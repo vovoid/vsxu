@@ -1,15 +1,16 @@
 #ifndef VSXFST_H
 #define VSXFST_H
 
-#if defined(__linux__) ||  defined(__APPLE__)
+#include <vsx_platform.h>
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #define VSXFSTDLLIMPORT
 #else
-
-#if VSXF_DLL
-# define VSXFSTDLLIMPORT __declspec (dllexport)
-#else /* Not BUILDING_DLL */
-# define VSXFSTDLLIMPORT __declspec (dllimport)
-#endif /* Not BUILDING_DLL */
+  #if defined(VSX_ENG_DLL)
+    #define VSXFSTDLLIMPORT __declspec (dllexport)
+  #else 
+    #define VSXFSTDLLIMPORT __declspec (dllimport)
+  #endif
 #endif
 
 #define VSXF_TYPE_FILESYSTEM 0

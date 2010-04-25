@@ -1,14 +1,22 @@
 #ifndef VSX_COMMAND_H
 #define VSX_COMMAND_H
-//#include "pthread/pthread.h"
-//#include <iostream>
-//#include <string>
-//#include <sstream>
+#include <vsx_platform.h>
 #include <map>
 #include <list>
 #include <vector>
-//#include "vsx_string_lib.h"
 #include "vsxfst.h"
+
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+#define VSXCDLLIMPORT
+#else
+  #if defined(VSX_ENG_DLL)
+    #define VSXCDLLIMPORT __declspec (dllexport)
+  #else 
+    #define VSXCDLLIMPORT __declspec (dllimport)
+  #endif
+#endif
+
 
 // different types of commands
 #define VSX_COMMAND_PARAM_SET 1
@@ -191,9 +199,9 @@ public:
     commands.push_back(t);
   }
 
-  void adds(int tp, vsx_string titl,vsx_string cmd, vsx_string cmd_data);
+  VSXCDLLIMPORT void adds(int tp, vsx_string titl,vsx_string cmd, vsx_string cmd_data);
 
-  void clear(bool del = false);
+  VSXCDLLIMPORT void clear(bool del = false);
 
   vsx_command_s* reset() {
     iter = commands.begin();

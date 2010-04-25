@@ -12,8 +12,6 @@
 #include <errno.h>
 #endif
 
-#include "vsx_string.h"
-#include "vsx_avector.h"
 #include "vsxfst.h"
 
 

@@ -8,3 +8,5 @@ _plugins_linux/*.so
 _plugins_win32/*.dll
 *.o
 install_manifest.txt
+*.dll
+*.dll.a
