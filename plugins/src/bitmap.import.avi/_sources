@@ -1,5 +1,3 @@
 set(SOURCES 
 main.cpp 
-api_stubs/vsx_param.cpp 
-#api_stubs/vsx_texture.cpp
 )
