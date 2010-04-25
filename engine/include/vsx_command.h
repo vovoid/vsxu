@@ -62,7 +62,7 @@ VSX_COMMAND_DLLIMPORT class vsx_command_s {
 public:
   VSX_COMMAND_DLLIMPORT void process_garbage();
   std::list<vsx_command_s*>* garbage_pointer;
-  static int id;
+  VSX_COMMAND_DLLIMPORT static int id;
   bool parsed;
   int owner; // for color-coding this command
   int type; // type of command
@@ -112,7 +112,7 @@ public:
   	printf("\n");
   }
 
-  ~vsx_command_s();
+  VSX_COMMAND_DLLIMPORT ~vsx_command_s();
 };
 
 VSX_COMMAND_DLLIMPORT vsx_command_s* vsx_command_parse(vsx_string& cmd_raw);
@@ -187,7 +187,7 @@ public:
     return 0;
   }
 	// add a command by specifying command and command data
-  void add(vsx_string cmd, vsx_string cmd_data);
+  VSX_COMMAND_DLLIMPORT void add(vsx_string cmd, vsx_string cmd_data);
 
   void add(vsx_string cmd, int cmd_data) {
     if (!accept_commands) return;
@@ -249,11 +249,11 @@ public:
   }
   // loads from file and puts the lines in vsx_command_s::raw.
   // The default is not to parse.
-  void load_from_file(vsx_string filename, bool parse = false,int type = 0);
-  void save_to_file(vsx_string filename);
+  VSX_COMMAND_DLLIMPORT void load_from_file(vsx_string filename, bool parse = false,int type = 0);
+  VSX_COMMAND_DLLIMPORT void save_to_file(vsx_string filename);
 
-  void token_replace(vsx_string search, vsx_string replace);
-  void parse();
+  VSX_COMMAND_DLLIMPORT void token_replace(vsx_string search, vsx_string replace);
+  VSX_COMMAND_DLLIMPORT void parse();
 
   void set_type(int new_type);
   int count() {

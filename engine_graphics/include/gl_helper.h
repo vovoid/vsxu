@@ -7,8 +7,8 @@
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #define VSX_GL_HELPER_DLLIMPORT
 #else
-  #if defined(VSX_ENG_DLL)
-    #define VSX_GL_HELPER_DLLIMPORT __declspec (dllexport)
+  #ifdef VSX_ENG_DLL
+    #define VSX_GL_HELPER_DLLIMPORT __declspec (dllexport) 
   #else 
     #define VSX_GL_HELPER_DLLIMPORT __declspec (dllimport)
   #endif

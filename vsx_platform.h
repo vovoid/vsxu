@@ -22,7 +22,7 @@
         #define PLATFORM                                        PLATFORM_WINDOWS
         #define PLATFORM_NAME                                   "Windows"
         #define PLATFORM_FAMILY                                 PLATFORM_FAMILY_WINDOWS
-        #define PLATFORM_SHARED_FILES                           vsx_string("./")
+        #define PLATFORM_SHARED_FILES                           vsx_string(".\\")
     #elif defined(__APPLE__) || defined(__MACH__)
         #define PLATFORM                                        PLATFORM_MACINTOSH
         #define PLATFORM_NAME                                   "Macintosh"

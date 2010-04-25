@@ -2,6 +2,7 @@
 #include "vsx_gl_global.h"
 #undef VSX_NOGLUT_LOCAL
 #include "vsx_math_3d.h"
+#include "gl_helper.h"
 
 void draw_box(vsx_vector pos, float width, float height) {
 	glBegin(GL_QUADS);

@@ -168,15 +168,15 @@ endif(UNIX)
 
 
 if(WIN32)
-  link_directories("../_lib/win32")
+  link_directories("../_lib/win32" ../engine_graphics)
 
   target_link_libraries(${module_id}
     wsock32
     ws2_32
+    vsxu_engine
+	vsxu_engine_graphics
     glew
     pthreadGCE
-	vsxu_engine_graphics
-    vsxu_engine
     gdi32
     glu32
     opengl32

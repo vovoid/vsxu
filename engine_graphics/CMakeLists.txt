@@ -13,16 +13,15 @@ if(WIN32)
 	../lib/win32/jpg
 	../lib/win32/zlib
   )
-  add_definitions(-DVSX_GLPNG_DLL)
+  add_definitions(-DVSX_GLPNG_DLL -DVSX_ENG_DLL=1)
   file(GLOB PNG_SOURCES "../lib/win32/png/*.c")
   file(GLOB JPG_SOURCES "../lib/win32/jpg/*.c")
   file(GLOB ZLIB_SOURCES "../lib/win32/zlib/*.c")
 endif(WIN32)
 
 #definitions
-#if you want an engine without OpenGL linkage, add -DVSX_NO_GL
 add_definitions(
- -DVSX_ENG_DLL=1
+ -DVSX_ENG_DLL
  -DVSX_FONT_NO_FT
  -DVSXU_EXE
  -DVSXU_DEVELOPER

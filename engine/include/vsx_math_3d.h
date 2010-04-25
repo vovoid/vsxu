@@ -9,6 +9,18 @@
 #define pi_float 3.1415926535897932384626433832795f
 #define half_pi 1.5707963267948966192313216916398
 
+#include <vsx_platform.h>
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+#define VSX_MATH_3D_DLLIMPORT
+#else
+  #ifdef VSX_ENG_DLL
+    #define VSX_MATH_3D_DLLIMPORT __declspec (dllexport) 
+  #else 
+    #define VSX_MATH_3D_DLLIMPORT __declspec (dllimport)
+  #endif
+#endif
+
 
 #ifndef __gl_h_
 typedef float GLfloat;
@@ -191,7 +203,7 @@ public:
 
 
 
-  double distance(vsx_vector otherpoint);
+  VSX_MATH_3D_DLLIMPORT double distance(vsx_vector otherpoint);
 
   /*void hsl2rgb(float h, float s, float l) {
   //	SColor t;
@@ -400,7 +412,7 @@ public:
 };
 #endif
 
-vsx_color vsx_color__(float x, float y, float z, float a = 0);
+VSX_MATH_3D_DLLIMPORT vsx_color vsx_color__(float x, float y, float z, float a = 0);
 
 class vsx_matrix {
 public:
@@ -566,17 +578,17 @@ public:
 
 
 
-float getmax(float foo,float bar);
-float getmin(float foo,float bar);
-float getrange(float value,float min,float max);
-int z_round(float val);
-double f_round(float val, int p);
-void v_norm(float *v);
-void mat_vec_mult(float *m, float *a, float *b);
-void mat_vec_mult3x3(float *m, float *a, float *b);
-void inv_mat( float *m, float *r);
+VSX_MATH_3D_DLLIMPORT float getmax(float foo,float bar);
+VSX_MATH_3D_DLLIMPORT float getmin(float foo,float bar);
+VSX_MATH_3D_DLLIMPORT float getrange(float value,float min,float max);
+VSX_MATH_3D_DLLIMPORT int z_round(float val);
+VSX_MATH_3D_DLLIMPORT double f_round(float val, int p);
+VSX_MATH_3D_DLLIMPORT void v_norm(float *v);
+VSX_MATH_3D_DLLIMPORT void mat_vec_mult(float *m, float *a, float *b);
+VSX_MATH_3D_DLLIMPORT void mat_vec_mult3x3(float *m, float *a, float *b);
+VSX_MATH_3D_DLLIMPORT void inv_mat( float *m, float *r);
 
-void Calc_Face_Normal(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float &nx, float &ny, float &nz);
+VSX_MATH_3D_DLLIMPORT void Calc_Face_Normal(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float &nx, float &ny, float &nz);
 
 
 

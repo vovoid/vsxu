@@ -63,7 +63,7 @@ class vsx_font {
     align = 1.0f;
   }
 public:
-  vsx_font_info* init(vsx_string font);
+  VSX_FONT_DLLIMPORT vsx_font_info* init(vsx_string font);
 
   vsx_avector<vsx_color> syntax_colors;
   // is in 2d mode?
