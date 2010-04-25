@@ -1,4 +1,6 @@
-#ifdef _WIN32
+#include <vsx_platform.h>
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
 #include <io.h>
 #endif
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
