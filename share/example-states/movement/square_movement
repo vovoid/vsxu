@@ -1,0 +1,39 @@
+meta_set fHx8fHw=
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.240521 -0.012511
+component_create renderers;basic;colored_rectangle colored_rectangle -0.172674 -0.007348
+param_set colored_rectangle size 0.13383688032627105713,0.16178001463413238525,0.00000000000000000000
+param_set colored_rectangle border_enable 0
+component_create maths;oscillators;oscillator oscillator -0.298502 -0.014052
+param_set oscillator osc_type 4
+param_set oscillator ofs 0.00000830873068480287
+param_set oscillator phase 0.00000988571810012218
+param_set oscillator time_source 1
+component_create maths;oscillators;oscillator oscillator1 -0.298195 -0.059521
+param_set oscillator1 osc_type 4
+param_set oscillator1 amp 0.50000840425491333008
+param_set oscillator1 ofs 0.00000929044563235948
+param_set oscillator1 time_source 1
+component_create maths;oscillators;oscillator oscillator_sq -0.360258 -0.008446
+param_set oscillator_sq osc_type 3
+param_set oscillator_sq amp 0.99999153614044189453
+param_set oscillator_sq phase 0.00000974898557615234
+param_set oscillator_sq freq 0.50000733137130737305
+param_set oscillator_sq time_source 1
+param_set oscillator_sq drive_type 0
+component_create maths;oscillators;oscillator oscillator_sq1 -0.372723 -0.057369
+param_set oscillator_sq1 osc_type 3
+param_set oscillator_sq1 amp 1.00000810623168945312
+param_set oscillator_sq1 phase 0.49999004602432250977
+param_set oscillator_sq1 freq 0.49999091029167175293
+param_set oscillator_sq1 time_source 1
+param_set oscillator_sq1 drive_type 0
+component_pos screen0 0.000000 0.000000
+param_set screen0 gamma_correction 1.00000095367431640625
+param_set screen0 clear_color 0.00000046420717580986,0.00000077531802844533,0.00000096349174327770,1.00000000000000000000
+note_create n0 -0.313893,0.009342,0.000000 0.122817,0.088371,0.000000 c3F1YXJlIG1vdmVtbnQKCm9zY2lfc3EgICAgCiBkcml2ZV90eXBlCi10aW1lIGlzIGludGVybmFsX2Fic29sdXRlIHNvIHRvIGJlIHByZWNpc2Ugc3F1YXJlIG1vdmVtZW50Cgpvc2NpbGxhdG9yCiAKLWl0IGNhbiB0YWtlIHNpbiBvciB0cmlhbmdsZSB2YWx1ZQogZHJpdmVfdHlwZQotdGltZSBpcyBpbnRlcm5hbF9yZWxhdGl2ZSBjYXVzZSBhYnNvbHV0ZSBkb2Vzbid0IGdpdmUgc3dpbmcKCnRpbWVfc291cmNlCi1pIGZvdW5kIHNlcXVlbmNlIHZhbHVlIGdpdmUgbW9yIHByZWNpc2Ugc3F1YXJlIG1vdmVtZW50LCBhbHRob3VnaCBpIGRvbnQgcXVpdGUKIHVuZGVyc3RhbmQgdGhlIGRpZmZlcmVuY2UgZnJvbSBvcGVyYXRpbmdfc3lzdGVtIHZhbHVlLCBidXQgbm90IGZvciBsb25nKHNvIAogc29tZXRoaW5nIG1heSBiZSB3cm9uZykKCiAgbWF5YmUgdGhlcmUgYXJlIG1vcmUgb3RoZXIgd2F5cyBmb3Igc3F1YXJlIG1vdmVtZW50LiBpIHdpbGwgYmUgaGFwcHkgdG8gc2VlCgpoYXZlIGZ1biE= 0.004000
+param_connect screen0 screen colored_rectangle render_out
+param_connect oscillator1 freq oscillator_sq1 float
+param_connect oscillator freq oscillator_sq float
+param_connect colored_rectangle position 3float_to_float3 result_float3
+param_connect 3float_to_float3 floatb oscillator1 float
+param_connect 3float_to_float3 floata oscillator float

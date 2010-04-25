@@ -1,0 +1,48 @@
+meta_set fHx8fHw=
+macro_create camrotationhelp -0.171854 0.073233 0.100000
+component_create maths;converters;3float_to_float3 camrotationhelp.3float_to_float31 0.028769 0.001432
+param_set camrotationhelp.3float_to_float31 floatb 0.00000872066630108748
+component_create maths;dummies;float_dummy camrotationhelp.float_dummy1 -0.037722 0.011188
+param_set camrotationhelp.float_dummy1 float_in 0.04312895983457565300
+component_create maths;oscillators;oscillator camrotationhelp.oscillator2 -0.003835 -0.024791
+param_set camrotationhelp.oscillator2 amp 0.99999928474426270000
+param_set camrotationhelp.oscillator2 ofs 0.00000069308629235820
+component_create maths;oscillators;oscillator camrotationhelp.oscillator3 -0.002942 0.013803
+param_set camrotationhelp.oscillator3 amp 0.98314893245697021000
+param_set camrotationhelp.oscillator3 ofs 0.00000069308629235820
+param_set camrotationhelp.oscillator3 phase -0.49999931454658508000
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.082846 -0.079571
+component_create mesh;solid;mesh_planes mesh_planes -0.156204 -0.116345
+param_set mesh_planes num_planes 20.00934982299804700000
+param_set mesh_planes space_between 0.05000868067145347600
+param_set mesh_planes diameter 1.00000822544097900000
+param_set mesh_planes normals 0.00000000000000000000,1.00000000000000000000,0.00000064626470930307
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.086652 0.007282
+component_create maths;oscillators;oscillator oscillator -0.243230 -0.007274
+param_set oscillator amp 0.59000080823898315000
+param_set oscillator ofs 0.60074615478515625000
+param_set oscillator freq 0.07141296565532684300
+component_create texture;buffers;render_surface_single render_surface_single -0.170298 -0.046203
+param_set render_surface_single support_feedback 0
+param_set render_surface_single clear_color 0.00000000000000000000,0.01592200063169002500,0.00939199980348348620,0.00000000000000000000
+param_set render_surface_single texture_size 1
+component_pos screen0 0.000000 0.000000
+component_create renderers;oscilloscopes;simple_oscilloscope simple_oscilloscope -0.250409 -0.066856
+param_set simple_oscilloscope position 0.00000000000000000000,0.00000000000000000000,0.00000092774280346930
+param_set simple_oscilloscope line_width 0.92678695917129517000
+param_set simple_oscilloscope color 1.00000000000000000000,1.00000000000000000000,0.99999928474426270000,1.00000000000000000000
+component_create system;sound;vsx_listener vsx_listener -0.410053 -0.017630
+param_alias alias_result_float3:float3 1 camrotationhelp alias_result_float3 camrotationhelp.3float_to_float31 result_float3
+param_connect simple_oscilloscope data_in vsx_listener wave
+param_connect screen0 screen orbit_camera render_out
+param_connect render_surface_single render_in simple_oscilloscope render_out
+param_connect orbit_camera render_in mesh_basic_render render_out
+param_connect orbit_camera distance oscillator float
+param_connect orbit_camera rotation camrotationhelp alias_result_float3
+param_connect mesh_basic_render mesh_in mesh_planes mesh
+param_connect mesh_basic_render tex_a render_surface_single texture_out
+param_connect camrotationhelp.oscillator3 freq camrotationhelp.float_dummy1 result_float
+param_connect camrotationhelp.oscillator2 freq camrotationhelp.float_dummy1 result_float
+param_connect camrotationhelp.3float_to_float31 floatc camrotationhelp.oscillator2 float
+param_alias alias_floatb:float -1 camrotationhelp alias_floatb camrotationhelp.3float_to_float31 floatb
+param_connect camrotationhelp.3float_to_float31 floata camrotationhelp.oscillator3 float

@@ -1,0 +1,152 @@
+meta_set fHx8fHw=
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.163583 0.038361
+component_create maths;color;converters;4f_hsv_to_f4_rgb 4f_hsv_to_f4_rgb -0.177007 -0.236001
+param_set 4f_hsv_to_f4_rgb s 0.43639627099037170000
+param_set 4f_hsv_to_f4_rgb v 0.17818146944046021000
+component_create maths;arithmetics;binary;add add -0.235915 0.168764
+component_create maths;arithmetics;binary;add add1 -0.231742 0.062955
+component_create maths;arithmetics;binary;add add2 -0.201713 -0.023705
+component_create renderers;opengl_modifiers;backface_culling backface_culling 0.029300 -0.057450
+param_set backface_culling status 1
+component_create particlesystems;generators;basic_spray_emitter basic_spray_emitter -0.081397 -0.189636
+param_set basic_spray_emitter speed_type 0
+param_set basic_spray_emitter time_source 0
+param_set basic_spray_emitter particle_size_base 0.29621911048889160000
+param_set basic_spray_emitter particle_size_random_weight 1.06991982460021970000
+component_create particlesystems;modifiers;basic_wind_deformer basic_wind_deformer 0.032130 -0.189468
+param_set basic_wind_deformer wind 0.03331293910741806000,0.03331293910741806000,0.03331293910741806000
+component_create renderers;opengl_modifiers;blend_mode blend_mode 0.076939 -0.074135
+param_set blend_mode dest_blend 1
+component_create texture;particles;blob blob -0.201640 -0.055518
+param_set blob arms 500.88693237304687000000
+param_set blob attenuation 5.49721288681030270000
+param_set blob size 6
+param_set blob star_flower -1.00000798702239990000
+macro_create camera_rotation_helper -0.041439 0.105334 0.233937
+component_create maths;converters;3float_to_float3 camera_rotation_helper.3float_to_float3 0.071481 0.066716
+param_set camera_rotation_helper.3float_to_float3 floatb -0.25484931468963623000
+component_create maths;dummies;float_dummy camera_rotation_helper.float_dummy -0.079796 0.021252
+component_create maths;oscillators;oscillator camera_rotation_helper.oscillator -0.000858 0.054147
+param_set camera_rotation_helper.oscillator amp 0.99999910593032837000
+param_set camera_rotation_helper.oscillator ofs 0.00000093879611995362
+param_set camera_rotation_helper.oscillator phase -0.49999904632568359000
+component_create maths;oscillators;oscillator camera_rotation_helper.oscillator1 -0.002068 -0.008290
+param_set camera_rotation_helper.oscillator1 amp 0.99999910593032837000
+param_set camera_rotation_helper.oscillator1 ofs 0.00000082698852565954
+param_set camera_rotation_helper.oscillator1 phase 0.00000091451869366210
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer 0.092746 -0.062151
+param_set depth_buffer depth_test 0
+param_set depth_buffer depth_mask 0
+macro_create empty -0.197070 0.117865 0.100000
+component_create maths;interpolation;float_interpolation float_interpolation -0.126365 0.105501
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate 0.048263 -0.016240
+param_set gl_rotate axis -2.80082011222839360000,0.99999910593032837000,0.05663099884986877400
+param_set gl_rotate angle -0.36485666036605835000
+component_create renderers;opengl_modifiers;gl_rotate_quat gl_rotate_quat 0.118734 0.012502
+param_set gl_rotate_quat rotation 0.00000000000000000039,0.00000000000000000000,0.00000203282888833201,1.00000000000000000000
+param_set gl_rotate_quat matrix_target 1
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.089331 -0.076971
+param_set mesh_basic_render vertex_colors 1
+param_set mesh_basic_render use_display_list 1
+param_set mesh_basic_render use_vertex_colors 0
+param_set mesh_basic_render particles_size_center 1
+component_create mesh;solid;mesh_sphere mesh_sphere -0.188765 -0.108204
+param_set mesh_sphere num_sectors 10.99999237060546900000
+param_set mesh_sphere num_stacks 10.99999237060546900000
+component_create maths;oscillators;oscillator noise_y -0.343281 0.052675
+param_set noise_y osc_type 0
+param_set noise_y ofs 0.00000090450078005233
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera 0.064844 0.082108
+param_set orbit_camera distance 0.91353148221969604000
+param_set orbit_camera upvector 0.10382474958896637000,0.10382474958896637000,0.10382474958896637000
+param_set orbit_camera near_clipping 0.16791589558124542000
+component_create maths;oscillators;oscillator oscillator -0.151311 -0.037831
+param_set oscillator freq 0.14119628071784973000
+component_create maths;oscillators;oscillator oscillator1 -0.232973 -0.175964
+param_set oscillator1 freq 3.41961169242858890000
+component_create texture;buffers;render_surface_single render_surface_single 0.137250 0.117448
+param_set render_surface_single support_feedback 0
+component_create texture;modifiers;rotate rotate -0.108070 0.005992
+component_pos screen0 0.301337 0.104552
+param_set screen0 gamma_correction 1.00000095367431640000
+param_set screen0 clear_color 0.00000000000000000551,0.00000000000000000000,0.00000000000000000000,0.00000088242728679688
+component_create renderers;oscilloscopes;simple_oscilloscope simple_oscilloscope -0.249812 -0.064695
+param_set simple_oscilloscope position 0.00000003450247376691,0.00000088664558006712,0.88696599006652832000
+param_set simple_oscilloscope line_width 42.00000000000000000000
+component_create maths;oscillators;oscillator sin_x -0.332860 0.123210
+param_set sin_x osc_type 0
+param_set sin_x ofs 0.00000092113702976349
+param_set sin_x freq 0.43930199742317200000
+param_set sin_x drive_type 2
+component_create maths;oscillators;oscillator sin_x2 -0.329736 -0.183734
+param_set sin_x2 osc_type 0
+param_set sin_x2 ofs 0.00000089379886958341
+param_set sin_x2 freq 0.15418991446495056000
+param_set sin_x2 drive_type 2
+component_create maths;oscillators;oscillator sin_x3 -0.329292 0.195928
+param_set sin_x3 osc_type 0
+param_set sin_x3 ofs 0.00000096620317435736
+component_create maths;oscillators;oscillator sin_x6 -0.334764 -0.109522
+param_set sin_x6 osc_type 0
+param_set sin_x6 ofs 0.00000093143881940705
+param_set sin_x6 freq 0.00195371918380260470
+param_set sin_x6 drive_type 2
+component_create maths;oscillators;oscillator sin_y -0.341290 -0.019823
+param_set sin_y osc_type 0
+param_set sin_y ofs 0.00000096007920546981
+param_set sin_y freq 0.16736219823360443000
+component_create texture;opengl;texture_coord_gen texture_coord_gen -0.016663 -0.068432
+param_set texture_coord_gen gen_s 1
+param_set texture_coord_gen gen_t 1
+component_create renderers;basic;textured_rectangle textured_rectangle 0.253091 0.128787
+param_set textured_rectangle facing_camera 0
+component_create maths;arithmetics;vector;vector_add_float vector_add_float -0.071946 0.040343
+component_create system;sound;vsx_listener vsx_listener -0.557250 -0.018317
+param_set vsx_listener multiplier 1.87425601482391360000
+param_alias alias_result_float3:float3 1 camera_rotation_helper alias_result_float3 camera_rotation_helper.3float_to_float3 result_float3
+param_connect vector_add_float param2 vsx_listener octaves_l_1
+param_connect textured_rectangle texture_in render_surface_single texture_out
+param_connect texture_coord_gen render_in mesh_basic_render render_out
+param_connect sin_y amp vsx_listener vu_l
+param_connect sin_x6 amp vsx_listener vu_l
+param_connect sin_x3 amp vsx_listener vu_l
+param_connect sin_x2 amp vsx_listener vu_l
+param_connect sin_x amp vsx_listener vu_l
+param_connect simple_oscilloscope data_in vsx_listener wave
+param_connect screen0 screen textured_rectangle render_out
+param_connect rotate rotation_angle oscillator float
+param_connect rotate texture_in blob texture
+param_connect render_surface_single render_in orbit_camera render_out
+param_connect orbit_camera render_in gl_rotate_quat render_out
+param_connect orbit_camera rotation camera_rotation_helper alias_result_float3
+param_connect noise_y amp vsx_listener vu_l
+param_connect mesh_basic_render particles basic_wind_deformer particlesystem
+param_connect mesh_basic_render mesh_in mesh_sphere mesh
+param_connect mesh_basic_render tex_a rotate texture_rotate_out
+param_connect gl_rotate_quat render_in gl_rotate render_out
+param_connect gl_rotate render_in depth_buffer render_out
+param_connect float_interpolation value_in vsx_listener octaves_l_1
+param_connect depth_buffer render_in blend_mode render_out
+param_connect camera_rotation_helper.oscillator1 freq camera_rotation_helper.float_dummy result_float
+param_connect camera_rotation_helper.oscillator freq camera_rotation_helper.float_dummy result_float
+param_alias alias_float_in:float -1 camera_rotation_helper alias_float_in camera_rotation_helper.float_dummy float_in
+param_connect camera_rotation_helper alias_float_in float_interpolation result_float
+param_connect camera_rotation_helper.3float_to_float3 floatc camera_rotation_helper.oscillator1 float
+param_connect camera_rotation_helper.3float_to_float3 floata camera_rotation_helper.oscillator float
+param_connect blend_mode render_in backface_culling render_out
+param_connect basic_wind_deformer in_particlesystem basic_spray_emitter particlesystem
+param_connect basic_spray_emitter color 4f_hsv_to_f4_rgb result_float4
+param_connect basic_spray_emitter speed_z sin_x6 float
+param_connect basic_spray_emitter speed_y sin_x6 float
+param_connect basic_spray_emitter speed_x sin_x6 float
+param_connect backface_culling render_in texture_coord_gen render_out
+param_connect add2 param2 sin_x6 float
+param_connect add2 param1 sin_x2 float
+param_connect add1 param2 sin_y float
+param_connect add1 param1 noise_y float
+param_connect add param2 sin_x float
+param_connect add param1 sin_x3 float
+param_connect 4f_hsv_to_f4_rgb h oscillator1 float
+param_connect 3float_to_float3 floatc add2 sum
+param_connect 3float_to_float3 floatb add1 sum
+param_connect 3float_to_float3 floata add sum

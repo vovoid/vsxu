@@ -1,0 +1,56 @@
+component_create renderers;opengl_modifiers;blend_mode blend_mode 0.106189 0.054946
+param_set blend_mode dest_blend 1
+component_create texture;effects;blur blur 0.165167 0.150173
+param_set blur start_value 5.90651893615722660000
+macro_create camera_rotation_helper -0.082683 0.188737 0.233937
+component_create maths;converters;3float_to_float3 camera_rotation_helper.3float_to_float3 0.071481 0.066716
+param_set camera_rotation_helper.3float_to_float3 floatb -0.25484931468963623000
+component_create maths;dummies;float_dummy camera_rotation_helper.float_dummy -0.079796 0.021252
+param_set camera_rotation_helper.float_dummy float_in 0.13013705611228943000
+component_create maths;oscillators;oscillator camera_rotation_helper.oscillator -0.000858 0.054147
+param_set camera_rotation_helper.oscillator amp 0.99999910593032837000
+param_set camera_rotation_helper.oscillator ofs 0.00000093879611995362
+param_set camera_rotation_helper.oscillator phase -0.49999904632568359000
+param_set camera_rotation_helper.oscillator drive_type 0
+component_create maths;oscillators;oscillator camera_rotation_helper.oscillator1 -0.002068 -0.008290
+param_set camera_rotation_helper.oscillator1 amp 0.99999910593032837000
+param_set camera_rotation_helper.oscillator1 ofs 0.00000082698852565954
+param_set camera_rotation_helper.oscillator1 phase 0.00000091451869366210
+param_set camera_rotation_helper.oscillator1 drive_type 0
+component_create renderers;mesh;mesh_line_render mesh_line_render -0.074215 0.107009
+param_set mesh_line_render override_base_color 1
+param_set mesh_line_render base_color 0.13118584454059601000,0.13449989259243011000,0.36684790253639221000,1.00000000000000000000
+param_set mesh_line_render base_color_add 0.00000072546833962406,0.00000010535865868633,0.00000010535865868633,0.00000000000000000000
+param_set mesh_line_render center_color 0.00000092141203822393,0.00000039711466115477,0.00000039711466115477,0.99999994039535522000
+param_set mesh_line_render center_color_add 0.00000012133438076489,0.00000008852706656626,0.00000020115498955420,0.00000000000000000000
+component_create renderers;mesh;mesh_line_render mesh_line_render1 -0.083217 0.020053
+component_create mesh;particles;mesh_star mesh_star -0.176074 0.067742
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera 0.021484 0.100320
+param_set orbit_camera distance 1.38942110538482670000
+component_create texture;buffers;render_surface_single render_surface_single 0.085035 0.151656
+param_set render_surface_single texture_size 3
+component_pos screen0 0.245104 0.083809
+param_set screen0 gamma_correction 0.99999916553497314000
+component_create renderers;examples;simple_with_texture simple_with_texture 0.233250 0.187986
+param_set simple_with_texture global_alpha 0.73651313781738281000
+param_set simple_with_texture facing_camera 0
+param_set simple_with_texture size 0.99999904632568359000
+component_create system;sound;vsx_listener vsx_listener -0.283100 0.077775
+param_set vsx_listener multiplier 1.00000095367431640000
+param_alias alias_result_float3:float3 1 camera_rotation_helper alias_result_float3 camera_rotation_helper.3float_to_float3 result_float3
+param_connect simple_with_texture texture_in blur texture_out
+param_connect screen0 screen blend_mode render_out
+param_connect screen0 screen simple_with_texture render_out
+param_connect render_surface_single render_in blend_mode render_out
+param_connect orbit_camera render_in mesh_line_render render_out
+param_connect orbit_camera rotation camera_rotation_helper alias_result_float3
+param_connect mesh_star paths vsx_listener spectrum
+param_connect mesh_line_render1 mesh_in mesh_star mesh
+param_connect mesh_line_render mesh_in mesh_star mesh
+param_connect camera_rotation_helper.oscillator1 freq camera_rotation_helper.float_dummy result_float
+param_connect camera_rotation_helper.oscillator freq camera_rotation_helper.float_dummy result_float
+param_alias alias_float_in:float -1 camera_rotation_helper alias_float_in camera_rotation_helper.float_dummy float_in
+param_connect camera_rotation_helper.3float_to_float3 floatc camera_rotation_helper.oscillator1 float
+param_connect camera_rotation_helper.3float_to_float3 floata camera_rotation_helper.oscillator float
+param_connect blur glow_source render_surface_single texture_out
+param_connect blend_mode render_in orbit_camera render_out

@@ -1,0 +1,19 @@
+meta_set fHx8fHw=
+component_create texture;particles;blob blob -0.295152 -0.015223
+param_set blob alpha 1
+param_set blob color 0.63350296020507812500,0.61808896064758300781,0.99999994039535522461,0.99999994039535522461
+component_create texture;particles;blob blob_clone -0.291758 0.033117
+param_set blob_clone alpha 1
+param_set blob_clone color 0.00000000000000000162,0.00000000000013337024,0.00000060993920669716,0.99999994039535522461
+component_pos screen0 0.000000 0.000000
+component_create renderers;basic;textured_rectangle textured_rectangle -0.158324 -0.005701
+param_set textured_rectangle facing_camera 0
+param_set textured_rectangle size 0.56081765890121459961
+component_create renderers;basic;textured_rectangle textured_rectangle_clone -0.156760 0.057972
+param_set textured_rectangle_clone facing_camera 0
+param_set textured_rectangle_clone size 0.49390605092048645020
+param_set textured_rectangle_clone position 0.34984490275382995605,0.30543097853660583496,0.00000000000000000000
+param_connect textured_rectangle_clone texture_in blob_clone texture
+param_connect textured_rectangle texture_in blob texture
+param_connect screen0 screen textured_rectangle render_out
+param_connect screen0 screen textured_rectangle_clone render_out

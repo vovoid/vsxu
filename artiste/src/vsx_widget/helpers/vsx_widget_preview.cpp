@@ -1,0 +1,238 @@
+#include <map>
+#include "vsx_font.h"
+// local includes
+#include "vsx_engine.h"
+
+#include "lib/vsx_widget_lib.h"
+
+#include "vsx_widget_base.h"
+#include "dialogs/vsx_widget_window_statics.h"
+#include "server/vsx_widget_server.h"
+
+#include "vsx_widget_preview.h"
+
+void vsx_window_texture_viewer::draw_2d() {
+	visible = !performance_mode;
+	if (performance_mode) return;
+    frame_delta += dtime;
+    ++frame_count;
+    if (frame_count == 50) {
+      fps = 1/(frame_delta/frame_count);
+      frame_count = 0;
+      frame_delta = 0;
+    }
+    //printf("-\n");
+    title = "vsxu preview (slow) @ "+i2s((int)round(fps))+" fps";
+    float vis = visible;
+    if (!visible) color.a = 0.3; else color.a = 1;
+    visible = 1;
+    vsx_widget_window::draw_2d();
+    visible = vis;
+    /*pos.x = 0;
+    pos.y = 1;//384/(screen_y-1);
+    size.y = 384/(screen_y-1);
+    size.x = 512/(screen_x-1);*/
+    pos_.y = pos.y+dragborder;
+    size_.y = size.y-font_size-dragborder;
+    pos_.x = pos.x+dragborder;
+    size_.x = size.x-dragborder*2;
+
+    //if (texture.texture_info.get_id() != -1) {
+      if (visible)
+      glColor4f(0,0,0,1);
+      else
+      glColor4f(0,0,0,0.3);
+//      draw_box(pos_,size_.x,size_.y);
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity();
+      glMatrixMode(GL_MODELVIEW);
+      glLoadIdentity();
+      if (*engine == 0) {
+      	set_pos(vsx_vector(0.0,2.0,0.0));
+      	set_size(vsx_vector(0.0,0.0,0.0));
+      }
+      // set new viewport
+      if (run)
+      if (*engine) {
+        // get viewport
+        /*((vsx_engine*)engine)->view_x = ceil(pos_.x*(screen_x-1))*screen_aspect;
+        ((vsx_engine*)engine)->view_y = ceil((pos_.y-size_.y)*(screen_y-1));
+        ((vsx_engine*)engine)->view_resx = ceil(size_.x*(screen_x-1))*screen_aspect;
+        ((vsx_engine*)engine)->view_resy = ceil(size_.y*(screen_y-1));*/
+
+        GLint	viewport[4];
+        glGetIntegerv(GL_VIEWPORT, viewport);
+#ifdef _WIN32
+        glViewport(
+          (int)ceil(pos_.x*(screen_x-1)),
+          (int)ceil(pos_.y*(screen_y-1)),
+          (int)ceil(size_.x*(screen_x-1)),
+          (int)ceil(size_.y*(screen_y-1))
+        );
+        glScissor(
+          (int)ceil(pos_.x*(screen_x-1)),
+          (int)ceil(pos_.y*(screen_y-1)),
+          (int)ceil(size_.x*(screen_x-1)),
+          (int)ceil(size_.y*(screen_y-1))
+        );
+#else
+        glViewport(
+          (int)ceil(pos_.x*(screen_x-1)),
+          (int)ceil((pos_.y)*(screen_y-1)),
+          (int)ceil(size_.x*(screen_x-1)),
+          (int)ceil((size_.y)*(screen_y-1))
+        );
+        glScissor(
+          (int)ceil(pos_.x*(screen_x-1)),
+          (int)ceil((pos_.y)*(screen_y-1)),
+          (int)ceil(size_.x*(screen_x-1)),
+          (int)ceil(size_.y*(screen_y-1))
+        );
+#endif
+        glEnable(GL_SCISSOR_TEST);
+
+        // render the engine
+        ((vsx_engine*)(*engine))->render();
+
+        glPolygonMode(GL_FRONT, GL_FILL);
+        glPolygonMode(GL_BACK, GL_FILL);
+        glDisable(GL_POLYGON_SMOOTH);
+
+
+//      glClear(GL_DEPTH_BUFFER_BIT);
+
+        // reset the viewport
+        //printf("--reset viewport %d %d %d %d\n",viewport[0],viewport[1],viewport[2],viewport[3]);
+        glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
+
+        glScissor(viewport[0],viewport[1],viewport[2],viewport[3]);
+        glDisable(GL_SCISSOR_TEST);
+      }
+      glDepthMask(GL_TRUE);
+      glDisable(GL_DEPTH_TEST);
+      //glMatrixMode(GL_MODELVIEW);
+    	//glPopMatrix();
+    	glMatrixMode(GL_PROJECTION);
+      //glPopMatrix();
+      glLoadIdentity();
+      gluOrtho2D(0, 1, 0, 1);
+      glMatrixMode(GL_MODELVIEW);
+      glLoadIdentity();
+      glEnable (GL_BLEND);
+      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+/*''     	texture.bind();
+  //    glEnable(texture.texture_info.get_type());
+  //  	glBindTexture(texture.texture_info.get_type(), texture.texture_info.get_id());
+      if (visible)
+      glColor4f(1,1,1,1);
+      else
+      glColor4f(1,1,1,0.3);
+     	glBegin(GL_QUADS);
+      	glTexCoord2f(0, 1);
+        glVertex3f(pos_.x,pos_.y,0);
+      	glTexCoord2f(1, 1);
+        glVertex3f(pos_.x+size_.x,pos_.y,0);
+      	glTexCoord2f(1, 0);
+        glVertex3f(pos_.x+size_.x,pos_.y-size_.y,0);
+      	glTexCoord2f(0, 0);
+        glVertex3f(pos_.x,pos_.y-size_.y,0);
+      glEnd();
+      texture._bind();*/
+  // 	  glDisable(texture.texture_info.get_type());
+   //	}
+    draw_children_2d();
+}
+
+bool vsx_window_texture_viewer::event_key_down(signed long key, bool alt, bool ctrl, bool shift) {
+  //printf("vsx_window_texture_viewer::event_key_down pressed %d %d %d \n",key,(int)alt,(int)ctrl);
+  //if (ctrl && (key == 'f' || key == 'F')) { fullwindow != fullwindow; if (fullwindow) mouse.hide_cursor(); else mouse.show_cursor(); run = true; return false;}
+  //if (alt && key == 20) {
+//	  fullscreen = !fullscreen; return false;}
+  if (ctrl && key == 32) { run = !run; return false;}
+  if (key == 32) { run = !run; return false;}
+  if (key == 13) {fullwindow = !fullwindow; if (fullwindow) mouse.hide_cursor(); else mouse.show_cursor();}
+
+//  ((vsx_window_texture_viewer*)tv)->fullwindow = !((vsx_window_texture_viewer*)tv)->fullwindow;
+//  if (((vsx_window_texture_viewer*)tv)->fullwindow) mouse.hide_cursor(); else mouse.show_cursor();
+
+  return false;
+}
+
+void vsx_window_texture_viewer::vsx_command_process_b(vsx_command_s *t) {
+//  printf("command: %s\n",t->cmd.c_str());
+  if (t->cmd == "fullwindow") fullwindow = !fullwindow; else
+  if (t->cmd == "toggle") run = !run; else
+  vsx_widget::vsx_command_process_b(t);
+
+//  printf("run %i\n",run);
+}
+
+void vsx_window_texture_viewer::init() {
+  if (init_run) return;
+/*  menu = add(new vsx_widget_popup_menu,".obtx_menu");
+  menu->commands.adds(VSX_COMMAND_MENU, "disable/enable {space or ctrl+space globally}", "toggle","");
+  menu->commands.adds(VSX_COMMAND_MENU, "toggle fullwindow {enter or ctrl+f globally}", "fullwindow","");
+  menu->commands.adds(VSX_COMMAND_MENU, "toggle fullscreen", "fullscreen","");
+  modestring_commands.reset();
+  vsx_command_s* c;
+  menu->commands.adds(VSX_COMMAND_MENU, "fullscreen (current resolution) {alt+enter}", "fullscreen","");
+
+  while (c = modestring_commands.get()) {
+    menu->commands.adds(VSX_COMMAND_MENU, "fullscreen "+c->cmd_data, "fullscreen",c->cmd_data);
+  }
+  //menu->commands.adds(VSX_COMMAND_MENU, "fullscreen 800x600:32@60 {alt+1}", "fullscreen","800x600:32@60");
+  //menu->commands.adds(VSX_COMMAND_MENU, "fullscreen 800x600:32@85 {alt+enter}", "fullscreen","800x600:32@85");
+  //menu->commands.adds(VSX_COMMAND_MENU, "fullscreen 1024x768:32@60 {alt+2}", "fullscreen","1024x768:32@60");
+  //menu->commands.adds(VSX_COMMAND_MENU, "fullscreen 1024x768:32@85", "fullscreen","1024x768:32@85");
+  //menu->commands.adds(VSX_COMMAND_MENU, "fullscreen 1280x800:32@60", "fullscreen","1280x800:32@60");
+  //menu->commands.adds(VSX_COMMAND_MENU, "fullscreen 1280x800:32@85", "fullscreen","1280x800:32@85");
+  //menu->commands.adds(VSX_COMMAND_MENU, "fullscreen 1280x1024:32@85", "fullscreen","1280x1024:32@85");
+  menu->commands.adds(VSX_COMMAND_MENU, "custom modestring", "custom","");
+  menu->size.x = 0.35;
+  menu->size.y = 0.5;*/
+  init_children();
+  /*pos_.y = pos.y-font_size+dragborder*2;
+  size_.y = size.y-font_size+dragborder*2;
+  pos_.x = pos.x+dragborder;
+  size_.x = size.x-dragborder*2;*/
+
+  if (!init_run) {
+  	vsx_widget_window::init();
+  }
+  topmost = true;
+//  texture = 0;
+  title = "vsxu output preview";
+  allow_resize_x = true;
+  allow_resize_y = true;
+  //dragborder = 0.001;
+  //pos.y = 1;
+  //pos.x = 0;
+  //size.x = 0.3;
+  //size.y = 0.3;
+  //target_size = size;
+  //target_pos = pos;
+  visible = 1;
+  size_min.x = 0.2;
+  size_min.y = 0.15;
+
+  init_run = true;
+}
+
+void vsx_window_texture_viewer::set_server(vsx_widget* new_server)
+{
+  engine = & ((vsx_widget_server*)new_server)->engine;
+}
+
+vsx_window_texture_viewer::vsx_window_texture_viewer() {
+  // vsxu gui production control mechanisms
+  fps = 0.0;
+  engine = 0;
+  frame_count = 0;
+  frame_delta = 0;
+  init_run = false;
+  run = true;
+  fullscreen = false;
+  fullwindow = false;
+  modestring = "";
+}

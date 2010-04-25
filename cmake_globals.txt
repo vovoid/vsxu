@@ -1,0 +1,25 @@
+set(EXTRA_LIBS "")
+
+if(VSXU_DEBUG)
+  add_definitions(-g -Wall)
+else(VSXU_DEBUG)
+  add_definitions(-Os -c -fmessage-length=0 -finline-functions)
+endif(VSXU_DEBUG)
+
+#add_definitions(-Os -c -fmessage-length=0 -finline-functions)
+#add_definitions(-O3 -c -fmessage-length=0 -finline-functions)
+
+
+if(WIN32)
+  cmake_policy(SET CMP0015 NEW)
+  cmake_policy(SET CMP0011 OLD)
+  include_directories("../_system_win32" "../_system_win32/pthread" "../_lib/win32")
+  
+  find_path(WINDOWS_LIB_PATH NAMES pthreadGCE.so
+    PATHS
+      ../../_lib/win32
+  )
+  
+  link_directories("../_lib/win32")
+endif(WIN32)
+

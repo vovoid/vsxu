@@ -1,0 +1,61 @@
+.key MAKE,COMPILER
+.bra {
+.ket }
+
+;*************************************************************************
+;* compile.ami - AmigaDOS compilation script
+;* $Date: 2003/02/02 20:51:40 $
+;* $Revision: 1.2 $
+;*
+;* This is a "helper" script for the top-level Makefile for GLFW.
+;*
+;* Usage 1: compile MAKEPROG SUFFIX
+;*
+;* MAKEPROG  Name of make program (e.g. make or nmake)
+;* SUFFIX    Makefile suffix for a specific compiler (e.g. msvc)
+;*
+;* Usage 2: compile CLEAN
+;*************************************************************************
+
+; Do we want to do a cleanup?
+IF "{MAKE}" EQ "CLEAN"
+  Echo "Cleaning up..."
+  delete >NIL: lib/amigaos/#?.o QUIET
+  delete >NIL: lib/amigaos/glfw.lib QUIET
+  delete >NIL: lib/amigaos/libglfw.a QUIET
+  delete >NIL: examples/boing QUIET
+  delete >NIL: examples/gears QUIET
+  delete >NIL: examples/keytest QUIET
+  delete >NIL: examples/listmodes QUIET
+  delete >NIL: examples/mipmaps QUIET
+  delete >NIL: examples/mtbench QUIET
+  delete >NIL: examples/mthello QUIET
+  delete >NIL: examples/particles QUIET
+  delete >NIL: examples/pong3d QUIET
+  delete >NIL: examples/splitview QUIET
+  delete >NIL: examples/triangle QUIET
+  delete >NIL: examples/wave QUIET
+  Skip done
+EndIF
+
+; Did we get a proper make program name?
+IF "{COMPILER}" EQ ""
+  echo >T:mymake{$$} "make -f Makefile.amigaos.{MAKE}"
+Else
+  echo >T:mymake{$$} "{MAKE} -f Makefile.amigaos.{COMPILER}"
+EndIF
+protect T:mymake{$$} SRWED add
+
+; Compile GLFW library
+cd lib/amigaos
+T:mymake{$$}
+
+; Compiler GLFW example programs
+cd //examples
+T:mymake{$$}
+cd /
+
+; Remove temporary file
+delete >NIL: T:mymake{$$} QUIET
+
+Lab done

@@ -1,0 +1,377 @@
+meta_set fHx8fHw=
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.194561 0.124542
+param_set 3float_to_float3 floatc 0.01513591594994068100
+component_create maths;converters;3float_to_float3 3float_to_float33 -0.172611 -0.018185
+param_set 3float_to_float33 floatb 0.57507187128067017000
+component_create maths;color;converters;4f_hsv_to_f4_rgb 4f_hsv_to_f4_rgb -0.617520 0.054280
+param_set 4f_hsv_to_f4_rgb s 1.27699470520019530000
+param_set 4f_hsv_to_f4_rgb a 1.02523922920227050000
+component_create maths;arithmetics;binary;add add -0.658699 0.146252
+component_create renderers;opengl_modifiers;blend_mode blend_mode 0.194362 0.096731
+param_set blend_mode dest_blend 1
+component_create renderers;opengl_modifiers;blend_mode blend_mode2 -0.061163 0.028830
+component_create renderers;opengl_modifiers;blend_mode blend_mode2_clone -0.161003 -0.203056
+param_set blend_mode2_clone source_blend 1
+param_set blend_mode2_clone dest_blend 1
+component_create texture;particles;blob blob -0.686377 -0.105389
+component_create texture;effects;blur blur 0.096647 -0.031546
+param_set blur texture_size 4
+param_set blur start_value 4.91201782226562500000
+param_set blur attenuation 1.31145524978637700000
+component_create renderers;opengl_modifiers;depth_test depth_test -0.011257 0.151352
+param_set depth_test status 0
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate -0.442506 0.237900
+param_set gl_rotate axis 0.99999946355819702000,0.00000000000000000000,0.00000000000366240675
+param_set gl_rotate angle 0.00000985298447631067
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate1 -0.295216 0.159663
+param_set gl_rotate1 angle 0.00000900974009709898
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate2 -0.497196 0.264820
+param_set gl_rotate2 angle 0.00000826225914352108
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate3 -0.040356 -0.131961
+param_set gl_rotate3 axis 0.00000000000000000000,0.52565002441406250000,1.00000000000000000000
+param_set gl_rotate3 angle 672.88897705078125000000
+component_create renderers;opengl_modifiers;gl_scale gl_scale -0.228519 0.144868
+param_set gl_scale scale 2.06869888305664060000,2.25303888320922850000,1.46547591686248780000
+macro_create hue_sine -0.660160 -0.177704 0.145378
+component_create maths;color;converters;4f_hsv_to_f4_rgb hue_sine.4f_hsv_to_f4_rgb 0.025630 0.006734
+param_set hue_sine.4f_hsv_to_f4_rgb s 0.50380158424377441000
+component_create maths;oscillators;oscillator hue_sine.oscillator -0.034507 0.005234
+param_set hue_sine.oscillator freq 0.55472797155380249000
+component_create renderers;vovoid;kaleidoscope kaleidoscope -0.355326 0.110904
+param_set kaleidoscope hemispheric -0.04075128957629203800
+component_create renderers;vovoid;kaleidoscope kaleidoscope1 -0.551907 0.191237
+param_set kaleidoscope1 hemispheric 0.04236520454287529000
+component_create maths;arithmetics;binary;mult mult -0.601244 0.120862
+param_set mult param2 0.26203331351280212000
+component_create maths;arithmetics;binary;mult mult1 -0.608228 0.286161
+param_set mult1 param1 436.64883422851562000000
+param_set mult1 param2 0.00653492473065853120
+component_create maths;arithmetics;binary;mult mult2 -0.605289 0.250595
+param_set mult2 param1 437.56802368164062000000
+param_set mult2 param2 0.02000075206160545300
+component_create maths;arithmetics;binary;mult mult3 -0.629662 -0.040096
+param_set mult3 param2 3.59501504898071290000
+component_create maths;arithmetics;binary;mult mult4 -0.607986 -0.013697
+param_set mult4 param2 3.54833602905273440000
+component_create maths;oscillators;oscillator oscillator -0.283138 0.057310
+param_set oscillator osc_type 4
+param_set oscillator amp 0.99477928876876831000
+param_set oscillator ofs 0.28558468818664551000
+param_set oscillator freq 0.04097050428390502900
+component_create maths;oscillators;oscillator oscillator1 -0.265825 0.087047
+param_set oscillator1 ofs -0.00000077889563954159
+param_set oscillator1 freq 0.04838429391384124800
+component_create maths;oscillators;oscillator oscillator2 -0.279784 -0.052707
+param_set oscillator2 amp 1.20000004768371580000
+param_set oscillator2 ofs 0.00000091400801238706
+param_set oscillator2 freq 0.77008891105651855000
+component_create maths;oscillators;oscillator oscillator3 -0.707048 0.172396
+param_set oscillator3 freq 0.21450665593147278000
+component_create maths;oscillators;oscillator oscillator4 -0.209662 -0.079430
+param_set oscillator4 amp 0.99524319171905518000
+param_set oscillator4 ofs 0.00000076148955940880
+param_set oscillator4 freq 0.10644499212503433000
+component_create maths;oscillators;oscillator oscillator5 -0.216768 -0.026736
+param_set oscillator5 amp 0.51357883214950562000
+param_set oscillator5 ofs -0.00000674224565955228
+param_set oscillator5 freq 0.07389765977859497100
+component_create maths;oscillators;oscillator oscillator6 -0.220440 0.064299
+param_set oscillator6 amp 3.99999094009399410000
+param_set oscillator6 ofs 0.00000918349815037800
+param_set oscillator6 freq 0.04122853279113769500
+component_create maths;oscillators;oscillator oscillator7 -0.219786 0.028060
+param_set oscillator7 amp 3.99999380111694340000
+param_set oscillator7 ofs -0.00000832328987598885
+param_set oscillator7 freq 0.04975655302405357400
+component_create maths;arithmetics;binary;pow pow -0.709970 0.070742
+param_set pow param2 0.04473008960485458400
+component_create maths;arithmetics;binary;pow pow1 -0.708173 0.105582
+param_set pow1 param2 0.49242013692855835000
+component_create maths;arithmetics;binary;pow pow2 -0.691831 0.041052
+param_set pow2 param2 0.34713816642761230000
+macro_create refeeder -0.488625 0.021547 0.358737
+component_create renderers;opengl_modifiers;blend_mode refeeder.blend_mode1 0.093705 0.053096
+param_set refeeder.blend_mode1 dest_blend 1
+component_create renderers;opengl_modifiers;blend_mode refeeder.blend_mode2 0.070764 -0.002781
+param_set refeeder.blend_mode2 dest_blend 1
+component_create renderers;opengl_modifiers;blend_mode refeeder.blend_mode3 0.077643 -0.058727
+param_set refeeder.blend_mode3 source_blend 1
+param_set refeeder.blend_mode3 dest_blend 1
+component_create texture;particles;blob refeeder.blob1 -0.092942 0.026716
+param_set refeeder.blob1 arms 6.71206092834472660000
+param_set refeeder.blob1 attenuation 12.07964134216308600000
+param_set refeeder.blob1 size 5
+param_set refeeder.blob1 star_flower 0.00328992982394993310
+macro_create refeeder.hue_sine -0.091148 0.123154 0.145378
+component_create maths;color;converters;4f_hsv_to_f4_rgb refeeder.hue_sine.4f_hsv_to_f4_rgb 0.036263 0.005652
+param_set refeeder.hue_sine.4f_hsv_to_f4_rgb s 1.02038919925689700000
+param_set refeeder.hue_sine.4f_hsv_to_f4_rgb a 1.00276100635528560000
+component_create maths;oscillators;oscillator refeeder.hue_sine.oscillator -0.043071 0.025609
+param_set refeeder.hue_sine.oscillator freq 0.01246130000799894300
+component_create maths;oscillators;oscillator refeeder.hue_sine.oscillator1 -0.031271 -0.017441
+param_set refeeder.hue_sine.oscillator1 amp 0.30268767476081848000
+param_set refeeder.hue_sine.oscillator1 ofs 0.38307398557662964000
+param_set refeeder.hue_sine.oscillator1 freq 0.06906006485223770100
+component_create maths;arithmetics;binary;mult refeeder.mult -0.086934 -0.084628
+param_set refeeder.mult param2 0.00201086280867457390
+component_create maths;arithmetics;binary;mult refeeder.mult5 -0.088383 -0.018090
+param_set refeeder.mult5 param2 0.82194387912750244000
+component_create maths;arithmetics;binary;mult refeeder.multbsize -0.097251 -0.050343
+param_set refeeder.multbsize param2 11.14379405975341800000
+component_create maths;oscillators;oscillator refeeder.oscillator -0.031289 0.066387
+param_set refeeder.oscillator amp 0.23034900426864624000
+param_set refeeder.oscillator ofs 0.56477165222167969000
+param_set refeeder.oscillator freq 0.04574489966034889200
+component_create maths;oscillators;oscillator refeeder.oscillator5 0.041353 0.143838
+param_set refeeder.oscillator5 amp 0.56607735157012939000
+param_set refeeder.oscillator5 ofs 1.80822503566741940000
+param_set refeeder.oscillator5 freq 0.26347297430038452000
+component_create maths;oscillators;oscillator refeeder.oscillator6 0.036100 0.108751
+param_set refeeder.oscillator6 ofs 0.00000096301027951995
+param_set refeeder.oscillator6 freq 0.00146563269663602110
+component_create texture;buffers;render_surface_single refeeder.render_surface_single 0.147957 -0.007289
+param_set refeeder.render_surface_single texture_size 1
+component_create renderers;examples;simple refeeder.simple -0.119691 0.048463
+param_set refeeder.simple position 0.12099007517099380000,0.42446097731590271000,0.00000000000000000000
+param_set refeeder.simple size 5.65795850753784180000,0.00813575368374586110,0.00000000000000000000
+param_set refeeder.simple border_enable 0
+param_set refeeder.simple rotation_axis 0.00000000000000001948,0.00000000000129536128,0.99999904632568359000
+component_create renderers;examples;simple_with_texture refeeder.simple_with_texture 0.091952 0.116903
+param_set refeeder.simple_with_texture global_alpha 0.58835881948471069000
+param_set refeeder.simple_with_texture facing_camera 0
+param_set refeeder.simple_with_texture color_center 0.99999946355819702000,0.99999946355819702000,0.99999940395355225000,1.00276100635528560000
+param_set refeeder.simple_with_texture color_a 1.00000000000000000000,1.00000000000000000000,0.99999940395355225000,1.00000000000000000000
+param_set refeeder.simple_with_texture color_b 0.99999958276748657000,0.99999952316284180000,0.99999994039535522000,1.00000000000000000000
+param_set refeeder.simple_with_texture color_c 1.00000000000000000000,0.99999904632568359000,1.00000000000000000000,1.00000000000000000000
+component_create renderers;examples;simple_with_texture refeeder.simple_with_texture2 0.016360 0.063866
+param_set refeeder.simple_with_texture2 facing_camera 0
+param_set refeeder.simple_with_texture2 color_multiplier 1.00000000000000000000,0.99999898672103882000,0.99999898672103882000,1.00000000000000000000
+param_set refeeder.simple_with_texture2 color_a 1.00000000000000000000,1.00000000000000000000,1.00000000000000000000,0.00000098772500223276
+param_set refeeder.simple_with_texture2 color_b 1.00000000000000000000,1.00000000000000000000,1.00000000000000000000,0.00000087704796669641
+param_set refeeder.simple_with_texture2 color_c 1.00000000000000000000,1.00000000000000000000,1.00000000000000000000,0.00000095652649179101
+param_set refeeder.simple_with_texture2 color_d 1.00000000000000000000,1.00000000000000000000,1.00000000000000000000,0.00000093519173560708
+component_create renderers;examples;simple_with_texture refeeder.simple_with_texture3 0.006323 -0.057997
+param_set refeeder.simple_with_texture3 facing_camera 0
+param_set refeeder.simple_with_texture3 x_aspect_ratio 0.01509882323443889600
+param_set refeeder.simple_with_texture3 position 0.00000000000000036416,0.21710214018821716000,0.00000000000000000000
+component_create renderers;examples;simple_with_texture refeeder.simple_with_texture4 -0.014240 -0.023498
+param_set refeeder.simple_with_texture4 facing_camera 0
+param_set refeeder.simple_with_texture4 x_aspect_ratio 0.04960684478282928500
+param_set refeeder.simple_with_texture4 size 0.64199590682983398000
+param_set refeeder.simple_with_texture4 position 0.37857678532600403000,0.22673900425434113000,0.00000000000000000000
+component_create renderers;examples;simple_with_texture refeeder.simple_with_texture8 -0.035247 0.008200
+param_set refeeder.simple_with_texture8 facing_camera 0
+param_set refeeder.simple_with_texture8 x_aspect_ratio 0.99968695640563965000
+param_set refeeder.simple_with_texture8 position -0.41462206840515137000,0.43602201342582703000,0.00000000000000000000
+component_create system;time refeeder.time -0.138415 -0.038650
+component_create texture;buffers;render_surface_single render_surface_single 0.019027 0.028804
+param_set render_surface_single texture_size 1
+component_pos screen0 0.294487 0.091562
+param_set screen0 gamma_correction 1.00000095367431640000
+component_create renderers;examples;simple_with_texture simple_with_texture 0.122749 0.067206
+param_set simple_with_texture facing_camera 0
+component_create renderers;examples;simple_with_texture simple_with_texture1 0.082473 0.114776
+param_set simple_with_texture1 global_alpha 1.03630459308624270000
+param_set simple_with_texture1 facing_camera 0
+param_set simple_with_texture1 tex_coord_b 1.00000000000000000000,1.00000000000000000000,-0.00000000000000000023
+component_create renderers;examples;simple_with_texture simple_with_texture2 -0.245769 -0.128825
+param_set simple_with_texture2 global_alpha 1.00000894069671630000
+param_set simple_with_texture2 facing_camera 0
+param_set simple_with_texture2 size 0.52613800764083862000
+param_set simple_with_texture2 angle 0.94027960300445557000
+param_set simple_with_texture2 color_center 1.00000000000000000000,1.00000000000000000000,1.00000000000000000000,0.99999910593032837000
+param_set simple_with_texture2 color_a 0.00000000000000000015,0.00000000000135227560,0.00000063798739802223,0.00000099999999747524
+param_set simple_with_texture2 color_b 0.00000066484528815636,0.00000000000000000000,0.00000000000002961346,0.00000099999999747524
+param_set simple_with_texture2 color_c 0.00000000000000000000,0.00000000000002876072,0.00000071572395654584,0.00413999985903501510
+param_set simple_with_texture2 color_d 0.00000000000000000000,0.00000000000030233243,0.00000083376693282844,0.00000099999999747524
+param_set simple_with_texture2 position -0.71554297208786011000,-0.69587928056716919000,0.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture2_clone -0.247151 -0.162867
+param_set simple_with_texture2_clone global_alpha 1.00000894069671630000
+param_set simple_with_texture2_clone facing_camera 0
+param_set simple_with_texture2_clone size 0.52613800764083862000
+param_set simple_with_texture2_clone angle 0.00000743738246455905
+param_set simple_with_texture2_clone color_center 1.00000000000000000000,1.00000000000000000000,1.00000000000000000000,0.99999910593032837000
+param_set simple_with_texture2_clone color_a 0.00000000000000000015,0.00000000000135227560,0.00000063798739802223,0.00000099999999747524
+param_set simple_with_texture2_clone color_b 0.00000066484528815636,0.00000000000000000000,0.00000000000002961346,0.00000099999999747524
+param_set simple_with_texture2_clone color_c 0.00000000000000000000,0.00000000000002876072,0.00000071572395654584,0.00413999985903501510
+param_set simple_with_texture2_clone color_d 0.00000000000000000000,0.00000000000030233243,0.00000083376693282844,0.00000099999999747524
+param_set simple_with_texture2_clone position 0.80509972572326660000,-0.69587898254394531000,0.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture2_clone_clone -0.246420 -0.195136
+param_set simple_with_texture2_clone_clone global_alpha 1.00000894069671630000
+param_set simple_with_texture2_clone_clone facing_camera 0
+param_set simple_with_texture2_clone_clone size 0.52613800764083862000
+param_set simple_with_texture2_clone_clone angle 0.00000743738246455905
+param_set simple_with_texture2_clone_clone color_center 1.00000000000000000000,1.00000000000000000000,1.00000000000000000000,0.99999910593032837000
+param_set simple_with_texture2_clone_clone color_a 0.00000000000000000015,0.00000000000135227560,0.00000063798739802223,0.00000099999999747524
+param_set simple_with_texture2_clone_clone color_b 0.00000066484528815636,0.00000000000000000000,0.00000000000002961346,0.00000099999999747524
+param_set simple_with_texture2_clone_clone color_c 0.00000000000000000000,0.00000000000002876072,0.00000071572395654584,0.00413999985903501510
+param_set simple_with_texture2_clone_clone color_d 0.00000000000000000000,0.00000000000030233243,0.00000083376693282844,0.00000099999999747524
+param_set simple_with_texture2_clone_clone position -0.54634958505630493000,0.82071799039840698000,0.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture2_clone_clone_clone -0.244302 -0.226880
+param_set simple_with_texture2_clone_clone_clone global_alpha 1.00000894069671630000
+param_set simple_with_texture2_clone_clone_clone facing_camera 0
+param_set simple_with_texture2_clone_clone_clone size 0.52613800764083862000
+param_set simple_with_texture2_clone_clone_clone angle 0.00000743738246455905
+param_set simple_with_texture2_clone_clone_clone color_center 1.00000000000000000000,1.00000000000000000000,1.00000000000000000000,0.99999910593032837000
+param_set simple_with_texture2_clone_clone_clone color_a 0.00000000000000000015,0.00000000000135227560,0.00000063798739802223,0.00000099999999747524
+param_set simple_with_texture2_clone_clone_clone color_b 0.00000066484528815636,0.00000000000000000000,0.00000000000002961346,0.00000099999999747524
+param_set simple_with_texture2_clone_clone_clone color_c 0.00000000000000000000,0.00000000000002876072,0.00000071572395654584,0.00413999985903501510
+param_set simple_with_texture2_clone_clone_clone color_d 0.00000000000000000000,0.00000000000030233243,0.00000083376693282844,0.00000099999999747524
+param_set simple_with_texture2_clone_clone_clone position 0.82399833202362061000,0.41099900007247925000,0.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture3 -0.405749 -0.222926
+param_set simple_with_texture3 global_alpha 0.21585212647914886000
+param_set simple_with_texture3 facing_camera 0
+param_set simple_with_texture3 size 1.07089877128601070000
+param_set simple_with_texture3 color_multiplier 0.55293202400207520000,0.54467701911926270000,0.55293291807174683000,1.00000000000000000000
+param_set simple_with_texture3 position 0.00000094081502766130,0.00000000000701307762,0.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture4 -0.562617 -0.057259
+param_set simple_with_texture4 global_alpha 0.82358014583587646000
+param_set simple_with_texture4 facing_camera 0
+param_set simple_with_texture4 x_aspect_ratio 0.51647967100143433000
+param_set simple_with_texture4 position 0.62816202640533447000,0.44216915965080261000,0.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture5 -0.546776 -0.172903
+param_set simple_with_texture5 global_alpha 0.97942686080932617000
+param_set simple_with_texture5 facing_camera 0
+param_set simple_with_texture5 color_multiplier 0.35785201191902161000,0.50392901897430420000,0.48469740152359009000,1.00000000000000000000
+param_set simple_with_texture5 position 0.41399186849594116000,0.00000000000000000000,0.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture6 -0.464027 -0.088432
+param_set simple_with_texture6 facing_camera 0
+param_set simple_with_texture6 x_aspect_ratio 0.06394595652818679800
+param_set simple_with_texture6 color_multiplier 0.48034310340881348000,0.43043404817581177000,0.99999994039535522000,1.00000000000000000000
+param_set simple_with_texture6 tex_coord_b 1.00000000000000000000,1.00000000000000000000,1.00000000000000000000
+param_set simple_with_texture6 position 0.37746301293373108000,0.39060994982719421000,0.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture7 -0.288031 -0.012241
+param_set simple_with_texture7 global_alpha 1.07949197292327880000
+param_set simple_with_texture7 facing_camera 0
+component_create renderers;examples;simple_with_texture simple_with_texture8 -0.405514 -0.174812
+param_set simple_with_texture8 global_alpha -0.00000909882874111645
+param_set simple_with_texture8 facing_camera 0
+component_create maths;converters;3float_to_float3 starfall_pos -0.174640 0.056869
+param_set starfall_pos floatc 0.00000093024982561474
+component_create renderers;opengl_modifiers;cameras;target_camera target_camera -0.112758 0.092669
+param_set target_camera destination 0.02158602513372898100,0.00397900026291608810,0.00000099999999747524
+param_set target_camera upvector 0.00000000000000000000,0.94972908496856689000,0.32823514938354492000
+param_set target_camera fov 170.81463623046875000000
+param_set target_camera near_clipping 0.00010095493780681863
+component_create texture;modifiers;tex_parameters tex_parameters -0.389417 0.045933
+param_set tex_parameters wrap_s 0
+param_set tex_parameters wrap_t 0
+param_set tex_parameters min_filter 1
+param_set tex_parameters mag_filter 1
+param_set tex_parameters anisotropic_filtering 1
+component_create system;time time -0.687765 0.280158
+component_create system;time time1 -0.160998 -0.133850
+component_create system;sound;vsx_listener vsx_listener -0.874616 0.089499
+param_set vsx_listener multiplier 2.58223009109497070000
+param_alias alias_render_out:render 1 refeeder alias_render_out refeeder.simple_with_texture render_out
+param_alias alias_texture_out:texture 1 refeeder alias_texture_out refeeder.render_surface_single texture_out
+param_alias alias_result_float4:float4 1 refeeder.hue_sine alias_result_float4 refeeder.hue_sine.4f_hsv_to_f4_rgb result_float4
+param_alias alias_alias_result_float4:float4 1 refeeder alias_alias_result_float4 refeeder.hue_sine alias_result_float4
+param_alias alias_result_float4:float4 1 hue_sine alias_result_float4 hue_sine.4f_hsv_to_f4_rgb result_float4
+param_connect tex_parameters texture_in refeeder alias_texture_out
+param_connect target_camera render_in gl_scale render_out
+param_connect target_camera position 3float_to_float3 result_float3
+param_connect starfall_pos floatb oscillator7 float
+param_connect starfall_pos floata oscillator6 float
+param_connect simple_with_texture8 texture_in refeeder alias_texture_out
+param_connect simple_with_texture6 texture_in blob texture
+param_connect simple_with_texture6 size mult4 product
+param_connect simple_with_texture5 angle vsx_listener octaves_l_5
+param_connect simple_with_texture5 texture_in blob texture
+param_connect simple_with_texture5 size vsx_listener octaves_l_6
+param_connect simple_with_texture5 x_aspect_ratio vsx_listener octaves_l_1
+param_connect simple_with_texture4 color_multiplier hue_sine alias_result_float4
+param_connect simple_with_texture4 texture_in blob texture
+param_connect simple_with_texture4 size mult3 product
+param_connect simple_with_texture3 texture_in refeeder alias_texture_out
+param_connect simple_with_texture2_clone_clone_clone texture_in refeeder alias_texture_out
+param_connect simple_with_texture2_clone_clone texture_in refeeder alias_texture_out
+param_connect simple_with_texture2_clone texture_in refeeder alias_texture_out
+param_connect simple_with_texture2 texture_in refeeder alias_texture_out
+param_connect simple_with_texture1 texture_in render_surface_single texture_out
+param_connect simple_with_texture texture_in blur texture_out
+param_connect simple_with_texture global_alpha add sum
+param_connect screen0 screen blend_mode render_out
+param_connect render_surface_single render_in depth_test render_out
+param_connect render_surface_single render_in blend_mode2 render_out
+param_connect render_surface_single render_in gl_rotate3 render_out
+param_connect refeeder.simple_with_texture8 color_center refeeder.hue_sine alias_result_float4
+param_connect refeeder.simple_with_texture8 angle refeeder.mult5 product
+param_connect refeeder.simple_with_texture8 texture_in refeeder.blob1 texture
+param_alias alias_size:float -1 refeeder alias_size refeeder.simple_with_texture8 size
+param_connect refeeder alias_size mult4 product
+param_alias alias_angle:float -1 refeeder alias_angle refeeder.simple_with_texture4 angle
+param_connect refeeder alias_angle mult product
+param_alias alias_texture_in:texture -1 refeeder alias_texture_in refeeder.simple_with_texture4 texture_in
+param_connect refeeder alias_texture_in blob texture
+param_alias alias_color_multiplier:float4 -1 refeeder alias_color_multiplier refeeder.simple_with_texture3 color_multiplier
+param_connect refeeder alias_color_multiplier 4f_hsv_to_f4_rgb result_float4
+param_connect refeeder.simple_with_texture3 angle refeeder.mult product
+param_alias alias_texture_in_1:texture -1 refeeder alias_texture_in_1 refeeder.simple_with_texture3 texture_in
+param_connect refeeder alias_texture_in_1 blob texture
+param_connect refeeder.simple_with_texture3 size refeeder.multbsize product
+param_connect refeeder.simple_with_texture2 angle refeeder.oscillator float
+param_connect refeeder.simple_with_texture2 texture_in refeeder.render_surface_single texture_out
+param_connect refeeder.simple_with_texture2 size refeeder.oscillator float
+param_connect refeeder.simple_with_texture color_multiplier refeeder.hue_sine alias_result_float4
+param_connect refeeder.simple_with_texture angle refeeder.oscillator6 float
+param_connect refeeder.simple_with_texture texture_in refeeder.render_surface_single texture_out
+param_connect refeeder.simple_with_texture size refeeder.oscillator5 float
+param_alias alias_color:float4 -1 refeeder alias_color refeeder.simple color
+param_connect refeeder alias_color 4f_hsv_to_f4_rgb result_float4
+param_connect refeeder.simple angle refeeder.mult product
+param_connect refeeder.render_surface_single render_in refeeder.blend_mode1 render_out
+param_connect refeeder.render_surface_single render_in refeeder.blend_mode2 render_out
+param_connect refeeder.render_surface_single render_in refeeder.blend_mode3 render_out
+param_alias alias_param1:float -1 refeeder alias_param1 refeeder.multbsize param1
+param_connect refeeder alias_param1 mult4 product
+param_connect refeeder.mult5 param1 refeeder.time r_time
+param_connect refeeder.mult param1 refeeder.time r_time
+param_alias alias_freq:float -1 refeeder.hue_sine alias_freq refeeder.hue_sine.oscillator freq
+param_alias alias_phase:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 refeeder.hue_sine alias_phase refeeder.hue_sine.oscillator phase
+param_alias alias_v:float -1 refeeder.hue_sine alias_v refeeder.hue_sine.4f_hsv_to_f4_rgb v
+param_alias alias_alias_v:float -1 refeeder alias_alias_v refeeder.hue_sine alias_v
+param_connect refeeder alias_alias_v mult product
+param_connect refeeder.hue_sine.4f_hsv_to_f4_rgb h refeeder.hue_sine.oscillator float
+param_connect refeeder.blend_mode3 render_in refeeder.simple_with_texture4 render_out
+param_alias alias_render_in:render -1 refeeder alias_render_in refeeder.blend_mode3 render_in
+param_connect refeeder alias_render_in simple_with_texture4 render_out
+param_connect refeeder alias_render_in simple_with_texture5 render_out
+param_connect refeeder alias_render_in simple_with_texture6 render_out
+param_connect refeeder.blend_mode3 render_in refeeder.simple_with_texture8 render_out
+param_connect refeeder.blend_mode3 render_in refeeder.simple_with_texture3 render_out
+param_connect refeeder.blend_mode2 render_in refeeder.simple_with_texture2 render_out
+param_connect refeeder.blend_mode1 render_in refeeder.simple_with_texture render_out
+param_connect pow2 param1 vsx_listener octaves_l_3
+param_connect pow1 param1 vsx_listener octaves_l_5
+param_connect pow param1 vsx_listener octaves_l_1
+param_connect mult4 param1 vsx_listener octaves_l_0
+param_connect mult3 param1 vsx_listener octaves_l_7
+param_connect mult param1 add sum
+param_connect kaleidoscope1 texture_a tex_parameters texture_rotate_out
+param_connect kaleidoscope texture_a tex_parameters texture_rotate_out
+param_alias alias_freq:float -1 hue_sine alias_freq hue_sine.oscillator freq
+param_alias alias_phase:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 hue_sine alias_phase hue_sine.oscillator phase
+param_connect hue_sine.4f_hsv_to_f4_rgb h hue_sine.oscillator float
+param_connect gl_scale render_in gl_rotate1 render_out
+param_connect gl_scale render_in gl_rotate render_out
+param_connect gl_rotate3 render_in blend_mode2_clone render_out
+param_connect gl_rotate2 render_in kaleidoscope1 render_out
+param_connect gl_rotate1 render_in kaleidoscope render_out
+param_connect gl_rotate render_in gl_rotate2 render_out
+param_connect blur glow_source render_surface_single texture_out
+param_connect blend_mode2_clone render_in simple_with_texture2 render_out
+param_connect blend_mode2_clone render_in simple_with_texture2_clone render_out
+param_connect blend_mode2_clone render_in simple_with_texture2_clone_clone render_out
+param_connect blend_mode2_clone render_in simple_with_texture2_clone_clone_clone render_out
+param_connect blend_mode2 render_in target_camera render_out
+param_connect blend_mode render_in simple_with_texture render_out
+param_connect blend_mode render_in simple_with_texture1 render_out
+param_connect add param2 vsx_listener vu_r
+param_connect add param1 vsx_listener vu_l
+param_connect 4f_hsv_to_f4_rgb v pow2 power
+param_connect 4f_hsv_to_f4_rgb h oscillator3 float
+param_connect 3float_to_float33 floatc oscillator4 float
+param_connect 3float_to_float33 floata oscillator5 float
+param_connect 3float_to_float3 floatb oscillator float
+param_connect 3float_to_float3 floata oscillator1 float

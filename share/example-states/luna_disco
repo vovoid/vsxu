@@ -1,0 +1,61 @@
+meta_set fHx8fHw=
+macro_create hue_sine -0.180748 0.044096 0.145378
+component_create maths;color;converters;4f_hsv_to_f4_rgb hue_sine.4f_hsv_to_f4_rgb 0.025927 0.003490
+component_create maths;oscillators;oscillator hue_sine.oscillator -0.034507 0.005234
+param_set hue_sine.oscillator freq 0.88800787925720214844
+macro_create hue_sine1 -0.182231 -0.013655 0.145378
+component_create maths;color;converters;4f_hsv_to_f4_rgb hue_sine1.4f_hsv_to_f4_rgb 0.025630 0.006734
+component_create maths;oscillators;oscillator hue_sine1.oscillator -0.034507 0.005234
+param_set hue_sine1.oscillator freq 1.46596205234527587891
+macro_create hue_sine2 -0.179585 -0.056666 0.145378
+component_create maths;color;converters;4f_hsv_to_f4_rgb hue_sine2.4f_hsv_to_f4_rgb 0.025630 0.006734
+component_create maths;oscillators;oscillator hue_sine2.oscillator -0.034507 0.005234
+param_set hue_sine2.oscillator freq 0.82591688632965087891
+macro_create hue_sine3 -0.179007 -0.114812 0.145378
+component_create maths;color;converters;4f_hsv_to_f4_rgb hue_sine3.4f_hsv_to_f4_rgb 0.025630 0.006734
+component_create maths;oscillators;oscillator hue_sine3.oscillator -0.034507 0.005234
+param_set hue_sine3.oscillator freq 1.03307521343231201172
+macro_create hue_sine4 -0.178992 -0.171785 0.145378
+component_create maths;color;converters;4f_hsv_to_f4_rgb hue_sine4.4f_hsv_to_f4_rgb 0.025630 0.006734
+component_create maths;oscillators;oscillator hue_sine4.oscillator -0.034507 0.005234
+param_set hue_sine4.oscillator freq 0.60773289203643798828
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera 0.028070 0.041146
+param_set orbit_camera distance 1.00000858306884765625
+param_set orbit_camera perspective_correct 1
+component_create texture;loaders;png_tex_load png_tex_load -0.189071 0.121785
+ps64 png_tex_load filename cmVzb3VyY2VzL2V4YW1wbGVzL2ltYWdlcy92b3ZvaWQvbHVuYS5wbmc=
+param_set png_tex_load reload 0
+cpp screen0 0.108384 0.054667
+component_create renderers;examples;simple_with_texture simple_with_texture -0.056612 0.042542
+param_set simple_with_texture facing_camera 0
+param_set simple_with_texture x_aspect_ratio 0.50379890203475952148
+param_set simple_with_texture size 0.82954984903335571289
+param_set simple_with_texture position 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_alias alias_result_float4:float4 1 hue_sine4 alias_result_float4 hue_sine4.4f_hsv_to_f4_rgb result_float4
+param_alias alias_result_float4:float4 1 hue_sine3 alias_result_float4 hue_sine3.4f_hsv_to_f4_rgb result_float4
+param_alias alias_result_float4:float4 1 hue_sine2 alias_result_float4 hue_sine2.4f_hsv_to_f4_rgb result_float4
+param_alias alias_result_float4:float4 1 hue_sine1 alias_result_float4 hue_sine1.4f_hsv_to_f4_rgb result_float4
+param_alias alias_result_float4:float4 1 hue_sine alias_result_float4 hue_sine.4f_hsv_to_f4_rgb result_float4
+param_connect simple_with_texture color_d hue_sine4 alias_result_float4
+param_connect simple_with_texture color_c hue_sine3 alias_result_float4
+param_connect simple_with_texture color_b hue_sine2 alias_result_float4
+param_connect simple_with_texture color_a hue_sine1 alias_result_float4
+param_connect simple_with_texture color_center hue_sine alias_result_float4
+param_connect simple_with_texture texture_in png_tex_load texture
+param_connect screen0 screen orbit_camera render_out
+param_connect orbit_camera render_in simple_with_texture render_out
+param_alias alias_freq:float -1 hue_sine4 alias_freq hue_sine4.oscillator freq
+param_alias alias_phase:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 hue_sine4 alias_phase hue_sine4.oscillator phase
+param_connect hue_sine4.4f_hsv_to_f4_rgb h hue_sine4.oscillator float
+param_alias alias_freq:float -1 hue_sine3 alias_freq hue_sine3.oscillator freq
+param_alias alias_phase:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 hue_sine3 alias_phase hue_sine3.oscillator phase
+param_connect hue_sine3.4f_hsv_to_f4_rgb h hue_sine3.oscillator float
+param_alias alias_freq:float -1 hue_sine2 alias_freq hue_sine2.oscillator freq
+param_alias alias_phase:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 hue_sine2 alias_phase hue_sine2.oscillator phase
+param_connect hue_sine2.4f_hsv_to_f4_rgb h hue_sine2.oscillator float
+param_alias alias_freq:float -1 hue_sine1 alias_freq hue_sine1.oscillator freq
+param_alias alias_phase:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 hue_sine1 alias_phase hue_sine1.oscillator phase
+param_connect hue_sine1.4f_hsv_to_f4_rgb h hue_sine1.oscillator float
+param_alias alias_freq:float -1 hue_sine alias_freq hue_sine.oscillator freq
+param_alias alias_phase:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 hue_sine alias_phase hue_sine.oscillator phase
+param_connect hue_sine.4f_hsv_to_f4_rgb h hue_sine.oscillator float

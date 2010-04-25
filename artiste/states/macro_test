@@ -1,0 +1,51 @@
+meta_set fHx8fHw=
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.282376 0.079991
+param_set 3float_to_float3 floatc 0.00000997127426671796
+component_create renderers;basic;colored_rectangle colored_rectangle -0.216266 0.017506
+param_set colored_rectangle border_enable 1
+param_set colored_rectangle border_color 0.99999910593032837000,0.00000030961166430643,0.00000030961166430643,1.00000000000000000000
+macro_create dsp_unit -0.493136 0.001532 0.441024
+component_create maths;arithmetics;binary;div dsp_unit.div 0.078765 0.011157
+param_set dsp_unit.div param2 0.01046709623187780400
+component_create system;sound;vsx_listener dsp_unit.vsx_listener -0.007720 -0.010014
+macro_create math_unit -0.376678 0.002266 0.100000
+component_create maths;arithmetics;binary;cos math_unit.cos 0.001431 0.022609
+component_create maths;arithmetics;binary;sin math_unit.sin -0.002875 -0.011653
+macro_create midi_unit -0.491997 0.082235 0.256919
+macro_create midi_unit.empty 0.005513 -0.019495 0.100000
+component_create maths;arithmetics;binary;add midi_unit.empty.add -0.005730 -0.021943
+param_set midi_unit.empty.add param2 1.99999105930328370000
+component_create maths;arithmetics;binary;mult midi_unit.empty.mult -0.010675 0.013263
+component_create maths;dummies;float_dummy midi_unit.float_dummy -0.062583 0.019743
+param_set midi_unit.float_dummy float_in 0.03170207887887954700
+component_create maths;dummies;float_dummy midi_unit.float_dummy1 -0.060855 -0.016817
+param_set midi_unit.float_dummy1 float_in 0.18161433935165405000
+component_create maths;dummies;float_dummy midi_unit.float_dummy2 -0.060328 -0.049594
+param_set midi_unit.float_dummy2 float_in 2.01851654052734370000
+component_pos screen0 0.000000 0.000000
+param_alias alias_product:float 1 midi_unit.empty alias_product midi_unit.empty.mult product
+param_alias alias_alias_product:float 1 midi_unit alias_alias_product midi_unit.empty alias_product
+param_alias alias_sum:float 1 midi_unit.empty alias_sum midi_unit.empty.add sum
+param_alias alias_alias_sum:float 1 midi_unit alias_alias_sum midi_unit.empty alias_sum
+param_alias alias_result_float:float 1 math_unit alias_result_float math_unit.sin result_float
+param_alias alias_result_float_1:float 1 math_unit alias_result_float_1 math_unit.cos result_float
+param_alias alias_vu_r:float 1 dsp_unit alias_vu_r dsp_unit.vsx_listener vu_r
+param_alias alias_vu_l:float 1 dsp_unit alias_vu_l dsp_unit.vsx_listener vu_l
+param_alias alias_quotient:float 1 dsp_unit alias_quotient dsp_unit.div quotient
+param_connect screen0 screen colored_rectangle render_out
+param_alias alias_param2:float -1 midi_unit.empty alias_param2 midi_unit.empty.mult param2
+param_connect midi_unit.empty alias_param2 midi_unit.float_dummy1 result_float
+param_alias alias_param1:float -1 midi_unit.empty alias_param1 midi_unit.empty.mult param1
+param_connect midi_unit.empty alias_param1 midi_unit.float_dummy result_float
+param_alias alias_param1_1:float -1 midi_unit.empty alias_param1_1 midi_unit.empty.add param1
+param_connect midi_unit.empty alias_param1_1 midi_unit.float_dummy2 result_float
+param_alias alias_float_in_1:float -1 math_unit alias_float_in_1 math_unit.sin float_in
+param_connect math_unit alias_float_in_1 dsp_unit alias_vu_r
+param_alias alias_float_in:float -1 math_unit alias_float_in math_unit.cos float_in
+param_connect math_unit alias_float_in midi_unit alias_alias_sum
+param_connect dsp_unit.div param1 dsp_unit.vsx_listener octaves_l_0
+param_connect colored_rectangle border_width dsp_unit alias_quotient
+param_connect colored_rectangle angle math_unit alias_result_float
+param_connect colored_rectangle position 3float_to_float3 result_float3
+param_connect 3float_to_float3 floatb math_unit alias_result_float_1
+param_connect 3float_to_float3 floata dsp_unit alias_vu_l

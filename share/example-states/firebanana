@@ -1,0 +1,39 @@
+meta_set fHx8fHw=
+component_create particlesystems;modifiers;basic_wind_deformer basic_wind_deformer -0.309249 -0.069788
+param_set basic_wind_deformer wind 0.00000000000000000000,0.00000094202732725535,0.00000000000000000000
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.092138 -0.012176
+param_set blend_mode dest_blend 1
+component_create texture;particles;blob blob -0.301162 -0.125722
+component_create renderers;opengl_modifiers;gl_scale gl_scale -0.162244 -0.000883
+param_set gl_scale scale 1.00000000000000000000,0.99999904632568359000,1.00000000000000000000
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.017746 0.005214
+param_set orbit_camera rotation -0.67026108503341675000,0.00000099999988378840,-0.04175096005201339700
+param_set orbit_camera distance 1.43236112594604490000
+component_create particlesystems;generators;particles_mesh_spray particles_mesh_spray -0.433138 -0.069992
+param_set particles_mesh_spray speed_x 0.00000088604093662070
+param_set particles_mesh_spray speed_y 0.07020001113414764400
+param_set particles_mesh_spray speed_z -0.00000094583037935081
+param_set particles_mesh_spray speed_type 0
+param_set particles_mesh_spray pick_type 1
+param_set particles_mesh_spray color 0.79232984781265259000,0.53215354681015015000,0.21140205860137939000,1.00000000000000000000
+param_set particles_mesh_spray num_particles 5000.00048828125000000000
+component_pos screen0 0.045356 0.004529
+component_create renderers;particlesystems;simple simple -0.222592 -0.015043
+param_set simple render_type 0
+param_set simple size_lifespan_type 0
+param_set simple ignore_particles_at_center 0
+param_set simple size_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple alpha_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+component_create particlesystems;modifiers;size_noise size_noise -0.371256 -0.053172
+param_set size_noise strength 1.67107498645782470000
+param_set size_noise size_type 0
+component_create mesh;vovoid;thorn thorn -0.518055 -0.068697
+param_connect size_noise in_particlesystem particles_mesh_spray particlesystem
+param_connect simple texture blob texture
+param_connect simple particlesystem basic_wind_deformer particlesystem
+param_connect screen0 screen orbit_camera render_out
+param_connect particles_mesh_spray mesh_in thorn mesh_result
+param_connect orbit_camera render_in blend_mode render_out
+param_connect gl_scale render_in simple render_out
+param_connect blend_mode render_in gl_scale render_out
+param_connect basic_wind_deformer in_particlesystem size_noise particlesystem

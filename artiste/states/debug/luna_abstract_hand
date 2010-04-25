@@ -1,0 +1,472 @@
+meta_set fHx8fHw=
+component_create renderers;opengl_modifiers;auto_normalize auto_normalize -0.409364 0.052591
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.055480 -0.033398
+component_create renderers;opengl_modifiers;blend_mode blend_mode1 -0.059753 -0.104249
+param_set blend_mode1 dest_blend 1
+component_create texture;particles;blob blob -0.612732 -0.103845
+param_set blob arms 11.51836490631103515625
+param_set blob attenuation 2.21859431266784667969
+param_set blob angle 1.02861750125885009766
+component_create mesh;importers;cal3d_importer cal3d_importer -0.948186 -0.194421
+ps64 cal3d_importer filename cmVzb3VyY2VzL2x1bmEzZC9sdW5hX3JpZ2dpbmdfZXhwZXJpbWVudDMyX3V2LmNmZw==
+param_set cal3d_importer Back1_rotation -0.59737682342529296875,0.54927521944046020508,0.44250541925430297852,-0.38161051273345947266
+param_set cal3d_importer Back1_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer Tail_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer LeftHip_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer LeftLegU_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer LeftLegB_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer LeftFoot_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer RightHip_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer RightLegU_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer RightLegB_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer RightFoot_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer Back2_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer Back3_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer Back4_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer Back5_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer NeckB_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer Neck_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer Head_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer Hair_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer RightArmU_rotation 0.47184309363365173340,0.49770304560661315918,-0.72346937656402587891,-0.07904341816902160645
+param_set cal3d_importer RightArmU_translation 0.00000093403548362403,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer RightArmB_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer RightHand_rotation 0.26227414608001708984,0.00000000000000000000,-0.00095217104535549879,-0.96499294042587280273
+param_set cal3d_importer RightHand_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer RightHandF1_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer RightHandF2_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer RightHandF3_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer RightHandP1_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer RightHandP2_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer RightHandP3_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer RightHandTh1_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer RightHandTh2_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer RightHandTh3_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer LeftArmU_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer LeftArmB_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer LeftHand_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer LeftHandF1_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer LeftHandF2_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer LeftHandF3_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer LeftHandP1_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer LeftHandP2_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer LeftHandP3_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer LeftHandTh1_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer LeftHandTh2_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer LeftHandTh3_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer Breasts_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer -0.046427 0.014607
+param_set depth_buffer depth_test 1
+param_set depth_buffer depth_mask 1
+macro_create empty -0.647724 -0.069088 0.356673
+component_create maths;dummies;float_dummy empty.float_dummy_1 -0.139145 0.069052
+component_create renderers;mesh;mesh_basic_render empty.mesh_basic_render 0.091546 0.027555
+param_set empty.mesh_basic_render use_vertex_colors 0
+component_create mesh;modifiers;transforms;mesh_rotate_quat_around_vertex empty.mesh_rotate_quat_around_vertex 0.012156 0.026451
+param_set empty.mesh_rotate_quat_around_vertex offset_pos 0.00000085774144054085,0.00000000000000000000,0.00000000011490553647
+component_create mesh;solid;mesh_super_banana empty.mesh_super_banana -0.033609 0.042411
+param_set empty.mesh_super_banana x_shape 0.361906;4.000000;MC4wMDAwMDA6MC4wMjk3MzEsMC4wMDc1OTY6MC4zOTUzMzIsLTAuMTI0OTcy|0.613982;4.000000;MC4yNDc4NDM6MC42NDgxOTQsLTAuMDM0MDg2OjAuNzkzMDM0LDAuMDAzNTMw|1.000000;1.000000;MC4wMDAwMDA=
+param_set empty.mesh_super_banana y_shape 1.000000;2.000000;MC4wMDM5ODE=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty.mesh_super_banana z_shape 0.229655;1.000000;MC4wMDAwMDA=|0.766586;1.000000;MC4wNTkxMTQ=|1.000000;0.000000;MS4wMDAwMDA=
+param_set empty.mesh_super_banana y_shape_multiplier 0.00000993696357909357
+param_set empty.mesh_super_banana size_shape_x 0.124220;1.000000;MC4wMDAwMDA=|0.804914;1.000000;MC4yMTUxMzU=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty.mesh_super_banana size_shape_y 0.080081;1.000000;MC4wMDAwMDA=|0.919919;1.000000;MC42MTA0NjU=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty.mesh_super_banana num_sectors 10.56886672973632812500
+param_set empty.mesh_super_banana num_stacks 15.12539863586425781250
+component_create mesh;modifiers;transforms;mesh_translate empty.mesh_translate 0.053671 0.022748
+component_create maths;arithmetics;binary;mult empty.mult -0.071905 -0.033309
+param_set empty.mult param2 3.47248792648315429688
+component_create maths;arithmetics;binary;mult empty.mult1 -0.080179 0.079608
+param_set empty.mult1 param2 0.10489762574434280396
+component_create maths;arithmetics;binary;mult empty.mult1_1 -0.080579 0.042427
+param_set empty.mult1_1 param2 0.63319718837738037109
+component_create maths;arithmetics;quaternion;quat_mul empty.quat_mul -0.014541 -0.016295
+param_set empty.quat_mul quat_b -0.32289972901344299316,0.59910744428634643555,0.61135536432266235352,0.40379533171653747559
+macro_create empty_1 -0.521366 0.026745 0.356673
+component_create maths;dummies;float_dummy empty_1.float_dummy_1 -0.135470 0.072268
+component_create renderers;mesh;mesh_basic_render empty_1.mesh_basic_render 0.068002 0.041490
+param_set empty_1.mesh_basic_render use_vertex_colors 0
+component_create mesh;modifiers;transforms;mesh_rotate_quat_around_vertex empty_1.mesh_rotate_quat_around_vertex 0.052456 -0.065339
+param_set empty_1.mesh_rotate_quat_around_vertex vertex_rot_id 0.00001753297510731500
+param_set empty_1.mesh_rotate_quat_around_vertex offset_pos 0.00000000265389887844,0.00000000000000003091,0.00000095168951474989
+component_create mesh;solid;mesh_super_banana empty_1.mesh_super_banana -0.026250 0.010935
+param_set empty_1.mesh_super_banana x_shape 0.543345;4.000000;MC4wMDAwMDA6MC44MDQzMDgsMC4xNzIzMDc6MC4yMTc2MTcsLTAuMDY1ODM4|0.456655;4.000000;MC40MDYwODU6MC42NDgxOTQsLTAuMDM0MDg2OjAuNzkzMDM0LDAuMDAzNTMw|1.000000;1.000000;MC4wMDAwMDA=
+param_set empty_1.mesh_super_banana y_shape 1.000000;2.000000;MC4wMDAwMDA=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_1.mesh_super_banana z_shape 0.229655;1.000000;MC4wMDAwMDA=|0.766586;1.000000;MC4wNTkxMTQ=|1.000000;0.000000;MS4wMDAwMDA=
+param_set empty_1.mesh_super_banana y_shape_multiplier 0.00000993696357909357
+param_set empty_1.mesh_super_banana size_shape_x 0.575039;1.000000;MC4wMDAwMDA=|0.354096;1.000000;MC42NDc2ODY=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_1.mesh_super_banana size_shape_y 0.326358;1.000000;MC4wMDAwMDA=|0.673642;1.000000;MC45OTA3NTc=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_1.mesh_super_banana num_sectors 10.56886672973632812500
+param_set empty_1.mesh_super_banana num_stacks 15.12539863586425781250
+component_create mesh;modifiers;transforms;mesh_translate empty_1.mesh_translate 0.006639 -0.026368
+component_create mesh;modifiers;pickers;mesh_vertex_picker empty_1.mesh_vertex_picker -0.038572 -0.089795
+param_set empty_1.mesh_vertex_picker id 18.24587631225585937500
+component_create maths;arithmetics;binary;mult empty_1.mult -0.088932 -0.012025
+param_set empty_1.mult param2 2.29201602935791015625
+component_create maths;arithmetics;binary;mult empty_1.mult1 -0.070500 0.074206
+param_set empty_1.mult1 param2 0.06033097580075263977
+component_create maths;arithmetics;binary;mult empty_1.mult1_1 -0.083448 0.029396
+param_set empty_1.mult1_1 param2 0.23672400414943695068
+component_create maths;arithmetics;quaternion;quat_mul empty_1.quat_mul -0.018143 -0.058768
+param_set empty_1.quat_mul quat_b 0.10546159744262695312,-0.04441667348146438599,0.12135694175958633423,0.98599064350128173828
+macro_create empty_1_1 -0.447250 -0.058042 0.356673
+component_create maths;dummies;float_dummy empty_1_1.float_dummy_1 -0.135470 0.072268
+component_create renderers;mesh;mesh_basic_render empty_1_1.mesh_basic_render 0.068002 0.041490
+param_set empty_1_1.mesh_basic_render use_vertex_colors 0
+component_create mesh;modifiers;transforms;mesh_rotate_quat_around_vertex empty_1_1.mesh_rotate_quat_around_vertex 0.052456 -0.065339
+param_set empty_1_1.mesh_rotate_quat_around_vertex vertex_rot_id 0.00001753297510731500
+param_set empty_1_1.mesh_rotate_quat_around_vertex offset_pos 0.00000000265389887844,0.00000000000000003091,0.00000095168951474989
+component_create mesh;solid;mesh_super_banana empty_1_1.mesh_super_banana -0.025675 0.012847
+param_set empty_1_1.mesh_super_banana x_shape 0.543345;4.000000;MC4wMDAwMDA6MC44MDQzMDgsMC4xNzIzMDc6MC4yMTc2MTcsLTAuMDY1ODM4|0.456655;4.000000;MC40MDYwODU6MC42NDgxOTQsLTAuMDM0MDg2OjAuNzkzMDM0LDAuMDAzNTMw|1.000000;1.000000;MC4wMDAwMDA=
+param_set empty_1_1.mesh_super_banana y_shape 1.000000;2.000000;MC4wMDAwMDA=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_1_1.mesh_super_banana z_shape 0.229655;1.000000;MC4wMDAwMDA=|0.766586;1.000000;MC4wNTkxMTQ=|1.000000;0.000000;MS4wMDAwMDA=
+param_set empty_1_1.mesh_super_banana y_shape_multiplier 0.00000993696357909357
+param_set empty_1_1.mesh_super_banana size_shape_x 0.575039;1.000000;MC4wMDAwMDA=|0.354096;1.000000;MC42NDc2ODY=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_1_1.mesh_super_banana size_shape_y 0.326358;1.000000;MC4wMDAwMDA=|0.673642;1.000000;MC45OTA3NTc=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_1_1.mesh_super_banana num_sectors 10.56886672973632812500
+param_set empty_1_1.mesh_super_banana num_stacks 15.12539863586425781250
+component_create mesh;modifiers;transforms;mesh_translate empty_1_1.mesh_translate 0.006639 -0.026368
+component_create mesh;modifiers;pickers;mesh_vertex_picker empty_1_1.mesh_vertex_picker -0.056783 -0.074369
+param_set empty_1_1.mesh_vertex_picker id 99.92717742919921875000
+component_create maths;arithmetics;binary;mult empty_1_1.mult -0.088600 -0.013174
+param_set empty_1_1.mult param2 1.05844342708587646484
+component_create maths;arithmetics;binary;mult empty_1_1.mult1 -0.070500 0.074206
+param_set empty_1_1.mult1 param2 -0.02692061290144920349
+component_create maths;arithmetics;binary;mult empty_1_1.mult1_1 -0.086758 0.033028
+param_set empty_1_1.mult1_1 param2 0.08167729526758193970
+component_create maths;arithmetics;quaternion;quat_mul empty_1_1.quat_mul -0.016538 -0.058303
+param_set empty_1_1.quat_mul quat_b 0.02572092972695827484,0.07841212302446365356,-0.06073007732629776001,0.99473708868026733398
+macro_create empty_1_2 -0.518849 0.074318 0.356673
+component_create maths;dummies;float_dummy empty_1_2.float_dummy_1 -0.135470 0.072268
+component_create renderers;mesh;mesh_basic_render empty_1_2.mesh_basic_render 0.068002 0.041490
+param_set empty_1_2.mesh_basic_render use_vertex_colors 0
+component_create mesh;modifiers;transforms;mesh_rotate_quat_around_vertex empty_1_2.mesh_rotate_quat_around_vertex 0.052456 -0.065339
+param_set empty_1_2.mesh_rotate_quat_around_vertex vertex_rot_id 0.00001753297510731500
+param_set empty_1_2.mesh_rotate_quat_around_vertex offset_pos 0.00000000265389887844,0.00000000000000003091,0.00000095168951474989
+component_create mesh;solid;mesh_super_banana empty_1_2.mesh_super_banana -0.026250 0.010935
+param_set empty_1_2.mesh_super_banana x_shape 0.543345;4.000000;MC4wMDAwMDA6MC44MDQzMDgsMC4xNzIzMDc6MC4yMTc2MTcsLTAuMDY1ODM4|0.456655;4.000000;MC40MDYwODU6MC42NDgxOTQsLTAuMDM0MDg2OjAuNzkzMDM0LDAuMDAzNTMw|1.000000;1.000000;MC4wMDAwMDA=
+param_set empty_1_2.mesh_super_banana y_shape 1.000000;2.000000;MC4wMDAwMDA=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_1_2.mesh_super_banana z_shape 0.229655;1.000000;MC4wMDAwMDA=|0.766586;1.000000;MC4wNTkxMTQ=|1.000000;0.000000;MS4wMDAwMDA=
+param_set empty_1_2.mesh_super_banana y_shape_multiplier 0.00000993696357909357
+param_set empty_1_2.mesh_super_banana size_shape_x 0.575039;1.000000;MC4wMDAwMDA=|0.354096;1.000000;MC42NDc2ODY=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_1_2.mesh_super_banana size_shape_y 0.326358;1.000000;MC4wMDAwMDA=|0.673642;1.000000;MC45OTA3NTc=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_1_2.mesh_super_banana num_sectors 10.56886672973632812500
+param_set empty_1_2.mesh_super_banana num_stacks 15.12539863586425781250
+component_create mesh;modifiers;transforms;mesh_translate empty_1_2.mesh_translate 0.006639 -0.026368
+component_create mesh;modifiers;pickers;mesh_vertex_picker empty_1_2.mesh_vertex_picker -0.059205 -0.080433
+param_set empty_1_2.mesh_vertex_picker id 5.43794202804565429688
+component_create maths;arithmetics;binary;mult empty_1_2.mult -0.088932 -0.012025
+param_set empty_1_2.mult param2 2.27005624771118164062
+component_create maths;arithmetics;binary;mult empty_1_2.mult1 -0.070500 0.074206
+param_set empty_1_2.mult1 param2 0.06033097580075263977
+component_create maths;arithmetics;binary;mult empty_1_2.mult1_1 -0.083448 0.029396
+param_set empty_1_2.mult1_1 param2 0.23672400414943695068
+component_create maths;arithmetics;quaternion;quat_mul empty_1_2.quat_mul -0.012898 -0.059770
+param_set empty_1_2.quat_mul quat_b -0.07657620310783386230,0.06727750599384307861,0.24154649674892425537,0.96502077579498291016
+macro_create empty_1_2_1 -0.514936 0.125724 0.356673
+component_create maths;dummies;float_dummy empty_1_2_1.float_dummy_1 -0.135470 0.072268
+component_create renderers;mesh;mesh_basic_render empty_1_2_1.mesh_basic_render 0.068002 0.041490
+param_set empty_1_2_1.mesh_basic_render use_vertex_colors 0
+component_create mesh;modifiers;transforms;mesh_rotate_quat_around_vertex empty_1_2_1.mesh_rotate_quat_around_vertex 0.052456 -0.065339
+param_set empty_1_2_1.mesh_rotate_quat_around_vertex vertex_rot_id 0.00001753297510731500
+param_set empty_1_2_1.mesh_rotate_quat_around_vertex offset_pos 0.00000000265389887844,0.00000000000000003091,0.00000095168951474989
+component_create mesh;solid;mesh_super_banana empty_1_2_1.mesh_super_banana -0.026071 0.011401
+param_set empty_1_2_1.mesh_super_banana x_shape 0.543345;4.000000;MC4wMDAwMDA6MC44MDQzMDgsMC4xNzIzMDc6MC4yMTc2MTcsLTAuMDY1ODM4|0.456655;4.000000;MC40MDYwODU6MC42NDgxOTQsLTAuMDM0MDg2OjAuNzkzMDM0LDAuMDAzNTMw|1.000000;1.000000;MC4wMDAwMDA=
+param_set empty_1_2_1.mesh_super_banana y_shape 1.000000;2.000000;MC4wMDAwMDA=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_1_2_1.mesh_super_banana z_shape 0.229655;1.000000;MC4wMDAwMDA=|0.766586;1.000000;MC4wNTkxMTQ=|1.000000;0.000000;MS4wMDAwMDA=
+param_set empty_1_2_1.mesh_super_banana y_shape_multiplier 0.00000993696357909357
+param_set empty_1_2_1.mesh_super_banana size_shape_x 0.575039;1.000000;MC4wMDAwMDA=|0.354096;1.000000;MC42NDc2ODY=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_1_2_1.mesh_super_banana size_shape_y 0.326358;1.000000;MC4wMDAwMDA=|0.673642;1.000000;MC45OTA3NTc=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_1_2_1.mesh_super_banana num_sectors 10.56886672973632812500
+param_set empty_1_2_1.mesh_super_banana num_stacks 15.12539863586425781250
+component_create mesh;modifiers;transforms;mesh_translate empty_1_2_1.mesh_translate 0.006639 -0.026368
+component_create mesh;modifiers;pickers;mesh_vertex_picker empty_1_2_1.mesh_vertex_picker -0.059441 -0.086050
+param_set empty_1_2_1.mesh_vertex_picker id 5.43794202804565429688
+component_create maths;arithmetics;binary;mult empty_1_2_1.mult -0.087611 -0.012025
+param_set empty_1_2_1.mult param2 1.39930725097656250000
+component_create maths;arithmetics;binary;mult empty_1_2_1.mult1 -0.070500 0.074206
+param_set empty_1_2_1.mult1 param2 0.04909975454211235046
+component_create maths;arithmetics;binary;mult empty_1_2_1.mult1_1 -0.083448 0.029396
+param_set empty_1_2_1.mult1_1 param2 0.10055455565452575684
+component_create maths;arithmetics;quaternion;quat_mul empty_1_2_1.quat_mul -0.012898 -0.059770
+param_set empty_1_2_1.quat_mul quat_b -0.17938506603240966797,0.06103920564055442810,0.33647215366363525391,0.92243248224258422852
+macro_create empty_1_3 -0.522910 -0.019192 0.356673
+component_create maths;dummies;float_dummy empty_1_3.float_dummy_1 -0.135470 0.072268
+component_create renderers;mesh;mesh_basic_render empty_1_3.mesh_basic_render 0.068002 0.041490
+param_set empty_1_3.mesh_basic_render use_vertex_colors 0
+component_create mesh;modifiers;transforms;mesh_rotate_quat_around_vertex empty_1_3.mesh_rotate_quat_around_vertex 0.052456 -0.065339
+param_set empty_1_3.mesh_rotate_quat_around_vertex vertex_rot_id 0.00001753297510731500
+param_set empty_1_3.mesh_rotate_quat_around_vertex offset_pos 0.00000000265389887844,0.00000000000000003091,0.00000095168951474989
+component_create mesh;solid;mesh_super_banana empty_1_3.mesh_super_banana -0.026363 0.010935
+param_set empty_1_3.mesh_super_banana x_shape 0.543345;4.000000;MC4wMDAwMDA6MC44MDQzMDgsMC4xNzIzMDc6MC4yMTc2MTcsLTAuMDY1ODM4|0.456655;4.000000;MC40MDYwODU6MC42NDgxOTQsLTAuMDM0MDg2OjAuNzkzMDM0LDAuMDAzNTMw|1.000000;1.000000;MC4wMDAwMDA=
+param_set empty_1_3.mesh_super_banana y_shape 1.000000;2.000000;MC4wMDAwMDA=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_1_3.mesh_super_banana z_shape 0.229655;1.000000;MC4wMDAwMDA=|0.766586;1.000000;MC4wNTkxMTQ=|1.000000;0.000000;MS4wMDAwMDA=
+param_set empty_1_3.mesh_super_banana y_shape_multiplier 0.00000993696357909357
+param_set empty_1_3.mesh_super_banana size_shape_x 0.575039;1.000000;MC4wMDAwMDA=|0.354096;1.000000;MC42NDc2ODY=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_1_3.mesh_super_banana size_shape_y 0.326358;1.000000;MC4wMDAwMDA=|0.673642;1.000000;MC45OTA3NTc=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_1_3.mesh_super_banana num_sectors 10.56886672973632812500
+param_set empty_1_3.mesh_super_banana num_stacks 15.12539863586425781250
+component_create mesh;modifiers;transforms;mesh_translate empty_1_3.mesh_translate 0.006639 -0.026368
+component_create mesh;modifiers;pickers;mesh_vertex_picker empty_1_3.mesh_vertex_picker -0.057551 -0.090479
+param_set empty_1_3.mesh_vertex_picker id 17.20982170104980468750
+component_create maths;arithmetics;binary;mult empty_1_3.mult -0.089445 -0.010444
+param_set empty_1_3.mult param2 1.19978415966033935547
+component_create maths;arithmetics;binary;mult empty_1_3.mult1 -0.071097 0.071777
+param_set empty_1_3.mult1 param2 0.07337349653244018555
+component_create maths;arithmetics;binary;mult empty_1_3.mult1_1 -0.082334 0.028195
+param_set empty_1_3.mult1_1 param2 -0.19209259748458862305
+component_create maths;arithmetics;quaternion;quat_mul empty_1_3.quat_mul -0.018138 -0.058750
+param_set empty_1_3.quat_mul quat_b -0.17980688810348510742,0.28511753678321838379,-0.62332808971405029297,-0.70557749271392822266
+macro_create empty_2 -0.587592 0.359537 0.160673
+macro_create empty_3 -0.587712 0.280277 0.356673
+component_create maths;dummies;float_dummy empty_3.float_dummy_1 -0.135450 0.072345
+param_set empty_3.float_dummy_1 float_in 0.99999040365219116211
+component_create renderers;mesh;mesh_basic_render empty_3.mesh_basic_render 0.062531 0.047567
+param_set empty_3.mesh_basic_render use_vertex_colors 0
+component_create mesh;modifiers;transforms;mesh_rotate_quat_around_vertex empty_3.mesh_rotate_quat_around_vertex 0.028440 -0.010015
+param_set empty_3.mesh_rotate_quat_around_vertex vertex_rot_id 0.00000000000000000000
+param_set empty_3.mesh_rotate_quat_around_vertex offset_pos 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+component_create mesh;solid;mesh_super_banana empty_3.mesh_super_banana -0.040682 0.051767
+param_set empty_3.mesh_super_banana x_shape 0.361906;4.000000;MC4wMDAwMDA6MC4wMjk3MzEsMC4wMDc1OTY6MC4zOTUzMzIsLTAuMTI0OTcy|0.613982;4.000000;MC4yNDc4NDM6MC42NDgxOTQsLTAuMDM0MDg2OjAuNzkzMDM0LDAuMDAzNTMw|1.000000;1.000000;MC4wMDAwMDA=
+param_set empty_3.mesh_super_banana y_shape 1.000000;2.000000;MC4wMDM5ODE=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_3.mesh_super_banana z_shape 0.229655;1.000000;MC4wMDAwMDA=|0.766586;1.000000;MC4wNTkxMTQ=|1.000000;0.000000;MS4wMDAwMDA=
+param_set empty_3.mesh_super_banana y_shape_multiplier 0.00000993696357909357
+param_set empty_3.mesh_super_banana size_shape_x 0.045687;1.000000;MC4wMDAwMDA=|0.883448;1.000000;MS4wMDAwMDA=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_3.mesh_super_banana size_shape_y 0.080081;1.000000;MC4wMDAwMDA=|0.919919;1.000000;MC42MTA0NjU=|1.000000;0.000000;MC4wMDAwMDA=
+param_set empty_3.mesh_super_banana num_sectors 10.56886672973632812500
+param_set empty_3.mesh_super_banana num_stacks 15.12539863586425781250
+component_create mesh;modifiers;transforms;mesh_translate empty_3.mesh_translate 0.006020 0.061614
+param_set empty_3.mesh_translate translation 0.41380089521408081055,0.00000000000000000000,0.00000000000000000000
+component_create maths;arithmetics;binary;mult empty_3.mult -0.075773 -0.029299
+param_set empty_3.mult param2 3.47248792648315429688
+component_create maths;arithmetics;binary;mult empty_3.mult1 -0.070500 0.074206
+param_set empty_3.mult1 param2 0.10489762574434280396
+component_create maths;arithmetics;binary;mult empty_3.mult1_1 -0.077089 0.032092
+param_set empty_3.mult1_1 param2 0.63319718837738037109
+component_create maths;arithmetics;quaternion;quat_mul empty_3.quat_mul -0.025705 -0.016620
+param_set empty_3.quat_mul quat_a 0.09260443598031997681,0.83842808008193969727,-0.51685613393783569336,-0.14602231979370117188
+param_set empty_3.quat_mul quat_b -0.71841222047805786133,-0.15074257552623748779,0.67908799648284912109,0.00012107923976145685
+component_create maths;dummies;float_dummy float_dummy -0.706942 0.063613
+component_create maths;oscillators;float_sequencer float_sequencer -0.632382 0.154727
+param_set float_sequencer float_sequence 1.000000;4.000000;MC4wMDAwMDA6MC42MjgxNDksMC4wNzE4NzU6MC44MzMyNjksLTAuMDMwODg4|1.000000;0.000000;MS4wMDAwMDA=
+param_set float_sequencer behaviour 0
+param_set float_sequencer trigger 0.00000000000000000000
+param_set float_sequencer trigger_reverse 0.00000000000000000000
+param_set float_sequencer time_source 0
+param_set float_sequencer drive_type 1
+component_create maths;oscillators;float_sequencer float_sequencer_1 -0.666350 0.048719
+param_set float_sequencer_1 float_sequence 1.000000;4.000000;MC4wMDAwMDA6MS4wMDAwMDAsMC4wMDA2NTc6MC44MzMyNjksLTAuMDMwODg4|1.000000;0.000000;MS4wMDAwMDA=
+param_set float_sequencer_1 behaviour 0
+param_set float_sequencer_1 trigger 0.00000000000000000000
+param_set float_sequencer_1 trigger_reverse 0.00000000000000000000
+param_set float_sequencer_1 length 0.99999094009399414062
+param_set float_sequencer_1 time_source 0
+param_set float_sequencer_1 drive_type 1
+component_create renderers;opengl_modifiers;light_directional light_directional -0.287009 0.082310
+param_set light_directional light_id 0
+param_set light_directional enabled 1
+param_set light_directional position -0.79433220624923706055,-0.03975698724389076233,0.60618090629577636719
+param_set light_directional ambient_color 0.00000082099199971708,0.00000078412335824396,0.00000078412335824396,1.00000000000000000000
+param_set light_directional diffuse_color 0.37154686450958251953,0.73237270116806030273,0.60900712013244628906,1.00000000000000000000
+component_create renderers;opengl_modifiers;light_directional light_directional_1 -0.219397 0.102725
+param_set light_directional_1 light_id 1
+param_set light_directional_1 enabled 1
+param_set light_directional_1 position -0.19375772774219512939,-0.85459154844284057617,-0.48179912567138671875
+param_set light_directional_1 ambient_color 0.00000082099199971708,0.00000078412335824396,0.00000078412335824396,1.00000000000000000000
+param_set light_directional_1 diffuse_color 0.37154686450958251953,0.73237270116806030273,0.60900712013244628906,1.00000000000000000000
+component_create renderers;opengl_modifiers;material_param material_param -0.184713 0.057418
+param_set material_param diffuse_reflectance 0.99999952316284179688,0.99999970197677612305,0.99999916553497314453,1.00000000000000000000
+param_set material_param specular_reflectance 0.99999994039535522461,0.99999904632568359375,0.99999904632568359375,1.00000000000000000000
+param_set material_param emission_intensity 0.00000085247296510715,0.00000089892284904636,0.00000081404851925981,1.00000000000000000000
+param_set material_param specular_exponent 49.78237152099609375000
+component_create maths;arithmetics;binary;max max -0.797206 0.061273
+param_set max param1 1.13140642642974853516
+param_set max param2 0.00000907330559130060
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.708604 -0.201831
+component_create renderers;mesh;mesh_face_id_render mesh_face_id_render -0.276928 -0.052341
+param_set mesh_face_id_render max_box 12.65080070495605468750,10.29192352294921875000,9.66823005676269531250
+param_set mesh_face_id_render font_size 46.45005416870117187500
+component_create maths;arithmetics;binary;min min -0.740395 0.062815
+param_set min param2 0.99999016523361206055
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.997799 -0.441806
+param_set orbit_camera rotation 0.63647395372390747070,-3.29845094680786132812,0.00000000000000000000
+param_set orbit_camera distance 1.15054476261138916016
+param_set orbit_camera destination 0.00000000000000000000,-0.87134778499603271484,0.00000000000000000001
+param_set orbit_camera perspective_correct 1
+component_create maths;oscillators;oscillator oscillator -0.611783 -0.143440
+param_set oscillator osc_type 2
+param_set oscillator amp 3.71970820426940917969
+param_set oscillator freq 0.08096654713153839111
+component_create renderers;opengl_modifiers;rendering_mode rendering_mode -0.105350 0.034696
+param_set rendering_mode back_facing 1
+component_create renderers;opengl_modifiers;rendering_mode rendering_mode1 -0.138734 -0.050308
+param_set rendering_mode1 front_facing 1
+param_set rendering_mode1 back_facing 0
+component_create renderers;opengl_modifiers;rendering_mode rendering_mode_1 -0.200067 -0.043757
+component_create texture;modifiers;rotate rotate -0.491375 -0.109789
+component_create texture;modifiers;scale scale -0.397554 -0.105512
+param_set scale scale_vector 0.13380293548107147217,0.62760603427886962891,1.00000000000000000000
+cpp screen0 0.000000 0.000000
+param_set screen0 gamma_correction 1.00000095367431640625
+param_set screen0 clear_color 0.00000000000002926513,0.00000000000000000000,0.00000000000000000001,0.00000070461976520164
+component_create texture;modifiers;translate translate -0.331548 -0.093967
+param_set translate translation_vector 1.89158689975738525391,8.07359695434570312500,0.00000099999988378840
+param_alias alias_result_quat:quaternion 1 empty_3 alias_result_quat empty_3.quat_mul result_quat
+param_alias alias_mesh_out:mesh 1 empty_3 alias_mesh_out empty_3.mesh_rotate_quat_around_vertex mesh_out
+param_alias alias_render_out:render 1 empty_3 alias_render_out empty_3.mesh_basic_render render_out
+param_alias alias_result_quat:quaternion 1 empty_1_3 alias_result_quat empty_1_3.quat_mul result_quat
+param_alias alias_mesh_out:mesh 1 empty_1_3 alias_mesh_out empty_1_3.mesh_rotate_quat_around_vertex mesh_out
+param_alias alias_render_out:render 1 empty_1_3 alias_render_out empty_1_3.mesh_basic_render render_out
+param_alias alias_result_quat:quaternion 1 empty_1_2_1 alias_result_quat empty_1_2_1.quat_mul result_quat
+param_alias alias_mesh_out:mesh 1 empty_1_2_1 alias_mesh_out empty_1_2_1.mesh_rotate_quat_around_vertex mesh_out
+param_alias alias_render_out:render 1 empty_1_2_1 alias_render_out empty_1_2_1.mesh_basic_render render_out
+param_alias alias_result_quat:quaternion 1 empty_1_2 alias_result_quat empty_1_2.quat_mul result_quat
+param_alias alias_mesh_out:mesh 1 empty_1_2 alias_mesh_out empty_1_2.mesh_rotate_quat_around_vertex mesh_out
+param_alias alias_render_out:render 1 empty_1_2 alias_render_out empty_1_2.mesh_basic_render render_out
+param_alias alias_result_quat:quaternion 1 empty_1_1 alias_result_quat empty_1_1.quat_mul result_quat
+param_alias alias_mesh_out:mesh 1 empty_1_1 alias_mesh_out empty_1_1.mesh_rotate_quat_around_vertex mesh_out
+param_alias alias_render_out:render 1 empty_1_1 alias_render_out empty_1_1.mesh_basic_render render_out
+param_alias alias_result_quat:quaternion 1 empty_1 alias_result_quat empty_1.quat_mul result_quat
+param_alias alias_mesh_out:mesh 1 empty_1 alias_mesh_out empty_1.mesh_rotate_quat_around_vertex mesh_out
+param_alias alias_render_out:render 1 empty_1 alias_render_out empty_1.mesh_basic_render render_out
+param_alias alias_result_quat:quaternion 1 empty alias_result_quat empty.quat_mul result_quat
+param_alias alias_render_out:render 1 empty alias_render_out empty.mesh_basic_render render_out
+param_connect translate texture_in scale texture_scale_out
+param_connect screen0 screen blend_mode render_out
+param_connect screen0 screen blend_mode1 render_out
+param_connect scale texture_in rotate texture_rotate_out
+param_connect rotate rotation_angle oscillator float
+param_connect rotate texture_in blob texture
+param_connect rendering_mode_1 render_in mesh_face_id_render render_out
+param_connect rendering_mode1 render_in orbit_camera render_out
+param_connect rendering_mode render_in orbit_camera render_out
+param_connect orbit_camera render_in material_param render_out
+param_connect orbit_camera render_in rendering_mode_1 render_out
+param_connect min param1 max result
+param_connect mesh_basic_render mesh_in cal3d_importer mesh
+param_connect material_param render_in light_directional_1 render_out
+param_connect light_directional_1 render_in light_directional render_out
+param_connect light_directional render_in auto_normalize render_out
+param_connect light_directional render_in mesh_basic_render render_out
+param_connect float_sequencer_1 drive float_dummy result_float
+param_connect float_sequencer drive float_dummy result_float
+param_connect float_dummy float_in min minimum
+param_alias alias_quat_a:quaternion -1 empty_3 alias_quat_a empty_3.quat_mul quat_a
+param_connect empty_3.mult1_1 param1 empty_3.float_dummy_1 result_float
+param_connect empty_3.mult1 param1 empty_3.float_dummy_1 result_float
+param_connect empty_3.mult param1 empty_3.float_dummy_1 result_float
+param_connect empty_3.mesh_translate mesh_in empty_3.mesh_super_banana mesh
+param_connect empty_3.mesh_super_banana size_shape_y_multiplier empty_3.mult1 product
+param_connect empty_3.mesh_super_banana size_shape_x_multiplier empty_3.mult1 product
+param_connect empty_3.mesh_super_banana z_shape_multiplier empty_3.mult product
+param_connect empty_3.mesh_super_banana x_shape_multiplier empty_3.mult1_1 product
+param_connect empty_3.mesh_rotate_quat_around_vertex quat_in empty_3.quat_mul result_quat
+param_connect empty_3.mesh_rotate_quat_around_vertex mesh_in empty_3.mesh_translate mesh_out
+param_connect empty_3.mesh_basic_render mesh_in empty_3.mesh_rotate_quat_around_vertex mesh_out
+param_alias alias_float_in:float -1 empty_3 alias_float_in empty_3.float_dummy_1 float_in
+param_alias alias_quat_a:quaternion -1 empty_1_3 alias_quat_a empty_1_3.quat_mul quat_a
+param_connect empty_1_3 alias_quat_a empty alias_result_quat
+param_connect empty_1_3.mult1_1 param1 empty_1_3.float_dummy_1 result_float
+param_connect empty_1_3.mult1 param1 empty_1_3.float_dummy_1 result_float
+param_connect empty_1_3.mult param1 empty_1_3.float_dummy_1 result_float
+param_alias alias_mesh_in:mesh -1 empty_1_3 alias_mesh_in empty_1_3.mesh_vertex_picker mesh_in
+param_connect empty_1_3.mesh_translate translation empty_1_3.mesh_vertex_picker vertex
+param_connect empty_1_3.mesh_translate mesh_in empty_1_3.mesh_super_banana mesh
+param_connect empty_1_3.mesh_super_banana size_shape_y_multiplier empty_1_3.mult1 product
+param_connect empty_1_3.mesh_super_banana size_shape_x_multiplier empty_1_3.mult1 product
+param_connect empty_1_3.mesh_super_banana z_shape_multiplier empty_1_3.mult product
+param_connect empty_1_3.mesh_super_banana x_shape_multiplier empty_1_3.mult1_1 product
+param_connect empty_1_3.mesh_rotate_quat_around_vertex quat_in empty_1_3.quat_mul result_quat
+param_connect empty_1_3.mesh_rotate_quat_around_vertex mesh_in empty_1_3.mesh_translate mesh_out
+param_connect empty_1_3.mesh_basic_render mesh_in empty_1_3.mesh_rotate_quat_around_vertex mesh_out
+param_alias alias_float_in:float -1 empty_1_3 alias_float_in empty_1_3.float_dummy_1 float_in
+param_connect empty_1_3 alias_float_in float_sequencer_1 float
+param_alias alias_quat_a:quaternion -1 empty_1_2_1 alias_quat_a empty_1_2_1.quat_mul quat_a
+param_connect empty_1_2_1 alias_quat_a empty alias_result_quat
+param_connect empty_1_2_1.mult1_1 param1 empty_1_2_1.float_dummy_1 result_float
+param_connect empty_1_2_1.mult1 param1 empty_1_2_1.float_dummy_1 result_float
+param_connect empty_1_2_1.mult param1 empty_1_2_1.float_dummy_1 result_float
+param_alias alias_mesh_in:mesh -1 empty_1_2_1 alias_mesh_in empty_1_2_1.mesh_vertex_picker mesh_in
+param_connect empty_1_2_1.mesh_translate translation empty_1_2_1.mesh_vertex_picker vertex
+param_connect empty_1_2_1.mesh_translate mesh_in empty_1_2_1.mesh_super_banana mesh
+param_connect empty_1_2_1.mesh_super_banana size_shape_y_multiplier empty_1_2_1.mult1 product
+param_connect empty_1_2_1.mesh_super_banana size_shape_x_multiplier empty_1_2_1.mult1 product
+param_connect empty_1_2_1.mesh_super_banana z_shape_multiplier empty_1_2_1.mult product
+param_connect empty_1_2_1.mesh_super_banana x_shape_multiplier empty_1_2_1.mult1_1 product
+param_connect empty_1_2_1.mesh_rotate_quat_around_vertex quat_in empty_1_2_1.quat_mul result_quat
+param_connect empty_1_2_1.mesh_rotate_quat_around_vertex mesh_in empty_1_2_1.mesh_translate mesh_out
+param_connect empty_1_2_1.mesh_basic_render mesh_in empty_1_2_1.mesh_rotate_quat_around_vertex mesh_out
+param_alias alias_float_in:float -1 empty_1_2_1 alias_float_in empty_1_2_1.float_dummy_1 float_in
+param_connect empty_1_2_1 alias_float_in float_sequencer_1 float
+param_alias alias_quat_a:quaternion -1 empty_1_2 alias_quat_a empty_1_2.quat_mul quat_a
+param_connect empty_1_2 alias_quat_a empty alias_result_quat
+param_connect empty_1_2.mult1_1 param1 empty_1_2.float_dummy_1 result_float
+param_connect empty_1_2.mult1 param1 empty_1_2.float_dummy_1 result_float
+param_connect empty_1_2.mult param1 empty_1_2.float_dummy_1 result_float
+param_alias alias_mesh_in:mesh -1 empty_1_2 alias_mesh_in empty_1_2.mesh_vertex_picker mesh_in
+param_connect empty_1_2.mesh_translate translation empty_1_2.mesh_vertex_picker vertex
+param_connect empty_1_2.mesh_translate mesh_in empty_1_2.mesh_super_banana mesh
+param_connect empty_1_2.mesh_super_banana size_shape_y_multiplier empty_1_2.mult1 product
+param_connect empty_1_2.mesh_super_banana size_shape_x_multiplier empty_1_2.mult1 product
+param_connect empty_1_2.mesh_super_banana z_shape_multiplier empty_1_2.mult product
+param_connect empty_1_2.mesh_super_banana x_shape_multiplier empty_1_2.mult1_1 product
+param_connect empty_1_2.mesh_rotate_quat_around_vertex quat_in empty_1_2.quat_mul result_quat
+param_connect empty_1_2.mesh_rotate_quat_around_vertex mesh_in empty_1_2.mesh_translate mesh_out
+param_connect empty_1_2.mesh_basic_render mesh_in empty_1_2.mesh_rotate_quat_around_vertex mesh_out
+param_alias alias_float_in:float -1 empty_1_2 alias_float_in empty_1_2.float_dummy_1 float_in
+param_connect empty_1_2 alias_float_in float_sequencer_1 float
+param_alias alias_quat_a:quaternion -1 empty_1_1 alias_quat_a empty_1_1.quat_mul quat_a
+param_connect empty_1_1 alias_quat_a empty_1 alias_result_quat
+param_connect empty_1_1.mult1_1 param1 empty_1_1.float_dummy_1 result_float
+param_connect empty_1_1.mult1 param1 empty_1_1.float_dummy_1 result_float
+param_connect empty_1_1.mult param1 empty_1_1.float_dummy_1 result_float
+param_alias alias_mesh_in:mesh -1 empty_1_1 alias_mesh_in empty_1_1.mesh_vertex_picker mesh_in
+param_connect empty_1_1 alias_mesh_in empty_1 alias_mesh_out
+param_connect empty_1_1.mesh_translate translation empty_1_1.mesh_vertex_picker vertex
+param_connect empty_1_1.mesh_translate mesh_in empty_1_1.mesh_super_banana mesh
+param_connect empty_1_1.mesh_super_banana size_shape_y_multiplier empty_1_1.mult1 product
+param_connect empty_1_1.mesh_super_banana size_shape_x_multiplier empty_1_1.mult1 product
+param_connect empty_1_1.mesh_super_banana z_shape_multiplier empty_1_1.mult product
+param_connect empty_1_1.mesh_super_banana x_shape_multiplier empty_1_1.mult1_1 product
+param_connect empty_1_1.mesh_rotate_quat_around_vertex quat_in empty_1_1.quat_mul result_quat
+param_connect empty_1_1.mesh_rotate_quat_around_vertex mesh_in empty_1_1.mesh_translate mesh_out
+param_connect empty_1_1.mesh_basic_render mesh_in empty_1_1.mesh_rotate_quat_around_vertex mesh_out
+param_alias alias_float_in:float -1 empty_1_1 alias_float_in empty_1_1.float_dummy_1 float_in
+param_connect empty_1_1 alias_float_in float_sequencer_1 float
+param_alias alias_quat_a:quaternion -1 empty_1 alias_quat_a empty_1.quat_mul quat_a
+param_connect empty_1 alias_quat_a empty alias_result_quat
+param_connect empty_1.mult1_1 param1 empty_1.float_dummy_1 result_float
+param_connect empty_1.mult1 param1 empty_1.float_dummy_1 result_float
+param_connect empty_1.mult param1 empty_1.float_dummy_1 result_float
+param_alias alias_mesh_in:mesh -1 empty_1 alias_mesh_in empty_1.mesh_vertex_picker mesh_in
+param_connect empty_1.mesh_translate translation empty_1.mesh_vertex_picker vertex
+param_connect empty_1.mesh_translate mesh_in empty_1.mesh_super_banana mesh
+param_connect empty_1.mesh_super_banana size_shape_y_multiplier empty_1.mult1 product
+param_connect empty_1.mesh_super_banana size_shape_x_multiplier empty_1.mult1 product
+param_connect empty_1.mesh_super_banana z_shape_multiplier empty_1.mult product
+param_connect empty_1.mesh_super_banana x_shape_multiplier empty_1.mult1_1 product
+param_connect empty_1.mesh_rotate_quat_around_vertex quat_in empty_1.quat_mul result_quat
+param_connect empty_1.mesh_rotate_quat_around_vertex mesh_in empty_1.mesh_translate mesh_out
+param_connect empty_1.mesh_basic_render mesh_in empty_1.mesh_rotate_quat_around_vertex mesh_out
+param_alias alias_float_in:float -1 empty_1 alias_float_in empty_1.float_dummy_1 float_in
+param_connect empty_1 alias_float_in float_sequencer_1 float
+param_alias alias_quat_a:quaternion -1 empty alias_quat_a empty.quat_mul quat_a
+param_connect empty alias_quat_a cal3d_importer RightHand_rotation
+param_connect empty.mult1_1 param1 empty.float_dummy_1 result_float
+param_connect empty.mult1 param1 empty.float_dummy_1 result_float
+param_connect empty.mult param1 empty.float_dummy_1 result_float
+param_alias alias_translation:float3 -1 empty alias_translation empty.mesh_translate translation
+param_connect empty alias_translation cal3d_importer RightHand_translation
+param_connect empty.mesh_translate mesh_in empty.mesh_rotate_quat_around_vertex mesh_out
+param_connect empty.mesh_super_banana size_shape_y_multiplier empty.mult1 product
+param_connect empty.mesh_super_banana size_shape_x_multiplier empty.mult1 product
+param_connect empty.mesh_super_banana z_shape_multiplier empty.mult product
+param_connect empty.mesh_super_banana x_shape_multiplier empty.mult1_1 product
+param_connect empty.mesh_rotate_quat_around_vertex quat_in empty.quat_mul result_quat
+param_connect empty.mesh_rotate_quat_around_vertex mesh_in empty.mesh_super_banana mesh
+param_connect empty.mesh_basic_render mesh_in empty.mesh_translate mesh_out
+param_alias alias_float_in:float -1 empty alias_float_in empty.float_dummy_1 float_in
+param_connect empty alias_float_in float_sequencer_1 float
+param_connect depth_buffer render_in rendering_mode render_out
+param_connect blend_mode render_in depth_buffer render_out
+param_connect auto_normalize render_in empty alias_render_out

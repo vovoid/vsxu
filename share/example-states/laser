@@ -1,0 +1,73 @@
+component_create maths;color;converters;4f_hsv_to_f4_rgb 4f_hsv_to_f4_rgb -0.331859 0.019084
+param_set 4f_hsv_to_f4_rgb s 0.73985904455184937000
+param_set 4f_hsv_to_f4_rgb v 0.50436806678771973000
+component_create renderers;opengl_modifiers;blend_mode blend_mode 0.022209 0.059123
+param_set blend_mode dest_blend 1
+component_create renderers;opengl_modifiers;blend_mode blend_mode1 0.332306 0.094351
+param_set blend_mode1 source_blend 1
+param_set blend_mode1 dest_blend 1
+component_create texture;particles;blob blob -0.169076 0.209951
+component_create texture;effects;blur blur 0.236009 0.034450
+param_set blur start_value 4.21637487411499020000
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate -0.124691 0.085435
+param_set gl_rotate axis 0.00000000000000000000,0.99999910593032837000,0.00000000000086270617
+component_create renderers;opengl_modifiers;gl_scale gl_scale -0.047400 0.078002
+param_set gl_scale scale 2.43160676956176760000,0.52564495801925659000,2.33061766624450680000
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.223758 0.129760
+component_create mesh;particles;mesh_rays mesh_rays -0.286889 0.087751
+component_create maths;arithmetics;binary;mult mult -0.189285 0.063154
+param_set mult param2 0.14906008541584015000
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera 0.084677 0.055955
+param_set orbit_camera rotation 0.23015202581882477000,0.09761187434196472200,0.96824681758880615000
+param_set orbit_camera distance 0.31147706508636475000
+param_set orbit_camera near_clipping 0.00116897386033087970
+component_create maths;oscillators;oscillator oscillator -0.510275 0.087091
+param_set oscillator ofs 7.99999904632568360000
+param_set oscillator freq 0.27612897753715515000
+component_create maths;oscillators;oscillator oscillator1 -0.397114 -0.039902
+param_set oscillator1 osc_type 3
+param_set oscillator1 freq 50.00000000000000000000
+component_create maths;oscillators;oscillator oscillator2 -0.414216 0.032481
+param_set oscillator2 osc_type 2
+param_set oscillator2 amp 0.30330291390419006000
+param_set oscillator2 freq 0.07713390141725540200
+component_create texture;buffers;render_surface_single render_surface_single 0.149951 0.067742
+param_set render_surface_single texture_size 1
+component_pos screen0 0.388654 0.119121
+param_set screen0 gamma_correction 1.00000095367431640000
+component_create renderers;examples;simple_with_texture simple_with_texture -0.090487 0.162957
+param_set simple_with_texture facing_camera 1
+param_set simple_with_texture size 0.00580686982721090320
+param_set simple_with_texture color_multiplier 0.99999684095382690000,0.63678216934204102000,0.99999982118606567000,0.99999994039535522000
+component_create renderers;examples;simple_with_texture simple_with_texture1 0.253522 0.138325
+param_set simple_with_texture1 facing_camera 0
+component_create renderers;examples;simple_with_texture simple_with_texture2 0.198538 0.119906
+param_set simple_with_texture2 facing_camera 0
+component_create renderers;examples;simple_with_texture simple_with_texture3 -0.084764 0.215423
+param_set simple_with_texture3 global_alpha 0.16301698982715607000
+param_set simple_with_texture3 facing_camera 0
+param_set simple_with_texture3 size 0.09134201705455780000
+param_set simple_with_texture3 color_multiplier 0.99999916553497314000,0.63476014137268066000,0.63476014137268066000,1.00000000000000000000
+component_create system;time time -0.246844 0.038018
+param_connect simple_with_texture3 texture_in blob texture
+param_connect simple_with_texture2 texture_in render_surface_single texture_out
+param_connect simple_with_texture1 texture_in blur texture_out
+param_connect simple_with_texture texture_in blob texture
+param_connect screen0 screen blend_mode1 render_out
+param_connect render_surface_single render_in orbit_camera render_out
+param_connect orbit_camera render_in blend_mode render_out
+param_connect mult param1 time r_time
+param_connect mesh_rays center_color 4f_hsv_to_f4_rgb result_float4
+param_connect mesh_rays num_rays oscillator float
+param_connect mesh_basic_render mesh_in mesh_rays mesh
+param_connect gl_scale render_in gl_rotate render_out
+param_connect gl_rotate render_in mesh_basic_render render_out
+param_connect gl_rotate angle mult product
+param_connect blur glow_source render_surface_single texture_out
+param_connect blend_mode1 render_in simple_with_texture1 render_out
+param_connect blend_mode1 render_in simple_with_texture2 render_out
+param_connect blend_mode render_in gl_scale render_out
+param_connect blend_mode render_in simple_with_texture render_out
+param_connect blend_mode render_in simple_with_texture3 render_out
+param_connect 4f_hsv_to_f4_rgb a oscillator1 float
+param_connect 4f_hsv_to_f4_rgb h oscillator2 float

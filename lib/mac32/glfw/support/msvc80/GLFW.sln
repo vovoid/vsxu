@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLFW", "GLFW.vcproj", "{BAA85EB9-BE33-45FB-B552-0AB3AC4D9CA9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLFWDLL", "GLFWDLL.vcproj", "{EE39B12C-97CF-4172-81FD-6ADE6B7F7B7B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BAA85EB9-BE33-45FB-B552-0AB3AC4D9CA9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BAA85EB9-BE33-45FB-B552-0AB3AC4D9CA9}.Debug|Win32.Build.0 = Debug|Win32
+		{BAA85EB9-BE33-45FB-B552-0AB3AC4D9CA9}.Release|Win32.ActiveCfg = Release|Win32
+		{BAA85EB9-BE33-45FB-B552-0AB3AC4D9CA9}.Release|Win32.Build.0 = Release|Win32
+		{EE39B12C-97CF-4172-81FD-6ADE6B7F7B7B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EE39B12C-97CF-4172-81FD-6ADE6B7F7B7B}.Debug|Win32.Build.0 = Debug|Win32
+		{EE39B12C-97CF-4172-81FD-6ADE6B7F7B7B}.Release|Win32.ActiveCfg = Release|Win32
+		{EE39B12C-97CF-4172-81FD-6ADE6B7F7B7B}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

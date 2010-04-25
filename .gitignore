@@ -1,0 +1,9 @@
+.metadata
+CMakeCache.txt
+CMakeFiles/
+CMakeFiles/*
+Makefile
+cmake_install.cmake
+_plugins_linux/*.so
+_plugins_win32/*.dll
+*.o

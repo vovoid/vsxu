@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+echo "This configure script supports the --prefix=path variable and nothing more"
+echo "VSXu depends on cmake to generate makefiles, you might need to install it"
+echo "Trying to configure the project..."
+#cut up the first parameter 
+#--prefix=foo
+COMMAND_PART=`echo $1 | cut -d \=  -f 1`
+DATA_PART=`echo $1 | cut -d \=  -f 2`
+echo $DATA_PART
+
+CMAKE_INSTP="/usr"
+
+if [ $COMMAND_PART = "--prefix" ]
+then
+echo "setting cmake_instp"
+CMAKE_INSTP=$DATA_PART
+else
+echo "foo"
+fi
+
+
+cmake . -DCMAKE_INSTALL_PREFIX="$CMAKE_INSTP"
+
+echo "The following command has now completed its run:"
+echo "cmake . -DCMAKE_INSTALL_PREFIX=\"$CMAKE_INSTP\""
+echo ""
+echo "VSXu is now configured. You can run the \"make\" and then \"make install\"."
+echo "To build with debug settings and or custom builds, please see the file BUILDING for more info."
+echo ""
+echo "Note! VSXu supports different sound sources depending on what you need."
+echo "Therefore you have to enable these manually. Edit plugins/CMakeLists.txt"
+echo "and enable the correct one. More information is available as comments in"
+echo "that file."

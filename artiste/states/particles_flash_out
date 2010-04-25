@@ -1,0 +1,65 @@
+meta_set fHx8fHw=
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.401095 0.028998
+component_create maths;color;converters;4f_hsv_to_f4_rgb 4f_hsv_to_f4_rgb -0.403965 -0.098305
+param_set 4f_hsv_to_f4_rgb s 0.37924635410308838000
+component_create particlesystems;modifiers;basic_wind_deformer basic_wind_deformer -0.277202 0.023183
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.140436 0.008971
+param_set blend_mode dest_blend 1
+component_create texture;particles;blob blob -0.303649 0.121407
+param_set blob arms 3.00000977516174320000
+param_set blob attenuation 0.88514465093612671000
+param_set blob star_flower 0.00000981834182312014
+param_set blob angle 1.10202538967132570000
+component_create maths;converters;float_to_float3 float_to_float3 -0.463111 0.020747
+component_create renderers;opengl_modifiers;gl_scale gl_scale -0.180620 0.082977
+param_set gl_scale scale 1.00000000000000000000,0.99999904632568359000,1.00000000000000000000
+component_create mesh;particles;mesh_star mesh_star -0.416438 -0.022737
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.069261 0.031088
+param_set orbit_camera rotation -0.51647520065307617000,-0.57377159595489502000,-0.63564091920852661000
+param_set orbit_camera distance 0.75000000000000000000
+param_set orbit_camera destination 0.00000089627712895890,0.26697999238967896000,0.00000000000000000979
+param_set orbit_camera fov 89.57889556884765600000
+param_set orbit_camera near_clipping 0.39044937491416931000
+component_create maths;oscillators;oscillator oscillator -0.220278 0.099148
+component_create particlesystems;generators;particles_mesh_spray particles_mesh_spray -0.326907 -0.030092
+param_set particles_mesh_spray add_vector 0.00000000000000000004,0.00000090005664787896,0.00000000000022651430
+param_set particles_mesh_spray time_source 1
+param_set particles_mesh_spray speed_x 0.00000088604093662070
+param_set particles_mesh_spray speed_y 0.07020001113414764400
+param_set particles_mesh_spray speed_z -0.00000094583037935081
+param_set particles_mesh_spray speed_type 0
+param_set particles_mesh_spray num_particles 4999.99951171875000000000
+param_set particles_mesh_spray particle_size_base 0.22596178948879242000
+component_pos screen0 0.000000 0.000000
+param_set screen0 gamma_correction 1.00000095367431640000
+component_create renderers;particlesystems;simple simple -0.210072 0.008947
+param_set simple render_type 0
+param_set simple size_lifespan_type 0
+param_set simple ignore_particles_at_center 0
+param_set simple size_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple alpha_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+component_create particlesystems;modifiers;size_noise size_noise -0.273886 -0.067331
+param_set size_noise size_type 0
+component_create maths;arithmetics;vector;vector_mul_float vector_mul_float -0.354395 0.030778
+param_set vector_mul_float param2 3.15359306335449220000
+component_create system;sound;vsx_listener vsx_listener -0.549168 -0.061213
+param_set vsx_listener multiplier 8.21424388885498050000
+param_connect vector_mul_float param1 3float_to_float3 result_float3
+param_connect size_noise strength vsx_listener octaves_r_6
+param_connect size_noise in_particlesystem particles_mesh_spray particlesystem
+param_connect simple texture blob texture
+param_connect simple particlesystem basic_wind_deformer particlesystem
+param_connect screen0 screen orbit_camera render_out
+param_connect particles_mesh_spray color 4f_hsv_to_f4_rgb result_float4
+param_connect particles_mesh_spray mesh_in mesh_star mesh
+param_connect orbit_camera render_in blend_mode render_out
+param_connect mesh_star paths vsx_listener wave
+param_connect gl_scale render_in simple render_out
+param_connect float_to_float3 param1 vsx_listener octaves_r_5
+param_connect blend_mode render_in gl_scale render_out
+param_connect basic_wind_deformer wind vector_mul_float result_float3
+param_connect basic_wind_deformer in_particlesystem size_noise particlesystem
+param_connect 4f_hsv_to_f4_rgb h vsx_listener octaves_r_0
+param_connect 3float_to_float3 floatc vsx_listener octaves_r_0
+param_connect 3float_to_float3 floatb vsx_listener octaves_r_3
+param_connect 3float_to_float3 floata vsx_listener octaves_r_7

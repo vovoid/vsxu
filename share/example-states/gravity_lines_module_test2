@@ -1,0 +1,81 @@
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.163583 0.038361
+component_create maths;converters;3float_to_float3 3float_to_float31 -0.050350 0.230094
+param_set 3float_to_float31 floata 0.00000082891250485773
+param_set 3float_to_float31 floatc -0.00000090676019226521
+component_create maths;arithmetics;binary;add add -0.235915 0.168764
+component_create maths;arithmetics;binary;add add1 -0.231742 0.062955
+param_set add1 param1 0.09074111282825470000
+component_create maths;arithmetics;binary;add add2 -0.201713 -0.023705
+macro_create camera_rotation_helper -0.168113 0.148948 0.233937
+component_create maths;converters;3float_to_float3 camera_rotation_helper.3float_to_float3 0.071481 0.066716
+param_set camera_rotation_helper.3float_to_float3 floatb -0.25484931468963623000
+component_create maths;dummies;float_dummy camera_rotation_helper.float_dummy -0.079796 0.021252
+param_set camera_rotation_helper.float_dummy float_in 0.06572598218917846700
+component_create maths;oscillators;oscillator camera_rotation_helper.oscillator -0.000858 0.054147
+param_set camera_rotation_helper.oscillator amp 0.99999910593032837000
+param_set camera_rotation_helper.oscillator ofs 0.00000093879611995362
+param_set camera_rotation_helper.oscillator phase -0.49999904632568359000
+component_create maths;oscillators;oscillator camera_rotation_helper.oscillator1 -0.002068 -0.008290
+param_set camera_rotation_helper.oscillator1 amp 0.99999910593032837000
+param_set camera_rotation_helper.oscillator1 ofs 0.00000082698852565954
+param_set camera_rotation_helper.oscillator1 phase 0.00000091451869366210
+component_create renderers;vovoid;gravity_lines gravity_lines -0.080413 0.052656
+param_set gravity_lines color0 0.99999988079071045000,0.70270508527755737000,0.00000000055894078255,0.68046593666076660000
+param_set gravity_lines color1 0.16846120357513428000,0.11323310434818268000,0.55673688650131226000,0.72364807128906250000
+param_set gravity_lines friction 0.99999904632568359000
+param_set gravity_lines step_length 30.00000000000000000000
+component_create maths;oscillators;oscillator noise_y -0.343281 0.052675
+param_set noise_y osc_type 0
+param_set noise_y ofs 0.00000090450078005233
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera 0.006254 0.081236
+component_pos screen0 0.107719 0.086340
+component_create renderers;examples;simple simple 0.037489 0.212879
+component_create maths;oscillators;oscillator sin_x -0.332860 0.123210
+param_set sin_x osc_type 0
+param_set sin_x ofs 0.00000092113702976349
+param_set sin_x freq 0.43930199742317200000
+component_create maths;oscillators;oscillator sin_x2 -0.329736 -0.183734
+param_set sin_x2 osc_type 0
+param_set sin_x2 ofs 0.00000089379886958341
+param_set sin_x2 freq 0.15418991446495056000
+component_create maths;oscillators;oscillator sin_x3 -0.329292 0.195928
+param_set sin_x3 osc_type 0
+param_set sin_x3 ofs 0.00000096620317435736
+component_create maths;oscillators;oscillator sin_x4 -0.112723 0.226286
+param_set sin_x4 osc_type 4
+param_set sin_x4 amp 1.00000095367431640000
+param_set sin_x4 ofs 0.00000098399709713703
+component_create maths;oscillators;oscillator sin_x6 -0.330232 -0.111157
+param_set sin_x6 osc_type 0
+param_set sin_x6 ofs 0.00000093143881940705
+component_create maths;oscillators;oscillator sin_y -0.341290 -0.019823
+param_set sin_y osc_type 0
+param_set sin_y ofs 0.00000096007920546981
+param_set sin_y freq 0.16736219823360443000
+component_create system;sound;vsx_listener vsx_listener -0.557250 -0.018317
+param_alias alias_result_float3:float3 1 camera_rotation_helper alias_result_float3 camera_rotation_helper.3float_to_float3 result_float3
+param_connect sin_y amp vsx_listener vu_l
+param_connect sin_x6 amp vsx_listener vu_l
+param_connect sin_x3 amp vsx_listener vu_l
+param_connect sin_x2 amp vsx_listener vu_l
+param_connect sin_x amp vsx_listener vu_l
+param_connect simple position 3float_to_float31 result_float3
+param_connect screen0 screen orbit_camera render_out
+param_connect orbit_camera render_in gravity_lines render_out
+param_connect orbit_camera rotation camera_rotation_helper alias_result_float3
+param_connect noise_y amp vsx_listener vu_l
+param_connect gravity_lines pos 3float_to_float3 result_float3
+param_connect camera_rotation_helper.oscillator1 freq camera_rotation_helper.float_dummy result_float
+param_connect camera_rotation_helper.oscillator freq camera_rotation_helper.float_dummy result_float
+param_alias alias_float_in:float -1 camera_rotation_helper alias_float_in camera_rotation_helper.float_dummy float_in
+param_connect camera_rotation_helper.3float_to_float3 floatc camera_rotation_helper.oscillator1 float
+param_connect camera_rotation_helper.3float_to_float3 floata camera_rotation_helper.oscillator float
+param_connect add2 param2 sin_x6 float
+param_connect add2 param1 sin_x2 float
+param_connect add1 param2 sin_y float
+param_connect add param2 sin_x float
+param_connect add param1 sin_x3 float
+param_connect 3float_to_float31 floatb sin_x4 float
+param_connect 3float_to_float3 floatc add2 sum
+param_connect 3float_to_float3 floatb add1 sum
+param_connect 3float_to_float3 floata add sum

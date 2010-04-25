@@ -1,0 +1,32 @@
+#include "vsx_string.h"
+#include <vsx_platform.h>
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+    #include <io.h>
+#else
+  // unix or other
+  #include <syslog.h>
+#endif
+#include "vsx_log.h"
+
+int log_level = 1;
+vsx_string log_dir;
+int first = 1; 
+
+void log(vsx_string message, int level)
+{
+	#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+    openlog ("vsxu_engine", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
+  	syslog(LOG_ERR,"%d: %s", level, message.c_str());
+	#else
+		if (log_level < level) return;
+		FILE* fpo = 0;
+		if (first) {
+			fpo = fopen((log_dir+"vsxu_engine.debug.log").c_str(),"w");
+			first = 0;
+		} else
+			fpo = fopen((log_dir+"vsxu_engine.debug.log").c_str(),"a");
+		if (!fpo) return;
+		fprintf(fpo, "%s\n", message.c_str() );
+		fclose(fpo);	
+	#endif
+}

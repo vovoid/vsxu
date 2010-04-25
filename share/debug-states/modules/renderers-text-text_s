@@ -1,0 +1,9 @@
+meta_set fHx8fHw=
+component_create renderers;opengl_modifiers;gl_translate gl_translate -0.225663 -0.014706
+param_set gl_translate translation -0.74962282180786132812,0.00000000000000000000,0.00000000000000000000
+cpp screen0 0.000000 0.000000
+component_create renderers;text;text_s text_s -0.359679 -0.016490
+ps64 text_s text_in Vm92b2lkIFZTWCBVbHRyYQ==
+ps64 text_s font_in cmVzb3VyY2VzL2V4YW1wbGVzL2ZvbnRzL2ZvbnQtYXJpYWwudHRm
+param_connect screen0 screen gl_translate render_out
+param_connect gl_translate render_in text_s render_out

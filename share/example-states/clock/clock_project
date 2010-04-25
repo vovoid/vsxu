@@ -1,0 +1,56 @@
+meta_set fHx8fHw=
+component_create maths;arithmetics;binary;add add -0.263219 -0.039268
+param_set add param2 -0.25012385845184326000
+component_create maths;arithmetics;binary;add add_clone -0.263124 -0.003370
+param_set add_clone param2 -0.25012385845184326000
+component_create maths;arithmetics;binary;add add_clone_clone -0.264111 0.028549
+param_set add_clone_clone param2 -0.25012385845184326000
+component_create system;clock clock -0.387370 -0.012282
+component_create maths;arithmetics;binary;div div -0.304832 -0.038798
+param_set div param2 -59.99997711181640600000
+component_create maths;arithmetics;binary;div div_clone -0.305125 -0.001904
+param_set div_clone param2 -59.99997711181640600000
+component_create maths;arithmetics;binary;div div_clone_clone -0.305457 0.028006
+param_set div_clone_clone param2 -12.00000953674316400000
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate -0.115744 -0.050158
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate1 -0.116671 0.036155
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate2 -0.114460 -0.013052
+component_create renderers;opengl_modifiers;gl_translate gl_translate -0.153946 -0.033487
+param_set gl_translate translation -0.60471594333648682000,0.00000000000000000000,0.00000000000000000000
+component_create renderers;opengl_modifiers;gl_translate gl_translate_minute -0.160850 0.005274
+param_set gl_translate_minute translation -0.60898303985595703000,0.00000000000000000000,0.00000000000000000000
+component_create renderers;opengl_modifiers;gl_translate gl_translate_second -0.160144 0.048727
+param_set gl_translate_second translation -0.60221308469772339000,0.00000000000000000000,0.00000000000000000000
+component_create renderers;basic;colored_rectangle hour_rect -0.205707 0.057325
+param_set hour_rect position 0.41583487391471863000,0.00000000000000000000,0.00000000000000000000
+param_set hour_rect size 0.26571208238601685000,0.00408700108528137210,0.00000000000000000000
+param_set hour_rect border_enable 0
+component_create renderers;basic;colored_rectangle minute_rect -0.205112 0.015201
+param_set minute_rect position 0.17006611824035645000,0.00000000000000000000,0.00000000000000000000
+param_set minute_rect size 0.53958100080490112000,0.00991191621869802470,0.00000000000000000000
+param_set minute_rect border_enable 0
+component_pos screen0 0.000000 0.000000
+component_create renderers;basic;colored_rectangle second_rect -0.205275 -0.022047
+param_set second_rect position 0.14437299966812134000,0.00000000000000000000,0.00000000000000000000
+param_set second_rect size 0.49785792827606201000,0.00260003237053751950,0.00000000000000000000
+param_set second_rect angle 24.99999046325683600000
+param_set second_rect border_enable 0
+param_set second_rect rotation_axis 0.00000000000000677205,0.00000000013673866206,0.99999904632568359000
+param_connect screen0 screen gl_rotate render_out
+param_connect screen0 screen gl_rotate2 render_out
+param_connect screen0 screen gl_rotate1 render_out
+param_connect gl_translate_second render_in hour_rect render_out
+param_connect gl_translate_minute render_in minute_rect render_out
+param_connect gl_translate render_in second_rect render_out
+param_connect gl_rotate2 render_in gl_translate_minute render_out
+param_connect gl_rotate2 angle add_clone sum
+param_connect gl_rotate1 render_in gl_translate_second render_out
+param_connect gl_rotate1 angle add_clone_clone sum
+param_connect gl_rotate render_in gl_translate render_out
+param_connect gl_rotate angle add sum
+param_connect div_clone_clone param1 clock hour12
+param_connect div_clone param1 clock minute
+param_connect div param1 clock second
+param_connect add_clone_clone param1 div_clone_clone quotient
+param_connect add_clone param1 div_clone quotient
+param_connect add param1 div quotient

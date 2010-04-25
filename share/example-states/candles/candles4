@@ -1,0 +1,97 @@
+meta_set fHx8fHw=
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.336560 -0.028299
+param_set 3float_to_float3 floatb 0.11634215712547302246
+param_set 3float_to_float3 floatc 0.29062175750732421875
+component_create particlesystems;modifiers;basic_wind_deformer basic_wind_deformer -0.286509 -0.012136
+component_create bitmaps;filters;bitm_blend_multiply bitm_blend_multiply -0.464665 0.046990
+param_set bitm_blend_multiply target_size 130.46014404296875000000,124.07262420654296875000,0.00000000000000000000
+param_set bitm_blend_multiply bitm2_ofs 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+component_create texture;loaders;bitmap2texture bitmap2texture -0.381786 0.080851
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.120519 0.039730
+param_set blend_mode dest_blend 1
+component_create bitmaps;generators;blob blob1 -0.519495 0.093389
+param_set blob1 attenuation 0.00000916379667614819
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer -0.199268 0.075258
+param_set depth_buffer depth_test 0
+param_set depth_buffer depth_mask 0
+component_create renderers;opengl_modifiers;gl_scale gl_scale -0.183668 0.102740
+param_set gl_scale scale 1.00000000000000000000,0.99999904632568359375,1.00000000000000000000
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.058373 0.028517
+param_set orbit_camera rotation -0.09155908226966857910,0.29345193505287170410,0.95157909393310546875
+param_set orbit_camera distance 0.59416162967681884766
+param_set orbit_camera fov 120.00031280517578125000
+param_set orbit_camera perspective_correct 0
+component_create maths;oscillators;oscillator oscillator -0.395533 -0.051911
+param_set oscillator amp 0.10054024308919906616
+param_set oscillator ofs 0.00000749826676837984
+param_set oscillator freq 0.30766767263412475586
+component_create particlesystems;generators;particles_mesh_spray particles_mesh_spray -0.394694 0.000264
+param_set particles_mesh_spray center 0.00000088265369413421,0.00000000000000000000,0.00000000000000000000
+param_set particles_mesh_spray random_deviation 0.16580101847648620605,0.00000000000000000000,0.11311084032058715820
+param_set particles_mesh_spray time_source 0
+param_set particles_mesh_spray speed_x 0.00000088604093662070
+param_set particles_mesh_spray speed_y 0.00000926153370528482
+param_set particles_mesh_spray speed_z -0.00000094583037935081
+param_set particles_mesh_spray speed_type 0
+param_set particles_mesh_spray particles_per_second -0.18149887025356292725
+param_set particles_mesh_spray color 0.96917903423309326172,0.59066605567932128906,0.10822400450706481934,0.48385903239250183105
+param_set particles_mesh_spray num_particles 999.99963378906250000000
+param_set particles_mesh_spray particle_size_base 0.09555300325155258179
+param_set particles_mesh_spray particle_size_random_weight 0.27791449427604675293
+component_create mesh;vertices;random_vertices random_vertices -0.506977 0.003157
+param_set random_vertices num_points 5.48519849777221679688
+param_set random_vertices scaling 0.49760600924491882324,0.07025215774774551392,0.50768899917602539062
+component_create texture;modifiers;rotate rotate -0.251779 0.156378
+param_set rotate rotation_angle 1.08273208141326904297
+component_pos screen0 0.018384 0.001733
+param_set screen0 gamma_correction 0.98783355951309204102
+param_set screen0 clear_color 0.00000000000000000551,0.00000000000000000000,0.00000000000000000000,0.00000088242728679688
+component_create renderers;particlesystems;simple simple -0.202522 -0.006135
+param_set simple render_type 0
+param_set simple size_lifespan_type 1
+param_set simple color_lifespan_type 1
+param_set simple ignore_particles_at_center 0
+param_set simple size_lifespan_sequence 0.474255;1.000000;MC45OTI4NTA=|0.527563;2.000000;MC45OTI1MDE=
+param_set simple alpha_lifespan_sequence 0.481507;2.000000;MC4xNTI5MjY=|0.072001;1.000000;MC4wNDA3ODI=|0.118513;2.000000;MC41NzQyMjI=|0.328123;1.000000;MC4zMDc1MDI=|1.000000;0.000000;LTAuMDAxNDUw
+param_set simple r_lifespan_sequence 0.086572;2.000000;LTAuMDAzMTY5|0.286629;2.000000;MC4wMDkxMTg=|0.316742;2.000000;MC45ODQzNTg=|1.000000;0.000000;MC4zMjMwNzM=
+param_set simple g_lifespan_sequence 0.082210;2.000000;LTAuMDAxNDU4|0.272593;2.000000;MC4wMDcyMzY=|0.294951;2.000000;MC40MzUyODE=|1.000000;0.000000;MC4zMzE4NTM=
+param_set simple b_lifespan_sequence 0.165230;2.000000;MC4yMTEyODQ=|0.496762;2.000000;MC4xMzY5OTU=|1.000000;0.000000;MC4zMjA3NzU=
+component_create bitmaps;generators;subplasma subplasma -0.536481 0.051166
+param_set subplasma rand_seed 2.98930788040161132812
+param_set subplasma amplitude 1
+component_create texture;modifiers;tex_parameters tex_parameters -0.096135 0.169667
+param_set tex_parameters wrap_s 3
+param_set tex_parameters wrap_t 1
+param_set tex_parameters min_filter 1
+param_set tex_parameters mag_filter 1
+param_set tex_parameters anisotropic_filtering 0
+component_create renderers;basic;textured_rectangle textured_rectangle -0.002460 0.154507
+param_set textured_rectangle facing_camera 0
+component_create texture;modifiers;translate translate -0.405116 0.197283
+param_set translate translation_vector 0.49131596088409423828,0.49736696481704711914,0.00000000000000000000
+component_create texture;modifiers;translate translate1 -0.180304 0.162320
+param_set translate1 translation_vector -0.48579397797584533691,-0.53133088350296020508,0.00000000000000000000
+note_create n4 -0.234914,-0.088236,0.000000 0.082152,0.043934,0.000000 VGhlIHNlY3JldCBvZiB0aGUgc2hhcGUgYW5kIGNvbG9yIG9mIHRoZSBmbGFtZXMKbGllIGluIHRoaXMgbW9kdWxlLiBUcnkgcGxheWluZyB3aXRoIGl0cyBtYW55CnNlcXVlbmNlcyAodGhhdCBjb250cm9sIGJlaGF2aW91ciBvdmVyIGEgcGFydGljbGUncwpsaWZlIHRpbWUpLiBJdCdzIGxvYWRzIG9mIGZ1biE= 0.004000
+note_create n3 -0.485523,0.100348,0.000000 0.061050,0.049211,0.000000 QSBibG9iIGJpdG1hcAptdWx0aXBsaWVkIHdpdGggYSAKc3VicGxhc21hIChibHVycmVkIG5vaXNlKQpyZW5kZXJzIGEgdGV4dHVyZSB0aGF0IGlzIHNpbWlsYXIKdG8gYSBmaXJlYmFsbCA6KQ== 0.004000
+note_create n2 -0.274202,0.210183,0.000000 0.173677,0.035371,0.000000 VGhpcyBiaXQgb2YgdGV4dHVyZSBtYW5pcHVsYXRpb24gaXMgdHJpY2t5LApmaXJzdCB5b3UgdHJhbnNsYXRlIChtb3ZlKSB0aGUgdGV4dHVyZSBzbyB0aGF0IHlvdSdsbCByb3RhdGUgYXJvdW5kIHRoZSB0ZXh0dXJlJ3MgY2VudGVyLCBub3QgdGhlIGNvcm5lci4KVGhlbiB3aGVuIHJvdGF0ZWQsIHlvdSBtb3ZlIGl0IGJhY2sgc28gaXQncyBuaWNlIGFuZCBjZW50ZXJlZC4KRmluYWxseSAtIEkgdXNlIHRoZSB0ZXhfcGFyYW1ldGVycyB0byBzZXQgdGhlIHdyYXBwaW5nIG1vZGUgdG8gY2xhbXAgdG8gZWRnZSAtIG90aGVyd2lzZSB3ZSdkCnNlZSBhIHJlcGVhdGluZyB0ZXh0dXJlLiBCdXQgd2Ugb25seSB3YW50IHRoZSBjZW50ZXIgYmxvYiB0byBiZSBzZWVuLg== 0.004000
+note_create n1 -0.151242,-0.059313,0.000000 0.050000,0.050000,0.000000 VGhlIGJsZW5kIG1vZGUgaGVyZSBpcyB1c2VkCnRvIG1ha2UgdGhlIHBhcnRpY2xlcycgY29sb3IKImFkZCB1cCIgdG93YXJkcyB3aGl0ZS4KT3RoZXJ3aXNlIHRoZXkgYmxvY2sgZm9yIGVhY2gKb3RoZXIsIGJ1dCBzaW5jZSB0aGlzCmlzIGZpcmUgLSBhbmQgbW9yZSBwbGFzbWEKZXF1YWxzIG1vcmUgbGlnaHQsIGl0IGxvb2tzCmJlc3QgdGhpcyB3YXku 0.004000
+note_create n0 0.007625,0.044372,0.000000 0.050000,0.016000,0.000000 Tk9URVMgQlkgSkFX 0.004000
+param_connect translate1 texture_in rotate texture_rotate_out
+param_connect translate texture_in bitmap2texture texture
+param_connect textured_rectangle texture_in tex_parameters texture_rotate_out
+param_connect tex_parameters texture_in translate1 texture_translate_out
+param_connect simple texture tex_parameters texture_rotate_out
+param_connect simple particlesystem basic_wind_deformer particlesystem
+param_connect screen0 screen orbit_camera render_out
+param_connect rotate texture_in translate texture_translate_out
+param_connect particles_mesh_spray mesh_in random_vertices mesh
+param_connect orbit_camera render_in blend_mode render_out
+param_connect gl_scale render_in depth_buffer render_out
+param_connect depth_buffer render_in simple render_out
+param_connect blend_mode render_in gl_scale render_out
+param_connect bitmap2texture bitmap bitm_blend_multiply bitmap
+param_connect bitm_blend_multiply in2 subplasma bitmap
+param_connect bitm_blend_multiply in1 blob1 bitmap
+param_connect basic_wind_deformer wind 3float_to_float3 result_float3
+param_connect basic_wind_deformer in_particlesystem particles_mesh_spray particlesystem
+param_connect 3float_to_float3 floata oscillator float

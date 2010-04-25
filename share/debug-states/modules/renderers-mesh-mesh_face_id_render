@@ -1,0 +1,53 @@
+meta_set fHx8fHw=
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.006931 0.040037
+param_set blend_mode dest_blend 1
+component_create texture;particles;blob blob -0.447575 0.079719
+param_set blob arms 10.10000896453857421875
+param_set blob attenuation 0.76756918430328369141
+param_set blob angle 0.00000000000000000000
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer -0.132928 0.074370
+param_set depth_buffer depth_test 1
+param_set depth_buffer depth_mask 1
+component_create maths;converters;3float_to_float3 float_to_float -0.253571 -0.011379
+param_set float_to_float floata 0.00000000000000000000
+param_set float_to_float floatb 0.91307908296585083008
+param_set float_to_float floatc 0.00000000000000000000
+component_create renderers;opengl_modifiers;light_directional light_directional -0.203839 0.064382
+param_set light_directional light_id 0
+param_set light_directional enabled 1
+param_set light_directional position -0.26691690087318420410,0.73750823736190795898,0.62035179138183593750
+param_set light_directional ambient_color 0.00000094057378419166,0.22982272505760192871,0.29500249028205871582,1.00000000000000000000
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.395153 0.043072
+component_create renderers;mesh;mesh_face_id_render mesh_face_id_render -0.186028 0.003239
+component_create mesh;solid;mesh_sphere mesh_sphere -0.453549 -0.001354
+param_set mesh_sphere num_sectors 100.86788177490234375000
+param_set mesh_sphere num_stacks 100.47290802001953125000
+component_create mesh;modifiers;pickers;mesh_vertex_picker mesh_vertex_picker -0.320998 -0.131166
+param_set mesh_vertex_picker id 5206.00000000000000000000
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.061785 0.064062
+param_set orbit_camera rotation -0.01461400464177131653,0.24563021957874298096,-0.96925318241119384766
+param_set orbit_camera distance 0.09983895719051361084
+param_set orbit_camera destination 0.45176520943641662598,0.00000000000000000000,0.00000000000000000000
+component_create maths;oscillators;oscillator oscillator -0.296522 -0.032802
+param_set oscillator freq 0.01785149797797203064
+cpp screen0 0.053149 0.021299
+param_set screen0 gamma_correction 1.00000095367431640625
+param_set screen0 clear_color 0.00000000000002926513,0.00000000000000000000,0.00000000000000000001,0.00000070461976520164
+component_create texture;opengl;texture_coord_gen texture_coord_gen -0.297322 0.069400
+param_set texture_coord_gen gen_s 5
+param_set texture_coord_gen gen_t 5
+param_set texture_coord_gen parameter 0.00000000000000000000,-0.00002000553649850190,0.00000000000000000000,0.00000000000000000000
+component_create renderers;basic;textured_rectangle textured_rectangle -0.200727 -0.088510
+param_set textured_rectangle facing_camera 1
+param_set textured_rectangle size 0.02877818606793880463
+param_connect textured_rectangle position mesh_vertex_picker vertex
+param_connect textured_rectangle texture_in blob texture
+param_connect texture_coord_gen render_in mesh_basic_render render_out
+param_connect screen0 screen blend_mode render_out
+param_connect orbit_camera render_in depth_buffer render_out
+param_connect orbit_camera render_in mesh_face_id_render render_out
+param_connect orbit_camera render_in textured_rectangle render_out
+param_connect mesh_face_id_render mesh_in mesh_sphere mesh
+param_connect mesh_basic_render tex_a blob texture
+param_connect light_directional render_in texture_coord_gen render_out
+param_connect blend_mode render_in orbit_camera render_out

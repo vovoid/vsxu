@@ -1,0 +1,16 @@
+
+#set(CMAKE_SHARED_LINKER_FLAGS -s)
+#set(CMAKE_MODULE_LINKER_FLAGS -s)
+
+
+set_target_properties(
+  ${module_id}
+    PROPERTIES
+      LIBRARY_OUTPUT_DIRECTORY
+        ${output_dir}
+      RUNTIME_OUTPUT_DIRECTORY
+        ${output_dir}
+#      CMAKE_SHARED_LINKER_FLAGS
+#        -s
+)
+

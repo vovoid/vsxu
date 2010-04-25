@@ -1,0 +1,7 @@
+macro_create $$name 0.145378
+component_create maths;color;converters;4f_hsv_to_f4_rgb $$name.4f_hsv_to_f4_rgb 0.0256303 0.00673351
+component_create maths;oscillators;oscillator $$name.oscillator -0.0345073 0.0052345
+param_alias alias_result_float4:float4 1 $$name alias_result_float4 $$name.4f_hsv_to_f4_rgb result_float4
+param_alias alias_freq:float -1 $$name alias_freq $$name.oscillator freq
+param_alias alias_phase:float -1 $$name alias_phase $$name.oscillator phase
+param_connect $$name.4f_hsv_to_f4_rgb h $$name.oscillator float

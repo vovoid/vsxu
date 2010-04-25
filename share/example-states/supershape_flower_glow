@@ -1,0 +1,76 @@
+meta_set fHx8fHw=
+component_create renderers;opengl_modifiers;blend_mode blend_mode 0.004870 0.051258
+param_set blend_mode dest_blend 1
+component_create texture;effects;blur blur -0.096035 -0.064769
+param_set blur texture_size 2
+param_set blur start_value 3.03145527839660644531
+param_set blur attenuation 0.81689012050628662109
+component_create texture;effects;blur blur1 -0.021012 -0.056260
+param_set blur1 start_value 4.27704811096191406250
+param_set blur1 attenuation 2.51884078979492187500
+component_create renderers;opengl_modifiers;gl_line_width gl_line_width -0.141625 0.032762
+param_set gl_line_width width 3.84100341796875000000
+component_create renderers;opengl_modifiers;light_directional light_directional -0.251031 0.116097
+param_set light_directional light_id 0
+param_set light_directional enabled 1
+param_set light_directional position 0.32587987184524536133,0.74977505207061767578,-0.57588154077529907227
+param_set light_directional diffuse_color 0.99999904632568359375,0.99999904632568359375,0.99999904632568359375,1.00000000000000000000
+component_create renderers;opengl_modifiers;material_param material_param -0.293130 0.159484
+param_set material_param ambient_reflectance 0.00000098831026207336,0.00000075221265660730,0.00000075221265660730,1.00000000000000000000
+param_set material_param diffuse_reflectance 0.13510197401046752930,0.14030492305755615234,0.24613691866397857666,1.00000000000000000000
+param_set material_param specular_reflectance 0.26154199242591857910,0.26154199242591857910,0.26154199242591857910,1.00000000000000000000
+param_set material_param emission_intensity 0.00808985158801078796,0.00808985158801078796,0.00808985158801078796,0.99999994039535522461
+param_set material_param specular_exponent 128.22138977050781250000
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.371753 0.047160
+component_create renderers;mesh;mesh_line_render mesh_line_render -0.284949 -0.027012
+component_create mesh;solid;mesh_solid_supershape mesh_solid_supershape -0.409949 0.003239
+param_set mesh_solid_supershape x_num_segments 15.02748966217041015625
+param_set mesh_solid_supershape x_stop 1.56657171249389648438
+param_set mesh_solid_supershape x_a 1.17599856853485107422
+param_set mesh_solid_supershape x_b 1.03221261501312255859
+param_set mesh_solid_supershape x_n1 7.82574748992919921875
+param_set mesh_solid_supershape x_n2 -8.67619705200195312500
+param_set mesh_solid_supershape x_n3 5.44556665420532226562
+param_set mesh_solid_supershape x_m 5.68010377883911132812
+param_set mesh_solid_supershape y_start -3.15236043930053710938
+component_create mesh;solid;mesh_sphere mesh_sphere -0.379151 -0.041543
+param_set mesh_sphere num_sectors 20.09321212768554687500
+param_set mesh_sphere num_stacks 20.00065803527832031250
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.163808 -0.028657
+param_set orbit_camera rotation 0.00065391865791752934,-0.02586599625647068024,0.26423203945159912109
+param_set orbit_camera distance 0.59352445602416992188
+param_set orbit_camera destination 0.00000000000000000000,0.00000092633922577079,0.00000000000000000000
+param_set orbit_camera fov 120.13124084472656250000
+param_set orbit_camera perspective_correct 1
+component_create texture;buffers;render_surface_single render_surface_single -0.097480 0.002788
+param_set render_surface_single support_feedback 0
+param_set render_surface_single float_texture 1
+param_set render_surface_single texture_size 10
+component_create renderers;opengl_modifiers;rendering_mode rendering_mode -0.211466 0.036063
+param_set rendering_mode front_facing 1
+param_set rendering_mode back_facing 1
+component_create renderers;opengl_modifiers;rendering_mode rendering_mode1 -0.188647 0.107243
+cpp screen0 0.044894 0.082494
+param_set screen0 gamma_correction 1.00000905990600585938
+param_set screen0 clear_color 0.00000000000000000003,0.00000000000000000000,0.00000000000003301989,0.99999910593032836914
+component_create renderers;basic;textured_rectangle textured_rectangle -0.062239 0.067555
+param_set textured_rectangle facing_camera 0
+component_create renderers;basic;textured_rectangle textured_rectangle1 -0.053429 0.017224
+param_set textured_rectangle1 facing_camera 0
+param_connect textured_rectangle1 texture_in blur1 texture_out
+param_connect textured_rectangle texture_in render_surface_single texture_out
+param_connect screen0 screen blend_mode render_out
+param_connect rendering_mode1 render_in light_directional render_out
+param_connect rendering_mode render_in light_directional render_out
+param_connect render_surface_single render_in gl_line_width render_out
+param_connect orbit_camera render_in rendering_mode1 render_out
+param_connect orbit_camera render_in rendering_mode render_out
+param_connect mesh_line_render mesh_in mesh_solid_supershape mesh
+param_connect mesh_basic_render mesh_in mesh_solid_supershape mesh
+param_connect material_param render_in mesh_basic_render render_out
+param_connect light_directional render_in material_param render_out
+param_connect gl_line_width render_in orbit_camera render_out
+param_connect blur1 glow_source blur texture_out
+param_connect blur glow_source render_surface_single texture_out
+param_connect blend_mode render_in textured_rectangle1 render_out
+param_connect blend_mode render_in textured_rectangle render_out

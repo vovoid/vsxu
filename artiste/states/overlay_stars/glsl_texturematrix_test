@@ -1,0 +1,32 @@
+meta_set fHx8fHw=
+component_create texture;particles;blob blob -0.419730 0.078580
+param_set blob arms 31.40069961547851600000
+param_set blob attenuation 1.98460543155670170000
+param_set blob size 5
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate -0.147035 0.051027
+param_set gl_rotate angle 0.00000967306550592184
+component_create renderers;shaders;blend_modes;overlay overlay -0.213970 0.073456
+ps64 overlay vertex_program dm9pZCBtYWluKCkKewoJZ2xfVGV4Q29vcmRbMF0gPSBnbF9NdWx0aVRleENvb3JkMDsKCWdsX1Bvc2l0aW9uID0gZ2xfTW9kZWxWaWV3UHJvamVjdGlvbk1hdHJpeCAqIGdsX1ZlcnRleDsKfQo=
+ps64 overlay fragment_program dW5pZm9ybSBzYW1wbGVyMkQgYmFzZV90LGJsZW5kX3Q7CnVuaWZvcm0gZmxvYXQgYWxwaGE7CmNvbnN0IHZlYzQgd2hpdGUgPSB2ZWM0KDEuMCwxLjAsMS4wLDEuMCk7CnZvaWQgbWFpbigpCnsKCXZlYzQgYmFzZSA9IHRleHR1cmUyRChiYXNlX3QsZ2xfVGV4Q29vcmRbMF0uc3QpOwoJdmVjNCBibGVuZCA9IHRleHR1cmUyRChibGVuZF90LGdsX1RleENvb3JkWzBdLnN0KTsKCXZlYzQgcmVzID0gYmFzZSAvICh3aGl0ZSAtIGJsZW5kKTsKCWdsX0ZyYWdDb2xvciA9IHZlYzQocmVzLnJnYixhbHBoYSk7Cn0=
+param_set overlay alpha 0.99999099969863892000
+component_create texture;loaders;png_tex_load png_tex_load -0.556325 -0.111051
+ps64 png_tex_load filename cmVzb3VyY2VzL29zbW9zaXMvbWV0YWJhbGxfdGV4dHVyZS5qcGc=
+component_create texture;loaders;png_tex_load png_tex_load1 -0.541525 -0.015638
+ps64 png_tex_load1 filename cmVzb3VyY2VzL2ltYWdlcy9iaXNvdXgucG5n
+component_create texture;modifiers;rotate rotate -0.333002 0.062572
+param_set rotate rotation_axis 0.00000000007589753825,0.00000000000000000000,0.99999910593032837000
+param_set rotate rotation_angle 0.00000960946090344805
+component_pos screen0 0.000000 0.000000
+component_create renderers;examples;simple simple -0.333474 0.137107
+param_set simple size 1.00000000000000000000,0.99999910593032837000,0.00000000000000000000
+param_set simple angle 0.00540612637996673580
+param_set simple border_enable 1
+param_set simple border_color 0.99999988079071045000,0.99999910593032837000,0.00000000000000000000,1.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture -0.420154 -0.015715
+param_set simple_with_texture facing_camera 0
+param_connect screen0 screen gl_rotate render_out
+param_connect rotate texture_in blob texture
+param_connect overlay blend_t rotate texture_rotate_out
+param_connect overlay base_t png_tex_load1 texture
+param_connect overlay render_in simple render_out
+param_connect gl_rotate render_in overlay render_out

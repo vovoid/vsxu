@@ -1,0 +1,24 @@
+if(WIN32)
+  #set(output_dir "../../_plugins_win32")
+  target_link_libraries(${module_id} vsxu_engine gdi32 pthreadGCE glew opengl32 glu32)
+endif(WIN32)
+
+if (UNIX)
+  #set(output_dir "../../_plugins_linux")
+  install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/vsxu/plugins)
+endif(UNIX)
+
+#set(CMAKE_SHARED_LINKER_FLAGS -s)
+#set(CMAKE_MODULE_LINKER_FLAGS -s)
+
+set_target_properties(
+  ${module_id}
+    PROPERTIES
+#      LIBRARY_OUTPUT_DIRECTORY
+#        ${output_dir}
+      PREFIX ""
+#      CMAKE_SHARED_LINKER_FLAGS
+#        -s
+)
+
+

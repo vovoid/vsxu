@@ -1,0 +1,724 @@
+meta_set fHx8fHw=
+component_create maths;color;converters;4f_hsv_to_f4_rgb 4f_hsv_to_f4_rgb -0.842302 -0.154338
+param_set 4f_hsv_to_f4_rgb s 0.67792379856109619141
+param_set 4f_hsv_to_f4_rgb v 0.36219009757041931152
+component_create maths;color;converters;4f_hsv_to_f4_rgb 4f_hsv_to_f4_rgb1 -0.924429 0.071225
+param_set 4f_hsv_to_f4_rgb1 s 0.43337604403495788574
+param_set 4f_hsv_to_f4_rgb1 v 0.24704703688621520996
+component_create maths;color;converters;4f_hsv_to_f4_rgb 4f_hsv_to_f4_rgb2 -1.256907 0.313038
+param_set 4f_hsv_to_f4_rgb2 s 0.10567189753055572510
+param_set 4f_hsv_to_f4_rgb2 v 0.76085394620895385742
+param_set 4f_hsv_to_f4_rgb2 a 0.31866592168807983398
+component_create maths;arithmetics;binary;add add -0.741549 -0.001833
+param_set add param2 0.06499198079109191895
+component_create maths;arithmetics;binary;add add1 -0.688136 -0.143338
+param_set add1 param2 0.17789590358734130859
+component_create maths;arithmetics;binary;add add1_clone -0.781449 -0.217236
+param_set add1_clone param2 0.17789590358734130859
+component_create maths;arithmetics;binary;add add1_clone_clone -0.780031 -0.277252
+param_set add1_clone_clone param2 0.17789590358734130859
+component_create maths;arithmetics;binary;add add2 -0.579316 0.285256
+param_set add2 param2 0.88125693798065185547
+component_create particlesystems;generators;basic_spray_emitter basic_spray_emitter -0.575486 0.017770
+param_set basic_spray_emitter speed_type 0
+param_set basic_spray_emitter time_source 0
+param_set basic_spray_emitter num_particles 320.00000000000000000000
+param_set basic_spray_emitter particle_size_random_weight 0.12332310527563095093
+param_set basic_spray_emitter particle_lifetime_random_weight 2.03596997261047363281
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.127204 0.039532
+param_set blend_mode dest_blend 1
+component_create renderers;opengl_modifiers;blend_mode blend_mode1 0.176957 0.070243
+param_set blend_mode1 source_blend 1
+param_set blend_mode1 dest_blend 1
+component_create renderers;opengl_modifiers;blend_mode blend_mode2 -0.128560 -0.044111
+param_set blend_mode2 source_blend 1
+param_set blend_mode2 dest_blend 1
+component_create texture;particles;blob blob -0.924622 0.230255
+component_create texture;effects;blur blur 0.026956 0.042044
+param_set blur start_value 5.00449895858764648438
+param_set blur attenuation 1.24029839038848876953
+component_create texture;effects;blur blur_clone 0.085149 0.033739
+param_set blur_clone start_value 5.00449895858764648438
+param_set blur_clone attenuation 1.24029839038848876953
+macro_create camera_control -0.400316 -0.013386 0.181595
+component_create maths;converters;3float_to_float3 camera_control.3float_to_float3 0.049231 0.030636
+component_create maths;dummies;float_dummy camera_control.float_dummy -0.062137 0.014381
+param_set camera_control.float_dummy float_in 0.01886190846562385559
+component_create maths;oscillators;oscillator camera_control.oscillator -0.015422 0.057936
+param_set camera_control.oscillator amp 1.96251296997070312500
+param_set camera_control.oscillator ofs 0.50000095367431640625
+param_set camera_control.oscillator phase 0.49999904632568359375
+component_create maths;oscillators;oscillator camera_control.oscillator1 -0.013479 -0.062367
+param_set camera_control.oscillator1 amp 1.93721401691436767578
+param_set camera_control.oscillator1 ofs 0.00000082698852565954
+component_create maths;oscillators;oscillator camera_control.oscillator3 0.002757 -0.004083
+param_set camera_control.oscillator3 amp 1.98872101306915283203
+param_set camera_control.oscillator3 ofs 0.00000099558747024275
+param_set camera_control.oscillator3 freq 0.01765824481844902039
+macro_create empty -0.511064 0.126736 0.508694
+component_create maths;converters;3float_to_float3 empty.3float_to_float31 0.051676 -0.062324
+component_create maths;arithmetics;binary;add empty.add2 -0.009376 -0.055893
+param_set empty.add2 param2 0.00298510608263313770
+component_create maths;arithmetics;binary;add empty.add3 -0.111735 0.058559
+component_create particlesystems;generators;basic_spray_emitter empty.basic_spray_emitter1 -0.005122 0.147000
+param_set empty.basic_spray_emitter1 speed_x 0.14503395557403564453
+param_set empty.basic_spray_emitter1 speed_y 0.10387589782476425171
+param_set empty.basic_spray_emitter1 speed_z 0.09346687048673629761
+param_set empty.basic_spray_emitter1 speed_type 0
+param_set empty.basic_spray_emitter1 time_source 0
+param_set empty.basic_spray_emitter1 num_particles 1000.00000000000000000000
+component_create renderers;opengl_modifiers;blend_mode empty.blend_mode2 0.026251 -0.128114
+param_set empty.blend_mode2 dest_blend 1
+component_create renderers;opengl_modifiers;blend_mode empty.blend_mode3 0.112724 0.156566
+param_set empty.blend_mode3 source_blend 1
+param_set empty.blend_mode3 dest_blend 1
+component_create maths;bspline;bspline_matrix empty.bspline_matrix -0.085937 0.138430
+component_create maths;accumulators;float_accumulator empty.float_accumulator -0.062526 0.055129
+component_create renderers;opengl_modifiers;gl_scale empty.gl_scale 0.198886 0.179651
+param_set empty.gl_scale scale 4.99999952316284179688,4.99999952316284179688,4.99999904632568359375
+component_create renderers;opengl_modifiers;gl_scale empty.gl_scale2 0.151252 -0.089473
+component_create renderers;opengl_modifiers;gl_translate empty.gl_translate 0.120464 0.030286
+component_create renderers;opengl_modifiers;light_directional empty.light_directional 0.097755 -0.124280
+param_set empty.light_directional light_id 1
+param_set empty.light_directional enabled 1
+param_set empty.light_directional diffuse_color 0.00000065303424889862,0.00000055103316753957,0.00000055103316753957,1.00000000000000000000
+param_set empty.light_directional specular_color 0.00000075689916911870,0.00000058414997283762,0.00000058414997283762,1.00000000000000000000
+component_create renderers;opengl_modifiers;material_param empty.material_param -0.043740 -0.128004
+param_set empty.material_param ambient_reflectance 0.99999904632568359375,0.99999904632568359375,0.99999904632568359375,1.00000000000000000000
+param_set empty.material_param diffuse_reflectance 0.00000071012908620105,0.00000037384251072581,0.00000037384251072581,1.00000000000000000000
+param_set empty.material_param specular_reflectance 0.00000076612542443399,0.00000031636182029615,0.00000031636182029615,1.00000000000000000000
+param_set empty.material_param emission_intensity 0.00000008072431256778,0.00000004189709912339,0.00000004189709912339,1.00000000000000000000
+component_create renderers;mesh;mesh_basic_render empty.mesh_basic_render -0.104558 -0.110278
+param_set empty.mesh_basic_render vertex_colors 1
+param_set empty.mesh_basic_render use_display_list 1
+component_create maths;arithmetics;binary;min empty.min -0.070376 0.102145
+param_set empty.min param2 0.02006216347217559814
+component_create maths;arithmetics;binary;mult empty.mult5 -0.206494 0.026813
+param_set empty.mult5 param2 1.45961034297943115234
+component_create maths;arithmetics;binary;mult empty.mult6 -0.131548 0.096647
+param_set empty.mult6 param2 0.09509395807981491089
+component_create maths;arithmetics;binary;mult empty.mult7 -0.150269 0.035342
+param_set empty.mult7 param2 0.15244284272193908691
+component_create maths;arithmetics;binary;mult empty.mult_ray1 -0.048340 -0.053996
+param_set empty.mult_ray1 param2 1.50194895267486572266
+component_create mesh;vertices;random_vertices empty.random_vertices -0.185040 0.131276
+component_create renderers;particlesystems;simple empty.simple1 0.051377 0.137940
+param_set empty.simple1 render_type 0
+param_set empty.simple1 size_lifespan_type 0
+param_set empty.simple1 color_lifespan_type 0
+param_set empty.simple1 ignore_particles_at_center 0
+param_set empty.simple1 size_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set empty.simple1 alpha_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set empty.simple1 r_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set empty.simple1 g_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set empty.simple1 b_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+component_create renderers;examples;simple_with_texture empty.simple_with_texture1 -0.007686 -0.002600
+param_set empty.simple_with_texture1 facing_camera 1
+param_set empty.simple_with_texture1 tex_coord_a 0.00000000000000000000,0.00000000000000000000,-1.00000000000000000000
+param_set empty.simple_with_texture1 tex_coord_b 1.00000000000000000000,1.00000000000000000000,-1.00000000000000000000
+component_create system;time empty.time -0.207219 0.087006
+component_create maths;arithmetics;vector;vector_mul_float empty.vector_mul_float -0.028370 0.067371
+component_create maths;converters;float_to_float3 float_to_float3 -0.330553 0.263737
+param_set float_to_float3 param1 3.26508402824401855469
+component_create renderers;opengl_modifiers;gl_scale gl_scale -0.271164 0.260585
+macro_create hue_sine -1.008523 -0.137781 0.145378
+component_create maths;color;converters;4f_hsv_to_f4_rgb hue_sine.4f_hsv_to_f4_rgb 0.035585 0.003532
+param_set hue_sine.4f_hsv_to_f4_rgb s 0.42676198482513427734
+param_set hue_sine.4f_hsv_to_f4_rgb v 1.05687403678894042969
+param_set hue_sine.4f_hsv_to_f4_rgb a 0.99999904632568359375
+component_create maths;oscillators;oscillator hue_sine.oscillator -0.038416 0.007745
+param_set hue_sine.oscillator freq 0.01117398310452699661
+macro_create hue_sine1 -1.014806 0.105885 0.145378
+component_create maths;color;converters;4f_hsv_to_f4_rgb hue_sine1.4f_hsv_to_f4_rgb 0.027271 -0.007483
+param_set hue_sine1.4f_hsv_to_f4_rgb s 0.47890511155128479004
+param_set hue_sine1.4f_hsv_to_f4_rgb a 0.97604525089263916016
+component_create maths;oscillators;oscillator hue_sine1.oscillator -0.035262 0.005202
+param_set hue_sine1.oscillator freq 0.11297188699245452881
+macro_create hue_sine2 -0.744311 -0.182469 0.145378
+component_create maths;color;converters;4f_hsv_to_f4_rgb hue_sine2.4f_hsv_to_f4_rgb 0.025630 0.006734
+param_set hue_sine2.4f_hsv_to_f4_rgb s 0.49874493479728698730
+param_set hue_sine2.4f_hsv_to_f4_rgb v 0.37275901436805725098
+component_create maths;oscillators;oscillator hue_sine2.oscillator -0.034507 0.005234
+param_set hue_sine2.oscillator phase 2.02777099609375000000
+param_set hue_sine2.oscillator freq 0.00243747280910611153
+macro_create hue_sine3 -0.739124 -0.313958 0.145378
+component_create maths;color;converters;4f_hsv_to_f4_rgb hue_sine3.4f_hsv_to_f4_rgb 0.025630 0.006734
+param_set hue_sine3.4f_hsv_to_f4_rgb s 0.36491939425468444824
+param_set hue_sine3.4f_hsv_to_f4_rgb v 0.27917706966400146484
+component_create maths;oscillators;oscillator hue_sine3.oscillator -0.034507 0.005234
+param_set hue_sine3.oscillator freq 0.01000961195677518845
+component_create mesh;particles;mesh_rays mesh_rays -0.676211 -0.075040
+param_set mesh_rays num_rays 10.00000953674316406250
+component_create maths;arithmetics;binary;mult mult -0.827581 0.001717
+param_set mult param2 1.39544010162353515625
+component_create maths;arithmetics;binary;mult mult1 -0.661212 -0.023136
+param_set mult1 param2 4.03033876419067382812
+component_create maths;arithmetics;binary;mult mult2 -0.752415 -0.124752
+param_set mult2 param2 17.17698478698730468750
+component_create maths;arithmetics;binary;mult mult2_clone -0.820434 -0.218518
+param_set mult2_clone param2 17.17698478698730468750
+component_create maths;arithmetics;binary;mult mult2_clone_clone -0.820536 -0.271195
+param_set mult2_clone_clone param2 17.17698478698730468750
+component_create maths;arithmetics;binary;mult mult3 -0.658662 0.038355
+param_set mult3 param2 3.00792694091796875000
+component_create maths;arithmetics;binary;mult mult4 -0.589316 -0.054120
+param_set mult4 param2 8.04957866668701171875
+component_create maths;arithmetics;binary;mult mult5 -0.638220 0.295242
+param_set mult5 param2 4.91614294052124023438
+component_create maths;arithmetics;binary;mult mult_clone -0.856135 -0.217413
+param_set mult_clone param2 1.39544010162353515625
+component_create maths;arithmetics;binary;mult mult_clone_clone -0.872308 -0.266698
+param_set mult_clone_clone param2 1.39544010162353515625
+component_create maths;arithmetics;binary;mult mult_size -0.660065 0.008889
+param_set mult_size param2 0.36993694305419921875
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.223231 0.034472
+param_set orbit_camera distance 1.95407378673553466797
+param_set orbit_camera perspective_correct 0
+component_create maths;oscillators;oscillator oscillator -1.329417 0.335265
+param_set oscillator osc_type 0
+component_create particlesystems;generators;particles_mesh_spray particles_mesh_spray -1.177703 0.360572
+param_set particles_mesh_spray center -1.75947618484497070312,-0.04997200146317481995,0.02536199986934661865
+param_set particles_mesh_spray spread 2.17320799827575683594,2.29743599891662597656,2.33538889884948730469
+param_set particles_mesh_spray add_vector 0.48248890042304992676,0.00000000000000000000,0.00000000000000000000
+param_set particles_mesh_spray random_deviation 0.11868299543857574463,0.13529798388481140137,0.13055017590522766113
+param_set particles_mesh_spray time_source 1
+param_set particles_mesh_spray speed_x 0.00000098838165740744
+param_set particles_mesh_spray speed_y 0.00000085734058075104
+param_set particles_mesh_spray speed_z 0.00000097236807050649
+param_set particles_mesh_spray speed_type 0
+param_set particles_mesh_spray particles_per_second 63.99999618530273437500
+param_set particles_mesh_spray num_particles 2000.00000000000000000000
+param_set particles_mesh_spray particle_size_base 0.01999237574636936188
+param_set particles_mesh_spray particle_size_random_weight 0.01399913057684898376
+param_set particles_mesh_spray particle_lifetime_base 30.19099235534667968750
+param_set particles_mesh_spray particle_lifetime_random_weight 5.25598382949829101562
+component_create texture;loaders;png_tex_load png_tex_load -0.677263 -0.201230
+ps64 png_tex_load filename cmVzb3VyY2VzL3ZzYS9jZW50ZXIucG5n
+param_set png_tex_load reload 0
+component_create mesh;vertices;random_vertices random_vertices -1.267866 0.378230
+param_set random_vertices num_points 1000.00000000000000000000
+macro_create rays -0.632125 -0.161071 0.419177
+component_create maths;converters;3float_to_float3 rays.3float_to_float32 0.057751 0.132143
+component_create maths;dummies;float_dummy rays.float_dummy -0.007179 0.135825
+component_create renderers;opengl_modifiers;gl_rotate rays.gl_rotate 0.096944 0.069553
+param_set rays.gl_rotate axis 0.99999994039535522461,0.00000088359428218610,0.00000000000000000000
+component_create renderers;opengl_modifiers;gl_scale rays.gl_scale 0.164266 0.084096
+component_create renderers;opengl_modifiers;light_directional rays.light_directional 0.079252 -0.030280
+param_set rays.light_directional enabled 1
+param_set rays.light_directional diffuse_color 0.00000088366084582958,0.00000015216468796098,0.00000015216468796098,1.00000000000000000000
+param_set rays.light_directional specular_color 0.00000078239008871606,0.00000067294337213752,0.00000067294337213752,1.00000000000000000000
+component_create renderers;opengl_modifiers;material_param rays.material_param 0.015600 -0.050909
+param_set rays.material_param ambient_reflectance 0.99999916553497314453,0.99999910593032836914,0.99999910593032836914,1.00000000000000000000
+param_set rays.material_param diffuse_reflectance 0.00000090811460040641,0.00000048204077529590,0.00000048204077529590,1.00000000000000000000
+param_set rays.material_param specular_reflectance 0.00000092254759920252,0.00000078485783205906,0.00000078485783205906,1.00000000000000000000
+param_set rays.material_param emission_intensity 0.00000088296798139709,0.00000079465939961665,0.00000079465939961665,1.00000000000000000000
+component_create renderers;mesh;mesh_basic_render rays.mesh_basic_render -0.071015 -0.052341
+param_set rays.mesh_basic_render use_display_list 1
+component_create mesh;particles;mesh_rays rays.mesh_rays1 -0.145024 -0.054266
+param_set rays.mesh_rays1 num_rays 7.00000000000000000000
+component_create maths;arithmetics;binary;mult rays.mult5 0.039431 0.076387
+param_set rays.mult5 param2 0.02779397368431091309
+component_create texture;modifiers;rotate rays.rotate -0.065313 0.036781
+param_set rays.rotate rotation_axis 0.00000000000000000000,0.00000000000132457413,0.99999910593032836914
+param_set rays.rotate rotation_angle 0.28037104010581970215
+component_create texture;modifiers;scale rays.scale -0.133335 0.043973
+param_set rays.scale scale_vector 0.99856078624725341797,-1.00495004653930664062,1.00000000000000000000
+component_create system;time rays.time -0.007971 0.085898
+component_create texture;modifiers;translate rays.translate -0.012002 0.026334
+param_set rays.translate translation_vector 0.00000000000000000000,-0.00716914655640721321,0.00000099999988378840
+component_create texture;buffers;render_surface_single render_surface_single -0.039250 0.045344
+param_set render_surface_single texture_size 10
+macro_create sa_rings -0.224695 -0.045240 0.615386
+component_create maths;color;converters;4f_hsv_to_f4_rgb sa_rings.4f_hsv_to_f4_rgb -0.142956 -0.020384
+param_set sa_rings.4f_hsv_to_f4_rgb s 0.36975395679473876953
+param_set sa_rings.4f_hsv_to_f4_rgb v 0.50143009424209594727
+param_set sa_rings.4f_hsv_to_f4_rgb a 0.57192820310592651367
+component_create particlesystems;generators;basic_spray_emitter sa_rings.basic_spray_emitter -0.030250 0.003152
+param_set sa_rings.basic_spray_emitter emitter_position 0.00000000000000037389,0.00000098602640719037,0.00000000000000000000
+param_set sa_rings.basic_spray_emitter time_source 0
+param_set sa_rings.basic_spray_emitter num_particles 60.00000000000000000000
+param_set sa_rings.basic_spray_emitter particle_size_base 0.20631505548954010010
+component_create texture;loaders;bitmap2texture sa_rings.bitmap2texture -0.197002 0.210802
+component_create renderers;opengl_modifiers;blend_mode sa_rings.blend_mode 0.243745 -0.048914
+param_set sa_rings.blend_mode dest_blend 1
+component_create renderers;opengl_modifiers;depth_mask sa_rings.depth_mask 0.159211 0.197026
+component_create renderers;opengl_modifiers;depth_test sa_rings.depth_test 0.102341 0.194786
+param_set sa_rings.depth_test status 0
+component_create renderers;opengl_modifiers;gl_color sa_rings.gl_color 0.107264 0.010204
+param_set sa_rings.gl_color color 0.99999994039535522461,0.64510405063629150391,0.64510405063629150391,1.00000000000000000000
+component_create bitmaps;loaders;jpeg_bitm_load sa_rings.jpeg_bitm_load -0.262751 0.215273
+ps64 sa_rings.jpeg_bitm_load filename cmVzb3VyY2VzL3ZzYS9kaXNjX3RleHR1cmUuanBn
+component_create renderers;mesh;mesh_basic_render sa_rings.mesh_basic_render 0.041491 0.066254
+param_set sa_rings.mesh_basic_render use_display_list 1
+param_set sa_rings.mesh_basic_render use_vertex_colors 0
+param_set sa_rings.mesh_basic_render particles_size_center 1
+component_create mesh;particles;mesh_disc sa_rings.mesh_disc -0.046376 0.070225
+param_set sa_rings.mesh_disc num_segments 39.99999618530273437500
+component_create maths;arithmetics;binary;mult sa_rings.mult -0.178751 0.081304
+param_set sa_rings.mult param2 19.95610809326171875000
+component_create maths;arithmetics;binary;mult sa_rings.mult1 -0.178186 0.034229
+param_set sa_rings.mult1 param2 3.03452706336975097656
+component_create renderers;opengl_modifiers;cameras;orbit_camera sa_rings.orbit_camera 0.017300 0.163265
+param_set sa_rings.orbit_camera distance 4.10717105865478515625
+component_create maths;oscillators;oscillator sa_rings.oscillator -0.223429 -0.025039
+param_set sa_rings.oscillator amp 0.49999910593032836914
+param_set sa_rings.oscillator ofs 0.49999919533729553223
+param_set sa_rings.oscillator freq 0.04740798845887184143
+component_create renderers;opengl_modifiers;rendering_mode sa_rings.rendering_mode 0.174464 -0.034513
+param_set sa_rings.rendering_mode smooth_edges 1
+component_create texture;modifiers;scale sa_rings.scale -0.059647 0.221207
+param_set sa_rings.scale scale_vector 13.93346691131591796875,0.99999904632568359375,1.00000000000000000000
+component_create texture;modifiers;translate sa_rings.translate -0.123448 0.216795
+param_set sa_rings.translate translation_vector 5.37488412857055664062,1.00000000000000000000,1.00000000000000000000
+macro_create sa_sattelite -0.508764 0.212054 0.508694
+component_create maths;converters;3float_to_float3 sa_sattelite.3float_to_float31 0.051676 -0.062324
+component_create maths;arithmetics;binary;add sa_sattelite.add2 -0.009256 -0.056207
+param_set sa_sattelite.add2 param2 0.00298510608263313770
+component_create maths;arithmetics;binary;add sa_sattelite.add_t -0.117995 0.083632
+component_create particlesystems;generators;basic_spray_emitter sa_sattelite.basic_spray_emitter1 0.020941 0.096262
+param_set sa_sattelite.basic_spray_emitter1 speed_x 0.06084762886166572571
+param_set sa_sattelite.basic_spray_emitter1 speed_y 0.05336378142237663269
+param_set sa_sattelite.basic_spray_emitter1 speed_z 0.06316190212965011597
+param_set sa_sattelite.basic_spray_emitter1 num_particles 500.00000000000000000000
+component_create maths;bspline;bspline_matrix sa_sattelite.bspline_matrix -0.040764 0.099415
+component_create maths;accumulators;float_accumulator sa_sattelite.float_accumulator -0.087484 0.097963
+component_create renderers;opengl_modifiers;gl_scale sa_sattelite.gl_scale 0.165275 0.090526
+param_set sa_sattelite.gl_scale scale 4.99999952316284179688,4.99999952316284179688,4.99999904632568359375
+component_create renderers;opengl_modifiers;gl_scale sa_sattelite.gl_scale2 0.149657 -0.094402
+component_create renderers;opengl_modifiers;gl_translate sa_sattelite.gl_translate 0.158196 -0.016660
+component_create renderers;opengl_modifiers;light_directional sa_sattelite.light_directional 0.076674 -0.131368
+param_set sa_sattelite.light_directional light_id 1
+param_set sa_sattelite.light_directional enabled 1
+param_set sa_sattelite.light_directional diffuse_color 0.00000065303424889862,0.00000055103316753957,0.00000055103316753957,1.00000000000000000000
+param_set sa_sattelite.light_directional specular_color 0.00000075689916911870,0.00000058414997283762,0.00000058414997283762,1.00000000000000000000
+component_create renderers;opengl_modifiers;material_param sa_sattelite.material_param -0.001739 -0.160756
+param_set sa_sattelite.material_param ambient_reflectance 0.99999904632568359375,0.99999904632568359375,0.99999904632568359375,1.00000000000000000000
+param_set sa_sattelite.material_param diffuse_reflectance 0.00000071012908620105,0.00000037384251072581,0.00000037384251072581,1.00000000000000000000
+param_set sa_sattelite.material_param specular_reflectance 0.00000076612542443399,0.00000031636182029615,0.00000031636182029615,1.00000000000000000000
+param_set sa_sattelite.material_param emission_intensity 0.00000008072431256778,0.00000004189709912339,0.00000004189709912339,1.00000000000000000000
+component_create renderers;mesh;mesh_basic_render sa_sattelite.mesh_basic_render -0.081859 -0.146399
+param_set sa_sattelite.mesh_basic_render vertex_colors 1
+param_set sa_sattelite.mesh_basic_render use_display_list 1
+component_create maths;arithmetics;binary;min sa_sattelite.min -0.045121 0.060194
+param_set sa_sattelite.min param2 0.02059513144195079803
+component_create maths;arithmetics;binary;mult sa_sattelite.mult5 -0.236805 0.027246
+param_set sa_sattelite.mult5 param2 1.52519714832305908203
+component_create maths;arithmetics;binary;mult sa_sattelite.mult6 -0.093974 0.054819
+param_set sa_sattelite.mult6 param2 0.11570999771356582642
+component_create maths;arithmetics;binary;mult sa_sattelite.mult_ray1 -0.048263 -0.053910
+param_set sa_sattelite.mult_ray1 param2 1.44520699977874755859
+component_create maths;arithmetics;binary;mult sa_sattelite.mult_t -0.190001 0.058082
+param_set sa_sattelite.mult_t param1 0.08995231240987777710
+component_create maths;arithmetics;binary;mult sa_sattelite.mult_t2 -0.146763 0.057431
+param_set sa_sattelite.mult_t2 param1 1.20842492580413818359
+component_create maths;arithmetics;binary;mult sa_sattelite.mult_t_a -0.162054 0.099442
+param_set sa_sattelite.mult_t_a param2 0.30000078678131103516
+component_create mesh;vertices;random_vertices sa_sattelite.random_vertices -0.110880 0.143044
+component_create renderers;particlesystems;simple sa_sattelite.simple1 0.082575 0.101985
+param_set sa_sattelite.simple1 render_type 0
+param_set sa_sattelite.simple1 size_lifespan_type 0
+param_set sa_sattelite.simple1 color_lifespan_type 0
+param_set sa_sattelite.simple1 ignore_particles_at_center 0
+param_set sa_sattelite.simple1 size_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set sa_sattelite.simple1 alpha_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set sa_sattelite.simple1 r_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set sa_sattelite.simple1 g_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set sa_sattelite.simple1 b_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+component_create renderers;examples;simple_with_texture sa_sattelite.simple_with_texture1 -0.010623 0.007271
+param_set sa_sattelite.simple_with_texture1 facing_camera 1
+component_create system;time sa_sattelite.time -0.233760 0.099389
+component_pos screen0 0.000000 0.000000
+param_set screen0 gamma_correction 1.00000095367431640625
+param_set screen0 clear_color 0.00000000000000000551,0.00000000000000000000,0.00000000000000000000,0.00000088242728679688
+component_create renderers;particlesystems;simple simple -0.472537 0.022965
+param_set simple render_type 0
+param_set simple size_lifespan_type 0
+param_set simple color_lifespan_type 0
+param_set simple ignore_particles_at_center 0
+param_set simple size_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple alpha_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple r_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple g_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple b_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+component_create renderers;particlesystems;simple simple1 -1.087712 0.360188
+param_set simple1 render_type 0
+param_set simple1 size_lifespan_type 1
+param_set simple1 color_lifespan_type 0
+param_set simple1 ignore_particles_at_center 0
+param_set simple1 size_lifespan_sequence 0.500000;2.000000;LTAuNTA4MTE0|0.497824;2.000000;MS4wMDAwMDA=|0.002176;0.000000;LTAuNDk2Mzk3
+param_set simple1 alpha_lifespan_sequence 0.082164;1.000000;LTAuMDA1NTk3|0.417836;1.000000;MC45NzEwMjg=|0.378437;1.000000;MS4wMDAwMDA=|0.122213;1.000000;MC45MzEzNDA=|-0.000650;0.000000;LTAuMDA4MjQz
+param_set simple1 r_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple1 g_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple1 b_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+component_create renderers;examples;simple_with_texture simple_with_texture -0.508783 -0.058923
+param_set simple_with_texture facing_camera 1
+param_set simple_with_texture position 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture1 0.047244 0.195900
+param_set simple_with_texture1 facing_camera 0
+component_create renderers;examples;simple_with_texture simple_with_texture2 0.044241 0.126477
+param_set simple_with_texture2 global_alpha 1.28170299530029296875
+param_set simple_with_texture2 facing_camera 0
+param_set simple_with_texture2 tex_coord_a 0.00000000000000000000,0.00000000000000000000,1.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture3 0.105218 0.084214
+param_set simple_with_texture3 facing_camera 0
+macro_create vsa_gnister -0.511456 0.283429 0.322948
+component_create particlesystems;generators;basic_spray_emitter vsa_gnister.basic_spray_emitter -0.038267 0.064250
+param_set vsa_gnister.basic_spray_emitter num_particles 600.00000000000000000000
+component_create renderers;opengl_modifiers;blend_mode vsa_gnister.blend_mode3 0.078332 0.086750
+param_set vsa_gnister.blend_mode3 source_blend 1
+param_set vsa_gnister.blend_mode3 dest_blend 1
+component_create maths;dummies;float_dummy vsa_gnister.float_dummy -0.123793 0.047472
+component_create maths;arithmetics;binary;mult vsa_gnister.mult6 -0.092433 0.018670
+param_set vsa_gnister.mult6 param2 1.00217604637145996094
+component_create renderers;particlesystems;simple vsa_gnister.simple 0.066722 -0.013929
+param_set vsa_gnister.simple render_type 0
+param_set vsa_gnister.simple size_lifespan_type 1
+param_set vsa_gnister.simple color_lifespan_type 0
+param_set vsa_gnister.simple ignore_particles_at_center 0
+param_set vsa_gnister.simple size_lifespan_sequence 0.500000;2.000000;MC4xODg4NjE=|0.495648;2.000000;MS4wMDAwMDA=|0.004352;0.000000;LTAuMDAzNzIw
+param_set vsa_gnister.simple alpha_lifespan_sequence 0.500000;2.000000;MC45NzkxNjA=|0.502046;2.000000;MS4wMDAwMDA=|-0.002046;0.000000;MC4wMDI4MjA=
+param_set vsa_gnister.simple r_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set vsa_gnister.simple g_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set vsa_gnister.simple b_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+component_create particlesystems;modifiers;size_noise vsa_gnister.size_noise 0.009977 0.024921
+param_set vsa_gnister.size_noise strength 1.00447702407836914062
+macro_create vsa_rays -0.624578 -0.228258 0.419177
+component_create maths;converters;3float_to_float3 vsa_rays.3float_to_float32 0.057751 0.132143
+component_create maths;dummies;float_dummy vsa_rays.float_dummy -0.007179 0.135825
+component_create renderers;opengl_modifiers;gl_rotate vsa_rays.gl_rotate 0.096944 0.069553
+param_set vsa_rays.gl_rotate axis 0.99999994039535522461,0.00000088359428218610,0.00000000000000000000
+component_create renderers;opengl_modifiers;gl_scale vsa_rays.gl_scale 0.164266 0.084096
+component_create renderers;opengl_modifiers;light_directional vsa_rays.light_directional 0.079252 -0.030280
+param_set vsa_rays.light_directional light_id 0
+param_set vsa_rays.light_directional enabled 1
+param_set vsa_rays.light_directional diffuse_color 0.00000088366084582958,0.00000015216468796098,0.00000015216468796098,1.00000000000000000000
+param_set vsa_rays.light_directional specular_color 0.00000078239008871606,0.00000067294337213752,0.00000067294337213752,1.00000000000000000000
+component_create renderers;opengl_modifiers;material_param vsa_rays.material_param 0.015600 -0.050909
+param_set vsa_rays.material_param ambient_reflectance 0.99999916553497314453,0.99999910593032836914,0.99999910593032836914,1.00000000000000000000
+param_set vsa_rays.material_param diffuse_reflectance 0.00000090811460040641,0.00000048204077529590,0.00000048204077529590,1.00000000000000000000
+param_set vsa_rays.material_param specular_reflectance 0.00000092254759920252,0.00000078485783205906,0.00000078485783205906,1.00000000000000000000
+param_set vsa_rays.material_param emission_intensity 0.00000088296798139709,0.00000079465939961665,0.00000079465939961665,1.00000000000000000000
+component_create renderers;mesh;mesh_basic_render vsa_rays.mesh_basic_render -0.071015 -0.052341
+param_set vsa_rays.mesh_basic_render use_display_list 1
+component_create mesh;particles;mesh_rays vsa_rays.mesh_rays1 -0.145024 -0.054266
+param_set vsa_rays.mesh_rays1 num_rays 9.99999046325683593750
+component_create maths;arithmetics;binary;mult vsa_rays.mult5 0.039431 0.076387
+param_set vsa_rays.mult5 param2 0.02779397368431091309
+component_create texture;modifiers;rotate vsa_rays.rotate -0.065313 0.036781
+param_set vsa_rays.rotate rotation_axis 0.00000000000000000000,0.00000000000132457413,0.99999910593032836914
+param_set vsa_rays.rotate rotation_angle 0.28037104010581970215
+component_create texture;modifiers;scale vsa_rays.scale -0.133335 0.043973
+param_set vsa_rays.scale scale_vector 0.99856078624725341797,-1.00495004653930664062,1.00000000000000000000
+component_create system;time vsa_rays.time -0.007971 0.085898
+component_create texture;modifiers;translate vsa_rays.translate -0.012002 0.026334
+param_set vsa_rays.translate translation_vector 0.00000000000000000000,-0.00716914655640721321,0.00000099999988378840
+macro_create vsa_rays1 -0.624608 -0.272143 0.419177
+component_create maths;converters;3float_to_float3 vsa_rays1.3float_to_float32 0.057751 0.132143
+component_create maths;dummies;float_dummy vsa_rays1.float_dummy -0.007179 0.135825
+component_create renderers;opengl_modifiers;gl_rotate vsa_rays1.gl_rotate 0.096944 0.069553
+param_set vsa_rays1.gl_rotate axis 0.99999994039535522461,0.00000088359428218610,0.00000000000000000000
+component_create renderers;opengl_modifiers;gl_scale vsa_rays1.gl_scale 0.164266 0.084096
+component_create renderers;opengl_modifiers;light_directional vsa_rays1.light_directional 0.079252 -0.030280
+param_set vsa_rays1.light_directional light_id 0
+param_set vsa_rays1.light_directional enabled 1
+param_set vsa_rays1.light_directional diffuse_color 0.00000088366084582958,0.00000015216468796098,0.00000015216468796098,1.00000000000000000000
+param_set vsa_rays1.light_directional specular_color 0.00000078239008871606,0.00000067294337213752,0.00000067294337213752,1.00000000000000000000
+component_create renderers;opengl_modifiers;material_param vsa_rays1.material_param 0.015600 -0.050909
+param_set vsa_rays1.material_param ambient_reflectance 0.99999916553497314453,0.99999910593032836914,0.99999910593032836914,1.00000000000000000000
+param_set vsa_rays1.material_param diffuse_reflectance 0.00000090811460040641,0.00000048204077529590,0.00000048204077529590,1.00000000000000000000
+param_set vsa_rays1.material_param specular_reflectance 0.00000092254759920252,0.00000078485783205906,0.00000078485783205906,1.00000000000000000000
+param_set vsa_rays1.material_param emission_intensity 0.00000088296798139709,0.00000079465939961665,0.00000079465939961665,1.00000000000000000000
+component_create renderers;mesh;mesh_basic_render vsa_rays1.mesh_basic_render -0.071015 -0.052341
+param_set vsa_rays1.mesh_basic_render use_display_list 1
+component_create mesh;particles;mesh_rays vsa_rays1.mesh_rays1 -0.145024 -0.054266
+param_set vsa_rays1.mesh_rays1 num_rays 9.99999141693115234375
+component_create maths;arithmetics;binary;mult vsa_rays1.mult5 0.039431 0.076387
+param_set vsa_rays1.mult5 param2 0.02779397368431091309
+component_create texture;modifiers;rotate vsa_rays1.rotate -0.065313 0.036781
+param_set vsa_rays1.rotate rotation_axis 0.00000000000000000000,0.00000000000132457413,0.99999910593032836914
+param_set vsa_rays1.rotate rotation_angle 0.28037104010581970215
+component_create texture;modifiers;scale vsa_rays1.scale -0.133335 0.043973
+param_set vsa_rays1.scale scale_vector 0.99856078624725341797,-1.00495004653930664062,1.00000000000000000000
+component_create system;time vsa_rays1.time -0.007971 0.085898
+component_create texture;modifiers;translate vsa_rays1.translate -0.012002 0.026334
+param_set vsa_rays1.translate translation_vector 0.00000000000000000000,-0.00716914655640721321,0.00000099999988378840
+component_create system;sound;vsx_listener vsx_listener -1.044659 -0.020480
+param_set vsx_listener multiplier 1.68595433235168457031
+param_alias alias_texture_translate_out:texture 1 vsa_rays1 alias_texture_translate_out vsa_rays1.translate texture_translate_out
+param_alias alias_render_out:render 1 vsa_rays1 alias_render_out vsa_rays1.gl_scale render_out
+param_alias alias_texture_translate_out:texture 1 vsa_rays alias_texture_translate_out vsa_rays.translate texture_translate_out
+param_alias alias_render_out:render 1 vsa_rays alias_render_out vsa_rays.gl_scale render_out
+param_alias alias_render_out:render 1 vsa_gnister alias_render_out vsa_gnister.blend_mode3 render_out
+param_alias alias_render_out:render 1 sa_sattelite alias_render_out sa_sattelite.gl_scale render_out
+param_alias alias_texture_scale_out:texture 1 sa_rings alias_texture_scale_out sa_rings.scale texture_scale_out
+param_alias alias_mesh:mesh 1 sa_rings alias_mesh sa_rings.mesh_disc mesh
+param_alias alias_render_out:render 1 sa_rings alias_render_out sa_rings.depth_mask render_out
+param_alias alias_texture_translate_out:texture 1 rays alias_texture_translate_out rays.translate texture_translate_out
+param_alias alias_render_out:render 1 rays alias_render_out rays.gl_scale render_out
+param_alias alias_result_float4:float4 1 hue_sine3 alias_result_float4 hue_sine3.4f_hsv_to_f4_rgb result_float4
+param_alias alias_result_float4:float4 1 hue_sine2 alias_result_float4 hue_sine2.4f_hsv_to_f4_rgb result_float4
+param_alias alias_float:float 1 hue_sine1 alias_float hue_sine1.oscillator float
+param_alias alias_result_float4:float4 1 hue_sine1 alias_result_float4 hue_sine1.4f_hsv_to_f4_rgb result_float4
+param_alias alias_float:float 1 hue_sine alias_float hue_sine.oscillator float
+param_alias alias_result_float4:float4 1 hue_sine alias_result_float4 hue_sine.4f_hsv_to_f4_rgb result_float4
+param_alias alias_render_out:render 1 empty alias_render_out empty.gl_scale render_out
+param_alias alias_result_float3:float3 1 camera_control alias_result_float3 camera_control.3float_to_float3 result_float3
+param_connect vsa_rays1.translate texture_in vsa_rays1.rotate texture_rotate_out
+param_alias alias_texture_in:texture -1 vsa_rays1 alias_texture_in vsa_rays1.scale texture_in
+param_connect vsa_rays1 alias_texture_in png_tex_load texture
+param_connect vsa_rays1.rotate texture_in vsa_rays1.scale texture_scale_out
+param_connect vsa_rays1.mult5 param1 vsa_rays1.time r_time
+param_connect vsa_rays1.mesh_basic_render mesh_in vsa_rays1.mesh_rays1 mesh
+param_connect vsa_rays1.mesh_basic_render tex_a vsa_rays1.translate texture_translate_out
+param_connect vsa_rays1.material_param render_in vsa_rays1.mesh_basic_render render_out
+param_alias alias_ambient_color:float4 -1 vsa_rays1 alias_ambient_color vsa_rays1.light_directional ambient_color
+param_connect vsa_rays1 alias_ambient_color hue_sine3 alias_result_float4
+param_connect vsa_rays1.light_directional render_in vsa_rays1.material_param render_out
+param_connect vsa_rays1.gl_scale render_in vsa_rays1.gl_rotate render_out
+param_connect vsa_rays1.gl_scale scale vsa_rays1.3float_to_float32 result_float3
+param_connect vsa_rays1.gl_rotate render_in vsa_rays1.light_directional render_out
+param_connect vsa_rays1.gl_rotate angle vsa_rays1.mult5 product
+param_alias alias_float_in:float -1 vsa_rays1 alias_float_in vsa_rays1.float_dummy float_in
+param_connect vsa_rays1 alias_float_in add1_clone_clone sum
+param_connect vsa_rays1.3float_to_float32 floatc vsa_rays1.float_dummy result_float
+param_connect vsa_rays1.3float_to_float32 floatb vsa_rays1.float_dummy result_float
+param_connect vsa_rays1.3float_to_float32 floata vsa_rays1.float_dummy result_float
+param_connect vsa_rays.translate texture_in vsa_rays.rotate texture_rotate_out
+param_alias alias_texture_in:texture -1 vsa_rays alias_texture_in vsa_rays.scale texture_in
+param_connect vsa_rays alias_texture_in png_tex_load texture
+param_connect vsa_rays.rotate texture_in vsa_rays.scale texture_scale_out
+param_connect vsa_rays.mult5 param1 vsa_rays.time r_time
+param_connect vsa_rays.mesh_basic_render mesh_in vsa_rays.mesh_rays1 mesh
+param_connect vsa_rays.mesh_basic_render tex_a vsa_rays.translate texture_translate_out
+param_connect vsa_rays.material_param render_in vsa_rays.mesh_basic_render render_out
+param_alias alias_ambient_color:float4 -1 vsa_rays alias_ambient_color vsa_rays.light_directional ambient_color
+param_connect vsa_rays alias_ambient_color hue_sine2 alias_result_float4
+param_connect vsa_rays.light_directional render_in vsa_rays.material_param render_out
+param_connect vsa_rays.gl_scale render_in vsa_rays.gl_rotate render_out
+param_connect vsa_rays.gl_scale scale vsa_rays.3float_to_float32 result_float3
+param_connect vsa_rays.gl_rotate render_in vsa_rays.light_directional render_out
+param_connect vsa_rays.gl_rotate angle vsa_rays.mult5 product
+param_alias alias_float_in:float -1 vsa_rays alias_float_in vsa_rays.float_dummy float_in
+param_connect vsa_rays alias_float_in add1_clone sum
+param_connect vsa_rays.3float_to_float32 floatc vsa_rays.float_dummy result_float
+param_connect vsa_rays.3float_to_float32 floatb vsa_rays.float_dummy result_float
+param_connect vsa_rays.3float_to_float32 floata vsa_rays.float_dummy result_float
+param_connect vsa_gnister.size_noise in_particlesystem vsa_gnister.basic_spray_emitter particlesystem
+param_alias alias_texture:texture -1 vsa_gnister alias_texture vsa_gnister.simple texture
+param_connect vsa_gnister alias_texture blob texture
+param_connect vsa_gnister.simple particlesystem vsa_gnister.size_noise particlesystem
+param_connect vsa_gnister.mult6 param1 vsa_gnister.float_dummy result_float
+param_alias alias_float_in:float -1 vsa_gnister alias_float_in vsa_gnister.float_dummy float_in
+param_connect vsa_gnister alias_float_in add2 sum
+param_connect vsa_gnister.blend_mode3 render_in vsa_gnister.simple render_out
+param_connect vsa_gnister.basic_spray_emitter particle_lifetime_base vsa_gnister.mult6 product
+param_alias alias_particle_size_base:float -1 vsa_gnister alias_particle_size_base vsa_gnister.basic_spray_emitter particle_size_base
+param_connect vsa_gnister alias_particle_size_base vsx_listener octaves_l_5
+param_alias alias_color:float4 -1 vsa_gnister alias_color vsa_gnister.basic_spray_emitter color
+param_connect vsa_gnister alias_color hue_sine1 alias_result_float4
+param_connect vsa_gnister.basic_spray_emitter speed_z vsa_gnister.float_dummy result_float
+param_connect vsa_gnister.basic_spray_emitter speed_y vsa_gnister.float_dummy result_float
+param_connect vsa_gnister.basic_spray_emitter speed_x vsa_gnister.float_dummy result_float
+param_connect simple_with_texture3 texture_in blur_clone texture_out
+param_connect simple_with_texture2 texture_in render_surface_single texture_out
+param_connect simple_with_texture1 texture_in render_surface_single texture_out
+param_connect simple_with_texture color_multiplier hue_sine alias_result_float4
+param_connect simple_with_texture texture_in blob texture
+param_connect simple_with_texture size mult4 product
+param_connect simple1 texture blob texture
+param_connect simple1 particlesystem particles_mesh_spray particlesystem
+param_connect simple texture blob texture
+param_connect simple particlesystem basic_spray_emitter particlesystem
+param_connect screen0 screen blend_mode1 render_out
+param_connect sa_sattelite.simple_with_texture1 position sa_sattelite.bspline_matrix position
+param_alias alias_color_multiplier:float4 -1 sa_sattelite alias_color_multiplier sa_sattelite.simple_with_texture1 color_multiplier
+param_connect sa_sattelite alias_color_multiplier hue_sine alias_result_float4
+param_alias alias_texture_in:texture -1 sa_sattelite alias_texture_in sa_sattelite.simple_with_texture1 texture_in
+param_connect sa_sattelite alias_texture_in blob texture
+param_connect sa_sattelite.simple_with_texture1 size sa_sattelite.mult5 product
+param_alias alias_texture:texture -1 sa_sattelite alias_texture sa_sattelite.simple1 texture
+param_connect sa_sattelite alias_texture blob texture
+param_connect sa_sattelite.simple1 particlesystem sa_sattelite.basic_spray_emitter1 particlesystem
+param_connect sa_sattelite.mult_t_a param1 sa_sattelite.time r_dtime
+param_connect sa_sattelite.mult_t2 param2 sa_sattelite.mult_t product
+param_connect sa_sattelite.mult_t param2 sa_sattelite.mult5 product
+param_connect sa_sattelite.mult_ray1 param1 sa_sattelite.mult5 product
+param_connect sa_sattelite.mult6 param1 sa_sattelite.mult5 product
+param_alias alias_param1:float -1 sa_sattelite alias_param1 sa_sattelite.mult5 param1
+param_connect sa_sattelite alias_param1 vsx_listener octaves_l_6
+param_connect sa_sattelite.min param1 sa_sattelite.mult6 product
+param_alias alias_mesh_in:mesh -1 sa_sattelite alias_mesh_in sa_sattelite.mesh_basic_render mesh_in
+param_connect sa_sattelite alias_mesh_in mesh_rays mesh
+param_connect sa_sattelite.material_param render_in sa_sattelite.mesh_basic_render render_out
+param_alias alias_ambient_color:float4 -1 sa_sattelite alias_ambient_color sa_sattelite.light_directional ambient_color
+param_connect sa_sattelite alias_ambient_color 4f_hsv_to_f4_rgb result_float4
+param_connect sa_sattelite.light_directional render_in sa_sattelite.material_param render_out
+param_connect sa_sattelite.gl_translate render_in sa_sattelite.gl_scale2 render_out
+param_connect sa_sattelite.gl_translate translation sa_sattelite.bspline_matrix position
+param_connect sa_sattelite.gl_scale2 render_in sa_sattelite.light_directional render_out
+param_connect sa_sattelite.gl_scale2 scale sa_sattelite.3float_to_float31 result_float3
+param_connect sa_sattelite.gl_scale render_in sa_sattelite.simple1 render_out
+param_connect sa_sattelite.gl_scale render_in sa_sattelite.gl_translate render_out
+param_connect sa_sattelite.float_accumulator float_in sa_sattelite.add_t sum
+param_connect sa_sattelite.bspline_matrix b_pos sa_sattelite.float_accumulator result_float
+param_connect sa_sattelite.bspline_matrix bspline_vertices_mesh sa_sattelite.random_vertices mesh
+param_connect sa_sattelite.basic_spray_emitter1 particle_size_base sa_sattelite.min minimum
+param_alias alias_color:float4 -1 sa_sattelite alias_color sa_sattelite.basic_spray_emitter1 color
+param_connect sa_sattelite alias_color hue_sine alias_result_float4
+param_connect sa_sattelite.basic_spray_emitter1 emitter_position sa_sattelite.bspline_matrix position
+param_connect sa_sattelite.add_t param2 sa_sattelite.mult_t_a product
+param_connect sa_sattelite.add_t param1 sa_sattelite.mult_t2 product
+param_connect sa_sattelite.add2 param1 sa_sattelite.mult_ray1 product
+param_connect sa_sattelite.3float_to_float31 floatc sa_sattelite.add2 sum
+param_connect sa_sattelite.3float_to_float31 floatb sa_sattelite.add2 sum
+param_connect sa_sattelite.3float_to_float31 floata sa_sattelite.add2 sum
+param_connect sa_rings.translate texture_in sa_rings.bitmap2texture texture
+param_connect sa_rings.scale texture_in sa_rings.translate texture_translate_out
+param_connect sa_rings.rendering_mode render_in sa_rings.gl_color render_out
+param_connect sa_rings.orbit_camera render_in sa_rings.blend_mode render_out
+param_alias alias_rotation:float3 -1 sa_rings alias_rotation sa_rings.orbit_camera rotation
+param_connect sa_rings alias_rotation camera_control alias_result_float3
+param_alias alias_param1_1:float -1 sa_rings alias_param1_1 sa_rings.mult1 param1
+param_connect sa_rings alias_param1_1 vsx_listener octaves_l_1
+param_alias alias_param1:float -1 sa_rings alias_param1 sa_rings.mult param1
+param_connect sa_rings alias_param1 vsx_listener octaves_l_1
+param_connect sa_rings.mesh_basic_render particles sa_rings.basic_spray_emitter particlesystem
+param_connect sa_rings.mesh_basic_render mesh_in sa_rings.mesh_disc mesh
+param_connect sa_rings.mesh_basic_render tex_a sa_rings.scale texture_scale_out
+param_connect sa_rings.gl_color render_in sa_rings.mesh_basic_render render_out
+param_connect sa_rings.depth_test render_in sa_rings.orbit_camera render_out
+param_connect sa_rings.depth_mask render_in sa_rings.depth_test render_out
+param_connect sa_rings.blend_mode render_in sa_rings.rendering_mode render_out
+param_connect sa_rings.bitmap2texture bitmap sa_rings.jpeg_bitm_load bitmap
+param_connect sa_rings.basic_spray_emitter particle_lifetime_base sa_rings.mult1 product
+param_connect sa_rings.basic_spray_emitter color sa_rings.4f_hsv_to_f4_rgb result_float4
+param_connect sa_rings.basic_spray_emitter speed_z sa_rings.mult product
+param_connect sa_rings.basic_spray_emitter speed_y sa_rings.mult product
+param_connect sa_rings.basic_spray_emitter speed_x sa_rings.mult product
+param_connect sa_rings.4f_hsv_to_f4_rgb h sa_rings.oscillator float
+param_connect render_surface_single render_in blend_mode render_out
+param_connect render_surface_single render_in blend_mode2 render_out
+param_connect rays.translate texture_in rays.rotate texture_rotate_out
+param_alias alias_texture_in:texture -1 rays alias_texture_in rays.scale texture_in
+param_connect rays alias_texture_in png_tex_load texture
+param_connect rays.rotate texture_in rays.scale texture_scale_out
+param_connect rays.mult5 param1 rays.time r_time
+param_connect rays.mesh_basic_render mesh_in rays.mesh_rays1 mesh
+param_connect rays.mesh_basic_render tex_a rays.translate texture_translate_out
+param_connect rays.material_param render_in rays.mesh_basic_render render_out
+param_alias alias_ambient_color:float4 -1 rays alias_ambient_color rays.light_directional ambient_color
+param_connect rays alias_ambient_color 4f_hsv_to_f4_rgb result_float4
+param_connect rays.light_directional render_in rays.material_param render_out
+param_connect rays.gl_scale render_in rays.gl_rotate render_out
+param_connect rays.gl_scale scale rays.3float_to_float32 result_float3
+param_connect rays.gl_rotate render_in rays.light_directional render_out
+param_connect rays.gl_rotate angle rays.mult5 product
+param_alias alias_float_in:float -1 rays alias_float_in rays.float_dummy float_in
+param_connect rays alias_float_in add1 sum
+param_connect rays.3float_to_float32 floatc rays.float_dummy result_float
+param_connect rays.3float_to_float32 floatb rays.float_dummy result_float
+param_connect rays.3float_to_float32 floata rays.float_dummy result_float
+param_connect particles_mesh_spray color 4f_hsv_to_f4_rgb2 result_float4
+param_connect particles_mesh_spray mesh_in random_vertices mesh
+param_connect orbit_camera render_in rays alias_render_out
+param_connect orbit_camera render_in empty alias_render_out
+param_connect orbit_camera render_in gl_scale render_out
+param_connect orbit_camera render_in simple render_out
+param_connect orbit_camera render_in vsa_gnister alias_render_out
+param_connect orbit_camera render_in vsa_rays alias_render_out
+param_connect orbit_camera render_in vsa_rays1 alias_render_out
+param_connect orbit_camera render_in sa_sattelite alias_render_out
+param_connect orbit_camera rotation camera_control alias_result_float3
+param_connect mult_size param1 add sum
+param_connect mult_clone_clone param1 vsx_listener octaves_l_4
+param_connect mult_clone param1 vsx_listener octaves_l_2
+param_connect mult5 param1 vsx_listener octaves_l_6
+param_connect mult4 param1 mult_size product
+param_connect mult3 param1 add sum
+param_connect mult2_clone_clone param1 mult_clone_clone product
+param_connect mult2_clone param1 mult_clone product
+param_connect mult2 param1 mult product
+param_connect mult1 param1 add sum
+param_connect mult param1 vsx_listener octaves_l_0
+param_alias alias_freq:float -1 hue_sine3 alias_freq hue_sine3.oscillator freq
+param_alias alias_phase:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 hue_sine3 alias_phase hue_sine3.oscillator phase
+param_connect hue_sine3.4f_hsv_to_f4_rgb h hue_sine3.oscillator float
+param_alias alias_freq:float -1 hue_sine2 alias_freq hue_sine2.oscillator freq
+param_alias alias_phase:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 hue_sine2 alias_phase hue_sine2.oscillator phase
+param_connect hue_sine2.4f_hsv_to_f4_rgb h hue_sine2.oscillator float
+param_alias alias_freq:float -1 hue_sine1 alias_freq hue_sine1.oscillator freq
+param_alias alias_phase:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 hue_sine1 alias_phase hue_sine1.oscillator phase
+param_connect hue_sine1.4f_hsv_to_f4_rgb h hue_sine1.oscillator float
+param_alias alias_freq:float -1 hue_sine alias_freq hue_sine.oscillator freq
+param_alias alias_phase:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 hue_sine alias_phase hue_sine.oscillator phase
+param_connect hue_sine.4f_hsv_to_f4_rgb h hue_sine.oscillator float
+param_connect gl_scale render_in simple1 render_out
+param_connect gl_scale scale float_to_float3 result_float3
+param_connect empty.simple_with_texture1 position empty.bspline_matrix position
+param_alias alias_color_multiplier:float4 -1 empty alias_color_multiplier empty.simple_with_texture1 color_multiplier
+param_connect empty alias_color_multiplier hue_sine1 alias_result_float4
+param_alias alias_texture_in:texture -1 empty alias_texture_in empty.simple_with_texture1 texture_in
+param_connect empty alias_texture_in blob texture
+param_connect empty.simple_with_texture1 size empty.mult5 product
+param_alias alias_texture:texture -1 empty alias_texture empty.simple1 texture
+param_connect empty alias_texture blob texture
+param_connect empty.simple1 particlesystem empty.basic_spray_emitter1 particlesystem
+param_connect empty.mult_ray1 param1 empty.mult5 product
+param_connect empty.mult7 param1 empty.mult5 product
+param_connect empty.mult6 param1 empty.mult5 product
+param_alias alias_param1:float -1 empty alias_param1 empty.mult5 param1
+param_connect empty alias_param1 mult product
+param_connect empty.min param1 empty.mult6 product
+param_alias alias_mesh_in:mesh -1 empty alias_mesh_in empty.mesh_basic_render mesh_in
+param_connect empty alias_mesh_in mesh_rays mesh
+param_connect empty.material_param render_in empty.mesh_basic_render render_out
+param_alias alias_ambient_color:float4 -1 empty alias_ambient_color empty.light_directional ambient_color
+param_connect empty alias_ambient_color 4f_hsv_to_f4_rgb1 result_float4
+param_connect empty.light_directional render_in empty.blend_mode2 render_out
+param_connect empty.gl_translate render_in empty.gl_scale2 render_out
+param_connect empty.gl_translate translation empty.bspline_matrix position
+param_connect empty.gl_scale2 render_in empty.light_directional render_out
+param_connect empty.gl_scale2 scale empty.3float_to_float31 result_float3
+param_connect empty.gl_scale render_in empty.gl_translate render_out
+param_connect empty.gl_scale render_in empty.blend_mode3 render_out
+param_connect empty.float_accumulator float_in empty.add3 sum
+param_connect empty.bspline_matrix b_pos empty.float_accumulator result_float
+param_connect empty.bspline_matrix bspline_vertices_mesh empty.random_vertices mesh
+param_connect empty.blend_mode3 render_in empty.simple1 render_out
+param_connect empty.blend_mode2 render_in empty.material_param render_out
+param_connect empty.basic_spray_emitter1 particle_size_base empty.min minimum
+param_alias alias_color:float4 -1 empty alias_color empty.basic_spray_emitter1 color
+param_connect empty alias_color hue_sine1 alias_result_float4
+param_connect empty.basic_spray_emitter1 emitter_position empty.bspline_matrix position
+param_connect empty.add3 param2 empty.mult7 product
+param_connect empty.add3 param1 empty.time r_dtime
+param_connect empty.add2 param1 empty.mult_ray1 product
+param_connect empty.3float_to_float31 floatc empty.add2 sum
+param_connect empty.3float_to_float31 floatb empty.add2 sum
+param_connect empty.3float_to_float31 floata empty.add2 sum
+param_connect camera_control.oscillator1 freq camera_control.float_dummy result_float
+param_connect camera_control.oscillator freq camera_control.float_dummy result_float
+param_connect camera_control.3float_to_float3 floatc camera_control.oscillator1 float
+param_connect camera_control.3float_to_float3 floatb camera_control.oscillator3 float
+param_connect camera_control.3float_to_float3 floata camera_control.oscillator float
+param_connect blur_clone glow_source blur texture_out
+param_connect blur glow_source render_surface_single texture_out
+param_connect blend_mode2 render_in sa_rings alias_render_out
+param_connect blend_mode1 render_in simple_with_texture2 render_out
+param_connect blend_mode1 render_in simple_with_texture3 render_out
+param_connect blend_mode1 render_in simple_with_texture1 render_out
+param_connect blend_mode render_in orbit_camera render_out
+param_connect basic_spray_emitter particle_lifetime_base mult1 product
+param_connect basic_spray_emitter particle_size_base mult_size product
+param_connect basic_spray_emitter color hue_sine alias_result_float4
+param_connect basic_spray_emitter speed_z mult3 product
+param_connect basic_spray_emitter speed_y mult3 product
+param_connect basic_spray_emitter speed_x mult3 product
+param_connect add2 param1 mult5 product
+param_connect add1_clone_clone param1 mult2_clone_clone product
+param_connect add1_clone param1 mult2_clone product
+param_connect add1 param1 mult2 product
+param_connect add param1 mult product
+param_connect 4f_hsv_to_f4_rgb2 h oscillator float
+param_connect 4f_hsv_to_f4_rgb1 h hue_sine1 alias_float
+param_connect 4f_hsv_to_f4_rgb h hue_sine alias_float

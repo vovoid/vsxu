@@ -1,0 +1,46 @@
+meta_set fHx8fHw=
+component_create renderers;basic;colored_rectangle colored_rectangle -0.177106 0.009217
+param_set colored_rectangle border_enable 0
+component_create renderers;basic;colored_rectangle colored_rectangle1 -0.177489 -0.039485
+param_set colored_rectangle1 border_enable 0
+param_set colored_rectangle1 color 1.00000000000000000000,0.00000099097701422579,1.00000000000000000000,1.00000000000000000000
+component_create texture;loaders;jpeg_tex_load jpeg_tex_load -0.229096 -0.130608
+ps64 jpeg_tex_load filename cmVzb3VyY2VzL2ltYWdlcy9yYXlhX3BvdzIuanBn
+component_create mesh;solid;mesh_box mesh_box -0.217726 -0.184265
+component_create renderers;mesh;mesh_line_render mesh_line_render -0.159478 -0.142757
+param_set mesh_line_render override_base_color 1
+param_set mesh_line_render base_color 0.99999916553497314453,0.00000087976826534941,0.00000087976826534941,1.00000000000000000000
+param_set mesh_line_render base_color_add 0.00000000000000000000,0.43375900387763977051,0.00000000000000000000,0.00000000000000000000
+component_create renderers;mesh;mesh_line_render mesh_line_render_clone -0.163809 -0.174311
+param_set mesh_line_render_clone override_base_color 1
+param_set mesh_line_render_clone base_color 0.99999916553497314453,0.00000087976826534941,0.00000087976826534941,1.00000000000000000000
+param_set mesh_line_render_clone base_color_add 0.00000000000000000000,0.43375900387763977051,0.00000000000000000000,0.00000000000000000000
+param_set mesh_line_render_clone each_to_center 1
+component_create maths;oscillators;oscillator oscillator -0.219738 -0.055016
+component_create renderers;basic;render_line render_line -0.096467 -0.158812
+component_create texture;buffers;render_surface_single render_surface_single -0.095272 -0.038104
+param_set render_surface_single texture_size 4
+component_pos screen0 0.000000 0.000000
+param_set screen0 gamma_correction 1.00000905990600585938
+param_set screen0 clear_color 0.00000000000000000003,0.00000000000000000000,0.00000000000003301989,0.99999910593032836914
+component_create renderers;basic;textured_rectangle textured_rectangle -0.152947 -0.088744
+param_set textured_rectangle facing_camera 0
+param_set textured_rectangle x_aspect_ratio 0.53500854969024658203
+param_set textured_rectangle size 0.82340639829635620117
+param_set textured_rectangle tex_coord_a 0.14664407074451446533,0.00000000000000000000,0.00000000000000000000
+param_set textured_rectangle tex_coord_b 0.84626394510269165039,1.00000000000000000000,0.00000000000000000000
+component_create renderers;basic;textured_rectangle textured_rectangle1 -0.053275 0.018566
+param_set textured_rectangle1 facing_camera 0
+param_set textured_rectangle1 angle 0.03125833719968795776
+param_set textured_rectangle1 color_multiplier 0.65003985166549682617,0.65003913640975952148,0.65003913640975952148,1.00000000000000000000
+param_connect textured_rectangle1 texture_in render_surface_single texture_out
+param_connect textured_rectangle texture_in jpeg_tex_load texture
+param_connect screen0 screen textured_rectangle1 render_out
+param_connect render_surface_single render_in textured_rectangle1 render_out
+param_connect render_surface_single render_in textured_rectangle render_out
+param_connect render_surface_single render_in mesh_line_render render_out
+param_connect render_surface_single render_in mesh_line_render_clone render_out
+param_connect render_surface_single render_in colored_rectangle1 render_out
+param_connect mesh_line_render_clone mesh_in mesh_box mesh
+param_connect mesh_line_render mesh_in mesh_box mesh
+param_connect colored_rectangle1 angle oscillator float

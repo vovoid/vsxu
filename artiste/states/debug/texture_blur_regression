@@ -1,0 +1,31 @@
+meta_set fHx8fHw=
+component_create texture;particles;blob blob -0.416985 0.069408
+param_set blob arms 10.10000896453857421875
+param_set blob attenuation 0.76756918430328369141
+param_set blob star_flower 0.00000000000000000000
+param_set blob angle 0.00000000000000000000
+component_create texture;effects;blur blur -0.086769 0.017279
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer -0.146835 0.048450
+param_set depth_buffer depth_test 1
+param_set depth_buffer depth_mask 1
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.328359 0.039475
+component_create mesh;solid;mesh_sphere mesh_sphere -0.436953 0.015520
+component_create texture;buffers;render_surface_single render_surface_single -0.143678 -0.021313
+component_pos screen0 0.000000 0.000000
+param_set screen0 gamma_correction 1.00000095367431640625
+param_set screen0 clear_color 0.00000000000002926513,0.00000000000000000000,0.00000000000000000001,0.00000070461976520164
+component_create texture;opengl;texture_coord_gen texture_coord_gen -0.230863 0.040776
+param_set texture_coord_gen gen_s 3
+param_set texture_coord_gen gen_t 3
+param_set texture_coord_gen parameter 0.00000000000000000000,-0.00002000553649850190,0.00000000000000000000,0.00000000000000000000
+component_create renderers;basic;textured_rectangle textured_rectangle -0.043647 -0.009015
+param_set textured_rectangle facing_camera 0
+param_set textured_rectangle angle 0.00000000000000000000
+param_set textured_rectangle position 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_connect textured_rectangle texture_in blur texture_out
+param_connect texture_coord_gen render_in mesh_basic_render render_out
+param_connect render_surface_single render_in depth_buffer render_out
+param_connect mesh_basic_render mesh_in mesh_sphere mesh
+param_connect mesh_basic_render tex_a blob texture
+param_connect depth_buffer render_in texture_coord_gen render_out
+param_connect blur glow_source render_surface_single texture_out

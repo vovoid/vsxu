@@ -1,0 +1,18 @@
+macro_create $$name 0.233937
+component_create maths;converters;3float_to_float3 $$name.3float_to_float3 0.071481 0.066716
+param_set $$name.3float_to_float3 floatb -0.25484931468963623000
+component_create maths;dummies;float_dummy $$name.float_dummy -0.072832 0.021251
+component_create maths;oscillators;oscillator $$name.oscillator -0.000858 0.054147
+param_set $$name.oscillator amp 0.99999910593032837000
+param_set $$name.oscillator ofs 0.00000093879611995362
+param_set $$name.oscillator phase -0.49999904632568359000
+component_create maths;oscillators;oscillator $$name.oscillator1 0.001985 -0.008290
+param_set $$name.oscillator1 amp 0.99999910593032837000
+param_set $$name.oscillator1 ofs 0.00000082698852565954
+param_set $$name.oscillator1 phase 0.00000091451869366210
+param_alias alias_result_float3:float3 1 $$name alias_result_float3 $$name.3float_to_float3 result_float3
+param_connect $$name.oscillator1 freq $$name.float_dummy result_float
+param_connect $$name.oscillator freq $$name.float_dummy result_float
+param_alias alias_float_in:float -1 $$name alias_float_in $$name.float_dummy float_in
+param_connect $$name.3float_to_float3 floatc $$name.oscillator1 float
+param_connect $$name.3float_to_float3 floata $$name.oscillator float

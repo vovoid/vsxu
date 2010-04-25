@@ -1,0 +1,8 @@
+meta_set fHx8fHw=
+component_create sound;input_visualization_listener input_visualization_listener -0.331690 -0.004011
+cpp screen0 0.000000 0.000000
+param_set screen0 gamma_correction 1.00000095367431640625
+component_create renderers;oscilloscopes;simple_oscilloscope simple_oscilloscope -0.172315 -0.009665
+param_set simple_oscilloscope size 1.00000000000000000000,0.33439785242080688477,0.00000000000000000000
+param_connect simple_oscilloscope data_in input_visualization_listener wave
+param_connect screen0 screen simple_oscilloscope render_out

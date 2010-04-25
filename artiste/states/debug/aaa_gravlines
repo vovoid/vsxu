@@ -1,0 +1,17 @@
+meta_set fHx8fHw=
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.269422 -0.010194
+component_create renderers;opengl_modifiers;gl_translate gl_translate -0.101215 0.016020
+param_set gl_translate translation 0.06296907365322113000,0.12379999458789825000,0.00000000000000000000
+component_create renderers;vovoid;gravity_lines gravity_lines -0.178219 -0.011507
+component_create maths;oscillators;oscillator oscillator -0.353890 -0.014563
+param_set oscillator ofs 0.00035201146965846419
+component_create maths;oscillators;oscillator oscillator1 -0.338682 -0.050523
+param_set oscillator1 ofs -0.01592847518622875200
+param_set oscillator1 freq 0.61985766887664795000
+component_pos screen0 0.000000 0.000000
+param_connect screen0 screen gravity_lines render_out
+param_connect screen0 screen gl_translate render_out
+param_connect gravity_lines pos 3float_to_float3 result_float3
+param_connect gl_translate render_in gravity_lines render_out
+param_connect 3float_to_float3 floatb oscillator1 float
+param_connect 3float_to_float3 floata oscillator float

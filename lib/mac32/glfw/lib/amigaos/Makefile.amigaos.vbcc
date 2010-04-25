@@ -1,0 +1,128 @@
+##########################################################################
+# Makefile for GLFW on AmigaOS using VBCC.
+#-------------------------------------------------------------------------
+# To compile GLFW using this makefile, run:
+#  make -f Makefile.amigaos.vbcc
+##########################################################################
+
+##########################################################################
+# Default: Build static library version of GLFW
+##########################################################################
+default: glfw.lib
+
+
+##########################################################################
+# GLFW version
+##########################################################################
+VERMAJOR = 2
+VERMINOR = 4
+
+
+##########################################################################
+# Compiler settings
+##########################################################################
+CC         = vc
+CFLAGS     = -c -I. -I/ -c99 -cpu=68020 -fpu=68881 -O1
+
+# Some modules should be optimized for speed (e.g. image decoding)
+CFLAGS_SPEED = -c -I. -I/ -c99 -cpu=68020 -fpu=68881 -O1
+
+
+##########################################################################
+# Library builder settings
+##########################################################################
+MKLIB    = join
+LIBFLAGS = as
+
+
+##########################################################################
+# Object files which are part of the GLFW library
+##########################################################################
+OBJS = \
+       enable.o \
+       fullscreen.o \
+       glext.o \
+       image.o \
+       init.o \
+       input.o \
+       joystick.o \
+       tga.o \
+       thread.o \
+       time.o \
+       window.o \
+       amigaos_enable.o \
+       amigaos_fullscreen.o \
+       amigaos_glext.o \
+       amigaos_init.o \
+       amigaos_joystick.o \
+       amigaos_thread.o \
+       amigaos_time.o \
+       amigaos_window.o
+
+
+##########################################################################
+# Rule for building library
+##########################################################################
+glfw.lib: $(OBJS)
+	$(MKLIB) $(OBJS) $(LIBFLAGS) $@
+
+
+##########################################################################
+# Rules for building library object files
+##########################################################################
+enable.o: /enable.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ /enable.c
+
+fullscreen.o: /fullscreen.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ /fullscreen.c
+
+glext.o: /glext.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ /glext.c
+
+image.o: /image.c /internal.h platform.h
+	$(CC) $(CFLAGS_SPEED) -o $@ /image.c
+
+init.o: /init.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ /init.c
+
+input.o: /input.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ /input.c
+
+joystick.o: /joystick.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ /joystick.c
+
+tga.o: /tga.c /internal.h platform.h
+	$(CC) $(CFLAGS_SPEED) -o $@ /tga.c
+
+thread.o: /thread.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ /thread.c
+
+time.o: /time.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ /time.c
+
+window.o: /window.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ /window.c
+
+amigaos_enable.o: amigaos_enable.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ amigaos_enable.c
+
+amigaos_fullscreen.o: amigaos_fullscreen.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ amigaos_fullscreen.c
+
+amigaos_glext.o: amigaos_glext.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ amigaos_glext.c
+
+amigaos_init.o: amigaos_init.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ amigaos_init.c
+
+amigaos_joystick.o: amigaos_joystick.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ amigaos_joystick.c
+
+amigaos_thread.o: amigaos_thread.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ amigaos_thread.c
+
+amigaos_time.o: amigaos_time.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ amigaos_time.c
+
+amigaos_window.o: amigaos_window.c /internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ amigaos_window.c

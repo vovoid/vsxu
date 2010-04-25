@@ -1,0 +1,19 @@
+meta_set fHx8fHw=
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.155070 -0.001322
+component_create mesh;modifiers;transforms;mesh_rotate_quat_around_vertex mesh_rotate_quat_around_vertex -0.228244 -0.055027
+param_set mesh_rotate_quat_around_vertex quat_in 0.30041462182998657227,-0.59120130538940429688,0.02814753539860248566,-0.74795711040496826172
+param_set mesh_rotate_quat_around_vertex vertex_rot_id 1.07406651973724365234
+param_set mesh_rotate_quat_around_vertex offset_pos 0.14483001828193664551,0.11198302358388900757,0.00000000000000000000
+component_create mesh;solid;mesh_sphere mesh_sphere -0.422961 0.002680
+param_set mesh_sphere num_sectors 18.21481704711914062500
+param_set mesh_sphere num_stacks 18.73603630065917968750
+component_create mesh;modifiers;transforms;mesh_translate mesh_translate -0.363746 0.001882
+param_set mesh_translate translation 0.00000098440887086326,0.00000000000000000000,0.00000000000000000000
+component_create mesh;modifiers;transforms;mesh_translate mesh_translate1 -0.299291 -0.000384
+param_set mesh_translate1 translation 0.00000085646405523221,0.00000000002081019905,0.00000000000000000000
+cpp screen0 0.000000 0.000000
+param_connect screen0 screen mesh_basic_render render_out
+param_connect mesh_translate1 mesh_in mesh_translate mesh_out
+param_connect mesh_translate mesh_in mesh_sphere mesh
+param_connect mesh_rotate_quat_around_vertex mesh_in mesh_translate1 mesh_out
+param_connect mesh_basic_render mesh_in mesh_rotate_quat_around_vertex mesh_out

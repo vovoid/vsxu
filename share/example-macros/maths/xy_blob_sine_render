@@ -1,0 +1,20 @@
+macro_create $$name 0.323952
+component_create renderers;basic;textured_rectangle $$name.simple_with_texture 0.059733 0.010182
+param_set $$name.simple_with_texture facing_camera 0
+macro_create $$name.xy_position_oscillation -0.072497 -0.027243 0.190878
+component_create maths;converters;3float_to_float3 $$name.xy_position_oscillation.3float_to_float3 0.003673 0.012631
+component_create maths;oscillators;oscillator $$name.xy_position_oscillation.oscillator1 -0.058793 0.031683
+component_create maths;oscillators;oscillator $$name.xy_position_oscillation.oscillator2 -0.056831 -0.012382
+param_alias alias_result_float3:float3 1 $$name.xy_position_oscillation alias_result_float3 $$name.xy_position_oscillation.3float_to_float3 result_float3
+param_alias alias_render_out:render 1 $$name alias_render_out $$name.simple_with_texture render_out
+param_alias alias_freq_1:float -1 $$name.xy_position_oscillation alias_freq_1 $$name.xy_position_oscillation.oscillator2 freq
+param_alias alias_phase_1:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 $$name.xy_position_oscillation alias_phase_1 $$name.xy_position_oscillation.oscillator2 phase
+param_alias alias_freq:float -1 $$name.xy_position_oscillation alias_freq $$name.xy_position_oscillation.oscillator1 freq
+param_alias alias_phase:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 $$name.xy_position_oscillation alias_phase $$name.xy_position_oscillation.oscillator1 phase
+param_connect $$name.xy_position_oscillation.3float_to_float3 floatb $$name.xy_position_oscillation.oscillator2 float
+param_connect $$name.xy_position_oscillation.3float_to_float3 floata $$name.xy_position_oscillation.oscillator1 float
+param_connect $$name.simple_with_texture position $$name.xy_position_oscillation alias_result_float3
+param_alias alias_color_multiplier:float4 -1 $$name alias_color_multiplier $$name.simple_with_texture color_multiplier
+param_alias alias_angle:float -1 $$name alias_angle $$name.simple_with_texture angle
+param_alias alias_texture_in:texture -1 $$name alias_texture_in $$name.simple_with_texture texture_in
+param_alias alias_size:float -1 $$name alias_size $$name.simple_with_texture size

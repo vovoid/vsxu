@@ -1,0 +1,33 @@
+set(EXTRA_LIBS "")
+
+if (VSXU_DEBUG EQUAL 1)
+  add_definitions( -DVSXU_DEBUG )
+  add_definitions(-g)
+else (VSXU_DEBUG EQUAL 1)
+  add_definitions(-Os)
+endif (VSXU_DEBUG EQUAL 1)
+
+
+add_definitions(-DBUILDING_DLL=1 -c -fmessage-length=0 -finline-functions -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX})
+include_directories(
+../include
+../../include
+../../../engine/include
+../../../engine_graphics/include
+../../../
+)
+
+
+if(WIN32)
+  cmake_policy(SET CMP0015 NEW)
+  cmake_policy(SET CMP0011 OLD)
+  include_directories("../../_system_win32" "../../_system_win32/pthread" "../../_lib/win32")
+  add_definitions(-D_WIN32=1)
+  find_path(WINDOWS_LIB_PATH NAMES pthreadGCE.so
+    PATHS
+      ../../_lib/win32
+  )
+
+  link_directories("../../_lib/win32")
+endif(WIN32)
+

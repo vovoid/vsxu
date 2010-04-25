@@ -1,0 +1,296 @@
+meta_set fHx8fHw=
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.214572 0.041734
+component_create renderers;opengl_modifiers;blend_mode blend_mode1 -0.193527 -0.067246
+component_create renderers;opengl_modifiers;blend_mode blend_mode2 -0.303316 -0.015483
+component_create renderers;basic;colored_rectangle colored_rectangle -0.107463 0.108036
+param_set colored_rectangle position -0.80999916791915894000,0.76000100374221802000,0.00000000000000000000
+param_set colored_rectangle size 0.01499999966472387300,0.14000092446804047000,0.00000000000000000000
+param_set colored_rectangle border_enable 0
+param_set colored_rectangle rotation_axis 0.00000000000009009759,0.00000000000000000000,0.99999922513961792000
+component_create renderers;basic;colored_rectangle colored_rectangle1 -0.032839 0.109756
+param_set colored_rectangle1 position -0.40499937534332275000,0.76000100374221802000,0.00000000000000000000
+param_set colored_rectangle1 size 0.01500063389539718600,0.14000099897384644000,0.00000000000000000000
+param_set colored_rectangle1 border_enable 0
+param_set colored_rectangle1 rotation_axis 0.00000000000000000000,0.00000000000000000000,1.00000000000000000000
+component_create renderers;basic;colored_rectangle colored_rectangle10 -0.274884 0.211871
+param_set colored_rectangle10 position -0.81000000238418579000,-0.00000092785973038190,0.00000000000000000000
+param_set colored_rectangle10 size 0.01499999966472387300,0.14000087976455688000,0.00000000000000000000
+param_set colored_rectangle10 border_enable 0
+param_set colored_rectangle10 rotation_axis 0.00000000000024633499,0.00000000000000000007,0.99999922513961792000
+component_create renderers;basic;colored_rectangle colored_rectangle11 -0.275987 0.162903
+param_set colored_rectangle11 position -0.40499910712242126000,-0.00000099999476788071,0.00000000000000000000
+param_set colored_rectangle11 size 0.01499999966472387300,0.14000095427036285000,0.00000000000000000000
+param_set colored_rectangle11 border_enable 0
+param_set colored_rectangle11 rotation_axis 0.00000000000000000000,0.00000000000000000000,1.00000000000000000000
+component_create renderers;basic;colored_rectangle colored_rectangle12 -0.280214 0.124950
+param_set colored_rectangle12 position 0.00000000000000000000,-0.00000091351722630861,0.00000000000000000000
+param_set colored_rectangle12 size 0.01499999966472387300,0.14000087976455688000,0.00000000000000000000
+param_set colored_rectangle12 border_enable 0
+param_set colored_rectangle12 rotation_axis 0.00000000000000000000,0.00000000000000000000,1.00000000000000000000
+component_create renderers;basic;colored_rectangle colored_rectangle13 -0.278708 0.087828
+param_set colored_rectangle13 position 0.40500050783157349000,-0.00000099999999747524,0.00000000000000000000
+param_set colored_rectangle13 size 0.01500099990516901000,0.14000084996223450000,0.00000000000000000000
+param_set colored_rectangle13 border_enable 0
+param_set colored_rectangle13 rotation_axis 0.00000000000000000000,0.00000000000000000000,1.00000000000000000000
+component_create renderers;basic;colored_rectangle colored_rectangle14 -0.272123 0.049748
+param_set colored_rectangle14 position 0.80999982357025146000,0.00000000000000000000,0.00000000000000000000
+param_set colored_rectangle14 size 0.01499999966472387300,0.14000074565410614000,0.00000000000000000000
+param_set colored_rectangle14 border_enable 0
+param_set colored_rectangle14 rotation_axis 0.00000000000033385924,0.00000000000000000010,0.99999910593032837000
+component_create renderers;basic;colored_rectangle colored_rectangle15 -0.236972 -0.127234
+param_set colored_rectangle15 position -0.81000041961669922000,-0.37999999523162842000,0.00000000000000000000
+param_set colored_rectangle15 size 0.01499911490827798800,0.14000000059604645000,0.00000000000000000000
+param_set colored_rectangle15 rotation_axis 0.00000000000062206826,0.00000000000000000031,0.99999916553497314000
+component_create renderers;basic;colored_rectangle colored_rectangle16 -0.246359 -0.181235
+param_set colored_rectangle16 position -0.40499907732009888000,-0.37999999523162842000,0.00000000000000000000
+param_set colored_rectangle16 size 0.01499925181269645700,0.13999901711940765000,0.00000000000000000000
+param_set colored_rectangle16 border_enable 0
+param_set colored_rectangle16 rotation_axis 0.00000000000027473369,0.00000000000000000009,0.99999922513961792000
+component_create renderers;basic;colored_rectangle colored_rectangle17 -0.303916 -0.210493
+param_set colored_rectangle17 position 0.00000000000000000000,-0.38000082969665527000,0.00000000000000000000
+param_set colored_rectangle17 size 0.01499908417463302600,0.13999900221824646000,0.00000000000000000000
+param_set colored_rectangle17 border_enable 0
+param_set colored_rectangle17 rotation_axis 0.00000000000006871478,0.00000000000000000001,0.91838324069976807000
+component_create renderers;basic;colored_rectangle colored_rectangle18 -0.351881 -0.167325
+param_set colored_rectangle18 position 0.40500080585479736000,-0.37999999523162842000,0.00000000000000000000
+param_set colored_rectangle18 size 0.01499919686466455500,0.13999901711940765000,0.00000000000000000000
+param_set colored_rectangle18 border_enable 0
+param_set colored_rectangle18 rotation_axis 0.00000000000028049646,0.00000000000000000001,0.99999916553497314000
+component_create renderers;basic;colored_rectangle colored_rectangle19 -0.344207 -0.116482
+param_set colored_rectangle19 position 0.81000059843063354000,-0.37999999523162842000,0.00000000000000000000
+param_set colored_rectangle19 size 0.01499901525676250500,0.13999901711940765000,0.00000000000000000000
+param_set colored_rectangle19 border_enable 0
+param_set colored_rectangle19 rotation_axis 0.00000000000009122062,0.00000000000000000002,0.99999910593032837000
+component_create renderers;basic;colored_rectangle colored_rectangle2 -0.046142 0.065669
+param_set colored_rectangle2 position 0.00000096095106982830,0.75999999046325684000,0.00000000000000000000
+param_set colored_rectangle2 size 0.01499999966472387300,0.14000077545642853000,0.00000000000000000000
+param_set colored_rectangle2 border_enable 0
+param_set colored_rectangle2 rotation_axis 0.00000000000000000000,0.00000000000000000000,0.62674200534820557000
+component_create renderers;basic;colored_rectangle colored_rectangle20 -0.469210 0.026708
+param_set colored_rectangle20 position -0.81000000238418579000,-0.75999915599822998000,0.00000000000000000000
+param_set colored_rectangle20 size 0.01499999873340129900,0.13999915122985840000,0.00000000000000000000
+param_set colored_rectangle20 border_enable 0
+param_set colored_rectangle20 rotation_axis 0.00000000000155601758,0.00000000000000000013,0.99999904632568359000
+component_create renderers;basic;colored_rectangle colored_rectangle21 -0.445796 -0.022030
+param_set colored_rectangle21 position -0.40499928593635559000,-0.75999999046325684000,0.00000000000000000000
+param_set colored_rectangle21 size 0.01499999873340129900,0.13999924063682556000,0.00000000000000000000
+param_set colored_rectangle21 border_enable 0
+param_set colored_rectangle21 rotation_axis 0.00000000000047309324,0.00000000000000000013,0.70238912105560303000
+component_create renderers;basic;colored_rectangle colored_rectangle22 -0.560949 -0.017994
+param_set colored_rectangle22 position 0.00000000000000000000,-0.76000076532363892000,0.00000000000000000000
+param_set colored_rectangle22 size 0.01499999873340129900,0.13999907672405243000,0.00000000000000000000
+param_set colored_rectangle22 border_enable 0
+param_set colored_rectangle22 rotation_axis 0.00000000000014551095,0.00000000000000000001,0.99999922513961792000
+component_create renderers;basic;colored_rectangle colored_rectangle23 -0.578252 0.043990
+param_set colored_rectangle23 position 0.40500065684318542000,-0.75999999046325684000,0.00000000001020817025
+param_set colored_rectangle23 size 0.01499999966472387300,0.13999907672405243000,0.00000000000000000000
+param_set colored_rectangle23 border_enable 0
+param_set colored_rectangle23 rotation_axis 0.00000000000000000003,0.00000000000079524229,0.99999922513961792000
+component_create renderers;basic;colored_rectangle colored_rectangle24 -0.495133 0.072253
+param_set colored_rectangle24 position 0.81000000238418579000,-0.75999921560287476000,0.00000000000000000000
+param_set colored_rectangle24 size 0.01499999966472387300,0.13999925553798676000,0.00000000000000000000
+param_set colored_rectangle24 border_enable 0
+param_set colored_rectangle24 rotation_axis 0.00000000000001400453,0.00000000000000000000,0.99999916553497314000
+component_create renderers;basic;colored_rectangle colored_rectangle3 -0.080784 0.028807
+param_set colored_rectangle3 position 0.40500101447105408000,0.75999909639358521000,0.00000000000000000000
+param_set colored_rectangle3 size 0.01499999966472387300,0.14000096917152405000,0.00000000000000000000
+param_set colored_rectangle3 border_enable 0
+param_set colored_rectangle3 rotation_axis 0.00000000000000000000,0.00000000000000000000,1.00000000000000000000
+component_create renderers;basic;colored_rectangle colored_rectangle4 -0.147272 0.083779
+param_set colored_rectangle4 position 0.81000101566314697000,0.76000076532363892000,0.00000000000000000000
+param_set colored_rectangle4 size 0.01499999966472387300,0.14000026881694794000,0.00000000000000000000
+param_set colored_rectangle4 border_enable 0
+param_set colored_rectangle4 rotation_axis 0.00000000000000000000,0.00000000000000000000,0.28194001317024231000
+component_create renderers;basic;colored_rectangle colored_rectangle5 -0.089495 -0.037228
+param_set colored_rectangle5 position -0.81000036001205444000,0.37999999523162842000,0.00000000000000000000
+param_set colored_rectangle5 size 0.01499999966472387300,0.14000035822391510000,0.00000000000000000000
+param_set colored_rectangle5 border_enable 0
+param_set colored_rectangle5 rotation_axis 0.00000000000015432386,0.00000000000000000007,0.99999922513961792000
+component_create renderers;basic;colored_rectangle colored_rectangle6 -0.078720 -0.071138
+param_set colored_rectangle6 position -0.40500095486640930000,0.37999996542930603000,0.00000000000000000000
+param_set colored_rectangle6 size 0.01499999966472387300,0.14000068604946136000,0.00000000000000000000
+param_set colored_rectangle6 border_enable 0
+param_set colored_rectangle6 rotation_axis 0.00000000000000000000,0.00000000000000000000,0.44227200746536255000
+component_create renderers;basic;colored_rectangle colored_rectangle7 -0.074495 -0.111503
+param_set colored_rectangle7 position 0.00000000000000000000,0.37999919056892395000,0.00000000000000000000
+param_set colored_rectangle7 size 0.01499999966472387300,0.14000092446804047000,0.00000000000000000000
+param_set colored_rectangle7 border_enable 0
+param_set colored_rectangle7 rotation_axis 0.00000000000000000000,0.00000000000000000000,0.65497702360153198000
+component_create renderers;basic;colored_rectangle colored_rectangle8 -0.068502 -0.150833
+param_set colored_rectangle8 position 0.40500000119209290000,0.38000077009201050000,0.00000000000000000000
+param_set colored_rectangle8 size 0.01500099990516901000,0.14000079035758972000,0.00000000000000000000
+param_set colored_rectangle8 border_enable 0
+param_set colored_rectangle8 rotation_axis 0.00000000000011607074,0.00000000000000018575,0.86881107091903687000
+component_create renderers;basic;colored_rectangle colored_rectangle9 -0.065198 -0.193627
+param_set colored_rectangle9 position 0.81000000238418579000,0.37999910116195679000,0.00000000000000000000
+param_set colored_rectangle9 size 0.01499999966472387300,0.14000074565410614000,0.00000000000000000000
+param_set colored_rectangle9 border_enable 0
+param_set colored_rectangle9 rotation_axis 0.00000000000009522391,0.00000000000000000002,0.52559924125671387000
+component_create maths;dummies;float_dummy float_dummy -0.458126 -0.093910
+param_set float_dummy float_in 0.50000792741775513000
+component_create maths;oscillators;oscillator oscillator -0.176026 0.144307
+pseq_p inject oscillator amp 0.000000;0;MC4wMDAwMDA=|1.000098;0;MC4xMjUwMDA=|2.000359;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+pseq_p inject oscillator freq 0.000000;0;MC4wMDAwMDA=|1.000280;0;MS4wMDAwMDI=|1.997776;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMzM=
+component_create maths;oscillators;oscillator oscillator1 -0.073376 0.129130
+pseq_p inject oscillator1 amp 0.000000;0;MC4wMDAwMDA=|2.999817;0;MC4xMjUwMDA=|2.000856;0;MC45OTk5OTk=|1.000000;0;MC4xMjUwMDA=
+pseq_p inject oscillator1 freq 0.000000;0;MC4wMDAwMDA=|3.000628;0;MS4wMDAwMDA=|1.999388;0;MC4yNDk5OTk=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator10 -0.344774 0.210628
+pseq_p inject oscillator10 amp 0.000000;0;MC4wMDAwMDA=|21.000019;0;MC4xMjUwMDA=|1.999797;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+pseq_p inject oscillator10 freq 0.000000;0;MC4wMDAwMDA=|21.000019;0;MS4wMDAwMDA=|2.000040;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator11 -0.345271 0.167602
+pseq_p inject oscillator11 amp 0.000000;0;MC4wMDAwMDA=|23.000000;0;MC4xMjUwMDA=|1.999998;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+pseq_p inject oscillator11 freq 0.000000;0;MC4wMDAwMDA=|23.000000;0;MS4wMDAwMDA=|2.000000;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator12 -0.344121 0.133004
+pseq_p inject oscillator12 amp 0.000000;0;MC4wMDAwMDA=|25.000000;0;MC4xMjUwMDA=|2.000000;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+pseq_p inject oscillator12 freq 0.000000;0;MC4wMDAwMDA=|25.000000;0;MS4wMDAwMDA=|2.000000;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator13 -0.341446 0.086023
+pseq_p inject oscillator13 amp 0.000000;0;MC4wMDAwMDA=|27.000000;0;MC4xMjUwMDA=|2.000000;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+pseq_p inject oscillator13 freq 0.000000;0;MC4wMDAwMDA=|27.000000;0;MS4wMDAwMDA=|2.000000;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator14 -0.338893 0.050618
+pseq_p inject oscillator14 amp 0.000000;0;MC4wMDAwMDA=|29.000000;0;MC4xMjUwMDA=|1.999999;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+pseq_p inject oscillator14 freq 0.000000;0;MC4wMDAwMDA=|29.000000;0;MS4wMDAwMDA=|2.000000;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator15 -0.287678 -0.129243
+pseq_p inject oscillator15 amp 0.000000;0;MC4wMDAwMDA=|30.999989;0;MC4xMjUwMDA=|1.999999;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+param_set oscillator15 phase 0.99999070167541504000
+pseq_p inject oscillator15 freq 0.000000;0;MC4wMDAwMDA=|30.999998;0;MS4wMDAwMDA=|2.000000;0;MC4yNTAwMDA=|1.000000;1;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator16 -0.293592 -0.170779
+pseq_p inject oscillator16 amp 0.000000;0;MC4wMDAwMDA=|33.000000;0;MC4xMjUwMDA=|2.000000;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+param_set oscillator16 phase 0.99999111890792847000
+pseq_p inject oscillator16 freq 0.000000;0;MC4wMDAwMDA=|33.000000;0;MS4wMDAwMDA=|1.999999;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator17 -0.354279 -0.208095
+pseq_p inject oscillator17 amp 0.000000;0;MC4wMDAwMDA=|35.000000;0;MC4xMjUwMDA=|2.000000;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+param_set oscillator17 phase 1.00000703334808350000
+pseq_p inject oscillator17 freq 0.000000;0;MC4wMDAwMDA=|35.000000;0;MS4wMDAwMDA=|2.000001;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator18 -0.418167 -0.164399
+pseq_p inject oscillator18 amp 0.000000;0;MC4wMDAwMDA=|37.000000;0;MC4xMjUwMDA=|2.000000;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+param_set oscillator18 phase 0.99999052286148071000
+pseq_p inject oscillator18 freq 0.000000;0;MC4wMDAwMDA=|37.000000;0;MS4wMDAwMDA=|2.000000;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator19 -0.393610 -0.119360
+pseq_p inject oscillator19 amp 0.000000;0;MC4wMDAwMDA=|39.000000;0;MC4xMjUwMDA=|2.000002;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+param_set oscillator19 phase 0.99999088048934937000
+pseq_p inject oscillator19 freq 0.000000;0;MC4wMDAwMDA=|39.000000;0;MS4wMDAwMDA=|2.000002;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator2 -0.089771 0.066013
+pseq_p inject oscillator2 amp 0.000000;0;MC4wMDAwMDA=|5.001822;0;MC4xMjUwMDA=|1.996144;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+pseq_p inject oscillator2 freq 0.000000;0;MC4wMDAwMDA=|5.000927;0;MS4wMDAwMDA=|1.998966;0;MC4yNTAwMDE=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator20 -0.520240 0.025108
+pseq_p inject oscillator20 amp 0.000000;0;MC4wMDAwMDA=|41.000000;0;MC4xMjUwMDA=|2.000002;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+pseq_p inject oscillator20 freq 0.000000;0;MC4wMDAwMDA=|41.000000;0;MS4wMDAwMDA=|2.000002;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator21 -0.509355 -0.024245
+pseq_p inject oscillator21 amp 0.000000;0;MC4wMDAwMDA=|43.000000;0;MC4xMjUwMDA=|1.999999;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+pseq_p inject oscillator21 freq 0.000000;0;MC4wMDAwMDA=|43.000000;0;MS4wMDAwMDA=|2.000001;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator22 -0.611203 -0.001236
+pseq_p inject oscillator22 amp 0.000000;0;MC4wMDAwMDA=|45.000000;0;MC4xMjUwMDA=|1.999998;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+pseq_p inject oscillator22 freq 0.000000;0;MC4wMDAwMDA=|45.000000;0;MS4wMDAwMDA=|1.999998;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator23 -0.627951 0.043910
+pseq_p inject oscillator23 amp 0.000000;0;MC4wMDAwMDA=|47.000000;0;MC4xMjUwMDA=|2.000000;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+pseq_p inject oscillator23 freq 0.000000;0;MC4wMDAwMDA=|47.000000;0;MS4wMDAwMDA=|2.000000;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator24 -0.543260 0.076736
+pseq_p inject oscillator24 amp 0.000000;0;MC4wMDAwMDA=|49.000000;0;MC4xMjUwMDA=|2.000000;0;MS4wMDAwMDA=|1.000000;0;MC4xMjQ5OTk=
+pseq_p inject oscillator24 freq 0.000000;0;MC4wMDAwMDA=|49.000000;0;MS4wMDAwMDA=|1.999999;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator3 -0.130280 0.033921
+pseq_p inject oscillator3 amp 0.000000;0;MC4wMDAwMDA=|7.000218;0;MC4xMjUwMDA=|1.999765;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+pseq_p inject oscillator3 freq 0.000000;0;MC4wMDAwMDA=|7.000001;0;MS4wMDAwMDA=|1.999251;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator4 -0.185773 0.090387
+pseq_p inject oscillator4 amp 0.000000;0;MC4wMDAwMDA=|8.999798;0;MC4xMjUwMDA=|2.000635;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+pseq_p inject oscillator4 freq 0.000000;0;MC4wMDAwMDA=|8.999904;0;MS4wMDAwMDA=|2.000397;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator5 -0.130671 -0.042287
+pseq_p inject oscillator5 amp 0.000000;0;MC4wMDAwMDA=|11.000000;0;MC4xMjUwMDA=|2.000001;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+param_set oscillator5 phase 0.99999177455902100000
+pseq_p inject oscillator5 freq 0.000001;0;MC4wMDAwMDA=|11.000000;0;MS4wMDAwMDA=|2.000000;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator6 -0.135919 -0.074784
+pseq_p inject oscillator6 amp 0.000000;0;MC4wMDAwMDA=|0.002792;0;MC4xMjUwMDA=|12.997208;0;MC4xNDMwNjE=|2.000000;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+param_set oscillator6 phase 0.99999094009399414000
+pseq_p inject oscillator6 freq 0.000000;0;MC4wMDAwMDA=|13.000000;0;MS4wMDAwMDA=|1.999999;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator7 -0.125768 -0.111883
+pseq_p inject oscillator7 amp 0.000000;0;MC4wMDAwMDA=|15.000000;0;MC4xMjUwMDA=|2.000002;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+param_set oscillator7 phase 1.00000965595245360000
+pseq_p inject oscillator7 freq 0.000000;0;MC4wMDAwMDA=|15.000001;0;MS4wMDAwMDA=|1.999999;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator8 -0.123413 -0.154841
+pseq_p inject oscillator8 amp 0.000000;0;MC4wMDAwMDA=|17.000000;0;MC4xMjUwMDA=|2.000001;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+param_set oscillator8 phase 0.99999201297760010000
+pseq_p inject oscillator8 freq 0.000000;0;MC4wMDAwMDA=|17.000010;0;MS4wMDAwMDA=|2.000001;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_create maths;oscillators;oscillator oscillator9 -0.132573 -0.194534
+pseq_p inject oscillator9 amp 0.000000;0;MC4wMDAwMDA=|19.000000;0;MC4xMjUwMDA=|2.000000;0;MS4wMDAwMDA=|1.000000;0;MC4xMjUwMDA=
+param_set oscillator9 phase 0.99999439716339111000
+pseq_p inject oscillator9 freq 0.000000;0;MC4wMDAwMDA=|19.000000;0;MS4wMDAwMDA=|2.000000;0;MC4yNTAwMDA=|1.000000;0;MS4wMDAwMDA=
+component_pos screen0 0.000000 0.000000
+param_set screen0 gamma_correction 0.00000429079636887764
+param_set screen0 clear_color 0.00000000000002926513,0.00000000000000000000,0.00000000000000000001,0.00000070461976520164
+param_connect screen0 screen colored_rectangle render_out
+param_connect screen0 screen colored_rectangle1 render_out
+param_connect screen0 screen colored_rectangle2 render_out
+param_connect screen0 screen colored_rectangle3 render_out
+param_connect screen0 screen colored_rectangle4 render_out
+param_connect screen0 screen colored_rectangle5 render_out
+param_connect screen0 screen colored_rectangle6 render_out
+param_connect screen0 screen colored_rectangle7 render_out
+param_connect screen0 screen colored_rectangle8 render_out
+param_connect screen0 screen colored_rectangle9 render_out
+param_connect screen0 screen blend_mode render_out
+param_connect screen0 screen blend_mode2 render_out
+param_connect screen0 screen blend_mode1 render_out
+param_connect oscillator9 ofs float_dummy result_float
+param_connect oscillator8 ofs float_dummy result_float
+param_connect oscillator7 ofs float_dummy result_float
+param_connect oscillator6 ofs float_dummy result_float
+param_connect oscillator5 ofs float_dummy result_float
+param_connect oscillator4 ofs float_dummy result_float
+param_connect oscillator3 ofs float_dummy result_float
+param_connect oscillator24 ofs float_dummy result_float
+param_connect oscillator23 ofs float_dummy result_float
+param_connect oscillator22 ofs float_dummy result_float
+param_connect oscillator21 ofs float_dummy result_float
+param_connect oscillator20 ofs float_dummy result_float
+param_connect oscillator2 ofs float_dummy result_float
+param_connect oscillator19 ofs float_dummy result_float
+param_connect oscillator18 ofs float_dummy result_float
+param_connect oscillator17 ofs float_dummy result_float
+param_connect oscillator16 ofs float_dummy result_float
+param_connect oscillator15 ofs float_dummy result_float
+param_connect oscillator14 ofs float_dummy result_float
+param_connect oscillator13 ofs float_dummy result_float
+param_connect oscillator12 ofs float_dummy result_float
+param_connect oscillator11 ofs float_dummy result_float
+param_connect oscillator10 ofs float_dummy result_float
+param_connect oscillator1 ofs float_dummy result_float
+param_connect oscillator ofs float_dummy result_float
+param_connect colored_rectangle9 angle oscillator9 float
+param_connect colored_rectangle8 angle oscillator8 float
+param_connect colored_rectangle7 angle oscillator7 float
+param_connect colored_rectangle6 angle oscillator6 float
+param_connect colored_rectangle5 angle oscillator5 float
+param_connect colored_rectangle4 angle oscillator4 float
+param_connect colored_rectangle3 angle oscillator3 float
+param_connect colored_rectangle24 angle oscillator24 float
+param_connect colored_rectangle23 angle oscillator23 float
+param_connect colored_rectangle22 angle oscillator22 float
+param_connect colored_rectangle21 angle oscillator21 float
+param_connect colored_rectangle20 angle oscillator20 float
+param_connect colored_rectangle2 angle oscillator2 float
+param_connect colored_rectangle19 angle oscillator19 float
+param_connect colored_rectangle18 angle oscillator18 float
+param_connect colored_rectangle17 angle oscillator17 float
+param_connect colored_rectangle16 angle oscillator16 float
+param_connect colored_rectangle15 angle oscillator15 float
+param_connect colored_rectangle14 angle oscillator14 float
+param_connect colored_rectangle13 angle oscillator13 float
+param_connect colored_rectangle12 angle oscillator12 float
+param_connect colored_rectangle11 angle oscillator11 float
+param_connect colored_rectangle10 angle oscillator10 float
+param_connect colored_rectangle1 angle oscillator1 float
+param_connect colored_rectangle angle oscillator float
+param_connect blend_mode2 render_in colored_rectangle20 render_out
+param_connect blend_mode2 render_in colored_rectangle21 render_out
+param_connect blend_mode2 render_in colored_rectangle24 render_out
+param_connect blend_mode2 render_in colored_rectangle23 render_out
+param_connect blend_mode2 render_in colored_rectangle22 render_out
+param_connect blend_mode1 render_in colored_rectangle15 render_out
+param_connect blend_mode1 render_in colored_rectangle16 render_out
+param_connect blend_mode1 render_in colored_rectangle17 render_out
+param_connect blend_mode1 render_in colored_rectangle18 render_out
+param_connect blend_mode1 render_in colored_rectangle19 render_out
+param_connect blend_mode render_in colored_rectangle10 render_out
+param_connect blend_mode render_in colored_rectangle11 render_out
+param_connect blend_mode render_in colored_rectangle12 render_out
+param_connect blend_mode render_in colored_rectangle13 render_out
+param_connect blend_mode render_in colored_rectangle14 render_out

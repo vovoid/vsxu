@@ -1,0 +1,9 @@
+#change this to install into other directory
+set(
+  CMAKE_PREFIX
+  /usr
+)
+
+add_definitions(
+  -DCMAKE_PREFIX="${CMAKE_PREFIX}"
+)

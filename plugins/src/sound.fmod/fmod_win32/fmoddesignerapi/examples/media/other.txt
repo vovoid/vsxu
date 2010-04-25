@@ -1,0 +1,4 @@
+drumloop.wav, FSOUND_2D
+horse.ogg, FSOUND_2D
+jaguar.ogg, FSOUND_2D
+seal.ogg, FSOUND_2D

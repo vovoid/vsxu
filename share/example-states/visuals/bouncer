@@ -1,0 +1,122 @@
+meta_set fHx8fHw=
+component_create renderers;opengl_modifiers;blend_mode blend_mode 0.184541 0.103915
+param_set blend_mode dest_blend 1
+component_create texture;particles;blob blob -0.106449 0.049955
+component_create maths;converters;float_to_float3 float_to_float3 0.238126 0.008630
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate 0.267460 0.085899
+param_set gl_rotate axis 0.00000098326654551784,0.00000000000000001730,1.00000000000000000000
+component_create renderers;opengl_modifiers;gl_scale gl_scale 0.351394 0.068511
+component_create renderers;opengl_modifiers;gl_scale gl_scale1 0.519523 0.135814
+param_set gl_scale1 scale 0.99999904632568359000,0.99999994039535522000,1.00000000000000000000
+component_create maths;arithmetics;binary;mult mult -0.136195 -0.106660
+param_set mult param2 8.76907634735107420000
+component_create maths;arithmetics;binary;mult mult1 -0.137843 -0.135232
+param_set mult1 param2 9.20982074737548830000
+component_create maths;arithmetics;binary;mult mult2 -0.138679 -0.159757
+param_set mult2 param2 5.46123600006103520000
+component_create maths;arithmetics;binary;mult mult3 -0.138212 -0.190965
+param_set mult3 param2 4.46318387985229490000
+component_create maths;arithmetics;binary;mult mult4 -0.138743 -0.224306
+param_set mult4 param2 2.52165985107421870000
+component_create maths;arithmetics;binary;mult mult5 -0.139308 -0.256750
+param_set mult5 param2 2.91003298759460450000
+component_create texture;buffers;render_surface_single render_surface_single 0.419402 0.126482
+param_set render_surface_single texture_size 1
+component_pos screen0 0.516788 0.066766
+param_set screen0 gamma_correction 1.00000095367431640000
+component_create renderers;examples;simple_with_texture simple_with_texture 0.085580 0.167691
+param_set simple_with_texture facing_camera 0
+param_set simple_with_texture x_aspect_ratio 0.65621912479400635000
+param_set simple_with_texture color_multiplier 0.00000000000382375381,1.00000000000000000000,0.00000099013470844511,1.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture1 0.086049 0.240107
+param_set simple_with_texture1 facing_camera 1
+param_set simple_with_texture1 x_aspect_ratio 0.29331916570663452000
+param_set simple_with_texture1 angle 0.43440914154052734000
+param_set simple_with_texture1 color_multiplier 0.99999910593032837000,0.99999910593032837000,0.99999994039535522000,1.00000000000000000000
+param_set simple_with_texture1 tex_coord_b 1.00000000000000000000,1.00000000000000000000,0.00000000062641714038
+param_set simple_with_texture1 position 0.00000000000000000000,0.00000088984717194762,0.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture2 0.087264 0.313792
+param_set simple_with_texture2 facing_camera 1
+param_set simple_with_texture2 x_aspect_ratio 0.29530388116836548000
+param_set simple_with_texture2 angle 0.28141301870346069000
+param_set simple_with_texture2 color_multiplier 0.99999994039535522000,0.00000000000000000000,0.00871490314602851870,1.00000000000000000000
+param_set simple_with_texture2 position 0.00000096070459676412,0.00000000000000000000,0.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture3 0.090049 0.090225
+param_set simple_with_texture3 facing_camera 0
+param_set simple_with_texture3 color_multiplier 0.10633505135774612000,0.99999988079071045000,0.17031112313270569000,1.00000000000000000000
+param_set simple_with_texture3 position 0.00000000000000000000,0.24929620325565338000,0.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture4 0.084860 -0.003271
+param_set simple_with_texture4 facing_camera 0
+param_set simple_with_texture4 color_multiplier 0.99999904632568359000,0.00000085568586882800,0.71638464927673340000,1.00000000000000000000
+param_set simple_with_texture4 tex_coord_a 0.00000000000000000000,0.00000000000000000000,16717489360148103000.00000000000000000000
+param_set simple_with_texture4 tex_coord_b 1.00000000000000000000,1.00000000000000000000,301280880309587500000000000000.00000000000000000000
+param_set simple_with_texture4 position 0.00910900067538022990,-0.38122278451919556000,0.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture5 0.087033 -0.067559
+param_set simple_with_texture5 facing_camera 0
+param_set simple_with_texture5 color_multiplier 0.00000097243753316434,0.86552494764328003000,0.99999982118606567000,1.00000000000000000000
+param_set simple_with_texture5 position 0.00000000000000000000,-0.04887302219867706300,0.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture6 0.110825 -0.149419
+param_set simple_with_texture6 facing_camera 0
+param_set simple_with_texture6 x_aspect_ratio 0.00399910146370530130
+param_set simple_with_texture6 color_multiplier 1.00000000000000000000,0.94228088855743408000,1.00000000000000000000,1.00000000000000000000
+param_set simple_with_texture6 tex_coord_a 0.00000000000000000000,0.00000000000000000000,0.00000000064096905561
+component_create renderers;examples;simple_with_texture simple_with_texture7 0.121253 -0.230905
+param_set simple_with_texture7 facing_camera 0
+param_set simple_with_texture7 x_aspect_ratio 0.00252424040809273720
+param_set simple_with_texture7 angle 0.33437401056289673000
+component_create renderers;basic;textured_rectangle textured_rectangle 0.417590 0.206252
+param_set textured_rectangle global_alpha 0.99999076128005981000
+param_set textured_rectangle facing_camera 0
+param_set textured_rectangle size 0.99306297302246094000
+param_set textured_rectangle angle 0.00000928888493945124
+param_set textured_rectangle color_multiplier 0.91844904422760010000,0.91844892501831055000,0.89461088180541992000,0.99999994039535522000
+param_set textured_rectangle color_a 0.00000000000000000000,0.99999904632568359000,0.00000099999965641473,1.00000000000000000000
+param_set textured_rectangle color_b 0.99999916553497314000,0.00000000000000005512,0.00000099999977010157,1.00000000000000000000
+param_set textured_rectangle color_c 0.00000000000000000000,0.00000000000000000450,0.99999910593032837000,1.00000000000000000000
+param_set textured_rectangle color_d 0.00000000000000000000,1.00000000000000000000,0.99999910593032837000,1.00000000000000000000
+component_create maths;arithmetics;vector;vector_add_float vector_add_float 0.299386 0.025433
+param_set vector_add_float param2 0.82358002662658691000
+component_create system;sound;vsx_listener vsx_listener -0.256406 -0.183305
+param_connect vector_add_float param1 float_to_float3 result_float3
+param_connect textured_rectangle texture_in render_surface_single texture_out
+param_connect simple_with_texture7 texture_in blob texture
+param_connect simple_with_texture7 size mult product
+param_connect simple_with_texture6 texture_in blob texture
+param_connect simple_with_texture6 size mult product
+param_connect simple_with_texture5 texture_in blob texture
+param_connect simple_with_texture5 size mult5 product
+param_connect simple_with_texture4 texture_in blob texture
+param_connect simple_with_texture4 size mult4 product
+param_connect simple_with_texture3 texture_in blob texture
+param_connect simple_with_texture3 size mult3 product
+param_connect simple_with_texture2 texture_in blob texture
+param_connect simple_with_texture2 size mult product
+param_connect simple_with_texture1 texture_in blob texture
+param_connect simple_with_texture1 size mult1 product
+param_connect simple_with_texture angle mult2 product
+param_connect simple_with_texture texture_in blob texture
+param_connect simple_with_texture size mult2 product
+param_connect screen0 screen gl_scale1 render_out
+param_connect render_surface_single render_in textured_rectangle render_out
+param_connect render_surface_single render_in gl_scale render_out
+param_connect mult5 param1 vsx_listener octaves_l_5
+param_connect mult4 param1 vsx_listener octaves_l_4
+param_connect mult3 param1 vsx_listener octaves_l_3
+param_connect mult2 param1 vsx_listener octaves_l_2
+param_connect mult1 param1 vsx_listener octaves_l_1
+param_connect mult param1 vsx_listener octaves_l_0
+param_connect gl_scale1 render_in textured_rectangle render_out
+param_connect gl_scale1 render_in gl_scale render_out
+param_connect gl_scale render_in gl_rotate render_out
+param_connect gl_scale scale vector_add_float result_float3
+param_connect gl_rotate render_in blend_mode render_out
+param_connect gl_rotate angle mult product
+param_connect float_to_float3 param1 mult product
+param_connect blend_mode render_in simple_with_texture2 render_out
+param_connect blend_mode render_in simple_with_texture1 render_out
+param_connect blend_mode render_in simple_with_texture render_out
+param_connect blend_mode render_in simple_with_texture5 render_out
+param_connect blend_mode render_in simple_with_texture3 render_out
+param_connect blend_mode render_in simple_with_texture4 render_out
+param_connect blend_mode render_in simple_with_texture6 render_out
+param_connect blend_mode render_in simple_with_texture7 render_out

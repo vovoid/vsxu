@@ -1,0 +1,54 @@
+meta_set fHx8fHw=
+component_create texture;loaders;bitmap2texture bitmap2texture -0.412434 0.103470
+component_create mesh;importers;cal3d_importer cal3d_importer -0.400593 0.011457
+ps64 cal3d_importer filename cmVzb3VyY2VzL2V4YW1wbGVzL21lc2hlcy9jYWwzZC9kb2xwaGluL2RvbHBoaW5fcmlnX3Rlc3Q1LmNmZw==
+param_set cal3d_importer torso_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer back_b_torso_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer back_b_torso2_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer back_b_torso3_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer back_b_torso4_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer tail_upper_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer tail_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer fin_top_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer jaw_upper_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer jaw_lower_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer l_fin_anchor_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer fin_left_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer r_fin_anchor_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer fin_right_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+component_create renderers;opengl_modifiers;depth_mask depth_mask -0.125252 0.018660
+param_set depth_mask status 1
+component_create renderers;opengl_modifiers;depth_test depth_test -0.079521 0.079983
+param_set depth_test status 1
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate -0.240148 0.024755
+param_set gl_rotate axis 0.57733017206192016602,0.99999988079071044922,0.00000000000032380338
+component_create bitmaps;loaders;jpeg_bitm_load jpeg_bitm_load -0.480722 0.101406
+ps64 jpeg_bitm_load filename cmVzb3VyY2VzL2V4YW1wbGVzL21lc2hlcy9jYWwzZC9kb2xwaGluL2RvbHBoaW5fdGV4LmpwZw==
+component_create renderers;opengl_modifiers;light_directional light_directional -0.185756 -0.003753
+param_set light_directional light_id 0
+param_set light_directional enabled 1
+param_set light_directional position -0.34356689453125000000,0.29948505759239196777,0.89009624719619750977
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.314910 0.048118
+component_create maths;arithmetics;binary;mult mult -0.307166 -0.026586
+param_set mult param2 0.13365700840950012207
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.002609 0.016813
+param_set orbit_camera rotation -0.05912889540195465088,-0.12040714919567108154,0.99096179008483886719
+param_set orbit_camera distance 1.29150402545928955078
+param_set orbit_camera perspective_correct 0
+cpp screen0 0.081486 0.008105
+param_set screen0 gamma_correction 0.99999916553497314453
+component_create system;time time -0.361546 -0.031221
+component_create texture;modifiers;translate translate -0.335116 0.125418
+param_set translate translation_vector 0.00000000000461371913,0.99999910593032836914,0.00000000000000000000
+param_connect translate texture_in bitmap2texture texture
+param_connect screen0 screen orbit_camera render_out
+param_connect orbit_camera render_in depth_test render_out
+param_connect mult param1 time r_time
+param_connect mesh_basic_render mesh_in cal3d_importer mesh
+param_connect mesh_basic_render tex_a translate texture_translate_out
+param_connect light_directional render_in gl_rotate render_out
+param_connect gl_rotate render_in mesh_basic_render render_out
+param_connect gl_rotate angle mult product
+param_connect depth_test render_in depth_mask render_out
+param_connect depth_mask render_in light_directional render_out
+param_connect bitmap2texture bitmap jpeg_bitm_load bitmap

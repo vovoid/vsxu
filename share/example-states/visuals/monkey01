@@ -1,0 +1,36 @@
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.330997 -0.070252
+param_set 3float_to_float3 floatc 0.99960345029830933000
+component_create maths;color;converters;4f_hsv_to_f4_rgb 4f_hsv_to_f4_rgb -0.457246 0.048999
+param_set 4f_hsv_to_f4_rgb h 0.34848600625991821000
+param_set 4f_hsv_to_f4_rgb s 0.88592416048049927000
+param_set 4f_hsv_to_f4_rgb a 0.96922707557678223000
+component_create maths;arithmetics;binary;add add -0.413800 -0.072752
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.067723 0.167820
+param_set blend_mode dest_blend 1
+component_create texture;particles;blob blob -0.237953 0.061257
+component_create maths;arithmetics;binary;div div -0.371697 -0.072781
+param_set div param2 10.00000095367431600000
+component_create maths;arithmetics;binary;mult mult -0.498752 0.057978
+param_set mult param2 2.06606507301330570000
+component_pos screen0 0.152339 0.138898
+param_set screen0 gamma_correction 1.00000095367431640000
+component_create renderers;oscilloscopes;simple_oscilloscope simple_oscilloscope -0.133504 -0.001765
+component_create renderers;examples;simple_with_texture simple_with_texture -0.137112 0.125303
+param_set simple_with_texture facing_camera 0
+param_set simple_with_texture tex_coord_a 0.00000000000000000000,0.00000000000000000000,2028437173861393800000000000000000.00000000000000000000
+component_create system;sound;vsx_listener vsx_listener -0.565625 0.009853
+param_connect simple_with_texture color_center 4f_hsv_to_f4_rgb result_float4
+param_connect simple_with_texture texture_in blob texture
+param_connect simple_with_texture size add sum
+param_connect simple_oscilloscope color 4f_hsv_to_f4_rgb result_float4
+param_connect simple_oscilloscope size 3float_to_float3 result_float3
+param_connect simple_oscilloscope data_in vsx_listener wave
+param_connect screen0 screen blend_mode render_out
+param_connect mult param1 vsx_listener octaves_l_3
+param_connect div param1 add sum
+param_connect blend_mode render_in simple_with_texture render_out
+param_connect blend_mode render_in simple_oscilloscope render_out
+param_connect add param2 vsx_listener octaves_r_7
+param_connect add param1 vsx_listener octaves_l_7
+param_connect 4f_hsv_to_f4_rgb v mult product
+param_connect 3float_to_float3 floatb div quotient

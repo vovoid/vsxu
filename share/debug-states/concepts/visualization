@@ -1,0 +1,29 @@
+meta_set fHx8fHw=
+component_create renderers;basic;colored_rectangle colored_rectangle -0.201908 0.036372
+param_set colored_rectangle size 1.00000000000000000000,0.08241787552833557129,0.00000000000000000000
+param_set colored_rectangle border_enable 0
+param_set colored_rectangle rotation_axis 0.00000000000000000001,0.00000094596418875881,0.99999994039535522461
+component_create maths;array;float_array_pick float_array_pick -0.312195 0.067613
+param_set float_array_pick which 4.50372505187988281250
+component_create renderers;opengl_modifiers;gl_translate gl_translate -0.168575 -0.035469
+param_set gl_translate translation 0.00000000000000000000,-0.71752232313156127930,0.00000000000000000000
+component_create sound;input_visualization_listener input_visualization_listener -0.420870 0.029093
+cpp screen0 0.000000 0.000000
+param_set screen0 gamma_correction 1.00000905990600585938
+param_set screen0 clear_color 0.00000000000000000003,0.00000000000000000000,0.00000000000003301989,0.99999910593032836914
+component_create renderers;oscilloscopes;simple_oscilloscope simple_oscilloscope -0.238285 -0.014886
+param_set simple_oscilloscope size 1.00000000000000000000,0.33257713913917541504,-0.00000000000000000000
+param_set simple_oscilloscope line_width 1.00000953674316406250
+param_set simple_oscilloscope color 1.00000000000000000000,1.00000000000000000000,1.00000000000000000000,0.99999904632568359375
+component_create renderers;oscilloscopes;simple_oscilloscope simple_oscilloscope1 -0.239142 -0.073078
+param_set simple_oscilloscope1 size 1.00000000000000000000,1.00000000000000000000,73169522154836517482664034304.00000000000000000000
+param_set simple_oscilloscope1 line_width 1.00000953674316406250
+param_set simple_oscilloscope1 color 0.31704702973365783691,1.00000000000000000000,0.55218887329101562500,0.99999904632568359375
+param_connect simple_oscilloscope1 data_in input_visualization_listener spectrum
+param_connect simple_oscilloscope data_in input_visualization_listener wave
+param_connect screen0 screen gl_translate render_out
+param_connect screen0 screen colored_rectangle render_out
+param_connect screen0 screen simple_oscilloscope render_out
+param_connect gl_translate render_in simple_oscilloscope1 render_out
+param_connect float_array_pick float_in input_visualization_listener wave
+param_connect colored_rectangle angle float_array_pick result_float

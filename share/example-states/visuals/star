@@ -1,0 +1,55 @@
+component_create renderers;opengl_modifiers;blend_mode blend_mode 0.050514 0.072333
+param_set blend_mode dest_blend 1
+param_set blend_mode blend_color 0.99999940395355225000,0.99999910593032837000,0.99999910593032837000,1.00000000000000000000
+component_create texture;particles;blob blob -0.194456 -0.003773
+param_set blob attenuation 6.95045804977416990000
+param_set blob star_flower -0.01833999715745449100
+component_create maths;arithmetics;binary;mult mult -0.288617 0.051343
+param_set mult param2 7.99999904632568360000
+component_create maths;arithmetics;binary;mult mult1 -0.289289 0.129086
+param_set mult1 param2 20.00000000000000000000
+component_create maths;arithmetics;binary;mult mult2 -0.289018 0.096244
+param_set mult2 param2 7.99999904632568360000
+component_create maths;oscillators;oscillator oscillator -0.113396 -0.065512
+param_set oscillator amp 6.52671098709106450000
+param_set oscillator freq 0.02300088107585907000
+component_create maths;oscillators;oscillator oscillator1 -0.137703 0.083214
+param_set oscillator1 amp 5.10150003433227540000
+param_set oscillator1 freq 0.05100084096193313600
+component_create maths;oscillators;oscillator oscillator2 -0.174347 0.178830
+param_set oscillator2 amp 6.37870311737060550000
+param_set oscillator2 freq 0.19999901950359344000
+component_create maths;oscillators;oscillator oscillator3 -0.285583 0.001396
+param_set oscillator3 amp 3.58192706108093260000
+param_set oscillator3 ofs 5.03758096694946290000
+param_set oscillator3 freq 0.09583388268947601300
+component_pos screen0 0.245104 0.083809
+param_set screen0 gamma_correction 0.99999916553497314000
+component_create renderers;examples;simple_with_texture simple_with_texture -0.042128 0.004773
+param_set simple_with_texture facing_camera 0
+param_set simple_with_texture color_multiplier 0.30565214157104492000,0.62774008512496948000,0.30565214157104492000,1.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture1 -0.042201 0.082163
+param_set simple_with_texture1 facing_camera 0
+param_set simple_with_texture1 color_multiplier 0.61441606283187866000,0.29609844088554382000,0.29495242238044739000,1.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture2 -0.043402 0.161777
+param_set simple_with_texture2 facing_camera 0
+param_set simple_with_texture2 color_multiplier 0.36660864949226379000,0.34335768222808838000,0.73482519388198853000,1.00000000000000000000
+param_set simple_with_texture2 position 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+component_create system;sound;vsx_listener vsx_listener -0.382915 0.110794
+param_connect simple_with_texture2 angle oscillator2 float
+param_connect simple_with_texture2 texture_in blob texture
+param_connect simple_with_texture2 size mult1 product
+param_connect simple_with_texture1 angle oscillator1 float
+param_connect simple_with_texture1 texture_in blob texture
+param_connect simple_with_texture1 size mult2 product
+param_connect simple_with_texture angle oscillator float
+param_connect simple_with_texture texture_in blob texture
+param_connect simple_with_texture size mult product
+param_connect screen0 screen blend_mode render_out
+param_connect mult2 param1 vsx_listener octaves_l_3
+param_connect mult1 param1 vsx_listener octaves_l_0
+param_connect mult param1 vsx_listener octaves_l_5
+param_connect blob arms oscillator3 float
+param_connect blend_mode render_in simple_with_texture1 render_out
+param_connect blend_mode render_in simple_with_texture render_out
+param_connect blend_mode render_in simple_with_texture2 render_out

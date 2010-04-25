@@ -1,0 +1,88 @@
+meta_set fHx8fHw=
+component_create renderers;opengl_modifiers;backface_culling backface_culling -0.221238 0.036973
+param_set backface_culling status 1
+component_create renderers;opengl_modifiers;blend_mode blend_mode_1 -0.131217 -0.022176
+component_create texture;particles;blob blob -0.468535 -0.067486
+param_set blob arms 3.00000882148742675781
+param_set blob attenuation 1.19148671627044677734
+param_set blob size 5
+param_set blob color 0.83613514900207519531,0.63851606845855712891,0.99999994039535522461,1.00000000000000000000
+param_set blob star_flower -1.00342249870300292969
+param_set blob angle 1.39123821258544921875
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer -0.204193 -0.049980
+param_set depth_buffer depth_test 1
+param_set depth_buffer depth_mask 1
+component_create renderers;opengl_modifiers;depth_function depth_function -0.361015 0.175874
+param_set depth_function depth_func 3
+component_create maths;dummies;float_dummy float_dummy -0.553808 -0.192377
+param_set float_dummy float_in 0.06434075534343719482
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate -0.320772 0.114138
+param_set gl_rotate axis 0.00000000000000000000,0.99999922513961791992,0.00000000048167475564
+component_create renderers;opengl_modifiers;light_directional light_directional -0.156160 0.052875
+param_set light_directional light_id 0
+param_set light_directional enabled 1
+param_set light_directional position 0.09663195908069610596,0.99150884151458740234,0.08702011406421661377
+param_set light_directional diffuse_color 0.00000095611653705419,0.85792613029479980469,0.99999994039535522461,1.00000000000000000000
+param_set light_directional specular_color 0.99999994039535522461,0.99999916553497314453,0.99999916553497314453,1.00000000000000000000
+component_create renderers;opengl_modifiers;light_directional light_directional_1 -0.201542 0.109877
+param_set light_directional_1 light_id 1
+param_set light_directional_1 enabled 1
+param_set light_directional_1 position -0.43045142292976379395,-0.24973089993000030518,0.86737847328186035156
+param_set light_directional_1 diffuse_color 0.99999904632568359375,0.99999904632568359375,0.99999904632568359375,1.00000000000000000000
+param_set light_directional_1 specular_color 0.78253126144409179688,0.99999988079071044922,0.71348613500595092773,1.00000000000000000000
+component_create renderers;opengl_modifiers;material_param material_param -0.109620 0.101624
+param_set material_param faces_affected 0
+param_set material_param ambient_reflectance 0.00000086952741185087,0.00000086952741185087,0.00000086952741185087,1.00000000000000000000
+param_set material_param diffuse_reflectance 0.99999994039535522461,0.99999994039535522461,0.99685508012771606445,0.99999922513961791992
+param_set material_param specular_reflectance 0.99999928474426269531,0.99999910593032836914,0.99999910593032836914,1.00000000000000000000
+param_set material_param emission_intensity 0.00000000000000000000,0.00000070901756998865,0.00000000000000000000,1.00000000000000000000
+param_set material_param specular_exponent 60.00000000000000000000
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.361897 -0.117862
+param_set mesh_basic_render use_display_list 1
+param_set mesh_basic_render use_vertex_colors 0
+component_create mesh;solid;mesh_torus_knot mesh_torus_knot -0.466766 -0.133981
+param_set mesh_torus_knot x_shape 0.533199;2.000000;MC41ODc2MTI=|0.458501;2.000000;MC4yMDY4MTg=|1.000000;1.000000;MC45NDcwMTA=
+param_set mesh_torus_knot y_shape 0.540035;2.000000;MC4wMDAwMDA=|0.459966;2.000000;MS4wMDAwMDA=|1.000000;1.000000;MC4wMDAwMDA=
+param_set mesh_torus_knot z_shape 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set mesh_torus_knot size_shape_x 0.525167;2.000000;MS4wMDAwMDA=|0.474832;2.000000;MC43MzAwNDI=|1.000000;0.000000;MS4wMDAwMDA=
+param_set mesh_torus_knot size_shape_y 0.505126;2.000000;MS4wMDAwMDA=|0.494874;2.000000;MC43NjQ2ODQ=|1.000000;0.000000;MS4wMDAwMDA=
+param_set mesh_torus_knot num_sectors 30.04737281799316406250
+param_set mesh_torus_knot num_stacks 600.30017089843750000000
+param_set mesh_torus_knot p 9.00000095367431640625
+param_set mesh_torus_knot q 1.00000882148742675781
+component_create maths;arithmetics;binary;mult mult -0.551757 -0.146697
+param_set mult param2 -0.59999060630798339844
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.073246 -0.004550
+param_set orbit_camera rotation 0.13960900902748107910,-0.02877390384674072266,0.78110796213150024414
+param_set orbit_camera distance 2.30762720108032226562
+param_set orbit_camera fov 90.00000762939453125000
+param_set orbit_camera perspective_correct 1
+component_create renderers;opengl_modifiers;rendering_mode rendering_mode -0.412048 0.177078
+param_set rendering_mode back_facing 0
+cpp screen0 0.000000 0.000000
+param_set screen0 gamma_correction 1.00000095367431640625
+param_set screen0 clear_color 0.00000000000002926513,0.00000000000000000000,0.00000000000000000001,0.00000070461976520164
+component_create texture;opengl;texture_coord_gen texture_coord_gen -0.290059 0.019150
+param_set texture_coord_gen gen_s 3
+param_set texture_coord_gen gen_t 5
+param_set texture_coord_gen parameter 0.00000000000000000000,0.00000000064460742299,0.04719924926757812500,52001587716569339789312.00000000000000000000
+component_create system;time time -0.643249 -0.133169
+param_connect texture_coord_gen render_in gl_rotate render_out
+param_connect screen0 screen orbit_camera render_out
+param_connect rendering_mode render_in mesh_basic_render render_out
+param_connect orbit_camera render_in blend_mode_1 render_out
+param_connect mult param1 time r_time
+param_connect mesh_torus_knot phi_offset mult product
+param_connect mesh_torus_knot size_shape_y_multiplier float_dummy result_float
+param_connect mesh_torus_knot size_shape_x_multiplier float_dummy result_float
+param_connect mesh_basic_render mesh_in mesh_torus_knot mesh
+param_connect mesh_basic_render tex_a blob texture
+param_connect material_param render_in light_directional render_out
+param_connect light_directional_1 render_in depth_buffer render_out
+param_connect light_directional render_in light_directional_1 render_out
+param_connect gl_rotate render_in depth_function render_out
+param_connect gl_rotate angle time r_time
+param_connect depth_function render_in rendering_mode render_out
+param_connect depth_buffer render_in backface_culling render_out
+param_connect blend_mode_1 render_in material_param render_out
+param_connect backface_culling render_in texture_coord_gen render_out

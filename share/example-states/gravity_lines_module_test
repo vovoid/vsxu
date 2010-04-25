@@ -1,0 +1,65 @@
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.141254 0.031191
+component_create maths;converters;3float_to_float3 3float_to_float31 -0.050350 0.230094
+param_set 3float_to_float31 floata 0.00000082891250485773
+param_set 3float_to_float31 floatc -0.00000090676019226521
+component_create maths;arithmetics;binary;add add -0.196568 0.095828
+macro_create camera_rotation_helper -0.141513 0.147740 0.233937
+component_create maths;converters;3float_to_float3 camera_rotation_helper.3float_to_float3 0.071481 0.066716
+param_set camera_rotation_helper.3float_to_float3 floatb -0.25484931468963623000
+component_create maths;dummies;float_dummy camera_rotation_helper.float_dummy -0.079796 0.021252
+param_set camera_rotation_helper.float_dummy float_in 0.31229096651077271000
+component_create maths;oscillators;oscillator camera_rotation_helper.oscillator 0.002975 0.053338
+param_set camera_rotation_helper.oscillator osc_type 4
+param_set camera_rotation_helper.oscillator amp 0.90000092983245850000
+param_set camera_rotation_helper.oscillator ofs 0.00000093879611995362
+param_set camera_rotation_helper.oscillator phase -0.83637487888336182000
+param_set camera_rotation_helper.oscillator drive_type 0
+component_create maths;oscillators;oscillator camera_rotation_helper.oscillator1 0.000949 -0.011197
+param_set camera_rotation_helper.oscillator1 osc_type 4
+param_set camera_rotation_helper.oscillator1 amp 0.90000092983245850000
+param_set camera_rotation_helper.oscillator1 ofs 0.00000082698852565954
+param_set camera_rotation_helper.oscillator1 drive_type 0
+component_create renderers;vovoid;gravity_lines gravity_lines -0.080413 0.052656
+param_set gravity_lines color0 0.99999994039535522000,0.14822998642921448000,0.09386200457811355600,0.37490624189376831000
+param_set gravity_lines color1 0.42912104725837708000,0.34791997075080872000,0.99999994039535522000,0.40580511093139648000
+param_set gravity_lines friction 0.56295287609100342000
+param_set gravity_lines step_length 20.00000000000000000000
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera 0.009995 0.065959
+component_create maths;oscillators;oscillator oscillator -0.270366 0.059642
+param_set oscillator amp 0.78078377246856689000
+param_set oscillator ofs 0.00000092113702976349
+param_set oscillator freq 0.43930199742317200000
+component_create maths;oscillators;oscillator oscillator1 -0.270702 -0.009429
+param_set oscillator1 amp 0.91364693641662598000
+param_set oscillator1 ofs 0.00000096007920546981
+component_create maths;oscillators;oscillator oscillator2 -0.270256 -0.075796
+param_set oscillator2 amp 1.00939822196960450000
+param_set oscillator2 ofs 0.00000089379886958341
+param_set oscillator2 freq 0.52415293455123901000
+component_create maths;oscillators;oscillator oscillator3 -0.269158 0.125067
+param_set oscillator3 osc_type 0
+param_set oscillator3 amp 1.10676300525665280000
+param_set oscillator3 ofs 0.00000096620317435736
+component_create maths;oscillators;oscillator oscillator4 -0.112723 0.226286
+param_set oscillator4 osc_type 4
+param_set oscillator4 amp 1.00000095367431640000
+param_set oscillator4 ofs 0.00000098399709713703
+component_pos screen0 0.120181 0.175437
+component_create renderers;examples;simple simple 0.037489 0.212879
+param_alias alias_result_float3:float3 1 camera_rotation_helper alias_result_float3 camera_rotation_helper.3float_to_float3 result_float3
+param_connect simple position 3float_to_float31 result_float3
+param_connect screen0 screen orbit_camera render_out
+param_connect orbit_camera render_in gravity_lines render_out
+param_connect orbit_camera rotation camera_rotation_helper alias_result_float3
+param_connect gravity_lines pos 3float_to_float3 result_float3
+param_connect camera_rotation_helper.oscillator1 freq camera_rotation_helper.float_dummy result_float
+param_connect camera_rotation_helper.oscillator freq camera_rotation_helper.float_dummy result_float
+param_alias alias_float_in:float -1 camera_rotation_helper alias_float_in camera_rotation_helper.float_dummy float_in
+param_connect camera_rotation_helper.3float_to_float3 floatc camera_rotation_helper.oscillator1 float
+param_connect camera_rotation_helper.3float_to_float3 floata camera_rotation_helper.oscillator float
+param_connect add param2 oscillator float
+param_connect add param1 oscillator3 float
+param_connect 3float_to_float31 floatb oscillator4 float
+param_connect 3float_to_float3 floatc oscillator2 float
+param_connect 3float_to_float3 floatb oscillator1 float
+param_connect 3float_to_float3 floata add sum

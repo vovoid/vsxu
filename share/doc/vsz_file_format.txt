@@ -1,0 +1,6 @@
+4 	chars		"VSXu"		identifier
+32	chars		hash		file hash (everything from the hash and forwards)
+7	chars		"0.1.0.0"	vsxu version
+4	unsigned long			size of file entry (including filename)
+nullterminated string			filename
+lzma-encoded data

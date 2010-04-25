@@ -1,0 +1,8 @@
+Did you know you could zoom
+by right-clicking the server and moving
+the mouse up/down?
+|||
+- You can modify position, scaling 
+and rotation using openGL matrix 
+modifying plugins in the opengl_modifiers
+section, scale, rotate and translate!

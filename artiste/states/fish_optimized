@@ -1,0 +1,251 @@
+meta_set fHx8fHw=
+component_create maths;arithmetics;binary;add add -0.432914 -0.006124
+param_set add param2 0.13500601053237915000
+component_create maths;arithmetics;binary;add add1 -0.483288 0.177612
+param_set add1 param2 3.68044781684875490000
+component_create particlesystems;modifiers;basic_gravity basic_gravity -0.224389 0.010733
+param_set basic_gravity mass_type 0
+param_set basic_gravity time_source 0
+component_create particlesystems;modifiers;basic_gravity basic_gravity1 -0.289333 -0.004762
+param_set basic_gravity1 mass_type 0
+param_set basic_gravity1 time_source 0
+param_set basic_gravity1 uniform_mass 0.16576468944549561000
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.089256 0.055124
+component_create renderers;opengl_modifiers;blend_mode blend_mode1 0.346957 0.172272
+param_set blend_mode1 dest_blend 1
+component_create texture;particles;blob blob -0.096682 -0.046883
+param_set blob arms 0.00000000000000000000
+param_set blob star_flower 0.00000000000000000000
+param_set blob angle 0.00000000000000000000
+component_create texture;effects;blur blur 0.247510 0.242052
+param_set blur start_value 4.97022247314453120000
+param_set blur attenuation 1.00000965595245360000
+component_create maths;bspline;bspline_matrix bspline_matrix -0.409477 -0.103184
+component_create maths;bspline;bspline_matrix bspline_matrix1 -0.405445 -0.181569
+macro_create camera_rotation_helper 0.085352 0.100163 0.233937
+component_create maths;converters;3float_to_float3 camera_rotation_helper.3float_to_float3 0.071481 0.066716
+component_create maths;dummies;float_dummy camera_rotation_helper.float_dummy -0.072832 0.021251
+component_create maths;oscillators;oscillator camera_rotation_helper.oscillator -0.002968 0.070245
+param_set camera_rotation_helper.oscillator amp 0.99999910593032837000
+param_set camera_rotation_helper.oscillator ofs 0.00000093879611995362
+param_set camera_rotation_helper.oscillator phase -0.49999904632568359000
+component_create maths;oscillators;oscillator camera_rotation_helper.oscillator1 0.001985 -0.008290
+param_set camera_rotation_helper.oscillator1 amp 0.99999910593032837000
+param_set camera_rotation_helper.oscillator1 ofs 0.00000082698852565954
+param_set camera_rotation_helper.oscillator1 phase 0.00000091451869366210
+component_create maths;oscillators;oscillator camera_rotation_helper.oscillator2 0.003374 0.033287
+param_set camera_rotation_helper.oscillator2 amp 0.35835364460945129000
+param_set camera_rotation_helper.oscillator2 ofs -0.85788428783416748000
+param_set camera_rotation_helper.oscillator2 phase -0.61325913667678833000
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer -0.016440 0.065196
+param_set depth_buffer depth_test 1
+param_set depth_buffer depth_mask 1
+component_create maths;accumulators;float_accumulator float_accumulator -0.541406 -0.091106
+component_create maths;interpolation;float_interpolation float_interpolation -0.579188 -0.085702
+param_set float_interpolation speed 19.29263305664062500000
+component_create maths;interpolation;float_interpolation float_interpolation1 -0.531480 0.178772
+param_set float_interpolation1 speed 18.51454544067382800000
+component_create maths;interpolation;float_interpolation float_interpolation2 0.012656 0.112978
+param_set float_interpolation2 speed 20.51664924621582000000
+component_create maths;limiters;float_limiter float_limiter -0.454620 0.064810
+param_set float_limiter limit_value 0.51963847875595093000
+param_set float_limiter type 1
+component_create maths;limiters;float_limiter float_limiter1 -0.441619 0.177744
+param_set float_limiter1 limit_value 33.75613021850585900000
+param_set float_limiter1 type 0
+component_create maths;converters;float_to_float3 friction -0.370770 -0.045459
+param_set friction param1 3.88894891738891600000
+component_create maths;converters;float_to_float3 grav_strength -0.370009 -0.008744
+component_create renderers;particlesystems;render_particle_ribbon gravity_ribbon_particles -0.342092 0.224658
+param_set gravity_ribbon_particles color0 1.00000000000000000000,1.00000000000000000000,1.00000000000000000000,0.99999904632568359000
+param_set gravity_ribbon_particles friction 1.00598168373107910000
+param_set gravity_ribbon_particles ribbon_width 0.19540084898471832000
+param_set gravity_ribbon_particles length 0.00027392091578803957
+component_create sound;input_visualization_listener input_visualization_listener -0.630615 -0.007126
+param_set input_visualization_listener multiplier 5.00000905990600590000
+component_create renderers;opengl_modifiers;light_directional light_directional 0.046180 0.260532
+param_set light_directional light_id 0
+param_set light_directional enabled 1
+param_set light_directional position 0.27360180020332336000,-0.69586151838302612000,-0.66401702165603638000
+param_set light_directional ambient_color 0.00000083625593561010,0.00000083511730508690,0.00000083511730508690,1.00000000000000000000
+param_set light_directional diffuse_color 0.40452659130096436000,0.55983018875122070000,0.99999910593032837000,1.00000000000000000000
+param_set light_directional specular_color 0.99999964237213135000,0.99999904632568359000,0.99999904632568359000,1.00000000000000000000
+component_create renderers;opengl_modifiers;light_directional light_directional1 0.104968 0.240623
+param_set light_directional1 light_id 1
+param_set light_directional1 enabled 1
+param_set light_directional1 position 0.10778783261775970000,0.94314211606979370000,-0.31442660093307495000
+param_set light_directional1 diffuse_color 0.58743447065353394000,0.58451944589614868000,0.99999904632568359000,1.00000000000000000000
+param_set light_directional1 specular_color 0.99999904632568359000,0.99999982118606567000,0.99999988079071045000,0.99999904632568359000
+component_create renderers;opengl_modifiers;light_directional light_directional2 0.142704 0.200748
+param_set light_directional2 light_id 2
+param_set light_directional2 enabled 1
+param_set light_directional2 position -0.59996795654296875000,0.99999904632568359000,0.78412008285522461000
+param_set light_directional2 ambient_color 0.00000000188420790082,0.08203140646219253500,0.20061998069286346000,1.00000000000000000000
+param_set light_directional2 diffuse_color 0.28328192234039307000,0.63698345422744751000,0.99999982118606567000,1.00000000000000000000
+param_set light_directional2 specular_color 0.99999982118606567000,0.99999982118606567000,0.99999910593032837000,1.00000000000000000000
+component_create renderers;opengl_modifiers;material_param material_param -0.233374 0.233924
+param_set material_param faces_affected 0
+param_set material_param ambient_reflectance 0.99999910593032837000,0.99999910593032837000,0.99999910593032837000,1.00000000000000000000
+param_set material_param diffuse_reflectance 0.99999946355819702000,0.99999904632568359000,0.99999904632568359000,1.00000000000000000000
+param_set material_param specular_reflectance 0.99999946355819702000,0.99999928474426270000,0.99999928474426270000,1.00000000000000000000
+param_set material_param emission_intensity 0.14958409965038300000,0.14958411455154419000,0.14958439767360687000,0.99999904632568359000
+param_set material_param specular_exponent 119.99999237060547000000
+component_create maths;arithmetics;binary;mult mult -0.506046 -0.124388
+param_set mult param2 0.59659516811370850000
+component_create maths;arithmetics;binary;mult mult1 -0.514986 0.001250
+param_set mult1 param2 5.04291486740112300000
+component_create maths;arithmetics;binary;mult mult2 -0.553042 0.063690
+param_set mult2 param2 104.14076995849609000000
+component_create maths;arithmetics;binary;mult mult3 -0.573782 0.170873
+param_set mult3 param2 2.83276700973510740000
+component_create maths;arithmetics;binary;mult mult4 -0.029774 0.113517
+param_set mult4 param2 0.93411034345626831000
+component_create maths;arithmetics;binary;mult mult5 -0.512148 0.110178
+param_set mult5 param2 4.27262353897094730000
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera 0.176736 0.086942
+param_set orbit_camera rotation 0.06550133228302002000,0.99484384059906006000,0.07743061333894729600
+param_set orbit_camera distance 0.95771849155426025000
+param_set orbit_camera destination 0.00000000000000000000,0.02604507841169834100,0.00000000000000000000
+param_set orbit_camera upvector 0.26525411009788513000,0.77101093530654907000,0.00000000000000000000
+param_set orbit_camera fov 101.00000000000000000000
+param_set orbit_camera near_clipping 0.00138671975582838060
+param_set orbit_camera far_clipping 5.45695924758911130000
+param_set orbit_camera perspective_correct 0
+component_create particlesystems;generators;particles_mesh_spray particles_mesh_spray -0.370328 0.105446
+param_set particles_mesh_spray center 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set particles_mesh_spray add_vector 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set particles_mesh_spray random_deviation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set particles_mesh_spray time_source 0
+param_set particles_mesh_spray speed_type 0
+param_set particles_mesh_spray num_particles 500.70123291015625000000
+component_create texture;loaders;png_tex_load png_tex_load -0.276317 0.146655
+ps64 png_tex_load filename cmVzb3VyY2VzL2hlcnJpbmcucG5n
+component_create mesh;vertices;random_vertices random_vertices -0.451534 0.123077
+param_set random_vertices rand_seed 0.00000000000000000000
+param_set random_vertices scaling 1.00000000000000000000,0.99999916553497314000,1.00000000000000000000
+component_create mesh;vertices;random_vertices random_vertices1 -0.486790 -0.174037
+param_set random_vertices1 rand_seed 0.00000000000000000000
+component_create mesh;vertices;random_vertices random_vertices2 -0.482301 -0.056625
+param_set random_vertices2 rand_seed 0.00000000000000000000
+component_create texture;buffers;render_surface_single render_surface_single 0.241533 0.115328
+param_set render_surface_single support_feedback 0
+param_set render_surface_single clear_color 0.07697925716638565100,0.08818230032920837400,0.29088199138641357000,1.00000000000000000000
+param_set render_surface_single texture_size 10
+component_create texture;modifiers;rotate rotate 0.017851 0.182800
+param_set rotate rotation_axis 0.00000000000000000000,0.00000094690432206335,0.99999994039535522000
+param_set rotate rotation_angle -0.24882709980010986000
+component_create texture;modifiers;scale scale -0.127821 0.156713
+param_set scale scale_vector 1.11807692050933840000,0.34808191657066345000,1.00000000000000000000
+component_pos screen0 0.352927 0.042139
+param_set screen0 gamma_correction 1.00000095367431640000
+param_set screen0 clear_color 0.00000038851047179378,0.00000079749219139558,0.00000098721386621037,1.00000000000000000000
+component_create renderers;particlesystems;simple simple 0.019092 -0.023676
+param_set simple render_type 0
+param_set simple size_lifespan_type 0
+param_set simple color_lifespan_type 0
+param_set simple ignore_particles_at_center 0
+param_set simple size_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple alpha_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple r_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple g_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple b_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+component_create maths;arithmetics;binary;sub sub -0.499281 0.072187
+param_set sub param1 10.00000953674316400000
+component_create texture;modifiers;tex_parameters tex_parameters -0.204602 0.144620
+param_set tex_parameters wrap_s 2
+param_set tex_parameters wrap_t 2
+param_set tex_parameters min_filter 1
+param_set tex_parameters mag_filter 1
+param_set tex_parameters anisotropic_filtering 1
+component_create texture;opengl;texture_bind texture_bind -0.000025 0.256958
+component_create renderers;basic;textured_rectangle textured_rectangle 0.200764 0.171009
+param_set textured_rectangle facing_camera 0
+param_set textured_rectangle angle 0.00000000000000000000
+param_set textured_rectangle position 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+component_create renderers;basic;textured_rectangle textured_rectangle1 0.291199 0.164177
+param_set textured_rectangle1 global_alpha 0.36529004573822021000
+param_set textured_rectangle1 facing_camera 0
+param_set textured_rectangle1 angle 0.00000000000000000000
+param_set textured_rectangle1 position 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+component_create renderers;basic;textured_rectangle textured_rectangle2 0.302754 0.239489
+param_set textured_rectangle2 global_alpha 0.68184274435043335000
+param_set textured_rectangle2 facing_camera 0
+param_set textured_rectangle2 angle 0.00000000000000000000
+param_set textured_rectangle2 position 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+component_create texture;modifiers;translate translate -0.057262 0.168356
+param_set translate translation_vector -0.00385094154626131060,2.08462095260620120000,0.00000000000000000000
+component_create maths;arithmetics;vector;vector_add vector_add -0.281062 -0.136056
+component_create maths;arithmetics;vector;vector_mul_float vector_mul_float1 -0.320203 -0.155134
+param_set vector_mul_float1 param2 1.95700311660766600000
+component_create maths;arithmetics;vector;vector_mul_float vector_mul_float2 -0.455612 0.095255
+param_set vector_mul_float2 param1 1.00000000000000000000,1.00000000000000000000,1.00000000000000000000
+param_alias alias_result_float3:float3 1 camera_rotation_helper alias_result_float3 camera_rotation_helper.3float_to_float3 result_float3
+param_connect vector_mul_float2 param2 mult5 product
+param_connect vector_mul_float1 param1 bspline_matrix1 position
+param_connect vector_add param2 vector_mul_float1 result_float3
+param_connect vector_add param1 bspline_matrix position
+param_connect translate texture_in scale texture_scale_out
+param_connect textured_rectangle2 texture_in blur texture_out
+param_connect textured_rectangle1 texture_in render_surface_single texture_out
+param_connect textured_rectangle texture_in rotate texture_rotate_out
+param_connect texture_bind tex_in rotate texture_rotate_out
+param_connect texture_bind render_in material_param render_out
+param_connect tex_parameters texture_in png_tex_load texture
+param_connect sub param2 mult2 product
+param_connect simple texture blob texture
+param_connect simple particlesystem basic_gravity particlesystem
+param_connect screen0 screen blend_mode1 render_out
+param_connect scale texture_in tex_parameters texture_rotate_out
+param_connect rotate texture_in translate texture_translate_out
+param_connect render_surface_single render_in orbit_camera render_out
+param_connect particles_mesh_spray particle_lifetime_random_weight float_limiter result_float
+param_connect particles_mesh_spray particle_lifetime_base float_limiter result_float
+param_connect particles_mesh_spray spread vector_mul_float2 result_float3
+param_connect particles_mesh_spray mesh_in random_vertices mesh
+param_connect orbit_camera render_in depth_buffer render_out
+param_connect mult5 param1 input_visualization_listener octaves_l_5
+param_connect mult4 param1 input_visualization_listener octaves_r_1
+param_connect mult3 param1 input_visualization_listener vu_l
+param_connect mult2 param1 input_visualization_listener octaves_l_1
+param_connect mult1 param1 input_visualization_listener vu_l
+param_connect mult param1 float_accumulator result_float
+param_connect material_param render_in gravity_ribbon_particles render_out
+param_connect light_directional2 render_in light_directional1 render_out
+param_connect light_directional1 render_in light_directional render_out
+param_connect light_directional render_in texture_bind render_out
+param_connect gravity_ribbon_particles step_length float_limiter1 result_float
+param_connect gravity_ribbon_particles in_particlesystem basic_gravity particlesystem
+param_connect grav_strength param1 add sum
+param_connect float_limiter1 value_in add1 sum
+param_connect float_limiter value_in sub sum
+param_connect float_interpolation2 value_in mult4 product
+param_connect float_interpolation1 value_in mult3 product
+param_connect float_interpolation value_in input_visualization_listener octaves_l_0
+param_connect float_accumulator float_in float_interpolation result_float
+param_connect depth_buffer render_in blend_mode render_out
+param_connect camera_rotation_helper.oscillator2 freq camera_rotation_helper.float_dummy result_float
+param_connect camera_rotation_helper.oscillator1 freq camera_rotation_helper.float_dummy result_float
+param_connect camera_rotation_helper.oscillator freq camera_rotation_helper.float_dummy result_float
+param_alias alias_float_in:float -1 camera_rotation_helper alias_float_in camera_rotation_helper.float_dummy float_in
+param_connect camera_rotation_helper alias_float_in float_interpolation2 result_float
+param_connect camera_rotation_helper.3float_to_float3 floatc camera_rotation_helper.oscillator1 float
+param_connect camera_rotation_helper.3float_to_float3 floatb camera_rotation_helper.oscillator2 float
+param_connect camera_rotation_helper.3float_to_float3 floata camera_rotation_helper.oscillator float
+param_connect bspline_matrix1 b_pos mult product
+param_connect bspline_matrix1 bspline_vertices_mesh random_vertices1 mesh
+param_connect bspline_matrix b_pos mult product
+param_connect bspline_matrix bspline_vertices_mesh random_vertices2 mesh
+param_connect blur glow_source render_surface_single texture_out
+param_connect blend_mode1 render_in textured_rectangle2 render_out
+param_connect blend_mode1 render_in textured_rectangle1 render_out
+param_connect blend_mode render_in light_directional2 render_out
+param_connect basic_gravity1 friction friction result_float3
+param_connect basic_gravity1 amount grav_strength result_float3
+param_connect basic_gravity1 center bspline_matrix position
+param_connect basic_gravity1 in_particlesystem particles_mesh_spray particlesystem
+param_connect basic_gravity friction friction result_float3
+param_connect basic_gravity amount grav_strength result_float3
+param_connect basic_gravity center vector_add result_float3
+param_connect basic_gravity in_particlesystem basic_gravity1 particlesystem
+param_connect add1 param1 float_interpolation1 result_float
+param_connect add param1 mult1 product

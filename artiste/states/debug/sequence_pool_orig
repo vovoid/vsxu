@@ -1,0 +1,29 @@
+meta_set fHx8fHw=
+component_create renderers;basic;colored_rectangle colored_rectangle -0.144243 0.044186
+param_set colored_rectangle size 1.00000000000000000000,0.16937597095966339111,-0.00000000000000000001
+param_set colored_rectangle angle 0.48475700616836547852
+param_set colored_rectangle color 0.99999928474426269531,0.00000031917085152600,0.00000083372253811831,1.00000000000000000000
+component_create renderers;basic;colored_rectangle colored_rectangle2 -0.144942 0.002168
+param_set colored_rectangle2 size 1.00000000000000000000,0.30000001192092895508,-0.00000000000023907504
+param_set colored_rectangle2 angle 0.63411402702331542969
+param_set colored_rectangle2 rotation_axis 0.00000000000000001205,0.00000099060036973242,0.99999964237213134766
+param_set colored_rectangle2 color 0.21289199590682983398,0.00000000000000929657,0.99999988079071044922,1.00000000000000000000
+cpp screen0 0.000000 0.000000
+param_set screen0 gamma_correction 1.00000905990600585938
+param_set screen0 clear_color 0.00000000000000000003,0.00000000000000000000,0.00000000000003301989,0.99999910593032836914
+component_create renderers;particlesystems;simple simple -0.099164 -0.113154
+param_set simple render_type 0
+param_set simple size_lifespan_type 0
+param_set simple color_lifespan_type 0
+param_set simple ignore_particles_at_center 0
+param_set simple size_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple alpha_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple r_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple g_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple b_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_connect screen0 screen colored_rectangle2 render_out
+param_connect screen0 screen colored_rectangle render_out
+seq_pool add asdf
+seq_pool pseq_inject asdf colored_rectangle angle 3.000000;0;MC40ODQ3NTc=|3.000000;0;MC4wMDAwMDA=
+seq_pool add banantest
+seq_pool pseq_inject banantest colored_rectangle2 angle 3.000000;1;MC42NTMxMTA=|3.000000;0;MC4wMDAwMDA=

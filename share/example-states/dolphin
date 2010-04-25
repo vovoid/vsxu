@@ -1,0 +1,99 @@
+meta_set fHx8fHw=
+component_create texture;loaders;bitmap2texture bitmap2texture -0.412434 0.103470
+component_create mesh;importers;cal3d_importer cal3d_importer -0.403068 0.018937
+ps64 cal3d_importer filename cmVzb3VyY2VzL21lc2hlcy9jYWwzZC9kb2xwaGluL2RvbHBoaW5fcmlnX3Rlc3Q1LmNmZw==
+param_set cal3d_importer torso_rotation -0.00905516371130943298,-0.00889205280691385269,0.03004123829305171967,0.99946808815002441406
+param_set cal3d_importer torso_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer back_b_torso_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer back_b_torso2_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer back_b_torso3_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer back_b_torso4_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer tail_upper_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer tail_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer fin_top_rotation -0.01126897986978292465,0.00115138851106166840,-0.44378781318664550781,0.89606028795242309570
+param_set cal3d_importer fin_top_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer jaw_upper_rotation 0.03996099531650543213,-0.01816899888217449188,0.99303728342056274414,0.10931620746850967407
+param_set cal3d_importer jaw_upper_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer jaw_lower_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer l_fin_anchor_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer fin_left_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer r_fin_anchor_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_set cal3d_importer fin_right_translation 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer -0.092049 0.017775
+param_set depth_buffer depth_test 1
+param_set depth_buffer depth_mask 1
+component_create maths;dummies;float_dummy float_dummy -0.602282 -0.029619
+component_create bitmaps;loaders;jpeg_bitm_load jpeg_bitm_load -0.480722 0.101406
+ps64 jpeg_bitm_load filename cmVzb3VyY2VzL21lc2hlcy9jYWwzZC9kb2xwaGluL2RvbHBoaW5fdGV4LmpwZw==
+component_create renderers;opengl_modifiers;light_directional light_directional -0.177739 0.012386
+param_set light_directional light_id 0
+param_set light_directional enabled 1
+param_set light_directional position 0.85445058345794677734,0.51564604043960571289,0.06342204660177230835
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.272749 0.034832
+component_create mesh;modifiers;transforms;mesh_rotate_quat mesh_rotate_quat -0.339927 0.025320
+param_set mesh_rotate_quat quat_in -0.71572583913803100586,0.00000000000000000000,0.00000000000000000000,0.69838130474090576172
+component_create maths;arithmetics;binary;mult mult -0.307166 -0.026586
+param_set mult param2 0.13365700840950012207
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.329798 -0.163706
+param_set orbit_camera rotation 0.59965687990188598633,0.08323597908020019531,-0.79591602087020874023
+param_set orbit_camera distance 3.75103855133056640625
+param_set orbit_camera fov 30.65736389160156250000
+param_set orbit_camera perspective_correct 1
+component_create maths;oscillators;oscillator oscillator -0.718904 -0.025749
+component_create maths;interpolation;quat_slerp_2p quat_slerp_p -0.498800 0.019718
+param_set quat_slerp_p quat_a -0.00475001847371459007,-0.00576587719842791557,0.02255630306899547577,0.99971771240234375000
+param_set quat_slerp_p quat_b -0.00475210044533014297,-0.00576867302879691124,0.00000234578806157515,0.99997210502624511719
+component_create maths;interpolation;quat_slerp_2p quat_slerp_p3 -0.498677 -0.014021
+param_set quat_slerp_p3 quat_a 0.00228485395200550556,-0.00062878552125766873,0.00000172757791006006,0.99999725818634033203
+param_set quat_slerp_p3 quat_b 0.00225435965694487095,-0.00061964854830875993,0.16194592416286468506,0.98679691553115844727
+component_create maths;interpolation;quat_slerp_2p quat_slerp_p4 -0.498383 -0.049590
+param_set quat_slerp_p4 quat_a -0.01315249688923358917,-0.01549014449119567871,-0.11824224144220352173,0.99277681112289428711
+param_set quat_slerp_p4 quat_b 0.00000000000000000000,0.00000000000000000000,0.09779490530490875244,0.99520659446716308594
+component_create maths;interpolation;quat_slerp_2p quat_slerp_p5 -0.498274 -0.084171
+param_set quat_slerp_p5 quat_a 0.00000000000000000000,0.00000000000000000000,0.00000361288016392791,1.00000000000000000000
+param_set quat_slerp_p5 quat_b 0.00000000000000000000,0.00000000000000000000,0.17577549815177917480,0.98443031311035156250
+component_create maths;interpolation;quat_slerp_2p quat_slerp_p6 -0.496512 -0.119935
+param_set quat_slerp_p6 quat_a 0.00000000000000000000,0.00000000000000000000,-0.11920772492885589600,0.99286937713623046875
+param_set quat_slerp_p6 quat_b 0.00000000000000000000,0.00000000000000000000,0.10573271661996841431,0.99439454078674316406
+component_create maths;interpolation;quat_slerp_2p quat_slerp_p7 -0.496835 -0.157614
+param_set quat_slerp_p7 quat_a 0.00027432962087914348,0.00044374028220772743,-0.31300458312034606934,0.94975143671035766602
+param_set quat_slerp_p7 quat_b 0.00028698873938992620,0.00046498174197040498,0.10340194404125213623,0.99463951587677001953
+component_create maths;interpolation;quat_slerp_2p quat_slerp_p8 -0.454008 -0.177806
+param_set quat_slerp_p8 quat_a 0.03081753291189670563,-0.02058061771094799042,0.99927043914794921875,-0.00923148356378078461
+param_set quat_slerp_p8 quat_b 0.05815038084983825684,-0.02199262194335460663,0.99629318714141845703,-0.05945247411727905273
+param_set quat_slerp_p8 pos -0.07240130752325057983
+component_create maths;interpolation;quat_slerp_2p quat_slerp_p9 -0.490551 -0.228524
+param_set quat_slerp_p9 quat_a 0.16479988396167755127,0.41698807477951049805,0.20551563799381256104,0.86989957094192504883
+param_set quat_slerp_p9 quat_b -0.23184694349765777588,0.38428729772567749023,0.29197278618812561035,0.84458398818969726562
+param_set quat_slerp_p9 pos 0.93125855922698974609
+cpp screen0 0.081486 0.008105
+param_set screen0 gamma_correction 0.99999916553497314453
+param_set screen0 clear_color 0.00000000000000000003,0.00000000000000000000,0.00000000000003301989,0.99999910593032836914
+component_create system;time time -0.361546 -0.031221
+component_create texture;modifiers;translate translate -0.335116 0.125418
+param_set translate translation_vector 0.00000000000461371913,0.99999910593032836914,0.00000000000000000000
+param_connect translate texture_in bitmap2texture texture
+param_connect screen0 screen orbit_camera render_out
+param_connect quat_slerp_p7 pos float_dummy result_float
+param_connect quat_slerp_p6 pos float_dummy result_float
+param_connect quat_slerp_p5 pos float_dummy result_float
+param_connect quat_slerp_p4 pos float_dummy result_float
+param_connect quat_slerp_p3 pos float_dummy result_float
+param_connect quat_slerp_p pos float_dummy result_float
+param_connect orbit_camera render_in depth_buffer render_out
+param_connect mult param1 time r_time
+param_connect mesh_rotate_quat mesh_in cal3d_importer mesh
+param_connect mesh_basic_render mesh_in mesh_rotate_quat mesh_out
+param_connect mesh_basic_render tex_a translate texture_translate_out
+param_connect light_directional render_in mesh_basic_render render_out
+param_connect float_dummy float_in oscillator float
+param_connect depth_buffer render_in light_directional render_out
+param_connect cal3d_importer fin_left_rotation quat_slerp_p9 result_quat
+param_connect cal3d_importer jaw_lower_rotation quat_slerp_p8 result_quat
+param_connect cal3d_importer tail_rotation quat_slerp_p7 result_quat
+param_connect cal3d_importer tail_upper_rotation quat_slerp_p6 result_quat
+param_connect cal3d_importer back_b_torso4_rotation quat_slerp_p5 result_quat
+param_connect cal3d_importer back_b_torso3_rotation quat_slerp_p4 result_quat
+param_connect cal3d_importer back_b_torso2_rotation quat_slerp_p3 result_quat
+param_connect cal3d_importer back_b_torso_rotation quat_slerp_p result_quat
+param_connect bitmap2texture bitmap jpeg_bitm_load bitmap

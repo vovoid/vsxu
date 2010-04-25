@@ -1,0 +1,3 @@
+#!/bin/sh
+rm -rf `find . -name CMakeFiles`
+rm -rf `find . -name CMakeCache.txt`

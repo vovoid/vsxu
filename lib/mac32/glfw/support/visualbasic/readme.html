@@ -1,0 +1,164 @@
+<html>
+
+<head>
+  <title>GLFW Readme file for Visual Basic</title>
+</head>
+<body>
+
+<!-- TITLE -------------------------------------------------------------->
+<center>
+<font face="bookman old style,arial" size=+4><b>GLFW v2.5</b></font><br>
+<font face="bookman old style,arial" size=+3>for Visual Basic</font>
+</center>
+
+<!-- CONTENTS ----------------------------------------------------------->
+<p>
+<center>
+<table border=0><tr><td>
+<b>
+<ol>
+ <li><a href="#sec1">Introduction</li></a>
+ <li><a href="#sec2">Using GLFW from Visual Basic</li></a>
+ <li><a href="#sec3">The author</li></a>
+</ol>
+</b>
+</td></tr></table>
+</center>
+
+
+<!----------------------------------------------------------------------->
+<p><hr>
+<!----------------------------------------------------------------------->
+
+<a name="sec1">
+<p><h2>1. Introduction</h2>
+
+<p>This directory contains Visual Basic bindings for the GLFW v2.5.x
+Windows DLL, and Visual Basic example programs. For further information
+on how to use GLFW you should read the GLFW documentation.
+
+<!----------------------------------------------------------------------->
+<p><hr>
+<!----------------------------------------------------------------------->
+
+<a name="sec2">
+<p><h2>2. Using GLFW from Visual Basic</h2>
+
+<p><h3>2.1 General</h3>
+
+<p>Using GLFW is slightly different from what Visual Basic users may be
+used to, since GLFW replaces much of the functionality already built in to
+Visual Basic. For instance, mouse clicks and key presses that occur in a
+GLFW window are handled completely by GLFW, and in order to handle such
+events you have to rely on GLFW functionality. While this may feel odd at
+first, it does not necessarily have to be a disadvantage.
+
+<p>The most important thing to comprehend is the way a GLFW "main loop"
+works. Unlike ordinary Visual Basic programs, which are largely event
+based, GLFW programs usually have a core loop that runs "forever" (until
+aborted for some reason). To understand how it works, please look at the
+supplied example programs. You should also read the GLFW Users Guide,
+which explains how to use GLFW (regardless of programming language).
+
+
+<p><br><h3>2.2 About the Visual Basic project</h3>
+
+<p>In order to use GLFW from a Visual Basic project, you need to add the
+file <b>glfw.bas</b> to your project (add existing module). It contains
+all the necessary constant, structure and function definitions. You also
+have to copy the file <b>glfw.dll</b> to your project directory.
+
+<p>Typically you want to call OpenGL functions from your Visual Basic
+program too. Threfore there are also bindings for opengl32.dll and
+glu32.dll included in this distribution, namely <b>opengl32.bas</b> and
+<b>glu32.bas</b>. Note that these files have not been tested fully, so
+there may be bugs in them (please report them if you find them).
+
+<p>If you wish to make a "pure" GLFW project (no forms), you can create a
+a new module, in which you place a procedure named 'Main':
+
+<p><b>Private Sub Main()<br>End Sub</b>
+
+<p>Then select <i>Project Properties</i>, and under the <i>General</i>
+tab, in the <i>Startup Object</i> field, select <b>Sub Main</b>. This is
+how the example programs are meant to be used.
+
+<p>It is of course possible to mix Visual Basic forms and GLFW code. For
+instance you can have a form button that starts your OpenGL program by
+initializing GLFW, opening a GLFW window and entering a GLFW main loop
+etc.
+
+
+<p><br><h3>2.3 Calling GLFW functions</h3>
+
+<p>In principle, the GLFW functions can be called with the same syntax as
+described in the GLFW Reference Manual. The primary difference is that
+some GLFW functions are treated as Visual Basic subroutines ("Sub"), which
+means that you should not use parentheses around the argument list. The
+functions that are treated as subroutines are functions that, in 'C'
+terms, return &quot;void&quot; (in other words, nothing). An example is
+the <b>glfwGetMousePos</b> function, which should be called like this:
+
+<p>&nbsp;&nbsp;<b>glfwGetMousePos xpos, ypos</b>
+
+<p>To be honest, my knowledge in Visual Basic is quite limited, so there
+may be other options and other things to consider. Have a look at the
+example programs for examples of how to call GLFW functions.
+
+
+<p><br><h3>2.4 Using callback functions</h3>
+
+<p>GLFW callback functions are very similar to Visual Basic event
+subroutines (e.g. <b>Private Sub Command1_Click()</b>). The primary
+difference is that you have to specify the functions manually, using GLFW
+functions (such as <b>glfwSetMousePosCallback</b>). GLFW callback
+functions, once registered, are called only when <b>glfwSwapBuffers</b> or
+<b>glfwPollEvents</b> are called (if there are any corresponding events
+pending).
+
+<p>Creating callback functions is pretty simple. All you need to do is to
+declare a subroutine as specified in the GLFW Reference Manual, but of
+course translated to Visual Basic. For instance a mouse position callback
+function should, in 'C' language, be:
+
+<p><b>void GLFWCALL MyFun( int xpos, int ypos)</b>
+
+<p>Never mind the GLFWCALL thing (it has to do with 'C' language calling
+conventions). In Visual Basic, this translates into:
+
+<p><b>Private Sub MyFun(ByVal xpos As Long, ByVal ypos As Long)</b>
+
+<p>To register the callback function you should use the <b>AddressOf</b>
+operator, like this:
+
+<p>&nbsp;&nbsp;<b>glfwSetMousePosCallback AddressOf MyFun</b>
+
+<p>Done!
+
+
+
+<!----------------------------------------------------------------------->
+<p><hr>
+<!----------------------------------------------------------------------->
+
+<a name="sec3">
+<p><h2>3. The maintainer</h2>
+
+<p>My name is Camilla Berglund,
+<a href="mailto:elmindreda@users.sourceforge.net">elmindreda@users.sourceforge.net</a>.
+Please visit our
+<a href="http://sourceforge.net/projects/glfw/">support forums</a>
+if you have any problems with GLFW or any questions concerning GLFW.
+
+<p>The GLFW web site can be found here:
+<a href="http://glfw.sourceforge.net/">http://glfw.sourceforge.net/</a>.
+It contains the latest version of GLFW, news and other information that is
+useful for OpenGL development.
+
+<!----------------------------------------------------------------------->
+<p><hr>
+<!----------------------------------------------------------------------->
+
+</body>
+</html>
+

@@ -1,0 +1,256 @@
+meta_set fHx8fHw=
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.076709 -0.136185
+component_create maths;color;converters;4f_hsv_to_f4_rgb 4f_hsv_to_f4_rgb -0.362040 0.028768
+param_set 4f_hsv_to_f4_rgb h 0.41342991590499878000
+param_set 4f_hsv_to_f4_rgb s 0.31608831882476807000
+component_create maths;arithmetics;binary;add add -0.123758 -0.144037
+param_set add param2 1.00000905990600590000
+component_create maths;arithmetics;binary;add add1 -0.183258 -0.077167
+param_set add1 param2 0.00000875879504746990
+component_create maths;arithmetics;binary;add add2 -0.321234 -0.056069
+component_create renderers;opengl_modifiers;blend_mode blend_mode 0.072829 -0.061827
+param_set blend_mode dest_blend 1
+component_create renderers;opengl_modifiers;blend_mode blend_mode1 -0.070228 0.075471
+component_create renderers;opengl_modifiers;blend_mode blend_mode2 -0.213183 0.189485
+param_set blend_mode2 dest_blend 1
+component_create renderers;opengl_modifiers;blend_mode blend_mode3 -0.663897 0.017762
+param_set blend_mode3 dest_blend 1
+component_create renderers;opengl_modifiers;blend_mode blend_mode4 -0.593702 0.300334
+param_set blend_mode4 source_blend 1
+param_set blend_mode4 dest_blend 1
+component_create texture;particles;blob blob -0.504173 0.130176
+param_set blob arms 15.99999809265136700000
+param_set blob attenuation 10.72873783111572300000
+param_set blob size 6
+param_set blob star_flower 0.00000933430874283658
+param_set blob angle 0.52988433837890625000
+component_create texture;particles;blob blob1 -0.789665 0.378681
+param_set blob1 attenuation 0.00000802303475211374
+component_create texture;effects;blur blur -0.074107 -0.081068
+param_set blur texture_size 2
+param_set blur start_value 2.66770195960998540000
+param_set blur attenuation 1.99999105930328370000
+component_create renderers;basic;colored_rectangle colored_rectangle -0.732727 0.013721
+param_set colored_rectangle size 1.00000000000000000000,0.17230495810508728000,0.00000000000000000000
+param_set colored_rectangle border_enable 0
+param_set colored_rectangle rotation_axis 0.00000000000000000000,0.46722412109375000000,1.00000000000000000000
+component_create renderers;basic;colored_rectangle colored_rectangle1 -0.730173 -0.024416
+param_set colored_rectangle1 position -0.53335201740264893000,0.23420806229114532000,0.00000000000000000000
+param_set colored_rectangle1 size 1.00000000000000000000,0.12217899411916733000,0.00000000000000000000
+param_set colored_rectangle1 border_enable 0
+param_set colored_rectangle1 rotation_axis 1.00000000000000000000,0.99999910593032837000,0.00000000000000000000
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer -0.121378 0.088244
+param_set depth_buffer depth_test 1
+param_set depth_buffer depth_mask 1
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer1 -0.289532 0.177155
+param_set depth_buffer1 depth_test 1
+param_set depth_buffer1 depth_mask 0
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer2 -0.611634 0.026812
+param_set depth_buffer2 depth_test 0
+param_set depth_buffer2 depth_mask 0
+component_create maths;accumulators;float_accumulator float_accumulator -0.773319 0.076840
+component_create maths;accumulators;float_accumulator float_accumulator1 -0.784656 0.022335
+component_create maths;accumulators;float_accumulator float_accumulator2 -0.777214 0.122351
+component_create maths;converters;float_to_float3 float_to_float3 -0.376007 0.200725
+param_set float_to_float3 param1 150.58634948730469000000
+component_create renderers;opengl_modifiers;gl_scale gl_scale -0.316546 0.214965
+component_create renderers;opengl_modifiers;light_directional light_directional -0.183354 0.079258
+param_set light_directional light_id 0
+param_set light_directional enabled 1
+param_set light_directional position -0.07489273697137832600,0.66410499811172485000,0.94829070568084717000
+param_set light_directional specular_color 0.99999982118606567000,0.71713417768478394000,0.00000087178403873622,1.00000000000000000000
+component_create renderers;opengl_modifiers;material_param material_param -0.263732 0.075471
+param_set material_param ambient_reflectance 0.00000099700241662504,0.00000000000337151032,0.00000000000337151032,1.00000000000000000000
+param_set material_param specular_reflectance 0.99999988079071045000,0.72737067937850952000,0.61053693294525146000,1.00000000000000000000
+param_set material_param emission_intensity 0.00000014833233308309,0.00000087824969341455,0.00000000000172422916,0.99999898672103882000
+param_set material_param specular_exponent 5.08574104309082030000
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.466238 0.072851
+component_create renderers;mesh;mesh_basic_render mesh_basic_render1 -0.423569 0.273488
+component_create renderers;mesh;mesh_line_render mesh_line_render -0.426768 0.212218
+param_set mesh_line_render override_base_color 1
+param_set mesh_line_render base_color 0.00000040034541370915,0.00000097936390375253,0.00000041733210309758,1.00000000000000000000
+param_set mesh_line_render center_color 0.53289848566055298000,0.99999904632568359000,0.35719659924507141000,1.00000000000000000000
+param_set mesh_line_render each_to_center 1
+component_create mesh;particles;mesh_rays mesh_rays -0.509602 0.251687
+param_set mesh_rays limit_ray_size 0.10000960528850555000
+param_set mesh_rays center_color 0.45240271091461182000,0.57949191331863403000,0.34555053710937500000,1.00000000000000000000
+component_create maths;arithmetics;binary;mult mult -0.160824 -0.136266
+param_set mult param2 0.58749777078628540000
+component_create maths;arithmetics;binary;mult mult1 -0.244789 -0.077769
+param_set mult1 param2 13.95820999145507800000
+component_create maths;arithmetics;binary;mult mult2 -0.124494 -0.006657
+param_set mult2 param1 4.63561439514160160000
+param_set mult2 param2 9.99999046325683590000
+component_create maths;arithmetics;binary;mult mult3 -0.347390 -0.026021
+param_set mult3 param2 6.56709194183349610000
+component_create maths;arithmetics;binary;mult mult4 -0.833594 0.074366
+component_create maths;arithmetics;binary;mult mult5 -0.836263 0.027029
+component_create maths;arithmetics;binary;mult mult6 -0.898247 0.054045
+param_set mult6 param2 19.99999046325683600000
+component_create maths;arithmetics;binary;mult mult7 -0.506234 0.170235
+param_set mult7 param2 550.00085449218750000000
+component_create maths;arithmetics;binary;mult mult8 -0.814888 0.124687
+param_set mult8 param2 0.07295317202806472800
+component_create mesh;importers;obj_importer obj_importer -0.559223 0.076702
+ps64 obj_importer filename cmVzb3VyY2VzL2NvcmUvdGVzdDIub2Jq
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.069749 0.018221
+param_set orbit_camera fov 105.38819122314453000000
+param_set orbit_camera near_clipping 0.00355965807102620600
+param_set orbit_camera far_clipping 110.86014556884766000000
+component_create particlesystems;generators;particles_mesh_spray particles_mesh_spray -0.774823 0.288049
+param_set particles_mesh_spray random_deviation 20.70000076293945300000,25.00000000000000000000,20.00000000000000000000
+param_set particles_mesh_spray time_source 0
+param_set particles_mesh_spray speed_type 0
+param_set particles_mesh_spray num_particles 999.99993896484375000000
+param_set particles_mesh_spray particle_size_base 0.17632009088993073000
+param_set particles_mesh_spray particle_lifetime_base 12.50888156890869100000
+component_create mesh;vertices;random_vertices random_vertices -0.849240 0.302038
+param_set random_vertices num_points 999.99957275390625000000
+param_set random_vertices scaling 50.00000000000000000000,50.00000000000000000000,50.00000000000000000000
+component_create texture;buffers;render_surface_single render_surface_single -0.012087 -0.004931
+param_set render_surface_single support_feedback 0
+param_set render_surface_single texture_size 1
+component_create texture;buffers;render_surface_single render_surface_single1 -0.558746 0.004362
+param_set render_surface_single1 support_feedback 0
+param_set render_surface_single1 clear_color 0.00000000000000000000,0.11213596910238266000,0.00000000000000000000,1.00000000000000000000
+param_set render_surface_single1 texture_size 3
+component_pos screen0 0.236872 -0.026436
+component_create renderers;particlesystems;simple simple -0.674475 0.293232
+param_set simple render_type 0
+param_set simple size_lifespan_type 0
+param_set simple ignore_particles_at_center 0
+param_set simple size_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple alpha_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+component_create texture;opengl;texture_coord_gen texture_coord_gen -0.376040 0.087846
+param_set texture_coord_gen gen_s 3
+param_set texture_coord_gen gen_t 3
+param_set texture_coord_gen gen_r 3
+component_create renderers;basic;textured_rectangle textured_rectangle 0.030991 0.045451
+param_set textured_rectangle facing_camera 0
+component_create renderers;basic;textured_rectangle textured_rectangle1 0.008175 -0.062426
+param_set textured_rectangle1 facing_camera 0
+param_set textured_rectangle1 size 1.00000929832458500000
+param_set textured_rectangle1 angle -0.00000908114998310339
+param_set textured_rectangle1 color_multiplier 0.83153122663497925000,0.92149114608764648000,0.99999910593032837000,1.00000000000000000000
+component_create renderers;basic;textured_rectangle textured_rectangle2 0.013779 -0.120470
+param_set textured_rectangle2 facing_camera 0
+param_set textured_rectangle2 x_aspect_ratio 41.22348403930664100000
+param_set textured_rectangle2 size 1.18433105945587160000
+param_set textured_rectangle2 angle -0.00061002874281257391
+param_set textured_rectangle2 color_multiplier 0.39385896921157837000,0.99999904632568359000,0.97706615924835205000,1.00000000000000000000
+component_create renderers;basic;textured_rectangle textured_rectangle3 -0.442435 0.152247
+param_set textured_rectangle3 facing_camera 1
+param_set textured_rectangle3 color_multiplier 0.60259604454040527000,0.76881939172744751000,0.99999994039535522000,1.00000000000000000000
+component_create renderers;basic;textured_rectangle textured_rectangle4 -0.720286 0.101701
+param_set textured_rectangle4 facing_camera 0
+param_set textured_rectangle4 x_aspect_ratio 0.99999088048934937000
+param_set textured_rectangle4 size 1.71280431747436520000
+component_create renderers;basic;textured_rectangle textured_rectangle5 -0.588815 -0.090967
+param_set textured_rectangle5 facing_camera 0
+component_create system;time time -0.955625 0.050238
+component_create system;sound;vsx_listener vsx_listener -0.500085 -0.110614
+param_set vsx_listener multiplier 1.79999065399169920000
+macro_create xy_position_oscillation -0.431516 -0.215775 0.190878
+component_create maths;converters;3float_to_float3 xy_position_oscillation.3float_to_float3 0.010459 0.015148
+component_create maths;oscillators;oscillator xy_position_oscillation.oscillator -0.047303 -0.019031
+param_set xy_position_oscillation.oscillator amp 1.00058448314666750000
+param_set xy_position_oscillation.oscillator ofs 0.01781512983143329600
+param_set xy_position_oscillation.oscillator freq 0.13787043094635010000
+component_create maths;oscillators;oscillator xy_position_oscillation.oscillator1 -0.057348 0.037262
+param_set xy_position_oscillation.oscillator1 amp 0.99999076128005981000
+param_set xy_position_oscillation.oscillator1 ofs 0.00000966469633567613
+param_set xy_position_oscillation.oscillator1 freq 0.14559514820575714000
+component_create maths;oscillators;oscillator xy_position_oscillation.oscillator2 -0.056242 0.011438
+param_set xy_position_oscillation.oscillator2 amp 0.99999147653579712000
+param_set xy_position_oscillation.oscillator2 ofs 0.00000873122098710155
+param_set xy_position_oscillation.oscillator2 freq 0.24199660122394562000
+macro_create xy_position_oscillation1 -0.213243 -0.006337 0.190878
+component_create maths;converters;3float_to_float3 xy_position_oscillation1.3float_to_float3 0.007591 0.009941
+param_set xy_position_oscillation1.3float_to_float3 floatc -1.46396255493164060000
+component_create maths;oscillators;oscillator xy_position_oscillation1.oscillator1 -0.058793 0.031683
+param_set xy_position_oscillation1.oscillator1 freq 0.10516841709613800000
+component_create maths;oscillators;oscillator xy_position_oscillation1.oscillator2 -0.054465 -0.011927
+param_set xy_position_oscillation1.oscillator2 amp 0.99999111890792847000
+param_set xy_position_oscillation1.oscillator2 ofs 0.00000965085655479925
+param_set xy_position_oscillation1.oscillator2 freq 0.06299266219139099100
+param_alias alias_result_float3:float3 1 xy_position_oscillation1 alias_result_float3 xy_position_oscillation1.3float_to_float3 result_float3
+param_alias alias_result_float3:float3 1 xy_position_oscillation alias_result_float3 xy_position_oscillation.3float_to_float3 result_float3
+param_alias alias_freq_1:float -1 xy_position_oscillation1 alias_freq_1 xy_position_oscillation1.oscillator2 freq
+param_alias alias_phase_1:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 xy_position_oscillation1 alias_phase_1 xy_position_oscillation1.oscillator2 phase
+param_alias alias_freq:float -1 xy_position_oscillation1 alias_freq xy_position_oscillation1.oscillator1 freq
+param_alias alias_phase:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 xy_position_oscillation1 alias_phase xy_position_oscillation1.oscillator1 phase
+param_connect xy_position_oscillation1.3float_to_float3 floatb xy_position_oscillation1.oscillator2 float
+param_connect xy_position_oscillation1.3float_to_float3 floata xy_position_oscillation1.oscillator1 float
+param_alias alias_freq_1:float -1 xy_position_oscillation alias_freq_1 xy_position_oscillation.oscillator2 freq
+param_alias alias_phase_1:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 xy_position_oscillation alias_phase_1 xy_position_oscillation.oscillator2 phase
+param_alias alias_freq:float -1 xy_position_oscillation alias_freq xy_position_oscillation.oscillator1 freq
+param_alias alias_phase:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 xy_position_oscillation alias_phase xy_position_oscillation.oscillator1 phase
+param_connect xy_position_oscillation.3float_to_float3 floatc xy_position_oscillation.oscillator float
+param_connect xy_position_oscillation.3float_to_float3 floatb xy_position_oscillation.oscillator2 float
+param_connect xy_position_oscillation.3float_to_float3 floata xy_position_oscillation.oscillator1 float
+param_connect textured_rectangle5 texture_in render_surface_single1 texture_out
+param_connect textured_rectangle4 angle float_accumulator2 result_float
+param_connect textured_rectangle4 texture_in blob texture
+param_connect textured_rectangle3 texture_in blob texture
+param_connect textured_rectangle3 size mult7 product
+param_connect textured_rectangle2 texture_in blur texture_out
+param_connect textured_rectangle2 global_alpha add1 sum
+param_connect textured_rectangle1 texture_in blur texture_out
+param_connect textured_rectangle1 global_alpha add1 sum
+param_connect textured_rectangle texture_in render_surface_single texture_out
+param_connect texture_coord_gen render_in mesh_basic_render render_out
+param_connect simple texture blob1 texture
+param_connect simple particlesystem particles_mesh_spray particlesystem
+param_connect screen0 screen blend_mode render_out
+param_connect render_surface_single1 render_in depth_buffer2 render_out
+param_connect render_surface_single render_in orbit_camera render_out
+param_connect particles_mesh_spray mesh_in random_vertices mesh
+param_connect orbit_camera render_in blend_mode1 render_out
+param_connect orbit_camera distance mult2 product
+param_connect orbit_camera rotation xy_position_oscillation1 alias_result_float3
+param_connect mult8 param1 vsx_listener octaves_l_3
+param_connect mult7 param1 vsx_listener octaves_l_0
+param_connect mult6 param1 time r_dtime
+param_connect mult5 param2 vsx_listener octaves_r_4
+param_connect mult5 param1 mult6 product
+param_connect mult4 param2 vsx_listener octaves_r_3
+param_connect mult4 param1 mult6 product
+param_connect mult3 param1 add2 sum
+param_connect mult1 param1 vsx_listener octaves_l_0
+param_connect mult param1 vsx_listener octaves_l_0
+param_connect mesh_line_render mesh_in mesh_rays mesh
+param_connect mesh_basic_render1 mesh_in mesh_rays mesh
+param_connect mesh_basic_render mesh_in obj_importer mesh
+param_connect mesh_basic_render tex_a render_surface_single1 texture_out
+param_connect material_param diffuse_reflectance 4f_hsv_to_f4_rgb result_float4
+param_connect material_param render_in texture_coord_gen render_out
+param_connect light_directional render_in material_param render_out
+param_connect gl_scale render_in mesh_line_render render_out
+param_connect gl_scale render_in mesh_basic_render1 render_out
+param_connect gl_scale scale float_to_float3 result_float3
+param_connect float_accumulator2 float_in mult8 product
+param_connect float_accumulator1 float_in mult5 product
+param_connect float_accumulator float_in mult4 product
+param_connect depth_buffer2 render_in blend_mode3 render_out
+param_connect depth_buffer1 render_in gl_scale render_out
+param_connect depth_buffer1 render_in textured_rectangle3 render_out
+param_connect depth_buffer1 render_in blend_mode4 render_out
+param_connect depth_buffer render_in light_directional render_out
+param_connect depth_buffer render_in blend_mode2 render_out
+param_connect colored_rectangle1 angle float_accumulator1 result_float
+param_connect colored_rectangle angle float_accumulator1 result_float
+param_connect blur glow_source render_surface_single texture_out
+param_connect blend_mode4 render_in simple render_out
+param_connect blend_mode3 render_in colored_rectangle render_out
+param_connect blend_mode3 render_in colored_rectangle1 render_out
+param_connect blend_mode3 render_in textured_rectangle4 render_out
+param_connect blend_mode2 render_in depth_buffer1 render_out
+param_connect blend_mode1 render_in depth_buffer render_out
+param_connect blend_mode render_in textured_rectangle render_out
+param_connect blend_mode render_in textured_rectangle2 render_out
+param_connect blend_mode render_in textured_rectangle1 render_out
+param_connect add2 param2 vsx_listener octaves_r_6
+param_connect add2 param1 vsx_listener octaves_r_1
+param_connect add1 param1 mult1 product
+param_connect add param1 mult product
+param_connect 4f_hsv_to_f4_rgb v mult3 product

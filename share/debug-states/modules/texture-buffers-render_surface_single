@@ -1,0 +1,18 @@
+meta_set fHx8fHw=
+component_create renderers;basic;colored_rectangle colored_rectangle -0.244721 0.040179
+param_set colored_rectangle border_enable 0
+component_create texture;buffers;render_surface_single render_surface_single -0.167955 0.029173
+param_set render_surface_single texture_size 10
+cpp screen0 0.000000 0.000000
+param_set screen0 gamma_correction 1.00000095367431640625
+param_set screen0 clear_color 0.00000000000002926513,0.00000000000000000000,0.00000000000000000001,0.00000070461976520164
+component_create renderers;basic;textured_rectangle textured_rectangle -0.174033 -0.034336
+param_set textured_rectangle global_alpha 0.94413715600967407227
+param_set textured_rectangle facing_camera 0
+param_set textured_rectangle size 0.91228711605072021484
+param_set textured_rectangle angle 0.05845138058066368103
+param_set textured_rectangle position 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+param_connect textured_rectangle texture_in render_surface_single texture_out
+param_connect screen0 screen textured_rectangle render_out
+param_connect render_surface_single render_in textured_rectangle render_out
+param_connect render_surface_single render_in colored_rectangle render_out

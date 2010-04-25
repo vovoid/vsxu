@@ -1,0 +1,5 @@
+FSBank library is for msvc or msvc compatible linkers only.
+
+fsbanklibexMT.lib  - fsbank library MULTITHREADED.  (c runtime linked statically)
+fsbanklibexMTD.lib - fsbank library MULTITHREADED DLL.  (c runtime linked dynamically)
+

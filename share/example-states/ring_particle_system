@@ -1,0 +1,51 @@
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.521946 0.197559
+component_create maths;color;converters;4f_hsv_to_f4_rgb 4f_hsv_to_f4_rgb -0.505742 -0.060271
+param_set 4f_hsv_to_f4_rgb s 0.56423187255859375000
+component_create particlesystems;generators;basic_spray_emitter basic_spray_emitter -0.419205 -0.014263
+param_set basic_spray_emitter emitter_position 0.00000000000000037389,0.00000098602640719037,0.00000000000000000000
+param_set basic_spray_emitter speed_x 2.03482294082641600000
+param_set basic_spray_emitter speed_y 1.36155402660369870000
+param_set basic_spray_emitter speed_z 2.27426195144653320000
+param_set basic_spray_emitter num_particles 20.72278404235839800000
+param_set basic_spray_emitter particle_size_base 0.65142786502838135000
+component_create texture;loaders;bitmap2texture bitmap2texture -0.536901 0.134161
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.145236 0.131006
+param_set blend_mode dest_blend 1
+component_create renderers;opengl_modifiers;gl_color gl_color -0.262040 0.151518
+param_set gl_color color 0.99999994039535522000,0.64510405063629150000,0.64510405063629150000,1.00000000000000000000
+component_create bitmaps;loaders;jpeg_bitm_load jpeg_bitm_load -0.655394 0.177287
+ps64 jpeg_bitm_load filename cmVzb3VyY2VzL3ZzYS9kaXNjX3RleHR1cmUuanBn
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.317520 0.065690
+param_set mesh_basic_render use_display_list 1
+param_set mesh_basic_render use_vertex_colors 0
+component_create mesh;particles;mesh_disc mesh_disc -0.366570 0.059016
+param_set mesh_disc num_segments 20.19583892822265600000
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.086203 0.156356
+param_set orbit_camera rotation 0.92028611898422241000,0.39111658930778503000,0.01004719547927379600
+param_set orbit_camera distance 1.90816283226013180000
+component_create maths;oscillators;oscillator oscillator -0.590960 -0.029740
+param_set oscillator amp 0.07017594575881958000
+param_set oscillator ofs 0.62135893106460571000
+param_set oscillator freq 0.55968588590621948000
+component_create maths;oscillators;oscillator oscillator1 -0.568841 0.197386
+param_set oscillator1 osc_type 0
+component_create renderers;opengl_modifiers;rendering_mode rendering_mode -0.191451 0.183654
+param_set rendering_mode smooth_edges 1
+component_create texture;modifiers;scale scale -0.365496 0.171431
+param_set scale scale_vector 6.96673393249511720000,0.99999904632568359000,1.00000000000000000000
+component_create texture;modifiers;translate translate -0.446812 0.177083
+param_connect translate translation_vector 3float_to_float3 result_float3
+param_connect translate texture_in bitmap2texture texture
+param_connect screen0 screen orbit_camera render_out
+param_connect scale texture_in translate texture_translate_out
+param_connect rendering_mode render_in gl_color render_out
+param_connect orbit_camera render_in blend_mode render_out
+param_connect mesh_basic_render particles basic_spray_emitter particlesystem
+param_connect mesh_basic_render mesh_in mesh_disc mesh
+param_connect mesh_basic_render tex_a scale texture_scale_out
+param_connect gl_color render_in mesh_basic_render render_out
+param_connect blend_mode render_in rendering_mode render_out
+param_connect bitmap2texture bitmap jpeg_bitm_load bitmap
+param_connect basic_spray_emitter color 4f_hsv_to_f4_rgb result_float4
+param_connect 4f_hsv_to_f4_rgb h oscillator float
+param_connect 3float_to_float3 floata oscillator1 float

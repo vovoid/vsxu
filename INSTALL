@@ -1,0 +1,93 @@
+-------------------------------------------------------------------------------
+ H O W   T O   B U I L D
+-------------------------------------------------------------------------------
+  Since v0.2 VSXu uses cmake. If you are unfamiliar with cmake, it's a Makefile
+  generator much like automake.
+  
+  For backwards compatibility VSXu supports ./configure.
+  
+  A typical build looks like this:
+  
+    ./configure
+    make
+    sudo make install
+
+    Then you can run the following programs:
+      vsxu_artiste 
+    and 
+      vsxu_player
+    with pulseaudio recording support for audio visualization.
+    (for more sound input options see the section "Sound Inputs")
+  
+  Another typical build looks like this:
+  
+    ./configure --prefix=/home/user/bin/vsxu
+    make
+    make install
+  
+  VSXu will install the following:
+  - vsxu_engine.so                 (into /usr/lib)
+  - vsxu_engine_graphics.so        (into /usr/lib)
+  - example files,
+    gui skins,
+    visualization projects         (into /usr/share/vsxu)
+    
+  The default build aims to installs vsxu as a standalone visualization program
+  using pulseaudio (FMOD on windows). This should be OK for most distros since
+  FMOD isn't free software.
+  
+  However VSXu can be built in many ways for a few different purpouses so please
+  review your options.
+
+-------------------------------------------------------------------------------
+A D V A N C E D   B U I L D   O P T I O N S
+-------------------------------------------------------------------------------
+
+  You can bypass the configure script (it's only for the people not reading this
+  file anyway).
+  
+  The concept is this:
+  instead of "./configure", 
+  run 
+  "cmake . -DFLAG1=VALUE1 -DFLAG2=VALUE2..."
+  
+  Full list of build flags:
+  
+    -DCMAKE_INSTALL_PREFIX="/path/to/install/dir"
+      sets installation path
+
+    -DENGINE_SCRIPTING=1
+      enables vsxl/gamemonkey (the scripting language in the engine)
+
+    -DVSXU_DEBUG=1
+      enables debug log/syslog messages and 
+      enables debug symbols
+
+    -DVSXU_SOUND_FMOD=1
+      see next section
+
+    -DVSXU_SOUND_MEDIA_PLAYER=1
+      see next section
+
+Examples:
+  This is my test-it-all command:
+    cmake . -DVSXU_DEBUG=1 -DENGINE_SCRIPTING=1 -DCMAKE_INSTALL_PREFIX="/home/jaw/vsxu_install_test"
+
+
+-------------------------------------------------------------------------------
+ S O U N D    I N P U T S
+-------------------------------------------------------------------------------
+
+  The default (on linux) is to build the pulseaudio listener.
+  On Windows the FMOD module.
+
+  You can currently only use ONE sound module, if you build+install multiple ones
+  you get conflicts and only the first will be loaded by the engine.
+
+  Optional scenario #1:
+    If You want an mp3/xm/it/ogg-playing standalone vsxu artiste to run presentations
+    or other advanced projects you should use the VSXU_SOUND_FMOD flag. It builds
+   
+  Options scenario #2:
+    You want to integrate vsxu into your media player or other project and you want
+    to feed vsxu with your own sound data. Then VSXU_SOUND_MEDIA_PLAYER is for you.

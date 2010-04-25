@@ -1,0 +1,12 @@
+meta_set fHx8fHw=
+component_create renderers;opengl_modifiers;gl_translate gl_translate -0.275287 0.026575
+param_set gl_translate translation 0.00000000000000000000,0.39532798528671264648,0.00000000000000000000
+component_create sound;input_visualization_listener input_visualization_listener -0.483058 0.009067
+component_pos screen0 0.000000 0.000000
+component_create renderers;oscilloscopes;simple_oscilloscope simple_oscilloscope -0.358593 -0.017211
+component_create renderers;oscilloscopes;simple_oscilloscope simple_oscilloscope1 -0.374109 0.029556
+param_connect simple_oscilloscope1 data_in input_visualization_listener spectrum
+param_connect simple_oscilloscope data_in input_visualization_listener wave
+param_connect screen0 screen simple_oscilloscope render_out
+param_connect screen0 screen gl_translate render_out
+param_connect gl_translate render_in simple_oscilloscope1 render_out

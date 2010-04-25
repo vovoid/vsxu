@@ -1,0 +1,1 @@
+Run the build_media_files.sh shell script to build the media files required for the simple_event example.

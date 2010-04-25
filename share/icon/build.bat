@@ -1,0 +1,1 @@
+windres -i vsxu.rc -o vsxu_icon.o

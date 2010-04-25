@@ -1,0 +1,48 @@
+meta_set fHx8fHw=
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.108168 -0.047007
+component_create maths;converters;3float_to_float3 3float_to_float31 -0.111857 -0.096145
+component_create texture;loaders;bitmap2texture bitmap2texture -0.150580 0.083211
+param_set bitmap2texture mipmaps 1
+component_create maths;oscillators;oscillator oscillator -0.153182 0.025614
+param_set oscillator amp 16.89999008178710900000
+param_set oscillator ofs 0.99999088048934937000
+param_set oscillator freq 0.00990803632885217670
+component_create maths;oscillators;oscillator oscillatora -0.155248 -0.020996
+param_set oscillatora osc_type 4
+param_set oscillatora amp 1.88762164115905760000
+param_set oscillatora ofs 2.00000882148742680000
+param_set oscillatora freq 0.30000925064086914000
+component_create maths;oscillators;oscillator oscillatorb -0.157084 -0.060676
+param_set oscillatorb amp 0.49947196245193481000
+param_set oscillatorb ofs 1.01613676548004150000
+param_set oscillatorb freq 0.63672393560409546000
+component_create maths;oscillators;oscillator oscillatorc -0.158141 -0.111896
+param_set oscillatorc ofs 0.99997711181640625000
+param_set oscillatorc freq 0.20278263092041016000
+component_create maths;oscillators;oscillator oscillatord -0.155410 -0.152908
+param_set oscillatord ofs 1.17005324363708500000
+param_set oscillatord freq 0.29550537467002869000
+component_create bitmaps;generators;plasma plasma -0.217910 0.096163
+param_set plasma col_amp 0.90209603309631348000,0.87544107437133789000,0.84878712892532349000,0.91098189353942871000
+param_set plasma col_ofs 0.01445099897682666800,0.00000000000000000000,0.00000000000000000000,0.99999916553497314000
+param_set plasma r_period 3.99999976158142090000,3.99999904632568360000,0.00000000000000000000
+param_set plasma g_period 3.99999904632568360000,31.99999809265136700000,0.00000099999999747524
+param_set plasma b_period 1.00000000000000000000,0.99999988079071045000,0.99999904632568359000
+param_set plasma a_period 0.00000000000000473569,0.00000000008056096068,0.00000093952445467949
+param_set plasma size 6
+component_pos screen0 0.000000 0.000000
+component_create renderers;examples;simple_with_texture simple_with_texture -0.052793 0.015133
+param_set simple_with_texture facing_camera 0
+param_set simple_with_texture x_aspect_ratio 0.84103649854660034000
+param_set simple_with_texture size 1.69999015331268310000
+param_set simple_with_texture color_multiplier 1.00000000000000000000,1.00000000000000000000,1.00000000000000000000,0.99999910593032837000
+param_connect simple_with_texture tex_coord_b 3float_to_float31 result_float3
+param_connect simple_with_texture tex_coord_a 3float_to_float3 result_float3
+param_connect simple_with_texture angle oscillator float
+param_connect simple_with_texture texture_in bitmap2texture texture
+param_connect screen0 screen simple_with_texture render_out
+param_connect bitmap2texture bitmap plasma bitmap
+param_connect 3float_to_float31 floatb oscillatord float
+param_connect 3float_to_float31 floata oscillatorc float
+param_connect 3float_to_float3 floatb oscillatorb float
+param_connect 3float_to_float3 floata oscillatora float

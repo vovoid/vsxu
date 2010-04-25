@@ -1,0 +1,106 @@
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.443677 0.001286
+param_set 3float_to_float3 floatb 0.15876853466033936000
+component_create maths;converters;3float_to_float3 3float_to_float31 -0.454254 -0.040175
+param_set 3float_to_float31 floatb 0.15648189187049866000
+component_create maths;converters;3float_to_float3 3float_to_float32 -0.428183 0.067187
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.102770 -0.018339
+param_set blend_mode dest_blend 1
+component_create renderers;opengl_modifiers;blend_mode blend_mode1 -0.353280 -0.125744
+param_set blend_mode1 dest_blend 1
+component_create renderers;opengl_modifiers;blend_mode blend_mode2 -0.350798 0.160804
+component_create renderers;opengl_modifiers;blend_mode blend_mode3 -0.317636 -0.035368
+param_set blend_mode3 dest_blend 1
+component_create texture;particles;blob blob -0.569828 -0.160316
+macro_create hue_sine -0.428763 0.261341 0.145378
+component_create maths;color;converters;4f_hsv_to_f4_rgb hue_sine.4f_hsv_to_f4_rgb 0.029754 0.001387
+param_set hue_sine.4f_hsv_to_f4_rgb s 0.31275409460067749000
+param_set hue_sine.4f_hsv_to_f4_rgb v 0.99999904632568359000
+component_create maths;oscillators;oscillator hue_sine.oscillator -0.032997 0.007651
+param_set hue_sine.oscillator freq 0.01205679960548877700
+component_create maths;arithmetics;binary;mult mult -0.446386 -0.094130
+param_set mult param2 20.69059944152832000000
+component_create maths;oscillators;oscillator oscillator -0.447003 0.173701
+param_set oscillator amp 0.00554509693756699560
+param_set oscillator ofs 0.00000077859345992692
+param_set oscillator freq 0.08719830960035324100
+component_create maths;oscillators;oscillator oscillator1 -0.477950 0.095400
+param_set oscillator1 amp 0.00481674773618578910
+param_set oscillator1 ofs 0.00000084416478784988
+param_set oscillator1 phase 0.27570620179176331000
+param_set oscillator1 freq 0.06784985214471817000
+component_create maths;oscillators;oscillator oscillator2 -0.481064 0.036693
+param_set oscillator2 amp 0.00526092294603586200
+param_set oscillator2 ofs 0.00000066489536720837
+param_set oscillator2 freq 0.15274402499198914000
+component_create texture;buffers;render_surface_single render_surface_single -0.239778 -0.057748
+param_set render_surface_single screen_width 1024
+param_set render_surface_single screen_height 1024
+param_set render_surface_single texture_size 1
+component_create renderers;opengl_modifiers;rendering_mode rendering_mode -0.052186 0.019155
+param_set rendering_mode smooth_edges 1
+param_set screen0 gamma_correction 1.00000095367431640000
+component_create renderers;oscilloscopes;simple_oscilloscope simple_oscilloscope -0.380668 -0.048950
+component_create renderers;oscilloscopes;simple_oscilloscope simple_oscilloscope2 -0.369032 0.015824
+param_set simple_oscilloscope2 angle 0.13865013420581818000
+param_set simple_oscilloscope2 line_width 2.01194405555725100000
+param_set simple_oscilloscope2 rotation_axis 0.00000000000000022469,0.00000000002083945169,0.99999904632568359000
+param_set simple_oscilloscope2 color 0.99999934434890747000,0.99999922513961792000,0.99999922513961792000,0.99999994039535522000
+component_create renderers;examples;simple_with_texture simple_with_texture -0.234751 0.098317
+param_set simple_with_texture global_alpha 1.02354371547698970000
+param_set simple_with_texture size 1.99882316589355470000
+param_set simple_with_texture angle -0.46361213922500610000
+param_set simple_with_texture color_multiplier 0.99999904632568359000,0.99999928474426270000,0.99999994039535522000,0.99999994039535522000
+param_set simple_with_texture color_center 0.60919690132141113000,0.72243988513946533000,0.99999994039535522000,1.00000000000000000000
+param_set simple_with_texture color_a 0.99999994039535522000,0.99999904632568359000,0.99999904632568359000,1.00000000000000000000
+param_set simple_with_texture color_b 0.99999910593032837000,0.99999904632568359000,0.99999982118606567000,1.00000000000000000000
+param_set simple_with_texture color_d 0.47497767210006714000,0.77857875823974609000,0.81013160943984985000,1.00000000000000000000
+param_set simple_with_texture tex_coord_a 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture1 -0.477219 -0.155181
+param_set simple_with_texture1 tex_coord_b 1.00000000000000000000,1.00000000000000000000,3936338.25000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture2 -0.360419 0.089131
+param_set simple_with_texture2 x_aspect_ratio 0.99999904632568359000
+param_set simple_with_texture2 size 0.99999934434890747000
+param_set simple_with_texture2 color_center 0.90890538692474365000,0.93214672803878784000,0.62037533521652222000,1.00000000000000000000
+param_set simple_with_texture2 tex_coord_b 1.00000000000000000000,1.00000000000000000000,0.20000000298023224000
+component_create renderers;examples;simple_with_texture simple_with_texture_out -0.168242 -0.053737
+param_set simple_with_texture_out global_alpha 0.68507730960845947000
+param_set simple_with_texture_out x_aspect_ratio 0.88491284847259521000
+param_set simple_with_texture_out size 2.58013629913330080000
+param_set simple_with_texture_out angle 0.41660067439079285000
+param_set simple_with_texture_out color_multiplier 0.71712481975555420000,0.62337100505828857000,0.99999976158142090000,1.00000000000000000000
+param_set simple_with_texture_out tex_coord_b 1.00000000000000000000,1.00000000000000000000,1.00000000000000000000
+component_create system;sound;vsx_listener vsx_listener -0.612045 0.025028
+param_set vsx_listener multiplier 0.99349677562713623000
+param_alias alias_result_float4:float4 1 hue_sine alias_result_float4 hue_sine.4f_hsv_to_f4_rgb result_float4
+param_connect simple_with_texture_out texture_in render_surface_single texture_out
+param_connect simple_with_texture2 tex_coord_a 3float_to_float32 result_float3
+param_connect simple_with_texture2 color_multiplier hue_sine alias_result_float4
+param_connect simple_with_texture2 angle oscillator float
+param_connect simple_with_texture2 texture_in render_surface_single texture_out
+param_connect simple_with_texture1 texture_in blob texture
+param_connect simple_with_texture1 size vsx_listener octaves_l_0
+param_connect simple_with_texture texture_in render_surface_single texture_out
+param_connect simple_oscilloscope2 size 3float_to_float31 result_float3
+param_connect simple_oscilloscope2 data_in vsx_listener wave
+param_connect simple_oscilloscope line_width mult product
+param_connect simple_oscilloscope size 3float_to_float3 result_float3
+param_connect simple_oscilloscope data_in vsx_listener wave
+param_connect screen0 screen rendering_mode render_out
+param_connect rendering_mode render_in blend_mode render_out
+param_connect rendering_mode render_in simple_with_texture render_out
+param_connect render_surface_single render_in blend_mode2 render_out
+param_connect render_surface_single render_in simple_with_texture render_out
+param_connect render_surface_single render_in simple_with_texture2 render_out
+param_connect render_surface_single render_in blend_mode3 render_out
+param_connect render_surface_single render_in blend_mode1 render_out
+param_connect mult param1 vsx_listener octaves_l_0
+param_alias alias_freq:float -1 hue_sine alias_freq hue_sine.oscillator freq
+param_alias alias_phase:float?help=Tm90IG9mdGVuIHVzZWZ1bCwKYnV0IGl0IHNoaWZ0cyB0aW1lIGJhY2sgYW5kIGZvcnRoLg== -1 hue_sine alias_phase hue_sine.oscillator phase
+param_connect hue_sine.4f_hsv_to_f4_rgb h hue_sine.oscillator float
+param_connect blend_mode3 render_in simple_oscilloscope2 render_out
+param_connect blend_mode3 render_in simple_oscilloscope render_out
+param_connect blend_mode1 render_in simple_with_texture1 render_out
+param_connect blend_mode render_in simple_with_texture_out render_out
+param_connect 3float_to_float32 floatb oscillator2 float
+param_connect 3float_to_float32 floata oscillator1 float
+param_connect 3float_to_float3 floata vsx_listener octaves_l_0

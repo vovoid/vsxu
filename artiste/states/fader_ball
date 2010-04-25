@@ -1,0 +1,49 @@
+meta_set fHx8fHw=
+component_create maths;converters;4float_to_float4 4float_to_float4 -0.003247 0.094420
+component_create maths;arithmetics;binary;add add -0.086817 -0.002088
+param_set add param2 0.04015375301241874700
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer -0.054055 0.065093
+param_set depth_buffer depth_test 0
+param_set depth_buffer depth_mask 0
+component_create renderers;opengl_modifiers;gl_color gl_color 0.040669 0.052125
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.123955 0.055345
+param_set mesh_basic_render use_vertex_colors 0
+component_create mesh;solid;mesh_sphere mesh_sphere -0.224776 0.079861
+param_set mesh_sphere num_sectors 19.99999237060546900000
+param_set mesh_sphere num_stacks 20.00048637390136700000
+component_create maths;arithmetics;binary;mult mult -0.130026 0.000365
+param_set mult param2 3.94697499275207520000
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera 0.016196 0.035733
+param_set orbit_camera rotation 0.01141500007361173600,1.23655700683593750000,0.00000000000000000000
+param_set orbit_camera destination 0.00000000000000000000,-0.38475298881530762000,0.00463500013574957850
+component_create maths;arithmetics;binary;pow pow -0.056928 -0.001107
+param_set pow param2 2.01194667816162110000
+component_pos screen0 0.098960 0.000534
+param_set screen0 gamma_correction 1.04879403114318850000
+param_set screen0 clear_color 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000,0.00000099999999747524
+component_create maths;arithmetics;binary;sub sub -0.226213 -0.084340
+param_set sub param1 0.99999243021011353000
+component_create texture;opengl;texture_coord_gen texture_coord_gen 0.100843 0.032774
+param_set texture_coord_gen gen_s 2
+param_set texture_coord_gen gen_t 2
+param_set texture_coord_gen gen_r 2
+param_set texture_coord_gen parameter 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
+component_create renderers;basic;textured_rectangle textured_rectangle1 -0.113667 -0.088924
+param_set textured_rectangle1 facing_camera 0
+component_create system;visual_fader visual_fader -0.306399 -0.086744
+param_connect textured_rectangle1 texture_in visual_fader texture_b_out
+param_connect texture_coord_gen render_in gl_color render_out
+param_connect sub param2 visual_fader fade_pos_out
+param_connect screen0 screen textured_rectangle1 render_out
+param_connect screen0 screen texture_coord_gen render_out
+param_connect pow param1 add sum
+param_connect orbit_camera render_in depth_buffer render_out
+param_connect orbit_camera distance pow power
+param_connect mult param1 visual_fader fade_pos_out
+param_connect mesh_basic_render mesh_in mesh_sphere mesh
+param_connect mesh_basic_render tex_a visual_fader texture_a_out
+param_connect gl_color render_in orbit_camera render_out
+param_connect gl_color color 4float_to_float4 result_float4
+param_connect depth_buffer render_in mesh_basic_render render_out
+param_connect add param1 mult product
+param_connect 4float_to_float4 floatd sub sum

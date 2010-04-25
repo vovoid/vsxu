@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 2.6)
+add_subdirectory(engine)
+add_subdirectory(engine_graphics)
+add_subdirectory(plugins)
+add_subdirectory(player)
+add_subdirectory(artiste)
+

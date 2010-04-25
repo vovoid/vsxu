@@ -1,0 +1,2 @@
+file(GLOB SOURCES cal3d/*.cpp)
+include_directories(.)

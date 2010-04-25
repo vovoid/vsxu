@@ -1,0 +1,25 @@
+meta_set fHx8fHw=
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.065219 0.005910
+param_set blend_mode dest_blend 1
+component_create texture;effects;blur blur -0.175922 0.133284
+param_set blur start_value 2.88640499114990230000
+component_create maths;oscillators;oscillator oscillator -0.259485 0.131847
+param_set oscillator amp 0.58703917264938354000
+param_set oscillator ofs 1.30244398117065430000
+param_set oscillator freq 2.62044811248779300000
+component_create texture;buffers;render_surface_single render_surface_single -0.245089 0.046973
+component_pos screen0 0.000000 0.000000
+component_create renderers;examples;simple_with_texture simple_with_texture -0.103160 0.080126
+param_set simple_with_texture facing_camera 0
+param_set simple_with_texture color_multiplier 0.76568710803985596000,0.99999988079071045000,0.79040986299514771000,1.00000000000000000000
+component_create renderers;text;text_s text_s -0.328443 0.031222
+param_set text_s size 0.46426603198051453000
+ps64 text_s text_in Z2xvd2luZyB0ZXh0
+ps64 text_s font_in cmVzb3VyY2VzL2ZvbnRzL2ZvbnQtYXJpYWwudHRm
+param_set text_s align 1
+param_connect simple_with_texture texture_in blur texture_out
+param_connect screen0 screen blend_mode render_out
+param_connect render_surface_single render_in text_s render_out
+param_connect blur attenuation oscillator float
+param_connect blur glow_source render_surface_single texture_out
+param_connect blend_mode render_in simple_with_texture render_out

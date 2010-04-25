@@ -1,0 +1,10 @@
+set(SOURCES 
+)
+file(GLOB SOURCES ftgl/*.cpp)
+if(WIN32)
+include_directories(ft2/include)
+endif(WIN32)
+
+if(UNIX)
+include_directories(/usr/include/freetype2)
+endif(UNIX)

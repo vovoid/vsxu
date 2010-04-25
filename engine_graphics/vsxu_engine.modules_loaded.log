@@ -1,0 +1,301 @@
+attempting to load: _deprecated.so
+with 3 modules
+_deprecated.so with 3 module(s)
+  module identifier: !renderers;opengl_modifiers;depth_test
+  module identifier: !renderers;opengl_modifiers;depth_mask
+  module identifier: !mesh;solid;mesh_supershape
+attempting to load: bitmap.modifiers.so
+with 2 modules
+bitmap.modifiers.so with 2 module(s)
+  module identifier: texture;loaders;texture2bitmap
+  module identifier: particlesystems;generators;bitmap2particlesystem
+attempting to load: bitmap.texgen.so
+with 29 modules
+bitmap.texgen.so with 29 module(s)
+  module identifier: bitmaps;generators;blob||bitmaps;generators;particles;blob
+  module identifier: texture;particles;blob
+  module identifier: bitmaps;modifiers;add_noise
+  module identifier: bitmaps;generators;plasma
+  module identifier: bitmaps;generators;subplasma
+  module identifier: bitmaps;filters;bitm_blend_normal
+  module identifier: bitmaps;filters;bitm_blend_lighten
+  module identifier: bitmaps;filters;bitm_blend_darken
+  module identifier: bitmaps;filters;bitm_blend_multiply
+  module identifier: bitmaps;filters;bitm_blend_average
+  module identifier: bitmaps;filters;bitm_blend_add
+  module identifier: bitmaps;filters;bitm_blend_subtract
+  module identifier: bitmaps;filters;bitm_blend_difference
+  module identifier: bitmaps;filters;bitm_blend_negation
+  module identifier: bitmaps;filters;bitm_blend_screen
+  module identifier: bitmaps;filters;bitm_blend_exclusion
+  module identifier: bitmaps;filters;bitm_blend_overlay
+  module identifier: bitmaps;filters;bitm_blend_soft_light
+  module identifier: bitmaps;filters;bitm_blend_hard_light
+  module identifier: bitmaps;filters;bitm_blend_color_dodge
+  module identifier: bitmaps;filters;bitm_blend_color_burn
+  module identifier: bitmaps;filters;bitm_blend_linear_dodge
+  module identifier: bitmaps;filters;bitm_blend_linear_burn
+  module identifier: bitmaps;filters;bitm_blend_linear_light
+  module identifier: bitmaps;filters;bitm_blend_vivid_light
+  module identifier: bitmaps;filters;bitm_blend_pin_light
+  module identifier: bitmaps;filters;bitm_blend_hard_mix
+  module identifier: bitmaps;filters;bitm_blend_reflect
+  module identifier: bitmaps;filters;bitm_blend_glow
+attempting to load: math.basic.so
+with 53 modules
+math.basic.so with 53 module(s)
+  module identifier: maths;converters;3float_to_float3
+  module identifier: maths;converters;4float_to_float4
+  module identifier: maths;color;converters;4f_hsv_to_f4_rgb
+  module identifier: maths;dummies;float_dummy
+  module identifier: maths;dummies;float3_dummy
+  module identifier: maths;array;float_array_pick
+  module identifier: maths;arithmetics;binary;add
+  module identifier: maths;arithmetics;binary;sub
+  module identifier: maths;arithmetics;binary;mult
+  module identifier: maths;arithmetics;binary;div
+  module identifier: maths;arithmetics;binary;min
+  module identifier: maths;arithmetics;binary;max
+  module identifier: maths;arithmetics;binary;pow
+  module identifier: maths;arithmetics;binary;round
+  module identifier: maths;arithmetics;binary;floor
+  module identifier: maths;arithmetics;binary;ceil
+  module identifier: maths;accumulators;float_accumulator
+  module identifier: maths;accumulators;float3_accumulator
+  module identifier: maths;accumulators;float4_accumulator
+  module identifier: maths;arithmetics;vector;vector_add||maths;arithmetics;float3;float3_add_float3
+  module identifier: maths;arithmetics;vector;vector_add_float||maths;arithmetics;float3;float3_add_float
+  module identifier: maths;arithmetics;vector;vector_mul_float||maths;arithmetics;float3;float3_mul_float
+  module identifier: maths;converters;float_to_float3
+  module identifier: maths;arithmetics;binary;abs
+  module identifier: maths;arithmetics;binary;sin
+  module identifier: maths;arithmetics;binary;cos
+  module identifier: maths;arithmetics;boolean;and
+  module identifier: maths;arithmetics;boolean;or
+  module identifier: maths;arithmetics;boolean;nor
+  module identifier: maths;arithmetics;boolean;xor
+  module identifier: maths;arithmetics;boolean;not
+  module identifier: !maths;arithmetics;vec4;float4_mul_float||maths;arithmetics;float4;float4_mul_float
+  module identifier: maths;arithmetics;boolean;nand
+  module identifier: !maths;arithmetics;vector;float4_add|maths;arithmetics;float4;float4_add
+  module identifier: maths;array;float_array_average
+  module identifier: maths;arithmetics;binary;mod
+  module identifier: maths;color;converters;f4_hsl_to_f4_rgb
+  module identifier: maths;converters;float3to3float
+  module identifier: maths;limiters;float_limiter
+  module identifier: maths;converters;4float_to_quaternion
+  module identifier: !maths;interpolation;float_interpolation||maths;interpolation;float_smoother
+  module identifier: maths;accumulators;quat_rotation_accum_2d
+  module identifier: maths;arithmetics;vector;vector_normalize
+  module identifier: maths;arithmetics;vector;vector_cross_product
+  module identifier: maths;arithmetics;vector;vector_dot_product
+  module identifier: maths;arithmetics;vector;vector_from_points
+  module identifier: maths;interpolation;quat_slerp_2p
+  module identifier: maths;arithmetics;quaternion;quat_mul
+  module identifier: maths;accumulators;float_accumulator_limits
+  module identifier: maths;interpolation;quat_slerp_3p
+  module identifier: maths;interpolation;float4_interpolate||maths;color;color_linear_interpolate
+  module identifier: maths;interpolation;float_interpolate
+  module identifier: maths;arithmetics;binary;acos
+attempting to load: math.oscillator.so
+with 2 modules
+math.oscillator.so with 2 module(s)
+  module identifier: maths;oscillators;oscillator
+  module identifier: maths;oscillators;float_sequencer
+attempting to load: mesh.generators.kaleidoscope.so
+with 2 modules
+mesh.generators.kaleidoscope.so with 2 module(s)
+  module identifier: renderers;vovoid;kaleidoscope
+  module identifier: mesh;generators;vovoid;kaleido_mesh
+attempting to load: mesh.generators.metaballs.so
+with 1 modules
+mesh.generators.metaballs.so with 1 module(s)
+  module identifier: mesh;solid;metaballs
+attempting to load: mesh.generators.ocean.so
+with 2 modules
+mesh.generators.ocean.so with 2 module(s)
+  module identifier: mesh;generators;ocean
+  module identifier: mesh;generators;ocean_tunnel
+attempting to load: mesh.generators.so
+with 12 modules
+mesh.generators.so with 12 module(s)
+  module identifier: mesh;vertices;needle
+  module identifier: mesh;vertices;random_vertices
+  module identifier: mesh;particles;mesh_rays
+  module identifier: mesh;particles;mesh_disc
+  module identifier: mesh;solid;mesh_planes
+  module identifier: mesh;solid;mesh_box
+  module identifier: mesh;solid;mesh_sphere
+  module identifier: mesh;solid;mesh_solid_supershape
+  module identifier: mesh;generators;ribbon
+  module identifier: mesh;solid;mesh_super_banana
+  module identifier: mesh;solid;mesh_torus_knot
+  module identifier: mesh;vertices;lightning_vertices
+attempting to load: mesh.generators.star.so
+with 1 modules
+mesh.generators.star.so with 1 module(s)
+  module identifier: mesh;particles;mesh_star
+attempting to load: mesh.importers.cal3d.so
+with 1 modules
+mesh.importers.cal3d.so with 1 module(s)
+  module identifier: mesh;importers;cal3d_importer
+attempting to load: mesh.importers.obj.so
+with 2 modules
+mesh.importers.obj.so with 2 module(s)
+  module identifier: mesh;importers;obj_importer
+  module identifier: mesh;importers;vxm_importer
+attempting to load: mesh.modifiers.so
+with 13 modules
+mesh.modifiers.so with 13 module(s)
+  module identifier: mesh;modifiers;pickers;mesh_vertex_picker
+  module identifier: mesh;modifiers;transforms;mesh_rotate_quat
+  module identifier: mesh;modifiers;deformers;mesh_vertex_move
+  module identifier: mesh;modifiers;transforms;mesh_translate
+  module identifier: mesh;modifiers;converters;mesh_to_float3_arrays
+  module identifier: mesh;modifiers;helpers;mesh_compute_tangents
+  module identifier: mesh;modifiers;deformers;mesh_inflate
+  module identifier: mesh;modifiers;deformers;mesh_normal_randistort
+  module identifier: mesh;modifiers;deformers;mesh_noise
+  module identifier: mesh;modifiers;transforms;mesh_rotate_quat_around_vertex
+  module identifier: mesh;dummies;mesh_dummy
+  module identifier: mesh;modifiers;transforms;mesh_scale
+  module identifier: mesh;modifiers;deformers;mesh_rain_down
+attempting to load: output.screen.so
+with 1 modules
+output.screen.so with 1 module(s)
+  module identifier: outputs;screen
+attempting to load: particlesystem.generators.so
+with 2 modules
+particlesystem.generators.so with 2 module(s)
+  module identifier: particlesystems;generators;basic_spray_emitter
+  module identifier: particlesystems;generators;particles_mesh_spray
+attempting to load: particlesystem.modifiers.so
+with 5 modules
+particlesystem.modifiers.so with 5 module(s)
+  module identifier: particlesystems;modifiers;basic_wind_deformer
+  module identifier: particlesystems;modifiers;size_noise
+  module identifier: particlesystems;modifiers;basic_gravity
+  module identifier: particlesystems;modifiers;floor
+  module identifier: particlesystems;modifiers;particle_fluid_deformer
+attempting to load: particlesystem.render.so
+with 3 modules
+particlesystem.render.so with 3 module(s)
+  module identifier: renderers;particlesystems;simple
+  module identifier: renderers;particlesystems;render_particle_center
+  module identifier: renderers;particlesystems;sparks
+attempting to load: render.basic.so
+with 3 modules
+render.basic.so with 3 module(s)
+  module identifier: renderers;basic;textured_rectangle||renderers;examples;simple_with_texture
+  module identifier: renderers;basic;colored_rectangle||renderers;examples;simple
+  module identifier: renderers;basic;render_line
+attempting to load: render.glsl.so
+setting environment with 1 modules
+render.glsl.so with 1 module(s)
+  module identifier: renderers;shaders;glsl_loader
+attempting to load: render.gravity_lines.so
+with 4 modules
+render.gravity_lines.so with 4 module(s)
+  module identifier: renderers;vovoid;gravity_lines
+  module identifier: renderers;vovoid;gravity_ribbon
+  module identifier: renderers;particlesystems;render_particle_ribbon
+  module identifier: renderers;mesh;render_mesh_ribbon
+attempting to load: render.jaw.so
+with 7 modules
+render.jaw.so with 7 module(s)
+  module identifier: mesh;vovoid;thorn
+  module identifier: mesh;vovoid;cloud_plane
+  module identifier: mesh;vovoid;planeworld
+  module identifier: mesh;segmesh;map_segmesh_bspline
+  module identifier: mesh;segmesh;shape;segmesh_shape_basic
+  module identifier: mesh;segmesh;segmesh_loft
+  module identifier: maths;bspline;bspline_matrix
+attempting to load: render.mesh.so
+with 7 modules
+render.mesh.so with 7 module(s)
+  module identifier: renderers;mesh;mesh_basic_render
+  module identifier: renderers;mesh;mesh_transparency_render
+  module identifier: renderers;mesh;mesh_render_array
+  module identifier: mesh;segmesh;segmesh_to_mesh
+  module identifier: renderers;mesh;mesh_line_render
+  module identifier: renderers;mesh;mesh_dot_render
+  module identifier: renderers;mesh;mesh_face_id_render
+attempting to load: render.opengl.extra.so
+with 2 modules
+render.opengl.extra.so with 2 module(s)
+  module identifier: texture;opengl;6bitm2cubemap
+  module identifier: texture;opengl;texture_coord_gen
+attempting to load: render.opengl.so
+with 23 modules
+render.opengl.so with 23 module(s)
+  module identifier: renderers;opengl_modifiers;blend_mode
+  module identifier: renderers;opengl_modifiers;cameras;orbit_camera
+  module identifier: renderers;opengl_modifiers;cameras;target_camera
+  module identifier: renderers;opengl_modifiers;cameras;freelook_camera
+  module identifier: renderers;opengl_modifiers;gl_translate
+  module identifier: renderers;opengl_modifiers;depth_buffer
+  module identifier: renderers;opengl_modifiers;gl_rotate
+  module identifier: renderers;opengl_modifiers;light_directional
+  module identifier: renderers;opengl_modifiers;rendering_mode
+  module identifier: renderers;opengl_modifiers;material_param
+  module identifier: renderers;opengl_modifiers;gl_scale
+  module identifier: renderers;opengl_modifiers;gl_matrix_multiply
+  module identifier: renderers;opengl_modifiers;gl_color
+  module identifier: renderers;opengl_modifiers;gl_ortho2d
+  module identifier: renderers;opengl_modifiers;gl_fog
+  module identifier: renderers;opengl_modifiers;backface_culling
+  module identifier: renderers;opengl_modifiers;gl_rotate_quat
+  module identifier: renderers;opengl_modifiers;auto_normalize
+  module identifier: renderers;opengl_modifiers;gl_matrix_get
+  module identifier: renderers;opengl_modifiers;gl_line_width
+  module identifier: renderers;opengl_modifiers;depth_buffer_clear
+  module identifier: renderers;opengl_modifiers;depth_function
+  module identifier: texture;opengl;texture_bind
+attempting to load: render.oscilloscope.so
+with 1 modules
+render.oscilloscope.so with 1 module(s)
+  module identifier: renderers;oscilloscopes;simple_oscilloscope
+attempting to load: render.text.so
+with 1 modules
+render.text.so with 1 module(s)
+  module identifier: renderers;text;text_s
+attempting to load: render.vovoid.so
+with 1 modules
+render.vovoid.so with 1 module(s)
+  module identifier: renderers;vovoid;skybox
+attempting to load: sound.libvisual.so
+with 1 modules
+sound.libvisual.so with 1 module(s)
+  module identifier: sound;input_visualization_listener||system;sound;vsx_listener
+attempting to load: string.so
+with 2 modules
+string.so with 2 module(s)
+  module identifier: system;filesystem;file_chooser
+  module identifier: string;converters;res_to_str||string;res_to_str
+attempting to load: system.so
+with 5 modules
+system.so with 5 module(s)
+  module identifier: system;shutdown
+  module identifier: system;time
+  module identifier: system;blocker
+  module identifier: system;clock
+  module identifier: system;system_sequencer_control
+attempting to load: texture.buffer.so
+with 7 modules
+texture.buffer.so with 7 module(s)
+  module identifier: texture;buffers;render_surface_single
+  module identifier: texture;modifiers;translate
+  module identifier: texture;modifiers;scale
+  module identifier: texture;modifiers;rotate
+  module identifier: texture;modifiers;tex_parameters
+  module identifier: texture;effects;blur
+  module identifier: system;visual_fader
+attempting to load: texture.load.so
+with 5 modules
+texture.load.so with 5 module(s)
+  module identifier: bitmaps;loaders;png_bitm_load
+  module identifier: texture;loaders;png_tex_load
+  module identifier: bitmaps;loaders;jpeg_bitm_load
+  module identifier: texture;loaders;jpeg_tex_load
+  module identifier: texture;loaders;bitmap2texture
+Loaded 204 modules

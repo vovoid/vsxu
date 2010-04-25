@@ -1,0 +1,179 @@
+#include "vsx_gl_global.h"
+#include <map>
+#include <list>
+#include <vector>
+#include "vsx_command.h"
+#include "vsx_math_3d.h"
+#include "vsx_texture_info.h"
+#include "vsx_texture.h"
+#include "vsx_font.h"
+#include "../vsx_widget_base.h"
+#include "vsx_widget_panel.h"
+
+void vsx_widget_panel::calc_size() {
+  if (size_from_parent) return;
+  size.x = target_size.x = parent->size.x-dragborder*2;
+  size.y = target_size.y = parent->size.y-dragborder*2;
+}
+
+vsx_vector vsx_widget_panel::calc_pos() {
+  vsx_vector p = get_pos_p();
+  if (pos_from_parent) {
+    p.x += target_pos.x;
+    p.y += target_pos.y;
+  }
+  p.x -= target_size.x*0.5;
+  p.y -= target_size.y*0.5;
+  //p.y -= dragborder;
+  if (render_type == VSX_WIDGET_RENDER_3D) {
+    p.z = pos.z;
+  } else {
+    p.z = 0.0f;
+  }
+  return p;
+}
+
+int vsx_widget_panel::inside_xy_l(vsx_vector &test, vsx_vector &global) { 
+  //return vsx_widget::inside_xy_l(test,global);
+  return 0;
+}
+
+void vsx_widget_panel::base_draw() {
+  calc_size();
+  vsx_vector p = calc_pos();
+  //vsx_color b(0,0,0,0), w(0,0,0,1), gr(0,1,0,1), r(1,0,0,1);
+  vsx_color b(0,0,0,0);
+  vsx_color w(0,0,0,1);
+  //draw_box_gradient(p, dragborder, target_size.y, skin_color[0], skin_color[1], skin_color[1], skin_color[0]);
+  draw_box_gradient(p, dragborder, target_size.y, skin_color[0], skin_color[1], skin_color[1], skin_color[0]);
+//  draw_box_gradient(p, target_size.x, dragborder, r, b, b, r);
+  draw_box_gradient(p, target_size.x, dragborder, w, b, b, w);
+  p.y += size.y-dragborder;
+  draw_box_gradient(p, target_size.x, dragborder, skin_color[0], skin_color[0], skin_color[1], skin_color[1]);
+//  draw_box_gradient(p, target_size.x, dragborder, skin_color[0], skin_color[0], skin_color[1], gr);
+  p.x += size.x-dragborder;
+  //p.y += 
+  //draw_box_gradient(p, dragborder, -(target_size.y-dragborder), gr, skin_color[0], skin_color[1], skin_color[1]);
+}
+
+vsx_widget_panel::vsx_widget_panel() {
+  size_min.x = 0;
+  size_min.y = 0;
+  size_from_parent = false;
+  pos_from_parent = false;
+  allow_move_y = allow_move_x = false;
+}
+
+//******************************************************************************
+//******************************************************************************
+//******************************************************************************
+//******************************************************************************
+//******************************************************************************
+
+void vsx_widget_split_panel::set_border(float border) {
+  splitter_size = border*0.5f;
+  vsx_widget::set_border(border);
+}
+
+vsx_widget_split_panel::vsx_widget_split_panel() {
+  splitter_size = dragborder*0.5f;
+  split_pos = 0.2f;
+  one = (vsx_widget_panel*)add(new vsx_widget_panel,"1");
+  one->size_from_parent = true;
+  two = (vsx_widget_panel*)add(new vsx_widget_panel,"2");
+  two->size_from_parent = true;
+  orientation = VSX_WIDGET_SPLIT_PANEL_VERT;
+}
+
+void vsx_widget_split_panel::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords) {
+  //!glutSetCursor(GLUT_CURSOR_UP_DOWN);
+}
+
+void vsx_widget_split_panel::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords) 
+{
+  split_pos = ((distance.center.y+(size.y)*0.5)/(size.y));
+  if (split_pos > 0.95) split_pos = 0.95;
+  if (split_pos < 0.05) split_pos = 0.05;
+}
+
+
+int vsx_widget_split_panel::inside_xy_l(vsx_vector &test, vsx_vector &global) {
+  if (coord_type == VSX_WIDGET_COORD_CENTER) {
+    if (
+      //(test.y > global.y-size.y*0.5f) && (test.y < global.y+size.y*0.5f) &&
+      (test.x > global.x-size.x*0.5f) && 
+      (test.x < global.x+size.x*0.5f) &&
+      (test.y > global.y-size.y*0.5f+split_pos*sy) && 
+      (test.y < global.y-size.y*0.5f+split_pos*sy+splitter_size)
+    ) {
+      return 1;
+    }
+  }/* else
+  if (coord_type == VSX_WIDGET_COORD_CORNER) {
+    if (test.x > global.x && 
+        test.x < global.x+size.x && 
+        test.y < global.y && 
+        test.y > global.y-size.y) 
+    {
+      return 2;
+    }
+  }*/
+  return 0;
+}
+
+
+void vsx_widget_split_panel::i_draw() {
+  calc_size();
+  vsx_vector p = calc_pos();
+  if (render_type == VSX_WIDGET_RENDER_2D)
+  p.z = 0.0f;
+  if (orientation == VSX_WIDGET_SPLIT_PANEL_VERT) {
+    sy = size.y-splitter_size;
+    float sx = size.x;
+
+    if (two->size_min.y) {
+      if (sy*(1-split_pos) < two->size_min.y) {
+        split_pos = (sy-two->size_min.y)/sy;
+      }
+    }
+    if (two->size_max.y) {
+      if (sy*(1-split_pos) > two->size_max.y) {
+        split_pos = (sy-two->size_max.y)/sy;
+      }
+    }
+
+    if (one->size_min.y) {
+      if (sy*(split_pos) < one->size_min.y) {
+        split_pos = (one->size_min.y)/sy;
+      }
+    }
+    if (one->size_max.y) {
+      if (sy*(split_pos) > two->size_max.y) {
+        split_pos = (one->size_max.y)/sy;
+      }
+    }
+      
+    two->target_size.x = sx;
+    two->target_size.y = sy*(1-split_pos);
+    two->size = two->target_size;
+
+
+    one->target_size.x = sx;
+    one->target_size.y = sy*split_pos;
+    one->size = one->target_size;
+      
+    one->target_pos.x = 0;
+    one->target_pos.y = -target_size.y*0.5+0.5*split_pos*sy;
+    one->target_pos.z = pos.z;
+    one->pos = one->target_pos;
+
+    two->target_pos.x = 0;
+    two->target_pos.y = target_size.y*0.5-0.5*(1.0f-split_pos)*sy;
+    two->target_pos.z = pos.z;
+    two->pos = two->target_pos;
+
+    glColor4f(1,1,1,1);
+    if (splitter_size != 0)
+    draw_box(p+vsx_vector(0,split_pos*sy),sx,splitter_size);
+  }
+}

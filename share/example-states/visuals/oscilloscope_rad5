@@ -1,0 +1,143 @@
+meta_set fHx8fHw=
+component_create maths;color;converters;4f_hsv_to_f4_rgb 4f_hsv_to_f4_rgb 0.126310 0.101614
+param_set 4f_hsv_to_f4_rgb s 0.10975278913974762000
+param_set 4f_hsv_to_f4_rgb v 0.80768287181854248000
+component_create maths;arithmetics;binary;add add -0.327271 0.077839
+param_set add param2 0.72847318649291992000
+component_create particlesystems;modifiers;basic_gravity basic_gravity -0.007848 -0.218173
+param_set basic_gravity mass_type 0
+param_set basic_gravity time_source 0
+param_set basic_gravity center 0.00000000000000000000,0.00000085065369148651,0.00000000000000000000
+param_set basic_gravity amount 0.00000000000000000000,0.25608104467391968000,0.00000000000000000000
+component_create particlesystems;generators;basic_spray_emitter basic_spray_emitter -0.116062 -0.197824
+param_set basic_spray_emitter emitter_position 0.00000000000000000000,0.04293994233012199400,0.00000000000000000000
+param_set basic_spray_emitter speed_x 2.19522309303283690000
+param_set basic_spray_emitter speed_y 1.70698690414428710000
+param_set basic_spray_emitter speed_z 3.24615502357482910000
+param_set basic_spray_emitter speed_type 0
+param_set basic_spray_emitter time_source 0
+param_set basic_spray_emitter num_particles 1000.00000000000000000000
+param_set basic_spray_emitter particle_size_random_weight 0.00379095901735126970
+param_set basic_spray_emitter particle_lifetime_base 2.92928600311279300000
+component_create renderers;opengl_modifiers;blend_mode blend_mode 0.285576 0.183553
+param_set blend_mode source_blend 1
+param_set blend_mode dest_blend 1
+component_create renderers;opengl_modifiers;blend_mode blend_mode1 -0.200239 -0.052390
+param_set blend_mode1 source_blend 1
+param_set blend_mode1 dest_blend 1
+component_create renderers;opengl_modifiers;blend_mode blend_mode2 -0.043318 -0.063947
+param_set blend_mode2 source_blend 1
+param_set blend_mode2 dest_blend 1
+component_create texture;particles;blob blob -0.200448 -0.147349
+param_set blob arms 5.19812011718750000000
+param_set blob attenuation 0.00000076051145470046
+component_create texture;effects;blur blur -0.148715 0.109562
+param_set blur texture_size 1
+component_create texture;effects;blur blur1 -0.113874 0.007711
+param_set blur1 texture_size 4
+param_set blur1 start_value 5.69514799118041990000
+param_set blur1 attenuation 1.72340500354766850000
+component_create texture;effects;blur blur2 0.194306 0.013220
+param_set blur2 texture_size 2
+param_set blur2 attenuation 1.06360387802124020000
+component_create maths;arithmetics;binary;mult mult -0.406480 0.045180
+param_set mult param2 14.61402511596679700000
+component_create maths;arithmetics;binary;mult mult1 -0.276501 0.114238
+param_set mult1 param2 3.49107003211975100000
+component_create maths;arithmetics;binary;mult mult2 -0.220290 -0.225805
+param_set mult2 param2 0.12061510235071182000
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera 0.093121 -0.055163
+param_set orbit_camera distance 0.87471115589141846000
+param_set orbit_camera destination -0.01246111467480659500,0.00000000000000000000,0.00000000000000000000
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera1 0.197955 0.211307
+param_set orbit_camera1 rotation -0.06099019944667816200,-0.11504600197076797000,1.00000000000000000000
+param_set orbit_camera1 distance 0.55576199293136597000
+param_set orbit_camera1 destination -0.02162799611687660200,0.01190500054508447600,0.04404097422957420300
+param_set orbit_camera1 upvector 0.00671114120632410050,0.99999994039535522000,0.00000000000000000000
+param_set orbit_camera1 fov 85.48390197753906300000
+component_create maths;oscillators;oscillator oscillator_color 0.065037 0.135384
+param_set oscillator_color freq 0.41409501433372498000
+component_create texture;buffers;render_surface_single render_surface_single -0.211647 0.036244
+param_set render_surface_single texture_size 1
+component_create texture;buffers;render_surface_single render_surface_single1 0.012585 -0.002476
+component_pos screen0 0.326008 0.032224
+param_set screen0 gamma_correction 0.99999916553497314000
+component_create renderers;particlesystems;simple simple -0.020168 -0.152992
+param_set simple render_type 0
+param_set simple size_lifespan_type 0
+param_set simple ignore_particles_at_center 0
+param_set simple size_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple alpha_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+component_create renderers;oscilloscopes;simple_oscilloscope simple_oscilloscope -0.330410 -0.153932
+param_set simple_oscilloscope size 0.99999994039535522000,2.14989900588989260000,0.00000000000000000000
+param_set simple_oscilloscope line_width 1.80914890766143800000
+param_set simple_oscilloscope color 0.50163877010345459000,0.50163888931274414000,0.50163877010345459000,1.00000000000000000000
+component_create renderers;oscilloscopes;simple_oscilloscope simple_oscilloscope1 -0.320669 -0.224404
+param_set simple_oscilloscope1 size 1.00000000000000000000,-0.97798073291778564000,0.00000000000000000000
+param_set simple_oscilloscope1 color 0.54561787843704224000,0.54561793804168701000,0.54561793804168701000,1.00000000000000000000
+component_create renderers;oscilloscopes;simple_oscilloscope simple_oscilloscope2 -0.350587 -0.028293
+param_set simple_oscilloscope2 position -0.01358186267316341400,0.00000099999977010157,0.00000000000000000000
+param_set simple_oscilloscope2 size 0.99999916553497314000,1.01191282272338870000,0.00000000000000000000
+param_set simple_oscilloscope2 angle 0.00000098893633548869
+param_set simple_oscilloscope2 line_width 2.04683566093444820000
+param_set simple_oscilloscope2 rotation_axis 0.00000000000030379692,1.00000000000000000000,0.99999904632568359000
+param_set simple_oscilloscope2 color 0.99999916553497314000,0.99999982118606567000,0.99999916553497314000,1.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture 0.224010 0.094603
+param_set simple_with_texture global_alpha 1.07462608814239500000
+param_set simple_with_texture facing_camera 0
+param_set simple_with_texture x_aspect_ratio 1.00000095367431640000
+param_set simple_with_texture size 1.02619671821594240000
+param_set simple_with_texture angle 0.00000090352631332280
+param_set simple_with_texture color_center 0.99999916553497314000,0.99999922513961792000,0.99999916553497314000,0.99999988079071045000
+param_set simple_with_texture color_b 0.99999994039535522000,0.57118600606918335000,0.00000081610437518975,1.00000000000000000000
+param_set simple_with_texture color_d 0.45788872241973877000,0.99999994039535522000,0.72741234302520752000,1.00000000000000000000
+param_set simple_with_texture tex_coord_b 1.00000000000000000000,1.00000000000000000000,1.00000000000000000000
+param_set simple_with_texture position 0.00993184372782707210,0.07184901833534240700,-0.45672193169593811000
+component_create renderers;examples;simple_with_texture simple_with_texture1 -0.061347 0.028944
+param_set simple_with_texture1 facing_camera 0
+param_set simple_with_texture1 tex_coord_b 1.00000000000000000000,1.00000000000000000000,1.00000000000000000000
+component_create renderers;examples;simple_with_texture simple_with_texture2 -0.023754 0.087248
+param_set simple_with_texture2 facing_camera 0
+component_create texture;modifiers;tex_parameters tex_parameters 0.105446 0.023198
+param_set tex_parameters wrap_s 0
+param_set tex_parameters wrap_t 0
+param_set tex_parameters min_filter 1
+param_set tex_parameters mag_filter 1
+param_set tex_parameters anisotropic_filtering 0
+component_create system;sound;vsx_listener vsx_listener -0.497085 -0.011542
+param_set vsx_listener multiplier 0.99999904632568359000
+param_connect tex_parameters texture_in render_surface_single1 texture_out
+param_connect simple_with_texture2 texture_in blur texture_out
+param_connect simple_with_texture1 texture_in blur1 texture_out
+param_connect simple_with_texture color_multiplier 4f_hsv_to_f4_rgb result_float4
+param_connect simple_with_texture texture_in blur2 texture_out
+param_connect simple_oscilloscope2 data_in vsx_listener wave
+param_connect simple_oscilloscope1 data_in vsx_listener spectrum
+param_connect simple_oscilloscope data_in vsx_listener spectrum
+param_connect simple texture blob texture
+param_connect simple particlesystem basic_gravity particlesystem
+param_connect screen0 screen simple_with_texture render_out
+param_connect render_surface_single1 render_in orbit_camera render_out
+param_connect render_surface_single1 render_in orbit_camera1 render_out
+param_connect render_surface_single render_in simple_oscilloscope2 render_out
+param_connect render_surface_single render_in simple render_out
+param_connect render_surface_single render_in simple_oscilloscope render_out
+param_connect render_surface_single render_in simple_oscilloscope1 render_out
+param_connect orbit_camera1 render_in blend_mode render_out
+param_connect orbit_camera render_in blend_mode2 render_out
+param_connect mult2 param1 vsx_listener octaves_r_3
+param_connect mult1 param1 add sum
+param_connect mult param1 vsx_listener octaves_l_0
+param_connect blur2 start_value mult product
+param_connect blur2 glow_source tex_parameters texture_rotate_out
+param_connect blur1 glow_source blur texture_out
+param_connect blur attenuation add sum
+param_connect blur start_value mult1 product
+param_connect blur glow_source render_surface_single texture_out
+param_connect blend_mode2 render_in simple_with_texture2 render_out
+param_connect blend_mode1 render_in simple_oscilloscope2 render_out
+param_connect blend_mode render_in simple_with_texture render_out
+param_connect basic_spray_emitter particle_size_base mult2 product
+param_connect basic_gravity in_particlesystem basic_spray_emitter particlesystem
+param_connect add param1 mult product
+param_connect 4f_hsv_to_f4_rgb h oscillator_color float

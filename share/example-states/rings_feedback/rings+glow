@@ -1,0 +1,120 @@
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.521946 0.197559
+component_create maths;color;converters;4f_hsv_to_f4_rgb 4f_hsv_to_f4_rgb -0.451698 -0.055271
+param_set 4f_hsv_to_f4_rgb s 0.47650098800659180000
+param_set 4f_hsv_to_f4_rgb v 0.17997787892818451000
+component_create particlesystems;generators;basic_spray_emitter basic_spray_emitter -0.376038 -0.031447
+param_set basic_spray_emitter emitter_position 0.00000000000000037389,0.00000098602640719037,0.00000000000000000000
+param_set basic_spray_emitter speed_x 2.03482294082641600000
+param_set basic_spray_emitter speed_y 1.36155402660369870000
+param_set basic_spray_emitter speed_z 2.27426195144653320000
+param_set basic_spray_emitter num_particles 20.72278404235839800000
+param_set basic_spray_emitter particle_size_base 0.29180204868316650000
+component_create texture;loaders;bitmap2texture bitmap2texture -0.568157 0.111420
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.166310 0.184917
+param_set blend_mode dest_blend 1
+component_create renderers;opengl_modifiers;blend_mode blend_mode1 -0.062281 0.089698
+param_set blend_mode1 dest_blend 1
+component_create renderers;opengl_modifiers;gl_color gl_color -0.246881 0.103955
+param_set gl_color color 0.99999994039535522000,0.64510405063629150000,0.64510405063629150000,1.00000000000000000000
+macro_create glow 0.025792 0.079200 0.366233
+component_create renderers;opengl_modifiers;blend_mode glow.blend_mode 0.129515 -0.044398
+param_set glow.blend_mode dest_blend 1
+component_create texture;effects;blur glow.blur -0.032376 0.059329
+param_set glow.blur start_value 3.70851302146911620000
+param_set glow.blur iterations 0.99999904632568359000
+param_set glow.blur multiplier 1.02735388278961180000
+component_create renderers;opengl_modifiers;depth_mask glow.depth_mask 0.128783 0.019845
+param_set glow.depth_mask status 0
+component_create renderers;opengl_modifiers;depth_test glow.depth_test 0.125182 0.083296
+param_set glow.depth_test status 0
+component_create maths;dummies;float_dummy glow.float_dummy -0.079770 -0.048636
+component_create texture;buffers;render_surface_single glow.render_surface_double -0.110162 0.072740
+param_set glow.render_surface_double screen_width 1024
+param_set glow.render_surface_double screen_height 1024
+param_set glow.render_surface_double texture_size 1
+component_create renderers;examples;simple_with_texture glow.simple_with_texture 0.040942 0.071283
+param_set glow.simple_with_texture global_alpha 0.57465267181396484000
+param_set glow.simple_with_texture facing_camera 0
+component_create renderers;examples;simple_with_texture glow.simple_with_texture2 0.042099 -0.017393
+param_set glow.simple_with_texture2 global_alpha 1.08928596973419190000
+param_set glow.simple_with_texture2 facing_camera 0
+param_set glow.simple_with_texture2 position 0.00000000000000000000,0.00000078616017162858,0.00000000000000000000
+component_create bitmaps;loaders;jpeg_bitm_load jpeg_bitm_load -0.653175 0.138926
+ps64 jpeg_bitm_load filename cmVzb3VyY2VzL3ZzYS9kaXNjX3RleHR1cmUuanBn
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.280777 0.035353
+param_set mesh_basic_render use_display_list 1
+param_set mesh_basic_render use_vertex_colors 0
+param_set mesh_basic_render particles_size_center 1
+component_create mesh;particles;mesh_disc mesh_disc -0.354422 0.057085
+param_set mesh_disc num_segments 60.00000000000000000000
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.085026 0.176943
+param_set orbit_camera rotation 0.92028611898422241000,0.39111658930778503000,0.01004719547927379600
+param_set orbit_camera distance 2.87283992767333980000
+component_create maths;oscillators;oscillator oscillator -0.524588 0.001271
+param_set oscillator amp 0.07017594575881958000
+param_set oscillator ofs 0.62135893106460571000
+param_set oscillator freq 0.55968588590621948000
+component_create maths;oscillators;oscillator oscillator1 -0.568841 0.197386
+param_set oscillator1 osc_type 0
+macro_create refeeder2 -0.145930 0.094915 0.388921
+component_create texture;buffers;render_surface_single refeeder2.render_surface_single 0.098581 -0.005799
+component_create renderers;examples;simple refeeder2.simple -0.015352 -0.066660
+param_set refeeder2.simple size 0.99999910593032837000,0.99999994039535522000,0.00000000000000000000
+param_set refeeder2.simple angle 0.00000097560860012891
+param_set refeeder2.simple rotation_axis 0.87173897027969360000,-0.32469499111175537000,0.36693900823593140000
+param_set refeeder2.simple color 0.00000000000161911836,0.00000000000137932829,0.00000000000137932829,0.99999910593032837000
+component_create renderers;examples;simple_with_texture refeeder2.simple_with_texture 0.111382 0.101358
+param_set refeeder2.simple_with_texture global_alpha 1.00093305110931400000
+param_set refeeder2.simple_with_texture facing_camera 0
+param_set refeeder2.simple_with_texture size 1.00000095367431640000
+param_set refeeder2.simple_with_texture angle 0.00000091873675955867
+param_set refeeder2.simple_with_texture color_multiplier 0.88216501474380493000,0.88679891824722290000,0.88246011734008789000,1.00000000000000000000
+param_set refeeder2.simple_with_texture color_center 0.99999940395355225000,0.99999922513961792000,0.99999922513961792000,1.00000000000000000000
+param_set refeeder2.simple_with_texture color_a 0.99999994039535522000,0.99999916553497314000,0.99999916553497314000,1.00000000000000000000
+param_set refeeder2.simple_with_texture color_b 0.99999916553497314000,0.99999916553497314000,0.99999916553497314000,1.00000000000000000000
+param_set refeeder2.simple_with_texture color_c 0.99999970197677612000,0.99999910593032837000,0.99999910593032837000,1.00000000000000000000
+param_set refeeder2.simple_with_texture color_d 0.99999904632568359000,0.99999982118606567000,0.99999988079071045000,1.00000000000000000000
+param_set refeeder2.simple_with_texture position 0.00000000000000000000,0.00000000000000000000,0.00000079333261737702
+component_create renderers;opengl_modifiers;rendering_mode rendering_mode -0.219807 0.176810
+param_set rendering_mode smooth_edges 1
+component_create texture;modifiers;scale scale -0.366734 0.171739
+param_set scale scale_vector 6.96673393249511720000,0.99999904632568359000,1.00000000000000000000
+component_pos screen0 0.108384 0.054667
+param_set screen0 gamma_correction 1.00000095367431640000
+component_create texture;modifiers;translate translate -0.449418 0.177083
+param_alias alias_render_out:render 1 refeeder2 alias_render_out refeeder2.simple_with_texture render_out
+param_alias alias_render_out_4:render 1 glow alias_render_out_4 glow.depth_test render_out
+param_connect translate translation_vector 3float_to_float3 result_float3
+param_connect translate texture_in bitmap2texture texture
+param_connect screen0 screen glow alias_render_out_4
+param_connect scale texture_in translate texture_translate_out
+param_connect rendering_mode render_in gl_color render_out
+param_connect refeeder2.simple_with_texture texture_in refeeder2.render_surface_single texture_out
+param_connect refeeder2.render_surface_single render_in refeeder2.simple_with_texture render_out
+param_alias alias_render_in:render -1 refeeder2 alias_render_in refeeder2.render_surface_single render_in
+param_connect refeeder2 alias_render_in orbit_camera render_out
+param_connect refeeder2.render_surface_single render_in refeeder2.simple render_out
+param_connect orbit_camera render_in blend_mode render_out
+param_connect mesh_basic_render particles basic_spray_emitter particlesystem
+param_connect mesh_basic_render mesh_in mesh_disc mesh
+param_connect mesh_basic_render tex_a scale texture_scale_out
+param_connect glow.simple_with_texture2 texture_in glow.blur texture_out
+param_connect glow.simple_with_texture2 size glow.float_dummy result_float
+param_alias alias_global_alpha_1:float -1 glow alias_global_alpha_1 glow.simple_with_texture2 global_alpha
+param_connect glow.simple_with_texture texture_in glow.render_surface_double texture_out
+param_connect glow.simple_with_texture size glow.float_dummy result_float
+param_alias alias_global_alpha:float -1 glow alias_global_alpha glow.simple_with_texture global_alpha
+param_alias alias_render_in:render -1 glow alias_render_in glow.render_surface_double render_in
+param_connect glow alias_render_in blend_mode1 render_out
+param_connect glow.depth_test render_in glow.depth_mask render_out
+param_connect glow.depth_mask render_in glow.blend_mode render_out
+param_connect glow.blur glow_source glow.render_surface_double texture_out
+param_connect glow.blend_mode render_in glow.simple_with_texture render_out
+param_connect glow.blend_mode render_in glow.simple_with_texture2 render_out
+param_connect gl_color render_in mesh_basic_render render_out
+param_connect blend_mode1 render_in refeeder2 alias_render_out
+param_connect blend_mode render_in rendering_mode render_out
+param_connect bitmap2texture bitmap jpeg_bitm_load bitmap
+param_connect basic_spray_emitter color 4f_hsv_to_f4_rgb result_float4
+param_connect 4f_hsv_to_f4_rgb h oscillator float
+param_connect 3float_to_float3 floata oscillator1 float

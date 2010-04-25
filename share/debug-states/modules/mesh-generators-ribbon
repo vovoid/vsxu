@@ -1,0 +1,54 @@
+meta_set fHx8fHw=
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.055379 -0.061887
+param_set blend_mode dest_blend 1
+component_create texture;particles;blob blob -0.545855 -0.060760
+param_set blob arms 11.51836490631103515625
+param_set blob attenuation 2.21859431266784667969
+param_set blob angle 1.02861750125885009766
+component_create renderers;opengl_modifiers;light_directional light_directional -0.205776 -0.039566
+param_set light_directional light_id 0
+param_set light_directional enabled 1
+param_set light_directional position 0.65423953533172607422,0.10454887896776199341,-0.74902617931365966797
+param_set light_directional ambient_color 0.99999922513961791992,0.99999916553497314453,0.99999916553497314453,1.00000000000000000000
+component_create renderers;opengl_modifiers;material_param material_param -0.153550 -0.031887
+param_set material_param emission_intensity 0.25613299012184143066,0.33791026473045349121,1.00000000000000000000,1.00000000000000000000
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.271639 -0.007085
+param_set mesh_basic_render use_vertex_colors 0
+component_create mesh;modifiers;deformers;mesh_normal_randistort mesh_normal_randistort -0.336821 0.023253
+param_set mesh_normal_randistort distortion_factor 0.00000099999988378840,0.00000000003399090037,0.00000091027322923765
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.148386 0.039337
+param_set orbit_camera rotation 0.14131604135036468506,-0.19930402934551239014,-0.96969413757324218750
+param_set orbit_camera distance 0.71992105245590209961
+param_set orbit_camera destination 0.78221893310546875000,0.00000000000022688172,0.00000000000000000000
+param_set orbit_camera perspective_correct 0
+component_create maths;oscillators;oscillator oscillator -0.529246 -0.102642
+param_set oscillator osc_type 2
+param_set oscillator amp 3.71970820426940917969
+param_set oscillator freq 0.08096654713153839111
+component_create renderers;opengl_modifiers;rendering_mode rendering_mode -0.102947 0.005142
+component_create mesh;generators;ribbon ribbon -0.440647 0.004285
+param_set ribbon start_point 0.00000000000000000005,0.00000000000000066151,0.01531440392136573792
+param_set ribbon end_point 1.88080012798309326172,0.00000000000000000000,0.78341102600097656250
+param_set ribbon up_vector 0.00000000000000000002,0.99999910593032836914,0.00000000000000000000
+param_set ribbon width 0.05830146744847297668
+param_set ribbon skew_amp 2.57178568840026855469
+param_set ribbon time_amp 3.15197849273681640625
+component_create texture;modifiers;rotate rotate -0.468257 -0.081634
+component_create texture;modifiers;scale scale -0.397344 -0.107111
+param_set scale scale_vector 0.13380293548107147217,0.62760603427886962891,1.00000000000000000000
+cpp screen0 0.000000 0.000000
+component_create texture;modifiers;translate translate -0.331548 -0.093967
+param_set translate translation_vector 1.89158689975738525391,8.07359695434570312500,0.00000099999988378840
+param_connect translate texture_in scale texture_scale_out
+param_connect screen0 screen blend_mode render_out
+param_connect scale texture_in rotate texture_rotate_out
+param_connect rotate rotation_angle oscillator float
+param_connect rotate texture_in blob texture
+param_connect rendering_mode render_in orbit_camera render_out
+param_connect orbit_camera render_in material_param render_out
+param_connect mesh_normal_randistort mesh_in ribbon mesh
+param_connect mesh_basic_render mesh_in mesh_normal_randistort mesh_out
+param_connect mesh_basic_render tex_a translate texture_translate_out
+param_connect material_param render_in light_directional render_out
+param_connect light_directional render_in mesh_basic_render render_out
+param_connect blend_mode render_in rendering_mode render_out

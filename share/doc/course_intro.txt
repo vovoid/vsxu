@@ -1,0 +1,266 @@
+Welcome to Vovoid VSX Ultra! <3
+I'm Luna of Vovoid - your guide and companion
+in this quite tricky piece of software.
+Nice to meet you!!
+ÿ
+I'm gonna tell you how to use VSXu, left-click me
+to hear more, right-click to hide me :)
+I will always be around to tell you stuff
+about VSXu and what you see, so when this
+introduction course is finished we can still
+hang out and have lots of fun!
+ÿ
+I hope we'll become friends on the way!
+ÿ
+Hint: go back/forth by clicking
+the arrows below!
+|||
+Now let's begin!
+ÿ
+What you see is the VSXu workspace, looks empty
+doesn't it? ;)
+Well, everything's hidden, I'll teach
+you how to use it.. But first you must learn
+how to navigate - it's a 3d work environment
+so you can move around, zoom in and
+out. This is done with the keyboard.
+Try to press
+R key to zoom in and W
+to zoom out!
+ÿ
+Pretty neat huh?
+ÿ
+
+|||
+Now you can also move sideways - just use:
+S + F
+and to go up/down:
+E + D
+ÿ
+Try to do this (zoom, move) for a while to see
+how far you can go in each direction.
+All the time when using VSXu, try to have
+your left hand on these keys on the
+keyboard and the other on your mouse.
+Just like playing a game - no functions
+will be out of reach for your left hand.
+In the beginning this might feel awkward
+but ultimately most people love it.
+ÿ
+
+|||
+Did you see the screen when you
+zoomed in? It's located in the middle of
+everything. It has a name - screen0!
+You can see that easier if you click on it.
+If you have trouble finding it, try
+hitting SPACE - I'll take you back to
+the middle of whatever you selected.
+ÿ
+
+|||
+By left-clicking on the screen component
+you have selected it and
+then you can move it around by dragging
+it. When we have more modules on the
+workspace you can do this with all
+of them.
+ÿ
+Another thing that you'll be doing a lot
+in VSXu is right-clicking to bring up
+contextual menus. Try right-clicking
+on the screen - however, it doesn't
+have a context menu so nothing happens.
+ÿ
+Most things in vsxu have a right-click
+menu of some sort.
+
+|||
+Now we can do some exploration!
+Do you see the 2 round discs attached to the
+top left side of the screen module?
+ÿ
+These are called "anchors".
+This is what modules use to communicate
+with other modules or simply to control
+the flow of things.
+Does this sound strange? It will soon clear
+up, bear with me!
+ÿ
+
+|||
+Now let's do something fun. We're gonna create
+a white line!
+The big patchwork colorful area the screen
+is lying on is the "server".
+ÿ
+If you right-click it (anywhere is fine) you'll
+get a menu.
+Pick the first item,
+"add module using browser"
+ÿ
+Woah! Now you should see the module-browser.
+It's reaaally big! Loads of modules here,
+it's hard to use until you get used to it.
+ÿ
+
+|||
+Now, you see that different groups have different
+colors. Click somewhere where there is not a box
+and drag around to move. The one we want is
+a "renderer" so it's in the orange block.
+(Look up to the left)
+ÿ
+Now, the branch name is renderers.
+Then find the branch called "examples"
+and one of its leafs is called "simple".
+ÿ
+
+|||
+Position the tree so the simple box is close to
+the middle of the screen, then left-click and drag
+it. You now get the placement cursor,
+move it to where you want to put your new module -
+I suggest you put it on the left side of the screen.
+If you don't see the screen, you can
+move around with the navigation keys
+on the keyboard while you're dragging
+(before releasing the mouse button)
+and find where you want to place it.
+Then just hit OK when you get to name it.
+ÿ
+
+|||
+Now to get out of the module browser
+just hit the right mouse button somewhere
+where there's not a module (between the boxes).
+ÿ
+Now we have 2 modules, the simple
+and the screen. Do you remember about
+the anchors? Do you see that there is
+a red circle with a white dot in it
+on the right side of the simple module
+and on the left side of the screen?
+If not, zoom in a bit and explore!
+(R zooms in, W zooms out, SDFE moves around)
+ÿ
+
+|||
+The different icons on anchors tell you which
+type of data it provides/accepts. In this case
+it's the [render] data type. Also, when you
+see 2 anchors not yet connected - you can
+experiment by connecting them and see what
+happens. A lot of this kind of exploration
+has to be done by you on your own, but I
+can tell you all about different modules
+and anchor (data) types as soon as this
+course is done! You will just click on
+something, and if I'm activated I'll
+describe it for you. This way you get
+to explore the rest of the program in
+your own pace.
+ÿ
+
+|||
+Now, let's connect these 2 anchors.
+Click down on one of them (either is fine)
+and drag to get a connection line.
+Then continue dragging it until you are
+above the other anchor and then just release
+the mouse button to form a connection.
+Try until it works! You should see
+the white line in the preview window!
+Maybe you already figured this out -
+you are smart - but the
+anchors on the left side of a module
+are inputs, the ones on the right side
+are outputs.
+ÿ
+
+|||
+However, you don't always need another module
+to provide data for a module.
+With some anchor (data) types you can access
+an abundance of tools to set them.
+Now we'll play with the angle,
+size and color of the white line using
+these tools.
+ÿ
+
+|||
+Here's something many have problems with the
+first time: understanding nested anchors.
+ÿ
+You see 2 anchors on the left side of the
+"simple" module, right?
+The first one, with a white + on it is a bit
+similar to the one below, but they are not
+the same!
+The first one with the + is an anchor group.
+If you double-click it you can access its
+children! Please do this!
+ÿ
+
+|||
+See all the other anchors that just popped up?
+If you move your mouse over an anchor you get to
+see its name - and here's what we're looking for.
+You might need to zoom in to see the anchors properly,
+but the second anchor in the "spatial" group
+which you just opened is called
+"angle". It's symbol is a boxy 8 :)
+ÿ
+Remembering that everything in VSXu has a
+right-click menu, the angle anchor definetly does!
+In the menu, select Controllers -> knob.
+ÿ
+So, simple.spatial.angle is the path
+to find this anchor :)
+ÿ
+
+|||
+Now you have a knob! You can click and drag on it
+to rotate it and thus change the angle.
+Some modules limit your actions with these
+controllers so you can't give values that
+would make the module crash.
+ÿ
+Also, try to right-click the text displaying
+the value and the knob itself - you can set
+the value manually and change the smoothess
+factor.
+ÿ
+Now try out the controllers for the rest of
+the parameters for this "simple" renderer.
+When you're done, we'll do one more step
+and then this course is finished :)
+|||
+Now let's make something happen on its own.
+For this purpouse there are mathematical
+modules - which you can use to process
+sound or simply generate values. Of these
+the oscillator is the most useful one.
+ÿ
+An oscillator is defined as "a device for
+producing alternating current". In this
+case it produces different values over
+time - making things move or rotate.
+You can find the oscillator in the
+maths section in the module browser.
+maths;parameters;oscillators;oscillator is the
+standard one.
+|||
+Just hook it up to the simple renderer's
+angle and it should start moving. Then you
+should explore the different parameters
+of the oscillator!
+ÿ
+This is the end of this course, it has
+gotten you up and running with the basic
+tools, from now on i'll help you differently.
+Just click anything and i'll tell you about
+it if I know something about it :)
+But first you have to put me in automatic
+mode - right-click me and choose that from
+the menu!

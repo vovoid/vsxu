@@ -1,0 +1,50 @@
+meta_set fHx8fHw=
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.330537 0.022830
+param_set 3float_to_float3 floatb 0.55385816097259521000
+param_set 3float_to_float3 floatc 0.00000096031692464749
+component_create particlesystems;modifiers;basic_wind_deformer basic_wind_deformer -0.279860 0.030401
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.146993 0.007280
+param_set blend_mode dest_blend 1
+component_create texture;particles;blob blob -0.291337 0.125560
+component_create renderers;opengl_modifiers;gl_scale gl_scale -0.177212 0.082128
+param_set gl_scale scale 0.99999994039535522000,0.99999994039535522000,0.99999904632568359000
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.071573 0.033393
+param_set orbit_camera rotation 0.91387689113616943000,0.09208291769027710000,0.39541047811508179000
+param_set orbit_camera distance 0.99059796333312988000
+component_create maths;oscillators;oscillator oscillator -0.391399 0.015268
+param_set oscillator osc_type 0
+param_set oscillator amp 3.36454105377197270000
+param_set oscillator ofs 0.00000092600470225079
+param_set oscillator freq 7.69928407669067380000
+component_create particlesystems;generators;particles_mesh_spray particles_mesh_spray -0.359888 -0.065937
+param_set particles_mesh_spray time_source 0
+param_set particles_mesh_spray speed_x 0.52336609363555908000
+param_set particles_mesh_spray speed_y 0.62105989456176758000
+param_set particles_mesh_spray speed_z 0.07693800330162048300
+param_set particles_mesh_spray speed_type 0
+param_set particles_mesh_spray color 0.79232984781265259000,0.53215354681015015000,0.21140205860137939000,1.00000000000000000000
+param_set particles_mesh_spray num_particles 5000.00048828125000000000
+component_create mesh;vertices;random_vertices random_vertices -0.443264 -0.065345
+param_set random_vertices num_points 5.00000095367431640000
+param_set random_vertices scaling 1.00000000000000000000,0.22902898490428925000,1.00000000000000000000
+component_pos screen0 0.000000 0.000000
+component_create renderers;particlesystems;simple simple -0.222592 -0.015043
+param_set simple render_type 0
+param_set simple size_lifespan_type 0
+param_set simple ignore_particles_at_center 0
+param_set simple size_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple alpha_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+component_create particlesystems;modifiers;size_noise size_noise -0.276129 -0.069661
+param_set size_noise strength 1.67107498645782470000
+param_set size_noise size_type 0
+param_connect size_noise in_particlesystem particles_mesh_spray particlesystem
+param_connect simple texture blob texture
+param_connect simple particlesystem basic_wind_deformer particlesystem
+param_connect screen0 screen orbit_camera render_out
+param_connect particles_mesh_spray mesh_in random_vertices mesh
+param_connect orbit_camera render_in blend_mode render_out
+param_connect gl_scale render_in simple render_out
+param_connect blend_mode render_in gl_scale render_out
+param_connect basic_wind_deformer wind 3float_to_float3 result_float3
+param_connect basic_wind_deformer in_particlesystem size_noise particlesystem
+param_connect 3float_to_float3 floata oscillator float
