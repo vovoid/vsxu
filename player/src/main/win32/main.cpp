@@ -9,7 +9,7 @@
 #include "vsx_avector.h"
 #include "vsx_string.h"
 using namespace std;
-#include "nehegl.h"
+#include "includes/nehegl.h"
 #include "application.h"
 #include "vsxfst.h"
 

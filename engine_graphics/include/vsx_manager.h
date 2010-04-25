@@ -2,8 +2,18 @@
 #define VSX_MANAGER_H
 
 #include <vsx_string.h>
+#include <vsx_platform.h>
 
 
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+#define VSX_MANAGER_DLLIMPORT
+#else
+  #if defined(VSX_ENG_DLL)
+    #define VSX_MANAGER_DLLIMPORT __declspec (dllexport)
+  #else 
+    #define VSX_MANAGER_DLLIMPORT __declspec (dllimport)
+  #endif
+#endif
 class vsx_manager_abs
 {
 public:
@@ -49,6 +59,6 @@ public:
 };
 
 extern "C" {
-vsx_manager_abs* manager_factory();
+VSX_MANAGER_DLLIMPORT vsx_manager_abs* manager_factory();
 }
 #endif

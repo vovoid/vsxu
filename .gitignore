@@ -10,3 +10,4 @@ _plugins_win32/*.dll
 install_manifest.txt
 *.dll
 *.dll.a
+*.exe

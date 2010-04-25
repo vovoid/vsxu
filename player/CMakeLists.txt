@@ -91,6 +91,7 @@ if(WIN32)
   ws2_32
   glew
   pthreadGCE
+  vsxu_engine_graphics
   vsxu_engine
   gdi32
   glu32
