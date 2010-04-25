@@ -12,6 +12,18 @@
 #endif
 #include "vsx_bitmap.h"
 
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+#define VSX_TEXTURE_DLLIMPORT
+#else
+  #if defined(VSX_ENG_DLL)
+    #define VSX_TEXTURE_DLLIMPORT __declspec (dllexport)
+  #else 
+    #define VSX_TEXTURE_DLLIMPORT __declspec (dllimport)
+  #endif
+#endif
+
+
 class vsx_texture {
 #ifdef VSXU_EXE
   static std::map<vsx_string, vsx_texture_info> t_glist;
@@ -43,11 +55,11 @@ public:
   vsx_texture_info texture_info;
 
   // pbuffer related functions
-  void init_buffer(int width, int height, bool float_texture = false); // run once
-  void init_buffer_render(int width, int height); // run once, needs support in hardware
-  void deinit_buffer(); // remove the buffer
-  void reinit_buffer(int width, int height, bool float_texture = false); // run in stop/start or when changing resolution
-  void reinit_buffer_render(int width, int height); // run in stop/start or when changing resolution
+  VSX_TEXTURE_DLLIMPORT void init_buffer(int width, int height, bool float_texture = false); // run once
+  VSX_TEXTURE_DLLIMPORT void init_buffer_render(int width, int height); // run once, needs support in hardware
+  VSX_TEXTURE_DLLIMPORT void deinit_buffer(); // remove the buffer
+  VSX_TEXTURE_DLLIMPORT void reinit_buffer(int width, int height, bool float_texture = false); // run in stop/start or when changing resolution
+  VSX_TEXTURE_DLLIMPORT void reinit_buffer_render(int width, int height); // run in stop/start or when changing resolution
 
   bool get_fbo_status() { return use_fbo;}
 
@@ -58,13 +70,13 @@ public:
 #endif
 
   // allocate an openGL texture ID
-  void init_opengl_texture();
+  VSX_TEXTURE_DLLIMPORT void init_opengl_texture();
 
   // reuploads all textures in the t_glist so you don't have to bother :)
   // just use thie in the start function of the module and all should be ok unless you use
   // the buffer. then see above.
-  void reinit_all_active();
-  void unload_all_active();
+  VSX_TEXTURE_DLLIMPORT void reinit_all_active();
+  VSX_TEXTURE_DLLIMPORT void unload_all_active();
 
   // upload a bitmap from RAM to the GPU
   // as an openGL texture. requires that init_opengl_texture
@@ -72,17 +84,17 @@ public:
 #ifdef VSXU_OPENGL_ES
 #define GL_BGRA_EXT 0
 #endif
-  void upload_ram_bitmap(vsx_bitmap* vbitmap,bool mipmaps = false, bool upside_down = true);
-  void upload_ram_bitmap(unsigned long* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
+  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap(vsx_bitmap* vbitmap,bool mipmaps = false, bool upside_down = true);
+  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap(unsigned long* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
 
   // load a tga file in the same thread as ours (why would anyone use tga when png's around? anyway..)
 //  void load_tga(vsx_string name, bool mipmaps = true);
 
   void* pti_l; // needed by the communication between the png thread and the texture. internal stuff.
   // load a png in the same thread as ours.
-  void load_png(vsx_string fname, bool mipmaps = true);
-  void load_png_thread(vsx_string fname, bool mipmaps = true);
-  void load_jpeg(vsx_string fname, bool mipmaps = true);
+  VSX_TEXTURE_DLLIMPORT void load_png(vsx_string fname, bool mipmaps = true);
+  VSX_TEXTURE_DLLIMPORT void load_png_thread(vsx_string fname, bool mipmaps = true);
+  VSX_TEXTURE_DLLIMPORT void load_jpeg(vsx_string fname, bool mipmaps = true);
 
   // update the transform object with a new transformation
  	void set_transform(vsx_transform_obj* new_transform_obj) {
@@ -93,16 +105,16 @@ public:
 	// return the transformation
 	vsx_transform_obj* get_transform(){return transform_obj;}
 
-  void begin_capture();
-  void end_capture();
+  VSX_TEXTURE_DLLIMPORT void begin_capture();
+  VSX_TEXTURE_DLLIMPORT void end_capture();
 
   // use this to bind the texture.
-  bool bind();
+  VSX_TEXTURE_DLLIMPORT bool bind();
   // use this when you're done with the texture
-  void _bind();
+  VSX_TEXTURE_DLLIMPORT void _bind();
 
   // use this to always set texture coordinates properly.
-  void texcoord2f(float x, float y);
+  VSX_TEXTURE_DLLIMPORT void texcoord2f(float x, float y);
 
   // constructors
   vsx_texture()  {
@@ -114,7 +126,7 @@ public:
   vsx_texture(int id, int type);
 
 
-  void unload();
+  VSX_TEXTURE_DLLIMPORT void unload();
 };
 
 

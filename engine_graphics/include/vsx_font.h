@@ -9,6 +9,18 @@
 #include "vsx_math_3d.h"
 #include "vsx_texture.h"
 
+#include <vsx_platform.h>
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+#define VSX_FONT_DLLIMPORT
+#else
+  #if defined(VSX_ENG_DLL)
+    #define VSX_FONT_DLLIMPORT __declspec (dllexport)
+  #else 
+    #define VSX_FONT_DLLIMPORT __declspec (dllimport)
+  #endif
+#endif
+
 struct vsx_font_info {
   int type; // 0 = texture (old) 1 = new (FtGL)
   vsx_texture* texture;  // pointer to either vsx_texture or ftgl font
@@ -65,15 +77,15 @@ public:
   float align;
   
   
-  vsx_vector print(vsx_vector p, const vsx_string& str, const float size, const vsx_string colors = "");  
-  vsx_vector print(vsx_vector p, const vsx_string& str, const vsx_string& font, float size, const vsx_string colors = "");  
-  vsx_vector print_center(vsx_vector p, const vsx_string& str, float size);
+  VSX_FONT_DLLIMPORT vsx_vector print(vsx_vector p, const vsx_string& str, const float size, const vsx_string colors = "");  
+  VSX_FONT_DLLIMPORT vsx_vector print(vsx_vector p, const vsx_string& str, const vsx_string& font, float size, const vsx_string colors = "");  
+  VSX_FONT_DLLIMPORT vsx_vector print_center(vsx_vector p, const vsx_string& str, float size);
   //vsx_vector print_center(vsx_vector p, const vsx_string& str, const vsx_string& font, float size);
-  vsx_vector print_right(vsx_vector p, const vsx_string& str, float size);
+  VSX_FONT_DLLIMPORT vsx_vector print_right(vsx_vector p, const vsx_string& str, float size);
   //vsx_vector print_right(vsx_vector p, const vsx_string& str, const vsx_string& font, float size);
   //vsx_vector get_size(vsx_vector p, const vsx_string& str, const vsx_string& font, float size);
-  vsx_vector get_size(const vsx_string& str, float size);
-  void reinit_all_active();
+  VSX_FONT_DLLIMPORT vsx_vector get_size(const vsx_string& str, float size);
+  VSX_FONT_DLLIMPORT void reinit_all_active();
   
   vsx_font(vsx_string path) {
     base_path = path;

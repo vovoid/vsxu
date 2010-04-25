@@ -90,7 +90,7 @@ endif (VSXU_DEBUG EQUAL 1)
 
 set(module_id vsxu_engine)
 message("*******************************************")
-message("building            " ${module_id})
+message("configuring            " ${module_id})
 message("*******************************************")
 
 set(SOURCES

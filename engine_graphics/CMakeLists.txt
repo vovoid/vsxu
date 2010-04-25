@@ -31,7 +31,7 @@ add_definitions(
 
 set(module_id vsxu_engine_graphics)
 message("*******************************************")
-message("building            " ${module_id})
+message("configuring            " ${module_id})
 message("*******************************************")
 
 set(SOURCES

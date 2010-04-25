@@ -8,12 +8,12 @@
 
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-#define VSXCDLLIMPORT
+#define VSX_COMMAND_DLLIMPORT
 #else
   #if defined(VSX_ENG_DLL)
-    #define VSXCDLLIMPORT __declspec (dllexport)
+    #define VSX_COMMAND_DLLIMPORT __declspec (dllexport)
   #else 
-    #define VSXCDLLIMPORT __declspec (dllimport)
+    #define VSX_COMMAND_DLLIMPORT __declspec (dllimport)
   #endif
 #endif
 
@@ -55,12 +55,12 @@
 
 //**********************************************************************************************************************
 
-class vsx_command_s {
-  static std::list<vsx_command_s*> garbage_list; // the parts of the command
-  static std::list<vsx_command_s*>::iterator it;
-  static std::list<vsx_command_s*>::iterator it_2;
+VSX_COMMAND_DLLIMPORT class vsx_command_s {
+  VSX_COMMAND_DLLIMPORT static std::list<vsx_command_s*> garbage_list; // the parts of the command
+  VSX_COMMAND_DLLIMPORT static std::list<vsx_command_s*>::iterator it;
+  VSX_COMMAND_DLLIMPORT static std::list<vsx_command_s*>::iterator it_2;
 public:
-  void process_garbage();
+  VSX_COMMAND_DLLIMPORT void process_garbage();
   std::list<vsx_command_s*>* garbage_pointer;
   static int id;
   bool parsed;
@@ -91,7 +91,7 @@ public:
     return raw; else
     return cmd + " " + cmd_data;
   }
-  void parse();
+  VSX_COMMAND_DLLIMPORT void parse();
   vsx_command_s() {
     parsed = false;
     type = 0;
@@ -103,7 +103,7 @@ public:
 //#endif
   }
   // returns a string like "part1 part2 part3" if start was 1 and end was 3
-  vsx_string get_parts(int start = 0, int end = -1);
+  VSX_COMMAND_DLLIMPORT vsx_string get_parts(int start = 0, int end = -1);
 
   void dump_to_stdout()
   {
@@ -115,7 +115,7 @@ public:
   ~vsx_command_s();
 };
 
-vsx_command_s* vsx_command_parse(vsx_string& cmd_raw);
+VSX_COMMAND_DLLIMPORT vsx_command_s* vsx_command_parse(vsx_string& cmd_raw);
 
 class vsx_command_list {
 public:
@@ -199,9 +199,9 @@ public:
     commands.push_back(t);
   }
 
-  VSXCDLLIMPORT void adds(int tp, vsx_string titl,vsx_string cmd, vsx_string cmd_data);
+  VSX_COMMAND_DLLIMPORT void adds(int tp, vsx_string titl,vsx_string cmd, vsx_string cmd_data);
 
-  VSXCDLLIMPORT void clear(bool del = false);
+  VSX_COMMAND_DLLIMPORT void clear(bool del = false);
 
   vsx_command_s* reset() {
     iter = commands.begin();

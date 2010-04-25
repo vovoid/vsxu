@@ -15,6 +15,7 @@ if(WIN32)
   include_directories(src/main/win32/)
   set(OS_SOURCES
     src/main/win32/main.cpp
+	src/main/win32/vsx_mouse.cpp
     src/main/win32/includes/nehegl.cpp
   )
   include_directories("../../_system_win32" "../../_system_win32/pthread" "../../_lib/win32")
@@ -48,7 +49,7 @@ add_definitions(
 get_filename_component(list_file_path ${CMAKE_CURRENT_LIST_FILE} PATH)
 string(REGEX MATCH "[a-z._-]*$" module_id ${list_file_path})
 message("*******************************************")
-message("building            " ${module_id})
+message("configuring            " ${module_id})
 message("*******************************************")
 
 set(SOURCES
@@ -174,6 +175,7 @@ if(WIN32)
     ws2_32
     glew
     pthreadGCE
+	vsxu_engine_graphics
     vsxu_engine
     gdi32
     glu32
