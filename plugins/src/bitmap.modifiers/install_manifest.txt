@@ -1,1 +1,0 @@
-/usr/lib/vsxu/plugins/bitmap.modifiers-lib.so

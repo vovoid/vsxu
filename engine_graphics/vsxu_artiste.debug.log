@@ -1,5 +1,0 @@
-found vsxu_preview widget
-message_b: load course_intro
-message_b: component_info screen0 screen:critical
-message_b: in_param_spec screen0 screen:render,gamma_correction:float?max=4&min=0&nc=1,clear_color:float4
-message_b: out_param_spec screen0 
