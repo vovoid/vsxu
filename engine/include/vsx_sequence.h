@@ -1,6 +1,19 @@
 #ifndef VSX_SEQUENCE_H
 #define VSX_SEQUENCE_H
 
+
+#include <vsx_platform.h>
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+#define VSX_SEQUENCE_DLLIMPORT
+#else
+  #ifdef VSX_ENG_DLL
+    #define VSX_SEQUENCE_DLLIMPORT __declspec (dllexport) 
+  #else 
+    #define VSX_SEQUENCE_DLLIMPORT __declspec (dllimport)
+  #endif
+#endif
+
 class vsx_sequence_item {
 public:
   float value;
@@ -42,14 +55,14 @@ public:
   int i_cur;
 
   long timestamp;
-  vsx_sequence();
-  vsx_sequence(const vsx_sequence& seq);
-  vsx_sequence(vsx_sequence& seq);
-  virtual ~vsx_sequence();
+  VSX_SEQUENCE_DLLIMPORT vsx_sequence();
+  VSX_SEQUENCE_DLLIMPORT vsx_sequence(const vsx_sequence& seq);
+  VSX_SEQUENCE_DLLIMPORT vsx_sequence(vsx_sequence& seq);
+  VSX_SEQUENCE_DLLIMPORT virtual ~vsx_sequence();
 
-  vsx_sequence& operator=(vsx_sequence& ss);
+  VSX_SEQUENCE_DLLIMPORT vsx_sequence& operator=(vsx_sequence& ss);
 
-  void reset();
+  VSX_SEQUENCE_DLLIMPORT void reset();
 
   void set_time(float time) {
     execute(time-i_time);
@@ -59,10 +72,10 @@ public:
   	return execute(time-i_time);
   }
 
-  float execute(float t_incr);
+  VSX_SEQUENCE_DLLIMPORT float execute(float t_incr);
   #ifndef VSX_NO_SEQUENCE
-  vsx_string get_string();
-  void set_string(vsx_string str);
+  VSX_SEQUENCE_DLLIMPORT vsx_string get_string();
+  VSX_SEQUENCE_DLLIMPORT void set_string(vsx_string str);
   #else
   virtual vsx_string get_string() = 0;
   virtual void set_string(vsx_string str) = 0;

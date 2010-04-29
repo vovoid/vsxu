@@ -11,13 +11,13 @@
 ;General
 
   ;Name and file
-  Name "VSX Ultra Player 0.1.18"
-  OutFile "vsxu_player_install_0118.exe"
+  Name "VSX Ultra Player 0.2.0"
+  OutFile "vsxu_player_install_020.exe"
   
   SetCompressor /SOLID lzma
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\vsxu_player_0.1.18"
+  InstallDir "$PROGRAMFILES\vsxu_player_0.2.0"
 
   ;Get installation folder from registry if available
   InstallDirRegKey HKCU "Software\vovoid\vsxu_player" ""
@@ -39,7 +39,7 @@
 
   ;Start Menu Folder Page Configuration
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
-  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Vovoid VSX Ultra Player" 
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Vovoid VSX Ultra Player 0.2.0" 
   !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
 	
 	
@@ -67,28 +67,27 @@ Section "VSX Ultra Player" secplayer
   SetOutPath "$INSTDIR"
 
   ;ADD YOUR OWN FILES HERE...
-  File ..\..\vsxu_player.exe
-  File ..\..\vsxu_engine.dll
-  File ..\..\vsxfst.dll
-  File ..\..\vsxg.dll
-  File ..\..\pthreadGCE.dll
-  File ..\..\fmodex.dll
-  File ..\..\glew_shared.dll
-  File ..\..\mingwm10.dll
+  File ..\..\player\vsxu_player.exe
+  File ..\..\engine\libvsxu_engine.dll
+  File ..\..\engine_graphics\libvsxu_engine_graphics.dll
+  File ..\..\lib\win32\pthreadGCE.dll
+  File ..\..\lib\win32\fmodex.dll
+  File ..\..\lib\win32\glew_shared.dll
+  File ..\..\lib\win32\mingwm10.dll
   
-  SetOutPath "$INSTDIR\_visuals_player"
-  File ..\..\_visuals_player\*.vsx
+  SetOutPath "$INSTDIR\visuals_player"
+  File ..\..\share\visuals_player\*.vsx
 
-  SetOutPath "$INSTDIR\_visuals_faders"
-  File ..\..\_visuals_faders\*.vsx
+  SetOutPath "$INSTDIR\visuals_faders"
+  File ..\..\share\visuals_faders\*.vsx
 
 !include _plugins.nsh
 
-  SetOutPath "$INSTDIR\_gfx\vsxu\font"
-  File ..\..\_gfx\vsxu\font\font-ascii.png
+  SetOutPath "$INSTDIR\font"
+  File ..\..\share\font\font-ascii.png
 
   ;Store installation folder
-  WriteRegStr HKCU "Software\vovoid\vsxu_player" "" $INSTDIR
+  WriteRegStr HKCU "Software\vovoid\vsxu_player_0.2.0" "" $INSTDIR
 
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
@@ -134,7 +133,7 @@ SectionEnd
 ;Descriptions
 
   ;Language strings
-  LangString DESC_secplayer ${LANG_ENGLISH} "Vsx Ultra Player 0.1.18"
+  LangString DESC_secplayer ${LANG_ENGLISH} "Vsx Ultra Player 0.2.0"
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -148,7 +147,7 @@ Section "Uninstall"
 
   ;ADD YOUR OWN FILES HERE...
 
-	Delete "$INSTDIR\vsxu_player.exe"
+  Delete "$INSTDIR\vsxu_player.exe"
   Delete "$INSTDIR\Uninstall.exe"
 
   RMDir "$INSTDIR"

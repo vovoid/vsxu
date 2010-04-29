@@ -4,11 +4,7 @@
 #include "vsx_math_3d.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
-#ifdef _WIN32
-#include "pthread/pthread.h"
-#else
 #include <pthread.h>
-#endif
 #include "main.h"
 
 

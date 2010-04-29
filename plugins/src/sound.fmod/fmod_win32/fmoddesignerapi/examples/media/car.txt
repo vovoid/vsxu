@@ -1,7 +1,0 @@
-car\offhigh.ogg, FSOUND_3D
-car\offlow.ogg, FSOUND_3D
-car\idle.ogg, FSOUND_3D
-car\offmid.ogg, FSOUND_3D
-car\onhigh.ogg, FSOUND_3D
-car\onlow.ogg, FSOUND_3D
-car\onmid.ogg, FSOUND_3D

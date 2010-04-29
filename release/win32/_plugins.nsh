@@ -1,12 +1,6 @@
-  SetOutPath "$INSTDIR\_plugins_win32"
-  File /x *ocean* ..\..\_plugins_win32\*.dll
+  SetOutPath "$INSTDIR\plugins"
+  File /r /x lib ..\..\plugins\*.dll
 
-  SetOutPath "$INSTDIR\_plugins_win32\render.glsl\blend_modes"
-  File ..\..\_plugins_win32\render.glsl\blend_modes\*.glsl
-
-  SetOutPath "$INSTDIR\_plugins_win32\render.glsl\lighting_models"
-  File ..\..\_plugins_win32\render.glsl\lighting_models\*.glsl
-  
-  SetOutPath "$INSTDIR\_plugins_win32\render.glsl\texture_filters"
-  File ..\..\_plugins_win32\render.glsl\texture_filters\*.glsl
+  SetOutPath "$INSTDIR\plugin-config\render.glsl"
+  File /r ..\..\plugins\src\render.glsl\share\plugin-config\render.glsl\*.*
 	

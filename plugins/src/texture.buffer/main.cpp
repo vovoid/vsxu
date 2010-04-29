@@ -1,9 +1,5 @@
 #include "_configuration.h"
-#ifdef _WIN32
-#include "pthread/pthread.h"
-#else
 #include "pthread.h"
-#endif
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include <vector>

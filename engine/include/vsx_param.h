@@ -8,6 +8,20 @@
   //#include <windows.h>
 #endif
 
+
+#include <vsx_platform.h>
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+#define VSX_PARAM_DLLIMPORT
+#else
+  #ifdef VSX_ENG_DLL
+    #define VSX_PARAM_DLLIMPORT __declspec (dllexport) 
+  #else 
+    #define VSX_PARAM_DLLIMPORT __declspec (dllimport)
+  #endif
+#endif
+
+
 #include "vsx_avector.h"
 #include "vsx_string.h"
 
@@ -228,8 +242,8 @@ public:
 class vsx_module_param_list {
 public:
   vsx_avector<vsx_module_param_abs*> id_vec;
-	vsx_module_param_abs* create(int type, const char* name, bool crit = false, bool all_required = false);
-	~vsx_module_param_list();
+  VSX_PARAM_DLLIMPORT vsx_module_param_abs* create(int type, const char* name, bool crit = false, bool all_required = false);
+  ~vsx_module_param_list();
 };
 
 typedef vsx_module_param<0, int,							1 > vsx_module_param_int; // use get() set()

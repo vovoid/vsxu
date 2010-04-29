@@ -56,14 +56,14 @@ project (${module_id})
 
 add_executable(${module_id}  ${SOURCES} ${OS_SOURCES} ${EXTRA_LIBS})
 include(../cmake_suffix.txt)
-
-if(UNIX)
   set_target_properties(
     ${module_id}
       PROPERTIES
         OUTPUT_NAME
           vsxu_player
   )
+
+if(UNIX)
   link_directories("/usr/lib/vsxu")
   target_link_libraries(${module_id}
     Xrandr

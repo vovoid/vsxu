@@ -3,9 +3,7 @@
 #include "main.h"
 #include "vsx_math_3d.h"
 //#include "vsx_string_lib.h"
-#ifdef _WIN32
-#include "pthread/pthread.h"
-#endif
+#include <pthread.h>
 
 typedef struct {
   CalBone* bone;

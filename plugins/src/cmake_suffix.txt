@@ -1,6 +1,15 @@
 if(WIN32)
   #set(output_dir "../../_plugins_win32")
-  target_link_libraries(${module_id} vsxu_engine gdi32 pthreadGCE glew opengl32 glu32)
+  target_link_libraries(
+    ${module_id} 
+	vsxu_engine_graphics 
+	vsxu_engine 
+	gdi32 
+	pthreadGCE 
+	glew 
+	opengl32 
+	glu32
+  )
 endif(WIN32)
 
 if (UNIX)
