@@ -12,7 +12,7 @@
 ;General
 
   ;Name and file
-  Name "VSX Ultra Artiste 0.1.2"
+  Name "VSX Ultra Artiste 0.2.0"
   OutFile "vsxu_artiste_install_020.exe"
   
   SetCompressor /SOLID lzma
