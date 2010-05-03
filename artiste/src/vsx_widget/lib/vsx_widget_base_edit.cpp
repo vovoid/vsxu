@@ -88,7 +88,6 @@ vsx_widget_base_edit::vsx_widget_base_edit() {
   menu->size.y = 0.5;
   menu->init();
   //lines.push_back("");
-
   //lines.push_back("test22223423498llkjsalfjaskdfoi2u348239429342934782347292384293842849237978");
 }
 

@@ -387,7 +387,7 @@ int vsx_widget_component::inside_xy_l(vsx_vector &test, vsx_vector &global) {
 				if (anchor_order[0] > anchor_order[1]) largest_num_anchors = anchor_order[0];
 				else
 				largest_num_anchors = anchor_order[1];
-				if (largest_num_anchors < 3) largest_num_anchors = 3.0f;
+				if (largest_num_anchors < 3) largest_num_anchors = 3;
 				target_size.y = target_size.x = 0.05f * 0.45 / 2.0f * (float)(largest_num_anchors-1);
 				interpolating_size = true;
 				size.y = size.x = 0.0f;
@@ -918,7 +918,7 @@ void vsx_widget_component::macro_toggle() {
 		if (anchor_order[0] > anchor_order[1]) largest_num_anchors = anchor_order[0];
 		else
 		largest_num_anchors = anchor_order[1];
-		if (largest_num_anchors < 3) largest_num_anchors = 3.0f;
+		if (largest_num_anchors < 3) largest_num_anchors = 3;
 		target_size.y = target_size.x = 0.05f * 0.45 / 2.0f * (float)(largest_num_anchors-1);
 		interpolating_size = true;
 	} else
