@@ -447,7 +447,7 @@ vsx_string vsx_get_data_path()
 #endif
   }
 #else
-  base_path = ".";
+  base_path = "data/";
 #endif
   return base_path;
 }

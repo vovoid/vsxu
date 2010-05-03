@@ -1,14 +1,7 @@
 #ifndef VSX_NO_CLIENT
     if (cmd == "state_load")
     {
-      vsx_string base_path;
-      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-        struct stat st;
-        char* home_dir = getenv ("HOME");
-        base_path = vsx_string(home_dir) + "/.vsxu/data/";
-      #else
-        base_path = "";
-      #endif
+      vsx_string base_path = vsx_get_data_path();
 
       vsx_string errmsg;
       state_name = c->parts[1];

@@ -25,7 +25,8 @@
       if (c->parts[1] == "resources") path = base_path+c->parts[1];
       if (c->parts[1] == "states" || c->parts[1] == "prods" || c->parts[1] == "visuals") path = base_path+c->parts[1];
       get_files_recursive(path,&mfiles,"",".hidden");
-      for (std::list<vsx_string>::iterator it = mfiles.begin(); it != mfiles.end(); ++it) {
+      for (std::list<vsx_string>::iterator it = mfiles.begin(); it != mfiles.end(); ++it) 
+	  {
         //printf("internal file: %s\n",(*it).c_str());
         //vsx_string s2 = str_replace("/",";",*it);
         //vsx_string s3 = str_replace("resources;","","resources;foo;bar");

@@ -9,6 +9,8 @@ SetOverwrite on
   File ..\..\lib\win32\fmodex.dll
   File ..\..\lib\win32\glew_shared.dll
   File ..\..\lib\win32\mingwm10.dll
+  File ..\..\lib\win32\zlib1.dll
+  File ..\..\lib\win32\freetype6.dll
   
  
  ; VSXU GRAPHICS

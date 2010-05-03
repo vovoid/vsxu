@@ -9,7 +9,8 @@
 #define VSX_EM_MACRO_H_
 
 	#ifndef VSX_NO_CLIENT
-    if (cmd == "macro_dump" || cmd == "component_clone") {
+    if (cmd == "macro_dump" || cmd == "component_clone") 
+	{
       // syntaX:
       //   macro_dump [name] [save_name]
       // - the most ultimate princess training ever, nyo!
