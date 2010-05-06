@@ -127,7 +127,9 @@ public:
           fparts.reset_used(fparts.get_used()-1);
           file_path = implode(fparts,fdeli)+"/";
         }
+#if defined(VSXU_DEBUG)
         printf("file path: %s\n",file_path.c_str());
+#endif
         //-------------------------------------------------
         vsx_avector<int> mesh_parts;
         vsx_avector<int> material_parts;
@@ -136,7 +138,6 @@ public:
         if (!fp) return;
     
         c_model = new CalCoreModel("core");
-        printf("opening: %s\n",current_filename.c_str());
         char buf[1024];
         vsx_string line;
         int mesh_id = 0;
@@ -635,7 +636,9 @@ public:
           fparts.reset_used(fparts.get_used()-1);
           file_path = implode(fparts,fdeli)+"/";
         }
+#ifdef VSXU_DEBUG
         printf("file path: %s\n",file_path.c_str());
+#endif
         //-------------------------------------------------
         vsx_avector<int> mesh_parts;
         vsx_avector<int> material_parts;
@@ -644,7 +647,6 @@ public:
         if (!fp) return;
 
         c_model = new CalCoreModel("core");
-        printf("opening: %s\n",current_filename.c_str());
         char buf[1024];
         vsx_string line;
         int mesh_id = 0;

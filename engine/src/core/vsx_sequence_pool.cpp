@@ -143,6 +143,11 @@ vsx_param_sequence_list* vsx_sequence_pool::get_sequence_list_by_name(vsx_string
 
 void vsx_sequence_pool::dump_to_command_list(vsx_command_list &savelist)
 {
+  int reinit_edit = 0;
+  if (edit_enabled) {
+    toggle_edit();
+    reinit_edit = 1;
+  }
 	for (std::map<vsx_string, vsx_param_sequence_list*>::iterator it = sequence_lists.begin(); it != sequence_lists.end(); it++)
 	{
 		savelist.add_raw("seq_pool add "+(*it).first);
@@ -151,15 +156,25 @@ void vsx_sequence_pool::dump_to_command_list(vsx_command_list &savelist)
 		vsx_string deli = "&";
 		std::vector<vsx_string> parts;
 		explode(sequence_dump, deli, parts);
-		for (size_t i = 0; i < parts.size(); i++)
-		{
-			vsx_string i_deli = "#";
-			std::vector<vsx_string> i_parts;
-			explode(parts[i], i_deli, i_parts);
-			// MULTIKRÅNGELKOMMANDO URKBURK
-			savelist.add_raw("seq_pool pseq_inject "+(*it).first+" "+i_parts[0]+" "+i_parts[1]+" "+i_parts[2]);
-		}
+#if VSXU_DEBUG
+    printf("sequence dump: %s\n", sequence_dump.c_str() );
+#endif
+    if (sequence_dump != "")
+    {
+      for (size_t i = 0; i < parts.size(); i++)
+      {
+        vsx_string i_deli = "#";
+        std::vector<vsx_string> i_parts;
+        explode(parts[i], i_deli, i_parts);
+        // MULTIKRÅNGELKOMMANDO URKBURK
+        savelist.add_raw("seq_pool pseq_inject "+(*it).first+" "+i_parts[0]+" "+i_parts[1]+" "+i_parts[2]);
+      }
+    }
 	}
+  if (reinit_edit) {
+    toggle_edit();
+  }
+  
 //seq_pool 1=add
 }
 

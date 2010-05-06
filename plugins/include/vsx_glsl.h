@@ -30,8 +30,9 @@ class vsx_glsl {
 
     int n;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &n);
+#if (VSXU_DEBUG)
     printf("maximum number of vertex attributes: %d\n", n);
-
+#endif
     // step 1, clean up multiple spaces etc, stop at '{' as that is
     // the beginning of the shader, no uniforms there
     vsx_avector<vsx_string> parts;
@@ -147,7 +148,9 @@ class vsx_glsl {
         if (pp.size()) {
           for (unsigned long j = 0; j < pp.size(); ++j) {
             attributes[pp[j]] = vtype;
+#if (VSXU_DEBUG)
             printf("attribute: %s is of type %s\n",pp[j].c_str(),vtype.c_str());
+#endif
           }
         }
       }
@@ -168,7 +171,9 @@ class vsx_glsl {
         if (pp.size()) {
           for (unsigned long j = 0; j < pp.size(); ++j) {
             vars[pp[j]] = vtype;
+            #if (VSXU_DEBUG)
             printf("uniform: %s is of type %s\n",pp[j].c_str(),vtype.c_str());
+            #endif
           }
         }
       }
@@ -176,8 +181,10 @@ class vsx_glsl {
     }
     int num_uniforms = gl_get_val(prog,GL_OBJECT_ACTIVE_UNIFORMS_ARB);
     int num_attributes = gl_get_val(prog,GL_OBJECT_ACTIVE_ATTRIBUTES_ARB);
+    #if (VSXU_DEBUG)
     printf("num uniforms (openGL): %d\n", num_uniforms);
     printf("num attributes (openGL): %d\n", num_attributes);
+    #endif
 
     GLcharARB name[1000];
     int length;
@@ -243,8 +250,9 @@ class vsx_glsl {
         }
         v_list.push_back(n_info);
 
-
+        #if (VSXU_DEBUG)
         printf("GLSL uniform name: %s\n",sn.c_str());
+        #endif
       }
     }
 
@@ -276,15 +284,18 @@ class vsx_glsl {
           case GL_BOOL_VEC4:
           case GL_FLOAT_VEC4:
           case GL_INT_VEC4:
+#if (VSXU_DEBUG)            
             printf("got quat array\n");
+#endif
             n_info.param_type = "quaternion_array";
             n_info.param_type_id = VSX_MODULE_PARAM_ID_QUATERNION_ARRAY;
           break;
         }
         a_list.push_back(n_info);
 
-
+#if (VSXU_DEBUG)
         printf("GLSL attribute name: %s\n",sn.c_str());
+#endif
       }
     }
   }
@@ -321,10 +332,14 @@ public:
       glDeleteObjectARB(fs);
       glDeleteObjectARB(prog);
     }
+#if (VSXU_DEBUG)    
     printf("linking glsl program");
+#endif
     if (GL_FRAGMENT_SHADER)
     {
+#if (VSXU_DEBUG)
       printf("OpenGL 2.0\n");
+#endif
       vs = glCreateShader(GL_VERTEX_SHADER);
       fs = glCreateShader(GL_FRAGMENT_SHADER);
     } else
@@ -386,7 +401,9 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
     }
     res = res + "},attributes:complex{";
     first = true;
+#if (VSXU_DEBUG)    
     printf("a_list size: %d\n", (int)a_list.size() );
+#endif
     for (int i = a_list.size()-1; i >= 0; --i) {
       //if (a_list[i].name[0] != '_')
       {

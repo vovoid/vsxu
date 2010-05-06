@@ -1153,7 +1153,7 @@ void vsx_widget_ultra_chooser::on_delete() {
 void vsx_widget_ultra_chooser::build_tree() {
   if (mymodel && treedraw) {
     delete mymodel;
-    delete treedraw;
+    treedraw->_delete();
   }
   allow_move = true;
   mymodel = new HTModel(module_tree);

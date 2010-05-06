@@ -1361,7 +1361,8 @@ void vsx_widget_anchor::init_menu(bool include_controllers) {
       }
     }
   }
-  else if (p_type == "enum")
+  else 
+  if (p_type == "enum")
   {
     //menu = add(new vsx_widget_popup_menu,".anchor_menu");
     vsx_string deli_p = "&";
@@ -1377,9 +1378,7 @@ void vsx_widget_anchor::init_menu(bool include_controllers) {
     }
   }
   if (!menu_->commands.count()) {
-    //menu->_delete();
-    delete (vsx_widget_popup_menu*)menu;
-    menu = 0;
+    menu_->_delete();
   } else
   {
     menu = add(menu_,"menu");
@@ -1503,8 +1502,9 @@ void vsx_widget_anchor::event_mouse_down(vsx_widget_distance distance,vsx_widget
 		if (p_type != "complex") {
 			if (t) {
 				((vsx_widget_connector*)t)->receiving_focus = true;
-				children.remove(t);
-				delete t;
+        t->_delete();
+				//children.remove(t);
+				//delete t;
 				t = 0;
 			}
 			if (ctrl && alt)
@@ -1535,8 +1535,9 @@ void vsx_widget_anchor::event_mouse_down(vsx_widget_distance distance,vsx_widget
 			vsx_widget_connector::dim_alpha = 1.0f;
 			vsx_widget_connector::receiving_focus = true;
 			if (t) {
-				children.remove(t);
-				delete t;
+        t->_delete();
+				//children.remove(t);
+				//delete t;
 				t = 0;
 			}
 			//((vsx_widget_connector*)t)->receiving_focus = true;
@@ -1803,8 +1804,9 @@ void vsx_widget_anchor::event_mouse_up(vsx_widget_distance distance,vsx_widget_c
 		clone_value = false;
 		drag_clone_anchor = 0;
 		if (t) {
-			children.remove(t);
-			delete t;
+			//children.remove(t);
+			//delete t;
+      t->_delete();
 			t = 0;
 			//vsx_widget *tt = 0;//!!!root->find_component(world,screen,true);
 			if (search_anchor) {
@@ -1850,8 +1852,9 @@ void vsx_widget_anchor::pre_draw() {
 		//printf("pre draw\n");
 		if (t) if (a_focus != this) {
 			((vsx_widget_connector*)t)->receiving_focus = true;
-			children.remove(t);
-			delete t;
+      t->_delete();
+			//children.remove(t);
+			//delete t;
 			t = 0;
 		}
 
@@ -2097,7 +2100,6 @@ vsx_widget_anchor::vsx_widget_anchor() {
 	menu = search_anchor = t = 0;
 	display_value_t = 0.0f;
 	widget_type = VSX_WIDGET_TYPE_ANCHOR;
-	vsx_widget::vsx_widget();
 }
 
 vsx_vector vsx_widget_anchor::get_pos_p() {

@@ -1041,7 +1041,7 @@ void main(void)\n\
 ";
 */
   vsx_string shader_res = shader.link();
-  printf("shader res: %s\n",shader_res.c_str());
+//  printf("shader res: %s\n",shader_res.c_str());
   glsl_tex_id = glGetUniformLocationARB(shader.prog,"GlowTexture");
 	glsl_offset_id = glGetUniformLocationARB(shader.prog,"texOffset");
 	glsl_attenuation = glGetUniformLocationARB(shader.prog,"attenuation");

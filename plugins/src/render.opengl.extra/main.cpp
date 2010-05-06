@@ -81,7 +81,7 @@ public:
                 texture_out->set_p(my_tex);
                 need_to_run = 0;
                 loading_done = true;
-                printf("vsx_build_cubemap_texture: COMPLETE\n");
+                //printf("vsx_build_cubemap_texture: COMPLETE\n");
                 return;
               }
             }

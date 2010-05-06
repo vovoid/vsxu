@@ -36,8 +36,6 @@
 
 vsx_widget_knob::vsx_widget_knob()
 {
-  vsx_widget_base_controller::vsx_widget_base_controller();
-  //cout << "vsx_widget_knob::vsx_widget_knob()" <<endl;
   generate_menu();
   menu->init();
 

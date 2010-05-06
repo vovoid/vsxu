@@ -425,13 +425,7 @@ int vsx_widget_component::inside_xy_l(vsx_vector &test, vsx_vector &global) {
       } else failed = true;
 
       if (failed) {
-        // we couldn't carry out the command right now, need to wait for asynchronous work to be done
-//        cout << "volatile fail: " << t->raw << endl;
-        //if (t->iterations < VSX_COMMAND_MAX_ITERATIONS) {
-//          t->iterations++;
-//          cout << "iterations: " << t->iterations;
           server->command_q_f.addc_front(t);
-  //      } else delete t;
       }
       return;
     } else

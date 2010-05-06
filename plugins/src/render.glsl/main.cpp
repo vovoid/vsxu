@@ -305,7 +305,9 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 {
 	if (shader_source == 0)
 	{
+#if (VSXU_DEBUG)
 		printf("SETTING DEFAULT PROGRAMS\n");
+#endif
 		shader.vertex_program = default_vert;
 		shader.fragment_program = default_frag;
 	} else {
@@ -313,10 +315,11 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 	}
 
 	vsx_string h = shader.link();
-
+#if (VSXU_DEBUG)
 	printf("vert = %s\n\n\n\n",shader.vertex_program.c_str());
 	printf("frag = %s\n",shader.fragment_program.c_str());
 	printf("link result:\n%s\n",h.c_str());
+#endif
 //	}
 	//printf("redeclare params\n");
 	//printf("%d\n",__LINE__);
@@ -414,15 +417,18 @@ unsigned long get_num_modules() {
 	if (engine_environment)
 	{
     base_path = engine_environment->engine_parameter[0];
+#if (VSXU_DEBUG)    
 		printf("------%s-------\n",(base_path+"render.glsl").c_str());
+#endif
 		get_files_recursive(base_path+"render.glsl",&i_shaders,".glsl",".svn");
 	}
 	else
   {
     return 1;
   }
-	
+#if (VSXU_DEBUG)
 	printf("list size: %d\n",i_shaders.size());
+#endif
 
 	unsigned long num_shaders = 0;
 	for (std::list<vsx_string>::iterator it = i_shaders.begin(); it != i_shaders.end(); ++it) {

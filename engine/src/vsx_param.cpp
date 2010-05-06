@@ -131,7 +131,7 @@ vsx_module_param_list::~vsx_module_param_list() {
       case VSX_MODULE_PARAM_ID_RESOURCE: delete ((vsx_module_param_resource*)id_vec[i]); break;
     }; // case
   }  
-  #ifdef VSXU_DEVELOPER
+  #ifdef VSXU_DEBUG
   printf("end of module parameter deletion\n");
   #endif
 #endif

@@ -215,8 +215,8 @@ public:
     int_vertex_normals.data = &int_empty_array;
     vertex_normals->set_p(int_vertex_normals);
 
-    int_vertex_tangents.data = &int_empty_array;
-    vertex_tangents->set_p(int_vertex_tangents);
+    //int_vertex_tangents.data = &int_empty_array;
+    //vertex_tangents->set_p(int_vertex_tangents);
 
     int_face_normals.data = &int_empty_array;
     face_normals->set_p(int_face_normals);

@@ -129,7 +129,7 @@ class module_load_png : public vsx_module {
   vsx_texture* texture;
   
   static void* png_worker_v(void *ptr) {
-    printf("thread starting\n");
+    //printf("thread starting\n");
     //if (((module_load_png*)ptr)->bitm.data) {
       //delete ((module_load_png*)ptr)->bitm.data;
     //}
@@ -139,12 +139,12 @@ class module_load_png : public vsx_module {
       ((module_load_png*)ptr)->bitm.valid = true;
       ((module_load_png*)ptr)->thread_state = 2;
     } else {
-      printf("thread: bitmap not valid\n");
+      //printf("thread: bitmap not valid\n");
       ((module_load_png*)ptr)->bitm.valid = false;
       ((module_load_png*)ptr)->thread_state = -1;
       ((module_load_png*)ptr)->last_modify_time = 0;
     }
-    printf("png thread ending\n");
+    //printf("png thread ending\n");
     return 0;
   }
   

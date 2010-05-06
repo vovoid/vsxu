@@ -421,6 +421,7 @@ public:
   // event reacting on marking widget for deletion
   virtual void before_delete();
 
+  void set_default_values();
   vsx_widget();
   virtual ~vsx_widget();
 };

@@ -160,7 +160,7 @@ public:
       "}"
     "},shader_params:complex{vertex_program:string,fragment_program:string"
     +shader.get_param_spec()+"}";
-    printf("in_param_spec: %s\n", info->in_param_spec.c_str() );
+    //printf("in_param_spec: %s\n", info->in_param_spec.c_str() );
     info->out_param_spec = "render_out:render";
     info->component_class = "render";
   }
@@ -243,11 +243,15 @@ public:
           ;
 
 
+#ifdef VSXU_DEBUG
     printf("vert = %s\n\n\n\n",shader.vertex_program.c_str());
     printf("frag = %s\n",shader.fragment_program.c_str());
+#endif
 
     vsx_string h = shader.link();
+#ifdef VSXU_DEBUG
     printf("link result:\n%s\n",h.c_str());
+#endif
 
     loading_done = true;
     redeclare_in_params(in_parameters);

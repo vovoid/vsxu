@@ -426,7 +426,9 @@ void vsx_widget_desktop::load_configuration()
   {
     main_conf.load_from_file(PLATFORM_SHARED_FILES+"vsxu.conf",true,0);
   }
+#ifdef VSXU_DEBUG
   printf("conf: %s\n", (PLATFORM_SHARED_FILES+"vsxu.conf").c_str());
+#endif
 #else
   main_conf.load_from_file("./vsxu.conf",true,0);
 #endif
@@ -436,7 +438,9 @@ void vsx_widget_desktop::load_configuration()
   while (mc = main_conf.get()) {
     if (mc->cmd == "skin") {
       skin_path = PLATFORM_SHARED_FILES+vsx_string("gfx/")+mc->cmd_data+"/";
+#ifdef VSXU_DEBUG
       printf("skin path: %s\n",skin_path.c_str());
+#endif
     } else
     if (mc->cmd == "global_interpolation_speed") {
       global_interpolation_speed = s2f(mc->cmd_data);

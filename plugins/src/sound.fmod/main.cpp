@@ -332,7 +332,7 @@ void run() {
         // find length of sample in bytes
         unsigned int byte_length;
         FMOD_Sound_GetLength(sound, &byte_length, FMOD_TIMEUNIT_PCMBYTES);
-        printf("song length in bytes: %d\n", byte_length);
+        //printf("song length in bytes: %d\n", byte_length);
         void* sample_data;
         void* sample_data_ext;
         unsigned int len1, len2;
@@ -347,7 +347,7 @@ void run() {
         );
         if (len1 == byte_length)
         {
-          printf("length is matching! \n");
+          //printf("length is matching! \n");
           signed short* sample_data_short = (signed short*)sample_data;
           size_t k = byte_length / sizeof(signed short);
           size_t index = 0;
@@ -360,7 +360,7 @@ void run() {
             //printf("%f ", full_pcm_data_l.array[index]);
             index++;
           }
-          printf("index reached: %d\n", index);
+          //printf("index reached: %d\n", index);
         }
 
         FMOD_Sound_Unlock(

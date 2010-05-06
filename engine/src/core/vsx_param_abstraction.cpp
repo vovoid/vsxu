@@ -1355,7 +1355,11 @@ vsx_string vsx_engine_param_list::single_param_spec(vsx_string param_name, int s
     sin = component->out_param_spec;
     else
     sin = component->in_param_spec;
-    //std::cout << "param spec: " << sin << std::endl;
+    
+#ifdef VSXU_DEBUG
+    //printf("vsx_engine_param_list::single_param_spec, sin= %s\n", sin.c_str() );
+#endif
+    
     if (sin.size() == 0) return "";
     unsigned int loc = startpos;
     bool nfound = true;
@@ -1374,9 +1378,10 @@ vsx_string vsx_engine_param_list::single_param_spec(vsx_string param_name, int s
 					while (spos < size) {
 						res+=sin[spos];
 						++spos;
-						if (sin[spos] == ',' ||
-								sin[spos] == '}' ||
-								spos == size)
+            if (spos == size ||
+                sin[spos] == ',' ||
+								sin[spos] == '}'
+								)
 						{
 							std::vector<vsx_string> plist;
 							vsx_string deli = ":";

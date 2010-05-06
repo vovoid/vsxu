@@ -109,7 +109,7 @@ public:
 
 //////////////////////////////////////////////////////////////////////
 
-template<int id, typename T, int arity = 1>
+template<int id, typename T, int arity = 1, int clear_ram = 0>
 
 class vsx_module_param : public vsx_module_param_abs {
 public:
@@ -136,6 +136,12 @@ public:
 			param_data = new T[arity];
 			param_data_default = new T[arity];
 			param_data_suggestion = new T[arity];
+      if (clear_ram)
+      {
+        memset((void*)param_data_default,0,sizeof(T)*arity);
+        memset((void*)param_data,0,sizeof(T)*arity);
+        memset((void*)param_data_suggestion,0,sizeof(T)*arity);
+      }
 		}
 	}
 
@@ -234,7 +240,7 @@ public:
     delete[] param_data_default;
     if (param_data)
     delete[] param_data;
-	}  
+	}
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -246,33 +252,33 @@ public:
   ~vsx_module_param_list();
 };
 
-typedef vsx_module_param<0, int,							1 > vsx_module_param_int; // use get() set()
-typedef vsx_module_param<1, int,							1 > vsx_module_param_render; // use get() set()
-typedef vsx_module_param<0, float,						1 > vsx_module_param_float; // use get() set()
-typedef vsx_module_param<0, float,						3 > vsx_module_param_float3; // use get() set()
-typedef vsx_module_param<0, double,						1 > vsx_module_param_double; // use get() set()
-typedef vsx_module_param<0, vsx_string,				1 > vsx_module_param_string; // use get() set()
+typedef vsx_module_param<0, int,							1,1 > vsx_module_param_int; // use get() set()
+typedef vsx_module_param<1, int,							1,1 > vsx_module_param_render; // use get() set()
+typedef vsx_module_param<0, float,						1,1 > vsx_module_param_float; // use get() set()
+typedef vsx_module_param<0, float,						3,1> vsx_module_param_float3; // use get() set()
+typedef vsx_module_param<0, double,						1,1 > vsx_module_param_double; // use get() set()
+typedef vsx_module_param<0, vsx_string,				1,0 > vsx_module_param_string; // use get() set()
 #ifdef VSX_NO_GL
-  typedef vsx_module_param<0, void*,              1 > vsx_module_param_texture; // use get_addr() / set_p()
+  typedef vsx_module_param<0, void*,              1,1 > vsx_module_param_texture; // use get_addr() / set_p()
 #else
   #ifndef VSX_NO_TEXTURE
-    typedef vsx_module_param<0, vsx_texture,	      1 > vsx_module_param_texture; 
+    typedef vsx_module_param<0, vsx_texture,	      1,0 > vsx_module_param_texture; 
   #else
-    typedef vsx_module_param<0, void*,              1 > vsx_module_param_texture;
+    typedef vsx_module_param<0, void*,              1,1 > vsx_module_param_texture;
   #endif
 #endif
-typedef vsx_module_param<0, float,							 4 > vsx_module_param_float4; // use get() set()
-typedef vsx_module_param<0, vsx_matrix,					 1 > vsx_module_param_matrix; // use get() set()
-typedef vsx_module_param<0, vsx_mesh,					   1 > vsx_module_param_mesh; // use get_addr() / set_p()
-typedef vsx_module_param<0, vsx_bitmap,					 1 > vsx_module_param_bitmap; // use get_addr() / set_p()
-typedef vsx_module_param<0, vsx_particlesystem,	 1 > vsx_module_param_particlesystem; // use get_addr() / set_p()
-typedef vsx_module_param<0, vsx_float_array,	   1 > vsx_module_param_float_array; // use get_addr() set_p()
-typedef vsx_module_param<0, vsx_sequence,   	   1 > vsx_module_param_sequence; // use get() set()
-typedef vsx_module_param<0, vsx_2dgrid_mesh,     1 > vsx_module_param_segment_mesh; // use get_addr() / set_p()
-typedef vsx_module_param<0, vsx_abstract,   	   1 > vsx_module_param_abstract; // use get_addr() / set_p()
-typedef vsx_module_param<1, float,   	           4 > vsx_module_param_quaternion; // use get_addr() / set_p()
-typedef vsx_module_param<1, vsx_string,   	     1 > vsx_module_param_resource; // use get() / set()
-typedef vsx_module_param<0, vsx_float3_array,	   1 > vsx_module_param_float3_array; // use get_addr() set_p()
-typedef vsx_module_param<0, vsx_quaternion_array,1 > vsx_module_param_quaternion_array; // use get_addr() set_p()
+typedef vsx_module_param<0, float,							 4,1 > vsx_module_param_float4; // use get() set()
+typedef vsx_module_param<0, vsx_matrix,					 1,0 > vsx_module_param_matrix; // use get() set()
+typedef vsx_module_param<0, vsx_mesh,					   1,0 > vsx_module_param_mesh; // use get_addr() / set_p()
+typedef vsx_module_param<0, vsx_bitmap,					 1,0 > vsx_module_param_bitmap; // use get_addr() / set_p()
+typedef vsx_module_param<0, vsx_particlesystem,	 1,0 > vsx_module_param_particlesystem; // use get_addr() / set_p()
+typedef vsx_module_param<0, vsx_float_array,	   1,0 > vsx_module_param_float_array; // use get_addr() set_p()
+typedef vsx_module_param<0, vsx_sequence,   	   1,0 > vsx_module_param_sequence; // use get() set()
+typedef vsx_module_param<0, vsx_2dgrid_mesh,     1,0 > vsx_module_param_segment_mesh; // use get_addr() / set_p()
+typedef vsx_module_param<0, vsx_abstract,   	   1,0 > vsx_module_param_abstract; // use get_addr() / set_p()
+typedef vsx_module_param<1, float,   	           4,1 > vsx_module_param_quaternion; // use get_addr() / set_p()
+typedef vsx_module_param<1, vsx_string,   	     1,0 > vsx_module_param_resource; // use get() / set()
+typedef vsx_module_param<0, vsx_float3_array,	   1,0 > vsx_module_param_float3_array; // use get_addr() set_p()
+typedef vsx_module_param<0, vsx_quaternion_array,1,0 > vsx_module_param_quaternion_array; // use get_addr() set_p()
 
 #endif

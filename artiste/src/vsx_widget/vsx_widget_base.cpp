@@ -151,11 +151,23 @@ vsx_widget::vsx_widget() {
   dragborder = 0.0025;
   support_scaling = false;
   font_size = 0.025;
+  menu_temp_disable = false;
+}
 
+void vsx_widget::set_default_values()
+{
+  
 }
 
 
 vsx_widget::~vsx_widget() {
+  printf("deconstructor, name: %s\n", name.c_str() );
+  ilist.erase(id);
+  if (glist.find(name) != glist.end())
+  {
+    glist.erase(name);
+  }
+
   if (this == root) {
     global_delete = true;
 //    stop();
@@ -1057,8 +1069,6 @@ void vsx_widget::vsx_command_process_f() {
           #endif
           t->parent->children.remove(t);
           t->parent->l_list.erase(t->name);
-          glist.erase(t->name);
-          ilist.erase(t->id);
 //          log("deleted component "+c->cmd_data+" "+t->name);
 					#ifdef VSX_DEBUG
           printf("actual deletion\n",t->id);
@@ -1111,8 +1121,6 @@ void vsx_widget::delete_() {
     #ifdef VSX_DEBUG
     //printf("5");
     #endif
-    glist.erase((*it)->name);
-    ilist.erase((*it)->id);
     #ifdef VSX_DEBUG
     //printf("6\n");
     #endif

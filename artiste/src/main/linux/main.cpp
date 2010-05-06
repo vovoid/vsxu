@@ -18,6 +18,8 @@
 #include "vsx_avector.h"
 #include "vsx_string.h"
 #include "vsxfst.h"
+#include "vsx_version.h"
+#include <stdlib.h>
 
 bool app_ctrl = false;
 bool app_alt = false;
@@ -158,6 +160,17 @@ int main(int argc, char* argv[])
     int y_res = 720;
 		for (int i = 1; i < argc; i++) {
 		vsx_string arg1 = argv[i];
+      if (arg1 == "--help")
+      {
+        printf(
+               "VSXu Artiste command syntax:\n"
+               "  -f             fullscreen mode\n"
+               "  -s 1920,1080   screen/window size\n"
+               "  -p 100,100     window posision\n"
+               "\n"
+              );
+        exit(0);
+      }
     	if (arg1 == "-f") {
     		start_fullscreen = true;
     	}
@@ -220,7 +233,7 @@ int main(int argc, char* argv[])
     //wglSwapIntervalEXT_Func wglSwapIntervalEXT = wglSwapIntervalEXT_Func(wglGetProcAddress("wglSwapIntervalEXT"));
     //if (wglSwapIntervalEXT) wglSwapIntervalEXT(1);
 
-		sprintf( titlestr, "Vovoid VSX Ultra 0.1.18 [GNU/Linux] [Visit us at http://vsxu.com]");
+    sprintf( titlestr, "Vovoid VSX Ultra %s [GNU/Linux] [Visit us at http://vsxu.com]", vsxu_ver);
 		glfwSetWindowTitle( titlestr );
 
 

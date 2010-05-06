@@ -613,7 +613,6 @@ void vsx_engine::build_module_list() {
         if (dlsym(module_handle,"set_environment_info"))
         #endif
         {
-          printf("supports env info!\n");
           // woo, supports env_info
           vsx_engine_environment* engine_env = new vsx_engine_environment;
           engine_env->engine_parameter[0] = PLATFORM_SHARED_FILES+"plugin-config/";

@@ -14,3 +14,12 @@ set_target_properties(
 #        -s
 )
 
+if(VSXU_DEBUG)
+else(VSXU_DEBUG)
+set_target_properties(
+  ${module_id}
+    PROPERTIES
+      CMAKE_SHARED_LINKER_FLAGS
+        -s
+)
+endif(VSXU_DEBUG)

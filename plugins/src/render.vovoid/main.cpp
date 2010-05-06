@@ -265,7 +265,7 @@ void vsx_module_plugin::skyBoxFromMap(int plane) {
 	}
 */
 //	delete cylImg;
-printf("done with plane %d\n",plane);
+//printf("done with plane %d\n",plane);
 }
 
 void vsx_module_plugin::module_info(vsx_module_info* info)

@@ -992,15 +992,13 @@ public:
   vsx_widget_hyperbolic_tree* root;  // drawing model
   vsx_widget_hyperbolic_tree* draw_root;  // the root of the drawing tree
     
-    int NBR_FRAMES; // number of intermediates 
+  int NBR_FRAMES; // number of intermediates 
     
-  ~vsx_widget_hyperbolic_tree() {
-    for (std::vector<vsx_widget_hyperbolic_tree*>::iterator it = children.begin(); it != children.end(); ++it) {
-      delete *it;
-      delete ze;
-      delete zs;
-      delete oldZe;
-    }
+  void on_delete()
+  {
+    if (ze) delete ze;
+    if (zs) delete zs;
+    if (oldZe) delete oldZe;
   }
      
     // create the base maintainer class     
@@ -1018,7 +1016,9 @@ public:
       kleinMode = false;
       border = 0;
       projType = -1.0;
-      
+      ze = 0;
+      zs = 0;
+      oldZe = 0;
 //        this.view = view;
         this->model = model;
         HTModel* model_root = model->root;

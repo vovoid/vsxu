@@ -73,7 +73,6 @@ void init_vxe() {
 
   //printf("{CLIENT} Starting engine:");
   vxe->start();
-  printf(" [DONE]\n");
 }
 
 

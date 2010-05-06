@@ -193,7 +193,7 @@ void vsx_texture::deinit_buffer() {
 #endif
 
 #ifndef VSXU_OPENGL_ES
-		printf("removing FBO\n");
+		//printf("removing FBO\n");
   	glDeleteRenderbuffersEXT(1,&depthbuffer_id);
   	glDeleteTextures(1,&texture_info.ogl_id);
     glDeleteFramebuffersEXT(1, &framebuffer_id);

@@ -12,7 +12,6 @@
 
 
 vsx_widget_scrollbar::vsx_widget_scrollbar() {
-  vsx_widget::vsx_widget();
   scroll_max = 1;
   scroll_window_size = 0.5;
   value = 0;
