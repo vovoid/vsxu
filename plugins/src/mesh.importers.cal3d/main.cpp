@@ -478,9 +478,9 @@ public:
             CalVector t1 = bones[j].bone->getTranslationAbsolute();
             CalQuaternion q2 = bones[j].bone->getRotationAbsolute();
 
-            bones[j].result_rotation   ->set( q2.x, 0 );
-            bones[j].result_rotation   ->set( q2.y, 1 );
-            bones[j].result_rotation   ->set( q2.z, 2 );
+            bones[j].result_rotation   ->set( -q2.x, 0 );
+            bones[j].result_rotation   ->set( -q2.y, 1 );
+            bones[j].result_rotation   ->set( -q2.z, 2 );
             bones[j].result_rotation   ->set( q2.w, 3 );
   
             bones[j].result_translation->set( t1.x, 0 );

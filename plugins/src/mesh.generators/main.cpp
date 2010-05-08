@@ -1338,6 +1338,8 @@ public:
         mesh.data->vertex_normals[vi] = tmp_vec - circle_base_pos;
         mesh.data->vertex_normals[vi].normalize();
         mesh.data->vertex_colors[vi] = vsx_color(1, 1, 1, 1);
+        mesh.data->vertex_tex_coords[vi].s = j1;
+        mesh.data->vertex_tex_coords[vi].t = ip;
 
         if (i && j)
         {

@@ -637,7 +637,6 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
   }
   
   void end() {
-
     if (!linked) return;
     unset_uniforms();
     glUseProgramObjectARB(0);

@@ -154,11 +154,6 @@ vsx_widget::vsx_widget() {
   menu_temp_disable = false;
 }
 
-void vsx_widget::set_default_values()
-{
-  
-}
-
 
 vsx_widget::~vsx_widget() {
   printf("deconstructor, name: %s\n", name.c_str() );

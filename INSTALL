@@ -70,8 +70,11 @@ A D V A N C E D   B U I L D   O P T I O N S
       see next section
 
 Examples:
-  This is my test-it-all command:
+  This is my test/debug-it-all command:
     cmake . -DVSXU_DEBUG=1 -DENGINE_SCRIPTING=1 -DCMAKE_INSTALL_PREFIX="/home/jaw/vsxu_install_test"
+
+  This is my personal installation for demo making:
+    cmake . -DENGINE_SCRIPTING=1 -DVSXU_SOUND_FMOD -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxu"
 
 
 -------------------------------------------------------------------------------

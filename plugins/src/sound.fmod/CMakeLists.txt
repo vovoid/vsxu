@@ -9,7 +9,7 @@ message("building vsxu module            " ${module_id})
 message("*******************************************")
 
 if(UNIX)
-  include_directories(fmod_linux32/fmodapi42208linux/api/inc/)
+  include_directories(lib/linux32/api/inc/)
 endif(UNIX)
 
 if(WIN32)

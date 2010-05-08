@@ -108,7 +108,7 @@ CAudioAnalyzer::CAudioAnalyzer() {
   result = FMOD_System_CreateSound(fsystem, 0, FMOD_2D | FMOD_SOFTWARE | FMOD_OPENUSER, &exinfo, &sound);
   ERRCHECK(result);
   //printf("fmod init %d\n",__LINE__);
-  result = FMOD_System_RecordStart(fsystem, 0, sound, true);
+  result = FMOD_System_RecordStart(fsystem, sound, true);
   ERRCHECK(result);
   //printf("fmod init %d\n",__LINE__);
   pFFTObject512 = new FFTReal(512);
@@ -165,7 +165,7 @@ CAudioAnalyzer::~CAudioAnalyzer() {
 SAudioData* CAudioAnalyzer::getCurrentData(float inputLevel,int quality) {
 
   result = FMOD_Sound_Lock(sound, 0, sizeof(short int) * exinfo.defaultfrequency * 2, (void**)&read_pointer1, (void**)&read_pointer2, &read_bytes1, &read_bytes2);
-  FMOD_System_GetRecordPosition(fsystem, 0, &lastrecordpos);
+  FMOD_System_GetRecordPosition(fsystem, &lastrecordpos);
   lastrecordpos *= 2;
   //printf("sample data: %d\n",read_pointer1[lastrecordpos]);
   ERRCHECK(result);
