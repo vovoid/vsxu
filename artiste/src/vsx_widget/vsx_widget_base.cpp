@@ -156,7 +156,6 @@ vsx_widget::vsx_widget() {
 
 
 vsx_widget::~vsx_widget() {
-  printf("deconstructor, name: %s\n", name.c_str() );
   ilist.erase(id);
   if (glist.find(name) != glist.end())
   {
@@ -818,43 +817,6 @@ void vsx_widget::resize(vsx_widget_distance distance) {
 }
 
 
-/*
-void vsx_widget::event_mouse_move(vsx_vector world, vsx_vector screen) {
-    if (alt && !ctrl && !shift) {
-      if (support_scaling && mouse_down_l) {
-        //world.y = -world.y;
-        vsx_vector pp = parent->get_pos_p();
-//        scale_to(scaling_start_size + (world - scaling_start));
-        scale_to(scaling_start_size + (world - scaling_start-pp));
-        if (support_interpolation) interpolating_size = true;
-        return;
-      }
-    }
-    if (mouse_down_l)
-    if (resize_i)
-    {
-      resize(world,screen);
-    } else
-    //move(screen.x-mouse_down_l_x,screen.y-mouse_down_l_y,0);
-
-    //if (this != root) vsx_widget::event_mouse_move(world,screen);
-
-  // the default behavior is to move with the cursor if the mouse is down on us - which it will be if event_mouse_down
-  // has been run.
-  //vsx_vector u = translate_xy(x,y);
-  {
-    vsx_vector uu = parent->get_pos_p();
-    world = world - uu;
-    world.z = pos.z;
-
-    if (mouse_down_l)
-    {
-      move(world.x-mouse_down_l_x,world.y-mouse_down_l_y,world.z);
-    }
-  }
-}
-*/
-
 //void vsx_widget::event_mouse_move_passive(vsx_vector world, vsx_vector screen) {
 /*  glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
   if (visible) {
@@ -1266,7 +1228,6 @@ void vsx_widget::draw_2d() {
 	printf("end_draw 2d: %s\n",name.c_str());
 	#endif
 }
-
 
 
 // VSX_WIDGET_WINDOW ***************************************************************************************************
