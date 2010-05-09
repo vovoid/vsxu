@@ -907,6 +907,7 @@ void module_info(vsx_module_info* info) {
 }
 
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {
+  glewInit();
 	glow_source = (vsx_module_param_texture*)in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE, "glow_source",false,false);
 	texture_result = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture_out");
 
@@ -1317,16 +1318,7 @@ void on_delete() {
 
 #if BUILDING_DLL
 vsx_module* create_new_module(unsigned long module) {
-  /*if (!glewinit) {
-    // we sneak in and init glew :) as we need it
-//    printf("textures.bitmaps-lib: glewinit\n");
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {
-  //    printf("Error: %s\n", glewGetErrorString(err));
-    }
-  } */
-glewInit();
+  glewInit();
   switch(module) {
     case 0: return (vsx_module*)(new vsx_module_rendered_texture_single);
     case 1: return (vsx_module*)(new vsx_module_texture_translate);
