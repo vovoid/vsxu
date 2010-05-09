@@ -15,7 +15,7 @@ class vsx_glsl {
   bool linked;
 
   GLint gl_get_val(GLhandleARB object, GLenum pname) {
-    GLint val;
+    GLint val = 0;
     glGetObjectParameterivARB(object, pname, &val);
     return val;
   }
@@ -331,6 +331,7 @@ public:
       glDeleteObjectARB(vs);
       glDeleteObjectARB(fs);
       glDeleteObjectARB(prog);
+      linked = false;
     }
 #if (VSXU_DEBUG)    
     printf("linking glsl program");
@@ -356,19 +357,18 @@ public:
 
   	glCompileShaderARB(vs);
     if (!gl_get_val(vs,GL_OBJECT_COMPILE_STATUS_ARB)) {
-      //return "module||Vertex program compilation failed.&&vertex_program||Compilation failed.";
+      return "module||Vertex program compilation failed.\n\nThe message from OpenGL was:"+get_log(vs);
     }
     glCompileShaderARB(fs);
     if (!gl_get_val(fs,GL_OBJECT_COMPILE_STATUS_ARB)) {
-      //return "module||Fragment program compilation failed.&&fragment_program||Compilation failed.";
+      return "module||Fragment program compilation failed.\n\nThe message from OpenGL was:"+get_log(fs);
     }
 
   	prog = glCreateProgramObjectARB();
   	glAttachObjectARB(prog,fs);
   	glAttachObjectARB(prog,vs);
-
   	glLinkProgramARB(prog);
-    if (gl_get_val(prog,GL_OBJECT_COMPILE_STATUS_ARB) == GL_FALSE) {
+    if (gl_get_val(prog,GL_OBJECT_LINK_STATUS_ARB) == GL_FALSE) {
       return "module||Linking failed.\n\
 The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)+"&&fragment_program||"+get_log(prog);
     }
@@ -641,7 +641,11 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
     unset_uniforms();
     glUseProgramObjectARB(0);
   }
-  vsx_glsl() : linked(false) {};
+  vsx_glsl() : 
+      linked(false),vs(0),
+      fs(0),
+      prog(0) 
+  {};
 };
 
 #endif
