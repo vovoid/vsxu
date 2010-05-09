@@ -47,15 +47,8 @@
       } else
       #endif
       if (c->parts.size() == 3) {
-        vsx_string base_path;
-        #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-          struct stat st;
-          char* home_dir = getenv ("HOME");
-          base_path = vsx_string(home_dir) + "/.vsxu/data/";
-        #else
-          base_path = "";
-        #endif
-
+        vsx_string base_path = vsx_get_data_path();
+        
         vsxf tfs;
         vsx_string filename = (c->parts[2]+str_replace(";","",c->parts[1]));
         tfs.archive_create((base_path+filename).c_str());
@@ -89,14 +82,7 @@
       } else
       #endif
       if (c->parts.size() == 2) {
-        vsx_string base_path;
-        #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-          struct stat st;
-          char* home_dir = getenv ("HOME");
-          base_path = vsx_string(home_dir) + "/.vsxu/data/";
-        #else
-          base_path = "";
-        #endif
+        vsx_string base_path = vsx_get_data_path();
         vsxf tfs;
         vsx_command_list savelist;
         get_state_as_commandlist(savelist);

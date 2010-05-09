@@ -42,8 +42,8 @@ endif(VSXU_SOUND_FMOD OR WIN32)
 
 add_subdirectory(src/string)
 add_subdirectory(src/system)
+add_subdirectory(src/texture)
 add_subdirectory(src/texture.load)
-add_subdirectory(src/texture.buffer)
 
 
 
