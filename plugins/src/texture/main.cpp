@@ -1317,15 +1317,6 @@ void on_delete() {
 
 #if BUILDING_DLL
 vsx_module* create_new_module(unsigned long module) {
-  /*if (!glewinit) {
-    // we sneak in and init glew :) as we need it
-//    printf("textures.bitmaps-lib: glewinit\n");
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {
-  //    printf("Error: %s\n", glewGetErrorString(err));
-    }
-  } */
 glewInit();
   switch(module) {
     case 0: return (vsx_module*)(new vsx_module_rendered_texture_single);

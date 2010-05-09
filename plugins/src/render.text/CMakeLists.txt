@@ -15,7 +15,7 @@ project (${module_id})
 include(../cmake_globals.txt)
 
 if(WIN32)
-link_directories(freetype_windows/lib)
+link_directories(lib/win32/lib)
 endif(WIN32)
 include(./_sources)
 add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES} ${EXTRA_LIBS})

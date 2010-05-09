@@ -2,7 +2,8 @@ set(SOURCES
 )
 file(GLOB SOURCES ftgl/*.cpp)
 if(WIN32)
-include_directories(ft2/include)
+include_directories(lib/win32/include)
+include_directories(lib/win32/include/freetype2)
 endif(WIN32)
 
 if(UNIX)
