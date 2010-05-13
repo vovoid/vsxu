@@ -88,7 +88,7 @@ public:
   	// amplitude = 0.5
   	// phase 0.5
   	// frequency 1
-  	
+  	rand_time_accum = 0.0f;
   	result1 = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"float");
     result1->set(0);
   //--------------------------------------------------------------------------------------------------	

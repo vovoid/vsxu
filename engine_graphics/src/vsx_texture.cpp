@@ -33,6 +33,15 @@ std::map<vsx_string, vsx_texture_info> vsx_texture::t_glist;
 void* vsx_texture::t_glist;
 #endif
 
+vsx_texture::vsx_texture()
+{
+  pti_l = 0;
+  locked = false;
+  rt = 0;
+  valid = false;
+  transform_obj = new vsx_transform_neutral;
+}
+
 vsx_texture::vsx_texture(int id, int type) {
   pti_l = 0;
   rt = 0;
@@ -40,6 +49,7 @@ vsx_texture::vsx_texture(int id, int type) {
   texture_info.ogl_type = type;
   transform_obj = new vsx_transform_neutral;
   valid = true;
+  locked = false;
 }
 
 void vsx_texture::init_opengl_texture() {
