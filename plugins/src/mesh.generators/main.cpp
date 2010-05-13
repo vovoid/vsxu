@@ -1174,6 +1174,7 @@ class vsx_module_mesh_abstract_hand : public vsx_module {
   vsx_module_param_float* size_shape_y_multiplier;
   // out
   vsx_module_param_mesh* result;
+  vsx_module_param_float* last_vertex_index;
   // internal
   vsx_mesh mesh;
   int l_param_updates;
@@ -1226,23 +1227,24 @@ public:
     info->identifier = "mesh;solid;mesh_super_banana";
     info->description = "";
     info->in_param_spec = "num_sectors:float?min=2,"
-        "num_stacks:float?min=2,"
-        "shape:complex{"
-        "x_shape:sequence,"
-        "x_shape_multiplier:float,"
-        "y_shape:sequence,"
-        "y_shape_multiplier:float,"
-        "z_shape:sequence,"
-        "z_shape_multiplier:float"
-        "},"
-        "size:complex{"
-        "size_shape_x:sequence,"
-        "size_shape_x_multiplier:float,"
-        "size_shape_y:sequence,"
-        "size_shape_y_multiplier:float"
-        "}"
+                          "num_stacks:float?min=2,"
+                          "shape:complex{"
+                            "x_shape:sequence,"
+                            "x_shape_multiplier:float,"
+                            "y_shape:sequence,"
+                            "y_shape_multiplier:float,"
+                            "z_shape:sequence,"
+                            "z_shape_multiplier:float"
+                          "},"
+                          "size:complex{"
+                            "size_shape_x:sequence,"
+                            "size_shape_x_multiplier:float,"
+                            "size_shape_y:sequence,"
+                            "size_shape_y_multiplier:float"
+                          "}"
         ;
-    info->out_param_spec = "mesh:mesh";
+    info->out_param_spec = "mesh:mesh,"
+                           "last_vertex_index:float";
     info->component_class = "mesh";
   }
 
@@ -1278,6 +1280,8 @@ public:
 
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
     result->set_p(mesh);
+    
+    last_vertex_index = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "last_vertex_index");
 
     current_num_stacks = 0;
     current_num_sectors = 0;
@@ -1449,6 +1453,7 @@ public:
     }
 */
     //printf("%d\n", vi);
+    last_vertex_index->set( (float)vi );
     mesh.timestamp++;
     result->set_p(mesh);
   }
