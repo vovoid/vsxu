@@ -117,7 +117,15 @@ public:
   VSX_TEXTURE_DLLIMPORT void texcoord2f(float x, float y);
 
   // constructors
-  vsx_texture();
+  
+  vsx_texture()
+  {
+    pti_l = 0;
+    locked = false;
+    rt = 0;
+    valid = false;
+    transform_obj = new vsx_transform_neutral;
+  }
   vsx_texture(int id, int type);
 
 
