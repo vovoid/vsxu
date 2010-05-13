@@ -447,7 +447,9 @@ vsx_string vsx_get_data_path()
 #endif
   }
 #else
-  base_path = "data/";
+  char* home_dir = getenv ("USERPROFILE");
+  base_path = home_dir+"\\data\\";
+  system(vsx_string("xcopy /E data "+base_path).c_str());
 #endif
   return base_path;
 }
