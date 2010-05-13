@@ -11,10 +11,8 @@
 #define MY_SET_BINARY_MODE(file)
 #endif
 
-#ifdef __linux__
-	#include <sys/types.h>
-	#include <sys/stat.h>
-#endif
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "7zip/Compress/LZMA/LZMADecoder.h"
 #include "7zip/Compress/LZMA/LZMAEncoder.h"
@@ -25,6 +23,7 @@
 #include "LzmaRam.h"
 
 #include "vsx_platform.h"
+#include "vsx_version.h"
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include <stdio.h>
@@ -427,7 +426,7 @@ vsx_string vsx_get_data_path()
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   struct stat st;
   char* home_dir = getenv ("HOME");
-  base_path = vsx_string(home_dir) + "/.vsxu/data/";
+  base_path = vsx_string(home_dir) + "/.vsxu/"+vsxu_ver+"/data/";
   if (stat(base_path.c_str(),&st) != 0)
   {
     mkdir( (base_path).c_str(),0700);
@@ -442,18 +441,19 @@ vsx_string vsx_get_data_path()
     symlink ( (PLATFORM_SHARED_FILES+"example-prods").c_str(), (base_path+"prods/examples").c_str() );
     symlink ( (PLATFORM_SHARED_FILES+"example-visuals").c_str(), (base_path+"visuals/examples").c_str() );
     symlink ( (PLATFORM_SHARED_FILES+"example-resources").c_str(), (base_path+"resources/examples").c_str() );
-#if (VSXU_DEBUG)
+    #if (VSXU_DEBUG)
     symlink ( (PLATFORM_SHARED_FILES+"debug-states").c_str(), (base_path+"states/debug").c_str() );
-#endif
+    #endif
   }
 #else
   char* home_dir = getenv ("USERPROFILE");
-  base_path = vsx_string(home_dir)+"\\data\\";
-  system(vsx_string("xcopy /E data "+base_path).c_str());
+  base_path = vsx_string(home_dir)+"\\vsxu\\"+vsxu_ver+"\\data\\";
+  if (access(base_path.c_str(),0) != 0)
+  {
+    printf("xcopy command: %s\n",vsx_string("xcopy /E data "+base_path).c_str());
+  
+    system(vsx_string("xcopy /E data "+base_path).c_str());
+  }
 #endif
   return base_path;
 }
-
-
-//28279628
-//18810213
