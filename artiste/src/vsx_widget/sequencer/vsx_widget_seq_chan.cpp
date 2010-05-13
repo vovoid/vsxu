@@ -227,8 +227,10 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
 						o_dlx = dlx;
 					}
 				}
+#ifdef VSXU_DEBUG
 				printf("dlx: %f\n", dlx);
 				printf("dly: %f\n", dly);
+#endif
 
 				// check if we've hit a point
 				if (!ctrl || (shift && button == 2))
@@ -959,15 +961,21 @@ void vsx_widget_seq_channel::vsx_command_process_b(vsx_command_s *t)
 			//printf(" pl.size = %d\n",pl.size());
 			for (std::list<vsx_string>::iterator it = pl.begin(); it != pl.end(); ++it)
 			{
+#ifdef VSXU_DEBUG
 				printf("it = %s\n", (*it).c_str());
+#endif
 				std::vector<vsx_string> pld;
 				vsx_string pdeli = ";";
 				explode((*it), pdeli, pld);
+#ifdef VSXU_DEBUG
 				printf("pld size: %d\n", pld.size());
+#endif
 				vsx_widget_param_sequence_item pa;
 				if (pld.size() < 2)
 					continue;
+#ifdef VSXU_DEBUG
 				printf("pld[1]: %s size: %d\n", pld[1].c_str(), pld.size());
+#endif
 				pa.interpolation = s2f(pld[1]);
 				if (pa.interpolation == 4)
 				{
