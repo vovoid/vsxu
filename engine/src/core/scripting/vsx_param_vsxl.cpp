@@ -37,9 +37,9 @@ class vsx_param_vsxl_driver_float : public vsx_param_vsxl_driver_abs {
 //	gmVariable vsx_vtime;
 //	gmVariable vsx_dtime;
 public:
-  bool load(vsx_module_param_abs* engine_param, vsx_string program);
-  bool run();
-  bool unload();
+  void *load(vsx_module_param_abs* engine_param, vsx_string program);
+  void run();
+  void unload();
 	vsx_param_vsxl_driver_float() {
 	  //machine = 0;
 	  id = -1;
@@ -90,7 +90,7 @@ static void GM_CDECL AsString(gmUserObject * a_object, char* a_buffer, int a_buf
 
 
 
-bool vsx_param_vsxl_driver_float::unload() {
+void vsx_param_vsxl_driver_float::unload() {
 #ifndef VSXE_NO_GM
 //  printf("unload\n");
   /*if (machine) {
@@ -102,7 +102,7 @@ bool vsx_param_vsxl_driver_float::unload() {
 }
 
 // load gaymonkay with new code
-bool vsx_param_vsxl_driver_float::load(vsx_module_param_abs* engine_param,vsx_string program) {
+void* vsx_param_vsxl_driver_float::load(vsx_module_param_abs* engine_param,vsx_string program) {
 #ifndef VSXE_NO_GM
   //printf("float::load1\n");
   my_param = engine_param;
@@ -162,10 +162,11 @@ global vsxl_pf"+i2s(id)+" = function(param)\n\
   engine->vsxl->machine.ExecuteString(script.c_str(), NULL, false, NULL);
   printf("load_a\n");
   //MessageBox(0, "post-execute", "status", MB_OK);
+  return this;
 #endif
 }
 
-bool vsx_param_vsxl_driver_float::run() {
+void vsx_param_vsxl_driver_float::run() {
 #ifndef VSXE_NO_GM
   // Call a script function
   realvalue = ((vsx_module_param_float*)my_param)->get_internal();
@@ -268,7 +269,7 @@ vsx_param_vsxl_driver_abs* vsx_param_vsxl::get_driver() {
   return my_driver;
 }
 
-bool vsx_param_vsxl::execute() {
+void vsx_param_vsxl::execute() {
 #ifndef VSXE_NO_GM
   my_driver->run();
 #endif

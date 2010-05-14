@@ -75,12 +75,8 @@ void vsx_engine::set_default_values()
   lastsent = 0;
   sequence_pool.set_engine((void*)this);
   last_e_state = e_state = VSX_ENGINE_STOPPED;
-  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-    // on unix/linux, resources are now stored in ~/.vsxu/data/resources
-    struct stat st;
-    char* home_dir = getenv ("HOME");
-    filesystem.set_base_path(vsx_string(home_dir) + "/.vsxu/data/");
-  #endif
+  // on unix/linux, resources are now stored in ~/.vsxu/data/resources
+  filesystem.set_base_path(vsx_get_data_path());
 }
 
 void vsx_engine::init() {

@@ -1,17 +1,3 @@
-//#ifdef FOOBAR
-
-//========================================================================
-// This is a small test application for GLFW.
-// The program opens a window (640x480), and renders a spinning colored
-// triangle (it is controlled with both the GLFW timer and the mouse). It
-// also calculates the rendering speed (FPS), which is displayed in the
-// window title bar.
-//========================================================================
-
-/************************************************************************
- * $Id: triangle.c,v 1.2 2003/02/02 22:34:12 marcus256 Exp $
- ************************************************************************/
-
 #include <stdio.h>
 #include "application.h"
 #include "GL/glfw.h"

@@ -37,8 +37,8 @@ public:
   std::vector<p_info*> p_list;
   gmMachine* machine;
   void *load(vsx_module_param_list* module_list,vsx_string program);
-  bool run();
-  bool unload();
+  void run();
+  void unload();
   vsx_comp_vsxl_driver();
 };
 
@@ -48,7 +48,7 @@ vsx_comp_vsxl_driver::vsx_comp_vsxl_driver() {
 #endif
 }
 
-bool vsx_comp_vsxl_driver::unload() {
+void vsx_comp_vsxl_driver::unload() {
 #ifndef VSXE_NO_GM
   if (machine) {
     machine->ResetAndFreeMemory();
@@ -68,7 +68,7 @@ void *vsx_comp_vsxl_driver::load(vsx_module_param_list* module_list,vsx_string p
     // go through the module params and build gmvariables for them :)
 
 //    for (std::vector<vsx_module_param_abs*>::iterator it = module_list->id_vec.begin(); it != module_list->id_vec.end(); ++it) {
-    for (int i = 0;  i < module_list->id_vec.size(); ++i) {
+    for (size_t i = 0;  i < module_list->id_vec.size(); ++i) {
       if (module_list->id_vec[i]->type == VSX_MODULE_PARAM_ID_FLOAT) {
         p_info* mp = new p_info;
         mp->param = module_list->id_vec[i];
@@ -111,10 +111,11 @@ global vsxl_cf = function()\n\
 #endif
   // Compile and execute the script
   machine->ExecuteString(script.c_str(), 0, true);
+  
 #endif // no gm
 }
 
-bool vsx_comp_vsxl_driver::run() {
+void vsx_comp_vsxl_driver::run() {
 #ifndef VSXE_NO_GM
   // Call a script function
   //printf("r");
@@ -227,8 +228,9 @@ vsx_comp_vsxl_driver_abs* vsx_comp_vsxl::get_driver() {
 #endif
 }
 
-bool vsx_comp_vsxl::execute() {
+void vsx_comp_vsxl::execute() {
 #ifndef VSXE_NO_GM
   my_driver->run();
+  
 #endif
 }

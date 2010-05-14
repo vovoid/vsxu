@@ -1006,7 +1006,7 @@ void vsx_widget::vsx_command_process_f() {
   if (this == root) {
     vsx_command_s *c = 0;
 
-    while (c = command_q_f.pop())
+    while ( (c = command_q_f.pop()) )
     {
       // cleanup duties :3
 

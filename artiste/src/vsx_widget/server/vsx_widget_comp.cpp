@@ -126,7 +126,7 @@ int vsx_widget_component::inside_xy_l(vsx_vector &test, vsx_vector &global) {
     } else
     if (t->cmd == "macro_dump_complete") {
       printf("macro dump complete\n");
-      macro_commands.save_to_file("_macros/"+t->parts[2]);
+      macro_commands.save_to_file(vsx_get_data_path()+"macros/"+t->parts[2]);
       macro_commands.clear();
       command_q_b.add_raw("module_info_add macros;"+t->parts[2]);
       server->vsx_command_queue_b(this);

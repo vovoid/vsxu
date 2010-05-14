@@ -1361,7 +1361,8 @@ vsx_string vsx_engine_param_list::single_param_spec(vsx_string param_name, int s
 #endif
     
     if (sin.size() == 0) return "";
-    unsigned int loc = startpos;
+    //unsigned int loc = startpos;
+    int loc = startpos;
     bool nfound = true;
     while (nfound) {
       loc = sin.find(param_name, loc);
