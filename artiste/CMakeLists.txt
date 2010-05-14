@@ -145,7 +145,7 @@ if(UNIX)
       ${CMAKE_INSTALL_PREFIX}/share/vsxu/gfx)
   install(
     FILES
-      ../share/gfx/vsxu_logo_artiste.jpg
+      ../share/gfx/vsxu_logo.jpg
       ../share/gfx/vsxu_logo_bkg.jpg
       ../share/gfx/luna.png
       ../share/vsxu.conf

@@ -66,7 +66,7 @@
 Section "VSX Ultra Artiste" secplayer
 
   SetOutPath "$INSTDIR\_gfx"
-  File /oname=vsxu_logo.jpg ..\..\share\gfx\vsxu_logo_artiste.jpg
+  File /oname=vsxu_logo.jpg ..\..\share\gfx\vsxu_logo.jpg
 
   SetOutPath "$INSTDIR"
   File ..\..\artiste\vsxu_artiste.exe

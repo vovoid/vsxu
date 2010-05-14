@@ -121,25 +121,25 @@ M E T A    I N F O R M A T I O N
 
 vsx_string vsx_manager::get_meta_visual_filename()
 {
-return "N/A";
+  return ((vsx_statelist*)int_state_manager)->get_meta_visual_filename();
 }
 
 vsx_string vsx_manager::get_meta_visual_name()
 {
 //vxe->meta_fields[0]
-return "N/A";
+  return ((vsx_statelist*)int_state_manager)->get_meta_visual_name();
 }
 
 vsx_string vsx_manager::get_meta_visual_creator()
 {
 //vxe->meta_fields[1]
-return "N/A";
+  return ((vsx_statelist*)int_state_manager)->get_meta_visual_creator();
 }
 
 vsx_string vsx_manager::get_meta_visual_company()
 {
 //vxe->meta_fields[2]
-return "N/A";
+  return ((vsx_statelist*)int_state_manager)->get_meta_visual_company();
 }
 
 /****************************************************************
@@ -148,7 +148,7 @@ F X   L E V E L
 
 float vsx_manager::get_fx_level()
 {
-  return 0.0f;
+  return ((vsx_statelist*)int_state_manager)->get_fx_level();
 }
 void vsx_manager::inc_fx_level()
 {
@@ -165,7 +165,7 @@ S P E E D
 
 float vsx_manager::get_speed()
 {
-  return 0.0f;
+  return ((vsx_statelist*)int_state_manager)->get_speed();
 }
 
 void vsx_manager::inc_speed()

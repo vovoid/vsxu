@@ -95,13 +95,21 @@ public:
   void prev_state();
   void inc_speed();
   void dec_speed();
+  float get_speed();
   void inc_amp();
   void dec_amp();
+  float get_fx_level();
   void toggle_fullscreen();
   void render();
   void init(vsx_string base_path);
   void load_fx_levels_from_user();
   void save_fx_levels_from_user();
+  
+  vsx_string get_meta_visual_filename();
+  vsx_string get_meta_visual_name();
+  vsx_string get_meta_visual_creator();
+  vsx_string get_meta_visual_company();
+  
 
   vsx_statelist();
 };

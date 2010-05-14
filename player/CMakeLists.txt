@@ -37,6 +37,11 @@ add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )
 
+
+if (VSXU_DEBUG EQUAL 1)
+  add_definitions( -DVSXU_DEBUG )
+endif (VSXU_DEBUG EQUAL 1)
+
 get_filename_component(list_file_path ${CMAKE_CURRENT_LIST_FILE} PATH)
 string(REGEX MATCH "[a-z._-]*$" module_id ${list_file_path})
 message("*******************************************")

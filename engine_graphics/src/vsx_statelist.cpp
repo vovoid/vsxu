@@ -65,15 +65,26 @@ void vsx_statelist::dec_speed()
   vxe->set_speed((*state_iter).speed);
 }
 
+
+float vsx_statelist::get_speed()
+{
+  return (*state_iter).speed;
+}
+
+
 void vsx_statelist::inc_amp() 
 {
   (*state_iter).fx_level+=0.05f;
   if ((*state_iter).fx_level > 16.0f) (*state_iter).fx_level = 16.0f;
 #if defined(__linux__)
   vsx_string fxlf = config_dir+"/"+(*state_iter).state_name_suffix.substr(visual_path.size()+1 , (*state_iter).state_name_suffix.size())+"_fx_level";
+  printf("fx level file: %s\n", fxlf.c_str() );
   FILE* fxfp = fopen( fxlf.c_str(), "w");
-  fputs(f2s((*state_iter).fx_level).c_str(), fxfp);
-  fclose(fxfp);
+  if (fxfp)
+  {
+    fputs(f2s((*state_iter).fx_level).c_str(), fxfp);
+    fclose(fxfp);
+  }
 #endif
   vxe->set_amp((*state_iter).fx_level);
   fx_alpha = 5.0f;
@@ -87,10 +98,18 @@ void vsx_statelist::dec_amp()
 #if defined(__linux__)
   vsx_string fxlf = config_dir+"/"+(*state_iter).state_name_suffix.substr(visual_path.size()+1 , (*state_iter).state_name_suffix.size())+"_fx_level";
   FILE* fxfp = fopen( fxlf.c_str(), "w");
-  fputs(f2s((*state_iter).fx_level).c_str(), fxfp);
-  fclose(fxfp);
+  if (fxfp)
+  {
+    fputs(f2s((*state_iter).fx_level).c_str(), fxfp);
+    fclose(fxfp);
+  }
 #endif
   fx_alpha = 5.0f;
+}
+
+float vsx_statelist::get_fx_level()
+{
+  return (*state_iter).fx_level;
 }
 
 void vsx_statelist::start()
@@ -110,6 +129,25 @@ void vsx_statelist::stop()
   vxe->unload_state();
   vxe->stop();
 }
+
+vsx_string vsx_statelist::get_meta_visual_filename()
+{
+  return (*state_iter).state_name;
+}
+vsx_string vsx_statelist::get_meta_visual_name()
+{
+  return (*state_iter).engine->meta_fields[0];
+}
+vsx_string vsx_statelist::get_meta_visual_creator()
+{
+  return (*state_iter).engine->meta_fields[1];
+}
+vsx_string vsx_statelist::get_meta_visual_company()
+{
+  return (*state_iter).engine->meta_fields[2];
+}
+
+
 
 /*void vsx_statelist::toggle_fullscreen() 
 {
@@ -328,8 +366,7 @@ void vsx_statelist::load_fx_levels_from_user()
   char* home_dir = getenv ("HOME");
   config_dir = home_dir;
   config_dir += "/.vsxu_player";
-  if (stat(config_dir.c_str(),&st) != 0)
-  mkdir(config_dir.c_str(),0700);
+  if (access(config_dir.c_str(),0) != 0) mkdir(config_dir.c_str(),0700);
 
   for (std::vector<state_info>::iterator it = statelist.begin(); it != statelist.end(); it++)
   {
@@ -479,6 +516,7 @@ void vsx_statelist::init(vsx_string base_path)
     statelist.push_back(state);
   }
   state_iter = statelist.begin();
+  load_fx_levels_from_user();
 }
 
 vsx_statelist::vsx_statelist() 

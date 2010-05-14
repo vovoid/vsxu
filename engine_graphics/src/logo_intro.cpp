@@ -184,7 +184,7 @@ vsx_logo_intro::vsx_logo_intro() {
   luna = new vsx_texture;
   luna->locked = true;
   luna->init_opengl_texture();
-  luna->load_jpeg(PLATFORM_SHARED_FILES+"gfx/vsxu_logo_artiste.jpg",false);
+  luna->load_jpeg(PLATFORM_SHARED_FILES+"gfx/vsxu_logo.jpg",false);
   luna_bkg = new vsx_texture;
   luna_bkg->locked = true;
   luna_bkg->init_opengl_texture();

@@ -18,7 +18,7 @@ SetOverwrite on
   File ..\..\share\doc\course_intro.txt
   SetOutPath "$INSTDIR\gfx"
   File ..\..\share\gfx\luna.png
-  File ..\..\share\gfx\vsxu_logo_artiste.jpg
+  File ..\..\share\gfx\vsxu_logo.jpg
   File ..\..\share\gfx\vsxu_logo_bkg.jpg
   SetOutPath "$INSTDIR\font"
   File ..\..\share\font\*.png

@@ -1,12 +1,13 @@
 
 #include "info_overlay.h"
+#include <vsx_platform.h>
 
 vsx_overlay::vsx_overlay() {
   help_id = 0;
   scroll_pos = 0.0f;
   title_timer = 5.0f;
   manager = 0;
-  myf = new vsx_font("/usr/share/vsxu/");
+  myf = new vsx_font(PLATFORM_SHARED_FILES);
   myf->init("font/font-ascii.png");
   myf->mode_2d = true;
   frame_counter = 0;
@@ -142,9 +143,9 @@ void vsx_overlay::set_help(int id) {
 
 void vsx_overlay::print_help() {
 
- vsx_string mess = "\
-VSX Ultra by Vovoid: jaw, cor, asterix, yume and ion -:- libs by: Laurent de Soras, Mark J. Harris, The Freetype Project, Auran Development Ltd."
-"-- for more vsxu goodies of course go to http://vsxu.com"
+ vsx_string message = "\
+VSX Ultra (c) Vovoid -:- libs by: Laurent de Soras, Mark J. Harris, The Freetype Project, Auran Development Ltd."
+"-- for more vsxu goodies go to http://vsxu.com"
 "-- visit our homepage at http://vovoid.com"
 ;
 
@@ -189,9 +190,9 @@ Keyboard shortcuts:\n\
 \n\
 ",0.05);
       //myf.color = vsx_color(1.0f,1.0f,1.0f,1.0f);
-      for (int i = 0; i < mess.size(); ++i) {
+      for (int i = 0; i < message.size(); ++i) {
         myf->color = vsx_color(sin((float)i*0.5f+total_time*3.5f)*0.4f+0.6f,cos((float)i*0.2f+total_time*0.72f)*0.4f+0.6f,sin((float)i*0.25f+total_time*2.01f)*0.4f+0.6f,1.0f);
-        myf->print(vsx_vector(0.5+scroll_pos+0.035*(float)i,-0.85f+sin(total_time*2.5f+(float)i*0.2f)*sin(total_time*1.7f+(float)i*0.1f)*0.1f),mess[i],0.07);
+        myf->print(vsx_vector(0.5+scroll_pos+0.035*(float)i,-0.85f+sin(total_time*2.5f+(float)i*0.2f)*sin(total_time*1.7f+(float)i*0.1f)*0.1f),message[i],0.07);
       }
       break; 
     case 2:

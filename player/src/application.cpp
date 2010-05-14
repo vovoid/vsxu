@@ -8,19 +8,24 @@
 #include "application.h"
 #include "info_overlay.h"
 
+
+// info_overlay is the text on top of the graphics
+// you might want to remove this.
+ 
+
 // global vars
-vsx_string fpsstring = "VSX Ultra "+vsx_string(vsxu_version)+" - �2005 Vovoid";
+vsx_string fpsstring = "VSX Ultra "+vsx_string(vsxu_version)+" - (c) Vovoid";
 vsx_manager_abs* manager;
+vsx_logo_intro* intro;
 
 void (*app_set_fullscreen)(int,bool) = 0;
 bool (*app_get_fullscreen)(int) = 0;
 
-#ifndef VSXU_DEMO
 vsx_overlay* overlay = 0;
-#endif
 
-void app_init(int id) {
-#ifndef VSXU_DEMO
+void app_init(int id) 
+{
+
   /*for (int i = 1; i < app_argc; i++) {
     vsx_string arg1 = app_argv[i];
     if (arg1 == "--help")
@@ -47,7 +52,6 @@ void app_init(int id) {
       state_file_list.push_back(arg1);
     }
   }*/
-#endif
 
 }
 
@@ -64,19 +68,25 @@ bool app_draw(int id)
     manager = manager_factory();
     vsx_string path = PLATFORM_SHARED_FILES;
     manager->init( path.c_str() );
+    overlay = new vsx_overlay;
+    overlay->set_manager(manager);
+    intro = new vsx_logo_intro;
 	}
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (manager) manager->render();
-	///if (overlay) overlay->render();
-	//intro->draw();
+	if (overlay) overlay->render();
+	intro->draw();
 	return true;
 }
 
-void app_key_down(long key) {
+void app_key_down(long key) 
+{
 	char key_out[100];
 	sprintf(key_out, "%d", (int)key);
 	//::MessageBox(0,key_out, key_out, MB_OK);
-	//printf("key: %d\n", (int)key);
+#ifdef VSXU_DEBUG
+	printf("key: %d\n", (int)key);
+#endif
 	switch (key) {
 	  case 257:
 		case 27: exit(0);
@@ -92,7 +102,8 @@ void app_key_down(long key) {
 		case 37: manager->prev_visual(); break;
 		case 286:
 		case 39: manager->next_visual(); break;
-		case 70: overlay->set_help(2); break;
+    case 258:overlay->set_help(1); break;
+    case 70: overlay->set_help(2); break;
 		case 82: if (app_ctrl) manager->pick_random_visual(); else manager->toggle_randomizer(); break;
 	}
 }
