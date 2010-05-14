@@ -827,7 +827,7 @@ void vsx_widget_server::vsx_command_process_b(vsx_command_s *t) {
 			// do export
 			vsx_string end = t->cmd.substr(-7);
 			if (end != "_cancel") {
-				vsx_string cc = t->cmd.substr(14); // _visuals
+				vsx_string cc = t->cmd.substr(15); // visuals
 				//::MessageBox(0, end.c_str(), cc.c_str(), MB_OK);
 				cmd_out->add_raw("meta_set "+t->parts[2]);
 				if (t->parts[1].substr(-4) != ".vsx") t->parts[1] += ".vsx";
@@ -1357,7 +1357,7 @@ module browser\n\
 	//name_dialog = add(new dialog_query_string("name of state","ex: jaw_states;mystate"),"state_save");
 	//export_dialog = add(new dialog_query_string("package export","filename ex: my_package.vsx"),"package_export");
 	export_dialog_ext = add(new dialog_query_string("visualization package export","\
-Filename to export to, will end up in _visuals/ (ex. 'mypackage.vsx')|\
+Filename to export to, will end up in visuals/ (ex. 'mypackage.vsx')|\
 Title of the visual (ex. 'Starlight Aurora')|\
 Your handle/nick/vsxu-id, (ex. 'jaw' or multiple: 'jaw, cor')|\
 Your group/company (ex. 'vovoid')|\
@@ -1367,7 +1367,7 @@ Free text comments (max 300 characters)|\
 "),"package_visual_export");
 
 	export_dialog_state = add(new dialog_query_string("save state","\
-Filename to save to, will end up in _states/ (ex. 'my_state')|\
+Filename to save to, will end up in states/ (ex. 'my_state')|\
 Title of the state (ex. 'My funky state')|\
 Your handle/nick/vsxu-id, (ex. 'jaw' or multiple: 'jaw, cor')|\
 Your group/company (ex. 'vovoid')|\
