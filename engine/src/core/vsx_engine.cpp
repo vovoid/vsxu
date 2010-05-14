@@ -1052,7 +1052,12 @@ void vsx_engine::redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_out)
       int order = (*it2)->dest->connect(dparam);
 //      printf("internal command: %d\n",order);
 #ifndef VSX_DEMO_MINI
-      cmd_out->add_raw("param_connect_volatile "+(*it2)->dest->owner->component->name+" "+(*it2)->src->name+" "+comp->name+" "+dparam->name+" "+i2s(order));
+      vsx_string dcn = (*it2)->dest->owner->component->name;
+      vsx_string srcn = (*it2)->src->name;
+      vsx_string cn = comp->name;
+      vsx_string dpn = dparam->name;
+      vsx_string os = i2s(order);
+      cmd_out->add_raw("param_connect_volatile "+dcn+" "+srcn+" "+cn+" "+dpn+" "+os);
 #endif
     }
   }
