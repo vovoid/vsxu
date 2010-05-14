@@ -177,9 +177,7 @@ void vsx_master_sequence_channel::insert_line(vsx_command_list* dest, vsx_comman
 	float p_vtime = i_vtime;
   long after_this_id = s2i(cmd_in->parts[4]); // item_action_id
   float time_diff = s2f(cmd_in->parts[5]);
-  float length = s2f(cmd_in->parts[6]);
   vsx_sequence_master_channel_item* pa;
-  //printf("delay: %f\n",delay);
   std::vector<vsx_sequence_master_channel_item*>::iterator it = items.begin();
   float item_length = 0.1f;
   if (after_this_id == (long)items.size()-1)
@@ -253,7 +251,7 @@ void vsx_master_sequence_channel::i_remove_line(int pos)
   std::vector<vsx_sequence_master_channel_item*>::iterator it = items.begin();
   if (pos != 0)
   {
-    for (size_t i = 0; i < pos; ++i) ++it;
+    for (size_t i = 0; i < (size_t)pos; ++i) ++it;
     //++it;
     //(*it).delay -= delay;
     if (pos < (long)items.size()-1)

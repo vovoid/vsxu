@@ -4,6 +4,15 @@
 
 class vsx_engine;
 
+//////////////////////////////////////////////////////////////////////
+
+class vsx_param_vsxl_abs {
+  public:
+    virtual void* load(vsx_module_param_abs* engine_param, vsx_string program, int id = -1) = 0;
+    virtual void execute() = 0;
+    virtual ~vsx_param_vsxl_abs() {};
+};
+
 
 class vsx_param_vsxl_driver_abs {
 
@@ -20,9 +29,9 @@ public:
   int result;
   void* state;
   vsx_string script;
-  virtual bool load(vsx_module_param_abs* engine_param,vsx_string program) = 0;
-  virtual bool run() = 0;
-  virtual bool unload() = 0;
+  virtual void* load(vsx_module_param_abs* engine_param,vsx_string program) = 0;
+  virtual void run() = 0;
+  virtual void unload() = 0;
   //virtual ~vsx_param_vsxl_driver_abs() = 0;
 };
 
@@ -36,7 +45,7 @@ public:
 	vsx_engine* engine;
   void* load(vsx_module_param_abs* engine_param, vsx_string program, int id = -1);
   vsx_param_vsxl_driver_abs* get_driver();
-  bool execute();
+  void execute();
   vsx_param_vsxl();
   void unload();
 };

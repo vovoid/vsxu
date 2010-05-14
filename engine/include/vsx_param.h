@@ -80,7 +80,7 @@ class vsx_module_param_abs;
 class vsx_param_vsxl_abs;
 class vsx_module_param_abs {
 public:
-	vsx_param_vsxl_abs* vsxl_modifier;
+	void* vsxl_modifier;
 
 	int type;
 	vsx_string name;
@@ -98,14 +98,6 @@ public:
   virtual ~vsx_module_param_abs() {}
 };
 
-//////////////////////////////////////////////////////////////////////
-
-class vsx_param_vsxl_abs {
-public:
-  virtual void* load(vsx_module_param_abs* engine_param, vsx_string program, int id = -1) = 0;
-  virtual bool execute() = 0;
-  virtual ~vsx_param_vsxl_abs() {};
-};
 
 //////////////////////////////////////////////////////////////////////
 

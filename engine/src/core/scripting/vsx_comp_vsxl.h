@@ -8,8 +8,8 @@ public:
   void* comp;
   vsx_string script;
   virtual void* load(vsx_module_param_list* module_list,vsx_string program) = 0;
-  virtual bool run() = 0;
-  virtual bool unload() = 0;
+  virtual void run() = 0;
+  virtual void unload() = 0;
   virtual ~vsx_comp_vsxl_driver_abs() {};
 };
 
@@ -18,7 +18,7 @@ class vsx_comp_vsxl {
 public:
   void* load(vsx_module_param_list* module_list, vsx_string program);
   vsx_comp_vsxl_driver_abs* get_driver();
-  bool execute();
+  void execute();
   vsx_comp_vsxl();
   void unload();
   ~vsx_comp_vsxl();

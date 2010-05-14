@@ -145,7 +145,7 @@ else
         //vsx_param_vsxl_driver_abs* driver;
         if (param->module_param->vsxl_modifier) {
           ((vsx_param_vsxl*)param->module_param->vsxl_modifier)->unload();
-          delete param->module_param->vsxl_modifier;
+          delete (vsx_param_vsxl_abs*)(param->module_param->vsxl_modifier);
           param->module_param->vsxl_modifier = 0;
           // send status to client
           cmd_out->add_raw("vsxl_pfr_ok "+c->parts[1]+" "+c->parts[2]);

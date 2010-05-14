@@ -10,14 +10,10 @@
 
 // global vars
 vsx_string fpsstring = "VSX Ultra "+vsx_string(vsxu_version)+" - �2005 Vovoid";
-
 vsx_manager_abs* manager;
-
 
 void (*app_set_fullscreen)(int,bool) = 0;
 bool (*app_get_fullscreen)(int) = 0;
-
-//float global_time;
 
 #ifndef VSXU_DEMO
 vsx_overlay* overlay = 0;
@@ -53,21 +49,8 @@ void app_init(int id) {
   }*/
 #endif
 
-/*#ifdef VSXU_DEMO
-	list->show_progress_bar = true;
-#endif*/
-#ifndef VSXU_DEMO
-	///overlay = new vsx_overlay();
-	///overlay->set_manager(manager);
-#endif
 }
 
-#ifdef VSXU_DEMO
-bool first = true;
-
-int start_loaded_modules;
-
-#endif
 
 void app_pre_draw() {}
 
@@ -76,15 +59,11 @@ bool app_draw(int id)
 {
 	if (first)
 	{
-    printf("app1\n");
 		//intro = new vsx_logo_intro;
 		first = false;
-    printf("app2\n");
     manager = manager_factory();
     vsx_string path = PLATFORM_SHARED_FILES;
-    printf("application_manager_init\n");
     manager->init( path.c_str() );
-    printf("application_after_manager_init\n");
 	}
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (manager) manager->render();
@@ -97,13 +76,10 @@ void app_key_down(long key) {
 	char key_out[100];
 	sprintf(key_out, "%d", (int)key);
 	//::MessageBox(0,key_out, key_out, MB_OK);
-	printf("key: %d\n", (int)key);
+	//printf("key: %d\n", (int)key);
 	switch (key) {
 	  case 257:
 		case 27: exit(0);
-		//case 38: list->get_vxe()->start(); break;//list->inc_amp(); break;
-		//case 40: list->get_vxe()->stop(); break;//list->dec_amp(); break;
-#ifndef VSXU_DEMO
 		case 298:
 		case 33: manager->inc_speed(); break;
 		case 299:
@@ -116,14 +92,9 @@ void app_key_down(long key) {
 		case 37: manager->prev_visual(); break;
 		case 286:
 		case 39: manager->next_visual(); break;
-		//case 13: manager->toggle_fullscreen(); overlay->reinit(); break;
 		case 70: overlay->set_help(2); break;
 		case 82: if (app_ctrl) manager->pick_random_visual(); else manager->toggle_randomizer(); break;
-		///case 258:
-		///case 112: overlay->set_help(1); break;
-#endif
 	}
-	//printf("key down: %d\n",key);
 }
 
 void app_key_up(long key) {}

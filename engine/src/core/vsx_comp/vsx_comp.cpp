@@ -18,6 +18,7 @@
 #include "vsx_param_abstraction.h"
 #ifndef VSXE_NO_GM
 #include "scripting/vsx_comp_vsxl.h"
+#include "scripting/vsx_param_vsxl.h"
 #endif
 #include "vsx_comp_channel.h"
 #include "vsx_log.h"
@@ -402,7 +403,10 @@ bool vsx_comp::prepare()
 #endif
 		// run vsxl after other component has set our value
 		if ((*it)->my_param->module_param->vsxl_modifier)
-		  (*it)->my_param->module_param->vsxl_modifier->execute();
+    {
+      void* a = (*it)->my_param->module_param->vsxl_modifier;
+      ((vsx_param_vsxl_abs*)a)  -> execute();
+    }
 		++i;
 	}
 	// we don't have any channels, so run instead

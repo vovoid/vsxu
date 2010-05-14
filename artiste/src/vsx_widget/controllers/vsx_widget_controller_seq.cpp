@@ -69,7 +69,9 @@ void vsx_widget_controller_sequence::vsx_command_process_b(vsx_command_s *t) {
   }
   else
   if (t->cmd == "pg64_ok") {
+#ifdef VSXU_DEBUG
     printf("command gotten from server: %s\n",t->raw.c_str());
+#endif
     command_q_b.add_raw("pseq_p_ok inject_get foo bar "+base64_decode(t->parts[3]));
     seq_chan->vsx_command_queue_b(this);
   }
