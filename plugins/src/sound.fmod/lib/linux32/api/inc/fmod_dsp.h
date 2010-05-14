@@ -1,5 +1,5 @@
 /* ========================================================================================== */
-/* FMOD Ex - DSP header file. Copyright (c), Firelight Technologies Pty, Ltd. 2004-2008.      */
+/* FMOD Ex - DSP header file. Copyright (c), Firelight Technologies Pty, Ltd. 2004-2009.      */
 /*                                                                                            */
 /* Use this header if you are interested in delving deeper into the FMOD software mixing /    */
 /* DSP engine.  In this header you can find parameter structures for FMOD system reigstered   */
@@ -37,7 +37,7 @@ typedef FMOD_RESULT (F_CALLBACK *FMOD_DSP_DIALOGCALLBACK)     (FMOD_DSP_STATE *d
     To get them to be active, first create the unit, then add it somewhere into the DSP network, either at the front of the network near the soundcard unit to affect the global output (by using System::getDSPHead), or on a single channel (using Channel::getDSPHead).
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]
     System::createDSPByType
@@ -65,6 +65,8 @@ typedef enum
     FMOD_DSP_TYPE_COMPRESSOR,         /* This unit implements dynamic compression (linked multichannel, wideband) */
     FMOD_DSP_TYPE_SFXREVERB,          /* This unit implements SFX reverb */
     FMOD_DSP_TYPE_LOWPASS_SIMPLE,     /* This unit filters sound using a simple lowpass with no resonance, but has flexible cutoff and is fast. */
+    FMOD_DSP_TYPE_DELAY,              /* This unit produces different delays on individual channels of the sound. */
+    FMOD_DSP_TYPE_TREMOLO,            /* This unit produces a tremolo / chopper effect on the sound. */
     FMOD_DSP_TYPE_FORCEINT = 65536    /* Makes sure this enum is signed 32bit. */
 } FMOD_DSP_TYPE;
 
@@ -87,7 +89,7 @@ typedef enum
     A step value of 0.0 would mean the full floating point range is accessable.<br>
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]    
     System::createDSP
@@ -120,7 +122,7 @@ typedef struct FMOD_DSP_PARAMETERDESC
     The other is to use DSP::showConfigDialog.  This is platform specific and requires a GUI, and will display a dialog box to configure the plugin.<br>
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]    
     System::createDSP
@@ -160,7 +162,7 @@ typedef struct FMOD_DSP_DESCRIPTION
     Members marked with [out] mean the variable is modified by FMOD and is for reading purposes only.  Do not change this value.<br>
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]
     FMOD_DSP_DESCRIPTION
@@ -168,8 +170,9 @@ typedef struct FMOD_DSP_DESCRIPTION
 */
 struct FMOD_DSP_STATE
 {
-    FMOD_DSP    *instance;      /* [out] Handle to the DSP hand the user created.  Not to be modified.  C++ users cast to FMOD::DSP to use.  */
-    void        *plugindata;    /* [in] Plugin writer created data the output author wants to attach to this object. */
+    FMOD_DSP      *instance;      /* [out] Handle to the DSP hand the user created.  Not to be modified.  C++ users cast to FMOD::DSP to use.  */
+    void          *plugindata;    /* [in] Plugin writer created data the output author wants to attach to this object. */
+	unsigned short speakermask;	  /* Specifies which speakers the DSP effect is active on */
 };
 
 
@@ -191,7 +194,7 @@ struct FMOD_DSP_STATE
     [REMARKS]
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]      
     DSP::setParameter
@@ -215,7 +218,7 @@ typedef enum
     [REMARKS]
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]      
     DSP::setParameter
@@ -246,7 +249,7 @@ typedef enum
     The effective maximum cutoff is about 8060hz.
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]      
     DSP::setParameter
@@ -270,7 +273,7 @@ typedef enum
     [REMARKS]
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]      
     DSP::setParameter
@@ -301,7 +304,7 @@ typedef enum
     If a channel echo is set to a lower number than the sound's channel count that is coming in, it will not echo the sound.<br>
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]      
     DSP::setParameter
@@ -323,6 +326,49 @@ typedef enum
 [ENUM]
 [  
     [DESCRIPTION]   
+    Parameter types for the FMOD_DSP_TYPE_DELAY filter.
+
+    [REMARKS]
+    Note.  Every time MaxDelay is changed, the plugin re-allocates the delay buffer.  This means the delay will dissapear at that time while it refills its new buffer.<br>
+    A larger MaxDelay results in larger amounts of memory allocated.<br>
+    Channel delays above MaxDelay will be clipped to MaxDelay and the delay buffer will not be resized.<br>
+    <br>
+
+    [PLATFORMS]
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
+
+    [SEE_ALSO]      
+    DSP::setParameter
+    DSP::getParameter
+    FMOD_DSP_TYPE
+]
+*/
+typedef enum
+{
+    FMOD_DSP_DELAY_CH0,      /* Channel #0 Delay in ms.  0  to 10000.  Default = 0. */
+    FMOD_DSP_DELAY_CH1,      /* Channel #1 Delay in ms.  0  to 10000.  Default = 0. */
+    FMOD_DSP_DELAY_CH2,      /* Channel #2 Delay in ms.  0  to 10000.  Default = 0. */
+    FMOD_DSP_DELAY_CH3,      /* Channel #3 Delay in ms.  0  to 10000.  Default = 0. */
+    FMOD_DSP_DELAY_CH4,      /* Channel #4 Delay in ms.  0  to 10000.  Default = 0. */
+    FMOD_DSP_DELAY_CH5,      /* Channel #5 Delay in ms.  0  to 10000.  Default = 0. */
+    FMOD_DSP_DELAY_CH6,      /* Channel #6 Delay in ms.  0  to 10000.  Default = 0. */
+    FMOD_DSP_DELAY_CH7,      /* Channel #7 Delay in ms.  0  to 10000.  Default = 0. */
+    FMOD_DSP_DELAY_CH8,      /* Channel #8 Delay in ms.  0  to 10000.  Default = 0. */
+    FMOD_DSP_DELAY_CH9,      /* Channel #9 Delay in ms.  0  to 10000.  Default = 0. */
+    FMOD_DSP_DELAY_CH10,     /* Channel #10 Delay in ms.  0  to 10000.  Default = 0. */
+    FMOD_DSP_DELAY_CH11,     /* Channel #11 Delay in ms.  0  to 10000.  Default = 0. */
+    FMOD_DSP_DELAY_CH12,     /* Channel #12 Delay in ms.  0  to 10000.  Default = 0. */
+    FMOD_DSP_DELAY_CH13,     /* Channel #13 Delay in ms.  0  to 10000.  Default = 0. */
+    FMOD_DSP_DELAY_CH14,     /* Channel #14 Delay in ms.  0  to 10000.  Default = 0. */
+    FMOD_DSP_DELAY_CH15,     /* Channel #15 Delay in ms.  0  to 10000.  Default = 0. */
+    FMOD_DSP_DELAY_MAXDELAY, /* Maximum delay in ms.  0  to 10000.  Default = 10. */
+} FMOD_DSP_DELAY;
+
+
+/*
+[ENUM]
+[  
+    [DESCRIPTION]   
     Parameter types for the FMOD_DSP_TYPE_FLANGE filter.
 
     [REMARKS]
@@ -332,7 +378,7 @@ typedef enum
     Flange depth is a percentage of a 10ms shift from the original signal.  Anything above 10ms is not considered flange because to the ear it begins to 'echo' so 10ms is the highest value possible.<br>
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]      
     DSP::setParameter
@@ -353,12 +399,48 @@ typedef enum
 [ENUM]
 [  
     [DESCRIPTION]   
+    Parameter types for the FMOD_DSP_TYPE_TREMOLO filter.
+
+    [REMARKS]
+    The tremolo effect varies the amplitude of a sound. Depending on the settings, this unit can produce a tremolo, chopper or auto-pan effect.<br>
+    <br>
+    The shape of the LFO (low freq. oscillator) can morphed between sine, triangle and sawtooth waves using the FMOD_DSP_TREMOLO_SHAPE and FMOD_DSP_TREMOLO_SKEW parameters.<br>
+    FMOD_DSP_TREMOLO_DUTY and FMOD_DSP_TREMOLO_SQUARE are useful for a chopper-type effect where the first controls the on-time duration and second controls the flatness of the envelope.<br>
+    FMOD_DSP_TREMOLO_SPREAD varies the LFO phase between channels to get an auto-pan effect. This works best with a sine shape LFO.<br>
+    The LFO can be synchronized using the FMOD_DSP_TREMOLO_PHASE parameter which sets its instantaneous phase.<br>
+
+    [PLATFORMS]
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
+
+    [SEE_ALSO]      
+    DSP::setParameter
+    DSP::getParameter
+    FMOD_DSP_TYPE
+]
+*/
+typedef enum
+{
+    FMOD_DSP_TREMOLO_FREQUENCY,     /* LFO frequency in Hz.  0.1 to 20.  Default = 4. */
+    FMOD_DSP_TREMOLO_DEPTH,         /* Tremolo depth.  0 to 1.  Default = 0. */
+    FMOD_DSP_TREMOLO_SHAPE,         /* LFO shape morph between triangle and sine.  0 to 1.  Default = 0. */
+    FMOD_DSP_TREMOLO_SKEW,          /* Time-skewing of LFO cycle.  -1 to 1.  Default = 0. */
+    FMOD_DSP_TREMOLO_DUTY,          /* LFO on-time.  0 to 1.  Default = 0.5. */
+    FMOD_DSP_TREMOLO_SQUARE,        /* Flatness of the LFO shape.  0 to 1.  Default = 0. */
+    FMOD_DSP_TREMOLO_PHASE,         /* Instantaneous LFO phase.  0 to 1.  Default = 0. */
+    FMOD_DSP_TREMOLO_SPREAD         /* Rotation / auto-pan effect.  -1 to 1.  Default = 0. */
+} FMOD_DSP_TREMOLO;
+
+
+/*
+[ENUM]
+[  
+    [DESCRIPTION]   
     Parameter types for the FMOD_DSP_TYPE_DISTORTION filter.
 
     [REMARKS]
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]      
     DSP::setParameter
@@ -387,7 +469,7 @@ typedef enum
     To avoid very sudden changes in volume level based on small samples of new data, fmod fades towards the desired amplification which makes for smooth gain control.  The fadetime parameter can control this.<br>
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]      
     DSP::setParameter
@@ -417,7 +499,7 @@ typedef enum
     When a frequency has its gain set to 1.0, the sound will be unaffected and represents the original signal exactly.<br>
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]      
     DSP::setParameter
@@ -457,7 +539,7 @@ typedef enum
     If a channel pitch shift is set to a lower number than the sound's channel count that is coming in, it will not pitch shift the sound.<br>
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]      
     DSP::setParameter
@@ -487,7 +569,7 @@ typedef enum
     This unit also could be used to do a simple echo, or a flange effect. 
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]      
     DSP::setParameter
@@ -517,9 +599,10 @@ typedef enum
 
     [REMARKS]
     Based on freeverb by Jezar at Dreampoint - http://www.dreampoint.co.uk.
+    This reverb is limited to stereo processing only, and may be removed in the future.  It is recommended to use FMOD_DSP_SFXREVERB instead which is higher quality and supports 5.1 and 7.1 output.
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]      
     DSP::setParameter
@@ -554,7 +637,7 @@ typedef enum
     For multichannel signals (>2) there will be no echo on those channels.<br>
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]      
     DSP::SetParameter
@@ -589,7 +672,7 @@ typedef enum
     <br>
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]      
     DSP::SetParameter
@@ -616,12 +699,10 @@ typedef enum
     This is a high quality I3DL2 based reverb which improves greatly on FMOD_DSP_REVERB.<br>
     On top of the I3DL2 property set, "Dry Level" is also included to allow the dry mix to be changed.<br>
     <br>
-    Currently FMOD_DSP_SFXREVERB_REFLECTIONSLEVEL, FMOD_DSP_SFXREVERB_REFLECTIONSDELAY and FMOD_DSP_SFXREVERB_REVERBDELAY are not enabled but will come in future versions.<br>
-    <br>
     These properties can be set with presets in FMOD_REVERB_PRESETS.
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]      
     DSP::SetParameter
@@ -634,7 +715,7 @@ typedef enum
 typedef enum
 {
     FMOD_DSP_SFXREVERB_DRYLEVEL,            /* Dry Level      : Mix level of dry signal in output in mB.  Ranges from -10000.0 to 0.0.  Default is 0. */
-    FMOD_DSP_SFXREVERB_ROOM,                /* Room           : Room effect level at low frequencies in mB.  Ranges from -10000.0 to 0.0.  Default is 0.0. */
+    FMOD_DSP_SFXREVERB_ROOM,                /* Room           : Room effect level at low frequencies in mB.  Ranges from -10000.0 to 0.0.  Default is -10000.0. */
     FMOD_DSP_SFXREVERB_ROOMHF,              /* Room HF        : Room effect high-frequency level re. low frequency level in mB.  Ranges from -10000.0 to 0.0.  Default is 0.0. */
     FMOD_DSP_SFXREVERB_ROOMROLLOFFFACTOR,   /* Room Rolloff   : Like DS3D flRolloffFactor but for room effect.  Ranges from 0.0 to 10.0. Default is 10.0 */
     FMOD_DSP_SFXREVERB_DECAYTIME,           /* Decay Time     : Reverberation decay time at low-frequencies in seconds.  Ranges from 0.1 to 20.0. Default is 1.0. */
@@ -661,7 +742,7 @@ typedef enum
     [REMARKS]
 
     [PLATFORMS]
-    Win32, Win64, Linux, Linux64, Macintosh, Xbox, Xbox360, PlayStation 2, GameCube, PlayStation Portable, PlayStation 3, Wii
+    Win32, Win64, Linux, Linux64, Macintosh, Xbox360, PlayStation 2, PlayStation Portable, PlayStation 3, Wii, Solaris, iPhone
 
     [SEE_ALSO]      
     DSP::setParameter

@@ -426,7 +426,7 @@ vsx_string vsx_get_data_path()
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   struct stat st;
   char* home_dir = getenv ("HOME");
-  base_path = vsx_string(home_dir) + "/.vsxu/"+vsxu_ver+"/data/";
+  base_path = vsx_string(home_dir)+"/.vsxu/"+vsxu_ver+"/data/";
   if (stat(base_path.c_str(),&st) != 0)
   {
     mkdir( (base_path).c_str(),0700);
@@ -451,7 +451,8 @@ vsx_string vsx_get_data_path()
   base_path = vsx_string(home_dir)+"\\vsxu\\"+vsxu_ver+"\\data\\";
   if (access(base_path.c_str(),0) != 0)
   {
-    printf("xcopy command: %s\n",vsx_string("xcopy /E data "+base_path).c_str());
+
+    //printf("xcopy command: %s\n",vsx_string("xcopy /E data "+base_path).c_str());
   
     system(vsx_string("xcopy /E data "+base_path).c_str());
   }
