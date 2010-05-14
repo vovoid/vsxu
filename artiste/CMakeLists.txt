@@ -133,6 +133,7 @@ if(UNIX)
       ../share/example-prods
       ../share/example-resources
       ../share/example-states
+      ../share/example-faders
       ../share/doc
       ../share/example-visuals
     DESTINATION
