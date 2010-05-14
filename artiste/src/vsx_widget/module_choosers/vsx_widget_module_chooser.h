@@ -18,6 +18,7 @@ public:
     HTCoord() {
       x = 0.0;
       y = 0.0;
+      z = 0.0;
     }
 
     /**
@@ -1052,6 +1053,7 @@ public:
 			projType = 0;
       this->father = father;
       this->node = node;
+      kleinMode = false;
 //      this->model = model;
 
       //label = new HTNodeLabel(this);
