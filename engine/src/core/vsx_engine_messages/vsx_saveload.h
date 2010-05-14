@@ -51,17 +51,25 @@
         
         vsxf tfs;
         vsx_string filename = (c->parts[2]+str_replace(";","",c->parts[1]));
+#ifdef VSXU_DEBUG
+        printf("exporting vsx filename: %s\n", (base_path+filename).c_str() );
+#endif
         tfs.archive_create((base_path+filename).c_str());
         vsx_command_list savelist;
         get_state_as_commandlist(savelist);
         savelist.filesystem = &tfs;
         savelist.save_to_file("_states/_default");
-        for (forge_map_iter = forge_map.begin(); forge_map_iter != forge_map.end(); ++forge_map_iter) {
+        for (forge_map_iter = forge_map.begin(); forge_map_iter != forge_map.end(); ++forge_map_iter) 
+        {
           vsx_comp* comp = (*forge_map_iter).second;
-          if (comp->component_class != "macro") {
-            for (unsigned long i = 0; i < comp->get_params_in()->param_id_list.size(); ++i) {
-              if (comp->get_params_in()->param_id_list[i]->module_param->type == VSX_MODULE_PARAM_ID_RESOURCE) {
-                if (comp->get_params_in()->param_id_list[i]->get_string() != comp->get_params_in()->param_id_list[i]->get_default_string()) {
+          if (comp->component_class != "macro") 
+          {
+            for (unsigned long i = 0; i < comp->get_params_in()->param_id_list.size(); ++i) 
+            {
+              if (comp->get_params_in()->param_id_list[i]->module_param->type == VSX_MODULE_PARAM_ID_RESOURCE) 
+              {
+                if (comp->get_params_in()->param_id_list[i]->get_string() != comp->get_params_in()->param_id_list[i]->get_default_string()) 
+                {
                   tfs.archive_add_file(comp->get_params_in()->param_id_list[i]->get_string());
                 }
               }
