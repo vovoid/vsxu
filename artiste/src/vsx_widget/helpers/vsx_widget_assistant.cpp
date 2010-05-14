@@ -168,7 +168,7 @@ void vsxu_assistant::init()
 
   vsx_command_s* c;
   vsx_command_list cla;
-  cla.load_from_file(PLATFORM_SHARED_FILES+"doc/help_settings.txt",true,4);
+  cla.load_from_file(vsx_get_data_path()+"help_settings.conf",true,4);
   auto_ = false;
   while ( (c = cla.pop()) ) {
     if (c->cmd == "auto") {
@@ -237,7 +237,7 @@ void vsxu_assistant::vsx_command_process_b(vsx_command_s *t) {
       inspected = 0;
       vsx_command_list cla;
       cla.add_raw("auto");
-      cla.save_to_file("_doc/help_settings.txt");
+      cla.save_to_file(vsx_get_data_path()+"help_settings.conf");
       auto_ = true;
       course.clear();
       ((vsx_widget_2d_pager*)pager)->max_pages = 0;//course.size();

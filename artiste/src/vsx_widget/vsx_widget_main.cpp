@@ -411,15 +411,9 @@ void vsx_widget_desktop::draw_2d() {
 void vsx_widget_desktop::load_configuration()
 {
   vsx_command_list main_conf;
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-  struct stat st;
-  char* home_dir = getenv ("HOME");
-  vsx_string config_dir(home_dir);
-  config_dir += "/.vsxu";
-  if (stat(config_dir.c_str(),&st) != 0)
-  mkdir(config_dir.c_str(),0700);
-  vsx_string config_file = config_dir + "/vsxu.conf";
-  if (stat(config_file.c_str(),&st) == 0)
+  vsx_string config_file = vsx_get_data_path() + "vsxu.conf";
+  
+  if (access(config_file.c_str(),0) == 0)
   {
     main_conf.load_from_file(config_file.c_str(),true,0);
   } else
@@ -427,10 +421,7 @@ void vsx_widget_desktop::load_configuration()
     main_conf.load_from_file(PLATFORM_SHARED_FILES+"vsxu.conf",true,0);
   }
 #ifdef VSXU_DEBUG
-  printf("conf: %s\n", (PLATFORM_SHARED_FILES+"vsxu.conf").c_str());
-#endif
-#else
-  main_conf.load_from_file("./vsxu.conf",true,0);
+  printf("conf: %s\n", config_file.c_str());
 #endif
   main_conf.reset();
   vsx_command_s* mc = 0;
@@ -461,19 +452,7 @@ void vsx_widget_desktop::load_configuration()
 
 void vsx_widget_desktop::save_configuration() {
   // final destination for the configuration data
-  vsx_string save_filename;
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-  struct stat st;
-  char* home_dir = getenv ("HOME");
-  vsx_string config_dir(home_dir);
-  config_dir += "/.vsxu";
-  if (stat(config_dir.c_str(),&st) != 0)
-  mkdir(config_dir.c_str(),0700);
-  vsx_string config_file = config_dir + "/vsxu.conf";
-  save_filename = config_file;
-#else
-  save_filename = "./vsxu.conf";
-#endif
+  vsx_string save_filename = vsx_get_data_path() + "vsxu.conf";
 
   vsx_command_list s_conf;
   for (std::map<vsx_string, vsx_string>::iterator it = configuration.begin(); it != configuration.end(); ++it) {

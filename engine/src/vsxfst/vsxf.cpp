@@ -97,7 +97,7 @@ void vsxf::archive_create(const char* filename) {
         data_size = ftell(fp);
         fseek(fp,0,SEEK_SET);
         data = new char[data_size];
-        fread(data,sizeof(char),data_size,fp);
+        if (!fread(data,sizeof(char),data_size,fp)) { return 2;};
         // write it to disk
         fseek(archive_handle,0,SEEK_END);
       }
@@ -143,7 +143,7 @@ void vsxf::archive_create(const char* filename) {
     if (size < 4) return 1;
     char header[5];
     header[4] = 0;
-    fread(header,sizeof(char),4,archive_handle);
+    if (!fread(header,sizeof(char),4,archive_handle)) return 2;
     //printf("header: %s\n",header);
     vsx_string hs(header);
     if (hs != "VSXz") return 2;
@@ -228,7 +228,7 @@ bool vsxf::is_archive_populated()
             //printf("nhandle size: %d\n",handle->size);
             void* inBuffer = malloc(handle->size);
             fseek(l_handle,archive_files[i].position-1,SEEK_SET);
-            fread(inBuffer,1,handle->size,l_handle);
+            if (!fread(inBuffer,1,handle->size,l_handle)) return NULL;
             void* outBuffer = 0;
             size_t outSize;
             size_t outSizeProcessed;
@@ -426,7 +426,11 @@ vsx_string vsx_get_data_path()
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   //struct stat st;
   char* home_dir = getenv ("HOME");
-  base_path = vsx_string(home_dir)+"/.vsxu/"+vsxu_ver+"/data/";
+  base_path = vsx_string(home_dir)+"/.vsxu/";
+  if (access(base_path.c_str(),0) != 0) mkdir( (base_path).c_str(),0700); 
+  base_path = base_path+vsxu_ver+"/";
+  if (access(base_path.c_str(),0) != 0) mkdir( (base_path).c_str(),0700); 
+  base_path = base_path+"data/";
 #ifdef VSXU_DEBUG
   printf("base path: %s\n", base_path.c_str() );
 #endif
@@ -439,14 +443,16 @@ vsx_string vsx_get_data_path()
     mkdir( (base_path+"visuals").c_str(),0700);
     mkdir( (base_path+"visuals_faders").c_str(),0700);
     mkdir( (base_path+"resources").c_str(),0700);
-      // add symlinks to examples
-    symlink ( (PLATFORM_SHARED_FILES+"example-macros").c_str(), (base_path+"macros/examples").c_str() );
-    symlink ( (PLATFORM_SHARED_FILES+"example-states").c_str(), (base_path+"states/examples").c_str() );
-    symlink ( (PLATFORM_SHARED_FILES+"example-prods").c_str(), (base_path+"prods/examples").c_str() );
-    symlink ( (PLATFORM_SHARED_FILES+"example-visuals").c_str(), (base_path+"visuals/examples").c_str() );
-    symlink ( (PLATFORM_SHARED_FILES+"example-resources").c_str(), (base_path+"resources/examples").c_str() );
-    #if (VSXU_DEBUG)
-    symlink ( (PLATFORM_SHARED_FILES+"debug-states").c_str(), (base_path+"states/debug").c_str() );
+    // add symlinks to examples
+    int sr;
+    sr = symlink ( (PLATFORM_SHARED_FILES+"example-macros").c_str(), (base_path+"macros/examples").c_str() );
+    sr = symlink ( (PLATFORM_SHARED_FILES+"example-states").c_str(), (base_path+"states/examples").c_str() );
+    sr = symlink ( (PLATFORM_SHARED_FILES+"example-prods").c_str(), (base_path+"prods/examples").c_str() );
+    sr = symlink ( (PLATFORM_SHARED_FILES+"example-visuals").c_str(), (base_path+"visuals/examples").c_str() );
+    sr = symlink ( (PLATFORM_SHARED_FILES+"example-resources").c_str(), (base_path+"resources/examples").c_str() );
+    sr = symlink ( (PLATFORM_SHARED_FILES+"example-faders").c_str(), (base_path+"visual_faders/examples").c_str() );
+#if (VSXU_DEBUG)
+    sr = symlink ( (PLATFORM_SHARED_FILES+"debug-states").c_str(), (base_path+"states/debug").c_str() );
     #endif
   }
 #else
