@@ -434,6 +434,7 @@ vsx_string vsx_get_data_path()
     mkdir( (base_path+"states").c_str(),0700);
     mkdir( (base_path+"prods").c_str(),0700);
     mkdir( (base_path+"visuals").c_str(),0700);
+    mkdir( (base_path+"visuals_faders").c_str(),0700);
     mkdir( (base_path+"resources").c_str(),0700);
       // add symlinks to examples
     symlink ( (PLATFORM_SHARED_FILES+"example-macros").c_str(), (base_path+"macros/examples").c_str() );

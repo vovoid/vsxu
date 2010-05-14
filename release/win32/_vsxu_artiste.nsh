@@ -51,6 +51,8 @@ SetOverwrite on
   File /r ..\..\share\debug-states\*.*
   SetOutPath "$INSTDIR\data\visuals\examples\"
   File /r ..\..\share\example-visuals\*.*
+  SetOutPath "$INSTDIR\data\visuals-faders\examples\"
+  File /r ..\..\share\example-faders\*.*
 
 ; player files
   SetOutPath "$INSTDIR\visuals_player"
