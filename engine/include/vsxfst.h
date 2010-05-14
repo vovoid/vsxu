@@ -62,7 +62,7 @@ public:
   int archive_load(const char* filename);
   void archive_create(const char* filename);
   void archive_close();
-  int archive_add_file(vsx_string filename, char* data = 0, unsigned long data_size = 0);
+  int archive_add_file(vsx_string filename, char* data = 0, unsigned long data_size = 0, vsx_string disk_filename = "");
   bool is_archive();
   bool is_archive_populated();
 

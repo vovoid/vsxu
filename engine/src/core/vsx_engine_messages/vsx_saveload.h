@@ -70,7 +70,7 @@
               {
                 if (comp->get_params_in()->param_id_list[i]->get_string() != comp->get_params_in()->param_id_list[i]->get_default_string()) 
                 {
-                  tfs.archive_add_file(comp->get_params_in()->param_id_list[i]->get_string());
+                  tfs.archive_add_file(comp->get_params_in()->param_id_list[i]->get_string(),0,0,vsx_get_data_path()+comp->get_params_in()->param_id_list[i]->get_string());
                 }
               }
             }

@@ -78,7 +78,12 @@ void vsxf::archive_create(const char* filename) {
     }
   }
 
-  int vsxf::archive_add_file(vsx_string filename, char* data, unsigned long data_size) {
+  int vsxf::archive_add_file(
+                             vsx_string filename, 
+                             char* data, 
+                             unsigned long data_size, 
+                             vsx_string disk_filename
+  ) {
 #ifndef VSXF_DEMO
     if (!archive_handle) return 1;
     unsigned long i = 0;
@@ -88,10 +93,11 @@ void vsxf::archive_create(const char* filename) {
       }
       ++i;
     }
-
+    vsx_string fopen_filename = filename;
+    if (fopen_filename != "") fopen_filename = disk_filename;
     FILE* fp = 0;
     if (data == 0) {
-      fp = fopen(filename.c_str(),"rb");
+      fp = fopen(fopen_filename.c_str(),"rb");
       if (fp) {
         fseek (fp, 0, SEEK_END);
         data_size = ftell(fp);
