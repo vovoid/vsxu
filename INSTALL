@@ -79,6 +79,8 @@ Examples:
   For system-wide visualization (with pulseaudio) on Linux:
     cmake . -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxupulse"
 
+  On Windows, for a debug build:
+    cmake . -G "MinGW Makefiles" -DVSXU_DEBUG=1
 
 -------------------------------------------------------------------------------
  S O U N D    I N P U T S

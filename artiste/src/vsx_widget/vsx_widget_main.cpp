@@ -12,6 +12,11 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <io.h>
+#include <fcntl.h>
+
 // local includes
 #include "vsx_widget_base.h"
 #include "window/vsx_widget_window.h"
