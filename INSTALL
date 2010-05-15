@@ -76,6 +76,8 @@ Examples:
   This is my personal installation for demo making:
     cmake . -DENGINE_SCRIPTING=1 -DVSXU_SOUND_FMOD=1 -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxu"
 
+  On Windows, for a debug build:
+    cmake . -G "MinGW Makefiles" -DVSXU_DEBUG=1
 
 -------------------------------------------------------------------------------
  S O U N D    I N P U T S
