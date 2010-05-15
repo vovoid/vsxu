@@ -17,6 +17,7 @@ vsx_overlay::vsx_overlay() {
   time2.start();
   total_time = 0.0f;
   intro_timer = 6.0f;
+  fx_alpha = 0.0f;
 }
 
 void vsx_overlay::set_manager(vsx_manager_abs* new_manager)
@@ -128,7 +129,7 @@ void vsx_overlay::reinit() {
       myf->color.r = myf->color.g = myf->color.b = 1.0f;
       myf->color.a = local_alpha;
       myf->print(vsx_vector(0.915f,-0.98f),"FX LVL",0.035);
-      myf->print(vsx_vector(0.85f,0.1f),f2s(manager->get_fx_level()),0.035);        
+      myf->print(vsx_vector(0.85f,0.1f),f2s(manager->get_fx_level()),0.035);
     }
     myf->color.r = myf->color.g = myf->color.b = myf->color.a = 1.0f;
     fx_alpha -= dt*4;
@@ -139,6 +140,11 @@ void vsx_overlay::set_help(int id) {
   if (help_id == id) help_id = 0;
   else help_id = id;
   scroll_pos = 0.0f;
+}
+
+void vsx_overlay::show_fx_graph()
+{
+  fx_alpha = 5.0f;
 }
 
 void vsx_overlay::print_help() {

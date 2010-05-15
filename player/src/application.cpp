@@ -87,7 +87,8 @@ void app_key_down(long key)
 #ifdef VSXU_DEBUG
 	printf("key: %d\n", (int)key);
 #endif
-	switch (key) {
+	switch (key) 
+  {
 	  case 257:
 		case 27: exit(0);
 		case 298:
@@ -95,14 +96,15 @@ void app_key_down(long key)
 		case 299:
 		case 34: manager->dec_speed(); break;
 		case 283:
-		case 38: manager->inc_fx_level(); break;
+    case 38: manager->inc_fx_level(); overlay->show_fx_graph(); break;
 		case 284:
-		case 40: manager->dec_fx_level(); break;
+    case 40: manager->dec_fx_level(); overlay->show_fx_graph(); break;
 		case 285:
 		case 37: manager->prev_visual(); break;
 		case 286:
 		case 39: manager->next_visual(); break;
     case 258:overlay->set_help(1); break;
+    case 112:
     case 70: overlay->set_help(2); break;
 		case 82: if (app_ctrl) manager->pick_random_visual(); else manager->toggle_randomizer(); break;
 	}

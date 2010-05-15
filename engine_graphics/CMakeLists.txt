@@ -53,10 +53,10 @@ add_library(${module_id} SHARED ${SOURCES} ${EXTRA_LIBS} ${PNG_SOURCES} ${JPG_SO
 install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 if(WIN32)
-target_link_libraries(${module_id} gdi32 glew opengl32 glu32 pthreadGCE)
-link_directories("../engine")
+  target_link_libraries(${module_id} gdi32 glew opengl32 glu32 pthreadGCE)
+  link_directories("../engine")
 else(WIN32)
-target_link_libraries(${module_id} X11 GLEW GL GLU)
+  target_link_libraries(${module_id} X11 GLEW GL GLU)
 endif(WIN32)
 target_link_libraries(${module_id} vsxu_engine)
 #include(../cmake_suffix.txt)

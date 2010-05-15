@@ -30,7 +30,7 @@ public:
 	void render();
   void set_help(int id);
   void print_help();
-	
+	void show_fx_graph();
 };
 
 #endif /*INFO_OVERLAY_H_*/
