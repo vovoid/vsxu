@@ -507,6 +507,9 @@ void vsx_statelist::init(vsx_string base_path)
 */
 
   get_files_recursive(own_path+visual_path, &state_file_list,"","");
+#ifdef VSXU_DEBUG
+  printf("getting files recursive: %s\n", (own_path+visual_path).c_str() );
+#endif
   for (std::list<vsx_string>::iterator it = state_file_list.begin(); it != state_file_list.end(); ++it) {
     state_info state;
     state.state_name = *it;
