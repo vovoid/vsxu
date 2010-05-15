@@ -491,6 +491,7 @@ void vsx_statelist::init(vsx_string base_path)
   //printf("argc: %d\n",argc);
 */
 #if PLATFORM == PLATFORM_WINDOWS
+  if (own_path.size())
   if (own_path[own_path.size()-1] != '\\') own_path.push_back('\\');
 #else
   if (own_path[own_path.size()-1] != '/') own_path.push_back('/');
