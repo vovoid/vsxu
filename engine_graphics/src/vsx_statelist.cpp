@@ -202,7 +202,9 @@ void vsx_statelist::render()
 
     get_files_recursive(own_path+"visuals_faders", &fader_file_list,"",".svn CVS");
     for (std::list<vsx_string>::iterator it = fader_file_list.begin(); it != fader_file_list.end(); ++it) {
-      //printf("initializing fader %s\n", (*it).c_str());
+#ifdef VSXU_DEBUG
+      printf("initializing fader %s\n", (*it).c_str());
+#endif
       lvxe = new vsx_engine(own_path);
       lvxe->dump_modules_to_disk = false;
       lvxe->init();
@@ -509,7 +511,9 @@ void vsx_statelist::init(vsx_string base_path)
     state_info state;
     state.state_name = *it;
     state.state_name_suffix = state.state_name.substr(own_path.size(),state.state_name.size() - own_path.size() );
-    //printf("adding state %s\n",(*it).c_str());
+#ifdef VSXU_DEBUG
+    printf("adding state %s\n",(*it).c_str());
+#endif
 
     state.fx_level = 1.0f;
     state.engine = 0;

@@ -1,9 +1,6 @@
 - if you add something to sequencer, and the value of the float is already set greater than one, then it locks up."
-- saving states, exporting presets (directory faults?)
 - player obviously not picking up the directory
 - psypussy and octapussy don't work (crash)
 
-- states>debug->mesh_modifiers_randistort doesn't do anything?
-  not able to verify this, works here
 - states>debug>kaliedo_front shows white. Our sound settings are obviously different?
 - clock not working
