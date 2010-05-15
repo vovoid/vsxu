@@ -76,7 +76,7 @@ Examples:
   This is my personal installation for demo making:
     cmake . -DENGINE_SCRIPTING=1 -DVSXU_SOUND_FMOD=1 -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxu"
 
-  For system-wide visualization (with pulseaudio) on Linux:
+  For visualization (with pulseaudio) on Linux:
     cmake . -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxupulse"
 
   On Windows, for a debug build:

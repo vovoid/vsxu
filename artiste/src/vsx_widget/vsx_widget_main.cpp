@@ -14,7 +14,9 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
 #include <io.h>
+#endif
 #include <fcntl.h>
 
 // local includes
