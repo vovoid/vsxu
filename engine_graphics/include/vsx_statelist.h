@@ -5,8 +5,8 @@
 #if PLATFORM == PLATFORM_LINUX
 #include <stdio.h>
 #include <stdlib.h>
-#include <string>
 #include <sys/stat.h>
+#include <unistd.h>
 #endif
 
 #include "vsx_engine.h"
@@ -90,9 +90,15 @@ public:
   void start();
   void stop();
   void toggle_randomizer();
+  void set_randomizer(bool status);
+  bool get_randomizer_status();
+  
   void random_state();
   void next_state();
   void prev_state();
+
+  vsx_string state_loading();
+  
   void inc_speed();
   void dec_speed();
   float get_speed();

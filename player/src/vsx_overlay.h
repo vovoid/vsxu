@@ -15,6 +15,7 @@ class vsx_overlay {
 	float delta_fps;
 	float total_time;
 	float title_timer;	
+  float show_randomizer_timer;
 	float scroll_pos;
 	float dt;
 	float intro_timer;
@@ -31,6 +32,7 @@ public:
   void set_help(int id);
   void print_help();
 	void show_fx_graph();
+  void show_randomizer_status();
 };
 
 #endif /*INFO_OVERLAY_H_*/

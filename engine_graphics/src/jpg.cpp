@@ -243,10 +243,10 @@ CJPEGTest::CJPEGTest()
 
 CJPEGTest::~CJPEGTest()
 {
+  if (m_pBuf)
+  {
     delete [] m_pBuf; 
-    m_pBuf = 0; 
-    m_nResX = 0; 
-    m_nResY = 0; 
+  }
 }
 
 bool CJPEGTest::LoadJPEG( const vsx_string & strFile, vsx_string & strErr,vsxf* filesystem)
@@ -260,67 +260,7 @@ bool CJPEGTest::LoadJPEG( const vsx_string & strFile, vsx_string & strErr,vsxf* 
         m_nResX = 0; 
         m_nResY = 0;     
     }
-        
-    //unsigned char * pJPEGData = 0;
-    //int nFileSize = 0;
-        
-    //{
-        // Check whether file exists
-        
-        /*struct _stat statBuf;
-        if( _stat( strFile.c_str(), &statBuf ) != 0 )
-        {
-            strErr = "Can't get info about file.";
-            return false;
-        }    
-        
-        // Load contents of file into memory buffer
-        
-        nFileSize = statBuf.st_size;
-        if( nFileSize == 0 )
-        {
-            strErr = "File is empty.";
-            return false;
-        }*/
-                
-        //FILE * pFile;
-        //pFile = fopen ( strFile.c_str() , "rb" );
-        //if (pFile==NULL) return false;
-        
-        //long lSize;
-        // obtain file size.
-        //fseek (pFile , 0 , SEEK_END);
-        //lSize = ftell (pFile);
-        //rewind (pFile);
-
-  // allocate memory to contain the whole file.
-    //buffer = (char*) malloc (lSize);
-        //if (buffer == NULL) return false;
-
-  // copy the file into the buffer.
-  
-        //std::ifstream iFile( strFile.c_str(), std::ios::binary );
-        //if( ! iFile )
-        //{
-            //strErr = "Can't open file.";
-            //return false;
-        //}
-    
-        //pJPEGData = new unsigned char[ nFileSize ];
-        /*if( ! pJPEGData )
-        {
-            strErr = "Can't allocate memory for image.";
-            return false;
-        }*/
-        //fread (pJPEGData,1,nFileSize,pFile);
-        //fclose(pFile);
-        //iFile.read( (char *)pJPEGData, nFileSize );
-        
-        //iFile.close();
-    //}    
-        
     // Decode image
-    
     struct jpeg_decompress_struct cinfo;
     struct jpeg_error_mgr jerr;
     
@@ -335,18 +275,12 @@ bool CJPEGTest::LoadJPEG( const vsx_string & strFile, vsx_string & strErr,vsxf* 
     }
     
     jpeg_stdio2_src( &cinfo, fp, filesystem );
-    //printf("jpeg1\n");
     jpeg_read_header( &cinfo, TRUE );
-    //printf("jpeg2\n");
     
     jpeg_start_decompress( &cinfo );
     
     m_nResX = cinfo.output_width;
     m_nResY = cinfo.output_height;
-    
-    //std::cout << "Dimensions: " << m_nResX << "x" << m_nResY << "\n";
-    //std::cout << "cinfo.output_components = " << cinfo.output_components << "\n";
-    //std::cout << "cinfo.out_color_components = " << cinfo.out_color_components << "\n";
     
     if( cinfo.out_color_components != 3 && cinfo.out_color_components != 1 )
     {
@@ -354,10 +288,6 @@ bool CJPEGTest::LoadJPEG( const vsx_string & strFile, vsx_string & strErr,vsxf* 
         return false;
     }
         
-    // Assign pixel buffer
-        
-    //std::cout << "Buffer size = " << cinfo.output_width * cinfo.output_height * cinfo.output_components << "\n";
-    
     m_pBuf = new unsigned char[ cinfo.output_width * cinfo.output_height * 3 ];
     
     if( cinfo.out_color_components == 3 )
@@ -408,9 +338,9 @@ bool CJPEGTest::LoadJPEG( const vsx_string & strFile, vsx_string & strErr,vsxf* 
     return true;
 }
     
-//bool CJPEGTest::SaveJPEG( const vsx_string & strFile, vsx_string & strErr, const int nQFactor ) const
-//{
-	/*if( ! m_pBuf )
+bool CJPEGTest::SaveJPEG( const vsx_string & strFile, vsx_string & strErr, const int nQFactor )
+{
+	if( ! m_pBuf )
 	{
 		return false;
     }	
@@ -461,9 +391,9 @@ bool CJPEGTest::LoadJPEG( const vsx_string & strFile, vsx_string & strErr,vsxf* 
     jpeg_destroy_compress( &cinfo );
     
     fclose( fp );
-    */
-    //return true;
-//}    
+    
+    return true;
+}    
 
 /*bool CJPEGTest::LoadTGA( const vsx_string & strFile, vsx_string & strErr )
 {

@@ -1,5 +1,4 @@
 #include "_configuration.h"
-#include <string>
 #include "vsx_gl_global.h"
 #include "vsx_math_3d.h"
 #include "vsx_param.h"

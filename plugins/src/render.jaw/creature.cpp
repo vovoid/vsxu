@@ -181,7 +181,7 @@ void vsx_module_segmesh_map_bspline::run() {
     	// a bad pointer hack, but it works :)
     	// we're only reading anyway.. 
       spline0.points.set_volatile();
-      spline0.points = spline_mesh->data->vertices;
+      spline0.points.set_data(spline_mesh->data->vertices.get_pointer(),spline_mesh->data->vertices.size());
     	if (!spline0.points.size()) return;
     	spline0.set_pos(stime);
     
@@ -437,7 +437,7 @@ void vsx_module_planeworld::run() {
 	}
 	else {
     spline0.points.set_volatile();
-	  spline0.points = spline_mesh->data->vertices;
+    spline0.points.set_data(spline_mesh->data->vertices.get_pointer(), spline_mesh->data->vertices.size() );
 	}
 
 	if (!spline0.points.size()) return;

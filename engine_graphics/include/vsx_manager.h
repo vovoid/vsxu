@@ -3,7 +3,7 @@
 
 #include <vsx_string.h>
 #include <vsx_platform.h>
-
+#include <string>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #define VSX_MANAGER_DLLIMPORT
@@ -19,8 +19,9 @@ class vsx_manager_abs
 public:
   // init manager with base path to where the effects (.vsx files) can be found
   // i.e. if base_path is /usr/share/vsxu/   then the engine will look in
-  // /usr/share/vsxu/_visuals
-  virtual void init(const char* base_path) {printf("abs_init\n");};
+  // /usr/share/vsxu/_visuals (linux)
+  // 
+  virtual void init(const char* base_path) {};
 
   // before you render first time, you need to start
   virtual void start() {};
@@ -33,15 +34,20 @@ public:
 
   // flipping through different visuals
   virtual void toggle_randomizer() {};
+  virtual void set_randomizer(bool status) {};
+  virtual bool get_randomizer_status() {};
   virtual void pick_random_visual() {};
   virtual void next_visual() {};
   virtual void prev_visual() {};
+  // if not empty string vsxu is asynchronously loading a new visualization before
+  // fading to it, this method can be used to display to the user "loading visual xxxxxx..."
+  virtual std::string visual_loading() {};
 
-  // provide metadata for information about current running effect
-  virtual vsx_string get_meta_visual_filename() {return ""; };
-  virtual vsx_string get_meta_visual_name() { return "";    };
-  virtual vsx_string get_meta_visual_creator() { return ""; };
-  virtual vsx_string get_meta_visual_company() { return ""; };
+  // provide metadata for information about current running visualization
+  virtual std::string get_meta_visual_filename() {return ""; };
+  virtual std::string get_meta_visual_name() { return "";    };
+  virtual std::string get_meta_visual_creator() { return ""; };
+  virtual std::string get_meta_visual_company() { return ""; };
 
   // amplification/fx level (more = flashier, less = less busy)
   virtual float get_fx_level() { return 0.0f;};

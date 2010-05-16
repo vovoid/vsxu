@@ -22,15 +22,19 @@ public:
 
   // flipping through different visuals
   void toggle_randomizer();
+  void set_randomizer(bool status);
+    
+  bool get_randomizer_status();
   void pick_random_visual();
   void next_visual();
   void prev_visual();
+  std::string visual_loading();
 
   // provide metadata for information about current running effect
-  vsx_string get_meta_visual_filename();
-  vsx_string get_meta_visual_name();
-  vsx_string get_meta_visual_creator();
-  vsx_string get_meta_visual_company();
+  std::string get_meta_visual_filename();
+  std::string get_meta_visual_name();
+  std::string get_meta_visual_creator();
+  std::string get_meta_visual_company();
 
   // amplification/fx level (more = flashier, less = less busy)
   float get_fx_level();
@@ -56,22 +60,17 @@ I M P L E M E N T A T I O N   +   F A C T O R Y
 
 vsx_manager_abs* manager_factory()
 {
-  printf("running manager_factory\n");
   vsx_manager_abs* mym = (vsx_manager_abs*)new vsx_manager();
-  printf("after constructor\n");
   return mym;
 }
 
 vsx_manager::vsx_manager()
 {
   int_state_manager = (void*)new vsx_statelist();
-  printf("manager constructor\n");
 }
 
 void vsx_manager::init(const char* base_path)
 {
-  printf("manager init\n");
-  //printf("manager init path: %s\n", base_path);
   ((vsx_statelist*)int_state_manager)->init(vsx_string(base_path));
 }
 
@@ -99,6 +98,16 @@ void vsx_manager::toggle_randomizer()
   ((vsx_statelist*)int_state_manager)->toggle_randomizer();
 }
 
+void vsx_manager::set_randomizer(bool status)
+{
+  
+}
+
+bool vsx_manager::get_randomizer_status()
+{
+  ((vsx_statelist*)int_state_manager)->get_randomizer_status();
+}
+
 void vsx_manager::pick_random_visual()
 {
   ((vsx_statelist*)int_state_manager)->random_state();
@@ -114,32 +123,36 @@ void vsx_manager::prev_visual()
   ((vsx_statelist*)int_state_manager)->prev_state();
 }
 
+std::string vsx_manager::visual_loading()
+{
+  return std::string( ((vsx_statelist*)int_state_manager)->state_loading().c_str() );
+}
 
 /****************************************************************
 M E T A    I N F O R M A T I O N
 *****************************************************************/
 
-vsx_string vsx_manager::get_meta_visual_filename()
+std::string vsx_manager::get_meta_visual_filename()
 {
-  return ((vsx_statelist*)int_state_manager)->get_meta_visual_filename();
+  return std::string( ((vsx_statelist*)int_state_manager)->get_meta_visual_filename().c_str() );
 }
 
-vsx_string vsx_manager::get_meta_visual_name()
+std::string vsx_manager::get_meta_visual_name()
 {
 //vxe->meta_fields[0]
-  return ((vsx_statelist*)int_state_manager)->get_meta_visual_name();
+  return std::string( ((vsx_statelist*)int_state_manager)->get_meta_visual_name().c_str() );
 }
 
-vsx_string vsx_manager::get_meta_visual_creator()
+std::string vsx_manager::get_meta_visual_creator()
 {
 //vxe->meta_fields[1]
-  return ((vsx_statelist*)int_state_manager)->get_meta_visual_creator();
+  return std::string( ((vsx_statelist*)int_state_manager)->get_meta_visual_creator().c_str() );
 }
 
-vsx_string vsx_manager::get_meta_visual_company()
+std::string vsx_manager::get_meta_visual_company()
 {
 //vxe->meta_fields[2]
-  return ((vsx_statelist*)int_state_manager)->get_meta_visual_company();
+  return std::string( ((vsx_statelist*)int_state_manager)->get_meta_visual_company().c_str() );
 }
 
 /****************************************************************

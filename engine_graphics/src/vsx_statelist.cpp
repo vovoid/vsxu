@@ -11,7 +11,9 @@ void vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info) {
     vxe_local->init();
     vxe_local->start();
     (*state_iter).engine = vxe_local;
+#ifdef VSXU_DEBUG
     printf("loading state: %s\n", (*state_iter).state_name.c_str());
+#endif
     vxe_local->load_state((*state_iter).state_name);
 
   } else
@@ -28,9 +30,16 @@ void vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info) {
 void vsx_statelist::toggle_randomizer() 
 {
   randomizer = !randomizer;
-  message_time = 3.0f;
-  if (randomizer) message = "Enabling randomizer...";
-  else message = "Disabling randomizer...";
+}
+
+bool vsx_statelist::get_randomizer_status()
+{
+  return randomizer;
+}
+
+void vsx_statelist::set_randomizer(bool status)
+{
+  randomizer = status;
 }
 
 void vsx_statelist::next_state()
@@ -50,6 +59,13 @@ void vsx_statelist::prev_state()
   transition_time = 2.0f;
 }
 
+vsx_string vsx_statelist::state_loading()
+{
+  if (transition_time > 1.0f) {
+    return (*state_iter).state_name;
+  }
+  return "";
+}
 
 void vsx_statelist::inc_speed() 
 {
@@ -78,7 +94,9 @@ void vsx_statelist::inc_amp()
   if ((*state_iter).fx_level > 16.0f) (*state_iter).fx_level = 16.0f;
 #if defined(__linux__)
   vsx_string fxlf = config_dir+"/"+(*state_iter).state_name_suffix.substr(visual_path.size()+1 , (*state_iter).state_name_suffix.size())+"_fx_level";
+#ifdef VSXU_DEBUG
   printf("fx level file: %s\n", fxlf.c_str() );
+#endif
   FILE* fxfp = fopen( fxlf.c_str(), "w");
   if (fxfp)
   {
@@ -280,8 +298,6 @@ void vsx_statelist::render()
     }
     } else
     {
-      // blend da shit man!
-      //printf("a1\n");
       if (cmd_out && cmd_in)
       {
         if (vxe)
@@ -290,7 +306,6 @@ void vsx_statelist::render()
         }
         cmd_out->clear();
       }
-      //printf("a2\n");
       tex1.begin_capture();
         if (vxe)
         {
@@ -332,10 +347,6 @@ void vsx_statelist::render()
       {
         transition_time -= timer.dtime();
       }
-      if (transition_time > 1.0f) {
-        message = "Loading visual - "+(*state_iter).state_name+"...";
-        message_time = 1.0f;
-      }
     }
   } else
   {
@@ -360,6 +371,8 @@ void vsx_statelist::render()
   }
 }
 
+ 
+
 void vsx_statelist::load_fx_levels_from_user()
 {
 #if PLATFORM == PLATFORM_LINUX
@@ -375,8 +388,9 @@ void vsx_statelist::load_fx_levels_from_user()
     state_info state = (*it);
     // read fx level files
     vsx_string fxlf = config_dir+"/"+state.state_name_suffix.substr(visual_path.size()+1 , state.state_name_suffix.size())+"_fx_level";
+#ifdef VSXU_DEBUG
     printf("fx level file: %s\n", fxlf.c_str() );
-
+#endif
     if ( stat( fxlf.c_str(), &st) != 0 )
     {
       // no fx level file
@@ -418,8 +432,9 @@ void vsx_statelist::save_fx_levels_from_user()
     state_info state = (*it);
     // read fx level files
     vsx_string fxlf = config_dir+"/"+state.state_name_suffix.substr(visual_path.size()+1 , state.state_name_suffix.size())+"_fx_level";
+#ifdef VSXU_DEBUG
     printf("fx level file: %s\n", fxlf.c_str() );
-
+#endif
     if ( stat( fxlf.c_str(), &st) != 0 )
     {
       // no fx level file
@@ -465,9 +480,9 @@ void vsx_statelist::init(vsx_string base_path)
 
   cmd_out = 0;
   own_path = base_path;
-
+#ifdef VSXU_DEBUG
   printf("own path: %s\n", own_path.c_str() );
-
+#endif
 /*
   vsx_avector<vsx_string> parts;
   vsx_avector<vsx_string> parts2;
@@ -529,5 +544,4 @@ void vsx_statelist::init(vsx_string base_path)
 
 vsx_statelist::vsx_statelist() 
 {
-printf("statelist constructor\n");
 };

@@ -46,15 +46,16 @@ int main(int argc, char* argv[])
 			vsxf filesystem; // our master filesystem handler
 			//printf("trying to load %s\n", argv[2]);
 			filesystem.archive_load(argv[2]);
-	    if (filesystem.archive_files.size()) {
-	    	for (unsigned long i = 0; i < filesystem.archive_files.size(); ++i)
+      if (filesystem.is_archive_populated()) {
+        vsx_avector<vsxf_archive_info>* archive_files = filesystem.get_archive_files();
+	    	for (unsigned long i = 0; i < (*archive_files).size(); ++i)
 	    	{
-	    		vsx_string out_filename = filesystem.archive_files[i].filename;
+	    		vsx_string out_filename = (*archive_files)[i].filename;
 	    		vsx_string out_dir = get_path_from_filename(out_filename);
 	    		vsx_string full_out_path = vsx_string(cur_path) + "/" + out_filename;
 	    		create_directory( (char*) (vsx_string(cur_path) + "/" + out_dir).c_str() );
-	    		printf("%s/%s\n", cur_path,  filesystem.archive_files[i].filename.c_str() );
-	    		vsxf_handle* fpi = filesystem.f_open(filesystem.archive_files[i].filename.c_str(), "r");
+	    		printf("%s/%s\n", cur_path,  (*archive_files)[i].filename.c_str() );
+	    		vsxf_handle* fpi = filesystem.f_open((*archive_files)[i].filename.c_str(), "r");
 	    		if (fpi)
 	    		{
 	    			FILE* fpo = fopen(full_out_path.c_str(), "wb");

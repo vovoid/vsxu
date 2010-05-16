@@ -65,18 +65,23 @@ void vsxf::archive_create(const char* filename) {
 #endif
 }
 
-  void vsxf::archive_close() {
-    if (type == VSXF_TYPE_ARCHIVE)
-    {
-      archive_name = "";
-      if (archive_handle) {
-        fclose(archive_handle);
-        archive_handle = 0;
-      }
-      type = VSXF_TYPE_FILESYSTEM;
-      archive_files.clear();
+vsx_avector<vsxf_archive_info>* vsxf::get_archive_files()
+{
+  return &archive_files;
+}
+
+void vsxf::archive_close() {
+  if (type == VSXF_TYPE_ARCHIVE)
+  {
+    archive_name = "";
+    if (archive_handle) {
+      fclose(archive_handle);
+      archive_handle = 0;
     }
+    type = VSXF_TYPE_FILESYSTEM;
+    archive_files.clear();
   }
+}
 
   int vsxf::archive_add_file(
                              vsx_string filename, 

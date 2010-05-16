@@ -50,7 +50,7 @@ message("*******************************************")
 
 set(SOURCES
   src/application.cpp
-  src/info_overlay.cpp
+  src/vsx_overlay.cpp
 )
 
 link_directories(

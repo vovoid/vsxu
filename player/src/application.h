@@ -15,6 +15,7 @@ extern bool app_ctrl;
 extern bool app_alt;
 extern bool app_shift;
 extern bool dual_monitor;
+extern bool disable_randomizer;
 
 extern int app_argc;
 extern char** app_argv;

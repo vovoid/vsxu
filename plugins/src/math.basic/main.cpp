@@ -1,5 +1,4 @@
 #include "_configuration.h"
-#include <string>
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "main.h"

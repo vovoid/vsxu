@@ -1,9 +1,9 @@
 #include "_configuration.h"
-#include "cal3d.h"
 #include "main.h"
 #include "vsx_math_3d.h"
 //#include "vsx_string_lib.h"
 #include <pthread.h>
+#include "cal3d.h"
 
 typedef struct {
   CalBone* bone;

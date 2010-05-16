@@ -1,16 +1,17 @@
 #include <stdio.h>
 #include "application.h"
-#include "GL/glfw.h"
-#include "vsx_avector.h"
-#include "vsx_string.h"
-#include "vsxfst.h"
-#include "vsx_version.h"
+#include <GL/glfw.h>
+#include <vsx_avector.h>
+#include <vsx_string.h>
+#include <vsxfst.h>
+#include <vsx_version.h>
 #include <stdlib.h>
 
 bool app_ctrl = false;
 bool app_alt = false;
 bool app_shift = false;
 bool dual_monitor = false;
+bool disable_randomizer = false;
 // implementation of app externals
 int app_argc = 0;
 char** app_argv;
@@ -122,7 +123,7 @@ int main(int argc, char* argv[])
   double  t, t0, t1;
   char    titlestr[ 200 ];
 
-    // Initialise GLFW
+  // Initialise GLFW
   glfwInit();
 
   bool start_fullscreen = false;
@@ -142,10 +143,13 @@ int main(int argc, char* argv[])
           "  -s [x,y] window size x,y \n\n"
             );
       exit(0);
-    }
+    } else
     if (arg1 == "-f") {
       start_fullscreen = true;
-    }
+    } else
+    if (arg1 == "-dr") {
+      disable_randomizer = true;
+    } else
     if (arg1 == "-s") {
       if (i+1 < argc)
       {

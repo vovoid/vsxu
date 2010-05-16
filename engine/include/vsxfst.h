@@ -58,7 +58,7 @@ class VSXFSTDLLIMPORT vsxf {
 public:
   vsxf();
   void set_base_path(vsx_string new_base_path);
-
+  vsx_avector<vsxf_archive_info>* get_archive_files();
   int archive_load(const char* filename);
   void archive_create(const char* filename);
   void archive_close();

@@ -4,4 +4,4 @@ add_subdirectory(engine_graphics)
 add_subdirectory(plugins)
 add_subdirectory(player)
 add_subdirectory(artiste)
-
+add_subdirectory(tools/vsxz)

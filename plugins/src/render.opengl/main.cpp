@@ -581,25 +581,25 @@ public:
 	  ambient_reflectance->set(0.2f,0);
 	  ambient_reflectance->set(0.2f,1);
 	  ambient_reflectance->set(0.2f,2);
-	  ambient_reflectance->set(1,3);
+	  ambient_reflectance->set(1.0f,3);
 
 	  diffuse_reflectance = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"diffuse_reflectance");
 	  diffuse_reflectance->set(0.8f,0);
 	  diffuse_reflectance->set(0.8f,1);
 	  diffuse_reflectance->set(0.8f,2);
-	  diffuse_reflectance->set(1,3);
+	  diffuse_reflectance->set(1.0f,3);
 
 	  specular_reflectance = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"specular_reflectance");
-	  specular_reflectance->set(0,0);
-	  specular_reflectance->set(0,1);
-	  specular_reflectance->set(0,2);
-	  specular_reflectance->set(1,3);
+	  specular_reflectance->set(0.0f,0);
+	  specular_reflectance->set(0.0f,1);
+	  specular_reflectance->set(0.0f,2);
+	  specular_reflectance->set(1.0f,3);
 
 	  emission_intensity = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"emission_intensity");
-	  emission_intensity->set(0,0);
-	  emission_intensity->set(0,1);
-	  emission_intensity->set(0,2);
-	  emission_intensity->set(1,3);
+	  emission_intensity->set(0.0f,0);
+	  emission_intensity->set(0.0f,1);
+	  emission_intensity->set(0.0f,2);
+	  emission_intensity->set(1.0f,3);
 
 	  specular_exponent = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"specular_exponent");
 

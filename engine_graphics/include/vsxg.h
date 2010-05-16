@@ -133,6 +133,8 @@ public:
         vsxf* filesystem
     );
     
+    bool SaveJPEG( const vsx_string & strFile, vsx_string & strErr, const int nQFactor );
+    
     // Get width
     int GetResX( void ) const;
     

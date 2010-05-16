@@ -9,9 +9,9 @@ include_directories(
 if(WIN32)
   include_directories(
     ../lib/win32
-	../lib/win32/png
-	../lib/win32/jpg
-	../lib/win32/zlib
+	  ../lib/win32/png
+	  ../lib/win32/jpg
+	  ../lib/win32/zlib
   )
   add_definitions(-DVSX_GLPNG_DLL -DVSX_ENG_DLL=1)
   file(GLOB PNG_SOURCES "../lib/win32/png/*.c")
