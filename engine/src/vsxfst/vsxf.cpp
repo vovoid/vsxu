@@ -476,7 +476,7 @@ vsx_string vsx_get_data_path()
     printf("xcopy command: %s\n",vsx_string("xcopy /E data "+base_path).c_str());
 #endif
   
-    system(vsx_string("xcopy /E data "+base_path).c_str());
+    system(vsx_string("xcopy /E data \""+base_path).c_str()+"\"");
   }
 #endif
   return base_path;
