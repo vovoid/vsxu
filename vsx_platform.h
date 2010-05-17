@@ -3,7 +3,8 @@
 //  engine_graphics
 //  artiste
 // NOT needed when using these libraries.
-
+#ifndef VSX_PLATFORM_H
+#define VSX_PLATFORM_H
 
 #define PLATFORM_WINDOWS          0
 #define PLATFORM_LINUX          1
@@ -25,7 +26,7 @@
         #define PLATFORM_SHARED_FILES                           vsx_string("")
         #define DIRECTORY_SEPARATOR                             "\\"
         #ifdef PLATFORM_SHARED_FILES_STL
-          #define PLATFORM_SHARED_FILES                         std::string("")
+          #define PLATFORM_SHARED_FILES_STLSTRING               std::string("")
         #endif
     #elif defined(__APPLE__) || defined(__MACH__)
         #define PLATFORM                                        PLATFORM_MACINTOSH
@@ -75,3 +76,4 @@
 
 #endif
 
+#endif

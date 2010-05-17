@@ -16,6 +16,8 @@ using namespace std;
 bool app_ctrl;
 bool app_alt;
 bool app_shift;
+bool disable_randomizer = false;
+
 
 class OpenGLWindow;
 
@@ -496,11 +498,16 @@ int main(int argc, char* argv[])
 printf("VSXu command line syntax:\n\
  -enum      shows available displays - id's from 0 and up\n\
  -main [id] main display (default: your primary display)\n\
- -out [id]  render output display (default: turned off)\n\n\
+ -out [id]  render output display (default: turned off)\n\
+ -dr        disable randomizer\n\n\
 \
 ");
  
   } else 
+    if (vsx_string(argv[1]) == "-dr")
+	{
+	  disable_randomizer = true;
+	} else
 	if (vsx_string(argv[1]) == "-enum") {
 		enumd = true;  		
 	} else {
