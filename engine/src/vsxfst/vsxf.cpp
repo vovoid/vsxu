@@ -472,7 +472,9 @@ vsx_string vsx_get_data_path()
   if (access(base_path.c_str(),0) != 0)
   {
 
-    //printf("xcopy command: %s\n",vsx_string("xcopy /E data "+base_path).c_str());
+#ifdef VSXU_DEBUG
+    printf("xcopy command: %s\n",vsx_string("xcopy /E data "+base_path).c_str());
+#endif
   
     system(vsx_string("xcopy /E data "+base_path).c_str());
   }
