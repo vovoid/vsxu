@@ -53,6 +53,8 @@ SetOverwrite on
   File /r ..\..\share\example-visuals\*.*
   SetOutPath "$INSTDIR\data\visuals-faders\examples\"
   File /r ..\..\share\example-faders\*.*
+  SetOutPath "$INSTDIR\data\screenshots\examples\"
+  File /r ..\..\share\screenshots\0.2.0\*.*
 
 ; player files
   SetOutPath "$INSTDIR\visuals_player"

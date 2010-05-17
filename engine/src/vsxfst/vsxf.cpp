@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#if defined(_WIN32) || defined(OS2) || defined(MSDOS)
+#if defined(_WIN32)
 #include <io.h>
 #include <fcntl.h>
 #define MY_SET_BINARY_MODE(file) setmode(fileno(file),O_BINARY)

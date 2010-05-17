@@ -34,7 +34,9 @@
 //#define NO_INTRO
 #include "application.h"
 #include "vsxg.h"
-
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include <time.h>
 #endif
@@ -346,10 +348,6 @@ public:
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
       if (access((vsx_get_data_path()+"screenshots").c_str(),0) != 0) mkdir((vsx_get_data_path()+"/screenshots").c_str(),0700);
         //sprintf(filename, "%sscreenshots/%d_%d_%d_rgb.jpg",vsx_get_data_path().c_str(),(int)time(0),viewport[2],viewport[3]);
-      #endif
-      #if PLATFORM == PLATFORM_WINDOWS
-        if (access((vsx_get_data_path()+"screenshots").c_str(),0) != 0) CreateDirectory((vsx_get_data_path()+"screenshots").c_str());
-			  //sprintf(filename, "%d_%d_%d.jpg",rand(),viewport[2],viewport[3]);
       #endif
 			/*FILE* fp = fopen(filename,"wb");
 			fwrite(pixeldata_flipped, 1, viewport[2] * viewport[3] * 3, fp);
