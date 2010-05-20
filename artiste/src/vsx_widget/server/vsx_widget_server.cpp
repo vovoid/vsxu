@@ -541,9 +541,22 @@ void vsx_widget_server::vsx_command_process_f() {
 				// add macros to the module list
 				vsx_module_info* a;
 				std::list<vsx_string> mfiles;
-				get_files_recursive("_macros",&mfiles,"",".svn CVS .hidden");
+        vsx_string base = vsx_get_data_path()+"macros";
+				get_files_recursive(base, &mfiles, "", "");
 				for (std::list<vsx_string>::iterator it = mfiles.begin(); it != mfiles.end(); ++it) {
-					vsx_string ss = str_replace("_macros;","",str_replace(" ","\\ ",str_replace("/",";",*it)));
+          vsx_string ss = str_replace(
+            " ",
+            "\\ ",
+            str_replace(
+              "/",
+              ";",
+              str_replace(
+                base,
+                "",
+                *it
+              )
+            )
+          );
 					a = new vsx_module_info;
 					a->identifier = "macros;"+ss;
 					//printf("a->ident: %s\n",a->identifier.c_str());
@@ -635,7 +648,7 @@ void vsx_widget_server::vsx_command_process_f() {
 				if (c->parts[1] == connection_id) {
 					// woop
 					vsx_command_list macro_commands;
-					macro_commands.load_from_file(str_replace(";","/",str_replace("macros;","_macros/",c->parts[2],1)));
+					macro_commands.load_from_file(str_replace(";","/",vsx_get_data_path()+str_replace("macros;","macros/",c->parts[2],1)));
 					macro_commands.token_replace("$$name",c->parts[3]);
 					macro_commands.parse();
 					macro_commands.reset();
