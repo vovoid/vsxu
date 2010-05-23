@@ -379,7 +379,9 @@ void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_
 {
 #ifndef VSX_NO_CLIENT
 	total_time = 0.0f; // reset total time for re-calculation
+#ifdef VSXU_DEBUG
   printf("UPDATE_LINE in engine %s\n",cmd_in->raw.c_str());
+#endif
   vsx_param_sequence_item pa;
   pa.total_length = s2f(cmd_in->parts[5]);
   pa.interpolation = s2i(cmd_in->parts[6]);
