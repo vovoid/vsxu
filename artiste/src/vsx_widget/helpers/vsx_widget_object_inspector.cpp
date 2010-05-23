@@ -292,7 +292,9 @@ void vsx_window_object_inspector::unload() {
 void vsx_window_object_inspector::load_file(vsx_string filename) {
   //cout << "trying to load " << filename << endl;
   filename = vsx_get_data_path()+filename;
+#ifdef VSXU_DEBUG
   printf("filename: %s\n", filename.c_str());
+#endif
   std::vector<vsx_string> parts;
   vsx_string deli = ".";
   explode(filename, deli, parts);
