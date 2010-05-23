@@ -180,7 +180,9 @@ void vsx_param_sequence_list::update_line(vsx_engine_param* param, vsx_command_l
   if (parameter_channel_map.find(param) != parameter_channel_map.end()) {
 
     vsx_param_sequence* p = parameter_channel_map[param];
+#ifdef VSXU_DEBUG
     printf("update param to %d\n", (int)p);
+#endif
     p->update_line(dest,cmd_in,cmd_prefix);
     if (engine && run_on_edit_enabled) {
     	p->execute(int_vtime);
