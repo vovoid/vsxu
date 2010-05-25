@@ -1,0 +1,19 @@
+meta_set fHx8fHw=
+component_create particlesystems;generators;basic_spray_emitter basic_spray_emitter -0.253291 0.008014
+component_create texture;particles;blob blob -0.236697 -0.081529
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.061891 -0.030748
+cpp screen0 0.000000 0.000000
+component_create renderers;particlesystems;simple simple -0.143639 -0.000107
+param_set simple render_type 1
+param_set simple size_lifespan_type 1
+param_set simple size_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple alpha_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple r_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple g_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+param_set simple b_lifespan_sequence 0.500000;0.000000;MS4wMDAwMDA=|0.500000;0.000000;MS4wMDAwMDA=
+ps64 simple fragment_program dm9pZCBtYWluKHZvaWQpCnsKZ2xfRnJhZ0NvbG9yID0gdmVjNChnbF9Qb2ludENvb3JkLnMsIGdsX1BvaW50Q29vcmQudCwgMC4wLCAxLjApOwp9
+ps64 simple vertex_program dm9pZCBtYWluKHZvaWQpCnsKICBnbF9Qb3NpdGlvbiA9IGZ0cmFuc2Zvcm0oKTsKICBnbF9Qb2ludFNpemUgPSAzMC4wOwp9
+param_connect simple texture blob texture
+param_connect simple particlesystem basic_spray_emitter particlesystem
+param_connect screen0 screen orbit_camera render_out
+param_connect orbit_camera render_in simple render_out
