@@ -447,7 +447,17 @@ void vsx_texture::upload_ram_bitmap(unsigned long* data, unsigned long size_x, u
 #ifndef VSXU_OPENGL_ES
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAX_LEVEL,0);
 #endif
-    glTexImage2D(texture_info.ogl_type, 0, bpp, size_x, size_y, 0, bpp2, GL_UNSIGNED_BYTE, data);
+    
+    // no compression
+    glTexImage2D(texture_info.ogl_type, 0,bpp , size_x, size_y, 0, bpp2, GL_UNSIGNED_BYTE, data);
+
+    // use compression
+    /*if (bpp == 3)
+    glTexImage2D(texture_info.ogl_type, 0,GL_COMPRESSED_RGB_S3TC_DXT1_EXT , size_x, size_y, 0, bpp2, GL_UNSIGNED_BYTE, data);
+    else
+    glTexImage2D(texture_info.ogl_type, 0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT , size_x, size_y, 0, bpp2, GL_UNSIGNED_BYTE, data);
+    // end compression block
+    */
   }
   if (upside_down) {
   	delete[] data;

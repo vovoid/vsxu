@@ -131,7 +131,7 @@ class vsx_glsl {
 
     vsx_string vtype;
     while (i < (long)parts.size()) {
-      if (parts[i] == "attribute") {
+      if (parts[i] == "attribute" || parts[i] == "in") {
         ++i;
         vtype = parts[i];
         vsx_string vp;
@@ -333,8 +333,10 @@ public:
       glDeleteObjectARB(prog);
       linked = false;
     }
-#if (VSXU_DEBUG)    
-    printf("linking glsl program");
+#if (VSXU_DEBUG)
+    if (GLEW_EXT_gpu_shader4)
+      printf("shader v4 support found\n");
+    printf("linking glsl program...\n");
 #endif
     if (GL_FRAGMENT_SHADER)
     {
@@ -352,10 +354,10 @@ public:
     const char *vp = vertex_program.c_str();
     const char *fp = fragment_program.c_str();
 
-    glShaderSourceARB(vs, 1, &vp,NULL);
-    glShaderSourceARB(fs, 1, &fp,NULL);
+    glShaderSource(vs, 1, &vp,NULL);
+    glShaderSource(fs, 1, &fp,NULL);
 
-  	glCompileShaderARB(vs);
+  	glCompileShader(vs);
     if (!gl_get_val(vs,GL_OBJECT_COMPILE_STATUS_ARB)) {
       return "module||Vertex program compilation failed.\n\nThe message from OpenGL was:"+get_log(vs);
     }
@@ -364,10 +366,10 @@ public:
       return "module||Fragment program compilation failed.\n\nThe message from OpenGL was:"+get_log(fs);
     }
 
-  	prog = glCreateProgramObjectARB();
-  	glAttachObjectARB(prog,fs);
-  	glAttachObjectARB(prog,vs);
-  	glLinkProgramARB(prog);
+  	prog = glCreateProgram();
+  	glAttachShader(prog,fs);
+  	glAttachShader(prog,vs);
+  	glLinkProgram(prog);
     if (gl_get_val(prog,GL_OBJECT_LINK_STATUS_ARB) == GL_FALSE) {
       return "module||Linking failed.\n\
 The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)+"&&fragment_program||"+get_log(prog);
@@ -468,7 +470,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
       if (v_list[i].module_param) {
         switch(v_list[i].param_type_id) {
           case VSX_MODULE_PARAM_ID_FLOAT:
-            glUniform1fARB(v_list[i].glsl_location,((vsx_module_param_float*)v_list[i].module_param)->get());
+            glUniform1f(v_list[i].glsl_location,((vsx_module_param_float*)v_list[i].module_param)->get());
           break;
           case VSX_MODULE_PARAM_ID_FLOAT3:
           {
@@ -483,7 +485,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
               case GL_FLOAT_VEC3:
                 //printf("setting %d uniform %s: %f\n",v_list[i].glsl_location,v_list[i].name.c_str(),((vsx_module_param_float3*)v_list[i].module_param)->get(0));
 
-                glUniform3fARB(v_list[i].glsl_location,
+                glUniform3f(v_list[i].glsl_location,
                     ((vsx_module_param_float3*)v_list[i].module_param)->get(0),
                     ((vsx_module_param_float3*)v_list[i].module_param)->get(1),
                     ((vsx_module_param_float3*)v_list[i].module_param)->get(2)
@@ -504,14 +506,14 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
               case GL_FLOAT_VEC4:
                 //printf("setting %d uniform %s: %f\n",v_list[i].glsl_location,v_list[i].name.c_str(),((vsx_module_param_float3*)v_list[i].module_param)->get(0));
 
-                glUniform4fARB(v_list[i].glsl_location,
+                glUniform4f(v_list[i].glsl_location,
                     ((vsx_module_param_float3*)v_list[i].module_param)->get(0),
                     ((vsx_module_param_float3*)v_list[i].module_param)->get(1),
                     ((vsx_module_param_float3*)v_list[i].module_param)->get(2),
                     ((vsx_module_param_float3*)v_list[i].module_param)->get(3)
                 );
 
-                //glUniform3fvARB(v_list[i].glsl_location,((vsx_module_param_float3*)v_list[i].module_param)->get_addr());
+                //glUniform3fv(v_list[i].glsl_location,((vsx_module_param_float3*)v_list[i].module_param)->get_addr());
                 break;
               case GL_BOOL_VEC4:
                 break;
@@ -529,10 +531,10 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
 #if defined(__linux__)
               glActiveTexture(GL_TEXTURE0 + tex_i);
 #else
-              glActiveTextureARB(GL_TEXTURE0 + tex_i);
+              glActiveTexture(GL_TEXTURE0 + tex_i);
 #endif
               ba->bind();
-              glUniform1iARB(v_list[i].glsl_location,tex_i);
+              glUniform1i(v_list[i].glsl_location,tex_i);
               tex_i++;
             }
           break;
@@ -544,16 +546,19 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
     }
     for (unsigned long i = 0; i < a_list.size(); ++i) {
       if (a_list[i].module_param) {
+        #ifdef VSXU_DEBUG
+              //printf("set attrib param_type_id %d\n",a_list[i].param_type_id);
+        #endif
         switch(a_list[i].param_type_id) {
           case VSX_MODULE_PARAM_ID_FLOAT_ARRAY:
           {
             vsx_float_array* p = ((vsx_module_param_float_array*)a_list[i].module_param)->get_addr();
             if (p)
             {
-              glVertexAttribPointerARB(a_list[i].glsl_location,1,GL_FLOAT,GL_FALSE,0, (GLvoid*)(p->data->get_pointer()));
-              glEnableVertexAttribArrayARB(a_list[i].glsl_location);
+              glVertexAttribPointer(a_list[i].glsl_location,1,GL_FLOAT,GL_FALSE,0, (GLvoid*)(p->data->get_pointer()));
+              glEnableVertexAttribArray(a_list[i].glsl_location);
             } else
-            glDisableVertexAttribArrayARB(a_list[i].glsl_location);
+            glDisableVertexAttribArray(a_list[i].glsl_location);
           }
           break;
           case VSX_MODULE_PARAM_ID_FLOAT3_ARRAY:
@@ -561,16 +566,18 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
             vsx_float3_array* p = ((vsx_module_param_float3_array*)a_list[i].module_param)->get_addr();
             if (p)
             {
-              glVertexAttribPointerARB(a_list[i].glsl_location,3,GL_FLOAT,GL_FALSE,0, (GLvoid*)(p->data->get_pointer()));
-              glEnableVertexAttribArrayARB(a_list[i].glsl_location);
+              #ifdef VSXU_DEBUG
+              //printf("setting float3 attrib in shader\n");
+              #endif
+              glVertexAttribPointer(a_list[i].glsl_location,3,GL_FLOAT,GL_FALSE,0, (GLvoid*)(p->data->get_pointer()));
+              glEnableVertexAttribArray(a_list[i].glsl_location);
             } else
-            glDisableVertexAttribArrayARB(a_list[i].glsl_location);
+            glDisableVertexAttribArray(a_list[i].glsl_location);
           }
           break;
         }
       }
     }
-    
   }
   
   void unset_uniforms() {
@@ -602,12 +609,12 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
         switch(a_list[i].param_type_id) {
           case VSX_MODULE_PARAM_ID_FLOAT_ARRAY:
           {
-            glDisableVertexAttribArrayARB(a_list[i].glsl_location);
+            glDisableVertexAttribArray(a_list[i].glsl_location);
           }
           break;
           case VSX_MODULE_PARAM_ID_FLOAT3_ARRAY:
           {
-            glDisableVertexAttribArrayARB(a_list[i].glsl_location);
+            glDisableVertexAttribArray(a_list[i].glsl_location);
           }
           break;
         }
@@ -626,20 +633,20 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
   void begin() {
     if (!linked) return;
     if (linked)
-  	glUseProgramObjectARB(prog);
+  	glUseProgram(prog);
   }
   
   void stop() {
-    glDeleteObjectARB(vs);
-    glDeleteObjectARB(fs);
-    glDeleteObjectARB(prog);
+    glDeleteShader(vs);
+    glDeleteShader(fs);
+    glDeleteProgram(prog);
   	linked = false;
   }
   
   void end() {
     if (!linked) return;
     unset_uniforms();
-    glUseProgramObjectARB(0);
+    glUseProgram(0);
   }
   vsx_glsl() : 
       linked(false),vs(0),
