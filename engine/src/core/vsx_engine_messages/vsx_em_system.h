@@ -30,7 +30,8 @@
         //printf("internal file: %s\n",(*it).c_str());
         //vsx_string s2 = str_replace("/",";",*it);
         //vsx_string s3 = str_replace("resources;","","resources;foo;bar");
-        vsx_string s2 = str_replace(str_replace("/",";",path)+";","",str_replace(" ",":20:",str_replace("/",";",*it)));
+        //vsx_string s2 = str_replace(str_replace("/",";",path)+";","",str_replace(" ",":20:",str_replace("/",";",*it)));
+        vsx_string s2 = str_replace(str_replace("/",";",path)+";","",str_replace(" ",":20:",str_replace("/",";",str_replace(path,"",*it))));
         //printf("s2: %s\n",s2.c_str());
         cmd_out->add_raw(c->parts[1]+"_list "+s2);
       }

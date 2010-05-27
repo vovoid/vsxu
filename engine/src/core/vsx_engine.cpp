@@ -157,12 +157,14 @@ int vsx_engine::i_load_state(vsx_command_list& load1,vsx_string *error_string) {
 
 int vsx_engine::load_state(vsx_string filename, vsx_string *error_string) {
 	LOG("load_state 1")
-  filesystem.set_base_path("");
+	filesystem.set_base_path("");
   if (filesystem.is_archive())
   {
     LOG("vsx_engine::load_state closing filesystem archive")
     filesystem.archive_close();
   }
+  
+
   LOG("load_state 2")
   vsx_command_list load1;
   load1.filesystem = &filesystem;
@@ -195,6 +197,7 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string) {
   //state_commands.load_from_file("_states/"+str_replace(";","/",c->parts[1]),true);
   //state_commands.load_from_file(filename,true);
   int res = i_load_state(load1,error_string);
+  if (!is_archive)
   filesystem.set_base_path(vsx_get_data_path());
   /*#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
     // on unix/linux, resources are now stored in ~/.vsxu/data/resources

@@ -147,7 +147,7 @@ public:
     info->identifier = "renderers;particlesystems;simple";
     info->in_param_spec = ""
     "particlesystem:particlesystem,texture:texture,options:complex{"
-      "render_type:enum?quads|point_sprits,"
+      "render_type:enum?quads|point_sprites,"
       "size_lifespan_type:enum?normal|sequence,"
       "size_lifespan_sequence:sequence,"
       "alpha_lifespan_sequence:sequence,"
@@ -223,7 +223,7 @@ public:
           "  float vertDist = distance(vec3(gl_Position.x,gl_Position.y,gl_Position.z), vec3(0.0,0.0,0.0));\n"
           "  float dist_alpha;\n"
           "  dist_alpha = pow(1 / vertDist,1.1);\n"
-          "  gl_PointSize = _vx * 0.135 * dist_alpha * _s;\n"
+          "  gl_PointSize = _vx * 0.155 * dist_alpha * _s;\n"
           "  if (gl_PointSize < 1.0) particle_alpha = gl_PointSize;\n"
           "}";
       shader.fragment_program =
