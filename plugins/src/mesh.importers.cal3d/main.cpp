@@ -679,9 +679,13 @@ public:
                 doc.Parse(a);
                 free(a);
                 if (c_model->loadCoreSkeleton(doc)) {
+                  #ifdef VSXU_DEBUG
                   printf("loaded skeleton: %s\n",parts[1].c_str());
+                  #endif
                 } else {
+                  #ifdef VSXU_DEBUG
                   printf("failed loading skeleton.. %s \n",(file_path+parts[1]).c_str());
+                  #endif
                 }
                 engine->filesystem->f_close(h);
               }
@@ -696,10 +700,14 @@ public:
                 free(a);
                 mesh_id = c_model->loadCoreMesh(doc);
                 if (mesh_id == -1) {
+                  #ifdef VSXU_DEBUG
                   printf("failed loading mesh.. %s \n",(file_path+parts[1]).c_str());
+                  #endif
                 } else
                 {
+                  #ifdef VSXU_DEBUG
                   printf("loaded mesh: %s\n",parts[1].c_str());
+                  #endif
                   mesh_parts.push_back(mesh_id);
                 }
                 engine->filesystem->f_close(h);
@@ -727,7 +735,9 @@ public:
           }
         }
         engine->filesystem->f_close(fp);
+        #ifdef VSXU_DEBUG
         printf("creating new model\n");
+        #endif
         m_model = new CalModel(c_model);
         m_model->attachMesh(mesh_id);
 
