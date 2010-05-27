@@ -515,6 +515,7 @@ public:
     // in
     vsx_module_param_resource* filename;
     vsx_module_param_quaternion* quat_p;
+    vsx_module_param_int* use_thread;
     // out
     vsx_module_param_mesh* result;
     // internal
@@ -548,7 +549,7 @@ public:
   {
     info->identifier = "mesh;importers;cal3d_importer";
     info->description = "";
-    info->in_param_spec = "filename:resource";
+    info->in_param_spec = "filename:resource,use_thread:enum?no|yes";
     info->out_param_spec = "mesh:mesh";
     if (bones.size()) {
       info->in_param_spec += ",bones:complex{";
@@ -577,6 +578,8 @@ public:
     quat_p->set(0.0f,1);
     quat_p->set(0.0f,2);
     quat_p->set(1.0f,3);
+    use_thread = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"use_thread");
+    use_thread->set(0);
     if (bones.size()) {
       for (unsigned long i = 0; i < bones.size(); ++i) {
         bones[i].param = (vsx_module_param_quaternion*)in_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION,(bones[i].name+"_rotation").c_str());
@@ -624,6 +627,9 @@ public:
   }
 
   void param_set_notify(const vsx_string& name) {
+    #ifdef VSXU_DEBUG
+    printf("cal3d param set notify..\n");
+    #endif
     if (name == "filename") {
       if (filename->get() != current_filename) {
         current_filename = filename->get();
@@ -636,15 +642,20 @@ public:
           fparts.reset_used(fparts.get_used()-1);
           file_path = implode(fparts,fdeli)+"/";
         }
-#ifdef VSXU_DEBUG
+        #ifdef VSXU_DEBUG
         printf("file path: %s\n",file_path.c_str());
-#endif
+        #endif
         //-------------------------------------------------
         vsx_avector<int> mesh_parts;
         vsx_avector<int> material_parts;
         vsxf_handle *fp;
         fp = engine->filesystem->f_open(current_filename.c_str(), "r");
-        if (!fp) return;
+        if (!fp) {
+          #ifdef VSXU_DEBUG
+          printf("cal3d: could not open filename: %s\n", current_filename.c_str() );
+          #endif
+          return;
+        }
 
         c_model = new CalCoreModel("core");
         char buf[1024];
@@ -826,7 +837,6 @@ public:
 
   static void* worker(void *ptr) {
     vsx_module_cal3d_loader_threaded* my = ((vsx_module_cal3d_loader_threaded*)ptr);
-    my->worker_running = true;
 
     CalSkeleton* m_skeleton = my->m_model->getSkeleton();
     m_skeleton->calculateState();
@@ -886,14 +896,14 @@ public:
   void run() {
     if (!m_model) return;
 
-    if (worker_running && thread_state == 3)
+    // if running, stall and wait for thread
+    if (thread_state == 1)
     while (thread_state != 2) {}
-    //void* status;
-    //if (thread_state != 2) pthread_join(worker_t, &status);
+
     // this concept assumes that the run takes shorter than the framerate to do
     if (thread_state == 2) { // thread is done
       // no thread running
-      worker_running = false;
+      
 
       mesh->timestamp++;
       result->set_p(*mesh);
@@ -905,7 +915,7 @@ public:
       thread_state = 3;
     }
 
-    if (!worker_running && p_updates != param_updates) {
+    if (thread_state == 3 && p_updates != param_updates) {
       p_updates = param_updates;
       if (bones.size()) {
         CalQuaternion q2;
@@ -945,15 +955,20 @@ public:
           }
         }
 
-        //printf("creating thread\n");
-        pthread_attr_init(&worker_t_attr);
-        //pthread_attr_setdetachstate(&worker_t_attr, PTHREAD_CREATE_JOINABLE);
+        if (0 == use_thread->get())
+        {
+          worker((void*)this);
+        } else
+        {
+          //printf("creating thread\n");
+          pthread_attr_init(&worker_t_attr);
+          //pthread_attr_setdetachstate(&worker_t_attr, PTHREAD_CREATE_JOINABLE);
 
-        thread_state = 1;
+          thread_state = 1;
 
-        pthread_create(&worker_t, &worker_t_attr, &worker, (void*)this);
-        pthread_detach(worker_t);
-
+          pthread_create(&worker_t, &worker_t_attr, &worker, (void*)this);
+          pthread_detach(worker_t);
+        }
         //printf("done creating thread\n");
       }
     }
@@ -995,16 +1010,16 @@ public:
 
 vsx_module* create_new_module(unsigned long module) {
   switch(module) {
-    //case 0: return (vsx_module*)(new vsx_module_cal3d_loader_threaded);
-    case 0: return (vsx_module*)(new vsx_module_cal3d_loader);
+    case 0: return (vsx_module*)(new vsx_module_cal3d_loader_threaded);
+    //case 0: return (vsx_module*)(new vsx_module_cal3d_loader);
   }
   return 0;
 }
 
 void destroy_module(vsx_module* m,unsigned long module) {
   switch(module) {
-    case 0: delete (vsx_module_cal3d_loader*)m; break;
-//    case 0: delete (vsx_module_cal3d_loader_threaded*)m; break;
+    //case 0: delete (vsx_module_cal3d_loader*)m; break;
+    case 0: delete (vsx_module_cal3d_loader_threaded*)m; break;
   }
 }
 
