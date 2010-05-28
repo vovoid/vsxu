@@ -196,9 +196,9 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string) {
   //state_name = c->parts[1];
   //state_commands.load_from_file("_states/"+str_replace(";","/",c->parts[1]),true);
   //state_commands.load_from_file(filename,true);
-  int res = i_load_state(load1,error_string);
   if (!is_archive)
   filesystem.set_base_path(vsx_get_data_path());
+  int res = i_load_state(load1,error_string);
   /*#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
     // on unix/linux, resources are now stored in ~/.vsxu/data/resources
     struct stat st;

@@ -54,6 +54,7 @@ vsx_widget_desktop *desktop = 0;
 bool prod_fullwindow = false;
 bool take_screenshot = false;
 bool *gui_prod_fullwindow;
+bool gui_prod_fullwindow_helptext = true;
 vsx_font myf;
 
 unsigned long frame_counter = 0;
@@ -274,7 +275,8 @@ public:
 				glVertex3f( 1.0f,0.92f, 0.0f);					// Bottom Right
 				glVertex3f(-1.0f,0.92f, 0.0f);					// Bottom Left
 			glEnd();											// Done Drawing The Quad
-			myf.print(vsx_vector(-1.0f,0.92f)," Fc "+i2s(frame_counter)+" Fps "+f2s(delta_fps)+" T "+f2s(total_time)+" Tfps "+f2s(frame_counter/total_time)+" MC "+i2s(vxe->get_num_modules())+" VSX Ultra (c) 2003-2010 Vovoid",0.05f);
+      if (gui_prod_fullwindow_helptext)
+			myf.print(vsx_vector(-1.0f,0.92f)," Fc "+i2s(frame_counter)+" Fps "+f2s(delta_fps)+" T "+f2s(total_time)+" Tfps "+f2s(frame_counter/total_time)+" MC "+i2s(vxe->get_num_modules())+" VSX Ultra (c) 2003-2010 Vovoid - Alt+T=toggle this text, Ctrl+Alt+P=screenshot (data dir), Alt+F=performance mode ",0.03f);
 	      }
 	      if (desktop && desktop->performance_mode) {
 	      	glClear(GL_DEPTH_BUFFER_BIT);
@@ -318,7 +320,7 @@ public:
 	    int zz = (int)((f_wait-gui_f_time)*1000.0f);
 	    if (zz < 0) zz = 0;
 	    //printf("zz%d ",zz);
-	//    Sleep(zz);
+      //Sleep(zz);
 	  }
 		if (take_screenshot) 
     {
@@ -356,7 +358,7 @@ public:
       jpeg.SaveJPEG( vsx_get_data_path()+"screenshots"+DIRECTORY_SEPARATOR+i2s(time(0))+"_"+ i2s(viewport[2]) + "_" + i2s(viewport[3])+".jpg", err, 100 );
       jpeg.m_pBuf = 0;
       #ifdef VSXU_DEBUG
-			printf("took screenshot to: %s\n",filename);
+			printf("saved screenshot to: %s\n",filename);
       #endif
       free(pixeldata);
       free(pixeldata_flipped);
@@ -435,8 +437,8 @@ void app_char(long key) {
 
 void app_key_down(long key) {
   if (desktop) {
-  	if (app_alt && app_ctrl && key == 80)
-  	take_screenshot = true;
+  	if (app_alt && app_ctrl && key == 80) take_screenshot = true;
+  	if (*gui_prod_fullwindow && app_alt && !app_ctrl && !app_shift && key == 'T') gui_prod_fullwindow_helptext = !gui_prod_fullwindow_helptext;
     desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
 #ifdef __APPLE__
     desktop->key_down(key,app_alt, app_ctrl, app_shift);

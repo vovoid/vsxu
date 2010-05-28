@@ -217,8 +217,8 @@ void vsx_widget_connector::draw() {
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
   mtex_blob.bind();
-    draw_box_tex(pv.x,pv.y,0,0.004f,0.004f);
-    draw_box_tex(ex,ey,0,0.004f,0.004f);
+    draw_box_texf(pv.x,pv.y,0,0.004f,0.004f);
+    draw_box_texf(ex,ey,0,0.004f,0.004f);
   mtex_blob._bind();
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
