@@ -15,7 +15,7 @@ typedef struct {
   CalVector o_t;
 } bone_info;
 
-class vsx_module_cal3d_loader : public vsx_module {
+/*class vsx_module_cal3d_loader : public vsx_module {
   // in
   vsx_module_param_resource* filename;
   vsx_module_param_quaternion* quat_p;
@@ -193,25 +193,25 @@ public:
                 engine->filesystem->f_close(h);
               }
             }
-            /*if (parts[0] == "material") {
-              vsxf_handle* h = engine->filesystem->f_open((file_path+parts[1]).c_str(),"r");
-              if (h) {
-                resources.push_back(file_path+parts[1]);
-                char* a = engine->filesystem->f_gets_entire(h);
-                TiXmlDocument doc;
-                doc.Parse(a);
-                delete a;
-                int material_id = c_model->loadCoreMaterial(doc);
-                if (material_id == -1) {
-                  printf("failed loading material.. %s \n",(file_path+parts[1]).c_str(),"r");
-                } else
-                {
-                  printf("loaded material: %s\n",parts[1].c_str());
-                  material_parts.push_back(material_id);
-                }
-                engine->filesystem->f_close(h);
-              }
-            }*/
+            //if (parts[0] == "material") {
+              //vsxf_handle* h = engine->filesystem->f_open((file_path+parts[1]).c_str(),"r");
+              //if (h) {
+                //resources.push_back(file_path+parts[1]);
+                //char* a = engine->filesystem->f_gets_entire(h);
+                //TiXmlDocument doc;
+                //doc.Parse(a);
+                //delete a;
+                //int material_id = c_model->loadCoreMaterial(doc);
+                //if (material_id == -1) {
+                  //printf("failed loading material.. %s \n",(file_path+parts[1]).c_str(),"r");
+                //} else
+                //{
+                  //printf("loaded material: %s\n",parts[1].c_str());
+                  //material_parts.push_back(material_id);
+                //}
+                //engine->filesystem->f_close(h);
+              //}
+            //}
           }
         }
         engine->filesystem->f_close(fp);
@@ -257,70 +257,6 @@ public:
         }
     
     
-    /*    
-        if (myCoreModel.loadCoreSkeleton(filename->get().c_str())) {
-          printf("loading successful!\n");
-          current_filename = filename->get();
-          
-        } else
-        {
-          printf("loading failed!\n");
-        }
-        FILE *fp;
-        if ((fp = fopen(current_filename.c_str(), "r")) == NULL)
-          return;
-        char buf[65535];
-        vsx_string line;
-        vsx_avector<vsx_vector> normals;
-        vsx_avector<vsx_vector> texcoords;
-        while (fgets(buf,65535,fp)) {
-          line = buf;
-          if (line[line.size()-1] == 0x0A) line.pop_back();
-          if (line[line.size()-1] == 0x0D) line.pop_back();
-          //printf("reading line: %s\n",line.c_str());
-          if (line.size()) {
-            vsx_avector<vsx_string> parts;
-            vsx_string deli = " ";
-            explode(line, deli, parts);
-            if (parts[0] == "v") {
-              mesh.data->vertices.push_back(vsx_vector__(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
-            } else 
-            if (parts[0] == "vt") {
-              texcoords.push_back(vsx_vector__(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
-              
-            } else
-            if (parts[0] == "vn") {
-              normals.push_back(vsx_vector__(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
-              //mesh.data->vertex_normals.push_back(vsx_vector__(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
-            } else
-            if (parts[0] == "f") {
-              if (parts.size() == 4) {
-                vsx_face ff;
-                vsx_avector<vsx_string> parts2;
-                vsx_string deli2 = "/";
-    
-                explode(parts[1], deli2, parts2);
-                ff.a = s2i(parts2[0])-1;
-                mesh.data->vertex_normals[ff.a] = normals[s2i(parts2[1])-1];
-                mesh.data->vertex_tex_coords[ff.a] = texcoords[s2i(parts2[1])-1];
-      
-                explode(parts[2], deli2, parts2);
-                ff.b = s2i(parts2[0])-1;
-                mesh.data->vertex_normals[ff.b] = normals[s2i(parts2[1])-1];
-                mesh.data->vertex_tex_coords[ff.b] = texcoords[s2i(parts2[1])-1];
-      
-                explode(parts[3], deli2, parts2);
-                ff.c = s2i(parts2[0])-1;
-                mesh.data->vertex_normals[ff.c] = normals[s2i(parts2[1])-1];
-                mesh.data->vertex_tex_coords[ff.c] = texcoords[s2i(parts2[1])-1];
-      
-                mesh.data->faces.push_back(ff);
-              }
-            }
-          }  
-        }
-        fclose(fp);
-        */
         loading_done = true;
         return;
       }
@@ -504,7 +440,7 @@ public:
     //mesh.clear();
   }
 };
-
+*/
 //******************************************************************************************
 //******************************************************************************************
 //******************************************************************************************
@@ -713,25 +649,6 @@ public:
                 engine->filesystem->f_close(h);
               }
             }
-            /*if (parts[0] == "material") {
-              vsxf_handle* h = engine->filesystem->f_open((file_path+parts[1]).c_str(),"r");
-              if (h) {
-                resources.push_back(file_path+parts[1]);
-                char* a = engine->filesystem->f_gets_entire(h);
-                TiXmlDocument doc;
-                doc.Parse(a);
-                delete a;
-                int material_id = c_model->loadCoreMaterial(doc);
-                if (material_id == -1) {
-                  printf("failed loading material.. %s \n",(file_path+parts[1]).c_str(),"r");
-                } else
-                {
-                  printf("loaded material: %s\n",parts[1].c_str());
-                  material_parts.push_back(material_id);
-                }
-                engine->filesystem->f_close(h);
-              }
-            }*/
           }
         }
         engine->filesystem->f_close(fp);
@@ -772,72 +689,6 @@ public:
         {
           (*it)->enableTangents(0, true);
         }
-
-
-    /*
-        if (myCoreModel.loadCoreSkeleton(filename->get().c_str())) {
-          printf("loading successful!\n");
-          current_filename = filename->get();
-
-        } else
-        {
-          printf("loading failed!\n");
-        }
-        FILE *fp;
-        if ((fp = fopen(current_filename.c_str(), "r")) == NULL)
-          return;
-        char buf[65535];
-        vsx_string line;
-        vsx_avector<vsx_vector> normals;
-        vsx_avector<vsx_vector> texcoords;
-        while (fgets(buf,65535,fp)) {
-          line = buf;
-          if (line[line.size()-1] == 0x0A) line.pop_back();
-          if (line[line.size()-1] == 0x0D) line.pop_back();
-          //printf("reading line: %s\n",line.c_str());
-          if (line.size()) {
-            vsx_avector<vsx_string> parts;
-            vsx_string deli = " ";
-            explode(line, deli, parts);
-            if (parts[0] == "v") {
-              mesh.data->vertices.push_back(vsx_vector__(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
-            } else
-            if (parts[0] == "vt") {
-              texcoords.push_back(vsx_vector__(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
-
-            } else
-            if (parts[0] == "vn") {
-              normals.push_back(vsx_vector__(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
-              //mesh.data->vertex_normals.push_back(vsx_vector__(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
-            } else
-            if (parts[0] == "f") {
-              if (parts.size() == 4) {
-                vsx_face ff;
-                vsx_avector<vsx_string> parts2;
-                vsx_string deli2 = "/";
-
-                explode(parts[1], deli2, parts2);
-                ff.a = s2i(parts2[0])-1;
-                mesh.data->vertex_normals[ff.a] = normals[s2i(parts2[1])-1];
-                mesh.data->vertex_tex_coords[ff.a] = texcoords[s2i(parts2[1])-1];
-
-                explode(parts[2], deli2, parts2);
-                ff.b = s2i(parts2[0])-1;
-                mesh.data->vertex_normals[ff.b] = normals[s2i(parts2[1])-1];
-                mesh.data->vertex_tex_coords[ff.b] = texcoords[s2i(parts2[1])-1];
-
-                explode(parts[3], deli2, parts2);
-                ff.c = s2i(parts2[0])-1;
-                mesh.data->vertex_normals[ff.c] = normals[s2i(parts2[1])-1];
-                mesh.data->vertex_tex_coords[ff.c] = texcoords[s2i(parts2[1])-1];
-
-                mesh.data->faces.push_back(ff);
-              }
-            }
-          }
-        }
-        fclose(fp);
-        */
         loading_done = true;
         return;
       }
@@ -904,16 +755,21 @@ public:
   }
 
   void run() {
-    if (!m_model) return;
+    if (!m_model)
+    {
+      return;
+    }
 
     // if running, stall and wait for thread
     if (thread_state == 1)
     while (thread_state != 2) {}
 
+
+
     // this concept assumes that the run takes shorter than the framerate to do
     if (thread_state == 2) { // thread is done
       // no thread running
-      
+
 
       mesh->timestamp++;
       result->set_p(*mesh);
@@ -925,7 +781,7 @@ public:
       thread_state = 3;
     }
 
-    if (thread_state == 3 && p_updates != param_updates) {
+    if ( (thread_state == 3 || thread_state == 0) && p_updates != param_updates) {
       p_updates = param_updates;
       if (bones.size()) {
         CalQuaternion q2;
@@ -1001,9 +857,6 @@ public:
         }
       }
     }
-
-
-    //printf("cal3d run3\n");
   }
 
   void on_delete() {
