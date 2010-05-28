@@ -56,6 +56,6 @@ void vsx_widget_window::i_draw() {
   // top
   draw_box(pos+vsx_vector(0.0f,size.y-dragborder),size.x,dragborder);
 	glColor4f(skin_color[3].r,skin_color[3].g,skin_color[3].b,skin_color[3].a);
-  myf.print(vsx_vector((pos.x+font_size*0.1)*screen_aspect,pos.y+size.y-font_size*0.85),title,font_size*0.7);
+  myf.print(vsx_vector((pos.x+font_size*0.1)*screen_aspect,pos.y+size.y-font_size*0.85),title,font_size*0.6);
 	}
 }

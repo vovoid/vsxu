@@ -3,13 +3,14 @@
 #include "vsx_module.h"
 #include "main.h"
 #include "vsx_math_3d.h"
-#ifdef _linux
+#if PLATFORM == PLATFORM_LINUX
 #include <time.h>
 #include <sys/time.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
+#include <vsx_platform.h>
 #include <linux/joystick.h>
 #define JOY_DEV "/dev/input/js"
 #define JOY_DEV1 "/dev/input/js0"
@@ -453,12 +454,12 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 	millisecond = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"millisecond");
 	millisecond->set(0);
 }
-#ifdef _WIN32
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
 SYSTEMTIME time;
 #endif
 
 void run() {
-#ifdef _WIN32
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
 	float sec = (float)time.wSecond+(float)time.wMilliseconds*0.001;
 	float min = (float)time.wMinute+sec/60.0f;
 	float hr = (float)time.wHour + min/60.0f;
@@ -473,7 +474,7 @@ void run() {
 	second->set(sec);
 	millisecond->set(time.wMilliseconds);
 #endif
-#ifdef _linux
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 	time_t result;
   result = time(NULL);
   tm* t = localtime(&result);

@@ -22,7 +22,7 @@ void vsx_window_texture_viewer::draw_2d() {
       frame_delta = 0;
     }
     //printf("-\n");
-    title = "vsxu preview (slow) @ "+i2s((int)round(fps))+" fps";
+    title = "vsxu preview (slow) @ "+i2s((int)round(fps))+" fps, Ctrl+F(ullscreen)";
     float vis = visible;
     if (!visible) color.a = 0.3; else color.a = 1;
     visible = 1;

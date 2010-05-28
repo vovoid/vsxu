@@ -695,6 +695,30 @@ void vsx_widget_component::draw() {
 			#define FF 1.0f
 #endif
 
+
+
+
+  const GLshort squareTexcoords[] = {
+    0, 0,
+    1, 0,
+    0, 1,
+    1, 1
+  };
+
+  const GLfloat squareVertices[] = {
+    -FF,   -FF,
+    FF,   -FF,
+    -FF,   FF,
+    FF,   FF,
+  };
+
+  glVertexPointer(2, GL_FLOAT, 0, squareVertices);
+  glTexCoordPointer(2, GL_SHORT, 0, squareTexcoords);
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+
+
 			if (ethereal) {
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 				glMatrixMode(GL_MODELVIEW);
@@ -705,16 +729,7 @@ void vsx_widget_component::draw() {
 					#ifndef VSXU_PLAYER
 					mtex.bind();
 					#endif
-					glBegin(GL_QUADS);
-						glTexCoord2f(0, 0);
-						glVertex2f(-FF,-FF);
-						glTexCoord2f(0, 1);
-						glVertex2f(-FF, FF);
-						glTexCoord2f(1, 1);
-						glVertex2f( FF, FF);
-						glTexCoord2f(1, 0);
-						glVertex2f( FF,-FF);
-					glEnd();
+					glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 					#ifndef VSXU_PLAYER
 					mtex._bind();
 					#endif
@@ -736,6 +751,12 @@ void vsx_widget_component::draw() {
 			mtex.bind();
 			#endif
 
+
+      glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+
+
+/*
 			glBegin(GL_QUADS);
 				glTexCoord2f(0, 0);
 				glVertex2f(-FF,-FF);
@@ -745,7 +766,7 @@ void vsx_widget_component::draw() {
 				glVertex2f( FF, FF);
 				glTexCoord2f(1, 0);
 				glVertex2f( FF,-FF);
-			glEnd();
+			glEnd();*/
 			#ifndef VSXU_PLAYER
 			mtex._bind();
 			#endif
@@ -754,7 +775,8 @@ void vsx_widget_component::draw() {
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 				glColor3f(1.0f, 1.0f, 1.0f);
 				mtex_blob.bind();
-				glBegin(GL_QUADS);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+				/*glBegin(GL_QUADS);
 					glTexCoord2f(0, 0);
 					glVertex2f(-FF2,-FF2);
 					glTexCoord2f(0, 1);
@@ -763,7 +785,7 @@ void vsx_widget_component::draw() {
 					glVertex2f( FF2, FF2);
 					glTexCoord2f(1, 0);
 					glVertex2f( FF2,-FF2);
-				glEnd();
+				glEnd();*/
 				mtex_blob._bind();
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 				/*

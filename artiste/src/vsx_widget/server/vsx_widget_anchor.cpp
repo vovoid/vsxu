@@ -1953,7 +1953,7 @@ void vsx_widget_anchor::draw() {
 #ifndef VSXU_PLAYER
 		mtex_d.bind();
 #endif
-		draw_box_tex(ax,ay,pos.z,sx,sy);
+		draw_box_texf(ax,ay,pos.z,sx,sy);
 #ifndef VSXU_PLAYER
 		mtex_d._bind();
 #endif
@@ -2075,7 +2075,7 @@ void vsx_widget_anchor::draw() {
 		glTranslatef(ax,ay,pos.z);
 		glRotatef(time*100,0,0,1);
 		mtex_blob.bind();
-			draw_box_tex(0,0,0,0.03f,0.03f);
+			draw_box_texf(0,0,0,0.03f,0.03f);
 		mtex_blob._bind();
 		glPopMatrix();
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

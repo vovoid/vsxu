@@ -208,11 +208,14 @@ bool vsxf::is_archive_populated()
     //     get a file descriptor from disk
     if (type == VSXF_TYPE_FILESYSTEM) {
     	vsx_string i_filename(filename);
-      #if defined(__APPLE__) || defined(__linux__)
-    	i_filename = str_replace("\\","/",i_filename);
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+        i_filename = str_replace("\\","/",i_filename);
+      #endif
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+        i_filename = str_replace("/","\\",i_filename);
       #endif
       #ifdef VSXU_DEBUG
-      printf("vsxf::f_open %s base_path: %s\n", filename,base_path.c_str() );
+        printf("vsxf::f_open %s base_path: %s\n\n", filename,base_path.c_str() );
       #endif
       handle->file_handle = fopen((base_path+i_filename).c_str(),mode);
       if (handle->file_handle == NULL) {
