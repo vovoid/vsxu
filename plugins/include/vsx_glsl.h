@@ -131,7 +131,7 @@ class vsx_glsl {
 
     vsx_string vtype;
     while (i < (long)parts.size()) {
-      if (parts[i] == "attribute" || parts[i] == "in") {
+      if (parts[i] == "attribute"/* || parts[i] == "in"*/) {
         ++i;
         vtype = parts[i];
         vsx_string vp;
