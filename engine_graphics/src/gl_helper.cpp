@@ -194,7 +194,7 @@ void draw_box_border(vsx_vector pos, vsx_vector size, float dragborder) {
   glVertexPointer(2, GL_FLOAT, 0, squareVertices);
   glEnableClientState(GL_VERTEX_ARRAY);
 
-  glDrawArrays(GL_TRIANGLE_STRIP, 0, 32);
+  glDrawArrays(GL_QUADS, 0, 16);
 
   glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -211,15 +211,15 @@ void draw_box_border(vsx_vector pos, vsx_vector size, float dragborder) {
   	glVertex2f(pos.x+size.x-dragborder, pos.y);
   	glVertex2f(pos.x+size.x,pos.y);
   
-  	glVertex2f(pos.x, pos.y+size.y-dragborder);
-  	glVertex2f(pos.x+size.x, pos.y+size.y-dragborder);
-  	glVertex2f(pos.x+size.x, pos.y+size.y);
-  	glVertex2f(pos.x, pos.y+size.y);
+  	glVertex2f(pos.x,           pos.y+size.y-dragborder);
+  	glVertex2f(pos.x+size.x,    pos.y+size.y-dragborder);
+  	glVertex2f(pos.x+size.x,    pos.y+size.y);
+  	glVertex2f(pos.x,           pos.y+size.y);
   
-  	glVertex2f(pos.x, pos.y+dragborder);
-  	glVertex2f(pos.x+size.x, pos.y+dragborder);
-  	glVertex2f(pos.x+size.x, pos.y);
-  	glVertex2f(pos.x, pos.y);
+  	glVertex2f(pos.x,          pos.y+dragborder);
+  	glVertex2f(pos.x+size.x,   pos.y+dragborder);
+  	glVertex2f(pos.x+size.x,   pos.y);
+  	glVertex2f(pos.x,          pos.y);
   glEnd();*/
 }
 
