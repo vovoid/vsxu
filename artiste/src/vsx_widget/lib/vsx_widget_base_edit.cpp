@@ -268,20 +268,22 @@ void vsx_widget_base_edit::event_mouse_down(vsx_widget_distance distance,vsx_wid
     if (carety < 0) carety = 0;
     if (carety > lines.size()-num_hidden_lines-1-scroll_y) carety = (int)floor(lines.size()-num_hidden_lines-1-scroll_y);
 
-		if (selected_line_highlight) {
-			int clicked_line = 0;
-			clicked_line = carety + (int)scroll_y;
-			int real_line = 0;
-			int num_visible_found = 0;
-			while (num_visible_found < clicked_line)
-			{
-				if (lines_visible[real_line] == 0) num_visible_found++;
-				real_line++;
-			}
-			if (real_line < lines_visible.size()-1)
-			while (lines_visible[real_line] != 0) real_line++;
-			selected_line = real_line;
-		}
+    if (lines_visible.size() == lines.size())
+    {
+      if (selected_line_highlight) {
+        int clicked_line = 0;
+        clicked_line = carety + (int)scroll_y;
+        int real_line = 0;
+        int num_visible_found = 0;
+        while (num_visible_found < clicked_line && real_line < (int)(lines.size()-1))
+        {
+          if (lines_visible[real_line] == 0) num_visible_found++;
+          real_line++;
+        }
+        while (lines_visible[real_line] != 0 && real_line < (int)(lines.size()-1)) real_line++;
+        selected_line = real_line;
+    }
+    }
     if (caretx > lines[(int)(carety+scroll_y)].size()-scroll_x) {
 #ifdef _WIN32
     event_key_down(-35,false,false,false);
@@ -370,13 +372,13 @@ void vsx_widget_base_edit::event_mouse_double_click(vsx_widget_distance distance
 		while (lines_visible[real_line] != 0) real_line++;
 		*/
 		//printf("real_line: %d\n", real_line);
-		if (real_line >= lines.size()-1) return;
+		if (real_line >= (int)lines.size()-1) return;
 		int real_white = count_whitespaces(lines[real_line]);
 		if (real_white < count_whitespaces(lines[real_line+1]))
 		{
 			real_line++;
 			int new_state = lines_visible[real_line]; // if next line is hidden (>1) set it to 0
-			while (real_line < lines.size() && count_whitespaces(lines[real_line]) > real_white)
+			while (real_line < (int)lines.size() && count_whitespaces(lines[real_line]) > real_white)
 			{
 				//printf("real line: %d\n",real_line);
 				if (!new_state) // next line is not hidden!
@@ -462,12 +464,12 @@ void vsx_widget_base_edit::i_draw() {
 
   int num_visible_found = 0;
   int real_line = 0;
-	while (num_visible_found < scroll_y) {
+	while (num_visible_found < scroll_y && real_line < (int)(lines.size()-1)) {
 		//printf("traversing visible found\n");
 		if (lines_visible[real_line] == 0) num_visible_found++;
 		real_line++;
 	}
-	while (lines_visible[real_line] != 0) real_line++;
+	while (lines_visible[real_line] != 0 && real_line < (int)(lines.size()-1)) real_line++;
 
   int curline = real_line;
   vsx_vector pp = p;
@@ -501,7 +503,7 @@ void vsx_widget_base_edit::i_draw() {
 
 	    if (enable_line_action_buttons)
 	    {
-	    	if (cur_render_line+1 > action_buttons.size())
+	    	if (cur_render_line+1 > (int)action_buttons.size())
 	    	{
 	    		vsx_widget* new_action_button = add(new vsx_widget_button,"ab_"+i2s(cur_render_line));
 	    		new_action_button->init();
@@ -945,6 +947,7 @@ vsx_string vsx_widget_base_edit::get_line(unsigned long line)
 	if (line < lines.size()) {
 		return lines[line];
 	}
+	return "";
 }
 
 //***************************************************************************************
