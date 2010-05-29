@@ -42,6 +42,8 @@ VSX_GL_HELPER_DLLIMPORT void draw_box_tex_c(vsx_vector pos, float width, float h
   glEnableClientState(GL_VERTEX_ARRAY);\
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);\
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);\
+  glDisableClientState(GL_VERTEX_ARRAY);\
+  glDisableClientState(GL_TEXTURE_COORD_ARRAY);\
 }
 
 

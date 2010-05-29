@@ -801,10 +801,11 @@ vsx_string vsx_engine_param::get_string() {
       return ((vsx_module_param_sequence*)module_param)->param_data[0].get_string();
     }
     case VSX_MODULE_PARAM_ID_MESH: {
+      /*
       vsx_mesh* m = ((vsx_module_param_mesh*)module_param)->param_data;
       if (m->data)
       sprintf(res,"%d vertices %d faces",(int)m->data->vertices.size(), (int)m->data->faces.size());
-      return vsx_string(res);
+      return vsx_string(res);*/
     }
   }
   return "";

@@ -16,6 +16,7 @@ void draw_box(vsx_vector pos, float width, float height) {
   glEnableClientState(GL_VERTEX_ARRAY);
 
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+  glDisableClientState(GL_VERTEX_ARRAY);
   
   /*
 	glBegin(GL_QUADS);
@@ -37,6 +38,8 @@ void draw_box_c(vsx_vector pos, float width, float height) {
   glEnableClientState(GL_VERTEX_ARRAY);
 
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+  glDisableClientState(GL_VERTEX_ARRAY);
 
   /*
   glBegin(GL_QUADS);
@@ -68,6 +71,10 @@ void draw_box_tex_c(vsx_vector pos, float width, float height) {
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+  glDisableClientState(GL_VERTEX_ARRAY);
+  
   /*
   glBegin(GL_QUADS);
   	glTexCoord2f(0, 1);
@@ -103,6 +110,10 @@ void draw_box_tex(vsx_vector pos, float width, float height) {
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+  glDisableClientState(GL_VERTEX_ARRAY);
+
   }
 
   /*
@@ -182,9 +193,11 @@ void draw_box_border(vsx_vector pos, vsx_vector size, float dragborder) {
 
   glVertexPointer(2, GL_FLOAT, 0, squareVertices);
   glEnableClientState(GL_VERTEX_ARRAY);
+
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 32);
 
-  
+  glDisableClientState(GL_VERTEX_ARRAY);
+
   /*
   
   glBegin(GL_QUADS);
