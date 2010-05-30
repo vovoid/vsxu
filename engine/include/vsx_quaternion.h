@@ -132,6 +132,54 @@ public:
     mat.m[8]     =         xz - wy;  mat.m[9]     =         yz + wx;  mat.m[10]    = 1.0f - (xx + yy);
     return mat;
   }
+
+  inline void from_matrix(vsx_matrix* mm)
+  {
+    #define m00 mm->m[0]
+    #define m01 mm->m[4]
+    #define m02 mm->m[8]
+    #define m03 mm->m[12]
+    #define m10 mm->m[1]
+    #define m11 mm->m[5]
+    #define m12 mm->m[9]
+    #define m13 mm->m[13]
+    #define m20 mm->m[2]
+    #define m21 mm->m[6]
+    #define m22 mm->m[10]
+    #define m23 mm->m[14]
+    #define m30 mm->m[3]
+    #define m31 mm->m[7]
+    #define m32 mm->m[11]
+    #define m33 mm->m[15]
+
+    /*#define m00 mm->m[0]
+    #define m01 mm->m[1]
+    #define m02 mm->m[2]
+    #define m03 mm->m[3]
+    #define m10 mm->m[4]
+    #define m11 mm->m[5]
+    #define m12 mm->m[6]
+    #define m13 mm->m[7]
+    #define m20 mm->m[8]
+    #define m21 mm->m[9]
+    #define m22 mm->m[10]
+    #define m23 mm->m[11]
+    #define m30 mm->m[12]
+    #define m31 mm->m[13]
+    #define m32 mm->m[14]
+    #define m33 mm->m[15]
+*/
+    w = sqrt( vsx_math_3d_max( 0, 1 + m00 + m11 + m22 ) ) / 2;
+    x = sqrt( vsx_math_3d_max( 0, 1 + m00 - m11 - m22 ) ) / 2;
+    y = sqrt( vsx_math_3d_max( 0, 1 - m00 + m11 - m22 ) ) / 2;
+    z = sqrt( vsx_math_3d_max( 0, 1 - m00 - m11 + m22 ) ) / 2;
+
+    x = copysign( x, m21 - m12 );
+    y = copysign( y, m02 - m20 );
+    z = copysign( z, m10 - m01 );
+    
+  }
+
   
   // normalizes the quaternion ensuring it stays a unit-quaternion
   inline void normalize() {

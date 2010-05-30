@@ -771,13 +771,73 @@ public:
 	}
 
 	void run() {
-	  result_quat->set(param1->get(0),0);
-	  result_quat->set(param2->get(0),1);
-	  result_quat->set(param3->get(0),2);
-	  result_quat->set(param4->get(0),3);
+	  result_quat->set(param1->get(),0);
+	  result_quat->set(param2->get(),1);
+	  result_quat->set(param3->get(),2);
+	  result_quat->set(param4->get(),3);
 	}
 
 };
+
+
+class module_vector_quaternion_to_4float : public vsx_module {
+  // in
+  vsx_module_param_quaternion* in_quat;
+
+  // out
+  vsx_module_param_float* param1;
+  vsx_module_param_float* param2;
+  vsx_module_param_float* param3;
+  vsx_module_param_float* param4;
+  // internal
+public:
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "maths;converters;quaternion_to_4float";
+    info->description = "takes quaternion\n"
+                        "outputs 4 floats\n";
+
+    info->in_param_spec = "in_quat:quaternion";
+    info->out_param_spec = "param1:float,"
+                           "param2:float,"
+                           "param3:float,"
+                           "param4:float";
+    info->component_class = "parameters";
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+
+    in_quat = (vsx_module_param_quaternion*)in_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION,"in_quat");
+    in_quat->set(0.0f,0);
+    in_quat->set(0.0f,1);
+    in_quat->set(0.0f,2);
+    in_quat->set(1.0f,3);
+
+    //--------------------------------------------------------------------------------------------------
+
+    param1 = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param1");
+    param2 = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param2");
+    param3 = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param3");
+    param4 = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param4");
+    param1->set(0.0f);
+    param2->set(0.0f);
+    param3->set(0.0f);
+    param4->set(1.0f);
+    
+  }
+
+  void run() {
+    param1->set(in_quat->get(0));
+    param2->set(in_quat->get(1));
+    param3->set(in_quat->get(2));
+    param4->set(in_quat->get(3));
+  }
+
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2477,6 +2537,7 @@ vsx_module* create_new_module(unsigned long module) {
     case 51: return (vsx_module*)(new vsx_float_interpolate);
     case 52: return (vsx_module*)(new vsx_float_acos);
     case 53: return (vsx_module*)(new vsx_quaternion_dummy);
+    case 54: return (vsx_module*)(new module_vector_quaternion_to_4float);
   }
   return 0;
 }
@@ -2537,10 +2598,11 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 51: delete (vsx_float_interpolate*)m; break;
     case 52: delete (vsx_float_acos*)m; break;
     case 53: delete (vsx_quaternion_dummy*)m; break;
+    case 54: delete (module_vector_quaternion_to_4float*)m; break;
   }
 }
 
 unsigned long get_num_modules() {
-  return 54;
+  return 55;
 }
 #endif

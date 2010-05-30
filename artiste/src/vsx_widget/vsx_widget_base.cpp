@@ -1030,17 +1030,17 @@ void vsx_widget::vsx_command_process_f() {
 					#ifdef VSX_DEBUG
           printf("actual deletion\n",t->id);
           #endif
-          //if (t->parent->marked_for_deletion) {
+          if (t->parent->marked_for_deletion) {
           //if (m_focus == t) m_focus = root;
           //if (k_focus == t) k_focus = root;
           //if (a_focus == t) { a_focus = root; m_focus = root; }
           m_focus = k_focus = a_focus = root;
-          /*} else
+          } else
           {
           	m_focus = t->parent;
           	k_focus = t->parent;
           	a_focus = t->parent;
-          }*/
+          }
           delete t;
           #ifdef VSX_DEBUG
           printf("after actual deletion\n",t->id);

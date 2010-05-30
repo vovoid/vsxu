@@ -37,7 +37,7 @@
 // TODO: optimize the mesh_quat_rotate to also use volatile arrays for speed
 // TODO: optimize the inflation mesh modifier to use volatile arrays for passthru arrays
 // TODO: add a real spheremapping module
-
+// TODO: quaternion rotation from 2 vertex id's: vector from point to point, normal, crossproduct = matrix -> quaternion
 // global static empty mesh
 vsx_mesh mesh_empty;
 
@@ -250,6 +250,128 @@ public:
   }
 };
 
+
+
+
+// calculates a rotation from 2 id's into a position and quaternion
+class vsx_module_mesh_calc_attachment : public vsx_module {
+  // in
+  vsx_module_param_mesh* mesh_in;
+  vsx_module_param_float* id_a;
+  vsx_module_param_float* id_b;
+  // out
+  vsx_module_param_float3* position;
+  vsx_module_param_quaternion* rotation;
+  // internal
+public:
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "mesh;modifiers;pickers;mesh_attach_picker";
+    info->description = "Builds a matrix/quaternion from 2 vertex id's\nand positions an object there.";
+    info->in_param_spec = "mesh_in:mesh,"
+    "id_a:float,"
+    "id_b:float";
+    info->out_param_spec = "position:float3,"
+    "rotation:quaternion";
+    info->component_class = "mesh";
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    mesh_in = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_in");
+    
+    id_a = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"id_a");
+    id_a->set(0.0f);
+
+    id_b = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"id_b");
+    id_b->set(0.0f);
+
+    loading_done = true;
+    position = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"position");
+    rotation = (vsx_module_param_quaternion*)out_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION,"rotation");
+
+    set_default_values();
+  }
+
+  void set_default_values() {
+    position->set(0.0f,0);
+    position->set(0.0f,1);
+    position->set(0.0f,2);
+    rotation->set(0.0f,0);
+    rotation->set(0.0f,1);
+    rotation->set(0.0f,2);
+    rotation->set(1.0f,3);
+  }
+
+  void run() {
+    vsx_mesh* p = mesh_in->get_addr();
+    if (p) {
+      
+      long id_a_ = (unsigned long)floor(id_a->get());
+      long id_b_ = (unsigned long)floor(id_b->get());
+      if (!p->data) return;
+
+      if (id_a_ < 0) id_a_ += p->data->vertices.size();
+      if (id_b_ < 0) id_b_ += p->data->vertices.size();
+
+      if (
+        (unsigned long)id_a_ < p->data->vertices.size()
+        &&
+        (unsigned long)id_b_ < p->data->vertices.size()
+        &&
+        (unsigned long)id_a_ < p->data->vertex_normals.size()
+        &&
+        (unsigned long)id_b_ < p->data->vertex_normals.size()
+        )
+      {
+        // 1. calculate vector
+        vsx_vector k,n,c;
+        vsx_matrix m,mr;
+
+        k = p->data->vertices[id_b_] - p->data->vertices[id_a_];
+        k.normalize();
+        n = p->data->vertex_normals[id_a_];
+        n.normalize();
+
+        c.cross(k,n);
+        c.normalize();
+
+        k.cross(c,n);
+        k.normalize();
+
+        m.m[0] = n.x; m.m[4] = n.y; m.m[8]  = n.z;
+        m.m[1] = k.x; m.m[5] = k.y; m.m[9]  = k.z;
+        m.m[2] = c.x; m.m[6] = c.y; m.m[10] = c.z;
+
+        mr.assign_inverse(&m);
+        
+
+        
+        //m.rotation_from_vectors(&k, &(p->data->vertex_normals[id_a_]) );
+        vsx_quaternion q;
+        q.from_matrix(&mr);
+        q.normalize();
+        position->set(p->data->vertices[id_a_].x,0);
+        position->set(p->data->vertices[id_a_].y,1);
+        position->set(p->data->vertices[id_a_].z,2);
+        rotation->set(q.x, 0);
+        rotation->set(q.y, 1);
+        rotation->set(q.z, 2);
+        rotation->set(q.w, 3);
+      } else {
+        set_default_values();
+      }
+    }
+  }
+
+  void on_delete() {
+  }
+};
+
+
+
+
 class vsx_module_mesh_quat_rotate : public vsx_module {
   // in
   vsx_module_param_mesh* mesh_in;
@@ -301,7 +423,6 @@ public:
       if ( invert_rotation->get())
       {
         vsx_matrix mat2 = q.matrix();
-        vsx_matrix mat;
         mat.assign_inverse(&mat2);
       } else
       {
@@ -1894,6 +2015,7 @@ vsx_module* create_new_module(unsigned long module) {
     case 10: return (vsx_module*)(new vsx_module_mesh_dummy);
     case 11: return (vsx_module*)(new vsx_module_mesh_scale);
     case 12: return (vsx_module*)(new vsx_module_mesh_rain_down);
+    case 13: return (vsx_module*)(new vsx_module_mesh_calc_attachment);
   }
   return 0;
 }
@@ -1913,10 +2035,11 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 10: delete (vsx_module_mesh_dummy*)m; break;
     case 11: delete (vsx_module_mesh_scale*)m; break;
     case 12: delete (vsx_module_mesh_rain_down*)m; break;
+    case 13: delete (vsx_module_mesh_calc_attachment*)m; break;
   }
 }
 
 unsigned long get_num_modules() {
   // we have only one module. it's id is 0
-  return 13;
+  return 14;
 }
