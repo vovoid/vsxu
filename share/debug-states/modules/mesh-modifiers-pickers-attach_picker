@@ -1,0 +1,73 @@
+meta_set fHx8fHw=
+component_create maths;converters;4float_to_quaternion 4float_to_quaternion -0.674745 -0.162092
+param_set 4float_to_quaternion param1 0.00000883096072357148
+param_set 4float_to_quaternion param2 0.54551655054092407227
+param_set 4float_to_quaternion param4 0.99999022483825683594
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer -0.268484 -0.021768
+param_set depth_buffer depth_test 1
+param_set depth_buffer depth_mask 1
+component_create maths;dummies;float3_dummy float3_dummy -0.487716 -0.174940
+param_set float3_dummy float3_in 0.00000000000002114483,2.41248607635498046875,1.00000000000000000000
+component_create renderers;opengl_modifiers;light_directional light_directional -0.177493 0.014406
+param_set light_directional enabled 1
+param_set light_directional diffuse_color 0.99999910593032836914,1.00000000000000000000,1.00000000000000000000,1.00000000000000000000
+component_create renderers;opengl_modifiers;material_param material_param -0.220688 0.061568
+param_set material_param diffuse_reflectance 0.80189311504364013672,0.80000001192092895508,0.80000001192092895508,1.00000000000000000000
+component_create mesh;modifiers;pickers;mesh_attach_picker mesh_attach_picker -0.822838 0.079241
+param_set mesh_attach_picker id_b 7.91898345947265625000
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.395045 0.027392
+param_set mesh_basic_render use_vertex_colors 0
+component_create renderers;mesh;mesh_basic_render mesh_basic_render_1 -0.527968 0.140365
+param_set mesh_basic_render_1 use_vertex_colors 0
+component_create mesh;modifiers;transforms;mesh_rotate_quat mesh_rotate_quat -0.677338 0.207048
+component_create mesh;modifiers;transforms;mesh_rotate_quat_around_vertex mesh_rotate_quat_around_vertex -0.847247 -0.029062
+param_set mesh_rotate_quat_around_vertex quat_in -0.14195895195007324219,0.69545841217041015625,0.05533551424741744995,0.70222729444503784180
+param_set mesh_rotate_quat_around_vertex vertex_rot_id 5.41538906097412109375
+param_set mesh_rotate_quat_around_vertex offset_pos 0.00000000000000000050,0.00000000000314730295,0.99999916553497314453
+component_create mesh;modifiers;transforms;mesh_rotate_quat_around_vertex mesh_rotate_quat_around_vertex_1 -0.694760 0.073147
+param_set mesh_rotate_quat_around_vertex_1 vertex_rot_id 1.04758012294769287109
+component_create mesh;modifiers;transforms;mesh_scale mesh_scale -0.798536 0.152298
+param_set mesh_scale scale 0.29926195740699768066,0.29926103353500366211,0.29086104035377502441
+component_create mesh;solid;mesh_sphere mesh_sphere -0.975334 0.053566
+param_set mesh_sphere num_sectors 18.85853958129882812500
+component_create mesh;modifiers;transforms;mesh_translate mesh_translate -0.593060 0.196047
+component_create mesh;modifiers;pickers;mesh_vertex_picker mesh_vertex_picker -0.538493 -0.057695
+component_create mesh;modifiers;pickers;mesh_vertex_picker mesh_vertex_picker_1 -0.539409 -0.127613
+param_set mesh_vertex_picker_1 id 1.21433734893798828125
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.105554 0.014585
+param_set orbit_camera rotation 0.00000000000000000000,0.72851109504699707031,1.00000000000000000000
+param_set orbit_camera distance 4.28521013259887695312
+component_create maths;oscillators;oscillator oscillator -0.677605 -0.106611
+param_set oscillator ofs 0.00000910732342163101
+component_create renderers;basic;render_line render_line -0.433069 -0.103806
+component_create renderers;basic;render_line render_line_1 -0.436374 -0.035167
+component_create renderers;opengl_modifiers;rendering_mode rendering_mode -0.156609 0.060813
+param_set rendering_mode front_facing 1
+param_set rendering_mode back_facing 1
+cpp screen0 0.000000 0.000000
+param_set screen0 gamma_correction 1.00000905990600585938
+param_set screen0 clear_color 0.00000000000000000003,0.00000000000000000000,0.00000000000003301989,0.99999910593032836914
+param_connect screen0 screen orbit_camera render_out
+param_connect rendering_mode render_in material_param render_out
+param_connect render_line_1 point_b float3_dummy out_float3
+param_connect render_line_1 point_a mesh_vertex_picker vertex
+param_connect render_line point_b float3_dummy out_float3
+param_connect render_line point_a mesh_vertex_picker_1 vertex
+param_connect orbit_camera render_in light_directional render_out
+param_connect orbit_camera render_in render_line_1 render_out
+param_connect orbit_camera render_in render_line render_out
+param_connect mesh_vertex_picker_1 mesh_in mesh_rotate_quat_around_vertex mesh_out
+param_connect mesh_vertex_picker mesh_in mesh_rotate_quat_around_vertex mesh_out
+param_connect mesh_translate translation mesh_attach_picker position
+param_connect mesh_translate mesh_in mesh_rotate_quat mesh_out
+param_connect mesh_scale mesh_in mesh_sphere mesh
+param_connect mesh_rotate_quat_around_vertex mesh_in mesh_sphere mesh
+param_connect mesh_rotate_quat quat_in mesh_attach_picker rotation
+param_connect mesh_rotate_quat mesh_in mesh_scale mesh_out
+param_connect mesh_basic_render_1 mesh_in mesh_translate mesh_out
+param_connect mesh_basic_render mesh_in mesh_rotate_quat_around_vertex mesh_out
+param_connect mesh_attach_picker mesh_in mesh_rotate_quat_around_vertex mesh_out
+param_connect material_param render_in depth_buffer render_out
+param_connect light_directional render_in rendering_mode render_out
+param_connect depth_buffer render_in mesh_basic_render render_out
+param_connect depth_buffer render_in mesh_basic_render_1 render_out
