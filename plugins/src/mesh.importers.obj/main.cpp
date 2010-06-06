@@ -153,9 +153,14 @@ void run() {
 
               
 	            //printf("f2\n");
-	            mesh.data->vertices[ff.a] = vertices[s2i(parts2[0])-1];
-	            mesh.data->vertices[ff.b] = vertices[s2i(parts3[0])-1];
-	            mesh.data->vertices[ff.c] = vertices[s2i(parts4[0])-1];
+              //printf("reading line: %s\n",line.c_str());
+              int id;
+              id = s2i(parts2[0])-1; if (id < 0) id=0;
+	            mesh.data->vertices[ff.a] = vertices[id];
+              id = s2i(parts3[0])-1; if (id < 0) id=0;
+              mesh.data->vertices[ff.b] = vertices[id];
+              id = s2i(parts4[0])-1; if (id < 0) id=0;
+	            mesh.data->vertices[ff.c] = vertices[id];
 
 	            if (found_texcoords && found_normals) {
                 if (parts2[1] != "") {
