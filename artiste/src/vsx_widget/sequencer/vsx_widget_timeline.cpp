@@ -234,6 +234,8 @@ bool vsx_widget_timeline::event_key_down(signed long key, bool alt, bool ctrl, b
 		}
   }
 
+  if (key == 't') show_wave_data = !show_wave_data;
+
   if (!ctrl) return true;
   switch(key) {
     case 'f':
