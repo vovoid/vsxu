@@ -311,7 +311,6 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
 		if (item_action_id != -1)
 		{
 			// code for adding a new keyframe/point, relies on above code
-			//printf("grufix ultra deluxe2 %f dist: %f  delay: %f\n",i_td,i_distance,lines[i_td].delay);
 			float interpolation_type = 1;
 			if (shift && ctrl && !alt)
 				interpolation_type = 2;

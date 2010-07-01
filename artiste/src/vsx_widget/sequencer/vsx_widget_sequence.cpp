@@ -239,7 +239,7 @@ void vsx_widget_sequence_editor::interpolate_size()
   unsigned long i = channels_start;
 
   while (i < channels.size()) {
-  	printf("status: %d\n", ((vsx_widget_seq_channel*)channels[i])->hidden_by_sequencer);
+  	//printf("status: %d\n", ((vsx_widget_seq_channel*)channels[i])->hidden_by_sequencer);
   	if (((vsx_widget_seq_channel*)channels[i])->hidden_by_sequencer)
   	{
   		channels[i]->visible = false;
