@@ -274,6 +274,7 @@ public:
         break;
       case 1: time = drive->get();
     }
+    if (time < 0.0f) time = 0.0f;
     float i_time = 0.0f;
     switch (behaviour->get()) {
       case 0:

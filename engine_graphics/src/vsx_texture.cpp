@@ -42,6 +42,7 @@ vsx_texture::vsx_texture(int id, int type) {
   transform_obj = new vsx_transform_neutral;
   valid = true;
   locked = false;
+  glewInit();
 }
 
 void vsx_texture::init_opengl_texture() {
@@ -118,10 +119,50 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture) {
 		glBindFramebufferOES(GL_FRAMEBUFFER_OES, prev_buf_l);
 #endif
 #ifndef VSXU_OPENGL_ES
+
     GLint prev_buf_l;
     GLuint tex_id;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l);
+
+
+    // multi sampled color buffer
+    glGenRenderbuffersEXT(1, &colorBuffer);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, colorBuffer);
+    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_RGBA8, width, height);
+
+    // multi sampled depth buffer
+    glGenRenderbuffersEXT(1, &depthBuffer);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthBuffer);
+    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_DEPTH_COMPONENT, width, height);
+
+    // create fbo for multi sampled content and attach depth and color buffers to it
     glGenFramebuffersEXT(1, &framebuffer_id);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebuffer_id);
+    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, colorBuffer);
+    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depthBuffer);
+
+    // create texture
+    glGenTextures(1, &tex_id);
+    glBindTexture(GL_TEXTURE_2D, tex_id);
+    if (float_texture)
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, i_width, i_height, 0, GL_RGBA, GL_FLOAT, NULL);
+    else
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, i_width, i_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set your texture parameters here if required ...
+
+    // create final fbo and attach texture to it
+    glGenFramebuffersEXT(1, &tex_fbo);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, tex_fbo);
+    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, tex_id, 0);
+
+
+
+    /*glGenFramebuffersEXT(1, &framebuffer_id);
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebuffer_id);
     glGenTextures(1, &tex_id);
     // Setup texture
@@ -130,24 +171,25 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, i_width, i_height, 0, GL_RGBA, GL_FLOAT, NULL);
 		else
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, i_width, i_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-
-	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0);
+*/
+/*	  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0);
 	  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);*/
 	  //glTexParameterf(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 
 	  //float rMaxAniso;
 	  //glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &rMaxAniso);
 	  //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
 
-	  glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, tex_id, 0);
+	  /*glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, tex_id, 0);
 
 	  glGenRenderbuffersEXT(1, &depthbuffer_id);
 		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthbuffer_id);
 		glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, i_width, i_height);
 		glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depthbuffer_id);
+    */
 	  texture_info.ogl_id = tex_id;
 	  texture_info.ogl_type = GL_TEXTURE_2D;
 	  texture_info.size_x = width;
@@ -301,6 +343,11 @@ void vsx_texture::end_capture() {
 #ifndef VSX_TEXTURE_NO_RT
   if (use_fbo) {
     if (locked) {
+      glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, framebuffer_id);
+      glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, tex_fbo);
+      glBlitFramebufferEXT(0, 0, texture_info.size_x, texture_info.size_x, 0, 0, texture_info.size_x, texture_info.size_x, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+
 #ifdef VSXU_OPENGL_ES
       glBindFramebufferOES(GL_FRAMEBUFFER_OES, prev_buf);
 #endif

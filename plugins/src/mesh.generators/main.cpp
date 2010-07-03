@@ -2053,6 +2053,287 @@ public:
   }
 };
 
+
+
+
+
+class vsx_module_mesh_ribbon_cloth : public vsx_module {
+  // in
+  vsx_module_param_float3* start_point;
+  vsx_module_param_float3* end_point;
+  vsx_module_param_float3* up_vector;
+  vsx_module_param_float* width;
+  vsx_module_param_float* skew_amp;
+  vsx_module_param_float* time_amp;
+  // out
+  vsx_module_param_mesh* result;
+  // internal
+  vsx_mesh mesh;
+  int l_param_updates;
+  bool regen;
+  vsx_array<vsx_vector> face_lengths;
+  vsx_array<vsx_vector> vertices_speed;
+  vsx_array<vsx_vector> vertices_orig;
+public:
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "mesh;generators;ribbon_cloth";
+    info->description = "";
+    info->in_param_spec =
+        "start_point:float3,"
+        "end_point:float3,"
+        "up_vector:float3,"
+        "width:float,"
+        "skew_amp:float,"
+        "time_amp:float"
+        ;
+    info->out_param_spec = "mesh:mesh";
+    info->component_class = "mesh";
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    l_param_updates = -1;
+    loading_done = true;
+    start_point = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"start_point");
+    end_point = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"end_point");
+    up_vector = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"up_vector");
+    width = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"width");
+    skew_amp = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"skew_amp");
+    skew_amp->set(1.0f);
+    time_amp = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"time_amp");
+    time_amp->set(1.0f);
+    width->set(0.1f);
+    result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
+    result->set_p(mesh);
+    regen = true;
+  }
+
+
+  void run()
+  {
+    //if (l_param_updates != param_updates) first_run = true;
+    mesh.data->vertices[0] = vsx_vector(0);
+
+    vsx_vector a(start_point->get(0), start_point->get(1), start_point->get(2));
+    vsx_vector b(end_point->get(0), end_point->get(1), end_point->get(2));
+    vsx_vector up(up_vector->get(0), up_vector->get(1), up_vector->get(2));
+    up *= width->get();
+
+
+    vsx_vector pos = a;
+    vsx_vector diff = b-a;
+    vsx_vector diff_n = diff;
+    diff_n.normalize();
+
+    vsx_vector normal;
+    vsx_vector up_n = up;
+    up_n.normalize();
+    normal.cross(diff_n, up_n);
+
+    vsx_vector up_side = normal;
+    up_side *= up.length();
+
+    float t = engine->vtime * time_amp->get();
+
+#define COUNT 20.0f
+    diff *= 0.1f / COUNT;
+    float skew_amount = skew_amp->get();
+    //     i=0   1   2   3   4   5   6   7   8   9
+    // /\    0   2   4   6   8   10  12  14  16  18
+    // ||    x---x---x---x---x---x---x---x---x---x
+    // up   a|0/1|2/3| / | / | / | / | / | / | / |b  ----> diff
+    //       x---x---x---x---x---x---x---x---x---x
+    //       1   3   5   7   9   11  13  15  17  19
+
+    
+    if (regen)
+    {
+      regen = false;
+      mesh.data->faces.reset_used();
+      for (int i = 0; i < (int)COUNT; i++)
+      {
+        int i2 = i << 1;
+        float it = (float)i / COUNT;
+        float ft = sin(it * 3.14159f + t) * sin(-it * 5.18674f - t);// + ( (float)(rand()%1000) * 0.0003f);
+        float thick = 0.16f;//sin(it * 3.14159f);
+        vsx_vector skew = up * ft * skew_amount * thick;
+
+        mesh.data->vertices[i2    ] = pos + up * thick + skew;
+        mesh.data->vertices[i2 + 1] = pos - up * thick + skew;
+        vertices_orig[i2] = mesh.data->vertices[i2    ];
+        vertices_orig[i2+1] = mesh.data->vertices[i2   +1];
+
+        mesh.data->vertex_normals[i2    ] = normal;
+        mesh.data->vertex_normals[i2 + 1] = normal;
+
+        pos += diff;
+
+        mesh.data->vertex_colors[i2] = vsx_color(1, 1, 1, 1);
+        mesh.data->vertex_colors[i2+1] = vsx_color(1, 1, 1, 1);
+
+        mesh.data->vertex_tex_coords[i2]   = vsx_tex_coord__(it, 0);
+        mesh.data->vertex_tex_coords[i2+1] = vsx_tex_coord__(it, 1);
+
+        vertices_speed[i2] = vsx_vector(0, 0, 0);
+        vertices_speed[i2+1] = vsx_vector(0, 0, 0);
+
+        vsx_vector len;
+        if (i>1)
+        {
+          vsx_face f;
+          //printf("i2: %d\n", i2);
+          //
+          //i2-2      i2
+          //
+          //i2-1      i2+1
+          {
+            f.a = i2;
+            f.b = i2 - 1;
+            f.c = i2 - 2;
+            mesh.data->faces.push_back(f);
+
+            vsx_vector v0 = mesh.data->vertices[f.a];
+            vsx_vector v1 = mesh.data->vertices[f.b];
+            vsx_vector v2 = mesh.data->vertices[f.c];
+
+            len.x = fabs( (v1 - v0).length()+(float)(rand()%1000)*0.0001f);
+            len.y = fabs( (v2 - v1).length()+(float)(rand()%1000)*0.0001f);
+            len.z = fabs( (v0 - v2).length()+(float)(rand()%1000)*0.00005f);
+            face_lengths.push_back(len);
+          }
+  
+          {
+            f.a = i2-1;
+            f.b = i2;
+            f.c = i2+1;
+            /*f.a = i2 + 1;
+            f.b = i2 - 1;
+            f.c = i2;*/
+            mesh.data->faces.push_back(f);
+
+            vsx_vector v0 = mesh.data->vertices[f.a];
+            vsx_vector v1 = mesh.data->vertices[f.b];
+            vsx_vector v2 = mesh.data->vertices[f.c];
+
+            len.x = fabs( (v1 - v0).length()+(float)(rand()%1000)*0.0001f );
+            len.y = fabs( (v2 - v1).length()+(float)(rand()%1000)*0.0001f );
+            len.z = fabs( (v0 - v2).length()+(float)(rand()%1000)*0.00005f );
+            
+            face_lengths.push_back(len);
+          }
+        }
+      }
+  #undef COUNT
+    }
+
+    //vertices_speed.allocate( mesh.data->vertices.size() );
+    float fcount = 1.0f / (float)mesh.data->faces.size();
+    for(unsigned int i = 0; i < mesh.data->faces.size(); i++) {
+        vsx_face& f = mesh.data->faces[i];
+        vsx_vector& v0 = mesh.data->vertices[f.a];
+        vsx_vector& v1 = mesh.data->vertices[f.b];
+        vsx_vector& v2 = mesh.data->vertices[f.c];
+        vsx_vector edgeA = (v1 - v0);
+        vsx_vector edgeB = (v2 - v1);
+        vsx_vector edgeC = (v0 - v2);
+
+        //vsx_vector ova = (vertices_orig[f.a]-v0+pos) / vertices_orig[f.a];
+        //vsx_vector ovb = (vertices_orig[f.b]-v1+pos) / vertices_orig[f.b];
+        //vsx_vector ovc = (vertices_orig[f.c]-v2+pos) / vertices_orig[f.c];
+        
+        
+        float lenA = edgeA.length();
+        float lenB = edgeB.length();
+        float lenC = edgeC.length();
+        if (lenA < 0.01f) lenA = 0.01f;
+        if (lenB < 0.01f) lenB = 0.01f;
+        if (lenC < 0.01f) lenC = 0.01f;
+        float edgeForceA = (face_lengths[i].x - lenA) / face_lengths[i].x;
+        float edgeForceB = (face_lengths[i].y - lenB) / face_lengths[i].y;
+        float edgeForceC = (face_lengths[i].z - lenC) / face_lengths[i].z;
+        float edgeAccA = edgeForceA / lenA;
+        float edgeAccB = edgeForceB / lenB;
+        float edgeAccC = edgeForceC / lenC;
+        vsx_vector accA = edgeA * edgeAccA;
+        vsx_vector accB = edgeB * edgeAccB;
+        vsx_vector accC = edgeC * edgeAccC;
+
+        float ii = 1.0f - (float)i * fcount;
+
+        //vertices_speed[f.a] -= ova*0.01f;
+        //vertices_speed[f.b] -= ovb*0.01f;
+        //vertices_speed[f.c] -= ovc*0.01f;
+        
+        vertices_speed[f.a] -= (accA - accC)*0.7f;// * 0.8f;//(0.10f+0.9*ii);
+        vertices_speed[f.b] -= (accB - accA)*0.7f;// * 0.8f;//(0.10f+0.9*ii);
+        vertices_speed[f.c] -= (accC - accB)*0.7f;// * 0.8f;//(0.10f+0.9*ii);
+
+        vertices_speed[f.a].y -= 0.04f;
+        vertices_speed[f.b].y -= 0.04f;
+        vertices_speed[f.c].y -= 0.04f;
+
+        vertices_speed[f.a].x -= 0.04f*sin(ii*1.5f);
+        vertices_speed[f.b].x -= 0.04f*sin(ii*1.5f);
+        vertices_speed[f.c].x -= 0.04f*sin(ii*1.5f);
+
+        // strive for edges to be 0.1 in length
+        //vertices_speed[f.a] = 
+    }
+    for(unsigned int i = 0; i < 4; i++)
+    {
+      mesh.data->vertices[i] = a;
+    }
+    for(unsigned int i = 4; i < mesh.data->vertices.size(); i++) {
+      mesh.data->vertices[i] += vertices_speed[i] * 0.01f;
+      //if(vertex_p[i].y < lowerBoundary) {
+      //  vertex_p[i].y = lowerBoundary;
+      //}
+      vertices_speed[i] = vertices_speed[i] * 0.90f;
+    }
+
+    for(unsigned int i = 0; i < mesh.data->faces.size(); i++) {
+      vsx_vector a = mesh.data->vertices[mesh.data->faces[i].b] - mesh.data->vertices[mesh.data->faces[i].a];
+      vsx_vector b = mesh.data->vertices[mesh.data->faces[i].c] - mesh.data->vertices[mesh.data->faces[i].a];
+      vsx_vector normal;
+      normal.cross(a,b);
+
+      //vsx_vector normal = mesh.data->get_face_normal(i);
+      normal = -normal;
+      normal.normalize();
+      mesh.data->vertex_normals[mesh.data->faces[i].a] = normal;
+      mesh.data->vertex_normals[mesh.data->faces[i].b] = normal;
+      mesh.data->vertex_normals[mesh.data->faces[i].c] = normal;
+    }
+
+    mesh.timestamp++;
+    result->set_p(mesh);
+    //}
+    /*else {
+      if (num_points->get() < mesh.data->vertices.size()) {
+        mesh.data->vertices.reset_used((int)num_points->get());
+      } else
+      if (num_points->get() > mesh.data->vertices.size()) {
+        for (int i = mesh.data->vertices.size(); i < (int)num_points->get(); ++i) {
+          mesh.data->vertices[i].x = (rand()%10000)*0.0001*scaling->get(0);
+          mesh.data->vertices[i].y = (rand()%10000)*0.0001*scaling->get(1);
+          mesh.data->vertices[i].z = (rand()%10000)*0.0001*scaling->get(2);
+        }
+
+      }
+    }
+      printf("randMesh done %d\n",mesh.data->vertices.size());*/
+
+    //  }
+  }
+};
+
+
+
+
+
+
 #ifdef BUILDING_DLL
 vsx_module* create_new_module(unsigned long module) {
   switch(module) {
@@ -2068,6 +2349,7 @@ vsx_module* create_new_module(unsigned long module) {
     case 9: return (vsx_module*)(new vsx_module_mesh_abstract_hand);
     case 10: return (vsx_module*)(new vsx_module_mesh_torus_knot);
     case 11: return (vsx_module*)(new vsx_module_mesh_lightning_vertices);
+    case 12: return (vsx_module*)(new vsx_module_mesh_ribbon_cloth);
   }
   return 0;
 }
@@ -2086,12 +2368,13 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 9: delete (vsx_module_mesh_abstract_hand*)m; break;
     case 10: delete (vsx_module_mesh_torus_knot*)m; break;
     case 11: delete (vsx_module_mesh_lightning_vertices*)m; break;
+    case 12: delete (vsx_module_mesh_ribbon_cloth*)m; break;
   }
 }
 
 unsigned long get_num_modules() {
   // we have only one module. it's id is 0
-  return 12;
+  return 13;
 }
 
 #endif

@@ -1938,10 +1938,9 @@ public:
       vertices_speed_p[f.c] -= pressureAcc;
 
       //apply material weight
-      float gravityAcc = materialWeight;
-      vertices_speed_p[f.a].y -= gravityAcc;
-      vertices_speed_p[f.b].y -= gravityAcc;
-      vertices_speed_p[f.c].y -= gravityAcc;
+      vertices_speed_p[f.a].y -= materialWeight;
+      vertices_speed_p[f.b].y -= materialWeight;
+      vertices_speed_p[f.c].y -= materialWeight;
 
     }
 

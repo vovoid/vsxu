@@ -34,6 +34,7 @@ class vsx_texture {
   bool use_fbo;
   GLuint framebuffer_id;
   GLuint depthbuffer_id;
+  GLuint colorBuffer, depthBuffer, tex_fbo;
 
 public:
   bool locked; // this is if another texture gets a texture already in the list, to prevent it from unloading.
