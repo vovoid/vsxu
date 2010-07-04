@@ -2074,6 +2074,7 @@ class vsx_module_mesh_ribbon_cloth : public vsx_module {
   vsx_array<vsx_vector> face_lengths;
   vsx_array<vsx_vector> vertices_speed;
   vsx_array<vsx_vector> vertices_orig;
+  int num_runs;
 public:
 
   void module_info(vsx_module_info* info)
@@ -2108,6 +2109,7 @@ public:
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
     result->set_p(mesh);
     regen = true;
+    num_runs = 0;
   }
 
 
@@ -2122,7 +2124,7 @@ public:
     up *= width->get();
 
 
-    vsx_vector pos = a;
+    vsx_vector pos = vsx_vector(0.0f,0.0f,0.0f);
     vsx_vector diff = b-a;
     vsx_vector diff_n = diff;
     diff_n.normalize();
@@ -2148,8 +2150,17 @@ public:
     //       1   3   5   7   9   11  13  15  17  19
 
     
+    
     if (regen)
     {
+      vertices_speed.allocate((int)COUNT*4);
+      for (int i = 0; i < (int)COUNT*4; i++)
+      {
+        vertices_speed[i].x = 0.0f;
+        vertices_speed[i].y = -0.04f;
+        vertices_speed[i].z = 0.0f;
+      }
+      
       regen = false;
       mesh.data->faces.reset_used();
       for (int i = 0; i < (int)COUNT; i++)
@@ -2176,8 +2187,8 @@ public:
         mesh.data->vertex_tex_coords[i2]   = vsx_tex_coord__(it, 0);
         mesh.data->vertex_tex_coords[i2+1] = vsx_tex_coord__(it, 1);
 
-        vertices_speed[i2] = vsx_vector(0, 0, 0);
-        vertices_speed[i2+1] = vsx_vector(0, 0, 0);
+        //vertices_speed[i2] = vsx_vector(0, 0, 0);
+        //vertices_speed[i2+1] = vsx_vector(0, 0, 0);
 
         vsx_vector len;
         if (i>1)
@@ -2201,6 +2212,11 @@ public:
             len.x = fabs( (v1 - v0).length()+(float)(rand()%1000)*0.0001f);
             len.y = fabs( (v2 - v1).length()+(float)(rand()%1000)*0.0001f);
             len.z = fabs( (v0 - v2).length()+(float)(rand()%1000)*0.00005f);
+            #define TRESH 0.04f
+            if (len.x < TRESH) len.x = TRESH;
+            if (len.y < TRESH) len.y = TRESH;
+            if (len.z < TRESH) len.z = TRESH;
+
             face_lengths.push_back(len);
           }
   
@@ -2220,6 +2236,11 @@ public:
             len.x = fabs( (v1 - v0).length()+(float)(rand()%1000)*0.0001f );
             len.y = fabs( (v2 - v1).length()+(float)(rand()%1000)*0.0001f );
             len.z = fabs( (v0 - v2).length()+(float)(rand()%1000)*0.00005f );
+            #define TRESH 0.04f
+            if (len.x < TRESH) len.x = TRESH;
+            if (len.y < TRESH) len.y = TRESH;
+            if (len.z < TRESH) len.z = TRESH;
+            
             
             face_lengths.push_back(len);
           }
@@ -2230,11 +2251,13 @@ public:
 
     //vertices_speed.allocate( mesh.data->vertices.size() );
     float fcount = 1.0f / (float)mesh.data->faces.size();
+    float dirx = b.x*0.04f;
+    float dirz = b.z*0.04f;
     for(unsigned int i = 0; i < mesh.data->faces.size(); i++) {
-        vsx_face& f = mesh.data->faces[i];
-        vsx_vector& v0 = mesh.data->vertices[f.a];
-        vsx_vector& v1 = mesh.data->vertices[f.b];
-        vsx_vector& v2 = mesh.data->vertices[f.c];
+        vsx_face f = mesh.data->faces[i];
+        vsx_vector v0 = mesh.data->vertices[f.a];
+        vsx_vector v1 = mesh.data->vertices[f.b];
+        vsx_vector v2 = mesh.data->vertices[f.c];
         vsx_vector edgeA = (v1 - v0);
         vsx_vector edgeB = (v2 - v1);
         vsx_vector edgeC = (v0 - v2);
@@ -2247,12 +2270,19 @@ public:
         float lenA = edgeA.length();
         float lenB = edgeB.length();
         float lenC = edgeC.length();
-        if (lenA < 0.01f) lenA = 0.01f;
-        if (lenB < 0.01f) lenB = 0.01f;
-        if (lenC < 0.01f) lenC = 0.01f;
+        
+        //if (lenA > face_lengths[i].x*1.1) lenA = face_lengths[i].x*2;
+        //if (lenB > face_lengths[i].y*1.1) lenB = face_lengths[i].y*2;
+        //if (lenC > face_lengths[i].z*1.1) lenC = face_lengths[i].z*2;
+        if (lenA < 0.0001f) lenA = 0.0001f;
+        if (lenB < 0.0001f) lenB = 0.0001f;
+        if (lenC < 0.0001f) lenC = 0.0001f;
         float edgeForceA = (face_lengths[i].x - lenA) / face_lengths[i].x;
         float edgeForceB = (face_lengths[i].y - lenB) / face_lengths[i].y;
         float edgeForceC = (face_lengths[i].z - lenC) / face_lengths[i].z;
+        //printf("%d fl: %f %f %f\n",i, face_lengths[i].x,face_lengths[i].y,face_lengths[i].z );
+        //printf("%d lenABC: %f %f %f\n",i, lenA,lenB,lenC );
+        //printf("%d ef: %f %f %f\n",i, edgeForceA, edgeForceB, edgeForceC);
         float edgeAccA = edgeForceA / lenA;
         float edgeAccB = edgeForceB / lenB;
         float edgeAccC = edgeForceC / lenC;
@@ -2265,18 +2295,27 @@ public:
         //vertices_speed[f.a] -= ova*0.01f;
         //vertices_speed[f.b] -= ovb*0.01f;
         //vertices_speed[f.c] -= ovc*0.01f;
-        
+        //printf("%d vsAp: %f %f %f\n", i, vertices_speed[f.a].x,vertices_speed[f.a].y,vertices_speed[f.a].z);
+        //printf("%d accA: %f %f %f\n", i, accA.x, accA.y, accA.z);
+        //printf("%d accB: %f %f %f\n", i, accB.x, accB.y, accB.z);
+        //printf("%d accC: %f %f %f\n", i, accC.x, accC.y, accC.z);
         vertices_speed[f.a] -= (accA - accC)*0.7f;// * 0.8f;//(0.10f+0.9*ii);
         vertices_speed[f.b] -= (accB - accA)*0.7f;// * 0.8f;//(0.10f+0.9*ii);
         vertices_speed[f.c] -= (accC - accB)*0.7f;// * 0.8f;//(0.10f+0.9*ii);
 
+        //printf("%d vsA: %f %f %f\n", i, vertices_speed[f.a].x,vertices_speed[f.a].y,vertices_speed[f.a].z);
+        
         vertices_speed[f.a].y -= 0.04f;
         vertices_speed[f.b].y -= 0.04f;
         vertices_speed[f.c].y -= 0.04f;
 
-        vertices_speed[f.a].x -= 0.04f*sin(ii*1.5f);
-        vertices_speed[f.b].x -= 0.04f*sin(ii*1.5f);
-        vertices_speed[f.c].x -= 0.04f*sin(ii*1.5f);
+        vertices_speed[f.a].x -= dirx*sin(ii*1.5f);
+        vertices_speed[f.b].x -= dirx*sin(ii*1.5f);
+        vertices_speed[f.c].x -= dirx*sin(ii*1.5f);
+
+        vertices_speed[f.a].z -= dirz*sin(ii*1.5f);
+        vertices_speed[f.b].z -= dirz*sin(ii*1.5f);
+        vertices_speed[f.c].z -= dirz*sin(ii*1.5f);
 
         // strive for edges to be 0.1 in length
         //vertices_speed[f.a] = 
@@ -2286,7 +2325,7 @@ public:
       mesh.data->vertices[i] = a;
     }
     for(unsigned int i = 4; i < mesh.data->vertices.size(); i++) {
-      mesh.data->vertices[i] += vertices_speed[i] * 0.01f;
+      mesh.data->vertices[i] += vertices_speed[i] * 0.02f;
       //if(vertex_p[i].y < lowerBoundary) {
       //  vertex_p[i].y = lowerBoundary;
       //}
@@ -2309,6 +2348,10 @@ public:
 
     mesh.timestamp++;
     result->set_p(mesh);
+    num_runs++;
+    printf("\n");
+    
+    //if (num_runs == 10) exit(0);
     //}
     /*else {
       if (num_points->get() < mesh.data->vertices.size()) {
