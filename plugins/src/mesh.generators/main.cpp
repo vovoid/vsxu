@@ -2065,6 +2065,9 @@ class vsx_module_mesh_ribbon_cloth : public vsx_module {
   vsx_module_param_float* width;
   vsx_module_param_float* skew_amp;
   vsx_module_param_float* time_amp;
+  vsx_module_param_float* damping_factor;
+  vsx_module_param_float* step_size;
+  vsx_module_param_float* stiffness;
   // out
   vsx_module_param_mesh* result;
   // internal
@@ -2084,10 +2087,13 @@ public:
     info->in_param_spec =
         "start_point:float3,"
         "end_point:float3,"
-        "up_vector:float3,"
-        "width:float,"
-        "skew_amp:float,"
-        "time_amp:float"
+        "damping_Factor:float,"
+        "step_size:float,"
+        "stiffness:float,"
+        //"up_vector:float3,"
+//        "width:float,"
+        //"skew_amp:float,"
+        //"time_amp:float"
         ;
     info->out_param_spec = "mesh:mesh";
     info->component_class = "mesh";
@@ -2099,10 +2105,21 @@ public:
     loading_done = true;
     start_point = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"start_point");
     end_point = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"end_point");
+
+    damping_factor = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"damping_Factor");
+    damping_factor->set(0.5f);
+    
+    step_size = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"step_size");
+    step_size->set(1.0f);
+
+    stiffness = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"stiffness");
+    stiffness->set(0.8f);
+
     up_vector = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"up_vector");
     width = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"width");
     skew_amp = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"skew_amp");
     skew_amp->set(1.0f);
+    
     time_amp = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"time_amp");
     time_amp->set(1.0f);
     width->set(0.1f);
@@ -2140,7 +2157,7 @@ public:
     float t = engine->vtime * time_amp->get();
 
 #define COUNT 20.0f
-    diff *= 0.1f / COUNT;
+    diff *= 0.4f / COUNT;
     float skew_amount = skew_amp->get();
     //     i=0   1   2   3   4   5   6   7   8   9
     // /\    0   2   4   6   8   10  12  14  16  18
@@ -2168,7 +2185,7 @@ public:
         int i2 = i << 1;
         float it = (float)i / COUNT;
         float ft = sin(it * 3.14159f + t) * sin(-it * 5.18674f - t);// + ( (float)(rand()%1000) * 0.0003f);
-        float thick = 0.16f;//sin(it * 3.14159f);
+        float thick = 0.56f;//sin(it * 3.14159f);
         vsx_vector skew = up * ft * skew_amount * thick;
 
         mesh.data->vertices[i2    ] = pos + up * thick + skew;
@@ -2250,9 +2267,11 @@ public:
     }
 
     //vertices_speed.allocate( mesh.data->vertices.size() );
+    for (int j = 0; j < 5; j++)
+    {
     float fcount = 1.0f / (float)mesh.data->faces.size();
-    float dirx = b.x*0.04f;
-    float dirz = b.z*0.04f;
+    float dirx = -b.x*0.05f;
+    float dirz = -b.z*0.05f;
     for(unsigned int i = 0; i < mesh.data->faces.size(); i++) {
         vsx_face f = mesh.data->faces[i];
         vsx_vector v0 = mesh.data->vertices[f.a];
@@ -2299,9 +2318,9 @@ public:
         //printf("%d accA: %f %f %f\n", i, accA.x, accA.y, accA.z);
         //printf("%d accB: %f %f %f\n", i, accB.x, accB.y, accB.z);
         //printf("%d accC: %f %f %f\n", i, accC.x, accC.y, accC.z);
-        vertices_speed[f.a] -= (accA - accC)*0.7f;// * 0.8f;//(0.10f+0.9*ii);
-        vertices_speed[f.b] -= (accB - accA)*0.7f;// * 0.8f;//(0.10f+0.9*ii);
-        vertices_speed[f.c] -= (accC - accB)*0.7f;// * 0.8f;//(0.10f+0.9*ii);
+        vertices_speed[f.a] -= (accA - accC)*stiffness->get();// * 0.8f;//(0.10f+0.9*ii);
+        vertices_speed[f.b] -= (accB - accA)*stiffness->get();// * 0.8f;//(0.10f+0.9*ii);
+        vertices_speed[f.c] -= (accC - accB)*stiffness->get();// * 0.8f;//(0.10f+0.9*ii);
 
         //printf("%d vsA: %f %f %f\n", i, vertices_speed[f.a].x,vertices_speed[f.a].y,vertices_speed[f.a].z);
         
@@ -2325,13 +2344,14 @@ public:
       mesh.data->vertices[i] = a;
     }
     for(unsigned int i = 4; i < mesh.data->vertices.size(); i++) {
-      mesh.data->vertices[i] += vertices_speed[i] * 0.02f;
+      mesh.data->vertices[i] += vertices_speed[i] * 0.02f * step_size->get();
+      if (mesh.data->vertices[i].y < 0.0f) mesh.data->vertices[i].y = 0.0f;
       //if(vertex_p[i].y < lowerBoundary) {
       //  vertex_p[i].y = lowerBoundary;
       //}
-      vertices_speed[i] = vertices_speed[i] * 0.90f;
+      vertices_speed[i] = vertices_speed[i] * damping_factor->get();
     }
-
+    }
     for(unsigned int i = 0; i < mesh.data->faces.size(); i++) {
       vsx_vector a = mesh.data->vertices[mesh.data->faces[i].b] - mesh.data->vertices[mesh.data->faces[i].a];
       vsx_vector b = mesh.data->vertices[mesh.data->faces[i].c] - mesh.data->vertices[mesh.data->faces[i].a];
