@@ -99,7 +99,7 @@ void vsx_mouse::hide_cursor()
   }  
   XDefineCursor( dpy, win, pointer );  
   XSync( dpy, False );
-  */ 
+  */
 }
 #endif //OS stuff
 
@@ -118,8 +118,7 @@ void vsx_mouse::set_cursor_pos(float x, float y)
 	glfwSetMousePos((int)(position.x), (int)(position.y));
 	#endif
 }
-  
-  
+
 vsx_mouse::vsx_mouse()
 {
 	cursor = 0;
