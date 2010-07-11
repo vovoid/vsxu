@@ -2272,7 +2272,10 @@ public:
     float fcount = 1.0f / (float)mesh.data->faces.size();
     float dirx = -b.x*0.05f;
     float dirz = -b.z*0.05f;
+    float stepsizemultiplier = 0.02f * step_size->get();
+    float gravity_pull = -0.01f;
     vsx_face* face_p = mesh.data->faces.get_pointer();
+    vsx_vector* vertices_speed_p = vertices_speed.get_pointer();
     
     vsx_vector* vertex_p = mesh.data->vertices.get_pointer();
 
@@ -2280,12 +2283,17 @@ public:
     {
       vsx_face* face_p_it = face_p;
       for(unsigned int i = 0; i < mesh.data->faces.size(); i++) {
+        // face fetching
         unsigned long fa = (*face_p_it).a;
         unsigned long fb = (*face_p_it).b;
         unsigned long fc = (*face_p_it).c;
-        vsx_vector v0 = mesh.data->vertices[fa];
-        vsx_vector v1 = mesh.data->vertices[fb];
-        vsx_vector v2 = mesh.data->vertices[fc];
+        face_p_it++;
+        // ---
+        
+        vsx_vector v0 = vertex_p[fa];
+        vsx_vector v1 = vertex_p[fb];
+        vsx_vector v2 = vertex_p[fc];
+        
         vsx_vector edgeA = (v1 - v0);
         vsx_vector edgeB = (v2 - v1);
         vsx_vector edgeC = (v0 - v2);
@@ -2309,23 +2317,22 @@ public:
 
         float ii = 1.0f - (float)i * fcount;
 
-        vertices_speed[fa] -= (accA - accC)*stiffness->get();// * 0.8f;//(0.10f+0.9*ii);
-        vertices_speed[fb] -= (accB - accA)*stiffness->get();// * 0.8f;//(0.10f+0.9*ii);
-        vertices_speed[fc] -= (accC - accB)*stiffness->get();// * 0.8f;//(0.10f+0.9*ii);
+        vertices_speed_p[fa] -= (accA - accC)*stiffness->get();// * 0.8f;//(0.10f+0.9*ii);
+        vertices_speed_p[fb] -= (accB - accA)*stiffness->get();// * 0.8f;//(0.10f+0.9*ii);
+        vertices_speed_p[fc] -= (accC - accB)*stiffness->get();// * 0.8f;//(0.10f+0.9*ii);
 
-        vertices_speed[fa].y -= 0.01f;
-        vertices_speed[fb].y -= 0.01f;
-        vertices_speed[fc].y -= 0.01f;
+        vertices_speed_p[fa].y += gravity_pull;
+        vertices_speed_p[fb].y += gravity_pull;
+        vertices_speed_p[fc].y += gravity_pull;
         float sp2 = pow(sin(ii*1.57f),3.0f)*2.0f;
 
-        vertices_speed[fa].x -= dirx*sp2;
-        vertices_speed[fb].x -= dirx*sp2;
-        vertices_speed[fc].x -= dirx*sp2;
+        vertices_speed_p[fa].x -= dirx*sp2;
+        vertices_speed_p[fb].x -= dirx*sp2;
+        vertices_speed_p[fc].x -= dirx*sp2;
 
-        vertices_speed[fa].z -= dirz*sp2;
-        vertices_speed[fb].z -= dirz*sp2;
-        vertices_speed[fc].z -= dirz*sp2;
-        face_p_it++;
+        vertices_speed_p[fa].z -= dirz*sp2;
+        vertices_speed_p[fb].z -= dirz*sp2;
+        vertices_speed_p[fc].z -= dirz*sp2;
       }
       vsx_vector mdist = a-prev_pos;  // prev_pos-------->a
       float mdl = mdist.length();
@@ -2338,9 +2345,9 @@ public:
         mdist.z = -mdist.z;
         //printf("newlength: %f\n", mdl-0.01f);
         addpos = mdist*(mdl-0.07f);
-        printf("addpos: %f, %f, %f\n", addpos.x, addpos.y, addpos.z);
+        //printf("addpos: %f, %f, %f\n", addpos.x, addpos.y, addpos.z);
         for(unsigned long i = 4; i < mesh.data->vertices.size(); i++) {
-          mesh.data->vertices[i] -= addpos;
+          vertex_p[i] -= addpos;
         }
       }
       prev_pos = a;
@@ -2348,9 +2355,10 @@ public:
       {
         mesh.data->vertices[i] = a;
       }
+      
       for(unsigned long i = 4; i < mesh.data->vertices.size(); i++) {
         //mesh.data->vertices[i] -= addpos;
-        mesh.data->vertices[i] += (vertices_speed[i] * 0.02f * step_size->get());
+        vertex_p[i] += (vertices_speed[i] * stepsizemultiplier);
         if (mesh.data->vertices[i].y < 0.0f) mesh.data->vertices[i].y = 0.0f;
         vertices_speed[i] = vertices_speed[i] * damping_factor->get();
       }
