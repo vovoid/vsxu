@@ -104,7 +104,7 @@ private:
 #ifdef VSXU_MODULES_STATIC
 	void register_static_module(vsx_string name);
 #endif
-
+  float frame_cfp_time;
 
 public:
   // scripting interface
@@ -171,6 +171,8 @@ public:
   double get_fps();
   void set_amp(float amp);
   void set_speed(float spd);
+  void set_constant_frame_progression(float new_frame_cfp_time);
+  void play();
 
   void set_float_array_param(int id, vsx_engine_float_array* float_array);
 

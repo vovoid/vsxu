@@ -144,6 +144,8 @@ void vsx_param_sequence::execute(float ptime) {
     if (to_val.size() && cur_val.size()) {
       float t = (line_time/cur_delay);
       if (param->module_param->type == VSX_MODULE_PARAM_ID_FLOAT) {
+        ++param->module->param_updates;
+        ++((vsx_module_param_quaternion*)param->module_param)->updates;
         float cv = s2f(cur_val);
         float ev = s2f(to_val);
         float dv = ev-cv;
@@ -161,8 +163,9 @@ void vsx_param_sequence::execute(float ptime) {
           float tt = bez_calc.t_from_x(t);
           float rv = bez_calc.y_from_t(tt);
           //printf("rv: %f\n",rv);
-          param->set_string(f2s(rv));
-
+          
+          //param->set_string(f2s(rv));
+          ((vsx_module_param_quaternion*)param->module_param)->set_internal(rv);
         } else
         {
 
@@ -173,15 +176,18 @@ void vsx_param_sequence::execute(float ptime) {
           // 3 = no interpolation + param_interpolator
 
           if (cur_interpolation == 0) {
-            param->set_string(f2s(cv));
+            ((vsx_module_param_quaternion*)param->module_param)->set_internal(cv);
+            //param->set_string(f2s(cv));
           } else
           if (cur_interpolation == 1) {
-            param->set_string(f2s(cv+dv*t));
+            ((vsx_module_param_quaternion*)param->module_param)->set_internal(cv+dv*t);
+            //param->set_string(f2s(cv+dv*t));
           } else
           if (cur_interpolation == 2) {
             float ft = t*pi_float;
             float f = (1 - cos(ft)) * 0.5f;
-            param->set_string(f2s(cv*(1-f) + ev*f));
+            ((vsx_module_param_quaternion*)param->module_param)->set_internal(cv*(1-f) + ev*f);
+            //param->set_string(f2s(cv*(1-f) + ev*f));
           }
           #ifndef VSX_NO_CLIENT
           else

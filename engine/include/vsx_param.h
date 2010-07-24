@@ -215,7 +215,27 @@ public:
       }		
     }
     valid = true;
+    return;
 	}
+
+  bool set_internal_from_param_with_value_check(vsx_module_param* val) {
+    if (!val->valid) {
+      valid = false;
+      return false;
+    }
+    bool changed = false;
+    check_free();
+    for (int i = 0; i < arity; ++i) {
+      param_data_suggestion[i] = val->param_data[i];
+      if (!vsxl_modifier) {
+        if (param_data[i] != val->param_data[i]) changed=true;
+
+        param_data[i] = val->param_data[i];
+      }
+    }
+    valid = true;
+    return changed;
+  }
 
 	void set_raw(T val, int index = 0) {
 		param_data[index] = val;

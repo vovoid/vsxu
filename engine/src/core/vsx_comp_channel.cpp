@@ -221,27 +221,40 @@ bool name::execute() { \
     if (my_param->critical) return false; else return true; \
   } \
 	if (!my_module->activate_offscreen()) return false;\
-	vector<vsx_channel_connection_info*>::iterator it; \
-	for (it = connections.begin(); it != connections.end(); ++it) \
-  { \
-		if(!(*it)->src_comp->prepare() && my_param->all_required) return false; \
-	} \
-	for (it = connections.begin(); it != connections.end(); ++it) \
-  { \
-		if(!(*it)->src_comp->run((*it)->module_param) && my_param->all_required) return false; \
-    ((type*)my_param->module_param)->set_internal_from_param((type*)(*it)->module_param); \
-	} \
-	++my_module->param_updates;\
-	++my_param->module_param->updates;\
+	vector<vsx_channel_connection_info*>::iterator it = connections.begin(); \
+  if(!(*it)->src_comp->prepare() && my_param->all_required) return false; \
+  if(!(*it)->src_comp->run((*it)->module_param) && my_param->all_required) return false; \
+  (((type*)my_param->module_param)->set_internal_from_param((type*)(*it)->module_param)); \
+	  ++my_module->param_updates;\
+	  ++my_param->module_param->updates;\
 	my_module->deactivate_offscreen();\
 	return true; \
 }
 
-NEW_DEFAULT_CHANNEL_EXECUTE_INC_PARAM_UPDATES(vsx_channel_int, vsx_module_param_int)
-NEW_DEFAULT_CHANNEL_EXECUTE_INC_PARAM_UPDATES(vsx_channel_float, vsx_module_param_float)
-NEW_DEFAULT_CHANNEL_EXECUTE_INC_PARAM_UPDATES(vsx_channel_float3, vsx_module_param_float3)
-NEW_DEFAULT_CHANNEL_EXECUTE_INC_PARAM_UPDATES(vsx_channel_float4, vsx_module_param_float4)
-NEW_DEFAULT_CHANNEL_EXECUTE_INC_PARAM_UPDATES(vsx_channel_quaternion, vsx_module_param_quaternion)
+#define NEW_DEFAULT_CHANNEL_EXECUTE_INC_PARAM_UPDATES_WITH_VALUE_CHECK(name, type) \
+bool name::execute() { \
+  \
+  if(connections.size() == 0) { \
+    if (my_param->critical) return false; else return true; \
+  } \
+  if (!my_module->activate_offscreen()) return false;\
+  vector<vsx_channel_connection_info*>::iterator it = connections.begin(); \
+  if(!(*it)->src_comp->prepare() && my_param->all_required) return false; \
+  if(!(*it)->src_comp->run((*it)->module_param) && my_param->all_required) return false; \
+  if (((type*)my_param->module_param)->set_internal_from_param_with_value_check((type*)(*it)->module_param)) \
+  {\
+    ++my_module->param_updates;\
+    ++my_param->module_param->updates;\
+  }\
+  my_module->deactivate_offscreen();\
+  return true; \
+}
+
+NEW_DEFAULT_CHANNEL_EXECUTE_INC_PARAM_UPDATES_WITH_VALUE_CHECK(vsx_channel_int, vsx_module_param_int)
+NEW_DEFAULT_CHANNEL_EXECUTE_INC_PARAM_UPDATES_WITH_VALUE_CHECK(vsx_channel_float, vsx_module_param_float)
+NEW_DEFAULT_CHANNEL_EXECUTE_INC_PARAM_UPDATES_WITH_VALUE_CHECK(vsx_channel_float3, vsx_module_param_float3)
+NEW_DEFAULT_CHANNEL_EXECUTE_INC_PARAM_UPDATES_WITH_VALUE_CHECK(vsx_channel_float4, vsx_module_param_float4)
+NEW_DEFAULT_CHANNEL_EXECUTE_INC_PARAM_UPDATES_WITH_VALUE_CHECK(vsx_channel_quaternion, vsx_module_param_quaternion)
 NEW_DEFAULT_CHANNEL_EXECUTE_INC_PARAM_UPDATES(vsx_channel_matrix, vsx_module_param_matrix)
 NEW_DEFAULT_CHANNEL_EXECUTE(vsx_channel_mesh, vsx_module_param_mesh)
 NEW_DEFAULT_CHANNEL_EXECUTE(vsx_channel_bitmap, vsx_module_param_bitmap)

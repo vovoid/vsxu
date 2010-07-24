@@ -77,6 +77,7 @@ void vsx_engine::set_default_values()
   last_e_state = e_state = VSX_ENGINE_STOPPED;
   // on unix/linux, resources are now stored in ~/.vsxu/data/resources
   filesystem.set_base_path(vsx_get_data_path());
+  frame_cfp_time = 0.0f;
 }
 
 void vsx_engine::init() {
@@ -599,6 +600,7 @@ void vsx_engine::build_module_list() {
         if (!module_handle) {
 			    #ifdef VSXU_DEVELOPER
             LOG(vsx_string("engine_load_module_a: error: ") + dlerror());
+            printf("%s\n", (vsx_string("engine_load_module_a: error: ") + dlerror()).c_str() );
 			    #endif
         }
       #endif
@@ -735,6 +737,16 @@ void vsx_engine::build_module_list() {
 }
 
 
+void vsx_engine::set_constant_frame_progression(float new_frame_cfp_time)
+{
+  frame_cfp_time = new_frame_cfp_time;
+}
+
+void vsx_engine::play()
+{
+  e_state = VSX_ENGINE_PLAYING;
+  g_timer.start();
+}
 
 //############## R E N D E R #######################################################################
 bool vsx_engine::render() {
@@ -779,7 +791,9 @@ bool vsx_engine::render() {
 
     //d_time = (1000.0f/avi_fps)*0.001f;
     //engine_info.dtime = 0;
-    d_time = (float)g_timer.dtime() * g_timer_amp;
+    float gtime = (float)g_timer.dtime();
+    if (frame_cfp_time != 0.0f) gtime = frame_cfp_time;
+    d_time = gtime * g_timer_amp;
     engine_info.real_dtime = d_time;
     engine_info.real_vtime += d_time;
     //
@@ -792,51 +806,54 @@ bool vsx_engine::render() {
     float dt = 0;
     // this is the fmod time synchronizer
 
-		for (std::list<vsx_comp*>::iterator it2 = outputs.begin(); it2 != outputs.end(); ++it2) {
-      vsx_engine_param* param;
+    if (frame_cfp_time == 0.0f)
+    {
+      for (std::list<vsx_comp*>::iterator it2 = outputs.begin(); it2 != outputs.end(); ++it2) {
+        vsx_engine_param* param;
 
-      param = (*it2)->get_params_out()->get_by_name("_st");
+        param = (*it2)->get_params_out()->get_by_name("_st");
 
-          //else {
-            //param = dest->get_params_in()->get_by_name(c->parts[2]);
-            //printf("size: %d\n",dest->get_params_in()->param_name_list.size());
-          //}
-      if (param) {
-        vsx_module_param_float* fp = (vsx_module_param_float*)param->module_param;
-        dt = fp->get();
-        if (dt != -1.0f) {
-        	//printf("getting time: %f\n", dt);
-          // we're getting some time from the module
-          if (e_state == VSX_ENGINE_PLAYING) {
-            if (last_m_time_synch == 0) {
-              g_timer.start();
-//              d_time_i = dt-0.06;//dt - frame_prev_time;
-              if (engine_info.vtime == 0)
-              d_time_i = dt;//dt-0.06;//dt - frame_prev_time;
-              //printf("f___dt: %f\n");
-              //engine_info.vtime = dt;//frame_prev_time = dt;
-              last_m_time_synch = 1;
+            //else {
+              //param = dest->get_params_in()->get_by_name(c->parts[2]);
+              //printf("size: %d\n",dest->get_params_in()->param_name_list.size());
+            //}
+        if (param) {
+          vsx_module_param_float* fp = (vsx_module_param_float*)param->module_param;
+          dt = fp->get();
+          if (dt != -1.0f) {
+            //printf("getting time: %f\n", dt);
+            // we're getting some time from the module
+            if (e_state == VSX_ENGINE_PLAYING) {
+              if (last_m_time_synch == 0) {
+                g_timer.start();
+  //              d_time_i = dt-0.06;//dt - frame_prev_time;
+                if (engine_info.vtime == 0)
+                d_time_i = dt;//dt-0.06;//dt - frame_prev_time;
+                //printf("f___dt: %f\n");
+                //engine_info.vtime = dt;//frame_prev_time = dt;
+                last_m_time_synch = 1;
+              } else {
+                d_time_i = d_time;
+                //d_time_i = dt - frame_prev_time;
+                //engine_info.vtime = dt;//
+                //if (d_time_i == 0)
+                //frame_prev_time = dt;
+                //d_time_i = d_time;
+              }
             } else {
-              d_time_i = d_time;
-              //d_time_i = dt - frame_prev_time;
-              //engine_info.vtime = dt;//
-              //if (d_time_i == 0)
-              //frame_prev_time = dt;
-              //d_time_i = d_time;
+              d_time_i = 0;
             }
+            //engine_info.vtime = dt;//frame_prev_time = dt;
+            //engine_info.dtime = d_time_i;
+            //d_time_i = dt;
           } else {
             d_time_i = 0;
           }
-          //engine_info.vtime = dt;//frame_prev_time = dt;
-          //engine_info.dtime = d_time_i;
-          //d_time_i = dt;
-        } else {
-          d_time_i = 0;
         }
+              //printf("aaaaa %s\n",param->get_name().c_str());
+              //vsx_string value = param->get_string();
       }
-            //printf("aaaaa %s\n",param->get_name().c_str());
-            //vsx_string value = param->get_string();
-		}
+    }
 		//if (e_state == VSX_ENGINE_PLAYING) {
 		  //printf("dt: %f\n",dt);
 		  //printf("dt: %f\n",engine_info.vtime);
