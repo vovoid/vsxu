@@ -16,7 +16,7 @@
 
 
 
-char string_res[256];
+char string_res[256] = "";
 
 const int s2i(const vsx_string& in)
 {
