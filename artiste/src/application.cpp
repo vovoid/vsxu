@@ -53,6 +53,7 @@ vsx_command_list internal_cmd_out;
 vsx_widget_desktop *desktop = 0;
 bool prod_fullwindow = false;
 bool take_screenshot = false;
+bool record_movie = false;
 bool *gui_prod_fullwindow;
 bool gui_prod_fullwindow_helptext = true;
 vsx_font myf;
@@ -169,6 +170,7 @@ public:
 	vsx_string current_fps;
 	vsx_timer gui_t;
 	int frame_count;
+  int movie_frame_count;
 	float gui_g_time;
 	double dt;
 	double gui_f_time;
@@ -179,6 +181,11 @@ public:
 	{};
 
 	void draw() {
+    if (record_movie) {
+      vxe->set_constant_frame_progression(1.0f / 30.0f);
+      vxe->play();
+    }
+    
 		if (desktop)
   	desktop->vsx_command_process_f();
 
@@ -205,15 +212,15 @@ public:
 		f_wait = 1.0f/100.0f;
 	  if (run_always || gui_f_time > f_wait)
 	  {
-	  ++frame_count;
+      ++frame_count;
 
-	#ifndef VSX_NO_CLIENT
+      #ifndef VSX_NO_CLIENT
 	    if (desktop) {
 	    	desktop->dtime = gui_f_time;
 	    	desktop->time += desktop->dtime;
 	    	desktop->frames = frame_count;
 	    }
-	#endif
+      #endif
 	    gui_fullscreen_fpstimer += gui_f_time;
 	      current_fps = f2s(round(1.0f/gui_f_time),2);
 	    if (gui_fullscreen_fpstimer > 1) {
@@ -222,80 +229,83 @@ public:
 	    }
 
 	  	gui_f_time = 0;
-	#ifndef VSX_NO_CLIENT
+      #ifndef VSX_NO_CLIENT
+        if (!*gui_prod_fullwindow)
+        {
+          if (desktop) {
+            desktop->init_frame();
+            desktop->draw();
+            desktop->draw_2d();
+          }
+        } else {
+        }
+        if (!dual_monitor)
+        vxe->process_message_queue(&internal_cmd_in,&internal_cmd_out);
+      if (*gui_prod_fullwindow) {
+      #endif
 
-	    if (!*gui_prod_fullwindow)
-	    {
-	      if (desktop) {
-	        desktop->init_frame();
-	      	desktop->draw();
-	      	desktop->draw_2d();
-	      }
-	    } else {
-	    }
-	    if (!dual_monitor)
-	    vxe->process_message_queue(&internal_cmd_in,&internal_cmd_out);
-	    if (*gui_prod_fullwindow) {
-	#endif
-	      glDepthMask(GL_TRUE);
-				glClearColor(0.0f,0.0f,0.0f,1.0f);
+      glDepthMask(GL_TRUE);
+      glClearColor(0.0f,0.0f,0.0f,1.0f);
 
-	      glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+      glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	    
-#ifndef NO_INTRO
-	    if (vxe->e_state == VSX_ENGINE_STOPPED)
-	    {
-	      intro->draw(true);
-	    }
+      #ifndef NO_INTRO
+        if (vxe->e_state == VSX_ENGINE_STOPPED)
+        {
+          intro->draw(true);
+        }
 	    #endif
-	      if (vxe && !dual_monitor) {
-	    		vxe->render();
-			glDisable(GL_DEPTH_TEST);
+      if (vxe && !dual_monitor) {
+        vxe->render();
+        glDisable(GL_DEPTH_TEST);
 
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-			glMatrixMode(GL_MODELVIEW);
-			glLoadIdentity();											// Reset The Modelview Matrix
- 			glEnable(GL_BLEND);
- 			++frame_counter;
- 			++delta_frame_counter;
- 			//float dt = time2.dtime();
- 			delta_frame_time+= dt;
- 			total_time += dt;
- 			if (delta_frame_counter == 100) {
- 				delta_fps = 100.0f/delta_frame_time;
- 				delta_frame_counter = 0;
- 				delta_frame_time = 0.0f;
- 			}
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glColor4f(0,0,0,0.4f);
-			glBegin(GL_QUADS);									// Draw A Quad
-				glVertex3f(-1.0f, 1.0f, 0.0f);					// Top Left
-				glVertex3f( 1.0f, 1.0f, 0.0f);					// Top Right
-				glVertex3f( 1.0f,0.92f, 0.0f);					// Bottom Right
-				glVertex3f(-1.0f,0.92f, 0.0f);					// Bottom Left
-			glEnd();											// Done Drawing The Quad
-      if (gui_prod_fullwindow_helptext)
-			myf.print(vsx_vector(-1.0f,0.92f)," Fc "+i2s(frame_counter)+" Fps "+f2s(delta_fps)+" T "+f2s(total_time)+" Tfps "+f2s(frame_counter/total_time)+" MC "+i2s(vxe->get_num_modules())+" VSX Ultra (c) 2003-2010 Vovoid - Alt+T=toggle this text, Ctrl+Alt+P=screenshot (data dir), Alt+F=performance mode ",0.03f);
-	      }
-	      if (desktop && desktop->performance_mode) {
-	      	glClear(GL_DEPTH_BUFFER_BIT);
-	        desktop->init_frame();
-	      	desktop->draw();
-	      	desktop->draw_2d();
-	      }
-	    }
-	    #ifndef NO_INTRO
-	    //intro->window_width = window_width;
-	    //intro->window_height = window_height;
-	    #endif
-	#ifndef VSX_DEMO
-	      //vsx_mouse mouse;
-	      //mouse.hide_cursor();
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();											// Reset The Modelview Matrix
+        glEnable(GL_BLEND);
+        ++frame_counter;
+        ++delta_frame_counter;
+        //float dt = time2.dtime();
+        delta_frame_time+= dt;
+        total_time += dt;
+        if (delta_frame_counter == 100) {
+          delta_fps = 100.0f/delta_frame_time;
+          delta_frame_counter = 0;
+          delta_frame_time = 0.0f;
+        }
+
+        if (gui_prod_fullwindow_helptext)
+        {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(0,0,0,0.4f);
+        glBegin(GL_QUADS);									// Draw A Quad
+          glVertex3f(-1.0f, 1.0f, 0.0f);					// Top Left
+          glVertex3f( 1.0f, 1.0f, 0.0f);					// Top Right
+          glVertex3f( 1.0f,0.92f, 0.0f);					// Bottom Right
+          glVertex3f(-1.0f,0.92f, 0.0f);					// Bottom Left
+        glEnd();											// Done Drawing The Quad
+        myf.print(vsx_vector(-1.0f,0.92f)," Fc "+i2s(frame_counter)+" Fps "+f2s(delta_fps)+" T "+f2s(total_time)+" Tfps "+f2s(frame_counter/total_time)+" MC "+i2s(vxe->get_num_modules())+" VSX Ultra (c) 2003-2010 Vovoid - Alt+T=toggle this text, Ctrl+Alt+P=screenshot (data dir), Alt+F=performance mode ",0.03f);
+        }
+      }
+      if (desktop && desktop->performance_mode) {
+        glClear(GL_DEPTH_BUFFER_BIT);
+        desktop->init_frame();
+        desktop->draw();
+        desktop->draw_2d();
+      }
+    }
+    #ifndef NO_INTRO
+    //intro->window_width = window_width;
+    //intro->window_height = window_height;
+    #endif
+    #ifndef VSX_DEMO
+	    //vsx_mouse mouse;
+	    //mouse.hide_cursor();
 	    #ifndef NO_INTRO
 	    intro->draw();
 	    #endif
-	#else
+    #else
 	    if (vxe->e_state == VSX_ENGINE_STOPPED)
 	    {
 	      #ifndef NO_INTRO
@@ -322,6 +332,50 @@ public:
 	    //printf("zz%d ",zz);
       //Sleep(zz);
 	  }
+    if (record_movie)
+    {
+      GLint viewport[4];
+      glGetIntegerv(GL_VIEWPORT, viewport);
+      char* pixeldata = (char*)malloc( viewport[2] * viewport[3] * 3 );
+      char* pixeldata_flipped = (char*)malloc( viewport[2] * viewport[3] * 3 );
+      take_screenshot = false;
+      glReadPixels(0,0,viewport[2],viewport[3],GL_RGB,GL_UNSIGNED_BYTE, (GLvoid*)pixeldata);
+      int x3 = viewport[2]*3;
+      int hi = viewport[3];
+      for (int y = 0; y < hi; y++)
+      {
+        for (int x = 0; x < x3; x++)
+        {
+          pixeldata_flipped[y*x3+x] = pixeldata[ (hi-y)*x3+x];
+        }
+      }
+
+      CJPEGTest jpeg;
+      jpeg.m_nResX = viewport[2];
+      jpeg.m_nResY = viewport[3];
+      jpeg.m_pBuf = (unsigned char*)pixeldata_flipped;
+
+      //char filename[32768];
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      if (access((vsx_get_data_path()+"videos").c_str(),0) != 0) mkdir((vsx_get_data_path()+"/videos").c_str(),0700);
+        //sprintf(filename, "%sscreenshots/%d_%d_%d_rgb.jpg",vsx_get_data_path().c_str(),(int)time(0),viewport[2],viewport[3]);
+      #endif
+      vsx_string err;
+      char mfilename[32];
+      sprintf(mfilename, "%05d", movie_frame_count);
+      
+      jpeg.SaveJPEG( vsx_get_data_path()+"videos"+DIRECTORY_SEPARATOR+vsx_string(mfilename)+"_"+ i2s(viewport[2]) + "_" + i2s(viewport[3])+".jpg", err, 100 );
+      jpeg.m_pBuf = 0;
+      #ifdef VSXU_DEBUG
+      printf("saved movie screenshot to: %s\n",filename);
+      #endif
+      free(pixeldata);
+      free(pixeldata_flipped);
+      movie_frame_count++;
+    }
+      
+	  
+	  
 		if (take_screenshot) 
     {
 			GLint viewport[4];
@@ -437,7 +491,16 @@ void app_char(long key) {
 
 void app_key_down(long key) {
   if (desktop) {
-  	if (app_alt && app_ctrl && key == 80) take_screenshot = true;
+  	if (app_alt && app_ctrl && app_shift && key == 80) {
+      if (record_movie == false)
+      {
+        my_draw.movie_frame_count = 0;
+      }
+      record_movie = !record_movie;
+    }
+  	else
+    if (app_alt && app_ctrl && key == 80) take_screenshot = true;
+      
   	if (*gui_prod_fullwindow && app_alt && !app_ctrl && !app_shift && key == 'T') gui_prod_fullwindow_helptext = !gui_prod_fullwindow_helptext;
     desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
 #ifdef __APPLE__
