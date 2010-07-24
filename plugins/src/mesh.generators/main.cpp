@@ -2276,10 +2276,10 @@ public:
     float gravity_pull = -0.01f;
     vsx_face* face_p = mesh.data->faces.get_pointer();
     vsx_vector* vertices_speed_p = vertices_speed.get_pointer();
-    
+    vsx_vector* faces_length_p = face_lengths.get_pointer();
     vsx_vector* vertex_p = mesh.data->vertices.get_pointer();
 
-    for (int j = 0; j < 10; j++)
+    for (int j = 0; j < 8; j++)
     {
       vsx_face* face_p_it = face_p;
       for(unsigned int i = 0; i < mesh.data->faces.size(); i++) {
@@ -2305,9 +2305,9 @@ public:
         if (lenA < 0.0001f) lenA = 0.0001f;
         if (lenB < 0.0001f) lenB = 0.0001f;
         if (lenC < 0.0001f) lenC = 0.0001f;
-        float edgeForceA = (face_lengths[i].x - lenA) / face_lengths[i].x;
-        float edgeForceB = (face_lengths[i].y - lenB) / face_lengths[i].y;
-        float edgeForceC = (face_lengths[i].z - lenC) / face_lengths[i].z;
+        float edgeForceA = (face_lengths[i].x - lenA) / faces_length_p[i].x;
+        float edgeForceB = (face_lengths[i].y - lenB) / faces_length_p[i].y;
+        float edgeForceC = (face_lengths[i].z - lenC) / faces_length_p[i].z;
         float edgeAccA = edgeForceA / lenA;
         float edgeAccB = edgeForceB / lenB;
         float edgeAccC = edgeForceC / lenC;
