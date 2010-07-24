@@ -699,6 +699,23 @@ public:
   static void* worker(void *ptr) {
     vsx_module_cal3d_loader_threaded* my = ((vsx_module_cal3d_loader_threaded*)ptr);
 
+    CalQuaternion q2;
+    CalVector t1;
+    for (unsigned long j = 0; j < my->bones.size(); ++j)
+    {
+      t1.x = my->bones[j].translation->get(0);
+      t1.y = my->bones[j].translation->get(1);
+      t1.z = my->bones[j].translation->get(2);
+      q2.x = my->bones[j].param->get(0);
+      q2.y = my->bones[j].param->get(1);
+      q2.z = my->bones[j].param->get(2);
+      q2.w = my->bones[j].param->get(3);
+      if (my->bones[j].bone != 0) {
+        my->bones[j].bone->setRotation(q2);
+        my->bones[j].bone->setTranslation(my->bones[j].o_t + t1);
+      }
+    }
+
     CalSkeleton* m_skeleton = my->m_model->getSkeleton();
     m_skeleton->calculateState();
 
@@ -748,6 +765,26 @@ public:
     }
     // end the rendering of the model
     pCalRenderer->endRendering();
+    if (!my->redeclare_out)
+    {
+      for (unsigned long j = 0; j < my->bones.size(); ++j)
+      {
+        if (my->bones[j].bone != 0)
+        {
+          CalVector t1 = my->bones[j].bone->getTranslationAbsolute();
+          CalQuaternion q2 = my->bones[j].bone->getRotationAbsolute();
+          my->bones[j].result_rotation   ->set( q2.x, 0 );
+          my->bones[j].result_rotation   ->set( q2.y, 1 );
+          my->bones[j].result_rotation   ->set( q2.z, 2 );
+          my->bones[j].result_rotation   ->set( q2.w, 3 );
+
+          my->bones[j].result_translation->set( t1.x, 0 );
+          my->bones[j].result_translation->set( t1.y, 1 );
+          my->bones[j].result_translation->set( t1.z, 2 );
+        }
+      }
+    }
+
     my->thread_state = 2;
     return 0;
     //pthread_exit((void*) ptr);
@@ -786,7 +823,7 @@ public:
       if (bones.size()) {
         CalQuaternion q2;
         CalVector t1;
-        for (unsigned long j = 0; j < bones.size(); ++j)
+        /*for (unsigned long j = 0; j < bones.size(); ++j)
         {
           t1.x = bones[j].translation->get(0);
           t1.y = bones[j].translation->get(1);
@@ -799,8 +836,8 @@ public:
             bones[j].bone->setRotation(q2);
             bones[j].bone->setTranslation(bones[j].o_t + t1);
           }
-        }
-
+        }*/
+/*
         if (!redeclare_out)
         {
           for (unsigned long j = 0; j < bones.size(); ++j)
@@ -820,7 +857,7 @@ public:
             }
           }
         }
-
+*/
         if (0 == use_thread->get())
         {
           worker((void*)this);
