@@ -5,9 +5,211 @@
 #include "vsx_math_3d.h"
 //#include "vsx_string_lib.h"
 #include "fftrefraction.h"
+#include <pthread.h>
+
+class vsx_module_mesh_ocean_tunnel_threaded : public vsx_module {
+public:
+  // in
+  vsx_module_param_float* time_speed;
+  // out
+  vsx_module_param_mesh* result;
+
+  // internal
+  vsx_mesh* mesh;
+  vsx_mesh mesh_a;
+  vsx_mesh mesh_b;
+  //bool first_run;
+  Alaska ocean;
+  float t;
+
+  // threading stuff
+  pthread_t         worker_t;
+  pthread_attr_t    worker_t_attr;
+  int p_updates;
+  bool              worker_running;
+  int               thread_state;
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "mesh;generators;ocean_tunnel";
+    info->description = "";
+    info->in_param_spec = "time_speed:float";
+    info->out_param_spec = "mesh:mesh";
+    info->component_class = "mesh";
+  }
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    mesh = &mesh_a;
+    thread_state = 0;
+    worker_running = false;
+    
+    loading_done = false;
+    time_speed = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"time_speed");
+    time_speed->set(0.2f);
+    result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
+    result->set_p(mesh_a);
+    //first_run = true;
+    ocean.calculate_ho();
+    t = 0;
+  }
+
+  static void* worker(void *ptr)
+  {
+    vsx_module_mesh_ocean_tunnel_threaded* my = ((vsx_module_mesh_ocean_tunnel_threaded*)ptr);
+
+    my->t += my->time_speed->get()*my->engine->real_dtime;
+    my->ocean.dtime = my->t;
+    my->ocean.display();
+    my->mesh->data->vertices.reset_used(0);
+    my->mesh->data->vertex_normals.reset_used(0);
+    my->mesh->data->vertex_tex_coords.reset_used(0);
+    my->mesh->data->faces.reset_used(0);
+    vsx_face face;
+    vsx_vector g;
+    vsx_vector c;
+    for (int L=-1;L<2;L++)
+    {
+      for (int i=0;i<(BIG_NX-1);i++)
+      {
+        unsigned long b = 0;
+        for (int k=-1;k<2;k++)
+        {
+          unsigned long a = 0;
+          for (int j=0;j<(BIG_NY);j++)
+          {
+            //printf("j: %d\n", j);
+            if (j%2 == 1) continue;
+#define TDIV (float)MAX_WORLD_X
+#define TD2  (float)MAX_WORLD_X*0.5f
+            g.x = my->ocean.sea[i][j][0];//+L*MAX_WORLD_X;
+            g.y = my->ocean.sea[i][j][1];//+k*MAX_WORLD_Y;
+            g.z = my->ocean.sea[i][j][2];//*ocean.scale_height;
+
+            float gr = \
+            PI*2.0f * g.x/(TDIV);
+            float nra = gr + 90.0f / 360.0f * 2*PI;
 
 
-// TODO: map it on a tunnel!
+            vsx_vector nn;
+            nn.x = my->ocean.big_normals[i][j][0];
+            nn.y = my->ocean.big_normals[i][j][1];
+            nn.normalize();
+            my->mesh->data->vertex_normals.push_back(vsx_vector(\
+              nn.x* cos(nra) + nn.y * -sin(nra),\
+              nn.x* sin(nra) + nn.y * cos(nra),\
+              my->ocean.big_normals[i][j][2]));
+            my->mesh->data->vertex_normals[my->mesh->data->vertex_normals.size()-1].normalize();
+
+
+            float gz = 2.0f+fabs(g.z)*1.5f;
+            c.x = cos(gr)*gz;
+            c.y = sin(gr)*gz;
+            c.z = g.y*2.0f;
+            b = my->mesh->data->vertices.push_back(c);
+            my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord__(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
+            ++a;
+            if (a >= 3) {
+              face.a = b-3;
+              face.b = b-2;
+              face.c = b-1;
+              my->mesh->data->faces.push_back(face);
+            }
+            g.x = my->ocean.sea[i+1][j][0];//+L*MAX_WORLD_X;
+            g.y = my->ocean.sea[i+1][j][1];//+k*MAX_WORLD_Y;
+            g.z = my->ocean.sea[i+1][j][2];//*ocean.scale_height;
+
+            gr = \
+            PI*2.0f* g.x/(TDIV);
+            nra = gr + 90.0f / 360.0f * 2*PI;
+
+
+            nn.x = my->ocean.big_normals[i+1][j][0];
+            nn.y = my->ocean.big_normals[i+1][j][1];
+            nn.normalize();
+            my->mesh->data->vertex_normals.push_back(vsx_vector(\
+              nn.x* cos(nra) + nn.y * -sin(nra),\
+              nn.x* sin(nra) + nn.y * cos(nra),\
+              my->ocean.big_normals[i+1][j][2]));
+
+            my->mesh->data->vertex_normals[my->mesh->data->vertex_normals.size()-1].normalize();
+
+            gz = 2.0f+fabs(g.z)*1.5f;
+            c.x = cos(gr)*gz;
+            c.y = sin(gr)*gz;
+            c.z = g.y*2.0f;
+            b = my->mesh->data->vertices.push_back(c);
+
+            my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord__(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
+
+            ++a;
+
+            if (a >= 4) {
+              face.a = b-3;
+              face.b = b-2;
+              face.c = b-1;
+              my->mesh->data->faces.push_back(face);
+            }
+          }
+        }
+      }
+    }
+    my->thread_state = 2;
+    return 0;
+  }
+
+
+  void run() {
+    loading_done = true;
+    // if running, stall and wait for thread
+    //if (thread_state == 1)
+    //while (thread_state != 2) {  }
+
+
+
+    // this concept assumes that the run takes shorter than the framerate to do
+    if (thread_state == 2) { // thread is done
+      // no thread running
+
+
+      mesh->timestamp++;
+      result->set_p(*mesh);
+
+      // toggle to the other mesh
+      if (mesh == &mesh_a) mesh = &mesh_b;
+      else mesh = &mesh_a;
+      // the one we point to now is the one that is going to be worked on
+      thread_state = 3;
+    }
+    if ( (thread_state == 3 || thread_state == 0) )
+    {
+      pthread_attr_init(&worker_t_attr);
+
+      thread_state = 1;
+
+      pthread_create(&worker_t, &worker_t_attr, &worker, (void*)this);
+      pthread_detach(worker_t);
+    }
+  }
+
+  void on_delete() {
+    if (thread_state == 1)
+    while (thread_state != 2) {}
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class vsx_module_mesh_ocean : public vsx_module {
@@ -221,6 +423,9 @@ for (int L=-1;L<2;L++)
     mesh.clear();
   }
 };
+
+
+
 
 
 
@@ -517,7 +722,7 @@ public:
 vsx_module* create_new_module(unsigned long module) {
   switch(module) {
     case 0: return (vsx_module*)(new vsx_module_mesh_ocean);
-    case 1: return (vsx_module*)(new vsx_module_mesh_ocean_tunnel);
+    case 1: return (vsx_module*)(new vsx_module_mesh_ocean_tunnel_threaded);
   }
   return 0;
 }
@@ -525,7 +730,7 @@ vsx_module* create_new_module(unsigned long module) {
 void destroy_module(vsx_module* m,unsigned long module) {
   switch(module) {
     case 0: delete (vsx_module_mesh_ocean*)m; break;
-    case 1: delete (vsx_module_mesh_ocean_tunnel*)m; break;
+    case 1: delete (vsx_module_mesh_ocean_tunnel_threaded*)m; break;
   }
 }
 

@@ -14,8 +14,8 @@ struct Vector3
 	float x, y, z;
 };
 
-#define NX 32
-#define NY 32
+#define NX 64
+#define NY 64
 
 #define INV_SQRT_TWO (1.0f)/sqrt(2.0f)
 #define MAX_WORLD_X 64
