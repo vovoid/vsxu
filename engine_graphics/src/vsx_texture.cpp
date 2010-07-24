@@ -128,6 +128,10 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture) {
     // multi sampled color buffer
     glGenRenderbuffersEXT(1, &colorBuffer);
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, colorBuffer);
+
+    if (float_texture)
+    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_RGBA16F_ARB, width, height);
+    else
     glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_RGBA8, width, height);
 
     // multi sampled depth buffer
