@@ -305,7 +305,7 @@ public:
     font_size->set(1.0f);
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 		myf = new vsx_font();
-		myf->init("_gfx/vsxu/font/font-ascii.png");
+		myf->init("/home/jaw/vsxu/vsxu/share/font/font-ascii.png");
 		//myf->mode_2d = true;
 
   }
