@@ -24,7 +24,7 @@
 //#define VSX_P_MATRIX
 //#define VSX_P_FLOAT_ARRAY
 //#define VSX_P_FLOAT3_ARRAY
-//#define VSX_P_STRING
+#define VSX_P_STRING
 #define VSX_P_SEQUENCE
 //#define VSX_P_ABSTRACT
 //#define VSX_P_QUATERNION
