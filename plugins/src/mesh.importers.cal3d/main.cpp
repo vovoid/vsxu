@@ -471,14 +471,18 @@ public:
     int p_updates;
     bool              worker_running;
     int               thread_state;
+    int               thread_exit;
+    int               prev_use_thread;
 
   vsx_module_cal3d_loader_threaded() {
     m_model = 0;
     c_model = 0;
     mesh = &mesh_a;
     thread_state = 0;
+    thread_exit = 0;
     worker_running = false;
     p_updates = -1;
+    prev_use_thread = 0;
   }
 
   void module_info(vsx_module_info* info)
@@ -516,6 +520,7 @@ public:
     quat_p->set(1.0f,3);
     use_thread = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"use_thread");
     use_thread->set(0);
+    prev_use_thread = 0;
     if (bones.size()) {
       for (unsigned long i = 0; i < bones.size(); ++i) {
         bones[i].param = (vsx_module_param_quaternion*)in_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION,(bones[i].name+"_rotation").c_str());
@@ -697,95 +702,79 @@ public:
 
 
   static void* worker(void *ptr) {
-    vsx_module_cal3d_loader_threaded* my = ((vsx_module_cal3d_loader_threaded*)ptr);
-
-    CalQuaternion q2;
-    CalVector t1;
-    for (unsigned long j = 0; j < my->bones.size(); ++j)
+    while (1)
     {
-      t1.x = my->bones[j].translation->get(0);
-      t1.y = my->bones[j].translation->get(1);
-      t1.z = my->bones[j].translation->get(2);
-      q2.x = my->bones[j].param->get(0);
-      q2.y = my->bones[j].param->get(1);
-      q2.z = my->bones[j].param->get(2);
-      q2.w = my->bones[j].param->get(3);
-      if (my->bones[j].bone != 0) {
-        my->bones[j].bone->setRotation(q2);
-        my->bones[j].bone->setTranslation(my->bones[j].o_t + t1);
-      }
-    }
-
-    CalSkeleton* m_skeleton = my->m_model->getSkeleton();
-    m_skeleton->calculateState();
-
-    CalRenderer *pCalRenderer;
-    pCalRenderer = my->m_model->getRenderer();
-    pCalRenderer->beginRendering();
-    int meshCount;
-    meshCount = pCalRenderer->getMeshCount();
-
-    int meshId;
-    for(meshId = 0; meshId < meshCount; meshId++)
-    {
-      // get the number of submeshes
-      int submeshCount;
-      submeshCount = pCalRenderer->getSubmeshCount(meshId);
-      //printf("submesh count: %d\n",submeshCount);
-
-      // loop through all submeshes of the mesh
-      int submeshId;
-      for(submeshId = 0; submeshId < submeshCount; submeshId++)
+      vsx_module_cal3d_loader_threaded* my = ((vsx_module_cal3d_loader_threaded*)ptr);
+      if (1 == my->prev_use_thread)
       {
-        // select mesh and submesh for further data access
-        if(pCalRenderer->selectMeshSubmesh(meshId, submeshId))
-        {
-          my->mesh->data->vertices[pCalRenderer->getVertexCount()+1] = vsx_vector(0,0,0);
-          pCalRenderer->getVertices(&my->mesh->data->vertices[0].x);
-          my->mesh->data->vertex_normals[pCalRenderer->getVertexCount()+1] = vsx_vector(0,0,0);
-          pCalRenderer->getNormals(&my->mesh->data->vertex_normals[0].x);
+        while (my->p_updates == my->param_updates) {
+          usleep(1);
+        }
+      }
+      my->p_updates = my->param_updates;
+      my->thread_state = 1;
 
-          if (pCalRenderer->isTangentsEnabled(0)) {
-            my->mesh->data->vertex_tangents[pCalRenderer->getVertexCount()+1].x = 0;// = vsx_vector(0,0,0);
-            int num_tagentspaces = pCalRenderer->getTangentSpaces(0,&my->mesh->data->vertex_tangents[0].x);
-            //printf("fetched %d tangents\n", num_tagentspaces);
+      CalSkeleton* m_skeleton = my->m_model->getSkeleton();
+      m_skeleton->calculateState();
+
+      CalRenderer *pCalRenderer;
+      pCalRenderer = my->m_model->getRenderer();
+      pCalRenderer->beginRendering();
+      int meshCount;
+      meshCount = pCalRenderer->getMeshCount();
+
+      int meshId;
+      for(meshId = 0; meshId < meshCount; meshId++)
+      {
+        // get the number of submeshes
+        int submeshCount;
+        submeshCount = pCalRenderer->getSubmeshCount(meshId);
+        //printf("submesh count: %d\n",submeshCount);
+
+        // loop through all submeshes of the mesh
+        int submeshId;
+        for(submeshId = 0; submeshId < submeshCount; submeshId++)
+        {
+          // select mesh and submesh for further data access
+          if(pCalRenderer->selectMeshSubmesh(meshId, submeshId))
+          {
+            my->mesh->data->vertices[pCalRenderer->getVertexCount()+1] = vsx_vector(0,0,0);
+            pCalRenderer->getVertices(&my->mesh->data->vertices[0].x);
+            my->mesh->data->vertex_normals[pCalRenderer->getVertexCount()+1] = vsx_vector(0,0,0);
+            pCalRenderer->getNormals(&my->mesh->data->vertex_normals[0].x);
+
+            if (pCalRenderer->isTangentsEnabled(0)) {
+              my->mesh->data->vertex_tangents[pCalRenderer->getVertexCount()+1].x = 0;// = vsx_vector(0,0,0);
+              int num_tagentspaces = pCalRenderer->getTangentSpaces(0,&my->mesh->data->vertex_tangents[0].x);
+              //printf("fetched %d tangents\n", num_tagentspaces);
+            }
+            //else printf("Tangents are NOT enabled\n");
+
+
+            my->mesh->data->vertex_tex_coords[pCalRenderer->getVertexCount()+1].s = 0;
+            pCalRenderer->getTextureCoordinates(0,&my->mesh->data->vertex_tex_coords[0].s);
+
+            int faceCount = pCalRenderer->getFaceCount();
+            (my->mesh)->data->faces.allocate(faceCount*3);
+            pCalRenderer->getFaces((int*)&(my->mesh)->data->faces[0].a);
+            (my->mesh)->data->faces.reset_used(faceCount);
           }
-          //else printf("Tangents are NOT enabled\n");
-
-
-          my->mesh->data->vertex_tex_coords[pCalRenderer->getVertexCount()+1].s = 0;
-          pCalRenderer->getTextureCoordinates(0,&my->mesh->data->vertex_tex_coords[0].s);
-
-          int faceCount = pCalRenderer->getFaceCount();
-          (my->mesh)->data->faces.allocate(faceCount*3);
-          pCalRenderer->getFaces((int*)&(my->mesh)->data->faces[0].a);
-          (my->mesh)->data->faces.reset_used(faceCount);
         }
       }
-    }
-    // end the rendering of the model
-    pCalRenderer->endRendering();
-    if (!my->redeclare_out)
-    {
-      for (unsigned long j = 0; j < my->bones.size(); ++j)
+      // end the rendering of the model
+      pCalRenderer->endRendering();
+      my->thread_state = 2;
+
+      if (0 == my->prev_use_thread) {
+        return 0;
+      }
+      while (my->thread_state == 2)
       {
-        if (my->bones[j].bone != 0)
-        {
-          CalVector t1 = my->bones[j].bone->getTranslationAbsolute();
-          CalQuaternion q2 = my->bones[j].bone->getRotationAbsolute();
-          my->bones[j].result_rotation   ->set( q2.x, 0 );
-          my->bones[j].result_rotation   ->set( q2.y, 1 );
-          my->bones[j].result_rotation   ->set( q2.z, 2 );
-          my->bones[j].result_rotation   ->set( q2.w, 3 );
-
-          my->bones[j].result_translation->set( t1.x, 0 );
-          my->bones[j].result_translation->set( t1.y, 1 );
-          my->bones[j].result_translation->set( t1.z, 2 );
-        }
+        if (my->thread_exit) {my->thread_state = 10; return 0; }
+        usleep(100);
       }
+      
     }
-
-    my->thread_state = 2;
     return 0;
     //pthread_exit((void*) ptr);
 
@@ -796,17 +785,75 @@ public:
     {
       return;
     }
+    if (!bones.size()) return;
 
+    // deal with changes in threading use
+    if (prev_use_thread != use_thread->get())
+    {
+      if (use_thread->get()) {
+        thread_state = 0;
+      }
+      else
+      {
+        // thread is running, kill it off
+        thread_exit = 1;
+        while (thread_state != 10)
+        {
+          usleep(100);
+        }
+        thread_state = 0;
+        thread_exit = 0;
+      }
+      prev_use_thread = use_thread->get();
+    }
+    unsigned long waits=0;
     // if running, stall and wait for thread
     if (thread_state == 1)
-    while (thread_state != 2) {}
-
-
+    {
+      while (thread_state == 1) { usleep(1); }
+      //while (thread_state == 1 && waits < 1000000) { waits++;}
+    }
 
     // this concept assumes that the run takes shorter than the framerate to do
     if (thread_state == 2) { // thread is done
       // no thread running
+      vsx_module_cal3d_loader_threaded* my = this;
+      if (!my->redeclare_out)
+      {
+        for (unsigned long j = 0; j < my->bones.size(); ++j)
+        {
+          if (my->bones[j].bone != 0)
+          {
+            CalVector t1 = my->bones[j].bone->getTranslationAbsolute();
+            CalQuaternion q2 = my->bones[j].bone->getRotationAbsolute();
+            my->bones[j].result_rotation   ->set( q2.x, 0 );
+            my->bones[j].result_rotation   ->set( q2.y, 1 );
+            my->bones[j].result_rotation   ->set( q2.z, 2 );
+            my->bones[j].result_rotation   ->set( q2.w, 3 );
 
+            my->bones[j].result_translation->set( t1.x, 0 );
+            my->bones[j].result_translation->set( t1.y, 1 );
+            my->bones[j].result_translation->set( t1.z, 2 );
+          }
+        }
+      }
+
+      CalQuaternion q2;
+      CalVector t1;
+      for (unsigned long j = 0; j < my->bones.size(); ++j)
+      {
+        t1.x = my->bones[j].translation->get(0);
+        t1.y = my->bones[j].translation->get(1);
+        t1.z = my->bones[j].translation->get(2);
+        q2.x = my->bones[j].param->get(0);
+        q2.y = my->bones[j].param->get(1);
+        q2.z = my->bones[j].param->get(2);
+        q2.w = my->bones[j].param->get(3);
+        if (my->bones[j].bone != 0) {
+          my->bones[j].bone->setRotation(q2);
+          my->bones[j].bone->setTranslation(my->bones[j].o_t + t1);
+        }
+      }
 
       mesh->timestamp++;
       result->set_p(*mesh);
@@ -817,65 +864,30 @@ public:
       // the one we point to now is the one that is going to be worked on
       thread_state = 3;
     }
-
-    if ( (thread_state == 3 || thread_state == 0) && p_updates != param_updates) {
-      p_updates = param_updates;
-      if (bones.size()) {
-        CalQuaternion q2;
-        CalVector t1;
-        /*for (unsigned long j = 0; j < bones.size(); ++j)
-        {
-          t1.x = bones[j].translation->get(0);
-          t1.y = bones[j].translation->get(1);
-          t1.z = bones[j].translation->get(2);
-          q2.x = bones[j].param->get(0);
-          q2.y = bones[j].param->get(1);
-          q2.z = bones[j].param->get(2);
-          q2.w = bones[j].param->get(3);
-          if (bones[j].bone != 0) {
-            bones[j].bone->setRotation(q2);
-            bones[j].bone->setTranslation(bones[j].o_t + t1);
-          }
-        }*/
-/*
-        if (!redeclare_out)
-        {
-          for (unsigned long j = 0; j < bones.size(); ++j)
-          {
-            if (bones[j].bone != 0)
-            {
-              CalVector t1 = bones[j].bone->getTranslationAbsolute();
-              CalQuaternion q2 = bones[j].bone->getRotationAbsolute();
-              bones[j].result_rotation   ->set( q2.x, 0 );
-              bones[j].result_rotation   ->set( q2.y, 1 );
-              bones[j].result_rotation   ->set( q2.z, 2 );
-              bones[j].result_rotation   ->set( q2.w, 3 );
-  
-              bones[j].result_translation->set( t1.x, 0 );
-              bones[j].result_translation->set( t1.y, 1 );
-              bones[j].result_translation->set( t1.z, 2 );
-            }
-          }
-        }
-*/
-        if (0 == use_thread->get())
-        {
-          worker((void*)this);
-        } else
-        {
-          //printf("creating thread\n");
-          pthread_attr_init(&worker_t_attr);
-          //pthread_attr_setdetachstate(&worker_t_attr, PTHREAD_CREATE_JOINABLE);
-
-          thread_state = 1;
-
-          pthread_create(&worker_t, &worker_t_attr, &worker, (void*)this);
-          pthread_detach(worker_t);
-        }
-        //printf("done creating thread\n");
+    //-------------------------------------
+    // no-thread execution
+    if (0 == use_thread->get())
+    {
+      if (p_updates != param_updates)
+      {
+        p_updates = param_updates;
+        worker((void*)this);
       }
+    } else
+    {
+      // threaded execution
+      if ( (thread_state == 0))
+      {
+        //printf("creating thread\n");
+        pthread_attr_init(&worker_t_attr);
+        //pthread_attr_setdetachstate(&worker_t_attr, PTHREAD_CREATE_JOINABLE);
+
+        pthread_create(&worker_t, &worker_t_attr, &worker, (void*)this);
+        pthread_detach(worker_t);
+      }
+
     }
-    if (!redeclare_out)
+    /*if (!redeclare_out)
     {
       for (unsigned long j = 0; j < bones.size(); ++j)
       {
@@ -893,14 +905,18 @@ public:
           bones[j].result_translation->set( t1.z, 2 );
         }
       }
-    }
+    }*/
   }
 
   void on_delete() {
+    thread_exit = 1;
+    while (thread_state != 10)
+    {
+      usleep(100);
+    }
     if (c_model) {
       delete (CalCoreModel*)c_model;
     }
-    //mesh.clear();
   }
 };
 

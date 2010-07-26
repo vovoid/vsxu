@@ -4,6 +4,7 @@
 #include "main.h"
 #include "vsx_math_3d.h"
 #include "vsx_font/vsx_font.h"
+#include "vsx_glsl.h"
 
 vsx_engine_environment* engine_environment = 0;
 
@@ -199,7 +200,7 @@ loading_done = true;
   }
 };
 
-#ifndef VSXU_OPENGL_ES
+
 class vsx_module_render_dots : public vsx_module {
   // in
 	vsx_module_param_mesh* mesh_in;
@@ -217,7 +218,7 @@ class vsx_module_render_dots : public vsx_module {
 public:
   void module_info(vsx_module_info* info) {
     info->identifier = "renderers;mesh;mesh_dot_render";
-    info->description = "Renders a dot at each vertex in the mesh.\nWorks great with a random point mesh.";
+    info->description = "Renders a dot at each vertex in the mesh.";
     info->in_param_spec = "mesh_in:mesh,base_color:float4,dot_size:float";
   	info->out_param_spec = "render_out:render";
   	info->component_class = "render";
@@ -244,11 +245,17 @@ public:
     mesh = mesh_in->get_addr();
     if (mesh) {
       glColor4f(base_color->get(0),base_color->get(1),base_color->get(2),base_color->get(3));
-      glBegin(GL_POINTS);
+
+      glEnableClientState(GL_VERTEX_ARRAY);
+      glVertexPointer(3, GL_FLOAT, sizeof(vsx_vector), mesh->data->vertices.get_pointer());
+      glDrawArrays(GL_POINTS,0,mesh->data->vertices.size());
+      glDisableClientState(GL_VERTEX_ARRAY);
+      
+      /*glBegin(GL_POINTS);
 	      for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
 	        glVertex3f(mesh->data->vertices[i].x,mesh->data->vertices[i].y,mesh->data->vertices[i].z);
 	      }
-      glEnd();
+      glEnd();*/
     }
     glPointSize(prev_psize);
 
@@ -257,6 +264,146 @@ public:
 	void on_delete() {
   }
 };
+
+
+class vsx_module_render_billboards : public vsx_module {
+  // in
+  vsx_module_param_mesh* mesh_in;
+  vsx_module_param_float4* base_color;
+  vsx_module_param_float* dot_size;
+
+  vsx_module_param_string* i_vertex_program;
+  vsx_module_param_string* i_fragment_program;
+  // out
+  vsx_module_param_render* render_out;
+  // internal
+  vsx_mesh* mesh;
+  vsx_matrix ma;
+  vsx_vector upv;
+
+  GLuint dlist;
+  bool list_built;
+  vsx_glsl shader;
+
+  void param_set_notify(const vsx_string& name) {
+    if ((name == "vertex_program" || name == "fragment_program")) {
+      //printf("PARAM_SET_NOTIFY %s\n\n",name.c_str());
+      shader.vertex_program = i_vertex_program->get();
+      shader.fragment_program = i_fragment_program->get();
+      message = shader.link();//"module||"+shader.get_log();
+      if (message.size() == 0) {
+        redeclare_in = true;
+        message = "module||ok";
+      }
+    }
+  }
+
+public:
+  void module_info(vsx_module_info* info) {
+    info->identifier = "renderers;mesh;mesh_dot_billboards";
+    info->description = "Renders a texture billboard at each vertex in the mesh.";
+    info->in_param_spec = "mesh_in:mesh,base_color:float4,dot_size:float,shader_params:complex{vertex_program:string,fragment_program:string"
+    +shader.get_param_spec()+"}";
+    info->out_param_spec = "render_out:render";
+    info->component_class = "render";
+    loading_done = true;
+  }
+
+  void redeclare_in_params(vsx_module_param_list& in_parameters)
+  {
+    shader.declare_params(in_parameters);
+    mesh_in = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_in");
+    //mesh_in->set_p(mesh);
+    base_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"base_color");
+    base_color->set(1.0f,0);
+    base_color->set(1.0f,1);
+    base_color->set(1.0f,2);
+    base_color->set(1.0f,3);
+    dot_size = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"dot_size");
+    dot_size->set(1.0f);
+
+    i_fragment_program = (vsx_module_param_string*)in_parameters.create(VSX_MODULE_PARAM_ID_STRING,"fragment_program");
+    i_fragment_program->set(shader.fragment_program);
+    i_vertex_program = (vsx_module_param_string*)in_parameters.create(VSX_MODULE_PARAM_ID_STRING,"vertex_program");
+    i_vertex_program->set(shader.vertex_program.c_str());
+    
+  }  
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {
+    shader.vertex_program = ""
+      "attribute float _s;\n"
+      "attribute float _a;\n"
+      "attribute vec3  _c;\n"
+      "uniform float _vx;\n"
+      "varying float particle_alpha;\n"
+      "varying vec3 particle_color;\n"
+      "\n"
+      "void main(void)\n"
+      "{\n"
+      "  particle_alpha = _a;\n"
+      "  particle_color = _c;\n"
+      "  gl_Position = ftransform();\n"
+      "  float vertDist = distance(vec3(gl_Position.x,gl_Position.y,gl_Position.z), vec3(0.0,0.0,0.0));\n"
+      "  float dist_alpha;\n"
+      "  dist_alpha = pow(1 / vertDist,1.1);\n"
+      "  gl_PointSize = _vx * 0.155 * dist_alpha * _s;\n"
+      "  if (gl_PointSize < 1.0) particle_alpha = gl_PointSize;\n"
+      "}"
+    ;
+    shader.fragment_program =
+      "uniform sampler2D _tex;\n"
+      "varying float particle_alpha;\n"
+      "varying vec3 particle_color;\n"
+      "void main(void)\n"
+      "{\n"
+        "vec2 l_uv=gl_PointCoord;\n"
+        "const vec2 l_offset = vec2(0.5,0.5);\n"
+        "l_uv-=l_offset;\n"
+        "l_uv=vec2(vec4(l_uv,0.0,1.0));\n"
+        "l_uv+=l_offset;\n"
+        "vec4 a = texture2D(_tex, l_uv);\n"
+        "gl_FragColor = vec4(a.r * particle_color.r, a.g * particle_color.g, a.b * particle_color.b, a.a * particle_alpha);\n"
+      "}\n"
+    ;
+
+    loading_done = true;
+
+    render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+    redeclare_in_params(in_parameters);
+  }
+  void output(vsx_module_param_abs* param) {
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+    #if defined(__linux__) || defined (WIN32)
+      shader.begin();
+    shader.set_uniforms();
+    glEnable( GL_POINT_SPRITE_ARB );
+    glEnable(GL_POINT_SMOOTH);
+    mesh = mesh_in->get_addr();
+    if (mesh) {
+      glColor4f(base_color->get(0),base_color->get(1),base_color->get(2),base_color->get(3));
+
+      glEnableClientState(GL_VERTEX_ARRAY);
+      glVertexPointer(3, GL_FLOAT, sizeof(vsx_vector), mesh->data->vertices.get_pointer());
+      glDrawArrays(GL_POINTS,0,mesh->data->vertices.size());
+      glDisableClientState(GL_VERTEX_ARRAY);
+
+      /*glBegin(GL_POINTS);
+        for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
+          glVertex3f(mesh->data->vertices[i].x,mesh->data->vertices[i].y,mesh->data->vertices[i].z);
+        }
+      glEnd();*/
+    }
+    glDisable(GL_POINT_SMOOTH);
+    glDisable( GL_POINT_SPRITE_ARB );
+    shader.end();
+    glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
+
+    render_out->set(1);
+  }
+  void on_delete() {
+  }
+};
+
+
 
 class vsx_module_render_face_id : public vsx_module {
   // in
@@ -793,6 +940,9 @@ public:
     list_built = false;
   }
 };
+
+
+
 
 ///------------------------------------------------------------------------------------
 #ifndef VSXU_OPENGL_ES
@@ -1350,6 +1500,7 @@ vsx_module* create_new_module(unsigned long module) {
     case 4: return (vsx_module*)(new vsx_module_mesh_render_line);
     case 5: return (vsx_module*)(new vsx_module_render_dots);
     case 6: return (vsx_module*)(new vsx_module_render_face_id);
+    case 7: return (vsx_module*)(new vsx_module_render_billboards);
   }
   return 0;
 }
@@ -1363,7 +1514,7 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 4: delete (vsx_module_mesh_render_line*)m; break;
     case 5: delete (vsx_module_render_dots*)m; break;
     case 6: delete (vsx_module_render_face_id*)m; break;
-
+    case 7: delete (vsx_module_render_billboards*)m; break;
   }
 }
 
@@ -1374,7 +1525,7 @@ unsigned long get_num_modules() {
   // on it. The aim here is to make VSXU think that each and one of the available
   // slavation cabinets are a unique module.
 
-  return 7;
+  return 8;
 }
 
 void set_environment_info(vsx_engine_environment* environment)

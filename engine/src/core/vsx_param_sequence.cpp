@@ -481,7 +481,32 @@ void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_
 
 void vsx_param_sequence::remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix) {
 #ifndef VSX_NO_CLIENT
-	total_time = 0.0f; // reset total time for re-calculation
+/*  float last_time; // last time we were called, to see if we should trace back
+  float line_time; // current line time (accumulated)
+  int line_cur; // current line
+  vsx_string cur_val, to_val;
+  float cur_delay;
+  int cur_interpolation;
+  float total_time;
+  bool repeat; // repeat this or stop at end?
+  float time_scaler; // global multiplier
+  float p_time; // internal time
+  float interp_time; // interpolation time for use when feeding the engine interpolator
+*/
+  last_time = 0.0f;
+  line_time = 0.0f;
+  line_cur = 0;
+  cur_val = "";
+  to_val = "";
+  cur_delay = 0.0f;
+  cur_interpolation = 1;
+  total_time = 0.0f; // reset total time for re-calculation
+  repeat = false;
+  time_scaler = 1.0f;
+  p_time = 0.0f;
+  interp_time = 0.0f;
+
+
   //printf("REMOVE_LINE in engine %s\n",cmd_in->raw.c_str());
   long pos = s2i(cmd_in->parts[4]);
   std::vector<vsx_param_sequence_item>::iterator it = items.begin();
@@ -494,10 +519,6 @@ void vsx_param_sequence::remove_line(vsx_command_list* dest, vsx_command_s* cmd_
     }
     items.erase(it);
   }
-  cur_val = to_val = "";
-  last_time = 0.0;
-  line_time = 0.0;
-  line_cur = 0;
   p_time = 0;
 
   dest->add_raw(cmd_prefix+"pseq_r_ok remove "+cmd_in->parts[2]+" "+cmd_in->parts[3]+" "+cmd_in->parts[4]);

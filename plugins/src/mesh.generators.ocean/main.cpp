@@ -6,6 +6,9 @@
 //#include "vsx_string_lib.h"
 #include "fftrefraction.h"
 #include <pthread.h>
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+#include <unistd.h>
+#endif
 
 class vsx_module_mesh_ocean_tunnel_threaded : public vsx_module {
 public:
@@ -28,6 +31,7 @@ public:
   int p_updates;
   bool              worker_running;
   int               thread_state;
+  int               thread_exit;
 
   void module_info(vsx_module_info* info)
   {
@@ -41,6 +45,7 @@ public:
   {
     mesh = &mesh_a;
     thread_state = 0;
+    thread_exit = 0;
     worker_running = false;
     
     loading_done = false;
@@ -55,120 +60,126 @@ public:
 
   static void* worker(void *ptr)
   {
-    vsx_module_mesh_ocean_tunnel_threaded* my = ((vsx_module_mesh_ocean_tunnel_threaded*)ptr);
-
-    my->t += my->time_speed->get()*my->engine->real_dtime;
-    my->ocean.dtime = my->t;
-    my->ocean.display();
-    my->mesh->data->vertices.reset_used(0);
-    my->mesh->data->vertex_normals.reset_used(0);
-    my->mesh->data->vertex_tex_coords.reset_used(0);
-    my->mesh->data->faces.reset_used(0);
-    vsx_face face;
-    vsx_vector g;
-    vsx_vector c;
-    for (int L=-1;L<2;L++)
+    while (1)
     {
-      for (int i=0;i<(BIG_NX-1);i++)
+      vsx_module_mesh_ocean_tunnel_threaded* my = ((vsx_module_mesh_ocean_tunnel_threaded*)ptr);
+      my->thread_state = 1;
+      my->t += my->time_speed->get()*my->engine->real_dtime;
+      my->ocean.dtime = my->t;
+      my->ocean.display();
+      my->mesh->data->vertices.reset_used(0);
+      my->mesh->data->vertex_normals.reset_used(0);
+      my->mesh->data->vertex_tex_coords.reset_used(0);
+      my->mesh->data->faces.reset_used(0);
+      vsx_face face;
+      vsx_vector g;
+      vsx_vector c;
+      for (int L=-1;L<2;L++)
       {
-        unsigned long b = 0;
-        for (int k=-1;k<2;k++)
+        for (int i=0;i<(BIG_NX-1);i++)
         {
-          unsigned long a = 0;
-          for (int j=0;j<(BIG_NY);j++)
+          unsigned long b = 0;
+          for (int k=-1;k<2;k++)
           {
-            //printf("j: %d\n", j);
-            if (j%2 == 1) continue;
-#define TDIV (float)MAX_WORLD_X
-#define TD2  (float)MAX_WORLD_X*0.5f
-            g.x = my->ocean.sea[i][j][0];//+L*MAX_WORLD_X;
-            g.y = my->ocean.sea[i][j][1];//+k*MAX_WORLD_Y;
-            g.z = my->ocean.sea[i][j][2];//*ocean.scale_height;
+            unsigned long a = 0;
+            for (int j=0;j<(BIG_NY);j++)
+            {
+              //printf("j: %d\n", j);
+              if (j%2 == 1) continue;
+  #define TDIV (float)MAX_WORLD_X
+  #define TD2  (float)MAX_WORLD_X*0.5f
+              g.x = my->ocean.sea[i][j][0];//+L*MAX_WORLD_X;
+              g.y = my->ocean.sea[i][j][1];//+k*MAX_WORLD_Y;
+              g.z = my->ocean.sea[i][j][2];//*ocean.scale_height;
 
-            float gr = \
-            PI*2.0f * g.x/(TDIV);
-            float nra = gr + 90.0f / 360.0f * 2*PI;
-
-
-            vsx_vector nn;
-            nn.x = my->ocean.big_normals[i][j][0];
-            nn.y = my->ocean.big_normals[i][j][1];
-            nn.normalize();
-            my->mesh->data->vertex_normals.push_back(vsx_vector(\
-              nn.x* cos(nra) + nn.y * -sin(nra),\
-              nn.x* sin(nra) + nn.y * cos(nra),\
-              my->ocean.big_normals[i][j][2]));
-            my->mesh->data->vertex_normals[my->mesh->data->vertex_normals.size()-1].normalize();
+              float gr = \
+              PI*2.0f * g.x/(TDIV);
+              float nra = gr + 90.0f / 360.0f * 2*PI;
 
 
-            float gz = 2.0f+fabs(g.z)*1.5f;
-            c.x = cos(gr)*gz;
-            c.y = sin(gr)*gz;
-            c.z = g.y*2.0f;
-            b = my->mesh->data->vertices.push_back(c);
-            my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord__(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
-            ++a;
-            if (a >= 3) {
-              face.a = b-3;
-              face.b = b-2;
-              face.c = b-1;
-              my->mesh->data->faces.push_back(face);
-            }
-            g.x = my->ocean.sea[i+1][j][0];//+L*MAX_WORLD_X;
-            g.y = my->ocean.sea[i+1][j][1];//+k*MAX_WORLD_Y;
-            g.z = my->ocean.sea[i+1][j][2];//*ocean.scale_height;
-
-            gr = \
-            PI*2.0f* g.x/(TDIV);
-            nra = gr + 90.0f / 360.0f * 2*PI;
+              vsx_vector nn;
+              nn.x = my->ocean.big_normals[i][j][0];
+              nn.y = my->ocean.big_normals[i][j][1];
+              nn.normalize();
+              my->mesh->data->vertex_normals.push_back(vsx_vector(\
+                nn.x* cos(nra) + nn.y * -sin(nra),\
+                nn.x* sin(nra) + nn.y * cos(nra),\
+                my->ocean.big_normals[i][j][2]));
+              my->mesh->data->vertex_normals[my->mesh->data->vertex_normals.size()-1].normalize();
 
 
-            nn.x = my->ocean.big_normals[i+1][j][0];
-            nn.y = my->ocean.big_normals[i+1][j][1];
-            nn.normalize();
-            my->mesh->data->vertex_normals.push_back(vsx_vector(\
-              nn.x* cos(nra) + nn.y * -sin(nra),\
-              nn.x* sin(nra) + nn.y * cos(nra),\
-              my->ocean.big_normals[i+1][j][2]));
+              float gz = 2.0f+fabs(g.z)*1.5f;
+              c.x = cos(gr)*gz;
+              c.y = sin(gr)*gz;
+              c.z = g.y*2.0f;
+              b = my->mesh->data->vertices.push_back(c);
+              my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord__(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
+              ++a;
+              if (a >= 3) {
+                face.a = b-3;
+                face.b = b-2;
+                face.c = b-1;
+                my->mesh->data->faces.push_back(face);
+              }
+              g.x = my->ocean.sea[i+1][j][0];//+L*MAX_WORLD_X;
+              g.y = my->ocean.sea[i+1][j][1];//+k*MAX_WORLD_Y;
+              g.z = my->ocean.sea[i+1][j][2];//*ocean.scale_height;
 
-            my->mesh->data->vertex_normals[my->mesh->data->vertex_normals.size()-1].normalize();
+              gr = \
+              PI*2.0f* g.x/(TDIV);
+              nra = gr + 90.0f / 360.0f * 2*PI;
 
-            gz = 2.0f+fabs(g.z)*1.5f;
-            c.x = cos(gr)*gz;
-            c.y = sin(gr)*gz;
-            c.z = g.y*2.0f;
-            b = my->mesh->data->vertices.push_back(c);
 
-            my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord__(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
+              nn.x = my->ocean.big_normals[i+1][j][0];
+              nn.y = my->ocean.big_normals[i+1][j][1];
+              nn.normalize();
+              my->mesh->data->vertex_normals.push_back(vsx_vector(\
+                nn.x* cos(nra) + nn.y * -sin(nra),\
+                nn.x* sin(nra) + nn.y * cos(nra),\
+                my->ocean.big_normals[i+1][j][2]));
 
-            ++a;
+              my->mesh->data->vertex_normals[my->mesh->data->vertex_normals.size()-1].normalize();
 
-            if (a >= 4) {
-              face.a = b-3;
-              face.b = b-2;
-              face.c = b-1;
-              my->mesh->data->faces.push_back(face);
+              gz = 2.0f+fabs(g.z)*1.5f;
+              c.x = cos(gr)*gz;
+              c.y = sin(gr)*gz;
+              c.z = g.y*2.0f;
+              b = my->mesh->data->vertices.push_back(c);
+
+              my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord__(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
+
+              ++a;
+
+              if (a >= 4) {
+                face.a = b-3;
+                face.b = b-2;
+                face.c = b-1;
+                my->mesh->data->faces.push_back(face);
+              }
             }
           }
         }
       }
+      //printf("runs\n");
+      my->thread_state = 2;
+      while (my->thread_state == 2)
+      {
+        if (my->thread_exit) {my->thread_state = 10; return 0; }
+        usleep(100);
+      }
     }
-    my->thread_state = 2;
-    return 0;
   }
 
 
   void run() {
     loading_done = true;
     // if running, stall and wait for thread
-    //if (thread_state == 1)
-    //while (thread_state != 2) {  }
-
-
+    float j = 0;
 
     // this concept assumes that the run takes shorter than the framerate to do
     if (thread_state == 2) { // thread is done
       // no thread running
+      //printf("tstate =2...\n");
 
 
       mesh->timestamp++;
@@ -180,8 +191,9 @@ public:
       // the one we point to now is the one that is going to be worked on
       thread_state = 3;
     }
-    if ( (thread_state == 3 || thread_state == 0) )
+    if ( (thread_state == 0) )
     {
+      //printf("tstate =0...\n");
       pthread_attr_init(&worker_t_attr);
 
       thread_state = 1;
@@ -191,9 +203,13 @@ public:
     }
   }
 
-  void on_delete() {
-    if (thread_state == 1)
-    while (thread_state != 2) {}
+  void on_delete()
+  {
+    thread_exit = 1;
+    while (thread_state != 10)
+    {
+      usleep(100);
+    }
   }
 };
 
