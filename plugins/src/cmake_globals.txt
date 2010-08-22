@@ -1,8 +1,12 @@
 set(EXTRA_LIBS "")
 
+if (VSXU_DEBUG_NOPRINTFS EQUAL 1)
+  add_definitions(-g -Wall)
+endif(VSXU_DEBUG_NOPRINTFS EQUAL 1)
+
 if (VSXU_DEBUG EQUAL 1)
   add_definitions( -DVSXU_DEBUG )
-  add_definitions(-g)
+  add_definitions(-g -Wall)
 else (VSXU_DEBUG EQUAL 1)
   add_definitions(-Os)
 endif (VSXU_DEBUG EQUAL 1)

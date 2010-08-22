@@ -89,27 +89,30 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   clear_color->set(0.0f,2);
   clear_color->set(1.0f,3);
   
-  default_ambient[0] = 0.2f;
-  default_ambient[1] = 0.2f;
-  default_ambient[2] = 0.2f;
-  default_ambient[3] = 1.0f;
+  ambient[0] = default_ambient[0] = 0.2f;
+  ambient[1] = default_ambient[1] = 0.2f;
+  ambient[2] = default_ambient[2] = 0.2f;
+  ambient[3] = default_ambient[3] = 1.0f;
   
-  default_diffuse[0] = 0.8f;
-  default_diffuse[1] = 0.8f;
-  default_diffuse[2] = 0.8f;
-  default_diffuse[3] = 1.0f;
+  diffuse[0] = default_diffuse[0] = 0.8f;
+  diffuse[1] = default_diffuse[1] = 0.8f;
+  diffuse[2] = default_diffuse[2] = 0.8f;
+  diffuse[3] = default_diffuse[3] = 1.0f;
   
-  default_specular[0] = 0.0f;
-  default_specular[1] = 0.0f;
-  default_specular[2] = 0.0f;
-  default_specular[3] = 1.0f;
-  default_emission[0] = 0.0f;
-  default_emission[1] = 0.0f;
-  default_emission[2] = 0.0f;
-  default_emission[3] = 1.0f;
-  default_spec_exp = 0.0f;
+  specular[0] = default_specular[0] = 0.0f;
+  specular[1] = default_specular[1] = 0.0f;
+  specular[2] = default_specular[2] = 0.0f;
+  specular[3] = default_specular[3] = 1.0f;
+
+  emission[0] = default_emission[0] = 0.0f;
+  emission[1] = default_emission[1] = 0.0f;
+  emission[2] = default_emission[2] = 0.0f;
+  emission[3] = default_emission[3] = 1.0f;
+  spec_exp = default_spec_exp = 0.0f;
   
 
+  
+  
 	//time_multiplier = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"time_multiplier");
 	//time_multiplier->set(1);
 	//m_timer.start();
@@ -219,7 +222,7 @@ bool activate_offscreen() {
 	glDisable(lights[6]);
 	glDisable(lights[7]);
   // default material
-  unsigned int ff = GL_FRONT_AND_BACK;
+  #define ff GL_FRONT_AND_BACK
   glGetMaterialfv(ff,GL_AMBIENT,&ambient[0]);
   glGetMaterialfv(ff,GL_DIFFUSE,&diffuse[0]);
   glGetMaterialfv(ff,GL_SPECULAR,&specular[0]);
@@ -231,7 +234,7 @@ bool activate_offscreen() {
   glMaterialfv(ff,GL_SPECULAR,default_specular);
   glMaterialfv(ff,GL_EMISSION,default_emission);
   glMaterialfv(ff,GL_SHININESS,&default_spec_exp);
-  
+  #undef ff
   //glMatrixMode(GL_PROJECTION);  
   //gluPerspective(45,(float)(viewport[2])/(float)(viewport[3]),0.001,120.0);
 	
@@ -239,13 +242,13 @@ bool activate_offscreen() {
 }
 
 void deactivate_offscreen() {
-  unsigned int ff = GL_FRONT_AND_BACK;
+  #define ff GL_FRONT_AND_BACK
   glMaterialfv(ff,GL_AMBIENT    ,&ambient[0]);
   glMaterialfv(ff,GL_DIFFUSE    ,&diffuse[0]);
   glMaterialfv(ff,GL_SPECULAR   ,&specular[0]);
   glMaterialfv(ff,GL_EMISSION   ,&emission[0]);
   glMaterialfv(ff,GL_SHININESS  ,&spec_exp);
-  
+  #undef ff
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
 }
 

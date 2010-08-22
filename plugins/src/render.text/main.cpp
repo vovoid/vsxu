@@ -253,6 +253,7 @@ void output(vsx_module_param_abs* param) {
 		if (process_lines())
 		text_in->updates = 0;
 	}
+	if (text_alpha->get() <= 0) return;
 	//printf("text_in updates %i\n",(int)text_in->updates);
   //printf("hoho\n");
 	//if (cur_font !=	font_in->get()) {

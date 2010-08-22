@@ -274,12 +274,14 @@ class vsx_module_render_billboards : public vsx_module {
 
   vsx_module_param_string* i_vertex_program;
   vsx_module_param_string* i_fragment_program;
+  vsx_module_param_int* use_display_list;
   // out
   vsx_module_param_render* render_out;
   // internal
   vsx_mesh* mesh;
   vsx_matrix ma;
   vsx_vector upv;
+  
 
   GLuint dlist;
   bool list_built;
@@ -302,8 +304,7 @@ public:
   void module_info(vsx_module_info* info) {
     info->identifier = "renderers;mesh;mesh_dot_billboards";
     info->description = "Renders a texture billboard at each vertex in the mesh.";
-    info->in_param_spec = "mesh_in:mesh,base_color:float4,dot_size:float,shader_params:complex{vertex_program:string,fragment_program:string"
-    +shader.get_param_spec()+"}";
+    info->in_param_spec = "mesh_in:mesh,base_color:float4,dot_size:float,use_display_list:enum?no|yes,shader_params:complex{vertex_program:string,fragment_program:string"+shader.get_param_spec()+"}";
     info->out_param_spec = "render_out:render";
     info->component_class = "render";
     loading_done = true;
@@ -321,6 +322,8 @@ public:
     base_color->set(1.0f,3);
     dot_size = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"dot_size");
     dot_size->set(1.0f);
+    use_display_list = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"use_display_list");
+    use_display_list->set(0);
 
     i_fragment_program = (vsx_module_param_string*)in_parameters.create(VSX_MODULE_PARAM_ID_STRING,"fragment_program");
     i_fragment_program->set(shader.fragment_program);
@@ -330,29 +333,22 @@ public:
   }  
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {
     shader.vertex_program = ""
-      "attribute float _s;\n"
-      "attribute float _a;\n"
-      "attribute vec3  _c;\n"
-      "uniform float _vx;\n"
       "varying float particle_alpha;\n"
-      "varying vec3 particle_color;\n"
       "\n"
       "void main(void)\n"
       "{\n"
-      "  particle_alpha = _a;\n"
-      "  particle_color = _c;\n"
       "  gl_Position = ftransform();\n"
       "  float vertDist = distance(vec3(gl_Position.x,gl_Position.y,gl_Position.z), vec3(0.0,0.0,0.0));\n"
       "  float dist_alpha;\n"
       "  dist_alpha = pow(1 / vertDist,1.1);\n"
-      "  gl_PointSize = _vx * 0.155 * dist_alpha * _s;\n"
+      "  gl_PointSize = 460.155 * dist_alpha * (1.0+abs((sin(gl_Vertex.x*10.0) * sin (gl_Vertex.z*20.0))));\n"
+      "  particle_alpha = pow(dist_alpha,1.2);\n"
       "  if (gl_PointSize < 1.0) particle_alpha = gl_PointSize;\n"
       "}"
     ;
     shader.fragment_program =
       "uniform sampler2D _tex;\n"
       "varying float particle_alpha;\n"
-      "varying vec3 particle_color;\n"
       "void main(void)\n"
       "{\n"
         "vec2 l_uv=gl_PointCoord;\n"
@@ -361,11 +357,12 @@ public:
         "l_uv=vec2(vec4(l_uv,0.0,1.0));\n"
         "l_uv+=l_offset;\n"
         "vec4 a = texture2D(_tex, l_uv);\n"
-        "gl_FragColor = vec4(a.r * particle_color.r, a.g * particle_color.g, a.b * particle_color.b, a.a * particle_alpha);\n"
+        "gl_FragColor = vec4(a.r, a.g, a.b, a.a * min(particle_alpha,1.0) * 0.1);\n"
       "}\n"
     ;
 
     loading_done = true;
+    list_built = false;
 
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     redeclare_in_params(in_parameters);
@@ -379,18 +376,40 @@ public:
     glEnable(GL_POINT_SMOOTH);
     mesh = mesh_in->get_addr();
     if (mesh) {
-      glColor4f(base_color->get(0),base_color->get(1),base_color->get(2),base_color->get(3));
+      if (!use_display_list->get() && list_built) {
+        list_built = false;
+        glDeleteLists(dlist,1);
+      }
+      //glColor4f(base_color->get(0),base_color->get(1),base_color->get(2),base_color->get(3));
 
-      glEnableClientState(GL_VERTEX_ARRAY);
-      glVertexPointer(3, GL_FLOAT, sizeof(vsx_vector), mesh->data->vertices.get_pointer());
-      glDrawArrays(GL_POINTS,0,mesh->data->vertices.size());
-      glDisableClientState(GL_VERTEX_ARRAY);
+      //glEnableClientState(GL_VERTEX_ARRAY);
+      //glVertexPointer(3, GL_FLOAT, sizeof(vsx_vector), mesh->data->vertices.get_pointer());
 
-      /*glBegin(GL_POINTS);
-        for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
-          glVertex3f(mesh->data->vertices[i].x,mesh->data->vertices[i].y,mesh->data->vertices[i].z);
+      if (!list_built)
+      {
+        // init list -------------------------------------
+        if (use_display_list->get() && list_built == false) {
+          dlist = glGenLists(1);
+          glNewList(dlist,GL_COMPILE);
         }
-      glEnd();*/
+          // draw --------------------
+          glBegin(GL_POINTS);
+          for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
+            glVertex3f(mesh->data->vertices[i].x,mesh->data->vertices[i].y,mesh->data->vertices[i].z);
+          }
+          glEnd();
+          //glDrawArrays(GL_POINTS,0,mesh->data->vertices.size());
+          // -------------------------
+        if (use_display_list->get() && list_built == false) {
+          glEndList();
+          list_built = true;
+        }
+      } else
+      {
+        glCallList(dlist);
+      }
+      // kill list -------------------------------------
+      //glDisableClientState(GL_VERTEX_ARRAY);
     }
     glDisable(GL_POINT_SMOOTH);
     glDisable( GL_POINT_SPRITE_ARB );
@@ -564,6 +583,7 @@ public:
     use_display_list->set(0);
     use_vertex_colors = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"use_vertex_colors");
     use_vertex_colors->set(1);
+    m_colors = true;
     particles_size_center = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"particles_size_center");
     particles_size_center->set(0);
     particles_in = (vsx_module_param_particlesystem*)in_parameters.create(VSX_MODULE_PARAM_ID_PARTICLESYSTEM,"particles");

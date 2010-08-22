@@ -1420,6 +1420,55 @@ void output(vsx_module_param_abs* param) {
 }
 };
 
+
+//-----------------------------------------------------------------------
+//--- GET VIEWPORT SIZE -------------------------------------------------
+//-----------------------------------------------------------------------
+
+
+class vsx_viewport_size : public vsx_module {
+  GLint viewport[4];
+  // in
+  // out
+  vsx_module_param_float* vx;
+  vsx_module_param_float* vy;
+  // internal
+
+public:
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "system;viewport_size";
+    info->description = "Gets current viewport size. Hook\nit to the screen or a texture buffer.";
+    info->in_param_spec = "";
+    info->out_param_spec = "vx:float,vy:float";
+    info->component_class = "render";
+    info->tunnel = true;
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+    vx = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"vx");
+    vx->set(0.0f);
+    vy = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"vy");
+    vy->set(0.0f);
+  }
+
+  void run()
+  {
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    vx->set( (float)fabs((float)(viewport[2])) );
+    vy->set( (float)fabs((float)(viewport[3])) );
+  }
+
+};
+
+
+
+
+
+
 //-----------------------------------------------------------------------
 //---- GL SCALE ---------------------------------------------------------
 //-----------------------------------------------------------------------
@@ -2081,6 +2130,7 @@ vsx_module* create_new_module(unsigned long module) {
     case 20: return (vsx_module*)(new vsx_depth_buffer_clear);
     case 21: return (vsx_module*)(new vsx_depth_func);
 		case 22: return (vsx_module*)(new vsx_texture_bind);
+    case 23: return (vsx_module*)(new vsx_viewport_size);
   }
   return 0;
 }
@@ -2110,13 +2160,14 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 20: delete (vsx_depth_buffer_clear*)m; break;
     case 21: delete (vsx_depth_func*)m; break;
 		case 22: delete (vsx_texture_bind*)m; break;
+    case 23: delete (vsx_viewport_size*)m; break;
   }
 }
 
 unsigned long get_num_modules() {
   // we have only one module. it's id is 0
   glewInit();
-  return 23;
+  return 24;
 }
 
 #endif

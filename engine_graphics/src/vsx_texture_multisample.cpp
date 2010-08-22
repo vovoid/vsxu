@@ -128,16 +128,12 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture) {
     // multi sampled color buffer
     glGenRenderbuffersEXT(1, &colorBuffer);
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, colorBuffer);
-
-    if (float_texture)
-    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_RGBA16F_ARB, width, height);
-    else
-    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_RGBA8, width, height);
+    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 2, GL_RGBA8, width, height);
 
     // multi sampled depth buffer
     glGenRenderbuffersEXT(1, &depthBuffer);
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthBuffer);
-    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_DEPTH_COMPONENT, width, height);
+    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 2, GL_DEPTH_COMPONENT, width, height);
 
     // create fbo for multi sampled content and attach depth and color buffers to it
     glGenFramebuffersEXT(1, &framebuffer_id);
@@ -430,31 +426,22 @@ void vsx_texture::upload_ram_bitmap(unsigned long* data, unsigned long size_x, u
 				// irregularly shaped texture
 				glewInit();
 				if (GLEW_ARB_texture_rectangle) {
-          #if defined(VSXU_DEBUG)
-					printf("GL_TEXTURE_RECTANGLE_EXT 1\n");
-          #endif
+					//printf("GL_TEXTURE_RECTANGLE_EXT 1\n");
 					texture_info.ogl_type = GL_TEXTURE_RECTANGLE_ARB;
 					mipmaps = false;
 				} else
 				{
-          #if defined(VSXU_DEBUG)
-          printf("GL_TEXTURE_MIPMAP FALLBACK 1\n");
-          #endif
+					//printf("GL_TEXTURE_MIPMAP FALLBACK 1\n");
 					texture_info.ogl_type = GL_TEXTURE_2D;
 					mipmaps = true;
 				}
 			#endif
 	  } else
 	  {
-      #if defined(VSXU_DEBUG)
-      printf("no mipmaps, GL_TEXTURE_2D\n");
-      #endif
 			texture_info.ogl_type = GL_TEXTURE_2D;
+	    //printf("GL_TEXTURE_2D 1\n");
 		}
 	} else {
-    //#if defined(VSXU_DEBUG)
-    printf("mipmaps, GL_TEXTURE_2D\n");
-    //#endif
 	  texture_info.ogl_type = GL_TEXTURE_2D;
 	//printf("GL_TEXTURE_2D 2\n");
 	}
@@ -473,10 +460,9 @@ void vsx_texture::upload_ram_bitmap(unsigned long* data, unsigned long size_x, u
   if (upside_down) {
   	unsigned char* data2 = new unsigned char[size_x * size_y * bpp];
   	int dy = 0;
-    int sxbpp = size_x*bpp;
   	for (int y = size_y-1; y >= 0; --y) {
 	    for (unsigned long x = 0; x < size_x*bpp; ++x) {
-      	data2[dy*sxbpp + x] = ((unsigned char*)data)[y*sxbpp + x];
+      	data2[dy*size_x*bpp + x] = ((unsigned char*)data)[y*size_x*bpp + x];
     	}
     	++dy;
   	}

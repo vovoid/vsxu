@@ -189,6 +189,7 @@ class vsx_module_rendered_texture_single : public vsx_module {
 	bool which_buffer;
 	bool allocate_second_texture;
 	int float_texture_int;
+  GLuint glsl_prog;
 
   GLint	viewport[4];
 public:
@@ -418,12 +419,15 @@ bool activate_offscreen() {
 #ifdef __APPLE__
 	glEnable(GL_BLEND);
 #endif
+  glGetIntegerv(GL_CURRENT_PROGRAM, (GLint*)&glsl_prog);
+  glUseProgram(0);
   //glBlendFunc(GL_SRC_ALPHA,GL_ONE);
   loading_done = true;
   return true;
 };
 
 void deactivate_offscreen() {
+  glUseProgram(glsl_prog);
   //printf("dac1\n");
   //printf("texture end capture: %d\n",fbo_stack_pos);
 
