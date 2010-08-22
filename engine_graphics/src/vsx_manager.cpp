@@ -9,7 +9,7 @@ public:
   // init manager with base path to where the effects (.vsx files) can be found
   // i.e. if base_path is /usr/share/vsxu/   then the engine will look in
   // /usr/share/vsxu/_visuals
-  void init(const char* base_path);
+  void init(const char* base_path, const char* sound_type);
 
   // before you render first time, you need to start
   void start();
@@ -46,6 +46,10 @@ public:
   void inc_speed();
   void dec_speed();
 
+  void set_sound_freq(float* data);
+  void set_sound_wave(float* data);
+
+
   // arbitrary engine information (statistics etc)
   // returns information about currently playing effect
   int get_engine_num_modules();
@@ -69,9 +73,9 @@ vsx_manager::vsx_manager()
   int_state_manager = (void*)new vsx_statelist();
 }
 
-void vsx_manager::init(const char* base_path)
+void vsx_manager::init(const char* base_path, const char* sound_type)
 {
-  ((vsx_statelist*)int_state_manager)->init(vsx_string(base_path));
+  ((vsx_statelist*)int_state_manager)->init(vsx_string(base_path),vsx_string(sound_type));
 }
 
 void vsx_manager::start()
@@ -190,6 +194,21 @@ void vsx_manager::dec_speed()
 {
   ((vsx_statelist*)int_state_manager)->dec_speed();
 }
+
+void vsx_manager::set_sound_freq(float* data)
+{
+   ((vsx_statelist*)int_state_manager)->set_sound_freq(data);
+}
+
+/****************************************************************
+S O U N D
+*****************************************************************/
+
+void vsx_manager::set_sound_wave(float* data)
+{
+  ((vsx_statelist*)int_state_manager)->set_sound_wave(data);
+}
+
 
 int vsx_manager::get_engine_num_modules()
 {

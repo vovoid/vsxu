@@ -20,8 +20,9 @@ public:
   // init manager with base path to where the effects (.vsx files) can be found
   // i.e. if base_path is /usr/share/vsxu/   then the engine will look in
   // /usr/share/vsxu/_visuals (linux)
-  // 
-  virtual void init(const char* base_path) {};
+  //
+  // sound types can be "pulseaudio", "media_player", "fmod"
+  virtual void init(const char* base_path, const char* sound_type) {};
 
   // before you render first time, you need to start
   virtual void start() {};
@@ -58,6 +59,11 @@ public:
   virtual float get_speed() { return 0.0f;};
   virtual void inc_speed() {};
   virtual void dec_speed() {};
+
+  // update engine sound data,
+  // arrays MUST be 512 floats long
+  virtual void set_sound_freq(float* data) {};
+  virtual void set_sound_wave(float* data) {};
 
   // arbitrary engine information (statistics etc)
   // returns information about currently playing effect
