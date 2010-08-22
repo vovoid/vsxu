@@ -172,6 +172,8 @@ public:
   void set_amp(float amp);
   void set_speed(float spd);
 
+  // 0 = reserved for wave data
+  // 1 = reserved for frequency data
   void set_float_array_param(int id, vsx_engine_float_array* float_array);
 
   // run once the gfx engine is initialized

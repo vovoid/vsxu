@@ -416,6 +416,32 @@ void vsx_statelist::load_fx_levels_from_user()
 #endif
 }
 
+
+void vsx_statelist::set_sound_freq(float* data)
+{
+  if (!vxe) return;
+  //int_freq.array[511] = 0.0f;
+  //float* dp = int_freq.array.get_pointer();
+  for (unsigned long i = 0; i < 513; i++)
+  {
+    int_freq.array[i] = data[i];
+  }
+  vxe->set_float_array_param(1, &int_freq);
+}
+
+void vsx_statelist::set_sound_wave(float* data)
+{
+  if (!vxe) return;
+  //int_wav.array[511] = 0.0f;
+  //float* dp = int_wav.array.get_pointer();
+  for (unsigned long i = 0; i < 513; i++)
+  {
+    int_wav.array[i] = data[i];
+  }
+  vxe->set_float_array_param(0, &int_wav);
+}
+
+
 void vsx_statelist::save_fx_levels_from_user()
 {
 #if PLATFORM == PLATFORM_LINUX

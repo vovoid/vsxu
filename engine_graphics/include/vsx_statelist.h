@@ -79,6 +79,9 @@ private:
   int first;
   int start_loaded_modules;
 
+  vsx_engine_float_array int_freq;
+  vsx_engine_float_array int_wav;
+
 public:
 
   vsx_engine* get_vxe() {
@@ -111,6 +114,9 @@ public:
   void init(vsx_string base_path,vsx_string init_sound_type);
   void load_fx_levels_from_user();
   void save_fx_levels_from_user();
+
+  void set_sound_freq(float* data);
+  void set_sound_wave(float* data);
   
   vsx_string get_meta_visual_filename();
   vsx_string get_meta_visual_name();

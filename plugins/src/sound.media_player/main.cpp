@@ -256,14 +256,14 @@ void run() {
   if (0 == engine->param_float_arrays.size())
   {
     int i;
-    for (i = 0; i < 512; ++i) {
+    /*for (i = 0; i < 512; ++i) {
         (*(wave.data))[i] = (float)(rand()%1000) * 0.0005 * l_mul;
     }
     wave_p->set_p(wave);
 
     for (i = 0; i < 512; ++i) {
         (*(spectrum.data))[i] = (float)(rand()%1000) * 0.0005 * l_mul;
-    }
+    }*/
   } else
   {
     vsx_engine_float_array* lv_wave_data = engine->param_float_arrays[0];

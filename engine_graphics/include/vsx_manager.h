@@ -60,6 +60,11 @@ public:
   virtual void inc_speed() {};
   virtual void dec_speed() {};
 
+  // update engine sound data,
+  // arrays MUST be 512 floats long
+  virtual void set_sound_freq(float* data) {};
+  virtual void set_sound_wave(float* data) {};
+
   // arbitrary engine information (statistics etc)
   // returns information about currently playing effect
   virtual int get_engine_num_modules() { return 0; };

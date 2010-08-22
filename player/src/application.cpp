@@ -21,6 +21,11 @@ vsx_logo_intro* intro;
 vsx_overlay* overlay = 0;
 bool first = true;
 
+/* uncomment for manual sound injection
+float sound_wave_test[513];
+float sound_freq_test[513];
+*/
+
 void (*app_set_fullscreen)(int,bool) = 0;
 bool (*app_get_fullscreen)(int) = 0;
 
@@ -32,14 +37,33 @@ bool app_draw(int id)
 	if (first)
 	{
 		first = false;
+    // create a new manager
     manager = manager_factory();
     std::string path = PLATFORM_SHARED_FILES_STLSTRING;
-    manager->init( path.c_str() ,"media_player");
+    // init manager with the shared path and sound input type.
+    // manual sound injection: manager->init( path.c_str() , "media_player");
+    manager->init( path.c_str() , "pulseaudio");
+    // create a new text overlay
     overlay = new vsx_overlay;
     overlay->set_manager(manager);
+    // create a new intro (Luna logo) object
     intro = new vsx_logo_intro;
     if (disable_randomizer) manager->set_randomizer(false);
 	}
+
+/* uncomment for manual sound injection
+  for (unsigned long i = 0; i < 512; i++)
+  {
+    sound_wave_test[i] = (float)(rand()%65535-32768)*(1.0f/32768.0f);
+  }
+  for (unsigned long i = 0; i < 512; i++)
+  {
+    sound_freq_test[i] = (float)(rand()%65535)*(1.0f/65535.0f);
+  }
+  manager->set_sound_freq(&sound_freq_test[0]);
+  manager->set_sound_wave(&sound_wave_test[0]);
+  */
+	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (manager) manager->render();
 	if (overlay) overlay->render();
