@@ -79,7 +79,7 @@ void vsx_engine::set_default_values()
   filesystem.set_base_path(vsx_get_data_path());
 }
 
-void vsx_engine::init() {
+void vsx_engine::init(vsx_string sound_type) {
   last_m_time_synch = 0;
   // video stuff
   first_start = true;
@@ -90,7 +90,7 @@ void vsx_engine::init() {
   frame_dfps = 0;
   frame_d = 50;
   component_name_autoinc = 0;
-  build_module_list();
+  build_module_list(sound_type);
 }
 
 vsx_module_param_abs* vsx_engine::get_in_param_by_name(vsx_string module_name, vsx_string param_name)
@@ -376,7 +376,7 @@ void vsx_engine::register_static_module(vsx_string name)
 
 #endif
 
-void vsx_engine::build_module_list() {
+void vsx_engine::build_module_list(vsx_string sound_type) {
   if (module_list.size()) return;
   unsigned long total_num_modules = 0;
   #ifdef VSXU_MODULES_STATIC
@@ -595,6 +595,16 @@ void vsx_engine::build_module_list() {
         module_handle = LoadLibrary((*it).c_str());
       #endif
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+        if (sound_type != "")
+        {
+          vsx_string fndeli = ".";
+          vsx_avector<vsx_string> fnparts;
+          explode(parts[parts.size()-1], fndeli, fnparts);
+          if (fnparts[0] == "sound")
+          {
+            if (fnparts[1] != sound_type) continue;
+          }
+        }
         module_handle = dlopen((*it).c_str(), RTLD_NOW);
         if (!module_handle) {
 			    #ifdef VSXU_DEVELOPER

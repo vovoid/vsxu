@@ -8,7 +8,7 @@ void vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info) {
     vxe_local = new vsx_engine(own_path);
     vxe_local->dump_modules_to_disk = false;
     vxe_local->no_client_time = true;
-    vxe_local->init();
+    vxe_local->init(sound_type);
     vxe_local->start();
     (*state_iter).engine = vxe_local;
 #ifdef VSXU_DEBUG
@@ -225,7 +225,7 @@ void vsx_statelist::render()
 #endif
       lvxe = new vsx_engine(own_path);
       lvxe->dump_modules_to_disk = false;
-      lvxe->init();
+      lvxe->init(sound_type);
       lvxe->start();
       lvxe->load_state(*it);
       faders.push_back(lvxe);
@@ -461,7 +461,7 @@ void vsx_statelist::save_fx_levels_from_user()
 }
 
 
-void vsx_statelist::init(vsx_string base_path)
+void vsx_statelist::init(vsx_string base_path,vsx_string init_sound_type)
 {
   no_fbo_ati = false;
   if (vsx_string((char*)glGetString(GL_VENDOR)) == vsx_string("ATI Technologies Inc.")) no_fbo_ati = true;
@@ -477,6 +477,7 @@ void vsx_statelist::init(vsx_string base_path)
   first = 2;
   show_progress_bar = false;
   vxe = 0;
+  sound_type = init_sound_type;
 
   cmd_out = 0;
   own_path = base_path;

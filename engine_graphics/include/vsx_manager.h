@@ -20,8 +20,9 @@ public:
   // init manager with base path to where the effects (.vsx files) can be found
   // i.e. if base_path is /usr/share/vsxu/   then the engine will look in
   // /usr/share/vsxu/_visuals (linux)
-  // 
-  virtual void init(const char* base_path) {};
+  //
+  // sound types can be "pulseaudio", "media_player", "fmod"
+  virtual void init(const char* base_path, const char* sound_type) {};
 
   // before you render first time, you need to start
   virtual void start() {};

@@ -58,6 +58,7 @@ private:
 
   vsx_string config_dir;
   vsx_string visual_path;
+  vsx_string sound_type;
 
   void init_current(vsx_engine *vxe_local, state_info* info);
   float transition_time;
@@ -107,7 +108,7 @@ public:
   float get_fx_level();
   void toggle_fullscreen();
   void render();
-  void init(vsx_string base_path);
+  void init(vsx_string base_path,vsx_string init_sound_type);
   void load_fx_levels_from_user();
   void save_fx_levels_from_user();
   

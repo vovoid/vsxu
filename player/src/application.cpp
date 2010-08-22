@@ -34,7 +34,7 @@ bool app_draw(int id)
 		first = false;
     manager = manager_factory();
     std::string path = PLATFORM_SHARED_FILES_STLSTRING;
-    manager->init( path.c_str() );
+    manager->init( path.c_str() ,"media_player");
     overlay = new vsx_overlay;
     overlay->set_manager(manager);
     intro = new vsx_logo_intro;

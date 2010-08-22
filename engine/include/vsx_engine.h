@@ -55,7 +55,7 @@ private:
 	std::map<vsx_string,vsx_module_info*> module_list;
 	std::map<vsx_string,vsx_module_info*>::const_iterator module_iter;
 	std::map<vsx_string,module_dll_info*> module_dll_list;
-	void build_module_list(); // (re)builds the module_list
+	void build_module_list(vsx_string sound_type = ""); // (re)builds the module_list
 
 	std::list<vsx_comp*> outputs;
 
@@ -175,7 +175,7 @@ public:
   void set_float_array_param(int id, vsx_engine_float_array* float_array);
 
   // run once the gfx engine is initialized
-  void init();
+  void init(vsx_string sound_type = "");
   // loads a new state (clearing out the previous one)
   int load_state(vsx_string filename, vsx_string *error_string = 0);
   // clears out the current state

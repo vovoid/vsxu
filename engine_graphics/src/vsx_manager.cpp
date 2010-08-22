@@ -9,7 +9,7 @@ public:
   // init manager with base path to where the effects (.vsx files) can be found
   // i.e. if base_path is /usr/share/vsxu/   then the engine will look in
   // /usr/share/vsxu/_visuals
-  void init(const char* base_path);
+  void init(const char* base_path, const char* sound_type);
 
   // before you render first time, you need to start
   void start();
@@ -69,9 +69,9 @@ vsx_manager::vsx_manager()
   int_state_manager = (void*)new vsx_statelist();
 }
 
-void vsx_manager::init(const char* base_path)
+void vsx_manager::init(const char* base_path, const char* sound_type)
 {
-  ((vsx_statelist*)int_state_manager)->init(vsx_string(base_path));
+  ((vsx_statelist*)int_state_manager)->init(vsx_string(base_path),vsx_string(sound_type));
 }
 
 void vsx_manager::start()
