@@ -32,7 +32,7 @@ add_subdirectory(src/render.vovoid)
 #sound input (and in some cases output) module(s)
 if (APPLE)
   #add fruity code here
-else (APPLE
+else (APPLE)
   if(VSXU_SOUND_FMOD)
     message("*** Building FMOD sound support")
     add_subdirectory(src/sound.fmod)
