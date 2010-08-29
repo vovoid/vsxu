@@ -257,6 +257,7 @@ void module_info(vsx_module_info* info)
 	//}
 	//printf("inparamspec: %s\n",info->in_param_spec.c_str());
   info->component_class = "render";
+  info->tunnel = true;
 }
 
 
