@@ -257,6 +257,7 @@ void module_info(vsx_module_info* info)
 	//}
 	//printf("inparamspec: %s\n",info->in_param_spec.c_str());
   info->component_class = "render";
+  info->tunnel = true;
 }
 
 
@@ -337,7 +338,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 }
 
 bool activate_offscreen() {
-  //printf("begin of activate offscreen\n");
+  //printf("GLSL::activate offscreen %f\n",engine->vtime);
 
 #if PLATFORM == PLATFORM_LINUX || PLATFORM == PLATFORM_WINDOWS
   shader.begin();
@@ -357,10 +358,12 @@ void run() {
     redeclare_in = true;
     first = false;
   }*/
+  //printf("GLSL RUN\n");
     render_result->set(1);
 }
 
 void deactivate_offscreen() {
+  //printf("GLSL::deactivate offscreen %f\n",engine->vtime);
   shader.end();
 }
 
