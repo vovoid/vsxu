@@ -44,6 +44,7 @@ vsx_param_sequence_list::vsx_param_sequence_list(void* my_engine) {
   other_time_source = 0;
   run_on_edit_enabled = true;
   total_time = 0.0f;
+  int_vtime = 0.0f;
 }
 
 vsx_param_sequence_list::~vsx_param_sequence_list()
@@ -72,6 +73,9 @@ vsx_param_sequence_list::vsx_param_sequence_list(const vsx_param_sequence_list &
 		parameter_channel_list.push_back(ps);
 	}
 	// WARNING TO SELF! ONRY INTENDED FOR POOL USAGE, NO MASTER CHANNELS COPIED
+  other_time_source = 0;
+  total_time = 0.0f;
+  int_vtime = 0.0f;  
 }
 
 

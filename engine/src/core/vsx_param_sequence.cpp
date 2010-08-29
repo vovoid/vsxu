@@ -51,7 +51,8 @@ void vsx_param_sequence::execute(float ptime) {
     return;
   } */
   //float ptime = comp->local_engine_info.dtime;  // time to go in one direction
-  if (line_time == 0 && line_cur == 0) {
+  if (line_time == 0
+    && line_cur == 0) {
     if (cur_val == "") {
       cur_val = items[0].value;
       cur_delay = items[0].total_length;
@@ -315,6 +316,7 @@ vsx_param_sequence::vsx_param_sequence(int p_type,vsx_engine_param* param) {
   line_time = 0.0f;
   line_cur = 0;
   p_time = 0;
+  cur_delay = 0.0f;
   vsx_param_sequence_item pa;
   pa.total_length = 3;
 
@@ -366,6 +368,7 @@ vsx_param_sequence::vsx_param_sequence() {
   line_cur = 0;
   p_time = 0;
 	total_time = 0.0f;
+  cur_delay = 0.0f;
 }
 
 /*void vsx_param_sequence::add_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix) {

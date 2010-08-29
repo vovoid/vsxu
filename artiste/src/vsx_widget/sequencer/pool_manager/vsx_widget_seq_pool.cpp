@@ -47,6 +47,7 @@ public:
 	void extra_init()
 	{
 		dragging = false;
+    draw_tooltip = 0;
 		editor->mirror_mouse_move_object = this;
 		editor->mirror_mouse_move_passive_object = this;
 		editor->mirror_mouse_down_object = this;
