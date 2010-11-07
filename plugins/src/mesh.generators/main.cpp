@@ -4,6 +4,7 @@
 #include "main.h"
 #include "vsx_math_3d.h"
 #include "vsx_sequence.h"
+#include "vsx_bspline.h"
 
 class vsx_module_mesh_rand_points : public vsx_module {
   // in
@@ -84,6 +85,92 @@ public:
     //  }
   }
 };
+
+
+
+
+class vsx_module_mesh_bspline_vertices : public vsx_module {
+  // in
+  vsx_module_param_mesh* source;
+  vsx_module_param_float* density;
+  // out
+  vsx_module_param_mesh* result;
+  // internal
+  vsx_mesh mesh;
+  vsx_bspline spline0;
+  bool first_run;
+public:
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "mesh;vertices;bspline_vertices";
+    info->description = "";
+    info->out_param_spec = "mesh:mesh";
+    info->in_param_spec =
+  "\
+  source:mesh,\
+  density:float\
+  ";
+    info->component_class = "mesh";
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+
+    source = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH, "source" );
+    
+    density = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "density" );
+    density->set(10);
+    
+    result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH, "mesh" );
+    result->set_p(mesh);
+    first_run = true;
+    spline0.init(vsx_vector(0), 0.7f, 0.3f, 0.6f);
+  }
+
+  void run() {
+    vsx_mesh* in = source->get_addr();
+    if (!in) return;
+    //if (mesh.data->vertices.size() != (int)num_points) {
+    spline0.points.set_volatile();
+    spline0.points.set_data(in->data->vertices.get_pointer(), in->data->vertices.size() );
+    spline0.set_pos(0.0f);
+    spline0.step(1);
+    int idens = (int)floor(density->get());
+    float step = 1.0f / (float)idens;
+      //mesh.data->vertices.reset_used();
+    if (in->timestamp != mesh.timestamp) first_run = true;
+    
+    if (first_run || param_updates) {
+      //printf("generating random points\n");
+      int i;
+      for (i = 0; i < (int)(in->data->vertices.size()-1) * idens; ++i) {
+        spline0.step(step);
+        mesh.data->vertices[i] = spline0.calc_coord();
+      }
+      mesh.data->vertices.reset_used(i);
+      first_run = false;
+      param_updates = 0;
+      mesh.timestamp = in->timestamp;
+      result->set_p(mesh);
+    } /*else {
+      if (num_points->get() < mesh.data->vertices.size()) {
+        mesh.data->vertices.reset_used((int)num_points->get());
+      } else
+      if (num_points->get() > mesh.data->vertices.size()) {
+        for (int i = mesh.data->vertices.size(); i < (int)num_points->get(); ++i) {
+          mesh.data->vertices[i].x = ((rand()%10000)*0.0001-0.5)*scaling->get(0);
+          mesh.data->vertices[i].y = ((rand()%10000)*0.0001-0.5)*scaling->get(1);
+          mesh.data->vertices[i].z = ((rand()%10000)*0.0001-0.5)*scaling->get(2);
+        }
+      }
+    }*/
+      //printf("randMesh done %d\n",mesh.data->vertices.size());
+    //  }
+  }
+};
+
+
 
 class vsx_module_mesh_lightning_vertices : public vsx_module {
   // in
@@ -2423,6 +2510,7 @@ vsx_module* create_new_module(unsigned long module) {
     case 10: return (vsx_module*)(new vsx_module_mesh_torus_knot);
     case 11: return (vsx_module*)(new vsx_module_mesh_lightning_vertices);
     case 12: return (vsx_module*)(new vsx_module_mesh_ribbon_cloth);
+    case 13: return (vsx_module*)(new vsx_module_mesh_bspline_vertices);
   }
   return 0;
 }
@@ -2442,12 +2530,13 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 10: delete (vsx_module_mesh_torus_knot*)m; break;
     case 11: delete (vsx_module_mesh_lightning_vertices*)m; break;
     case 12: delete (vsx_module_mesh_ribbon_cloth*)m; break;
+    case 13: delete (vsx_module_mesh_bspline_vertices*)m; break;
   }
 }
 
 unsigned long get_num_modules() {
   // we have only one module. it's id is 0
-  return 13;
+  return 14;
 }
 
 #endif
