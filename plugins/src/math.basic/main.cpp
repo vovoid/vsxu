@@ -272,54 +272,54 @@ public:
 
 class module_3float_to_float3 : public vsx_module {
   // in
-	vsx_module_param_float* floata;
-	vsx_module_param_float* floatb;
-	vsx_module_param_float* floatc;
-	// out
-	vsx_module_param_float3* result3;
-	// internal
+  vsx_module_param_float* floata;
+  vsx_module_param_float* floatb;
+  vsx_module_param_float* floatc;
+  // out
+  vsx_module_param_float3* result3;
+  // internal
 public:
 
 
-	void module_info(vsx_module_info* info)
-	{
-	  info->identifier = "maths;converters;3float_to_float3";
-	  info->description = "[floata, floatb, floatc] are copied and \n"
-												"converted into \n"
-												"[result_float3] which is a float3\n"
-												"\n"
-												"This is a simple conversion module.\n"
-												"Whenever possible, try to set values\n"
-												"with sliders, this is only good if you\n"
-												"really need to convert";
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "maths;converters;3float_to_float3";
+    info->description = "[floata, floatb, floatc] are copied and \n"
+                        "converted into \n"
+                        "[result_float3] which is a float3\n"
+                        "\n"
+                        "This is a simple conversion module.\n"
+                        "Whenever possible, try to set values\n"
+                        "with sliders, this is only good if you\n"
+                        "really need to convert";
 
-	  info->out_param_spec = "result_float3:float3";
-	  info->in_param_spec = "floata:float?help=`Set it to anything you like :)`,"
-													"floatb:float,"
-													"floatc:float";
+    info->out_param_spec = "result_float3:float3";
+    info->in_param_spec = "floata:float?help=`Set it to anything you like :)`,"
+                          "floatb:float,"
+                          "floatc:float";
 
-	  info->component_class = "parameters";
-	}
+    info->component_class = "parameters";
+  }
 
-	void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
-	{
-	  loading_done = true;
-		floata = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"floata");
-		floatb = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"floatb");
-		floatc = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"floatc");
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+    floata = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"floata");
+    floatb = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"floatb");
+    floatc = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"floatc");
 
-		result3 = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"result_float3");
-		result3->set(0.0f, 0);
-		result3->set(0.0f, 1);
-		result3->set(0.0f, 2);
-	//--------------------------------------------------------------------------------------------------
-	}
+    result3 = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"result_float3");
+    result3->set(0.0f, 0);
+    result3->set(0.0f, 1);
+    result3->set(0.0f, 2);
+  //--------------------------------------------------------------------------------------------------
+  }
 
-	void run() {
-	  result3->set(floata->get(),0);
-	  result3->set(floatb->get(),1);
-	  result3->set(floatc->get(),2);
-	}
+  void run() {
+    result3->set(floata->get(),0);
+    result3->set(floatb->get(),1);
+    result3->set(floatc->get(),2);
+  }
 
 };
 
@@ -332,14 +332,14 @@ void module_4float_to_float4::module_info(vsx_module_info* info)
 {
   info->identifier = "maths;converters;4float_to_float4";
   info->description = ""
-											"[floata, floatb, floatc, floatd] are copied and \n"
-											"converted into \n"
-											"[result_float4] which is a float3\n"
-											"\n"
-											"This is a simple conversion module.\n"
-											"Whenever possible, try to set values\n"
-											"with sliders, this is only good if you\n"
-											"really need to convert";
+                      "[floata, floatb, floatc, floatd] are copied and \n"
+                      "converted into \n"
+                      "[result_float4] which is a float3\n"
+                      "\n"
+                      "This is a simple conversion module.\n"
+                      "Whenever possible, try to set values\n"
+                      "with sliders, this is only good if you\n"
+                      "really need to convert";
 
   info->out_param_spec = "result_float4:float4";
   info->in_param_spec = "\
@@ -354,16 +354,16 @@ floatd:float";
 void module_4float_to_float4::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   loading_done = true;
-	floata = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"floata");
-	floatb = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"floatb");
-	floatc = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"floatc");
-	floatd = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"floatd");
-	floata->set(1);
+  floata = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"floata");
+  floatb = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"floatb");
+  floatc = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"floatc");
+  floatd = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"floatd");
+  floata->set(1);
   floatb->set(1);
-	floatc->set(1);
-	floatd->set(1);
+  floatc->set(1);
+  floatd->set(1);
 
-	result4 = (vsx_module_param_float4*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"result_float4");
+  result4 = (vsx_module_param_float4*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"result_float4");
   result4->set(1,0);
   result4->set(1,1);
   result4->set(1,2);
@@ -398,13 +398,13 @@ param2:float3";
 void module_vector_add::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   loading_done = true;
-	param1 = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"param1");
-	param2 = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"param2");
+  param1 = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"param1");
+  param2 = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"param2");
 
-	result3 = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"result_float3");
-	result3->set(0,0);
-	result3->set(0,1);
-	result3->set(0,2);
+  result3 = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"result_float3");
+  result3->set(0,0);
+  result3->set(0,1);
+  result3->set(0,2);
 //--------------------------------------------------------------------------------------------------
 }
 
@@ -484,13 +484,13 @@ param2:float";
 void module_vector_add_float::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   loading_done = true;
-	param1 = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"param1");
-	param2 = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param2");
+  param1 = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"param1");
+  param2 = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param2");
 
-	result3 = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"result_float3");
-	result3->set(0,0);
-	result3->set(0,1);
-	result3->set(0,2);
+  result3 = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"result_float3");
+  result3->set(0,0);
+  result3->set(0,1);
+  result3->set(0,2);
 //--------------------------------------------------------------------------------------------------
 }
 
@@ -506,45 +506,45 @@ void module_vector_add_float::run() {
 
 class module_vector_mul_float : public vsx_module {
   // in
-	vsx_module_param_float3* param1;
-	vsx_module_param_float* param2;
+  vsx_module_param_float3* param1;
+  vsx_module_param_float* param2;
 
-	// out
-	vsx_module_param_float3* result3;
-	// internal
+  // out
+  vsx_module_param_float3* result3;
+  // internal
 public:
 
-	void module_info(vsx_module_info* info)
-	{
-	  info->identifier = "maths;arithmetics;vector;vector_mul_float||maths;arithmetics;float3;float3_mul_float";
-	  info->description = "multiplies each of the values in\n"
-	                      "the float3 vector with the float\n"
-	                      "value in param1";
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "maths;arithmetics;vector;vector_mul_float||maths;arithmetics;float3;float3_mul_float";
+    info->description = "multiplies each of the values in\n"
+                        "the float3 vector with the float\n"
+                        "value in param1";
 
-	  info->out_param_spec = "result_float3:float3";
-	  info->in_param_spec = "param1:float3,"
-													"param2:float";
-	  info->component_class = "parameters";
-	}
+    info->out_param_spec = "result_float3:float3";
+    info->in_param_spec = "param1:float3,"
+                          "param2:float";
+    info->component_class = "parameters";
+  }
 
-	void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
-	{
-	  loading_done = true;
-		param1 = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"param1");
-		param2 = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param2");
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+    param1 = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"param1");
+    param2 = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param2");
 
-		result3 = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"result_float3");
-		result3->set(0,0);
-		result3->set(0,1);
-		result3->set(0,2);
-	//--------------------------------------------------------------------------------------------------
-	}
+    result3 = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"result_float3");
+    result3->set(0,0);
+    result3->set(0,1);
+    result3->set(0,2);
+  //--------------------------------------------------------------------------------------------------
+  }
 
-	void run() {
-	  result3->set(param1->get(0)*param2->get(),0);
-	  result3->set(param1->get(1)*param2->get(),1);
-	  result3->set(param1->get(2)*param2->get(),2);
-	}
+  void run() {
+    result3->set(param1->get(0)*param2->get(),0);
+    result3->set(param1->get(1)*param2->get(),1);
+    result3->set(param1->get(2)*param2->get(),2);
+  }
 
 };
 
@@ -730,54 +730,122 @@ public:
 
 class module_vector_4float_to_quaternion : public vsx_module {
   // in
-	vsx_module_param_float* param1;
-	vsx_module_param_float* param2;
-	vsx_module_param_float* param3;
-	vsx_module_param_float* param4;
+  vsx_module_param_float* param1;
+  vsx_module_param_float* param2;
+  vsx_module_param_float* param3;
+  vsx_module_param_float* param4;
 
-	// out
-	vsx_module_param_quaternion* result_quat;
-	// internal
+  // out
+  vsx_module_param_quaternion* result_quat;
+  // internal
 public:
 
-	void module_info(vsx_module_info* info)
-	{
-	  info->identifier = "maths;converters;4float_to_quaternion";
-	  info->description = "takes 4 float values and forms a\n"
-	                      "quaternion\n";
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "maths;converters;4float_to_quaternion";
+    info->description = "takes 4 float values and forms a\n"
+                        "quaternion\n";
 
-	  info->out_param_spec = "result_quat:quaternion";
-	  info->in_param_spec = "param1:float,"
-													"param2:float,"
-													"param3:float,"
-													"param4:float";
-	  info->component_class = "parameters";
-	}
+    info->out_param_spec = "result_quat:quaternion";
+    info->in_param_spec = "param1:float,"
+                          "param2:float,"
+                          "param3:float,"
+                          "param4:float";
+    info->component_class = "parameters";
+  }
 
-	void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
-	{
-	  loading_done = true;
-		param1 = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param1");
-		param2 = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param2");
-		param3 = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param3");
-		param4 = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param4");
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+    param1 = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param1");
+    param2 = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param2");
+    param3 = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param3");
+    param4 = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param4");
 
-		result_quat = (vsx_module_param_quaternion*)out_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION,"result_quat");
-		result_quat->set(0.0f,0);
-		result_quat->set(0.0f,1);
-		result_quat->set(0.0f,2);
-		result_quat->set(1.0f,3);
-	//--------------------------------------------------------------------------------------------------
-	}
+    result_quat = (vsx_module_param_quaternion*)out_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION,"result_quat");
+    result_quat->set(0.0f,0);
+    result_quat->set(0.0f,1);
+    result_quat->set(0.0f,2);
+    result_quat->set(1.0f,3);
+  //--------------------------------------------------------------------------------------------------
+  }
 
-	void run() {
-	  result_quat->set(param1->get(),0);
-	  result_quat->set(param2->get(),1);
-	  result_quat->set(param3->get(),2);
-	  result_quat->set(param4->get(),3);
-	}
+  void run() {
+    result_quat->set(param1->get(),0);
+    result_quat->set(param2->get(),1);
+    result_quat->set(param3->get(),2);
+    result_quat->set(param4->get(),3);
+  }
 
 };
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+class module_vector_float4_to_4float : public vsx_module {
+  // in
+  vsx_module_param_float4* in_float4;
+
+  // out
+  vsx_module_param_float* param1;
+  vsx_module_param_float* param2;
+  vsx_module_param_float* param3;
+  vsx_module_param_float* param4;
+  // internal
+public:
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "maths;converters;float4_to_4float";
+    info->description = "takes float4\n"
+                        "outputs 4 floats\n";
+
+    info->in_param_spec = "in_float4:float4";
+    info->out_param_spec = "param1:float,"
+                           "param2:float,"
+                           "param3:float,"
+                           "param4:float";
+    info->component_class = "parameters";
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+
+    in_float4 = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"in_float4");
+    in_float4->set(0.0f,0);
+    in_float4->set(0.0f,1);
+    in_float4->set(0.0f,2);
+    in_float4->set(1.0f,3);
+
+    //--------------------------------------------------------------------------------------------------
+
+    param1 = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param1");
+    param2 = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param2");
+    param3 = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param3");
+    param4 = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param4");
+    param1->set(0.0f);
+    param2->set(0.0f);
+    param3->set(0.0f);
+    param4->set(0.0f);
+
+  }
+
+  void run() {
+    param1->set(in_float4->get(0));
+    param2->set(in_float4->get(1));
+    param3->set(in_float4->get(2));
+    param4->set(in_float4->get(3));
+  }
+
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 class module_vector_quaternion_to_4float : public vsx_module {
@@ -1221,12 +1289,12 @@ void module_float_to_float3::module_info(vsx_module_info* info)
 void module_float_to_float3::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   loading_done = true;
-	param1 = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param1");
+  param1 = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"param1");
 
-	result3 = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"result_float3");
-	result3->set(0,0);
-	result3->set(0,1);
-	result3->set(0,2);
+  result3 = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"result_float3");
+  result3->set(0,0);
+  result3->set(0,1);
+  result3->set(0,2);
 //--------------------------------------------------------------------------------------------------
 }
 
@@ -1256,11 +1324,11 @@ void vsx_float_array_pick::module_info(vsx_module_info* info)
 void vsx_float_array_pick::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   loading_done = true;
-	float_in = (vsx_module_param_float_array*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"float_in");
-	which = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"which");
-	which->set(0);
+  float_in = (vsx_module_param_float_array*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"float_in");
+  which = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"which");
+  which->set(0);
 
-	result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
+  result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
   result_float->set(0);
 //--------------------------------------------------------------------------------------------------
 }
@@ -1280,67 +1348,67 @@ void vsx_float_array_pick::run() {
 
 class vsx_float_array_average : public vsx_module {
   // in
-	vsx_module_param_float_array* float_in;
-	vsx_module_param_float* start;
-	vsx_module_param_float* end;
-	// out
-	vsx_module_param_float* result_float;
-	// internal
-	vsx_float_array* my_array;
+  vsx_module_param_float_array* float_in;
+  vsx_module_param_float* start;
+  vsx_module_param_float* end;
+  // out
+  vsx_module_param_float* result_float;
+  // internal
+  vsx_float_array* my_array;
 public:
 
 
 
-	void module_info(vsx_module_info* info)
-	{
-	  info->identifier = "maths;array;float_array_average";
-	  info->description = "Calculates the average of all\n\
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "maths;array;float_array_average";
+    info->description = "Calculates the average of all\n\
 values in the array";
-	  info->in_param_spec = "float_in:float_array,start:float,end:float";
-	  info->out_param_spec = "result_float:float";
-	  info->component_class = "parameters";
-	}
+    info->in_param_spec = "float_in:float_array,start:float,end:float";
+    info->out_param_spec = "result_float:float";
+    info->component_class = "parameters";
+  }
 
-	void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
-	{
-	  loading_done = true;
-		float_in = (vsx_module_param_float_array*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"float_in");
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+    float_in = (vsx_module_param_float_array*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"float_in");
 
-		start = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"start");
-		start->set(0);
-		end = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"end");
-		end->set(0);
+    start = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"start");
+    start->set(0);
+    end = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"end");
+    end->set(0);
 
-		result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
-	  result_float->set(0);
-	//--------------------------------------------------------------------------------------------------
-	}
+    result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
+    result_float->set(0);
+  //--------------------------------------------------------------------------------------------------
+  }
 
-	void run() {
-	  my_array = float_in->get_addr();
-	  if (my_array) {
-	    float temp = 0;
-	    float divisor = 0;
-	    if (end->get() > start->get()) {
-	      float x = (float)ceil(start->get());
-	      float x_e = (float)	floor(end->get());
-	      float x_e_f = end->get();
-	      if (x_e > (*(my_array->data)).size()-1) {
-	        x_e = (*(my_array->data)).size()-1;
-	        x_e_f = x_e;
-	      }
-	      divisor += x - start->get();
-	      temp += (*(my_array->data))[(int)x-1]*(x - start->get());
-	      for (; x < x_e; ++x) {
-	        temp += (*(my_array->data))[(int)x];
-	      }
-	      divisor += x_e_f - x_e;
-	      temp += (*(my_array->data))[(int)x_e+1]*(x_e_f - x_e);
-	      temp /= divisor;
-	      result_float->set(temp);
-	    }
-	  }
-	}
+  void run() {
+    my_array = float_in->get_addr();
+    if (my_array) {
+      float temp = 0;
+      float divisor = 0;
+      if (end->get() > start->get()) {
+        float x = (float)ceil(start->get());
+        float x_e = (float) floor(end->get());
+        float x_e_f = end->get();
+        if (x_e > (*(my_array->data)).size()-1) {
+          x_e = (*(my_array->data)).size()-1;
+          x_e_f = x_e;
+        }
+        divisor += x - start->get();
+        temp += (*(my_array->data))[(int)x-1]*(x - start->get());
+        for (; x < x_e; ++x) {
+          temp += (*(my_array->data))[(int)x];
+        }
+        divisor += x_e_f - x_e;
+        temp += (*(my_array->data))[(int)x_e+1]*(x_e_f - x_e);
+        temp /= divisor;
+        result_float->set(temp);
+      }
+    }
+  }
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1351,49 +1419,49 @@ values in the array";
 class vsx_float_accumulator : public vsx_module
 {
   // in
-	vsx_module_param_float* float_in;
-	vsx_module_param_int* reset;
-	// out
-	vsx_module_param_float* result_float;
-	// internal
+  vsx_module_param_float* float_in;
+  vsx_module_param_int* reset;
+  // out
+  vsx_module_param_float* result_float;
+  // internal
   float value;
 public:
 
 
-	void module_info(vsx_module_info* info)
-	{
-	  info->identifier = "maths;accumulators;float_accumulator";
-	  info->description = "accumulator - float\n"
-	                      "result += in\n"
-	                      "\n"
-	                      "adds the value in float_in\n"
-	                      "to its current value once\n"
-	                      "per frame";
-	  info->out_param_spec = "result_float:float";
-	  info->in_param_spec = "float_in:float,reset:enum?ok";
-	  info->component_class = "parameters";
-	}
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "maths;accumulators;float_accumulator";
+    info->description = "accumulator - float\n"
+                        "result += in\n"
+                        "\n"
+                        "adds the value in float_in\n"
+                        "to its current value once\n"
+                        "per frame";
+    info->out_param_spec = "result_float:float";
+    info->in_param_spec = "float_in:float,reset:enum?ok";
+    info->component_class = "parameters";
+  }
 
-	void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
-	{
-	  loading_done = true;
-		float_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"float_in");
-		value = 0;
-		reset = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"reset");
-		reset->set(-1);
-		result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
-		result_float->set(0.0f);
-	//--------------------------------------------------------------------------------------------------
-	}
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+    float_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"float_in");
+    value = 0;
+    reset = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"reset");
+    reset->set(-1);
+    result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
+    result_float->set(0.0f);
+  //--------------------------------------------------------------------------------------------------
+  }
 
-	void run() {
-	  if (reset->get() == 0) {
-	    reset->set(-1);
-	    value = 0;
-	  }
-	  value += float_in->get();
-	  result_float->set(value);
-	}
+  void run() {
+    if (reset->get() == 0) {
+      reset->set(-1);
+      value = 0;
+    }
+    value += float_in->get();
+    result_float->set(value);
+  }
 
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1479,13 +1547,13 @@ void vsx_float3_accumulator::module_info(vsx_module_info* info)
 void vsx_float3_accumulator::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   loading_done = true;
-	float3_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"float3_in");
-	value[0] = 0;
-	value[1] = 0;
-	value[2] = 0;
-	reset = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"reset");
-	reset->set(-1);
-	result_float3 = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"result_float3");
+  float3_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"float3_in");
+  value[0] = 0;
+  value[1] = 0;
+  value[2] = 0;
+  reset = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"reset");
+  reset->set(-1);
+  result_float3 = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"result_float3");
   result_float3->set(0,0);
   result_float3->set(0,1);
   result_float3->set(0,2);
@@ -1529,14 +1597,14 @@ void vsx_float4_accumulator::module_info(vsx_module_info* info)
 void vsx_float4_accumulator::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   loading_done = true;
-	float4_in = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"float4_in");
-	value[0] = 0;
-	value[1] = 0;
-	value[2] = 0;
-	value[3] = 0;
-	reset = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"reset");
-	reset->set(-1);
-	result_float4 = (vsx_module_param_float4*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"result_float4");
+  float4_in = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"float4_in");
+  value[0] = 0;
+  value[1] = 0;
+  value[2] = 0;
+  value[3] = 0;
+  reset = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"reset");
+  reset->set(-1);
+  result_float4 = (vsx_module_param_float4*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"result_float4");
   result_float4->set(0,0);
   result_float4->set(0,1);
   result_float4->set(0,2);
@@ -1620,56 +1688,56 @@ public:
 class vsx_float_limit : public vsx_module
 {
   // in
-	vsx_module_param_float* float_in;
-	vsx_module_param_float* limit_value;
-	vsx_module_param_int* type;
-	// out
-	vsx_module_param_float* result_float;
-	// internal
+  vsx_module_param_float* float_in;
+  vsx_module_param_float* limit_value;
+  vsx_module_param_int* type;
+  // out
+  vsx_module_param_float* result_float;
+  // internal
 public:
 
-	void module_info(vsx_module_info* info)
-	{
-	  info->identifier = "maths;limiters;float_limiter";
-	  info->description = "If value_in is la\n"
-	                      "limit_value, result is set to\n"
-	                      "limit_value, otherwise result\n"
-	                      "is set to value_in.\n";
-	  info->out_param_spec = "result_float:float";
-	  info->in_param_spec = "value_in:float,limit_value:float,type:enum?max|min";
-	  info->component_class = "parameters";
-	}
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "maths;limiters;float_limiter";
+    info->description = "If value_in is la\n"
+                        "limit_value, result is set to\n"
+                        "limit_value, otherwise result\n"
+                        "is set to value_in.\n";
+    info->out_param_spec = "result_float:float";
+    info->in_param_spec = "value_in:float,limit_value:float,type:enum?max|min";
+    info->component_class = "parameters";
+  }
 
-	void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
-	{
-	  loading_done = true;
-		float_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"value_in");
-		float_in->set(0.0f);
-		limit_value = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"limit_value");
-		limit_value->set(1.0f);
-		result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
-	  result_float->set(0.0f);
-	  type = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"type");
-	//--------------------------------------------------------------------------------------------------
-	}
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+    float_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"value_in");
+    float_in->set(0.0f);
+    limit_value = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"limit_value");
+    limit_value->set(1.0f);
+    result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
+    result_float->set(0.0f);
+    type = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"type");
+  //--------------------------------------------------------------------------------------------------
+  }
 
-	void run() {
-		if (type->get() == 0)
-		{
-			if (float_in->get() > limit_value->get())
-			{
-				result_float->set(limit_value->get());
-			} else
-			result_float->set(float_in->get());
-		} else
-		{
-			if (float_in->get() < limit_value->get())
-			{
-				result_float->set(limit_value->get());
-			} else
-			result_float->set(float_in->get());
-		}
-	}
+  void run() {
+    if (type->get() == 0)
+    {
+      if (float_in->get() > limit_value->get())
+      {
+        result_float->set(limit_value->get());
+      } else
+      result_float->set(float_in->get());
+    } else
+    {
+      if (float_in->get() < limit_value->get())
+      {
+        result_float->set(limit_value->get());
+      } else
+      result_float->set(float_in->get());
+    }
+  }
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1680,44 +1748,44 @@ public:
 class vsx_float_smooth : public vsx_module
 {
   // in
-	vsx_module_param_float* float_in;
-	vsx_module_param_float* speed;
-	// out
-	vsx_module_param_float* result_float;
-	// internal
-	double internal_value;
+  vsx_module_param_float* float_in;
+  vsx_module_param_float* speed;
+  // out
+  vsx_module_param_float* result_float;
+  // internal
+  double internal_value;
 public:
 
-	void module_info(vsx_module_info* info)
-	{
-	  info->identifier = "!maths;interpolation;float_interpolation||maths;interpolation;float_smoother";
-	  info->description = "Smoothens a value over time\n"
-	  										" - same algorith as the knobs/sliders";
-	  info->out_param_spec = "result_float:float";
-	  info->in_param_spec = "value_in:float,speed:float";
-	  info->component_class = "parameters";
-	}
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "!maths;interpolation;float_interpolation||maths;interpolation;float_smoother";
+    info->description = "Smoothens a value over time\n"
+                        " - same algorith as the knobs/sliders";
+    info->out_param_spec = "result_float:float";
+    info->in_param_spec = "value_in:float,speed:float";
+    info->component_class = "parameters";
+  }
 
-	void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
-	{
-	  loading_done = true;
-		float_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"value_in");
-		float_in->set(0.0f);
-		speed = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"speed");
-		speed->set(1.0f);
-		result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
-	  result_float->set(0.0f);
-	  internal_value = 0.0f;
-	//--------------------------------------------------------------------------------------------------
-	}
-	void run() {
-	  double tt = engine->dtime*speed->get();
-	  if (tt > 1.0) tt = 1.0;
-	  double temp = (float)(internal_value*(1.0-tt)+(double)float_in->get() * tt);
-	  //printf("temp: %f\n",temp);
-	  internal_value = temp;
-	  result_float->set((float)internal_value);
-	}
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+    float_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"value_in");
+    float_in->set(0.0f);
+    speed = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"speed");
+    speed->set(1.0f);
+    result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
+    result_float->set(0.0f);
+    internal_value = 0.0f;
+  //--------------------------------------------------------------------------------------------------
+  }
+  void run() {
+    double tt = engine->dtime*speed->get();
+    if (tt > 1.0) tt = 1.0;
+    double temp = (float)(internal_value*(1.0-tt)+(double)float_in->get() * tt);
+    //printf("temp: %f\n",temp);
+    internal_value = temp;
+    result_float->set((float)internal_value);
+  }
 
 };
 
@@ -1763,6 +1831,54 @@ public:
     result_float->set( float_in_a->get(0) * p1 + float_in_b->get(0) * p, 0);
   }
 };
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+class vsx_float3_interpolate : public vsx_module
+{
+  // in
+  vsx_module_param_float3* float3_in_a;
+  vsx_module_param_float3* float3_in_b;
+  vsx_module_param_float* pos;
+  // out
+  vsx_module_param_float3* result_float3;
+public:
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "maths;interpolation;float3_interpolate";
+    info->description = "linear interpolation for the value\npos ranges from 0.0 to 1.0";
+    info->in_param_spec = "float3_in_a:float3,float3_in_b:float3,pos:float";
+    info->out_param_spec = "result_float3:float3";
+    info->component_class = "parameters";
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+    float3_in_a = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"float3_in_a");
+    float3_in_b = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"float3_in_b");
+    pos = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"pos");
+    result_float3 = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"result_float3");
+    result_float3->set(0.0f, 0);
+    result_float3->set(0.0f, 1);
+    result_float3->set(0.0f, 2);
+  }
+  void run() {
+    float p = pos->get();
+    if (p < 0.0f) p = 0.0f;
+    else // optimization
+    if (p > 1.0f) p = 1.0f;
+    float p1 = 1.0f - p;
+    result_float3->set( float3_in_a->get(0) * p1 + float3_in_b->get(0) * p, 0);
+    result_float3->set( float3_in_a->get(1) * p1 + float3_in_b->get(1) * p, 1);
+    result_float3->set( float3_in_a->get(2) * p1 + float3_in_b->get(2) * p, 2);
+  }
+
+};
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1834,9 +1950,9 @@ void vsx_float_abs::module_info(vsx_module_info* info)
 void vsx_float_abs::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   loading_done = true;
-	float_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"float_in");
+  float_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"float_in");
 
-	result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
+  result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
   result_float->set(0);
 //--------------------------------------------------------------------------------------------------
 }
@@ -1865,9 +1981,9 @@ void vsx_float_sin::module_info(vsx_module_info* info)
 void vsx_float_sin::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   loading_done = true;
-	float_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"float_in");
+  float_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"float_in");
 
-	result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
+  result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
   result_float->set(0);
 //--------------------------------------------------------------------------------------------------
 }
@@ -1986,9 +2102,9 @@ void vsx_bool_and::module_info(vsx_module_info* info)
 void vsx_bool_and::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   loading_done = true;
-	float_a = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"a");
-	float_b = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"b");
-	result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
+  float_a = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"a");
+  float_b = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"b");
+  result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
   result_float->set(0);
 //--------------------------------------------------------------------------------------------------
 }
@@ -2022,9 +2138,9 @@ void vsx_bool_nand::module_info(vsx_module_info* info)
 void vsx_bool_nand::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   loading_done = true;
-	float_a = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"a");
-	float_b = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"b");
-	result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
+  float_a = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"a");
+  float_b = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"b");
+  result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
   result_float->set(0);
 //--------------------------------------------------------------------------------------------------
 }
@@ -2059,9 +2175,9 @@ void vsx_bool_or::module_info(vsx_module_info* info)
 void vsx_bool_or::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   loading_done = true;
-	float_a = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"a");
-	float_b = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"b");
-	result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
+  float_a = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"a");
+  float_b = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"b");
+  result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
   result_float->set(0);
 //--------------------------------------------------------------------------------------------------
 }
@@ -2095,9 +2211,9 @@ void vsx_bool_nor::module_info(vsx_module_info* info)
 void vsx_bool_nor::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   loading_done = true;
-	float_a = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"a");
-	float_b = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"b");
-	result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
+  float_a = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"a");
+  float_b = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"b");
+  result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
   result_float->set(0);
 //--------------------------------------------------------------------------------------------------
 }
@@ -2122,9 +2238,9 @@ void vsx_bool_xor::module_info(vsx_module_info* info)
 void vsx_bool_xor::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   loading_done = true;
-	float_a = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"a");
-	float_b = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"b");
-	result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
+  float_a = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"a");
+  float_b = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"b");
+  result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
   result_float->set(0);
 //--------------------------------------------------------------------------------------------------
 }
@@ -2159,8 +2275,8 @@ void vsx_bool_not::module_info(vsx_module_info* info)
 void vsx_bool_not::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   loading_done = true;
-	float_a = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"a");
-	result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
+  float_a = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"a");
+  result_float = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result_float");
   result_float->set(0);
 //--------------------------------------------------------------------------------------------------
 }
@@ -2178,10 +2294,10 @@ void vsx_bool_not::run() {
 
 class vsx_float3_dummy : public vsx_module {
   // in
-	vsx_module_param_float3* float3_in;
-	// out
-	vsx_module_param_float3* result_float3;
-	// internal
+  vsx_module_param_float3* float3_in;
+  // out
+  vsx_module_param_float3* result_float3;
+  // internal
 public:
   void module_info(vsx_module_info* info)
   {
@@ -2200,15 +2316,15 @@ public:
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
     loading_done = true;
-  	float3_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"float3_in");
-  	float3_in->set(1,0);
-  	float3_in->set(1,1);
-  	float3_in->set(1,2);
+    float3_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"float3_in");
+    float3_in->set(0,0);
+    float3_in->set(0,1);
+    float3_in->set(0,2);
 
-  	result_float3 = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"out_float3");
-    result_float3->set(1,0);
-    result_float3->set(1,1);
-    result_float3->set(1,2);
+    result_float3 = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"out_float3");
+    result_float3->set(0,0);
+    result_float3->set(0,1);
+    result_float3->set(0,2);
   }
 
   void run() {
@@ -2217,6 +2333,57 @@ public:
     result_float3->set(float3_in->get(2),2);
   }
 };
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+class vsx_float4_dummy : public vsx_module {
+  // in
+  vsx_module_param_float4* float4_in;
+  // out
+  vsx_module_param_float4* result_float4;
+  // internal
+public:
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "maths;dummies;float4_dummy";
+    info->description = "This is only to gather connections\n"
+                        " - inside a macro for instance if \n"
+                        "you have many components which need\n"
+                        "to read the same value but you don't\n"
+                        "want 10 aliases going out.\n[floatin]\n"
+                        "is copied to [result_float].";
+    info->out_param_spec = "out_float4:float4";
+    info->in_param_spec = "float4_in:float4";
+    info->component_class = "parameters";
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+    float4_in = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"float4_in");
+    float4_in->set(0,0);
+    float4_in->set(0,1);
+    float4_in->set(0,2);
+    float4_in->set(0,3);
+
+    result_float4 = (vsx_module_param_float4*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"out_float4");
+    result_float4->set(0,0);
+    result_float4->set(0,1);
+    result_float4->set(0,2);
+    result_float4->set(0,3);
+  }
+
+  void run() {
+    result_float4->set(float4_in->get(0),0);
+    result_float4->set(float4_in->get(1),1);
+    result_float4->set(float4_in->get(2),2);
+    result_float4->set(float4_in->get(3),3);
+  }
+};
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2275,12 +2442,12 @@ class vsx_quaternion_dummy : public vsx_module {
 
 class vsx_float3to3float : public vsx_module {
   // in
-	vsx_module_param_float3* float3_in;
-	// out
-	vsx_module_param_float* a;
-	vsx_module_param_float* b;
-	vsx_module_param_float* c;
-	// internal
+  vsx_module_param_float3* float3_in;
+  // out
+  vsx_module_param_float* a;
+  vsx_module_param_float* b;
+  vsx_module_param_float* c;
+  // internal
 public:
   void module_info(vsx_module_info* info)
   {
@@ -2294,13 +2461,13 @@ public:
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
     loading_done = true;
-  	float3_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"float3_in");
-  	a = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"a");
-  	a->set(0.0f);
-  	b = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"b");
-  	b->set(0.0f);
-  	c = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"c");
-  	c->set(0.0f);
+    float3_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"float3_in");
+    a = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"a");
+    a->set(0.0f);
+    b = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"b");
+    b->set(0.0f);
+    c = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"c");
+    c->set(0.0f);
   }
 
   void run() {
@@ -2357,16 +2524,16 @@ a:float\
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   loading_done = true;
-	floata = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"h");
-	floatb = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"s");
-	floatc = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"v");
-	floatd = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"a");
-	floata->set(0);
+  floata = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"h");
+  floatb = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"s");
+  floatc = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"v");
+  floatd = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"a");
+  floata->set(0);
   floatb->set(1);
-	floatc->set(1);
-	floatd->set(1);
+  floatc->set(1);
+  floatd->set(1);
 
-	result4 = (vsx_module_param_float4*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"result_float4");
+  result4 = (vsx_module_param_float4*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"result_float4");
   result4->set(0,0);
   result4->set(0,1);
   result4->set(0,2);
@@ -2395,10 +2562,10 @@ void run() {
 class vsx_module_f4_hsl_to_rgb_f4 : public vsx_module {
   vsx_color color;
   // in
-	vsx_module_param_float4* hsl;
-	// out
-	vsx_module_param_float4* result4;
-	// internal
+  vsx_module_param_float4* hsl;
+  // out
+  vsx_module_param_float4* result4;
+  // internal
 
   float Hue_2_RGB(float v1, float v2, float vH)
   {
@@ -2435,7 +2602,7 @@ and converts to an RedGreenBlueAlpha float4";
   {
     loading_done = true;
     hsl = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"hsl");
-  	result4 = (vsx_module_param_float4*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"result_float4");
+    result4 = (vsx_module_param_float4*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"result_float4");
     result4->set(0,0);
     result4->set(0,1);
     result4->set(0,2);
@@ -2538,6 +2705,8 @@ vsx_module* create_new_module(unsigned long module) {
     case 52: return (vsx_module*)(new vsx_float_acos);
     case 53: return (vsx_module*)(new vsx_quaternion_dummy);
     case 54: return (vsx_module*)(new module_vector_quaternion_to_4float);
+    case 55: return (vsx_module*)(new vsx_float3_interpolate);
+    case 56: return (vsx_module*)(new vsx_float4_dummy);
   }
   return 0;
 }
@@ -2599,10 +2768,14 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 52: delete (vsx_float_acos*)m; break;
     case 53: delete (vsx_quaternion_dummy*)m; break;
     case 54: delete (module_vector_quaternion_to_4float*)m; break;
+    case 55: delete (vsx_float3_interpolate*)m; break;
+    case 56: delete (vsx_float4_dummy*)m; break;
   }
 }
 
 unsigned long get_num_modules() {
-  return 55;
+  return 57;
 }
 #endif
+
+//module_vector_float4_to_4float
