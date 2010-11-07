@@ -394,8 +394,12 @@ public:
         }
           // draw --------------------
           glBegin(GL_POINTS);
+          // ugly hack to support vertex id
+          float vid = 0.0f;
+          float dvdi = 1.0f / (float)mesh->data->vertices.size();
           for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
-            glVertex3f(mesh->data->vertices[i].x,mesh->data->vertices[i].y,mesh->data->vertices[i].z);
+            glVertex4f(mesh->data->vertices[i].x,mesh->data->vertices[i].y,mesh->data->vertices[i].z,vid);
+            vid += dvdi;
           }
           glEnd();
           //glDrawArrays(GL_POINTS,0,mesh->data->vertices.size());
@@ -534,6 +538,7 @@ class vsx_module_render_mesh : public vsx_module {
   // in
   vsx_module_param_texture* tex_a;
   vsx_module_param_mesh* mesh_in;
+  vsx_module_param_mesh* particle_cloud;
   vsx_module_param_int* vertex_colors;
   vsx_module_param_int* use_vertex_colors;
   vsx_module_param_int* use_display_list;
@@ -545,6 +550,7 @@ class vsx_module_render_mesh : public vsx_module {
   vsx_module_param_render* render_result;
   // internal
   vsx_mesh* mesh;
+  vsx_mesh* particle_mesh;
   vsx_texture* ta;
   bool m_normals, m_tex, m_colors;
   vsx_matrix mod_mat, proj_mat;
@@ -562,6 +568,7 @@ public:
     info->identifier = "renderers;mesh;mesh_basic_render";
     info->in_param_spec = "tex_a:texture,mesh_in:mesh,"
                           "particles:particlesystem,"
+                          "particle_cloud:mesh,"
                           "options:complex{"
                           "vertex_colors:enum?no|yes,"
                           "use_display_list:enum?no|yes,"
@@ -587,6 +594,7 @@ public:
     particles_size_center = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"particles_size_center");
     particles_size_center->set(0);
     particles_in = (vsx_module_param_particlesystem*)in_parameters.create(VSX_MODULE_PARAM_ID_PARTICLESYSTEM,"particles");
+    particle_cloud = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"particle_cloud");
 
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     render_result->set(0);
@@ -743,6 +751,23 @@ public:
         else {
           //printf("cl");
           particles = particles_in->get_addr();
+          particle_mesh = particle_cloud->get_addr();
+          if (particle_mesh)
+          {
+            float ss;
+            glMatrixMode(GL_MODELVIEW);
+            glPushMatrix();
+            for (unsigned long i = 0; i < particle_mesh->data->vertices.size(); ++i) {
+              glPushMatrix();
+              glTranslatef(
+                particle_mesh->data->vertices[i].x,
+                particle_mesh->data->vertices[i].y,
+                particle_mesh->data->vertices[i].z
+              );
+              glCallList(dlist);
+              glPopMatrix();
+            }
+          } else
           if (particles) {
             float ss;
             glMatrixMode(GL_MODELVIEW);
