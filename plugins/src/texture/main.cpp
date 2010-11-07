@@ -416,9 +416,9 @@ bool activate_offscreen() {
 	glClearColor(clear_color->get(0),clear_color->get(1),clear_color->get(2),clear_color->get(3));
   //printf("clear buffer\n");
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		// Clear Screen And Depth Buffer
-#ifdef __APPLE__
+//#ifdef __APPLE__
 	glEnable(GL_BLEND);
-#endif
+//#endif
   glGetIntegerv(GL_CURRENT_PROGRAM, (GLint*)&glsl_prog);
   glUseProgram(0);
   //glBlendFunc(GL_SRC_ALPHA,GL_ONE);
@@ -985,7 +985,7 @@ void main()\n\
 }\n\
 ";
 
-shader.fragment_program = "\
+/*shader.fragment_program = "\
 uniform sampler2D GlowTexture;\n\
 uniform vec2      texOffset;\n\
 uniform float     attenuation;\n\
@@ -1015,6 +1015,57 @@ void main(void)\n\
   gl_FragColor = finalColor * attenuation; \n\
 }\n\
 ";
+*/
+
+
+shader.fragment_program = "\
+uniform sampler2D GlowTexture;\n\
+uniform vec2      texOffset;\n\
+uniform float     attenuation;\n\
+varying vec2 texcoord;\n\
+void main(void)\n\
+{\n\
+  vec4  finalColor = vec4(0.0,0.0,0.0,0.0);\n\
+\n\
+  vec2 offset = vec2(-5.0,-5.0) * (texOffset) + texcoord;\n\
+  \n\
+  finalColor += 0.0097 * texture2D(GlowTexture, offset);\n\
+  offset += texOffset;\n\
+  \n\
+  finalColor += 0.0297 * texture2D(GlowTexture, offset);\n\
+  offset += texOffset;\n\
+  \n\
+  finalColor += 0.0439453 * texture2D(GlowTexture, offset);\n\
+  offset += texOffset;\n\
+  \n\
+  finalColor += 0.1171875 * texture2D(GlowTexture, offset);\n\
+  offset += texOffset;\n\
+  \n\
+  finalColor += 0.205078125 * texture2D(GlowTexture, offset);\n\
+  offset += texOffset;\n\
+  \n\
+  finalColor += 0.24609375 * texture2D(GlowTexture, offset);\n\
+  offset += texOffset;\n\
+  \n\
+  finalColor += 0.205078125 * texture2D(GlowTexture, offset);\n\
+  offset += texOffset;\n\
+  \n\
+  finalColor += 0.1171875 * texture2D(GlowTexture, offset);\n\
+  offset += texOffset;\n\
+  \n\
+  finalColor += 0.0439453 * texture2D(GlowTexture, offset);\n\
+  offset += texOffset;\n\
+  \n\
+  finalColor += 0.0297 * texture2D(GlowTexture, offset);\n\
+  offset += texOffset;\n\
+  \n\
+  finalColor += 0.0097 * texture2D(GlowTexture, offset);\n\
+  \n\
+  gl_FragColor = finalColor * attenuation; \n\
+}\n\
+";
+
+
 #endif
 
 /*shader.fragment_program = "\
