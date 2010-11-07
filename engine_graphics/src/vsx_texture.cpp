@@ -452,9 +452,9 @@ void vsx_texture::upload_ram_bitmap(unsigned long* data, unsigned long size_x, u
 			texture_info.ogl_type = GL_TEXTURE_2D;
 		}
 	} else {
-    //#if defined(VSXU_DEBUG)
+    #if defined(VSXU_DEBUG)
     printf("mipmaps, GL_TEXTURE_2D\n");
-    //#endif
+    #endif
 	  texture_info.ogl_type = GL_TEXTURE_2D;
 	//printf("GL_TEXTURE_2D 2\n");
 	}
