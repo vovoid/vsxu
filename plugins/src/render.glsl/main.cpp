@@ -257,7 +257,7 @@ void module_info(vsx_module_info* info)
 	//}
 	//printf("inparamspec: %s\n",info->in_param_spec.c_str());
   info->component_class = "render";
-  info->tunnel = true;
+  info->tunnel = false;
 }
 
 
@@ -359,7 +359,7 @@ void run() {
     first = false;
   }*/
   //printf("GLSL RUN\n");
-    render_result->set(1);
+    render_result->set(0);
 }
 
 void deactivate_offscreen() {
