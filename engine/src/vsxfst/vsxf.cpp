@@ -99,7 +99,8 @@ void vsxf::archive_close() {
       ++i;
     }
     vsx_string fopen_filename = filename;
-    if (fopen_filename != "") fopen_filename = disk_filename;
+    if (disk_filename != "") fopen_filename = disk_filename;
+    printf("vsxz adding file: %s\n", fopen_filename.c_str());
     FILE* fp = 0;
     if (data == 0) {
       fp = fopen(fopen_filename.c_str(),"rb");

@@ -75,7 +75,8 @@
               }
             }
             for (unsigned long i = 0; i < comp->module->resources.size(); ++i) {
-              tfs.archive_add_file(comp->module->resources[i]);
+              printf("engine resource add: %s\n", comp->module->resources[i].c_str() );
+              tfs.archive_add_file(comp->module->resources[i],0,0,vsx_get_data_path()+comp->module->resources[i]);
             }
           }
         }
