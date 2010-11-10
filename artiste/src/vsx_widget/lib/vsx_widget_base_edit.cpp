@@ -11,6 +11,7 @@
 #include "vsx_widget_lib.h"
 #include "vsx_widget_panel.h"
 #include "vsx_widget_base_edit.h"
+#include <stdlib.h>
 #ifndef _WIN32
 #include "GL/glfw.h"
 #endif

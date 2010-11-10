@@ -11,11 +11,11 @@
 #include "vsx_texture.h"
 #ifndef VSX_TEXTURE_NO_GLPNG
 #include "vsxg.h"
+#include <stdlib.h>
 #ifdef _WIN32
 	#include "pthread.h"
 #else
 	#include "pthread.h"
-	#include <stdlib.h>
 #endif
 #endif
 #ifdef VSXU_MAC_XCODE
