@@ -29,6 +29,12 @@ add_subdirectory(src/render.oscilloscope)
 add_subdirectory(src/render.text)
 add_subdirectory(src/render.vovoid)
 
+
+
+if (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
+  add_definitions( -DPLATFORM_SHARED_FILES_FLAT_INSTALL )
+endif (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
+
 #sound input (and in some cases output) module(s)
 if (APPLE)
   #add fruity code here

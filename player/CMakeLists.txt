@@ -42,6 +42,11 @@ if (VSXU_DEBUG EQUAL 1)
   add_definitions( -DVSXU_DEBUG )
 endif (VSXU_DEBUG EQUAL 1)
 
+
+if (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
+  add_definitions( -DPLATFORM_SHARED_FILES_FLAT_INSTALL )
+endif (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
+
 get_filename_component(list_file_path ${CMAKE_CURRENT_LIST_FILE} PATH)
 string(REGEX MATCH "[a-z._-]*$" module_id ${list_file_path})
 message("*******************************************")
