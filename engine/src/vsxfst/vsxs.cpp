@@ -1,10 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
 #ifdef _WIN32
 #include <io.h>
 #endif
 
 #if defined(__linux__) || defined(__APPLE__)
-#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>

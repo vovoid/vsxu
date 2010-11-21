@@ -55,48 +55,47 @@ vsx_comp::vsx_comp() {
 }
 
 vsx_comp::~vsx_comp() {
-#ifndef VSX_DEMO_MINI
-  LOG("component destructor1");
-  delete in_module_parameters;
-  LOG("component destructor2");
-  delete out_module_parameters;
-  LOG("component destructor3");
-  delete module_info;
-  LOG("component destructor4");
-  delete in_parameters;
-  LOG("component destructor5");
-  delete out_parameters;
-  LOG("component destructor6");
-  for (std::vector <vsx_channel*>::iterator it = channels.begin(); it != channels.end(); ++it) {
-    delete *it;
-  }
-#ifndef VSXE_NO_GM
-  if (vsxl_modifier) delete (vsx_comp_vsxl*)vsxl_modifier;
-#endif
-
-  LOG("component destructor7\n");
-#endif
+  #ifndef VSX_DEMO_MINI
+    LOG("component destructor1");
+    delete in_module_parameters;
+    LOG("component destructor2");
+    delete out_module_parameters;
+    LOG("component destructor3");
+    delete module_info;
+    LOG("component destructor4");
+    delete in_parameters;
+    LOG("component destructor5");
+    delete out_parameters;
+    LOG("component destructor6");
+    for (std::vector <vsx_channel*>::iterator it = channels.begin(); it != channels.end(); ++it) {
+      delete *it;
+    }
+    #ifndef VSXE_NO_GM
+      if (vsxl_modifier) delete (vsx_comp_vsxl*)vsxl_modifier;
+    #endif
+    LOG("component destructor7\n");
+  #endif
 }
 
 void vsx_comp::load_module(module_dll_info* module_dll) {
-#ifdef VSXU_MODULES_STATIC
-#ifdef VSXU_MAC_XCODE
-		syslog(LOG_ERR,"vsx_comp::load_module %s\n",(char*)(module_dll->module_handle));
-#else
-	printf("vsx_comp::load_module %s\n",(char*)(module_dll->module_handle));
-#endif
-	module = create_named_module((char*)(module_dll->module_handle));
-#else
-#ifdef _WIN32
-  vsx_module*(*query)(unsigned long) = (vsx_module*(*)(unsigned long))GetProcAddress(module_dll->module_handle, "create_new_module");
-#endif
-#if defined(__linux__) || defined(__APPLE__)
-  vsx_module*(*query)(unsigned long) = (vsx_module*(*)(unsigned long))dlsym(module_dll->module_handle, "create_new_module");
-#endif
-  LOG("load_module 1")
-  module = query(module_dll->module_id);
-  LOG("load_module 2")
-#endif
+  #ifdef VSXU_MODULES_STATIC
+    #ifdef VSXU_MAC_XCODE
+      syslog(LOG_ERR,"vsx_comp::load_module %s\n",(char*)(module_dll->module_handle));
+    #else
+      printf("vsx_comp::load_module %s\n",(char*)(module_dll->module_handle));
+    #endif
+    module = create_named_module((char*)(module_dll->module_handle));
+  #else
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+      vsx_module*(*factory_create)(unsigned long) = (vsx_module*(*)(unsigned long))GetProcAddress(module_dll->module_handle, "create_new_module");
+    #endif
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      vsx_module*(*factory_create)(unsigned long) = (vsx_module*(*)(unsigned long))dlsym(module_dll->module_handle, "create_new_module");
+    #endif
+      LOG("load_module 1")
+      module = factory_create(module_dll->module_id);
+      LOG("load_module 2")
+  #endif
   init_module();
   LOG("load_module finished")
 }
@@ -106,22 +105,21 @@ void vsx_comp::unload_module(module_dll_info* module_dll) {
   if (module) {
     module->on_delete();
   }
-  //vsx_module*(*query)(unsigned long) = (vsx_module*(*)(unsigned long))GetProcAddress(hLibModule, "create_new_module");
-#ifdef _WIN32
-  if (GetProcAddress(module_dll->module_handle, "destroy_module") == 0) {
-  	LOG("unload module ERROR! couldn't find handle for destroy_module!")
-  	return;
-  }
-  void(*unload)(vsx_module*,unsigned long) = (void(*)(vsx_module*,unsigned long))GetProcAddress(module_dll->module_handle, "destroy_module");
-#endif
-#if defined(__linux__) || defined(__APPLE__)
-  if (dlsym(module_dll->module_handle, "destroy_module") == 0)
-	{
-		LOG("unload module ERROR! couldn't find handle for destroy_module!")
-		return;
-	}
-  void(*unload)(vsx_module*,unsigned long) = (void(*)(vsx_module*,unsigned long))dlsym(module_dll->module_handle, "destroy_module");
-#endif
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+    if (GetProcAddress(module_dll->module_handle, "destroy_module") == 0) {
+      LOG("unload module ERROR! couldn't find handle for destroy_module!")
+      return;
+    }
+    void(*unload)(vsx_module*,unsigned long) = (void(*)(vsx_module*,unsigned long))GetProcAddress(module_dll->module_handle, "destroy_module");
+  #endif
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+    if (dlsym(module_dll->module_handle, "destroy_module") == 0)
+    {
+      LOG("unload module ERROR! couldn't find handle for destroy_module!")
+      return;
+    }
+    void(*unload)(vsx_module*,unsigned long) = (void(*)(vsx_module*,unsigned long))dlsym(module_dll->module_handle, "destroy_module");
+  #endif
   LOG("before unload2")
   unload(module,module_dll->module_id);
   module = 0;
@@ -379,7 +377,7 @@ bool vsx_comp::prepare()
 	for (std::vector <vsx_channel*>::iterator it = channels.begin(); it != channels.end(); ++it) {
     // check time to speed up loading bar
     if (r_engine_info->state == VSX_ENGINE_LOADING) {
-//    	LOG("engine is loading, time to test")
+      //LOG("engine is loading, time to test")
     	//double atime = ((vsx_engine*)engine_owner)->g_timer.atime();
     	//LOG("atime: "+f2s(atime));
     	//LOG("fstarttime: "+f2s(((vsx_engine*)engine_owner)->frame_start_time));
@@ -391,16 +389,15 @@ bool vsx_comp::prepare()
       }
     }
     //---
-//	for (int i = 0; i < channels.size(); i++)
-    // if i is 0 (on the first run) prepare the module
+    //if i is 0 (on the first run) prepare the module
 		if (!(*it)->execute()) {
 			frame_status = frame_failed;
-//			printf("failed channel execute : %s\n",name.c_str());
+    //printf("failed channel execute : %s\n",name.c_str());
 			return false;
 		}
-#ifdef VSXU_MODULE_TIMING
-		new_time_run += (*it)->channel_execution_time;
-#endif
+    #ifdef VSXU_MODULE_TIMING
+      new_time_run += (*it)->channel_execution_time;
+    #endif
 		// run vsxl after other component has set our value
     #ifndef VSXE_NO_GM
       if ((*it)->my_param->module_param->vsxl_modifier)
@@ -411,18 +408,15 @@ bool vsx_comp::prepare()
     #endif
 		++i;
 	}
-	// we don't have any channels, so run instead
-	//if (i == 0 || module_info->output) {
 	if (module_info->output) {
-		//new_time_output = 0.0f;
 		LOG("module->run");
-#ifdef VSXU_MODULE_TIMING
-		run_timer.start();
-#endif
-	  module->run();
-#ifdef VSXU_MODULE_TIMING
-	  new_time_run += run_timer.dtime();
-#endif
+    #ifdef VSXU_MODULE_TIMING
+      run_timer.start();
+    #endif
+      module->run();
+    #ifdef VSXU_MODULE_TIMING
+      new_time_run += run_timer.dtime();
+    #endif
 	}
 	// special case for output components (screen etc.)
 	if (module_info->output) {
@@ -446,47 +440,42 @@ bool vsx_comp::run(vsx_module_param_abs* param)
 	}
 
 	if(frame_status == frame_failed) return false;
-//	{
-		if(frame_status == prepare_finished) {
-	  	//printf("c:%s:module_pre_run\n",name.c_str());
-			#ifndef VSXE_NO_GM
-    	if (vsxl_modifier) {
+	
+  if(frame_status == prepare_finished) {
+    //printf("c:%s:module_pre_run\n",name.c_str());
+    #ifndef VSXE_NO_GM
+      if (vsxl_modifier) {
         ((vsx_comp_vsxl*)vsxl_modifier)->execute();
-    	}
-			#endif
-#ifdef VSXU_MODULE_TIMING
-			run_timer.start();
-#endif
-			module->run();
-#ifdef VSXU_MODULE_TIMING
-			new_time_run += run_timer.dtime();
-#endif
-			//printf("%s new_time_run = %f\n",name.c_str(),new_time_run);
-	  	//printf("c:%s:module_post_run\n",name.c_str());
+      }
+    #endif
+    #ifdef VSXU_MODULE_TIMING
+      run_timer.start();
+    #endif
+    module->run();
+    #ifdef VSXU_MODULE_TIMING
+      new_time_run += run_timer.dtime();
+    #endif
+    //printf("%s new_time_run = %f\n",name.c_str(),new_time_run);
+    //printf("c:%s:module_post_run\n",name.c_str());
 
-			if (module_info->tunnel)
-			frame_status = initial_status; else
-			frame_status = run_finished;
-		}
-//		if (!output_finished) {
-	//printf("c:%s:module_pre_output\n",name.c_str());
-#ifdef VSXU_MODULE_TIMING
-		run_timer.start();
-#endif
+    if (module_info->tunnel)
+    frame_status = initial_status; else
+    frame_status = run_finished;
+  }
+  //printf("c:%s:module_pre_output\n",name.c_str());
+  #ifdef VSXU_MODULE_TIMING
+    run_timer.start();
+  #endif
     module->output(param);
-#ifdef VSXU_MODULE_TIMING
+  #ifdef VSXU_MODULE_TIMING
     new_time_output += run_timer.dtime();
-#endif
-    //printf("%s new_time_output = %f\n",name.c_str(),new_time_output);
-//    printf("c:%s:module_post_output\n",name.c_str());
-
+  #endif
+  //    printf("%s new_time_output = %f\n",name.c_str(),new_time_output);
+  //    printf("c:%s:module_post_output\n",name.c_str());
   //		output_finished = true;
-	//	}
-//	printf("c:d\n");
-  //param = param_internal;
-		return true;
-//	}
-//	return false;
+  //    printf("c:d\n");
+  //    param = param_internal;
+  return true;
 }
 
 bool vsx_comp::stop() {
@@ -501,18 +490,6 @@ bool vsx_comp::start() {
 	module->start();
 	return true;
 }
-
-/*bool vsx_comp::connect(vsx_string param_name, vsx_comp_abs* other_component, vsx_string other_param_name, int* ord) {
-	for (unsigned long i = 0; i < channels.size(); ++i) {
-		if (param_name == channels[i]->get_param_name()) {
-		  if (ord) {
-		    *ord = channels[i]->connections.size();
-		  }
-			return channels[i]->connect((vsx_comp*)other_component,other_param_name);
-		}
-	}
-	return false;
-}*/
 
 bool vsx_comp::disconnect(vsx_string param_name, vsx_comp_abs* other_component, vsx_string other_param_name) {
 	for (unsigned long i = 0; i < channels.size(); ++i) {
@@ -566,6 +543,5 @@ vsx_string process_module_param_spec(vsx_string& input) {
     }
     ++i;
   }
-  //printf("ret_val: %s\n",ret_val.c_str());
   return ret_val;
 }

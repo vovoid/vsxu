@@ -69,7 +69,7 @@ public:
 
 
 	// All Setup For OpenGL Goes Here
-	int InitGL(GLvoid)
+	int InitGL()
 	{
 		glShadeModel(GL_SMOOTH);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
@@ -81,7 +81,7 @@ public:
 	}
 
 	// Properly Kill The Window
-	GLvoid Destroy(GLvoid)
+	GLvoid Destroy()
 	{
 		// Are We In Fullscreen Mode?
 		if(fullscreen)

@@ -37,6 +37,11 @@ add_definitions(
 )
 endif(VSXU_DEBUG)
 
+if (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
+  add_definitions( -DPLATFORM_SHARED_FILES_FLAT_INSTALL )
+endif (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
+
+
 #definitions
 add_definitions(
  -DVSX_TEXTURE_NO_RT

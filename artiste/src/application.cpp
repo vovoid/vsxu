@@ -127,8 +127,11 @@ void app_init(int id) {
     parts2.push_back(parts[i]);
   }
   own_path = implode(parts2,deli);
-  if (own_path.size()) own_path.push_back('\\');
+  if (own_path.size()) own_path.push_back(deli[0]);
 
+  //#ifdef VSXU_DEBUG
+  printf("own path: %s   \n", own_path.c_str() );
+  //#endif
 	//printf("argc: %d %s\n",app_argc,own_path.c_str());
 	vxe = new vsx_engine(own_path.c_str());
 	gui_prod_fullwindow = &prod_fullwindow;

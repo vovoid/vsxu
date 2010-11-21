@@ -536,6 +536,7 @@ void vsx_statelist::init(vsx_string base_path,vsx_string init_sound_type)
   if (own_path.size())
   if (own_path[own_path.size()-1] != '\\') own_path.push_back('\\');
 #else
+  if (own_path.size())
   if (own_path[own_path.size()-1] != '/') own_path.push_back('/');
 #endif
   visual_path = "visuals_player";
