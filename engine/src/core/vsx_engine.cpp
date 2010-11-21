@@ -330,418 +330,200 @@ void vsx_engine::destroy() {
 	}
 }
 
-#ifdef VSXU_MODULES_STATIC
-
-#include "vsx_module_static.h"
-
-void vsx_engine::register_static_module(vsx_string name)
-{
-	int i = 0;
-  vsx_module_info* a;
-	a = new vsx_module_info;
-	a->output = 42;
-	vsx_module* module = create_named_module(name);
-	module->module_info(a);
-	module_dll_info* info = new module_dll_info;
-	info->module_handle = (void*)(name.c_copy());
-	info->module_id = i;
-	i++;
-	a->location = "external";
-
-	vsx_string identifier;
-	if (a->identifier[0] == '!') {
-		identifier = a->identifier.substr(1);
-	} else {
-		identifier = a->identifier;
-	}
-	vsx_string deli = "||";
-	vsx_avector<vsx_string> parts;
-	explode(identifier, deli, parts);
-	module_dll_info* info2 = 0;
-	for (i = 0; i < parts.size(); ++i) {
-		if (i && !info2) {
-			info2 = new module_dll_info;
-			*info2 = *info;
-		}
-		if (i) {
-			module_dll_list[parts[i]] = info2;
-		}
-		else {
-			module_dll_list[parts[i]] = info;
-		}
-		module_list[parts[i]] = a;
-	}
-	delete module;
-}
-
-#endif
-
 void vsx_engine::build_module_list(vsx_string sound_type) {
   if (module_list.size()) return;
   unsigned long total_num_modules = 0;
-  #ifdef VSXU_MODULES_STATIC
-    #define RADD_MODULE(nm) register_static_module(#nm); total_num_modules++
-    RADD_MODULE(vsx_module_output_screen);
-	  RADD_MODULE(vsx_module_render_basic_colored_rectangle);
-	  RADD_MODULE(vsx_module_render_line);
-	  RADD_MODULE(vsx_module_plugin_maths_oscillator);
-	  RADD_MODULE(vsx_module_plugin_maths_oscillators_float_sequencer);
-	  RADD_MODULE(texture_loaders_bitmap2texture);
-	  RADD_MODULE(vsx_module_simple_with_texture);
-	  RADD_MODULE(bitmaps;loaders;png_bitm_load);
-	  RADD_MODULE(texture;loaders;png_tex_load);
-	  RADD_MODULE(bitmaps;loaders;jpeg_bitm_load);
-	  RADD_MODULE(texture;loaders;jpeg_tex_load);
-	  RADD_MODULE(vsx_module_mesh_needle);
-	  RADD_MODULE(vsx_module_mesh_rand_points);
-	  RADD_MODULE(vsx_module_mesh_rays);
-	  RADD_MODULE(vsx_module_mesh_disc);
-	  RADD_MODULE(vsx_module_mesh_planes);
-	  RADD_MODULE(vsx_module_mesh_box);
-	  RADD_MODULE(vsx_module_mesh_sphere);
-	  RADD_MODULE(vsx_module_mesh_supershape);
-  
-	  RADD_MODULE(vsx_module_mesh_render_line);
-	  RADD_MODULE(vsx_module_render_mesh);
-  
-	  RADD_MODULE(vsx_module_blend_mode);
-	  RADD_MODULE(vsx_orbit_camera);
-	  RADD_MODULE(vsx_target_camera);
-	  RADD_MODULE(vsx_freelook_camera);
-	  RADD_MODULE(vsx_gl_translate);
-	  RADD_MODULE(vsx_depth_buffer);
-	  RADD_MODULE(vsx_gl_rotate);
-	  RADD_MODULE(vsx_light);
-	  RADD_MODULE(vsx_material_param);
-	  RADD_MODULE(vsx_gl_scale);
-	  RADD_MODULE(vsx_gl_matrix_multiply);
-	  RADD_MODULE(vsx_gl_color);
-	  RADD_MODULE(vsx_gl_orto_2d);
-	  RADD_MODULE(vsx_fog);
-	  RADD_MODULE(vsx_backface_cull);
-	  RADD_MODULE(vsx_gl_rotate_quat);
-	  RADD_MODULE(vsx_gl_normalize);
-	  RADD_MODULE(vsx_module_gl_matrix_get);
-	  RADD_MODULE(vsx_gl_line_width);
-	  RADD_MODULE(vsx_depth_buffer_clear);
-	  RADD_MODULE(vsx_depth_func);
-	  RADD_MODULE(vsx_texture_bind);
-  
-	  RADD_MODULE(module_3float_to_float3);
-	  RADD_MODULE(module_4float_to_float4);
-	  RADD_MODULE(vsx_module_4f_hsv_to_rgb_f4);
-	  RADD_MODULE(vsx_float_dummy);
-	  RADD_MODULE(vsx_float3_dummy);
-	  RADD_MODULE(vsx_float_array_pick);
-	  RADD_MODULE(vsx_arith_add);
-	  RADD_MODULE(vsx_arith_sub);
-	  RADD_MODULE(vsx_arith_mult);
-	  RADD_MODULE(vsx_arith_div);
-	  RADD_MODULE(vsx_arith_min);
-	  RADD_MODULE(vsx_arith_max);
-	  RADD_MODULE(vsx_arith_pow);
-	  RADD_MODULE(vsx_arith_round);
-	  RADD_MODULE(vsx_arith_floor);
-	  RADD_MODULE(vsx_arith_ceil);
-	  RADD_MODULE(vsx_float_accumulator);
-	  RADD_MODULE(vsx_float3_accumulator);
-	  RADD_MODULE(vsx_float4_accumulator);
-	  RADD_MODULE(module_vector_add);
-	  RADD_MODULE(module_vector_add_float);
-	  RADD_MODULE(module_vector_mul_float);
-	  RADD_MODULE(module_float_to_float3);
-	  RADD_MODULE(vsx_float_abs);
-	  RADD_MODULE(vsx_float_sin);
-	  RADD_MODULE(vsx_float_cos);
-	  RADD_MODULE(vsx_bool_and);
-	  RADD_MODULE(vsx_bool_or);
-	  RADD_MODULE(vsx_bool_nor);
-	  RADD_MODULE(vsx_bool_xor);
-	  RADD_MODULE(vsx_bool_not);
-	  RADD_MODULE(module_vec4_mul_float);
-	  RADD_MODULE(vsx_bool_nand);
-	  RADD_MODULE(module_float4_add);
-	  RADD_MODULE(vsx_float_array_average);
-	  RADD_MODULE(vsx_arith_mod);
-	  RADD_MODULE(vsx_module_f4_hsl_to_rgb_f4);
-	  RADD_MODULE(vsx_float3to3float);
-	  RADD_MODULE(vsx_float_limit);
-	  RADD_MODULE(module_vector_4float_to_quaternion);
-	  RADD_MODULE(vsx_float_interpolate);
-	  RADD_MODULE(module_quaternion_rotation_accumulator_2d);
-	  RADD_MODULE(module_vector_normalize);
-	  RADD_MODULE(module_vector_cross_product);
-	  RADD_MODULE(module_vector_dot_product);
-	  RADD_MODULE(module_vector_from_points);
-	  RADD_MODULE(module_quaternion_slerp_2);
-	  RADD_MODULE(module_quaternion_mul);
-	  RADD_MODULE(vsx_float_accumulator_limits);
-  
-	  RADD_MODULE(vsx_module_rendered_texture_single);
-	  RADD_MODULE(vsx_module_texture_translate);
-	  RADD_MODULE(vsx_module_texture_scale);
-	  RADD_MODULE(vsx_module_texture_rotate);
-	  RADD_MODULE(vsx_module_texture_parameter);
-	  RADD_MODULE(vsx_module_kaleido_mesh);
-  
-	  RADD_MODULE(vsx_module_plugin_wind);
-	  RADD_MODULE(vsx_module_particle_size_noise);
-	  RADD_MODULE(vsx_module_plugin_gravity);
-	  RADD_MODULE(vsx_module_particle_floor);
-	  RADD_MODULE(vsx_module_plugin_fluid);
-	  RADD_MODULE(module_bitmap_blob_a);
-    RADD_MODULE(module_bitmap_blob_b);
-	  RADD_MODULE(module_bitmap_add_noise);
-	  RADD_MODULE(module_bitmap_plasma);
-	  RADD_MODULE(module_bitmap_subplasma);
-	  RADD_MODULE(module_bitmap_blend_1);
-	  RADD_MODULE(module_bitmap_blend_2);
-	  RADD_MODULE(module_bitmap_blend_3);
-	  RADD_MODULE(module_bitmap_blend_4);
-	  RADD_MODULE(module_bitmap_blend_5);
-	  RADD_MODULE(module_bitmap_blend_6);
-	  RADD_MODULE(module_bitmap_blend_7);
-	  RADD_MODULE(module_bitmap_blend_8);
-	  RADD_MODULE(module_bitmap_blend_9);
-	  RADD_MODULE(module_bitmap_blend_10);
-	  RADD_MODULE(module_bitmap_blend_11);
-	  RADD_MODULE(module_bitmap_blend_12);
-	  RADD_MODULE(module_bitmap_blend_13);
-	  RADD_MODULE(module_bitmap_blend_14);
-	  RADD_MODULE(module_bitmap_blend_15);
-	  RADD_MODULE(module_bitmap_blend_16);
-	  RADD_MODULE(module_bitmap_blend_17);
-	  RADD_MODULE(module_bitmap_blend_18);
-	  RADD_MODULE(module_bitmap_blend_19);
-	  RADD_MODULE(module_bitmap_blend_20);
-	  RADD_MODULE(module_bitmap_blend_21);
-	  RADD_MODULE(module_bitmap_blend_22);
-	  RADD_MODULE(module_bitmap_blend_23);
-	  RADD_MODULE(module_bitmap_blend_24);
-	  RADD_MODULE(vsx_module_particle_gen_simple);
-	  RADD_MODULE(vsx_module_particle_gen_mesh);
-	  RADD_MODULE(module_render_particlesystem);
-	  RADD_MODULE(module_render_particlesystem_c);
-	  RADD_MODULE(module_render_particlesystem_sparks);
-	  RADD_MODULE(vsx_listener);
-	  #if !defined (VSXU_OPENGL_ES)
-      RADD_MODULE(vsx_module_texture_blur);
-		  RADD_MODULE(vsx_module_visual_fader);
-	    RADD_MODULE(vsx_polygon_mode);
-	  #endif
-    RADD_MODULE(vsx_module_thorn);
-    RADD_MODULE(vsx_cloud_plane);
-    RADD_MODULE(vsx_module_planeworld);
-    RADD_MODULE(vsx_module_segmesh_map_bspline);
-    RADD_MODULE(vsx_module_segmesh_shape_basic);
-    RADD_MODULE(vsx_module_segmesh_loft);
-    RADD_MODULE(vsx_module_segmesh_bspline_matrix);
-	  RADD_MODULE(vsx_module_system_time);
-	  RADD_MODULE(vsx_module_block_chain);
-	  RADD_MODULE(vsx_depth_test);
-	  RADD_MODULE(vsx_depth_mask);
-	  RADD_MODULE(vsx_module_metaballs);
-	  RADD_MODULE(vsx_module_oscilloscope);
-	  RADD_MODULE(vsx_build_cubemap_texture);
-	  RADD_MODULE(vsx_texture_coord_gen);
-  
-	  RADD_MODULE(vsx_module_gravlines);
-	  RADD_MODULE(vsx_module_gravity_ribbon);
-	  RADD_MODULE(vsx_module_gravity_ribbon_particles);
-  
-  #else  //#ifdef VSXU_MODULES_STATIC
 
-	  // first, add all the internal modules
-    vsx_module_info* a;
-    vsx_module* im = 0;
-  
-    #ifdef VSXU_DEVELOPER
-	  //FILE* fpo = 0;
-	  //if (dump_modules_to_disk) fpo = fopen((vsxu_base_path+"vsxu_engine.modules_loaded.log").c_str(),"w");
-	  //if (fpo) {
-		  LOG("engine_load_module_i: {ENGINE} VSXU Developer:");
-		  LOG("engine_load_module_i: {ENGINE} Loading modules; dumping progress to logfile:");
-    //	}
+  // first, add all the internal modules
+  vsx_module_info* a;
+  vsx_module* im = 0;
+
+  #ifdef VSXU_DEVELOPER
+  //FILE* fpo = 0;
+  //if (dump_modules_to_disk) fpo = fopen((vsxu_base_path+"vsxu_engine.modules_loaded.log").c_str(),"w");
+  //if (fpo) {
+    LOG("engine_load_module_i: {ENGINE} VSXU Developer:");
+    LOG("engine_load_module_i: {ENGINE} Loading modules; dumping progress to logfile:");
+  //	}
+  #endif
+  std::list<vsx_string> mfiles;
+
+  //printf("%s\n", vsx_string(vsxu_base_path+"_plugins").c_str());
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+    get_files_recursive(vsxu_base_path+"plugins",&mfiles,".dll","");
+  #endif
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+    #ifdef PLATFORM_SHARED_FILES_FLAT_INSTALL
+      #ifdef VSXU_DEBUG
+      printf("vsxu_base_path is %s             \n", vsxu_base_path.c_str() );
+      #endif
+      get_files_recursive(vsxu_base_path+"plugins",&mfiles,".so","");
+    #else
+      get_files_recursive(vsx_string(CMAKE_INSTALL_PREFIX)+"/lib/vsxu/plugins",&mfiles,".so","");
     #endif
-    std::list<vsx_string> mfiles;
-  
-    //printf("%s\n", vsx_string(vsxu_base_path+"_plugins").c_str());
+    //printf("Plugin directory: %s\n", vsx_string(vsxu_base_path+"_plugins_linux").c_str());
+  #endif
+  LOG("engine_load_module_a: mfiles.size: "+i2s(mfiles.size()));
+  for (std::list<vsx_string>::iterator it = mfiles.begin(); it != mfiles.end(); ++it) {
+    //printf("list iteration:%d\n",__LINE__);
+    vsx_avector<vsx_string> parts;
+
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      void* module_handle;
+      vsx_string deli = "/";
+    #endif
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-      get_files_recursive(vsxu_base_path+"plugins",&mfiles,".dll","");
+      HMODULE module_handle;
+      vsx_string deli = "\\";
+    #endif
+    explode((*it),deli,parts);
+    //printf("full filename: %s\n",(*it).c_str());
+    #ifdef VSXU_DEVELOPER
+      LOG("engine_load_module_a: attempting to load:"+parts[parts.size()-1]);
+    #endif
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+      module_handle = LoadLibrary((*it).c_str());
     #endif
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-      #ifdef PLATFORM_SHARED_FILES_FLAT_INSTALL
-        #ifdef VSXU_DEBUG
-        printf("vsxu_base_path is %s             \n", vsxu_base_path.c_str() );
-        #endif
-        get_files_recursive(vsxu_base_path+"plugins",&mfiles,".so","");
-      #else
-        get_files_recursive(vsx_string(CMAKE_INSTALL_PREFIX)+"/lib/vsxu/plugins",&mfiles,".so","");
-      #endif
-      //printf("Plugin directory: %s\n", vsx_string(vsxu_base_path+"_plugins_linux").c_str());
-    #endif
-    LOG("engine_load_module_a: mfiles.size: "+i2s(mfiles.size()));
-    for (std::list<vsx_string>::iterator it = mfiles.begin(); it != mfiles.end(); ++it) {
-      //printf("list iteration:%d\n",__LINE__);
-      vsx_avector<vsx_string> parts;
-  
-      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-        void* module_handle;
-        vsx_string deli = "/";
-      #endif
-      #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-        HMODULE module_handle;
-        vsx_string deli = "\\";
-      #endif
-      explode((*it),deli,parts);
-      //printf("full filename: %s\n",(*it).c_str());
-      #ifdef VSXU_DEVELOPER
-        LOG("engine_load_module_a: attempting to load:"+parts[parts.size()-1]);
-		  #endif
-      #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-        module_handle = LoadLibrary((*it).c_str());
-      #endif
-      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-        if (sound_type != "")
+      if (sound_type != "")
+      {
+        vsx_string fndeli = ".";
+        vsx_avector<vsx_string> fnparts;
+        explode(parts[parts.size()-1], fndeli, fnparts);
+        if (fnparts[0] == "sound")
         {
-          vsx_string fndeli = ".";
-          vsx_avector<vsx_string> fnparts;
-          explode(parts[parts.size()-1], fndeli, fnparts);
-          if (fnparts[0] == "sound")
-          {
-            if (fnparts[1] != sound_type) continue;
+          if (fnparts[1] != sound_type) continue;
+        }
+      }
+      module_handle = dlopen((*it).c_str(), RTLD_NOW);
+      if (!module_handle) {
+        #ifdef VSXU_DEVELOPER
+          LOG(vsx_string("engine_load_module_a: error: ") + dlerror());
+        #endif
+      }
+    #endif
+    //printf("after_dlopen\n");
+    if (module_handle)
+    {
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+      if (GetProcAddress(module_handle, "set_environment_info"))
+      #endif
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      if (dlsym(module_handle,"set_environment_info"))
+      #endif
+      {
+        // woo, supports env_info
+        vsx_engine_environment* engine_env = new vsx_engine_environment;
+        engine_env->engine_parameter[0] = PLATFORM_SHARED_FILES+"plugin-config/";
+        #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+          void(*set_env)(vsx_engine_environment*) = (void(*)(vsx_engine_environment*))GetProcAddress(module_handle, "set_environment_info");
+        #endif
+        #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+          void(*set_env)(vsx_engine_environment*) = (void(*)(vsx_engine_environment*))dlsym(module_handle, "set_environment_info");
+        #endif
+        // ------
+        set_env(engine_env);
+        // ------
+        #ifdef VSXU_DEVELOPER
+          LOG("engine_load_module_b: setting environment "+engine_env->engine_parameter[0]);
+        #endif
+      }
+      //else printf("doesn't support env info :(\n");
+
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+        vsx_module*(*query)(unsigned long) = (vsx_module*(*)(unsigned long))GetProcAddress(module_handle, "create_new_module");
+      #endif
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+        vsx_module*(*query)(unsigned long) = (vsx_module*(*)(unsigned long))dlsym(module_handle, "create_new_module");
+      #endif
+
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+      if (GetProcAddress(module_handle, "get_num_modules"))
+      {
+        unsigned long(*get_num_modules)(void) = (unsigned long(*)(void))GetProcAddress(module_handle, "get_num_modules");
+      #endif
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      if (dlsym(module_handle, "get_num_modules"))
+      {
+        unsigned long(*get_num_modules)(void) = (unsigned long(*)(void))dlsym(module_handle, "get_num_modules");
+      #endif
+        //printf("before get num modules\n");
+        unsigned long num_modules = get_num_modules();
+        //printf("after get num modules\n");
+        #ifdef VSXU_DEVELOPER
+          LOG("engine_load_module_a: with "+i2s((int)num_modules)+" modules");
+        #endif
+        total_num_modules += num_modules;
+        #ifdef VSXU_DEVELOPER
+          LOG("engine_load_module_a: parts[parts.size()-1] with "+i2s(num_modules)+" module(s)");
+        #endif  // VSXU_DEVELOPER
+
+        for (unsigned long i = 0; i < num_modules; ++i) {
+          im = query(i);
+          a = new vsx_module_info;
+          a->output = 42;
+          //printf("pointer_int %d\n",a);
+          //a->identifier = "outputs;screen";
+          //a->output = 1;
+          //a->in_param_spec = "screen:render,gamma_correction:float";
+          //a->component_class = "screen";
+
+          im->module_info(a);
+          #ifdef VSXU_DEVELOPER
+          LOG("engine_load_module_a:  module identifier: "+a->identifier);
+          #endif
+          a->location = "external";
+          //vsx_string identifier;
+          /*if (a->identifier[0] == '!') {
+            identifier = a->identifier.substr(1);
+            info->hidden_from_gui = true;
+          } else {
+            info->hidden_from_gui = false;
+            identifier = a->identifier;
+          }*/
+
+          // main info source
+          module_dll_info* info = new module_dll_info;
+          info->module_handle = module_handle;
+          info->module_id = i;
+
+          vsx_string deli = "||";
+          vsx_avector<vsx_string> parts;
+          explode(a->identifier, deli, parts);
+          module_dll_info* info2 = 0;
+          for (unsigned long i = 0; i < parts.size(); ++i) {
+            vsx_string identifier;
+            info2 = new module_dll_info;
+            *info2 = *info;
+            if (parts[i][0] == '!')
+            {
+              // hidden from gui
+              info2->hidden_from_gui = true;
+              identifier = parts[i].substr(1);
+            } else
+            {
+              // normal
+              info2->hidden_from_gui = false;
+              identifier = parts[i];
+            }
+            LOG("engine_load_module_b: adding module to engine with ident: "+identifier);
+            module_dll_list[identifier] = info2;
+//		  				if (i && !info2)
+            //{
+
+              //info2->hidden_from_gui = true;
+//	  				}
+            //if (i) {
+
+            //else {
+//	      			module_dll_list[parts[i]] = info;
+  //      		}
+            module_list[identifier] = a;
           }
         }
-        module_handle = dlopen((*it).c_str(), RTLD_NOW);
-        if (!module_handle) {
-			    #ifdef VSXU_DEVELOPER
-            LOG(vsx_string("engine_load_module_a: error: ") + dlerror());
-			    #endif
-        }
-      #endif
-      //printf("after_dlopen\n");
-      if (module_handle) 
-      {
-        #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-        if (GetProcAddress(module_handle, "set_environment_info"))
-        #endif
-        #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-        if (dlsym(module_handle,"set_environment_info"))
-        #endif
-        {
-          // woo, supports env_info
-          vsx_engine_environment* engine_env = new vsx_engine_environment;
-          engine_env->engine_parameter[0] = PLATFORM_SHARED_FILES+"plugin-config/";
-          #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-            void(*set_env)(vsx_engine_environment*) = (void(*)(vsx_engine_environment*))GetProcAddress(module_handle, "set_environment_info");
-          #endif
-          #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-            void(*set_env)(vsx_engine_environment*) = (void(*)(vsx_engine_environment*))dlsym(module_handle, "set_environment_info");
-          #endif
-          // ------
-          set_env(engine_env);
-          // ------
-				  #ifdef VSXU_DEVELOPER
-            LOG("engine_load_module_b: setting environment "+engine_env->engine_parameter[0]);
-				  #endif
-        }
-        //else printf("doesn't support env info :(\n");
-  
-        #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-          vsx_module*(*query)(unsigned long) = (vsx_module*(*)(unsigned long))GetProcAddress(module_handle, "create_new_module");
-        #endif
-        #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-          vsx_module*(*query)(unsigned long) = (vsx_module*(*)(unsigned long))dlsym(module_handle, "create_new_module");
-        #endif
-  
-        #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-        if (GetProcAddress(module_handle, "get_num_modules"))
-        {
-          unsigned long(*get_num_modules)(void) = (unsigned long(*)(void))GetProcAddress(module_handle, "get_num_modules");
-        #endif
-        #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-        if (dlsym(module_handle, "get_num_modules"))
-        {
-          unsigned long(*get_num_modules)(void) = (unsigned long(*)(void))dlsym(module_handle, "get_num_modules");
-        #endif
-          //printf("before get num modules\n");
-	        unsigned long num_modules = get_num_modules();
-	        //printf("after get num modules\n");
-				  #ifdef VSXU_DEVELOPER
-	          LOG("engine_load_module_a: with "+i2s((int)num_modules)+" modules");
-				  #endif
-	        total_num_modules += num_modules;
-          #ifdef VSXU_DEVELOPER
-				    LOG("engine_load_module_a: parts[parts.size()-1] with "+i2s(num_modules)+" module(s)");
-          #endif  // VSXU_DEVELOPER
-  
-	        for (unsigned long i = 0; i < num_modules; ++i) {
-	          im = query(i);
-	          a = new vsx_module_info;
-	          a->output = 42;
-	          //printf("pointer_int %d\n",a);
-	          //a->identifier = "outputs;screen";
-	          //a->output = 1;
-	          //a->in_param_spec = "screen:render,gamma_correction:float";
-	          //a->component_class = "screen";
-  
-	          im->module_info(a);
-					  #ifdef VSXU_DEVELOPER
-	          LOG("engine_load_module_a:  module identifier: "+a->identifier);
-					  #endif
-	          a->location = "external";
-					  //vsx_string identifier;
-	          /*if (a->identifier[0] == '!') {
-	            identifier = a->identifier.substr(1);
-	            info->hidden_from_gui = true;
-	          } else {
-	            info->hidden_from_gui = false;
-	            identifier = a->identifier;
-	          }*/
-  
-	          // main info source
-	          module_dll_info* info = new module_dll_info;
-	          info->module_handle = module_handle;
-	          info->module_id = i;
-  
-	          vsx_string deli = "||";
-	          vsx_avector<vsx_string> parts;
-	          explode(a->identifier, deli, parts);
-	          module_dll_info* info2 = 0;
-	          for (unsigned long i = 0; i < parts.size(); ++i) {
-	            vsx_string identifier;
-	            info2 = new module_dll_info;
-						  *info2 = *info;
-	            if (parts[i][0] == '!')
-	            {
-	              // hidden from gui
-							  info2->hidden_from_gui = true;
-							  identifier = parts[i].substr(1);
-	            } else
-	            {
-	              // normal
-							  info2->hidden_from_gui = false;
-							  identifier = parts[i];
-	            }
-	            LOG("engine_load_module_b: adding module to engine with ident: "+identifier);
-              module_dll_list[identifier] = info2;
-  //		  				if (i && !info2)
-	            //{
-  
-	              //info2->hidden_from_gui = true;
-  //	  				}
-	            //if (i) {
-  
-	            //else {
-  //	      			module_dll_list[parts[i]] = info;
-	  //      		}
-	            module_list[identifier] = a;
-	          }
-	        }
-	      }
       }
     }
-  #endif  // #ifdef VSXU_MODULES_STATIC
+  }
 
   #ifndef VSX_DEMO_MINI
 	  #ifdef VSXU_DEVELOPER

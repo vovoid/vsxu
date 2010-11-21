@@ -23,6 +23,10 @@ add_definitions(
  -DVSX_TEXTURE_NO_JPEG
  -DVSXU_DEVELOPER
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
+ -DMOD_CNM=create_new_module
+ -DMOD_DM=destroy_module
+ -DMOD_GNM=get_num_modules
+) 
 )
 
 if(ENGINE_SCRIPTING)
@@ -146,6 +150,7 @@ include(../cmake_globals.txt)
 project (${module_id})
 
 add_library(${module_id} SHARED ${SOURCES} ${GAME_MONKEY} ${EXTRA_LIBS})
+add_library(${module_id}_static STATIC ${SOURCES} ${GAME_MONKEY} ${EXTRA_LIBS})
 
 install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 #include(../cmake_suffix.txt)

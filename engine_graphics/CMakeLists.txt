@@ -60,6 +60,7 @@ include(../cmake_globals.txt)
 project (${module_id})
 
 add_library(${module_id} SHARED ${SOURCES} ${EXTRA_LIBS} ${PNG_SOURCES} ${JPG_SOURCES} ${ZLIB_SOURCES})
+add_library(${module_id}_static STATIC ${SOURCES} ${EXTRA_LIBS} ${PNG_SOURCES} ${JPG_SOURCES} ${ZLIB_SOURCES})
 
 install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
