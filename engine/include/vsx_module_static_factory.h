@@ -44,3 +44,11 @@ class vsxm_sf
     vsxm_sf();
 
 };
+
+extern vsxm_sf static_holder;
+
+// WAH HAX
+#ifdef VSXU_ENGINE_STATIC
+  #define dlopen(a,b) static_holder.dlopen(a)
+  #define dlsym(a,b) static_holder.dlsym(a,b)
+#endif

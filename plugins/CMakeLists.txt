@@ -20,7 +20,7 @@ function(CREATE_STATIC_GLUE module_id)
       unsigned long " vsx_module_${module_id_f}_nm "();\n"
     )
     # create a cpp include file for calls
-    file(APPEND ../../static_factory_funcmapping.cpp "  VSXM_SF_ADD_MODULE(\"output_screen\"," vsx_module_${module_id_f}_cm "," vsx_module_${module_id_f}_dm "," vsx_module_${module_id_f}_cm ");\n")
+    file(APPEND ../../static_factory_funcmapping.cpp "  VSXM_SF_ADD_MODULE(\"${module_id}\"," vsx_module_${module_id_f}_cm "," vsx_module_${module_id_f}_dm "," vsx_module_${module_id_f}_nm ");\n")
     add_definitions(
       -DMOD_CM=vsx_module_${module_id_f}_cm
       -DMOD_DM=vsx_module_${module_id_f}_dm
@@ -46,6 +46,7 @@ endfunction(CREATE_MODULE)
 
 #GROWL
 if (VSXU_ENGINE_STATIC EQUAL 1)
+message ("building static libs, cleaning out inclusion files") 
   # 1. create the file for static factory
   file(WRITE static_factory_funcmapping.cpp "")
   file(WRITE static_factory_funcmapping.h "")

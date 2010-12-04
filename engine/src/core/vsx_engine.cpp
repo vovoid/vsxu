@@ -29,7 +29,6 @@
 
 #ifdef VSXU_ENGINE_STATIC
 #include "vsx_module_static_factory.h"
-vsxm_sf static_holder;
 #endif
 
 
@@ -377,10 +376,8 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
     //printf("list iteration:%d\n",__LINE__);
     vsx_avector<vsx_string> parts;
 
-    #ifdef VSXU_ENGINE_STATIC
-    #define dlopen(a,b) static_holder.dlopen(a)
-    #define dlsym(a,b) static_holder.dlsym(a,b)
-    #endif
+    // definition for static storage
+
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
       void* module_handle;
       vsx_string deli = "/";

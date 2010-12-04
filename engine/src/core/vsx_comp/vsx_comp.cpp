@@ -22,11 +22,9 @@
 #endif
 #include "vsx_comp_channel.h"
 #include "vsx_log.h"
-#ifdef VSXU_MODULES_STATIC
-  #ifdef VSXU_MAC_XCODE
-  #include <syslog.h>
-  #endif
-#include "vsx_module_static.h"
+
+#ifdef VSXU_ENGINE_STATIC
+#include "vsx_module_static_factory.h"
 #endif
 
 vsx_comp::vsx_comp() {
