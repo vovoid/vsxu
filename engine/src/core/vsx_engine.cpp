@@ -27,6 +27,10 @@
 #include <unistd.h>
 #endif
 
+#ifdef VSXU_ENGINE_STATIC
+#include "vsx_module_static_factory.h"
+vsxm_sf static_holder;
+#endif
 
 
 #ifndef VSXE_NO_GM
@@ -360,7 +364,11 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
       #endif
       get_files_recursive(vsxu_base_path+"plugins",&mfiles,".so","");
     #else
+      #ifdef VSXU_ENGINE_STATIC
+      static_holder.get_factory_names(&mfiles);
+      #else
       get_files_recursive(vsx_string(CMAKE_INSTALL_PREFIX)+"/lib/vsxu/plugins",&mfiles,".so","");
+      #endif
     #endif
     //printf("Plugin directory: %s\n", vsx_string(vsxu_base_path+"_plugins_linux").c_str());
   #endif
@@ -369,6 +377,10 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
     //printf("list iteration:%d\n",__LINE__);
     vsx_avector<vsx_string> parts;
 
+    #ifdef VSXU_ENGINE_STATIC
+    #define dlopen(a,b) static_holder.dlopen(a)
+    #define dlsym(a,b) static_holder.dlsym(a,b)
+    #endif
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
       void* module_handle;
       vsx_string deli = "/";
@@ -433,10 +445,17 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
       //else printf("doesn't support env info :(\n");
 
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-        vsx_module*(*query)(unsigned long) = (vsx_module*(*)(unsigned long))GetProcAddress(module_handle, "create_new_module");
+        vsx_module*(*create_new_module)(unsigned long) = (vsx_module*(*)(unsigned long))GetProcAddress(module_handle, "create_new_module");
       #endif
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-        vsx_module*(*query)(unsigned long) = (vsx_module*(*)(unsigned long))dlsym(module_handle, "create_new_module");
+        vsx_module*(*create_new_module)(unsigned long) = (vsx_module*(*)(unsigned long))dlsym(module_handle, "create_new_module");
+      #endif
+
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+        void(*destroy_module)(vsx_module*) = (void(*)(vsx_module*))GetProcAddress(module_handle, "destroy_module");
+      #endif
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+        void(*destroy_module)(vsx_module*) = (void(*)(vsx_module*))dlsym(module_handle, "destroy_module");
       #endif
 
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
@@ -449,9 +468,9 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
       {
         unsigned long(*get_num_modules)(void) = (unsigned long(*)(void))dlsym(module_handle, "get_num_modules");
       #endif
-        //printf("before get num modules\n");
+
         unsigned long num_modules = get_num_modules();
-        //printf("after get num modules\n");
+  
         #ifdef VSXU_DEVELOPER
           LOG("engine_load_module_a: with "+i2s((int)num_modules)+" modules");
         #endif
@@ -461,28 +480,14 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
         #endif  // VSXU_DEVELOPER
 
         for (unsigned long i = 0; i < num_modules; ++i) {
-          im = query(i);
+          im = create_new_module(i);
           a = new vsx_module_info;
-          a->output = 42;
-          //printf("pointer_int %d\n",a);
-          //a->identifier = "outputs;screen";
-          //a->output = 1;
-          //a->in_param_spec = "screen:render,gamma_correction:float";
-          //a->component_class = "screen";
-
           im->module_info(a);
+          destroy_module(im);
           #ifdef VSXU_DEVELOPER
           LOG("engine_load_module_a:  module identifier: "+a->identifier);
           #endif
           a->location = "external";
-          //vsx_string identifier;
-          /*if (a->identifier[0] == '!') {
-            identifier = a->identifier.substr(1);
-            info->hidden_from_gui = true;
-          } else {
-            info->hidden_from_gui = false;
-            identifier = a->identifier;
-          }*/
 
           // main info source
           module_dll_info* info = new module_dll_info;
@@ -510,16 +515,6 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
             }
             LOG("engine_load_module_b: adding module to engine with ident: "+identifier);
             module_dll_list[identifier] = info2;
-//		  				if (i && !info2)
-            //{
-
-              //info2->hidden_from_gui = true;
-//	  				}
-            //if (i) {
-
-            //else {
-//	      			module_dll_list[parts[i]] = info;
-  //      		}
             module_list[identifier] = a;
           }
         }
@@ -607,10 +602,10 @@ bool vsx_engine::render() {
 
     if (frame_cfp_time == 0.0f)
     {
-      for (std::list<vsx_comp*>::iterator it2 = outputs.begin(); it2 != outputs.end(); ++it2) {
+      for (unsigned long i = 0; i < outputs.size(); i++) {
         vsx_engine_param* param;
 
-        param = (*it2)->get_params_out()->get_by_name("_st");
+        param = outputs[i]->get_params_out()->get_by_name("_st");
 
             //else {
               //param = dest->get_params_in()->get_by_name(c->parts[2]);
@@ -711,8 +706,8 @@ bool vsx_engine::render() {
  		//printf("d2");
 
 		// go through the outputs - actual rendering
-		for (std::list<vsx_comp*>::iterator it2 = outputs.begin(); it2 != outputs.end(); ++it2) {
-		  (*it2)->prepare();
+		for (unsigned long i = 0; i < outputs.size(); i++) {
+		  outputs[i]->prepare();
 		}
 		for(std::vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
 			(*it)->reset_frame_status();

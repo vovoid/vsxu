@@ -57,7 +57,7 @@ private:
 	std::map<vsx_string,module_dll_info*> module_dll_list;
 	void build_module_list(vsx_string sound_type = ""); // (re)builds the module_list
 
-	std::list<vsx_comp*> outputs;
+	vsx_avector<vsx_comp*> outputs;
 
   // Time/sequencing variables
  	// global frame counter (mostly for fun)

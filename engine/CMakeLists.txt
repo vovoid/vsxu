@@ -8,6 +8,15 @@ src/core/vsx_comp
 src/core
 )
 
+
+if (VSXU_ENGINE_STATIC EQUAL 1)
+  #static build
+  include(../plugins/static_factory_cmake_link_directories)
+  add_definitions(
+    -DVSXU_ENGINE_STATIC
+  )
+endif (VSXU_ENGINE_STATIC EQUAL 1)
+
 #definitions
 #if you want an engine without OpenGL linkage, add -DVSX_NO_GL
 add_definitions(
@@ -23,10 +32,6 @@ add_definitions(
  -DVSX_TEXTURE_NO_JPEG
  -DVSXU_DEVELOPER
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
- -DMOD_CNM=create_new_module
- -DMOD_DM=destroy_module
- -DMOD_GNM=get_num_modules
-) 
 )
 
 if(ENGINE_SCRIPTING)
@@ -147,11 +152,23 @@ include(../cmake_globals.txt)
 #../vsxu_engine_gm
 #)
 
+set(STATIC_SOURCES
+./src/core/vsx_module_static_factory/vsx_module_static_factory.cpp
+)
 project (${module_id})
 
-add_library(${module_id} SHARED ${SOURCES} ${GAME_MONKEY} ${EXTRA_LIBS})
-add_library(${module_id}_static STATIC ${SOURCES} ${GAME_MONKEY} ${EXTRA_LIBS})
+if (VSXU_ENGINE_STATIC EQUAL 1)
+  #static build
+  
+  add_library(${module_id}_static STATIC ${STATIC_SOURCES} ${SOURCES} ${GAME_MONKEY} ${EXTRA_LIBS})
+  add_library(${module_id} SHARED ${STATIC_SOURCES} ${SOURCES} ${GAME_MONKEY} ${EXTRA_LIBS})
+  include(../plugins/static_factory_cmake_target_link_libraries)
+  install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+else (VSXU_ENGINE_STATIC EQUAL 1)
+  #dynamic build
+  add_library(${module_id} SHARED ${SOURCES} ${GAME_MONKEY} ${EXTRA_LIBS})
+  install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+endif (VSXU_ENGINE_STATIC EQUAL 1)
 
-install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 #include(../cmake_suffix.txt)
 

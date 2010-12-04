@@ -607,7 +607,7 @@ void output(vsx_module_param_abs* param) {
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 #if BUILDING_DLL
-vsx_module* create_new_module(unsigned long module) {
+vsx_module* MOD_CM(unsigned long module) {
   switch (module) {
     case 0: return (vsx_module*)new vsx_module_simple_with_texture;
     case 1: return (vsx_module*)new vsx_module_render_basic_colored_rectangle;
@@ -617,7 +617,7 @@ vsx_module* create_new_module(unsigned long module) {
 }
 
 
-void destroy_module(vsx_module* m,unsigned long module) {
+void MOD_DM(vsx_module* m,unsigned long module) {
   switch(module) {
     case 0: delete (vsx_module_simple_with_texture*)m; break;
     case 1: delete (vsx_module_render_basic_colored_rectangle*)m; break;
@@ -626,7 +626,7 @@ void destroy_module(vsx_module* m,unsigned long module) {
 }
 
 
-unsigned long get_num_modules() {
+unsigned long MOD_NM() {
   return 3;
 }  
 

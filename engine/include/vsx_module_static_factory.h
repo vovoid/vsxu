@@ -5,10 +5,29 @@
 
 //vsx module static factory info class
 
+class vsxm_sf_info
+{
+public:
+  vsx_string name;
+  void* cm; //create module func
+  void* dm; //delete module func
+  void* nm; //number of modules
+  vsxm_sf_info(vsx_string n_name, void *n_cm, void* n_dm, void* n_nm)
+  {
+    name = n_name;
+    cm = n_cm;
+    dm = n_dm;
+    nm = n_nm;
+  }
+};
+
+//vsx module static factory manager class
+
 class vsxm_sf
 {
   private:
-    std::list<vsx_string> module_names;
+  vsx_avector<vsxm_sf_info*> modules;
+    
   
   public:
     // will fill out internal std::maps with pointers to factory functions
@@ -20,6 +39,8 @@ class vsxm_sf
     void* dlsym(void *handle, const char *symbol);
 
     // returns a list of factory names to query
-    std::list<vsx_string> get_factory_names();
+    void get_factory_names(std::list<vsx_string>* mfiles);
 
-}
+    vsxm_sf();
+
+};

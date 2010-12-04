@@ -161,6 +161,11 @@ public:
   	allocation_increment = new_increment;
   }
 
+  void remove(T val)
+  {
+    
+  }
+
   /*vsx_avector(vsx_avector<T>& v) {
     T* f = v.get_pointer();
     unsigned long vs = v.size();

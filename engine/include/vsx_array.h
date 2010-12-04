@@ -8,7 +8,7 @@
 // It uses a nasty trick - allocating class pointers with malloc.
 // Rules if you want to avoid segfault:
 // * DON'T STORE POINTERS TO CLASSES WITH VIRTUAL FUNCTIONS
-// * DON'T POINT ANY ELEMENT/DATA STORED IN THE ARRAY
+// * DON'T POINT TO ANY ELEMENT/DATA STORED IN THE ARRAY
 //   (data is realloc'd, such pointers would be invalid)
 // Now you've been warned, use it for speed!
 

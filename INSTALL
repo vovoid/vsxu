@@ -56,6 +56,9 @@ A D V A N C E D   B U I L D   O P T I O N S
     -DCMAKE_INSTALL_PREFIX="/path/to/install/dir"
       sets installation path
 
+    -DVSXU_ENGINE_STATIC=1
+      build the engine static, with engine_graphics and all modules compiled in
+
     -DENGINE_SCRIPTING=1
       enables vsxl/gamemonkey (the scripting language in the engine)
 
@@ -68,6 +71,7 @@ A D V A N C E D   B U I L D   O P T I O N S
 
     -DVSXU_SOUND_MEDIA_PLAYER=1
       see next section
+
 
 Examples:
   This is my test/debug-it-all command:
