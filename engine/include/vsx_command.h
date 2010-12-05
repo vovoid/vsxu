@@ -39,7 +39,6 @@
 //float www = (LOL)intarnet;
 
 
-
 // command specification (container class)
 // this is used within the whole system. that is both the client, who has both a vsx_engine and an instance of the gui
 // widget system, and in the server.
@@ -81,7 +80,6 @@ public:
     title = t->title;
     cmd = t->cmd;
     cmd_data = t->cmd_data;
-//    cmd_data_bin << t->cmd_data_bin.str();
     raw = t->raw;
     parts = t->parts;
     iterations = t->iterations;
@@ -97,11 +95,12 @@ public:
     type = 0;
     iterations = 0;
     ++id;
-//#ifndef VSX_CMD_GARBAGE_DISABLED
+    //#ifndef VSX_CMD_GARBAGE_DISABLED
     garbage_list.push_back(this);
     garbage_pointer = &garbage_list;
-//#endif
+    //#endif
   }
+
   // returns a string like "part1 part2 part3" if start was 1 and end was 3
   VSX_COMMAND_DLLIMPORT vsx_string get_parts(int start = 0, int end = -1);
 
@@ -117,7 +116,20 @@ public:
 
 VSX_COMMAND_DLLIMPORT vsx_command_s* vsx_command_parse(vsx_string& cmd_raw);
 
+// thread safety notice:
+//  an instance of this class shouldn't be shared among more than 2 threads hence it's a simple mutex
+//  combined with provider/consumer FIFO or LIFO buffer (pop/push, pop_front/push_front)
 class vsx_command_list {
+  int mutex; // thread safety, 1 = locked, 0 = unlocked, ready to lock
+
+  void get_lock() {
+    while (mutex) {}
+    mutex = 1;
+  }
+  void release_lock() {
+    mutex = 0;
+  }
+ 
 public:
 #ifdef VSX_ENG_DLL
   vsxf* filesystem;
@@ -136,7 +148,9 @@ public:
       ++cmd->iterations;
       vsx_command_s *t = new vsx_command_s;
       t->copy(cmd);
-      commands.push_back(t);
+      get_lock();
+        commands.push_back(t);
+      release_lock();
       return t;
     }
     return 0;
@@ -168,7 +182,9 @@ public:
     if (cmd_) {
       if (cmd_->iterations < VSX_COMMAND_MAX_ITERATIONS) {
         ++cmd_->iterations;
-        commands.push_back(cmd_);
+        get_lock();
+          commands.push_back(cmd_);
+        release_lock();
         return cmd_;
       }
     } else return 0;
@@ -180,7 +196,9 @@ public:
     if (cmd_) {
       if (cmd_->iterations < VSX_COMMAND_MAX_ITERATIONS) {
         ++cmd_->iterations;
-        commands.push_front(cmd_);
+        get_lock();
+          commands.push_front(cmd_);
+        release_lock();
         return cmd_;
       }
     } else return 0;
@@ -189,14 +207,17 @@ public:
 	// add a command by specifying command and command data
   VSX_COMMAND_DLLIMPORT void add(vsx_string cmd, vsx_string cmd_data);
 
+  // adds a command
+  // Thread safety: YES
+
   void add(vsx_string cmd, int cmd_data) {
     if (!accept_commands) return;
     vsx_command_s* t = new vsx_command_s;
     t->cmd = cmd;
-    /*std::stringstream f;
-    f << cmd_data;*///Implementing new conversion functions
     t->cmd_data = i2s(cmd_data);//f.str();
-    commands.push_back(t);
+    get_lock();
+      commands.push_back(t);
+    release_lock();
   }
 
   VSX_COMMAND_DLLIMPORT void adds(int tp, vsx_string titl,vsx_string cmd, vsx_string cmd_data);
@@ -204,15 +225,22 @@ public:
   VSX_COMMAND_DLLIMPORT void clear(bool del = false);
 
   vsx_command_s* reset() {
-    iter = commands.begin();
+    get_lock();
+      iter = commands.begin();
+    release_lock();
     return *iter;
   }
 
+  // gets the current command from internal iterator
+  // Thread safety: NO
   vsx_command_s* get_cur() {
     if (iter != commands.end()) {
       return *iter;
     } else return 0;
   }
+  
+  // gets the current command from internal iterator and advancing iterator
+  // Thread safety: NO
   vsx_command_s* get() {
     if (iter != commands.end()) {
     vsx_command_s* h = *iter;
@@ -223,49 +251,72 @@ public:
     return 0;
   }
 
+  // returns and removes the command first in the list
+  // Thread safety: YES
   bool pop(vsx_command_s **t) {
+    get_lock();
     if (commands.size()) {
       *t = commands.front();
       commands.pop_front();
+      release_lock();
       return true;
     }
-    //*t = 0;
+    release_lock();
     return false;
   }
+
+
+  // returns and removes the command first in the list
+  // Thread safety: YES
   vsx_command_s *pop() {
+    get_lock();
     if (commands.size()) {
       vsx_command_s *t = commands.front();
       commands.pop_front();
+      release_lock();
       return t;
-    } else return 0;
+    }
+    release_lock();
+    return 0;
   }
 
+  // returns and removes the command last in the list
+  // Thread safety: YES
   vsx_command_s *pop_back() {
+    get_lock();
     if (commands.size()) {
       vsx_command_s *t = commands.back();
       commands.pop_back();
+      release_lock();
       return t;
-    } else return 0;
+    }
+    release_lock();
+    return 0;
   }
+
   // loads from file and puts the lines in vsx_command_s::raw.
   // The default is not to parse.
+  // Thread safety: NO
   VSX_COMMAND_DLLIMPORT void load_from_file(vsx_string filename, bool parse = false,int type = 0);
+  // Thread safety: NO
   VSX_COMMAND_DLLIMPORT void save_to_file(vsx_string filename);
 
+  // Thread safety: NO
   VSX_COMMAND_DLLIMPORT void token_replace(vsx_string search, vsx_string replace);
+  // Thread safety: NO
   VSX_COMMAND_DLLIMPORT void parse();
 
   void set_type(int new_type);
+
+  // Thread safety: YES
   int count() {
-    return commands.size();
+    get_lock();
+    int j = commands.size();
+    release_lock();
+    return j;
   }
-  vsx_command_list() : filesystem(0),accept_commands(1) {}
-  ~vsx_command_list(){
-    //for (std::list <vsx_command_s*>::iterator it = commands.begin(); it != commands.end(); ++it) {
-      //delete *it;
-      //*it = 0;
-    //}
-  };
+  vsx_command_list() : mutex(0),filesystem(0),accept_commands(1) {}
+  ~vsx_command_list() {};
 };
 
 
@@ -280,42 +331,5 @@ public:
 };
 
 double ntime();
-
-/*
-class vsx_command_timing {
-  std::map<vsx_string,vsx_command_timing_container*> vsx_command_timing;
-  vsx_command_timing_container *t;
-  double startt;
-  vsx_string cmd;
-
-public:
-
-  void start(vsx_string cmd_) {
-    cmd = cmd_;
-    startt = ntime();
-  }
-
-  double stop() {
-    double end = ntime();
-    startt = end-startt;
-    if (startt == 0) startt = 0.00001;
-    t = vsx_command_timing[cmd];
-    if (!t) { t = vsx_command_timing[cmd] = new vsx_command_timing_container; }
-    t->totaltime+=startt;
-    ++t->count;
-    t->average = t->totaltime/((double)t->count);
-    return startt;
-  }
-
-  double average(vsx_string cmd_) {
-    vsx_command_timing_container *t = 0;
-    t = vsx_command_timing[cmd_];
-    if (t) return t->average;
-    else return 0.00001;
-  }
-
-};
-*/
-
 
 #endif
