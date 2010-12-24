@@ -17,6 +17,7 @@
 #include "lib/vsx_widget_lib.h"
 #include "vsx_widget_comp.h"
 #include "vsx_widget_anchor.h"
+#include <vsx_command_client_server.h>
 #include "vsx_widget_server.h"
 //#include "vsx_widget_module_chooser.h"
 #include "dialogs/vsx_widget_window_statics.h"

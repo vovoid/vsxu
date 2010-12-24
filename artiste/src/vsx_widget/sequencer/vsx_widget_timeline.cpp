@@ -18,6 +18,7 @@
 #include "vsx_widget_sequence.h"
 #include "vsx_widget_seq_chan.h"
 #include "vsx_widget_timeline.h"
+#include <vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
 // engine includes
 #include "vsx_engine.h"

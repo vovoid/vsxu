@@ -18,13 +18,12 @@
 
 #include "log/vsx_log_a.h"
 
-//#include "../resource.h"
-
 #ifndef VSX_NO_CLIENT
 #include "vsx_widget/vsx_widget_base.h"
 #include "vsx_widget/window/vsx_widget_window.h"
 #include "vsx_widget/lib/vsx_widget_lib.h"
 #include "vsx_widget/vsx_widget_main.h"
+#include <vsx_command_client_server.h>
 #include "vsx_widget/server/vsx_widget_server.h"
 #include "vsx_widget/module_choosers/vsx_widget_module_chooser.h"
 #include "vsx_widget/helpers/vsx_widget_object_inspector.h"
@@ -81,12 +80,14 @@ void init_vxe() {
 }
 
 
-void load_desktop_a(vsx_string state_name = "") {
+void load_desktop_a(vsx_string state_name = "")
+{
   //printf("{CLIENT} creating desktop:");
   desktop = new vsx_widget_desktop;
   //printf(" [DONE]\n");
   internal_cmd_in.clear();
   internal_cmd_out.clear();
+  // connect server widget to command lists
   ((vsx_widget_server*)desktop->f("desktop_local"))->cmd_in = &internal_cmd_out;
   ((vsx_widget_server*)desktop->f("desktop_local"))->cmd_out = &internal_cmd_in;
   if (state_name != "") ((vsx_widget_server*)desktop->f("desktop_local"))->state_name = str_replace("/",";",str_replace("//",";",str_replace("_states/","",state_name)));

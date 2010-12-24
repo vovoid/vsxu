@@ -142,6 +142,7 @@ set(SOURCES
 ./src/vsx_sequence.cpp
 ./src/log/vsx_log.cpp
 ./src/vsx_command.cpp
+./src/vsx_command_client_server.cpp
 ./src/vsxfst/7zip/Compress/LZMA_C/LzmaDecode.c
 ./src/vsxfst/7zip/Compress/Branch/BranchX86.c
 ./src/vsxfst/LzmaRamDecode.c

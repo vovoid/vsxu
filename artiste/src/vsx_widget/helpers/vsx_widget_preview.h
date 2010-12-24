@@ -5,6 +5,7 @@
 class vsx_window_texture_viewer : public vsx_widget_window {
   vsx_widget *inspected;
   vsx_widget *label1;
+  vsx_widget *server;
   float frame_delta;
   float frame_count;
   float fps;

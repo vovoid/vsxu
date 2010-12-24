@@ -29,6 +29,7 @@
 #include "lib/vsx_widget_lib.h"
 //#include "vsx_widget_comp.h"
 #include "server/vsx_widget_anchor.h"
+#include <vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
 //#include "vsx_widget_module_chooser.h"
 #include "dialogs/vsx_widget_window_statics.h"
@@ -55,9 +56,6 @@ void vsx_widget_desktop::init() {
 	//menu->commands.adds(VSX_COMMAND_MENU, "help;about", "b","");
 	//menu->size.x = 0.3;
 	//menu->size.y = 0.5;
-
-	//menu->commands["connect new server"] = 0;
-	//menu->commands["exit"] = 1;
 
 	// popup window
 	add(new vsx_window_object_inspector(),"object_inspector");
@@ -483,68 +481,6 @@ void vsx_widget_desktop::save_configuration() {
       save_configuration();
       load_configuration();
     }
-#ifdef VOVOID
-    else
-    if (t->cmd == "gui") {
-      if (t->cmd_data == "dump")
-        {
-          log("---------- gui dump -------------");
-          for (children_iter=children.begin(); children_iter != children.end(); ++children_iter)
-          log((*children_iter)->name);
-        }
-    } else
-    if (t->cmd == "server_connect") {
-      f("server_connect_host")->show();
-      return;
-    } else
-    if (t->cmd == "server_connect_host") {
-      if (t->cmd_data == "") t->cmd_data = "localhost";
-      vsx_widget* sv = add(new vsx_widget_server,t->cmd_data);
-      if (!sv)
-      {
-        log("you fool! we're already connected to this server!");
-        return;
-      }
-      sv->color.r = (double)(rand()%1000)/1000.0;
-      sv->color.g = (double)(rand()%1000)/1000.0;
-      sv->color.b = (double)(rand()%1000)/1000.0;
-
-      sv->init();
-      sv->command_q_b.add(t);
-      sv->vsx_command_queue_b(sv);
-      //sv->visible = 1;
-      return;
-      /*stringstream d;
-      d << rand();
-      vsx_widget* sv = add(new vsx_widget_server,name+".msrv."+d.str());
-      sv->p["r"] = (double)(rand()%1000)/1000.0;
-      sv->p["g"] = (double)(rand()%1000)/1000.0;
-      sv->p["b"] = (double)(rand()%1000)/1000.0;
-      sv->size.x = 5;
-      sv->size.y = 5;
-
-
-      vsx_widget* t = sv->add(new vsx_widget_component,sv->name+"test");
-      t->size.x = 0.2;
-      t->pos.y = 0;
-      t->pos.x = 0;
-
-
-      t = sv->add(new vsx_widget_component,sv->name+"test2");
-      t->size.x = 0.2;
-      t->pos.y = 1;
-      t->pos.x = 1;
-
-
-      t = sv->add(new vsx_widget_component,sv->name+"test3");
-      t->size.x = 0.2;
-      t->pos.y = 0;
-      t->pos.x = 1;
-
-      sv->init();
-      //delete t;*/
-    }
-#endif
   }
 
   //void vsx_widget_desktop::event_mouse_move_passive(vsx_vector world, vsx_vector screen) {
@@ -599,13 +535,14 @@ vsx_widget_desktop::vsx_widget_desktop() {
   }
   // server widget
   sv = add(new vsx_widget_server,"desktop_local");
-  ((vsx_widget_server*)sv)->stype = 1;
+
   sv->color.b = 255.0/255.0;
   sv->color.g = 200.0/255.0;
   sv->color.r = 200.0/255.0;
-  //sv->p["a"] = 0.4;
   sv->size.x = 5;
   sv->size.y = 5;
+
+  //sv->p["a"] = 0.4;
 
   // preview window
   tv = add(new vsx_window_texture_viewer(),"vsxu_preview");
@@ -616,19 +553,6 @@ vsx_widget_desktop::vsx_widget_desktop() {
   m_focus = sv;
   k_focus = sv;
 
-//  ((vsx_window_texture_viewer*)tv)->engine = (void*)vme;
-//  main_conf.reset();
-/*  while (mc = main_conf.get()) {
-    if (mc->cmd == "modestring_default") {
-      ((vsx_window_texture_viewer*)tv)->modestring_default = mc->cmd_data;
-    } else
-    if (mc->cmd == "modestring") {
-      ((vsx_window_texture_viewer*)tv)->modestring_commands.addc(mc);
-    }
-  }*/
-  //front(tv);
-
-
   console =  add(new vsx_widget_2d_console,"system_console");
 
   ((vsx_widget_2d_console*)console)->set_destination(sv);
@@ -638,14 +562,8 @@ vsx_widget_desktop::vsx_widget_desktop() {
   mtex.load_jpeg(skin_path+"desktop.jpg");
 #endif
 
-
-  //tv->topmost = true;
-  //front(tv);
-
   k_focus = this;
   m_focus = this;
-//  a_focus = this;
-
 
   zpf = 0.0;
   zpa = 0.0;

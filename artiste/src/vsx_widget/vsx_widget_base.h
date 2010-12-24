@@ -410,11 +410,11 @@ public:
   //
   vsx_widget *add(vsx_widget *t,vsx_string name);
 
-  // actual deletion event
+  // actual deletion event, don't use this unless you know what you are doing!
   virtual void _delete();
   virtual void mark_for_deletion();
 
-  // deletes the widget and all its children
+  // ask the object to delete itself and all its children (nice)
   virtual void delete_();
   // deletion event
   virtual void on_delete();
