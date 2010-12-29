@@ -22,11 +22,6 @@
 #include <syslog.h>
 #endif
 
-#ifdef VSXU_OPENGL_ES
-#include <OpenGLES/ES1/gl.h>
-#include <OpenGLES/ES1/glext.h>
-#endif
-
 #ifdef VSXU_EXE
 std::map<vsx_string, vsx_texture_info> vsx_texture::t_glist;
 #else
@@ -42,7 +37,9 @@ vsx_texture::vsx_texture(int id, int type) {
   transform_obj = new vsx_transform_neutral;
   valid = true;
   locked = false;
+  #ifndef VSXU_OPENGL_ES
   glewInit();
+  #endif
 }
 
 void vsx_texture::init_opengl_texture() {
@@ -75,7 +72,7 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture) {
 	  // use_fbo = false;
   //}
   if (use_fbo) {
-#ifdef VSXU_OPENGL_ES
+#ifdef VSXU_OPENGL_ES_1_0
     GLint prev_buf_l;
     GLuint tex_id;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING_OES, (GLint *)&prev_buf_l);
@@ -234,7 +231,7 @@ void vsx_texture::init_buffer_render(int width, int height) {
 void vsx_texture::deinit_buffer() {
 #ifndef VSX_TEXTURE_NO_RT
   if (use_fbo) {
-#ifdef VSXU_OPENGL_ES
+#ifdef VSXU_OPENGL_ES_1_0
   	glDeleteRenderbuffersOES(1,&depthbuffer_id);
   	glDeleteTextures(1,&texture_info.ogl_id);
     glDeleteFramebuffersOES(1, &framebuffer_id);
@@ -289,7 +286,7 @@ void vsx_texture::begin_capture() {
   if (use_fbo) {
     if (locked) printf("locked\n");
     if (locked) return;
-#ifdef VSXU_OPENGL_ES
+#ifdef VSXU_OPENGL_ES_1_0
     glGetIntegerv(GL_FRAMEBUFFER_BINDING_OES, (GLint *)&prev_buf);
 #endif
 #ifndef VSXU_OPENGL_ES
@@ -308,7 +305,7 @@ void vsx_texture::begin_capture() {
 
     GLfloat one_array[4] = {1.0f, 1.0f, 1.0f, 1.0f};
     GLfloat zero_array[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-
+    #ifndef VSXU_OPENGL_ES_2_0
     glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,&one_array[0]);
     glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,&one_array[0]);
     glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,&zero_array[0]);
@@ -319,8 +316,9 @@ void vsx_texture::begin_capture() {
     glDisable(GL_LIGHT1);
     glDisable(GL_LIGHT2);
     glDisable(GL_LIGHT3);
+    #endif
     glEnable(GL_BLEND);
-#ifdef VSXU_OPENGL_ES
+#ifdef VSXU_OPENGL_ES_1_0
     glBindTexture(GL_TEXTURE_2D,0);
 //			printf("framebuffer_id: %d\n");
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, framebuffer_id);
@@ -347,12 +345,14 @@ void vsx_texture::end_capture() {
 #ifndef VSX_TEXTURE_NO_RT
   if (use_fbo) {
     if (locked) {
-      glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, framebuffer_id);
-      glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, tex_fbo);
-      glBlitFramebufferEXT(0, 0, texture_info.size_x, texture_info.size_x, 0, 0, texture_info.size_x, texture_info.size_x, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+      #ifndef VSXU_OPENGL_ES_2_0
+        glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, framebuffer_id);
+        glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, tex_fbo);
+        glBlitFramebufferEXT(0, 0, texture_info.size_x, texture_info.size_x, 0, 0, texture_info.size_x, texture_info.size_x, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+      #endif
 
 
-#ifdef VSXU_OPENGL_ES
+#ifdef VSXU_OPENGL_ES_1_0
       glBindFramebufferOES(GL_FRAMEBUFFER_OES, prev_buf);
 #endif
 #ifndef VSXU_OPENGL_ES
@@ -365,7 +365,7 @@ void vsx_texture::end_capture() {
       glMatrixMode(GL_PROJECTION);
       glPopMatrix();
       glMatrixMode(GL_MODELVIEW);
-#ifndef VSXU_OPENGL_ES
+#ifndef VSXU_OPENGL_ES_2_0
       glPopAttrib();
 #endif
       locked = false;

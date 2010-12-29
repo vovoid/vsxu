@@ -49,6 +49,7 @@ if(UNIX)
   target_link_libraries(${module_id}
     dl
     vsxu_engine
+    pthread
   )
   install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 endif(UNIX)

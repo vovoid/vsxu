@@ -1,14 +1,16 @@
 #ifndef VSX_TEXTURE_LIB_H
 #define VSX_TEXTURE_LIB_H
 #ifdef VSXU_EXE
-#include <map>
+  #include <map>
 #endif
 #include "vsx_texture_info.h"
 #include "vsx_string.h"
 #ifndef VSX_TEXTURE_NO_RT
-#ifndef VSX_TEXTURE_NO_RT_PBUFFER
-#include "render_texture.h"
-#endif
+  #ifndef VSX_TEXTURE_NO_RT_PBUFFER
+    #ifndef VSXU_OPENGL_ES
+      #include "render_texture.h"
+    #endif
+  #endif
 #endif
 #include "vsx_bitmap.h"
 
@@ -45,7 +47,7 @@ public:
   // is this valid for binding:
   bool valid;
 
-#if !defined(VSX_TEXTURE_NO_RT) && !defined(VSX_TEXTURE_NO_RT_PBUFFER)
+#if !defined(VSX_TEXTURE_NO_RT) && !defined(VSX_TEXTURE_NO_RT_PBUFFER) && !defined(VSXU_OPENGL_ES)
   RenderTexture *rt; // render texture (used when acting as a pbuffer)
 #else
   void *rt;
@@ -64,7 +66,7 @@ public:
 
   bool get_fbo_status() { return use_fbo;}
 
-#if ((!defined(VSX_TEXTURE_NO_RT)) && (!defined(VSX_TEXTURE_NO_RT_PBUFFER)))
+#if ((!defined(VSX_TEXTURE_NO_RT)) && (!defined(VSX_TEXTURE_NO_RT_PBUFFER))) && (!defined(VSXU_OPENGL_ES))
   RenderTexture* get_rt() { return rt; }
 #else
   void* get_rt() { return rt; }

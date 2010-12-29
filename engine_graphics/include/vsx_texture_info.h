@@ -4,7 +4,7 @@
 #ifdef _WIN32
 #include <windows.h>
 #endif
-#include <GL/glew.h>
+#include "vsx_gl_global.h"
 //#include <gl\gl.h>
 //#include <gl\glu.h>
 //#include <gl\glaux.h>

@@ -97,55 +97,62 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   	render_result->set(0);
   }	
 
-void output(vsx_module_param_abs* param) {
-  	glMatrixMode(GL_MODELVIEW);
-  	glPushMatrix();
-  	glTranslatef(position->get(0),position->get(1),position->get(2));
+  void output(vsx_module_param_abs* param) {
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glTranslatef(position->get(0),position->get(1),position->get(2));
 
-  	glRotatef((float)angle->get()*360, rotation_axis->get(0), rotation_axis->get(1), rotation_axis->get(2));
+    glRotatef((float)angle->get()*360, rotation_axis->get(0), rotation_axis->get(1), rotation_axis->get(2));
 
-  	glScalef(size->get(0), size->get(1), size->get(2));
+    glScalef(size->get(0), size->get(1), size->get(2));
+    #ifndef VSXU_OPENGL_ES_2_0
+      glColor4f(color_rgb->get(0),color_rgb->get(1),color_rgb->get(2),color_rgb->get(3));
+    #endif
+    #ifdef VSXU_OPENGL_ES
+      const GLfloat squareVertices[] = {
+        -1.0f, -1.0f,
+        1.0f,  -1.0f,
+        -1.0f,  1.0f,
+        1.0f,   1.0f,
+      };
+      #ifdef VSXU_OPENGL_ES_1_0
+        glDisableClientState(GL_COLOR_ARRAY);
+        glVertexPointer(2, GL_FLOAT, 0, squareVertices);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+      #endif
+      #ifdef VSXU_OPENGL_ES_2_0
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0,2,GL_FLOAT, GL_FALSE, 0, squareVertices);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+      #endif
+    #endif
 
-  	glColor4f(color_rgb->get(0),color_rgb->get(1),color_rgb->get(2),color_rgb->get(3));
-#ifdef VSXU_OPENGL_ES
-	const GLfloat squareVertices[] = {
-		-1.0f, -1.0f,
-		1.0f,  -1.0f,
-		-1.0f,  1.0f,
-		1.0f,   1.0f,
-	};
-  glDisableClientState(GL_COLOR_ARRAY);
-	glVertexPointer(2, GL_FLOAT, 0, squareVertices);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-#endif
-	
-#ifndef VSXU_OPENGL_ES
-  	glBegin(GL_QUADS);
-  	  glTexCoord2f(0.0f,0.0f);
-      glVertex3f(-1.0f, -1.0f, 0.0f);
-  	  glTexCoord2f(0.0f,1.0f);
-      glVertex3f(-1.0f,  1.0f, 0.0f);
-  	  glTexCoord2f(1.0f,1.0f);
-      glVertex3f( 1.0f,  1.0f, 0.0f);
-  	  glTexCoord2f(1.0f,0.0f);
-      glVertex3f( 1.0f, -1.0f, 0.0f);
-  	glEnd();
+    #ifndef VSXU_OPENGL_ES
+      glBegin(GL_QUADS);
+        glTexCoord2f(0.0f,0.0f);
+        glVertex3f(-1.0f, -1.0f, 0.0f);
+        glTexCoord2f(0.0f,1.0f);
+        glVertex3f(-1.0f,  1.0f, 0.0f);
+        glTexCoord2f(1.0f,1.0f);
+        glVertex3f( 1.0f,  1.0f, 0.0f);
+        glTexCoord2f(1.0f,0.0f);
+        glVertex3f( 1.0f, -1.0f, 0.0f);
+      glEnd();
 
-  	if (border->get()) {
-    	glEnable(GL_LINE_SMOOTH);
-    	glLineWidth(border_width->get());
-    	glBegin(GL_LINE_STRIP);
-    		glColor4f(border_color->get(0),border_color->get(1),border_color->get(2),border_color->get(3));
-    		glVertex3f(-1, -1.0f, 0);
-    		glVertex3f(-1, 1.0f, 0);
-    		glVertex3f( 1, 1.0f, 0);
-    		glVertex3f( 1, -1.0f, 0);
-    		glVertex3f(-1, -1.0f, 0);
-    	glEnd();
-    }
-#endif
+      if (border->get()) {
+        glEnable(GL_LINE_SMOOTH);
+        glLineWidth(border_width->get());
+        glBegin(GL_LINE_STRIP);
+          glColor4f(border_color->get(0),border_color->get(1),border_color->get(2),border_color->get(3));
+          glVertex3f(-1, -1.0f, 0);
+          glVertex3f(-1, 1.0f, 0);
+          glVertex3f( 1, 1.0f, 0);
+          glVertex3f( 1, -1.0f, 0);
+          glVertex3f(-1, -1.0f, 0);
+        glEnd();
+      }
+    #endif
   	glPopMatrix();
     render_result->set(1);
     loading_done = true;
@@ -223,14 +230,21 @@ public:
 		point_a->get(0), point_a->get(1), point_a->get(2),
 		point_b->get(0), point_b->get(1), point_b->get(2),
 	};
-	GLfloat line_colors[] = {
-		color_a->get(0),color_a->get(1),color_a->get(2),color_a->get(3),
-		color_b->get(0),color_b->get(1),color_b->get(2),color_b->get(3),
-	};
-	glVertexPointer(3, GL_FLOAT, 0, line_vertices);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glColorPointer(4, GL_FLOAT, 0, line_colors);
-	glEnableClientState(GL_COLOR_ARRAY);
+
+  #ifdef VSXU_OPENGL_ES_1_0
+    GLfloat line_colors[] = {
+      color_a->get(0),color_a->get(1),color_a->get(2),color_a->get(3),
+      color_b->get(0),color_b->get(1),color_b->get(2),color_b->get(3),
+    };
+    glVertexPointer(3, GL_FLOAT, 0, line_vertices);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glColorPointer(4, GL_FLOAT, 0, line_colors);
+    glEnableClientState(GL_COLOR_ARRAY);
+  #endif
+  #ifdef VSXU_OPENGL_ES_2_0
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0,2,GL_FLOAT, GL_FALSE, 0, line_vertices);
+	#endif
 	
 	glDrawArrays(GL_LINE_STRIP, 0, 2);
 #endif
@@ -302,12 +316,19 @@ GLfloat blobVec1[4];
 void beginBlobs() {
 	glEnable(GL_TEXTURE_2D);
 	GLfloat tmpMat[16];
-
-	glGetFloatv(GL_MODELVIEW_MATRIX, blobMat);
+  #ifdef VSXU_OPENGL_ES
+    // TODO
+  #else
+    glGetFloatv(GL_MODELVIEW_MATRIX, blobMat);
+  #endif
+  
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
-	
-	glGetFloatv(GL_PROJECTION_MATRIX, tmpMat);
+	#ifdef VSXU_OPENGL_ES
+	  // TODO
+  #else
+  glGetFloatv(GL_PROJECTION_MATRIX, tmpMat);
+  #endif
 	tmpMat[3] = 0;
 	tmpMat[7] = 0;
 	tmpMat[11] = 0;
@@ -336,7 +357,11 @@ void beginBlobs() {
 	v_norm(blobMat + 8);
 	
 	glMultMatrixf(blobMat);
-	glGetFloatv(GL_PROJECTION_MATRIX, blobMat);
+  #ifdef VSXU_OPENGL_ES
+    // TODO
+  #else
+    glGetFloatv(GL_PROJECTION_MATRIX, blobMat);
+  #endif
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 
@@ -491,29 +516,37 @@ void output(vsx_module_param_abs* param) {
 				-tmpVec1[0], -tmpVec1[1], -tmpVec1[2],
 				-tmpVec0[0], -tmpVec0[1], -tmpVec0[2],
 			};
-			GLfloat fan_colors[] = {
-				cm.r*color_center->get(0), cm.g*color_center->get(1) , cm.b*color_center->get(2),cm.a*color_center->get(3),
-				cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3),
-				cm.r*color_b->get(0), cm.g*color_b->get(1)   , cm.b*color_b->get(2),cm.a*color_b->get(3),
-				cm.r*color_c->get(0), cm.g*color_c->get(1)   , cm.b*color_c->get(2),cm.a*color_c->get(3),
-				cm.r*color_d->get(0), cm.g*color_d->get(1)   , cm.b*color_d->get(2),cm.a*color_d->get(3),
-				cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3),
-			};
-			GLfloat fan_texcoords[] = {
-				(tbx-tax)*0.5+tax,(tby-tay)*0.5+tay,
-				tax, tby,	
-				tax, tay,	
-				tbx, tay,	
-				tbx, tby,	
-				tax, tby,
-			};
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glEnableClientState(GL_COLOR_ARRAY);
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glVertexPointer(3, GL_FLOAT, 0, fan_vertices);
-			glColorPointer(4, GL_FLOAT, 0, fan_colors);
-			glTexCoordPointer(2, GL_FLOAT, 0, fan_texcoords);
-		
+
+      #ifdef VSXU_OPENGL_ES_1_0
+        GLfloat fan_colors[] = {
+          cm.r*color_center->get(0), cm.g*color_center->get(1) , cm.b*color_center->get(2),cm.a*color_center->get(3),
+          cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3),
+          cm.r*color_b->get(0), cm.g*color_b->get(1)   , cm.b*color_b->get(2),cm.a*color_b->get(3),
+          cm.r*color_c->get(0), cm.g*color_c->get(1)   , cm.b*color_c->get(2),cm.a*color_c->get(3),
+          cm.r*color_d->get(0), cm.g*color_d->get(1)   , cm.b*color_d->get(2),cm.a*color_d->get(3),
+          cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3),
+        };
+        GLfloat fan_texcoords[] = {
+          (tbx-tax)*0.5+tax,(tby-tay)*0.5+tay,
+          tax, tby,
+          tax, tay,
+          tbx, tay,
+          tbx, tby,
+          tax, tby,
+        };
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glVertexPointer(3, GL_FLOAT, 0, fan_vertices);
+        glColorPointer(4, GL_FLOAT, 0, fan_colors);
+        glTexCoordPointer(2, GL_FLOAT, 0, fan_texcoords);
+      #endif
+
+      #ifdef VSXU_OPENGL_ES_2_0
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0,3,GL_FLOAT, GL_FALSE, 0, fan_vertices);
+      #endif
+
 			glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 		#endif
 		#ifndef VSXU_OPENGL_ES
@@ -549,29 +582,37 @@ void output(vsx_module_param_abs* param) {
 				1,-1,
 				-1,-1,
 			};
-			GLfloat fan_colors[] = {
-				cm.r*color_center->get(0), cm.g*color_center->get(1) , cm.b*color_center->get(2),cm.a*color_center->get(3),
-				cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3),
-				cm.r*color_b->get(0), cm.g*color_b->get(1)   , cm.b*color_b->get(2),cm.a*color_b->get(3),
-				cm.r*color_c->get(0), cm.g*color_c->get(1)   , cm.b*color_c->get(2),cm.a*color_c->get(3),
-				cm.r*color_d->get(0), cm.g*color_d->get(1)   , cm.b*color_d->get(2),cm.a*color_d->get(3),
-				cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3),
-			};
-			GLfloat fan_texcoords[] = {
-				(tbx-tax)*0.5+tax,(tby-tay)*0.5+tay,
-				tax, tay,	
-				tax, tby,	
-				tbx, tby,	
-				tbx, tay,	
-				tax, tay,
-			};
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glEnableClientState(GL_COLOR_ARRAY);
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glVertexPointer(2, GL_FLOAT, 0, fan_vertices);
-			glColorPointer(4, GL_FLOAT, 0, fan_colors);
-			glTexCoordPointer(2, GL_FLOAT, 0, fan_texcoords);
-		
+
+      #ifdef VSXU_OPENGL_ES_1_0
+        GLfloat fan_colors[] = {
+          cm.r*color_center->get(0), cm.g*color_center->get(1) , cm.b*color_center->get(2),cm.a*color_center->get(3),
+          cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3),
+          cm.r*color_b->get(0), cm.g*color_b->get(1)   , cm.b*color_b->get(2),cm.a*color_b->get(3),
+          cm.r*color_c->get(0), cm.g*color_c->get(1)   , cm.b*color_c->get(2),cm.a*color_c->get(3),
+          cm.r*color_d->get(0), cm.g*color_d->get(1)   , cm.b*color_d->get(2),cm.a*color_d->get(3),
+          cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3),
+        };
+        GLfloat fan_texcoords[] = {
+          (tbx-tax)*0.5+tax,(tby-tay)*0.5+tay,
+          tax, tay,
+          tax, tby,
+          tbx, tby,
+          tbx, tay,
+          tax, tay,
+        };
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glVertexPointer(3, GL_FLOAT, 0, fan_vertices);
+        glColorPointer(4, GL_FLOAT, 0, fan_colors);
+        glTexCoordPointer(2, GL_FLOAT, 0, fan_texcoords);
+      #endif
+
+      #ifdef VSXU_OPENGL_ES_2_0
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0,3,GL_FLOAT, GL_FALSE, 0, fan_vertices);
+      #endif
+      
 			glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 		#endif
 		#ifndef VSXU_OPENGL_ES

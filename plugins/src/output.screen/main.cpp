@@ -212,29 +212,31 @@ bool activate_offscreen() {
   glClearColor(clear_color->get(0),clear_color->get(1),clear_color->get(2),clear_color->get(3));
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glDisable(GL_SCISSOR_TEST);
-	const unsigned int lights[] = {GL_LIGHT0,GL_LIGHT1,GL_LIGHT2,GL_LIGHT3,GL_LIGHT4,GL_LIGHT5,GL_LIGHT6,GL_LIGHT7};
-	glDisable(lights[0]);
-	glDisable(lights[1]);
-	glDisable(lights[2]);
-	glDisable(lights[3]);
-	glDisable(lights[4]);
-	glDisable(lights[5]);
-	glDisable(lights[6]);
-	glDisable(lights[7]);
-  // default material
-  #define ff GL_FRONT_AND_BACK
-  glGetMaterialfv(ff,GL_AMBIENT,&ambient[0]);
-  glGetMaterialfv(ff,GL_DIFFUSE,&diffuse[0]);
-  glGetMaterialfv(ff,GL_SPECULAR,&specular[0]);
-  glGetMaterialfv(ff,GL_EMISSION,&emission[0]);
-  glGetMaterialfv(ff,GL_SHININESS,&spec_exp);
+  #ifndef VSXU_OPENGL_ES_2_0
+    const unsigned int lights[] = {GL_LIGHT0,GL_LIGHT1,GL_LIGHT2,GL_LIGHT3,GL_LIGHT4,GL_LIGHT5,GL_LIGHT6,GL_LIGHT7};
+    glDisable(lights[0]);
+    glDisable(lights[1]);
+    glDisable(lights[2]);
+    glDisable(lights[3]);
+    glDisable(lights[4]);
+    glDisable(lights[5]);
+    glDisable(lights[6]);
+    glDisable(lights[7]);
+    // default material
+    #define ff GL_FRONT_AND_BACK
+    glGetMaterialfv(ff,GL_AMBIENT,&ambient[0]);
+    glGetMaterialfv(ff,GL_DIFFUSE,&diffuse[0]);
+    glGetMaterialfv(ff,GL_SPECULAR,&specular[0]);
+    glGetMaterialfv(ff,GL_EMISSION,&emission[0]);
+    glGetMaterialfv(ff,GL_SHININESS,&spec_exp);
 
-  glMaterialfv(ff,GL_AMBIENT,default_ambient);
-  glMaterialfv(ff,GL_DIFFUSE,default_diffuse);
-  glMaterialfv(ff,GL_SPECULAR,default_specular);
-  glMaterialfv(ff,GL_EMISSION,default_emission);
-  glMaterialfv(ff,GL_SHININESS,&default_spec_exp);
-  #undef ff
+    glMaterialfv(ff,GL_AMBIENT,default_ambient);
+    glMaterialfv(ff,GL_DIFFUSE,default_diffuse);
+    glMaterialfv(ff,GL_SPECULAR,default_specular);
+    glMaterialfv(ff,GL_EMISSION,default_emission);
+    glMaterialfv(ff,GL_SHININESS,&default_spec_exp);
+    #undef ff
+  #endif
   //glMatrixMode(GL_PROJECTION);  
   //gluPerspective(45,(float)(viewport[2])/(float)(viewport[3]),0.001,120.0);
 	
@@ -242,13 +244,15 @@ bool activate_offscreen() {
 }
 
 void deactivate_offscreen() {
-  #define ff GL_FRONT_AND_BACK
-  glMaterialfv(ff,GL_AMBIENT    ,&ambient[0]);
-  glMaterialfv(ff,GL_DIFFUSE    ,&diffuse[0]);
-  glMaterialfv(ff,GL_SPECULAR   ,&specular[0]);
-  glMaterialfv(ff,GL_EMISSION   ,&emission[0]);
-  glMaterialfv(ff,GL_SHININESS  ,&spec_exp);
-  #undef ff
+  #ifndef VSXU_OPENGL_ES_2_0
+    #define ff GL_FRONT_AND_BACK
+    glMaterialfv(ff,GL_AMBIENT    ,&ambient[0]);
+    glMaterialfv(ff,GL_DIFFUSE    ,&diffuse[0]);
+    glMaterialfv(ff,GL_SPECULAR   ,&specular[0]);
+    glMaterialfv(ff,GL_EMISSION   ,&emission[0]);
+    glMaterialfv(ff,GL_SHININESS  ,&spec_exp);
+    #undef ff
+  #endif
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
 }
 

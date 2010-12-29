@@ -44,6 +44,13 @@ function (CREATE_MODULE ${module_id})
   endif (VSXU_ENGINE_STATIC EQUAL 1)
 endfunction(CREATE_MODULE)
 
+
+if (VSXU_OPENGL_ES_2_0 EQUAL 1)
+  add_definitions(-DVSXU_OPENGL_ES)
+  add_definitions(-DVSXU_OPENGL_ES_2_0)
+endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
+
+
 #GROWL
 if (VSXU_ENGINE_STATIC EQUAL 1)
 message ("building static libs, cleaning out inclusion files") 

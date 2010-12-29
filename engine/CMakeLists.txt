@@ -93,6 +93,9 @@ else(ENGINE_SCRIPTING)
   )
 endif(ENGINE_SCRIPTING)
 
+
+
+
 if (VSXU_DEBUG EQUAL 1)
   add_definitions( -DVSXU_DEBUG )
 endif (VSXU_DEBUG EQUAL 1)
@@ -147,6 +150,7 @@ set(SOURCES
 ./src/vsxfst/7zip/Compress/Branch/BranchX86.c
 ./src/vsxfst/LzmaRamDecode.c
 )
+
 include(../cmake_globals.txt)
 #link_directories(
 #../vsxfst

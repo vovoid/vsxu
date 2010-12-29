@@ -125,13 +125,14 @@ module browser\n\
   menu->commands.adds(VSX_COMMAND_MENU,"server  >;connect","show_connect_dialog","");
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
   {
-    //cmd_in = tcp_c->command_list_in();
-    //cmd_out = tcp_c->command_list_out();
-    menu->commands.adds(VSX_COMMAND_MENU,"server  >;shutdown","dn","");
-    menu->commands.adds(VSX_COMMAND_MENU,"server  >;disconnect","disconnect","");
+    menu->commands.adds(VSX_COMMAND_MENU,"server  >;disconnect","dc","");
+    menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
+    menu->commands.adds(VSX_COMMAND_MENU,"shutdown server", "system.shutdown","");
+  } else
+  {
+    menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
+    menu->commands.adds(VSX_COMMAND_MENU,"quit artiste", "system.shutdown","");
   }
-  menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
-  menu->commands.adds(VSX_COMMAND_MENU,"quit artiste", "system.shutdown","");
   if (state_name == "")
   state_name ="_default";
   menu->set_size(vsx_vector(0.4f,0.5f));

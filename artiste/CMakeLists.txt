@@ -7,6 +7,7 @@ include_directories(
   src
   src/vsx_font
   src/vsx_widget
+  include
 )
 
 set(OS_SOURCES "")
@@ -90,6 +91,7 @@ set(SOURCES
   src/vsx_widget/module_choosers/vsx_widget_module_chooser_list.cpp
   src/vsx_widget/vsx_widget_main.cpp
   src/application.cpp
+  src/gl_helper.cpp
 )
 
 link_directories(

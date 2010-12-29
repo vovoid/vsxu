@@ -45,7 +45,6 @@ if (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
 endif (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
 
 set(SOURCES
-src/gl_helper.cpp
 src/glpng.cpp
 src/jpg.cpp
 src/logo_intro.cpp
@@ -56,6 +55,15 @@ src/vsx_statelist.cpp
 src/vsx_manager.cpp
 )
 include(../cmake_globals.txt)
+
+if (VSXU_OPENGL_ES_2_0 EQUAL 1)
+  add_definitions(-DVSXU_OPENGL_ES -DVSXU_OPENGL_ES_2_0 -DVSX_TEXTURE_NO_RT_PBUFFER)
+  set(SOURCES
+    ${SOURCES}
+    src/gl_es_shader_wrapper.cpp
+  )
+endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
+
 
 project (${module_id})
 

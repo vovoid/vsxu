@@ -12,7 +12,6 @@ file(GLOB API_STUBS "api_stubs/*.cpp")
 
 project (${module_id})
 include(../cmake_globals.txt)
-link_directories(../../vsxfst ../../vsxg)
 include(./_sources)
 add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES} ${EXTRA_LIBS} vsx_font/vsx_font.cpp)
 include(../cmake_suffix.txt)
