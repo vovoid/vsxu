@@ -60,7 +60,7 @@ if (VSXU_OPENGL_ES_2_0 EQUAL 1)
   add_definitions(-DVSXU_OPENGL_ES -DVSXU_OPENGL_ES_2_0 -DVSX_TEXTURE_NO_RT_PBUFFER)
   set(SOURCES
     ${SOURCES}
-    src/gl_es_shader_wrapper.cpp
+    src/vsx_gl_es_shader_wrapper.cpp
   )
 endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 

@@ -6,7 +6,7 @@
 		  #if (PLATFORM == PLATFORM_LINUX)
 		    #include "GLES2/gl2.h"
         #include "EGL/egl.h"
-        #include "gl_es_shader_wrapper.h"
+        #include "vsx_gl_es_shader_wrapper.h"
 		  #else
         #include <OpenGLES/ES1/gl.h>
         #include <OpenGLES/ES1/glext.h>

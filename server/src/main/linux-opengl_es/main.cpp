@@ -19,12 +19,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "vsx_gl_es_shader_wrapper.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <X11/Xlib.h>
 
 #include "application.h"
-
+#include "vsx_string.h"
 
 int app_argc = 0;
 char** app_argv;
@@ -52,95 +54,6 @@ Display *hDisplay;
             exit(1); \
         } \
     }
-
-
-
-
-/*
- * Loads the shader source into memory.
- *
- * sFilename: String holding filename to load
- */
-char* load_shader(char *sFilename) {
-    char *pResult = NULL;
-    FILE *pFile = NULL;
-    long iLen = 0;
-
-    pFile = fopen(sFilename, "r");
-
-    if(pFile == NULL) {
-        fprintf(stderr, "Error: Cannot read file '%s'\n", sFilename);
-      exit(-1);
-    }
-
-    fseek(pFile, 0, SEEK_END); /* Seek end of file */
-    iLen = ftell(pFile);
-    fseek(pFile, 0, SEEK_SET); /* Seek start of file again */
-    pResult = (char*)calloc(iLen+1, sizeof(char));
-    fread(pResult, sizeof(char), iLen, pFile);
-    pResult[iLen] = '\0';
-    fclose(pFile);
-
-    return pResult;
-}
-
-/*
- * Create shader, load in source, compile, dump debug as necessary.
- *
- * pShader: Pointer to return created shader ID.
- * sFilename: Passed-in filename from which to load shader source.
- * iShaderType: Passed to GL, e.g. GL_VERTEX_SHADER.
- */
-void process_shader(GLuint *pShader, char *sFilename, GLint iShaderType) {
-  GLint iStatus;
-  const char *aStrings[1] = { NULL };
-
-  /* Create shader and load into GL. */
-  *pShader = GL_CHECK(glCreateShader(iShaderType));
-
-  aStrings[0] = load_shader(sFilename);
-
-  GL_CHECK(glShaderSource(*pShader, 1, aStrings, NULL));
-
-  /* Clean up shader source. */
-  free((void *)aStrings[0]);
-  aStrings[0] = NULL;
-
-  /* Try compiling the shader. */
-  GL_CHECK(glCompileShader(*pShader));
-  GL_CHECK(glGetShaderiv(*pShader, GL_COMPILE_STATUS, &iStatus));
-
-  // Dump debug info (source and log) if compilation failed.
-  if(iStatus != GL_TRUE) {
-#ifdef DEBUG
-    GLint iLen;
-    char *sDebugSource = NULL;
-    char *sErrorLog = NULL;
-
-    /* Get shader source. */
-    GL_CHECK(glGetShaderiv(*pShader, GL_SHADER_SOURCE_LENGTH, &iLen));
-
-    sDebugSource = (char*)malloc(iLen);
-
-    GL_CHECK(glGetShaderSource(*pShader, iLen, NULL, sDebugSource));
-
-    printf("Debug source START:\n%s\nDebug source END\n\n", sDebugSource);
-    free(sDebugSource);
-
-    /* Now get the info log. */
-    GL_CHECK(glGetShaderiv(*pShader, GL_INFO_LOG_LENGTH, &iLen));
-
-    sErrorLog = (char*)malloc(iLen);
-
-    GL_CHECK(glGetShaderInfoLog(*pShader, iLen, NULL, sErrorLog));
-
-    printf("Log START:\n%s\nLog END\n\n", sErrorLog);
-    free(sErrorLog);
-#endif
-
-    exit(-1);
-  }
-}
 
 
 /* Waits for map notification */
@@ -426,34 +339,7 @@ int main(int argc, char **argv) {
 
   EGL_CHECK(eglMakeCurrent(sEGLDisplay, sEGLSurface, sEGLSurface, sEGLContext));
 
-  /* Shader Initialisation */
-  process_shader(&uiVertShader, "shader.vert", GL_VERTEX_SHADER);
-  process_shader(&uiFragShader, "shader.frag", GL_FRAGMENT_SHADER);
-
-  /* Create uiProgram (ready to attach shaders) */
-    uiProgram = GL_CHECK(glCreateProgram());
-
-    /* Attach shaders and link uiProgram */
-    GL_CHECK(glAttachShader(uiProgram, uiVertShader));
-    GL_CHECK(glAttachShader(uiProgram, uiFragShader));
-    GL_CHECK(glLinkProgram(uiProgram));
-
-    /* Get attribute locations of non-fixed attributes like colour and texture coordinates. */
-    iLocPosition = GL_CHECK(glGetAttribLocation(uiProgram, "av4position"));
-    iLocColour = GL_CHECK(glGetAttribLocation(uiProgram, "av3colour"));
-
-#ifdef DEBUG
-  printf("iLocPosition = %i\n", iLocPosition);
-  printf("iLocColour   = %i\n", iLocColour);
-#endif
-
-  /* Get uniform locations */
-    iLocMVP = GL_CHECK(glGetUniformLocation(uiProgram, "mvp"));
-
-#ifdef DEBUG
-  printf("iLocMVP      = %i\n", iLocMVP);
-#endif
-
+  shader_wrapper_init_shaders();
   GL_CHECK(glUseProgram(uiProgram));
 
     /* Enable attributes for position, colour and texture coordinates etc. */
