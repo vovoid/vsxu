@@ -7,8 +7,17 @@
 
 vsx_matrix matrices[3];
 
+vsx_matrix compound_matrix;
+bool compound_matrix_valid = false;
+
 int matrix_mode = 0;
 
+GLuint shader_program;
+GLuint fragmeent_shader_handle;
+GLuint vertex_shader_handle;
+GLuint vertices_attrib_handle;
+GLuint colors_attrib_handle;
+GLuint mm_uniform_handle;
 
 #define GL_CHECK(x) \
         x; \
@@ -20,7 +29,7 @@ int matrix_mode = 0;
           } \
         }
 
-void vsx_load_shader(GLuint *pShader, vsx_string shader_source, GLint iShaderType)
+void vsx_es_load_shader(GLuint *pShader, vsx_string shader_source, GLint iShaderType)
 {
   GLint iStatus;
   const char *aStrings[1] = { NULL };
@@ -43,7 +52,8 @@ void vsx_load_shader(GLuint *pShader, vsx_string shader_source, GLint iShaderTyp
   GL_CHECK(glGetShaderiv(*pShader, GL_COMPILE_STATUS, &iStatus));
 
   // Dump debug info (source and log) if compilation failed.
-  if(iStatus != GL_TRUE) {
+  if(iStatus != GL_TRUE)
+  {
 #ifdef DEBUG
     GLint iLen;
     char *sDebugSource = NULL;
@@ -75,32 +85,29 @@ void vsx_load_shader(GLuint *pShader, vsx_string shader_source, GLint iShaderTyp
 }
 
 
-GLuint shader_program;
-GLuint fragmeent_shader_handle;
-GLuint vertex_shader_handle;
 
-void shader_wrapper_init_shaders()
+void vsx_es_shader_wrapper_init_shaders()
 {
 
   /* Shader Initialisation */
-  vsx_load_shader(&vertex_shader_handle, vsx_string("\
-attribute vec4 av4position;\
-attribute vec3 av3colour;\
+  vsx_es_load_shader(&vertex_shader_handle, vsx_string("\
+attribute vec4 vertices;\
+attribute vec3 colors;\
 \
-uniform mat4 mvp;\
+uniform mat4 mm;\
 \
-varying vec3 vv3colour;\
+varying vec3 col;\
 \
 void main() {\
-  vv3colour = av3colour;\
-  gl_Position = mvp * av4position;\
+  col = colors;\
+  gl_Position = mm * vertices;\
 }\
 "), GL_VERTEX_SHADER);
-  vsx_load_shader(&fragmeent_shader_handle, vsx_string("\
+  vsx_es_load_shader(&fragmeent_shader_handle, vsx_string("\
 precision lowp float;\
-varying vec3 vv3colour;\
+varying vec3 col;\
 void main() {\
-  gl_FragColor = vec4(vv3colour, 1.0);\
+  gl_FragColor = vec4(col, 1.0);\
 }\
 "), GL_FRAGMENT_SHADER);
 
@@ -113,20 +120,49 @@ void main() {\
     GL_CHECK(glLinkProgram(shader_program));
 
     /* Get attribute locations of non-fixed attributes like colour and texture coordinates. */
-    iLocPosition = GL_CHECK(glGetAttribLocation(shader_program, "av4position"));
-    iLocColour = GL_CHECK(glGetAttribLocation(shader_program, "av3colour"));
+    vertices_attrib_handle = GL_CHECK(glGetAttribLocation(shader_program, "vertices"));
+    colors_attrib_handle = GL_CHECK(glGetAttribLocation(shader_program, "colors"));
 
 #ifdef DEBUG
-  printf("iLocPosition = %i\n", iLocPosition);
-  printf("iLocColour   = %i\n", iLocColour);
+  printf("vertices_attrib_handle = %i\n", vertices_attrib_handle);
+  printf("colors_attrib_handle   = %i\n", colors_attrib_handle);
 #endif
 
   /* Get uniform locations */
-    iLocMVP = GL_CHECK(glGetUniformLocation(shader_program, "mvp"));
+    mm_uniform_handle = GL_CHECK(glGetUniformLocation(shader_program, "mm"));
 
 #ifdef DEBUG
   printf("iLocMVP      = %i\n", iLocMVP);
 #endif
+
+  GL_CHECK(glUseProgram(shader_program));
+
+
+  GL_CHECK(glEnableVertexAttribArray(vertices_attrib_handle));
+  GL_CHECK(glEnableVertexAttribArray(colors_attrib_handle));
+
+  matrices[GL_MODELVIEW].load_identity();
+  matrices[GL_PROJECTION].load_identity();
+}
+
+void vsx_es_set_default_arrays(GLvoid* vertices, GLvoid* colors)
+{
+  GL_CHECK(glVertexAttribPointer(vertices_attrib_handle, 3, GL_FLOAT, GL_FALSE, 0, vertices));
+  GL_CHECK(glVertexAttribPointer(colors_attrib_handle, 3, GL_FLOAT, GL_FALSE, 0, colors));
+}
+
+void vsx_es_begin()
+{
+  if (!compound_matrix_valid)
+  {
+    compound_matrix.multiply(&matrices[GL_MODELVIEW], &matrices[GL_PROJECTION]);
+    GL_CHECK(glUniformMatrix4fv(mm_uniform_handle, 1, GL_FALSE, compound_matrix.m));
+  }
+}
+
+void vsx_es_end()
+{
+  
 }
 
 void glTranslatef(float x, float y, float z)
@@ -139,41 +175,40 @@ void glScalef(float x, float y, float z)
 
 void glRotatef(float angle, float x, float y, float z)
 {
+  static vsx_matrix m;
+  
+  double radians, c, s, c1, u[3], length;
+  int i, j;
 
-  /*
-    double radians, c, s, c1, u[3], length;
-    int i, j;
+  radians = (angle * M_PI) / 180.0;
 
-    radians = (angle * M_PI) / 180.0;
+  c = cos(radians);
+  s = sin(radians);
 
-    c = cos(radians);
-    s = sin(radians);
+  c1 = 1.0 - cos(radians);
 
-    c1 = 1.0 - cos(radians);
+  length = sqrt(x * x + y * y + z * z);
 
-    length = sqrt(x * x + y * y + z * z);
+  u[0] = x / length;
+  u[1] = y / length;
+  u[2] = z / length;
 
-    u[0] = x / length;
-    u[1] = y / length;
-    u[2] = z / length;
+  for (i = 0; i < 16; i++) {
+    m.m[i] = 0.0;
+  }
 
-    for (i = 0; i < 16; i++) {
-        R[i] = 0.0;
+  m.m[15] = 1.0;
+
+  for (i = 0; i < 3; i++) {
+    m.m[i * 4 + (i + 1) % 3] = u[(i + 2) % 3] * s;
+    m.m[i * 4 + (i + 2) % 3] = -u[(i + 1) % 3] * s;
+  }
+
+  for (i = 0; i < 3; i++) {
+    for (j = 0; j < 3; j++) {
+      m.m[i * 4 + j] += c1 * u[i] * u[j] + (i == j ? c : 0.0);
     }
-
-    R[15] = 1.0;
-
-    for (i = 0; i < 3; i++) {
-        R[i * 4 + (i + 1) % 3] = u[(i + 2) % 3] * s;
-        R[i * 4 + (i + 2) % 3] = -u[(i + 1) % 3] * s;
-    }
-
-    for (i = 0; i < 3; i++) {
-        for (j = 0; j < 3; j++) {
-            R[i * 4 + j] += c1 * u[i] * u[j] + (i == j ? c : 0.0);
-        }
-    }
-  */
+  }
 }
 
 void glMatrixMode(int new_value)
@@ -197,5 +232,6 @@ void glPopMatrix()
 void glMultMatrixf(GLfloat matrix[16])
 {
 }
+
 
 #endif

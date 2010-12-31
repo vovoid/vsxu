@@ -8,6 +8,7 @@
 
 
 
+
 //TODO: make an enumeration toggler
 
 #ifndef MIN_MAX_STATIC

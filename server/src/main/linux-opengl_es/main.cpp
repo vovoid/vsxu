@@ -339,16 +339,8 @@ int main(int argc, char **argv) {
 
   EGL_CHECK(eglMakeCurrent(sEGLDisplay, sEGLSurface, sEGLSurface, sEGLContext));
 
-  shader_wrapper_init_shaders();
-  GL_CHECK(glUseProgram(uiProgram));
-
-    /* Enable attributes for position, colour and texture coordinates etc. */
-    GL_CHECK(glEnableVertexAttribArray(iLocPosition));
-    GL_CHECK(glEnableVertexAttribArray(iLocColour));
-
-  /* Populate attributes for position, colour and texture coordinates etc. */
-    GL_CHECK(glVertexAttribPointer(iLocPosition, 3, GL_FLOAT, GL_FALSE, 0, aVertices));
-    GL_CHECK(glVertexAttribPointer(iLocColour, 3, GL_FLOAT, GL_FALSE, 0, aColours));
+  vsx_es_shader_wrapper_init_shaders();
+  
 
     GL_CHECK(glEnable(GL_CULL_FACE));
     GL_CHECK(glEnable(GL_DEPTH_TEST));

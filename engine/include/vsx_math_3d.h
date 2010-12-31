@@ -26,11 +26,6 @@
 typedef float GLfloat;
 #endif
 
-inline float vsx_math_3d_max(const float& x, const float& y)
-{
-  return ( x > y ) ? x : y;
-}
-
 class vsx_vector {
 public:
   union
