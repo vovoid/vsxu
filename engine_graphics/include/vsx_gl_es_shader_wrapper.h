@@ -5,6 +5,8 @@
 #include "vsx_string.h"
 #include "vsx_gl_global.h"
 
+#define VSX_GL_ES_MATRIX_STACK_DEPTH 10
+
 
 // TODO: remove this after all "hidden" shader ops are moved into the cpp file
 //void vsx_load_shader(GLuint *pShader, vsx_string shader_source, GLint iShaderType);
@@ -39,6 +41,7 @@ void glPopMatrix();
 
 void glMultMatrixf(GLfloat matrix[16]);
 
+void gluPerspective(double fovy, double aspect, double zNear, double zFar);
 
 #endif
 #endif

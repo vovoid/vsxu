@@ -342,12 +342,13 @@ int main(int argc, char **argv) {
   vsx_es_shader_wrapper_init_shaders();
   
 
-    GL_CHECK(glEnable(GL_CULL_FACE));
-    GL_CHECK(glEnable(GL_DEPTH_TEST));
+    GL_CHECK(glDisable(GL_CULL_FACE));
+    GL_CHECK(glDisable(GL_DEPTH_TEST));
 
   XSelectInput(hDisplay, hWindow, KeyPressMask | ExposureMask | EnterWindowMask
     | LeaveWindowMask | PointerMotionMask | VisibilityChangeMask | ButtonPressMask
-    | ButtonReleaseMask | StructureNotifyMask);
+    | ButtonReleaseMask | StructureNotifyMask
+  );
   app_init(0);
   
   /* Enter event loop */
@@ -359,7 +360,7 @@ int main(int argc, char **argv) {
                 bDone = 1;
             }
         }
-
+        //printf("inner loop\n");
         //rotate_matrix(iXangle, 1.0, 0.0, 0.0, aModelView);
         //rotate_matrix(iYangle, 0.0, 1.0, 0.0, aRotate);
 
@@ -376,9 +377,7 @@ int main(int argc, char **argv) {
         //multiply_matrix(aPerspective, aModelView, aMVP);
 
         //GL_CHECK(glUniformMatrix4fv(iLocMVP, 1, GL_FALSE, aMVP));
-        app_pre_draw();
-        app_draw(0);
-        iXangle += 3;
+        /*iXangle += 3;
         iYangle += 2;
         iZangle += 1;
 
@@ -387,10 +386,12 @@ int main(int argc, char **argv) {
         if(iYangle >= 360) iYangle -= 360;
         if(iYangle < 0) iYangle += 360;
         if(iZangle >= 360) iZangle -= 360;
-        if(iZangle < 0) iZangle += 360;
+        if(iZangle < 0) iZangle += 360;*/
 
-        GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
-        GL_CHECK(glDrawArrays(GL_TRIANGLES, 0, 36));
+        //GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
+        //GL_CHECK(glDrawArrays(GL_TRIANGLES, 0, 36));
+        app_pre_draw();
+        app_draw(0);
 
         if (!eglSwapBuffers(sEGLDisplay, sEGLSurface)) {
             printf("Failed to swap buffers.\n");

@@ -36,7 +36,7 @@ message("*******************************************")
 
 
 if (VSXU_DEBUG EQUAL 1)
-  add_definitions( -DVSXU_DEBUG )
+  add_definitions( -DVSXU_DEBUG -DDEBUG )
 endif (VSXU_DEBUG EQUAL 1)
 
 

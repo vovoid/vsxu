@@ -4,8 +4,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "vsx_gl_es_shader_wrapper.h"
+#define DEBUG
 
-vsx_matrix matrices[3];
+vsx_matrix core_matrix[3];
+
+
+vsx_matrix matrix_stack[3][VSX_GL_ES_MATRIX_STACK_DEPTH];
+int matrix_stack_index = 0;
 
 vsx_matrix compound_matrix;
 bool compound_matrix_valid = false;
@@ -92,11 +97,11 @@ void vsx_es_shader_wrapper_init_shaders()
   /* Shader Initialisation */
   vsx_es_load_shader(&vertex_shader_handle, vsx_string("\
 attribute vec4 vertices;\
-attribute vec3 colors;\
+attribute vec4 colors;\
 \
 uniform mat4 mm;\
 \
-varying vec3 col;\
+varying vec4 col;\
 \
 void main() {\
   col = colors;\
@@ -105,9 +110,9 @@ void main() {\
 "), GL_VERTEX_SHADER);
   vsx_es_load_shader(&fragmeent_shader_handle, vsx_string("\
 precision lowp float;\
-varying vec3 col;\
+varying vec4 col;\
 void main() {\
-  gl_FragColor = vec4(col, 1.0);\
+  gl_FragColor = col;\
 }\
 "), GL_FRAGMENT_SHADER);
 
@@ -132,30 +137,30 @@ void main() {\
     mm_uniform_handle = GL_CHECK(glGetUniformLocation(shader_program, "mm"));
 
 #ifdef DEBUG
-  printf("iLocMVP      = %i\n", iLocMVP);
+  printf("mm_uniform_handle      = %i\n", mm_uniform_handle);
 #endif
 
   GL_CHECK(glUseProgram(shader_program));
 
-
   GL_CHECK(glEnableVertexAttribArray(vertices_attrib_handle));
   GL_CHECK(glEnableVertexAttribArray(colors_attrib_handle));
 
-  matrices[GL_MODELVIEW].load_identity();
-  matrices[GL_PROJECTION].load_identity();
+  core_matrix[GL_MODELVIEW].load_identity();
+  core_matrix[GL_PROJECTION].load_identity();
 }
 
 void vsx_es_set_default_arrays(GLvoid* vertices, GLvoid* colors)
 {
   GL_CHECK(glVertexAttribPointer(vertices_attrib_handle, 3, GL_FLOAT, GL_FALSE, 0, vertices));
-  GL_CHECK(glVertexAttribPointer(colors_attrib_handle, 3, GL_FLOAT, GL_FALSE, 0, colors));
+  GL_CHECK(glVertexAttribPointer(colors_attrib_handle, 4, GL_FLOAT, GL_FALSE, 0, colors));
 }
 
 void vsx_es_begin()
 {
   if (!compound_matrix_valid)
   {
-    compound_matrix.multiply(&matrices[GL_MODELVIEW], &matrices[GL_PROJECTION]);
+    compound_matrix.multiply(&core_matrix[GL_MODELVIEW], &core_matrix[GL_PROJECTION]);
+    //compound_matrix.dump();
     GL_CHECK(glUniformMatrix4fv(mm_uniform_handle, 1, GL_FALSE, compound_matrix.m));
   }
 }
@@ -165,50 +170,95 @@ void vsx_es_end()
   
 }
 
+vsx_matrix m_temp;
+
 void glTranslatef(float x, float y, float z)
 {
+  /*
+  1 0 0 x
+  0 1 0 y
+  0 0 1 z
+  0 0 0 1
+  */
+  vsx_matrix m_trans;
+  m_temp = core_matrix[matrix_mode];
+  m_trans.m[12]  = x;
+  m_trans.m[13]  = y;
+  m_trans.m[14]  = z;
+  core_matrix[matrix_mode].multiply(&m_trans, &m_temp);
 }
 
 void glScalef(float x, float y, float z)
 {
+  /*
+  x 0 0 0
+  0 y 0 0
+  0 0 z 0
+  0 0 0 1
+  */
+  vsx_matrix m_scalef;
+  m_temp = core_matrix[matrix_mode];
+  m_scalef.m[0] = x;
+  m_scalef.m[5] = y;
+  m_scalef.m[10] = z;
+  core_matrix[matrix_mode].multiply(&m_scalef, &m_temp);
 }
 
 void glRotatef(float angle, float x, float y, float z)
 {
-  static vsx_matrix m;
+  m_temp = core_matrix[matrix_mode];
   
-  double radians, c, s, c1, u[3], length;
-  int i, j;
-
+  vsx_matrix m_rotate;
+  /*
+    Rotation matrix:
+    xx(1-c)+c   xy(1-c)-zs  xz(1-c)+ys   0
+    yx(1-c)+zs  yy(1-c)+c   yz(1-c)-xs   0
+    xz(1-c)-ys  yz(1-c)+xs  zz(1-c)+c    0
+    0           0           0            1
+    
+    c = cos(angle), s = sin(angle), and ||( x,y,z )|| = 1
+*/
+  float radians;
   radians = (angle * M_PI) / 180.0;
+  float c = cos(radians);
+  float s = sin(radians);
+  float c1 = 1.0 - c;
 
-  c = cos(radians);
-  s = sin(radians);
-
-  c1 = 1.0 - cos(radians);
-
-  length = sqrt(x * x + y * y + z * z);
-
-  u[0] = x / length;
-  u[1] = y / length;
-  u[2] = z / length;
-
-  for (i = 0; i < 16; i++) {
-    m.m[i] = 0.0;
+  float xx = x*x;
+  float yy = y*y;
+  float zz = z*z;
+  
+  //normalize vector
+  float length = sqrt(xx + yy + zz);
+  if (length != 1.0f)
+  {
+    x = x / length;
+    y = y / length;
+    z = z / length;
   }
+  
+  float xy = x*y;
+  float xz = x*z;
+  float yz = y*z;
+  float xs = x*s;
+  float ys = y*s;
+  float zs = z*s;
 
-  m.m[15] = 1.0;
+  // note: awkward indexes due to gl es column major format
+  //       this differs from regular GL.
+  m_rotate.m[0 ] = x*x*(c1)+c;
+  m_rotate.m[4 ] = xy*(c1)-zs;
+  m_rotate.m[8 ] = xz*(c1)+y*s;
 
-  for (i = 0; i < 3; i++) {
-    m.m[i * 4 + (i + 1) % 3] = u[(i + 2) % 3] * s;
-    m.m[i * 4 + (i + 2) % 3] = -u[(i + 1) % 3] * s;
-  }
+  m_rotate.m[1 ] = xy*(c1)+zs;
+  m_rotate.m[5 ] = y*y*(c1)+c;
+  m_rotate.m[9 ] = yz*(c1)-x*s;
 
-  for (i = 0; i < 3; i++) {
-    for (j = 0; j < 3; j++) {
-      m.m[i * 4 + j] += c1 * u[i] * u[j] + (i == j ? c : 0.0);
-    }
-  }
+  m_rotate.m[2 ] = xz*(c1)-y*s;
+  m_rotate.m[6 ] = yz*(c1)+x*s;
+  m_rotate.m[10] = z*z*(c1)+c;
+
+  core_matrix[matrix_mode].multiply(&m_rotate,&m_temp);
 }
 
 void glMatrixMode(int new_value)
@@ -218,19 +268,54 @@ void glMatrixMode(int new_value)
 
 void glLoadIdentity()
 {
-  matrices[matrix_mode].load_identity();
+  core_matrix[matrix_mode].load_identity();
 }
+
+/*
+vsx_matrix matrix_stack[3][10];
+int matrix_stack_index = 0;
+*/
 
 void glPushMatrix()
 {
+  if (matrix_stack_index + 1 < VSX_GL_ES_MATRIX_STACK_DEPTH)
+  {
+    matrix_stack[matrix_mode][matrix_stack_index++] = core_matrix[matrix_mode];
+  }
 }
 
 void glPopMatrix()
 {
+  if (matrix_stack_index - 1 >= 0)
+  {
+    core_matrix[matrix_mode] = matrix_stack[matrix_mode][matrix_stack_index--];
+  }
 }
 
 void glMultMatrixf(GLfloat matrix[16])
 {
+}
+
+void gluPerspective(double fovy, double aspect, double znear, double zfar ) {
+  vsx_matrix m_pers;
+  vsx_matrix m_temp = core_matrix[matrix_mode];
+  int i;
+  double f;
+
+  f = 1.0/tan(fovy * 0.5);
+
+  for (i = 0; i < 16; i++) {
+      m_pers.m[i] = 0.0;
+  }
+
+  m_pers.m[0] = f / aspect;
+  m_pers.m[5] = f;
+  m_pers.m[10] = (znear + zfar) / (znear - zfar);
+  m_pers.m[11] = -1.0;
+  m_pers.m[14] = (2.0 * znear * zfar) / (znear - zfar);
+  m_pers.m[15] = 0.0;
+  
+  core_matrix[matrix_mode].multiply(&m_pers,&m_temp);
 }
 
 

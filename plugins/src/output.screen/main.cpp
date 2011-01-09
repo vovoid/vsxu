@@ -194,13 +194,11 @@ bool activate_offscreen() {
   GLint viewport[4];
   glGetIntegerv(GL_VIEWPORT, viewport);
 
+  printf("viewport x: %d viewport y %d\n", viewport[2], viewport[3]);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();											// Reset The Modelview Matrix
-#ifdef VSXU_OPENGL_ES
-	glRotatef(-90, 0.0f, 0.0f, 1.0f);
-#endif
  	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 #ifndef VSXU_OPENGL_ES
@@ -237,9 +235,11 @@ bool activate_offscreen() {
     glMaterialfv(ff,GL_SHININESS,&default_spec_exp);
     #undef ff
   #endif
-  //glMatrixMode(GL_PROJECTION);  
-  //gluPerspective(45,(float)(viewport[2])/(float)(viewport[3]),0.001,120.0);
-	
+
+  #ifdef VSXU_OPENGL_ES_2_0
+  //glMatrixMode(GL_PROJECTION);
+  //gluPerspective(90,1.0f,0.0001f,120.0f);
+	#endif
   return true;
 }
 

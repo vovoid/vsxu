@@ -100,30 +100,39 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glTranslatef(position->get(0),position->get(1),position->get(2));
-
     glRotatef((float)angle->get()*360, rotation_axis->get(0), rotation_axis->get(1), rotation_axis->get(2));
-
+    
     glScalef(size->get(0), size->get(1), size->get(2));
+
     #ifndef VSXU_OPENGL_ES_2_0
       glColor4f(color_rgb->get(0),color_rgb->get(1),color_rgb->get(2),color_rgb->get(3));
     #endif
     #ifdef VSXU_OPENGL_ES
-      const GLfloat squareVertices[] = {
-        -1.0f, -1.0f,
-        1.0f,  -1.0f,
-        -1.0f,  1.0f,
-        1.0f,   1.0f,
+      const GLfloat square_vertices[] = {
+        -1.0f, -1.0f, 0.0f,
+        1.0f,  -1.0f, 0.0f,
+        -1.0f,  1.0f, 0.0f,
+        1.0f,   1.0f, 0.0f
+      };
+      const GLfloat square_colors[] = {
+        color_rgb->get(0), color_rgb->get(1),color_rgb->get(2),color_rgb->get(3),
+        color_rgb->get(0), color_rgb->get(1),color_rgb->get(2),color_rgb->get(3),
+        color_rgb->get(0), color_rgb->get(1),color_rgb->get(2),color_rgb->get(3),
+        color_rgb->get(0), color_rgb->get(1),color_rgb->get(2),color_rgb->get(3),
       };
       #ifdef VSXU_OPENGL_ES_1_0
         glDisableClientState(GL_COLOR_ARRAY);
-        glVertexPointer(2, GL_FLOAT, 0, squareVertices);
+        glVertexPointer(2, GL_FLOAT, 0, square_vertices);
         glEnableClientState(GL_VERTEX_ARRAY);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
       #endif
       #ifdef VSXU_OPENGL_ES_2_0
+        vsx_es_begin();
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0,2,GL_FLOAT, GL_FALSE, 0, squareVertices);
+        vsx_es_set_default_arrays((GLvoid*)&square_vertices, (GLvoid*)&square_colors);
+        //glVertexAttribPointer(0,2,GL_FLOAT, GL_FALSE, 0, squareVertices);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        vsx_es_end();
       #endif
     #endif
 
