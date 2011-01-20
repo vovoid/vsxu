@@ -206,7 +206,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
           if ((*msg)[msg->size()-1] == '\r') msg->pop_back();
           if ((*msg)[msg->size()-1] == '\n') msg->pop_back();
           if ((*msg)[msg->size()-1] == '\r') msg->pop_back();
-          printf("got2: %s___\n",msg->c_str());
+          //printf("got2: %s___\n",msg->c_str());
           if (*msg == "dc")
           {
             close(recv_sock);
@@ -354,7 +354,7 @@ void* vsx_command_list_client::client_worker(void *ptr)
         if ((*msg)[msg->size()-1] == '\r') msg->pop_back();
         if ((*msg)[msg->size()-1] == '\n') msg->pop_back();
         if ((*msg)[msg->size()-1] == '\r') msg->pop_back();
-        printf("got2: %s___\n",msg->c_str());
+        //printf("got2: %s___\n",msg->c_str());
         if (*msg == "dc")
         {
           close(sock);

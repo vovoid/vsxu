@@ -194,7 +194,7 @@ bool activate_offscreen() {
   GLint viewport[4];
   glGetIntegerv(GL_VIEWPORT, viewport);
 
-  printf("viewport x: %d viewport y %d\n", viewport[2], viewport[3]);
+  //printf("viewport x: %d viewport y %d\n", viewport[2], viewport[3]);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glMatrixMode(GL_MODELVIEW);

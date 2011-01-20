@@ -4,8 +4,10 @@ cmake_minimum_required(VERSION 2.6)
 get_filename_component(list_file_path ${CMAKE_CURRENT_LIST_FILE} PATH)
 string(REGEX MATCH "[a-z.-]*$" module_id ${list_file_path})
 message("*******************************************")
-message("building vsxu module            " ${module_id})
+message("configuring vsxu module            " ${module_id})
 message("*******************************************")
+
+CREATE_STATIC_GLUE(${module_id})
 
 file(GLOB LOCAL_SOURCES "*.cpp")
 file(GLOB API_STUBS "api_stubs/*.cpp")
@@ -14,7 +16,7 @@ project (${module_id})
 include(../cmake_globals.txt)
 
 include(./_sources)
-add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES} ${EXTRA_LIBS})
+CREATE_MODULE(${module_id})
 include(../cmake_suffix.txt)
 
   install(
@@ -24,6 +26,6 @@ include(../cmake_suffix.txt)
       ${CMAKE_INSTALL_PREFIX}/share/vsxu/plugin-config)
 
 if(UNIX)
-target_link_libraries(${module_id} X11 GLEW GL GLU vsxu_engine_graphics vsxu_engine)
+target_link_libraries(${module_id} X11 GLEW GL GLU)
 endif(UNIX)
 

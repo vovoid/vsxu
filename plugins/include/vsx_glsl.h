@@ -1,6 +1,10 @@
 #ifndef VSX_GLSL_H
 #define VSX_GLSL_H
 
+#ifdef VSXU_OPENGL_ES_2_0
+#include "vsx_glsl_es.h"
+#else
+
 typedef struct {
   vsx_module_param_abs* module_param;
   vsx_string name;
@@ -621,7 +625,6 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
       }
     }
 
-    //if (GLEW_VERSION_1_3)
 #if defined(__linux__)
     glActiveTexture(GL_TEXTURE0);
 #else
@@ -655,4 +658,5 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
   {};
 };
 
-#endif
+#endif // ifdef OPENGL_ES_2_0
+#endif // ifndef VSX_GLSL_H

@@ -365,8 +365,9 @@ void beginBlobs() {
 	v_norm(blobMat + 8);
 	
 	glMultMatrixf(blobMat);
-  #ifdef VSXU_OPENGL_ES
+  #ifdef VSXU_OPENGL_ES_2_0
     // TODO
+    
   #else
     glGetFloatv(GL_PROJECTION_MATRIX, blobMat);
   #endif

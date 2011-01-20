@@ -30,7 +30,6 @@ GLuint mm_uniform_handle;
           GLenum glError = glGetError(); \
           if(glError != GL_NO_ERROR) { \
             fprintf(stderr, "glGetError() = %i (0x%.8x) at line %i\n", glError, glError, __LINE__); \
-            exit(1); \
           } \
         }
 
@@ -42,15 +41,8 @@ void vsx_es_load_shader(GLuint *pShader, vsx_string shader_source, GLint iShader
   /* Create shader and load into GL. */
   *pShader = GL_CHECK(glCreateShader(iShaderType));
 
-  //aStrings[0] = load_shader(sFilename);
-
-  //(shader_source.c_str())
   const char* source = shader_source.c_str();
   GL_CHECK(glShaderSource(*pShader, 1, &source, NULL));
-
-  /* Clean up shader source. */
-  free((void *)aStrings[0]);
-  aStrings[0] = NULL;
 
   /* Try compiling the shader. */
   GL_CHECK(glCompileShader(*pShader));
