@@ -121,6 +121,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
   while (1)
   {
     printf("waiting for connection...\n");
+    run = true;
     int recv_sock = accept(
                             listen_sock,
                             (struct sockaddr *)&their_addr,

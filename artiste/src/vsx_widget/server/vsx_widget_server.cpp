@@ -910,7 +910,7 @@ void vsx_widget_server::vsx_command_process_b(vsx_command_s *t) {
     if (t->cmd == "show_connect_dialog")
     {
       ((dialog_query_string*)connect_dialog)->name = "connect";
-      ((dialog_query_string*)connect_dialog)->show("::1");
+      ((dialog_query_string*)connect_dialog)->show("127.0.0.1");
     }
     else
     if (t->cmd == "connect")
