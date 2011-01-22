@@ -7,7 +7,7 @@ include_directories(
   src
   src/vsx_font
   src/vsx_widget
-  include
+  ./include
 )
 
 set(OS_SOURCES "")
