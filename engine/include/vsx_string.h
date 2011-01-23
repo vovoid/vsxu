@@ -101,6 +101,15 @@ public:
     *this = foo;
   };
 //#
+
+//----------------------------------------------------------------------------
+// NULLTERMINATED CHAR*
+//----------------------------------------------------------------------------
+  vsx_string(const char* ss) {
+    *this = ss;
+  };
+
+  
   const vsx_string& operator=(const vsx_string& ss) {
     if (&ss != this) {
       //printf("copying with =\n");
@@ -150,13 +159,7 @@ public:
     }
     return *this;
   };
-  
-//----------------------------------------------------------------------------
-// NULLTERMINATED CHAR*
-//----------------------------------------------------------------------------
-  vsx_string(const char* ss) {
-    *this = ss;
-  };
+
 //#
 //#ifndef VSX_STRING_TINY
   const vsx_string& operator=(const char* ss) {

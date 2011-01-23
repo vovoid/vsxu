@@ -68,6 +68,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
   bool run = true;
   ssize_t size_recv;
   int keepalive_timer = 0;
+  vsx_string message_stack;
   
   memset(&hints, 0, sizeof hints); // make sure the struct is empty
   hints.ai_family = AF_INET; //AF_INET6 or AF_UNSPEC
@@ -193,8 +194,41 @@ void* vsx_command_list_server::server_worker(void *ptr)
           keepalive_timer = 0;
         }
       }
-      
-      if (recv_buf[0] != 0)
+
+      // need microsecond timing calculation
+      if (size_recv > 0 && size_recv < BUFLEN)
+      {
+        printf("size_recv: %d\n", size_recv);
+        for (ssize_t i = 0; i < size_recv; i++)
+        {
+          if
+            (
+              (recv_buf[i] == '\n' || recv_buf[i] == '\r')
+              &&
+              message_stack.size()
+            )
+          {
+            printf("got2: %s___\n",message_stack.c_str());
+            if (message_stack == "dc")
+            {
+              close(recv_sock);
+              run = false;
+              return 0;
+            }
+            else
+            {
+              this_->cmd_in->add_raw(message_stack);
+            }
+            message_stack = "";
+          } else
+          {
+            message_stack.push_back(recv_buf[i]);
+          }
+        }
+        memset(&recv_buf,0,BUFLEN);
+      }
+      usleep(1);
+      /*if (recv_buf[0] != 0)
       {
         vsx_string recv_data(recv_buf);
 
@@ -220,7 +254,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
         }
         memset(&recv_buf,0,size_recv+0x1);
       }
-      usleep(10000);
+      usleep(10000);*/
     }
   }
   close(listen_sock);
@@ -247,13 +281,14 @@ void* vsx_command_list_client::client_worker(void *ptr)
   int sock, recv_sock;
   ssize_t size_recv;
   int keepalive_timer = 0;
+  vsx_string message_stack;
   
   memset(&hints, 0, sizeof hints); // make sure the struct is empty
   hints.ai_family = AF_UNSPEC;     // don't care IPv4 or IPv6
   hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
 
   // get ready to connect
-  status = getaddrinfo("127.0.0.1", "11030", &hints, &servinfo);
+  status = getaddrinfo(this_->server_address.c_str(), "11030", &hints, &servinfo);
 
   sock = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
 
@@ -280,11 +315,10 @@ void* vsx_command_list_client::client_worker(void *ptr)
   bool run = true;
 
   this_->connected = VSX_COMMAND_CLIENT_CONNECTED;
-  
   while (run)
   {
     printf("rt\n");
-    size_recv = recv(sock, &recv_buf, BUFLEN, MSG_DONTWAIT);
+    size_recv = recv(sock, &recv_buf, BUFLEN-1, MSG_DONTWAIT);
     if (size_recv == -1)
     {
       if (EAGAIN != errno && EWOULDBLOCK != errno)
@@ -341,37 +375,29 @@ void* vsx_command_list_client::client_worker(void *ptr)
     }
 
     // need microsecond timing calculation
-    if (recv_buf[0] != 0)
+    if (size_recv > 0 && size_recv < BUFLEN)
     {
-      recv_buf[BUFLEN-1] = 0x0; // buffer overflow protection
-      vsx_string recv_data(recv_buf);
-      vsx_avector<vsx_string> parts;
-      vsx_string deli = "\n";
-      explode(recv_data, deli, parts);
-      for (unsigned long i = 0; i < parts.size(); i++)
+      printf("size_recv: %d\n", size_recv);
+      for (ssize_t i = 0; i < size_recv; i++)
       {
-        vsx_string* msg = &parts[i];
-
-        if ((*msg)[msg->size()-1] == '\r') msg->pop_back();
-        if ((*msg)[msg->size()-1] == '\n') msg->pop_back();
-        if ((*msg)[msg->size()-1] == '\r') msg->pop_back();
-        //printf("got2: %s___\n",msg->c_str());
-        if (*msg == "dc")
+        if
+          (
+            (recv_buf[i] == '\n' || recv_buf[i] == '\r')
+            &&
+            message_stack.size()
+          )
         {
-          close(sock);
-          run = false;
-          this_->connected = VSX_COMMAND_CLIENT_DISCONNECTED;
-          printf("line: %d\n", __LINE__);
-          return 0;
-        }
-        else
+          printf("got2: %s___\n",message_stack.c_str());
+          this_->cmd_in.add_raw(message_stack);
+          message_stack = "";
+        } else
         {
-          this_->cmd_in.add_raw((*msg));
+          message_stack.push_back(recv_buf[i]);
         }
       }
       memset(&recv_buf,0,BUFLEN);
     }
-    usleep(10000);
+    usleep(1);
   }
   return 0;
 }
@@ -386,8 +412,9 @@ vsx_command_list* vsx_command_list_client::get_command_list_out()
   return &cmd_out;  
 }
 
-bool vsx_command_list_client::client_connect()
+bool vsx_command_list_client::client_connect(vsx_string &server_a)
 {
+  server_address = server_a;
   pthread_attr_init(&worker_t_attr);
   pthread_create(&worker_t, &worker_t_attr, &client_worker, (void*)this);
   pthread_detach(worker_t);

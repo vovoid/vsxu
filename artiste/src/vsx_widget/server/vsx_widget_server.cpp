@@ -233,7 +233,7 @@ void vsx_widget_server::server_connect(vsx_string host, vsx_string port)
   client = new vsx_command_list_client;
   cmd_in = client->get_command_list_in();
   cmd_out = client->get_command_list_out();
-  client->client_connect();
+  client->client_connect(host);
   server_type = VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET;
   support_scaling = true;
 }
@@ -255,6 +255,7 @@ void vsx_widget_server::vsx_command_process_f() {
     // messages from the engine
 		while ( (c = cmd_in->pop()) )
 		{
+      c->dump_to_stdout();
 			if (c->cmd == "vsxu_welcome") {
 				server_version = c->parts[1];
 				connection_id = c->parts[2];
@@ -658,7 +659,7 @@ void vsx_widget_server::vsx_command_process_f() {
 				// syntax:
 				//         module_list [class=render/texture] [identifier] {information} {in_param_spec} {out_param_spec}
 				// VARNING: inparamspec osv. r inte implemenenterat i servern!  <-- BUUU
-				if (c->parts.size() > 1) {
+				if (c->parts.size() > 2) {
 					// init new module information holder
 					vsx_module_info* a;
 					a = new vsx_module_info;
@@ -751,7 +752,7 @@ void vsx_widget_server::vsx_command_process_f() {
 				((vsx_widget_ultra_chooser*)state_chooser)->build_tree();
 				((vsx_widget_ultra_chooser*)state_chooser)->build_tree();
 			}
-			if (c->cmd == "resources_list") {
+			if (c->cmd == "resources_list" && c->parts.size() == 2) {
 				vsx_module_info* a;
 				a = new vsx_module_info;
 				a->identifier = str_replace(":20:"," ",c->parts[1]);

@@ -41,6 +41,9 @@ class vsx_command_list_client
   vsx_command_list cmd_in;
   vsx_command_list cmd_out;
 
+  // internal server address
+  vsx_string server_address;
+  
   // internal worker method
   static void* client_worker(void *ptr);
   int connected;
@@ -51,7 +54,7 @@ public:
   vsx_command_list* get_command_list_out();
 
   // start the server (after setting command_lists)
-  bool client_connect();
+  bool client_connect(vsx_string &server_a);
 
   // get connection status
   int get_connection_status();
