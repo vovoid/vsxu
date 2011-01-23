@@ -140,7 +140,7 @@ int main(int argc, char* argv[])
 
     // Initialise GLFW
     glfwInit();
-
+    set_modifiers();
     bool start_fullscreen = false;
     int x_res = 1280;
     int y_res = 720;

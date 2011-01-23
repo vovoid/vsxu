@@ -198,7 +198,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
       // need microsecond timing calculation
       if (size_recv > 0 && size_recv < BUFLEN)
       {
-        printf("size_recv: %d\n", size_recv);
+        //printf("size_recv: %d\n", size_recv);
         for (ssize_t i = 0; i < size_recv; i++)
         {
           if
@@ -208,7 +208,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
               message_stack.size()
             )
           {
-            printf("got2: %s___\n",message_stack.c_str());
+            //printf("got2: %s___\n",message_stack.c_str());
             if (message_stack == "dc")
             {
               close(recv_sock);
@@ -227,7 +227,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
         }
         memset(&recv_buf,0,BUFLEN);
       }
-      usleep(1);
+      usleep(10);
       /*if (recv_buf[0] != 0)
       {
         vsx_string recv_data(recv_buf);
@@ -295,6 +295,7 @@ void* vsx_command_list_client::client_worker(void *ptr)
   // servinfo now points to a linked list of 1 or more struct addrinfos
   if (connect(sock, servinfo->ai_addr, servinfo->ai_addrlen) == -1)
   {
+    this_->connected = VSX_COMMAND_CLIENT_DISCONNECTED;
     handle_error("connect");
   }
 
@@ -317,7 +318,6 @@ void* vsx_command_list_client::client_worker(void *ptr)
   this_->connected = VSX_COMMAND_CLIENT_CONNECTED;
   while (run)
   {
-    printf("rt\n");
     size_recv = recv(sock, &recv_buf, BUFLEN-1, MSG_DONTWAIT);
     if (size_recv == -1)
     {
@@ -377,7 +377,6 @@ void* vsx_command_list_client::client_worker(void *ptr)
     // need microsecond timing calculation
     if (size_recv > 0 && size_recv < BUFLEN)
     {
-      printf("size_recv: %d\n", size_recv);
       for (ssize_t i = 0; i < size_recv; i++)
       {
         if
@@ -387,7 +386,7 @@ void* vsx_command_list_client::client_worker(void *ptr)
             message_stack.size()
           )
         {
-          printf("got2: %s___\n",message_stack.c_str());
+          //printf("got2: %s___\n",message_stack.c_str());
           this_->cmd_in.add_raw(message_stack);
           message_stack = "";
         } else
@@ -397,7 +396,7 @@ void* vsx_command_list_client::client_worker(void *ptr)
       }
       memset(&recv_buf,0,BUFLEN);
     }
-    usleep(1);
+    usleep(10);
   }
   return 0;
 }
