@@ -27,7 +27,6 @@ add_definitions(
  -DMOD_DM=destroy_module
  -DMOD_GNM=get_num_modules
 ) 
-)
 
 if(ENGINE_SCRIPTING)
 # add gamemonkey source files here

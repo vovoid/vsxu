@@ -80,7 +80,8 @@ void app_key_down(long key)
   {
     // esc:
 	  case 257:
-		case 27: 
+		case 27:
+      if (manager) manager_destroy(manager);
       exit(0);
     // pgup:
 		case 298:

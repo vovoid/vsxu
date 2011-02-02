@@ -2,6 +2,7 @@
 #define VSXFST_H
 
 #include <vsx_platform.h>
+#include <stdlib.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #define VSXFSTDLLIMPORT
@@ -28,7 +29,8 @@
 
 // FILESYSTEM OPERATIONS
 
-typedef struct {
+class vsxf_handle {
+public:
   vsx_string filename;
   unsigned long position;   // position in the data stream
   unsigned long size;       // size of the data stream in bytes
@@ -36,7 +38,20 @@ typedef struct {
   void* file_data; // in the case of type == 1 this is the actual decompressed file in RAM
                    // don't mess with this! the file class will handle it.. 
   FILE* file_handle;
-} vsxf_handle;
+  vsxf_handle() { file_data=0; position=0;}
+  ~vsxf_handle() {
+    if (file_data) {
+      if (mode == VSXF_MODE_WRITE)
+      {
+        delete (vsx_avector<char>*)file_data;
+      }
+      else
+      {
+        free(file_data);
+      }
+    }
+  }
+};
 
 
 

@@ -135,6 +135,7 @@ void vsx_statelist::start()
   vxe->start();
   vxe->load_state((*state_iter).state_name);
 }
+
 void vsx_statelist::stop()
 {
   for (std::vector<state_info>::iterator it = statelist.begin(); it != statelist.end(); ++it)
@@ -572,4 +573,19 @@ void vsx_statelist::init(vsx_string base_path,vsx_string init_sound_type)
 
 vsx_statelist::vsx_statelist() 
 {
-};
+}
+
+vsx_statelist::~vsx_statelist()
+{
+    #ifdef VSXU_DEBUG
+    printf("statelist destructor\n");
+    #endif
+  
+  for (size_t i = 0; i < faders.size(); i++)
+  {
+    #ifdef VSXU_DEBUG
+    printf("deleting fader %d\n", i);
+    #endif
+    delete faders[i];
+  }
+}

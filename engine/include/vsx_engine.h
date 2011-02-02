@@ -51,6 +51,15 @@ private:
   //-- engine state
 	bool first_start;
 	bool stopped;
+
+  //-- open dll/so's
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+    std::vector<HMODULE> module_handles;
+  #endif
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+    std::vector<void*> module_handles;
+  #endif
+  
 	//-- available modules
 	std::map<vsx_string,vsx_module_info*> module_list;
 	std::map<vsx_string,vsx_module_info*>::const_iterator module_iter;
@@ -114,6 +123,12 @@ public:
 		void* vsxl;
 	#endif
 
+
+  //debug refcounter
+  #ifdef VSXU_DEBUG
+    static int engine_counter;
+    int engine_id;
+  #endif
   //--
 
 	bool dump_modules_to_disk;
@@ -187,6 +202,7 @@ public:
 
 	vsx_engine();
 	vsx_engine(vsx_string path);
+  ~vsx_engine();
 };
 
 

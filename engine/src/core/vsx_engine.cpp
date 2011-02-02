@@ -46,15 +46,34 @@
 vsx_module_engine_info vsx_engine::engine_info;
 #endif
 
+int vsx_engine::engine_counter = 0;
 using namespace std;
 
 vsx_engine::vsx_engine() {
   set_default_values();
+  #ifdef VSXU_DEBUG
+  engine_id = engine_counter++;
+  printf("constructing engine with id: %d\n", engine_id);
+  #endif
 }
 
 vsx_engine::vsx_engine(vsx_string path) {
 	set_default_values();
   log_dir = vsxu_base_path = path;
+  #ifdef VSXU_DEBUG
+  engine_id = engine_counter++;
+  printf("constructing engine with id: %d\n", engine_id);
+  #endif
+}
+
+
+vsx_engine::~vsx_engine()
+{
+  #ifdef VSXU_DEBUG
+  printf("destructing engine with id: %d\n", engine_id);
+  #endif
+  i_clear();
+  destroy();
 }
 
 void vsx_engine::set_default_values()
@@ -318,14 +337,21 @@ bool vsx_engine::stop() {
 }
 // free all our file / dynamic library handles
 void vsx_engine::destroy() {
+  #ifdef VSXU_DEBUG
+    printf("engine destroy\n");
+  #endif
+  // unload module handles
+  for (size_t i = 0; i < module_handles.size(); i++)
+  {
+    #ifdef _WIN32
+      FreeLibrary(module_handles[i]);
+    #endif
+    #if defined(__linux__) || defined(__APPLE__)
+      dlclose(module_handles[i]);
+    #endif
+  }
 	for (std::map<vsx_string,module_dll_info*>::iterator it = module_dll_list.begin(); it != module_dll_list.end(); ++it)
 	{
-#ifdef _WIN32
-		FreeLibrary((*it).second->module_handle);
-#endif
-#if defined(__linux__) || defined(__APPLE__)
-		dlclose((*it).second->module_handle);
-#endif
 		delete (module_dll_info*)((*it).second);
 	}
 }
@@ -405,6 +431,9 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
     //printf("after_dlopen\n");
     if (module_handle)
     {
+      // add to open modules
+      module_handles.push_back(module_handle);
+      
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
       if (GetProcAddress(module_handle, "set_environment_info"))
       #endif
@@ -435,6 +464,22 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
       #endif
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
         vsx_module*(*query)(unsigned long) = (vsx_module*(*)(unsigned long))dlsym(module_handle, "create_new_module");
+      #endif
+
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+        if (GetProcAddress(module_handle, "destroy_module") == 0) {
+          LOG("unload module ERROR! couldn't find handle for destroy_module!")
+          return;
+        }
+        void(*unload)(vsx_module*,unsigned long) = (void(*)(vsx_module*,unsigned long))GetProcAddress(module_handle, "destroy_module");
+      #endif
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+        if (dlsym(module_handle, "destroy_module") == 0)
+        {
+          LOG("unload module ERROR! couldn't find handle for destroy_module!")
+          return;
+        }
+        void(*unload)(vsx_module*,unsigned long) = (void(*)(vsx_module*,unsigned long))dlsym(module_handle, "destroy_module");
       #endif
 
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
@@ -469,6 +514,7 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
           //a->component_class = "screen";
 
           im->module_info(a);
+          unload(im,i);
           #ifdef VSXU_DEVELOPER
           LOG("engine_load_module_a:  module identifier: "+a->identifier);
           #endif
@@ -520,6 +566,7 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
   //      		}
             module_list[identifier] = a;
           }
+          delete info;
         }
       }
     }
