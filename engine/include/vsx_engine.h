@@ -61,6 +61,7 @@ private:
   #endif
   
 	//-- available modules
+  std::vector<vsx_module_info*> module_infos;
 	std::map<vsx_string,vsx_module_info*> module_list;
 	std::map<vsx_string,vsx_module_info*>::const_iterator module_iter;
 	std::map<vsx_string,module_dll_info*> module_dll_list;
@@ -97,7 +98,7 @@ private:
 	int component_name_autoinc;
 	void set_default_values();
 	int i_load_state(vsx_command_list& load1, vsx_string *error_string);
-  void i_clear(vsx_command_list *cmd_out = 0);
+  void i_clear(vsx_command_list *cmd_out = 0, bool clear_critical = false);
   void rename_component();
 	int rename_component(vsx_string old_identifier, vsx_string new_base = "$", vsx_string new_name = "$");
   void redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_out);

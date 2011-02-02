@@ -72,7 +72,7 @@ vsx_engine::~vsx_engine()
   #ifdef VSXU_DEBUG
   printf("destructing engine with id: %d\n", engine_id);
   #endif
-  i_clear();
+  i_clear(0,true);
   destroy();
 }
 
@@ -335,6 +335,7 @@ bool vsx_engine::stop() {
 	return false;
 #endif
 }
+
 // free all our file / dynamic library handles
 void vsx_engine::destroy() {
   #ifdef VSXU_DEBUG
@@ -354,6 +355,11 @@ void vsx_engine::destroy() {
 	{
 		delete (module_dll_info*)((*it).second);
 	}
+	// clean up module list
+  for (size_t i = 0; i < module_infos.size(); i++)
+  {
+    delete module_infos[i];
+  }
 }
 
 void vsx_engine::build_module_list(vsx_string sound_type) {
@@ -566,6 +572,7 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
   //      		}
             module_list[identifier] = a;
           }
+          module_infos.push_back(a);
           delete info;
         }
       }
@@ -1063,14 +1070,14 @@ double vsx_engine::get_fps() {
 #endif
 }
 
-void vsx_engine::i_clear(vsx_command_list *cmd_out) {
+void vsx_engine::i_clear(vsx_command_list *cmd_out,bool clear_critical) {
 #ifndef VSX_DEMO_MINI
   //if (filesystem.type == VSXF_TYPE_ARCHIVE) filesystem.archive_close();
 
   std::map<vsx_string,vsx_comp*> forge_map_save;
   std::vector<vsx_comp*> forge_save;
   for (std::map<vsx_string,vsx_comp*>::iterator fit = forge_map.begin(); fit != forge_map.end(); ++fit) {
-    if (!(*fit).second->internal_critical)
+    if (!(*fit).second->internal_critical || clear_critical)
     {
       LOG("component deleting: "+(*fit).second->name);
 
@@ -1105,6 +1112,7 @@ void vsx_engine::i_clear(vsx_command_list *cmd_out) {
     LOG("delete step 4\n");
       LOG("del "+(*fit).second->name)
       if ((*fit).second->component_class != "macro")
+      if (module_list.find((*fit).second->identifier) != module_list.end())
       if (module_list[(*fit).second->identifier]->location == "external") {
           LOG("unloading "+(*fit).second->name);
                   (*fit).second->unload_module(module_dll_list[(*fit).second->identifier]);

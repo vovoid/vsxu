@@ -267,6 +267,7 @@ bool vsxf::is_archive_populated()
               //printf("byte %s\n",outBuffer);
               //FILE* ff = fmemopen (void *outBuffer, outSize, "r");
             }
+            free(inBuffer);
             fclose(l_handle);
             return handle;
           }
