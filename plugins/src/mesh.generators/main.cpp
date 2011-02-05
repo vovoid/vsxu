@@ -83,6 +83,16 @@ public:
       //printf("randMesh done %d\n",mesh.data->vertices.size());
     //  }
   }
+
+  void on_delete()
+  {
+    mesh.clear();
+  }
+
+  virtual ~vsx_module_mesh_rand_points()
+  {
+    mesh.clear();
+  }
 };
 
 class vsx_module_mesh_lightning_vertices : public vsx_module {
@@ -207,6 +217,15 @@ public:
       }*/
     }
   }
+  void on_delete()
+  {
+    mesh.clear();
+  }
+
+  ~vsx_module_mesh_lightning_vertices()
+  {
+    mesh.clear();
+  }
 };
 
 class vsx_module_mesh_rays : public vsx_module {
@@ -307,6 +326,15 @@ public:
       printf("randMesh done %d\n",mesh.data->vertices.size());*/
 
     //  }
+  }
+  void on_delete()
+  {
+    mesh.clear();
+  }
+
+  ~vsx_module_mesh_rays()
+  {
+    mesh.clear();
   }
 };
 
@@ -424,6 +452,15 @@ public:
       printf("randMesh done %d\n",mesh.data->vertices.size());*/
 
     //  }
+  }
+  void on_delete()
+  {
+    mesh.clear();
+  }
+  
+  ~vsx_module_mesh_disc()
+  {
+    mesh.clear();
   }
 };
 
@@ -792,6 +829,14 @@ public:
 
     //  }
   }
+  void on_delete()
+  {
+    mesh.clear();
+  }
+  ~vsx_module_mesh_supershape()
+  {
+    mesh.clear();
+  }
 };
 
 class vsx_module_mesh_planes : public vsx_module {
@@ -808,7 +853,6 @@ class vsx_module_mesh_planes : public vsx_module {
 	int n_segs;
 	int l_param_updates;
 public:
-
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;solid;mesh_planes";
@@ -913,6 +957,15 @@ public:
       printf("randMesh done %d\n",mesh.data->vertices.size());*/
 
     //  }
+  }
+  
+  void on_delete()
+  {
+    mesh.clear();
+  }  
+  ~vsx_module_mesh_planes()
+  {
+    mesh.clear();
   }
 };
 
@@ -1037,7 +1090,15 @@ public:
     mesh.timestamp++;
     result->set_p(mesh);
   }
-
+  
+  void on_delete()
+  {
+    mesh.clear();
+  }
+  ~vsx_module_mesh_box()
+  {
+    mesh.clear();
+  }
 };
 
 class vsx_module_mesh_sphere : public vsx_module {
@@ -1052,8 +1113,7 @@ class vsx_module_mesh_sphere : public vsx_module {
 	int current_num_stacks;
 	int current_num_sectors;
 
-public:
-
+public: 
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;solid;mesh_sphere";
@@ -1154,6 +1214,15 @@ public:
   	//printf("%d\n", vi);
 		mesh.timestamp++;
     result->set_p(mesh);
+  }
+  
+  void on_delete()
+  {
+    mesh.clear();
+  }  
+
+  ~vsx_module_mesh_sphere() {
+    mesh.clear();
   }
 };
 
@@ -1456,6 +1525,16 @@ public:
     last_vertex_index->set( (float)vi );
     mesh.timestamp++;
     result->set_p(mesh);
+  }
+
+  void on_delete()
+  {
+    mesh.clear();
+  }  
+
+  ~vsx_module_mesh_abstract_hand()
+  {
+    mesh.clear();
   }
 };
 
@@ -1824,6 +1903,15 @@ public:
     mesh.timestamp++;
     result->set_p(mesh);
   }
+
+  void on_delete()
+  {
+    mesh.clear();
+  }
+  ~vsx_module_mesh_torus_knot()
+  {
+    mesh.clear();
+  }
 };
 
 class vsx_module_mesh_needle : public vsx_module {
@@ -1836,9 +1924,6 @@ class vsx_module_mesh_needle : public vsx_module {
 	vsx_mesh mesh;
 
 public:
-
-
-
 	void module_info(vsx_module_info* info)
 	{
 	  info->identifier = "mesh;vertices;needle";
@@ -1880,6 +1965,16 @@ size:float\
 	  mesh.timestamp++;
 	  result->set_p(mesh);
 	}
+
+  void on_delete()
+  {
+    mesh.clear();
+  }
+
+  ~vsx_module_mesh_needle()
+  {
+    mesh.clear();
+  }
 };
 
 class vsx_module_mesh_ribbon : public vsx_module {
@@ -2050,6 +2145,15 @@ public:
       printf("randMesh done %d\n",mesh.data->vertices.size());*/
 
     //  }
+  }
+
+  void on_delete()
+  {
+    mesh.clear();
+  }
+  ~vsx_module_mesh_ribbon()
+  {
+    mesh.clear();
   }
 };
 

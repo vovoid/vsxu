@@ -17,7 +17,11 @@ class vsx_module_obj_loader : public vsx_module {
 	int n_rays;
 	vsx_string current_filename;
 public:
-
+  ~vsx_module_obj_loader()
+  {
+    mesh.clear();
+    mesh_empty.clear();
+  }
 void module_info(vsx_module_info* info)
 {
   info->identifier = "mesh;importers;obj_importer";
@@ -339,7 +343,10 @@ class vsx_module_vxm_loader : public vsx_module {
   int n_rays;
   vsx_string current_filename;
 public:
-
+  ~vsx_module_vxm_loader()
+  {
+    mesh.clear();
+  }
 void module_info(vsx_module_info* info)
 {
   info->identifier = "mesh;importers;vxm_importer";

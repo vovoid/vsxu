@@ -119,7 +119,7 @@ void app_key_down(long key)
       break;
     // "F" key:
     case 112:
-    case 70: 
+    case 70:
       overlay->set_help(2); 
       break;
     // "R" key:

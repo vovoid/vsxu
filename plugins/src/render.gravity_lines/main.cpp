@@ -382,7 +382,10 @@ class vsx_module_gravity_ribbon_mesh : public vsx_module {
   long prev_num_vertices;
 
 public:
-
+  ~vsx_module_gravity_ribbon_mesh()
+  {
+    mesh_out.clear();
+  }
   bool init() {
     last_update = 0;
     return true;

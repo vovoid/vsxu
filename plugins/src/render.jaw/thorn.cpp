@@ -411,4 +411,7 @@ void vsx_module_thorn::run() {
 }
 
 
-
+vsx_module_thorn::~vsx_module_thorn()
+{
+  mesh.clear();
+}

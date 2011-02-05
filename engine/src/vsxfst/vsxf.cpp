@@ -219,9 +219,9 @@ bool vsxf::is_archive_populated()
       #endif
       handle->file_handle = fopen((base_path+i_filename).c_str(),mode);
       if (handle->file_handle == NULL) {
-        return NULL;
         delete handle;
-      }else
+        return NULL;
+      } else
       return handle;
     } else {
       FILE* l_handle = fopen(archive_name.c_str(),"rb");
@@ -245,7 +245,11 @@ bool vsxf::is_archive_populated()
             //printf("nhandle size: %d\n",handle->size);
             void* inBuffer = malloc(handle->size);
             fseek(l_handle,archive_files[i].position-1,SEEK_SET);
-            if (!fread(inBuffer,1,handle->size,l_handle)) return NULL;
+            if (!fread(inBuffer,1,handle->size,l_handle))
+            {
+              delete handle;
+              return NULL;
+            }
             void* outBuffer = 0;
             size_t outSize;
             size_t outSizeProcessed;
@@ -282,8 +286,10 @@ bool vsxf::is_archive_populated()
         handle->mode = VSXF_MODE_WRITE;
         return handle;
       }
+      delete handle;
       return 0;
     }
+    delete handle;
     return 0;
   }
 
@@ -297,7 +303,6 @@ bool vsxf::is_archive_populated()
         }
       }
       delete handle;
-      handle = 0;
     }
   }
 

@@ -1,6 +1,5 @@
 #include "vsx_command.h"
 #include <time.h>
-//#include <fstream>
 
 int vsx_command_s::id = 0;
 
@@ -31,7 +30,7 @@ void vsx_command_s::process_garbage() {
     }
   }
 
-  //for ( it != garbage_list.end(); ++it) {
+//  for ( it != garbage_list.end(); ++it) {
 //    ++(*it)->iterations;
 //  }
 //  for (std::list<vsx_command*>::iterator it = garbage_list.begin(); it != garbage_list.end(); ++it) {
@@ -141,33 +140,11 @@ void vsx_command_list::load_from_file(vsx_string filename, bool parse, int type)
       }
     }
   }
-  //printf("end\n");
 #ifdef VSX_ENG_DLL
   filesystem->f_close(fp);
 #else
   fclose(fp);
 #endif
-/*  std::ifstream fis;
-  //printf("loading from '%s'\n",filename.c_str());
-  fis.open(filename.c_str(), std::ios_base::in);
-  vsx_string line;
-  char buf[65535];
-  if (fis) {
-    //printf("ok\n");
-    while (fis.getline(buf,65535)) {
-      line = buf;
-      if (line != "") {
-        if (parse) {
-          add_raw(line);
-        } else {
-          vsx_command_s* t = new vsx_command_s;
-          t->raw = line;
-          commands.push_back(t);
-        }
-      }
-    }
-  }
-  fis.close();*/
 }
 
 void vsx_command_list::save_to_file(vsx_string filename) {
@@ -273,10 +250,8 @@ vsx_command_s* vsx_command_parse(vsx_string& cmd_raw) {
   t->parts = cmdps;
   t->parsed = true;
   //printf("parsing part: %s\n",t->parts[0].c_str());
-
   return t;
 }
-
 
 double ntime() {
   return ((double)clock())/((double)CLOCKS_PER_SEC);

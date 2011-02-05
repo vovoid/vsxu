@@ -121,6 +121,7 @@ public:
   }
   void clear() {
 #ifndef VSX_NO_MESH
+    if (0 == data) return;
     delete (vsx_mesh_data*)data;
     data = 0;
 #endif

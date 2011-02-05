@@ -85,6 +85,7 @@ public:
 	void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters);
 	void run();
 	void on_delete();
+  ~vsx_module_segmesh_map_bspline();
 };
 
 
@@ -106,6 +107,8 @@ public:
   void module_info(vsx_module_info* info);
 	void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters);
 	void run();
+  void on_delete();
+  ~vsx_module_planeworld();
 };
 
 

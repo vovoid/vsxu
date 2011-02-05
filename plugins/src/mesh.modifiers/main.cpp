@@ -353,6 +353,10 @@ class vsx_module_mesh_quat_rotate_around_vertex : public vsx_module {
   vsx_quaternion q;
 public:
 
+  ~vsx_module_mesh_quat_rotate_around_vertex()
+  {
+    mesh.clear();
+  }
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;modifiers;transforms;mesh_rotate_quat_around_vertex";
@@ -502,7 +506,11 @@ class vsx_module_mesh_translate : public vsx_module {
   // internal
   vsx_mesh mesh;
 public:
-
+  virtual ~vsx_module_mesh_translate()
+  {
+    mesh.clear();
+  }
+  
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;modifiers;transforms;mesh_translate";
@@ -605,7 +613,10 @@ class vsx_module_mesh_scale : public vsx_module {
   // internal
   vsx_mesh mesh;
 public:
-
+  ~vsx_module_mesh_scale()
+  {
+    mesh.clear();
+  }
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;modifiers;transforms;mesh_scale";
@@ -710,7 +721,10 @@ class vsx_module_mesh_noise : public vsx_module {
 
   vsx_avector<vsx_vector> random_distort_points;
 public:
-
+  ~vsx_module_mesh_noise()
+  {
+    mesh.clear();
+  }
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;modifiers;deformers;mesh_noise";
@@ -821,7 +835,11 @@ class vsx_module_mesh_rain_down : public vsx_module {
   vsx_array<float> vertex_explosion_array_x;
   vsx_array<float> vertex_explosion_array_z;
 public:
-
+  ~vsx_module_mesh_rain_down()
+  {
+    mesh.clear();
+  }
+  
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;modifiers;deformers;mesh_rain_down";
@@ -991,7 +1009,10 @@ class vsx_module_mesh_deformers_random_normal_distort : public vsx_module {
   vsx_array<vsx_vector> normals_dist_array;
 
 public:
-
+  ~vsx_module_mesh_deformers_random_normal_distort()
+  {
+    mesh.clear();
+  }
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;modifiers;deformers;mesh_normal_randistort";
@@ -1194,7 +1215,10 @@ class vsx_module_mesh_compute_tangents : public vsx_module {
   vsx_quaternion_array i_tangents;
   vsx_array<vsx_quaternion> data;
 public:
-
+  ~vsx_module_mesh_compute_tangents()
+  {
+    mesh.clear();
+  }
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;modifiers;helpers;mesh_compute_tangents";
@@ -1320,7 +1344,10 @@ class vsx_module_mesh_deformers_mesh_vertex_move : public vsx_module {
   vsx_avector<int> vertices_needing_normal_calc;
   float falloff;
 public:
-
+  ~vsx_module_mesh_deformers_mesh_vertex_move()
+  {
+    mesh.clear();
+  }
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;modifiers;deformers;mesh_vertex_move";
@@ -1570,6 +1597,11 @@ class vsx_module_mesh_inflate : public vsx_module {
 
   bool debug;
 public:
+  ~vsx_module_mesh_inflate()
+  {
+    mesh.clear();
+  }
+  
   void _printVector(const char* name, int faceInd, vsx_vector vec) {
   	if(debug) printf("%d %s: %f %f %f \n", faceInd, name, vec.x, vec.y, vec.z);
   }

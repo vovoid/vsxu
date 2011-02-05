@@ -1297,7 +1297,10 @@ class vsx_module_segmesh_to_mesh : public vsx_module {
   vsx_2dgrid_mesh* mesh_in;
   vsx_mesh mesh;
 public:
-
+  ~vsx_module_segmesh_to_mesh()
+  {
+    mesh.clear();
+  }
   void module_info(vsx_module_info* info) {
     info->identifier = "mesh;segmesh;segmesh_to_mesh";
     info->in_param_spec = "seg_mesh_in:segment_mesh";

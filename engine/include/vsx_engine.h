@@ -39,7 +39,7 @@ class DLLIMPORT vsx_engine {
 private:
   vsx_string vsxu_base_path;
   vsxf filesystem; // our master filesystem handler
-
+  vsx_engine_environment engine_environment;
   //-- component list
 	std::vector<vsx_comp*> forge;
 	std::map<vsx_string,vsx_comp*> forge_map;

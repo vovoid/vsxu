@@ -19,6 +19,11 @@ class vsx_module_mesh_ocean : public vsx_module {
 	//bool first_run;
 	Alaska ocean;
 public:
+  virtual ~vsx_module_mesh_ocean()
+  {
+    mesh.clear();
+  }
+
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;generators;ocean";
@@ -235,6 +240,10 @@ class vsx_module_mesh_ocean_tunnel : public vsx_module {
 	Alaska ocean;
 	float t;
 public:
+  virtual ~vsx_module_mesh_ocean_tunnel()
+  {
+    mesh.clear();
+  }
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;generators;ocean_tunnel";

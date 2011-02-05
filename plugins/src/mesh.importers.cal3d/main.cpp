@@ -35,6 +35,11 @@ public:
     c_model = 0;
   }
 
+  ~vsx_module_cal3d_loader()
+  {
+    mesh.clear();
+  }
+  
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;importers;cal3d_importer";
@@ -542,6 +547,12 @@ public:
     thread_state = 0;
     worker_running = false;
     p_updates = -1;
+  }
+
+  ~vsx_module_cal3d_loader_threaded()
+  {
+    mesh_a.clear();
+    mesh_b.clear();
   }
 
   void module_info(vsx_module_info* info)

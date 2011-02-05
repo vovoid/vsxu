@@ -385,10 +385,14 @@ void vsx_module_segmesh_map_bspline::run() {
 }
 
 void vsx_module_segmesh_map_bspline::on_delete() {
-  result_mesh.data->clear();
+  result_mesh.clear();
   gmesh.cleanup();
 }
 
+vsx_module_segmesh_map_bspline::~vsx_module_segmesh_map_bspline()
+{
+  result_mesh.clear();
+}
 
 
 
@@ -540,6 +544,14 @@ void vsx_module_planeworld::run() {
   loading_done = true;
 }
 
+void vsx_module_planeworld::on_delete()
+{
+  mesh.clear();
+  gmesh.cleanup();
+}
 
-
+vsx_module_planeworld::~vsx_module_planeworld()
+{
+  mesh.clear();
+}
 

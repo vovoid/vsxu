@@ -284,6 +284,11 @@ class vsx_module_kaleido_mesh : public vsx_module {
 
 public:
 
+  ~vsx_module_kaleido_mesh()
+  {
+    mesh.clear();
+  }
+  
 void module_info(vsx_module_info* info)
 {
   info->identifier = "mesh;generators;vovoid;kaleido_mesh";

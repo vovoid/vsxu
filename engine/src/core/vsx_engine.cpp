@@ -308,7 +308,8 @@ bool vsx_engine::start() {
     forge_map["screen0"] = comp;
     outputs.push_back(comp);
     log("adding screen",0);
-    comp->load_module(module_dll_list[module_list["outputs;screen"]->identifier]);
+    comp->identifier = "outputs;screen";
+    comp->load_module(module_dll_list[module_list[comp->identifier]->identifier]);
     comp->component_class += ":critical";
   	comp->name="screen0";
   	comp->engine_info(&engine_info);
@@ -448,8 +449,7 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
       #endif
       {
         // woo, supports env_info
-        vsx_engine_environment* engine_env = new vsx_engine_environment;
-        engine_env->engine_parameter[0] = PLATFORM_SHARED_FILES+"plugin-config/";
+        engine_environment.engine_parameter[0] = PLATFORM_SHARED_FILES+"plugin-config/";
         #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
           void(*set_env)(vsx_engine_environment*) = (void(*)(vsx_engine_environment*))GetProcAddress(module_handle, "set_environment_info");
         #endif
@@ -457,10 +457,10 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
           void(*set_env)(vsx_engine_environment*) = (void(*)(vsx_engine_environment*))dlsym(module_handle, "set_environment_info");
         #endif
         // ------
-        set_env(engine_env);
+        set_env(&engine_environment);
         // ------
         #ifdef VSXU_DEVELOPER
-          LOG("engine_load_module_b: setting environment "+engine_env->engine_parameter[0]);
+          LOG("engine_load_module_b: setting environment "+engine_environment.engine_parameter[0]);
         #endif
       }
       //else printf("doesn't support env info :(\n");
@@ -1113,13 +1113,16 @@ void vsx_engine::i_clear(vsx_command_list *cmd_out,bool clear_critical) {
       LOG("del "+(*fit).second->name)
       if ((*fit).second->component_class != "macro")
       if (module_list.find((*fit).second->identifier) != module_list.end())
-      if (module_list[(*fit).second->identifier]->location == "external") {
-          LOG("unloading "+(*fit).second->name);
-                  (*fit).second->unload_module(module_dll_list[(*fit).second->identifier]);
-                }
+      if (module_list[(*fit).second->identifier]->location == "external")
+      {
+        LOG("unloading "+(*fit).second->name);
+        (*fit).second->unload_module(module_dll_list[(*fit).second->identifier]);
+      }
       delete ((*fit).second);
       LOG("done deleting")
-    } else {
+    }
+    else
+    {
       (*fit).second->position.x = 0;
       (*fit).second->position.y = 0;
       forge_save.push_back((*fit).second);

@@ -140,4 +140,7 @@ void vsx_cloud_plane::run() {
 }
 
 
-
+vsx_cloud_plane::~vsx_cloud_plane()
+{
+  mesh.clear();
+}

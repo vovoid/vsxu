@@ -53,6 +53,10 @@ class vsx_module_mesh_star : public vsx_module {
 	vsx_float_array* spectrum;
 
 public:
+  virtual ~vsx_module_mesh_star()
+  {
+    mesh.clear();
+  }
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;particles;mesh_star";

@@ -20,6 +20,10 @@ class vsx_module_metaballs : public vsx_module {
 	bool first_run;
 	int i_grid_size;
 public:
+  ~vsx_module_metaballs()
+  {
+    mesh.clear();
+  }
 void module_info(vsx_module_info* info)
 {
   info->identifier = "mesh;solid;metaballs";
