@@ -48,7 +48,7 @@ void output(vsx_module_param_abs* param) {
   //float time = engine->vtime*4;
   if (tex_a) {
 
-  	vsx_texture* ta;
+  	vsx_texture** ta;
   	ta = tex_a->get_addr();
     if (!ta) {
       render_result->set(0);
@@ -88,7 +88,7 @@ void output(vsx_module_param_abs* param) {
     list_built = false;
     param_updates = 0;
   }
-  ta->bind();
+  (*ta)->bind();
 
   if (!list_built) {
 
@@ -171,7 +171,7 @@ void output(vsx_module_param_abs* param) {
     glCallList(dlist);
   }
 
-	ta->_bind();
+	(*ta)->_bind();
 
 //	glBindTexture(GL_TEXTURE_2D, tex[0]);
 

@@ -260,9 +260,10 @@ public:
     return commands.size();
   }
   vsx_command_list() : filesystem(0),accept_commands(1) {}
-  ~vsx_command_list(){
+  ~vsx_command_list()
+  {
     //for (std::list <vsx_command_s*>::iterator it = commands.begin(); it != commands.end(); ++it) {
-      //delete *it;
+     //delete *it;
       //*it = 0;
     //}
   };

@@ -379,7 +379,7 @@ class vsx_module_render_mesh : public vsx_module {
   vsx_module_param_render* render_result;
   // internal
   vsx_mesh* mesh;
-  vsx_texture* ta;
+  vsx_texture** ta;
   bool m_normals, m_tex, m_colors;
   vsx_matrix mod_mat, proj_mat;
   vsx_particlesystem* particles;
@@ -494,14 +494,14 @@ public:
 
 
         if (ta) {
-          vsx_transform_obj& texture_transform = *ta->get_transform();
+          vsx_transform_obj& texture_transform = *(*ta)->get_transform();
 
           glMatrixMode(GL_TEXTURE);
           glPushMatrix();
 
-          if (ta->get_transform())
+          if ((*ta)->get_transform())
           texture_transform();
-          ta->bind();
+          (*ta)->bind();
         }// else printf("not using texture.\n");
 
 
@@ -648,7 +648,7 @@ public:
         }
 
         if (ta) {
-          ta->_bind();
+          (*ta)->_bind();
           glMatrixMode(GL_TEXTURE);
           glPopMatrix();
         }
@@ -808,7 +808,7 @@ class vsx_module_render_mesh_array : public vsx_module {
   // internal
   vsx_mesh* mesh;
   vsx_particlesystem* particles;
-  vsx_texture* ta;
+  vsx_texture** ta;
   bool m_normals, m_tex, m_colors;
   vsx_matrix ma;
   vsx_vector upv;
@@ -952,7 +952,7 @@ class vsx_module_render_mesh_zsort : public vsx_module {
   vsx_module_param_render* render_result;
   // internal
   vsx_mesh* mesh;
-  vsx_texture* ta;
+  vsx_texture** ta;
   bool m_normals, m_tex, m_colors;
   vsx_matrix mod_mat, proj_mat;
   vsx_avector_nd<face_holder> f_distances;
@@ -1100,18 +1100,18 @@ public:
         }
 
         if (ta) {
-          vsx_transform_obj& texture_transform = *ta->get_transform();
+          vsx_transform_obj& texture_transform = *(*ta)->get_transform();
 
           glMatrixMode(GL_TEXTURE);
           glPushMatrix();
 
-          if (ta->get_transform())
+          if ((*ta)->get_transform())
           {
                   //printf("texture\n");
 
             texture_transform();
           }
-          ta->bind();
+          (*ta)->bind();
         }
 
         //printf("faces: %d\n",mesh->data->faces.get_used());
@@ -1151,7 +1151,7 @@ public:
         if (m_colors) {
           glDisableClientState(GL_COLOR_ARRAY);
         }
-        if (ta) ta->_bind();
+        if (ta) (*ta)->_bind();
         if (vertex_colors->get()) {
           glDisable(GL_COLOR_MATERIAL);
         }

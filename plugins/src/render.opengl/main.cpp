@@ -2020,11 +2020,12 @@ public:
     render_in->set(0);
     render_out->set(0);
     tex_in = (vsx_module_param_texture*)in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"tex_in");
-    tex_in->set_p(i_tex);
+    tex_in->set(&i_tex);
   }
 
 	bool activate_offscreen() {
-    if ((t_tex = tex_in->get_addr())) {
+    if (!tex_in->get_addr()) return false;
+    if ((t_tex = (*(tex_in->get_addr())))) {
      	glMatrixMode(GL_TEXTURE);
      	glPushMatrix();
      	vsx_transform_obj& texture_transform = *(t_tex->get_transform());
@@ -2035,8 +2036,7 @@ public:
 
       t_tex->bind();
 
-    } else
-			t_tex = 0;
+    }
     return true;
   }
 

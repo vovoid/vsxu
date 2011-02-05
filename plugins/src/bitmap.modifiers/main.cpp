@@ -18,7 +18,7 @@ class module_texture_to_bitmap : public vsx_module {
 	vsx_bitmap bitm;
 	int bitm_timestamp;
 	
-  vsx_texture* texture;
+  vsx_texture** texture;
 
   int p_updates;
 
@@ -52,7 +52,7 @@ public:
   void run() {
     texture = texture_in->get_addr();
     if (texture) {
-      texture->bind();
+      (*texture)->bind();
       GLint components;
       glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_COMPONENTS,&components);
       //printf("components: %d\n",components);
@@ -85,7 +85,7 @@ public:
         ++bitm.timestamp;
         result1->set_p(bitm);
       }
-      texture->_bind();
+      (*texture)->_bind();
     }
   }
   void start() {

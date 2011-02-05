@@ -332,8 +332,8 @@ void vsx_statelist::render()
       if (param_t_a && param_t_b && param_pos && fade_pos_from_engine)
       {
         //printf("rendering fader\n");
-        param_t_a->set_p(tex1);
-        param_t_b->set_p(tex_to);
+        param_t_a->set(&tex1);
+        param_t_b->set(&tex_to);
         fade_pos_from_engine->set(1.0f);
         float t = transition_time;
         if (t > 1.0f) t = 1.0f;

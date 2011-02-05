@@ -254,7 +254,7 @@ typedef vsx_module_param<0, vsx_string,				1,0 > vsx_module_param_string; // use
   typedef vsx_module_param<0, void*,              1,1 > vsx_module_param_texture; // use get_addr() / set_p()
 #else
   #ifndef VSX_NO_TEXTURE
-    typedef vsx_module_param<0, vsx_texture,	      1,0 > vsx_module_param_texture; 
+    typedef vsx_module_param<0, vsx_texture*,	      1,0 > vsx_module_param_texture; 
   #else
     typedef vsx_module_param<0, void*,              1,1 > vsx_module_param_texture;
   #endif

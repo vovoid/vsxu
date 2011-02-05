@@ -522,9 +522,7 @@ void vsx_module_plugin::on_delete() {
   //if (bitm_p.valid) delete bitm_p.data;
   for (int i = 0; i < 6; ++i) {
     result_tex[i].unload();
-    if (result_bitm[i].timestamp) delete[] result_bitm[i].data;
-    delete result_tex[i].transform_obj;
-    
+    if (result_bitm[i].timestamp) delete[] result_bitm[i].data;    
   }
 }
 

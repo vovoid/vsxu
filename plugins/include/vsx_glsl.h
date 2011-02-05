@@ -520,7 +520,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
             }
           break;
           case VSX_MODULE_PARAM_ID_TEXTURE:
-            vsx_texture* ba;
+            vsx_texture** ba;
             //glBindTexture(GL_TEXTURE_2D, my_texture_object);
             ba = ((vsx_module_param_texture*)v_list[i].module_param)->get_addr();
             if (ba) {
@@ -531,7 +531,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
 #else
               glActiveTextureARB(GL_TEXTURE0 + tex_i);
 #endif
-              ba->bind();
+              (*ba)->bind();
               glUniform1iARB(v_list[i].glsl_location,tex_i);
               tex_i++;
             }
@@ -579,7 +579,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
       if (v_list[i].module_param) {
         switch(v_list[i].param_type_id) {
           case VSX_MODULE_PARAM_ID_TEXTURE:
-          vsx_texture* ba;
+          vsx_texture** ba;
           //glBindTexture(GL_TEXTURE_2D, my_texture_object);
           ba = ((vsx_module_param_texture*)v_list[i].module_param)->get_addr();
           if (ba) {
@@ -590,7 +590,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
             glActiveTextureARB(GL_TEXTURE0 + tex_i);
 #endif
             //printf("unbinding tex\n");
-            ba->_bind();
+            (*ba)->_bind();
             ++tex_i;
           }
         }

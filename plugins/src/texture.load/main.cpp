@@ -62,7 +62,7 @@ public:
 	  texture->init_opengl_texture();
 	
 	  result_texture = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");  
-	  result_texture->set_p(*texture);
+	  result_texture->set(texture);
 	  loading_done = true;
 	}
 	
@@ -82,7 +82,7 @@ public:
 	    texture->upload_ram_bitmap(bitm,true);
 	    else
 	    texture->upload_ram_bitmap(bitm,false);
-	    result_texture->set_p(*texture);
+	    result_texture->set(texture);
 	    //printf("-u");
 	  } 
 	}
@@ -97,13 +97,12 @@ public:
 	  bitm = bitm_in->get_addr();
 	  if (bitm) {
 	    texture->upload_ram_bitmap(bitm,mipmaps->get());
-	    result_texture->set_p(*texture);
+	    result_texture->set(texture);
 	  }
 	}  
 	
 	void on_delete() {
 	  texture->unload();
-	  delete texture->transform_obj;
 	  delete texture;
 	}
 
@@ -301,7 +300,7 @@ void output(vsx_module_param_abs* param)
     {
       texture->upload_ram_bitmap(&bitm,true);
       texture->valid = true;
-      texture_out->set_p(*texture);
+      texture_out->set(texture);
       texture_timestamp = bitm.timestamp;
     }
   }
@@ -315,7 +314,7 @@ void start() {
   texture->init_opengl_texture();
   texture->upload_ram_bitmap(&bitm,true);
   texture->valid = true;
-  texture_out->set_p(*texture);
+  texture_out->set(texture);
 }
 
 
@@ -328,7 +327,6 @@ void on_delete() {
   }
   if (texture) {
     texture->unload();
-    delete texture->transform_obj;
     delete texture;
   }
 }
@@ -606,7 +604,7 @@ public:
       {
         texture->upload_ram_bitmap(&bitm,true);
         texture->valid = true;
-        texture_out->set_p(*texture);
+        texture_out->set(texture);
         texture_timestamp = bitm.timestamp;
       }
     }
