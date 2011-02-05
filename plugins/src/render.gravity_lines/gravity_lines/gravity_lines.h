@@ -75,8 +75,8 @@ public:
   virtual void init();
   virtual void un_init() {
   	for (unsigned long i = 0; i < oldPos.size(); ++i) {
-  		delete[] oldPos[i];
-  	} 
+  		delete oldPos[i];
+    }
   }
   virtual void reset_pos(float x, float y, float z);
   virtual void update(float delta_time, float x, float y, float z);
@@ -89,7 +89,7 @@ public:
   std::vector<Mass> masses;
   std::vector<vsx_vector*> oldPos;
   //vsx_vector oldPos[NUMBER][BUFF_LEN];
-  virtual ~gravity_lines() {};
+  ~gravity_lines();
 };
 
 #endif

@@ -53,6 +53,12 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 	result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
   result->set_p(mesh);
   first_run = true;
+
+  balls.vertices = &(mesh.data->vertices);
+  balls.vertex_normals = &(mesh.data->vertex_normals);
+  balls.vertex_tex_coords = &(mesh.data->vertex_tex_coords);
+  balls.faces = &(mesh.data->faces);
+
 }
 
 void run() {
@@ -70,13 +76,9 @@ void run() {
 		
 		//printf("update took: %f s\n", timer.dtime());
   timer.start();
-    balls.Render();
+  balls.Render();
 		
   //printf("render took: %f s\n", timer.dtime());
-  mesh.data->vertices = balls.vertices;
-  mesh.data->vertex_normals = balls.vertex_normals;
-  mesh.data->vertex_tex_coords = balls.vertex_tex_coords;
-  mesh.data->faces = balls.faces;
   mesh.timestamp++;
   }
   result->set_p(mesh);

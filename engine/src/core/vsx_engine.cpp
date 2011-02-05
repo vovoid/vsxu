@@ -46,32 +46,33 @@
 vsx_module_engine_info vsx_engine::engine_info;
 #endif
 
-int vsx_engine::engine_counter = 0;
+//int vsx_engine::engine_counter = 0;
 using namespace std;
 
 vsx_engine::vsx_engine() {
   set_default_values();
-  #ifdef VSXU_DEBUG
+  /*#ifdef VSXU_DEBUG
   engine_id = engine_counter++;
   printf("constructing engine with id: %d\n", engine_id);
-  #endif
+  #endif*/
 }
 
-vsx_engine::vsx_engine(vsx_string path) {
-	set_default_values();
-  log_dir = vsxu_base_path = path;
-  #ifdef VSXU_DEBUG
+vsx_engine::vsx_engine(vsx_string path)
+{
+  /*#ifdef VSXU_DEBUG
   engine_id = engine_counter++;
   printf("constructing engine with id: %d\n", engine_id);
-  #endif
+  #endif*/
+	set_default_values();
+  log_dir = vsxu_base_path = path;
 }
 
 
 vsx_engine::~vsx_engine()
 {
-  #ifdef VSXU_DEBUG
+  /*#ifdef VSXU_DEBUG
   printf("destructing engine with id: %d\n", engine_id);
-  #endif
+  #endif*/
   i_clear(0,true);
   destroy();
 }
@@ -309,7 +310,8 @@ bool vsx_engine::start() {
     outputs.push_back(comp);
     log("adding screen",0);
     comp->identifier = "outputs;screen";
-    comp->load_module(module_dll_list[module_list[comp->identifier]->identifier]);
+    comp->load_module(module_dll_list[module_list["outputs;screen"]->identifier]);
+    //comp->load_module(module_dll_list[module_list[comp->identifier]->identifier]);
     comp->component_class += ":critical";
   	comp->name="screen0";
   	comp->engine_info(&engine_info);

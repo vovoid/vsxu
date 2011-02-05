@@ -126,10 +126,10 @@ public:
 
 
   //debug refcounter
-  #ifdef VSXU_DEBUG
+/*  #ifdef VSXU_DEBUG
     static int engine_counter;
     int engine_id;
-  #endif
+  #endif*/
   //--
 
 	bool dump_modules_to_disk;
