@@ -374,21 +374,24 @@ class vsx_module_gravity_ribbon_mesh : public vsx_module {
   // internal
   vsx_avector<gravity_strip*> gr;
   gravity_strip* grp;
-  vsx_mesh* mesh;
-  vsx_mesh mesh_out;
+  vsx_mesh** mesh;
+  vsx_mesh* mesh_out;
 
   vsx_matrix modelview_matrix_no_connection;
   float last_update;
   long prev_num_vertices;
 
 public:
-  ~vsx_module_gravity_ribbon_mesh()
-  {
-    mesh_out.clear();
-  }
+  
   bool init() {
+    mesh_out = new vsx_mesh;
     last_update = 0;
     return true;
+  }
+
+  void on_delete()
+  {
+    delete mesh_out;
   }
 
   void module_info(vsx_module_info* info)
@@ -475,7 +478,7 @@ public:
   void output(vsx_module_param_abs* param) {
     mesh = in_mesh->get_addr();
 
-    if (mesh && (*mesh).data->vertices.size())
+    if (mesh && (*mesh)->data->vertices.size())
     {
       if (prev_num_vertices != (int)mesh_id_count->get())
       {
@@ -492,7 +495,7 @@ public:
         prev_num_vertices = (int)mesh_id_count->get();
       }
       //printf("mesh_id_start: %d\n", (int)mesh_id_start->get());
-      size_t mesh_index = (size_t)mesh_id_start->get() % (*mesh).data->vertices.size();
+      size_t mesh_index = (size_t)mesh_id_start->get() % (*mesh)->data->vertices.size();
 
       vsx_matrix* matrix_result = modelview_matrix->get_addr();
       if (!matrix_result)
@@ -528,17 +531,17 @@ public:
           if (reset_pos->get() > 0.0f)
           {
             gr[i]->reset_pos(
-              mesh->data->vertices[mesh_index].x,
-              mesh->data->vertices[mesh_index].y,
-              mesh->data->vertices[mesh_index].z
+              (*mesh)->data->vertices[mesh_index].x,
+              (*mesh)->data->vertices[mesh_index].y,
+              (*mesh)->data->vertices[mesh_index].z
             );
           } else
           {
             gr[i]->update(
               engine->dtime,
-              mesh->data->vertices[mesh_index].x,
-              mesh->data->vertices[mesh_index].y,
-              mesh->data->vertices[mesh_index].z
+              (*mesh)->data->vertices[mesh_index].x,
+              (*mesh)->data->vertices[mesh_index].y,
+              (*mesh)->data->vertices[mesh_index].z
             );
           }
           gr[i]->render();
@@ -552,7 +555,7 @@ public:
           (*particles->particles)[i].pos.y += py*engine->dtime;
           (*particles->particles)[i].pos.z += pz*engine->dtime;*/
           mesh_index++;
-          mesh_index = mesh_index % mesh->data->vertices.size();
+          mesh_index = mesh_index % (*mesh)->data->vertices.size();
         }
       }
       else
@@ -565,21 +568,21 @@ public:
 
         //printf("num2: %d\n", num2);
         // allocate mesh memory for all parts
-        mesh_out.data->faces.allocate(num2);
-        mesh_out.data->vertices.allocate(num2);
-        mesh_out.data->vertex_normals.allocate(num2);
-        mesh_out.data->vertex_tex_coords.allocate(num2);
+        mesh_out->data->faces.allocate(num2);
+        mesh_out->data->vertices.allocate(num2);
+        mesh_out->data->vertex_normals.allocate(num2);
+        mesh_out->data->vertex_tex_coords.allocate(num2);
         //printf("mesh: %d\n", __LINE__);
-        mesh_out.data->faces.reset_used(num2);
-        mesh_out.data->vertices.reset_used(num2);
-        mesh_out.data->vertex_normals.reset_used(num2);
-        mesh_out.data->vertex_tex_coords.reset_used(num2);
+        mesh_out->data->faces.reset_used(num2);
+        mesh_out->data->vertices.reset_used(num2);
+        mesh_out->data->vertex_normals.reset_used(num2);
+        mesh_out->data->vertex_tex_coords.reset_used(num2);
         //printf("mesh: %d\n", __LINE__);
 
-        vsx_face*      fs_d = mesh_out.data->faces.get_pointer();
-        vsx_vector*    vs_d = mesh_out.data->vertices.get_pointer();
-        vsx_vector*    ns_d = mesh_out.data->vertex_normals.get_pointer();
-        vsx_tex_coord* ts_d = mesh_out.data->vertex_tex_coords.get_pointer();
+        vsx_face*      fs_d = mesh_out->data->faces.get_pointer();
+        vsx_vector*    vs_d = mesh_out->data->vertices.get_pointer();
+        vsx_vector*    ns_d = mesh_out->data->vertex_normals.get_pointer();
+        vsx_tex_coord* ts_d = mesh_out->data->vertex_tex_coords.get_pointer();
         int generated_vertices = 0;
         int generated_faces = 0;
         //printf("mesh: %d\n", __LINE__);
@@ -611,32 +614,32 @@ public:
           if (reset_pos->get() > 0.0f)
           {
             gr[i]->reset_pos(
-              mesh->data->vertices[mesh_index].x,
-              mesh->data->vertices[mesh_index].y,
-              mesh->data->vertices[mesh_index].z
+              (*mesh)->data->vertices[mesh_index].x,
+              (*mesh)->data->vertices[mesh_index].y,
+              (*mesh)->data->vertices[mesh_index].z
             );
           } else
           {
             gr[i]->update(
               engine->dtime,
-              mesh->data->vertices[mesh_index].x,
-              mesh->data->vertices[mesh_index].y,
-              mesh->data->vertices[mesh_index].z
+              (*mesh)->data->vertices[mesh_index].x,
+              (*mesh)->data->vertices[mesh_index].y,
+              (*mesh)->data->vertices[mesh_index].z
             );
           }
           //printf("%d\n", (int)i);
 
-          gr[i]->generate_mesh(mesh_out,fs_d, vs_d, ns_d, ts_d, matrix_result, &upv, generated_vertices, generated_faces);
+          gr[i]->generate_mesh(*mesh_out,fs_d, vs_d, ns_d, ts_d, matrix_result, &upv, generated_vertices, generated_faces);
           mesh_index++;
-          mesh_index = mesh_index % mesh->data->vertices.size();
+          mesh_index = mesh_index % (*mesh)->data->vertices.size();
         }
 
 //        printf("generated faces: %d\n", generated_faces);
         //printf("generated vertices: %d\n", generated_vertices);
-        mesh_out.data->faces.reset_used(generated_faces);
-        mesh_out.data->vertices.reset_used(generated_vertices);
-        mesh_out.data->vertex_normals.reset_used(generated_vertices);
-        mesh_out.data->vertex_tex_coords.reset_used(generated_vertices);
+        mesh_out->data->faces.reset_used(generated_faces);
+        mesh_out->data->vertices.reset_used(generated_vertices);
+        mesh_out->data->vertex_normals.reset_used(generated_vertices);
+        mesh_out->data->vertex_tex_coords.reset_used(generated_vertices);
         //printf("mesh: %d\n", __LINE__);
 
         mesh_result->set_p(mesh_out);

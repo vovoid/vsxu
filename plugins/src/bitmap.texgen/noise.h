@@ -138,10 +138,10 @@ void on_delete() {
     result1->valid = false;
     pthread_join(worker_t,0);
   }
-  //delete[] data_a;
-  //delete[] data_b;
-  //if (result_bitm.valid)
-  //delete[] result_bitm.data;
+  delete[] data_a;
+  delete[] data_b;
+  if (result_bitm.valid)
+  delete[] result_bitm.data;
 }
 
 };

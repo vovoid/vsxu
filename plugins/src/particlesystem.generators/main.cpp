@@ -284,7 +284,6 @@ class vsx_module_particle_gen_mesh : public vsx_module {
   float size_base, size_random_weight;
   float lifetime_base, lifetime_random_weight;
 
-  vsx_mesh* our_mesh;
   bool first;
   
   unsigned long meshcoord;
@@ -459,6 +458,7 @@ in sequence.\n\
     if (ddtime < 0) first = true;
     float dtime = ddtime;
     // get the mesh 
+    vsx_mesh** our_mesh;
     our_mesh = mesh_in->get_addr();
     if (our_mesh) {
     
@@ -546,9 +546,9 @@ in sequence.\n\
       float avx = add_vector->get(0);
       float avy = add_vector->get(1);
       float avz = add_vector->get(2);
-      unsigned long num_vertices = our_mesh->data->vertices.size();
+      unsigned long num_vertices = (*our_mesh)->data->vertices.size();
       if (num_vertices) {
-        vsx_vector* vertex_pool = our_mesh->data->vertices.get_pointer();
+        vsx_vector* vertex_pool = (*our_mesh)->data->vertices.get_pointer();
         vsx_vector* vertex_cur = &vertex_pool[meshcoord];
           //printf("something to do\n");
         // go through all particles
@@ -595,7 +595,7 @@ in sequence.\n\
                   (*pp).speed.z = speed_mult*spd_z;
                 break;
                 case 2:  // fixed vector direction
-                  vsx_vector dir = our_mesh->data->vertices[meshcoord];
+                  vsx_vector dir = (*our_mesh)->data->vertices[meshcoord];
                   dir.normalize();
                   (*pp).speed = dir * speed_mult;
                   (*pp).speed.x += avx;

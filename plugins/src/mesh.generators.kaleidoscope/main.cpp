@@ -280,36 +280,40 @@ class vsx_module_kaleido_mesh : public vsx_module {
 	// out
 	vsx_module_param_mesh* mesh_result;
 	// internal
-	vsx_mesh mesh;
+	vsx_mesh* mesh;
 
 public:
 
-  ~vsx_module_kaleido_mesh()
-  {
-    mesh.clear();
-  }
   
-void module_info(vsx_module_info* info)
-{
-  info->identifier = "mesh;generators;vovoid;kaleido_mesh";
-  info->in_param_spec = "hemispheric:float";
-  info->out_param_spec = "mesh_out:mesh";
-  info->component_class = "mesh";
-  loading_done = true;
-}
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "mesh;generators;vovoid;kaleido_mesh";
+    info->in_param_spec = "hemispheric:float";
+    info->out_param_spec = "mesh_out:mesh";
+    info->component_class = "mesh";
+    loading_done = true;
+  }
 
-void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
-{
-  hemispheric = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"hemispheric");
-  hemispheric->set(0.0f);
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    hemispheric = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"hemispheric");
+    hemispheric->set(0.0f);
+    mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
+  }
 
-	mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
-  //mesh_result->set(0);
-}
+  bool init() {
+    mesh = new vsx_mesh;
+    return true;
+  }
+
+  void on_delete()
+  {
+    delete mesh;
+  }
 
 void run() {
 
-  if (mesh.data->vertices.get_used() && hemispheric->updates == 0) {
+  if (mesh->data->vertices.get_used() && hemispheric->updates == 0) {
     // re-allocate
   } else {
     // just allocate
@@ -360,54 +364,54 @@ void run() {
             float r2 = (float)sqrt(fabs(1.0f-(x2*x2+y2*y2)))*hemispheric_v;
 
 
-  					mesh.data->vertex_tex_coords[vert_pos].s = u0;
-						mesh.data->vertex_tex_coords[vert_pos].t = v0;
-						mesh.data->vertices[vert_pos].x = x0;
-						mesh.data->vertices[vert_pos].y = y0;
-						mesh.data->vertices[vert_pos].z = r0;
+  					mesh->data->vertex_tex_coords[vert_pos].s = u0;
+						mesh->data->vertex_tex_coords[vert_pos].t = v0;
+						mesh->data->vertices[vert_pos].x = x0;
+						mesh->data->vertices[vert_pos].y = y0;
+						mesh->data->vertices[vert_pos].z = r0;
       			++vert_pos;
-  					mesh.data->vertex_tex_coords[vert_pos].s = u1;
-						mesh.data->vertex_tex_coords[vert_pos].t = v0;
-						mesh.data->vertices[vert_pos].x = x1;
-						mesh.data->vertices[vert_pos].y = y1;
-						mesh.data->vertices[vert_pos].z = (float)sqrt(fabs(1.0f-(x1*x1+y1*y1)))*hemispheric_v;
+  					mesh->data->vertex_tex_coords[vert_pos].s = u1;
+						mesh->data->vertex_tex_coords[vert_pos].t = v0;
+						mesh->data->vertices[vert_pos].x = x1;
+						mesh->data->vertices[vert_pos].y = y1;
+						mesh->data->vertices[vert_pos].z = (float)sqrt(fabs(1.0f-(x1*x1+y1*y1)))*hemispheric_v;
       			++vert_pos;
-  					mesh.data->vertex_tex_coords[vert_pos].s = u1;
-						mesh.data->vertex_tex_coords[vert_pos].t = v1;
-						mesh.data->vertices[vert_pos].x = x2;
-						mesh.data->vertices[vert_pos].y = y2;
-						mesh.data->vertices[vert_pos].z = r2;
+  					mesh->data->vertex_tex_coords[vert_pos].s = u1;
+						mesh->data->vertex_tex_coords[vert_pos].t = v1;
+						mesh->data->vertices[vert_pos].x = x2;
+						mesh->data->vertices[vert_pos].y = y2;
+						mesh->data->vertices[vert_pos].z = r2;
       			++vert_pos;
 
-      			mesh.data->faces[face_pos].a = vert_pos-3;
-      			mesh.data->faces[face_pos].b = vert_pos-2;
-      			mesh.data->faces[face_pos].c = vert_pos-1;
+      			mesh->data->faces[face_pos].a = vert_pos-3;
+      			mesh->data->faces[face_pos].b = vert_pos-2;
+      			mesh->data->faces[face_pos].c = vert_pos-1;
       			++face_pos;
 
       			//------------------------------------------------------
 
-  					mesh.data->vertex_tex_coords[vert_pos].s = u1;
-						mesh.data->vertex_tex_coords[vert_pos].t = v1;
-						mesh.data->vertices[vert_pos].x = x2;
-						mesh.data->vertices[vert_pos].y = y2;
-						mesh.data->vertices[vert_pos].z = r2;
+  					mesh->data->vertex_tex_coords[vert_pos].s = u1;
+						mesh->data->vertex_tex_coords[vert_pos].t = v1;
+						mesh->data->vertices[vert_pos].x = x2;
+						mesh->data->vertices[vert_pos].y = y2;
+						mesh->data->vertices[vert_pos].z = r2;
       			++vert_pos;
-  					mesh.data->vertex_tex_coords[vert_pos].s = u0;
-						mesh.data->vertex_tex_coords[vert_pos].t = v1;
-						mesh.data->vertices[vert_pos].x = x3;
-						mesh.data->vertices[vert_pos].y = y3;
-						mesh.data->vertices[vert_pos].z = (float)sqrt(fabs(1.0f-(x3*x3+y3*y3)))*hemispheric_v;
+  					mesh->data->vertex_tex_coords[vert_pos].s = u0;
+						mesh->data->vertex_tex_coords[vert_pos].t = v1;
+						mesh->data->vertices[vert_pos].x = x3;
+						mesh->data->vertices[vert_pos].y = y3;
+						mesh->data->vertices[vert_pos].z = (float)sqrt(fabs(1.0f-(x3*x3+y3*y3)))*hemispheric_v;
       			++vert_pos;
-  					mesh.data->vertex_tex_coords[vert_pos].s = u0;
-						mesh.data->vertex_tex_coords[vert_pos].t = v0;
-						mesh.data->vertices[vert_pos].x = x0;
-						mesh.data->vertices[vert_pos].y = y0;
-						mesh.data->vertices[vert_pos].z = r0;
+  					mesh->data->vertex_tex_coords[vert_pos].s = u0;
+						mesh->data->vertex_tex_coords[vert_pos].t = v0;
+						mesh->data->vertices[vert_pos].x = x0;
+						mesh->data->vertices[vert_pos].y = y0;
+						mesh->data->vertices[vert_pos].z = r0;
       			++vert_pos;
 
-      			mesh.data->faces[face_pos].a = vert_pos-3;
-      			mesh.data->faces[face_pos].b = vert_pos-2;
-      			mesh.data->faces[face_pos].c = vert_pos-1;
+      			mesh->data->faces[face_pos].a = vert_pos-3;
+      			mesh->data->faces[face_pos].b = vert_pos-2;
+      			mesh->data->faces[face_pos].c = vert_pos-1;
             ++face_pos;
 //            printf("%d facepos\n",face_pos);
 
@@ -421,7 +425,7 @@ void run() {
   //					glTexCoord3f(u0, v0, d0);	glVertex2f(x0, y0);
 				}
  		  loading_done = true;
- 		  mesh.timestamp++;
+ 		  mesh->timestamp++;
 		}
     mesh_result->set(mesh);
   }

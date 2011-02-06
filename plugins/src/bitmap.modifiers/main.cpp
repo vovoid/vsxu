@@ -207,7 +207,7 @@ public:
       particlesystem_out->set_p(particles);
     }
   }
-  void on_delete() {
+  ~module_bitmap_to_particlesystem() {
     delete particles.particles;
   }
 };
