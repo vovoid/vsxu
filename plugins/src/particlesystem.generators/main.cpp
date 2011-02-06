@@ -446,7 +446,7 @@ in sequence.\n\
 
   void on_delete()
   {
-    //delete  particles.particles;
+    delete particles.particles;
   }
   
   void run() {
@@ -482,7 +482,6 @@ in sequence.\n\
       if (first) {
         //printf("first %d %d\n",(int)particles_count->get(),(int)(*particles.particles).size());
         (*particles.particles).allocate((int)particles_count->get());
-        //rand()%1000)/1000.0f)
         f_randpool.allocate((int)particles_count->get()*10);
         float* fpp = f_randpool.get_pointer();
 

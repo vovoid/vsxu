@@ -379,7 +379,7 @@ int  pngLoadRaw(const char* filename, pngRawInfo *pinfo, vsxf* filesystem) {
 
    png_read_end(png, endinfo);
 	png_destroy_read_struct(&png, &info, &endinfo);
-
+  filesystem->f_close(i_filesystem.fp);
 	return 1;
 }
 

@@ -1,12 +1,14 @@
 #include <vsx_platform.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-#include <io.h>
+  #include <io.h>
 #endif
+
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-#include <dlfcn.h>
-#include <syslog.h>
+  #include <dlfcn.h>
+  #include <syslog.h>
 #endif
+
 #include <dirent.h>
 #include <sys/types.h>
 #include "vsx_string.h"
@@ -17,8 +19,6 @@
 #include "vsx_note.h"
 
 
-
-
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,7 +26,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
-
 
 
 #ifndef VSXE_NO_GM
@@ -77,6 +76,39 @@ vsx_engine::~vsx_engine()
   destroy();
 }
 
+// free all our file / dynamic library handles
+void vsx_engine::destroy() {
+  #ifdef VSXU_DEBUG
+    printf("engine destroy\n");
+  #endif
+  // unload module handles
+  for (size_t i = 0; i < module_handles.size(); i++)
+  {
+    #ifdef _WIN32
+      FreeLibrary(module_handles[i]);
+    #endif
+    #if defined(__linux__) || defined(__APPLE__)
+      //void* oulp = (void*)dlsym(module_handles[i], "on_unload_library");
+      if (dlsym(module_handles[i], "on_unload_library"))
+      {
+        void(*on_unload_library)(void) = (void(*)(void))dlsym(module_handles[i], "on_unload_library");
+        on_unload_library();
+      }
+      dlclose(module_handles[i]);
+    #endif
+  }
+  for (std::map<vsx_string,module_dll_info*>::iterator it = module_dll_list.begin(); it != module_dll_list.end(); ++it)
+  {
+    delete (module_dll_info*)((*it).second);
+  }
+  // clean up module list
+  for (size_t i = 0; i < module_infos.size(); i++)
+  {
+    delete module_infos[i];
+  }
+}
+
+
 void vsx_engine::set_default_values()
 {
 	no_client_time = false;
@@ -123,7 +155,8 @@ vsx_module_param_abs* vsx_engine::get_in_param_by_name(vsx_string module_name, v
 	return 0;
 }
 
-int vsx_engine::i_load_state(vsx_command_list& load1,vsx_string *error_string) {
+int vsx_engine::i_load_state(vsx_command_list& load1,vsx_string *error_string)
+{
 	LOG("i_load_state 1")
   vsx_command_list load2,loadr2;
   load1.reset();
@@ -219,6 +252,7 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string) {
   if (!is_archive)
   filesystem.set_base_path(vsx_get_data_path());
   int res = i_load_state(load1,error_string);
+  load1.clear(true);
   /*#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
     // on unix/linux, resources are now stored in ~/.vsxu/data/resources
     struct stat st;
@@ -228,7 +262,8 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string) {
   return res;
 }
 
-vsx_comp* vsx_engine::add(vsx_string label)	{
+vsx_comp* vsx_engine::add(vsx_string label)
+{
 	if (!forge_map[label])
 	{
     vsx_comp* comp = new vsx_comp;
@@ -250,51 +285,60 @@ vsx_comp* vsx_engine::add(vsx_string label)	{
       }
 		}
 		forge_map[label] = comp;
-//    cout << "adding component with name " << comp->name << endl;
 		return comp;
 	}
 	return 0;
 }
 
 // send our current time to the client
-void vsx_engine::tell_client_time(vsx_command_list *cmd_out) {
+void vsx_engine::tell_client_time(vsx_command_list *cmd_out)
+{
 	if (no_client_time) return;
-#ifndef VSX_NO_CLIENT
-  bool send = false;
+  #ifndef VSX_NO_CLIENT
+    bool send = false;
 
-  if (lastsent < 0 || lastsent > 0.05 ) {
-    send = true;
-    lastsent = 0;
-  }
-  if (e_state != last_e_state) send = true;
+    if (lastsent < 0 || lastsent > 0.05 ) {
+      send = true;
+      lastsent = 0;
+    }
+    if (e_state != last_e_state) send = true;
 
-  if (send) {
-    cmd_out->add_raw("time_upd " + f2s(engine_info.vtime)+" "+i2s(e_state));
-  }
-  last_e_state = e_state;
-#endif
+    if (send) {
+      cmd_out->add_raw("time_upd " + f2s(engine_info.vtime)+" "+i2s(e_state));
+    }
+    last_e_state = e_state;
+  #endif
 }
+
 // set engine speed
-void vsx_engine::set_speed(float spd) {
-#ifndef VSX_DEMO_MINI
-	g_timer_amp = spd;
-#endif
+void vsx_engine::set_speed(float spd)
+{
+  #ifndef VSX_DEMO_MINI
+    g_timer_amp = spd;
+  #endif
 }
+
 // set internal float parameter
-void vsx_engine::set_float_array_param(int id, vsx_engine_float_array* float_array) {
+void vsx_engine::set_float_array_param(int id, vsx_engine_float_array* float_array)
+{
 	engine_info.param_float_arrays[id] = float_array;
 }
+
 // set FX level amplification (sound, etc)
-void vsx_engine::set_amp(float amp) {
-#ifndef VSX_DEMO_MINI
-  engine_info.amp = amp;
-#endif
+void vsx_engine::set_amp(float amp)
+{
+  #ifndef VSX_DEMO_MINI
+    engine_info.amp = amp;
+  #endif
 }
+
 // start the engine and sending all the modules the start signal
-bool vsx_engine::start() {
+bool vsx_engine::start()
+{
 	if (!stopped) return false;
 	if (stopped) stopped = false;
-  if (first_start) {
+  if (first_start)
+  {
     sequence_list.set_engine(this);
     first_start = false;
     vsx_comp* comp = new vsx_comp;
@@ -326,43 +370,17 @@ bool vsx_engine::start() {
 }
 // stop the engine
 bool vsx_engine::stop() {
-#ifndef VSX_DEMO_MINI
-	if (!stopped)
-	{
-  	for (unsigned long i = 0; i < forge.size(); ++i) {
-  		forge[i]->stop();
-  	}
-  	stopped = true;
-  	return true;
-	}
-	return false;
-#endif
-}
-
-// free all our file / dynamic library handles
-void vsx_engine::destroy() {
-  #ifdef VSXU_DEBUG
-    printf("engine destroy\n");
+  #ifndef VSX_DEMO_MINI
+    if (!stopped)
+    {
+      for (unsigned long i = 0; i < forge.size(); ++i) {
+        forge[i]->stop();
+      }
+      stopped = true;
+      return true;
+    }
+    return false;
   #endif
-  // unload module handles
-  for (size_t i = 0; i < module_handles.size(); i++)
-  {
-    #ifdef _WIN32
-      FreeLibrary(module_handles[i]);
-    #endif
-    #if defined(__linux__) || defined(__APPLE__)
-      dlclose(module_handles[i]);
-    #endif
-  }
-	for (std::map<vsx_string,module_dll_info*>::iterator it = module_dll_list.begin(); it != module_dll_list.end(); ++it)
-	{
-		delete (module_dll_info*)((*it).second);
-	}
-	// clean up module list
-  for (size_t i = 0; i < module_infos.size(); i++)
-  {
-    delete module_infos[i];
-  }
 }
 
 void vsx_engine::build_module_list(vsx_string sound_type) {
@@ -613,20 +631,20 @@ bool vsx_engine::render() {
  		//printf("d1");
 	if (!stopped) {
 	  frame_timer.start();
-  // here we set the global time of the engine.
-  // In case we need this module to do something else - capture to file
-  // we would need to set dtime to the length of each frame, and add vtime
-  // with dtime here to stretch the time correctly.
-  /*if (reset_time->get() == 0) {
-    //printf("reset_time\n");
-    d_time = -v_time;
-    //v_time = 0;
-    reset_time->set(1);
-  } else { */
-    //if (time_multiplier->get() < 0.000001) {time_multiplier->set(0.000001);}
-/*  }  */
-  //engine->dtime = d_time;
-  //engine->vtime = v_time;
+    // here we set the global time of the engine.
+    // In case we need this module to do something else - capture to file
+    // we would need to set dtime to the length of each frame, and add vtime
+    // with dtime here to stretch the time correctly.
+    /*if (reset_time->get() == 0) {
+      //printf("reset_time\n");
+      d_time = -v_time;
+      //v_time = 0;
+      reset_time->set(1);
+    } else { */
+      //if (time_multiplier->get() < 0.000001) {time_multiplier->set(0.000001);}
+    /*}*/
+    //engine->dtime = d_time;
+    //engine->vtime = v_time;
 
     //
     //printf("engine rendering new frame\n");
@@ -786,57 +804,6 @@ bool vsx_engine::render() {
       }
 		}
 
-// 1. disconnect all connections
-// 2. delete all in_params
-// 3. run redeclare_params
-//
-
-		// video
-		/*if (e_state == VSX_ENGINE_PLAYING) {
-      if (!avi_play) {
-        vsx_string aviname = "test.avi";
-      	HDC hdcscreen=GetDC(0), hdc=CreateCompatibleDC(hdcscreen);
-      	ReleaseDC(0,hdcscreen);
-        BITMAPINFO bi;
-        ZeroMemory(&bi,sizeof(bi));
-        BITMAPINFOHEADER &bih = bi.bmiHeader;
-        bih.biSize=sizeof(bih);
-        bih.biWidth=512;
-        bih.biHeight=384;
-        bih.biPlanes=1;
-        bih.biBitCount=32;
-        bih.biCompression=BI_RGB;
-        //bih.biSizeImage = ((bih.biWidth*bih.biBitCount/8+3)&0xFFFFFFFC)*bih.biHeight;
-        bih.biSizeImage = ((bih.biWidth*bih.biBitCount/8+3)&0xFFFFFFFC)*bih.biHeight;
-        bih.biXPelsPerMeter=1000;
-        bih.biYPelsPerMeter=1000;
-        bih.biClrUsed=0;
-        bih.biClrImportant=0;
-        void *bits;
-        hbm=CreateDIBSection(hdc,(BITMAPINFO*)&bih,DIB_RGB_COLORS,&bits,NULL,NULL);
-        //
-        HGDIOBJ holdb=SelectObject(hdc,hbm);
-        HPEN hp = CreatePen(PS_SOLID,32,RGB(255,255,128));
-        HGDIOBJ holdp=SelectObject(hdc,hp);
-    //
-        avi = CreateAvi(aviname.c_str(),1000/avi_fps,NULL);
-    	//for (int frame=0; frame<200; frame++)
-    	//{ // static background
-    		dbits=(DWORD*)bits;
-
-      }
-
-      	glReadPixels(view_x,view_y-1,
-		    512,
-		    384,
-		    GL_BGRA,
-		    GL_UNSIGNED_BYTE,
-		    dbits);
-	     AddAviFrame(avi,hbm);
-      avi_play = true;
-    }*/
-//		printf
-
 		//printf("MODULES LEFT TO LOAD: %d\n",i);
     engine_info.dtime = 0;
     last_frame_time = (float)frame_timer.dtime();
@@ -960,8 +927,7 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
   //---------------------------------------
   double total_time = 0.0;
 
-
-#define FAIL(header, message) 	cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(#header)+" Error "+base64_encode(#message))
+  #define FAIL(header, message) 	cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(#header)+" Error "+base64_encode(#message))
 
   vsx_command_timer.start();
   //bool run = true;
@@ -979,22 +945,22 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
     else
     	cmd_out = cmd_out_res;
 
-#define cmd c->cmd
-#define cmd_data c->cmd_data
+    #define cmd c->cmd
+    #define cmd_data c->cmd_data
 
-#include "vsx_engine_messages/vsx_saveload.h"
-#include "vsx_engine_messages/vsx_em_comp.h"
-#include "vsx_engine_messages/vsx_connections.h"
-#include "vsx_engine_messages/vsx_parameters.h"
-#include "vsx_engine_messages/vsx_sequencer.h"
-#include "vsx_engine_messages/vsx_em_macro.h"
-#include "vsx_engine_messages/vsx_seq_pool.h"
-#include "vsx_engine_messages/vsx_engine_time.h"
-#include "vsx_engine_messages/vsx_em_script.h"
-#ifndef VSX_NO_CLIENT
-  #include "vsx_engine_messages/vsx_note.h"
-#endif
-#include "vsx_engine_messages/vsx_em_system.h"
+    #include "vsx_engine_messages/vsx_saveload.h"
+    #include "vsx_engine_messages/vsx_em_comp.h"
+    #include "vsx_engine_messages/vsx_connections.h"
+    #include "vsx_engine_messages/vsx_parameters.h"
+    #include "vsx_engine_messages/vsx_sequencer.h"
+    #include "vsx_engine_messages/vsx_em_macro.h"
+    #include "vsx_engine_messages/vsx_seq_pool.h"
+    #include "vsx_engine_messages/vsx_engine_time.h"
+    #include "vsx_engine_messages/vsx_em_script.h"
+    #ifndef VSX_NO_CLIENT
+      #include "vsx_engine_messages/vsx_note.h"
+    #endif
+    #include "vsx_engine_messages/vsx_em_system.h"
 
 		total_time+=vsx_command_timer.dtime();
 		// internal garbage collection
@@ -1067,9 +1033,9 @@ void vsx_engine::send_state_to_client(vsx_command_list *cmd_out) {
 }
 
 double vsx_engine::get_fps() {
-#ifndef VSX_DEMO_MINI
+  #ifndef VSX_DEMO_MINI
   return frame_dfps;
-#endif
+  #endif
 }
 
 void vsx_engine::i_clear(vsx_command_list *cmd_out,bool clear_critical) {
@@ -1164,9 +1130,9 @@ void vsx_engine::unload_state() {
   i_clear();
 }
 
-int vsx_engine::get_state_as_commandlist(vsx_command_list &savelist) {
-
-#ifndef VSX_NO_CLIENT
+int vsx_engine::get_state_as_commandlist(vsx_command_list &savelist)
+{
+  #ifndef VSX_NO_CLIENT
   vsx_command_list tmp_comp;
   vsx_command_list tmp_param_set;
   vsx_command_list tmp_connections;
@@ -1204,7 +1170,6 @@ int vsx_engine::get_state_as_commandlist(vsx_command_list &savelist) {
         {
           // or dump the value
           //printf("component name: %sparam name:\n",comp->name.c_str(),param->module_param->name.c_str());
-          //cout << comp->channels[i]->get_param_name() << ":::" << comp->channels[i]->my_param->module_param->get_default_string() << ":::" << comp->channels[i]->my_param->module_param->get_string() << endl;
           //printf("name:%s\nval: %s\ndef: %s\n",param->module_param->name.c_str(),param->module_param->get_string().c_str(),param->module_param->get_default_string().c_str());
           vsx_string pval = param->get_string();
           //printf("val: %s  default: %s\n",pval.c_str(),param->get_default_string().c_str());
@@ -1270,7 +1235,7 @@ int vsx_engine::get_state_as_commandlist(vsx_command_list &savelist) {
 	sequence_pool.dump_to_command_list(savelist);
 	// dump the master sequences with their connections to the sequence pools
 	sequence_list.dump_master_channels_to_command_list(savelist);
-#endif
+  #endif
   return 0;
 }
 
@@ -1281,7 +1246,6 @@ int vsx_engine::get_state_as_commandlist(vsx_command_list &savelist) {
 int vsx_engine::rename_component(vsx_string old_identifier, vsx_string new_base, vsx_string new_name)
 {
 #ifndef VSX_NO_CLIENT
-
   //printf("new base: %s\n",new_base.c_str());
   // first we need to split up the name so we have the old base and the old name
   vsx_string old_base;
@@ -1310,92 +1274,73 @@ int vsx_engine::rename_component(vsx_string old_identifier, vsx_string new_base,
   int max_loop = 0;
   if (t->component_class == "macro") max_loop = 0; else max_loop = 1;
 
-    std::list<vsx_string> macro_comps;
-    std::list<vsx_comp*> macro_comp_p;
-    std::map<vsx_string,vsx_comp*>::iterator m_i = forge_map.find(old_identifier);
-    bool first = true;
-    bool drun = true;
-    // loop and find all components we need to rename
-    int runs = 0;
-    while (drun) {
-      if (m_i != forge_map.end()) {
-        vsx_string tt = (*m_i).first;
-        if (tt.find(old_identifier) == 0 || first) {
-          if (first || tt[old_identifier.size()] == vsx_string(".")) {
-            first = false;
-            macro_comps.push_back(tt);
-            macro_comp_p.push_back((*m_i).second);
-          }
-        } else drun = false;
-        ++m_i;
+  std::list<vsx_string> macro_comps;
+  std::list<vsx_comp*> macro_comp_p;
+  std::map<vsx_string,vsx_comp*>::iterator m_i = forge_map.find(old_identifier);
+  bool first = true;
+  bool drun = true;
+  // loop and find all components we need to rename
+  int runs = 0;
+  while (drun) {
+    if (m_i != forge_map.end()) {
+      vsx_string tt = (*m_i).first;
+      if (tt.find(old_identifier) == 0 || first) {
+        if (first || tt[old_identifier.size()] == vsx_string(".")) {
+          first = false;
+          macro_comps.push_back(tt);
+          macro_comp_p.push_back((*m_i).second);
+        }
       } else drun = false;
-      ++runs;
-      if (max_loop != 0)
-      if (runs >= max_loop) drun = false;
-    }
+      ++m_i;
+    } else drun = false;
+    ++runs;
+    if (max_loop != 0)
+    if (runs >= max_loop) drun = false;
+  }
 
-    /*vsx_string parent_name;
-    if (t->parent) {
-      parent_name = t->parent->name;
-    } else parent_name = "";*/
-    vsx_string new_name_ = "";
-    // do the actual renaming
-    std::list<vsx_comp*>::iterator it_c = macro_comp_p.begin();
+  /*vsx_string parent_name;
+  if (t->parent) {
+    parent_name = t->parent->name;
+  } else parent_name = "";*/
+  vsx_string new_name_ = "";
+  // do the actual renaming
+  std::list<vsx_comp*>::iterator it_c = macro_comp_p.begin();
 
-    for (std::list<vsx_string>::iterator it2 = macro_comps.begin(); it2 != macro_comps.end(); ++it2) {
-      forge_map.erase(*it2);
-      if (new_base.size()) {
-        if (old_base.size()) {
-          //printf("p1\n");
-          // moving from macro to macro
-          new_name_ = new_base+"."+str_replace(old_name,new_name,str_replace(old_base+".","",*it2,1,0),1,0);
-        }
-        else {
-          //printf("p2 %s  %s   %s\n",old_name.c_str(),new_name.c_str(),(*it2).c_str());
-          // moving from root to macro
-          new_name_ = new_base+"."+str_replace(old_name,new_name,*it2,1,0);
-        }
+  for (std::list<vsx_string>::iterator it2 = macro_comps.begin(); it2 != macro_comps.end(); ++it2)
+  {
+    forge_map.erase(*it2);
+    if (new_base.size()) {
+      if (old_base.size()) {
+        //printf("p1\n");
+        // moving from macro to macro
+        new_name_ = new_base+"."+str_replace(old_name,new_name,str_replace(old_base+".","",*it2,1,0),1,0);
       }
       else {
-        // moving the component to the root (server)
-        // from macro to root
-        if (old_base.size()) {
-          // "old_base.component_name" -> "new_component_name"
-          //printf("p3 %s \n",str_replace(old_base+".","",*it2,1,0).c_str());
-          new_name_ = str_replace(old_name,new_name,str_replace(old_base+".","",*it2,1,0),1,0);
-          new_name = new_name;
-        } else {
-          // plain renaming
-          //printf("p4\n");
-          new_name_ = str_replace(old_name,new_name,*it2,1,0);
-        }
+        //printf("p2 %s  %s   %s\n",old_name.c_str(),new_name.c_str(),(*it2).c_str());
+        // moving from root to macro
+        new_name_ = new_base+"."+str_replace(old_name,new_name,*it2,1,0);
       }
-      //printf("new name is: %s\n",new_name_.c_str());
-      forge_map[new_name_] = *it_c;
-      (*it_c)->name = new_name_;
-      ++it_c;
-    }
-  //}
-  /*else {
-    std::vector<vsx_string> name_split;
-    vsx_string deli = ".";
-    explode((*it)->name,deli, name_split);
-    if (new_base != "") {
-      new_name = new_base+"."+name_split[name_split.size()-1];
     }
     else {
-      new_name = name_split[name_split.size()-1];
+      // moving the component to the root (server)
+      // from macro to root
+      if (old_base.size()) {
+        // "old_base.component_name" -> "new_component_name"
+        //printf("p3 %s \n",str_replace(old_base+".","",*it2,1,0).c_str());
+        new_name_ = str_replace(old_name,new_name,str_replace(old_base+".","",*it2,1,0),1,0);
+        new_name = new_name;
+      } else {
+        // plain renaming
+        //printf("p4\n");
+        new_name_ = str_replace(old_name,new_name,*it2,1,0);
+      }
     }
-    forge_map.erase((*it)->name);
-    if (forge_map.find(new_name) != forge_map.end()) {
-      new_name += i2s(component_name_autoinc);
-      cmd_out->add_raw("component_rename_ok "+(*it)->name+" "+(*it)->name+i2s(component_name_autoinc));
-      (*it)->name = (*it)->name+i2s(component_name_autoinc);
-      ++component_name_autoinc;
-    }
-    forge_map[new_name] = t;
-    t->name = new_name;
-  }*/
+    //printf("new name is: %s\n",new_name_.c_str());
+    forge_map[new_name_] = *it_c;
+    (*it_c)->name = new_name_;
+    ++it_c;
+  }
+  
   // actually move the component
   if (assign_first) {
     //printf("moving component\n");

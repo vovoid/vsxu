@@ -94,7 +94,6 @@ void vsx_command_list::clear(bool del) {
   for (std::list <vsx_command_s*>::iterator it = commands.begin(); it != commands.end(); ++it) {
     (*it)->garbage_pointer->remove(*it);
     delete *it;
-    //*it = 0;
   }
   commands.clear();
 }

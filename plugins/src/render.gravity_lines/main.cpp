@@ -238,6 +238,14 @@ public:
 	  return true;
 	}
 
+  void on_delete()
+  {
+    for (unsigned long i = 0; i < gr.size(); i++)
+    {
+      delete gr[i];
+    }
+  }
+  
 	void module_info(vsx_module_info* info)
 	{
 	  info->identifier = "renderers;particlesystems;render_particle_ribbon";

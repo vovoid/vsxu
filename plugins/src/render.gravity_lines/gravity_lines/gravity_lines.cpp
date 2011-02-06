@@ -150,7 +150,7 @@ void gravity_lines::render() {
 gravity_lines::~gravity_lines()
 {
   for (unsigned long i = 0; i < oldPos.size(); ++i) {
-    delete oldPos[i];
+    delete[] oldPos[i];
   } 
 }
 

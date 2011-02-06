@@ -19,6 +19,7 @@ void vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info) {
   } else
   {
     if (info->need_reload) {
+      printf("reloading state\n");
       vxe_local->unload_state();
       vxe_local->load_state(info->state_name);
       info->need_reload = false;
@@ -285,18 +286,18 @@ void vsx_statelist::render()
       cmd_out = &(*state_iter).cmd_out;
       transitioning = false;
       transition_time = 2.0f;
-    if (cmd_out && cmd_in)
-    {
+      if (cmd_out && cmd_in)
+      {
+        if (vxe)
+        {
+          vxe->process_message_queue(cmd_in,cmd_out);
+        }
+        cmd_out->clear(true);
+      }
       if (vxe)
       {
-        vxe->process_message_queue(cmd_in,cmd_out);
+        vxe->render();
       }
-      cmd_out->clear();
-    }
-    if (vxe)
-    {
-      vxe->render();
-    }
     } else
     {
       if (cmd_out && cmd_in)
@@ -305,7 +306,7 @@ void vsx_statelist::render()
         {
           vxe->process_message_queue(cmd_in,cmd_out);
         }
-        cmd_out->clear();
+        cmd_out->clear(true);
       }
       tex1.begin_capture();
         if (vxe)

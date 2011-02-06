@@ -1224,7 +1224,7 @@ public:
       }
       
       mesh->timestamp++;
-      mesh_out->set_p(mesh);
+      mesh_out->set(mesh);
       prev_timestamp = (*p)->timestamp;
       //for (int i = 0; i < (*p)->data->vertex_normals.size(); i++) mesh->data->vertex_normals[i] = (*p)->data->vertex_normals[i];
       param_updates = 0;
