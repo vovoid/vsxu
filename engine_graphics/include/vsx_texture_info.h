@@ -98,21 +98,8 @@ public:
 
 	GLuint get_id() {return ogl_id;}
 	GLuint get_type() {return ogl_type;}
-//  PBuffer* pbuffer;
-	vsx_texture_info(GLuint id = 0, GLuint ntype = 0) : size_x(0), size_y(0), type(0), ogl_id(id), ogl_type(ntype) {
-//	  pbuffer = 0;
-//    printf("5");
-		
+	vsx_texture_info(GLuint id = 0, GLuint ntype = 0) : size_x(0), size_y(0), ogl_id(id), ogl_type(ntype) {
 	}
-/*	void init_pbuffer() {
-    
-	};
-	void bind() {
-	
-	};
-	void _bind() {
-	};
-*/
 };
 
 #endif

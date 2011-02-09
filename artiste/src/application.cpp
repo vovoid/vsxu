@@ -134,7 +134,7 @@ void app_init(int id) {
   printf("own path: %s   \n", own_path.c_str() );
   //#endif
 	//printf("argc: %d %s\n",app_argc,own_path.c_str());
-	vxe = new vsx_engine(own_path.c_str());
+	vxe = new vsx_engine(own_path);
 	gui_prod_fullwindow = &prod_fullwindow;
 //	if (!dual_monitor && id == 1) {
   myf.init(PLATFORM_SHARED_FILES+"font/font-ascii_output.png");

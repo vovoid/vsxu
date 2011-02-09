@@ -19,8 +19,8 @@ public:
 
   // internal
   vsx_mesh* mesh;
-  vsx_mesh mesh_a;
-  vsx_mesh mesh_b;
+  vsx_mesh* mesh_a;
+  vsx_mesh* mesh_b;
   //bool first_run;
   Alaska ocean;
   float t;
@@ -33,6 +33,21 @@ public:
   int               thread_state;
   int               thread_exit;
 
+  bool init() {
+    mesh_a = new vsx_mesh;
+    mesh_b = new vsx_mesh;
+    return true;
+  }
+
+  void on_delete()
+  {
+    thread_exit = 1;
+    void* p;
+    pthread_join(worker_t,&p);
+    delete mesh_a;
+    delete mesh_b;
+  }
+
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;generators;ocean_tunnel";
@@ -43,7 +58,7 @@ public:
   }
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-    mesh = &mesh_a;
+    mesh = mesh_a;
     thread_state = 0;
     thread_exit = 0;
     worker_running = false;
@@ -183,11 +198,11 @@ public:
 
 
       mesh->timestamp++;
-      result->set_p(*mesh);
+      result->set(mesh);
 
       // toggle to the other mesh
-      if (mesh == &mesh_a) mesh = &mesh_b;
-      else mesh = &mesh_a;
+      if (mesh == mesh_a) mesh = mesh_b;
+      else mesh = mesh_a;
       // the one we point to now is the one that is going to be worked on
       thread_state = 3;
     }
@@ -200,15 +215,6 @@ public:
 
       pthread_create(&worker_t, &worker_t_attr, &worker, (void*)this);
       pthread_detach(worker_t);
-    }
-  }
-
-  void on_delete()
-  {
-    thread_exit = 1;
-    while (thread_state != 10)
-    {
-      usleep(100);
     }
   }
 };
@@ -233,10 +239,22 @@ class vsx_module_mesh_ocean : public vsx_module {
 	// out
 	vsx_module_param_mesh* result;
 	// internal
-	vsx_mesh mesh;
+	vsx_mesh* mesh;
 	//bool first_run;
 	Alaska ocean;
 public:
+
+  bool init() {
+    mesh = new vsx_mesh;
+    return true;
+  }
+
+  void on_delete()
+  {
+    delete mesh;
+  }
+
+
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;generators;ocean";
@@ -249,17 +267,17 @@ public:
   {
     loading_done = false;
   	result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh);
+    result->set(mesh);
     //first_run = true;
     ocean.calculate_ho();
   }
   void run() {
     ocean.dtime = engine->real_vtime*0.1f;
     ocean.display();
-    mesh.data->vertices.reset_used(0);
-    mesh.data->vertex_normals.reset_used(0);
-    mesh.data->vertex_tex_coords.reset_used(0);
-    mesh.data->faces.reset_used(0);
+    mesh->data->vertices.reset_used(0);
+    mesh->data->vertex_normals.reset_used(0);
+    mesh->data->vertex_tex_coords.reset_used(0);
+    mesh->data->faces.reset_used(0);
     vsx_face face;
   	/*for (int L=0;L<2;L++)
   	{
@@ -330,19 +348,19 @@ for (int L=-1;L<2;L++)
             //mesh.data->vertex_tex_coords.push_back(vsx_vector__(((float)(i))/(float)NX*4.0f,(float)j/(float)NY*4.0f,0.0f));
   					//glTexCoord2f(((float)(i))/(float)NX*4,(float)j/(float)NY*4);
   					//glNormal3d(ocean.big_normals[i][j][0],ocean.big_normals[i][j][1],ocean.big_normals[i][j][2]);
-  					mesh.data->vertex_normals.push_back(vsx_vector(ocean.big_normals[i][j][0],ocean.big_normals[i][j][1],ocean.big_normals[i][j][2]));
+  					mesh->data->vertex_normals.push_back(vsx_vector(ocean.big_normals[i][j][0],ocean.big_normals[i][j][1],ocean.big_normals[i][j][2]));
   
   					//glVertex3f(
               //ocean.sea[i][j][0]+L*MAX_WORLD_X,
   						//ocean.sea[i][j][1]+k*MAX_WORLD_Y,
   						//ocean.sea[i][j][2]*ocean.scale_height);
-  					b = mesh.data->vertices.push_back(vsx_vector(ocean.sea[i][j][0]+L*MAX_WORLD_X,ocean.sea[i][j][1]+k*MAX_WORLD_Y,ocean.sea[i][j][2]*ocean.scale_height));
+  					b = mesh->data->vertices.push_back(vsx_vector(ocean.sea[i][j][0]+L*MAX_WORLD_X,ocean.sea[i][j][1]+k*MAX_WORLD_Y,ocean.sea[i][j][2]*ocean.scale_height));
   					++a;
   					if (a >= 3) {
               face.a = b-3;
               face.b = b-2;
               face.c = b-1;
-              mesh.data->faces.push_back(face);
+              mesh->data->faces.push_back(face);
               //mesh.data->faces[f_count].a = a-3;
               //mesh.data->faces[f_count].b = a-2;
               //mesh.data->faces[f_count].c = a-1;
@@ -352,7 +370,7 @@ for (int L=-1;L<2;L++)
             //mesh.data->vertex_tex_coords.push_back(vsx_vector__(((float)(i)+1)/(float)NX*4,(float)j/(float)NY*4,0.0f));
   
   					//glTexCoord2f(((float)(i)+1)/(float)NX*4,(float)j/(float)NY*4);
-  					mesh.data->vertex_normals.push_back(vsx_vector(ocean.big_normals[i+1][j][0],ocean.big_normals[i+1][j][1],ocean.big_normals[i+1][j][2]));
+  					mesh->data->vertex_normals.push_back(vsx_vector(ocean.big_normals[i+1][j][0],ocean.big_normals[i+1][j][1],ocean.big_normals[i+1][j][2]));
   					//glNormal3d(ocean.big_normals[i+1][j][0],ocean.big_normals[i+1][j][1],ocean.big_normals[i+1][j][2]);
   
   					//glVertex3f(ocean.sea[i+1][j][0]+L*MAX_WORLD_X,
@@ -360,19 +378,19 @@ for (int L=-1;L<2;L++)
   						//ocean.sea[i+1][j][2]*ocean.scale_height);
 
 
-            b = mesh.data->vertices.push_back(vsx_vector(ocean.sea[i+1][j][0]+L*MAX_WORLD_X,ocean.sea[i+1][j][1]+k*MAX_WORLD_Y,ocean.sea[i+1][j][2]*ocean.scale_height));
+            b = mesh->data->vertices.push_back(vsx_vector(ocean.sea[i+1][j][0]+L*MAX_WORLD_X,ocean.sea[i+1][j][1]+k*MAX_WORLD_Y,ocean.sea[i+1][j][2]*ocean.scale_height));
             ++a;
   					if (a >= 4) {
               face.a = b-3;
               face.b = b-2;
               face.c = b-1;
-              mesh.data->faces.push_back(face);
+              mesh->data->faces.push_back(face);
             }
   				}
   			}
   		}
   	}
-    mesh.timestamp++;
+    mesh->timestamp++;
     
     /*if (filename->get() != current_filename) {
       current_filename = filename->get();
@@ -434,10 +452,6 @@ for (int L=-1;L<2;L++)
     loading_done = true;
     result->set_p(mesh);
   }
-  
-  void on_delete() {
-    mesh.clear();
-  }
 };
 
 
@@ -451,11 +465,20 @@ class vsx_module_mesh_ocean_tunnel : public vsx_module {
 	// out
 	vsx_module_param_mesh* result;
 	// internal
-	vsx_mesh mesh;
+	vsx_mesh* mesh;
 	//bool first_run;
 	Alaska ocean;
 	float t;
 public:
+  bool init() {
+    mesh = new vsx_mesh;
+    return true;
+  }
+
+  void on_delete()
+  {
+    delete mesh;
+  }
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;generators;ocean_tunnel";
@@ -479,10 +502,10 @@ public:
   	t += time_speed->get()*engine->real_dtime;
     ocean.dtime = t;
     ocean.display();
-    mesh.data->vertices.reset_used(0);
-    mesh.data->vertex_normals.reset_used(0);
-    mesh.data->vertex_tex_coords.reset_used(0);
-    mesh.data->faces.reset_used(0);
+    mesh->data->vertices.reset_used(0);
+    mesh->data->vertex_normals.reset_used(0);
+    mesh->data->vertex_tex_coords.reset_used(0);
+    mesh->data->faces.reset_used(0);
     vsx_face face;
   	/*for (int L=0;L<2;L++)
   	{
@@ -582,35 +605,35 @@ public:
 						nn.x = ocean.big_normals[i][j][0];
 						nn.y = ocean.big_normals[i][j][1];
 						nn.normalize();
-  					mesh.data->vertex_normals.push_back(vsx_vector(\
+  					mesh->data->vertex_normals.push_back(vsx_vector(\
   						nn.x* cos(nra) + nn.y * -sin(nra),\
   						nn.x* sin(nra) + nn.y * cos(nra),\
   						ocean.big_normals[i][j][2]));
-  					mesh.data->vertex_normals[mesh.data->vertex_normals.size()-1].normalize();
+  					mesh->data->vertex_normals[mesh->data->vertex_normals.size()-1].normalize();
 
 						
 						float gz = 2.0f+fabs(g.z)*1.5f;
 						c.x = cos(gr)*gz;
 						c.y = sin(gr)*gz;
 						c.z = g.y*2.0f;
-  					b = mesh.data->vertices.push_back(c);
-						mesh.data->vertex_tex_coords.push_back(vsx_tex_coord__(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
+  					b = mesh->data->vertices.push_back(c);
+						mesh->data->vertex_tex_coords.push_back(vsx_tex_coord__(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
   					++a;
   					if (a >= 3) {
               face.a = b-3;
               face.b = b-2;
               face.c = b-1;
-              mesh.data->faces.push_back(face);
-              //mesh.data->faces[f_count].a = a-3;
-              //mesh.data->faces[f_count].b = a-2;
-              //mesh.data->faces[f_count].c = a-1;
+              mesh->data->faces.push_back(face);
+              //mesh->data->faces[f_count].a = a-3;
+              //mesh->data->faces[f_count].b = a-2;
+              //mesh->data->faces[f_count].c = a-1;
               //++f_count;
             }
             //printf("%d %d\n",i,j);
-            //mesh.data->vertex_tex_coords.push_back(vsx_vector__(((float)(i)+1)/(float)NX*4,(float)j/(float)NY*4,0.0f));
+            //mesh->data->vertex_tex_coords.push_back(vsx_vector__(((float)(i)+1)/(float)NX*4,(float)j/(float)NY*4,0.0f));
   
   					//glTexCoord2f(((float)(i)+1)/(float)NX*4,(float)j/(float)NY*4);
-  					//mesh.data->vertex_normals.push_back(vsx_vector(ocean.big_normals[i+1][j][0],ocean.big_normals[i+1][j][1],ocean.big_normals[i+1][j][2]));
+  					//mesh->data->vertex_normals.push_back(vsx_vector(ocean.big_normals[i+1][j][0],ocean.big_normals[i+1][j][1],ocean.big_normals[i+1][j][2]));
   					//glNormal3d(ocean.big_normals[i+1][j][0],ocean.big_normals[i+1][j][1],ocean.big_normals[i+1][j][2]);
   
   					//glVertex3f(ocean.sea[i+1][j][0]+L*MAX_WORLD_X,
@@ -618,7 +641,7 @@ public:
   						//ocean.sea[i+1][j][2]*ocean.scale_height);
 
 
-            //b = mesh.data->vertices.push_back(vsx_vector(ocean.sea[i+1][j][0]+L*MAX_WORLD_X,ocean.sea[i+1][j][1]+k*MAX_WORLD_Y,ocean.sea[i+1][j][2]*ocean.scale_height));
+            //b = mesh->data->vertices.push_back(vsx_vector(ocean.sea[i+1][j][0]+L*MAX_WORLD_X,ocean.sea[i+1][j][1]+k*MAX_WORLD_Y,ocean.sea[i+1][j][2]*ocean.scale_height));
 						//++a;
 						g.x = ocean.sea[i+1][j][0];//+L*MAX_WORLD_X;
 						g.y = ocean.sea[i+1][j][1];//+k*MAX_WORLD_Y;
@@ -632,22 +655,22 @@ public:
 						nn.x = ocean.big_normals[i+1][j][0];
 						nn.y = ocean.big_normals[i+1][j][1];
 						nn.normalize();
-  					mesh.data->vertex_normals.push_back(vsx_vector(\
+  					mesh->data->vertex_normals.push_back(vsx_vector(\
   						nn.x* cos(nra) + nn.y * -sin(nra),\
   						nn.x* sin(nra) + nn.y * cos(nra),\
   						ocean.big_normals[i+1][j][2]));
 //  						ocean.big_normals[i+1][j][0]* cos(nra) + ocean.big_normals[i+1][j][1] * -sin(nra),
 //  						ocean.big_normals[i+1][j][0]* sin(nra) + ocean.big_normals[i+1][j][1] * cos(nra),
 
-  					mesh.data->vertex_normals[mesh.data->vertex_normals.size()-1].normalize();
+  					mesh->data->vertex_normals[mesh->data->vertex_normals.size()-1].normalize();
 						
 						gz = 2.0f+fabs(g.z)*1.5f;
 						c.x = cos(gr)*gz;
 						c.y = sin(gr)*gz;
 						c.z = g.y*2.0f;
-  					b = mesh.data->vertices.push_back(c);
+  					b = mesh->data->vertices.push_back(c);
   					
-						mesh.data->vertex_tex_coords.push_back(vsx_tex_coord__(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
+						mesh->data->vertex_tex_coords.push_back(vsx_tex_coord__(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
             
             ++a;
 
@@ -655,7 +678,7 @@ public:
               face.a = b-3;
               face.b = b-2;
               face.c = b-1;
-              mesh.data->faces.push_back(face);
+              mesh->data->faces.push_back(face);
             }
   				}
   			}
@@ -723,10 +746,6 @@ public:
     }*/
     loading_done = true;
     result->set_p(mesh);
-  }
-  
-  void on_delete() {
-    mesh.clear();
   }
 };
 

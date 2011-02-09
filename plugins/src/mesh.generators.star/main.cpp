@@ -44,7 +44,7 @@ class vsx_module_mesh_star : public vsx_module {
 	// out
 	vsx_module_param_mesh* result;
 	// internal
-	vsx_mesh mesh;
+	vsx_mesh* mesh;
 	bool first_run;
 
 	float trail_length;
@@ -53,6 +53,17 @@ class vsx_module_mesh_star : public vsx_module {
 	vsx_float_array* spectrum;
 
 public:
+
+  bool init() {
+    mesh = new vsx_mesh;
+    return true;
+  }
+
+  void on_delete()
+  {
+    delete mesh;
+  }
+
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;particles;mesh_star";
@@ -118,10 +129,10 @@ public:
       quat.w = sin(worms[i]->freq.w*engine->vtime+worms[i]->phs.w);
       quat.normalize();
       vsx_matrix mat = quat.matrix();
-      //mesh.data->vertices[jj] = mat.multiply_vector(vsx_vector__(1,0,0));
-      //mesh.data->vertex_colors[jj] = vsx_color__(1.0f,1.0f,1.0f,1.0f);
-      mesh.data->vertices[jj] = vsx_vector(0);
-      mesh.data->vertex_colors[jj] = vsx_color();
+      //mesh->data->vertices[jj] = mat.multiply_vector(vsx_vector__(1,0,0));
+      //mesh->data->vertex_colors[jj] = vsx_color__(1.0f,1.0f,1.0f,1.0f);
+      mesh->data->vertices[jj] = vsx_vector(0);
+      mesh->data->vertex_colors[jj] = vsx_color();
       ++jj;
       for (unsigned long k = 0; k < worms[i]->lines.size(); ++k) {
         vsx_quaternion qq = worms[i]->lines[k].pos;
@@ -131,42 +142,38 @@ public:
         vsx_matrix mat2 = worms[i]->lines[k].pos.matrix();
         //worms[i]->size = 1.0f;
         //worms[i]->size = worms[i]->size*(1-tt) + size*ttt;
-        mesh.data->vertices[jj] = mat2.multiply_vector(vsx_vector(1.0f,0,0));
-        mesh.data->vertex_colors[jj] = worms[i]->color;//vsx_color__(0.1f,0.3f,0.1f,1.0f);
+        mesh->data->vertices[jj] = mat2.multiply_vector(vsx_vector(1.0f,0,0));
+        mesh->data->vertex_colors[jj] = worms[i]->color;//vsx_color__(0.1f,0.3f,0.1f,1.0f);
         ++jj;
       }
     }
-    mesh.timestamp++;
+    mesh->timestamp++;
 
     /*if (first_run || n_rays != (int)num_rays->get()) {
-      mesh.data->vertex_tex_coords[0] = vsx_vector__(0,0,0);
-      mesh.data->vertices.reset_used();
-      mesh.data->faces.reset_used();
+      mesh->data->vertex_tex_coords[0] = vsx_vector__(0,0,0);
+      mesh->data->vertices.reset_used();
+      mesh->data->faces.reset_used();
       //printf("generating random points\n");
       for (int i = 1; i < (int)num_rays->get(); ++i) {
-        mesh.data->vertices[i*2].x = (rand()%10000)*0.0001-0.5;
-        mesh.data->vertices[i*2].y = (rand()%10000)*0.0001-0.5;
-        mesh.data->vertices[i*2].z = (rand()%10000)*0.0001-0.5;
-        mesh.data->vertex_colors[i*2] = vsx_color__(0,0,0,0);
-        mesh.data->vertex_tex_coords[i*2] = vsx_vector__(0,1,0);
-        mesh.data->vertices[i*2+1].x = (rand()%10000)*0.0001-0.5;
-        mesh.data->vertices[i*2+1].y = (rand()%10000)*0.0001-0.5;
-        mesh.data->vertices[i*2+1].z = (rand()%10000)*0.0001-0.5;
-        mesh.data->vertex_colors[i*2+1] = vsx_color__(0,0,0,0);
-        mesh.data->vertex_tex_coords[i*2+1] = vsx_vector__(1,0,0);
-        mesh.data->faces[i-1].a = 0;
-        mesh.data->faces[i-1].b = i*2;
-        mesh.data->faces[i-1].c = i*2+1;
+        mesh->data->vertices[i*2].x = (rand()%10000)*0.0001-0.5;
+        mesh->data->vertices[i*2].y = (rand()%10000)*0.0001-0.5;
+        mesh->data->vertices[i*2].z = (rand()%10000)*0.0001-0.5;
+        mesh->data->vertex_colors[i*2] = vsx_color__(0,0,0,0);
+        mesh->data->vertex_tex_coords[i*2] = vsx_vector__(0,1,0);
+        mesh->data->vertices[i*2+1].x = (rand()%10000)*0.0001-0.5;
+        mesh->data->vertices[i*2+1].y = (rand()%10000)*0.0001-0.5;
+        mesh->data->vertices[i*2+1].z = (rand()%10000)*0.0001-0.5;
+        mesh->data->vertex_colors[i*2+1] = vsx_color__(0,0,0,0);
+        mesh->data->vertex_tex_coords[i*2+1] = vsx_vector__(1,0,0);
+        mesh->data->faces[i-1].a = 0;
+        mesh->data->faces[i-1].b = i*2;
+        mesh->data->faces[i-1].c = i*2+1;
         n_rays = (int)num_rays->get();
       }
       first_run = false;
 
     } */
     result->set_p(mesh);
-  }
-
-	void on_delete() {
-    mesh.clear();
   }
 };
 

@@ -32,7 +32,10 @@ add_definitions(
  -DVSX_TEXTURE_NO_JPEG
  -DVSXU_DEVELOPER
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
-)
+ -DMOD_CNM=create_new_module
+ -DMOD_DM=destroy_module
+ -DMOD_GNM=get_num_modules
+) 
 
 if(ENGINE_SCRIPTING)
 # add gamemonkey source files here

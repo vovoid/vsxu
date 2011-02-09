@@ -55,6 +55,7 @@ public:
   int get_engine_num_modules();
 
   vsx_manager();
+  ~vsx_manager();
 };
 
 /****************************************************************
@@ -68,9 +69,19 @@ vsx_manager_abs* manager_factory()
   return mym;
 }
 
+vsx_manager_abs* manager_destroy(vsx_manager_abs* manager)
+{
+  delete (vsx_manager*)manager;
+}
+
 vsx_manager::vsx_manager()
 {
   int_state_manager = (void*)new vsx_statelist();
+}
+
+vsx_manager::~vsx_manager()
+{
+  delete (vsx_statelist*)int_state_manager;
 }
 
 void vsx_manager::init(const char* base_path, const char* sound_type)

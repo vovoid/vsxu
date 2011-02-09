@@ -1,6 +1,5 @@
 #include "vsx_command.h"
 #include <time.h>
-//#include <fstream>
 
 int vsx_command_s::id = 0;
 
@@ -31,7 +30,7 @@ void vsx_command_s::process_garbage() {
     }
   }
 
-  //for ( it != garbage_list.end(); ++it) {
+//  for ( it != garbage_list.end(); ++it) {
 //    ++(*it)->iterations;
 //  }
 //  for (std::list<vsx_command*>::iterator it = garbage_list.begin(); it != garbage_list.end(); ++it) {
@@ -71,7 +70,9 @@ vsx_command_s::~vsx_command_s()
 {
   if (iterations == -1)
   garbage_list.remove(this);
-  //printf("vsx_command_s::destructor %s :::::::: %s\n",cmd.c_str(),raw.c_str());
+  #ifdef VSXU_DEBUG
+    printf("vsx_command_s::destructor %s :::::::: %s\n",cmd.c_str(),raw.c_str());
+  #endif
 }
 
 
@@ -92,10 +93,14 @@ void vsx_command_s::parse() {
 
 void vsx_command_list::clear(bool del) {
   if (del)
-  for (std::list <vsx_command_s*>::iterator it = commands.begin(); it != commands.end(); ++it) {
-    (*it)->garbage_pointer->remove(*it);
-    delete *it;
-    //*it = 0;
+  {
+    for (std::list <vsx_command_s*>::iterator it = commands.begin(); it != commands.end(); ++it) {
+      (*it)->garbage_pointer->remove(*it);
+      #ifdef VSXU_DEBUG
+        printf("deleting command\n");
+      #endif
+      delete *it;
+    }
   }
   commands.clear();
 }
@@ -108,11 +113,21 @@ void vsx_command_list::load_from_file(vsx_string filename, bool parse, int type)
   //printf("load_from_file VSX_ENG\n");
   vsxf_handle* fp;
   if ((fp = filesystem->f_open(filename.c_str(), "r")) == NULL)
+  {
+    #ifdef VSXU_DEBUG
+    printf("error #1 opening file\n");
+    #endif
     return;
+  }
 #else
   FILE* fp;
   if ((fp = fopen(filename.c_str(), "r")) == NULL)
+  {
+    #ifdef VSXU_DEBUG
+    printf("error #2 opening file\n");
+    #endif
     return;
+  }
 #endif
   char buf[65535];
   vsx_string line;
@@ -141,33 +156,11 @@ void vsx_command_list::load_from_file(vsx_string filename, bool parse, int type)
       }
     }
   }
-  //printf("end\n");
 #ifdef VSX_ENG_DLL
   filesystem->f_close(fp);
 #else
   fclose(fp);
 #endif
-/*  std::ifstream fis;
-  //printf("loading from '%s'\n",filename.c_str());
-  fis.open(filename.c_str(), std::ios_base::in);
-  vsx_string line;
-  char buf[65535];
-  if (fis) {
-    //printf("ok\n");
-    while (fis.getline(buf,65535)) {
-      line = buf;
-      if (line != "") {
-        if (parse) {
-          add_raw(line);
-        } else {
-          vsx_command_s* t = new vsx_command_s;
-          t->raw = line;
-          commands.push_back(t);
-        }
-      }
-    }
-  }
-  fis.close();*/
 }
 
 void vsx_command_list::save_to_file(vsx_string filename) {
@@ -252,7 +245,8 @@ void vsx_command_list::adds(int tp, vsx_string titl,vsx_string cmd, vsx_string c
 }
 
 void vsx_command_list::set_type(int new_type) {
-	for (std::list <vsx_command_s*>::iterator it = commands.begin(); it != commands.end(); ++it) {
+	for (std::list <vsx_command_s*>::iterator it = commands.begin(); it != commands.end(); ++it)
+  {
 		(*it)->type = new_type;
 	}
 }
@@ -272,11 +266,8 @@ vsx_command_s* vsx_command_parse(vsx_string& cmd_raw) {
   }
   t->parts = cmdps;
   t->parsed = true;
-  //printf("parsing part: %s\n",t->parts[0].c_str());
-
   return t;
 }
-
 
 double ntime() {
   return ((double)clock())/((double)CLOCKS_PER_SEC);
