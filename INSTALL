@@ -75,6 +75,9 @@ A D V A N C E D   B U I L D   O P T I O N S
     -DVSXU_OPENGL_ES_2_0=1
       use opengl es 2.0 instead of regular opengl
 
+    -DVSXU_MEEGO=1
+      compile for meego
+
 
 Examples:
   This is my test/debug-it-all command:

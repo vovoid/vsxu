@@ -217,7 +217,10 @@ void* vsx_command_list_server::server_worker(void *ptr)
             }
             else
             {
-              this_->cmd_in->add_raw(message_stack);
+              if (message_stack != "_")
+              {
+                this_->cmd_in->add_raw(message_stack);
+              }
             }
             message_stack = "";
           } else
@@ -391,7 +394,10 @@ void* vsx_command_list_client::client_worker(void *ptr)
           message_stack = "";
         } else
         {
-          message_stack.push_back(recv_buf[i]);
+          if (message_stack != "_")
+          {
+            message_stack.push_back(recv_buf[i]);
+          }
         }
       }
       memset(&recv_buf,0,BUFLEN);
