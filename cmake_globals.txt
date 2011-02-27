@@ -13,7 +13,8 @@ endif(VSXU_DEBUG)
 #add_definitions(-Os -c -fmessage-length=0 -finline-functions)
 #add_definitions(-O3 -c -fmessage-length=0 -finline-functions)
 
-cmake_policy(SET CMP0015 OLD)
+cmake_policy(VERSION 2.6.0)
+# CMP0015 OLD)
 cmake_policy(SET CMP0011 OLD)
 
 

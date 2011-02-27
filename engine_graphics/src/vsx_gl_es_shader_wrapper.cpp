@@ -30,6 +30,7 @@ GLuint mm_uniform_handle;
           GLenum glError = glGetError(); \
           if(glError != GL_NO_ERROR) { \
             fprintf(stderr, "glGetError() = %i (0x%.8x) at line %i\n", glError, glError, __LINE__); \
+            exit(0); \
           } \
         }
 

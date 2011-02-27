@@ -66,18 +66,20 @@ endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 
 
 project (${module_id})
-
 add_library(${module_id} SHARED ${SOURCES} ${EXTRA_LIBS} ${PNG_SOURCES} ${JPG_SOURCES} ${ZLIB_SOURCES})
-add_library(${module_id}_static STATIC ${SOURCES} ${EXTRA_LIBS} ${PNG_SOURCES} ${JPG_SOURCES} ${ZLIB_SOURCES})
-
 install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
-
 if(WIN32)
   target_link_libraries(${module_id} gdi32 glew opengl32 glu32 pthreadGCE)
   link_directories("../engine")
 else(WIN32)
-  target_link_libraries(${module_id} X11 GLEW GL GLU)
+  if (VSXU_OPENGL_ES_2_0 EQUAL 1)
+#    target_link_libraries(${module_id})
+  else (VSXU_OPENGL_ES_2_0 EQUAL 1)
+#    target_link_libraries(${module_id} X11 GLEW GL GLU)
+  endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 endif(WIN32)
 target_link_libraries(${module_id} vsxu_engine)
+
+
 #include(../cmake_suffix.txt)
 
