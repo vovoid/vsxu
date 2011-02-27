@@ -26,6 +26,6 @@ include(../cmake_suffix.txt)
       ${CMAKE_INSTALL_PREFIX}/share/vsxu/plugin-config)
 
 if(UNIX)
-target_link_libraries(${module_id} X11 GLEW GL GLU)
+#target_link_libraries(${module_id})
 endif(UNIX)
 

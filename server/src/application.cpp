@@ -86,6 +86,7 @@ void app_init(int id) {
   //#endif
 	//printf("argc: %d %s\n",app_argc,own_path.c_str());
 	vxe = new vsx_engine(own_path.c_str());
+  vsx_es_shader_wrapper_init_shaders();
 //  myf.init(PLATFORM_SHARED_FILES+"font/font-ascii_output.png");
 }
 

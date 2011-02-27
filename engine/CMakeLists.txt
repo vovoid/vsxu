@@ -34,6 +34,11 @@ add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )
 
+if (VSXU_OPENGL_ES_2_0 EQUAL 1)
+  add_definitions(-DVSXU_OPENGL_ES -DVSXU_OPENGL_ES_2_0)
+endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
+
+
 if(ENGINE_SCRIPTING)
 # add gamemonkey source files here
   include_directories(

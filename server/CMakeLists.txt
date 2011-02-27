@@ -12,12 +12,20 @@ include_directories(
 set(OS_SOURCES "")
 
 if(UNIX)
-  include_directories(src/main/linux-opengl/)
   if (VSXU_OPENGL_ES_2_0 EQUAL 1)
-    add_definitions(-DVSXU_OPENGL_ES)
-    set(OS_SOURCES
-      src/main/linux-opengl_es/main.cpp
-    )
+    if (MEEGO EQUAL 1)
+      include_directories(src/main/linux-opengl/)
+      add_definitions(-DVSXU_OPENGL_ES)
+      set(OS_SOURCES
+        src/main/linux-opengl_es/main.cpp
+      )
+    else (VSXU_MEEGO EQUAL 1)
+      include_directories(src/main/linux-opengl/)
+      add_definitions(-DVSXU_OPENGL_ES)
+      set(OS_SOURCES
+        src/main/linux-meego_opengl_es/main.cpp
+      )
+    endif (MEEGO EQUAL 1)
   else (VSXU_OPENGL_ES_2_0 EQUAL 1)
     set(OS_SOURCES
       src/main/linux-opengl/main.cpp
@@ -59,11 +67,10 @@ link_directories(
 ../engine
 )
 
-#if (VSXU_ENGINE_STATIC EQUAL 1)
+if (VSXU_ENGINE_STATIC EQUAL 1)
   include(../plugins/static_factory_cmake_link_directories)
   link_directories(../lib/linux32/)
-
-#endif (VSXU_ENGINE_STATIC EQUAL 1)
+endif (VSXU_ENGINE_STATIC EQUAL 1)
 
 
 project (${module_id})
@@ -79,35 +86,42 @@ set_target_properties(
 )
 
 if(UNIX)
-  if (VSXU_ENGINE_STATIC EQUAL 1)
-    include(../plugins/static_factory_cmake_target_link_libraries)
-  endif (VSXU_ENGINE_STATIC EQUAL 1)
+
+  
   link_directories("/usr/lib/vsxu")
 
-  target_link_libraries(${module_id}
-    Xrandr
-    X11
-    vovoid_glfw
-    pthread
-    GLU
-    GL
-    GLEW
-    png
-    jpeg
-    vsxu_engine_graphics
-  )
   if (VSXU_OPENGL_ES_2_0 EQUAL 1)
     target_link_libraries(${module_id}
       EGL
       GLESv2
+      X11
+      png
+      jpeg
+    )
+  else (VSXU_OPENGL_ES_2_0 EQUAL 1)
+    target_link_libraries(${module_id}
+      Xrandr
+      X11
+      vovoid_glfw
+      pthread
+      GLU
+      GL
+      GLEW
+      png
+      jpeg
     )
   endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 
   if (VSXU_ENGINE_STATIC EQUAL 1)
-    target_link_libraries(vsxu_engine_static)
+    message("ENGINE STATIC")
+    target_link_libraries(${module_id} vsxu_engine)
+    target_link_libraries(${module_id} vsxu_engine_graphics)
     include(../plugins/static_factory_cmake_target_link_libraries)
   else (VSXU_ENGINE_STATIC EQUAL 1)
-    target_link_libraries(vsxu_engine)
+    include(../plugins/static_factory_cmake_target_link_libraries)
+    target_link_libraries(${module_id} vsxu_engine)
+    target_link_libraries(${module_id} vsxu_engine_graphics)
   endif (VSXU_ENGINE_STATIC EQUAL 1)
+
   install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 endif(UNIX)
