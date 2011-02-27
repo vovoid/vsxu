@@ -99,6 +99,7 @@ if(UNIX)
       jpeg
     )
   else (VSXU_OPENGL_ES_2_0 EQUAL 1)
+    link_directories("../lib/linux32")
     target_link_libraries(${module_id}
       Xrandr
       X11
