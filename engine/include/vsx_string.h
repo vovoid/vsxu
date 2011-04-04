@@ -161,7 +161,7 @@ public:
 //#ifndef VSX_STRING_TINY
   const vsx_string& operator=(const char* ss) {
     data.clear();
-    while (*ss != 0) {
+    while (ss && *ss != 0) {
       data.push_back(*ss);
       ++ss;
     }
