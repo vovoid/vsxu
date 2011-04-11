@@ -281,7 +281,8 @@ class vsx_module_render_billboards : public vsx_module {
   vsx_mesh* mesh;
   vsx_matrix ma;
   vsx_vector upv;
-  
+
+  int mesh_timestamp;
 
   GLuint dlist;
   bool list_built;
@@ -308,6 +309,7 @@ public:
     info->out_param_spec = "render_out:render";
     info->component_class = "render";
     loading_done = true;
+    mesh_timestamp = -1;
   }
 
   void redeclare_in_params(vsx_module_param_list& in_parameters)
@@ -376,7 +378,7 @@ public:
     glEnable(GL_POINT_SMOOTH);
     mesh = mesh_in->get_addr();
     if (mesh) {
-      if (!use_display_list->get() && list_built) {
+      if ((!use_display_list->get() || mesh_timestamp != mesh->timestamp) && list_built) {
         list_built = false;
         glDeleteLists(dlist,1);
       }
@@ -387,6 +389,7 @@ public:
 
       if (!list_built)
       {
+        mesh_timestamp = mesh->timestamp;
         // init list -------------------------------------
         if (use_display_list->get() && list_built == false) {
           dlist = glGenLists(1);
