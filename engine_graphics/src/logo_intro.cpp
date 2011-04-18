@@ -19,7 +19,7 @@ float alpha;
 
 bool finished = false;
 
-void vsx_logo_intro::draw(bool always) {
+void vsx_logo_intro::draw(bool always,bool draw_background) {
     if (logo_time > animlen)
     {
       if (finished)
@@ -35,7 +35,10 @@ void vsx_logo_intro::draw(bool always) {
     }
 
     float dtime = timer.dtime();
-    if (always) dtime = 0;
+    if (always) {
+      dtime = 0;
+      logo_time = 0;
+    }
 
     logo_rot1 += dtime*0.01;
     logo_rot2 -= dtime*0.014;
@@ -96,67 +99,70 @@ void vsx_logo_intro::draw(bool always) {
           glEnd();
         float alphab = alpha*0.4;
       	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-        luna_bkg->bind();
-          glPushMatrix();
-        	glColor4f(0.298,0.368,0.41,alphab);
-          glRotatef(logo_rot1*360,0,0,1);
-          glBegin(GL_QUADS);
-          	glTexCoord2f(0, 1);
-            glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
-          	glTexCoord2f(0, 0);
-            glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
-          	glTexCoord2f(1, 0);
-            glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
-          	glTexCoord2f(1, 1);
-            glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
-          glEnd();
-          glPopMatrix();
-          glPushMatrix();
-          glRotatef(360*logo_rot2,0,0,alphab);
-          glBegin(GL_QUADS);
-          	glTexCoord2f(0, 1);
-            glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
-          	glTexCoord2f(0, 0);
-            glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
-          	glTexCoord2f(1, 0);
-            glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
-          	glTexCoord2f(1, 1);
-            glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
-          glEnd();
-          glPopMatrix();
-          glPushMatrix();
-        	glColor4f(0.15,0.433,0.46,alphab);
-          glRotatef(360*logo_rot3,0,0,1);
-          glBegin(GL_QUADS);
-          	glTexCoord2f(0, 1);
-            glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
-          	glTexCoord2f(0, 0);
-            glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
-          	glTexCoord2f(1, 0);
-            glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
-          	glTexCoord2f(1, 1);
-            glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
-          glEnd();
-          glPopMatrix();
-          glPushMatrix();
-          logo_size.x = 22;
-          logo_size.y = 22;
+        if (draw_background)
+        {
+          luna_bkg->bind();
+            glPushMatrix();
+            glColor4f(0.298,0.368,0.41,alphab);
+            glRotatef(logo_rot1*360,0,0,1);
+            glBegin(GL_QUADS);
+              glTexCoord2f(0, 1);
+              glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
+              glTexCoord2f(0, 0);
+              glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
+              glTexCoord2f(1, 0);
+              glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
+              glTexCoord2f(1, 1);
+              glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
+            glEnd();
+            glPopMatrix();
+            glPushMatrix();
+            glRotatef(360*logo_rot2,0,0,alphab);
+            glBegin(GL_QUADS);
+              glTexCoord2f(0, 1);
+              glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
+              glTexCoord2f(0, 0);
+              glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
+              glTexCoord2f(1, 0);
+              glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
+              glTexCoord2f(1, 1);
+              glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
+            glEnd();
+            glPopMatrix();
+            glPushMatrix();
+            glColor4f(0.15,0.433,0.46,alphab);
+            glRotatef(360*logo_rot3,0,0,1);
+            glBegin(GL_QUADS);
+              glTexCoord2f(0, 1);
+              glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
+              glTexCoord2f(0, 0);
+              glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
+              glTexCoord2f(1, 0);
+              glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
+              glTexCoord2f(1, 1);
+              glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
+            glEnd();
+            glPopMatrix();
+            glPushMatrix();
+            logo_size.x = 22;
+            logo_size.y = 22;
 
-        	glColor4f(0.433,0.25,0.56,alphab);
-          glRotatef(360*logo_rot3*0.5,0,0,1);
-          glBegin(GL_QUADS);
-          	glTexCoord2f(0, 1);
-            glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
-          	glTexCoord2f(0, 0);
-            glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
-          	glTexCoord2f(1, 0);
-            glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
-          	glTexCoord2f(1, 1);
-            glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
-          glEnd();
-          glPopMatrix();
-        luna_bkg->_bind();
-      	glColor4f(1,1,1,alpha*0.8);
+            glColor4f(0.433,0.25,0.56,alphab);
+            glRotatef(360*logo_rot3*0.5,0,0,1);
+            glBegin(GL_QUADS);
+              glTexCoord2f(0, 1);
+              glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
+              glTexCoord2f(0, 0);
+              glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
+              glTexCoord2f(1, 0);
+              glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
+              glTexCoord2f(1, 1);
+              glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
+            glEnd();
+            glPopMatrix();
+          luna_bkg->_bind();
+        }
+      	glColor4f(1,1,1,alpha*1.0);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
         luna->bind();

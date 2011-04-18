@@ -1,4 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
+if (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
+  add_definitions( -DPLATFORM_SHARED_FILES_FLAT_INSTALL )
+endif (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
+  
 add_subdirectory(engine)
 add_subdirectory(engine_graphics)
 add_subdirectory(plugins)

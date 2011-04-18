@@ -41,10 +41,18 @@
         #define PLATFORM                                        PLATFORM_LINUX
         #define PLATFORM_NAME                                   "Linux"
         #define PLATFORM_FAMILY                                 PLATFORM_FAMILY_UNIX
-        #define PLATFORM_SHARED_FILES                           vsx_string(CMAKE_INSTALL_PREFIX)+vsx_string("/share/vsxu/")
+        #ifdef PLATFORM_SHARED_FILES_FLAT_INSTALL
+          #define PLATFORM_SHARED_FILES                           vsx_string("")
+        #else
+          #define PLATFORM_SHARED_FILES                           vsx_string(CMAKE_INSTALL_PREFIX)+vsx_string("/share/vsxu/")
+        #endif
         #define DIRECTORY_SEPARATOR                             "/"
         #ifdef PLATFORM_SHARED_FILES_STL
-          #define PLATFORM_SHARED_FILES_STLSTRING               std::string(CMAKE_INSTALL_PREFIX)+std::string("/share/vsxu/")
+          #ifdef PLATFORM_SHARED_FILES_FLAT_INSTALL
+            #define PLATFORM_SHARED_FILES_STLSTRING               std::string("")
+          #else
+            #define PLATFORM_SHARED_FILES_STLSTRING               std::string(CMAKE_INSTALL_PREFIX)+std::string("/share/vsxu/")
+          #endif
         #endif
 #else
         #define PLATFORM                                        PLATFORM_SOMETHINGELSE
