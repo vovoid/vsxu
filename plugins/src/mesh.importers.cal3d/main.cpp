@@ -493,6 +493,7 @@ public:
   bool init() {
     mesh_a = new vsx_mesh;
     mesh_b = new vsx_mesh;
+    mesh = mesh_a;
     return true;
   }
 
