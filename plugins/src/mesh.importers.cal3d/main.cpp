@@ -483,7 +483,6 @@ public:
   vsx_module_cal3d_loader_threaded() {
     m_model = 0;
     c_model = 0;
-    mesh = mesh_a;
     thread_state = 0;
     thread_exit = 0;
     worker_running = false;
