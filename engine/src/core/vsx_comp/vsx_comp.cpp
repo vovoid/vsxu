@@ -100,6 +100,7 @@ void vsx_comp::load_module(module_dll_info* module_dll) {
 
 void vsx_comp::unload_module(module_dll_info* module_dll) {
   LOG("before unload1")
+  printf("unloading %s\n",name.c_str());
   if (module) {
     module->on_delete();
   }

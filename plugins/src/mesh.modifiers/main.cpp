@@ -381,6 +381,16 @@ class vsx_module_mesh_quat_rotate : public vsx_module {
   vsx_quaternion q;
 public:
 
+  bool init() {
+    mesh = new vsx_mesh;
+    return true;
+  }
+  
+  void on_delete()
+  {
+    delete mesh;
+  }
+  
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;modifiers;transforms;mesh_rotate_quat";
@@ -1154,7 +1164,6 @@ class vsx_module_mesh_deformers_random_normal_distort : public vsx_module {
 
 public:
   bool init() {
-    mesh = new vsx_mesh;
     return true;
   }
 
@@ -1189,8 +1198,9 @@ public:
     vertex_distortion_factor = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "vertex_distortion_factor");
     vertex_distortion_factor->set(1.0f);
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
-    mesh_out->set_p(mesh);
+    mesh_out->set(mesh);
     prev_timestamp = 0xFFFFFFFF;
+    mesh = new vsx_mesh;
   }
   unsigned long prev_timestamp;
   vsx_vector v, v_;

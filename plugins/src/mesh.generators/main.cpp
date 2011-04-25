@@ -2121,8 +2121,7 @@ public:
     time_amp->set(1.0f);
     width->set(0.1f);
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh);
-//    first_run = true;
+    result->set(mesh);
   }
 
   bool init() {
@@ -2236,7 +2235,7 @@ public:
 
 
       mesh->timestamp++;
-      result->set_p(mesh);
+      result->set(mesh);
     //}
     /*else {
       if (num_points->get() < mesh->data->vertices.size()) {

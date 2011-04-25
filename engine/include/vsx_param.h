@@ -281,7 +281,7 @@ typedef vsx_module_param<0, vsx_string,				1,0 > vsx_module_param_string; // use
 #endif
 typedef vsx_module_param<0, float,							 4,1 > vsx_module_param_float4; // use get() set()
 typedef vsx_module_param<0, vsx_matrix,					 1,0 > vsx_module_param_matrix; // use get() set()
-typedef vsx_module_param<0, vsx_mesh*,		  	   1,0 > vsx_module_param_mesh; // use get_addr() / set()
+typedef vsx_module_param<0, vsx_mesh*,		  	   1,0 > vsx_module_param_mesh; // use get() / set()
 typedef vsx_module_param<0, vsx_bitmap,					 1,0 > vsx_module_param_bitmap; // use get_addr() / set_p()
 typedef vsx_module_param<0, vsx_particlesystem,	 1,0 > vsx_module_param_particlesystem; // use get_addr() / set_p()
 typedef vsx_module_param<0, vsx_float_array,	   1,0 > vsx_module_param_float_array; // use get_addr() set_p()
