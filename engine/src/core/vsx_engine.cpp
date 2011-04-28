@@ -510,7 +510,7 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
         void(*destroy_module)(vsx_module*) = (void(*)(vsx_module*))GetProcAddress(module_handle, "destroy_module");
       #endif
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-        void(*destroy_module)(vsx_module*) = (void(*)(vsx_module*))dlsym(module_handle, "destroy_module");
+        //void(*destroy_module)(vsx_module*) = (void(*)(vsx_module*))dlsym(module_handle, "destroy_module");
       #endif
 
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS

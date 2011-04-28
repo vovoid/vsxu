@@ -14,4 +14,3 @@ if (NOT VSXU_ENGINE_STATIC EQUAL 1)
   add_subdirectory(tools/vsxz)
 endif (NOT VSXU_ENGINE_STATIC EQUAL 1)
 
-add_subdirectory(qtplayer)
