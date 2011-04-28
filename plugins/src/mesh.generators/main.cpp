@@ -2122,16 +2122,18 @@ public:
     width->set(0.1f);
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
     result->set(mesh);
+    mesh = new vsx_mesh;
   }
 
   bool init() {
-    mesh = new vsx_mesh;
     return true;
   }
 
   void on_delete()
   {
+    if (mesh)
     delete mesh;
+    mesh = 0;
   }
 
   void run()
