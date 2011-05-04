@@ -72,6 +72,7 @@ public:
   }
 
   void clear() {
+    if (data_volatile) { return; }
   	if (A)
     free(A);
     A = 0;

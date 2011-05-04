@@ -8,7 +8,7 @@
 #ifndef VSX_GLOBAL_H
 #define VSX_GLOBAL_H
 
-#define vsxu_version "VSXu 0.2.0"
-#define vsxu_ver "0.2.0"
+#define vsxu_version "VSXu 0.3.0"
+#define vsxu_ver "0.3.0"
 
 #endif

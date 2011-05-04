@@ -20,7 +20,7 @@ class vsx_module_mesh_render_line : public vsx_module {
 	// out
 	vsx_module_param_render* render_out;
 	// internal
-	vsx_mesh* mesh;
+	vsx_mesh** mesh;
   vsx_matrix ma;
   vsx_vector upv;
 
@@ -120,11 +120,11 @@ loading_done = true;
 					#endif
           if (override_base_color->get()) {
             
-            for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
-							#ifdef VSXU_OPENGL_ES_1_0
-								fan_vertices[3] = mesh->data->vertices[i].x;
-								fan_vertices[4] = mesh->data->vertices[i].y;
-								fan_vertices[5] = mesh->data->vertices[i].z;
+            for (unsigned long i = 0; i < (*mesh)->data->vertices.size(); ++i) {
+              #ifdef VSXU_OPENGL_ES_1_0
+                fan_vertices[3] = (*mesh)->data->vertices[i].x;
+                fan_vertices[4] = (*mesh)->data->vertices[i].y;
+                fan_vertices[5] = (*mesh)->data->vertices[i].z;
 								glDrawArrays(GL_LINES, 0, 2);
 							#endif
 							#ifdef VSXU_OPENGL_ES_2_0
@@ -134,19 +134,19 @@ loading_done = true;
 								l_center_color.gl_color();
 								glVertex3f(0.0f,0.0f,0.0f);
 								main_color.gl_color();
-								glVertex3f(mesh->data->vertices[i].x,mesh->data->vertices[i].y,mesh->data->vertices[i].z);
+								glVertex3f((*mesh)->data->vertices[i].x,(*mesh)->data->vertices[i].y,(*mesh)->data->vertices[i].z);
 							#endif
             }
           } else {
-            for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
-							#ifdef VSXU_OPENGL_ES_1_0
-								fan_vertices[3] = mesh->data->vertices[i].x;
-								fan_vertices[4] = mesh->data->vertices[i].y;
-								fan_vertices[5] = mesh->data->vertices[i].z;
-								fan_colors[4] = mesh->data->vertex_colors[i].r;
-								fan_colors[5] = mesh->data->vertex_colors[i].g;
-								fan_colors[6] = mesh->data->vertex_colors[i].b;
-								fan_colors[7] = mesh->data->vertex_colors[i].a;
+            for (unsigned long i = 0; i < (*mesh)->data->vertices.size(); ++i) {
+              #ifdef VSXU_OPENGL_ES_1_0
+                fan_vertices[3] = (*mesh)->data->vertices[i].x;
+                fan_vertices[4] = (*mesh)->data->vertices[i].y;
+                fan_vertices[5] = (*mesh)->data->vertices[i].z;
+                fan_colors[4] = (*mesh)->data->vertex_colors[i].r;
+                fan_colors[5] = (*mesh)->data->vertex_colors[i].g;
+                fan_colors[6] = (*mesh)->data->vertex_colors[i].b;
+                fan_colors[7] = (*mesh)->data->vertex_colors[i].a;
 								glDrawArrays(GL_LINES, 0, 2);
 							#endif
 							#ifdef VSXU_OPENGL_ES_2_0
@@ -155,8 +155,8 @@ loading_done = true;
 							#ifndef VSXU_OPENGL_ES
 								l_center_color.gl_color();
 								glVertex3f(0.0f,0.0f,0.0f);
-								mesh->data->vertex_colors[i].gl_color();
-								glVertex3f(mesh->data->vertices[i].x,mesh->data->vertices[i].y,mesh->data->vertices[i].z);
+								(*mesh)->data->vertex_colors[i].gl_color();
+								glVertex3f((*mesh)->data->vertices[i].x,(*mesh)->data->vertices[i].y,(*mesh)->data->vertices[i].z);
 							#endif
             }
           }
@@ -184,23 +184,22 @@ loading_done = true;
           #endif
 					
           #ifndef VSXU_OPENGL_ES
-            if (override_base_color->get()) {
-              glColor4f(base_color->get(0)+base_color_add->get(0),base_color->get(1)+base_color_add->get(1),base_color->get(2)+base_color_add->get(2),base_color->get(3)+base_color_add->get(3));
-              for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
-                glVertex3f(mesh->data->vertices[i].x,mesh->data->vertices[i].y,mesh->data->vertices[i].z);
-              }
-            } else
-            {
-              for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
-                if (mesh->data->vertex_colors.size())
-                mesh->data->vertex_colors[i].gl_color();
-                glVertex3f(mesh->data->vertices[i].x,mesh->data->vertices[i].y,mesh->data->vertices[i].z);
-              }
+          if (override_base_color->get()) {
+            glColor4f(base_color->get(0)+base_color_add->get(0),base_color->get(1)+base_color_add->get(1),base_color->get(2)+base_color_add->get(2),base_color->get(3)+base_color_add->get(3));
+            for (unsigned long i = 0; i < (*mesh)->data->vertices.size(); ++i) {
+              glVertex3f((*mesh)->data->vertices[i].x,(*mesh)->data->vertices[i].y,(*mesh)->data->vertices[i].z);
             }
+          } else
+          {
+            for (unsigned long i = 0; i < (*mesh)->data->vertices.size(); ++i) {
+              if ((*mesh)->data->vertex_colors.size())
+              (*mesh)->data->vertex_colors[i].gl_color();
+              glVertex3f((*mesh)->data->vertices[i].x,(*mesh)->data->vertices[i].y,(*mesh)->data->vertices[i].z);
+            }
+          }
           #endif
-					
         }
-      #ifndef VSXU_OPENGL_ES
+      #ifndef VSXU_OPENGL_ES_2_0
       glEnd();
       #endif
       render_out->set(1);
@@ -220,7 +219,7 @@ class vsx_module_render_dots : public vsx_module {
 	// out
 	vsx_module_param_render* render_out;
 	// internal
-	vsx_mesh* mesh;
+	vsx_mesh** mesh;
   vsx_matrix ma;
   vsx_vector upv;
 
@@ -258,8 +257,8 @@ public:
       glColor4f(base_color->get(0),base_color->get(1),base_color->get(2),base_color->get(3));
 
       glEnableClientState(GL_VERTEX_ARRAY);
-      glVertexPointer(3, GL_FLOAT, sizeof(vsx_vector), mesh->data->vertices.get_pointer());
-      glDrawArrays(GL_POINTS,0,mesh->data->vertices.size());
+      glVertexPointer(3, GL_FLOAT, sizeof(vsx_vector), (*mesh)->data->vertices.get_pointer());
+      glDrawArrays(GL_POINTS,0,(*mesh)->data->vertices.size());
       glDisableClientState(GL_VERTEX_ARRAY);
       
       /*glBegin(GL_POINTS);
@@ -289,7 +288,7 @@ class vsx_module_render_billboards : public vsx_module {
   // out
   vsx_module_param_render* render_out;
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh** mesh;
   vsx_matrix ma;
   vsx_vector upv;
   
@@ -407,9 +406,9 @@ public:
           glBegin(GL_POINTS);
           // ugly hack to support vertex id
           float vid = 0.0f;
-          float dvdi = 1.0f / (float)mesh->data->vertices.size();
-          for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
-            glVertex4f(mesh->data->vertices[i].x,mesh->data->vertices[i].y,mesh->data->vertices[i].z,vid);
+          float dvdi = 1.0f / (float)(*mesh)->data->vertices.size();
+          for (unsigned long i = 0; i < (*mesh)->data->vertices.size(); ++i) {
+            glVertex4f((*mesh)->data->vertices[i].x,(*mesh)->data->vertices[i].y,(*mesh)->data->vertices[i].z,vid);
             vid += dvdi;
           }
           glEnd();
@@ -449,7 +448,7 @@ class vsx_module_render_face_id : public vsx_module {
 	// out
 	vsx_module_param_render* render_out;
 	// internal
-	vsx_mesh* mesh;
+	vsx_mesh** mesh;
   vsx_matrix ma;
   vsx_vector upv;
   vsx_font* myf;
@@ -505,17 +504,17 @@ public:
       float fs = font_size->get();
 
       glColor4f(base_color->get(0),base_color->get(1),base_color->get(2),base_color->get(3));
-	    for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
+	    for (unsigned long i = 0; i < (*mesh)->data->vertices.size(); ++i) {
       	//glPushMatrix();
 	        //glTranslateff(mesh->data->vertices[i].x,mesh->data->vertices[i].y,mesh->data->vertices[i].z);
-	      if (mesh->data->vertices[i].x > minx && mesh->data->vertices[i].x < maxx)
+	      if ((*mesh)->data->vertices[i].x > minx && (*mesh)->data->vertices[i].x < maxx)
 	      {
-	        if (mesh->data->vertices[i].y > miny && mesh->data->vertices[i].y < maxy)
+	        if ((*mesh)->data->vertices[i].y > miny && (*mesh)->data->vertices[i].y < maxy)
 	        {
-	          if (mesh->data->vertices[i].z > minz && mesh->data->vertices[i].z < maxz)
+	          if ((*mesh)->data->vertices[i].z > minz && (*mesh)->data->vertices[i].z < maxz)
 	          {
               myf->print(
-                  mesh->data->vertices[i],
+                  (*mesh)->data->vertices[i],
                   i2s(i), 0.007f * fs
               );
 	          }
@@ -560,9 +559,9 @@ class vsx_module_render_mesh : public vsx_module {
   // out
   vsx_module_param_render* render_result;
   // internal
-  vsx_mesh* mesh;
-  vsx_mesh* particle_mesh;
-  vsx_texture* ta;
+  vsx_mesh** particle_mesh;
+  vsx_mesh** mesh;
+  vsx_texture** ta;
   bool m_normals, m_tex, m_colors;
   vsx_matrix mod_mat, proj_mat;
   vsx_particlesystem* particles;
@@ -618,14 +617,12 @@ public:
   }
 
   void output(vsx_module_param_abs* param) {
-    //if (tex_a && mesh_in) {
-    //  vsx_mesh* ma = mesh_in->get_addr();
-
     GLint dmask;
     glGetIntegerv(GL_DEPTH_WRITEMASK,&dmask);
     mesh = mesh_in->get_addr();
     if (mesh) {
-      if (mesh->data->faces.get_used()) {
+      if (!(*mesh)->data) return;
+      if ((*mesh)->data->faces.get_used()) {
         ta = tex_a->get_addr();
         //printf("renderer output\n");
 
@@ -680,14 +677,14 @@ public:
 
 
         if (ta) {
-          vsx_transform_obj& texture_transform = *ta->get_transform();
+          vsx_transform_obj& texture_transform = *(*ta)->get_transform();
 
           glMatrixMode(GL_TEXTURE);
           glPushMatrix();
 
-          if (ta->get_transform())
+          if ((*ta)->get_transform())
           texture_transform();
-          ta->bind();
+          (*ta)->bind();
         }// else printf("not using texture.\n");
 
 
@@ -703,32 +700,32 @@ public:
           glDeleteLists(dlist,1);
         }
 #endif
-        prev_mesh_timestamp = mesh->timestamp;
+        prev_mesh_timestamp = (*mesh)->timestamp;
         //printf("texcoords: %d\n",mesh->data->vertex_tex_coords.get_used());
 
         //printf("faces: %d\n",mesh->data->faces.get_used());
         //printf("vertices: %d\n",mesh->data->vertices.get_used());
         if (use_vertex_colors->get())
         {
-          if (mesh->data->vertex_colors.get_used()) {
-            glColorPointer(4,GL_FLOAT,0,mesh->data->vertex_colors.get_pointer());
+          if ((*mesh)->data->vertex_colors.get_used()) {
+            glColorPointer(4,GL_FLOAT,0,(*mesh)->data->vertex_colors.get_pointer());
             glEnableClientState(GL_COLOR_ARRAY);
             m_colors = true;
           } else
           m_colors = false;
         }
 
-        if (mesh->data->vertex_normals.get_used()) {
-          glNormalPointer(GL_FLOAT,0,mesh->data->vertex_normals.get_pointer());
+        if ((*mesh)->data->vertex_normals.get_used()) {
+          glNormalPointer(GL_FLOAT,0,(*mesh)->data->vertex_normals.get_pointer());
           glEnableClientState(GL_NORMAL_ARRAY);
           m_normals = true;
         } else
         m_normals = false;
 
         //#ifdef FOO
-        //printf("used: %d\n",mesh->data->vertex_tex_coords.get_used());
-        if (mesh->data->vertex_tex_coords.get_used()) {
-          glTexCoordPointer(2,GL_FLOAT,0,mesh->data->vertex_tex_coords.get_pointer());
+        //printf("used: %d\n",(*mesh)->data->vertex_tex_coords.get_used());
+        if ((*mesh)->data->vertex_tex_coords.get_used()) {
+          glTexCoordPointer(2,GL_FLOAT,0,(*mesh)->data->vertex_tex_coords.get_pointer());
           glEnableClientState(GL_TEXTURE_COORD_ARRAY);
           m_tex = true;
         } else
@@ -736,7 +733,7 @@ public:
         m_tex = false;
 
 
-        glVertexPointer(3,GL_FLOAT,0,mesh->data->vertices.get_pointer());
+        glVertexPointer(3,GL_FLOAT,0,(*mesh)->data->vertices.get_pointer());
         glEnableClientState(GL_VERTEX_ARRAY);
         if (!list_built) {
 
@@ -748,7 +745,7 @@ public:
 #endif
 
 #ifndef VSXU_OPENGL_ES
-            glDrawElements(GL_TRIANGLES,mesh->data->faces.get_used()*3,GL_UNSIGNED_INT,mesh->data->faces.get_pointer());
+            glDrawElements(GL_TRIANGLES,(*mesh)->data->faces.get_used()*3,GL_UNSIGNED_INT,(*mesh)->data->faces.get_pointer());
 #else
 					glDrawElements(GL_TRIANGLES,mesh->data->faces.get_used()*3,GL_UNSIGNED_SHORT,mesh->data->faces.get_pointer());
 
@@ -768,12 +765,12 @@ public:
             float ss;
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
-            for (unsigned long i = 0; i < particle_mesh->data->vertices.size(); ++i) {
+            for (unsigned long i = 0; i < (*particle_mesh)->data->vertices.size(); ++i) {
               glPushMatrix();
               glTranslatef(
-                particle_mesh->data->vertices[i].x,
-                particle_mesh->data->vertices[i].y,
-                particle_mesh->data->vertices[i].z
+                (*particle_mesh)->data->vertices[i].x,
+                (*particle_mesh)->data->vertices[i].y,
+                (*particle_mesh)->data->vertices[i].z
               );
               glCallList(dlist);
               glPopMatrix();
@@ -851,7 +848,7 @@ public:
         }
 
         if (ta) {
-          ta->_bind();
+          (*ta)->_bind();
           glMatrixMode(GL_TEXTURE);
           glPopMatrix();
         }
@@ -1014,7 +1011,7 @@ class vsx_module_render_mesh_array : public vsx_module {
   // internal
   vsx_mesh* mesh;
   vsx_particlesystem* particles;
-  vsx_texture* ta;
+  vsx_texture** ta;
   bool m_normals, m_tex, m_colors;
   vsx_matrix ma;
   vsx_vector upv;
@@ -1157,8 +1154,8 @@ class vsx_module_render_mesh_zsort : public vsx_module {
   // out
   vsx_module_param_render* render_result;
   // internal
-  vsx_mesh* mesh;
-  vsx_texture* ta;
+  vsx_mesh** mesh;
+  vsx_texture** ta;
   bool m_normals, m_tex, m_colors;
   vsx_matrix mod_mat, proj_mat;
   vsx_avector_nd<face_holder> f_distances;
@@ -1231,7 +1228,7 @@ public:
     //  vsx_mesh* ma = mesh_in->get_addr();
     mesh = mesh_in->get_addr();
     if (mesh) {
-      if (mesh->data->faces.get_used()) {
+      if ((*mesh)->data->faces.get_used()) {
 
 
 
@@ -1274,16 +1271,16 @@ public:
         //b.dump("camera_pos");
 
         // make sure we have centers to sort on
-        if (!mesh->data->face_centers.size()) {
-          mesh->data->calculate_face_centers();
+        if (!(*mesh)->data->face_centers.size()) {
+          (*mesh)->data->calculate_face_centers();
         }
         // loop through all the faces and calculate the distance from the camera
-        for (unsigned long i = 0; i < mesh->data->face_centers.size(); ++i) {
-          //f_distances[i].dist = mesh->data->face_centers[i].distance(b);
-          f_distances[i].dist = mesh->data->face_centers[i].dot_product(&sort_vec);
+        for (unsigned long i = 0; i < (*mesh)->data->face_centers.size(); ++i) {
+          //f_distances[i].dist = (*mesh)->data->face_centers[i].distance(b);
+          f_distances[i].dist = (*mesh)->data->face_centers[i].dot_product(&sort_vec);
           f_distances[i].id = i;
           /*glPushMatrix();
-          glTranslatef(mesh->data->face_centers[i].x,mesh->data->face_centers[i].y,mesh->data->face_centers[i].z);
+          glTranslatef((*mesh)->data->face_centers[i].x,(*mesh)->data->face_centers[i].y,(*mesh)->data->face_centers[i].z);
           glColor4f(1,1,1,1);
           gluSphere(quadratic,0.1,20,20);
           glPopMatrix();
@@ -1293,10 +1290,10 @@ public:
         // we have the distances, now time to sort
         //std::sort(f_distances, f_distances.get_end_pointer());
         fquicksort(f_distances.get_pointer(),f_distances.size());
-        for (unsigned long i = 0; i < mesh->data->face_centers.size(); ++i) {
+        for (unsigned long i = 0; i < (*mesh)->data->face_centers.size(); ++i) {
           //printf("id: %d  dist: %f\n",f_distances[i].id, f_distances[i].dist);
-          f_result[i] = mesh->data->faces[f_distances[i].id];
-          //f_result[mesh->data->face_centers.size()-1-i] = mesh->data->faces[f_distances[i].id];
+          f_result[i] = (*mesh)->data->faces[f_distances[i].id];
+          //f_result[(*mesh)->data->face_centers.size()-1-i] = (*mesh)->data->faces[f_distances[i].id];
         }
         //printf("f_Result.size: %d\n",f_result.size());
 
@@ -1306,43 +1303,43 @@ public:
         }
 
         if (ta) {
-          vsx_transform_obj& texture_transform = *ta->get_transform();
+          vsx_transform_obj& texture_transform = *(*ta)->get_transform();
 
           glMatrixMode(GL_TEXTURE);
           glPushMatrix();
 
-          if (ta->get_transform())
+          if ((*ta)->get_transform())
           {
                   //printf("texture\n");
 
             texture_transform();
           }
-          ta->bind();
+          (*ta)->bind();
         }
 
-        //printf("faces: %d\n",mesh->data->faces.get_used());
+        //printf("faces: %d\n",(*mesh)->data->faces.get_used());
 
-        if (mesh->data->vertex_colors.get_used()) {
-          glColorPointer(4,GL_FLOAT,0,mesh->data->vertex_colors.get_pointer());
+        if ((*mesh)->data->vertex_colors.get_used()) {
+          glColorPointer(4,GL_FLOAT,0,(*mesh)->data->vertex_colors.get_pointer());
           glEnableClientState(GL_COLOR_ARRAY);
           m_colors = true;
         } else m_colors = false;
 
-        if (mesh->data->vertex_normals.get_used()) {
-          glNormalPointer(GL_FLOAT,0,mesh->data->vertex_normals.get_pointer());
+        if ((*mesh)->data->vertex_normals.get_used()) {
+          glNormalPointer(GL_FLOAT,0,(*mesh)->data->vertex_normals.get_pointer());
           glEnableClientState(GL_NORMAL_ARRAY);
           m_normals = true;
         } else m_normals = false;
 
-        if (mesh->data->vertex_tex_coords.get_used()) {
-          glTexCoordPointer(2,GL_FLOAT,0,mesh->data->vertex_tex_coords.get_pointer());
+        if ((*mesh)->data->vertex_tex_coords.get_used()) {
+          glTexCoordPointer(2,GL_FLOAT,0,(*mesh)->data->vertex_tex_coords.get_pointer());
           glEnableClientState(GL_TEXTURE_COORD_ARRAY);
           m_tex = true;
         } else m_tex = false;
 
-        glVertexPointer(3,GL_FLOAT,0,mesh->data->vertices.get_pointer());
+        glVertexPointer(3,GL_FLOAT,0,(*mesh)->data->vertices.get_pointer());
         glEnableClientState(GL_VERTEX_ARRAY);
-          //glDrawElements(GL_TRIANGLES,mesh->data->faces.get_used()*3,GL_UNSIGNED_INT,mesh->data->faces.get_pointer());
+          //glDrawElements(GL_TRIANGLES,(*mesh)->data->faces.get_used()*3,GL_UNSIGNED_INT,(*mesh)->data->faces.get_pointer());
           glDrawElements(GL_TRIANGLES,f_result.get_used()*3,GL_UNSIGNED_INT,f_result.get_pointer());
         glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -1357,7 +1354,7 @@ public:
         if (m_colors) {
           glDisableClientState(GL_COLOR_ARRAY);
         }
-        if (ta) ta->_bind();
+        if (ta) (*ta)->_bind();
         if (vertex_colors->get()) {
           glDisable(GL_COLOR_MATERIAL);
         }
@@ -1501,7 +1498,7 @@ class vsx_module_segmesh_to_mesh : public vsx_module {
   vsx_module_param_segment_mesh* seg_mesh_in;
   vsx_module_param_mesh* mesh_out;
   vsx_2dgrid_mesh* mesh_in;
-  vsx_mesh mesh;
+  vsx_mesh* mesh;
 public:
 
   void module_info(vsx_module_info* info) {
@@ -1517,7 +1514,16 @@ public:
     //vsx_2dgrid_mesh foomesh;
     //seg_mesh_in->set(foomesh);
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
-    mesh_out->set_p(mesh);
+    mesh_out->set(mesh);
+  }
+
+  bool init() {
+    mesh = new vsx_mesh;
+    return true;
+  }
+  void on_delete()
+  {
+    delete mesh;
   }
 
   void output(vsx_module_param_abs* param) {
@@ -1525,15 +1531,10 @@ public:
     if (mesh_in) {
       mesh_in->calculate_face_normals();
       mesh_in->calculate_vertex_normals();
-      mesh_in->dump_vsx_mesh(&mesh);
+      mesh_in->dump_vsx_mesh(mesh);
       mesh_out->set(mesh);
     }
   }
-
-  void on_delete() {
-    mesh.clear();
-  }
-
 };
 
 

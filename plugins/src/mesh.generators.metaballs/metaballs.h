@@ -33,10 +33,11 @@ public:
 	void  Render();
 
 	void  SetGridSize(int nSize);
-    vsx_array<vsx_vector> vertices;
-    vsx_array<vsx_vector> vertex_normals;
-    vsx_array<vsx_tex_coord> vertex_tex_coords;
-    vsx_array<vsx_face> faces;
+
+  vsx_array<vsx_vector>* vertices;
+  vsx_array<vsx_vector>* vertex_normals;
+  vsx_array<vsx_tex_coord>* vertex_tex_coords;
+  vsx_array<vsx_face>* faces;
 
 protected:
 	float ComputeEnergy(float x, float y, float z);

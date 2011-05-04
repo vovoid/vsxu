@@ -136,7 +136,6 @@ public:
 #else
   void* filesystem;
 #endif
-
   int accept_commands;  // 1 accepts, 0 won't accept
   std::list <vsx_command_s*> commands; // results of commands
   std::list <vsx_command_s*>::const_iterator iter;
@@ -316,7 +315,13 @@ public:
     return j;
   }
   vsx_command_list() : mutex(0),filesystem(0),accept_commands(1) {}
-  ~vsx_command_list() {};
+  ~vsx_command_list()
+  {
+    //for (std::list <vsx_command_s*>::iterator it = commands.begin(); it != commands.end(); ++it) {
+     //delete *it;
+      //*it = 0;
+    //}
+  };
 };
 
 

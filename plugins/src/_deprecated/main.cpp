@@ -141,7 +141,7 @@ class vsx_module_mesh_old_supershape : public vsx_module {
   // out
   vsx_module_param_mesh* result;
   // internal
-  vsx_mesh mesh;
+  vsx_mesh* mesh;
   bool first_run;
   int n_segs;
   int l_param_updates;
@@ -227,15 +227,26 @@ public:
     first_run = true;
   }
 
+  bool init() {
+    mesh = new vsx_mesh;
+    return true;
+  }
+  void on_delete()
+  {
+    delete mesh;
+  }
+
+
   void run() {
     if (l_param_updates != param_updates) first_run = true;
-    mesh.data->vertices[0] = vsx_vector(10);
+    mesh->data->vertices[0] = vsx_vector(10);
 
     if (first_run) {
       l_param_updates = param_updates;
       //printf("generating random points\n");
-      mesh.data->vertices.reset_used();
-      mesh.data->faces.reset_used();
+      mesh = new vsx_mesh;
+      mesh->data->vertices.reset_used();
+      mesh->data->faces.reset_used();
       int vi = 0; // vertex index
 
       // sanity checks
@@ -320,9 +331,9 @@ public:
           tmp_vec.y = r1 * sin(phi) * r2 * cos(theta);
           tmp_vec.z = r2 * sin(theta);
           //printf("%f %f %f\n", tmp_vec.x, tmp_vec.y, tmp_vec.z);
-          mesh.data->vertices[vi] = tmp_vec;
-          mesh.data->vertex_normals[vi] = tmp_vec;
-          mesh.data->vertex_colors[vi] = vsx_color(1, 1, 1, 1);
+          mesh->data->vertices[vi] = tmp_vec;
+          mesh->data->vertex_normals[vi] = tmp_vec;
+          mesh->data->vertex_colors[vi] = vsx_color(1, 1, 1, 1);
           phi += phi_step;
           vi++;
         }
@@ -336,39 +347,35 @@ public:
           a.a = i * _x_num_segments + j;
           a.b = (i + 1) * _x_num_segments + j;
           a.c = i * _x_num_segments + ((j + 1) % _x_num_segments);
-          if (a.a > mesh.data->vertices.size()) a.a = 0;
-          if (a.b > mesh.data->vertices.size()) a.b = 0;
-          if (a.c > mesh.data->vertices.size()) a.c = 0;
-          vsx_vector aa = mesh.data->vertices[a.b] - mesh.data->vertices[a.a];
-          vsx_vector b = mesh.data->vertices[a.c] - mesh.data->vertices[a.a];
+          if (a.a > mesh->data->vertices.size()) a.a = 0;
+          if (a.b > mesh->data->vertices.size()) a.b = 0;
+          if (a.c > mesh->data->vertices.size()) a.c = 0;
+          vsx_vector aa = mesh->data->vertices[a.b] - mesh->data->vertices[a.a];
+          vsx_vector b = mesh->data->vertices[a.c] - mesh->data->vertices[a.a];
           vsx_vector n;
           n.cross(aa,b);
           n.normalize();
-          mesh.data->vertex_normals[a.a] = mesh.data->vertex_normals[a.b] = mesh.data->vertex_normals[a.c] = n;
+          mesh->data->vertex_normals[a.a] = mesh->data->vertex_normals[a.b] = mesh->data->vertex_normals[a.c] = n;
           //printf("%d %d %d\n", a.a, a.b, a.c);
-          mesh.data->faces.push_back(a);
+          mesh->data->faces.push_back(a);
           a.a = i * _x_num_segments + ((j + 1) % _x_num_segments);
           a.b = (i + 1) * _x_num_segments + j;
           a.c = (i + 1) * _x_num_segments + ((j + 1) % _x_num_segments);
           //printf("%d %d %d\n", a.a, a.b, a.c);
-          aa = mesh.data->vertices[a.b] - mesh.data->vertices[a.a];
-          b = mesh.data->vertices[a.c] - mesh.data->vertices[a.a];
+          aa = mesh->data->vertices[a.b] - mesh->data->vertices[a.a];
+          b = mesh->data->vertices[a.c] - mesh->data->vertices[a.a];
           //vsx_vector n;
           n.cross(aa,b);
           n.normalize();
-          mesh.data->vertex_normals[a.a] = mesh.data->vertex_normals[a.b] = mesh.data->vertex_normals[a.c] = n;
+          mesh->data->vertex_normals[a.a] = mesh->data->vertex_normals[a.b] = mesh->data->vertex_normals[a.c] = n;
 
-          mesh.data->faces.push_back(a);
+          mesh->data->faces.push_back(a);
         }
       }
     }
-    result->set_p(mesh);
+    result->set(mesh);
 
     //  }
-  }
-
-  void on_delete() {
-    mesh.clear();
   }
 };
 

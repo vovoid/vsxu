@@ -37,7 +37,7 @@ class vsx_texture {
   GLuint framebuffer_id;
   GLuint depthbuffer_id;
   GLuint colorBuffer, depthBuffer, tex_fbo;
-
+  int original_transform_obj;
 public:
   bool locked; // this is if another texture gets a texture already in the list, to prevent it from unloading.
                 // if not locked it can safely delete it. This is an approximation of course, but should work
@@ -104,6 +104,7 @@ public:
 		if(transform_obj == new_transform_obj) return;
 		if(transform_obj) delete transform_obj;
 		transform_obj = new_transform_obj;
+    original_transform_obj = 0;
 	}
 	// return the transformation
 	vsx_transform_obj* get_transform(){return transform_obj;}
@@ -128,9 +129,14 @@ public:
     rt = 0;
     valid = false;
     transform_obj = new vsx_transform_neutral;
+    original_transform_obj = 1;
   }
   vsx_texture(int id, int type);
-
+  ~vsx_texture()
+  {
+    if (original_transform_obj)
+    delete transform_obj;
+  }
 
   VSX_TEXTURE_DLLIMPORT void unload();
 };

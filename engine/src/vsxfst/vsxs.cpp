@@ -42,7 +42,6 @@ vsx_string f2s(float in)
 
 vsx_string f2s(float in, int decimals)
 {
-  
   sprintf(string_res,vsx_string("%."+i2s(decimals)+"f").c_str(),in);
   return vsx_string(string_res);
 }
@@ -274,7 +273,8 @@ int split_string(vsx_string& input, vsx_string& delimiter, std::vector<vsx_strin
   char lastchar = 0;
   for (int i = 0; i < input.size(); ++i)
   {
-    if (input[i] == delimiter[fpos] && lastchar != '\\') {
+    if (input[i] == delimiter[fpos] && lastchar != '\\')
+    {
       ++fpos;
     } else {
       res.push_back(input[i]);

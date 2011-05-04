@@ -73,7 +73,12 @@ Section "VSX Ultra Player" secplayer
   File ..\..\lib\win32\pthreadGCE.dll
   File ..\..\lib\win32\fmodex.dll
   File ..\..\lib\win32\glew_shared.dll
+  File ..\..\lib\win32\libgcc_s_dw2-1.dll
+  File ..\..\lib\win32\freetype6.dll
+  File ..\..\lib\win32\libstdc++-6.dll
+  File ..\..\lib\win32\zlib1.dll
   File ..\..\lib\win32\mingwm10.dll
+  
   
   SetOutPath "$INSTDIR\visuals_player"
   File ..\..\share\visuals_player\*.vsx
@@ -85,6 +90,8 @@ Section "VSX Ultra Player" secplayer
 
   SetOutPath "$INSTDIR\font"
   File ..\..\share\font\font-ascii.png
+
+  SetOutPath "$INSTDIR"
 
   ;Store installation folder
   WriteRegStr HKCU "Software\vovoid\vsxu_player_0.2.0" "" $INSTDIR

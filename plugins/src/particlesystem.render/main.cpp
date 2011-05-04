@@ -117,7 +117,7 @@ class module_render_particlesystem : public vsx_module {
 	vsx_module_param_render* render_result;
 	// internal
 	vsx_particlesystem* particles;
-	vsx_texture* tex;
+	vsx_texture** tex;
 	vsx_sequence seq_size;
 	vsx_sequence seq_alpha;
 	vsx_sequence seq_r;
@@ -342,18 +342,18 @@ public:
     {
       tex = tex_inf->get_addr();
       if (tex) {
-        if (!(tex->valid)) {
+        if (!((*tex)->valid)) {
           return;
         }
-      	vsx_transform_obj texture_transform = tex->get_transform();
+      	vsx_transform_obj texture_transform = (*tex)->get_transform();
 
       	glMatrixMode(GL_TEXTURE);
       	glPushMatrix();
 
-      	if (tex->get_transform()) texture_transform();
+      	if ((*tex)->get_transform()) texture_transform();
 
 
-        tex->bind();
+        (*tex)->bind();
         glColor4f(1,1,1,1);
 
         if (render_type->get() == 1)
@@ -632,7 +632,7 @@ public:
           }
           glEnd();
         }
-        tex->_bind();
+        (*tex)->_bind();
       	glMatrixMode(GL_TEXTURE);
       	glPopMatrix();
       	glMatrixMode(GL_MODELVIEW);
@@ -655,7 +655,7 @@ class module_render_particlesystem_c : public vsx_module {
 	vsx_module_param_render* render_result;
 	// internal
 	vsx_particlesystem* particles;
-	vsx_texture* tex;
+	vsx_texture** tex;
 public:
   void module_info(vsx_module_info* info)
   {
@@ -690,20 +690,20 @@ public:
       tex = tex_inf->get_addr();
       float local_alpha = alpha->get();
       if (tex) {
-        if (!(tex->valid)) {
+        if (!((*tex)->valid)) {
           return;
         }
         float cx = position->get(0);
         float cy = position->get(1);
         float cz = position->get(2);
-      	vsx_transform_obj texture_transform = tex->get_transform();
+      	vsx_transform_obj texture_transform = (*tex)->get_transform();
 
       	glMatrixMode(GL_TEXTURE);
       	glPushMatrix();
 
-      	if (tex->get_transform()) texture_transform();
+      	if ((*tex)->get_transform()) texture_transform();
 
-        tex->bind();
+        (*tex)->bind();
         beginBlobs();
         glBegin(GL_QUADS);
 
@@ -730,7 +730,7 @@ public:
           }
         }
         glEnd();
-        tex->_bind();
+        (*tex)->_bind();
       	glMatrixMode(GL_TEXTURE);
       	glPopMatrix();
       	glMatrixMode(GL_MODELVIEW);

@@ -80,7 +80,8 @@ void app_key_down(long key)
   {
     // esc:
 	  case 257:
-		case 27: 
+		case 27:
+      if (manager) manager_destroy(manager);
       exit(0);
     // pgup:
 		case 298:
@@ -118,7 +119,7 @@ void app_key_down(long key)
       break;
     // "F" key:
     case 112:
-    case 70: 
+    case 70:
       overlay->set_help(2); 
       break;
     // "R" key:

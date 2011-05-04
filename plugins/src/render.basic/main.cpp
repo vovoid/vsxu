@@ -301,12 +301,9 @@ class vsx_module_simple_with_texture : public vsx_module {
 	vsx_module_param_render* render_result;
 	
 	float tax, tay, tbx, tby;
-	
-	// internal
-//	vsx_texture t_inf;
-
   vsx_color cm;
-public:	
+
+public:
 
 
 void module_info(vsx_module_info* info)
@@ -462,13 +459,13 @@ void output(vsx_module_param_abs* param) {
 	//if (tex_inf)
   {
 	//printf("simple_renderer_texture::output\n");
-	vsx_texture* t_inf;
+	vsx_texture** t_inf;
 	t_inf = tex_inf->get_addr();
   if (!t_inf) {
     render_result->set(0);
     return;
   }
-  if (!(t_inf->valid)) {
+  if (!((*t_inf)->valid)) {
     render_result->set(0);
     return;
   }
@@ -476,7 +473,7 @@ void output(vsx_module_param_abs* param) {
   
 //	int texture_id = t_inf->texture_info.get_id();
 //	int texture_type = t_inf->texture_info.get_type();
-	vsx_transform_obj& texture_transform = *t_inf->get_transform();
+	vsx_transform_obj& texture_transform = *(*t_inf)->get_transform();
 	
 	float obj_size = size->get();
 
@@ -489,7 +486,7 @@ void output(vsx_module_param_abs* param) {
 	glMatrixMode(GL_TEXTURE);
 	glPushMatrix();
 
-	if (t_inf->get_transform()) texture_transform();
+	if ((*t_inf)->get_transform()) texture_transform();
 
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
@@ -506,7 +503,7 @@ void output(vsx_module_param_abs* param) {
 //	glEnable(texture_type);
 //	glDisable(GL_DEPTH_TEST);
 //	glBindTexture(texture_type, texture_id);
-  t_inf->bind();
+  (*t_inf)->bind();
   float alpha = opacity->get();
   if (alpha < 0) alpha = 0;
 
@@ -568,22 +565,22 @@ void output(vsx_module_param_abs* param) {
 		#endif
 		#ifndef VSXU_OPENGL_ES
 			glBegin(GL_TRIANGLE_FAN);
-				glColor4f(cm.r*color_center->get(0), cm.g*color_center->get(1) , cm.b*color_center->get(2),cm.a*color_center->get(3));  t_inf->texcoord2f((tbx-tax)*0.5f+tax,(tby-tay)*0.5f+tay); 
+				glColor4f(cm.r*color_center->get(0), cm.g*color_center->get(1) , cm.b*color_center->get(2),cm.a*color_center->get(3));  (*t_inf)->texcoord2f((tbx-tax)*0.5f+tax,(tby-tay)*0.5f+tay);
 				glVertex3f(0,0,0);
       
-				glColor4f(cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3));	t_inf->texcoord2f(tax, tby);	
+				glColor4f(cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3));	(*t_inf)->texcoord2f(tax, tby);
 				glVertex3f(-tmpVec0[0], -tmpVec0[1], -tmpVec0[2]);
 				
-				glColor4f(cm.r*color_b->get(0), cm.g*color_b->get(1)   , cm.b*color_b->get(2),cm.a*color_b->get(3));	t_inf->texcoord2f(tax, tay);	
+				glColor4f(cm.r*color_b->get(0), cm.g*color_b->get(1)   , cm.b*color_b->get(2),cm.a*color_b->get(3));	(*t_inf)->texcoord2f(tax, tay);
 				glVertex3f(tmpVec1[0],  tmpVec1[1], tmpVec1[2]);
       
-				glColor4f(cm.r*color_c->get(0), cm.g*color_c->get(1)   , cm.b*color_c->get(2),cm.a*color_c->get(3));	t_inf->texcoord2f(tbx, tay);	
+				glColor4f(cm.r*color_c->get(0), cm.g*color_c->get(1)   , cm.b*color_c->get(2),cm.a*color_c->get(3));	(*t_inf)->texcoord2f(tbx, tay);
 				glVertex3f( tmpVec0[0],  tmpVec0[1], tmpVec0[2]);
       
-				glColor4f(cm.r*color_d->get(0), cm.g*color_d->get(1)   , cm.b*color_d->get(2),cm.a*color_d->get(3));	t_inf->texcoord2f(tbx, tby);	
+				glColor4f(cm.r*color_d->get(0), cm.g*color_d->get(1)   , cm.b*color_d->get(2),cm.a*color_d->get(3));	(*t_inf)->texcoord2f(tbx, tby);
 				glVertex3f(-tmpVec1[0], -tmpVec1[1], -tmpVec1[2]);
       
-				glColor4f(cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3));	t_inf->texcoord2f(tax, tby);	
+				glColor4f(cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3));	(*t_inf)->texcoord2f(tax, tby);
 				glVertex3f(-tmpVec0[0], -tmpVec0[1], -tmpVec0[2]);
 			glEnd();
 		#endif
@@ -634,18 +631,18 @@ void output(vsx_module_param_abs* param) {
 		#endif
 		#ifndef VSXU_OPENGL_ES
 			glBegin(GL_TRIANGLE_FAN);
-				glColor4f(cm.r*color_center->get(0), cm.g*color_center->get(1) , cm.b*color_center->get(2),cm.a*color_center->get(3));  t_inf->texcoord2f((tbx-tax)*0.5f+tax,(tby-tay)*0.5f+tay); 
+				glColor4f(cm.r*color_center->get(0), cm.g*color_center->get(1) , cm.b*color_center->get(2),cm.a*color_center->get(3));  (*t_inf)->texcoord2f((tbx-tax)*0.5f+tax,(tby-tay)*0.5f+tay);
 				glVertex3i(0,0,0);
-				glColor4f(cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3));	t_inf->texcoord2f(tax, tay);	glVertex3f(-1, -1, 0);
-				glColor4f(cm.r*color_b->get(0), cm.g*color_b->get(1)   , cm.b*color_b->get(2),cm.a*color_b->get(3));	t_inf->texcoord2f(tax, tby);	glVertex3f(-1,  1, 0);
-				glColor4f(cm.r*color_c->get(0), cm.g*color_c->get(1)   , cm.b*color_c->get(2),cm.a*color_c->get(3));	t_inf->texcoord2f(tbx, tby);	glVertex3f( 1,  1, 0);
-				glColor4f(cm.r*color_d->get(0), cm.g*color_d->get(1)   , cm.b*color_d->get(2),cm.a*color_d->get(3));	t_inf->texcoord2f(tbx, tay);	glVertex3f( 1, -1, 0);
-				glColor4f(cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3));	t_inf->texcoord2f(tax, tay);	glVertex3f(-1, -1, 0);
+				glColor4f(cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3));	(*t_inf)->texcoord2f(tax, tay);	glVertex3f(-1, -1, 0);
+				glColor4f(cm.r*color_b->get(0), cm.g*color_b->get(1)   , cm.b*color_b->get(2),cm.a*color_b->get(3));	(*t_inf)->texcoord2f(tax, tby);	glVertex3f(-1,  1, 0);
+				glColor4f(cm.r*color_c->get(0), cm.g*color_c->get(1)   , cm.b*color_c->get(2),cm.a*color_c->get(3));	(*t_inf)->texcoord2f(tbx, tby);	glVertex3f( 1,  1, 0);
+				glColor4f(cm.r*color_d->get(0), cm.g*color_d->get(1)   , cm.b*color_d->get(2),cm.a*color_d->get(3));	(*t_inf)->texcoord2f(tbx, tay);	glVertex3f( 1, -1, 0);
+				glColor4f(cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3));	(*t_inf)->texcoord2f(tax, tay);	glVertex3f(-1, -1, 0);
 			glEnd();
 		#endif
   }
 
-  t_inf->_bind();
+  (*t_inf)->_bind();
 
 	glPopMatrix();
 	glMatrixMode(GL_TEXTURE);

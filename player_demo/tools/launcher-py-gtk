@@ -1,0 +1,71 @@
+#!/usr/bin/env python
+import pygtk
+pygtk.require('2.0')
+import gtk
+import subprocess
+import os
+import sys
+
+class launcher:
+    def run_button(self, widget):
+	os.chdir("demo")
+	os.environ['__GL_SYNC_TO_VBLANK'] = '1'
+	os.environ['__GL_FSAA_MODE'] = self.fsaa.get_text()
+	os.environ['LD_LIBRARY_PATH'] = './'
+	arg = ["./ldr"];
+	if self.fullscreen_checkbutton.get_active():
+		arg.append("-f")
+	arg.append("-s")
+	arg.append(self.x_res.get_text()+","+self.y_res.get_text())
+	retcode = subprocess.call(arg)
+	sys.exit()
+    def __init__(self):
+        self.x = 50
+        self.y = 50
+        window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        window.set_title("Vovoid Luna:Reactivation Launcher")
+        window.connect("destroy", lambda w: gtk.main_quit())
+        window.set_border_width(10)
+        window.resize(450,200)
+        self.fixed = gtk.Fixed()
+        window.add(self.fixed)
+        self.fixed.show()
+        self.fullscreen_checkbutton = gtk.CheckButton()
+        self.fixed.put(self.fullscreen_checkbutton, 180,10)
+        self.fullscreen_checkbutton.show()
+        label1 = gtk.Label("run fullscreen")
+        self.fixed.put(label1, 10, 10)
+        label1.show()
+        label1 = gtk.Label("x resolution")
+        self.fixed.put(label1, 10, 40)
+        label1.show()
+        self.x_res = gtk.Entry()
+        self.x_res.set_text("1920")
+        self.fixed.put(self.x_res, 180,40)
+        self.x_res.show()
+        label1 = gtk.Label("y resolution")
+        self.fixed.put(label1, 10, 70)
+        label1.show()
+        self.y_res = gtk.Entry()
+        self.y_res.set_text("1080")
+        self.fixed.put(self.y_res, 180,70)
+        self.y_res.show()
+        label1 = gtk.Label("FSAA mode")
+        self.fixed.put(label1, 10, 100)
+        label1.show()
+        self.fsaa = gtk.Entry()
+        self.fsaa.set_text("5")
+        self.fixed.put(self.fsaa, 180,100)
+        self.fsaa.show()
+        run_button = gtk.Button("run demo")
+        self.fixed.put(run_button, 10, 130)
+        run_button.show()
+        run_button.connect("clicked", self.run_button)
+        window.show()
+def main():
+    gtk.main()
+    return 0
+
+if __name__ == "__main__":
+    launcher()
+    main()

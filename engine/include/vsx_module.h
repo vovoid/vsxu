@@ -244,6 +244,7 @@ public:
   // when it's time to allocate memory for parameters (when a module is to be used for real)
   // you have to implement this method to declare parameters. This is very related to the module_info function
   // as that one declares the GUI aspects of these parameters.
+  // DO NOT allocate your own memory in here, do it in the init() function
 	virtual void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {};
 	
 	bool redeclare_in;
@@ -255,9 +256,11 @@ public:
 	// avector with all the filenames that this module needs
 	// this is needed to build .vsx packages
 	vsx_avector<vsx_string> resources;
-	// the init method, in here you should do stuff that needs to be done only once - i.e. read configuration
-	// values from disk or calculate stuff. Bear in mind that this is done as a part of the main thread
-	// so if you want to do heavy processing, you have to create a thread in here.
+	// the init method, in here you should do stuff that needs to be done only once -
+  // - allocate + initialize memory
+  // - read configuration files
+	// - calculate stuff.
+  // Note though: this is called from the main thread so for heavy processing - create a thread instead.
 	virtual bool init() {return true;};
 
   // status screens, these are nice for the live performer as the module gets a chance to draw something

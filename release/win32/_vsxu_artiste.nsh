@@ -8,9 +8,11 @@ SetOverwrite on
   File ..\..\lib\win32\pthreadGCE.dll
   File ..\..\lib\win32\fmodex.dll
   File ..\..\lib\win32\glew_shared.dll
-  File ..\..\lib\win32\mingwm10.dll
+  File ..\..\lib\win32\libgcc_s_dw2-1.dll
+  File ..\..\lib\win32\libstdc++-6.dll
   File ..\..\lib\win32\zlib1.dll
   File ..\..\lib\win32\freetype6.dll
+  File ..\..\lib\win32\mingwm10.dll  
   
  
  ; VSXU GRAPHICS

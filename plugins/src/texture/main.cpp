@@ -80,19 +80,19 @@ public:
 		texture_a.upload_ram_bitmap(&ab,false);
 		texture_b.upload_ram_bitmap(&bb,false);
 
-		texture_a_out->set_p(texture_a);
-		texture_b_out->set_p(texture_b);
+		texture_a_out->set(&texture_a);
+		texture_b_out->set(&texture_b);
 	}
 
 	void output(vsx_module_param_abs* param)
 	{
-		vsx_texture* t_a;
+		vsx_texture** t_a;
 			t_a = texture_a_in->get_addr();
-		vsx_texture* t_b;
+		vsx_texture** t_b;
 			t_b = texture_b_in->get_addr();
 		if (t_a && t_b) {
-			((vsx_module_param_texture*)texture_a_out)->set_p(*t_a);
-			((vsx_module_param_texture*)texture_b_out)->set_p(*t_b);
+			((vsx_module_param_texture*)texture_a_out)->set(*t_a);
+			((vsx_module_param_texture*)texture_b_out)->set(*t_b);
 		}
 		if (fade_pos_from_engine->get() != 0.0f)
 		{
@@ -264,7 +264,7 @@ void start() {
   which_buffer = false;
   texture->init_buffer(res_x,res_x);
   texture->valid = false;
-  texture_result->set(*texture);
+  texture_result->set(texture);
 
   allocate_second_texture = texture->get_fbo_status();
 
@@ -457,13 +457,13 @@ void deactivate_offscreen() {
   {
     texture->end_capture();
     texture->valid = true;
-    ((vsx_module_param_texture*)texture_result)->set_p(*texture);
+    ((vsx_module_param_texture*)texture_result)->set(texture);
   }
   else
   {
     texture2->end_capture();
     texture2->valid = true;
-    ((vsx_module_param_texture*)texture_result)->set_p(*texture2);
+    ((vsx_module_param_texture*)texture_result)->set(texture2);
   }
 
   which_buffer = !which_buffer;
@@ -565,20 +565,20 @@ void vsx_module_texture_translate::declare_params(vsx_module_param_list& in_para
 }
 
 void vsx_module_texture_translate::run() {
-  vsx_texture* texture_info_in = texture_info_param_in->get_addr();
+  vsx_texture** texture_info_in = texture_info_param_in->get_addr();
   if (texture_info_in)
   {
-    texture_out->valid = texture_info_in->valid;
-    texture_out->rt = texture_info_in->rt;
-  	texture_out->texture_info = texture_info_in->texture_info;
+    texture_out->valid = (*texture_info_in)->valid;
+    texture_out->rt = (*texture_info_in)->rt;
+  	texture_out->texture_info = (*texture_info_in)->texture_info;
   	float x = translation_vec->get(0);
   	float y = translation_vec->get(1);
   	float z = translation_vec->get(2);
-  	vsx_transform_obj* prev_transform = texture_info_in->get_transform();
+  	vsx_transform_obj* prev_transform = (*texture_info_in)->get_transform();
   	transform.set_previous_transform(prev_transform);
   	transform.update(x, y, z);
   	texture_out->set_transform(&transform);
-    ((vsx_module_param_texture*)texture_result)->set_p(*texture_out);
+    ((vsx_module_param_texture*)texture_result)->set(texture_out);
 
   } else texture_result->valid = false;
 
@@ -638,21 +638,21 @@ void vsx_module_texture_scale::declare_params(vsx_module_param_list& in_paramete
 }
 
 void vsx_module_texture_scale::run() {
-	vsx_texture* texture_info_in = texture_info_param_in->get_addr();
+	vsx_texture** texture_info_in = texture_info_param_in->get_addr();
 	if (texture_info_in)
  {
-	  texture_out->valid = texture_info_in->valid;
+	  texture_out->valid = (*texture_info_in)->valid;
     //if (texture_info_in->rt)
-    texture_out->rt = texture_info_in->rt;
-  	texture_out->texture_info = texture_info_in->texture_info;
+    texture_out->rt = (*texture_info_in)->rt;
+  	texture_out->texture_info = (*texture_info_in)->texture_info;
   	float x = scale_vec->get(0);
   	float y = scale_vec->get(1);
   	float z = scale_vec->get(2);
-  	vsx_transform_obj* prev_transform = texture_info_in->get_transform();
+  	vsx_transform_obj* prev_transform = (*texture_info_in)->get_transform();
   	transform.set_previous_transform(prev_transform);
   	transform.update(x, y, z);
   	texture_out->set_transform(&transform);
-  	((vsx_module_param_texture*)texture_result)->set_p(*texture_out);
+  	((vsx_module_param_texture*)texture_result)->set(texture_out);
   }	else {
     texture_result->valid = false;
   }
@@ -693,30 +693,30 @@ void vsx_module_texture_rotate::declare_params(vsx_module_param_list& in_paramet
 void vsx_module_texture_rotate::run() {
 //printf("rotate_begin\n");
 
-	vsx_texture* texture_info_in = texture_info_param_in->get_addr();
+	vsx_texture** texture_info_in = texture_info_param_in->get_addr();
 	//printf("validness: %d\n",texture_info_param_in->valid);
 //	if (texture_info_in->valid)
   if (texture_info_in)
   {
 
     //if (texture_info_in->rt)
-    texture_out->rt = texture_info_in->rt;
-    texture_out->valid = texture_info_in->valid;
+    texture_out->rt = (*texture_info_in)->rt;
+    texture_out->valid = (*texture_info_in)->valid;
 
 //	if (texture_info_in->texture_info) {
-  	texture_out->texture_info = texture_info_in->texture_info;
+  	texture_out->texture_info = (*texture_info_in)->texture_info;
 //  }
 
   	float x = rotation_axis->get(0);
   	float y = rotation_axis->get(1);
   	float z = rotation_axis->get(2);
   	float a = rotation_angle->get()*360;
-  	vsx_transform_obj* prev_transform = texture_info_in->get_transform();
+  	vsx_transform_obj* prev_transform = (*texture_info_in)->get_transform();
   	transform.set_previous_transform(prev_transform);
   	transform.update(a, x, y, z);
     //	if (texture_out)
   	texture_out->set_transform(&transform);
-  	((vsx_module_param_texture*)texture_result)->set_p(*texture_out);
+  	((vsx_module_param_texture*)texture_result)->set(texture_out);
   }	else {
     //printf("fooble\n");
     texture_result->valid = false;
@@ -775,7 +775,7 @@ class vsx_module_texture_parameter : public vsx_module {
   // out
   vsx_module_param_texture* texture_result;
   // internal
-  vsx_texture* texture_out;
+  vsx_texture** texture_out;
 
 public:
 
@@ -824,7 +824,7 @@ public:
     {
      if (param_updates)
      {
-        texture_out->bind();
+        (*texture_out)->bind();
   #ifdef VSXU_OPENGL_ES
         if (GL_EXT_texture_filter_anisotropic)
   #endif
@@ -835,9 +835,9 @@ public:
           float rMaxAniso;
           glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &rMaxAniso);
           if (anisotropic_filter->get())
-          glTexParameterf(texture_out->texture_info.ogl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
+          glTexParameterf((*texture_out)->texture_info.ogl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
           else
-          glTexParameterf(texture_out->texture_info.ogl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f);
+          glTexParameterf((*texture_out)->texture_info.ogl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f);
         }
 
         float vals[4];
@@ -846,18 +846,18 @@ public:
         vals[2] = border_color->get(2);
         vals[3] = border_color->get(3);
 
-        glTexParameteri(texture_out->texture_info.ogl_type,GL_TEXTURE_MIN_FILTER, tex_filter[min_filter->get()]);
-        glTexParameteri(texture_out->texture_info.ogl_type,GL_TEXTURE_MAG_FILTER, tex_filter[mag_filter->get()]);
+        glTexParameteri((*texture_out)->texture_info.ogl_type,GL_TEXTURE_MIN_FILTER, tex_filter[min_filter->get()]);
+        glTexParameteri((*texture_out)->texture_info.ogl_type,GL_TEXTURE_MAG_FILTER, tex_filter[mag_filter->get()]);
   #ifndef VSXU_OPENGL_ES
-        glTexParameterfv(texture_out->texture_info.ogl_type, GL_TEXTURE_BORDER_COLOR, vals);
+        glTexParameterfv((*texture_out)->texture_info.ogl_type, GL_TEXTURE_BORDER_COLOR, vals);
   #endif
-        glTexParameteri(texture_out->texture_info.ogl_type, GL_TEXTURE_WRAP_T, tex_wrap[wrap_t->get()]);
-        glTexParameteri(texture_out->texture_info.ogl_type, GL_TEXTURE_WRAP_S, tex_wrap[wrap_s->get()]);
-        texture_out->_bind();
+        glTexParameteri((*texture_out)->texture_info.ogl_type, GL_TEXTURE_WRAP_T, tex_wrap[wrap_t->get()]);
+        glTexParameteri((*texture_out)->texture_info.ogl_type, GL_TEXTURE_WRAP_S, tex_wrap[wrap_s->get()]);
+        (*texture_out)->_bind();
 
         --param_updates;
       }
-      ((vsx_module_param_texture*)texture_result)->set_p(*texture_out);
+      ((vsx_module_param_texture*)texture_result)->set(*texture_out);
 
     }	else {
       texture_result->valid = false;
@@ -934,7 +934,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   attenuation = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
   attenuation->set(1.0f);
 
-  texture_result->set_p(*texture);
+  texture_result->set(texture);
 
 #ifdef __APPLE__
 	return;
@@ -1177,16 +1177,16 @@ void run() {
   }
 
 
-  vsx_texture* ti = glow_source->get_addr();
+  vsx_texture** ti = glow_source->get_addr();
 
   if (ti) {
-    ti->bind();
+    (*ti)->bind();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    ti->_bind();
+    (*ti)->_bind();
 
     //glGetIntegerv(GL_VIEWPORT, viewport);
 	//
@@ -1205,7 +1205,7 @@ void run() {
 
       if (GLEW_VERSION_1_3)
         glActiveTexture(GL_TEXTURE0);
-      ti->bind();
+      (*ti)->bind();
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
         shader.begin();
@@ -1223,7 +1223,7 @@ void run() {
             glVertex3f( 1.0f, -1.0f, 0.0f);
         	glEnd();
         shader.end();
-      ti->_bind();
+      (*ti)->_bind();
     texture->end_capture();
     //
     texture->valid = true;
@@ -1324,7 +1324,7 @@ void run() {
 
     //glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
 
-    texture_result->set_p(*texture2);
+    texture_result->set(texture2);
   }
 }
 
@@ -1336,8 +1336,6 @@ void stop() {
   if (texture) {
     texture->deinit_buffer();
     texture2->deinit_buffer();
-    delete texture->transform_obj;
-    delete texture2->transform_obj;
   	delete texture;
   	delete texture2;
     texture = 0;
@@ -1359,8 +1357,6 @@ void on_delete() {
   if (texture) {
     texture->deinit_buffer();
     texture2->deinit_buffer();
-    delete texture->transform_obj;
-    delete texture2->transform_obj;
   	delete texture;
   	delete texture2;
     texture = 0;

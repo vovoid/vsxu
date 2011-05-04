@@ -152,10 +152,10 @@ void CMetaballs::Render()
 	m_nFacePart = 0;
 	m_nNumVertices = 0;
 	m_pVertices.reset_used(0);
-	vertices.reset_used(0);
-  vertex_normals.reset_used(0);
-  vertex_tex_coords.reset_used(0);
-  faces.reset_used(0);
+	vertices->reset_used(0);
+  vertex_normals->reset_used(0);
+  vertex_tex_coords->reset_used(0);
+  faces->reset_used(0);
 		// Clear status grids
 	memset(m_pnGridPointStatus, 0, sizeof(char)*(m_nGridSize+1)*(m_nGridSize+1)*(m_nGridSize+1));
 	memset(m_pnGridVoxelStatus, 0, sizeof(char)*m_nGridSize*m_nGridSize*m_nGridSize);
@@ -435,25 +435,25 @@ int CMetaballs::ComputeGridVoxel(int x, int y, int z)
 			float t = (m_fLevel - b[nIndex0])/(b[nIndex1] - b[nIndex0]);
 
 
-			vertices[m_nNumVertices].x =
+			(*vertices)[m_nNumVertices].x =
 				CMarchingCubes::m_CubeVertices[nIndex0][0]*(1-t) +
 			    CMarchingCubes::m_CubeVertices[nIndex1][0]*t;
-			vertices[m_nNumVertices].y =
+			(*vertices)[m_nNumVertices].y =
 				CMarchingCubes::m_CubeVertices[nIndex0][1]*(1-t) +
 				CMarchingCubes::m_CubeVertices[nIndex1][1]*t;
-			vertices[m_nNumVertices].z =
+			(*vertices)[m_nNumVertices].z =
 				CMarchingCubes::m_CubeVertices[nIndex0][2]*(1-t) +
 				CMarchingCubes::m_CubeVertices[nIndex1][2]*t;
-			vertices[m_nNumVertices].x = fx +
-				vertices[m_nNumVertices].x*m_fVoxelSize;
-			vertices[m_nNumVertices].y = fy +
-				vertices[m_nNumVertices].y*m_fVoxelSize;
-			vertices[m_nNumVertices].z = fz +
-				vertices[m_nNumVertices].z*m_fVoxelSize;
+			(*vertices)[m_nNumVertices].x = fx +
+				(*vertices)[m_nNumVertices].x*m_fVoxelSize;
+			(*vertices)[m_nNumVertices].y = fy +
+				(*vertices)[m_nNumVertices].y*m_fVoxelSize;
+			(*vertices)[m_nNumVertices].z = fz +
+				(*vertices)[m_nNumVertices].z*m_fVoxelSize;
 
 			// Compute the normal at the vertex
 //			ComputeNormal(&m_pVertices[m_nNumVertices]);
-			ComputeNormal(&vertices[m_nNumVertices],&vertex_normals[m_nNumVertices],&vertex_tex_coords[m_nNumVertices]);
+			ComputeNormal(&(*vertices)[m_nNumVertices],&(*vertex_normals)[m_nNumVertices],&(*vertex_tex_coords)[m_nNumVertices]);
 
 			m_nNumVertices++;
 //			return 0;
@@ -462,13 +462,13 @@ int CMetaballs::ComputeGridVoxel(int x, int y, int z)
 		// Add the edge's vertex index to the index list
 		
     if (m_nFacePart == 0) {
-      faces[m_nNumIndices].a = EdgeIndices[nEdge];
+      (*faces)[m_nNumIndices].a = EdgeIndices[nEdge];
     } else
     if (m_nFacePart == 1) {
-      faces[m_nNumIndices].b = EdgeIndices[nEdge];
+      (*faces)[m_nNumIndices].b = EdgeIndices[nEdge];
     } else
     if (m_nFacePart == 2) {
-      faces[m_nNumIndices].c = EdgeIndices[nEdge];
+      (*faces)[m_nNumIndices].c = EdgeIndices[nEdge];
     }
 
     ++m_nFacePart;

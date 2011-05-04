@@ -178,7 +178,7 @@ public:
       texture = new vsx_texture;
       texture->init_opengl_texture();
       result_texture = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
-      result_texture->set_p(*texture);
+      result_texture->set(texture);
     }
     to_delete_data = 0;
   }
@@ -197,7 +197,7 @@ public:
         if (c_type == 1)
         texture->upload_ram_bitmap(&bitm,true);
         if (c_type == 1)
-        result_texture->set_p(*texture);
+        result_texture->set(texture);
         result1->set_p(bitm);
         loading_done = true;
       }
@@ -244,7 +244,7 @@ public:
         texture->init_opengl_texture();
         texture->upload_ram_bitmap(&bitm,true);
       }
-      result_texture->set_p(*texture);
+      result_texture->set(texture);
     }
   }
 
@@ -277,7 +277,6 @@ public:
     if (c_type == 1) {
       if (texture) {
         //printf(":t:");
-        delete texture->transform_obj;
         texture->unload();
         delete texture;
       }
