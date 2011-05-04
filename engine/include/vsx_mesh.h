@@ -10,7 +10,7 @@ typedef unsigned int GLuint;
 
 typedef struct {
 #ifdef VSXU_OPENGL_ES
-  GLushort a,b,c;
+  GLuint a,b,c;
 #else
 	GLuint a,b,c;
 #endif

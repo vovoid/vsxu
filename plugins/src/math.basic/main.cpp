@@ -2648,8 +2648,8 @@ and converts to an RedGreenBlueAlpha float4";
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
 
-#if BUILDING_DLL
-vsx_module* create_new_module(unsigned long module) {
+
+vsx_module* MOD_CM(unsigned long module) {
   switch (module) {
     case 0:  return (vsx_module*)(new module_3float_to_float3);
     case 1:  return (vsx_module*)(new module_4float_to_float4);
@@ -2712,7 +2712,7 @@ vsx_module* create_new_module(unsigned long module) {
   return 0;
 }
 
-void destroy_module(vsx_module* m,unsigned long module) {
+void MOD_DM(vsx_module* m,unsigned long module) {
   switch(module) {
     case 0: delete (module_3float_to_float3*)m; break;
     case 1: delete (module_4float_to_float4*)m; break;
@@ -2774,9 +2774,9 @@ void destroy_module(vsx_module* m,unsigned long module) {
   }
 }
 
-unsigned long get_num_modules() {
+unsigned long MOD_NM() {
   return 57;
 }
-#endif
+
 
 //module_vector_float4_to_4float

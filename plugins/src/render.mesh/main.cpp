@@ -6,8 +6,6 @@
 #include "vsx_font/vsx_font.h"
 #include "vsx_glsl.h"
 
-vsx_engine_environment* engine_environment = 0;
-
 class vsx_module_mesh_render_line : public vsx_module {
   // in
 	vsx_module_param_mesh* mesh_in;
@@ -89,14 +87,16 @@ loading_done = true;
     glGetFloatv(GL_LINE_WIDTH,&prev_width);
 
     glLineWidth(line_width->get());
+    #ifndef VSXU_OPENGL_ES
     glEnable(GL_LINE_SMOOTH);
+    #endif
     mesh = mesh_in->get_addr();
     if (mesh) 
     {
         if (center->get()) {
           vsx_color l_center_color = vsx_color__(center_color->get(0)+center_color_add->get(0),center_color->get(1)+center_color_add->get(1),center_color->get(2)+center_color_add->get(2),center_color->get(3)+center_color_add->get(3));
 					vsx_color main_color = vsx_color__(base_color->get(0)+base_color_add->get(0),base_color->get(1)+base_color_add->get(1),base_color->get(2)+base_color_add->get(2),base_color->get(3)+base_color_add->get(3));
-					#ifdef VSXU_OPENGL_ES
+					#ifdef VSXU_OPENGL_ES_1_0
 					GLfloat fan_vertices[] = {
 						0,0,0,
 						0,0,0,
@@ -111,6 +111,9 @@ loading_done = true;
 					glVertexPointer(3, GL_FLOAT, 0, fan_vertices);
 					glColorPointer(4, GL_FLOAT, 0, fan_colors);
 					#endif
+					#ifdef VSXU_OPENGL_ES_2_0
+					//TODO
+					#endif
 					
 					#ifndef VSXU_OPENGL_ES
 					glBegin(GL_LINES);
@@ -118,11 +121,14 @@ loading_done = true;
           if (override_base_color->get()) {
             
             for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
-							#ifdef VSXU_OPENGL_ES
+							#ifdef VSXU_OPENGL_ES_1_0
 								fan_vertices[3] = mesh->data->vertices[i].x;
 								fan_vertices[4] = mesh->data->vertices[i].y;
 								fan_vertices[5] = mesh->data->vertices[i].z;
 								glDrawArrays(GL_LINES, 0, 2);
+							#endif
+							#ifdef VSXU_OPENGL_ES_2_0
+							//TODO
 							#endif
 							#ifndef VSXU_OPENGL_ES
 								l_center_color.gl_color();
@@ -133,7 +139,7 @@ loading_done = true;
             }
           } else {
             for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
-							#ifdef VSXU_OPENGL_ES
+							#ifdef VSXU_OPENGL_ES_1_0
 								fan_vertices[3] = mesh->data->vertices[i].x;
 								fan_vertices[4] = mesh->data->vertices[i].y;
 								fan_vertices[5] = mesh->data->vertices[i].z;
@@ -142,6 +148,8 @@ loading_done = true;
 								fan_colors[6] = mesh->data->vertex_colors[i].b;
 								fan_colors[7] = mesh->data->vertex_colors[i].a;
 								glDrawArrays(GL_LINES, 0, 2);
+							#endif
+							#ifdef VSXU_OPENGL_ES_2_0
 							#endif
 							
 							#ifndef VSXU_OPENGL_ES
@@ -155,43 +163,46 @@ loading_done = true;
         } // center->get()
         else
         {
-#ifndef VSXU_OPENGL_ES
+          #ifndef VSXU_OPENGL_ES
           glBegin(GL_LINE_STRIP);
-#endif
-#ifdef VSXU_OPENGL_ES
-					glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-					if (override_base_color->get()) {
-						glColor4f(base_color->get(0)+base_color_add->get(0),base_color->get(1)+base_color_add->get(1),base_color->get(2)+base_color_add->get(2),base_color->get(3)+base_color_add->get(3));
-						glDisableClientState(GL_COLOR_ARRAY);
-					} else {
-						glEnableClientState(GL_COLOR_ARRAY);
-						glColorPointer(4, GL_FLOAT, 0, mesh->data->vertex_colors.get_pointer());
-					}
-					glEnableClientState(GL_VERTEX_ARRAY);
-					glVertexPointer(3, GL_FLOAT, 0, mesh->data->vertices.get_pointer());
-					glDrawArrays(GL_LINE_STRIP,0,mesh->data->vertices.size());
-#endif
+          #endif
+          #ifdef VSXU_OPENGL_ES_1_0
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            if (override_base_color->get()) {
+              glColor4f(base_color->get(0)+base_color_add->get(0),base_color->get(1)+base_color_add->get(1),base_color->get(2)+base_color_add->get(2),base_color->get(3)+base_color_add->get(3));
+              glDisableClientState(GL_COLOR_ARRAY);
+            } else {
+              glEnableClientState(GL_COLOR_ARRAY);
+              glColorPointer(4, GL_FLOAT, 0, mesh->data->vertex_colors.get_pointer());
+            }
+            glEnableClientState(GL_VERTEX_ARRAY);
+            glVertexPointer(3, GL_FLOAT, 0, mesh->data->vertices.get_pointer());
+            glDrawArrays(GL_LINE_STRIP,0,mesh->data->vertices.size());
+          #endif
+          #ifdef VSXU_OPENGL_ES_2_0
+          //TODO
+          #endif
 					
-#ifndef VSXU_OPENGL_ES
-          if (override_base_color->get()) {
-            glColor4f(base_color->get(0)+base_color_add->get(0),base_color->get(1)+base_color_add->get(1),base_color->get(2)+base_color_add->get(2),base_color->get(3)+base_color_add->get(3));
-            for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
-              glVertex3f(mesh->data->vertices[i].x,mesh->data->vertices[i].y,mesh->data->vertices[i].z);
+          #ifndef VSXU_OPENGL_ES
+            if (override_base_color->get()) {
+              glColor4f(base_color->get(0)+base_color_add->get(0),base_color->get(1)+base_color_add->get(1),base_color->get(2)+base_color_add->get(2),base_color->get(3)+base_color_add->get(3));
+              for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
+                glVertex3f(mesh->data->vertices[i].x,mesh->data->vertices[i].y,mesh->data->vertices[i].z);
+              }
+            } else
+            {
+              for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
+                if (mesh->data->vertex_colors.size())
+                mesh->data->vertex_colors[i].gl_color();
+                glVertex3f(mesh->data->vertices[i].x,mesh->data->vertices[i].y,mesh->data->vertices[i].z);
+              }
             }
-          } else
-          {
-            for (unsigned long i = 0; i < mesh->data->vertices.size(); ++i) {
-              if (mesh->data->vertex_colors.size())
-              mesh->data->vertex_colors[i].gl_color();
-              glVertex3f(mesh->data->vertices[i].x,mesh->data->vertices[i].y,mesh->data->vertices[i].z);
-            }
-          }
-#endif
+          #endif
 					
         }
-#ifndef VSXU_OPENGL_ES
+      #ifndef VSXU_OPENGL_ES
       glEnd();
-#endif
+      #endif
       render_out->set(1);
     } else
     render_out->set(0);
@@ -1526,9 +1537,9 @@ public:
 };
 
 
-#if BUILDING_DLL
 
-vsx_module* create_new_module(unsigned long module) {
+
+vsx_module* MOD_CM(unsigned long module) {
   // in here you load your module.
   // i suggest you make a cache on the first run (this is called once when the vsxu engine starts
   // as it's looping through the available modules and will call
@@ -1550,7 +1561,7 @@ vsx_module* create_new_module(unsigned long module) {
   return 0;
 }
 
-void destroy_module(vsx_module* m,unsigned long module) {
+void MOD_DM(vsx_module* m,unsigned long module) {
   switch(module) {
     case 0: delete (vsx_module_render_mesh*)m; break;
     case 1: delete (vsx_module_render_mesh_zsort*)m; break;
@@ -1563,7 +1574,7 @@ void destroy_module(vsx_module* m,unsigned long module) {
   }
 }
 
-unsigned long get_num_modules() {
+unsigned long MOD_NM() {
   // in here you have to find out how many salvation modules are available and return
   // the correct number. The create_new_module will then create one of each and run
   //   vsx_module_plugin::module_info(vsx_module_info* info)
@@ -1572,10 +1583,3 @@ unsigned long get_num_modules() {
 
   return 8;
 }
-
-void set_environment_info(vsx_engine_environment* environment)
-{
-	engine_environment = environment;
-}
-
-#endif

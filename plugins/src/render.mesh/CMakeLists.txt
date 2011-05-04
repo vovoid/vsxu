@@ -7,12 +7,17 @@ message("*******************************************")
 message("building vsxu module            " ${module_id})
 message("*******************************************")
 
+CREATE_STATIC_GLUE(${module_id})
+
 file(GLOB LOCAL_SOURCES "*.cpp")
 file(GLOB API_STUBS "api_stubs/*.cpp")
 
 project (${module_id})
 include(../cmake_globals.txt)
 include(./_sources)
-add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES} ${EXTRA_LIBS} vsx_font/vsx_font.cpp)
+
+CREATE_MODULE(${module_id})
+
 include(../cmake_suffix.txt)
-target_link_libraries(${module_id} vsxu_engine_graphics vsxu_engine)
+
+#target_link_libraries(${module_id} vsxu_engine_graphics vsxu_engine)

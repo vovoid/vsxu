@@ -322,8 +322,8 @@ public:
   }
 };
 
-#if BUILDING_DLL
-vsx_module* create_new_module(unsigned long module) {
+
+vsx_module* MOD_CM(unsigned long module) {
   switch (module) {
     case 0: return (vsx_module*)new vsx_module_plugin_maths_oscillator;
     case 1: return (vsx_module*)new vsx_module_plugin_maths_oscillators_float_sequencer;
@@ -331,15 +331,15 @@ vsx_module* create_new_module(unsigned long module) {
   return 0;
 }
 
-void destroy_module(vsx_module* m,unsigned long module) {
+void MOD_DM(vsx_module* m,unsigned long module) {
   switch(module) {
     case 0: delete (vsx_module_plugin_maths_oscillator*)m; break;
     case 1: delete (vsx_module_plugin_maths_oscillators_float_sequencer*)m; break;
   }
 }
 
-unsigned long get_num_modules() {
+unsigned long MOD_NM() {
   // we have only one module. it's id is 0
   return 2;
 }  
-#endif
+
