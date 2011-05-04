@@ -36,6 +36,7 @@ public:
   bool init() {
     mesh_a = new vsx_mesh;
     mesh_b = new vsx_mesh;
+    mesh = mesh_a;
     return true;
   }
 
@@ -67,7 +68,6 @@ public:
     time_speed = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"time_speed");
     time_speed->set(0.2f);
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh_a);
     //first_run = true;
     ocean.calculate_ho();
     t = 0;
@@ -267,8 +267,6 @@ public:
   {
     loading_done = false;
   	result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set(mesh);
-    //first_run = true;
     ocean.calculate_ho();
   }
   void run() {
@@ -493,7 +491,7 @@ public:
     time_speed = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"time_speed");
     time_speed->set(0.2f);
   	result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh);
+
     //first_run = true;
     ocean.calculate_ho();
     t = 0;

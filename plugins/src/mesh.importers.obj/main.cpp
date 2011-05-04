@@ -48,7 +48,6 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   preserve_uv_coords->set(1);
 
   result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-  result->set_p(mesh);
   first_run = true;
 }
 

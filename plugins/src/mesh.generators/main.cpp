@@ -47,7 +47,6 @@ public:
     scaling->set(1,1);
     scaling->set(1,2);
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh);
     first_run = true;
   }
   bool init() {
@@ -108,6 +107,15 @@ class vsx_module_mesh_bspline_vertices : public vsx_module {
   vsx_bspline spline0;
   bool first_run;
 public:
+  bool init() {
+    mesh = new vsx_mesh;
+    return true;
+  }
+  void on_delete()
+  {
+    delete mesh;
+  }
+  
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;vertices;bspline_vertices";
@@ -131,7 +139,7 @@ public:
     density->set(10);
     
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH, "mesh" );
-    result->set(mesh);
+
     first_run = true;
     spline0.init(vsx_vector(0), 0.7f, 0.3f, 0.6f);
   }
@@ -233,9 +241,7 @@ public:
     scaling->set(1,1);
     scaling->set(1,2);
     mesh_a = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_a");
-    //mesh_b = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_b");
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh);
     first_run = true;
     lifetime = 0;
   }
@@ -355,7 +361,6 @@ public:
     center_color->set(0.5f,2);
     center_color->set(1,3);
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh);
     first_run = true;
   }
 
@@ -464,7 +469,6 @@ public:
     n_segs = 20;
 
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh);
     first_run = true;
   }
 
@@ -684,7 +688,6 @@ public:
     y_stop->set((float)pi);
 
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh);
     first_run = true;
   }
 
@@ -976,7 +979,6 @@ public:
     n_segs = 20;
 
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh);
     first_run = true;
   }
 
@@ -1090,7 +1092,6 @@ public:
     loading_done = true;
 
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh);
     first_run = true;
   }
 
@@ -1232,7 +1233,6 @@ public:
     num_stacks->set(4.0f);
 
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh);
     current_num_stacks = 0;
     current_num_sectors = 0;
   }
@@ -1446,7 +1446,7 @@ public:
     num_stacks->set(4.0f);
 
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh);
+    
     
     last_vertex_index = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "last_vertex_index");
 
@@ -1759,7 +1759,6 @@ public:
     q->set(3.0f);
     phi_offset = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"phi_offset");
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh);
 
     current_num_stacks = 0;
     current_num_sectors = 0;
@@ -2045,7 +2044,6 @@ size:float\
 		size->set(1);
 
 		result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-	  result->set_p(mesh);
 	}
 
   bool init() {
@@ -2072,7 +2070,7 @@ size:float\
 	    istart += size->get()/5.0f;
 	  }
 	  mesh->timestamp++;
-	  result->set_p(mesh);
+
 	}
 };
 
@@ -2121,7 +2119,6 @@ public:
     time_amp->set(1.0f);
     width->set(0.1f);
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set(mesh);
     mesh = new vsx_mesh;
   }
 
@@ -2338,7 +2335,6 @@ public:
     time_amp->set(1.0f);
     width->set(0.1f);
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set(mesh);
     regen = true;
     num_runs = 0;
   }

@@ -414,7 +414,6 @@ public:
     //id->set(0.0f);
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
-    mesh_out->set(mesh);
   }
   unsigned long prev_timestamp;
   void run() {
@@ -514,7 +513,7 @@ public:
     //id->set(0.0f);
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
-    mesh_out->set_p(mesh);
+    
     prev_timestamp = 0xFFFFFFFF;
     //mesh->data->vertices.reset_used(0);
     //mesh->data->vertex_normals.reset_used(0);
@@ -665,7 +664,6 @@ public:
     translation = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "translation");
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
-    mesh_out->set_p(mesh);
   }
   unsigned long prev_timestamp;
   vsx_vector v;
@@ -776,7 +774,6 @@ public:
     scale = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "scale");
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
-    mesh_out->set_p(mesh);
   }
   unsigned long prev_timestamp;
   vsx_vector v;
@@ -889,7 +886,6 @@ public:
     noise_amount = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "noise_amount");
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
-    mesh_out->set_p(mesh);
   }
   unsigned long prev_timestamp;
   vsx_vector v;
@@ -1017,7 +1013,6 @@ public:
     prev_start = -1.0f;
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
-    mesh_out->set_p(mesh);
   }
 
   void run() {
@@ -1164,6 +1159,7 @@ class vsx_module_mesh_deformers_random_normal_distort : public vsx_module {
 
 public:
   bool init() {
+    mesh = new vsx_mesh;
     return true;
   }
 
@@ -1198,9 +1194,7 @@ public:
     vertex_distortion_factor = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "vertex_distortion_factor");
     vertex_distortion_factor->set(1.0f);
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
-    mesh_out->set(mesh);
     prev_timestamp = 0xFFFFFFFF;
-    mesh = new vsx_mesh;
   }
   unsigned long prev_timestamp;
   vsx_vector v, v_;
@@ -1538,7 +1532,6 @@ public:
     //id->set(0.0f);
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
-    mesh_out->set_p(mesh);
   }
 
   int first_index;
@@ -1828,7 +1821,6 @@ public:
 
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
-    mesh_out->set_p(mesh);
     volume_out = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"volume_out");
     volume_out->set(0.0f);
   }

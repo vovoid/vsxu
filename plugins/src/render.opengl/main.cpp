@@ -2069,7 +2069,7 @@ public:
     render_in->set(0);
     render_out->set(0);
     tex_in = (vsx_module_param_texture*)in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"tex_in");
-    tex_in->set(&i_tex);
+    //tex_in->set(&i_tex);
   }
 
 	bool activate_offscreen() {

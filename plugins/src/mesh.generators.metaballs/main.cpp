@@ -34,7 +34,6 @@ public:
     grid_size = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"grid_size");
     grid_size->set(20.0f);
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh);
     loading_done = true;
     first_run = true;
   }

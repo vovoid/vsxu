@@ -78,7 +78,6 @@ public:
     loading_done = true;
   	paths = (vsx_module_param_float_array*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"paths");
   	result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh);
     first_run = true;
   }
 

@@ -611,6 +611,7 @@ public:
     glGetIntegerv(GL_DEPTH_WRITEMASK,&dmask);
     mesh = mesh_in->get_addr();
     if (mesh) {
+      if (!(*mesh)->data) return;
       if ((*mesh)->data->faces.get_used()) {
         ta = tex_a->get_addr();
         //printf("renderer output\n");
