@@ -75,7 +75,7 @@ public:
       first_run = false;
       param_updates = 0;
       mesh->timestamp++;
-      result->set(mesh);
+      result->set_p(mesh);
     } /*else {
       if (num_points->get() < mesh->data->vertices.size()) {
         mesh->data->vertices.reset_used((int)num_points->get());

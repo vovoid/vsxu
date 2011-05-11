@@ -1088,7 +1088,7 @@ void vsx_engine::i_clear(vsx_command_list *cmd_out,bool clear_critical) {
       if ((*fit).second->module_info->output)
       outputs.remove((*fit).second);
     LOG("delete step 4\n");
-      LOG("del "+(*fit).second->name)
+      LOG("del "+(*fit).second->name);
       if ((*fit).second->component_class != "macro")
       if (module_list.find((*fit).second->identifier) != module_list.end())
       if (module_list[(*fit).second->identifier]->location == "external")
@@ -1097,7 +1097,7 @@ void vsx_engine::i_clear(vsx_command_list *cmd_out,bool clear_critical) {
         (*fit).second->unload_module(module_dll_list[(*fit).second->identifier]);
       }
       delete ((*fit).second);
-      LOG("done deleting")
+      LOG("done deleting"´)
     }
     else
     {

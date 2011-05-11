@@ -329,7 +329,7 @@ void* vsx_command_list_client::client_worker(void *ptr)
         close(sock);
         run = false;
         this_->connected = VSX_COMMAND_CLIENT_DISCONNECTED;
-        printf("line: %d\n", __LINE__);
+        //printf("line: %d\n", __LINE__);
         return 0;
       }
     }
@@ -338,7 +338,7 @@ void* vsx_command_list_client::client_worker(void *ptr)
     while (this_->cmd_out.pop(&out_command))
     {
       vsx_string res = out_command->str()+"\n";
-      printf("sending to server: %s\n", res.c_str() );
+      //printf("sending to server: %s\n", res.c_str() );
       if (send(
         sock,
         res.c_str(),
@@ -349,7 +349,7 @@ void* vsx_command_list_client::client_worker(void *ptr)
           close(sock);
           this_->cmd_out.add_front(out_command);
           this_->connected = VSX_COMMAND_CLIENT_DISCONNECTED;
-          printf("line: %d\n", __LINE__);
+          //printf("line: %d\n", __LINE__);
           return 0;
       }
       else

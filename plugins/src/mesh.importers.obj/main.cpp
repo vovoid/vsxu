@@ -162,7 +162,7 @@ void run() {
 
               
 	            //printf("f2\n");
-              //printf("reading line: %s\n",line.c_str());
+              printf("reading line: %s\n",line.c_str());
               int id;
               id = s2i(parts2[0])-1; if (id < 0) id=0;
 	            mesh->data->vertices[ff.a] = vertices[id];

@@ -34,7 +34,6 @@ public:
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
     mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_result");
-    mesh_result->set_p(mesh);
     bspline_vertices_mesh = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"bspline_vertices_mesh");
     spline0.init(vsx_vector(0), 0.7f, 0.3f, 0.6f);
     srand ( time(NULL) );

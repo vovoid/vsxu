@@ -244,7 +244,7 @@ void vsx_widget_server::vsx_command_process_f() {
 
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
   {
-    printf("connection status: %d\n", client->get_connection_status());
+    //printf("connection status: %d\n", client->get_connection_status());
     if (client->get_connection_status() == VSX_COMMAND_CLIENT_DISCONNECTED)
     {
       _delete();
@@ -928,7 +928,7 @@ void vsx_widget_server::vsx_command_process_b(vsx_command_s *t) {
       
       ((vsx_widget_server*)ns)->server_connect(t->parts[1],"1234");
       ns->init();
-      ns->set_size(vsx_vector(1.0f,1.0f));
+      ns->set_size(vsx_vector(2.0f,2.0f));
       // 2. tell the new server to connect its command lists
     } else
 		// 1: menu choice is done
