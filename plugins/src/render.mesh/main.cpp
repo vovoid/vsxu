@@ -373,6 +373,18 @@ public:
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     #if defined(__linux__) || defined (WIN32)
       shader.begin();
+      GLint viewport[4];
+      glGetIntegerv (GL_VIEWPORT, viewport);
+      float t_res_x = (float)abs(viewport[2] - viewport[0]);
+      
+      
+      if (shader.v_map.find("_vx") != shader.v_map.end())
+      {
+        //printf("found vx\n");
+        vsx_module_param_float* p = (vsx_module_param_float*)shader.v_map["_vx"]->module_param;
+        if (p) p->set(t_res_x);
+      }
+      
     shader.set_uniforms();
     glEnable( GL_POINT_SPRITE_ARB );
     glEnable(GL_POINT_SMOOTH);
