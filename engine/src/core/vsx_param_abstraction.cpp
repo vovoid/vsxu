@@ -911,6 +911,7 @@ void vsx_engine_param::set_string(vsx_string data, int index) {
     }
     case VSX_MODULE_PARAM_ID_RESOURCE: {
       ((vsx_module_param_resource*)module_param)->check_free();
+      data = str_replace("//", "/", data);
       ((vsx_module_param_resource*)module_param)->param_data[0] = data;
       return;
     }

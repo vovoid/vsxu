@@ -72,11 +72,13 @@ if(WIN32)
   target_link_libraries(${module_id} gdi32 glew opengl32 glu32 pthreadGCE)
   link_directories("../engine")
 else(WIN32)
+
   if (VSXU_OPENGL_ES_2_0 EQUAL 1)
 #    target_link_libraries(${module_id})
   else (VSXU_OPENGL_ES_2_0 EQUAL 1)
 #    target_link_libraries(${module_id} X11 GLEW GL GLU)
   endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
+#  target_link_libraries(${module_id} X11 GLEW.a GL GLU png.a jpeg.a z.a)
 endif(WIN32)
 target_link_libraries(${module_id} vsxu_engine)
 

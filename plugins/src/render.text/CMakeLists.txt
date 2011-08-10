@@ -22,5 +22,5 @@ add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES} ${EXTRA
 include(../cmake_suffix.txt)
 target_link_libraries(${module_id} vsxu_engine freetype)
 if(UNIX)
-target_link_libraries(${module_id} vsxu_engine freetype)
+target_link_libraries(${module_id} vsxu_engine freetype.a)
 endif(UNIX)

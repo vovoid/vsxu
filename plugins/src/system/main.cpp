@@ -554,6 +554,59 @@ bool activate_offscreen() {
 
 };
 
+
+class vsx_module_block_chain_load : public vsx_module {
+  // in
+  vsx_module_param_float* fadeout_time;
+  vsx_module_param_render* render_in;
+  // out
+  vsx_module_param_render* render_result;
+  vsx_module_param_float* fadeout_out;
+  // internal
+  public:
+    void module_info(vsx_module_info* info)
+    {
+      info->identifier = "system;blocker_loading";
+      //#ifndef VSX_NO_CLIENT
+      info->description = "Runs a rendering chain\
+      Only when the engine is loading and time\
+      seconds after that. Useful for \"loading\" overlays.";
+      info->in_param_spec = "render_in:render,fadeout_time:float";
+      info->out_param_spec = "render_out:render,fadeout_out:float";
+      info->component_class = "system";
+      //#endif
+      info->tunnel = true; // always run this
+    }
+    
+    void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+    {
+      loading_done = true;
+      fadeout_time = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"fadeout_time");
+      fadeout_time->set(1.0f);
+      
+      render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
+      render_in->set(0);
+      render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+      render_result->set(0);
+      fadeout_out = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"fadeout_out");
+      fadeout_out->set(1.0f);
+    }
+    
+    bool activate_offscreen() {
+      if (engine->state == VSX_ENGINE_LOADING) return true;
+      if (engine->state == VSX_ENGINE_PLAYING)
+      {
+        if (engine->vtime < fadeout_time->get())
+        {
+          fadeout_out->set(1.0f - engine->vtime/fadeout_time->get());
+          return true;
+        }
+      }
+      return false;
+    }
+    
+};
+
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -565,8 +618,9 @@ vsx_module* create_new_module(unsigned long module) {
     case 2: return (vsx_module*)(new vsx_module_block_chain);
     case 3: return (vsx_module*)(new vsx_module_system_clock);
     case 4: return (vsx_module*)(new vsx_module_system_trig_sequencer);
+    case 5: return (vsx_module*)(new vsx_module_block_chain_load);
 #ifdef _linux
-    case 5: return (vsx_module*)(new vsx_module_system_joystick);
+    case 6: return (vsx_module*)(new vsx_module_system_joystick);
 #endif
   }
   return 0;
@@ -578,18 +632,19 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 1: delete (vsx_module_system_time*)m; break;
     case 2: delete (vsx_module_block_chain*)m; break;
     case 3: delete (vsx_module_system_clock*)m; break;
-    case 4: delete (vsx_module_system_trig_sequencer*)m; break; 
+    case 4: delete (vsx_module_system_trig_sequencer*)m; break;
+    case 5: delete (vsx_module_block_chain_load*)m; break;
 #ifdef _linux
-    case 5: delete (vsx_module_system_joystick*)m; break;
+    case 6: delete (vsx_module_system_joystick*)m; break;
 #endif
   }
 }
 
 unsigned long get_num_modules() {
 #ifdef _linux
-  return 6;
+  return 7;
 #else
-  return 5;
+  return 6;
 #endif
 }  
 

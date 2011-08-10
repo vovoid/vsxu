@@ -84,7 +84,7 @@ Examples:
     cmake . -DVSXU_DEBUG=1 -DENGINE_SCRIPTING=1 -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxu_debug"
 
   This is my personal installation for demo making:
-    cmake . -DENGINE_SCRIPTING=1 -DVSXU_SOUND_FMOD=1 -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxu"
+    cmake . -DVSXU_SOUND_FMOD=1 -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxu"
 
   For visualization (with pulseaudio) on Linux:
     cmake . -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxupulse"

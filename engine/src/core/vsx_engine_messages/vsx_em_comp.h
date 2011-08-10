@@ -279,7 +279,7 @@
       for (vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
         if ((*it)->module) {
           if (!(*it)->module->loading_done) {
-            //printf("not loaded: %s\n",(*it)->name.c_str());
+            printf("not loaded: %s\n",(*it)->name.c_str());
             cmd_out->add_raw("c_msg "+(*it)->name+" "+base64_encode("module||NOT LOADED"));
           } else
           cmd_out->add_raw("c_msg "+(*it)->name+" "+base64_encode("module||ok"));

@@ -29,7 +29,7 @@ class vsx_logo_intro {
 
 public:
   int window_width, window_height;
-  VSX_LOGO_INTRO_DLLIMPORT void draw(bool always = false);  
+  VSX_LOGO_INTRO_DLLIMPORT void draw(bool always = false,bool draw_background = true);  
   VSX_LOGO_INTRO_DLLIMPORT vsx_logo_intro();
   VSX_LOGO_INTRO_DLLIMPORT void reinit();
 }; 
