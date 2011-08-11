@@ -11,13 +11,13 @@
 ;General
 
   ;Name and file
-  Name "VSX Ultra Player 0.2.0"
-  OutFile "vsxu_player_install_020.exe"
+  Name "VSX Ultra Player 0.3.0"
+  OutFile "vsxu_player_install_030.exe"
   
   SetCompressor /SOLID lzma
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\vsxu_player_0.2.0"
+  InstallDir "$PROGRAMFILES\vsxu_player_0.3.0"
 
   ;Get installation folder from registry if available
   InstallDirRegKey HKCU "Software\vovoid\vsxu_player" ""
@@ -39,7 +39,7 @@
 
   ;Start Menu Folder Page Configuration
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
-  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Vovoid VSX Ultra Player 0.2.0" 
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Vovoid VSX Ultra Player 0.3.0" 
   !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
 	
 	
@@ -94,7 +94,7 @@ Section "VSX Ultra Player" secplayer
   SetOutPath "$INSTDIR"
 
   ;Store installation folder
-  WriteRegStr HKCU "Software\vovoid\vsxu_player_0.2.0" "" $INSTDIR
+  WriteRegStr HKCU "Software\vovoid\vsxu_player_0.3.0" "" $INSTDIR
 
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
@@ -140,7 +140,7 @@ SectionEnd
 ;Descriptions
 
   ;Language strings
-  LangString DESC_secplayer ${LANG_ENGLISH} "Vsx Ultra Player 0.2.0"
+  LangString DESC_secplayer ${LANG_ENGLISH} "Vsx Ultra Player 0.3.0"
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
