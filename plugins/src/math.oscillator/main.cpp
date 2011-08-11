@@ -323,10 +323,208 @@ public:
 };
 
 
+class vsx_module_plugin_maths_oscillators_inside_range : public vsx_module {
+  // in
+  vsx_module_param_float* sound_in;
+  vsx_module_param_float* range_low;
+  vsx_module_param_float* range_high;
+  vsx_module_param_float* randomness;
+
+  // out
+  vsx_module_param_float* every_beat;
+  vsx_module_param_float* random_beat;
+  vsx_module_param_float* in_range;
+
+  // internal
+  bool is_in_range;
+
+public:
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "maths;oscillators;inside_range";
+    info->description =
+  "outputs 1 when Sound levels\n"
+  "are inside the min / max range \n"
+  "useful for beat detection. \n"
+  "randomness must be between 0 and 100\n";
+
+    info->in_param_spec =
+      "sound_in:float,"
+    "range_low:float,"
+    "range_high:float,"
+      "randomness:float"
+      ;
+    info->out_param_spec = "every_beat:float, random_beat:float, in_range:float";
+
+    info->component_class = "parameters";
+  }
+
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    // TODO:
+    loading_done = true;
+    sound_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"sound_in");
+  sound_in->set(0);
+  range_low = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"range_low");
+  range_low->set(0.5f);
+  range_high = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"range_high");
+  range_high->set(1);
+  randomness = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"randomness");
+  randomness->set(0.5f);
+  is_in_range = false;
+    every_beat = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"every_beat");
+    every_beat->set(0);
+  random_beat = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"random_beat");
+    random_beat->set(10);
+  in_range = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"in_range");
+    in_range->set(0);
+  }
+
+
+
+  void run() {
+  float current_sound = sound_in->get();
+
+  if (is_in_range)
+  {
+  every_beat->set(0); //its already pulsed out, so don't pulse again
+  random_beat->set(0);
+  if ((sound_in->get() <= range_low->get()) || (sound_in->get() > range_high->get()))
+  {
+    is_in_range = false;
+  }
+  }
+
+  else  if (current_sound > range_low->get() && current_sound < range_high->get())
+  {
+    is_in_range = true;
+    every_beat->set(1.0f);
+    float random_number = rand() % 100;
+    if (random_number > randomness->get())
+    {
+      random_beat->set(0.0f);
+    }
+    else
+    {
+      random_beat->set(1.0f);
+    }
+  }
+
+  if (is_in_range)
+  {
+    in_range->set(1.0f);
+  }
+  else
+  {
+  in_range->set(0.0f);
+  }
+  }
+};
+
+class vsx_module_plugin_maths_oscillators_pulse_oscillator : public vsx_module {
+  // in
+  vsx_module_param_float* amp;
+  vsx_module_param_float* fade_speed;
+  vsx_module_param_float* trigger;
+
+  // out
+  vsx_module_param_float* result1;
+
+  // internal
+  float current_time;
+  bool is_pulsing;
+  bool pause;
+  float current_phase;
+  float current_pos;
+
+public:
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "maths;oscillators;pulse_oscillator";
+    info->description =
+      "Like a normal oscillator,/n"
+    "but it pulses to 50% and /n "
+    "pauses until the next pulse /n";
+    info->in_param_spec =
+
+      "osc:complex"
+      "{"
+    "trigger:float,"
+      "fade_speed:float,"
+      "amp:float,"
+      "}"
+      ;
+    info->out_param_spec = "result1:float";
+
+    info->component_class = "parameters";
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+
+    loading_done = true;
+  trigger = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"trigger");
+    amp = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"amp");
+    fade_speed = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"fade_speed");
+    amp->set(0.5f);
+    fade_speed->set(1); // one revolution per second
+    current_time = 0;
+  is_pulsing = false;
+  pause = true;
+  current_pos= 0;
+  current_phase = 1;
+
+    // amplitude = 0.5
+    // phase 0.5
+    // frequency 1
+    result1 = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result1");
+    result1->set(0);
+  }
+
+  void run() {
+  if(pause && (trigger->get() == 0)) {
+  result1->set(current_pos);
+  } else {
+
+  current_time += fade_speed->get() / 60;
+  float frequencyChunk = fade_speed->get() / 60;
+  //current_pos = (float)sin((current_time)*pi_float) * amp->get();
+  current_pos = (float)sin((current_time)*pi_float) * amp->get() + amp->get();
+
+  if ((current_pos > 1- frequencyChunk) && (current_phase == 1))
+  {
+  current_pos = 1;
+  current_phase = 2;
+  pause = true;
+  result1->set(0.5);
+
+  }
+  else if ((current_pos < frequencyChunk ) &&(current_phase == 2) )
+  {
+  current_pos = 0;
+  current_phase = 1;
+  pause = true;
+  result1->set(0);
+  }
+  else
+  {
+    pause = false;
+    result1->set(current_pos);
+  }
+  }
+  }
+};
+
+
 vsx_module* MOD_CM(unsigned long module) {
   switch (module) {
     case 0: return (vsx_module*)new vsx_module_plugin_maths_oscillator;
     case 1: return (vsx_module*)new vsx_module_plugin_maths_oscillators_float_sequencer;
+    case 2: return (vsx_module*)new vsx_module_plugin_maths_oscillators_inside_range;
+    case 3: return (vsx_module*)new vsx_module_plugin_maths_oscillators_pulse_oscillator;
   }
   return 0;
 }
@@ -335,11 +533,13 @@ void MOD_DM(vsx_module* m,unsigned long module) {
   switch(module) {
     case 0: delete (vsx_module_plugin_maths_oscillator*)m; break;
     case 1: delete (vsx_module_plugin_maths_oscillators_float_sequencer*)m; break;
+    case 2: delete (vsx_module_plugin_maths_oscillators_inside_range*)m; break;
+    case 3: delete (vsx_module_plugin_maths_oscillators_pulse_oscillator*)m; break;
   }
 }
 
 unsigned long MOD_NM() {
   // we have only one module. it's id is 0
-  return 2;
+  return 4;
 }  
 
