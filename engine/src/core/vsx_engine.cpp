@@ -469,11 +469,6 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
           printf("%s\n", (vsx_string("engine_load_module_a: error: ") + dlerror()).c_str() );
         #endif
       }
-      #ifdef PLATFORM_SHARED_FILES_FLAT_INSTALL
-        get_files_recursive("plugins",&mfiles,".so","");
-      #else
-        get_files_recursive(vsx_string(CMAKE_INSTALL_PREFIX)+"/lib/vsxu/plugins",&mfiles,".so","");
-      #endif
       //printf("Plugin directory: %s\n", vsx_string(vsxu_base_path+"_plugins_linux").c_str());
     #endif
     //printf("after_dlopen\n");

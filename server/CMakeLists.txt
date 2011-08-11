@@ -101,7 +101,7 @@ if(UNIX)
     target_link_libraries(${module_id}
       Xrandr
       X11
-      vovoid_glfw
+      glfw
       pthread
       GLU
       GL
