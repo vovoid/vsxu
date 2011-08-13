@@ -13,7 +13,7 @@
 // local includes
 #include "lib/vsx_widget_lib.h"
 #include "vsx_widget_anchor.h"
-#include "vsx_widget_main.h"
+#include "vsx_widget_desktop.h"
 #include "vsx_widget_comp.h"
 
 #include "vsx_widget_connector.h"

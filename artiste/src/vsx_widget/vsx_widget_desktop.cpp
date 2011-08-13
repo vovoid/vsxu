@@ -36,7 +36,7 @@
 #include "lib/vsx_widget_panel.h"
 #include "lib/vsx_widget_base_edit.h"
 
-#include "vsx_widget_main.h"
+#include "vsx_widget_desktop.h"
 
 #ifndef _WIN32
 #include "GL/glfw.h"
@@ -471,7 +471,8 @@ void vsx_widget_desktop::save_configuration() {
       t->cmd == "system.shutdown" ||
       t->cmd == "fullscreen" ||
       t->cmd == "fullscreen_toggle"
-    ) {
+    )
+    {
       system_command_queue->addc(t);
     }
     else

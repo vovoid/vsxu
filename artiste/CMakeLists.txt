@@ -89,7 +89,7 @@ set(SOURCES
   src/vsx_widget/arcball/arcball.cpp
   src/vsx_widget/module_choosers/vsx_widget_module_chooser.cpp
   src/vsx_widget/module_choosers/vsx_widget_module_chooser_list.cpp
-  src/vsx_widget/vsx_widget_main.cpp
+  src/vsx_widget/vsx_widget_desktop.cpp
   src/application.cpp
   src/gl_helper.cpp
 )

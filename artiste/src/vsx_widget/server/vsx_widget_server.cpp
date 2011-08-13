@@ -27,7 +27,7 @@
 #include "dialogs/vsx_widget_window_statics.h"
 #include "module_choosers/vsx_widget_module_chooser.h"
 #include "module_choosers/vsx_widget_module_chooser_list.h"
-#include "vsx_widget_main.h"
+#include "vsx_widget_desktop.h"
 #include "vsx_widget_comp.h"
 #include <vsx_command_client_server.h>
 #include "vsx_widget_server.h"
@@ -875,7 +875,7 @@ void vsx_widget_server::vsx_command_process_b(vsx_command_s *t) {
 		undo_s();
 	}
 
-	if (t->cmd == "conf") {
+	if (t->cmd == "conf" || t->cmd == "system.shutdown") {
 		command_q_b.add(t);
 		return;
 	}

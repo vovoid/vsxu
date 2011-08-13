@@ -445,6 +445,7 @@ finish:
   {
     pa_simple_free(s);
   }
+  worker_signal = 2;
   return 0;
 }
 
@@ -481,8 +482,9 @@ unsigned long get_num_modules() {
 void on_unload_library()
 {
   worker_signal = 1;
-  void* ret;
-  pthread_join(worker_t, &ret);
+  while (worker_signal == 1) {
+    usleep(100);
+  }
 }
 
 #endif
