@@ -2067,6 +2067,200 @@ public:
 #undef printFloat
 
 
+
+class vertex_holder {
+public:
+  float dist;
+  int id;
+  bool operator < (const vertex_holder& a) {
+      return dist > a.dist;
+  }
+};
+
+class vsx_module_mesh_vertex_distance_sort : public vsx_module {
+  // in
+  vsx_module_param_mesh* mesh_in;
+  vsx_module_param_float3* distance_to;
+  // out
+  vsx_module_param_mesh* mesh_out;
+  // internal
+  vsx_mesh* mesh;
+  vsx_array<vertex_holder*> distances;
+
+  //*******************************************************************************
+  //*******************************************************************************
+  //*******************************************************************************
+  //*******************************************************************************
+
+  // fast square root routine from nvidia
+  
+  #define FP_BITS(fp) (*(unsigned int *)&(fp))
+
+  static unsigned int fast_sqrt_table[0x10000];  // declare table of square roots
+
+  typedef union FastSqrtUnion
+  {
+    float f;
+    unsigned int i;
+  } FastSqrtUnion;
+
+  void  build_sqrt_table()
+  {
+    unsigned int i;
+    FastSqrtUnion s;
+
+    for (i = 0; i <= 0x7FFF; i++)
+    {
+
+      // Build a float with the bit pattern i as mantissa
+      //  and an exponent of 0, stored as 127
+
+      s.i = (i << 8) | (0x7F << 23);
+      s.f = (float)sqrt(s.f);
+
+      // Take the square root then strip the first 7 bits of
+      //  the mantissa into the table
+
+      fast_sqrt_table[i + 0x8000] = (s.i & 0x7FFFFF);
+
+      // Repeat the process, this time with an exponent of 1,
+      //  stored as 128
+
+      s.i = (i << 8) | (0x80 << 23);
+      s.f = (float)sqrt(s.f);
+
+      fast_sqrt_table[i] = (s.i & 0x7FFFFF);
+    }
+  }
+
+  inline float fastsqrt(float n)
+  {
+    if (FP_BITS(n) == 0)
+      return 0.0;                 // check for square root of 0
+
+    FP_BITS(n) = fast_sqrt_table[(FP_BITS(n) >> 8) & 0xFFFF] | ((((FP_BITS(n) - 0x3F800000) >> 1) + 0x3F800000) & 0x7F800000);
+
+    return n;
+  }
+  
+  //*******************************************************************************
+  //*******************************************************************************
+  //*******************************************************************************
+  //*******************************************************************************
+
+  // pointer swapper
+  static int partition(vertex_holder** a, int first, int last) {
+    vertex_holder pivot = (*a[first]);
+    int lastS1 = first;
+    int firstUnknown = first + 1;
+    while (firstUnknown <= last) {
+      if ((*a[firstUnknown]) < pivot) {
+        lastS1++;
+        vertex_holder* b = a[firstUnknown];
+        a[firstUnknown] = a[lastS1];
+        a[lastS1] = b;
+      }
+      firstUnknown++;
+    }
+    vertex_holder* b = a[first];
+    a[first] = a[lastS1];
+    a[lastS1] = b;
+    return lastS1;
+  }
+
+  static void quicksort(vertex_holder** a, int first, int last) {
+    if (first < last) {
+      int pivotIndex = partition(a, first, last);
+      quicksort(a, first, pivotIndex - 1);
+      quicksort(a, pivotIndex + 1, last);
+    }
+  }
+
+  static void quicksort(vertex_holder** a, int aSize) {
+    quicksort(a, 0, aSize - 1);
+  }
+
+public:
+
+  bool init() {
+    mesh = new vsx_mesh;
+    return true;
+  }
+
+  void on_delete()
+  {
+    // clear out the distances list
+    delete mesh;
+  }
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "mesh;vertices;helpers;mesh_vertex_distance_sorc";
+    info->description = "Sorts vertices by distance to a point\n"
+                        " - camera/eye for instance";
+    info->in_param_spec = "mesh_in:mesh,distance_to:float3";
+    info->out_param_spec = "mesh_out:mesh";
+    info->component_class = "mesh";
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    mesh_in = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_in");
+    distance_to = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "distance_to");
+    loading_done = true;
+    mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
+  }
+
+
+  unsigned long prev_timestamp;
+  void run() {
+    vsx_mesh** p = mesh_in->get_addr();
+    if (p && (param_updates || prev_timestamp != (*p)->timestamp)) {
+      prev_timestamp = (*p)->timestamp;
+
+      mesh->data->vertices.reset_used(0);
+      mesh->data->vertex_normals.reset_used(0);
+      mesh->data->vertex_tex_coords.reset_used(0);
+      mesh->data->vertex_colors.reset_used(0);
+      mesh->data->faces.reset_used(0);
+
+      //---
+      float dtx = distance_to->get(0);
+      float dty = distance_to->get(1);
+      float dtz = distance_to->get(2);
+      //---
+      //  init iterators
+      vsx_vector* vp = (*p)->data->vertices.get_pointer();
+      float* vf = distances.get_pointer();
+      //
+      size_t prev_alloc = distances.size();
+      distances.allocate((*p)->data->vertices.size());
+      for (unsigned int i = 0; i < (*p)->data->vertices.size(); i++)
+      {
+        float x = dtx - (*vp).x;
+        float y = dty - (*vp).y;
+        float z = dtz - (*vp).z;
+        (*vf) = fastsqrt(x*x + y*y + z*z);
+        vf++;
+        vp++;
+      }
+      // sort the both arrays
+      
+/*
+      vsx_array<vsx_vector> vertices;
+      vsx_array<vsx_vector> vertex_normals;
+      vsx_array<vsx_color> vertex_colors;
+      vsx_array<vsx_tex_coord> vertex_tex_coords;
+      vsx_array<vsx_face> faces;
+*/
+      mesh->timestamp++;
+      mesh_out->set_p(mesh);
+      //for (int i = 0; i < (*p)->data->vertex_normals.size(); i++) mesh->data->vertex_normals[i] = (*p)->data->vertex_normals[i];
+      param_updates = 0;
+    }
+  }
+};
+
 //------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------
