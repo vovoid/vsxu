@@ -330,12 +330,14 @@ if (t->cmd == "in_param_spec" || t->cmd == "out_param_spec") {
 
 				if (l_io < 0)
 				{
-					if (add_c[1] != "complex") ((vsx_widget_component*)((vsx_widget_anchor*)tt)->component)->p_l_list_in[add_c[0]] = tt;
+					//if (add_c[1] != "complex")
+          ((vsx_widget_component*)((vsx_widget_anchor*)tt)->component)->p_l_list_in[add_c[0]] = tt;
 					((vsx_widget_anchor*)tt)->a_order = anchor_order[0]++;
 				}
 				else
 				{
-					if (add_c[1] != "complex") ((vsx_widget_component*)((vsx_widget_anchor*)tt)->component)->p_l_list_out[add_c[0]] = tt;
+					//if (add_c[1] != "complex")
+          ((vsx_widget_component*)((vsx_widget_anchor*)tt)->component)->p_l_list_out[add_c[0]] = tt;
 					((vsx_widget_anchor*)tt)->a_order = anchor_order[1]++;
 					//printf("new anchor has order %d",((vsx_widget_anchor*)tt)->order);
 				}

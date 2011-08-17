@@ -324,7 +324,6 @@ public:
 
   void redeclare_in_params(vsx_module_param_list& in_parameters)
   {
-    shader.declare_params(in_parameters);
     mesh_in = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_in");
     //mesh_in->set_p(mesh);
     base_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"base_color");
@@ -341,7 +340,9 @@ public:
     i_fragment_program->set(shader.fragment_program);
     i_vertex_program = (vsx_module_param_string*)in_parameters.create(VSX_MODULE_PARAM_ID_STRING,"vertex_program");
     i_vertex_program->set(shader.vertex_program.c_str());
-    
+
+    shader.declare_params(in_parameters);
+
   }  
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {
     shader.vertex_program = ""
@@ -349,6 +350,9 @@ public:
       "\n"
       "void main(void)\n"
       "{\n"
+      "  // vertex id is stored in gl_Vertex.w, ugly hack!\n"
+      "  // thus we need to reset it here\n"
+      "  gl_Vertex.w = 1.0;\n"
       "  gl_Position = ftransform();\n"
       "  float vertDist = distance(vec3(gl_Position.x,gl_Position.y,gl_Position.z), vec3(0.0,0.0,0.0));\n"
       "  float dist_alpha;\n"
@@ -375,7 +379,7 @@ public:
 
     loading_done = true;
     list_built = false;
-
+    vsx_string h = shader.link();
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     redeclare_in_params(in_parameters);
   }
@@ -428,6 +432,7 @@ public:
           float dvdi = 1.0f / (float)(*mesh)->data->vertices.size();
           for (unsigned long i = 0; i < (*mesh)->data->vertices.size(); ++i) {
             glVertex4f((*mesh)->data->vertices[i].x,(*mesh)->data->vertices[i].y,(*mesh)->data->vertices[i].z,vid);
+            //glVertex3f((*mesh)->data->vertices[i].x,(*mesh)->data->vertices[i].y,(*mesh)->data->vertices[i].z);
             vid += dvdi;
           }
           glEnd();

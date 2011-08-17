@@ -238,6 +238,17 @@ int vsx_widget_component::inside_xy_l(vsx_vector &test, vsx_vector &global) {
         }
         l_io = 1;
       }
+      if (fix_anchors)
+      {
+        for (std::map<vsx_string, vsx_widget*>::iterator it = t_list.begin(); it != t_list.end(); it++)
+        {
+          if ( ((*it).second)->widget_type == VSX_WIDGET_TYPE_ANCHOR)
+          {
+            ((vsx_widget_anchor*)((*it).second))->anchor_order[0] = 0;
+            ((vsx_widget_anchor*)((*it).second))->anchor_order[1] = 0;
+          }
+        }
+      }
 
       // p[0]: in_param_spec
       // p[1]: osc2
@@ -396,9 +407,6 @@ int vsx_widget_component::inside_xy_l(vsx_vector &test, vsx_vector &global) {
 
       //printf("num anchors: %d\n", largest_num_anchors);
       init_children();
-//      if (fix_anchors) {
-        //macro_fix_anchors(true);
-  //    }
       return;
     } else
     if (t->cmd == "param_connect_volatile") {
