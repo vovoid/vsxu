@@ -1634,12 +1634,6 @@ public:
       //printf("moved %d\n", ind);
     }
     vertices_needing_normal_calc.push_back(ind);
-    //vsx_avector<int> vertices_falloff;
-//        vertices_falloff.push_back(ind);
-    //while (falloff > 0.0f)
-    //{
-
-    //}
   }
   vsx_mesh** p;
   void run() {
@@ -2096,7 +2090,7 @@ class vsx_module_mesh_vertex_distance_sort : public vsx_module {
   
   #define FP_BITS(fp) (*(unsigned int *)&(fp))
 
-  static unsigned int fast_sqrt_table[0x10000];  // declare table of square roots
+  unsigned int fast_sqrt_table[0x10000];  // declare table of square roots
 
   typedef union FastSqrtUnion
   {
@@ -2143,12 +2137,14 @@ class vsx_module_mesh_vertex_distance_sort : public vsx_module {
     return n;
   }
   
+  
   //*******************************************************************************
   //*******************************************************************************
   //*******************************************************************************
   //*******************************************************************************
 
   // pointer swapper
+/*  
   static int partition(vertex_holder** a, int first, int last) {
     vertex_holder pivot = (*a[first]);
     int lastS1 = first;
@@ -2179,6 +2175,34 @@ class vsx_module_mesh_vertex_distance_sort : public vsx_module {
   static void quicksort(vertex_holder** a, int aSize) {
     quicksort(a, 0, aSize - 1);
   }
+*/
+  void quicksort(vertex_holder** a, int left, int right) {
+      int i = left, j = right;
+      vertex_holder *tmp;
+      float pivot = a[(left + right) / 2]->dist;
+
+      /* partition */
+      while (i <= j) {
+            while (a[i]->dist < pivot)
+                  i++;
+            while (a[j]->dist > pivot)
+                  j--;
+            if (i <= j) {
+                  tmp = a[i];
+                  a[i] = a[j];
+                  a[j] = tmp;
+                  i++;
+                  j--;
+            }
+      };
+
+      /* recursion */
+      if (left < j)
+            quicksort(a, left, j);
+      if (i < right)
+            quicksort(a, i, right);
+}
+  
 
 public:
 
@@ -2195,7 +2219,7 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;vertices;helpers;mesh_vertex_distance_sorc";
+    info->identifier = "mesh;vertices;modifiers;mesh_vertex_distance_sort";
     info->description = "Sorts vertices by distance to a point\n"
                         " - camera/eye for instance";
     info->in_param_spec = "mesh_in:mesh,distance_to:float3";
@@ -2209,6 +2233,7 @@ public:
     distance_to = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "distance_to");
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
+    build_sqrt_table();
   }
 
 
@@ -2217,45 +2242,60 @@ public:
     vsx_mesh** p = mesh_in->get_addr();
     if (p && (param_updates || prev_timestamp != (*p)->timestamp)) {
       prev_timestamp = (*p)->timestamp;
-
-      mesh->data->vertices.reset_used(0);
-      mesh->data->vertex_normals.reset_used(0);
-      mesh->data->vertex_tex_coords.reset_used(0);
-      mesh->data->vertex_colors.reset_used(0);
-      mesh->data->faces.reset_used(0);
-
+      // if new mesh from upstream, import it into ours...
       //---
       float dtx = distance_to->get(0);
       float dty = distance_to->get(1);
       float dtz = distance_to->get(2);
       //---
-      //  init iterators
+      //  init pointer iterators
+      size_t vertex_count = (*p)->data->vertices.size();
+      
+      if (distances.size() < vertex_count)
+      {
+        distances.allocate(vertex_count);
+        for (size_t i = 0; i < vertex_count; i++)
+        {
+          distances[i] = new vertex_holder;
+        }
+      }
+      //-----------------------------------------------------------
+      vertex_holder** vf = distances.get_pointer();
       vsx_vector* vp = (*p)->data->vertices.get_pointer();
-      float* vf = distances.get_pointer();
       //
       size_t prev_alloc = distances.size();
-      distances.allocate((*p)->data->vertices.size());
+      
       for (unsigned int i = 0; i < (*p)->data->vertices.size(); i++)
       {
-        float x = dtx - (*vp).x;
-        float y = dty - (*vp).y;
-        float z = dtz - (*vp).z;
-        (*vf) = fastsqrt(x*x + y*y + z*z);
+        float x = fabs(dtx - (*vp).x);
+        float y = fabs(dty - (*vp).y);
+        float z = fabs(dtz - (*vp).z);
+        // yo pythagoras!
+        (*vf)->dist = sqrtf(x*x + y*y + z*z);
+        (*vf)->id = i;
         vf++;
         vp++;
       }
-      // sort the both arrays
-      
-/*
-      vsx_array<vsx_vector> vertices;
-      vsx_array<vsx_vector> vertex_normals;
-      vsx_array<vsx_color> vertex_colors;
-      vsx_array<vsx_tex_coord> vertex_tex_coords;
-      vsx_array<vsx_face> faces;
-*/
+      // sort the arrays
+      quicksort(distances.get_pointer(),0,vertex_count-1);
+      // put it back into our private mesh, payload order is calculated by id
+      mesh->data->vertices.allocate(vertex_count);
+      vertex_holder** ddp = distances.get_pointer();
+      vsx_vector* dp = mesh->data->vertices.get_end_pointer();
+      vsx_vector* ds = (*p)->data->vertices.get_pointer();
+      size_t i = 0;
+      while (i < vertex_count)
+      {
+        printf("id: %d  %f\n", (*ddp)->id,(*ddp)->dist);
+        *dp = ds[(*ddp)->id];
+        dp--;
+        ddp++;
+        i++;
+      }
+      // finally set output params
       mesh->timestamp++;
       mesh_out->set_p(mesh);
-      //for (int i = 0; i < (*p)->data->vertex_normals.size(); i++) mesh->data->vertex_normals[i] = (*p)->data->vertex_normals[i];
+
       param_updates = 0;
     }
   }
@@ -2287,6 +2327,7 @@ vsx_module* create_new_module(unsigned long module) {
     case 11: return (vsx_module*)(new vsx_module_mesh_scale);
     case 12: return (vsx_module*)(new vsx_module_mesh_rain_down);
     case 13: return (vsx_module*)(new vsx_module_mesh_calc_attachment);
+    case 14: return (vsx_module*)(new vsx_module_mesh_vertex_distance_sort);
   }
   return 0;
 }
@@ -2307,10 +2348,10 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 11: delete (vsx_module_mesh_scale*)m; break;
     case 12: delete (vsx_module_mesh_rain_down*)m; break;
     case 13: delete (vsx_module_mesh_calc_attachment*)m; break;
+    case 14: delete (vsx_module_mesh_vertex_distance_sort*)m; break;
   }
 }
 
 unsigned long get_num_modules() {
-  // we have only one module. it's id is 0
-  return 14;
+  return 15;
 }
