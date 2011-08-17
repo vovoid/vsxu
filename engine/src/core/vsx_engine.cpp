@@ -466,8 +466,8 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
       if (!module_handle) {
         #ifdef VSXU_DEVELOPER
           LOG(vsx_string("engine_load_module_a: error: ") + dlerror());
-          printf("%s\n", (vsx_string("engine_load_module_a: error: ") + dlerror()).c_str() );
         #endif
+        printf("%s\n", (vsx_string("engine_load_module_a: error: ") + dlerror()).c_str() );
       }
       //printf("Plugin directory: %s\n", vsx_string(vsxu_base_path+"_plugins_linux").c_str());
     #endif

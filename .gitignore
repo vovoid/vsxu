@@ -14,6 +14,7 @@ install_manifest.txt
 /engine/libvsxu_engine.so
 /engine_graphics/libvsxu_engine_graphics.so
 /player/vsxu_player
+/server/vsxu_server
 /plugins/src/_deprecated/_deprecated.so
 /plugins/src/bitmap.modifiers/bitmap.modifiers.so
 /plugins/src/bitmap.texgen/bitmap.texgen.so
