@@ -2,6 +2,7 @@
 #define VSX_ARRAY_H
 
 #include <stdlib.h>
+#include <string.h>
 // VSX Array class
 //
 // This is a special case array aimed at speed - for mesh data etc.
@@ -33,6 +34,13 @@ public:
   	used = allocated = nsize;
   }
 
+  // clones another array of same type into this one
+  void clone(vsx_array<T>* F)
+  {
+    allocate(F->size());
+    memcpy((void*)A, (void*)(F->get_pointer()), sizeof(T) * used);
+  }
+
   void set_volatile() {
     if (0 == data_volatile && A && allocated)
     {
@@ -54,7 +62,7 @@ public:
     return A;
   }
   T* get_end_pointer() {
-    return A+used*sizeof(T);
+    return &A[used-1];
   }
   unsigned long get_allocated() {
     return allocated;
