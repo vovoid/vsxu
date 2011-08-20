@@ -8,7 +8,6 @@ message("building vsxu module            " ${module_id})
 message("*******************************************")
 
 file(GLOB LOCAL_SOURCES "*.cpp")
-file(GLOB API_STUBS "api_stubs/*.cpp")
 
 project (${module_id})
 include(../cmake_globals.txt)
