@@ -192,22 +192,25 @@ public:
       i = 0;
       for (unsigned long y = 0; y < bitm->size_y; ++y) {
         int cc = y*width;
-        for (int x = 0; x < width; ++x) {
-          (*particles.particles)[i].color.b = ((float)(unsigned char)((bitm->data[cc+x]&0x00FF0000)>>16))/255.0f;
-          (*particles.particles)[i].color.g = ((float)(unsigned char)((bitm->data[cc+x]&0x0000FF00)>>8))/255.0f;
-          (*particles.particles)[i].color.r = ((float)(unsigned char)((bitm->data[cc+x]&0x000000FF)))/255.0f;
-          (*particles.particles)[i].color.a = 1.0f;
-          if ((*particles.particles)[i].color.b < 0.01f && (*particles.particles)[i].color.g < 0.01f && (*particles.particles)[i].color.r < 0.01f)
-          (*particles.particles)[i].size = 0.0f;
-          else
-          (*particles.particles)[i].size = (*particles.particles)[i].orig_size = blobsize->get();
-          
-          (*particles.particles)[i].speed.x = 0;
-          (*particles.particles)[i].speed.y = 0;
-          (*particles.particles)[i].speed.z = 0;
-          (*particles.particles)[i].time = 0;
-          (*particles.particles)[i].lifetime = 1000000000;
-          ++i;
+        if (bitm->bformat == GL_RGBA)
+        {
+          for (int x = 0; x < width; ++x) {
+            (*particles.particles)[i].color.b = ((float)(unsigned char)((((unsigned long*)bitm->data)[cc+x]&0x00FF0000)>>16))/255.0f;
+            (*particles.particles)[i].color.g = ((float)(unsigned char)((((unsigned long*)bitm->data)[cc+x]&0x0000FF00)>>8))/255.0f;
+            (*particles.particles)[i].color.r = ((float)(unsigned char)((((unsigned long*)bitm->data)[cc+x]&0x000000FF)))/255.0f;
+            (*particles.particles)[i].color.a = 1.0f;
+            if ((*particles.particles)[i].color.b < 0.01f && (*particles.particles)[i].color.g < 0.01f && (*particles.particles)[i].color.r < 0.01f)
+            (*particles.particles)[i].size = 0.0f;
+            else
+            (*particles.particles)[i].size = (*particles.particles)[i].orig_size = blobsize->get();
+
+            (*particles.particles)[i].speed.x = 0;
+            (*particles.particles)[i].speed.y = 0;
+            (*particles.particles)[i].speed.z = 0;
+            (*particles.particles)[i].time = 0;
+            (*particles.particles)[i].lifetime = 1000000000;
+            ++i;
+          }
         }
       }
       particlesystem_out->set_p(particles);
@@ -260,9 +263,12 @@ static void* noise_worker(void *ptr) {
 
       //((module_bitmap_add_noise*)ptr)->result_bitm->data;
       //unsigned long cc = rand()<<8 | (char)rand();
-      for (unsigned long x = 0; x < b_c; ++x) {
-          p[x] = ((module_bitmap_add_noise*)ptr)->t_bitm.data[x] | rand() << 8  | (unsigned char)rand(); //bitm->data[x + y*result_bitm.size_x]
-          //((module_bitmap_add_noise*)ptr)->bitm->data[x]<<
+      if (((module_bitmap_add_noise*)ptr)->t_bitm.bformat == GL_RGBA)
+      {
+        for (unsigned long x = 0; x < b_c; ++x)
+        {
+            p[x] = ((unsigned long*)((module_bitmap_add_noise*)ptr)->t_bitm.data)[x] | rand() << 8  | (unsigned char)rand(); //bitm->data[x + y*result_bitm.size_x]
+        }
       }
       ((module_bitmap_add_noise*)ptr)->result_bitm.valid = true;
       ((module_bitmap_add_noise*)ptr)->result_bitm.data = p;

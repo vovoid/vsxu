@@ -88,7 +88,7 @@ public:
 #define GL_BGRA_EXT 0
 #endif
   VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap(vsx_bitmap* vbitmap,bool mipmaps = false, bool upside_down = true);
-  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap(unsigned long* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
+  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap(void* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
 
   // load a tga file in the same thread as ours (why would anyone use tga when png's around? anyway..)
 //  void load_tga(vsx_string name, bool mipmaps = true);

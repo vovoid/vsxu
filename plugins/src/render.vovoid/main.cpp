@@ -85,10 +85,10 @@ unsigned long vsx_module_plugin::getColor(float u, float v) {
 */
   unsigned long vv = (unsigned long)floor(v);
   unsigned long uu = (unsigned long)floor(u);
-	unsigned long c00 = bitm_p.data[(vv    ) % cylSizeY * cylSizeX + (uu    ) % cylSizeX];
-	unsigned long c01 = bitm_p.data[(vv    ) % cylSizeY * cylSizeX + (uu + 1) % cylSizeX];
-	unsigned long c10 = bitm_p.data[(vv + 1) % cylSizeY * cylSizeX + (uu    ) % cylSizeX];
-	unsigned long c11 = bitm_p.data[(vv + 1) % cylSizeY * cylSizeX + (uu + 1) % cylSizeX];
+	unsigned long c00 = ((unsigned long*)bitm_p.data)[(vv    ) % cylSizeY * cylSizeX + (uu    ) % cylSizeX];
+	unsigned long c01 = ((unsigned long*)bitm_p.data)[(vv    ) % cylSizeY * cylSizeX + (uu + 1) % cylSizeX];
+	unsigned long c10 = ((unsigned long*)bitm_p.data)[(vv + 1) % cylSizeY * cylSizeX + (uu    ) % cylSizeX];
+	unsigned long c11 = ((unsigned long*)bitm_p.data)[(vv + 1) % cylSizeY * cylSizeX + (uu + 1) % cylSizeX];
 
   /*if (((unsigned long)v    ) % cylSizeY * cylSizeX + ((unsigned long)u    ) % cylSizeX > 1024*2048)
   printf("u: %f v: %f\n",u,v);*/
@@ -188,7 +188,7 @@ void vsx_module_plugin::skyBoxFromMap(int plane) {
 					break;
 					case MAP_SPHERE:
             //if ( plane)
-						result_bitm[plane].data[v * texSize + u] = getColorSph(vec);
+						((unsigned long*)result_bitm[plane].data)[v * texSize + u] = getColorSph(vec);
 					break;
 				}
 			}
@@ -522,7 +522,7 @@ void vsx_module_plugin::on_delete() {
   //if (bitm_p.valid) delete bitm_p.data;
   for (int i = 0; i < 6; ++i) {
     result_tex[i].unload();
-    if (result_bitm[i].timestamp) delete[] result_bitm[i].data;    
+    if (result_bitm[i].timestamp) delete[] (unsigned long*)result_bitm[i].data;    
   }
 }
 

@@ -55,20 +55,20 @@ public:
 		ab.bformat = GL_RGBA;
 		ab.size_x = ab.size_y = 2;
 		ab.data = new unsigned long[4];
-		ab.data[0] = 0xFFFF0000;
-		ab.data[1] = 0xFF000000;
-		ab.data[2] = 0xFF000000;
-		ab.data[3] = 0xFFFF0000;
+		((unsigned long*)ab.data)[0] = 0xFFFF0000;
+		((unsigned long*)ab.data)[1] = 0xFF000000;
+		((unsigned long*)ab.data)[2] = 0xFF000000;
+		((unsigned long*)ab.data)[3] = 0xFFFF0000;
 		ab.valid = true;
 
 		bb.bpp = 4;
 		bb.bformat = GL_RGBA;
 		bb.size_x = bb.size_y = 2;
 		bb.data = new unsigned long[4];
-		bb.data[0] = 0xFF000000;
-		bb.data[1] = 0xFF0000FF;
-		bb.data[2] = 0xFF0000FF;
-		bb.data[3] = 0xFF000000;
+		((unsigned long*)bb.data)[0] = 0xFF000000;
+		((unsigned long*)bb.data)[1] = 0xFF0000FF;
+		((unsigned long*)bb.data)[2] = 0xFF0000FF;
+		((unsigned long*)bb.data)[3] = 0xFF000000;
 		bb.valid = true;
 
 		texture_a.locked = true;

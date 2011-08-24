@@ -477,7 +477,7 @@ class module_load_jpeg : public vsx_module {
       char* rb = (char*)((CJPEGTest*)mod->cj)->m_pBuf;
       mod->bitm.data = new unsigned long[b_c*2];
       for (unsigned long i = 0; i < b_c; ++i) {
-        mod->bitm.data[i] = 0xFF000000 | (unsigned char)rb[i*3+2] << 16 | (unsigned char)rb[i*3+1] << 8 | (unsigned char)rb[i*3]; 
+        ((unsigned long*)mod->bitm.data)[i] = 0xFF000000 | (unsigned char)rb[i*3+2] << 16 | (unsigned char)rb[i*3+1] << 8 | (unsigned char)rb[i*3]; 
       }
       /*unsigned char* data2 = new unsigned char[b_c * 4];  
       int dy = 0;
@@ -614,7 +614,7 @@ public:
     if (thread_state == 1) 
     pthread_join(worker_t, 0);
     if (bitm.valid) {
-      delete[] bitm.data;
+      delete[] (unsigned long*)bitm.data;
     }
   }  
 };

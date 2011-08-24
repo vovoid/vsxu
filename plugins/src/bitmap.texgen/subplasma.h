@@ -146,7 +146,7 @@ public:
 				(y&(mm1))/mmf);
 		}
 
-	unsigned long *p = ((module_bitmap_subplasma*)ptr)->work_bitmap->data;
+	unsigned long *p = (unsigned long*)((module_bitmap_subplasma*)ptr)->work_bitmap->data;
     
 	
     for (x = 0; x < mod->i_size * (mod->i_size); ++x, p++) 
@@ -221,7 +221,7 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
     //bitm.size_y = bitm.size_x = 256;
     to_delete_data = 0;
   }
-  unsigned long *to_delete_data;
+  void *to_delete_data;
   void run() {
     // initialize our worker thread, we don't want to keep the renderloop waiting do we?
     if (!worker_running)
@@ -260,7 +260,7 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
     }  
     if (to_delete_data && my_ref == 0)
     {
-      delete[] to_delete_data;
+      delete[] (unsigned long*)to_delete_data;
       to_delete_data = 0;
     }
   }
@@ -274,7 +274,7 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
     //printf("a");
     //printf("b");
     //printf("c");
-    delete[] bitm.data;
+    delete[] (unsigned long*)bitm.data;
     //printf("d");
   }
 };
