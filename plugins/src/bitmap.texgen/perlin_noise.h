@@ -37,6 +37,7 @@ public:
   vsx_module_param_int* frequency;
   vsx_module_param_int* bitmap_type;
   vsx_module_param_int* alpha;
+  vsx_module_param_float* perlin_strength;
   vsx_module_param_float4* color;
 
   vsx_bitmap*       work_bitmap;
@@ -65,7 +66,7 @@ public:
     float star_flower = mod->star_flower->get();
     float angle = mod->angle->get();
     int size = mod->i_size;
-    int hsize = size >> 1;
+    int hsize = size / 2;
     
     if (mod->work_bitmap->bpp == 4)
     {
@@ -91,7 +92,7 @@ public:
             if (dist > 1.0f) dist = 1.0f;
             if (dist < 0.0f) dist = 0.0f;
           }
-          float pf = (perlin->Get(xp,yp)+1.0f) * 0.5f * 255.0f * dist;
+          float pf = pow( (perlin->Get(xp,yp)+1.0f) * 0.5f, mod->perlin_strength->get()) * 255.0f * dist;
           if (mod->alpha->get())
           {
             long pr = max(0,min(255,(long)(255.0f * mod->color->get(0))));
@@ -122,6 +123,7 @@ public:
       GLfloat *p = (GLfloat*)mod->work_bitmap->data;
       float yp = 0.0f;
       float xp;
+      float ddiv = 1.0f / (((float)hsize)+1.0f);
       for (int y = -hsize; y < hsize; ++y)
       {
         xp = 0.0f;
@@ -133,21 +135,31 @@ public:
             float xx = (size/(size-2.0f))*((float)x)+0.5f;
             float yy = (size/(size-2.0f))*((float)y)+0.5f;
             float dd = sqrt(xx*xx + yy*yy);
-            float dstf = dd/((float)hsize+1.0f);
-            float phase = (float)pow(1.0f - (float)fabs((float)cos(angle+arms*(float)atan2(xx,yy)))*(star_flower+(1.0f-star_flower)*(((dstf)))),attenuation);
+            if (dd > (float)hsize)
+            {
+              dist = 0.0f;
+            }
+            else
+            {
+            float xx = (size/(size-2.0f))*((float)x)+0.5f;
+            float yy = (size/(size-2.0f))*((float)y)+0.5f;
+            float dd = sqrt(xx*xx + yy*yy);
+            float dstf = dd * ddiv;
+            float phase = (float)pow(1.0f - (float)fabs((float)cos(angle+arms*(float)atan2(xx,yy)))*(star_flower+(1-star_flower)*(((dstf)))),attenuation);
             if (phase > 2.0f) phase = 1.0f;
-            dist = cos(dstf * pi/2.0f) * phase;
-            if (dist > 0.9f) dist = 0.9f;
-            if (dist < 0.5f) dist = 0.5000f;
+            dist = (cos(((dstf * pi/2.0f)))*phase);
+            if (dist > 1.0f) dist = 1.0f;
+            if (dist < 0.0f) dist = 0.0f;
+            }
           }
           
-          GLfloat pf = (GLfloat)((perlin->Get(xp,yp)+1.0f) * 0.5f * dist);
+          GLfloat pf = (GLfloat)(pow( (perlin->Get(xp,yp)+1.0f) * 0.5f, mod->perlin_strength->get())* dist);
           if (mod->alpha->get())
           {
             p[0] = mod->color->get(0);
             p[1] = mod->color->get(1);
             p[2] = mod->color->get(2);
-            p[3] = pf;
+            p[3] = max(0.0f,min(1.0f,pf * mod->color->get(3)));
           } else {
             p[0] = pf*mod->color->get(0);
             p[1] = pf*mod->color->get(1);
@@ -173,11 +185,13 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->in_param_spec = "rand_seed:float,"
+    info->in_param_spec = "perlin_options:complex{"
+                          "rand_seed:float,"
+                          "perlin_strength:float,"
                           "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024|2048x2048,"
                           "octave:enum?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16,"
                           "frequency:enum?1|2|3|4|5|6|7|8,"
-                          "bitmap_type:enum?integer|float,"
+                          "bitmap_type:enum?integer|float},"
                           "blob_settings:complex{"
                             "enable_blob:enum?no|yes,"
                             "arms:float,"
@@ -202,6 +216,9 @@ public:
 
     rand_seed = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"rand_seed");
     rand_seed->set(4.0f);
+
+    perlin_strength = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"perlin_strength");
+    perlin_strength->set(1.0f);
 
     enable_blob = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"enable_blob");
     
