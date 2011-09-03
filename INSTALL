@@ -56,6 +56,9 @@ A D V A N C E D   B U I L D   O P T I O N S
     -DCMAKE_INSTALL_PREFIX="/path/to/install/dir"
       sets installation path
 
+    -DVSXU_ENGINE_STATIC=1
+      build the engine static, with engine_graphics and all modules compiled in
+
     -DENGINE_SCRIPTING=1
       enables vsxl/gamemonkey (the scripting language in the engine)
 
@@ -69,6 +72,13 @@ A D V A N C E D   B U I L D   O P T I O N S
     -DVSXU_SOUND_MEDIA_PLAYER=1
       see next section
 
+    -DVSXU_OPENGL_ES_2_0=1
+      use opengl es 2.0 instead of regular opengl
+
+    -DVSXU_MEEGO=1
+      compile for meego
+
+
 Examples:
   This is my test/debug-it-all command:
     cmake . -DVSXU_DEBUG=1 -DENGINE_SCRIPTING=1 -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxu_debug"
@@ -78,6 +88,9 @@ Examples:
 
   For visualization (with pulseaudio) on Linux:
     cmake . -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxupulse"
+
+  For debugging static opengles (for phones etc)
+    cmake . -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxu_static_debug" -DVSXU_DEBUG=1 -DVSXU_OPENGL_ES_2_0=1 -DVSXU_ENGINE_STATIC=1
 
   On Windows, for a debug build:
     cmake . -G "MinGW Makefiles" -DVSXU_DEBUG=1

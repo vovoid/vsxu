@@ -12,16 +12,16 @@
 ;General
 
   ;Name and file
-  Name "VSX Ultra Artiste 0.2.0"
-  OutFile "vsxu_artiste_install_020.exe"
+  Name "VSX Ultra Artiste 0.3.0"
+  OutFile "vsxu_artiste_install_030.exe"
   
   SetCompressor /SOLID lzma
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\vsxu_artiste_0.2.0"
+  InstallDir "$PROGRAMFILES\vsxu_artiste_0.3.0"
 
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\vovoid\vsxu_artiste_020" ""
+  InstallDirRegKey HKCU "Software\vovoid\vsxu_artiste_030" ""
 ;--------------------------------
 ;Variables
 
@@ -40,7 +40,7 @@
 
   ;Start Menu Folder Page Configuration
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
-  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Vovoid VSX Ultra Artiste 0.2.0" 
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Vovoid VSX Ultra Artiste 0.3.0" 
   !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
 	
 	

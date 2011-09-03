@@ -11,20 +11,15 @@
 #include "vsx_texture.h"
 #ifndef VSX_TEXTURE_NO_GLPNG
 #include "vsxg.h"
+#include <stdlib.h>
 #ifdef _WIN32
 	#include "pthread.h"
 #else
 	#include "pthread.h"
-	#include <stdlib.h>
 #endif
 #endif
 #ifdef VSXU_MAC_XCODE
 #include <syslog.h>
-#endif
-
-#ifdef VSXU_OPENGL_ES
-#include <OpenGLES/ES1/gl.h>
-#include <OpenGLES/ES1/glext.h>
 #endif
 
 #ifdef VSXU_EXE
@@ -42,7 +37,9 @@ vsx_texture::vsx_texture(int id, int type) {
   transform_obj = new vsx_transform_neutral;
   valid = true;
   locked = false;
+  #ifndef VSXU_OPENGL_ES
   glewInit();
+  #endif
 }
 
 void vsx_texture::init_opengl_texture() {
@@ -75,7 +72,7 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture) {
 	  // use_fbo = false;
   //}
   if (use_fbo) {
-#ifdef VSXU_OPENGL_ES
+#ifdef VSXU_OPENGL_ES_1_0
     GLint prev_buf_l;
     GLuint tex_id;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING_OES, (GLint *)&prev_buf_l);
@@ -234,7 +231,7 @@ void vsx_texture::init_buffer_render(int width, int height) {
 void vsx_texture::deinit_buffer() {
 #ifndef VSX_TEXTURE_NO_RT
   if (use_fbo) {
-#ifdef VSXU_OPENGL_ES
+#ifdef VSXU_OPENGL_ES_1_0
   	glDeleteRenderbuffersOES(1,&depthbuffer_id);
   	glDeleteTextures(1,&texture_info.ogl_id);
     glDeleteFramebuffersOES(1, &framebuffer_id);
@@ -289,7 +286,7 @@ void vsx_texture::begin_capture() {
   if (use_fbo) {
     if (locked) printf("locked\n");
     if (locked) return;
-#ifdef VSXU_OPENGL_ES
+#ifdef VSXU_OPENGL_ES_1_0
     glGetIntegerv(GL_FRAMEBUFFER_BINDING_OES, (GLint *)&prev_buf);
 #endif
 #ifndef VSXU_OPENGL_ES
@@ -308,7 +305,7 @@ void vsx_texture::begin_capture() {
 
     GLfloat one_array[4] = {1.0f, 1.0f, 1.0f, 1.0f};
     GLfloat zero_array[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-
+    #ifndef VSXU_OPENGL_ES_2_0
     glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,&one_array[0]);
     glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,&one_array[0]);
     glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,&zero_array[0]);
@@ -319,8 +316,9 @@ void vsx_texture::begin_capture() {
     glDisable(GL_LIGHT1);
     glDisable(GL_LIGHT2);
     glDisable(GL_LIGHT3);
+    #endif
     glEnable(GL_BLEND);
-#ifdef VSXU_OPENGL_ES
+#ifdef VSXU_OPENGL_ES_1_0
     glBindTexture(GL_TEXTURE_2D,0);
 //			printf("framebuffer_id: %d\n");
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, framebuffer_id);
@@ -347,12 +345,14 @@ void vsx_texture::end_capture() {
 #ifndef VSX_TEXTURE_NO_RT
   if (use_fbo) {
     if (locked) {
-      glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, framebuffer_id);
-      glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, tex_fbo);
-      glBlitFramebufferEXT(0, 0, texture_info.size_x, texture_info.size_x, 0, 0, texture_info.size_x, texture_info.size_x, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+      #ifndef VSXU_OPENGL_ES_2_0
+        glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, framebuffer_id);
+        glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, tex_fbo);
+        glBlitFramebufferEXT(0, 0, texture_info.size_x, texture_info.size_x, 0, 0, texture_info.size_x, texture_info.size_x, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+      #endif
 
 
-#ifdef VSXU_OPENGL_ES
+#ifdef VSXU_OPENGL_ES_1_0
       glBindFramebufferOES(GL_FRAMEBUFFER_OES, prev_buf);
 #endif
 #ifndef VSXU_OPENGL_ES
@@ -365,7 +365,7 @@ void vsx_texture::end_capture() {
       glMatrixMode(GL_PROJECTION);
       glPopMatrix();
       glMatrixMode(GL_MODELVIEW);
-#ifndef VSXU_OPENGL_ES
+#ifndef VSXU_OPENGL_ES_2_0
       glPopAttrib();
 #endif
       locked = false;
@@ -419,7 +419,7 @@ void vsx_texture::upload_ram_bitmap(vsx_bitmap* vbitmap,bool mipmaps, bool upsid
 #endif
 }
 
-void vsx_texture::upload_ram_bitmap(unsigned long* data, unsigned long size_x, unsigned long size_y, bool mipmaps, int bpp, int bpp2, bool upside_down) {
+void vsx_texture::upload_ram_bitmap(void* data, unsigned long size_x, unsigned long size_y, bool mipmaps, int bpp, int bpp2, bool upside_down) {
 #ifndef VSX_TEXTURE_NO_R_UPLOAD
 	if (!mipmaps) {
 	  if ((float)size_x/(float)size_y != 1.0) {
@@ -471,16 +471,31 @@ void vsx_texture::upload_ram_bitmap(unsigned long* data, unsigned long size_x, u
 	//printf("%d GL Error was: %x\n", __LINE__,glGetError());
 
   if (upside_down) {
-  	unsigned char* data2 = new unsigned char[size_x * size_y * bpp];
-  	int dy = 0;
-    int sxbpp = size_x*bpp;
-  	for (int y = size_y-1; y >= 0; --y) {
-	    for (unsigned long x = 0; x < size_x*bpp; ++x) {
-      	data2[dy*sxbpp + x] = ((unsigned char*)data)[y*sxbpp + x];
-    	}
-    	++dy;
-  	}
-  	data = (unsigned long*)data2;
+    if (bpp == GL_RGBA32F_ARB)
+    {
+      GLfloat* data2 = new GLfloat[size_x * size_y * 4];
+      int dy = 0;
+      int sxbpp = size_x*4;
+      for (int y = size_y-1; y >= 0; --y) {
+        for (unsigned long x = 0; x < size_x*4; ++x) {
+          data2[dy*sxbpp + x] = ((GLfloat*)data)[y*sxbpp + x];
+        }
+        ++dy;
+      }
+      data = (GLfloat*)data2;
+    } else
+    {
+      unsigned char* data2 = new unsigned char[size_x * size_y * bpp];
+      int dy = 0;
+      int sxbpp = size_x*bpp;
+      for (int y = size_y-1; y >= 0; --y) {
+        for (unsigned long x = 0; x < size_x*bpp; ++x) {
+          data2[dy*sxbpp + x] = ((unsigned char*)data)[y*sxbpp + x];
+        }
+        ++dy;
+      }
+      data = (unsigned long*)data2;
+    }
   }
   //glTexParameteri(texture_info.ogl_type, GL_TEXTURE_WRAP_S, GL_CLAMP);
   //glTexParameteri(texture_info.ogl_type, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -499,6 +514,9 @@ void vsx_texture::upload_ram_bitmap(unsigned long* data, unsigned long size_x, u
 		printf("GL NOError is: %d\n", GL_NO_ERROR);
 #endif
 #ifndef VSXU_OPENGL_ES
+    if (bpp == GL_RGBA32F_ARB)
+    gluBuild2DMipmaps(texture_info.ogl_type,bpp,size_x,size_y,bpp2,GL_FLOAT,data);
+    else
     gluBuild2DMipmaps(texture_info.ogl_type,bpp,size_x,size_y,bpp2,GL_UNSIGNED_BYTE,data);
 #endif
   }
@@ -510,7 +528,13 @@ void vsx_texture::upload_ram_bitmap(unsigned long* data, unsigned long size_x, u
 #endif
     
     // no compression
-    glTexImage2D(texture_info.ogl_type, 0,bpp , size_x, size_y, 0, bpp2, GL_UNSIGNED_BYTE, data);
+    if (bpp == GL_RGBA32F_ARB)
+    {
+      glTexImage2D(texture_info.ogl_type, 0,bpp , size_x, size_y, 0, bpp2, GL_FLOAT, data);
+    } else
+    {
+      glTexImage2D(texture_info.ogl_type, 0,bpp , size_x, size_y, 0, bpp2, GL_UNSIGNED_BYTE, data);
+    }
 
     // use compression
     /*if (bpp == 3)
@@ -521,7 +545,13 @@ void vsx_texture::upload_ram_bitmap(unsigned long* data, unsigned long size_x, u
     */
   }
   if (upside_down) {
-  	delete[] data;
+    if (bpp == GL_RGBA32F_ARB)
+    {
+  	delete[] (GLfloat*)data;
+    } else
+    {
+      delete[] (unsigned long*)data;
+    }
   }
   //printf("after upload\n");
 

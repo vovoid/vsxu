@@ -57,6 +57,34 @@ typedef unsigned char uint8;
 #define Blend_Phoenix(A,B)  ((uint8)(min(A,B) - max(A,B) + 255))
 #define Blend_Opacity(A,B,F,O)  ((uint8)(O * F(A,B) + (1 - O) * B))
 
+
+/*#define fl_Blend_Normal(A,B) ((unsigned char)(A))
+#define fl_Blend_Lighten(A,B)  ((unsigned char)((B > A) ? B:A))
+#define fl_Blend_Darken(A,B) ((unsigned char)((B > A) ? A:B))*/
+#define fl_Blend_Multiply(A,B) ((unsigned char)((A * B) / 255))
+/*#define fl_Blend_Average(A,B)  ((unsigned char)((A + B) / 2))
+#define fl_Blend_Add(A,B)  ((unsigned char)((A + B > 255) ? 255:(A + B)))
+#define fl_Blend_Subtract(A,B) ((unsigned char)((A + B < 255) ? 0:(A + B - 255)))
+#define fl_Blend_Difference(A,B) ((unsigned char)(abs(A - B)))
+#define fl_Blend_Negation(A,B) ((unsigned char)(255 - abs(255 - A - B)))
+#define fl_Blend_Screen(A,B) ((unsigned char)(255 - (((255 - A) * (255 - B)) >> 8)))
+#define fl_Blend_Exclusion(A,B)  ((unsigned char)(A + B - 2 * A * B / 255))
+#define fl_Blend_Overlay(A,B)  ((unsigned char)((B < 128) ? (2 * A * B / 255):(255 - 2 * (255 - A) * (255 - B) / 255)))
+#define fl_Blend_Soft_Light(A,B)  ((uint8)((B < 128) ? (2*((A >> 1)+64)) * (B/255):(255 - (2*(255-((A >> 1) + 64))*(255-B)/255))))
+#define fl_Blend_Hard_Light(A,B)  (Blend_Overlay(B,A))
+#define fl_Blend_Color_Dodge(A,B) ((uint8)((A == 255) ? A:((B << 8 ) / (255 - A) > 255) ? 255:((B << 8 ) / (255 - A))))
+#define fl_Blend_Color_Burn(A,B)  ((uint8)((A == 0) ? 0:((255 - (((255 - B) << 8 ) / A)) < 0) ? 0:(255 - (((255 - B) << 8 ) / A))))
+#define fl_Blend_Linear_Dodge(A,B)  (Blend_Add(A,B))
+#define fl_Blend_Linear_Burn(A,B) (Blend_Subtract(A,B))
+#define fl_Blend_Linear_Light(A,B)  ((uint8)(A < 128) ? Blend_Linear_Burn((2 * A),B):Blend_Linear_Dodge((2 * (A - 128)),B))
+#define fl_Blend_Vivid_Light(A,B) ((uint8)(A < 128) ? Blend_Color_Burn((2 * A),B):Blend_Color_Dodge((2 * (A - 128)),B))
+#define fl_Blend_Pin_Light(A,B) ((uint8)(A < 128) ? Blend_Darken((2 * A),B):Blend_Lighten((2 *(A - 128)),B))
+#define fl_Blend_Hard_Mix(A,B)  ((uint8)(A < 255 - B) ? 0:255)
+#define fl_Blend_Reflect(A,B)  ((uint8)((B == 255) ? B:((A * A / (255 - B) > 255) ? 255:(A * A / (255 - B)))))
+#define fl_Blend_Glow(A,B) (Blend_Reflect(B,A))
+#define fl_Blend_Phoenix(A,B)  ((uint8)(min(A,B) - max(A,B) + 255))*/
+#define fl_Blend_Opacity(A,B,F,O)  ((O * F(A,B) + (1 - O) * B))
+
 // 0..24 blend types
 
 class module_bitmap_blend : public vsx_module {
@@ -82,6 +110,7 @@ public:
   vsx_module_param_bitmap* in2;
 
   vsx_module_param_int* filter_type;
+  vsx_module_param_int* bitmap_type;
 
   vsx_module_param_float3* bitm1_ofs;
   vsx_module_param_float3* bitm2_ofs;
@@ -98,7 +127,8 @@ public:
   // our worker thread, to keep the tough generating work off the main loop
   // this is a fairly simple operation, but when you want to generate fractals
   // and decode film, you could run into several seconds of processing time. 
-  static void* worker(void *ptr) {
+  static void* worker(void *ptr)
+  {
     module_bitmap_blend* mod = ((module_bitmap_blend*)ptr);
     vsx_bitmap* bitm = mod->work_bitmap;
     vsx_bitmap* bitm1 = mod->bitm1;
@@ -106,7 +136,7 @@ public:
     
     unsigned long x,y,ix,iy;
 
-    for (x = 0; x < bitm->size_x * bitm->size_y; x++) bitm->data[x] = 0;
+    for (x = 0; x < bitm->size_x * bitm->size_y; x++) ((unsigned long*)bitm->data)[x] = 0;
     //TEEEEMP!
     //bitm->timestamp++;
     //bitm->valid = true;
@@ -122,17 +152,13 @@ public:
       ixbound = false;
       for (x = (unsigned long)mod->bitm1_ofs->get(0); x < bitm->size_x && !ixbound; x++)
       {
-        bitm->data[x + y * bitm->size_x] = bitm1->data[ix + iy * bitm1->size_x]; 
+        ((unsigned long*)bitm->data)[x + y * bitm->size_x] = ((unsigned long*)bitm1->data)[ix + iy * bitm1->size_x]; 
         ix++;
         if (ix >= bitm1->size_x) ixbound = true;
       }
       iy++;
       if (iy >= bitm1->size_y) iybound = true;
     }
-
-
-//#define BLEND_FUNC(BLT)
-//  BLT(((unsigned char*)&bitm2->data[ix + iy * bitm2->size_x])[a],((unsigned char*)&bitm->data[x + y * bitm->size_x])[a]);
 
     iybound = false;
     iy = 0;
@@ -142,11 +168,13 @@ public:
       ixbound = false;
       for (x = (unsigned long)mod->bitm2_ofs->get(0); x < bitm->size_x && !ixbound; x++)
       {
+        unsigned long* data = (unsigned long*)bitm->data;
+        unsigned long* data2 = (unsigned long*)bitm2->data;
 
 #define BLEND_FUNC(BLT) \
       for (int a = 0; a < 4; a++)\
       {\
-        ((unsigned char*)&bitm->data[x + y * bitm->size_x])[a] = Blend_Opacity(((unsigned char*)&bitm2->data[ix + iy * bitm2->size_x])[a],((unsigned char*)&bitm->data[x + y * bitm->size_x])[a],BLT,mod->bitm2_opacity->get());\
+        ((unsigned char*)&data[x + y * bitm->size_x])[a] = Blend_Opacity(((unsigned char*)&data2[ix + iy * bitm2->size_x])[a],((unsigned char*)&data[x + y * bitm->size_x])[a],BLT,mod->bitm2_opacity->get());\
       }\
       
   switch (mod->filter_type->get())
@@ -184,57 +212,7 @@ public:
     iy++;
     if (iy >= bitm2->size_y) iybound = true;
   }
-      
-  //BLEND_FUNC(Blend_Lighten)
-  /*
-    iybound = false;
-    iy = 0;
-    for (y = (unsigned long)mod->bitm2_ofs->get(1); y < bitm->size_y && !iybound; y++)
-    {
-      ix = 0;
-      ixbound = false;
-      for (x = (unsigned long)mod->bitm2_ofs->get(0); x < bitm->size_x && !ixbound; x++)
-      {
-        for (int a = 0; a < 4; a++)
-        {
-          //((unsigned char*)&bitm->data[x + y * bitm->size_x])[a] = Blend_Multiply(((unsigned char*)&bitm2->data[ix + iy * bitm2->size_x])[a],((unsigned char*)&bitm->data[x + y * bitm->size_x])[a]);
-          switch (mod->blend_type)
-          {
-            case BLEND_NORMAL       : BLEND_FUNC(Blend_Normal) break;
-            case BLEND_LIGHTEN      : BLEND_FUNC(Blend_Lighten) break;
-            case BLEND_DARKEN       : BLEND_FUNC(Blend_Darken) break;
-            case BLEND_MULTIPLY     : BLEND_FUNC(Blend_Multiply) break;
-            case BLEND_AVERAGE      : BLEND_FUNC(Blend_Average) break;
-            case BLEND_ADD          : BLEND_FUNC(Blend_Add) break;
-            case BLEND_SUBTRACT     : BLEND_FUNC(Blend_Subtract) break;
-            case BLEND_DIFFERENCE   : BLEND_FUNC(Blend_Difference) break;
-            case BLEND_NEGATION     : BLEND_FUNC(Blend_Negation) break;
-            case BLEND_SCREEN       : BLEND_FUNC(Blend_Screen) break;
-            case BLEND_EXCLUSION    : BLEND_FUNC(Blend_Exclusion) break;
-            case BLEND_OVERLAY      : BLEND_FUNC(Blend_Overlay) break;
-            case BLEND_SOFT_LIGHT   : BLEND_FUNC(Blend_Soft_Light) break;
-            case BLEND_HARD_LIGHT   : BLEND_FUNC(Blend_Hard_Light) break;
-            case BLEND_COLOR_DODGE  : BLEND_FUNC(Blend_Color_Dodge) break;
-            case BLEND_COLOR_BURN   : BLEND_FUNC(Blend_Color_Burn) break;
-            case BLEND_LINEAR_DODGE : BLEND_FUNC(Blend_Linear_Dodge) break;
-            case BLEND_LINEAR_BURN  : BLEND_FUNC(Blend_Linear_Burn) break;
-            case BLEND_LINEAR_LIGHT : BLEND_FUNC(Blend_Linear_Light) break;
-            case BLEND_VIVID_LIGHT  : BLEND_FUNC(Blend_Vivid_Light) break;
-            case BLEND_PIN_LIGHT    : BLEND_FUNC(Blend_Pin_Light) break;
-            case BLEND_HARD_MIX     : BLEND_FUNC(Blend_Hard_Mix) break;
-            case BLEND_REFLECT      : BLEND_FUNC(Blend_Reflect) break;
-            case BLEND_GLOW         : BLEND_FUNC(Blend_Glow) break;
-            case BLEND_PHOENIX      : BLEND_FUNC(Blend_Phoenix) break;
-          }
-          
-        }
-        ix++;
-        if (ix > bitm2->size_x) ixbound = true;
-      }
-      iy++;
-      if (iy > bitm2->size_y) iybound = true;
-    }
-*/
+
     bitm->timestamp++;
     bitm->valid = true;
     mod->thread_state = 2;
@@ -248,7 +226,7 @@ public:
     info->in_param_spec = "bmp1:complex{in1:bitmap,bitm1_ofs:float3},bmp2:complex{in2:bitmap,bitm2_ofs:float3,bitm2_opacity:float},target_size:float3,\
 blend_type:enum?BLEND_NORMAL|BLEND_LIGHTEN|BLEND_DARKEN|BLEND_MULTIPLY|BLEND_AVERAGE|BLEND_ADD|BLEND_SUBTRACT|BLEND_DIFFERENCE|BLEND_NEGATION|\
 BLEND_SCREEN|BLEND_EXCLUSION|BLEND_OVERLAY|BLEND_SOFT_LIGHT|BLEND_HARD_LIGHT|BLEND_COLOR_DODGE|BLEND_COLOR_BURN|BLEND_LINEAR_DODGE|\
-BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HARD_MIX|BLEND_REFLECT|BLEND_GLOW|BLEND_PHOENIX";
+BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HARD_MIX|BLEND_REFLECT|BLEND_GLOW|BLEND_PHOENIX,bitmap_type:enum?integer|float";
     vsx_string nn;
     switch (blend_type)
     {
@@ -310,6 +288,8 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
 
     filter_type = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"blend_type");
     filter_type->set(blend_type);
+
+    bitmap_type = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"bitmap_type");
     
     work_bitmap = &bitm;
     bitm.data = 0;
@@ -327,7 +307,7 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
     to_delete_data = 0;
     result1->set_p(bitm);
   }
-  unsigned long *to_delete_data;
+  void *to_delete_data;
 
   void run() {
     bitm1 = in1->get_addr();
@@ -346,7 +326,6 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
         timestamp1 = bitm1->timestamp;
         timestamp2 = bitm2->timestamp;
         
-        //if (bitm->data) delete[] bitm.data;
         if (bitm.size_x != (unsigned long)target_size->get(0) || bitm.size_y != (unsigned long)target_size->get(1))
         {
           if (bitm.data != 0) to_delete_data = bitm.data;
@@ -383,7 +362,7 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
     if (thread_state == 3)
     if (to_delete_data && (*bitm.ref) == 0)
     {
-      delete[] to_delete_data;
+      delete[] (unsigned long*)to_delete_data;
       to_delete_data = 0;
     }        
     
@@ -398,7 +377,8 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
     //printf("a");
     //printf("b");
     //printf("c");
-    delete[] bitm.data;
+    
+    delete[] (unsigned long*)bitm.data;
     //printf("d");
   }
 };

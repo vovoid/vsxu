@@ -12,7 +12,7 @@
 #include "vsx_widget_base.h"
 #include "lib/vsx_widget_lib.h"
 #include "dialogs/vsx_widget_window_statics.h"
-#include "vsx_widget_main.h"
+#include "vsx_widget_desktop.h"
 #include "vsx_widget_object_inspector.h"
 #include "vsxfst.h"
 #include "vsx_param.h"

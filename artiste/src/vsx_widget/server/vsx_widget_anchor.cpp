@@ -16,8 +16,9 @@
 #include "lib/vsx_widget_lib.h"
 #include "vsx_widget_base.h"
 #include "window/vsx_widget_window.h"
-#include "vsx_widget_main.h"
+#include "vsx_widget_desktop.h"
 #include "vsx_widget_anchor.h"
+#include <vsx_command_client_server.h>
 #include "vsx_widget_server.h"
 #include "module_choosers/vsx_widget_module_chooser.h"
 #include "vsx_widget_connector.h"
@@ -329,12 +330,14 @@ if (t->cmd == "in_param_spec" || t->cmd == "out_param_spec") {
 
 				if (l_io < 0)
 				{
-					if (add_c[1] != "complex") ((vsx_widget_component*)((vsx_widget_anchor*)tt)->component)->p_l_list_in[add_c[0]] = tt;
+					//if (add_c[1] != "complex")
+          ((vsx_widget_component*)((vsx_widget_anchor*)tt)->component)->p_l_list_in[add_c[0]] = tt;
 					((vsx_widget_anchor*)tt)->a_order = anchor_order[0]++;
 				}
 				else
 				{
-					if (add_c[1] != "complex") ((vsx_widget_component*)((vsx_widget_anchor*)tt)->component)->p_l_list_out[add_c[0]] = tt;
+					//if (add_c[1] != "complex")
+          ((vsx_widget_component*)((vsx_widget_anchor*)tt)->component)->p_l_list_out[add_c[0]] = tt;
 					((vsx_widget_anchor*)tt)->a_order = anchor_order[1]++;
 					//printf("new anchor has order %d",((vsx_widget_anchor*)tt)->order);
 				}

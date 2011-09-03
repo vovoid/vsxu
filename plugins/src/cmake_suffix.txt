@@ -14,7 +14,10 @@ endif(WIN32)
 
 if (UNIX)
   #set(output_dir "../../_plugins_linux")
-  install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/vsxu/plugins)
+  if (VSXU_ENGINE_STATIC EQUAL 1)
+  else (VSXU_ENGINE_STATIC EQUAL 1)
+    install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/vsxu/plugins)
+  endif (VSXU_ENGINE_STATIC EQUAL 1)
 endif(UNIX)
 
 #set(CMAKE_SHARED_LINKER_FLAGS -s)

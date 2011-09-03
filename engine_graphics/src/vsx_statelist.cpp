@@ -19,6 +19,7 @@ void vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info) {
   } else
   {
     if (info->need_reload) {
+      printf("reloading state\n");
       vxe_local->unload_state();
       vxe_local->load_state(info->state_name);
       info->need_reload = false;
@@ -135,6 +136,7 @@ void vsx_statelist::start()
   vxe->start();
   vxe->load_state((*state_iter).state_name);
 }
+
 void vsx_statelist::stop()
 {
   for (std::vector<state_info>::iterator it = statelist.begin(); it != statelist.end(); ++it)
@@ -284,18 +286,18 @@ void vsx_statelist::render()
       cmd_out = &(*state_iter).cmd_out;
       transitioning = false;
       transition_time = 2.0f;
-    if (cmd_out && cmd_in)
-    {
+      if (cmd_out && cmd_in)
+      {
+        if (vxe)
+        {
+          vxe->process_message_queue(cmd_in,cmd_out);
+        }
+        cmd_out->clear(true);
+      }
       if (vxe)
       {
-        vxe->process_message_queue(cmd_in,cmd_out);
+        vxe->render();
       }
-      cmd_out->clear();
-    }
-    if (vxe)
-    {
-      vxe->render();
-    }
     } else
     {
       if (cmd_out && cmd_in)
@@ -304,7 +306,7 @@ void vsx_statelist::render()
         {
           vxe->process_message_queue(cmd_in,cmd_out);
         }
-        cmd_out->clear();
+        cmd_out->clear(true);
       }
       tex1.begin_capture();
         if (vxe)
@@ -331,8 +333,8 @@ void vsx_statelist::render()
       if (param_t_a && param_t_b && param_pos && fade_pos_from_engine)
       {
         //printf("rendering fader\n");
-        param_t_a->set_p(tex1);
-        param_t_b->set_p(tex_to);
+        param_t_a->set(&tex1);
+        param_t_b->set(&tex_to);
         fade_pos_from_engine->set(1.0f);
         float t = transition_time;
         if (t > 1.0f) t = 1.0f;
@@ -536,6 +538,7 @@ void vsx_statelist::init(vsx_string base_path,vsx_string init_sound_type)
   if (own_path.size())
   if (own_path[own_path.size()-1] != '\\') own_path.push_back('\\');
 #else
+  if (own_path.size())
   if (own_path[own_path.size()-1] != '/') own_path.push_back('/');
 #endif
   visual_path = "visuals_player";
@@ -571,4 +574,19 @@ void vsx_statelist::init(vsx_string base_path,vsx_string init_sound_type)
 
 vsx_statelist::vsx_statelist() 
 {
-};
+}
+
+vsx_statelist::~vsx_statelist()
+{
+    #ifdef VSXU_DEBUG
+    printf("statelist destructor\n");
+    #endif
+  
+  for (size_t i = 0; i < faders.size(); i++)
+  {
+    #ifdef VSXU_DEBUG
+    printf("deleting fader %d\n", i);
+    #endif
+    delete faders[i];
+  }
+}

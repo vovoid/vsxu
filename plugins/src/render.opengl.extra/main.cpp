@@ -45,7 +45,7 @@ public:
     positive_z = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"positive_z");
     negative_z = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"negative_z");
     texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture_out");
-    texture_out->set_p(my_tex);
+    texture_out->set(&my_tex);
     need_to_run = 1;
   }
 
@@ -78,7 +78,7 @@ public:
                 my_tex.texture_info.ogl_id = texture;
                 my_tex.texture_info.ogl_type = GL_TEXTURE_CUBE_MAP_EXT;
                 my_tex.valid = true;
-                texture_out->set_p(my_tex);
+                texture_out->set(&my_tex);
                 need_to_run = 0;
                 loading_done = true;
                 //printf("vsx_build_cubemap_texture: COMPLETE\n");
@@ -100,7 +100,7 @@ public:
 
       p_x = n_x = p_y = n_y = p_z = n_z = 0;
       my_tex.unload();
-      texture_out->set_p(my_tex);
+      texture_out->set(&my_tex);
     }
     need_to_run = 1;
   }

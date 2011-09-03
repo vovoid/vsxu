@@ -1,14 +1,16 @@
 #ifndef VSX_TEXTURE_LIB_H
 #define VSX_TEXTURE_LIB_H
 #ifdef VSXU_EXE
-#include <map>
+  #include <map>
 #endif
 #include "vsx_texture_info.h"
 #include "vsx_string.h"
 #ifndef VSX_TEXTURE_NO_RT
-#ifndef VSX_TEXTURE_NO_RT_PBUFFER
-#include "render_texture.h"
-#endif
+  #ifndef VSX_TEXTURE_NO_RT_PBUFFER
+    #ifndef VSXU_OPENGL_ES
+      #include "render_texture.h"
+    #endif
+  #endif
 #endif
 #include "vsx_bitmap.h"
 
@@ -35,7 +37,7 @@ class vsx_texture {
   GLuint framebuffer_id;
   GLuint depthbuffer_id;
   GLuint colorBuffer, depthBuffer, tex_fbo;
-
+  int original_transform_obj;
 public:
   bool locked; // this is if another texture gets a texture already in the list, to prevent it from unloading.
                 // if not locked it can safely delete it. This is an approximation of course, but should work
@@ -45,7 +47,7 @@ public:
   // is this valid for binding:
   bool valid;
 
-#if !defined(VSX_TEXTURE_NO_RT) && !defined(VSX_TEXTURE_NO_RT_PBUFFER)
+#if !defined(VSX_TEXTURE_NO_RT) && !defined(VSX_TEXTURE_NO_RT_PBUFFER) && !defined(VSXU_OPENGL_ES)
   RenderTexture *rt; // render texture (used when acting as a pbuffer)
 #else
   void *rt;
@@ -64,7 +66,7 @@ public:
 
   bool get_fbo_status() { return use_fbo;}
 
-#if ((!defined(VSX_TEXTURE_NO_RT)) && (!defined(VSX_TEXTURE_NO_RT_PBUFFER)))
+#if ((!defined(VSX_TEXTURE_NO_RT)) && (!defined(VSX_TEXTURE_NO_RT_PBUFFER))) && (!defined(VSXU_OPENGL_ES))
   RenderTexture* get_rt() { return rt; }
 #else
   void* get_rt() { return rt; }
@@ -86,7 +88,7 @@ public:
 #define GL_BGRA_EXT 0
 #endif
   VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap(vsx_bitmap* vbitmap,bool mipmaps = false, bool upside_down = true);
-  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap(unsigned long* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
+  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap(void* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
 
   // load a tga file in the same thread as ours (why would anyone use tga when png's around? anyway..)
 //  void load_tga(vsx_string name, bool mipmaps = true);
@@ -102,6 +104,7 @@ public:
 		if(transform_obj == new_transform_obj) return;
 		if(transform_obj) delete transform_obj;
 		transform_obj = new_transform_obj;
+    original_transform_obj = 0;
 	}
 	// return the transformation
 	vsx_transform_obj* get_transform(){return transform_obj;}
@@ -126,9 +129,14 @@ public:
     rt = 0;
     valid = false;
     transform_obj = new vsx_transform_neutral;
+    original_transform_obj = 1;
   }
   vsx_texture(int id, int type);
-
+  ~vsx_texture()
+  {
+    if (original_transform_obj)
+    delete transform_obj;
+  }
 
   VSX_TEXTURE_DLLIMPORT void unload();
 };

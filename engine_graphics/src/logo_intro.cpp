@@ -20,6 +20,7 @@ float alpha;
 bool finished = false;
 
 void vsx_logo_intro::draw(bool always,bool draw_background) {
+  #ifndef VSXU_OPENGL_ES
     if (logo_time > animlen)
     {
       if (finished)
@@ -56,6 +57,7 @@ void vsx_logo_intro::draw(bool always,bool draw_background) {
     if (alpha > 1) alpha = 1;
     if (alpha < 0) alpha = 0;
 //    if (c_alpha < 0) c_alpha = 0;
+
       glEnable(GL_BLEND);
 
       glDepthMask(GL_TRUE);
@@ -68,9 +70,6 @@ void vsx_logo_intro::draw(bool always,bool draw_background) {
   		float screeny = (float)(viewport[3]-viewport[1]);
   		gluPerspective(45, screenx/screeny, 0.001, 100.0);
 
-      //gluPerspective(45,(float)window_width/(float)window_height,0.001,100.0);
-      //gluPerspective(45,1,0.001,100.0);
-//      gluPerspective(45,1,0.001,100.0);
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
       gluLookAt(0,0,20,0,0,0.0,0.0,1.0,0.0);
@@ -161,8 +160,11 @@ void vsx_logo_intro::draw(bool always,bool draw_background) {
             glEnd();
             glPopMatrix();
           luna_bkg->_bind();
+          glColor4f(1,1,1,alpha*0.8);
+        } else
+        {
+          glColor4f(1,1,1,alpha*1.0);
         }
-      	glColor4f(1,1,1,alpha*1.0);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
         luna->bind();
@@ -178,6 +180,7 @@ void vsx_logo_intro::draw(bool always,bool draw_background) {
           glEnd();
         luna->_bind();
         glEnable(GL_DEPTH_TEST);
+    #endif
   }
 }
 
@@ -190,6 +193,10 @@ vsx_logo_intro::vsx_logo_intro() {
   luna = new vsx_texture;
   luna->locked = true;
   luna->init_opengl_texture();
+  #ifdef VSXU_DEBUG
+    printf("shared files: %s\n", (PLATFORM_SHARED_FILES).c_str() );
+  #endif
+  printf("%s\n",(vsx_string(PLATFORM_SHARED_FILES)+vsx_string("gfx/vsxu_logo.jpg")).c_str());
   luna->load_jpeg(PLATFORM_SHARED_FILES+"gfx/vsxu_logo.jpg",false);
   luna_bkg = new vsx_texture;
   luna_bkg->locked = true;

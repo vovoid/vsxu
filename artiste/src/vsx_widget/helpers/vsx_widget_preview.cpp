@@ -7,6 +7,7 @@
 
 #include "vsx_widget_base.h"
 #include "dialogs/vsx_widget_window_statics.h"
+#include <vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
 
 #include "vsx_widget_preview.h"
@@ -221,6 +222,7 @@ void vsx_window_texture_viewer::init() {
 
 void vsx_window_texture_viewer::set_server(vsx_widget* new_server)
 {
+  server = new_server;
   engine = & ((vsx_widget_server*)new_server)->engine;
 }
 

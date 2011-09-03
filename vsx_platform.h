@@ -41,6 +41,7 @@
         #define PLATFORM                                        PLATFORM_LINUX
         #define PLATFORM_NAME                                   "Linux"
         #define PLATFORM_FAMILY                                 PLATFORM_FAMILY_UNIX
+
         #ifdef PLATFORM_SHARED_FILES_FLAT_INSTALL
           #define PLATFORM_SHARED_FILES                           vsx_string("")
         #else

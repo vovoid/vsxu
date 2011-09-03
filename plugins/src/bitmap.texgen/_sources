@@ -1,2 +1,1 @@
-set(SOURCES 
-)
+file(GLOB SOURCES perlin/*.cpp)

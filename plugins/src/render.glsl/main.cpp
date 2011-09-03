@@ -314,11 +314,11 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 	} else {
 		load_shader(shader,ext_shaders[shader_source-1].name);
 	}
+  printf("vert = %s\n",shader.vertex_program.c_str());
+  printf("frag = %s\n",shader.fragment_program.c_str());
 
 	vsx_string h = shader.link();
 #if (VSXU_DEBUG)
-	printf("vert = %s\n\n\n\n",shader.vertex_program.c_str());
-	printf("frag = %s\n",shader.fragment_program.c_str());
 	printf("link result:\n%s\n",h.c_str());
 #endif
 //	}
@@ -368,8 +368,11 @@ void deactivate_offscreen() {
 }
 
 bool init() {
+  #ifdef VSXU_OPENGL_ES_2_0
+  if (!(GL_VERTEX_SHADER)) {
+  #else
   if (!(GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader)) {
-
+  #endif
 #ifdef _WIN32
     if (MessageBox(0,"Error, no GLSL present. Do you still want to run?","Fatal error!",MB_YESNO|MB_ICONQUESTION)) {
 
@@ -377,8 +380,6 @@ bool init() {
       return true;
     } else
 #else
-
-    //exit(0);
 #endif
     return false;
   }
@@ -393,7 +394,7 @@ bool init() {
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 
-vsx_module* create_new_module(unsigned long module) {
+vsx_module* MOD_CM(unsigned long module) {
 	if (module) {
 		vsx_module* v = (vsx_module*)(new vsx_module_glsl());
 		((vsx_module_glsl*)v)->shader_source = (long)module;
@@ -405,14 +406,16 @@ vsx_module* create_new_module(unsigned long module) {
 	return 0;
 }
 
-void destroy_module(vsx_module* m,unsigned long module) {
+void MOD_DM(vsx_module* m,unsigned long module) {
   delete (vsx_module_glsl*)m;
 }
 
 
 
-unsigned long get_num_modules() {
+unsigned long MOD_NM() {
+  #ifndef VSXU_OPENGL_ES
 	glewInit();
+  #endif
 	// run once when vsxu starts
 	init_run.push_back(0);
 	std::list<vsx_string> i_shaders;
@@ -432,7 +435,7 @@ unsigned long get_num_modules() {
 #if (VSXU_DEBUG)
 	printf("list size: %d\n",i_shaders.size());
 #endif
-
+ 
 	unsigned long num_shaders = 0;
 	for (std::list<vsx_string>::iterator it = i_shaders.begin(); it != i_shaders.end(); ++it) {
     vsx_string filename = *it;

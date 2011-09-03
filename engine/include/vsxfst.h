@@ -2,6 +2,7 @@
 #define VSXFST_H
 
 #include <vsx_platform.h>
+#include <stdlib.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #define VSXFSTDLLIMPORT
@@ -28,7 +29,8 @@
 
 // FILESYSTEM OPERATIONS
 
-typedef struct {
+class vsxf_handle {
+public:
   vsx_string filename;
   unsigned long position;   // position in the data stream
   unsigned long size;       // size of the data stream in bytes
@@ -36,7 +38,29 @@ typedef struct {
   void* file_data; // in the case of type == 1 this is the actual decompressed file in RAM
                    // don't mess with this! the file class will handle it.. 
   FILE* file_handle;
-} vsxf_handle;
+  vsxf_handle() : position(0), size(0),mode(0), file_data(0), file_handle(0) {}
+  ~vsxf_handle() {
+    #ifdef VSXU_DEBUG
+      printf("vsxf_handle destructor, %s\n", filename.c_str() );
+    #endif
+    if (file_data) {
+      if (mode == VSXF_MODE_WRITE)
+      {
+        #ifdef VSXU_DEBUG
+          printf(">>> deleting file data #1, %s\n", filename.c_str() );
+        #endif
+        delete (vsx_avector<char>*)file_data;
+      }
+      else
+      {
+        #ifdef VSXU_DEBUG
+          printf(">>> deleting file data #2, %s\n", filename.c_str() );
+        #endif
+        free(file_data);
+      }
+    }
+  }
+};
 
 
 
@@ -57,6 +81,7 @@ class VSXFSTDLLIMPORT vsxf {
   vsx_string base_path;
 public:
   vsxf();
+  vsxf(const vsxf& f);
   void set_base_path(vsx_string new_base_path);
   vsx_avector<vsxf_archive_info>* get_archive_files();
   int archive_load(const char* filename);

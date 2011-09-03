@@ -1,12 +1,14 @@
 #include <vsx_platform.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-#include <io.h>
+  #include <io.h>
 #endif
+
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-#include <dlfcn.h>
-#include <syslog.h>
+  #include <dlfcn.h>
+  #include <syslog.h>
 #endif
+
 #include <dirent.h>
 #include <sys/types.h>
 #include "vsx_string.h"
@@ -17,8 +19,6 @@
 #include "vsx_note.h"
 
 
-
-
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,7 +27,9 @@
 #include <unistd.h>
 #endif
 
-
+#ifdef VSXU_ENGINE_STATIC
+#include "vsx_module_static_factory.h"
+#endif
 
 #ifndef VSXE_NO_GM
 #include "gm/gmThread.h"    // Game monkey script machine and thread
@@ -46,16 +48,72 @@
 vsx_module_engine_info vsx_engine::engine_info;
 #endif
 
+//int vsx_engine::engine_counter = 0;
 using namespace std;
 
 vsx_engine::vsx_engine() {
   set_default_values();
+  /*#ifdef VSXU_DEBUG
+  engine_id = engine_counter++;
+  printf("constructing engine with id: %d\n", engine_id);
+  #endif*/
 }
 
-vsx_engine::vsx_engine(vsx_string path) {
+vsx_engine::vsx_engine(vsx_string path)
+{
+  /*#ifdef VSXU_DEBUG
+  engine_id = engine_counter++;
+  printf("constructing engine with id: %d\n", engine_id);
+  #endif*/
 	set_default_values();
   log_dir = vsxu_base_path = path;
 }
+
+
+vsx_engine::~vsx_engine()
+{
+  /*#ifdef VSXU_DEBUG
+  printf("destructing engine with id: %d\n", engine_id);
+  #endif*/
+  commands_internal.clear(true);
+  commands_res_internal.clear(true);
+  commands_out_cache.clear(true);
+  i_clear(0,true);
+  destroy();
+}
+
+// free all our file / dynamic library handles
+void vsx_engine::destroy() {
+  #ifdef VSXU_DEBUG
+    printf("engine destroy\n");
+  #endif
+  // unload module handles
+  for (size_t i = 0; i < module_handles.size(); i++)
+  {
+    #ifdef _WIN32
+      FreeLibrary(module_handles[i]);
+    #endif
+    #if defined(__linux__) || defined(__APPLE__)
+      //void* oulp = (void*)dlsym(module_handles[i], "on_unload_library");
+      if (dlsym(module_handles[i], "on_unload_library"))
+      {
+        void(*on_unload_library)(void) = (void(*)(void))dlsym(module_handles[i], "on_unload_library");
+        on_unload_library();
+      }
+      dlclose(module_handles[i]);
+    #endif
+  }
+  for (std::map<vsx_string,module_dll_info*>::iterator it = module_dll_list.begin(); it != module_dll_list.end(); ++it)
+  {
+    delete (module_dll_info*)((*it).second);
+  }
+  // clean up module list
+  for (size_t i = 0; i < module_infos.size(); i++)
+  {
+    delete module_infos[i];
+  }
+}
+
 
 void vsx_engine::set_default_values()
 {
@@ -104,7 +162,8 @@ vsx_module_param_abs* vsx_engine::get_in_param_by_name(vsx_string module_name, v
 	return 0;
 }
 
-int vsx_engine::i_load_state(vsx_command_list& load1,vsx_string *error_string) {
+int vsx_engine::i_load_state(vsx_command_list& load1,vsx_string *error_string)
+{
 	LOG("i_load_state 1")
   vsx_command_list load2,loadr2;
   load1.reset();
@@ -112,7 +171,8 @@ int vsx_engine::i_load_state(vsx_command_list& load1,vsx_string *error_string) {
   // check the macro list to verify the existence of the componente we need for this macro
   bool components_existing = true;
   vsx_string failed_component = "";
-  while ( (mc = load1.get()) ) {
+  while ( (mc = load1.get()) )
+  {
     if (mc->cmd == "component_create")
     {
       if (!(module_list.find(mc->parts[1]) != module_list.end()))
@@ -122,11 +182,11 @@ int vsx_engine::i_load_state(vsx_command_list& load1,vsx_string *error_string) {
         if (error_string) *error_string = "Module missing in engine: "+mc->parts[1];
 				printf("%s\n",vsx_string("Module missing in engine: "+mc->parts[1]).c_str());
       	LOG3("Module missing in engine: "+mc->parts[1]);
-
       }
     }
   }
-  load1.add_raw("state_load_done");
+  static vsx_string sld("state_load_done");
+  load1.add_raw(sld);
   load1.reset();
   //if (components_existing)
   {
@@ -153,7 +213,6 @@ int vsx_engine::i_load_state(vsx_command_list& load1,vsx_string *error_string) {
 	modules_loaded = 0;
 	modules_left_to_load = 0;
   return 0;
-
 }
 
 int vsx_engine::load_state(vsx_string filename, vsx_string *error_string) {
@@ -200,6 +259,7 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string) {
   if (!is_archive)
   filesystem.set_base_path(vsx_get_data_path());
   int res = i_load_state(load1,error_string);
+  load1.clear(true);
   /*#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
     // on unix/linux, resources are now stored in ~/.vsxu/data/resources
     struct stat st;
@@ -209,7 +269,8 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string) {
   return res;
 }
 
-vsx_comp* vsx_engine::add(vsx_string label)	{
+vsx_comp* vsx_engine::add(vsx_string label)
+{
 	if (!forge_map[label])
 	{
     vsx_comp* comp = new vsx_comp;
@@ -231,51 +292,60 @@ vsx_comp* vsx_engine::add(vsx_string label)	{
       }
 		}
 		forge_map[label] = comp;
-//    cout << "adding component with name " << comp->name << endl;
 		return comp;
 	}
 	return 0;
 }
 
 // send our current time to the client
-void vsx_engine::tell_client_time(vsx_command_list *cmd_out) {
+void vsx_engine::tell_client_time(vsx_command_list *cmd_out)
+{
 	if (no_client_time) return;
-#ifndef VSX_NO_CLIENT
-  bool send = false;
+  #ifndef VSX_NO_CLIENT
+    bool send = false;
 
-  if (lastsent < 0 || lastsent > 0.05 ) {
-    send = true;
-    lastsent = 0;
-  }
-  if (e_state != last_e_state) send = true;
+    if (lastsent < 0 || lastsent > 0.05 ) {
+      send = true;
+      lastsent = 0;
+    }
+    if (e_state != last_e_state) send = true;
 
-  if (send) {
-    cmd_out->add_raw("time_upd " + f2s(engine_info.vtime)+" "+i2s(e_state));
-  }
-  last_e_state = e_state;
-#endif
+    if (send) {
+      cmd_out->add_raw("time_upd " + f2s(engine_info.vtime)+" "+i2s(e_state));
+    }
+    last_e_state = e_state;
+  #endif
 }
+
 // set engine speed
-void vsx_engine::set_speed(float spd) {
-#ifndef VSX_DEMO_MINI
-	g_timer_amp = spd;
-#endif
+void vsx_engine::set_speed(float spd)
+{
+  #ifndef VSX_DEMO_MINI
+    g_timer_amp = spd;
+  #endif
 }
+
 // set internal float parameter
-void vsx_engine::set_float_array_param(int id, vsx_engine_float_array* float_array) {
+void vsx_engine::set_float_array_param(int id, vsx_engine_float_array* float_array)
+{
 	engine_info.param_float_arrays[id] = float_array;
 }
+
 // set FX level amplification (sound, etc)
-void vsx_engine::set_amp(float amp) {
-#ifndef VSX_DEMO_MINI
-  engine_info.amp = amp;
-#endif
+void vsx_engine::set_amp(float amp)
+{
+  #ifndef VSX_DEMO_MINI
+    engine_info.amp = amp;
+  #endif
 }
+
 // start the engine and sending all the modules the start signal
-bool vsx_engine::start() {
+bool vsx_engine::start()
+{
 	if (!stopped) return false;
 	if (stopped) stopped = false;
-  if (first_start) {
+  if (first_start)
+  {
     sequence_list.set_engine(this);
     first_start = false;
     vsx_comp* comp = new vsx_comp;
@@ -290,7 +360,9 @@ bool vsx_engine::start() {
     forge_map["screen0"] = comp;
     outputs.push_back(comp);
     log("adding screen",0);
+    comp->identifier = "outputs;screen";
     comp->load_module(module_dll_list[module_list["outputs;screen"]->identifier]);
+    //comp->load_module(module_dll_list[module_list[comp->identifier]->identifier]);
     comp->component_class += ":critical";
   	comp->name="screen0";
   	comp->engine_info(&engine_info);
@@ -305,442 +377,225 @@ bool vsx_engine::start() {
 }
 // stop the engine
 bool vsx_engine::stop() {
-#ifndef VSX_DEMO_MINI
-	if (!stopped)
-	{
-  	for (unsigned long i = 0; i < forge.size(); ++i) {
-  		forge[i]->stop();
-  	}
-  	stopped = true;
-  	return true;
-	}
-	return false;
-#endif
+  #ifndef VSX_DEMO_MINI
+    if (!stopped)
+    {
+      for (unsigned long i = 0; i < forge.size(); ++i) {
+        forge[i]->stop();
+      }
+      stopped = true;
+      return true;
+    }
+    return false;
+  #endif
 }
-// free all our file / dynamic library handles
-void vsx_engine::destroy() {
-	for (std::map<vsx_string,module_dll_info*>::iterator it = module_dll_list.begin(); it != module_dll_list.end(); ++it)
-	{
-#ifdef _WIN32
-		FreeLibrary((*it).second->module_handle);
-#endif
-#if defined(__linux__) || defined(__APPLE__)
-		dlclose((*it).second->module_handle);
-#endif
-		delete (module_dll_info*)((*it).second);
-	}
-}
-
-#ifdef VSXU_MODULES_STATIC
-
-#include "vsx_module_static.h"
-
-void vsx_engine::register_static_module(vsx_string name)
-{
-	int i = 0;
-  vsx_module_info* a;
-	a = new vsx_module_info;
-	a->output = 42;
-	vsx_module* module = create_named_module(name);
-	module->module_info(a);
-	module_dll_info* info = new module_dll_info;
-	info->module_handle = (void*)(name.c_copy());
-	info->module_id = i;
-	i++;
-	a->location = "external";
-
-	vsx_string identifier;
-	if (a->identifier[0] == '!') {
-		identifier = a->identifier.substr(1);
-	} else {
-		identifier = a->identifier;
-	}
-	vsx_string deli = "||";
-	vsx_avector<vsx_string> parts;
-	explode(identifier, deli, parts);
-	module_dll_info* info2 = 0;
-	for (i = 0; i < parts.size(); ++i) {
-		if (i && !info2) {
-			info2 = new module_dll_info;
-			*info2 = *info;
-		}
-		if (i) {
-			module_dll_list[parts[i]] = info2;
-		}
-		else {
-			module_dll_list[parts[i]] = info;
-		}
-		module_list[parts[i]] = a;
-	}
-	delete module;
-}
-
-#endif
 
 void vsx_engine::build_module_list(vsx_string sound_type) {
   if (module_list.size()) return;
   unsigned long total_num_modules = 0;
-  #ifdef VSXU_MODULES_STATIC
-    #define RADD_MODULE(nm) register_static_module(#nm); total_num_modules++
-    RADD_MODULE(vsx_module_output_screen);
-	  RADD_MODULE(vsx_module_render_basic_colored_rectangle);
-	  RADD_MODULE(vsx_module_render_line);
-	  RADD_MODULE(vsx_module_plugin_maths_oscillator);
-	  RADD_MODULE(vsx_module_plugin_maths_oscillators_float_sequencer);
-	  RADD_MODULE(texture_loaders_bitmap2texture);
-	  RADD_MODULE(vsx_module_simple_with_texture);
-	  RADD_MODULE(bitmaps;loaders;png_bitm_load);
-	  RADD_MODULE(texture;loaders;png_tex_load);
-	  RADD_MODULE(bitmaps;loaders;jpeg_bitm_load);
-	  RADD_MODULE(texture;loaders;jpeg_tex_load);
-	  RADD_MODULE(vsx_module_mesh_needle);
-	  RADD_MODULE(vsx_module_mesh_rand_points);
-	  RADD_MODULE(vsx_module_mesh_rays);
-	  RADD_MODULE(vsx_module_mesh_disc);
-	  RADD_MODULE(vsx_module_mesh_planes);
-	  RADD_MODULE(vsx_module_mesh_box);
-	  RADD_MODULE(vsx_module_mesh_sphere);
-	  RADD_MODULE(vsx_module_mesh_supershape);
-  
-	  RADD_MODULE(vsx_module_mesh_render_line);
-	  RADD_MODULE(vsx_module_render_mesh);
-  
-	  RADD_MODULE(vsx_module_blend_mode);
-	  RADD_MODULE(vsx_orbit_camera);
-	  RADD_MODULE(vsx_target_camera);
-	  RADD_MODULE(vsx_freelook_camera);
-	  RADD_MODULE(vsx_gl_translate);
-	  RADD_MODULE(vsx_depth_buffer);
-	  RADD_MODULE(vsx_gl_rotate);
-	  RADD_MODULE(vsx_light);
-	  RADD_MODULE(vsx_material_param);
-	  RADD_MODULE(vsx_gl_scale);
-	  RADD_MODULE(vsx_gl_matrix_multiply);
-	  RADD_MODULE(vsx_gl_color);
-	  RADD_MODULE(vsx_gl_orto_2d);
-	  RADD_MODULE(vsx_fog);
-	  RADD_MODULE(vsx_backface_cull);
-	  RADD_MODULE(vsx_gl_rotate_quat);
-	  RADD_MODULE(vsx_gl_normalize);
-	  RADD_MODULE(vsx_module_gl_matrix_get);
-	  RADD_MODULE(vsx_gl_line_width);
-	  RADD_MODULE(vsx_depth_buffer_clear);
-	  RADD_MODULE(vsx_depth_func);
-	  RADD_MODULE(vsx_texture_bind);
-  
-	  RADD_MODULE(module_3float_to_float3);
-	  RADD_MODULE(module_4float_to_float4);
-	  RADD_MODULE(vsx_module_4f_hsv_to_rgb_f4);
-	  RADD_MODULE(vsx_float_dummy);
-	  RADD_MODULE(vsx_float3_dummy);
-	  RADD_MODULE(vsx_float_array_pick);
-	  RADD_MODULE(vsx_arith_add);
-	  RADD_MODULE(vsx_arith_sub);
-	  RADD_MODULE(vsx_arith_mult);
-	  RADD_MODULE(vsx_arith_div);
-	  RADD_MODULE(vsx_arith_min);
-	  RADD_MODULE(vsx_arith_max);
-	  RADD_MODULE(vsx_arith_pow);
-	  RADD_MODULE(vsx_arith_round);
-	  RADD_MODULE(vsx_arith_floor);
-	  RADD_MODULE(vsx_arith_ceil);
-	  RADD_MODULE(vsx_float_accumulator);
-	  RADD_MODULE(vsx_float3_accumulator);
-	  RADD_MODULE(vsx_float4_accumulator);
-	  RADD_MODULE(module_vector_add);
-	  RADD_MODULE(module_vector_add_float);
-	  RADD_MODULE(module_vector_mul_float);
-	  RADD_MODULE(module_float_to_float3);
-	  RADD_MODULE(vsx_float_abs);
-	  RADD_MODULE(vsx_float_sin);
-	  RADD_MODULE(vsx_float_cos);
-	  RADD_MODULE(vsx_bool_and);
-	  RADD_MODULE(vsx_bool_or);
-	  RADD_MODULE(vsx_bool_nor);
-	  RADD_MODULE(vsx_bool_xor);
-	  RADD_MODULE(vsx_bool_not);
-	  RADD_MODULE(module_vec4_mul_float);
-	  RADD_MODULE(vsx_bool_nand);
-	  RADD_MODULE(module_float4_add);
-	  RADD_MODULE(vsx_float_array_average);
-	  RADD_MODULE(vsx_arith_mod);
-	  RADD_MODULE(vsx_module_f4_hsl_to_rgb_f4);
-	  RADD_MODULE(vsx_float3to3float);
-	  RADD_MODULE(vsx_float_limit);
-	  RADD_MODULE(module_vector_4float_to_quaternion);
-	  RADD_MODULE(vsx_float_interpolate);
-	  RADD_MODULE(module_quaternion_rotation_accumulator_2d);
-	  RADD_MODULE(module_vector_normalize);
-	  RADD_MODULE(module_vector_cross_product);
-	  RADD_MODULE(module_vector_dot_product);
-	  RADD_MODULE(module_vector_from_points);
-	  RADD_MODULE(module_quaternion_slerp_2);
-	  RADD_MODULE(module_quaternion_mul);
-	  RADD_MODULE(vsx_float_accumulator_limits);
-  
-	  RADD_MODULE(vsx_module_rendered_texture_single);
-	  RADD_MODULE(vsx_module_texture_translate);
-	  RADD_MODULE(vsx_module_texture_scale);
-	  RADD_MODULE(vsx_module_texture_rotate);
-	  RADD_MODULE(vsx_module_texture_parameter);
-	  RADD_MODULE(vsx_module_kaleido_mesh);
-  
-	  RADD_MODULE(vsx_module_plugin_wind);
-	  RADD_MODULE(vsx_module_particle_size_noise);
-	  RADD_MODULE(vsx_module_plugin_gravity);
-	  RADD_MODULE(vsx_module_particle_floor);
-	  RADD_MODULE(vsx_module_plugin_fluid);
-	  RADD_MODULE(module_bitmap_blob_a);
-    RADD_MODULE(module_bitmap_blob_b);
-	  RADD_MODULE(module_bitmap_add_noise);
-	  RADD_MODULE(module_bitmap_plasma);
-	  RADD_MODULE(module_bitmap_subplasma);
-	  RADD_MODULE(module_bitmap_blend_1);
-	  RADD_MODULE(module_bitmap_blend_2);
-	  RADD_MODULE(module_bitmap_blend_3);
-	  RADD_MODULE(module_bitmap_blend_4);
-	  RADD_MODULE(module_bitmap_blend_5);
-	  RADD_MODULE(module_bitmap_blend_6);
-	  RADD_MODULE(module_bitmap_blend_7);
-	  RADD_MODULE(module_bitmap_blend_8);
-	  RADD_MODULE(module_bitmap_blend_9);
-	  RADD_MODULE(module_bitmap_blend_10);
-	  RADD_MODULE(module_bitmap_blend_11);
-	  RADD_MODULE(module_bitmap_blend_12);
-	  RADD_MODULE(module_bitmap_blend_13);
-	  RADD_MODULE(module_bitmap_blend_14);
-	  RADD_MODULE(module_bitmap_blend_15);
-	  RADD_MODULE(module_bitmap_blend_16);
-	  RADD_MODULE(module_bitmap_blend_17);
-	  RADD_MODULE(module_bitmap_blend_18);
-	  RADD_MODULE(module_bitmap_blend_19);
-	  RADD_MODULE(module_bitmap_blend_20);
-	  RADD_MODULE(module_bitmap_blend_21);
-	  RADD_MODULE(module_bitmap_blend_22);
-	  RADD_MODULE(module_bitmap_blend_23);
-	  RADD_MODULE(module_bitmap_blend_24);
-	  RADD_MODULE(vsx_module_particle_gen_simple);
-	  RADD_MODULE(vsx_module_particle_gen_mesh);
-	  RADD_MODULE(module_render_particlesystem);
-	  RADD_MODULE(module_render_particlesystem_c);
-	  RADD_MODULE(module_render_particlesystem_sparks);
-	  RADD_MODULE(vsx_listener);
-	  #if !defined (VSXU_OPENGL_ES)
-      RADD_MODULE(vsx_module_texture_blur);
-		  RADD_MODULE(vsx_module_visual_fader);
-	    RADD_MODULE(vsx_polygon_mode);
-	  #endif
-    RADD_MODULE(vsx_module_thorn);
-    RADD_MODULE(vsx_cloud_plane);
-    RADD_MODULE(vsx_module_planeworld);
-    RADD_MODULE(vsx_module_segmesh_map_bspline);
-    RADD_MODULE(vsx_module_segmesh_shape_basic);
-    RADD_MODULE(vsx_module_segmesh_loft);
-    RADD_MODULE(vsx_module_segmesh_bspline_matrix);
-	  RADD_MODULE(vsx_module_system_time);
-	  RADD_MODULE(vsx_module_block_chain);
-	  RADD_MODULE(vsx_depth_test);
-	  RADD_MODULE(vsx_depth_mask);
-	  RADD_MODULE(vsx_module_metaballs);
-	  RADD_MODULE(vsx_module_oscilloscope);
-	  RADD_MODULE(vsx_build_cubemap_texture);
-	  RADD_MODULE(vsx_texture_coord_gen);
-  
-	  RADD_MODULE(vsx_module_gravlines);
-	  RADD_MODULE(vsx_module_gravity_ribbon);
-	  RADD_MODULE(vsx_module_gravity_ribbon_particles);
-  
-  #else  //#ifdef VSXU_MODULES_STATIC
 
-	  // first, add all the internal modules
-    vsx_module_info* a;
-    vsx_module* im = 0;
-  
-    #ifdef VSXU_DEVELOPER
-	  //FILE* fpo = 0;
-	  //if (dump_modules_to_disk) fpo = fopen((vsxu_base_path+"vsxu_engine.modules_loaded.log").c_str(),"w");
-	  //if (fpo) {
-		  LOG("engine_load_module_i: {ENGINE} VSXU Developer:");
-		  LOG("engine_load_module_i: {ENGINE} Loading modules; dumping progress to logfile:");
-    //	}
+  // first, add all the internal modules
+  vsx_module_info* a;
+  vsx_module* im = 0;
+
+  #ifdef VSXU_DEVELOPER
+  //FILE* fpo = 0;
+  //if (dump_modules_to_disk) fpo = fopen((vsxu_base_path+"vsxu_engine.modules_loaded.log").c_str(),"w");
+  //if (fpo) {
+    LOG("engine_load_module_i: {ENGINE} VSXU Developer:");
+    LOG("engine_load_module_i: {ENGINE} Loading modules; dumping progress to logfile:");
+  //	}
+  #endif
+  std::list<vsx_string> mfiles;
+
+  //printf("%s\n", vsx_string(vsxu_base_path+"_plugins").c_str());
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+    get_files_recursive(vsxu_base_path+"plugins",&mfiles,".dll","");
+  #endif
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+    #ifdef PLATFORM_SHARED_FILES_FLAT_INSTALL
+      #ifdef VSXU_DEBUG
+      printf("vsxu_base_path is %s             \n", vsxu_base_path.c_str() );
+      #endif
+      get_files_recursive(vsxu_base_path+"plugins",&mfiles,".so","");
+    #else
+      #ifdef VSXU_ENGINE_STATIC
+      static_holder.get_factory_names(&mfiles);
+      #else
+      get_files_recursive(vsx_string(CMAKE_INSTALL_PREFIX)+"/lib/vsxu/plugins",&mfiles,".so","");
+      #endif
     #endif
-    std::list<vsx_string> mfiles;
-  
-    //printf("%s\n", vsx_string(vsxu_base_path+"_plugins").c_str());
+    //printf("Plugin directory: %s\n", vsx_string(vsxu_base_path+"_plugins_linux").c_str());
+  #endif
+  LOG("engine_load_module_a: mfiles.size: "+i2s(mfiles.size()));
+  for (std::list<vsx_string>::iterator it = mfiles.begin(); it != mfiles.end(); ++it) {
+    //printf("list iteration:%d\n",__LINE__);
+    vsx_avector<vsx_string> parts;
+
+    // definition for static storage
+
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      void* module_handle;
+      vsx_string deli = "/";
+    #endif
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-      get_files_recursive(vsxu_base_path+"plugins",&mfiles,".dll","");
+      HMODULE module_handle;
+      vsx_string deli = "\\";
+    #endif
+    explode((*it),deli,parts);
+    //printf("full filename: %s\n",(*it).c_str());
+    #ifdef VSXU_DEVELOPER
+      LOG("engine_load_module_a: attempting to load:"+parts[parts.size()-1]);
+    #endif
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+      module_handle = LoadLibrary((*it).c_str());
     #endif
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-      #ifdef PLATFORM_SHARED_FILES_FLAT_INSTALL
-        get_files_recursive("plugins",&mfiles,".so","");
-      #else
-        get_files_recursive(vsx_string(CMAKE_INSTALL_PREFIX)+"/lib/vsxu/plugins",&mfiles,".so","");
-      #endif
+
+      if (sound_type != "")
+      {
+        vsx_string fndeli = ".";
+        vsx_avector<vsx_string> fnparts;
+        explode(parts[parts.size()-1], fndeli, fnparts);
+        if (fnparts[0] == "sound")
+        {
+          if (fnparts[1] != sound_type) continue;
+        }
+      }
+      module_handle = dlopen((*it).c_str(), RTLD_NOW);
+      if (!module_handle) {
+        #ifdef VSXU_DEVELOPER
+          LOG(vsx_string("engine_load_module_a: error: ") + dlerror());
+        #endif
+        printf("%s\n", (vsx_string("engine_load_module_a: error: ") + dlerror()).c_str() );
+      }
       //printf("Plugin directory: %s\n", vsx_string(vsxu_base_path+"_plugins_linux").c_str());
     #endif
-    LOG("engine_load_module_a: mfiles.size: "+i2s(mfiles.size()));
-    for (std::list<vsx_string>::iterator it = mfiles.begin(); it != mfiles.end(); ++it) {
-      //printf("list iteration:%d\n",__LINE__);
-      vsx_avector<vsx_string> parts;
-  
-      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-        void* module_handle;
-        vsx_string deli = "/";
-      #endif
+    //printf("after_dlopen\n");
+    if (module_handle)
+    {
+      // add to open modules
+      module_handles.push_back(module_handle);
+      
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-        HMODULE module_handle;
-        vsx_string deli = "\\";
-      #endif
-      explode((*it),deli,parts);
-      //printf("full filename: %s\n",(*it).c_str());
-      #ifdef VSXU_DEVELOPER
-        LOG("engine_load_module_a: attempting to load:"+parts[parts.size()-1]);
-		  #endif
-      #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-        module_handle = LoadLibrary((*it).c_str());
+      if (GetProcAddress(module_handle, "set_environment_info"))
       #endif
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-        if (sound_type != "")
-        {
-          vsx_string fndeli = ".";
-          vsx_avector<vsx_string> fnparts;
-          explode(parts[parts.size()-1], fndeli, fnparts);
-          if (fnparts[0] == "sound")
-          {
-            if (fnparts[1] != sound_type) continue;
-          }
-        }
-        module_handle = dlopen((*it).c_str(), RTLD_NOW);
-        if (!module_handle) {
-			    #ifdef VSXU_DEVELOPER
-            LOG(vsx_string("engine_load_module_a: error: ") + dlerror());
-            printf("%s\n", (vsx_string("engine_load_module_a: error: ") + dlerror()).c_str() );
-			    #endif
-        }
+      if (dlsym(module_handle,"set_environment_info"))
       #endif
-      //printf("after_dlopen\n");
-      if (module_handle) 
       {
+        // woo, supports env_info
+        engine_environment.engine_parameter[0] = PLATFORM_SHARED_FILES+"plugin-config/";
         #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-        if (GetProcAddress(module_handle, "set_environment_info"))
+          void(*set_env)(vsx_engine_environment*) = (void(*)(vsx_engine_environment*))GetProcAddress(module_handle, "set_environment_info");
         #endif
         #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-        if (dlsym(module_handle,"set_environment_info"))
+          void(*set_env)(vsx_engine_environment*) = (void(*)(vsx_engine_environment*))dlsym(module_handle, "set_environment_info");
         #endif
-        {
-          // woo, supports env_info
-          vsx_engine_environment* engine_env = new vsx_engine_environment;
-          engine_env->engine_parameter[0] = PLATFORM_SHARED_FILES+"plugin-config/";
-          #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-            void(*set_env)(vsx_engine_environment*) = (void(*)(vsx_engine_environment*))GetProcAddress(module_handle, "set_environment_info");
-          #endif
-          #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-            void(*set_env)(vsx_engine_environment*) = (void(*)(vsx_engine_environment*))dlsym(module_handle, "set_environment_info");
-          #endif
-          // ------
-          set_env(engine_env);
-          // ------
-				  #ifdef VSXU_DEVELOPER
-            LOG("engine_load_module_b: setting environment "+engine_env->engine_parameter[0]);
-				  #endif
+        // ------
+        set_env(&engine_environment);
+        // ------
+        #ifdef VSXU_DEVELOPER
+          LOG("engine_load_module_b: setting environment "+engine_environment.engine_parameter[0]);
+        #endif
+      }
+      //else printf("doesn't support env info :(\n");
+
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+        vsx_module*(*create_new_module)(unsigned long) = (vsx_module*(*)(unsigned long))GetProcAddress(module_handle, "create_new_module");
+      #endif
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+        vsx_module*(*create_new_module)(unsigned long) = (vsx_module*(*)(unsigned long))dlsym(module_handle, "create_new_module");
+      #endif
+
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+        void(*destroy_module)(vsx_module*) = (void(*)(vsx_module*))GetProcAddress(module_handle, "destroy_module");
+      #endif
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+        //void(*destroy_module)(vsx_module*) = (void(*)(vsx_module*))dlsym(module_handle, "destroy_module");
+      #endif
+
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+        if (GetProcAddress(module_handle, "destroy_module") == 0) {
+          LOG("unload module ERROR! couldn't find handle for destroy_module!")
+          return;
         }
-        //else printf("doesn't support env info :(\n");
-  
-        #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-          vsx_module*(*query)(unsigned long) = (vsx_module*(*)(unsigned long))GetProcAddress(module_handle, "create_new_module");
-        #endif
-        #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-          vsx_module*(*query)(unsigned long) = (vsx_module*(*)(unsigned long))dlsym(module_handle, "create_new_module");
-        #endif
-  
-        #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-        if (GetProcAddress(module_handle, "get_num_modules"))
+        void(*unload)(vsx_module*,unsigned long) = (void(*)(vsx_module*,unsigned long))GetProcAddress(module_handle, "destroy_module");
+      #endif
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+        if (dlsym(module_handle, "destroy_module") == 0)
         {
-          unsigned long(*get_num_modules)(void) = (unsigned long(*)(void))GetProcAddress(module_handle, "get_num_modules");
+          LOG("unload module ERROR! couldn't find handle for destroy_module!")
+          return;
+        }
+        void(*unload)(vsx_module*,unsigned long) = (void(*)(vsx_module*,unsigned long))dlsym(module_handle, "destroy_module");
+      #endif
+
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+      if (GetProcAddress(module_handle, "get_num_modules"))
+      {
+        unsigned long(*get_num_modules)(void) = (unsigned long(*)(void))GetProcAddress(module_handle, "get_num_modules");
+      #endif
+      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      if (dlsym(module_handle, "get_num_modules"))
+      {
+        unsigned long(*get_num_modules)(void) = (unsigned long(*)(void))dlsym(module_handle, "get_num_modules");
+      #endif
+
+        unsigned long num_modules = get_num_modules();
+  
+        #ifdef VSXU_DEVELOPER
+          LOG("engine_load_module_a: with "+i2s((int)num_modules)+" modules");
         #endif
-        #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-        if (dlsym(module_handle, "get_num_modules"))
-        {
-          unsigned long(*get_num_modules)(void) = (unsigned long(*)(void))dlsym(module_handle, "get_num_modules");
-        #endif
-          //printf("before get num modules\n");
-	        unsigned long num_modules = get_num_modules();
-	        //printf("after get num modules\n");
-				  #ifdef VSXU_DEVELOPER
-	          LOG("engine_load_module_a: with "+i2s((int)num_modules)+" modules");
-				  #endif
-	        total_num_modules += num_modules;
+        total_num_modules += num_modules;
+        #ifdef VSXU_DEVELOPER
+          LOG("engine_load_module_a: parts[parts.size()-1] with "+i2s(num_modules)+" module(s)");
+        #endif  // VSXU_DEVELOPER
+
+        for (unsigned long i = 0; i < num_modules; ++i) {
+          im = create_new_module(i);
+          a = new vsx_module_info;
+          im->module_info(a);
+          unload(im,i);
           #ifdef VSXU_DEVELOPER
-				    LOG("engine_load_module_a: parts[parts.size()-1] with "+i2s(num_modules)+" module(s)");
-          #endif  // VSXU_DEVELOPER
-  
-	        for (unsigned long i = 0; i < num_modules; ++i) {
-	          im = query(i);
-	          a = new vsx_module_info;
-	          a->output = 42;
-	          //printf("pointer_int %d\n",a);
-	          //a->identifier = "outputs;screen";
-	          //a->output = 1;
-	          //a->in_param_spec = "screen:render,gamma_correction:float";
-	          //a->component_class = "screen";
-  
-	          im->module_info(a);
-					  #ifdef VSXU_DEVELOPER
-	          LOG("engine_load_module_a:  module identifier: "+a->identifier);
-					  #endif
-	          a->location = "external";
-					  //vsx_string identifier;
-	          /*if (a->identifier[0] == '!') {
-	            identifier = a->identifier.substr(1);
-	            info->hidden_from_gui = true;
-	          } else {
-	            info->hidden_from_gui = false;
-	            identifier = a->identifier;
-	          }*/
-  
-	          // main info source
-	          module_dll_info* info = new module_dll_info;
-	          info->module_handle = module_handle;
-	          info->module_id = i;
-  
-	          vsx_string deli = "||";
-	          vsx_avector<vsx_string> parts;
-	          explode(a->identifier, deli, parts);
-	          module_dll_info* info2 = 0;
-	          for (unsigned long i = 0; i < parts.size(); ++i) {
-	            vsx_string identifier;
-	            info2 = new module_dll_info;
-						  *info2 = *info;
-	            if (parts[i][0] == '!')
-	            {
-	              // hidden from gui
-							  info2->hidden_from_gui = true;
-							  identifier = parts[i].substr(1);
-	            } else
-	            {
-	              // normal
-							  info2->hidden_from_gui = false;
-							  identifier = parts[i];
-	            }
-	            LOG("engine_load_module_b: adding module to engine with ident: "+identifier);
-              module_dll_list[identifier] = info2;
-  //		  				if (i && !info2)
-	            //{
-  
-	              //info2->hidden_from_gui = true;
-  //	  				}
-	            //if (i) {
-  
-	            //else {
-  //	      			module_dll_list[parts[i]] = info;
-	  //      		}
-	            module_list[identifier] = a;
-	          }
-	        }
-	      }
+          LOG("engine_load_module_a:  module identifier: "+a->identifier);
+          #endif
+          a->location = "external";
+
+          // main info source
+          module_dll_info* info = new module_dll_info;
+          info->module_handle = module_handle;
+          info->module_id = i;
+
+          vsx_string deli = "||";
+          vsx_avector<vsx_string> parts;
+          explode(a->identifier, deli, parts);
+          module_dll_info* info2 = 0;
+          for (unsigned long i = 0; i < parts.size(); ++i) {
+            vsx_string identifier;
+            info2 = new module_dll_info;
+            *info2 = *info;
+            if (parts[i][0] == '!')
+            {
+              // hidden from gui
+              info2->hidden_from_gui = true;
+              identifier = parts[i].substr(1);
+            } else
+            {
+              // normal
+              info2->hidden_from_gui = false;
+              identifier = parts[i];
+            }
+            LOG("engine_load_module_b: adding module to engine with ident: "+identifier);
+            module_dll_list[identifier] = info2;
+            module_list[identifier] = a;
+          }
+          module_infos.push_back(a);
+          delete info;
+        }
       }
     }
-  #endif  // #ifdef VSXU_MODULES_STATIC
+  }
 
   #ifndef VSX_DEMO_MINI
 	  #ifdef VSXU_DEVELOPER
@@ -784,20 +639,20 @@ bool vsx_engine::render() {
  		//printf("d1");
 	if (!stopped) {
 	  frame_timer.start();
-  // here we set the global time of the engine.
-  // In case we need this module to do something else - capture to file
-  // we would need to set dtime to the length of each frame, and add vtime
-  // with dtime here to stretch the time correctly.
-  /*if (reset_time->get() == 0) {
-    //printf("reset_time\n");
-    d_time = -v_time;
-    //v_time = 0;
-    reset_time->set(1);
-  } else { */
-    //if (time_multiplier->get() < 0.000001) {time_multiplier->set(0.000001);}
-/*  }  */
-  //engine->dtime = d_time;
-  //engine->vtime = v_time;
+    // here we set the global time of the engine.
+    // In case we need this module to do something else - capture to file
+    // we would need to set dtime to the length of each frame, and add vtime
+    // with dtime here to stretch the time correctly.
+    /*if (reset_time->get() == 0) {
+      //printf("reset_time\n");
+      d_time = -v_time;
+      //v_time = 0;
+      reset_time->set(1);
+    } else { */
+      //if (time_multiplier->get() < 0.000001) {time_multiplier->set(0.000001);}
+    /*}*/
+    //engine->dtime = d_time;
+    //engine->vtime = v_time;
 
     //
     //printf("engine rendering new frame\n");
@@ -822,10 +677,10 @@ bool vsx_engine::render() {
 
     if (frame_cfp_time == 0.0f)
     {
-      for (std::list<vsx_comp*>::iterator it2 = outputs.begin(); it2 != outputs.end(); ++it2) {
+      for (unsigned long i = 0; i < outputs.size(); i++) {
         vsx_engine_param* param;
 
-        param = (*it2)->get_params_out()->get_by_name("_st");
+        param = outputs[i]->get_params_out()->get_by_name("_st");
 
             //else {
               //param = dest->get_params_in()->get_by_name(c->parts[2]);
@@ -926,8 +781,8 @@ bool vsx_engine::render() {
  		//printf("d2");
 
 		// go through the outputs - actual rendering
-		for (std::list<vsx_comp*>::iterator it2 = outputs.begin(); it2 != outputs.end(); ++it2) {
-		  (*it2)->prepare();
+		for (unsigned long i = 0; i < outputs.size(); i++) {
+		  outputs[i]->prepare();
 		}
 		for(std::vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
 			(*it)->reset_frame_status();
@@ -961,57 +816,6 @@ bool vsx_engine::render() {
         e_state = VSX_ENGINE_PLAYING;
       }
 		}
-
-// 1. disconnect all connections
-// 2. delete all in_params
-// 3. run redeclare_params
-//
-
-		// video
-		/*if (e_state == VSX_ENGINE_PLAYING) {
-      if (!avi_play) {
-        vsx_string aviname = "test.avi";
-      	HDC hdcscreen=GetDC(0), hdc=CreateCompatibleDC(hdcscreen);
-      	ReleaseDC(0,hdcscreen);
-        BITMAPINFO bi;
-        ZeroMemory(&bi,sizeof(bi));
-        BITMAPINFOHEADER &bih = bi.bmiHeader;
-        bih.biSize=sizeof(bih);
-        bih.biWidth=512;
-        bih.biHeight=384;
-        bih.biPlanes=1;
-        bih.biBitCount=32;
-        bih.biCompression=BI_RGB;
-        //bih.biSizeImage = ((bih.biWidth*bih.biBitCount/8+3)&0xFFFFFFFC)*bih.biHeight;
-        bih.biSizeImage = ((bih.biWidth*bih.biBitCount/8+3)&0xFFFFFFFC)*bih.biHeight;
-        bih.biXPelsPerMeter=1000;
-        bih.biYPelsPerMeter=1000;
-        bih.biClrUsed=0;
-        bih.biClrImportant=0;
-        void *bits;
-        hbm=CreateDIBSection(hdc,(BITMAPINFO*)&bih,DIB_RGB_COLORS,&bits,NULL,NULL);
-        //
-        HGDIOBJ holdb=SelectObject(hdc,hbm);
-        HPEN hp = CreatePen(PS_SOLID,32,RGB(255,255,128));
-        HGDIOBJ holdp=SelectObject(hdc,hp);
-    //
-        avi = CreateAvi(aviname.c_str(),1000/avi_fps,NULL);
-    	//for (int frame=0; frame<200; frame++)
-    	//{ // static background
-    		dbits=(DWORD*)bits;
-
-      }
-
-      	glReadPixels(view_x,view_y-1,
-		    512,
-		    384,
-		    GL_BGRA,
-		    GL_UNSIGNED_BYTE,
-		    dbits);
-	     AddAviFrame(avi,hbm);
-      avi_play = true;
-    }*/
-//		printf
 
 		//printf("MODULES LEFT TO LOAD: %d\n",i);
     engine_info.dtime = 0;
@@ -1136,8 +940,7 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
   //---------------------------------------
   double total_time = 0.0;
 
-
-#define FAIL(header, message) 	cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(#header)+" Error "+base64_encode(#message))
+  #define FAIL(header, message) 	cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(#header)+" Error "+base64_encode(#message))
 
   vsx_command_timer.start();
   //bool run = true;
@@ -1155,28 +958,27 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
     else
     	cmd_out = cmd_out_res;
 
-#define cmd c->cmd
-#define cmd_data c->cmd_data
+    #define cmd c->cmd
+    #define cmd_data c->cmd_data
 
-#include "vsx_engine_messages/vsx_saveload.h"
-#include "vsx_engine_messages/vsx_em_comp.h"
-#include "vsx_engine_messages/vsx_connections.h"
-#include "vsx_engine_messages/vsx_parameters.h"
-#include "vsx_engine_messages/vsx_sequencer.h"
-#include "vsx_engine_messages/vsx_em_macro.h"
-#include "vsx_engine_messages/vsx_seq_pool.h"
-#include "vsx_engine_messages/vsx_engine_time.h"
-#include "vsx_engine_messages/vsx_em_script.h"
-#ifndef VSX_NO_CLIENT
-  #include "vsx_engine_messages/vsx_note.h"
-#endif
-#include "vsx_engine_messages/vsx_em_system.h"
+    #include "vsx_engine_messages/vsx_saveload.h"
+    #include "vsx_engine_messages/vsx_em_comp.h"
+    #include "vsx_engine_messages/vsx_connections.h"
+    #include "vsx_engine_messages/vsx_parameters.h"
+    #include "vsx_engine_messages/vsx_sequencer.h"
+    #include "vsx_engine_messages/vsx_em_macro.h"
+    #include "vsx_engine_messages/vsx_seq_pool.h"
+    #include "vsx_engine_messages/vsx_engine_time.h"
+    #include "vsx_engine_messages/vsx_em_script.h"
+    #ifndef VSX_NO_CLIENT
+      #include "vsx_engine_messages/vsx_note.h"
+    #endif
+    #include "vsx_engine_messages/vsx_em_system.h"
 
 		total_time+=vsx_command_timer.dtime();
 		// internal garbage collection
 		(*(c->garbage_pointer)).remove(c);
 		delete c;
-		c = 0;
   }
 #undef cmd
 #undef cmd_data
@@ -1243,19 +1045,19 @@ void vsx_engine::send_state_to_client(vsx_command_list *cmd_out) {
 }
 
 double vsx_engine::get_fps() {
-#ifndef VSX_DEMO_MINI
+  #ifndef VSX_DEMO_MINI
   return frame_dfps;
-#endif
+  #endif
 }
 
-void vsx_engine::i_clear(vsx_command_list *cmd_out) {
+void vsx_engine::i_clear(vsx_command_list *cmd_out,bool clear_critical) {
 #ifndef VSX_DEMO_MINI
   //if (filesystem.type == VSXF_TYPE_ARCHIVE) filesystem.archive_close();
 
   std::map<vsx_string,vsx_comp*> forge_map_save;
   std::vector<vsx_comp*> forge_save;
   for (std::map<vsx_string,vsx_comp*>::iterator fit = forge_map.begin(); fit != forge_map.end(); ++fit) {
-    if (!(*fit).second->internal_critical)
+    if (!(*fit).second->internal_critical || clear_critical)
     {
       LOG("component deleting: "+(*fit).second->name);
 
@@ -1288,15 +1090,19 @@ void vsx_engine::i_clear(vsx_command_list *cmd_out) {
       if ((*fit).second->module_info->output)
       outputs.remove((*fit).second);
     LOG("delete step 4\n");
-      LOG("del "+(*fit).second->name)
+      LOG("del "+(*fit).second->name);
       if ((*fit).second->component_class != "macro")
-      if (module_list[(*fit).second->identifier]->location == "external") {
-          LOG("unloading "+(*fit).second->name);
-                  (*fit).second->unload_module(module_dll_list[(*fit).second->identifier]);
-                }
+      if (module_list.find((*fit).second->identifier) != module_list.end())
+      if (module_list[(*fit).second->identifier]->location == "external")
+      {
+        LOG("unloading "+(*fit).second->name);
+        (*fit).second->unload_module(module_dll_list[(*fit).second->identifier]);
+      }
       delete ((*fit).second);
-      LOG("done deleting")
-    } else {
+      LOG("done deleting"´)
+    }
+    else
+    {
       (*fit).second->position.x = 0;
       (*fit).second->position.y = 0;
       forge_save.push_back((*fit).second);
@@ -1336,9 +1142,9 @@ void vsx_engine::unload_state() {
   i_clear();
 }
 
-int vsx_engine::get_state_as_commandlist(vsx_command_list &savelist) {
-
-#ifndef VSX_NO_CLIENT
+int vsx_engine::get_state_as_commandlist(vsx_command_list &savelist)
+{
+  #ifndef VSX_NO_CLIENT
   vsx_command_list tmp_comp;
   vsx_command_list tmp_param_set;
   vsx_command_list tmp_connections;
@@ -1376,7 +1182,6 @@ int vsx_engine::get_state_as_commandlist(vsx_command_list &savelist) {
         {
           // or dump the value
           //printf("component name: %sparam name:\n",comp->name.c_str(),param->module_param->name.c_str());
-          //cout << comp->channels[i]->get_param_name() << ":::" << comp->channels[i]->my_param->module_param->get_default_string() << ":::" << comp->channels[i]->my_param->module_param->get_string() << endl;
           //printf("name:%s\nval: %s\ndef: %s\n",param->module_param->name.c_str(),param->module_param->get_string().c_str(),param->module_param->get_default_string().c_str());
           vsx_string pval = param->get_string();
           //printf("val: %s  default: %s\n",pval.c_str(),param->get_default_string().c_str());
@@ -1442,7 +1247,7 @@ int vsx_engine::get_state_as_commandlist(vsx_command_list &savelist) {
 	sequence_pool.dump_to_command_list(savelist);
 	// dump the master sequences with their connections to the sequence pools
 	sequence_list.dump_master_channels_to_command_list(savelist);
-#endif
+  #endif
   return 0;
 }
 
@@ -1453,7 +1258,6 @@ int vsx_engine::get_state_as_commandlist(vsx_command_list &savelist) {
 int vsx_engine::rename_component(vsx_string old_identifier, vsx_string new_base, vsx_string new_name)
 {
 #ifndef VSX_NO_CLIENT
-
   //printf("new base: %s\n",new_base.c_str());
   // first we need to split up the name so we have the old base and the old name
   vsx_string old_base;
@@ -1482,92 +1286,73 @@ int vsx_engine::rename_component(vsx_string old_identifier, vsx_string new_base,
   int max_loop = 0;
   if (t->component_class == "macro") max_loop = 0; else max_loop = 1;
 
-    std::list<vsx_string> macro_comps;
-    std::list<vsx_comp*> macro_comp_p;
-    std::map<vsx_string,vsx_comp*>::iterator m_i = forge_map.find(old_identifier);
-    bool first = true;
-    bool drun = true;
-    // loop and find all components we need to rename
-    int runs = 0;
-    while (drun) {
-      if (m_i != forge_map.end()) {
-        vsx_string tt = (*m_i).first;
-        if (tt.find(old_identifier) == 0 || first) {
-          if (first || tt[old_identifier.size()] == vsx_string(".")) {
-            first = false;
-            macro_comps.push_back(tt);
-            macro_comp_p.push_back((*m_i).second);
-          }
-        } else drun = false;
-        ++m_i;
+  std::list<vsx_string> macro_comps;
+  std::list<vsx_comp*> macro_comp_p;
+  std::map<vsx_string,vsx_comp*>::iterator m_i = forge_map.find(old_identifier);
+  bool first = true;
+  bool drun = true;
+  // loop and find all components we need to rename
+  int runs = 0;
+  while (drun) {
+    if (m_i != forge_map.end()) {
+      vsx_string tt = (*m_i).first;
+      if (tt.find(old_identifier) == 0 || first) {
+        if (first || tt[old_identifier.size()] == vsx_string(".")) {
+          first = false;
+          macro_comps.push_back(tt);
+          macro_comp_p.push_back((*m_i).second);
+        }
       } else drun = false;
-      ++runs;
-      if (max_loop != 0)
-      if (runs >= max_loop) drun = false;
-    }
+      ++m_i;
+    } else drun = false;
+    ++runs;
+    if (max_loop != 0)
+    if (runs >= max_loop) drun = false;
+  }
 
-    /*vsx_string parent_name;
-    if (t->parent) {
-      parent_name = t->parent->name;
-    } else parent_name = "";*/
-    vsx_string new_name_ = "";
-    // do the actual renaming
-    std::list<vsx_comp*>::iterator it_c = macro_comp_p.begin();
+  /*vsx_string parent_name;
+  if (t->parent) {
+    parent_name = t->parent->name;
+  } else parent_name = "";*/
+  vsx_string new_name_ = "";
+  // do the actual renaming
+  std::list<vsx_comp*>::iterator it_c = macro_comp_p.begin();
 
-    for (std::list<vsx_string>::iterator it2 = macro_comps.begin(); it2 != macro_comps.end(); ++it2) {
-      forge_map.erase(*it2);
-      if (new_base.size()) {
-        if (old_base.size()) {
-          //printf("p1\n");
-          // moving from macro to macro
-          new_name_ = new_base+"."+str_replace(old_name,new_name,str_replace(old_base+".","",*it2,1,0),1,0);
-        }
-        else {
-          //printf("p2 %s  %s   %s\n",old_name.c_str(),new_name.c_str(),(*it2).c_str());
-          // moving from root to macro
-          new_name_ = new_base+"."+str_replace(old_name,new_name,*it2,1,0);
-        }
+  for (std::list<vsx_string>::iterator it2 = macro_comps.begin(); it2 != macro_comps.end(); ++it2)
+  {
+    forge_map.erase(*it2);
+    if (new_base.size()) {
+      if (old_base.size()) {
+        //printf("p1\n");
+        // moving from macro to macro
+        new_name_ = new_base+"."+str_replace(old_name,new_name,str_replace(old_base+".","",*it2,1,0),1,0);
       }
       else {
-        // moving the component to the root (server)
-        // from macro to root
-        if (old_base.size()) {
-          // "old_base.component_name" -> "new_component_name"
-          //printf("p3 %s \n",str_replace(old_base+".","",*it2,1,0).c_str());
-          new_name_ = str_replace(old_name,new_name,str_replace(old_base+".","",*it2,1,0),1,0);
-          new_name = new_name;
-        } else {
-          // plain renaming
-          //printf("p4\n");
-          new_name_ = str_replace(old_name,new_name,*it2,1,0);
-        }
+        //printf("p2 %s  %s   %s\n",old_name.c_str(),new_name.c_str(),(*it2).c_str());
+        // moving from root to macro
+        new_name_ = new_base+"."+str_replace(old_name,new_name,*it2,1,0);
       }
-      //printf("new name is: %s\n",new_name_.c_str());
-      forge_map[new_name_] = *it_c;
-      (*it_c)->name = new_name_;
-      ++it_c;
-    }
-  //}
-  /*else {
-    std::vector<vsx_string> name_split;
-    vsx_string deli = ".";
-    explode((*it)->name,deli, name_split);
-    if (new_base != "") {
-      new_name = new_base+"."+name_split[name_split.size()-1];
     }
     else {
-      new_name = name_split[name_split.size()-1];
+      // moving the component to the root (server)
+      // from macro to root
+      if (old_base.size()) {
+        // "old_base.component_name" -> "new_component_name"
+        //printf("p3 %s \n",str_replace(old_base+".","",*it2,1,0).c_str());
+        new_name_ = str_replace(old_name,new_name,str_replace(old_base+".","",*it2,1,0),1,0);
+        new_name = new_name;
+      } else {
+        // plain renaming
+        //printf("p4\n");
+        new_name_ = str_replace(old_name,new_name,*it2,1,0);
+      }
     }
-    forge_map.erase((*it)->name);
-    if (forge_map.find(new_name) != forge_map.end()) {
-      new_name += i2s(component_name_autoinc);
-      cmd_out->add_raw("component_rename_ok "+(*it)->name+" "+(*it)->name+i2s(component_name_autoinc));
-      (*it)->name = (*it)->name+i2s(component_name_autoinc);
-      ++component_name_autoinc;
-    }
-    forge_map[new_name] = t;
-    t->name = new_name;
-  }*/
+    //printf("new name is: %s\n",new_name_.c_str());
+    forge_map[new_name_] = *it_c;
+    (*it_c)->name = new_name_;
+    ++it_c;
+  }
+  
   // actually move the component
   if (assign_first) {
     //printf("moving component\n");

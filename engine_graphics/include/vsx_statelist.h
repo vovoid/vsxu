@@ -29,6 +29,9 @@ public:
     need_stop = false;
     need_reload = false;
   }
+  ~state_info() {
+    if (engine) delete engine;
+  }
 };
 
 // WARNING! INIT THIS YOURSELF WITH THE NEW OPERATOR SOMEWHERE
@@ -125,6 +128,7 @@ public:
   
 
   vsx_statelist();
+  ~vsx_statelist();
 };
 
 #endif /*VSX_STATELIST_H_*/

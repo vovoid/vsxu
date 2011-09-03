@@ -7,6 +7,7 @@ include_directories(
   src
   src/vsx_font
   src/vsx_widget
+  ./include
 )
 
 set(OS_SOURCES "")
@@ -36,6 +37,11 @@ add_definitions(
  -DDEBUG
 )
 endif(VSXU_DEBUG)
+
+if (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
+  add_definitions( -DPLATFORM_SHARED_FILES_FLAT_INSTALL )
+endif (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
+
 
 #definitions
 add_definitions(
@@ -83,8 +89,9 @@ set(SOURCES
   src/vsx_widget/arcball/arcball.cpp
   src/vsx_widget/module_choosers/vsx_widget_module_chooser.cpp
   src/vsx_widget/module_choosers/vsx_widget_module_chooser_list.cpp
-  src/vsx_widget/vsx_widget_main.cpp
+  src/vsx_widget/vsx_widget_desktop.cpp
   src/application.cpp
+  src/gl_helper.cpp
 )
 
 link_directories(

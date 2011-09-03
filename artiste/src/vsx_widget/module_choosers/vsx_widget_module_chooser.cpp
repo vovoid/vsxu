@@ -17,7 +17,8 @@
 #include "vsx_widget_base.h"
 #include "window/vsx_widget_window.h"
 #include "lib/vsx_widget_lib.h"
-#include "vsx_widget_main.h"
+#include "vsx_widget_desktop.h"
+#include <vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
 #include "server/vsx_widget_comp.h"
 #include "vsx_widget_module_chooser.h"

@@ -8,9 +8,11 @@ SetOverwrite on
   File ..\..\lib\win32\pthreadGCE.dll
   File ..\..\lib\win32\fmodex.dll
   File ..\..\lib\win32\glew_shared.dll
-  File ..\..\lib\win32\mingwm10.dll
+  File ..\..\lib\win32\libgcc_s_dw2-1.dll
+  File ..\..\lib\win32\libstdc++-6.dll
   File ..\..\lib\win32\zlib1.dll
   File ..\..\lib\win32\freetype6.dll
+  File ..\..\lib\win32\mingwm10.dll  
   
  
  ; VSXU GRAPHICS
@@ -54,7 +56,7 @@ SetOverwrite on
   SetOutPath "$INSTDIR\data\visuals-faders\examples\"
   File /r ..\..\share\example-faders\*.*
   SetOutPath "$INSTDIR\data\screenshots\examples\"
-  File /r ..\..\share\screenshots\0.2.0\*.*
+  File /r ..\..\share\screenshots\0.3.0\*.*
 
 ; player files
   SetOutPath "$INSTDIR\visuals_player"

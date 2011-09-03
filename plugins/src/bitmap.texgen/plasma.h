@@ -82,7 +82,7 @@ public:
     //float arms = ((module_bitmap_plasma*)ptr)->arms->get()*0.5f;
     //float star_flower = ((module_bitmap_plasma*)ptr)->star_flower->get();
     //float angle = ((module_bitmap_plasma*)ptr)->angle->get();
-    unsigned long *p = ((module_bitmap_plasma*)ptr)->work_bitmap->data;
+    unsigned long *p = (unsigned long*)((module_bitmap_plasma*)ptr)->work_bitmap->data;
     int ssize = ((module_bitmap_plasma*)ptr)->i_size;
     int hsize = ssize >> 1;
     //float sp1 = (float)size + 1.0f;
@@ -203,7 +203,7 @@ size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024";
     need_to_rebuild = true;
     to_delete_data = 0;
   }
-  unsigned long *to_delete_data;
+  void *to_delete_data;
   void run() {
     // initialize our worker thread, we don't want to keep the renderloop waiting do we?
     if (!worker_running)
@@ -238,7 +238,7 @@ size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024";
         loading_done = true;
         if (to_delete_data)
         {
-          delete[] to_delete_data;
+          delete[] (unsigned long*)to_delete_data;
           to_delete_data = 0;
         }
       }
@@ -273,7 +273,7 @@ size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024";
     //printf("a");
     //printf("b");
     //printf("c");
-    delete[] bitm.data;
+    delete[] (unsigned long*)bitm.data;
     //printf("d");
   }
 };

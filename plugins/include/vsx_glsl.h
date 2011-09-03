@@ -1,6 +1,10 @@
 #ifndef VSX_GLSL_H
 #define VSX_GLSL_H
 
+#ifdef VSXU_OPENGL_ES_2_0
+#include "vsx_glsl_es.h"
+#else
+
 typedef struct {
   vsx_module_param_abs* module_param;
   vsx_string name;
@@ -522,8 +526,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
             }
           break;
           case VSX_MODULE_PARAM_ID_TEXTURE:
-            vsx_texture* ba;
-            //glBindTexture(GL_TEXTURE_2D, my_texture_object);
+            vsx_texture** ba;
             ba = ((vsx_module_param_texture*)v_list[i].module_param)->get_addr();
             if (ba) {
               //printf("GLSL:binding texture\n");
@@ -533,8 +536,8 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
 #else
               glActiveTexture(GL_TEXTURE0 + tex_i);
 #endif
-              ba->bind();
-              glUniform1i(v_list[i].glsl_location,tex_i);
+              (*ba)->bind();
+              glUniform1iARB(v_list[i].glsl_location,tex_i);
               tex_i++;
             }
           break;
@@ -586,7 +589,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
       if (v_list[i].module_param) {
         switch(v_list[i].param_type_id) {
           case VSX_MODULE_PARAM_ID_TEXTURE:
-          vsx_texture* ba;
+          vsx_texture** ba;
           //glBindTexture(GL_TEXTURE_2D, my_texture_object);
           ba = ((vsx_module_param_texture*)v_list[i].module_param)->get_addr();
           if (ba) {
@@ -597,7 +600,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
             glActiveTextureARB(GL_TEXTURE0 + tex_i);
 #endif
             //printf("unbinding tex\n");
-            ba->_bind();
+            (*ba)->_bind();
             ++tex_i;
           }
         }
@@ -621,7 +624,6 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
       }
     }
 
-    //if (GLEW_VERSION_1_3)
 #if defined(__linux__)
     glActiveTexture(GL_TEXTURE0);
 #else
@@ -655,4 +657,5 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
   {};
 };
 
-#endif
+#endif // ifdef OPENGL_ES_2_0
+#endif // ifndef VSX_GLSL_H

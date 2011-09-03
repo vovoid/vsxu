@@ -1,3 +1,7 @@
 sudo apt-get install libglew1.5-dev
 sudo apt-get install libglfw-dev
 sudo apt-get install libpng12-dev
+sudo apt-get install libftgl-dev
+sudo apt-get install libjpeg62-dev
+sudo apt-get install libpulse-dev
+sudo apt-get install libxrandr-dev

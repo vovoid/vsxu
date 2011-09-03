@@ -1,6 +1,34 @@
 #ifndef DEFAULT_SHADER_H_
 #define DEFAULT_SHADER_H_
 
+
+
+
+#ifdef VSXU_OPENGL_ES_2_0
+const char* default_vert =
+"attribute vec4 vertices;\
+attribute vec4 colors;\
+\
+uniform mat4 mm;\
+\
+varying vec4 col;\
+\
+void main() {\
+  col = colors;\
+  gl_Position = mm * vertices;\
+}\
+";
+
+const char* default_frag =
+"precision lowp float;\
+varying vec4 col;\
+void main() {\
+  gl_FragColor = col;\
+}\
+";
+#else
+
+
 /*
 const char* default_vert2 = "\
 void main()\n\
@@ -133,7 +161,7 @@ const char* default_frag = "\
     }\n\
 ";
 
-
+#endif // else VSXU_OPENGL_ES_2_0
 
 #endif /*DEFAULT_SHADER_H_*/
 

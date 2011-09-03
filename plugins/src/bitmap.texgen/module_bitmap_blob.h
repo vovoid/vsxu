@@ -67,7 +67,7 @@ public:
     float arms = ((module_bitmap_blob*)ptr)->arms->get()*0.5f;
     float star_flower = ((module_bitmap_blob*)ptr)->star_flower->get();
     float angle = ((module_bitmap_blob*)ptr)->angle->get();
-    unsigned long *p = ((module_bitmap_blob*)ptr)->work_bitmap->data;
+    unsigned long *p = (unsigned long*)((module_bitmap_blob*)ptr)->work_bitmap->data;
     int size = ((module_bitmap_blob*)ptr)->i_size;
     //float sp1 = (float)size + 1.0f;
     float dist;
@@ -78,17 +78,13 @@ public:
   			float xx = (size/(size-2.0f))*((float)x)+0.5f;
   			float yy = (size/(size-2.0f))*((float)y)+0.5f;
   			float dd = sqrt(xx*xx + yy*yy);
-  			if((long)(dd) > hsize) *p = 0;
-  			else {
-          float phase;
-          float dstf = dd/((float)hsize+1);
-          phase = (float)pow(1.0f - (float)fabs((float)cos(angle+arms*(float)atan2(xx,yy)))*(star_flower+(1-star_flower)*(((dstf)))),attenuation);
-          if (phase > 2.0f) phase = 1.0f;
-          *p = (long)(255.0f * (cos(((dstf * pi/2.0f)))*phase));
-          if (*p > 255) *p = 255;
-          if (*p < 0) *p = 0;
-          dist = (cos(((dstf * pi/2.0f)))*phase);
-        }
+        float dstf = dd/((float)hsize+1);
+        float phase = (float)pow(1.0f - (float)fabs((float)cos(angle+arms*(float)atan2(xx,yy)))*(star_flower+(1-star_flower)*(((dstf)))),attenuation);
+        if (phase > 2.0f) phase = 1.0f;
+        *p = (long)(255.0f * (cos(((dstf * pi/2.0f)))*phase));
+        if (*p > 255) *p = 255;
+        if (*p < 0) *p = 0;
+        dist = cos(dstf * pi/2.0f)*phase;
   			if (((module_bitmap_blob*)ptr)->work_alpha == 1)
   			{
           long pr = max(0,min(255,(long)(255.0f *  ((module_bitmap_blob*)ptr)->work_color[0])));
@@ -178,11 +174,11 @@ public:
       texture = new vsx_texture;
       texture->init_opengl_texture();
       result_texture = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
-      result_texture->set_p(*texture);
+      result_texture->set(texture);
     }
     to_delete_data = 0;
   }
-  unsigned long *to_delete_data;
+  void *to_delete_data;
   void run() {
     //printf("param_updates: %d\n",param_updates);
     //printf("p_updates: %d\n",p_updates);
@@ -197,7 +193,7 @@ public:
         if (c_type == 1)
         texture->upload_ram_bitmap(&bitm,true);
         if (c_type == 1)
-        result_texture->set_p(*texture);
+        result_texture->set(texture);
         result1->set_p(bitm);
         loading_done = true;
       }
@@ -234,7 +230,7 @@ public:
 
     if (to_delete_data && my_ref == 0)
     {
-      delete[] to_delete_data;
+      delete[] (unsigned long*)to_delete_data;
       to_delete_data = 0;
     }
   }
@@ -244,7 +240,7 @@ public:
         texture->init_opengl_texture();
         texture->upload_ram_bitmap(&bitm,true);
       }
-      result_texture->set_p(*texture);
+      result_texture->set(texture);
     }
   }
 
@@ -277,13 +273,12 @@ public:
     if (c_type == 1) {
       if (texture) {
         //printf(":t:");
-        delete texture->transform_obj;
         texture->unload();
         delete texture;
       }
     }
     //printf("c");
-    delete[] bitm.data;
+    delete[] (unsigned long*)bitm.data;
     //printf("d");
   }
 };

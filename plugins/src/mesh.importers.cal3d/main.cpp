@@ -22,7 +22,7 @@ typedef struct {
   // out
   vsx_module_param_mesh* result;
   // internal
-  vsx_mesh mesh;
+  vsx_mesh* mesh;
   bool first_run;
   int n_rays;
   vsx_string current_filename;
@@ -35,7 +35,20 @@ public:
     c_model = 0;
   }
 
-  void module_info(vsx_module_info* info)
+  bool init() {
+    mesh = new vsx_mesh;
+    return true;
+  }
+
+  void on_delete()
+  {
+    if (c_model) {
+      delete c_model;
+    }
+    delete mesh;
+  }
+
+void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;importers;cal3d_importer";
     info->description = "";
@@ -339,8 +352,8 @@ public:
             // get the transformed vertices of the submesh
             //static float meshVertices[30000][3];
             
-            mesh.data->vertices[pCalRenderer->getVertexCount()+1] = vsx_vector(0,0,0);
-            pCalRenderer->getVertices(&mesh.data->vertices[0].x);
+            mesh->data->vertices[pCalRenderer->getVertexCount()+1] = vsx_vector(0,0,0);
+            pCalRenderer->getVertices(&mesh->data->vertices[0].x);
             //pCalRenderer->getVertices(&meshVertices[0][0]);
             //printf("number of vertices: %d\n",pCalRenderer->getVertexCount());
             //printf("vertex0.x: %f\n",meshVertices[0][0]);
@@ -348,23 +361,23 @@ public:
   //printf("b");
           //// get the transformed normals of the submesh
           //static float meshNormals[30000][3];
-          mesh.data->vertex_normals[pCalRenderer->getVertexCount()+1] = vsx_vector(0,0,0);
-          pCalRenderer->getNormals(&mesh.data->vertex_normals[0].x);
+          mesh->data->vertex_normals[pCalRenderer->getVertexCount()+1] = vsx_vector(0,0,0);
+          pCalRenderer->getNormals(&mesh->data->vertex_normals[0].x);
 
           //printf("caltangent size: %d\n",sizeof(CalCoreSubmesh::TangentSpace));
           //printf("vsx_vector size: %d\n",sizeof(vsx_vector));
 
           if (pCalRenderer->isTangentsEnabled(0)) {
             //printf("Tangents are enabled\n");
-            mesh.data->vertex_tangents[pCalRenderer->getVertexCount()+1].x = 0;// = vsx_vector(0,0,0);
-            int num_tagentspaces = pCalRenderer->getTangentSpaces(0,&mesh.data->vertex_tangents[0].x);
+            mesh->data->vertex_tangents[pCalRenderer->getVertexCount()+1].x = 0;// = vsx_vector(0,0,0);
+            int num_tagentspaces = pCalRenderer->getTangentSpaces(0,&mesh->data->vertex_tangents[0].x);
             //printf("fetched %d tangents\n", num_tagentspaces);
           }
           //else printf("Tangents are NOT enabled\n");
           
 
-          mesh.data->vertex_tex_coords[pCalRenderer->getVertexCount()+1].s = 0;
-          pCalRenderer->getTextureCoordinates(0,&mesh.data->vertex_tex_coords[0].s);
+          mesh->data->vertex_tex_coords[pCalRenderer->getVertexCount()+1].s = 0;
+          pCalRenderer->getTextureCoordinates(0,&mesh->data->vertex_tex_coords[0].s);
   
           // get the texture coordinates of the submesh
           // (only for the first map as example, others can be accessed in the same way though)
@@ -385,13 +398,13 @@ public:
           //printf("facecount: %d\n",faceCount);
 //          vsx_face a;
 
-          //printf("allocated: %d\n",mesh.data->faces.get_allocated());
-          //mesh.data->faces[faceCount*3] = a;
-          mesh.data->faces.allocate(faceCount*3);
-          //printf("allocated: %d\n",mesh.data->faces.get_allocated());
-          pCalRenderer->getFaces((int*)&mesh.data->faces[0].a);
-          mesh.data->faces.reset_used(faceCount);
-          //printf("face id 0: %d\n",mesh.data->faces[10].a);
+          //printf("allocated: %d\n",mesh->data->faces.get_allocated());
+          //mesh->data->faces[faceCount*3] = a;
+          mesh->data->faces.allocate(faceCount*3);
+          //printf("allocated: %d\n",mesh->data->faces.get_allocated());
+          pCalRenderer->getFaces((int*)&mesh->data->faces[0].a);
+          mesh->data->faces.reset_used(faceCount);
+          //printf("face id 0: %d\n",mesh->data->faces[10].a);
           //faceCount = pCalRenderer->getFaces(&meshFaces[0][0]);
   //printf("d");
           //[ render the faces with the graphic-API here ]
@@ -427,17 +440,10 @@ public:
       }
     }
 
-    mesh.timestamp++;
+    mesh->timestamp++;
     result->set_p(mesh);
 
     //printf("cal3d run3\n");
-  }
-  
-  void on_delete() {
-    if (c_model) {
-      delete c_model;
-    }
-    //mesh.clear();
   }
 };
 */
@@ -456,8 +462,8 @@ public:
     vsx_module_param_mesh* result;
     // internal
     vsx_mesh* mesh;
-    vsx_mesh mesh_a;
-    vsx_mesh mesh_b;
+    vsx_mesh* mesh_a;
+    vsx_mesh* mesh_b;
     bool first_run;
     int n_rays;
     vsx_string current_filename;
@@ -477,12 +483,26 @@ public:
   vsx_module_cal3d_loader_threaded() {
     m_model = 0;
     c_model = 0;
-    mesh = &mesh_a;
     thread_state = 0;
     thread_exit = 0;
     worker_running = false;
     p_updates = -1;
     prev_use_thread = 0;
+  }
+  bool init() {
+    mesh_a = new vsx_mesh;
+    mesh_b = new vsx_mesh;
+    mesh = mesh_a;
+    return true;
+  }
+
+  void on_delete()
+  {
+    if (c_model) {
+      delete (CalCoreModel*)c_model;
+    }
+    delete mesh_a;
+    delete mesh_b;
   }
 
   void module_info(vsx_module_info* info)
@@ -856,11 +876,11 @@ public:
       }
 
       mesh->timestamp++;
-      result->set_p(*mesh);
+      result->set(mesh);
 
       // toggle to the other mesh
-      if (mesh == &mesh_a) mesh = &mesh_b;
-      else mesh = &mesh_a;
+      if (mesh == mesh_a) mesh = mesh_b;
+      else mesh = mesh_a;
       // the one we point to now is the one that is going to be worked on
       thread_state = 3;
     }
@@ -906,17 +926,6 @@ public:
         }
       }
     }*/
-  }
-
-  void on_delete() {
-    thread_exit = 1;
-    while (thread_state != 10)
-    {
-      usleep(100);
-    }
-    if (c_model) {
-      delete (CalCoreModel*)c_model;
-    }
   }
 };
 

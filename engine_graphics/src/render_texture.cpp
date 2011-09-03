@@ -1,3 +1,4 @@
+#ifndef VSXU_OPENGL_ES
 //---------------------------------------------------------------------------
 // File : RenderTexture.cpp
 //---------------------------------------------------------------------------
@@ -2216,3 +2217,4 @@ bool RenderTexture::Reset(int iWidth, int iHeight)
     
     return true;
 }
+#endif

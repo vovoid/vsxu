@@ -39,7 +39,7 @@ class DLLIMPORT vsx_engine {
 private:
   vsx_string vsxu_base_path;
   vsxf filesystem; // our master filesystem handler
-
+  vsx_engine_environment engine_environment;
   //-- component list
 	std::vector<vsx_comp*> forge;
 	std::map<vsx_string,vsx_comp*> forge_map;
@@ -51,13 +51,23 @@ private:
   //-- engine state
 	bool first_start;
 	bool stopped;
+
+  //-- open dll/so's
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+    std::vector<HMODULE> module_handles;
+  #endif
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+    std::vector<void*> module_handles;
+  #endif
+  
 	//-- available modules
+  std::vector<vsx_module_info*> module_infos;
 	std::map<vsx_string,vsx_module_info*> module_list;
 	std::map<vsx_string,vsx_module_info*>::const_iterator module_iter;
 	std::map<vsx_string,module_dll_info*> module_dll_list;
 	void build_module_list(vsx_string sound_type = ""); // (re)builds the module_list
 
-	std::list<vsx_comp*> outputs;
+	vsx_avector<vsx_comp*> outputs;
 
   // Time/sequencing variables
  	// global frame counter (mostly for fun)
@@ -88,7 +98,7 @@ private:
 	int component_name_autoinc;
 	void set_default_values();
 	int i_load_state(vsx_command_list& load1, vsx_string *error_string);
-  void i_clear(vsx_command_list *cmd_out = 0);
+  void i_clear(vsx_command_list *cmd_out = 0, bool clear_critical = false);
   void rename_component();
 	int rename_component(vsx_string old_identifier, vsx_string new_base = "$", vsx_string new_name = "$");
   void redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_out);
@@ -114,6 +124,12 @@ public:
 		void* vsxl;
 	#endif
 
+
+  //debug refcounter
+/*  #ifdef VSXU_DEBUG
+    static int engine_counter;
+    int engine_id;
+  #endif*/
   //--
 
 	bool dump_modules_to_disk;
@@ -189,6 +205,7 @@ public:
 
 	vsx_engine();
 	vsx_engine(vsx_string path);
+  ~vsx_engine();
 };
 
 

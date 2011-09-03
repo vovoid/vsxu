@@ -1,5 +1,72 @@
 cmake_minimum_required(VERSION 2.6)
 
+message ("begin of script")
+
+function(CREATE_STATIC_GLUE module_id)
+  if (VSXU_ENGINE_STATIC EQUAL 1)
+    # create a link directory
+    file(APPEND ../../static_factory_cmake_link_directories "link_directories(" ${CMAKE_SOURCE_DIR}/plugins/src/${module_id}/")\n" )
+    # link library
+    file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${module_id} ")\n" )
+
+    # make a C++-friendly name out of the module name
+    string(REPLACE "." "_" module_id_f ${module_id} )
+
+    # rig up the factory include symbols
+    # create defines for code in the engine
+    file(APPEND ../../static_factory_funcmapping.h 
+      "vsx_module* " vsx_module_${module_id_f}_cm "(unsigned long module);
+      void " vsx_module_${module_id_f}_dm "(vsx_module* m,unsigned long module);
+      unsigned long " vsx_module_${module_id_f}_nm "();\n"
+    )
+    # create a cpp include file for calls
+    file(APPEND ../../static_factory_funcmapping.cpp "  VSXM_SF_ADD_MODULE(\"${module_id}\"," vsx_module_${module_id_f}_cm "," vsx_module_${module_id_f}_dm "," vsx_module_${module_id_f}_nm ");\n")
+    add_definitions(
+      -DMOD_CM=vsx_module_${module_id_f}_cm
+      -DMOD_DM=vsx_module_${module_id_f}_dm
+      -DMOD_NM=vsx_module_${module_id_f}_nm
+    )
+  else  (VSXU_ENGINE_STATIC EQUAL 1)
+    add_definitions(
+      -DMOD_CM=create_new_module
+      -DMOD_DM=destroy_module
+      -DMOD_NM=get_num_modules
+    )
+  endif (VSXU_ENGINE_STATIC EQUAL 1)
+endfunction(CREATE_STATIC_GLUE)
+
+
+function (CREATE_MODULE ${module_id})
+  if (VSXU_ENGINE_STATIC EQUAL 1)
+    add_library(${module_id} STATIC ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES} ${EXTRA_LIBS})
+  else (VSXU_ENGINE_STATIC EQUAL 1)
+    add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES} ${EXTRA_LIBS})
+  endif (VSXU_ENGINE_STATIC EQUAL 1)
+endfunction(CREATE_MODULE)
+
+
+if (VSXU_OPENGL_ES_2_0 EQUAL 1)
+  add_definitions(-DVSXU_OPENGL_ES)
+  add_definitions(-DVSXU_OPENGL_ES_2_0)
+endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
+
+
+#GROWL
+if (VSXU_ENGINE_STATIC EQUAL 1)
+  message ("building static libs, cleaning out inclusion files") 
+  # 1. create the file for static factory
+  file(WRITE static_factory_funcmapping.cpp "")
+  file(WRITE static_factory_funcmapping.h "")
+  file(WRITE static_factory_cmake_link_directories "")
+  file(WRITE static_factory_cmake_target_link_libraries "")
+  add_subdirectory(src/math.basic)
+  add_subdirectory(src/math.oscillator)
+  add_subdirectory(src/output.screen)
+  add_subdirectory(src/render.basic)
+  add_subdirectory(src/render.glsl)
+  add_subdirectory(src/render.mesh)
+else (VSXU_ENGINE_STATIC EQUAL 1)
+message ("normal operation")
 add_subdirectory(src/bitmap.import.avi)
 add_subdirectory(src/bitmap.modifiers)
 add_subdirectory(src/bitmap.texgen)
@@ -29,29 +96,40 @@ add_subdirectory(src/render.oscilloscope)
 add_subdirectory(src/render.text)
 add_subdirectory(src/render.vovoid)
 
+
+
+if (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
+  add_definitions( -DPLATFORM_SHARED_FILES_FLAT_INSTALL )
+endif (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
+
 #sound input (and in some cases output) module(s)
-if(VSXU_SOUND_FMOD)
-  message("*** Building FMOD sound support")
-  add_subdirectory(src/sound.fmod)
-elseif(VSXU_SOUND_ITUNES)
-  message("*** Building itunes sound support")
-  add_subdirectory(src/sound.itunes)
-else(VSXU_SOUND_FMOD)
-  if (WIN32)
-    message("*** Building WIN32 FMOD sound support")
+if (APPLE)
+  #add fruity code here
+else (APPLE)
+  if(VSXU_SOUND_FMOD)
+    message("*** Building FMOD sound support")
     add_subdirectory(src/sound.fmod)
-  else(WIN32)
-    message("*** Building UNIX pulseaudio, media_player sound support")
-add_subdirectory(src/sound.media_player)
-add_subdirectory(src/sound.pulseaudio)
-  endif(WIN32)
-endif(VSXU_SOUND_FMOD)
+  elseif(VSXU_SOUND_ITUNES)
+    message("*** Building itunes sound support")
+    add_subdirectory(src/sound.itunes)
+  else(VSXU_SOUND_FMOD)
+    if (WIN32)
+      message("*** Building WIN32 FMOD sound support")
+      add_subdirectory(src/sound.fmod)
+    else(WIN32)
+      message("*** Building UNIX pulseaudio, media_player sound support")
+  add_subdirectory(src/sound.media_player)
+  add_subdirectory(src/sound.pulseaudio)
+    endif(WIN32)
+  endif(VSXU_SOUND_FMOD)
+endif(APPLE)
 
 add_subdirectory(src/string)
 add_subdirectory(src/system)
 add_subdirectory(src/texture)
 add_subdirectory(src/texture.load)
 
+endif (VSXU_ENGINE_STATIC EQUAL 1)
 
 
 

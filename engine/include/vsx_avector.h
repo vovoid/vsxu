@@ -161,6 +161,25 @@ public:
   	allocation_increment = new_increment;
   }
 
+  void remove(T val)
+  {
+    // allocate new
+    T* n = new T[allocated];
+    // iteration pointer
+    T* p = n;
+    for(unsigned long i = 0; i < used; i++)
+    {
+      if (A[i] != val)
+      {
+        *p = A[i];
+        p++;
+      }
+    }
+    used--;
+    delete[] A;
+    A = n;
+  }
+
   /*vsx_avector(vsx_avector<T>& v) {
     T* f = v.get_pointer();
     unsigned long vs = v.size();

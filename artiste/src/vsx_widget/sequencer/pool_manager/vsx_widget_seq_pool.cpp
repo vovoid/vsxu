@@ -15,6 +15,7 @@
 #include "lib/vsx_widget_lib.h"
 #include "lib/vsx_widget_panel.h"
 #include "lib/vsx_widget_base_edit.h"
+#include <vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
 #include "server/vsx_widget_comp.h"
 #include "dialogs/vsx_widget_window_statics.h"

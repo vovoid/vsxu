@@ -27,8 +27,9 @@
 #include "dialogs/vsx_widget_window_statics.h"
 #include "module_choosers/vsx_widget_module_chooser.h"
 #include "module_choosers/vsx_widget_module_chooser_list.h"
-#include "vsx_widget_main.h"
+#include "vsx_widget_desktop.h"
 #include "vsx_widget_comp.h"
+#include <vsx_command_client_server.h>
 #include "vsx_widget_server.h"
 #include "vsx_widget_anchor.h"
 #include "vsx_widget_connector.h"
@@ -38,38 +39,228 @@
 #include "controllers/vsx_widget_controller.h"
 #include "controllers/vsx_widget_editor.h"
 #include "helpers/vsx_widget_note.h"
+
+
 using namespace std;
 
 // VSX_WIDGET_SERVER ***************************************************************************************************
 
+vsx_widget_server::vsx_widget_server() {
+  widget_type = VSX_WIDGET_TYPE_SERVER;
+  cmd_out = 0;
+  cmd_in = 0;
+  server_type = VSX_WIDGET_SERVER_CONNECTION_TYPE_INTERNAL;
+  init_run = false;
+  support_scaling = false;
+  selection = false;
+  client = 0;
+
+  log(" welcome to");
+  log(" _   _  ___ _  __     _        ___  ___   ___");
+  log(" \\\\  / //_   \\//      /  / /    /  /__/  /__/");
+  log("  \\\\/  ___/ _/\\\\_    /__/ /__  /  /  \\  /  /");
+  log("   "+vsx_string(vsxu_version));
+  log("-----------------------------------------------------------------");
+  log(" (c) 2003-2011 vovoid || http://vovoid.com || http://vsxu.com");
+}
+
+void vsx_widget_server::init() {
+  help_text = "The server is selected:\n\
+- left-double-click to get the\n\
+module browser\n\
+- ctrl+left-double_click to load a state\n";
+
+  menu = add(new vsx_widget_popup_menu,name+".server_menu");
+  support_interpolation = true;
+  interpolation_speed = 3;
+  title = name;
+  menu->commands.adds(VSX_COMMAND_MENU,"open module browser (add module)... [left-double-click]", "show_module_browser","");
+  menu->commands.adds(VSX_COMMAND_MENU,"open module list (add module)...", "show_module_browser_list","");
+  menu->commands.adds(VSX_COMMAND_MENU,"open resource browser (preview resources)...", "resource_menu","");
+  menu->commands.adds(VSX_COMMAND_MENU,"add empty macro [alt+left-double-click]", "add_empty_macro","$mpos");
+  menu->commands.adds(VSX_COMMAND_MENU,"add note", "add_note","$mpos");
+  menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
+  menu->commands.adds(VSX_COMMAND_MENU,"project >;load state... (from _states/ dir) [ctrl+left-double-click]","state_menu_load","");
+  menu->commands.adds(VSX_COMMAND_MENU,"project >;save state as... (in _states/ dir)","state_menu_save","");
+  menu->commands.adds(VSX_COMMAND_MENU,"project >;clear state","clear","");
+  menu->commands.adds(VSX_COMMAND_MENU,"compile >;music visual (.vsx, '_visuals/' dir) as...","m_package_export_visuals","");
+  menu->commands.adds(VSX_COMMAND_MENU,"compile >;music visual fader (.vsx, '_visuals_faders/' dir) as...","m_package_export_visuals_faders","");
+  menu->commands.adds(VSX_COMMAND_MENU,"compile >;general package (.vsx '_prods/' dir) as...","m_package_export_prods","");
+  menu->commands.adds(VSX_COMMAND_MENU,"load template >;music visual","state_template_visual","");
+  menu->commands.adds(VSX_COMMAND_MENU,"load template >;music visual fader","state_template_fader","");
+  menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
+  menu->commands.adds(VSX_COMMAND_MENU,"master sequencer >;open sequencer window...","sequence_menu","");
+  menu->commands.adds(VSX_COMMAND_MENU,"master sequencer >;----------------------","","");
+  menu->commands.adds(VSX_COMMAND_MENU,"master sequencer >;rewind","rewind","");
+  menu->commands.adds(VSX_COMMAND_MENU,"master sequencer >;play","play","");
+  menu->commands.adds(VSX_COMMAND_MENU,"master sequencer >;stop","stop","");
+  menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
+  menu->commands.adds(VSX_COMMAND_MENU,"animation clips >;open animation pool manager...","seq_pool_menu","");
+  menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
+  menu->commands.adds(VSX_COMMAND_MENU,"tools >;undo >;undo [Ctrl+Z]","undo","");
+  menu->commands.adds(VSX_COMMAND_MENU,"tools >;undo >;disable","conf","automatic_undo 0");
+  menu->commands.adds(VSX_COMMAND_MENU,"tools >;undo >;automatic","conf","automatic_undo 1");
+  menu->commands.adds(VSX_COMMAND_MENU,"tools >;undo >;create rollback point","undo_s","");
+  menu->commands.adds(VSX_COMMAND_MENU,"tools >;show modules that haven't loaded","get_module_status","");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui smoothness >;none","conf","global_interpolation_speed 1000.0");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui smoothness >;slow","conf","global_interpolation_speed 0.5");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui smoothness >;normal","conf","global_interpolation_speed 1.0");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui smoothness >;quick","conf","global_interpolation_speed 2.0");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui keyboard movement speed >;very slow","conf","global_key_speed 1");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui keyboard movement speed >;slow","conf","global_key_speed 2");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui keyboard movement speed >;normal","conf","global_key_speed 3");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;none","conf","global_framerate_limit -1");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;2fps","conf","global_framerate_limit 2");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;5fps","conf","global_framerate_limit 5");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;10fps","conf","global_framerate_limit 10");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;25fps","conf","global_framerate_limit 25");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;30fps","conf","global_framerate_limit 30");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;50fps","conf","global_framerate_limit 50");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;60fps","conf","global_framerate_limit 60");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;80fps","conf","global_framerate_limit 80");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;85fps","conf","global_framerate_limit 85");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;90fps","conf","global_framerate_limit 90");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;100fps","conf","global_framerate_limit 100");
+  menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
+  menu->commands.adds(VSX_COMMAND_MENU,"server  >;connect","show_connect_dialog","");
+  if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
+  {
+    menu->commands.adds(VSX_COMMAND_MENU,"server  >;disconnect","dc","");
+    menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
+    menu->commands.adds(VSX_COMMAND_MENU,"shutdown server", "system.shutdown","");
+  } else
+  {
+    menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
+    menu->commands.adds(VSX_COMMAND_MENU,"quit artiste", "system.shutdown","");
+  }
+  if (state_name == "")
+  state_name ="_default";
+  menu->set_size(vsx_vector(0.4f,0.5f));
+  //cmd_out->add_raw("state_load "+base64_encode("states;_default"));
+  module_chooser = add(new vsx_widget_ultra_chooser,"module_browser");
+  ((vsx_widget_ultra_chooser*)module_chooser)->server = this;
+
+  module_chooser_list = add(new vsx_module_chooser_list,"module_browser_list");
+  ((vsx_module_chooser_list*)module_chooser_list)->set_server(this);
+
+  state_chooser = add(new vsx_widget_ultra_chooser,"state_browser");
+  resource_chooser = add(new vsx_widget_ultra_chooser,"resource_browser");
+  //name_dialog = add(new dialog_query_string("name of state","ex: jaw_states;mystate"),"state_save");
+  //export_dialog = add(new dialog_query_string("package export","filename ex: my_package.vsx"),"package_export");
+  export_dialog_ext = add(new dialog_query_string("visualization package export","\
+Filename to export to, will end up in visuals/ (ex. 'mypackage.vsx')|\
+Title of the visual (ex. 'Starlight Aurora')|\
+Your handle/nick/vsxu-id, (ex. 'jaw' or multiple: 'jaw, cor')|\
+Your group/company (ex. 'vovoid')|\
+Your country (ex. 'Sweden')|\
+Your homepage (ex. 'http://vovoid.com')|\
+Free text comments (max 300 characters)|\
+"),"package_visual_export");
+
+  export_dialog_state = add(new dialog_query_string("save state","\
+Filename to save to, will end up in states/ (ex. 'my_state')|\
+Title of the state (ex. 'My funky state')|\
+Your handle/nick/vsxu-id, (ex. 'jaw' or multiple: 'jaw, cor')|\
+Your group/company (ex. 'vovoid')|\
+Your country (ex. 'Sweden')|\
+Your homepage (ex. 'http://vovoid.com')|\
+Free text comments (max 300 characters)|\
+"),"package_visual_export");
+
+  connect_dialog = add(new dialog_query_string("connect to server","hostname or ip"),"connect_dialog");
+  // very extremely unfortunate for us the macros have to be in each and one of the
+  // servers' browsers so we blatantly add pointers to them here, tee hee! ;) this to mimimize
+  // the memory abuse but it will still be a lot :(
+  // this is due to the fact that macros are stored in the client, not in the server
+  // or should this be different? who knows..
+
+
+  selection = false;
+
+  set_size(vsx_vector(10.0f,10.0f));
+  //size.x = 5;
+  //size.y = 5;
+  //target_size = size;
+  //target_pos = pos;
+  color.a = 0.6; // a
+  init_children();
+
+  init_run = true;
+  cmd_out->add_raw("get_module_list");
+  cmd_out->add_raw("get_list resources");
+  cmd_out->add_raw("get_list states");
+  cmd_out->add_raw("get_list prods");
+  cmd_out->add_raw("get_list visuals");
+  if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_INTERNAL)
+  {
+    cmd_out->add_raw("state_load "+base64_encode("states;_default"));
+  }
+  cmd_out->add_raw("get_state");
+
+  // set sequencer to 0, we gonna fill it later
+  sequencer = 0;
+  seq_pool = 0; // TODO: remove the auto-init
+
+#ifndef VSXU_PLAYER
+  if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
+  {
+    mtex.load_png(skin_path+"server.png");
+    color.a = 1.0; // a
+  } else
+  {
+    mtex.load_png(skin_path+"server.png");
+  }
+#endif
+  init_run = true;
+}
+
+void vsx_widget_server::reinit()
+{
+  #ifndef VSXU_PLAYER
+    mtex.load_png(skin_path+"server.png");
+  #endif
+  vsx_widget::reinit();
+}
+
+void vsx_widget_server::on_delete() {
+  for (std::map<vsx_string,vsx_module_info*>::iterator it = module_list.begin(); it != module_list.end(); ++it) {
+    delete (*it).second;
+  }
+}
+
+void vsx_widget_server::server_connect(vsx_string host, vsx_string port)
+{
+  client = new vsx_command_list_client;
+  cmd_in = client->get_command_list_in();
+  cmd_out = client->get_command_list_out();
+  client->client_connect(host);
+  server_type = VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET;
+  support_scaling = true;
+}
+
 // messages from the engine
 void vsx_widget_server::vsx_command_process_f() {
 	vsx_command_s *c = 0;
+
+  if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
+  {
+    //printf("connection status: %d\n", client->get_connection_status());
+    if (client->get_connection_status() == VSX_COMMAND_CLIENT_DISCONNECTED)
+    {
+      _delete();
+    }
+  }
+  
 	if (init_run) {
-		//if (type == 2) pthread_mutex_lock(&heap_m);
+    // messages from the engine
 		while ( (c = cmd_in->pop()) )
 		{
-			//vsx_command_s *c = 0;
-			//c->cmd = "kokokokokokokokokokokoko";
-//        printf("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-			//if (c->cmd != "time_upd")
-			//printf("cmd_out: %s\n",c->raw.c_str());
-			//cout << "client command: " << c->raw << " " << " : " << c->cmd << endl;
-			//delete c;
-			//cout << "hej hej" << endl;
-			//cmd_result.add("hej","bar");
-
-			//vsx_string cmd = c->cmd;
-			//vsx_string cmd_data = c->cmd_data;
-			//vsx_command_timer.start(c->cmd);
-			//c->parse();
-
+      c->dump_to_stdout();
 			if (c->cmd == "vsxu_welcome") {
 				server_version = c->parts[1];
 				connection_id = c->parts[2];
 			} else
 			if (c->cmd == "component_create_ok") {
-
 				// syntax:
 				//  component_create_ok [name] [component_info] [x-pos] [y-pos] [size] [extra]
 				vsx_widget* cm = 0;
@@ -106,15 +297,9 @@ void vsx_widget_server::vsx_command_process_f() {
 				comp_list[c->cmd_data] = cm;
 				if (!cm)
 				{
-#ifdef VSXU_ARTISTE
-//            log("error, could not create this component.. it already exists");
-#endif
 					return;
 				}
-				// set some variables
-				// init the component
 				cm->init();
-				//cm->size.x = 0.05;
 				if (cm->parent->widget_type == VSX_WIDGET_TYPE_COMPONENT) {
 					cm->enabled = ((vsx_widget_component*)cm->parent)->open;
 					cm->visible = ((vsx_widget_component*)cm->parent)->open;
@@ -122,36 +307,27 @@ void vsx_widget_server::vsx_command_process_f() {
 				if (c->parts.size() >= 6)
 				{
 					if (c->parts[2] == "macro") {
-						//cm->size.x = 0.05;
 						((vsx_widget_component*)cm)->old_size.y = ((vsx_widget_component*)cm)->old_size.x = s2f(c->parts[5]);
 					}
 					else
 					{
-						//printf("seacrhing for: %s\n",c->parts[5].c_str());
 						cm->help_text = build_comp_helptext(c->parts[5]);
 						((vsx_widget_component*)cm)->module_path = c->parts[5];
-//              }
 					}
-					//((vsx_widget_component*)cm)->size.x = s2f(c->parts[5]);
-//            printf("custom size component: %s\n",c->parts[5].c_str());
 				}
 				cm->set_size(vsx_vector(0.05f*0.45f,0.05f*0.45f));
 				if (c->parts.size() >= 7) {
 					if (c->parts[6] == "out") {
 						((vsx_widget_component*)cm)->not_movable = true;
-//              printf("out type component\n");
 					}
 				}
 				((vsx_widget_component*)cm)->server = this;
 				((vsx_widget_component*)cm)->real_name = real_name;
 				((vsx_widget_component*)cm)->parent_name = parent_name;
 
-//          cout << "component pos x: " <<c->parts[3] << endl;
 				cm->set_pos(vsx_vector(s2f(c->parts[3]),s2f(c->parts[4])));
-				//cm->target_pos.x = s2f(c->parts[3]);
-				//cm->target_pos.y = s2f(c->parts[4]);
-				//cm->interpolating_pos = true;
-				// send in the component_info
+
+        // send in the component_info
 				command_q_b.add_raw("component_info "+cm->name+" "+c->parts[2]);
 				cm->vsx_command_queue_b(this);
 				if (module_chooser->visible != 0) front(module_chooser);
@@ -214,13 +390,7 @@ void vsx_widget_server::vsx_command_process_f() {
 					{
 						// so if the name is ok
 						if ((*children_iter)->name == c->parts[3]) {
-							// go through the list of connectors to this anchor and disconnect them
-							//if (((vsx_widget_anchor*)(*children_iter))->connectors.size()) {
-								/*for (std::list<vsx_widget*>::iterator it = ((vsx_widget_anchor*)(*children_iter))->connectors.begin(); it != ((vsx_widget_anchor*)(*children_iter))->connectors.end(); it++) {
-									root->command_q_f.add("delete",(*it)->id);
-								}*/
-								(*children_iter)->_delete();
-							//}
+              (*children_iter)->_delete();
 						}
 						else
 						{
@@ -270,9 +440,10 @@ void vsx_widget_server::vsx_command_process_f() {
 						(*it).second->interpolating_pos = true;
 					}
 				}
-				if (seq_pool) seq_pool->message("clear");
-				if (sequencer) sequencer->message("clear");
-//          if (server_message != "") cmd_out->add_raw("get_state");
+				if (seq_pool)
+          seq_pool->message("clear");
+				if (sequencer)
+          sequencer->message("clear");
 				server_message = "";
 				state_name = "";
 			} else
@@ -281,9 +452,7 @@ void vsx_widget_server::vsx_command_process_f() {
 				server_message = "";
 				std::map<vsx_string, vsx_widget*>temp_ = comp_list;
 				for (std::map<vsx_string, vsx_widget*>::iterator it = temp_.begin(); it != temp_.end(); ++it) {
-					//if (!((vsx_widget_component*)(*it).second)->internal_critical) {
-						(*it).second->_delete();
-					//}
+          (*it).second->_delete();
 				}
 				vsx_string s_name = base64_decode(c->parts[1]);
 
@@ -351,7 +520,8 @@ void vsx_widget_server::vsx_command_process_f() {
 					std::list<vsx_widget_connector_info*> out_connection_list;
 					component_moved->get_connections_in_abs(&in_connection_list);
 					component_moved->get_connections_out_abs(&out_connection_list);
-					//printf("in_list size: %d\n",in_connection_list.size());
+
+          //printf("in_list size: %d\n",in_connection_list.size());
 					//for(std::list<vsx_widget_connector_info*>::iterator it = in_connection_list.begin(); it != in_connection_list.end(); ++it) {
 					//printf("source: %s dest: %s\n",(*it)->source->name.c_str(), (*it)->dest->name.c_str());
 					//}
@@ -371,11 +541,6 @@ void vsx_widget_server::vsx_command_process_f() {
 					component_moved->pos = component_moved->target_pos = dst_pos + component_moved->real_pos - master_pos;
 					if ((float)fabs(component_moved->pos.x) > max_size) max_size = (float)fabs(component_moved->pos.x);
 					if ((float)fabs(component_moved->pos.y) > max_size) max_size = (float)fabs(component_moved->pos.y);
-
-					//component_moved->target_pos.x = dst_pos.x;//-dest_pos.x + (t->real_pos.x - base_comp_pos.x);
-					//component_moved->target_pos.y = dst_pos.y;//-dest_pos.y + (t->real_pos.y - base_comp_pos.y);
-					//component_moved->pos = component_moved->target_pos;
-					//t->interpolating_pos = true;
 
 					component_moved->rename_add_prefix(dest_name_prefix, parent_name_prefix);
 
@@ -426,20 +591,9 @@ void vsx_widget_server::vsx_command_process_f() {
 				// ("den som hittar, han finner" - norkst ordsprk)
 				vsx_widget* tc = find_component(c->parts[1]);
 				if (tc) {
-					//if (c->cmd == "c_msg") {
-						//printf("c_msg\ncmd part 1: %s\n",c->parts[1].c_str());
-						//printf("cmd part 2: %s\n",base64_decode(c->parts[2]).c_str());
-						//printf("sending message to %s\n",tc->name.c_str());
-					//}
 					command_q_b.add(c);
 					tc->vsx_command_queue_b(this,true);
 				}
-				// what is this?!? can it be aniahlated?
-/*          if (l_list.find(c->parts[1]) != l_list.end()) {
-					//printf("in_ppp 2 found\n");
-					command_q_b.add(c);
-				 l_list[c->parts[1]]->vsx_command_queue_b(this);
-				}*/
 			}
 			else
 			if (
@@ -493,31 +647,19 @@ void vsx_widget_server::vsx_command_process_f() {
 					command_q_b.addc(c);
 					tc->vsx_command_queue_b(this,true);
 				}
-				/*if (!sequencer) {
-					command_q_b.add_raw("sequence_menu");
-					vsx_command_queue_b(this);
-				}*/
 				if (sequencer) {
 					command_q_b.addc(c);
 					sequencer->vsx_command_queue_b(this,true);
 				}
-				//printf("prehonk %s\n",c->parts[1].c_str());
-				//if (t = f(s2i(c->parts[1]))) {
-				//printf("honkin' it up\n");
-					//command_q_b.add(c);
-					//t->vsx_command_queue_b(this);
-				//}
 			} else
 			if (c->cmd == "engine_dump_complete") {
-				//dump_commands.save_to_file("_states/"+str_replace(";","/",c->parts[1]));
-				//dump_commands.clear();
 				state_name = c->parts[1];
 			} else
 			if (c->cmd == "module_list") {
 				// syntax:
 				//         module_list [class=render/texture] [identifier] {information} {in_param_spec} {out_param_spec}
 				// VARNING: inparamspec osv. r inte implemenenterat i servern!  <-- BUUU
-				if (c->parts.size() > 1) {
+				if (c->parts.size() > 2) {
 					// init new module information holder
 					vsx_module_info* a;
 					a = new vsx_module_info;
@@ -569,24 +711,11 @@ void vsx_widget_server::vsx_command_process_f() {
 				((vsx_widget_ultra_chooser*)module_chooser)->build_tree();
 				((vsx_module_chooser_list*)module_chooser_list)->build_tree();
 				((vsx_module_chooser_list*)module_chooser_list)->show();
-				/*std::list<vsx_string> mfiles2;
-				get_files_recursive("_states",&mfiles2,"",".svn CVS .hidden");
-				for (std::list<vsx_string>::iterator it = mfiles2.begin(); it != mfiles2.end(); ++it) {
-					vsx_string ss = str_replace("_states;","",str_replace(" ","\\ ",str_replace("/",";",*it)));
-					a = new vsx_module_info;
-					a->identifier = ss;
-					a->component_class = "state";
-					((vsx_widget_ultra_chooser*)state_chooser)->module_tree->module_info = 0;
-					((vsx_widget_ultra_chooser*)state_chooser)->module_tree->add(a->identifier,a);
-//            module_list["states;"+ss] = a;
-				}
-				((vsx_widget_ultra_chooser*)state_chooser)->build_tree();*/
 
 				//PORTANT STUFF
-
-					//todo:: add more info to the command and store it in the module_info object
-					// module_class is not necesarry as that is part of the info sent to the client
-					// when a component is created.
+        //todo:: add more info to the command and store it in the module_info object
+        // module_class is not necesarry as that is part of the info sent to the client
+        // when a component is created.
 			} else
 			if (c->cmd == "server_message") {
 				server_message = base64_decode(c->parts[1]);
@@ -623,7 +752,7 @@ void vsx_widget_server::vsx_command_process_f() {
 				((vsx_widget_ultra_chooser*)state_chooser)->build_tree();
 				((vsx_widget_ultra_chooser*)state_chooser)->build_tree();
 			}
-			if (c->cmd == "resources_list") {
+			if (c->cmd == "resources_list" && c->parts.size() == 2) {
 				vsx_module_info* a;
 				a = new vsx_module_info;
 				a->identifier = str_replace(":20:"," ",c->parts[1]);
@@ -653,10 +782,6 @@ void vsx_widget_server::vsx_command_process_f() {
 					macro_commands.parse();
 					macro_commands.reset();
 					vsx_command_s* mc = 0;
-//            cout << "###########################################MACRO LOADING############" << endl;
-//            cout << "###########################################MACRO LOADING############" << endl;
-//            cout << "###########################################MACRO LOADING############" << endl;
-//            cout << "###########################################MACRO LOADING############" << endl;
 					// check the macro list to verify the existence of the componente we need for this macro
 					bool components_existing = true;
 					vsx_string failed_component = "";
@@ -671,12 +796,8 @@ void vsx_widget_server::vsx_command_process_f() {
 					if (components_existing) {
 						macro_commands.reset();
 						while ( (mc = macro_commands.get()) ) {
-//                printf("macro command: %s\n",mc->raw.c_str());
 							if (mc->cmd == "macro_create" && mc->parts.size() < 4) {
-
-//                  cout << "macro_create::: "+mc->parts[1]+" "+c->parts[4]+" "+c->parts[5] << endl;
 								cmd_out->add_raw("macro_create "+mc->parts[1]+" "+c->parts[4]+" "+c->parts[5]+" "+mc->parts[2]);
-		//            front(msg);
 							} else {
 								if (mc->cmd != "")
 								cmd_out->addc(mc);
@@ -690,13 +811,8 @@ void vsx_widget_server::vsx_command_process_f() {
 			else log(">"+c->raw);
 		}
 	}
-#ifdef FOO
-	if (stype == 2) {
-		tcp_c->synchronize();
-		tcp_c->send();
-	}
-#endif
-	bool run_volatile = true;
+
+  bool run_volatile = true;
 	while (run_volatile)
 	{
 		vsx_widget_component *comp;
@@ -726,12 +842,10 @@ void vsx_widget_server::vsx_command_process_f() {
 			) {
 				//find in children
 				if ( (comp = (vsx_widget_component*)find_component(c->parts[1])) ) {
-//          l_list[c->parts[1]]->command_q_b.add(c);
 					command_q_b.addc(c);
 					comp->vsx_command_queue_b(this,true);
 					run_volatile = false;
 				} else {
-//            printf(",");
 					command_q_f.add_front(c);
 					run_volatile = false;
 				}
@@ -740,12 +854,12 @@ void vsx_widget_server::vsx_command_process_f() {
 		else run_volatile = false;
 	}
 	vsx_widget::vsx_command_queue_f();
-	//if (stype == 2) pthread_mutex_unlock(&heap_m);
 }
 
 // messages to the engine from other widgets
 void vsx_widget_server::vsx_command_process_b(vsx_command_s *t) {
-	//t->parse();
+  // process messages from the children, to the engine and to the system
+  // cmd_out messages sent to engine
 	if (
 	t->cmd == "state_load"
 	|| t->cmd == "param_connect"
@@ -761,7 +875,7 @@ void vsx_widget_server::vsx_command_process_b(vsx_command_s *t) {
 		undo_s();
 	}
 
-	if (t->cmd == "conf") {
+	if (t->cmd == "conf" || t->cmd == "system.shutdown") {
 		command_q_b.add(t);
 		return;
 	}
@@ -779,62 +893,62 @@ void vsx_widget_server::vsx_command_process_b(vsx_command_s *t) {
 			sequencer->_delete();
 			sequencer = 0;
 		} else
-#if FOO
-		if (t->cmd == "server_connect_host") {
-			log("trying to connect");
-			//tcp_c.command_lists_init(&cmd_in, &cmd_out);
-			tcp_c = new vsx_tcp;
-			vsx_string res = tcp_c->connect(t->cmd_data);
-			log(res);
-			vsx_command_s *cm = command_q_b.add_raw(res);
-			parent->vsx_command_queue_b(this);
-			if (cm->parts[1] == "error")
-			{
-				root->command_q_f.add("delete",id);
-				return;
-			}
-//      cout << "rrooomble" << endl;
-			visible = 1;
-			log("connected to server");
-			log("asking for initialization commands");
-
-			//system_command_queue->addc(t);
-			//delete t;
-		}
-		else
-		if (t->cmd == "disconnect") {
-			cmd_out->add("q","");
-			tcp_c->synchronize();
-			parent->log(tcp_c->disconnect());
-			delete_();
-			//root->command_q_f.add("delete",id);
-		} else
-#endif
-		if (t->cmd == "add_component") {
+		if (t->cmd == "show_module_browser") {
 			front(module_chooser);
 			((vsx_widget_ultra_chooser*)module_chooser)->message = "DRAG MODULE ONTO DESKTOP";
 			((vsx_widget_ultra_chooser*)module_chooser)->mode = 0;
 			((vsx_widget_ultra_chooser*)module_chooser)->show();
 		}
 		else
-		if (t->cmd == "add_component_list") {
+		if (t->cmd == "show_module_browser_list") {
 			front(module_chooser_list);
 			//((vsx_module_chooser*)module_chooser_list)->message = "DRAG MODULE ONTO DESKTOP";
 			//((vsx_widget_ultra_chooser*)module_chooser)->mode = 0;
 			((vsx_module_chooser_list*)module_chooser_list)->show();
 		}
 		else
+    //
+    if (t->cmd == "show_connect_dialog")
+    {
+      ((dialog_query_string*)connect_dialog)->name = "connect";
+      ((dialog_query_string*)connect_dialog)->show("127.0.0.1");
+    }
+    else
+    if (t->cmd == "connect")
+    {
+      printf("creating new server %s\n",t->parts[1].c_str());
+      // 1. create a new server widget
+      vsx_widget* ns = add( new vsx_widget_server, "server "+t->parts[1] );
+      ns->set_pos(vsx_vector(1.0f,0.0f));
+      ns->color.b = 255.0/255.0;
+      ns->color.g = 200.0/255.0;
+      ns->color.r = 200.0/255.0;
+      ns->size.x = 2;
+      ns->size.y = 2;
+      
+      ((vsx_widget_server*)ns)->server_connect(t->parts[1],"1234");
+      ns->init();
+      ns->set_size(vsx_vector(2.0f,2.0f));
+      // 2. tell the new server to connect its command lists
+    } else
 		// 1: menu choice is done
 		if (t->cmd == "state_menu_save") {
 			//((dialog_query_string*)export_dialog_state)->
 			((dialog_query_string*)export_dialog_state)->name = "state_save";
 			#ifdef VSX_DEBUG
-			printf("state_name is: %s\n",state_name.c_str());
+        printf("state_name is: %s\n",state_name.c_str());
 			#endif
 			((dialog_query_string*)export_dialog_state)->show(state_name);
 			return;
 		}
 		else
+    if (t->cmd == "state_save") {
+      state_name = t->parts[1];
+      cmd_out->add_raw("meta_set "+t->parts[2]);
+      cmd_out->add_raw("state_save "+t->parts[1]);
+      return;
+    }
+    else
 		// 1: menu choice is done
 		if (t->cmd.substr(0,14) == "package_export") {
 			// do export
@@ -851,37 +965,8 @@ void vsx_widget_server::vsx_command_process_b(vsx_command_s *t) {
 			vsx_string cc = t->cmd.substr(16);
 			((dialog_query_string*)export_dialog_ext)->name = "package_export"+cc; // package_export_visuals
 			((dialog_query_string*)export_dialog_ext)->show();
-
-		}
-		/*if (t->cmd == "package_export_menu") {
-			((dialog_query_string*)export_dialog_ext)->name = "package_export";
-			((dialog_query_string*)export_dialog_ext)->show();
-			return;
 		}
 		else
-		if (t->cmd == "package_export_visual_menu") {
-			((dialog_query_string*)export_dialog_ext)->name = "package_visual_export";
-			((dialog_query_string*)export_dialog_ext)->show();
-			return;
-		}
-		else
-		if (t->cmd == "package_export") {
-			cmd_out->add_raw("meta_set "+t->parts[2]);
-			cmd_out->add_raw("package_export "+t->parts[1]+" _prods/");
-			return;
-		} else
-		if (t->cmd == "package_visual_export") {
-			cmd_out->add_raw("meta_set "+t->parts[2]);
-			cmd_out->add_raw("package_export "+t->parts[1]+" _visuals/");
-			return;
-		}*/
-		else
-		if (t->cmd == "state_save") {
-			state_name = t->parts[1];
-			cmd_out->add_raw("meta_set "+t->parts[2]);
-			cmd_out->add_raw("state_save "+t->parts[1]);
-			return;
-		} else
 		if (t->cmd == "state_template_fader") {
 			cmd_out->add_raw("clear");
 			cmd_out->add_raw("component_pos screen0 0.000000 0.003253");
@@ -1000,16 +1085,13 @@ void vsx_widget_server::vsx_command_process_b(vsx_command_s *t) {
 		{
 			LOG_A("adding copy:"+t->cmd)
 			cmd_out->addc(t);
-#ifdef FOO
-			if (stype == 2) tcp_c->send();
-#endif
 		}
 	}
 }
 
 void vsx_widget_server::param_alias_ok(vsx_string p_def, vsx_string io, vsx_string comp, vsx_string param, vsx_string source_comp, vsx_string source_param, vsx_string seven) {
-// 1. skapa ny anchor
-// 2. kopiera info till den
+  // 1. create new anchor
+  // 2. copy info to it
 	command_q_b.clear();
 	vsx_widget* dest = find_component(comp);
 	if (io == "-1") {
@@ -1020,11 +1102,11 @@ void vsx_widget_server::param_alias_ok(vsx_string p_def, vsx_string io, vsx_stri
 		command_q_b.add_raw("opsa "+comp+" "+p_def+" 1");
 		dest->vsx_command_queue_b(this);
 	}
-	//cout << "out_param_spec "+c->parts[3]+" "+c->parts[1] << endl;
 
 	// find the anchor that should own the connector
-//          vsx_widget_component* conn_dest = (vsx_widget_component*)find_component(c->parts[5]);
-//          command_q_b.add_raw("param_connect_ok "+c->parts[5]+" "+c->parts[6]+" "+c->parts[3]+" "+c->parts[4]);
+  // Specification:
+  //          vsx_widget_component* conn_dest = (vsx_widget_component*)find_component(c->parts[5]);
+  //          command_q_b.add_raw("param_connect_ok "+c->parts[5]+" "+c->parts[6]+" "+c->parts[3]+" "+c->parts[4]);
 	for (std::list<vsx_widget*>::iterator it = dest->children.begin(); it != dest->children.end(); ++it) {
 		if ((*it)->widget_type == VSX_WIDGET_TYPE_ANCHOR) {
 			((vsx_widget_anchor*)*it)->alias = true;
@@ -1034,21 +1116,12 @@ void vsx_widget_server::param_alias_ok(vsx_string p_def, vsx_string io, vsx_stri
 		vsx_widget_component* conn_dest = (vsx_widget_component*)find_component(source_comp);
 		command_q_b.add_raw("pcva "+source_comp+" "+source_param+" "+comp+" "+param+" "+seven+" "+io);
 		conn_dest->vsx_command_queue_b(this);
-		//((vsx_widget_component*)dest)->macro_fix_anchors();
-		//((vsx_widget_component*)conn_dest)->macro_fix_anchors();
 	} else {
 		vsx_widget_component* conn_dest = (vsx_widget_component*)find_component(comp);
 		command_q_b.add_raw("pcva "+comp+" "+param+" "+source_comp+" "+source_param+" "+seven+" "+io);
 		conn_dest->vsx_command_queue_b(this);
 		((vsx_widget_component*)dest)->macro_fix_anchors();
 	}
-/*          vsx_widget_component* conn_dest = (vsx_widget_component*)find_component(c->parts[3]);
-	command_q_b.add_raw("param_connect_volatile "+c->parts[3]+" "+c->parts[4]+" "+c->parts[5]+" "+c->parts[6]+" "+c->parts[7]);
-	conn_dest->vsx_command_queue_b(this);*/
-//          cout << "param_connect_volatile "+c->parts[3]+" "+c->parts[4]+" "+c->parts[5]+" "+c->parts[6]+" -1" << endl;
-//          command_q_b.add_raw("param_connect_ok "+c->parts[3]+" "+c->parts[4]+" "+c->parts[5]+" "+c->parts[6]+" -1");
-
-	//vsx_widget_anchor* conn_dest_anchor = conn_dest->p_l_list[c->parts[6]];
 }
 
 bool vsx_widget_server::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
@@ -1154,7 +1227,7 @@ void vsx_widget_server::event_mouse_move(vsx_widget_distance distance,vsx_widget
 				mouse.set_cursor_pos(remPointer.x,remPointer.y);
 			}
 		}
-		if (!mouse_down_r && mouse_down_l) {
+		if (!mouse_down_r && mouse_down_l && server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_INTERNAL) {
 			if (mouse.position != remPointer) {
 				float dx = (mouse.position.x-remPointer.x);
 				float dy = (mouse.position.y-remPointer.y);
@@ -1211,7 +1284,7 @@ void vsx_widget_server::draw() {
 		float x = pos.x+parent->pos.x;
 		float y = pos.y+parent->pos.y;
 
-		if (!performance_mode)
+		if (!performance_mode || server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
 		{
 			#ifndef VSXU_PLAYER
 			mtex.bind();
@@ -1220,7 +1293,14 @@ void vsx_widget_server::draw() {
 			//else
 			glColor4f(0.3,0.3,0.3,1);
 			#endif
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+			if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
+      {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      }
+      else
+      {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+      }
 
 			glBegin(GL_QUADS);
 				#ifndef VSXU_PLAYER
@@ -1284,200 +1364,7 @@ void vsx_widget_server::draw() {
 	}
 }
 
-void vsx_widget_server::init() {
-	help_text = "The server is selected:\n\
-- left-double-click to get the\n\
-module browser\n\
-- ctrl+left-double_click to load a state\n";
-	//vsx_widget* foo = add(new vsx_widget_note,name+".editor_test_3d");
-	//vsx_widget* foo2 = add(new vsx_widget_editor,name+".editor_test_2d");
 
-	menu = add(new vsx_widget_popup_menu,name+".server_menu");
-	support_interpolation = true;
-	interpolation_speed = 3;
-	#ifdef VOVOID
-	if (stype == 2) {
-		cmd_in = tcp_c->command_list_in();
-		md_out = tcp_c->command_list_out();
-		menu->commands.adds(VSX_COMMAND_MENU, "shutdown server", "dn","");
-		menu->commands.adds(VSX_COMMAND_MENU, "disconnect from server", "disconnect","");
-		// oysters promenade
-		menu->commands.adds(VSX_COMMAND_MENU, "----------------------", "","");
-	}
-	#endif
-	title = name;
-	menu->commands.adds(VSX_COMMAND_MENU,"open module browser (add module)... [left-double-click]", "add_component","");
-	menu->commands.adds(VSX_COMMAND_MENU,"open module list (add module)...", "add_component_list","");
-	menu->commands.adds(VSX_COMMAND_MENU,"open resource browser (preview resources)...", "resource_menu","");
-	menu->commands.adds(VSX_COMMAND_MENU,"add empty macro [alt+left-double-click]", "add_empty_macro","$mpos");
-	menu->commands.adds(VSX_COMMAND_MENU,"add note", "add_note","$mpos");
-	menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
-	menu->commands.adds(VSX_COMMAND_MENU,"project >;load state... (from _states/ dir) [ctrl+left-double-click]","state_menu_load","");
-	menu->commands.adds(VSX_COMMAND_MENU,"project >;save state as... (in _states/ dir)","state_menu_save","");
-	menu->commands.adds(VSX_COMMAND_MENU,"project >;clear state","clear","");
-	menu->commands.adds(VSX_COMMAND_MENU,"compile >;music visual (.vsx, '_visuals/' dir) as...","m_package_export_visuals","");
-	menu->commands.adds(VSX_COMMAND_MENU,"compile >;music visual fader (.vsx, '_visuals_faders/' dir) as...","m_package_export_visuals_faders","");
-	menu->commands.adds(VSX_COMMAND_MENU,"compile >;general package (.vsx '_prods/' dir) as...","m_package_export_prods","");
-	menu->commands.adds(VSX_COMMAND_MENU,"load template >;music visual","state_template_visual","");
-	menu->commands.adds(VSX_COMMAND_MENU,"load template >;music visual fader","state_template_fader","");
-	menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
-	menu->commands.adds(VSX_COMMAND_MENU,"master sequencer >;open sequencer window...","sequence_menu","");
-	menu->commands.adds(VSX_COMMAND_MENU,"master sequencer >;----------------------","","");
-	menu->commands.adds(VSX_COMMAND_MENU,"master sequencer >;rewind","rewind","");
-	menu->commands.adds(VSX_COMMAND_MENU,"master sequencer >;play","play","");
-	menu->commands.adds(VSX_COMMAND_MENU,"master sequencer >;stop","stop","");
-	menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
-	menu->commands.adds(VSX_COMMAND_MENU,"animation clips >;open animation pool manager...","seq_pool_menu","");
-	menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
-	menu->commands.adds(VSX_COMMAND_MENU,"tools >;undo >;undo [Ctrl+Z]","undo","");
-	menu->commands.adds(VSX_COMMAND_MENU,"tools >;undo >;disable","conf","automatic_undo 0");
-	menu->commands.adds(VSX_COMMAND_MENU,"tools >;undo >;automatic","conf","automatic_undo 1");
-	menu->commands.adds(VSX_COMMAND_MENU,"tools >;undo >;create rollback point","undo_s","");
-	menu->commands.adds(VSX_COMMAND_MENU,"tools >;show modules that haven't loaded","get_module_status","");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui smoothness >;none","conf","global_interpolation_speed 1000.0");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui smoothness >;slow","conf","global_interpolation_speed 0.5");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui smoothness >;normal","conf","global_interpolation_speed 1.0");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui smoothness >;quick","conf","global_interpolation_speed 2.0");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui keyboard movement speed >;very slow","conf","global_key_speed 1");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui keyboard movement speed >;slow","conf","global_key_speed 2");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui keyboard movement speed >;normal","conf","global_key_speed 3");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;none","conf","global_framerate_limit -1");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;2fps","conf","global_framerate_limit 2");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;5fps","conf","global_framerate_limit 5");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;10fps","conf","global_framerate_limit 10");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;25fps","conf","global_framerate_limit 25");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;30fps","conf","global_framerate_limit 30");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;50fps","conf","global_framerate_limit 50");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;60fps","conf","global_framerate_limit 60");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;80fps","conf","global_framerate_limit 80");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;85fps","conf","global_framerate_limit 85");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;90fps","conf","global_framerate_limit 90");
-	menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;100fps","conf","global_framerate_limit 100");
-	menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
-	menu->commands.adds(VSX_COMMAND_MENU,"quit vsxu", "system.shutdown","");
-	if (state_name == "")
-	state_name ="_default";
-	menu->set_size(vsx_vector(0.4f,0.5f));
-	//cmd_out->add_raw("state_load "+base64_encode("states;_default"));
-	module_chooser = add(new vsx_widget_ultra_chooser,"module_browser");
-	((vsx_widget_ultra_chooser*)module_chooser)->server = this;
-
-	module_chooser_list = add(new vsx_module_chooser_list,"module_browser_list");
-	((vsx_module_chooser_list*)module_chooser_list)->set_server(this);
-
-	state_chooser = add(new vsx_widget_ultra_chooser,"state_browser");
-	resource_chooser = add(new vsx_widget_ultra_chooser,"resource_browser");
-	//name_dialog = add(new dialog_query_string("name of state","ex: jaw_states;mystate"),"state_save");
-	//export_dialog = add(new dialog_query_string("package export","filename ex: my_package.vsx"),"package_export");
-	export_dialog_ext = add(new dialog_query_string("visualization package export","\
-Filename to export to, will end up in visuals/ (ex. 'mypackage.vsx')|\
-Title of the visual (ex. 'Starlight Aurora')|\
-Your handle/nick/vsxu-id, (ex. 'jaw' or multiple: 'jaw, cor')|\
-Your group/company (ex. 'vovoid')|\
-Your country (ex. 'Sweden')|\
-Your homepage (ex. 'http://vovoid.com')|\
-Free text comments (max 300 characters)|\
-"),"package_visual_export");
-
-	export_dialog_state = add(new dialog_query_string("save state","\
-Filename to save to, will end up in states/ (ex. 'my_state')|\
-Title of the state (ex. 'My funky state')|\
-Your handle/nick/vsxu-id, (ex. 'jaw' or multiple: 'jaw, cor')|\
-Your group/company (ex. 'vovoid')|\
-Your country (ex. 'Sweden')|\
-Your homepage (ex. 'http://vovoid.com')|\
-Free text comments (max 300 characters)|\
-"),"package_visual_export");
-
-	// very extremely unfortunate for us the macros have to be in each and one of the
-	// servers' browsers so we blatantly add pointers to them here, tee hee! ;) this to mimimize
-	// the memory abuse but it will still be a lot :(
-	// this is due to the fact that macros are stored in the client, not in the server
-	// or should this be different? who knows..
-
-
-	selection = false;
-
-	set_size(vsx_vector(5.0f,5.0f));
-	//size.x = 5;
-	//size.y = 5;
-	//target_size = size;
-	//target_pos = pos;
-	color.a = 0.6; // a
-	init_children();
-	/*foo->set_render_type(VSX_WIDGET_RENDER_3D);
-
-	foo->pos.x = 0.0;
-	foo->pos.y = 0.0;
-	foo->target_pos = foo->pos;
-	foo->set_font_size(0.01);
-	foo->set_border(0.00035);
-	foo->size.y = foo->size.x = 0.1;
-	foo->target_size = foo->size;*/
-	//((vsx_widget_editor*)foo)->load_text("hej\nhopp");
-
-	/*foo2->pos.x = 0.0f;
-	foo2->pos.y = 0.3;
-	foo2->target_pos = foo2->pos;
-	foo2->size.y = foo2->size.x = 0.3;
-	foo2->target_size = foo2->size;
-	foo2->set_render_type(VSX_WIDGET_RENDER_2D);
-	foo2->set_font_size(0.02);
-	foo2->set_border(0.0045);
-	((vsx_widget_editor*)foo2)->load_text("hej\nhopp");*/
-
-	init_run = true;
-	cmd_out->add_raw("get_module_list");
-	cmd_out->add_raw("get_list resources");
-	cmd_out->add_raw("get_list states");
-	cmd_out->add_raw("get_list prods");
-	cmd_out->add_raw("get_list visuals");
-	cmd_out->add_raw("state_load "+base64_encode("states;_default"));
-	cmd_out->add_raw("get_state");
-
-	// set sequencer to 0, we gonna fill it later
-	sequencer = 0;
-	/*sequencer = (vsx_widget*)add(new vsx_widget_sequence_editor,"Main Sequencer");
-	sequencer->init();
-	sequencer->set_pos(vsx_vector(0.0f,-0.3f));
-	sequencer->visible = 0;*/
-	seq_pool = 0; // TODO: remove the auto-init
-	//seq_pool = (vsx_widget*)add(new vsx_widget_seq_pool_manager,name+"sequence_pool");
-	//seq_pool->init();
-	//seq_pool->set_render_type(VSX_WIDGET_RENDER_3D);
-	//seq_pool->show();
-	//front(seq_pool);
-
-#ifndef VSXU_PLAYER
-	mtex.load_png(skin_path+"server.png");
-#endif
-	init_run = true;
-}
-
-void vsx_widget_server::reinit() {
-#ifndef VSXU_PLAYER
-	mtex.load_png(skin_path+"server.png");
-#endif
-	vsx_widget::reinit();
-}
-
-vsx_widget_server::vsx_widget_server() {
-  widget_type = VSX_WIDGET_TYPE_SERVER;
-  cmd_out = 0;
-  cmd_in = 0;
-  stype = 2;
-  init_run = false;
-  support_scaling = false;
-  selection = false;
-
-	log(" welcome to");
-	log(" _   _  ___ _  __     _        ___  ___   ___");
-	log(" \\\\  / //_   \\//      /  / /    /  /__/  /__/");
-	log("  \\\\/  ___/ _/\\\\_    /__/ /__  /  /  \\  /  /");
-	log("   "+vsx_string(vsxu_version));
-	log("-----------------------------------------------------------------");
-	log(" (c) 2003-2009 vovoid || http://vovoid.com || http://vsxu.com");
-}
 
 vsx_widget* vsx_widget_server::find_component(vsx_string name) {
 	// support "containers" here in the future
@@ -1584,10 +1471,5 @@ Module path:\n\
   return vsx_string("");
 }
 
-void vsx_widget_server::on_delete() {
-  for (std::map<vsx_string,vsx_module_info*>::iterator it = module_list.begin(); it != module_list.end(); ++it) {
-    delete (*it).second;
-  }
-}
 
 #endif

@@ -2048,8 +2048,7 @@ class vsx_texture_bind : public vsx_module {
 	// out
 	vsx_module_param_render* render_out;
 	// internal
-	vsx_texture* t_tex;
-	vsx_texture i_tex;
+	vsx_texture** t_tex;
 
 public:
   void module_info(vsx_module_info* info) {
@@ -2069,29 +2068,30 @@ public:
     render_in->set(0);
     render_out->set(0);
     tex_in = (vsx_module_param_texture*)in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"tex_in");
-    tex_in->set_p(i_tex);
+    //tex_in->set(&i_tex);
   }
 
 	bool activate_offscreen() {
-    if ((t_tex = tex_in->get_addr())) {
+    t_tex = tex_in->get_addr();
+    if (t_tex)
+    {
      	glMatrixMode(GL_TEXTURE);
      	glPushMatrix();
-     	vsx_transform_obj& texture_transform = *(t_tex->get_transform());
+      vsx_transform_obj& texture_transform = *(*t_tex)->get_transform();
      	texture_transform();
 
       glMatrixMode(GL_MODELVIEW);
 
 
-      t_tex->bind();
+      (*t_tex)->bind();
 
-    } else
-			t_tex = 0;
+    }
     return true;
   }
 
 	void deactivate_offscreen() {
     if (t_tex) {
-      t_tex->_bind();
+      (*t_tex)->_bind();
       glMatrixMode(GL_TEXTURE);
       glPopMatrix();
       glMatrixMode(GL_MODELVIEW);

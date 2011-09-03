@@ -14,6 +14,7 @@ install_manifest.txt
 /engine/libvsxu_engine.so
 /engine_graphics/libvsxu_engine_graphics.so
 /player/vsxu_player
+/server/vsxu_server
 /plugins/src/_deprecated/_deprecated.so
 /plugins/src/bitmap.modifiers/bitmap.modifiers.so
 /plugins/src/bitmap.texgen/bitmap.texgen.so
@@ -47,5 +48,9 @@ install_manifest.txt
 /plugins/src/texture.load/texture.load.so
 /plugins/src/texture/texture.so
 /plugins/src/sound.pulseaudio/sound.pulseaudio.so
+/plugins/static_factory_cmake_link_directories
+/plugins/static_factory_cmake_target_link_libraries
+/plugins/static_factory_funcmapping.cpp
+/plugins/static_factory_funcmapping.h
 /tools/vsxz/vsxz
 
