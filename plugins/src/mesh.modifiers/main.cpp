@@ -851,6 +851,139 @@ public:
   }
 };
 
+
+class vsx_module_mesh_translate_edge_wraparound : public vsx_module {
+  // in
+  vsx_module_param_mesh* mesh_in;
+  vsx_module_param_float3* translation;
+  vsx_module_param_float3* edge_min;
+  vsx_module_param_float3* edge_max;
+  // out
+  vsx_module_param_mesh* mesh_out;
+  // internal
+  vsx_mesh* mesh;
+public:
+  bool init() {
+    mesh = new vsx_mesh;
+    return true;
+  }
+
+  void on_delete()
+  {
+    delete mesh;
+  }
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "mesh;modifiers;transforms;mesh_translate_edge_wraparound";
+    info->description = "Translates/moves mesh";
+    info->in_param_spec = "mesh_in:mesh,translation:float3,edge_min:float3,edge_max:float3";
+    info->out_param_spec = "mesh_out:mesh";
+    info->component_class = "mesh";
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    mesh_in = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_in");
+    translation = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "translation");
+    edge_min = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "edge_min");
+    edge_min->set(-1.0f, 0);
+    edge_min->set(-1.0f, 1);
+    edge_min->set(-1.0f, 2);
+    edge_max = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "edge_max");
+    edge_max->set(1.0f, 0);
+    edge_max->set(1.0f, 1);
+    edge_max->set(1.0f, 2);
+    loading_done = true;
+    mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
+  }
+  unsigned long prev_timestamp;
+  vsx_vector v;
+  void run() {
+    vsx_mesh** p = mesh_in->get_addr();
+    if (!p)
+    {
+      mesh_empty.timestamp = (int)(engine->real_vtime*1000.0f);
+      mesh_out->set(&mesh_empty);
+      prev_timestamp = 0xFFFFFFFF;
+      return;
+    }
+
+    if (p && (param_updates || prev_timestamp != (*p)->timestamp)) {
+      prev_timestamp = (*p)->timestamp;
+      v.x = translation->get(0);
+      v.y = translation->get(1);
+      v.z = translation->get(2);
+      mesh->data->vertices.reset_used(0);
+      mesh->data->vertex_normals.reset_used(0);
+      mesh->data->vertex_tex_coords.reset_used(0);
+      mesh->data->vertex_colors.reset_used(0);
+      mesh->data->faces.reset_used(0);
+
+      unsigned long end = (*p)->data->vertices.size();
+      vsx_vector* vs_p = &(*p)->data->vertices[0];//.get_pointer();
+      mesh->data->vertices.allocate(end);
+      mesh->data->vertices.reset_used(end);
+      vsx_vector* vs_d = mesh->data->vertices.get_pointer();
+
+      float eminx = edge_min->get(0);
+      float eminy = edge_min->get(1);
+      float eminz = edge_min->get(2);
+      
+      float emaxx = edge_max->get(0);
+      float emaxy = edge_max->get(1);
+      float emaxz = edge_max->get(2);
+
+      
+
+      for (unsigned int i = 0; i < end; i++)
+      {
+        vs_d[i] = vs_p[i] + v;
+        if (vs_d[i].x > emaxx) vs_d[i].x = eminx + fmod(vs_d[i].x,emaxx);
+        if (vs_d[i].y > emaxy) vs_d[i].y = eminy + fmod(vs_d[i].y,emaxy);
+        if (vs_d[i].z > emaxz) vs_d[i].z = eminz + fmod(vs_d[i].z,emaxz);
+      }
+/*
+      vsx_array<vsx_vector> vertices;
+      vsx_array<vsx_vector> vertex_normals;
+      vsx_array<vsx_color> vertex_colors;
+      vsx_array<vsx_tex_coord> vertex_tex_coords;
+      vsx_array<vsx_face> faces;
+*/
+
+      //if (prev_timestamp != (*p)->timestamp)
+      //{
+      mesh->data->vertex_normals.set_volatile();
+      mesh->data->vertex_normals.set_data((*p)->data->vertex_normals.get_pointer(), (*p)->data->vertex_normals.size());
+
+      mesh->data->vertex_tex_coords.set_volatile();
+      mesh->data->vertex_tex_coords.set_data((*p)->data->vertex_tex_coords.get_pointer(), (*p)->data->vertex_tex_coords.size());
+
+      mesh->data->vertex_tangents.set_volatile();
+      mesh->data->vertex_tangents.set_data((*p)->data->vertex_tangents.get_pointer(), (*p)->data->vertex_tangents.size());
+
+      mesh->data->vertex_colors.set_volatile();
+      mesh->data->vertex_colors.set_data((*p)->data->vertex_colors.get_pointer(), (*p)->data->vertex_colors.size());
+
+      mesh->data->faces.set_volatile();
+      mesh->data->faces.set_data((*p)->data->faces.get_pointer(), (*p)->data->faces.size());
+//      }
+
+
+      //for (unsigned int i = 0; i < (*p)->data->vertex_normals.size(); i++) mesh->data->vertex_normals[i] = (*p)->data->vertex_normals[i];
+      //for (unsigned int i = 0; i < (*p)->data->vertex_tangents.size(); i++) mesh->data->vertex_tangents[i] = (*p)->data->vertex_tangents[i];
+      //for (unsigned int i = 0; i < (*p)->data->vertex_tex_coords.size(); i++) mesh->data->vertex_tex_coords[i] = (*p)->data->vertex_tex_coords[i];
+      //for (int i = 0; i < (*p)->data->vertex_normals.size(); i++) mesh->data->vertex_normals[i] = (*p)->data->vertex_normals[i];
+      //for (unsigned int i = 0; i < (*p)->data->vertex_colors.size(); i++) mesh->data->vertex_colors[i] = (*p)->data->vertex_colors[i];
+      //for (unsigned int i = 0; i < (*p)->data->faces.size(); i++) mesh->data->faces[i] = (*p)->data->faces[i];
+      mesh->timestamp++;
+      mesh_out->set_p(mesh);
+      //for (int i = 0; i < (*p)->data->vertex_normals.size(); i++) mesh->data->vertex_normals[i] = (*p)->data->vertex_normals[i];
+      param_updates = 0;
+    }
+  }
+};
+
 class vsx_module_mesh_noise : public vsx_module {
   // in
   vsx_module_param_mesh* mesh_in;
@@ -1196,7 +1329,7 @@ public:
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
     prev_timestamp = 0xFFFFFFFF;
   }
-  unsigned long prev_timestamp;
+  unsigned long int prev_timestamp;
   vsx_vector v, v_;
   float vertex_distortion_factor_;
   void run() {
@@ -1243,7 +1376,7 @@ public:
           ) 
           && 
           (
-            prev_timestamp != -1
+            prev_timestamp != 0xFFFFFFFF
           )
           &&
           (
@@ -2077,9 +2210,14 @@ class vsx_module_mesh_vertex_distance_sort : public vsx_module {
   vsx_module_param_float3* distance_to;
   // out
   vsx_module_param_mesh* mesh_out;
+  vsx_module_param_float_array* original_ids;
   // internal
   vsx_mesh* mesh;
   vsx_array<vertex_holder*> distances;
+
+  // previous id maintanence
+  vsx_float_array i_ids;
+  vsx_array<float> ids_data;
 
   //*******************************************************************************
   //*******************************************************************************
@@ -2137,45 +2275,6 @@ class vsx_module_mesh_vertex_distance_sort : public vsx_module {
     return n;
   }
   
-  
-  //*******************************************************************************
-  //*******************************************************************************
-  //*******************************************************************************
-  //*******************************************************************************
-
-  // pointer swapper
-/*  
-  static int partition(vertex_holder** a, int first, int last) {
-    vertex_holder pivot = (*a[first]);
-    int lastS1 = first;
-    int firstUnknown = first + 1;
-    while (firstUnknown <= last) {
-      if ((*a[firstUnknown]) < pivot) {
-        lastS1++;
-        vertex_holder* b = a[firstUnknown];
-        a[firstUnknown] = a[lastS1];
-        a[lastS1] = b;
-      }
-      firstUnknown++;
-    }
-    vertex_holder* b = a[first];
-    a[first] = a[lastS1];
-    a[lastS1] = b;
-    return lastS1;
-  }
-
-  static void quicksort(vertex_holder** a, int first, int last) {
-    if (first < last) {
-      int pivotIndex = partition(a, first, last);
-      quicksort(a, first, pivotIndex - 1);
-      quicksort(a, pivotIndex + 1, last);
-    }
-  }
-
-  static void quicksort(vertex_holder** a, int aSize) {
-    quicksort(a, 0, aSize - 1);
-  }
-*/
   void quicksort(vertex_holder** a, int left, int right) {
       int i = left, j = right;
       vertex_holder *tmp;
@@ -2223,7 +2322,7 @@ public:
     info->description = "Sorts vertices by distance to a point\n"
                         " - camera/eye for instance";
     info->in_param_spec = "mesh_in:mesh,distance_to:float3";
-    info->out_param_spec = "mesh_out:mesh";
+    info->out_param_spec = "mesh_out:mesh,original_ids:float_array";
     info->component_class = "mesh";
   }
 
@@ -2233,6 +2332,10 @@ public:
     distance_to = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "distance_to");
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
+    original_ids = (vsx_module_param_float_array*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"original_ids");
+    i_ids.data = &ids_data;
+    original_ids->set_p(i_ids);
+    
     build_sqrt_table();
   }
 
@@ -2242,6 +2345,8 @@ public:
     vsx_mesh** p = mesh_in->get_addr();
     if (p && (param_updates || prev_timestamp != (*p)->timestamp)) {
       prev_timestamp = (*p)->timestamp;
+
+      if (!(*p)->data->vertices.size()) return;
       // if new mesh from upstream, import it into ours...
       //---
       float dtx = distance_to->get(0);
@@ -2250,10 +2355,13 @@ public:
       //---
       //  init pointer iterators
       size_t vertex_count = (*p)->data->vertices.size();
-      
+      printf("distances arreay size: %d      mesh data size: %d\n", distances.size(), vertex_count);
       if (distances.size() < vertex_count)
       {
-        distances.allocate(vertex_count);
+        #ifdef VSXU_DEBUG
+        printf("allocating more memory for vertex holders...\n");
+        #endif
+        distances.allocate(vertex_count-1);
         for (size_t i = 0; i < vertex_count; i++)
         {
           distances[i] = new vertex_holder;
@@ -2263,7 +2371,6 @@ public:
       vertex_holder** vf = distances.get_pointer();
       vsx_vector* vp = (*p)->data->vertices.get_pointer();
       //
-      size_t prev_alloc = distances.size();
       
       for (unsigned int i = 0; i < (*p)->data->vertices.size(); i++)
       {
@@ -2286,8 +2393,9 @@ public:
       size_t i = 0;
       while (i < vertex_count)
       {
-        printf("id: %d  %f\n", (*ddp)->id,(*ddp)->dist);
+        //printf("id: %d  %f\n", (*ddp)->id,(*ddp)->dist);
         *dp = ds[(*ddp)->id];
+        ids_data[i] = (float)(*ddp)->id;
         dp--;
         ddp++;
         i++;
@@ -2312,7 +2420,8 @@ public:
 //******************************************************************************************
 
 vsx_module* create_new_module(unsigned long module) {
-  switch(module) {
+  switch(module)
+  {
     case 0: return (vsx_module*)(new vsx_module_mesh_vertex_picker);
     case 1: return (vsx_module*)(new vsx_module_mesh_quat_rotate);
     case 2: return (vsx_module*)(new vsx_module_mesh_deformers_mesh_vertex_move);
@@ -2328,12 +2437,14 @@ vsx_module* create_new_module(unsigned long module) {
     case 12: return (vsx_module*)(new vsx_module_mesh_rain_down);
     case 13: return (vsx_module*)(new vsx_module_mesh_calc_attachment);
     case 14: return (vsx_module*)(new vsx_module_mesh_vertex_distance_sort);
+    case 15: return (vsx_module*)(new vsx_module_mesh_translate_edge_wraparound);
   }
   return 0;
 }
 
 void destroy_module(vsx_module* m,unsigned long module) {
-  switch(module) {
+  switch(module)
+  {
     case 0: delete (vsx_module_mesh_vertex_picker*)m; break;
     case 1: delete (vsx_module_mesh_quat_rotate*)m; break;
     case 2: delete (vsx_module_mesh_deformers_mesh_vertex_move*)m; break;
@@ -2349,9 +2460,10 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 12: delete (vsx_module_mesh_rain_down*)m; break;
     case 13: delete (vsx_module_mesh_calc_attachment*)m; break;
     case 14: delete (vsx_module_mesh_vertex_distance_sort*)m; break;
+    case 15: delete (vsx_module_mesh_translate_edge_wraparound*)m; break;
   }
 }
 
 unsigned long get_num_modules() {
-  return 15;
+  return 16;
 }
