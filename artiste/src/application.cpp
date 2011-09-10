@@ -276,9 +276,6 @@ public:
 
       jpeg.SaveJPEG( vsx_get_data_path()+"videos"+DIRECTORY_SEPARATOR+vsx_string(mfilename)+"_"+ i2s(viewport[2]) + "_" + i2s(viewport[3])+".jpg", err, 100 );
       jpeg.m_pBuf = 0;
-      #ifdef VSXU_DEBUG
-      printf("saved movie screenshot to: %s\n",filename);
-      #endif
       free(pixeldata);
       free(pixeldata_flipped);
       movie_frame_count++;
@@ -323,9 +320,6 @@ public:
       vsx_string err;
       jpeg.SaveJPEG( vsx_get_data_path()+"screenshots"+DIRECTORY_SEPARATOR+i2s(time(0))+"_"+ i2s(viewport[2]) + "_" + i2s(viewport[3])+".jpg", err, 100 );
       jpeg.m_pBuf = 0;
-      #ifdef VSXU_DEBUG
-      printf("saved screenshot to: %s\n",filename);
-      #endif
       free(pixeldata);
       free(pixeldata_flipped);
     }
