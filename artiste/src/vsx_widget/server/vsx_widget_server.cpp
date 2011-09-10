@@ -916,7 +916,9 @@ void vsx_widget_server::vsx_command_process_b(vsx_command_s *t) {
     else
     if (t->cmd == "connect")
     {
+      #if VSX_DEBUG
       printf("creating new server %s\n",t->parts[1].c_str());
+      #endif
       // 1. create a new server widget
       vsx_widget* ns = add( new vsx_widget_server, "server "+t->parts[1] );
       ns->set_pos(vsx_vector(1.0f,0.0f));
