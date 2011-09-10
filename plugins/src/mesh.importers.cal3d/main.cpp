@@ -490,9 +490,6 @@ public:
     prev_use_thread = 0;
   }
   bool init() {
-    mesh_a = new vsx_mesh;
-    mesh_b = new vsx_mesh;
-    mesh = mesh_a;
     return true;
   }
 
@@ -579,6 +576,10 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
+    mesh_a = new vsx_mesh;
+    mesh_b = new vsx_mesh;
+    mesh = mesh_a;
+    
     loading_done = false;
     current_filename = "";
     redeclare_in_params(in_parameters);
