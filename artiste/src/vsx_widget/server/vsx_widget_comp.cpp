@@ -213,7 +213,7 @@ int vsx_widget_component::inside_xy_l(vsx_vector &test, vsx_vector &global) {
     //{
     } else
     if (t->cmd == "in_param_spec" || t->cmd == "out_param_spec" || t->cmd == "ipsa" || t->cmd == "opsa") {
-      //printf("param part 1: %s----:::\n",t->raw.c_str());
+      //printf("widget_comp::vsx_command_process_b command in_param_spec: param part 1: %s----:::\n",t->raw.c_str());
       bool fix_anchors = false;
       if (t->parts.size() < 3) return;
       int l_io = 0;

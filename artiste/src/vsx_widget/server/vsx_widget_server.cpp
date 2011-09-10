@@ -594,6 +594,13 @@ void vsx_widget_server::vsx_command_process_f() {
 					command_q_b.add(c);
 					tc->vsx_command_queue_b(this,true);
 				}
+				// ****************************************************************
+				// This is useful for debugging out-of-order commands:
+				//else
+        //{
+        //  printf("ARTISTE ERROR: could not find component %s\n", c->parts[1].c_str() );
+        //}
+        // ****************************************************************
 			}
 			else
 			if (

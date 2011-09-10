@@ -35,6 +35,8 @@ endif(UNIX)
 if(VSXU_DEBUG)
 add_definitions(
  -DDEBUG
+# -DVSXU_DEBUG
+# -DVSX_DEBUG
 )
 endif(VSXU_DEBUG)
 
