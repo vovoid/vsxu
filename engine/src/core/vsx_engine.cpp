@@ -869,33 +869,40 @@ void vsx_engine::redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_out) 
 
 void vsx_engine::redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_out) {
   // 1. get all connections in a list
-  //printf("+++redeclaring out\n");
+  #ifdef VSXU_DEBUG
+  printf("+++redeclaring out\n");
+  #endif
   list<vsx_engine_param_connection_info*> abs_connections_out;
   vsx_engine_param_list* out = comp->get_params_out();
   out->get_abs_connections(&abs_connections_out);
 
+  // will nuke all the internal params.
   comp->re_init_out_params();
 #ifndef VSX_DEMO_MINI
   cmd_out->add_raw("out_param_spec "+comp->name+" "+comp->out_param_spec+" c");
 #endif
-  //printf("outparamspec: %s\n",("out_param_spec "+comp->name+" "+comp->out_param_spec+" c").c_str());
+  #ifdef VSXU_DEBUG
+    printf("outparamspec: %s\n",("out_param_spec "+comp->name+" "+comp->out_param_spec+" c").c_str());
+  #endif
   comp->module->redeclare_out = false;
   out = comp->get_params_out();
 
   for (list<vsx_engine_param_connection_info*>::iterator it2 = abs_connections_out.begin(); it2 != abs_connections_out.end(); ++it2) {
-    //printf("trying to connect %s\n",(*it2)->dest_name.c_str());
+    #ifdef VSXU_DEBUG
+      printf("(*it2)->dest_name: %s\n",(*it2)->dest_name.c_str());
+      printf("(*it2)->src_name:  %s    %s\n",(*it2)->src_name.c_str(),(*it2)->dest_name.c_str());
+    #endif
     vsx_engine_param* dparam = out->get_by_name((*it2)->src_name);
-    //printf("(*it2)->src_name:  %s    %s\n",(*it2)->src_name.c_str(),(*it2)->dest_name.c_str());
     if (dparam) {
       int order = (*it2)->dest->connect(dparam);
 //      printf("internal command: %d\n",order);
 #ifndef VSX_DEMO_MINI
-      vsx_string dcn = (*it2)->dest->owner->component->name;
-      vsx_string srcn = (*it2)->src->name;
+      vsx_string dest_comp_name = (*it2)->dest->owner->component->name;
+      vsx_string srcn = (*it2)->src_name;
       vsx_string cn = comp->name;
       vsx_string dpn = dparam->name;
       vsx_string os = i2s(order);
-      cmd_out->add_raw("param_connect_volatile "+dcn+" "+srcn+" "+cn+" "+dpn+" "+os);
+      cmd_out->add_raw("param_connect_volatile "+dest_comp_name+" "+srcn+" "+cn+" "+dpn+" "+os);
 #endif
     }
   }
