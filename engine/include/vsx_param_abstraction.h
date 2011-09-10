@@ -35,9 +35,9 @@ public:
   int connection_order;
   int localorder;
   int num_dest_connections;
-  vsx_engine_param* src;
+  vsx_engine_param* src;  // can be volatile!
   vsx_string src_name;
-  vsx_engine_param* dest;
+  vsx_engine_param* dest; // can be volatile!
   vsx_string dest_name;
   vsx_channel_connection_info* channel_connection;
 };
