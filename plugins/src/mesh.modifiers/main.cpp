@@ -2355,7 +2355,7 @@ public:
       //---
       //  init pointer iterators
       size_t vertex_count = (*p)->data->vertices.size();
-      printf("distances arreay size: %d      mesh data size: %d\n", distances.size(), vertex_count);
+      //printf("distances arreay size: %d      mesh data size: %d\n", distances.size(), vertex_count);
       if (distances.size() < vertex_count)
       {
         #ifdef VSXU_DEBUG
