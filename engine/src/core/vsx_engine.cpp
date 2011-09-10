@@ -870,7 +870,7 @@ void vsx_engine::redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_out) 
 void vsx_engine::redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_out) {
   // 1. get all connections in a list
   #ifdef VSXU_DEBUG
-  printf("+++redeclaring out\n");
+  printf("+++redeclaring out for component named: %s\n",comp->name.c_str());
   #endif
   list<vsx_engine_param_connection_info*> abs_connections_out;
   vsx_engine_param_list* out = comp->get_params_out();
@@ -882,15 +882,15 @@ void vsx_engine::redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_out)
   cmd_out->add_raw("out_param_spec "+comp->name+" "+comp->out_param_spec+" c");
 #endif
   #ifdef VSXU_DEBUG
-    printf("outparamspec: %s\n",("out_param_spec "+comp->name+" "+comp->out_param_spec+" c").c_str());
+    //printf("outparamspec: %s\n",("out_param_spec "+comp->name+" "+comp->out_param_spec+" c").c_str());
   #endif
   comp->module->redeclare_out = false;
   out = comp->get_params_out();
 
   for (list<vsx_engine_param_connection_info*>::iterator it2 = abs_connections_out.begin(); it2 != abs_connections_out.end(); ++it2) {
     #ifdef VSXU_DEBUG
-      printf("(*it2)->dest_name: %s\n",(*it2)->dest_name.c_str());
-      printf("(*it2)->src_name:  %s    %s\n",(*it2)->src_name.c_str(),(*it2)->dest_name.c_str());
+      //printf("(*it2)->dest_name: %s\n",(*it2)->dest_name.c_str());
+      //printf("(*it2)->src_name:  %s    %s\n",(*it2)->src_name.c_str(),(*it2)->dest_name.c_str());
     #endif
     vsx_engine_param* dparam = out->get_by_name((*it2)->src_name);
     if (dparam) {
@@ -915,22 +915,6 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
 
   commands_res_internal.clear(true);
   tell_client_time(cmd_out_res);
-  //printf("-----------------------------------------------------\n");
-  // check for module requests
-  for (vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
-    if ((*it)->module) {
-      if ((*it)->module->redeclare_in) {
-        redeclare_in_params(*it,cmd_out_res);
-      }
-      if ((*it)->module->redeclare_out) {
-        redeclare_out_params(*it,cmd_out_res);
-      }
-      if ((*it)->module->message.size()) {
-        cmd_out_res->add_raw("c_msg "+(*it)->name+" "+base64_encode((*it)->module->message));
-        (*it)->module->message = "";
-      }
-    }
-  }
   vsx_command_s *c = 0;
   if (!exclusive) {
     while ( (c = commands_out_cache.pop()) ) cmd_out_res->add(c);
@@ -981,15 +965,34 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
       #include "vsx_engine_messages/vsx_note.h"
     #endif
     #include "vsx_engine_messages/vsx_em_system.h"
-
+    
+    #undef cmd
+    #undef cmd_data
+    
 		total_time+=vsx_command_timer.dtime();
 		// internal garbage collection
 		(*(c->garbage_pointer)).remove(c);
 		delete c;
   }
-#undef cmd
-#undef cmd_data
 
+  // check for module requests
+  if (e_state != VSX_ENGINE_LOADING)
+  {
+    for (vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
+      if ((*it)->module) {
+        if ((*it)->module->redeclare_in) {
+          redeclare_in_params(*it,cmd_out_res);
+        }
+        if ((*it)->module->redeclare_out) {
+          redeclare_out_params(*it,cmd_out_res);
+        }
+        if ((*it)->module->message.size()) {
+          cmd_out_res->add_raw("c_msg "+(*it)->name+" "+base64_encode((*it)->module->message));
+          (*it)->module->message = "";
+        }
+      }
+    }
+  }
 } // process_comand_queue
 
 void vsx_engine::send_state_to_client(vsx_command_list *cmd_out) {
