@@ -36,13 +36,13 @@ public:
   // flipping through different visuals
   virtual void toggle_randomizer() {};
   virtual void set_randomizer(bool status) {};
-  virtual bool get_randomizer_status() {};
+  virtual bool get_randomizer_status() { return false; };
   virtual void pick_random_visual() {};
   virtual void next_visual() {};
   virtual void prev_visual() {};
   // if not empty string vsxu is asynchronously loading a new visualization before
   // fading to it, this method can be used to display to the user "loading visual xxxxxx..."
-  virtual std::string visual_loading() {};
+  virtual std::string visual_loading() { return ""; };
 
   // provide metadata for information about current running visualization
   virtual std::string get_meta_visual_filename() {return ""; };
