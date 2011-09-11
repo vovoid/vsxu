@@ -120,7 +120,7 @@ void vsx_manager::set_randomizer(bool status)
 
 bool vsx_manager::get_randomizer_status()
 {
-  ((vsx_statelist*)int_state_manager)->get_randomizer_status();
+  return ((vsx_statelist*)int_state_manager)->get_randomizer_status();
 }
 
 void vsx_manager::pick_random_visual()
