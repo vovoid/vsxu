@@ -1,3 +1,11 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Joe Dart. Cleaned up for VSXu by Jonatan "jaw" Wallmander
+*
+* License: Public Domain
+*/
+
 
 #include <stdio.h>
 #include <GL/glew.h>
@@ -64,14 +72,9 @@ public:
 	float time;
 	float dtime;
 	void	calculate_ho();
-//	void	calculate_normal_texture_map();
-
-	//void show_normals();
-	void RenderOcean();
 	void display(void);
 	void make_normals(COMPLEX c[NX][NY]);
 	void myinit(void);
-	//void myReshape(int w, int h);
 	void pre_choppy();
 	void prep_loop();
 	void idle(void);
