@@ -9,7 +9,7 @@
 #else
   #ifdef VSX_ENG_DLL
     #define VSX_SEQUENCE_DLLIMPORT __declspec (dllexport) 
-  #else 
+  #else
     #define VSX_SEQUENCE_DLLIMPORT __declspec (dllimport)
   #endif
 #endif

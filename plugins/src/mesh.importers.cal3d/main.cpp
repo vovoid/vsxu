@@ -460,10 +460,12 @@ public:
     vsx_module_param_int* use_thread;
     // out
     vsx_module_param_mesh* result;
+    vsx_module_param_mesh* bones_bounding_box;
     // internal
     vsx_mesh* mesh;
     vsx_mesh* mesh_a;
     vsx_mesh* mesh_b;
+    vsx_mesh* mesh_bbox;
     bool first_run;
     int n_rays;
     vsx_string current_filename;
@@ -507,7 +509,7 @@ public:
     info->identifier = "mesh;importers;cal3d_importer";
     info->description = "";
     info->in_param_spec = "filename:resource,use_thread:enum?no|yes";
-    info->out_param_spec = "mesh:mesh";
+    info->out_param_spec = "mesh:mesh,bones_bounding_box:mesh";
     if (bones.size()) {
       info->in_param_spec += ",bones:complex{";
       info->out_param_spec += ",absolutes:complex{";
@@ -564,6 +566,9 @@ public:
     // default
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
     result->set_p(mesh_a);
+    // bounding box for all bones
+    bones_bounding_box = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"bones_bounding_box");
+    bones_bounding_box->set_p(mesh_bbox);
     // bones
     if (bones.size()) {
       for (unsigned long i = 0; i < bones.size(); ++i) {
@@ -579,6 +584,7 @@ public:
     mesh_a = new vsx_mesh;
     mesh_b = new vsx_mesh;
     mesh = mesh_a;
+    mesh_bbox = new vsx_mesh;
     
     loading_done = false;
     current_filename = "";
@@ -766,7 +772,7 @@ public:
 
             if (pCalRenderer->isTangentsEnabled(0)) {
               my->mesh->data->vertex_tangents[pCalRenderer->getVertexCount()+1].x = 0;// = vsx_vector(0,0,0);
-              int num_tagentspaces = pCalRenderer->getTangentSpaces(0,&my->mesh->data->vertex_tangents[0].x);
+              //int num_tagentspaces = pCalRenderer->getTangentSpaces(0,&my->mesh->data->vertex_tangents[0].x);
               //printf("fetched %d tangents\n", num_tagentspaces);
             }
             //else printf("Tangents are NOT enabled\n");
@@ -827,7 +833,7 @@ public:
       }
       prev_use_thread = use_thread->get();
     }
-    unsigned long waits=0;
+    
     // if running, stall and wait for thread
     if (thread_state == 1)
     {
@@ -839,14 +845,29 @@ public:
     if (thread_state == 2) { // thread is done
       // no thread running
       vsx_module_cal3d_loader_threaded* my = this;
+      m_model->getSkeleton()->calculateBoundingBoxes();
       if (!my->redeclare_out)
       {
+        mesh_bbox->data->vertices.allocate(my->bones.size() * 8);
+        
         for (unsigned long j = 0; j < my->bones.size(); ++j)
         {
           if (my->bones[j].bone != 0)
           {
             CalVector t1 = my->bones[j].bone->getTranslationAbsolute();
             CalQuaternion q2 = my->bones[j].bone->getRotationAbsolute();
+            my->bones[j].bone->getCoreBone()->calculateBoundingBox(m_model->getCoreModel());
+            my->bones[j].bone->calculateBoundingBox();
+            
+            CalBoundingBox bbox = my->bones[j].bone->getBoundingBox();
+            CalVector bboxv[8];
+            bbox.computePoints((CalVector*)&bboxv);
+            for (unsigned long bbi = 0; bbi < 8; bbi++)
+            {
+              mesh_bbox->data->vertices[j*8+bbi].x = bboxv[bbi].x;
+              mesh_bbox->data->vertices[j*8+bbi].y = bboxv[bbi].y;
+              mesh_bbox->data->vertices[j*8+bbi].z = bboxv[bbi].z;
+            }
             my->bones[j].result_rotation   ->set( q2.x, 0 );
             my->bones[j].result_rotation   ->set( q2.y, 1 );
             my->bones[j].result_rotation   ->set( q2.z, 2 );
@@ -855,6 +876,8 @@ public:
             my->bones[j].result_translation->set( t1.x, 0 );
             my->bones[j].result_translation->set( t1.y, 1 );
             my->bones[j].result_translation->set( t1.z, 2 );
+
+            
           }
         }
       }
