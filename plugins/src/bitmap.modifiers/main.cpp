@@ -96,7 +96,7 @@ public:
 //          printf("allocating new memory\n");
 //          printf("height: %d\n",height);
           
-          if (bitm.data) delete[] bitm.data;
+          if (bitm.data) delete[] (unsigned long*)bitm.data;
           bitm.data = new unsigned long[width*height];
           bitm.size_x = width;
           bitm.size_y = height;
@@ -124,7 +124,7 @@ public:
   void on_delete() {
     //printf("deleting bitmap..");
     if (bitm.valid)
-    delete[] bitm.data;
+    delete[] (unsigned long*)bitm.data;
   }
 };
 
@@ -341,7 +341,7 @@ void run() {
       worker_running = false;
 
       // need to realloc
-      if (result_bitm.valid) delete[] result_bitm.data;
+      if (result_bitm.valid) delete[] (unsigned long*)result_bitm.data;
       data_a = new unsigned long[bitm->size_x*bitm->size_y];
       data_b = new unsigned long[bitm->size_x*bitm->size_y];
       result_bitm.data = data_a;
@@ -389,7 +389,7 @@ void on_delete() {
   delete[] data_a;
   delete[] data_b;
   if (result_bitm.valid)
-  delete[] result_bitm.data;
+  delete[] (unsigned long*)result_bitm.data;
 }
 
 };
