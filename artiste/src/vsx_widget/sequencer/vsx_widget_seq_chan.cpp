@@ -443,8 +443,10 @@ void vsx_widget_seq_channel::event_mouse_double_click(
 		if (mouse_clicked_id != -1)
 		{
 			{
-				printf("seq_channel: double-clicked an item with hit %d\n",extra_hit);
-				if (extra_hit = 1)
+        #ifdef VSXU_DEBUG
+          printf("seq_channel: double-clicked an item with hit %d\n",extra_hit);
+        #endif
+				if (extra_hit == 1)
 				{
 					vsx_widget** time_controller = &(items[mouse_clicked_id].master_channel_time_sequence);
 					if (!*time_controller)

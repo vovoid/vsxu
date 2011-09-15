@@ -452,7 +452,7 @@ void vsx_widget_desktop::load_configuration()
   main_conf.reset();
   vsx_command_s* mc = 0;
   auto_undo = 1;
-  while (mc = main_conf.get()) {
+  while ( (mc = main_conf.get()) ) {
     if (mc->cmd == "skin") {
       skin_path = PLATFORM_SHARED_FILES+vsx_string("gfx/")+mc->cmd_data+"/";
 #ifdef VSXU_DEBUG
@@ -542,7 +542,7 @@ vsx_widget_desktop::vsx_widget_desktop() {
   }
 #endif
   skin_conf.reset();
-  while (mc = skin_conf.get()) {
+  while ( (mc = skin_conf.get()) ) {
     if (mc->cmd == "color") {
       vsx_avector<vsx_string> parts;
       vsx_string deli = ",";

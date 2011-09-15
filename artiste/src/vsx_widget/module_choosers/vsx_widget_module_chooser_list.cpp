@@ -110,7 +110,7 @@ public:
 		int prev_carety = editor->carety;
 		int prev_selected_line = editor->selected_line;
 		editor->event_mouse_down(distance, coords,0);  // ugly hack! LAMORZ ATTACK!
-		if (editor->selected_line < i_rows_lookup.size())
+		if ((size_t)editor->selected_line < i_rows_lookup.size())
 		{
 			mod_i = i_rows_lookup[editor->selected_line];
 		} else

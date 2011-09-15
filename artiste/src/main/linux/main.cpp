@@ -156,7 +156,7 @@ int main(int argc, char* argv[])
 	  app_argc = argc;
 	  app_argv = argv;
     int     width, height, running, frames, x, y;
-    double  t, t0, t1, fps;
+    double  t, t0, t1;
     char    titlestr[ 200 ];
 
     // Initialise GLFW
