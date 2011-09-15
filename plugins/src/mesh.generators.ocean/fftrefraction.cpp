@@ -12,8 +12,8 @@
 // Visualize paul bourke's fft. This program takes Jensen into account.
 // It also uses Chen water ideas and some Nutman cubemap code.
 //
-//	 joe dart ffjjd@uaf.edu	 
-//		This program is first version of cg refraction.		
+//	 joe dart ffjjd@uaf.edu
+//		This program is first version of cg refraction.
 //		This program runs correctly with "choppy" waves.
 //		june 22, 2003
 //

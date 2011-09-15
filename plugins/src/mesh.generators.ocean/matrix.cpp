@@ -1,3 +1,11 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Joe Dart. Cleaned up for VSXu by Jonatan "jaw" Wallmander
+*
+* License: Public Domain
+*/
+
 //
 // Helper functions for matrix and vector math.
 //

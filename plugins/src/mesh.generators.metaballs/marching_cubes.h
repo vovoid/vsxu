@@ -1,4 +1,5 @@
-/** Public domain */
+/** License: Public domain */
+
 #ifndef MARCHINGCUBES_H
 #define MARCHINGCUBES_H
 

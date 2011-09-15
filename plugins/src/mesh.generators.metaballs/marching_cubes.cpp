@@ -1,4 +1,4 @@
-/** Public domain */
+/** License: Public domain */
 
 #include "marching_cubes.h"
 
