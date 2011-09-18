@@ -276,7 +276,7 @@ void run() {
   // set wave
   if (0 == engine->param_float_arrays.size())
   {
-    int i;
+    //int i;
     /*for (i = 0; i < 512; ++i) {
         (*(wave.data))[i] = (float)(rand()%1000) * 0.0005 * l_mul;
     }

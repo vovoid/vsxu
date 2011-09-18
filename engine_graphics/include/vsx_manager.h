@@ -93,6 +93,6 @@ public:
 
 extern "C" {
 VSX_MANAGER_DLLIMPORT vsx_manager_abs* manager_factory();
-VSX_MANAGER_DLLIMPORT vsx_manager_abs* manager_destroy(vsx_manager_abs* manager);
+VSX_MANAGER_DLLIMPORT void manager_destroy(vsx_manager_abs* manager);
 }
 #endif

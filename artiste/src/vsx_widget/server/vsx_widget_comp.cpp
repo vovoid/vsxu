@@ -297,7 +297,7 @@ int vsx_widget_component::inside_xy_l(vsx_vector &test, vsx_vector &global) {
       vsx_string cms = "";
       int state = 0;
 //      float ypos = size.y/2;
-      for (int i = 0; i < cd.size(); ++i) {
+      for (size_t i = 0; i < cd.size(); ++i) {
         if (state == 0 && cd[i] != ',' && cd[i] != '{')
         cm += cd[i];
 
@@ -306,7 +306,7 @@ int vsx_widget_component::inside_xy_l(vsx_vector &test, vsx_vector &global) {
         if (state > 0)
         {
           // add to the command to be sent further in
-          if (cd[i] != '{' && cd[i] != '}' || state > 1)
+          if ( (cd[i] != '{' && cd[i] != '}') || state > 1)
           cms += cd[i];
         }
         if (cd[i] == '}') { state--; }
@@ -643,7 +643,7 @@ int vsx_widget_component::inside_xy_l(vsx_vector &test, vsx_vector &global) {
 
 void vsx_widget_component::vsx_command_process_f() {
   vsx_command_s *c = 0;
-  while (c = command_q_f.pop())
+  while ( (c = command_q_f.pop()) )
   {
     if (c->cmd == "init") {
 //        printf("init_component from the forwards queue - i'm %s\n",name.c_str());

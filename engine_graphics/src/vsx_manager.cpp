@@ -90,7 +90,7 @@ vsx_manager_abs* manager_factory()
   return mym;
 }
 
-vsx_manager_abs* manager_destroy(vsx_manager_abs* manager)
+void manager_destroy(vsx_manager_abs* manager)
 {
   delete (vsx_manager*)manager;
 }

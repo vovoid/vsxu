@@ -720,7 +720,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
 				if (is_controller)
 				{
 					float accum_time = 0.0f;
-					for (size_t ii = 0; ii < mouse_clicked_id-1; ii++)
+					for (int ii = 0; ii < mouse_clicked_id-1; ii++)
 					{
 						accum_time += items[ii].total_length;
 					}
@@ -824,7 +824,6 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
 				// look through all items
 				bool run = true;
 				float time_start = 0.0f;
-				float time_clicked = pos_to_time(distance.center.x);
 				float pos_clicked = distance.center.x;
 
 				for (size_t i = 0; i < items.size()-1 && run; i++)
@@ -2188,12 +2187,12 @@ void vsx_widget_seq_channel::drop_master_channel(vsx_widget_distance distance,
 {
 	float time_iterator = 0;
 	//float accumulated_time = 0.0f;
-	int item_iterator = 0;
+	unsigned long item_iterator = 0;
 	//int item_action_id = -1;
 	vsx_vector drop_pos_local = coords.world_global - get_pos_p();
 	float time_pos = (drop_pos_local.x / size.x + 0.5f) * (view_time_end
 			- view_time_start) + view_time_start;
-	while (item_iterator < (int) items.size() && time_iterator < time_pos)
+	while (item_iterator < items.size() && time_iterator < time_pos)
 	{
 		time_iterator += items[item_iterator].total_length;
 		++item_iterator;

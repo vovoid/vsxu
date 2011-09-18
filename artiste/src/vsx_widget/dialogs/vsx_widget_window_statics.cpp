@@ -20,8 +20,6 @@
 */
 
 #ifndef VSX_NO_CLIENT
-//#include <string>
-//#include <iostream>
 #include <map>
 #include <list>
 #include "vsx_gl_global.h"
@@ -187,7 +185,7 @@ dialog_messagebox::dialog_messagebox(vsx_string title_,vsx_string hint) {
   }
   vsx_widget::init_children();
 
-  int max_len = 0;
+  size_t max_len = 0;
   for (unsigned long i = 0; i < lines.size(); ++i) {
     if (lines[i].size() > max_len) max_len = lines[i].size();
   }

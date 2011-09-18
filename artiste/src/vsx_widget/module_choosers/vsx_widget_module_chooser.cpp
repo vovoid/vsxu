@@ -1120,7 +1120,7 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
   module_chooser_colors.reset();
 
   vsx_command_s* mc = 0;
-  while (mc = module_chooser_colors.get()) {
+  while ( (mc = module_chooser_colors.get()) ) {
     if (mc->cmd == "ccolor") {
       std::vector<vsx_string> parts;
       vsx_string deli = ",";

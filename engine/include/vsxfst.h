@@ -141,7 +141,7 @@ VSXFSTDLLIMPORT bool crlf(char *buffer,int len);
 #define STR_PAD_RIGHT 1
 #define STR_PAD_OVERFLOW_LEFT 0
 #define STR_PAD_OVERFLOW_RIGHT 1
-VSXFSTDLLIMPORT vsx_string str_pad(const vsx_string& str, const vsx_string& chr, int t_len, int pad_type = STR_PAD_LEFT,int overflow_adjust = STR_PAD_OVERFLOW_RIGHT);
+VSXFSTDLLIMPORT vsx_string str_pad(const vsx_string& str, const vsx_string& chr, size_t t_len, int pad_type = STR_PAD_LEFT,int overflow_adjust = STR_PAD_OVERFLOW_RIGHT);
 
 // this function replaces only one item per token. 
 VSXFSTDLLIMPORT vsx_string str_replace(vsx_string search, vsx_string replace, vsx_string subject, int max_replacements = 0, int required_pos = -1);

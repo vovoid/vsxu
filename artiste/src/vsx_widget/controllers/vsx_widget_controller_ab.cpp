@@ -983,8 +983,8 @@ void vsx_widget_controller_pad::draw() {
   vsx_widget_base_controller::draw();
   glColor4f(1.0f,1.0f,1.0f,0.2f);
   draw_box_c(parentpos+pos, draw_area,draw_area);
-  int start_prevs = prev_pos-300;
-  int stop_prevs = prev_pos;
+  unsigned long start_prevs = prev_pos-300;
+  
   if (start_prevs < 0) start_prevs += 300;
   if (start_prevs >= prev_draw.size()) start_prevs = 0;
 
@@ -993,8 +993,8 @@ void vsx_widget_controller_pad::draw() {
   glLineWidth(1.0f);
   glBegin(GL_LINE_STRIP);
   bool run = true;
-  int i = start_prevs;
-  int j = 0;
+  unsigned long i = start_prevs;
+  unsigned long j = 0;
   while (run)
   {
   //for (int i = start_prevs; i < stop_prevs; i++) {
@@ -1051,7 +1051,7 @@ void vsx_widget_controller_pad::event_mouse_move(vsx_widget_distance distance,vs
   	prev_draw[prev_pos].z = 2.0f;
   	prev_pos++;
   	if (prev_pos > 300) prev_pos = 0; // cyclic buffer
-  	for (int i = 0; i < prev_draw.size(); i++)
+  	for (unsigned long i = 0; i < prev_draw.size(); i++)
   	{
     	prev_draw[i].z -= 2.0f/300.0f;
   		if (prev_draw[i].z < 0.0f) prev_draw[i].z = 0.0f;

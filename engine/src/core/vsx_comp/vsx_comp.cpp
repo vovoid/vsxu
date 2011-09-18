@@ -509,7 +509,7 @@ void vsx_comp::disconnect(vsx_string param_name) {
 
 vsx_string process_module_param_spec(vsx_string& input) {
   vsx_string ret_val;
-  int i = 0;
+  size_t i = 0;
   bool block = false;
   vsx_string s_block;
   while (i < input.size()) {

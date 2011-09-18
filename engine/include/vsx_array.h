@@ -36,14 +36,14 @@
 
 template<class T>
 class vsx_array {
-  unsigned long allocated;
-  unsigned long used;
+  size_t allocated;
+  size_t used;
   T* A;
-  unsigned long allocation_increment;
-  unsigned long data_volatile;
+  size_t allocation_increment;
+  size_t data_volatile;
 
 public:
-  unsigned long timestamp;
+  size_t timestamp;
 
   void set_allocation_increment(unsigned long new_increment) {
   	allocation_increment = new_increment;
@@ -85,18 +85,18 @@ public:
   T* get_end_pointer() {
     return &A[used-1];
   }
-  unsigned long get_allocated() {
+  size_t get_allocated() {
     return allocated;
   }
-  unsigned long get_used() {
+  size_t get_used() {
     return used;
   }
   // std::vector compatibility
-  unsigned long push_back(T val) {
+  size_t push_back(T val) {
     (*this)[used] = val;
     return used;
   }
-  unsigned long size() {
+  size_t size() {
     return used;
   }
 
@@ -152,28 +152,28 @@ public:
 
 template<class T>
 class vsx_avector_nd {
-  unsigned long allocated;
-  unsigned long used;
+  size_t allocated;
+  size_t used;
   T* A;
-  unsigned long allocation_increment;
+  size_t allocation_increment;
 public:
-  unsigned long timestamp;
+  size_t timestamp;
   T* get_pointer() {
     return A;
   }
-  unsigned long get_allocated() {
+  size_t get_allocated() {
     return allocated;
   }
-  unsigned long get_used() {
+  size_t get_used() {
     return used;
   }
   // std::vector compatibility
-  unsigned long push_back(T val) {
+  size_t push_back(T val) {
     (*this)[used] = val;
     return used;
   }
 
-  unsigned long size() {
+  size_t size() {
     return used;
   }
 

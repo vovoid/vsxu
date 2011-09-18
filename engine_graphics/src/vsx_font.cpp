@@ -280,7 +280,7 @@ void vsx_font::reinit_all_active() {
     int lines = 0;
     int max_char = 0;
     int cur_pos = 0;
-    for (int i = 0; i < str.size(); ++i) {
+    for (size_t i = 0; i < str.size(); ++i) {
       if (lines == 0) lines = 1;
       ++cur_pos;
       if (str[i] == 0x0A) {

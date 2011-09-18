@@ -97,7 +97,7 @@
 
    	  menu_items.reset();
    	  int c = 1;
-      while (t = menu_items.get()) {
+      while ( (t = menu_items.get()) ) {
         if (c == over && over != 0)
         {
           current_command_over = t;
@@ -170,7 +170,7 @@
 
     commands.reset();
     vsx_command_s* t;
-    while (t = commands.get()) {
+    while ( (t = commands.get()) ) {
       add_commands(t);
       //
 
@@ -249,7 +249,7 @@ void vsx_widget_button::i_draw() {
 	if (!visible) return;
 
 	vsx_vector p = get_pos_p();
-	if (coord_type = VSX_WIDGET_COORD_CENTER) {
+	if (coord_type == VSX_WIDGET_COORD_CENTER) {
 		p.x -= size.x*0.5;
 		p.y += size.y*0.5;
 		//p.z = 1.1f;
@@ -435,8 +435,7 @@ void vsx_widget_2d_pager::increase() {
 }
 
 void vsx_widget_2d_pager::decrease() {
-  if (max_pages)
-  if (cur_page) --cur_page; else cur_page = max_pages-1;
+  if (max_pages && cur_page) --cur_page; else cur_page = max_pages-1;
 }
 
 #endif

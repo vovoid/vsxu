@@ -1511,7 +1511,7 @@ public:
     mesh->data->faces.reset_used();
 
     float one_div_num_stacks = 1.0f / (float)current_num_stacks;
-    float one_div_num_sectors = 1.0f / (float)current_num_sectors;
+    //float one_div_num_sectors = 1.0f / (float)current_num_sectors;
     float one_div_num_sectors_minus_one = 1.0f / (float)(current_num_sectors - 1);
 
     //for(int i = 1; i < current_num_stacks; i++)
@@ -1828,7 +1828,7 @@ public:
     mesh->data->faces.reset_used();
     float one_div_num_stacks = 1.0f / (float)(current_num_stacks);
 
-    int num_vertices = current_num_stacks * (current_num_sectors-1);
+    //int num_vertices = current_num_stacks * (current_num_sectors-1);
 
     for(int i = 0; i < current_num_stacks; i++)
     {

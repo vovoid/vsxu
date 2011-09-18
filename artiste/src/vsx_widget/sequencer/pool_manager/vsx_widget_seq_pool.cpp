@@ -163,7 +163,6 @@ public:
       vsx_widget* search_widget = root->find_component(coords,l_distance);
       if (search_widget)
       {
-        bool macro = false;
         if (search_widget->widget_type == VSX_WIDGET_TYPE_SEQUENCE_CHANNEL)
         {
           drop_pos = l_distance.center;

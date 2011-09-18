@@ -210,7 +210,6 @@ public:
   void run() {
     loading_done = true;
     // if running, stall and wait for thread
-    float j = 0;
 
     // this concept assumes that the run takes shorter than the framerate to do
     if (thread_state == 2) { // thread is done

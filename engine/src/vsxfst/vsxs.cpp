@@ -82,25 +82,25 @@ bool crlf(char *buffer,int len) {
 
 
 
-vsx_string str_pad(const vsx_string& str, const vsx_string& chr, int t_len, int pad_type, int overflow_adjust) {
+vsx_string str_pad(const vsx_string& str, const vsx_string& chr, size_t t_len, int pad_type, int overflow_adjust) {
   vsx_string ps = "";
   if (str.size() > t_len) 
   {
     if (overflow_adjust == STR_PAD_OVERFLOW_LEFT) {
-      for (int i = 0; i < t_len; ++i) {
+      for (size_t i = 0; i < t_len; ++i) {
         ps = vsx_string(str[str.size()-i-1]) + ps;
       }  
       return ps;
     } else
     {
-      for (int i = 0; i < t_len; ++i) {
+      for (size_t i = 0; i < t_len; ++i) {
         ps += str[i];
       }
       return ps;
     }
   } else  
   {  
-    for (int i = 0; i < (t_len-str.size()); ++i) {
+    for (size_t i = 0; i < (t_len-str.size()); ++i) {
       ps += chr;
     }
     if (pad_type == STR_PAD_LEFT)
@@ -164,7 +164,7 @@ const vsx_string str_replace_char_pad(vsx_string search, vsx_string replace, vsx
   //vsx_string hh = "";
   if (subject.size() != subject_r.size()) return subject_r;
   vsx_string rep;
-  for (int i = 0; i < search.size(); ++i) rep.push_back(replace[0]);
+  for (size_t i = 0; i < search.size(); ++i) rep.push_back(replace[0]);
   vsx_string n;
   //printf("first\n");
   if (search == "") return subject_r;
@@ -197,10 +197,10 @@ int explode(vsx_string& input, vsx_string& delimiter, vsx_avector<vsx_string>& r
   }
   //printf("splitting vsx_string: %s\n",input.c_str());
   vsx_string res;
-  int fpos = 0;
+  size_t fpos = 0;
   int count = 0;
   char lastchar = 0;
-  for (int i = 0; i < input.size(); ++i)
+  for (size_t i = 0; i < input.size(); ++i)
   {
     if (input[i] == delimiter[fpos] && lastchar != '\\') {
       ++fpos;
@@ -289,10 +289,10 @@ int split_string(vsx_string& input, vsx_string& delimiter, std::vector<vsx_strin
   }
   //printf("splitting vsx_string: %s\n",input.c_str());
   vsx_string res;
-  int fpos = 0;
+  size_t fpos = 0;
   int count = 0;
   char lastchar = 0;
-  for (int i = 0; i < input.size(); ++i)
+  for (size_t i = 0; i < input.size(); ++i)
   {
     if (input[i] == delimiter[fpos] && lastchar != '\\')
     {
@@ -326,9 +326,9 @@ int split_string(vsx_string& input, vsx_string& delimiter, std::list<vsx_string>
   }
   //printf("splitting vsx_string: %s\n",input.c_str());
   vsx_string res;
-  int fpos = 0;
+  size_t fpos = 0;
   int count = 0;
-  for (int i = 0; i < input.size(); ++i)
+  for (size_t i = 0; i < input.size(); ++i)
   {
     if (input[i] == delimiter[fpos]) {
       ++fpos;
@@ -552,10 +552,10 @@ vsx_string base64_encode(vsx_string data)
 {
   int i;
     //auto     string::size_type  i;
-    auto     char               c;
+    char               c;
     //auto     string::size_type  len = data.length();
     int len = data.size();
-    auto     vsx_string             ret;
+    vsx_string             ret;
 
     for (i = 0; i < len; ++i)
     {
@@ -598,11 +598,11 @@ vsx_string base64_decode(vsx_string data)
 {
     //auto     string::size_type  i;
     int i;
-    auto     char               c;
-    auto     char               c1;
+    char               c;
+    char               c1;
     //auto     string::size_type  len = data.length();
     int len = data.size();
-    auto     vsx_string             ret;
+    vsx_string             ret;
 
     for (i = 0; i < len; ++i)
     {

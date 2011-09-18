@@ -282,6 +282,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
     }
   }
   close(listen_sock);
+  return 0;
 }
 
 // ****************************************************************************
@@ -302,7 +303,7 @@ void* vsx_command_list_client::client_worker(void *ptr)
   struct addrinfo hints;
   struct addrinfo *servinfo;  // will point to the results
   char recv_buf[BUFLEN];
-  int sock, recv_sock;
+  int sock;
   ssize_t size_recv;
   int keepalive_timer = 0;
   vsx_string message_stack;
