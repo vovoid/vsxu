@@ -908,6 +908,24 @@ void vsx_engine::redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_out)
   }
 }
 
+void vsx_engine::process_message_queue_redeclare(vsx_command_list *cmd_out_res)
+{
+  for (vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
+    if ((*it)->module) {
+      if ((*it)->module->redeclare_in) {
+        redeclare_in_params(*it,cmd_out_res);
+      }
+      if ((*it)->module->redeclare_out) {
+        redeclare_out_params(*it,cmd_out_res);
+      }
+      if ((*it)->module->message.size()) {
+        cmd_out_res->add_raw("c_msg "+(*it)->name+" "+base64_encode((*it)->module->message));
+        (*it)->module->message = "";
+      }
+    }
+  }
+}
+
 //############## M E S S A G E   P R O C E S S O R #################################################
 void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive) {
   // service commands
@@ -919,7 +937,13 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
   if (!exclusive) {
     while ( (c = commands_out_cache.pop()) ) cmd_out_res->add(c);
   }
+  // check for module requests
 
+  if (e_state == VSX_ENGINE_LOADING)
+  {
+    process_message_queue_redeclare(cmd_out_res);
+  }
+  
   // handle exclusivity
   if (exclusive) cmd_in->set_type(1);
   // add the incoming commands to our own list for buffering (to continue on next frame if we don't have time to do them all)
@@ -968,6 +992,12 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
     
     #undef cmd
     #undef cmd_data
+
+    if (e_state != VSX_ENGINE_LOADING)
+    {
+      process_message_queue_redeclare(cmd_out_res);
+    }
+    
     
 		total_time+=vsx_command_timer.dtime();
 		// internal garbage collection
@@ -975,24 +1005,6 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
 		delete c;
   }
 
-  // check for module requests
-  if (e_state != VSX_ENGINE_LOADING)
-  {
-    for (vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
-      if ((*it)->module) {
-        if ((*it)->module->redeclare_in) {
-          redeclare_in_params(*it,cmd_out_res);
-        }
-        if ((*it)->module->redeclare_out) {
-          redeclare_out_params(*it,cmd_out_res);
-        }
-        if ((*it)->module->message.size()) {
-          cmd_out_res->add_raw("c_msg "+(*it)->name+" "+base64_encode((*it)->module->message));
-          (*it)->module->message = "";
-        }
-      }
-    }
-  }
 } // process_comand_queue
 
 void vsx_engine::send_state_to_client(vsx_command_list *cmd_out) {

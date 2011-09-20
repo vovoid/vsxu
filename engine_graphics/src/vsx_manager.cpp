@@ -51,11 +51,15 @@ public:
   void prev_visual();
   std::string visual_loading();
 
+  // dump the list of all loadable visuals
+  std::vector<std::string> get_visual_filenames();
+  
   // provide metadata for information about current running effect
   std::string get_meta_visual_filename();
   std::string get_meta_visual_name();
   std::string get_meta_visual_creator();
   std::string get_meta_visual_company();
+  
 
   // amplification/fx level (more = flashier, less = less busy)
   float get_fx_level();
@@ -163,6 +167,22 @@ std::string vsx_manager::visual_loading()
 {
   return std::string( ((vsx_statelist*)int_state_manager)->state_loading().c_str() );
 }
+
+
+/****************************************************************
+V I S U A L   F I L E N A M E S   I N F O R M A T I O N
+*****************************************************************/
+std::vector<std::string> vsx_manager::get_visual_filenames()
+{
+  std::list<vsx_string>* items = ((vsx_statelist*)int_state_manager)->get_state_file_list();
+  std::vector<std::string> return_items;
+  for(std::list<vsx_string>::iterator it = (*items).begin(); it != (*items).end(); it++)
+  {
+    return_items.push_back( std::string((*it).c_str()) );
+  }
+  return return_items;
+}
+
 
 /****************************************************************
 M E T A    I N F O R M A T I O N

@@ -125,6 +125,10 @@ public:
   void next_state();
   void prev_state();
 
+  std::list<vsx_string>* get_state_file_list();
+  std::list<vsx_string>* get_fader_file_list();
+  
+
   vsx_string state_loading();
   
   void inc_speed();

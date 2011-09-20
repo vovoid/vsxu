@@ -25,6 +25,7 @@
 #include <vsx_string.h>
 #include <vsx_platform.h>
 #include <string>
+#include <vector>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #define VSX_MANAGER_DLLIMPORT
@@ -64,6 +65,9 @@ public:
   // if not empty string vsxu is asynchronously loading a new visualization before
   // fading to it, this method can be used to display to the user "loading visual xxxxxx..."
   virtual std::string visual_loading() { return ""; };
+
+  // dump the list of all loadable visuals
+  std::vector<std::string> get_visual_filenames();
 
   // provide metadata for information about current running visualization
   virtual std::string get_meta_visual_filename() {return ""; };

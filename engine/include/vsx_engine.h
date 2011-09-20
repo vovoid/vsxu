@@ -122,6 +122,7 @@ private:
   void i_clear(vsx_command_list *cmd_out = 0, bool clear_critical = false);
   void rename_component();
 	int rename_component(vsx_string old_identifier, vsx_string new_base = "$", vsx_string new_name = "$");
+  void process_message_queue_redeclare(vsx_command_list *cmd_out_res);
   void redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_out);
   void redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_out);
   void send_state_to_client(vsx_command_list *cmd_out);
