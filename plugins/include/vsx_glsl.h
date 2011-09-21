@@ -184,6 +184,7 @@ class vsx_glsl {
       ++i;
     }
     int num_uniforms = gl_get_val(prog,GL_OBJECT_ACTIVE_UNIFORMS_ARB);
+    int num_attributes = gl_get_val(prog,GL_OBJECT_ACTIVE_ATTRIBUTES_ARB);
     #if (VSXU_DEBUG)
     printf("num uniforms (openGL): %d\n", num_uniforms);
     #endif
@@ -258,13 +259,12 @@ class vsx_glsl {
       }
     }
     
-    int num_attributes = gl_get_val(prog,GL_ACTIVE_ATTRIBUTES);
+    
     #if (VSXU_DEBUG)
     printf("num attributes (openGL): %d\n", num_attributes);
     #endif
-    GLcharARB aname[1000];
     for (i = 0; i < num_attributes; ++i) {
-      glGetActiveAttrib(prog,i,1000,&length,&size,&type,(GLchar*)&aname);
+      glGetActiveAttribARB(prog,i,1000,&length,&size,&type,(GLcharARB*)&name);
       vsx_string sn = name;
 
       #if (VSXU_DEBUG)
