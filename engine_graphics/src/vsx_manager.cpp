@@ -44,7 +44,7 @@ public:
   // flipping through different visuals
   void toggle_randomizer();
   void set_randomizer(bool status);
-    
+  
   bool get_randomizer_status();
   void pick_random_visual();
   void next_visual();
