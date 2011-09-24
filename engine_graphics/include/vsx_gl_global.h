@@ -38,11 +38,7 @@
         #define VSX_NOGLUT
       #endif
 
-      #ifdef VSXU_MAC_XCODE
-        #include <glew.h>
-      #else
-        #include <GL/glew.h>
-      #endif
+      #include <GL/glew.h>
 
       #ifdef _WIN32
         #include <GL/wglew.h>
