@@ -19,6 +19,9 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+
+#include <vsx_platform.h>
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include "vsx_command_client_server.h"
 
 
@@ -452,3 +455,5 @@ int vsx_command_list_client::get_connection_status()
 {
   return connected;
 }
+
+#endif

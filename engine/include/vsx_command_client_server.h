@@ -19,6 +19,9 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <vsx_platform.h>
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -80,3 +83,5 @@ public:
   // get connection status
   int get_connection_status();
 };
+
+#endif

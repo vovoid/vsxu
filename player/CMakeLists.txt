@@ -99,7 +99,6 @@ if(WIN32)
   target_link_libraries(${module_id}
   wsock32
   ws2_32
-  glew
   pthreadGCE
   vsxu_engine_graphics
   vsxu_engine

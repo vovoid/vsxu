@@ -12,7 +12,9 @@ if (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
   add_subdirectory(artiste)
 endif (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
 
+if(UNIX)
 add_subdirectory(server)
+endif(UNIX)
 
 if (NOT VSXU_ENGINE_STATIC EQUAL 1)
   add_subdirectory(tools/vsxz)

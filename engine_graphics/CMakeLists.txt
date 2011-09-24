@@ -69,7 +69,7 @@ project (${module_id})
 add_library(${module_id} SHARED ${SOURCES} ${EXTRA_LIBS} ${PNG_SOURCES} ${JPG_SOURCES} ${ZLIB_SOURCES})
 install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 if(WIN32)
-  target_link_libraries(${module_id} gdi32 glew opengl32 glu32 pthreadGCE)
+  target_link_libraries(${module_id} gdi32 glew32.dll glew32mx opengl32 glu32 pthreadGCE)
   link_directories("../engine")
 else(WIN32)
 

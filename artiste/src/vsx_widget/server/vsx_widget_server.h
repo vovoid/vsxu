@@ -55,7 +55,9 @@ class vsx_widget_server : public vsx_widget {
   vsx_string server_message;
   unsigned int server_type; // 1 is internal, 2 is connected via socket
 
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   vsx_command_list_client* client;
+  #endif
 public:
   float server_vtime;
   float server_fps;

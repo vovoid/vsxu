@@ -243,7 +243,7 @@ void draw_box_border(vsx_vector pos, vsx_vector size, float dragborder) {
   	glVertex2f(pos.x,          pos.y);
   glEnd();*/
 }
-
+ 
 vsx_vector vsx_vec_viewport() {
   GLint viewport[4];
   glGetIntegerv(GL_VIEWPORT, viewport);

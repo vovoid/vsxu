@@ -74,7 +74,9 @@ vsx_widget_server::vsx_widget_server() {
   init_run = false;
   support_scaling = false;
   selection = false;
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   client = 0;
+  #endif
 
   log(" welcome to");
   log(" _   _  ___ _  __     _        ___  ___   ___");
@@ -143,7 +145,9 @@ module browser\n\
   menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;90fps","conf","global_framerate_limit 90");
   menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;100fps","conf","global_framerate_limit 100");
   menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   menu->commands.adds(VSX_COMMAND_MENU,"server  >;connect","show_connect_dialog","");
+  #endif
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
   {
     menu->commands.adds(VSX_COMMAND_MENU,"server  >;disconnect","dc","");
@@ -251,12 +255,14 @@ void vsx_widget_server::on_delete() {
 
 void vsx_widget_server::server_connect(vsx_string host, vsx_string port)
 {
-  client = new vsx_command_list_client;
-  cmd_in = client->get_command_list_in();
-  cmd_out = client->get_command_list_out();
-  client->client_connect(host);
-  server_type = VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET;
-  support_scaling = true;
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+    client = new vsx_command_list_client;
+    cmd_in = client->get_command_list_in();
+    cmd_out = client->get_command_list_out();
+    client->client_connect(host);
+    server_type = VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET;
+    support_scaling = true;
+  #endif
 }
 
 // messages from the engine
@@ -265,11 +271,13 @@ void vsx_widget_server::vsx_command_process_f() {
 
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
   {
+	#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
     //printf("connection status: %d\n", client->get_connection_status());
     if (client->get_connection_status() == VSX_COMMAND_CLIENT_DISCONNECTED)
     {
       _delete();
     }
+	#endif
   }
   
 	if (init_run) {

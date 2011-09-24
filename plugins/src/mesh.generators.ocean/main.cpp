@@ -201,7 +201,9 @@ public:
       while (my->thread_state == 2)
       {
         if (my->thread_exit) {my->thread_state = 10; return 0; }
+		#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
         usleep(100);
+		#endif
       }
     }
   }

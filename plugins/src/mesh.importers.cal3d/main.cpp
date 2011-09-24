@@ -756,7 +756,9 @@ public:
       if (1 == my->prev_use_thread)
       {
         while (my->p_updates == my->param_updates) {
+		  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
           usleep(1);
+		  #endif
         }
       }
       my->p_updates = my->param_updates;
@@ -819,7 +821,9 @@ public:
       while (my->thread_state == 2)
       {
         if (my->thread_exit) {my->thread_state = 10; return 0; }
+		#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
         usleep(100);
+		#endif
       }
       
     }
@@ -847,7 +851,9 @@ public:
         thread_exit = 1;
         while (thread_state != 10)
         {
-          usleep(100);
+		  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+            usleep(100);
+		  #endif
         }
         thread_state = 0;
         thread_exit = 0;
@@ -858,7 +864,11 @@ public:
     // if running, stall and wait for thread
     if (thread_state == 1)
     {
-      while (thread_state == 1) { usleep(1); }
+      while (thread_state == 1) { 
+	    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+	      usleep(1); 
+		#endif
+	  }
       //while (thread_state == 1 && waits < 1000000) { waits++;}
     }
 

@@ -6,7 +6,7 @@ if(WIN32)
 	vsxu_engine 
 	gdi32 
 	pthreadGCE 
-	glew 
+	glew32.dll
 	opengl32 
 	glu32
   )
