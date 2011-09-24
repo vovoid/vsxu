@@ -583,7 +583,7 @@ int vsx_widget_component::inside_xy_l(vsx_vector &test, vsx_vector &global) {
             target_size.y = size.y *= 0.45;
           }
         }
-        help_text = "Component type: "+parts[0]+"\n"+help_text;
+        help_text = "Module type: "+parts[0]+"\n"+help_text;
         //parts.pop_back();
         //if (parts.size() > 1) {
           //printf("parts is larger than one\n");

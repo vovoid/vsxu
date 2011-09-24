@@ -116,7 +116,7 @@ void vsxu_assistant::i_draw() {
 	clickpoint.x = clickpoint.x*(1-tt)+size_multiplier*tt;
 
   size.x = 0.3*clickpoint.x*(screen_aspect);
-  size.y = 0.4*clickpoint.x;
+  size.y = 0.5*clickpoint.x;
   //printf("pos.x: %f\n",pos.x);
   //size.y-0.09f*clickpoint.x;
   alpha = (clickpoint.x-0.2)*2;
@@ -149,7 +149,7 @@ void vsxu_assistant::i_draw() {
       text = course[((vsx_widget_2d_pager*)pager)->cur_page];
       //else text = "";
       myf.color.a = alpha;
-      myf.print(vsx_vector((pos.x+size.x*0.06)*screen_aspect,pos.y+size.y-size.y*0.09),text,0.012*clickpoint.x);
+      myf.print(vsx_vector((pos.x+size.x*0.06)*screen_aspect,pos.y+size.y-size.y*0.12),text,0.012*clickpoint.x);
     }
   }
   target_pos = pos;
