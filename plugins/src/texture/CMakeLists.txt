@@ -15,7 +15,7 @@ include(../cmake_globals.txt)
 include(./_sources)
 link_directories(${CMAKE_INSTALL_PREFIX}/lib)
 add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES} ${EXTRA_LIBS})
-message(${CMAKE_INSTALL_PREFIX}/lib)
+
 include(../cmake_suffix.txt)
 if(UNIX)
 target_link_libraries(${module_id} X11 GLEW GL GLU vsxu_engine_graphics vsxu_engine)
