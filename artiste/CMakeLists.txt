@@ -65,7 +65,7 @@ set(SOURCES
   src/log/vsx_log_a.cpp
   src/vsx_widget/vsx_widget_base.cpp
   src/vsx_widget/server/vsx_widget_comp.cpp
-  src/vsx_widget/server/vsx_widget_connector.cpp
+  src/vsx_widget/server/vsx_widget_connector_bezier.cpp
   src/vsx_widget/server/vsx_widget_anchor.cpp
   src/vsx_widget/server/vsx_widget_server.cpp
   src/vsx_widget/controllers/vsx_widget_controller.cpp

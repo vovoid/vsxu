@@ -42,7 +42,7 @@
 #include <vsx_command_client_server.h>
 #include "vsx_widget_server.h"
 #include "module_choosers/vsx_widget_module_chooser.h"
-#include "vsx_widget_connector.h"
+#include "vsx_widget_connector_bezier.h"
 #include "helpers/vsx_widget_assistant.h"
 //#include "vsx_widget_object_inspector.h"
 #include "controllers/vsx_widget_base_controller.h"
@@ -80,7 +80,7 @@ void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t) {
 		std::map<int,vsx_widget*> connection_map;
 		for (children_iter = children.begin(); children_iter != children.end(); ++children_iter) {
 			if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_CONNECTOR) {
-				connection_map[((vsx_widget_connector*)*children_iter)->order] = *children_iter;
+				connection_map[((vsx_widget_connector_bezier*)*children_iter)->order] = *children_iter;
 			}
 		}
 		//std::list<vsx_widget*> cstack;
@@ -91,8 +91,8 @@ void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t) {
 //      printf("oldorder: %d",((vsx_widget_connector*)connection_map[c])->order);
 //      printf("order: %s",(*it).c_str());
 //        cstack.push_back(connection_map[s2i(*it)]);
-		((vsx_widget_connector*)connection_map[s2i(*it)])->order = c;
-		((vsx_widget_connector*)connection_map[s2i(*it)])->move(vsx_vector(0));
+		((vsx_widget_connector_bezier*)connection_map[s2i(*it)])->order = c;
+		((vsx_widget_connector_bezier*)connection_map[s2i(*it)])->move(vsx_vector(0));
 		//((vsx_widget_connector*)connection_map[s2i(*it)])->pos.x = 0;
 		//((vsx_widget_connector*)connection_map[s2i(*it)])->pos.y = 0;
 	//printf("order-name: %s",((vsx_widget_connector*)connection_map[c])->destination->name.c_str());
@@ -104,12 +104,12 @@ if (t->cmd == "connections_order_int") {
 	// create the order-map. we're lucky as the maps always put the contents in order <3
 	for (children_iter = children.begin(); children_iter != children.end(); ++children_iter) {
 		if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_CONNECTOR) {
-			position_map[((vsx_widget_connector*)*children_iter)->real_pos.y] = *children_iter;
+			position_map[((vsx_widget_connector_bezier*)*children_iter)->real_pos.y] = *children_iter;
 		}
 	}
 	std::vector<vsx_string> order_list;
 	for (std::map<float,vsx_widget*>::reverse_iterator it = position_map.rbegin(); it != position_map.rend(); ++it) {
-		order_list.push_back(i2s(((vsx_widget_connector*)((*it).second))->order));
+		order_list.push_back(i2s(((vsx_widget_connector_bezier*)((*it).second))->order));
 	}
 	vsx_string order_list_finished = implode(order_list,",");
 	command_q_b.add_raw("connections_order "+component->name+" "+name+" "+order_list_finished);
@@ -208,27 +208,27 @@ if (t->cmd == "pca") {
 			// delete controllers
 			delete_controllers();
 			// add new connector
-			vsx_widget *tt = add(new vsx_widget_connector,name+":conn");
+			vsx_widget *tt = add(new vsx_widget_connector_bezier,name+":conn");
 			vsx_vector u;
 			vsx_vector uu = get_pos_p();
-			((vsx_widget_connector*)tt)->alias_conn = false;
+			((vsx_widget_connector_bezier*)tt)->alias_conn = false;
 			if (ba->alias && io == -1 && ba->io == io) {
 				ba->alias_parent = this;
-				((vsx_widget_connector*)tt)->alias_conn = true;
+				((vsx_widget_connector_bezier*)tt)->alias_conn = true;
 			}
 			if (alias && io == 1 && ba->io == io) {
 				alias_parent = ba;
 				alias_for_component = t->parts[3];
 				alias_for_anchor = t->parts[4];
-				((vsx_widget_connector*)tt)->alias_conn = true;
+				((vsx_widget_connector_bezier*)tt)->alias_conn = true;
 			}
 			tt->size.x = 1;
 			tt->size.y = 1;
 			tt->init();
-			((vsx_widget_connector*)tt)->order = s2i(t->parts[5]);
-			((vsx_widget_connector*)tt)->receiving_focus = true;
-			((vsx_widget_connector*)tt)->destination = ba;
-			((vsx_widget_connector*)tt)->open = conn_open;
+			((vsx_widget_connector_bezier*)tt)->order = s2i(t->parts[5]);
+			((vsx_widget_connector_bezier*)tt)->receiving_focus = true;
+			((vsx_widget_connector_bezier*)tt)->destination = ba;
+			((vsx_widget_connector_bezier*)tt)->open = conn_open;
 
 			ba->connectors.push_back(tt);
 			connections.push_back(tt);
@@ -241,9 +241,9 @@ if (t->cmd == "param_disconnect_ok") {
 	//  param_disconnect_ok [component] [anchor] [destination_component] [destination-anchor]
 	for (children_iter = children.begin(); children_iter != children.end(); ++children_iter) {
 		if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_CONNECTOR)
-		if (((vsx_widget_anchor*)((vsx_widget_connector*)(*children_iter))->destination)->component->name == t->parts[3])
+		if (((vsx_widget_anchor*)((vsx_widget_connector_bezier*)(*children_iter))->destination)->component->name == t->parts[3])
 		{
-			if (((vsx_widget_anchor*)((vsx_widget_connector*)(*children_iter))->destination)->name == t->parts[4])
+			if (((vsx_widget_anchor*)((vsx_widget_connector_bezier*)(*children_iter))->destination)->name == t->parts[4])
 			{
 				// this is the one. KILL IT!
 
@@ -692,7 +692,7 @@ bool vsx_widget_anchor::connect(vsx_widget* other_anchor) {
 		}
 
 		for (std::list <vsx_widget*>::iterator it = connections.begin(); it != connections.end(); ++it) {
-			if ( ((vsx_widget_connector*)*it)->destination == other_anchor) {
+			if ( ((vsx_widget_connector_bezier*)*it)->destination == other_anchor) {
 				//command_q_b.add_raw("alert_dialog foo error "+base64_encode("Double connection!"));
 				return false;
 			}
@@ -716,7 +716,7 @@ void vsx_widget_anchor::before_delete() {
 		if (io == -1)
 		for (std::list <vsx_widget*>::iterator it = children.begin(); it != children.end(); ++it) {
 			if ((*it)->widget_type == VSX_WIDGET_TYPE_CONNECTOR && !(*it)->marked_for_deletion) {
-				vsx_widget_connector* c = (vsx_widget_connector*)(*it);
+				vsx_widget_connector_bezier* c = (vsx_widget_connector_bezier*)(*it);
 //          printf("left dealing with %s\n",c->name.c_str());
 				if (c->destination) {
 					if (((vsx_widget_anchor*)c->destination)->io == io) ((vsx_widget_anchor*)c->destination)->_delete();
@@ -734,7 +734,7 @@ void vsx_widget_anchor::before_delete() {
 		#endif
 		for (std::list <vsx_widget*>::iterator it = connectors2.begin(); it != connectors2.end(); ++it) {
 //        if ((*it)->type == "vsx_widget_connector") {
-				((vsx_widget_connector*)(*it))->destination = 0;
+				((vsx_widget_connector_bezier*)(*it))->destination = 0;
 //          printf("connector: %s\n",(*it)->name.c_str());
 //          printf("io: %d\n",io);
 				 //(*it)->parent->children.remove((*it));
@@ -782,13 +782,13 @@ void vsx_widget_anchor::update_connection_order() {
   if (children.size()) {
     for (std::list <vsx_widget*>::iterator it=children.begin(); it != children.end(); ++it) {
       if ((*it)->widget_type == VSX_WIDGET_TYPE_CONNECTOR && !(*it)->marked_for_deletion) {
-        connection_map[((vsx_widget_connector*)*it)->order] = *it;
+        connection_map[((vsx_widget_connector_bezier*)*it)->order] = *it;
       }
     }
     // go through these in the sorted order and update the order
     int c = 0;
     for (std::map<int,vsx_widget*>::iterator it2 = connection_map.begin(); it2 != connection_map.end(); ++it2) {
-      ((vsx_widget_connector*)(*it2).second)->order = c;
+      ((vsx_widget_connector_bezier*)(*it2).second)->order = c;
       ++c;
     }
   }
@@ -803,7 +803,7 @@ void vsx_widget_anchor::get_connections_abs(vsx_widget* base, std::list<vsx_widg
       bool found = false;
       std::list<vsx_widget*>::iterator it;
       for (std::list<vsx_widget*>::iterator itb = connections.begin(); itb != connections.end(); ++itb) {
-        if (((vsx_widget_connector*)(*itb))->order == (int)i) {
+        if (((vsx_widget_connector_bezier*)(*itb))->order == (int)i) {
           it = itb;
           found = true;
         }
@@ -812,19 +812,19 @@ void vsx_widget_anchor::get_connections_abs(vsx_widget* base, std::list<vsx_widg
       if (found)
       if ((*it)->widget_type == VSX_WIDGET_TYPE_CONNECTOR && !(*it)->marked_for_deletion) {
 //        printf("dest: %s\n",((vsx_widget_connector*)*it)->destination->name.c_str());
-        if (((vsx_widget_anchor*)((vsx_widget_connector*)*it)->destination)->io != io)
+        if (((vsx_widget_anchor*)((vsx_widget_connector_bezier*)*it)->destination)->io != io)
         {
-          if (!((vsx_widget_component*)((vsx_widget_anchor*)((vsx_widget_connector*)*it)->destination)->component)->is_moving) {
+          if (!((vsx_widget_component*)((vsx_widget_anchor*)((vsx_widget_connector_bezier*)*it)->destination)->component)->is_moving) {
             // ok, we found a real connection, stop here
             vsx_widget_connector_info* connector_info = new vsx_widget_connector_info;
             connector_info->dest = base;
-            connector_info->source = ((vsx_widget_connector*)*it)->destination;
-            connector_info->order = ((vsx_widget_connector*)*it)->order;
+            connector_info->source = ((vsx_widget_connector_bezier*)*it)->destination;
+            connector_info->order = ((vsx_widget_connector_bezier*)*it)->order;
             mlist->push_back(connector_info);
           }
         } else
-        if (((vsx_widget_anchor*)((vsx_widget_connector*)*it)->destination)->alias) {
-          ((vsx_widget_anchor*)(((vsx_widget_connector*)*it)->destination))->get_connections_abs(base, mlist);
+        if (((vsx_widget_anchor*)((vsx_widget_connector_bezier*)*it)->destination)->alias) {
+          ((vsx_widget_anchor*)(((vsx_widget_connector_bezier*)*it)->destination))->get_connections_abs(base, mlist);
         }
       }
     }
@@ -851,19 +851,19 @@ void vsx_widget_anchor::get_connections_abs(vsx_widget* base, std::list<vsx_widg
     for (std::list <vsx_widget*>::iterator it = connectors.begin(); it != connectors.end(); ++it) {
 //      printf("outconnector %s\n",(*it)->name.c_str());
       if (!(*it)->marked_for_deletion) {
-        if (((vsx_widget_anchor*)((vsx_widget_connector*)*it)->parent)->io != io)
+        if (((vsx_widget_anchor*)((vsx_widget_connector_bezier*)*it)->parent)->io != io)
         {
-          if (!((vsx_widget_component*)((vsx_widget_anchor*)((vsx_widget_connector*)*it)->parent)->component)->is_moving) {
+          if (!((vsx_widget_component*)((vsx_widget_anchor*)((vsx_widget_connector_bezier*)*it)->parent)->component)->is_moving) {
             // these are connections, add them to the outlist
             vsx_widget_connector_info* connector_info = new vsx_widget_connector_info;
             connector_info->source = base;
-            connector_info->dest = ((vsx_widget_connector*)*it)->parent;
-            connector_info->order = ((vsx_widget_connector*)*it)->order;
+            connector_info->dest = ((vsx_widget_connector_bezier*)*it)->parent;
+            connector_info->order = ((vsx_widget_connector_bezier*)*it)->order;
             mlist->push_back(connector_info);
           }
         } else
-        if (((vsx_widget_anchor*)((vsx_widget_connector*)*it)->parent)->alias) {
-          ((vsx_widget_anchor*)(((vsx_widget_connector*)*it)->parent))->get_connections_abs(base, mlist);
+        if (((vsx_widget_anchor*)((vsx_widget_connector_bezier*)*it)->parent)->alias) {
+          ((vsx_widget_anchor*)(((vsx_widget_connector_bezier*)*it)->parent))->get_connections_abs(base, mlist);
         }
       }
     }
@@ -876,7 +876,7 @@ void vsx_widget_anchor::disconnect_abs() {
     for (std::list<vsx_widget*>::iterator it = children.begin(); it != children.end(); ++it) {
       //
       if ((*it)->widget_type == VSX_WIDGET_TYPE_CONNECTOR)
-      if (!((vsx_widget_component*)((vsx_widget_anchor*)((vsx_widget_connector*)*it)->destination)->component)->is_moving)
+      if (!((vsx_widget_component*)((vsx_widget_anchor*)((vsx_widget_connector_bezier*)*it)->destination)->component)->is_moving)
       {
         //printf("abs_disconnect -1 %s\n",(*it)->name.c_str());
         (*it)->_delete();
@@ -886,13 +886,13 @@ void vsx_widget_anchor::disconnect_abs() {
     std::list <vsx_widget*> connectors_temp = connectors;
     for (std::list <vsx_widget*>::iterator it = connectors_temp.begin(); it != connectors_temp.end(); ++it) {
 //      printf("abs_disconnect +1 %s\n",(*it)->name.c_str());
-      if (!((vsx_widget_component*)((vsx_widget_anchor*)((vsx_widget_connector*)*it)->parent)->component)->is_moving)
+      if (!((vsx_widget_component*)((vsx_widget_anchor*)((vsx_widget_connector_bezier*)*it)->parent)->component)->is_moving)
       {
         if (
             ((vsx_widget_anchor*)(*it)->parent)->alias
           &&
             (((vsx_widget_anchor*)(*it)->parent)->component->parent !=
-            ((vsx_widget_anchor*)(((vsx_widget_connector*)(*it))->destination))->component->parent)
+            ((vsx_widget_anchor*)(((vsx_widget_connector_bezier*)(*it))->destination))->component->parent)
           )
           {
           (*it)->parent->_delete();
@@ -932,12 +932,12 @@ void vsx_widget_anchor::param_connect_abs(vsx_string c_component, vsx_string c_p
         // delete controllers & check for existing connections
         for (children_iter = children.begin(); children_iter != children.end(); ++children_iter) {
           if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_CONNECTOR) {
-            if ( ((vsx_widget_connector*)(*children_iter))->destination == (vsx_widget*)other_anchor) return;
+            if ( ((vsx_widget_connector_bezier*)(*children_iter))->destination == (vsx_widget*)other_anchor) return;
           }
           if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_CONTROLLER) (*children_iter)->_delete();//root->command_q_f.add("delete",(*children_iter)->id);
         }
         // add new connection
-        vsx_widget_connector *connection = (vsx_widget_connector *)add(new vsx_widget_connector,name+":conn");
+        vsx_widget_connector_bezier *connection = (vsx_widget_connector_bezier *)add(new vsx_widget_connector_bezier,name+":conn");
 
         connection->alias_conn = false;
         if (other_anchor->alias && io == -1 && other_anchor->io == io) {
@@ -1054,8 +1054,8 @@ void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widg
         int oo = 0;
         for (std::list<vsx_widget*>::iterator it = alias_parent->children.begin(); it != alias_parent->children.end(); ++it) {
           if ((*it)->widget_type == VSX_WIDGET_TYPE_CONNECTOR) {
-            if (((vsx_widget_connector*)(*it))->destination == this) {
-              oo = ((vsx_widget_connector*)(*it))->order;
+            if (((vsx_widget_connector_bezier*)(*it))->destination == this) {
+              oo = ((vsx_widget_connector_bezier*)(*it))->order;
               //printf("found oo, %d\n",oo);
               //it = alias_parent->children.end();
             }
@@ -1073,8 +1073,8 @@ void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widg
         int oo = 0;
         for (std::list<vsx_widget*>::iterator it = alias_parent->children.begin(); it != alias_parent->children.end(); ++it) {
           if ((*it)->widget_type == VSX_WIDGET_TYPE_CONNECTOR) {
-            if (((vsx_widget_connector*)(*it))->destination == this) {
-              oo = ((vsx_widget_connector*)(*it))->order;
+            if (((vsx_widget_connector_bezier*)(*it))->destination == this) {
+              oo = ((vsx_widget_connector_bezier*)(*it))->order;
               //printf("found oo %d\n",oo);
               //it = alias_parent->children.end();
             }
@@ -1145,17 +1145,17 @@ void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widg
   } else {
     // go through our list of connections to find an alias
     vsx_widget_anchor* our_alias = 0;
-    vsx_widget_connector* our_connection = 0;
+    vsx_widget_connector_bezier* our_connection = 0;
     for (std::list<vsx_widget*>::iterator it = children.begin(); it != children.end(); ++it) {
       //
       if ((*it)->widget_type == VSX_WIDGET_TYPE_CONNECTOR && !(*it)->marked_for_deletion) {
 //        printf("dest: %s\n",((vsx_widget_connector*)*it)->destination->name.c_str());
 
-        if (((vsx_widget_anchor*)((vsx_widget_connector*)*it)->destination)->alias
-        &&  ((vsx_widget_anchor*)((vsx_widget_connector*)*it)->destination)->io == io
+        if (((vsx_widget_anchor*)((vsx_widget_connector_bezier*)*it)->destination)->alias
+        &&  ((vsx_widget_anchor*)((vsx_widget_connector_bezier*)*it)->destination)->io == io
         ) {
-          our_alias = (vsx_widget_anchor*)((vsx_widget_connector*)*it)->destination;
-          our_connection = (vsx_widget_connector*)(*it);
+          our_alias = (vsx_widget_anchor*)((vsx_widget_connector_bezier*)*it)->destination;
+          our_connection = (vsx_widget_connector_bezier*)(*it);
         }
       }
     }
@@ -1220,10 +1220,10 @@ vsx_widget_anchor* vsx_widget_anchor::alias_to_level(vsx_widget_anchor* dest) {
   src_name = implode(src_name_parts,deli);
   vsx_widget_anchor* alias_found = 0;
   for (std::list <vsx_widget*>::iterator it = connectors.begin(); it != connectors.end(); ++it) {
-    if (!((vsx_widget_anchor*)((vsx_widget_connector*)(*it))->parent)->marked_for_deletion)
-    if (((vsx_widget_anchor*)((vsx_widget_connector*)(*it))->parent)->alias)
-    if (((vsx_widget_anchor*)((vsx_widget_connector*)(*it))->parent)->alias_parent == this)
-    alias_found = (vsx_widget_anchor*)((vsx_widget_connector*)(*it))->parent;
+    if (!((vsx_widget_anchor*)((vsx_widget_connector_bezier*)(*it))->parent)->marked_for_deletion)
+    if (((vsx_widget_anchor*)((vsx_widget_connector_bezier*)(*it))->parent)->alias)
+    if (((vsx_widget_anchor*)((vsx_widget_connector_bezier*)(*it))->parent)->alias_parent == this)
+    alias_found = (vsx_widget_anchor*)((vsx_widget_connector_bezier*)(*it))->parent;
   }
 
   if (alias_found) {
@@ -1531,7 +1531,7 @@ void vsx_widget_anchor::event_mouse_down(vsx_widget_distance distance,vsx_widget
 		//glutSetCursor(GLUT_CURSOR_CROSSHAIR);
 		if (p_type != "complex") {
 			if (t) {
-				((vsx_widget_connector*)t)->receiving_focus = true;
+				((vsx_widget_connector_bezier*)t)->receiving_focus = true;
         t->_delete();
 				//children.remove(t);
 				//delete t;
@@ -1544,8 +1544,8 @@ void vsx_widget_anchor::event_mouse_down(vsx_widget_distance distance,vsx_widget
 				drag_clone_anchor = this;
 			} else
 			{
-				t = add(new vsx_widget_connector,name+":ct");
-				((vsx_widget_connector*)t)->receiving_focus = false;
+				t = add(new vsx_widget_connector_bezier,name+":ct");
+				((vsx_widget_connector_bezier*)t)->receiving_focus = false;
 				t->size = distance.center;
 				t->init();
 			}
@@ -1562,8 +1562,8 @@ void vsx_widget_anchor::event_mouse_down(vsx_widget_distance distance,vsx_widget
 			//t->_delete();
 			drag_status = false;
 			((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_show();
-			vsx_widget_connector::dim_alpha = 1.0f;
-			vsx_widget_connector::receiving_focus = true;
+			vsx_widget_connector_bezier::dim_alpha = 1.0f;
+			vsx_widget_connector_bezier::receiving_focus = true;
 			if (t) {
         t->_delete();
 				//children.remove(t);
@@ -1661,9 +1661,9 @@ void vsx_widget_anchor::event_mouse_double_click(vsx_widget_distance distance,vs
 			for (children_iter=children.begin(); children_iter != children.end(); ++children_iter)
 			{
 				if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_CONNECTOR) {
-					if (((vsx_widget_connector*)(*children_iter))->destination) {
+					if (((vsx_widget_connector_bezier*)(*children_iter))->destination) {
 						++c;
-						((vsx_widget_connector*)(*children_iter))->open = conn_open;
+						((vsx_widget_connector_bezier*)(*children_iter))->open = conn_open;
 					}
 				}
 			}
@@ -1766,7 +1766,7 @@ void vsx_widget_anchor::event_mouse_move(vsx_widget_distance distance,vsx_widget
     drag_coords = coords;
     ((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_hide();
     if (t)
-    vsx_widget_connector::dim_alpha = 0.25f;
+    vsx_widget_connector_bezier::dim_alpha = 0.25f;
 
     drag_anchor = this;
     if (t)
@@ -1813,8 +1813,8 @@ void vsx_widget_anchor::event_mouse_up(vsx_widget_distance distance,vsx_widget_c
 		}
 		drag_status = false;
 		((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_show();
-		vsx_widget_connector::dim_alpha = 1.0f;
-		vsx_widget_connector::receiving_focus = true;
+		vsx_widget_connector_bezier::dim_alpha = 1.0f;
+		vsx_widget_connector_bezier::receiving_focus = true;
 		if (clone_value)
 		{
 			if (search_anchor)
@@ -1881,7 +1881,7 @@ void vsx_widget_anchor::pre_draw() {
 	if (visible > 0) {
 		//printf("pre draw\n");
 		if (t) if (a_focus != this) {
-			((vsx_widget_connector*)t)->receiving_focus = true;
+			((vsx_widget_connector_bezier*)t)->receiving_focus = true;
       t->_delete();
 			//children.remove(t);
 			//delete t;
