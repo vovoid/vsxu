@@ -284,7 +284,7 @@ void vsx_widget_server::vsx_command_process_f() {
     // messages from the engine
 		while ( (c = cmd_in->pop()) )
 		{
-      c->dump_to_stdout();
+      //c->dump_to_stdout();
 			if (c->cmd == "vsxu_welcome") {
 				server_version = c->parts[1];
 				connection_id = c->parts[2];
