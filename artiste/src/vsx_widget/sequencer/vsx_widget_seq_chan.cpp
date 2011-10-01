@@ -1175,7 +1175,6 @@ void vsx_widget_seq_channel::vsx_command_process_b(vsx_command_s *t)
 		// 0=param_set 1=[data] 2=[id]
 		if (t->cmd == "param_set")
 		{
-
 			// 0=mseq_channel_ok 1=row 2=time_sequence 3=[name] 4=[item_id] 5=[get]/[set] 6(optional)=[sequence_dump]
 			backwards_message("mseq_channel row time_sequence "+channel_name+" "+t->parts[2]+" set "+t->parts[1]);
 		}
@@ -1183,7 +1182,7 @@ void vsx_widget_seq_channel::vsx_command_process_b(vsx_command_s *t)
 		// [0=pg64] [1=param_name] [2=global_widget_id] [3=local_item_id]
 		if (t->cmd == "pg64")
 		{
-			t->dump_to_stdout();
+			//t->dump_to_stdout();
 			// message from a time sequencer to initialize its value
 			// 0=mseq_channel_ok 1=row 2=time_sequence 3=[name] 4=[item_id] 5=[get]/[set] 6(optional)=[sequence_dump]
 			backwards_message("mseq_channel row time_sequence "+channel_name+" "+t->parts[3]+" get");
