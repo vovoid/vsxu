@@ -56,8 +56,8 @@ public:
   }
 
   ~vsx_bspline() {
-    printf("bspline destructor\n");
   }
+  
 	vsx_bspline(vsx_vector _center, float _radius, float _minDistNext, float _maxDistNext) {
 		current_pos = 0.0f;
 		center = _center;
@@ -91,42 +91,6 @@ public:
     set_pos(real_pos+stepn);
   }
 
-	/*void step(float step) {
-		int numNew = (int)(currentPos + step) - (int)(currentPos);
-
-		if (numNew > 4)	numNew = 4; // to avoid creating of too many new points...
-
-		for (int i = 0; i < numNew; i++) {
-      //printf("adding new point %d\n",i);
-
-			vsx_vector next;
-
-			p0 = p1;
-			p1 = p2;
-			p2 = p3;
-
-			float len;
-
-			do {
-				next.x = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * maxDistNext;
-				next.y = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * maxDistNext;
-				next.z = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * maxDistNext;
-
-				len = next.norm();
-
-				if(len > maxDistNext) next.normalize(maxDistNext);
-				if(len < minDistNext) next.normalize(minDistNext);
-
-				p3 = p2 + next;
-				
-				len = (p3 - center).length();
-			} while(len > radius);
-		}
-
-		currentPos += step;
-		if(currentPos > 1.0f) currentPos -= int(currentPos);
-	};*/
-
 	vsx_vector calc_coord() {
     vsx_vector v;
 		float t = current_pos;
@@ -136,11 +100,6 @@ public:
 		float k1 = 1.0f - 3.0f * t + 3.0f * t2 - t3;
 		float k2 = 4.0f - 6.0f * t2 + 3.0f * t3;
 		float k3 = 1.0f + 3.0f * t + 3.0f * t2 - 3.0f * t3;
-		/*printf("k1: %f\nk2: %f\nk3: %f\nt3: %f\n",k1,k2,k3,t3);
-		p0.dump("p0");
-		p1.dump("p1");
-		p2.dump("p2");
-		p3.dump("p3");*/
 
 		v = (p0 * k1 + 
 				p1 * k2 + 
@@ -150,95 +109,4 @@ public:
 	};
 };
 
-
-
-/*class vsx_bspline_rand {
-  float		currentPos;
-  vsx_vector	p0, p1, p2, p3;
-  float		minDistNext;
-  float		maxDistNext;
-  vsx_vector center;
-  float		radius;
-
-public:
-  
-  vsx_bspline_rand() {};
-
-	vsx_bspline_rand(vsx_vector _center, float _radius, float _minDistNext, float _maxDistNext) {
-		currentPos = 0.0f;
-		center = _center;
-		radius = _radius;
-		minDistNext = _minDistNext;
-		maxDistNext = _maxDistNext;
-//		step(4.0f);
-	};
-
-	void init(vsx_vector _center, float _radius, float _minDistNext, float _maxDistNext) {
-		currentPos = 0.0f;
-		center = _center;
-		radius = _radius;
-		minDistNext = _minDistNext;
-		maxDistNext = _maxDistNext;
-//		step(4.0f);
-	};
-
-	void step(float step) {
-		int numNew = (int)(currentPos + step) - (int)(currentPos);
-
-		if (numNew > 4)	numNew = 4; // to avoid creating of too many new points...
-
-		for (int i = 0; i < numNew; i++) {
-      //printf("adding new point %d\n",i);
-
-			vsx_vector next;
-
-			p0 = p1;
-			p1 = p2;
-			p2 = p3;
-
-			float len;
-
-			do {
-				next.x = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * maxDistNext;
-				next.y = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * maxDistNext;
-				next.z = ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f) * maxDistNext;
-
-				len = next.norm();
-
-				if(len > maxDistNext) next.normalize(maxDistNext);
-				if(len < minDistNext) next.normalize(minDistNext);
-
-				p3 = p2 + next;
-				
-				len = (p3 - center).length();
-			} while(len > radius);
-		}
-
-		currentPos += step;
-		if(currentPos > 1.0f) currentPos -= int(currentPos);
-	};
-
-	vsx_vector calc_coord() {
-    vsx_vector v;
-		float t = currentPos;
-		float t2 = t * t;
-		float t3 = t2 * t;
-
-		float k1 = 1.0f - 3.0f * t + 3.0f * t2 - t3;
-		float k2 = 4.0f - 6.0f * t2 + 3.0f * t3;
-		float k3 = 1.0f + 3.0f * t + 3.0f * t2 - 3.0f * t3;
-		printf("k1: %f\nk2: %f\nk3: %f\nt3: %f\n",k1,k2,k3,t3);
-		p0.dump("p0");
-		p1.dump("p1");
-		p2.dump("p2");
-		p3.dump("p3");*/
-
-/*		v = (p0 * k1 + 
-				p1 * k2 + 
-				p2 * k3 + 
-				p3 * t3) * (1.0f / 6.0f);
-		return v;
-	};
-};
-*/
 #endif
