@@ -91,7 +91,15 @@ int vsx_widget_connector_bezier::inside_xy_l(vsx_vector &test, vsx_vector &globa
   if (alt || !ctrl) return 0;
   if (alt && ctrl) return 0;
   // NOTE! sx/sy is lower right!
-  if (test.x > sx || test.x < ex)
+  float tsx = sx;
+  float tex = ex;
+  if (ex > sx)
+  {
+    tex = sx;
+    tsx = ex;
+  }
+
+  if (test.x > tsx || test.x < tex)
   {
     #if VSX_DEBUG
       printf("outside sx/ex\n");
@@ -218,6 +226,7 @@ void vsx_widget_connector_bezier::draw()
     ey = dv.y;
   }
 
+
   glEnable(GL_LINE_SMOOTH);
 
 
@@ -227,17 +236,52 @@ void vsx_widget_connector_bezier::draw()
     draw_box_texf(ex,ey,0,0.004f,0.004f);
   mtex_blob._bind();
 
-//   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-// 
-//   glColor4f(0.0f, 0.0f, 0.0f, 0.3f);
-//   glLineWidth(3.0f);
-//   glBegin(GL_LINES);
-     sx = pv.x;
-     sy = pv.y;
-//     glVertex3f(sx,sy,pos.z);
-//     glVertex3f(ex,ey,pos.z);
-//   glEnd();
-//   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+  sx = pv.x;
+  sy = pv.y;
+  
+  
+  
+  if (old_sx != sx || old_sy != sy || old_ex != ex || old_ey != ey)
+  {
+    // recalc
+    vsx_bezier_calc bez_calc;
+    bez_calc.x0 = sx;
+    bez_calc.y0 = sy;
+    
+    bez_calc.x1 = sx+(ex-sx)*0.5f;
+    bez_calc.y1 = sy;
+    
+    bez_calc.x2 = ex-(ex-sx)*0.5f;
+    bez_calc.y2 = ey;
+    
+    bez_calc.x3 = ex;
+    bez_calc.y3 = ey;
+    bez_calc.init();
+    
+    size_t i = 0;
+    for (float t = 0.0f; t <= 1.05f; t += 0.05f)
+    {
+      cached_spline[i].x = bez_calc.x_from_t(t);
+      cached_spline[i].y = bez_calc.y_from_t(t);
+      i++;
+    }
+    old_sx = sx;
+    old_sy = sy;
+    old_ex = ex;
+    old_ey = ey;
+  }
+  
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  glColor4f(0.0f, 0.0f, 0.0f, 0.3f);
+  glLineWidth(3.0f);
+    glBegin(GL_LINE_STRIP);
+      for (size_t i = 0; i < 21; i++)
+      {
+        glVertex3f(cached_spline[i].x,cached_spline[i].y,pos.z);
+      }
+    glEnd();
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
   if (m_focus == this || a_focus == this || k_focus == this)
   {
@@ -248,19 +292,6 @@ void vsx_widget_connector_bezier::draw()
     glLineWidth(1.0f);
   }
 
-  vsx_bezier_calc bez_calc;
-  bez_calc.x0 = sx;
-  bez_calc.y0 = sy;
-
-  bez_calc.x1 = sx+(ex-sx)*0.5f;
-  bez_calc.y1 = sy;
-
-  bez_calc.x2 = ex-(ex-sx)*0.5f;
-  bez_calc.y2 = ey;
-
-  bez_calc.x3 = ex;
-  bez_calc.y3 = ey;
-  bez_calc.init();
   
   glLineWidth(2.0f);
   if (k_focus == this)
@@ -279,10 +310,11 @@ void vsx_widget_connector_bezier::draw()
     }
   }
 
+
   glBegin(GL_LINE_STRIP);
-    for (float t = 0.0f; t <= 1.05f; t += 0.05f)
+    for (size_t i = 0; i < 21; i++)
     {
-      glVertex3f(bez_calc.x_from_t(t),bez_calc.y_from_t(t),pos.z);
+      glVertex3f(cached_spline[i].x,cached_spline[i].y,pos.z);
     }
   glEnd();
 
@@ -359,6 +391,7 @@ vsx_widget_connector_bezier::vsx_widget_connector_bezier()
   destination = 0;
   receiving_focus = true;
   support_interpolation = true;
+  old_sx = old_sy = old_ex = old_ey = 0.0f;
 }
 
 bool vsx_widget_connector_bezier::event_key_down(signed long key, bool alt, bool ctrl, bool shift) 
