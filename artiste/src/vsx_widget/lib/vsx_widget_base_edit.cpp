@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #include "vsx_gl_global.h"
 #include <map>
 #include <list>
@@ -122,7 +143,7 @@ void vsx_widget_base_edit::process_line(int n_line) {
   if (lines[i][0] == '/' && lines[i][1] == '/')
   fill = (char)0x02;
 
-  for (int j = 0; j < lines[i].size(); ++j) {
+  for (size_t j = 0; j < lines[i].size(); ++j) {
     b = b + fill;
   }
   if (fill == (char)0x01)
@@ -149,7 +170,7 @@ void vsx_widget_base_edit::process_lines() {
     if (lines[i][0] == '/' && lines[i][1] == '/')
     fill = (char)0x02;
 
-    for (int j = 0; j < lines[i].size(); ++j) {
+    for (size_t j = 0; j < lines[i].size(); ++j) {
       b = b + fill;
     }
     if (fill == (char)0x01)
@@ -166,7 +187,7 @@ void vsx_widget_base_edit::process_lines() {
 }
 
 void vsx_widget_base_edit::calculate_scroll_size() {
-  int t_longest_line = 0;
+  size_t t_longest_line = 0;
   for (std::vector<vsx_string>::iterator it = lines.begin(); it != lines.end(); ++it) {
     if ((*it).size() > t_longest_line) t_longest_line = (*it).size();
   }
@@ -325,7 +346,7 @@ void vsx_widget_base_edit::event_mouse_wheel(float y)
 
 int count_whitespaces(vsx_string& s)
 {
-	int i = 0;
+	size_t i = 0;
 	while (i < s.size() && s[i] == ' ')
 	{
 		//printf("line: %d\n",__LINE__);
@@ -643,7 +664,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
 #endif
 #endif
       ++caretx;
-      if (caretx > lines[carety+(int)scroll_y].size()-(int)scroll_x) {
+      if ((size_t)caretx > lines[carety+(int)scroll_y].size()-(int)scroll_x) {
 #ifdef _WIN32
         event_key_down(-40,false,false,false);
         event_key_down(-36,false,false,false);
@@ -676,7 +697,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
             //fix_pos();
           }
         }
-        if (caretx > lines[carety+(int)scroll_y].size()-(int)scroll_x)
+        if ((size_t)caretx > lines[carety+(int)scroll_y].size()-(int)scroll_x)
 #ifdef _WIN32
           event_key_down(-35);
 #else
@@ -722,7 +743,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
           ++scroll_y;
           --carety;
         }
-        if (caretx > lines[carety+(int)scroll_y].size()-(int)scroll_x)
+        if ((size_t)caretx > lines[carety+(int)scroll_y].size()-(int)scroll_x)
          caretx = lines[carety+(int)scroll_y].size()-(int)scroll_x;
       }
       break;
@@ -854,7 +875,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
         command_q_b.add_raw(d+lines[0]);
         parent->vsx_command_queue_b(this);
       } else {
-        if (caretx+(int)scroll_x > lines[carety+(int)scroll_y].size()) event_key_down(-35,false,false,false);
+        if ((size_t)caretx+(size_t)scroll_x > lines[carety+(int)scroll_y].size()) event_key_down(-35,false,false,false);
         while (c2 < carety+(int)scroll_y) { ++c2; ++it; ++itp; ++itlv; }
         ++it;
         ++itp;
@@ -910,7 +931,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
       	lines[carety+(int)scroll_y].insert(caretx+(int)scroll_x,(char)key);
       	updates++;
       	++caretx;
-      	if (caretx > lines[carety+(int)scroll_y].size()-(int)scroll_x)
+      	if ((size_t)caretx > lines[carety+(int)scroll_y].size()-(int)scroll_x)
        	caretx = lines[carety+(int)scroll_y].size()-(int)scroll_x;
       	int t_scroll_x = (int)scroll_x;
       	if (caretx+(int)scroll_x > characters_width) ++scroll_x;

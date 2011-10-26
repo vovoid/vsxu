@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #include "_configuration.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
@@ -387,7 +408,7 @@ class vsx_module_gravity_ribbon_mesh : public vsx_module {
 
   vsx_matrix modelview_matrix_no_connection;
   float last_update;
-  long prev_num_vertices;
+  unsigned long prev_num_vertices;
 
 public:
   
@@ -488,10 +509,10 @@ public:
 
     if (mesh && (*mesh)->data->vertices.size())
     {
-      if (prev_num_vertices != (int)mesh_id_count->get())
+      if (prev_num_vertices != (unsigned long)mesh_id_count->get())
       {
         // remove all the old ones
-        for (unsigned long i = prev_num_vertices; i < (int)mesh_id_count->get(); ++i)
+        for (unsigned long i = prev_num_vertices; i < (unsigned long)mesh_id_count->get(); ++i)
         {
           //printf("allocating %d\n", i);
           //if (i == prev_num_vertices)
@@ -603,7 +624,7 @@ public:
         upv.x = upvector->get(0);
         upv.y = upvector->get(1);
         upv.z = upvector->get(2);
-        for (int i = 0; i < prev_num_vertices; ++i)
+        for (unsigned long i = 0; i < prev_num_vertices; ++i)
         {
           gr[i]->width = ribbon_width->get();
           gr[i]->length = length->get();

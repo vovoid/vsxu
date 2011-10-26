@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #ifndef VSX_NO_CLIENT
 #include "vsx_gl_global.h"
 #include <map>
@@ -53,7 +74,9 @@ vsx_widget_server::vsx_widget_server() {
   init_run = false;
   support_scaling = false;
   selection = false;
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   client = 0;
+  #endif
 
   log(" welcome to");
   log(" _   _  ___ _  __     _        ___  ___   ___");
@@ -122,7 +145,9 @@ module browser\n\
   menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;90fps","conf","global_framerate_limit 90");
   menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;100fps","conf","global_framerate_limit 100");
   menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   menu->commands.adds(VSX_COMMAND_MENU,"server  >;connect","show_connect_dialog","");
+  #endif
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
   {
     menu->commands.adds(VSX_COMMAND_MENU,"server  >;disconnect","dc","");
@@ -230,12 +255,14 @@ void vsx_widget_server::on_delete() {
 
 void vsx_widget_server::server_connect(vsx_string host, vsx_string port)
 {
-  client = new vsx_command_list_client;
-  cmd_in = client->get_command_list_in();
-  cmd_out = client->get_command_list_out();
-  client->client_connect(host);
-  server_type = VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET;
-  support_scaling = true;
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+    client = new vsx_command_list_client;
+    cmd_in = client->get_command_list_in();
+    cmd_out = client->get_command_list_out();
+    client->client_connect(host);
+    server_type = VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET;
+    support_scaling = true;
+  #endif
 }
 
 // messages from the engine
@@ -244,18 +271,20 @@ void vsx_widget_server::vsx_command_process_f() {
 
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
   {
+	#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
     //printf("connection status: %d\n", client->get_connection_status());
     if (client->get_connection_status() == VSX_COMMAND_CLIENT_DISCONNECTED)
     {
       _delete();
     }
+	#endif
   }
   
 	if (init_run) {
     // messages from the engine
 		while ( (c = cmd_in->pop()) )
 		{
-      c->dump_to_stdout();
+      //c->dump_to_stdout();
 			if (c->cmd == "vsxu_welcome") {
 				server_version = c->parts[1];
 				connection_id = c->parts[2];
@@ -594,6 +623,13 @@ void vsx_widget_server::vsx_command_process_f() {
 					command_q_b.add(c);
 					tc->vsx_command_queue_b(this,true);
 				}
+				// ****************************************************************
+				// This is useful for debugging out-of-order commands:
+				//else
+        //{
+        //  printf("ARTISTE ERROR: could not find component %s\n", c->parts[1].c_str() );
+        //}
+        // ****************************************************************
 			}
 			else
 			if (
@@ -916,7 +952,9 @@ void vsx_widget_server::vsx_command_process_b(vsx_command_s *t) {
     else
     if (t->cmd == "connect")
     {
+      #if VSX_DEBUG
       printf("creating new server %s\n",t->parts[1].c_str());
+      #endif
       // 1. create a new server widget
       vsx_widget* ns = add( new vsx_widget_server, "server "+t->parts[1] );
       ns->set_pos(vsx_vector(1.0f,0.0f));

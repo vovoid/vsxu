@@ -129,6 +129,7 @@ int main(int argc, char* argv[])
   bool start_fullscreen = false;
   int x_res = 1280;
   int y_res = 720;
+  bool manual_resolution_set = false;
   for (int i = 1; i < argc; i++) {
     vsx_string arg1 = argv[i];
     if (arg1 == "--help")
@@ -160,10 +161,19 @@ int main(int argc, char* argv[])
         explode(arg2, deli, parts);
         x_res = s2i(parts[0]);
         y_res = s2i(parts[1]);
+        manual_resolution_set = true;
       }
     }
   }
-
+  if (start_fullscreen && !manual_resolution_set)
+  {
+    // try to get the resolution from the desktop for fullscreen
+    GLFWvidmode video_mode;
+    glfwGetDesktopMode(&video_mode);
+    x_res = video_mode.Height;
+    y_res = video_mode.Width;
+  }
+  
     // Open OpenGL window
   glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
   if( !glfwOpenWindow( x_res, y_res, 0,0,0,0,16,0, start_fullscreen?GLFW_FULLSCREEN:GLFW_WINDOW ) ) // GLFW_FULLSCREEN

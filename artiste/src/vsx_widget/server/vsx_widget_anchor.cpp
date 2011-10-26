@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #ifndef VSX_NO_CLIENT
 #include "vsx_gl_global.h"
 #include <map>
@@ -266,7 +287,7 @@ if (t->cmd == "in_param_spec" || t->cmd == "out_param_spec") {
 	vsx_string cms = "";
 	int state = 0;
 	//float ypos = size.y/2-size.y*0.8/2;
-	for (int i = 0; i < cd.size(); ++i) {
+	for (size_t i = 0; i < cd.size(); ++i) {
 		if (state == 0 && cd[i] != ',' && cd[i] != '{')
 		cm += cd[i];
 
@@ -275,7 +296,7 @@ if (t->cmd == "in_param_spec" || t->cmd == "out_param_spec") {
 		if (state > 0)
 		{
 			// add to the command to be sent further in
-			if (cd[i] != '{' && cd[i] != '}' || state > 1)
+			if ( (cd[i] != '{' && cd[i] != '}') || state > 1)
 			cms += cd[i];
 		}
 		if (cd[i] == '}') { state--; }
@@ -1236,7 +1257,7 @@ map<vsx_string,vsx_string> parse_url_params(vsx_string input, char major, char m
   vsx_string key="",val="",strip="";
   int p=0;
 
-  for (int i=0;i<input.size();++i)
+  for (size_t i=0;i<input.size();++i)
   {
       if (input[i]=='(') ++sublevel;
       if (input[i]==')') --sublevel;
@@ -1272,114 +1293,120 @@ void vsx_widget_anchor::init_menu(bool include_controllers) {
   if (alias) {
     menu_->commands.adds(VSX_COMMAND_MENU, "unalias", "anchor_unalias","");
   }
-  if (io==-1)
-  if (p_type == "float") {
-    if (!default_controller.size()) default_controller = "controller_knob";
-    if (include_controllers) {
-      menu_->commands.adds(VSX_COMMAND_MENU, "set default value", "param_set_default","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "--Controllers---------", "","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "knob", "controller_knob","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "slider", "controller_slider","");
-    }
-    menu_->commands.adds(VSX_COMMAND_MENU, "--Animation Clip ------", "","");
-    menu_->commands.adds(VSX_COMMAND_MENU, "animation clip;add to current", "seq_pool_add","");
-    menu_->commands.adds(VSX_COMMAND_MENU, "--Sequencer-----------", "","");
-    menu_->commands.adds(VSX_COMMAND_MENU, "sequencer;add/edit sequence", "pseq_a_m","");
-    menu_->commands.adds(VSX_COMMAND_MENU, "sequencer;remove sequence", "pseq_p","remove");
-    menu_->commands.adds(VSX_COMMAND_MENU, "--VSXL scripting------", "","");
-    menu_->commands.adds(VSX_COMMAND_MENU, "add/edit filter script", "vsxl_load_script","");
-    menu_->commands.adds(VSX_COMMAND_MENU, "remove filter script", "vsxl_remove_script","");
-  }
-  else if (p_type == "float3")
+  if (io == -1)
   {
-    if (!default_controller.size()) default_controller = "controller_slider_multi 3";
-    if (include_controllers) {
-      menu_->commands.adds(VSX_COMMAND_MENU, "set default value", "param_set_default","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "--Controllers--------", "","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "sliders", "controller_slider_multi","3");
-      menu_->commands.adds(VSX_COMMAND_MENU, "rotation axis sphere", "controller_ab","3");
-      menu_->commands.adds(VSX_COMMAND_MENU, "color", "controller_col","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "pad", "controller_pad","");
-    }
-  }
-  else if (p_type == "float4")
-  {
-    if (!default_controller.size()) default_controller = "controller_slider_multi 4";
-    //menu = add(new vsx_widget_popup_menu,".anchor_menu");
-    if (include_controllers) {
-      menu_->commands.adds(VSX_COMMAND_MENU, "set default value", "param_set_default","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "--Controllers--------", "","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "sliders", "controller_slider_multi","4");
-      menu_->commands.adds(VSX_COMMAND_MENU, "color", "controller_col","");
-    }
-  }
-  else if (p_type == "quaternion")
-  {
-    if (!default_controller.size()) default_controller = "controller_slider_multi 4";
-    //menu = add(new vsx_widget_popup_menu,".anchor_menu");
-    if (include_controllers) {
-      menu_->commands.adds(VSX_COMMAND_MENU, "set default value", "param_set_default","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "--Controllers--------", "","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "sliders", "controller_slider_multi","4");
-      menu_->commands.adds(VSX_COMMAND_MENU, "rotation axis sphere", "controller_ab","4");
-    }
-    menu_->commands.adds(VSX_COMMAND_MENU, "--Sequencer-----------", "","");
-    menu_->commands.adds(VSX_COMMAND_MENU, "add/edit sequence", "pseq_a_m","");
-    menu_->commands.adds(VSX_COMMAND_MENU, "remove sequence", "pseq_p","remove");
-  }
-  else if (p_type == "resource") {
-    if (!default_controller.size()) default_controller = "controller_resource";
-    if (include_controllers) {
-      menu_->commands.adds(VSX_COMMAND_MENU, "set default value", "param_set_default","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "--Controllers--------", "","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "resource library", "controller_resource","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "text editor", "controller_edit","");
-    }
-  }
-  else if (p_type == "string") {
-    if (!default_controller.size()) default_controller = "controller_edit";
-    if (include_controllers) {
-      menu_->commands.adds(VSX_COMMAND_MENU, "set default value", "param_set_default","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "--Controllers--------", "","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "text editor", "controller_edit","");
-      if (default_controller == "controller_resource") {
-        menu_->commands.adds(VSX_COMMAND_MENU, "resource library", "controller_resource","");
+    if (p_type == "float") {
+      if (!default_controller.size()) default_controller = "controller_knob";
+      if (include_controllers) {
+        menu_->commands.adds(VSX_COMMAND_MENU, "set default value", "param_set_default","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Controllers---------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "knob", "controller_knob","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "slider", "controller_slider","");
       }
+      menu_->commands.adds(VSX_COMMAND_MENU, "--Animation Clip ------", "","");
+      menu_->commands.adds(VSX_COMMAND_MENU, "animation clip;add to current", "seq_pool_add","");
+      menu_->commands.adds(VSX_COMMAND_MENU, "--Sequencer-----------", "","");
+      menu_->commands.adds(VSX_COMMAND_MENU, "sequencer;add/edit sequence", "pseq_a_m","");
+      menu_->commands.adds(VSX_COMMAND_MENU, "sequencer;remove sequence", "pseq_p","remove");
+      menu_->commands.adds(VSX_COMMAND_MENU, "--VSXL scripting------", "","");
+      menu_->commands.adds(VSX_COMMAND_MENU, "add/edit filter script", "vsxl_load_script","");
+      menu_->commands.adds(VSX_COMMAND_MENU, "remove filter script", "vsxl_remove_script","");
     }
-  }
-  else if (p_type == "sequence") {
-    menu_->commands.adds(VSX_COMMAND_MENU, "editor", "controller_seq_edit","");
-  }
-  else if (p_type == "complex")
-  {
-    menu_->commands.adds(VSX_COMMAND_MENU, "open/close (left-double-click)", "tg","");
-    dialogs=parse_url_params(p_type_suffix);
-    for (map<vsx_string,vsx_string>::iterator it = dialogs.begin(); it != dialogs.end(); ++it)
+    else if (p_type == "float3")
     {
-      //cout << (*it).first.substr(0,7)<<endl;
-      if (((vsx_string)(*it).first).substr(0,7) == "dialog_")
+      if (!default_controller.size()) default_controller = "controller_slider_multi 3";
+      if (include_controllers) {
+        menu_->commands.adds(VSX_COMMAND_MENU, "set default value", "param_set_default","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Controllers--------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "sliders", "controller_slider_multi","3");
+        menu_->commands.adds(VSX_COMMAND_MENU, "rotation axis sphere", "controller_ab","3");
+        menu_->commands.adds(VSX_COMMAND_MENU, "color", "controller_col","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "pad", "controller_pad","");
+      }
+    }
+    else if (p_type == "float4")
+    {
+      if (!default_controller.size()) default_controller = "controller_slider_multi 4";
+      //menu = add(new vsx_widget_popup_menu,".anchor_menu");
+      if (include_controllers) {
+        menu_->commands.adds(VSX_COMMAND_MENU, "set default value", "param_set_default","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Controllers--------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "sliders", "controller_slider_multi","4");
+        menu_->commands.adds(VSX_COMMAND_MENU, "color", "controller_col","");
+      }
+    }
+    else if (p_type == "quaternion")
+    {
+      if (!default_controller.size()) default_controller = "controller_slider_multi 4";
+      //menu = add(new vsx_widget_popup_menu,".anchor_menu");
+      if (include_controllers) {
+        menu_->commands.adds(VSX_COMMAND_MENU, "set default value", "param_set_default","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Controllers--------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "sliders", "controller_slider_multi","4");
+        menu_->commands.adds(VSX_COMMAND_MENU, "rotation axis sphere", "controller_ab","4");
+      }
+      menu_->commands.adds(VSX_COMMAND_MENU, "--Sequencer-----------", "","");
+      menu_->commands.adds(VSX_COMMAND_MENU, "add/edit sequence", "pseq_a_m","");
+      menu_->commands.adds(VSX_COMMAND_MENU, "remove sequence", "pseq_p","remove");
+    }
+    else if (p_type == "resource")
+    {
+      if (!default_controller.size()) default_controller = "controller_resource";
+      if (include_controllers) {
+        menu_->commands.adds(VSX_COMMAND_MENU, "set default value", "param_set_default","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Controllers--------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "resource library", "controller_resource","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "text editor", "controller_edit","");
+      }
+    }
+    else if (p_type == "string")
+    {
+      if (!default_controller.size()) default_controller = "controller_edit";
+      if (include_controllers) {
+        menu_->commands.adds(VSX_COMMAND_MENU, "set default value", "param_set_default","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Controllers--------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "text editor", "controller_edit","");
+        if (default_controller == "controller_resource") {
+          menu_->commands.adds(VSX_COMMAND_MENU, "resource library", "controller_resource","");
+        }
+      }
+    }
+    else if (p_type == "sequence")
+    {
+      menu_->commands.adds(VSX_COMMAND_MENU, "editor", "controller_seq_edit","");
+    }
+    else if (p_type == "complex")
+    {
+      menu_->commands.adds(VSX_COMMAND_MENU, "open/close (left-double-click)", "tg","");
+      dialogs=parse_url_params(p_type_suffix);
+      for (map<vsx_string,vsx_string>::iterator it = dialogs.begin(); it != dialogs.end(); ++it)
       {
-        vsx_string name=((vsx_string)(*it).first).substr(7);
-        menu_->commands.adds(VSX_COMMAND_MENU, "Dialogs;"+name, "settings_dialog",name+" "+(*it).second);
+        //cout << (*it).first.substr(0,7)<<endl;
+        if (((vsx_string)(*it).first).substr(0,7) == "dialog_")
+        {
+          vsx_string name=((vsx_string)(*it).first).substr(7);
+          menu_->commands.adds(VSX_COMMAND_MENU, "Dialogs;"+name, "settings_dialog",name+" "+(*it).second);
+        }
+      }
+    }
+    else if (p_type == "enum")
+    {
+      //menu = add(new vsx_widget_popup_menu,".anchor_menu");
+      vsx_string deli_p = "&";
+      vector<vsx_string> parts;
+      explode(p_type_suffix,deli_p,parts);
+
+      vsx_string deli = "|";
+      vector<vsx_string> enumerations;
+      explode(parts[0],deli,enumerations);
+      for (unsigned long i = 0; i < enumerations.size(); ++i) {
+        menu_->commands.adds(VSX_COMMAND_MENU, enumerations[i],"enum",i2s(i));
+        enum_items.push_back(enumerations[i]);
       }
     }
   }
-  else 
-  if (p_type == "enum")
-  {
-    //menu = add(new vsx_widget_popup_menu,".anchor_menu");
-    vsx_string deli_p = "&";
-    vector<vsx_string> parts;
-    explode(p_type_suffix,deli_p,parts);
 
-    vsx_string deli = "|";
-    vector<vsx_string> enumerations;
-    explode(parts[0],deli,enumerations);
-    for (unsigned long i = 0; i < enumerations.size(); ++i) {
-      menu_->commands.adds(VSX_COMMAND_MENU, enumerations[i],"enum",i2s(i));
-      enum_items.push_back(enumerations[i]);
-    }
-  }
+  
   if (!menu_->commands.count()) {
     menu_->_delete();
   } else

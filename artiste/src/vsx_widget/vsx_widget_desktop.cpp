@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #ifndef VSX_NO_CLIENT
 #include <map>
 #include <list>
@@ -431,7 +452,7 @@ void vsx_widget_desktop::load_configuration()
   main_conf.reset();
   vsx_command_s* mc = 0;
   auto_undo = 1;
-  while (mc = main_conf.get()) {
+  while ( (mc = main_conf.get()) ) {
     if (mc->cmd == "skin") {
       skin_path = PLATFORM_SHARED_FILES+vsx_string("gfx/")+mc->cmd_data+"/";
 #ifdef VSXU_DEBUG
@@ -521,7 +542,7 @@ vsx_widget_desktop::vsx_widget_desktop() {
   }
 #endif
   skin_conf.reset();
-  while (mc = skin_conf.get()) {
+  while ( (mc = skin_conf.get()) ) {
     if (mc->cmd == "color") {
       vsx_avector<vsx_string> parts;
       vsx_string deli = ",";

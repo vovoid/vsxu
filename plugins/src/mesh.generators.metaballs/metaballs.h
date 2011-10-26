@@ -1,3 +1,7 @@
+/**
+ Public domain
+*/
+
 #ifndef METABALLS_H
 #define METABALLS_H
 

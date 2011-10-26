@@ -78,6 +78,9 @@ A D V A N C E D   B U I L D   O P T I O N S
     -DVSXU_MEEGO=1
       compile for meego
 
+    -DOPTIMIZATION_FLAGS=1
+      enable a lot of optimization flags (see cmake_globals.txt for info)
+
 
 Examples:
   This is my test/debug-it-all command:
@@ -85,6 +88,9 @@ Examples:
 
   This is my personal installation for demo making:
     cmake . -DVSXU_SOUND_FMOD=1 -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxu"
+
+  This is my default personal installation:
+    cmake . -DOPTIMIZATION_FLAGS=1 -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxu_0.3.0"
 
   For visualization (with pulseaudio) on Linux:
     cmake . -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxupulse"

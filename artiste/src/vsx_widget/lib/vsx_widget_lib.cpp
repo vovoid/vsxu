@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #ifndef VSX_NO_CLIENT
 #include "vsx_gl_global.h"
 //#include <string>
@@ -76,7 +97,7 @@
 
    	  menu_items.reset();
    	  int c = 1;
-      while (t = menu_items.get()) {
+      while ( (t = menu_items.get()) ) {
         if (c == over && over != 0)
         {
           current_command_over = t;
@@ -149,7 +170,7 @@
 
     commands.reset();
     vsx_command_s* t;
-    while (t = commands.get()) {
+    while ( (t = commands.get()) ) {
       add_commands(t);
       //
 
@@ -228,7 +249,7 @@ void vsx_widget_button::i_draw() {
 	if (!visible) return;
 
 	vsx_vector p = get_pos_p();
-	if (coord_type = VSX_WIDGET_COORD_CENTER) {
+	if (coord_type == VSX_WIDGET_COORD_CENTER) {
 		p.x -= size.x*0.5;
 		p.y += size.y*0.5;
 		//p.z = 1.1f;
@@ -414,8 +435,7 @@ void vsx_widget_2d_pager::increase() {
 }
 
 void vsx_widget_2d_pager::decrease() {
-  if (max_pages)
-  if (cur_page) --cur_page; else cur_page = max_pages-1;
+  if (max_pages && cur_page) --cur_page; else cur_page = max_pages-1;
 }
 
 #endif

@@ -232,7 +232,7 @@ pgup/pgdn             - increase/decrease speed (per visual)\n\
 ",0.05);
 #endif
       //myf.color = vsx_color(1.0f,1.0f,1.0f,1.0f);
-      for (int i = 0; i < message.size(); ++i) {
+      for (size_t i = 0; i < message.size(); ++i) {
         myf->color = vsx_color(sin((float)i*0.5f+total_time*3.5f)*0.4f+0.6f,cos((float)i*0.2f+total_time*0.72f)*0.4f+0.6f,sin((float)i*0.25f+total_time*2.01f)*0.4f+0.6f,1.0f);
         myf->print(vsx_vector(0.5+scroll_pos+0.035*(float)i,-0.85f+sin(total_time*2.5f+(float)i*0.2f)*sin(total_time*1.7f+(float)i*0.1f)*0.1f),message[i],0.07);
       }

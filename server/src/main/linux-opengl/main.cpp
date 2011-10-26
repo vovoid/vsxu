@@ -1,3 +1,25 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan "jaw" Wallmander, Vovoid Media Technologies - Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
+
 #include <stdio.h>
 #include "application.h"
 #include "GL/glfw.h"
@@ -135,13 +157,14 @@ int main(int argc, char* argv[])
 	  app_argc = argc;
 	  app_argv = argv;
     int     width, height, running, frames, x, y;
-    double  t, t0, t1, fps;
+    double  t, t0, t1;
     char    titlestr[ 200 ];
 
     // Initialise GLFW
     glfwInit();
 
     bool start_fullscreen = false;
+    bool manual_resolution_set;
     int x_res = 1280;
     int y_res = 720;
 		for (int i = 1; i < argc; i++) {
@@ -170,10 +193,19 @@ int main(int argc, char* argv[])
     			explode(arg2, deli, parts);
     			x_res = s2i(parts[0]);
     			y_res = s2i(parts[1]);
+          manual_resolution_set = true;
     		}
     	}
     }
-
+    if (start_fullscreen && !manual_resolution_set)
+    {
+      // try to get the resolution from the desktop for fullscreen
+      GLFWvidmode video_mode;
+      glfwGetDesktopMode(&video_mode);
+      x_res = video_mode.Height;
+      y_res = video_mode.Width;
+    }
+    
     // Open OpenGL window
     glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
     if( !glfwOpenWindow( x_res, y_res, 0,0,0,0,16,0, start_fullscreen?GLFW_FULLSCREEN:GLFW_WINDOW ) ) // GLFW_FULLSCREEN

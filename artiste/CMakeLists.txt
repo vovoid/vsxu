@@ -35,6 +35,8 @@ endif(UNIX)
 if(VSXU_DEBUG)
 add_definitions(
  -DDEBUG
+# -DVSXU_DEBUG
+# -DVSX_DEBUG
 )
 endif(VSXU_DEBUG)
 
@@ -59,6 +61,7 @@ message("configuring            " ${module_id})
 message("*******************************************")
 
 set(SOURCES
+  src/gl_helper.cpp
   src/log/vsx_log_a.cpp
   src/vsx_widget/vsx_widget_base.cpp
   src/vsx_widget/server/vsx_widget_comp.cpp
@@ -91,7 +94,6 @@ set(SOURCES
   src/vsx_widget/module_choosers/vsx_widget_module_chooser_list.cpp
   src/vsx_widget/vsx_widget_desktop.cpp
   src/application.cpp
-  src/gl_helper.cpp
 )
 
 link_directories(
@@ -183,7 +185,7 @@ if(WIN32)
     ws2_32
     vsxu_engine
 	vsxu_engine_graphics
-    glew
+    glew32.dll
     pthreadGCE
     gdi32
     glu32

@@ -1,5 +1,8 @@
+/* This file is Public Domain */
+
 /* Created by exoticorn ( http://talk.maemo.org/showthread.php?t=37356 )
  * edited and commented by André Bergner [endboss]
+ * modified and adapted for VSXu for testing on the N900 phone by Jonatan Wallmander
  *
  * libraries needed:   libx11-dev, libgles2-dev
  *

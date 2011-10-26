@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #if defined(WIN32) || defined(_WIN64) || defined(__WATCOMC__)
   #include <windows.h>
   #include <conio.h>
@@ -255,7 +276,7 @@ void run() {
   // set wave
   if (0 == engine->param_float_arrays.size())
   {
-    int i;
+    //int i;
     /*for (i = 0; i < 512; ++i) {
         (*(wave.data))[i] = (float)(rand()%1000) * 0.0005 * l_mul;
     }

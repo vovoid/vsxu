@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #ifndef VSX_NO_CLIENT
 #include "vsxfst.h"
 #include "vsx_gl_global.h"
@@ -422,8 +443,10 @@ void vsx_widget_seq_channel::event_mouse_double_click(
 		if (mouse_clicked_id != -1)
 		{
 			{
-				printf("seq_channel: double-clicked an item with hit %d\n",extra_hit);
-				if (extra_hit = 1)
+        #ifdef VSXU_DEBUG
+          printf("seq_channel: double-clicked an item with hit %d\n",extra_hit);
+        #endif
+				if (extra_hit == 1)
 				{
 					vsx_widget** time_controller = &(items[mouse_clicked_id].master_channel_time_sequence);
 					if (!*time_controller)
@@ -697,7 +720,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
 				if (is_controller)
 				{
 					float accum_time = 0.0f;
-					for (size_t ii = 0; ii < mouse_clicked_id-1; ii++)
+					for (int ii = 0; ii < mouse_clicked_id-1; ii++)
 					{
 						accum_time += items[ii].total_length;
 					}
@@ -801,7 +824,6 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
 				// look through all items
 				bool run = true;
 				float time_start = 0.0f;
-				float time_clicked = pos_to_time(distance.center.x);
 				float pos_clicked = distance.center.x;
 
 				for (size_t i = 0; i < items.size()-1 && run; i++)
@@ -1153,7 +1175,6 @@ void vsx_widget_seq_channel::vsx_command_process_b(vsx_command_s *t)
 		// 0=param_set 1=[data] 2=[id]
 		if (t->cmd == "param_set")
 		{
-
 			// 0=mseq_channel_ok 1=row 2=time_sequence 3=[name] 4=[item_id] 5=[get]/[set] 6(optional)=[sequence_dump]
 			backwards_message("mseq_channel row time_sequence "+channel_name+" "+t->parts[2]+" set "+t->parts[1]);
 		}
@@ -1161,7 +1182,7 @@ void vsx_widget_seq_channel::vsx_command_process_b(vsx_command_s *t)
 		// [0=pg64] [1=param_name] [2=global_widget_id] [3=local_item_id]
 		if (t->cmd == "pg64")
 		{
-			t->dump_to_stdout();
+			//t->dump_to_stdout();
 			// message from a time sequencer to initialize its value
 			// 0=mseq_channel_ok 1=row 2=time_sequence 3=[name] 4=[item_id] 5=[get]/[set] 6(optional)=[sequence_dump]
 			backwards_message("mseq_channel row time_sequence "+channel_name+" "+t->parts[3]+" get");
@@ -2165,12 +2186,12 @@ void vsx_widget_seq_channel::drop_master_channel(vsx_widget_distance distance,
 {
 	float time_iterator = 0;
 	//float accumulated_time = 0.0f;
-	int item_iterator = 0;
+	unsigned long item_iterator = 0;
 	//int item_action_id = -1;
 	vsx_vector drop_pos_local = coords.world_global - get_pos_p();
 	float time_pos = (drop_pos_local.x / size.x + 0.5f) * (view_time_end
 			- view_time_start) + view_time_start;
-	while (item_iterator < (int) items.size() && time_iterator < time_pos)
+	while (item_iterator < items.size() && time_iterator < time_pos)
 	{
 		time_iterator += items[item_iterator].total_length;
 		++item_iterator;

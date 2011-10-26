@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #include "_configuration.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
@@ -1490,7 +1511,7 @@ public:
     mesh->data->faces.reset_used();
 
     float one_div_num_stacks = 1.0f / (float)current_num_stacks;
-    float one_div_num_sectors = 1.0f / (float)current_num_sectors;
+    //float one_div_num_sectors = 1.0f / (float)current_num_sectors;
     float one_div_num_sectors_minus_one = 1.0f / (float)(current_num_sectors - 1);
 
     //for(int i = 1; i < current_num_stacks; i++)
@@ -1807,7 +1828,7 @@ public:
     mesh->data->faces.reset_used();
     float one_div_num_stacks = 1.0f / (float)(current_num_stacks);
 
-    int num_vertices = current_num_stacks * (current_num_sectors-1);
+    //int num_vertices = current_num_stacks * (current_num_sectors-1);
 
     for(int i = 0; i < current_num_stacks; i++)
     {

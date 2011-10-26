@@ -1,3 +1,27 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
+
+#include <vsx_platform.h>
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include "vsx_command_client_server.h"
 
 
@@ -261,6 +285,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
     }
   }
   close(listen_sock);
+  return 0;
 }
 
 // ****************************************************************************
@@ -281,7 +306,7 @@ void* vsx_command_list_client::client_worker(void *ptr)
   struct addrinfo hints;
   struct addrinfo *servinfo;  // will point to the results
   char recv_buf[BUFLEN];
-  int sock, recv_sock;
+  int sock;
   ssize_t size_recv;
   int keepalive_timer = 0;
   vsx_string message_stack;
@@ -430,3 +455,5 @@ int vsx_command_list_client::get_connection_status()
 {
   return connected;
 }
+
+#endif

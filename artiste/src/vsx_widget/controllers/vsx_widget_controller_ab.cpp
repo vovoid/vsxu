@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #ifndef VSX_NO_CLIENT
 #include "vsx_gl_global.h"
 //#include <string>
@@ -962,8 +983,8 @@ void vsx_widget_controller_pad::draw() {
   vsx_widget_base_controller::draw();
   glColor4f(1.0f,1.0f,1.0f,0.2f);
   draw_box_c(parentpos+pos, draw_area,draw_area);
-  int start_prevs = prev_pos-300;
-  int stop_prevs = prev_pos;
+  unsigned long start_prevs = prev_pos-300;
+  
   if (start_prevs < 0) start_prevs += 300;
   if (start_prevs >= prev_draw.size()) start_prevs = 0;
 
@@ -972,8 +993,8 @@ void vsx_widget_controller_pad::draw() {
   glLineWidth(1.0f);
   glBegin(GL_LINE_STRIP);
   bool run = true;
-  int i = start_prevs;
-  int j = 0;
+  unsigned long i = start_prevs;
+  unsigned long j = 0;
   while (run)
   {
   //for (int i = start_prevs; i < stop_prevs; i++) {
@@ -1030,7 +1051,7 @@ void vsx_widget_controller_pad::event_mouse_move(vsx_widget_distance distance,vs
   	prev_draw[prev_pos].z = 2.0f;
   	prev_pos++;
   	if (prev_pos > 300) prev_pos = 0; // cyclic buffer
-  	for (int i = 0; i < prev_draw.size(); i++)
+  	for (unsigned long i = 0; i < prev_draw.size(); i++)
   	{
     	prev_draw[i].z -= 2.0f/300.0f;
   		if (prev_draw[i].z < 0.0f) prev_draw[i].z = 0.0f;

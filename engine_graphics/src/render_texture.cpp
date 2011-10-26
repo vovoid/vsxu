@@ -414,7 +414,7 @@ bool RenderTexture::Initialize(int width, int height,
     _pDisplay = glXGetCurrentDisplay();
     GLXContext context = glXGetCurrentContext();
     int screen = DefaultScreen(_pDisplay);
-    XVisualInfo *visInfo;
+    XVisualInfo *visInfo = 0;
     
     //int iFormat = 0;
     //int iNumFormats;

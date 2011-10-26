@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #ifndef VSXFST_H
 #define VSXFST_H
 
@@ -120,7 +141,7 @@ VSXFSTDLLIMPORT bool crlf(char *buffer,int len);
 #define STR_PAD_RIGHT 1
 #define STR_PAD_OVERFLOW_LEFT 0
 #define STR_PAD_OVERFLOW_RIGHT 1
-VSXFSTDLLIMPORT vsx_string str_pad(const vsx_string& str, const vsx_string& chr, int t_len, int pad_type = STR_PAD_LEFT,int overflow_adjust = STR_PAD_OVERFLOW_RIGHT);
+VSXFSTDLLIMPORT vsx_string str_pad(const vsx_string& str, const vsx_string& chr, size_t t_len, int pad_type = STR_PAD_LEFT,int overflow_adjust = STR_PAD_OVERFLOW_RIGHT);
 
 // this function replaces only one item per token. 
 VSXFSTDLLIMPORT vsx_string str_replace(vsx_string search, vsx_string replace, vsx_string subject, int max_replacements = 0, int required_pos = -1);

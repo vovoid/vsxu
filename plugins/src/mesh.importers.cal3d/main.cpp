@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #include "_configuration.h"
 #include "main.h"
 #include "vsx_math_3d.h"
@@ -460,10 +481,12 @@ public:
     vsx_module_param_int* use_thread;
     // out
     vsx_module_param_mesh* result;
+    vsx_module_param_mesh* bones_bounding_box;
     // internal
     vsx_mesh* mesh;
     vsx_mesh* mesh_a;
     vsx_mesh* mesh_b;
+    vsx_mesh* mesh_bbox;
     bool first_run;
     int n_rays;
     vsx_string current_filename;
@@ -490,9 +513,6 @@ public:
     prev_use_thread = 0;
   }
   bool init() {
-    mesh_a = new vsx_mesh;
-    mesh_b = new vsx_mesh;
-    mesh = mesh_a;
     return true;
   }
 
@@ -510,7 +530,7 @@ public:
     info->identifier = "mesh;importers;cal3d_importer";
     info->description = "";
     info->in_param_spec = "filename:resource,use_thread:enum?no|yes";
-    info->out_param_spec = "mesh:mesh";
+    info->out_param_spec = "mesh:mesh,bones_bounding_box:mesh";
     if (bones.size()) {
       info->in_param_spec += ",bones:complex{";
       info->out_param_spec += ",absolutes:complex{";
@@ -567,6 +587,9 @@ public:
     // default
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
     result->set_p(mesh_a);
+    // bounding box for all bones
+    bones_bounding_box = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"bones_bounding_box");
+    bones_bounding_box->set_p(mesh_bbox);
     // bones
     if (bones.size()) {
       for (unsigned long i = 0; i < bones.size(); ++i) {
@@ -579,6 +602,11 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
+    mesh_a = new vsx_mesh;
+    mesh_b = new vsx_mesh;
+    mesh = mesh_a;
+    mesh_bbox = new vsx_mesh;
+    
     loading_done = false;
     current_filename = "";
     redeclare_in_params(in_parameters);
@@ -728,7 +756,9 @@ public:
       if (1 == my->prev_use_thread)
       {
         while (my->p_updates == my->param_updates) {
+		  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
           usleep(1);
+		  #endif
         }
       }
       my->p_updates = my->param_updates;
@@ -765,7 +795,7 @@ public:
 
             if (pCalRenderer->isTangentsEnabled(0)) {
               my->mesh->data->vertex_tangents[pCalRenderer->getVertexCount()+1].x = 0;// = vsx_vector(0,0,0);
-              int num_tagentspaces = pCalRenderer->getTangentSpaces(0,&my->mesh->data->vertex_tangents[0].x);
+              //int num_tagentspaces = pCalRenderer->getTangentSpaces(0,&my->mesh->data->vertex_tangents[0].x);
               //printf("fetched %d tangents\n", num_tagentspaces);
             }
             //else printf("Tangents are NOT enabled\n");
@@ -791,7 +821,9 @@ public:
       while (my->thread_state == 2)
       {
         if (my->thread_exit) {my->thread_state = 10; return 0; }
+		#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
         usleep(100);
+		#endif
       }
       
     }
@@ -819,18 +851,24 @@ public:
         thread_exit = 1;
         while (thread_state != 10)
         {
-          usleep(100);
+		  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+            usleep(100);
+		  #endif
         }
         thread_state = 0;
         thread_exit = 0;
       }
       prev_use_thread = use_thread->get();
     }
-    unsigned long waits=0;
+    
     // if running, stall and wait for thread
     if (thread_state == 1)
     {
-      while (thread_state == 1) { usleep(1); }
+      while (thread_state == 1) { 
+	    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+	      usleep(1); 
+		#endif
+	  }
       //while (thread_state == 1 && waits < 1000000) { waits++;}
     }
 
@@ -838,14 +876,29 @@ public:
     if (thread_state == 2) { // thread is done
       // no thread running
       vsx_module_cal3d_loader_threaded* my = this;
+      m_model->getSkeleton()->calculateBoundingBoxes();
       if (!my->redeclare_out)
       {
+        mesh_bbox->data->vertices.allocate(my->bones.size() * 8);
+        
         for (unsigned long j = 0; j < my->bones.size(); ++j)
         {
           if (my->bones[j].bone != 0)
           {
             CalVector t1 = my->bones[j].bone->getTranslationAbsolute();
             CalQuaternion q2 = my->bones[j].bone->getRotationAbsolute();
+            my->bones[j].bone->getCoreBone()->calculateBoundingBox(m_model->getCoreModel());
+            my->bones[j].bone->calculateBoundingBox();
+            
+            CalBoundingBox bbox = my->bones[j].bone->getBoundingBox();
+            CalVector bboxv[8];
+            bbox.computePoints((CalVector*)&bboxv);
+            for (unsigned long bbi = 0; bbi < 8; bbi++)
+            {
+              mesh_bbox->data->vertices[j*8+bbi].x = bboxv[bbi].x;
+              mesh_bbox->data->vertices[j*8+bbi].y = bboxv[bbi].y;
+              mesh_bbox->data->vertices[j*8+bbi].z = bboxv[bbi].z;
+            }
             my->bones[j].result_rotation   ->set( q2.x, 0 );
             my->bones[j].result_rotation   ->set( q2.y, 1 );
             my->bones[j].result_rotation   ->set( q2.z, 2 );
@@ -854,6 +907,8 @@ public:
             my->bones[j].result_translation->set( t1.x, 0 );
             my->bones[j].result_translation->set( t1.y, 1 );
             my->bones[j].result_translation->set( t1.z, 2 );
+
+            
           }
         }
       }

@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #include "vsx_statelist.h"
 
 
@@ -59,6 +80,18 @@ void vsx_statelist::prev_state()
   init_current((*state_iter).engine, &(*state_iter));
   transition_time = 2.0f;
 }
+
+
+std::list<vsx_string>* vsx_statelist::get_state_file_list()
+{
+  return &state_file_list;
+}
+
+std::list<vsx_string>* vsx_statelist::get_fader_file_list()
+{
+  return &fader_file_list;
+}
+
 
 vsx_string vsx_statelist::state_loading()
 {
@@ -144,7 +177,6 @@ void vsx_statelist::stop()
     if ((*it).engine)
     (*it).engine->stop();
     (*it).need_reload = true;
-    //(*it).need_stop = true;
   }
   vxe->unload_state();
   vxe->stop();
@@ -373,7 +405,7 @@ void vsx_statelist::render()
   }
 }
 
- 
+
 
 void vsx_statelist::load_fx_levels_from_user()
 {
@@ -390,9 +422,9 @@ void vsx_statelist::load_fx_levels_from_user()
     state_info state = (*it);
     // read fx level files
     vsx_string fxlf = config_dir+"/"+state.state_name_suffix.substr(visual_path.size()+1 , state.state_name_suffix.size())+"_fx_level";
-#ifdef VSXU_DEBUG
-    printf("fx level file: %s\n", fxlf.c_str() );
-#endif
+    #ifdef VSXU_DEBUG
+      printf("fx level file: %s\n", fxlf.c_str() );
+    #endif
     if ( stat( fxlf.c_str(), &st) != 0 )
     {
       // no fx level file
@@ -512,28 +544,7 @@ void vsx_statelist::init(vsx_string base_path,vsx_string init_sound_type)
 #ifdef VSXU_DEBUG
   printf("own path: %s\n", own_path.c_str() );
 #endif
-/*
-  vsx_avector<vsx_string> parts;
-  vsx_avector<vsx_string> parts2;
-#if defined(__linux__)
-  vsx_string deli = "/";
-#else
-  vsx_string deli = "\\";
-#endif
-  explode(own_path, deli, parts);
-  for (unsigned long i = 0; i < parts.size()-1; ++i)
-  {
-    parts2.push_back(parts[i]);
-  }
-  own_path = implode(parts2,deli);
-#if defined(__linux__)
-  if (own_path.size()) own_path.push_back('/');
-#else
-  if (own_path.size()) own_path.push_back('\\');
-#endif
-  printf("own path: %s\n",own_path.c_str());
-  //printf("argc: %d\n",argc);
-*/
+
 #if PLATFORM == PLATFORM_WINDOWS
   if (own_path.size())
   if (own_path[own_path.size()-1] != '\\') own_path.push_back('\\');
@@ -542,15 +553,6 @@ void vsx_statelist::init(vsx_string base_path,vsx_string init_sound_type)
   if (own_path[own_path.size()-1] != '/') own_path.push_back('/');
 #endif
   visual_path = "visuals_player";
-
-/*  if (app_argc > 1) {
-    //printf("argv1: %s\n", app_argv[1]);
-    if (vsx_string(app_argv[1]) == "-vd") {
-      visual_path = vsx_string(app_argv[2]);
-      //printf("changing visual path to: %s\n", visual_path.c_str() );
-    }
-  }
-*/
 
   get_files_recursive(own_path+visual_path, &state_file_list,"","");
 #ifdef VSXU_DEBUG
@@ -578,9 +580,9 @@ vsx_statelist::vsx_statelist()
 
 vsx_statelist::~vsx_statelist()
 {
-    #ifdef VSXU_DEBUG
-    printf("statelist destructor\n");
-    #endif
+  #ifdef VSXU_DEBUG
+  printf("statelist destructor\n");
+  #endif
   
   for (size_t i = 0; i < faders.size(); i++)
   {

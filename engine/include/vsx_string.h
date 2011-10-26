@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 // Vovoid Light String Class
 // (c) 2005 Vovoid Software & Multimedia, All rights reserved
 
@@ -43,7 +64,7 @@ public:
   char* c_copy() const {
   	zero_add();
   	char* n = new char[this->size()+1];
-  	for (int i = 0; i <= this->size(); i++) {
+  	for (size_t i = 0; i <= this->size(); i++) {
   		n[i] = data[i];
   	}
   	return n;
@@ -71,7 +92,7 @@ public:
     return 0;
   }
 //#endif
-  const long size() const { 
+  const size_t size() const {
     if (!data.size()) return 0;
     if (data[data.get_used()-1])
     return data.get_used(); else
@@ -152,7 +173,7 @@ public:
   const vsx_string& operator+=(const vsx_string& right) {
     //printf("a5\n");
     zero_remove();
-    int i = 0;
+    size_t i = 0;
     while (i < right.size()) {
       data.push_back(right[i]);
       ++i;
@@ -227,38 +248,20 @@ public:
     return *this;
   };
   
-  
-//----------------------------------------------------------------------------
-// EXTERNAL CHAR*
-//----------------------------------------------------------------------------
-    
-  
-
   friend const vsx_string operator+(const char* left, const vsx_string& right) {
-    //printf("a3\n");
     vsx_string n;
-    int i = 0;
+    size_t i = 0;
     while (left[i] != 0) {
       n.push_back_(left[i]);
       ++i;
     }
     i = 0;
-    //printf("a3b\n");
-    //printf("right size: %d",right.size());
     while (i < right.size()) {
       n.push_back_(right[i]);
       ++i;
     }
-    //i = 0;
-    //while (i < right.size()) {
-//      n.push_back(right[i]);
-//      ++i;
-//    }
     return n;
   };
-
-  
-  
 
   friend int operator==(const vsx_string& left,const vsx_string& right) {
     if (left.size() != right.size()) return 0;
@@ -286,9 +289,9 @@ public:
     return strcmp(left.c_str(), right.c_str());
   }
  
-  const int find(const vsx_string& search, int start = 0) const {
+  const int find(const vsx_string& search, size_t start = 0) const {
     if (search.size() == 0) return 0;
-    int found = 0; // if this is equal to search.size() we're done
+    size_t found = 0; // if this is equal to search.size() we're done
     if (start > size()) return -1;
 		if (start < 0) return -1;
     //printf("search_a size: %d\n",size());
@@ -308,7 +311,7 @@ public:
     return -1;
   }
 
-  const vsx_string substr(int start, int length = -1) {
+  const vsx_string substr(size_t start, int length = -1) {
     vsx_string n;
     zero_remove();
     if (length == -1) length = size();

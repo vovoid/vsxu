@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #include "vsx_gl_global.h"
 #include <map>
 #include <list>
@@ -95,7 +116,7 @@ void vsxu_assistant::i_draw() {
 	clickpoint.x = clickpoint.x*(1-tt)+size_multiplier*tt;
 
   size.x = 0.3*clickpoint.x*(screen_aspect);
-  size.y = 0.4*clickpoint.x;
+  size.y = 0.5*clickpoint.x;
   //printf("pos.x: %f\n",pos.x);
   //size.y-0.09f*clickpoint.x;
   alpha = (clickpoint.x-0.2)*2;
@@ -128,7 +149,7 @@ void vsxu_assistant::i_draw() {
       text = course[((vsx_widget_2d_pager*)pager)->cur_page];
       //else text = "";
       myf.color.a = alpha;
-      myf.print(vsx_vector((pos.x+size.x*0.06)*screen_aspect,pos.y+size.y-size.y*0.09),text,0.012*clickpoint.x);
+      myf.print(vsx_vector((pos.x+size.x*0.06)*screen_aspect,pos.y+size.y-size.y*0.12),text,0.012*clickpoint.x);
     }
   }
   target_pos = pos;

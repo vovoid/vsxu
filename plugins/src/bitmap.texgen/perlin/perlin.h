@@ -1,3 +1,5 @@
+/* Jonatan Wallmander 2011-09-14: This file appears to be public domain */
+
 #ifndef PERLIN_H_
 
 #define PERLIN_H_

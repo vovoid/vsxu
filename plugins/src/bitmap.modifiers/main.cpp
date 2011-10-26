@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan "jaw" Wallmander, Vovoid Media Technologies - Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #include "_configuration.h"
 //----------------------------
 #include "vsx_gl_global.h"
@@ -75,7 +96,7 @@ public:
 //          printf("allocating new memory\n");
 //          printf("height: %d\n",height);
           
-          if (bitm.data) delete[] bitm.data;
+          if (bitm.data) delete[] (unsigned long*)bitm.data;
           bitm.data = new unsigned long[width*height];
           bitm.size_x = width;
           bitm.size_y = height;
@@ -103,7 +124,7 @@ public:
   void on_delete() {
     //printf("deleting bitmap..");
     if (bitm.valid)
-    delete[] bitm.data;
+    delete[] (unsigned long*)bitm.data;
   }
 };
 
@@ -320,7 +341,7 @@ void run() {
       worker_running = false;
 
       // need to realloc
-      if (result_bitm.valid) delete[] result_bitm.data;
+      if (result_bitm.valid) delete[] (unsigned long*)result_bitm.data;
       data_a = new unsigned long[bitm->size_x*bitm->size_y];
       data_b = new unsigned long[bitm->size_x*bitm->size_y];
       result_bitm.data = data_a;
@@ -368,7 +389,7 @@ void on_delete() {
   delete[] data_a;
   delete[] data_b;
   if (result_bitm.valid)
-  delete[] result_bitm.data;
+  delete[] (unsigned long*)result_bitm.data;
 }
 
 };

@@ -1,3 +1,24 @@
+/**
+* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+*
+* @author Jonatan Wallmander, Vovoid Media Technologies Copyright (C) 2003-2011
+* @see The GNU Public License (GPL)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #include "vsx_manager.h"
 #include "vsx_statelist.h"
 
@@ -23,18 +44,22 @@ public:
   // flipping through different visuals
   void toggle_randomizer();
   void set_randomizer(bool status);
-    
+  
   bool get_randomizer_status();
   void pick_random_visual();
   void next_visual();
   void prev_visual();
   std::string visual_loading();
 
+  // dump the list of all loadable visuals
+  std::vector<std::string> get_visual_filenames();
+  
   // provide metadata for information about current running effect
   std::string get_meta_visual_filename();
   std::string get_meta_visual_name();
   std::string get_meta_visual_creator();
   std::string get_meta_visual_company();
+  
 
   // amplification/fx level (more = flashier, less = less busy)
   float get_fx_level();
@@ -69,7 +94,7 @@ vsx_manager_abs* manager_factory()
   return mym;
 }
 
-vsx_manager_abs* manager_destroy(vsx_manager_abs* manager)
+void manager_destroy(vsx_manager_abs* manager)
 {
   delete (vsx_manager*)manager;
 }
@@ -142,6 +167,22 @@ std::string vsx_manager::visual_loading()
 {
   return std::string( ((vsx_statelist*)int_state_manager)->state_loading().c_str() );
 }
+
+
+/****************************************************************
+V I S U A L   F I L E N A M E S   I N F O R M A T I O N
+*****************************************************************/
+std::vector<std::string> vsx_manager::get_visual_filenames()
+{
+  std::list<vsx_string>* items = ((vsx_statelist*)int_state_manager)->get_state_file_list();
+  std::vector<std::string> return_items;
+  for(std::list<vsx_string>::iterator it = (*items).begin(); it != (*items).end(); it++)
+  {
+    return_items.push_back( std::string((*it).c_str()) );
+  }
+  return return_items;
+}
+
 
 /****************************************************************
 M E T A    I N F O R M A T I O N
