@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-include(../cmake_globals.txt)
+
 include_directories(
   ../
   ../engine/include
@@ -102,7 +102,7 @@ link_directories(
 
 project (${module_id})
 
-add_executable(${module_id}  ${SOURCES} ${OS_SOURCES} ${EXTRA_LIBS})
+add_executable(${module_id}  ${SOURCES} ${OS_SOURCES})
 include(../cmake_suffix.txt)
 
 

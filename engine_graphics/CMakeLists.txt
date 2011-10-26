@@ -54,7 +54,6 @@ src/vsx_texture.cpp
 src/vsx_statelist.cpp
 src/vsx_manager.cpp
 )
-include(../cmake_globals.txt)
 
 if (VSXU_OPENGL_ES_2_0 EQUAL 1)
   add_definitions(-DVSXU_OPENGL_ES -DVSXU_OPENGL_ES_2_0 -DVSX_TEXTURE_NO_RT_PBUFFER)
@@ -66,7 +65,7 @@ endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 
 
 project (${module_id})
-add_library(${module_id} SHARED ${SOURCES} ${EXTRA_LIBS} ${PNG_SOURCES} ${JPG_SOURCES} ${ZLIB_SOURCES})
+add_library(${module_id} SHARED ${SOURCES} ${PNG_SOURCES} ${JPG_SOURCES} ${ZLIB_SOURCES})
 install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 if(WIN32)
   target_link_libraries(${module_id} gdi32 glew opengl32 glu32 pthreadGCE)
@@ -80,8 +79,10 @@ else(WIN32)
   endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 #  target_link_libraries(${module_id} X11 GLEW.a GL GLU png.a jpeg.a z.a)
 endif(WIN32)
-target_link_libraries(${module_id} vsxu_engine)
-
-
+target_link_libraries(${module_id} vsxu_engine GLU
+                                  ${DL_LIBRARY}
+                                  ${PNG_LIBRARY} 
+                                  ${JPEG_LIBRARY}
+                                  ${GLEW_LIBRARY})
 #include(../cmake_suffix.txt)
 

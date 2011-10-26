@@ -159,7 +159,6 @@ set(SOURCES
 ./src/vsxfst/LzmaRamDecode.c
 )
 
-include(../cmake_globals.txt)
 #link_directories(
 #../vsxfst
 #../vsxu_engine_gm
@@ -173,15 +172,15 @@ project (${module_id})
 if (VSXU_ENGINE_STATIC EQUAL 1)
   #static build
   
-  add_library(${module_id}_static STATIC ${STATIC_SOURCES} ${SOURCES} ${GAME_MONKEY} ${EXTRA_LIBS})
-  add_library(${module_id} SHARED ${STATIC_SOURCES} ${SOURCES} ${GAME_MONKEY} ${EXTRA_LIBS})
+  add_library(${module_id}_static STATIC ${STATIC_SOURCES} ${SOURCES} ${GAME_MONKEY})
+  add_library(${module_id} SHARED ${STATIC_SOURCES} ${SOURCES} ${GAME_MONKEY})
   include(../plugins/static_factory_cmake_target_link_libraries)
   install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 else (VSXU_ENGINE_STATIC EQUAL 1)
   #dynamic build
-  add_library(${module_id} SHARED ${SOURCES} ${GAME_MONKEY} ${EXTRA_LIBS})
+  add_library(${module_id} SHARED ${SOURCES} ${GAME_MONKEY})
   install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 endif (VSXU_ENGINE_STATIC EQUAL 1)
 
+target_link_libraries(${module_id} ${DL_LIBRARY})
 #include(../cmake_suffix.txt)
-
