@@ -75,7 +75,7 @@ endif (VSXU_ENGINE_STATIC EQUAL 1)
 
 project (${module_id})
 
-add_executable(${module_id}  ${SOURCES} ${OS_SOURCES} ${EXTRA_LIBS})
+add_executable(${module_id}  ${SOURCES} ${OS_SOURCES})
 include(../cmake_suffix.txt)
 
 set_target_properties(
