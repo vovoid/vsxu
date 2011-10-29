@@ -8,9 +8,8 @@ message("configuring vsxu module            " ${module_id})
 message("*******************************************")
 
 set(LOCAL_SOURCES "main.cpp")
-
+include (../cmake_globals.txt)
 project (${module_id})
-include(../cmake_globals.txt)
 include(./_sources)
-add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES} ${EXTRA_LIBS})
+add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES})
 include(../cmake_suffix.txt)

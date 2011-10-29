@@ -10,11 +10,9 @@ message("*******************************************")
 
 
 project (${module_id})
-include(../cmake_globals.txt)
-
 
 include(./_sources)
-add_library(${module_id} MODULE ${SOURCES} ${EXTRA_LIBS})
+add_library(${module_id} MODULE ${SOURCES})
 include(../cmake_suffix.txt)
 
 target_link_libraries(${module_id}

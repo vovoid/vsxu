@@ -35,7 +35,7 @@ link_directories(
 
 project (${module_id})
 
-add_executable(${module_id}  ${SOURCES} ${EXTRA_LIBS})
+add_executable(${module_id}  ${SOURCES})
 include(../../cmake_suffix.txt)
 
 set_target_properties(
@@ -47,7 +47,6 @@ set_target_properties(
 
 if(UNIX)
   target_link_libraries(${module_id}
-    dl
     vsxu_engine
     pthread
   )

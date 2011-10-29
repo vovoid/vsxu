@@ -1,4 +1,3 @@
-set(EXTRA_LIBS "")
 
 if(VSXU_DEBUG_NOPRINTFS)
   add_definitions(-g -Wall)
