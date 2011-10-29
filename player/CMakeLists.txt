@@ -76,7 +76,7 @@ include(../cmake_suffix.txt)
 if(UNIX)
   link_directories("/usr/lib/vsxu")
   target_link_libraries(${module_id}
-    Xrandr
+    ${X11_Xrandr_LIB}
     X11
     glfw
     pthread

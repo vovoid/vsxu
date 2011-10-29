@@ -96,9 +96,9 @@ set(SOURCES
   src/application.cpp
 )
 
-link_directories(
-../
-)
+#link_directories(
+#../
+#)
 
 
 
