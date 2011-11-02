@@ -185,7 +185,7 @@ void vsx_param_sequence_list::update_line(vsx_engine_param* param, vsx_command_l
 
     vsx_param_sequence* p = parameter_channel_map[param];
 #ifdef VSXU_DEBUG
-    printf("update param to %d\n", (int)p);
+    printf("update param to %p\n", p);
 #endif
     p->update_line(dest,cmd_in,cmd_prefix);
     if (engine && run_on_edit_enabled) {

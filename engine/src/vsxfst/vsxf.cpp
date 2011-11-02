@@ -107,7 +107,7 @@ void vsxf::archive_close() {
   int vsxf::archive_add_file(
                              vsx_string filename, 
                              char* data, 
-                             unsigned long data_size, 
+                             uint32_t data_size, 
                              vsx_string disk_filename
   ) {
 #ifndef VSXF_DEMO
@@ -145,7 +145,7 @@ void vsxf::archive_close() {
     //dictionary = 1 << 21;
     LzmaRamEncode((Byte*)data, data_size, outBuffer, outSize, &outSizeProcessed, dictionary, SZ_FILTER_AUTO);
     data_size = outSizeProcessed+filename.size()+1;
-    fwrite(&data_size,sizeof(long),1,archive_handle);
+    fwrite(&data_size,sizeof(uint32_t),1,archive_handle);
     fputs(filename.c_str(),archive_handle);
     char nn = 0;
     fwrite(&nn,sizeof(char),1,archive_handle);
@@ -170,6 +170,10 @@ void vsxf::archive_close() {
     if (type == VSXF_TYPE_ARCHIVE) archive_close();
     archive_name = filename;
     archive_handle = fopen(filename,"rb");
+    if (!archive_handle) {
+      printf("error! \"%s\" is not a valid file handle!\n",filename);
+      return 0;
+    }
     fseek (archive_handle, 0, SEEK_END);
     unsigned long size = ftell(archive_handle);
     fseek(archive_handle,0,SEEK_SET);
@@ -182,7 +186,7 @@ void vsxf::archive_close() {
     if (hs != "VSXz") return 2;
     //printf("archive seems ok...\n");
     //printf("binary pos is: %d\n",ftell(archive_handle));
-    while (fread(&size,sizeof(unsigned long),1,archive_handle) != 0) {
+    while (fread(&size,sizeof(uint32_t),1,archive_handle) != 0) {
       //char filebuf[4096];
       char aa;
       //int pos = 0;

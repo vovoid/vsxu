@@ -24,6 +24,7 @@
 
 #include <vsx_platform.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #define VSXFSTDLLIMPORT
@@ -108,7 +109,7 @@ public:
   int archive_load(const char* filename);
   void archive_create(const char* filename);
   void archive_close();
-  int archive_add_file(vsx_string filename, char* data = 0, unsigned long data_size = 0, vsx_string disk_filename = "");
+  int archive_add_file(vsx_string filename, char* data = 0, uint32_t data_size = 0, vsx_string disk_filename = "");
   bool is_archive();
   bool is_archive_populated();
 
@@ -125,7 +126,6 @@ VSXFSTDLLIMPORT bool verify_filesuffix(vsx_string& input, const char* type);
 VSXFSTDLLIMPORT void create_directory(char* path);
 VSXFSTDLLIMPORT void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,vsx_string include_filter = "",vsx_string exclude_filter = "CVS");
 VSXFSTDLLIMPORT vsx_string get_path_from_filename(vsx_string filename);
-//VSXFSTDLLIMPORT vsx_string get_executable_path(); 
 
 
 // STRING OPERATIONS
