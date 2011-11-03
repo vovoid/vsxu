@@ -41,16 +41,3 @@ ENDIF (WIN32)
 
 INCLUDE(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(GLEW DEFAULT_MSG GLEW_LIBRARY GLEW_INCLUDE_PATH)
-
-#This seems to be depricated....
-#IF (GLEW_INCLUDE_PATH)
-#	message("~~~~~~~~~~~~~~~~~GLEW FOUND~~~~~~~~~~~~~~")
-#	message(${GLEW_INCLUDE_PATH})
-#	SET(GLEW_FOUND "YES")
-#	#SET( GLEW_FOUND 1 CACHE STRING "Set to 1 if GLEW is found, 0 otherwise")
-#ELSE (GLEW_INCLUDE_PATH)
-#	message("~~~~~~~~~~~~~~~~~GLEW NOT FOUND~~~~~~~~~~~~~~")
-#	#SET( GLEW_FOUND 0 CACHE STRING "Set to 1 if GLEW is found, 0 otherwise")
-#ENDIF (GLEW_INCLUDE_PATH)
-
-#MARK_AS_ADVANCED( GLEW_FOUND )

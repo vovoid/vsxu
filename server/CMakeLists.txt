@@ -1,6 +1,15 @@
-cmake_minimum_required(VERSION 2.6)
+set(module_id vsxu_server)
+message("*******************************************")
+message("configuring            " ${module_id})
+message("*******************************************")
 
-include(../cmake_globals.txt)
+project (${module_id})
+
+
+################################################################################
+# CMAKE PACKAGES ###############################################################
+################################################################################
+include(cmake_packages.txt)
 
 include_directories(
   ../
@@ -52,19 +61,8 @@ add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )
 
-get_filename_component(list_file_path ${CMAKE_CURRENT_LIST_FILE} PATH)
-string(REGEX MATCH "[a-z._-]*$" module_id ${list_file_path})
-message("*******************************************")
-message("configuring            " ${module_id})
-message("*******************************************")
-
 set(SOURCES
   src/application.cpp
-)
-
-link_directories(
-../
-../engine
 )
 
 if (VSXU_ENGINE_STATIC EQUAL 1)
@@ -73,17 +71,9 @@ if (VSXU_ENGINE_STATIC EQUAL 1)
 endif (VSXU_ENGINE_STATIC EQUAL 1)
 
 
-project (${module_id})
 
 add_executable(${module_id}  ${SOURCES} ${OS_SOURCES})
 include(../cmake_suffix.txt)
-
-set_target_properties(
-  ${module_id}
-    PROPERTIES
-      OUTPUT_NAME
-        vsxu_server
-)
 
 if(UNIX)
   link_directories("/usr/lib/vsxu")
@@ -97,17 +87,15 @@ if(UNIX)
       jpeg
     )
   else (VSXU_OPENGL_ES_2_0 EQUAL 1)
-    link_directories("../lib/linux32/")
     target_link_libraries(${module_id}
-      Xrandr
-      X11
-      glfw
-      pthread
-      GLU
-      GL
-      GLEW
-      png
-      jpeg
+      ${X11_Xrandr_LIB}
+      ${X11_LIBRARIES}
+      ${GLFW_LIBRARY}
+      ${CMAKE_THREAD_LIBS_INIT}
+      ${GLEW_LIBRARY}
+      ${OPENGL_LIBRARIES}
+      ${PNG_LIBRARIES}
+      ${JPEG_LIBRARIES}
     )
   endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 

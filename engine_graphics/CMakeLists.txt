@@ -1,9 +1,23 @@
-cmake_minimum_required(VERSION 2.6)
+set(module_id vsxu_engine_graphics)
+message("*******************************************")
+message("configuring            " ${module_id})
+message("*******************************************")
+
+project (${module_id})
+
+################################################################################
+# CMAKE PACKAGES ###############################################################
+################################################################################
+include(cmake_packages.txt)
+
+################################################################################
+# INCLUDES #####################################################################
+################################################################################
 
 include_directories(
-  "../"
-  "include"
-  "../engine/include"
+  ${CMAKE_SOURCE_DIR}/
+  ${CMAKE_SOURCE_DIR}/engine_graphics/include
+  ${CMAKE_SOURCE_DIR}/engine/include
 )
 
 if(WIN32)
@@ -28,11 +42,6 @@ add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )
 
-set(module_id vsxu_engine_graphics)
-message("*******************************************")
-message("configuring            " ${module_id})
-message("*******************************************")
-
 
 
 if (VSXU_DEBUG EQUAL 1)
@@ -45,14 +54,14 @@ if (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
 endif (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
 
 set(SOURCES
-src/glpng.cpp
-src/jpg.cpp
-src/logo_intro.cpp
-src/render_texture.cpp
-src/vsx_font.cpp
-src/vsx_texture.cpp
-src/vsx_statelist.cpp
-src/vsx_manager.cpp
+  src/glpng.cpp
+  src/jpg.cpp
+  src/logo_intro.cpp
+  src/render_texture.cpp
+  src/vsx_font.cpp
+  src/vsx_texture.cpp
+  src/vsx_statelist.cpp
+  src/vsx_manager.cpp
 )
 
 if (VSXU_OPENGL_ES_2_0 EQUAL 1)
@@ -64,11 +73,11 @@ if (VSXU_OPENGL_ES_2_0 EQUAL 1)
 endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 
 
-project (${module_id})
+
 add_library(${module_id} SHARED ${SOURCES} ${PNG_SOURCES} ${JPG_SOURCES} ${ZLIB_SOURCES})
 install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 if(WIN32)
-  target_link_libraries(${module_id} gdi32 glew32.dll glew32mx opengl32 glu32 pthreadGCE)
+  target_link_libraries(${module_id} gdi32)
   link_directories("../engine")
 else(WIN32)
 
@@ -79,10 +88,12 @@ else(WIN32)
   endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 #  target_link_libraries(${module_id} X11 GLEW.a GL GLU png.a jpeg.a z.a)
 endif(WIN32)
-target_link_libraries(${module_id} vsxu_engine GLU
-                                  ${DL_LIBRARY}
-                                  ${PNG_LIBRARY} 
-                                  ${JPEG_LIBRARY}
-                                  ${GLEW_LIBRARY})
-#include(../cmake_suffix.txt)
 
+target_link_libraries(${module_id}
+  ${OPENGL_LIBRARIES}
+  ${CMAKE_THREAD_LIBS_INIT}
+  ${PNG_LIBRARY}
+  ${JPEG_LIBRARY}
+  ${GLEW_LIBRARY}
+  vsxu_engine
+)
