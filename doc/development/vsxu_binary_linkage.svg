@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="vsxu_binary_linkage.svg"
+   inkscape:export-filename="/home/jaw/vovoid/Vovoid Software &amp; Multimedia/projects/1_in_progress/vsxu/documentation/vsxu_binary_linkage.png"
+   inkscape:export-xdpi="164.25334"
+   inkscape:export-ydpi="164.25334">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#000000"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="413.01754"
+     inkscape:cy="338.8658"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer3"
+     showgrid="false"
+     inkscape:window-width="2560"
+     inkscape:window-height="1552"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1" />
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       id="perspective10"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       id="filter3239"
+       inkscape:label="Fancy blur"
+       inkscape:menu="Blurs"
+       inkscape:menu-tooltip="Smooth colorized contour which allows desaturation and hue rotation"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         id="feGaussianBlur3241"
+         stdDeviation="5"
+         result="result1" />
+      <feComposite
+         id="feComposite3243"
+         in2="result1"
+         operator="arithmetic"
+         k2="2"
+         in="result1" />
+    </filter>
+    <filter
+       id="filter3271"
+       inkscape:label="Cross-smooth"
+       inkscape:menu="Blurs"
+       inkscape:menu-tooltip="Blur inner borders and intersections"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         id="feGaussianBlur3273"
+         stdDeviation="3" />
+      <feColorMatrix
+         id="feColorMatrix3275"
+         result="fbSourceGraphic"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 6 -2.5 " />
+    </filter>
+    <inkscape:perspective
+       id="perspective3290"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       id="filter3322"
+       inkscape:label="Cross-smooth"
+       inkscape:menu="Blurs"
+       inkscape:menu-tooltip="Blur inner borders and intersections"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         id="feGaussianBlur3324"
+         stdDeviation="3" />
+      <feColorMatrix
+         id="feColorMatrix3326"
+         result="fbSourceGraphic"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 6 -2.5 " />
+    </filter>
+    <inkscape:perspective
+       id="perspective3336"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       id="filter3322-2"
+       inkscape:label="Cross-smooth"
+       inkscape:menu="Blurs"
+       inkscape:menu-tooltip="Blur inner borders and intersections"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         id="feGaussianBlur3324-0"
+         stdDeviation="3" />
+      <feColorMatrix
+         id="feColorMatrix3326-6"
+         result="fbSourceGraphic"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 6 -2.5 " />
+    </filter>
+    <inkscape:perspective
+       id="perspective3414"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4247"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+  </defs>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(0,-308.2677)"
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <text
+       id="text2820"
+       y="360.10464"
+       x="22.627419"
+       style="font-size:32;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"><tspan
+         style="fill:#ffffff;font-size:32"
+         y="360.10464"
+         x="22.627419"
+         id="tspan2822"
+         sodipodi:role="line">Binary Linkage VSXu 0.3.0</tspan></text>
+    <rect
+       style="fill:#483737;fill-opacity:1;"
+       id="rect3163"
+       width="444.77017"
+       height="308.29855"
+       x="28.284269"
+       y="433.64377"
+       transform="matrix(2.1628514,0,0,1.485474,-31.629467,-244.34606)" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Layer">
+    <rect
+       style="fill:#53536c;fill-opacity:1;"
+       id="rect3320"
+       width="420.02142"
+       height="366.9884"
+       x="48.790367"
+       y="155.07454" />
+    <rect
+       style="fill:#53536c;fill-opacity:1;"
+       id="rect3320-8"
+       width="420.02142"
+       height="366.9884"
+       x="541.83765"
+       y="153.63268" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Bitstream Vera Sans"
+       x="553.89117"
+       y="183.92664"
+       id="text3398-2"><tspan
+         sodipodi:role="line"
+         id="tspan3400-6"
+         x="553.89117"
+         y="183.92664"
+         style="font-size:20px;fill:#ffffff">VSXu Engine Graphics</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Text"
+     style="display:inline">
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3263"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       transform="translate(-33.178676,17.810513)"><flowRegion
+         id="flowRegion3265"><rect
+           id="rect3267"
+           width="392.44431"
+           height="277.18588"
+           x="94.045204"
+           y="180.53038" /></flowRegion><flowPara
+         id="flowPara3269"
+         style="font-size:9px;fill:#ffffff">Linkage: Dynamic (SO/DLL)</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3402" /><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3404">Parameter and logic takes place here. This library also provides a file system abstraction layer for the modules  and some common string operations such as recursive file search, explode/implode of strings, base conversions etc.  Many of the basic datatypes used both in engine, modules and artiste/player are defined in engine/include  Noteworthy is that the Engine does not need OpenGL - all those calls are provided in “Engine Graphics” and inside the modules. Thus you can use the engine (for the sake of argument) without any graphics output.  </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3359" /><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3361">Noteworthy files / headers: </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3363">  engine/include/vsx_param.h    the different data types modules can use/support </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3365">  engine/include/vsx_mesh.h     mesh implementation engine/includes</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3461">  engine/include/vsx_avector.h   vector (array) class using &quot;new&quot; for mem alloc</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3463">  engine/include/vsx_array.h       as above, but specialized, using malloc</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3471">  engine/include/vsx_float_array.h      a data type used in modules</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3473">  engine/include/vsx_sequence.h       also used in modules. </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3475" /><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3465" /><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3467" /></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="43.895958"
+       y="133.4292"
+       id="text3278"><tspan
+         sodipodi:role="line"
+         id="tspan3280"
+         x="43.895958"
+         y="133.4292"
+         style="font-size:20px;fill:#ffffff">Binary (Artiste/Player/Server/Player Demo)</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3388"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       transform="translate(-1.4142136,-12.020815)"><flowRegion
+         id="flowRegion3390"><rect
+           id="rect3392"
+           width="393.85849"
+           height="295.57065"
+           x="555.78595"
+           y="208.81465" /></flowRegion><flowPara
+         id="flowPara3394"
+         style="font-size:9px;fill:#ffffff">Linkage: Dynamic (SO/DLL)</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3479" /><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3477">Provides graphics loading and other helper tools to mother Binary and to many of the modules. Texture uploading to OpenGL, Texture class implementation, Jpeg and PNG loading, Basic Bitmap Font rendering (artiste, player).</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3453" /><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3455">Noteworthy files / headers, all are in engine_graphics/include:</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3481" /><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3483">vsx_texture.h     Convenience class for creating textures.</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3487">                          Is also the texture data type. For modules it provides help with </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3491">                          creating FBO's, loading PNG/Jpegs.</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3493" /><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3489" /><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3457" /><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3459" /></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="60.104076"
+       y="184.77301"
+       id="text3398"><tspan
+         sodipodi:role="line"
+         id="tspan3400"
+         x="60.104076"
+         y="184.77301"
+         style="font-size:20px;fill:#ffffff">VSXu Engine</tspan></text>
+    <rect
+       style="fill:#5fbcd3;fill-opacity:1;display:inline"
+       id="rect3495"
+       width="35.355339"
+       height="120.91526"
+       x="61.506126"
+       y="498.46326"
+       inkscape:transform-center-y="-4.9497475" />
+    <rect
+       style="fill:#5fbcd3;fill-opacity:1;display:inline"
+       id="rect3495-7"
+       width="35.355339"
+       height="120.91526"
+       x="114.53912"
+       y="498.81683"
+       inkscape:transform-center-y="-4.9497475" />
+    <rect
+       style="fill:#5fbcd3;fill-opacity:1;display:inline"
+       id="rect3495-1"
+       width="35.355339"
+       height="120.91526"
+       x="168.04703"
+       y="499.34717"
+       inkscape:transform-center-y="-4.9497475" />
+    <rect
+       style="fill:#5fbcd3;fill-opacity:1;display:inline"
+       id="rect3495-7-7"
+       width="35.355339"
+       height="120.91526"
+       x="221.08002"
+       y="499.70068"
+       inkscape:transform-center-y="-4.9497475" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Bitstream Vera Sans"
+       x="272.93103"
+       y="582.60895"
+       id="text3544"><tspan
+         sodipodi:role="line"
+         id="tspan3546"
+         x="272.93103"
+         y="582.60895"
+         style="font-size:20px;fill:#ffffff">Modules</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3388-4"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Bitstream Vera Sans"
+       transform="translate(-284.05303,386.49609)"><flowRegion
+         id="flowRegion3390-9"><rect
+           id="rect3392-09"
+           width="451.13412"
+           height="69.296478"
+           x="555.78595"
+           y="208.81465" /></flowRegion><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3669-1">- DLL's shared Objects not dynamically linked</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3818">- File system is searched by the engine on startup</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara4308">- They are loaded by the engine with dlopen and similar mechanics on other platforms.</flowPara></flowRoot>  </g>
+</svg>

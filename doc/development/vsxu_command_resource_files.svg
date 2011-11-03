@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="vsxu_command_resource_files.svg"
+   inkscape:export-filename="/home/jaw/vovoid/Vovoid Software &amp; Multimedia/projects/1_in_progress/vsxu/documentation/vsxu_command_resource_files.png"
+   inkscape:export-xdpi="164.28755"
+   inkscape:export-ydpi="164.28755">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#000000"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="418.77348"
+     inkscape:cy="367.15007"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer3"
+     showgrid="false"
+     inkscape:window-width="2560"
+     inkscape:window-height="1551"
+     inkscape:window-x="0"
+     inkscape:window-y="26"
+     inkscape:window-maximized="1" />
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       id="perspective10"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       id="filter3239"
+       inkscape:label="Fancy blur"
+       inkscape:menu="Blurs"
+       inkscape:menu-tooltip="Smooth colorized contour which allows desaturation and hue rotation"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         id="feGaussianBlur3241"
+         stdDeviation="5"
+         result="result1" />
+      <feComposite
+         id="feComposite3243"
+         in2="result1"
+         operator="arithmetic"
+         k2="2"
+         in="result1" />
+    </filter>
+    <filter
+       id="filter3271"
+       inkscape:label="Cross-smooth"
+       inkscape:menu="Blurs"
+       inkscape:menu-tooltip="Blur inner borders and intersections"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         id="feGaussianBlur3273"
+         stdDeviation="3" />
+      <feColorMatrix
+         id="feColorMatrix3275"
+         result="fbSourceGraphic"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 6 -2.5 " />
+    </filter>
+    <inkscape:perspective
+       id="perspective3290"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       id="filter3322"
+       inkscape:label="Cross-smooth"
+       inkscape:menu="Blurs"
+       inkscape:menu-tooltip="Blur inner borders and intersections"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         id="feGaussianBlur3324"
+         stdDeviation="3" />
+      <feColorMatrix
+         id="feColorMatrix3326"
+         result="fbSourceGraphic"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 6 -2.5 " />
+    </filter>
+    <inkscape:perspective
+       id="perspective3336"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       id="filter3322-2"
+       inkscape:label="Cross-smooth"
+       inkscape:menu="Blurs"
+       inkscape:menu-tooltip="Blur inner borders and intersections"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         id="feGaussianBlur3324-0"
+         stdDeviation="3" />
+      <feColorMatrix
+         id="feColorMatrix3326-6"
+         result="fbSourceGraphic"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 6 -2.5 " />
+    </filter>
+    <inkscape:perspective
+       id="perspective3414"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3505"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3527"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3681"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3706"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3777"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3834"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3856"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3897"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3966"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+  </defs>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(0,-308.2677)"
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <text
+       id="text2820"
+       y="353.03357"
+       x="30.405594"
+       style="font-size:32px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"><tspan
+         style="font-size:32px;fill:#ffffff"
+         y="353.03357"
+         x="30.405594"
+         id="tspan2822"
+         sodipodi:role="line">Command and Resource File Architecture VSXu 0.3.0</tspan></text>
+    <rect
+       style="fill:#501616;fill-opacity:1"
+       id="rect3163"
+       width="470.53256"
+       height="172.29834"
+       x="27.423883"
+       y="399.1134" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="33.234016"
+       y="377.78232"
+       id="text3548"><tspan
+         sodipodi:role="line"
+         id="tspan3550"
+         x="33.234016"
+         y="377.78232"
+         style="font-size:13px;fill:#ffffff">©2011 Vovoid Media Technologies, Jonatan Wallmander</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Layer">
+    <rect
+       style="fill:#53536c;fill-opacity:1"
+       id="rect3320-8"
+       width="468.81177"
+       height="231.22389"
+       x="29.18523"
+       y="336.77335" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Text"
+     style="display:inline">
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="43.895958"
+       y="119.99417"
+       id="text3278"><tspan
+         sodipodi:role="line"
+         id="tspan3280"
+         x="43.895958"
+         y="119.99417"
+         style="font-size:20px;fill:#ffffff">Client Binary (VSXu Artiste)</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3388"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       transform="translate(-512.65241,-73.539105)"><flowRegion
+         id="flowRegion3390"><rect
+           id="rect3392"
+           width="446.18439"
+           height="255.26556"
+           x="555.78595"
+           y="208.81465" /></flowRegion><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3459">- Acts as a command processor. Asynchronous commands are allowed.</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3663">  For instance - updates from the engine about current time, error messages etc.</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3665">- Hierarchial GUI, messages are passed and processed in each GUI element</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3669">- Commands from the rendering server (engine) are parsed and passed into the module hierarchy</flowPara></flowRoot>    <rect
+       style="fill:#5fbcd3;fill-opacity:1"
+       id="rect3495"
+       width="35.355339"
+       height="120.91526"
+       x="56.568546"
+       y="550.34723"
+       inkscape:transform-center-y="-4.9497475" />
+    <rect
+       style="fill:#5fbcd3;fill-opacity:1;display:inline"
+       id="rect3495-7"
+       width="35.355339"
+       height="120.91526"
+       x="109.60154"
+       y="550.70081"
+       inkscape:transform-center-y="-4.9497475" />
+    <rect
+       style="fill:#5fbcd3;fill-opacity:1;display:inline"
+       id="rect3495-1"
+       width="35.355339"
+       height="120.91526"
+       x="163.10944"
+       y="551.23114"
+       inkscape:transform-center-y="-4.9497475" />
+    <rect
+       style="fill:#5fbcd3;fill-opacity:1;display:inline"
+       id="rect3495-7-7"
+       width="35.355339"
+       height="120.91526"
+       x="216.14243"
+       y="551.58466"
+       inkscape:transform-center-y="-4.9497475" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="268.70053"
+       y="594.89496"
+       id="text3544"><tspan
+         sodipodi:role="line"
+         id="tspan3546"
+         x="268.70053"
+         y="594.89496"
+         style="font-size:20px;fill:#ffffff">Modules</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Bitstream Vera Sans"
+       x="47.752213"
+       y="366.3602"
+       id="text3278-2"><tspan
+         sodipodi:role="line"
+         id="tspan3280-2"
+         x="47.752213"
+         y="366.3602"
+         style="font-size:20px;fill:#ffffff">VSXu Engine</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3388-6"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Bitstream Vera Sans"
+       transform="translate(-512.43635,167.33632)"><flowRegion
+         id="flowRegion3390-1"><rect
+           id="rect3392-0"
+           width="446.18439"
+           height="255.26556"
+           x="555.78595"
+           y="208.81465" /></flowRegion><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3669-9">- Acts as a command processor</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3747">- Commands coming from The Client can render different behaviour:</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3749">  - load a state file or production (see resources on the right)   </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3751">  - list all available file resources   </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3753">  - list all available module names with description   </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3755">  - list the in and out parameters of a module   </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3757">  - create/delete instances of modules   </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3759">  - interconnect modules’ parameters together   </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3761">  - get/set parameters </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3763">Engine message transfer protocols currently include: </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3765">- vsx_command_list (when used as dynamic library and linked with client) </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3767">- TCP/IP (standalone, both IPv4 and IPv6) currently limited to one conn. per server</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3388-4"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Bitstream Vera Sans"
+       transform="translate(-288.2835,398.78206)"><flowRegion
+         id="flowRegion3390-9"><rect
+           id="rect3392-09"
+           width="251.73003"
+           height="79.195976"
+           x="555.78595"
+           y="208.81465" /></flowRegion><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3669-1">- DLL's shared Objects not dynamically linked</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3818">- File system is searched by the engine on startup</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3820">- Thus MUST reside on the same hardware node as</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3822">  the VSXu engine.</flowPara></flowRoot>    <rect
+       style="fill:#ff00ff;fill-opacity:1"
+       id="rect3824"
+       width="102.53049"
+       height="26.870058"
+       x="512.6524"
+       y="342.45782" />
+    <rect
+       style="fill:#ff00ff;fill-opacity:1;display:inline"
+       id="rect3824-1"
+       width="102.53049"
+       height="26.870058"
+       x="512.29889"
+       y="382.76291" />
+    <rect
+       style="fill:#ff00ff;fill-opacity:1;display:inline"
+       id="rect3824-5"
+       width="102.53049"
+       height="26.870058"
+       x="512.47565"
+       y="422.00735" />
+    <rect
+       style="fill:#ff00ff;fill-opacity:1;display:inline"
+       id="rect3824-1-9"
+       width="102.53049"
+       height="26.870058"
+       x="512.12213"
+       y="462.31244" />
+    <rect
+       style="fill:#ff00ff;fill-opacity:1;display:inline"
+       id="rect3824-5-7"
+       width="102.53049"
+       height="26.870058"
+       x="511.76852"
+       y="500.49619" />
+    <rect
+       style="fill:#ff00ff;fill-opacity:1;display:inline"
+       id="rect3824-1-9-7"
+       width="102.53049"
+       height="26.870058"
+       x="511.41501"
+       y="540.80127" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3926"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       transform="translate(-5.6568543,2.1213203)"><flowRegion
+         id="flowRegion3928"><rect
+           id="rect3930"
+           width="375.47369"
+           height="323.85492"
+           x="636.39612"
+           y="338.21518" /></flowRegion><flowPara
+         id="flowPara3932"
+         style="font-size:9px;fill:#ffffff">Resources (External Content) </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3934">- state files - containing all commands for getting the Engine into a state </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3936">- production files (.vsx) - containing a state file and all needed external resources. A packed (zip-like) format. </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3938">- images (png/jpeg) </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3940">- meshes </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3942">- sound files </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3944">- etc.  </flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3946"></flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3948">The resource files must reside on the same hardware node as the engine.</flowPara></flowRoot>    <rect
+       style="fill:#ff0000;fill-opacity:1"
+       id="rect3950"
+       width="1021.0622"
+       height="2.1213202"
+       x="14.849242"
+       y="292.25323" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="24.748737"
+       y="294.3746"
+       id="text3952"><tspan
+         sodipodi:role="line"
+         id="tspan3954"
+         x="24.748737"
+         y="294.3746"
+         style="font-size:18px;font-style:italic;fill:#ffffff;-inkscape-font-specification:AlArabiya Italic">Linkage barrier</tspan></text>
+    <rect
+       style="fill:#501616;fill-opacity:1"
+       id="rect3163-5"
+       width="470.53256"
+       height="172.29834"
+       x="526.28772"
+       y="89.431458" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Bitstream Vera Sans"
+       x="542.75983"
+       y="118.57993"
+       id="text3278-6"><tspan
+         sodipodi:role="line"
+         id="tspan3280-3"
+         x="542.75983"
+         y="118.57993"
+         style="font-size:20px;fill:#ffffff">Client Binary (Yours?)</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3388-9"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Bitstream Vera Sans"
+       transform="translate(-13.788568,-74.95335)"><flowRegion
+         id="flowRegion3390-4"><rect
+           id="rect3392-8"
+           width="446.18439"
+           height="255.26556"
+           x="555.78595"
+           y="208.81465" /></flowRegion><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara3459-1">- Does not have to act on status messages</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara4007">- Can feed states to the engine</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara4009">- No need for GUI - can be scripting language (PHP/Python/Perl etc.)</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara4026">- Telnet is possible to use - port is: 11030</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara4030">- Note that Artiste doesn't enable the TCP/IP server in its own embedded VSXu Engine -</flowPara><flowPara
+         style="font-size:9px;fill:#ffffff"
+         id="flowPara4036">  to run a standalone engine as server you need the &quot;server&quot; binary.</flowPara></flowRoot>  </g>
+</svg>
