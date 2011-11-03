@@ -47,6 +47,7 @@ install_manifest.txt
 /plugins/src/texture.load/texture.load.so
 /plugins/src/texture/texture.so
 /plugins/src/sound.pulseaudio/sound.pulseaudio.so
+/plugins/src/sound.fmod
 /plugins/static_factory_cmake_link_directories
 /plugins/static_factory_cmake_target_link_libraries
 /plugins/static_factory_funcmapping.cpp
