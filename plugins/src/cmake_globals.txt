@@ -26,8 +26,8 @@ add_definitions(
 include_directories(
 ../include
 ../../include
-../../../engine/include
-../../../engine_graphics/include
+${CMAKE_SOURCE_DIR}/engine/include
+${CMAKE_SOURCE_DIR}/engine_graphics/include
 ../../../
 )
 
