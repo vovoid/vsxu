@@ -20,20 +20,15 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/engine/include
 )
 
+
+################################################################################
+# DEFINITIONS ##################################################################
+################################################################################
+
 if(WIN32)
-  include_directories(
-    ../lib/win32
-	  ../lib/win32/png
-	  ../lib/win32/jpg
-	  ../lib/win32/zlib
-  )
   add_definitions(-DVSX_GLPNG_DLL -DVSX_ENG_DLL=1)
-  file(GLOB PNG_SOURCES "../lib/win32/png/*.c")
-  file(GLOB JPG_SOURCES "../lib/win32/jpg/*.c")
-  file(GLOB ZLIB_SOURCES "../lib/win32/zlib/*.c")
 endif(WIN32)
 
-#definitions
 add_definitions(
  -DVSX_ENG_DLL
  -DVSX_FONT_NO_FT
@@ -78,7 +73,6 @@ add_library(${module_id} SHARED ${SOURCES} ${PNG_SOURCES} ${JPG_SOURCES} ${ZLIB_
 install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 if(WIN32)
   target_link_libraries(${module_id} gdi32)
-  link_directories("../engine")
 else(WIN32)
 
   if (VSXU_OPENGL_ES_2_0 EQUAL 1)
@@ -90,10 +84,10 @@ else(WIN32)
 endif(WIN32)
 
 target_link_libraries(${module_id}
+  ${PNG_LIBRARIES}
+  ${JPEG_LIBRARIES}
   ${OPENGL_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
-  ${PNG_LIBRARY}
-  ${JPEG_LIBRARY}
   ${GLEW_LIBRARY}
   vsxu_engine
 )
