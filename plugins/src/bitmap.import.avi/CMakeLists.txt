@@ -11,7 +11,10 @@ message("*******************************************")
 
 project (${module_id})
 
-include(./_sources)
+include (../cmake_globals.txt)
+include(${list_file_path}/_sources)
+include_directories(${CMAKE_SOURCE_DIR}/engine_graphics/include)
+
 add_library(${module_id} MODULE ${SOURCES})
 include(../cmake_suffix.txt)
 
