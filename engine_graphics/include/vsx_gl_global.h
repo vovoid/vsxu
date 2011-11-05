@@ -50,9 +50,9 @@
         #endif
       #endif
 
-      #ifdef _WIN32 // bubbletrace
-        #include <GL/glaux.h>
-      #endif
+//      #ifdef _WIN32 // bubbletrace
+        //#include <GL/glaux.h>
+      //#endif
 
       #if defined(VSXU_MAC_XCODE)
         #include <glext.h>
