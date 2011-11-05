@@ -1,15 +1,10 @@
-  link_directories(
-    engine_graphics
-  )
-
   target_link_libraries(${module_id}
     wsock32
     ws2_32
     vsxu_engine
     vsxu_engine_graphics
     ${GLEW_LIBRARY}
-    pthreadGCE
+    ${CMAKE_THREAD_LIBS_INIT}
     gdi32
-    glu32
-    opengl32
+    ${OPENGL_LIBRARIES}
   )
