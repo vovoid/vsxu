@@ -59,27 +59,6 @@
 #define VSXG_DLLIMPORT
 #endif
 
-#ifdef __cplusplus
-//extern "C" {
-#endif
-
-/*#ifdef _MSC_VER
-	#ifdef _DEBUG
-		#pragma comment (lib, "glpngd.lib")
-	#else
-		#pragma comment (lib, "glpng.lib")
-	#endif
-#endif*/
-
-/* XXX This is from Win32's <windef.h> */
-/*#ifndef APIENTRY
-	#if (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED)
-		#define APIENTRY    __stdcall
-	#else
-		#define APIENTRY
-	#endif
-#endif
-*/
 /* Mipmapping parameters */
 #define PNG_NOMIPMAPS      0 /* No mipmapping                        */
 #define PNG_BUILDMIPMAPS  -1 /* Calls a clone of gluBuild2DMipmaps() */
@@ -89,20 +68,6 @@
 #define PNG_NOMIPMAP     PNG_NOMIPMAPS
 #define PNG_BUILDMIPMAP  PNG_BUILDMIPMAPS
 #define PNG_SIMPLEMIPMAP PNG_SIMPLEMIPMAPS
-
-/* Transparency parameters */
-#define PNG_CALLBACK  -3 /* Call the callback function to generate alpha   */
-#define PNG_ALPHA     -2 /* Use alpha channel in PNG file, if there is one */
-#define PNG_SOLID     -1 /* No transparency                                */
-#define PNG_STENCIL    0 /* Sets alpha to 0 for r=g=b=0, 1 otherwise       */
-#define PNG_BLEND1     1 /* a = r+g+b                                      */
-#define PNG_BLEND2     2 /* a = (r+g+b)/2                                  */
-#define PNG_BLEND3     3 /* a = (r+g+b)/3                                  */
-#define PNG_BLEND4     4 /* a = r*r+g*g+b*b                                */
-#define PNG_BLEND5     5 /* a = (r*r+g*g+b*b)/2                            */
-#define PNG_BLEND6     6 /* a = (r*r+g*g+b*b)/3                            */
-#define PNG_BLEND7     7 /* a = (r*r+g*g+b*b)/4                            */
-#define PNG_BLEND8     8 /* a = sqrt(r*r+g*g+b*b)                          */
 
 typedef struct {
 	unsigned int Width;
@@ -122,24 +87,7 @@ typedef struct {
 	unsigned char *Palette;
 } pngRawInfo;
 
-//int APIENTRY DLLIMPORT pngLoadRaw(const char *filename, pngRawInfo *rawinfo);
-//extern int APIENTRY DLLIMPORT pngLoadRawF(FILE *file, pngRawInfo *rawinfo);
 extern int VSXG_DLLIMPORT pngLoadRaw(const char* filename, pngRawInfo *rawinfo, vsxf* filesystem);
-
-/*extern int APIENTRY DLLIMPORT pngLoad(const char *filename, int mipmap, int trans, pngInfo *info);
-extern int APIENTRY DLLIMPORT pngLoadF(FILE *file, int mipmap, int trans, pngInfo *info);
-*/
-//extern unsigned int APIENTRY DLLIMPORT pngBind(const char *filename, int mipmap, int trans, pngInfo *info, int wrapst, int minfilter, int magfilter);
-//extern unsigned int APIENTRY DLLIMPORT pngBindF(FILE *file, int mipmap, int trans, pngInfo *info, int wrapst, int minfilter, int magfilter);
-
-/*extern void APIENTRY DLLIMPORT pngSetStencil(unsigned char red, unsigned char green, unsigned char blue);
-extern void APIENTRY DLLIMPORT pngSetAlphaCallback(unsigned char (*callback)(unsigned char red, unsigned char green, unsigned char blue));
-extern void APIENTRY DLLIMPORT pngSetViewingGamma(double viewingGamma);
-extern void APIENTRY DLLIMPORT pngSetStandardOrientation(int standardorientation);
-*/
-#ifdef __cplusplus
-//}
-#endif
 
 class VSXG_DLLIMPORT CJPEGTest
 {
