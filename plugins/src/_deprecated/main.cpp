@@ -21,7 +21,6 @@
 
 #include "vsx_param.h"
 #include "vsx_module.h"
-#include "main.h"
 #include "vsx_math_3d.h"
 #include "vsx_quaternion.h"
 
@@ -402,15 +401,18 @@ public:
 
 
 
-//-----------------------------------------------------------------------
-//-----------------------------------------------------------------------
-//--- FOG ---------------------------------------------------------------
-//-----------------------------------------------------------------------
-//-----------------------------------------------------------------------
+//******************************************************************************
+//*** F A C T O R Y ************************************************************
+//******************************************************************************
 
+#ifdef _WIN32
+extern "C" {
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
+__declspec(dllexport) unsigned long get_num_modules();
+}
+#endif
 
-// #################################################################################
-#if BUILDING_DLL
 vsx_module* create_new_module(unsigned long module) {
   // as we have only one module available, don't look at the module variable, just return - for speed
   // otherwise you'd have something like,, switch(module) { case 0: break; }
@@ -436,4 +438,3 @@ unsigned long get_num_modules() {
   return 3;
 }  
 
-#endif
