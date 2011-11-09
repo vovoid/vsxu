@@ -12,22 +12,41 @@ SET(CPACK_SET_DESTDIR "on")
 set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
 endif(UNIX)
 
+set(ARCHITECTURE i386)
+if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+  set(ARCHITECTURE amd64)
+endif (CMAKE_SIZEOF_VOID_P EQUAL 8)
+
 SET(VERSION 0.3.0)
 SET($ {VERSION} CPACK_DEBIAN_PACKAGE_VERSION)
 SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 SET(CPACK_DEBIAN_PACKAGE_SECTION "graphics")
-SET(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+SET(CPACK_DEBIAN_ARCHITECTURE ${ARCHITECTURE})
 SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libxrandr2 (> = 2: 1.3.0-3), libc6 (> = 2.1.3), libgcc1 (> = 1: 4.1.1)")
 
-SET(CPACK_PACKAGE_DESCRIPTION "Music Visualizer")
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Music Visualizer, Realtime Graphics Visual Programming Language, ")
+SET(CPACK_PACKAGE_DESCRIPTION "VSXu Music Visualizer")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "VSXu Music Visualizer, Realtime Graphics Visual Programming Language, ")
 SET(CPACK_PACKAGE_CONTACT "Jonatan Wallmander <jonatan@vovoid.com> ")
 SET(CPACK_PACKAGE_FILE_NAME ${CMAKE_PROJECT_NAME}_${VERSION}_${CPACK_DEBIAN_ARCHITECTURE})
 
-SET(CPACK_COMPONENTS_ALL Applications Libraries ApplicationData)
+SET(CPACK_COMPONENTS_ALL engine artiste player server)
+set(CPACK_COMPONENT_ENGINE_DISPLAY_NAME "VSXu Engine")
+set(CPACK_COMPONENT_ENGINE_REQUIRED 1)
+set(CPACK_COMPONENT_ARTISTE_DISPLAY_NAME "VSXu Artiste")
+set(CPACK_COMPONENT_PLAYER_DISPLAY_NAME "VSXu Player")
+set(CPACK_COMPONENT_PLAYER_REQUIRED 1)
 
 
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jonatan 'jaw' Wallmander") #required
+
+
+
+set(CPACK_PACKAGE_NAME "MyLib")
+set(CPACK_PACKAGE_VENDOR "Vovoid Media Technologies")
+set(CPACK_PACKAGE_VERSION_MAJOR "0")
+set(CPACK_PACKAGE_VERSION_MINOR "3")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "CPack Component Example")
 
 if (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
   add_definitions( -DPLATFORM_SHARED_FILES_FLAT_INSTALL )
@@ -49,29 +68,12 @@ endif(VSXU_DEBUG)
 #add_definitions(-O3 -c -fmessage-length=0 -finline-functions)
 
 
-#find_package(DL REQUIRED)
-#find_package(GLEW REQUIRED)
-#find_package(GLFW REQUIRED)
-#find_package(PNG REQUIRED)
-#find_package(JPEG REQUIRED)
-#find_package(FTGL REQUIRED)
-#find_package(PULSEAUDIO REQUIRED)
-#find_package(Threads REQUIRED)
-#find_package(X11 COMPONENTS X11_Xrandr REQUIRED)
-
-#if(NOT X11_Xrandr_FOUND)
-  #message("ERROR: Xrandr lib not found, terminating")
-  #return(10)
-#endif(NOT X11_Xrandr_FOUND)
-
-
 ################################################################################
 # VSXU LIBRARIES ###############################################################
 ################################################################################
 add_subdirectory(engine)
 add_subdirectory(engine_graphics)
 add_subdirectory(plugins)
-
 
 ################################################################################
 # VSXU IMPLEMENTATIONS/BINARIES ################################################

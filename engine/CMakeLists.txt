@@ -181,12 +181,17 @@ if (VSXU_ENGINE_STATIC EQUAL 1)
   add_library(${module_id}_static STATIC ${STATIC_SOURCES} ${SOURCES} ${GAME_MONKEY})
   add_library(${module_id} SHARED ${STATIC_SOURCES} ${SOURCES} ${GAME_MONKEY})
   include(../plugins/static_factory_cmake_target_link_libraries)
-  install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 else (VSXU_ENGINE_STATIC EQUAL 1)
   #dynamic build
   add_library(${module_id} SHARED ${SOURCES} ${GAME_MONKEY})
-  install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 endif (VSXU_ENGINE_STATIC EQUAL 1)
+if(UNIX)
+install(TARGETS ${module_id} DESTINATION lib)
+endif(UNIX)
+if(WIN32)
+  message(${CMAKE_INSTALL_PREFIX})
+  install(TARGETS ${module_id} DESTINATION "./" COMPONENT engine)
+endif(WIN32)
 
 target_link_libraries(${module_id}
   ${DL_LIBRARY}
