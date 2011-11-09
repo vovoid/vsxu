@@ -413,17 +413,10 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
     get_files_recursive(vsxu_base_path+"plugins",&mfiles,".dll","");
   #endif
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-    #ifdef PLATFORM_SHARED_FILES_FLAT_INSTALL
-      #ifdef VSXU_DEBUG
-      printf("vsxu_base_path is %s             \n", vsxu_base_path.c_str() );
-      #endif
-      get_files_recursive(vsxu_base_path+"plugins",&mfiles,".so","");
+    #ifdef VSXU_ENGINE_STATIC
+    static_holder.get_factory_names(&mfiles);
     #else
-      #ifdef VSXU_ENGINE_STATIC
-      static_holder.get_factory_names(&mfiles);
-      #else
-      get_files_recursive(vsx_string(CMAKE_INSTALL_PREFIX)+"/lib/vsxu/plugins",&mfiles,".so","");
-      #endif
+    get_files_recursive(vsx_string(CMAKE_INSTALL_PREFIX)+"/lib/vsxu/plugins",&mfiles,".so","");
     #endif
     //printf("Plugin directory: %s\n", vsx_string(vsxu_base_path+"_plugins_linux").c_str());
   #endif

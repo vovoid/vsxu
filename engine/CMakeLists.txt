@@ -61,11 +61,6 @@ if (VSXU_DEBUG EQUAL 1)
 endif (VSXU_DEBUG EQUAL 1)
 
 
-if (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
-  add_definitions( -DPLATFORM_SHARED_FILES_FLAT_INSTALL )
-endif (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
-
-
 ################################################################################
 # SOURCES ######################################################################
 ################################################################################

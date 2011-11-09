@@ -1,9 +1,0 @@
-Note!
-
-If glfw is available in your distribution, please use
-that. Otherwise compile it here and insert the files yourself
-into /usr/lib and /usr/include.
-
-If you are going to use the fmod module (recommended for 
-experimental use only) you have to insert the proper fmod libraries
-into /usr/lib found in this directory.
