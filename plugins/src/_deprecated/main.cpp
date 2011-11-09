@@ -208,8 +208,8 @@ public:
     x_num_segments->set(15.0f);
     x_start        = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"x_start");
     x_stop         = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"x_stop");
-    x_start->set(-half_pi);
-    x_stop->set(half_pi);
+    x_start->set(-HALF_PI);
+    x_stop->set(HALF_PI);
     x_a            = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"x_a");
     x_a->set(1.0f);
     x_b            = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"x_b");
@@ -227,8 +227,8 @@ public:
     y_num_segments->set(15.0f);
     y_start        = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"y_start");
     y_stop         = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"y_stop");
-    y_start->set(-pi);
-    y_stop->set(pi);
+    y_start->set(-PI);
+    y_stop->set(PI);
     y_a            = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"y_a");
     y_a->set(1.0f);
     y_b            = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"y_b");

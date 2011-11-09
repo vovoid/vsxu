@@ -54,11 +54,11 @@
         //#include <GL/glaux.h>
       //#endif
 
-      #if defined(VSXU_MAC_XCODE)
-        #include <glext.h>
-      #else
-        #include <GL/glext.h>
-      #endif
+      //#if defined(VSXU_MAC_XCODE)
+        //#include <glext.h>
+      //#else
+        //#include <GL/glext.h>
+      //#endif
     #endif
   #endif
 #endif

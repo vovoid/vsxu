@@ -1548,7 +1548,7 @@ void vsx_widget_seq_channel::i_draw()
 								//float part = ((tstart-t_cur)/(lines[td].delay));
 								for (float i = 0; i < 10; ++i)
 								{
-									float ft = pi / 10 * i;
+									float ft = PI / 10 * i;
 									float f = (1 - cos(ft)) * 0.5;
 									float ee = sv * (1 - f) + ev * f;
 									draw_line(time_iterator + items[item_iterator].total_length
@@ -1563,7 +1563,7 @@ void vsx_widget_seq_channel::i_draw()
 							{
 								for (float i = 0; i < 10; ++i)
 								{
-									float ft = pi / 10 * i;
+									float ft = PI / 10 * i;
 									float f = (1 - cos(ft)) * 0.5;
 									float ee = sv * (1 - f) + ev * f;
 									draw_line(time_iterator + items[item_iterator].total_length
@@ -1577,7 +1577,7 @@ void vsx_widget_seq_channel::i_draw()
 							{
 								for (float i = 0; i < 10; ++i)
 								{
-									float ft = pi / 10 * i;
+									float ft = PI / 10 * i;
 									float f = (1 - cos(ft)) * 0.5;
 									float ee = sv * (1 - f) + ev * f;
 									draw_line(time_iterator + items[item_iterator].total_length

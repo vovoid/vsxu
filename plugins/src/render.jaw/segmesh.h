@@ -55,7 +55,7 @@ public:
     switch (shape_type->get()) {
       case 0:
         {
-          incr = pi_float*2.0f/sides->get();
+          incr = PI_FLOAT*2.0f/sides->get();
           for (float a = 0; a < sides->get(); ++a) {
             gmesh.vertices[0][(int)a].coord = vsx_vector((float)cos(a*incr)*ss,(float)sin(a*incr)*ss,0);
             gmesh.vertices[0][(int)a].color = vsx_color((float)(rand()%1000)*0.001f,(float)(rand()%1000)*0.001f,(float)(rand()%1000)*0.001f,0.8f);

@@ -47,7 +47,7 @@ public:
 
   inline void cos_slerp(vsx_quaternion& from, vsx_quaternion& to, float t)
   {
-    slerp(from,to,(float)sin(t*half_pi));
+    slerp(from,to,(float)sin(t*HALF_PI));
   }
 
   inline void slerp(vsx_quaternion& from, vsx_quaternion& to, float t)

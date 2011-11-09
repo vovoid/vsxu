@@ -29,9 +29,9 @@
 #endif /* Not BUILDING_DLL */
 
 extern "C" {
-_declspec(dllexport) vsx_module* create_new_module(unsigned long module);
-_declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
-_declspec(dllexport) unsigned long get_num_modules();
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
+__declspec(dllexport) unsigned long get_num_modules();
 
 }
 

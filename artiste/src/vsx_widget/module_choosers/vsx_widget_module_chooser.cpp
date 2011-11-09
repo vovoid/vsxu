@@ -269,7 +269,7 @@ bool HTNode::isLeaf() {
         //printf("root->getlength() = %d\n",root->getLength());
         double l1 = (1.2 - mroot->getLength());
         //if (l1 > 0.4) l1 = 0.4;
-        double l2 = cos((20.0 * pi) / (2.6 * nbrChild + 38.0));
+        double l2 = cos((20.0 * PI) / (2.6 * nbrChild + 38.0));
         //printf("l1: %f\n",l1);
         //printf("l2: %f\n",l2);
         length = mroot->getLength() + (l1 * l2);
@@ -976,7 +976,7 @@ void vsx_widget_ultra_chooser::draw_2d()
       //glColor4f(0,0.5,0.6,0.9*visible);
       glColor4f(0,0,0,0);
 
-      float n = 2*pi/nu;
+      float n = 2*PI/nu;
       for (float i = 0; i <= nu; i++) {
         glVertex3f(size.x*cos(n*i)/2+0.5f,size.y*sin(n*i)/2+0.5f,0);
       }
@@ -1025,7 +1025,7 @@ void vsx_widget_ultra_chooser::draw_2d()
     if (message != "")
     myf.print_center(a, message,0.035);
     if (drag_dropped) {
-      myf.color.a = (sin(pi+time*13)+1)*0.4f+0.2f;
+      myf.color.a = (sin(PI+time*13)+1)*0.4f+0.2f;
       myf.print_center(vsx_vector(a.x,a.y+0.16), "* Dropping "+treedraw->selected->node->node->module_info->identifier+" *",0.025);
       myf.print_center(vsx_vector(a.x,a.y+0.13), "Hold the mouse button, move/drag the module where you want to place it.",0.025);
       myf.print_center(vsx_vector(a.x,a.y+0.1), "Then release the left mouse button to drop it.",0.025);

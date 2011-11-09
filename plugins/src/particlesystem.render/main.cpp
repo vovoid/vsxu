@@ -913,7 +913,7 @@ public:
             for (int k = 0; k < ARRAY_STEPS; k++)
             {
               vsx_vector tv = (*particles->particles)[found].pos + last_dist * ((float)k / ARRAY_STEPS);
-              tv += perpendicular_mult * (*(data->data))[array_pos] * (float)sin(pi * ((float)k / ARRAY_STEPS)) * 0.1f;
+              tv += perpendicular_mult * (*(data->data))[array_pos] * (float)sin(PI * ((float)k / ARRAY_STEPS)) * 0.1f;
               glVertex3f(tv.x, tv.y, tv.z);
               if (array_pos++ > (int)data->data->size()-2) array_pos = 0;
             }

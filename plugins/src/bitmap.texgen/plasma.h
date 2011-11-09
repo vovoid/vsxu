@@ -108,7 +108,7 @@ public:
     int ssize = ((module_bitmap_plasma*)ptr)->i_size;
     int hsize = ssize >> 1;
     //float sp1 = (float)size + 1.0f;
-    float size = (float)(2.0f*pi)/(float)ssize;
+    float size = (float)(2.0f*PI)/(float)ssize;
     
   	for(y = -hsize; y < hsize; ++y)
   		for(x = -hsize; x < hsize; ++x,p++)
@@ -128,7 +128,7 @@ public:
           float dstf = dd/((float)hsize+1);
           phase = pow(1 - fabs(cos(angle+arms*atan2(xx,yy)))*(star_flower+(1-star_flower)*(((dstf)))),attenuation);
           if (phase > 2.0) phase = 1.0;
-          *p = (long)(255.0f * (cos(((dstf * pi/2.0f)))*phase));
+          *p = (long)(255.0f * (cos(((dstf * PI/2.0f)))*phase));
           if (*p > 255) *p = 255;
           if (*p < 0) *p = 0;
         }*/

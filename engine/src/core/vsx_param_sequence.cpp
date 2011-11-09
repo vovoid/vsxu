@@ -185,7 +185,7 @@ void vsx_param_sequence::execute(float ptime) {
             //param->set_string(f2s(cv+dv*t));
           } else
           if (cur_interpolation == 2) {
-            float ft = t*pi_float;
+            float ft = t*PI_FLOAT;
             float f = (1 - cos(ft)) * 0.5f;
             ((vsx_module_param_quaternion*)param->module_param)->set_internal(cv*(1-f) + ev*f);
             //param->set_string(f2s(cv*(1-f) + ev*f));

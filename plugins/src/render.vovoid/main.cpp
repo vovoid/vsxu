@@ -31,7 +31,6 @@
 #define MAP_SPHERE 1
 
 
-//const double pi = 3.1415926535897932384626433832795;
 
 //unsigned long* cylImg;
 //int cylSizeX, cylSizeY;
@@ -47,7 +46,7 @@
 	float scale = v_rlen(vec2);
 	v_smult(vec, scale);
 
-	float cylU = (float)(atan2(vec[0], vec[2]) / pi + 1) * 0.5f * cylSizeX;
+	float cylU = (float)(atan2(vec[0], vec[2]) / PI + 1) * 0.5f * cylSizeX;
 	float cylV = (float)((vec[1] + 1) * 0.5f * (cylSizeY - 1));
 	if(cylV < 0) cylV = 0;
 	if(cylV > cylSizeY) cylV = cylSizeY;
@@ -76,7 +75,7 @@ float v_rlen(float *v){
 unsigned long vsx_module_plugin::getColorSph(float *vec) {
 	v_norm(vec);
 
-	float sphV = (float)((acos(-vec[1]) / pi) ) * cylSizeY;
+	float sphV = (float)((acos(-vec[1]) / PI) ) * cylSizeY;
 
 	float vec2[4] = {
 		vec[0],
@@ -86,8 +85,8 @@ unsigned long vsx_module_plugin::getColorSph(float *vec) {
 	float scale = v_rlen(vec2);
 	v_smult(vec, scale);
 
-//	float sphU = (float)(atan2(vec[0], vec[2]) / pi + 1) * 0.5f * cylSizeX;
-	float sphU = (float)(atan2(vec[0], vec[2]) / pi ) * 0.5f * cylSizeX;
+//	float sphU = (float)(atan2(vec[0], vec[2]) / PI + 1) * 0.5f * cylSizeX;
+	float sphU = (float)(atan2(vec[0], vec[2]) / PI ) * 0.5f * cylSizeX;
 
 //	cylV = fmod(fabs(cylV), cylSizeY);
 //	cylU = fmod(cylU * 7, cylSizeX);

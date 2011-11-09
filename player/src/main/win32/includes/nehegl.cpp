@@ -17,8 +17,8 @@
  
 #define COMPILE_MULTIMON_STUBS
 #include "multimon.h"
-#include <gl/gl.h>
-#include <gl/glu.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <vector>
 #include <map>
 #include "vsx_avector.h"

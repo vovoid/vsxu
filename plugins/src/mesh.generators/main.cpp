@@ -306,9 +306,9 @@ public:
       float sz = scaling->get(2) * length->get();
       for (i = 0; i < (int)num_points->get(); ++i)
       {
-        mesh->data->vertices[i].x = start.x + ((rand()%10000)*0.0001f-0.5f)*sx * sin((float)i * one_div_num_points * pi);
-        mesh->data->vertices[i].y = start.y + ((rand()%10000)*0.0001f-0.5f)*sy * sin((float)i * one_div_num_points * pi);
-        mesh->data->vertices[i].z = start.z + ((rand()%10000)*0.0001f-0.5f)*sz * sin((float)i * one_div_num_points * pi);
+        mesh->data->vertices[i].x = start.x + ((rand()%10000)*0.0001f-0.5f)*sx * sin((float)i * one_div_num_points * PI);
+        mesh->data->vertices[i].y = start.y + ((rand()%10000)*0.0001f-0.5f)*sy * sin((float)i * one_div_num_points * PI);
+        mesh->data->vertices[i].z = start.z + ((rand()%10000)*0.0001f-0.5f)*sz * sin((float)i * one_div_num_points * PI);
         float c = 1.0f - (float)i * one_div_num_points;
         mesh->data->vertex_colors[i].r = c;
         mesh->data->vertex_colors[i].g = c;
@@ -513,7 +513,7 @@ public:
       //printf("generating random points\n");
       mesh->data->vertices.reset_used();
       mesh->data->faces.reset_used();
-      float inc = (float)(pi*2/(double)((int)num_segments->get()));
+      float inc = (float)(PI*2/(double)((int)num_segments->get()));
       float t_inc = 1.0f/(float)((int)num_segments->get());
       float t = 0.0f;
       float ip = 0.0f;
@@ -689,8 +689,8 @@ public:
     x_num_segments->set(40.0f);
     x_start        = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"x_start");
     x_stop         = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"x_stop");
-    x_start->set((float)-half_pi);
-    x_stop->set((float)half_pi);
+    x_start->set((float)-HALF_PI);
+    x_stop->set((float)HALF_PI);
     x_a            = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"x_a");
     x_a->set(1.0f);
     x_b            = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"x_b");
@@ -705,8 +705,8 @@ public:
     x_m->set(1.0f);
     y_start        = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"y_start");
     y_stop         = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"y_stop");
-    y_start->set((float)-pi);
-    y_stop->set((float)pi);
+    y_start->set((float)-PI);
+    y_stop->set((float)PI);
 
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
     first_run = true;
@@ -735,12 +735,12 @@ public:
 
 			// sanity checks
 			float _x_start = x_start->get();
-			/*if (_x_start < -half_pi) _x_start = -half_pi;
-			if (_x_start > half_pi) _x_start = half_pi;*/
+			/*if (_x_start < -HALF_PI) _x_start = -HALF_PI;
+			if (_x_start > HALF_PI) _x_start = HALF_PI;*/
 
 			float _x_stop = x_stop->get();
-			/*if (_x_stop < -half_pi) _x_stop = -half_pi;
-			if (_x_stop > half_pi) _x_stop = half_pi;*/
+			/*if (_x_stop < -HALF_PI) _x_stop = -HALF_PI;
+			if (_x_stop > HALF_PI) _x_stop = HALF_PI;*/
 
 			if (_x_start > _x_stop) {
 				float t = _x_start;
@@ -749,12 +749,12 @@ public:
 			}
 
 			float _y_start = y_start->get();
-			/*if (_y_start < -pi) _y_start = -pi;
-			if (_y_start > pi) _y_start = pi;*/
+			/*if (_y_start < -PI) _y_start = -PI;
+			if (_y_start > PI) _y_start = PI;*/
 
 			float _y_stop = y_stop->get();
-			/*if (_y_stop < -pi) _y_stop = -pi;
-			if (_y_stop > pi) _y_stop = pi;*/
+			/*if (_y_stop < -PI) _y_stop = -PI;
+			if (_y_stop > PI) _y_stop = PI;*/
 
 			if (_y_start > _y_stop) {
 				float t = _y_start;
@@ -1284,11 +1284,11 @@ public:
     int vi = 0; // vertex index
 
 		for(int i = 1; i < current_num_stacks; i++) {
-			double angle_stack = (double)i / current_num_stacks * pi;
+			double angle_stack = (double)i / current_num_stacks * PI;
 			float rad = (float)sin(angle_stack);
 			float y = (float)cos(angle_stack);
 			for(int j = 0; j < current_num_sectors; j++) {
-				double angle = (double)j / current_num_sectors * 2 * pi;
+				double angle = (double)j / current_num_sectors * 2 * PI;
 		    vsx_vector tmp_vec((float)sin(angle) * rad, y, (float)cos(angle) * rad);
 		    //printf("%f %f %f\n", tmp_vec.x, tmp_vec.y, tmp_vec.z);
 		    mesh->data->vertices[vi] = tmp_vec;
@@ -1532,8 +1532,8 @@ public:
       {
         double j1 = (float)j * one_div_num_sectors_minus_one;
         vsx_vector tmp_vec(
-            circle_base_pos.x + cos(j1 * two_pi) * size_shape_x[index8192] * size_shape_x_multiplier_f,
-            circle_base_pos.y + sin(j1 * two_pi) * size_shape_y[index8192] * size_shape_y_multiplier_f,
+            circle_base_pos.x + cos(j1 * TWO_PI) * size_shape_x[index8192] * size_shape_x_multiplier_f,
+            circle_base_pos.y + sin(j1 * TWO_PI) * size_shape_y[index8192] * size_shape_y_multiplier_f,
             circle_base_pos.z
         );
         mesh->data->vertices[vi] = tmp_vec;
@@ -1588,14 +1588,14 @@ public:
 
       double i1 = (double)(i-1) / (current_num_stacks-1);
       float global_shape = sin(i1 * 3.14159);
-      double angle_stack = (double)i / current_num_stacks * pi;
+      double angle_stack = (double)i / current_num_stacks * PI;
       float rad = (float)sin(angle_stack);
       float y = (float)cos(angle_stack);
       //double i1 = (double)i / current_num_sectors;
       for(int j = 0; j < current_num_sectors; j++)
       {
         double j1 = (double)j / current_num_sectors;
-        double angle = j1 *  pi;
+        double angle = j1 *  PI;
         float s = (float)sin(angle) * rad;
         vsx_vector tmp_vec(
               s*growth->get() * global_shape,
@@ -1836,8 +1836,8 @@ public:
       // x and y are the roundness
       float ip = (float)i * one_div_num_stacks;
       float ip2 = (float)(i+1) * one_div_num_stacks;
-      float phi = two_pi * ip;
-      float phi2 = two_pi * ip2;
+      float phi = TWO_PI * ip;
+      float phi2 = TWO_PI * ip2;
 
       // knot vertex pos
 
@@ -1879,8 +1879,8 @@ public:
 
         //newpoint = point.x * N + point.y * B;
 
-        float px = cos(j1 * two_pi) * size_shape_x[index8192] * size_shape_x_multiplier_f;
-        float py = sin(j1 * two_pi) * size_shape_y[index8192] * size_shape_y_multiplier_f;
+        float px = cos(j1 * TWO_PI) * size_shape_x[index8192] * size_shape_x_multiplier_f;
+        float py = sin(j1 * TWO_PI) * size_shape_y[index8192] * size_shape_y_multiplier_f;
 
         vsx_vector tmp_vec(
             circle_base_pos.x,

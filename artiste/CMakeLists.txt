@@ -16,6 +16,8 @@ include(cmake_packages.txt)
 ################################################################################
 
 include_directories(
+  ${OPENGL_INCLUDE_DIR}
+  ${GLEW_INCLUDE_PATH}
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/engine/include
   ${CMAKE_SOURCE_DIR}/engine_graphics/include
@@ -25,7 +27,7 @@ include_directories(
 )
 
 ################################################################################
-# DEFINES
+# DEFINES ######################################################################
 ################################################################################
 
 if(UNIX)
@@ -45,7 +47,6 @@ if (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
 endif (PLATFORM_SHARED_FILES_FLAT_INSTALL EQUAL 1)
 
 
-#definitions
 add_definitions(
  -DVSX_TEXTURE_NO_RT
  -DVSX_FONT_NO_FT

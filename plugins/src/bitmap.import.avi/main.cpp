@@ -26,7 +26,6 @@
 //#include "system/pthread/pthread.h"
 #include "main.h"
 
-
 #include <vfw.h>
 class module_bitmap_avi : public vsx_module {
   // in

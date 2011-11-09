@@ -159,8 +159,8 @@ public:
     	break;
     	// sin
       case 1:
-				result1->set((float)sin((time+phase->get())*pi_float) * amp->get() + ofs->get());
-      	//result1->set((float)sin((time+phase->get())*pi) * amp->get() + ofs->get());
+				result1->set((float)sin((time+phase->get())*PI_FLOAT) * amp->get() + ofs->get());
+      	//result1->set((float)sin((time+phase->get())*PI) * amp->get() + ofs->get());
     	break;
     	// saw
       case 2:
@@ -512,8 +512,8 @@ public:
 
   current_time += fade_speed->get() / 60;
   float frequencyChunk = fade_speed->get() / 60;
-  //current_pos = (float)sin((current_time)*pi_float) * amp->get();
-  current_pos = (float)sin((current_time)*pi_float) * amp->get() + amp->get();
+  //current_pos = (float)sin((current_time)*PI_FLOAT) * amp->get();
+  current_pos = (float)sin((current_time)*PI_FLOAT) * amp->get() + amp->get();
 
   if ((current_pos > 1- frequencyChunk) && (current_phase == 1))
   {

@@ -15,6 +15,9 @@ include(cmake_packages.txt)
 ################################################################################
 
 include_directories(
+  ${OPENGL_INCLUDE_DIR}
+  ${PNG_INCLUDE_DIR}
+  ${JPEG_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/engine_graphics/include
   ${CMAKE_SOURCE_DIR}/engine/include
@@ -82,6 +85,10 @@ else(WIN32)
   endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 #  target_link_libraries(${module_id} X11 GLEW.a GL GLU png.a jpeg.a z.a)
 endif(WIN32)
+
+if (NOT ${CMAKE_THREAD_LIBS_INIT}) # and crosscompile
+  set(CMAKE_THREAD_LIBS_INIT pthread)
+endif (NOT ${CMAKE_THREAD_LIBS_INIT})
 
 target_link_libraries(${module_id}
   ${PNG_LIBRARIES}

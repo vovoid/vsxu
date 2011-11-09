@@ -1,15 +1,15 @@
 if(WIN32)
-  target_link_libraries(
-    ${module_id} 
-    vsxu_engine_graphics
-    vsxu_engine
-    gdi32
-    pthreadGCE
-    glew32.dll
-    opengl32
-    glu32
-  )
+  target_link_libraries(${module_id} gdi32)
 endif(WIN32)
+
+target_link_libraries(
+  ${module_id}
+  vsxu_engine_graphics
+  vsxu_engine
+  ${CMAKE_THREAD_LIBS_INIT}
+  ${GLEW_LIBRARY}
+  ${OPENGL_LIBRARIES}
+)
 
 if (UNIX)
   if (VSXU_ENGINE_STATIC EQUAL 1)

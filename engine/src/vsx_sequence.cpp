@@ -251,7 +251,7 @@ float vsx_sequence::execute(float t_incr) {
     else
     if (cur_interpolation == 2)
     {
-      float ft = line_time/cur_delay*pi_float;
+      float ft = line_time/cur_delay*PI_FLOAT;
       float f = (1 - (float)cos(ft)) * 0.5f;
       //printf("return %d\n",__LINE__);
       return cv*(1-f) + ev*f;

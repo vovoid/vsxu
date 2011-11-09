@@ -18,7 +18,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#define _WIN32_WINNT 0x0800
+//#define _WIN32_WINNT 0x0800
 #include <windows.h>
 
 #if defined(SM_CMONITORS) && (WINVER < 0x0500)
@@ -36,9 +36,12 @@
 #endif /* (SM_CMONITORS) && (WINVER < 0x0500) */
  
 #define COMPILE_MULTIMON_STUBS
+#include <tchar.h>
+#include <sec_api/tchar_s.h>
+
 #include "multimon.h"
-#include <gl/gl.h>
-#include <gl/glu.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <vector>
 #include <map>
 #include "vsx_avector.h"

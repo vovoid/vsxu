@@ -110,7 +110,7 @@ public:
             float dstf = dd/((float)hsize+1);
             float phase = (float)pow(1.0f - (float)fabs((float)cos(angle+arms*(float)atan2(xx,yy)))*(star_flower+(1-star_flower)*(((dstf)))),attenuation);
             if (phase > 2.0f) phase = 1.0f;
-            dist = (cos(((dstf * pi/2.0f)))*phase);
+            dist = (cos(((dstf * PI/2.0f)))*phase);
             if (dist > 1.0f) dist = 1.0f;
             if (dist < 0.0f) dist = 0.0f;
           }
@@ -169,7 +169,7 @@ public:
             float dstf = dd * ddiv;
             float phase = (float)pow(1.0f - (float)fabs((float)cos(angle+arms*(float)atan2(xx,yy)))*(star_flower+(1-star_flower)*(((dstf)))),attenuation);
             if (phase > 2.0f) phase = 1.0f;
-            dist = (cos(((dstf * pi/2.0f)))*phase);
+            dist = (cos(((dstf * PI/2.0f)))*phase);
             if (dist > 1.0f) dist = 1.0f;
             if (dist < 0.0f) dist = 0.0f;
             }

@@ -174,14 +174,14 @@ void vsx_widget_knob::on_delete() {
     presentation_value /= multiplier;
     if (k_focus != editor)
     ((vsx_widget_base_edit*)editor)->set_string(f2s(presentation_value,15));
-    float angle=(fmod(presentation_value,1)*pi)*2;
-    float target_angle=(fmod(target_value,1)*pi)*2;
+    float angle=(fmod(presentation_value,1)*PI)*2;
+    float target_angle=(fmod(target_value,1)*PI)*2;
    	glBegin(GL_TRIANGLE_FAN);
       glColor4f(darkshade*color.r,darkshade*color.g,darkshade*color.b,1);
       glVertex3f((parentpos.x+pos.x),(parentpos.y+pos.y),pos.z);
-      for (float t=0;t<2*pi;t+=pi/6.0f)
+      for (float t=0;t<2*PI;t+=PI/6.0f)
       {
-        float c=1-fabs(sin(t+angle+0.21*pi));
+        float c=1-fabs(sin(t+angle+0.21*PI));
         glColor4f(c*color.r,c*color.g,c*color.b,1);
     		glVertex3f((parentpos.x+pos.x)+(sin(t+angle)*(size.x*0.49f)),(parentpos.y+pos.y)+(cos(t+angle)*(size.y*0.49f)),pos.z);
       }

@@ -207,9 +207,9 @@ public:
     double arg() {
         double a = atan(y / x);
         if (x < 0) {
-            a += pi;
+            a += PI;
         } else if (y < 0) {
-            a += 2 * pi;
+            a += 2 * PI;
         }
         return a;
     }
@@ -653,7 +653,7 @@ public:
     double getAngle() {
         double angle = B->arg() - A->arg();
         if (angle < 0) {
-            angle += 2*pi;
+            angle += 2*PI;
         }
         return angle;
     }

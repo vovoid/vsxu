@@ -102,10 +102,10 @@ public:
         float dstf = dd/((float)hsize+1);
         float phase = (float)pow(1.0f - (float)fabs((float)cos(angle+arms*(float)atan2(xx,yy)))*(star_flower+(1-star_flower)*(((dstf)))),attenuation);
         if (phase > 2.0f) phase = 1.0f;
-        *p = (long)(255.0f * (cos(((dstf * pi/2.0f)))*phase));
+        *p = (long)(255.0f * (cos(((dstf * PI/2.0f)))*phase));
         if (*p > 255) *p = 255;
         if (*p < 0) *p = 0;
-        dist = cos(dstf * pi/2.0f)*phase;
+        dist = cos(dstf * PI/2.0f)*phase;
   			if (((module_bitmap_blob*)ptr)->work_alpha == 1)
   			{
           long pr = max(0,min(255,(long)(255.0f *  ((module_bitmap_blob*)ptr)->work_color[0])));

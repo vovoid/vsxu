@@ -116,7 +116,6 @@ void output(vsx_module_param_abs* param) {
     dlist = glGenLists(1);
     glNewList(dlist,GL_COMPILE);
 
-  //	static const float pi = 3.1415927f;
   	static const int nRings = 6;
   	static const int nSectors = 16;
   	static const int tessU = 4, tessV = 4;
@@ -134,9 +133,9 @@ void output(vsx_module_param_abs* param) {
   	for(j = 0; j < nRings; j++)
   		for(i = 0; i < nSectors; i++) {
   			float dist0  =  (float)j      * (1.0f   / nRings);
-  			float angle0 =  (float)i      * (2.0f * (float)pi / nSectors);
+  			float angle0 =  (float)i      * (2.0f * (float)PI / nSectors);
   			float dist1  = ((float)j + 1.0f) * (1.0f   / nRings);
-  			float angle1 = ((float)i + 1.0f) * (2.0f * (float)pi / nSectors);
+  			float angle1 = ((float)i + 1.0f) * (2.0f * (float)PI / nSectors);
 
   			float uFact = j&1?1:-1;
   			float vFact = i&1?1:-1;
@@ -220,9 +219,9 @@ void output(vsx_module_param_abs* param) {
 	for(j = 0; j < nRings2; j++)
 		for(i = 0; i < nSectors2; i++) {
 			float dist0  =  j      * (1.0f   / nRings2);
-			float angle0 =  i      * (2 * pi / nSectors2);
+			float angle0 =  i      * (2 * PI / nSectors2);
 			float dist1  = (j + 1) * (1.0f   / nRings2);
-			float angle1 = (i + 1) * (2 * pi / nSectors2);
+			float angle1 = (i + 1) * (2 * PI / nSectors2);
 
 			float uFact = j&1?1:-1;
 			float vFact = i&1?1:-1;
@@ -347,9 +346,9 @@ void run() {
   	for(j = 0; j < nRings; j++)
   		for(i = 0; i < nSectors; i++) {
   			float dist0  =  (float)j      * (1.0f   / nRings);
-  			float angle0 =  (float)i      * (2.0f * (float)pi / nSectors);
+  			float angle0 =  (float)i      * (2.0f * (float)PI / nSectors);
   			float dist1  = ((float)j + 1.0f) * (1.0f   / nRings);
-  			float angle1 = ((float)i + 1.0f) * (2.0f * (float)pi / nSectors);
+  			float angle1 = ((float)i + 1.0f) * (2.0f * (float)PI / nSectors);
 
   			float uFact = j&1?1:-1;
   			float vFact = i&1?1:-1;

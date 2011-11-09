@@ -16,12 +16,13 @@ include(cmake_packages.txt)
 ################################################################################
 
 include_directories(
-../
-../engine_graphics/include
-include 
-src/log
-src/core/vsx_comp
-src/core
+  ${GLEW_INCLUDE_PATH}
+  ../
+  ../engine_graphics/include
+  include
+  src/log
+  src/core/vsx_comp
+  src/core
 )
 
 ################################################################################

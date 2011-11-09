@@ -103,8 +103,8 @@ public:
 };
 
 
-  const float incr = pi_float/15.0f;
-  const float f_end = pi_float*2;
+  const float incr = PI_FLOAT/15.0f;
+  const float f_end = PI_FLOAT*2;
 
   const float b_end = 0.999999f;
   const float b_mult = 0.999999f/20.0f;
@@ -485,8 +485,8 @@ public:
       for (unsigned long i = 0; i < segments->get(); ++i) {
         float ip = (float)i / (float)segments->get();
         int index8192 = (int)round(8192.0f*ip);
-        sx = x_shape[index8192];//->execute(n_inc);//sin(pi/(num-1)*(float)(i)*5)*pow(((float)i/(float)num),2);
-        sy = y_shape[index8192];//loft_y_seq->execute(n_inc);//sin(pi/(num-1)*(float)(i)*5)*pow(((float)i/(float)num),2);
+        sx = x_shape[index8192];//->execute(n_inc);//sin(PI/(num-1)*(float)(i)*5)*pow(((float)i/(float)num),2);
+        sy = y_shape[index8192];//loft_y_seq->execute(n_inc);//sin(PI/(num-1)*(float)(i)*5)*pow(((float)i/(float)num),2);
         for (j = 0; j < (int)sides; ++j) {
           base_mesh.vertices[i][j].coord.x = bb->vertices[0][j].coord.x * sx;
           base_mesh.vertices[i][j].coord.y = bb->vertices[0][j].coord.y * sy;
