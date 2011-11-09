@@ -29,7 +29,6 @@
 #include <unistd.h>
 #define Sleep sleep
 #endif
-#include "main.h"
 #include <math.h>
 
 
@@ -48,7 +47,20 @@
 #include "subplasma.h"
 #include "blend.h"
 
-#ifdef BUILDING_DLL
+
+//******************************************************************************
+//*** F A C T O R Y ************************************************************
+//******************************************************************************
+
+#ifdef _WIN32
+extern "C" {
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
+__declspec(dllexport) unsigned long get_num_modules();
+}
+#endif
+
+
 vsx_module* create_new_module(unsigned long module) {
   if (module > 4)
   {
@@ -86,4 +98,3 @@ unsigned long get_num_modules() {
   // we have only one module. it's id is 0
   return 5+24;
 }
-#endif

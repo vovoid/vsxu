@@ -22,7 +22,6 @@
 #include "_configuration.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
-#include "main.h"
 #include "vsx_math_3d.h"
 
 class vsx_module_plugin_maths_oscillator : public vsx_module {
@@ -539,6 +538,17 @@ public:
   }
 };
 
+//******************************************************************************
+//*** F A C T O R Y ************************************************************
+//******************************************************************************
+
+#ifdef _WIN32
+extern "C" {
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
+__declspec(dllexport) unsigned long get_num_modules();
+}
+#endif
 
 vsx_module* MOD_CM(unsigned long module) {
   switch (module) {
@@ -560,7 +570,6 @@ void MOD_DM(vsx_module* m,unsigned long module) {
 }
 
 unsigned long MOD_NM() {
-  // we have only one module. it's id is 0
   return 4;
 }  
 

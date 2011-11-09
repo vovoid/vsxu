@@ -73,6 +73,7 @@ add_subdirectory(src/mesh.generators)
 add_subdirectory(src/mesh.generators.kaleidoscope)
 add_subdirectory(src/mesh.generators.metaballs)
 add_subdirectory(src/mesh.generators.ocean)
+add_subdirectory(src/mesh.generators.skybox)
 add_subdirectory(src/mesh.generators.star)
 add_subdirectory(src/mesh.importers.cal3d)
 add_subdirectory(src/mesh.importers.obj)
@@ -90,7 +91,6 @@ add_subdirectory(src/render.opengl)
 add_subdirectory(src/render.opengl.extra)
 add_subdirectory(src/render.oscilloscope)
 add_subdirectory(src/render.text)
-add_subdirectory(src/render.vovoid)
 
 
 

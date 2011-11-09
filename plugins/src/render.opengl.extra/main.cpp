@@ -224,16 +224,17 @@ parameter:float4\
 
 
 
-// #################################################################################
+//******************************************************************************
+//*** F A C T O R Y ************************************************************
+//******************************************************************************
 
-#ifdef BUILDING_DLL
-
+#ifdef _WIN32
 extern "C" {
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 }
-
+#endif
 
 vsx_module* create_new_module(unsigned long module) {
   glewInit();
@@ -257,4 +258,3 @@ unsigned long get_num_modules() {
   // we have only one module. it's id is 0
   return 2;
 }
-#endif

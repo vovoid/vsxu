@@ -26,18 +26,6 @@
 #include "gravity_lines/gravity_lines.h"
 #include "gravity_lines/gravity_strip.h"
 
-#if BUILDING_DLL
-# define DLLIMPORT __declspec (dllexport)
-#else /* Not BUILDING_DLL */
-# define DLLIMPORT __declspec (dllimport)
-#endif /* Not BUILDING_DLL */
-
-extern "C" {
-__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
-__declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
-__declspec(dllexport) unsigned long get_num_modules();
-}
-
 
 class vsx_module_gravlines : public vsx_module {
   // in
@@ -679,7 +667,18 @@ public:
   }
 };
 
-#if BUILDING_DLL
+//******************************************************************************
+//*** F A C T O R Y ************************************************************
+//******************************************************************************
+
+#ifdef _WIN32
+extern "C" {
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
+__declspec(dllexport) unsigned long get_num_modules();
+}
+#endif
+
 unsigned long get_num_modules() {
   // we have only one module. it's id is 0
   return 4;
@@ -705,4 +704,3 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 3: delete (vsx_module_gravity_ribbon_mesh*)m; break;
   }
 }
-#endif

@@ -20,9 +20,10 @@
 */
 
 #include "_configuration.h"
-#include "main.h"
+#include "vsx_param.h"
+#include "vsx_module.h"
+#include "cal3d.h"
 #include "vsx_math_3d.h"
-//#include "vsx_string_lib.h"
 #include <pthread.h>
 #include "cal3d.h"
 
@@ -987,6 +988,18 @@ public:
 
 
 
+//******************************************************************************
+//*** F A C T O R Y ************************************************************
+//******************************************************************************
+
+#ifdef _WIN32
+extern "C" {
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
+__declspec(dllexport) unsigned long get_num_modules();
+}
+#endif
+
 
 vsx_module* create_new_module(unsigned long module) {
   switch(module) {
@@ -1005,7 +1018,6 @@ void destroy_module(vsx_module* m,unsigned long module) {
 
 
 unsigned long get_num_modules() {
-  // we have only one module. it's id is 0
   return 1;
 }
 

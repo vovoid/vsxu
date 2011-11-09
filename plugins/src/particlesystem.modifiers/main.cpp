@@ -25,7 +25,6 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_quaternion.h"
-#include "main.h"
 
 
 class vsx_module_plugin_fluid : public vsx_module {
@@ -914,11 +913,18 @@ public:
   }
 };
 
-//_____________________________________________________________________________________________________________
-//_____________________________________________________________________________________________________________
-//_____________________________________________________________________________________________________________
+//******************************************************************************
+//*** F A C T O R Y ************************************************************
+//******************************************************************************
 
-#if BUILDING_DLL
+#ifdef _WIN32
+extern "C" {
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
+__declspec(dllexport) unsigned long get_num_modules();
+}
+#endif
+
 unsigned long get_num_modules() {
   return 5;
 }  
@@ -943,5 +949,3 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 4: delete (vsx_module_plugin_fluid*)m; break;
   }
 }
-
-#endif

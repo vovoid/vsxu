@@ -25,7 +25,6 @@
 #include "vsx_module.h"
 #include <vector>
 #include <map>
-#include "main.h"
 #ifndef VSXU_OPENGL_ES
   #ifndef VSXU_MAC_XCODE
     #include "render_texture.h"
@@ -1388,7 +1387,18 @@ void on_delete() {
 };
 #endif    // OPENGL_ES
 
-#if BUILDING_DLL
+//******************************************************************************
+//*** F A C T O R Y ************************************************************
+//******************************************************************************
+
+#ifdef _WIN32
+extern "C" {
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
+__declspec(dllexport) unsigned long get_num_modules();
+}
+#endif
+
 vsx_module* create_new_module(unsigned long module) {
   glewInit();
   switch(module) {
@@ -1420,6 +1430,3 @@ unsigned long get_num_modules() {
 
 }
 
-#endif
-
-//#!

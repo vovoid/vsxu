@@ -28,7 +28,6 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_float_array.h"
-#include "main.h"
 #include "vsx_math_3d.h"
 
   /*
@@ -392,12 +391,18 @@ void run() {
 
 
 
-//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//******************************************************************************
+//*** F A C T O R Y ************************************************************
+//******************************************************************************
 
-#if BUILDING_DLL
+#ifdef _WIN32
+extern "C" {
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
+__declspec(dllexport) unsigned long get_num_modules();
+}
+#endif
+
 vsx_module* create_new_module(unsigned long module) {
   switch (module) {
     case 0: return (vsx_module*)(new vsx_listener);
@@ -415,5 +420,3 @@ void destroy_module(vsx_module* m,unsigned long module) {
 unsigned long get_num_modules() {
   return 1;
 }
-#endif
-

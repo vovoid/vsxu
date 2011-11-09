@@ -294,6 +294,13 @@ public:
 };
 
 
+
+
+extern "C" {
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
+__declspec(dllexport) unsigned long get_num_modules();
+}
  
 vsx_module* create_new_module(unsigned long module) {
   return (vsx_module*)(new module_bitmap_avi);

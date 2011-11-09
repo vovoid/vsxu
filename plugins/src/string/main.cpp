@@ -24,7 +24,6 @@
 #include "vsx_module.h"
 //#include "vsx_string_lib.h"
 #include "vsx_avector.h"
-#include "main.h"
 #include "vsxfst.h"
 
 class vsx_module_file_chooser : public vsx_module {
@@ -121,7 +120,17 @@ public:
 
 
 
-//###########################################################################################
+//******************************************************************************
+//*** F A C T O R Y ************************************************************
+//******************************************************************************
+
+#ifdef _WIN32
+extern "C" {
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
+__declspec(dllexport) unsigned long get_num_modules();
+}
+#endif
 
 vsx_module* create_new_module(unsigned long module) {
   switch(module) {
@@ -141,6 +150,4 @@ void destroy_module(vsx_module* m,unsigned long module) {
 unsigned long get_num_modules() {
   return 2;
 }  
-
-
 

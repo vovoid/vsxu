@@ -22,7 +22,6 @@
 #include "_configuration.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
-#include "main.h"
 
 
 class vsx_module_oscilloscope : public vsx_module {
@@ -143,7 +142,18 @@ void output(vsx_module_param_abs* param) {
 
 };
 
-#if BUILDING_DLL
+//******************************************************************************
+//*** F A C T O R Y ************************************************************
+//******************************************************************************
+
+#ifdef _WIN32
+extern "C" {
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
+__declspec(dllexport) unsigned long get_num_modules();
+}
+#endif
+
 
 unsigned long get_num_modules() {
   // we have only one module. it's id is 0
@@ -162,4 +172,4 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 0: delete (vsx_module_oscilloscope*)m; break;
   }
 }
-#endif
+

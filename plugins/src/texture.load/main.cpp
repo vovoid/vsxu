@@ -25,7 +25,6 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "pthread.h"
-#include "main.h"
 #include "vsxg.h"
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -644,7 +643,18 @@ public:
 
 // MODULE INTERFACE
 
-#if BUILDING_DLL
+//******************************************************************************
+//*** F A C T O R Y ************************************************************
+//******************************************************************************
+
+#ifdef _WIN32
+extern "C" {
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
+__declspec(dllexport) unsigned long get_num_modules();
+}
+#endif
+
 bool glewinit = false;
 
 vsx_module* create_new_module(unsigned long module) {
@@ -691,4 +701,3 @@ unsigned long get_num_modules() {
   // we have only one module. it's id is 0
   return 5;
 }  
-#endif
