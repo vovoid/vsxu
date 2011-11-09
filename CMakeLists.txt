@@ -2,23 +2,47 @@ cmake_minimum_required(VERSION 2.8)
 
 PROJECT(VSXu)
 
+################################################################################
+# CMAKE MODULE PATH ############################################################
+################################################################################
+set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 
+
+################################################################################
+# GLOBAL INSTALL VARIABLES #####################################################
+################################################################################
+if(UNIX)
+  set(VSXU_INSTALL_LIB_DIR "lib")
+  set(VSXU_INSTALL_BIN_DIR "bin")
+  set(VSXU_INSTALL_SHARE_DIR "share/vsxu")
+endif()
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(VSXU_INSTALL_LIB_DIR ".")
+  set(VSXU_INSTALL_BIN_DIR ".")
+  set(VSXU_INSTALL_SHARE_DIR "share")
+endif()
+
+
+################################################################################
+# CPACK OPTIONS ################################################################
+################################################################################
 SET(CPACK_PACKAGE_NAME "VSXu")
 SET(CPACK_PACKAGE_VERSION "0.3.0")
 
 if (UNIX)
-SET(CPACK_PACKAGING_INSTALL_PREFIX "/opt/vovoid")
-SET(CPACK_SET_DESTDIR "on")
-set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
-endif(UNIX)
+  SET(CPACK_PACKAGING_INSTALL_PREFIX "/opt/vovoid")
+  SET(CPACK_SET_DESTDIR "on")
+  SET(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+endif()
 
-set(ARCHITECTURE i386)
-if (CMAKE_SIZEOF_VOID_P EQUAL 8)
-  set(ARCHITECTURE amd64)
-endif (CMAKE_SIZEOF_VOID_P EQUAL 8)
+SET(ARCHITECTURE i386)
+IF (CMAKE_SIZEOF_VOID_P EQUAL 8)
+  SET(ARCHITECTURE amd64)
+ENDIF()
 
 SET(VERSION 0.3.0)
-SET($ {VERSION} CPACK_DEBIAN_PACKAGE_VERSION)
+SET(${VERSION} CPACK_DEBIAN_PACKAGE_VERSION)
 SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 SET(CPACK_DEBIAN_PACKAGE_SECTION "graphics")
 SET(CPACK_DEBIAN_ARCHITECTURE ${ARCHITECTURE})
@@ -30,16 +54,12 @@ SET(CPACK_PACKAGE_CONTACT "Jonatan Wallmander <jonatan@vovoid.com> ")
 SET(CPACK_PACKAGE_FILE_NAME ${CMAKE_PROJECT_NAME}_${VERSION}_${CPACK_DEBIAN_ARCHITECTURE})
 
 SET(CPACK_COMPONENTS_ALL engine artiste player server)
-set(CPACK_COMPONENT_ENGINE_DISPLAY_NAME "VSXu Engine")
-set(CPACK_COMPONENT_ENGINE_REQUIRED 1)
-set(CPACK_COMPONENT_ARTISTE_DISPLAY_NAME "VSXu Artiste")
-set(CPACK_COMPONENT_PLAYER_DISPLAY_NAME "VSXu Player")
-set(CPACK_COMPONENT_PLAYER_REQUIRED 1)
-
-
+SET(CPACK_COMPONENT_ENGINE_DISPLAY_NAME "VSXu Engine")
+SET(CPACK_COMPONENT_ENGINE_REQUIRED 1)
+SET(CPACK_COMPONENT_ARTISTE_DISPLAY_NAME "VSXu Artiste")
+SET(CPACK_COMPONENT_PLAYER_DISPLAY_NAME "VSXu Player")
+SET(CPACK_COMPONENT_PLAYER_REQUIRED 1)
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jonatan 'jaw' Wallmander") #required
-
-
 
 set(CPACK_PACKAGE_NAME "MyLib")
 set(CPACK_PACKAGE_VENDOR "Vovoid Media Technologies")
@@ -48,8 +68,12 @@ set(CPACK_PACKAGE_VERSION_MINOR "3")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "CPack Component Example")
 
-set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+INCLUDE(CPack)
 
+
+################################################################################
+# DEFINES ######################################################################
+################################################################################
 if(VSXU_DEBUG)
   add_definitions(-g -Wall)
 else(VSXU_DEBUG)
@@ -91,7 +115,4 @@ if (VSXU_PLAYER_DEMO EQUAL 1)
   add_subdirectory(player_demo)
 endif (VSXU_PLAYER_DEMO EQUAL 1)
 
-################################################################################
-# CPACK ########################################################################
-################################################################################
-INCLUDE(CPack)
+

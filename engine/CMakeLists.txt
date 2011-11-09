@@ -180,13 +180,8 @@ else (VSXU_ENGINE_STATIC EQUAL 1)
   #dynamic build
   add_library(${module_id} SHARED ${SOURCES} ${GAME_MONKEY})
 endif (VSXU_ENGINE_STATIC EQUAL 1)
-if(UNIX)
-install(TARGETS ${module_id} DESTINATION lib)
-endif(UNIX)
-if(WIN32)
-  message(${CMAKE_INSTALL_PREFIX})
-  install(TARGETS ${module_id} DESTINATION "./" COMPONENT engine)
-endif(WIN32)
+
+install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)
 
 target_link_libraries(${module_id}
   ${DL_LIBRARY}

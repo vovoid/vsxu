@@ -1,5 +1,6 @@
 if(WIN32)
   target_link_libraries(${module_id} gdi32)
+  install(TARGETS ${module_id} DESTINATION plugins COMPONENT engine)
 endif(WIN32)
 
 target_link_libraries(
@@ -14,7 +15,7 @@ target_link_libraries(
 if (UNIX)
   if (VSXU_ENGINE_STATIC EQUAL 1)
   else (VSXU_ENGINE_STATIC EQUAL 1)
-    install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/vsxu/plugins)
+    install(TARGETS ${module_id} DESTINATION lib/vsxu/plugins)
   endif (VSXU_ENGINE_STATIC EQUAL 1)
 endif(UNIX)
 

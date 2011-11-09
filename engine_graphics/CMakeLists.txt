@@ -64,9 +64,9 @@ if (VSXU_OPENGL_ES_2_0 EQUAL 1)
 endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 
 
-
 add_library(${module_id} SHARED ${SOURCES} ${PNG_SOURCES} ${JPG_SOURCES} ${ZLIB_SOURCES})
-install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)
+
 if(WIN32)
   target_link_libraries(${module_id} gdi32)
 else(WIN32)

@@ -111,7 +111,7 @@ set(SOURCES
 )
 
 ################################################################################
-# LINKAGE ######################################################################
+# LINK #########################################################################
 ################################################################################
 
 add_executable(${module_id} ${SOURCES} ${OS_SOURCES})
@@ -119,10 +119,99 @@ add_executable(${module_id} ${SOURCES} ${OS_SOURCES})
 include(../cmake_suffix.txt)
 
 if(UNIX)
-  include(CMake_targets_install_unix.txt)
+  target_link_libraries(
+    ${module_id}
+    ${X11_Xrandr_LIB}
+    ${X11_LIBRARIES}
+    ${GLFW_LIBRARY}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${GLEW_LIBRARY}
+    ${OPENGL_LIBRARIES}
+    ${PNG_LIBRARIES}
+    ${JPEG_LIBRARIES}
+    vsxu_engine_graphics
+    vsxu_engine
+  )
+
 endif(UNIX)
 
 
 if(WIN32)
-  include(CMake_targets_install_windows.txt)
+  target_link_libraries(
+    ${module_id}
+    wsock32
+    ws2_32
+    vsxu_engine
+    vsxu_engine_graphics
+    ${GLEW_LIBRARY}
+    ${CMAKE_THREAD_LIBS_INIT}
+    gdi32
+    ${OPENGL_LIBRARIES}
+  )
 endif(WIN32)
+
+
+################################################################################
+## INSTALL #####################################################################
+################################################################################
+
+install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_BIN_DIR})
+install(
+  DIRECTORY
+    ${CMAKE_SOURCE_DIR}/share/visuals_faders
+    ${CMAKE_SOURCE_DIR}/share/visuals_player
+    ${CMAKE_SOURCE_DIR}/share/font
+    ${CMAKE_SOURCE_DIR}/share/gfx/vsxu_luna
+    ${CMAKE_SOURCE_DIR}/share/example-macros
+    ${CMAKE_SOURCE_DIR}/share/example-prods
+    ${CMAKE_SOURCE_DIR}/share/example-resources
+    ${CMAKE_SOURCE_DIR}/share/example-states
+    ${CMAKE_SOURCE_DIR}/share/example-faders
+    ${CMAKE_SOURCE_DIR}/share/doc
+    ${CMAKE_SOURCE_DIR}/share/example-visuals
+  DESTINATION
+    ${VSXU_INSTALL_SHARE_DIR}
+  COMPONENT
+    artiste
+)
+
+install(
+  DIRECTORY
+    ${CMAKE_SOURCE_DIR}/share/gfx/vsxu_luna
+  DESTINATION
+    ${VSXU_INSTALL_SHARE_DIR}/gfx
+  COMPONENT
+    artiste
+)
+
+install(
+  FILES
+    ${CMAKE_SOURCE_DIR}/share/gfx/vsxu_logo.jpg
+    ${CMAKE_SOURCE_DIR}/share/gfx/vsxu_logo_bkg.jpg
+    ${CMAKE_SOURCE_DIR}/share/gfx/luna.png
+    ${CMAKE_SOURCE_DIR}/share/vsxu.conf
+  DESTINATION
+    ${VSXU_INSTALL_SHARE_DIR}/gfx
+  COMPONENT
+    artiste
+)
+
+install(
+  FILES
+    ${CMAKE_SOURCE_DIR}/share/vsxu.conf
+  DESTINATION
+    ${VSXU_INSTALL_SHARE_DIR}
+  COMPONENT
+    artiste
+)
+
+if (VSXU_DEBUG EQUAL 1)
+  install(
+    DIRECTORY
+      ${CMAKE_SOURCE_DIR}/share/debug-states
+    DESTINATION
+      ${VSXU_INSTALL_SHARE_DIR}
+    COMPONENT
+      artiste
+  )
+endif (VSXU_DEBUG EQUAL 1)

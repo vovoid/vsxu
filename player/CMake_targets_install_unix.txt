@@ -12,4 +12,10 @@
     vsxu_engine
   )
   install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-  install(DIRECTORY ../share/visuals_faders ../share/visuals_player ../share/font DESTINATION ${CMAKE_INSTALL_PREFIX}/share/vsxu)
+  install(DIRECTORY
+  ../share/visuals_faders
+  ../share/visuals_player
+  ../share/font
+  DESTINATION
+    ${CMAKE_INSTALL_PREFIX}/share/vsxu
+  )
