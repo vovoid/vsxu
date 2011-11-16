@@ -35,7 +35,7 @@ class vsx_bezier_calc {
   float g;
   float h;
 
-public:  
+public:
   float x0;
   float y0;
   float x1;
