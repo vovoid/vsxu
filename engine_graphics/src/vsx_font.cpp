@@ -38,6 +38,8 @@ vsx_font_info* vsx_font::init(vsx_string font) {
     my_font_info->texture = new vsx_texture();
     //std::cout << "registering new font: "<< font << std::endl;
     //font_info->texture->load_png(base_path+"resources\\fonts\\font-"+font+".png",true);
+    vsx_string ss = base_path+font;
+    printf("font init: %s\n", ss.c_str() );
     my_font_info->texture->load_png(base_path+font,true);
     ch = 16.0f/255.0f;
     cw = 10.0f/255.0f;

@@ -45,9 +45,7 @@ endif(UNIX)
 
 
 if(VSXU_DEBUG)
-add_definitions(
- -DDEBUG
-)
+add_definitions(-DDEBUG)
 endif(VSXU_DEBUG)
 
 add_definitions(
@@ -63,15 +61,14 @@ set(SOURCES
 
 if (VSXU_ENGINE_STATIC EQUAL 1)
   include(../plugins/static_factory_cmake_link_directories)
-  link_directories(../lib/linux32/)
 endif (VSXU_ENGINE_STATIC EQUAL 1)
 
 
-
-add_executable(${module_id}  ${SOURCES} ${OS_SOURCES})
-include(../cmake_suffix.txt)
-
 if(UNIX)
+
+  add_executable(${module_id}  ${SOURCES} ${OS_SOURCES})
+  include(../cmake_suffix.txt)
+
   link_directories("/usr/lib/vsxu")
 
   if (VSXU_OPENGL_ES_2_0 EQUAL 1)
@@ -104,6 +101,7 @@ if(UNIX)
     target_link_libraries(${module_id} vsxu_engine)
     target_link_libraries(${module_id} vsxu_engine_graphics)
   endif (VSXU_ENGINE_STATIC EQUAL 1)
-
-  install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+  install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT server)
 endif(UNIX)
+
+  

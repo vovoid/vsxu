@@ -108,6 +108,7 @@ static void png_vsxf_read_data(png_structp png_ptr, png_bytep data, png_size_t l
 
 //int APIENTRY pngLoadRawF(FILE *fp, pngRawInfo *pinfo) {
 int  pngLoadRaw(const char* filename, pngRawInfo *pinfo, vsxf* filesystem) {
+  printf("%s line %d\n",__FILE__,__LINE__);
 	unsigned char header[8];
 	png_structp png;
 	png_infop   info;
@@ -122,31 +123,28 @@ int  pngLoadRaw(const char* filename, pngRawInfo *pinfo, vsxf* filesystem) {
 
 	png_uint_32 i;
 
-	if (pinfo == NULL) return 0;
+	if (pinfo == NULL) {
+    return 0;
+  }
 	i_filesystem.filesystem = filesystem;
 	i_filesystem.fp = filesystem->f_open(filename,"rb");
-	if (!i_filesystem.fp) return 0;
+	if (!i_filesystem.fp) {
+    printf("error in png loader: i_filesystem.fp not valid on line %d\n",__LINE__);
+    return 0;
+  }
   
 	filesystem->f_read(header, 8, i_filesystem.fp);
-	if (!png_check_sig(header, 8)) return 0;
+	if (!png_check_sig(header, 8)) {
+    printf("error in %s on line %d\n",__FILE__,__LINE__);
+    return 0;
+  }
 
 	png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 	info = png_create_info_struct(png);
 	endinfo = png_create_info_struct(png);
-
-	// DH: added following lines
-	//if (setjmp(png->jmpbuf))
-	if (png_jmpbuf(png))
-	{
-		png_destroy_read_struct(&png, &info, &endinfo);
-		return 0;
-	}
-	// ~DH
-	
 	
 	png_set_read_fn(png, (png_bytep)(&i_filesystem), png_vsxf_read_data);
-	//png_init_io(png, fp);
-	png_set_sig_bytes(png, 8);
+  png_set_sig_bytes(png, 8);
 	png_read_info(png, info);
 	png_get_IHDR(png, info, &width, &height, &depth, &color, NULL, NULL, NULL);
 

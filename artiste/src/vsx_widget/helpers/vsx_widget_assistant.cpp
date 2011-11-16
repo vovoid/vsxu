@@ -157,7 +157,7 @@ void vsxu_assistant::i_draw() {
 }
 
 void vsxu_assistant::reinit() {
-  texture.load_png(PLATFORM_SHARED_FILES+"gfx/luna.png");
+  texture.load_png(PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"luna.png");
   vsx_widget::reinit();
 }
 
@@ -169,7 +169,7 @@ void vsxu_assistant::init()
   coord_type = VSX_WIDGET_COORD_CORNER;
   topmost = true;
   myf.mode_2d = true;
-  texture.load_png(PLATFORM_SHARED_FILES+"gfx/luna.png");
+  texture.load_png(PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"luna.png");
   if (configuration.find("assistant_size") != configuration.end()) {
     size_multiplier = s2f(configuration["assistant_size"]);
   } else

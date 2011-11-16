@@ -18,7 +18,7 @@ IF (WIN32)
 		DOC "The GLEW library"
 		CMAKE_FIND_ROOT_PATH_BOTH 
 		)
-		
+		add_definitions(-DGLEW_STATIC=1)
 ELSE (WIN32)
 	FIND_PATH( GLEW_INCLUDE_PATH GL/glew.h
 		/usr/include

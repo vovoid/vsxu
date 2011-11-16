@@ -44,6 +44,10 @@ if (VSXU_DEBUG EQUAL 1)
   add_definitions( -DVSXU_DEBUG -DDEBUG )
 endif (VSXU_DEBUG EQUAL 1)
 
+################################################################################
+# SOURCES ######################################################################
+################################################################################
+
 set(SOURCES
   src/glpng.cpp
   src/jpg.cpp
@@ -91,3 +95,9 @@ target_link_libraries(${module_id}
   ${GLEW_LIBRARY}
   vsxu_engine
 )
+
+if (WIN32)
+  target_link_libraries(${module_id}
+    gdi32
+  )
+endif()

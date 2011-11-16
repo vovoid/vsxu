@@ -1,16 +1,4 @@
-  target_link_libraries(${module_id}
-    ${X11_Xrandr_LIB}
-    X11
-    glfw
-    pthread
-    GLU
-    GL
-    GLEW
-    png
-    jpeg
-    vsxu_engine_graphics
-    vsxu_engine
-  )
+
   install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
   install(DIRECTORY
   ../share/visuals_faders

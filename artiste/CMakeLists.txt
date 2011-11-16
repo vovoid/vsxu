@@ -155,7 +155,7 @@ endif(WIN32)
 ## INSTALL #####################################################################
 ################################################################################
 
-install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_BIN_DIR})
+install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT artiste)
 install(
   DIRECTORY
     ${CMAKE_SOURCE_DIR}/share/visuals_faders

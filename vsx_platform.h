@@ -23,10 +23,10 @@
         #define PLATFORM                                        PLATFORM_WINDOWS
         #define PLATFORM_NAME                                   "Windows"
         #define PLATFORM_FAMILY                                 PLATFORM_FAMILY_WINDOWS
-        #define PLATFORM_SHARED_FILES                           vsx_string("share")
+        #define PLATFORM_SHARED_FILES                           vsx_string("share\\")
         #define DIRECTORY_SEPARATOR                             "\\"
         #ifdef PLATFORM_SHARED_FILES_STL
-          #define PLATFORM_SHARED_FILES_STLSTRING               std::string("share")
+          #define PLATFORM_SHARED_FILES_STLSTRING               std::string("share\\")
         #endif
     #elif defined(__APPLE__) || defined(__MACH__)
         #define PLATFORM                                        PLATFORM_MACINTOSH

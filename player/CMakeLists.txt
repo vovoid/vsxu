@@ -36,9 +36,9 @@ add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )
 
-if (VSXU_DEBUG EQUAL 1)
+if(VSXU_DEBUG EQUAL 1)
   add_definitions( -DVSXU_DEBUG )
-endif (VSXU_DEBUG EQUAL 1)
+endif()
 
 ################################################################################
 # SOURCES ######################################################################
@@ -59,21 +59,63 @@ if(UNIX)
   )
 endif(UNIX)
 
-
-
 set(SOURCES
   src/application.cpp
   src/vsx_overlay.cpp
 )
 
 
+################################################################################
+# LINK #########################################################################
+################################################################################
+
 add_executable(${module_id}  ${SOURCES} ${OS_SOURCES})
 include(../cmake_suffix.txt)
 
 if(UNIX)
-  include(CMake_targets_install_unix.txt)
-endif(UNIX)
+  target_link_libraries(
+    ${module_id}
+    ${X11_Xrandr_LIB}
+    ${X11_LIBRARIES}
+    ${GLFW_LIBRARY}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${GLEW_LIBRARY}
+    ${OPENGL_LIBRARIES}
+    ${PNG_LIBRARIES}
+    ${JPEG_LIBRARIES}
+    vsxu_engine_graphics
+    vsxu_engine
+  )
+endif()
 
 if(WIN32)
-  include(CMake_targets_install_windows.txt)
-endif(WIN32)
+  target_link_libraries(${module_id}
+  wsock32
+  ws2_32
+  ${CMAKE_THREAD_LIBS_INIT}
+  vsxu_engine_graphics
+  vsxu_engine
+  gdi32
+  ${OPENGL_LIBRARIES}
+)
+endif()
+
+
+################################################################################
+## INSTALL #####################################################################
+################################################################################
+
+install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT player)
+install(
+  DIRECTORY
+    ${CMAKE_SOURCE_DIR}/share/visuals_faders
+    ${CMAKE_SOURCE_DIR}/share/visuals_player
+    ${CMAKE_SOURCE_DIR}/share/font
+  DESTINATION
+    ${VSXU_INSTALL_SHARE_DIR}
+  COMPONENT player
+)
+
+
+
+

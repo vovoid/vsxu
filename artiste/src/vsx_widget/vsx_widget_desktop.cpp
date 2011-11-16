@@ -520,7 +520,7 @@ vsx_widget_desktop::vsx_widget_desktop() {
   vsx_command_list modelist;
   vsx_command_s* mc = 0;
   load_configuration();
-  myf.init(PLATFORM_SHARED_FILES+"font/font-ascii.png");
+  myf.init(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png");
   vsx_command_list skin_conf;
   skin_conf.load_from_file(skin_path+"skin.conf",true,4);
 #ifdef VSXU_PLAYER
