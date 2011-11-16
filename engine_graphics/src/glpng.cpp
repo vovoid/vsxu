@@ -108,7 +108,6 @@ static void png_vsxf_read_data(png_structp png_ptr, png_bytep data, png_size_t l
 
 //int APIENTRY pngLoadRawF(FILE *fp, pngRawInfo *pinfo) {
 int  pngLoadRaw(const char* filename, pngRawInfo *pinfo, vsxf* filesystem) {
-  printf("%s line %d\n",__FILE__,__LINE__);
 	unsigned char header[8];
 	png_structp png;
 	png_infop   info;

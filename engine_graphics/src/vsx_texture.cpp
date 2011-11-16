@@ -595,7 +595,7 @@ void vsx_texture::upload_ram_bitmap(void* data, unsigned long size_x, unsigned l
 #endif
     {
       locked = false;
-      printf("processing png: %s\n",fname.c_str());
+      //printf("processing png: %s\n",fname.c_str());
       vsxf filesystem;
       pngRawInfo* pp = new pngRawInfo;
       if (pngLoadRaw(fname.c_str(), pp, &filesystem))
@@ -612,7 +612,7 @@ void vsx_texture::upload_ram_bitmap(void* data, unsigned long size_x, unsigned l
         upload_ram_bitmap((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,pp->Components,GL_RGBA);
         free(pp->Data);
         texture_info.type = 1; // png
-        printf("name: %s\n",fname.c_str());
+        //printf("name: %s\n",fname.c_str());
 #ifdef VSXU_EXE
         t_glist[fname] = texture_info;
 #endif
