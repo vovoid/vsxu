@@ -183,6 +183,12 @@ endif (VSXU_ENGINE_STATIC EQUAL 1)
 
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)
 
+if(WIN32)
+# find pthreadGC2.dll (HACK!)
+  find_file(pthread_dll pthreadGC2.dll)
+  install(FILES ${pthread_dll} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT artiste)
+endif()
+
 target_link_libraries(${module_id}
   ${DL_LIBRARY}
   ${CMAKE_THREAD_LIBS_INIT}

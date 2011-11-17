@@ -353,7 +353,7 @@ bool vsx_engine::start()
     comp->engine_owner = (void*)this;
     if (module_list.find("outputs;screen") == module_list.end())
     {
-      log("panic! can not create screen! are the plugins/modules compiled?",0);
+      log("panic! can not create screen! are the plugins/modules compiled?\n",0);
       exit(0);
     }
     forge.push_back(comp);
@@ -416,11 +416,12 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
     #ifdef VSXU_ENGINE_STATIC
     static_holder.get_factory_names(&mfiles);
     #else
+    //printf("globbing plugins from %s\n",(vsx_string(CMAKE_INSTALL_PREFIX)+"/lib/vsxu/plugins").c_str());
     get_files_recursive(vsx_string(CMAKE_INSTALL_PREFIX)+"/lib/vsxu/plugins",&mfiles,".so","");
     #endif
     //printf("Plugin directory: %s\n", vsx_string(vsxu_base_path+"_plugins_linux").c_str());
   #endif
-  LOG("engine_load_module_a: mfiles.size: "+i2s(mfiles.size()));
+  LOG("vsxu_engine_load_module_a: mfiles.size: "+i2s(mfiles.size()));
   for (std::list<vsx_string>::iterator it = mfiles.begin(); it != mfiles.end(); ++it) {
     //printf("list iteration:%d\n",__LINE__);
     vsx_avector<vsx_string> parts;
@@ -510,7 +511,7 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
 
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
         if (GetProcAddress(module_handle, "destroy_module") == 0) {
-          LOG("unload module ERROR! couldn't find handle for destroy_module!")
+          log("unload module ERROR! couldn't find handle for destroy_module!");
           return;
         }
         void(*unload)(vsx_module*,unsigned long) = (void(*)(vsx_module*,unsigned long))GetProcAddress(module_handle, "destroy_module");
@@ -518,7 +519,7 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
         if (dlsym(module_handle, "destroy_module") == 0)
         {
-          LOG("unload module ERROR! couldn't find handle for destroy_module!")
+          printf("unload module ERROR! couldn't find handle for destroy_module!\n");
           return;
         }
         void(*unload)(vsx_module*,unsigned long) = (void(*)(vsx_module*,unsigned long))dlsym(module_handle, "destroy_module");

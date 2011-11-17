@@ -415,14 +415,17 @@ bool init() {
 //*** F A C T O R Y ************************************************************
 //******************************************************************************
 
-#ifdef _WIN32
+#ifndef _WIN32
+#define __declspec(a)
+#endif
+
 extern "C" {
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 __declspec(dllexport) void set_environment_info(vsx_engine_environment* environment);
 }
-#endif
+
 
 vsx_module* MOD_CM(unsigned long module) {
   if (module) {

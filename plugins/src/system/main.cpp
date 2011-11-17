@@ -634,13 +634,16 @@ class vsx_module_block_chain_load : public vsx_module {
 //*** F A C T O R Y ************************************************************
 //******************************************************************************
 
-#ifdef _WIN32
+#ifndef _WIN32
+#define __declspec(a)
+#endif
+
 extern "C" {
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 }
-#endif
+
 
 vsx_module* create_new_module(unsigned long module) {
   switch(module) {
