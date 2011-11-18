@@ -226,6 +226,54 @@ void vsx_widget_connector_bezier::draw()
     ey = dv.y;
   }
 
+  // set color (if not already done)
+  if (!color_initialized)
+  {
+    vsx_string p_type = ((vsx_widget_anchor*)parent)->p_type;
+    if (p_type == "complex")
+    {
+      color = vsx_color__(216.0f/255.0f,76.0f/255.0f,202.0f/255.0f,1.0f);
+    } else
+    if (p_type == "float" || p_type == "float_array")
+    {
+      color = vsx_color__(20.0f/255.0f,121.0f/255.0f,72.0f/255.0f,1.0f);
+    } else
+    if (p_type == "float3" || p_type == "float3_array")
+    {
+      color = vsx_color__(64.0f/255.0f,190.0f/255.0f,78.0f/255.0f,0.8f);
+    } else
+    if (p_type == "float4")
+    {
+      color = vsx_color__(142.0f/255.0f,49.0f/255.0f,168.0f/255.0f,1.0f);
+    } else
+    if (p_type == "texture")
+    {
+      color = vsx_color__(15.0f/255.0f,99.0f/255.0f,206.0f/255.0f,1.0f);
+    } else
+    if (p_type == "render")
+    {
+      color = vsx_color__(236.0f/255.0f,70.0f/255.0f,70.0f/255.0f,1.0f);
+    } else
+    if (p_type == "mesh")
+    {
+      color = vsx_color__(0.0f/255.0f,255.0f/255.0f,255.0f/255.0f,1.0f);
+    }
+    else
+    if (p_type == "bitmap")
+    {
+      color = vsx_color__(255.0f/255.0f,0.0f/255.0f,255.0f/255.0f,1.0f);
+    } else
+    if (p_type == "particlesystem")
+    {
+      color = vsx_color__(160.0f/255.0f,38.0f/255.0f,190.0f/255.0f,1.0f);
+    } else
+    if (p_type == "quaternion")
+    {
+      color = vsx_color__(249.0f/255.0f,167.0f/255.0f,86.0f/255.0f,1.0f);
+    }
+    color_initialized = true;
+  }
+
 
   glEnable(GL_LINE_SMOOTH);
 
@@ -310,6 +358,7 @@ void vsx_widget_connector_bezier::draw()
     }
   }
 
+  color.gl_color();
 
   glBegin(GL_LINE_STRIP);
     for (size_t i = 0; i < 21; i++)
@@ -318,10 +367,16 @@ void vsx_widget_connector_bezier::draw()
     }
   glEnd();
 
-//  glBegin(GL_LINES);
-//    glVertex3f(sx,sy,pos.z);
-//    glVertex3f(ex,ey,pos.z);
-//  glEnd();
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glLineWidth(1.0f);
+  glBegin(GL_LINE_STRIP);
+  for (size_t i = 0; i < 21; i++)
+  {
+    glColor4f(1.0,1.0,1.0,((float)i/21.0f) * 0.8f);
+    glVertex3f(cached_spline[i].x,cached_spline[i].y,pos.z);
+  }
+  glEnd();
+
   glDisable(GL_LINE_SMOOTH);
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -392,6 +447,7 @@ vsx_widget_connector_bezier::vsx_widget_connector_bezier()
   receiving_focus = true;
   support_interpolation = true;
   old_sx = old_sy = old_ex = old_ey = 0.0f;
+  color_initialized = false;
 }
 
 bool vsx_widget_connector_bezier::event_key_down(signed long key, bool alt, bool ctrl, bool shift) 
