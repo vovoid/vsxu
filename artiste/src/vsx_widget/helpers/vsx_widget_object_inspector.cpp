@@ -37,7 +37,7 @@
 #include "vsx_widget_desktop.h"
 #include "vsx_widget_object_inspector.h"
 #include "server/vsx_widget_anchor.h"
-#include "server/vsx_widget_connector.h"
+#include "server/vsx_widget_connector_bezier.h"
 #include "server/vsx_widget_comp.h"
 #include "vsxfst.h"
 #include "vsx_param.h"
@@ -134,7 +134,7 @@ void vsx_window_object_inspector::draw() {
     else
     if (inspected->widget_type == VSX_WIDGET_TYPE_CONNECTOR)
     {
-      label1->title = ((vsx_widget_connector*)a_focus)->destination->name;
+      label1->title = ((vsx_widget_connector_bezier*)a_focus)->destination->name;
       view_type = 0;
       label1->visible = 1;
       //label2->title = ((vsx_widget_anchor*)inspected)->p_type;
