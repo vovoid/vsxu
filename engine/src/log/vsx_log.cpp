@@ -19,6 +19,7 @@ void log(vsx_string message, int level)
   	syslog(LOG_ERR,"%d: %s", level, message.c_str());
 	#else
 		if (log_level < level) return;
+    printf("%s\n",message.c_str());
 		FILE* fpo = 0;
 		if (first) {
 			fpo = fopen((log_dir+"vsxu_engine.debug.log").c_str(),"w");

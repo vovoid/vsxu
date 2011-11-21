@@ -112,7 +112,7 @@ public:
     gui_g_time(0),
     gui_f_time(0),
     gui_fullscreen_fpstimer(0)
-  {};
+  {}
   ~vsxu_draw() {}
 
   void draw() {

@@ -26,7 +26,7 @@ void vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info) {
   //title_timer = 5.0f;
   if (vxe_local == 0)
   {
-    vxe_local = new vsx_engine(own_path);
+    vxe_local = new vsx_engine();
     vxe_local->dump_modules_to_disk = false;
     vxe_local->no_client_time = true;
     vxe_local->init(sound_type);
@@ -257,7 +257,7 @@ void vsx_statelist::render()
 #ifdef VSXU_DEBUG
       printf("initializing fader %s\n", (*it).c_str());
 #endif
-      lvxe = new vsx_engine(own_path);
+      lvxe = new vsx_engine();
       lvxe->dump_modules_to_disk = false;
       lvxe->init(sound_type);
       lvxe->start();

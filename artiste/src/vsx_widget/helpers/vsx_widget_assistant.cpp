@@ -213,14 +213,14 @@ void vsxu_assistant::toggle_size() {
   if (size_multiplier == 1.0f) {
     size_multiplier = 0.8f;
   } else
-  /*if (size_multiplier == 0.9f) {
-    size_multiplier = 0.8f;
-  } else*/
   if (size_multiplier == 0.8f) {
     size_multiplier = 0.2f;
   } else
   if (size_multiplier == 0.2f)
-  size_multiplier = 1.3f;
+  {
+    size_multiplier = 1.3f;
+  }
+  printf("assistant size is now: %f\n",size_multiplier);
   configuration["assistant_size"] = f2s(size_multiplier);
   ((vsx_widget_desktop*)root)->save_configuration();
 }
