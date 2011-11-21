@@ -74,21 +74,21 @@ public:
 		ab.bpp = 4;
 		ab.bformat = GL_RGBA;
 		ab.size_x = ab.size_y = 2;
-		ab.data = new unsigned long[4];
-		((unsigned long*)ab.data)[0] = 0xFFFF0000;
-		((unsigned long*)ab.data)[1] = 0xFF000000;
-		((unsigned long*)ab.data)[2] = 0xFF000000;
-		((unsigned long*)ab.data)[3] = 0xFFFF0000;
+    ab.data = new vsx_bitmap_32bt[4];
+    ((vsx_bitmap_32bt*)ab.data)[0] = 0xFFFF0000;
+    ((vsx_bitmap_32bt*)ab.data)[1] = 0xFF000000;
+    ((vsx_bitmap_32bt*)ab.data)[2] = 0xFF000000;
+    ((vsx_bitmap_32bt*)ab.data)[3] = 0xFFFF0000;
 		ab.valid = true;
 
 		bb.bpp = 4;
 		bb.bformat = GL_RGBA;
 		bb.size_x = bb.size_y = 2;
-		bb.data = new unsigned long[4];
-		((unsigned long*)bb.data)[0] = 0xFF000000;
-		((unsigned long*)bb.data)[1] = 0xFF0000FF;
-		((unsigned long*)bb.data)[2] = 0xFF0000FF;
-		((unsigned long*)bb.data)[3] = 0xFF000000;
+    bb.data = new vsx_bitmap_32bt[4];
+    ((vsx_bitmap_32bt*)bb.data)[0] = 0xFF000000;
+    ((vsx_bitmap_32bt*)bb.data)[1] = 0xFF0000FF;
+    ((vsx_bitmap_32bt*)bb.data)[2] = 0xFF0000FF;
+    ((vsx_bitmap_32bt*)bb.data)[3] = 0xFF000000;
 		bb.valid = true;
 
 		texture_a.locked = true;

@@ -88,7 +88,7 @@ public:
     float arms = ((module_bitmap_blob*)ptr)->arms->get()*0.5f;
     float star_flower = ((module_bitmap_blob*)ptr)->star_flower->get();
     float angle = ((module_bitmap_blob*)ptr)->angle->get();
-    unsigned long *p = (unsigned long*)((module_bitmap_blob*)ptr)->work_bitmap->data;
+    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_blob*)ptr)->work_bitmap->data;
     int size = ((module_bitmap_blob*)ptr)->i_size;
     //float sp1 = (float)size + 1.0f;
     float dist;
@@ -229,7 +229,7 @@ public:
         i_size = 8 << size->get();
         //printf("i_size: %d\n",i_size);
         if (bitm.data) to_delete_data = bitm.data;
-        bitm.data = new unsigned long[i_size*i_size];
+        bitm.data = new vsx_bitmap_32bt[i_size*i_size];
         bitm.size_y = bitm.size_x = i_size;
       }
 
@@ -251,7 +251,7 @@ public:
 
     if (to_delete_data && my_ref == 0)
     {
-      delete[] (unsigned long*)to_delete_data;
+      delete[] (vsx_bitmap_32bt*)to_delete_data;
       to_delete_data = 0;
     }
   }
@@ -299,7 +299,7 @@ public:
       }
     }
     //printf("c");
-    delete[] (unsigned long*)bitm.data;
+    delete[] (vsx_bitmap_32bt*)bitm.data;
     //printf("d");
   }
 };

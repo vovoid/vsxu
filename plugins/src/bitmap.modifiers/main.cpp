@@ -94,8 +94,8 @@ public:
 //          printf("allocating new memory\n");
 //          printf("height: %d\n",height);
           
-          if (bitm.data) delete[] (unsigned long*)bitm.data;
-          bitm.data = new unsigned long[width*height];
+          if (bitm.data) delete[] (vsx_bitmap_32bt*)bitm.data;
+          bitm.data = new vsx_bitmap_32bt[width*height];
           bitm.size_x = width;
           bitm.size_y = height;
         }
@@ -122,7 +122,7 @@ public:
   void on_delete() {
     //printf("deleting bitmap..");
     if (bitm.valid)
-    delete[] (unsigned long*)bitm.data;
+    delete[] (vsx_bitmap_32bt*)bitm.data;
   }
 };
 
@@ -197,7 +197,7 @@ public:
       float space = size->get()/(float)width;
       float dest = -size->get()*0.5f;
       if (first) {
-        for (unsigned long y = 0; y < bitm->size_y; ++y) {
+        for (size_t y = 0; y < bitm->size_y; ++y) {
           for (int x = 0; x < width; ++x) {
             (*particles.particles)[i].pos.x = dest+(float)x*space+random_weight->get()*(-0.5+(float)(rand()%1000)/1000.0f);
             (*particles.particles)[i].pos.y = 0;
@@ -209,14 +209,14 @@ public:
       }
 
       i = 0;
-      for (unsigned long y = 0; y < bitm->size_y; ++y) {
+      for (size_t y = 0; y < bitm->size_y; ++y) {
         int cc = y*width;
         if (bitm->bformat == GL_RGBA)
         {
           for (int x = 0; x < width; ++x) {
-            (*particles.particles)[i].color.b = ((float)(unsigned char)((((unsigned long*)bitm->data)[cc+x]&0x00FF0000)>>16))/255.0f;
-            (*particles.particles)[i].color.g = ((float)(unsigned char)((((unsigned long*)bitm->data)[cc+x]&0x0000FF00)>>8))/255.0f;
-            (*particles.particles)[i].color.r = ((float)(unsigned char)((((unsigned long*)bitm->data)[cc+x]&0x000000FF)))/255.0f;
+            (*particles.particles)[i].color.b = ((float)(unsigned char)((((vsx_bitmap_32bt*)bitm->data)[cc+x]&0x00FF0000)>>16))/255.0f;
+            (*particles.particles)[i].color.g = ((float)(unsigned char)((((vsx_bitmap_32bt*)bitm->data)[cc+x]&0x0000FF00)>>8))/255.0f;
+            (*particles.particles)[i].color.r = ((float)(unsigned char)((((vsx_bitmap_32bt*)bitm->data)[cc+x]&0x000000FF)))/255.0f;
             (*particles.particles)[i].color.a = 1.0f;
             if ((*particles.particles)[i].color.b < 0.01f && (*particles.particles)[i].color.g < 0.01f && (*particles.particles)[i].color.r < 0.01f)
             (*particles.particles)[i].size = 0.0f;
@@ -253,8 +253,8 @@ class module_bitmap_add_noise : public vsx_module {
   vsx_bitmap t_bitm;
 
   int buf, frame;
-  unsigned long *data_a;
-  unsigned long *data_b;
+  vsx_bitmap_32bt *data_a;
+  vsx_bitmap_32bt *data_b;
   int bitm_timestamp;
   vsx_bitmap result_bitm;
   bool first, worker_running, t_done;
@@ -270,7 +270,7 @@ static void* noise_worker(void *ptr) {
   int i_frame = -1;
   //int x,y;
   bool buf = false;
-  unsigned long *p;
+  vsx_bitmap_32bt *p;
   while (((module_bitmap_add_noise*)ptr)->worker_running) {
     if (i_frame != ((module_bitmap_add_noise*)ptr)->frame) {
     //printf("%d ",ptr);
@@ -284,9 +284,9 @@ static void* noise_worker(void *ptr) {
       //unsigned long cc = rand()<<8 | (char)rand();
       if (((module_bitmap_add_noise*)ptr)->t_bitm.bformat == GL_RGBA)
       {
-        for (unsigned long x = 0; x < b_c; ++x)
+        for (size_t x = 0; x < b_c; ++x)
         {
-            p[x] = ((unsigned long*)((module_bitmap_add_noise*)ptr)->t_bitm.data)[x] | rand() << 8  | (unsigned char)rand(); //bitm->data[x + y*result_bitm.size_x]
+            p[x] = ((vsx_bitmap_32bt*)((module_bitmap_add_noise*)ptr)->t_bitm.data)[x] | rand() << 8  | (unsigned char)rand(); //bitm->data[x + y*result_bitm.size_x]
         }
       }
       ((module_bitmap_add_noise*)ptr)->result_bitm.valid = true;
@@ -339,9 +339,9 @@ void run() {
       worker_running = false;
 
       // need to realloc
-      if (result_bitm.valid) delete[] (unsigned long*)result_bitm.data;
-      data_a = new unsigned long[bitm->size_x*bitm->size_y];
-      data_b = new unsigned long[bitm->size_x*bitm->size_y];
+      if (result_bitm.valid) delete[] (vsx_bitmap_32bt*)result_bitm.data;
+      data_a = new vsx_bitmap_32bt[bitm->size_x*bitm->size_y];
+      data_b = new vsx_bitmap_32bt[bitm->size_x*bitm->size_y];
       result_bitm.data = data_a;
       result_bitm.valid = true;
       result_bitm.size_x = bitm->size_x;
@@ -387,7 +387,7 @@ void on_delete() {
   delete[] data_a;
   delete[] data_b;
   if (result_bitm.valid)
-  delete[] (unsigned long*)result_bitm.data;
+  delete[] (vsx_bitmap_32bt*)result_bitm.data;
 }
 
 };

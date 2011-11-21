@@ -167,14 +167,14 @@ public:
 				(y&(mm1))/mmf);
 		}
 
-	unsigned long *p = (unsigned long*)((module_bitmap_subplasma*)ptr)->work_bitmap->data;
+  vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_subplasma*)ptr)->work_bitmap->data;
     
 	
     for (x = 0; x < mod->i_size * (mod->i_size); ++x, p++) 
     {
       //if (SubPlasma[x] != 0)
       //printf("SubPlasma[x] = %d,", SubPlasma[x]);
-      *p = 0xFF000000 | ((unsigned long)SubPlasma[x]) << 16 | (unsigned long)SubPlasma[x] << 8 | (unsigned long)SubPlasma[x];// | 0 * 0x00000100 | 0;
+      *p = 0xFF000000 | ((vsx_bitmap_32bt)SubPlasma[x]) << 16 | (vsx_bitmap_32bt)SubPlasma[x] << 8 | (vsx_bitmap_32bt)SubPlasma[x];// | 0 * 0x00000100 | 0;
       
     }
   	/*for(y = -hsize; y < hsize; ++y)
@@ -238,7 +238,7 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
     bitm.ref = &my_ref;
     bitm_timestamp = bitm.timestamp = rand();
     need_to_rebuild = true;
-    //bitm.data = new unsigned long[256*256];
+    //bitm.data = new vsx_bitmap_32bt[256*256];
     //bitm.size_y = bitm.size_x = 256;
     to_delete_data = 0;
   }
@@ -252,7 +252,7 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
         i_size = 8 << size->get();
         if (bitm.data) to_delete_data = bitm.data;   
           //delete[] bitm.data;
-        bitm.data = new unsigned long[i_size*i_size];
+        bitm.data = new vsx_bitmap_32bt[i_size*i_size];
         bitm.size_y = bitm.size_x = i_size;
       }
 
@@ -281,7 +281,7 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
     }  
     if (to_delete_data && my_ref == 0)
     {
-      delete[] (unsigned long*)to_delete_data;
+      delete[] (vsx_bitmap_32bt*)to_delete_data;
       to_delete_data = 0;
     }
   }
@@ -295,7 +295,7 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
     //printf("a");
     //printf("b");
     //printf("c");
-    delete[] (unsigned long*)bitm.data;
+    delete[] (vsx_bitmap_32bt*)bitm.data;
     //printf("d");
   }
 };

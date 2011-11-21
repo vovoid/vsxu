@@ -22,10 +22,14 @@
 #ifndef VSX_BITMAP_H
 #define VSX_BITMAP_H
 
+#include <stdint.h>
+
 // everyone that wants to mess with this must make a copy of their own.
 // because threads are working on it it has to be like this.
 // also, if the timestamp and it's valid it's ok to read from it, otherwise
 // it's not.
+
+typedef uint32_t vsx_bitmap_32bt;
 
 class vsx_bitmap {
 public:

@@ -492,6 +492,7 @@ void vsx_texture::upload_ram_bitmap(void* data, unsigned long size_x, unsigned l
 	//printf("%d GL Error was: %x\n", __LINE__,glGetError());
 
   if (upside_down) {
+    //printf("texture is upside down\n");
     if (bpp == GL_RGBA32F_ARB)
     {
       GLfloat* data2 = new GLfloat[size_x * size_y * 4];

@@ -295,7 +295,7 @@ public:
         }
         bitm.size_x = pp->Width;
         bitm.size_y = pp->Height;
-        bitm.data = (unsigned long*)(pp->Data);
+        bitm.data = (vsx_bitmap_32bt*)(pp->Data);
         //bitm.valid = true;
         //printf("%d %d %d\n",bitm.bpp,bitm.size_x,bitm.size_y);
         bitm.timestamp++;
@@ -435,7 +435,7 @@ void module_load_png_bitmap::run() {
     }
     bitm.size_x = pp->Width;
     bitm.size_y = pp->Height;
-    bitm.data = (unsigned long*)(pp->Data);
+    bitm.data = (vsx_bitmap_32bt*)(pp->Data);
     //printf("%d %d %d\n",bitm.bpp,bitm.size_x,bitm.size_y);
     
     bitm.valid = true;
@@ -493,11 +493,11 @@ class module_load_jpeg : public vsx_module {
       //int size_y = ((module_load_jpeg_bitmap*)ptr)->bitm.size_y;
       mod->bitm.size_x = ((CJPEGTest*)mod->cj)->GetResX();
       mod->bitm.size_y = ((CJPEGTest*)mod->cj)->GetResY();
-      unsigned long b_c = (mod->bitm.size_x) * (mod->bitm.size_y);
+      vsx_bitmap_32bt b_c = (mod->bitm.size_x) * (mod->bitm.size_y);
       char* rb = (char*)((CJPEGTest*)mod->cj)->m_pBuf;
-      mod->bitm.data = new unsigned long[b_c*2];
+      mod->bitm.data = new vsx_bitmap_32bt[b_c*2];
       for (unsigned long i = 0; i < b_c; ++i) {
-        ((unsigned long*)mod->bitm.data)[i] = 0xFF000000 | (unsigned char)rb[i*3+2] << 16 | (unsigned char)rb[i*3+1] << 8 | (unsigned char)rb[i*3]; 
+        ((vsx_bitmap_32bt*)mod->bitm.data)[i] = 0xFF000000 | (unsigned char)rb[i*3+2] << 16 | (unsigned char)rb[i*3+1] << 8 | (unsigned char)rb[i*3];
       }
       /*unsigned char* data2 = new unsigned char[b_c * 4];  
       int dy = 0;
@@ -508,7 +508,7 @@ class module_load_jpeg : public vsx_module {
         ++dy;
       }*/
       //delete[] ((module_load_jpeg_bitmap*)ptr)->bitm.data;
-      //((module_load_jpeg_bitmap*)ptr)->bitm.data = (unsigned long*)data2;
+      //((module_load_jpeg_bitmap*)ptr)->bitm.data = (vsx_bitmap_32bt*)data2;
       delete (CJPEGTest*)mod->cj;
       //while (((module_load_jpeg_bitmap*)ptr)->thread_state != 2)
       mod->thread_state = 2;
@@ -634,7 +634,7 @@ public:
     if (thread_state == 1) 
     pthread_join(worker_t, 0);
     if (bitm.valid) {
-      delete[] (unsigned long*)bitm.data;
+      delete[] (vsx_bitmap_32bt*)bitm.data;
     }
   }  
 };

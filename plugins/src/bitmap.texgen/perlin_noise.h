@@ -93,7 +93,7 @@ public:
     if (mod->work_bitmap->bpp == 4)
     {
       // integer data type 
-      unsigned long *p = (unsigned long*)mod->work_bitmap->data;
+      vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)mod->work_bitmap->data;
       float yp = 0.0f;
       float xp;
       for (int y = -hsize; y < hsize; ++y)
@@ -283,7 +283,7 @@ public:
     bitm.ref = &my_ref;
     bitm_timestamp = bitm.timestamp = rand();
     need_to_rebuild = true;
-    //bitm.data = new unsigned long[256*256];
+    //bitm.data = new vsx_bitmap_32bt[256*256];
     //bitm.size_y = bitm.size_x = 256;
     to_delete_data = 0;
     old_bitmap_type = 0;
@@ -306,7 +306,7 @@ public:
         {
           case 0:
             bitm.bpp = 4;
-            bitm.data = new unsigned long[i_size*i_size];
+            bitm.data = new vsx_bitmap_32bt[i_size*i_size];
             break;
           case 1:
             bitm.bpp = GL_RGBA32F_ARB;
@@ -341,7 +341,7 @@ public:
     }
     if (to_delete_data && my_ref == 0)
     {
-      delete[] (unsigned long*)to_delete_data;
+      delete[] (vsx_bitmap_32bt*)to_delete_data;
       to_delete_data = 0;
     }
   }
@@ -355,7 +355,7 @@ public:
     //printf("a");
     //printf("b");
     //printf("c");
-    delete[] (unsigned long*)bitm.data;
+    delete[] (vsx_bitmap_32bt*)bitm.data;
     //printf("d");
   }
 };

@@ -157,7 +157,7 @@ public:
     
     unsigned long x,y,ix,iy;
 
-    for (x = 0; x < bitm->size_x * bitm->size_y; x++) ((unsigned long*)bitm->data)[x] = 0;
+    for (x = 0; x < bitm->size_x * bitm->size_y; x++) ((vsx_bitmap_32bt*)bitm->data)[x] = 0;
     //TEEEEMP!
     //bitm->timestamp++;
     //bitm->valid = true;
@@ -173,7 +173,7 @@ public:
       ixbound = false;
       for (x = (unsigned long)mod->bitm1_ofs->get(0); x < bitm->size_x && !ixbound; x++)
       {
-        ((unsigned long*)bitm->data)[x + y * bitm->size_x] = ((unsigned long*)bitm1->data)[ix + iy * bitm1->size_x]; 
+        ((vsx_bitmap_32bt*)bitm->data)[x + y * bitm->size_x] = ((vsx_bitmap_32bt*)bitm1->data)[ix + iy * bitm1->size_x];
         ix++;
         if (ix >= bitm1->size_x) ixbound = true;
       }
@@ -189,8 +189,8 @@ public:
       ixbound = false;
       for (x = (unsigned long)mod->bitm2_ofs->get(0); x < bitm->size_x && !ixbound; x++)
       {
-        unsigned long* data = (unsigned long*)bitm->data;
-        unsigned long* data2 = (unsigned long*)bitm2->data;
+        vsx_bitmap_32bt* data = (vsx_bitmap_32bt*)bitm->data;
+        vsx_bitmap_32bt* data2 = (vsx_bitmap_32bt*)bitm2->data;
 
 #define BLEND_FUNC(BLT) \
       for (int a = 0; a < 4; a++)\
@@ -321,7 +321,7 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
     bitm.ref = &my_ref;    
     bitm_timestamp = bitm.timestamp = rand();
     need_to_rebuild = true;
-    //bitm.data = new unsigned long[256*256];
+    //bitm.data = new vsx_bitmap_32bt[256*256];
     //bitm.size_y = bitm.size_x = 256;
     bitm.size_y = bitm.size_x = 0;
     timestamp1 = timestamp2 = -1;
@@ -350,7 +350,7 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
         if (bitm.size_x != (unsigned long)target_size->get(0) || bitm.size_y != (unsigned long)target_size->get(1))
         {
           if (bitm.data != 0) to_delete_data = bitm.data;
-          bitm.data = new unsigned long[(int)target_size->get(0)*(int)target_size->get(1)];
+          bitm.data = new vsx_bitmap_32bt[(int)target_size->get(0)*(int)target_size->get(1)];
           bitm.size_x = (int)target_size->get(0);
           bitm.size_y = (int)target_size->get(1);
           
@@ -383,7 +383,7 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
     if (thread_state == 3)
     if (to_delete_data && (*bitm.ref) == 0)
     {
-      delete[] (unsigned long*)to_delete_data;
+      delete[] (vsx_bitmap_32bt*)to_delete_data;
       to_delete_data = 0;
     }        
     
@@ -399,7 +399,7 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
     //printf("b");
     //printf("c");
     
-    delete[] (unsigned long*)bitm.data;
+    delete[] (vsx_bitmap_32bt*)bitm.data;
     //printf("d");
   }
 };

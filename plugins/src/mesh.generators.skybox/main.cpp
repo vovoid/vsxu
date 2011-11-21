@@ -35,35 +35,6 @@ typedef struct {
   int p_plane;
 } SB_THREAD_DATA;
 
-//unsigned long* cylImg;
-//int cylSizeX, cylSizeY;
-
-//unsigned long getColor(float u, float v);
-/*unsigned long getColorCyl(float *vec) {
-  v_norm(vec);
-  float vec2[4] = {
-    vec[0],
-    0,
-    vec[2],
-    1};
-  float scale = v_rlen(vec2);
-  v_smult(vec, scale);
-
-  float cylU = (float)(atan2(vec[0], vec[2]) / PI + 1) * 0.5f * cylSizeX;
-  float cylV = (float)((vec[1] + 1) * 0.5f * (cylSizeY - 1));
-  if(cylV < 0) cylV = 0;
-  if(cylV > cylSizeY) cylV = cylSizeY;
-
-//	cylV = fmod(fabs(cylV), cylSizeY);
-//	cylU = fmod(cylU * 7, cylSizeX);
-//	cylV = fmod(cylV * 4, cylSizeY);
-
-  return getColor(cylU, cylV);
-}*/
-
-/*float v_rlen(float *v){
-  return 1.0f / (GLfloat)sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-}*/
 
 void inline v_smult(GLfloat *v, float s){
   v[0] *= s;
@@ -90,6 +61,7 @@ class vsx_module_plugin : public vsx_module {
   vsx_module_param_bitmap* negative_z;
   // internal
   bool              worker_running;
+  bool              worker_ever_started;
   pthread_t         worker_t[6];
   pthread_attr_t    worker_t_attr[6];
 
@@ -104,32 +76,27 @@ public:
 
   int cylSizeX, cylSizeY;
 
-  unsigned long getColor(float u, float v)
+  vsx_bitmap_32bt getColor(float u, float v)
   {
-  //  printf(" %d", (int)(v    ) % cylSizeY * cylSizeX + (int)(u    ) % cylSizeX);
-  /*  unsigned long c00 = bitm_p.data[((unsigned long)v    ) % cylSizeY * cylSizeX + ((unsigned long)u    ) % cylSizeX];
-    unsigned long c01 = bitm_p.data[((unsigned long)v    ) % cylSizeY * cylSizeX + ((unsigned long)u + 1) % cylSizeX];
-    unsigned long c10 = bitm_p.data[((unsigned long)v + 1) % cylSizeY * cylSizeX + ((unsigned long)u    ) % cylSizeX];
-    unsigned long c11 = bitm_p.data[((unsigned long)v + 1) % cylSizeY * cylSizeX + ((unsigned long)u + 1) % cylSizeX];
-  */
-    unsigned long vv = (unsigned long)floor(v);
-    unsigned long uu = (unsigned long)floor(u);
-    unsigned long c00 = ((unsigned long*)bitm_p.data)[(vv    ) % cylSizeY * cylSizeX + (uu    ) % cylSizeX];
-    unsigned long c01 = ((unsigned long*)bitm_p.data)[(vv    ) % cylSizeY * cylSizeX + (uu + 1) % cylSizeX];
-    unsigned long c10 = ((unsigned long*)bitm_p.data)[(vv + 1) % cylSizeY * cylSizeX + (uu    ) % cylSizeX];
-    unsigned long c11 = ((unsigned long*)bitm_p.data)[(vv + 1) % cylSizeY * cylSizeX + (uu + 1) % cylSizeX];
 
-    /*if (((unsigned long)v    ) % cylSizeY * cylSizeX + ((unsigned long)u    ) % cylSizeX > 1024*2048)
+    vsx_bitmap_32bt vv = (vsx_bitmap_32bt)floor(v);
+    vsx_bitmap_32bt uu = (vsx_bitmap_32bt)floor(u);
+    vsx_bitmap_32bt c00 = ((vsx_bitmap_32bt*)bitm_p.data)[(vv    ) % cylSizeY * cylSizeX + (uu    ) % cylSizeX];
+    vsx_bitmap_32bt c01 = ((vsx_bitmap_32bt*)bitm_p.data)[(vv    ) % cylSizeY * cylSizeX + (uu + 1) % cylSizeX];
+    vsx_bitmap_32bt c10 = ((vsx_bitmap_32bt*)bitm_p.data)[(vv + 1) % cylSizeY * cylSizeX + (uu    ) % cylSizeX];
+    vsx_bitmap_32bt c11 = ((vsx_bitmap_32bt*)bitm_p.data)[(vv + 1) % cylSizeY * cylSizeX + (uu + 1) % cylSizeX];
+
+    /*if (((vsx_bitmap_32bt)v    ) % cylSizeY * cylSizeX + ((vsx_bitmap_32bt)u    ) % cylSizeX > 1024*2048)
     printf("u: %f v: %f\n",u,v);*/
 
     float fracU = (u + 10000) - (int)(u + 10000);
     float fracV = (v + 10000) - (int)(v + 10000);
 
-    unsigned long a, r, g, b;
-    unsigned long a00, a01, a10, a11;
-    unsigned long r00, r01, r10, r11;
-    unsigned long g00, g01, g10, g11;
-    unsigned long b00, b01, b10, b11;
+    vsx_bitmap_32bt a, r, g, b;
+    vsx_bitmap_32bt a00, a01, a10, a11;
+    vsx_bitmap_32bt r00, r01, r10, r11;
+    vsx_bitmap_32bt g00, g01, g10, g11;
+    vsx_bitmap_32bt b00, b01, b10, b11;
 
     #define sep_col(col, a, r, g, b)\
       a = (((col) >> 24) & 255);\
@@ -138,7 +105,7 @@ public:
       b = (((col) >> 0) & 255);
 
     #define interpol(x, x00, x01, x10, x11, fracU, fracV)\
-      x = (unsigned long)(x00 * (1.0f - fracU) * (1.0f - fracV) + \
+      x = (vsx_bitmap_32bt)(x00 * (1.0f - fracU) * (1.0f - fracV) + \
           x01 * (fracU) * (1.0f - fracV) + \
           x10 * (1.0f - fracU) * (fracV) + \
           x11 * (fracU) * (fracV));
@@ -156,7 +123,7 @@ public:
     return (a << 24) | (r << 16) | (g << 8) | b;
   }
 
-  unsigned long getColorSph(float *vec)
+  vsx_bitmap_32bt getColorSph(float *vec)
   {
     v_norm(vec);
 
@@ -243,7 +210,7 @@ public:
             break;
             case MAP_SPHERE:
               //if ( plane)
-              ((unsigned long*)result_bitm[plane].data)[v * texSize + u] = getColorSph(vec);
+              ((vsx_bitmap_32bt*)result_bitm[plane].data)[v * texSize + u] = getColorSph(vec);
             break;
           }
         }
@@ -367,6 +334,7 @@ public:
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     render_result->set(0);
     worker_running = false;
+    worker_ever_started = false;
   }
   
   static void* worker(void *data)
@@ -387,10 +355,10 @@ public:
       if (bitm->valid && bitm_timestamp != bitm->timestamp) {
         /*if (bitm->bpp == 3) {
           bitm_p.valid = true;
-          unsigned long b_c = (bitm->size_x-1) * (bitm->size_y-1);
+          vsx_bitmap_32bt b_c = (bitm->size_x-1) * (bitm->size_y-1);
           char* rb = (char*)bitm->data;
-          bitm_p.data = new unsigned long[b_c];
-          for (unsigned long i = 0; i < b_c; ++i) {
+          bitm_p.data = new vsx_bitmap_32bt[b_c];
+          for (vsx_bitmap_32bt i = 0; i < b_c; ++i) {
             bitm_p.data[i] = 0xFF000000 | (unsigned char)rb[i*3+2] << 16 | (unsigned char)rb[i*3+1] << 8 | (unsigned char)rb[i*3];
           }
         } else */
@@ -401,7 +369,7 @@ public:
         // ok, new version
         for (int i = 0; i < 6; ++i) {
           result_bitm[i].timestamp = 0;
-          result_bitm[i].data = new unsigned long[512*512];
+          result_bitm[i].data = new vsx_bitmap_32bt[512*512];
           result_bitm[i].size_x = 512;
           result_bitm[i].size_y = 512;
     //      for (int j = 0; j < 512*512; ++j) result_bitm[i].data[j] = 0xFF000000+rand()%255;
@@ -413,6 +381,7 @@ public:
           h->target = (void*)this;
           pthread_attr_init(&worker_t_attr[i]);
           pthread_create(&worker_t[i], &worker_t_attr[i], &worker, (void*)h);
+          worker_ever_started = true;
           //sched_param s_param;
           //int policy = 0;
           //s_param.sched_priority = 20;
@@ -552,8 +521,11 @@ public:
   void stop()
   {
     if (!loading_done) {
-      for (int i = 0; i < 6; ++i) {
-        pthread_join(worker_t[i],0);
+      if (worker_ever_started)
+      {
+        for (int i = 0; i < 6; ++i) {
+          pthread_join(worker_t[i],0);
+        }
       }
     }
     for (int i = 0; i < 6; ++i) {
@@ -578,7 +550,7 @@ public:
     //if (bitm_p.valid) delete bitm_p.data;
     for (int i = 0; i < 6; ++i) {
       result_tex[i].unload();
-      if (result_bitm[i].timestamp) delete[] (unsigned long*)result_bitm[i].data;
+      if (result_bitm[i].timestamp) delete[] (vsx_bitmap_32bt*)result_bitm[i].data;
     }
   }
 };

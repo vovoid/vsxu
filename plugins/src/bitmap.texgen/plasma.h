@@ -104,7 +104,7 @@ public:
     //float arms = ((module_bitmap_plasma*)ptr)->arms->get()*0.5f;
     //float star_flower = ((module_bitmap_plasma*)ptr)->star_flower->get();
     //float angle = ((module_bitmap_plasma*)ptr)->angle->get();
-    unsigned long *p = (unsigned long*)((module_bitmap_plasma*)ptr)->work_bitmap->data;
+    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_plasma*)ptr)->work_bitmap->data;
     int ssize = ((module_bitmap_plasma*)ptr)->i_size;
     int hsize = ssize >> 1;
     //float sp1 = (float)size + 1.0f;
@@ -235,7 +235,7 @@ size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024";
         i_size = 8 << size->get();
         if (bitm.data) to_delete_data = bitm.data;
         //if (bitm.data) delete[] bitm.data;
-        bitm.data = new unsigned long[i_size*i_size];
+        bitm.data = new vsx_bitmap_32bt[i_size*i_size];
         bitm.size_y = bitm.size_x = i_size;
       }
 
@@ -260,7 +260,7 @@ size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024";
         loading_done = true;
         if (to_delete_data)
         {
-          delete[] (unsigned long*)to_delete_data;
+          delete[] (vsx_bitmap_32bt*)to_delete_data;
           to_delete_data = 0;
         }
       }
@@ -295,7 +295,7 @@ size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024";
     //printf("a");
     //printf("b");
     //printf("c");
-    delete[] (unsigned long*)bitm.data;
+    delete[] (vsx_bitmap_32bt*)bitm.data;
     //printf("d");
   }
 };
