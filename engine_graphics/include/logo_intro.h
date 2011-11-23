@@ -52,7 +52,7 @@ public:
   int window_width, window_height;
   VSX_LOGO_INTRO_DLLIMPORT void draw(bool always = false,bool draw_background = true, bool draw_black_overlay = true);
   VSX_LOGO_INTRO_DLLIMPORT vsx_logo_intro();
-  VSX_LOGO_INTRO_DLLIMPORT void set_destroy_textures(bool new_value)
+  void set_destroy_textures(bool new_value)
   {
     destroy_textures = new_value;
   }

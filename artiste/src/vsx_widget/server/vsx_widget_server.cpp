@@ -227,6 +227,7 @@ Free text comments (max 300 characters)|\
   seq_pool = 0; // TODO: remove the auto-init
 
 #ifndef VSXU_PLAYER
+  printf("trying to load server png: %s\n",(skin_path+"server.png").c_str());
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
   {
     mtex.load_png(skin_path+"server.png");
