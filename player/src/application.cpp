@@ -5,7 +5,6 @@
 #include <vsx_version.h>
 #include <vsx_platform.h>
 #include <vsx_manager.h>
-#include <logo_intro.h>
 
 // local includes
 #include "application.h"
@@ -16,7 +15,7 @@
 
 vsx_manager_abs* manager;
 
-vsx_logo_intro* intro;
+
 
 vsx_overlay* overlay = 0;
 bool first = true;
@@ -51,7 +50,6 @@ bool app_draw(int id)
     overlay = new vsx_overlay;
     overlay->set_manager(manager);
     // create a new intro (Luna logo) object
-    intro = new vsx_logo_intro;
     if (disable_randomizer) manager->set_randomizer(false);
 	}
 
@@ -71,7 +69,6 @@ bool app_draw(int id)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (manager) manager->render();
 	if (overlay) overlay->render();
-	intro->draw();
 	return true;
 }
 

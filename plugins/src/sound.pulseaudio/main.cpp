@@ -323,7 +323,7 @@ void run() {
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-int worker_signal = 0;
+static int worker_signal;
 
 void* worker(void *ptr)
 {
@@ -454,18 +454,21 @@ void* worker(void *ptr)
           //fprintf(stderr, __FILE__": write() failed: %s\n", strerror(errno));
           //goto finish;
       //}
+      //printf("worker signal: %d\n",worker_signal);
     if (worker_signal == 1) goto finish;
   }
 
   ret = 0;
 
 finish:
-
+  //printf("finishing up...\n");
   if (s)
   {
     pa_simple_free(s);
   }
+  //printf("finishing up 2...\n");
   worker_signal = 2;
+  //printf("worker signal: %d\n",worker_signal);
   return 0;
 }
 
@@ -484,6 +487,7 @@ extern "C" {
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
+__declspec(dllexport) void on_unload_library();
 }
 
 
@@ -515,8 +519,9 @@ unsigned long get_num_modules() {
 
 void on_unload_library()
 {
+  if (worker_signal == 2) return;
   worker_signal = 1;
-  while (worker_signal == 1) {
+  while (worker_signal != 2) {
     usleep(100);
   }
 }

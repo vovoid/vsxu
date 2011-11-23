@@ -323,7 +323,7 @@ public:
         //printf("num particles: %d\n",particles->particles->size());
     	//printf("prev_num: %d\n",prev_num_particles);
         for (unsigned long i = prev_num_particles; i < particles->particles->size(); ++i) {
-        	if (i == prev_num_particles) printf("allocating again\n");
+        	//if (i == prev_num_particles) printf("allocating again\n");
         	gr[i] = new gravity_strip;
           //printf("i: %d\n",i);
           gr[i]->init();

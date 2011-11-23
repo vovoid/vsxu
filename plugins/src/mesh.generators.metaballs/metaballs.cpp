@@ -277,7 +277,7 @@ void CMetaballs::AddNeighbor(int x, int y, int z)
 	if( m_nMaxOpenVoxels == m_nNumOpenVoxels )
 	{
 		m_nMaxOpenVoxels *= 2;
-		printf("metaballs allocating more memory\n");
+		//printf("metaballs allocating more memory\n");
 		int *pTmp = new int[m_nMaxOpenVoxels*3];
 		memcpy(pTmp, m_pOpenVoxels, m_nNumOpenVoxels*3*sizeof(int));
 		delete[] m_pOpenVoxels;

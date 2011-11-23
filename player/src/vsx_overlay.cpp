@@ -19,6 +19,8 @@ vsx_overlay::vsx_overlay() {
   intro_timer = 6.0f;
   fx_alpha = 0.0f;
   show_randomizer_timer = 0.0f;
+  intro = new vsx_logo_intro;
+  intro->set_destroy_textures(false);
 }
 
 void vsx_overlay::set_manager(vsx_manager_abs* new_manager)
@@ -31,6 +33,7 @@ void vsx_overlay::reinit() {
 }
   
 void vsx_overlay::render() {
+
   glDisable(GL_DEPTH_TEST);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -70,7 +73,7 @@ void vsx_overlay::render() {
     
     show_randomizer_timer -= dt;
   }
-  
+
   if (manager) {
     if (manager->visual_loading() != "") title_timer = 2.0f;
     myf->color.a = title_timer;
@@ -90,7 +93,7 @@ void vsx_overlay::render() {
     }
     myf->print(vsx_vector(-1.0f,0.96f),output,0.04);
   }
-  myf->print(vsx_vector(0.75f,0.96f),"Vovoid VSX Ultra",0.04);
+  //myf->print(vsx_vector(0.75f,0.96f),"Vovoid VSXu",0.04);
   myf->color.a = 1.0f;
   title_timer -= dt;
 
@@ -143,6 +146,22 @@ void vsx_overlay::render() {
   myf->color.r = myf->color.g = myf->color.b = myf->color.a = 1.0f;
   fx_alpha -= dt*4;
   print_help();
+  if (title_timer > -5.0f && total_time > 4.0f)
+  {
+    // small intro
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    glViewport(viewport[2]-(GLint)(viewport[2]*0.17f),viewport[3]-(GLint)(viewport[3]*0.17f),viewport[2]/5,viewport[3]/5);
+    bool draw_always = false;
+    if (title_timer>1.8f) draw_always = true;
+    intro->draw(draw_always,false,false);
+    //GLint screenx = GLint(viewport[2]-viewport[0]);
+    //G screeny = (viewport[3]-viewport[1]);
+    glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
+  } else
+  {
+    intro->draw();
+  }
 }
 
 void vsx_overlay::set_help(int id) {
@@ -163,11 +182,11 @@ void vsx_overlay::show_randomizer_status()
 
 void vsx_overlay::print_help() {
 
- vsx_string message = "\
-VSX Ultra (c) Vovoid -:- libs by: Laurent de Soras, Mark J. Harris, The Freetype Project, Auran Development Ltd."
-"-- for more vsxu goodies go to http://vsxu.com"
-"-- visit our homepage at http://vovoid.com"
-;
+ //vsx_string message = "\
+//VSX Ultra (c) Vovoid -:- libs by: Laurent de Soras, Mark J. Harris, The Freetype Project, Auran Development Ltd."
+//"-- for more vsxu goodies go to http://vsxu.com"
+//"-- visit our homepage at http://vovoid.com"
+//;
 
 
   /*if (gui_g_time < 15) {
@@ -232,10 +251,10 @@ pgup/pgdn             - increase/decrease speed (per visual)\n\
 ",0.05);
 #endif
       //myf.color = vsx_color(1.0f,1.0f,1.0f,1.0f);
-      for (size_t i = 0; i < message.size(); ++i) {
-        myf->color = vsx_color(sin((float)i*0.5f+total_time*3.5f)*0.4f+0.6f,cos((float)i*0.2f+total_time*0.72f)*0.4f+0.6f,sin((float)i*0.25f+total_time*2.01f)*0.4f+0.6f,1.0f);
-        myf->print(vsx_vector(0.5+scroll_pos+0.035*(float)i,-0.85f+sin(total_time*2.5f+(float)i*0.2f)*sin(total_time*1.7f+(float)i*0.1f)*0.1f),message[i],0.07);
-      }
+      //for (size_t i = 0; i < message.size(); ++i) {
+      //  myf->color = vsx_color(sin((float)i*0.5f+total_time*3.5f)*0.4f+0.6f,cos((float)i*0.2f+total_time*0.72f)*0.4f+0.6f,sin((float)i*0.25f+total_time*2.01f)*0.4f+0.6f,1.0f);
+      //  myf->print(vsx_vector(0.5+scroll_pos+0.035*(float)i,-0.85f+sin(total_time*2.5f+(float)i*0.2f)*sin(total_time*1.7f+(float)i*0.1f)*0.1f),message[i],0.07);
+      //}
       break; 
     case 2:
       if (manager) { 

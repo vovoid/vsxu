@@ -95,7 +95,7 @@ std::list<vsx_string>* vsx_statelist::get_fader_file_list()
 
 vsx_string vsx_statelist::state_loading()
 {
-  if (transition_time > 1.0f) {
+  if (transition_time > 0.0f && transition_time < 2.0f) {
     return (*state_iter).state_name;
   }
   return "";

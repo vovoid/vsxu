@@ -40,7 +40,7 @@ float alpha;
 
 bool finished = false;
 
-void vsx_logo_intro::draw(bool always,bool draw_background) {
+void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overlay) {
   #ifndef VSXU_OPENGL_ES
     if (logo_time > animlen)
     {
@@ -50,16 +50,19 @@ void vsx_logo_intro::draw(bool always,bool draw_background) {
       }
       else 
       {
-        luna->unload();
-        luna_bkg->unload();
-        finished = true;
+        if (destroy_textures)
+        {
+          luna->unload();
+          luna_bkg->unload();
+          finished = true;
+        }
       }
     }
 
     float dtime = timer.dtime();
     if (always) {
       dtime = 0;
-      logo_time = 0;
+      logo_time = 0.0f;
     }
 
     logo_rot1 += dtime*0.01;
@@ -105,8 +108,11 @@ void vsx_logo_intro::draw(bool always,bool draw_background) {
       logo_size.y = 20;
     	if (logo_time < animlen) {
         glDisable(GL_DEPTH_TEST);
+        //printf("drawing logo intro\n");
 
-        glColor4f(0,0,0,b_alpha);
+        if (draw_black_overlay)
+        {
+          glColor4f(0,0,0,b_alpha);
           glBegin(GL_QUADS);
           	glTexCoord2f(0, 1);
             glVertex3f(logo_pos.x-logo_size.x*1.5/2,logo_pos.y-logo_size.y/2,logo_pos.z);
@@ -117,6 +123,7 @@ void vsx_logo_intro::draw(bool always,bool draw_background) {
           	glTexCoord2f(1, 1);
             glVertex3f(logo_pos.x+logo_size.x*1.5/2,logo_pos.y-logo_size.y/2,logo_pos.z);
           glEnd();
+        }
         float alphab = alpha*0.4;
       	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         if (draw_background)
@@ -210,6 +217,7 @@ vsx_logo_intro::vsx_logo_intro() {
   logo_rot1 = 0;
   logo_rot2 = 0.13;
   logo_rot3 = 0.3;
+  destroy_textures = true;
   // sweet sweet luuuuuu <3
   luna = new vsx_texture;
   luna->locked = true;
@@ -217,8 +225,8 @@ vsx_logo_intro::vsx_logo_intro() {
   #ifdef VSXU_DEBUG
     printf("shared files: %s\n", (PLATFORM_SHARED_FILES).c_str() );
   #endif
-  printf("%s\n",(vsx_string(PLATFORM_SHARED_FILES)+vsx_string("gfx/vsxu_logo.jpg")).c_str());
-  luna->load_jpeg(PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo.jpg",false);
+  //printf("%s\n",(vsx_string(PLATFORM_SHARED_FILES)+vsx_string("gfx/vsxu_logo.jpg")).c_str());
+  luna->load_jpeg(PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo.jpg",true);
   luna_bkg = new vsx_texture;
   luna_bkg->locked = true;
   luna_bkg->init_opengl_texture();

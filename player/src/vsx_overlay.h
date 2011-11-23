@@ -5,6 +5,8 @@
 #include "vsx_manager.h"
 #include "vsx_timer.h"
 #include "vsxfst.h"
+#include <logo_intro.h>
+
 
 class vsx_overlay {
 	vsx_timer time2;
@@ -22,6 +24,8 @@ class vsx_overlay {
   vsx_manager_abs* manager;
   int help_id;
   float fx_alpha;
+  bool first;
+  vsx_logo_intro* intro;
 	
 public:
 	
