@@ -758,7 +758,7 @@ void vsx_widget_server::vsx_command_process_f() {
 			} else
 			if (c->cmd == "states_list") {
 				vsx_module_info* a = new vsx_module_info;
-				a->identifier = "states;"+c->parts[1];
+        a->identifier = "states;"+str_replace(":20:"," ",c->parts[1]);
 				a->component_class = "state";
 				((vsx_widget_ultra_chooser*)state_chooser)->module_tree->module_info = 0;
 				((vsx_widget_ultra_chooser*)state_chooser)->module_tree->add(a->identifier,a);
@@ -768,7 +768,7 @@ void vsx_widget_server::vsx_command_process_f() {
 			} else
 			if (c->cmd == "prods_list") {
 				vsx_module_info* a = new vsx_module_info;
-				a->identifier = "prods;"+c->parts[1];
+        a->identifier = "prods;"+str_replace(":20:"," ",c->parts[1]);
 				a->component_class = "prod";
 				((vsx_widget_ultra_chooser*)state_chooser)->module_tree->module_info = 0;
 				((vsx_widget_ultra_chooser*)state_chooser)->module_tree->add("prods;"+a->identifier,a);
@@ -779,7 +779,7 @@ void vsx_widget_server::vsx_command_process_f() {
 			} else
 			if (c->cmd == "visuals_list") {
 				vsx_module_info* a = new vsx_module_info;
-				a->identifier = "visuals;"+c->parts[1];
+        a->identifier = "visuals;"+str_replace(":20:"," ",c->parts[1]);
 				a->component_class = "visuals";
 				((vsx_widget_ultra_chooser*)state_chooser)->module_tree->module_info = 0;
 				((vsx_widget_ultra_chooser*)state_chooser)->module_tree->add("visuals;"+a->identifier,a);
