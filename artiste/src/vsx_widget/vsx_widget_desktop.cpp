@@ -201,16 +201,6 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
         case 'F': case 'f':{ interpolating = false;xpd=1.0;} break;
         case 'R': case 'r':{ interpolating = false;zpd=-1.0;} break;
         case 'W': case 'w':{ interpolating = false;zpd=1.0;} break;
-#ifndef VSXU_PLAYER
-#ifndef _WIN32
-        case GLFW_KEY_TAB:
-#else
-        case 0x09:
-#endif
-        {
-          ((vsxu_assistant*)assistant)->toggle_size();
-        } break;
-#endif
       } // switch
     } else {
       return true;
@@ -232,6 +222,16 @@ bool vsx_widget_desktop::key_up(signed long key, bool alt, bool ctrl, bool shift
         case 'F': case 'f': xpd=0.0; break;
         case 'R': case 'r': zpd=0.0; break;
         case 'W': case 'w': zpd=0.0; break;
+#ifndef VSXU_PLAYER
+#ifndef _WIN32
+        case GLFW_KEY_TAB:
+#else
+        case 0x09:
+#endif
+        {
+          ((vsxu_assistant*)assistant)->toggle_size();
+        } break;
+#endif
         //case 'c': tcp_main_client.connect(578); break;
       }
     } else {
