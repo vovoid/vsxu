@@ -71,7 +71,6 @@ private:
   std::vector<vsx_engine*> faders;
 
   vsx_engine* vxe;
-  vsx_engine* vxe_to;
 
   vsx_command_list *cmd_in;
   vsx_command_list *cmd_out;
@@ -89,7 +88,7 @@ private:
   float message_time;
   vsx_string message;
   bool render_first;
-  vsx_engine* lvxe;
+
   vsx_command_list l_cmd_in;
   vsx_command_list l_cmd_out;
   unsigned long fade_id;

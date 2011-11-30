@@ -257,7 +257,7 @@ void vsx_statelist::render()
 #ifdef VSXU_DEBUG
       printf("initializing fader %s\n", (*it).c_str());
 #endif
-      lvxe = new vsx_engine();
+      vsx_engine* lvxe = new vsx_engine();
       lvxe->dump_modules_to_disk = false;
       lvxe->init(sound_type);
       lvxe->start();
