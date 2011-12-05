@@ -27,7 +27,8 @@ endif()
 ################################################################################
 # CPACK OPTIONS ################################################################
 ################################################################################
-SET(CPACK_PACKAGE_NAME "VSXu")
+SET(CPACK_PACKAGE_NAME "vsxu")
+SET(CPACK_DEBIAN_PACKAGE_NAME "vsxu")
 SET(CPACK_PACKAGE_VERSION "0.3.0")
 
 if (UNIX)
@@ -46,7 +47,7 @@ SET(${VERSION} CPACK_DEBIAN_PACKAGE_VERSION)
 SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 SET(CPACK_DEBIAN_PACKAGE_SECTION "graphics")
 SET(CPACK_DEBIAN_ARCHITECTURE ${ARCHITECTURE})
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libxrandr2 (> = 2: 1.3.0-3), libc6 (> = 2.1.3), libgcc1 (> = 1: 4.1.1)")
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libxrandr2 (>= 2:1.3.0-3), libc6 (>= 2.1.3), libgcc1 (>= 1:4.1.1), libglfw2 (>= 2.6), libpng12-0 (>= 1.2.46-3), libjpeg8 (>= 6b1-1), libglew1.6 (>=1.6.0)")
 
 SET(CPACK_PACKAGE_DESCRIPTION "VSXu Music Visualizer")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "VSXu Music Visualizer, Realtime Graphics Visual Programming Language, ")
@@ -59,7 +60,7 @@ SET(CPACK_COMPONENT_ENGINE_REQUIRED 1)
 SET(CPACK_COMPONENT_ARTISTE_DISPLAY_NAME "VSXu Artiste")
 SET(CPACK_COMPONENT_PLAYER_DISPLAY_NAME "VSXu Player")
 SET(CPACK_COMPONENT_PLAYER_REQUIRED 1)
-SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jonatan 'jaw' Wallmander") #required
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jonatan 'jaw' Wallmander / Vovoid Media Technologies")
 
 set(CPACK_PACKAGE_EXECUTABLES "vsxu_player" "VSXu Player" "vsxu_artiste" "VSXu Artiste")
 set(CPACK_NSIS_EXECUTABLES_DIRECTORY ".")

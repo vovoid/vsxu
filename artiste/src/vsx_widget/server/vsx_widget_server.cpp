@@ -153,9 +153,9 @@ module browser\n\
     menu->commands.adds(VSX_COMMAND_MENU,"server  >;disconnect","dc","");
     menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
     menu->commands.adds(VSX_COMMAND_MENU,"shutdown server", "system.shutdown","");
+    menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
   } else
   {
-    menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
     menu->commands.adds(VSX_COMMAND_MENU,"quit artiste", "system.shutdown","");
   }
   if (state_name == "")
@@ -230,12 +230,13 @@ Free text comments (max 300 characters)|\
   printf("trying to load server png: %s\n",(skin_path+"server.png").c_str());
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
   {
-    mtex.load_png(skin_path+"server.png");
+    mtex.load_png(skin_path+"server.png",true);
     color.a = 1.0; // a
   } else
   {
-    mtex.load_png(skin_path+"server.png");
+    mtex.load_png(skin_path+"server.png",true);
   }
+  printf("after trying to load png\n");
 #endif
   init_run = true;
 }

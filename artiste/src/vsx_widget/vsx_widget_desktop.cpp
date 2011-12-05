@@ -453,7 +453,7 @@ void vsx_widget_desktop::load_configuration()
   auto_undo = 1;
   while ( (mc = main_conf.get()) ) {
     if (mc->cmd == "skin") {
-      skin_path = PLATFORM_SHARED_FILES+vsx_string("gfx/")+mc->cmd_data+"/";
+      skin_path = PLATFORM_SHARED_FILES+vsx_string("gfx")+DIRECTORY_SEPARATOR+mc->cmd_data+DIRECTORY_SEPARATOR;
 #ifdef VSXU_DEBUG
       printf("skin path: %s\n",skin_path.c_str());
 #endif

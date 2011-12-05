@@ -123,6 +123,7 @@ int  pngLoadRaw(const char* filename, pngRawInfo *pinfo, vsxf* filesystem) {
 	png_uint_32 i;
 
 	if (pinfo == NULL) {
+    printf("error in png loader: pinfo is NULL %d\n",__LINE__);
     return 0;
   }
 	i_filesystem.filesystem = filesystem;

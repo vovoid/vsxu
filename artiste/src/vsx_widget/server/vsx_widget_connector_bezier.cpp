@@ -87,9 +87,9 @@ int vsx_widget_connector_bezier::inside_xy_l(vsx_vector &test, vsx_vector &globa
     }
   }
   #define sensitivity 0.005f
-  #define VSX_DEBUG 1
-  if (alt || !ctrl) return 0;
-  if (alt && ctrl) return 0;
+
+  //if (alt || !ctrl) return 0;
+  //if (alt && ctrl) return 0;
   // NOTE! sx/sy is lower right!
   float tsx = sx;
   float tex = ex;
@@ -138,7 +138,7 @@ int vsx_widget_connector_bezier::inside_xy_l(vsx_vector &test, vsx_vector &globa
   bez_calc.y3 = ey;
   bez_calc.init();
   float t = bez_calc.t_from_x(test.x);
-  printf("global: %f,%f    t: %f\n", test.x, test.y, t); 
+  //printf("global: %f,%f    t: %f\n", test.x, test.y, t);
   float y = bez_calc.y_from_t(t);
   if ( fabs(test.y - y) < 0.005f ) 
   {
@@ -331,9 +331,13 @@ void vsx_widget_connector_bezier::draw()
     glEnd();
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
+  float lw = 2.0f;
+  float phase = 0.0f;
+  phase = sin(fmod(time,PI));
   if (m_focus == this || a_focus == this || k_focus == this)
   {
-    glLineWidth(1.0f+fmod(time*20.0f,5.0f));
+    lw = 1.0f+fmod(time*20.0f,5.0f);
+    glLineWidth(lw);
   }
   else
   {
@@ -341,7 +345,7 @@ void vsx_widget_connector_bezier::draw()
   }
 
   
-  glLineWidth(2.0f);
+  glLineWidth(lw);
   if (k_focus == this)
   {
     glColor4f(1,0.5,0.5,alpha);
@@ -368,11 +372,11 @@ void vsx_widget_connector_bezier::draw()
   glEnd();
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glLineWidth(1.0f);
+  glLineWidth(lw * 0.5f);
   glBegin(GL_LINE_STRIP);
   for (size_t i = 0; i < 21; i++)
   {
-    glColor4f(1.0,1.0,1.0,((float)i/21.0f) * 0.8f);
+    glColor4f(1.0,1.0,1.0,fabs(0.8f*sin(((float)i/21.0f) * PI + time*2.5f)));
     glVertex3f(cached_spline[i].x,cached_spline[i].y,pos.z);
   }
   glEnd();
