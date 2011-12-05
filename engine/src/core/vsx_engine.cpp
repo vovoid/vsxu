@@ -75,6 +75,7 @@ vsx_engine::~vsx_engine()
   /*#ifdef VSXU_DEBUG
   printf("destructing engine with id: %d\n", engine_id);
   #endif*/
+  stop();
   commands_internal.clear(true);
   commands_res_internal.clear(true);
   commands_out_cache.clear(true);
