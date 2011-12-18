@@ -23,6 +23,7 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_math_3d.h"
+#include <vsx_platform.h>
 #if PLATFORM == PLATFORM_LINUX
 #include <time.h>
 #include <sys/time.h>
@@ -653,7 +654,7 @@ vsx_module* create_new_module(unsigned long module) {
     case 3: return (vsx_module*)(new vsx_module_system_clock);
     case 4: return (vsx_module*)(new vsx_module_system_trig_sequencer);
     case 5: return (vsx_module*)(new vsx_module_block_chain_load);
-#ifdef _linux
+#if PLATFORM == PLATFORM_LINUX
     case 6: return (vsx_module*)(new vsx_module_system_joystick);
 #endif
   }
@@ -668,14 +669,14 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 3: delete (vsx_module_system_clock*)m; break;
     case 4: delete (vsx_module_system_trig_sequencer*)m; break;
     case 5: delete (vsx_module_block_chain_load*)m; break;
-#ifdef _linux
+#if PLATFORM == PLATFORM_LINUX
     case 6: delete (vsx_module_system_joystick*)m; break;
 #endif
   }
 }
 
 unsigned long get_num_modules() {
-#ifdef _linux
+#if PLATFORM == PLATFORM_LINUX
   return 7;
 #else
   return 6;
