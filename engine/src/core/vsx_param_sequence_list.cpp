@@ -292,8 +292,8 @@ void vsx_param_sequence_list::inject_param(vsx_engine_param* param, vsx_comp_abs
     param->sequence = true;
     if (engine)
     {
-      // is this really needed??? disabled for now..
-      //p->execute(((vsx_engine*)engine)->engine_info.vtime);
+      // reset time - needed when paused somewhere and re-declaring parameters
+      p->execute(((vsx_engine*)engine)->engine_info.vtime);
     }
     parameter_channel_list.push_back(p);
     parameter_channel_map[param] = p;
