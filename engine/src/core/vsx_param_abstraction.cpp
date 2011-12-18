@@ -869,6 +869,32 @@ vsx_string vsx_engine_param::get_default_string() {
     }
   }
   return "";
+}
+
+void vsx_engine_param::set_compound_string(vsx_string data)
+{
+  switch (module_param->type) {
+    case VSX_MODULE_PARAM_ID_INT:
+    case VSX_MODULE_PARAM_ID_FLOAT:
+    case VSX_MODULE_PARAM_ID_DOUBLE:
+    case VSX_MODULE_PARAM_ID_STRING:
+    case VSX_MODULE_PARAM_ID_RESOURCE:
+    case VSX_MODULE_PARAM_ID_SEQUENCE:
+    case VSX_MODULE_PARAM_ID_FLOAT_ARRAY:
+    set_string(data);
+    return;
+    case VSX_MODULE_PARAM_ID_FLOAT3:
+    case VSX_MODULE_PARAM_ID_FLOAT4:
+    case VSX_MODULE_PARAM_ID_QUATERNION:
+    break;
+  }
+  vsx_string deli = ",";
+  std::vector<vsx_string> data_parts;
+  explode(data,deli,data_parts);
+  for (size_t i = 0; i < data_parts.size(); i++)
+  {
+    set_string(data_parts[i],i);
+  }
 
 }
 

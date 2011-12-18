@@ -829,10 +829,14 @@ void vsx_engine::redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_out) 
 
   // dump out the sequences for those params that have such
   std::map<vsx_string, vsx_string> sequences;
+  std::map<vsx_string, vsx_string> values;
   for (unsigned long i = 0; i < in->param_id_list.size(); ++i) {
     if (in->param_id_list[i]->sequence) {
       sequences[in->param_id_list[i]->name] = sequence_list.dump_param(in->param_id_list[i]);
       sequence_list.remove_param_sequence(in->param_id_list[i]);
+    } else
+    {
+      values[in->param_id_list[i]->name] = in->param_id_list[i]->get_string();
     }
   }
 
@@ -841,10 +845,15 @@ void vsx_engine::redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_out) 
   comp->module->redeclare_in = false;
   in = comp->get_params_in();
 
-  // repopulate the sequences
+  // repopulate the sequences / values
   for (unsigned long i = 0; i < in->param_id_list.size(); ++i) {
     if (sequences.find(in->param_id_list[i]->name) != sequences.end()) {
       sequence_list.inject_param(in->param_id_list[i], comp, sequences[in->param_id_list[i]->name]);
+    } else
+    {
+      if (values.find(in->param_id_list[i]->name) != values.end()) {
+        in->param_id_list[i]->set_compound_string(values[in->param_id_list[i]->name]);
+      }
     }
   }
 

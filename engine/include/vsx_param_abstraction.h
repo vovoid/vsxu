@@ -128,6 +128,7 @@ public:
 // for values that can be represented as string
   vsx_string get_string();
   vsx_string get_default_string();
+  void set_compound_string(vsx_string data);
   void set_string(vsx_string data, int index = 0);
   void clean_up_module_param(vsx_module_param_abs* param);
 
