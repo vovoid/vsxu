@@ -87,6 +87,7 @@ void vsx_param_sequence_list::add_param_sequence(vsx_engine_param* param, vsx_co
     p->engine = engine;
     p->comp = comp;
     p->param = param;
+    param->sequence = true;
     if (engine && run_on_edit_enabled) {
       p->execute(((vsx_engine*)engine)->engine_info.vtime);
     }
@@ -102,6 +103,7 @@ void vsx_param_sequence_list::remove_param_sequence(vsx_engine_param* param) {
     //printf("erasing sequence\n");
     vsx_param_sequence* p = (*(parameter_channel_map.find(param))).second;
     delete p;
+    param->sequence = false;
     parameter_channel_list.remove(p);
     parameter_channel_map.erase(param);
   }
@@ -287,6 +289,7 @@ void vsx_param_sequence_list::inject_param(vsx_engine_param* param, vsx_comp_abs
     p->comp = comp;
     p->param = param;
     p->inject(data);
+    param->sequence = true;
     if (engine)
     {
       // is this really needed??? disabled for now..

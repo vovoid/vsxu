@@ -30,7 +30,6 @@
           //vsx_module_param_abs* param = p->module_param;
           if (param) {
             if (c->parts[1] == "inject") {
-              param->sequence = true;
               sequence_list.inject_param(param, dest, c->parts[4]);
             } else
             if (c->parts[1] == "inject_get") {
@@ -43,14 +42,12 @@
             } else
             if (c->parts[1] == "add") {
               if (!param->sequence) {
-                param->sequence = true;
                 sequence_list.add_param_sequence(param,(vsx_comp_abs*)dest);
               }
               sequence_list.get_init(param,cmd_out,((vsx_comp_abs*)dest)->name);
             } else
             if (c->parts[1] == "remove") {
               sequence_list.remove_param_sequence(param);
-              param->sequence = false;
 #ifndef VSX_NO_CLIENT
               cmd_out->add_raw("pseq_p_ok remove "+c->parts[2]+" "+c->parts[3]);
 #endif
