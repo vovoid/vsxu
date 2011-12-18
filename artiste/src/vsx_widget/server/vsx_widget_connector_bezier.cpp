@@ -75,6 +75,7 @@ int vsx_widget_connector_bezier::inside_xy_l(vsx_vector &test, vsx_vector &globa
   if (!visible) return false;
   if (((vsx_widget_component*)((vsx_widget_anchor*)parent)->component)->ethereal_all) return false;
   if (!receiving_focus) return false;
+  if (((vsx_widget_anchor*)parent)->get_drag_status()) return false;
   if (destination)
   if (!((vsx_widget_anchor*)parent)->component->visible || !((vsx_widget_anchor*)destination)->component->visible) return false;
   if (open && order != -1) {

@@ -115,6 +115,7 @@ public:
   void toggle(int override = 0); // 1 = close, 2 = open
   void get_value();
   void fix_anchors();
+  bool get_drag_status();
 
 
   virtual void hide_children() {

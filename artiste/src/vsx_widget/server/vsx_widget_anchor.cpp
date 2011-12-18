@@ -1724,6 +1724,11 @@ void vsx_widget_anchor::get_value()
   component->vsx_command_queue_b(this);
 }
 
+bool vsx_widget_anchor::get_drag_status()
+{
+  return drag_status;
+}
+
 void vsx_widget_anchor::delete_controllers() 
 {
   for (children_iter = children.begin(); children_iter != children.end(); ++children_iter) 
@@ -1911,7 +1916,7 @@ void vsx_widget_anchor::pre_draw()
     if (clone_value) 
     {
       component->color.a = 0.05f;
-      if (drag_anchor && drag_anchor != this) 
+      if (drag_anchor && drag_anchor != this)
       {
         if (drag_anchor->io == io) 
         {
