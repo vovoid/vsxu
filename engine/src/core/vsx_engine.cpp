@@ -974,8 +974,8 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
     //printf("c type %d\n",c->type);
     if (c->type == 1)
     	cmd_out = &commands_res_internal;
-    else
-    	cmd_out = cmd_out_res;
+    //else
+//    	cmd_out = cmd_out_res;
 
     #define cmd c->cmd
     #define cmd_data c->cmd_data

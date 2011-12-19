@@ -179,6 +179,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
       {
         if (EAGAIN != errno && EWOULDBLOCK != errno)
         {
+          printf("EAGAIN / EWOULDBLOCK. closing socket...\n");
           close(recv_sock);
           run = false;
         }
@@ -189,6 +190,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
       int count_sent = 0;
       while (this_->cmd_out->pop(&out_command))
       {
+        //printf("sending command: %s\n",out_command->str().c_str() );
         vsx_string res = out_command->str()+"\n";
         if (send(
           recv_sock,
@@ -196,6 +198,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
           res.size(),
           MSG_NOSIGNAL
         ) == -1) {
+          printf("error in sending. closing socket...\n");
           close(recv_sock);
           run = false;
         } else
@@ -203,6 +206,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
           count_sent++;
         }
       }
+      //printf("after cmd_out loop\n");
       if (!count_sent) {
         if (keepalive_timer++ == 150) {
           vsx_string res = "_\n";
@@ -235,9 +239,11 @@ void* vsx_command_list_server::server_worker(void *ptr)
             //printf("got2: %s___\n",message_stack.c_str());
             if (message_stack == "dc")
             {
+              memset(&recv_buf,0,BUFLEN);
               close(recv_sock);
               run = false;
-              return 0;
+              message_stack = "";
+              //return 0;
             }
             else
             {

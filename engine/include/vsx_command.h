@@ -26,6 +26,7 @@
 #include <list>
 #include <vector>
 #include "vsxfst.h"
+#include <pthread.h>
 
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
@@ -142,13 +143,13 @@ VSX_COMMAND_DLLIMPORT vsx_command_s* vsx_command_parse(vsx_string& cmd_raw);
 //  combined with provider/consumer FIFO or LIFO buffer (pop/push, pop_front/push_front)
 class vsx_command_list {
   int mutex; // thread safety, 1 = locked, 0 = unlocked, ready to lock
+  pthread_mutex_t mutex1;
 
   void get_lock() {
-    while (mutex) {}
-    mutex = 1;
+    pthread_mutex_lock( &mutex1 );
   }
   void release_lock() {
-    mutex = 0;
+    pthread_mutex_unlock( &mutex1 );
   }
  
 public:
@@ -245,6 +246,7 @@ public:
   VSX_COMMAND_DLLIMPORT void clear(bool del = false);
 
   vsx_command_s* reset() {
+    printf("reset command list %p\n", this);
     get_lock();
       iter = commands.begin();
     release_lock();
@@ -335,7 +337,7 @@ public:
     release_lock();
     return j;
   }
-  vsx_command_list() : mutex(0),filesystem(0),accept_commands(1) {}
+  vsx_command_list();
   ~vsx_command_list()
   {
     //for (std::list <vsx_command_s*>::iterator it = commands.begin(); it != commands.end(); ++it) {
