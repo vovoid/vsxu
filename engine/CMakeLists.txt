@@ -183,6 +183,14 @@ endif (VSXU_ENGINE_STATIC EQUAL 1)
 
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)
 
+######################################################################################
+# Install the Headers so as to install VSXu as a library
+if (UNIX)
+  file(GLOB HEADERS "include/*.h")
+  install (FILES ${HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/engine COMPONENT Devel)
+endif()
+################################################################################
+
 if(WIN32)
 # find pthreadGC2.dll (HACK!)
   find_file(pthread_dll pthreadGC2.dll)
