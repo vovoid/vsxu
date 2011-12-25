@@ -246,7 +246,7 @@ public:
   VSX_COMMAND_DLLIMPORT void clear(bool del = false);
 
   vsx_command_s* reset() {
-    printf("reset command list %p\n", this);
+    //printf("reset command list %p\n", this);
     get_lock();
       iter = commands.begin();
     release_lock();
@@ -337,7 +337,7 @@ public:
     release_lock();
     return j;
   }
-  vsx_command_list();
+  VSX_COMMAND_DLLIMPORT vsx_command_list();
   ~vsx_command_list()
   {
     //for (std::list <vsx_command_s*>::iterator it = commands.begin(); it != commands.end(); ++it) {
