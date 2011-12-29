@@ -19,13 +19,12 @@ include(./_sources)
 CREATE_MODULE(${module_id})
 include(../cmake_suffix.txt)
 
-  install(
-    DIRECTORY
-      share/plugin-config/render.glsl
-    DESTINATION
-      ${CMAKE_INSTALL_PREFIX}/share/vsxu/plugin-config)
-
-if(UNIX)
-#target_link_libraries(${module_id})
-endif(UNIX)
+install(
+  DIRECTORY
+    share/plugin-config
+  DESTINATION
+    ${VSXU_INSTALL_SHARE_DIR}
+  COMPONENT
+    engine
+)
 
