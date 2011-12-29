@@ -462,41 +462,49 @@ public:
             float* shader_alphas_dp = shader_alphas_data.get_pointer();
 
             vsx_particle* particle_p = (*particles->particles).get_pointer();
+            //printf("particles count: %d\n",particles->particles->size());
             if (color_lifespan_type->get())
             {
               for (unsigned long i = 0; i < (*particles->particles).size(); ++i)
               {
                 vsx_particle* pp = &particle_p[i];
-                float tt = pp->time/pp->lifetime;
-                if (tt < 0.0f) tt = 0.0f;
-                if (tt > 1.0f) tt = 1.0f;
+                if (pp->lifetime != 0.0f) {
+                  float tt = pp->time/pp->lifetime;
+                  if (tt < 0.0f) tt = 0.0f;
+                  if (tt > 1.0f) tt = 1.0f;
 
-                //int index8192 = (int)round(8192.0f*tt);
-                int index8192 = (int)(8192.0f*tt);
-                shader_sizes_dp[i] = pp->size * sizes[index8192];
-                shader_alphas_dp[i] = pp->color.a * alphas[index8192];
+                  //int index8192 = (int)round(8192.0f*tt);
+                  //printf("tt: %f %f\n",tt,pp->lifetime);
+                  int index8192 = (int)(8192.0f*tt);
 
-                shader_colors_dp[i].x = rs[index8192];
-                shader_colors_dp[i].y = gs[index8192];
-                shader_colors_dp[i].z = bs[index8192];
+                  float ss = sizes[index8192];
+                  shader_sizes_dp[i] = pp->size * ss;
+                  shader_alphas_dp[i] = pp->color.a * alphas[index8192];
+
+                  shader_colors_dp[i].x = rs[index8192];
+                  shader_colors_dp[i].y = gs[index8192];
+                  shader_colors_dp[i].z = bs[index8192];
+                }
               }
             } else
             {
               for (unsigned long i = 0; i < (*particles->particles).size(); ++i)
               {
                 vsx_particle* pp = &particle_p[i];
-                float tt = pp->time/pp->lifetime;
-                if (tt < 0.0f) tt = 0.0f;
-                if (tt > 1.0f) tt = 1.0f;
+                if (pp->lifetime != 0.0f) {
+                  float tt = pp->time/pp->lifetime;
+                  if (tt < 0.0f) tt = 0.0f;
+                  if (tt > 1.0f) tt = 1.0f;
 
-                //int index8192 = (int)round(8192.0f*tt);
-                int index8192 = (int)(8192.0f*tt);
-                shader_sizes_dp[i] = pp->size*(float)sizes[index8192];
-                shader_alphas_dp[i] = pp->color.a*(float)alphas[index8192];
+                  //int index8192 = (int)round(8192.0f*tt);
+                  int index8192 = (int)(8192.0f*tt);
+                  shader_sizes_dp[i] = pp->size*(float)sizes[index8192];
+                  shader_alphas_dp[i] = pp->color.a*(float)alphas[index8192];
 
-                shader_colors_dp[i].x = pp->color.r;
-                shader_colors_dp[i].y = pp->color.g;
-                shader_colors_dp[i].z = pp->color.b;
+                  shader_colors_dp[i].x = pp->color.r;
+                  shader_colors_dp[i].y = pp->color.g;
+                  shader_colors_dp[i].z = pp->color.b;
+                }
               }
             }
             shader_sizes.data = &shader_sizes_data;
