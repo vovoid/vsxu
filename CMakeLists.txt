@@ -6,6 +6,7 @@ set(VSXU_VERSION_MAJOR "0")
 set(VSXU_VERSION_MINOR "3")
 set(VSXU_VERSION_PATCH "0")
 set(VSXU_VERSION ${VSXU_VERSION_MAJOR}.${VSXU_VERSION_MINOR}.${VSXU_VERSION_PATCH})
+
 ################################################################################
 # CMAKE MODULE PATH ############################################################
 ################################################################################
@@ -55,7 +56,7 @@ ENDIF (UNIX)
 ################################################################################
 SET(CPACK_PACKAGE_NAME "vsxu")
 SET(CPACK_DEBIAN_PACKAGE_NAME "vsxu")
-SET(CPACK_PACKAGE_VERSION VSXU_VERSION)
+SET(CPACK_PACKAGE_VERSION ${VSXU_VERSION})
 
 if (UNIX)
   SET(CPACK_PACKAGING_INSTALL_PREFIX "/opt/vovoid")
@@ -68,7 +69,7 @@ IF (CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET(ARCHITECTURE amd64)
 ENDIF()
 
-SET(${VSXU_VERSION} CPACK_DEBIAN_PACKAGE_VERSION)
+SET(VERSION ${CPACK_DEBIAN_PACKAGE_VERSION})
 SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 SET(CPACK_DEBIAN_PACKAGE_SECTION "graphics")
 SET(CPACK_DEBIAN_ARCHITECTURE ${ARCHITECTURE})
@@ -77,7 +78,7 @@ SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libxrandr2 (>= 2:1.3.0-3), libc6 (>= 2.1.3), l
 SET(CPACK_PACKAGE_DESCRIPTION "VSXu Music Visualizer")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "VSXu Music Visualizer, Realtime Graphics Visual Programming Language, ")
 SET(CPACK_PACKAGE_CONTACT "Jonatan Wallmander <jonatan@vovoid.com> ")
-SET(CPACK_PACKAGE_FILE_NAME ${CMAKE_PROJECT_NAME}_${VERSION}_${CPACK_DEBIAN_ARCHITECTURE})
+SET(CPACK_PACKAGE_FILE_NAME ${CMAKE_PROJECT_NAME}_${VSXU_VERSION}_${CPACK_DEBIAN_ARCHITECTURE})
 
 SET(CPACK_COMPONENTS_ALL engine artiste player server)
 SET(CPACK_COMPONENT_ENGINE_DISPLAY_NAME "VSXu Engine")
