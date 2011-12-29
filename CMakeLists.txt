@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 2.8)
 
 PROJECT(VSXu)
 
+set(VSXU_VERSION_MAJOR "0")
+set(VSXU_VERSION_MINOR "3")
+set(VSXU_VERSION_PATCH "0")
+set(VSXU_VERSION ${VSXU_VERSION_MAJOR}.${VSXU_VERSION_MINOR}.${VSXU_VERSION_PATCH})
 ################################################################################
 # CMAKE MODULE PATH ############################################################
 ################################################################################
@@ -11,17 +15,39 @@ set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 ################################################################################
 # GLOBAL INSTALL VARIABLES #####################################################
 ################################################################################
+
+#TODO: what about libsuffix: 32 or 64bit
 if(UNIX)
+  set(VSXU_INSTALL_INCLUDE_DIR "include/vsxu")
   set(VSXU_INSTALL_LIB_DIR "lib")
   set(VSXU_INSTALL_BIN_DIR "bin")
   set(VSXU_INSTALL_SHARE_DIR "share/vsxu")
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(VSXU_INSTALL_INCLUDE_DIR "include")
   set(VSXU_INSTALL_LIB_DIR ".")
   set(VSXU_INSTALL_BIN_DIR ".")
   set(VSXU_INSTALL_SHARE_DIR "share")
 endif()
+
+######################################################################################
+# Install the Global Headers so as to install VSXu as a library
+if (UNIX)
+  file(GLOB HEADERS "*.h")
+  install (FILES ${HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR} COMPONENT Devel)
+endif()
+
+################################################################################
+# The pkg-config file
+################################################################################
+IF (UNIX)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/libvsxu.pc.in
+                  ${CMAKE_CURRENT_BINARY_DIR}/libvsxu.pc
+                  @ONLY)
+  INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/libvsxu.pc
+           DESTINATION ${VSXU_INSTALL_LIB_DIR}/pkgconfig)
+ENDIF (UNIX)
 
 
 ################################################################################
@@ -29,7 +55,7 @@ endif()
 ################################################################################
 SET(CPACK_PACKAGE_NAME "vsxu")
 SET(CPACK_DEBIAN_PACKAGE_NAME "vsxu")
-SET(CPACK_PACKAGE_VERSION "0.3.0")
+SET(CPACK_PACKAGE_VERSION VSXU_VERSION)
 
 if (UNIX)
   SET(CPACK_PACKAGING_INSTALL_PREFIX "/opt/vovoid")
@@ -42,8 +68,7 @@ IF (CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET(ARCHITECTURE amd64)
 ENDIF()
 
-SET(VERSION 0.3.0)
-SET(${VERSION} CPACK_DEBIAN_PACKAGE_VERSION)
+SET(${VSXU_VERSION} CPACK_DEBIAN_PACKAGE_VERSION)
 SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 SET(CPACK_DEBIAN_PACKAGE_SECTION "graphics")
 SET(CPACK_DEBIAN_ARCHITECTURE ${ARCHITECTURE})
@@ -66,9 +91,9 @@ set(CPACK_PACKAGE_EXECUTABLES "vsxu_player" "VSXu Player" "vsxu_artiste" "VSXu A
 set(CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
 set(CPACK_PACKAGE_NAME VSXu ${CPACK_PACKAGE_VERSION})
 set(CPACK_PACKAGE_VENDOR "Vovoid Media Technologies")
-set(CPACK_PACKAGE_VERSION_MAJOR "0")
-set(CPACK_PACKAGE_VERSION_MINOR "3")
-set(CPACK_PACKAGE_VERSION_PATCH "0")
+set(CPACK_PACKAGE_VERSION_MAJOR ${VSXU_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${VSXU_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${VSXU_VERSION_PATCH})
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "Vovoid VSXu ${CPACK_PACKAGE_VERSION}")
 set(CPACK_STRIP_FILES 1)
 

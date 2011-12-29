@@ -71,6 +71,15 @@ endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 add_library(${module_id} SHARED ${SOURCES} ${PNG_SOURCES} ${JPG_SOURCES} ${ZLIB_SOURCES})
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)
 
+######################################################################################
+# Install the Headers so as to install VSXu as a library
+if (UNIX)
+  file(GLOB HEADERS "include/*.h")
+  install (FILES ${HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/engine_graphics COMPONENT Devel)
+endif()
+################################################################################
+
+
 if(WIN32)
   target_link_libraries(${module_id} gdi32)
 else(WIN32)
