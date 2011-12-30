@@ -67,7 +67,7 @@ public:
   virtual std::string visual_loading() { return ""; };
 
   // dump the list of all loadable visuals
-  std::vector<std::string> get_visual_filenames();
+  virtual std::vector<std::string> get_visual_filenames(){ std::vector<std::string> files ; return files;}
 
   // provide metadata for information about current running visualization
   virtual std::string get_meta_visual_filename() {return ""; };
