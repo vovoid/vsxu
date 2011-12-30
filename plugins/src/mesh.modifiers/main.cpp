@@ -1970,6 +1970,7 @@ public:
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
     volume_out = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"volume_out");
     volume_out->set(0.0f);
+    prev_timestamp = 0xFFFFFFFF;
   }
 
   unsigned long prev_timestamp;

@@ -158,7 +158,7 @@ but you usually want a lot more.";
     particles_count->set(100);
     particles.timestamp = 0;
     particles.particles = new vsx_array<vsx_particle>;
-    result_particlesystem->set_p(particles);
+    //result_particlesystem->set_p(particles);
     first = true;
   }
 
@@ -390,7 +390,6 @@ in sequence.\n\
   {
     loading_done = true;
     result_particlesystem = (vsx_module_param_particlesystem*)out_parameters.create(VSX_MODULE_PARAM_ID_PARTICLESYSTEM,"particlesystem");
-    result_particlesystem->set(particles);
 
     mesh_in = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_in");
 
@@ -502,6 +501,7 @@ in sequence.\n\
       if (first) {
         //printf("first %d %d\n",(int)particles_count->get(),(int)(*particles.particles).size());
         (*particles.particles).allocate((int)particles_count->get());
+        (*particles.particles).memory_clear();
         f_randpool.allocate((int)particles_count->get()*10);
         float* fpp = f_randpool.get_pointer();
 
@@ -513,18 +513,40 @@ in sequence.\n\
 
         vsx_particle* pp =(*particles.particles).get_pointer();
         for (i = 0; i < (int)particles_count->get(); ++i) {
-          (*pp).color = vsx_color__(0,0,0,0);
-          (*pp).size = 0.01f;
-          (*pp).orig_size = 0.01f;
+          /*vsx_vector pos; // current position
+          vsx_vector speed; // current speed
+          vsx_color color; // color it starts out as (including alpha)
+          vsx_color color_end; // color it interpolates to (including alpha)
+          vsx_quaternion rotation; // rotation vector
+          vsx_quaternion rotation_dir; // rotation vector
+          float orig_size; // size upon creation (also used for weight)
+          float size; // rendering size
+          float time; // how long it has lived
+          float lifetime; // how long it can live
+          int grounded; // if a particle is grounded it shouldn't move or rotate anymore, lying on the floor
+          */
           (*pp).pos.x = 0;
           (*pp).pos.y = 0;
           (*pp).pos.z = 0;
           (*pp).speed.x = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
           (*pp).speed.y = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
           (*pp).speed.z = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
+          (*pp).color = vsx_color__(0,0,0,0);
+          (*pp).color_end = vsx_color__(0,0,0,0);
+          (*pp).rotation.x = 0.0f;
+          (*pp).rotation.y = 0.0f;
+          (*pp).rotation.z = 0.0f;
+          (*pp).rotation.w = 1.0f;
+          (*pp).rotation_dir.x = 0.0f;
+          (*pp).rotation_dir.y = 0.0f;
+          (*pp).rotation_dir.z = 0.0f;
+          (*pp).rotation_dir.w = 1.0f;
+          (*pp).orig_size = 0.01f;
+          (*pp).size = 0.01f;
           (*pp).lifetime = lifetime_base+(*(f_randpool_pointer++))*lifetime_random_weight-lifetime_random_weight*0.5f;
           //printf("setting lifetime: %f\n",(*particles.particles)[i].lifetime);
           (*pp).time = (*(f_randpool_pointer++)) * (*pp).lifetime;
+          (*pp).grounded = 0;
           pp++;
         }
         first = false;

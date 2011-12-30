@@ -873,6 +873,7 @@ vsx_string vsx_engine_param::get_default_string() {
 
 void vsx_engine_param::set_compound_string(vsx_string data)
 {
+  if (!data.size()) return;
   switch (module_param->type) {
     case VSX_MODULE_PARAM_ID_INT:
     case VSX_MODULE_PARAM_ID_FLOAT:
