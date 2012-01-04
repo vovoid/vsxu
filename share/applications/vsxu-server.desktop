@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=VSXu server [windowed]
+GenericName=Real Time OpenGL Graphics Server
+Comment=VSXu Server - Perform Real Time Graphics
+Exec=/usr/bin/vsxu_server
+Icon=/usr/share/vsxu/icon/vsxu_icon.png
+Terminal=true
+Type=Application
+Categories=Graphics;
+StartupNotify=false
+NoDisplay=false

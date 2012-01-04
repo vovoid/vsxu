@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=VSXu Player [fullscreen]
+GenericName=Music Visualizer
+Comment=VSXu Player
+Exec=/usr/bin/vsxu_player -f
+Icon=/usr/share/vsxu/icon/vsxu_icon.png
+Terminal=true
+Type=Application
+Categories=AudioVideo;Audio;Player;
+StartupNotify=false
+NoDisplay=false
