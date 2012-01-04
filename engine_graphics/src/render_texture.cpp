@@ -400,14 +400,14 @@ bool RenderTexture::Initialize(int width, int height,
         ? (value?true:false) : false; 
     
 #if defined(_DEBUG) | defined(DEBUG)
-    fprintf(stderr, "Created a %dx%d RenderTexture with BPP(%d, %d, %d, %d)",
+/*    fprintf(stderr, "Created a %dx%d RenderTexture with BPP(%d, %d, %d, %d)",
         _iWidth, _iHeight, 
         _iNumColorBits[0], _iNumColorBits[1], 
         _iNumColorBits[2], _iNumColorBits[3]);
     if (_iNumDepthBits) fprintf(stderr, " depth=%d", _iNumDepthBits);
     if (_iNumStencilBits) fprintf(stderr, " stencil=%d", _iNumStencilBits);
     if (_bDoubleBuffered) fprintf(stderr, " double buffered");
-    fprintf(stderr, "\n");
+    fprintf(stderr, "\n");*/
 #endif
 
 #else // !_WIN32
@@ -1657,10 +1657,10 @@ bool RenderTexture::_VerifyExtensions()
     {
         // [Redge]
 #if defined(_DEBUG) | defined(DEBUG)
-        fprintf(stderr, 
+        /*fprintf(stderr,
                 "RenderTexture Warning: "
                 "OpenGL extension GL_ARB_depth_texture not available.\n"
-                "         Using glReadPixels() to emulate behavior.\n");
+                "         Using glReadPixels() to emulate behavior.\n");*/
 #endif   
         _bHasARBDepthTexture = false;
         //PrintExtensionError("GL_ARB_depth_texture");
