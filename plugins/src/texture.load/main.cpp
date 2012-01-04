@@ -82,7 +82,6 @@ public:
 	  texture->init_opengl_texture();
 	
 	  result_texture = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");  
-	  result_texture->set(texture);
 	  loading_done = true;
 	}
 	
