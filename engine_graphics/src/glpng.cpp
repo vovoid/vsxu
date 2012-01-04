@@ -100,7 +100,8 @@ static void png_vsxf_read_data(png_structp png_ptr, png_bytep data, png_size_t l
 
    if (check != length)
    {
-      png_error(png_ptr, "Read Error");
+     printf("Error reading png file. 'Check'' is not equal to 'length' in glpng.cpp line %d",__LINE__);
+     //png_error(png_ptr, "Read Error");
    }
 }
 
@@ -140,9 +141,33 @@ int  pngLoadRaw(const char* filename, pngRawInfo *pinfo, vsxf* filesystem) {
   }
 
 	png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+  if (!png) {
+    printf("error in %s on line %d\n",__FILE__,__LINE__);
+    return 0;
+  }
 	info = png_create_info_struct(png);
-	endinfo = png_create_info_struct(png);
-	
+  if (!info)
+  {
+      png_destroy_read_struct(&png,(png_infopp)NULL,(png_infopp)NULL);
+      printf("error in %s on line %d\n",__FILE__,__LINE__);
+      return 0;
+  }
+  endinfo = png_create_info_struct(png);
+  if (!endinfo)
+  {
+    png_destroy_read_struct(&png, &info, (png_infopp)NULL);
+    printf("error in %s on line %d\n",__FILE__,__LINE__);
+    return 0;
+  }
+
+  if (setjmp(png_jmpbuf(png)))
+  {
+    printf("error in png_jmpbuf %s on line %d\n",__FILE__,__LINE__);
+    png_destroy_read_struct(&png, &info,&endinfo);
+    filesystem->f_close(i_filesystem.fp);
+    return 0;
+  }
+
 	png_set_read_fn(png, (png_bytep)(&i_filesystem), png_vsxf_read_data);
   png_set_sig_bytes(png, 8);
 	png_read_info(png, info);
