@@ -66,7 +66,7 @@ public:
     positive_z = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"positive_z");
     negative_z = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"negative_z");
     texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture_out");
-    texture_out->set(&my_tex);
+    //texture_out->set(&my_tex);
     need_to_run = 1;
   }
 
