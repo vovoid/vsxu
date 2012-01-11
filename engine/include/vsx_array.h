@@ -114,12 +114,12 @@ public:
     memset(A, 0, sizeof(T) * allocated);
   }
 
-  void reset_used(unsigned long val = 0) {
+  void reset_used(size_t val = 0) {
   	// TODO: if value larger than count of allocated items in memory handle this some way
     used = val;
   }
 
-  void allocate(unsigned long index) {
+  void allocate(size_t index) {
     if (index >= allocated || allocated == 0)
     {
     	if (allocation_increment == 0) allocation_increment = 1;
