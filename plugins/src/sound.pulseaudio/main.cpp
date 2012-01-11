@@ -40,7 +40,7 @@
 
 int thread_created = 0;
 pthread_t         worker_t;
-pthread_attr_t    worker_t_attr;
+pthread_mutex_t signal_mutex;
 
 typedef struct
 {
@@ -455,7 +455,12 @@ void* worker(void *ptr)
           //goto finish;
       //}
       //printf("worker signal: %d\n",worker_signal);
-    if (worker_signal == 1) goto finish;
+    pthread_mutex_lock(&signal_mutex);
+    int signal_value = worker_signal;
+    pthread_mutex_unlock(&signal_mutex);
+
+
+    if (signal_value == 1) goto finish;
   }
 
   ret = 0;
@@ -467,7 +472,9 @@ finish:
     pa_simple_free(s);
   }
   //printf("finishing up 2...\n");
+  pthread_mutex_lock(&signal_mutex);
   worker_signal = 2;
+  pthread_mutex_unlock(&signal_mutex);
   //printf("worker signal: %d\n",worker_signal);
   return 0;
 }
@@ -496,9 +503,8 @@ vsx_module* create_new_module(unsigned long module) {
   {
     //printf("creating pulseaudio thread:\n");
     worker_signal = 0;
-    pthread_attr_init(&worker_t_attr);
-    pthread_create(&worker_t, &worker_t_attr, &worker, (void*)&pa_audio_data);
-    pthread_detach(worker_t);
+    pthread_mutex_init(&signal_mutex,NULL);
+    pthread_create(&worker_t, NULL, &worker, (void*)&pa_audio_data);
     thread_created++;
   }
   switch (module) {
@@ -519,10 +525,13 @@ unsigned long get_num_modules() {
 
 void on_unload_library()
 {
-  if (worker_signal == 2) return;
-  worker_signal = 1;
-  while (worker_signal != 2) {
-    usleep(100);
+  if (thread_created)
+  {
+    pthread_mutex_lock(&signal_mutex);
+    worker_signal = 1;
+    pthread_mutex_unlock(&signal_mutex);
+    void* ret;
+    pthread_join(worker_t, &ret);
   }
 }
 
