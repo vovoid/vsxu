@@ -427,7 +427,7 @@ public:
           glEnable(GL_POINT_SMOOTH);
           if (size_lifespan_type->get() == 0) {
             glBegin( GL_POINTS );
-            for (unsigned long i = 0; i < particles->particles->size(); ++i) {
+            for (size_t i = 0; i < particles->particles->size(); ++i) {
             if ((*particles->particles)[i].size > 0.0f) {
                 float tt = ((*particles->particles)[i].time/(*particles->particles)[i].lifetime);
                 float a = 1 - tt;
@@ -465,7 +465,7 @@ public:
             //printf("particles count: %d\n",particles->particles->size());
             if (color_lifespan_type->get())
             {
-              for (unsigned long i = 0; i < (*particles->particles).size(); ++i)
+              for (size_t i = 0; i < (*particles->particles).size(); ++i)
               {
                 vsx_particle* pp = &particle_p[i];
                 if (pp->lifetime != 0.0f) {
@@ -488,7 +488,7 @@ public:
               }
             } else
             {
-              for (unsigned long i = 0; i < (*particles->particles).size(); ++i)
+              for (size_t i = 0; i < (*particles->particles).size(); ++i)
               {
                 vsx_particle* pp = &particle_p[i];
                 if (pp->lifetime != 0.0f) {
@@ -550,7 +550,7 @@ public:
             glColor4f(1.0,1.0,1.0,1.0);
             glEnableClientState(GL_VERTEX_ARRAY);
             glVertexPointer(3, GL_FLOAT, sizeof(vsx_particle), (*particles->particles).get_pointer());
-            glDrawArrays(GL_POINTS,0,(*particles->particles).size());
+            glDrawArrays(GL_POINTS,0,(*particles->particles).size()-1);
             glDisableClientState(GL_VERTEX_ARRAY);
 
 
