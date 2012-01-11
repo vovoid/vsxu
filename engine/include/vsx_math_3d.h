@@ -25,6 +25,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <cstring>
+#include <stdint.h>
+
 #define TWO_PI 3.1415926535897932384626433832795 * 2.0
 #define PI 3.1415926535897932384626433832795
 #define PI_FLOAT 3.1415926535897932384626433832795f
@@ -601,6 +603,17 @@ public:
 
 };
 
+
+class vsx_rand {
+  void* state;
+public:
+  VSX_MATH_3D_DLLIMPORT vsx_rand();
+  VSX_MATH_3D_DLLIMPORT ~vsx_rand();
+  VSX_MATH_3D_DLLIMPORT float srand(uint32_t seed);
+  VSX_MATH_3D_DLLIMPORT uint32_t rand();
+  VSX_MATH_3D_DLLIMPORT float frand();
+
+};
 
 
 VSX_MATH_3D_DLLIMPORT float getmax(float foo,float bar);

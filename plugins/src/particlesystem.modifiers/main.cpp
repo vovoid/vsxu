@@ -659,7 +659,8 @@ class vsx_module_particle_size_noise : public vsx_module {
 	vsx_module_param_float* strength;
 	vsx_module_param_int* size_type;
 	// out
-	vsx_module_param_particlesystem* result_particlesystem;	
+  vsx_module_param_particlesystem* result_particlesystem;
+  vsx_rand rand;
   vsx_array<float> f_randpool;
   float* f_randpool_pointer;
 public:
@@ -691,10 +692,8 @@ public:
   }
   
   void run() {
-    //printf("size-noise runnah\n");
-    particles = in_particlesystem->get_addr();  
+    particles = in_particlesystem->get_addr();
     if (particles) {
-      //printf("size-noise runnah2\n");
       float sx = strength->get(0);
 
       unsigned long nump = particles->particles->size();
@@ -702,10 +701,10 @@ public:
       {
         for (unsigned long i = f_randpool.size()<<1; i < nump<<1; i++)
         {
-          f_randpool[i] = ((float)(rand()%1000000)*0.000001f);
+          f_randpool[i] = rand.frand();
         }
       }
-      f_randpool_pointer = f_randpool.get_pointer() + rand()%nump;
+      f_randpool_pointer = f_randpool.get_pointer() + rand.rand()%nump;
       if (size_type->get()) {
         vsx_particle* pp = particles->particles->get_pointer();
 

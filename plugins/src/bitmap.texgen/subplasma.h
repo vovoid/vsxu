@@ -122,72 +122,72 @@ public:
   
   unsigned char* SubPlasma = new unsigned char[mod->i_size * mod->i_size];
   for (x = 0; x < mod->i_size*mod->i_size; ++x) { SubPlasma[x] = 0; }
-	int np=2 << mod->amplitude->get();
-	//int rx=256;
-	//int ry=256;
-	
-	unsigned int musize = mod->i_size-1;
+  int np=2 << mod->amplitude->get();
+  //int rx=256;
+  //int ry=256;
 
-	//int ssize=rx/np;
-	
-	unsigned int mmu = (unsigned int)(((float)mod->i_size/(float)np));
-	//printf("mmu: %d\n", mmu);
-	unsigned int mm1 = mmu-1;
-	unsigned int mm2 = mmu*2;
-	float mmf = (float)mmu;
+  unsigned int musize = mod->i_size-1;
 
+  //int ssize=rx/np;
 
+  unsigned int mmu = (unsigned int)(((float)mod->i_size/(float)np));
+  //printf("mmu: %d\n", mmu);
+  unsigned int mm1 = mmu-1;
+  unsigned int mm2 = mmu*2;
+  float mmf = (float)mmu;
 
-	srand((int)mod->rand_seed->get());
-	for (y=0; y < np; y++)
-		for (x=0; x < np; x++)
-			SubPlasma[x*mmu+y*mmu*mod->i_size] = rand();
+  vsx_rand rand;
 
-	for (y=0; y<np; y++)
-		for (x=0; x<mod->i_size; x++) {
-			int p=x&(~mm1);
-			int zy=y*mmu*mod->i_size;
-			SubPlasma[x+zy] = catmullrom_interpolate(
-				SubPlasma[((p-mmu)&musize)+zy],
-				SubPlasma[((p   )&musize)+zy],
-				SubPlasma[((p+mmu)&musize)+zy],
-				SubPlasma[((p+mm2)&musize)+zy],
-				(x&mm1)/mmf);
-		}
-		
-	int sl = mod->size->get()+3;
-	for (y=0; y<mod->i_size; y++)
-		for (x=0; x<mod->i_size; x++) {
-			int p=y&(~(mm1));
-			SubPlasma[x+y*mod->i_size] = catmullrom_interpolate(
-				SubPlasma[x+(((p-mmu)&musize)<<sl)],
-				SubPlasma[x+(((p   )&musize)<<sl)],
-				SubPlasma[x+(((p+mmu)&musize)<<sl)],
-				SubPlasma[x+(((p+mm2)&musize)<<sl)],
-				(y&(mm1))/mmf);
-		}
+  rand.srand((int)mod->rand_seed->get());
+  for (y=0; y < np; y++)
+    for (x=0; x < np; x++)
+      SubPlasma[x*mmu+y*mmu*mod->i_size] = rand.rand();
+
+  for (y=0; y<np; y++)
+    for (x=0; x<mod->i_size; x++) {
+      int p=x&(~mm1);
+      int zy=y*mmu*mod->i_size;
+      SubPlasma[x+zy] = catmullrom_interpolate(
+        SubPlasma[((p-mmu)&musize)+zy],
+        SubPlasma[((p   )&musize)+zy],
+        SubPlasma[((p+mmu)&musize)+zy],
+        SubPlasma[((p+mm2)&musize)+zy],
+        (x&mm1)/mmf);
+    }
+
+  int sl = mod->size->get()+3;
+  for (y=0; y<mod->i_size; y++)
+    for (x=0; x<mod->i_size; x++) {
+      int p=y&(~(mm1));
+      SubPlasma[x+y*mod->i_size] = catmullrom_interpolate(
+        SubPlasma[x+(((p-mmu)&musize)<<sl)],
+        SubPlasma[x+(((p   )&musize)<<sl)],
+        SubPlasma[x+(((p+mmu)&musize)<<sl)],
+        SubPlasma[x+(((p+mm2)&musize)<<sl)],
+        (y&(mm1))/mmf);
+    }
 
   vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_subplasma*)ptr)->work_bitmap->data;
-    
-	
-    for (x = 0; x < mod->i_size * (mod->i_size); ++x, p++) 
+
+
+    for (x = 0; x < mod->i_size * (mod->i_size); ++x, p++)
     {
       //if (SubPlasma[x] != 0)
       //printf("SubPlasma[x] = %d,", SubPlasma[x]);
       *p = 0xFF000000 | ((vsx_bitmap_32bt)SubPlasma[x]) << 16 | (vsx_bitmap_32bt)SubPlasma[x] << 8 | (vsx_bitmap_32bt)SubPlasma[x];// | 0 * 0x00000100 | 0;
-      
+
     }
-  	/*for(y = -hsize; y < hsize; ++y)
-  		for(x = -hsize; x < hsize; ++x,p++)
-  		{
-  			float xx = (size/(size-2.0f))*((float)x)+0.5f;
-  			float yy = (size/(size-2.0f))*((float)y)+0.5f;
-  			long r = (long)round(fmod(fabs((sin((x*size+rox)*rpx)*sin((y*size+roy)*rpy)+1.0f)*ramp+rofs),255.0));
-  			long g = (long)round(fmod(fabs((sin((x*size+gox)*gpx)*sin((y*size+goy)*gpy)+1.0f)*gamp+gofs),255.0));
-  			long b = (long)round(fmod(fabs((sin((x*size+box)*bpx)*sin((y*size+boy)*bpy)+1.0f)*bamp+bofs),255.0));
-  			long a = (long)round(fmod(fabs((sin((x*size+aox)*apx)*sin((y*size+aoy)*apy)+1.0f)*aamp+aofs),255.0));
-  			*p = 0x01000000 * a | b * 0x00010000 | g * 0x00000100 | r;
-  		}*/
+    /*for(y = -hsize; y < hsize; ++y)
+      for(x = -hsize; x < hsize; ++x,p++)
+      {
+        float xx = (size/(size-2.0f))*((float)x)+0.5f;
+        float yy = (size/(size-2.0f))*((float)y)+0.5f;
+        long r = (long)round(fmod(fabs((sin((x*size+rox)*rpx)*sin((y*size+roy)*rpy)+1.0f)*ramp+rofs),255.0));
+        long g = (long)round(fmod(fabs((sin((x*size+gox)*gpx)*sin((y*size+goy)*gpy)+1.0f)*gamp+gofs),255.0));
+        long b = (long)round(fmod(fabs((sin((x*size+box)*bpx)*sin((y*size+boy)*bpy)+1.0f)*bamp+bofs),255.0));
+        long a = (long)round(fmod(fabs((sin((x*size+aox)*apx)*sin((y*size+aoy)*apy)+1.0f)*aamp+aofs),255.0));
+        *p = 0x01000000 * a | b * 0x00010000 | g * 0x00000100 | r;
+      }*/
     ((module_bitmap_subplasma*)ptr)->work_bitmap->timestamp++;
     ((module_bitmap_subplasma*)ptr)->work_bitmap->valid = true;
     ((module_bitmap_subplasma*)ptr)->thread_state = 2;
@@ -262,8 +262,8 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
       pthread_attr_init(&worker_t_attr);
       thread_state = 1;
       worker_running = true;
-      pthread_create(&worker_t, &worker_t_attr, &worker, (void*)this);   
-      pthread_detach(worker_t);
+      pthread_create(&worker_t, NULL, &worker, (void*)this);
+
       
       //printf("done creating thread\n");
     }
@@ -287,15 +287,9 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
   }
   
   void on_delete() {
-    //printf("deleting bitmap..");
-    if (thread_state == 1) {
-      while (thread_state != 2) Sleep(1);
-      pthread_cancel(worker_t);
-    }
-    //printf("a");
-    //printf("b");
-    //printf("c");
+    // wait for thread to finish
+    void* ret;
+    pthread_join(worker_t,&ret);
     delete[] (vsx_bitmap_32bt*)bitm.data;
-    //printf("d");
   }
 };

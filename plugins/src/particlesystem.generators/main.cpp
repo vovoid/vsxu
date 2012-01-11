@@ -42,6 +42,7 @@ class vsx_module_particle_gen_simple : public vsx_module {
   float lifetime_base, lifetime_random_weight;
   vsx_quaternion q1;
   vsx_quaternion* q_out;
+  vsx_rand rand;
 
 
   vsx_particlesystem particles;
@@ -229,13 +230,13 @@ but you usually want a lot more.";
       // if the time got over the maximum lifetime of the particle, re-initialize it
       if (p_to_go > 1)
       if ((*particles.particles)[i].time > (*particles.particles)[i].lifetime) {
-        (*particles.particles)[i].size = (*particles.particles)[i].orig_size = size_base+((float)(rand()%1000)/1000)*size_random_weight-size_random_weight*0.5f;
+        (*particles.particles)[i].size = (*particles.particles)[i].orig_size = size_base+rand.frand()*size_random_weight-size_random_weight*0.5f;
         (*particles.particles)[i].color = vsx_color__(rr,gg,bb,aa);
         switch (speed_type->get()) {
           case 0:
-            (*particles.particles)[i].speed.x = spd_x*((float)(rand()%1000)/1000.0f)-spd_x*0.5f;
-            (*particles.particles)[i].speed.y = spd_y*((float)(rand()%1000)/1000.0f)-spd_y*0.5f;
-            (*particles.particles)[i].speed.z = spd_z*((float)(rand()%1000)/1000.0f)-spd_z*0.5f;
+            (*particles.particles)[i].speed.x = spd_x*rand.frand()-spd_x*0.5f;
+            (*particles.particles)[i].speed.y = spd_y*rand.frand()-spd_y*0.5f;
+            (*particles.particles)[i].speed.z = spd_z*rand.frand()-spd_z*0.5f;
           break;
           case 1:
             (*particles.particles)[i].speed.x = spd_x;
@@ -244,10 +245,10 @@ but you usually want a lot more.";
           break;
         } // switch
 
-        (*particles.particles)[i].rotation.x = ((float)(rand()%1000)/1000.0f)*2.0f-1.0f;
-        (*particles.particles)[i].rotation.y = ((float)(rand()%1000)/1000.0f)*2.0f-1.0f;
-        (*particles.particles)[i].rotation.z = ((float)(rand()%1000)/1000.0f)*2.0f-1.0f;
-        (*particles.particles)[i].rotation.w = ((float)(rand()%1000)/1000.0f)*2.0f-1.0f;
+        (*particles.particles)[i].rotation.x = rand.frand()*2.0f-1.0f;
+        (*particles.particles)[i].rotation.y = rand.frand()*2.0f-1.0f;
+        (*particles.particles)[i].rotation.z = rand.frand()*2.0f-1.0f;
+        (*particles.particles)[i].rotation.w = rand.frand()*2.0f-1.0f;
         (*particles.particles)[i].rotation.normalize();
 
         (*particles.particles)[i].rotation_dir.x = particle_rotation_dir->get(0);
@@ -260,7 +261,7 @@ but you usually want a lot more.";
         (*particles.particles)[i].pos.y = py;
         (*particles.particles)[i].pos.z = pz;
         (*particles.particles)[i].time = 0;
-        (*particles.particles)[i].lifetime = lifetime_base+((float)(rand()%1000)/1000.0f)*lifetime_random_weight-lifetime_random_weight*0.5f;
+        (*particles.particles)[i].lifetime = lifetime_base+rand.frand()*lifetime_random_weight-lifetime_random_weight*0.5f;
         --p_to_go;
       }
       // add the speed component to the particles
@@ -296,7 +297,7 @@ but you usually want a lot more.";
 };
 
 class vsx_module_particle_gen_mesh : public vsx_module {
-  int i;
+  size_t i;
   float time;
 
   float px, py, pz, rr, gg, bb, aa;
@@ -307,6 +308,8 @@ class vsx_module_particle_gen_mesh : public vsx_module {
   bool first;
 
   unsigned long meshcoord;
+
+  vsx_rand rand;
 
   vsx_module_param_mesh* mesh_in;
 
@@ -481,6 +484,8 @@ in sequence.\n\
     our_mesh = mesh_in->get_addr();
     if (our_mesh) {
 
+      size_t particle_count = (size_t)particles_count->get();
+
       center_[0] = center->get(0);
       center_[1] = center->get(1);
       center_[2] = center->get(2);
@@ -496,23 +501,24 @@ in sequence.\n\
       lifetime_random_weight = particle_lifetime_random_weight->get();
       float half_lifetime_random_weight = 0.5f * lifetime_random_weight;
 
-      if ((unsigned long)particles_count->get()+1 != (*particles.particles).size())
+      if (particle_count+1 != (*particles.particles).size())
         first = true;
       if (first) {
         //printf("first %d %d\n",(int)particles_count->get(),(int)(*particles.particles).size());
-        (*particles.particles).allocate((int)particles_count->get());
+        (*particles.particles).allocate(particle_count);
         (*particles.particles).memory_clear();
-        f_randpool.allocate((int)particles_count->get()*10);
+        f_randpool.allocate(particle_count*10);
+        f_randpool.memory_clear();
         float* fpp = f_randpool.get_pointer();
 
         for (i = 0; i < (int)particles_count->get()*10; ++i) {
-          *fpp = (float)(rand()%100000)*0.00001f;
+          *fpp = rand.frand();
           fpp++;
         }
         f_randpool_pointer = f_randpool.get_pointer();
 
         vsx_particle* pp =(*particles.particles).get_pointer();
-        for (i = 0; i < (int)particles_count->get(); ++i) {
+        for (i = 0; i < particle_count; ++i) {
           /*vsx_vector pos; // current position
           vsx_vector speed; // current speed
           vsx_color color; // color it starts out as (including alpha)
@@ -583,6 +589,9 @@ in sequence.\n\
         particles_to_go += particles_per_second->get()*dtime;
         if (particles_to_go > particles_per_second->get()) particles_to_go = particles_per_second->get();
       }
+
+      // set the rand pool pointer to something nice and random
+      f_randpool_pointer = f_randpool.get_pointer() + rand.rand()%(nump+1);
 
       float avx = add_vector->get(0);
       float avy = add_vector->get(1);
@@ -678,7 +687,7 @@ in sequence.\n\
         }
         //(*particles.particles)[particles.particles->size()-1].color.a = nump-floor(nump);
       }
-      f_randpool_pointer = f_randpool.get_pointer() + rand()%(nump+1);
+
       // in case some modifier has decided to base some mesh or whatever on the particle system
       // increase the timsetamp so that module can know that it has to copy the particle system all
       // over again.

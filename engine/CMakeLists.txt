@@ -153,6 +153,7 @@ set(SOURCES
   src/core/vsx_param_sequence_list.cpp
   src/core/vsx_module_static.cpp
   src/vsx_math_3d.cpp
+  src/mtwist.c
   src/vsx_param.cpp
   src/vsx_sequence.cpp
   src/log/vsx_log.cpp

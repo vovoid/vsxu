@@ -24,6 +24,7 @@
 #include "vsx_gl_global.h"
 #endif
 #include "vsx_math_3d.h"
+#include <mtwist.h>
 
 double vsx_vector::distance(vsx_vector otherpoint) {
   double dx = otherpoint.x - x;
@@ -163,7 +164,30 @@ void Calc_Face_Normal(float x1, float y1, float z1, float x2, float y2, float z2
 
 
 
+vsx_rand::vsx_rand()
+{
+  state = (void*)new mt_state;
+  srand(1);
+}
 
+vsx_rand::~vsx_rand()
+{
+  delete (mt_state*)state;
+}
+
+float vsx_rand::srand(uint32_t seed)
+{
+  mts_seed32((mt_state*)state,seed);
+}
+uint32_t vsx_rand::rand()
+{
+  return mts_lrand((mt_state*)state);
+}
+
+float vsx_rand::frand()
+{
+  return mts_ldrand((mt_state*)state);
+}
 
 
 

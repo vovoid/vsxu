@@ -37,6 +37,7 @@ class vsx_module_mesh_rand_points : public vsx_module {
 	vsx_mesh* mesh;
 	vsx_vector old_scaling;
 	bool first_run;
+  vsx_rand rand;
 public:
   void module_info(vsx_module_info* info)
   {
@@ -83,13 +84,13 @@ public:
 
       //mesh->data->vertices.reset_used();
     if (first_run || param_updates) {
-      srand( (int)rand_seed->get() );
+      rand.srand( (int)rand_seed->get() );
       //printf("generating random points\n");
       int i;
       for (i = 0; i < (int)num_points->get(); ++i) {
-        mesh->data->vertices[i].x = ((rand()%10000)*0.0001f-0.5f)*scaling->get(0);
-        mesh->data->vertices[i].y = ((rand()%10000)*0.0001f-0.5f)*scaling->get(1);
-        mesh->data->vertices[i].z = ((rand()%10000)*0.0001f-0.5f)*scaling->get(2);
+        mesh->data->vertices[i].x = (rand.frand()-0.5f)*scaling->get(0);
+        mesh->data->vertices[i].y = (rand.frand()-0.5f)*scaling->get(1);
+        mesh->data->vertices[i].z = (rand.frand()-0.5f)*scaling->get(2);
       }
       mesh->data->vertices.reset_used(i);
       first_run = false;
