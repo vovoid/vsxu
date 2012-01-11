@@ -54,7 +54,6 @@ class module_bitmap_blob : public vsx_module {
 
   vsx_texture* texture;
   pthread_t					worker_t;
-  pthread_attr_t		worker_t_attr;
 
   int p_updates;
   int my_ref;
@@ -241,10 +240,8 @@ public:
       work_color[1] = min(1.0f,color->get(1));
       work_color[2] = min(1.0f,color->get(2));
       work_color[3] = min(1.0f,color->get(3));
-      pthread_attr_init(&worker_t_attr);
       thread_state = 1;
-      pthread_create(&worker_t, &worker_t_attr, &worker, (void*)this);
-      pthread_detach(worker_t);
+      pthread_create(&worker_t, NULL, &worker, (void*)this);
 
       //printf("done creating thread\n");
     }
@@ -284,13 +281,10 @@ public:
   }
 
   void on_delete() {
-    //printf("deleting bitmap..");
-    if (thread_state == 1) {
-      while (thread_state != 2) Sleep(1);
-      pthread_cancel(worker_t);
-    }
-    //printf("a");
-    //printf("b");
+    // wait for thread to finish
+    void* ret;
+    pthread_join(worker_t,&ret);
+
     if (c_type == 1) {
       if (texture) {
         //printf(":t:");
@@ -298,8 +292,6 @@ public:
         delete texture;
       }
     }
-    //printf("c");
     delete[] (vsx_bitmap_32bt*)bitm.data;
-    //printf("d");
   }
 };

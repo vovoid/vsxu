@@ -110,15 +110,15 @@ typedef unsigned char uint8;
 
 class module_bitmap_blend : public vsx_module {
   
-	// out
-	vsx_module_param_bitmap* result1;
-	// internal
-	bool need_to_rebuild;
-	
-	int bitm_timestamp;
-	
-  pthread_t					worker_t;
-  pthread_attr_t		worker_t_attr;
+  // out
+  vsx_module_param_bitmap* result1;
+  // internal
+  bool need_to_rebuild;
+
+  int bitm_timestamp;
+
+  pthread_t	worker_t;
+
 
   int p_updates;
 
@@ -296,7 +296,7 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
     p_updates = -1;
     in1 = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"in1");
     in2 = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"in2");
-  	result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
+    result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
     
     target_size = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"target_size");
     target_size->set(512.0f,0);
@@ -357,12 +357,9 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
         }
         
         //printf("creating thread\n");
-        pthread_attr_init(&worker_t_attr);
         thread_state = 1;
         worker_running = true;
-        pthread_create(&worker_t, &worker_t_attr, &worker, (void*)this);   
-        pthread_detach(worker_t);
-  
+        pthread_create(&worker_t, NULL, &worker, (void*)this);
         //printf("done creating thread\n");
       }
     }
@@ -385,21 +382,14 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
     {
       delete[] (vsx_bitmap_32bt*)to_delete_data;
       to_delete_data = 0;
-    }        
+    }
     
   }
   
   void on_delete() {
-    //printf("deleting bitmap..");
-    if (thread_state == 1) {
-      while (thread_state != 2) Sleep(1);
-      pthread_cancel(worker_t);
-    }
-    //printf("a");
-    //printf("b");
-    //printf("c");
-    
+    // wait for thread to finish
+    void* ret;
+    pthread_join(worker_t,&ret);
     delete[] (vsx_bitmap_32bt*)bitm.data;
-    //printf("d");
   }
 };

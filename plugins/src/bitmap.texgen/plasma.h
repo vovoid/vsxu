@@ -22,17 +22,16 @@
 
 class module_bitmap_plasma : public vsx_module {
   // in
-	
-	// out
-	vsx_module_param_bitmap* result1;
-	// internal
-	bool need_to_rebuild;
-	
-	vsx_bitmap bitm;
-	int bitm_timestamp;
-	
-  pthread_t					worker_t;
-  pthread_attr_t		worker_t_attr;
+
+  // out
+  vsx_module_param_bitmap* result1;
+  // internal
+  bool need_to_rebuild;
+
+  vsx_bitmap bitm;
+  int bitm_timestamp;
+
+  pthread_t	worker_t;
 
   int p_updates;
   int my_ref;
@@ -110,20 +109,21 @@ public:
     //float sp1 = (float)size + 1.0f;
     float size = (float)(2.0f*PI)/(float)ssize;
     
-  	for(y = -hsize; y < hsize; ++y)
-  		for(x = -hsize; x < hsize; ++x,p++)
-  		{
-  			//float xx = (size/(size-2.0f))*((float)x)+0.5f;
-  			//float yy = (size/(size-2.0f))*((float)y)+0.5f;
-  			long r = (long)round(fmod(fabs((sin((x*size+rox)*rpx)*sin((y*size+roy)*rpy)+1.0f)*ramp+rofs),255.0));
-  			long g = (long)round(fmod(fabs((sin((x*size+gox)*gpx)*sin((y*size+goy)*gpy)+1.0f)*gamp+gofs),255.0));
-  			long b = (long)round(fmod(fabs((sin((x*size+box)*bpx)*sin((y*size+boy)*bpy)+1.0f)*bamp+bofs),255.0));
-  			long a = (long)round(fmod(fabs((sin((x*size+aox)*apx)*sin((y*size+aoy)*apy)+1.0f)*aamp+aofs),255.0));
-  			//long a = 255;
-  			//long g = 0;
-  			//long b = 0;
-  			//if((long)(dd) > hsize) *p = 0;
-  			//else {
+    for(y = -hsize; y < hsize; ++y)
+    {
+      for(x = -hsize; x < hsize; ++x,p++)
+      {
+        //float xx = (size/(size-2.0f))*((float)x)+0.5f;
+        //float yy = (size/(size-2.0f))*((float)y)+0.5f;
+        long r = (long)round(fmod(fabs((sin((x*size+rox)*rpx)*sin((y*size+roy)*rpy)+1.0f)*ramp+rofs),255.0));
+        long g = (long)round(fmod(fabs((sin((x*size+gox)*gpx)*sin((y*size+goy)*gpy)+1.0f)*gamp+gofs),255.0));
+        long b = (long)round(fmod(fabs((sin((x*size+box)*bpx)*sin((y*size+boy)*bpy)+1.0f)*bamp+bofs),255.0));
+        long a = (long)round(fmod(fabs((sin((x*size+aox)*apx)*sin((y*size+aoy)*apy)+1.0f)*aamp+aofs),255.0));
+        //long a = 255;
+        //long g = 0;
+        //long b = 0;
+        //if((long)(dd) > hsize) *p = 0;
+        //else {
 /*          float phase;
           float dstf = dd/((float)hsize+1);
           phase = pow(1 - fabs(cos(angle+arms*atan2(xx,yy)))*(star_flower+(1-star_flower)*(((dstf)))),attenuation);
@@ -132,9 +132,10 @@ public:
           if (*p > 255) *p = 255;
           if (*p < 0) *p = 0;
         }*/
-  			*p = 0x01000000 * a | b * 0x00010000 | g * 0x00000100 | r;
-  			
-  		}
+        *p = 0x01000000 * a | b * 0x00010000 | g * 0x00000100 | r;
+
+      }
+    }// for y
     ((module_bitmap_plasma*)ptr)->work_bitmap->timestamp++;
     ((module_bitmap_plasma*)ptr)->work_bitmap->valid = true;
     ((module_bitmap_plasma*)ptr)->thread_state = 2;
@@ -242,10 +243,8 @@ size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024";
       p_updates = param_updates;
       bitm.valid = false;
       //printf("creating thread\n");
-      pthread_attr_init(&worker_t_attr);
       thread_state = 1;
-      pthread_create(&worker_t, &worker_t_attr, &worker, (void*)this);   
-      pthread_detach(worker_t);
+      pthread_create(&worker_t, NULL, &worker, (void*)this);
 
       //printf("done creating thread\n");
     }
@@ -270,32 +269,12 @@ size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024";
   void start() {
   }  
   
-  void stop() {
-    //if (worker_running) {
-      //printf("a");
-      //pthread_join(worker_t,0);
-      //printf("b");
-      //worker_running = false;
-    //}
-      //printf("c");
-      //delete texture->transform_obj;
-      //printf("d");
-//      texture->unload();
-      //printf("e");
-      //delete texture;
-      //texture = 0;
-  }
+  void stop() {}
   
   void on_delete() {
-    //printf("deleting bitmap..");
-    if (thread_state == 1) {
-      while (thread_state != 2) Sleep(1);
-      pthread_cancel(worker_t);
-    }
-    //printf("a");
-    //printf("b");
-    //printf("c");
+    // wait for thread to finish
+    void* ret;
+    pthread_join(worker_t,&ret);
     delete[] (vsx_bitmap_32bt*)bitm.data;
-    //printf("d");
   }
 };

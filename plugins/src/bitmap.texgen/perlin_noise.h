@@ -39,7 +39,6 @@ class module_bitmap_texgen_perlin_noise : public vsx_module {
   int bitm_timestamp;
 
   pthread_t         worker_t;
-  pthread_attr_t    worker_t_attr;
 
   int p_updates;
   int my_ref;
@@ -319,11 +318,9 @@ public:
       p_updates = param_updates;
       bitm.valid = false;
       //printf("creating thread\n");
-      pthread_attr_init(&worker_t_attr);
       thread_state = 1;
       worker_running = true;
-      pthread_create(&worker_t, &worker_t_attr, &worker, (void*)this);
-      pthread_detach(worker_t);
+      pthread_create(&worker_t, NULL, &worker, (void*)this);
 
       //printf("done creating thread\n");
     }
@@ -347,15 +344,9 @@ public:
   }
 
   void on_delete() {
-    //printf("deleting bitmap..");
-    if (thread_state == 1) {
-      while (thread_state != 2) Sleep(1);
-      pthread_cancel(worker_t);
-    }
-    //printf("a");
-    //printf("b");
-    //printf("c");
+    // wait for thread to finish
+    void* ret;
+    pthread_join(worker_t,&ret);
     delete[] (vsx_bitmap_32bt*)bitm.data;
-    //printf("d");
   }
 };
