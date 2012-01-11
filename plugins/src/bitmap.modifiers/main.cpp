@@ -349,8 +349,6 @@ void run() {
 
       pthread_attr_init(&worker_t_attr);
       pthread_create(&worker_t, &worker_t_attr, &noise_worker, (void*)this);
-      //pthread_detach(worker_t);
-      /*pthread_getschedparam (worker_t,&policy,&s_param)*/;
       sched_param s_param;
       int policy = 0;
       s_param.sched_priority = 20;
