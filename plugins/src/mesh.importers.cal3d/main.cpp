@@ -117,6 +117,9 @@ public:
     delete mesh_a;
     delete mesh_b;
     pthread_mutex_unlock(&mesh_mutex);
+    pthread_mutex_destroy(&thread_exit_mutex);
+    pthread_mutex_destroy(&mesh_mutex);
+    sem_destroy(&sem_worker_todo);
   }
 
   void module_info(vsx_module_info* info)
@@ -465,8 +468,6 @@ public:
     {
       printf("cal3d %d\n",__LINE__);
       pthread_create(&worker_t, NULL, &worker, (void*)&thread_info);
-      printf("cal3d %d\n",__LINE__);
-      pthread_detach(worker_t);
       printf("cal3d %d\n",__LINE__);
       thread_created = true;
       thread_info.is_thread = true;
