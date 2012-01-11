@@ -477,19 +477,19 @@ void vsx_texture::upload_ram_bitmap(void* data, unsigned long size_x, unsigned l
     printf("mipmaps, GL_TEXTURE_2D\n");
     #endif
 	  texture_info.ogl_type = GL_TEXTURE_2D;
-	//printf("GL_TEXTURE_2D 2\n");
+  //printf("GL_TEXTURE_2D 2\n");
 	}
 	GLboolean oldStatus = glIsEnabled(texture_info.ogl_type);
-	//printf("%d GL Error was: %x\n", __LINE__,glGetError());
+  //printf("%d GL Error was: %x\n", __LINE__,glGetError());
 	glEnable(texture_info.ogl_type);
-	//printf("%d GL Error was: %x\n", __LINE__,glGetError());
+  //printf("%d GL Error was: %x\n", __LINE__,glGetError());
 	glBindTexture(texture_info.ogl_type, texture_info.ogl_id);
-	//printf("Texture id is %d\n",texture_info.ogl_id);
-	//printf("%d GL Error was: %x\n", __LINE__,glGetError());
+  //printf("Texture id is %d\n",texture_info.ogl_id);
+  //printf("%d GL Error was: %x\n", __LINE__,glGetError());
 	glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	//printf("%d GL Error was: %x\n", __LINE__,glGetError());
+  //printf("%d GL Error was: %x\n", __LINE__,glGetError());
 	glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//printf("%d GL Error was: %x\n", __LINE__,glGetError());
+  //printf("%d GL Error was: %x\n", __LINE__,glGetError());
 
   if (upside_down) {
     //printf("texture is upside down\n");
@@ -507,12 +507,17 @@ void vsx_texture::upload_ram_bitmap(void* data, unsigned long size_x, unsigned l
       data = (GLfloat*)data2;
     } else
     {
-      unsigned char* data2 = new unsigned char[size_x * size_y * bpp];
+      unsigned char* data2 = new unsigned char[(size_x) * (size_y) * (bpp)];
       int dy = 0;
       int sxbpp = size_x*bpp;
-      for (int y = size_y-1; y >= 0; --y) {
-        for (unsigned long x = 0; x < size_x*bpp; ++x) {
-          data2[dy*sxbpp + x] = ((unsigned char*)data)[y*sxbpp + x];
+      for (int y = size_y-1; y >= 0; --y)
+      {
+        //printf("y: %d\n",y);
+        int dysxbpp = dy*sxbpp;
+        int ysxbpp = y * sxbpp;
+        for (int x = 0; x < size_x*bpp; ++x)
+        {
+          data2[dysxbpp + x] = ((unsigned char*)data)[ysxbpp + x];
         }
         ++dy;
       }
@@ -544,7 +549,7 @@ void vsx_texture::upload_ram_bitmap(void* data, unsigned long size_x, unsigned l
   }
   else
   {
-    //printf("NO mipmaps");
+    //printf("NO mipmaps. Size.x : %d, size.y: %d bpp: %d, bpp2: %d\n",size_x, size_y,bpp,bpp2);
 #ifndef VSXU_OPENGL_ES
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAX_LEVEL,0);
 #endif
@@ -557,7 +562,6 @@ void vsx_texture::upload_ram_bitmap(void* data, unsigned long size_x, unsigned l
     {
       glTexImage2D(texture_info.ogl_type, 0,bpp , size_x, size_y, 0, bpp2, GL_UNSIGNED_BYTE, data);
     }
-
     // use compression
     /*if (bpp == 3)
     glTexImage2D(texture_info.ogl_type, 0,GL_COMPRESSED_RGB_S3TC_DXT1_EXT , size_x, size_y, 0, bpp2, GL_UNSIGNED_BYTE, data);
@@ -566,10 +570,11 @@ void vsx_texture::upload_ram_bitmap(void* data, unsigned long size_x, unsigned l
     // end compression block
     */
   }
+  //printf("before cleaning up of upside down\n");
   if (upside_down) {
     if (bpp == GL_RGBA32F_ARB)
     {
-  	delete[] (GLfloat*)data;
+      delete[] (GLfloat*)data;
     } else
     {
       delete[] (unsigned long*)data;
