@@ -228,6 +228,7 @@ class vsx_module_mesh_lightning_vertices : public vsx_module {
   unsigned long lifetime;
   vsx_vector delta;
   vsx_vector start;
+  vsx_rand rand;
 public:
   void module_info(vsx_module_info* info)
   {
@@ -288,12 +289,12 @@ public:
       if (lifetime <= 0)
       {
 
-        id_a = rand() % (*p_a)->data->vertices.size();
+        id_a = rand.rand() % (*p_a)->data->vertices.size();
         //id_b = rand() % p_b->data->vertices.size();
         //printf("id_a: %d\n", (int)id_a);
-        lifetime = (int) ((float)(rand() % 10) * lifetime_mod->get()) + 5;
+        lifetime = (int) ((float)(rand.rand() % 10) * lifetime_mod->get()) + 5;
         //delta = p_b->data->vertices[id_b] - p_a->data->vertices[id_a];
-        delta = (*p_a)->data->vertex_normals[id_a] * ((rand()%10000)*0.0001f) * length->get();
+        delta = (*p_a)->data->vertex_normals[id_a] * rand.frand() * length->get();
         start = (*p_a)->data->vertices[id_a];
         delta *= 1.0f / (float)((int)num_points->get());
       }
@@ -306,9 +307,10 @@ public:
       float sz = scaling->get(2) * length->get();
       for (i = 0; i < (int)num_points->get(); ++i)
       {
-        mesh->data->vertices[i].x = start.x + ((rand()%10000)*0.0001f-0.5f)*sx * sin((float)i * one_div_num_points * PI);
-        mesh->data->vertices[i].y = start.y + ((rand()%10000)*0.0001f-0.5f)*sy * sin((float)i * one_div_num_points * PI);
-        mesh->data->vertices[i].z = start.z + ((rand()%10000)*0.0001f-0.5f)*sz * sin((float)i * one_div_num_points * PI);
+        printf("generating point %d %f %f %f\n",i,delta.x, delta.y, delta.z);
+        mesh->data->vertices[i].x = start.x + (rand.frand()-0.5f)*sx * sin((float)i * one_div_num_points * PI);
+        mesh->data->vertices[i].y = start.y + (rand.frand()-0.5f)*sy * sin((float)i * one_div_num_points * PI);
+        mesh->data->vertices[i].z = start.z + (rand.frand()-0.5f)*sz * sin((float)i * one_div_num_points * PI);
         float c = 1.0f - (float)i * one_div_num_points;
         mesh->data->vertex_colors[i].r = c;
         mesh->data->vertex_colors[i].g = c;
@@ -319,7 +321,7 @@ public:
       }
       mesh->data->vertices.reset_used(i);
       lifetime--;
-
+      result->set(mesh);
       /*
         srand( (int)rand_seed->get() );
         //printf("generating random points\n");
