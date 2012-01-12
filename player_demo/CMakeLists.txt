@@ -1,17 +1,32 @@
-cmake_minimum_required(VERSION 2.6)
+set(module_id vsxu_demo_player)
+message("*******************************************")
+message("configuring            " ${module_id})
+message("*******************************************")
 
-include(../cmake_globals.txt)
+################################################################################
+project (${module_id})
 
+################################################################################
+# CMAKE PACKAGES ###############################################################
+################################################################################
+include(cmake_packages.txt)
+
+################################################################################
+# INCLUDES #####################################################################
+################################################################################
 include_directories(
-  ../
-  ../engine/include
-  ../engine_graphics/include
-  src
+  ${OPENGL_INCLUDE_DIR}
+  ${GLEW_INCLUDE_PATH}
+  ${CMAKE_SOURCE_DIR}/
+  ${CMAKE_SOURCE_DIR}/engine/include
+  ${CMAKE_SOURCE_DIR}/engine_graphics/include
+  ${CMAKE_SOURCE_DIR}/player/src
 )
 
-set(OS_SOURCES "")
+################################################################################
+# DEFINES ######################################################################
+################################################################################
 
-#definitions
 add_definitions(
  -DVSX_FONT_NO_FT
  -DDEBUG
@@ -27,44 +42,47 @@ if (VSXU_DEBUG EQUAL 1)
   add_definitions( -DVSXU_DEBUG )
 endif (VSXU_DEBUG EQUAL 1)
 
-get_filename_component(list_file_path ${CMAKE_CURRENT_LIST_FILE} PATH)
-string(REGEX MATCH "[a-z._-]*$" module_id ${list_file_path})
-message("*******************************************")
-message("building            " ${module_id})
-message("*******************************************")
+################################################################################
+# SOURCES ######################################################################
+################################################################################
+
+set(OS_SOURCES "")
+
+if(WIN32)
+  set(OS_SOURCES
+    src/main/win32/main.cpp
+    src/main/win32/includes/nehegl.cpp
+  )
+endif(WIN32)
+
+if(UNIX)
+  set(OS_SOURCES
+    src/main/linux/main.cpp
+  )
+endif(UNIX)
 
 set(SOURCES
   src/application.cpp
-  src/main/linux/main.cpp
   )
 
-link_directories(
-./
-)
+################################################################################
+# LINK #########################################################################
+################################################################################
 
-project (${module_id})
-
-add_executable(${module_id}  ${SOURCES} ${OS_SOURCES})
+add_executable(${module_id} ${SOURCES} ${OS_SOURCES})
 include(../cmake_suffix.txt)
-  set_target_properties(
-    ${module_id}
-      PROPERTIES
-        OUTPUT_NAME
-          vsxu_player_demo
-  )
 
 if(UNIX)
-  link_directories("/usr/lib/vsxu")
-  target_link_libraries(${module_id}
-    Xrandr
-    X11
-    glfw-2.7
-    pthread
-    GLU
-    GL
-    GLEW.a
-    png.a
-    jpeg.a
+  target_link_libraries(
+    ${module_id}
+    ${X11_Xrandr_LIB}
+    ${X11_LIBRARIES}
+    ${GLFW_LIBRARY}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${GLEW_LIBRARY}
+    ${OPENGL_LIBRARIES}
+    ${PNG_LIBRARIES}
+    ${JPEG_LIBRARIES}
     vsxu_engine_graphics
     vsxu_engine
   )
@@ -72,21 +90,20 @@ if(UNIX)
   install(DIRECTORY ../share/visuals_faders ../share/visuals_player ../share/font DESTINATION ${CMAKE_INSTALL_PREFIX}/share/vsxu)
 endif(UNIX)
 
-
 if(WIN32)
-  link_directories("../_lib/win32")
-  
   target_link_libraries(${module_id}
   wsock32
   ws2_32
-  glew
-  pthreadGCE
+  ${CMAKE_THREAD_LIBS_INIT}
   vsxu_engine_graphics
   vsxu_engine
   gdi32
-  glu32
-  opengl32
-  )
-endif(WIN32)
+  ${OPENGL_LIBRARIES}
+)
+endif()
 
+################################################################################
+## INSTALL #####################################################################
+################################################################################
 
+install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT artiste)

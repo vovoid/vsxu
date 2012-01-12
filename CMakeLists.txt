@@ -89,7 +89,7 @@ SET(CPACK_COMPONENT_PLAYER_DISPLAY_NAME "VSXu Player")
 SET(CPACK_COMPONENT_PLAYER_REQUIRED 1)
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jonatan 'jaw' Wallmander / Vovoid Media Technologies")
 
-set(CPACK_PACKAGE_EXECUTABLES "vsxu_player" "VSXu Player" "vsxu_artiste" "VSXu Artiste")
+set(CPACK_PACKAGE_EXECUTABLES "vsxu_player" "VSXu Player" "vsxu_artiste" "VSXu Artiste" "vsxu_demo_player" "Demo - Vovoid - Luna - Reactivation")
 set(CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
 set(CPACK_PACKAGE_NAME VSXu ${CPACK_PACKAGE_VERSION})
 set(CPACK_PACKAGE_VENDOR "Vovoid Media Technologies")
@@ -132,6 +132,7 @@ add_subdirectory(plugins)
 if (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
   add_subdirectory(artiste)
   add_subdirectory(player)
+  add_subdirectory(player_demo)
 endif (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
 
 if(UNIX)
@@ -142,8 +143,8 @@ if (NOT VSXU_ENGINE_STATIC EQUAL 1)
   add_subdirectory(tools/vsxz)
 endif (NOT VSXU_ENGINE_STATIC EQUAL 1)
 
-if (VSXU_PLAYER_DEMO EQUAL 1)
-  add_subdirectory(player_demo)
-endif (VSXU_PLAYER_DEMO EQUAL 1)
+
+
+
 
 

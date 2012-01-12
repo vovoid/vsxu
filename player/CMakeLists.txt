@@ -69,7 +69,7 @@ set(SOURCES
 # LINK #########################################################################
 ################################################################################
 
-add_executable(${module_id}  ${SOURCES} ${OS_SOURCES})
+add_executable(${module_id} ${SOURCES} ${OS_SOURCES})
 include(../cmake_suffix.txt)
 
 if(UNIX)
