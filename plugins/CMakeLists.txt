@@ -91,25 +91,12 @@ add_subdirectory(src/render.opengl)
 add_subdirectory(src/render.opengl.extra)
 add_subdirectory(src/render.oscilloscope)
 add_subdirectory(src/render.text)
+add_subdirectory(src/sound.fmod)
 
-
-#sound input (and in some cases output) module(s)
-if(VSXU_SOUND_FMOD)
-  message("*** Configuring FMOD sound support")
-  add_subdirectory(src/sound.fmod)
-elseif(VSXU_SOUND_ITUNES)
-  message("*** Configuring itunes sound support")
-  add_subdirectory(src/sound.itunes)
-else(VSXU_SOUND_FMOD)
-  if (WIN32)
-    message("*** Configuring WIN32 FMOD sound support")
-    add_subdirectory(src/sound.fmod)
-  else(WIN32)
-    message("*** Configuring UNIX pulseaudio, media_player sound support")
-add_subdirectory(src/sound.media_player)
-add_subdirectory(src/sound.pulseaudio)
-  endif(WIN32)
-endif(VSXU_SOUND_FMOD)
+if (UNIX)
+  add_subdirectory(src/sound.media_player)
+  add_subdirectory(src/sound.pulseaudio)
+endif(UNIX)
 
 add_subdirectory(src/string)
 add_subdirectory(src/system)
@@ -117,6 +104,4 @@ add_subdirectory(src/texture)
 add_subdirectory(src/texture.load)
 
 endif (VSXU_ENGINE_STATIC EQUAL 1)
-
-
 
