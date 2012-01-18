@@ -167,11 +167,12 @@ public:
     //gmesh.add_face(2,1, 2,2, 2,3);
     gmesh.calculate_face_normals();
     gmesh.calculate_vertex_normals();
-    //printf("vert size: %d\n",gmesh.vertices.size());
+
 
     gmesh.dump_vsx_mesh(mesh);
-    //printf("apa2000\n");
+
     mesh->data->calculate_face_centers();
+    mesh_result->set(mesh);
     loading_done = true;
   }
 };
