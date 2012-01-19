@@ -307,7 +307,7 @@ public:
       float sz = scaling->get(2) * length->get();
       for (i = 0; i < (int)num_points->get(); ++i)
       {
-        printf("generating point %d %f %f %f\n",i,delta.x, delta.y, delta.z);
+        //printf("generating point %d %f %f %f\n",i,delta.x, delta.y, delta.z);
         mesh->data->vertices[i].x = start.x + (rand.frand()-0.5f)*sx * sin((float)i * one_div_num_points * PI);
         mesh->data->vertices[i].y = start.y + (rand.frand()-0.5f)*sy * sin((float)i * one_div_num_points * PI);
         mesh->data->vertices[i].z = start.z + (rand.frand()-0.5f)*sz * sin((float)i * one_div_num_points * PI);
