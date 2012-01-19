@@ -56,12 +56,12 @@ Alaska::Alaska()
 	lambda = 0.35;//0.29;
 	dir = 1;
 	a_global=.0008f; // phillips constant
-	wind_global[0] = 20;
+  wind_global[0] = 20;
 	wind_global[1] = 30;
 	scale_height = 0.25;//scale the wave heights
-	deep = 120;
+
 //	wind = .7;
-	wind = 0.1;
+  wind = 0.1;
 	factor = 10.0;	//this determines speed of wave
 }
 

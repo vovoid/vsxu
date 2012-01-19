@@ -67,17 +67,17 @@ public:
   
 
 
-	Alaska();
-	
-	float time;
-	float dtime;
-	void	calculate_ho();
-	void display(void);
-	void make_normals(COMPLEX c[NX][NY]);
-	void myinit(void);
-	void pre_choppy();
-	void prep_loop();
-	void idle(void);
+  Alaska();
+
+  float time;
+  float dtime;
+  void	calculate_ho();
+  void display(void);
+  void make_normals(COMPLEX c[NX][NY]);
+  void myinit(void);
+  void pre_choppy();
+  void prep_loop();
+  void idle(void);
 
   // Helpers
   double phillips(double a,double k[2],double wind[2]);
@@ -88,16 +88,14 @@ public:
 
 
 
+  GLubyte alpha_color_array[3];
+  double lambda;
+  float fog_dense;
+  int dir;
+  float wind;
 
-protected:
-	GLubyte alpha_color_array[3];
-	double lambda;
-	float fog_dense;
-	int dir;
-	float wind;
-
-	double factor;	//this determines speed of wave
-	double start_time;
+  double factor;	//this determines speed of wave
+  double start_time;
 };
 
   void gauss(double mywork[2]);

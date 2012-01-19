@@ -286,7 +286,11 @@ public:
 
 class vsx_module_mesh_ocean : public vsx_module {
   // in
-	// out
+  vsx_module_param_float* wave_speed;
+  vsx_module_param_float* wind_speed;
+  vsx_module_param_float* wind_speed_x;
+  vsx_module_param_float* wind_speed_y;
+  // out
 	vsx_module_param_mesh* result;
 	// internal
 	vsx_mesh* mesh;
@@ -309,18 +313,40 @@ public:
   {
     info->identifier = "mesh;generators;ocean";
     info->description = "";
-    info->in_param_spec = "";
+    info->in_param_spec =
+        "wave_speed:float,"
+        "wind_speed_x:float,"
+        "wind_speed_y:float,"
+        "wind_speed:float"
+        ;
     info->out_param_spec = "mesh:mesh";
     info->component_class = "mesh";
   }
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
     loading_done = false;
-  	result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
+    wave_speed = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"wave_speed");
+    wave_speed->set(1.0);
+    wind_speed = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"wind_speed");
+    wind_speed->set(1.0);
+    wind_speed_x = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"wind_speed_x");
+    wind_speed_x->set(1.0);
+    wind_speed_y = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"wind_speed_y");
+    wind_speed_y->set(1.0);
+    result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
     ocean.calculate_ho();
   }
   void run() {
     ocean.dtime = engine->real_vtime*0.1f;
+    if (param_updates)
+    {
+      ocean.factor = wave_speed->get() * 10.0;
+      ocean.wind = wind_speed->get() * 0.1;
+      ocean.wind_global[0] = wind_speed_x->get();
+      ocean.wind_global[1] = wind_speed_y->get();
+      ocean.calculate_ho();
+      param_updates = 0;
+    }
     ocean.display();
     mesh->data->vertices.reset_used(0);
     mesh->data->vertex_normals.reset_used(0);
