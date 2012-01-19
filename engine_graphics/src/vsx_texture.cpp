@@ -71,7 +71,7 @@ void vsx_texture::init_opengl_texture() {
   texture_info.ogl_type = GL_TEXTURE_2D;
 }
 
-void vsx_texture::init_buffer(int width, int height, bool float_texture) {
+void vsx_texture::init_buffer(int width, int height, bool float_texture, bool alpha) {
 #ifndef VSX_TEXTURE_NO_RT
   locked = false;
   prev_buf = 0;
@@ -148,9 +148,9 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture) {
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, colorBuffer);
 
     if (float_texture)
-    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_RGBA16F_ARB, width, height);
+    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, alpha?GL_RGBA16F_ARB:GL_RGB16F_ARB, width, height);
     else
-    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_RGBA8, width, height);
+    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, alpha?GL_RGBA8:GL_RGB8, width, height);
 
     // multi sampled depth buffer
     glGenRenderbuffersEXT(1, &depthBuffer);
@@ -198,14 +198,14 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture) {
 	  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);*/
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);*/
 	  //glTexParameterf(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 
 	  //float rMaxAniso;
 	  //glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &rMaxAniso);
 	  //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
 
-	  /*glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, tex_id, 0);
+    /*glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, tex_id, 0);
 
 	  glGenRenderbuffersEXT(1, &depthbuffer_id);
 		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthbuffer_id);
@@ -276,13 +276,13 @@ void vsx_texture::deinit_buffer() {
 #endif
 }
 
-void vsx_texture::reinit_buffer(int width, int height, bool float_texture) {
+void vsx_texture::reinit_buffer(int width, int height, bool float_texture, bool alpha) {
 #ifndef VSX_TEXTURE_NO_RT
   //if (rt) {
 //      delete (RenderTexture*)rt;
 //    }
   deinit_buffer();
-  init_buffer(width,height,float_texture);
+  init_buffer(width,height,float_texture,alpha);
 #endif
 }
 

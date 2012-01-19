@@ -79,10 +79,10 @@ public:
   vsx_texture_info texture_info;
 
   // pbuffer related functions
-  VSX_TEXTURE_DLLIMPORT void init_buffer(int width, int height, bool float_texture = false); // run once
+  VSX_TEXTURE_DLLIMPORT void init_buffer(int width, int height, bool float_texture = false, bool alpha = true); // run once
   VSX_TEXTURE_DLLIMPORT void init_buffer_render(int width, int height); // run once, needs support in hardware
   VSX_TEXTURE_DLLIMPORT void deinit_buffer(); // remove the buffer
-  VSX_TEXTURE_DLLIMPORT void reinit_buffer(int width, int height, bool float_texture = false); // run in stop/start or when changing resolution
+  VSX_TEXTURE_DLLIMPORT void reinit_buffer(int width, int height, bool float_texture = false, bool alpha = true); // run in stop/start or when changing resolution
   VSX_TEXTURE_DLLIMPORT void reinit_buffer_render(int width, int height); // run in stop/start or when changing resolution
 
   bool get_fbo_status() { return use_fbo;}

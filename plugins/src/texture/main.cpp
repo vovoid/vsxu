@@ -193,22 +193,25 @@ public:
 
 class vsx_module_rendered_texture_single : public vsx_module {
   // in
-	vsx_module_param_render* my_render;
-	vsx_module_param_int* texture_size;
-	vsx_module_param_int* support_feedback;
-	vsx_module_param_int* float_texture;
-	vsx_module_param_float4* clear_color;
-	// out
-	vsx_module_param_texture* texture_result;
-	// internal
-	int res_x, res_y;
-	int dbuff;
-	int tex_size_internal;
-	vsx_texture* texture;
-	vsx_texture* texture2;
-	bool which_buffer;
-	bool allocate_second_texture;
-	int float_texture_int;
+  vsx_module_param_render* my_render;
+  vsx_module_param_int* texture_size;
+  vsx_module_param_int* support_feedback;
+  vsx_module_param_int* float_texture;
+  vsx_module_param_int* alpha_channel;
+  vsx_module_param_float4* clear_color;
+  // out
+  vsx_module_param_texture* texture_result;
+  // internal
+  int res_x, res_y;
+  int dbuff;
+  int tex_size_internal;
+  vsx_texture* texture;
+  vsx_texture* texture2;
+  bool which_buffer;
+  bool allocate_second_texture;
+  int float_texture_int;
+  int alpha_channel_int;
+
   GLuint glsl_prog;
 
   GLint	viewport[4];
@@ -220,61 +223,42 @@ void module_info(vsx_module_info* info) {
 #ifndef VSX_NO_CLIENT
   info->in_param_spec = "render_in:render,"
   "texture_size:enum?2048x2048|1024x1024|512x512|256x256|128x128|64x64|32x32|16x16|8x8|4x4|VIEWPORT_SIZE|VIEWPORT_SIZE_DIV_2|VIEWPORT_SIZE_DIV_4|VIEWPORT_SIZEx2|VIEWPORT_SIZEx4,"
-  "support_feedback:enum?no|yes,float_texture:enum?no|yes,clear_color:float4";
+  "support_feedback:enum?no|yes,float_texture:enum?no|yes,alpha_channel:enum?no|yes,clear_color:float4";
   info->out_param_spec = "texture_out:texture";
   info->component_class = "texture";
 #endif
 }
 
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {
-  //printf("a\n");
-	my_render = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER, "render_in",false,false);
-	//res_x = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "screen_width");
-	//res_y = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "screen_height");
-	res_x = 512;
-	//res_x->set(f);
-	//res_y->set(f);
+  my_render = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER, "render_in",false,false);
+  res_x = 512;
 
-	support_feedback = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "support_feedback");
-	support_feedback->set(1);
+  support_feedback = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "support_feedback");
+  support_feedback->set(1);
 
-	float_texture = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "float_texture");
-	float_texture->set(0);
-	float_texture_int = 0;
+  float_texture = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "float_texture");
+  float_texture->set(0);
+  float_texture_int = 0;
 
-	clear_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4, "clear_color");
-	clear_color->set(0,0);
-	clear_color->set(0,1);
-	clear_color->set(0,2);
-	clear_color->set(1,3);
+  alpha_channel = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "alpha_channel");
+  alpha_channel->set(1);
+  alpha_channel_int = 1;
+
+  clear_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4, "clear_color");
+  clear_color->set(0,0);
+  clear_color->set(0,1);
+  clear_color->set(0,2);
+  clear_color->set(1,3);
 
 
-	texture_size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "texture_size");
-	texture_size->set(2);
+  texture_size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "texture_size");
+  texture_size->set(2);
 
-	tex_size_internal = -1;
+  tex_size_internal = -1;
 
-	texture_result = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture_out");
-/**
-    texture2->init_opengl_texture();
-//    unsigned char* data2 = new unsigned char[res_x*res_y*4];
-    texture2->bind();
-    //gluBuild2DMipmaps(GL_TEXTURE_2D,4,res_x,res_y,GL_RGBA,GL_UNSIGNED_BYTE,data2);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAX_LEVEL,0);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, res_x, res_x, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-    texture2->_bind();
-//    delete[] data2;
-    texture2->valid = true;
-*/
-  //glTexImage2D(GL_TEXTURE_2D, 0, 32, size_x, size_y, 0, bpp2, GL_UNSIGNED_BYTE, data2);
+  texture_result = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture_out");
   allocate_second_texture = true;
   start();
-  //
 }
 
 void start() {
@@ -311,6 +295,12 @@ bool activate_offscreen() {
   }*/
 
   bool rebuild = false;
+
+  if (alpha_channel->get() != alpha_channel_int)
+  {
+    alpha_channel_int = alpha_channel->get();
+    rebuild = true;
+  }
 
   if (float_texture->get() != float_texture_int)
   {
@@ -403,9 +393,9 @@ bool activate_offscreen() {
     texture->texture_info.ogl_type = GL_TEXTURE_2D;
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf_l);
     } else {*/
-    texture->reinit_buffer(res_x, res_y,float_texture->get());
+    texture->reinit_buffer(res_x, res_y,float_texture->get(),alpha_channel->get());
     if (texture->get_fbo_status() && support_feedback->get())
-    texture2->reinit_buffer(res_x, res_y, float_texture->get());
+    texture2->reinit_buffer(res_x, res_y, float_texture->get(),alpha_channel->get());
     /**}*/
   }
 
