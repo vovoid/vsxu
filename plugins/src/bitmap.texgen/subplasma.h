@@ -72,6 +72,7 @@ public:
   vsx_module_param_int* amplitude;
   
   vsx_bitmap*       work_bitmap;
+  bool              thread_created;
   bool              worker_running;
   int               thread_state;
   int               i_size;
@@ -214,6 +215,7 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
   {
     thread_state = 0;
     worker_running = false;
+    thread_created = false;
     p_updates = -1;
 
 
@@ -262,6 +264,7 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
       pthread_attr_init(&worker_t_attr);
       thread_state = 1;
       worker_running = true;
+      thread_created = true;
       pthread_create(&worker_t, NULL, &worker, (void*)this);
 
       
@@ -287,9 +290,15 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
   }
   
   void on_delete() {
-    // wait for thread to finish
-    void* ret;
-    pthread_join(worker_t,&ret);
-    delete[] (vsx_bitmap_32bt*)bitm.data;
+    if (thread_created)
+    {
+      // wait for thread to finish
+      void* ret;
+      pthread_join(worker_t,&ret);
+    }
+    if (bitm.data)
+    {
+      delete[] (vsx_bitmap_32bt*)bitm.data;
+    }
   }
 };

@@ -142,6 +142,7 @@ public:
   
   vsx_bitmap*       work_bitmap;
   bool              worker_running;
+  bool              thread_created;
   int               thread_state;
   int my_ref;
 
@@ -293,6 +294,7 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
   {
     thread_state = 0;
     worker_running = false;
+    thread_created = false;
     p_updates = -1;
     in1 = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"in1");
     in2 = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"in2");
@@ -359,6 +361,7 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
         //printf("creating thread\n");
         thread_state = 1;
         worker_running = true;
+        thread_created = true;
         pthread_create(&worker_t, NULL, &worker, (void*)this);
         //printf("done creating thread\n");
       }
@@ -387,9 +390,14 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
   }
   
   void on_delete() {
-    // wait for thread to finish
-    void* ret;
-    pthread_join(worker_t,&ret);
-    delete[] (vsx_bitmap_32bt*)bitm.data;
+    if (thread_created)
+    {
+      void* ret;
+      pthread_join(worker_t,&ret);
+    }
+    if (bitm.data)
+    {
+      delete[] (vsx_bitmap_32bt*)bitm.data;
+    }
   }
 };

@@ -59,6 +59,7 @@ public:
   vsx_module_param_int* size;
   
   vsx_bitmap*       work_bitmap;
+  bool              thread_created;
   bool              worker_running;
   int               thread_state;
   int               i_size;
@@ -177,6 +178,7 @@ size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024";
   {
     thread_state = 0;
     worker_running = false;
+    thread_created = false;
     p_updates = -1;
 
     col_amp = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"col_amp");
@@ -244,6 +246,7 @@ size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024";
       bitm.valid = false;
       //printf("creating thread\n");
       thread_state = 1;
+      thread_created = true;
       pthread_create(&worker_t, NULL, &worker, (void*)this);
 
       //printf("done creating thread\n");
@@ -272,9 +275,15 @@ size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024";
   void stop() {}
   
   void on_delete() {
-    // wait for thread to finish
-    void* ret;
-    pthread_join(worker_t,&ret);
-    delete[] (vsx_bitmap_32bt*)bitm.data;
+    if (thread_created)
+    {
+      // wait for thread to finish
+      void* ret;
+      pthread_join(worker_t,&ret);
+    }
+    if  (bitm.data)
+    {
+      delete[] (vsx_bitmap_32bt*)bitm.data;
+    }
   }
 };

@@ -63,6 +63,7 @@ public:
 
   vsx_bitmap*       work_bitmap;
   bool              worker_running;
+  bool              thread_created;
   int               thread_state;
   int               i_size;
   int               old_bitmap_type;
@@ -233,6 +234,7 @@ public:
   {
     thread_state = 0;
     worker_running = false;
+    thread_created = false;
     p_updates = -1;
 
     rand_seed = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"rand_seed");
@@ -321,6 +323,7 @@ public:
       thread_state = 1;
       worker_running = true;
       pthread_create(&worker_t, NULL, &worker, (void*)this);
+      thread_created = true;
 
       //printf("done creating thread\n");
     }
@@ -346,7 +349,13 @@ public:
   void on_delete() {
     // wait for thread to finish
     void* ret;
-    pthread_join(worker_t,&ret);
-    delete[] (vsx_bitmap_32bt*)bitm.data;
+    if (thread_created)
+    {
+      pthread_join(worker_t,&ret);
+    }
+    if (bitm.data)
+    {
+      delete[] (vsx_bitmap_32bt*)bitm.data;
+    }
   }
 };

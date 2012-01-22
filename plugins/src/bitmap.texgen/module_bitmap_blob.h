@@ -70,6 +70,7 @@ public:
 
   vsx_bitmap*       work_bitmap;
   bool              worker_running;
+  bool              thread_created;
   int               thread_state;
   int               c_type;
   int               i_size;
@@ -163,6 +164,7 @@ public:
   {
     thread_state = 0;
     worker_running = false;
+    thread_created = false;
     p_updates = -1;
     arms = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"arms");
     attenuation = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
@@ -242,6 +244,7 @@ public:
       work_color[3] = min(1.0f,color->get(3));
       thread_state = 1;
       pthread_create(&worker_t, NULL, &worker, (void*)this);
+      thread_created = true;
 
       //printf("done creating thread\n");
     }
@@ -283,7 +286,10 @@ public:
   void on_delete() {
     // wait for thread to finish
     void* ret;
-    pthread_join(worker_t,&ret);
+    if (thread_created)
+    {
+      pthread_join(worker_t,&ret);
+    }
 
     if (c_type == 1) {
       if (texture) {
