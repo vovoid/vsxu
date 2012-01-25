@@ -32,9 +32,9 @@ struct Vector3
 #define BIG_NY (NY+1)
 #define STEPX MAX_WORLD_X/NX
 
-#define MINX 10
+#define MINX 0
 #define MAXX 100
-#define MINY 10
+#define MINY 0
 #define MAXY 100
 
 //#define GRAV_CONSTANT	9.81f //gravitational constant metric
@@ -47,6 +47,7 @@ struct Vector3
 class Alaska
 {
 public:
+  bool normals_only;
   float GRAV_CONSTANT;
   double hold_horizontal[NX][NY][4];//store k[0],k[1],klen,klen*klen
   double sea[BIG_NX][BIG_NY][3];

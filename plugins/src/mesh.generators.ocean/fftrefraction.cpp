@@ -52,17 +52,18 @@
 //
 Alaska::Alaska()
 {
+  normals_only = false;
   GRAV_CONSTANT = 30.81f; //gravitational constant metric
-	lambda = 0.35;//0.29;
-	dir = 1;
-	a_global=.0008f; // phillips constant
+  lambda = 0.29;
+  dir = 1;
+  a_global=.0008f; // phillips constant
   wind_global[0] = 20;
-	wind_global[1] = 30;
-	scale_height = 0.25;//scale the wave heights
+  wind_global[1] = 30;
+  scale_height = 0.25;//scale the wave heights
 
-//	wind = .7;
+  //	wind = .7;
   wind = 0.1;
-	factor = 10.0;	//this determines speed of wave
+  factor = 10.0;	//this determines speed of wave
 }
 
 
@@ -322,19 +323,38 @@ void	Alaska::pre_choppy()
 
 void	Alaska::prep_loop()
 {
-	for (int i=0;i<NX;i++)
-	{
-		for (int j=0;j<NY;j++)
-		{
-			sea[i][j][0]=displayXY[i][j][0];
-			sea[i][j][1]=displayXY[i][j][1];
-			sea[i][j][2]=c[i][j].real;
+  if (normals_only)
+  {
+    for (int i=0;i<NX;i++)
+    {
+      for (int j=0;j<NY;j++)
+      {
+        sea[i][j][0]=(float)i;
+        sea[i][j][1]=(float)j;
+        sea[i][j][2]=c[i][j].real;
 
-			big_normals[i][j][0]=normals[i][j][0];
-			big_normals[i][j][1]=normals[i][j][1];
-			big_normals[i][j][2]=normals[i][j][2];
-		}
-	}
+        big_normals[i][j][0]=normals[i][j][0];
+        big_normals[i][j][1]=normals[i][j][1];
+        big_normals[i][j][2]=normals[i][j][2];
+      }
+    }
+  }
+  else
+  {
+    for (int i=0;i<NX;i++)
+    {
+      for (int j=0;j<NY;j++)
+      {
+        sea[i][j][0]=displayXY[i][j][0];
+        sea[i][j][1]=displayXY[i][j][1];
+        sea[i][j][2]=c[i][j].real;
+
+        big_normals[i][j][0]=normals[i][j][0];
+        big_normals[i][j][1]=normals[i][j][1];
+        big_normals[i][j][2]=normals[i][j][2];
+      }
+    }
+  }
 
 	//now fill in the final row and column of the sea correctly
 	// and fill in the normals
