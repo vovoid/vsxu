@@ -114,9 +114,6 @@ public:
   }
 };
 
-
-
-
 class vsx_module_mesh_bspline_vertices : public vsx_module {
   // in
   vsx_module_param_mesh* source;
@@ -205,8 +202,6 @@ public:
     //  }
   }
 };
-
-
 
 class vsx_module_mesh_lightning_vertices : public vsx_module {
   // in
@@ -1071,22 +1066,6 @@ public:
       n_segs = (int)num_planes->get();
     }
     result->set_p(mesh);
-    /*else {
-      if (num_points->get() < mesh->data->vertices.size()) {
-        mesh->data->vertices.reset_used((int)num_points->get());
-      } else
-      if (num_points->get() > mesh->data->vertices.size()) {
-        for (int i = mesh->data->vertices.size(); i < (int)num_points->get(); ++i) {
-          mesh->data->vertices[i].x = (rand()%10000)*0.0001*scaling->get(0);
-          mesh->data->vertices[i].y = (rand()%10000)*0.0001*scaling->get(1);
-          mesh->data->vertices[i].z = (rand()%10000)*0.0001*scaling->get(2);
-        }
-
-      }
-    }
-      printf("randMesh done %d\n",mesh->data->vertices.size());*/
-
-    //  }
   }
 };
 
@@ -1215,6 +1194,91 @@ public:
 
 
 
+
+    first_run = false;
+    mesh->timestamp++;
+    result->set_p(mesh);
+  }
+};
+
+class vsx_module_mesh_grid : public vsx_module {
+  // in
+  vsx_module_param_float* power_of_two_size;
+  // out
+  vsx_module_param_mesh* result;
+  // internal
+  vsx_mesh* mesh;
+  bool first_run;
+  int l_param_updates;
+public:
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "mesh;solid;mesh_grid";
+    info->description = "";
+    info->in_param_spec = "power_of_two_size:float";
+    info->out_param_spec = "mesh:mesh";
+    info->component_class = "mesh";
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    l_param_updates = -1;
+    loading_done = true;
+    power_of_two_size = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"power_of_two_size");
+    power_of_two_size->set(5);
+
+    result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
+    first_run = true;
+  }
+
+  bool init() {
+    mesh = new vsx_mesh;
+    return true;
+  }
+
+  void on_delete()
+  {
+    delete mesh;
+  }
+
+  void run() {
+    if (!first_run && param_updates == 0) return;
+    param_updates = 0;
+    size_t width = (size_t)pow(2, (size_t)power_of_two_size->get());
+
+    float onedivwidth = 1.0 / (float)width;
+    float halfonedivwidth = -0.5f;
+    for (size_t x = 0; x < width; x++)
+    {
+      for (size_t z = 0; z < width; z++)
+      {
+        size_t ipos = x + z*width;
+        mesh->data->vertices[ipos].x = halfonedivwidth + ((float)x) * onedivwidth;
+        mesh->data->vertices[ipos].z = halfonedivwidth + ((float)z) * onedivwidth;
+        mesh->data->vertices[ipos].y = 0.0;
+        mesh->data->vertex_normals[ipos].x = 0.0;
+        mesh->data->vertex_normals[ipos].z = 0.0;
+        mesh->data->vertex_normals[ipos].y = 1.0;
+        mesh->data->vertex_tex_coords[ipos].s = ((float)x) * onedivwidth;
+        mesh->data->vertex_tex_coords[ipos].t = ((float)z) * onedivwidth;
+      }
+    }
+    for (int x = 1; x < width; x++)
+    {
+      for (int z = 1; z < width; z++)
+      {
+        vsx_face a;
+        a.a = x-1 +  (z - 1) * width;
+        a.b = x   +  (z - 1) * width;
+        a.c = x-1 +  (z    ) * width;
+        mesh->data->faces.push_back(a);
+        a.a = x   +  (z - 1) * width;
+        a.b = x-1 +  (z    ) * width;
+        a.c = x   +  (z    ) * width;
+        mesh->data->faces.push_back(a);
+      }
+    }
 
     first_run = false;
     mesh->timestamp++;
@@ -2278,10 +2342,6 @@ public:
   }
 };
 
-
-
-
-
 class vsx_module_mesh_ribbon_cloth : public vsx_module {
   // in
   vsx_module_param_float3* start_point;
@@ -2324,10 +2384,6 @@ public:
         "damping_Factor:float,"
         "step_size:float,"
         "stiffness:float,"
-        //"up_vector:float3,"
-//        "width:float,"
-        //"skew_amp:float,"
-        //"time_amp:float"
         ;
     info->out_param_spec = "mesh:mesh";
     info->component_class = "mesh";
@@ -2365,7 +2421,6 @@ public:
 
   void run()
   {
-    //if (l_param_updates != param_updates) first_run = true;
     mesh->data->vertices[0] = vsx_vector(0);
 
     vsx_vector a(start_point->get(0), start_point->get(1), start_point->get(2));
@@ -2611,26 +2666,6 @@ public:
     mesh->timestamp++;
     result->set(mesh);
     num_runs++;
-//    printf("\n");
-    
-    //if (num_runs == 10) exit(0);
-    //}
-    /*else {
-      if (num_points->get() < mesh.data->vertices.size()) {
-        mesh.data->vertices.reset_used((int)num_points->get());
-      } else
-      if (num_points->get() > mesh.data->vertices.size()) {
-        for (int i = mesh.data->vertices.size(); i < (int)num_points->get(); ++i) {
-          mesh.data->vertices[i].x = (rand()%10000)*0.0001*scaling->get(0);
-          mesh.data->vertices[i].y = (rand()%10000)*0.0001*scaling->get(1);
-          mesh.data->vertices[i].z = (rand()%10000)*0.0001*scaling->get(2);
-        }
-
-      }
-    }
-      printf("randMesh done %d\n",mesh.data->vertices.size());*/
-
-    //  }
   }
 };
 
@@ -2668,6 +2703,7 @@ vsx_module* create_new_module(unsigned long module) {
     case 11: return (vsx_module*)(new vsx_module_mesh_lightning_vertices);
     case 12: return (vsx_module*)(new vsx_module_mesh_ribbon_cloth);
     case 13: return (vsx_module*)(new vsx_module_mesh_bspline_vertices);
+    case 14: return (vsx_module*)(new vsx_module_mesh_grid);
   }
   return 0;
 }
@@ -2688,10 +2724,11 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 11: delete (vsx_module_mesh_lightning_vertices*)m; break;
     case 12: delete (vsx_module_mesh_ribbon_cloth*)m; break;
     case 13: delete (vsx_module_mesh_bspline_vertices*)m; break;
+    case 14: delete (vsx_module_mesh_grid*)m; break;
   }
 } 
 
 unsigned long get_num_modules() {
-  return 14;
+  return 15;
 }
 
