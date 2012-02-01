@@ -47,14 +47,14 @@
 
 
 class vsx_widget_pool_tree : public vsx_widget_base_editor {
-	vsx_texture mtex_blob;
-	vsx_widget* name_dialog;
-	bool dragging;
-	vsx_widget_coords drag_coords;
-	int mod_i;
-	vsx_string macro_name;
-	vsx_vector drop_pos;
-	vsx_widget* server;
+  vsx_texture mtex_blob;
+  vsx_widget* name_dialog;
+  bool dragging;
+  vsx_widget_coords drag_coords;
+  int mod_i;
+  vsx_string macro_name;
+  vsx_vector drop_pos;
+  vsx_widget* server;
   int draw_tooltip;
   vsx_string tooltip_text;
   vsx_vector tooltip_pos;
@@ -63,81 +63,81 @@ public:
 
   void set_server(vsx_widget* serv)
   {
-  	server = serv;
+    server = serv;
   }
 
-	void extra_init()
-	{
-		dragging = false;
+  void extra_init()
+  {
+    dragging = false;
     draw_tooltip = 0;
-		editor->mirror_mouse_move_object = this;
-		editor->mirror_mouse_move_passive_object = this;
-		editor->mirror_mouse_down_object = this;
-		editor->mirror_mouse_up_object = this;
-		editor->enable_syntax_highlighting = false;
-		name_dialog = add(new dialog_query_string("name of component","Choose a unique name for your component"),"component_create_name");
-		//((dialog_query_string*)name_dialog)->init();
-		mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png");
-		set_render_type(VSX_WIDGET_RENDER_2D);
-	}
+    editor->mirror_mouse_move_object = this;
+    editor->mirror_mouse_move_passive_object = this;
+    editor->mirror_mouse_down_object = this;
+    editor->mirror_mouse_up_object = this;
+    editor->enable_syntax_highlighting = false;
+    name_dialog = add(new dialog_query_string("name of component","Choose a unique name for your component"),"component_create_name");
+    //((dialog_query_string*)name_dialog)->init();
+    mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png");
+    set_render_type(VSX_WIDGET_RENDER_2D);
+  }
 
-	void event_mouse_move(vsx_widget_distance distance, vsx_widget_coords coords)
-	{
-		//printf("mouse move");
-		//mod_i = i_rows_lookup[editor->selected_line];
-		//if (mod_i != -1)
-		//{
-		if (get_selected_item() != "")
-		{
-			dragging = true;
-			//printf("found module %s\n",i_mod_info[mod_i]->identifier.c_str());
-			drag_coords = coords;
-		}
+  void event_mouse_move(vsx_widget_distance distance, vsx_widget_coords coords)
+  {
+    //printf("mouse move");
+    //mod_i = i_rows_lookup[editor->selected_line];
+    //if (mod_i != -1)
+    //{
+    if (get_selected_item() != "")
+    {
+      dragging = true;
+      //printf("found module %s\n",i_mod_info[mod_i]->identifier.c_str());
+      drag_coords = coords;
+    }
 //		}
-	};
+  };
 
-	void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
-	{
-		if (dragging) dragging = false;
-		//vsx_widget_base_edit::event_mouse_down(distance, coords, button);
-		if (get_selected_item() != "")
-		{
-  		command_q_b.add_raw("seq_pool select " + editor->get_line(editor->selected_line) );
-  		parent->vsx_command_queue_b(this);
-		}
-	}
+  void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+  {
+    if (dragging) dragging = false;
+    //vsx_widget_base_edit::event_mouse_down(distance, coords, button);
+    if (get_selected_item() != "")
+    {
+      command_q_b.add_raw("seq_pool select " + editor->get_line(editor->selected_line) );
+      parent->vsx_command_queue_b(this);
+    }
+  }
 
-	vsx_string get_selected_item()
-	{
-		if (editor->get_line(editor->selected_line) != "[none defined]")
-			return editor->get_line(editor->selected_line);
-		return "";
-	}
+  vsx_string get_selected_item()
+  {
+    if (editor->get_line(editor->selected_line) != "[none defined]")
+      return editor->get_line(editor->selected_line);
+    return "";
+  }
 
 
-	virtual void i_draw()
-	{
-		vsx_widget_base_editor::i_draw();
+  virtual void i_draw()
+  {
+    vsx_widget_base_editor::i_draw();
 
-	}
+  }
 
-	virtual void draw_2d()// { if (render_type == VSX_WIDGET_RENDER_2D) { if (visible) i_draw(); } if (visible) draw_children_2d();}
-	{
-		i_draw();
-		draw_children_2d();
-		// draw the little box
-		if (dragging && m_focus != editor) dragging = false;
-		if (dragging)
-		{
-			mtex_blob.bind();
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-			float l_asp = screen_x/screen_y;
-			//printf("screen aspect: %f\n",screen_aspect);
-			glColor4f(1,1,1,1);
-			draw_box_tex_c(drag_coords.screen_global, 0.03/l_asp, 0.03);
-			mtex_blob._bind();
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		}
+  virtual void draw_2d()// { if (render_type == VSX_WIDGET_RENDER_2D) { if (visible) i_draw(); } if (visible) draw_children_2d();}
+  {
+    i_draw();
+    draw_children_2d();
+    // draw the little box
+    if (dragging && m_focus != editor) dragging = false;
+    if (dragging)
+    {
+      mtex_blob.bind();
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+      float l_asp = screen_x/screen_y;
+      //printf("screen aspect: %f\n",screen_aspect);
+      glColor4f(1,1,1,1);
+      draw_box_tex_c(drag_coords.screen_global, 0.03/l_asp, 0.03);
+      mtex_blob._bind();
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
 
     if (draw_tooltip && m_o_focus == editor && !dragging) {
       myf.color.a = 0.0f;
@@ -154,11 +154,11 @@ public:
       myf.print(tooltip_pos, tooltip_text, 0.022f);
 
     }
-	}
-	void event_mouse_up(vsx_widget_distance distance, vsx_widget_coords coords, int button)
-	{
-		if (dragging)
-		{
+  }
+  void event_mouse_up(vsx_widget_distance distance, vsx_widget_coords coords, int button)
+  {
+    if (dragging)
+    {
       vsx_widget_distance l_distance;
       vsx_widget* search_widget = root->find_component(coords,l_distance);
       if (search_widget)
@@ -168,7 +168,7 @@ public:
           drop_pos = l_distance.center;
           if (((vsx_widget_seq_channel*)search_widget)->channel_type == VSX_WIDGET_SEQ_CHANNEL_TYPE_MASTER)
           {
-						((vsx_widget_seq_channel*)search_widget)->drop_master_channel(distance,coords,editor->get_line(editor->selected_line));
+            ((vsx_widget_seq_channel*)search_widget)->drop_master_channel(distance,coords,editor->get_line(editor->selected_line));
           }
           // split the identifier into the name
           //vsx_avector<vsx_string> parts;
@@ -176,106 +176,122 @@ public:
           //explode(i_mod_info[mod_i]->identifier, deli, parts);
           //vsx_string module_name = parts[parts.size()-1];
           //if (ctrl)
-					//((dialog_query_string*)name_dialog)->show(((vsx_widget_server*)server)->get_unique_name(module_name));
+          //((dialog_query_string*)name_dialog)->show(((vsx_widget_server*)server)->get_unique_name(module_name));
           //else
           //{
-          	//command_q_b.add_raw("component_create_name "+((vsx_widget_server*)server)->get_unique_name(module_name));
-          	//vsx_command_queue_b(this);
+            //command_q_b.add_raw("component_create_name "+((vsx_widget_server*)server)->get_unique_name(module_name));
+            //vsx_command_queue_b(this);
           //}
         }
       }
-			dragging = false;
-		}
-	}
+      dragging = false;
+    }
+  }
 
 void vsx_command_process_b(vsx_command_s *t) {}
 };
 
 vsx_widget_seq_pool_manager::vsx_widget_seq_pool_manager() {
   // common init
-	render_type = VSX_WIDGET_RENDER_3D;
-  	vsx_widget_window::init();
-  	init_run = true;
-  	visible = 0;
-  	title = "Animation Clips";
-  	allow_resize_x = allow_resize_y = true;
-  	set_size(vsx_vector(0.15f, 0.7f));
-  	coord_related_parent = false;
+  render_type = VSX_WIDGET_RENDER_3D;
+    vsx_widget_window::init();
+    init_run = true;
+    visible = 0;
+    title = "Animation Clips";
+    allow_resize_x = allow_resize_y = true;
+    set_size(vsx_vector(0.15f, 0.7f));
+    coord_related_parent = false;
   // tree init
-  	vsx_widget_pool_tree *e = (vsx_widget_pool_tree*)add(new vsx_widget_pool_tree,"e");
-  	e->init();
-  	e->set_string("[none defined]");
-  	e->set_render_type(render_type);
-  	e->coord_type = VSX_WIDGET_COORD_CORNER;
-  	e->set_pos(vsx_vector(size.x/2,size.y/2));
-  	e->editor->set_font_size(0.016f);
-  	e->size_from_parent = true;
-  	e->editor->editing_enabled = false;
-  	e->editor->selected_line_highlight = true;
-  	e->set_pos(vsx_vector(size.x/2,size.y/2));
-  	e->pos_from_parent = true;
-  	e->extra_init();
-  	edit = (vsx_widget*)e;
-  	e->extra_init();
+    vsx_widget_pool_tree *e = (vsx_widget_pool_tree*)add(new vsx_widget_pool_tree,"e");
+    e->init();
+    e->set_string("[none defined]");
+    e->set_render_type(render_type);
+    e->coord_type = VSX_WIDGET_COORD_CORNER;
+    e->set_pos(vsx_vector(size.x/2,size.y/2));
+    e->editor->set_font_size(0.016f);
+    e->size_from_parent = true;
+    e->editor->editing_enabled = false;
+    e->editor->selected_line_highlight = true;
+    e->set_pos(vsx_vector(size.x/2,size.y/2));
+    e->pos_from_parent = true;
+    e->extra_init();
+    edit = (vsx_widget*)e;
+    e->extra_init();
 
   // buttons
-  	button_add = add(new vsx_widget_button,"add");
-  	button_add->init();
-		button_add->title = "ADD";
-  	button_add->commands.adds(4,"add","add","");
+    button_add = add(new vsx_widget_button,"add");
+    button_add->init();
+    button_add->title = "ADD";
+    button_add->commands.adds(4,"add","add","");
 
-	  button_del = add(new vsx_widget_button,"del");
-	  button_del->init();
-		button_del->title = "DEL";
-	  button_del->commands.adds(4,"del","del","");
+    button_del = add(new vsx_widget_button,"del");
+    button_del->init();
+    button_del->title = "DEL";
+    button_del->commands.adds(4,"del","del","");
 
-	  button_toggle_edit = add(new vsx_widget_button,"edit");
-	  button_toggle_edit->init();
-		button_toggle_edit->title = "EDIT";
-	  button_toggle_edit->commands.adds(4,"edit","edit","");
+    button_toggle_edit = add(new vsx_widget_button,"edit");
+    button_toggle_edit->init();
+    button_toggle_edit->title = "EDIT";
+    button_toggle_edit->commands.adds(4,"edit","edit","");
 
-	  button_clone = add(new vsx_widget_button,"clone");
-	  button_clone->init();
-		button_clone->title = "CLONE";
-	  button_clone->commands.adds(4,"clone","clone","");
+    button_clone = add(new vsx_widget_button,"clone");
+    button_clone->init();
+    button_clone->title = "CLONE";
+    button_clone->commands.adds(4,"clone","clone","");
 
+    button_import = add(new vsx_widget_button,"import");
+    button_import->init();
+    button_import->title = "IMP";
+    button_import->commands.adds(4,"gui_import","gui_import","");
+
+    button_export = add(new vsx_widget_button,"export");
+    button_export->init();
+    button_export->title = "EXP";
+    button_export->commands.adds(4,"gui_export","gui_export","");
 
   // search field
-  	vsx_widget_base_edit *s = (vsx_widget_base_edit*)add(new vsx_widget_base_edit,"e");
-  	s->init();
-  	s->set_font_size(font_size); // 0.02f
-  	s->size_from_parent = true;
-  	s->single_row = true;
-  	s->set_string("");
-  	s->caret_goto_end();
-  	s->allowed_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#%&()=+?-_";
-  	s->mirror_keystrokes_object = this;
-  	search = (vsx_widget*)s;
-	// dialogs init
- 	  name_dialog = add(new dialog_query_string("name of pool","Choose a unique name for your Animation / Clip"),"dialog_add");
- 	  ((dialog_query_string*)name_dialog)->set_allowed_chars(s->allowed_chars);
+    vsx_widget_base_edit *s = (vsx_widget_base_edit*)add(new vsx_widget_base_edit,"e");
+    s->init();
+    s->set_font_size(font_size); // 0.02f
+    s->size_from_parent = true;
+    s->single_row = true;
+    s->set_string("");
+    s->caret_goto_end();
+    s->allowed_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#%&()=+?-_";
+    s->mirror_keystrokes_object = this;
+    search = (vsx_widget*)s;
+  // dialogs init
+    name_dialog = add(new dialog_query_string("name of pool","Choose a unique name for your Animation / Clip"),"dialog_add");
+    ((dialog_query_string*)name_dialog)->set_allowed_chars(s->allowed_chars);
 
- 	  clone_name_dialog = add(new dialog_query_string("name of clone pool","Choose a unique name for your clone of the Animation / Clip"),"dialog_clone");
- 	  ((dialog_query_string*)clone_name_dialog)->set_allowed_chars(s->allowed_chars);
- 	  sequencer = 0;
+    clone_name_dialog = add(new dialog_query_string("name of clone pool","Choose a unique name for your clone of the Animation / Clip"),"dialog_clone");
+    ((dialog_query_string*)clone_name_dialog)->set_allowed_chars(s->allowed_chars);
+
+    import_name_dialog = add(new dialog_query_string("import animation file","Name of the file (in data/animations/*)"),"dialog_import");
+    ((dialog_query_string*)import_name_dialog)->set_allowed_chars(s->allowed_chars);
+
+    export_name_dialog = add(new dialog_query_string("export animation file","Name of the file (in data/animations/*)"),"dialog_export");
+    ((dialog_query_string*)export_name_dialog)->set_allowed_chars(s->allowed_chars);
+  // general inits
+    sequencer = 0;
   // done
 }
 
 void vsx_widget_seq_pool_manager::init()
 {
-	backwards_message("seq_pool dump_names");
+  backwards_message("seq_pool dump_names");
 }
 
 void vsx_widget_seq_pool_manager::set_server(vsx_widget* serv)
 {
-	((vsx_widget_pool_tree*)edit)->set_server(serv);
+  ((vsx_widget_pool_tree*)edit)->set_server(serv);
 }
 
 bool vsx_widget_seq_pool_manager::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
 {
-	vsx_string filter = ((vsx_widget_base_edit*)search)->get_string();
-	((vsx_widget_base_editor*)edit)->editor->set_filter_string( filter );
-	return true;
+  vsx_string filter = ((vsx_widget_base_edit*)search)->get_string();
+  ((vsx_widget_base_editor*)edit)->editor->set_filter_string( filter );
+  return true;
 }
 
 void vsx_widget_seq_pool_manager::show() {
@@ -293,99 +309,105 @@ void vsx_widget_seq_pool_manager::show(vsx_string value) {
 
 void vsx_widget_seq_pool_manager::i_draw()
 {
-	vsx_widget_window::i_draw();
-	button_add->set_size(vsx_vector(0.03f,font_size));
-	button_add->set_pos(vsx_vector(button_add->size.x*0.5+dragborder,size.y-font_size*2.5f));
-	button_del->set_size(vsx_vector(0.03f,font_size));
-	button_del->set_pos(vsx_vector(button_add->size.x*1.5+dragborder,size.y-font_size*2.5f));
-	button_toggle_edit->set_size(vsx_vector(0.03f,font_size));
-	button_toggle_edit->set_pos(vsx_vector(button_add->size.x*2.5+dragborder, size.y-font_size*2.5f));
-	button_clone->set_size(vsx_vector(0.03f,font_size));
-	button_clone->set_pos(vsx_vector(button_add->size.x*3.5+dragborder,size.y-font_size*2.5f));
-	edit->set_pos(vsx_vector(size.x/2,size.y/2-font_size*1.5f+dragborder*0.5f));//+dragborder*0.5f
-	edit->set_size(vsx_vector(size.x-dragborder*2,size.y-font_size*3-dragborder));
+  vsx_widget_window::i_draw();
+  button_add->set_size(vsx_vector(0.02f,font_size));
+  button_del->set_size(vsx_vector(0.02f,font_size));
+  button_clone->set_size(vsx_vector(0.02f,font_size));
+  button_toggle_edit->set_size(vsx_vector(0.02f,font_size));
+  button_import->set_size(vsx_vector(0.02f,font_size));
+  button_export->set_size(vsx_vector(0.02f,font_size));
+
+  button_add->set_pos(vsx_vector(button_add->size.x*0.5+dragborder,size.y-font_size*2.5f));
+  button_del->set_pos(vsx_vector(button_add->size.x*1.5+dragborder,size.y-font_size*2.5f));
+  button_toggle_edit->set_pos(vsx_vector(button_add->size.x*2.5+dragborder, size.y-font_size*2.5f));
+  button_clone->set_pos(vsx_vector(button_add->size.x*3.5+dragborder,size.y-font_size*2.5f));
+  button_import->set_pos(vsx_vector(button_add->size.x*4.5+dragborder,size.y-font_size*2.5f));
+  button_export->set_pos(vsx_vector(button_add->size.x*5.5+dragborder,size.y-font_size*2.5f));
+
+  edit->set_pos(vsx_vector(size.x/2,size.y/2-font_size*1.5f+dragborder*0.5f));//+dragborder*0.5f
+  edit->set_size(vsx_vector(size.x-dragborder*2,size.y-font_size*3-dragborder));
   search->set_size(vsx_vector(size.x-dragborder*2, font_size));
   search->set_pos(vsx_vector(size.x/2,size.y-font_size*1.5f));
 }
 
 void vsx_widget_seq_pool_manager::vsx_command_process_b(vsx_command_s *t) {
-	// MESSAGES FROM THE ENGINE
-	if (t->cmd == "seq_pool")
-	{
-		if (t->parts[1] == "del")
-		{
+  // MESSAGES FROM THE ENGINE
+  if (t->cmd == "seq_pool")
+  {
+    if (t->parts[1] == "del")
+    {
 
-		}
-		if (t->parts[1] == "dump_names")
-		{
-			if (t->parts.size() > 2)
-			{
-				((vsx_widget_pool_tree*)edit)->set_string(str_replace(";", "\n", t->parts[2]));
-			} else
-			{
-				((vsx_widget_pool_tree*)edit)->set_string("[none defined]");
-			}
-		} else
-		if (t->parts[1] == "clear_sequencer")
-		{
-			if (sequencer)
-			{
-				((vsx_widget_sequence_editor*)sequencer)->clear_sequencer();
-				((vsx_widget_sequence_editor*)sequencer)->load_sequence_list();
-			}
-		} else
-		if (t->parts[1] == "pseq_p_ok" || t->parts[1] == "pseq_r_ok" || t->parts[1] == "pseq_l_dump_ok" || t->parts[1] == "seq_list_ok")
-		{
-			if (sequencer)
-			{
-				vsx_string command;
-				for (unsigned long i = 1; i < t->parts.size(); i++)
-				{
-					if (i != 1) command += " ";
-					command += t->parts[i];
-				}
-				command_q_b.add_raw(command);
-				sequencer->vsx_command_queue_b(this,true);
-			}
-		} else
-		if (t->parts[1] == "toggle_edit") {
-			if (t->parts[2] == "1")
-			{
-				//sequence init
-				sequencer = (vsx_widget*)add(new vsx_widget_sequence_editor,"Animation Sequencer");
-				((vsx_widget_sequence_editor*)sequencer)->disable_master_channel = true;
-				sequencer->init();
-				sequencer->set_render_type(render_type);
-				sequencer->constrained_y = sequencer->constrained_x = false;
-				//sequencer->set_pos(vsx_vector(pos.x+0.42f,pos.y-sequencer->size.y*0.5f));
-				sequencer->set_render_type(VSX_WIDGET_RENDER_3D);
-				sequencer->coord_related_parent = false;
-				sequencer->set_pos(vsx_vector(0.0f,-0.6f));
-			} else
-			{
-				if (sequencer)
-				{
-					sequencer->_delete();
-					sequencer = 0;
-				}
-			}
+    }
+    if (t->parts[1] == "dump_names")
+    {
+      if (t->parts.size() > 2)
+      {
+        ((vsx_widget_pool_tree*)edit)->set_string(str_replace(";", "\n", t->parts[2]));
+      } else
+      {
+        ((vsx_widget_pool_tree*)edit)->set_string("[none defined]");
+      }
+    } else
+    if (t->parts[1] == "clear_sequencer")
+    {
+      if (sequencer)
+      {
+        ((vsx_widget_sequence_editor*)sequencer)->clear_sequencer();
+        ((vsx_widget_sequence_editor*)sequencer)->load_sequence_list();
+      }
+    } else
+    if (t->parts[1] == "pseq_p_ok" || t->parts[1] == "pseq_r_ok" || t->parts[1] == "pseq_l_dump_ok" || t->parts[1] == "seq_list_ok")
+    {
+      if (sequencer)
+      {
+        vsx_string command;
+        for (unsigned long i = 1; i < t->parts.size(); i++)
+        {
+          if (i != 1) command += " ";
+          command += t->parts[i];
+        }
+        command_q_b.add_raw(command);
+        sequencer->vsx_command_queue_b(this,true);
+      }
+    } else
+    if (t->parts[1] == "toggle_edit") {
+      if (t->parts[2] == "1")
+      {
+        //sequence init
+        sequencer = (vsx_widget*)add(new vsx_widget_sequence_editor,"Animation Sequencer");
+        ((vsx_widget_sequence_editor*)sequencer)->disable_master_channel = true;
+        sequencer->init();
+        sequencer->set_render_type(render_type);
+        sequencer->constrained_y = sequencer->constrained_x = false;
+        //sequencer->set_pos(vsx_vector(pos.x+0.42f,pos.y-sequencer->size.y*0.5f));
+        sequencer->set_render_type(VSX_WIDGET_RENDER_3D);
+        sequencer->coord_related_parent = false;
+        sequencer->set_pos(vsx_vector(0.0f,-0.6f));
+      } else
+      {
+        if (sequencer)
+        {
+          sequencer->_delete();
+          sequencer = 0;
+        }
+      }
 
-			printf("gui got toggle edit: %s\n",t->parts[2].c_str());
-		} else
-		command_q_b.add(t);
-	} else
-	// MESSAGES FOR THE ENGINE
-	if (t->cmd == "time_set" || t->cmd == "pseq_p" || t->cmd == "pseq_r" || t->cmd == "pseq_l_dump" || t->cmd == "seq_list") {
-		vsx_string command = "seq_pool";
-		for (unsigned long i = 0; i < t->parts.size(); i++)
-		{
-			command += " ";
-			command += t->parts[i];
-		}
-		command_q_b.add_raw(command);
-		parent->vsx_command_queue_b(this);
-	} else
-	// GUI COMMANDS
+      printf("gui got toggle edit: %s\n",t->parts[2].c_str());
+    } else
+    command_q_b.add(t);
+  } else
+  // MESSAGES FOR THE ENGINE
+  if (t->cmd == "time_set" || t->cmd == "pseq_p" || t->cmd == "pseq_r" || t->cmd == "pseq_l_dump" || t->cmd == "seq_list") {
+    vsx_string command = "seq_pool";
+    for (unsigned long i = 0; i < t->parts.size(); i++)
+    {
+      command += " ";
+      command += t->parts[i];
+    }
+    command_q_b.add_raw(command);
+    parent->vsx_command_queue_b(this);
+  } else
+  // GUI COMMANDS
   if (t->cmd == "cancel") {
     command_q_b.add(name+"_cancel","cancel");
     parent->vsx_command_queue_b(this);
@@ -393,45 +415,63 @@ void vsx_widget_seq_pool_manager::vsx_command_process_b(vsx_command_s *t) {
     return;
   } else
   if (t->cmd == "add") {
-  	((dialog_query_string*)name_dialog)->show();
-  	return;
+    ((dialog_query_string*)name_dialog)->show();
+    return;
   } else
   if (t->cmd == "dialog_add") {
-  	command_q_b.add_raw("seq_pool add " + t->parts[1]);
-  	parent->vsx_command_queue_b(this);
+    command_q_b.add_raw("seq_pool add " + t->parts[1]);
+    parent->vsx_command_queue_b(this);
   } else
   if (t->cmd ==	"dialog_clone") {
-  	command_q_b.add_raw("seq_pool clone " + ((vsx_widget_pool_tree*)edit)->get_selected_item()+ " " + t->parts[1]);
-  	parent->vsx_command_queue_b(this);
+    command_q_b.add_raw("seq_pool clone " + ((vsx_widget_pool_tree*)edit)->get_selected_item()+ " " + t->parts[1]);
+    parent->vsx_command_queue_b(this);
   } else
- 	if (t->cmd == "edit")
- 	{
- 		backwards_message("seq_pool toggle_edit");
- 	} else
-	if (t->cmd == "clone")
-	{
-		((dialog_query_string*)clone_name_dialog)->show();
-		return;
-	}	else
- 	if (t->cmd == "clear")
- 	{
-		if (sequencer)
-		{
-			sequencer->_delete();
-			sequencer = 0;
-		}
-		((vsx_widget_pool_tree*)edit)->set_string("[none defined]");
- 	} else
+  if (t->cmd ==	"dialog_import") {
+    command_q_b.add_raw("seq_pool import " + t->parts[1]);
+    parent->vsx_command_queue_b(this);
+  } else
+  if (t->cmd ==	"dialog_export") {
+    command_q_b.add_raw("seq_pool export " + t->parts[1]);
+    parent->vsx_command_queue_b(this);
+  } else
+  if (t->cmd == "edit")
+  {
+    backwards_message("seq_pool toggle_edit");
+  } else
+  if (t->cmd == "clone")
+  {
+    ((dialog_query_string*)clone_name_dialog)->show();
+    return;
+  }	else
+  if (t->cmd == "gui_import")
+  {
+    ((dialog_query_string*)import_name_dialog)->show();
+  return;
+  }	else
+  if (t->cmd == "gui_export")
+  {
+    ((dialog_query_string*)export_name_dialog)->show();
+    return;
+  }	else
+  if (t->cmd == "clear")
+  {
+    if (sequencer)
+    {
+      sequencer->_delete();
+      sequencer = 0;
+    }
+    ((vsx_widget_pool_tree*)edit)->set_string("[none defined]");
+  } else
   if (t->cmd == "del") {
-  	vsx_string del_name = ((vsx_widget_pool_tree*)edit)->get_selected_item();
-  	if (del_name != "")
-  	{
-  		backwards_message("seq_pool del "+del_name);
-  	}
-  	return;
+    vsx_string del_name = ((vsx_widget_pool_tree*)edit)->get_selected_item();
+    if (del_name != "")
+    {
+      backwards_message("seq_pool del "+del_name);
+    }
+    return;
   } else
   if (t->cmd == "close") {
-  	visible = 0;
+    visible = 0;
   }
 /*    vsx_string first_res;
       vsx_avector<vsx_string> res;

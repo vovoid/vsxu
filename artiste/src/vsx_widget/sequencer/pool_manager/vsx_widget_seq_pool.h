@@ -33,10 +33,14 @@ class vsx_widget_seq_pool_manager : public vsx_widget_window {
   vsx_widget *button_add;
   vsx_widget *button_del;
   vsx_widget *button_clone;
+  vsx_widget *button_import;
+  vsx_widget *button_export;
   vsx_widget *button_toggle_edit;
   // dialogs
   vsx_widget *name_dialog;
   vsx_widget *clone_name_dialog;
+  vsx_widget *import_name_dialog;
+  vsx_widget *export_name_dialog;
   // sequencer
   vsx_widget *sequencer;
 

@@ -103,6 +103,8 @@ private:
   double frame_dprev;
   double frame_dfps;
   int frame_d;
+  // engine's attempts of keeping up outside framerate (for artiste etc) while loading a state
+  bool ignore_per_frame_time_limit; // default: false
 
   float lastsent;
   int last_e_state;
@@ -211,6 +213,8 @@ public:
   void set_speed(float spd);
   void set_constant_frame_progression(float new_frame_cfp_time);
   void play();
+  
+  void set_ignore_per_frame_time_limit(bool new_value);
 
   // 0 = reserved for wave data
   // 1 = reserved for frequency data

@@ -69,6 +69,9 @@ public:
 	void set_time(float time);
 	vsx_param_sequence_list* get_sequence_list_by_name(vsx_string name);
 	void dump_to_command_list(vsx_command_list &savelist);
+  // save/load from file
+  bool export_to_file(vsx_string filename);
+  bool import_from_file(vsx_string filename);
 
 	// deinitialization
   void clear();
