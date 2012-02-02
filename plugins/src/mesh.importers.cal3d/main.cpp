@@ -183,10 +183,8 @@ public:
   {
     // default
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    result->set_p(mesh_a);
     // bounding box for all bones
     bones_bounding_box = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"bones_bounding_box");
-    bones_bounding_box->set_p(mesh_bbox);
     // bones
     if (bones.size()) {
       for (unsigned long i = 0; i < bones.size(); ++i) {

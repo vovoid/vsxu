@@ -489,7 +489,6 @@ public:
     render_result->set(0);
 
     mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
-    mesh_result->set_p(mesh_out);
   }
 
   void output(vsx_module_param_abs* param) {
