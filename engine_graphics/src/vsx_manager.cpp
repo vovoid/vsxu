@@ -18,7 +18,8 @@
 * with this program; if not, write to the Free Software Foundation, Inc.,
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-
+#define PLATFORM_SHARED_FILES_STL
+#include "vsx_platform.h"
 #include "vsx_manager.h"
 #include "vsx_statelist.h"
 
@@ -111,6 +112,9 @@ vsx_manager::~vsx_manager()
 
 void vsx_manager::init(const char* base_path, const char* sound_type)
 {
+  if(!base_path)
+    base_path =  std::string(PLATFORM_SHARED_FILES_STLSTRING).c_str();
+
   ((vsx_statelist*)int_state_manager)->init(vsx_string(base_path),vsx_string(sound_type));
 }
 
