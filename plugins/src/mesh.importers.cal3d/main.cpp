@@ -215,7 +215,7 @@ public:
     pthread_mutex_lock(&mesh_mutex);
 
     #ifdef VSXU_DEBUG
-    printf("cal3d param set notify..\n");
+    printf("cal3d param set notify..\n",0);
     #endif
 
     if (name == "filename") {
@@ -305,7 +305,7 @@ public:
         }
         engine->filesystem->f_close(fp);
         #ifdef VSXU_DEBUG
-        printf("creating new model\n");
+        printf("creating new model\n",0);
         #endif
         m_model = new CalModel(c_model);
         m_model->attachMesh(mesh_id);

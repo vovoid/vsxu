@@ -39,8 +39,8 @@
 
 
 vsx_widget_base_edit::vsx_widget_base_edit() {
-	enable_syntax_highlighting = true;
-	enable_line_action_buttons = false;
+  enable_syntax_highlighting = true;
+  enable_line_action_buttons = false;
   title ="edit";
   widget_type = VSX_WIDGET_TYPE_EDITOR;
   render_type = VSX_WIDGET_RENDER_2D;
@@ -114,18 +114,18 @@ vsx_widget_base_edit::vsx_widget_base_edit() {
 }
 
 void vsx_widget_base_edit::vsx_command_process_b(vsx_command_s *t) {
-	updates++;
-	if (t->cmd == "action")
-	{
-		// TODO: take into account hidden lines
-		backwards_message("editor_action "+i2s(id)+" "+lines[scroll_y+s2i(t->parts[1])]);
-	}
-	else
-	if (t->cmd == "font_size")
-	{
-		font_size = s2f(t->parts[1]);
-	}
-	else
+  updates++;
+  if (t->cmd == "action")
+  {
+    // TODO: take into account hidden lines
+    backwards_message("editor_action "+i2s(id)+" "+lines[scroll_y+s2i(t->parts[1])]);
+  }
+  else
+  if (t->cmd == "font_size")
+  {
+    font_size = s2f(t->parts[1]);
+  }
+  else
   if (t->cmd == "clear") {
     k_focus = this;
     set_string("");
@@ -242,7 +242,7 @@ void vsx_widget_base_edit::set_string(const vsx_string& str) {
   // hide eventual action buttons
   for (size_t i = 0; i < action_buttons.size(); i++)
   {
-  	action_buttons[i]->visible = 0.0f;
+    action_buttons[i]->visible = 0.0f;
   }
   process_lines();
   calculate_scroll_size();
@@ -250,21 +250,21 @@ void vsx_widget_base_edit::set_string(const vsx_string& str) {
 
 void vsx_widget_base_edit::set_filter_string(vsx_string &filter_string)
 {
-	if (filter_string.size() == 0) {
-		if (filter_string_enabled) lines_visible = lines_visible_stack;
-		filter_string_enabled = false;
-		return;
-	}
+  if (filter_string.size() == 0) {
+    if (filter_string_enabled) lines_visible = lines_visible_stack;
+    filter_string_enabled = false;
+    return;
+  }
 
-	if (!filter_string_enabled) lines_visible_stack = lines_visible;
+  if (!filter_string_enabled) lines_visible_stack = lines_visible;
 
   for (unsigned long i = 0; i < lines.size(); ++i) {
-  	if (lines[i].find(filter_string) != -1) lines_visible[i] = 0;
-  	else lines_visible[i] = 1;
+    if (lines[i].find(filter_string) != -1) lines_visible[i] = 0;
+    else lines_visible[i] = 1;
   }
-	scroll_y = 0;
-	scrollbar_pos_y = 0;
-	filter_string_enabled = true;
+  scroll_y = 0;
+  scrollbar_pos_y = 0;
+  filter_string_enabled = true;
 }
 
 void vsx_widget_base_edit::caret_goto_end() {
@@ -281,7 +281,7 @@ void vsx_widget_base_edit::event_mouse_down(vsx_widget_distance distance,vsx_wid
   vsx_widget::event_mouse_down(distance,coords,button);
   if (!lines.size()) return;
   if (button == 0) {
-  	m_focus = this;
+    m_focus = this;
 //      caretx = floor(distance.corner.x/(font_size*0.37));
 //printf("distance.corner: %f\n",distance.corner.x);
     caretx = (int)floor(distance.corner.x/(font_size*0.37));
@@ -322,133 +322,134 @@ void vsx_widget_base_edit::event_mouse_down(vsx_widget_distance distance,vsx_wid
 
 void vsx_widget_base_edit::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
 {
-	if (mirror_mouse_up_object != 0) mirror_mouse_up_object->event_mouse_up(distance, coords,button);
+  if (mirror_mouse_up_object != 0) mirror_mouse_up_object->event_mouse_up(distance, coords,button);
 }
 
 void vsx_widget_base_edit::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
 {
-	if (mirror_mouse_move_object != 0) mirror_mouse_move_object->event_mouse_move(distance, coords);
+  if (mirror_mouse_move_object != 0) mirror_mouse_move_object->event_mouse_move(distance, coords);
 }
 
 void vsx_widget_base_edit::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
 {
-	if (mirror_mouse_move_passive_object != 0) mirror_mouse_move_passive_object->event_mouse_move_passive(distance, coords);
+  if (mirror_mouse_move_passive_object != 0) mirror_mouse_move_passive_object->event_mouse_move_passive(distance, coords);
 
 }
 
 void vsx_widget_base_edit::event_mouse_wheel(float y)
 {
-	float ff = longest_y - characters_height;
-	scrollbar_pos_y -= y / ff;
-	if (scrollbar_pos_y < 0) scrollbar_pos_y = 0;
-	if (scrollbar_pos_y > 1.0f) scrollbar_pos_y = 1.0f;
+  float ff = longest_y - characters_height;
+  scrollbar_pos_y -= y / ff;
+  if (scrollbar_pos_y < 0) scrollbar_pos_y = 0;
+  if (scrollbar_pos_y > 1.0f) scrollbar_pos_y = 1.0f;
 }
 
 int count_whitespaces(vsx_string& s)
 {
-	size_t i = 0;
-	while (i < s.size() && s[i] == ' ')
-	{
-		//printf("line: %d\n",__LINE__);
-		i++;
-	}
-	return i;
+  size_t i = 0;
+  while (i < s.size() && s[i] == ' ')
+  {
+    //printf("line: %d\n",__LINE__);
+    i++;
+  }
+  return i;
 }
 
 void vsx_widget_base_edit::event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button)
 {
-	if (mirror_mouse_double_click_object) {
-		mirror_mouse_double_click_object->event_mouse_double_click(distance,coords,button);
-	}
+  if (mirror_mouse_double_click_object) {
+    mirror_mouse_double_click_object->event_mouse_double_click(distance,coords,button);
+  }
 
-	if (button == 0)
-	{
-		// 0 0 a c
-		// 1 0  +b
-		// 2 0    +c
-		// 3 0    +d
-		// 4 0  +e
-		// 5 0   +f
-		// 6 1    +g
-		// 7 1    +g
-		// 8 0   +g
-		// 9 0  +g
-		// A 0 g
+  if (button == 0)
+  {
+    // 0 0 a c
+    // 1 0  +b
+    // 2 0    +c
+    // 3 0    +d
+    // 4 0  +e
+    // 5 0   +f
+    // 6 1    +g
+    // 7 1    +g
+    // 8 0   +g
+    // 9 0  +g
+    // A 0 g
 
-		if (filter_string_enabled) return;
+    if (filter_string_enabled) return;
 
 
 
-		event_mouse_down(distance, coords,button);
-		// 1. locate real line
+    event_mouse_down(distance, coords,button);
+    // 1. locate real line
 
-		int real_line = selected_line;
-		/*int clicked_line = carety + (int)scroll_y;
-		int real_line = 0;
-		int num_visible_found = 0;
+    int real_line = selected_line;
+    if (real_line < 0) return;
+    /*int clicked_line = carety + (int)scroll_y;
+    int real_line = 0;
+    int num_visible_found = 0;
 
-		while (num_visible_found < clicked_line) {
-			if (lines_visible[real_line] == 0) num_visible_found++;
-			real_line++;
-		}
-		while (lines_visible[real_line] != 0) real_line++;
-		*/
-		//printf("real_line: %d\n", real_line);
-		if (real_line >= (int)lines.size()-1) return;
-		int real_white = count_whitespaces(lines[real_line]);
-		if (real_white < count_whitespaces(lines[real_line+1]))
-		{
-			real_line++;
-			int new_state = lines_visible[real_line]; // if next line is hidden (>1) set it to 0
-			while (real_line < (int)lines.size() && count_whitespaces(lines[real_line]) > real_white)
-			{
-				//printf("real line: %d\n",real_line);
-				if (!new_state) // next line is not hidden!
-				{
-					if (lines_visible[real_line] == 0) num_hidden_lines++;  // a previously unhidden line is now hidden
-				  lines_visible[real_line]++; // hide line
+    while (num_visible_found < clicked_line) {
+      if (lines_visible[real_line] == 0) num_visible_found++;
+      real_line++;
+    }
+    while (lines_visible[real_line] != 0) real_line++;
+    */
+    //printf("real_line: %d\n", real_line);
+    if (real_line >= (int)lines.size()-1) return;
+    int real_white = count_whitespaces(lines[real_line]);
+    if (real_white < count_whitespaces(lines[real_line+1]))
+    {
+      real_line++;
+      int new_state = lines_visible[real_line]; // if next line is hidden (>1) set it to 0
+      while (real_line < (int)lines.size() && count_whitespaces(lines[real_line]) > real_white)
+      {
+        //printf("real line: %d\n",real_line);
+        if (!new_state) // next line is not hidden!
+        {
+          if (lines_visible[real_line] == 0) num_hidden_lines++;  // a previously unhidden line is now hidden
+          lines_visible[real_line]++; // hide line
 
-					//float ff = longest_y - characters_height;
-				  //scrollbar_pos_y += (1.0 / ff) * 0.10f;
-				  //if (scrollbar_pos_y > 1.0f) scrollbar_pos_y = 1.0f;
-				} else
-				{
-				  lines_visible[real_line]--;
-				  if (lines_visible[real_line] == 0) num_hidden_lines--; // a previously hidden line is now unhidden
-					//float ff = longest_y - characters_height;
-					//scrollbar_pos_y -= 1.0 / ff;
-				  //if (scrollbar_pos_y < 0.0f) scrollbar_pos_y = 0.0f;
-				}
-				real_line++;
-			}
-		}
-		calculate_scroll_size();
-		// 2. check next line if it's more indented
-		// 3. if it's not - do nothing, we're at lowest level
-		// 4. else hide lines until end or less indented
-	}
+          //float ff = longest_y - characters_height;
+          //scrollbar_pos_y += (1.0 / ff) * 0.10f;
+          //if (scrollbar_pos_y > 1.0f) scrollbar_pos_y = 1.0f;
+        } else
+        {
+          lines_visible[real_line]--;
+          if (lines_visible[real_line] == 0) num_hidden_lines--; // a previously hidden line is now unhidden
+          //float ff = longest_y - characters_height;
+          //scrollbar_pos_y -= 1.0 / ff;
+          //if (scrollbar_pos_y < 0.0f) scrollbar_pos_y = 0.0f;
+        }
+        real_line++;
+      }
+    }
+    calculate_scroll_size();
+    // 2. check next line if it's more indented
+    // 3. if it's not - do nothing, we're at lowest level
+    // 4. else hide lines until end or less indented
+  }
 }
 
 void vsx_widget_base_edit::fold_all()
 {
-	int prev_white = 0;
-	int val = 0;
-	int white_frac = 0;
-	for (unsigned long i = 0; i < lines_visible.size(); i++)
-	{
-		int white = count_whitespaces(lines[i]);
-		if (white_frac == 0 && white > prev_white) white_frac = white;
-		//if (white < prev_white) val--;
-		//prev_white = white;
-		//if (val < 0) val = 0;
-		//if (white == 0) val = 0;
-		if (white_frac == 0) val = 0;
-		else
-		val = white / white_frac;
-		//printf("%d %s\n", val,lines[i].c_str());
-		lines_visible[i] = val;
-	}
-	calculate_scroll_size();
+  int prev_white = 0;
+  int val = 0;
+  int white_frac = 0;
+  for (unsigned long i = 0; i < lines_visible.size(); i++)
+  {
+    int white = count_whitespaces(lines[i]);
+    if (white_frac == 0 && white > prev_white) white_frac = white;
+    //if (white < prev_white) val--;
+    //prev_white = white;
+    //if (val < 0) val = 0;
+    //if (white == 0) val = 0;
+    if (white_frac == 0) val = 0;
+    else
+    val = white / white_frac;
+    //printf("%d %s\n", val,lines[i].c_str());
+    lines_visible[i] = val;
+  }
+  calculate_scroll_size();
 }
 
 /*******************************************************************************
@@ -486,12 +487,12 @@ void vsx_widget_base_edit::i_draw() {
 
   int num_visible_found = 0;
   int real_line = 0;
-	while (num_visible_found < scroll_y && real_line < (int)(lines.size()-1)) {
-		//printf("traversing visible found\n");
-		if (lines_visible[real_line] == 0) num_visible_found++;
-		real_line++;
-	}
-	while (lines_visible[real_line] != 0 && real_line < (int)(lines.size()-1)) real_line++;
+  while (num_visible_found < scroll_y && real_line < (int)(lines.size()-1)) {
+    //printf("traversing visible found\n");
+    if (lines_visible[real_line] == 0) num_visible_found++;
+    real_line++;
+  }
+  while (lines_visible[real_line] != 0 && real_line < (int)(lines.size()-1)) real_line++;
 
   int curline = real_line;
   vsx_vector pp = p;
@@ -503,51 +504,51 @@ void vsx_widget_base_edit::i_draw() {
   if (curline < (int)lines.size())
   while (run)
   {
-  	if (lines_visible[curline] == 0)
-  	{
-  		//printf("rendering %d\n",curline);
-	    // save current size for speed in a variable
-	    long cursize = (long)lines[curline].size();
-	    //printf("scroll_x: %d\n",scroll_x);
-	    //printf("curline: %d\n",curline);
-	    //printf("cursize: %d\n",cursize);
-	    if (selected_line_highlight && curline == selected_line)
-	    {
-	    	skin_color[15].gl_color();
-	      myf.syntax_colors[0] = skin_color[16]; // base color
-	    	draw_box(pp,target_size.x,font_size);
-	    }
-	    if (cursize-(long)scroll_x >= (long)characters_width) {
-	      myf.print(pp,lines[curline].substr((int)scroll_x,(int)characters_width),font_size,lines_p[curline].substr((int)scroll_x,(int)characters_width));
-	    } else
-	    if (scroll_x < cursize)
-	    myf.print(pp,lines[curline].substr((int)scroll_x,(int)(lines[curline].size()-floor(scroll_x))),font_size,lines_p[curline].substr((int)scroll_x,(int)(lines[curline].size()-scroll_x)));
+    if (lines_visible[curline] == 0)
+    {
+      //printf("rendering %d\n",curline);
+      // save current size for speed in a variable
+      long cursize = (long)lines[curline].size();
+      //printf("scroll_x: %d\n",scroll_x);
+      //printf("curline: %d\n",curline);
+      //printf("cursize: %d\n",cursize);
+      if (selected_line_highlight && curline == selected_line)
+      {
+        skin_color[15].gl_color();
+        myf.syntax_colors[0] = skin_color[16]; // base color
+        draw_box(pp,target_size.x,font_size);
+      }
+      if (cursize-(long)scroll_x >= (long)characters_width) {
+        myf.print(pp,lines[curline].substr((int)scroll_x,(int)characters_width),font_size,lines_p[curline].substr((int)scroll_x,(int)characters_width));
+      } else
+      if (scroll_x < cursize)
+      myf.print(pp,lines[curline].substr((int)scroll_x,(int)(lines[curline].size()-floor(scroll_x))),font_size,lines_p[curline].substr((int)scroll_x,(int)(lines[curline].size()-scroll_x)));
 
-	    if (enable_line_action_buttons)
-	    {
-	    	if (cur_render_line+1 > (int)action_buttons.size())
-	    	{
-	    		vsx_widget* new_action_button = add(new vsx_widget_button,"ab_"+i2s(cur_render_line));
-	    		new_action_button->init();
-	    		new_action_button->set_size( vsx_vector(0.005f, font_size) );
-	    		new_action_button->coord_related_parent = false;
-	    		new_action_button->render_type = this->render_type;
-	    		new_action_button->title = "x";
-	    		new_action_button->commands.adds(4,"","action",i2s(cur_render_line));
-	    		action_buttons.push_back(new_action_button);
-	    	}
-	    	action_buttons[cur_render_line]->set_pos(pp + vsx_vector(target_size.x-0.0025f,font_size*0.5f));
-	    	action_buttons[cur_render_line]->visible = 1.0f;
-	    }
+      if (enable_line_action_buttons)
+      {
+        if (cur_render_line+1 > (int)action_buttons.size())
+        {
+          vsx_widget* new_action_button = add(new vsx_widget_button,"ab_"+i2s(cur_render_line));
+          new_action_button->init();
+          new_action_button->set_size( vsx_vector(0.005f, font_size) );
+          new_action_button->coord_related_parent = false;
+          new_action_button->render_type = this->render_type;
+          new_action_button->title = "x";
+          new_action_button->commands.adds(4,"","action",i2s(cur_render_line));
+          action_buttons.push_back(new_action_button);
+        }
+        action_buttons[cur_render_line]->set_pos(pp + vsx_vector(target_size.x-0.0025f,font_size*0.5f));
+        action_buttons[cur_render_line]->visible = 1.0f;
+      }
 
-	    pp.y -= font_size;
+      pp.y -= font_size;
 
-	    if (selected_line_highlight && curline == selected_line)
-	    {
-	      myf.syntax_colors[0] = skin_color[14]; // base color
-	    }
-	    cur_render_line++;
-  	}
+      if (selected_line_highlight && curline == selected_line)
+      {
+        myf.syntax_colors[0] = skin_color[14]; // base color
+      }
+      cur_render_line++;
+    }
 //    ++it;
     ++curline;
     //printf("%d %d %d %d\n",cur_render_line,(int)(characters_height-1), (int)curline, (lines.size()-1));
@@ -839,7 +840,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
           //fix_pos();
         }
       }
-    	if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
+      if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
     break;
     // delete
 #ifdef _WIN32
@@ -859,7 +860,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
 #endif
 #endif
       process_line(carety+(int)scroll_y);
-    	if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
+      if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
     break;
     // enter
 #ifdef _WIN32
@@ -904,7 +905,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
         process_line(carety-1+(int)scroll_y);
         process_line(carety+(int)scroll_y);
       }
-    	if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
+      if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
     break;
     // esc
 #ifdef _WIN32
@@ -922,25 +923,25 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
       a_focus = k_focus = parent;
     break;
     default:
-    	if (key > 0) {
-      	if (allowed_chars.size()) {
-	        if (allowed_chars.find(key) == -1) {
-          	break;
-        	}
-      	}
-      	lines[carety+(int)scroll_y].insert(caretx+(int)scroll_x,(char)key);
-      	updates++;
-      	++caretx;
-      	if ((size_t)caretx > lines[carety+(int)scroll_y].size()-(int)scroll_x)
-       	caretx = lines[carety+(int)scroll_y].size()-(int)scroll_x;
-      	int t_scroll_x = (int)scroll_x;
-      	if (caretx+(int)scroll_x > characters_width) ++scroll_x;
-      	//fix_pos();
-      	//cout << scroll_x - t_scroll_x << endl;
-      	caretx -= (int)scroll_x - t_scroll_x;
-      	process_line(carety+(int)scroll_y);
-	    	if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
-    	}
+      if (key > 0) {
+        if (allowed_chars.size()) {
+          if (allowed_chars.find(key) == -1) {
+            break;
+          }
+        }
+        lines[carety+(int)scroll_y].insert(caretx+(int)scroll_x,(char)key);
+        updates++;
+        ++caretx;
+        if ((size_t)caretx > lines[carety+(int)scroll_y].size()-(int)scroll_x)
+        caretx = lines[carety+(int)scroll_y].size()-(int)scroll_x;
+        int t_scroll_x = (int)scroll_x;
+        if (caretx+(int)scroll_x > characters_width) ++scroll_x;
+        //fix_pos();
+        //cout << scroll_x - t_scroll_x << endl;
+        caretx -= (int)scroll_x - t_scroll_x;
+        process_line(carety+(int)scroll_y);
+        if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
+      }
     // FROO
   }
   calculate_scroll_size();
@@ -966,10 +967,10 @@ vsx_string vsx_widget_base_edit::get_string()
 
 vsx_string vsx_widget_base_edit::get_line(unsigned long line)
 {
-	if (line < lines.size()) {
-		return lines[line];
-	}
-	return "";
+  if (line < lines.size()) {
+    return lines[line];
+  }
+  return "";
 }
 
 //***************************************************************************************
