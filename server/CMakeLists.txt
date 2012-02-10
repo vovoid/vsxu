@@ -69,8 +69,6 @@ if(UNIX)
   add_executable(${module_id}  ${SOURCES} ${OS_SOURCES})
   include(../cmake_suffix.txt)
 
-  link_directories("/usr/lib/vsxu")
-
   if (VSXU_OPENGL_ES_2_0 EQUAL 1)
     target_link_libraries(${module_id}
       EGL
