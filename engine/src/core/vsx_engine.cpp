@@ -418,7 +418,7 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
     static_holder.get_factory_names(&mfiles);
     #else
     //printf("globbing plugins from %s\n",(vsx_string(CMAKE_INSTALL_PREFIX)+"/lib/vsxu/plugins").c_str());
-    get_files_recursive(vsx_string(CMAKE_INSTALL_PREFIX)+"/lib/vsxu/plugins",&mfiles,".so","");
+    get_files_recursive(vsx_string(CMAKE_INSTALL_PREFIX)+"/"+vsx_string(VSXU_INSTALL_LIB_DIR)+"/vsxu/plugins",&mfiles,".so","");
     #endif
     //printf("Plugin directory: %s\n", vsx_string(vsxu_base_path+"_plugins_linux").c_str());
   #endif
