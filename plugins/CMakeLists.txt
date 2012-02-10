@@ -91,7 +91,10 @@ add_subdirectory(src/render.opengl)
 add_subdirectory(src/render.opengl.extra)
 add_subdirectory(src/render.oscilloscope)
 add_subdirectory(src/render.text)
-add_subdirectory(src/sound.fmod)
+
+if (EXISTS "src/sound.fmod" AND IS_DIRECTORY "src/sound.fmod")
+  add_subdirectory(src/sound.fmod)
+endif (EXISTS "src/sound.fmod" AND IS_DIRECTORY "src/sound.fmod")
 
 if (UNIX)
   add_subdirectory(src/sound.media_player)
