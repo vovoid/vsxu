@@ -15,7 +15,7 @@ target_link_libraries(
 if (UNIX)
   if (VSXU_ENGINE_STATIC EQUAL 1)
   else (VSXU_ENGINE_STATIC EQUAL 1)
-    install(TARGETS ${module_id} DESTINATION lib/vsxu/plugins)
+    install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR}/vsxu/plugins)
   endif (VSXU_ENGINE_STATIC EQUAL 1)
 endif(UNIX)
 
@@ -25,5 +25,3 @@ set_target_properties(
     PROPERTIES
       PREFIX ""
 )
-
-
