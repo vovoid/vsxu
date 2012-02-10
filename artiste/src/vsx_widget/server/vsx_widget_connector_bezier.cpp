@@ -137,6 +137,10 @@ int vsx_widget_connector_bezier::inside_xy_l(vsx_vector &test, vsx_vector &globa
 
   bez_calc.x3 = ex;
   bez_calc.y3 = ey;
+
+  if (test.x > sx-parent->size.x*0.5f) return 0;
+  if (test.x < ex+parent->size.x*0.5f) return 0;
+
   bez_calc.init();
   float t = bez_calc.t_from_x(test.x);
   //printf("global: %f,%f    t: %f\n", test.x, test.y, t);
