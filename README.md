@@ -18,39 +18,29 @@ presets ("visuals" or "states").
 
 How do i get it?
 -----------------
-Instructions for compiling a basic version of VSXu Ubuntu/Debian:
 
-o) Make sure you have met the build dependencies:
+Compilation Instructions for a basic version of VSXu Ubuntu/Debian:
 
-sudo apt-get install libglew1.6-dev
-sudo apt-get install libglfw-dev
-sudo apt-get install libpng12-dev
-sudo apt-get install libftgl-dev
-sudo apt-get install libjpeg8-dev
-sudo apt-get install libpulse-dev
-sudo apt-get install libxrandr-dev
-sudo apt-get install make
-sudo apt-get install cmake
-sudo apt-get install g++
-sudo apt-get install gcc
-sudo apt-get install git-core
+Make sure you have met the build dependencies:
 
-Optional:
----------
-sudo apt-get install libcv-dev libcvaux-dev
+      sudo apt-get install libglew1.6-dev libglfw-dev libpng12-dev libftgl-dev libjpeg8-dev libpulse-dev libxrandr-dev make cmake g++ gcc git-core
 
-o) Get the VSXu Source from github
+Optional dependencies:
 
-git clone git://github.com/vovoid/vsxu.git
+      sudo apt-get install libcv-dev libcvaux-dev
 
-o) Build it
+Get the VSXu Source from github:
 
-cd vsxu
-mkdir build
-cd build
-cmake ..
-make
-make install
+      git clone git://github.com/vovoid/vsxu.git
+
+Build it:
+
+      cd vsxu
+      mkdir build
+      cd build
+      cmake ..
+      make
+      make install
 
 For more advanced build instructions (and for the instructions for Windows users)
 visit http://www.vsxu.com/development/compiling-from-source
