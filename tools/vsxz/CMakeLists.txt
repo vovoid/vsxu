@@ -21,9 +21,9 @@ add_definitions(
 
 get_filename_component(list_file_path ${CMAKE_CURRENT_LIST_FILE} PATH)
 string(REGEX MATCH "[a-z._-]*$" module_id ${list_file_path})
-message("*******************************************")
+
 message("configuring            " ${module_id})
-message("*******************************************")
+
 
 set(SOURCES
   main.cpp

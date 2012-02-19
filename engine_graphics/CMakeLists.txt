@@ -1,7 +1,7 @@
 set(module_id vsxu_engine_graphics)
-message("*******************************************")
+
 message("configuring            " ${module_id})
-message("*******************************************")
+
 
 project (${module_id})
 
