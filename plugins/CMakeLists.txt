@@ -106,5 +106,7 @@ add_subdirectory(src/system)
 add_subdirectory(src/texture)
 add_subdirectory(src/texture.load)
 
+add_subdirectory(src/bitmap.camera)
+
 endif (VSXU_ENGINE_STATIC EQUAL 1)
 
