@@ -29,7 +29,7 @@
 
 #include "highgui.h"
 
-class module_bitmap_webcam : public vsx_module {
+class module_video_webcam : public vsx_module {
   // in
 
   // out
@@ -44,11 +44,11 @@ class module_bitmap_webcam : public vsx_module {
   int current_frame;
   int previous_frame;
 public:
-  module_bitmap_webcam(){
+  module_video_webcam(){
     m_capture = cvCreateCameraCapture(0);
     m_frame = 0;
   }
-  ~module_bitmap_webcam(){
+  ~module_video_webcam(){
     release_webcam();
   }
 
@@ -61,7 +61,7 @@ public:
   void module_info(vsx_module_info* info)
   {
     info->in_param_spec = "";
-      info->identifier = "bitmaps;loaders;camera";
+      info->identifier = "video;camera";
       info->out_param_spec = "bitmap:bitmap";
       info->component_class = "bitmap";
     info->description = "Fetches camera data as bitmaps";
@@ -127,11 +127,11 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 vsx_module* create_new_module(unsigned long module) {
-  return (vsx_module*)(new module_bitmap_webcam);
+  return (vsx_module*)(new module_video_webcam);
 }
 
 void destroy_module(vsx_module* m,unsigned long module) {
-  delete (module_bitmap_webcam*)m;
+  delete (module_video_webcam*)m;
 }
 
 unsigned long get_num_modules() {

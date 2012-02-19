@@ -139,7 +139,6 @@ add_definitions(-DVSXU_INSTALL_LIB_DIR="${VSXU_INSTALL_LIB_DIR}")
 #add_definitions(-Os -c -fmessage-length=0 -finline-functions)
 #add_definitions(-O3 -c -fmessage-length=0 -finline-functions)
 
-
 ################################################################################
 # VSXU LIBRARIES ###############################################################
 ################################################################################

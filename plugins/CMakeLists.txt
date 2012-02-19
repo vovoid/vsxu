@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 
 function(CREATE_STATIC_GLUE module_id)
   if (VSXU_ENGINE_STATIC EQUAL 1)
@@ -106,7 +106,11 @@ add_subdirectory(src/system)
 add_subdirectory(src/texture)
 add_subdirectory(src/texture.load)
 
-add_subdirectory(src/bitmap.camera)
+find_package( OpenCV )
+
+if(OpenCV_FOUND)
+  add_subdirectory(src/video.camera)
+endif(OpenCV_FOUND)
 
 endif (VSXU_ENGINE_STATIC EQUAL 1)
 
