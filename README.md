@@ -27,7 +27,7 @@ Make sure you have met the build dependencies:
 
 Optional dependencies:
 
-      sudo apt-get install libcv-dev libcvaux-dev
+      sudo apt-get install libcv-dev libcvaux-dev libhighgui-dev
 
 Get the VSXu Source from github:
 
