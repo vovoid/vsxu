@@ -92,6 +92,7 @@ int vsx_widget_connector_bezier::inside_xy_l(vsx_vector &test, vsx_vector &globa
   //if (alt || !ctrl) return 0;
   //if (alt && ctrl) return 0;
   // NOTE! sx/sy is lower right!
+
   float tsx = sx;
   float tex = ex;
   if (ex > sx)
@@ -100,7 +101,7 @@ int vsx_widget_connector_bezier::inside_xy_l(vsx_vector &test, vsx_vector &globa
     tsx = ex;
   }
 
-  if (test.x > tsx || test.x < tex)
+  if (test.x > tsx+sensitivity || test.x < tex-sensitivity)
   {
     #if VSX_DEBUG
       printf("outside sx/ex\n");
@@ -138,19 +139,53 @@ int vsx_widget_connector_bezier::inside_xy_l(vsx_vector &test, vsx_vector &globa
   bez_calc.x3 = ex;
   bez_calc.y3 = ey;
 
-  if (test.x > sx-parent->size.x*0.5f) return 0;
-  if (test.x < ex+parent->size.x*0.5f) return 0;
+  int a = 0, b = 0, c = 0, d = 0;
 
-  bez_calc.init();
-  float t = bez_calc.t_from_x(test.x);
-  //printf("global: %f,%f    t: %f\n", test.x, test.y, t);
-  float y = bez_calc.y_from_t(t);
-  if ( fabs(test.y - y) < 0.005f ) 
+  if (test.y < tsy+parent->size.y*0.5f) a=1;//printf("A\n");
+  if (test.x > tsx-parent->size.x*0.5f) b=1;//printf("B\n");//return 0;
+  if (test.x < tex+parent->size.x*0.5f) c=1;//printf("C\n");//return 0;
+  //printf("%f  %f\n",test.y,ey);
+  if (test.y > tey-parent->size.y*0.5f) d=1;//printf("D\n");
+  //printf("a:%d b:%d c:%d d:%d\n",a,b,c,d);
+  if (a && b) return 0;
+  if (a && c) return 0;
+  if (c && d) return 0;
+  if (b && d) return 0;
+  //printf("ex-sx: %f\n",ex-sx);
+  if (fabs(ex-sx) < 0.005)
   {
-    #if VSX_DEBUG
-    printf("hit on bezier!\n");
-    #endif
-    return coord_type;
+    if (b && c) return coord_type;
+  } else
+  if (fabs(ex-sx) > 0.02)
+  {
+    bez_calc.init();
+    float t = bez_calc.t_from_x(test.x);
+    //printf("global: %f,%f    t: %f\n", test.x, test.y, t);
+    float y = bez_calc.y_from_t(t);
+    if ( fabs(test.y - y) < sensitivity )
+    {
+      #if VSX_DEBUG
+      printf("hit on bezier!\n");
+      #endif
+      return coord_type;
+    }
+  } else
+  {
+    // newton raphson fails on too narrow lines; treat this one as straight line
+    //  *
+    //   '
+    //dy  '
+    // dx  *
+    float dy = ey-sy;
+    float dx = ex-sx;
+    //printf("test.x %f  test.y %f\n",test.x-sx,test.y-sy);
+    float dxdy = dy/dx;
+    float dty = (test.y-sy);
+    float xtest = dty * dxdy;
+    //printf("calc: %f\n",xtest);
+    if ( (test.x > xtest-sensitivity) || test.x < xtest+sensitivity)
+      return coord_type;
+    //
   }
   return 0;
 }
