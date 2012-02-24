@@ -175,7 +175,7 @@ vsx_rand::~vsx_rand()
   delete (mt_state*)state;
 }
 
-float vsx_rand::srand(uint32_t seed)
+void vsx_rand::srand(uint32_t seed)
 {
   mts_seed32((mt_state*)state,seed);
 }
@@ -186,7 +186,7 @@ uint32_t vsx_rand::rand()
 
 float vsx_rand::frand()
 {
-  return mts_ldrand((mt_state*)state);
+  return (float)mts_drand((mt_state*)state);
 }
 
 

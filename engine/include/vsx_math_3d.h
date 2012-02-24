@@ -609,7 +609,7 @@ class vsx_rand {
 public:
   VSX_MATH_3D_DLLIMPORT vsx_rand();
   VSX_MATH_3D_DLLIMPORT ~vsx_rand();
-  VSX_MATH_3D_DLLIMPORT float srand(uint32_t seed);
+  VSX_MATH_3D_DLLIMPORT void srand(uint32_t seed);
   VSX_MATH_3D_DLLIMPORT uint32_t rand();
   VSX_MATH_3D_DLLIMPORT float frand();
 
