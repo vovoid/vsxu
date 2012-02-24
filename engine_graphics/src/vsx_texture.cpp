@@ -49,8 +49,18 @@ std::map<vsx_string, vsx_texture_info> vsx_texture::t_glist;
 void* vsx_texture::t_glist;
 #endif
 
+vsx_texture::vsx_texture(){
+  m_enableMultisample = false;
+  pti_l = 0;
+  rt = 0;
+  valid = false;
+  locked = false;
+  transform_obj = new vsx_transform_neutral;
+  original_transform_obj = 1;
+  }
 
 vsx_texture::vsx_texture(int id, int type) {
+  m_enableMultisample = false;
   pti_l = 0;
   rt = 0;
   texture_info.ogl_id = id;
@@ -147,15 +157,22 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture, bool al
     glGenRenderbuffersEXT(1, &colorBuffer);
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, colorBuffer);
 
-    if (float_texture)
-    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, alpha?GL_RGBA16F_ARB:GL_RGB16F_ARB, width, height);
+    if(m_enableMultisample){
+      if (float_texture)
+        glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, alpha?GL_RGBA16F_ARB:GL_RGB16F_ARB, width, height);
+      else
+        glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, alpha?GL_RGBA8:GL_RGB8, width, height);
+    }
     else
-    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, alpha?GL_RGBA8:GL_RGB8, width, height);
+      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, alpha?GL_RGBA8:GL_RGB8, width, height);
 
     // multi sampled depth buffer
     glGenRenderbuffersEXT(1, &depthBuffer);
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthBuffer);
-    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_DEPTH_COMPONENT, width, height);
+    if(m_enableMultisample)
+      glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_DEPTH_COMPONENT, width, height);
+    else
+      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, width, height);
 
     // create fbo for multi sampled content and attach depth and color buffers to it
     glGenFramebuffersEXT(1, &framebuffer_id);
