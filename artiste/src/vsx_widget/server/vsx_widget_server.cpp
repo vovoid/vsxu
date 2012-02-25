@@ -97,28 +97,27 @@ module browser\n\
   support_interpolation = true;
   interpolation_speed = 3;
   title = name;
-  menu->commands.adds(VSX_COMMAND_MENU,"open module browser (add module)... [left-double-click]", "show_module_browser","");
-  menu->commands.adds(VSX_COMMAND_MENU,"open module list (add module)...", "show_module_browser_list","");
-  menu->commands.adds(VSX_COMMAND_MENU,"open resource browser (preview resources)...", "resource_menu","");
-  menu->commands.adds(VSX_COMMAND_MENU,"add empty macro [alt+left-double-click]", "add_empty_macro","$mpos");
-  menu->commands.adds(VSX_COMMAND_MENU,"add note", "add_note","$mpos");
-  menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
-  menu->commands.adds(VSX_COMMAND_MENU,"project >;load state... (from _states/ dir) [ctrl+left-double-click]","state_menu_load","");
-  menu->commands.adds(VSX_COMMAND_MENU,"project >;save state as... (in _states/ dir)","state_menu_save","");
-  menu->commands.adds(VSX_COMMAND_MENU,"project >;clear state","clear","");
+  menu->commands.adds(VSX_COMMAND_MENU,"new >;empty project","clear","");
+  menu->commands.adds(VSX_COMMAND_MENU,"new >;visualization","state_template_visual","");
+  menu->commands.adds(VSX_COMMAND_MENU,"new >;transition for vsxu player","state_template_fader","");
+  menu->commands.adds(VSX_COMMAND_MENU,"open...                               [ctrl+leftmouse-doubleclick]","state_menu_load","");
+  menu->commands.adds(VSX_COMMAND_MENU,"save as... ","state_menu_save","");
   menu->commands.adds(VSX_COMMAND_MENU,"compile >;music visual (.vsx, '_visuals/' dir) as...","m_package_export_visuals","");
   menu->commands.adds(VSX_COMMAND_MENU,"compile >;music visual fader (.vsx, '_visuals_faders/' dir) as...","m_package_export_visuals_faders","");
   menu->commands.adds(VSX_COMMAND_MENU,"compile >;general package (.vsx '_prods/' dir) as...","m_package_export_prods","");
-  menu->commands.adds(VSX_COMMAND_MENU,"load template >;music visual","state_template_visual","");
-  menu->commands.adds(VSX_COMMAND_MENU,"load template >;music visual fader","state_template_fader","");
   menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
-  menu->commands.adds(VSX_COMMAND_MENU,"master sequencer >;open sequencer window...","sequence_menu","");
-  menu->commands.adds(VSX_COMMAND_MENU,"master sequencer >;----------------------","","");
-  menu->commands.adds(VSX_COMMAND_MENU,"master sequencer >;rewind","rewind","");
-  menu->commands.adds(VSX_COMMAND_MENU,"master sequencer >;play","play","");
-  menu->commands.adds(VSX_COMMAND_MENU,"master sequencer >;stop","stop","");
+  menu->commands.adds(VSX_COMMAND_MENU,"module browser...                              [left-double-click]", "show_module_browser","");
+  menu->commands.adds(VSX_COMMAND_MENU,"module list...", "show_module_browser_list","");
+  menu->commands.adds(VSX_COMMAND_MENU,"resource viewer...", "resource_menu","");
   menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
-  menu->commands.adds(VSX_COMMAND_MENU,"animation clips >;open animation pool manager...","seq_pool_menu","");
+  menu->commands.adds(VSX_COMMAND_MENU,"create macro                               [alt+left-double-click]", "add_empty_macro","$mpos");
+  menu->commands.adds(VSX_COMMAND_MENU,"create note", "add_note","$mpos");
+  menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
+  menu->commands.adds(VSX_COMMAND_MENU,"sequencer >;sequencer...","sequence_menu","");
+  menu->commands.adds(VSX_COMMAND_MENU,"sequencer >;animation clips...","seq_pool_menu","");
+  menu->commands.adds(VSX_COMMAND_MENU,"time >;rewind","rewind","");
+  menu->commands.adds(VSX_COMMAND_MENU,"time >;play","play","");
+  menu->commands.adds(VSX_COMMAND_MENU,"time >;stop","stop","");
   menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
   menu->commands.adds(VSX_COMMAND_MENU,"tools >;undo >;undo [Ctrl+Z]","undo","");
   menu->commands.adds(VSX_COMMAND_MENU,"tools >;undo >;disable","conf","automatic_undo 0");
@@ -144,19 +143,17 @@ module browser\n\
   menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;85fps","conf","global_framerate_limit 85");
   menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;90fps","conf","global_framerate_limit 90");
   menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui framerate limit >;100fps","conf","global_framerate_limit 100");
-  menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-  menu->commands.adds(VSX_COMMAND_MENU,"server  >;connect","show_connect_dialog","");
+  menu->commands.adds(VSX_COMMAND_MENU,"server >;connect to rendering server...","show_connect_dialog","");
   #endif
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
   {
-    menu->commands.adds(VSX_COMMAND_MENU,"server  >;disconnect","dc","");
-    menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
-    menu->commands.adds(VSX_COMMAND_MENU,"shutdown server", "system.shutdown","");
-    menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
+    menu->commands.adds(VSX_COMMAND_MENU,"server >;disconnect","dc","");
+    menu->commands.adds(VSX_COMMAND_MENU,"server >;kill server", "system.shutdown","");
   } else
   {
-    menu->commands.adds(VSX_COMMAND_MENU,"quit artiste", "system.shutdown","");
+    menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
+    menu->commands.adds(VSX_COMMAND_MENU,"exit", "system.shutdown","");
   }
   if (state_name == "")
   state_name ="_default";
@@ -933,7 +930,7 @@ void vsx_widget_server::vsx_command_process_b(vsx_command_s *t) {
 		} else
 		if (t->cmd == "show_module_browser") {
 			front(module_chooser);
-			((vsx_widget_ultra_chooser*)module_chooser)->message = "DRAG MODULE ONTO DESKTOP";
+      ((vsx_widget_ultra_chooser*)module_chooser)->message = "Drag and drop to create a module instance";
 			((vsx_widget_ultra_chooser*)module_chooser)->mode = 0;
 			((vsx_widget_ultra_chooser*)module_chooser)->show();
 		}
@@ -1046,7 +1043,7 @@ void vsx_widget_server::vsx_command_process_b(vsx_command_s *t) {
 		// 1: menu choice, bring up chooser
 		if (t->cmd == "state_menu_load") {
 			front(state_chooser);
-			((vsx_widget_ultra_chooser*)state_chooser)->message = "DOUBLE CLICK TO LOAD STATE";
+      ((vsx_widget_ultra_chooser*)state_chooser)->message = "Double click to load a project";
 			((vsx_widget_ultra_chooser*)state_chooser)->mode = 1;
 			((vsx_widget_ultra_chooser*)state_chooser)->command_receiver = this;
 			((vsx_widget_ultra_chooser*)state_chooser)->command = "state_load";
@@ -1055,7 +1052,7 @@ void vsx_widget_server::vsx_command_process_b(vsx_command_s *t) {
 		} else
 		if (t->cmd == "resource_menu") {
 			front(resource_chooser);
-			((vsx_widget_ultra_chooser*)resource_chooser)->message = "VIEWER ONLY";
+      ((vsx_widget_ultra_chooser*)resource_chooser)->message = "Resource viewer";
 			((vsx_widget_ultra_chooser*)resource_chooser)->mode = 1;
 			((vsx_widget_ultra_chooser*)resource_chooser)->command_receiver = this;
 			((vsx_widget_ultra_chooser*)resource_chooser)->command = "";
