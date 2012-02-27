@@ -143,8 +143,8 @@ public:
 
   // constructors
 
-  vsx_texture();
-  vsx_texture(int id, int type);
+  VSX_TEXTURE_DLLIMPORT vsx_texture();
+  VSX_TEXTURE_DLLIMPORT vsx_texture(int id, int type);
   ~vsx_texture()
   {
     if (original_transform_obj)
