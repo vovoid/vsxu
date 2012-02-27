@@ -59,7 +59,6 @@ class vsx_texture {
   GLuint depthbuffer_id;
   GLuint colorBuffer, depthBuffer, tex_fbo;
   int original_transform_obj;
-  bool m_enableMultisample;
 public:
   bool locked; // this is if another texture gets a texture already in the list, to prevent it from unloading.
                 // if not locked it can safely delete it. This is an approximation of course, but should work
@@ -80,7 +79,7 @@ public:
   vsx_texture_info texture_info;
 
   // pbuffer related functions
-  VSX_TEXTURE_DLLIMPORT void init_buffer(int width, int height, bool float_texture = false, bool alpha = true); // run once
+  VSX_TEXTURE_DLLIMPORT void init_buffer(int width, int height, bool float_texture = false, bool alpha = true, bool multisample = false); // run once
   VSX_TEXTURE_DLLIMPORT void init_buffer_render(int width, int height); // run once, needs support in hardware
   VSX_TEXTURE_DLLIMPORT void deinit_buffer(); // remove the buffer
   VSX_TEXTURE_DLLIMPORT void reinit_buffer(int width, int height, bool float_texture = false, bool alpha = true); // run in stop/start or when changing resolution

@@ -50,7 +50,6 @@ void* vsx_texture::t_glist;
 #endif
 
 vsx_texture::vsx_texture(){
-  m_enableMultisample = false;
   pti_l = 0;
   rt = 0;
   valid = false;
@@ -60,7 +59,6 @@ vsx_texture::vsx_texture(){
   }
 
 vsx_texture::vsx_texture(int id, int type) {
-  m_enableMultisample = false;
   pti_l = 0;
   rt = 0;
   texture_info.ogl_id = id;
@@ -81,7 +79,7 @@ void vsx_texture::init_opengl_texture() {
   texture_info.ogl_type = GL_TEXTURE_2D;
 }
 
-void vsx_texture::init_buffer(int width, int height, bool float_texture, bool alpha) {
+void vsx_texture::init_buffer(int width, int height, bool float_texture, bool alpha, bool enable_multisample) {
 #ifndef VSX_TEXTURE_NO_RT
   locked = false;
   prev_buf = 0;
@@ -157,7 +155,7 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture, bool al
     glGenRenderbuffersEXT(1, &colorBuffer);
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, colorBuffer);
 
-    if(m_enableMultisample){
+    if(enable_multisample){
       if (float_texture)
         glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, alpha?GL_RGBA16F_ARB:GL_RGB16F_ARB, width, height);
       else
@@ -169,7 +167,7 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture, bool al
     // multi sampled depth buffer
     glGenRenderbuffersEXT(1, &depthBuffer);
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthBuffer);
-    if(m_enableMultisample)
+    if(enable_multisample)
       glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_DEPTH_COMPONENT, width, height);
     else
       glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, width, height);
