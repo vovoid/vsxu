@@ -29,6 +29,7 @@
 #include "vsx_module.h"
 #include "vsx_float_array.h"
 #include "vsx_math_3d.h"
+#include "fftreal/fftreal.h"
 
   /*
   i = 0..n	1.3 ^ i	   1.3 ^ i - 1	  1.3^i-1 / 1.3^n	  (1.3^i-1 / 1.3^n) * (n-1) + 1
@@ -120,6 +121,9 @@ class vsx_listener : public vsx_module {
   	vsx_module_param_float_array* spectrum_p_hq;
     vsx_float_array octave_spectrum_hq;
   	vsx_module_param_float_array* octave_spectrum_p_hq;
+    float fftbuf[1024];
+    size_t fftbuf_it;
+    FFTReal* fft;
 
 public:
 
@@ -175,17 +179,6 @@ wave:float_array,\
 normal:complex{spectrum:float_array},hq:complex{spectrum_hq:float_array}";
   info->component_class = "output";
 #endif
-  /*if (!fmod_init) {
-    //printf("Initializing fmod...\n");
-    if (!FSOUND_Init(44100, 32, FSOUND_INIT_ACCURATEVULEVELS ))
-    {
-      printf("Error!\n");
-      printf("%s\n", FMOD_ErrorString(FSOUND_GetError()));
-      FSOUND_Close();
-      //return false;
-    }
-    fmod_init = true;
-  } */
 }
 
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
@@ -249,6 +242,8 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   spectrum_p->set_p(spectrum);
   spectrum_p_hq->set_p(spectrum_hq);
   //printf("spectrum size0: %d\n",spectrum.data->size());
+  fftbuf_it = 0;
+  fft = new FFTReal(512);
   loading_done = true;
 }
 
@@ -269,124 +264,99 @@ int echo_log(const char* message, int a) {
 
 int i;
 
-void run() {
-  //SAudioData* dat = aa->getCurrentData(multiplier->get(),quality->get()+1);
-  float l_mul = multiplier->get()*engine->amp * 0.4f;
-  // set wave
-  if (0 == engine->param_float_arrays.size())
-  {
-    //int i;
-    /*for (i = 0; i < 512; ++i) {
-        (*(wave.data))[i] = (float)(rand()%1000) * 0.0005 * l_mul;
+  void run() {
+    float l_mul = multiplier->get()*engine->amp*0.4f;
+    // set wave
+    if (0 == engine->param_float_arrays.size())
+    {
+      // enable to test using random data when not getting sound
+      //int i;
+      /*for (i = 0; i < 512; ++i) {
+          (*(wave.data))[i] = (float)(rand()%1000) * 0.0005 * l_mul;
+      }
+      wave_p->set_p(wave);
+
+      for (i = 0; i < 512; ++i) {
+          (*(spectrum.data))[i] = (float)(rand()%1000) * 0.0005 * l_mul;
+      }*/
+    } else
+    {
+      vsx_engine_float_array* lv_wave_data = engine->param_float_arrays[0];
+      //vsx_engine_float_array* lv_freq_data = engine->param_float_arrays[1];
+
+      // Process incoming wave data
+      for (i = 0; i < 512; ++i)
+      {
+        const float &f = (*lv_wave_data).array[i];
+        // add to wave buffer
+        (*(wave.data))[i] =  f * l_mul;
+        // add to spectrum buffer
+        fftbuf[fftbuf_it++] = f;
+      }
+      wave_p->set_p(wave);
+
+      // Spectrum analysis
+      fftbuf_it = fftbuf_it % 1024;
+      // do some FFT's
+      float dspectrum[1024];
+      float spectrum_dest[512];
+      fft->do_fft( (float*)&dspectrum, (float*) &fftbuf[0]);
+      float re, im;
+
+      for(int ii = 0; ii < 256; ii++)
+      {
+        re = dspectrum[ii];
+        im = dspectrum[ii + 256];
+        spectrum_dest[ii] = (float)sqrt(re * re + im * im) / 256.0f * l_mul;
+      }
+
+      // calc vu
+      float vu = 0.0f;
+      for (int ii = 0; ii < 256; ii++)
+      {
+        vu += spectrum_dest[ii];
+      }
+      vu_l_p->set(vu);
+      vu_r_p->set(vu);
+
+      for (size_t ii = 0; ii < 512; ii++)
+      {
+        (*(spectrum.data))[ii] = spectrum_dest[ii >> 1] * 3.0f * pow(log( 10.0f + 44100.0f * (ii / 512.0f)) ,1.0f);
+      }
+
     }
-    wave_p->set_p(wave);
-
-    for (i = 0; i < 512; ++i) {
-        (*(spectrum.data))[i] = (float)(rand()%1000) * 0.0005 * l_mul;
-    }*/
-  } else
-  {
-    vsx_engine_float_array* lv_wave_data = engine->param_float_arrays[0];
-    vsx_engine_float_array* lv_freq_data = engine->param_float_arrays[1];
-
-
-    for (i = 0; i < 512; ++i) {
-        (*(wave.data))[i] = (*lv_wave_data).array[i] * l_mul;
-    }
-    wave_p->set_p(wave);
-
-    for (i = 0; i < 512; ++i) {
-        (*(spectrum.data))[i] = (*lv_freq_data).array[i] * l_mul;
-    }
-  }
-  spectrum_p->set_p(spectrum);
-  spectrum_p_hq->set_p(spectrum);
-  //int start = 0;
-  float cur_val = 0.0f;
-
-  float vu = 0.0f;
-
-
-#define spec_calc(obj, start) \
-  for (i = start * 64; i < (start+1)*64; i++) {\
-    cur_val += (*(spectrum.data))[ round((float)i * 0.5f) ];\
-  }\
-  cur_val = (cur_val / 64.0f);\
-  vu += cur_val;\
-  obj->set(cur_val);
-
-  spec_calc(octaves_l_0_p, 0)
-  spec_calc(octaves_l_1_p, 1)
-  spec_calc(octaves_l_2_p, 2)
-  spec_calc(octaves_l_3_p, 3)
-  spec_calc(octaves_l_4_p, 4)
-  spec_calc(octaves_l_5_p, 5)
-  spec_calc(octaves_l_6_p, 6)
-  spec_calc(octaves_l_7_p, 7)
-
-  spec_calc(octaves_r_0_p, 0)
-  spec_calc(octaves_r_1_p, 1)
-  spec_calc(octaves_r_2_p, 2)
-  spec_calc(octaves_r_3_p, 3)
-  spec_calc(octaves_r_4_p, 4)
-  spec_calc(octaves_r_5_p, 5)
-  spec_calc(octaves_r_6_p, 6)
-  spec_calc(octaves_r_7_p, 7)
-
-  vu = 5.5f * vu / 8;
-
-  vu_l_p->set(vu * l_mul);
-  vu_r_p->set(vu * l_mul);
-
-
-//printf("module_listener::run %d\n",__LINE__);
-	/*vu_l_p->set(dat->vu[0] * l_mul);
-	vu_r_p->set(dat->vu[1] * l_mul);
-//	printf("module_listener::run %d\n",__LINE__);
-  octaves_l_0_p->set(dat->octaveSpectrum[0][0]*l_mul);
-  octaves_l_1_p->set(dat->octaveSpectrum[0][1]*l_mul);
-  octaves_l_2_p->set(dat->octaveSpectrum[0][2]*l_mul);
-  octaves_l_3_p->set(dat->octaveSpectrum[0][3]*l_mul);
-  octaves_l_4_p->set(dat->octaveSpectrum[0][4]*l_mul);
-  octaves_l_5_p->set(dat->octaveSpectrum[0][5]*l_mul);
-  octaves_l_6_p->set(dat->octaveSpectrum[0][6]*l_mul);
-  octaves_l_7_p->set(dat->octaveSpectrum[0][7]*l_mul);
-
-  octaves_r_0_p->set(dat->octaveSpectrum[1][0]*l_mul);
-  octaves_r_1_p->set(dat->octaveSpectrum[1][1]*l_mul);
-  octaves_r_2_p->set(dat->octaveSpectrum[1][2]*l_mul);
-  octaves_r_3_p->set(dat->octaveSpectrum[1][3]*l_mul);
-  octaves_r_4_p->set(dat->octaveSpectrum[1][4]*l_mul);
-  octaves_r_5_p->set(dat->octaveSpectrum[1][5]*l_mul);
-  octaves_r_6_p->set(dat->octaveSpectrum[1][6]*l_mul);
-  octaves_r_7_p->set(dat->octaveSpectrum[1][7]*l_mul);*/
-  /*
-  //printf("module_listener::run %d\n",__LINE__);
-  if ((quality->get()+1) & 1) {
-    for (int i = 0; i < 512; ++i) {
-      fft[i] = dat->spectrum[0][i/2]*l_mul;
-    }
-//    printf("module_listener::run %d\n",__LINE__);
-    normalize_fft(fft,spectrum);
-    //printf("module_listener::run %d\n",__LINE__);
     spectrum_p->set_p(spectrum);
-  }
-  //printf("module_listener::run %d\n",__LINE__);
+    spectrum_p_hq->set_p(spectrum);
 
-  if ((quality->get()+1) & 2) {
-    for (int i = 0; i < 512; ++i) {
-      fft[i] = dat->spectrum_512[0][i]*l_mul;
-    }
-    normalize_fft(fft,spectrum_hq);
-    spectrum_p_hq->set_p(spectrum_hq);
-  }*/
-  //printf("module_listener::run %d\n",__LINE__);
-  //printf("wave: %f\n",dat->complexSpectrum[0][12]);
-  //float* fft = FSOUND_DSP_GetSpectrum();
-//  FSOUND_SAMPLE* samp = FSOUND_GetCurrentSample(channel);
-//  if (samp)
-//  printf("sample length: %d\n",FSOUND_Sample_GetLength(samp));
-}
+    // calculate octaves
+    float cur_val = 0.0f;
+    #define spec_calc(obj, start,offset) \
+      cur_val = 0.0f; \
+      for (i = start * 50 + offset; i < (start+1)*50; i++) {\
+        cur_val += (*(spectrum.data))[ round((float)i * 0.5f) ];\
+      }\
+      cur_val = (cur_val / 50.0f);\
+      obj->set(cur_val);
+    //#
+
+    spec_calc(octaves_l_0_p, 0,10)
+    spec_calc(octaves_l_1_p, 1,0)
+    spec_calc(octaves_l_2_p, 2,0)
+    spec_calc(octaves_l_3_p, 3,0)
+    spec_calc(octaves_l_4_p, 4,0)
+    spec_calc(octaves_l_5_p, 5,0)
+    spec_calc(octaves_l_6_p, 6,0)
+    spec_calc(octaves_l_7_p, 7,0)
+
+    octaves_r_0_p->set(octaves_l_0_p->get());
+    octaves_r_1_p->set(octaves_l_1_p->get());
+    octaves_r_2_p->set(octaves_l_2_p->get());
+    octaves_r_3_p->set(octaves_l_3_p->get());
+    octaves_r_4_p->set(octaves_l_4_p->get());
+    octaves_r_5_p->set(octaves_l_5_p->get());
+    octaves_r_6_p->set(octaves_l_6_p->get());
+    octaves_r_7_p->set(octaves_l_7_p->get());
+  }
 };
 
 
