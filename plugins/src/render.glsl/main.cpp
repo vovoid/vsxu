@@ -466,7 +466,7 @@ unsigned long MOD_NM() {
     return 1;
   }
 #if (VSXU_DEBUG)
-  printf("list size: %d\n",i_shaders.size());
+  printf("list size: %lu\n",i_shaders.size());
 #endif
 
   unsigned long num_shaders = 0;
