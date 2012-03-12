@@ -1,25 +1,54 @@
-All design and graphic content (c) Vovoid Software & Multimedia.
-Raya (c) Katie De Sousa.
-Luna and the VSXu logo are (c) Vovoid Software & Multimedia.
-They can NOT be used in another project. They are only included
-in this release for completeness and you do not have permission
-to modify them.
+--------------------------------------------------------------------------------
+Visualizations, project files and art provided with this release:
+
+  Definition:
+    All .vsx files contained in the share/ folder. This includes all
+    visualizations, example projects (Luna:Reactivation for instance) and others.
+    Thus: All content created by "jaw", "asterix", "Vovoid"
+    are under copyright and you are only permitted to use them subject
+    to this agreement.
+
+    You may use them as you see fit, but we reserve the right to decide wether
+    or not you can remix them.
+
+  Use on Apple hardware/software:
+
+    We can't guarantee the visual quality of our works on any of Apple's
+    systems thus we strongly advise against their use until we officially
+    support this hardware platform properly.
+
+--------------------------------------------------------------------------------
+Graphics / design:
+
+  All design and graphic content/skins etc (c) Vovoid Software & Multimedia
+  are provided to you as-is, not for remixing.
+
+  Luna and the VSXu logo are (c) Vovoid Media Technologies.
+
+--------------------------------------------------------------------------------
+Example assets:
+
+  Raya (c) Katie De Sousa.
+
+--------------------------------------------------------------------------------
 
 Separate libraries are copyrighted and licensed separately 
 by their respective owners.
 
-All code copyrighted by vovoid released under the GNU GPL v2 as included in
+--------------------------------------------------------------------------------
+
+All code (C and C++) is released under the GNU GPL v2 as included in
 this document.
 ----
-		    GNU GENERAL PUBLIC LICENSE
-		       Version 2, June 1991
+        GNU GENERAL PUBLIC LICENSE
+           Version 2, June 1991
 
  Copyright (C) 1989, 1991 Free Software Foundation, Inc.
      59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  Everyone is permitted to copy and distribute verbatim copies
  of this license document, but changing it is not allowed.
 
-			    Preamble
+          Preamble
 
   The licenses for most software are designed to take away your
 freedom to share and change it.  By contrast, the GNU General Public
