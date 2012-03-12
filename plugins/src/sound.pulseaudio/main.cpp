@@ -295,23 +295,23 @@ void run() {
   vu_l_p->set(pa_audio_data.vu[0]);
   vu_r_p->set(pa_audio_data.vu[1]);
 
-  octaves_l_0_p->set(pa_audio_data.octaves[0][0] );
-  octaves_l_1_p->set(pa_audio_data.octaves[0][1] );
-  octaves_l_2_p->set(pa_audio_data.octaves[0][2] );
-  octaves_l_3_p->set(pa_audio_data.octaves[0][3] );
-  octaves_l_4_p->set(pa_audio_data.octaves[0][4] );
-  octaves_l_5_p->set(pa_audio_data.octaves[0][5] );
-  octaves_l_6_p->set(pa_audio_data.octaves[0][6] );
-  octaves_l_7_p->set(pa_audio_data.octaves[0][7] );
+  octaves_l_0_p->set(pa_audio_data.octaves[0][0]);
+  octaves_l_1_p->set(pa_audio_data.octaves[0][1]);
+  octaves_l_2_p->set(pa_audio_data.octaves[0][2]);
+  octaves_l_3_p->set(pa_audio_data.octaves[0][3]);
+  octaves_l_4_p->set(pa_audio_data.octaves[0][4]);
+  octaves_l_5_p->set(pa_audio_data.octaves[0][5]);
+  octaves_l_6_p->set(pa_audio_data.octaves[0][6]);
+  octaves_l_7_p->set(pa_audio_data.octaves[0][7]);
 
-  octaves_r_0_p->set(pa_audio_data.octaves[0][0] );
-  octaves_r_1_p->set(pa_audio_data.octaves[0][1] );
-  octaves_r_2_p->set(pa_audio_data.octaves[0][2] );
-  octaves_r_3_p->set(pa_audio_data.octaves[0][3] );
-  octaves_r_4_p->set(pa_audio_data.octaves[0][4] );
-  octaves_r_5_p->set(pa_audio_data.octaves[0][5] );
-  octaves_r_6_p->set(pa_audio_data.octaves[0][6] );
-  octaves_r_7_p->set(pa_audio_data.octaves[0][7] );
+  octaves_r_0_p->set(pa_audio_data.octaves[0][0]);
+  octaves_r_1_p->set(pa_audio_data.octaves[0][1]);
+  octaves_r_2_p->set(pa_audio_data.octaves[0][2]);
+  octaves_r_3_p->set(pa_audio_data.octaves[0][3]);
+  octaves_r_4_p->set(pa_audio_data.octaves[0][4]);
+  octaves_r_5_p->set(pa_audio_data.octaves[0][5]);
+  octaves_r_6_p->set(pa_audio_data.octaves[0][6]);
+  octaves_r_7_p->set(pa_audio_data.octaves[0][7]);
 
 }
 };
@@ -332,7 +332,7 @@ void* worker(void *ptr)
   ss.rate = 44100;
   ss.channels = 2;
   pa_simple *s = NULL;
-  int ret = 1;
+
   int error;
   int16_t buf[1024];
   float fftbuf[1024];
@@ -367,9 +367,10 @@ void* worker(void *ptr)
           goto finish;
       }
       int j = 0;
+      // nab left channel for spectrum data
       for (size_t i = 0; i < 512; i++)
       {
-        float f = (float)buf[j] / 16384.0f;
+        const float &f = (float)buf[j] / 16384.0f;
         (*(pa_d->wave[0].data))[i] = f * pa_d->l_mul;
         fftbuf[fftbuf_it++] = f;
         j++;
@@ -386,18 +387,13 @@ void* worker(void *ptr)
       // do some FFT's
       float spectrum[1024];
       float spectrum_dest[512];
-      //fft->do_fft( (float*)&spectrum, (float*)&fftbuf );
-      fft->do_fft( (float*)&spectrum, (float*) &fftbuf[0]);//pa_d->wave[0].data->get_pointer() );
+      fft->do_fft( (float*)&spectrum, (float*) &fftbuf[0]);
       float re, im;
-
-
-      //float* data_dest = ((float*)( pa_d->spectrum[0].data->get_pointer() ));
 
       for(int ii = 0; ii < 256; ii++)
       {
         re = spectrum[ii];
         im = spectrum[ii + 256];
-        //data_dest[ii] = (float)sqrt(re * re + im * im) / 512.0f;
         spectrum_dest[ii] = (float)sqrt(re * re + im * im) / 256.0f * pa_d->l_mul;
       }
 
@@ -463,7 +459,7 @@ void* worker(void *ptr)
     if (signal_value == 1) goto finish;
   }
 
-  ret = 0;
+
 
 finish:
   //printf("finishing up...\n");
