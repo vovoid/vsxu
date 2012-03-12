@@ -587,7 +587,7 @@ vsx_statelist::~vsx_statelist()
   for (size_t i = 0; i < faders.size(); i++)
   {
     #ifdef VSXU_DEBUG
-    printf("deleting fader %d\n", i);
+    printf("deleting fader %lu\n", i);
     #endif
     delete faders[i];
   }

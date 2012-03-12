@@ -137,17 +137,17 @@ public:
     vsx_quaternion quat;
     int jj = 0;
     for (unsigned long i = 0; i < worms.size(); ++i) {
-      float size = 1.0f;
-      if (spectrum) {
+      //float size = 1.0f;
+      //if (spectrum) {
 //        size = (*(spectrum->data))[i*(spectrum->data->size()/worms.size()-1)]+0.04f;
-        size = (*(spectrum->data))[i*2];
-      }
+        //size = (*(spectrum->data))[i*2];
+      //}
       quat.x = sin(worms[i]->freq.x*engine->vtime+worms[i]->phs.x);
       quat.y = sin(worms[i]->freq.y*engine->vtime+worms[i]->phs.y);
       quat.z = sin(worms[i]->freq.z*engine->vtime+worms[i]->phs.z);
       quat.w = sin(worms[i]->freq.w*engine->vtime+worms[i]->phs.w);
       quat.normalize();
-      vsx_matrix mat = quat.matrix();
+      //vsx_matrix mat = quat.matrix();
       //mesh->data->vertices[jj] = mat.multiply_vector(vsx_vector__(1,0,0));
       //mesh->data->vertex_colors[jj] = vsx_color__(1.0f,1.0f,1.0f,1.0f);
       mesh->data->vertices[jj] = vsx_vector(0);

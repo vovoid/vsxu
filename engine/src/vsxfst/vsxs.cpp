@@ -39,7 +39,7 @@
 
 char string_res[256] = "";
 
-const int s2i(const vsx_string& in)
+int s2i(const vsx_string& in)
 {
   return atoi(in.c_str());
 }
@@ -50,7 +50,7 @@ vsx_string i2s(int in)
   return vsx_string(string_res);
 }
 
-const float s2f(const vsx_string& in)
+float s2f(const vsx_string& in)
 {
   return atof(in.c_str());
 }

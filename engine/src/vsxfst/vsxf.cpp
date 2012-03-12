@@ -346,10 +346,12 @@ bool vsxf::is_archive_populated()
         while (buf[i]) {
           //printf("i: %d\n",handle->position);
           (*(vsx_avector<char>*)(handle->file_data))[handle->position = handle->size++] = buf[i++];
+          /*
           char aa[2];
           aa[0] = (*(vsx_avector<char>*)(handle->file_data))[handle->position];
           aa[1] = 0;
-          //printf("char added: %s",aa);
+          printf("char added: %s",aa);
+          */
         } // while
       } // if
     }
@@ -493,15 +495,15 @@ vsx_string vsx_get_data_path()
       mkdir( (base_path+"visuals_faders").c_str(),0700);
       mkdir( (base_path+"resources").c_str(),0700);
       // add symlinks to examples
-      int sr;
-      sr = symlink ( (PLATFORM_SHARED_FILES+"example-macros").c_str(), (base_path+"macros/examples").c_str() );
-      sr = symlink ( (PLATFORM_SHARED_FILES+"example-states").c_str(), (base_path+"states/examples").c_str() );
-      sr = symlink ( (PLATFORM_SHARED_FILES+"example-prods").c_str(), (base_path+"prods/examples").c_str() );
-      sr = symlink ( (PLATFORM_SHARED_FILES+"example-visuals").c_str(), (base_path+"visuals/examples").c_str() );
-      sr = symlink ( (PLATFORM_SHARED_FILES+"example-resources").c_str(), (base_path+"resources/examples").c_str() );
-      sr = symlink ( (PLATFORM_SHARED_FILES+"example-faders").c_str(), (base_path+"visual_faders/examples").c_str() );
+
+      symlink ( (PLATFORM_SHARED_FILES+"example-macros").c_str(), (base_path+"macros/examples").c_str() );
+      symlink ( (PLATFORM_SHARED_FILES+"example-states").c_str(), (base_path+"states/examples").c_str() );
+      symlink ( (PLATFORM_SHARED_FILES+"example-prods").c_str(), (base_path+"prods/examples").c_str() );
+      symlink ( (PLATFORM_SHARED_FILES+"example-visuals").c_str(), (base_path+"visuals/examples").c_str() );
+      symlink ( (PLATFORM_SHARED_FILES+"example-resources").c_str(), (base_path+"resources/examples").c_str() );
+      symlink ( (PLATFORM_SHARED_FILES+"example-faders").c_str(), (base_path+"visual_faders/examples").c_str() );
       #if (VSXU_DEBUG)
-        sr = symlink ( (PLATFORM_SHARED_FILES+"debug-states").c_str(), (base_path+"states/debug").c_str() );
+        symlink ( (PLATFORM_SHARED_FILES+"debug-states").c_str(), (base_path+"states/debug").c_str() );
       #endif
     }
   #else // platform family = unix

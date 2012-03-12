@@ -169,6 +169,9 @@ typedef struct {
 #define DTOR            0.0174532925
 #define RTOD            57.2957795
 #define TWOPI           6.283185307179586476925287
+#ifdef PI
+#undef PI
+#endif
 #define PI              3.141592653589793238462643
 #define PID2            1.570796326794896619231322
 #define PID3            1.047197551196397746154214

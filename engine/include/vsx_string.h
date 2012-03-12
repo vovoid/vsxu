@@ -33,10 +33,10 @@ class vsx_string {
   mutable vsx_avector<char> data;
 
   // deal with the terminating 0 character
-  const bool zero_test() const {
-    return data[data.get_used()-1];
+  bool zero_test() const {
+    return (data[data.get_used()-1]);
   }
-  const void zero_add() const {
+  void zero_add() const {
     //printf("data_get_used: %d\n",data.get_used());
     if (!data.size()) {
       data.push_back((char)0);
@@ -50,7 +50,7 @@ public:
   {
   	return data.get_pointer();
   }
-  const void zero_remove() const {
+  void zero_remove() const {
     if (data.size())
     if (!data[data.size()-1])
     data.reset_used(data.size()-1);
@@ -81,8 +81,8 @@ public:
   inline void push_back_(const char p) {
     data.push_back(p);
   }
-//#ifndef VSX_STRING_TINY  
-  const char pop_back() {
+
+  char pop_back() const {
     zero_remove();
     if (data.size()) {
       char f = data[data.size()-1];
@@ -91,8 +91,8 @@ public:
     }
     return 0;
   }
-//#endif
-  const size_t size() const {
+
+  size_t size() const {
     if (!data.size()) return 0;
     if (data[data.get_used()-1])
     return data.get_used(); else
@@ -130,7 +130,6 @@ public:
     *this = ss;
   };
 
-  
   const vsx_string& operator=(const vsx_string& ss) {
     if (&ss != this) {
       //printf("copying with =\n");
@@ -289,14 +288,14 @@ public:
     return strcmp(left.c_str(), right.c_str());
   }
  
-  const int find(const vsx_string& search, size_t start = 0) const {
+  int find(const vsx_string& search, int start = 0) const {
     if (search.size() == 0) return 0;
     size_t found = 0; // if this is equal to search.size() we're done
-    if (start > size()) return -1;
+    if (start > (int)size()) return -1;
 		if (start < 0) return -1;
     //printf("search_a size: %d\n",size());
     //printf("search_a text: %s\n",search.c_str());
-    for (; start < size(); ++start) {
+    for (; start < (int)size(); ++start) {
       if (data[start] == search[found]) {
       //printf("start: %d\n",start);
         ++found;
@@ -311,7 +310,7 @@ public:
     return -1;
   }
 
-  const vsx_string substr(size_t start, int length = -1) {
+  const vsx_string substr(int start, int length = -1) {
     vsx_string n;
     zero_remove();
     if (length == -1) length = size();
@@ -323,8 +322,8 @@ public:
     	else
     	if (length > s) length = s;
     }
-    if (start < size()) {
-      while (start < size() && length) {
+    if (start < (int)size()) {
+      while (start < (int)size() && length) {
         n.push_back(data[start]);
         ++start;
         --length;

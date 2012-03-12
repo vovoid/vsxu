@@ -170,7 +170,7 @@ int vsx_engine::i_load_state(vsx_command_list& load1,vsx_string *error_string)
   load1.reset();
   vsx_command_s* mc = 0;
   // check the macro list to verify the existence of the componente we need for this macro
-  bool components_existing = true;
+  //bool components_existing = true;
   vsx_string failed_component = "";
   while ( (mc = load1.get()) )
   {
@@ -179,10 +179,10 @@ int vsx_engine::i_load_state(vsx_command_list& load1,vsx_string *error_string)
       if (!(module_list.find(mc->parts[1]) != module_list.end()))
       {
         failed_component = mc->parts[2];
-        components_existing = false;
+        //components_existing = false;
         if (error_string) *error_string = "Module missing in engine: "+mc->parts[1];
-				printf("%s\n",vsx_string("Module missing in engine: "+mc->parts[1]).c_str());
-      	LOG3("Module missing in engine: "+mc->parts[1]);
+        printf("%s\n",vsx_string("Module missing in engine: "+mc->parts[1]).c_str());
+        LOG3("Module missing in engine: "+mc->parts[1]);
       }
     }
   }
@@ -191,28 +191,28 @@ int vsx_engine::i_load_state(vsx_command_list& load1,vsx_string *error_string)
   load1.reset();
   //if (components_existing)
   {
-  	LOG("i_load_state: all modules are available, proceeding with load")
+    LOG("i_load_state: all modules are available, proceeding with load")
 
-  	LOG("stopping")
+    LOG("stopping")
     stop();
-  	LOG("i_clear")
+    LOG("i_clear")
     i_clear();
     LOG("start()")
 
     //load2.add_raw("clear");
     //process_message_queue(&load2,&loadr2,true);
     start();
-  	LOG("i_load_state pre processing_message_queue")
+    LOG("i_load_state pre processing_message_queue")
 
     process_message_queue(&load1,&loadr2,true);
-  	LOG("i_load_state post processing_message_queue")
+    LOG("i_load_state post processing_message_queue")
     load2.clear(true);
     loadr2.clear(true);
   }
   load1.clear(true);
   e_state = VSX_ENGINE_LOADING;
-	modules_loaded = 0;
-	modules_left_to_load = 0;
+  modules_loaded = 0;
+  modules_left_to_load = 0;
   return 0;
 }
 

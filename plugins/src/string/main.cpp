@@ -82,7 +82,6 @@ public:
       	filename_count->set((float)files_list.size());
         unsigned long fid = (unsigned long)floor(file_id->get());
         if (fid >= files_list.size()) fid = files_list.size()-1;
-        if (fid < 0) fid = 0;
         filename_result->set(files_list[fid]);
       }
     }

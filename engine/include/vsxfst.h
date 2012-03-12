@@ -130,9 +130,9 @@ VSXFSTDLLIMPORT vsx_string get_path_from_filename(vsx_string filename);
 
 // STRING OPERATIONS
 
-VSXFSTDLLIMPORT const int s2i(const vsx_string& in);
+VSXFSTDLLIMPORT int s2i(const vsx_string& in);
 VSXFSTDLLIMPORT vsx_string i2s(int in);
-VSXFSTDLLIMPORT const float s2f(const vsx_string& in);
+VSXFSTDLLIMPORT float s2f(const vsx_string& in);
 VSXFSTDLLIMPORT vsx_string f2s(float in);
 VSXFSTDLLIMPORT vsx_string f2s(float in, int decimals);
 VSXFSTDLLIMPORT bool crlf(char *buffer,int len);

@@ -136,7 +136,8 @@ void Alaska::make_signed(Vector3 &v, unsigned char *ip)
 void Alaska::display(void)
 {
 
-	double kvector[2],klength,wkt;
+  //double kvector[2];
+  double klength,wkt;
   //////////////////alernativ below///////////
 	int yHalf = NY/2 + 1;
 	for (int i = 0; i<yHalf; ++i)
@@ -154,8 +155,8 @@ void Alaska::display(void)
 	//		kvector[0]=2.0*PI*((float)i-.5*NX)/MAX_WORLD_X;//but I think I should use these
 	//		kvector[1]=2.0*PI*((float)j-.5*NY)/MAX_WORLD_Y;
 
-			kvector[0]=hold_horizontal[i][j][0];
-			kvector[1]=hold_horizontal[i][j][1];
+      //kvector[0]=hold_horizontal[i][j][0];
+      //kvector[1]=hold_horizontal[i][j][1];
 
 		//	klength=sqrt(kvector[0]*kvector[0]+kvector[1]*kvector[1]);
 			klength=hold_horizontal[i][j][2];

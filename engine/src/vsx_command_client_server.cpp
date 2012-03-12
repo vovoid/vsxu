@@ -308,7 +308,7 @@ vsx_command_list_client::vsx_command_list_client()
 void* vsx_command_list_client::client_worker(void *ptr)
 {
   vsx_command_list_client* this_ = (vsx_command_list_client*)ptr;
-  int status;
+  /*int status;*/
   struct addrinfo hints;
   struct addrinfo *servinfo;  // will point to the results
   char recv_buf[BUFLEN];
@@ -322,7 +322,7 @@ void* vsx_command_list_client::client_worker(void *ptr)
   hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
 
   // get ready to connect
-  status = getaddrinfo(this_->server_address.c_str(), "11030", &hints, &servinfo);
+  /*status = */getaddrinfo(this_->server_address.c_str(), "11030", &hints, &servinfo);
 
   sock = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
 

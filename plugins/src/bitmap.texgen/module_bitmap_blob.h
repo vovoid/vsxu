@@ -1,4 +1,4 @@
-/**
+  /**
 * Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
 *
 * @author Jonatan "jaw" Wallmander, Vovoid Media Technologies - Copyright (C) 2003-2011
@@ -102,9 +102,10 @@ public:
         float dstf = dd/((float)hsize+1);
         float phase = (float)pow(1.0f - (float)fabs((float)cos(angle+arms*(float)atan2(xx,yy)))*(star_flower+(1-star_flower)*(((dstf)))),attenuation);
         if (phase > 2.0f) phase = 1.0f;
-        *p = (long)(255.0f * (cos(((dstf * PI_FLOAT/2.0f)))*phase));
-        if (*p > 255) *p = 255;
-        if (*p < 0) *p = 0;
+        float pf = (255.0f * (cos(((dstf * PI_FLOAT/2.0f)))*phase));
+        if (pf > 255.0f) pf = 255.0f;
+        if (pf < 0.0f) pf = 0.0f;
+        *p = (long)pf;
         dist = cos(dstf * PI_FLOAT/2.0f)*phase;
   			if (((module_bitmap_blob*)ptr)->work_alpha == 1)
   			{
