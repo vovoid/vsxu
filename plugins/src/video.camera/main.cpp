@@ -26,36 +26,37 @@
 //#include "system/pthread/pthread.h"
 #include "main.h"
 
-
-#include "highgui.h"
+//#include <cv.h>
+#include <highgui.h>
 
 class module_video_webcam : public vsx_module {
-  // in
-
-  // out
   vsx_module_param_bitmap* result1;
   // internal
   CvCapture* m_capture;
   vsx_bitmap bitm;
-  vsx_bitmap*       work_bitmap;
   IplImage *m_frame;
 
   int width, height;
   int current_frame;
   int previous_frame;
 public:
-  module_video_webcam(){
-    m_capture = cvCreateCameraCapture(0);
-    m_frame = 0;
+  module_video_webcam():
+    m_capture(0),
+    m_frame(0){
   }
   ~module_video_webcam(){
     release_webcam();
+  }
+
+  bool init(){
+    m_capture = cvCreateCameraCapture(0);
   }
 
   void release_webcam()
   {
     if(m_capture)
       cvReleaseCapture( &m_capture );
+    m_capture = 0;
   }
 
   void module_info(vsx_module_info* info)
@@ -66,14 +67,11 @@ public:
       info->component_class = "bitmap";
     info->description = "Fetches camera data as bitmaps";
   }
-  
+
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-
-    //load_avi_file();
     result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
     result1->set_p(bitm);
-    work_bitmap = &bitm;
     bitm.data = 0;
     bitm.bpp = 3;
     bitm.bformat = GL_RGB;
@@ -89,7 +87,7 @@ public:
   {
     m_frame = cvQueryFrame(m_capture);
     if(m_frame){
-      bitm.bpp = m_frame->nChannels;
+      cvConvertImage(m_frame,m_frame, CV_CVTIMG_SWAP_RB);
       bitm.data = m_frame->imageData;
       bitm.timestamp++;
       bitm.size_x = m_frame->width;
@@ -111,7 +109,7 @@ public:
   {
     printf("Webcam on delete\n");
     release_webcam();
-    delete[] bitm.data;
+    //delete[] bitm.data;
   }
 };
 
