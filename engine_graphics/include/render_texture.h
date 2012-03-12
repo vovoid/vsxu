@@ -69,9 +69,7 @@
 
 #include <string>*/
 #include <vector>
-#define VSX_NOGLUT_LOCAL
 #include "vsx_gl_global.h"
-#undef VSX_NOGLUT_LOCAL
 
 /* The pixel format for the pbuffer is controlled by the mode string passed
 * into the PBuffer constructor. This string can have the following attributes:

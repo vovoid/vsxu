@@ -19,9 +19,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#define VSX_NOGLUT_LOCAL
 #include "vsx_gl_global.h"
-#undef VSX_NOGLUT_LOCAL
 #include "vsx_math_3d.h"
 #include "gl_helper.h"
 

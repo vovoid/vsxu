@@ -34,9 +34,7 @@
 #define VSX_MODULE_H
 
 #ifndef VSX_NO_GL
-	#define VSX_NOGLUT_LOCAL
-	#include "vsx_gl_global.h"
-	#undef VSX_NOGLUT_LOCAL
+  #include "vsx_gl_global.h"
 #endif
 
 #include "vsxfst.h"

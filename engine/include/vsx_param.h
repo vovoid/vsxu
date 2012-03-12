@@ -50,9 +50,7 @@
   #include <map>
 #endif
 #ifndef VSX_NO_GL
-  #define VSX_NOGLUT_LOCAL
   #include "vsx_gl_global.h"
-  #undef VSX_NOGLUT_LOCAL
   #include "vsx_texture_info.h"
   #ifndef VSX_NO_TEXTURE
     #include "vsx_texture.h"

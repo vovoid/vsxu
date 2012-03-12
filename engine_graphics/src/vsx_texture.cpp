@@ -25,9 +25,7 @@
   #include <map>
   #include "vsxfst.h"
 #endif
-#define VSX_NOGLUT_LOCAL
 #include "vsx_gl_global.h"
-#undef VSX_NOGLUT_LOCAL
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #ifndef VSX_TEXTURE_NO_GLPNG
