@@ -227,6 +227,7 @@ vsx_string vsx_statelist::get_meta_visual_company()
 }*/
 
 void vsx_statelist::random_state() {
+  if (0 == statelist.size()) return;
   if ((*state_iter).engine != vxe) return;
   int steps = rand() % statelist.size();
   while (steps) {
@@ -575,6 +576,13 @@ void vsx_statelist::init(vsx_string base_path,vsx_string init_sound_type)
     statelist.push_back(state);
   }
   state_iter = statelist.begin();
+  int steps = rand() % statelist.size();
+  while (steps) {
+    ++state_iter;
+    if (state_iter == statelist.end()) state_iter = statelist.begin();
+    --steps;
+  }
+
   load_fx_levels_from_user();
 }
 
