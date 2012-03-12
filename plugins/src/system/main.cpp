@@ -182,7 +182,7 @@ public:
   
   bool init_joysticks()
   {
-    printf("start init joysticks\n");
+//    printf("start init joysticks\n");
     for (int i = 0; i < 10; i++)
     {
       joystick_info ji;
@@ -195,10 +195,10 @@ public:
         ioctl( ji.joy_fd, JSIOCGAXES, &ji.num_of_axis );
         ioctl( ji.joy_fd, JSIOCGBUTTONS, &ji.num_of_buttons );
         ioctl( ji.joy_fd, JSIOCGNAME(80), &ji.name_of_joystick );
-        printf("Joystick detected: %s\n\t%d axis\n\t%d buttons\n\n"
+        /*printf("Joystick detected: %s\n\t%d axis\n\t%d buttons\n\n"
           , ji.name_of_joystick
           , ji.num_of_axis
-          , ji.num_of_buttons );
+          , ji.num_of_buttons );*/
         joysticks[i] = ji;
 //        printf("ji.joy_fd: %d\n", ji.joy_fd);
         
