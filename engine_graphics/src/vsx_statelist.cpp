@@ -178,8 +178,11 @@ void vsx_statelist::stop()
     (*it).engine->stop();
     (*it).need_reload = true;
   }
-  vxe->unload_state();
-  vxe->stop();
+  if (vxe)
+  {
+    vxe->unload_state();
+    vxe->stop();
+  }
 }
 
 vsx_string vsx_statelist::get_meta_visual_filename()
@@ -265,14 +268,15 @@ void vsx_statelist::render()
       faders.push_back(lvxe);
       fade_id = 0;
     }
+    transitioning = false;
+    render_first = false;
+    if ( state_iter == statelist.end() ) return;
     init_current((*state_iter).engine, &(*state_iter));
     vxe = (*state_iter).engine;
     cmd_in = &(*state_iter).cmd_in;
     cmd_out = &(*state_iter).cmd_out;
-    transitioning = false;
-
-    render_first = false;
   }
+  if ( !statelist.size() ) return;
 
   //printf("r2");
   if ((*state_iter).engine != vxe) // change is on the way
