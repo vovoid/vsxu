@@ -296,7 +296,6 @@ public:
       float _strength = strength->get();
 
       // go through all particles, they travel within 0.0..N
-      float ax,ay,bx,by,cx,cy,dx,dy;
       for (unsigned long i = 0; i <  particles->particles->size(); ++i) {
         // add the delta-time to the time of the particle
         float mpx = (*particles->particles)[i].pos.x;
@@ -309,14 +308,15 @@ public:
         if (dpx < 1) dpx = 1;
         if (dpy+1 > N) dpy = N;
         if (dpy < 1) dpy = 1;
-        float fpx = (float)floor(px);
-        float fpy = (float)floor(py);
+        //float fpx = (float)floor(px);
+        //float fpy = (float)floor(py);
         
-        cx = ax = mpx-fpx;
-        ay = mpy-fpy;
-        dx = bx = 1.0f-ax;
-        by = ay;
-        dy = cy = 1.0f-ay;
+        //float ax,ay,bx,by,cx,cy,dx,dy;
+        //cx = ax = mpx-fpx;
+        //ay = mpy-fpy;
+        //dx = bx = 1.0f-ax;
+        //by = ay;
+        //dy = cy = 1.0f-ay;
 
         //float va = 1.0f-ax*ay;
         //float vb = 1.0f-bx*by;
