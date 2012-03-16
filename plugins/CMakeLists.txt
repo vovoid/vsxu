@@ -92,9 +92,9 @@ add_subdirectory(src/render.opengl.extra)
 add_subdirectory(src/render.oscilloscope)
 add_subdirectory(src/render.text)
 
-if (EXISTS "src/sound.fmod" AND IS_DIRECTORY "src/sound.fmod")
+if (IS_DIRECTORY ${CMAKE_SOURCE_DIR}/plugins/src/sound.fmod)
   add_subdirectory(src/sound.fmod)
-endif (EXISTS "src/sound.fmod" AND IS_DIRECTORY "src/sound.fmod")
+endif ()
 
 if (UNIX)
   add_subdirectory(src/sound.media_player)
