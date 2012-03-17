@@ -119,8 +119,9 @@ public:
 
 	GLuint get_id() {return ogl_id;}
 	GLuint get_type() {return ogl_type;}
-	vsx_texture_info(GLuint id = 0, GLuint ntype = 0) : size_x(0), size_y(0), ogl_id(id), ogl_type(ntype) {
-	}
+  vsx_texture_info() : size_x(0), size_y(0) {}
+  //vsx_texture_info(GLuint id = 0, GLuint ntype = 0) : size_x(0), size_y(0), ogl_id(id), ogl_type(ntype) {
+  //}
 };
 
 #endif
