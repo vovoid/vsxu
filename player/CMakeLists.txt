@@ -20,6 +20,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/engine/include
   ${CMAKE_SOURCE_DIR}/engine_graphics/include
+  ${CMAKE_SOURCE_DIR}/engine_audiovisual/include
   ${CMAKE_SOURCE_DIR}/player/src
 )
 
@@ -83,6 +84,7 @@ if(UNIX)
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
+    vsxu_engine_audiovisual
     vsxu_engine_graphics
     vsxu_engine
   )
@@ -93,6 +95,7 @@ if(WIN32)
   wsock32
   ws2_32
   ${CMAKE_THREAD_LIBS_INIT}
+  vsxu_engine_audiovisual
   vsxu_engine_graphics
   vsxu_engine
   gdi32
