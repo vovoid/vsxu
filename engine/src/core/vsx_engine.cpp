@@ -1087,7 +1087,6 @@ void vsx_engine::i_clear(vsx_command_list *cmd_out,bool clear_critical) {
 
   std::map<vsx_string,vsx_comp*> forge_map_save;
   std::vector<vsx_comp*> forge_save;
-  printf("forge map size: %d\n",forge_map.size());
   for (std::map<vsx_string,vsx_comp*>::iterator fit = forge_map.begin(); fit != forge_map.end(); ++fit) {
     if (!(*fit).second->internal_critical || clear_critical)
     {

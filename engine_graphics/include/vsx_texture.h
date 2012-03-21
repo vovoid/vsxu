@@ -21,23 +21,14 @@
 
 #ifndef VSX_TEXTURE_LIB_H
 #define VSX_TEXTURE_LIB_H
-#ifdef VSXU_EXE
-  #include <map>
-#endif
-#include "vsx_texture_info.h"
-#include "vsx_string.h"
-#ifndef VSX_TEXTURE_NO_RT
-  #ifndef VSX_TEXTURE_NO_RT_PBUFFER
-    #ifndef VSXU_OPENGL_ES
-      #include "render_texture.h"
-    #endif
-  #endif
-#endif
-#include "vsx_bitmap.h"
+#include <map>
+#include <vsx_texture_info.h>
+#include <vsx_string.h>
+#include <vsx_bitmap.h>
 
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-#define VSX_TEXTURE_DLLIMPORT
+  #define VSX_TEXTURE_DLLIMPORT
 #else
   #if defined(VSX_ENG_DLL)
     #define VSX_TEXTURE_DLLIMPORT __declspec (dllexport)
@@ -47,14 +38,11 @@
 #endif
 
 
-class vsx_texture {
-#ifdef VSXU_EXE
+class vsx_texture
+{
   static std::map<vsx_string, vsx_texture_info> t_glist;
-#else
-  static void* t_glist;
-#endif
   GLint prev_buf;
-  bool use_fbo;
+  bool valid_fbo;
   GLuint framebuffer_id;
   GLuint depthbuffer_id;
   GLuint colorBuffer, depthBuffer, tex_fbo;
@@ -68,30 +56,17 @@ public:
   // is this valid for binding:
   bool valid;
 
-#if !defined(VSX_TEXTURE_NO_RT) && !defined(VSX_TEXTURE_NO_RT_PBUFFER) && !defined(VSXU_OPENGL_ES)
-  RenderTexture *rt; // render texture (used when acting as a pbuffer)
-#else
-  void *rt;
-#endif
-	vsx_transform_obj* transform_obj; // transformation
+  vsx_transform_obj* transform_obj; // transformation
 
   // our texture info
   vsx_texture_info texture_info;
 
-  // pbuffer related functions
+  // FBO functions
   VSX_TEXTURE_DLLIMPORT void init_buffer(int width, int height, bool float_texture = false, bool alpha = true, bool multisample = false); // run once
-  VSX_TEXTURE_DLLIMPORT void init_buffer_render(int width, int height); // run once, needs support in hardware
   VSX_TEXTURE_DLLIMPORT void deinit_buffer(); // remove the buffer
   VSX_TEXTURE_DLLIMPORT void reinit_buffer(int width, int height, bool float_texture = false, bool alpha = true); // run in stop/start or when changing resolution
-  VSX_TEXTURE_DLLIMPORT void reinit_buffer_render(int width, int height); // run in stop/start or when changing resolution
-
-  bool get_fbo_status() { return use_fbo;}
-
-#if ((!defined(VSX_TEXTURE_NO_RT)) && (!defined(VSX_TEXTURE_NO_RT_PBUFFER))) && (!defined(VSXU_OPENGL_ES))
-  RenderTexture* get_rt() { return rt; }
-#else
-  void* get_rt() { return rt; }
-#endif
+  VSX_TEXTURE_DLLIMPORT void begin_capture();
+  VSX_TEXTURE_DLLIMPORT void end_capture();
 
   // allocate an openGL texture ID
   VSX_TEXTURE_DLLIMPORT void init_opengl_texture();
@@ -121,17 +96,14 @@ public:
   VSX_TEXTURE_DLLIMPORT void load_jpeg(vsx_string fname, bool mipmaps = true);
 
   // update the transform object with a new transformation
- 	void set_transform(vsx_transform_obj* new_transform_obj) {
-		if(transform_obj == new_transform_obj) return;
-		if(transform_obj) delete transform_obj;
-		transform_obj = new_transform_obj;
+  void set_transform(vsx_transform_obj* new_transform_obj) {
+    if(transform_obj == new_transform_obj) return;
+    if(transform_obj) delete transform_obj;
+    transform_obj = new_transform_obj;
     original_transform_obj = 0;
-	}
-	// return the transformation
-	vsx_transform_obj* get_transform(){return transform_obj;}
-
-  VSX_TEXTURE_DLLIMPORT void begin_capture();
-  VSX_TEXTURE_DLLIMPORT void end_capture();
+  }
+  // return the transformation
+  vsx_transform_obj* get_transform(){return transform_obj;}
 
   // use this to bind the texture.
   VSX_TEXTURE_DLLIMPORT bool bind();

@@ -52,7 +52,6 @@ set(SOURCES
   src/glpng.cpp
   src/jpg.cpp
   src/logo_intro.cpp
-  src/render_texture.cpp
   src/vsx_font.cpp
   src/vsx_texture.cpp
   src/vsx_statelist.cpp
@@ -60,7 +59,7 @@ set(SOURCES
 )
 
 if (VSXU_OPENGL_ES_2_0 EQUAL 1)
-  add_definitions(-DVSXU_OPENGL_ES -DVSXU_OPENGL_ES_2_0 -DVSX_TEXTURE_NO_RT_PBUFFER)
+  add_definitions(-DVSXU_OPENGL_ES -DVSXU_OPENGL_ES_2_0)
   set(SOURCES
     ${SOURCES}
     src/vsx_gl_es_shader_wrapper.cpp

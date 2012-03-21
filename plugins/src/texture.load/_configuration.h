@@ -28,9 +28,6 @@
 
 // size optimization togglers
 //#define VSX_NO_TEXTURE
-//#define VSX_TEXTURE_NO_R_UPLOAD
-#define VSX_TEXTURE_NO_RT
-#define VSX_TEXTURE_NO_GLPNG
 #define VSX_NO_SEQUENCE
 #define VSX_NO_MESH
 //#define VSX_STRINGLIB_NOSTL

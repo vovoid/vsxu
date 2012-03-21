@@ -44,7 +44,6 @@ endif(VSXU_DEBUG)
 
 
 add_definitions(
- -DVSX_TEXTURE_NO_RT
  -DVSX_FONT_NO_FT
  -DVSXU_EXE
  -DVSXU_ARTISTE

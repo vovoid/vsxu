@@ -30,7 +30,6 @@ include_directories(
 add_definitions(
  -DVSX_FONT_NO_FT
  -DDEBUG
- -DVSX_TEXTURE_NO_RT
  -DVSXU_EXE
  -DVSXU_DEVELOPER
  -DVSXU_ARTISTE

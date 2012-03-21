@@ -26,10 +26,7 @@
 #include <vector>
 #include <map>
 #ifndef VSXU_OPENGL_ES
-  #ifndef VSXU_MAC_XCODE
-    #include "render_texture.h"
-  #endif
-#include "vsx_glsl.h"
+  #include "vsx_glsl.h"
 #endif
 
 #ifndef VSXU_OPENGL_ES
@@ -186,11 +183,6 @@ public:
 
 //-----------------------------------------------------
 
-//GLuint fbo_stack[32];
-//int fbo_stack_pos = 0;
-
-
-
 class vsx_module_rendered_texture_single : public vsx_module {
   // in
   vsx_module_param_render* my_render;
@@ -263,20 +255,16 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
 void start() {
 
-  texture = new vsx_texture;
 
   which_buffer = false;
+  texture = new vsx_texture;
   texture->init_buffer(res_x,res_x);
   texture->valid = false;
   texture_result->set(texture);
 
-  allocate_second_texture = texture->get_fbo_status();
-
-  if (allocate_second_texture) {
-    texture2 = new vsx_texture;
-    texture2->init_buffer(res_x,res_x);
-    texture2->valid = false;
-  }
+  texture2 = new vsx_texture;
+  texture2->init_buffer(res_x,res_x);
+  texture2->valid = false;
 }
 
 bool activate_offscreen() {
@@ -287,12 +275,6 @@ bool activate_offscreen() {
 #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
   glGetIntegerv (GL_VIEWPORT, viewport);
 #endif
-  //**use_fbo = GLEW_EXT_framebuffer_object;
-
-  /***if (use_fbo) {
-    glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf);
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-  }*/
 
   bool rebuild = false;
 
@@ -357,67 +339,15 @@ bool activate_offscreen() {
       case 14: res_x = abs(viewport[2] - viewport[0]) * 4; res_y = abs(viewport[3] - viewport[1]) * 4; break;
     };
 
-    //printf("res_x %d res_y %d\n",res_x, res_y);
-    /**if (use_fbo) {
-      texture2->bind();
-      glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAX_LEVEL,0);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, res_x, res_x, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-      texture2->_bind();
-
-
-    GLint prev_buf_l;
-    glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l);
-    glGenFramebuffersEXT(1, &framebuffer_id);
-    glGenTextures(1, &tex_id);
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebuffer_id);
-    // Setup texture
-    glBindTexture(GL_TEXTURE_2D, tex_id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, res_x, res_x, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, tex_id, 0);
-
-    glGenRenderbuffersEXT(1, &depthbuffer_id);
-		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthbuffer_id);
-		glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, res_x, res_x);
-		glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depthbuffer_id);
-    texture->texture_info.ogl_id = tex_id;
-    texture->texture_info.ogl_type = GL_TEXTURE_2D;
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf_l);
-    } else {*/
     texture->reinit_buffer(res_x, res_y,float_texture->get(),alpha_channel->get());
-    if (texture->get_fbo_status() && support_feedback->get())
+    if (support_feedback->get())
     texture2->reinit_buffer(res_x, res_y, float_texture->get(),alpha_channel->get());
-    /**}*/
   }
 
-  /***if (use_fbo) {
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glMatrixMode(GL_TEXTURE);
-    glPushMatrix();
-    glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebuffer_id);
-  }
-  else {****/
-
-  if (!which_buffer || support_feedback->get() == 0 || (!texture->get_fbo_status()))
+  if (!which_buffer || support_feedback->get() == 0)
     texture->begin_capture();
   else
     texture2->begin_capture();
-  //**}
 
   //printf("changing viewport to %d\n",res_x);
 	glViewport(0,0,res_x,res_y);
@@ -439,7 +369,7 @@ bool activate_offscreen() {
 void deactivate_offscreen() {
   glUseProgram(glsl_prog);
 
-  if (!which_buffer || support_feedback->get() == 0 || (!texture->get_fbo_status()))
+  if (!which_buffer || support_feedback->get() == 0)
   {
     if (texture)
     {
@@ -478,6 +408,7 @@ void stop() {
     if (allocate_second_texture && texture2) {
       texture2->deinit_buffer();
       delete texture2;
+      texture2 = 0;
     }
   }
 }
@@ -531,7 +462,6 @@ void vsx_module_texture_translate::run() {
   if (texture_info_in)
   {
     texture_out->valid = (*texture_info_in)->valid;
-    texture_out->rt = (*texture_info_in)->rt;
   	texture_out->texture_info = (*texture_info_in)->texture_info;
   	float x = translation_vec->get(0);
   	float y = translation_vec->get(1);
@@ -543,26 +473,6 @@ void vsx_module_texture_translate::run() {
     ((vsx_module_param_texture*)texture_result)->set(texture_out);
 
   } else texture_result->valid = false;
-
-/*  //printf("translate_begin\n");
-  //if (texture_info_param_in) {
-  	vsx_texture* texture_info_in = &(texture_info_param_in->get());
-  //	if (texture_info_in) {
-//    	if (texture_info_in->texture_info) {
-    	  texture_out->rt = texture_info_in->rt;
-      	texture_out->texture_info.set_id(texture_info_in->texture_info.get_id());
-      	texture_out->texture_info.set_type(texture_info_in->texture_info.get_type());
-
-//    	}
-
-    	vsx_transform_obj* prev_transform = texture_info_in->get_transform();
-    	transform.set_previous_transform(prev_transform);
-      //if (texture_out)
-      texture_out->set_transform(&transform);
-//    }
-//  }
-  //printf("hejeee\n");
-*/
 }
 
 void vsx_module_texture_translate::on_delete() {
@@ -604,8 +514,6 @@ void vsx_module_texture_scale::run() {
 	if (texture_info_in)
  {
 	  texture_out->valid = (*texture_info_in)->valid;
-    //if (texture_info_in->rt)
-    texture_out->rt = (*texture_info_in)->rt;
   	texture_out->texture_info = (*texture_info_in)->texture_info;
   	float x = scale_vec->get(0);
   	float y = scale_vec->get(1);
@@ -661,8 +569,6 @@ void vsx_module_texture_rotate::run() {
   if (texture_info_in)
   {
 
-    //if (texture_info_in->rt)
-    texture_out->rt = (*texture_info_in)->rt;
     texture_out->valid = (*texture_info_in)->valid;
 
 //	if (texture_info_in->texture_info) {
