@@ -62,16 +62,16 @@ private:
   vsxf filesystem; // our master filesystem handler
   vsx_engine_environment engine_environment;
   //-- component list
-	std::vector<vsx_comp*> forge;
-	std::map<vsx_string,vsx_comp*> forge_map;
-	std::map<vsx_string,vsx_comp*>::const_iterator forge_map_iter;
+  std::vector<vsx_comp*> forge;
+  std::map<vsx_string,vsx_comp*> forge_map;
+  std::map<vsx_string,vsx_comp*>::const_iterator forge_map_iter;
   std::map<vsx_string,vsx_comp*>::reverse_iterator forge_map_riter;
   //-- notes
   std::map<vsx_string,vsx_note> note_map;
   std::map<vsx_string,vsx_note>::iterator note_iter;
   //-- engine state
-	bool first_start;
-	bool stopped;
+  bool first_start;
+  bool stopped;
 
   //-- open dll/so's
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
@@ -80,24 +80,24 @@ private:
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
     std::vector<void*> module_handles;
   #endif
-  
-	//-- available modules
-  std::vector<vsx_module_info*> module_infos;
-	std::map<vsx_string,vsx_module_info*> module_list;
-	std::map<vsx_string,vsx_module_info*>::const_iterator module_iter;
-	std::map<vsx_string,module_dll_info*> module_dll_list;
-	void build_module_list(vsx_string sound_type = ""); // (re)builds the module_list
 
-	vsx_avector<vsx_comp*> outputs;
+  //-- available modules
+  std::vector<vsx_module_info*> module_infos;
+  std::map<vsx_string,vsx_module_info*> module_list;
+  std::map<vsx_string,vsx_module_info*>::const_iterator module_iter;
+  std::map<vsx_string,module_dll_info*> module_dll_list;
+  void build_module_list(vsx_string sound_type = ""); // (re)builds the module_list
+
+  vsx_avector<vsx_comp*> outputs;
 
   // Time/sequencing variables
- 	// global frame counter (mostly for fun)
+  // global frame counter (mostly for fun)
   vsx_timer m_timer;
   vsx_timer frame_timer;
   float last_frame_time;
- 	float d_time;
- 	// delta fps with variable measurement scope
- 	int last_m_time_synch; // has the engine been synchronized with module time in control?
+  float d_time;
+  // delta fps with variable measurement scope
+  int last_m_time_synch; // has the engine been synchronized with module time in control?
   double frame_dcount;
   double frame_dtime;
   double frame_dprev;
@@ -117,13 +117,13 @@ private:
   vsx_string state_name;
   vsx_command_list commands_res_internal;
   vsx_command_list commands_out_cache;
-	// auto-increment variable to give components unique names in the event that the user doesn't care
-	int component_name_autoinc;
-	void set_default_values();
-	int i_load_state(vsx_command_list& load1, vsx_string *error_string);
+  // auto-increment variable to give components unique names in the event that the user doesn't care
+  int component_name_autoinc;
+  void set_default_values();
+  int i_load_state(vsx_command_list& load1, vsx_string *error_string);
   void i_clear(vsx_command_list *cmd_out = 0, bool clear_critical = false);
   void rename_component();
-	int rename_component(vsx_string old_identifier, vsx_string new_base = "$", vsx_string new_name = "$");
+  int rename_component(vsx_string old_identifier, vsx_string new_base = "$", vsx_string new_name = "$");
   void process_message_queue_redeclare(vsx_command_list *cmd_out_res);
   void redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_out);
   void redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_out);
@@ -136,17 +136,17 @@ private:
   float g_timer_amp;
 
 #ifdef VSXU_MODULES_STATIC
-	void register_static_module(vsx_string name);
+  void register_static_module(vsx_string name);
 #endif
   float frame_cfp_time;
 
 public:
   // scripting interface
-	#ifdef VSX_ENG_DLL
-		vsxl_engine* vsxl;
-	#else
-		void* vsxl;
-	#endif
+  #ifdef VSX_ENG_DLL
+    vsxl_engine* vsxl;
+  #else
+    void* vsxl;
+  #endif
 
 
   //debug refcounter
@@ -156,8 +156,8 @@ public:
   #endif*/
   //--
 
-	bool dump_modules_to_disk;
-	bool no_client_time;
+  bool dump_modules_to_disk;
+  bool no_client_time;
   vsx_command_list commands_internal;
   vsx_timer g_timer;
   double frame_start_time;
@@ -176,12 +176,12 @@ public:
 
   // pointer to this is info for the modules
 #ifdef VSXU_ENGINE_INFO_STATIC
-	static vsx_module_engine_info engine_info;
+  static vsx_module_engine_info engine_info;
 #else
-	vsx_module_engine_info engine_info;
+  vsx_module_engine_info engine_info;
 #endif
 
-	vsx_comp* add(vsx_string label);
+  vsx_comp* add(vsx_string label);
   //void add(vsx_string label, bool auto_naming);
 
   vsx_string meta_information;
@@ -191,20 +191,20 @@ public:
 
   vsx_module_param_abs* get_in_param_by_name(vsx_string module_name, vsx_string param_name);
 
-	vsx_comp* get_by_name(vsx_string label) {
+  vsx_comp* get_by_name(vsx_string label) {
     if (forge_map.find(label) != forge_map.end()) {
-		return forge_map[label];
-		} else return 0;
-	}
-	vsx_comp* get_by_id(unsigned long id) {
-		return forge[id];
-	}
+    return forge_map[label];
+    } else return 0;
+  }
+  vsx_comp* get_by_id(unsigned long id) {
+    return forge[id];
+  }
 
   // should be run when the GL surface is destroyed
-	bool stop();
+  bool stop();
   // should be run soon after the GL surface is initialized
-	bool start();
-	bool render();
+  bool start();
+  bool render();
 
   void process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive = false);
 
@@ -213,7 +213,7 @@ public:
   void set_speed(float spd);
   void set_constant_frame_progression(float new_frame_cfp_time);
   void play();
-  
+
   void set_ignore_per_frame_time_limit(bool new_value);
 
   // 0 = reserved for wave data
@@ -229,8 +229,8 @@ public:
 
   void destroy();
 
-	vsx_engine();
-	vsx_engine(vsx_string path);
+  vsx_engine();
+  vsx_engine(vsx_string path);
   ~vsx_engine();
 };
 
