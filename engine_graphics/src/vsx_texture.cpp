@@ -47,7 +47,7 @@ std::map<vsx_string, vsx_texture_info> vsx_texture::t_glist;
 void* vsx_texture::t_glist;
 #endif
 
-#define HANDLE_GL_ERROR gl_error = glGetError(); if (gl_error != GL_NO_ERROR) { printf("%s GlGetError()=%d on line %d",__FILE__,gl_error,__LINE__); return; } else printf("%s %d\n",__FILE__,__LINE__);
+#define HANDLE_GL_ERROR gl_error = glGetError(); if (gl_error != GL_NO_ERROR) { printf("%s GlGetError()=%d on line %d",__FILE__,gl_error,__LINE__); return; }
 
 vsx_texture::vsx_texture(){
   pti_l = 0;
