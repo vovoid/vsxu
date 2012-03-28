@@ -949,7 +949,7 @@ void vsx_engine_param::set_string(vsx_string data, int index) {
     }
     case VSX_MODULE_PARAM_ID_FLOAT_ARRAY: {
       clean_up_module_param(module_param);
-      if (!((vsx_module_param_sequence*)module_param)->valid) {
+      if (!((vsx_module_param_float_array*)module_param)->valid) {
         // data in our param is most likely pointing at invalid memory.
         vsx_float_array nn;
         nn.data = new vsx_array<float>;
@@ -963,7 +963,7 @@ void vsx_engine_param::set_string(vsx_string data, int index) {
       for (unsigned long i = 0; i < parts.size(); ++i) {
         (*((vsx_module_param_float_array*)module_param)->param_data[0].data).push_back(s2f(parts[i]));
       }
-      ((vsx_module_param_sequence*)module_param)->valid = true;
+      ((vsx_module_param_float_array*)module_param)->valid = true;
       return;
     }
   }
