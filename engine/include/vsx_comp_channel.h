@@ -117,5 +117,6 @@ NEW_DEFAULT_CHANNEL(vsx_channel_float3_array, 1)
 NEW_DEFAULT_CHANNEL(vsx_channel_quaternion_array, 1)
 NEW_DEFAULT_CHANNEL(vsx_channel_string, 1)
 NEW_DEFAULT_CHANNEL(vsx_channel_resource, 1)
+NEW_DEFAULT_CHANNEL(vsx_channel_sequence, 1)
 
 #endif

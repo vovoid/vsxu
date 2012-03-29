@@ -264,6 +264,7 @@ NEW_DEFAULT_CHANNEL_EXECUTE(vsx_channel_float3_array, vsx_module_param_float3_ar
 NEW_DEFAULT_CHANNEL_EXECUTE(vsx_channel_quaternion_array, vsx_module_param_quaternion_array)
 NEW_DEFAULT_CHANNEL_EXECUTE(vsx_channel_string, vsx_module_param_string)
 NEW_DEFAULT_CHANNEL_EXECUTE(vsx_channel_resource, vsx_module_param_resource)
+NEW_DEFAULT_CHANNEL_EXECUTE(vsx_channel_sequence, vsx_module_param_sequence)
 
 bool vsx_channel_segment_mesh::execute() { 
   
