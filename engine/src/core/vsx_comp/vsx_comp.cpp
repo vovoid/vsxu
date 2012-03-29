@@ -35,19 +35,19 @@ vsx_comp::vsx_comp() {
   size = 0.05f;
   frame_status = initial_status;
   in_parameters = new vsx_engine_param_list;
-	in_parameters->component = this;
-	in_parameters->io = -1;
+  in_parameters->component = this;
+  in_parameters->io = -1;
   out_parameters = new vsx_engine_param_list;
-	out_parameters->component = this;
-	out_parameters->io = 1;
-	parent = 0;
-	all_valid = true;
-	time_multiplier = 1.0f;
-	//local_engine_info.dtime = 0;
-	//local_engine_info.vtime = 0;
-	//local_engine_info.real_dtime = 0;
-	//local_engine_info.real_vtime = 0;
-	in_module_parameters = new vsx_module_param_list;
+  out_parameters->component = this;
+  out_parameters->io = 1;
+  parent = 0;
+  all_valid = true;
+  time_multiplier = 1.0f;
+  //local_engine_info.dtime = 0;
+  //local_engine_info.vtime = 0;
+  //local_engine_info.real_dtime = 0;
+  //local_engine_info.real_vtime = 0;
+  in_module_parameters = new vsx_module_param_list;
   out_module_parameters = new vsx_module_param_list;
 
 }
@@ -127,41 +127,41 @@ void vsx_comp::unload_module(module_dll_info* module_dll) {
 }
 
 void vsx_comp::re_init_in_params() {
-	// this doesn't EVER happen on its own (or shouldn't)
-	// so we can be a bit sloppy with optimizations here...
-	// It's initiated by the user changing stuff in the GUI most likely
-	std::map<vsx_string, float> float_values_saved;
-	std::map<vsx_string, int> int_values_saved;
+  // this doesn't EVER happen on its own (or shouldn't)
+  // so we can be a bit sloppy with optimizations here...
+  // It's initiated by the user changing stuff in the GUI most likely
+  std::map<vsx_string, float> float_values_saved;
+  std::map<vsx_string, int> int_values_saved;
 
-	typedef vsx_sequence sequence;
-	std::map<vsx_string, vsx_sequence> sequence_values_saved;	// technical assumption:
-	// most parameters are usually declared with the same name and type.
-	// so: save the easy ones (float, int, string, float3 etc).
-	for (unsigned long i = 0; i < in_module_parameters->id_vec.size(); i++)
-	{
-		vsx_module_param_abs* mparam = in_module_parameters->id_vec[i];
-		switch (mparam->type)
-		{
-			case VSX_MODULE_PARAM_ID_INT:
-			{
-				int_values_saved[mparam->name] = ((vsx_module_param_int*)mparam)->get();
-			}
-			break;
-			case VSX_MODULE_PARAM_ID_FLOAT:
-			{
-				float_values_saved[mparam->name] = ((vsx_module_param_float*)mparam)->get();
-			}
-			break;
-			case VSX_MODULE_PARAM_ID_SEQUENCE:
-			{
-				vsx_sequence a = ((vsx_module_param_sequence*)mparam)->get();
-				sequence_values_saved[mparam->name] = a;
-			}
-			break;
-			default:
-			break;
-		};
-	}
+  typedef vsx_sequence sequence;
+  std::map<vsx_string, vsx_sequence> sequence_values_saved;	// technical assumption:
+  // most parameters are usually declared with the same name and type.
+  // so: save the easy ones (float, int, string, float3 etc).
+  for (unsigned long i = 0; i < in_module_parameters->id_vec.size(); i++)
+  {
+    vsx_module_param_abs* mparam = in_module_parameters->id_vec[i];
+    switch (mparam->type)
+    {
+      case VSX_MODULE_PARAM_ID_INT:
+      {
+        int_values_saved[mparam->name] = ((vsx_module_param_int*)mparam)->get();
+      }
+      break;
+      case VSX_MODULE_PARAM_ID_FLOAT:
+      {
+        float_values_saved[mparam->name] = ((vsx_module_param_float*)mparam)->get();
+      }
+      break;
+      case VSX_MODULE_PARAM_ID_SEQUENCE:
+      {
+        vsx_sequence a = ((vsx_module_param_sequence*)mparam)->get();
+        sequence_values_saved[mparam->name] = a;
+      }
+      break;
+      default:
+      break;
+    };
+  }
 
   delete in_parameters;
   delete in_module_parameters;
@@ -177,23 +177,23 @@ void vsx_comp::re_init_in_params() {
   in_param_spec = process_module_param_spec(module_info->in_param_spec);
   in_parameters = new vsx_engine_param_list;
   in_parameters->component = this;
-	in_parameters->io = -1;
+  in_parameters->io = -1;
   in_parameters->init(in_module_parameters);
   init_channels();
 
   // restore the values kthx;; this code will prolly compress well
 #define RESTORE_FUNC(i_type) \
-	for (std::map<vsx_string, i_type>::iterator it = i_type##_values_saved.begin(); it != i_type##_values_saved.end();\
-  		it++)\
+  for (std::map<vsx_string, i_type>::iterator it = i_type##_values_saved.begin(); it != i_type##_values_saved.end();\
+      it++)\
   {\
-		for (unsigned long i = 0; i < in_module_parameters->id_vec.size(); i++)\
-		{\
-			if (in_module_parameters->id_vec[i]->name == (*it).first)\
-			{\
-				((vsx_module_param_##i_type*)in_module_parameters->id_vec[i])->set((*it).second);\
-				((vsx_module_param_##i_type*)in_module_parameters->id_vec[i])->updates++;\
-			}\
-		}\
+    for (unsigned long i = 0; i < in_module_parameters->id_vec.size(); i++)\
+    {\
+      if (in_module_parameters->id_vec[i]->name == (*it).first)\
+      {\
+        ((vsx_module_param_##i_type*)in_module_parameters->id_vec[i])->set((*it).second);\
+        ((vsx_module_param_##i_type*)in_module_parameters->id_vec[i])->updates++;\
+      }\
+    }\
   }
   RESTORE_FUNC(float);
   RESTORE_FUNC(int);
@@ -214,117 +214,120 @@ void vsx_comp::re_init_out_params() {
   out_param_spec = process_module_param_spec(module_info->out_param_spec);
   out_parameters = new vsx_engine_param_list;
   out_parameters->component = this;
-	out_parameters->io = 1;
+  out_parameters->io = 1;
   out_parameters->init(out_module_parameters);
 }
 
 void vsx_comp::init_channels() {
-	// we need to set up channels
-	for (std::vector<vsx_engine_param*>::iterator it = in_parameters->param_id_list.begin(); it != in_parameters->param_id_list.end(); ++it) {
-	  vsx_engine_param* param = *it;
+  // we need to set up channels
+  for (std::vector<vsx_engine_param*>::iterator it = in_parameters->param_id_list.begin(); it != in_parameters->param_id_list.end(); ++it) {
+    vsx_engine_param* param = *it;
     param->module_param->set_current_as_default();
 
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_RENDER) {
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_RENDER) {
       if (!param->module_param->valid) ((vsx_module_param_render*)param->module_param)->set(0);
-			channels.push_back(param->channel = new vsx_channel_render(module,param,this));
-		} else
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_TEXTURE) {
-			channels.push_back(param->channel = new vsx_channel_texture(module,param,this));
-		} else
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_FLOAT3) {
+      channels.push_back(param->channel = new vsx_channel_render(module,param,this));
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_TEXTURE) {
+      channels.push_back(param->channel = new vsx_channel_texture(module,param,this));
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_FLOAT3) {
       if (!param->module_param->valid) {
         ((vsx_module_param_float3*)param->module_param)->set(0.0f,0);
         ((vsx_module_param_float3*)param->module_param)->set(0.0f,1);
         ((vsx_module_param_float3*)param->module_param)->set(0.0f,2);
       }
-			channels.push_back(param->channel = new vsx_channel_float3(module,param,this));
-		} else
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_FLOAT4) {
-			channels.push_back(param->channel = new vsx_channel_float4(module,param,this));
+      channels.push_back(param->channel = new vsx_channel_float3(module,param,this));
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_FLOAT4) {
+      channels.push_back(param->channel = new vsx_channel_float4(module,param,this));
       if (!param->module_param->valid) {
         ((vsx_module_param_float4*)param->module_param)->set(0.0f,0);
         ((vsx_module_param_float4*)param->module_param)->set(0.0f,1);
         ((vsx_module_param_float4*)param->module_param)->set(0.0f,2);
         ((vsx_module_param_float4*)param->module_param)->set(0.0f,3);
       }
-		} else
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_QUATERNION) {
-			channels.push_back(param->channel = new vsx_channel_quaternion(module,param,this));
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_QUATERNION) {
+      channels.push_back(param->channel = new vsx_channel_quaternion(module,param,this));
       if (!param->module_param->valid) {
         ((vsx_module_param_quaternion*)param->module_param)->set(0.0f,0);
         ((vsx_module_param_quaternion*)param->module_param)->set(0.0f,1);
         ((vsx_module_param_quaternion*)param->module_param)->set(0.0f,2);
         ((vsx_module_param_quaternion*)param->module_param)->set(1.0f,3);
       }
-		} else
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_FLOAT) {
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_FLOAT) {
       if (!param->module_param->valid) ((vsx_module_param_float*)param->module_param)->set(0.0f);
-			channels.push_back(param->channel = new vsx_channel_float(module,param,this));
-		} else
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_INT) {
+      channels.push_back(param->channel = new vsx_channel_float(module,param,this));
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_INT) {
       if (!param->module_param->valid) ((vsx_module_param_int*)param->module_param)->set(0);
-			channels.push_back(param->channel = new vsx_channel_int(module,param,this));
-		} else
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_MESH) {
-			channels.push_back(param->channel = new vsx_channel_mesh(module,param,this));
-		} else
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_MATRIX) {
-			channels.push_back(param->channel = new vsx_channel_matrix(module,param,this));
-		} else
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_SEGMENT_MESH) {
-			channels.push_back(param->channel = new vsx_channel_segment_mesh(module,param,this));
-		} else
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_BITMAP) {
-			channels.push_back(param->channel = new vsx_channel_bitmap(module,param,this));
-		} else
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_PARTICLESYSTEM) {
-			channels.push_back(param->channel = new vsx_channel_particlesystem(module,param,this));
-		} else
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_FLOAT_ARRAY) {
-			channels.push_back(param->channel = new vsx_channel_float_array(module,param,this));
-		} else
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_FLOAT3_ARRAY) {
-			channels.push_back(param->channel = new vsx_channel_float3_array(module,param,this));
-		} else
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_QUATERNION_ARRAY) {
-			channels.push_back(param->channel = new vsx_channel_quaternion_array(module,param,this));
-		} else
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_STRING) {
-			channels.push_back(param->channel = new vsx_channel_string(module,param,this));
-		} else
-		if (param->module_param->type == VSX_MODULE_PARAM_ID_RESOURCE) {
-			channels.push_back(param->channel = new vsx_channel_resource(module,param,this));
-		}
-	}
+      channels.push_back(param->channel = new vsx_channel_int(module,param,this));
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_MESH) {
+      channels.push_back(param->channel = new vsx_channel_mesh(module,param,this));
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_MATRIX) {
+      channels.push_back(param->channel = new vsx_channel_matrix(module,param,this));
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_SEGMENT_MESH) {
+      channels.push_back(param->channel = new vsx_channel_segment_mesh(module,param,this));
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_BITMAP) {
+      channels.push_back(param->channel = new vsx_channel_bitmap(module,param,this));
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_PARTICLESYSTEM) {
+      channels.push_back(param->channel = new vsx_channel_particlesystem(module,param,this));
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_FLOAT_ARRAY) {
+      channels.push_back(param->channel = new vsx_channel_float_array(module,param,this));
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_FLOAT3_ARRAY) {
+      channels.push_back(param->channel = new vsx_channel_float3_array(module,param,this));
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_QUATERNION_ARRAY) {
+      channels.push_back(param->channel = new vsx_channel_quaternion_array(module,param,this));
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_STRING) {
+      channels.push_back(param->channel = new vsx_channel_string(module,param,this));
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_RESOURCE) {
+      channels.push_back(param->channel = new vsx_channel_resource(module,param,this));
+    } else
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_SEQUENCE) {
+      channels.push_back(param->channel = new vsx_channel_sequence(module,param,this));
+    }
+  }
 }
 
 void vsx_comp::init_module()
 {
-	module->declare_params(*in_module_parameters, *out_module_parameters);
+  module->declare_params(*in_module_parameters, *out_module_parameters);
 //  str_replace("\n","",str_replace(" ","",str_replace("\t","",module_info->in_param_spec)));
 //str_replace("\n","",str_replace(" ","",str_replace("\t","",module_info->out_param_spec)));
   LOG("init_module 1")
-	module->module_info(module_info);
-	in_param_spec = process_module_param_spec(module_info->in_param_spec);
-	out_param_spec = process_module_param_spec(module_info->out_param_spec);
-	component_class = module_info->component_class;
-	LOG("init_module 2")
-	//if (module_info->output) {
+  module->module_info(module_info);
+  in_param_spec = process_module_param_spec(module_info->in_param_spec);
+  out_param_spec = process_module_param_spec(module_info->out_param_spec);
+  component_class = module_info->component_class;
+  LOG("init_module 2")
+  //if (module_info->output) {
 //  }
 
-	LOG(vsx_string("module param spec: ")+in_param_spec.c_str());
+  LOG(vsx_string("module param spec: ")+in_param_spec.c_str());
 
-	// build up the internal engine_param_list
-	//printf("init in params\n");
-	in_parameters->init(in_module_parameters);
-	//printf("init out params\n");
-	LOG("init_module 3")
-	out_parameters->init(out_module_parameters);
-	//printf("init channels\n");
+  // build up the internal engine_param_list
+  //printf("init in params\n");
+  in_parameters->init(in_module_parameters);
+  //printf("init out params\n");
+  LOG("init_module 3")
+  out_parameters->init(out_module_parameters);
+  //printf("init channels\n");
   init_channels();
   LOG("init_module 4")
   //printf("module init\n");
-	module->init();
+  module->init();
   LOG("init_module finished")
   //local_engine_info.dtime = 0;
   //local_engine_info.vtime = 0;
@@ -341,23 +344,23 @@ bool vsx_comp::engine_info(vsx_module_engine_info* engine) {
 
 bool vsx_comp::prepare()
 {
-	if (parent)
-	{
-		LOG("comp prepare name: "+name+" of "+((vsx_comp_abs*)parent)->name)
-	}
-		else
-		{
+  if (parent)
+  {
+    LOG("comp prepare name: "+name+" of "+((vsx_comp_abs*)parent)->name)
+  }
+    else
+    {
   LOG("comp prepare name: "+name)
-		}
-	if (frame_status == frame_failed) return false;
-	if (frame_status != initial_status) return true;
-	frame_status = prepare_called;
-	// it needs to prepare all parameters for the run function
-	// this means it has to execute all channels to get texture id's etc
-	unsigned long i = 0;
-	for (std::vector <vsx_channel*>::iterator it = channels.begin(); it != channels.end(); ++it) {
+    }
+  if (frame_status == frame_failed) return false;
+  if (frame_status != initial_status) return true;
+  frame_status = prepare_called;
+  // it needs to prepare all parameters for the run function
+  // this means it has to execute all channels to get texture id's etc
+  unsigned long i = 0;
+  for (std::vector <vsx_channel*>::iterator it = channels.begin(); it != channels.end(); ++it) {
     if ((*it)->my_param->critical && !(*it)->connections.size()) {
-    	// this channel is critical but not connected! can't run!
+      // this channel is critical but not connected! can't run!
       i = 1; break;
     }
   }
@@ -375,31 +378,31 @@ bool vsx_comp::prepare()
     }
   }
 
-	for (std::vector <vsx_channel*>::iterator it = channels.begin(); it != channels.end(); ++it) {
+  for (std::vector <vsx_channel*>::iterator it = channels.begin(); it != channels.end(); ++it) {
     // check time to speed up loading bar
     if (r_engine_info->state == VSX_ENGINE_LOADING) {
       //LOG("engine is loading, time to test")
-    	//double atime = ((vsx_engine*)engine_owner)->g_timer.atime();
-    	//LOG("atime: "+f2s(atime));
-    	//LOG("fstarttime: "+f2s(((vsx_engine*)engine_owner)->frame_start_time));
-    	//printf("frame_start_time: %f\n",f2s(((vsx_engine*)engine_owner)->frame_start_time));
-    	double t = (((vsx_engine*)engine_owner)->g_timer.atime() - ((vsx_engine*)engine_owner)->frame_start_time);
+      //double atime = ((vsx_engine*)engine_owner)->g_timer.atime();
+      //LOG("atime: "+f2s(atime));
+      //LOG("fstarttime: "+f2s(((vsx_engine*)engine_owner)->frame_start_time));
+      //printf("frame_start_time: %f\n",f2s(((vsx_engine*)engine_owner)->frame_start_time));
+      double t = (((vsx_engine*)engine_owner)->g_timer.atime() - ((vsx_engine*)engine_owner)->frame_start_time);
       if (t > 0.4) {
-      	LOG("timer return")
+        LOG("timer return")
         return false;
       }
     }
     //---
     //if i is 0 (on the first run) prepare the module
-		if (!(*it)->execute()) {
-			frame_status = frame_failed;
+    if (!(*it)->execute()) {
+      frame_status = frame_failed;
     //printf("failed channel execute : %s\n",name.c_str());
-			return false;
-		}
+      return false;
+    }
     #ifdef VSXU_MODULE_TIMING
       new_time_run += (*it)->channel_execution_time;
     #endif
-		// run vsxl after other component has set our value
+    // run vsxl after other component has set our value
     #ifndef VSXE_NO_GM
       if ((*it)->my_param->module_param->vsxl_modifier)
       {
@@ -407,10 +410,10 @@ bool vsx_comp::prepare()
         ((vsx_param_vsxl_abs*)a)  -> execute();
       }
     #endif
-		++i;
-	}
-	if (module_info->output) {
-		LOG("module->run");
+    ++i;
+  }
+  if (module_info->output) {
+    LOG("module->run");
     #ifdef VSXU_MODULE_TIMING
       run_timer.start();
     #endif
@@ -418,30 +421,30 @@ bool vsx_comp::prepare()
     #ifdef VSXU_MODULE_TIMING
       new_time_run += run_timer.dtime();
     #endif
-	}
-	// special case for output components (screen etc.)
-	if (module_info->output) {
-	  frame_status = run_finished;
-	}
-	frame_status = prepare_finished;
-	return true;
+  }
+  // special case for output components (screen etc.)
+  if (module_info->output) {
+    frame_status = run_finished;
+  }
+  frame_status = prepare_finished;
+  return true;
 }
 
 bool vsx_comp::run(vsx_module_param_abs* param)
 {
-	LOG(vsx_string("run:name=")+name.c_str());
+  LOG(vsx_string("run:name=")+name.c_str());
 
-	if (module_info->output) {
-	  return true;
-	}
-	if (module_info->tunnel) {
+  if (module_info->output) {
+    return true;
+  }
+  if (module_info->tunnel) {
     // very extra param!
     frame_status = initial_status;
-	  prepare();
-	}
+    prepare();
+  }
 
-	if(frame_status == frame_failed) return false;
-	
+  if(frame_status == frame_failed) return false;
+
   if(frame_status == prepare_finished) {
     //printf("c:%s:module_pre_run\n",name.c_str());
     #ifndef VSXE_NO_GM
@@ -482,31 +485,31 @@ bool vsx_comp::run(vsx_module_param_abs* param)
 bool vsx_comp::stop() {
   //printf("stopping %s\n",name.c_str());
   if (module)
-	module->stop();
-	return true;
+  module->stop();
+  return true;
 }
 
 bool vsx_comp::start() {
   if (module)
-	module->start();
-	return true;
+  module->start();
+  return true;
 }
 
 bool vsx_comp::disconnect(vsx_string param_name, vsx_comp_abs* other_component, vsx_string other_param_name) {
-	for (unsigned long i = 0; i < channels.size(); ++i) {
-		if (param_name == channels[i]->get_param_name()) {
-		  return channels[i]->disconnect((vsx_comp*)other_component,other_param_name);
-		}
-	}
-	return false;
+  for (unsigned long i = 0; i < channels.size(); ++i) {
+    if (param_name == channels[i]->get_param_name()) {
+      return channels[i]->disconnect((vsx_comp*)other_component,other_param_name);
+    }
+  }
+  return false;
 }
 
 void vsx_comp::disconnect(vsx_string param_name) {
-	for (unsigned long i = 0; i < channels.size(); ++i) {
-		if (param_name == channels[i]->get_param_name()) {
-				channels[i]->disconnect();
-		}
-	}
+  for (unsigned long i = 0; i < channels.size(); ++i) {
+    if (param_name == channels[i]->get_param_name()) {
+        channels[i]->disconnect();
+    }
+  }
 }
 
 vsx_string process_module_param_spec(vsx_string& input) {
