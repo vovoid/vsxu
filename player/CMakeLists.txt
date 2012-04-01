@@ -44,32 +44,17 @@ endif()
 # SOURCES ######################################################################
 ################################################################################
 
-set(OS_SOURCES "")
-
-if(WIN32)
-  set(OS_SOURCES
-    src/main/win32/main.cpp
-    src/main/win32/includes/nehegl.cpp
-  )
-endif(WIN32)
-
-if(UNIX)
-  set(OS_SOURCES
-    src/main/linux/main.cpp
-  )
-endif(UNIX)
-
 set(SOURCES
+  src/main.cpp
   src/application.cpp
   src/vsx_overlay.cpp
 )
-
 
 ################################################################################
 # LINK #########################################################################
 ################################################################################
 
-add_executable(${module_id} ${SOURCES} ${OS_SOURCES})
+add_executable(${module_id} ${SOURCES})
 include(../cmake_suffix.txt)
 
 if(UNIX)
@@ -90,6 +75,7 @@ endif()
 
 if(WIN32)
   target_link_libraries(${module_id}
+  ${GLFW_LIBRARY}
   wsock32
   ws2_32
   ${CMAKE_THREAD_LIBS_INIT}

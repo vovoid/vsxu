@@ -13,6 +13,8 @@
 // you might want to remove this.
 #include "vsx_overlay.h"
 
+#include <GL/glfw.h>
+
 vsx_manager_abs* manager;
 
 
@@ -33,9 +35,9 @@ void app_pre_draw() {}
 
 bool app_draw(int id)
 {
-	if (first)
-	{
-		first = false;
+  if (first)
+  {
+    first = false;
     // create a new manager
     manager = manager_factory();
     std::string path = PLATFORM_SHARED_FILES_STLSTRING;
@@ -51,9 +53,10 @@ bool app_draw(int id)
     overlay->set_manager(manager);
     // create a new intro (Luna logo) object
     if (disable_randomizer) manager->set_randomizer(false);
-	}
+  }
 
-/* uncomment for manual sound injection
+  /*
+  uncomment for manual sound injection
   for (unsigned long i = 0; i < 512; i++)
   {
     sound_wave_test[i] = (float)(rand()%65535-32768)*(1.0f/32768.0f);
@@ -65,77 +68,58 @@ bool app_draw(int id)
   manager->set_sound_freq(&sound_freq_test[0]);
   manager->set_sound_wave(&sound_wave_test[0]);
   */
-	
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	if (manager) manager->render();
-	if (overlay) overlay->render();
-	return true;
+
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  if (manager) manager->render();
+  if (overlay) overlay->render();
+  return true;
 }
 
-void app_key_down(long key) 
+void app_key_down(long key)
 {
-  #ifdef VSXU_DEBUG
-  	printf("key: %d\n", (int)key);
-  #endif
-  switch (key) 
+  switch (key)
   {
-    // esc:
-	  case 257:
-		case 27:
+    case GLFW_KEY_ESC:
       if (manager) manager_destroy(manager);
       exit(0);
-    // pgup:
-		case 298:
-		case 33: 
-      manager->inc_speed(); 
+    case GLFW_KEY_PAGEUP:
+      manager->inc_speed();
       break;
-    // pgdn:
-		case 299:
-		case 34: 
-      manager->dec_speed(); 
+    case GLFW_KEY_PAGEDOWN:
+      manager->dec_speed();
       break;
-    // arrow up:
-		case 283:
-    case 38: 
-      manager->inc_fx_level(); overlay->show_fx_graph(); 
+    case GLFW_KEY_UP:
+      manager->inc_fx_level(); overlay->show_fx_graph();
       break;
-    // arrow down:
-		case 284:
-    case 40: 
-      manager->dec_fx_level(); overlay->show_fx_graph(); 
+    case GLFW_KEY_DOWN:
+      manager->dec_fx_level(); overlay->show_fx_graph();
       break;
-    // arrow left:
-		case 285:
-		case 37: 
-      manager->prev_visual(); 
+    case GLFW_KEY_LEFT:
+      manager->prev_visual();
       break;
-    // arrow right:
-		case 286:
-		case 39: 
-      manager->next_visual(); 
+    case GLFW_KEY_RIGHT:
+      manager->next_visual();
       break;
-    // "F1" key:
-    case 258:
-      overlay->set_help(1); 
+    case GLFW_KEY_F1:
+      overlay->set_help(1);
       break;
     // "F" key:
-    case 112:
     case 70:
-      overlay->set_help(2); 
+      overlay->set_help(2);
       break;
     // "R" key:
-		case 82:
-      if (app_ctrl) 
+    case 82:
+      if (app_ctrl)
       {
-        manager->pick_random_visual(); 
+        manager->pick_random_visual();
       }
-      else 
+      else
       {
-        manager->toggle_randomizer(); 
+        manager->toggle_randomizer();
         overlay->show_randomizer_status();
       }
       break;
-	}
+  }
 }
 
 void app_key_up(long key) {}
