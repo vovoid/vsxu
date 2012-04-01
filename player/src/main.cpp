@@ -20,7 +20,6 @@ void set_modifiers()
 {
   app_ctrl = (bool)glfwGetKey(GLFW_KEY_LCTRL);
   app_shift = (bool)glfwGetKey(GLFW_KEY_LSHIFT);
-  //printf("shift is: %d\n",app_shift);
   app_alt = (bool)glfwGetKey(GLFW_KEY_LALT);
 }
 
@@ -32,15 +31,11 @@ float initial_key_delay = 0.04f;
 
 void GLFWCALL key_char_event( int character, int action )
 {
-#ifdef __APPLE__
-  return;
-#endif
   if (action == GLFW_PRESS)
   {
     //printf("got key: %d\n",character);
     app_char(character);
     key_character = character;
-
   }
 }
 
@@ -96,10 +91,7 @@ int mouse_pos_type = 0;
 void GLFWCALL mouse_pos_event(int x, int y)
 {
   set_modifiers();
-  //printf("mouse_pos_event %d, %d\n",x,y);
   glfwGetMousePos(&last_x, &last_y);
-  //last_x = x;
-  //last_y = y;
   if (mouse_state) mouse_pos_type = 1;
   else mouse_pos_type = 2;
 }
@@ -130,7 +122,8 @@ int main(int argc, char* argv[])
   int x_res = 1280;
   int y_res = 720;
   bool manual_resolution_set = false;
-  for (int i = 1; i < argc; i++) {
+  for (int i = 1; i < argc; i++)
+  {
     vsx_string arg1 = argv[i];
     if (arg1 == "--help")
     {
@@ -201,23 +194,21 @@ int main(int argc, char* argv[])
     }
   }
 
-    //glfwSetWindowPos(1380,200);
-
   glfwSetKeyCallback(&key_event);
   glfwSetMouseButtonCallback(&mouse_button_event);
   glfwSetMousePosCallback(&mouse_pos_event);
   glfwSetCharCallback(&key_char_event);
   glfwSetMouseWheelCallback(&mouse_wheel);
-    // Enable sticky keys
+  // Enable sticky keys
   glfwEnable( GLFW_STICKY_KEYS );
   glfwSwapInterval(1);
-    // Main loop
+  // Main loop
   running = GL_TRUE;
   frames = 0;
   t0 = glfwGetTime();
-    //typedef BOOL (APIENTRY * wglSwapIntervalEXT_Func)(int);
-    //wglSwapIntervalEXT_Func wglSwapIntervalEXT = wglSwapIntervalEXT_Func(wglGetProcAddress("wglSwapIntervalEXT"));
-    //if (wglSwapIntervalEXT) wglSwapIntervalEXT(1);
+  //typedef BOOL (APIENTRY * wglSwapIntervalEXT_Func)(int);
+  //wglSwapIntervalEXT_Func wglSwapIntervalEXT = wglSwapIntervalEXT_Func(wglGetProcAddress("wglSwapIntervalEXT"));
+  //if (wglSwapIntervalEXT) wglSwapIntervalEXT(1);
 
   sprintf( titlestr, "Vovoid VSX Ultra %s [GNU/Linux] [Visit us at http://vsxu.com]", vsxu_ver);
   glfwSetWindowTitle( titlestr );
@@ -234,7 +225,7 @@ int main(int argc, char* argv[])
 
     app_pre_draw();
 
-        // Get time and mouse position
+    // Get time and mouse position
     t = glfwGetTime();
     glfwGetMousePos( &x, &y );
     float delta = t-t1;
@@ -257,70 +248,34 @@ int main(int argc, char* argv[])
         }
       }
     }
-        // Calculate and display FPS (frames per second)
-        /*if( (t-t0) > 1.0 || frames == 0 )
-    {
-    fps = (double)frames / (t-t0);
-    sprintf( titlestr, "Vovoid VSX Ultra Artiste :: GNU/Linux version (%.1f FPS)", fps );
-    glfwSetWindowTitle( titlestr );
-    t0 = t;
-    frames = 0;
-  }*/
     frames ++;
 
-        // Get window size (may be different than the requested size)
+    // Get window size (may be different than the requested size)
     glfwGetWindowSize( &width, &height );
     height = height > 0 ? height : 1;
 
-        // Set viewport
+    // Set viewport
     glViewport( 0, 0, width, height );
 
-        // Clear color buffer
+    // Clear color buffer
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
     glClear( GL_COLOR_BUFFER_BIT );
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();                     // Reset The Modelview Matrix
+    glLoadIdentity();
 
     app_draw(0);
 
-        // Select and setup the projection matrix
-        /*glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-    gluPerspective( 65.0f, (GLfloat)width/(GLfloat)height, 1.0f,
-    100.0f );
-
-        // Select and setup the modelview matrix
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
-    gluLookAt( 0.0f, 1.0f, 0.0f,    // Eye-position
-    0.0f, 20.0f, 0.0f,   // View-point
-    0.0f, 0.0f, 1.0f );  // Up-vector
-
-        // Draw a rotating colorful triangle
-    glTranslatef( 0.0f, 14.0f, 0.0f );
-    glRotatef( 0.3*(GLfloat)x + (GLfloat)t*100.0f, 0.0f, 0.0f, 1.0f );
-    glBegin( GL_TRIANGLES );
-    glColor3f( 1.0f, 0.0f, 0.0f );
-    glVertex3f( -5.0f, 0.0f, -4.0f );
-    glColor3f( 0.0f, 1.0f, 0.0f );
-    glVertex3f( 5.0f, 0.0f, -4.0f );
-    glColor3f( 0.0f, 0.0f, 1.0f );
-    glVertex3f( 0.0f, 0.0f, 6.0f );
-    glEnd();
-        */
-        // Swap buffers
     glfwSwapBuffers();
 
-        // Check if the ESC key was pressed or the window was closed
+    // Check if the ESC key was pressed or the window was closed
     running = /*!glfwGetKey( GLFW_KEY_ESC ) &&*/
-        glfwGetWindowParam( GLFW_OPENED );
+    glfwGetWindowParam( GLFW_OPENED );
   }
 
-    // Close OpenGL window and terminate GLFW
+  // Close OpenGL window and terminate GLFW
   glfwTerminate();
 
   return 0;
 }
-//endif

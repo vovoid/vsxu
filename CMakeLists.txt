@@ -5,7 +5,8 @@ PROJECT(VSXu)
 set(VSXU_VERSION_MAJOR "0")
 set(VSXU_VERSION_MINOR "3")
 set(VSXU_VERSION_PATCH "0")
-set(VSXU_VERSION ${VSXU_VERSION_MAJOR}.${VSXU_VERSION_MINOR}.${VSXU_VERSION_PATCH})
+set(VSXU_VERSION_PATCH_MINOR "4")
+set(VSXU_VERSION ${VSXU_VERSION_MAJOR}.${VSXU_VERSION_MINOR}.${VSXU_VERSION_PATCH}.${VSXU_VERSION_PATCH_MINOR})
 
 message("---------------------------------------------------------------------")
 message("                  Configuring Vovoid VSXu Ultra                      ")
@@ -112,7 +113,15 @@ SET(CPACK_COMPONENT_PLAYER_DISPLAY_NAME "VSXu Player")
 SET(CPACK_COMPONENT_PLAYER_REQUIRED 1)
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jonatan 'jaw' Wallmander / Vovoid Media Technologies")
 
-set(CPACK_PACKAGE_EXECUTABLES "vsxu_player" "VSXu Player" "vsxu_artiste" "VSXu Artiste" "vsxu_demo_player" "Demo - Vovoid - Luna - Reactivation")
+SET(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "VSXu ${CPACK_PACKAGE_VERSION}")
+set(CPACK_PACKAGE_EXECUTABLES "vsxu_player;VSXu Player Window" "vsxu_artiste;VSXu Artiste" "vsxu_demo_player;Demo - Vovoid - Luna - Reactivation")
+set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player Fullscreen.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_player.exe \\\" -f
+")
+set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
+    Delete \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player Fullscreen.lnk\\\"
+")
+
 set(CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
 set(CPACK_PACKAGE_NAME VSXu ${CPACK_PACKAGE_VERSION})
 set(CPACK_PACKAGE_VENDOR "Vovoid Media Technologies")
