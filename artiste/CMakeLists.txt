@@ -74,7 +74,6 @@ if(UNIX)
 endif(UNIX)
 
 set(SOURCES
-  src/gl_helper.cpp
   src/log/vsx_log_a.cpp
   src/vsx_widget/vsx_widget_base.cpp
   src/vsx_widget/server/vsx_widget_comp.cpp

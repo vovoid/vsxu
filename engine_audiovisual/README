@@ -1,0 +1,4 @@
+Support libs / shared functions for using vsxu as an audio visualizer.
+Includes: 
+  vsx_manager - a class controlling what visual to show, provides an interface for getting metadata from the visual etc.
+                It can also accept audio data in the form of floats.

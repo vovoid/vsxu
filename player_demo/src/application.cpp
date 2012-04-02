@@ -4,7 +4,6 @@
 // vsxu includes
 #include <vsx_version.h>
 #include <vsx_platform.h>
-#include <vsx_manager.h>
 #include <vsx_engine.h>
 #include "logo_intro.h"
 

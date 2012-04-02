@@ -1,0 +1,8 @@
+Support libs / shared functions for all modules and vsxu programs.
+Includes: 
+  OpenGL Texture handling & FBO (vsx_texture.h)
+  JPEG loading (vsx_texture.h)
+  PNG loading (vsx_texture.h)
+  Font rendering, (vsx_font.h)
+  OpenGL convenience functions (gl_helper.h)
+  VSXu Logo rendering / intro (logo_intro.h)

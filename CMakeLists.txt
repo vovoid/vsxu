@@ -157,6 +157,7 @@ add_definitions(-DVSXU_INSTALL_LIB_DIR="${VSXU_INSTALL_LIB_DIR}")
 # VSXU LIBRARIES ###############################################################
 ################################################################################
 add_subdirectory(engine)
+add_subdirectory(engine_audiovisual)
 add_subdirectory(engine_graphics)
 add_subdirectory(plugins)
 
