@@ -206,7 +206,7 @@ public:
   bool start();
   bool render();
 
-  void process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive = false);
+  void process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive = false, bool ignore_timing = false);
 
   double get_fps();
   void set_amp(float amp);

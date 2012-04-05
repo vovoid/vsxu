@@ -936,7 +936,7 @@ void vsx_engine::set_ignore_per_frame_time_limit(bool new_value)
 }
 
 //############## M E S S A G E   P R O C E S S O R #################################################
-void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive) {
+void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive, bool ignore_timing) {
   // service commands
 	LOG("process_message_queue 1")
 
