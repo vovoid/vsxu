@@ -304,26 +304,32 @@ void vsx_statelist::render()
 
   if ((*state_iter).engine != vxe) // change is on the way
   {
-    tex_to.begin_capture();
-      if ((*state_iter).engine)
-      {
-        (*state_iter).engine->process_message_queue(&(*state_iter).cmd_in,&(*state_iter).cmd_out);
-        (*state_iter).engine->render();
-      }
-      glColorMask(false, false, false, true);
-      glClearColor(0,0,0,1);
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      glColorMask(true, true, true, true);
-    tex_to.end_capture();
-    if (
-      (*state_iter).engine->modules_left_to_load == 0 &&
-      (*state_iter).engine->commands_internal.count() == 0 &&
-      transition_time > 1.0f
-    )
+    if ( tex_to.has_buffer_support() )
     {
-      transition_time = 1.0f;
-      timer.start();
-      fade_id = rand() % (faders.size());
+      tex_to.begin_capture();
+        if ((*state_iter).engine)
+        {
+          (*state_iter).engine->process_message_queue(&(*state_iter).cmd_in,&(*state_iter).cmd_out);
+          (*state_iter).engine->render();
+        }
+        glColorMask(false, false, false, true);
+        glClearColor(0,0,0,1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glColorMask(true, true, true, true);
+      tex_to.end_capture();
+      if (
+        (*state_iter).engine->modules_left_to_load == 0 &&
+        (*state_iter).engine->commands_internal.count() == 0 &&
+        transition_time > 1.0f
+      )
+      {
+        transition_time = 1.0f;
+        timer.start();
+        fade_id = rand() % (faders.size());
+      }
+    } else
+    {
+      transition_time = -1.0f;
     }
 
     if (transition_time <= 0.0)
