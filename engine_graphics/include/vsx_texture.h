@@ -62,6 +62,7 @@ public:
   vsx_texture_info texture_info;
 
   // FBO functions
+  VSX_TEXTURE_DLLIMPORT bool has_buffer_support();
   VSX_TEXTURE_DLLIMPORT void init_buffer(int width, int height, bool float_texture = false, bool alpha = true, bool multisample = false); // run once
   VSX_TEXTURE_DLLIMPORT void deinit_buffer(); // remove the buffer
   VSX_TEXTURE_DLLIMPORT void reinit_buffer(int width, int height, bool float_texture = false, bool alpha = true); // run in stop/start or when changing resolution

@@ -71,6 +71,10 @@ void vsx_texture::init_opengl_texture()
   texture_info.ogl_id = tex_id;
   texture_info.ogl_type = GL_TEXTURE_2D;
 }
+bool vsx_texture::has_buffer_support()
+{
+  return GLEW_EXT_framebuffer_object && GLEW_EXT_framebuffer_blit;
+}
 
 void vsx_texture::init_buffer(int width, int height, bool float_texture, bool alpha, bool enable_multisample)
 {
@@ -83,7 +87,7 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture, bool al
   int i_width = width;
   int i_height = height;
 
-  if ( !(GLEW_EXT_framebuffer_object && GLEW_EXT_framebuffer_blit) )
+  if ( !has_buffer_support() )
   {
     printf("vsx_texture error: No FBO available!\n");
     return;
@@ -97,7 +101,8 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture, bool al
 
   glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, colorBuffer); HANDLE_GL_ERROR
 
-  if(enable_multisample){
+  if(enable_multisample && GLEW_EXT_framebuffer_multisample)
+  {
     if (float_texture)
     {
       glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, alpha?GL_RGBA16F_ARB:GL_RGB16F_ARB, width, height); HANDLE_GL_ERROR
@@ -115,7 +120,7 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture, bool al
   // depth buffer
   glGenRenderbuffersEXT(1, &depthBuffer); HANDLE_GL_ERROR;
   glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthBuffer); HANDLE_GL_ERROR
-  if(enable_multisample)
+  if(enable_multisample && GLEW_EXT_framebuffer_multisample)
   {
     glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_DEPTH_COMPONENT, width, height); HANDLE_GL_ERROR
   }
