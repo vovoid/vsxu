@@ -10,8 +10,8 @@
 bool app_ctrl = false;
 bool app_alt = false;
 bool app_shift = false;
-bool dual_monitor = false;
 bool disable_randomizer = false;
+bool option_preload_all = false;
 // implementation of app externals
 int app_argc = 0;
 char** app_argv;
@@ -125,21 +125,25 @@ int main(int argc, char* argv[])
   for (int i = 1; i < argc; i++)
   {
     vsx_string arg1 = argv[i];
-    if (arg1 == "--help")
+    if (arg1 == "--help" || arg1 == "/?" || arg1 == "-help" || arg1 == "-?")
     {
       printf(
              "Usage:\n"
           "  vsxu_player [path_to_vsx_file]\n"
           "\n"
           "Flags: \n"
-          "  -dr   Disable randomizer     \n\n"
-          "  -p [x,y] window position x,y \n\n"
-          "  -s [x,y] window size x,y \n\n"
+          "  -pl        Preload all visuals on start \n"
+          "  -dr        Disable randomizer     \n"
+          "  -p [x,y]   Set window position x,y \n"
+          "  -s [x,y]   Set window size x,y \n\n\n"
             );
       exit(0);
     } else
     if (arg1 == "-f") {
       start_fullscreen = true;
+    } else
+    if (arg1 == "-pl") {
+      option_preload_all = true;
     } else
     if (arg1 == "-dr") {
       disable_randomizer = true;

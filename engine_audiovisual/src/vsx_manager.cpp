@@ -72,6 +72,8 @@ public:
   void inc_speed();
   void dec_speed();
 
+  void set_option_preload_all(bool value);
+
   void set_sound_freq(float* data);
   void set_sound_wave(float* data);
 
@@ -249,6 +251,11 @@ void vsx_manager::inc_speed()
 void vsx_manager::dec_speed()
 {
   ((vsx_statelist*)int_state_manager)->dec_speed();
+}
+
+void vsx_manager::set_option_preload_all(bool value)
+{
+ ((vsx_statelist*)int_state_manager)->set_option_preload_all(value);
 }
 
 void vsx_manager::set_sound_freq(float* data)

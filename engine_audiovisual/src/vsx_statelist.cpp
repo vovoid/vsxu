@@ -272,44 +272,55 @@ void vsx_statelist::render()
     transitioning = false;
     render_first = false;
     if ( state_iter == statelist.end() ) return;
-    init_current((*state_iter).engine, &(*state_iter));
+
+    // go through statelist and load and validate every plugin
+    for (state_iter = statelist.begin(); state_iter != statelist.end(); state_iter++)
+    {
+      init_current((*state_iter).engine, &(*state_iter));
+      if (option_preload_all == true)
+      {
+        while ( (*state_iter).engine->modules_left_to_load )
+        {
+          (*state_iter).engine->process_message_queue( &(*state_iter).cmd_in, cmd_out = &(*state_iter).cmd_out,false, true);
+          (*state_iter).engine->render();
+        }
+      }
+    }
+
+    // reset state_iter to a random state
+    state_iter = statelist.begin();
+    int steps = rand() % statelist.size();
+    while (steps) {
+      ++state_iter;
+      if (state_iter == statelist.end()) state_iter = statelist.begin();
+      --steps;
+    }
+
     vxe = (*state_iter).engine;
     cmd_in = &(*state_iter).cmd_in;
     cmd_out = &(*state_iter).cmd_out;
   }
   if ( !statelist.size() ) return;
 
-  //printf("r2");
   if ((*state_iter).engine != vxe) // change is on the way
   {
-    //printf("r3");
-    //printf("rendering tex_to %f\n", transition_time);
     tex_to.begin_capture();
       if ((*state_iter).engine)
       {
-        //printf("\n%s\n", (*state_iter).state_name.c_str());
-        //printf("r31");
         (*state_iter).engine->process_message_queue(&(*state_iter).cmd_in,&(*state_iter).cmd_out);
-        //printf("r32");
         (*state_iter).engine->render();
-        //printf("r33");
       }
       glColorMask(false, false, false, true);
       glClearColor(0,0,0,1);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       glColorMask(true, true, true, true);
     tex_to.end_capture();
-    //printf("r34");
-    //printf("vme2->modules_loaded: %d\n",(*state_iter).engine->modules_loaded);
-    //printf("vme2->modules_left_to_load: %d\n",(*state_iter).engine->modules_left_to_load);
-    //printf("vme2->internal_msg_size: %d\n",(*state_iter).engine->commands_internal.count());
     if (
       (*state_iter).engine->modules_left_to_load == 0 &&
       (*state_iter).engine->commands_internal.count() == 0 &&
       transition_time > 1.0f
     )
     {
-      //printf("setting transition time to 1\n");
       transition_time = 1.0f;
       timer.start();
       fade_id = rand() % (faders.size());
@@ -317,7 +328,6 @@ void vsx_statelist::render()
 
     if (transition_time <= 0.0)
     {
-      //printf("transition time < 0.0\n");
       vxe = (*state_iter).engine;
       cmd_in = &(*state_iter).cmd_in;
       cmd_out = &(*state_iter).cmd_out;
@@ -356,20 +366,14 @@ void vsx_statelist::render()
         glColorMask(true, true, true, true);
 
       tex1.end_capture();
-      //printf("a3 %d\n",faders.size());
-      //printf("num modules: %d\n", faders[0]->get_num_modules());
-      //vsx_comp* comp = faders[0]->get_by_name("visual_fader");
       vsx_module_param_texture* param_t_a = (vsx_module_param_texture*)faders[fade_id]->get_in_param_by_name("visual_fader", "texture_a_in");
-      //printf("a4\n");
       vsx_module_param_texture* param_t_b = (vsx_module_param_texture*)faders[fade_id]->get_in_param_by_name("visual_fader", "texture_b_in");
       vsx_module_param_float* param_pos = (vsx_module_param_float*)faders[fade_id]->get_in_param_by_name("visual_fader", "fade_pos_in");
       vsx_module_param_float* fade_pos_from_engine = (vsx_module_param_float*)faders[fade_id]->get_in_param_by_name("visual_fader", "fade_pos_from_engine");
-      //printf("a4\n");
       faders[fade_id]->process_message_queue(&l_cmd_in, &l_cmd_out);
       l_cmd_out.clear();
       if (param_t_a && param_t_b && param_pos && fade_pos_from_engine)
       {
-        //printf("rendering fader\n");
         param_t_a->set(&tex1);
         param_t_b->set(&tex_to);
         fade_pos_from_engine->set(1.0f);
@@ -377,11 +381,10 @@ void vsx_statelist::render()
         if (t > 1.0f) t = 1.0f;
         if (t < 0.0f) t = 0.0f;
         param_pos->set(1.0-t);
-        //cmd_out->clear();
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         faders[fade_id]->render();
       }
-      //
+
       if (transition_time <= 1.0f)
       {
         transition_time -= timer.dtime();
@@ -391,8 +394,6 @@ void vsx_statelist::render()
   {
     if (cmd_out && cmd_in)
     {
-      //printf("num in commands: %d\n",cmd_in->commands.size());
-      //printf("num ou commands: %d\n",cmd_out->commands.size());
       vxe->process_message_queue(cmd_in, cmd_out);
       cmd_out->clear();
     }
@@ -400,7 +401,6 @@ void vsx_statelist::render()
     if (randomizer)
     {
       randomizer_time -= vxe->engine_info.real_dtime;
-      //printf("%f\n", randomizer_time);
       if (randomizer_time < 0.0f)
       {
         random_state();
@@ -575,19 +575,13 @@ void vsx_statelist::init(vsx_string base_path,vsx_string init_sound_type)
     state.engine = 0;
     statelist.push_back(state);
   }
-  state_iter = statelist.begin();
-  int steps = rand() % statelist.size();
-  while (steps) {
-    ++state_iter;
-    if (state_iter == statelist.end()) state_iter = statelist.begin();
-    --steps;
-  }
 
   load_fx_levels_from_user();
 }
 
 vsx_statelist::vsx_statelist() 
 {
+  option_preload_all = false;
 }
 
 vsx_statelist::~vsx_statelist()

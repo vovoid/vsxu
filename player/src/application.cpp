@@ -40,11 +40,13 @@ bool app_draw(int id)
     first = false;
     // create a new manager
     manager = manager_factory();
-    std::string path = PLATFORM_SHARED_FILES_STLSTRING;
+    manager->set_option_preload_all(option_preload_all);
+
     // init manager with the shared path and sound input type.
     // manual sound injection: manager->init( path.c_str() , "media_player");
+    std::string path = PLATFORM_SHARED_FILES_STLSTRING;
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-    manager->init( path.c_str(), "fmod");
+      manager->init( path.c_str(), "fmod");
     #else
       manager->init( path.c_str(), "pulseaudio");
     #endif

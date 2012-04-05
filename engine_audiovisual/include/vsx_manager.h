@@ -69,24 +69,41 @@ public:
   // dump the list of all loadable visuals
   virtual std::vector<std::string> get_visual_filenames() = 0;
 
-  // provide metadata for information about current running visualization
+  // **************************************************************************
+  // VISUAL METADATA
+  // Provides metadata for information about current running visualization
   virtual std::string get_meta_visual_filename() = 0;
   virtual std::string get_meta_visual_name() = 0;
   virtual std::string get_meta_visual_creator() = 0;
   virtual std::string get_meta_visual_company() = 0;
 
-  // amplification/fx level (more = flashier, less = less busy)
+  // **************************************************************************
+  // EFFECT / FX LEVEL
+  // Amplification/FX level (more = flashier, less = less busy)
   virtual float get_fx_level() = 0;
   virtual void inc_fx_level() = 0;
   virtual void dec_fx_level() = 0;
 
+  // **************************************************************************
+  // TIME SPEED MANIPULATION
   // time speed (more = faster movements, less = slow motion)
   virtual float get_speed() = 0;
   virtual void inc_speed() = 0;
   virtual void dec_speed() = 0;
 
-  // update engine sound data,
-  // arrays MUST be 512 floats long
+  // **************************************************************************
+  // MISC OPTIONS
+
+  // set_option_preload_all
+  //   should all states be loaded on initial frame? default: false
+  //   This will make vsxu stall on startup while loading all presets.
+  virtual void set_option_preload_all(bool value) = 0;
+
+  // **************************************************************************
+  // SOUND INJECTION
+  //
+  // Send sound data to vsx_engine for visualization.
+  // NOTE! Arrays MUST be 512 bytes long.
   virtual void set_sound_freq(float* data) = 0;
   virtual void set_sound_wave(float* data) = 0;
 

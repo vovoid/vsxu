@@ -105,11 +105,25 @@ private:
   vsx_engine_float_array int_freq;
   vsx_engine_float_array int_wav;
 
+  // options
+  bool option_preload_all;
+
 public:
 
   vsx_engine* get_vxe() {
     return vxe;
   }
+
+  // **************************************************************************
+  // OPTIONS
+
+  // set_option_preload_all
+  //   should all states be loaded on initial frame? default: false
+  void set_option_preload_all(bool new_value)
+  {
+    option_preload_all = new_value;
+  }
+  // **************************************************************************
 
   state_info* get_state() {
     return &(*state_iter);
