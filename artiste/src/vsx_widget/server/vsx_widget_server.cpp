@@ -53,7 +53,7 @@
 #include <vsx_command_client_server.h>
 #include "vsx_widget_server.h"
 #include "vsx_widget_anchor.h"
-#include "vsx_widget_connector.h"
+#include "vsx_widget_connector_bezier.h"
 #include "sequencer/vsx_widget_sequence.h"
 #include "sequencer/pool_manager/vsx_widget_seq_pool.h"
 #include "controllers/vsx_widget_base_controller.h"
