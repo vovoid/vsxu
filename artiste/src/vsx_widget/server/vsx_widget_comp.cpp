@@ -63,464 +63,471 @@ int vsx_widget_component::inside_xy_l(vsx_vector &test, vsx_vector &global) {
   return vsx_widget::inside_xy_l(test, global);
 }
 
-  void vsx_widget_component::vsx_command_process_b(vsx_command_s *t) {
-//    t->parse();  // <-- we love _the parsing_ don't we! :D
-    //t->cmd == "pseq_i" ||
-    if (t->cmd == "pseq_p_ok") {
-      if (p_l_list_in.find(t->parts[3]) != p_l_list_in.end()) {
-        command_q_b.add(t);
-        p_l_list_in[t->parts[3]]->vsx_command_queue_b(this);
-      } else server->command_q_f.addc_front(t);
-      return;
+void vsx_widget_component::vsx_command_process_b(vsx_command_s *t)
+{
+  if (t->cmd == "pseq_p_ok")
+  {
+    if (p_l_list_in.find(t->parts[3]) != p_l_list_in.end())
+    {
+      command_q_b.add(t);
+      p_l_list_in[t->parts[3]]->vsx_command_queue_b(this);
+    } else server->command_q_f.addc_front(t);
+    return;
+  } else
+  if (
+    t->cmd == "vsxl_pfr_ok" ||
+    t->cmd == "param_connect_ok" ||
+    t->cmd == "param_disconnect_ok" ||
+    t->cmd == "connections_order_ok" ||
+    t->cmd == "vsxl_pfl_s"
+  ) {
+    if (p_l_list_in.find(t->parts[2]) != p_l_list_in.end())
+    {
+      command_q_b.add(t);
+      p_l_list_in[t->parts[2]]->vsx_command_queue_b(this);
+    }
+    return;
+  } else
+  if (t->cmd == "vsxl_pfi_ok") {
+    if (p_l_list_in.find(t->parts[2]) != p_l_list_in.end())
+    {
+      command_q_b.add(t);
+      p_l_list_in[t->parts[2]]->vsx_command_queue_b(this);
     } else
-    if (
-      t->cmd == "vsxl_pfr_ok" ||
-      t->cmd == "param_connect_ok" ||
-      t->cmd == "param_disconnect_ok" ||
-      t->cmd == "connections_order_ok" ||
-      t->cmd == "vsxl_pfl_s"
-    ) {
-      if (p_l_list_in.find(t->parts[2]) != p_l_list_in.end()) {
+    {
+      //printf("adding command to server again, not found\n");
+      server->command_q_f.addc(t);
+    }
+    return;
+  } else
+  if (t->cmd == "pca") {
+    if (t->parts[6] == "-1")
+    {
+      if (p_l_list_in.find(t->parts[2]) != p_l_list_in.end())
+      {
         command_q_b.add(t);
         p_l_list_in[t->parts[2]]->vsx_command_queue_b(this);
       }
-      return;
-    } else
-    if (t->cmd == "vsxl_pfi_ok") {
-      if (p_l_list_in.find(t->parts[2]) != p_l_list_in.end()) {
+    } else {
+      if (p_l_list_out.find(t->parts[2]) != p_l_list_out.end())
+      {
         command_q_b.add(t);
-        p_l_list_in[t->parts[2]]->vsx_command_queue_b(this);
+        p_l_list_out[t->parts[2]]->vsx_command_queue_b(this);
+      }
+    }
+  } else
+  if (t->cmd == "c_msg")
+  {
+    vsx_string s = base64_decode(t->parts[2]);
+    vsx_string deli = "&&";
+
+    deli = "||";
+    std::vector<vsx_string> parts;
+    explode(s,deli,parts);
+    if (parts[0] == "module")
+    {
+      if (parts[1] == "ok")
+      {
+        message = "";
+      } else {
+        message = parts[1];
+        message_time = 6.0f;
+      }
+    } else
+    {
+    }
+    return;
+  } else
+  if (t->cmd == "add_empty_macro")
+  {
+    printf("empty: %s\n",t->cmd_data.c_str());
+    command_q_b.add_raw("macro_create macros;empty "+name+"."+"empty"+" "+str_replace(","," ",t->cmd_data)+" 0.1");
+    server->vsx_command_queue_b(this);
+    return;
+  } else
+  if (t->cmd == "macro_dump")
+  {
+    command_q_b.add_raw("macro_dump "+name+" "+t->parts[1]);
+    server->vsx_command_queue_b(this);
+    return;
+  } else
+  if (t->cmd == "macro_dump_add")
+  {
+    printf("macro_dump_add %s\n",base64_decode(t->parts[2]).c_str());
+    macro_commands.add_raw(base64_decode(t->parts[2]));
+    return;
+  } else
+  if (t->cmd == "macro_dump_complete")
+  {
+    printf("macro dump complete\n");
+    macro_commands.save_to_file(vsx_get_data_path()+"macros/"+t->parts[2]);
+    macro_commands.clear();
+    command_q_b.add_raw("module_info_add macros;"+t->parts[2]);
+    server->vsx_command_queue_b(this);
+    return;
+  } else
+  if (t->cmd == "component_clone_add") {
+    printf("component_clone_add %s\n",base64_decode(t->parts[2]).c_str());
+    macro_commands.add_raw(base64_decode(t->parts[2]));
+    return;
+  } else
+  if (t->cmd == "component_clone_complete")
+  {
+    printf("component clone complete %s\n",t->raw.c_str());
+    macro_commands.parse();
+
+    macro_commands.token_replace("$$name",((vsx_widget_server*)server)->get_unique_name(t->parts[1]));
+    vsx_command_s* mc = 0;
+    macro_commands.reset();
+    bool is_part_of_macro = false;
+    while ((mc = macro_commands.get())) {
+      if (mc->cmd == "macro_create" && mc->parts.size() < 4)
+      {
+        is_part_of_macro = true; // the following components are part of a macro
+        command_q_b.add_raw("macro_create_real "+mc->parts[1]+" "+t->parts[3]+" "+t->parts[4]+" "+mc->parts[2]);
+        //printf("component_clone_internal: %s\n", vsx_string("macro_create_real "+mc->parts[1]+" "+t->parts[3]+" "+t->parts[4]+" "+mc->parts[2]).c_str());
       } else
+      if (mc->cmd == "macro_create" && mc->parts.size() < 6)
       {
-        //printf("adding command to server again, not found\n");
-        server->command_q_f.addc(t);
+        command_q_b.add_raw("macro_create_real "+mc->parts[1]+" "+mc->parts[3]+" "+mc->parts[4]+" "+mc->parts[5]);
+        printf("component_clone_internal: %s\n", vsx_string("macro_create_real "+mc->parts[1]+" "+t->parts[3]+" "+t->parts[4]+" "+mc->parts[2]).c_str());
       }
-      return;
-    } else
-    if (t->cmd == "pca") {
-      if (t->parts[6] == "-1") {
-        if (p_l_list_in.find(t->parts[2]) != p_l_list_in.end()) {
-          command_q_b.add(t);
-          p_l_list_in[t->parts[2]]->vsx_command_queue_b(this);
+      else if (mc->cmd == "component_create")
+        {
+          if (is_part_of_macro)
+            // child of macro, should retain its position
+            command_q_b.add_raw("component_create "+mc->parts[1]+" "+mc->parts[2]+" "+mc->parts[3]+" "+mc->parts[4]);
+          else
+            // move it to the new position, it's just a module being cloned
+            command_q_b.add_raw("component_create "+mc->parts[1]+" "+mc->parts[2]+" "+t->parts[3]+" "+t->parts[4]);
+          //
         }
-      } else {
-        if (p_l_list_out.find(t->parts[2]) != p_l_list_out.end()) {
-          command_q_b.add(t);
-          p_l_list_out[t->parts[2]]->vsx_command_queue_b(this);
-        }
-      }
-    } else
-    if (t->cmd == "c_msg") {
-      vsx_string s = base64_decode(t->parts[2]);
-      vsx_string deli = "&&";
-
-      deli = "||";
-      std::vector<vsx_string> parts;
-      explode(s,deli,parts);
-      if (parts[0] == "module") {
-        if (parts[1] == "ok") {
-          message = "";
-        } else {
-          message = parts[1];
-          message_time = 6.0f;
-        }
-        //printf("message: %s\n",message.c_str());
-      } else {
-
-      }
-      return;
-    } else
-    if (t->cmd == "add_empty_macro") {
-      printf("empty: %s\n",t->cmd_data.c_str());
-      command_q_b.add_raw("macro_create macros;empty "+name+"."+"empty"+" "+str_replace(","," ",t->cmd_data)+" 0.1");
-      server->vsx_command_queue_b(this);
-      return;
-    } else
-    if (t->cmd == "macro_dump") {
-      command_q_b.add_raw("macro_dump "+name+" "+t->parts[1]);
-      server->vsx_command_queue_b(this);
-      return;
-    } else
-    if (t->cmd == "macro_dump_add") {
-      printf("macro_dump_add %s\n",base64_decode(t->parts[2]).c_str());
-      macro_commands.add_raw(base64_decode(t->parts[2]));
-      return;
-    } else
-    if (t->cmd == "macro_dump_complete") {
-      printf("macro dump complete\n");
-      macro_commands.save_to_file(vsx_get_data_path()+"macros/"+t->parts[2]);
-      macro_commands.clear();
-      command_q_b.add_raw("module_info_add macros;"+t->parts[2]);
-      server->vsx_command_queue_b(this);
-      return;
-    } else
-    if (t->cmd == "component_clone_add") {
-      printf("component_clone_add %s\n",base64_decode(t->parts[2]).c_str());
-      macro_commands.add_raw(base64_decode(t->parts[2]));
-      return;
-    } else
-    if (t->cmd == "component_clone_complete") {
-      printf("component clone complete %s\n",t->raw.c_str());
-      macro_commands.parse();
-
-      macro_commands.token_replace("$$name",((vsx_widget_server*)server)->get_unique_name(t->parts[1]));
-      vsx_command_s* mc = 0;
-      macro_commands.reset();
-      bool is_part_of_macro = false;
-      while ((mc = macro_commands.get())) {
-        if (mc->cmd == "macro_create" && mc->parts.size() < 4)
-				{
-					is_part_of_macro = true; // the following components are part of a macro
-					command_q_b.add_raw("macro_create_real "+mc->parts[1]+" "+t->parts[3]+" "+t->parts[4]+" "+mc->parts[2]);
-					//printf("component_clone_internal: %s\n", vsx_string("macro_create_real "+mc->parts[1]+" "+t->parts[3]+" "+t->parts[4]+" "+mc->parts[2]).c_str());
-				} else
-        if (mc->cmd == "macro_create" && mc->parts.size() < 6)
-				{
-					command_q_b.add_raw("macro_create_real "+mc->parts[1]+" "+mc->parts[3]+" "+mc->parts[4]+" "+mc->parts[5]);
-					printf("component_clone_internal: %s\n", vsx_string("macro_create_real "+mc->parts[1]+" "+t->parts[3]+" "+t->parts[4]+" "+mc->parts[2]).c_str());
-				}
-        else if (mc->cmd == "component_create")
-					{
-        	  if (is_part_of_macro)
-        	  	// child of macro, should retain its position
-							command_q_b.add_raw("component_create "+mc->parts[1]+" "+mc->parts[2]+" "+mc->parts[3]+" "+mc->parts[4]);
-        	  else
-        	  	// move it to the new position, it's just a module being cloned
-        	  	command_q_b.add_raw("component_create "+mc->parts[1]+" "+mc->parts[2]+" "+t->parts[3]+" "+t->parts[4]);
-        	  //
-					}
-        else
-					{
-						if (mc->cmd != "")
-						command_q_b.addc(mc);
-					}
-        //if
-      }
-		  server->vsx_command_queue_b(this);
-      macro_commands.clear();
-      return;
-    } else
-    if (t->cmd == "macro_saveas") {
-      ((dialog_query_string*)name_dialog)->show("");
-      return;
-    } else
-    if (t->cmd == "macro_toggle") {
-      macro_toggle();
-    } else
-    if (t->cmd == "component_delete_menu") {
-      if (component_type != "screen") {
-        command_q_b.add_raw("component_delete "+name);
-        server->vsx_command_queue_b(this);
-
-        if (((vsx_widget_server*)(server))->selected_list.size())
-        for (std::list<vsx_widget*>::iterator itx = ((vsx_widget_server*)server)->selected_list.begin(); itx != ((vsx_widget_server*)server)->selected_list.end(); ++itx) {
-          if ((*itx) != this)
-          if (!((vsx_widget_component*)(*itx))->internal_critical) {
-          //((vsx_widget_component*)(*itx))->component_type != "screen") {
-            command_q_b.add_raw("component_delete "+(*itx)->name);
-            server->vsx_command_queue_b(this);
-          }
-        }
-      }
-      return;
-      //for (std::list<vsx_widget*>::iterator it=children.begin(); it != children.end(); it++)
-      //{
-        // 1. disconnect everything on the serverside
-        // 2. delete the components, the gui will handle visual connections when the server is finished.
-        //    this is done as eeach vsx_component goes through all anchors on the in-side and plain deletes them.
-        //    then it goes through the anchors on its outside, using the reversemap to find the anchors in charge
-        //    and ask them to delete.
-      //}
-    //{
-    } else
-    if (t->cmd == "in_param_spec" || t->cmd == "out_param_spec" || t->cmd == "ipsa" || t->cmd == "opsa") {
-      //printf("widget_comp::vsx_command_process_b command in_param_spec: param part 1: %s----:::\n",t->raw.c_str());
-      bool fix_anchors = false;
-      if (t->parts.size() < 3) return;
-      int l_io = 0;
-      if (t->cmd == "in_param_spec" || t->cmd == "ipsa") {
-        l_io = -1;
-        if (t->cmd != "ipsa")
-        if (p_l_list_in.size()) {
-          anchor_order[0] = 0;
-          t_list = p_l_list_in;
-          p_l_list_in.clear();
-          fix_anchors = true;
-        }
-      }
       else
-      {
-        if (t->cmd != "opsa")
-        if (p_l_list_out.size()) {
-          anchor_order[1] = 0;
-          t_list = p_l_list_out;
-          p_l_list_out.clear();
-          fix_anchors = true;
-        }
-        l_io = 1;
-      }
-      if (fix_anchors)
-      {
-        for (std::map<vsx_string, vsx_widget*>::iterator it = t_list.begin(); it != t_list.end(); it++)
         {
-          if ( ((*it).second)->widget_type == VSX_WIDGET_TYPE_ANCHOR)
-          {
-            ((vsx_widget_anchor*)((*it).second))->anchor_order[0] = 0;
-            ((vsx_widget_anchor*)((*it).second))->anchor_order[1] = 0;
+          if (mc->cmd != "")
+          command_q_b.addc(mc);
+        }
+      //if
+    }
+    server->vsx_command_queue_b(this);
+    macro_commands.clear();
+    return;
+  } else
+  if (t->cmd == "macro_saveas")
+  {
+    ((dialog_query_string*)name_dialog)->show("");
+    return;
+  } else
+  if (t->cmd == "macro_toggle")
+  {
+    macro_toggle();
+  } else
+  if (t->cmd == "component_delete_menu")
+  {
+    if (component_type != "screen")
+    {
+      command_q_b.add_raw("component_delete "+name);
+      server->vsx_command_queue_b(this);
+
+      if (((vsx_widget_server*)(server))->selected_list.size())
+      for (std::list<vsx_widget*>::iterator itx = ((vsx_widget_server*)server)->selected_list.begin(); itx != ((vsx_widget_server*)server)->selected_list.end(); ++itx) {
+        if ((*itx) != this)
+        if (!((vsx_widget_component*)(*itx))->internal_critical) {
+        //((vsx_widget_component*)(*itx))->component_type != "screen") {
+          command_q_b.add_raw("component_delete "+(*itx)->name);
+          server->vsx_command_queue_b(this);
+        }
+      }
+    }
+    return;
+    //for (std::list<vsx_widget*>::iterator it=children.begin(); it != children.end(); it++)
+    //{
+      // 1. disconnect everything on the serverside
+      // 2. delete the components, the gui will handle visual connections when the server is finished.
+      //    this is done as eeach vsx_component goes through all anchors on the in-side and plain deletes them.
+      //    then it goes through the anchors on its outside, using the reversemap to find the anchors in charge
+      //    and ask them to delete.
+    //}
+  //{
+  } else
+  if (t->cmd == "in_param_spec" || t->cmd == "out_param_spec" || t->cmd == "ipsa" || t->cmd == "opsa")
+  {
+    //printf("widget_comp::vsx_command_process_b command in_param_spec: param part 1: %s----:::\n",t->raw.c_str());
+    bool fix_anchors = false;
+    if (t->parts.size() < 3) return;
+    int l_io = 0;
+    if (t->cmd == "in_param_spec" || t->cmd == "ipsa") {
+      l_io = -1;
+      if (t->cmd != "ipsa")
+      if (p_l_list_in.size()) {
+        anchor_order[0] = 0;
+        t_list = p_l_list_in;
+        p_l_list_in.clear();
+        fix_anchors = true;
+      }
+    }
+    else
+    {
+      if (t->cmd != "opsa")
+      if (p_l_list_out.size()) {
+        anchor_order[1] = 0;
+        t_list = p_l_list_out;
+        p_l_list_out.clear();
+        fix_anchors = true;
+      }
+      l_io = 1;
+    }
+    if (fix_anchors)
+    {
+      for (std::map<vsx_string, vsx_widget*>::iterator it = t_list.begin(); it != t_list.end(); it++)
+      {
+        if ( ((*it).second)->widget_type == VSX_WIDGET_TYPE_ANCHOR)
+        {
+          ((vsx_widget_anchor*)((*it).second))->anchor_order[0] = 0;
+          ((vsx_widget_anchor*)((*it).second))->anchor_order[1] = 0;
+        }
+      }
+    }
+
+    // p[0]: in_param_spec
+    // p[1]: osc2
+    // p[2]: actual command
+    std::vector<vsx_string> add_c;
+    /*
+    complex:surround_sound_data[blob:center
+    ,
+    complex:rear_data[blob:Rleft
+    ,
+    blob:Rright]
+    ,
+    complex:front_data[blob:Fleft
+    ,
+    blob:Fright]]
+    ,
+    float:result2
+    */
+    //printf("param_spec_parsing %d\n",l_io);
+
+    // THIS CODE IS A MESS! :(
+    vsx_string cd = t->parts[2];
+    //printf("comp_param_spec_parsing %s----:::\n",cd.c_str());
+    vsx_string cm = "";
+    vsx_string cms = "";
+    int state = 0;
+    //float ypos = size.y/2;
+    for (size_t i = 0; i < cd.size(); ++i)
+    {
+      if (state == 0 && cd[i] != ',' && cd[i] != '{')
+      cm += cd[i];
+
+      if (cd[i] == '{') { ++state; }
+
+      if (state > 0)
+      {
+        // add to the command to be sent further in
+        if ( (cd[i] != '{' && cd[i] != '}') || state > 1)
+        cms += cd[i];
+      }
+      if (cd[i] == '}') { state--; }
+
+      if ((cd[i] == ',' || i == cd.size()-1) && state == 0 ) {
+        // we have our first part covered, and the command-sub
+        // 1. find the name of this anchor
+        add_c.clear();
+        vsx_string deli = ":";
+        split_string(cm,deli,add_c,-1);
+        vsx_widget_anchor *anchor = 0;
+        //printf("comp_p1\n");
+        // see if there's an anchor we can use
+        if (t_list.find(add_c[0]) != t_list.end()) {
+          anchor = (vsx_widget_anchor*)t_list[add_c[0]];
+          //printf("anchor order 1++ %s\n",tt->name.c_str());
+          if (l_io < 0) {
+            anchor->a_order = anchor_order[0]++;
+            p_l_list_in[add_c[0]] = t_list[add_c[0]];
           }
-        }
-      }
-
-      // p[0]: in_param_spec
-      // p[1]: osc2
-      // p[2]: actual command
-      std::vector<vsx_string> add_c;
-      /*
-      complex:surround_sound_data[blob:center
-      ,
-      complex:rear_data[blob:Rleft
-      ,
-      blob:Rright]
-      ,
-      complex:front_data[blob:Fleft
-      ,
-      blob:Fright]]
-      ,
-      float:result2
-      */
-//      printf("param_spec_parsing %d\n",l_io);
-
-      // THIS CODE IS A MESS! :(
-      vsx_string cd = t->parts[2];
-      //printf("comp_param_spec_parsing %s----:::\n",cd.c_str());
-      vsx_string cm = "";
-      vsx_string cms = "";
-      int state = 0;
-//      float ypos = size.y/2;
-      for (size_t i = 0; i < cd.size(); ++i) {
-        if (state == 0 && cd[i] != ',' && cd[i] != '{')
-        cm += cd[i];
-
-        if (cd[i] == '{') { ++state; }
-
-        if (state > 0)
+          else
+          {
+            ((vsx_widget_anchor*)anchor)->a_order = anchor_order[1]++;
+            p_l_list_out[add_c[0]] = t_list[add_c[0]];
+          }
+          t_list.erase(add_c[0]);
+        } else
         {
-          // add to the command to be sent further in
-          if ( (cd[i] != '{' && cd[i] != '}') || state > 1)
-          cms += cd[i];
-        }
-        if (cd[i] == '}') { state--; }
+          // no previous anchor found, create a new one
+          anchor = (vsx_widget_anchor*)add(new vsx_widget_anchor,add_c[0]);
+          // extra type info split
+          //printf("addc0 %s\n\n\n",cm.c_str());
+          std::vector<vsx_string> type_info;
+          vsx_string type_deli = "?";
+          split_string(add_c[1],type_deli,type_info);
+          if (type_info.size() == 2)
+          ((vsx_widget_anchor*)anchor)->p_type_suffix = type_info[1];
+          ((vsx_widget_anchor*)anchor)->p_type = type_info[0];
+          ((vsx_widget_anchor*)anchor)->p_desc = cm;
+          ((vsx_widget_anchor*)anchor)->io = l_io;
+          ((vsx_widget_anchor*)anchor)->anchor_order[0] = 0;
+          ((vsx_widget_anchor*)anchor)->anchor_order[1] = 0;
+          if (t->parts.size() == 4) if (t->parts[3] == "1") {
+            ((vsx_widget_anchor*)anchor)->alias = true;
+          }
 
-        if ((cd[i] == ',' || i == cd.size()-1) && state == 0 ) {
-          // we have our first part covered, and the command-sub
-          // 1. find the name of this anchor
-          add_c.clear();
-          vsx_string deli = ":";
-          split_string(cm,deli,add_c,-1);
-          vsx_widget_anchor *anchor = 0;
-          //printf("comp_p1\n");
-          // see if there's an anchor we can use
-          if (t_list.find(add_c[0]) != t_list.end()) {
-            anchor = (vsx_widget_anchor*)t_list[add_c[0]];
-//            printf("anchor order 1++ %s\n",tt->name.c_str());
+          ((vsx_widget_anchor*)anchor)->component = this;
+          if (add_c[0] != "complex") {
             if (l_io < 0) {
-              anchor->a_order = anchor_order[0]++;
-              p_l_list_in[add_c[0]] = t_list[add_c[0]];
+              //printf("addint to p_list_in\n");
+              ((vsx_widget_component*)((vsx_widget_anchor*)anchor)->component)->p_l_list_in[add_c[0]] = anchor;
             }
             else
             {
-              ((vsx_widget_anchor*)anchor)->a_order = anchor_order[1]++;
-              p_l_list_out[add_c[0]] = t_list[add_c[0]];
+              //printf("addint to p_list_out\n");
+              ((vsx_widget_component*)((vsx_widget_anchor*)anchor)->component)->p_l_list_out[add_c[0]] = anchor;
             }
-            t_list.erase(add_c[0]);
-          } else
-          {
-            // no previous anchor found, create a new one
-            anchor = (vsx_widget_anchor*)add(new vsx_widget_anchor,add_c[0]);
-            // extra type info split
-  //          printf("addc0 %s\n\n\n",cm.c_str());
-            std::vector<vsx_string> type_info;
-            vsx_string type_deli = "?";
-            split_string(add_c[1],type_deli,type_info);
-            if (type_info.size() == 2)
-            ((vsx_widget_anchor*)anchor)->p_type_suffix = type_info[1];
-            ((vsx_widget_anchor*)anchor)->p_type = type_info[0];
-            ((vsx_widget_anchor*)anchor)->p_desc = cm;
-            ((vsx_widget_anchor*)anchor)->io = l_io;
-            ((vsx_widget_anchor*)anchor)->anchor_order[0] = 0;
-            ((vsx_widget_anchor*)anchor)->anchor_order[1] = 0;
-            if (t->parts.size() == 4) if (t->parts[3] == "1") {
-              ((vsx_widget_anchor*)anchor)->alias = true;
-            }
-
-            ((vsx_widget_anchor*)anchor)->component = this;
-            if (add_c[0] != "complex") {
-  //            cout << "p_l_list adding "+add_c[0] << endl;
-              if (l_io < 0) {
-                //printf("addint to p_list_in\n");
-                ((vsx_widget_component*)((vsx_widget_anchor*)anchor)->component)->p_l_list_in[add_c[0]] = anchor;
-              }
-              else
-              {
-                //printf("addint to p_list_out\n");
-                ((vsx_widget_component*)((vsx_widget_anchor*)anchor)->component)->p_l_list_out[add_c[0]] = anchor;
-              }
-            }
-
-            if (l_io < 0)
-            {
-//              printf("anchor order 2++ %s\n",tt->name.c_str());
-              ((vsx_widget_anchor*)anchor)->a_order = anchor_order[0]++;
-            }
-            else
-            {
-  //            printf("anchor order 2++ %s\n",tt->name.c_str());
-              ((vsx_widget_anchor*)anchor)->a_order = anchor_order[1]++;
-              //printf("new anchor has order %d",((vsx_widget_anchor*)tt)->order);
-            }
-
-            //tt->pos.y = ypos;
-
-            anchor->size.x = anchor->size.y = 0.0f;
-            anchor->target_size.x = anchor->target_size.y = 0.05/6;
-            anchor->interpolating_size = true;
-
-            //tt->size.x = size.x/6;
-            //tt->size.y = size.x/6;
-            //printf("comp_p2\n");
-            //printf("comp_p3\n");
           }
 
-          if (cms.size()) {
-            //printf("cms = %s\n",cms.c_str());
-            ((vsx_widget_anchor*)anchor)->p_def += add_c[1];
-            ((vsx_widget_anchor*)anchor)->p_def += "[";
-            if (t->parts.size() == 4) {
-              if (t->parts[3] == "c") cms += " c";
-            }
-            command_q_b.add_raw(t->cmd+" "+add_c[0]+" "+cms);
-            anchor->vsx_command_queue_b(this);
-            ((vsx_widget_anchor*)anchor)->p_def += "]";
-            //((vsx_widget_anchor*)tt)->fix_anchors();
-          } else ((vsx_widget_anchor*)anchor)->p_def = add_c[1];
-          //ypos -= (size.x/6)*1.5;
-          cms = "";
-          cm = "";
+          if (l_io < 0)
+          {
+            //printf("anchor order 2++ %s\n",tt->name.c_str());
+            ((vsx_widget_anchor*)anchor)->a_order = anchor_order[0]++;
+          }
+          else
+          {
+            //printf("anchor order 2++ %s\n",tt->name.c_str());
+            ((vsx_widget_anchor*)anchor)->a_order = anchor_order[1]++;
+            //printf("new anchor has order %d",((vsx_widget_anchor*)tt)->order);
+          }
+
+          //tt->pos.y = ypos;
+
+          anchor->size.x = anchor->size.y = 0.0f;
+          anchor->target_size.x = anchor->target_size.y = 0.05/6;
+          anchor->interpolating_size = true;
+
+          //tt->size.x = size.x/6;
+          //tt->size.y = size.x/6;
+          //printf("comp_p2\n");
+          //printf("comp_p3\n");
         }
-      }
-      for (std::map<vsx_string, vsx_widget*>::iterator it = t_list.begin(); it != t_list.end(); ++it)
-      {
-        (*it).second->_delete();
-      }
 
-      if (!macro)
-      {
-				// scale component according to anchor count
-				int largest_num_anchors;
-				if (anchor_order[0] > anchor_order[1]) largest_num_anchors = anchor_order[0];
-				else
-				largest_num_anchors = anchor_order[1];
-				if (largest_num_anchors < 3) largest_num_anchors = 3;
-				target_size.y = target_size.x = 0.05f * 0.45 / 2.0f * (float)(largest_num_anchors-1);
-				interpolating_size = true;
-				size.y = size.x = 0.0f;
+        if (cms.size()) {
+          //printf("cms = %s\n",cms.c_str());
+          ((vsx_widget_anchor*)anchor)->p_def += add_c[1];
+          ((vsx_widget_anchor*)anchor)->p_def += "[";
+          if (t->parts.size() == 4) {
+            if (t->parts[3] == "c") cms += " c";
+          }
+          command_q_b.add_raw(t->cmd+" "+add_c[0]+" "+cms);
+          anchor->vsx_command_queue_b(this);
+          ((vsx_widget_anchor*)anchor)->p_def += "]";
+          //((vsx_widget_anchor*)tt)->fix_anchors();
+        } else ((vsx_widget_anchor*)anchor)->p_def = add_c[1];
+        //ypos -= (size.x/6)*1.5;
+        cms = "";
+        cm = "";
       }
+    }
+    for (std::map<vsx_string, vsx_widget*>::iterator it = t_list.begin(); it != t_list.end(); ++it)
+    {
+      (*it).second->_delete();
+    }
 
-      //printf("num anchors: %d\n", largest_num_anchors);
-      init_children();
-      return;
-    } else
-    if (t->cmd == "param_connect_volatile") {
-//        printf("\n---------------- running param_connect_volatile\n");
-      bool failed = false;
-      vsx_widget_component* a = (vsx_widget_component *)((vsx_widget_server*)server)->find_component(t->parts[3]);
-      if (a) {
-//        cout << a->p_l_list.size() << endl;
-        if (a->p_l_list_out.find(t->parts[4]) != a->p_l_list_out.end())
+    if (!macro)
+    {
+      // scale component according to anchor count
+      int largest_num_anchors;
+      if (anchor_order[0] > anchor_order[1]) largest_num_anchors = anchor_order[0];
+      else
+      largest_num_anchors = anchor_order[1];
+      if (largest_num_anchors < 3) largest_num_anchors = 3;
+      target_size.y = target_size.x = 0.05f * 0.45 / 2.0f * (float)(largest_num_anchors-1);
+      interpolating_size = true;
+      size.y = size.x = 0.0f;
+    }
+
+    //printf("num anchors: %d\n", largest_num_anchors);
+    init_children();
+    return;
+  } else
+  if (t->cmd == "param_connect_volatile") {
+    bool failed = false;
+    vsx_widget_component* a = (vsx_widget_component *)((vsx_widget_server*)server)->find_component(t->parts[3]);
+    if (a) {
+      if (a->p_l_list_out.find(t->parts[4]) != a->p_l_list_out.end())
+      {
+        if (p_l_list_in.find(t->parts[2]) != p_l_list_in.end()) {
+          // seems all we need is out there, make the connection!
+          command_q_b.add_raw(
+            "param_connect_ok "+
+            name+" "+
+            p_l_list_in[t->parts[2]]->name+" "+
+            a->name+" "+
+            a->p_l_list_out[t->parts[4]]->name+" "+
+            t->parts[5]
+          );
+          //
+          p_l_list_in[t->parts[2]]->vsx_command_queue_b(this);
+        } else failed = true;
+      } else failed = true;
+    } else failed = true;
+
+    if (failed) {
+        server->command_q_f.addc_front(t);
+    }
+    return;
+  } else
+  // param connect volatile for aliases, purely internal stuff :3
+  if (t->cmd == "pcva") {
+    bool failed = false;
+    vsx_widget_component* a = (vsx_widget_component *)((vsx_widget_server*)server)->find_component(t->parts[3]);
+    if (a) {
+      if (t->parts[6] == "-1") {
+        //printf("negative io! i'm %s\n",name.c_str());
+        if (a->p_l_list_in.find(t->parts[4]) != a->p_l_list_in.end())
         {
+         // printf("found 1\n");
           if (p_l_list_in.find(t->parts[2]) != p_l_list_in.end()) {
+           // printf("found 2\n");
             // seems all we need is out there, make the connection!
             command_q_b.add_raw(
-              "param_connect_ok "+
+              "pca "+
               name+" "+
               p_l_list_in[t->parts[2]]->name+" "+
               a->name+" "+
-              a->p_l_list_out[t->parts[4]]->name+" "+
-              t->parts[5]
+              a->p_l_list_in[t->parts[4]]->name+" "+
+              t->parts[5]+" "+
+              t->parts[6]
             );
-            //
             p_l_list_in[t->parts[2]]->vsx_command_queue_b(this);
           } else failed = true;
         } else failed = true;
-      } else failed = true;
-
-      if (failed) {
-          server->command_q_f.addc_front(t);
-      }
-      return;
-    } else
-    // param connect volatile for aliases, purely internal stuff :3
-    if (t->cmd == "pcva") {
-        //printf("\n---------------- running pcva\n");
-      bool failed = false;
-      vsx_widget_component* a = (vsx_widget_component *)((vsx_widget_server*)server)->find_component(t->parts[3]);
-      if (a) {
-        if (t->parts[6] == "-1") {
-          //printf("negative io! i'm %s\n",name.c_str());
-          if (a->p_l_list_in.find(t->parts[4]) != a->p_l_list_in.end())
-          {
-           // printf("found 1\n");
-            if (p_l_list_in.find(t->parts[2]) != p_l_list_in.end()) {
-             // printf("found 2\n");
-              // seems all we need is out there, make the connection!
-              command_q_b.add_raw(
-                "pca "+
-                name+" "+
-                p_l_list_in[t->parts[2]]->name+" "+
-                a->name+" "+
-                a->p_l_list_in[t->parts[4]]->name+" "+
-                t->parts[5]+" "+
-                t->parts[6]
-              );
-              p_l_list_in[t->parts[2]]->vsx_command_queue_b(this);
-            } else failed = true;
+      } else {
+        //printf("positive io! i'm %s\n",name.c_str());
+        if (a->p_l_list_out.find(t->parts[4]) != a->p_l_list_out.end())
+        {
+          //printf("found 1\n");
+          if (p_l_list_out.find(t->parts[2]) != p_l_list_out.end()) {
+            //printf("found 2\n");
+            // seems all we need is out there, make the connection!
+            command_q_b.add_raw(
+              "pca "+
+              name+" "+
+              p_l_list_out[t->parts[2]]->name+" "+
+              a->name+" "+
+              a->p_l_list_out[t->parts[4]]->name+" "+
+              t->parts[5]+" "+
+              t->parts[6]
+            );
+            p_l_list_out[t->parts[2]]->vsx_command_queue_b(this);
           } else failed = true;
-        } else {
-          //printf("positive io! i'm %s\n",name.c_str());
-          if (a->p_l_list_out.find(t->parts[4]) != a->p_l_list_out.end())
-          {
-            //printf("found 1\n");
-            if (p_l_list_out.find(t->parts[2]) != p_l_list_out.end()) {
-              //printf("found 2\n");
-              // seems all we need is out there, make the connection!
-              command_q_b.add_raw(
-                "pca "+
-                name+" "+
-                p_l_list_out[t->parts[2]]->name+" "+
-                a->name+" "+
-                a->p_l_list_out[t->parts[4]]->name+" "+
-                t->parts[5]+" "+
-                t->parts[6]
-              );
-              /*cout <<                 "pca "+
-                name+" "+
-                p_l_list_out[t->parts[2]]->name+" "+
-                a->name+" "+
-                a->p_l_list_out[t->parts[4]]->name+" "+
-                t->parts[5]+" "+
-                t->parts[6] << endl;*/
-
-              p_l_list_out[t->parts[2]]->vsx_command_queue_b(this);
-            } else failed = true;
-          } else failed = true;
-        }
-      } else failed = true;
-
-      if (failed) {
-        server->command_q_f.addc(t);
+        } else failed = true;
       }
-      return;
-    } else
+    } else failed = true;
+
+    if (failed) {
+      server->command_q_f.addc(t);
+    }
+    return;
+  } else
   if (t->cmd == "vsxl_load_script") {
     // vsxl param filter load
     command_q_b.add_raw("vsxl_cfl "+name);
@@ -537,7 +544,8 @@ int vsx_widget_component::inside_xy_l(vsx_vector &test, vsx_vector &global) {
   if (t->cmd == "vsxl_cfr_ok") {
     vsxl_filter = false;
   } else
-  if (t->cmd == "vsxl_cfl_s") {
+  if (t->cmd == "vsxl_cfl_s")
+  {
     vsx_widget* tt = add(new vsx_widget_editor,name+".edit");
     ((vsx_widget_editor*)tt)->target_param = name;
     ((vsx_widget_editor*)tt)->return_command = "ps64";
@@ -561,97 +569,88 @@ int vsx_widget_component::inside_xy_l(vsx_vector &test, vsx_vector &global) {
     command_q_b.add_raw("vsxl_cfi "+name+" "+t->parts[1]);
     server->vsx_command_queue_b(this);
   } else
-  //if (t->cmd == "component_time") {
-//    command_q_b.add_raw("component_time "+name+" "+t->parts[1]);
-  //}
-    if (t->cmd == "component_info") {
+  if (t->cmd == "component_info")
+  {
+    if (t->parts.size() >= 3) {
+      std::vector<vsx_string> parts;
+      // critical:screen:small
+      vsx_string deli = ":";
+      explode(t->parts[2],deli,parts);
 
-      if (t->parts.size() >= 3) {
-        std::vector<vsx_string> parts;
-        // critical:screen:small
-        //printf("component info: %s\n",t->parts[2].c_str());
-        vsx_string deli = ":";
-        explode(t->parts[2],deli,parts);
-
-        if (parts.size() > 1)
-        for (unsigned long i = 1; i < parts.size(); ++i) {
-          //printf("part: %s\n",parts[i].c_str());
-          if (parts[i] == "critical") internal_critical = true;
-          else
-          if (parts[i] == "small") {
+      if (parts.size() > 1)
+      for (unsigned long i = 1; i < parts.size(); ++i) {
+        if (parts[i] == "critical")
+        {
+          internal_critical = true;
+        }
+        else
+        {
+          if (parts[i] == "small")
+          {
             target_size.x = size.x *= 0.45;
             target_size.y = size.y *= 0.45;
           }
         }
-        help_text = "Module type: "+parts[0]+"\n"+help_text;
-        //parts.pop_back();
-        //if (parts.size() > 1) {
-          //printf("parts is larger than one\n");
-          //mtex.load_png_thread(skin_path+"component_types/"+parts[1]+".png");
-          //component_type = parts[1];
-        //} else {
-          //printf("parts is NOT larger than one\n");
-        component_type = parts[0];
-#ifndef VSXU_PLAYER
-				//printf("component type: %s\n",parts[0].c_str());
-          mtex.load_png(skin_path+"component_types/"+parts[0]+".png");
-#else
-    color = vsx_color__(0.8,0.7,0.6,0.4);
-    if (component_type == "macro") {
-      color = vsx_color__(17.0f/255.0f,92.0f/255.0f,105.0f/255.0f,0.8f);
-    } else
-    if (component_type == "render") {
-      color = vsx_color__(197.0f/255.0f,51.0f/255.0f,65.0f/255.0f,0.8f);
-    }
-
-#endif
-        if (!internal_critical)
-        {
-          menu = add(new vsx_widget_popup_menu,".comp_menu");
-          //if (parts.size() > 1) {
-            //target_size.x = size.x *= 0.45;
-            //target_size.y = size.y *= 0.45;
-          //}
-          menu->size.x = 0.32;
-          if (component_type != "macro") {
-          menu->commands.adds(VSX_COMMAND_MENU, "add/edit VSXL filter script", "vsxl_load_script","");
-          menu->commands.adds(VSX_COMMAND_MENU, "remove VSXL filter script", "vsxl_remove_script","");
-          menu->commands.adds(VSX_COMMAND_MENU, "----------------------", "","");
-          } else
-          {
-            macro = true;
-            menu->commands.adds(VSX_COMMAND_MENU, "add module... [ left-double-click ]", "add_component","");
-            menu->commands.adds(VSX_COMMAND_MENU, "add empty macro [alt+left-double-click]", "add_empty_macro","$mpos");
-            menu->commands.adds(VSX_COMMAND_MENU, "save macro...","macro_saveas","");
-            menu->commands.adds(VSX_COMMAND_MENU, "open/close [alt + right-click]", "macro_toggle","");
-            support_scaling = true;
-            name_dialog = add(new dialog_query_string("name of macro","ex: my_macros;my_macro1"),"macro_dump");
-            menu->commands.adds(VSX_COMMAND_MENU, "----------------------", "","");
-          }
-          menu->commands.adds(VSX_COMMAND_MENU, "delete [ del ]", "component_delete_menu","");
-
-        }
-
-        if (menu)
-        menu->init();
-        title = real_name;
       }
-      return;
-    }
-    command_q_b.add(t);
-  }
 
-void vsx_widget_component::vsx_command_process_f() {
+      help_text = "Module type: "+parts[0]+"\n"+help_text;
+
+      component_type = parts[0];
+
+      mtex.load_png(skin_path+"component_types/"+component_type+".png");
+      if (component_type == "macro")
+      {
+        // load overlay texture
+        mtex_overlay.load_png(skin_path+"component_types/"+component_type+"_overlay.png");
+      }
+
+      if (!internal_critical)
+      {
+        menu = add(new vsx_widget_popup_menu,".comp_menu");
+        //if (parts.size() > 1) {
+          //target_size.x = size.x *= 0.45;
+          //target_size.y = size.y *= 0.45;
+        //}
+        menu->size.x = 0.32;
+        if (component_type != "macro") {
+        menu->commands.adds(VSX_COMMAND_MENU, "add/edit VSXL filter script", "vsxl_load_script","");
+        menu->commands.adds(VSX_COMMAND_MENU, "remove VSXL filter script", "vsxl_remove_script","");
+        menu->commands.adds(VSX_COMMAND_MENU, "----------------------", "","");
+        } else
+        {
+          macro = true;
+          menu->commands.adds(VSX_COMMAND_MENU, "add module... [ left-double-click ]", "add_component","");
+          menu->commands.adds(VSX_COMMAND_MENU, "add empty macro [alt+left-double-click]", "add_empty_macro","$mpos");
+          menu->commands.adds(VSX_COMMAND_MENU, "save macro...","macro_saveas","");
+          menu->commands.adds(VSX_COMMAND_MENU, "open/close [alt + right-click]", "macro_toggle","");
+          support_scaling = true;
+          name_dialog = add(new dialog_query_string("name of macro","ex: my_macros;my_macro1"),"macro_dump");
+          menu->commands.adds(VSX_COMMAND_MENU, "----------------------", "","");
+        }
+        menu->commands.adds(VSX_COMMAND_MENU, "delete [ del ]", "component_delete_menu","");
+
+      }
+
+      if (menu)
+      menu->init();
+      title = real_name;
+    }
+    return;
+  }
+  command_q_b.add(t);
+}
+
+void vsx_widget_component::vsx_command_process_f()
+{
   vsx_command_s *c = 0;
   while ( (c = command_q_f.pop()) )
   {
-    if (c->cmd == "init") {
-//        printf("init_component from the forwards queue - i'm %s\n",name.c_str());
+    if (c->cmd == "init")
+    {
       //command_q_b.add("get_in_param_spec",name);
       //command_q_b.add("get_out_param_spec",name);
       //command_q_b.add_raw("get_in_param_connections "+name);
       //command_q_b.add_raw("get_component_info "+name);
-
       //parent->vsx_command_queue_b(this);
       init_run = true;
     }
@@ -662,11 +661,13 @@ void vsx_widget_component::vsx_command_process_f() {
   vsx_widget::vsx_command_queue_f();
 }
 
-void vsx_widget_component::init() {
+void vsx_widget_component::init()
+{
   if (init_run) return;
   vsxl_filter = false;
   internal_critical = false;
   open = false;
+  macro_overlay_opacity = 0.5f;
   deleting = 0;
   is_moving = false;
   support_interpolation = true;
@@ -695,229 +696,395 @@ void vsx_widget_component::init() {
   transform_state = 0;
   size_min.x = 0.1f;
 
-	mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png");
+  mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png");
 }
 
-void vsx_widget_component::reinit() {
-#ifndef VSXU_PLAYER
+void vsx_widget_component::reinit()
+{
+  #ifndef VSXU_PLAYER
   mtex.load_png(skin_path+"component_types/"+component_type+".png");
-#endif
+  #endif
   vsx_widget::reinit();
 }
 
-void vsx_widget_component::draw() {
-	if (deleting == 1 && size.x < 0.00001f) {
-		perform_delete();
-		deleting++;
-		return;
-	}
-	if (!enabled) return;
-	//vsx_widget_3d_grid_comp::draw();
-	vsx_vector pp = parent->get_pos_p();
-	size.y = size.x;
-//  if (!macro)
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-	glPushMatrix();
-#ifndef VSXU_PLAYER
-			#define FF 1.2f
-			#define FF2 1.8f
-#else
-			#define FF 1.0f
-#endif
+void vsx_widget_component::draw()
+{
+  if (deleting == 1 && size.x < 0.00001f)
+  {
+    perform_delete();
+    deleting++;
+    return;
+  }
+  if (!enabled) return;
+  vsx_vector pp = parent->get_pos_p();
+  size.y = size.x;
+  glPushMatrix();
+  #define FF 1.2f
+  #define FF2 1.8f
+  #define FFDIV 0.24f
 
 
+    const GLshort squareTexcoords[] = {
+      0, 0,
+      1, 0,
+      0, 1,
+      1, 1
+    };
+
+    const GLfloat squareVertices[] = {
+      -FF,   -FF,
+      FF,   -FF,
+      -FF,   FF,
+      FF,   FF,
+    };
+
+    const GLfloat grid_lines[] = {
+      -FF, -FF+1.0f*FFDIV,
+        0, -FF+1.0f*FFDIV,
+        0, -FF+1.0f*FFDIV,
+       FF, -FF+1.0f*FFDIV,
+
+      -FF, -FF+2.0f*FFDIV,
+        0, -FF+2.0f*FFDIV,
+        0, -FF+2.0f*FFDIV,
+       FF, -FF+2.0f*FFDIV,
+
+      -FF, -FF+3.0f*FFDIV,
+        0, -FF+3.0f*FFDIV,
+        0, -FF+3.0f*FFDIV,
+       FF, -FF+3.0f*FFDIV,
+
+      -FF, -FF+4.0f*FFDIV,
+        0, -FF+4.0f*FFDIV,
+        0, -FF+4.0f*FFDIV,
+       FF, -FF+4.0f*FFDIV,
+
+      -FF, -FF+5.0f*FFDIV,
+        0, -FF+5.0f*FFDIV,
+        0, -FF+5.0f*FFDIV,
+       FF, -FF+5.0f*FFDIV,
+
+      -FF, -FF+6.0f*FFDIV,
+        0, -FF+6.0f*FFDIV,
+        0, -FF+6.0f*FFDIV,
+       FF, -FF+6.0f*FFDIV,
+
+      -FF, -FF+7.0f*FFDIV,
+        0, -FF+7.0f*FFDIV,
+        0, -FF+7.0f*FFDIV,
+       FF, -FF+7.0f*FFDIV,
+
+      -FF, -FF+8.0f*FFDIV,
+        0, -FF+8.0f*FFDIV,
+        0, -FF+8.0f*FFDIV,
+       FF, -FF+8.0f*FFDIV,
+
+      -FF, -FF+9.0f*FFDIV,
+        0, -FF+9.0f*FFDIV,
+        0, -FF+9.0f*FFDIV,
+       FF, -FF+9.0f*FFDIV,
+
+      -FF+1.0f*FFDIV, -FF,
+      -FF+1.0f*FFDIV,   0,
+      -FF+1.0f*FFDIV,   0,
+      -FF+1.0f*FFDIV,  FF,
+
+      -FF+2.0f*FFDIV, -FF,
+      -FF+2.0f*FFDIV,   0,
+      -FF+2.0f*FFDIV,   0,
+      -FF+2.0f*FFDIV,  FF,
+
+      -FF+3.0f*FFDIV, -FF,
+      -FF+3.0f*FFDIV,   0,
+      -FF+3.0f*FFDIV,   0,
+      -FF+3.0f*FFDIV,  FF,
+
+      -FF+4.0f*FFDIV, -FF,
+      -FF+4.0f*FFDIV,   0,
+      -FF+4.0f*FFDIV,   0,
+      -FF+4.0f*FFDIV,  FF,
+
+      -FF+5.0f*FFDIV, -FF,
+      -FF+5.0f*FFDIV,   0,
+      -FF+5.0f*FFDIV,   0,
+      -FF+5.0f*FFDIV,  FF,
+
+      -FF+6.0f*FFDIV, -FF,
+      -FF+6.0f*FFDIV,   0,
+      -FF+6.0f*FFDIV,   0,
+      -FF+6.0f*FFDIV,  FF,
+
+      -FF+7.0f*FFDIV, -FF,
+      -FF+7.0f*FFDIV,   0,
+      -FF+7.0f*FFDIV,   0,
+      -FF+7.0f*FFDIV,  FF,
+
+      -FF+8.0f*FFDIV, -FF,
+      -FF+8.0f*FFDIV,   0,
+      -FF+8.0f*FFDIV,   0,
+      -FF+8.0f*FFDIV,  FF,
+
+      -FF+9.0f*FFDIV, -FF,
+      -FF+9.0f*FFDIV,   0,
+      -FF+9.0f*FFDIV,   0,
+      -FF+9.0f*FFDIV,  FF,
+    };
+
+    #define GRID_ALPHA 0.4f
+    const GLfloat grid_colors[] = {
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+      // ----
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+      1.0f,1.0f,1.0f,0.0f,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,GRID_ALPHA,
+      1.0f,1.0f,1.0f,0.0f,
+
+    };
+    #undef GRID_ALPHA
 
 
-  const GLshort squareTexcoords[] = {
-    0, 0,
-    1, 0,
-    0, 1,
-    1, 1
-  };
+    glVertexPointer(2, GL_FLOAT, 0, squareVertices);
+    glTexCoordPointer(2, GL_SHORT, 0, squareTexcoords);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-  const GLfloat squareVertices[] = {
-    -FF,   -FF,
-    FF,   -FF,
-    -FF,   FF,
-    FF,   FF,
-  };
-
-  glVertexPointer(2, GL_FLOAT, 0, squareVertices);
-  glTexCoordPointer(2, GL_SHORT, 0, squareTexcoords);
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-
-
-			if (ethereal) {
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-				glMatrixMode(GL_MODELVIEW);
-				glPushMatrix();
-					glColor4f(0.4,0.4,0.5,0.7);
-					glTranslatef(real_pos.x+pp.x,real_pos.y+pp.y,real_pos.z);
-					glScaled(size.x/2,size.y/2,1);
-					#ifndef VSXU_PLAYER
-					mtex.bind();
-					#endif
-					glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-					#ifndef VSXU_PLAYER
-					mtex._bind();
-					#endif
-				glPopMatrix();
-				glColor4f(1,1,1,0.3);
-			} else
-			//if (ethereal_all && !macro) {
-				//glColor4f(1,0.5,0.5,0.1);
-			//}
-			//else
-			color.gl_color();
-			if (macro)
-			glColor3f(color.r,color.g,color.b);
-			//glColor4f(1,1,1,1);
-
-			glTranslatef(pos.x+pp.x,pos.y+pp.y,pos.z);
-			glScaled(size.x/2,size.y/2,1);
-			#ifndef VSXU_PLAYER
-			mtex.bind();
-			#endif
-
-
-      glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-
-
-/*
-			glBegin(GL_QUADS);
-				glTexCoord2f(0, 0);
-				glVertex2f(-FF,-FF);
-				glTexCoord2f(0, 1);
-				glVertex2f(-FF, FF);
-				glTexCoord2f(1, 1);
-				glVertex2f( FF, FF);
-				glTexCoord2f(1, 0);
-				glVertex2f( FF,-FF);
-			glEnd();*/
-			#ifndef VSXU_PLAYER
-			mtex._bind();
-			#endif
-			if (selected)
-			{
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-				glColor3f(1.0f, 1.0f, 1.0f);
-				mtex_blob.bind();
+    if (ethereal)
+    {
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+      glMatrixMode(GL_MODELVIEW);
+      glPushMatrix();
+        glColor4f(0.4,0.4,0.5,0.7);
+        glTranslatef(real_pos.x+pp.x,real_pos.y+pp.y,real_pos.z);
+        glScaled(size.x/2,size.y/2,1);
+        #ifndef VSXU_PLAYER
+          mtex.bind();
+        #endif
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-				/*glBegin(GL_QUADS);
-					glTexCoord2f(0, 0);
-					glVertex2f(-FF2,-FF2);
-					glTexCoord2f(0, 1);
-					glVertex2f(-FF2, FF2);
-					glTexCoord2f(1, 1);
-					glVertex2f( FF2, FF2);
-					glTexCoord2f(1, 0);
-					glVertex2f( FF2,-FF2);
-				glEnd();*/
-				mtex_blob._bind();
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				/*
-				glLineWidth(2);
-				glBegin(GL_LINE_STRIP);
-					glVertex3f(-1,-1,0);
-					glVertex3f(-1, 1,0);
-					glVertex3f( 1, 1,0);
-					glVertex3f( 1,-1,0);
-					glVertex3f(-1,-1,0);
-				glEnd();*/
-			}
-			#undef FF
-			#undef FF2
-			glColor3f(0,1,1);
-			if (vsxl_filter) {
-				glLineWidth(4);
-				glBegin(GL_LINE_STRIP);
-					glVertex2f(-0.95,-0.95);
-					glVertex2f(-0.95, 0.95);
-					glVertex2f( 0.95, 0.95);
-					glVertex2f( 0.95,-0.95);
-					glVertex2f(-0.95,-0.95);
-				glEnd();
-			}
-			if (message.size()) {
-				glColor4f(1.0f,0.0f,0.0f,0.3f);
-				glBegin(GL_QUADS);
-					glVertex2f(-0.75,-0.75);
-					glVertex2f(0.75,-0.75);
-					glVertex2f(0.75,0.75);
-					glVertex2f(-0.75,0.75);
-				glEnd();
-			}
+        #ifndef VSXU_PLAYER
+          mtex._bind();
+        #endif
+      glPopMatrix();
+      glColor4f(1,1,1,0.3);
+    } else
+    {
+      color.gl_color();
+    }
+    if (macro)
+    {
+      glColor3f(color.r,color.g,color.b);
+    }
 
-			if (macro)
-			if (!open)
-			{
-				glColor4f(0,1,1,0.4*color.a);
-				glLineWidth(2);
-				glBegin(GL_LINE_STRIP);
-					glVertex2f(-0.95,-0.95);
-					glVertex2f(0.95,-0.95);
-					glVertex2f(0.95,0.95);
-					glVertex2f(-0.95,0.95);
-					glVertex2f(-0.95,-0.95);
-				glEnd();
-			}
-			//glLoadIdentity();
-			if (ethereal) {
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			}
-	glPopMatrix();
-	if (a_focus == this) {
-		pre_draw_children();
-		draw_children();
-	}
-	if (show_titles) {
-		vsx_vector t = pos + pp;
-		float font_size = size.y*0.3;
-		float max_size = 0.006;
-		if (selected) max_size = 0.012;
-		if (font_size > max_size) font_size = max_size;
-		t.y -= size.y*0.5;
+    glTranslatef(pos.x+pp.x,pos.y+pp.y,pos.z);
+    glScaled(size.x/2, size.y/2, 1);
+    mtex.bind();
+      glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    mtex._bind();
+    if (macro)
+    {
+      glColor4f(1.0,1.0,1.0,macro_overlay_opacity);
+      mtex_overlay.bind();
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+      mtex_overlay._bind();
+    }
 
-		//myf.background = true;
-		//myf.background_color.a = color.a*0.4f;
-		myf.print_center(t, real_name,font_size);
-		t.y += size.y*0.5;
-		if (message.size())
-		{
-			if (message_time > 0.0f) {
-				message_time -= dtime;
-				glColor4f(0,0,0,0.8);
-				vsx_vector rp = t;
-				rp.x -= 0.008f*10;
-				//rp.y -= 0.004;
-				draw_box(rp, 0.008*20, -0.008*10);
-				rp.x += 0.0008;
-				rp.y -= 0.001;
-				//myf.background = true;
-				myf.color = vsx_color__(1,0.5,0.5,1.0f-fmod(time*2.0f,1.0f));
-				myf.print(rp, "\nModule status:\n"+message, 0.008);
-			} else
-			if (m_o_focus == this && !mouse_down_l && !mouse_down_r) {
-				glColor4f(0,0,0,0.8);
-				vsx_vector rp = t + message_pos;
-				rp.y -= 0.004;
-				draw_box(rp, 0.004*20, -0.004*10);
-				rp.x += 0.0008;
-				rp.y -= 0.001;
-				//myf.background = false;
-				myf.color = vsx_color__(1,0.5,0.5,color.a);
-				myf.print(rp, "\nModule status:\n"+message, 0.004);
-			}
-		}
-		myf.color = vsx_color(1.0f,1.0f,1.0f,1.0f);
-	}
-	if (a_focus != this) {
-		pre_draw_children();
-		draw_children();
-	}
+    if (selected)
+    {
+      if (macro && open)
+      {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        glVertexPointer(2, GL_FLOAT, 0, grid_lines);
+        glColorPointer(4, GL_FLOAT, 0, grid_colors);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        glDrawArrays(GL_LINES, 0, 4 * 9 * 2);
+        glDisableClientState(GL_COLOR_ARRAY);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      }
+      else
+      {
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+      glColor4f(1.0f, 1.0f, 1.0f,0.7f);
+      mtex_blob.bind();
+      glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+      mtex_blob._bind();
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      }
+    }
+    #undef FF
+    #undef FF2
+    glColor3f(0,1,1);
+    if (vsxl_filter)
+    {
+      glLineWidth(4);
+      glBegin(GL_LINE_STRIP);
+        glVertex2f(-0.95,-0.95);
+        glVertex2f(-0.95, 0.95);
+        glVertex2f( 0.95, 0.95);
+        glVertex2f( 0.95,-0.95);
+        glVertex2f(-0.95,-0.95);
+      glEnd();
+    }
+    if (message.size()) {
+      glColor4f(1.0f,0.0f,0.0f,0.3f);
+      glBegin(GL_QUADS);
+        glVertex2f(-0.75,-0.75);
+        glVertex2f(0.75,-0.75);
+        glVertex2f(0.75,0.75);
+        glVertex2f(-0.75,0.75);
+      glEnd();
+    }
+
+    if (macro)
+    if (!open)
+    {
+      glColor4f(0,1,1,0.4*color.a);
+      glLineWidth(2);
+      glBegin(GL_LINE_STRIP);
+        glVertex2f(-0.95,-0.95);
+        glVertex2f(0.95,-0.95);
+        glVertex2f(0.95,0.95);
+        glVertex2f(-0.95,0.95);
+        glVertex2f(-0.95,-0.95);
+      glEnd();
+    }
+    //glLoadIdentity();
+    if (ethereal) {
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+  glPopMatrix();
+  if (a_focus == this) {
+    pre_draw_children();
+    draw_children();
+  }
+  if (show_titles) {
+    vsx_vector t = pos + pp;
+    float font_size = size.y*0.3;
+    float max_size = 0.006;
+    if (selected) max_size = 0.012;
+    if (font_size > max_size) font_size = max_size;
+    t.y -= size.y*0.5;
+
+    //myf.background = true;
+    //myf.background_color.a = color.a*0.4f;
+    myf.print_center(t, real_name,font_size);
+    t.y += size.y*0.5;
+    if (message.size())
+    {
+      if (message_time > 0.0f) {
+        message_time -= dtime;
+        glColor4f(0,0,0,0.8);
+        vsx_vector rp = t;
+        rp.x -= 0.008f*10;
+        //rp.y -= 0.004;
+        draw_box(rp, 0.008*20, -0.008*10);
+        rp.x += 0.0008;
+        rp.y -= 0.001;
+        //myf.background = true;
+        myf.color = vsx_color__(1,0.5,0.5,1.0f-fmod(time*2.0f,1.0f));
+        myf.print(rp, "\nModule status:\n"+message, 0.008);
+      } else
+      if (m_o_focus == this && !mouse_down_l && !mouse_down_r) {
+        glColor4f(0,0,0,0.8);
+        vsx_vector rp = t + message_pos;
+        rp.y -= 0.004;
+        draw_box(rp, 0.004*20, -0.004*10);
+        rp.x += 0.0008;
+        rp.y -= 0.001;
+        //myf.background = false;
+        myf.color = vsx_color__(1,0.5,0.5,color.a);
+        myf.print(rp, "\nModule status:\n"+message, 0.004);
+      }
+    }
+    myf.color = vsx_color(1.0f,1.0f,1.0f,1.0f);
+  }
+  if (a_focus != this) {
+    pre_draw_children();
+    draw_children();
+  }
 }
 
 void vsx_widget_component::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords) {
@@ -926,7 +1093,15 @@ void vsx_widget_component::event_mouse_move_passive(vsx_widget_distance distance
 
 void vsx_widget_component::event_mouse_wheel(float y)
 {
-	server->event_mouse_wheel(y);
+  if (macro && open && alt)
+  {
+    macro_overlay_opacity += -y * 0.1f;
+    if (macro_overlay_opacity < 0.0f) macro_overlay_opacity = 0.0f;
+    if (macro_overlay_opacity > 1.0f) macro_overlay_opacity = 1.0f;
+  } else
+  {
+    server->event_mouse_wheel(y);
+  }
 }
 
 void vsx_widget_component::macro_close() {
@@ -941,145 +1116,145 @@ void vsx_widget_component::macro_close() {
 }
 
 void vsx_widget_component::macro_toggle() {
-	if (open) {
-		macro_close();
-	}
-	open = !open;
-	for (children_iter = children.begin(); children_iter != children.end(); ++children_iter) {
-		if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_COMPONENT) {
-			(*children_iter)->enabled = open;
-			(*children_iter)->visible = open;
-			if (!open) {
-				(*children_iter)->pos.x = 0;
-				(*children_iter)->pos.y = 0;
-			} else {
-				(*children_iter)->interpolating_pos = true;
-			}
-		}
-	}
-	support_scaling = open;
-	if (!open) {
-		old_size = target_size;
-		int largest_num_anchors;
-		if (anchor_order[0] > anchor_order[1]) largest_num_anchors = anchor_order[0];
-		else
-		largest_num_anchors = anchor_order[1];
-		if (largest_num_anchors < 3) largest_num_anchors = 3;
-		target_size.y = target_size.x = 0.05f * 0.45 / 2.0f * (float)(largest_num_anchors-1);
-		interpolating_size = true;
-	} else
-	{
-		target_size = old_size;
-		interpolating_size = true;
-	}
-	((vsx_widget_server*)server)->select(this);
+  if (open) {
+    macro_close();
+  }
+  open = !open;
+  for (children_iter = children.begin(); children_iter != children.end(); ++children_iter) {
+    if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_COMPONENT) {
+      (*children_iter)->enabled = open;
+      (*children_iter)->visible = open;
+      if (!open) {
+        (*children_iter)->pos.x = 0;
+        (*children_iter)->pos.y = 0;
+      } else {
+        (*children_iter)->interpolating_pos = true;
+      }
+    }
+  }
+  support_scaling = open;
+  if (!open) {
+    old_size = target_size;
+    int largest_num_anchors;
+    if (anchor_order[0] > anchor_order[1]) largest_num_anchors = anchor_order[0];
+    else
+    largest_num_anchors = anchor_order[1];
+    if (largest_num_anchors < 3) largest_num_anchors = 3;
+    target_size.y = target_size.x = 0.05f * 0.45 / 2.0f * (float)(largest_num_anchors-1);
+    interpolating_size = true;
+  } else
+  {
+    target_size = old_size;
+    interpolating_size = true;
+  }
+  ((vsx_widget_server*)server)->select(this);
 }
 
 void vsx_widget_component::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
-	menu_temp_disable = true;
-	//printf("distance.center.x %f\n",distance.center.x);
-	if (!alt && !shift && button == 2) {
-		((vsx_widget_server*)server)->select(this);
-	}
-	if (macro && open && button == 0)
-	support_scaling = true; else support_scaling = false;
-	//if (ctrl && !alt && !shift && button == GLUT_RIGHT_BUTTON) {
-		//if (component_type != "screen") {
+  menu_temp_disable = true;
+  //printf("distance.center.x %f\n",distance.center.x);
+  if (!alt && !shift && button == 2) {
+    ((vsx_widget_server*)server)->select(this);
+  }
+  if (macro && open && button == 0)
+  support_scaling = true; else support_scaling = false;
+  //if (ctrl && !alt && !shift && button == GLUT_RIGHT_BUTTON) {
+    //if (component_type != "screen") {
 //        command_q_b.add_raw("component_delete "+name);
 //        server->vsx_command_queue_b(this);
 //      }
-	//} else
-	if (shift && ctrl && !alt && button == 0) {
-		if (!((vsx_widget_server*)server)->select_add(this)) return;
+  //} else
+  if (shift && ctrl && !alt && button == 0) {
+    if (!((vsx_widget_server*)server)->select_add(this)) return;
 
-		if (((vsx_widget_server*)(this->server))->selected_list.size())
-		for (std::list<vsx_widget*>::iterator itx = ((vsx_widget_server*)server)->selected_list.begin(); itx != ((vsx_widget_server*)server)->selected_list.end(); ++itx) {
-			((vsx_widget_component*)(*itx))->real_pos = ((vsx_widget_component*)(*itx))->target_pos;
-			((vsx_widget_component*)(*itx))->ethereal = true;
-			ethereal_all = true;
-			move_time = time;
-			transform_state = COMPONENT_MOVE;
-		}
+    if (((vsx_widget_server*)(this->server))->selected_list.size())
+    for (std::list<vsx_widget*>::iterator itx = ((vsx_widget_server*)server)->selected_list.begin(); itx != ((vsx_widget_server*)server)->selected_list.end(); ++itx) {
+      ((vsx_widget_component*)(*itx))->real_pos = ((vsx_widget_component*)(*itx))->target_pos;
+      ((vsx_widget_component*)(*itx))->ethereal = true;
+      ethereal_all = true;
+      move_time = time;
+      transform_state = COMPONENT_MOVE;
+    }
 //      real_pos = pos;
 //      ethereal = true;
-	} else
-	if (ctrl && alt && !shift && button == 0) {
-		real_pos = target_pos;
-		ethereal = true;
-		move_time = time;
-		transform_state = COMPONENT_MOVE;
-	} else
-	if (ctrl && !alt && !shift && button == 0) {
-		((vsx_widget_server*)server)->select_add_gui(this);
-	}
-	else
-	if (alt && !shift && !ctrl && button == 2) {
-		if (component_type == "macro") {
-			macro_toggle();
-			parent->front(this);
-			a_focus = this;
-			m_focus = this;
-			support_scaling = open;
-			return;
-		} else
-		if (parent->widget_type == VSX_WIDGET_TYPE_COMPONENT)
-		((vsx_widget_component*)parent)->macro_toggle();
-		return;
-	} else
-	if (alt && !ctrl && button == 0 && component_type == "macro" && open) {
-		if (support_scaling) {
-			//printf("supporting scaling\n");
-			if (transform_state == COMPONENT_SCALE) scaled = true;
-			move_time = time;
-			transform_state = COMPONENT_SCALE;
-		}// else printf("doesn't support scaling\n");
+  } else
+  if (ctrl && alt && !shift && button == 0) {
+    real_pos = target_pos;
+    ethereal = true;
+    move_time = time;
+    transform_state = COMPONENT_MOVE;
+  } else
+  if (ctrl && !alt && !shift && button == 0) {
+    ((vsx_widget_server*)server)->select_add_gui(this);
+  }
+  else
+  if (alt && !shift && !ctrl && button == 2) {
+    if (component_type == "macro") {
+      macro_toggle();
+      parent->front(this);
+      a_focus = this;
+      m_focus = this;
+      support_scaling = open;
+      return;
+    } else
+    if (parent->widget_type == VSX_WIDGET_TYPE_COMPONENT)
+    ((vsx_widget_component*)parent)->macro_toggle();
+    return;
+  } else
+  if (alt && !ctrl && button == 0 && component_type == "macro" && open) {
+    if (support_scaling) {
+      //printf("supporting scaling\n");
+      if (transform_state == COMPONENT_SCALE) scaled = true;
+      move_time = time;
+      transform_state = COMPONENT_SCALE;
+    }// else printf("doesn't support scaling\n");
 //      printf("component scale transform state set\n");
-	} else
-	if (button == 0) {
-		if (transform_state == 0) {
-			//printf("moving\n");
-			move_time = time;
-			transform_state = COMPONENT_MOVE;
-			scaled = false;
-		}
-		((vsx_widget_server*)server)->select(this);
-	}
-	menu_temp_disable = false;
-	vsx_widget::event_mouse_down(distance,coords,button);
+  } else
+  if (button == 0) {
+    if (transform_state == 0) {
+      //printf("moving\n");
+      move_time = time;
+      transform_state = COMPONENT_MOVE;
+      scaled = false;
+    }
+    ((vsx_widget_server*)server)->select(this);
+  }
+  menu_temp_disable = false;
+  vsx_widget::event_mouse_down(distance,coords,button);
 }
 
 void vsx_widget_component::event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
-	 //if (ctrl && button == GLUT_RIGHT_BUTTON) {
-		 //if (component_type != "screen") {
+   //if (ctrl && button == GLUT_RIGHT_BUTTON) {
+     //if (component_type != "screen") {
 //         command_q_b.add_raw("component_delete "+name);
 //         server->vsx_command_queue_b(this);
 //       }
 //     } else
-	if (component_type == "macro") {
-		if (button == 0 && alt && !shift && !ctrl) {
-			command_q_b.add_raw("add_empty_macro "+f2s(distance.center.x)+","+f2s(distance.center.y));
-			vsx_command_queue_b(this);
-		} else
+  if (component_type == "macro") {
+    if (button == 0 && alt && !shift && !ctrl) {
+      command_q_b.add_raw("add_empty_macro "+f2s(distance.center.x)+","+f2s(distance.center.y));
+      vsx_command_queue_b(this);
+    } else
 
-		if (alt && button == 2 && !ctrl && !shift) {
-			//macro_toggle();
-			return;
-		} else
-		if (button == 0 && !ctrl && !shift && !alt) {
-			if (open) {
-				((vsx_widget_server*)server)->front(((vsx_widget_server*)server)->module_chooser);
-				((vsx_widget_server*)server)->module_chooser->show();
-			}
-		}
-	} else {
-		if (!alt && button == 0 && !ctrl && !shift) {
-			vsx_vector pp = get_pos_p();
-			root->move_camera(vsx_vector(pp.x, pp.y, 1.2f+size.x*3.0f));
-			transform_state = -1;
-			((vsx_widget_server*)server)->select(this);
-			return;
-		}
-	}
+    if (alt && button == 2 && !ctrl && !shift) {
+      //macro_toggle();
+      return;
+    } else
+    if (button == 0 && !ctrl && !shift && !alt) {
+      if (open) {
+        ((vsx_widget_server*)server)->front(((vsx_widget_server*)server)->module_chooser);
+        ((vsx_widget_server*)server)->module_chooser->show();
+      }
+    }
+  } else {
+    if (!alt && button == 0 && !ctrl && !shift) {
+      vsx_vector pp = get_pos_p();
+      root->move_camera(vsx_vector(pp.x, pp.y, 1.2f+size.x*3.0f));
+      transform_state = -1;
+      ((vsx_widget_server*)server)->select(this);
+      return;
+    }
+  }
 }
 
 void vsx_widget_component::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
@@ -1258,13 +1433,11 @@ void vsx_widget_component::server_scale_notify() {
 }
 
 void vsx_widget_component::macro_fix_anchors(bool override) {
-  //cout << "macro fix anchors " << name << endl;
   if (!override)
   if (!macro) return;
   int anchor_orders = 0;
   if (marked_for_deletion) return;
   for (std::list<vsx_widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-//    cout << (*it)->name << endl;
     if ((*it)->widget_type == VSX_WIDGET_TYPE_ANCHOR) {
       if (((vsx_widget_anchor*)(*it))->io == 1 && !(*it)->marked_for_deletion) {
         ((vsx_widget_anchor*)(*it))->a_order = anchor_orders;
@@ -1327,53 +1500,53 @@ vsx_string vsx_widget_component::alias_get_unique_name_out(vsx_string base_name,
 
 void vsx_widget_component::hide_all_complex_anchors_but_me(vsx_widget* open_anchor)
 {
-	if ( ((vsx_widget_anchor*)open_anchor)->io == -1)
-	{
-		for (p_l_list_in_iter = p_l_list_in.begin(); p_l_list_in_iter != p_l_list_in.end(); p_l_list_in_iter++)
-		{
-			if ( ((vsx_widget_anchor*)(*p_l_list_in_iter).second)->p_type[0] == 'c') // dumb slow string identifiers MUST DIE!
-			{
-				if ( ((vsx_widget_anchor*)(*p_l_list_in_iter).second)->p_type == "complex")
-				{
-					if (open_anchor == (*p_l_list_in_iter).second)
-					{
-						// open
-						if ( ((vsx_widget_anchor*)(*p_l_list_in_iter).second)->tree_open)
-							((vsx_widget_anchor*)(*p_l_list_in_iter).second)->toggle(1);
-						else
-						((vsx_widget_anchor*)(*p_l_list_in_iter).second)->toggle(2);
-					} else
-					{
-						// close
-						((vsx_widget_anchor*)(*p_l_list_in_iter).second)->toggle(1);
-					}
-				}
-			}
-		}
-	} else
-	{
-		for (p_l_list_out_iter = p_l_list_out.begin(); p_l_list_out_iter != p_l_list_out.end(); p_l_list_out_iter++)
-		{
-			if ( ((vsx_widget_anchor*)(*p_l_list_out_iter).second)->p_type[0] == 'c') // dumb slow stroutg identifiers MUST DIE!
-			{
-				if ( ((vsx_widget_anchor*)(*p_l_list_out_iter).second)->p_type == "complex")
-				{
-					if (open_anchor == (*p_l_list_out_iter).second)
-					{
-						// open
-						if ( ((vsx_widget_anchor*)(*p_l_list_out_iter).second)->tree_open)
-							((vsx_widget_anchor*)(*p_l_list_out_iter).second)->toggle(1);
-						else
-						((vsx_widget_anchor*)(*p_l_list_out_iter).second)->toggle(2);
-					} else
-					{
-						// close
-						((vsx_widget_anchor*)(*p_l_list_out_iter).second)->toggle(1);
-					}
-				}
-			}
-		}
-	}
+  if ( ((vsx_widget_anchor*)open_anchor)->io == -1)
+  {
+    for (p_l_list_in_iter = p_l_list_in.begin(); p_l_list_in_iter != p_l_list_in.end(); p_l_list_in_iter++)
+    {
+      if ( ((vsx_widget_anchor*)(*p_l_list_in_iter).second)->p_type[0] == 'c') // dumb slow string identifiers MUST DIE!
+      {
+        if ( ((vsx_widget_anchor*)(*p_l_list_in_iter).second)->p_type == "complex")
+        {
+          if (open_anchor == (*p_l_list_in_iter).second)
+          {
+            // open
+            if ( ((vsx_widget_anchor*)(*p_l_list_in_iter).second)->tree_open)
+              ((vsx_widget_anchor*)(*p_l_list_in_iter).second)->toggle(1);
+            else
+            ((vsx_widget_anchor*)(*p_l_list_in_iter).second)->toggle(2);
+          } else
+          {
+            // close
+            ((vsx_widget_anchor*)(*p_l_list_in_iter).second)->toggle(1);
+          }
+        }
+      }
+    }
+  } else
+  {
+    for (p_l_list_out_iter = p_l_list_out.begin(); p_l_list_out_iter != p_l_list_out.end(); p_l_list_out_iter++)
+    {
+      if ( ((vsx_widget_anchor*)(*p_l_list_out_iter).second)->p_type[0] == 'c') // dumb slow stroutg identifiers MUST DIE!
+      {
+        if ( ((vsx_widget_anchor*)(*p_l_list_out_iter).second)->p_type == "complex")
+        {
+          if (open_anchor == (*p_l_list_out_iter).second)
+          {
+            // open
+            if ( ((vsx_widget_anchor*)(*p_l_list_out_iter).second)->tree_open)
+              ((vsx_widget_anchor*)(*p_l_list_out_iter).second)->toggle(1);
+            else
+            ((vsx_widget_anchor*)(*p_l_list_out_iter).second)->toggle(2);
+          } else
+          {
+            // close
+            ((vsx_widget_anchor*)(*p_l_list_out_iter).second)->toggle(1);
+          }
+        }
+      }
+    }
+  }
 }
 
 
@@ -1401,8 +1574,10 @@ void vsx_widget_component::rename(vsx_string new_name, bool partial_name) {
   real_name = comp_realname[comp_realname.size()-1];
 }
 
-void vsx_widget_component::rename_add_prefix(vsx_string prefix, vsx_string old_name_remove) {
-  for (std::list<vsx_widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+void vsx_widget_component::rename_add_prefix(vsx_string prefix, vsx_string old_name_remove)
+{
+  for (std::list<vsx_widget*>::iterator it = children.begin(); it != children.end(); ++it)
+  {
     if ((*it)->widget_type == VSX_WIDGET_TYPE_COMPONENT) {
       ((vsx_widget_component*)(*it))->rename_add_prefix(prefix,old_name_remove);
     }
@@ -1420,17 +1595,13 @@ void vsx_widget_component::rename_add_prefix(vsx_string prefix, vsx_string old_n
   std::list<vsx_string> name_list;
   vsx_string deli = ".";
   explode(prefix, deli, prefix_list);
-//  cout << prefix_list.size() << endl;
   explode(new_name, deli, name_list);
-//  cout << name_list.size() << endl;
-  for (std::list<vsx_string>::iterator it = name_list.begin(); it != name_list.end(); ++it) {
-//    cout << "pushing back: " << *it << endl;
+  for (std::list<vsx_string>::iterator it = name_list.begin(); it != name_list.end(); ++it)
+  {
     prefix_list.push_back(*it);
   }
-
   //prefix_list.merge(name_list);
 
-//  cout << prefix_list.size() << endl;
   new_name = implode(prefix_list, deli);
 
 //  printf("prefix = %s new_name = %s\n",prefix.c_str(), new_name.c_str());
@@ -1473,14 +1644,14 @@ void vsx_widget_component::disconnect_abs() {
 
 void vsx_widget_component::begin_delete()
 {
-	deleting = 1;
-	target_size.x  = 0.0f;
-	interpolating_size = true;
-	/*for (std::list<vsx_widget*>::iterator itx = children.begin(); itx != children.end(); itx++)
-	{
-		(*itx)->target_size.y = (*itx)->target_size.x = 0.0f;
-		(*itx)->interpolating_size = true;
-	}*/
+  deleting = 1;
+  target_size.x  = 0.0f;
+  interpolating_size = true;
+  /*for (std::list<vsx_widget*>::iterator itx = children.begin(); itx != children.end(); itx++)
+  {
+    (*itx)->target_size.y = (*itx)->target_size.x = 0.0f;
+    (*itx)->interpolating_size = true;
+  }*/
 }
 
 
@@ -1492,16 +1663,16 @@ void vsx_widget_component::perform_delete()
 
 bool vsx_widget_component::event_key_down(signed long key, bool alt, bool ctrl, bool shift) {
 #ifdef _WIN32
-	if (abs(key) == 46) {
+  if (abs(key) == 46) {
 #else
-	if (abs(key) == GLFW_KEY_DEL) {
+  if (abs(key) == GLFW_KEY_DEL) {
 #endif
-		if (((vsx_widget_server*)(this->server))->selected_list.size())
+    if (((vsx_widget_server*)(this->server))->selected_list.size())
     for (std::list<vsx_widget*>::iterator itx = ((vsx_widget_server*)server)->selected_list.begin(); itx != ((vsx_widget_server*)server)->selected_list.end(); ++itx) {
       if (!((vsx_widget_component*)(*itx))->internal_critical) {
       //((vsx_widget_component*)(*itx))->component_type != "screen") {
         //cout << "component_delete "+(*itx)->name << endl;
-      	((vsx_widget_component*)(*itx))->begin_delete();
+        ((vsx_widget_component*)(*itx))->begin_delete();
         //!!command_q_b.add_raw("component_delete "+(*itx)->name);
         //!!server->vsx_command_queue_b(this);
       }

@@ -61,12 +61,13 @@ public:
   // message from server
   vsx_string message;
   float message_time;
-#ifndef VSXU_PLAYER
   vsx_texture mtex;
-#endif
+
   // macro specific stuff
   bool open; // for containers - macros.
   vsx_vector old_size; // the previous size to return to..
+  vsx_texture mtex_overlay;
+  float macro_overlay_opacity;
 
   // info used when moving
   bool is_moving;
