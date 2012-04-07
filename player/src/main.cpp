@@ -7,14 +7,16 @@
 #include <vsx_version.h>
 #include <stdlib.h>
 
+// implementation of app externals
 bool app_ctrl = false;
 bool app_alt = false;
 bool app_shift = false;
 bool disable_randomizer = false;
 bool option_preload_all = false;
-// implementation of app externals
+
 int app_argc = 0;
 char** app_argv;
+
 
 void set_modifiers()
 {
@@ -171,10 +173,11 @@ int main(int argc, char* argv[])
     y_res = video_mode.Width;
   }
   
-    // Open OpenGL window
+  // Open OpenGL window
   glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
   if( !glfwOpenWindow( x_res, y_res, 0,0,0,0,16,0, start_fullscreen?GLFW_FULLSCREEN:GLFW_WINDOW ) ) // GLFW_FULLSCREEN
   {
+    printf("Error! Could not create an OpenGL context. Please check your GPU drivers...\n");
     glfwTerminate();
     return 0;
   }
