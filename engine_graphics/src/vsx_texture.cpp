@@ -114,7 +114,14 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture, bool al
   }
   else
   {
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, alpha?GL_RGBA8:GL_RGB8, width, height); HANDLE_GL_ERROR
+    if (float_texture)
+    {
+      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, alpha?GL_RGBA16F_ARB:GL_RGB16F_ARB, width, height); HANDLE_GL_ERROR
+    }
+    else
+    {
+      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, alpha?GL_RGBA8:GL_RGB8, width, height); HANDLE_GL_ERROR
+    }
   }
 
   // depth buffer
