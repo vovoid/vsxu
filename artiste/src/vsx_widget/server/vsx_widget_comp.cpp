@@ -970,18 +970,20 @@ void vsx_widget_component::draw()
       mtex_overlay._bind();
     }
 
+
     if (selected)
     {
       if (macro && open)
       {
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         glVertexPointer(2, GL_FLOAT, 0, grid_lines);
         glColorPointer(4, GL_FLOAT, 0, grid_colors);
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_COLOR_ARRAY);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
         glDrawArrays(GL_LINES, 0, 4 * 9 * 2);
         glDisableClientState(GL_COLOR_ARRAY);
+        glDisableClientState(GL_VERTEX_ARRAY);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       }
       else
@@ -1035,6 +1037,7 @@ void vsx_widget_component::draw()
     if (ethereal) {
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
+  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
   glPopMatrix();
   if (a_focus == this) {
     pre_draw_children();
