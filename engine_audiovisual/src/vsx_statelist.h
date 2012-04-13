@@ -43,14 +43,17 @@ public:
   vsx_command_list cmd_out;
   bool need_stop;
   bool need_reload;
+  bool is_volatile;
 
   state_info() {
     speed = 1.0f;
     engine = 0;
     need_stop = false;
     need_reload = false;
+    is_volatile = false;
   }
   ~state_info() {
+    if (is_volatile) return;
     if (engine) delete engine;
   }
 };
@@ -83,7 +86,7 @@ private:
   vsx_string visual_path;
   vsx_string sound_type;
 
-  void init_current(vsx_engine *vxe_local, state_info* info);
+  int init_current(vsx_engine *vxe_local, state_info* info);
   float transition_time;
   float message_time;
   vsx_string message;

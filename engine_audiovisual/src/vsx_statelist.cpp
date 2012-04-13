@@ -22,7 +22,7 @@
 #include "vsx_statelist.h"
 
 
-void vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info) {
+int vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info) {
   //title_timer = 5.0f;
   if (vxe_local == 0)
   {
@@ -35,7 +35,7 @@ void vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info) {
 #ifdef VSXU_DEBUG
     printf("loading state: %s\n", (*state_iter).state_name.c_str());
 #endif
-    vxe_local->load_state((*state_iter).state_name);
+    return vxe_local->load_state((*state_iter).state_name);
 
   } else
   {
@@ -242,41 +242,50 @@ void vsx_statelist::random_state() {
 
 void vsx_statelist::render() 
 {
-  if (render_first) {
+  if (render_first)
+  {
+    glewInit();
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-    /*      if (vsx_string((char*)glGetString(GL_VENDOR)) == vsx_string("ATI Technologies Inc."))
-    {
-      int r = 512;
-      tex1.init_buffer(r,r);
-      tex_to.init_buffer(r, r);
-    } else*/
+    if (tex1.has_buffer_support())
     {
       tex1.init_buffer(viewport[2], viewport[3]);
       tex_to.init_buffer(viewport[2], viewport[3]);
-    }
 
-    get_files_recursive(own_path+"visuals_faders", &fader_file_list,"",".svn CVS");
-    for (std::list<vsx_string>::iterator it = fader_file_list.begin(); it != fader_file_list.end(); ++it) {
-#ifdef VSXU_DEBUG
-      printf("initializing fader %s\n", (*it).c_str());
-#endif
-      vsx_engine* lvxe = new vsx_engine();
-      lvxe->dump_modules_to_disk = false;
-      lvxe->init(sound_type);
-      lvxe->start();
-      lvxe->load_state(*it);
-      faders.push_back(lvxe);
-      fade_id = 0;
+      get_files_recursive(own_path+"visuals_faders", &fader_file_list,"",".svn CVS");
+      for (std::list<vsx_string>::iterator it = fader_file_list.begin(); it != fader_file_list.end(); ++it)
+      {
+        #ifdef VSXU_DEBUG
+          printf("initializing fader %s\n", (*it).c_str());
+        #endif
+        vsx_engine* lvxe = new vsx_engine();
+        lvxe->dump_modules_to_disk = false;
+        lvxe->init(sound_type);
+        lvxe->start();
+        lvxe->load_state(*it);
+        faders.push_back(lvxe);
+        fade_id = 0;
+      }
     }
     transitioning = false;
     render_first = false;
     if ( state_iter == statelist.end() ) return;
 
-    // go through statelist and load and validate every plugin
+    // mark all state_info instances volatile
     for (state_iter = statelist.begin(); state_iter != statelist.end(); state_iter++)
     {
-      init_current((*state_iter).engine, &(*state_iter));
+      (*state_iter).is_volatile = true;
+    }
+
+    // go through statelist and load and validate every plugin
+    std::vector<state_info> new_statelist;
+    for (state_iter = statelist.begin(); state_iter != statelist.end(); state_iter++)
+    {
+      if (init_current((*state_iter).engine, &(*state_iter)) > 0)
+      {
+        continue;
+      }
+      new_statelist.push_back(*state_iter);
       if (option_preload_all == true)
       {
         while ( (*state_iter).engine->modules_left_to_load )
@@ -285,6 +294,13 @@ void vsx_statelist::render()
           (*state_iter).engine->render();
         }
       }
+    }
+    statelist = new_statelist;
+
+    // mark all state_info instances non-volatile (engine will be deleted when state_iter will be deleted)
+    for (state_iter = statelist.begin(); state_iter != statelist.end(); state_iter++)
+    {
+      (*state_iter).is_volatile = true;
     }
 
     // reset state_iter to a random state
@@ -299,7 +315,9 @@ void vsx_statelist::render()
     vxe = (*state_iter).engine;
     cmd_in = &(*state_iter).cmd_in;
     cmd_out = &(*state_iter).cmd_out;
-  }
+  } // render first
+
+  // prevent from rendering by mistake
   if ( !statelist.size() ) return;
 
   if ((*state_iter).engine != vxe) // change is on the way
@@ -361,34 +379,45 @@ void vsx_statelist::render()
         }
         cmd_out->clear(true);
       }
-      tex1.begin_capture();
-        if (vxe)
-        {
-          vxe->render();
-        }
-        glColorMask(false, false, false, true);
-        glClearColor(0,0,0,1);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glColorMask(true, true, true, true);
 
-      tex1.end_capture();
-      vsx_module_param_texture* param_t_a = (vsx_module_param_texture*)faders[fade_id]->get_in_param_by_name("visual_fader", "texture_a_in");
-      vsx_module_param_texture* param_t_b = (vsx_module_param_texture*)faders[fade_id]->get_in_param_by_name("visual_fader", "texture_b_in");
-      vsx_module_param_float* param_pos = (vsx_module_param_float*)faders[fade_id]->get_in_param_by_name("visual_fader", "fade_pos_in");
-      vsx_module_param_float* fade_pos_from_engine = (vsx_module_param_float*)faders[fade_id]->get_in_param_by_name("visual_fader", "fade_pos_from_engine");
-      faders[fade_id]->process_message_queue(&l_cmd_in, &l_cmd_out);
-      l_cmd_out.clear();
-      if (param_t_a && param_t_b && param_pos && fade_pos_from_engine)
+      // begin capture
+      if (tex1.has_buffer_support())
       {
-        param_t_a->set(&tex1);
-        param_t_b->set(&tex_to);
-        fade_pos_from_engine->set(1.0f);
-        float t = transition_time;
-        if (t > 1.0f) t = 1.0f;
-        if (t < 0.0f) t = 0.0f;
-        param_pos->set(1.0-t);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        faders[fade_id]->render();
+        tex1.begin_capture();
+      }
+
+      // render
+      if (vxe)
+      {
+        vxe->render();
+      }
+      glColorMask(false, false, false, true);
+      glClearColor(0,0,0,1);
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      glColorMask(true, true, true, true);
+
+      // end capture and send to fader
+      if (tex1.has_buffer_support())
+      {
+        tex1.end_capture();
+        vsx_module_param_texture* param_t_a = (vsx_module_param_texture*)faders[fade_id]->get_in_param_by_name("visual_fader", "texture_a_in");
+        vsx_module_param_texture* param_t_b = (vsx_module_param_texture*)faders[fade_id]->get_in_param_by_name("visual_fader", "texture_b_in");
+        vsx_module_param_float* param_pos = (vsx_module_param_float*)faders[fade_id]->get_in_param_by_name("visual_fader", "fade_pos_in");
+        vsx_module_param_float* fade_pos_from_engine = (vsx_module_param_float*)faders[fade_id]->get_in_param_by_name("visual_fader", "fade_pos_from_engine");
+        faders[fade_id]->process_message_queue(&l_cmd_in, &l_cmd_out);
+        l_cmd_out.clear();
+        if (param_t_a && param_t_b && param_pos && fade_pos_from_engine)
+        {
+          param_t_a->set(&tex1);
+          param_t_b->set(&tex_to);
+          fade_pos_from_engine->set(1.0f);
+          float t = transition_time;
+          if (t > 1.0f) t = 1.0f;
+          if (t < 0.0f) t = 0.0f;
+          param_pos->set(1.0-t);
+          glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+          faders[fade_id]->render();
+        }
       }
 
       if (transition_time <= 1.0f)
