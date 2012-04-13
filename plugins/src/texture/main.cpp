@@ -253,6 +253,12 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   start();
 }
 
+bool can_run()
+{
+  vsx_texture tex;
+  return tex.has_buffer_support();
+}
+
 void start() {
 
 

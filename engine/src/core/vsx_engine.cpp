@@ -65,7 +65,7 @@ vsx_engine::vsx_engine(vsx_string path)
   engine_id = engine_counter++;
   printf("constructing engine with id: %d\n", engine_id);
   #endif*/
-	set_default_values();
+  set_default_values();
   log_dir = vsxu_base_path = path;
 }
 
@@ -118,7 +118,7 @@ void vsx_engine::destroy() {
 
 void vsx_engine::set_default_values()
 {
-	no_client_time = false;
+  no_client_time = false;
   g_timer_amp = 1.0f;
   engine_info.amp = 1.0f;
   engine_info.vtime = 0;
@@ -127,9 +127,9 @@ void vsx_engine::set_default_values()
   engine_info.real_dtime = 0;
   engine_info.filesystem = &filesystem;
   engine_info.request_play = 0;
-	engine_info.request_stop = 0;
-	engine_info.request_rewind = 0;
-	dump_modules_to_disk = true;
+  engine_info.request_stop = 0;
+  engine_info.request_rewind = 0;
+  dump_modules_to_disk = true;
   vsxl = 0;
   lastsent = 0;
   sequence_pool.set_engine((void*)this);
@@ -143,7 +143,7 @@ void vsx_engine::init(vsx_string sound_type) {
   last_m_time_synch = 0;
   // video stuff
   first_start = true;
-	stopped = true;
+  stopped = true;
   frame_dcount = 0;
   frame_dtime = 0;
   frame_dprev = -1;
@@ -155,17 +155,17 @@ void vsx_engine::init(vsx_string sound_type) {
 
 vsx_module_param_abs* vsx_engine::get_in_param_by_name(vsx_string module_name, vsx_string param_name)
 {
-	vsx_comp* c = get_by_name(module_name);
-	if (c) {
-		vsx_engine_param* p = c->get_params_in()->get_by_name(param_name);
-		if (p) return p->module_param;
-	}
-	return 0;
+  vsx_comp* c = get_by_name(module_name);
+  if (c) {
+    vsx_engine_param* p = c->get_params_in()->get_by_name(param_name);
+    if (p) return p->module_param;
+  }
+  return 0;
 }
 
-int vsx_engine::i_load_state(vsx_command_list& load1,vsx_string *error_string)
+int vsx_engine::i_load_state(vsx_command_list& load1,vsx_string *error_string, vsx_string info_filename)
 {
-	LOG("i_load_state 1")
+  LOG("i_load_state 1")
   vsx_command_list load2,loadr2;
   load1.reset();
   vsx_command_s* mc = 0;
@@ -180,9 +180,21 @@ int vsx_engine::i_load_state(vsx_command_list& load1,vsx_string *error_string)
       {
         failed_component = mc->parts[2];
         //components_existing = false;
-        if (error_string) *error_string = "Module missing in engine: "+mc->parts[1];
-        printf("%s\n",vsx_string("Module missing in engine: "+mc->parts[1]).c_str());
+        if (error_string) *error_string = "VSX Engine could not find or load module: "+mc->parts[1];
+        printf( "%s\n",vsx_string(
+                  "**************************************************\n"
+                  "Notice: \n\tVSX Engine could not load module: "
+                  "'"+mc->parts[1]+"'"
+                  "\n\tThis prevented the project: \n\t\t'"+
+                  info_filename+"'\n"+
+                  "\tfrom loading.\n"
+                  "\tThis is most likely from your GPU/drivers do not support some feature needed.\n"
+                  "\tPlease consider upgrading your hardware or drivers.\n"
+                  "\tIf you are a developer, this might mean some modules didn't compile properly.\n"
+                  "**************************************************\n\n").c_str() );
+
         LOG3("Module missing in engine: "+mc->parts[1]);
+        return 1;
       }
     }
   }
@@ -217,14 +229,14 @@ int vsx_engine::i_load_state(vsx_command_list& load1,vsx_string *error_string)
 }
 
 int vsx_engine::load_state(vsx_string filename, vsx_string *error_string) {
-	LOG("load_state 1")
-	filesystem.set_base_path("");
+  LOG("load_state 1")
+  filesystem.set_base_path("");
   if (filesystem.is_archive())
   {
     LOG("vsx_engine::load_state closing filesystem archive")
     filesystem.archive_close();
   }
-  
+
 
   LOG("load_state 2")
   vsx_command_list load1;
@@ -251,39 +263,31 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string) {
   load1.load_from_file(i_filename,true);
   LOG("load_state after")
 #ifdef VSXU_MAC_XCODE
-	syslog(LOG_ERR,"load1.count() = %d\n", load1.count());
+  syslog(LOG_ERR,"load1.count() = %d\n", load1.count());
 #endif
-  //if (!load1.count()) return 1;
-  //state_name = c->parts[1];
-  //state_commands.load_from_file("_states/"+str_replace(";","/",c->parts[1]),true);
-  //state_commands.load_from_file(filename,true);
+
   if (!is_archive)
   filesystem.set_base_path(vsx_get_data_path());
-  int res = i_load_state(load1,error_string);
+  int res = i_load_state(load1,error_string,filename);
   load1.clear(true);
-  /*#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-    // on unix/linux, resources are now stored in ~/.vsxu/data/resources
-    struct stat st;
-    char* home_dir = getenv ("HOME");
-    filesystem.set_base_path(vsx_string(home_dir) + "/.vsxu/data/");
-  #endif*/
+
   return res;
 }
 
 vsx_comp* vsx_engine::add(vsx_string label)
 {
-	if (!forge_map[label])
-	{
+  if (!forge_map[label])
+  {
     vsx_comp* comp = new vsx_comp;
     comp->engine_owner = (void*)this;
     comp->name = label;
-		forge.push_back(comp);
+    forge.push_back(comp);
 
-		// is this a child of a macro?
-		vector<vsx_string> c_parts;
-		vsx_string deli = ".";
-		explode(label, deli, c_parts);
-		if (c_parts.size() > 1) {
+    // is this a child of a macro?
+    vector<vsx_string> c_parts;
+    vsx_string deli = ".";
+    explode(label, deli, c_parts);
+    if (c_parts.size() > 1) {
       // ok, we have a macro
       c_parts.pop_back();
       vsx_string macro_name = implode(c_parts,deli);
@@ -291,17 +295,17 @@ vsx_comp* vsx_engine::add(vsx_string label)
         comp->parent = macro_comp;
         macro_comp->children.push_back(comp);
       }
-		}
-		forge_map[label] = comp;
-		return comp;
-	}
-	return 0;
+    }
+    forge_map[label] = comp;
+    return comp;
+  }
+  return 0;
 }
 
 // send our current time to the client
 void vsx_engine::tell_client_time(vsx_command_list *cmd_out)
 {
-	if (no_client_time) return;
+  if (no_client_time) return;
   #ifndef VSX_NO_CLIENT
     bool send = false;
 
@@ -329,7 +333,7 @@ void vsx_engine::set_speed(float spd)
 // set internal float parameter
 void vsx_engine::set_float_array_param(int id, vsx_engine_float_array* float_array)
 {
-	engine_info.param_float_arrays[id] = float_array;
+  engine_info.param_float_arrays[id] = float_array;
 }
 
 // set FX level amplification (sound, etc)
@@ -343,8 +347,8 @@ void vsx_engine::set_amp(float amp)
 // start the engine and sending all the modules the start signal
 bool vsx_engine::start()
 {
-	if (!stopped) return false;
-	if (stopped) stopped = false;
+  if (!stopped) return false;
+  if (stopped) stopped = false;
   if (first_start)
   {
     sequence_list.set_engine(this);
@@ -365,16 +369,16 @@ bool vsx_engine::start()
     comp->load_module(module_dll_list[module_list["outputs;screen"]->identifier]);
     //comp->load_module(module_dll_list[module_list[comp->identifier]->identifier]);
     comp->component_class += ":critical";
-  	comp->name="screen0";
-  	comp->engine_info(&engine_info);
-	}
-	for (std::vector<vsx_comp*>::iterator it = forge.begin(); it != forge.end(); ++it) {
-		(*it)->start();
-	}
+    comp->name="screen0";
+    comp->engine_info(&engine_info);
+  }
+  for (std::vector<vsx_comp*>::iterator it = forge.begin(); it != forge.end(); ++it) {
+    (*it)->start();
+  }
   m_timer.start();
   g_timer.start();
   lastsent = 0;
-	return true;
+  return true;
 }
 // stop the engine
 bool vsx_engine::stop() {
@@ -471,7 +475,7 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
     {
       // add to open modules
       module_handles.push_back(module_handle);
-      
+
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
       if (GetProcAddress(module_handle, "set_environment_info"))
       #endif
@@ -538,7 +542,7 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
       #endif
 
         unsigned long num_modules = get_num_modules();
-  
+
         #ifdef VSXU_DEVELOPER
           LOG("engine_load_module_a: with "+i2s((int)num_modules)+" modules");
         #endif
@@ -548,10 +552,19 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
         #endif  // VSXU_DEVELOPER
 
         for (unsigned long i = 0; i < num_modules; ++i) {
+          // create a new module instance
           im = create_new_module(i);
-          a = new vsx_module_info;
-          im->module_info(a);
+            // get module info
+            a = new vsx_module_info;
+            im->module_info(a);
+            // check to see if the module can run on this system
+            bool can_run = im->can_run();
+          // finally: destroy the module instance
           unload(im,i);
+          // if this module can't run on this system, don't add it to module
+          // list, aka move on to check the next module
+          if (!can_run) continue;
+
           #ifdef VSXU_DEVELOPER
           LOG("engine_load_module_a:  module identifier: "+a->identifier);
           #endif
@@ -593,10 +606,10 @@ void vsx_engine::build_module_list(vsx_string sound_type) {
   }
 
   #ifndef VSX_DEMO_MINI
-	  #ifdef VSXU_DEVELOPER
+    #ifdef VSXU_DEVELOPER
       LOG("engine_load_module_i: Loaded "+i2s((int)total_num_modules)+" modules");
       LOG("engine_load_module_i: [DONE]\n");
-	  #endif
+    #endif
   #endif
 }
 
@@ -615,25 +628,25 @@ void vsx_engine::play()
 //############## R E N D E R #######################################################################
 bool vsx_engine::render() {
    // check for time control requests from the modules
-	if (engine_info.request_play == 1 && e_state != VSX_ENGINE_LOADING) {
-		e_state = VSX_ENGINE_PLAYING;
-		engine_info.request_play = 0;
-	}
+  if (engine_info.request_play == 1 && e_state != VSX_ENGINE_LOADING) {
+    e_state = VSX_ENGINE_PLAYING;
+    engine_info.request_play = 0;
+  }
 
-	if (engine_info.request_stop == 1) {
-		e_state = VSX_ENGINE_STOPPED;
-		engine_info.request_stop = 0;
-	}
+  if (engine_info.request_stop == 1) {
+    e_state = VSX_ENGINE_STOPPED;
+    engine_info.request_stop = 0;
+  }
 
-	if (engine_info.request_rewind == 1) {
-		e_state = VSX_ENGINE_REWIND;
-		engine_info.request_rewind = 0;
-	}
+  if (engine_info.request_rewind == 1) {
+    e_state = VSX_ENGINE_REWIND;
+    engine_info.request_rewind = 0;
+  }
 
   //vsx_command_s cm; cm.process_garbage();
- 		//printf("d1");
-	if (!stopped) {
-	  frame_timer.start();
+    //printf("d1");
+  if (!stopped) {
+    frame_timer.start();
     // here we set the global time of the engine.
     // In case we need this module to do something else - capture to file
     // we would need to set dtime to the length of each frame, and add vtime
@@ -718,9 +731,9 @@ bool vsx_engine::render() {
               //vsx_string value = param->get_string();
       }
     }
-		//if (e_state == VSX_ENGINE_PLAYING) {
-		  //printf("dt: %f\n",dt);
-		  //printf("dt: %f\n",engine_info.vtime);
+    //if (e_state == VSX_ENGINE_PLAYING) {
+      //printf("dt: %f\n",dt);
+      //printf("dt: %f\n",engine_info.vtime);
       //printf("time diff: %f\n",dt-(engine_info.vtime));
       //printf("engine.dtime: %f\n",engine_info.dtime);
     //} //else printf("------STOPPED\n");
@@ -772,15 +785,15 @@ bool vsx_engine::render() {
 
     //engine_info.dtime = dtime;
     //engine_info.vtime = vtime;
- 		//++frame_tcount;
- 		//printf("d2");
+    //++frame_tcount;
+    //printf("d2");
 
-		// go through the outputs - actual rendering
-		for (unsigned long i = 0; i < outputs.size(); i++) {
-		  outputs[i]->prepare();
-		}
-		for(std::vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
-			(*it)->reset_frame_status();
+    // go through the outputs - actual rendering
+    for (unsigned long i = 0; i < outputs.size(); i++) {
+      outputs[i]->prepare();
+    }
+    for(std::vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
+      (*it)->reset_frame_status();
     }
 
     // reset every component
@@ -788,36 +801,36 @@ bool vsx_engine::render() {
     {
       modules_left_to_load = 0;
       modules_loaded = 0;
-		  for(vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it)
+      for(vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it)
       {
-  			if ((*it)->component_class != "macro")
-  			if ((*it)->module)
+        if ((*it)->component_class != "macro")
+        if ((*it)->module)
         {
-    			if (!(*it)->module->loading_done)
+          if (!(*it)->module->loading_done)
           {
             vsx_module_info foom;
             (*it)->module->module_info(&foom);
             //#ifdef VSXU_ARTISTE
             LOG3(vsx_string("waiting for module: ")+foom.identifier+" with name: "+(*it)->name);
 
-						//#endif
-    			  ++modules_left_to_load;
-    			} else ++modules_loaded;
+            //#endif
+            ++modules_left_to_load;
+          } else ++modules_loaded;
         }
       }	//else printf("component without module\n");
 
-  		//printf("i_count: %d   %d\n",commands_internal.count(),modules_left_to_load);
-  		if (modules_left_to_load == 0 && commands_internal.count() == 0) {
+      //printf("i_count: %d   %d\n",commands_internal.count(),modules_left_to_load);
+      if (modules_left_to_load == 0 && commands_internal.count() == 0) {
         e_state = VSX_ENGINE_PLAYING;
       }
-		}
+    }
 
-		//printf("MODULES LEFT TO LOAD: %d\n",i);
+    //printf("MODULES LEFT TO LOAD: %d\n",i);
     engine_info.dtime = 0;
     last_frame_time = (float)frame_timer.dtime();
-		return true;
-	}
-	return false;
+    return true;
+  }
+  return false;
 }
 
 void vsx_engine::redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_out) {
@@ -932,13 +945,13 @@ void vsx_engine::process_message_queue_redeclare(vsx_command_list *cmd_out_res)
 
 void vsx_engine::set_ignore_per_frame_time_limit(bool new_value)
 {
-  
+
 }
 
 //############## M E S S A G E   P R O C E S S O R #################################################
 void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive, bool ignore_timing) {
   // service commands
-	LOG("process_message_queue 1")
+  LOG("process_message_queue 1")
 
   commands_res_internal.clear(true);
   tell_client_time(cmd_out_res);
@@ -952,7 +965,7 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
   {
     process_message_queue_redeclare(cmd_out_res);
   }
-  
+
   // handle exclusivity
   if (exclusive) cmd_in->set_type(1);
   // add the incoming commands to our own list for buffering (to continue on next frame if we don't have time to do them all)
@@ -978,7 +991,7 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
     //printf("%s\n", vsx_string(vsx_string("cmd_in: ")+c->cmd+" ::: "+c->raw).c_str());
     //printf("c type %d\n",c->type);
     if (c->type == 1)
-    	cmd_out = &commands_res_internal;
+      cmd_out = &commands_res_internal;
     //else
 //    	cmd_out = cmd_out_res;
 
@@ -998,7 +1011,7 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
       #include "vsx_engine_messages/vsx_note.h"
     #endif
     #include "vsx_engine_messages/vsx_em_system.h"
-    
+
     #undef cmd
     #undef cmd_data
 
@@ -1006,24 +1019,24 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
     {
       process_message_queue_redeclare(cmd_out_res);
     }
-    
-    
-		total_time+=vsx_command_timer.dtime();
-		// internal garbage collection
-		(*(c->garbage_pointer)).remove(c);
-		delete c;
+
+
+    total_time+=vsx_command_timer.dtime();
+    // internal garbage collection
+    (*(c->garbage_pointer)).remove(c);
+    delete c;
   }
 
 } // process_comand_queue
 
 void vsx_engine::send_state_to_client(vsx_command_list *cmd_out) {
 #ifndef VSX_DEMO_MINI
-	#ifndef SAVE_PRODUCTION
+  #ifndef SAVE_PRODUCTION
   if (filesystem.type != VSXF_TYPE_FILESYSTEM)  {
     cmd_out->add_raw("server_message "+base64_encode("Packages not possible to edit, ask author for state!"));
     return;
   }
-	#endif
+  #endif
   vsx_command_list temp_conn;
   vsx_command_list temp_conn_alias;
   for (unsigned long i = 0; i < forge.size(); ++i) {
@@ -1051,9 +1064,9 @@ void vsx_engine::send_state_to_client(vsx_command_list *cmd_out) {
         cmd_out->add_raw("vsxl_pfi_ok "+forge[i]->name+" "+param->name);
       }
     }
-		if (forge[i]->vsxl_modifier) {
-			cmd_out->add_raw("vsxl_cfi_ok "+forge[i]->name);
-		}
+    if (forge[i]->vsxl_modifier) {
+      cmd_out->add_raw("vsxl_cfi_ok "+forge[i]->name);
+    }
   }
   // conns
   vsx_command_s* outc;
@@ -1157,15 +1170,15 @@ void vsx_engine::i_clear(vsx_command_list *cmd_out,bool clear_critical) {
   engine_info.dtime = 0;
   engine_info.real_vtime = 0;
   e_state = VSX_ENGINE_STOPPED;
-	if (filesystem.is_archive())
-	{
-		if (cmd_out)
-		{
-			//printf("clear not filesystem\n");
-			filesystem.archive_close();
-			send_state_to_client(cmd_out);
-		}
-	}
+  if (filesystem.is_archive())
+  {
+    if (cmd_out)
+    {
+      //printf("clear not filesystem\n");
+      filesystem.archive_close();
+      send_state_to_client(cmd_out);
+    }
+  }
 #endif
 }
 
@@ -1223,42 +1236,42 @@ int vsx_engine::get_state_as_commandlist(vsx_command_list &savelist)
             )
             {
               if (
-             			param->module_param->type == VSX_MODULE_PARAM_ID_STRING
-              		||
-              		param->module_param->type == VSX_MODULE_PARAM_ID_RESOURCE
-              	)
+                  param->module_param->type == VSX_MODULE_PARAM_ID_STRING
+                  ||
+                  param->module_param->type == VSX_MODULE_PARAM_ID_RESOURCE
+                )
               {
                 tmp_comp.add_raw(vsx_string("ps64 ")+comp->name+" "+param->name+" "+base64_encode(pval));
               } else
               {
-              	tmp_comp.add_raw(vsx_string("param_set ")+comp->name+" "+param->name+" "+pval);
+                tmp_comp.add_raw(vsx_string("param_set ")+comp->name+" "+param->name+" "+pval);
               }
             }
           }
         }
         // dump the param vsxl filter
       }
-    	//printf("running pre vsxlmf %s\n", param->name.c_str());
-			#ifndef VSXE_NO_GM
+      //printf("running pre vsxlmf %s\n", param->name.c_str());
+      #ifndef VSXE_NO_GM
       if (param->module_param->vsxl_modifier) {
-      	//printf("vsxl modifier present\n");
+        //printf("vsxl modifier present\n");
         vsx_param_vsxl_driver_abs* driver;
         driver = (vsx_param_vsxl_driver_abs*)((vsx_param_vsxl*)param->module_param->vsxl_modifier)->get_driver();
         tmp_comp.add_raw(vsx_string("vsxl_pfi ")+comp->name+" "+param->name+" "+i2s(driver->id)+" "+base64_encode(driver->script));
       }
-			#endif
+      #endif
     }
-		#ifndef VSXE_NO_GM
+    #ifndef VSXE_NO_GM
     if (comp->vsxl_modifier) {
       vsx_comp_vsxl_driver_abs* driver;
       driver = (vsx_comp_vsxl_driver_abs*)((vsx_comp_vsxl*)comp->vsxl_modifier)->get_driver();
       tmp_comp.add_raw(vsx_string("vsxl_cfi ")+comp->name+" "+base64_encode(driver->script));
     }
-		#endif
+    #endif
   }
   for (note_iter = note_map.begin(); note_iter != note_map.end(); note_iter++)
   {
-  	tmp_connections.add_raw((*note_iter).second.serialize_state());
+    tmp_connections.add_raw((*note_iter).second.serialize_state());
   }
 
   vsx_command_s* outc;
@@ -1275,9 +1288,9 @@ int vsx_engine::get_state_as_commandlist(vsx_command_list &savelist)
     savelist.addc(outc);
   }
   // dump the sequence pool
-	sequence_pool.dump_to_command_list(savelist);
-	// dump the master sequences with their connections to the sequence pools
-	sequence_list.dump_master_channels_to_command_list(savelist);
+  sequence_pool.dump_to_command_list(savelist);
+  // dump the master sequences with their connections to the sequence pools
+  sequence_list.dump_master_channels_to_command_list(savelist);
   #endif
   return 0;
 }
@@ -1383,7 +1396,7 @@ int vsx_engine::rename_component(vsx_string old_identifier, vsx_string new_base,
     (*it_c)->name = new_name_;
     ++it_c;
   }
-  
+
   // actually move the component
   if (assign_first) {
     //printf("moving component\n");
@@ -1397,14 +1410,14 @@ int vsx_engine::rename_component(vsx_string old_identifier, vsx_string new_base,
   }
   return 1;
   #else
-	return 0;
+  return 0;
 #endif
 }
 
 
 extern "C" vsx_engine* create_engine()
 {
-	return new vsx_engine;
+  return new vsx_engine;
 }
 
 // VSX_ENGINE

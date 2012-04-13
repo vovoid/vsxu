@@ -73,7 +73,11 @@ void vsx_texture::init_opengl_texture()
 }
 bool vsx_texture::has_buffer_support()
 {
-  return GLEW_EXT_framebuffer_object && GLEW_EXT_framebuffer_blit;
+  bool fbo = GLEW_EXT_framebuffer_object;
+  bool blit = GLEW_EXT_framebuffer_blit;
+  if (!fbo) printf("vsx_texture Notice: EXT_framebuffer_object support is MISSING! This will mean limited functionality.\n\n");
+  if (!blit) printf("vsx_texture Notice: EXT_framebuffer_blit support is MISSING! This will mean limited functionality.\n\n");
+  return fbo && blit;
 }
 
 void vsx_texture::init_buffer(int width, int height, bool float_texture, bool alpha, bool enable_multisample)
