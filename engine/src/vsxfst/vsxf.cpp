@@ -477,7 +477,7 @@ vsx_string vsx_get_data_path()
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
     //struct stat st;
     char* home_dir = getenv ("HOME");
-    base_path = vsx_string(home_dir)+"/.vsxu/";
+    base_path = vsx_string(home_dir)+"/.local/share/vsxu/";
     if (access(base_path.c_str(),0) != 0)
     {
       mkdir( (base_path).c_str(), 0700 );
@@ -492,9 +492,11 @@ vsx_string vsx_get_data_path()
     if (access(base_path.c_str(),0) != 0)
     {
       mkdir( (base_path).c_str(),0700);
+      mkdir( (base_path+"animations").c_str(),0700);
       mkdir( (base_path+"macros").c_str(),0700);
-      mkdir( (base_path+"states").c_str(),0700);
       mkdir( (base_path+"prods").c_str(),0700);
+      mkdir( (base_path+"screenshots").c_str(),0700);
+      mkdir( (base_path+"states").c_str(),0700);
       mkdir( (base_path+"visuals").c_str(),0700);
       mkdir( (base_path+"visuals_faders").c_str(),0700);
       mkdir( (base_path+"resources").c_str(),0700);
@@ -505,7 +507,7 @@ vsx_string vsx_get_data_path()
       symlink ( (PLATFORM_SHARED_FILES+"example-prods").c_str(), (base_path+"prods/examples").c_str() );
       symlink ( (PLATFORM_SHARED_FILES+"example-visuals").c_str(), (base_path+"visuals/examples").c_str() );
       symlink ( (PLATFORM_SHARED_FILES+"example-resources").c_str(), (base_path+"resources/examples").c_str() );
-      symlink ( (PLATFORM_SHARED_FILES+"example-faders").c_str(), (base_path+"visual_faders/examples").c_str() );
+      symlink ( (PLATFORM_SHARED_FILES+"example-faders").c_str(), (base_path+"visuals_faders/examples").c_str() );
       #if (VSXU_DEBUG)
         symlink ( (PLATFORM_SHARED_FILES+"debug-states").c_str(), (base_path+"states/debug").c_str() );
       #endif
@@ -521,9 +523,11 @@ vsx_string vsx_get_data_path()
     {
       printf("trying to create base_path: %s\n",base_path.c_str());
       mkdir( (base_path).c_str());
+      mkdir( (base_path+"animations").c_str());
       mkdir( (base_path+"macros").c_str());
-      mkdir( (base_path+"states").c_str());
       mkdir( (base_path+"prods").c_str());
+      mkdir( (base_path+"screenshots").c_str());
+      mkdir( (base_path+"states").c_str());
       mkdir( (base_path+"visuals").c_str());
       mkdir( (base_path+"visuals_faders").c_str());
       mkdir( (base_path+"resources").c_str());
