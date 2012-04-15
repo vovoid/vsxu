@@ -1,0 +1,121 @@
+meta_set fHx8fHw=
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.282430 -0.188841
+component_create texture;loaders;bitmap2texture bitmap2texture -0.317728 0.040045
+param_set bitmap2texture mipmaps 1
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.134380 0.062272
+macro_create empty -0.234272 0.045981 0.291177
+component_create maths;dummies;float_dummy empty.float_dummy -0.093100 -0.018087
+component_create renderers;basic;textured_rectangle empty.textured_rectangle -0.009893 -0.003416
+component_create renderers;basic;textured_rectangle empty.textured_rectangle_2 -0.004204 -0.045876
+param_set empty.textured_rectangle_2 position 0.00000000000000000000,0.02608986757695674896,0.00000000000000000000
+component_create renderers;basic;textured_rectangle empty.textured_rectangle_2_1 -0.003641 -0.095236
+param_set empty.textured_rectangle_2_1 position 0.00000000000000000000,0.05136106535792350769,0.00000000000000000000
+component_create renderers;basic;textured_rectangle empty.textured_rectangle_2_1_1 -0.003940 -0.132990
+param_set empty.textured_rectangle_2_1_1 position 0.00000000000000000000,0.07916413247585296631,0.00000000000000000000
+macro_create empty_1 -0.257809 -0.063015 0.291177
+component_create maths;dummies;float_dummy empty_1.float_dummy -0.093100 -0.018087
+component_create renderers;basic;textured_rectangle empty_1.textured_rectangle -0.009893 -0.003416
+component_create renderers;basic;textured_rectangle empty_1.textured_rectangle_2 -0.004204 -0.045876
+param_set empty_1.textured_rectangle_2 position 0.00000000000000000000,0.02608986757695674896,0.00000000000000000000
+component_create renderers;basic;textured_rectangle empty_1.textured_rectangle_2_1 -0.003641 -0.095236
+param_set empty_1.textured_rectangle_2_1 position 0.00000000000000000000,0.05136106535792350769,0.00000000000000000000
+component_create renderers;basic;textured_rectangle empty_1.textured_rectangle_2_1_1 -0.003940 -0.132990
+param_set empty_1.textured_rectangle_2_1_1 position 0.00000000000000000000,0.07916413247585296631,0.00000000000000000000
+component_create maths;dummies;float_dummy float_dummy -0.347495 -0.077135
+param_set float_dummy float_in 0.49999156594276428223
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate -0.126969 -0.003261
+param_set gl_rotate angle -0.04866798967123031616
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate_1 -0.132241 -0.051722
+param_set gl_rotate_1 angle -1.19990611076354980469
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate_1_1 -0.134143 -0.095747
+param_set gl_rotate_1_1 angle -1.34855496883392333984
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate_1_1_1 -0.132677 -0.135828
+param_set gl_rotate_1_1_1 angle -1.07391786575317382812
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate_1_1_1_1 -0.135610 -0.171755
+param_set gl_rotate_1_1_1_1 angle -1.12869846820831298828
+component_create renderers;opengl_modifiers;gl_translate gl_translate -0.210763 -0.022289
+component_create maths;oscillators;oscillator oscillator -0.337387 -0.185447
+param_set oscillator amp 0.20089195668697357178
+param_set oscillator ofs 0.00000967552659858484
+param_set oscillator freq 0.30155861377716064453
+component_create bitmaps;generators;perlin_noise perlin_noise -0.438321 0.032311
+param_set perlin_noise rand_seed 9.07030200958251953125
+param_set perlin_noise size 7
+param_set perlin_noise frequency 7
+param_set perlin_noise octave 7
+param_set perlin_noise bitmap_type 1
+param_set perlin_noise alpha 1
+component_create texture;buffers;render_surface_single render_surface_single -0.076418 0.035881
+param_set render_surface_single support_feedback 0
+param_set render_surface_single float_texture 1
+param_set render_surface_single texture_size 10
+cpp screen0 0.023751 0.000950
+component_create renderers;basic;textured_rectangle textured_rectangle_1 -0.047370 -0.016660
+param_set textured_rectangle_1 size 0.99999094009399414062
+param_alias alias_render_out:render 1 empty_1 alias_render_out empty_1.textured_rectangle_2_1_1 render_out
+param_alias alias_render_out_1:render 1 empty_1 alias_render_out_1 empty_1.textured_rectangle_2_1 render_out
+param_alias alias_render_out_2:render 1 empty_1 alias_render_out_2 empty_1.textured_rectangle_2 render_out
+param_alias alias_render_out_3:render 1 empty_1 alias_render_out_3 empty_1.textured_rectangle render_out
+param_alias alias_render_out:render 1 empty alias_render_out empty.textured_rectangle_2_1_1 render_out
+param_alias alias_render_out_1:render 1 empty alias_render_out_1 empty.textured_rectangle_2_1 render_out
+param_alias alias_render_out_2:render 1 empty alias_render_out_2 empty.textured_rectangle_2 render_out
+param_alias alias_render_out_3:render 1 empty alias_render_out_3 empty.textured_rectangle render_out
+param_connect textured_rectangle_1 texture_in render_surface_single texture_out
+param_connect screen0 screen textured_rectangle_1 render_out
+param_connect render_surface_single render_in blend_mode render_out
+param_connect gl_translate render_in empty_1 alias_render_out
+param_connect gl_translate render_in empty_1 alias_render_out_1
+param_connect gl_translate render_in empty_1 alias_render_out_2
+param_connect gl_translate render_in empty_1 alias_render_out_3
+param_connect gl_translate translation 3float_to_float3 result_float3
+param_connect gl_rotate_1_1_1_1 render_in gl_translate render_out
+param_connect gl_rotate_1_1_1 render_in gl_translate render_out
+param_connect gl_rotate_1_1 render_in gl_translate render_out
+param_connect gl_rotate_1 render_in gl_translate render_out
+param_connect gl_rotate render_in gl_translate render_out
+param_alias alias_texture_in:texture -1 empty_1 alias_texture_in empty_1.textured_rectangle_2_1_1 texture_in
+param_connect empty_1 alias_texture_in bitmap2texture texture
+param_connect empty_1.textured_rectangle_2_1_1 global_alpha empty_1.float_dummy result_float
+param_alias alias_texture_in_1:texture -1 empty_1 alias_texture_in_1 empty_1.textured_rectangle_2_1 texture_in
+param_connect empty_1 alias_texture_in_1 bitmap2texture texture
+param_alias alias_global_alpha_1:float -1 empty_1 alias_global_alpha_1 empty_1.textured_rectangle_2_1 global_alpha
+param_connect empty_1.textured_rectangle_2_1 global_alpha empty_1.float_dummy result_float
+param_alias alias_texture_in_2:texture -1 empty_1 alias_texture_in_2 empty_1.textured_rectangle_2 texture_in
+param_connect empty_1 alias_texture_in_2 bitmap2texture texture
+param_alias alias_global_alpha_2:float -1 empty_1 alias_global_alpha_2 empty_1.textured_rectangle_2 global_alpha
+param_connect empty_1.textured_rectangle_2 global_alpha empty_1.float_dummy result_float
+param_alias alias_texture_in_3:texture -1 empty_1 alias_texture_in_3 empty_1.textured_rectangle texture_in
+param_connect empty_1 alias_texture_in_3 bitmap2texture texture
+param_alias alias_global_alpha_3:float -1 empty_1 alias_global_alpha_3 empty_1.textured_rectangle global_alpha
+param_connect empty_1.textured_rectangle global_alpha empty_1.float_dummy result_float
+param_alias alias_float_in:float -1 empty_1 alias_float_in empty_1.float_dummy float_in
+param_connect empty_1 alias_float_in float_dummy result_float
+param_alias alias_texture_in:texture -1 empty alias_texture_in empty.textured_rectangle_2_1_1 texture_in
+param_connect empty alias_texture_in bitmap2texture texture
+param_connect empty.textured_rectangle_2_1_1 global_alpha empty.float_dummy result_float
+param_alias alias_texture_in_1:texture -1 empty alias_texture_in_1 empty.textured_rectangle_2_1 texture_in
+param_connect empty alias_texture_in_1 bitmap2texture texture
+param_alias alias_global_alpha_1:float -1 empty alias_global_alpha_1 empty.textured_rectangle_2_1 global_alpha
+param_connect empty.textured_rectangle_2_1 global_alpha empty.float_dummy result_float
+param_alias alias_texture_in_2:texture -1 empty alias_texture_in_2 empty.textured_rectangle_2 texture_in
+param_connect empty alias_texture_in_2 bitmap2texture texture
+param_alias alias_global_alpha_2:float -1 empty alias_global_alpha_2 empty.textured_rectangle_2 global_alpha
+param_connect empty.textured_rectangle_2 global_alpha empty.float_dummy result_float
+param_alias alias_texture_in_3:texture -1 empty alias_texture_in_3 empty.textured_rectangle texture_in
+param_connect empty alias_texture_in_3 bitmap2texture texture
+param_alias alias_global_alpha_3:float -1 empty alias_global_alpha_3 empty.textured_rectangle global_alpha
+param_connect empty.textured_rectangle global_alpha empty.float_dummy result_float
+param_alias alias_float_in:float -1 empty alias_float_in empty.float_dummy float_in
+param_connect empty alias_float_in float_dummy result_float
+param_connect blend_mode render_in gl_translate render_out
+param_connect blend_mode render_in gl_rotate render_out
+param_connect blend_mode render_in gl_rotate_1 render_out
+param_connect blend_mode render_in gl_rotate_1_1 render_out
+param_connect blend_mode render_in gl_rotate_1_1_1 render_out
+param_connect blend_mode render_in gl_rotate_1_1_1_1 render_out
+param_connect blend_mode render_in empty alias_render_out_3
+param_connect blend_mode render_in empty alias_render_out_2
+param_connect blend_mode render_in empty alias_render_out_1
+param_connect blend_mode render_in empty alias_render_out
+param_connect bitmap2texture bitmap perlin_noise bitmap
+param_connect 3float_to_float3 floatb oscillator float

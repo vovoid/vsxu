@@ -203,13 +203,3 @@ install(
     artiste
 )
 
-if (VSXU_DEBUG EQUAL 1)
-  install(
-    DIRECTORY
-      ${CMAKE_SOURCE_DIR}/share/debug-states
-    DESTINATION
-      ${VSXU_INSTALL_SHARE_DIR}
-    COMPONENT
-      artiste
-  )
-endif (VSXU_DEBUG EQUAL 1)

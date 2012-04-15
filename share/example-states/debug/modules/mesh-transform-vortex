@@ -1,0 +1,47 @@
+meta_set fHx8fHw=
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.375613 -0.014169
+param_set 3float_to_float3 floatb -0.00000943657323659863
+component_create maths;converters;3float_to_float3 3float_to_float3_ -0.325354 -0.154421
+component_create maths;converters;3float_to_float3 3float_to_float3_1 -0.324342 -0.096629
+component_create maths;dummies;float_dummy float_dummy -0.523047 -0.169898
+component_create maths;oscillators;float_sequencer float_sequencer -0.429395 -0.084246
+param_set float_sequencer float_sequence 0.355677;2.000000;MC4wMDAwMDA=|0.362575;2.000000;MC4zOTM2MzE=|0.261729;2.000000;MC42NzkwNzY=|1.000000;0.000000;MC42ODIxMDk=
+param_set float_sequencer length 1.08187055587768554688
+param_set float_sequencer drive_type 1
+component_create maths;oscillators;float_sequencer float_sequencer_1 -0.430519 -0.161748
+param_set float_sequencer_1 float_sequence 1.000000;2.000000;MC4wMDAwMDA=|1.000000;0.000000;MS4wMDAwMDA=
+param_set float_sequencer_1 length 1.10706377029418945312
+param_set float_sequencer_1 drive_type 1
+component_create renderers;mesh;mesh_dot_render mesh_dot_render -0.159468 -0.013162
+component_create mesh;modifiers;transforms;mesh_translate_edge_wraparound mesh_translate_edge_wraparound -0.308955 0.020094
+component_create mesh;modifiers;deformers;mesh_vortex mesh_vortex -0.213965 -0.044975
+component_create maths;arithmetics;binary;mult mult -0.445659 0.000486
+param_set mult param2 0.05752075836062431335
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.063053 -0.007268
+param_set orbit_camera rotation -0.04849900305271148682,0.00000085057683918421,0.96623194217681884766
+param_set orbit_camera distance 0.91047132015228271484
+param_set orbit_camera perspective_correct 1
+component_create maths;oscillators;oscillator oscillator -0.621885 -0.166246
+param_set oscillator amp 0.50000923871994018555
+param_set oscillator freq 0.87491512298583984375
+component_create mesh;vertices;random_vertices random_vertices -0.407750 0.056242
+param_set random_vertices num_points 9999.99804687500000000000
+param_set random_vertices scaling 2.01324009895324707031,1.99609303474426269531,0.00000090907093408532
+cpp screen0 0.000000 0.000000
+component_create system;time time -0.531192 0.012440
+param_connect screen0 screen orbit_camera render_out
+param_connect orbit_camera render_in mesh_dot_render render_out
+param_connect mult param1 time time
+param_connect mesh_vortex area 3float_to_float3_ result_float3
+param_connect mesh_vortex amount 3float_to_float3_1 result_float3
+param_connect mesh_vortex mesh_in mesh_translate_edge_wraparound mesh_out
+param_connect mesh_translate_edge_wraparound translation 3float_to_float3 result_float3
+param_connect mesh_translate_edge_wraparound mesh_in random_vertices mesh
+param_connect mesh_dot_render mesh_in mesh_vortex mesh_out
+param_connect float_sequencer_1 drive float_dummy result_float
+param_connect float_sequencer drive float_dummy result_float
+param_connect float_dummy float_in oscillator float
+param_connect 3float_to_float3_1 floatb float_sequencer float
+param_connect 3float_to_float3_1 floata float_sequencer float
+param_connect 3float_to_float3_ floata float_sequencer_1 float
+param_connect 3float_to_float3 floata mult product

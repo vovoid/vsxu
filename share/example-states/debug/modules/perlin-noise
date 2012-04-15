@@ -1,0 +1,22 @@
+meta_set fHx8fHw=
+component_create texture;loaders;bitmap2texture bitmap2texture -0.246464 0.026925
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.091951 0.022536
+param_set orbit_camera distance 0.92632716894149780273
+param_set orbit_camera perspective_correct 1
+component_create bitmaps;generators;perlin_noise perlin_noise -0.356974 0.026355
+param_set perlin_noise rand_seed 9.07030200958251953125
+param_set perlin_noise enable_blob 1
+param_set perlin_noise arms 2.99999070167541503906
+param_set perlin_noise attenuation 1.99999105930328369141
+param_set perlin_noise star_flower -0.00000674903549224837
+param_set perlin_noise angle 1.49999070167541503906
+param_set perlin_noise size 7
+param_set perlin_noise frequency 7
+param_set perlin_noise octave 5
+param_set perlin_noise alpha 1
+cpp screen0 0.000000 0.000000
+component_create renderers;basic;textured_rectangle textured_rectangle -0.183294 0.020711
+param_connect textured_rectangle texture_in bitmap2texture texture
+param_connect screen0 screen orbit_camera render_out
+param_connect orbit_camera render_in textured_rectangle render_out
+param_connect bitmap2texture bitmap perlin_noise bitmap

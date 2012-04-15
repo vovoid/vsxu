@@ -1,0 +1,77 @@
+meta_set fHx8fHw=
+component_create texture;particles;blob blob -0.400580 0.136877
+param_set blob arms 7.00000905990600585938
+param_set blob attenuation 1.01576828956604003906
+param_set blob size 5
+param_set blob star_flower 0.00000694905929776723
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer -0.258623 -0.021723
+param_set depth_buffer depth_test 1
+param_set depth_buffer depth_mask 1
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer_1 -0.115871 -0.093758
+param_set depth_buffer_1 depth_test 1
+component_create renderers;opengl_modifiers;gl_color gl_color -0.155243 -0.121287
+param_set gl_color color 0.00000091345884811744,0.00000000010392315480,0.00000000000000260941,0.00000000000000000011
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate -0.367039 0.097378
+component_create renderers;opengl_modifiers;gl_rotate gl_rotate_1 -0.235127 0.064806
+param_set gl_rotate_1 axis 0.00000000000000000000,0.99999994039535522461,0.00000097837323664862
+component_create renderers;opengl_modifiers;light_directional light_directional -0.125175 0.076688
+param_set light_directional enabled 1
+param_set light_directional position 0.11455500125885009766,-1.97196102142333984375,0.02117802947759628296
+param_set light_directional ambient_color 0.77920854091644287109,0.62619012594223022461,0.95604085922241210938,1.00000000000000000000
+param_set light_directional diffuse_color 0.99999946355819702148,0.00000079762884297452,0.00000079762884297452,1.00000000000000000000
+param_set light_directional specular_color 0.77350115776062011719,0.99999988079071044922,0.00000094146895435188,1.00000000000000000000
+component_create renderers;opengl_modifiers;light_directional light_directional_1 -0.127215 0.131400
+param_set light_directional_1 light_id 1
+param_set light_directional_1 enabled 1
+param_set light_directional_1 position 0.00000093052068450561,0.99999994039535522461,0.05754600465297698975
+param_set light_directional_1 ambient_color 0.77920854091644287109,0.62619012594223022461,0.95604085922241210938,1.00000000000000000000
+param_set light_directional_1 diffuse_color 0.01812886632978916168,0.00000089002736558541,0.99999958276748657227,1.00000000000000000000
+param_set light_directional_1 specular_color 0.88938909769058227539,0.00000100000715974602,0.99999994039535522461,1.00000000000000000000
+component_create renderers;opengl_modifiers;material_param material_param -0.080798 0.017679
+param_set material_param specular_reflectance 0.99999994039535522461,0.99999994039535522461,0.99999904632568359375,1.00000000000000000000
+param_set material_param emission_intensity 0.00000099999988378840,0.00000000000000000012,0.00000091163701654295,1.00000000000000000000
+param_set material_param specular_exponent 89.99999237060546875000
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.330303 -0.036769
+param_set mesh_basic_render use_display_list 1
+component_create renderers;mesh;mesh_basic_render mesh_basic_render_1 -0.301583 -0.138457
+param_set mesh_basic_render_1 use_display_list 1
+component_create mesh;solid;mesh_grid mesh_grid -0.517092 -0.014639
+param_set mesh_grid power_of_two_size 8.24582576751708984375
+component_create mesh;modifiers;deformers;mesh_normal_randistort mesh_normal_randistort -0.453692 -0.028949
+param_set mesh_normal_randistort distortion_factor 0.00000000000000000000,0.12189918756484985352,0.00000000000000000000
+param_set mesh_normal_randistort distort_vertices 1
+param_set mesh_normal_randistort vertex_distortion_factor 1.41106414794921875000
+component_create mesh;modifiers;deformers;mesh_normal_randistort mesh_normal_randistort_1 -0.393650 -0.125969
+param_set mesh_normal_randistort_1 distortion_factor 0.19896799325942993164,-0.66106510162353515625,0.19896799325942993164
+component_create maths;arithmetics;binary;mult mult -0.492296 0.097621
+param_set mult param2 0.04213656112551689148
+component_create maths;arithmetics;binary;mult mult_1 -0.329992 0.063815
+param_set mult_1 param2 0.01537029631435871124
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.203157 0.192440
+param_set orbit_camera rotation 0.69649612903594970703,0.36342799663543701172,0.10113298892974853516
+param_set orbit_camera distance 0.55650240182876586914
+param_set orbit_camera perspective_correct 1
+component_create renderers;opengl_modifiers;rendering_mode rendering_mode -0.227556 -0.147729
+param_set rendering_mode front_facing 1
+param_set rendering_mode back_facing 1
+cpp screen0 0.000000 0.000000
+component_create system;time time -0.474633 0.018484
+param_connect screen0 screen material_param render_out
+param_connect orbit_camera render_in gl_rotate render_out
+param_connect mult_1 param1 time r_time
+param_connect mult param1 time r_time
+param_connect mesh_normal_randistort_1 mesh_in mesh_normal_randistort mesh_out
+param_connect mesh_normal_randistort mesh_in mesh_grid mesh
+param_connect mesh_basic_render_1 mesh_in mesh_normal_randistort_1 mesh_out
+param_connect mesh_basic_render mesh_in mesh_normal_randistort_1 mesh_out
+param_connect mesh_basic_render tex_a blob texture
+param_connect material_param render_in light_directional render_out
+param_connect light_directional_1 render_in orbit_camera render_out
+param_connect light_directional render_in light_directional_1 render_out
+param_connect gl_rotate_1 render_in depth_buffer render_out
+param_connect gl_rotate_1 angle mult product
+param_connect gl_rotate render_in gl_rotate_1 render_out
+param_connect gl_rotate angle mult_1 product
+param_connect depth_buffer_1 render_in gl_color render_out
+param_connect depth_buffer render_in mesh_basic_render render_out
+param_connect blob angle time r_time
