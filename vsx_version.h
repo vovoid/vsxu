@@ -8,12 +8,11 @@
 #ifndef VSX_VERSION_H
 #define VSX_VERSION_H
 
-#define vsxu_version "VSXu 0.3.0"
-#define vsxu_ver "0.3.0"
+#define vsxu_version "VSXu 0.3.1"
+#define vsxu_ver "0.3.1"
 
 #define VSXU_VERSION_MAJOR 0
 #define VSXU_VERSION_MINOR 3
-#define VSXU_VERSION_PATCH 0
-#define VSXU_VERSION_PATCH_MINOR 4
+#define VSXU_VERSION_PATCH 1
 
 #endif
