@@ -44,117 +44,117 @@
 #include "vsx_widget_module_chooser_list.h"
 //
 class vsx_widget_chooser_editor : public vsx_widget_base_editor {
-	vsx_texture mtex_blob;
-	vsx_widget* name_dialog;
-	bool dragging;
-	vsx_widget_coords drag_coords;
-	int mod_i;
-	vsx_string macro_name;
-	vsx_vector drop_pos;
-	vsx_widget* server;
+  vsx_texture mtex_blob;
+  vsx_widget* name_dialog;
+  bool dragging;
+  vsx_widget_coords drag_coords;
+  int mod_i;
+  vsx_string macro_name;
+  vsx_vector drop_pos;
+  vsx_widget* server;
   int draw_tooltip;
   vsx_string tooltip_text;
   vsx_vector tooltip_pos;
 
 public:
-	std::vector<int> i_rows_lookup;
+  std::vector<int> i_rows_lookup;
   std::vector<vsx_module_info*> i_mod_info;
 
 
   vsx_widget_chooser_editor()
   {
-  	draw_tooltip = 0;
-  	dragging = false;
+    draw_tooltip = 0;
+    dragging = false;
   }
 
   void set_server(vsx_widget* serv)
   {
-  	server = serv;
+    server = serv;
   }
 
-	void extra_init()
-	{
-		dragging = false;
-		editor->mirror_mouse_move_object = this;
-		editor->mirror_mouse_move_passive_object = this;
-		editor->mirror_mouse_up_object = this;
-		editor->enable_syntax_highlighting = false;
-		editor->font_size = 0.014;
-		name_dialog = add(new dialog_query_string("name of component","Choose a unique name for your component"),"component_create_name");
-		//((dialog_query_string*)name_dialog)->init();
-		mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png");
-		set_render_type(VSX_WIDGET_RENDER_2D);
-	}
+  void extra_init()
+  {
+    dragging = false;
+    editor->mirror_mouse_move_object = this;
+    editor->mirror_mouse_move_passive_object = this;
+    editor->mirror_mouse_up_object = this;
+    editor->enable_syntax_highlighting = false;
+    editor->font_size = 0.014;
+    name_dialog = add(new dialog_query_string("name of component","Choose a unique name for your component"),"component_create_name");
+    //((dialog_query_string*)name_dialog)->init();
+    mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png");
+    set_render_type(VSX_WIDGET_RENDER_2D);
+  }
 
-	void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
-	{
-		//printf("mouse move");
-		mod_i = i_rows_lookup[editor->selected_line];
-		if (mod_i != -1)
-		{
-			dragging = true;
-			//printf("found module %s\n",i_mod_info[mod_i]->identifier.c_str());
-			drag_coords = coords;
-		}
-	};
+  void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
+  {
+    //printf("mouse move");
+    mod_i = i_rows_lookup[editor->selected_line];
+    if (mod_i != -1)
+    {
+      dragging = true;
+      //printf("found module %s\n",i_mod_info[mod_i]->identifier.c_str());
+      drag_coords = coords;
+    }
+  };
 
-	void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
-	{
-		if (dragging) dragging = false;
-		//vsx_widget_base_edit::event_mouse_down(distance, coords, button);
-	}
+  void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+  {
+    if (dragging) dragging = false;
+    //vsx_widget_base_edit::event_mouse_down(distance, coords, button);
+  }
 
-	virtual void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
-	{
-		int prev_caretx = editor->caretx;
-		int prev_carety = editor->carety;
-		int prev_selected_line = editor->selected_line;
-		editor->event_mouse_down(distance, coords,0);  // ugly hack! LAMORZ ATTACK!
-		if ((size_t)editor->selected_line < i_rows_lookup.size())
-		{
-			mod_i = i_rows_lookup[editor->selected_line];
-		} else
-			mod_i = -1;
-		editor->caretx = prev_caretx;
-		editor->carety = prev_carety;
-		editor->selected_line = prev_selected_line;
-		draw_tooltip = 0;
-		if (mod_i != -1)
-		{
-			if (i_mod_info[mod_i]->description.size()>1)
-			{
-				tooltip_pos = coords.screen_global;
-				tooltip_pos.x += 0.08;
-				tooltip_text = i_mod_info[mod_i]->description;
-				draw_tooltip = 1;
-			}
-			//printf("hovering over %s\n", i_mod_info[mod_i]->description.c_str() );
-		}
-	}
+  virtual void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
+  {
+    int prev_caretx = editor->caretx;
+    int prev_carety = editor->carety;
+    int prev_selected_line = editor->selected_line;
+    editor->event_mouse_down(distance, coords,0);  // ugly hack! LAMORZ ATTACK!
+    if ((size_t)editor->selected_line < i_rows_lookup.size())
+    {
+      mod_i = i_rows_lookup[editor->selected_line];
+    } else
+      mod_i = -1;
+    editor->caretx = prev_caretx;
+    editor->carety = prev_carety;
+    editor->selected_line = prev_selected_line;
+    draw_tooltip = 0;
+    if (mod_i != -1)
+    {
+      if (i_mod_info[mod_i]->description.size()>1)
+      {
+        tooltip_pos = coords.screen_global;
+        tooltip_pos.x += 0.08;
+        tooltip_text = i_mod_info[mod_i]->description;
+        draw_tooltip = 1;
+      }
+      //printf("hovering over %s\n", i_mod_info[mod_i]->description.c_str() );
+    }
+  }
 
-	virtual void i_draw()
-	{
-		vsx_widget_base_editor::i_draw();
+  virtual void i_draw()
+  {
+    vsx_widget_base_editor::i_draw();
 
-	}
+  }
 
-	virtual void draw_2d()// { if (render_type == VSX_WIDGET_RENDER_2D) { if (visible) i_draw(); } if (visible) draw_children_2d();}
-	{
-		i_draw();
-		draw_children_2d();
-		// draw the little box
-		if (dragging && m_focus != editor) dragging = false;
-		if (dragging)
-		{
-			mtex_blob.bind();
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-			float l_asp = screen_x/screen_y;
-			//printf("screen aspect: %f\n",screen_aspect);
-			glColor4f(1,1,1,1);
-			draw_box_tex_c(drag_coords.screen_global, 0.03/l_asp, 0.03);
-			mtex_blob._bind();
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		}
+  virtual void draw_2d()// { if (render_type == VSX_WIDGET_RENDER_2D) { if (visible) i_draw(); } if (visible) draw_children_2d();}
+  {
+    i_draw();
+    draw_children_2d();
+    // draw the little box
+    if (dragging && m_focus != editor) dragging = false;
+    if (dragging)
+    {
+      mtex_blob.bind();
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+      float l_asp = screen_x/screen_y;
+      //printf("screen aspect: %f\n",screen_aspect);
+      glColor4f(1,1,1,1);
+      draw_box_tex_c(drag_coords.screen_global, 0.03/l_asp, 0.03);
+      mtex_blob._bind();
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
 
     if (draw_tooltip && m_o_focus == editor && !dragging) {
       myf.color.a = 0.0f;
@@ -171,11 +171,11 @@ public:
       myf.print(tooltip_pos, tooltip_text, 0.022f);
 
     }
-	}
-	void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
-	{
-		if (dragging)
-		{
+  }
+  void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+  {
+    if (dragging)
+    {
       vsx_widget_distance l_distance;
       vsx_widget* tt = root->find_component(coords,l_distance);
       if (tt)
@@ -191,16 +191,16 @@ public:
           explode(i_mod_info[mod_i]->identifier, deli, parts);
           vsx_string module_name = parts[parts.size()-1];
           if (ctrl)
-					((dialog_query_string*)name_dialog)->show(((vsx_widget_server*)server)->get_unique_name(module_name));
+          ((dialog_query_string*)name_dialog)->show(((vsx_widget_server*)server)->get_unique_name(module_name));
           else
           {
-          	command_q_b.add_raw("component_create_name "+((vsx_widget_server*)server)->get_unique_name(module_name));
-          	vsx_command_queue_b(this);
+            command_q_b.add_raw("component_create_name "+((vsx_widget_server*)server)->get_unique_name(module_name));
+            vsx_command_queue_b(this);
           }
         }
       }
-		}
-	}
+    }
+  }
 
 void vsx_command_process_b(vsx_command_s *t) {
   if (t->cmd == "cancel" || t->cmd == "component_create_name_cancel") {
@@ -267,67 +267,67 @@ vsx_module_chooser_list::vsx_module_chooser_list() {
   e->pos_from_parent = true;
 
   /*e->set_string(
-  		"+ renderers\n"
-  		" + basic\n"
-  		"   colored_rectangle\n"
-  		"   textured_rectangle\n"
-  		"+ renderers2\n"
-  		" + basic2\n"
-  		"   colored_rectangle2\n"
-  		"   textured_rectangle2\n"
-  		"+ renderers3\n"
-  		" + basic3\n"
-  		"   colored_rectangle3\n"
-  		"   textured_rectangle3\n"
-  		"+ renderers\n"
-  		" + basic\n"
-  		"   colored_rectangle\n"
-  		"   textured_rectangle\n"
-  		"+ renderers2\n"
-  		" + basic2\n"
-  		"   colored_rectangle2\n"
-  		"   textured_rectangle2\n"
-  		"+ renderers3\n"
-  		" + basic3\n"
-  		"   colored_rectangle3\n"
-  		"   textured_rectangle3\n"
-  		"+ renderers\n"
-  		" + basic\n"
-  		"   colored_rectangle\n"
-  		"   textured_rectangle\n"
-  		"+ renderers2\n"
-  		" + basic2\n"
-  		"   colored_rectangle2\n"
-  		"   textured_rectangle2\n"
-  		"+ renderers3\n"
-  		" + basic3\n"
-  		"   colored_rectangle3\n"
-  		"   textured_rectangle3\n"
-  		"+ renderers\n"
-  		" + basic\n"
-  		"   colored_rectangle\n"
-  		"   textured_rectangle\n"
-  		"+ renderers2\n"
-  		" + basic2\n"
-  		"   colored_rectangle2\n"
-  		"   textured_rectangle2\n"
-  		"+ renderers3\n"
-  		" + basic3\n"
-  		"   colored_rectangle3\n"
-  		"   textured_rectangle3\n"
-  		"+ renderers\n"
-  		" + basic\n"
-  		"   colored_rectangle\n"
-  		"   textured_rectangle\n"
-  		"+ renderers2\n"
-  		" + basic2\n"
-  		"   colored_rectangle2\n"
-  		"   textured_rectangle2\n"
-  		"+ renderers3\n"
-  		" + basic3\n"
-  		"   colored_rectangle3\n"
-  		"   textured_rectangle3\n"
-  		);*/
+      "+ renderers\n"
+      " + basic\n"
+      "   colored_rectangle\n"
+      "   textured_rectangle\n"
+      "+ renderers2\n"
+      " + basic2\n"
+      "   colored_rectangle2\n"
+      "   textured_rectangle2\n"
+      "+ renderers3\n"
+      " + basic3\n"
+      "   colored_rectangle3\n"
+      "   textured_rectangle3\n"
+      "+ renderers\n"
+      " + basic\n"
+      "   colored_rectangle\n"
+      "   textured_rectangle\n"
+      "+ renderers2\n"
+      " + basic2\n"
+      "   colored_rectangle2\n"
+      "   textured_rectangle2\n"
+      "+ renderers3\n"
+      " + basic3\n"
+      "   colored_rectangle3\n"
+      "   textured_rectangle3\n"
+      "+ renderers\n"
+      " + basic\n"
+      "   colored_rectangle\n"
+      "   textured_rectangle\n"
+      "+ renderers2\n"
+      " + basic2\n"
+      "   colored_rectangle2\n"
+      "   textured_rectangle2\n"
+      "+ renderers3\n"
+      " + basic3\n"
+      "   colored_rectangle3\n"
+      "   textured_rectangle3\n"
+      "+ renderers\n"
+      " + basic\n"
+      "   colored_rectangle\n"
+      "   textured_rectangle\n"
+      "+ renderers2\n"
+      " + basic2\n"
+      "   colored_rectangle2\n"
+      "   textured_rectangle2\n"
+      "+ renderers3\n"
+      " + basic3\n"
+      "   colored_rectangle3\n"
+      "   textured_rectangle3\n"
+      "+ renderers\n"
+      " + basic\n"
+      "   colored_rectangle\n"
+      "   textured_rectangle\n"
+      "+ renderers2\n"
+      " + basic2\n"
+      "   colored_rectangle2\n"
+      "   textured_rectangle2\n"
+      "+ renderers3\n"
+      " + basic3\n"
+      "   colored_rectangle3\n"
+      "   textured_rectangle3\n"
+      );*/
   //e->caret_goto_end();
   e->extra_init();
   edit = (vsx_widget*)e;
@@ -351,14 +351,14 @@ vsx_module_chooser_list::vsx_module_chooser_list() {
 
 void vsx_module_chooser_list::set_server(vsx_widget* serv)
 {
-	((vsx_widget_chooser_editor*)edit)->set_server(serv);
+  ((vsx_widget_chooser_editor*)edit)->set_server(serv);
 }
 
 bool vsx_module_chooser_list::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
 {
-	vsx_string filter = ((vsx_widget_base_edit*)search)->get_string();
-	((vsx_widget_base_editor*)edit)->editor->set_filter_string( filter );
-	return true;
+  vsx_string filter = ((vsx_widget_base_edit*)search)->get_string();
+  ((vsx_widget_base_editor*)edit)->editor->set_filter_string( filter );
+  return true;
 }
 
 void vsx_module_chooser_list::show() {
@@ -375,9 +375,9 @@ void vsx_module_chooser_list::show(vsx_string value) {
 
 void vsx_module_chooser_list::i_draw()
 {
-	vsx_widget_window::i_draw();
-	edit->set_pos(vsx_vector(size.x/2,size.y/2-font_size+dragborder*0.5f));
-	edit->set_size(vsx_vector(size.x-dragborder*2,size.y-font_size*2-dragborder*2));
+  vsx_widget_window::i_draw();
+  edit->set_pos(vsx_vector(size.x/2,size.y/2-font_size+dragborder*0.5f));
+  edit->set_size(vsx_vector(size.x-dragborder*2,size.y-font_size*2-dragborder*2));
   search->set_size(vsx_vector(size.x-dragborder*2, 0.02f));
   search->set_pos(vsx_vector(size.x/2,size.y-0.04f));
 }
@@ -418,63 +418,63 @@ void vsx_module_chooser_list::vsx_command_process_b(vsx_command_s *t) {
 
 void vsx_module_chooser_list::add_item(vsx_string name,vsx_module_info* m_info)
 {
-	i_rows.push_back(name);
-	((vsx_widget_chooser_editor*)edit)->i_mod_info.push_back(m_info);
+  i_rows.push_back(name);
+  ((vsx_widget_chooser_editor*)edit)->i_mod_info.push_back(m_info);
 }
 
 void vsx_module_chooser_list::build_tree()
 {
-	std::vector<vsx_string> p_stack;
-	vsx_string result;
-	int module_id = 0;
-	unsigned long i;
-	unsigned long j;
-	for (i = 0; i < i_rows.size(); i++) {
-		std::vector<vsx_string> parts;
-		vsx_string deli = ";";
-		//printf("i_rows[i]: %s     %d\n", i_rows[i].c_str(),p_stack.size());
-		explode(i_rows[i], deli, parts);
-		for (j = 0; j < parts.size()-1; j++)
-		{
-			bool change = false;
-			if (j == parts.size()-2 && p_stack.size() >= j+2)
-			{
-				while (p_stack.size() != j+1) p_stack.pop_back();
-			}
-			if (p_stack.size() >= j+1)
-			{
-				// stack has something, check if it's the same as we got
-				if (p_stack[j] != parts[j])
-				{
-					// new category, trim down stack
-					while (p_stack.size() != j) p_stack.pop_back();
-					p_stack.push_back(parts[j]);
-					change = true;
-				}
-			} else
-			{
-				// we know now that stack doesn't have this, just add and go on
-				p_stack.push_back(parts[j]);
-				change = true;
-			}
-			if (!change) continue;
-			// add whitespaces
-			for (unsigned long k = 0; k < (p_stack.size()-1) * 4; k++) result += " ";
-			// add string
-			result += "+ ";
-			result += (parts[j]+"\n");
-			((vsx_widget_chooser_editor*)edit)->i_rows_lookup.push_back(-1);
-		}
-		for (unsigned long k = 0; k < (p_stack.size()) * 4; k++) result += " ";
-		// add string
-		result += (parts[parts.size()-1]+"\n");
-		((vsx_widget_chooser_editor*)edit)->i_rows_lookup.push_back(module_id);
-		module_id++;
-	}
-	i_rows.clear();
+  std::vector<vsx_string> p_stack;
+  vsx_string result;
+  int module_id = 0;
+  unsigned long i;
+  unsigned long j;
+  for (i = 0; i < i_rows.size(); i++) {
+    std::vector<vsx_string> parts;
+    vsx_string deli = ";";
+    //printf("i_rows[i]: %s     %d\n", i_rows[i].c_str(),p_stack.size());
+    explode(i_rows[i], deli, parts);
+    for (j = 0; j < parts.size()-1; j++)
+    {
+      bool change = false;
+      if (j == parts.size()-2 && p_stack.size() >= j+2)
+      {
+        while (p_stack.size() != j+1) p_stack.pop_back();
+      }
+      if (p_stack.size() >= j+1)
+      {
+        // stack has something, check if it's the same as we got
+        if (p_stack[j] != parts[j])
+        {
+          // new category, trim down stack
+          while (p_stack.size() != j) p_stack.pop_back();
+          p_stack.push_back(parts[j]);
+          change = true;
+        }
+      } else
+      {
+        // we know now that stack doesn't have this, just add and go on
+        p_stack.push_back(parts[j]);
+        change = true;
+      }
+      if (!change) continue;
+      // add whitespaces
+      for (unsigned long k = 0; k < (p_stack.size()-1) * 4; k++) result += " ";
+      // add string
+      result += "+ ";
+      result += (parts[j]+"\n");
+      ((vsx_widget_chooser_editor*)edit)->i_rows_lookup.push_back(-1);
+    }
+    for (unsigned long k = 0; k < (p_stack.size()) * 4; k++) result += " ";
+    // add string
+    result += (parts[parts.size()-1]+"\n");
+    ((vsx_widget_chooser_editor*)edit)->i_rows_lookup.push_back(module_id);
+    module_id++;
+  }
+  i_rows.clear();
 //	printf("RESULT\nRESULT\nRESULT\nRESULT\n\n%s",result.c_str());
-	((vsx_widget_chooser_editor*)edit)->set_string(result);
-	((vsx_widget_chooser_editor*)edit)->editor->fold_all();
+  ((vsx_widget_chooser_editor*)edit)->set_string(result);
+  ((vsx_widget_chooser_editor*)edit)->editor->fold_all();
 }
 
 
