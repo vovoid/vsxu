@@ -12,8 +12,9 @@ hang out and have lots of fun!
 ÿ
 I hope we'll become friends on the way!
 ÿ
-Hint: go back/forth by clicking
-the arrows below!
+Hint: If you just upgraded VSXu, maybe you
+need to copy over the data files from the
+previous version? 
 |||
 Now let's begin!
 ÿ
@@ -21,7 +22,7 @@ What you see is the VSXu workspace, looks empty
 doesn't it? ;)
 Well, everything's hidden, I'll teach
 you how to use it.. But first you must learn
-how to navigate - it's a 3d work environment
+how to navigate - it's a 3D work environment
 so you can move around, zoom in and
 out. This is done with the keyboard.
 Try to press
@@ -97,7 +98,7 @@ is lying on is the "server".
 If you right-click it (anywhere is fine) you'll
 get a menu.
 Pick the first item,
-"add module using browser"
+"module browser..."
 ÿ
 Woah! Now you should see the module-browser.
 It's reaaally big! Loads of modules here,
@@ -111,13 +112,13 @@ and drag around to move. The one we want is
 a "renderer" so it's in the orange block.
 (Look up to the left)
 ÿ
-Now, the branch name is renderers.
-Then find the branch called "examples"
-and one of its leafs is called "simple".
+Now, the branch name is "basic".
+and one of its leafs is called "colored
+rectangle".
 ÿ
 
 |||
-Position the tree so the simple box is close to
+Position the tree so the [colored rectangle] is close to
 the middle of the screen, then left-click and drag
 it. You now get the placement cursor,
 move it to where you want to put your new module -
@@ -133,7 +134,7 @@ Then just hit OK when you get to name it.
 |||
 Now to get out of the module browser
 just hit the right mouse button somewhere
-where there's not a module (between the boxes).
+where there's not a leaf (between the boxes).
 ÿ
 Now we have 2 modules, the simple
 and the screen. Do you remember about
@@ -182,7 +183,7 @@ are outputs.
 However, you don't always need another module
 to provide data for a module.
 With some anchor (data) types you can access
-an abundance of tools to set them.
+an abundance of tools to control them.
 Now we'll play with the angle,
 size and color of the white line using
 these tools.
@@ -198,18 +199,18 @@ The first one, with a white + on it is a bit
 similar to the one below, but they are not
 the same!
 The first one with the + is an anchor group.
-If you double-click it you can access its
+If you click it you can access its
 children! Please do this!
 ÿ
 
 |||
 See all the other anchors that just popped up?
 If you move your mouse over an anchor you get to
-see its name - and here's what we're looking for.
+see its name/value - this is what we're looking for.
 You might need to zoom in to see the anchors properly,
 but the second anchor in the "spatial" group
 which you just opened is called
-"angle". It's symbol is a boxy 8 :)
+"angle". 
 ÿ
 Remembering that everything in VSXu has a
 right-click menu, the angle anchor definetly does!
@@ -226,7 +227,7 @@ Some modules limit your actions with these
 controllers so you can't give values that
 would make the module crash.
 ÿ
-Also, try to right-click the text displaying
+Also, try to left-click the text displaying
 the value and the knob itself - you can set
 the value manually and change the smoothess
 factor.
@@ -259,8 +260,15 @@ of the oscillator!
 This is the end of this course, it has
 gotten you up and running with the basic
 tools, from now on i'll help you differently.
-Just click anything and i'll tell you about
-it if I know something about it :)
-But first you have to put me in automatic
-mode - right-click me and choose that from
-the menu!
+|||
+If you want to learn more, just right-click
+me and select something from "Courses".
+ÿ
+If you want me to tell you about everything
+you left-click on, put me in
+"automatic mode"
+- right-click me and choose that from
+the menu! Then I'll tell you about everything
+you click on that I have some info about.
+ÿ
+[Tab] to make me smaller.

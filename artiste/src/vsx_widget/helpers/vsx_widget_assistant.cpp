@@ -184,6 +184,8 @@ void vsxu_assistant::init()
   menu->commands.adds(VSX_COMMAND_MENU, "Toggle size {tab}", "mini","");
   menu->commands.adds(VSX_COMMAND_MENU, "Automatic Mode", "auto","");
   menu->commands.adds(VSX_COMMAND_MENU, "Courses;Introduction course", "load","course_intro");
+  menu->commands.adds(VSX_COMMAND_MENU, "Courses;Performance mode", "load","course_performance_mode");
+  menu->commands.adds(VSX_COMMAND_MENU, "Courses;Macros", "load","course_macro");
   menu->size.x = 0.2;
   menu->init();
 

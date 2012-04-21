@@ -63,7 +63,7 @@
 
 
 // global vars
-vsx_string fpsstring = "VSX Ultra "+vsx_string(vsxu_version)+" - 2010 Vovoid";
+vsx_string fpsstring = "VSX Ultra "+vsx_string(vsxu_version)+" - 2012 Vovoid";
 vsx_engine* vxe = 0;
 
 // from the perspective (both for gui/server) from here towards the tcp thread

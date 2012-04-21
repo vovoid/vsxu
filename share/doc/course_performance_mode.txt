@@ -1,0 +1,15 @@
+Hi! This time I'll tell you about
+the performance mode in VSXu.
+ÿ
+It's also one of the things that make
+a real-time user interface so appealing.
+|||
+It's very simple, once you have something
+running in the preview window, hit
+Ctrl+F to go fullscreen,
+then hit Alt+F to enter the performance
+mode. Like this you can see the result
+of your actions fullscreen with the GUI
+superimposed on top.
+ÿ
+Most useful when being creative!

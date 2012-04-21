@@ -1,0 +1,67 @@
+Hi! This time I'll tell you about
+macros - they are useful for organizing
+large projects!
+ÿ
+You can do this with right-click
+menus, but I'll show you the shortcuts.
+Let's get started!
+|||
+Let's say you have a group of modules
+that you want to group together into a
+macro - first you need to create the
+macro.
+ÿ
+Alt+Left-click anywhere and a macro should
+pop up.
+Alt+Right-click to open/close it (can also
+be done via menu)
+|||
+Ok, now we should move the modules into
+the macro. Select all of them - either
+one by one with Ctrl+Leftclick on them -
+or by holding Ctrl and dragging a selection
+box around them.
+ÿ
+Now hold Ctrl+Shift and left-drag one of
+the modules into the macro. When you release
+the mouse, the modules should be inside the
+macro! Verify by Alt+Right-clicking to
+close it.
+Any connections (to screen for instance) will
+be routed through an "alias".
+|||
+If you want to move stuff out of a macro, do the
+same - Ctrl+Shift-drag.
+ÿ
+Now that we have the macro, now what?
+Well, you can save the macro for future use in
+other of your projects. Right-click it
+and select "save macro..." and it'll be part
+of the macros selection in the module browser/list.
+|||
+However in order to not have to go into the macro
+to tweak stuff, we need to publish parameters to
+the outside through aliases.
+ÿ
+This is done by starting dragging out a
+connection only for a bit and then just
+releasing while the mouse
+is still over the macro. Try it!
+|||
+Now that we have a functioning macro,
+we can also make copies of it.
+Make sure the macro is closed and
+hold Alt+Ctrl and drag-release left
+mouse button to create a copy!
+Quite useful right?
+ÿ
+Also you can nest macros in macros if you
+need to, a closed macro should behave just
+like any other module! So Ctrl+Shift-drag
+a macro into a macro to get the full use
+of this feature!
+|||
+If you need to change the transparency of
+a macro, just hold Alt and roll on your
+mouse wheel. Very useful when editing
+stuff using the "performance mode"!
