@@ -122,7 +122,7 @@ if(UNIX)
     ${X11_Xrandr_LIB}
     ${X11_LIBRARIES}
     ${GLFW_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
+    ${PTHREAD_LIBRARY}
     ${GLEW_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
@@ -142,7 +142,7 @@ if(WIN32)
     vsxu_engine
     vsxu_engine_graphics
     ${GLEW_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
+    ${PTHREAD_LIBRARY}
     gdi32
     ${OPENGL_LIBRARIES}
   )

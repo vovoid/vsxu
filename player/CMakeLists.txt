@@ -64,7 +64,7 @@ if(UNIX)
     ${X11_Xrandr_LIB}
     ${X11_LIBRARIES}
     ${GLFW_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
+    ${PTHREAD_LIBRARY}
     ${GLEW_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
@@ -76,16 +76,17 @@ if(UNIX)
 endif()
 
 if(WIN32)
-  target_link_libraries(${module_id}
-  ${GLFW_LIBRARY}
-  wsock32
-  ws2_32
-  ${CMAKE_THREAD_LIBS_INIT}
-  vsxu_engine_audiovisual
-  vsxu_engine_graphics
-  vsxu_engine
-  gdi32
-  ${OPENGL_LIBRARIES}
+  target_link_libraries(
+  ${module_id}
+    ${GLFW_LIBRARY}
+    wsock32
+    ws2_32
+    ${PTHREAD_LIBRARY}
+    vsxu_engine_audiovisual
+    vsxu_engine_graphics
+    vsxu_engine
+    gdi32
+    ${OPENGL_LIBRARIES}
 )
 endif()
 

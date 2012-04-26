@@ -98,7 +98,7 @@ target_link_libraries(${module_id}
   ${PNG_LIBRARIES}
   ${JPEG_LIBRARIES}
   ${OPENGL_LIBRARIES}
-  ${CMAKE_THREAD_LIBS_INIT}
+  ${PTHREAD_LIBRARY}
   ${GLEW_LIBRARY}
   vsxu_engine
 )

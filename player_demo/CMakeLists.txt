@@ -77,7 +77,7 @@ if(UNIX)
     ${X11_Xrandr_LIB}
     ${X11_LIBRARIES}
     ${GLFW_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
+    ${PTHREAD_LIBRARY}
     ${GLEW_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
@@ -93,7 +93,7 @@ if(WIN32)
   target_link_libraries(${module_id}
   wsock32
   ws2_32
-  ${CMAKE_THREAD_LIBS_INIT}
+  ${PTHREAD_LIBRARY}
   vsxu_engine_graphics
   vsxu_engine
   gdi32
