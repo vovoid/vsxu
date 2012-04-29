@@ -130,7 +130,6 @@ public:
     if (bytes_read <= 0)
       return;
 
-    printf("Received %s \n",buffer);
     std::string data(buffer);
     int comma1 = data.find(",");
     int comma2 = data.rfind(",");
