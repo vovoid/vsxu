@@ -12,7 +12,7 @@ function(CREATE_STATIC_GLUE module_id)
 
     # rig up the factory include symbols
     # create defines for code in the engine
-    file(APPEND ../../static_factory_funcmapping.h 
+    file(APPEND ../../static_factory_funcmapping.h
       "vsx_module* " vsx_module_${module_id_f}_cm "(unsigned long module);
       void " vsx_module_${module_id_f}_dm "(vsx_module* m,unsigned long module);
       unsigned long " vsx_module_${module_id_f}_nm "();\n"
@@ -111,6 +111,8 @@ find_package( OpenCV )
 if(OpenCV_FOUND)
   add_subdirectory(src/video.camera)
 endif(OpenCV_FOUND)
+
+add_subdirectory(src/sensors.accelerometer)
 
 endif (VSXU_ENGINE_STATIC EQUAL 1)
 
