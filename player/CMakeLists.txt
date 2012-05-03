@@ -107,5 +107,16 @@ install(
 )
 
 
+IF (UNIX)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/vsxu-player-fullscreen.desktop.in
+                  ${CMAKE_CURRENT_BINARY_DIR}/vsxu-player-fullscreen.desktop
+                  @ONLY)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/vsxu-player.desktop.in
+                  ${CMAKE_CURRENT_BINARY_DIR}/vsxu-player.desktop
+                  @ONLY)
 
+  INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/vsxu-player-fullscreen.desktop
+                 ${CMAKE_CURRENT_BINARY_DIR}/vsxu-player.desktop
+           DESTINATION ${CMAKE_INSTALL_PREFIX}/applications/)
+ENDIF (UNIX)
 

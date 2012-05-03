@@ -203,3 +203,15 @@ install(
     artiste
 )
 
+IF (UNIX)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/vsxu-artiste-fullscreen.desktop.in
+                  ${CMAKE_CURRENT_BINARY_DIR}/vsxu-artiste-fullscreen.desktop
+                  @ONLY)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/vsxu-artiste.desktop.in
+                  ${CMAKE_CURRENT_BINARY_DIR}/vsxu-artiste.desktop
+                  @ONLY)
+
+  INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/vsxu-artiste-fullscreen.desktop
+                 ${CMAKE_CURRENT_BINARY_DIR}/vsxu-artiste.desktop
+           DESTINATION ${CMAKE_INSTALL_PREFIX}/applications/)
+ENDIF (UNIX)

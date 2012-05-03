@@ -102,4 +102,15 @@ if(UNIX)
   install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT server)
 endif(UNIX)
 
-  
+IF (UNIX)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/vsxu-server-fullscreen.desktop.in
+                  ${CMAKE_CURRENT_BINARY_DIR}/vsxu-server-fullscreen.desktop
+                  @ONLY)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/vsxu-server.desktop.in
+                  ${CMAKE_CURRENT_BINARY_DIR}/vsxu-server.desktop
+                  @ONLY)
+
+  INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/vsxu-server-fullscreen.desktop
+                 ${CMAKE_CURRENT_BINARY_DIR}/vsxu-server.desktop
+           DESTINATION ${CMAKE_INSTALL_PREFIX}/applications/)
+ENDIF (UNIX)
