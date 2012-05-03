@@ -213,5 +213,5 @@ IF (UNIX)
 
   INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/vsxu-artiste-fullscreen.desktop
                  ${CMAKE_CURRENT_BINARY_DIR}/vsxu-artiste.desktop
-           DESTINATION ${CMAKE_INSTALL_PREFIX}/applications/)
+           DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications/)
 ENDIF (UNIX)
