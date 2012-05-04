@@ -4,7 +4,6 @@ GenericName=Music Visualizer
 Comment=VSXu Player
 Exec=@CMAKE_INSTALL_PREFIX@/bin/vsxu_player -f
 Icon=vsxu
-Terminal=true
 Type=Application
 Categories=AudioVideo;Audio;Player;
 StartupNotify=false

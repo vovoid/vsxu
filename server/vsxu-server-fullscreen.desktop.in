@@ -4,7 +4,6 @@ GenericName=Real Time OpenGL Graphics Server
 Comment=VSXu Server - Perform Real Time Graphics
 Exec=@CMAKE_INSTALL_PREFIX@/bin/vsxu_server -f
 Icon=vsxu
-Terminal=true
 Type=Application
 Categories=Graphics;
 StartupNotify=false
