@@ -106,3 +106,16 @@ endif()
 ################################################################################
 
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT artiste)
+
+IF (UNIX)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/vsxu-demo-player-fullscreen.desktop.in
+                  ${CMAKE_CURRENT_BINARY_DIR}/vsxu-demo-player-fullscreen.desktop
+                  @ONLY)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/vsxu-demo-player.desktop.in
+                  ${CMAKE_CURRENT_BINARY_DIR}/vsxu-demo-player.desktop
+                  @ONLY)
+
+  INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/vsxu-demo-player-fullscreen.desktop
+                 ${CMAKE_CURRENT_BINARY_DIR}/vsxu-demo-player.desktop
+           DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications/)
+ENDIF (UNIX)
