@@ -1,0 +1,26 @@
+meta_set V2FsayBDeWNsZXxzYWlkaW5lc2g1fFZvdm9pZHxJbmRpYXxodHRwOi8vc2FpZGluZXNoNS53b3JkcHJlc3MuY29tfFRoaXMgc3ByaXRlIGRlbW9uc3RyYXRlcyBob3cgdG8gZG8gYSBzaW1wbGUgc3ByaXRlIGFuaW1hdGlvbiB3aXRoIFZTWHU=
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.257889 0.050755
+param_set 3float_to_float3 floatb -0.00844163820147514343
+component_create maths;arithmetics;float3;float3_add_float3 float3_add_float3 -0.186153 -0.018483
+param_set float3_add_float3 param2 0.12499906867742538452,0.99999994039535522461,0.00000000000000000000
+component_create maths;arithmetics;binary;floor floor -0.322324 0.027655
+param_set floor step 0.12501186132431030273
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.047808 -0.006607
+component_create maths;oscillators;oscillator oscillator -0.393902 0.025186
+param_set oscillator osc_type 2
+param_set oscillator phase 0.49999251961708068848
+param_set oscillator freq 3.00000095367431640625
+component_create texture;loaders;png_tex_load png_tex_load -0.154462 -0.065261
+ps64 png_tex_load filename cmVzb3VyY2VzL2V4YW1wbGVzL2ltYWdlcy93YWxrX2N5Y2xlLnBuZw==
+cpp screen0 0.000000 0.000000
+param_set screen0 clear_color 0.99999910593032836914,0.99999994039535522461,0.99999994039535522461,1.00000000000000000000
+component_create renderers;basic;textured_rectangle textured_rectangle -0.096908 0.000121
+param_set textured_rectangle x_aspect_ratio 1.00000846385955810547
+param_connect textured_rectangle tex_coord_b float3_add_float3 result_float3
+param_connect textured_rectangle tex_coord_a 3float_to_float3 result_float3
+param_connect textured_rectangle texture_in png_tex_load texture
+param_connect screen0 screen orbit_camera render_out
+param_connect orbit_camera render_in textured_rectangle render_out
+param_connect floor param1 oscillator float
+param_connect float3_add_float3 param1 3float_to_float3 result_float3
+param_connect 3float_to_float3 floata floor result
