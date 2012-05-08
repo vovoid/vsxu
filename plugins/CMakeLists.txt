@@ -112,7 +112,9 @@ if(OpenCV_FOUND)
   add_subdirectory(src/video.camera)
 endif(OpenCV_FOUND)
 
-add_subdirectory(src/sensors.accelerometer)
+if (PLUGINS_EXPERIMENTAL_SENSORS)
+  add_subdirectory(src/sensors.accelerometer)
+endif()
 
 endif (VSXU_ENGINE_STATIC EQUAL 1)
 
