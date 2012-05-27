@@ -63,6 +63,33 @@ typedef struct {
   vsx_avector<float> array;
 } vsx_engine_float_array;
 
+
+/*
+  Struct that holds keyboard/mouse events recieved by the engine
+*/
+#define VSX_ENGINE_INPUT_EVENT_BUFSIZE 32
+
+#define VSX_ENGINE_INPUT_EVENT_KEY_DOWN 10
+#define VSX_ENGINE_INPUT_EVENT_KEY_UP 20
+#define VSX_ENGINE_INPUT_EVENT_MOUSE_DOWN 100
+#define VSX_ENGINE_INPUT_EVENT_MOUSE_UP 150
+#define VSX_ENGINE_INPUT_EVENT_MOUSE_MOVE 200
+#define VSX_ENGINE_INPUT_EVENT_MOUSE_HOVER 250
+#define VSX_ENGINE_INPUT_EVENT_MOUSE_WHEEL 300
+
+typedef struct
+{
+  int type;   // VSX_ENGINE_INPUT_EVENT_*
+  int key;    // key or button (if positive, it's a character, if negative it's a special key code)
+  float x;    // mouse/accelerometer pos
+  float y;    // mouse/accelerometer pos or mouse wheel rotation
+  float z;    //
+  float w;    //
+  bool alt;   // status of alt key, true = pressed
+  bool ctrl;  // status of ctrl key, true = pressed
+  bool shift; // status of shift key, true = pressed
+} vsx_engine_input_event;
+
 /*
   The information that the module get from the engine. All modules share a pointer
   to this struct.
@@ -89,6 +116,10 @@ typedef struct  {
   int request_play;
   int request_stop;
   int request_rewind;
+
+  size_t num_input_events;
+  vsx_engine_input_event input_events[VSX_ENGINE_INPUT_EVENT_BUFSIZE];
+
   // this is used to send delta hints to control a sequencer in recording mode
   vsx_avector<float> sequencer_hints;
   // this is to send parameters from the implementor of the engine down to the modules, like sound data etc

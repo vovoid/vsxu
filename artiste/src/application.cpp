@@ -193,7 +193,7 @@ public:
         #ifndef NO_INTRO
           if (vxe->e_state == VSX_ENGINE_STOPPED)
           {
-            intro->draw(true);
+            //intro->draw(true);
           }
         #endif
         if (vxe && !dual_monitor) {
@@ -237,7 +237,7 @@ public:
         }
       }
       #ifndef NO_INTRO
-        intro->draw();
+        //intro->draw();
       #endif
       if (!first && !desktop)
       {
@@ -488,6 +488,29 @@ bool app_draw(int id)
 
 void app_char(long key) {
   if (desktop) {
+    if
+      (
+        !( key == 102 && (app_alt || app_ctrl) )
+        &&
+        !desktop->performance_mode
+        &&
+        *gui_prod_fullwindow
+      )
+    {
+      vsx_engine_input_event eie;
+      eie.type = VSX_ENGINE_INPUT_EVENT_KEY_DOWN;
+      eie.key = key;
+      eie.ctrl = app_ctrl;
+      eie.alt = app_alt;
+      eie.shift = app_shift;
+      if (vxe)
+      {
+        vxe->input_event(eie);
+      }
+
+      //printf("would send char to engine %d\n", key);
+      return;
+    }
     desktop->key_down(key,app_alt, app_ctrl, app_shift);
   }
 }
@@ -504,19 +527,60 @@ void app_key_down(long key) {
     else
     if (app_alt && app_ctrl && key == 80) take_screenshot = true;
 
+    if
+      (
+        !( key == 'F' && (app_alt || app_ctrl) )
+        &&
+        !( key == 'T' && app_alt )
+        &&
+        !desktop->performance_mode
+        &&
+        *gui_prod_fullwindow
+      )
+    {
+      vsx_engine_input_event eie;
+      eie.type = VSX_ENGINE_INPUT_EVENT_KEY_DOWN;
+      eie.key = -key;
+      eie.ctrl = app_ctrl;
+      eie.alt = app_alt;
+      eie.shift = app_shift;
+      if (vxe)
+      {
+        vxe->input_event(eie);
+      }
+      //printf("would send key to engine %d\n", key);
+      return;
+    }
+
     if (*gui_prod_fullwindow && app_alt && !app_ctrl && !app_shift && key == 'T') gui_prod_fullwindow_helptext = !gui_prod_fullwindow_helptext;
     desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
-#ifdef __APPLE__
-    desktop->key_down(key,app_alt, app_ctrl, app_shift);
-#else
     desktop->key_down(-key,app_alt, app_ctrl, app_shift);
-#endif
   }
 }
 
 void app_key_up(long key) {
   //if (desktop)
   if (desktop) {
+    if (
+      !desktop->performance_mode
+      &&
+      *gui_prod_fullwindow
+    )
+    {
+      vsx_engine_input_event eie;
+      eie.type = VSX_ENGINE_INPUT_EVENT_KEY_UP;
+      eie.key = key;
+      eie.ctrl = app_ctrl;
+      eie.alt = app_alt;
+      eie.shift = app_shift;
+      if (vxe)
+      {
+        vxe->input_event(eie);
+      }
+
+      //printf("would send key up to engine %d\n", key);
+      return;
+    }
     //printf("key up %d\n",key);
     desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
     desktop->key_up(key,app_alt, app_ctrl, app_shift);
@@ -525,9 +589,34 @@ void app_key_up(long key) {
 }
 
 void app_mouse_move_passive(int x, int y) {
-  //if (gui_prod_fullwindow)
-  //if (*gui_prod_fullwindow) return;
   if (desktop) {
+    if (
+      !desktop->performance_mode
+      &&
+      *gui_prod_fullwindow
+    )
+    {
+      //glfwDisable(GLFW_MOUSE_CURSOR);
+
+      vsx_engine_input_event eie;
+      eie.type = VSX_ENGINE_INPUT_EVENT_MOUSE_HOVER;
+      eie.x = (float)x;
+      eie.y = (float)y;
+      eie.ctrl = app_ctrl;
+      eie.alt = app_alt;
+      eie.shift = app_shift;
+      if (vxe)
+      {
+        vxe->input_event(eie);
+      }
+
+      //printf("would send mouse passive move to engine\n");
+      return;
+    } else
+    {
+      //glfwEnable(GLFW_MOUSE_CURSOR);
+    }
+
     desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
     desktop->mouse_move_passive(x,y);
   }
@@ -548,6 +637,29 @@ void app_mouse_move(int x, int y) {
   if (yy > viewport[3]) yy = viewport[3]-1;
 #ifndef VSX_NO_CLIENT
   if (desktop) {
+
+    if (
+      !desktop->performance_mode
+      &&
+      *gui_prod_fullwindow
+    )
+    {
+      vsx_engine_input_event eie;
+      eie.type = VSX_ENGINE_INPUT_EVENT_MOUSE_MOVE;
+      eie.x = (float)x;
+      eie.y = (float)y;
+      eie.ctrl = app_ctrl;
+      eie.alt = app_alt;
+      eie.shift = app_shift;
+      if (vxe)
+      {
+        vxe->input_event(eie);
+      }
+
+      //printf("would send mouse move to engine\n");
+      return;
+    }
+
     desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
     desktop->mouse_move(xx,yy);
   }
@@ -558,28 +670,91 @@ void app_mouse_move(int x, int y) {
 void app_mouse_down(unsigned long button,int x,int y)
 {
   if (desktop) {
-  desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
-  desktop->mouse_down(x,y,button);
-  //printf("is alt down: %d\n",app_alt);
+    if (
+      !desktop->performance_mode
+      &&
+      *gui_prod_fullwindow
+    )
+    {
+      vsx_engine_input_event eie;
+      eie.type = VSX_ENGINE_INPUT_EVENT_MOUSE_DOWN;
+      eie.key = button;
+      eie.x = (float)x;
+      eie.y = (float)y;
+      eie.ctrl = app_ctrl;
+      eie.alt = app_alt;
+      eie.shift = app_shift;
+      if (vxe)
+      {
+        vxe->input_event(eie);
+      }
+
+      //printf("would send mouse button down to engine \n");
+      return;
+    }
+
+    desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
+    desktop->mouse_down(x,y,button);
   }
-  //printf("button %d pressed at %d, %d\n",(int)button,(int)x,(int)y);
 }
 
 void app_mouse_up(unsigned long button,int x,int y)
 {
   if (desktop) {
+    if (
+      !desktop->performance_mode
+      &&
+      *gui_prod_fullwindow
+    )
+    {
+      vsx_engine_input_event eie;
+      eie.type = VSX_ENGINE_INPUT_EVENT_MOUSE_UP;
+      eie.key = button;
+      eie.x = (float)x;
+      eie.y = (float)y;
+      eie.ctrl = app_ctrl;
+      eie.alt = app_alt;
+      eie.shift = app_shift;
+      if (vxe)
+      {
+        vxe->input_event(eie);
+      }
+
+      //printf("would send mouse button up to engine \n");
+      return;
+    }
     desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
     desktop->mouse_up(x,y,button);
   }
-  //printf("button %d depressed at %d, %d\n",(int)button,(int)x,(int)y);
 }
 
 void app_mousewheel(float diff,int x,int y)
 {
   if (desktop)
   {
+    if (
+      !desktop->performance_mode
+      &&
+      *gui_prod_fullwindow
+    )
+    {
+      vsx_engine_input_event eie;
+      eie.type = VSX_ENGINE_INPUT_EVENT_MOUSE_WHEEL;
+      eie.x = (float)x;
+      eie.y = (float)y;
+      eie.w = diff;
+      eie.ctrl = app_ctrl;
+      eie.alt = app_alt;
+      eie.shift = app_shift;
+      if (vxe)
+      {
+        vxe->input_event(eie);
+      }
+
+      //printf("would send mouse wheel to engine \n");
+      return;
+    }
     desktop->mouse_wheel(diff);
   }
-  //printf("mousewheel diff: %f\n",diff);
 }
 

@@ -140,6 +140,10 @@ private:
 #endif
   float frame_cfp_time;
 
+  // called each frame after engine has rendered
+  void reset_input_events();
+
+
 public:
   // scripting interface
   #ifdef VSX_ENG_DLL
@@ -191,6 +195,8 @@ public:
 
   vsx_module_param_abs* get_in_param_by_name(vsx_string module_name, vsx_string param_name);
 
+  void input_event(vsx_engine_input_event &new_input_event);
+
   vsx_comp* get_by_name(vsx_string label) {
     if (forge_map.find(label) != forge_map.end()) {
     return forge_map[label];
@@ -228,6 +234,7 @@ public:
   void unload_state();
 
   void destroy();
+
 
   vsx_engine();
   vsx_engine(vsx_string path);

@@ -163,6 +163,20 @@ vsx_module_param_abs* vsx_engine::get_in_param_by_name(vsx_string module_name, v
   return 0;
 }
 
+void vsx_engine::reset_input_events()
+{
+  engine_info.num_input_events = 0;
+}
+
+void vsx_engine::input_event(vsx_engine_input_event &new_input_event)
+{
+  if (engine_info.num_input_events < VSX_ENGINE_INPUT_EVENT_BUFSIZE)
+  {
+    engine_info.input_events[engine_info.num_input_events] = new_input_event;
+    engine_info.num_input_events++;
+  }
+}
+
 int vsx_engine::i_load_state(vsx_command_list& load1,vsx_string *error_string, vsx_string info_filename)
 {
   LOG("i_load_state 1")
@@ -828,8 +842,13 @@ bool vsx_engine::render() {
     //printf("MODULES LEFT TO LOAD: %d\n",i);
     engine_info.dtime = 0;
     last_frame_time = (float)frame_timer.dtime();
+
+    // reset input events counter
+    reset_input_events();
     return true;
   }
+  // reset input events counter
+  reset_input_events();
   return false;
 }
 
