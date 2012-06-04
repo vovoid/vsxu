@@ -29,7 +29,7 @@
 //#include <cv.h>
 #include <highgui.h>
 
-class module_video_webcam : public vsx_module {
+class module_video_camera : public vsx_module {
   vsx_module_param_bitmap* result1;
   // internal
   CvCapture* m_capture;
@@ -40,19 +40,19 @@ class module_video_webcam : public vsx_module {
   int current_frame;
   int previous_frame;
 public:
-  module_video_webcam():
+  module_video_camera():
     m_capture(0),
     m_frame(0){
   }
-  ~module_video_webcam(){
-    release_webcam();
+  ~module_video_camera(){
+    release_camera();
   }
 
   bool init(){
     m_capture = cvCreateCameraCapture(0);
   }
 
-  void release_webcam()
+  void release_camera()
   {
     if(m_capture)
       cvReleaseCapture( &m_capture );
@@ -79,7 +79,7 @@ public:
     previous_frame = -1;
   }
 
-  void param_set_notify(const vsx_string& name) 
+  void param_set_notify(const vsx_string& name)
   {
   }
 
@@ -94,21 +94,21 @@ public:
       bitm.size_y = m_frame->height;
       bitm.valid = true;
       result1->set(bitm);
-      //printf("getting webcam data for %s \n", bitm.timestamp);
+      //printf("getting camera data for %s \n", bitm.timestamp);
       loading_done = true;
     }
   }
   void start() {
-    printf("Webcam on start\n");
+    printf("Camera started\n");
   }
   void stop() {
-    printf("Webcam on stop\n");
+    printf("Camera stopped\n");
   }
 
   void on_delete()
   {
-    printf("Webcam on delete\n");
-    release_webcam();
+    printf("Camera deleted\n");
+    release_camera();
     //delete[] bitm.data;
   }
 };
@@ -125,11 +125,11 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 vsx_module* create_new_module(unsigned long module) {
-  return (vsx_module*)(new module_video_webcam);
+  return (vsx_module*)(new module_video_camera);
 }
 
 void destroy_module(vsx_module* m,unsigned long module) {
-  delete (module_video_webcam*)m;
+  delete (module_video_camera*)m;
 }
 
 unsigned long get_num_modules() {
