@@ -38,8 +38,6 @@ bool frame_isReady;
 IplImage *buffer = 0;
 
 //TODO: implement the cleanup after memory is released
-//TODO: as opencv doesn't yet support enumerating cameras,
-//make allow only a single camera module to be instantiated.
 
 void* worker(void *ptr) {
     CvCapture* capture = cvCreateCameraCapture(0);
@@ -76,9 +74,23 @@ class module_video_camera : public vsx_module {
   int current_frame;
   int previous_frame;
 
+  // currently we enable the camera reading only for a single class.
+  bool m_isValid;
 public:
+  // this stores the number of valid instances of Camera module
+  static int count;
+
   module_video_camera():
     m_buffer(0){
+      //Enable the camera reading only on a single object
+      if(count >= 1){
+        m_isValid = false;
+        message = "module||ERROR! Only 1 instance of Camera module is currently allowed";
+      }
+      else {
+        count++;
+        m_isValid = true;
+      }
       m_bitm.data = 0;
       m_bitm.bpp = 3;
       m_bitm.bformat = GL_RGB;
@@ -86,35 +98,42 @@ public:
   };
   ~module_video_camera(){
     //release_camera();
+    if(m_isValid)
+      count--;
   };
 
 
   bool init(){
     //Initialize the worker thread which does the job
-    m_isRunning = true;
-    frame_isReady = false;
-    printf("Camera started\n");
-    pthread_attr_init(&attr);
-    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+    if(m_isValid){
+      m_isRunning = true;
+      frame_isReady = false;
+      printf("Camera started\n");
+      pthread_attr_init(&attr);
+      pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 
-    pthread_mutex_init(&signal_mutex, NULL);
-    pthread_create(&worker_t, NULL, &worker , (void*)&m_bitm);
+      pthread_mutex_init(&signal_mutex, NULL);
+      pthread_create(&worker_t, NULL, &worker , (void*)&m_bitm);
+    }
+
   }
 
   void release_camera()
   {
     // Signal the worker thread to shutdown
-    pthread_mutex_lock(&signal_mutex);
-    m_isRunning = false;
-    pthread_mutex_unlock(&signal_mutex);
+    if(m_isValid){
+      pthread_mutex_lock(&signal_mutex);
+      m_isRunning = false;
+      pthread_mutex_unlock(&signal_mutex);
 
-    //Cleanup
-    pthread_attr_destroy(&attr);
-    pthread_mutex_destroy(&signal_mutex);
+      //Cleanup
+      pthread_attr_destroy(&attr);
+      pthread_mutex_destroy(&signal_mutex);
 
-    // wait for the worker thread to shutdown
-    void *  ret;
-    pthread_join(worker_t,&ret);
+      // wait for the worker thread to shutdown
+      void *  ret;
+      pthread_join(worker_t,&ret);
+    }
   }
 
   void module_info(vsx_module_info* info)
@@ -139,24 +158,25 @@ public:
 
   void run()
   {
-    pthread_mutex_lock(&signal_mutex);
-    if(frame_isReady){
-        if(!m_buffer)
-          m_buffer = cvCreateImage(cvSize(buffer->width,buffer->height),
-                                   buffer->depth,buffer->nChannels);
-        cvCopy(buffer,m_buffer);
-        m_bitm.data = m_buffer->imageData;
-        m_bitm.timestamp++;
-        m_bitm.size_x = m_buffer->width;
-        m_bitm.size_y = m_buffer->height;
-        m_bitm.valid = true;
+    if (m_isValid){
+      pthread_mutex_lock(&signal_mutex);
+      if(frame_isReady){
+          if(!m_buffer)
+            m_buffer = cvCreateImage(cvSize(buffer->width,buffer->height),
+                                    buffer->depth,buffer->nChannels);
+          cvCopy(buffer,m_buffer);
+          m_bitm.data = m_buffer->imageData;
+          m_bitm.timestamp++;
+          m_bitm.size_x = m_buffer->width;
+          m_bitm.size_y = m_buffer->height;
+          m_bitm.valid = true;
 
-      result1->set_p(m_bitm);
-      frame_isReady = false;
-      loading_done = true;
+        result1->set_p(m_bitm);
+        frame_isReady = false;
+        loading_done = true;
+      }
+      pthread_mutex_unlock(&signal_mutex);
     }
-    pthread_mutex_unlock(&signal_mutex);
-
   }
   void start() {
   }
@@ -172,6 +192,7 @@ public:
   }
 };
 
+int module_video_camera::count = 0;
 
 #ifndef _WIN32
 #define __declspec(a)
