@@ -24,6 +24,7 @@
 #include "vsx_math_3d.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
+
 #include "main.h"
 
 //#include <cv.h>
@@ -34,33 +35,41 @@ pthread_mutex_t signal_mutex;
 pthread_t worker_t;
 pthread_attr_t attr;
 bool m_isRunning;
-bool frame_isReady;
-IplImage *buffer = 0;
-
-//TODO: implement the cleanup after memory is released
+int current_buffer = -1;
 
 void* worker(void *ptr) {
     CvCapture* capture = cvCreateCameraCapture(0);
     bool running = true;
     IplImage *m_frame;
-    vsx_bitmap *bitm = (vsx_bitmap*)ptr;
+    IplImage **buffer = (IplImage**)ptr;
 
     while(running){
       m_frame = cvQueryFrame(capture);
       if(m_frame){
-        if(!buffer)
-          buffer = cvCreateImage(cvSize(m_frame->width,m_frame->height),
+        if( buffer[0] == 0 || buffer[1] == 0 ){
+          buffer[0] = cvCreateImage(cvSize(m_frame->width,m_frame->height),
                                  m_frame->depth,m_frame->nChannels);
-        //printf("getting camera data for %s \n", bitm.timestamp);
+          buffer[1] = cvCreateImage(cvSize(m_frame->width,m_frame->height),
+                                 m_frame->depth,m_frame->nChannels);
+        }
+
+        //Convert the image to the actual form and put it in the actual current buffer
+        cvConvertImage(m_frame,buffer[(current_buffer+1)%2], CV_CVTIMG_SWAP_RB);
 
         pthread_mutex_lock(&signal_mutex);
-        cvConvertImage(m_frame,buffer, CV_CVTIMG_SWAP_RB);
-        frame_isReady = true;
         running = m_isRunning;
+        current_buffer = (current_buffer+1)%2;
+        //When the module is asked to be deleted invalidate the current frame so that it wont be read in the main thread
+        if(!running)
+          current_buffer = -1;
         pthread_mutex_unlock(&signal_mutex);
       }
     }
+
+    //Cleanup
     cvReleaseCapture( &capture );
+    cvReleaseImage(&buffer[0]);
+    cvReleaseImage(&buffer[1]);
     pthread_exit(NULL);
   }
 
@@ -68,10 +77,9 @@ class module_video_camera : public vsx_module {
   vsx_module_param_bitmap* result1;
   // internal
   vsx_bitmap m_bitm;
-  IplImage *m_buffer;
+  IplImage* m_buffer[2];
 
   int width, height;
-  int current_frame;
   int previous_frame;
 
   // currently we enable the camera reading only for a single class.
@@ -80,8 +88,8 @@ public:
   // this stores the number of valid instances of Camera module
   static int count;
 
-  module_video_camera():
-    m_buffer(0){
+  module_video_camera()
+    {
       //Enable the camera reading only on a single object
       if(count >= 1){
         m_isValid = false;
@@ -89,6 +97,8 @@ public:
       }
       else {
         count++;
+        m_buffer[0] = 0;
+        m_buffer[1] = 0;
         m_isValid = true;
       }
       m_bitm.data = 0;
@@ -96,6 +106,7 @@ public:
       m_bitm.bformat = GL_RGB;
       m_bitm.valid = false;
   };
+
   ~module_video_camera(){
     //release_camera();
     if(m_isValid)
@@ -107,13 +118,13 @@ public:
     //Initialize the worker thread which does the job
     if(m_isValid){
       m_isRunning = true;
-      frame_isReady = false;
+      current_buffer = -1;
       printf("Camera started\n");
       pthread_attr_init(&attr);
       pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 
       pthread_mutex_init(&signal_mutex, NULL);
-      pthread_create(&worker_t, NULL, &worker , (void*)&m_bitm);
+      pthread_create(&worker_t, NULL, &worker , (void*)m_buffer);
     }
 
   }
@@ -126,13 +137,14 @@ public:
       m_isRunning = false;
       pthread_mutex_unlock(&signal_mutex);
 
+      // wait for the worker thread to shutdown
+      void *  ret;
+      pthread_join(worker_t,&ret);
+
       //Cleanup
       pthread_attr_destroy(&attr);
       pthread_mutex_destroy(&signal_mutex);
 
-      // wait for the worker thread to shutdown
-      void *  ret;
-      pthread_join(worker_t,&ret);
     }
   }
 
@@ -158,24 +170,22 @@ public:
 
   void run()
   {
+    int i;
     if (m_isValid){
       pthread_mutex_lock(&signal_mutex);
-      if(frame_isReady){
-          if(!m_buffer)
-            m_buffer = cvCreateImage(cvSize(buffer->width,buffer->height),
-                                    buffer->depth,buffer->nChannels);
-          cvCopy(buffer,m_buffer);
-          m_bitm.data = m_buffer->imageData;
-          m_bitm.timestamp++;
-          m_bitm.size_x = m_buffer->width;
-          m_bitm.size_y = m_buffer->height;
-          m_bitm.valid = true;
+      i = current_buffer;
+      pthread_mutex_unlock(&signal_mutex);
+
+      if(i >= 0){
+        m_bitm.data = m_buffer[i]->imageData;
+        m_bitm.size_x = m_buffer[i]->width;
+        m_bitm.size_y = m_buffer[i]->height;
+        m_bitm.timestamp++;
+        m_bitm.valid = true;
 
         result1->set_p(m_bitm);
-        frame_isReady = false;
         loading_done = true;
       }
-      pthread_mutex_unlock(&signal_mutex);
     }
   }
   void start() {
