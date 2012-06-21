@@ -37,7 +37,9 @@
  
 #define COMPILE_MULTIMON_STUBS
 #include <tchar.h>
+#ifndef _MSC_VER
 #include <sec_api/tchar_s.h>
+#endif
 
 #include "multimon.h"
 #include <GL/gl.h>
@@ -117,6 +119,10 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
 
             DEVMODE devMode;
             devMode.dmSize = sizeof(DEVMODE);
+            // Ensure that dmDriverExtra is 0 since stack allocated data contains garbarge
+            // and we don't want to allow the EnumDisplaySettingsEx call to overwrite 
+            // any stack memory.
+            devMode.dmDriverExtra = 0;
             for (int j = 0; EnumDisplaySettingsEx(displayDevice.DeviceName, j, &devMode, 0); j++)
             {
                 if (devMode.dmPelsWidth < 640 || devMode.dmPelsHeight < 480 || devMode.dmBitsPerPel < 16)
