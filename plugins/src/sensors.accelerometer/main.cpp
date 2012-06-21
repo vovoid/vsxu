@@ -18,7 +18,12 @@
 * with this program; if not, write to the Free Software Foundation, Inc.,
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+#ifndef _MSC_VER
 #include <inttypes.h>
+#else
+#include <stdint.h>
+#endif
+
 #include <string>
 #include <stdlib.h>
 
@@ -125,7 +130,7 @@ public:
 
   void run() {
     Net::Address sender;
-    unsigned char buffer[128];
+    char buffer[128];
     int bytes_read = socket.Receive (sender, buffer, sizeof (buffer));
     if (bytes_read <= 0)
       return;
