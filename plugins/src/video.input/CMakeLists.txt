@@ -8,7 +8,9 @@ message("configuring vsxu module            " ${module_id})
 project (${module_id})
 
 include (../cmake_globals.txt)
-include(${list_file_path}/_sources)
+
+set(SOURCES main.cpp module_video_file.cpp module_video_camera.cpp module_video_input.cpp)
+
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 link_directories(${OpenCV_LIB_DIR})

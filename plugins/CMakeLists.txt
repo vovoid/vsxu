@@ -109,7 +109,7 @@ add_subdirectory(src/texture.load)
 find_package( OpenCV )
 
 if(OpenCV_FOUND)
-  add_subdirectory(src/video.camera)
+  add_subdirectory(src/video.input)
 endif(OpenCV_FOUND)
 
 if (PLUGINS_EXPERIMENTAL_SENSORS)

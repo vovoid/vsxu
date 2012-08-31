@@ -53,4 +53,5 @@ install_manifest.txt
 /plugins/static_factory_funcmapping.cpp
 /plugins/static_factory_funcmapping.h
 /tools/vsxz/vsxz
-
+/build/*
+/inst/*
