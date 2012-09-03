@@ -84,7 +84,8 @@ void module_video_input::freeBuffers()
 {
   m_buffersReady = false;
   for(int i = 0; i < N_BUFFERS; i++){
-    cvReleaseImage(&m_buffer[i]);
+    if(m_buffer[i])
+      cvReleaseImage(&m_buffer[i]);
     m_buffer[i] = 0;
   }
 }

@@ -40,6 +40,8 @@ class module_video_input : public vsx_module {
    * The Derived classes should implement the
    *    1) Worker Thread
    *    2) Module specific functions from vsx_module (eg: module_info)
+   *
+   * TODO: Implement a state machine representing the Worker's current state
    */
 
   //Thread details
