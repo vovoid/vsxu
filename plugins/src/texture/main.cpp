@@ -366,14 +366,21 @@ bool activate_offscreen() {
 	glEnable(GL_BLEND);
 //#endif
   glGetIntegerv(GL_CURRENT_PROGRAM, (GLint*)&glsl_prog);
-  glUseProgram(0);
+  if ( atof(glGetString(GL_VERSION)) >= 2.0 )
+    glUseProgram(0);
+  else
+    glUseProgramObjectARB(0);
+
   //glBlendFunc(GL_SRC_ALPHA,GL_ONE);
   loading_done = true;
   return true;
 };
 
 void deactivate_offscreen() {
-  glUseProgram(glsl_prog);
+  if ( atof(glGetString(GL_VERSION)) >= 2.0 )
+    glUseProgram(glsl_prog);
+  else
+    glUseProgramObjectARB(glsl_prog);
 
   if (!which_buffer || support_feedback->get() == 0)
   {

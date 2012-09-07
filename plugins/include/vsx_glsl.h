@@ -1,6 +1,8 @@
 #ifndef VSX_GLSL_H
 #define VSX_GLSL_H
 
+#include <GL/gl.h>
+#include <GL/glext.h>
 #ifdef VSXU_OPENGL_ES_2_0
 #include "vsx_glsl_es.h"
 #else
@@ -333,6 +335,7 @@ public:
 
   vsx_string link() {
     if (!(GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader)) return "module||Error! No GLSL hardware support!";
+    //if ( atof(glGetString(GL_VERSION)) < 2.0 ) return "module||Error! Unsupported OpenGL Version";
     if (linked) {
       v_list.clear();
       a_list.clear();
@@ -348,38 +351,54 @@ public:
       printf("shader v4 support found\n");
     printf("linking glsl program...\n");
 #endif
-    if (GL_FRAGMENT_SHADER)
+    const char *vp = vertex_program.c_str();
+    const char *fp = fragment_program.c_str();
+
+    if ( atof(glGetString(GL_VERSION)) >= 2.0 )
     {
 #if (VSXU_DEBUG)
       printf("OpenGL 2.0\n");
 #endif
       vs = glCreateShader(GL_VERTEX_SHADER);
       fs = glCreateShader(GL_FRAGMENT_SHADER);
-    } else
-    {
+      glShaderSource(vs, 1, &vp,NULL);
+      glShaderSource(fs, 1, &fp,NULL);
+
+      glCompileShader(vs);
+      if (!gl_get_val(vs,GL_OBJECT_COMPILE_STATUS_ARB)) {
+        return "module||Vertex program compilation failed.\n\nThe message from OpenGL was:"+get_log(vs);
+      }
+      glCompileShaderARB(fs);
+      if (!gl_get_val(fs,GL_OBJECT_COMPILE_STATUS_ARB)) {
+        return "module||Fragment program compilation failed.\n\nThe message from OpenGL was:"+get_log(fs);
+      }
+
+      prog = glCreateProgram();
+      glAttachShader(prog,fs);
+      glAttachShader(prog,vs);
+      glLinkProgram(prog);
+    }
+    else {
       vs = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
       fs = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
+      glShaderSourceARB(vs, 1, &vp,NULL);
+      glShaderSourceARB(fs, 1, &fp,NULL);
+
+      glCompileShaderARB(vs);
+      if (!gl_get_val(vs,GL_OBJECT_COMPILE_STATUS_ARB)) {
+        return "module||Vertex program compilation failed.\n\nThe message from OpenGL was:"+get_log(vs);
+      }
+      glCompileShaderARB(fs);
+      if (!gl_get_val(fs,GL_OBJECT_COMPILE_STATUS_ARB)) {
+        return "module||Fragment program compilation failed.\n\nThe message from OpenGL was:"+get_log(fs);
+      }
+
+      prog = glCreateProgramObjectARB();
+      glAttachObjectARB(prog,fs);
+      glAttachObjectARB(prog,vs);
+      glLinkProgramARB(prog);
     }
 
-    const char *vp = vertex_program.c_str();
-    const char *fp = fragment_program.c_str();
-
-    glShaderSource(vs, 1, &vp,NULL);
-    glShaderSource(fs, 1, &fp,NULL);
-
-  	glCompileShader(vs);
-    if (!gl_get_val(vs,GL_OBJECT_COMPILE_STATUS_ARB)) {
-      return "module||Vertex program compilation failed.\n\nThe message from OpenGL was:"+get_log(vs);
-    }
-    glCompileShaderARB(fs);
-    if (!gl_get_val(fs,GL_OBJECT_COMPILE_STATUS_ARB)) {
-      return "module||Fragment program compilation failed.\n\nThe message from OpenGL was:"+get_log(fs);
-    }
-
-  	prog = glCreateProgram();
-  	glAttachShader(prog,fs);
-  	glAttachShader(prog,vs);
-  	glLinkProgram(prog);
     if (gl_get_val(prog,GL_OBJECT_LINK_STATUS_ARB) == GL_FALSE) {
       return "module||Linking failed.\n\
 The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)+"&&fragment_program||"+get_log(prog);
@@ -641,7 +660,10 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
   void begin() {
     if (!linked) return;
     if (linked)
-  	glUseProgram(prog);
+      if ( atof(glGetString(GL_VERSION)) >= 2.0 )
+        glUseProgram(prog);
+      else
+        glUseProgramObjectARB(prog);
   }
   
   void stop() {
@@ -654,7 +676,10 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
   void end() {
     if (!linked) return;
     unset_uniforms();
-    glUseProgram(0);
+    if ( atof(glGetString(GL_VERSION)) >= 2.0 )
+      glUseProgram(0);
+    else
+      glUseProgramObjectARB(0);
   }
   vsx_glsl() : 
       linked(false),vs(0),
