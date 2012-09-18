@@ -37,6 +37,11 @@
         #ifdef PLATFORM_SHARED_FILES_STL
           #define PLATFORM_SHARED_FILES_STLSTRING                         std::string("")
         #endif
+         // MSG_NOSIGNAL does not exists on OS X
+        #ifndef MSG_NOSIGNAL
+            #define MSG_NOSIGNAL SO_NOSIGPIPE
+        #endif
+
     #elif defined(linux) || defined(__linux) || defined(__linux__) || defined(__CYGWIN__)
         #define PLATFORM                                        PLATFORM_LINUX
         #define PLATFORM_NAME                                   "Linux"

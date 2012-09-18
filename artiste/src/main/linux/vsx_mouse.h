@@ -24,8 +24,6 @@
 #ifdef _WIN32
 #include <windows.h>
 #else
-#include <X11/Xlib.h>
-#include <X11/cursorfont.h>
 #endif
 #include "vsx_math_3d.h"
 
@@ -42,9 +40,6 @@
 class vsx_mouse
 {
   #ifndef _WIN32
-  Display *dpy;
-  Window   win;
-  Cursor pointer;
   #endif
   public:
   int cursor;

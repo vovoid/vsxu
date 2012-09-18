@@ -143,7 +143,7 @@ VSX_COMMAND_DLLIMPORT vsx_command_s* vsx_command_parse(vsx_string& cmd_raw);
 //  combined with provider/consumer FIFO or LIFO buffer (pop/push, pop_front/push_front)
 class vsx_command_list {
   int mutex; // thread safety, 1 = locked, 0 = unlocked, ready to lock
-  pthread_mutex_t mutex1;
+  pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
 
   void get_lock() {
     pthread_mutex_lock( &mutex1 );

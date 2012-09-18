@@ -79,8 +79,6 @@ void vsx_mouse::hide_cursor()
   }  
 } 
 #else
-#include <X11/Xlib.h>
-#include <X11/cursorfont.h>
 void vsx_mouse::set_cursor(int id) {
 	cursor = id;
 }

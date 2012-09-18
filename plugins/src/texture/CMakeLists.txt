@@ -17,5 +17,5 @@ add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES})
 
 include(../cmake_suffix.txt)
 if(UNIX)
-target_link_libraries(${module_id} X11 GLEW GL GLU vsxu_engine_graphics vsxu_engine)
+target_link_libraries(${module_id} GLEW -framework\ OpenGL -framework\ GLUT vsxu_engine_graphics vsxu_engine)
 endif(UNIX)

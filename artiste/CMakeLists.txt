@@ -119,8 +119,6 @@ include(../cmake_suffix.txt)
 if(UNIX)
   target_link_libraries(
     ${module_id}
-    ${X11_Xrandr_LIB}
-    ${X11_LIBRARIES}
     ${GLFW_LIBRARY}
     ${PTHREAD_LIBRARY}
     ${GLEW_LIBRARY}
