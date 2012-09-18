@@ -8,13 +8,16 @@ if(UNIX)
 
 
   file(GLOB LOCAL_SOURCES "*.cpp")
-  
-  find_package(PULSEAUDIO REQUIRED)
-  
-  project (${module_id})
-  include (../cmake_globals.txt)
-  include(./_sources)
-  add_library(${module_id} MODULE ${LOCAL_SOURCES} fftreal/fftreal.cpp ${API_STUBS} ${SOURCES})
-  include(../cmake_suffix.txt)
-  target_link_libraries(${module_id} ${PULSEAUDIO_LIBRARY} ${PULSEAUDIO_SIMPLE_LIBRARY})
+
+  find_package(PULSEAUDIO)
+  # PulseAudio is optional
+  if (PULSEAUDIO_FOUND)
+    project (${module_id})
+    include (../cmake_globals.txt)
+    include(./_sources)
+    add_library(${module_id} MODULE ${LOCAL_SOURCES} fftreal/fftreal.cpp ${API_STUBS} ${SOURCES})
+    include(../cmake_suffix.txt)
+    target_link_libraries(${module_id} ${PULSEAUDIO_LIBRARY} ${PULSEAUDIO_SIMPLE_LIBRARY})
+  endif (PULSEAUDIO_FOUND)
+
 endif(UNIX)
