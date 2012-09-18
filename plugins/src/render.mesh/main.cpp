@@ -472,6 +472,7 @@ public:
     glDisable(GL_POINT_SMOOTH);
     glDisable( GL_POINT_SPRITE_ARB );
     shader.end();
+#endif
     glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
     render_out->set(1);
@@ -576,7 +577,6 @@ public:
 	void on_delete() {
   }
 };
-#endif
 
 class face_holder {
 public:

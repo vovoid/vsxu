@@ -1,8 +1,8 @@
 #ifndef VSX_GLSL_H
 #define VSX_GLSL_H
 
-#include <GL/gl.h>
-#include <GL/glext.h>
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
 #ifdef VSXU_OPENGL_ES_2_0
 #include "vsx_glsl_es.h"
 #else
@@ -354,7 +354,7 @@ public:
     const char *vp = vertex_program.c_str();
     const char *fp = fragment_program.c_str();
 
-    if ( atof(glGetString(GL_VERSION)) >= 2.0 )
+    if ( atof((char *)glGetString(GL_VERSION)) >= 2.0 )
     {
 #if (VSXU_DEBUG)
       printf("OpenGL 2.0\n");
@@ -660,7 +660,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
   void begin() {
     if (!linked) return;
     if (linked)
-      if ( atof(glGetString(GL_VERSION)) >= 2.0 )
+      if ( atof((char *)glGetString(GL_VERSION)) >= 2.0 )
         glUseProgram(prog);
       else
         glUseProgramObjectARB(prog);
@@ -676,7 +676,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
   void end() {
     if (!linked) return;
     unset_uniforms();
-    if ( atof(glGetString(GL_VERSION)) >= 2.0 )
+    if ( atof((char *)glGetString(GL_VERSION)) >= 2.0 )
       glUseProgram(0);
     else
       glUseProgramObjectARB(0);

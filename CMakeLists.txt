@@ -165,12 +165,12 @@ add_subdirectory(plugins)
 ################################################################################
 if (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
   add_subdirectory(artiste)
-  add_subdirectory(player)
-  add_subdirectory(player_demo)
+#  add_subdirectory(player)
+#  add_subdirectory(player_demo)
 endif (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
 
 if(UNIX)
-  add_subdirectory(server)
+  #add_subdirectory(server)
 endif(UNIX)
 
 if (NOT VSXU_ENGINE_STATIC EQUAL 1)

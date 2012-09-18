@@ -22,7 +22,7 @@
 
 #include "perlin/perlin.h"
 #include <vsx_bitmap.h>
-#include <GL/gl.h>
+#include <OpenGL/gl.h>
 
 
 

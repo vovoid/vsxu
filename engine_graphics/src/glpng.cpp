@@ -130,6 +130,8 @@ int  pngLoadRaw(const char* filename, pngRawInfo *pinfo, vsxf* filesystem) {
 	i_filesystem.filesystem = filesystem;
 	i_filesystem.fp = filesystem->f_open(filename,"rb");
 	if (!i_filesystem.fp) {
+        printf("Opening %s ...\n", ( filename));
+
     printf("error in png loader: i_filesystem.fp not valid on line %d\n",__LINE__);
     return 0;
   }

@@ -366,7 +366,7 @@ bool activate_offscreen() {
 	glEnable(GL_BLEND);
 //#endif
   glGetIntegerv(GL_CURRENT_PROGRAM, (GLint*)&glsl_prog);
-  if ( atof(glGetString(GL_VERSION)) >= 2.0 )
+  if ( atof((char *)glGetString(GL_VERSION)) >= 2.0 )
     glUseProgram(0);
   else
     glUseProgramObjectARB(0);
@@ -377,7 +377,7 @@ bool activate_offscreen() {
 };
 
 void deactivate_offscreen() {
-  if ( atof(glGetString(GL_VERSION)) >= 2.0 )
+  if ( atof((char *)glGetString(GL_VERSION)) >= 2.0 )
     glUseProgram(glsl_prog);
   else
     glUseProgramObjectARB(glsl_prog);
