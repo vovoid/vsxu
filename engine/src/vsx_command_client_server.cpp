@@ -32,6 +32,12 @@
 #include <vsxfst.h>
 //#define TCP_NODELAY 1
 
+
+// MSG_NOSIGNAL does not exists on OS X and other BSDs
+#ifndef MSG_NOSIGNAL
+  #define MSG_NOSIGNAL SO_NOSIGPIPE
+#endif
+
 #define handle_error(msg) \
            perror(msg); \
            return 0;
