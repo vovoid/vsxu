@@ -9,7 +9,12 @@ project (${module_id})
 ################################################################################
 # CMAKE PACKAGES ###############################################################
 ################################################################################
-include(cmake_packages.txt)
+find_package(GLFW REQUIRED)
+find_package(PTHREAD REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(PNG REQUIRED)
+find_package(JPEG REQUIRED)
 
 ################################################################################
 # INCLUDES #####################################################################
@@ -54,25 +59,6 @@ add_definitions(
 # SOURCES ######################################################################
 ################################################################################
 
-set(OS_SOURCES "")
-
-if(WIN32)
-  include_directories(src/main/win32/)
-  set(OS_SOURCES
-    src/main/win32/main.cpp
-    src/main/win32/vsx_mouse.cpp
-    src/main/win32/includes/nehegl.cpp
-  )
-endif(WIN32)
-
-if(UNIX)
-  include_directories(src/main/linux/)
-  set(OS_SOURCES
-    src/main/linux/main.cpp
-    src/main/linux/vsx_mouse.cpp
-  )
-endif(UNIX)
-
 set(SOURCES
   src/log/vsx_log_a.cpp
   src/vsx_widget/vsx_widget_base.cpp
@@ -106,21 +92,21 @@ set(SOURCES
   src/vsx_widget/module_choosers/vsx_widget_module_chooser_list.cpp
   src/vsx_widget/vsx_widget_desktop.cpp
   src/application.cpp
+  src/main.cpp
+  src/vsx_mouse.cpp
 )
 
 ################################################################################
 # LINK #########################################################################
 ################################################################################
 
-add_executable(${module_id} ${SOURCES} ${OS_SOURCES})
+add_executable(${module_id} ${SOURCES} )
 
 include(../cmake_suffix.txt)
 
 if(UNIX)
   target_link_libraries(
     ${module_id}
-    ${X11_Xrandr_LIB}
-    ${X11_LIBRARIES}
     ${GLFW_LIBRARY}
     ${PTHREAD_LIBRARY}
     ${GLEW_LIBRARY}
@@ -137,6 +123,7 @@ endif(UNIX)
 if(WIN32)
   target_link_libraries(
     ${module_id}
+    ${GLFW_LIBRARY}
     wsock32
     ws2_32
     vsxu_engine
@@ -203,7 +190,7 @@ install(
     artiste
 )
 
-IF (UNIX)
+IF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/vsxu-artiste-fullscreen.desktop.in
                   ${CMAKE_CURRENT_BINARY_DIR}/vsxu-artiste-fullscreen.desktop
                   @ONLY)
@@ -214,4 +201,4 @@ IF (UNIX)
   INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/vsxu-artiste-fullscreen.desktop
                  ${CMAKE_CURRENT_BINARY_DIR}/vsxu-artiste.desktop
            DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications/)
-ENDIF (UNIX)
+ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")

@@ -9,7 +9,12 @@ project (${module_id})
 ################################################################################
 # CMAKE PACKAGES ###############################################################
 ################################################################################
-include(cmake_packages.txt)
+find_package(GLFW REQUIRED)
+find_package(PTHREAD REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(PNG REQUIRED)
+find_package(JPEG REQUIRED)
 
 include_directories(
   ../
@@ -79,8 +84,6 @@ if(UNIX)
     )
   else (VSXU_OPENGL_ES_2_0 EQUAL 1)
     target_link_libraries(${module_id}
-      ${X11_Xrandr_LIB}
-      ${X11_LIBRARIES}
       ${GLFW_LIBRARY}
       ${CMAKE_THREAD_LIBS_INIT}
       ${GLEW_LIBRARY}
