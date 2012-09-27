@@ -24,7 +24,6 @@ module_video_file::module_video_file():
   module_video_input(),
   m_filename(0)
 {
-  isValid();
 }
 
 void module_video_file::module_info(vsx_module_info* info)
@@ -40,9 +39,8 @@ void module_video_file::declare_params(vsx_module_param_list& in_parameters, vsx
 {
   m_filename = (vsx_module_param_string*)in_parameters.create(VSX_MODULE_PARAM_ID_STRING,"filename");
   m_filename->set("");
-  result = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-  result->set_p(m_bitm);
-  previous_frame = -1;
+  m_result = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
+  m_result->set_p(m_bitm);
 }
 
 void module_video_file::param_set_notify(const vsx_string& name)
@@ -55,58 +53,53 @@ void module_video_file::param_set_notify(const vsx_string& name)
 
 bool module_video_file::isValid()
 {
-  if(m_filename){
-    // The module is valid if the file exists.
-    if (FILE *f = fopen((vsx_get_data_path() + m_filename->get()).c_str(), "r")){
-      printf("Opening %s ...\n", (vsx_get_data_path() + m_filename->get()).c_str());
-      m_isValid = true;
-      fclose(f);
-    }
-    else printf( "Cannot open %s !!\n", (vsx_get_data_path() + m_filename->get()).c_str() );
+  if( !m_filename || m_filename->get() == "")
+    return false;
+
+  if (FILE *f = fopen((vsx_get_data_path() + m_filename->get()).c_str(), "r")){
+    fclose(f);
+    return true;
   }
-  else m_isValid = false;
-  return m_isValid;
+
+  printf( "Cannot open %s !!\n", (vsx_get_data_path() + m_filename->get()).c_str() );
+  return false;
 }
 
-void* module_video_file::worker()
+void module_video_file::worker()
 {
   // Create a fresh capture device
   CvCapture* capture = cvCaptureFromFile((vsx_get_data_path() + m_filename->get()).c_str());
-  bool running = true, invalidFrame = false;
-  int nextBuffer;
+  if(!capture || currentTask() != INITIALIZE_CAPTURE ){
+    message = "module||ERROR! Cannot initialize video file reader!!";
+    addTask(CLEANUP_CAPTURE);
+    return;
+  }
+  else message = "";
+
   IplImage *frame;
+  Tasks task = INITIALIZE_CAPTURE;
+  double delay = 1000000.0/cvGetCaptureProperty(capture,CV_CAP_PROP_FPS); //To maintain the needed fps
 
-  // To maintain the needed fps
-  double delay = 1000000.0/cvGetCaptureProperty(capture,CV_CAP_PROP_FPS);
+  while( task != TERMINATE_CAPTURE ){
 
-  while(capture && running){
+    // Fetch a frame if its asked for / couldnt fetch a previous frame / is the first time.
+    if( task == FETCH_FRAME || task == IGNORE_FRAME || task == INITIALIZE_CAPTURE ){
+      frame = cvQueryFrame(capture);
+      if(frame){
+        if( !m_bufferReady )
+          initializeBuffers(frame->width,frame->height, frame->depth, frame->nChannels);
 
-    nextBuffer = (m_currentBuffer+1)%N_BUFFERS;
-    frame = cvQueryFrame(capture);
-
-    if(frame){
-      if( !m_buffersReady )
-        initializeBuffers(frame->width,frame->height, frame->depth, frame->nChannels);
-
-      //Convert the image to the actual form and put it in the next buffer to be read
-      cvConvertImage(frame,m_buffer[nextBuffer], CV_CVTIMG_SWAP_RB);
-    }
-    else invalidFrame = true;
-
-    pthread_mutex_lock(&m_mutex);
-      running = m_isRunning;
-      m_currentBuffer = nextBuffer;
-      //When the module is asked to be deleted or if the frame cannot be captured,
-      //invalidate the current frame so that it wont be read in the main thread
-      if( (!running) || invalidFrame ){
-        m_currentBuffer = -1;
-        invalidFrame = false;
+        cvConvertImage(frame,m_buffer[nextPage()], CV_CVTIMG_SWAP_RB);
+        addTask(CONSUME_FRAME);
       }
-    pthread_mutex_unlock(&m_mutex);
+      else addTask(IGNORE_FRAME);
+    }
     usleep(delay);
+    task = currentTask();
   }
 
   //Cleanup
   cvReleaseCapture(&capture);
   freeBuffers();
+  addTask(CLEANUP_CAPTURE);
 }

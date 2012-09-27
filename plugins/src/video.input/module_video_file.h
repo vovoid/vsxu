@@ -26,11 +26,12 @@ class module_video_file : public module_video_input {
   /**
    * The File Backend of the Video Capture Class
    * TODO: Allow setting an external time source.
+   * TODO: Add options like repeat forever/play once, reload etc...
    */
   vsx_module_param_string* m_filename;
 
   bool isValid();
-  void* worker();
+  void worker();
 
 public:
   module_video_file();

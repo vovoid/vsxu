@@ -34,6 +34,7 @@
 
 class module_video_input : public vsx_module {
   /**
+   * 
    * The Abstract Base class for Video Capture class.
    * As Video capture is a CPU intensive/ blocking operation, this class implements
    * The thread management routines.
@@ -41,73 +42,89 @@ class module_video_input : public vsx_module {
    *    1) Worker Thread
    *    2) Module specific functions from vsx_module (eg: module_info)
    *
-   * TODO: Implement a state machine representing the Worker's current state
+   * The module's thread synchronization is maintained by a "Shared Task List".
+   *
+   * Any thread can issue a task for any other thread.
+   * Currently we have
+   * 1)a worker thread which fetches video frames and puts it in the next buffer page.
+   * 2)a main thread, which consumes the current buffer page and flips the current page.
+   * 
    */
-
-  //Thread details
-  pthread_t m_worker;
-  pthread_attr_t m_worker_attribute;
 
 protected:
   vsx_bitmap m_bitm;
-  vsx_module_param_bitmap* result;
+  vsx_module_param_bitmap* m_result;
 
   /**
    * The double buffer needed for smoother video capture.
    */
   IplImage* m_buffer[N_BUFFERS];
-  bool m_buffersReady;
-  int m_currentBuffer;
-
-  bool m_isValid;
-  bool m_isRunning;
-
-  int width, height;
-  int previous_frame;
-
-  /**
-   * A nice mutex for all the synchronization needs of the worker thread.
-   */
-  pthread_mutex_t m_mutex;
+  bool m_bufferReady;
 
   void initializeBuffers(int w, int h, int depth, int nChannels);
+  int currentPage();
+  int nextPage();
+  void flipPage();
   void freeBuffers();
+
+  enum Tasks {
+    INITIALIZE_CAPTURE, FETCH_FRAME, TERMINATE_CAPTURE, // Main Thread gets to add these tasks
+    CONSUME_FRAME, IGNORE_FRAME, CLEANUP_CAPTURE // Worker Thread gets to add these tasks
+  };
+  Tasks currentTask();
+  void addTask(Tasks task);
+
+  /**
+   * Reimplement this function to return if a module's state is valid/it can be allowed to initialized'.
+   * For eg. this function can return false if there are no hardware cameras available for the camera module.
+   */
+  virtual bool isValid();
 
   /**
    * This is the actual function which is run in a separate thread indefinitely.
    * Reimplement this method in the derived class.
    * It is the worker's responsibility to initialize and free buffers to be used.
    */
-  virtual void *worker()=0;
+  virtual void worker()=0;
 
-  /**
-   * Boilerplate code to start the worker thread for the real action!
-   */
-  static void* startWorker(void *obj) {
-    static_cast<module_video_input*>(obj)->worker();
-    pthread_exit(0);
-  }
-
-  /**
-   * Gently shutdown the worker thread
-   */
+  // Gently shutdown the worker thread
   void release_capture();
 
 public:
   module_video_input();
-  /**
-   * Initialize the module
-   */
+  ~module_video_input();
+
+  // Initializes the datastructures and starts the worker thread
   bool init();
 
-  /**
-   * This function is called once per every frame VSXu Renders.
-   */
+  //This function is called once per every frame VSXu Renders.
   void run();
 
   void stop();
 
+  //calls release_capture
   void on_delete();
+
+private:
+  //Thread details
+  pthread_t m_worker;
+  pthread_attr_t m_worker_attribute;
+
+  pthread_mutex_t m_mutex;
+
+  int m_currentPage;
+  // The main shared variable
+  Tasks m_currentTask;
+
+  // Just a useless frame counter
+  int nFrames;
+
+  //Boilerplate code to start the worker thread for the real action!
+  inline static void* startWorker(void *obj) {
+    static_cast<module_video_input*>(obj)->worker();
+    pthread_exit(0);
+  }
+
 };
 
 #endif // MODULE_VIDEO_INPUT_H

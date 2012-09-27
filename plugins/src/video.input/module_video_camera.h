@@ -30,7 +30,7 @@ class module_video_camera : public module_video_input {
    */
 
   bool isValid();
-  void* worker();
+  void worker();
 
 public:
   //To Allow only one instance of this class

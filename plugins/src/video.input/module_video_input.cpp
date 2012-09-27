@@ -22,13 +22,34 @@
 
 module_video_input::module_video_input():
   vsx_module(),
-  m_buffersReady(false),
-  m_currentBuffer(-1),  // We havent used any buffers yet.
-  m_isValid(true),     //The derived class constructors will do the appropriate validation checks
-  m_isRunning(false)  //The base class has to start the worker threads after validation
+  m_bufferReady(false),
+  m_currentTask(module_video_input::INITIALIZE_CAPTURE), //Whenever the worker starts...
+  m_currentPage(-1),  // We havent used any buffers yet.
+  nFrames(0)
 {
+  // Initialize the mutex and the worker thread attributes:
+  // We reuse these variables for all the threads.
+  pthread_attr_init(&m_worker_attribute);
+  pthread_attr_setdetachstate(&m_worker_attribute, PTHREAD_CREATE_JOINABLE);
 
-  //Enable the capture reading only on a single object
+  pthread_mutex_init(&m_mutex, NULL);
+}
+
+bool module_video_input::isValid()
+{
+  return false;
+}
+
+bool module_video_input::init()
+{
+  if(!isValid())
+    return false;
+
+  printf("Starting Capture...\n");
+
+  //Not bothering with mutexes:
+  // This method must not be called when a worker thread is alive.
+  // As it Initializes the internal data structures.
   m_buffer[0] = 0;
   m_buffer[1] = 0;
 
@@ -36,40 +57,26 @@ module_video_input::module_video_input():
   m_bitm.bpp = 3;
   m_bitm.bformat = GL_RGB;
   m_bitm.valid = false;
-}
 
-bool module_video_input::init()
-{
-  if(m_isValid){
-    m_isRunning = true;
-    m_currentBuffer = -1;
+  m_currentTask = INITIALIZE_CAPTURE;
+  m_currentPage = -1;
 
-    printf("Capture started\n");
-    pthread_attr_init(&m_worker_attribute);
-    pthread_attr_setdetachstate(&m_worker_attribute, PTHREAD_CREATE_JOINABLE);
+  pthread_create(&m_worker, NULL, &startWorker , (void*)this);
 
-    pthread_mutex_init(&m_mutex, NULL);
-    pthread_create(&m_worker, NULL, &startWorker , (void*)this);
-    return true;
-  }
-  return false;
+  return true;
 }
 
 void module_video_input::release_capture()
 {
-  // Signal the worker thread to shutdown
-  if(m_isValid && m_isRunning){
-    pthread_mutex_lock(&m_mutex);
-    m_isRunning = false;
-    pthread_mutex_unlock(&m_mutex);
-
+  Tasks state = currentTask();
+  if( state != INITIALIZE_CAPTURE && state != CLEANUP_CAPTURE ){
+    // Command the worker thread to terminate
+    addTask(TERMINATE_CAPTURE);
+ 
     // wait for the worker thread to shutdown
-    void *  ret;
+    void*  ret;
     pthread_join(m_worker,&ret);
 
-    //Cleanup
-    pthread_attr_destroy(&m_worker_attribute);
-    pthread_mutex_destroy(&m_mutex);
   }
 }
 
@@ -77,12 +84,38 @@ void module_video_input::initializeBuffers(int w, int h, int depth, int nChannel
 {
   for(int i = 0; i < N_BUFFERS; i++)
     m_buffer[i] = cvCreateImage(cvSize(w,h),depth,nChannels);
-  m_buffersReady = true;
+  m_bufferReady = true;
 }
+
+int module_video_input::currentPage()
+{
+  int buffer;
+
+  pthread_mutex_lock(&m_mutex);
+  buffer = m_currentPage;
+  pthread_mutex_unlock(&m_mutex);
+
+  return buffer;
+}
+
+int module_video_input::nextPage()
+{
+  return ( currentPage() + 1)%N_BUFFERS;
+}
+
+
+void module_video_input::flipPage()
+{
+  pthread_mutex_lock(&m_mutex);
+  m_currentPage++;
+  m_currentPage%=N_BUFFERS;
+  pthread_mutex_unlock(&m_mutex);
+}
+
 
 void module_video_input::freeBuffers()
 {
-  m_buffersReady = false;
+  m_bufferReady = false;
   for(int i = 0; i < N_BUFFERS; i++){
     if(m_buffer[i])
       cvReleaseImage(&m_buffer[i]);
@@ -90,25 +123,44 @@ void module_video_input::freeBuffers()
   }
 }
 
+module_video_input::Tasks module_video_input::currentTask()
+{
+  Tasks state;
+
+  pthread_mutex_lock(&m_mutex);
+  state = m_currentTask;
+  pthread_mutex_unlock(&m_mutex);
+
+  return state;
+}
+
+void module_video_input::addTask(Tasks state)
+{
+  pthread_mutex_lock(&m_mutex);
+  m_currentTask = state;
+  pthread_mutex_unlock(&m_mutex);
+
+}
+
+
 
 void module_video_input::run()
 {
-  int currentBuffer;
-  if (m_isValid){
-    pthread_mutex_lock(&m_mutex);
-    currentBuffer = m_currentBuffer;
-    pthread_mutex_unlock(&m_mutex);
+  if ( currentTask() == CONSUME_FRAME ){
+    nFrames++;
+    int page = currentPage();
 
-    if(currentBuffer >= 0){
-      m_bitm.data = m_buffer[currentBuffer]->imageData;
-      m_bitm.size_x = m_buffer[currentBuffer]->width;
-      m_bitm.size_y = m_buffer[currentBuffer]->height;
-      m_bitm.timestamp++;
-      m_bitm.valid = true;
+    m_bitm.data = m_buffer[page]->imageData;
+    m_bitm.size_x = m_buffer[page]->width;
+    m_bitm.size_y = m_buffer[page]->height;
+    m_bitm.timestamp++;
+    m_bitm.valid = true;
 
-      result->set_p(m_bitm);
-      loading_done = true;
-    }
+    m_result->set_p(m_bitm);
+    loading_done = true;
+
+    flipPage();
+    addTask(FETCH_FRAME);
   }
 }
 
@@ -119,7 +171,15 @@ void module_video_input::stop()
 
 void module_video_input::on_delete()
 {
-  printf("Capture deleted\n");
   release_capture();
+  printf("Capture deleted\n");
   //delete[] bitm.data;
 }
+
+module_video_input::~module_video_input()
+{
+  //Cleanup
+  pthread_attr_destroy(&m_worker_attribute);
+  pthread_mutex_destroy(&m_mutex);
+}
+
