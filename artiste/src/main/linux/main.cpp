@@ -135,6 +135,7 @@ int mousewheel_prev_pos = 0;
 
 void GLFWCALL mouse_wheel(int pos)
 {
+  set_modifiers();
   app_mousewheel((float)(pos-mousewheel_prev_pos),last_x,last_y);
   mousewheel_prev_pos = pos;
 }
