@@ -132,7 +132,7 @@ class module_load_png : public vsx_module {
   // in
   float time;
   vsx_module_param_resource* filename_in;
-  vsx_module_param_int* reload;   
+  vsx_module_param_int* reload;
   
   // out
   vsx_module_param_bitmap* bitmap_out;
