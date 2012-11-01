@@ -222,6 +222,16 @@ public:
     w *= len;
   }
 
+  vsx_vector transform(vsx_vector p1)
+  {
+    vsx_vector p2;
+    p2.x = w*w*p1.x + 2*y*w*p1.z - 2*z*w*p1.y + x*x*p1.x + 2*y*x*p1.y + 2*z*x*p1.z - z*z*p1.x - y*y*p1.x;
+    p2.y = 2*x*y*p1.x + y*y*p1.y + 2*z*y*p1.z + 2*w*z*p1.x - z*z*p1.y + w*w*p1.y - 2*x*w*p1.z - x*x*p1.y;
+    p2.z = 2*x*z*p1.x + 2*y*z*p1.y + z*z*p1.z - 2*w*y*p1.x - y*y*p1.z + 2*w*x*p1.y - x*x*p1.z + w*w*p1.z;
+    return p2;
+  }
+
+
 //#ifdef VSX_STRING_LIB_H
 #ifdef VSXFST_H
  /*****************************************************************************/
