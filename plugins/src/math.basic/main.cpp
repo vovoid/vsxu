@@ -1801,7 +1801,7 @@ public:
   //--------------------------------------------------------------------------------------------------
   }
   void run() {
-    double tt = engine->dtime*speed->get();
+    double tt = engine->real_dtime*speed->get();
     if (tt > 1.0) tt = 1.0;
     double temp = (float)(internal_value*(1.0-tt)+(double)float_in->get() * tt);
     //printf("temp: %f\n",temp);
