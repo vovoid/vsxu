@@ -225,6 +225,8 @@ bool vsxf::is_archive_populated()
 }
 
   vsxf_handle* vsxf::f_open(const char* filename, const char* mode) {
+    vsx_string i_filename(filename);
+    if (!i_filename.size()) return NULL;
     vsxf_handle* handle = new vsxf_handle;
     // 1.  are we archive or filesystem?
     // 1a. archive:
@@ -233,7 +235,6 @@ bool vsxf::is_archive_populated()
     // 1b. file:
     //     get a file descriptor from disk
     if (type == VSXF_TYPE_FILESYSTEM) {
-    	vsx_string i_filename(filename);
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
         i_filename = str_replace("\\","/",i_filename);
       #endif
