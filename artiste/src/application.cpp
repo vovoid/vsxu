@@ -406,12 +406,22 @@ void app_init(int id) {
   //printf("argc: %d %s\n",app_argc,own_path.c_str());
   //---------------------------------------------------------------------------
   vxe = new vsx_engine(own_path);
+
+
   gui_prod_fullwindow = &prod_fullwindow;
   //---------------------------------------------------------------------------
   myf.init(PLATFORM_SHARED_FILES+"font/font-ascii_output.png");
   if (dual_monitor) {
     vxe->init();
     vxe->start();
+  }
+
+  // set engine argv
+  for (size_t i = 0; i < app_argc; i++)
+  {
+    vsx_string arg = vsx_string(app_argv[i]);
+    printf("adding arg: %s\n", arg.c_str() );
+    vxe->engine_info.argv.push_back( arg );
   }
 }
 
