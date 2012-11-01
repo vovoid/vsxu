@@ -344,6 +344,14 @@ public:
     //return n;
   }
 
+  void trim_lf()
+  {
+    if ( !this->size() ) return;
+    if ( (*this)[this->size()-1] == 0x0A ) this->pop_back();
+    if ( (*this)[this->size()-1] == 0x0D ) this->pop_back();
+
+  }
+
 };
 
 
