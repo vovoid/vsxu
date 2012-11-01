@@ -129,6 +129,7 @@ void vsx_engine::set_default_values()
   engine_info.request_play = 0;
   engine_info.request_stop = 0;
   engine_info.request_rewind = 0;
+  engine_info.request_set_time = -0.01f;
   dump_modules_to_disk = true;
   vsxl = 0;
   lastsent = 0;
@@ -655,6 +656,16 @@ bool vsx_engine::render() {
   if (engine_info.request_rewind == 1) {
     e_state = VSX_ENGINE_REWIND;
     engine_info.request_rewind = 0;
+  }
+
+  if (e_state == VSX_ENGINE_STOPPED && engine_info.request_set_time > 0.0f)
+  {
+    float dd = engine_info.vtime - engine_info.request_set_time;
+    if (dd > 0) {
+      engine_info.dtime = -dd;
+    } else {
+      engine_info.dtime = fabs(dd);
+    }
   }
 
   //vsx_command_s cm; cm.process_garbage();
