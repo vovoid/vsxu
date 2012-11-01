@@ -451,7 +451,7 @@ void vsx_texture::upload_ram_bitmap(void* data, unsigned long size_x, unsigned l
   valid = true;
 }
 
-void vsx_texture::load_png(vsx_string fname, bool mipmaps)
+void vsx_texture::load_png(vsx_string fname, bool mipmaps, vsxf* filesystem)
 {
   if (t_glist.find(fname) != t_glist.end()) {
     //printf("already found png: %s\n",fname.c_str());
@@ -461,10 +461,15 @@ void vsx_texture::load_png(vsx_string fname, bool mipmaps)
   } else
   {
     locked = false;
+    vsxf* i_filesystem = 0x0;
     //printf("processing png: %s\n",fname.c_str());
-    vsxf filesystem;
+    if (filesystem == 0x0)
+    {
+      i_filesystem = new vsxf;
+      filesystem = i_filesystem;
+    }
     pngRawInfo* pp = new pngRawInfo;
-    if (pngLoadRaw(fname.c_str(), pp, &filesystem))
+    if (pngLoadRaw(fname.c_str(), pp, filesystem))
     {
       this->name = fname;
       init_opengl_texture();
@@ -482,6 +487,7 @@ void vsx_texture::load_png(vsx_string fname, bool mipmaps)
       t_glist[fname] = texture_info;
     }
     delete pp;
+    if (i_filesystem) delete i_filesystem;
   }
 }
 

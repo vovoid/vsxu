@@ -25,6 +25,7 @@
 #include <vsx_texture_info.h>
 #include <vsx_string.h>
 #include <vsx_bitmap.h>
+#include <vsxfst.h>
 
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
@@ -92,7 +93,7 @@ public:
 
   void* pti_l; // needed by the communication between the png thread and the texture. internal stuff.
   // load a png in the same thread as ours.
-  VSX_TEXTURE_DLLIMPORT void load_png(vsx_string fname, bool mipmaps = true);
+  VSX_TEXTURE_DLLIMPORT void load_png(vsx_string fname, bool mipmaps = true, vsxf* filesystem = 0x0);
   VSX_TEXTURE_DLLIMPORT void load_png_thread(vsx_string fname, bool mipmaps = true);
   VSX_TEXTURE_DLLIMPORT void load_jpeg(vsx_string fname, bool mipmaps = true);
 
