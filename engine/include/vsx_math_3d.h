@@ -225,7 +225,7 @@ public:
 
 
 
-  VSX_MATH_3D_DLLIMPORT double distance(vsx_vector otherpoint);
+  VSX_MATH_3D_DLLIMPORT double distance(const vsx_vector &otherpoint);
 
   /*void hsl2rgb(float h, float s, float l) {
   //	SColor t;
@@ -585,7 +585,7 @@ public:
   	vsx_vector x, y, z;
   	z = *dir;
   	z.normalize();
-  	y = vsx_vector(-z.y*z.x,1-z.y*z.y,-z.y*z.z);
+    y = vsx_vector(-z.y*z.x, 1-z.y*z.y, -z.y*z.z);
   	y.normalize();
 
   	x.cross(y,z);
@@ -594,6 +594,22 @@ public:
   	m[0] = x.x; m[4] = x.y; m[8] = x.z;
   	m[1] = y.x; m[5] = y.y; m[9] = y.z;
   	m[2] = z.x; m[6] = z.y; m[10] = z.z;
+  }
+
+  void rotation_from_vectors_n(vsx_vector* xv, vsx_vector* yv)
+  {
+    vsx_vector x, y, z;
+    x = *xv;
+    x.normalize();
+    y = *yv;
+    y.normalize();
+
+    z.cross(x,y);
+    z.normalize();
+
+    m[0] = x.x; m[4] = x.y; m[8] = x.z;
+    m[1] = y.x; m[5] = y.y; m[9] = y.z;
+    m[2] = z.x; m[6] = z.y; m[10] = z.z;
   }
 
 

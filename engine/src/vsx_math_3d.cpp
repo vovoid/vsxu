@@ -26,7 +26,7 @@
 #include "vsx_math_3d.h"
 #include <mtwist.h>
 
-double vsx_vector::distance(vsx_vector otherpoint) {
+double vsx_vector::distance(const vsx_vector &otherpoint) {
   double dx = otherpoint.x - x;
   double dy = otherpoint.y - y;
   double dz = otherpoint.z - z;
