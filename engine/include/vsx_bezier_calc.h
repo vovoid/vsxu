@@ -23,7 +23,9 @@
 #define VSX_BEZIER_CALC_H
 
 
-// recursive third-grade newton raphson numerical analysis solver
+//
+// recursive two dimensional third-grade newton raphson numerical analysis solver
+// and bezier curve
 
 class vsx_bezier_calc {
   float a;
@@ -36,13 +38,14 @@ class vsx_bezier_calc {
   float h;
 
 public:
-  float x0;
+  float x0; // first coordinate
   float y0;
-  float x1;
+  float x1; // first handle
   float y1;
-  float x2;
+
+  float x2; // second handle
   float y2;
-  float x3;
+  float x3; // second coordinate
   float y3;
 
 /*  vsx_bezier_calc() {
