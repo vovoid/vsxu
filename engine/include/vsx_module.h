@@ -116,6 +116,10 @@ typedef struct  {
   int request_play;
   int request_stop;
   int request_rewind;
+  float request_set_time;
+
+  // if available, command line parameters
+  vsx_avector<vsx_string> argv;
 
   size_t num_input_events;
   vsx_engine_input_event input_events[VSX_ENGINE_INPUT_EVENT_BUFSIZE];
