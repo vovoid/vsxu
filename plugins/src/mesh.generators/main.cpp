@@ -2695,9 +2695,6 @@ class vsx_module_mesh_plane_uv_distort : public vsx_module {
   // x_shape
   vsx_sequence seq_x_shape;
   float x_shape[8192];
-  // y_shape
-  vsx_sequence seq_y_shape;
-  float y_shape[8192];
   // z_shape
   vsx_sequence seq_z_shape;
   float z_shape[8192];
