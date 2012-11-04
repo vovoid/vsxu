@@ -2698,13 +2698,6 @@ class vsx_module_mesh_plane_uv_distort : public vsx_module {
   // z_shape
   vsx_sequence seq_z_shape;
   float z_shape[8192];
-  // size_shape_x
-  vsx_sequence seq_size_shape_x;
-  float size_shape_x[8192];
-  // size_shape_y
-  vsx_sequence seq_size_shape_y;
-  float size_shape_y[8192];
-
 
   void calc_shapes() {
 #define CALCS(var_name) \
