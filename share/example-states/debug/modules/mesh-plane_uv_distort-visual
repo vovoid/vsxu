@@ -1,0 +1,69 @@
+meta_set fHx8fHw=
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.290452 -0.351676
+param_set blend_mode dest_blend 1
+component_create texture;particles;blob blob -0.580050 -0.323772
+component_create renderers;opengl_modifiers;gl_translate gl_translate -0.294730 -0.208215
+param_set gl_translate translation 0.00000000000000000000,0.57381719350814819336,0.00000000000000000000
+component_create renderers;opengl_modifiers;gl_translate gl_translate_1 -0.296305 -0.263604
+param_set gl_translate_1 translation 0.00000000000000000000,-0.65642815828323364258,0.00000000000000000000
+component_create sound;input_visualization_listener input_visualization_listener -0.630025 -0.189932
+component_create renderers;opengl_modifiers;light_directional light_directional -0.313698 0.172839
+param_set light_directional enabled 1
+param_set light_directional position -0.00186826149001717567,0.11824385821819305420,-0.99298280477523803711
+component_create renderers;opengl_modifiers;material_param material_param -0.232888 0.144700
+param_set material_param diffuse_reflectance 0.00000095785651410552,0.00000081060761658591,0.00000081060761658591,1.00000000000000000000
+param_set material_param emission_intensity 0.92850291728973388672,0.99999988079071044922,0.83908998966217041016,0.99999892711639404297
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.410902 0.142838
+param_set mesh_basic_render use_vertex_colors 0
+component_create maths;arithmetics;binary;mult mult -0.537095 -0.262087
+param_set mult param2 0.15075868368148803711
+component_create maths;arithmetics;binary;mult mult_1 -0.518192 -0.095152
+param_set mult_1 param2 0.13775759935379028320
+component_create mesh;solid;plane_uv_distort plane_uv_distort -0.509714 0.147769
+param_set plane_uv_distort x_res 50.99595642089843750000
+param_set plane_uv_distort y_res 50.99996948242187500000
+param_set plane_uv_distort x_shape 0.527289;2.000000;MC44MjA2Njg=|0.472711;2.000000;MC40OTI4Nzk=|1.000000;1.000000;MC44NDU0MjM=
+param_set plane_uv_distort z_shape 0.195532;2.000000;MS4wMDAwMDA=|0.172433;2.000000;MC40OTc5OTM=|0.163565;2.000000;MC43MDI2NDk=|0.468469;2.000000;MC40OTY3ODk=|1.000000;1.000000;MC4wMDAwMDA=
+param_set plane_uv_distort x_shape_multiplier -0.02391570992767810822
+param_set plane_uv_distort z_shape_multiplier 0.02928564883768558502
+component_create texture;buffers;render_surface_single render_surface_single -0.109521 -0.063285
+param_set render_surface_single clear_color 0.00000087288663053187,0.00000000000000000000,0.00000000000000000000,1.00000000000000000000
+param_set render_surface_single texture_size 10
+cpp screen0 0.053090 0.005451
+component_create renderers;oscilloscopes;simple_oscilloscope simple_oscilloscope -0.440657 -0.109487
+param_set simple_oscilloscope size 0.99999904632568359375,0.07159300148487091064,0.00000000000000000000
+param_set simple_oscilloscope rotation_axis 0.00000000000000002263,0.00000000008498108467,0.99999904632568359375
+param_set simple_oscilloscope color 0.97921401262283325195,0.99999994039535522461,0.99313104152679443359,1.00000000000000000000
+component_create texture;modifiers;tex_parameters tex_parameters -0.295739 -0.028217
+param_set tex_parameters wrap_s 3
+param_set tex_parameters wrap_t 3
+param_set tex_parameters min_filter 1
+param_set tex_parameters mag_filter 1
+param_set tex_parameters anisotropic_filtering 1
+param_set tex_parameters border_color 0.00780399981886148453,0.03995399922132492065,0.00000000000000000000,0.99999910593032836914
+component_create renderers;basic;textured_rectangle textured_rectangle 0.037948 -0.067418
+component_create renderers;basic;textured_rectangle textured_rectangle_1 -0.444366 -0.279555
+param_set textured_rectangle_1 color_multiplier 0.00000000053813453693,0.99999994039535522461,0.70838618278503417969,1.00000000000000000000
+param_set textured_rectangle_1 position -0.73921728134155273438,0.72382396459579467773,0.00000000000000000000
+component_create system;time time -0.580917 -0.095566
+param_connect textured_rectangle_1 texture_in blob texture
+param_connect textured_rectangle_1 size mult product
+param_connect textured_rectangle texture_in render_surface_single texture_out
+param_connect tex_parameters texture_in render_surface_single texture_out
+param_connect simple_oscilloscope angle mult_1 product
+param_connect simple_oscilloscope data_in input_visualization_listener wave
+param_connect screen0 screen textured_rectangle render_out
+param_connect render_surface_single render_in material_param render_out
+param_connect render_surface_single render_in simple_oscilloscope render_out
+param_connect render_surface_single render_in gl_translate render_out
+param_connect render_surface_single render_in gl_translate_1 render_out
+param_connect render_surface_single render_in blend_mode render_out
+param_connect mult_1 param1 time r_time
+param_connect mult param1 input_visualization_listener octaves_l_0
+param_connect mesh_basic_render mesh_in plane_uv_distort mesh
+param_connect mesh_basic_render tex_a tex_parameters texture_rotate_out
+param_connect material_param render_in light_directional render_out
+param_connect light_directional render_in mesh_basic_render render_out
+param_connect gl_translate_1 render_in simple_oscilloscope render_out
+param_connect gl_translate render_in simple_oscilloscope render_out
+param_connect blend_mode render_in textured_rectangle_1 render_out
