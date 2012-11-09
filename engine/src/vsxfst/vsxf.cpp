@@ -76,6 +76,11 @@ void vsxf::set_base_path(vsx_string new_base_path)
   base_path = new_base_path;
 }
 
+vsx_string vsxf::get_base_path()
+{
+  return base_path;
+}
+
 void vsxf::archive_create(const char* filename) {
 #ifndef VSXF_DEMO
   archive_name = filename;
