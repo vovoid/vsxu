@@ -79,8 +79,6 @@ void vsx_mouse::hide_cursor()
   }  
 } 
 #else
-#include <X11/Xlib.h>
-#include <X11/cursorfont.h>
 void vsx_mouse::set_cursor(int id) {
 	cursor = id;
 }
@@ -144,13 +142,7 @@ vsx_mouse::vsx_mouse()
 {
 	cursor = 0;
 #ifdef _WIN32
-	
 	visible=true;
-#else
-#ifndef __APPLE__
-	dpy = XOpenDisplay(0);
-	cursor = None;
-#endif
 #endif
 }  
 

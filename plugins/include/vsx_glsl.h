@@ -1,8 +1,6 @@
 #ifndef VSX_GLSL_H
 #define VSX_GLSL_H
 
-#include <GL/gl.h>
-#include <GL/glext.h>
 #ifdef VSXU_OPENGL_ES_2_0
 #include "vsx_glsl_es.h"
 #else

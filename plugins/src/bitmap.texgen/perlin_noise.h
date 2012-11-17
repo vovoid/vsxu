@@ -22,9 +22,6 @@
 
 #include "perlin/perlin.h"
 #include <vsx_bitmap.h>
-#include <GL/gl.h>
-
-
 
 
 class module_bitmap_texgen_perlin_noise : public vsx_module {

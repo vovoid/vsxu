@@ -3,6 +3,7 @@ if(WIN32)
   install(TARGETS ${module_id} DESTINATION plugins COMPONENT engine)
 endif(WIN32)
 
+link_directories(${OpenGL_LIB_DIR})
 target_link_libraries(
   ${module_id}
   vsxu_engine_graphics
