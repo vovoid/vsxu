@@ -21,10 +21,12 @@ set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 ################################################################################
 
 if(UNIX)
-  set(VSXU_INSTALL_INCLUDE_DIR "include/vsxu")
-  set(VSXU_INSTALL_LIB_DIR "lib")
-  set(VSXU_INSTALL_BIN_DIR "bin")
-  set(VSXU_INSTALL_SHARE_DIR "share/vsxu")
+  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(VSXU_INSTALL_INCLUDE_DIR "include")
+    set(VSXU_INSTALL_LIB_DIR ".")
+    set(VSXU_INSTALL_BIN_DIR ".")
+    set(VSXU_INSTALL_SHARE_DIR ".")
+  endif()
   # Override this default 'lib' with 'lib64' iff:
   #  - we are on Linux system but NOT cross-compiling
   #  - we are NOT on debian
@@ -35,6 +37,10 @@ if(UNIX)
   if(CMAKE_SYSTEM_NAME MATCHES "Linux"
       AND NOT CMAKE_CROSSCOMPILING
       AND NOT EXISTS "/etc/debian_version")
+    set(VSXU_INSTALL_INCLUDE_DIR "include/vsxu")
+    set(VSXU_INSTALL_LIB_DIR "lib")
+    set(VSXU_INSTALL_BIN_DIR "bin")
+    set(VSXU_INSTALL_SHARE_DIR "share/vsxu")
     if(NOT DEFINED CMAKE_SIZEOF_VOID_P)
       message(AUTHOR_WARNING
         "Unable to determine default CMAKE_INSTALL_LIBDIR directory because no target architecture is known. "
