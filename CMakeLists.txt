@@ -25,7 +25,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(VSXU_INSTALL_LIB_DIR ".")
     set(VSXU_INSTALL_BIN_DIR ".")
     set(VSXU_INSTALL_SHARE_DIR ".")
-    endif()
+endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(VSXU_INSTALL_INCLUDE_DIR "include/vsxu")
