@@ -18,12 +18,12 @@
 */
 
 
-#ifndef MODULE_VIDEO_CAMERA_H
-#define MODULE_VIDEO_CAMERA_H
+#ifndef INPUT_VIDEO_CAMERA_H
+#define INPUT_VIDEO_CAMERA_H
 
-#include "module_video_input.h"
+#include "input_video.h"
 
-class module_video_camera : public module_video_input {
+class input_video_camera : public module_video_input {
   /**
    * The Camera Backend of the Video Capture Class
    * TODO: Allow changing the current camera
@@ -36,8 +36,8 @@ public:
   //To Allow only one instance of this class
   static int count;
 
-  module_video_camera();
-  ~module_video_camera();
+  input_video_camera();
+  ~input_video_camera();
   void module_info(vsx_module_info* info);
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters);
 
@@ -45,4 +45,4 @@ public:
 
 
 
-#endif // MODULE_VIDEO_CAMERA_H
+#endif // INPUT_VIDEO_CAMERA_H

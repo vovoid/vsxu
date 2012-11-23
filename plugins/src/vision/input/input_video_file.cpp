@@ -18,24 +18,24 @@
 */
 
 #include <vsxfst.h>
-#include "module_video_file.h"
+#include "input_video_file.h"
 
-module_video_file::module_video_file():
+input_video_file::input_video_file():
   module_video_input(),
   m_filename(0)
 {
 }
 
-void module_video_file::module_info(vsx_module_info* info)
+void input_video_file::module_info(vsx_module_info* info)
 {
   info->in_param_spec = "filename:resource";
-    info->identifier = "video;file";
+    info->identifier = "vision;input;video_file_input";
     info->out_param_spec = "bitmap:bitmap";
     info->component_class = "bitmap";
   info->description = "Fetches frame data from a ffmpeg compatible video file as bitmaps.";
 }
 
-void module_video_file::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+void input_video_file::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   m_filename = (vsx_module_param_string*)in_parameters.create(VSX_MODULE_PARAM_ID_STRING,"filename");
   m_filename->set("");
@@ -43,7 +43,7 @@ void module_video_file::declare_params(vsx_module_param_list& in_parameters, vsx
   m_result->set_p(m_bitm);
 }
 
-void module_video_file::param_set_notify(const vsx_string& name)
+void input_video_file::param_set_notify(const vsx_string& name)
 {
   if(name == "filename" && isValid()){
     release_capture();
@@ -51,7 +51,7 @@ void module_video_file::param_set_notify(const vsx_string& name)
   }
 }
 
-bool module_video_file::isValid()
+bool input_video_file::isValid()
 {
   if( !m_filename || m_filename->get() == "")
     return false;
@@ -65,7 +65,7 @@ bool module_video_file::isValid()
   return false;
 }
 
-void module_video_file::worker()
+void input_video_file::worker()
 {
   // Create a fresh capture device
   CvCapture* capture = cvCaptureFromFile((vsx_get_data_path() + m_filename->get()).c_str());

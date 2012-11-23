@@ -103,12 +103,8 @@ add_subdirectory(src/string)
 add_subdirectory(src/system)
 add_subdirectory(src/texture)
 add_subdirectory(src/texture.load)
+add_subdirectory(src/vision)
 
-find_package( OpenCV )
-
-if(OpenCV_FOUND)
-  add_subdirectory(src/video.input)
-endif(OpenCV_FOUND)
 
 if (PLUGINS_EXPERIMENTAL_SENSORS)
   add_subdirectory(src/sensors.accelerometer)

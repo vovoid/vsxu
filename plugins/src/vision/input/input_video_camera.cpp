@@ -18,11 +18,11 @@
 */
 
 
-#include "module_video_camera.h"
+#include "input_video_camera.h"
 
-int module_video_camera::count = 0;
+int input_video_camera::count = 0;
 
-module_video_camera::module_video_camera():
+input_video_camera::input_video_camera():
   module_video_input()
 {
   count++;
@@ -30,7 +30,7 @@ module_video_camera::module_video_camera():
     message = "module||ERROR! Only 1 instance of Camera module is currently allowed";
 }
 
-bool module_video_camera::isValid()
+bool input_video_camera::isValid()
 {
   //FIXME: check for the available number of cameras instead of hardcoding it to 1 instance..
   //STATUS: issue put on hold because of upstream library not supporting it:
@@ -41,27 +41,27 @@ bool module_video_camera::isValid()
   return true;
 }
 
-module_video_camera::~module_video_camera()
+input_video_camera::~input_video_camera()
 {
   count--;
 }
 
-void module_video_camera::module_info(vsx_module_info* info)
+void input_video_camera::module_info(vsx_module_info* info)
 {
   info->in_param_spec = "";
-    info->identifier = "video;camera";
+    info->identifier = "vision;input;video_camera_input";
     info->out_param_spec = "bitmap:bitmap";
     info->component_class = "bitmap";
   info->description = "Fetches camera data as bitmaps";
 }
 
-void module_video_camera::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+void input_video_camera::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   m_result = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
   m_result->set_p(m_bitm);
 }
 
-void module_video_camera::worker()
+void input_video_camera::worker()
 {
   CvCapture* capture = cvCreateCameraCapture(0);//cvCaptureFromCAM(0);
   if(!capture || currentTask() != INITIALIZE_CAPTURE){
