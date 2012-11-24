@@ -1,6 +1,9 @@
-Vovoid VSXu Ultra
+Vovoid VSXu
 =================
-©2003-2012 Vovoid Media Technologies
+©2003-2012 Vovoid Media Technologies AB, Sweden
+http://www.vsxu.com
+http://www.vovoid.com
+
 
 
 VSXu (VSX Ultra) is an OpenGL-based (hardware-accelerated), 
