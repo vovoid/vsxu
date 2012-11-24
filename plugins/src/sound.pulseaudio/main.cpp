@@ -344,6 +344,7 @@ void* worker(void *ptr)
   //int gc = 0;
   pa_buffer_attr buffer_attr;
   buffer_attr.fragsize = 512;
+  buffer_attr.maxlength = -1;
   /* Create the recording stream */
   if (!(s = pa_simple_new(NULL, "vsxu", PA_STREAM_RECORD, NULL, "r", &ss, NULL, &buffer_attr, &error))) {
       //fprintf(stderr, __FILE__": pa_simple_new() failed: %s\n", pa_strerror(error));
