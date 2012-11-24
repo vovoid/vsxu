@@ -16,6 +16,3 @@ include(./_sources)
 add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES})
 
 include(../cmake_suffix.txt)
-if(UNIX)
-target_link_libraries(${module_id} X11 GLEW GL GLU vsxu_engine_graphics vsxu_engine)
-endif(UNIX)

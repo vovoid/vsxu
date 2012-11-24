@@ -24,7 +24,6 @@
 #include "vsx_module.h"
 #include "vsx_math_3d.h"
 #include <vsx_platform.h>
-#if PLATFORM == PLATFORM_LINUX
 #include <time.h>
 #include <sys/time.h>
 #include <stdio.h>
@@ -32,6 +31,9 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <vsx_platform.h>
+
+#if PLATFORM == PLATFORM_LINUX
+
 #include <linux/joystick.h>
 #define JOY_DEV "/dev/input/js"
 #define JOY_DEV1 "/dev/input/js0"

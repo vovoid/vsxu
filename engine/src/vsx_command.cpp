@@ -272,12 +272,12 @@ void vsx_command_list::set_type(int new_type) {
 	}
 }
 
-vsx_command_list::vsx_command_list()
+vsx_command_list::vsx_command_list():
+  mutex(0),
+  filesystem(0),
+  accept_commands(1)
 {
-  mutex = 0;
-  filesystem = 0;
-  accept_commands = 1;
-  mutex1 = PTHREAD_MUTEX_INITIALIZER;
+  pthread_mutex_init(&mutex1, NULL);
 }
 
 vsx_command_s* vsx_command_parse(vsx_string& cmd_raw) {
