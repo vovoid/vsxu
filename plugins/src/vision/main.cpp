@@ -19,8 +19,10 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "module_video_file.h"
-#include "module_video_camera.h"
+#include "input/input_video_file.h"
+#include "input/input_video_camera.h"
+#include "trackers/tracker_bitmap_color.h"
+
 
 #ifndef _WIN32
 #define __declspec(a)
@@ -35,21 +37,25 @@ __declspec(dllexport) unsigned long get_num_modules();
 vsx_module* create_new_module(unsigned long module) {
   switch(module){
     case 0:
-      return (vsx_module*)(new module_video_file);
+      return (vsx_module*)(new input_video_file);
     case 1:
-      return (vsx_module*)(new module_video_camera);
+      return (vsx_module*)(new input_video_camera);
+    case 2:
+      return (vsx_module*)(new tracker_bitmap_color);
   }
 }
 
 void destroy_module(vsx_module* m,unsigned long module) {
   switch(module){
     case 0:
-      return delete (module_video_file*)m;
+      return delete (input_video_file*)m;
     case 1:
-      return delete (module_video_camera*)m;
+      return delete (input_video_camera*)m;
+    case 2:
+      return delete (tracker_bitmap_color*)m;
   }
 }
 
 unsigned long get_num_modules() {
-  return 2;
+  return 3;
 }

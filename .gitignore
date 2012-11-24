@@ -55,3 +55,5 @@ install_manifest.txt
 /tools/vsxz/vsxz
 /build/*
 /inst/*
+*.user
+*.kdev*

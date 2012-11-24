@@ -17,12 +17,12 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef MODULE_VIDEO_FILE_H
-#define MODULE_VIDEO_FILE_H
+#ifndef INPUT_VIDEO_FILE_H
+#define INPUT_VIDEO_FILE_H
 
-#include "module_video_input.h"
+#include "input_video.h"
 
-class module_video_file : public module_video_input {
+class input_video_file : public module_video_input {
   /**
    * The File Backend of the Video Capture Class
    * TODO: Allow setting an external time source.
@@ -34,10 +34,10 @@ class module_video_file : public module_video_input {
   void worker();
 
 public:
-  module_video_file();
+  input_video_file();
   void module_info(vsx_module_info* info);
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters);
   void param_set_notify(const vsx_string& name);
 };
 
-#endif // MODULE_VIDEO_FILE_H
+#endif // INPUT_VIDEO_FILE_H

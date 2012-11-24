@@ -18,8 +18,8 @@
 */
 
 
-#ifndef MODULE_VIDEO_INPUT_H
-#define MODULE_VIDEO_INPUT_H
+#ifndef VIDEO_INPUT_H
+#define VIDEO_INPUT_H
 
 #include <pthread.h>
 #include "vsx_gl_global.h"
@@ -127,4 +127,4 @@ private:
 
 };
 
-#endif // MODULE_VIDEO_INPUT_H
+#endif // VIDEO_INPUT_H

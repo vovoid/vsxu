@@ -1,6 +1,6 @@
 meta_set Q2FtZXJhIFRlc3R8c2FpZGluZXNoNXx2b3ZvaWR8SW5kaWF8aHR0cDovL3NhaWRpbmVzaDUud29yZHByZXNzLmNvbXw=
 component_create texture;loaders;bitmap2texture bitmap2texture -0.149533 -0.034794
-component_create video;camera camera -0.225753 -0.066276
+component_create vision;input;video_camera_input camera -0.225753 -0.066276
 cpp screen0 0.000000 0.000000
 component_create renderers;basic;textured_rectangle textured_rectangle -0.078855 -0.013260
 param_connect textured_rectangle texture_in bitmap2texture texture

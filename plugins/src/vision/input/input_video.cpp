@@ -18,7 +18,7 @@
 */
 
 
-#include "module_video_input.h"
+#include "input_video.h"
 
 module_video_input::module_video_input():
   vsx_module(),
