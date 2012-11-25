@@ -148,7 +148,7 @@ void module_video_input::run()
 {
   if ( currentTask() == CONSUME_FRAME ){
     nFrames++;
-    int page = currentPage();
+    int page = nextPage();
 
     m_bitm.data = m_buffer[page]->imageData;
     m_bitm.size_x = m_buffer[page]->width;
