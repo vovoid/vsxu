@@ -25,6 +25,8 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 
+#include <cv.h>
+
 class tracker_bitmap_color : public vsx_module
 {
   vsx_module_param_bitmap* in_bitmap;
@@ -33,11 +35,19 @@ class tracker_bitmap_color : public vsx_module
 
   vsx_module_param_float3* result_position;
   //vsx_module_param_bitmap* filtered_output;
-  //vsx_bitmap m_bitm; //filtered output
+  //vsx_bitmap m_bitm; //debug output
 
   int m_previousTimestamp; //Internal copy , needed for checking with the previous image
 
+  IplImage* m_img[4];
+  CvMoments* m_moments;
+
+  void initialize_buffers(int w, int h);
+  void release_buffers();
+
 public:
+  tracker_bitmap_color();
+  ~tracker_bitmap_color();
   virtual void module_info(vsx_module_info* info);
   virtual void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters);
   virtual void run();

@@ -18,6 +18,7 @@
 */
 
 #include <vsxfst.h>
+#include <highgui.h>
 #include "input_video_file.h"
 
 input_video_file::input_video_file():

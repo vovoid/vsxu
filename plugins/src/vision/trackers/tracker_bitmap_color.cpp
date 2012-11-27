@@ -16,15 +16,70 @@
 * with this program; if not, write to the Free Software Foundation, Inc.,
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-
 #include <cv.h>
 #include "tracker_bitmap_color.h"
+
+#define FILTER_NONE 0
+#define FILTER_HSV 1
+#define FILTER_HSV_THRESHOLD 2
+#define FILTER_HSV_THRESHOLD_RGB 3
+
+
+tracker_bitmap_color::tracker_bitmap_color():
+  m_previousTimestamp(0),
+  vsx_module()
+{
+  m_img[FILTER_NONE] = 0;
+  m_img[FILTER_HSV] = 0;
+  m_img[FILTER_HSV_THRESHOLD] = 0;
+  m_img[FILTER_HSV_THRESHOLD_RGB] = 0;
+  m_moments = (CvMoments*)malloc(sizeof(CvMoments));
+}
+
+tracker_bitmap_color::~tracker_bitmap_color()
+{
+  release_buffers();
+  delete m_moments;
+}
+
+void tracker_bitmap_color::initialize_buffers( int w, int h )
+{
+  //Do nothing, If the previous image and input image are same as the dimensions,
+  if(m_img[FILTER_NONE] && m_img[FILTER_NONE]->width == w && m_img[FILTER_NONE]->height == h) return;
+  else release_buffers();
+
+  //for a camera input, assume the image is composed of 8bit RGB pixels.
+  //Also for the input image, the just the headers are sufficient.
+  m_img[FILTER_NONE] = cvCreateImageHeader(cvSize(w,h),8,3);
+
+  m_img[FILTER_HSV] = cvCreateImage(cvSize(w,h),8,3);
+  m_img[FILTER_HSV_THRESHOLD] = cvCreateImage(cvSize(w,h),8,1);
+  //m_img[FILTER_HSV_THRESHOLD_RGB] = cvCreateImage(cvSize(w,h),8,3);
+}
+
+void tracker_bitmap_color::release_buffers()
+{
+  //allocates buffers if needed
+  if(!m_img[FILTER_NONE] || !m_img[FILTER_HSV] || !m_img[FILTER_HSV_THRESHOLD] || !m_img[FILTER_HSV_THRESHOLD_RGB])
+    return;
+
+  cvReleaseImageHeader(&m_img[FILTER_NONE]);
+  cvReleaseImage(&m_img[FILTER_HSV]);
+  cvReleaseImage(&m_img[FILTER_HSV_THRESHOLD]);
+  //cvReleaseImage(&m_img[FILTER_HSV_THRESHOLD_RGB]);
+
+  m_img[FILTER_NONE] = 0;
+  m_img[FILTER_HSV] = 0;
+  m_img[FILTER_HSV_THRESHOLD] = 0;
+  m_img[FILTER_HSV_THRESHOLD_RGB] = 0;
+}
 
 
 void tracker_bitmap_color::module_info(vsx_module_info* info)
 {
   info->identifier = "vision;trackers;bitmap_color_tracker";
-  info->description = "Tracks the centroid of a colored blob in the input bitmap.\nSpecify the ranges of the input color in the HSV scale using color1, color2.";
+  info->description = "Tracks the centroid of a colored blob in the input bitmap.\n\
+  Specify the ranges of the input color in the FILTER_HSV scale using color1, color2.";
   //info->out_param_spec = "blob_position:float3,filtered_output:bitmap";
   //TODO: Add a proper debug output which can be disabled
   info->out_param_spec = "blob_position:float3";
@@ -44,8 +99,7 @@ void tracker_bitmap_color::declare_params(vsx_module_param_list& in_parameters, 
   result_position->set(0,0);
   result_position->set(0,1);
   result_position->set(0,2);
-  
-  m_previousTimestamp = 0;
+
   //filtered_output->set_p(m_bitm);
   loading_done = true;
 }
@@ -55,45 +109,41 @@ void tracker_bitmap_color::run()
   vsx_bitmap *bmp = in_bitmap->get_addr();
 
   //Check if there is any new image to process
-  if(!bmp || !bmp->valid ||!bmp->timestamp || bmp->timestamp == m_previousTimestamp){
+  if(!(bmp && bmp->valid && bmp->timestamp && bmp->timestamp != m_previousTimestamp)){
     printf("Skipping frame\n");
     return;
   }
 
-  m_previousTimestamp = bmp->timestamp;
+  m_previousTimestamp = bmp->timestamp;  
+  initialize_buffers(bmp->size_x, bmp->size_y);
 
-  //for a camera input, we currently assume the image is composed of 8bit RGB pixels and reconstruct the OpenCV image
-  IplImage *img_input, *img_HSV, *img_threshold;
-  img_input = cvCreateImageHeader(cvSize(bmp->size_x,bmp->size_y),8,3);
-  img_input->imageData = (char*)bmp->data;
+  //Grab the input image
+  m_img[FILTER_NONE]->imageData = (char*)bmp->data;
 
-  img_HSV = cvCreateImage(cvSize(bmp->size_x,bmp->size_y),8,3);
-  img_threshold = cvCreateImage(cvSize(bmp->size_x,bmp->size_y),8,1);
+  //1)filter the image to the HSV color space
+  cvCvtColor(m_img[FILTER_NONE],m_img[FILTER_HSV],CV_RGB2HSV);
 
-  //Get the image in HSV color space
-  cvCvtColor(img_input,img_HSV,CV_RGB2HSV);
-
-  //Threshold the image based on the supplied range of colors
-  cvInRangeS( img_HSV,
+  //2Threshold the image based on the supplied range of colors
+  cvInRangeS( m_img[FILTER_HSV],
               cvScalar( (int)(in_color1->get(0)*255), (int)(in_color1->get(1)*255), (int)(in_color1->get(2)*255) ),
               cvScalar( (int)(in_color2->get(0)*255), (int)(in_color2->get(1)*255), (int)(in_color2->get(2)*255) ),
-              img_threshold );
+              m_img[FILTER_HSV_THRESHOLD] );
 
   //keep the image for debugging purposes
-  //cvCvtColor(img_threshold,img_HSV, CV_GRAY2RGB);
-  //Now the math
-  //1)Get the moments
-  CvMoments *moments = (CvMoments*)malloc(sizeof(CvMoments));
-  cvMoments(img_threshold,moments,1);
-  double moment10 = cvGetSpatialMoment(moments,1,0);
-  double moment01 = cvGetSpatialMoment(moments,0,1);
-  double area = cvGetCentralMoment(moments,0,0);
+  //cvCvtColor(img_threshold,img_FILTER_HSV, CV_GRAY2RGB);
 
-  //2)Calculate the positions
+  //3)Now the math to find the centroid of the "thresholded image"
+  //3.1)Get the moments
+  cvMoments(m_img[FILTER_HSV_THRESHOLD],m_moments,1);
+  double moment10 = cvGetSpatialMoment(m_moments,1,0);
+  double moment01 = cvGetSpatialMoment(m_moments,0,1);
+  double area = cvGetCentralMoment(m_moments,0,0);
+
+  //3.2)Calculate the positions
   double posX =  moment10/area;
   double posY = moment01/area;
 
-  //3) Normalize the positions
+  //3.3) Normalize the positions
   posX = posX/bmp->size_x;
   posY = posY/bmp->size_y;
 
@@ -104,16 +154,9 @@ void tracker_bitmap_color::run()
 
   /*
   m_bitm = *bmp;
-  m_bitm.data = img_HSV->imageData;;
+  m_bitm.data = img_FILTER_HSV->imageData;;
   filtered_output->set_p(m_bitm);
   //loading_done = true;
   */
 
-  //Release the allocated resources
-  //TODO : Allocate and release resources on demand/only when the data changes.
-  //       else reuse the previously allocated structures.
-  delete moments;
-  cvReleaseImageHeader(&img_input);
-  cvReleaseImage(&img_HSV);
-  cvReleaseImage(&img_threshold);
 }
