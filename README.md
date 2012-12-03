@@ -32,7 +32,7 @@ Make sure you have met the build dependencies:
 
 Optional dependencies:
 
-      sudo apt-get install libopencv-dev libcvaux-dev libhighgui-dev
+      sudo apt-get install libopencv-dev libcvaux-dev libhighgui-dev libcv-dev
 
 Get the VSXu Source from github:
 
