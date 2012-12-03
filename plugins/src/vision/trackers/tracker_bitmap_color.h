@@ -21,11 +21,11 @@
 #ifndef TRACKER_BITMAP_COLOR_H
 #define TRACKER_BITMAP_COLOR_H
 
+#include <cv.h>
 #include "vsx_math_3d.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
 
-#include <cv.h>
 
 class tracker_bitmap_color : public vsx_module
 {
@@ -33,9 +33,9 @@ class tracker_bitmap_color : public vsx_module
   vsx_module_param_float3* in_color1;
   vsx_module_param_float3* in_color2;
 
-  vsx_module_param_float3* result_position;
-  //vsx_module_param_bitmap* filtered_output;
-  //vsx_bitmap m_bitm; //debug output
+  vsx_module_param_float3* out_centroid;
+  vsx_module_param_bitmap* out_debug;
+  vsx_bitmap m_debug; //debug output
 
   int m_previousTimestamp; //Internal copy , needed for checking with the previous image
 
@@ -51,6 +51,7 @@ public:
   virtual void module_info(vsx_module_info* info);
   virtual void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters);
   virtual void run();
+  virtual void output(vsx_module_param_abs* param);
 };
 
 #endif // TRACKER_BITMAP_COLOR_H

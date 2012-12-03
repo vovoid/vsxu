@@ -16,7 +16,6 @@
 * with this program; if not, write to the Free Software Foundation, Inc.,
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#include <cv.h>
 #include "tracker_bitmap_color.h"
 
 #define FILTER_NONE 0
@@ -54,7 +53,7 @@ void tracker_bitmap_color::initialize_buffers( int w, int h )
 
   m_img[FILTER_HSV] = cvCreateImage(cvSize(w,h),8,3);
   m_img[FILTER_HSV_THRESHOLD] = cvCreateImage(cvSize(w,h),8,1);
-  //m_img[FILTER_HSV_THRESHOLD_RGB] = cvCreateImage(cvSize(w,h),8,3);
+  m_img[FILTER_HSV_THRESHOLD_RGB] = cvCreateImage(cvSize(w,h),8,3);
 }
 
 void tracker_bitmap_color::release_buffers()
@@ -66,7 +65,7 @@ void tracker_bitmap_color::release_buffers()
   cvReleaseImageHeader(&m_img[FILTER_NONE]);
   cvReleaseImage(&m_img[FILTER_HSV]);
   cvReleaseImage(&m_img[FILTER_HSV_THRESHOLD]);
-  //cvReleaseImage(&m_img[FILTER_HSV_THRESHOLD_RGB]);
+  cvReleaseImage(&m_img[FILTER_HSV_THRESHOLD_RGB]);
 
   m_img[FILTER_NONE] = 0;
   m_img[FILTER_HSV] = 0;
@@ -79,10 +78,10 @@ void tracker_bitmap_color::module_info(vsx_module_info* info)
 {
   info->identifier = "vision;trackers;bitmap_color_tracker";
   info->description = "Tracks the centroid of a colored blob in the input bitmap.\n\
-  Specify the ranges of the input color in the FILTER_HSV scale using color1, color2.";
-  //info->out_param_spec = "blob_position:float3,filtered_output:bitmap";
-  //TODO: Add a proper debug output which can be disabled
-  info->out_param_spec = "blob_position:float3";
+Specify the ranges of the input color in the HSV scale using color1, color2.";
+  info->out_param_spec = "blob_position:float3,debug_output:bitmap";
+  
+  //info->out_param_spec = "blob_position:float3";
   info->in_param_spec = "bitmap:bitmap,color1:float3,color2:float3";
   info->component_class = "parameters"; //TODO: Add a new component_class for vision objects
 }
@@ -93,14 +92,14 @@ void tracker_bitmap_color::declare_params(vsx_module_param_list& in_parameters, 
   in_color1 = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"color1");
   in_color2 = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"color2");
 
-  result_position = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"blob_position");
-  //filtered_output = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"filtered_output");
+  out_centroid = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"blob_position");
+  out_debug = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"debug_output");
 
-  result_position->set(0,0);
-  result_position->set(0,1);
-  result_position->set(0,2);
+  out_centroid->set(0,0);
+  out_centroid->set(0,1);
+  out_centroid->set(0,2);
 
-  //filtered_output->set_p(m_bitm);
+  out_debug->set_p(m_debug);
   loading_done = true;
 }
 
@@ -110,7 +109,9 @@ void tracker_bitmap_color::run()
 
   //Check if there is any new image to process
   if(!(bmp && bmp->valid && bmp->timestamp && bmp->timestamp != m_previousTimestamp)){
-    printf("Skipping frame\n");
+#ifdef VSXU_DEBUG
+    printf("Skipping frame after %d \n",m_previousTimestamp);
+#endif
     return;
   }
 
@@ -129,9 +130,6 @@ void tracker_bitmap_color::run()
               cvScalar( (int)(in_color2->get(0)*255), (int)(in_color2->get(1)*255), (int)(in_color2->get(2)*255) ),
               m_img[FILTER_HSV_THRESHOLD] );
 
-  //keep the image for debugging purposes
-  //cvCvtColor(img_threshold,img_FILTER_HSV, CV_GRAY2RGB);
-
   //3)Now the math to find the centroid of the "thresholded image"
   //3.1)Get the moments
   cvMoments(m_img[FILTER_HSV_THRESHOLD],m_moments,1);
@@ -148,15 +146,25 @@ void tracker_bitmap_color::run()
   posY = posY/bmp->size_y;
 
   //Finally set the result
+#ifdef VSXU_DEBUG
   printf("Position: (%f,%f)\n",posX,posY);
-  result_position->set(posX,0);
-  result_position->set(posX,1);
+#endif
+  out_centroid->set(posX,0);
+  out_centroid->set(posX,1);
 
-  /*
-  m_bitm = *bmp;
-  m_bitm.data = img_FILTER_HSV->imageData;;
-  filtered_output->set_p(m_bitm);
-  //loading_done = true;
-  */
+  //keep the image for debugging purposes
+  //cvCvtColor(m_img[FILTER_HSV_THRESHOLD],m_img[FILTER_HSV_THRESHOLD_RGB], CV_GRAY2RGB);
+  m_debug = *bmp;
+  m_debug.data = m_img[FILTER_HSV_THRESHOLD_RGB]->imageData;
+  out_debug->set_p(m_debug);
+}
 
+void tracker_bitmap_color::output(vsx_module_param_abs* param)
+{
+  if(m_img[FILTER_NONE] && param->name == "debug_output"){
+#ifdef VSXU_DEBUG
+    printf("Creating a debug image\n");
+#endif
+    cvCvtColor(m_img[FILTER_HSV_THRESHOLD],m_img[FILTER_HSV_THRESHOLD_RGB], CV_GRAY2RGB);
+  }
 }
