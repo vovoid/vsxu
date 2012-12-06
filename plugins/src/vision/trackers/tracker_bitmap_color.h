@@ -36,6 +36,7 @@ class tracker_bitmap_color : public vsx_module
   vsx_module_param_float3* out_centroid;
   vsx_module_param_bitmap* out_debug;
   vsx_bitmap m_debug; //debug output
+  bool m_compute_debug_out;
 
   int m_previousTimestamp; //Internal copy , needed for checking with the previous image
 

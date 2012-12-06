@@ -26,6 +26,7 @@
 
 tracker_bitmap_color::tracker_bitmap_color():
   m_previousTimestamp(0),
+  m_compute_debug_out(false),
   vsx_module()
 {
   m_img[FILTER_NONE] = 0;
@@ -152,19 +153,19 @@ void tracker_bitmap_color::run()
   out_centroid->set(posX,0);
   out_centroid->set(posX,1);
 
-  //keep the image for debugging purposes
-  //cvCvtColor(m_img[FILTER_HSV_THRESHOLD],m_img[FILTER_HSV_THRESHOLD_RGB], CV_GRAY2RGB);
-  m_debug = *bmp;
-  m_debug.data = m_img[FILTER_HSV_THRESHOLD_RGB]->imageData;
-  out_debug->set_p(m_debug);
+  //Calculate the debug output only if requested
+  if(m_compute_debug_out){
+    m_compute_debug_out = false;
+    cvCvtColor(m_img[FILTER_HSV_THRESHOLD],m_img[FILTER_HSV_THRESHOLD_RGB], CV_GRAY2RGB);
+
+    m_debug = *bmp;
+    m_debug.data = m_img[FILTER_HSV_THRESHOLD_RGB]->imageData;
+    out_debug->set_p(m_debug);
+  }
 }
 
 void tracker_bitmap_color::output(vsx_module_param_abs* param)
 {
-  if(m_img[FILTER_NONE] && param->name == "debug_output"){
-#ifdef VSXU_DEBUG
-    printf("Creating a debug image\n");
-#endif
-    cvCvtColor(m_img[FILTER_HSV_THRESHOLD],m_img[FILTER_HSV_THRESHOLD_RGB], CV_GRAY2RGB);
-  }
+  if(param->name == "debug_output")
+    m_compute_debug_out = true;
 }
