@@ -29,6 +29,8 @@
 #include <RtError.h>
 #include <fftreal.h>
 
+typedef signed short sample;
+
 #define N_BUFFERS 2
 #define N_BUFFER_FRAMES 512
 #define SAMPLE_RATE 44100
@@ -41,23 +43,38 @@ class input_audio_raw : public vsx_module
 {
   vsx_module_param_int*         in_quality;
   vsx_module_param_float*       in_multiplier;
-  
+
   vsx_module_param_float*       out_vu[N_CHANNELS];
   vsx_module_param_float*       out_octaves[N_CHANNELS][N_OCTAVES];
-  vsx_module_param_float_array* out_wave;
-  vsx_module_param_float_array* out_spectrum;
-  vsx_module_param_float_array* out_spectrum_hq;
+  vsx_module_param_float_array* out_wave[N_CHANNELS];
+  vsx_module_param_float_array* out_spectrum[N_CHANNELS];
 
-  vsx_float_array m_wave, m_spectrum, m_spectrum_hq;
+  //Internal data buffers
+  vsx_float_array m_wave[N_BUFFERS][N_CHANNELS], m_spectrum[N_BUFFERS][N_CHANNELS];
+  float m_vu[N_BUFFERS][N_CHANNELS], m_octaves[N_BUFFERS][N_CHANNELS][N_OCTAVES];
+
+  //Double buffer related properties
+  int m_currentBuffer;
+  void initializeBuffers();
+  void freeBuffers();
+  int currentBufferPage();
+  int nextBufferPage();
+  void flipBufferPage();
 
   RtAudio m_adc;
+
+  //Internal objects needed for calculating vu and octave data
   FFTReal m_fft_machine;
+  float m_tmp_wave[N_CHANNELS][N_BUFFER_FRAMES];
+  float m_tmp_fft_samples[N_CHANNELS][N_BUFFER_FRAMES];
+  float m_tmp_fft_values[N_CHANNELS][N_BUFFER_FRAMES];
+
   unsigned int m_sample_rate,m_buffer_frames;
 
   static int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
                      double streamTime, RtAudioStreamStatus status, void *userData );
 
-  void read_data(double* buffer , int nBufferFrames);
+  void read_data(sample* buffer , int nBufferFrames);
 
 public:
   input_audio_raw();
