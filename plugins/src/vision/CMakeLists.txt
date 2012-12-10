@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 find_package( OpenCV )
+find_package(PTHREAD)
 
 if(OpenCV_FOUND)
 
@@ -22,7 +23,7 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 
 link_directories(${OpenCV_LIB_DIR})
 add_library(${module_id} MODULE ${SOURCES})
-target_link_libraries(${module_id} ${OpenCV_LIBS})
+target_link_libraries(${module_id} ${OpenCV_LIBS} ${PTHREAD_LIBRARY})
 include(../cmake_suffix.txt)
 
 endif(OpenCV_FOUND)

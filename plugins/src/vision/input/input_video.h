@@ -28,8 +28,6 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 
-#include <unistd.h>
-
 #define N_BUFFERS 2
 
 class module_video_input : public vsx_module {

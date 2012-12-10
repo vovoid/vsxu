@@ -95,7 +95,6 @@ void input_video_file::worker()
       }
       else addTask(IGNORE_FRAME);
     }
-    usleep(delay);
     task = currentTask();
   }
 

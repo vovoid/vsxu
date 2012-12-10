@@ -89,7 +89,6 @@ void input_video_camera::worker()
       else addTask(IGNORE_FRAME);
     }
 
-    usleep(10);
     task = currentTask();
   }
 
