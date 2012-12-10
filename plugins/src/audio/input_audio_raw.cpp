@@ -26,10 +26,12 @@ input_audio_raw::input_audio_raw():
   m_currentBuffer(-1),
   vsx_module()
 {
+  pthread_mutex_init(&m_mutex, NULL);
 }
 
 input_audio_raw::~input_audio_raw()
 {
+  pthread_mutex_destroy(&m_mutex);
 }
 
 bool input_audio_raw::can_run()
@@ -134,16 +136,22 @@ void input_audio_raw::on_delete()
 
 inline int input_audio_raw::currentBufferPage()
 {
-  return m_currentBuffer;
+  int currentBuffer;
+  pthread_mutex_lock(&m_mutex);
+    currentBuffer = m_currentBuffer;
+  pthread_mutex_unlock(&m_mutex);
+  return currentBuffer;
 }
 
 inline int input_audio_raw::nextBufferPage()
 {
-  return (m_currentBuffer + 1)%N_BUFFERS;
+  return (currentBufferPage() + 1)%N_BUFFERS;
 }
 
 inline void input_audio_raw::flipBufferPage(){
-  m_currentBuffer = (m_currentBuffer + 1)%N_BUFFERS;
+  pthread_mutex_lock(&m_mutex);
+    m_currentBuffer = (m_currentBuffer + 1)%N_BUFFERS;
+  pthread_mutex_unlock(&m_mutex);
 }
 
 void input_audio_raw::initializeBuffers()

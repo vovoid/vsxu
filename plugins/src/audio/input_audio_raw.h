@@ -28,6 +28,7 @@
 #include <RtAudio.h>
 #include <RtError.h>
 #include <fftreal.h>
+#include <pthread.h>
 
 typedef signed short sample;
 
@@ -59,6 +60,8 @@ class input_audio_raw : public vsx_module
   float m_vu[N_BUFFERS][N_CHANNELS], m_octaves[N_BUFFERS][N_CHANNELS][N_OCTAVES];
 
   //Double buffer related properties
+  pthread_mutex_t m_mutex;
+
   int m_currentBuffer;
   void initializeBuffers();
   void freeBuffers();

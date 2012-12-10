@@ -17,6 +17,7 @@ endif (PULSEAUDIO_FOUND)
 #TODO: Add in the needed definitions for each Audio Library on each platform
 if(AUDIO_LIBRARIES)
   project (${module_id})
+  find_package(PTHREAD)
   include (../cmake_globals.txt)
   include_directories ( lib/RtAudio/
                         lib/fftreal/ )
@@ -26,6 +27,6 @@ if(AUDIO_LIBRARIES)
               lib/RtAudio/RtAudio.cpp)
   add_library(${module_id} MODULE ${SOURCES})
   include(../cmake_suffix.txt)
-  target_link_libraries(${module_id} ${AUDIO_LIBRARIES})
+  target_link_libraries(${module_id} ${AUDIO_LIBRARIES} ${PTHREAD_LIBRARY})
 endif(AUDIO_LIBRARIES)
 
