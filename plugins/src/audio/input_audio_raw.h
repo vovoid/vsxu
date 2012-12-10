@@ -41,13 +41,18 @@ typedef signed short sample;
 
 class input_audio_raw : public vsx_module
 {
-  vsx_module_param_int*         in_quality;
   vsx_module_param_float*       in_multiplier;
 
   vsx_module_param_float*       out_vu[N_CHANNELS];
   vsx_module_param_float*       out_octaves[N_CHANNELS][N_OCTAVES];
   vsx_module_param_float_array* out_wave[N_CHANNELS];
   vsx_module_param_float_array* out_spectrum[N_CHANNELS];
+
+  //Hidden params for maintaining backwards compatibility with the older audio input module
+  vsx_module_param_int*         hidden_in_quality;
+  vsx_module_param_float_array* hidden_out_wave;
+  vsx_module_param_float_array* hidden_out_spectrum;
+  vsx_module_param_float_array* hidden_out_spectrum_hq;
 
   //Internal data buffers
   vsx_float_array m_wave[N_BUFFERS][N_CHANNELS], m_spectrum[N_BUFFERS][N_CHANNELS];

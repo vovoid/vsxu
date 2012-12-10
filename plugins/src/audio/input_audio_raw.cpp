@@ -175,12 +175,11 @@ void input_audio_raw::freeBuffers()
 void input_audio_raw::module_info(vsx_module_info* info)
 {
   //TODO: Re create the input params based on the available device capabilities for module configuration.
-  //TODO: Add the (hidden)parameters from the older module to maintain the backwards compatibility
   info->output = 1;
-  info->identifier = "audio;input;raw";
+  info->identifier = "audio;input;raw||sound;input_visualization_listener||system;sound;vsx_listener";
 #ifndef VSX_NO_CLIENT
   info->description = "VU is the volume level for each channel.\nThe octaves are 0 = bass, 7 = treble";
-  info->in_param_spec = "quality:enum?normal_only|high_only|both,multiplier:float";
+  info->in_param_spec = "multiplier:float";
   info->out_param_spec = "vu:complex{vu_l:float,vu_r:float},\
 octaves:complex{\
   left:complex{\
@@ -191,8 +190,8 @@ octaves:complex{\
     octaves_r_4:float,octaves_r_5:float,octaves_r_6:float,octaves_r_7:float\
   }\
 },\
-wave:complex{wave_left:float_array,wave_right:float_array,},\
-spectrum:complex{spectrum_left:float_array,spectrum_right:float_array}";
+wave_data:complex{wave_left:float_array,wave_right:float_array,},\
+spectrum_data:complex{spectrum_left:float_array,spectrum_right:float_array}";
   info->component_class = "output";
 #endif
 
@@ -200,8 +199,8 @@ spectrum:complex{spectrum_left:float_array,spectrum_right:float_array}";
 
 void input_audio_raw::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
-  in_quality = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"quality");
-  in_quality->set(0);
+  hidden_in_quality = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"quality");
+  hidden_in_quality->set(0);
 
   in_multiplier = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"multiplier");
   in_multiplier->set(1);
@@ -229,11 +228,20 @@ void input_audio_raw::declare_params(vsx_module_param_list& in_parameters, vsx_m
   out_spectrum[LEFT] = (vsx_module_param_float_array*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"spectrum_left");
   out_spectrum[RIGHT] = (vsx_module_param_float_array*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"spectrum_right");
 
+
   initializeBuffers();
   for (int i = 0; i < N_CHANNELS; i++ ){
     out_wave[i]->set_p(m_wave[0][i]);
     out_spectrum[i]->set_p(m_spectrum[0][i]);
   }
+
+  //Now the params for the backwards compatibility
+  hidden_out_wave = (vsx_module_param_float_array*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"wave");
+  hidden_out_spectrum = (vsx_module_param_float_array*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"spectrum");
+  hidden_out_spectrum_hq = (vsx_module_param_float_array*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"spectrum_hq");
+  hidden_out_wave->set_p(m_wave[0][LEFT]);
+  hidden_out_spectrum->set_p(m_spectrum[0][LEFT]);
+  hidden_out_spectrum_hq->set_p(m_spectrum[0][LEFT]);
 
   loading_done = true;
 }
@@ -250,4 +258,9 @@ void input_audio_raw::run()
     for(int j = 0; j < N_OCTAVES; j++)
       out_octaves[i][j]->set(m_octaves[page][i][j]);
   }
+
+  hidden_out_wave->set_p(m_wave[page][LEFT]);
+  hidden_out_spectrum->set_p(m_spectrum[page][LEFT]);
+  hidden_out_spectrum_hq->set_p(m_spectrum[page][LEFT]);
+
 }
