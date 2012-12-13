@@ -61,7 +61,7 @@ void input_audio_raw::read_data(sample* buffer, int nBufferFrames)
   //Copy the data iinto internal buffers
   for( int i = 0; i < N_CHANNELS; i++ )
     for ( int j = 0; j < nBufferFrames; j++){
-      m_tmp_wave[i][j] = buffer[2*j + i]/16384.0;
+      m_tmp_wave[i][j] = buffer[2*j + i]/8192.0;
       (*(m_wave[page][i].data))[j] = m_tmp_wave[i][j];
       m_vu[page][i] += m_tmp_wave[i][j]/nBufferFrames;
     }
