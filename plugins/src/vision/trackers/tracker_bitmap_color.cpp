@@ -38,8 +38,7 @@ tracker_bitmap_color::tracker_bitmap_color():
 
 tracker_bitmap_color::~tracker_bitmap_color()
 {
-  release_buffers();
-  delete m_moments;
+  free(m_moments);
 }
 
 void tracker_bitmap_color::initialize_buffers( int w, int h )
@@ -56,6 +55,12 @@ void tracker_bitmap_color::initialize_buffers( int w, int h )
   m_img[FILTER_HSV_THRESHOLD] = cvCreateImage(cvSize(w,h),8,1);
   m_img[FILTER_HSV_THRESHOLD_RGB] = cvCreateImage(cvSize(w,h),8,3);
 }
+
+void tracker_bitmap_color::on_delete()
+{
+  release_buffers();
+}
+
 
 void tracker_bitmap_color::release_buffers()
 {
