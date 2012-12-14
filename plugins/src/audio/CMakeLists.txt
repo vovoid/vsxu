@@ -22,9 +22,11 @@ if(AUDIO_LIBRARIES)
   include_directories ( lib/RtAudio/
                         lib/fftreal/ )
   set(SOURCES main.cpp
-              input_audio_raw.cpp
+              input/input_audio_raw.cpp
+              input/input_audio_mediaplayer.cpp
               lib/fftreal/fftreal.cpp
               lib/RtAudio/RtAudio.cpp)
+
   add_library(${module_id} MODULE ${SOURCES})
   include(../cmake_suffix.txt)
   target_link_libraries(${module_id} ${AUDIO_LIBRARIES} ${PTHREAD_LIBRARY})

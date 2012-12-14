@@ -17,6 +17,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <sstream>
 #include "input_audio_raw.h"
 
 input_audio_raw::input_audio_raw():
@@ -42,9 +43,9 @@ bool input_audio_raw::can_run()
 int input_audio_raw::record(void* outputBuffer, void* inputBuffer, unsigned int nBufferFrames, double streamTime, RtAudioStreamStatus status, void* userData)
 {
   if ( status )
-    std::cout << "Stream overflow detected!" << std::endl;
+    std::cout << "Stream overflow/underflow detected!" << std::endl;
     // Do something with the data in the "inputBuffer" buffer.
-   else ((input_audio_raw*)userData)->read_data((sample*)inputBuffer, nBufferFrames);
+  else ((input_audio_raw*)userData)->read_data((sample*)inputBuffer, nBufferFrames);
 
   return 0;
 }
@@ -61,9 +62,9 @@ void input_audio_raw::read_data(sample* buffer, int nBufferFrames)
   //Copy the data iinto internal buffers
   for( int i = 0; i < N_CHANNELS; i++ )
     for ( int j = 0; j < nBufferFrames; j++){
-      m_tmp_wave[i][j] = buffer[2*j + i]/8192.0;
+      m_tmp_wave[i][j] = buffer[2*j + i]*amplification/16384.0;
       (*(m_wave[page][i].data))[j] = m_tmp_wave[i][j];
-      m_vu[page][i] += m_tmp_wave[i][j]/nBufferFrames;
+      //m_vu[page][i] += m_tmp_wave[i][j]/nBufferFrames;
     }
 
   //Take the FFT
@@ -77,7 +78,7 @@ void input_audio_raw::read_data(sample* buffer, int nBufferFrames)
     for ( int j = 0; j < n_fft_values; j++){
       real = m_tmp_fft_samples[i][j];
       imaginary = m_tmp_fft_samples[i][j+n_fft_values];
-      m_tmp_fft_values[i][j] = (sqrt(real*real + imaginary*imaginary)/n_fft_values)*amplification;
+      m_tmp_fft_values[i][j] = (sqrt(real*real + imaginary*imaginary)/n_fft_values);
       m_vu[page][i] += m_tmp_fft_values[i][j];
     }
 
@@ -87,14 +88,13 @@ void input_audio_raw::read_data(sample* buffer, int nBufferFrames)
       (*(m_spectrum[page][i].data))[j] = m_tmp_fft_values[i][j/2] * 3.0 * pow(log( 10.0f + ((float)SAMPLE_RATE) * (j /(float)nBufferFrames)) ,1.0f);
 
   //Calculating the Octave data
-  float current_octave =0;
   int values_per_octave = nBufferFrames/N_OCTAVES;
   for (int i = 0; i < N_CHANNELS; i++)
     for ( int j = 0; j < N_OCTAVES; j++){
       m_octaves[page][i][j] = 0;
       for ( int k = 0; k < values_per_octave; k++)
-        m_octaves[page][i][j] +=  (*(m_spectrum[page][i].data))[j];
-      m_octaves[page][i][j] /= values_per_octave;
+        m_octaves[page][i][j] +=  (*(m_spectrum[page][i].data))[j*values_per_octave + k];
+      m_octaves[page][i][j] /= (values_per_octave - 14);
     }
 }
 

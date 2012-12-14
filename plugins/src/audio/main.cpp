@@ -19,7 +19,8 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "input_audio_raw.h"
+#include "input/input_audio_raw.h"
+#include "input/input_audio_mediaplayer.h"
 
 #ifndef _WIN32
 #define __declspec(a)
@@ -35,6 +36,8 @@ vsx_module* create_new_module(unsigned long module) {
   switch(module){
     case 0:
       return (vsx_module*)(new input_audio_raw);
+    case 1:
+      return (vsx_module*)(new input_audio_mediaplayer);
   }
 }
 
@@ -42,9 +45,11 @@ void destroy_module(vsx_module* m,unsigned long module) {
   switch(module){
     case 0:
       return delete (input_audio_raw*)m;
+    case 1:
+      return delete (input_audio_mediaplayer*)m;
   }
 }
 
 unsigned long get_num_modules() {
-  return 1;
+  return 2;
 }
