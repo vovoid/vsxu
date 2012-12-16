@@ -7,12 +7,25 @@ message("configuring vsxu module            " ${module_id})
 
 set(AUDIO_LIBRARIES "")
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 find_package(PULSEAUDIO)
-if (PULSEAUDIO_FOUND)
+if(PULSEAUDIO_FOUND)
   add_definitions(-D__LINUX_PULSE__)
   include_directories(${PULSEAUDIO_INCLUDE_DIRS})
   set( AUDIO_LIBRARIES ${PULSEAUDIO_LIBRARY} ${PULSEAUDIO_SIMPLE_LIBRARY})
-endif (PULSEAUDIO_FOUND)
+endif(PULSEAUDIO_FOUND)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  add_definitions(-D__MACOSX_CORE__)
+  add_definitions(-D__OS_MACOSX__)
+  find_library(COREAUDIO_LIBRARY CoreAudio)
+  if(COREAUDIO_LIBRARY_FOUND)
+    set( AUDIO_LIBRARIES ${COREAUDIO_LIBRARY})
+  endif(COREAUDIO_LIBRARY_FOUND)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
 
 #TODO: Add in the needed definitions for each Audio Library on each platform
 if(AUDIO_LIBRARIES)
