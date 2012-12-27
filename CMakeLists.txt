@@ -124,7 +124,7 @@ INCLUDE(CPack)
 ################################################################################
 if(VSXU_DEBUG)
   message("All warnings are enabled")
-  add_definitions(-g -Wall -Wtype-limits -Wuninitialized -Wignored-qualifiers -Wempty-body -Wunused-parameter)
+  add_definitions(-g -Wall -Wtype-limits -fpermissive -Wuninitialized -Wignored-qualifiers -Wempty-body -Wunused-parameter)
 else(VSXU_DEBUG)
   if (OPTIMIZATION_FLAGS EQUAL 1)
     add_definitions(-lrt -lm -O1 -march=opteron -fno-thread-jumps -fno-if-conversion2 -fno-delayed-branch -fno-loop-optimize -ftree-dce -ftree-sra -ftree-copyrename -ftree-fre -ftree-ch -fmerge-constants -fcrossjumping -fcse-follow-jumps -fcse-skip-blocks -fexpensive-optimizations -fstrength-reduce -frerun-cse-after-loop -frerun-loop-opt -fforce-addr -fpeephole2 -fschedule-insns2 -fregmove -freorder-blocks -fsched-interblock -funit-at-a-time -falign-functions -falign-jumps -falign-loops -falign-labels -finline-functions -fno-inline -ftracer -fmodulo-sched -fgcse-sm -freschedule-modulo-scheduled-loops -ftree-loop-im -ftree-loop-ivcanon -maccumulate-outgoing-args -mno-align-stringops -D__NO_MATH_INLINES -funsafe-math-optimizations -fno-signaling-nans)
