@@ -100,6 +100,11 @@ public:
     return used;
   }
 
+  size_t get_sizeof()
+  {
+    return used * sizeof(T);
+  }
+
   void clear() {
     if (data_volatile) { return; }
   	if (A)
