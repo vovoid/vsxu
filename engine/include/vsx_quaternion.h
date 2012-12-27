@@ -45,6 +45,13 @@ public:
     z = zz;
   }
 
+  vsx_quaternion(float xx, float yy, float zz, float ww) {
+    x = xx;
+    y = yy;
+    z = zz;
+    w = ww;
+  }
+
   inline void cos_slerp(vsx_quaternion& from, vsx_quaternion& to, float t)
   {
     slerp(from,to,(float)sin(t*HALF_PI));
