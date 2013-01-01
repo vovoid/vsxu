@@ -98,12 +98,17 @@ public:
   bool first;
   vsx_string current_fps;
   vsx_timer gui_t;
+  vsx_timer engine_render_time;
   int frame_count;
   int movie_frame_count;
   float gui_g_time;
   double dt;
   double gui_f_time;
   double gui_fullscreen_fpstimer;
+  double max_fps;
+  double min_fps;
+  double max_render_time;
+  double min_render_time;
   vsx_command_s pgv;
   vsx_logo_intro *intro;
   vsxu_draw() :
@@ -111,7 +116,11 @@ public:
     frame_count(0),
     gui_g_time(0),
     gui_f_time(0),
-    gui_fullscreen_fpstimer(0)
+    gui_fullscreen_fpstimer(0),
+    max_fps(0),
+    min_fps(1000000),
+    max_render_time(-1),
+    min_render_time(1000)
   {}
   ~vsxu_draw() {}
 
@@ -197,7 +206,9 @@ public:
           }
         #endif
         if (vxe && !dual_monitor) {
+          engine_render_time.start();
           vxe->render();
+          float frame_time = engine_render_time.dtime();
           glDisable(GL_DEPTH_TEST);
 
           glMatrixMode(GL_PROJECTION);
@@ -226,7 +237,23 @@ public:
               glVertex3f( 1.0f,0.92f, 0.0f);          // Bottom Right
               glVertex3f(-1.0f,0.92f, 0.0f);          // Bottom Left
             glEnd();                      // Done Drawing The Quad
-            myf.print(vsx_vector(-1.0f,0.92f)," Fc "+i2s(frame_counter)+" Fps "+f2s(delta_fps)+" T "+f2s(total_time)+" Tfps "+f2s(frame_counter/total_time)+" MC "+i2s(vxe->get_num_modules())+" VSX Ultra (c) 2003-2010 Vovoid - Alt+T=toggle this text, Ctrl+Alt+P=screenshot (data dir), Alt+F=performance mode ",0.03f);
+            if (delta_fps > max_fps) max_fps = delta_fps;
+            if (delta_fps < min_fps) min_fps = delta_fps;
+            if (frame_time < min_render_time) min_render_time = frame_time;
+            if (frame_time > max_render_time) max_render_time = frame_time;
+            myf.print(vsx_vector(-0.99f,0.92f),"VSXu (c) 2003-2013 Vovoid - Alt+T=toggle this text, Ctrl+Alt+P=screenshot (data dir), Alt+F=performance mode || FrameCounter "+i2s(frame_counter) + "   Elapsed time: "+f2s(total_time)+"   Module Count: "+i2s(vxe->get_num_modules())+"Average FPS "+f2s(frame_counter/total_time),0.025f);
+            myf.print
+            (
+              vsx_vector(
+                -0.99f,
+                0.88f
+              ),
+              "(Cur/Min/Max) "
+              "FPS: ("+f2s(delta_fps)+"/"+f2s(min_fps)+"/"+f2s(max_fps)+")"
+              "Frame render time: ("+f2s(frame_time)+"/"+f2s(min_render_time)+"/"+f2s(max_render_time)+")"
+              ,0.025f
+            );
+            //"("+f2s(frame_time)+")
           }
         }
         if (desktop && desktop->performance_mode) {
