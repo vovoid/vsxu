@@ -17,6 +17,16 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   endif(PULSEAUDIO_FOUND)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  find_package(ALSA)
+  if(ALSA_FOUND)
+    add_definitions(-D__LINUX_ALSA__)
+
+    include_directories(${ALSA_INCLUDE_DIRS})
+    set( AUDIO_LIBRARIES ${AUDIO_LIBRARIES} ${ALSA_LIBRARY} )
+  endif(ALSA_FOUND)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   find_library(COREAUDIO_LIBRARY CoreAudio)
