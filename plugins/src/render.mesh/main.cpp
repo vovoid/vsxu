@@ -588,6 +588,7 @@ public:
   //face_holder() : dist(0),id(0) {};
 };
 
+
 class vsx_module_render_mesh : public vsx_module {
   // in
   vsx_module_param_texture* tex_a;
@@ -606,15 +607,210 @@ class vsx_module_render_mesh : public vsx_module {
   vsx_mesh** particle_mesh;
   vsx_mesh** mesh;
   vsx_texture** ta;
-  bool m_normals, m_tex, m_colors;
+  bool m_normals, m_tex_coords, m_colors;
   vsx_matrix mod_mat, proj_mat;
   vsx_particlesystem* particles;
   vsx_matrix ma;
-  vsx_vector upv;
 
   GLuint dlist;
   bool list_built;
   unsigned long prev_mesh_timestamp;
+
+  // vbo index offsets
+  int offset_normals;
+  int offset_vertices;
+  int offset_texcoords;
+  int offset_vertex_colors;
+  // vbo handles
+  GLuint vbo_id_vertex_normals_texcoords;
+  GLuint vbo_id_draw_indices;
+  // current - state - used to see if anything has changed
+  GLuint current_vbo_draw_type;
+  int current_num_vertices;
+  int current_num_faces;
+
+  ///////////////////////////////////////////////////////////////////////////////
+  // generate vertex buffer object and bind it with its data
+  // You must give 2 hints about data usage; target and mode, so that OpenGL can
+  // decide which data should be stored and its location.
+  // VBO works with 2 different targets; GL_ARRAY_BUFFER_ARB for vertex arrays
+  // and GL_ELEMENT_ARRAY_BUFFER_ARB for index array in glDrawElements().
+  // The default target is GL_ARRAY_BUFFER_ARB.
+  // By default, usage mode is set as GL_STATIC_DRAW_ARB.
+  // Other usages are GL_STREAM_DRAW_ARB, GL_STREAM_READ_ARB, GL_STREAM_COPY_ARB,
+  // GL_STATIC_DRAW_ARB, GL_STATIC_READ_ARB, GL_STATIC_COPY_ARB,
+  // GL_DYNAMIC_DRAW_ARB, GL_DYNAMIC_READ_ARB, GL_DYNAMIC_COPY_ARB.
+  GLuint create_vbo(const void* data, int dataSize, GLenum target, GLenum usage)
+  {
+    GLuint id = 0;  // 0 is reserved, glGenBuffersARB() will return non-zero id if success
+
+    glGenBuffersARB(1, &id);                        // create a vbo
+    glBindBufferARB(target, id);                    // activate vbo id to use
+    glBufferDataARB(target, dataSize, data, usage); // upload data to video card
+
+    // check data size in VBO is same as input array, if not return 0 and delete VBO
+    int bufferSize = 0;
+    glGetBufferParameterivARB(target, GL_BUFFER_SIZE_ARB, &bufferSize);
+    if(dataSize != bufferSize)
+    {
+      glDeleteBuffersARB(1, &id);
+      id = 0;
+    }
+    return id;      // return VBO id
+  }
+
+  inline void init_vbo(GLuint draw_type = GL_STREAM_DRAW_ARB)
+  {
+    if (vbo_id_vertex_normals_texcoords) {
+      printf("inig vbo failed - vbo_id_vertex_normals_texcoords already has a value: %d\n", vbo_id_vertex_normals_texcoords);
+      return;
+    }
+    current_vbo_draw_type = draw_type;
+    offset_normals = 0;
+    offset_vertices = 0;
+    offset_texcoords = 0;
+    offset_vertex_colors = 0;
+    GLintptr offset = 0;
+
+
+    //-----------------------------------------------------------------------
+    // generate the buffers
+    glGenBuffersARB
+    (
+      1,
+      &vbo_id_vertex_normals_texcoords
+    );
+    // bind the vertex, normals buffer for use
+    glBindBufferARB
+    (
+      GL_ARRAY_BUFFER_ARB,
+      vbo_id_vertex_normals_texcoords
+    );
+    //-----------------------------------------------------------------------
+    // allocate the buffer
+    glBufferDataARB(
+      GL_ARRAY_BUFFER_ARB,
+      (*mesh)->data->vertex_normals.get_sizeof()
+      +
+      (*mesh)->data->vertices.get_sizeof()
+      +
+      (*mesh)->data->vertex_tex_coords.get_sizeof()
+      ,
+      0,
+      draw_type//GL_STATIC_DRAW_ARB // only static draw
+    );
+
+    //-----------------------------------------------------------------------
+    // inject the different arrays
+    // 1: vertex normals ----------------------------------------------------
+    if ( (*mesh)->data->vertex_normals.size() )
+    {
+      offset_normals = offset;
+      glBufferSubDataARB
+      (
+        GL_ARRAY_BUFFER_ARB,
+        offset,
+        (*mesh)->data->vertex_normals.get_sizeof(),
+        (*mesh)->data->vertex_normals.get_pointer()
+      );
+      offset += (*mesh)->data->vertex_normals.get_sizeof();
+    }
+
+    // 2: texture coordinates -----------------------------------------------
+    if ( (*mesh)->data->vertex_tex_coords.size() )
+    {
+      offset_texcoords = offset;
+      glBufferSubDataARB
+      (
+        GL_ARRAY_BUFFER_ARB,
+        offset,
+        (*mesh)->data->vertex_tex_coords.get_sizeof(),
+        (*mesh)->data->vertex_tex_coords.get_pointer()
+      );
+      offset += (*mesh)->data->vertex_tex_coords.get_sizeof();
+    }
+
+    // 3: optional: vertex color coordinates -----------------------------------------------
+    if ( (*mesh)->data->vertex_colors.size() )
+    {
+      offset_vertex_colors = offset;
+      glBufferSubDataARB
+      (
+        GL_ARRAY_BUFFER_ARB,
+        offset,
+        (*mesh)->data->vertex_colors.get_sizeof(),
+        (*mesh)->data->vertex_colors.get_pointer()
+      );
+      offset += (*mesh)->data->vertex_colors.get_sizeof();
+    }
+
+    // 4: vertices ----------------------------------------------------------
+    offset_vertices = offset;
+    glBufferSubDataARB
+    (
+      GL_ARRAY_BUFFER_ARB,
+      offset,
+      (*mesh)->data->vertices.get_sizeof(),
+      (*mesh)->data->vertices.get_pointer()
+    );
+    offset += (*mesh)->data->vertices.get_sizeof();
+    current_num_vertices = (*mesh)->data->vertices.size();
+
+    //-----------------------------------------------------------------------
+
+    int bufferSize;
+    glGetBufferParameterivARB(GL_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize);
+    printf("vertex and normal array in vbo: %d bytes\n", bufferSize);
+    //used_memory += bufferSize;
+
+    // create VBO for index array
+    // Target of this VBO is GL_ELEMENT_ARRAY_BUFFER_ARB and usage is GL_STATIC_DRAW_ARB
+    vbo_id_draw_indices =
+        create_vbo
+        (
+          (*mesh)->data->faces.get_pointer(),
+          (*mesh)->data->faces.get_sizeof(),
+          GL_ELEMENT_ARRAY_BUFFER_ARB,
+          GL_STATIC_DRAW_ARB
+        );
+
+    glGetBufferParameterivARB(GL_ELEMENT_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize);
+    printf("index array in vbo: %d bytes\n", bufferSize);
+    //used_memory += bufferSize;
+    //printf("total VBO memory used: %d bytes\n", used_memory);
+    current_num_faces = (*mesh)->data->faces.size();
+  }
+
+  inline void destroy_vbo()
+  {
+    if (!vbo_id_vertex_normals_texcoords) return;
+    glDeleteBuffersARB(1, &vbo_id_vertex_normals_texcoords);
+    glDeleteBuffersARB(1, &vbo_id_draw_indices);
+    vbo_id_vertex_normals_texcoords = 0;
+    vbo_id_draw_indices = 0;
+  }
+
+
+  inline bool check_if_need_to_reinit_vbo(GLuint draw_type)
+  {
+    if (!vbo_id_vertex_normals_texcoords) return true;
+    if (current_num_vertices != (*mesh)->data->vertices.size() ) return true;
+    if (current_num_faces != (*mesh)->data->faces.size() ) return true;
+    if (current_vbo_draw_type != draw_type) return true;
+    return false;
+  }
+
+  inline void maintain_vbo_type(GLuint draw_type = GL_STREAM_DRAW_ARB)
+  {
+    if (check_if_need_to_reinit_vbo(draw_type))
+    {
+      printf("re-initializing the VBO!\n");
+      destroy_vbo();
+      init_vbo(draw_type);
+    }
+  }
+
+
 public:
 
   void module_info(vsx_module_info* info)
@@ -652,388 +848,350 @@ public:
 
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     render_result->set(0);
-    upv = vsx_vector(0,1,0);
-    //quadratic=gluNewQuadric();                          // Create A Pointer To The Quadric Object
-    //gluQuadricNormals(quadratic, GLU_SMOOTH);           // Create Smooth Normals
-    //gluQuadricTexture(quadratic, GL_TRUE);              // Create Texture Coords
-    list_built = false;
     prev_mesh_timestamp = 0xFFFFFF;
+
+    // init variables
+    // vbo index offsets
+    offset_normals = 0;
+    offset_vertices = 0;
+    offset_texcoords = 0;
+    offset_vertex_colors = 0;
+    // vbo handles
+    vbo_id_vertex_normals_texcoords = 0;
+    vbo_id_draw_indices = 0;
+    // current - state - used to see if anything has changed
+    current_vbo_draw_type = 0;
+    current_num_vertices = 0;
+    current_num_faces = 0;
+
   }
 
-  void output(vsx_module_param_abs* param) {
-    GLint dmask;
-    glGetIntegerv(GL_DEPTH_WRITEMASK,&dmask);
-    mesh = mesh_in->get_addr();
-    if (mesh) {
-      if (!(*mesh)->data) return;
-      if ((*mesh)->data->faces.get_used()) {
-        ta = tex_a->get_addr();
-        //printf("renderer output\n");
+  void inline enable_texture()
+  {
+    ta = tex_a->get_addr();
+    if (ta)
+    {
+      vsx_transform_obj& texture_transform = *(*ta)->get_transform();
 
-        //GLfloat center[] = {0.0f, 0.0f, 0.0f, 1.0f};
-        //GLfloat deep[] = {0.0f, 0.0f, 1.0f, 1.0f};
-        //GLfloat mod_mat_inv[16];
-        //vsx_matrix mod_mat_inv = mod_mat;
-        //mod_mat_inv.assign_inverse(&mod_mat);
+      glMatrixMode(GL_TEXTURE);
+      glPushMatrix();
 
-        //inv_mat(mod_mat, mod_mat_inv);
-        //mat_vec_mult(mod_mat_inv, center, start);
-        //mat_vec_mult(mod_mat_inv, deep, end);
+      if ((*ta)->get_transform())
+      texture_transform();
+      (*ta)->bind();
+    }
+  }
 
-        //vsx_matrix m;
+  void inline disable_texture()
+  {
+    if (ta)
+    {
+      (*ta)->_bind();
+      glMatrixMode(GL_TEXTURE);
+      glPopMatrix();
+    }
+  }
 
-        //glGetFloatv(GL_PROJECTION_MATRIX, m.m);
-        // we assume that the camera is 10 000 units away from the object
-        //vsx_vector a(0,0,100);
-        //vsx_vector b = m.multiply_vector(a);
-        // b is now the camera position
-        //b.normalize();
-        //b.x*=10;
-        //b.y*=10;
-        //b.z*=10;
-        //b.dump("camera_pos");
+  void inline enable_client_arrays_no_vbo()
+  {
+    // reset presence values
+    m_colors = false;
+    m_normals = false;
+    m_tex_coords = false;
 
-        // make sure we have centers to sort on
-        //if (!mesh.data->face_centers.size()) {
-          //mesh.data->calculate_face_centers();
-        //}
-        // loop through all the faces and calculate the distance from the camera
-        //for (int i = 0; i < mesh.data->face_centers.size(); ++i) {
-          //f_distances[i].dist = mesh.data->face_centers[i].distance(b);
-          //f_distances[i].dist = mesh.data->face_centers[i].dot_product(&sort_vec);
-          //f_distances[i].id = i;
-          /*glPushMatrix();
-          glTranslatef(mesh.data->face_centers[i].x,mesh.data->face_centers[i].y,mesh.data->face_centers[i].z);
-          glColor4f(1,1,1,1);
-          gluSphere(quadratic,0.1,20,20);
-          glPopMatrix();
-          printf("id: %d  dist: %f\n",i, f_distances[i].dist);*/
-        //}
-        //printf("-----\n");
-        // we have the distances, now time to sort
-        //std::sort(f_distances, f_distances.get_end_pointer());
-        //fquicksort(f_distances.get_pointer(),f_distances.size());
-        //for (int i = 0; i < mesh.data->face_centers.size(); ++i) {
-          //printf("id: %d  dist: %f\n",f_distances[i].id, f_distances[i].dist);
-          //f_result[i] = mesh.data->faces[f_distances[i].id];
-        //}
-        //printf("f_Result.size: %d\n",f_result.size());
+    // enable vertex colors
+    if (use_vertex_colors->get())
+    {
+      if ((*mesh)->data->vertex_colors.get_used()) {
+        glColorPointer(4,GL_FLOAT,0,(*mesh)->data->vertex_colors.get_pointer());
+        m_colors = true;
+      }
+    }
+    // enable vertex normals
+    if ((*mesh)->data->vertex_normals.get_used()) {
+      glNormalPointer(GL_FLOAT,0,(*mesh)->data->vertex_normals.get_pointer());
+      m_normals = true;
+    }
+    // enable tex coords
+    if ((*mesh)->data->vertex_tex_coords.get_used()) {
+      glTexCoordPointer(2,GL_FLOAT,0,(*mesh)->data->vertex_tex_coords.get_pointer());
+      m_tex_coords = true;
+    }
+    // enable vertices
+    glVertexPointer(3,GL_FLOAT,0,(*mesh)->data->vertices.get_pointer());
 
-
-        if (ta) {
-          vsx_transform_obj& texture_transform = *(*ta)->get_transform();
-
-          glMatrixMode(GL_TEXTURE);
-          glPushMatrix();
-
-          if ((*ta)->get_transform())
-          texture_transform();
-          (*ta)->bind();
-        }// else printf("not using texture.\n");
+    glEnableClientState(GL_VERTEX_ARRAY);
+    if (m_colors) glEnableClientState(GL_COLOR_ARRAY);
+    if (m_normals) glEnableClientState(GL_NORMAL_ARRAY);
+    if (m_tex_coords) glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  }
 
 
-        if (vertex_colors->get()) {
-          glEnable(GL_COLOR_MATERIAL);
-          //printf("vertex colors %d\n");
+  void inline enable_client_arrays_vbo()
+  {
+    // reset presence values
+    m_colors = false;
+    m_normals = false;
+    m_tex_coords = false;
+
+
+    // bind the vertex, normals buffer for use
+    glBindBufferARB
+    (
+      GL_ARRAY_BUFFER_ARB,
+      vbo_id_vertex_normals_texcoords
+    );
+
+    // if buffer type is "STREAM", upload new data
+
+    if (current_vbo_draw_type == GL_STREAM_DRAW_ARB)
+    {
+      char *ptr = (char*)glMapBufferARB(GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+      if(ptr)
+      {
+        /*if ((*mesh)->data->vertex_normals.get_used()) {
+          memcpy( ptr + offset_normals, (*mesh)->data->vertex_normals.get_pointer(), (*mesh)->data->vertex_normals.get_sizeof() );
         }
-
-#ifndef VSXU_OPENGL_ES
-
-        if (!use_display_list->get() && list_built) {
-          list_built = false;
-          glDeleteLists(dlist,1);
+        if ((*mesh)->data->vertex_tex_coords.get_used()) {
+          memcpy( ptr + offset_texcoords, (*mesh)->data->vertex_tex_coords.get_pointer(), (*mesh)->data->vertex_tex_coords.get_sizeof() );
         }
-#endif
-        prev_mesh_timestamp = (*mesh)->timestamp;
-        //printf("texcoords: %d\n",mesh->data->vertex_tex_coords.get_used());
-
-        //printf("faces: %d\n",mesh->data->faces.get_used());
-        //printf("vertices: %d\n",mesh->data->vertices.get_used());
         if (use_vertex_colors->get())
         {
           if ((*mesh)->data->vertex_colors.get_used()) {
-            glColorPointer(4,GL_FLOAT,0,(*mesh)->data->vertex_colors.get_pointer());
-            glEnableClientState(GL_COLOR_ARRAY);
-            m_colors = true;
-          } else
-          m_colors = false;
-        }
-
-        if ((*mesh)->data->vertex_normals.get_used()) {
-          glNormalPointer(GL_FLOAT,0,(*mesh)->data->vertex_normals.get_pointer());
-          glEnableClientState(GL_NORMAL_ARRAY);
-          m_normals = true;
-        } else
-        m_normals = false;
-
-        //#ifdef FOO
-        //printf("used: %d\n",(*mesh)->data->vertex_tex_coords.get_used());
-        if ((*mesh)->data->vertex_tex_coords.get_used()) {
-          glTexCoordPointer(2,GL_FLOAT,0,(*mesh)->data->vertex_tex_coords.get_pointer());
-          glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-          m_tex = true;
-        } else
-        //#endif
-        m_tex = false;
-
-
-        glVertexPointer(3,GL_FLOAT,0,(*mesh)->data->vertices.get_pointer());
-        glEnableClientState(GL_VERTEX_ARRAY);
-        if (!list_built) {
-
-#ifndef VSXU_OPENGL_ES
-          if (use_display_list->get() && list_built == false) {
-            dlist = glGenLists(1);
-            glNewList(dlist,GL_COMPILE);
+            memcpy( ptr + offset_vertex_colors, (*mesh)->data->vertex_colors.get_pointer(), (*mesh)->data->vertex_colors.get_sizeof() );
           }
-#endif
-
-#ifndef VSXU_OPENGL_ES
-            glDrawElements(GL_TRIANGLES,(*mesh)->data->faces.get_used()*3,GL_UNSIGNED_INT,(*mesh)->data->faces.get_pointer());
-#else
-					glDrawElements(GL_TRIANGLES,mesh->data->faces.get_used()*3,GL_UNSIGNED_SHORT,mesh->data->faces.get_pointer());
-
-#endif
-          if (use_display_list->get() && list_built == false) {
-            glEndList();
-            list_built = true;
-          }
-#ifndef VSXU_OPENGL_ES
-        }
-        else {
-          //printf("cl");
-          particles = particles_in->get_addr();
-          particle_mesh = particle_cloud->get_addr();
-          if (particle_mesh)
-          {
-            glMatrixMode(GL_MODELVIEW);
-            glPushMatrix();
-            for (unsigned long i = 0; i < (*particle_mesh)->data->vertices.size(); ++i) {
-              glPushMatrix();
-              glTranslatef(
-                (*particle_mesh)->data->vertices[i].x,
-                (*particle_mesh)->data->vertices[i].y,
-                (*particle_mesh)->data->vertices[i].z
-              );
-              glCallList(dlist);
-              glPopMatrix();
-            }
-          } else
-          if (particles) {
-            float ss;
-            glMatrixMode(GL_MODELVIEW);
-            if (particles->particles)
-            for (unsigned long i = 0; i < particles->particles->size(); ++i) {
-              (*particles->particles)[i].color.a = (1-((*particles->particles)[i].time/(*particles->particles)[i].lifetime));
-              (*particles->particles)[i].color.gl_color();
-              glPushMatrix();
-                //ma.rotation_from_vectors(&(*particles->particles)[i].rotation, &upv);
-                ma = (*particles->particles)[i].rotation.matrix();
-                if (particles_size_center->get())
-                {
-                  glMultMatrixf(ma.m);
-                  ss = (*particles->particles)[i].pos.norm();
-                } else {
-                  glTranslatef(
-                    (*particles->particles)[i].pos.x,
-                    (*particles->particles)[i].pos.y,
-                    (*particles->particles)[i].pos.z
-                  );
-                  ss = (*particles->particles)[i].size*(1-((*particles->particles)[i].time/(*particles->particles)[i].lifetime));
-                }
-                glScalef(
-                  ss,
-                  ss,
-                  ss
-                );
-                glMultMatrixf(ma.m);
-                glCallList(dlist);
-              glPopMatrix();
-
-            }
-          } else
-          glCallList(dlist);
-        }
-#endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        glDisableClientState(GL_VERTEX_ARRAY);
-
-        if (m_normals) {
-          glDisableClientState(GL_NORMAL_ARRAY);
-        }
-
-        if (m_tex) {
-          glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        }
-
-        if (m_colors) {
-          glDisableClientState(GL_COLOR_ARRAY);
-        }
-
-        if (ta) {
-          (*ta)->_bind();
-          glMatrixMode(GL_TEXTURE);
-          glPopMatrix();
-        }
-        if (vertex_colors->get()) {
-          glDisable(GL_COLOR_MATERIAL);
-        }
-
-        render_result->set(1);
-      } else
-      render_result->set(0);
-
-      //  if (!ma) {
-      //    render_result->set(0);
-    //      return;
-    //    }
-        //if (!ta) {
-          // no texture attached :/
-    //      printf("mesh data %d\n",ma.data);
-      //printf("number of faces: %d\n",ma.data->faces.get_used());
-    /*        glBegin(GL_TRIANGLES);
-            //ma->data->faces.get_used()-10;
-            if (ma.data->faces.get_used())
-            for (unsigned long i = 0; i < ma.data->faces.get_used()-1; ++i) {
-              //printf(" %f",ma.data->vertices[ma.data->faces[i].c].x);
-              glTexCoord3f(
-                ma->data->vertex_tex_coords[ma->data->faces[i].a].x,
-                ma->data->vertex_tex_coords[ma->data->faces[i].a].y,
-                ma->data->vertex_tex_coords[ma->data->faces[i].a].z);*/
-    /*          glNormal3f(
-                ma.data->vertex_normals[ma.data->faces[i].a].x,
-                ma.data->vertex_normals[ma.data->faces[i].a].y,
-                ma.data->vertex_normals[ma.data->faces[i].a].z);
-              glVertex3f(
-                ma.data->vertices[ma.data->faces[i].a].x,
-                ma.data->vertices[ma.data->faces[i].a].y,
-                ma.data->vertices[ma.data->faces[i].a].z);
-              glTexCoord3f(
-                ma->data->vertex_tex_coords[ma->data->faces[i].b].x,
-                ma->data->vertex_tex_coords[ma->data->faces[i].b].y,
-                ma->data->vertex_tex_coords[ma->data->faces[i].b].z);*/
-    /*          glNormal3f(
-                ma.data->vertex_normals[ma.data->faces[i].b].x,
-                ma.data->vertex_normals[ma.data->faces[i].b].y,
-                ma.data->vertex_normals[ma.data->faces[i].b].z);
-              glVertex3f(
-                ma.data->vertices[ma.data->faces[i].b].x,
-                ma.data->vertices[ma.data->faces[i].b].y,
-                ma.data->vertices[ma.data->faces[i].b].z);
-              glTexCoord3f(
-                ma->data->vertex_tex_coords[ma->data->faces[i].c].x,
-                ma->data->vertex_tex_coords[ma->data->faces[i].c].y,
-                ma->data->vertex_tex_coords[ma->data->faces[i].c].z);*/
-    /*          glNormal3f(
-                ma.data->vertex_normals[ma.data->faces[i].c].x,
-                ma.data->vertex_normals[ma.data->faces[i].c].y,
-                ma.data->vertex_normals[ma.data->faces[i].c].z);
-              glVertex3f(
-                ma.data->vertices[ma.data->faces[i].c].x,
-                ma.data->vertices[ma.data->faces[i].c].y,
-                ma.data->vertices[ma.data->faces[i].c].z);
-            }
-            glEnd();
-            //ta->_bind();
-            render_result->set(1);
-      */
-
-    /*    } else {
-          //printf("h");
-      glColor3f(1, 1, 1);
-      glMatrixMode(GL_TEXTURE);
-      glPushMatrix();
-      glLoadIdentity();
-
-      vsx_transform_obj& texture_transform = *ta->get_transform();
-      if (ta->get_transform()) texture_transform();
-      printf("number of vertices: %d\n",ma->data->vertices.get_used());
-      float time = engine->vtime*4;
-
-
-      glTranslatef(
-        (float)sin(time * 0.0053f),
-        (float)sin(time * 0.003f), 0);
-
-      glRotatef(time * 1, 0, 0, 1);
-      glRotatef(sin(time * 0.036f) * 60, 0, 1, 0);
-
-      glScalef(
-        1.850f + (float)sin(time * 0.0014f) * 0.07f,
-        1.850f + (float)sin(time * 0.0010f) * 0.07f,
-        1.850f + (float)sin(time * 0.0007f) * 0.07f);      */
-          // we have texture
-
-          /*ta->bind();
-          if (ma->data->vertex_tex_coords.get_used()) {
-            glBegin(GL_TRIANGLES);
-            for (unsigned long i = 0; i < ma->data->faces.get_used(); ++i) {
-              glTexCoord3f(
-                ma->data->vertex_tex_coords[ma->data->faces[i].a].x,
-                ma->data->vertex_tex_coords[ma->data->faces[i].a].y,
-                ma->data->vertex_tex_coords[ma->data->faces[i].a].z);
-              glVertex3f(
-                ma->data->vertices[ma->data->faces[i].a].x,
-                ma->data->vertices[ma->data->faces[i].a].y,
-                ma->data->vertices[ma->data->faces[i].a].z);
-              glTexCoord3f(
-                ma->data->vertex_tex_coords[ma->data->faces[i].b].x,
-                ma->data->vertex_tex_coords[ma->data->faces[i].b].y,
-                ma->data->vertex_tex_coords[ma->data->faces[i].b].z);
-              glVertex3f(
-                ma->data->vertices[ma->data->faces[i].b].x,
-                ma->data->vertices[ma->data->faces[i].b].y,
-                ma->data->vertices[ma->data->faces[i].b].z);
-              glTexCoord3f(
-                ma->data->vertex_tex_coords[ma->data->faces[i].c].x,
-                ma->data->vertex_tex_coords[ma->data->faces[i].c].y,
-                ma->data->vertex_tex_coords[ma->data->faces[i].c].z);
-              glVertex3f(
-                ma->data->vertices[ma->data->faces[i].c].x,
-                ma->data->vertices[ma->data->faces[i].c].y,
-                ma->data->vertices[ma->data->faces[i].c].z);
-            }
-            glEnd();
-            ta->_bind();
-            render_result->set(1);
-            glPopMatrix();
-          } else {
-
-          }    */
-          // no texture coordinates, buuuuu :(
-    //    }
-      //}
+        }*/
+        memcpy( ptr + offset_vertices, (*mesh)->data->vertices.get_pointer(), (*mesh)->data->vertices.get_sizeof() );
+        glUnmapBufferARB(GL_ARRAY_BUFFER_ARB); // release pointer to mapping buffer
+      }
     }
-    //printf("e\n");
+
+
+    // enable vertex colors
+    if (use_vertex_colors->get())
+    {
+      if ((*mesh)->data->vertex_colors.get_used()) {
+        glColorPointer(4,GL_FLOAT,0,offset_vertex_colors);
+        m_colors = true;
+      }
+    }
+    // enable vertex normals
+    if ((*mesh)->data->vertex_normals.get_used()) {
+      glNormalPointer(GL_FLOAT,0,offset_normals);
+      m_normals = true;
+    }
+    // enable tex coords
+    if ((*mesh)->data->vertex_tex_coords.get_used()) {
+      glTexCoordPointer(2,GL_FLOAT,0,offset_texcoords);
+      m_tex_coords = true;
+    }
+    // enable vertices
+    glVertexPointer(3,GL_FLOAT,0,offset_vertices);
+
+    // bind the index array buffer buffer for use
+    glBindBufferARB
+    (
+      GL_ELEMENT_ARRAY_BUFFER_ARB,
+      vbo_id_draw_indices
+    );
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    if (m_colors) glEnableClientState(GL_COLOR_ARRAY);
+    if (m_normals) glEnableClientState(GL_NORMAL_ARRAY);
+    if (m_tex_coords) glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  }
+
+
+  void inline disable_client_arrays_no_vbo()
+  {
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    if (m_normals) {
+      glDisableClientState(GL_NORMAL_ARRAY);
+    }
+
+    if (m_tex_coords) {
+      glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    }
+
+    if (m_colors) {
+      glDisableClientState(GL_COLOR_ARRAY);
+    }
+  }
+
+  void inline disable_client_arrays_vbo()
+  {
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    if (m_normals) {
+      glDisableClientState(GL_NORMAL_ARRAY);
+    }
+
+    if (m_tex_coords) {
+      glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    }
+
+    if (m_colors) {
+      glDisableClientState(GL_COLOR_ARRAY);
+    }
+
+    // unbind the VBO buffers
+    glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+  }
+
+
+  void inline perform_draw()
+  {
+    //glDrawElements(GL_TRIANGLES,(*mesh)->data->faces.get_used()*3,GL_UNSIGNED_INT,(*mesh)->data->faces.get_pointer());
+    glDrawElements(GL_TRIANGLES,(*mesh)->data->faces.get_used()*3,GL_UNSIGNED_INT,0);
+  }
+
+  void inline cleanup_successful_rendering()
+  {
+    disable_client_arrays_vbo();
+    disable_texture();
+    if (vertex_colors->get()) {
+      glDisable(GL_COLOR_MATERIAL);
+    }
+    render_result->set(1);
+  }
+
+  void inline output_opengl_es(vsx_module_param_abs* param)
+  {
+    mesh = mesh_in->get_addr();
+    // sanity checks
+    if (!mesh) { render_result->set(0); return; }
+    if (!(*mesh)->data) { render_result->set(0); return; }
+    if (!(*mesh)->data->faces.get_used()) { render_result->set(0); return; }
+
+    enable_texture();
+
+    if (vertex_colors->get()) glEnable(GL_COLOR_MATERIAL);
+
+
+    prev_mesh_timestamp = (*mesh)->timestamp;
+
+    enable_client_arrays_no_vbo();
+    glDrawElements(GL_TRIANGLES,(*mesh)->data->faces.get_used()*3,GL_UNSIGNED_SHORT,(*mesh)->data->faces.get_pointer());
+    disable_client_arrays_no_vbo();
+
+    disable_texture();
+
+    if (vertex_colors->get()) glDisable(GL_COLOR_MATERIAL);
+
+    render_result->set(1);
+  }
+
+  // if no display list: re-init vbo with stream rendering
+  // if display list: re-init vbo with static rendering
+  // display_list being set overrides new functionality
+  // since indices will be static always, need to check for changes in number of vertices; rebuild if changed.
+
+  void output(vsx_module_param_abs* param)
+  {
+    #ifdef VSXU_OPENGL_ES
+    output_opengl_es(param); return;
+    #endif
+    mesh = mesh_in->get_addr();
+    // sanity checks
+    if (!mesh) { render_result->set(0); return; }
+    if (!(*mesh)->data) { render_result->set(0); return; }
+    if (!(*mesh)->data->faces.get_used()) { render_result->set(0); return; }
+
+    if (use_display_list->get())
+    {
+      // make sure vbo is set to static draw
+      maintain_vbo_type(GL_STATIC_DRAW_ARB);
+    } else
+    {
+      // make sure vbo is set to stream draw
+      maintain_vbo_type(GL_STREAM_DRAW_ARB);
+    }
+
+    enable_texture();
+
+    if (vertex_colors->get()) glEnable(GL_COLOR_MATERIAL);
+
+    prev_mesh_timestamp = (*mesh)->timestamp;
+
+    particle_mesh = particle_cloud->get_addr();
+    if (particle_mesh)
+    {
+      // make sure vbo is set to static draw
+      //maintain_vbo_type(GL_STATIC_DRAW_ARB);
+      enable_client_arrays_vbo();
+
+      glMatrixMode(GL_MODELVIEW);
+      for (unsigned long i = 0; i < (*particle_mesh)->data->vertices.size(); ++i) {
+        glPushMatrix();
+        glTranslatef(
+          (*particle_mesh)->data->vertices[i].x,
+          (*particle_mesh)->data->vertices[i].y,
+          (*particle_mesh)->data->vertices[i].z
+        );
+        perform_draw();
+        glPopMatrix();
+      }
+      cleanup_successful_rendering();
+      return;
+    }
+
+
+    particles = particles_in->get_addr();
+    if (particles)
+    {
+      // sanity checks
+      if (!particles->particles) { render_result->set(0); return; }
+
+      // make sure vbo is set to static draw
+      //maintain_vbo_type(GL_STATIC_DRAW_ARB);
+      enable_client_arrays_vbo();
+      float ss;
+      glMatrixMode(GL_MODELVIEW);
+
+      for (unsigned long i = 0; i < particles->particles->size(); ++i)
+      {
+        (*particles->particles)[i].color.a = (1-((*particles->particles)[i].time/(*particles->particles)[i].lifetime));
+        (*particles->particles)[i].color.gl_color();
+        glPushMatrix();
+          ma = (*particles->particles)[i].rotation.matrix();
+          if (particles_size_center->get())
+          {
+            glMultMatrixf(ma.m);
+            ss = (*particles->particles)[i].pos.norm();
+          }
+          else
+          {
+            glTranslatef(
+              (*particles->particles)[i].pos.x,
+              (*particles->particles)[i].pos.y,
+              (*particles->particles)[i].pos.z
+            );
+            ss = (*particles->particles)[i].size*(1-((*particles->particles)[i].time/(*particles->particles)[i].lifetime));
+          }
+          glScalef(
+            ss,
+            ss,
+            ss
+          );
+          glMultMatrixf(ma.m);
+          perform_draw();
+        glPopMatrix();
+      } // for (unsigned long i = 0; i < particles->particles->size(); ++i)
+      cleanup_successful_rendering();
+      return;
+    }
+
+    enable_client_arrays_vbo();
+    perform_draw();
+    cleanup_successful_rendering();
   }
 
   void stop() {
-#ifndef VSXU_OPENGL_ES
-    if (list_built) {
-      glDeleteLists(dlist,1);
-    }
-#endif
-    list_built = false;
+    #ifndef VSXU_OPENGL_ES
+    destroy_vbo();
+    #endif
   }
 };
 
