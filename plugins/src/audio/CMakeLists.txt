@@ -10,20 +10,24 @@ set(AUDIO_LIBRARIES "")
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   find_package(PULSEAUDIO)
   if(PULSEAUDIO_FOUND)
-    add_definitions(-D__LINUX_PULSE__)
+    if(NOT USE_ALSA) #Do not use pulseaudio if one explicitly prefers alsa 
+      add_definitions(-D__LINUX_PULSE__)
 
-    include_directories(${PULSEAUDIO_INCLUDE_DIRS})
-    set( AUDIO_LIBRARIES ${PULSEAUDIO_LIBRARY} ${PULSEAUDIO_SIMPLE_LIBRARY})
+      include_directories(${PULSEAUDIO_INCLUDE_DIRS})
+      set( AUDIO_LIBRARIES ${PULSEAUDIO_LIBRARY} ${PULSEAUDIO_SIMPLE_LIBRARY})
+    endif(NOT USE_ALSA)
   endif(PULSEAUDIO_FOUND)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   find_package(ALSA)
   if(ALSA_FOUND)
-    add_definitions(-D__LINUX_ALSA__)
+    if(NOT PULSEAUDIO_FOUND OR USE_ALSA) #If pulseaudio is not found or even if pulseaudio is found, if one prefers alsa
+      add_definitions(-D__LINUX_ALSA__)
 
-    include_directories(${ALSA_INCLUDE_DIRS})
-    set( AUDIO_LIBRARIES ${AUDIO_LIBRARIES} ${ALSA_LIBRARY} )
+      include_directories(${ALSA_INCLUDE_DIRS})
+      set( AUDIO_LIBRARIES ${AUDIO_LIBRARIES} ${ALSA_LIBRARY} )
+    endif(NOT PULSEAUDIO_FOUND OR USE_ALSA)
   endif(ALSA_FOUND)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
