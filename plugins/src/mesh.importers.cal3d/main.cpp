@@ -351,6 +351,7 @@ public:
   static void* worker(void *ptr) {
     cal3d_thread_info thread_info= *(cal3d_thread_info*)ptr;
     vsx_module_cal3d_loader_threaded* my = ((vsx_module_cal3d_loader_threaded*)  thread_info.class_pointer);
+    unsigned long exit_check_counter = 0;
     while (1)
     {
       if (0 == sem_trywait(&my->sem_worker_todo))
@@ -413,7 +414,7 @@ public:
         printf("cal3d %d\n",__LINE__);
         pthread_mutex_unlock(&my->mesh_mutex);
         printf("cal3d %d\n",__LINE__);
-      }
+      } else usleep(100);
 
       // if we're not supposed to run in a thread
       if (false == thread_info.is_thread)
@@ -421,20 +422,24 @@ public:
         return 0;
       }
 
-      // see if the exit flag is set (user changed from threaded to non-threaded mode)
-      printf("cal3d %d\n",__LINE__);
-      pthread_mutex_lock(&my->thread_exit_mutex);
-      printf("cal3d %d\n",__LINE__);
-      int time_to_exit = my->thread_exit;
-      printf("cal3d %d\n",__LINE__);
-      pthread_mutex_unlock(&my->thread_exit_mutex);
-      printf("cal3d %d\n",__LINE__);
-      if (time_to_exit) {
-        int *retval = new int;
-        *retval = 0;
-        my->thread_exit = 0;
-        pthread_exit((void*)retval);
-        return 0;
+      if (exit_check_counter++ > 10000)
+      {
+        exit_check_counter = 0;
+        // see if the exit flag is set (user changed from threaded to non-threaded mode)
+        printf("cal3d %d\n",__LINE__);
+        pthread_mutex_lock(&my->thread_exit_mutex);
+        printf("cal3d %d\n",__LINE__);
+        int time_to_exit = my->thread_exit;
+        printf("cal3d %d\n",__LINE__);
+        pthread_mutex_unlock(&my->thread_exit_mutex);
+        printf("cal3d %d\n",__LINE__);
+        if (time_to_exit) {
+          int *retval = new int;
+          *retval = 0;
+          my->thread_exit = 0;
+          pthread_exit((void*)retval);
+          return 0;
+        }
       }
     }
     return 0;
