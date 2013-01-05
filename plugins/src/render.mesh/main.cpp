@@ -717,7 +717,7 @@ class vsx_module_render_mesh : public vsx_module {
         (*mesh)->data->vertex_normals.get_pointer()
       );
       offset += (*mesh)->data->vertex_normals.get_sizeof();
-      printf("offset after vertex normals: %d\n", offset);
+      //printf("offset after vertex normals: %d\n", offset);
     }
 
     // 2: texture coordinates -----------------------------------------------
@@ -732,7 +732,7 @@ class vsx_module_render_mesh : public vsx_module {
         (*mesh)->data->vertex_tex_coords.get_pointer()
       );
       offset += (*mesh)->data->vertex_tex_coords.get_sizeof();
-      printf("offset after texcoords: %d\n", offset);
+      //printf("offset after texcoords: %d\n", offset);
     }
 
     // 3: optional: vertex color coordinates -----------------------------------------------
@@ -747,7 +747,7 @@ class vsx_module_render_mesh : public vsx_module {
         (*mesh)->data->vertex_colors.get_pointer()
       );
       offset += (*mesh)->data->vertex_colors.get_sizeof();
-      printf("offset after vertex colors: %d\n", offset);
+      //printf("offset after vertex colors: %d\n", offset);
     }
 
     // 4: vertices ----------------------------------------------------------
@@ -761,13 +761,13 @@ class vsx_module_render_mesh : public vsx_module {
     );
     offset += (*mesh)->data->vertices.get_sizeof();
     current_num_vertices = (*mesh)->data->vertices.size();
-    printf("offset after vertices: %d\n", offset);
+    //printf("offset after vertices: %d\n", offset);
 
     //-----------------------------------------------------------------------
 
     int bufferSize;
     glGetBufferParameterivARB(GL_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize);
-    printf("vertex and normal array in vbo: %d bytes\n", bufferSize);
+    //printf("vertex and normal array in vbo: %d bytes\n", bufferSize);
 
     // unbind the array buffer
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
@@ -784,7 +784,7 @@ class vsx_module_render_mesh : public vsx_module {
         );
 
     glGetBufferParameterivARB(GL_ELEMENT_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize);
-    printf("index array in vbo: %d bytes\n", bufferSize);
+    //printf("index array in vbo: %d bytes\n", bufferSize);
     //used_memory += bufferSize;
     //printf("total VBO memory used: %d bytes\n", used_memory);
     current_num_faces = (*mesh)->data->faces.size();
@@ -814,7 +814,7 @@ class vsx_module_render_mesh : public vsx_module {
   {
     if (check_if_need_to_reinit_vbo(draw_type))
     {
-      printf("re-initializing the VBO!\n");
+      //printf("re-initializing the VBO!\n");
       destroy_vbo();
       init_vbo(draw_type);
     }
@@ -959,11 +959,11 @@ public:
       char *ptr = (char*)glMapBufferARB(GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY_ARB);
       if (ptr)
       {
-        printf("vertices ofset: %d\n", offset_vertices);
-        /*if ((*mesh)->data->vertex_normals.get_used()) {
+        //printf("vertices ofset: %d\n", offset_vertices);
+        if ((*mesh)->data->vertex_normals.get_used()) {
           memcpy( ptr + offset_normals, (*mesh)->data->vertex_normals.get_pointer(), (*mesh)->data->vertex_normals.get_sizeof() );
         }
-        if ((*mesh)->data->vertex_tex_coords.get_used()) {
+        /*if ((*mesh)->data->vertex_tex_coords.get_used()) {
           memcpy( ptr + offset_texcoords, (*mesh)->data->vertex_tex_coords.get_pointer(), (*mesh)->data->vertex_tex_coords.get_sizeof() );
         }
         if (use_vertex_colors->get())
@@ -1106,9 +1106,11 @@ public:
     #endif
     mesh = mesh_in->get_addr();
     // sanity checks
-    if (!mesh) { render_result->set(0); return; }
-    if (!(*mesh)->data) { render_result->set(0); return; }
-    if (!(*mesh)->data->faces.get_used()) { render_result->set(0); return; }
+    if (!mesh) { message="module||Can not render: mesh is not set"; render_result->set(0); return; }
+    if (!(*mesh)->data) { message="module||Can not render: Mesh data is not set"; render_result->set(0); return; }
+    if (!(*mesh)->data->faces.get_used()) { message="module||Can not render: Mesh has no faces"; render_result->set(0); return; }
+    message="module||ok";
+
 
     if (use_display_list->get())
     {
