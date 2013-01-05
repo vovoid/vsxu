@@ -653,6 +653,7 @@ class vsx_module_render_mesh : public vsx_module {
     glGetBufferParameterivARB(target, GL_BUFFER_SIZE_ARB, &bufferSize);
     if(dataSize != bufferSize)
     {
+      printf("datasize not equal to buffersize\n");
       glDeleteBuffersARB(1, &id);
       id = 0;
     }
@@ -695,6 +696,8 @@ class vsx_module_render_mesh : public vsx_module {
       (*mesh)->data->vertices.get_sizeof()
       +
       (*mesh)->data->vertex_tex_coords.get_sizeof()
+      +
+      (*mesh)->data->vertex_colors.get_sizeof()
       ,
       0,
       draw_type//GL_STATIC_DRAW_ARB // only static draw
@@ -714,6 +717,7 @@ class vsx_module_render_mesh : public vsx_module {
         (*mesh)->data->vertex_normals.get_pointer()
       );
       offset += (*mesh)->data->vertex_normals.get_sizeof();
+      printf("offset after vertex normals: %d\n", offset);
     }
 
     // 2: texture coordinates -----------------------------------------------
@@ -728,6 +732,7 @@ class vsx_module_render_mesh : public vsx_module {
         (*mesh)->data->vertex_tex_coords.get_pointer()
       );
       offset += (*mesh)->data->vertex_tex_coords.get_sizeof();
+      printf("offset after texcoords: %d\n", offset);
     }
 
     // 3: optional: vertex color coordinates -----------------------------------------------
@@ -742,6 +747,7 @@ class vsx_module_render_mesh : public vsx_module {
         (*mesh)->data->vertex_colors.get_pointer()
       );
       offset += (*mesh)->data->vertex_colors.get_sizeof();
+      printf("offset after vertex colors: %d\n", offset);
     }
 
     // 4: vertices ----------------------------------------------------------
@@ -755,13 +761,16 @@ class vsx_module_render_mesh : public vsx_module {
     );
     offset += (*mesh)->data->vertices.get_sizeof();
     current_num_vertices = (*mesh)->data->vertices.size();
+    printf("offset after vertices: %d\n", offset);
 
     //-----------------------------------------------------------------------
 
     int bufferSize;
     glGetBufferParameterivARB(GL_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize);
     printf("vertex and normal array in vbo: %d bytes\n", bufferSize);
-    //used_memory += bufferSize;
+
+    // unbind the array buffer
+    glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
 
     // create VBO for index array
     // Target of this VBO is GL_ELEMENT_ARRAY_BUFFER_ARB and usage is GL_STATIC_DRAW_ARB
@@ -779,6 +788,7 @@ class vsx_module_render_mesh : public vsx_module {
     //used_memory += bufferSize;
     //printf("total VBO memory used: %d bytes\n", used_memory);
     current_num_faces = (*mesh)->data->faces.size();
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
   }
 
   inline void destroy_vbo()
@@ -947,8 +957,9 @@ public:
     if (current_vbo_draw_type == GL_STREAM_DRAW_ARB)
     {
       char *ptr = (char*)glMapBufferARB(GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY_ARB);
-      if(ptr)
+      if (ptr)
       {
+        printf("vertices ofset: %d\n", offset_vertices);
         /*if ((*mesh)->data->vertex_normals.get_used()) {
           memcpy( ptr + offset_normals, (*mesh)->data->vertex_normals.get_pointer(), (*mesh)->data->vertex_normals.get_sizeof() );
         }
