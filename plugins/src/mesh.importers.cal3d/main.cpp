@@ -414,7 +414,7 @@ public:
         printf("cal3d %d\n",__LINE__);
         pthread_mutex_unlock(&my->mesh_mutex);
         printf("cal3d %d\n",__LINE__);
-      } else usleep(100);
+      };// else usleep(100); //TODO: find a nice crossplatform alternative for usleep()
 
       // if we're not supposed to run in a thread
       if (false == thread_info.is_thread)
