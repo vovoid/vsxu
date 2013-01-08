@@ -29,7 +29,7 @@ endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(VSXU_INSTALL_INCLUDE_DIR "include/vsxu")
-    set(VSXU_INSTALL_LIB_DIR "lib")
+    set(VSXU_INSTALL_LIB_DIR "lib${LIB_SUFFIX}")
     set(VSXU_INSTALL_BIN_DIR "bin")
     set(VSXU_INSTALL_SHARE_DIR "share/vsxu")
 endif()
