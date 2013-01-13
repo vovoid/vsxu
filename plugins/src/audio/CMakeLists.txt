@@ -10,7 +10,7 @@ set(AUDIO_LIBRARIES "")
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   find_package(PULSEAUDIO)
   if(PULSEAUDIO_FOUND)
-    if(NOT USE_ALSA) #Do not use pulseaudio if one explicitly prefers alsa 
+    if(NOT USE_ALSA) #Do not use pulseaudio if one explicitly prefers alsa
       add_definitions(-D__LINUX_PULSE__)
 
       include_directories(${PULSEAUDIO_INCLUDE_DIRS})
@@ -39,9 +39,13 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     add_definitions(-D__OS_MACOSX__)
 
     set( AUDIO_LIBRARIES ${AUDIO_LIBRARIES} ${COREAUDIO_LIBRARY})
-    endif(COREAUDIO_LIBRARY_FOUND)
+  endif(COREAUDIO_LIBRARY_FOUND)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  add_definitions(-D__WINDOWS_DS__)
+  set( AUDIO_LIBRARIES ${AUDIO_LIBRARIES} winmm dsound)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 #TODO: Add in the needed definitions for each Audio Library on each platform
 if(AUDIO_LIBRARIES)
