@@ -262,17 +262,6 @@ public:
           "}\n"
           ;
 
-
-#ifdef VSXU_DEBUG
-    printf("vert = %s\n\n\n\n",shader.vertex_program.c_str());
-    printf("frag = %s\n",shader.fragment_program.c_str());
-#endif
-
-    vsx_string h = shader.link();
-#ifdef VSXU_DEBUG
-    printf("link result:\n%s\n",h.c_str());
-#endif
-
     loading_done = true;
     redeclare_in_params(in_parameters);
 
@@ -378,7 +367,16 @@ public:
 
         if (render_type->get() == 1)
         {
+          if ( !shader.get_linked() )
+          {
+            vsx_string h = shader.link();
+            #ifdef VSXU_DEBUG
+              printf("vert = %s\n\n\n\n",shader.vertex_program.c_str());
+              printf("frag = %s\n",shader.fragment_program.c_str());
+              printf("link result:\n%s\n",h.c_str());
+            #endif
 
+          }
           glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
           #if defined(__linux__) || defined (WIN32)
             shader.begin();
@@ -515,32 +513,32 @@ public:
             float t_res_x = (float)abs(viewport[2] - viewport[0]);
 
 
-            if (shader.v_map.find("_vx") != shader.v_map.end())
+            if (shader.uniform_map.find("_vx") != shader.uniform_map.end())
             {
               //printf("found vx\n");
-              vsx_module_param_float* p = (vsx_module_param_float*)shader.v_map["_vx"]->module_param;
+              vsx_module_param_float* p = (vsx_module_param_float*)shader.uniform_map["_vx"]->module_param;
               if (p) p->set(t_res_x);
             }
 
-            if (shader.a_map.find("_s") != shader.a_map.end())
+            if (shader.attribute_map.find("_s") != shader.attribute_map.end())
             {
               //printf("found _s\n");
-              vsx_module_param_float_array* p = (vsx_module_param_float_array*)shader.a_map["_s"]->module_param;
+              vsx_module_param_float_array* p = (vsx_module_param_float_array*)shader.attribute_map["_s"]->module_param;
               //printf("found size1\n");
               if (p) p->set_p(shader_sizes);
             }
 
-            if (shader.a_map.find("_c") != shader.a_map.end())
+            if (shader.attribute_map.find("_c") != shader.attribute_map.end())
             {
               //printf("found _c\n");
-              vsx_module_param_float3_array* p = (vsx_module_param_float3_array*)shader.a_map["_c"]->module_param;
+              vsx_module_param_float3_array* p = (vsx_module_param_float3_array*)shader.attribute_map["_c"]->module_param;
               if (p) p->set_p(shader_colors);
             }
 
-            if (shader.a_map.find("_a") != shader.a_map.end())
+            if (shader.attribute_map.find("_a") != shader.attribute_map.end())
             {
               //printf("found _a\n");
-              vsx_module_param_float_array* p = (vsx_module_param_float_array*)shader.a_map["_a"]->module_param;
+              vsx_module_param_float_array* p = (vsx_module_param_float_array*)shader.attribute_map["_a"]->module_param;
               if (p) p->set_p(shader_alphas);
             }
 
