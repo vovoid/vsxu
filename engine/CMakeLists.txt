@@ -140,6 +140,7 @@ set(SOURCES
   src/vsxfst/vsxf.cpp
   src/vsxfst/vsxs.cpp
   src/core/vsx_engine.cpp
+  src/core/vsx_engine_abs.cpp
   src/core/vsx_sequence_pool.cpp
   src/core/vsx_param_abstraction.cpp
   src/core/vsx_comp_channel.cpp

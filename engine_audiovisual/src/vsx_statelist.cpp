@@ -191,15 +191,15 @@ vsx_string vsx_statelist::get_meta_visual_filename()
 }
 vsx_string vsx_statelist::get_meta_visual_name()
 {
-  return (*state_iter).engine->meta_fields[0];
+  return (*state_iter).engine->get_meta_information(0);
 }
 vsx_string vsx_statelist::get_meta_visual_creator()
 {
-  return (*state_iter).engine->meta_fields[1];
+  return (*state_iter).engine->get_meta_information(1);
 }
 vsx_string vsx_statelist::get_meta_visual_company()
 {
-  return (*state_iter).engine->meta_fields[2];
+  return (*state_iter).engine->get_meta_information(2);
 }
 
 
@@ -336,7 +336,7 @@ void vsx_statelist::render()
       tex_to.end_capture();
       if (
         (*state_iter).engine->get_modules_left_to_load() == 0 &&
-        (*state_iter).engine->get_commands_internal_status() &&
+        (*state_iter).engine->get_commands_internal_count() &&
         transition_time > 1.0f
       )
       {
