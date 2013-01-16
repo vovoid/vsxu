@@ -1238,12 +1238,90 @@ public:
 
 };
 
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-class module_vec4_mul_float : public vsx_module {
+class module_axis_angle_to_quaternion : public vsx_module {
+  // in
+  vsx_module_param_float3* axis;
+  vsx_module_param_float* angle;
+
+  // out
+  vsx_module_param_quaternion* result;
+  // internal
+  vsx_quaternion q;
+public:
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "maths;arithmetics;quaternion;axis_angle_to_quaternion";
+    info->description =
+      "Converts rotation around\n"
+      "an axis with an angle\n"
+      "into a quaternion."
+    ;
+
+    info->in_param_spec =
+      "axis:float3,"
+      "angle:float"
+      ;
+    info->out_param_spec = "result:quaternion";
+    info->component_class = "parameters";
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+
+    axis = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"axis");
+    axis->set( 0.0f, 0 );
+    axis->set( 0.0f, 1 );
+    axis->set( 1.0f, 2 );
+
+    angle = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"angle");
+    angle->set( 0.0f );
+
+    //--------------------------------------------------------------------------------------------------
+
+    result = (vsx_module_param_quaternion*)out_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION,"result");
+    result->set( 0.0, 0 );
+    result->set( 0.0, 1 );
+    result->set( 0.0, 2 );
+    result->set( 1.0, 3 );
+
+  }
+
+  void run()
+  {
+    vsx_vector i_axis(
+          axis->get(0),
+          axis->get(1),
+          axis->get(2)
+          );
+    // make sure vector has length 1
+    i_axis.normalize();
+
+    float i_angle = angle->get();
+    q.from_axis_angle( i_axis, i_angle);
+    result->set(q.x, 0);
+    result->set(q.y, 1);
+    result->set(q.z, 2);
+    result->set(q.w, 3);
+  }
+
+};
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+class module_float4_mul_float : public vsx_module {
   // in
   vsx_module_param_float4* param1;
   vsx_module_param_float* param2;
@@ -2712,7 +2790,7 @@ vsx_module* MOD_CM(unsigned long module) {
     case 28: return (vsx_module*)(new vsx_bool_nor);
     case 29: return (vsx_module*)(new vsx_bool_xor);
     case 30: return (vsx_module*)(new vsx_bool_not);
-    case 31: return (vsx_module*)(new module_vec4_mul_float);
+    case 31: return (vsx_module*)(new module_float4_mul_float);
     case 32: return (vsx_module*)(new vsx_bool_nand);
     case 33: return (vsx_module*)(new module_float4_add);
     case 34: return (vsx_module*)(new vsx_float_array_average);
@@ -2738,6 +2816,7 @@ vsx_module* MOD_CM(unsigned long module) {
     case 54: return (vsx_module*)(new module_vector_quaternion_to_4float);
     case 55: return (vsx_module*)(new vsx_float3_interpolate);
     case 56: return (vsx_module*)(new vsx_float4_dummy);
+    case 57: return (vsx_module*)(new module_axis_angle_to_quaternion);
   }
   return 0;
 }
@@ -2775,7 +2854,7 @@ void MOD_DM(vsx_module* m,unsigned long module) {
     case 28: delete (vsx_bool_nor*)m; break;
     case 29: delete (vsx_bool_xor*)m; break;
     case 30: delete (vsx_bool_not*)m; break;
-    case 31: delete (module_vec4_mul_float*)m; break;
+    case 31: delete (module_float4_mul_float*)m; break;
     case 32: delete (vsx_bool_nand*)m; break;
     case 33: delete (module_float4_add*)m; break;
     case 34: delete (vsx_float_array_average*)m; break;
@@ -2801,11 +2880,12 @@ void MOD_DM(vsx_module* m,unsigned long module) {
     case 54: delete (module_vector_quaternion_to_4float*)m; break;
     case 55: delete (vsx_float3_interpolate*)m; break;
     case 56: delete (vsx_float4_dummy*)m; break;
+    case 57: delete (module_axis_angle_to_quaternion*)m; break;
   }
 }
 
 unsigned long MOD_NM() {
-  return 57;
+  return 58;
 }
 
 
