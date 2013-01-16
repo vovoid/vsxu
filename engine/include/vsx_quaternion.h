@@ -135,6 +135,15 @@ public:
   }
 
 
+  inline void from_axis_angle( vsx_vector &axis, float &angle)
+  {
+    w = sin( angle / 2.0f );
+    x = axis.x * w;
+    y = axis.y * w;
+    z = axis.z * w;
+    w = cos( angle / 2.0f);
+  }
+
   // OPTIMIZATION PENALTY!!!
   // Since we want to be able to multiply with ourselves, q1 is not by reference.
   inline void mul(vsx_quaternion q1, vsx_quaternion &q2) {

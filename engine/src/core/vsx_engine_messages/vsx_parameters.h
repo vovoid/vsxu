@@ -1,7 +1,7 @@
 #ifndef VSX_NO_CLIENT
 		if (cmd == "pa_ren") {
       //printf("pa_ren\n");
-      vsx_comp* dest = get_by_name(c->parts[1]);
+      vsx_comp* dest = get_component_by_name(c->parts[1]);
       if (dest) {
         bool ok;
         if (c->parts[4] == "-1") {
@@ -22,7 +22,7 @@
       if (c->parts.size() >= 3)
       {
         //printf("hej");
-        vsx_comp* dest = get_by_name(c->parts[1]);
+        vsx_comp* dest = get_component_by_name(c->parts[1]);
         if (dest) {
           vsx_engine_param* param;
           if (cmd == "pgo")
@@ -54,7 +54,7 @@
       //  param_get [component] [param] [extra_info]
       if (c->parts.size() >= 3)
       {
-        vsx_comp* dest = get_by_name(c->parts[1]);
+        vsx_comp* dest = get_component_by_name(c->parts[1]);
         if (dest) {
           vsx_engine_param* param = dest->get_params_in()->get_by_name(c->parts[2]);
           if (param) {
@@ -75,7 +75,7 @@
       //  param_set [component] [param] [value]
       if (c->parts.size() == 4)
       {
-        vsx_comp* dest = get_by_name(c->parts[1]);
+        vsx_comp* dest = get_component_by_name(c->parts[1]);
         if (dest) {
           vsx_engine_param* param = dest->get_params_in()->get_by_name(c->parts[2]);
           if (param) {
@@ -100,7 +100,7 @@
       //  ps [component] [param] [value]
       if (c->parts.size() == 4)
       {
-        vsx_comp* dest = get_by_name(c->parts[1]);
+        vsx_comp* dest = get_component_by_name(c->parts[1]);
         if (dest) {
           vsx_engine_param* param = dest->get_params_in()->get_by_name(c->parts[2]);
           if (param) {
@@ -128,7 +128,7 @@
       //   param_set [component] [parameter] [value],[value],
       if (c->parts.size() == 4)
       {
-        vsx_comp* dest = get_by_name(c->parts[1]);
+        vsx_comp* dest = get_component_by_name(c->parts[1]);
         if (dest) {
           vsx_engine_param* ep = dest->get_params_in()->get_by_name(c->parts[2]);
           if (ep) {
@@ -162,7 +162,7 @@
       //   param_set_interpolate [component] [parameter] [value],[value],... [speed]
       if (c->parts.size() >= 5)
       {
-        vsx_comp* dest = get_by_name(c->parts[1]);
+        vsx_comp* dest = get_component_by_name(c->parts[1]);
         if (dest) {
           vsx_engine_param* e_param = dest->get_params_in()->get_by_name(c->parts[2]);
           if (e_param) {
@@ -189,7 +189,7 @@
     }
     else
     if (cmd == "param_set_default") {
-      vsx_comp* dest = get_by_name(c->parts[1]);
+      vsx_comp* dest = get_component_by_name(c->parts[1]);
       if (dest) {
         vsx_module_param_abs* param = dest->get_params_in()->get_by_name(c->parts[2])->module_param;
         param->set_default();

@@ -27,9 +27,8 @@ int vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info) {
   if (vxe_local == 0)
   {
     vxe_local = new vsx_engine();
-    vxe_local->dump_modules_to_disk = false;
-    vxe_local->no_client_time = true;
-    vxe_local->init(sound_type);
+    vxe_local->set_module_list( module_list );
+    vxe_local->set_no_send_client_time(true);
     vxe_local->start();
     (*state_iter).engine = vxe_local;
 #ifdef VSXU_DEBUG
@@ -45,7 +44,8 @@ int vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info) {
       vxe_local->load_state(info->state_name);
       info->need_reload = false;
     }
-    vxe_local->g_timer.start();
+
+    vxe_local->reset_time();
   }
 }
 
@@ -259,8 +259,7 @@ void vsx_statelist::render()
           printf("initializing fader %s\n", (*it).c_str());
         #endif
         vsx_engine* lvxe = new vsx_engine();
-        lvxe->dump_modules_to_disk = false;
-        lvxe->init(sound_type);
+        lvxe->set_module_list( module_list );
         lvxe->start();
         lvxe->load_state(*it);
         faders.push_back(lvxe);
@@ -288,7 +287,7 @@ void vsx_statelist::render()
       new_statelist.push_back(*state_iter);
       if (option_preload_all == true)
       {
-        while ( (*state_iter).engine->modules_left_to_load )
+        while ( (*state_iter).engine->get_modules_left_to_load() )
         {
           (*state_iter).engine->process_message_queue( &(*state_iter).cmd_in, cmd_out = &(*state_iter).cmd_out,false, true);
           (*state_iter).engine->render();
@@ -336,8 +335,8 @@ void vsx_statelist::render()
         glColorMask(true, true, true, true);
       tex_to.end_capture();
       if (
-        (*state_iter).engine->modules_left_to_load == 0 &&
-        (*state_iter).engine->commands_internal.count() == 0 &&
+        (*state_iter).engine->get_modules_left_to_load() == 0 &&
+        (*state_iter).engine->get_commands_internal_status() &&
         transition_time > 1.0f
       )
       {
@@ -435,7 +434,7 @@ void vsx_statelist::render()
     vxe->render();
     if (randomizer)
     {
-      randomizer_time -= vxe->engine_info.real_dtime;
+      randomizer_time -= vxe->get_engine_info()->real_dtime;
       if (randomizer_time < 0.0f)
       {
         random_state();
@@ -481,7 +480,7 @@ void vsx_statelist::load_fx_levels_from_user()
       // got the file
       FILE* fpfx = fopen(fxlf.c_str(), "r");
       char dest[256];
-      fgets(dest, 256, fpfx);
+      char* ret_fgets = fgets(dest, 256, fpfx);
       fclose(fpfx);
       vsx_string ff = dest;
       state.fx_level = s2f(ff);
@@ -551,7 +550,7 @@ void vsx_statelist::save_fx_levels_from_user()
       // got the file
       FILE* fpfx = fopen(fxlf.c_str(), "r");
       char dest[256];
-      fgets(dest, 256, fpfx);
+      char* ret_fgets = fgets(dest, 256, fpfx);
       fclose(fpfx);
       vsx_string ff = dest;
       state.fx_level = s2f(ff);

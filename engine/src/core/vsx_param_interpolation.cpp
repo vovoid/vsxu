@@ -1,7 +1,6 @@
 #ifndef VSX_NO_CLIENT
 #include <list>
 #include "vsx_param.h"
-#include "vsx_module_dll_info.h"
 #include "vsx_module.h"
 #include "vsx_command.h"
 #include "vsx_param_interpolation.h"
@@ -82,7 +81,7 @@ bool vsx_module_param_interpolation_quaternion::set(vsx_string value, int arity,
 
 bool vsx_module_param_interpolation_quaternion::interpolate(float dtime) {
   //printf("running quat-interpolation\n");
-  float tt = dtime*dest_interp;
+  float tt = dtime * dest_interp;
   if (tt > 1) tt = 1;
   int done = 0;
   vsx_quaternion from_quat;

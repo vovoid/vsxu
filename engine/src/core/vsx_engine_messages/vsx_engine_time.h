@@ -3,10 +3,10 @@
       play();
     } else
     if (cmd == "stop") {
-      e_state = VSX_ENGINE_STOPPED;
+      current_state = VSX_ENGINE_STOPPED;
     } else
     if (cmd == "rewind") {
-      e_state = VSX_ENGINE_REWIND;
+      current_state = VSX_ENGINE_REWIND;
     } else
 #ifndef VSXU_NO_CLIENT
     if (cmd == "fps_d" || cmd == "fps") {

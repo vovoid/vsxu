@@ -90,13 +90,13 @@ public:
   
 	//void load_module(vsx_string module_class, vsx_string name);
 
-	void load_module(module_dll_info* module_dll);
-	void unload_module(module_dll_info* module_dll);
+  void load_module(const vsx_string& module_name);
+  void unload_module();
 	void init_module();
 	
-	bool prepare(); // pre-parade!
+  bool prepare(); // pre-parade!
 
-	bool run(vsx_module_param_abs* param);
+  bool run(vsx_module_param_abs* param);
 	bool stop();
 	bool start();
 

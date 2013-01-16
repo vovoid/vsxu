@@ -75,9 +75,8 @@ bool (*app_get_fullscreen)(int) = 0;
 float global_time;
 vsx_timer time2;
 
-void init_vxe() {
+void start_engine() {
   printf("starting engine..\n");
-  vxe->init();
   vxe->start();
 }
 
@@ -144,7 +143,7 @@ public:
 	  {
 
       if (first) {
-        init_vxe();
+        start_engine();
         cl_server.set_command_lists(&internal_cmd_in,&internal_cmd_out);
         cl_server.start();
         first = false;

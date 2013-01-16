@@ -73,7 +73,11 @@ private:
 
   std::vector<vsx_engine*> faders;
 
+  // our currently running engine
   vsx_engine* vxe;
+
+  // module list shared among all engine instances
+  vsx_module_list_abs* module_list;
 
   vsx_command_list *cmd_in;
   vsx_command_list *cmd_out;
@@ -112,6 +116,11 @@ private:
   bool option_preload_all;
 
 public:
+
+  void set_module_list( vsx_module_list_abs* new_module_list)
+  {
+    module_list = new_module_list;
+  }
 
   vsx_engine* get_vxe() {
     return vxe;

@@ -35,7 +35,8 @@
 #include "vsxfst.h"
 #include "vsx_font.h"
 #include <vsx_version.h>
-#include "vsx_engine.h"
+#include <vsx_engine.h>
+#include <vsx_module_list_factory.h>
 
 #include "log/vsx_log_a.h"
 
@@ -64,6 +65,7 @@
 
 // global vars
 vsx_string fpsstring = "VSX Ultra "+vsx_string(vsxu_version)+" - 2012 Vovoid";
+vsx_module_list_abs* vxe_module_list;
 vsx_engine* vxe = 0;
 
 // from the perspective (both for gui/server) from here towards the tcp thread
@@ -76,6 +78,7 @@ bool take_screenshot = false;
 bool record_movie = false;
 bool *gui_prod_fullwindow;
 bool gui_prod_fullwindow_helptext = true;
+bool reset_time_measurements = false;
 vsx_font myf;
 
 unsigned long frame_counter = 0;
@@ -199,12 +202,6 @@ public:
 
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-        #ifndef NO_INTRO
-          if (vxe->e_state == VSX_ENGINE_STOPPED)
-          {
-            //intro->draw(true);
-          }
-        #endif
         if (vxe && !dual_monitor) {
           engine_render_time.start();
           vxe->render();
@@ -237,10 +234,18 @@ public:
               glVertex3f( 1.0f,0.92f, 0.0f);          // Bottom Right
               glVertex3f(-1.0f,0.92f, 0.0f);          // Bottom Left
             glEnd();                      // Done Drawing The Quad
+            if (reset_time_measurements)
+            {
+              max_fps = 0.0f;
+              min_fps = 1000.0f;
+              max_render_time = 0.0f;
+              min_render_time = 1000.0f;
+              reset_time_measurements = false;
+            }
             if (delta_fps > max_fps) max_fps = delta_fps;
             if (delta_fps < min_fps) min_fps = delta_fps;
-            if (frame_time < min_render_time) min_render_time = frame_time;
             if (frame_time > max_render_time) max_render_time = frame_time;
+            if (frame_time < min_render_time) min_render_time = frame_time;
             myf.print(vsx_vector(-0.99f,0.92f),"VSXu (c) 2003-2013 Vovoid - Alt+T=toggle this text, Ctrl+Alt+P=screenshot (data dir), Alt+F=performance mode || FrameCounter "+i2s(frame_counter) + "   Elapsed time: "+f2s(total_time)+"   Module Count: "+i2s(vxe->get_num_modules())+"Average FPS "+f2s(frame_counter/total_time),0.025f);
             myf.print
             (
@@ -248,9 +253,10 @@ public:
                 -0.99f,
                 0.88f
               ),
-              "(Cur/Min/Max) "
-              "FPS: ("+f2s(delta_fps)+"/"+f2s(min_fps)+"/"+f2s(max_fps)+")"
-              "Frame render time: ("+f2s(frame_time)+"/"+f2s(min_render_time)+"/"+f2s(max_render_time)+")"
+              "[Cur/Min/Max] "
+              "FPS: ("+f2s(delta_fps)+"/"+f2s(min_fps)+"/"+f2s(max_fps)+") "
+              "Frame render time: ("+f2s(frame_time)+"/"+f2s(min_render_time)+"/"+f2s(max_render_time)+") "
+              "Ctrl+T to reset"
               ,0.025f
             );
             //"("+f2s(frame_time)+")
@@ -264,7 +270,7 @@ public:
         }
       }
       #ifndef NO_INTRO
-        //intro->draw();
+        intro->draw();
       #endif
       if (!first && !desktop)
       {
@@ -274,7 +280,6 @@ public:
       if (first)
       {
         if (!dual_monitor) {
-          vxe->init();
           vxe->start();
         }
         load_desktop_a();
@@ -433,13 +438,14 @@ void app_init(int id) {
   //printf("argc: %d %s\n",app_argc,own_path.c_str());
   //---------------------------------------------------------------------------
   vxe = new vsx_engine(own_path);
+  vxe_module_list = vsx_module_list_factory_create();
+  vxe->set_module_list(vxe_module_list);
 
 
   gui_prod_fullwindow = &prod_fullwindow;
   //---------------------------------------------------------------------------
   myf.init(PLATFORM_SHARED_FILES+"font/font-ascii_output.png");
   if (dual_monitor) {
-    vxe->init();
     vxe->start();
   }
 
@@ -448,7 +454,7 @@ void app_init(int id) {
   {
     vsx_string arg = vsx_string(app_argv[i]);
     printf("adding arg: %s\n", arg.c_str() );
-    vxe->engine_info.argv.push_back( arg );
+    vxe->get_engine_info()->argv.push_back( arg );
   }
 }
 
@@ -568,7 +574,7 @@ void app_key_down(long key) {
       (
         !( key == 'F' && (app_alt || app_ctrl) )
         &&
-        !( key == 'T' && app_alt )
+        !( key == 'T' && (app_alt || app_ctrl) )
         &&
         !desktop->performance_mode
         &&
@@ -590,6 +596,7 @@ void app_key_down(long key) {
     }
 
     if (*gui_prod_fullwindow && app_alt && !app_ctrl && !app_shift && key == 'T') gui_prod_fullwindow_helptext = !gui_prod_fullwindow_helptext;
+    if (*gui_prod_fullwindow && !app_alt && app_ctrl && !app_shift && key == 'T') reset_time_measurements = true;
     desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
     desktop->key_down(-key,app_alt, app_ctrl, app_shift);
   }

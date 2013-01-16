@@ -24,7 +24,7 @@
       }
       else
       {
-        vsx_comp* dest = get_by_name(c->parts[2]);
+        vsx_comp* dest = get_component_by_name(c->parts[2]);
         if (dest) {
           vsx_engine_param* param = dest->get_params_in()->get_by_name(c->parts[3]);
           //vsx_module_param_abs* param = p->module_param;
@@ -59,7 +59,7 @@
     // PATTERN/SEQUENCE ROW MANAGEMENT
 #ifndef VSX_NO_CLIENT
     if (cmd == "pseq_r") {
-      vsx_comp* dest = get_by_name(c->parts[2]);
+      vsx_comp* dest = get_component_by_name(c->parts[2]);
       if (dest) {
         vsx_engine_param* param = dest->get_params_in()->get_by_name(c->parts[3]);
         if (param) {

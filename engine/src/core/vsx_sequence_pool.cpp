@@ -160,7 +160,7 @@ bool vsx_sequence_pool::import_from_file(vsx_string filename)
     c->parse();
     if (c->parts[0] == "pseq_inject")
     {
-      vsx_comp* component = ((vsx_engine*)engine)->get_by_name(c->parts[1]);
+      vsx_comp* component = ((vsx_engine*)engine)->get_component_by_name(c->parts[1]);
       if (component) {
         vsx_engine_param* param = component->get_params_in()->get_by_name(c->parts[2]);
         if (param)

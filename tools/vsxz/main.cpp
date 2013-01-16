@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 
 	printf("Vovoid VSX Zip\n");
 
-	getcwd(cur_path,4096);
+  char* ret_getcwd = getcwd(cur_path,4096);
 	printf("current path is: %s\n", cur_path);
 
 	//srand ( time(NULL)+rand() );

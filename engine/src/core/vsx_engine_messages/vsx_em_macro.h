@@ -76,7 +76,7 @@
       }
     } else
     if (cmd == "macro_prerun") {
-      if (get_by_name(c->parts[3])) {
+      if (get_component_by_name(c->parts[3])) {
         cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("There is already a macro '"+c->parts[3]+"'"));
       } else {
         cmd_out->addc(c);
@@ -87,7 +87,7 @@
       if (c->parts.size() == 5) {
         // syntax:
         //  macro_create macro1 [pos_x] [pos_y] [size]
-        if (!get_by_name(c->parts[1])) {
+        if (!get_component_by_name(c->parts[1])) {
           vsx_comp* comp = add(c->parts[1]);
           // ok we force this to boo macrooo
           comp->component_class = "macro";
@@ -96,7 +96,7 @@
           comp->position.y = s2f(c->parts[3]);
           comp->size = s2f(c->parts[4]);
           // the code creating the macro seems pretty similar to that of the component eh?
-          cmd_out->add_raw(vsx_string("component_create_ok ")+c->parts[1]+" "+get_by_name(c->parts[1])->component_class+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4]);
+          cmd_out->add_raw(vsx_string("component_create_ok ")+c->parts[1]+" "+get_component_by_name(c->parts[1])->component_class+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4]);
 					#endif
 //          printf("macro_done\n");
         }

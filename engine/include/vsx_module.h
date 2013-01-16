@@ -101,7 +101,10 @@ typedef struct
 #define VSX_ENGINE_REWIND 2
 
 typedef struct  {
+  // filesystem handle to use in every module's file operations
   vsxf* filesystem;
+  // module list - so that modules can construct their own vsx_engine's
+  void* module_list;
 
   int state; // stopped or playing
   float amp; // engine effect amplification - can be used freely by the modules
@@ -255,6 +258,13 @@ public:
 
 class vsx_module {
 public:
+  //-----internal:
+    int module_id; // module id, used when destroying a module. Managed by engine. Should be treated as read-only!
+    vsx_string module_identifier; // when created, holds module identifier. Managed by engine. Should be treated as read-only!
+  //-
+
+
+
   // this property will be set by the engine, it allows access to certain parts of the engine for the modules.
   vsx_module_engine_info* engine;
 

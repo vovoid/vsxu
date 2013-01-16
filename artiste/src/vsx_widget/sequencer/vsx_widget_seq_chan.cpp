@@ -1148,7 +1148,7 @@ void vsx_widget_seq_channel::vsx_command_process_b(vsx_command_s *t)
 					std::vector<vsx_string> pld;
 					vsx_string pdeli = ";";
 					explode((*it), pdeli, pld);
-					printf("pld size: %d\n", pld.size());
+          printf("pld size: %lx\n", pld.size());
 					vsx_widget_param_sequence_item pa;
 					pa.type = VSX_WIDGET_SEQ_CHANNEL_TYPE_MASTER;
 					pa.total_length = s2f(pld[0]);
@@ -1156,7 +1156,7 @@ void vsx_widget_seq_channel::vsx_command_process_b(vsx_command_s *t)
 					if (pld.size() > 2)
 					pa.pool_name = base64_decode(pld[2]);
 					//if (pld.size() < 2) continue;
-					printf("pld[1]: %s size: %d\n", pld[1].c_str(), pld.size());
+          printf("pld[1]: %s size: %lx\n", pld[1].c_str(), pld.size());
 					//pa.interpolation = s2f(pld[1]);
 					//pa.total_length = s2f(pld[0]);
 					items.push_back(pa);

@@ -149,6 +149,9 @@ set(SOURCES
   src/core/vsx_master_sequencer/vsx_master_sequence_channel.cpp
   src/core/vsx_param_sequence_list.cpp
   src/core/vsx_module_static.cpp
+  src/core/vsx_module_list/vsx_module_list_factory.cpp
+  src/core/vsx_module_list/vsx_module_list.cpp
+  src/core/vsx_module_list/vsx_dlopen.cpp
   src/vsx_math_3d.cpp
   src/mtwist.c
   src/vsx_param.cpp

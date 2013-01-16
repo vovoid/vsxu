@@ -178,13 +178,14 @@ void vsx_widget_timeline::i_draw() {
   {
 		vsx_widget_server* server = (vsx_widget_server*)owner->get_server();
 		vsx_engine* engine = (vsx_engine*)(server->engine);
+    vsx_module_engine_info* engine_info = engine->get_engine_info();
 
-		if (engine->engine_info.param_float_arrays.size() >= 4 && a_focus == this)
+    if (engine_info->param_float_arrays.size() >= 4 && a_focus == this)
 		{
 			vsx_engine_float_array *full_pcm_data_l;
 			vsx_engine_float_array *full_pcm_data_r;
-			full_pcm_data_l = engine->engine_info.param_float_arrays[2];
-			full_pcm_data_r = engine->engine_info.param_float_arrays[3];
+      full_pcm_data_l = engine_info->param_float_arrays[2];
+      full_pcm_data_r = engine_info->param_float_arrays[3];
 			if (full_pcm_data_l->array.size() > 0)
 			{
 				// assuming we have 44100 samples per second

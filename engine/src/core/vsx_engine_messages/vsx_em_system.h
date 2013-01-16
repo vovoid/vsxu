@@ -9,13 +9,43 @@
 #define VSX_EM_SYSTEM_H_
 
 #ifndef VSX_NO_CLIENT
-    if (cmd == "get_module_list") {
-      for (module_iter = module_list.begin(); module_iter != module_list.end(); ++module_iter) {
-        if ((*module_iter).first != "outputs;screen")
-        if (!module_dll_list[(*module_iter).first]->hidden_from_gui)
-        cmd_out->add_raw(vsx_string("module_list ")+(*module_iter).second->component_class+" "+(*module_iter).first+" "+base64_encode((*module_iter).second->description+" "));
+    if (cmd == "get_module_list")
+    {
+      std::vector< vsx_module_info* >* my_module_list = module_list->get_module_list();
+
+      for
+      (
+        size_t i = 0;
+        i < my_module_list->size();
+        i++
+      )
+      {
+        if
+        (
+            (*my_module_list)[i]->identifier != "outputs;screen"
+        )
+        {
+          cmd_out->add_raw(
+                vsx_string("module_list ")
+                +
+                (*my_module_list)[i]->component_class
+                +
+                " "
+                +
+                (*my_module_list)[i]->identifier
+                +
+                " "
+                +
+                base64_encode(
+                  (*my_module_list)[i]->description
+                  +
+                  " "
+                )
+          );
+        }
       }
       cmd_out->add_raw("module_list_end");
+      delete my_module_list;
     }
     else
     if (cmd == "get_list") {

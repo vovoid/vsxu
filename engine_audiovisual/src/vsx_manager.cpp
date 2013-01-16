@@ -19,6 +19,13 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #define PLATFORM_SHARED_FILES_STL
+#include <map>
+#include <vector>
+#include <vsx_string.h>
+#include <vsx_param.h>
+#include <vsx_module.h>
+#include "vsx_module_list_abs.h"
+#include "vsx_module_list_factory.h"
 #include "vsx_platform.h"
 #include "vsx_manager.h"
 #include "vsx_statelist.h"
@@ -27,6 +34,8 @@ class vsx_manager : public vsx_manager_abs
 {
 private:
 void * int_state_manager;
+vsx_module_list_abs* module_list;
+
 public:
   // init manager with base path to where the effects (.vsx files) can be found
   // i.e. if base_path is /usr/share/vsxu/   then the engine will look in
@@ -105,11 +114,14 @@ void manager_destroy(vsx_manager_abs* manager)
 vsx_manager::vsx_manager()
 {
   int_state_manager = (void*)new vsx_statelist();
+  module_list = vsx_module_list_factory_create();
+  ((vsx_statelist*)int_state_manager)->set_module_list( module_list );
 }
 
 vsx_manager::~vsx_manager()
 {
   delete (vsx_statelist*)int_state_manager;
+  vsx_module_list_factory_destroy( module_list );
 }
 
 void vsx_manager::init(const char* base_path, const char* sound_type)

@@ -1,6 +1,5 @@
 #include "vsxfst.h"
 #include "vsx_param.h"
-#include "vsx_module_dll_info.h"
 #include "vsx_module.h"
 #include "vsx_timer.h"
 #include <list>
@@ -89,7 +88,7 @@ void vsx_param_sequence_list::add_param_sequence(vsx_engine_param* param, vsx_co
     p->param = param;
     param->sequence = true;
     if (engine && run_on_edit_enabled) {
-      p->execute(((vsx_engine*)engine)->engine_info.vtime);
+      p->execute(((vsx_engine*)engine)->get_engine_info()->vtime);
     }
 
     parameter_channel_list.push_back(p);
@@ -293,7 +292,7 @@ void vsx_param_sequence_list::inject_param(vsx_engine_param* param, vsx_comp_abs
     if (engine)
     {
       // reset time - needed when paused somewhere and re-declaring parameters
-      p->execute(((vsx_engine*)engine)->engine_info.vtime);
+      p->execute(((vsx_engine*)engine)->get_engine_info()->vtime);
     }
     parameter_channel_list.push_back(p);
     parameter_channel_map[param] = p;

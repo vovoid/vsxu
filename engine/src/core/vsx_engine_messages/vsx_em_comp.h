@@ -2,14 +2,11 @@
       if (c->parts.size() == 5) {
         // syntax:
         //  component_create math_logic;oscillator_dlux macro1.my_oscillator 0.013 0.204
-        if (!get_by_name(c->parts[2])) {
-          if (module_list.find(c->parts[1]) != module_list.end()) {
+        if (!get_component_by_name(c->parts[2])) {
+          if (module_list->find(c->parts[1])) {
           	LOG("create 1")
             vsx_comp* comp = add(c->parts[2]);
-            if (module_list[c->parts[1]]->location == "external") {
-              comp->load_module(module_dll_list[c->parts[1]]);
-            } //else
-            //comp->load_module(module_list[c->parts[1]]->location,c->parts[1]);
+            comp->load_module(c->parts[1]);
             comp->identifier = c->parts[1];
          		if (comp->module_info->output) {
         		  //printf("outputs d00d\n");
@@ -22,7 +19,7 @@
             comp->position.y = s2f(c->parts[4]);
             LOG("create 3")
 #ifndef VSX_NO_CLIENT
-            cmd_out->add_raw("component_create_ok "+c->parts[2]+" "+get_by_name(c->parts[2])->component_class+" "+c->parts[3]+" "+c->parts[4]+" "+c->parts[1]);
+            cmd_out->add_raw("component_create_ok "+c->parts[2]+" "+get_component_by_name(c->parts[2])->component_class+" "+c->parts[3]+" "+c->parts[4]+" "+c->parts[1]);
             cmd_out->add_raw("in_param_spec "+comp->name+" "+comp->in_param_spec);
             cmd_out->add_raw("out_param_spec "+comp->name+" "+comp->out_param_spec);
 #endif
@@ -121,15 +118,15 @@
                 if (comp->module_info->output) {
                   fdrun = true;
                   outputs.remove(comp);
-
                 }
+                // unload the module
                 if (!macro)
-                if (module_list[comp->identifier]->location == "external") {
-                  comp->unload_module(module_dll_list[comp->identifier]);
+                {
+                  comp->unload_module();
                 }
 
             		to_delete.push_back(comp);
-//                printf("delete step 7\n");
+                //printf("delete step 7\n");
               } else drun = false;
             } else drun = false;
           }
@@ -153,7 +150,7 @@
       // 3. Move/rename the components
       // 4. Go through all connection infos and reconnect as best we can with the VSXu CONNECT_FAR algorithm, create aliases when needed
 
-      vsx_comp* dest = get_by_name(c->parts[1]);
+      vsx_comp* dest = get_component_by_name(c->parts[1]);
       if (!dest) c->parts[1] = "";
       vsx_string deli = ",";
       std::vector<vsx_string> comp_source;
@@ -162,7 +159,7 @@
       // 0. Go through the list of components, all here  needs to be done for each and one component exclusively
       for (std::vector<vsx_string>::iterator it = comp_source.begin(); it != comp_source.end(); ++it) {
 				//printf("starting move on component: %s\n",(*it).c_str());
-        vsx_comp* comp = get_by_name(*it);
+        vsx_comp* comp = get_component_by_name(*it);
         components.push_back(comp);
       }
 
@@ -257,7 +254,7 @@
     else
     if (cmd == "cpp" || cmd == "component_pos") {
       if (c->parts.size() == 4) {
-        vsx_comp* dest = get_by_name(c->parts[1]);
+        vsx_comp* dest = get_component_by_name(c->parts[1]);
         if (dest) {
           dest->position.x = s2f(c->parts[2]);
           dest->position.y = s2f(c->parts[3]);
@@ -267,7 +264,7 @@
     else
     if (cmd == "component_size") {
       if (c->parts.size() == 3) {
-        vsx_comp* dest = get_by_name(c->parts[1]);
+        vsx_comp* dest = get_component_by_name(c->parts[1]);
         if (dest) {
           dest->size = s2f(c->parts[2]);
         }
@@ -292,7 +289,7 @@
     	//printf("component timing 1\n");
       if (c->parts.size() == 3) {
       //  printf("component timing 2\n");
-        vsx_comp* src = get_by_name(c->parts[1]);
+        vsx_comp* src = get_component_by_name(c->parts[1]);
         if (src) {
         	//printf("component timing run!\n");
           cmd_out->add_raw(vsx_string("component_timing_ok ")+c->parts[2]+" "+f2s(src->time_run,12)+" "+f2s(src->time_output,12)+" "+f2s(last_frame_time,12));

@@ -4,9 +4,9 @@
       //  param_connect [in-comp] [in-param] [out-comp] [out-param]
       if (c->parts.size() >= 5)
       {
-        vsx_comp* dest = get_by_name(c->parts[1]);
+        vsx_comp* dest = get_component_by_name(c->parts[1]);
         //if (dest->get_params_in()->get_by_name
-        vsx_comp* src  = get_by_name(c->parts[3]);
+        vsx_comp* src  = get_component_by_name(c->parts[3]);
         if (dest && src) {
           vsx_engine_param* dest_param = dest->get_params_in()->get_by_name(c->parts[2]);
           vsx_engine_param* src_param = src->get_params_out()->get_by_name(c->parts[4]);
@@ -53,8 +53,8 @@
       //  param_disconnect [in-comp] [in-param] [out-comp] [out-param]
       if (c->parts.size() == 5)
       {
-        vsx_comp* dest = get_by_name(c->parts[1]);
-        vsx_comp* src  = get_by_name(c->parts[3]);
+        vsx_comp* dest = get_component_by_name(c->parts[1]);
+        vsx_comp* src  = get_component_by_name(c->parts[3]);
         if (dest && src) {
           vsx_engine_param* dest_param = dest->get_params_in()->get_by_name(c->parts[2]);
           vsx_engine_param* src_param = src->get_params_out()->get_by_name(c->parts[4]);
@@ -74,8 +74,8 @@
       //   param_alias [p_def] [-1=in / 1=out] [component] [parameter] [source_component] [source_parameter] 
       if (c->parts.size() >= 7) {
         // the source here is the param to be aliased, the dest is the destination component that is to own the new alias
-        vsx_comp* src  = get_by_name(c->parts[5]);
-        vsx_comp* dest = get_by_name(c->parts[3]);
+        vsx_comp* src  = get_component_by_name(c->parts[5]);
+        vsx_comp* dest = get_component_by_name(c->parts[3]);
         if (dest && src) {
           vsx_engine_param_list* src_l;
           vsx_engine_param_list* dest_l;
@@ -124,7 +124,7 @@
     if (cmd == "param_unalias") {
       // syntax:
       //   param_unalias [-1/1] [component] [param_name]
-      vsx_comp* dest = get_by_name(c->parts[2]);
+      vsx_comp* dest = get_component_by_name(c->parts[2]);
       if (dest) {
         //vsx_engine_param* param;
         bool result;
@@ -144,7 +144,7 @@
     if (cmd == "connections_order") {
       //syntax: 
       //  connections_order_ok [component] [param] [specification]
-      vsx_comp* dest = get_by_name(c->parts[1]);
+      vsx_comp* dest = get_component_by_name(c->parts[1]);
       if (dest) {
         if (dest->get_params_in()->order(c->parts[2],c->parts[3]) > 0)
         cmd_out->add_raw("connections_order_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]);

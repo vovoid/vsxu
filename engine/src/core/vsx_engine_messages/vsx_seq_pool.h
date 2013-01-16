@@ -101,7 +101,7 @@ if (cmd == "seq_pool") {
   // ***************************************
   // 0=seq_pool 1=add_param 2=[component] 3=[parameter]
   if (c->parts[1] == "add_param") {
-    vsx_comp* component = get_by_name(c->parts[2]);
+    vsx_comp* component = get_component_by_name(c->parts[2]);
     if (component) {
       vsx_engine_param* param = component->get_params_in()->get_by_name(c->parts[3]);
       if (sequence_pool.get_selected())
@@ -148,7 +148,7 @@ if (cmd == "seq_pool") {
   if (c->parts[1] == "pseq_inject") {
     if (sequence_pool.get_sequence_list_by_name(c->parts[2]))
     {
-      vsx_comp* component = get_by_name(c->parts[3]);
+      vsx_comp* component = get_component_by_name(c->parts[3]);
       if (component) {
         vsx_engine_param* param = component->get_params_in()->get_by_name(c->parts[4]);
         if (param)
@@ -170,7 +170,7 @@ if (cmd == "seq_pool") {
   if (c->parts[1] == "pseq_p") {
     if (sequence_pool.get_selected())
     {
-      vsx_comp* component = get_by_name(c->parts[3]);
+      vsx_comp* component = get_component_by_name(c->parts[3]);
       if (component) {
         vsx_engine_param* param = component->get_params_in()->get_by_name(c->parts[4]);
         if (param)
@@ -211,7 +211,7 @@ if (cmd == "seq_pool") {
   if (c->parts[1] == "pseq_r") {
     if (sequence_pool.get_selected())
     {
-      vsx_comp* component = get_by_name(c->parts[3]);
+      vsx_comp* component = get_component_by_name(c->parts[3]);
       if (component) {
         vsx_engine_param* param = component->get_params_in()->get_by_name(c->parts[4]);
         if (param) {

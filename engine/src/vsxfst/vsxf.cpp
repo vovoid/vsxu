@@ -482,12 +482,13 @@ vsx_string vsx_get_data_path()
   vsx_string base_path;
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
     //struct stat st;
+    int symlink_res = 0;
     char* home_dir = getenv ("HOME");
     base_path = vsx_string(home_dir)+"/.local/share/vsxu/";
     if (access(base_path.c_str(),0) != 0)
     {
       mkdir( (base_path).c_str(), 0700 );
-      symlink ( (base_path).c_str(), (vsx_string(home_dir)+"/vsxu").c_str() );
+      symlink_res = symlink ( (base_path).c_str(), (vsx_string(home_dir)+"/vsxu").c_str() );
     }
     base_path = base_path+vsxu_ver+"/";
     if (access(base_path.c_str(),0) != 0) mkdir( (base_path).c_str(),0700);
@@ -508,14 +509,14 @@ vsx_string vsx_get_data_path()
       mkdir( (base_path+"resources").c_str(),0700);
       // add symlinks to examples
 
-      symlink ( (PLATFORM_SHARED_FILES+"example-macros").c_str(), (base_path+"macros/examples").c_str() );
-      symlink ( (PLATFORM_SHARED_FILES+"example-states").c_str(), (base_path+"states/examples").c_str() );
-      symlink ( (PLATFORM_SHARED_FILES+"example-prods").c_str(), (base_path+"prods/examples").c_str() );
-      symlink ( (PLATFORM_SHARED_FILES+"example-visuals").c_str(), (base_path+"visuals/examples").c_str() );
-      symlink ( (PLATFORM_SHARED_FILES+"example-resources").c_str(), (base_path+"resources/examples").c_str() );
-      symlink ( (PLATFORM_SHARED_FILES+"example-faders").c_str(), (base_path+"visuals_faders/examples").c_str() );
+      symlink_res = symlink ( (PLATFORM_SHARED_FILES+"example-macros").c_str(), (base_path+"macros/examples").c_str() );
+      symlink_res = symlink ( (PLATFORM_SHARED_FILES+"example-states").c_str(), (base_path+"states/examples").c_str() );
+      symlink_res = symlink ( (PLATFORM_SHARED_FILES+"example-prods").c_str(), (base_path+"prods/examples").c_str() );
+      symlink_res = symlink ( (PLATFORM_SHARED_FILES+"example-visuals").c_str(), (base_path+"visuals/examples").c_str() );
+      symlink_res = symlink ( (PLATFORM_SHARED_FILES+"example-resources").c_str(), (base_path+"resources/examples").c_str() );
+      symlink_res = symlink ( (PLATFORM_SHARED_FILES+"example-faders").c_str(), (base_path+"visuals_faders/examples").c_str() );
       #if (VSXU_DEBUG)
-        symlink ( (PLATFORM_SHARED_FILES+"debug-states").c_str(), (base_path+"states/debug").c_str() );
+        symlink_res = symlink ( (PLATFORM_SHARED_FILES+"debug-states").c_str(), (base_path+"states/debug").c_str() );
       #endif
     }
   #else // platform family = unix
@@ -553,4 +554,10 @@ vsx_string vsx_get_data_path()
     }
   #endif
   return base_path;
+}
+
+
+vsx_string vsx_get_directory_separator()
+{
+  return vsx_string(DIRECTORY_SEPARATOR);
 }

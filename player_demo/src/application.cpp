@@ -34,15 +34,12 @@ vsx_logo_intro* intro;
 
 bool app_draw(int id)
 {
-  
 	if (first)
 	{
 		first = false;
     intro = new vsx_logo_intro;
     vxe_local = new vsx_engine("");
-    vxe_local->dump_modules_to_disk = false;
-    vxe_local->no_client_time = true;
-    vxe_local->init("fmod");
+    vxe_local->set_no_send_client_time(true);
     vxe_local->start();
     vsx_string path = PLATFORM_SHARED_FILES;
     vxe_local->load_state(path+"example-prods/vovoid-luna-reactivation.vsx");
@@ -51,7 +48,12 @@ bool app_draw(int id)
   vxe_local->process_message_queue(&cmd_in,&cmd_out);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   vxe_local->render();
-  if (vxe_local->e_state == VSX_ENGINE_LOADING && vxe_local->engine_info.vtime < 1.0f)
+  if
+  (
+      vxe_local->get_engine_state() == VSX_ENGINE_LOADING
+      &&
+      vxe_local->get_engine_info()->vtime < 1.0f
+  )
   intro->draw(true,false);
   else
   intro->draw(false,false);
