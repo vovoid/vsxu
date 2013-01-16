@@ -126,6 +126,7 @@ public:
   		}
     ((module_bitmap_blob*)ptr)->work_bitmap->timestamp++;
     ((module_bitmap_blob*)ptr)->work_bitmap->valid = true;
+    ((module_bitmap_blob*)ptr)->loading_done = true;
     ((module_bitmap_blob*)ptr)->thread_state = 2;
     // the thread will die here.
     return 0;
@@ -163,6 +164,7 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
+    loading_done = true;
     thread_state = 0;
     worker_running = false;
     thread_created = false;
@@ -218,7 +220,6 @@ public:
         if (c_type == 1)
         result_texture->set(texture);
         result1->set_p(bitm);
-        loading_done = true;
       }
       thread_state = 3;
     }
