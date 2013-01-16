@@ -16,6 +16,7 @@ typedef struct {
 } vsx_glsl_type_info;
 
 class vsx_glsl {
+protected:
   bool linked;
 
   GLint gl_get_val(GLhandleARB object, GLenum pname) {
@@ -24,9 +25,9 @@ class vsx_glsl {
     return val;
   }
   
-  vsx_avector<vsx_glsl_type_info> v_list;
+  vsx_avector<vsx_glsl_type_info> uniform_list;
 
-  vsx_avector<vsx_glsl_type_info> a_list;
+  vsx_avector<vsx_glsl_type_info> attribute_list;
   
   void process_vars() {
     std::map<vsx_string,vsx_string> vars;
@@ -251,7 +252,7 @@ class vsx_glsl {
             n_info.param_type_id = VSX_MODULE_PARAM_ID_MATRIX;
           break;
         }
-        v_list.push_back(n_info);
+        uniform_list.push_back(n_info);
 
         #if (VSXU_DEBUG)
         printf("GLSL uniform name: %s\n",sn.c_str());
@@ -294,14 +295,14 @@ class vsx_glsl {
           case GL_BOOL_VEC4:
           case GL_FLOAT_VEC4:
           case GL_INT_VEC4:
-#if (VSXU_DEBUG)            
+//#if (VSXU_DEBUG)
             printf("got quat array\n");
-#endif
+//#endif
             n_info.param_type = "quaternion_array";
             n_info.param_type_id = VSX_MODULE_PARAM_ID_QUATERNION_ARRAY;
           break;
         }
-        a_list.push_back(n_info);
+        attribute_list.push_back(n_info);
 
 #if (VSXU_DEBUG)
         printf("GLSL attribute name: %s\n",sn.c_str());
@@ -319,8 +320,8 @@ public:
   vsx_string vertex_program;
   vsx_string fragment_program;
 
-  std::map<vsx_string,vsx_glsl_type_info*> v_map;
-  std::map<vsx_string,vsx_glsl_type_info*> a_map;
+  std::map<vsx_string,vsx_glsl_type_info*> uniform_map;
+  std::map<vsx_string,vsx_glsl_type_info*> attribute_map;
 
 
   void init() {
@@ -334,10 +335,10 @@ public:
   vsx_string link() {
     if (!(GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader)) return "module||Error! No GLSL hardware support!";
     if (linked) {
-      v_list.clear();
-      a_list.clear();
-      v_map.clear();
-      a_map.clear();
+      uniform_list.clear();
+      attribute_list.clear();
+      uniform_map.clear();
+      attribute_map.clear();
       glDeleteObjectARB(vs);
       glDeleteObjectARB(fs);
       glDeleteObjectARB(prog);
@@ -422,22 +423,22 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
     if (!linked) return "";
     vsx_string res = ",uniforms:complex{";
     bool first = true;
-    for (int i = v_list.size()-1; i >= 0; --i) {
+    for (int i = uniform_list.size()-1; i >= 0; --i) {
       if (first) first = false;
       else res = res + ",";
-      res = res +v_list[i].name+":"+v_list[i].param_type;
+      res = res +uniform_list[i].name+":"+uniform_list[i].param_type;
     }
     res = res + "},attributes:complex{";
     first = true;
 #if (VSXU_DEBUG)    
-    printf("a_list size: %d\n", (int)a_list.size() );
+    printf("a_list size: %d\n", (int)attribute_list.size() );
 #endif
-    for (int i = a_list.size()-1; i >= 0; --i) {
+    for (int i = attribute_list.size()-1; i >= 0; --i) {
       //if (a_list[i].name[0] != '_')
       {
         if (first) first = false;
         else res = res + ",";
-        res = res +a_list[i].name+":"+a_list[i].param_type;
+        res = res +attribute_list[i].name+":"+attribute_list[i].param_type;
       }
     }
     res = res + "}";
@@ -448,156 +449,175 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
   void declare_params(vsx_module_param_list& in_parameters) {
     if (!linked) return;
 
-    for (unsigned long i = 0; i < v_list.size(); ++i) {
-      v_map[v_list[i].name] = &v_list[i];
+    for (unsigned long i = 0; i < uniform_list.size(); ++i) {
+      uniform_map[uniform_list[i].name] = &uniform_list[i];
 
-      v_list[i].module_param = 0;
+      uniform_list[i].module_param = 0;
       //if (v_list[i].name[0] != '_')
-      switch(v_list[i].param_type_id) {
+      switch(uniform_list[i].param_type_id) {
         case VSX_MODULE_PARAM_ID_FLOAT:
-          v_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,v_list[i].name.c_str());
+          uniform_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,uniform_list[i].name.c_str());
         break;
         case VSX_MODULE_PARAM_ID_FLOAT3:
-          v_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,v_list[i].name.c_str());
+          uniform_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,uniform_list[i].name.c_str());
         break;
         case VSX_MODULE_PARAM_ID_FLOAT4:
-          v_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,v_list[i].name.c_str());
+          uniform_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,uniform_list[i].name.c_str());
         break;
         case VSX_MODULE_PARAM_ID_TEXTURE:
-          v_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,v_list[i].name.c_str());
+          uniform_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,uniform_list[i].name.c_str());
         break;
         case VSX_MODULE_PARAM_ID_MATRIX:
-          v_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_MATRIX,v_list[i].name.c_str());
+          uniform_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_MATRIX,uniform_list[i].name.c_str());
         break;
       }
     }
-    for (unsigned long i = 0; i < a_list.size(); ++i) {
-      a_list[i].module_param = 0;
-      a_map[a_list[i].name] = &a_list[i];
+    for (unsigned long i = 0; i < attribute_list.size(); ++i) {
+      attribute_list[i].module_param = 0;
+      attribute_map[attribute_list[i].name] = &attribute_list[i];
       //if (a_list[i].name[0] != '_')
-      switch(a_list[i].param_type_id) {
+      switch(attribute_list[i].param_type_id) {
         case VSX_MODULE_PARAM_ID_FLOAT_ARRAY:
-          a_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,a_list[i].name.c_str());
+          attribute_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,attribute_list[i].name.c_str());
         break;
         case VSX_MODULE_PARAM_ID_FLOAT3_ARRAY:
-          a_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3_ARRAY,a_list[i].name.c_str());
+          attribute_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3_ARRAY,attribute_list[i].name.c_str());
         break;
         case VSX_MODULE_PARAM_ID_QUATERNION_ARRAY:
-          a_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION_ARRAY,a_list[i].name.c_str());
+          attribute_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION_ARRAY,attribute_list[i].name.c_str());
         break;
       }
     }
   }
 
-  void set_uniforms() {
+  virtual void set_uniforms()
+  {
     int tex_i = 0;
-    for (unsigned long i = 0; i < v_list.size(); ++i) {
+    for (unsigned long i = 0; i < uniform_list.size(); ++i) {
     	//printf("setting uniform %d\n",i);
-      if (v_list[i].module_param) {
-        switch(v_list[i].param_type_id) {
-          case VSX_MODULE_PARAM_ID_FLOAT:
-            glUniform1f(v_list[i].glsl_location,((vsx_module_param_float*)v_list[i].module_param)->get());
-          break;
-          case VSX_MODULE_PARAM_ID_FLOAT3:
-          {
-            switch (v_list[i].glsl_type)
-            {
-              case GL_BOOL_VEC2:
-                break;
-              case GL_FLOAT_VEC2:
-                break;
-              case GL_INT_VEC2:
-                break;
-              case GL_FLOAT_VEC3:
-                //printf("setting %d uniform %s: %f\n",v_list[i].glsl_location,v_list[i].name.c_str(),((vsx_module_param_float3*)v_list[i].module_param)->get(0));
-
-                glUniform3f(v_list[i].glsl_location,
-                    ((vsx_module_param_float3*)v_list[i].module_param)->get(0),
-                    ((vsx_module_param_float3*)v_list[i].module_param)->get(1),
-                    ((vsx_module_param_float3*)v_list[i].module_param)->get(2)
-                );
-
-                //glUniform3fvARB(v_list[i].glsl_location,((vsx_module_param_float3*)v_list[i].module_param)->get_addr());
-                break;
-              case GL_BOOL_VEC3:
-                break;
-              case GL_INT_VEC3:
-                break;
-            }
-          }
-          break;
-          case VSX_MODULE_PARAM_ID_FLOAT4:
-            switch (v_list[i].glsl_type)
-            {
-              case GL_FLOAT_VEC4:
-                //printf("setting %d uniform %s: %f\n",v_list[i].glsl_location,v_list[i].name.c_str(),((vsx_module_param_float3*)v_list[i].module_param)->get(0));
-
-                glUniform4f(v_list[i].glsl_location,
-                    ((vsx_module_param_float3*)v_list[i].module_param)->get(0),
-                    ((vsx_module_param_float3*)v_list[i].module_param)->get(1),
-                    ((vsx_module_param_float3*)v_list[i].module_param)->get(2),
-                    ((vsx_module_param_float3*)v_list[i].module_param)->get(3)
-                );
-
-                //glUniform3fv(v_list[i].glsl_location,((vsx_module_param_float3*)v_list[i].module_param)->get_addr());
-                break;
-              case GL_BOOL_VEC4:
-                break;
-              case GL_INT_VEC4:
-                break;
-            }
-          break;
-          case VSX_MODULE_PARAM_ID_TEXTURE:
-            vsx_texture** ba;
-            ba = ((vsx_module_param_texture*)v_list[i].module_param)->get_addr();
-            if (ba) {
-              //printf("GLSL:binding texture\n");
-              //if (GLEW_VERSION_1_3)
-#if defined(__linux__)
-              glActiveTexture(GL_TEXTURE0 + tex_i);
-#else
-              glActiveTexture(GL_TEXTURE0 + tex_i);
-#endif
-              (*ba)->bind();
-              glUniform1iARB(v_list[i].glsl_location,tex_i);
-              tex_i++;
-            }
-          break;
-          case VSX_MODULE_PARAM_ID_MATRIX:
-            //v_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_MATRIX,v_list[i].name.c_str());
-          break;
-        }
+      if (!uniform_list[i].module_param)
+      {
+        continue;
       }
+
+      switch(uniform_list[i].param_type_id) {
+        case VSX_MODULE_PARAM_ID_FLOAT:
+          glUniform1f(uniform_list[i].glsl_location,((vsx_module_param_float*)uniform_list[i].module_param)->get());
+        break;
+        case VSX_MODULE_PARAM_ID_FLOAT3:
+        {
+          switch (uniform_list[i].glsl_type)
+          {
+            case GL_BOOL_VEC2:
+              break;
+            case GL_FLOAT_VEC2:
+              break;
+            case GL_INT_VEC2:
+              break;
+            case GL_FLOAT_VEC3:
+              //printf("setting %d uniform %s: %f\n",v_list[i].glsl_location,v_list[i].name.c_str(),((vsx_module_param_float3*)v_list[i].module_param)->get(0));
+
+              glUniform3f(uniform_list[i].glsl_location,
+                  ((vsx_module_param_float3*)uniform_list[i].module_param)->get(0),
+                  ((vsx_module_param_float3*)uniform_list[i].module_param)->get(1),
+                  ((vsx_module_param_float3*)uniform_list[i].module_param)->get(2)
+              );
+
+              //glUniform3fvARB(v_list[i].glsl_location,((vsx_module_param_float3*)v_list[i].module_param)->get_addr());
+              break;
+            case GL_BOOL_VEC3:
+              break;
+            case GL_INT_VEC3:
+              break;
+          }
+        }
+        break;
+        case VSX_MODULE_PARAM_ID_FLOAT4:
+          switch (uniform_list[i].glsl_type)
+          {
+            case GL_FLOAT_VEC4:
+              //printf("setting %d uniform %s: %f\n",v_list[i].glsl_location,v_list[i].name.c_str(),((vsx_module_param_float3*)v_list[i].module_param)->get(0));
+
+              glUniform4f(uniform_list[i].glsl_location,
+                  ((vsx_module_param_float3*)uniform_list[i].module_param)->get(0),
+                  ((vsx_module_param_float3*)uniform_list[i].module_param)->get(1),
+                  ((vsx_module_param_float3*)uniform_list[i].module_param)->get(2),
+                  ((vsx_module_param_float3*)uniform_list[i].module_param)->get(3)
+              );
+
+              //glUniform3fv(v_list[i].glsl_location,((vsx_module_param_float3*)v_list[i].module_param)->get_addr());
+              break;
+            case GL_BOOL_VEC4:
+              break;
+            case GL_INT_VEC4:
+              break;
+          }
+        break;
+        case VSX_MODULE_PARAM_ID_TEXTURE:
+          vsx_texture** ba;
+          ba = ((vsx_module_param_texture*)uniform_list[i].module_param)->get_addr();
+          if (ba) {
+            //printf("GLSL:binding texture\n");
+            //if (GLEW_VERSION_1_3)
+#if defined(__linux__)
+            glActiveTexture(GL_TEXTURE0 + tex_i);
+#else
+            glActiveTexture(GL_TEXTURE0 + tex_i);
+#endif
+            (*ba)->bind();
+            glUniform1iARB(uniform_list[i].glsl_location,tex_i);
+            tex_i++;
+          }
+        break;
+        case VSX_MODULE_PARAM_ID_MATRIX:
+          //v_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_MATRIX,v_list[i].name.c_str());
+        break;
+      }
+
     }
-    for (unsigned long i = 0; i < a_list.size(); ++i) {
-      if (a_list[i].module_param) {
+    for (unsigned long i = 0; i < attribute_list.size(); ++i) {
+      if (attribute_list[i].module_param) {
         #ifdef VSXU_DEBUG
               //printf("set attrib param_type_id %d\n",a_list[i].param_type_id);
         #endif
-        switch(a_list[i].param_type_id) {
+        switch(attribute_list[i].param_type_id) {
           case VSX_MODULE_PARAM_ID_FLOAT_ARRAY:
           {
-            vsx_float_array* p = ((vsx_module_param_float_array*)a_list[i].module_param)->get_addr();
+            vsx_float_array* p = ((vsx_module_param_float_array*)attribute_list[i].module_param)->get_addr();
             if (p)
             {
-              glVertexAttribPointer(a_list[i].glsl_location,1,GL_FLOAT,GL_FALSE,0, (GLvoid*)(p->data->get_pointer()));
-              glEnableVertexAttribArray(a_list[i].glsl_location);
+              glVertexAttribPointer(attribute_list[i].glsl_location,1,GL_FLOAT,GL_FALSE,0, (GLvoid*)(p->data->get_pointer()));
+              glEnableVertexAttribArray(attribute_list[i].glsl_location);
             } else
-            glDisableVertexAttribArray(a_list[i].glsl_location);
+            glDisableVertexAttribArray(attribute_list[i].glsl_location);
           }
           break;
           case VSX_MODULE_PARAM_ID_FLOAT3_ARRAY:
           {
-            vsx_float3_array* p = ((vsx_module_param_float3_array*)a_list[i].module_param)->get_addr();
+            vsx_float3_array* p = ((vsx_module_param_float3_array*)attribute_list[i].module_param)->get_addr();
             if (p)
             {
               #ifdef VSXU_DEBUG
               //printf("setting float3 attrib in shader\n");
               #endif
-              glVertexAttribPointer(a_list[i].glsl_location,3,GL_FLOAT,GL_FALSE,0, (GLvoid*)(p->data->get_pointer()));
-              glEnableVertexAttribArray(a_list[i].glsl_location);
+              glVertexAttribPointer(attribute_list[i].glsl_location,3,GL_FLOAT,GL_FALSE,0, (GLvoid*)(p->data->get_pointer()));
+              glEnableVertexAttribArray(attribute_list[i].glsl_location);
             } else
-            glDisableVertexAttribArray(a_list[i].glsl_location);
+            glDisableVertexAttribArray(attribute_list[i].glsl_location);
+          }
+          break;
+          case VSX_MODULE_PARAM_ID_QUATERNION_ARRAY:
+          {
+            vsx_quaternion_array* p = ((vsx_module_param_quaternion_array*)attribute_list[i].module_param)->get_addr();
+            if (p)
+            {
+              //#ifdef VSXU_DEBUG
+              //printf("setting quaternion attrib in shader\n");
+              //#endif
+              glVertexAttribPointer(attribute_list[i].glsl_location,4,GL_FLOAT,GL_FALSE,0, (GLvoid*)(p->data->get_pointer()));
+              glEnableVertexAttribArray(attribute_list[i].glsl_location);
+            } else
+            glDisableVertexAttribArray(attribute_list[i].glsl_location);
           }
           break;
         }
@@ -605,15 +625,15 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
     }
   }
   
-  void unset_uniforms() {
+  virtual void unset_uniforms() {
     int tex_i = 0;
-    for (unsigned long i = 0; i < v_list.size(); ++i) {
-      if (v_list[i].module_param) {
-        switch(v_list[i].param_type_id) {
+    for (unsigned long i = 0; i < uniform_list.size(); ++i) {
+      if (uniform_list[i].module_param) {
+        switch(uniform_list[i].param_type_id) {
           case VSX_MODULE_PARAM_ID_TEXTURE:
           vsx_texture** ba;
           //glBindTexture(GL_TEXTURE_2D, my_texture_object);
-          ba = ((vsx_module_param_texture*)v_list[i].module_param)->get_addr();
+          ba = ((vsx_module_param_texture*)uniform_list[i].module_param)->get_addr();
           if (ba) {
         	//if (GLEW_VERSION_1_3)
 #if defined(__linux__)
@@ -629,18 +649,13 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
       }
     }
 
-    for (unsigned long i = 0; i < a_list.size(); ++i) {
-      if (a_list[i].module_param) {
-        switch(a_list[i].param_type_id) {
+    for (unsigned long i = 0; i < attribute_list.size(); ++i) {
+      if (attribute_list[i].module_param) {
+        switch(attribute_list[i].param_type_id) {
           case VSX_MODULE_PARAM_ID_FLOAT_ARRAY:
-          {
-            glDisableVertexAttribArray(a_list[i].glsl_location);
-          }
-          break;
           case VSX_MODULE_PARAM_ID_FLOAT3_ARRAY:
-          {
-            glDisableVertexAttribArray(a_list[i].glsl_location);
-          }
+          case VSX_MODULE_PARAM_ID_QUATERNION_ARRAY:
+            glDisableVertexAttribArray(attribute_list[i].glsl_location);
           break;
         }
       }
@@ -679,10 +694,11 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
       glUseProgramObjectARB(0);
   }
   vsx_glsl() : 
-      linked(false),vs(0),
+      linked(false),
+      vs(0),
       fs(0),
       prog(0) 
-  {};
+  {}
 };
 
 #endif // ifdef OPENGL_ES_2_0
