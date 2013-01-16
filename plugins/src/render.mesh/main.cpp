@@ -412,10 +412,10 @@ public:
       float t_res_x = (float)abs(viewport[2] - viewport[0]);
       
       
-      if (shader.v_map.find("_vx") != shader.v_map.end())
+      if (shader.uniform_map.find("_vx") != shader.uniform_map.end())
       {
         //printf("found vx\n");
-        vsx_module_param_float* p = (vsx_module_param_float*)shader.v_map["_vx"]->module_param;
+        vsx_module_param_float* p = (vsx_module_param_float*)shader.uniform_map["_vx"]->module_param;
         if (p) p->set(t_res_x);
       }
       
@@ -621,13 +621,16 @@ class vsx_module_render_mesh : public vsx_module {
   int offset_vertices;
   int offset_texcoords;
   int offset_vertex_colors;
+
   // vbo handles
   GLuint vbo_id_vertex_normals_texcoords;
   GLuint vbo_id_draw_indices;
+
   // current - state - used to see if anything has changed
   GLuint current_vbo_draw_type;
   int current_num_vertices;
   int current_num_faces;
+
 
   ///////////////////////////////////////////////////////////////////////////////
   // generate vertex buffer object and bind it with its data
@@ -660,7 +663,7 @@ class vsx_module_render_mesh : public vsx_module {
     return id;      // return VBO id
   }
 
-  inline void init_vbo(GLuint draw_type = GL_STREAM_DRAW_ARB)
+  inline void init_vbo(GLuint draw_type = GL_DYNAMIC_DRAW_ARB)
   {
     if (vbo_id_vertex_normals_texcoords) {
       printf("inig vbo failed - vbo_id_vertex_normals_texcoords already has a value: %d\n", vbo_id_vertex_normals_texcoords);
@@ -810,7 +813,7 @@ class vsx_module_render_mesh : public vsx_module {
     return false;
   }
 
-  inline void maintain_vbo_type(GLuint draw_type = GL_STREAM_DRAW_ARB)
+  inline void maintain_vbo_type(GLuint draw_type = GL_DYNAMIC_DRAW_ARB)
   {
     if (check_if_need_to_reinit_vbo(draw_type))
     {
@@ -952,32 +955,6 @@ public:
       vbo_id_vertex_normals_texcoords
     );
 
-    // if buffer type is "STREAM", upload new data
-
-    if (current_vbo_draw_type == GL_STREAM_DRAW_ARB)
-    {
-      char *ptr = (char*)glMapBufferARB(GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY_ARB);
-      if (ptr)
-      {
-        //printf("vertices ofset: %d\n", offset_vertices);
-        if ((*mesh)->data->vertex_normals.get_used()) {
-          memcpy( ptr + offset_normals, (*mesh)->data->vertex_normals.get_pointer(), (*mesh)->data->vertex_normals.get_sizeof() );
-        }
-        /*if ((*mesh)->data->vertex_tex_coords.get_used()) {
-          memcpy( ptr + offset_texcoords, (*mesh)->data->vertex_tex_coords.get_pointer(), (*mesh)->data->vertex_tex_coords.get_sizeof() );
-        }
-        if (use_vertex_colors->get())
-        {
-          if ((*mesh)->data->vertex_colors.get_used()) {
-            memcpy( ptr + offset_vertex_colors, (*mesh)->data->vertex_colors.get_pointer(), (*mesh)->data->vertex_colors.get_sizeof() );
-          }
-        }*/
-        memcpy( ptr + offset_vertices, (*mesh)->data->vertices.get_pointer(), (*mesh)->data->vertices.get_sizeof() );
-        glUnmapBufferARB(GL_ARRAY_BUFFER_ARB); // release pointer to mapping buffer
-      }
-    }
-
-
     // enable vertex colors
     if (use_vertex_colors->get())
     {
@@ -1051,7 +1028,6 @@ public:
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
   }
 
-
   void inline perform_draw()
   {
     //glDrawElements(GL_TRIANGLES,(*mesh)->data->faces.get_used()*3,GL_UNSIGNED_INT,(*mesh)->data->faces.get_pointer());
@@ -1080,6 +1056,7 @@ public:
 
     if (vertex_colors->get()) glEnable(GL_COLOR_MATERIAL);
 
+    if (vertex_colors->get()) glEnable(GL_COLOR_MATERIAL);
 
     prev_mesh_timestamp = (*mesh)->timestamp;
 
@@ -1094,6 +1071,61 @@ public:
     render_result->set(1);
   }
 
+  void run()
+  {
+    if (!mesh_in->valid) return;
+    mesh = mesh_in->get_addr();
+    // sanity checks
+    if (!mesh) { message="module||Can not render: mesh is not set"; render_result->set(0); return; }
+    if (!(*mesh)->data) { message="module||Can not render: Mesh data is not set"; render_result->set(0); return; }
+    if (!(*mesh)->data->faces.get_used()) { message="module||Can not render: Mesh has no faces"; render_result->set(0); return; }
+    message="module||ok";
+
+    // don't upload unless changed
+    if
+    (
+      prev_mesh_timestamp == (*mesh)->timestamp
+    ) return;
+
+    // bind the vertex, normals buffer for use
+    glBindBufferARB
+    (
+      GL_ARRAY_BUFFER_ARB,
+      vbo_id_vertex_normals_texcoords
+    );
+
+    // if buffer type is "STREAM", upload new data
+
+    if (current_vbo_draw_type == GL_DYNAMIC_DRAW_ARB)
+    {
+      char *ptr = (char*)glMapBufferARB(GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+
+      if (ptr)
+      {
+        //printf("uploading %d vertices to VBO\n", (*mesh)->data->vertices.size());
+        //printf("vertices ofset: %d\n", offset_vertices);
+        if ((*mesh)->data->vertex_normals.get_used()) {
+          memcpy( ptr + offset_normals, (*mesh)->data->vertex_normals.get_pointer(), (*mesh)->data->vertex_normals.get_sizeof() );
+        }
+        if ((*mesh)->data->vertex_tex_coords.get_used()) {
+          memcpy( ptr + offset_texcoords, (*mesh)->data->vertex_tex_coords.get_pointer(), (*mesh)->data->vertex_tex_coords.get_sizeof() );
+        }
+        if (use_vertex_colors->get())
+        {
+          if ((*mesh)->data->vertex_colors.get_used()) {
+            memcpy( ptr + offset_vertex_colors, (*mesh)->data->vertex_colors.get_pointer(), (*mesh)->data->vertex_colors.get_sizeof() );
+          }
+        }
+        memcpy( ptr + offset_vertices, (*mesh)->data->vertices.get_pointer(), (*mesh)->data->vertices.get_sizeof() );
+        glUnmapBufferARB(GL_ARRAY_BUFFER_ARB); // release pointer to mapping buffer
+      }
+    }
+    // unbind the VBO buffers
+    glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+
+    prev_mesh_timestamp = (*mesh)->timestamp;
+  }
+
   // if no display list: re-init vbo with stream rendering
   // if display list: re-init vbo with static rendering
   // display_list being set overrides new functionality
@@ -1104,6 +1136,7 @@ public:
     #ifdef VSXU_OPENGL_ES
     output_opengl_es(param); return;
     #endif
+    if (!mesh_in->valid) return;
     mesh = mesh_in->get_addr();
     // sanity checks
     if (!mesh) { message="module||Can not render: mesh is not set"; render_result->set(0); return; }
@@ -1119,14 +1152,13 @@ public:
     } else
     {
       // make sure vbo is set to stream draw
-      maintain_vbo_type(GL_STREAM_DRAW_ARB);
+      maintain_vbo_type(GL_DYNAMIC_DRAW_ARB);
     }
 
     enable_texture();
 
     if (vertex_colors->get()) glEnable(GL_COLOR_MATERIAL);
 
-    prev_mesh_timestamp = (*mesh)->timestamp;
 
     particle_mesh = particle_cloud->get_addr();
     if (particle_mesh)
