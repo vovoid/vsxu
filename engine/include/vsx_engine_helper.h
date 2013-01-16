@@ -8,7 +8,7 @@ class vsx_engine_helper
 public:
   vsx_engine* engine;
 
-  vsx_engine_helper(vsx_string state_name)
+  vsx_engine_helper(vsx_string state_name, vsx_module_list_abs* module_list)
   {
     // create the new engine
     engine = new vsx_engine();
