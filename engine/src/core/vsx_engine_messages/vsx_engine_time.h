@@ -1,6 +1,6 @@
 #ifndef VSX_DEMO_MINI
     if (cmd == "play") {
-      play();
+      time_play();
     } else
     if (cmd == "stop") {
       current_state = VSX_ENGINE_STOPPED;

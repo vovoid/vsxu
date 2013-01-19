@@ -444,7 +444,11 @@ bool vsx_comp::prepare()
     #ifdef VSXU_MODULE_TIMING
       run_timer.start();
     #endif
-      module->run();
+      // don't run run() if engine is in output mode
+      if ( false == ((vsx_engine*)engine_owner)->get_render_hint_module_output_only() )
+      {
+        module->run();
+      }
     #ifdef VSXU_MODULE_TIMING
       new_time_run += run_timer.dtime();
     #endif
@@ -483,7 +487,10 @@ bool vsx_comp::run(vsx_module_param_abs* param)
     #ifdef VSXU_MODULE_TIMING
       run_timer.start();
     #endif
-    module->run();
+    if ( false == ((vsx_engine*)engine_owner)->get_render_hint_module_output_only() )
+    {
+      module->run();
+    }
     #ifdef VSXU_MODULE_TIMING
       new_time_run += run_timer.dtime();
     #endif

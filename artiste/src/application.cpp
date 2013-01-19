@@ -130,7 +130,7 @@ public:
   void draw() {
     if (record_movie) {
       vxe->set_constant_frame_progression(1.0f / 60.0f);
-      vxe->play();
+      vxe->time_play();
     }
 
     if (desktop)
