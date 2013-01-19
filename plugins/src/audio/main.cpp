@@ -19,6 +19,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include "input/input_audio_midi.h"
 #include "input/input_audio_raw.h"
 #include "input/input_audio_mediaplayer.h"
 
@@ -35,8 +36,10 @@ __declspec(dllexport) unsigned long get_num_modules();
 vsx_module* create_new_module(unsigned long module) {
   switch(module){
     case 0:
-      return (vsx_module*)(new input_audio_raw);
+      return (vsx_module*)(new input_audio_midi);
     case 1:
+      return (vsx_module*)(new input_audio_raw);
+    case 2:
       return (vsx_module*)(new input_audio_mediaplayer);
   }
 }
@@ -44,12 +47,14 @@ vsx_module* create_new_module(unsigned long module) {
 void destroy_module(vsx_module* m,unsigned long module) {
   switch(module){
     case 0:
-      return delete (input_audio_raw*)m;
+      return delete (input_audio_midi*)m;
     case 1:
+      return delete (input_audio_raw*)m;
+    case 2:
       return delete (input_audio_mediaplayer*)m;
   }
 }
 
 unsigned long get_num_modules() {
-  return 2;
+  return 3;
 }

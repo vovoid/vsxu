@@ -42,12 +42,13 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   endif(COREAUDIO_LIBRARY_FOUND)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   add_definitions(-D__WINDOWS_DS__)
   set( AUDIO_LIBRARIES ${AUDIO_LIBRARIES} winmm dsound)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
-#TODO: Add in the needed definitions for each Audio Library on each platform
+#TODO: Add in the needed definitions for each Audio/Midi Library on each platform
 if(AUDIO_LIBRARIES)
   project (${module_id})
   find_package(PTHREAD)
@@ -55,10 +56,12 @@ if(AUDIO_LIBRARIES)
   include_directories ( lib/
                         lib/fftreal/ )
   set(SOURCES main.cpp
+              input/input_audio_midi.cpp
               input/input_audio_raw.cpp
               input/input_audio_mediaplayer.cpp
               lib/fftreal/fftreal.cpp
-              lib/RtAudio/RtAudio.cpp)
+              lib/RtAudio/RtAudio.cpp
+              lib/RtMidi/RtMidi.cpp )
 
   add_library(${module_id} MODULE ${SOURCES})
   include(../cmake_suffix.txt)
