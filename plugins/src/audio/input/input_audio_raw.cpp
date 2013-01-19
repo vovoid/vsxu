@@ -184,7 +184,7 @@ void input_audio_raw::module_info(vsx_module_info* info)
 {
   //TODO: Re create the input params based on the available device capabilities for module configuration.
   info->output = 1;
-  info->identifier = "audio;input;raw||sound;input_visualization_listener||system;sound;vsx_listener";
+  info->identifier = "audio;input;wave_in||sound;input_visualization_listener||system;sound;vsx_listener";
 #ifndef VSX_NO_CLIENT
   info->description = "VU is the volume level for each channel.\nThe octaves are 0 = bass, 7 = treble";
   info->in_param_spec = "multiplier:float";

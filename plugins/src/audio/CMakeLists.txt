@@ -52,7 +52,7 @@ if(AUDIO_LIBRARIES)
   project (${module_id})
   find_package(PTHREAD)
   include (../cmake_globals.txt)
-  include_directories ( lib/RtAudio/
+  include_directories ( lib/
                         lib/fftreal/ )
   set(SOURCES main.cpp
               input/input_audio_raw.cpp
