@@ -19,7 +19,10 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#ifdef WITH_MIDI
 #include "input/input_audio_midi.h"
+#endif
+
 #include "input/input_audio_raw.h"
 #include "input/input_audio_mediaplayer.h"
 
@@ -36,25 +39,33 @@ __declspec(dllexport) unsigned long get_num_modules();
 vsx_module* create_new_module(unsigned long module) {
   switch(module){
     case 0:
-      return (vsx_module*)(new input_audio_midi);
-    case 1:
       return (vsx_module*)(new input_audio_raw);
-    case 2:
+    case 1:
       return (vsx_module*)(new input_audio_mediaplayer);
+#ifdef WITH_MIDI
+    case 2:
+      return (vsx_module*)(new input_audio_midi);
+#endif
   }
 }
 
 void destroy_module(vsx_module* m,unsigned long module) {
   switch(module){
     case 0:
-      return delete (input_audio_midi*)m;
+      return delete (input_audio_mediaplayer*)m;
     case 1:
       return delete (input_audio_raw*)m;
+#ifdef WITH_MIDI
     case 2:
-      return delete (input_audio_mediaplayer*)m;
+      return delete (input_audio_midi*)m;
+#endif
   }
 }
 
 unsigned long get_num_modules() {
+#ifdef WITH_MIDI
   return 3;
+#elif WITH_MIDI
+  return 2;
+#endif
 }

@@ -22,6 +22,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   find_package(ALSA)
   if(ALSA_FOUND)
     add_definitions(-D__LINUX_ALSA__)
+    add_definitions( -DWITH_MIDI )
     set( WITH_MIDI TRUE )
 
     include_directories(${ALSA_INCLUDE_DIRS})
