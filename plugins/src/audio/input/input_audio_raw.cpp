@@ -20,7 +20,14 @@
 #include <sstream>
 #include "input_audio_raw.h"
 
+#ifdef __LINUX_PULSE__
+#define  AUDIO_API RtAudio::LINUX_PULSE
+#elif __LINUX_PULSE__
+#define AUDIO_API
+#endif
+
 input_audio_raw::input_audio_raw():
+  m_adc(AUDIO_API),
   m_fft_machine(N_BUFFER_FRAMES),
   m_buffer_frames(N_BUFFER_FRAMES),
   m_sample_rate(SAMPLE_RATE),
