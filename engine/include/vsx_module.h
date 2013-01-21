@@ -308,7 +308,7 @@ public:
   // DO NOT allocate your own memory in here, do it in the init() function
   virtual void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {};
 
-    // Redeclaration of parameters
+  // Redeclaration of parameters
   // If you need to redeclare in our out parameters during runtime,
   // you implement the appropriate method and when it's time, youset
   // redeclare_[in|out] = true;
