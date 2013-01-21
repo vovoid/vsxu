@@ -52,9 +52,9 @@ vsx_module* create_new_module(unsigned long module) {
 void destroy_module(vsx_module* m,unsigned long module) {
   switch(module){
     case 0:
-      return delete (input_audio_mediaplayer*)m;
-    case 1:
       return delete (input_audio_raw*)m;
+    case 1:
+      return delete (input_audio_mediaplayer*)m;
 #ifdef WITH_MIDI
     case 2:
       return delete (input_audio_midi*)m;
