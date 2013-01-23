@@ -156,7 +156,7 @@ void tracker_bitmap_color::run()
   printf("Position: (%f,%f)\n",posX,posY);
 #endif
   out_centroid->set(posX,0);
-  out_centroid->set(posX,1);
+  out_centroid->set(posY,1);
 
   //Calculate the debug output only if requested
   if(m_compute_debug_out){
