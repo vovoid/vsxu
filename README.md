@@ -43,7 +43,7 @@ Build it:
       cd vsxu
       mkdir build
       cd build
-      cmake ..
+      cmake -DCMAKE_INSTALL_PREFIX=/usr ..
       make
       make install
 
