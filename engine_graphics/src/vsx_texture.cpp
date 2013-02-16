@@ -48,6 +48,7 @@ vsx_texture::vsx_texture()
   locked = false;
   transform_obj = new vsx_transform_neutral;
   original_transform_obj = 1;
+  depth_buffer_local = true;
 }
 
 vsx_texture::vsx_texture(int id, int type)
@@ -62,6 +63,7 @@ vsx_texture::vsx_texture(int id, int type)
   #ifndef VSXU_OPENGL_ES
     glewInit();
   #endif
+  depth_buffer_local = true;
 }
 
 void vsx_texture::init_opengl_texture()
@@ -80,7 +82,19 @@ bool vsx_texture::has_buffer_support()
   return fbo && blit;
 }
 
-void vsx_texture::init_buffer(int width, int height, bool float_texture, bool alpha, bool enable_multisample)
+
+GLuint vsx_texture::get_depth_buffer_handle()
+{
+  return depth_buffer_handle;
+}
+
+void vsx_texture::init_feedback_buffer(
+  int width,
+  int height,
+  bool float_texture,
+  bool alpha,
+  bool enable_multisample
+)
 {
   GLenum gl_error; glGetError();
   locked = false;
@@ -96,14 +110,18 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture, bool al
     printf("vsx_texture error: No FBO available!\n");
     return;
   }
+
+  // set the buffer type (for deinit and capturing)
+  frame_buffer_type = VSX_TEXTURE_BUFFER_TYPE_FEEDBACK_PBUFFER;
+
   GLint prev_buf_l;
   GLuint tex_id;
   glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l); HANDLE_GL_ERROR
 
   // color buffer
-  glGenRenderbuffersEXT(1, &colorBuffer); HANDLE_GL_ERROR
+  glGenRenderbuffersEXT(1, &color_buffer_handle); HANDLE_GL_ERROR
 
-  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, colorBuffer); HANDLE_GL_ERROR
+  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, color_buffer_handle); HANDLE_GL_ERROR
 
   if(enable_multisample && GLEW_EXT_framebuffer_multisample)
   {
@@ -128,9 +146,8 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture, bool al
     }
   }
 
-  // depth buffer
-  glGenRenderbuffersEXT(1, &depthBuffer); HANDLE_GL_ERROR;
-  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthBuffer); HANDLE_GL_ERROR
+  glGenRenderbuffersEXT(1, &depth_buffer_handle); HANDLE_GL_ERROR;
+  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depth_buffer_handle); HANDLE_GL_ERROR
   if(enable_multisample && GLEW_EXT_framebuffer_multisample)
   {
     glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_DEPTH_COMPONENT, width, height); HANDLE_GL_ERROR
@@ -141,10 +158,10 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture, bool al
   }
 
   // create fbo for multi sampled content and attach depth and color buffers to it
-  glGenFramebuffersEXT(1, &framebuffer_id); HANDLE_GL_ERROR
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebuffer_id); HANDLE_GL_ERROR
-  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, colorBuffer); HANDLE_GL_ERROR
-  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depthBuffer); HANDLE_GL_ERROR
+  glGenFramebuffersEXT(1, &frame_buffer_handle); HANDLE_GL_ERROR
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle); HANDLE_GL_ERROR
+  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, color_buffer_handle); HANDLE_GL_ERROR
+  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depth_buffer_handle); HANDLE_GL_ERROR
 
   // create texture
   glGenTextures(1, &tex_id); HANDLE_GL_ERROR
@@ -165,9 +182,10 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture, bool al
   // set your texture parameters here if required ...
 
   // create final fbo and attach texture to it
-  glGenFramebuffersEXT(1, &tex_fbo); HANDLE_GL_ERROR
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, tex_fbo); HANDLE_GL_ERROR
+  glGenFramebuffersEXT(1, &frame_buffer_object_handle); HANDLE_GL_ERROR
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_object_handle); HANDLE_GL_ERROR
   glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, tex_id, 0); HANDLE_GL_ERROR
+
 
   texture_info.ogl_id = tex_id;
   texture_info.ogl_type = GL_TEXTURE_2D;
@@ -178,24 +196,300 @@ void vsx_texture::init_buffer(int width, int height, bool float_texture, bool al
   valid_fbo = true; // valid for capturing
 }
 
+
+void vsx_texture::reinit_feedback_buffer
+(
+  int width,
+  int height,
+  bool float_texture,
+  bool alpha,
+  bool multisample
+)
+{
+  deinit_buffer();
+  init_feedback_buffer
+  (
+    width,
+    height,
+    float_texture,
+    alpha,
+    multisample
+  );
+}
+
+// init an offscreen color buffer, no depth
+VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_buffer
+(
+  int width, // width in pixels
+  int height, // height in pixels
+  bool float_texture = false, // use floating point channels (8-bit is default)
+  bool alpha = true, // support alpha channel or not
+  bool multisample = false // enable anti-aliasing
+)
+{
+  GLenum gl_error; glGetError();
+  locked = false;
+  prev_buf = 0;
+  #ifndef VSXU_OPENGL_ES
+    glewInit();
+  #endif
+  int i_width = width;
+  int i_height = height;
+
+  if ( !has_buffer_support() )
+  {
+    printf("vsx_texture error: No FBO available!\n");
+    return;
+  }
+
+  // set the buffer type (for deinit and capturing)
+  frame_buffer_type = VSX_TEXTURE_BUFFER_TYPE_COLOR;
+
+  // save the previous FBO (stack behaviour)
+  GLint prev_buf_l;
+  GLuint tex_id;
+  glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l); HANDLE_GL_ERROR
+
+  GLuint texture_storage_type;
+
+  if (float_texture)
+  {
+    texture_storage_type = alpha?GL_RGBA16F_ARB:GL_RGB16F_ARB;
+  }
+  else
+  {
+    texture_storage_type = alpha?GL_RGBA8:GL_RGB8;
+  }
+
+  //RGBA8 2D texture, 24 bit depth texture, 256x256
+  glGenTextures(1, &color_buffer_handle);
+  glBindTexture(GL_TEXTURE_2D, color_buffer_handle);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  //NULL means reserve texture memory, but texels are undefined
+  glTexImage2D(GL_TEXTURE_2D, 0, texture_storage_type, i_width, i_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
+
+  //-------------------------
+  glGenFramebuffersEXT(1, &frame_buffer_handle);
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle);
+  //Attach 2D texture to this FBO
+  glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, color_buffer_handle, 0/*mipmap level*/);
+  //-------------------------
+  //Does the GPU support current FBO configuration?
+  GLenum status;
+  status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+  switch(status)
+  {
+     case GL_FRAMEBUFFER_COMPLETE_EXT:
+      texture_info.ogl_id = color_buffer_handle;
+      texture_info.ogl_type = GL_TEXTURE_2D;
+      texture_info.size_x = width;
+      texture_info.size_y = height;
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf_l); HANDLE_GL_ERROR
+      valid = true; // valid for binding
+      valid_fbo = true; // valid for capturing
+      break;
+    default:
+    break;
+  }
+}
+
+// run in stop/start or when changing resolution
+VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_buffer
+(
+  int width, // width in pixels
+  int height, // height in pixels
+  bool float_texture = false, // use floating point channels (8-bit is default)
+  bool alpha = true, // support alpha channel or not
+  bool multisample = false // enable anti-aliasing
+)
+{
+  deinit_buffer();
+  init_color_buffer
+  (
+    width,
+    height,
+    float_texture,
+    alpha,
+    multisample
+  );
+
+}
+
+// init an offscreen color + depth buffer (as textures)
+// See http://www.opengl.org/wiki/Framebuffer_Object_Examples
+VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
+(
+  int width, // width in pixels
+  int height, // height in pixels
+  bool float_texture = false, // use floating point channels (8-bit is default)
+  bool alpha = true, // support alpha channel or not
+  bool multisample = false, // enable anti-aliasing
+  GLuint existing_depth_texture_id
+)
+{
+  GLenum gl_error; glGetError();
+  locked = false;
+  prev_buf = 0;
+  #ifndef VSXU_OPENGL_ES
+    glewInit();
+  #endif
+  int i_width = width;
+  int i_height = height;
+
+  if ( !has_buffer_support() )
+  {
+    printf("vsx_texture error: No FBO available!\n");
+    return;
+  }
+
+  // set the buffer type (for deinit and capturing)
+  frame_buffer_type = VSX_TEXTURE_BUFFER_TYPE_COLOR_DEPTH;
+
+
+  // save the previous FBO (stack behaviour)
+  GLint prev_buf_l;
+  GLuint tex_id;
+  glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l); HANDLE_GL_ERROR
+
+  GLuint texture_storage_type;
+
+  if (float_texture)
+  {
+    texture_storage_type = alpha?GL_RGBA16F_ARB:GL_RGB16F_ARB;
+  }
+  else
+  {
+    texture_storage_type = alpha?GL_RGBA8:GL_RGB8;
+  }
+
+  //RGBA8 2D texture, 24 bit depth texture, 256x256
+  glGenTextures(1, &color_buffer_handle);
+  glBindTexture(GL_TEXTURE_2D, color_buffer_handle);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  //NULL means reserve texture memory, but texels are undefined
+  glTexImage2D(GL_TEXTURE_2D, 0, texture_storage_type, i_width, i_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
+
+  if (existing_depth_texture_id != 0)
+  {
+    depth_buffer_handle = existing_depth_texture_id;
+    depth_buffer_local = false;
+  } else
+  {
+    glGenTextures(1, &depth_buffer_handle);
+    glBindTexture(GL_TEXTURE_2D, depth_buffer_handle);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+    //NULL means reserve texture memory, but texels are undefined
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, i_width, i_height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+    depth_buffer_local = true;
+  }
+  //-------------------------
+  glGenFramebuffersEXT(1, &frame_buffer_handle);
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle);
+  //Attach 2D texture to this FBO
+  glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, color_buffer_handle, 0/*mipmap level*/);
+  //-------------------------
+  //Attach depth texture to FBO
+  glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depth_buffer_handle, 0/*mipmap level*/);
+  //-------------------------
+  //Does the GPU support current FBO configuration?
+  GLenum status;
+  status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+  switch(status)
+  {
+     case GL_FRAMEBUFFER_COMPLETE_EXT:
+      texture_info.ogl_id = color_buffer_handle;
+      texture_info.ogl_type = GL_TEXTURE_2D;
+      texture_info.size_x = width;
+      texture_info.size_y = height;
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf_l); HANDLE_GL_ERROR
+      valid = true; // valid for binding
+      valid_fbo = true; // valid for capturing
+      break;
+    default:
+    break;
+  }
+}
+
+// run in stop/start or when changing resolution
+VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_depth_buffer
+(
+  int width,
+  int height,
+  bool float_texture,
+  bool alpha,
+  bool multisample,
+  GLuint existing_depth_texture_id
+)
+{
+  printf("reinit color depth buffer\n");
+  deinit_buffer();
+  init_color_depth_buffer
+  (
+    width,
+    height,
+    float_texture,
+    alpha,
+    multisample,
+    existing_depth_texture_id
+  );
+}
+
 void vsx_texture::deinit_buffer()
 {
   GLenum gl_error; glGetError();
   if (!valid_fbo) return;
-  #ifndef VSXU_OPENGL_ES
-    glDeleteRenderbuffersEXT(1,&depthbuffer_id); HANDLE_GL_ERROR
-    glDeleteTextures(1,&texture_info.ogl_id); HANDLE_GL_ERROR
-    glDeleteFramebuffersEXT(1, &framebuffer_id); HANDLE_GL_ERROR
-  #endif
+  if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_FEEDBACK_PBUFFER)
+  {
+    #ifndef VSXU_OPENGL_ES
+      glDeleteRenderbuffersEXT(1,&color_buffer_handle); HANDLE_GL_ERROR
+      glDeleteRenderbuffersEXT(1,&depth_buffer_handle); HANDLE_GL_ERROR
+      glDeleteTextures(1,&texture_info.ogl_id); HANDLE_GL_ERROR
+      glDeleteFramebuffersEXT(1, &frame_buffer_handle); HANDLE_GL_ERROR
+    #endif
+    return;
+  }
+  if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_COLOR)
+  {
+    //Delete resources
+    glDeleteTextures(1, &color_buffer_handle);
+    depth_buffer_handle = 0;
+    depth_buffer_local = 0;
+    //Bind 0, which means render to back buffer, as a result, fb is unbound
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    glDeleteFramebuffersEXT(1, &frame_buffer_handle);
+    return;
+  }
+  if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_COLOR_DEPTH)
+  {
+    //Delete resources
+    glDeleteTextures(1, &color_buffer_handle);
+    if (depth_buffer_local)
+    {
+      glDeleteTextures(1, &depth_buffer_handle);
+    }
+    depth_buffer_handle = 0;
+    depth_buffer_local = 0;
+    //Bind 0, which means render to back buffer, as a result, fb is unbound
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    glDeleteFramebuffersEXT(1, &frame_buffer_handle);
+    return;
+  }
 }
 
-void vsx_texture::reinit_buffer(int width, int height, bool float_texture, bool alpha)
-{
-  deinit_buffer();
-  init_buffer(width,height,float_texture,alpha);
-}
 
-void vsx_texture::begin_capture()
+void vsx_texture::begin_capture_to_buffer()
 {
   GLenum gl_error; glGetError();
   if (!valid_fbo) return;
@@ -234,7 +528,7 @@ void vsx_texture::begin_capture()
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, framebuffer_id);
   #endif
   #ifndef VSXU_OPENGL_ES
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebuffer_id); HANDLE_GL_ERROR
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle); HANDLE_GL_ERROR
   #endif
 
   glViewport(0,0,(int)texture_info.size_x, (int)texture_info.size_y); HANDLE_GL_ERROR
@@ -242,18 +536,21 @@ void vsx_texture::begin_capture()
   locked = true;
 }
 
-void vsx_texture::end_capture()
+void vsx_texture::end_capture_to_buffer()
 {
   GLenum gl_error; glGetError();
   if (!valid_fbo) return;
   if (locked)
   {
+
+    if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_FEEDBACK_PBUFFER)
+    {
     #ifndef VSXU_OPENGL_ES_2_0
-      glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, framebuffer_id); HANDLE_GL_ERROR
-      glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, tex_fbo); HANDLE_GL_ERROR
+      glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, frame_buffer_handle); HANDLE_GL_ERROR
+      glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, frame_buffer_object_handle); HANDLE_GL_ERROR
       glBlitFramebufferEXT(0, 0, (GLint)texture_info.size_x-1, (GLint)texture_info.size_y-1, 0, 0, (GLint)texture_info.size_x-1, (GLint)texture_info.size_y-1, GL_COLOR_BUFFER_BIT, GL_NEAREST); HANDLE_GL_ERROR
     #endif
-
+    }
     #ifdef VSXU_OPENGL_ES_1_0
       glBindFramebufferOES(GL_FRAMEBUFFER_OES, prev_buf);
     #endif

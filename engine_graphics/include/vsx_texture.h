@@ -38,38 +38,123 @@
   #endif
 #endif
 
+#define VSX_TEXTURE_BUFFER_TYPE_FEEDBACK_PBUFFER 1
+#define VSX_TEXTURE_BUFFER_TYPE_COLOR 2
+#define VSX_TEXTURE_BUFFER_TYPE_COLOR_DEPTH 3
 
 class vsx_texture
 {
   static std::map<vsx_string, vsx_texture_info> t_glist;
   GLint prev_buf;
   bool valid_fbo;
-  GLuint framebuffer_id;
-  GLuint depthbuffer_id;
-  GLuint colorBuffer, depthBuffer, tex_fbo;
+  GLuint color_buffer_handle;
+  GLuint depth_buffer_handle;
+  bool depth_buffer_local;
+  GLuint frame_buffer_handle;
+  GLuint frame_buffer_object_handle;
   int original_transform_obj;
+  int frame_buffer_type;
 public:
-  bool locked; // this is if another texture gets a texture already in the list, to prevent it from unloading.
-                // if not locked it can safely delete it. This is an approximation of course, but should work
-                // in most cases.
+  // this is if another texture gets a texture already in the list, to prevent it from unloading.
+  // if not locked it can safely delete it. This is an approximation of course, but should work
+  // in most cases.
+  bool locked;
+
   // name of the texture
   vsx_string name;
+
   // is this valid for binding:
   bool valid;
 
-  vsx_transform_obj* transform_obj; // transformation
+  // transformation object
+  vsx_transform_obj* transform_obj;
 
   // our texture info
   vsx_texture_info texture_info;
 
-  // FBO functions
-  VSX_TEXTURE_DLLIMPORT bool has_buffer_support();
-  VSX_TEXTURE_DLLIMPORT void init_buffer(int width, int height, bool float_texture = false, bool alpha = true, bool multisample = false); // run once
-  VSX_TEXTURE_DLLIMPORT void deinit_buffer(); // remove the buffer
-  VSX_TEXTURE_DLLIMPORT void reinit_buffer(int width, int height, bool float_texture = false, bool alpha = true); // run in stop/start or when changing resolution
-  VSX_TEXTURE_DLLIMPORT void begin_capture();
-  VSX_TEXTURE_DLLIMPORT void end_capture();
+  // FBO functions-------------------------------------------------------------
+  // FBO is used to capture rendering output into a texture rather than to the
+  // screen for re-use in other rendering operations.
 
+  // query if the hardware has Frame Buffer Object support
+  VSX_TEXTURE_DLLIMPORT bool has_buffer_support();
+
+  // init an offscreen feedback possible buffer
+  VSX_TEXTURE_DLLIMPORT void init_feedback_buffer
+  (
+    int width, // width in pixels
+    int height, // height in pixels
+    bool float_texture = false, // use floating point channels (8-bit is default)
+    bool alpha = true, // support alpha channel or not
+    bool multisample = false // enable anti-aliasing
+  );
+
+  // run in stop/start or when changing resolution
+  VSX_TEXTURE_DLLIMPORT void reinit_feedback_buffer
+  (
+    int width, // width in pixels
+    int height, // height in pixels
+    bool float_texture = false, // use floating point channels (8-bit is default)
+    bool alpha = true, // support alpha channel or not
+    bool multisample = false // enable anti-aliasing
+  );
+
+  // init an offscreen feedback possible buffer
+  VSX_TEXTURE_DLLIMPORT void init_color_buffer
+  (
+    int width, // width in pixels
+    int height, // height in pixels
+    bool float_texture = false, // use floating point channels (8-bit is default)
+    bool alpha = true, // support alpha channel or not
+    bool multisample = false // enable anti-aliasing
+  );
+
+  // run in stop/start or when changing resolution
+  VSX_TEXTURE_DLLIMPORT void reinit_color_buffer
+  (
+    int width, // width in pixels
+    int height, // height in pixels
+    bool float_texture = false, // use floating point channels (8-bit is default)
+    bool alpha = true, // support alpha channel or not
+    bool multisample = false // enable anti-aliasing
+  );
+
+  // init an offscreen feedback possible buffer
+  VSX_TEXTURE_DLLIMPORT void init_color_depth_buffer
+  (
+    int width, // width in pixels
+    int height, // height in pixels
+    bool float_texture = false, // use floating point channels (8-bit is default)
+    bool alpha = true, // support alpha channel or not
+    bool multisample = false, // enable anti-aliasing
+    GLuint existing_depth_texture_id = 0
+  );
+
+  // run in stop/start or when changing resolution
+  VSX_TEXTURE_DLLIMPORT void reinit_color_depth_buffer
+  (
+    int width, // width in pixels
+    int height, // height in pixels
+    bool float_texture = false, // use floating point channels (8-bit is default)
+    bool alpha = true, // support alpha channel or not
+    bool multisample = false, // enable anti-aliasing
+    GLuint existing_depth_texture_id = 0
+  );
+
+  // remove/delete the buffer
+  VSX_TEXTURE_DLLIMPORT void deinit_buffer();
+
+  // begin capturing render output into the frame buffer object
+  VSX_TEXTURE_DLLIMPORT void begin_capture_to_buffer();
+
+  // end the capturing render output into the frame buffer object
+  VSX_TEXTURE_DLLIMPORT void end_capture_to_buffer();
+
+  VSX_TEXTURE_DLLIMPORT GLuint get_depth_buffer_handle();
+
+
+
+  // General texture functions-------------------------------------------------
   // allocate an openGL texture ID
   VSX_TEXTURE_DLLIMPORT void init_opengl_texture();
 
