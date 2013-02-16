@@ -856,6 +856,73 @@ public:
 	}
 };
 
+//----------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------
+//--- BUFFER CLEAR --------------------------------------------------------
+//-----------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+class vsx_buffer_clear : public vsx_module {
+  // in
+  vsx_module_param_render* render_in;
+  vsx_module_param_int* clear_color_buffer;
+  vsx_module_param_int* clear_depth_buffer;
+  vsx_module_param_float4* clear_color;
+  // out
+  vsx_module_param_render* render_result;
+  // internal
+public:
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "renderers;opengl_modifiers;buffer_clear";
+    info->description = "";
+
+    info->in_param_spec =
+      "render_in:render,"
+      "color_buffer:enum?no|yes,"
+      "clear_color:float4,"
+      "depth_buffer:enum?no|yes"
+    ;
+    info->out_param_spec = "render_out:render";
+    info->component_class = "render";
+    info->tunnel = true;
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+    render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
+    clear_color_buffer = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"color_buffer");
+    clear_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"clear_color");
+    clear_depth_buffer = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"depth_buffer");
+    render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+  }
+
+  bool activate_offscreen()
+  {
+    glClearColor
+    (
+      clear_color->get(0),
+      clear_color->get(1),
+      clear_color->get(2),
+      clear_color->get(3)
+    );
+    glClear(
+          GL_DEPTH_BUFFER_BIT * clear_depth_buffer->get()
+          |
+          GL_COLOR_BUFFER_BIT * clear_color_buffer->get()
+    );
+    return true;
+  }
+
+  void deactivate_offscreen() {
+  }
+
+  void output(vsx_module_param_abs* param) {
+    render_result->set(render_in->get());
+  }
+};
+
 
 //-----------------------------------------------------------------------
 //-----------------------------------------------------------------------
@@ -2164,6 +2231,7 @@ vsx_module* create_new_module(unsigned long module) {
     case 21: return (vsx_module*)(new vsx_depth_func);
 		case 22: return (vsx_module*)(new vsx_texture_bind);
     case 23: return (vsx_module*)(new vsx_viewport_size);
+    case 24: return (vsx_module*)(new vsx_buffer_clear);
   }
   return 0;
 }
@@ -2194,12 +2262,13 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 21: delete (vsx_depth_func*)m; break;
 		case 22: delete (vsx_texture_bind*)m; break;
     case 23: delete (vsx_viewport_size*)m; break;
+    case 24: delete (vsx_buffer_clear*)m; break;
   }
 }
 
 unsigned long get_num_modules() {
   // we have only one module. it's id is 0
   glewInit();
-  return 24;
+  return 25;
 }
 
