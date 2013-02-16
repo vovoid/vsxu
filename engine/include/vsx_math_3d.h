@@ -192,6 +192,13 @@ public:
     z*=a;
   }
 
+  void midpoint(const vsx_vector& a, const vsx_vector& b)
+  {
+    x = (a.x + b.x) * 0.5;
+    y = (a.y + b.y) * 0.5;
+    z = (a.z + b.z) * 0.5;
+  }
+
 
   void assign_face_normal(vsx_vector *a, vsx_vector*bb, vsx_vector*c) {
     float relx1 = bb->x - a->x,
