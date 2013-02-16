@@ -46,10 +46,14 @@ vsx_channel_connection_info* vsx_channel::connect(vsx_engine_param* src)
     {
       if ((*it)->src_comp == src->owner->component) return 0;
     }
+    // create the connection
     vsx_channel_connection_info* ci = new vsx_channel_connection_info;
     ci->module_param = src->module_param;
     ci->src_comp = (vsx_comp*)src->owner->component;
     connections.push_back(ci);
+    // set both ends module params as connected
+    src->module_param->connected = true;
+    my_param->module_param->connected = true;
     return ci;
   } else return 0; 
   return 0;
@@ -62,11 +66,15 @@ bool vsx_channel::disconnect(vsx_engine_param* src)
   {
     if ((*it)->module_param == src->module_param)
     {
-        my_param->module_param->valid = false;
-        delete *it;
-        *it = 0;
-        connections.erase(it);
-        return true;
+      // set both ends module params as disconnected
+      src->module_param->connected = false;
+      my_param->module_param->connected = false;
+      // set my module param to invalid
+      my_param->module_param->valid = false;
+      delete *it;
+      *it = 0;
+      connections.erase(it);
+      return true;
     }
   }  
   return false;

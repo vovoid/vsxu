@@ -88,7 +88,7 @@ public:
 	void run() {
 	  bitm = bitm_in->get_addr();
 	  if (!bitm) {
-	    result_texture->valid = false;
+      result_texture->valid = false;
 	    return;
 	  }
 	  if (bitm->valid && bitm_timestamp != bitm->timestamp) {
@@ -201,14 +201,14 @@ public:
   {
     loading_done = false;
     
-  	filename_in = (vsx_module_param_resource*)in_parameters.create(VSX_MODULE_PARAM_ID_RESOURCE,"filename");
-  	filename_in->set("");
-  	current_filename = "";
-  	
-  	reload = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reload");
-  	
-  	// out
-  	bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
+    filename_in = (vsx_module_param_resource*)in_parameters.create(VSX_MODULE_PARAM_ID_RESOURCE,"filename");
+    filename_in->set("");
+    current_filename = "";
+    
+    reload = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reload");
+    
+    // out
+    bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
   
     bitm.size_x = 0;
     bitm.size_y = 0;
@@ -223,11 +223,11 @@ public:
     texture->init_opengl_texture();
     texture->valid = false;
     
-  	texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
-  	texture_out->valid = false;
-  	
-  	texture_timestamp = -1;
-  	//texture_out->set_p(*texture);
+    texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
+    texture_out->valid = false;
+  
+    texture_timestamp = -1;
+    //texture_out->set_p(*texture);
   }
   
   time_t last_modify_time;

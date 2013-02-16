@@ -47,7 +47,7 @@ public:
   void add_param_sequence(vsx_engine_param* param, vsx_comp_abs* comp);
   void remove_param_sequence(vsx_engine_param* param);
 
-  void set_run_on_edit(bool new_value) { run_on_edit_enabled = new_value; };
+  void set_run_on_edit(bool new_value) { run_on_edit_enabled = new_value; }
 
   void get_init(vsx_engine_param* param, vsx_command_list* dest,vsx_string comp_name, vsx_string prefix = "");
   void get_contents(vsx_engine_param* param, vsx_command_list* dest,vsx_string controller_id);
@@ -80,8 +80,8 @@ public:
   vsx_string get_channel_names();
 
   // time operations
-  void set_time(float new_vtime) { int_vtime = new_vtime; };
-  void set_time_source(int new_time_source) { time_source = new_time_source; };
+  void set_time(float new_vtime) { int_vtime = new_vtime; }
+  void set_time_source(int new_time_source) { time_source = new_time_source; }
   void rescale_time(float start, float scale);
   float calculate_total_time(bool no_cache = false);
 

@@ -66,11 +66,15 @@ protected:
 
 //-- engine rendering / behaviour hints
   bool render_hint_module_output_only;
+  bool render_hint_module_run_only;
 
 //-- module list
   vsx_module_list_abs* module_list;
 
 //-- time/sequencing variables
+  // loop endpoint
+  float loop_point_end;
+
   vsx_timer g_timer;
   vsx_timer m_timer;
   vsx_timer frame_timer; // measure rendering time
@@ -103,8 +107,8 @@ protected:
   double frame_dcount;
   double frame_dtime;
   double frame_dprev;
-  double frame_dfps;
-  int frame_d;
+  double frame_delta_fps;
+  int frame_delta_fps_frame_count_interval;
 
 //-- command internals
   // timer that aims to benchmark the message queue in realtime to predict/prevent framedrops

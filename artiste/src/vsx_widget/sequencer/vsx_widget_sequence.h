@@ -32,6 +32,7 @@ class vsx_widget_sequence_editor : public vsx_widget {
   vsx_widget* but_stop;
   vsx_widget* but_add_master_channel;
   vsx_widget* but_remove_master_channel;
+  vsx_widget* but_set_loop_point;
   std::vector<vsx_widget*> channels;
   std::map<vsx_string,vsx_widget*> channels_map;
   float channels_visible;
@@ -39,7 +40,8 @@ class vsx_widget_sequence_editor : public vsx_widget {
   vsx_widget* sequence_list;
   void update_list();
   // dialogs
-  vsx_widget *name_dialog;
+  vsx_widget* name_dialog;
+  vsx_widget* loop_point_dialog;
 public:
 	bool disable_master_channel;
 

@@ -25,7 +25,8 @@
 #include <stdio.h>
 
 template<class T>
-class vsx_avector {
+class vsx_avector
+{
 public:
   size_t allocated;
   size_t used;

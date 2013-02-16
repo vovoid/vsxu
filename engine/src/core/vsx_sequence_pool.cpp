@@ -98,10 +98,29 @@ void vsx_sequence_pool::run(float dtime, bool run_from_channel)
   {
     if (cur_sequence_list)
     {
-      //printf("inner_run %f\n",vtime);
+      if (current_state == 1)
+      {
+        vtime += dtime;
+        if (loop_point > 0.0f)
+        {
+          vtime = fmod(vtime, loop_point);
+        }
+        //printf("inner_run %f\n",vtime);
+      }
       cur_sequence_list->run_absolute(vtime);
     }
   }
+}
+
+
+int vsx_sequence_pool::get_state()
+{
+  return current_state;
+}
+
+float vsx_sequence_pool::get_time()
+{
+  return vtime;
 }
 
 void vsx_sequence_pool::set_time(float time)
@@ -109,9 +128,35 @@ void vsx_sequence_pool::set_time(float time)
   vtime = time;
   if (edit_enabled)
   {
-    if (cur_sequence_list) cur_sequence_list->run_absolute(vtime);
+    if (cur_sequence_list)
+    {
+      cur_sequence_list->run_absolute(vtime);
+    }
   }
 }
+
+
+void vsx_sequence_pool::play()
+{
+  current_state = 1;
+}
+
+void vsx_sequence_pool::stop()
+{
+  current_state = 0;
+}
+
+void vsx_sequence_pool::rewind()
+{
+  current_state = 0;
+  vtime = 0.0f;
+}
+
+void vsx_sequence_pool::set_loop_point(float new_loop_point)
+{
+  loop_point = new_loop_point;
+}
+
 
 vsx_param_sequence_list* vsx_sequence_pool::get_sequence_list_by_name(vsx_string name)
 {
@@ -228,5 +273,7 @@ void vsx_sequence_pool::clear()
 vsx_sequence_pool::vsx_sequence_pool() {
   cur_sequence_list = 0;
   edit_enabled = false;
+  loop_point = -1.0f;
+  current_state = 0;
 }
 

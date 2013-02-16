@@ -48,7 +48,7 @@
 
 class vsx_widget_pool_tree : public vsx_widget_base_editor {
   vsx_texture mtex_blob;
-  vsx_widget* name_dialog;
+  //vsx_widget* name_dialog;
   bool dragging;
   vsx_widget_coords drag_coords;
   int mod_i;
@@ -75,7 +75,7 @@ public:
     editor->mirror_mouse_down_object = this;
     editor->mirror_mouse_up_object = this;
     editor->enable_syntax_highlighting = false;
-    name_dialog = add(new dialog_query_string("name of component","Choose a unique name for your component"),"component_create_name");
+    //name_dialog = add(new dialog_query_string("name of component","Choose a unique name for your component"),"component_create_name");
     //((dialog_query_string*)name_dialog)->init();
     mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png");
     set_render_type(VSX_WIDGET_RENDER_2D);
@@ -155,6 +155,7 @@ public:
 
     }
   }
+
   void event_mouse_up(vsx_widget_distance distance, vsx_widget_coords coords, int button)
   {
     if (dragging)
@@ -330,7 +331,8 @@ void vsx_widget_seq_pool_manager::i_draw()
   search->set_pos(vsx_vector(size.x/2,size.y-font_size*1.5f));
 }
 
-void vsx_widget_seq_pool_manager::vsx_command_process_b(vsx_command_s *t) {
+void vsx_widget_seq_pool_manager::vsx_command_process_b(vsx_command_s *t)
+{
   // MESSAGES FROM THE ENGINE
   if (t->cmd == "seq_pool")
   {
@@ -356,7 +358,18 @@ void vsx_widget_seq_pool_manager::vsx_command_process_b(vsx_command_s *t) {
         ((vsx_widget_sequence_editor*)sequencer)->load_sequence_list();
       }
     } else
-    if (t->parts[1] == "pseq_p_ok" || t->parts[1] == "pseq_r_ok" || t->parts[1] == "pseq_l_dump_ok" || t->parts[1] == "seq_list_ok")
+    if
+    (
+      t->parts[1] == "pseq_p_ok"
+      ||
+      t->parts[1] == "pseq_r_ok"
+      ||
+      t->parts[1] == "pseq_l_dump_ok"
+      ||
+      t->parts[1] == "seq_list_ok"
+      ||
+      t->parts[1] == "time_upd"
+    )
     {
       if (sequencer)
       {
@@ -367,22 +380,22 @@ void vsx_widget_seq_pool_manager::vsx_command_process_b(vsx_command_s *t) {
           command += t->parts[i];
         }
         command_q_b.add_raw(command);
+        printf("seq_pool command for sequencer: %s\n", command.c_str());
         sequencer->vsx_command_queue_b(this,true);
       }
     } else
-    if (t->parts[1] == "toggle_edit") {
+    if (t->parts[1] == "toggle_edit")
+    {
       if (t->parts[2] == "1")
       {
-        //sequence init
+        //sequencer init
         sequencer = (vsx_widget*)add(new vsx_widget_sequence_editor,"Animation Sequencer");
+        // don't display master channel button
         ((vsx_widget_sequence_editor*)sequencer)->disable_master_channel = true;
-        sequencer->init();
-        sequencer->set_render_type(render_type);
         sequencer->constrained_y = sequencer->constrained_x = false;
-        //sequencer->set_pos(vsx_vector(pos.x+0.42f,pos.y-sequencer->size.y*0.5f));
-        sequencer->set_render_type(VSX_WIDGET_RENDER_3D);
         sequencer->coord_related_parent = false;
         sequencer->set_pos(vsx_vector(0.0f,-0.6f));
+        sequencer->init();
       } else
       {
         if (sequencer)
@@ -391,13 +404,35 @@ void vsx_widget_seq_pool_manager::vsx_command_process_b(vsx_command_s *t) {
           sequencer = 0;
         }
       }
-
-      printf("gui got toggle edit: %s\n",t->parts[2].c_str());
     } else
     command_q_b.add(t);
   } else
+
+
+
+
   // MESSAGES FOR THE ENGINE
-  if (t->cmd == "time_set" || t->cmd == "pseq_p" || t->cmd == "pseq_r" || t->cmd == "pseq_l_dump" || t->cmd == "seq_list") {
+  if
+  (
+    t->cmd == "stop"
+    ||
+    t->cmd == "rewind"
+    ||
+    t->cmd == "play"
+    ||
+    t->cmd == "time_set_loop_point"
+    ||
+    t->cmd == "time_set"
+    ||
+    t->cmd == "pseq_p"
+    ||
+    t->cmd == "pseq_r"
+    ||
+    t->cmd == "pseq_l_dump"
+    ||
+    t->cmd == "seq_list"
+  )
+  {
     vsx_string command = "seq_pool";
     for (unsigned long i = 0; i < t->parts.size(); i++)
     {
@@ -406,7 +441,13 @@ void vsx_widget_seq_pool_manager::vsx_command_process_b(vsx_command_s *t) {
     }
     command_q_b.add_raw(command);
     parent->vsx_command_queue_b(this);
-  } else
+  }
+  else
+
+
+
+
+
   // GUI COMMANDS
   if (t->cmd == "cancel") {
     command_q_b.add(name+"_cancel","cancel");
@@ -462,7 +503,8 @@ void vsx_widget_seq_pool_manager::vsx_command_process_b(vsx_command_s *t) {
     }
     ((vsx_widget_pool_tree*)edit)->set_string("[none defined]");
   } else
-  if (t->cmd == "del") {
+  if (t->cmd == "del")
+  {
     vsx_string del_name = ((vsx_widget_pool_tree*)edit)->get_selected_item();
     if (del_name != "")
     {
@@ -470,32 +512,8 @@ void vsx_widget_seq_pool_manager::vsx_command_process_b(vsx_command_s *t) {
     }
     return;
   } else
-  if (t->cmd == "close") {
+  if (t->cmd == "close")
+  {
     visible = 0;
   }
-/*    vsx_string first_res;
-      vsx_avector<vsx_string> res;
-      for (unsigned long i = 0; i < edits.size(); ++i) {
-        if (!first_res.size()) first_res = ((vsx_widget_base_edit*)(edits[i]))->get_string();
-        else
-        {
-          printf("res pushback\n");
-          res.push_back( ((vsx_widget_base_edit*)(edits[i]))->get_string() );
-          ((vsx_widget_base_edit*)(edits[i]))->set_string("");
-        }
-      }
-      vsx_string i("|");
-      vsx_string ress = implode(res, i);
-      printf("ress. %s\n",ress.c_str());
-      vsx_string cmd = name+" "+first_res;
-      if (ress.size()) {
-        cmd += " "+base64_encode(ress);
-      }
-      command_q_b.add_raw(cmd);*/
-//    } else {
-//      command_q_b.add_raw(name+" "+((vsx_widget_base_edit*)edit1)->get_string());
-//      parent->vsx_command_queue_b(this);
-//      ((vsx_widget_base_edit*)edit1)->set_string("");
-//    }
-  //}
 }

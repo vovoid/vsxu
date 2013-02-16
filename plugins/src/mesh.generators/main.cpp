@@ -2353,6 +2353,7 @@ class vsx_module_mesh_ribbon_cloth : public vsx_module {
   vsx_module_param_float* damping_factor;
   vsx_module_param_float* step_size;
   vsx_module_param_float* stiffness;
+  vsx_module_param_float* floor_y;
   // out
   vsx_module_param_mesh* result;
   // internal
@@ -2384,6 +2385,7 @@ public:
         "damping_Factor:float,"
         "step_size:float,"
         "stiffness:float,"
+        "floor_y:float"
         ;
     info->out_param_spec = "mesh:mesh";
     info->component_class = "mesh";
@@ -2409,7 +2411,10 @@ public:
     width = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"width");
     skew_amp = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"skew_amp");
     skew_amp->set(1.0f);
-    
+
+    floor_y = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"floor_y");
+    floor_y->set(0.0f);
+
     time_amp = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"time_amp");
     time_amp->set(1.0f);
     width->set(0.1f);
@@ -2642,11 +2647,11 @@ public:
       {
         mesh->data->vertices[i] = a;
       }
-      
+      float floor = floor_y->get();
       for(unsigned long i = 4; i < mesh->data->vertices.size(); i++) {
         //mesh->data->vertices[i] -= addpos;
         vertex_p[i] += (vertices_speed[i] * stepsizemultiplier);
-        if (mesh->data->vertices[i].y < 0.0f) mesh->data->vertices[i].y = 0.0f;
+        if (mesh->data->vertices[i].y < floor) mesh->data->vertices[i].y = floor;
         vertices_speed[i] = vertices_speed[i] * damping_factor->get();
       }
     }
@@ -2857,8 +2862,604 @@ public:
 };
 
 
+// UGLY HACKS GALORE:
+typedef struct {
+    vsx_vector pt[3];
+} tri;
+
+typedef struct {
+    int npoly;
+    tri *poly;
+} obj;
+
+/* Six equidistant points lying on the unit sphere */
+#define XPLUS vsx_vector( 1,  0,  0  ) /*  X */
+#define XMIN  vsx_vector( -1,  0,  0 ) /* -X */
+#define YPLUS vsx_vector(  0,  1,  0 ) /*  Y */
+#define YMIN  vsx_vector(  0, -1,  0 ) /* -Y */
+#define ZPLUS vsx_vector(  0,  0,  1 ) /*  Z */
+#define ZMIN  vsx_vector(  0,  0, -1 ) /* -Z */
+
+tri octahedron[] = {
+    { { XPLUS, ZPLUS, YPLUS } },
+    { { YPLUS, ZPLUS, XMIN  } },
+    { { XMIN , ZPLUS, YMIN  } },
+    { { YMIN , ZPLUS, XPLUS } },
+    { { XPLUS, YPLUS, ZMIN  } },
+    { { YPLUS, XMIN , ZMIN  } },
+    { { XMIN , YMIN , ZMIN  } },
+    { { YMIN , XPLUS, ZMIN  } }
+};
 
 
+/* A unit octahedron */
+obj oct = {
+    sizeof(octahedron) / sizeof(octahedron[0]),
+    &octahedron[0]
+};
+
+// thanks to Jon Leech (code from 1989!) for the base for this module.
+class vsx_module_mesh_sphere_octahedron : public vsx_module
+{
+  // in
+  vsx_module_param_float* subdivision_level;
+  vsx_module_param_float* max_normalization_level;
+  // out
+  vsx_module_param_mesh* result;
+  // internal
+  vsx_mesh* mesh;
+  int l_param_updates;
+  int current_subdivision_level;
+  int current_max_normalization_level;
+
+public:
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "mesh;solid;mesh_sphere_octahedron";
+    info->description =
+        "A sphere based on an octahedron\n"
+        "subdivided [subdivision_level]\n"
+        "number of times. You can set\n"
+        "[max_normalization_leve] to stop\n"
+        "normalizing the vertices making\n"
+        "a more bulky surface."
+    ;
+    info->in_param_spec =
+        "subdivision_level:float?min=1,"
+        "max_normalization_level:float"
+    ;
+    info->out_param_spec = "mesh:mesh";
+    info->component_class = "mesh";
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    l_param_updates = -1;
+    loading_done = true;
+
+    subdivision_level = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"subdivision_level");
+    subdivision_level->set(1.0f);
+
+    max_normalization_level = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"max_normalization_level");
+    max_normalization_level->set(0.0f);
+
+
+    current_subdivision_level = 0;
+
+    result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
+  }
+
+  bool init()
+  {
+    mesh = new vsx_mesh;
+    return true;
+  }
+
+  void on_delete()
+  {
+    delete mesh;
+  }
+
+  void run()
+  {
+    int new_subdivision_level = (int)subdivision_level->get();
+    int new_max_normalization_level = (int)max_normalization_level->get();
+
+
+    if
+    (
+      current_subdivision_level == new_subdivision_level
+      &&
+      current_max_normalization_level == new_max_normalization_level
+    )
+    return;
+    current_subdivision_level = new_subdivision_level;
+    current_max_normalization_level = new_max_normalization_level;
+
+    mesh->data->reset();
+
+    obj *old, *nnew;
+    int  i;
+    int  level;		/* Current subdivision level */
+    int  maxlevel = new_subdivision_level;	/* Maximum subdivision level */
+    int maxnormlevel = (int)max_normalization_level->get();
+
+
+    old = &oct;
+
+    /* Subdivide each starting triangle (maxlevel - 1) times */
+    for (level = 1; level < maxlevel; level++)
+    {
+      /* Allocate a new object */
+      nnew = (obj *)malloc(sizeof(obj));
+
+      nnew->npoly = old->npoly * 4;
+
+      /* Allocate 4* the number of points in the current approximation */
+      nnew->poly  = (tri *)malloc(nnew->npoly * sizeof(tri));
+
+      /* Subdivide each triangle in the old approximation and normalize
+       *  the new points thus generated to lie on the surface of the unit
+       *  sphere.
+       * Each input triangle with vertices labelled [0,1,2] as shown
+       *  below will be turned into four new triangles:
+       *
+       *			Make new points
+       *			    a = (0+2)/2
+       *			    b = (0+1)/2
+       *			    c = (1+2)/2
+       *	  1
+       *	 /\		Normalize a, b, c
+       *	/  \
+       *    b/____\ c		Construct new triangles
+       *    /\    /\		    [0,b,a]
+       *   /	\  /  \		    [b,1,c]
+       *  /____\/____\	    [a,b,c]
+       * 0	  a	2	    [a,c,2]
+       */
+      for (i = 0; i < old->npoly; i++)
+      {
+        tri *oldt = &old->poly[i];
+        tri *newt = &nnew->poly[i*4];
+        vsx_vector a, b, c;
+
+        a.midpoint(oldt->pt[0], oldt->pt[2]);
+        b.midpoint(oldt->pt[0], oldt->pt[1]);
+        c.midpoint(oldt->pt[1], oldt->pt[2]);
+
+        if (level < maxnormlevel)
+        {
+          a.normalize();
+          b.normalize();
+          c.normalize();
+        }
+
+        newt->pt[0] = oldt->pt[0];
+        newt->pt[1] = b;
+        newt->pt[2] = a;
+        newt++;
+
+        newt->pt[0] = b;
+        newt->pt[1] = oldt->pt[1];
+        newt->pt[2] = c;
+        newt++;
+
+        newt->pt[0] = a;
+        newt->pt[1] = b;
+        newt->pt[2] = c;
+        newt++;
+
+        newt->pt[0] = a;
+        newt->pt[1] = c;
+        newt->pt[2] = oldt->pt[2];
+      }
+
+      if (level > 1) {
+          free(old->poly);
+          free(old);
+      }
+
+      /* Continue subdividing new triangles */
+      old = nnew;
+    }
+
+    for (i = 0; i < old->npoly; i++)
+    {
+      mesh->data->vertices.push_back(old->poly[i].pt[0]);
+      mesh->data->vertices.push_back(old->poly[i].pt[1]);
+      mesh->data->vertices.push_back(old->poly[i].pt[2]);
+      vsx_vector n;
+      n = old->poly[i].pt[0];
+      n.normalize();
+      mesh->data->vertex_normals.push_back(n);
+      n = old->poly[i].pt[1];
+      n.normalize();
+      mesh->data->vertex_normals.push_back(n);
+      n = old->poly[i].pt[2];
+      n.normalize();
+      mesh->data->vertex_normals.push_back(n);
+
+      vsx_face a;
+      a.a = i*3+1;
+      a.b = i*3;
+      a.c = i*3+2;
+      mesh->data->faces.push_back(a);
+    }
+
+    if (maxlevel > 1)
+    free(old);
+
+    mesh->timestamp++;
+    result->set_p(mesh);
+  }
+};
+
+
+
+
+// Phi - the square root of 5 plus 1 divided by 2
+#define sqr5 2.2361
+#define phi (1.0 + sqr5) * 0.5
+
+// Golden ratio - the ratio of edgelength to radius
+#define ratio (float)sqrt( 10.0 + (2.0 * sqr5)) / (4.0 * phi)
+#define ia (42.0 / ratio) * 0.5
+#define ib (42.0 / ratio) / (2.0 * phi)
+
+
+#define v0  vsx_vector(    0,   (ib),  -(ia)  )
+#define v1  vsx_vector(  (ib),   (ia),     0  )
+#define v2  vsx_vector( -(ib),   (ia),     0  )
+#define v3  vsx_vector(    0,   (ib),   (ia)  )
+#define v4  vsx_vector(    0,  -(ib),   (ia)  )
+#define v5  vsx_vector( -(ia),     0,   (ib)  )
+#define v6  vsx_vector(     0,  -(ib),  -(ia)  )
+#define v7  vsx_vector(    ia,     0,  -(ib)  )
+#define v8  vsx_vector(    ia,     0,     ib  )
+#define v9  vsx_vector( -(ia),     0,  -(ib)  )
+#define v10 vsx_vector(    ib,   -(ia),    0  )
+#define v11 vsx_vector( -(ib),   -(ia),    0  )
+
+
+// thanks to Jon Leech (code from 1989!) for the base for this module.
+class vsx_module_mesh_sphere_icosahedron : public vsx_module
+{
+  // in
+  vsx_module_param_float* subdivision_level;
+  vsx_module_param_float* max_normalization_level;
+  vsx_module_param_float* initial_ico_scale;
+  // out
+  vsx_module_param_mesh* result;
+  // internal
+  vsx_mesh* mesh;
+  int l_param_updates;
+  int current_subdivision_level;
+  int current_max_normalization_level;
+
+public:
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "mesh;solid;mesh_sphere_icosahedron";
+    info->description =
+        "A sphere based on an icosahedron\n"
+        "subdivided [subdivision_level]\n"
+        "number of times. You can set\n"
+        "[max_normalization_leve] to stop\n"
+        "normalizing the vertices making\n"
+        "a more bulky surface."
+    ;
+    info->in_param_spec =
+        "subdivision_level:float?min=1,"
+        "max_normalization_level:float,"
+        "initial_ico_scale:float"
+    ;
+    info->out_param_spec = "mesh:mesh";
+    info->component_class = "mesh";
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    l_param_updates = -1;
+    loading_done = true;
+
+    subdivision_level = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"subdivision_level");
+    subdivision_level->set(1.0f);
+
+    max_normalization_level = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"max_normalization_level");
+    max_normalization_level->set(0.0f);
+
+    initial_ico_scale = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"initial_ico_scale");
+    initial_ico_scale->set(1.0f);
+
+    current_subdivision_level = 0;
+
+    result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
+  }
+
+  bool init()
+  {
+    mesh = new vsx_mesh;
+    return true;
+  }
+
+  void on_delete()
+  {
+    delete mesh;
+  }
+
+  void run()
+  {
+    if (!param_updates) return;
+    param_updates = 0;
+    int new_subdivision_level = (int)subdivision_level->get();
+    int new_max_normalization_level = (int)max_normalization_level->get();
+
+    /*if
+    (
+      current_subdivision_level == new_subdivision_level
+      &&
+      current_max_normalization_level == new_max_normalization_level
+    )
+    return;*/
+    current_subdivision_level = new_subdivision_level;
+    current_max_normalization_level = new_max_normalization_level;
+
+    mesh->data->reset();
+
+    tri icosahedron[] =
+    {
+      { { v0, v1, v2 } },
+      { { v3, v2, v1 } },
+      { { v3, v4, v5 } },
+      { { v3, v8, v4 } },
+      { { v0, v6, v7 } },
+      { { v0, v9, v6 } },
+      { { v4, v10, v11 } },
+      { { v6, v11, v10 } },
+      { { v2, v5, v9 } },
+      { { v11, v9, v5 } },
+      { { v1, v7, v8 } },
+      { { v10, v8, v7 } },
+      { { v3, v5, v2 } },
+      { { v3, v1, v8 } },
+      { { v0, v2, v9 } },
+      { { v0, v7, v1 } },
+      { { v6, v9, v11 } },
+      { { v6, v10, v7 } },
+      { { v4, v11, v5 } },
+      { { v4, v8, v10 } }
+    };
+
+
+    /* A unit icosahedron */
+    obj ico = {
+        sizeof(icosahedron) / sizeof(icosahedron[0]),
+        &icosahedron[0]
+    };
+
+    obj *old, *nnew;
+    int  i;
+    int  level;		/* Current subdivision level */
+    int  maxlevel = new_subdivision_level;	/* Maximum subdivision level */
+    int maxnormlevel = (int)max_normalization_level->get();
+
+    float iscale = initial_ico_scale->get();
+    for (i = 0; i < ico.npoly; i++)
+    {
+      ico.poly[i].pt[0] *= iscale;
+      ico.poly[i].pt[1] *= iscale;
+      ico.poly[i].pt[2] *= iscale;
+    }
+
+    old = &ico;
+
+
+
+    /* Subdivide each starting triangle (maxlevel - 1) times */
+    for (level = 1; level < maxlevel; level++)
+    {
+      /* Allocate a new object */
+      nnew = (obj *)malloc(sizeof(obj));
+
+      nnew->npoly = old->npoly * 4;
+
+      /* Allocate 4* the number of points in the current approximation */
+      nnew->poly  = (tri *)malloc(nnew->npoly * sizeof(tri));
+
+      /* Subdivide each triangle in the old approximation and normalize
+       *  the new points thus generated to lie on the surface of the unit
+       *  sphere.
+       * Each input triangle with vertices labelled [0,1,2] as shown
+       *  below will be turned into four new triangles:
+       *
+       *			Make new points
+       *			    a = (0+2)/2
+       *			    b = (0+1)/2
+       *			    c = (1+2)/2
+       *	  1
+       *	 /\		Normalize a, b, c
+       *	/  \
+       *    b/____\ c		Construct new triangles
+       *    /\    /\		    [0,b,a]
+       *   /	\  /  \		    [b,1,c]
+       *  /____\/____\	    [a,b,c]
+       * 0	  a	2	    [a,c,2]
+       */
+      for (i = 0; i < old->npoly; i++)
+      {
+        tri *oldt = &old->poly[i];
+        tri *newt = &nnew->poly[i*4];
+        vsx_vector xa, xb, xc;
+
+        xa.midpoint(oldt->pt[0], oldt->pt[2]);
+        xb.midpoint(oldt->pt[0], oldt->pt[1]);
+        xc.midpoint(oldt->pt[1], oldt->pt[2]);
+
+        if (level < maxnormlevel)
+        {
+          xa.normalize();
+          xb.normalize();
+          xc.normalize();
+        }
+
+        newt->pt[0] = oldt->pt[0];
+        newt->pt[1] = xb;
+        newt->pt[2] = xa;
+        newt++;
+
+        newt->pt[0] = xb;
+        newt->pt[1] = oldt->pt[1];
+        newt->pt[2] = xc;
+        newt++;
+
+        newt->pt[0] = xa;
+        newt->pt[1] = xb;
+        newt->pt[2] = xc;
+        newt++;
+
+        newt->pt[0] = xa;
+        newt->pt[1] = xc;
+        newt->pt[2] = oldt->pt[2];
+      }
+
+      if (level > 1) {
+          free(old->poly);
+          free(old);
+      }
+
+      /* Continue subdividing new triangles */
+      old = nnew;
+    }
+
+    size_t vertex_index = 0;
+    for (i = 0; i < old->npoly; i++)
+    {
+      vsx_vector find = old->poly[i].pt[0];
+      // try to find this vertex somewhere before
+      int index_a = -1;
+      for (int j = 0; j < mesh->data->vertices.size(); j++)
+      {
+        if (mesh->data->vertices[j] == find)
+        {
+          index_a = j;
+          break;
+        }
+      }
+      if (index_a == -1)
+      {
+        mesh->data->vertices.push_back(old->poly[i].pt[0]);
+
+        vsx_vector n(0,0,0);
+//        n = old->poly[i].pt[0];
+//        n.normalize();
+        mesh->data->vertex_normals.push_back(n);
+
+        index_a = vertex_index;
+        vertex_index++;
+      }
+
+
+      find = old->poly[i].pt[1];
+      // try to find this vertex somewhere before
+      int index_b = -1;
+      for (int j = 0; j < mesh->data->vertices.size(); j++)
+      {
+        if (mesh->data->vertices[j] == find)
+        {
+          index_b = j;
+          break;
+        }
+      }
+      if (index_b == -1)
+      {
+        mesh->data->vertices.push_back(old->poly[i].pt[1]);
+
+        vsx_vector n(0,0,0);
+//        n = old->poly[i].pt[1];
+//        n.normalize();
+        mesh->data->vertex_normals.push_back(n);
+
+        index_b = vertex_index;
+        vertex_index++;
+      }
+
+
+      find = old->poly[i].pt[2];
+      // try to find this vertex somewhere before
+      int index_c = -1;
+      for (int j = 0; j < mesh->data->vertices.size(); j++)
+      {
+        if (mesh->data->vertices[j] == find)
+        {
+          index_c = j;
+          break;
+        }
+      }
+      if (index_c == -1)
+      {
+        mesh->data->vertices.push_back(old->poly[i].pt[2]);
+
+        vsx_vector n(0,0,0);
+//        n = old->poly[i].pt[2];
+//        n.normalize();
+        mesh->data->vertex_normals.push_back(n);
+
+        index_c = vertex_index;
+        vertex_index++;
+      }
+
+
+      /*mesh->data->vertices.push_back(old->poly[i].pt[1]);
+      mesh->data->vertices.push_back(old->poly[i].pt[2]);
+      n = old->poly[i].pt[1];
+      n.normalize();
+      mesh->data->vertex_normals.push_back(n);
+      n = old->poly[i].pt[2];
+      n.normalize();
+      mesh->data->vertex_normals.push_back(n);*/
+
+      vsx_face face;
+      face.a = index_b;
+      face.b = index_a;
+      face.c = index_c;
+
+      vsx_vector an;
+      an.assign_face_normal
+      (
+            &mesh->data->vertices[index_b],
+            &mesh->data->vertices[index_a],
+            &mesh->data->vertices[index_c]
+      );
+      //an.normalize();
+      mesh->data->vertex_normals[index_a] += an;
+      mesh->data->vertex_normals[index_b] += an;
+      mesh->data->vertex_normals[index_c] += an;
+
+
+
+//      face.a = i*3+1;
+//      face.b = i*3;
+//      face.c = i*3+2;
+      mesh->data->faces.push_back(face);
+    }
+
+    // normalize all normals
+    for (size_t i = 0; i < mesh->data->vertex_normals.size(); i++)
+    {
+      mesh->data->vertex_normals[i].normalize();
+    }
+
+    if (maxlevel > 1)
+    free(old);
+
+    mesh->timestamp++;
+    result->set_p(mesh);
+  }
+};
+
+
+#undef ia
+#undef ib
 
 
 //******************************************************************************
@@ -2877,7 +3478,8 @@ __declspec(dllexport) unsigned long get_num_modules();
 
 
 vsx_module* create_new_module(unsigned long module) {
-  switch(module) {
+  switch(module)
+  {
     case 0: return (vsx_module*)(new vsx_module_mesh_needle);
     case 1: return (vsx_module*)(new vsx_module_mesh_rand_points);
     case 2: return (vsx_module*)(new vsx_module_mesh_rays);
@@ -2894,6 +3496,8 @@ vsx_module* create_new_module(unsigned long module) {
     case 13: return (vsx_module*)(new vsx_module_mesh_bspline_vertices);
     case 14: return (vsx_module*)(new vsx_module_mesh_grid);
     case 15: return (vsx_module*)(new vsx_module_mesh_plane_uv_distort);
+    case 16: return (vsx_module*)(new vsx_module_mesh_sphere_octahedron);
+    case 17: return(vsx_module*)(new vsx_module_mesh_sphere_icosahedron);
   }
   return 0;
 }
@@ -2916,10 +3520,11 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 13: delete (vsx_module_mesh_bspline_vertices*)m; break;
     case 14: delete (vsx_module_mesh_grid*)m; break;
     case 15: delete (vsx_module_mesh_plane_uv_distort*)m; break;
+    case 16: delete (vsx_module_mesh_sphere_octahedron*)m; break;
+    case 17: delete (vsx_module_mesh_sphere_icosahedron*)m; break;
   }
 } 
 
 unsigned long get_num_modules() {
-  return 16;
+  return 18;
 }
-

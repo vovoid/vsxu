@@ -1696,7 +1696,7 @@ public:
   vsx_vector v;
   void run() {
     vsx_mesh** p = mesh_in->get_addr();
-    if (p && (prev_timestamp != (*p)->timestamp)) {
+    if (p /*&& (prev_timestamp != (*p)->timestamp)*/ ) {
       prev_timestamp = (*p)->timestamp;
 
 

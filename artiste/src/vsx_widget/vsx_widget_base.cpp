@@ -987,33 +987,48 @@ void vsx_widget::hide_children() {
 }
 
 
+vsx_widget *vsx_widget::add(vsx_widget *widget_pointer, vsx_string name)
+{
+  // set the name of the widget internally
+  widget_pointer->name = name;
+  // setup the parent relationship
+  widget_pointer->parent = this;
+  // setup the command parent relationship
+  widget_pointer->cmd_parent = this;
 
-vsx_widget *vsx_widget::add(vsx_widget *t,vsx_string name) {
-  //printf("adding %s\n",name.c_str());
-  t->name = name;
-  t->parent = this;
-  t->cmd_parent = this;
-  if (t->topmost) children.push_back(t); else
-  if (children.size()) {
-    children_iter = children.end();
-    --children_iter;
-    if (children_iter != children.begin())
-    while ((*(children_iter))->topmost && children_iter != children.begin()) {
-//      printf("1");
-    --children_iter;
-    };
-
-    children.insert(children_iter,1,t);
-  } else
-  children.push_back(t);
-  //++children_iter;
-  //printf("++adding done\n");
-  //
-  //log("added child widget: "+name);
-  //cout << this->name+" created vsx_widget_component "+name << endl;
-  glist[name] = t;
-  l_list[name] = t;
-  return t;
+  // if this is intended to be topmost
+  if (widget_pointer->topmost)
+  {
+    children.push_back(widget_pointer);
+  }
+  else
+  {
+    // if needed, iterate backwards to not override topmost widgets
+    if (children.size())
+    {
+      children_iter = children.end();
+      --children_iter;
+      if (children_iter != children.begin())
+      {
+        while ((*(children_iter))->topmost && children_iter != children.begin())
+        {
+          --children_iter;
+        }
+      }
+      // now that we found our pos, insert the widget here
+      children.insert(children_iter,1,widget_pointer);
+    }
+    else
+    {
+      // nothing special, just push it on the stack
+      children.push_back(widget_pointer);
+    }
+  }
+  // add the pointer to the global list
+  glist[name] = widget_pointer;
+  l_list[name] = widget_pointer;
+  // finally return the widget pointer
+  return widget_pointer;
 }
 
 void vsx_widget::vsx_command_process_f() {

@@ -249,8 +249,8 @@ void vsx_statelist::render()
     glGetIntegerv(GL_VIEWPORT, viewport);
     if (tex1.has_buffer_support())
     {
-      tex1.init_buffer(viewport[2], viewport[3]);
-      tex_to.init_buffer(viewport[2], viewport[3]);
+      tex1.init_feedback_buffer(viewport[2], viewport[3]);
+      tex_to.init_feedback_buffer(viewport[2], viewport[3]);
 
       get_files_recursive(own_path+"visuals_faders", &fader_file_list,"",".svn CVS");
       for (std::list<vsx_string>::iterator it = fader_file_list.begin(); it != fader_file_list.end(); ++it)
@@ -323,7 +323,7 @@ void vsx_statelist::render()
   {
     if ( tex_to.has_buffer_support() )
     {
-      tex_to.begin_capture();
+      tex_to.begin_capture_to_buffer();
         if ((*state_iter).engine)
         {
           (*state_iter).engine->process_message_queue(&(*state_iter).cmd_in,&(*state_iter).cmd_out);
@@ -333,7 +333,7 @@ void vsx_statelist::render()
         glClearColor(0,0,0,1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glColorMask(true, true, true, true);
-      tex_to.end_capture();
+      tex_to.end_capture_to_buffer();
       if (
         (*state_iter).engine->get_modules_left_to_load() == 0 &&
         (*state_iter).engine->get_commands_internal_count() &&
@@ -382,7 +382,7 @@ void vsx_statelist::render()
       // begin capture
       if (tex1.has_buffer_support())
       {
-        tex1.begin_capture();
+        tex1.begin_capture_to_buffer();
       }
 
       // render
@@ -398,7 +398,7 @@ void vsx_statelist::render()
       // end capture and send to fader
       if (tex1.has_buffer_support())
       {
-        tex1.end_capture();
+        tex1.end_capture_to_buffer();
         vsx_module_param_texture* param_t_a = (vsx_module_param_texture*)faders[fade_id]->get_in_param_by_name("visual_fader", "texture_a_in");
         vsx_module_param_texture* param_t_b = (vsx_module_param_texture*)faders[fade_id]->get_in_param_by_name("visual_fader", "texture_b_in");
         vsx_module_param_float* param_pos = (vsx_module_param_float*)faders[fade_id]->get_in_param_by_name("visual_fader", "fade_pos_in");

@@ -121,13 +121,13 @@ public:
     draw_tooltip = 0;
     if (mod_i != -1)
     {
-      if (i_mod_info[mod_i]->description.size()>1)
-      {
+      //if (i_mod_info[mod_i]->description.size()>1)
+      //{
         tooltip_pos = coords.screen_global;
         tooltip_pos.x += 0.08;
-        tooltip_text = i_mod_info[mod_i]->description;
+        tooltip_text = i_mod_info[mod_i]->identifier+"\n---------------------\n"+i_mod_info[mod_i]->description;
         draw_tooltip = 1;
-      }
+      //}
       //printf("hovering over %s\n", i_mod_info[mod_i]->description.c_str() );
     }
   }

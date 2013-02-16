@@ -1,4 +1,13 @@
 #ifndef VSX_DEMO_MINI
+    // ***************************************
+    // Set time loop point
+    // ***************************************
+    // 0=seq_pool 1=time_set_loop_point 2=[time:float]
+    if (cmd == "time_set_loop_point")
+    {
+      loop_point_end = s2f(c->parts[1]);
+    } else
+
     if (cmd == "play") {
       time_play();
     } else
@@ -10,7 +19,7 @@
     } else
 #ifndef VSXU_NO_CLIENT
     if (cmd == "fps_d" || cmd == "fps") {
-    	cmd_out->add("fps_d",f2s(frame_dfps));
+      cmd_out->add("fps_d",f2s(frame_delta_fps));
     }
     else
     if (cmd == "time_set") {

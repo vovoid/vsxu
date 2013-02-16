@@ -365,7 +365,9 @@ void CalSubmesh::setLodLevel(float lodLevel)
       collapsedVertexId = vectorFace[faceId].vertexId[vertexId];
 
       // collapse the vertex id until it fits into the current lod level
+
       while(collapsedVertexId >= m_vertexCount) collapsedVertexId = vectorVertex[collapsedVertexId].collapseId;
+      //if (collapsedVertexId >= m_vertexCount) collapsedVertexId = m_vertexCount-1;
 
       // store the collapse vertex id in the submesh face vector
       m_vectorFace[faceId].vertexId[vertexId] = collapsedVertexId;

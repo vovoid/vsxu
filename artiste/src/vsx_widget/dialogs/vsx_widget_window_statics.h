@@ -34,11 +34,12 @@ public:
   vsx_widget *edit1;
   void vsx_command_process_b(vsx_command_s *t);
   
+  void set_value(vsx_string value);
   void show(vsx_string value);
   void show();
   void init() {};
   void set_allowed_chars(vsx_string ch);
-  dialog_query_string(vsx_string title_, vsx_string in_fields = "");
+  dialog_query_string(vsx_string window_title, vsx_string in_fields = "");
 };
 
 //--------------------------------------------------------------------------------------------------

@@ -30,6 +30,7 @@
 #include <vsx_timer.h>
 
 //#define printf(a,b)
+#define VSXU_DEBUG 1
 
 typedef struct {
   CalBone* bone;
@@ -52,8 +53,12 @@ public:
     vsx_module_param_resource* filename;
     vsx_module_param_quaternion* quat_p;
     vsx_module_param_int* use_thread;
-    vsx_module_param_quaternion* rotation;
+
+    vsx_module_param_float3* pre_rotation_center;
+    vsx_module_param_quaternion* pre_rotation;
+
     vsx_module_param_float3* rotation_center;
+    vsx_module_param_quaternion* rotation;
     vsx_module_param_float3* post_rot_translate;
 
     // out
@@ -74,6 +79,7 @@ public:
     pthread_t         worker_t;
     pthread_mutex_t   mesh_mutex;
     int               thread_has_something_to_deliver; // locked by the mesh mutex
+    int               have_sent_work_to_thread;
     vsx_mesh*         mesh; // locked by the mesh mutex
 
     pthread_mutex_t   thread_exit_mutex;
@@ -88,10 +94,14 @@ public:
     cal3d_thread_info thread_info;
 
     // transform
+    vsx_quaternion pre_rotation_quaternion;
+    vsx_matrix pre_rotation_mat;
+    vsx_vector pre_rot_center;
+
     vsx_quaternion rotation_quaternion;
     vsx_matrix rotation_mat;
     vsx_vector rot_center;
-    vsx_vector post_rot_t;
+    vsx_vector post_rot_translate_vec;
 
 
   vsx_module_cal3d_loader_threaded() {
@@ -107,6 +117,7 @@ public:
     pthread_mutex_init(&thread_exit_mutex,NULL);
     sem_init(&sem_worker_todo,0,0);
     thread_has_something_to_deliver = 0;
+    have_sent_work_to_thread = 0;
   }
   bool init() {
     return true;
@@ -142,6 +153,8 @@ public:
     info->in_param_spec =
         "filename:resource,use_thread:enum?no|yes,"
         "transforms:complex{"
+          "pre_rotation:quaternion,"
+          "pre_rotation_center:float3,"
           "rotation:quaternion,"
           "rotation_center:float3,"
           "post_rot_translate:float3"
@@ -174,12 +187,22 @@ public:
     filename = (vsx_module_param_resource*)in_parameters.create(VSX_MODULE_PARAM_ID_RESOURCE,"filename");
     filename->set(current_filename);
 
+    pre_rotation = (vsx_module_param_quaternion*)in_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION,"pre_rotation");
+    pre_rotation->set(0.0f,0);
+    pre_rotation->set(0.0f,1);
+    pre_rotation->set(0.0f,2);
+    pre_rotation->set(1.0f,3);
+    pre_rotation_center = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"pre_rotation_center");
+
+
+
     rotation = (vsx_module_param_quaternion*)in_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION,"rotation");
     rotation->set(0.0f,0);
     rotation->set(0.0f,1);
     rotation->set(0.0f,2);
     rotation->set(1.0f,3);
     rotation_center = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"rotation_center");
+
     post_rot_translate = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"post_rot_translate");
 
 
@@ -193,7 +216,12 @@ public:
     prev_use_thread = 0;
     if (bones.size())
     {
-      for (unsigned long i = 0; i < bones.size(); ++i) {
+      for (unsigned long i = 0; i < bones.size(); ++i)
+      {
+        #ifdef VSXU_DEBUG
+        printf(" declaring parameter for bone: \"%s\"\n", bones[i].name.c_str());
+        fflush(stdout);
+        #endif
         bones[i].param = (vsx_module_param_quaternion*)in_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION,(bones[i].name+"_rotation").c_str());
         bones[i].translation = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,(bones[i].name+"_translation").c_str());
         CalQuaternion q2;
@@ -371,11 +399,13 @@ public:
         quat_p->set(q2.w,3);
 
         // enable tangent space calculations
-        std::vector<CalSubmesh *>mesh_list = m_model->getMesh(mesh_id)->getVectorSubmesh();
+
+        /*std::vector<CalSubmesh *>mesh_list = m_model->getMesh(mesh_id)->getVectorSubmesh();
         for (std::vector<CalSubmesh *>::iterator it = mesh_list.begin(); it != mesh_list.end(); it++)
         {
           (*it)->enableTangents(0, true);
-        }
+        }*/
+
         loading_done = true;
       }
     }
@@ -387,6 +417,7 @@ public:
     cal3d_thread_info thread_info= *(cal3d_thread_info*)ptr;
     vsx_module_cal3d_loader_threaded* my = ((vsx_module_cal3d_loader_threaded*)  thread_info.class_pointer);
     unsigned long exit_check_counter = 0;
+    int first_rendering = 0;
     while (1)
     {
       if (0 == sem_trywait(&my->sem_worker_todo))
@@ -424,6 +455,7 @@ public:
             {
               my->mesh->data->vertices[pCalRenderer->getVertexCount()+1] = vsx_vector(0,0,0);
               pCalRenderer->getVertices(&my->mesh->data->vertices[0].x);
+
               my->mesh->data->vertex_normals[pCalRenderer->getVertexCount()+1] = vsx_vector(0,0,0);
               pCalRenderer->getNormals(&my->mesh->data->vertex_normals[0].x);
 
@@ -436,13 +468,17 @@ public:
               //else printf("Tangents are NOT enabled\n");
 
 
-              my->mesh->data->vertex_tex_coords[pCalRenderer->getVertexCount()+1].s = 0;
-              pCalRenderer->getTextureCoordinates(0,&my->mesh->data->vertex_tex_coords[0].s);
+              if (first_rendering < 4)
+              {
+                my->mesh->data->vertex_tex_coords[pCalRenderer->getVertexCount()+1].s = 0;
+                pCalRenderer->getTextureCoordinates(0,&my->mesh->data->vertex_tex_coords[0].s);
 
-              int faceCount = pCalRenderer->getFaceCount();
-              (my->mesh)->data->faces.allocate(faceCount*3);
-              pCalRenderer->getFaces((int*)&(my->mesh)->data->faces[0].a);
-              (my->mesh)->data->faces.reset_used(faceCount);
+                int faceCount = pCalRenderer->getFaceCount();
+                (my->mesh)->data->faces.allocate(faceCount*3);
+                pCalRenderer->getFaces((int*)&(my->mesh)->data->faces[0].a);
+                (my->mesh)->data->faces.reset_used(faceCount);
+                first_rendering++;
+              }
             }
           }
         }
@@ -453,8 +489,9 @@ public:
         // ********************************************************************
         // perform transforms
 
-        my->post_rot_t += my->rot_center;
+        my->post_rot_translate_vec += my->rot_center;
 
+        my->pre_rotation_mat = my->pre_rotation_quaternion.matrix();
         my->rotation_mat = my->rotation_quaternion.matrix();
 
         unsigned long end = (my->mesh)->data->vertices.size();
@@ -464,16 +501,34 @@ public:
 
         for (unsigned long i = 0; i < end; i++)
         {
-          // vertex rotation
+          // scaling
+//          *vs_v *= 0.95f;
+          //vs_v->y *= 0.9f;
+
+          // pre rotation
+          vs_v->multiply_matrix_other_vec
+          (
+            &my->pre_rotation_mat.m[0],
+            *vs_v - my->pre_rot_center
+          );
+          (*vs_v) += my->pre_rot_center;
+          vsx_vector n = *vs_n;
+          vs_n->multiply_matrix_other_vec(
+            &my->pre_rotation_mat.m[0],
+            n
+          );
+
+
+          // post rotation
           vs_v->multiply_matrix_other_vec
           (
             &my->rotation_mat.m[0],
             *vs_v - my->rot_center
           );
           // vertex offset
-          (*vs_v) += my->post_rot_t;
+          (*vs_v) += my->post_rot_translate_vec;
           // normal rotation
-          vsx_vector n = *vs_n;
+          n = *vs_n;
           vs_n->multiply_matrix_other_vec(
             &my->rotation_mat.m[0],
             n
@@ -549,7 +604,7 @@ public:
         //printf("cal3d %d\n",__LINE__);
         pthread_mutex_unlock(&my->mesh_mutex);
         //printf("cal3d %d\n",__LINE__);
-      };
+      }
 
       // if we're not supposed to run in a thread
       if (false == thread_info.is_thread)
@@ -587,6 +642,7 @@ public:
     if (!bones.size())
       return;
 
+    //printf("cal3d module run!\n");
     // deal with changes in threading use
     if (thread_created && use_thread->get() == 0)
     {
@@ -621,6 +677,16 @@ public:
     if (0 == pthread_mutex_lock(&mesh_mutex) )
     {
       // lock ackquired. thread is waiting for us to set the semaphore before doing anything again.
+      /*bool wait = true;
+      if (!thread_has_something_to_deliver && have_sent_work_to_thread)
+      {
+        while (wait)
+        {
+          pthread_mutex_unlock(&mesh_mutex);
+          pthread_mutex_lock(&mesh_mutex);
+          if (thread_has_something_to_deliver) wait = false;
+        }
+      }*/
       if (thread_has_something_to_deliver)
       {
         thread_has_something_to_deliver = false;
@@ -685,6 +751,16 @@ public:
             bones[j].bone->setTranslation(bones[j].o_t + t1);
           }
         }
+
+        pre_rotation_quaternion.x = pre_rotation->get(0);
+        pre_rotation_quaternion.y = pre_rotation->get(1);
+        pre_rotation_quaternion.z = pre_rotation->get(2);
+        pre_rotation_quaternion.w = pre_rotation->get(3);
+
+        pre_rot_center.x = pre_rotation_center->get(0);
+        pre_rot_center.y = pre_rotation_center->get(1);
+        pre_rot_center.z = pre_rotation_center->get(2);
+
         rotation_quaternion.x = rotation->get(0);
         rotation_quaternion.y = rotation->get(1);
         rotation_quaternion.z = rotation->get(2);
@@ -694,9 +770,9 @@ public:
         rot_center.y = rotation_center->get(1);
         rot_center.z = rotation_center->get(2);
 
-        post_rot_t.x = post_rot_translate->get(0);
-        post_rot_t.y = post_rot_translate->get(1);
-        post_rot_t.z = post_rot_translate->get(2);
+        post_rot_translate_vec.x = post_rot_translate->get(0);
+        post_rot_translate_vec.y = post_rot_translate->get(1);
+        post_rot_translate_vec.z = post_rot_translate->get(2);
       }
       pthread_mutex_unlock(&mesh_mutex);
     }
@@ -704,6 +780,7 @@ public:
     {
       p_updates = param_updates;
       //printf("cal3d %d\n",__LINE__);
+      have_sent_work_to_thread = 1;
       sem_post(&sem_worker_todo);
       //printf("cal3d %d\n",__LINE__);
     }

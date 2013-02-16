@@ -111,6 +111,8 @@ public:
   // operations in the modules.
   bool get_render_hint_module_output_only();
   void set_render_hint_module_output_only(bool new_value);
+  bool get_render_hint_module_run_only();
+  void set_render_hint_module_run_only(bool new_value);
 
 
 

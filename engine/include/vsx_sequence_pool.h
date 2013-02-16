@@ -39,14 +39,16 @@
 //  Parameters who have sequence manager control are not prohibited from having connections,
 
 // sequence pool is where all small snippets are stored
-class vsx_sequence_pool {
+class vsx_sequence_pool
+{
 	void* engine;
 	bool edit_enabled;
 	vsx_param_sequence_list* cur_sequence_list;
 	vsx_string active;
 	std::map<vsx_string, vsx_param_sequence_list*> sequence_lists;
 	float vtime;
-	int state; // 0 = stopped, 1 = playing
+  int current_state; // 0 = stopped, 1 = playing
+  float loop_point; // vtime is a modulus of this
 public:
 
 	// sequence list operations
@@ -61,14 +63,24 @@ public:
 
 	// sequence operations on current active list
 	int add_sequence(vsx_engine_param* param, vsx_comp_abs* comp);
+  vsx_param_sequence_list* get_sequence_list_by_name(vsx_string name);
 
 	void set_engine(void* new_engine);
-	vsx_string dump_names();
+
 	void run(float dtime,bool run_from_channel = false); // if enabled, it'll run all sequences and set values
-	//void run_from_channel(float vtime); // run this from a channel, i.e. totally abstracted time
+
+  // time manipulation
+  int get_state();
+  float get_time();
 	void set_time(float time);
-	vsx_param_sequence_list* get_sequence_list_by_name(vsx_string name);
-	void dump_to_command_list(vsx_command_list &savelist);
+  void play();
+  void stop();
+  void rewind();
+  void set_loop_point(float new_loop_point);
+
+  // serialize functions
+  vsx_string dump_names();
+  void dump_to_command_list(vsx_command_list &savelist);
   // save/load from file
   bool export_to_file(vsx_string filename);
   bool import_from_file(vsx_string filename);
@@ -78,13 +90,5 @@ public:
 
 	vsx_sequence_pool();
 };
-
-// sequence manager holds all sequence channels.
-/*class vsx_sequence_manager {
-public:
-	std::map<vsx_string, vsx_sequence_channel*> channels;
-	void run(float dtime);
-};
-*/
 
 #endif /* VSX_SEQUENCE_POOL_H_ */

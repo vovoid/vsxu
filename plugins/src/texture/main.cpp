@@ -190,6 +190,7 @@ class vsx_module_rendered_texture_single : public vsx_module {
   vsx_module_param_int* support_feedback;
   vsx_module_param_int* float_texture;
   vsx_module_param_int* alpha_channel;
+  vsx_module_param_int* multisample;
   vsx_module_param_float4* clear_color;
   // out
   vsx_module_param_texture* texture_result;
@@ -201,8 +202,10 @@ class vsx_module_rendered_texture_single : public vsx_module {
   vsx_texture* texture2;
   bool which_buffer;
   bool allocate_second_texture;
+  int support_feedback_int;
   int float_texture_int;
   int alpha_channel_int;
+  int multisample_int;
 
   GLuint glsl_prog;
 
@@ -212,11 +215,48 @@ public:
 
 void module_info(vsx_module_info* info) {
   info->identifier = "texture;buffers;render_surface_single";
+  info->description =
+    "This module captures rendering to a texture\n"
+    "- color buffer RGBA\n"
+    "- depth buffer 24-bit\n"
+    "\n"
+    "Everything you render connected to this module\n"
+    "is stored in the texture and can be reused when\n"
+    "rendering other objects.\n"
+    "Via double-buffering, this module supports\n"
+    "feedback loops - you can use its own texture\n"
+    "to draw on itself.\n"
+    "It supports floating point textures, optional\n"
+    "Alpha channel and optional multisampling.\n"
+    "Dynamic textures can be very useful!";
+
 #ifndef VSX_NO_CLIENT
   info->in_param_spec = "render_in:render,"
-  "texture_size:enum?2048x2048|1024x1024|512x512|256x256|128x128|64x64|32x32|16x16|8x8|4x4|VIEWPORT_SIZE|VIEWPORT_SIZE_DIV_2|VIEWPORT_SIZE_DIV_4|VIEWPORT_SIZEx2|VIEWPORT_SIZEx4,"
-  "support_feedback:enum?no|yes,float_texture:enum?no|yes,alpha_channel:enum?no|yes,clear_color:float4";
-  info->out_param_spec = "texture_out:texture";
+    "texture_size:enum?"
+      "2048x2048|"
+      "1024x1024|"
+      "512x512|"
+      "256x256|"
+      "128x128|"
+      "64x64|"
+      "32x32|"
+      "16x16|"
+      "8x8|"
+      "4x4|"
+      "VIEWPORT_SIZE|"
+      "VIEWPORT_SIZE_DIV_2|"
+      "VIEWPORT_SIZE_DIV_4|"
+      "VIEWPORT_SIZEx2|"
+      "VIEWPORT_SIZEx4,"
+    "support_feedback:enum?no|yes,"
+    "float_texture:enum?no|yes,"
+    "alpha_channel:enum?no|yes,"
+    "multisample:enum?no|yes,"
+    "clear_color:float4"
+  ;
+  info->out_param_spec =
+    "texture_out:texture"
+  ;
   info->component_class = "texture";
 #endif
 }
@@ -227,6 +267,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
   support_feedback = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "support_feedback");
   support_feedback->set(1);
+  support_feedback_int = 1;
 
   float_texture = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "float_texture");
   float_texture->set(0);
@@ -235,6 +276,9 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   alpha_channel = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "alpha_channel");
   alpha_channel->set(1);
   alpha_channel_int = 1;
+
+  multisample = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "multisample");
+  multisample_int = 0;
 
   clear_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4, "clear_color");
   clear_color->set(0,0);
@@ -249,6 +293,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   tex_size_internal = -1;
 
   texture_result = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture_out");
+
   allocate_second_texture = true;
   start();
 }
@@ -261,28 +306,29 @@ bool can_run()
 
 void start() {
 
-
   which_buffer = false;
   texture = new vsx_texture;
-  texture->init_buffer(res_x,res_x);
+  texture->init_color_depth_buffer(res_x,res_x);
   texture->valid = false;
   texture_result->set(texture);
 
   texture2 = new vsx_texture;
-  texture2->init_buffer(res_x,res_x);
+  texture2->init_color_depth_buffer(res_x,res_x);
   texture2->valid = false;
 }
 
 bool activate_offscreen() {
-  //printf("ac1\n");
-  //printf("activate offscreen\n");
-  //glGetIntegerv(GL_VIEWPORT, viewport);
-  //printf("old viewport is %d %d %d %d\n",viewport[0],viewport[1],viewport[2],viewport[3]);
-#if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
-  glGetIntegerv (GL_VIEWPORT, viewport);
-#endif
+  #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
+    glGetIntegerv (GL_VIEWPORT, viewport);
+  #endif
 
   bool rebuild = false;
+
+  if (support_feedback->get() != support_feedback_int)
+  {
+    support_feedback_int = support_feedback->get();
+    rebuild = true;
+  }
 
   if (alpha_channel->get() != alpha_channel_int)
   {
@@ -293,6 +339,18 @@ bool activate_offscreen() {
   if (float_texture->get() != float_texture_int)
   {
     float_texture_int = float_texture->get();
+    rebuild = true;
+  }
+
+  if (multisample->get() != multisample_int)
+  {
+    multisample_int = multisample->get();
+    rebuild = true;
+  }
+
+  if (multisample->get() != multisample_int)
+  {
+    multisample_int = multisample->get();
     rebuild = true;
   }
 
@@ -345,48 +403,72 @@ bool activate_offscreen() {
       case 14: res_x = abs(viewport[2] - viewport[0]) * 4; res_y = abs(viewport[3] - viewport[1]) * 4; break;
     };
 
-    texture->reinit_buffer(res_x, res_y,float_texture->get(),alpha_channel->get());
-    if (support_feedback->get())
-    texture2->reinit_buffer(res_x, res_y, float_texture->get(),alpha_channel->get());
+    if (0 == support_feedback_int)
+    {
+      texture->reinit_color_depth_buffer
+      (
+        res_x,
+        res_y,
+        float_texture_int,
+        alpha_channel_int,
+        multisample_int
+      );
+    }
+    if (1 == support_feedback_int)
+    {
+      // feedback textures ignores foreign depth buffer...
+      texture->reinit_color_depth_buffer
+      (
+        res_x,
+        res_y,
+        float_texture_int,
+        alpha_channel_int,
+        multisample_int
+      );
+      texture2->reinit_color_depth_buffer
+      (
+        res_x,
+        res_y,
+        float_texture_int,
+        alpha_channel_int,
+        multisample_int
+      );
+    }
   }
 
   if (!which_buffer || support_feedback->get() == 0)
-    texture->begin_capture();
+    texture->begin_capture_to_buffer();
   else
-    texture2->begin_capture();
+    texture2->begin_capture_to_buffer();
 
   //printf("changing viewport to %d\n",res_x);
 	glViewport(0,0,res_x,res_y);
 	glDepthMask(GL_TRUE);
-	//glDisable(GL_DEPTH_TEST);
 	glClearColor(clear_color->get(0),clear_color->get(1),clear_color->get(2),clear_color->get(3));
-  //printf("clear buffer\n");
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		// Clear Screen And Depth Buffer
-//#ifdef __APPLE__
 	glEnable(GL_BLEND);
-//#endif
   glGetIntegerv(GL_CURRENT_PROGRAM, (GLint*)&glsl_prog);
   if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
     glUseProgram(0);
   else
     glUseProgramObjectARB(0);
 
-  //glBlendFunc(GL_SRC_ALPHA,GL_ONE);
   loading_done = true;
   return true;
-};
+}
 
-void deactivate_offscreen() {
+void deactivate_offscreen()
+{
   if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
     glUseProgram(glsl_prog);
   else
     glUseProgramObjectARB(glsl_prog);
 
-  if (!which_buffer || support_feedback->get() == 0)
+  if (!which_buffer || support_feedback_int == 0)
   {
     if (texture)
     {
-      texture->end_capture();
+      texture->end_capture_to_buffer();
       texture->valid = true;
     }
     ((vsx_module_param_texture*)texture_result)->set(texture);
@@ -395,7 +477,7 @@ void deactivate_offscreen() {
   {
     if (texture2)
     {
-      texture2->end_capture();
+      texture2->end_capture_to_buffer();
       texture2->valid = true;
     }
     ((vsx_module_param_texture*)texture_result)->set(texture2);
@@ -409,8 +491,10 @@ void deactivate_offscreen() {
   #endif
 }
 
-void stop() {
-  if (texture) {
+void stop()
+{
+  if (texture)
+  {
     texture->deinit_buffer();
     #ifdef VSXU_DEBUG
       printf("deleting texture\n");
@@ -438,6 +522,595 @@ void on_delete() {
 }
 
 };
+
+
+//-------------------------------------------------------------------------------------- FU MO MO
+//----------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------
+
+class vsx_module_rendered_texture_color_depth_buffer : public vsx_module {
+  // in
+  vsx_module_param_render* my_render;
+  vsx_module_param_int* texture_size;
+  vsx_module_param_int* float_texture;
+  vsx_module_param_int* alpha_channel;
+  vsx_module_param_int* multisample;
+  vsx_module_param_texture* depth_buffer_in;
+  // out
+  vsx_module_param_texture* texture_result;
+  vsx_module_param_texture* depth_buffer_out;
+  // internal
+  int res_x, res_y;
+  int dbuff;
+  int tex_size_internal;
+  vsx_texture* texture;
+  vsx_texture depth_buffer_texture;
+
+  int float_texture_int;
+  int alpha_channel_int;
+  int multisample_int;
+  GLuint depth_buffer_in_int;
+
+  GLuint glsl_prog;
+
+  GLint	viewport[4];
+public:
+  vsx_module_rendered_texture_color_depth_buffer() : texture(0) {};
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "texture;buffers;render_surface_color_depth_buffer";
+
+    info->description =
+      "This module captures rendering to a texture\n"
+      "- color buffer RGBA\n"
+      "- depth buffer 24-bit\n"
+      "\n"
+      "Everything you render connected to this module\n"
+      "is stored in the texture and can be reused when\n"
+      "rendering other objects.\n"
+      "This module can also output depth buffer for\n"
+      "Another identical module to use (shared depth\n"
+      "buffer, or it can (via the input) use another\n"
+      "module's depth buffer.\n"
+      "It supports floating point textures, optional\n"
+      "Alpha channel and optional multisampling.\n"
+      "Dynamic textures can be very useful!";
+
+  #ifndef VSX_NO_CLIENT
+    info->in_param_spec = "render_in:render,"
+      "texture_size:enum?"
+        "2048x2048|"
+        "1024x1024|"
+        "512x512|"
+        "256x256|"
+        "128x128|"
+        "64x64|"
+        "32x32|"
+        "16x16|"
+        "8x8|"
+        "4x4|"
+        "VIEWPORT_SIZE|"
+        "VIEWPORT_SIZE_DIV_2|"
+        "VIEWPORT_SIZE_DIV_4|"
+        "VIEWPORT_SIZEx2|"
+        "VIEWPORT_SIZEx4,"
+      "float_texture:enum?no|yes,"
+      "alpha_channel:enum?no|yes,"
+      "multisample:enum?no|yes,"
+      "depth_buffer:texture"
+    ;
+    info->out_param_spec =
+      "color_buffer:texture,"
+      "depth_buffer:texture"
+    ;
+    info->component_class = "texture";
+  #endif
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {
+    my_render = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER, "render_in",false,false);
+    res_x = 512;
+
+    float_texture = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "float_texture");
+    float_texture->set(0);
+    float_texture_int = 0;
+
+    alpha_channel = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "alpha_channel");
+    alpha_channel->set(1);
+    alpha_channel_int = 1;
+
+    multisample = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "multisample");
+    multisample_int = 0;
+
+    texture_size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "texture_size");
+    texture_size->set(2);
+
+    tex_size_internal = -1;
+
+    texture_result = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"color_buffer");
+
+    depth_buffer_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"depth_buffer");
+    depth_buffer_in = (vsx_module_param_texture*)in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"depth_buffer");
+    depth_buffer_in_int = 0;
+
+    start();
+  }
+
+  bool can_run()
+  {
+    vsx_texture tex;
+    return tex.has_buffer_support();
+  }
+
+  void start()
+  {
+    texture = new vsx_texture;
+    texture->init_color_depth_buffer(res_x,res_x);
+    texture->valid = false;
+    texture_result->set(texture);
+  }
+
+  bool activate_offscreen() {
+    #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
+      glGetIntegerv (GL_VIEWPORT, viewport);
+    #endif
+
+    bool rebuild = false;
+
+    if (alpha_channel->get() != alpha_channel_int)
+    {
+      alpha_channel_int = alpha_channel->get();
+      rebuild = true;
+    }
+
+    if (float_texture->get() != float_texture_int)
+    {
+      float_texture_int = float_texture->get();
+      rebuild = true;
+    }
+
+    if (multisample->get() != multisample_int)
+    {
+      multisample_int = multisample->get();
+      rebuild = true;
+    }
+
+    if (multisample->get() != multisample_int)
+    {
+      multisample_int = multisample->get();
+      rebuild = true;
+    }
+    if (depth_buffer_in->connected && depth_buffer_in->valid)
+    {
+      vsx_texture* depth_in = depth_buffer_in->get();
+      if ( depth_buffer_in_int != depth_in->texture_info.ogl_id )
+      {
+        depth_buffer_in_int = depth_in->texture_info.ogl_id;
+        rebuild = true;
+      }
+      // check if the sizes differ, if they do we can't proceed
+    } else
+    {
+      if (0 != depth_buffer_in_int) rebuild = true;
+      depth_buffer_in_int = 0;
+    }
+
+    if (texture_size->get() >= 10)
+    {
+      glGetIntegerv (GL_VIEWPORT, viewport);
+      int t_res_x = abs(viewport[2] - viewport[0]);
+      int t_res_y = abs(viewport[3] - viewport[1]);
+
+      if (texture_size->get() == 10) {
+        if (t_res_x != res_x || t_res_y != res_y) rebuild = true;
+      }
+
+      if (texture_size->get() == 11) {
+        if (t_res_x / 2 != res_x || t_res_y / 2 != res_y) rebuild = true;
+      }
+
+      if (texture_size->get() == 12) {
+        if (t_res_x / 4 != res_x || t_res_y / 4 != res_y) rebuild = true;
+      }
+
+      if (texture_size->get() == 13) {
+        if (t_res_x * 2 != res_x || t_res_y * 2 != res_y) rebuild = true;
+      }
+
+      if (texture_size->get() == 14) {
+        if (t_res_x * 4 != res_x || t_res_y * 4 != res_y) rebuild = true;
+      }
+    }
+
+
+    if (texture_size->get() != tex_size_internal || rebuild)
+    {
+      //printf("generating new framebuffer\n");
+      tex_size_internal = texture_size->get();
+      switch (tex_size_internal) {
+        case 0: res_y = res_x = 2048; break;
+        case 1: res_y = res_x = 1024; break;
+        case 2: res_y = res_x = 512; break;
+        case 3: res_y = res_x = 256; break;
+        case 4: res_y = res_x = 128; break;
+        case 5: res_y = res_x = 64; break;
+        case 6: res_y = res_x = 32; break;
+        case 7: res_y = res_x = 16; break;
+        case 8: res_y = res_x = 8; break;
+        case 9: res_y = res_x = 4; break;
+        case 10: res_x = abs(viewport[2] - viewport[0]); res_y = abs(viewport[3] - viewport[1]); break;
+        case 11: res_x = abs(viewport[2] - viewport[0]) / 2; res_y = abs(viewport[3] - viewport[1]) / 2; break;
+        case 12: res_x = abs(viewport[2] - viewport[0]) / 4; res_y = abs(viewport[3] - viewport[1]) / 4; break;
+        case 13: res_x = abs(viewport[2] - viewport[0]) * 2; res_y = abs(viewport[3] - viewport[1]) * 2; break;
+        case 14: res_x = abs(viewport[2] - viewport[0]) * 4; res_y = abs(viewport[3] - viewport[1]) * 4; break;
+      };
+
+      if (
+          depth_buffer_in_int != 0
+      )
+      {
+        vsx_texture* depth_in = depth_buffer_in->get();
+        if (
+            depth_in->texture_info.size_x != res_x ||
+            depth_in->texture_info.size_y != res_y
+          )
+        {
+          res_x = depth_in->texture_info.size_x;
+          res_y = depth_in->texture_info.size_y;
+        }
+      }
+
+      texture->reinit_color_depth_buffer
+      (
+        res_x,
+        res_y,
+        float_texture_int,
+        alpha_channel_int,
+        multisample_int,
+        depth_buffer_in_int
+      );
+    }
+
+    texture->begin_capture_to_buffer();
+
+    //printf("changing viewport to %d\n",res_x);
+    glViewport(0,0,res_x,res_y);
+    glDepthMask(GL_TRUE);
+
+    glEnable(GL_BLEND);
+    glGetIntegerv(GL_CURRENT_PROGRAM, (GLint*)&glsl_prog);
+    if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
+      glUseProgram(0);
+    else
+      glUseProgramObjectARB(0);
+
+    depth_buffer_texture.texture_info.ogl_id = texture->get_depth_buffer_handle();
+    depth_buffer_texture.texture_info.ogl_type = GL_TEXTURE_2D;
+    depth_buffer_texture.texture_info.size_x = res_x;
+    depth_buffer_texture.texture_info.size_y = res_y;
+    depth_buffer_out->set(&depth_buffer_texture);
+
+
+    loading_done = true;
+    return true;
+  }
+
+  void deactivate_offscreen()
+  {
+    if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
+      glUseProgram(glsl_prog);
+    else
+      glUseProgramObjectARB(glsl_prog);
+
+    if (texture)
+    {
+      texture->end_capture_to_buffer();
+      texture->valid = true;
+    }
+    ((vsx_module_param_texture*)texture_result)->set(texture);
+
+
+    #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
+    //printf("resetting viewport to %d %d %d %d\n",viewport[0],viewport[1],viewport[2],viewport[3]);
+    glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
+    #endif
+  }
+
+  void stop()
+  {
+    if (texture)
+    {
+      texture->deinit_buffer();
+      #ifdef VSXU_DEBUG
+        printf("deleting texture\n");
+      #endif
+      delete texture;
+      texture = 0;
+    }
+  }
+
+  void on_delete() {
+    stop();
+  }
+
+  ~vsx_module_rendered_texture_color_depth_buffer() {
+    if (texture)
+    delete texture;
+  }
+
+};
+
+
+
+//-------------------------------------------------------------------------------------- FU MO MO
+//----------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------
+
+class vsx_module_rendered_texture_color_buffer : public vsx_module {
+  // in
+  vsx_module_param_render* my_render;
+  vsx_module_param_int* texture_size;
+  vsx_module_param_int* float_texture;
+  vsx_module_param_int* alpha_channel;
+  vsx_module_param_int* multisample;
+  // out
+  vsx_module_param_texture* texture_result;
+  // internal
+  int res_x, res_y;
+  int dbuff;
+  int tex_size_internal;
+  vsx_texture* texture;
+
+  int float_texture_int;
+  int alpha_channel_int;
+  int multisample_int;
+
+  GLuint glsl_prog;
+
+  GLint	viewport[4];
+public:
+  vsx_module_rendered_texture_color_buffer() : texture(0) {};
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "texture;buffers;render_surface_color_buffer";
+    info->description =
+      "This module captures rendering to a texture\n"
+      "- only color buffer\n"
+      "  thus RGB and optional Alpha\n"
+      "Everything you render connected to this module\n"
+      "is stored in the texture and can be reused when\n"
+      "rendering other objects.\n"
+      "It supports floating point textures, optional\n"
+      "Alpha channel and optional multisampling.\n"
+      "Dynamic textures can be very useful!";
+  #ifndef VSX_NO_CLIENT
+    info->in_param_spec = "render_in:render,"
+      "texture_size:enum?"
+        "2048x2048|"
+        "1024x1024|"
+        "512x512|"
+        "256x256|"
+        "128x128|"
+        "64x64|"
+        "32x32|"
+        "16x16|"
+        "8x8|"
+        "4x4|"
+        "VIEWPORT_SIZE|"
+        "VIEWPORT_SIZE_DIV_2|"
+        "VIEWPORT_SIZE_DIV_4|"
+        "VIEWPORT_SIZEx2|"
+        "VIEWPORT_SIZEx4,"
+      "float_texture:enum?no|yes,"
+      "alpha_channel:enum?no|yes,"
+      "multisample:enum?no|yes"
+    ;
+    info->out_param_spec =
+      "color_buffer:texture"
+    ;
+    info->component_class = "texture";
+  #endif
+  }
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {
+    my_render = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER, "render_in",false,false);
+    res_x = 512;
+
+    float_texture = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "float_texture");
+    float_texture->set(0);
+    float_texture_int = 0;
+
+    alpha_channel = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "alpha_channel");
+    alpha_channel->set(1);
+    alpha_channel_int = 1;
+
+    multisample = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "multisample");
+    multisample_int = 0;
+
+    texture_size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "texture_size");
+    texture_size->set(2);
+
+    tex_size_internal = -1;
+
+    texture_result = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"color_buffer");
+
+    start();
+  }
+
+  bool can_run()
+  {
+    vsx_texture tex;
+    return tex.has_buffer_support();
+  }
+
+  void start()
+  {
+    texture = new vsx_texture;
+    texture->init_color_depth_buffer(res_x,res_x);
+    texture->valid = false;
+    texture_result->set(texture);
+  }
+
+  bool activate_offscreen() {
+    #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
+      glGetIntegerv (GL_VIEWPORT, viewport);
+    #endif
+
+    bool rebuild = false;
+
+    if (alpha_channel->get() != alpha_channel_int)
+    {
+      alpha_channel_int = alpha_channel->get();
+      rebuild = true;
+    }
+
+    if (float_texture->get() != float_texture_int)
+    {
+      float_texture_int = float_texture->get();
+      rebuild = true;
+    }
+
+    if (multisample->get() != multisample_int)
+    {
+      multisample_int = multisample->get();
+      rebuild = true;
+    }
+
+    if (multisample->get() != multisample_int)
+    {
+      multisample_int = multisample->get();
+      rebuild = true;
+    }
+
+    if (texture_size->get() >= 10)
+    {
+      glGetIntegerv (GL_VIEWPORT, viewport);
+      int t_res_x = abs(viewport[2] - viewport[0]);
+      int t_res_y = abs(viewport[3] - viewport[1]);
+
+      if (texture_size->get() == 10) {
+        if (t_res_x != res_x || t_res_y != res_y) rebuild = true;
+      }
+
+      if (texture_size->get() == 11) {
+        if (t_res_x / 2 != res_x || t_res_y / 2 != res_y) rebuild = true;
+      }
+
+      if (texture_size->get() == 12) {
+        if (t_res_x / 4 != res_x || t_res_y / 4 != res_y) rebuild = true;
+      }
+
+      if (texture_size->get() == 13) {
+        if (t_res_x * 2 != res_x || t_res_y * 2 != res_y) rebuild = true;
+      }
+
+      if (texture_size->get() == 14) {
+        if (t_res_x * 4 != res_x || t_res_y * 4 != res_y) rebuild = true;
+      }
+    }
+
+
+    if (texture_size->get() != tex_size_internal || rebuild)
+    {
+      //printf("generating new framebuffer\n");
+      tex_size_internal = texture_size->get();
+      switch (tex_size_internal) {
+        case 0: res_y = res_x = 2048; break;
+        case 1: res_y = res_x = 1024; break;
+        case 2: res_y = res_x = 512; break;
+        case 3: res_y = res_x = 256; break;
+        case 4: res_y = res_x = 128; break;
+        case 5: res_y = res_x = 64; break;
+        case 6: res_y = res_x = 32; break;
+        case 7: res_y = res_x = 16; break;
+        case 8: res_y = res_x = 8; break;
+        case 9: res_y = res_x = 4; break;
+        case 10: res_x = abs(viewport[2] - viewport[0]); res_y = abs(viewport[3] - viewport[1]); break;
+        case 11: res_x = abs(viewport[2] - viewport[0]) / 2; res_y = abs(viewport[3] - viewport[1]) / 2; break;
+        case 12: res_x = abs(viewport[2] - viewport[0]) / 4; res_y = abs(viewport[3] - viewport[1]) / 4; break;
+        case 13: res_x = abs(viewport[2] - viewport[0]) * 2; res_y = abs(viewport[3] - viewport[1]) * 2; break;
+        case 14: res_x = abs(viewport[2] - viewport[0]) * 4; res_y = abs(viewport[3] - viewport[1]) * 4; break;
+      };
+
+      texture->reinit_color_depth_buffer
+      (
+        res_x,
+        res_y,
+        float_texture_int,
+        alpha_channel_int,
+        multisample_int
+      );
+    }
+
+    texture->begin_capture_to_buffer();
+
+    //printf("changing viewport to %d\n",res_x);
+    glViewport(0,0,res_x,res_y);
+    glDepthMask(GL_TRUE);
+
+    glEnable(GL_BLEND);
+    glGetIntegerv(GL_CURRENT_PROGRAM, (GLint*)&glsl_prog);
+    if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
+      glUseProgram(0);
+    else
+      glUseProgramObjectARB(0);
+
+    loading_done = true;
+    return true;
+  }
+
+  void deactivate_offscreen()
+  {
+    if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
+      glUseProgram(glsl_prog);
+    else
+      glUseProgramObjectARB(glsl_prog);
+
+    if (texture)
+    {
+      texture->end_capture_to_buffer();
+      texture->valid = true;
+    }
+    ((vsx_module_param_texture*)texture_result)->set(texture);
+
+
+    #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
+    //printf("resetting viewport to %d %d %d %d\n",viewport[0],viewport[1],viewport[2],viewport[3]);
+    glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
+    #endif
+  }
+
+  void stop()
+  {
+    if (texture)
+    {
+      texture->deinit_buffer();
+      #ifdef VSXU_DEBUG
+        printf("deleting texture\n");
+      #endif
+      delete texture;
+      texture = 0;
+    }
+  }
+
+  void on_delete() {
+    stop();
+  }
+
+  ~vsx_module_rendered_texture_color_buffer() {
+    if (texture)
+    delete texture;
+  }
+
+};
+
+
 
 
 //-------------------------------------------------------------------------------------- FU MO MO
@@ -782,6 +1455,8 @@ vsx_module* create_new_module(unsigned long module) {
     case 4: return (vsx_module*)(new vsx_module_texture_parameter);
     case 5: return (vsx_module*)(new vsx_module_texture_blur);
     case 6: return (vsx_module*)(new vsx_module_visual_fader);
+    case 7: return (vsx_module*)(new vsx_module_rendered_texture_color_depth_buffer);
+    case 8: return (vsx_module*)(new vsx_module_rendered_texture_color_buffer);
   };
   return 0;
 }
@@ -795,11 +1470,13 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 4: delete (vsx_module_texture_parameter*)m; break;
     case 5: delete (vsx_module_texture_blur*)m; break;
     case 6: delete (vsx_module_visual_fader*)m; break;
+    case 7: delete (vsx_module_rendered_texture_color_depth_buffer*)m; break;
+    case 8: delete (vsx_module_rendered_texture_color_buffer*)m; break;
   }
 }
 
 unsigned long get_num_modules() {
-  return 7;
+  return 9;
 
 }
 

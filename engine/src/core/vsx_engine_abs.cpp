@@ -72,11 +72,12 @@ void vsx_engine_abs::constructor_set_default_values()
   stopped = true;
   // rendering hints
   render_hint_module_output_only = false;
+  render_hint_module_run_only = false;
   frame_dcount = 0;
   frame_dtime = 0;
   frame_dprev = -1;
-  frame_dfps = 0;
-  frame_d = 50;
+  frame_delta_fps = 0;
+  frame_delta_fps_frame_count_interval = 50;
   component_name_autoinc = 0;
 }
 
@@ -200,8 +201,11 @@ void vsx_engine_abs::tell_client_time(vsx_command_list *cmd_out)
     }
     if (current_state != last_e_state) send = true;
 
-    if (send) {
+    if (send)
+    {
       cmd_out->add_raw("time_upd " + f2s(engine_info.vtime)+" "+i2s(current_state));
+      // check to see if we should send our sequence pool too
+      cmd_out->add_raw("seq_pool time_upd " + f2s(sequence_pool.get_time())+" "+i2s(sequence_pool.get_state()));
     }
     last_e_state = current_state;
   #endif
@@ -472,7 +476,8 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
   vsx_command_list tmp_connections;
   vsx_command_list tmp_aliases;
   if (meta_information.size()) tmp_comp.add_raw("meta_set "+base64_encode(meta_information));
-  for (forge_map_iter = forge_map.begin(); forge_map_iter != forge_map.end(); ++forge_map_iter) {
+  for (forge_map_iter = forge_map.begin(); forge_map_iter != forge_map.end(); ++forge_map_iter)
+  {
     vsx_comp* comp = (*forge_map_iter).second;
     if (((*forge_map_iter).second->component_class == "macro"))
     tmp_comp.add_raw(vsx_string("macro_create ")+(*forge_map_iter).first+" "+f2s(comp->position.x)+" "+f2s(comp->position.y)+" "+f2s((*forge_map_iter).second->size));
@@ -565,10 +570,18 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
   while ( (outc = tmp_connections.pop_back()) ) {
     savelist.addc(outc);
   }
+
   // dump the sequence pool
   sequence_pool.dump_to_command_list(savelist);
+
   // dump the master sequences with their connections to the sequence pools
   sequence_list.dump_master_channels_to_command_list(savelist);
+
+  // dump the loop point
+  if (loop_point_end > 0.0f)
+  {
+    savelist.add_raw("time_set_loop_point "+f2s(loop_point_end));
+  }
   #endif
   return 0;
 }

@@ -2,7 +2,9 @@
 // * fix saving / loading
 // *
 
-if (cmd == "seq_pool") {
+if (cmd == "seq_pool")
+{
+  c->dump_to_stdout();
   //printf("seq_pool %s\n", c->parts[1].c_str());
 
   if (c->parts[1] == "seq_list") {
@@ -17,6 +19,16 @@ if (cmd == "seq_pool") {
     cmd_out->add_raw("seq_pool dump_names "+sequence_pool.dump_names());
   } else
 
+  // ***************************************
+  // Set time loop point
+  // ***************************************
+  // 0=seq_pool 1=time_set_loop_point 2=[time:float]
+  if (c->parts[1] == "time_set_loop_point")
+  {
+    sequence_pool.set_loop_point(s2f(c->parts[2]));
+    c->dump_to_stdout();
+  } else
+
 
   // ***************************************
   // Set time
@@ -25,6 +37,30 @@ if (cmd == "seq_pool") {
   if (c->parts[1] == "time_set") {
     //printf("time_set: %f\n", s2f(c->parts[2]));
     sequence_pool.set_time(s2f(c->parts[2]));
+  } else
+
+  // ***************************************
+  // Play
+  // ***************************************
+  // 0=seq_pool 1=play
+  if (c->parts[1] == "play") {
+    sequence_pool.play();
+  } else
+
+  // ***************************************
+  // Stop
+  // ***************************************
+  // 0=seq_pool 1=stop
+  if (c->parts[1] == "stop") {
+    sequence_pool.stop();
+  } else
+
+  // ***************************************
+  // Stop
+  // ***************************************
+  // 0=seq_pool 1=stop
+  if (c->parts[1] == "rewind") {
+    sequence_pool.rewind();
   } else
 
   // ***************************************
@@ -167,15 +203,18 @@ if (cmd == "seq_pool") {
   // Legacy sequence pattern modifier
   // ***************************************
   // 0=seq_pool 1=pseq_p 2=command 3=[component] 4=[param]
-  if (c->parts[1] == "pseq_p") {
+  if (c->parts[1] == "pseq_p")
+  {
     if (sequence_pool.get_selected())
     {
       vsx_comp* component = get_component_by_name(c->parts[3]);
-      if (component) {
+      if (component)
+      {
         vsx_engine_param* param = component->get_params_in()->get_by_name(c->parts[4]);
         if (param)
         {
-          if (c->parts[2] == "inject") {
+          if (c->parts[2] == "inject")
+          {
             //param->sequence = true;
             //sequence_list.inject_param(param, dest, c->parts[4]);
           } else
@@ -183,17 +222,20 @@ if (cmd == "seq_pool") {
           // Inject Get (dump a sequencer up to the GUI)
           // ***************************************
           // 0=seq_pool 1=pseq_p 2=inject_get 3=[component] 4=[param]
-          if (c->parts[2] == "inject_get") {
+          if (c->parts[2] == "inject_get")
+          {
             if (sequence_pool.get_selected())
             {
               vsx_string sequence_specification = sequence_pool.get_selected()->dump_param(param);
-              if (sequence_specification != "") {
+              if (sequence_specification != "")
+              {
                 cmd_out->add_raw("seq_pool pseq_p_ok inject_get "+c->parts[3]+" "+c->parts[4]+" "+sequence_specification+" "+i2s(param->module_param->type));
               }
             }
           } else
           // 0=seq_pool 1=pseq_p 2=remove 3=[component] 4=[param]
-          if (c->parts[2] == "remove") {
+          if (c->parts[2] == "remove")
+          {
             if (sequence_pool.get_selected())
             {
               sequence_pool.get_selected()->remove_param_sequence(param);
@@ -208,29 +250,32 @@ if (cmd == "seq_pool") {
   // Legacy sequence pattern modifier
   // ***************************************
   // 0=seq_pool 1=pseq_p 2=command 3=[component] 4=[param]
-  if (c->parts[1] == "pseq_r") {
+  if (c->parts[1] == "pseq_r")
+  {
     if (sequence_pool.get_selected())
     {
       vsx_comp* component = get_component_by_name(c->parts[3]);
-      if (component) {
+      if (component)
+      {
         vsx_engine_param* param = component->get_params_in()->get_by_name(c->parts[4]);
-        if (param) {
+        if (param)
+        {
           for (int i = 0; i < (int)c->parts.size()-1; i++)
+          {
             c->parts[i] = c->parts[i+1];
-          // add
-          //if (c->parts[1] == "add") {
-          // seq_pool.get_selected()->add_line(param, cmd_out, c,"seq_pool ");
-          //} else
-          // update
-          if (c->parts[1] == "update") {
+          }
+          if (c->parts[1] == "update")
+          {
             sequence_pool.get_selected()->update_line(param, cmd_out, c,"seq_pool ");
           } else
           // insert
-          if (c->parts[1] == "insert") {
+          if (c->parts[1] == "insert")
+          {
             sequence_pool.get_selected()->insert_line(param, cmd_out, c,"seq_pool ");
           } else
           //remove
-          if (c->parts[1] == "remove") {
+          if (c->parts[1] == "remove")
+          {
             sequence_pool.get_selected()->remove_line(param, cmd_out, c,"seq_pool ");
           }
         }

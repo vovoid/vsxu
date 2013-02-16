@@ -151,6 +151,16 @@ void vsx_engine::set_render_hint_module_output_only(bool new_value)
   render_hint_module_output_only = new_value;
 }
 
+bool vsx_engine::get_render_hint_module_run_only()
+{
+  return render_hint_module_run_only;
+}
+
+void vsx_engine::set_render_hint_module_run_only(bool new_value)
+{
+  render_hint_module_run_only = new_value;
+}
+
 
 void vsx_engine::reset_time()
 {
@@ -368,7 +378,11 @@ void vsx_engine::time_rewind()
 bool vsx_engine::render()
 {
   if (!valid) return false;
-   // check for time control requests from the modules
+
+  // reset dtime
+  engine_info.dtime = 0;
+
+  // check for time control requests from the modules
   if
   (
     engine_info.request_play == 1
@@ -389,170 +403,157 @@ bool vsx_engine::render()
     time_rewind();
   }
 
-  if (current_state == VSX_ENGINE_STOPPED && engine_info.request_set_time > 0.0f)
+  if
+  (
+      current_state == VSX_ENGINE_STOPPED
+      &&
+      engine_info.request_set_time > 0.0f
+  )
   {
     float dd = engine_info.vtime - engine_info.request_set_time;
-    if (dd > 0) {
+    if (dd > 0)
+    {
       engine_info.dtime = -dd;
-    } else {
+    }
+    else
+    {
       engine_info.dtime = fabs(dd);
     }
   }
 
-  //vsx_command_s cm; cm.process_garbage();
-    //printf("d1");
-  if (!stopped) {
+  if (!stopped)
+  {
     frame_timer.start();
-    // here we set the global time of the engine.
-    // In case we need this module to do something else - capture to file
-    // we would need to set dtime to the length of each frame, and add vtime
-    // with dtime here to stretch the time correctly.
-    /*if (reset_time->get() == 0) {
-      //printf("reset_time\n");
-      d_time = -v_time;
-      //v_time = 0;
-      reset_time->set(1);
-    } else { */
-      //if (time_multiplier->get() < 0.000001) {time_multiplier->set(0.000001);}
-    /*}*/
-    //engine->dtime = d_time;
-    //engine->vtime = v_time;
 
-    //
-    //printf("engine rendering new frame\n");
-
-
-    //d_time = (1000.0f/avi_fps)*0.001f;
-    //engine_info.dtime = 0;
     float gtime = (float)g_timer.dtime();
-    if (frame_cfp_time != 0.0f) gtime = frame_cfp_time;
+
+    if (frame_cfp_time != 0.0f)
+    {
+      gtime = frame_cfp_time;
+    }
     d_time = gtime * g_timer_amp;
     engine_info.real_dtime = d_time;
     engine_info.real_vtime += d_time;
-    //
-    if (current_state == VSX_ENGINE_LOADING) {
+
+    if (current_state == VSX_ENGINE_LOADING)
+    {
       frame_start_time = g_timer.atime();
     }
 
-
     float d_time_i = d_time;
     float dt = 0;
-    // this is the fmod time synchronizer
 
+    // this is the fmod time synchronizer
     if (frame_cfp_time == 0.0f)
     {
-      for (unsigned long i = 0; i < outputs.size(); i++) {
+      for (unsigned long i = 0; i < outputs.size(); i++)
+      {
         vsx_engine_param* param;
-
         param = outputs[i]->get_params_out()->get_by_name("_st");
-
-            //else {
-              //param = dest->get_params_in()->get_by_name(c->parts[2]);
-              //printf("size: %d\n",dest->get_params_in()->param_name_list.size());
-            //}
         if (param) {
           vsx_module_param_float* fp = (vsx_module_param_float*)param->module_param;
           dt = fp->get();
-          if (dt != -1.0f) {
-            //printf("getting time: %f\n", dt);
+          if (dt != -1.0f)
+          {
             // we're getting some time from the module
-            if (current_state == VSX_ENGINE_PLAYING) {
-              if (last_m_time_synch == 0) {
+            if (current_state == VSX_ENGINE_PLAYING)
+            {
+              if (last_m_time_synch == 0)
+              {
                 g_timer.start();
-  //              d_time_i = dt-0.06;//dt - frame_prev_time;
                 if (engine_info.vtime == 0)
                 d_time_i = dt;//dt-0.06;//dt - frame_prev_time;
-                //printf("f___dt: %f\n");
-                //engine_info.vtime = dt;//frame_prev_time = dt;
                 last_m_time_synch = 1;
-              } else {
+              } else
+              {
                 d_time_i = d_time;
-                //d_time_i = dt - frame_prev_time;
-                //engine_info.vtime = dt;//
-                //if (d_time_i == 0)
-                //frame_prev_time = dt;
-                //d_time_i = d_time;
               }
-            } else {
+            } else
+            {
               d_time_i = 0;
             }
-            //engine_info.vtime = dt;//frame_prev_time = dt;
-            //engine_info.dtime = d_time_i;
-            //d_time_i = dt;
-          } else {
+          } else
+          {
             d_time_i = 0;
           }
         }
-              //printf("aaaaa %s\n",param->get_name().c_str());
-              //vsx_string value = param->get_string();
       }
     }
-    //if (e_state == VSX_ENGINE_PLAYING) {
-      //printf("dt: %f\n",dt);
-      //printf("dt: %f\n",engine_info.vtime);
-      //printf("time diff: %f\n",dt-(engine_info.vtime));
-      //printf("engine.dtime: %f\n",engine_info.dtime);
-    //} //else printf("------STOPPED\n");
 
-
-#ifndef VSX_NO_CLIENT
-    if (current_state == VSX_ENGINE_REWIND) {
+    // maintain time if state has changed
+    if (current_state == VSX_ENGINE_REWIND)
+    {
       engine_info.dtime = -engine_info.vtime;
       engine_info.vtime = 0;
       g_timer.start();
       current_state = VSX_ENGINE_STOPPED;
-    } else
-#endif
-    if (current_state == VSX_ENGINE_PLAYING) {
-      engine_info.dtime = d_time_i;// * time_multiplier->get();
-      engine_info.vtime += engine_info.dtime;
-    } else {
-      engine_info.vtime += engine_info.dtime;
+      goto post_state_change;
     }
+    if (current_state == VSX_ENGINE_PLAYING)
+    {
+      engine_info.dtime = d_time_i;
+    }
+    engine_info.vtime += engine_info.dtime;
+
+    post_state_change:
+
+    // check if the loop point has been passed
+    if (
+        loop_point_end > 0.0f
+        &&
+        engine_info.vtime > loop_point_end
+        )
+    {
+      engine_info.dtime += -loop_point_end;
+      engine_info.vtime += -loop_point_end;
+    }
+
 
     if (current_state == VSX_ENGINE_STOPPED) last_m_time_synch = 0;
-    //if (avi_play && e_state == VSX_ENGINE_STOPPED) {
-      //printf("closing AVI\n");
-      //CloseAvi(avi);
-      //printf("done closing AVI\n");
-      //avi_play = false;
-    //}
-    engine_info.state = current_state;
-    //printf("engine state: %d\n",e_state);
 
+    // propagate current state so modules can read it
+    engine_info.state = current_state;
+
+    // maintain the timer which keeps track of how often to send
+    // a command to client with current time in it
     lastsent += engine_info.dtime;
 
-    //printf("ed %f ev %f | ",engine_info.dtime, engine_info.vtime);
-
-
-    if (frame_dcount++ > frame_d) {frame_dcount = 0; frame_dtime = 0; frame_dprev = engine_info.vtime; }
-    else {
-      frame_dtime+=(engine_info.vtime-frame_dprev);
-      frame_dprev = engine_info.vtime;
-      frame_dfps = 1/(frame_dtime/frame_dcount);
+    // maintain the fps counter data
+    if (frame_dcount++ > frame_delta_fps_frame_count_interval)
+    {
+      frame_dcount = 0;
+      frame_dtime = 0;
     }
-    sequence_list.run(engine_info.dtime);
-    //if (seq_pool
-#ifndef VSX_NO_CLIENT
-    interpolation_list.run(m_timer.dtime());
-#endif
+    else
+    {
+      frame_dtime+=(engine_info.vtime-frame_dprev);
+      frame_delta_fps = 1/(frame_dtime/frame_dcount);
+    }
+    // save the vtime for next call to render()
+    frame_dprev = engine_info.vtime;
 
+    // advance the sequencer
+    sequence_list.run(engine_info.dtime);
+
+    // advance the sequence pool
     sequence_pool.run(engine_info.dtime);
 
-    //engine_info.dtime = dtime;
-    //engine_info.vtime = vtime;
-    //++frame_tcount;
-    //printf("d2");
+    // run the parameter interpolators
+    interpolation_list.run(m_timer.dtime());
 
-    // go through the outputs - actual rendering
+
+    // render the state by iterating over the outputs
     for (unsigned long i = 0; i < outputs.size(); i++) {
       outputs[i]->prepare();
     }
-    for(std::vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
+    
+    // post-rendering reset frame status of the components
+    for(std::vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it)
+    {
       (*it)->reset_frame_status();
     }
 
-    // reset every component
+    // when we're loading, we need to reset every component
     if (current_state == VSX_ENGINE_LOADING)
     {
       modules_left_to_load = 0;
@@ -566,23 +567,24 @@ bool vsx_engine::render()
           {
             vsx_module_info foom;
             (*it)->module->module_info(&foom);
-            //#ifdef VSXU_ARTISTE
+
             LOG3(vsx_string("waiting for module: ")+foom.identifier+" with name: "+(*it)->name);
 
-            //#endif
             ++modules_left_to_load;
-          } else ++modules_loaded;
+          } else
+          {
+            ++modules_loaded;
+          }
         }
-      }	//else printf("component without module\n");
+      }
 
-      //printf("i_count: %d   %d\n",commands_internal.count(),modules_left_to_load);
-      if (modules_left_to_load == 0 && commands_internal.count() == 0) {
+      if (modules_left_to_load == 0 && commands_internal.count() == 0)
+      {
         current_state = VSX_ENGINE_PLAYING;
       }
     }
 
     //printf("MODULES LEFT TO LOAD: %d\n",i);
-    engine_info.dtime = 0;
     last_frame_time = (float)frame_timer.dtime();
 
     // reset input events counter
@@ -691,7 +693,7 @@ float vsx_engine::get_last_frame_time()
 
 double vsx_engine::get_fps() {
   #ifndef VSX_DEMO_MINI
-  return frame_dfps;
+  return frame_delta_fps;
   #endif
 }
 

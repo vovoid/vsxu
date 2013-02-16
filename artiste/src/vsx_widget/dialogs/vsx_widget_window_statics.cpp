@@ -37,13 +37,16 @@
 //
 
 
-dialog_query_string::dialog_query_string(vsx_string title_, vsx_string in_fields) {
+dialog_query_string::dialog_query_string(vsx_string window_title, vsx_string in_fields)
+{
   // buttons, always needed
   vsx_widget *button1 = add(new vsx_widget_button,".b1");
   vsx_widget *button2 = add(new vsx_widget_button,".b2");
-  // now for the edit fields
   vsx_widget_window::init();
-  if (in_fields != "") {
+
+  // now for the edit fields
+  if (in_fields != "")
+  {
     vsx_avector<vsx_string> f_parts;
     vsx_string deli = "|";
     explode(in_fields, deli, f_parts);
@@ -51,7 +54,9 @@ dialog_query_string::dialog_query_string(vsx_string title_, vsx_string in_fields
     set_size(vsx_vector(0.45f, 0.10f+(float)(f_parts.size())*0.04f));
     float yp = target_size.y - 0.04f-0.02f;
     edit1 = 0;
-    for (unsigned int i = 0; i < f_parts.size(); ++i) {
+    for (unsigned int i = 0; i < f_parts.size(); ++i)
+    {
+      // add an editor
       vsx_widget_base_edit *e = (vsx_widget_base_edit*)add(new vsx_widget_base_edit,"e");
       if (!edit1) edit1 = (vsx_widget*)e;
       edits.push_back((vsx_widget*)e);
@@ -64,10 +69,10 @@ dialog_query_string::dialog_query_string(vsx_string title_, vsx_string in_fields
       e->set_string("");
       e->caret_goto_end();
       e->allowed_chars = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#�%&()=+?-_.,:/;";
-      
+
+      // add a label for this editor
       vsx_widget_2d_label *l = (vsx_widget_2d_label*)add(new vsx_widget_2d_label,"l");
       l->init();
-      //l->set_size(vsx_vector(0.1));
       l->halign = a_left;
       l->set_pos(vsx_vector(e->pos.x-e->size.x*0.5,yp+0.02f));
       l->set_font_size(0.015f);
@@ -75,23 +80,8 @@ dialog_query_string::dialog_query_string(vsx_string title_, vsx_string in_fields
       
       yp -= 0.04f;
     }
-    
-  }/* else {
-    vsx_widget *label1 = add(new vsx_widget_2d_label,".l1");
-    vsx_widget_base_edit *editor = add(new vsx_widget_base_edit,".e");
-    vsx_widget_window::init();
-    set_size(vsx_vector(0.3f, 0.14f));
-    label1->pos.x = size.x/2;
-    label1->pos.y = target_size.y-0.04;
-    label1->title = hint;
-    editor->set_pos(vsx_vector(label1->pos.x, label1->pos.y-0.02));
-    editor->set_size(vsx_vector(0.25f, 0.02f));
-    editor->size_from_parent = true;
-    editor->single_row = true;
-    editor->set_font_size(0.02f);
-  }*/
-//  edit1 = editor;
-  title = title_;
+  }
+  title = window_title;
 
   button1->title = "ok";
   button1->set_pos(vsx_vector(0.055,0.03));
@@ -105,56 +95,63 @@ dialog_query_string::dialog_query_string(vsx_string title_, vsx_string in_fields
   visible = 0;
 }
 
-void dialog_query_string::set_allowed_chars(vsx_string ch) {
+void dialog_query_string::set_allowed_chars(vsx_string ch)
+{
 	((vsx_widget_base_edit*)edit1)->allowed_chars = ch;
 }
 
-void dialog_query_string::show() {
+void dialog_query_string::show()
+{
+  // set keyboard focus to current editor widget
   a_focus = k_focus = edit1;
+  // set ourselves visible
   visible = 1;
   set_pos(vsx_vector(0.5f-size.x/2, 0.5-size.y/2,0));
   parent->front(this);
 }
 
-void dialog_query_string::show(vsx_string value) {
+void dialog_query_string::set_value(vsx_string value)
+{
+  ((vsx_widget_base_edit*)edit1)->set_string(value);
+  ((vsx_widget_base_edit*)edit1)->caret_goto_end();
+}
+
+void dialog_query_string::show(vsx_string value)
+{
   ((vsx_widget_base_edit*)edit1)->set_string(value);
   ((vsx_widget_base_edit*)edit1)->caret_goto_end();
   show();
 }
 
 
-void dialog_query_string::vsx_command_process_b(vsx_command_s *t) {
-  if (t->cmd == "cancel") { 
+void dialog_query_string::vsx_command_process_b(vsx_command_s *t)
+{
+  if (t->cmd == "cancel")
+  {
     command_q_b.add(name+"_cancel","cancel");
     parent->vsx_command_queue_b(this);
-    visible = 0; return;
+    visible = 0;
+    return;
   }
-    vsx_string first_res;
-      vsx_avector<vsx_string> res;
-      for (unsigned long i = 0; i < edits.size(); ++i) {
-        if (!first_res.size()) first_res = ((vsx_widget_base_edit*)(edits[i]))->get_string();
-        else
-        {
-          //printf("res pushback\n");
-          res.push_back( ((vsx_widget_base_edit*)(edits[i]))->get_string() );
-          ((vsx_widget_base_edit*)(edits[i]))->set_string("");
-        }
-      }
-      vsx_string i("|");
-      vsx_string ress = implode(res, i);
-      //printf("ress. %s\n",ress.c_str());
-      vsx_string cmd = name+" "+first_res;
-      if (ress.size()) {
-        cmd += " "+base64_encode(ress); 
-      }
-      if (extra_value != "") cmd += " "+extra_value;
-      command_q_b.add_raw(cmd);
-//    } else {
-//      command_q_b.add_raw(name+" "+((vsx_widget_base_edit*)edit1)->get_string());
-//      parent->vsx_command_queue_b(this);
-//      ((vsx_widget_base_edit*)edit1)->set_string("");
-//    }
-  //}
+  vsx_string first_res;
+  vsx_avector<vsx_string> res;
+  for (unsigned long i = 0; i < edits.size(); ++i) {
+    if (!first_res.size()) first_res = ((vsx_widget_base_edit*)(edits[i]))->get_string();
+    else
+    {
+      //printf("res pushback\n");
+      res.push_back( ((vsx_widget_base_edit*)(edits[i]))->get_string() );
+      ((vsx_widget_base_edit*)(edits[i]))->set_string("");
+    }
+  }
+  vsx_string i("|");
+  vsx_string ress = implode(res, i);
+  vsx_string cmd = name+" "+first_res;
+  if (ress.size()) {
+    cmd += " "+base64_encode(ress);
+  }
+  if (extra_value != "") cmd += " "+extra_value;
+  command_q_b.add_raw(cmd);
   visible = 0;
 }
 

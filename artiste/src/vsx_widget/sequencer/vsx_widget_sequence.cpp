@@ -86,15 +86,9 @@ void vsx_widget_sequence_editor::init() {
 
 	channels_start = 0;
 
-
   timeline = add(new vsx_widget_timeline,name+".timeline");
   timeline->init();
   timeline->set_size(vsx_vector(size.x*0.995f,size.y*0.04f));
-  //timeline->size.x = size.x*0.995;
-  //timeline->size.y = size.y*0.05;
-  //timeline->set_pos(vsx_vector(0.0f, size.y*0.5-timeline->size.y*2));
-  //timeline->pos.x = 0;
-  //timeline->pos.y = size.y*0.5-timeline->size.y*2;
   ((vsx_widget_timeline*)timeline)->owner = this;
 
   but_rew = add(new vsx_widget_button,name+"rewind");
@@ -122,15 +116,20 @@ void vsx_widget_sequence_editor::init() {
 		but_add_master_channel = add(new vsx_widget_button,name+"stop");
 		but_add_master_channel->render_type = VSX_WIDGET_RENDER_3D;
 		but_add_master_channel->init();
-		but_add_master_channel->title = "Add Master Channel";
+    but_add_master_channel->title = "master channel+";
 		but_add_master_channel->target_size.x = but_add_master_channel->size.x = 0.045;
 		but_add_master_channel->commands.adds(4,"button_add_master","button_add_master","");
 	}
 
-	vsx_widget_sequence_tree* sequence_tree = (vsx_widget_sequence_tree*)add(new vsx_widget_sequence_tree, "sequence_list");
+  but_set_loop_point= add(new vsx_widget_button,"but_set_loop_point");
+  but_set_loop_point->render_type = VSX_WIDGET_RENDER_3D;
+  but_set_loop_point->init();
+  but_set_loop_point->title = "end loop point";
+  but_set_loop_point->target_size.x = but_set_loop_point->size.x = 0.040;
+  but_set_loop_point->commands.adds(4,"but_set_loop_point","but_set_loop_point","");
+
+  vsx_widget_sequence_tree* sequence_tree = (vsx_widget_sequence_tree*)add(new vsx_widget_sequence_tree, "sequence_list");
   sequence_tree->init();
-	//sequence_tree->set_string("[none defined]");
-	//sequence_tree->set_render_type(VSX_WIDGET_RENDER_2D);
 	sequence_tree->coord_type = VSX_WIDGET_COORD_CORNER;
 	sequence_tree->set_pos(vsx_vector(size.x/2,size.y/2)-dragborder*2);
 	sequence_tree->editor->set_font_size(0.008f);
@@ -145,20 +144,7 @@ void vsx_widget_sequence_editor::init() {
 	sequence_list = (vsx_widget*)sequence_tree;
 	this->interpolate_size();
 
-/*
-	sl->set_pos(vsx_vector(-size.x/2+0.05f+dragborder,dragborder*0.5f));
-	sl->set_size(vsx_vector(0.1f,size.y-dragborder*2));
-  but_rew->set_pos(vsx_vector(-size.x*0.5f+0.1f+but_rew->size.x*0.5f+dragborder*2,size.y*0.5f-but_rew->size.x*0.5f-dragborder*2));
-  but_play->set_pos(vsx_vector(but_rew->pos.x+but_rew->size.x+dragborder, but_rew->pos.y));
-  but_stop->set_pos(vsx_vector(but_play->pos.x + but_play->size.x + dragborder, but_rew->pos.y));
-  timeline->target_size.x = timeline->size.x = size.x-0.1f-dragborder*4;
-  timeline->pos.x = timeline->target_pos.x = 0.05f;
-  timeline->target_pos.y = timeline->pos.y = but_rew->pos.y-dragborder-but_rew->size.y*0.5-timeline->size.y*0.5f;
-*/
   set_render_type(render_type);
-  // ask engine for list of param sequences
-  //command_q_b.add_raw("pseq_p list");
-  //parent->vsx_command_queue_b(this);
 
   menu = add(new vsx_widget_popup_menu,".comp_menu");
   title = "sequencer";
@@ -167,13 +153,17 @@ void vsx_widget_sequence_editor::init() {
   menu->init();
 	name_dialog = add(new dialog_query_string("name of channel","Choose a unique name for your Master Channel"),"dialog_add");
 	((dialog_query_string*)name_dialog)->set_allowed_chars("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_");
+
+  loop_point_dialog = add(new dialog_query_string("loop point in seconds","-1.0 to disable, 2.0 for 2 seconds etc"),"dialog_set_loop_point");
+  ((dialog_query_string*)loop_point_dialog)->set_allowed_chars("0123456789-.");
+  ((dialog_query_string*)loop_point_dialog)->set_value("1.0");
+
 	load_sequence_list();
 }
 
-void vsx_widget_sequence_editor::clear_sequencer() {
+void vsx_widget_sequence_editor::clear_sequencer()
+{
 	((vsx_widget_sequence_tree*)sequence_list)->set_string("[none defined]");
-	//std::vector<vsx_widget*> channels;
-  //std::map<vsx_string,vsx_widget*> channels_map;
 	for (std::vector<vsx_widget*>::iterator it = channels.begin(); it != channels.end(); it++) {
 		(*it)->_delete();
 	}
@@ -181,7 +171,8 @@ void vsx_widget_sequence_editor::clear_sequencer() {
 	channels_map.clear();
 }
 
-void vsx_widget_sequence_editor::load_sequence_list() {
+void vsx_widget_sequence_editor::load_sequence_list()
+{
 	printf("load_sequence_list\n");
   command_q_b.add_raw("seq_list");
   parent->vsx_command_queue_b(this);
@@ -204,12 +195,6 @@ void vsx_widget_sequence_editor::i_draw() {
 	myf.color = vsx_color(1.0f,1.0f,1.0f,1.0f);
 
   vsx_widget::i_draw();
-  	/*if (!channels.size()) {
-      myf.mode_2d = true;
-      myf.color = vsx_color(1,1,1,0.7);
-      myf.print(vsx_vector(parentpos.x+pos.x-size.x*0.4,parentpos.y+pos.y), "No channels open, right-click different\nparameters and if available: \nchoose sequence -> add/edit sequence",0.01);
-      myf.color = vsx_color(1.0f,1.0f,1.0f,1.0f);
-    }*/
 }
 
 void vsx_widget_sequence_editor::update_list()
@@ -230,31 +215,16 @@ void vsx_widget_sequence_editor::interpolate_size()
   vsx_widget::interpolate_size();
 	sequence_list->set_pos(vsx_vector(-size.x/2+0.05f+dragborder));
 	sequence_list->set_size(vsx_vector(0.1f,size.y-dragborder*2));
-  but_rew->set_pos(vsx_vector(-size.x*0.5f+0.1f+but_rew->size.x*0.5f+dragborder*2,size.y*0.5f-but_rew->size.x*0.5f-dragborder*2));
+  but_rew->set_pos(vsx_vector( -size.x * 0.5f + 0.1f + but_rew->size.x*0.5f + dragborder*2 ,size.y*0.5f-but_rew->size.x*0.5f-dragborder*2));
   but_play->set_pos(vsx_vector(but_rew->pos.x+but_rew->size.x+dragborder, but_rew->pos.y));
   but_stop->set_pos(vsx_vector(but_play->pos.x + but_play->size.x + dragborder, but_rew->pos.y));
-  if (but_add_master_channel) but_add_master_channel->set_pos(vsx_vector(but_stop->pos.x + but_stop->size.x + dragborder + but_add_master_channel->size.x / 2, but_rew->pos.y));
+  but_set_loop_point->set_pos(vsx_vector(-size.x*0.5f +0.23f,but_rew->pos.y));
+  if (but_add_master_channel) but_add_master_channel->set_pos(vsx_vector(but_stop->pos.x + but_stop->size.x  + but_add_master_channel->size.x / 2, but_rew->pos.y));
   timeline->target_size.x = timeline->size.x = size.x-0.1f-dragborder*4;
   timeline->pos.x = timeline->target_pos.x = 0.05f;
   timeline->target_pos.y = timeline->pos.y = but_rew->pos.y-dragborder-but_rew->size.y*0.5-timeline->size.y*0.5f;
 
-  ///but_rew->set_pos(vsx_vector(-size.x*0.5f+but_rew->size.x*0.5f+dragborder*2,size.y*0.5f-but_rew->size.x*0.5f-dragborder*2));
-  ///but_play->set_pos(vsx_vector(but_rew->pos.x+but_rew->size.x+dragborder, but_rew->pos.y));
-  ///but_stop->set_pos(vsx_vector(but_play->pos.x + but_play->size.x + dragborder, but_rew->pos.y));
-  //but_rew->pos.x = -size.x*0.5f+but_rew->size.x*0.5f+dragborder*2;
-  //but_rew->pos.y = size.y*0.5f-but_rew->size.x*0.5f-dragborder*2;
-
-  //but_play->pos.x = but_rew->pos.x+but_rew->size.x+dragborder;//-size.x*0.5+but_play->size.x+dragborder*2;
-  //but_play->pos.y = but_rew->pos.y;
-
-  //but_stop->pos.x = but_play->pos.x + but_play->size.x + dragborder;
-  //but_stop->pos.y = but_rew->pos.y;
-
-  ///timeline->target_size.x = timeline->size.x = size.x-dragborder*4;
-  ///timeline->target_pos.y = timeline->pos.y = but_rew->pos.y-dragborder-but_rew->size.y*0.5-timeline->size.y*0.5f;
-
   channels_visible = (size.y-timeline->size.y*2.5-0.001f)/0.052f;
-  //printf("chan_visible: %f\n",channels_visible);
   float ypos = size.y*0.5-dragborder*2-but_rew->size.y-timeline->size.y-dragborder;//-0.027-0.025;
   for (int i = 0; i < channels_start; ++i) channels[i]->visible = false;
   unsigned long i = channels_start;
@@ -392,6 +362,17 @@ void vsx_widget_sequence_editor::vsx_command_process_b(vsx_command_s *t) {
   {
   	command_q_b.add_raw("mseq_channel add " + t->parts[1]);
   	parent->vsx_command_queue_b(this);
+  }
+  if (t->cmd == "but_set_loop_point")
+  {
+    ((dialog_query_string*)loop_point_dialog)->show();
+    return;
+  }
+  else
+  if (t->cmd == "dialog_set_loop_point")
+  {
+    command_q_b.add_raw("time_set_loop_point " + t->parts[1]);
+    parent->vsx_command_queue_b(this);
   }
   else
   if (t->cmd == "editor_action")
@@ -534,17 +515,25 @@ void vsx_widget_sequence_editor::vsx_command_process_b(vsx_command_s *t) {
       bool run = true;
       channels_map.erase(t->parts[2]+":"+t->parts[3]);
       std::vector<vsx_widget*>::iterator it = channels.begin();
-      while (run) {
-        //printf("running\n");
-        if (((vsx_widget_seq_channel*)(*it))->channel_name == t->parts[2] && ((vsx_widget_seq_channel*)(*it))->param_name == t->parts[3]) {
+      while (run && it != channels.end())
+      {
+        //printf("running sequencer channel remove %s\n", ((vsx_widget_seq_channel*)(*it))->channel_name.c_str());
+        // if the channel is opened, remove it
+        if
+        (
+            ((vsx_widget_seq_channel*)(*it))->channel_name == t->parts[2]
+            && ((vsx_widget_seq_channel*)(*it))->param_name == t->parts[3]
+        )
+        {
           run = false;
           (*it)->_delete();
           channels.erase(it);
-          load_sequence_list();
           interpolate_size();
         } else
         ++it;
       }
+      // reload the list on the left
+      load_sequence_list();
     }
   } else
   // row operations
