@@ -135,13 +135,21 @@ public:
   }
 
 
-  inline void from_axis_angle( vsx_vector &axis, float &angle)
+  inline void from_axis_angle( vsx_vector &source_axis, float &source_angle)
   {
-    w = sin( angle / 2.0f );
-    x = axis.x * w;
-    y = axis.y * w;
-    z = axis.z * w;
-    w = cos( angle / 2.0f);
+    w = sin( source_angle / 2.0f );
+    x = source_axis.x * w;
+    y = source_axis.y * w;
+    z = source_axis.z * w;
+    w = cos( source_angle / 2.0f);
+  }
+
+  inline void to_axis_angle( vsx_vector &result_axis, float &result_angle)
+  {
+    result_angle = 2 * acos(w);
+    result_axis.x = x / sqrt(1-w*w);
+    result_axis.y = y / sqrt(1-w*w);
+    result_axis.z = z / sqrt(1-w*w);
   }
 
   // OPTIMIZATION PENALTY!!!
