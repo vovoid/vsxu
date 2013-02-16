@@ -44,6 +44,7 @@
 
 
 #include "vsx_avector.h"
+#include "vsx_avector_nd.h"
 #include "vsx_string.h"
 
 #ifdef VSXU_EXE
@@ -104,7 +105,7 @@ public:
   int type;
   vsx_string name;
   unsigned long updates; // number of writes, incremented each time the parameter is written to
-  vsx_module_param_abs(const char* nname) : vsxl_modifier(0),name(nname),updates(0),valid(false),value_from_module(false) {}
+  bool connected;
   bool valid;
   bool value_from_module;
   bool critical; // is this critical for whatever purpouse it exists?
@@ -114,6 +115,17 @@ public:
 
   virtual void set_current_as_default() = 0;
   virtual void set_default() = 0;
+  vsx_module_param_abs(const char* nname) :
+    vsxl_modifier(0x0),
+    type(0),
+    name(nname),
+    updates(0),
+    connected(false),
+    valid(false),
+    value_from_module(false),
+    critical(false),
+    all_required(false)
+  {}
   virtual ~vsx_module_param_abs() {}
 };
 
