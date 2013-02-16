@@ -10,13 +10,11 @@ message("configuring vsxu module            " ${module_id})
 CREATE_STATIC_GLUE(${module_id})
 
 file(GLOB LOCAL_SOURCES "*.cpp")
-file(GLOB API_STUBS "api_stubs/*.cpp")
 
 project (${module_id})
 include(./_sources)
 include (../cmake_globals.txt)
-CREATE_MODULE(${module_id})
+CREATE_MODULE(${module_id} LOCAL_SOURCES)
 
 include(../cmake_suffix.txt)
 
-#target_link_libraries(${module_id} vsxu_engine_graphics vsxu_engine)

@@ -23,7 +23,8 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_math_3d.h"
-#include "vsx_font/vsx_font.h"
+#define VSX_FONT_NO_FT 1
+#include "vsx_font.h"
 #include "vsx_glsl.h"
 
 class vsx_module_mesh_render_line : public vsx_module {
@@ -490,6 +491,7 @@ class vsx_module_render_face_id : public vsx_module {
   vsx_module_param_float3* min_box;
   vsx_module_param_float3* max_box;
 	vsx_module_param_float* font_size;
+  vsx_module_param_float* font_align;
 	// out
 	vsx_module_param_render* render_out;
 	// internal
@@ -504,7 +506,7 @@ public:
   void module_info(vsx_module_info* info) {
     info->identifier = "renderers;mesh;mesh_face_id_render";
     info->description = "";
-    info->in_param_spec = "mesh_in:mesh,base_color:float4,font_size:float,min_box:float3,max_box:float3";
+    info->in_param_spec = "mesh_in:mesh,base_color:float4,font_size:float,min_box:float3,max_box:float3,font_align:float";
   	info->out_param_spec = "render_out:render";
   	info->component_class = "render";
 		loading_done = true;
@@ -527,10 +529,12 @@ public:
     max_box->set( 1.0f,1);
     max_box->set( 1.0f,2);
     font_size = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"font_size");
+    font_align = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"font_align");
     font_size->set(1.0f);
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 		myf = new vsx_font();
-		myf->init("/home/jaw/vsxu/vsxu/share/font/font-ascii.png");
+    myf->init("/home/jaw/vsxu-dev/vsxu/share/font/font-ascii.png");
+
 		//myf->mode_2d = true;
 
   }
@@ -548,6 +552,7 @@ public:
       float maxz = max_box->get(2);
       float fs = font_size->get();
 
+      myf->align = font_align->get();
       glColor4f(base_color->get(0),base_color->get(1),base_color->get(2),base_color->get(3));
 	    for (unsigned long i = 0; i < (*mesh)->data->vertices.size(); ++i) {
       	//glPushMatrix();
@@ -643,11 +648,12 @@ class vsx_module_render_mesh : public vsx_module {
   // Other usages are GL_STREAM_DRAW_ARB, GL_STREAM_READ_ARB, GL_STREAM_COPY_ARB,
   // GL_STATIC_DRAW_ARB, GL_STATIC_READ_ARB, GL_STATIC_COPY_ARB,
   // GL_DYNAMIC_DRAW_ARB, GL_DYNAMIC_READ_ARB, GL_DYNAMIC_COPY_ARB.
-  GLuint create_vbo(const void* data, int dataSize, GLenum target, GLenum usage)
+  void create_vbo(GLuint &id, const void* data, int dataSize, GLenum target, GLenum usage)
   {
-    GLuint id = 0;  // 0 is reserved, glGenBuffersARB() will return non-zero id if success
-
-    glGenBuffersARB(1, &id);                        // create a vbo
+    if (id == 0)
+    {
+      glGenBuffersARB(1, &id);                        // create a vbo
+    }
     glBindBufferARB(target, id);                    // activate vbo id to use
     glBufferDataARB(target, dataSize, data, usage); // upload data to video card
 
@@ -660,7 +666,6 @@ class vsx_module_render_mesh : public vsx_module {
       glDeleteBuffersARB(1, &id);
       id = 0;
     }
-    return id;      // return VBO id
   }
 
   inline void init_vbo(GLuint draw_type = GL_DYNAMIC_DRAW_ARB)
@@ -679,11 +684,14 @@ class vsx_module_render_mesh : public vsx_module {
 
     //-----------------------------------------------------------------------
     // generate the buffers
-    glGenBuffersARB
-    (
-      1,
-      &vbo_id_vertex_normals_texcoords
-    );
+    if (vbo_id_vertex_normals_texcoords == 0)
+    {
+      glGenBuffersARB
+      (
+        1,
+        &vbo_id_vertex_normals_texcoords
+      );
+    }
     // bind the vertex, normals buffer for use
     glBindBufferARB
     (
@@ -700,7 +708,7 @@ class vsx_module_render_mesh : public vsx_module {
       +
       (*mesh)->data->vertex_tex_coords.get_sizeof()
       +
-      (*mesh)->data->vertex_colors.get_sizeof()
+      (*mesh)->data->vertex_colors.get_sizeof()+10
       ,
       0,
       draw_type//GL_STATIC_DRAW_ARB // only static draw
@@ -777,14 +785,14 @@ class vsx_module_render_mesh : public vsx_module {
 
     // create VBO for index array
     // Target of this VBO is GL_ELEMENT_ARRAY_BUFFER_ARB and usage is GL_STATIC_DRAW_ARB
-    vbo_id_draw_indices =
-        create_vbo
-        (
-          (*mesh)->data->faces.get_pointer(),
-          (*mesh)->data->faces.get_sizeof(),
-          GL_ELEMENT_ARRAY_BUFFER_ARB,
-          GL_STATIC_DRAW_ARB
-        );
+    create_vbo
+    (
+      vbo_id_draw_indices,
+      (*mesh)->data->faces.get_pointer(),
+      (*mesh)->data->faces.get_sizeof(),
+      GL_ELEMENT_ARRAY_BUFFER_ARB,
+      GL_STATIC_DRAW_ARB
+    );
 
     glGetBufferParameterivARB(GL_ELEMENT_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize);
     //printf("index array in vbo: %d bytes\n", bufferSize);
@@ -797,8 +805,8 @@ class vsx_module_render_mesh : public vsx_module {
   inline void destroy_vbo()
   {
     if (!vbo_id_vertex_normals_texcoords) return;
-    glDeleteBuffersARB(1, &vbo_id_vertex_normals_texcoords);
     glDeleteBuffersARB(1, &vbo_id_draw_indices);
+    glDeleteBuffersARB(1, &vbo_id_vertex_normals_texcoords);
     vbo_id_vertex_normals_texcoords = 0;
     vbo_id_draw_indices = 0;
   }
@@ -815,12 +823,10 @@ class vsx_module_render_mesh : public vsx_module {
 
   inline void maintain_vbo_type(GLuint draw_type = GL_DYNAMIC_DRAW_ARB)
   {
-    if (check_if_need_to_reinit_vbo(draw_type))
-    {
-      //printf("re-initializing the VBO!\n");
-      destroy_vbo();
-      init_vbo(draw_type);
-    }
+    if (!check_if_need_to_reinit_vbo(draw_type)) return;
+    //printf("re-initializing the VBO!\n");
+    destroy_vbo();
+    init_vbo(draw_type);
   }
 
 
@@ -842,6 +848,7 @@ public:
     info->component_class = "render";
   }
 
+  int num_uploads;
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
     loading_done = true;
@@ -877,6 +884,9 @@ public:
     current_num_vertices = 0;
     current_num_faces = 0;
 
+    vbo_id_vertex_normals_texcoords = 0;
+    vbo_id_draw_indices = 0;
+    num_uploads = 0;
   }
 
   void inline enable_texture()
@@ -1087,6 +1097,8 @@ public:
       prev_mesh_timestamp == (*mesh)->timestamp
     ) return;
 
+    if (check_if_need_to_reinit_vbo(current_vbo_draw_type)) return;
+
     // bind the vertex, normals buffer for use
     glBindBufferARB
     (
@@ -1107,8 +1119,12 @@ public:
         if ((*mesh)->data->vertex_normals.get_used()) {
           memcpy( ptr + offset_normals, (*mesh)->data->vertex_normals.get_pointer(), (*mesh)->data->vertex_normals.get_sizeof() );
         }
-        if ((*mesh)->data->vertex_tex_coords.get_used()) {
-          memcpy( ptr + offset_texcoords, (*mesh)->data->vertex_tex_coords.get_pointer(), (*mesh)->data->vertex_tex_coords.get_sizeof() );
+        if (num_uploads < 100)
+        {
+          if ((*mesh)->data->vertex_tex_coords.get_used())
+          {
+            memcpy( ptr + offset_texcoords, (*mesh)->data->vertex_tex_coords.get_pointer(), (*mesh)->data->vertex_tex_coords.get_sizeof() );
+          }
         }
         if (use_vertex_colors->get())
         {
@@ -1118,6 +1134,7 @@ public:
         }
         memcpy( ptr + offset_vertices, (*mesh)->data->vertices.get_pointer(), (*mesh)->data->vertices.get_sizeof() );
         glUnmapBufferARB(GL_ARRAY_BUFFER_ARB); // release pointer to mapping buffer
+        num_uploads++;
       }
     }
     // unbind the VBO buffers
