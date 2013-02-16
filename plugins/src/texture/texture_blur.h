@@ -46,11 +46,11 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
   texture = new vsx_texture;
   res_x = res_y = 256;
-  texture->init_buffer(res_x,res_y);
+  texture->reinit_color_buffer(res_x,res_y,true,false);
   texture->valid = true;
 
   texture2 = new vsx_texture;
-  texture2->init_buffer(res_x,res_y);
+  texture2->reinit_color_buffer(res_x,res_y,true,false);
   texture2->valid = true;
 
 
@@ -142,7 +142,6 @@ void main(void)\n\
 ";
 */
 
-
 shader.fragment_program = "\
 uniform sampler2D GlowTexture;\n\
 uniform vec2      texOffset;\n\
@@ -190,7 +189,80 @@ void main(void)\n\
 }\n\
 ";
 
+/*
+    shader.fragment_program =
+    "uniform float sigma;     // The sigma value for the gaussian function: higher value means more blur\n"
+    "                        // A good value for 9x9 is around 3 to 5\n"
+    "                        // A good value for 7x7 is around 2.5 to 4\n"
+    "                        // A good value for 5x5 is around 2 to 3.5\n"
+    "                             // ... play around with this based on what you need :)\n"
+    "    \n"
+    "    uniform float blurSize;  // This should usually be equal to\n"
+    "                             // 1.0f / texture_pixel_width for a horizontal blur, and\n"
+    "                             // 1.0f / texture_pixel_height for a vertical blur.\n"
+    "\n"
+    "    uniform sampler2D GlowTexture;  // Texture that will be blurred by this shader\n"
+    "\n"
+    "    const float pi = 3.14159265f;\n"
+    "    \n"
+    "    // The following are all mutually exclusive macros for various \n"
+    "    // seperable blurs of varying kernel size\n"
+    "    #if defined(VERTICAL_BLUR_9)\n"
+    "    const float numBlurPixelsPerSide = 4.0f;\n"
+    "    const vec2  blurMultiplyVec      = vec2(0.0f, 1.0f);\n"
+    "    #elif defined(HORIZONTAL_BLUR_9)\n"
+    "    const float numBlurPixelsPerSide = 4.0f;\n"
+    "    const vec2  blurMultiplyVec      = vec2(1.0f, 0.0f);\n"
+    "    #elif defined(VERTICAL_BLUR_7)\n"
+    "    const float numBlurPixelsPerSide = 3.0f;\n"
+    "    const vec2  blurMultiplyVec      = vec2(0.0f, 1.0f);\n"
+    "    #elif defined(HORIZONTAL_BLUR_7)\n"
+    "    const float numBlurPixelsPerSide = 3.0f;\n"
+    "    const vec2  blurMultiplyVec      = vec2(1.0f, 0.0f);\n"
+    "    #elif defined(VERTICAL_BLUR_5)\n"
+    "    const float numBlurPixelsPerSide = 2.0f;\n"
+    "    const vec2  blurMultiplyVec      = vec2(0.0f, 1.0f);\n"
+    "    #elif defined(HORIZONTAL_BLUR_5)\n"
+    "    const float numBlurPixelsPerSide = 2.0f;\n"
+    "    const vec2  blurMultiplyVec      = vec2(1.0f, 0.0f);\n"
+    "    #else\n"
+    "    // This only exists to get this shader to compile when no macros are defined\n"
+    "    const float numBlurPixelsPerSide = 0.0f;\n"
+    "    const vec2  blurMultiplyVec      = vec2(0.0f, 0.0f);\n"
+    "    #endif\n"
+    "    \n"
+    "    void main() {\n"
+    "    \n"
+    "      // Incremental Gaussian Coefficent Calculation (See GPU Gems 3 pp. 877 - 889)\n"
+    "      vec3 incrementalGaussian;\n"
+    "      incrementalGaussian.x = 1.0f / (sqrt(2.0f * pi) * sigma);\n"
+    "      incrementalGaussian.y = exp(-0.5f / (sigma * sigma));\n"
+    "      incrementalGaussian.z = incrementalGaussian.y * incrementalGaussian.y;\n"
+    "    \n"
+    "      vec4 avgValue = vec4(0.0f, 0.0f, 0.0f, 0.0f);\n"
+    "      float coefficientSum = 0.0f;\n"
+    "    \n"
+    "      // Take the central sample first...\n"
+    "      avgValue += texture2D(blurSampler, gl_TexCoord[0].xy) * incrementalGaussian.x;\n"
+    "      coefficientSum += incrementalGaussian.x;\n"
+    "      incrementalGaussian.xy *= incrementalGaussian.yz;\n"
+    "    \n"
+    "      // Go through the remaining 8 vertical samples (4 on each side of the center)\n"
+    "      for (float i = 1.0f; i <= numBlurPixelsPerSide; i++) { \n"
+    "        avgValue += texture2D(blurSampler, gl_TexCoord[0].xy - i * blurSize * \n"
+    "                              blurMultiplyVec) * incrementalGaussian.x;         \n"
+    "        avgValue += texture2D(blurSampler, gl_TexCoord[0].xy + i * blurSize * \n"
+    "                              blurMultiplyVec) * incrementalGaussian.x;         \n"
+    "        coefficientSum += 2 * incrementalGaussian.x;\n"
+    "        incrementalGaussian.xy *= incrementalGaussian.yz;\n"
+    "      }\n"
+    "       \n"
+    "      gl_FragColor = avgValue / coefficientSum;\n"
+    "    }\n"
+    "    \n"
+    ;
 
+*/
 #endif
 
 /*shader.fragment_program = "\
@@ -236,73 +308,82 @@ bool activate_offscreen() {
 void deactivate_offscreen() {
 }
 
-void run() {
-#ifdef __APPLE__
-  return;
-#endif
-  if (texture == 0) {
-  //printf("############################# texture is 0 and creating new one...\n");
-    texture = new vsx_texture;
+  void run() {
+    if
+    (
+      !glow_source->connected
+    )
+    {
+      return;
+    }
+    if (texture == 0)
+    {
+      //printf("############################# texture is 0 and creating new one...\n");
+      texture = new vsx_texture;
 
-    tex_size_internal = 3;
-    texture->init_buffer(res_x,res_y);
-    //texture->valid = false;
+      tex_size_internal = 3;
+      texture->reinit_color_buffer(res_x,res_y,true,false);
+      //texture->valid = false;
 
-    texture2 = new vsx_texture;
-    texture2->init_buffer(res_x,res_y);
-    //texture2->valid = false;
-  }
-  bool rebuild = false;
-  if (texture_size->get() >= 10)
-  {
-    glGetIntegerv (GL_VIEWPORT, viewport);
-    int t_res_x = abs(viewport[2] - viewport[0]);
-    int t_res_y = abs(viewport[3] - viewport[1]);
+      texture2 = new vsx_texture;
+      texture2->reinit_color_buffer(res_x,res_y,true,false);
+      //texture2->valid = false;
+    }
+    bool rebuild = false;
+    if (texture_size->get() >= 10)
+    {
+      glGetIntegerv (GL_VIEWPORT, viewport);
+      int t_res_x = abs(viewport[2] - viewport[0]);
+      int t_res_y = abs(viewport[3] - viewport[1]);
 
-    if (texture_size->get() == 10) {
-      if (t_res_x != res_x || t_res_y != res_y) rebuild = true;
+      if (texture_size->get() == 10) {
+        if (t_res_x != res_x || t_res_y != res_y) rebuild = true;
+      }
+
+      if (texture_size->get() == 11) {
+        if (t_res_x / 2 != res_x || t_res_y / 2 != res_y) rebuild = true;
+      }
+
+      if (texture_size->get() == 12) {
+        if (t_res_x / 4 != res_x || t_res_y / 4 != res_y) rebuild = true;
+      }
+
+      if (texture_size->get() == 13) {
+        if (t_res_x * 2 != res_x || t_res_y * 2 != res_y) rebuild = true;
+      }
     }
 
-    if (texture_size->get() == 11) {
-      if (t_res_x / 2 != res_x || t_res_y / 2 != res_y) rebuild = true;
+
+    if (texture_size->get() != tex_size_internal || rebuild) {
+      tex_size_internal = texture_size->get();
+      switch (tex_size_internal) {
+        case 0: res_y = res_x = 2048; break;
+        case 1: res_y = res_x = 1024; break;
+        case 2: res_y = res_x = 512; break;
+        case 3: res_y = res_x = 256; break;
+        case 4: res_y = res_x = 128; break;
+        case 5: res_y = res_x = 64; break;
+        case 6: res_y = res_x = 32; break;
+        case 7: res_y = res_x = 16; break;
+        case 8: res_y = res_x = 8; break;
+        case 9: res_y = res_x = 4; break;
+        case 10: res_x = abs(viewport[2] - viewport[0]); res_y = abs(viewport[3] - viewport[1]); break;
+        case 11: res_x = abs(viewport[2] - viewport[0]) / 2; res_y = abs(viewport[3] - viewport[1]) / 2; break;
+        case 12: res_x = abs(viewport[2] - viewport[0]) / 4; res_y = abs(viewport[3] - viewport[1]) / 4; break;
+        case 13: res_x = abs(viewport[2] - viewport[0]) * 2; res_y = abs(viewport[3] - viewport[1]) * 2; break;
+      };
+      texture->reinit_feedback_buffer(res_x,res_y);
+      texture2->reinit_feedback_buffer(res_x,res_y);
     }
 
-    if (texture_size->get() == 12) {
-      if (t_res_x / 4 != res_x || t_res_y / 4 != res_y) rebuild = true;
-    }
 
-    if (texture_size->get() == 13) {
-      if (t_res_x * 2 != res_x || t_res_y * 2 != res_y) rebuild = true;
-    }
-  }
+    vsx_texture** ti = glow_source->get_addr();
 
+    if (!ti) return;
+    if (!texture) return;
+    if (!texture2) return;
 
-  if (texture_size->get() != tex_size_internal || rebuild) {
-    tex_size_internal = texture_size->get();
-    switch (tex_size_internal) {
-      case 0: res_y = res_x = 2048; break;
-      case 1: res_y = res_x = 1024; break;
-      case 2: res_y = res_x = 512; break;
-      case 3: res_y = res_x = 256; break;
-      case 4: res_y = res_x = 128; break;
-      case 5: res_y = res_x = 64; break;
-      case 6: res_y = res_x = 32; break;
-      case 7: res_y = res_x = 16; break;
-      case 8: res_y = res_x = 8; break;
-      case 9: res_y = res_x = 4; break;
-      case 10: res_x = abs(viewport[2] - viewport[0]); res_y = abs(viewport[3] - viewport[1]); break;
-      case 11: res_x = abs(viewport[2] - viewport[0]) / 2; res_y = abs(viewport[3] - viewport[1]) / 2; break;
-      case 12: res_x = abs(viewport[2] - viewport[0]) / 4; res_y = abs(viewport[3] - viewport[1]) / 4; break;
-      case 13: res_x = abs(viewport[2] - viewport[0]) * 2; res_y = abs(viewport[3] - viewport[1]) * 2; break;
-    };
-    texture->init_buffer(res_x,res_y);
-    texture2->init_buffer(res_x,res_y);
-  }
-
-
-  vsx_texture** ti = glow_source->get_addr();
-
-  if (ti) {
+    //
     (*ti)->bind();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -311,84 +392,141 @@ void run() {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     (*ti)->_bind();
 
-    //glGetIntegerv(GL_VIEWPORT, viewport);
-  //
-    //printf("sprog: %d\n",shader.prog);
-   //printf("tex id: %d\n",glsl_tex_id);
-  //printf("attenuation id: %d\n",glsl_attenuation);
-  //printf("ofs id: %d\n",glsl_offset_id);
-    float a = start_value->get()*0.001f;
-//printf("a = %f\n",a);
 
-    if (texture)
-    {
-      texture->begin_capture();
-        glViewport(0,0,res_x,res_y);
-        loading_done = true;
-        glColor4f(1,1,1,1);
-        glDisable(GL_BLEND);
+    float pixel_offset_size_x = start_value->get() * 2.0f / (float)res_x;
+    float pixel_offset_size_y = start_value->get() * 2.0f / (float)res_y;
 
-        if (GLEW_VERSION_1_3)
-          glActiveTexture(GL_TEXTURE0);
-        (*ti)->bind();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-          shader.begin();
-            glUniform1iARB(glsl_tex_id,0);
-            glUniform2fARB(glsl_offset_id,a,0.0f);
-            glUniform1fARB(glsl_attenuation, attenuation->get());
-            glBegin(GL_QUADS);
-              glTexCoord2f(0.0f,0.0f);
-              glVertex3f(-1.0f, -1.0f, 0.0f);
-              glTexCoord2f(0.0f,1.0f);
-              glVertex3f(-1.0f,  1.0f, 0.0f);
-              glTexCoord2f(1.0f,1.0f);
-              glVertex3f( 1.0f,  1.0f, 0.0f);
-              glTexCoord2f(1.0f,0.0f);
-              glVertex3f( 1.0f, -1.0f, 0.0f);
-            glEnd();
-          shader.end();
-        (*ti)->_bind();
-      texture->end_capture();
-      texture->valid = true;
-    }
-    //
-    if (texture2)
-    {
-      texture2->begin_capture();
-        glViewport(0,0,res_x,res_y);
-        loading_done = true;
-        glColor4f(1,1,1,1);
-        glDisable(GL_BLEND);
-        if (GLEW_VERSION_1_3)
+    texture->begin_capture_to_buffer();
+      glViewport(0,0,res_x,res_y);
+      loading_done = true;
+      glColor4f(1,1,1,1);
+      glDisable(GL_BLEND);
+
+      if (GLEW_VERSION_1_3)
         glActiveTexture(GL_TEXTURE0);
-        texture->bind();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+      (*ti)->bind();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+        shader.begin();
+          glUniform1iARB(glsl_tex_id,0);
+          glUniform2fARB(glsl_offset_id,   pixel_offset_size_x,0.0f);
+          glUniform1fARB(glsl_attenuation, attenuation->get());
+          glBegin(GL_QUADS);
+            glTexCoord2f(0.0f,0.0f);
+            glVertex3f(-1.0f, -1.0f, 0.0f);
+            glTexCoord2f(0.0f,1.0f);
+            glVertex3f(-1.0f,  1.0f, 0.0f);
+            glTexCoord2f(1.0f,1.0f);
+            glVertex3f( 1.0f,  1.0f, 0.0f);
+            glTexCoord2f(1.0f,0.0f);
+            glVertex3f( 1.0f, -1.0f, 0.0f);
+          glEnd();
+        shader.end();
+      (*ti)->_bind();
+    texture->end_capture_to_buffer();
+    texture->valid = true;
 
-          shader.begin();
-            glUniform1iARB(glsl_tex_id,0);
-            //glUniform2fARB(glsl_offset_id,0.0f,a);
-            glUniform2fARB(glsl_offset_id,0.0f,a);
-            glUniform1fARB(glsl_attenuation, attenuation->get());
-            glBegin(GL_QUADS);
-              glTexCoord2f(0.0f,0.0f);
-              glVertex3f(-1.0f, -1.0f, 0.0f);
-              glTexCoord2f(0.0f,1.0f);
-              glVertex3f(-1.0f,  1.0f, 0.0f);
-              glTexCoord2f(1.0f,1.0f);
-              glVertex3f( 1.0f,  1.0f, 0.0f);
-              glTexCoord2f(1.0f,0.0f);
-              glVertex3f( 1.0f, -1.0f, 0.0f);
-            glEnd();
-          shader.end();
-        texture->_bind();
-      texture2->end_capture();
-      texture2->valid = true;
-    }
+    //
+    texture2->begin_capture_to_buffer();
+      glViewport(0,0,res_x,res_y);
+      loading_done = true;
+      glColor4f(1,1,1,1);
+      glDisable(GL_BLEND);
+      if (GLEW_VERSION_1_3)
+      glActiveTexture(GL_TEXTURE0);
+      texture->bind();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+
+        shader.begin();
+          glUniform1iARB(glsl_tex_id,0);
+          glUniform2fARB(glsl_offset_id, 0.0f, pixel_offset_size_y);
+          glUniform1fARB(glsl_attenuation, attenuation->get());
+          glBegin(GL_QUADS);
+            glTexCoord2f(0.0f,0.0f);
+            glVertex3f(-1.0f, -1.0f, 0.0f);
+            glTexCoord2f(0.0f,1.0f);
+            glVertex3f(-1.0f,  1.0f, 0.0f);
+            glTexCoord2f(1.0f,1.0f);
+            glVertex3f( 1.0f,  1.0f, 0.0f);
+            glTexCoord2f(1.0f,0.0f);
+            glVertex3f( 1.0f, -1.0f, 0.0f);
+          glEnd();
+        shader.end();
+      texture->_bind();
+    texture2->end_capture_to_buffer();
+    texture2->valid = true;
+
+
+    pixel_offset_size_x = 1.0f / (float)res_x;
+    pixel_offset_size_y = 1.0f / (float)res_y;
+
+    // 2nd pass
+    texture->begin_capture_to_buffer();
+      glViewport(0,0,res_x,res_y);
+      loading_done = true;
+      glColor4f(1,1,1,1);
+      glDisable(GL_BLEND);
+
+      if (GLEW_VERSION_1_3)
+        glActiveTexture(GL_TEXTURE0);
+      texture2->bind();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+        shader.begin();
+          glUniform1iARB(glsl_tex_id,0);
+          glUniform2fARB(glsl_offset_id,pixel_offset_size_x,0.0f);
+          glUniform1fARB(glsl_attenuation, attenuation->get());
+          glBegin(GL_QUADS);
+            glTexCoord2f(0.0f,0.0f);
+            glVertex3f(-1.0f, -1.0f, 0.0f);
+            glTexCoord2f(0.0f,1.0f);
+            glVertex3f(-1.0f,  1.0f, 0.0f);
+            glTexCoord2f(1.0f,1.0f);
+            glVertex3f( 1.0f,  1.0f, 0.0f);
+            glTexCoord2f(1.0f,0.0f);
+            glVertex3f( 1.0f, -1.0f, 0.0f);
+          glEnd();
+        shader.end();
+      texture2->_bind();
+    texture->end_capture_to_buffer();
+    texture->valid = true;
+
+    texture2->begin_capture_to_buffer();
+      glViewport(0,0,res_x,res_y);
+      loading_done = true;
+      glColor4f(1,1,1,1);
+      glDisable(GL_BLEND);
+      if (GLEW_VERSION_1_3)
+      glActiveTexture(GL_TEXTURE0);
+      texture->bind();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+
+        shader.begin();
+          glUniform1iARB(glsl_tex_id,0);
+          glUniform2fARB(glsl_offset_id, 0.0f, pixel_offset_size_y);
+          glUniform1fARB(glsl_attenuation, attenuation->get());
+          glBegin(GL_QUADS);
+            glTexCoord2f(0.0f,0.0f);
+            glVertex3f(-1.0f, -1.0f, 0.0f);
+            glTexCoord2f(0.0f,1.0f);
+            glVertex3f(-1.0f,  1.0f, 0.0f);
+            glTexCoord2f(1.0f,1.0f);
+            glVertex3f( 1.0f,  1.0f, 0.0f);
+            glTexCoord2f(1.0f,0.0f);
+            glVertex3f( 1.0f, -1.0f, 0.0f);
+          glEnd();
+        shader.end();
+      texture->_bind();
+    texture2->end_capture_to_buffer();
+    texture2->valid = true;
+
+
+
+    // finally, set the output
     texture_result->set(texture2);
   }
-}
 
   void stop() {
   #ifdef __APPLE__
