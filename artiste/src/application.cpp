@@ -450,9 +450,9 @@ void app_init(int id) {
   }
 
   // set engine argv
-  for (size_t i = 0; i < app_argc; i++)
+  for (size_t i = 0; i < app_argv.size(); i++)
   {
-    vsx_string arg = vsx_string(app_argv[i]);
+    vsx_string arg = app_argv[i];
     printf("adding arg: %s\n", arg.c_str() );
     vxe->get_engine_info()->argv.push_back( arg );
   }

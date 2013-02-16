@@ -37,6 +37,7 @@
   #include "vsx_gl_global.h"
 #endif
 
+#include "vsx_argvector.h"
 #include "vsxfst.h"
 
 #ifdef _WIN32
@@ -122,7 +123,7 @@ typedef struct  {
   float request_set_time;
 
   // if available, command line parameters
-  vsx_avector<vsx_string> argv;
+  vsx_argvector argv;
 
   size_t num_input_events;
   vsx_engine_input_event input_events[VSX_ENGINE_INPUT_EVENT_BUFSIZE];

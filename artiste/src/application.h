@@ -24,7 +24,6 @@
 
 #include <sys/time.h>
 
-
 //extern vsx_engine* vme;
 //#define vsxu_version "VSXu 0.1.14 beta"
 //extern vsx_string vsxu_name;
@@ -37,8 +36,7 @@ extern bool app_alt;
 extern bool app_shift;
 extern bool dual_monitor;
 
-extern int app_argc;
-extern char** app_argv;
+extern vsx_argvector app_argv;
 
 //extern int app_num_displays; // 0 means the primary one used, 1 the extra
 extern void (*app_set_fullscreen)(int,bool);

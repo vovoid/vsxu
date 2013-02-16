@@ -20,10 +20,11 @@
 */
 
 #include <stdio.h>
-#include "application.h"
-#include "GL/glfw.h"
 #include "vsx_avector.h"
 #include "vsx_string.h"
+#include <vsx_argvector.h>
+#include "application.h"
+#include "GL/glfw.h"
 #include "vsxfst.h"
 #include "vsx_version.h"
 #include <stdlib.h>
@@ -34,8 +35,8 @@ bool app_alt = false;
 bool app_shift = false;
 bool dual_monitor = false;
 
-int app_argc = 0;
-char** app_argv;
+
+vsx_argvector app_argv;
 
 /*
 void app_char(long key);
@@ -145,8 +146,15 @@ void GLFWCALL mouse_wheel(int pos)
 
 int main(int argc, char* argv[])
 {
-  app_argc = argc;
-  app_argv = argv;
+  for (size_t i = 0; i < argc; i++)
+  {
+    vsx_string arg = vsx_string(argv[i]);
+    app_argv.push_back( arg );
+  }
+
+  //vsx_string arg = vsx_string()
+  //app_argc = argc;
+  //app_argv = argv;
   int     width, height, running, frames, x, y;
   double  t, t0, t1;
   char    titlestr[ 200 ];
@@ -159,38 +167,32 @@ int main(int argc, char* argv[])
   int x_res = 1280;
   int y_res = 720;
 
-  for (int i = 1; i < argc; i++)
+  if (app_argv.has_param("help"))
   {
-    vsx_string arg1 = argv[i];
-    if (arg1 == "--help")
-    {
-      printf(
-             "VSXu Artiste command syntax:\n"
-             "  -f             fullscreen mode\n"
-             "  -s 1920,1080   screen/window size\n"
-             "  -p 100,100     window posision\n"
-             "\n"
-            );
-      exit(0);
-    }
-    if (arg1 == "-f")
-    {
-        start_fullscreen = true;
-    }
-    if (arg1 == "-s")
-    {
-      if (i+1 < argc)
-      {
-        i++;
-        vsx_string arg2 = argv[i];
-        vsx_avector<vsx_string> parts;
-        vsx_string deli = ",";
-        explode(arg2, deli, parts);
-        x_res = s2i(parts[0]);
-        y_res = s2i(parts[1]);
-        manual_resolution_set = true;
-      }
-    }
+    printf(
+           "VSXu Artiste command syntax:\n"
+           "  -f             fullscreen mode\n"
+           "  -s 1920,1080   screen/window size\n"
+           "  -p 100,100     window posision\n"
+           "\n"
+          );
+    exit(0);
+  }
+
+  if (app_argv.has_param("f"))
+  {
+    start_fullscreen = true;
+  }
+
+  if (app_argv.has_param_with_value("s"))
+  {
+    vsx_string arg = app_argv.get_param_value("s");
+    vsx_avector<vsx_string> parts;
+    vsx_string deli = ",";
+    explode(arg, deli, parts);
+    x_res = s2i(parts[0]);
+    y_res = s2i(parts[1]);
+    manual_resolution_set = true;
   }
 
   if (start_fullscreen && !manual_resolution_set)
