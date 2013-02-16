@@ -25,8 +25,8 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 
-#include <RtAudio.h>
-#include <RtError.h>
+#include <RtAudio/RtAudio.h>
+#include <RtAudio/RtError.h>
 #include <fftreal.h>
 #include <pthread.h>
 

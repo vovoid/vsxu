@@ -20,7 +20,14 @@
 #include <sstream>
 #include "input_audio_raw.h"
 
+#ifdef __LINUX_PULSE__
+#define  AUDIO_API RtAudio::LINUX_PULSE
+#elif __LINUX_PULSE__
+#define AUDIO_API
+#endif
+
 input_audio_raw::input_audio_raw():
+  m_adc(AUDIO_API),
   m_fft_machine(N_BUFFER_FRAMES),
   m_buffer_frames(N_BUFFER_FRAMES),
   m_sample_rate(SAMPLE_RATE),
@@ -184,7 +191,7 @@ void input_audio_raw::module_info(vsx_module_info* info)
 {
   //TODO: Re create the input params based on the available device capabilities for module configuration.
   info->output = 1;
-  info->identifier = "audio;input;raw||sound;input_visualization_listener||system;sound;vsx_listener";
+  info->identifier = "audio;input;wave_in||sound;input_visualization_listener||system;sound;vsx_listener";
 #ifndef VSX_NO_CLIENT
   info->description = "VU is the volume level for each channel.\nThe octaves are 0 = bass, 7 = treble";
   info->in_param_spec = "multiplier:float";
