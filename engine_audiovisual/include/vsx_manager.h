@@ -45,6 +45,10 @@ public:
   //
   // sound types can be "pulseaudio", "media_player", "fmod"
   virtual void init(const char* base_path, const char* sound_type) = 0;
+  
+  // add another directory of visuals to be added to the list of
+  // visuals after the visuals in the default directory 
+  virtual void add_visual_path(const char* new_visual_path) = 0;
 
   // before you render first time, you need to start
   virtual void start() = 0;
@@ -59,6 +63,7 @@ public:
   virtual void toggle_randomizer() = 0;
   virtual void set_randomizer(bool status) = 0;
   virtual bool get_randomizer_status() = 0;
+  virtual void pick_visual (int selection) = 0;
   virtual void pick_random_visual() = 0;
   virtual void next_visual() = 0;
   virtual void prev_visual() = 0;
