@@ -49,6 +49,25 @@ int vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info) {
   }
 }
 
+void vsx_statelist::add_visual_path(vsx_string new_visual_path)
+{
+  get_files_recursive(new_visual_path, &state_file_list,"","");
+
+  #ifdef VSXU_DEBUG
+  printf("getting files recursive: %s\n", (new_visual_path).c_str() );
+  #endif
+
+  for (std::list<vsx_string>::iterator it = state_file_list.begin(); it != state_file_list.end(); ++it) {
+      state_info state;
+      state.state_name = *it;
+      state.state_name_suffix = state.state_name.substr(new_visual_path.size(),state.state_name.size() - new_visual_path.size() );
+  #ifdef VSXU_DEBUG
+      printf("adding state %s\n",(*it).c_str());
+  #endif
+      statelist.push_back(state);
+  }
+}
+
 void vsx_statelist::toggle_randomizer() 
 {
   randomizer = !randomizer;
@@ -62,6 +81,26 @@ bool vsx_statelist::get_randomizer_status()
 void vsx_statelist::set_randomizer(bool status)
 {
   randomizer = status;
+}
+
+void vsx_statelist::select_visual(int selection)
+{
+    if (0 == statelist.size()) return;
+    if ((*state_iter).engine != vxe) return;
+    bool change = true;
+    int count = 0;
+    state_iter = statelist.begin();
+    while (change) {
+      ++state_iter;
+      count++;
+      if (count >= selection) change = false;
+      if (state_iter == statelist.end()) {
+          state_iter = statelist.begin();
+          change = false;
+      }
+    }
+    init_current((*state_iter).engine, &(*state_iter));
+    transition_time = 2.0f;
 }
 
 void vsx_statelist::next_state()
