@@ -91,7 +91,6 @@ add_subdirectory(src/render.opengl)
 add_subdirectory(src/render.opengl.extra)
 add_subdirectory(src/render.oscilloscope)
 add_subdirectory(src/render.text)
-add_subdirectory(src/vovoid.game)
 
 if (IS_DIRECTORY ${CMAKE_SOURCE_DIR}/plugins/src/sound.fmod)
   add_subdirectory(src/sound.fmod)
