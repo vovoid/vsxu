@@ -97,15 +97,16 @@ void vsx_widget_controller_sequence::vsx_command_process_b(vsx_command_s *t) {
     seq_chan->vsx_command_queue_b(this);
   }
   else
-	if (t->cmd == "menu_close" || t->cmd == "remove_chan") {
-		if (!parent_removal)
-		{
+  if (t->cmd == "menu_close" || t->cmd == "remove_chan")
+  {
+    //if (!parent_removal)
+    //{
 			_delete();
-		} else
-		{
-			command_q_b.add_raw("controller_sequence_close "+i2s(id)+command_suffix);
-			parent->vsx_command_queue_b(this);
-		}
+//		} else
+//		{
+//			command_q_b.add_raw("controller_sequence_close "+i2s(id)+command_suffix);
+//			parent->vsx_command_queue_b(this);
+//		}
   }
 }
 

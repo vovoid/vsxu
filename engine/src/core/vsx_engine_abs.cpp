@@ -50,16 +50,7 @@ void vsx_engine_abs::constructor_set_default_values()
   valid = false;
   no_send_client_time = false;
   g_timer_amp = 1.0f;
-  engine_info.amp = 1.0f;
-  engine_info.vtime = 0;
-  engine_info.dtime = 0;
-  engine_info.real_vtime = 0;
-  engine_info.real_dtime = 0;
   engine_info.filesystem = &filesystem;
-  engine_info.request_play = 0;
-  engine_info.request_stop = 0;
-  engine_info.request_rewind = 0;
-  engine_info.request_set_time = -0.01f;
   vsxl = 0;
   lastsent = 0;
   sequence_pool.set_engine((void*)this);

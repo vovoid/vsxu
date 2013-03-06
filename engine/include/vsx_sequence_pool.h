@@ -50,6 +50,9 @@ class vsx_sequence_pool
   int current_state; // 0 = stopped, 1 = playing
   float loop_point; // vtime is a modulus of this
 public:
+  // global parameter operations
+  // removes the parameter from all internal sequence lists
+  void remove_param_sequence(vsx_engine_param* param);
 
 	// sequence list operations
 	int add(vsx_string name); // 1 = success, 0 = fail
@@ -67,7 +70,10 @@ public:
 
 	void set_engine(void* new_engine);
 
-	void run(float dtime,bool run_from_channel = false); // if enabled, it'll run all sequences and set values
+  void run(
+    float dtime,
+    bool run_from_channel = false
+  ); // if enabled, it'll run all sequences and set values
 
   // time manipulation
   int get_state();

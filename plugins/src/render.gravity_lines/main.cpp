@@ -54,8 +54,8 @@ public:
 													"{"
 														"friction:float,"
 													  "step_length:float,"
-													  "color0:float4,"
-													  "color1:float4"
+                            "color0:float4?default_controller=controller_col,"
+                            "color1:float4?default_controller=controller_col"
 													"}";
 
   	info->out_param_spec = "render_out:render";

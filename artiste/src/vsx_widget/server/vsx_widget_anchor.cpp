@@ -1480,11 +1480,17 @@ void vsx_widget_anchor::init()
   #endif
   
   dialogs=parse_url_params(p_type_suffix);
+  // default is to allow connections to this anchor
+  forbid_connections = false;
   for (map<vsx_string,vsx_string>::iterator it = dialogs.begin(); it != dialogs.end(); ++it)
   {
     if ((*it).first == "default_controller")
     {
       default_controller = (*it).second;
+    }
+    if ((*it).first == "nc")
+    {
+      forbid_connections = true;
     }
   }
 
@@ -1545,6 +1551,8 @@ void vsx_widget_anchor::event_mouse_down(vsx_widget_distance distance,vsx_widget
         drag_clone_anchor = this;
       } else
       {
+        if (forbid_connections) return;
+        if (io == -1 && connections.size() && p_type != "render") return;
         t = add(new vsx_widget_connector_bezier,name+":ct");
         ((vsx_widget_connector_bezier*)t)->receiving_focus = false;
         t->size = distance.center;
@@ -1655,48 +1663,58 @@ void vsx_widget_anchor::event_mouse_double_click(vsx_widget_distance distance,vs
   if (button == 0)
   {
     {
-      conn_open = !conn_open;
-      int c = 0;
-      for (children_iter=children.begin(); children_iter != children.end(); ++children_iter)
+      // if render type == render
+      if (p_type == "render")
       {
-        if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_CONNECTOR) 
+        conn_open = !conn_open;
+        int c = 0;
+        for (children_iter=children.begin(); children_iter != children.end(); ++children_iter)
         {
-          if (((vsx_widget_connector_bezier*)(*children_iter))->destination) 
+          if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_CONNECTOR)
           {
-            ++c;
-            ((vsx_widget_connector_bezier*)(*children_iter))->open = conn_open;
+            if (((vsx_widget_connector_bezier*)(*children_iter))->destination)
+            {
+              ++c;
+              ((vsx_widget_connector_bezier*)(*children_iter))->open = conn_open;
+            }
           }
         }
+        return;
       }
 
-      if (!c) 
+      if (p_type == "sequence")
       {
-        if (ctrl) 
-        {
-          command_q_b.add_raw("seq_pool_add");
-          this->vsx_command_queue_b(this);
-        } else
-        if (alt) 
+        command_q_b.add_raw("controller_seq_edit");
+        this->vsx_command_queue_b(this);
+        return;
+      }
+
+
+      if (ctrl)
+      {
+        command_q_b.add_raw("seq_pool_add");
+        this->vsx_command_queue_b(this);
+      } else
+      if (alt)
+      {
+        command_q_b.add_raw("pseq_a_m");
+        this->vsx_command_queue_b(this);
+      }
+      else
+      if (shift)
+      {
+      }
+      else
+      {
+        if (sequenced)
         {
           command_q_b.add_raw("pseq_a_m");
           this->vsx_command_queue_b(this);
-        }
-        else
-        if (shift) 
+        } else
+        if (default_controller.size())
         {
-        } 
-        else
-        {
-          if (sequenced)
-          {
-            command_q_b.add_raw("pseq_a_m");
-            this->vsx_command_queue_b(this);
-          } else
-          if (default_controller.size()) 
-          {
-            command_q_b.add_raw(default_controller);
-            vsx_command_queue_b(this);
-          }
+          command_q_b.add_raw(default_controller);
+          vsx_command_queue_b(this);
         }
       }
     }
@@ -1827,11 +1845,6 @@ void vsx_widget_anchor::event_mouse_up(vsx_widget_distance distance,vsx_widget_c
         coords.screen_global.x -= menu->size.x;
         menu->pos = menu->target_pos = coords.screen_global;
       }
-    } else
-    if (p_type == "sequence")
-    {
-      command_q_b.add_raw("controller_seq_edit");
-      this->vsx_command_queue_b(this);
     }
     drag_status = false;
     ((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_show();
@@ -1867,19 +1880,23 @@ void vsx_widget_anchor::event_mouse_up(vsx_widget_distance distance,vsx_widget_c
           //check that the type of input is not the same as ours
           //printf("ioooo %d\n",((vsx_widget_anchor*)tt)->io);
           //printf("name: %s\n",((vsx_widget_anchor*)tt)->name.c_str());
-          if (((vsx_widget_anchor*)search_anchor)->io != io)
+
+          if
+          (
+            ((vsx_widget_anchor*)search_anchor)->io != io
+            &&
+            ((vsx_widget_anchor*)search_anchor)->forbid_connections == false
+            &&
+            p_type == ((vsx_widget_anchor*)search_anchor)->p_type
+          )
           {
-            // 1. is the param_def string equal to ours?
-            if (p_type == ((vsx_widget_anchor*)search_anchor)->p_type)
+            if (((vsx_widget_anchor*)search_anchor)->io == -1)
             {
-              if (((vsx_widget_anchor*)search_anchor)->io == -1) 
-              {
-                connect(search_anchor);
-              } 
-              else 
-              {
-                ((vsx_widget_anchor*)search_anchor)->connect(this);
-              }
+              connect(search_anchor);
+            }
+            else
+            {
+              ((vsx_widget_anchor*)search_anchor)->connect(this);
             }
           }
         } else

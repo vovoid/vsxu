@@ -148,8 +148,8 @@ public:
   void module_info(vsx_module_info* info)
   {
     info->in_param_spec = "settings:complex{\
-col_amp:float4,\
-col_ofs:float4,\
+col_amp:float4?default_controller=controller_col,\
+col_ofs:float4?default_controller=controller_col,\
 period:complex{\
 r_period:float3,\
 g_period:float3,\

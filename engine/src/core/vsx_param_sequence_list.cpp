@@ -224,53 +224,35 @@ void vsx_param_sequence_list::remove_line(vsx_engine_param* param, vsx_command_l
 }
 
 
-void vsx_param_sequence_list::run(float dtime,lamer show_debug) {
+void vsx_param_sequence_list::run(float dtime, float blend) {
 	int_vtime += dtime;
 
-	if (show_debug)
-	{
-		//printf("sq_list dtime: %f\n",dtime);
-		//printf("sq_list vtime: %f ",int_vtime);
-	}
-
-  for (std::list<vsx_param_sequence*>::iterator it = parameter_channel_list.begin(); it != parameter_channel_list.end(); ++it) {
-    (*it)->execute(dtime);
-//    (*it)->execute((*it)->comp->local_engine_info.dtime);
-    //if (cs) {
-//      commands_send.add(cs);
-//    }
+  // run normal param sequences
+  for (std::list<vsx_param_sequence*>::iterator it = parameter_channel_list.begin(); it != parameter_channel_list.end(); ++it)
+  {
+    (*it)->execute(dtime, blend);
   }
 
+  // run master channels
   for (std::list<void*>::iterator it = master_channel_list.begin(); it != master_channel_list.end(); it++)
   {
   	((vsx_master_sequence_channel*)(*it))->run(dtime);
   }
-
-  if (commands_send.count()) {
-    ((vsx_engine*)engine)->process_message_queue(&commands_send,&commands_return);
-  }
-  commands_return.clear();
 }
 
-void vsx_param_sequence_list::run_absolute(float vtime)
+void vsx_param_sequence_list::run_absolute(float vtime, float blend)
 {
 	float dtime = vtime - int_vtime;
-	//printf("sl: int_vtime: %f   dtime: %f\n",int_vtime, dtime);
-	int_vtime += dtime;
+  //printf("sl: int_vtime: %f   dtime: %f\n",int_vtime, dtime);
+  int_vtime += dtime;
   for (std::list<vsx_param_sequence*>::iterator it = parameter_channel_list.begin(); it != parameter_channel_list.end(); ++it) {
-    (*it)->execute(dtime);
+    (*it)->execute(dtime, blend);
   }
 
   for (std::list<void*>::iterator it = master_channel_list.begin(); it != master_channel_list.end(); it++)
   {
   	((vsx_master_sequence_channel*)(*it))->run(dtime);
   }
-
-  if (commands_send.count()) {
-    ((vsx_engine*)engine)->process_message_queue(&commands_send,&commands_return);
-  }
-  commands_return.clear();
-
 }
 
 vsx_string vsx_param_sequence_list::dump_param(vsx_engine_param* param) {

@@ -98,7 +98,7 @@ but you usually want a lot more.";
       particle_rotation_dir:quaternion\
     },\
     appearance:complex{\
-      color:float4,\
+      color:float4?default_controller=controller_col,\
       time:complex{particle_lifetime_base:float,particle_lifetime_random_weight:float}\
     }\
     ";
@@ -382,7 +382,7 @@ in sequence.\n\
       size:complex{particle_size_base:float,particle_size_random_weight:float}\
     },\
     appearance:complex{\
-      color:float4,\
+      color:float4?default_controller=controller_col,\
       time:complex{particle_lifetime_base:float,particle_lifetime_random_weight:float},\
       time_source:enum?sequencer|real\
     }";

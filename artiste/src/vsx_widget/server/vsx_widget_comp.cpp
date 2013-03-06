@@ -180,8 +180,9 @@ void vsx_widget_component::vsx_command_process_b(vsx_command_s *t)
     vsx_command_s* mc = 0;
     macro_commands.reset();
     bool is_part_of_macro = false;
-    while ((mc = macro_commands.get())) {
-      if (mc->cmd == "macro_create" && mc->parts.size() < 4)
+    while ((mc = macro_commands.get()))
+    {
+      if (mc->cmd == "macro_create" && mc->parts.size() < 5)
       {
         is_part_of_macro = true; // the following components are part of a macro
         command_q_b.add_raw("macro_create_real "+mc->parts[1]+" "+t->parts[3]+" "+t->parts[4]+" "+mc->parts[2]);
@@ -189,8 +190,8 @@ void vsx_widget_component::vsx_command_process_b(vsx_command_s *t)
       } else
       if (mc->cmd == "macro_create" && mc->parts.size() < 6)
       {
-        command_q_b.add_raw("macro_create_real "+mc->parts[1]+" "+mc->parts[3]+" "+mc->parts[4]+" "+mc->parts[5]);
-        printf("component_clone_internal: %s\n", vsx_string("macro_create_real "+mc->parts[1]+" "+t->parts[3]+" "+t->parts[4]+" "+mc->parts[2]).c_str());
+        command_q_b.add_raw("macro_create_real "+mc->parts[1]+" "+mc->parts[2]+" "+mc->parts[3]+" "+mc->parts[4]);
+        //printf("component_clone_internal: %s\n", vsx_string("macro_create_real "+mc->parts[1]+" "+t->parts[3]+" "+t->parts[4]+" "+mc->parts[2]).c_str());
       }
       else if (mc->cmd == "component_create")
         {
@@ -362,7 +363,9 @@ void vsx_widget_component::vsx_command_process_b(vsx_command_s *t)
           vsx_string type_deli = "?";
           split_string(add_c[1],type_deli,type_info);
           if (type_info.size() == 2)
-          ((vsx_widget_anchor*)anchor)->p_type_suffix = type_info[1];
+          {
+            ((vsx_widget_anchor*)anchor)->p_type_suffix = type_info[1];
+          }
           ((vsx_widget_anchor*)anchor)->p_type = type_info[0];
           ((vsx_widget_anchor*)anchor)->p_desc = cm;
           ((vsx_widget_anchor*)anchor)->io = l_io;

@@ -141,7 +141,7 @@ public:
           "attenuation:float,"
           "star_flower:float,"
           "angle:float,"
-          "color:float4,"
+          "color:float4?default_controller=controller_col,"
           "alpha:enum?no|yes"
         "},"
         "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024|2048x2048"

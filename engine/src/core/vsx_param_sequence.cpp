@@ -16,7 +16,7 @@ vsx_param_sequence_item::vsx_param_sequence_item()
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-void vsx_param_sequence::execute(float ptime)
+void vsx_param_sequence::execute(float ptime, float blend)
 {
   if (items.size() < 2)
   {
@@ -109,10 +109,43 @@ void vsx_param_sequence::execute(float ptime)
     if (param->module_param->type == VSX_MODULE_PARAM_ID_FLOAT)
     {
       ++param->module->param_updates;
-      ++((vsx_module_param_quaternion*)param->module_param)->updates;
+      ++((vsx_module_param_float*)param->module_param)->updates;
       float cv = s2f(cur_val);
       float ev = s2f(to_val);
       float dv = ev-cv;
+      float result_value = cv;
+
+      //printf("sequence execute: %s %f\n", cur_val.c_str(), cv);
+      // 0 = no interpolation
+      // 1 = linear interpolation
+      // 2 = cosine interpolation
+      // 3 = no interpolation + param_interpolator
+
+      if (cur_interpolation == 1)
+      {
+        result_value = cv + dv * t;
+        goto execute_float_value_set;
+      }
+      if (cur_interpolation == 2)
+      {
+        float f =
+          (
+            1
+            -
+            cos(
+              t * PI_FLOAT
+            )
+          )
+          * 0.5f
+        ;
+        result_value = cv * (1.0f-f) + ev * f;
+        goto execute_float_value_set;
+      }
+      //if (cur_interpolation == 3)
+      //{
+      //  ((vsx_engine*)engine)->interpolation_list.set_target_value(param, f2s(cv), 0, interp_time);
+      //}
+
       if (cur_interpolation == 4)
       {
         bez_calc.x0 = 0.0f;
@@ -124,41 +157,20 @@ void vsx_param_sequence::execute(float ptime)
         bez_calc.x3 = 1.0f;
         bez_calc.y3 = ev;
         bez_calc.init();
+
         float tt = bez_calc.t_from_x(t);
-        float rv = bez_calc.y_from_t(tt);
+        result_value = bez_calc.y_from_t(tt);
+        goto execute_float_value_set;
+      }
 
-        ((vsx_module_param_quaternion*)param->module_param)->set_internal(rv);
-      } else
+      execute_float_value_set:
       {
-        //printf("sequence execute: %s %f\n", cur_val.c_str(), cv);
-        // 0 = no interpolation
-        // 1 = linear interpolation
-        // 2 = cosine interpolation
-        // 3 = no interpolation + param_interpolator
-
-        if (cur_interpolation == 0)
+        if (blend < 1.0f)
         {
-          ((vsx_module_param_quaternion*)param->module_param)->set_internal(cv);
-          //param->set_string(f2s(cv));
+          float current_value = ((vsx_module_param_float*)param->module_param)->get_internal();
+          result_value = (1.0f - blend) * current_value + blend * result_value;
         }
-        else
-        if (cur_interpolation == 1)
-        {
-          ((vsx_module_param_quaternion*)param->module_param)->set_internal(cv+dv*t);
-          //param->set_string(f2s(cv+dv*t));
-        }
-        else
-        if (cur_interpolation == 2)
-        {
-          float ft = t*PI_FLOAT;
-          float f = (1 - cos(ft)) * 0.5f;
-          ((vsx_module_param_quaternion*)param->module_param)->set_internal(cv*(1-f) + ev*f);
-        }
-        else
-        if (cur_interpolation == 3)
-        {
-          //((vsx_engine*)engine)->interpolation_list.set_target_value(param, f2s(cv), 0, interp_time);
-        }
+        ((vsx_module_param_quaternion*)param->module_param)->set_internal(result_value);
       }
     } else
     if (param->module_param->type == VSX_MODULE_PARAM_ID_QUATERNION)

@@ -38,8 +38,10 @@
       }
     } else
 #ifndef VSX_NO_CLIENT
-    if (cmd == "component_delete") {
-      if (c->parts.size() == 2) {
+    if (cmd == "component_delete")
+{
+      if (c->parts.size() == 2)
+      {
         std::map<vsx_string,vsx_comp*> temp_forge_map = forge_map;
         //for (forge_map_iter = forge_map.begin(); forge_map_iter != forge_map.end(); forge_map_iter++) {
 //          cout << "forge_map["<<(*forge_map_iter).first<<"]" << endl;
@@ -53,7 +55,8 @@
           while (drun) {
 //            cout << ":";
             if (!macro) drun = false;
-            if (forge_map_iter != temp_forge_map.end()) {
+            if (forge_map_iter != temp_forge_map.end())
+            {
               vsx_string t = (*forge_map_iter).first;
               vsx_comp* comp = (*forge_map_iter).second;
               if ((t == c->parts[1]) || (macro && (t.find(c->parts[1]+".") == 0))) {
@@ -72,11 +75,19 @@
                 }
 //                printf("delete step 2\n");
                 // ! 3:: remove aliases of other components that have aliased our params and connections (this does this)
-                for (std::vector<vsx_engine_param*>::iterator it = comp->get_params_in()->param_id_list.begin(); it != comp->get_params_in()->param_id_list.end(); ++it) {
-                  if ((*it)->sequence) {
+                for
+                (
+                  std::vector<vsx_engine_param*>::iterator it = comp->get_params_in()->param_id_list.begin();
+                  it != comp->get_params_in()->param_id_list.end();
+                  ++it
+                )
+                {
+                  if ((*it)->sequence)
+                  {
                     sequence_list.remove_param_sequence((*it));
                     cmd_out->add_raw("pseq_p_ok remove "+comp->name+" "+(*it)->name);
                   }
+                  sequence_pool.remove_param_sequence((*it));
                   interpolation_list.remove(*it);
                 }
 //                printf("comp name: %s\n",comp->name.c_str());

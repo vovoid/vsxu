@@ -71,8 +71,21 @@ position and color (rgba).\
   )\
   */
   /* &min=0&help=`This controls the angle of the line\nrotated around the [rotation_axis].\nHint: Hook it to an oscillator or similar\nfor some fun twisting action!`,\*/
-//  info->in_param_spec = "spatial:complex{position:float3,angle:float,rotation_axis:float3,size:float3},color:float4";
-    info->in_param_spec = "spatial:complex{position:float3,angle:float,rotation_axis:float3,size:float3},border:complex{border_enable:enum?no|yes,border_width:float,border_color:float4},color:float4";
+
+    info->in_param_spec =
+      "spatial:complex{"
+        "position:float3,"
+        "angle:float,"
+        "rotation_axis:float3,"
+        "size:float3"
+      "},"
+      "border:complex{"
+        "border_enable:enum?no|yes,"
+        "border_width:float,"
+        "border_color:float4?default_controller=controller_col"
+      "},"
+      "color:float4?default_controller=controller_col"
+    ;
   
     info->out_param_spec = "render_out:render";
     info->component_class = "render";
@@ -211,8 +224,8 @@ public:
     info->in_param_spec = "spatial:complex{"
                             "point_a:float3,"
                             "point_b:float3,"
-                            "color_a:float4,"
-                            "color_b:float4,"
+                            "color_a:float4?default_controller=controller_col,"
+                            "color_b:float4?default_controller=controller_col,"
                             "width:float}";
       
     info->out_param_spec = "render_out:render";
@@ -299,7 +312,6 @@ public:
 };
 
 
-
 class vsx_module_simple_with_texture : public vsx_module {
   // in
 	vsx_module_param_float3* position;
@@ -328,15 +340,42 @@ public:
 
 void module_info(vsx_module_info* info)
 {
-  info->identifier = "renderers;basic;textured_rectangle||renderers;examples;simple_with_texture";
-  info->in_param_spec = "spatial:complex{position:float3,size:float,angle:float,x_aspect_ratio:float,tex_coord_a:float3,tex_coord_b:float3,facing_camera:enum?no|yes},color:complex{global_alpha:float,color_multiplier:float4,color_center:float4,color_a:float4,color_b:float4,color_c:float4,color_d:float4},texture_in:texture";
+  info->identifier =
+    "renderers;basic;textured_rectangle"
+    "||"
+    "renderers;examples;simple_with_texture"
+  ;
+
+  info->in_param_spec =
+    "spatial:complex{"
+      "position:float3,"
+      "size:float,"
+      "angle:float,"
+      "x_aspect_ratio:float,"
+      "tex_coord_a:float3,"
+      "tex_coord_b:float3,"
+      "facing_camera:enum?no|yes&nc=1" // don't allow connections to this, pure config only
+    "},"
+    "color:complex{"
+      "global_alpha:float,"
+      "color_multiplier:float4?default_controller=controller_col,"
+      "color_center:float4?default_controller=controller_col,"
+      "color_a:float4?default_controller=controller_col,"
+      "color_b:float4?default_controller=controller_col,"
+      "color_c:float4?default_controller=controller_col,"
+      "color_d:float4?default_controller=controller_col"
+    "},"
+    "texture_in:texture"
+  ;
+
   info->description = 
-"Renders a textured rectangle.\n"
-"It has the following featurs:\n"
-"- facing camera (billboard)\n"
-"- variable texture aspect ratio\n"
-"- colors in center and 4 corners";
-    
+    "Renders a textured rectangle.\n"
+    "It has the following featurs:\n"
+    "- facing camera (billboard)\n"
+    "- variable texture aspect ratio\n"
+    "- colors in center and 4 corners"
+  ;
+
   info->out_param_spec = "render_out:render";
   info->component_class = "render";
 }

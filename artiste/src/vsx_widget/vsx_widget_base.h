@@ -240,13 +240,19 @@ public:
     			(source != this)
     	 )
     {
-      cmd_parent->vsx_command_queue_b(this,direct,iterations+1);
+      if (cmd_parent)
+      {
+        cmd_parent->vsx_command_queue_b(this,direct,iterations+1);
+      }
     }
   }
 
   inline void backwards_message(const vsx_string &message) {
 		command_q_b.add_raw(message);
-  	cmd_parent->vsx_command_queue_b(this);
+    if (cmd_parent)
+    {
+      cmd_parent->vsx_command_queue_b(this);
+    }
   }
 
   inline void message(const vsx_string &message) {

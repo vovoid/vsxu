@@ -34,8 +34,6 @@ class vsx_param_sequence_list {
   float int_vtime;
   int time_source; // 0 = engine, 1 = int_vtime
   float* other_time_source;
-  vsx_command_list commands_send;
-  vsx_command_list commands_return;
   bool run_on_edit_enabled;
   float total_time;
   std::list<vsx_param_sequence*> parameter_channel_list;
@@ -86,8 +84,8 @@ public:
   float calculate_total_time(bool no_cache = false);
 
   // run / execute
-  void run(float dtime,lamer show_debug = false);
-  void run_absolute(float vtime);
+  void run(float dtime, float blend = 1.0f);
+  void run_absolute(float vtime, float blend = 1.0f);
 
   // initialization / de-initialization
   void set_engine(void* s_engine) { engine = s_engine; }

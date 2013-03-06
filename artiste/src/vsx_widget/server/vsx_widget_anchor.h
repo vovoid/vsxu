@@ -73,6 +73,7 @@ public:
 
   bool vsxl_filter; // is this param filtered?
   bool sequenced; // is this param sequenced?
+  bool forbid_connections;
 
   int a_order; // in wich position of our parent we are - 0 is the first, 1 is the second and so on
   int io; // -1 = in, 1 = out  - the type (and position) of the anchor

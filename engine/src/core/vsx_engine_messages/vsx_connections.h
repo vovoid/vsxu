@@ -7,47 +7,40 @@
         vsx_comp* dest = get_component_by_name(c->parts[1]);
         //if (dest->get_params_in()->get_by_name
         vsx_comp* src  = get_component_by_name(c->parts[3]);
-        if (dest && src) {
+        if (dest && src)
+        {
           vsx_engine_param* dest_param = dest->get_params_in()->get_by_name(c->parts[2]);
           vsx_engine_param* src_param = src->get_params_out()->get_by_name(c->parts[4]);
-          if (dest_param && src_param) {
-          	if (!dest_param->sequence) {
+          if (dest_param && src_param)
+          {
+            if (!dest_param->sequence)
+            {
             	int order = dest_param->connect(src_param);
 	            // connect the first param to the second, let the parameter class handle wether or not it's an alias, to set up a channel etc.
-            	if (order != -1) {
+              if (order != -1)
+              {
 	              if (c->parts.size() != 6) {
-#ifndef VSX_NO_CLIENT
                 	cmd_out->add_raw("param_connect_volatile "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4]+" "+i2s(order));
-#endif
               	}  
             	}
-          	} 
-#ifndef VSX_NO_CLIENT
+            }
           	else cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("- Can not connect -| This parameter is sequenced!"));
-#endif
           }
-#ifndef VSX_NO_CLIENT
           else
           {
           	if (!src_param) cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("- Can not connect -| Source parameter declared in parameter specification but not bound in module!|Contact module author of|"+c->parts[3]+"::"+c->parts[4])+"!");
           	if (!dest_param) cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("- Can not connect -| Destination parameter declared in parameter specification but not bound in module!|Contact module author of |"+c->parts[1]+"::"+c->parts[2])+"!");
           }
-#endif
         }  
-#ifndef VSX_NO_CLIENT
         else 
         {
           if (!dest)
           cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Contact module author:|destination module param \""+c->parts[2]+" lacks implementation!"));
         }
-#endif
       }
-#ifndef VSX_NO_CLIENT
       else cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Can not connect:| Neither source or dest component exists."));
-#endif
     }
     else
-#ifndef VSX_NO_CLIENT
     if (cmd == "param_disconnect") {
       // syntax:
       //  param_disconnect [in-comp] [in-param] [out-comp] [out-param]
@@ -67,7 +60,6 @@
       }
     }
     else
-#endif
     if (cmd == "param_alias") {
       // syntax: 
       //        0          1           2            3           4              5                 6

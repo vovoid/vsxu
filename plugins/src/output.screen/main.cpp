@@ -74,7 +74,7 @@ public:
     ;
     info->in_param_spec = "screen:render,"
                           "gamma_correction:float?max=4&min=0&nc=1,"
-                          "clear_color:float4";
+                          "clear_color:float4?nc=1";
     info->component_class = "screen";
   }
 

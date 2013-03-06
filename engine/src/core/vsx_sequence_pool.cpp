@@ -6,6 +6,15 @@ void vsx_sequence_pool::set_engine(void* new_engine)
   engine = new_engine;
 }
 
+
+void vsx_sequence_pool::remove_param_sequence(vsx_engine_param* param)
+{
+  for (std::map<vsx_string, vsx_param_sequence_list*>::iterator it = sequence_lists.begin(); it != sequence_lists.end(); it++)
+  {
+    (*it).second->remove_param_sequence(param);
+  }
+}
+
 int vsx_sequence_pool::add(vsx_string name) // 1 = success, 0 = fail
 {
   //printf("%d\n", __LINE__);
@@ -270,10 +279,12 @@ void vsx_sequence_pool::clear()
 
 
 
-vsx_sequence_pool::vsx_sequence_pool() {
+vsx_sequence_pool::vsx_sequence_pool()
+{
   cur_sequence_list = 0;
   edit_enabled = false;
   loop_point = -1.0f;
   current_state = 0;
+  vtime = 0.0f;
 }
 

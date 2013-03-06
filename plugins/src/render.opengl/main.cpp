@@ -209,9 +209,9 @@ void module_info(vsx_module_info* info)
   info->description = "Sets the color for modules\n\
 that don't do this themselves.";
   info->in_param_spec =
-"\
-render_in:render,\
-color:float4";
+    "render_in:render,"
+    "color:float4?default_controller=controller_col"
+  ;
   info->out_param_spec = "render_out:render";
   info->component_class = "render";
   info->tunnel = true; // always run this
@@ -271,12 +271,11 @@ To get sat adding, choose:\n\
   GL_ONE";
 
   info->in_param_spec =
-"\
-render_in:render,\
-source_blend:enum?ZERO|ONE|DST_COLOR|ONE_MINUS_DST_COLOR|SRC_ALPHA|ONE_MINUS_SRC_ALPHA|DST_ALPHA|ONE_MINUS_DST_ALPHA|CONSTANT_COLOR_EXT|ONE_MINUS_CONSTANT_COLOR_EXT|CONSTANT_ALPHA_EXT|ONE_MINUS_CONSTANT_ALPHA_EXT|SRC_ALPHA_SATURATE,\
-dest_blend:enum?ZERO|ONE|SRC_COLOR|ONE_MINUS_SRC_COLOR|SRC_ALPHA|ONE_MINUS_SRC_ALPHA|DST_ALPHA|ONE_MINUS_DST_ALPHA|CONSTANT_COLOR_EXT|ONE_MINUS_CONSTANT_COLOR_EXT|CONSTANT_ALPHA_EXT|ONE_MINUS_CONSTANT_ALPHA_EXT,\
-blend_color:float4\
-";
+"render_in:render,"
+"source_blend:enum?ZERO|ONE|DST_COLOR|ONE_MINUS_DST_COLOR|SRC_ALPHA|ONE_MINUS_SRC_ALPHA|DST_ALPHA|ONE_MINUS_DST_ALPHA|CONSTANT_COLOR_EXT|ONE_MINUS_CONSTANT_COLOR_EXT|CONSTANT_ALPHA_EXT|ONE_MINUS_CONSTANT_ALPHA_EXT|SRC_ALPHA_SATURATE&nc=1,"
+"dest_blend:enum?ZERO|ONE|SRC_COLOR|ONE_MINUS_SRC_COLOR|SRC_ALPHA|ONE_MINUS_SRC_ALPHA|DST_ALPHA|ONE_MINUS_DST_ALPHA|CONSTANT_COLOR_EXT|ONE_MINUS_CONSTANT_COLOR_EXT|CONSTANT_ALPHA_EXT|ONE_MINUS_CONSTANT_ALPHA_EXT&nc=1,"
+"blend_color:float4?default_controller=controller_col"
+;
   info->out_param_spec = "render_out:render";
   info->component_class = "render";
   info->tunnel = true;
@@ -359,62 +358,65 @@ public:
 
 
 
-void module_info(vsx_module_info* info)
-{
-  info->identifier = "renderers;opengl_modifiers;light_directional";
-  info->description = "\
-A light always hitting the triangles\n\
-from the same direction given\n\
-in [position]. This module modifies \n\
-one lightsource, you can have 8 lights\n\
-(nested) at the same time depending\n\
-on your OpenGL drivers.\n";
-  info->in_param_spec =
-"\
-render_in:render,\
-properties:complex{light_id:enum?0|1|2|3|4|5|6|7,\
-enabled:enum?NO|YES,\
-position:float3,\
-ambient_color:float4,\
-diffuse_color:float4,\
-specular_color:float4}";
-  info->out_param_spec = "render_out:render";
-  info->component_class = "render";
-  info->tunnel = true;
-}
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "renderers;opengl_modifiers;light_directional";
+    info->description =
+    "A light always hitting the triangles\n"
+    "from the same direction given\n"
+    "in [position]. This module modifies \n"
+    "one lightsource, you can have 8 lights\n"
+    "(nested) at the same time depending\n"
+    "on your OpenGL drivers.\n";
 
-void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
-{
-  loading_done = true;
-	render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
+    info->in_param_spec =
+      "render_in:render,"
+      "properties:complex{"
+        "light_id:enum?0|1|2|3|4|5|6|7,"
+        "enabled:enum?NO|YES,"
+        "position:float3,"
+        "ambient_color:float4?default_controller=controller_col,"
+        "diffuse_color:float4?default_controller=controller_col,"
+        "specular_color:float4?default_controller=controller_col"
+      "}"
+    ;
+    info->out_param_spec = "render_out:render";
+    info->component_class = "render";
+    info->tunnel = true;
+  }
 
-  light_id = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"light_id");
-  enabled = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"enabled");
-  position = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"position");
-  position->set(0,0);
-  position->set(0,1);
-  position->set(1,2);
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+    render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
 
-  ambient_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"ambient_color");
-  ambient_color->set(0,0);
-  ambient_color->set(0,1);
-  ambient_color->set(0,2);
-  ambient_color->set(1,3);
+    light_id = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"light_id");
+    enabled = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"enabled");
+    position = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"position");
+    position->set(0,0);
+    position->set(0,1);
+    position->set(1,2);
 
-  diffuse_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"diffuse_color");
-  diffuse_color->set(1,0);
-  diffuse_color->set(1,1);
-  diffuse_color->set(1,2);
-  diffuse_color->set(1,3);
+    ambient_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"ambient_color");
+    ambient_color->set(0,0);
+    ambient_color->set(0,1);
+    ambient_color->set(0,2);
+    ambient_color->set(1,3);
 
-  specular_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"specular_color");
-  specular_color->set(1,0);
-  specular_color->set(1,1);
-  specular_color->set(1,2);
-  specular_color->set(1,3);
+    diffuse_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"diffuse_color");
+    diffuse_color->set(1,0);
+    diffuse_color->set(1,1);
+    diffuse_color->set(1,2);
+    diffuse_color->set(1,3);
 
-	render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
-}
+    specular_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"specular_color");
+    specular_color->set(1,0);
+    specular_color->set(1,1);
+    specular_color->set(1,2);
+    specular_color->set(1,3);
+
+    render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+  }
 
 
 
@@ -580,10 +582,10 @@ public:
 	  info->in_param_spec =	"render_in:render,"
 													"faces_affected:enum?front_facing|back_facing|front_and_back,"
 													"properties:complex{"
-													 	"ambient_reflectance:float4,"
-													  "diffuse_reflectance:float4,"
-													  "specular_reflectance:float4,"
-													  "emission_intensity:float4,"
+                            "ambient_reflectance:float4?default_controller=controller_col,"
+                            "diffuse_reflectance:float4?default_controller=controller_col,"
+                            "specular_reflectance:float4?default_controller=controller_col,"
+                            "emission_intensity:float4?default_controller=controller_col,"
 													  "specular_exponent:float"
 													"}";
 	  info->out_param_spec = "render_out:render";
@@ -880,7 +882,7 @@ public:
     info->in_param_spec =
       "render_in:render,"
       "color_buffer:enum?no|yes,"
-      "clear_color:float4,"
+      "clear_color:float4?default_controller=controller_col,"
       "depth_buffer:enum?no|yes"
     ;
     info->out_param_spec = "render_out:render";
@@ -1003,7 +1005,7 @@ void module_info(vsx_module_info* info)
   info->identifier = "renderers;opengl_modifiers;gl_fog";
   info->description = "Enables the fog built into OpenGL";
   info->in_param_spec =
-"render_in:render,status:enum?DISABLED|ENABLED,fog_color:float4,fog_start:float,fog_end:float";
+"render_in:render,status:enum?DISABLED|ENABLED,fog_color:float4?default_controller=controller_col,fog_start:float,fog_end:float";
   info->out_param_spec = "render_out:render";
   info->component_class = "render";
   info->tunnel = true;

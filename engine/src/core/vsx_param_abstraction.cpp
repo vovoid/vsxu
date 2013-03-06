@@ -1398,13 +1398,21 @@ vsx_string vsx_engine_param_list::single_param_spec(vsx_string param_name, int s
     //unsigned int loc = startpos;
     int loc = startpos;
     bool nfound = true;
-    while (nfound) {
+    while (nfound)
+    {
       loc = sin.find(param_name, loc);
       //std::cout << " loc = " << loc;
-			if (loc >= startpos && loc != -1) {
-				if (loc == 0 ||
-				 sin[loc-1] == ',' ||
-				 sin[loc-1] == '{') {
+      if (loc >= startpos && loc != -1)
+      {
+        if
+        (
+          loc == 0
+            ||
+          sin[loc-1] == ','
+            ||
+          sin[loc-1] == '{'
+        )
+        {
 					//printf("parsing_inner\n");
 					vsx_string res = "";
 					int spos = loc;

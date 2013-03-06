@@ -101,7 +101,9 @@ typedef struct
 #define VSX_ENGINE_PLAYING 1
 #define VSX_ENGINE_REWIND 2
 
-typedef struct  {
+class vsx_module_engine_info
+{
+public:
   // filesystem handle to use in every module's file operations
   vsxf* filesystem;
   // module list - so that modules can construct their own vsx_engine's
@@ -138,7 +140,22 @@ typedef struct  {
   // item 3 is reserved for Full song PCM data for the sequencer, Right Channel (from module to host app)
   // item 4..999 are reserved for Vovoid use
   vsx_avector<vsx_engine_float_array*> param_float_arrays;
-} vsx_module_engine_info;
+
+  vsx_module_engine_info()
+  {
+    state = 0;
+    amp = 1.0f;
+    dtime = 0.0f;
+    vtime = 0.0f;
+    real_dtime = 0.0f;
+    real_vtime = 0.0f;
+    request_play = 0;
+    request_stop = 0;
+    request_rewind = 0;
+    request_set_time = -0.01f;
+    num_input_events = 0;
+  }
+};
 
 /*
   Modules are the workhorses of VSXU. To understand how they work, you have to know the concept of module and
@@ -225,6 +242,15 @@ public:
   bool tunnel; // very special case for render component that have to be reset after each run.
 
 
+  /*
+  Param specifications - used for the GUI (artiste)
+  Looks like:
+    name:type?param1=val1&param2=val2
+
+    Notable extra params for a param are:
+      nc=1                       - don't allow connections to this param
+      default_controller=knob    - what happens when double-clicking on the param
+  */
   vsx_string in_param_spec;
   vsx_string out_param_spec;
 

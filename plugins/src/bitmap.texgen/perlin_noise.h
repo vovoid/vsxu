@@ -218,7 +218,7 @@ public:
                             "star_flower:float,"
                             "angle:float,"
                           "},"
-                          "color:float4,"
+                          "color:float4?default_controller=controller_col,"
                           "alpha:enum?no|yes"
                           ;
     info->identifier = "bitmaps;generators;perlin_noise";

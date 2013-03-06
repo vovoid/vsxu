@@ -53,11 +53,13 @@ using namespace std;
 vsx_engine::vsx_engine()
 {
   constructor_set_default_values();
+  loop_point_end = -1.0f;
 }
 
 vsx_engine::vsx_engine(vsx_string path)
 {
   constructor_set_default_values();
+  loop_point_end = -1.0f;
   log_dir = path;
 }
 

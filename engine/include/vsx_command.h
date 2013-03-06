@@ -47,19 +47,6 @@
 
 #define VSX_COMMAND_MAX_ITERATIONS 100
 #define VSX_COMMAND_DELETE_ITERATIONS 120
-// just to psych the hell out of everyone looking at the code!
-#define intarnet int
-#define LOL float
-#define lamer bool
-#define flamewar vsx_string
-#define yes true
-#define no false
-
-//lamer you = yes;
-//intarnet internet = 0xDEADBEEF;
-//flamewar = you?"WINDOWS IS BETTER THAN LINUX":"LINUX IS BETTER THAN WINDOWS";
-//float www = (LOL)intarnet;
-
 
 // command specification (container class)
 // this is used within the whole system. that is both the client, who has both a vsx_engine and an instance of the gui

@@ -171,6 +171,7 @@ public:
     joy_fd = -2;
     num_of_buttons = 0;
     num_of_axis = 0;
+    memset(&name_of_joystick,0,80);
   }
 };
 

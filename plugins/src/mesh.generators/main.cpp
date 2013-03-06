@@ -2925,8 +2925,8 @@ public:
         "a more bulky surface."
     ;
     info->in_param_spec =
-        "subdivision_level:float?min=1,"
-        "max_normalization_level:float"
+        "subdivision_level:float?min=1&nc=1,"
+        "max_normalization_level:float?nc=1"
     ;
     info->out_param_spec = "mesh:mesh";
     info->component_class = "mesh";
@@ -3149,9 +3149,9 @@ public:
         "a more bulky surface."
     ;
     info->in_param_spec =
-        "subdivision_level:float?min=1,"
-        "max_normalization_level:float,"
-        "initial_ico_scale:float"
+        "subdivision_level:float?min=1&nc=1,"
+        "max_normalization_level:float?nc=1,"
+        "initial_ico_scale:float?nc=1"
     ;
     info->out_param_spec = "mesh:mesh";
     info->component_class = "mesh";

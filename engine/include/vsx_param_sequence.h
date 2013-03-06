@@ -67,7 +67,7 @@ public:
   std::vector<vsx_param_sequence_item> items; // the actual sequence
 
   void set_time(float stime);
-  void execute(float ptime); // returns command if available
+  void execute(float ptime, float blend = 1.0f); // returns command if available
   void update_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
   void insert_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
   void remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
