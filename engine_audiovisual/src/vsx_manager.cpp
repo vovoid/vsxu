@@ -41,6 +41,11 @@ public:
   // i.e. if base_path is /usr/share/vsxu/   then the engine will look in
   // /usr/share/vsxu/_visuals
   void init(const char* base_path, const char* sound_type);
+  
+  // this function takes a path where VSXu visuals can be found and 
+  // adds the visuals after the visuals in the default directory in 
+  // the index of visuals
+  void add_visual_path(const char* new_visual_path);
 
   // before you render first time, you need to start
   void start();
@@ -56,6 +61,7 @@ public:
   void set_randomizer(bool status);
   
   bool get_randomizer_status();
+  void pick_visual(int selection);
   void pick_random_visual();
   void next_visual();
   void prev_visual();
@@ -132,6 +138,14 @@ void vsx_manager::init(const char* base_path, const char* sound_type)
   ((vsx_statelist*)int_state_manager)->init(vsx_string(base_path),vsx_string(sound_type));
 }
 
+void vsx_manager::add_visual_path(const char* new_visual_path)
+{
+  if(!new_visual_path)
+    return;
+
+  ((vsx_statelist*)int_state_manager)->add_visual_path(vsx_string(new_visual_path));
+}
+
 void vsx_manager::start()
 {
 ((vsx_statelist*)int_state_manager)->start();
@@ -164,6 +178,11 @@ void vsx_manager::set_randomizer(bool status)
 bool vsx_manager::get_randomizer_status()
 {
   return ((vsx_statelist*)int_state_manager)->get_randomizer_status();
+}
+
+void vsx_manager::pick_visual(int selection)
+{
+  ((vsx_statelist*)int_state_manager)->select_visual(selection);
 }
 
 void vsx_manager::pick_random_visual()

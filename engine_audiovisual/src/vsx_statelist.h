@@ -125,6 +125,8 @@ public:
   vsx_engine* get_vxe() {
     return vxe;
   }
+  
+  void add_visual_path(vsx_string new_visual_path);
 
   // **************************************************************************
   // OPTIONS
@@ -145,6 +147,8 @@ public:
   void toggle_randomizer();
   void set_randomizer(bool status);
   bool get_randomizer_status();
+  
+  void select_visual (int selection);
   
   void random_state();
   void next_state();
