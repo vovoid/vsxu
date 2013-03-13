@@ -2783,7 +2783,8 @@ public:
     delete mesh;
   }
 
-  void run() {
+  void run()
+  {
     //printf("sequence data: %s\n", seq_x_shape.get_string().c_str() );
     int new_res_x = (int)x_res->get();
     int new_res_z = (int)z_res->get();

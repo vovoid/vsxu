@@ -1097,6 +1097,7 @@ public:
       prev_mesh_timestamp == (*mesh)->timestamp
     ) return;
 
+
     if (check_if_need_to_reinit_vbo(current_vbo_draw_type)) return;
 
     // bind the vertex, normals buffer for use
@@ -1119,13 +1120,12 @@ public:
         if ((*mesh)->data->vertex_normals.get_used()) {
           memcpy( ptr + offset_normals, (*mesh)->data->vertex_normals.get_pointer(), (*mesh)->data->vertex_normals.get_sizeof() );
         }
-        if (num_uploads < 100)
+        
+        if ((*mesh)->data->vertex_tex_coords.get_used())
         {
-          if ((*mesh)->data->vertex_tex_coords.get_used())
-          {
-            memcpy( ptr + offset_texcoords, (*mesh)->data->vertex_tex_coords.get_pointer(), (*mesh)->data->vertex_tex_coords.get_sizeof() );
-          }
+          memcpy( ptr + offset_texcoords, (*mesh)->data->vertex_tex_coords.get_pointer(), (*mesh)->data->vertex_tex_coords.get_sizeof() );
         }
+
         if (use_vertex_colors->get())
         {
           if ((*mesh)->data->vertex_colors.get_used()) {
