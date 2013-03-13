@@ -30,7 +30,7 @@
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #define VSX_MANAGER_DLLIMPORT
 #else
-  #if defined(VSX_ENG_DLL)
+  #if defined(VSX_AUDOVISUAL_DLL)
     #define VSX_MANAGER_DLLIMPORT __declspec (dllexport)
   #else 
     #define VSX_MANAGER_DLLIMPORT __declspec (dllimport)
@@ -119,8 +119,9 @@ public:
   virtual int get_engine_num_modules() = 0;
 };
 
+#endif
+
 extern "C" {
 VSX_MANAGER_DLLIMPORT vsx_manager_abs* manager_factory();
 VSX_MANAGER_DLLIMPORT void manager_destroy(vsx_manager_abs* manager);
 }
-#endif

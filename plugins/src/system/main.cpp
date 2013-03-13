@@ -29,10 +29,10 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <sys/ioctl.h>
 #include <vsx_platform.h>
 
 #if PLATFORM == PLATFORM_LINUX
+#include <sys/ioctl.h>
 
 #include <linux/joystick.h>
 #define JOY_DEV "/dev/input/js"

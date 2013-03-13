@@ -3,12 +3,12 @@ cmake_minimum_required(VERSION 2.8)
 PROJECT(VSXu)
 
 set(VSXU_VERSION_MAJOR "0")
-set(VSXU_VERSION_MINOR "3")
-set(VSXU_VERSION_PATCH "1")
+set(VSXU_VERSION_MINOR "4")
+set(VSXU_VERSION_PATCH "0")
 set(VSXU_VERSION ${VSXU_VERSION_MAJOR}.${VSXU_VERSION_MINOR}.${VSXU_VERSION_PATCH})
 
 message("---------------------------------------------------------------------")
-message("                  Configuring Vovoid VSXu Ultra                      ")
+message("                     Configuring Vovoid VSXu                         ")
 message("=====================================================================")
 ################################################################################
 # CMAKE MODULE PATH ############################################################

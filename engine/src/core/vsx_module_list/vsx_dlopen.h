@@ -3,12 +3,11 @@
 #define VSX_DLOPEN_H
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+  #include <windows.h>
   typedef HMODULE vsx_dynamic_object_handle;
-#endif
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+#else
   typedef void* vsx_dynamic_object_handle;
 #endif
-
 
 class vsx_dlopen
 {
@@ -19,4 +18,7 @@ public:
   static char*                      error();
 };
 
+
 #endif
+
+

@@ -27,13 +27,9 @@ include_directories(
 # DEFINITIONS ##################################################################
 ################################################################################
 
-if(WIN32)
-  add_definitions(-DVSX_ENG_DLL=1)
-endif(WIN32)
-
 add_definitions(
- -DVSX_ENG_DLL
  -DVSXU_EXE
+ -DVSX_AUDOVISUAL_DLL
  -DVSXU_DEVELOPER
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )
