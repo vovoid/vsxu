@@ -176,6 +176,7 @@ but you usually want a lot more.";
         (*particles.particles)[i].pos.x = 0;
         (*particles.particles)[i].pos.y = 0;
         (*particles.particles)[i].pos.z = 0;
+        (*particles.particles)[i].creation_pos = (*particles.particles)[i].pos;
         (*particles.particles)[i].speed.x = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
         (*particles.particles)[i].speed.y = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
         (*particles.particles)[i].speed.z = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
@@ -229,7 +230,8 @@ but you usually want a lot more.";
       (*particles.particles)[i].time+=ddtime;
       // if the time got over the maximum lifetime of the particle, re-initialize it
       if (p_to_go > 1)
-      if ((*particles.particles)[i].time > (*particles.particles)[i].lifetime) {
+      if ((*particles.particles)[i].time > (*particles.particles)[i].lifetime)
+      {
         (*particles.particles)[i].size = (*particles.particles)[i].orig_size = size_base+rand.frand()*size_random_weight-size_random_weight*0.5f;
         (*particles.particles)[i].color = vsx_color__(rr,gg,bb,aa);
         switch (speed_type->get()) {
@@ -260,6 +262,7 @@ but you usually want a lot more.";
         (*particles.particles)[i].pos.x = px;
         (*particles.particles)[i].pos.y = py;
         (*particles.particles)[i].pos.z = pz;
+        (*particles.particles)[i].creation_pos = (*particles.particles)[i].pos;
         (*particles.particles)[i].time = 0;
         (*particles.particles)[i].lifetime = lifetime_base+rand.frand()*lifetime_random_weight-lifetime_random_weight*0.5f;
         --p_to_go;
@@ -534,6 +537,7 @@ in sequence.\n\
           (*pp).pos.x = 0;
           (*pp).pos.y = 0;
           (*pp).pos.z = 0;
+          (*pp).creation_pos = (*pp).pos;
           (*pp).speed.x = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
           (*pp).speed.y = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
           (*pp).speed.z = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
@@ -665,6 +669,7 @@ in sequence.\n\
               (*pp).pos.x = center_[0]+(*vertex_cur).x*spread_[0]+rda*((*(f_randpool_pointer++))-0.5f);
               (*pp).pos.y = center_[1]+(*vertex_cur).y*spread_[1]+rdb*((*(f_randpool_pointer++))-0.5f);
               (*pp).pos.z = center_[2]+(*vertex_cur).z*spread_[2]+rdc*((*(f_randpool_pointer++))-0.5f);
+              (*pp).creation_pos = (*pp).pos;
               (*pp).time = 0.0f;
               (*pp).lifetime = lifetime_base+(*(f_randpool_pointer++))*lifetime_random_weight-half_lifetime_random_weight;
               if (pick_type->get() == 0) {

@@ -835,15 +835,16 @@ public:
   void module_info(vsx_module_info* info)
   {
     info->identifier = "renderers;mesh;mesh_basic_render";
-    info->in_param_spec = "tex_a:texture,mesh_in:mesh,"
-                          "particles:particlesystem,"
-                          "particle_cloud:mesh,"
-                          "options:complex{"
-                          "vertex_colors:enum?no|yes,"
-                          "use_display_list:enum?no|yes,"
-                          "use_vertex_colors:enum?no|yes,"
-                          "particles_size_center:enum?no|yes,"
-                          "}";
+    info->in_param_spec =
+        "tex_a:texture,mesh_in:mesh,"
+        "particles:particlesystem,"
+        "particle_cloud:mesh,"
+        "options:complex{"
+          "vertex_colors:enum?no|yes,"
+          "use_display_list:enum?no|yes,"
+          "use_vertex_colors:enum?no|yes,"
+          "particles_size_center:enum?no|yes,"
+        "}";
     info->out_param_spec = "render_out:render";
     info->component_class = "render";
   }
@@ -1217,28 +1218,43 @@ public:
         (*particles->particles)[i].color.a = (1-((*particles->particles)[i].time/(*particles->particles)[i].lifetime));
         (*particles->particles)[i].color.gl_color();
         glPushMatrix();
-          ma = (*particles->particles)[i].rotation.matrix();
-          if (particles_size_center->get())
-          {
-            glMultMatrixf(ma.m);
-            ss = (*particles->particles)[i].pos.norm();
-          }
-          else
-          {
-            glTranslatef(
-              (*particles->particles)[i].pos.x,
-              (*particles->particles)[i].pos.y,
-              (*particles->particles)[i].pos.z
-            );
-            ss = (*particles->particles)[i].size*(1-((*particles->particles)[i].time/(*particles->particles)[i].lifetime));
-          }
+
+        ma = (*particles->particles)[i].rotation.matrix();
+        if (particles_size_center->get())
+        {
+          glTranslatef(
+            (*particles->particles)[i].creation_pos.x,
+            (*particles->particles)[i].creation_pos.y,
+            (*particles->particles)[i].creation_pos.z
+          );
+          glMultMatrixf(ma.m);
+          vsx_vector ipos = (*particles->particles)[i].pos;
+          ipos.x -= (*particles->particles)[i].creation_pos.x;
+          ipos.y -= (*particles->particles)[i].creation_pos.y;
+          ipos.z -= (*particles->particles)[i].creation_pos.z;
+          ss = ipos.norm();
           glScalef(
             ss,
             ss,
             ss
           );
+        }
+        else
+        {
           glMultMatrixf(ma.m);
-          perform_draw();
+          glTranslatef(
+            (*particles->particles)[i].pos.x,
+            (*particles->particles)[i].pos.y,
+            (*particles->particles)[i].pos.z
+          );
+          ss = (*particles->particles)[i].size*(1-((*particles->particles)[i].time/(*particles->particles)[i].lifetime));
+          glScalef(
+            ss,
+            ss,
+            ss
+          );
+        }
+        perform_draw();
         glPopMatrix();
       } // for (unsigned long i = 0; i < particles->particles->size(); ++i)
       cleanup_successful_rendering();

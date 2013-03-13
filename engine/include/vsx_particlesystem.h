@@ -22,7 +22,9 @@
 #ifndef VSX_PARTICLESYSTEM_H
 #define VSX_PARTICLESYSTEM_H
 
-typedef struct {
+typedef struct
+{
+  vsx_vector creation_pos; // position the particle had when created
   vsx_vector pos; // current position
   vsx_vector speed; // current speed
   vsx_color color; // color it starts out as (including alpha)
