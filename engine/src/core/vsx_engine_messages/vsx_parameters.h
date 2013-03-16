@@ -192,7 +192,32 @@
       vsx_comp* dest = get_component_by_name(c->parts[1]);
       if (dest) {
         vsx_module_param_abs* param = dest->get_params_in()->get_by_name(c->parts[2])->module_param;
-        param->set_default();
+        if (param)
+        {
+          param->set_default();
+        }
+      }
+    }
+    else
+    // parameter flag - boolean toggles for the param
+    // syntax:
+    //  0     1           2           3     4
+    //  pflag [component] [parameter] [key] [value]
+    // example:
+    //  pflag simple angle external_expose 1
+    if (cmd == "pflag")
+    {
+      vsx_comp* dest = get_component_by_name(c->parts[1]);
+      if (dest)
+      {
+        vsx_engine_param* param = dest->get_params_in()->get_by_name(c->parts[2]);
+        if (param)
+        {
+          if (c->parts[3] == "external_expose")
+          {
+            param->external_expose = s2i( c->parts[4] );
+          }
+        }
       }
     }
     else

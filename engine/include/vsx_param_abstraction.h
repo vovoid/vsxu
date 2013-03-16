@@ -94,6 +94,9 @@ public:
 
   bool alias; // is this an alias or a source anchor?
 
+  // expose this param when running engine in a module?
+  int external_expose;
+
 // we save here our own connections so we can disconnect properly when an alias is removed
   std::vector<vsx_engine_param_connection*> connections;
   vsx_engine_param_connection* get_conn_by_dest(vsx_engine_param* dest);
@@ -105,13 +108,14 @@ public:
   // disconnect all connections in this and aliased without disconnecting the engine
 	void disconnect_abs_connections();
 
-// dump! YEAH!
+  // dump/serialize values
   void dump_aliases_and_connections(vsx_string base_macro, vsx_command_list* command_result);
   void dump_aliases_and_connections_rc(vsx_command_list* command_result); // direct
   void dump_aliases(vsx_string base_macro, vsx_command_list* command_result);
   void dump_aliases_rc(vsx_command_list* command_result);
   void dump_connections(vsx_string base_macro, vsx_command_list* command_result);
   void get_abs_connections(std::list<vsx_engine_param_connection_info*>* abs_connections, vsx_engine_param* dest);
+  void dump_pflags(vsx_command_list* command_result);
 
 // order, also pretty yeah...
   void rebuild_orders(std::vector<int>* new_order);

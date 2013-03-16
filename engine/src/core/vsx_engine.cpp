@@ -175,13 +175,32 @@ vsx_module_param_abs* vsx_engine::get_in_param_by_name(vsx_string module_name, v
   if (!valid)
     return 0x0;
   vsx_comp* c = get_component_by_name(module_name);
-  if (c) {
+  if (c)
+  {
     vsx_engine_param* p = c->get_params_in()->get_by_name(param_name);
     if (p) return p->module_param;
   }
   return 0x0;
 }
 
+void vsx_engine::get_external_exposed_parameters( vsx_avector< vsx_module_param_abs* >* result )
+{
+  // iterate through all modules
+  for (forge_map_iter = forge_map.begin(); forge_map_iter != forge_map.end(); ++forge_map_iter)
+  {
+    vsx_comp* comp = (*forge_map_iter).second;
+    // iterate through all parameters
+    for (unsigned long i = 0; i < comp->get_params_in()->param_id_list.size(); ++i)
+    {
+      vsx_engine_param* param = comp->get_params_in()->param_id_list[i];
+      // only return those that are exposed
+      if (param->external_expose)
+      {
+        result->push_back( param->module_param );
+      }
+    }
+  }
+}
 
 unsigned long vsx_engine::get_num_modules()
 {

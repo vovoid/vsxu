@@ -432,6 +432,12 @@ void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t)
     command_q_b.add_raw("seq_pool add_param "+component->name+" "+name);
     component->vsx_command_queue_b(this);
   } else
+  if (t->cmd == "pflag")
+  {
+    command_q_b.add_raw("pflag "+component->name+" "+name+" "+t->parts[1]+" "+t->parts[2]);
+    component->vsx_command_queue_b(this);
+  }
+  else
   if (t->cmd == "controller_seq_edit") 
   {
     for (children_iter = children.begin(); children_iter != children.end(); ++children_iter) 
@@ -1295,6 +1301,12 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
       menu_->commands.adds(VSX_COMMAND_MENU, "--VSXL scripting------", "","");
       menu_->commands.adds(VSX_COMMAND_MENU, "add/edit filter script", "vsxl_load_script","");
       menu_->commands.adds(VSX_COMMAND_MENU, "remove filter script", "vsxl_remove_script","");
+      if (!alias)
+      {
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Sub-engine export--------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "Disable export", "pflag","external_expose 0");
+        menu_->commands.adds(VSX_COMMAND_MENU, "Enable export", "pflag","external_expose 1");
+      }
     }
     else 
     if (p_type == "float3")
@@ -1312,6 +1324,12 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
         menu_->commands.adds(VSX_COMMAND_MENU, "color", "controller_col","");
         menu_->commands.adds(VSX_COMMAND_MENU, "pad", "controller_pad","");
       }
+      if (!alias)
+      {
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Sub-engine export--------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "Disable export", "pflag","external_expose 0");
+        menu_->commands.adds(VSX_COMMAND_MENU, "Enable export", "pflag","external_expose 1");
+      }
     }
     else if (p_type == "float4")
     {
@@ -1326,6 +1344,12 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
         menu_->commands.adds(VSX_COMMAND_MENU, "--Controllers--------", "","");
         menu_->commands.adds(VSX_COMMAND_MENU, "sliders", "controller_slider_multi","4");
         menu_->commands.adds(VSX_COMMAND_MENU, "color", "controller_col","");
+      }
+      if (!alias)
+      {
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Sub-engine export--------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "Disable export", "pflag","external_expose 0");
+        menu_->commands.adds(VSX_COMMAND_MENU, "Enable export", "pflag","external_expose 1");
       }
     }
     else if (p_type == "quaternion")
@@ -1345,6 +1369,12 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
       menu_->commands.adds(VSX_COMMAND_MENU, "--Sequencer-----------", "","");
       menu_->commands.adds(VSX_COMMAND_MENU, "add/edit sequence", "pseq_a_m","");
       menu_->commands.adds(VSX_COMMAND_MENU, "remove sequence", "pseq_p","remove");
+      if (!alias)
+      {
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Sub-engine export--------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "Disable export", "pflag","external_expose 0");
+        menu_->commands.adds(VSX_COMMAND_MENU, "Enable export", "pflag","external_expose 1");
+      }
     }
     else if (p_type == "resource")
     {
@@ -1358,6 +1388,12 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
         menu_->commands.adds(VSX_COMMAND_MENU, "--Controllers--------", "","");
         menu_->commands.adds(VSX_COMMAND_MENU, "resource library", "controller_resource","");
         menu_->commands.adds(VSX_COMMAND_MENU, "text editor", "controller_edit","");
+      }
+      if (!alias)
+      {
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Sub-engine export--------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "Disable export", "pflag","external_expose 0");
+        menu_->commands.adds(VSX_COMMAND_MENU, "Enable export", "pflag","external_expose 1");
       }
     }
     else 
@@ -1377,11 +1413,23 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
           menu_->commands.adds(VSX_COMMAND_MENU, "resource library", "controller_resource","");
         }
       }
+      if (!alias)
+      {
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Sub-engine export--------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "Disable export", "pflag","external_expose 0");
+        menu_->commands.adds(VSX_COMMAND_MENU, "Enable export", "pflag","external_expose 1");
+      }
     }
-    else 
+    else
     if (p_type == "sequence")
     {
       menu_->commands.adds(VSX_COMMAND_MENU, "editor", "controller_seq_edit","");
+      if (!alias)
+      {
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Sub-engine export--------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "Disable export", "pflag","external_expose 0");
+        menu_->commands.adds(VSX_COMMAND_MENU, "Enable export", "pflag","external_expose 1");
+      }
     }
     else 
     if (p_type == "complex")

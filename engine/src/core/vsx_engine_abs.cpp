@@ -516,14 +516,16 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
                 )
               {
                 tmp_comp.add_raw(vsx_string("ps64 ")+comp->name+" "+param->name+" "+base64_encode(pval));
-              } else
+              }
+              else
               {
                 tmp_comp.add_raw(vsx_string("param_set ")+comp->name+" "+param->name+" "+pval);
               }
             }
           }
         }
-        // dump the param vsxl filter
+        // dump pflags
+        param->dump_pflags(&tmp_comp);
       }
       //printf("running pre vsxlmf %s\n", param->name.c_str());
       #ifndef VSXE_NO_GM

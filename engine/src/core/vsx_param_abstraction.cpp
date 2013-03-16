@@ -16,9 +16,9 @@ class vsx_engine_param_list;
 
 vsx_engine_param::vsx_engine_param() {
   sequence = false;
+  external_expose = 0;
   alias = false;
   alias_parent = 0;
-//  alias_child = 0;
   channel = 0;
 }
 
@@ -618,6 +618,14 @@ void vsx_engine_param::dump_connections(vsx_string base_macro, vsx_command_list*
 #endif
 }
 
+
+void vsx_engine_param::dump_pflags(vsx_command_list* command_result)
+{
+  if (external_expose)
+  {
+    command_result->add_raw("pflag "+owner->component->name+" "+name+" external_expose 1");
+  }
+}
 
 void vsx_engine_param::get_abs_connections(std::list<vsx_engine_param_connection_info*>* abs_connections, vsx_engine_param* dest) {
 #ifndef VSX_NO_CLIENT
