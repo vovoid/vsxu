@@ -1819,6 +1819,7 @@ class vsx_gl_rotate_quat : public vsx_module {
 
   vsx_module_param_quaternion* rotation;
   vsx_module_param_int* matrix_target_l;
+  vsx_module_param_int* invert_rotation;
 
 	vsx_module_param_render* render_in;
 	// out
@@ -1830,17 +1831,18 @@ public:
   void module_info(vsx_module_info* info)
   {
     info->identifier = "renderers;opengl_modifiers;gl_rotate_quat";
-    info->description = "Multiplies the current modelview\n\
-  matrix with a rotation defined \n\
-  by a quaternion. \n\
-  I.e. rotates anything connected \n\
-  via it.";
+    info->description = "Multiplies the current modelview\n"
+      "matrix with a rotation defined \n"
+      "by a quaternion. \n"
+      "I.e. rotates anything connected \n"
+      "via it."
+    ;
     info->in_param_spec =
-  "\
-  render_in:render,\
-  rotation:quaternion,\
-  matrix_target:enum?MODELVIEW|PROJECTION|TEXTURE\
-  ";
+      "render_in:render,"
+      "rotation:quaternion,"
+      "matrix_target:enum?MODELVIEW|PROJECTION|TEXTURE,"
+      "invert_rotation:enum?NO|YES"
+    ;
     info->out_param_spec = "render_out:render";
     info->component_class = "render";
     info->tunnel = true; // always run this
@@ -1857,6 +1859,9 @@ public:
     rotation->set(1,3);
     matrix_target_l = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"matrix_target");
 
+    invert_rotation = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"invert_rotation");
+    invert_rotation->set(0);
+
   	render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
 
   	render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
@@ -1868,28 +1873,23 @@ public:
     glGetFloatv(matrix_target_get[matrix_target_l->get()], tmpMat);
     glMatrixMode(matrix_target[matrix_target_l->get()]);
 
-    /*if (matrix_target->get() == 0) {
-      glGetFloatv(GL_MODELVIEW_MATRIX, tmpMat);
-      glMatrixMode(GL_MODELVIEW);
-    } else
-    if (matrix_target->get() == 1) {
-      glGetFloatv(GL_PROJECTION_MATRIX, tmpMat);
-      glMatrixMode(GL_PROJECTION);
-    } else
-    if (matrix_target->get() == 2) {
-      glGetFloatv(GL_TEXTURE_MATRIX, tmpMat);
-      glMatrixMode(GL_TEXTURE);
-    }*/
   	bb.x = rotation->get(0);
   	bb.y = rotation->get(1);
   	bb.z = rotation->get(2);
   	bb.w = rotation->get(3);
     bb.normalize();
-  	//printf("internal quat is: %f %f %f %f\n",bb.x,bb.y,bb.z,bb.w);
+
   	vsx_matrix mat;
-  	mat = bb.matrix();
+    if (invert_rotation->get())
+    {
+      vsx_matrix mat2;
+      mat2 = bb.matrix();
+      mat.assign_inverse( &mat2 );
+    } else
+    {
+      mat = bb.matrix();
+    }
   	glMultMatrixf(mat.m);
-  	//glRotatef(angle->get()*360.0f,bb.x,bb.y,bb.z);
     return true;
   }
 
