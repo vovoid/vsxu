@@ -222,9 +222,9 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_buffer
 (
   int width, // width in pixels
   int height, // height in pixels
-  bool float_texture = false, // use floating point channels (8-bit is default)
-  bool alpha = true, // support alpha channel or not
-  bool multisample = false // enable anti-aliasing
+  bool float_texture, // use floating point channels (8-bit is default)
+  bool alpha, // support alpha channel or not
+  bool multisample // enable anti-aliasing
 )
 {
   GLenum gl_error; glGetError();
@@ -301,9 +301,9 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_buffer
 (
   int width, // width in pixels
   int height, // height in pixels
-  bool float_texture = false, // use floating point channels (8-bit is default)
-  bool alpha = true, // support alpha channel or not
-  bool multisample = false // enable anti-aliasing
+  bool float_texture, // use floating point channels (8-bit is default)
+  bool alpha, // support alpha channel or not
+  bool multisample // enable anti-aliasing
 )
 {
   deinit_buffer();
@@ -324,9 +324,9 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
 (
   int width, // width in pixels
   int height, // height in pixels
-  bool float_texture = false, // use floating point channels (8-bit is default)
-  bool alpha = true, // support alpha channel or not
-  bool multisample = false, // enable anti-aliasing
+  bool float_texture, // use floating point channels (8-bit is default)
+  bool alpha, // support alpha channel or not
+  bool multisample, // enable anti-aliasing
   GLuint existing_depth_texture_id
 )
 {
