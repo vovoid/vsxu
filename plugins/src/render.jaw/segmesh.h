@@ -321,7 +321,7 @@ public:
           e.normalize();
           //d = d + e*0.4;
 
-          ma.rotation_from_vectors(&e, &upv);
+          ma.rotation_from_vectors(&e);
           //old_vec = e;
           old = spos;
 

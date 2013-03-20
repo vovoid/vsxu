@@ -109,7 +109,7 @@ public:
       e.normalize();
       //d = d + e*0.4;
 
-      ma.rotation_from_vectors(&e, &upv);
+      ma.rotation_from_vectors(&e);
 
   //    gmesh.vertices[i+1][0].coord = gmesh.vertices[0][0].coord+spos;
   //    gmesh.vertices[i+1][1].coord = gmesh.vertices[0][1].coord+spos;

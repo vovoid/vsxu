@@ -587,7 +587,7 @@ public:
     memcpy(&m,&mm,sizeof(float)*16);
   }
 
-  void rotation_from_vectors(vsx_vector* dir, vsx_vector* upv)
+  void rotation_from_vectors(vsx_vector* dir)
   {
   	vsx_vector x, y, z;
   	z = *dir;
