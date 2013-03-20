@@ -37,7 +37,13 @@ public:
   float z;
   float w;
   
-  vsx_quaternion() {};
+  vsx_quaternion()
+  {
+    x = 0.0f;
+    y = 0.0f;
+    z = 0.0f;
+    w = 1.0f;
+  }
 
   vsx_quaternion(float xx, float yy, float zz) {
     x = xx;
