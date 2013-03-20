@@ -622,10 +622,17 @@ class vsx_module_render_mesh : public vsx_module {
   unsigned long prev_mesh_timestamp;
 
   // vbo index offsets
-  int offset_normals;
-  int offset_vertices;
-  int offset_texcoords;
-  int offset_vertex_colors;
+  #if PLATFORM_BITS == 32
+    int offset_normals;
+    int offset_vertices;
+    int offset_texcoords;
+    int offset_vertex_colors;
+  #else
+    int64_t offset_normals;
+    int64_t offset_vertices;
+    int64_t offset_texcoords;
+    int64_t offset_vertex_colors;
+  #endif
 
   // vbo handles
   GLuint vbo_id_vertex_normals_texcoords;
@@ -970,22 +977,22 @@ public:
     if (use_vertex_colors->get())
     {
       if ((*mesh)->data->vertex_colors.get_used()) {
-        glColorPointer(4,GL_FLOAT,0,offset_vertex_colors);
+        glColorPointer(4,GL_FLOAT,0,(GLvoid*)offset_vertex_colors);
         m_colors = true;
       }
     }
     // enable vertex normals
     if ((*mesh)->data->vertex_normals.get_used()) {
-      glNormalPointer(GL_FLOAT,0,offset_normals);
+      glNormalPointer(GL_FLOAT,0,(GLvoid*)offset_normals);
       m_normals = true;
     }
     // enable tex coords
     if ((*mesh)->data->vertex_tex_coords.get_used()) {
-      glTexCoordPointer(2,GL_FLOAT,0,offset_texcoords);
+      glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)offset_texcoords);
       m_tex_coords = true;
     }
     // enable vertices
-    glVertexPointer(3,GL_FLOAT,0,offset_vertices);
+    glVertexPointer(3,GL_FLOAT,0,(GLvoid*)offset_vertices);
 
     // bind the index array buffer buffer for use
     glBindBufferARB
