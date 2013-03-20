@@ -221,39 +221,20 @@ public:
     bitm.size_y = 0;
     bitm.valid = false;
     bitm.data = 0;
-    bitm_timestamp = bitm.timestamp;
+    texture_timestamp = bitm_timestamp = bitm.timestamp;
   
     bitmap_out->set_p(bitm);
     thread_state = 0;
-    texture = new vsx_texture;
-    texture->locked = true;
-    texture->init_opengl_texture();
-    texture->valid = false;
+    texture = 0x0;
     
     texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
     texture_out->valid = false;
-
-    texture_timestamp = -1;
-    //texture_out->set_p(*texture);
   }
   
   time_t last_modify_time;
   t_stat st;
-  void run() {
-		
-    //int state_checked = 0;
-    /*if (poll_updates->get() && current_filename != "")
-    {
-      
-      stat(current_filename.c_str(), &st);
-      //printf("mtime: %d\n", st.st_mtime);
-      if (st.st_mtime != last_modify_time)
-      {
-        last_modify_time = st.st_mtime;
-        state_checked = 1;
-        printf("STATE CHECK AND CHONG\n");
-      }
-    }*/
+  void run()
+  {
     if (current_filename != filename_in->get() || reload->get() == 1) {
       reload->set(0);
 
@@ -302,20 +283,12 @@ public:
         bitm.size_x = pp->Width;
         bitm.size_y = pp->Height;
         bitm.data = (vsx_bitmap_32bt*)(pp->Data);
-        //bitm.valid = true;
-        //printf("%d %d %d\n",bitm.bpp,bitm.size_x,bitm.size_y);
+
         bitm.timestamp++;
         bitmap_out->set_p(bitm);
       }
       loading_done = true;
   }
-  //bitm = bitm_in->get();
-  //if (bitm.valid && bitm_timestamp != bitm.timestamp) {
-    // ok, new version
-    //bitm_timestamp = bitm.timestamp;
-    //texture->upload_ram_bitmap(&bitm);
-  //}  
-  //result_texture->set_p(*texture);
 }
 
 void output(vsx_module_param_abs* param)
@@ -324,6 +297,13 @@ void output(vsx_module_param_abs* param)
   {
     if (texture_timestamp != bitm.timestamp)
     {
+      if (texture == 0x0)
+      {
+        texture = new vsx_texture;
+        texture->locked = true;
+        texture->init_opengl_texture();
+        texture->valid = false;
+      }
       texture->upload_ram_bitmap(&bitm,true);
       texture->valid = true;
       texture_out->set(texture);
