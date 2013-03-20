@@ -795,15 +795,16 @@ public:
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
   }
+
   unsigned long prev_timestamp;
   vsx_vector v;
   void run() {
     vsx_mesh** p = mesh_in->get_addr();
     if (!p) 
     {
-      mesh_empty.timestamp = (int)(engine->real_vtime*1000.0f);
-      mesh_out->set(&mesh_empty);
-      prev_timestamp = 0xFFFFFFFF;
+      //mesh_empty.timestamp = (int)(engine->real_vtime*1000.0f);
+      //mesh_out->set(&mesh_empty);
+      //prev_timestamp = 0xFFFFFFFF;
       return;
     }   
     
@@ -1061,8 +1062,8 @@ public:
     vsx_mesh** p = mesh_in->get_addr();
     if (!p)
     {
-      mesh_empty.timestamp = (int)(engine->real_vtime*1000.0f);
-      mesh_out->set(&mesh_empty);
+      //mesh_empty.timestamp = (int)(engine->real_vtime*1000.0f);
+      //mesh_out->set(&mesh_empty);
       prev_timestamp = 0xFFFFFFFF;
       return;
     }
