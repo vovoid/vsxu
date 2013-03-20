@@ -603,6 +603,7 @@ class vsx_module_render_mesh : public vsx_module {
   vsx_module_param_int* use_vertex_colors;
   vsx_module_param_int* use_display_list;
   vsx_module_param_int* particles_size_center;
+  vsx_module_param_int* ignore_uvs_in_vbo_updates;
   vsx_module_param_particlesystem* particles_in;
 
 
@@ -851,6 +852,7 @@ public:
           "use_display_list:enum?no|yes,"
           "use_vertex_colors:enum?no|yes,"
           "particles_size_center:enum?no|yes,"
+          "ignore_uvs_in_vbo_updates:enum?no|yes"
         "}";
     info->out_param_spec = "render_out:render";
     info->component_class = "render";
@@ -868,6 +870,10 @@ public:
     use_display_list->set(0);
     use_vertex_colors = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"use_vertex_colors");
     use_vertex_colors->set(1);
+
+    ignore_uvs_in_vbo_updates = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"ignore_uvs_in_vbo_updates");
+    ignore_uvs_in_vbo_updates->set(0);
+
     m_colors = true;
     particles_size_center = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"particles_size_center");
     particles_size_center->set(0);
@@ -1131,8 +1137,16 @@ public:
         
         if ((*mesh)->data->vertex_tex_coords.get_used())
         {
-          memcpy( ptr + offset_texcoords, (*mesh)->data->vertex_tex_coords.get_pointer(), (*mesh)->data->vertex_tex_coords.get_sizeof() );
+          // optimize away the UV uploads
+          if
+          (
+            false == (ignore_uvs_in_vbo_updates->get() == 1 && num_uploads > 100)
+          )
+          {
+            memcpy( ptr + offset_texcoords, (*mesh)->data->vertex_tex_coords.get_pointer(), (*mesh)->data->vertex_tex_coords.get_sizeof() );
+          }
         }
+
 
         if (use_vertex_colors->get())
         {
