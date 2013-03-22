@@ -658,10 +658,10 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
   #define FAIL(header, message) 	cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(#header)+" Error "+base64_encode(#message))
 
   vsx_command_timer.start();
-  //bool run = true;
+
   vsx_command_list* cmd_out = cmd_out_res;
-  while (total_time < 0.01)
-  //while (1)
+
+  while (total_time < 0.01 || ignore_timing)
   {
     c = commands_internal.pop();
     if (!c) break;
