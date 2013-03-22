@@ -22,7 +22,7 @@
 
 #ifdef __LINUX_PULSE__
 #define  AUDIO_API RtAudio::LINUX_PULSE
-#elif __LINUX_PULSE__
+#else
 #define AUDIO_API
 #endif
 

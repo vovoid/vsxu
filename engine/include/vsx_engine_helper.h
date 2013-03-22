@@ -31,7 +31,7 @@ public:
 
   void render()
   {
-    engine->process_message_queue( &cmd_in, &cmd_out, false, true );
+    engine->process_message_queue( &cmd_in, &cmd_out, false, false );
     cmd_out.clear(true);
     engine->render();
   }

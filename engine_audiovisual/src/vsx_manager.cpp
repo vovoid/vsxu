@@ -124,8 +124,6 @@ void manager_destroy(vsx_manager_abs* manager)
 vsx_manager::vsx_manager()
 {
   int_state_manager = (void*)new vsx_statelist();
-  module_list = vsx_module_list_factory_create();
-  ((vsx_statelist*)int_state_manager)->set_module_list( module_list );
 }
 
 vsx_manager::~vsx_manager()
@@ -138,6 +136,9 @@ void vsx_manager::init(const char* base_path, const char* sound_type)
 {
   if(!base_path)
     base_path =  std::string(PLATFORM_SHARED_FILES_STLSTRING).c_str();
+
+  module_list = vsx_module_list_factory_create(vsx_string(sound_type));
+  ((vsx_statelist*)int_state_manager)->set_module_list( module_list );
 
   ((vsx_statelist*)int_state_manager)->init(vsx_string(base_path),vsx_string(sound_type));
 }

@@ -367,8 +367,6 @@ for( x=0 ; x<num_of_buttons ; ++x )
   printf("B%d: %d  ", x, button[x] );
 printf("\n");
 */  
-  //if (float_in->get() > 1.0) exit(0);
-  //render_out->set(1);
 }
 
 };

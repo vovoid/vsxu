@@ -10,6 +10,7 @@ class vsx_module_list : public vsx_module_list_abs
 {
 private:
   std::vector< vsx_dynamic_object_handle > plugin_handles;
+  vsx_argvector arguments;
 public:
   void init(vsx_string args = "");
   void destroy();

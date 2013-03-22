@@ -16,6 +16,8 @@ void vsx_module_list::init(vsx_string args)
   // woops, looks like we already built the list
   if (module_list.size()) return;
 
+  arguments.init_from_string(args);
+
   // statistics counter - how many modules are loaded in total?
   unsigned long total_num_modules = 0;
 
@@ -73,6 +75,21 @@ void vsx_module_list::init(vsx_string args)
 
     // add this module handle to our list of module handles
     plugin_handles.push_back(plugin_handle);
+
+    //-------------------------------------------------------------------------
+    // look for the OPTIONAL arguments method
+    if (vsx_dlopen::sym(plugin_handle, "module_factory_arguments") != 0)
+    {
+      void(*module_factory_arguments)(void*) =
+          (void(*)(void*))
+          vsx_dlopen::sym(
+            plugin_handle,
+            "module_factory_arguments"
+          );
+      module_factory_arguments( (void*)&arguments );
+    }
+    //-------------------------------------------------------------------------
+
 
     //-------------------------------------------------------------------------
     // look for the REQUIRED constructor (factory) method

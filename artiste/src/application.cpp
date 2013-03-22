@@ -438,7 +438,7 @@ void app_init(int id) {
   //printf("argc: %d %s\n",app_argc,own_path.c_str());
   //---------------------------------------------------------------------------
   vxe = new vsx_engine(own_path);
-  vxe_module_list = vsx_module_list_factory_create();
+  vxe_module_list = vsx_module_list_factory_create("");
   vxe->set_module_list(vxe_module_list);
 
 

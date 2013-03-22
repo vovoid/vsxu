@@ -32,7 +32,6 @@ class vsx_module_obj_loader : public vsx_module {
 	vsx_module_param_mesh* result;
 	// internal
 	vsx_mesh* mesh;
-  vsx_mesh* mesh_empty;
 	bool first_run;
 	int n_rays;
 	vsx_string current_filename;
@@ -76,7 +75,6 @@ void run() {
    	if (!verify_filesuffix(filename->get(),"obj")) {
    		filename->set(current_filename);
    		message = "module||ERROR! This is not a OBJ mesh file!";
-      result->set_p(mesh_empty);
    		return;
    	} else message = "module||ok";
 
@@ -85,7 +83,6 @@ void run() {
     //printf("a\n");
     if ((fp = engine->filesystem->f_open(current_filename.c_str(), "r")) == NULL)
     {
-      result->set_p(mesh_empty);
       return;
     }
     
