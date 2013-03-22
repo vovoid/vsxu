@@ -408,8 +408,8 @@ void deactivate_offscreen() {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     texture2->_bind();
 
-    float pixel_offset_size_x = start_value->get() * 2.0f / (float)res_x;
-    float pixel_offset_size_y = start_value->get() * 2.0f / (float)res_y;
+    float pixel_offset_size_x = start_value->get() * 0.4f / (float)res_x;
+    float pixel_offset_size_y = start_value->get() * 0.4f / (float)res_y;
 
     texture->begin_capture_to_buffer();
       glViewport(0,0,res_x,res_y);
