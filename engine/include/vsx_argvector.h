@@ -77,6 +77,28 @@ public:
     return "";
   }
 
+  void init_from_string(vsx_string new_string)
+  {
+    vsx_string res;
+    new_string.trim_lf();
+
+    for (size_t i = 0; i < new_string.size(); i++)
+    {
+      if (new_string[i] == ' ' && res.size())
+      {
+        data.push_back( res );
+        res.clear();
+      } else
+      {
+        res.push_back( new_string[i] );
+      }
+    }
+    if (res.size())
+    {
+      data.push_back(res);
+    }
+  }
+
   vsx_argvector() {}
 };
 

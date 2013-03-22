@@ -99,6 +99,16 @@ public:
     return data.get_used()-1; 
   }
 
+  void clear()
+  {
+    data.reset_used();
+  }
+
+  void empty()
+  {
+    data.reset_used();
+  }
+
   char& operator[](int index) const {
   	if (index < 0) index = 0;
     return data[index];
