@@ -78,15 +78,15 @@ void vsx_module_list::init(vsx_string args)
 
     //-------------------------------------------------------------------------
     // look for the OPTIONAL arguments method
-    if (vsx_dlopen::sym(plugin_handle, "module_factory_arguments") != 0)
+    if (vsx_dlopen::sym(plugin_handle, "set_required_factory_arguments") != 0)
     {
-      void(*module_factory_arguments)(void*) =
+      void(*set_required_factory_arguments)(void*) =
           (void(*)(void*))
           vsx_dlopen::sym(
             plugin_handle,
-            "module_factory_arguments"
+            "set_required_factory_arguments"
           );
-      module_factory_arguments( (void*)&arguments );
+      set_required_factory_arguments( (void*)&arguments );
     }
     //-------------------------------------------------------------------------
 

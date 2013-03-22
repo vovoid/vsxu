@@ -31,15 +31,18 @@
 #endif
 
 vsx_argvector* internal_args;
+size_t sound_module_type = 0;
+
 
 extern "C" {
-__declspec(dllexport) void module_factory_arguments(void* arguments);
+__declspec(dllexport) void set_required_factory_arguments(void* arguments);
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 }
 
-void module_factory_arguments(void* arguments)
+// this is run before the factory is queried
+void set_required_factory_arguments(void* arguments)
 {
   internal_args = (vsx_argvector*)arguments;
 }
@@ -51,10 +54,12 @@ vsx_module* create_new_module(unsigned long module)
     case 0:
     if (internal_args->has_param("sound_type_media_player"))
     {
+      sound_module_type = 1;
       printf("sound type: media player\n");
       return (vsx_module*)(new input_audio_mediaplayer);
     } else
     {
+      sound_module_type = 0;
       return (vsx_module*)(new input_audio_raw);
     }
 #ifdef WITH_MIDI
@@ -68,7 +73,13 @@ void destroy_module(vsx_module* m,unsigned long module)
 {
   switch(module){
     case 0:
-      return delete (input_audio_raw*)m;
+      switch(sound_module_type)
+      {
+        case 0:
+        return delete (input_audio_raw*)m;
+        case 1:
+        return delete (input_audio_mediaplayer*)m;
+      }
 #ifdef WITH_MIDI
     case 1:
       return delete (input_audio_midi*)m;
