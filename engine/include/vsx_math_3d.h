@@ -466,14 +466,14 @@ public:
     m[12] = m[3];  m[13] = m[7];  m[14] = m[11];  m[15] = m[15];
   }
 
-  inline vsx_vector multiply_vector(vsx_vector a)
+  inline vsx_vector multiply_vector(const vsx_vector &a)
   {
     vsx_vector b;
     b.x = m[0] * a.x + m[1] * a.y + m[2]  * a.z + m[3];
     b.y = m[4] * a.x + m[5] * a.y + m[6]  * a.z + m[7];
     b.z = m[8] * a.x + m[9] * a.y + m[10] * a.z + m[11];
   	return b;
-  };
+  }
 
   void assign_inverse(vsx_matrix *mm) {
     float d00, d01, d02, d03;
