@@ -2,7 +2,6 @@
 #define VSX_MODULE_LIST_ABS_H
 
 // Module List Abstract Class
-// Needs to be implemented per platform
 
 class vsx_module_list_abs
 {
