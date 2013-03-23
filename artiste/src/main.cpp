@@ -152,32 +152,26 @@ int main(int argc, char* argv[])
     app_argv.push_back( arg );
   }
 
-  //vsx_string arg = vsx_string()
-  //app_argc = argc;
-  //app_argv = argv;
-  int     width, height, running, frames, x, y;
-  double  t, t0, t1;
-  char    titlestr[ 200 ];
+  if (app_argv.has_param("help"))
+  {
+    app_print_cli_help();
+    exit(0);
+  }
 
   // Initialise GLFW
   glfwInit();
   set_modifiers();
+
+
+  int     width, height, running, frames, x, y;
+  double  t, t0, t1;
+  char    titlestr[ 200 ];
+
   bool start_fullscreen = false;
   bool manual_resolution_set = false;
   int x_res = 1280;
   int y_res = 720;
 
-  if (app_argv.has_param("help"))
-  {
-    printf(
-           "VSXu Artiste command syntax:\n"
-           "  -f             fullscreen mode\n"
-           "  -s 1920,1080   screen/window size\n"
-           "  -p 100,100     window posision\n"
-           "\n"
-          );
-    exit(0);
-  }
 
   if (app_argv.has_param("f"))
   {

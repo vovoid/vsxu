@@ -11,7 +11,7 @@
 
 
 
-void vsx_module_list::init(vsx_string args)
+void vsx_module_list::init(vsx_string args, bool print_help = false)
 {
   // woops, looks like we already built the list
   if (module_list.size()) return;
@@ -75,6 +75,22 @@ void vsx_module_list::init(vsx_string args)
 
     // add this module handle to our list of module handles
     plugin_handles.push_back(plugin_handle);
+
+    if (print_help)
+    {
+      if ( vsx_dlopen::sym(plugin_handle, "print_help") )
+      {
+        void(*print_help)() =
+            (void(*)())
+            vsx_dlopen::sym(
+              plugin_handle,
+              "print_help"
+            );
+        print_help();
+        printf("\n-----------------------------------------\n\n");
+      }
+      continue;
+    }
 
 
     //-------------------------------------------------------------------------

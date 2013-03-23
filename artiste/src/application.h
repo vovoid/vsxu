@@ -38,13 +38,10 @@ extern bool dual_monitor;
 
 extern vsx_argvector app_argv;
 
-//extern int app_num_displays; // 0 means the primary one used, 1 the extra
-extern void (*app_set_fullscreen)(int,bool);
-extern bool (*app_get_fullscreen)(int);
-
-
 
 void app_init(int id); // which context is used?
+
+void app_print_cli_help();
 
 void app_pre_draw();
 

@@ -438,9 +438,8 @@ void app_init(int id) {
   //printf("argc: %d %s\n",app_argc,own_path.c_str());
   //---------------------------------------------------------------------------
   vxe = new vsx_engine(own_path);
-  vsx_string args = app_argv.serialize();
-  printf("arguments serialized: %s\n", args.c_str());
-  vxe_module_list = vsx_module_list_factory_create(args);
+
+  vxe_module_list = vsx_module_list_factory_create(app_argv.serialize(),false);
   vxe->set_module_list(vxe_module_list);
 
 
@@ -450,14 +449,26 @@ void app_init(int id) {
   if (dual_monitor) {
     vxe->start();
   }
+}
 
-  // set engine argv
-  for (size_t i = 0; i < app_argv.size(); i++)
-  {
-    vsx_string arg = app_argv[i];
-    printf("adding arg: %s\n", arg.c_str() );
-    vxe->get_engine_info()->argv.push_back( arg );
-  }
+/*
+ print out help texts
+*/
+void app_print_cli_help()
+{
+  printf(
+         "VSXu Artiste command syntax:\n"
+         "  -f             fullscreen mode\n"
+         "  -s 1920,1080   screen/window size\n"
+         "  -p 100,100     window posision\n"
+         "\n"
+        );
+  vsx_module_list_abs* module_list = vsx_module_list_factory_create
+  (
+    app_argv.serialize(),
+        true
+  );
+
 }
 
 

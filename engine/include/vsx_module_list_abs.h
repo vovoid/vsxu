@@ -26,6 +26,7 @@ public:
   //   This method looks on disk for plugins, enumerates them
   //   and stores the results.
   //   Parameters:
+  //
   //     args:
   //       Can be used for config/things like:
   //         - Preferred driver (if dealing with hardware)
@@ -33,9 +34,15 @@ public:
   //       Should only be used for stuff that has to stay the
   //       same during the whole instance of an engine. For everything
   //       else - use normal module parameters (maybe even hidden ones).
+  //
+  //     print_help:
+  //       Tell the module so's to print out (to cli) documentation for
+  //       all flags supported.
+  //
   //   Example use:
-  //     build_module_list("sound.recording.type=fmod;opengl.vsync=1;");
-  virtual void init(vsx_string args = "") = 0;
+  //     build_module_list("-sound_driver pulse -opengl_vsync 1", false);
+  //     build_module_list("", true);
+  virtual void init(vsx_string args = "", bool print_help = false) = 0;
 
   virtual void destroy() = 0;
 

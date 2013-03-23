@@ -34,11 +34,17 @@ size_t sound_module_type = 0;
 
 
 extern "C" {
+__declspec(dllexport) void print_help();
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 }
 
+void print_help()
+{
+  printf("Parameters for vsx_listener (visualization sound input):\n");
+  printf("  -sound_type_media_player    - use media player backend (testing only)\n");
+}
 
 vsx_module* create_new_module(unsigned long module, void* args)
 {
