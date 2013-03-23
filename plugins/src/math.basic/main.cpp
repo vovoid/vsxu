@@ -2829,14 +2829,14 @@ and converts to an RedGreenBlueAlpha float4";
 #endif
 
 extern "C" {
-__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
 
-vsx_module* MOD_CM(unsigned long module) {
+vsx_module* MOD_CM(unsigned long module, void* args) {
   switch (module) {
     case 0:  return (vsx_module*)(new module_3float_to_float3);
     case 1:  return (vsx_module*)(new module_4float_to_float4);

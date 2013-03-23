@@ -1847,14 +1847,14 @@ public:
 #endif
 
 extern "C" {
-__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
 
-vsx_module* MOD_CM(unsigned long module) {
+vsx_module* MOD_CM(unsigned long module, void* args) {
   // in here you load your module.
   // i suggest you make a cache on the first run (this is called once when the vsxu engine starts
   // as it's looping through the available modules and will call

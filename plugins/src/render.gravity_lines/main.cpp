@@ -675,7 +675,7 @@ public:
 #endif
 
 extern "C" {
-__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 }
@@ -686,7 +686,7 @@ unsigned long get_num_modules() {
   return 4;
 }
 
-vsx_module* create_new_module(unsigned long module) {
+vsx_module* create_new_module(unsigned long module, void* args) {
   // as we have only one module available, don't look at the module variable, just return - FOR SPEED (says jaw)
   // otherwise you'd have something like,, switch(module) { case 0: break; }
   switch (module) {

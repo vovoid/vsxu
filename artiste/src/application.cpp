@@ -438,7 +438,9 @@ void app_init(int id) {
   //printf("argc: %d %s\n",app_argc,own_path.c_str());
   //---------------------------------------------------------------------------
   vxe = new vsx_engine(own_path);
-  vxe_module_list = vsx_module_list_factory_create("");
+  vsx_string args = app_argv.serialize();
+  printf("arguments serialized: %s\n", args.c_str());
+  vxe_module_list = vsx_module_list_factory_create(args);
   vxe->set_module_list(vxe_module_list);
 
 

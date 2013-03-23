@@ -921,7 +921,7 @@ public:
 #endif
 
 extern "C" {
-__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 }
@@ -931,7 +931,7 @@ unsigned long get_num_modules() {
   return 5;
 }  
 
-vsx_module* create_new_module(unsigned long module) {
+vsx_module* create_new_module(unsigned long module, void* args) {
   switch (module) {
     case 0: return (vsx_module*)(new vsx_module_plugin_wind);
     case 1: return (vsx_module*)(new vsx_module_particle_size_noise);

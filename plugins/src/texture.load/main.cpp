@@ -804,7 +804,7 @@ public:
 #endif
 
 extern "C" {
-__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 }
@@ -812,7 +812,7 @@ __declspec(dllexport) unsigned long get_num_modules();
 
 bool glewinit = false;
 
-vsx_module* create_new_module(unsigned long module) {
+vsx_module* create_new_module(unsigned long module, void* args) {
   if (!glewinit)
   {
     // we sneak in and init glew :) as we need it

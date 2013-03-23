@@ -99,6 +99,17 @@ public:
     }
   }
 
+  vsx_string serialize()
+  {
+    vsx_string res;
+    for (size_t i = 0; i < data.size(); i++)
+    {
+      if (i) res.push_back(' ');
+      res += data[i];
+    }
+    return res;
+  }
+
   vsx_argvector() {}
 };
 

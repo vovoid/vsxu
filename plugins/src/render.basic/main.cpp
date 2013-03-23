@@ -726,13 +726,13 @@ void output(vsx_module_param_abs* param) {
 #endif
 
 extern "C" {
-__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-vsx_module* MOD_CM(unsigned long module) {
+vsx_module* MOD_CM(unsigned long module, void* args) {
   switch (module) {
     case 0: return (vsx_module*)new vsx_module_simple_with_texture;
     case 1: return (vsx_module*)new vsx_module_render_basic_colored_rectangle;

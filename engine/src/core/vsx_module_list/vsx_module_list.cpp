@@ -40,7 +40,7 @@ void vsx_module_list::init(vsx_string args)
     ,
     &mfiles
     ,
-    ".so"
+    PLATFORM_DLL_SUFFIX
     ,
     ""
   );
@@ -76,20 +76,6 @@ void vsx_module_list::init(vsx_string args)
     // add this module handle to our list of module handles
     plugin_handles.push_back(plugin_handle);
 
-    //-------------------------------------------------------------------------
-    // look for the OPTIONAL arguments method
-    if (vsx_dlopen::sym(plugin_handle, "set_required_factory_arguments") != 0)
-    {
-      void(*set_required_factory_arguments)(void*) =
-          (void(*)(void*))
-          vsx_dlopen::sym(
-            plugin_handle,
-            "set_required_factory_arguments"
-          );
-      set_required_factory_arguments( (void*)&arguments );
-    }
-    //-------------------------------------------------------------------------
-
 
     //-------------------------------------------------------------------------
     // look for the REQUIRED constructor (factory) method
@@ -103,8 +89,8 @@ void vsx_module_list::init(vsx_string args)
       continue; // try to load the next plugin
     }
     // initialize constructor (factory) method
-    vsx_module*(*create_new_module)(unsigned long) =
-        (vsx_module*(*)(unsigned long))
+    vsx_module*(*create_new_module)(unsigned long, void*) =
+        (vsx_module*(*)(unsigned long, void*))
         vsx_dlopen::sym(
           plugin_handle,
           "create_new_module"
@@ -183,7 +169,7 @@ void vsx_module_list::init(vsx_string args)
     {
       // ask the constructor / factory to create a module instance for us
       vsx_module* module_object =
-          create_new_module(module_index_iterator);
+          create_new_module(module_index_iterator, (void*)&arguments);
       // check for error
       if (0x0 == module_object)
       {
@@ -309,7 +295,8 @@ vsx_module* vsx_module_list::load_module_by_name(vsx_string name)
     ->
     create_new_module
     (
-      ((vsx_module_plugin_info*)module_plugin_list[ name ])->module_id
+      ((vsx_module_plugin_info*)module_plugin_list[ name ])->module_id,
+      (void*)&arguments
     )
   ;
   module->module_id = ((vsx_module_plugin_info*)module_plugin_list[ name ])->module_id;

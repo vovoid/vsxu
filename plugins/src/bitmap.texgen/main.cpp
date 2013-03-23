@@ -57,14 +57,14 @@
 #endif
 
 extern "C" {
-__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
 
-vsx_module* create_new_module(unsigned long module) {
+vsx_module* create_new_module(unsigned long module, void* args) {
   if (module > 4)
   {
     module_bitmap_blend* b = new module_bitmap_blend;

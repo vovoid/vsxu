@@ -31,7 +31,7 @@ typedef struct {
   vsx_module_info* module_info;
 
   // cached function to module's constructor/destructor
-  vsx_module*(*create_new_module)( unsigned long );
+  vsx_module*(*create_new_module)( unsigned long, void* );
   void(*destroy_module)( vsx_module*, unsigned long );
 } vsx_module_plugin_info;
 

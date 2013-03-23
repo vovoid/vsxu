@@ -30,32 +30,25 @@
 #define __declspec(a)
 #endif
 
-vsx_argvector* internal_args;
 size_t sound_module_type = 0;
 
 
 extern "C" {
-__declspec(dllexport) void set_required_factory_arguments(void* arguments);
-__declspec(dllexport) vsx_module* create_new_module(unsigned long module);
+__declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 }
 
-// this is run before the factory is queried
-void set_required_factory_arguments(void* arguments)
-{
-  internal_args = (vsx_argvector*)arguments;
-}
 
-vsx_module* create_new_module(unsigned long module)
+vsx_module* create_new_module(unsigned long module, void* args)
 {
+  vsx_argvector* internal_args = (vsx_argvector*) args;
   switch(module)
   {
     case 0:
     if (internal_args->has_param("sound_type_media_player"))
     {
       sound_module_type = 1;
-      printf("sound type: media player\n");
       return (vsx_module*)(new input_audio_mediaplayer);
     } else
     {
