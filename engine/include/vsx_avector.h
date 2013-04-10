@@ -136,13 +136,15 @@ public:
     }
     return A[index];
   }
-  vsx_avector() : allocated(0),used(0),A(0),allocation_increment(1),timestamp(0) {};
-//#ifndef VSX_AVECTOR_ND
-  ~vsx_avector() {
-    //printf("avector destructor\n");
-    delete[] A;
+  vsx_avector() : allocated(0),used(0),A(0),allocation_increment(1),timestamp(0) {}
+  ~vsx_avector()
+  {
+    if (A)
+    {
+      delete[] A;
+      A = 0x0;
+    }
   }
-//#endif
 };
 
 #endif
