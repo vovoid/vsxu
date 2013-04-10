@@ -91,6 +91,7 @@ vsx_widget_base_edit::vsx_widget_base_edit() {
   scrollbar_pos_y = 0;
   longest_line = 0;
   longest_y = 0;
+  updates = 0;
   process_characters = true;
   num_hidden_lines = 0;
   myf.syntax_colors[0] = skin_color[14]; // base color

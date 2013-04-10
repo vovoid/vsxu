@@ -1099,6 +1099,7 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
   hide_ = false;
   first = true;
   drag_dropped = false;
+  draw_tooltip = false;
   drag_module = false;
   module_tree = new HTNode;
   interpolation_speed = 7;
