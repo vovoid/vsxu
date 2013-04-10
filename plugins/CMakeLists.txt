@@ -93,10 +93,11 @@ add_subdirectory(src/render.oscilloscope)
 add_subdirectory(src/render.text)
 
 if (IS_DIRECTORY ${CMAKE_SOURCE_DIR}/plugins/src/sound.fmod)
-  add_subdirectory(src/sound.fmod)
+  #add_subdirectory(src/sound.fmod)
 endif ()
 
-add_subdirectory(src/sound)
+#add_subdirectory(src/sound)
+add_subdirectory(src/sound.rtaudio)
 
 add_subdirectory(src/string)
 add_subdirectory(src/system)
