@@ -157,7 +157,8 @@ RtAudio :: RtAudio( RtAudio::Api api ) throw()
 
     // No compiled support for specified API value.  Issue a debug
     // warning and continue as if no API was specified.
-    std::cerr << "\nRtAudio: no compiled support for specified API argument!\n" << std::endl;
+    printf("\nRtAudio: no compiled support for specified API argument!\n");
+    //std::cerr << "\nRtAudio: no compiled support for specified API argument!\n" << std::endl;
   }
 
   // Iterate through the compiled APIs and return as soon as we find
@@ -175,7 +176,8 @@ RtAudio :: RtAudio( RtAudio::Api api ) throw()
   // definition __RTAUDIO_DUMMY__ is automatically defined if no
   // API-specific definitions are passed to the compiler. But just in
   // case something weird happens, we'll print out an error message.
-  std::cerr << "\nRtAudio: no compiled API support found ... critical error!!\n\n";
+  printf("\nRtAudio: no compiled API support found ... critical error!!\n\n");
+  //std::cerr << "\nRtAudio: no compiled API support found ... critical error!!\n\n";
 }
 
 RtAudio :: ~RtAudio() throw()
@@ -7706,7 +7708,8 @@ void RtApi :: error( RtError::Type type )
 {
   errorStream_.str(""); // clear the ostringstream
   if ( type == RtError::WARNING && showWarnings_ == true )
-    std::cerr << '\n' << errorText_ << "\n\n";
+    printf("\n%s\n\n", errorText_.c_str());
+    //std::cerr << '\n' << errorText_ << "\n\n";
   else if ( type != RtError::WARNING )
     throw( RtError( errorText_, type ) );
 }

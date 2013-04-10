@@ -13,7 +13,8 @@
 #define RTERROR_H
 
 #include <exception>
-#include <iostream>
+//#include <iostream>
+#include <stdio.h>
 #include <string>
 
 class RtError : public std::exception
@@ -41,7 +42,10 @@ class RtError : public std::exception
   virtual ~RtError( void ) throw() {}
 
   //! Prints thrown error message to stderr.
-  virtual void printMessage( void ) const throw() { std::cerr << '\n' << message_ << "\n\n"; }
+  virtual void printMessage( void ) const throw() {
+    printf("\n%s\n", message_.c_str());
+    //std::cerr << '\n' << message_ << "\n\n";
+  }
 
   //! Returns the thrown error message type.
   virtual const Type& getType(void) const throw() { return type_; }
