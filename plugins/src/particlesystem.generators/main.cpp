@@ -182,7 +182,7 @@ but you usually want a lot more.";
         (*particles.particles)[i].speed.z = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
         (*particles.particles)[i].time = 3;//((float)(rand()%1000)/1000.0)*2;
         (*particles.particles)[i].lifetime = 2;//((float)(rand()%1000)/1000.0)*2;
-        (*particles.particles)[i].rotation_dir = vsx_quaternion(0,0,0,1);
+        (*particles.particles)[i].rotation_dir = vsx_quaternion(0,0,0,0);
       }
       first = false;
       return;
