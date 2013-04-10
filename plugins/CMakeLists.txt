@@ -96,9 +96,7 @@ if (IS_DIRECTORY ${CMAKE_SOURCE_DIR}/plugins/src/sound.fmod)
   add_subdirectory(src/sound.fmod)
 endif ()
 
-#add_subdirectory(src/sound.media_player)
-#add_subdirectory(src/sound.pulseaudio)
-add_subdirectory(src/audio)
+add_subdirectory(src/sound)
 
 add_subdirectory(src/string)
 add_subdirectory(src/system)
