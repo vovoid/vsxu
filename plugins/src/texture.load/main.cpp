@@ -157,9 +157,11 @@ class module_load_png : public vsx_module {
     //if (((module_load_png*)ptr)->bitm.data) {
       //delete ((module_load_png*)ptr)->bitm.data;
     //}
+
+    module_load_png* module = ((module_load_png*)ptr);
     
     ((module_load_png*)ptr)->pp = new pngRawInfo;
-    if (pngLoadRaw(((module_load_png*)ptr)->current_filename.c_str(), ((module_load_png*)ptr)->pp,((module_load_png*)ptr)->engine->filesystem)) {
+    if (pngLoadRaw( module->current_filename.c_str(), ((module_load_png*)ptr)->pp,((module_load_png*)ptr)->engine->filesystem)) {
       ((module_load_png*)ptr)->bitm.valid = true;
       ((module_load_png*)ptr)->thread_state = 2;
     } else {
@@ -313,7 +315,10 @@ void output(vsx_module_param_abs* param)
 }
 
 void stop() {
-  texture->unload();
+  if (texture)
+  {
+    texture->unload();
+  }
 }
 
 void start() {
