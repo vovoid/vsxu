@@ -825,7 +825,6 @@ public:
         }
         else
         {
-          glMultMatrixf(ma.m);
           glTranslatef(
             (*particles->particles)[i].pos.x,
             (*particles->particles)[i].pos.y,
@@ -837,6 +836,7 @@ public:
             ss,
             ss
           );
+          glMultMatrixf(ma.m);
         }
 //        printf("output %d\n", __LINE__);
 
