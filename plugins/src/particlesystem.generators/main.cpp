@@ -182,6 +182,7 @@ but you usually want a lot more.";
         (*particles.particles)[i].speed.z = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
         (*particles.particles)[i].time = 3;//((float)(rand()%1000)/1000.0)*2;
         (*particles.particles)[i].lifetime = 2;//((float)(rand()%1000)/1000.0)*2;
+        (*particles.particles)[i].rotation_dir = vsx_quaternion(0,0,0,1);
       }
       first = false;
       return;
@@ -514,7 +515,7 @@ in sequence.\n\
         f_randpool.memory_clear();
         float* fpp = f_randpool.get_pointer();
 
-        for (i = 0; i < (int)particles_count->get()*10; ++i) {
+        for (i = 0; i < (size_t)particles_count->get()*10; ++i) {
           *fpp = rand.frand();
           fpp++;
         }
@@ -612,7 +613,7 @@ in sequence.\n\
         float rdb = random_deviation->get(1);
         float rdc = random_deviation->get(2);
         vsx_particle* pp =(*particles.particles).get_pointer();
-        for (i = 0; i < nump; ++i) {
+        for (i = 0; i < (size_t)nump; ++i) {
           // add the delta-time to the time of the particle
           (*pp).time+=dtime;
           // is the time got over the maximum lifetime of the particle, re-initialize it
@@ -729,7 +730,9 @@ unsigned long get_num_modules() {
   return 2;
 }
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   switch (module) {
     case 0: return (vsx_module*)(new vsx_module_particle_gen_simple);
     case 1: return (vsx_module*)(new vsx_module_particle_gen_mesh);

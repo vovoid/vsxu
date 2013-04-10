@@ -114,6 +114,7 @@ void module_info(vsx_module_info* info)
 
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
+  VSX_UNUSED(out_parameters);
   loading_done = true;
   trig_play = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"trig_play");
   trig_stop = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"trig_stop");
@@ -277,6 +278,7 @@ void module_info(vsx_module_info* info)
 
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
+  VSX_UNUSED(in_parameters);
   loading_done = true;
   
   init_joysticks();
@@ -408,6 +410,7 @@ passed since the last frame.";
 
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
+  VSX_UNUSED(in_parameters);
   loading_done = true;
 	time_out = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"time");
 	time_out->set(0.0f);
@@ -467,6 +470,7 @@ millisecond:float}";
 
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
+  VSX_UNUSED(in_parameters);
   loading_done = true;
 	year = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"year");
 	year->set(0);
@@ -659,6 +663,7 @@ __declspec(dllexport) unsigned long get_num_modules();
 
 
 vsx_module* create_new_module(unsigned long module, void* args) {
+  VSX_UNUSED(args);
   switch(module) {
     case 0: return (vsx_module*)(new vsx_module_system_shutdown);
     case 1: return (vsx_module*)(new vsx_module_system_time);

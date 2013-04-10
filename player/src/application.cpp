@@ -30,11 +30,15 @@ float sound_freq_test[513];
 void (*app_set_fullscreen)(int,bool) = 0;
 bool (*app_get_fullscreen)(int) = 0;
 
-void app_init(int id) {}
+void app_init(int id)
+{
+  VSX_UNUSED(id);
+}
 void app_pre_draw() {}
 
 bool app_draw(int id)
 {
+  VSX_UNUSED(id);
   if (first)
   {
     first = false;
@@ -124,11 +128,40 @@ void app_key_down(long key)
   }
 }
 
-void app_key_up(long key) {}
-void app_mouse_move_passive(int x, int y) {}
-void app_mouse_move(int x, int y) {}
-void app_mouse_down(unsigned long button,int x,int y) {}
-void app_mouse_up(unsigned long button,int x,int y) {}
-void app_mousewheel(float diff,int x,int y) {}
-void app_char(long key) {}
+void app_key_up(long key)
+{
+  VSX_UNUSED(key);
+}
+void app_mouse_move_passive(int x, int y)
+{
+  VSX_UNUSED(x);
+  VSX_UNUSED(y);
+}
+void app_mouse_move(int x, int y)
+{
+  VSX_UNUSED(x);
+  VSX_UNUSED(y);
+}
+void app_mouse_down(unsigned long button,int x,int y)
+{
+  VSX_UNUSED(button);
+  VSX_UNUSED(x);
+  VSX_UNUSED(y);
+}
+void app_mouse_up(unsigned long button,int x,int y)
+{
+  VSX_UNUSED(button);
+  VSX_UNUSED(x);
+  VSX_UNUSED(y);
+}
+void app_mousewheel(float diff,int x,int y)
+{
+  VSX_UNUSED(diff);
+  VSX_UNUSED(x);
+  VSX_UNUSED(y);
+}
+void app_char(long key)
+{
+  VSX_UNUSED(key);
+}
 

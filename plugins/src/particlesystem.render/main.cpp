@@ -345,7 +345,9 @@ public:
     }
   }
 
-  void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param)
+  {
+    VSX_UNUSED(param);
     particles = particles_in->get_addr();
     if (particles)
     {
@@ -709,7 +711,9 @@ public:
     render_result->set(0);
   }
 
-  void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param)
+  {
+    VSX_UNUSED(param);
     particles = particles_in->get_addr();
     if (particles)
     {
@@ -820,7 +824,9 @@ public:
     charges_init = false;
   }
 
-  void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param)
+  {
+    VSX_UNUSED(param);
     particles = particles_in->get_addr();
     if (particles)
     {
@@ -948,7 +954,9 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   switch (module) {
     case 0: return (vsx_module*)(new module_render_particlesystem);
     case 1: return (vsx_module*)(new module_render_particlesystem_c);

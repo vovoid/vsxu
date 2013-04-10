@@ -180,18 +180,8 @@ void vsx_overlay::show_randomizer_status()
   show_randomizer_timer = 5.0f;
 }
 
-void vsx_overlay::print_help() {
-
- //vsx_string message = "\
-//VSX Ultra (c) Vovoid -:- libs by: Laurent de Soras, Mark J. Harris, The Freetype Project, Auran Development Ltd."
-//"-- for more vsxu goodies go to http://vsxu.com"
-//"-- visit our homepage at http://vovoid.com"
-//;
-
-
-  /*if (gui_g_time < 15) {
-    myf.print(vsx_vector__(-1,-1,0),"Press F1 for help - http://vsxu.com; http://doc.vsxu.com ","ascii",0.04);
-  }*/
+void vsx_overlay::print_help()
+{
   glDisable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);

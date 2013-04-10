@@ -80,6 +80,7 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
+    VSX_UNUSED(out_parameters);
     loading_done = true;
     my_render = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER, "screen");
 
@@ -118,7 +119,8 @@ public:
     spec_exp = default_spec_exp = 0.0f;
   }
 
-  void set_gamma(float mgamma) {
+  void set_gamma(float mgamma)
+  {
   #ifdef _WIN32
    HDC hdc = wglGetCurrentDC();
     gamma_s mygamma;
@@ -133,6 +135,8 @@ public:
       mygamma.b[i] = v << 8;
     }  
     SetDeviceGammaRamp(hdc, (void*)mgp);
+  #else
+    VSX_UNUSED(mgamma);
   #endif
  }
  
@@ -234,7 +238,9 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-vsx_module* MOD_CM(unsigned long module, void* args) {
+vsx_module* MOD_CM(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   switch(module) {
     case 0: return (vsx_module*)(new vsx_module_output_screen);
   }

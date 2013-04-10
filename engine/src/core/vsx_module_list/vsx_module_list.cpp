@@ -11,7 +11,7 @@
 
 
 
-void vsx_module_list::init(vsx_string args, bool print_help = false)
+void vsx_module_list::init(vsx_string args, bool print_help)
 {
   // woops, looks like we already built the list
   if (module_list.size()) return;
@@ -19,7 +19,7 @@ void vsx_module_list::init(vsx_string args, bool print_help = false)
   arguments.init_from_string(args);
 
   // statistics counter - how many modules are loaded in total?
-  unsigned long total_num_modules = 0;
+  //unsigned long total_num_modules = 0;
 
   // set up engine environment for later use (directories in which modules can look for config)
   vsx_engine_environment engine_environment;
@@ -278,7 +278,7 @@ std::vector< vsx_module_info* >* vsx_module_list::get_module_list( bool include_
     vsx_module_plugin_info* plugin_info = (vsx_module_plugin_info*)((*it).second);
     if
     (
-        include_hidden && plugin_info->hidden_from_gui
+        (include_hidden && plugin_info->hidden_from_gui)
         ||
         !plugin_info->hidden_from_gui
     )

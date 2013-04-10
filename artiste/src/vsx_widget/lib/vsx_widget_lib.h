@@ -77,7 +77,13 @@ public:
 
 class vsx_widget_2d_label : public vsx_widget {
 public:
-  bool inside_xyd(vsx_vector world, vsx_vector screen) { return false; }
+  bool inside_xyd(vsx_vector world, vsx_vector screen)
+  {
+    VSX_UNUSED(world);
+    VSX_UNUSED(screen);
+
+    return false;
+  }
 	align halign;
   void init();
   void draw_2d();

@@ -380,12 +380,31 @@ public:
   void mouse_wheel(float y);
 
 // INTERNAL EVENTS IN RESPONSE TO EXTERNAL INPUT, DEFAULTS (CAN BE OVERRIDDEN)
-  virtual bool event_key_down(signed long key, bool alt = false, bool ctrl = false, bool shift = false) { return true; }
-  virtual bool event_key_up(signed long key, bool alt = false, bool ctrl = false, bool shift = false) { return true; }
+  virtual bool event_key_down(signed long key, bool alt = false, bool ctrl = false, bool shift = false)
+  {
+    VSX_UNUSED(key);
+    VSX_UNUSED(alt);
+    VSX_UNUSED(ctrl);
+    VSX_UNUSED(shift);
+    return true;
+  }
+  virtual bool event_key_up(signed long key, bool alt = false, bool ctrl = false, bool shift = false)
+  {
+    VSX_UNUSED(key);
+    VSX_UNUSED(alt);
+    VSX_UNUSED(ctrl);
+    VSX_UNUSED(shift);
+    return true;
+  }
   // new events
   virtual void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   virtual void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button);
-  virtual void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button) {};
+  virtual void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+  {
+    VSX_UNUSED(distance);
+    VSX_UNUSED(coords);
+    VSX_UNUSED(button);
+  }
   virtual void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);
   virtual void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords);
   virtual void event_mouse_wheel(float y);
@@ -397,7 +416,11 @@ public:
   virtual void init() {init_run = true;}
   // if widget is related to a command, code that reads the command and sets the widget goes
   // in init_from_command
-	virtual bool init_from_command(vsx_command_s* c) { return false; }
+  virtual bool init_from_command(vsx_command_s* c)
+  {
+    VSX_UNUSED(c);
+    return false;
+  }
   virtual void init_children() {
     for (children_iter=children.begin(); children_iter != children.end(); ++children_iter) (*children_iter)->init();
   }
@@ -423,7 +446,10 @@ public:
   virtual void move_d(vsx_vector t);
   //virtual bool scale_to(vsx_vector t);
 
-  virtual void move_camera(vsx_vector world) {};
+  virtual void move_camera(vsx_vector world)
+  {
+    VSX_UNUSED(world);
+  }
 
   // CONSTRUCTION/DESTRUCTION
   bool marked_for_deletion;

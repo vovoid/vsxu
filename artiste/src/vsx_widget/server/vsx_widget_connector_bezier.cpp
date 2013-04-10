@@ -189,7 +189,12 @@ int vsx_widget_connector_bezier::inside_xy_l(vsx_vector &test, vsx_vector &globa
   }
   return 0;
 }
-void vsx_widget_connector_bezier::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
+void vsx_widget_connector_bezier::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+{
+  VSX_UNUSED(distance);
+  VSX_UNUSED(coords);
+
+
   if (button == 0)
   {
     mouse_down_l = 1;
@@ -198,7 +203,9 @@ void vsx_widget_connector_bezier::event_mouse_down(vsx_widget_distance distance,
   }
 }
 
-void vsx_widget_connector_bezier::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords) {
+void vsx_widget_connector_bezier::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
+{
+  VSX_UNUSED(coords);
   move_d(vsx_vector(0.0f,(distance.center.y-mouse_down_pos.center.y)));
 }
 
@@ -372,8 +379,7 @@ void vsx_widget_connector_bezier::draw()
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
   float lw = 2.0f;
-  float phase = 0.0f;
-  phase = sin(fmod(time,PI));
+
   if (m_focus == this || a_focus == this || k_focus == this)
   {
     lw = 1.0f+fmod(time*20.0f,5.0f);
@@ -496,6 +502,9 @@ vsx_widget_connector_bezier::vsx_widget_connector_bezier()
 
 bool vsx_widget_connector_bezier::event_key_down(signed long key, bool alt, bool ctrl, bool shift) 
 {
+  VSX_UNUSED(alt);
+  VSX_UNUSED(ctrl);
+  VSX_UNUSED(shift);
   if (key == 127) {
     command_q_b.add_raw("disconnect");
     vsx_command_queue_b(this);

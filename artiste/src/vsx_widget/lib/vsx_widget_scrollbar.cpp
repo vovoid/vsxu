@@ -40,17 +40,17 @@ vsx_widget_scrollbar::vsx_widget_scrollbar() {
   coord_type = VSX_WIDGET_COORD_CORNER;
 }  
 
-void vsx_widget_scrollbar::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
+void vsx_widget_scrollbar::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+{
+  VSX_UNUSED(coords);
+  VSX_UNUSED(button);
   click_down = distance.corner;
-  //printf("cd_world.y = %f\n",click_down.y);
-  //printf("cd_world_local.y = %f\n",distance.corner.y);
   cur_pos_click_down = cur_pos;
-  //printf("cur_pos_click_down %f\n",cur_pos_click_down);
-//    vsx_widget::event_mouse_down(world,screen,button);
 }  
 
-void vsx_widget_scrollbar::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords) {
-//  vsx_vector pp = parent->get_pos_p();
+void vsx_widget_scrollbar::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
+{
+  VSX_UNUSED(coords);
     
   if (scroll_type == 0) { // horizontal scroll
     cur_pos = distance.corner.x + cur_pos_click_down-click_down.x;

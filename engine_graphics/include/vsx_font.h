@@ -59,8 +59,7 @@ class vsx_font {
   void reinit(vsx_font_info* f_info,vsx_string font);
   bool list_built;
   GLuint dlist;
-  //vsx_string old_string;
-  //float old_size;
+
   float dx, dy, dz;
   vsx_string base_path;
   float ch, cw, size_s;
@@ -71,12 +70,8 @@ class vsx_font {
 
   void init_vars() {
     mode_2d = false;
-    //old_size = 0;
-    //dlist = glGenLists(1);
     list_built = false;
-//    outline_transparency = 0;
     my_font_info = 0;
-    //background = false;
     color.r = 1;
     color.g = 1;
     color.b = 1;
@@ -84,7 +79,7 @@ class vsx_font {
     align = 1.0f;
   }
 public:
-  VSX_FONT_DLLIMPORT vsx_font_info* init(vsx_string font);
+  VSX_FONT_DLLIMPORT vsx_font_info* init(vsx_string font, vsxf* filesystem = 0x0);
 
   vsx_avector<vsx_color> syntax_colors;
   // is in 2d mode?

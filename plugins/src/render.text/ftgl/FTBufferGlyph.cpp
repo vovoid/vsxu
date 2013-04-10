@@ -71,6 +71,7 @@ FTBufferGlyph::~FTBufferGlyph()
 
 float FTBufferGlyph::Render( const FTPoint& pen)
 {
+  (void)pen;
     if( data && buffer)
     {
     }

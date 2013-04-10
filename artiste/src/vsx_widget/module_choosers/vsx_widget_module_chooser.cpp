@@ -328,7 +328,7 @@ void vsx_widget_hyperbolic_tree::translateToOrigin(vsx_widget_hyperbolic_tree* n
         //if (geodesics.find(child) != geodesics.end()) {
           HTGeodesic* gg = child->mygeodesic;//geodesics[children[i]];
           //printf("child.geodesics = %d\n",children[i]->geodesics.size());
-          HTCoord zz = *(draw_root->ze);
+          //HTCoord zz = *(draw_root->ze);
           //zz.x = 10;
           //zz.y -=0.25;
             //double box_size = sqrt(zz.d(gg->zb));
@@ -506,7 +506,17 @@ void vsx_widget_hyperbolic_tree::translateToOrigin(vsx_widget_hyperbolic_tree* n
 
 int vsx_widget_ultra_chooser::inside_xy_l(vsx_vector &test, vsx_vector &global)
 {
-  if (visible >= 0.0f) return coord_type; else return 0;
+  VSX_UNUSED(test);
+  VSX_UNUSED(global);
+
+  if (visible >= 0.0f)
+  {
+    return coord_type;
+  }
+  else
+  {
+    return 0;
+  }
 }
 
 void vsx_widget_ultra_chooser::init() {
@@ -530,7 +540,12 @@ void vsx_widget_ultra_chooser::cancel_drop() {
   ((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_show();
 }
 
-bool vsx_widget_ultra_chooser::event_key_down(signed long key, bool alt, bool ctrl, bool shift) {
+bool vsx_widget_ultra_chooser::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+{
+  VSX_UNUSED(alt);
+  VSX_UNUSED(ctrl);
+  VSX_UNUSED(shift);
+
   //printf("%d\n",key);
   /*if (ctrl) {
     if (key == 'r') { size.x += 0.1; size.y += 0.1;}
@@ -626,6 +641,9 @@ bool doubleclix;
 
 void vsx_widget_ultra_chooser::event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button)
 {
+  VSX_UNUSED(coords);
+  VSX_UNUSED(button);
+
 	LOG_A("begin doubleclix\n");
   if (!treedraw) return;
   allow_move = false;
@@ -711,7 +729,8 @@ void vsx_widget_ultra_chooser::event_mouse_double_click(vsx_widget_distance dist
 
 void vsx_widget_ultra_chooser::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
 {
-  //!glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+  VSX_UNUSED(coords);
+
   HTCoord test_coord;
   test_coord.x = distance.corner.x;
   test_coord.y = distance.corner.y;
@@ -736,6 +755,8 @@ void vsx_widget_ultra_chooser::event_mouse_move_passive(vsx_widget_distance dist
 
 void vsx_widget_ultra_chooser::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
 {
+  VSX_UNUSED(coords);
+
 	//printf("chooser mouse down\n");
   if (drag_module) { cancel_drop(); return; }
   HTCoord test_coord;
@@ -843,7 +864,11 @@ void vsx_widget_ultra_chooser::event_mouse_move(vsx_widget_distance distance,vsx
 }
 
 
-void vsx_widget_ultra_chooser::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
+void vsx_widget_ultra_chooser::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+{
+  VSX_UNUSED(distance);
+  VSX_UNUSED(button);
+
   if (!treedraw) return;
   //if (button == GLUT_LEFT_BUTTON)
   {

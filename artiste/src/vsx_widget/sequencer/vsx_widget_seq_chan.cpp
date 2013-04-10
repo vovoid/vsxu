@@ -438,6 +438,10 @@ void vsx_widget_seq_channel::event_mouse_up(vsx_widget_distance distance,
 void vsx_widget_seq_channel::event_mouse_double_click(
 		vsx_widget_distance distance, vsx_widget_coords coords, int button)
 {
+  VSX_UNUSED(distance);
+  VSX_UNUSED(coords);
+  VSX_UNUSED(button);
+
 	if (channel_type == VSX_WIDGET_SEQ_CHANNEL_TYPE_MASTER)
 	{
 		if (mouse_clicked_id != -1)
@@ -2070,6 +2074,8 @@ void vsx_widget_seq_channel::draw_selection_box(float t0, float y0)
 bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
 		bool ctrl, bool shift)
 {
+  VSX_UNUSED(shift);
+
 	if (is_controller) return true;
 	//printf("key: %d\n",key);
 	switch (key)
@@ -2184,6 +2190,7 @@ bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
 void vsx_widget_seq_channel::drop_master_channel(vsx_widget_distance distance,
 		vsx_widget_coords coords, vsx_string name)
 {
+  VSX_UNUSED(distance);
 	float time_iterator = 0;
 	//float accumulated_time = 0.0f;
 	unsigned long item_iterator = 0;

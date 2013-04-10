@@ -669,13 +669,13 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
 
   }
         
-  void begin() {
+  void begin()
+  {
     if (!linked) return;
-    if (linked)
-      if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
-        glUseProgram(prog);
-      else
-        glUseProgramObjectARB(prog);
+    if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
+      glUseProgram(prog);
+    else
+      glUseProgramObjectARB(prog);
   }
   
   void stop() {

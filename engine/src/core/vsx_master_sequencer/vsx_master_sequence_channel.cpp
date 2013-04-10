@@ -128,6 +128,8 @@ void vsx_master_sequence_channel::run(float dtime)
 
 void vsx_master_sequence_channel::update_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
 {
+  VSX_UNUSED(dest);
+  VSX_UNUSED(cmd_prefix);
 	//total_time = 0.0f; // reset total time for re-calculation
 	// ____COMMAND STRUCTURE______________________
 	// 0=mseq_channel
@@ -327,7 +329,7 @@ void vsx_master_sequence_channel::time_sequence(vsx_command_list* dest, vsx_comm
 
 void vsx_master_sequence_channel::set_time(float new_time)
 {
-
+  VSX_UNUSED(new_time);
 }
 
 vsx_string vsx_master_sequence_channel::dump()

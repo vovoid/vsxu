@@ -129,7 +129,9 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   	render_result->set(0);
   }	
 
-  void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param)
+  {
+    VSX_UNUSED(param);
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glTranslatef(position->get(0),position->get(1),position->get(2));
@@ -264,7 +266,9 @@ public:
     render_result->set(0);
   } 
 
-	void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param)
+  {
+    VSX_UNUSED(param);
 #ifdef VSXU_OPENGL_ES
 	GLfloat line_vertices[] = {
 		point_a->get(0), point_a->get(1), point_a->get(2),
@@ -514,7 +518,9 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 	render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
   render_result->set(0);
 }	
-void output(vsx_module_param_abs* param) {
+void output(vsx_module_param_abs* param)
+{
+  VSX_UNUSED(param);
 	//if (tex_inf)
   {
 	//printf("simple_renderer_texture::output\n");
@@ -732,7 +738,9 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-vsx_module* MOD_CM(unsigned long module, void* args) {
+vsx_module* MOD_CM(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   switch (module) {
     case 0: return (vsx_module*)new vsx_module_simple_with_texture;
     case 1: return (vsx_module*)new vsx_module_render_basic_colored_rectangle;

@@ -54,7 +54,10 @@ vsx_vector vsx_widget_panel::calc_pos() {
   return p;
 }
 
-int vsx_widget_panel::inside_xy_l(vsx_vector &test, vsx_vector &global) { 
+int vsx_widget_panel::inside_xy_l(vsx_vector &test, vsx_vector &global)
+{
+  VSX_UNUSED(test);
+  VSX_UNUSED(global);
   //return vsx_widget::inside_xy_l(test,global);
   return 0;
 }
@@ -106,19 +109,24 @@ vsx_widget_split_panel::vsx_widget_split_panel() {
   orientation = VSX_WIDGET_SPLIT_PANEL_VERT;
 }
 
-void vsx_widget_split_panel::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords) {
-  //!glutSetCursor(GLUT_CURSOR_UP_DOWN);
+void vsx_widget_split_panel::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
+{
+  VSX_UNUSED(distance);
+  VSX_UNUSED(coords);
 }
 
 void vsx_widget_split_panel::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords) 
 {
+  VSX_UNUSED(coords);
+
   split_pos = ((distance.center.y+(size.y)*0.5)/(size.y));
   if (split_pos > 0.95) split_pos = 0.95;
   if (split_pos < 0.05) split_pos = 0.05;
 }
 
 
-int vsx_widget_split_panel::inside_xy_l(vsx_vector &test, vsx_vector &global) {
+int vsx_widget_split_panel::inside_xy_l(vsx_vector &test, vsx_vector &global)
+{
   if (coord_type == VSX_WIDGET_COORD_CENTER) {
     if (
       //(test.y > global.y-size.y*0.5f) && (test.y < global.y+size.y*0.5f) &&
@@ -143,7 +151,8 @@ int vsx_widget_split_panel::inside_xy_l(vsx_vector &test, vsx_vector &global) {
 }
 
 
-void vsx_widget_split_panel::i_draw() {
+void vsx_widget_split_panel::i_draw()
+{
   calc_size();
   vsx_vector p = calc_pos();
   if (render_type == VSX_WIDGET_RENDER_2D)

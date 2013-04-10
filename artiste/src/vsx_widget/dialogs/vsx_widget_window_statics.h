@@ -66,12 +66,21 @@ public:
   virtual void init_children() {
   }
   
-  void show(vsx_string value) {
+  void show(vsx_string value)
+  {
+    VSX_UNUSED(value);
+
     show();
   }
   
 
-  virtual bool event_key_down(signed long key, bool alt, bool ctrl, bool shift) {
+  virtual bool event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+  {
+    VSX_UNUSED(key);
+    VSX_UNUSED(alt);
+    VSX_UNUSED(ctrl);
+    VSX_UNUSED(shift);
+
     k_focus = parent;
     a_focus = parent;
     _delete();

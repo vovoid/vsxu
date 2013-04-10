@@ -320,6 +320,14 @@ bool RtApi :: probeDeviceOpen( unsigned int device, StreamMode mode, unsigned in
                                RtAudioFormat format, unsigned int *bufferSize,
                                RtAudio::StreamOptions *options )
 {
+  (void)device;
+  (void)mode;
+  (void)channels;
+  (void)firstChannel;
+  (void)sampleRate;
+  (void)format;
+  (void)bufferSize;
+  (void)options;
   // MUST be implemented in subclasses!
   return FAILURE;
 }
@@ -6356,6 +6364,7 @@ unsigned int RtApiPulse::getDeviceCount( void )
 
 RtAudio::DeviceInfo RtApiPulse::getDeviceInfo( unsigned int device )
 {
+  (void)device;
   RtAudio::DeviceInfo info;
   info.probed = true;
   info.name = "PulseAudio";

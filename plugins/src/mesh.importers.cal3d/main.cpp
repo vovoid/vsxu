@@ -278,7 +278,7 @@ public:
     pthread_mutex_lock(&mesh_mutex);
 
     #ifdef VSXU_DEBUG
-    printf("cal3d param set notify..\n",0);
+    printf("cal3d param set notify..\n");
     #endif
 
     if (name == "filename") {
@@ -368,7 +368,7 @@ public:
         }
         engine->filesystem->f_close(fp);
         #ifdef VSXU_DEBUG
-        printf("creating new model\n",0);
+        printf("creating new model\n");
         #endif
         m_model = new CalModel(c_model);
         m_model->attachMesh(mesh_id);
@@ -806,7 +806,9 @@ __declspec(dllexport) unsigned long get_num_modules();
 
 
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   switch(module) {
     case 0: return (vsx_module*)(new vsx_module_cal3d_loader_threaded);
   }

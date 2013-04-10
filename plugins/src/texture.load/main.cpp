@@ -812,7 +812,10 @@ __declspec(dllexport) unsigned long get_num_modules();
 
 bool glewinit = false;
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
+
   if (!glewinit)
   {
     // we sneak in and init glew :) as we need it

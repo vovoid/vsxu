@@ -587,10 +587,10 @@ public:
 		prev = next = 0;
 	}
 
-	const char*		Name()  const		{ return name.c_str (); }		///< Return the name of this attribute.
+  const char*		Name()  const		{ return name.c_str (); }		///< Return the name of this attribute.
 	const char*		Value() const		{ return value.c_str (); }		///< Return the value of this attribute.
-	const int       IntValue() const;									///< Return the value of this attribute, converted to an integer.
-	const double	DoubleValue() const;								///< Return the value of this attribute, converted to a double.
+  const int       IntValue() const;									///< Return the value of this attribute, converted to an integer.
+  const double	DoubleValue() const;								///< Return the value of this attribute, converted to a double.
 
 	/** QueryIntValue examines the value string. It is an alternative to the
 		IntValue() method with richer error checking.

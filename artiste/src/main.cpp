@@ -126,6 +126,8 @@ int mouse_pos_type = 0;
 
 void GLFWCALL mouse_pos_event(int x, int y)
 {
+  VSX_UNUSED(x);
+  VSX_UNUSED(y);
   set_modifiers();
   glfwGetMousePos(&last_x, &last_y);
   if (mouse_state) mouse_pos_type = 1;
@@ -146,7 +148,7 @@ void GLFWCALL mouse_wheel(int pos)
 
 int main(int argc, char* argv[])
 {
-  for (size_t i = 0; i < argc; i++)
+  for (size_t i = 0; i < (size_t)argc; i++)
   {
     vsx_string arg = vsx_string(argv[i]);
     app_argv.push_back( arg );
@@ -164,7 +166,7 @@ int main(int argc, char* argv[])
 
 
   int     width, height, running, frames, x, y;
-  double  t, t0, t1;
+  double  t, t1;
   char    titlestr[ 200 ];
 
   bool start_fullscreen = false;
@@ -239,9 +241,8 @@ int main(int argc, char* argv[])
   // Main loop
   running = GL_TRUE;
   frames = 0;
-  t0 = glfwGetTime();
 
-  sprintf( titlestr, "Vovoid VSX Ultra %s [GNU/Linux] [Visit us at http://vsxu.com]", vsxu_ver);
+  sprintf( titlestr, "Vovoid VSXu %s [GNU/Linux] [Visit us at http://vsxu.com]", vsxu_ver);
   glfwSetWindowTitle( titlestr );
 
 

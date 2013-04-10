@@ -64,7 +64,9 @@ __declspec(dllexport) unsigned long get_num_modules();
 
 
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   if (module > 4)
   {
     module_bitmap_blend* b = new module_bitmap_blend;

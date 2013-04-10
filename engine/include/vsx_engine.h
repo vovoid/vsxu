@@ -159,7 +159,7 @@ public:
   int load_state(vsx_string filename, vsx_string *error_string = 0);
 
   // process messages - this should be run once per physical frame
-  void process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive = false, bool ignore_timing = false);
+  void process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive = false, bool ignore_timing = false, float max_time = 0.01f);
 
   // sequencer time control
   void time_play();

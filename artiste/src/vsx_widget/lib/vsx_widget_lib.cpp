@@ -178,7 +178,9 @@
     init_run = true;
   }
 
-  void vsx_widget_popup_menu::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords) {
+  void vsx_widget_popup_menu::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
+  {
+    VSX_UNUSED(coords);
     //printf("menu type: %d\n",render_type);
     //printf("menu passive %d %f %f \n",menu_items.count(),target_pos.y,distance.corner.y);
 
@@ -191,7 +193,10 @@
     vsx_widget::vsx_command_process_b(t);
   }
 
-  void vsx_widget_popup_menu::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
+  void vsx_widget_popup_menu::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+  {
+    VSX_UNUSED(distance);
+    VSX_UNUSED(button);
     if (over) {
       if (!oversub) {
         // add a number of commands
@@ -231,8 +236,14 @@ void vsx_widget_button::init() {
   target_size = size;
 }
 
-void vsx_widget_button::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
-  if (!outside) {
+void vsx_widget_button::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+{
+  VSX_UNUSED(distance);
+  VSX_UNUSED(coords);
+  VSX_UNUSED(button);
+
+  if (!outside)
+  {
     commands.reset();
     command_q_b.addc(commands.get_cur());
     parent->vsx_command_queue_b(this);
@@ -241,6 +252,8 @@ void vsx_widget_button::event_mouse_up(vsx_widget_distance distance,vsx_widget_c
 
 void vsx_widget_button::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
 {
+  VSX_UNUSED(coords);
+
   outside = !((distance.corner.x > 0) && (distance.corner.x < target_size.x) && (distance.corner.y > 0) && (distance.corner.y < target_size.y));
 }
 
@@ -363,7 +376,12 @@ void vsx_widget_button::i_draw() {
   	myf.print_center(vsx_vector((p.x+size.x/2)*screen_aspect,p.y-size.y+size.y*0.2,0), title,"ascii",size.y*0.6);*/
   //}
 
-  void vsx_widget_button::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
+  void vsx_widget_button::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+  {
+    VSX_UNUSED(distance);
+    VSX_UNUSED(coords);
+    VSX_UNUSED(button);
+
     outside = false;
     m_focus = this;
   }
@@ -418,7 +436,11 @@ void vsx_widget_2d_pager::init() {
 	coord_type = VSX_WIDGET_COORD_CENTER;
 }
 
-void vsx_widget_2d_pager::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
+void vsx_widget_2d_pager::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+{
+  VSX_UNUSED(coords);
+  VSX_UNUSED(button);
+
   distance.center.x > 0.0f ? increase() : decrease();
 }
 

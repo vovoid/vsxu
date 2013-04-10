@@ -508,7 +508,9 @@ void vsx_widget::mouse_wheel(float y) {
 	m_o_focus->event_mouse_wheel(y);
 }
 
-void vsx_widget::event_mouse_wheel(float y) {
+void vsx_widget::event_mouse_wheel(float y)
+{
+  VSX_UNUSED(y);
 }
 
 void vsx_widget::mouse_move_passive(float x, float y) {
@@ -575,7 +577,10 @@ void vsx_widget::mouse_down(float x, float y, int button) {
   //printf("done mouse down\n");
 }
 
-void vsx_widget::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
+void vsx_widget::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+{
+  VSX_UNUSED(coords);
+
   if (this != root)
   parent->front(this);
   if (button == 0)
@@ -627,7 +632,10 @@ void vsx_widget::mouse_up(float x, float y, int button) {
 
 
 
-void vsx_widget::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords) {
+void vsx_widget::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
+{
+  VSX_UNUSED(coords);
+
   //glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
   //printf("distance.corner.x: %f\n",distance.corner.x);
   if (visible) {
@@ -693,7 +701,10 @@ void vsx_widget::calculate_mouse_distance(float x, float y, vsx_widget_coords &c
   //printf("world.x post: %f\n",world.x);
 }
 
-void vsx_widget::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
+void vsx_widget::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+{
+  VSX_UNUSED(distance);
+
   if (button == 2) {
     if (!menu_temp_disable)
     if (menu) {
@@ -707,7 +718,10 @@ void vsx_widget::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords c
 }
 
 
-void vsx_widget::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords) {
+void vsx_widget::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
+{
+  VSX_UNUSED(coords);
+
   if (mouse_down_l)
   {
     if (support_scaling)
@@ -735,7 +749,7 @@ void vsx_widget::resize(vsx_widget_distance distance) {
 
     float dx = distance.center.x-mouse_down_pos.center.x;
     float dy = mouse_down_pos.center.y - distance.center.y;
-    vsx_vector s_target_pos = target_pos;
+
     if (resize_i & 1) {
       //float dy = screen.y-target_pos.y;
       //target_pos.y -= dy;

@@ -20,9 +20,9 @@
 #include "input_audio_midi.h"
 
 input_audio_midi::input_audio_midi():
+  vsx_module(),
   m_midiin(0),
-  m_isValid(false),
-  vsx_module()
+  m_isValid(false)
 {
 
   try {
@@ -86,6 +86,8 @@ void input_audio_midi::module_info(vsx_module_info* info)
 
 void input_audio_midi::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
+  VSX_UNUSED(in_parameters);
+  VSX_UNUSED(out_parameters);
   loading_done = true;
 }
 
@@ -96,7 +98,7 @@ void input_audio_midi::run()
 
   std::vector<unsigned char> message;
   double stamp = m_midiin->getMessage( &message );
-  for ( int i=0; i < message.size(); i++ )
+  for ( size_t i = 0; i < message.size(); i++ )
     std::cout << "Byte " << i << " = " << (int)message[i] << ", ";
 
   if ( message.size() > 0 )

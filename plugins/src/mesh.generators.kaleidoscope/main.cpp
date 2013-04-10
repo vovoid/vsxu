@@ -63,6 +63,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 }
 
 void output(vsx_module_param_abs* param) {
+  VSX_UNUSED(param);
   //glBlendFunc(GL_ONE, GL_ONE);
 
   //float time = engine->vtime*4;
@@ -466,7 +467,9 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   switch (module) {
     case 0: return (vsx_module*)(new vsx_module_kaleido_star);
     case 1: return (vsx_module*)(new vsx_module_kaleido_mesh);

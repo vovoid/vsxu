@@ -59,9 +59,10 @@
 // TODO: add a real spheremapping module
 // TODO: quaternion rotation from 2 vertex id's: vector from point to point, normal, crossproduct = matrix -> quaternion
 // global static empty mesh
-vsx_mesh mesh_empty;
+//vsx_mesh mesh_empty;
 
-class vsx_module_mesh_dummy : public vsx_module {
+class vsx_module_mesh_dummy : public vsx_module
+{
   // in
   vsx_module_param_mesh* mesh_in;
   // out
@@ -149,42 +150,41 @@ public:
 
   void run() {
     vsx_mesh** p = mesh_in->get_addr();
-    if (p) {
-      passthru->set(*p);
-      long id_ = (unsigned long)floor(id->get());
-      if (!(*p)->data) return;
+    if (!p) return;
+    passthru->set(*p);
+    long id_ = (unsigned long)floor(id->get());
+    if (!(*p)->data) return;
 
-      if (id_ < 0) id_ += (*p)->data->vertices.size();
+    if (id_ < 0) id_ += (*p)->data->vertices.size();
 
-      if ((unsigned long)id_ < (*p)->data->vertices.size())
+    if ((unsigned long)id_ < (*p)->data->vertices.size())
+    {
+      vertex->set((*p)->data->vertices[id_].x,0);
+      vertex->set((*p)->data->vertices[id_].y,1);
+      vertex->set((*p)->data->vertices[id_].z,2);
+
+      if ((*p)->data->vertex_normals.size() > (unsigned long)id_)
       {
-        vertex->set((*p)->data->vertices[id_].x,0);
-        vertex->set((*p)->data->vertices[id_].y,1);
-        vertex->set((*p)->data->vertices[id_].z,2);
-
-        if ((*p)->data->vertex_normals.size() > (unsigned long)id_)
-        {
-          //printf("id: %d\n",(int)id_);
-          normal->set((*p)->data->vertex_normals[id_].x,0);
-          normal->set((*p)->data->vertex_normals[id_].y,1);
-          normal->set((*p)->data->vertex_normals[id_].z,2);
-        }
-        if ((*p)->data->vertex_colors.size() > (unsigned long)id_)
-        {
-          color->set((*p)->data->vertex_colors[id_].x,0);
-          color->set((*p)->data->vertex_colors[id_].y,1);
-          color->set((*p)->data->vertex_colors[id_].z,2);
-          color->set((*p)->data->vertex_colors[id_].z,3);
-        }
-
-        if ((*p)->data->vertex_tex_coords.size() > (unsigned long)id_)
-        {
-          texcoords->set((*p)->data->vertex_tex_coords[id_].s,0);
-          texcoords->set((*p)->data->vertex_tex_coords[id_].t,1);
-        }
-      } else {
-        set_default_values();
+        //printf("id: %d\n",(int)id_);
+        normal->set((*p)->data->vertex_normals[id_].x,0);
+        normal->set((*p)->data->vertex_normals[id_].y,1);
+        normal->set((*p)->data->vertex_normals[id_].z,2);
       }
+      if ((*p)->data->vertex_colors.size() > (unsigned long)id_)
+      {
+        color->set((*p)->data->vertex_colors[id_].x,0);
+        color->set((*p)->data->vertex_colors[id_].y,1);
+        color->set((*p)->data->vertex_colors[id_].z,2);
+        color->set((*p)->data->vertex_colors[id_].z,3);
+      }
+
+      if ((*p)->data->vertex_tex_coords.size() > (unsigned long)id_)
+      {
+        texcoords->set((*p)->data->vertex_tex_coords[id_].s,0);
+        texcoords->set((*p)->data->vertex_tex_coords[id_].t,1);
+      }
+    } else {
+      set_default_values();
     }
   }
 };
@@ -244,26 +244,25 @@ public:
   }
   void run() {
     vsx_mesh** p = mesh_in->get_addr();
-    if (p)
-    {
-      int_vertices.data = &((*p)->data->vertices);
-      vertices->set_p(int_vertices);
+    if (!p) return;
 
-      int_vertex_normals.data = &((*p)->data->vertex_normals);
-      vertex_normals->set_p(int_vertex_normals);
+    int_vertices.data = &((*p)->data->vertices);
+    vertices->set_p(int_vertices);
 
-      //int_vertex_tangents.data = &((*p)->data->vertex_tangents);
-      //vertex_tangents->set_p(int_vertex_tangents);
+    int_vertex_normals.data = &((*p)->data->vertex_normals);
+    vertex_normals->set_p(int_vertex_normals);
 
-      int_face_normals.data = &((*p)->data->face_normals);
-      face_normals->set_p(int_face_normals);
+    //int_vertex_tangents.data = &((*p)->data->vertex_tangents);
+    //vertex_tangents->set_p(int_vertex_tangents);
 
-      int_face_normals.data = &((*p)->data->face_normals);
-      face_normals->set_p(int_face_normals);
+    int_face_normals.data = &((*p)->data->face_normals);
+    face_normals->set_p(int_face_normals);
 
-      int_face_centers.data = &((*p)->data->face_centers);
-      face_centers->set_p(int_face_centers);
-    }
+    int_face_normals.data = &((*p)->data->face_normals);
+    face_normals->set_p(int_face_normals);
+
+    int_face_centers.data = &((*p)->data->face_centers);
+    face_centers->set_p(int_face_centers);
   }
 };
 
@@ -323,63 +322,63 @@ public:
 
   void run() {
     vsx_mesh** p = mesh_in->get_addr();
-    if (p) {
+    if (!p) return;
       
-      long id_a_ = (unsigned long)floor(id_a->get());
-      long id_b_ = (unsigned long)floor(id_b->get());
-      if (!(*p)->data) return;
+    long id_a_ = (unsigned long)floor(id_a->get());
+    long id_b_ = (unsigned long)floor(id_b->get());
+    if (!(*p)->data) return;
 
-      if (id_a_ < 0) id_a_ += (*p)->data->vertices.size();
-      if (id_b_ < 0) id_b_ += (*p)->data->vertices.size();
+    if (id_a_ < 0) id_a_ += (*p)->data->vertices.size();
+    if (id_b_ < 0) id_b_ += (*p)->data->vertices.size();
 
-      if (
-        (unsigned long)id_a_ < (*p)->data->vertices.size()
-        &&
-        (unsigned long)id_b_ < (*p)->data->vertices.size()
-        &&
-        (unsigned long)id_a_ < (*p)->data->vertex_normals.size()
-        &&
-        (unsigned long)id_b_ < (*p)->data->vertex_normals.size()
-        )
-      {
-        // 1. calculate vector
-        vsx_vector k,n,c;
-        vsx_matrix m,mr;
+    if (
+      (unsigned long)id_a_ < (*p)->data->vertices.size()
+      &&
+      (unsigned long)id_b_ < (*p)->data->vertices.size()
+      &&
+      (unsigned long)id_a_ < (*p)->data->vertex_normals.size()
+      &&
+      (unsigned long)id_b_ < (*p)->data->vertex_normals.size()
+      )
+    {
+      // 1. calculate vector
+      vsx_vector k,n,c;
+      vsx_matrix m,mr;
 
-        k = (*p)->data->vertices[id_b_] - (*p)->data->vertices[id_a_];
-        k.normalize();
-        n = (*p)->data->vertex_normals[id_a_];
-        n.normalize();
+      k = (*p)->data->vertices[id_b_] - (*p)->data->vertices[id_a_];
+      k.normalize();
+      n = (*p)->data->vertex_normals[id_a_];
+      n.normalize();
 
-        c.cross(k,n);
-        c.normalize();
+      c.cross(k,n);
+      c.normalize();
 
-        k.cross(c,n);
-        k.normalize();
+      k.cross(c,n);
+      k.normalize();
 
-        m.m[0] = n.x; m.m[4] = n.y; m.m[8]  = n.z;
-        m.m[1] = k.x; m.m[5] = k.y; m.m[9]  = k.z;
-        m.m[2] = c.x; m.m[6] = c.y; m.m[10] = c.z;
+      m.m[0] = n.x; m.m[4] = n.y; m.m[8]  = n.z;
+      m.m[1] = k.x; m.m[5] = k.y; m.m[9]  = k.z;
+      m.m[2] = c.x; m.m[6] = c.y; m.m[10] = c.z;
 
-        mr.assign_inverse(&m);
-        
+      mr.assign_inverse(&m);
 
-        
-        //m.rotation_from_vectors(&k, &(p->data->vertex_normals[id_a_]) );
-        vsx_quaternion q;
-        q.from_matrix(&mr);
-        q.normalize();
-        position->set((*p)->data->vertices[id_a_].x,0);
-        position->set((*p)->data->vertices[id_a_].y,1);
-        position->set((*p)->data->vertices[id_a_].z,2);
-        rotation->set(q.x, 0);
-        rotation->set(q.y, 1);
-        rotation->set(q.z, 2);
-        rotation->set(q.w, 3);
-      } else {
-        set_default_values();
-      }
+
+
+      //m.rotation_from_vectors(&k, &(p->data->vertex_normals[id_a_]) );
+      vsx_quaternion q;
+      q.from_matrix(&mr);
+      q.normalize();
+      position->set((*p)->data->vertices[id_a_].x,0);
+      position->set((*p)->data->vertices[id_a_].y,1);
+      position->set((*p)->data->vertices[id_a_].z,2);
+      rotation->set(q.x, 0);
+      rotation->set(q.y, 1);
+      rotation->set(q.z, 2);
+      rotation->set(q.w, 3);
+    } else {
+      set_default_values();
     }
+
   }
 
   void on_delete() {
@@ -399,6 +398,7 @@ class vsx_module_mesh_quat_rotate : public vsx_module {
   // internal
   vsx_mesh* mesh;
   vsx_quaternion q;
+  unsigned long prev_timestamp;
 public:
 
   bool init() {
@@ -434,11 +434,19 @@ public:
     //id->set(0.0f);
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
+    prev_timestamp = 0xffff;
   }
-  unsigned long prev_timestamp;
-  void run() {
+
+  void run()
+  {
     vsx_mesh** p = mesh_in->get_addr();
-    if (p && (param_updates || prev_timestamp != (*p)->timestamp)) {
+    if (!p) { printf("error in vsx_module_mesh_quat_rotate: mesh_in is invalid\n"); return; }
+    if (
+        param_updates
+        ||
+        prev_timestamp != (*p)->timestamp
+        )
+    {
       prev_timestamp = (*p)->timestamp;
       q.x = quat_in->get(0);
       q.y = quat_in->get(1);
@@ -543,9 +551,6 @@ public:
     vsx_mesh** p = mesh_in->get_addr();
     if (!p) 
     {
-      mesh_empty.timestamp = (int)(engine->real_vtime*1000.0f);
-      mesh_out->set(&mesh_empty);
-      prev_timestamp = 0xFFFFFFFF;
       return;
     }   
     
@@ -658,6 +663,7 @@ class vsx_module_mesh_translate : public vsx_module {
   vsx_module_param_mesh* mesh_out;
   // internal
   vsx_mesh* mesh;
+  unsigned long prev_timestamp;
 public:
   bool init() {
     mesh = new vsx_mesh;
@@ -684,20 +690,16 @@ public:
     translation = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "translation");
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
+    prev_timestamp = 0xFFFF;
   }
-  unsigned long prev_timestamp;
   vsx_vector v;
-  void run() {
+  void run()
+  {
     vsx_mesh** p = mesh_in->get_addr();
-    if (!p) 
-    {
-      mesh_empty.timestamp = (int)(engine->real_vtime*1000.0f);
-      mesh_out->set(&mesh_empty);
-      prev_timestamp = 0xFFFFFFFF;
-      return;
-    }   
+    if (!p) { printf("error in vsx_module_mesh_translate: mesh_in is invalid\n"); return; }
 
-    if (p && (param_updates || prev_timestamp != (*p)->timestamp)) {
+    if (param_updates || prev_timestamp != (*p)->timestamp)
+    {
       prev_timestamp = (*p)->timestamp;
       v.x = translation->get(0);
       v.y = translation->get(1);
@@ -769,6 +771,9 @@ class vsx_module_mesh_scale : public vsx_module {
   vsx_module_param_mesh* mesh_out;
   // internal
   vsx_mesh* mesh;
+  unsigned long prev_timestamp;
+  vsx_vector v;
+
 public:
   bool init() {
     mesh = new vsx_mesh;
@@ -794,21 +799,20 @@ public:
     scale = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "scale");
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
+    prev_timestamp = 0xFFFFFFFF;
   }
 
-  unsigned long prev_timestamp;
-  vsx_vector v;
   void run() {
     vsx_mesh** p = mesh_in->get_addr();
-    if (!p) 
-    {
-      //mesh_empty.timestamp = (int)(engine->real_vtime*1000.0f);
-      //mesh_out->set(&mesh_empty);
-      //prev_timestamp = 0xFFFFFFFF;
-      return;
-    }   
+    if (!p) { printf("error in vsx_module_mesh_scale: mesh_in is invalid\n"); return; }
     
-    if (p && (param_updates || prev_timestamp != (*p)->timestamp)) {
+    if
+    (
+      param_updates
+      ||
+      prev_timestamp != (*p)->timestamp
+    )
+    {
       prev_timestamp = (*p)->timestamp;
       v.x = scale->get(0);
       v.y = scale->get(1);
@@ -904,6 +908,7 @@ public:
     mesh_in = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_in");
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
+    prev_timestamp = 0xFFFFFFFF;
   }
 
   unsigned long prev_timestamp;
@@ -912,9 +917,6 @@ public:
     vsx_mesh** p = mesh_in->get_addr();
     if (!p)
     {
-      mesh_empty.timestamp = (int)(engine->real_vtime*1000.0f);
-      mesh_out->set(&mesh_empty);
-      prev_timestamp = 0xFFFFFFFF;
       return;
     }
 
@@ -1312,15 +1314,13 @@ public:
     prev_start = -1.0f;
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
+    prev_timestamp = 0xFFFFFFFF;
   }
 
   void run() {
     vsx_mesh** p = mesh_in->get_addr();
     if (!p) 
     {
-      mesh_empty.timestamp = (int)(engine->real_vtime*1000.0f);
-      mesh_out->set(&mesh_empty);
-      prev_timestamp = 0xFFFFFFFF;
       return;
     }   
     if (((start->get() > 0.0f))) {
@@ -1455,6 +1455,9 @@ class vsx_module_mesh_deformers_random_normal_distort : public vsx_module {
   // internal
   vsx_mesh* mesh;
   vsx_array<vsx_vector> normals_dist_array;
+  unsigned long int prev_timestamp;
+  vsx_vector v, v_;
+  float vertex_distortion_factor_;
 
 public:
   bool init() {
@@ -1494,17 +1497,12 @@ public:
     vertex_distortion_factor->set(1.0f);
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
     prev_timestamp = 0xFFFFFFFF;
+    vertex_distortion_factor_ = 0.0f;
   }
-  unsigned long int prev_timestamp;
-  vsx_vector v, v_;
-  float vertex_distortion_factor_;
   void run() {
     vsx_mesh** p = mesh_in->get_addr();
     if (!p) 
     {
-      mesh_empty.timestamp = (int)(engine->real_vtime*1000.0f);
-      mesh_out->set(&mesh_empty);
-      prev_timestamp = 0xFFFFFFFF;
       return;
     }
     if (p && (param_updates || prev_timestamp != (*p)->timestamp)) {
@@ -2127,9 +2125,6 @@ public:
     vsx_mesh** p = mesh_in->get_addr();
     if (!p) 
     {
-      mesh_empty.timestamp = (int)(engine->real_vtime*1000.0f);
-      mesh_out->set(&mesh_empty);
-      prev_timestamp = 0xFFFFFFFF;
       return;
     }
 
@@ -2616,6 +2611,7 @@ public:
     area = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "area");
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
+    prev_timestamp = 0xFFFFFFFF;
   }
 
   unsigned long prev_timestamp;
@@ -2623,9 +2619,6 @@ public:
     vsx_mesh** p = mesh_in->get_addr();
     if (!p)
     {
-      mesh_empty.timestamp = (int)(engine->real_vtime*1000.0f);
-      mesh_out->set(&mesh_empty);
-      prev_timestamp = 0xFFFFFFFF;
       return;
     }
 
@@ -2723,7 +2716,9 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   switch(module)
   {
     case 0: return (vsx_module*)(new vsx_module_mesh_vertex_picker);

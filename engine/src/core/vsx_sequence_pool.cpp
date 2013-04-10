@@ -100,6 +100,7 @@ vsx_string vsx_sequence_pool::dump_names()
 
 void vsx_sequence_pool::run(float dtime, bool run_from_channel)
 {
+  VSX_UNUSED(run_from_channel);
   // 1. run all sequences if we're enabled
   // 2. compare all engine's hints and send the changed values up to the GUI which will then handle eventual movements
   //printf("edit enabled: %d\n",(int)edit_enabled);

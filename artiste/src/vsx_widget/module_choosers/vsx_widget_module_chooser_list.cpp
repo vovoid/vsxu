@@ -88,18 +88,21 @@ public:
 
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
   {
-    //printf("mouse move");
+    VSX_UNUSED(distance);
     mod_i = i_rows_lookup[editor->selected_line];
     if (mod_i != -1)
     {
       dragging = true;
-      //printf("found module %s\n",i_mod_info[mod_i]->identifier.c_str());
       drag_coords = coords;
     }
   };
 
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
   {
+    VSX_UNUSED(distance);
+    VSX_UNUSED(coords);
+    VSX_UNUSED(button);
+
     if (dragging) dragging = false;
     //vsx_widget_base_edit::event_mouse_down(distance, coords, button);
   }
@@ -172,8 +175,11 @@ public:
 
     }
   }
+
   void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
   {
+    VSX_UNUSED(distance);
+    VSX_UNUSED(button);
     if (dragging)
     {
       vsx_widget_distance l_distance;
@@ -356,6 +362,10 @@ void vsx_module_chooser_list::set_server(vsx_widget* serv)
 
 bool vsx_module_chooser_list::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
 {
+  VSX_UNUSED(key);
+  VSX_UNUSED(alt);
+  VSX_UNUSED(ctrl);
+  VSX_UNUSED(shift);
   vsx_string filter = ((vsx_widget_base_edit*)search)->get_string();
   ((vsx_widget_base_editor*)edit)->editor->set_filter_string( filter );
   return true;

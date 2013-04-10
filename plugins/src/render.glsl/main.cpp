@@ -427,7 +427,9 @@ __declspec(dllexport) void set_environment_info(vsx_engine_environment* environm
 }
 
 
-vsx_module* MOD_CM(unsigned long module, void* args) {
+vsx_module* MOD_CM(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   if (module) {
     vsx_module* v = (vsx_module*)(new vsx_module_glsl());
     ((vsx_module_glsl*)v)->shader_source = (long)module;
@@ -439,7 +441,9 @@ vsx_module* MOD_CM(unsigned long module, void* args) {
   return 0;
 }
 
-void MOD_DM(vsx_module* m,unsigned long module) {
+void MOD_DM(vsx_module* m,unsigned long module)
+{
+  VSX_UNUSED(module);
   delete (vsx_module_glsl*)m;
 }
 

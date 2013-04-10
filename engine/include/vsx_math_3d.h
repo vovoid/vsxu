@@ -422,6 +422,7 @@ public:
     #endif
   }
   void gl(float m) {
+    VSX_UNUSED(m);
     #ifdef __gl_h_
     #ifndef VSX_NO_GL
     glColor4f(m*r,m*g,m*b,a);

@@ -66,6 +66,7 @@ vsx_module* create_new_module(unsigned long module, void* args)
       return (vsx_module*)(new input_audio_midi);
 #endif
   }
+  return 0x0;
 }
 
 void destroy_module(vsx_module* m,unsigned long module)

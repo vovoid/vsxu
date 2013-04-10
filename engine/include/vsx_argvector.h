@@ -18,14 +18,14 @@ public:
     return data.size();
   }
 
-  size_t push_back(const vsx_string& val)
+  void push_back(const vsx_string& val)
   {
     data.push_back(val);
   }
 
   bool has_param(const vsx_string& param)
   {
-    int data_num_elements = size();
+    size_t data_num_elements = size();
     if (data_num_elements == 0) return false;
     for (size_t i = 0; i < data_num_elements; i++)
     {
@@ -39,7 +39,7 @@ public:
 
   bool has_param_with_value(const vsx_string& param)
   {
-    int data_num_elements = size();
+    size_t data_num_elements = size();
     if (data_num_elements == 0) return false;
     for (size_t i = 0; i < data_num_elements; i++)
     {
@@ -59,7 +59,7 @@ public:
 
   vsx_string get_param_value(const vsx_string& param)
   {
-    int data_num_elements = size();
+    size_t data_num_elements = size();
     if (data_num_elements == 0) return "";
     for (size_t i = 0; i < data_num_elements; i++)
     {

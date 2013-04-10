@@ -142,6 +142,7 @@ void gravity_strip::generate_mesh(
        int &generated_faces
      )
 {
+  VSX_UNUSED(mesh);
   if (!oldPos.size()) return;
   //glEnable(GL_LINE_SMOOTH);
   //glLineWidth(1.0f);

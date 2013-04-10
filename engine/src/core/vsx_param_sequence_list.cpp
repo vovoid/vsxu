@@ -28,6 +28,9 @@ void vsx_param_sequence_list::get_init(vsx_engine_param* param, vsx_command_list
 }
 
 void vsx_param_sequence_list::get_contents(vsx_engine_param* param, vsx_command_list* dest,vsx_string controller_id) {
+  VSX_UNUSED(param);
+  VSX_UNUSED(dest);
+  VSX_UNUSED(controller_id);
   /*if (ppm.find(param) != ppm.end()) {
     vsx_param_sequence* p = (*ppm.find(param)).second;
     unsigned long row = 0;

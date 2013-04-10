@@ -305,8 +305,11 @@ void vsx_widget_slider::vsx_command_process_b(vsx_command_s *t) {
   }
   void vsx_widget_slider::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
   {
-    bSnap=(shift|alt|ctrl);
-    if (controlling) {
+    VSX_UNUSED(coords);
+
+    bSnap = ( shift | alt | ctrl );
+    if (controlling)
+    {
       target_value = (-(((distance.corner.y-handlesize/2)/(size.y-handlesize))-1) * (amp))+ofs; //amp-ofs
       cap_value();
     }

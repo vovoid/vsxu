@@ -58,7 +58,9 @@ public:
     info->description = "transforms a texture into a bitmap (slow!)";
   }
   
-  void param_set_notify(const vsx_string& name) {
+  void param_set_notify(const vsx_string& name)
+  {
+    VSX_UNUSED(name);
   };
   
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
@@ -161,7 +163,9 @@ public:
     info->description = "";
   }
   
-  void param_set_notify(const vsx_string& name) {
+  void param_set_notify(const vsx_string& name)
+  {
+    VSX_UNUSED(name);
     first = true;
   };
   
@@ -408,7 +412,9 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   switch(module) {
     case 0: return (vsx_module*)(new module_texture_to_bitmap);
     case 1: return (vsx_module*)(new module_bitmap_to_particlesystem);

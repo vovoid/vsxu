@@ -1,6 +1,6 @@
 #ifndef lint
-static char Rcs_Id[] =
-    "$Id: mtwist.c,v 1.23 2010-12-11 00:28:18+13 geoff Exp $";
+//static char Rcs_Id[] =
+//    "$Id: mtwist.c,v 1.23 2010-12-11 00:28:18+13 geoff Exp $";
 #endif
 
 /*

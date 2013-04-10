@@ -236,7 +236,9 @@ bool activate_offscreen() {
   return true;
 }
 
-void output(vsx_module_param_abs* param) {
+void output(vsx_module_param_abs* param)
+{
+  VSX_UNUSED(param);
   render_result->set(render_in->get());
 }
 };
@@ -327,7 +329,9 @@ void deactivate_offscreen() {
 }
 
 
-void output(vsx_module_param_abs* param) {
+void output(vsx_module_param_abs* param)
+{
+  VSX_UNUSED(param);
   render_result->set(render_in->get());
 }
 
@@ -460,7 +464,9 @@ void deactivate_offscreen() {
 }
 
 
-void output(vsx_module_param_abs* param) {
+void output(vsx_module_param_abs* param)
+{
+  VSX_UNUSED(param);
   render_result->set(render_in->get());
 }
 
@@ -541,7 +547,7 @@ void deactivate_offscreen() {
   }
 }
 
-void output(vsx_module_param_abs* param) {
+void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
   render_result->set(render_in->get());
 }
 };
@@ -596,6 +602,30 @@ public:
 	void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 	{
 	  loading_done = true;
+    // initialize memory to make valgrind happy
+    ambient[0] = 0.0f;
+    ambient[1] = 0.0f;
+    ambient[2] = 0.0f;
+    ambient[3] = 0.0f;
+
+    diffuse[0] = 0.0f;
+    diffuse[1] = 0.0f;
+    diffuse[2] = 0.0f;
+    diffuse[3] = 0.0f;
+
+    specular[0] = 0.0f;
+    specular[1] = 0.0f;
+    specular[2] = 0.0f;
+    specular[3] = 0.0f;
+
+    emission[0] = 0.0f;
+    emission[1] = 0.0f;
+    emission[2] = 0.0f;
+    emission[3] = 0.0f;
+
+    spec_exp = 0.0f;
+
+
 		render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
 	  faces_affected = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"faces_affected");
 	  faces_affected->set(2);
@@ -624,12 +654,14 @@ public:
 	  emission_intensity->set(1.0f,3);
 
 	  specular_exponent = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"specular_exponent");
+    specular_exponent->set(0.0f);
 
 		render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 	}
 
 
-	bool activate_offscreen() {
+  bool activate_offscreen()
+  {
 	  unsigned int ff = faces_list[faces_affected->get()];
 		//GLfloat ambient[4];
 		//GLfloat diffuse[4];
@@ -642,10 +674,6 @@ public:
 		glGetMaterialfv(ff,GL_EMISSION,&emission[0]);
 		glGetMaterialfv(ff,GL_SHININESS,&spec_exp);
 
-	  /*mm[0] = value->get(0);
-	  mm[1] = value->get(1);
-	  mm[2] = value->get(2);
-	  mm[3] = value->get(3);*/
 	  glMaterialfv(ff,GL_AMBIENT,ambient_reflectance->get_addr());
 	  glMaterialfv(ff,GL_DIFFUSE,diffuse_reflectance->get_addr());
 	  glMaterialfv(ff,GL_SPECULAR,specular_reflectance->get_addr());
@@ -654,7 +682,8 @@ public:
 	  return true;
 	}
 
-	void deactivate_offscreen() {
+  void deactivate_offscreen()
+  {
 	  unsigned int ff = faces_list[faces_affected->get()];
 	  glMaterialfv(ff,GL_AMBIENT		,&ambient[0]);
 	  glMaterialfv(ff,GL_DIFFUSE		,&diffuse[0]);
@@ -663,7 +692,7 @@ public:
 	  glMaterialfv(ff,GL_SHININESS	,&spec_exp);
 	}
 
-	void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
 	  render_result->set(render_in->get());
 	}
 
@@ -754,7 +783,7 @@ renderer.\n\
 		}
 	}
 
-	void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
 	  render_result->set(render_in->get());
 	}
 };
@@ -809,7 +838,7 @@ public:
     if (reset_func) glDepthFunc(old_depth_func);
   }
 
-  void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
     render_result->set(render_in->get());
   }
 };
@@ -853,7 +882,7 @@ public:
 	void deactivate_offscreen() {
 	}
 
-	void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
 	  render_result->set(render_in->get());
 	}
 };
@@ -920,7 +949,7 @@ public:
   void deactivate_offscreen() {
   }
 
-  void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
     render_result->set(render_in->get());
   }
 };
@@ -977,7 +1006,7 @@ void deactivate_offscreen() {
   glDisable(GL_CULL_FACE);
 }
 
-void output(vsx_module_param_abs* param) {
+void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
   render_result->set(render_in->get());
 }
 };
@@ -1046,7 +1075,7 @@ bool activate_offscreen() {
   return true;
 }
 
-void output(vsx_module_param_abs* param) {
+void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
   render_result->set(render_in->get());
 }
 
@@ -1157,7 +1186,7 @@ void deactivate_offscreen() {
 }
 
 
-void output(vsx_module_param_abs* param) {
+void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
   render_result->set(render_in->get());
 }
 
@@ -1288,7 +1317,7 @@ void deactivate_offscreen() {
   glMultMatrixf(tmpMat_model);
 }
 
-void output(vsx_module_param_abs* param) {
+void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
   render_result->set(render_in->get());
 }
 
@@ -1435,7 +1464,7 @@ void deactivate_offscreen() {
 	glMultMatrixf(tmpMat_model);
 }
 
-void output(vsx_module_param_abs* param) {
+void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
   render_result->set(render_in->get());
 }
 
@@ -1504,7 +1533,7 @@ void deactivate_offscreen() {
 	glMultMatrixf(tmpMat);
 }
 
-void output(vsx_module_param_abs* param) {
+void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
   render_result->set(render_in->get());
 }
 };
@@ -1537,6 +1566,7 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
+    VSX_UNUSED(in_parameters);
     loading_done = true;
     vx = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"vx");
     vx->set(0.0f);
@@ -1652,7 +1682,7 @@ void deactivate_offscreen() {
 	glMultMatrixf(tmpMat);
 }
 
-void output(vsx_module_param_abs* param) {
+void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
   render_result->set(render_in->get());
 }
 
@@ -1723,7 +1753,7 @@ void deactivate_offscreen() {
 	glMultMatrixf(tmpMat);
 }
 
-void output(vsx_module_param_abs* param) {
+void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
   render_result->set(render_in->get());
 }
 
@@ -1805,7 +1835,7 @@ void vsx_gl_rotate::deactivate_offscreen() {
 	glMultMatrixf(tmpMat);
 }
 
-void vsx_gl_rotate::output(vsx_module_param_abs* param) {
+void vsx_gl_rotate::output(vsx_module_param_abs* param) { VSX_UNUSED(param);
   render_result->set(render_in->get());
 }
 
@@ -1900,7 +1930,7 @@ public:
   	glMultMatrixf(tmpMat);
   }
 
-  void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
     render_result->set(render_in->get());
   }
 };
@@ -2045,7 +2075,7 @@ module for some interresting results.";
     }
   }
 
-  void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
     render_result->set(render_in->get());
   }
 };
@@ -2205,7 +2235,9 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   // as we have only one module available, don't look at the module variable, just return - for speed
   // otherwise you'd have something like,, switch(module) { case 0: break; }
   switch(module) {

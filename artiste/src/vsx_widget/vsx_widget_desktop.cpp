@@ -107,13 +107,12 @@ mtex.load_jpeg(skin_path+"desktop.jpg");
 #endif
 }
 
-bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool n_shift) {
-	this->alt = n_alt;
+bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool n_shift)
+{
+  this->alt = n_alt;
 	this->ctrl = n_ctrl;
 	this->shift = n_shift;
-	char test[2]; test[0] = (char)key; test[1] = 0;
-	//printf("key as char: %s\n", test);
-	//printf("got key: %d\n", key);
+
   if (k_focus) {
     if (k_focus->event_key_down(key,alt,ctrl,shift)) {
       if (ctrl) {

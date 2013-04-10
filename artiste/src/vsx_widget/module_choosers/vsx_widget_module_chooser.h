@@ -1024,7 +1024,13 @@ public:
   }
      
     // create the base maintainer class     
-  vsx_widget_hyperbolic_tree(vsx_widget_hyperbolic_tree* s_root, vsx_widget_hyperbolic_tree* s_drawroot,HTModel* model) { 
+  vsx_widget_hyperbolic_tree(
+      vsx_widget_hyperbolic_tree* s_root,
+      vsx_widget_hyperbolic_tree* s_drawroot,
+      HTModel* model
+  )
+  {
+    VSX_UNUSED(s_drawroot);
       //HTDraw(HTModel model, HTView view) {
       if (s_root == 0) root = this;
       selected = 0;
@@ -1327,7 +1333,9 @@ public:
      *
      * @param mode    setting on or off.
      */
-    void set_kleinMode(bool mode) {
+    void set_kleinMode(bool mode)
+    {
+      VSX_UNUSED(mode);
         /*if (mode != kleinMode) {
             HTCoord* zo = new HTCoord(draw_root->getCoordinates());
             
@@ -1539,7 +1547,9 @@ public:
         }
     }
     
-    vsx_widget_hyperbolic_tree* findNode(HTCoord* zs) {
+    vsx_widget_hyperbolic_tree* findNode(HTCoord* zs)
+    {
+      VSX_UNUSED(zs);
         //if (label->contains(zs)) {
 //            return this;
 //        } else {

@@ -1018,6 +1018,8 @@ bool CalCoreModel::loadCoreSkeleton(const std::string& strFilename)
 
 bool CalCoreModel::saveCoreAnimation(const std::string& strFilename, int coreAnimationId)
 {
+  (void)strFilename;
+  (void)coreAnimationId;
   // check if the core animation id is valid
   /*if((coreAnimationId < 0) || (coreAnimationId >= (int)m_vectorCoreAnimation.size()))
   {
@@ -1049,6 +1051,8 @@ bool CalCoreModel::saveCoreAnimation(const std::string& strFilename, int coreAni
 
 bool CalCoreModel::saveCoreMaterial(const std::string& strFilename, int coreMaterialId)
 {
+  (void)strFilename;
+  (void)coreMaterialId;
   // check if the core material id is valid
   /*if((coreMaterialId < 0) || (coreMaterialId >= (int)m_vectorCoreMaterial.size()))
   {
@@ -1080,6 +1084,8 @@ bool CalCoreModel::saveCoreMaterial(const std::string& strFilename, int coreMate
 
 bool CalCoreModel::saveCoreMesh(const std::string& strFilename, int coreMeshId)
 {
+  (void)strFilename;
+  (void)coreMeshId;
 /*
   // check if the core mesh id is valid
   if((coreMeshId < 0) || (coreMeshId >= (int)m_vectorCoreMesh.size()))
@@ -1111,6 +1117,7 @@ bool CalCoreModel::saveCoreMesh(const std::string& strFilename, int coreMeshId)
 
 bool CalCoreModel::saveCoreSkeleton(const std::string& strFilename)
 {
+  (void)strFilename;
   /*
   // check if we have a core skeleton in this code model
   if(m_pCoreSkeleton == 0)

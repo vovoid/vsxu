@@ -37,19 +37,28 @@ public:
   bool show_wave_data;
   void move_time(vsx_vector world);
   
-  void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
+  void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+  {
+    VSX_UNUSED(coords);
+    VSX_UNUSED(button);
+
     move_time(distance.center);
     a_focus = this;
-    //printf("hoho\n");
-    //vsx_widget::event_mouse_down(world,screen,button);
   }
-  void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
+
+  void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+  {
+    VSX_UNUSED(distance);
+    VSX_UNUSED(coords);
+    VSX_UNUSED(button);
+
     auto_move_dir = 0;
     owner->update_time_from_engine = true;
-    //vsx_widget::event_mouse_up(distance,coords,button);
   }
-  void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords) {
-//    world = world - parent->get_pos_p();
+
+  void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
+  {
+    VSX_UNUSED(coords);
     move_time(distance.center);
   } 
   

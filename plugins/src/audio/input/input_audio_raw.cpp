@@ -27,12 +27,18 @@
 #endif
 
 input_audio_raw::input_audio_raw():
+  vsx_module(),
+  in_multiplier(0x0),
+  hidden_in_quality(0x0),
+  hidden_out_wave(0x0),
+  hidden_out_spectrum(0x0),
+  hidden_out_spectrum_hq(0x0),
+  amp(1.0f),
+  m_currentBuffer(-1),
   m_adc(AUDIO_API),
   m_fft_machine(N_BUFFER_FRAMES),
-  m_buffer_frames(N_BUFFER_FRAMES),
   m_sample_rate(SAMPLE_RATE),
-  m_currentBuffer(-1),
-  vsx_module()
+  m_buffer_frames(N_BUFFER_FRAMES)
 {
   pthread_mutex_init(&m_mutex, NULL);
 }
@@ -49,6 +55,8 @@ bool input_audio_raw::can_run()
 
 int input_audio_raw::record(void* outputBuffer, void* inputBuffer, unsigned int nBufferFrames, double streamTime, RtAudioStreamStatus status, void* userData)
 {
+  VSX_UNUSED(outputBuffer);
+  VSX_UNUSED(streamTime);
   if ( status )
     std::cout << "Stream overflow/underflow detected!" << std::endl;
     // Do something with the data in the "inputBuffer" buffer.
@@ -62,7 +70,8 @@ void input_audio_raw::read_data(sample* buffer, int nBufferFrames)
   //TODO: Make the computation of an output only if it is needed, using flags collected from vsx_module::output
   //printf("Read %d frames\n",nBufferFrames);
   int page = nextBufferPage();
-  float amplification = in_multiplier->get()*engine->amp;
+
+  float amplification = in_multiplier->get() * amp;
   m_vu[page][LEFT] = 0;
   m_vu[page][RIGHT] = 0;
 
@@ -265,6 +274,8 @@ void input_audio_raw::run()
 {
   flipBufferPage();
   int page = currentBufferPage();
+
+  amp = engine->amp * 0.25f;
 
   for (int i = 0; i < N_CHANNELS; i++ ){
     out_vu[i]->set(m_vu[page][i]);

@@ -47,6 +47,7 @@ public:
   vsx_array<vsx_particle>* particles;
   vsx_particlesystem() {
     particles = 0;
+    timestamp = 0;
   }
 };  
 

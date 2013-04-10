@@ -99,7 +99,9 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
 vsx_array<float> xposs;
 
-void output(vsx_module_param_abs* param) {
+void output(vsx_module_param_abs* param)
+{
+  VSX_UNUSED(param);
   loading_done = true;
   data = data_in->get_addr();
   if (!data) {
@@ -163,7 +165,10 @@ unsigned long get_num_modules() {
   return 1;
 }  
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
+  VSX_UNUSED(module);
   // as we have only one module available, don't look at the module variable, just return - FOR SPEED (says jaw)
   // otherwise you'd have something like,, switch(module) { case 0: break; }
   return (vsx_module*)new vsx_module_oscilloscope;

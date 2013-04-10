@@ -80,14 +80,19 @@ void start_engine() {
   vxe->start();
 }
 
-void load_desktop_a(vsx_string state_name = "") {
+void load_desktop_a()
+{
+
   internal_cmd_in.clear();
   internal_cmd_out.clear();
-//  internal_cmd_out.add_raw(vsx_string("vsxu_welcome ")+vsx_string(vsxu_ver)+" 0");
+
 }
 
 
-void app_init(int id) {
+void app_init(int id)
+{
+  VSX_UNUSED(id);
+
 	vsx_string own_path;
   vsx_avector<vsx_string> parts;
   vsx_avector<vsx_string> parts2;
@@ -188,34 +193,56 @@ vsxu_draw my_draw;
 
 bool app_draw(int id)
 {
+  VSX_UNUSED(id);
   my_draw.draw();
 	return true;
 }
 
-void app_char(long key) {
+void app_char(long key)
+{
+  VSX_UNUSED(key);
 }
 
-void app_key_down(long key) {
+void app_key_down(long key)
+{
+  VSX_UNUSED(key);
 }
 
-void app_key_up(long key) {
+void app_key_up(long key)
+{
+  VSX_UNUSED(key);
 }
 
-void app_mouse_move_passive(int x, int y) {
+void app_mouse_move_passive(int x, int y)
+{
+  VSX_UNUSED(x);
+  VSX_UNUSED(y);
 }
 
-void app_mouse_move(int x, int y) {
+void app_mouse_move(int x, int y)
+{
+  VSX_UNUSED(x);
+  VSX_UNUSED(y);
 }
 
 void app_mouse_down(unsigned long button,int x,int y)
 {
+  VSX_UNUSED(button);
+  VSX_UNUSED(x);
+  VSX_UNUSED(y);
 }
 
 void app_mouse_up(unsigned long button,int x,int y)
 {
+  VSX_UNUSED(button);
+  VSX_UNUSED(x);
+  VSX_UNUSED(y);
 }
 
 void app_mousewheel(float diff,int x,int y)
 {
+  VSX_UNUSED(diff);
+  VSX_UNUSED(x);
+  VSX_UNUSED(y);
 }
 

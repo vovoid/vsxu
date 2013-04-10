@@ -53,6 +53,7 @@ void draw_box_c(vsx_vector pos, float width, float height) {
     pos.x+width,   pos.y+height,
   };
   glDisableClientState(GL_COLOR_ARRAY);
+  glDisableClientState(GL_NORMAL_ARRAY);
   glVertexPointer(2, GL_FLOAT, 0, squareVertices);
   glEnableClientState(GL_VERTEX_ARRAY);
 

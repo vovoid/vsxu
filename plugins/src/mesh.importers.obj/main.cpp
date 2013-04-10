@@ -288,6 +288,7 @@ void run() {
     engine->filesystem->f_close(fp);
     loading_done = true;
     mesh->timestamp = (int)(engine->real_vtime*1000.0f);
+    printf("mesh timestamp: %d\n", (int)mesh->timestamp);
     #ifdef VSXU_DEBUG
       printf("mesh timestamp: %d\n", (int)mesh->timestamp);
     #endif
@@ -524,7 +525,9 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   switch(module) {
     case 0: return (vsx_module*)(new vsx_module_obj_loader);
     case 1: return (vsx_module*)(new vsx_module_vxm_loader);

@@ -59,8 +59,13 @@ public:
 		editor->mirror_mouse_double_click_object = this;
 		//set_render_type(VSX_WIDGET_RENDER_2D);
 	}
+
 	void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button)
 	{
+    VSX_UNUSED(distance);
+    VSX_UNUSED(coords);
+    VSX_UNUSED(button);
+
 		sequence_editor->toggle_channel_visible(editor->get_line(editor->selected_line));
 	}
 };
@@ -628,7 +633,12 @@ void vsx_widget_sequence_editor::vsx_command_process_b(vsx_command_s *t) {
   vsx_widget::vsx_command_process_b(t);
 }
 
-bool vsx_widget_sequence_editor::event_key_down(signed long key, bool alt, bool ctrl, bool shift) {
+bool vsx_widget_sequence_editor::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+{
+  VSX_UNUSED(alt);
+  VSX_UNUSED(ctrl);
+  VSX_UNUSED(shift);
+
   switch(key) {
     case 't':
       {

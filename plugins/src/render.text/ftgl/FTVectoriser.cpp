@@ -51,6 +51,8 @@ void CALLBACK ftglVertex( void* data, FTMesh* mesh)
 
 void CALLBACK ftglCombine( FTGL_DOUBLE coords[3], void* vertex_data[4], GLfloat weight[4], void** outData, FTMesh* mesh)
 {
+  (void)vertex_data;
+  (void)weight;
     FTGL_DOUBLE* vertex = static_cast<FTGL_DOUBLE*>(coords);
     *outData = mesh->Combine( vertex[0], vertex[1], vertex[2]);
 }

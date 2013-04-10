@@ -216,6 +216,7 @@ int explode(vsx_string& input, vsx_string& delimiter, vsx_avector<vsx_string>& r
       //res.clear();
       ++count;
     }
+    if (count >= max_parts && max_parts > 0) return count;
     lastchar = input[i];
   }
   if (count == 0) results.push_back(input);
@@ -309,6 +310,7 @@ int split_string(vsx_string& input, vsx_string& delimiter, std::vector<vsx_strin
       //res.clear();
       ++count;
     }
+    if (count >= max_parts && max_parts > 0) return count;
     lastchar = input[i];
   }
   if (count == 0) results.push_back(input);
@@ -345,6 +347,7 @@ int split_string(vsx_string& input, vsx_string& delimiter, std::list<vsx_string>
       //res.clear();
       ++count;
     }
+    if (count >= max_parts && max_parts > 0) return count;
   }
   if (count == 0 && input != "") results.push_back(input);
   return count;

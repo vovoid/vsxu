@@ -551,6 +551,10 @@ void vsx_widget_controller_ab::event_mouse_move(vsx_widget_distance distance,vsx
 
 void vsx_widget_controller_ab::event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button)
 {
+  VSX_UNUSED(distance);
+  VSX_UNUSED(coords);
+  VSX_UNUSED(button);
+
   mouse.show_cursor();
   _delete();
 }
@@ -651,7 +655,8 @@ void vsx_widget_controller_color::vsx_command_process_b(vsx_command_s *t) {
   } else vsx_widget_base_controller::vsx_command_process_b(t);
 }
 
-void vsx_widget_controller_color::draw() {
+void vsx_widget_controller_color::draw()
+{
   if (!visible) return;
   parentpos = parent->get_pos_p();
   vsx_widget_base_controller::draw();
@@ -661,8 +666,6 @@ void vsx_widget_controller_color::draw() {
 	float sx = size.x*0.5;
 	float sy = size.y*0.5;
 	float gridc = 70.0;
-	float gx = size.x/gridc;
-	float gy = size.y/gridc;
 	float gi = 1.0/gridc;
 
 	float ss = size.x*base_size;
@@ -702,8 +705,8 @@ void vsx_widget_controller_color::draw() {
 
   gridc = 10.0;
   gi = 1.0 / gridc;
-  gx = size.x/gridc;
-  gy = size.y/gridc;
+  //gx = size.x/gridc;
+  //gy = size.y/gridc;
 
 	for (float i = 0; i < 1.0; i+=gi) {
 	  for (float j = 0; j < 1.0; j+=gi) {
@@ -870,11 +873,19 @@ void vsx_widget_controller_color::event_mouse_down(vsx_widget_distance distance,
   vsx_widget_base_controller::event_mouse_down(distance,coords,button);
 }
 
-void vsx_widget_controller_color::event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
+void vsx_widget_controller_color::event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+{
+  VSX_UNUSED(distance);
+  VSX_UNUSED(coords);
+  VSX_UNUSED(button);
 	_delete();
 }
 
-bool vsx_widget_controller_color::event_key_down(signed long key, bool alt, bool ctrl, bool shift) {
+bool vsx_widget_controller_color::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+{
+  VSX_UNUSED(alt);
+  VSX_UNUSED(ctrl);
+  VSX_UNUSED(shift);
   switch (key) {
     case 'f':
       angle_dest+= 0.01;
@@ -983,10 +994,10 @@ void vsx_widget_controller_pad::draw() {
   vsx_widget_base_controller::draw();
   glColor4f(1.0f,1.0f,1.0f,0.2f);
   draw_box_c(parentpos+pos, draw_area,draw_area);
-  unsigned long start_prevs = prev_pos-300;
+  long start_prevs = prev_pos-300;
   
   if (start_prevs < 0) start_prevs += 300;
-  if (start_prevs >= prev_draw.size()) start_prevs = 0;
+  if (start_prevs >= (long)prev_draw.size()) start_prevs = 0;
 
   //float inc = 1.0f / ((float)stop_prevs - (float)start_prevs);
   //float alpha = 0.0f;

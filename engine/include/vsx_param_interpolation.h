@@ -30,15 +30,10 @@ public:
   vsx_module* module;
   
   // set new destination value
-  virtual bool set(vsx_module_param_abs* value,int arity, float interpolation_time) {return false;};
-  virtual bool set(vsx_string value,int arity, float interpolation_time) {return false;};
+  virtual bool set(vsx_module_param_abs* value,int arity, float interpolation_time) = 0;
+  virtual bool set(vsx_string value,int arity, float interpolation_time) = 0;
   // to be run each frame
-  virtual bool interpolate(float dtime) {return false;};
-  vsx_module_param_interpolation_abs() {};
-  vsx_module_param_interpolation_abs(vsx_module_param_abs* param) {
-    target_param = param;
-  }  
-  virtual ~vsx_module_param_interpolation_abs() {};
+  virtual bool interpolate(float dtime) = 0;
 };  
 
 

@@ -177,7 +177,7 @@ void vsx_manager::toggle_randomizer()
 
 void vsx_manager::set_randomizer(bool status)
 {
-  
+  ((vsx_statelist*)int_state_manager)->set_randomizer(status);
 }
 
 bool vsx_manager::get_randomizer_status()

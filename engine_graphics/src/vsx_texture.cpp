@@ -227,6 +227,7 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_buffer
   bool multisample // enable anti-aliasing
 )
 {
+  VSX_UNUSED(multisample);
   GLenum gl_error; glGetError();
   locked = false;
   prev_buf = 0;
@@ -247,7 +248,6 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_buffer
 
   // save the previous FBO (stack behaviour)
   GLint prev_buf_l;
-  GLuint tex_id;
   glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l); HANDLE_GL_ERROR
 
   GLuint texture_storage_type;
@@ -330,6 +330,7 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
   GLuint existing_depth_texture_id
 )
 {
+  VSX_UNUSED(multisample);
   GLenum gl_error; glGetError();
   locked = false;
   prev_buf = 0;
@@ -351,7 +352,7 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
 
   // save the previous FBO (stack behaviour)
   GLint prev_buf_l;
-  GLuint tex_id;
+  //GLuint tex_id;
   glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l); HANDLE_GL_ERROR
 
   GLuint texture_storage_type;
@@ -675,7 +676,7 @@ void vsx_texture::upload_ram_bitmap(void* data, unsigned long size_x, unsigned l
         //printf("y: %d\n",y);
         int dysxbpp = dy*sxbpp;
         int ysxbpp = y * sxbpp;
-        for (int x = 0; x < size_x*bpp; ++x)
+        for (size_t x = 0; x < size_x*bpp; ++x)
         {
           data2[dysxbpp + x] = ((unsigned char*)data)[ysxbpp + x];
         }
@@ -903,7 +904,8 @@ void vsx_texture::texcoord2f(float x, float y) {
 
 void vsx_texture::unload()
 {
-  if (texture_info.ogl_id != 0)	{
+  if (texture_info.ogl_id != 0)
+  {
     if (name != "" && t_glist.find(name) != t_glist.end())
     {
       if (!locked)

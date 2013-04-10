@@ -245,7 +245,11 @@ void vsx_widget_timeline::i_draw() {
 	vsx_widget::i_draw();
 }
 
-bool vsx_widget_timeline::event_key_down(signed long key, bool alt, bool ctrl, bool shift) {
+bool vsx_widget_timeline::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+{
+  VSX_UNUSED(alt);
+  VSX_UNUSED(shift);
+
   float dt = (owner->tend-owner->tstart)*0.5;
   switch(key) {
 		case 'a':

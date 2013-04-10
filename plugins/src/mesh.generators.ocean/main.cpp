@@ -641,7 +641,9 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   switch(module) {
     case 0: return (vsx_module*)(new vsx_module_mesh_ocean_threaded);
     case 1: return (vsx_module*)(new vsx_module_mesh_ocean_tunnel_threaded);

@@ -29,24 +29,22 @@
 
 std::map<vsx_string, vsx_font_info*> vsx_font::glist;
 
-vsx_font_info* vsx_font::init(vsx_string font) {
+vsx_font_info* vsx_font::init(vsx_string font, vsxf* filesystem)
+{
   //vsx_font_info* font_info;
   my_font_info = glist[font] = new vsx_font_info;
 
-  if (font[0] != '-') {
+  if (font[0] != '-')
+  {
     my_font_info->type = 0;
     my_font_info->texture = new vsx_texture();
-    //std::cout << "registering new font: "<< font << std::endl;
-    //font_info->texture->load_png(base_path+"resources\\fonts\\font-"+font+".png",true);
     vsx_string ss = base_path+font;
-    //printf("font init: %s\n", ss.c_str() );
-    my_font_info->texture->load_png(base_path+font,true);
+    my_font_info->texture->load_png( base_path+font, true, filesystem );
     ch = 16.0f/255.0f;
     cw = 10.0f/255.0f;
-    //printf("loading font: %s\n",(base_path+font).c_str());
   } else {
-#ifndef VSX_FONT_NO_FT
-#ifndef VSX_NO_CLIENT
+    #ifndef VSX_FONT_NO_FT
+    #ifndef VSX_NO_CLIENT
     font_info->type = 1;
     font_info->ftfont = new FTGLPolygonFont((base_path+"resources\\fonts\\font"+font+".ttf").c_str());
     font_info->ftfont->FaceSize(10);
@@ -54,8 +52,8 @@ vsx_font_info* vsx_font::init(vsx_string font) {
     font_info->ftfont_outline = new FTGLOutlineFont((base_path+"resources\\fonts\\font"+font+".ttf").c_str());
     font_info->ftfont_outline->FaceSize(10);
     font_info->ftfont_outline->CharMap(ft_encoding_unicode);
-#endif
-#endif
+    #endif
+    #endif
   }
   return my_font_info;
 }  

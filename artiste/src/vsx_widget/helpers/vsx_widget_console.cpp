@@ -121,7 +121,11 @@
     command_q_b.add(vsx_command_parse(t->raw));
   }
 
-  void vsx_widget_2d_console::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
+  void vsx_widget_2d_console::event_mouse_down(vsx_widget_distance distance, vsx_widget_coords coords, int button)
+  {
+    VSX_UNUSED(distance);
+    VSX_UNUSED(coords);
+
     if ((button == 0) && (tx > 0)) k_focus = editor;
     parent->front(this);
     if (ythrust == 0) {

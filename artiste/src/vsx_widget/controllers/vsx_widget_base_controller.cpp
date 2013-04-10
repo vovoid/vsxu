@@ -140,11 +140,13 @@ void vsx_widget_base_controller::generate_menu()
   //don't forget to init the menu in subclasses
 }
 
-bool vsx_widget_base_controller::key_down(signed long key, bool alt, bool ctrl, bool shift) {
-  //printf("key is %d\n",(int)key);
-  //if (k_focus) {
-    if (key == 'c') delete_();
-  //}
+bool vsx_widget_base_controller::key_down(signed long key, bool alt, bool ctrl, bool shift)
+{
+  VSX_UNUSED(alt);
+  VSX_UNUSED(ctrl);
+  VSX_UNUSED(shift);
+
+  if (key == 'c') delete_();
   return true;
 }
 
@@ -334,6 +336,8 @@ void vsx_widget_base_controller::event_mouse_move(vsx_widget_distance distance,v
 
 void vsx_widget_base_controller::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
 {
+  VSX_UNUSED(distance);
+  VSX_UNUSED(coords);
 	if (hint) ((vsx_widget_3d_hint*)hint)->popup();
 
   bSnap=(shift|alt|ctrl);

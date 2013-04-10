@@ -4,6 +4,7 @@ class vsx_module_texture_blur : public vsx_module {
   vsx_module_param_float* start_value;
   vsx_module_param_float* attenuation;
   vsx_module_param_int* texture_size;
+  vsx_module_param_int* passes;
   int tex_size_internal;
 
   int res_x, res_y;
@@ -29,7 +30,13 @@ void module_info(vsx_module_info* info) {
   texture = 0;
   info->identifier = "texture;effects;blur";
 #ifndef VSX_NO_CLIENT
-  info->in_param_spec = "glow_source:texture,start_value:float,attenuation:float,texture_size:enum?2048x2048|1024x1024|512x512|256x256|128x128|64x64|32x32|16x16|8x8|4x4|VIEWPORT_SIZE|VIEWPORT_SIZE_DIV_2|VIEWPORT_SIZE_DIV_4|VIEWPORT_SIZEx2";
+  info->in_param_spec =
+      "glow_source:texture,"
+      "start_value:float,"
+      "attenuation:float,"
+      "texture_size:enum?2048x2048|1024x1024|512x512|256x256|128x128|64x64|32x32|16x16|8x8|4x4|VIEWPORT_SIZE|VIEWPORT_SIZE_DIV_2|VIEWPORT_SIZE_DIV_4|VIEWPORT_SIZEx2,"
+      "passes:enum?ONE|TWO"
+  ;
   info->out_param_spec = "texture_out:texture";
   info->component_class = "texture";
 #endif
@@ -43,6 +50,9 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   texture_size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"texture_size");
   texture_size->set(3);
   tex_size_internal = 3;
+
+  passes = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"passes");
+  passes->set(0);
 
   texture = new vsx_texture;
   res_x = res_y = 256;
@@ -408,8 +418,8 @@ void deactivate_offscreen() {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     texture2->_bind();
 
-    float pixel_offset_size_x = start_value->get() * 0.4f / (float)res_x;
-    float pixel_offset_size_y = start_value->get() * 0.4f / (float)res_y;
+    float pixel_offset_size_x = start_value->get() * 0.1f / (float)res_x;
+    float pixel_offset_size_y = start_value->get() * 0.1f / (float)res_y;
 
     texture->begin_capture_to_buffer();
       glViewport(0,0,res_x,res_y);
@@ -472,9 +482,18 @@ void deactivate_offscreen() {
     texture2->end_capture_to_buffer();
     texture2->valid = true;
 
+    if (passes->get() == 0)
+    {
+      texture_result->set(texture2);
+      return;
+    }
 
-    pixel_offset_size_x = 1.0f / (float)res_x;
-    pixel_offset_size_y = 1.0f / (float)res_y;
+
+
+//    pixel_offset_size_x = 1.0f / (float)res_x;
+//    pixel_offset_size_y = 1.0f / (float)res_y;
+    pixel_offset_size_x = start_value->get() * 0.4f / (float)res_x;
+    pixel_offset_size_y = start_value->get() * 0.4f / (float)res_y;
 
     // 2nd pass
     texture->begin_capture_to_buffer();

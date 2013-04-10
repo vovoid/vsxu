@@ -59,6 +59,8 @@ class input_audio_raw : public vsx_module
   vsx_float_array m_wave[N_BUFFERS][N_CHANNELS], m_spectrum[N_BUFFERS][N_CHANNELS];
   float m_vu[N_BUFFERS][N_CHANNELS], m_octaves[N_BUFFERS][N_CHANNELS][N_OCTAVES];
 
+  float amp;
+
   //Double buffer related properties
   pthread_mutex_t m_mutex;
 
@@ -77,7 +79,8 @@ class input_audio_raw : public vsx_module
   float m_tmp_fft_samples[N_CHANNELS][N_BUFFER_FRAMES];
   float m_tmp_fft_values[N_CHANNELS][N_BUFFER_FRAMES];
 
-  unsigned int m_sample_rate,m_buffer_frames;
+  unsigned int m_sample_rate;
+  unsigned int m_buffer_frames;
 
   static int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
                      double streamTime, RtAudioStreamStatus status, void *userData );

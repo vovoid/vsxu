@@ -406,6 +406,8 @@ CalCoreSkeleton *CalLoader::loadCoreSkeleton(void* inputBuffer)
 
 CalCoreAnimation *CalLoader::loadCoreAnimation(CalDataSource& dataSrc, CalCoreSkeleton *skel)
 {
+  (void)dataSrc;
+  (void)skel;
 /*
   // check if this is a valid file
   char magic[4];
@@ -494,6 +496,7 @@ CalCoreAnimation *CalLoader::loadCoreAnimation(CalDataSource& dataSrc, CalCoreSk
 
 CalCoreMaterial *CalLoader::loadCoreMaterial(CalDataSource& dataSrc)
 {
+  (void)dataSrc;
 /*
   // check if this is a valid file
   char magic[4];
@@ -608,6 +611,7 @@ CalCoreMaterial *CalLoader::loadCoreMaterial(CalDataSource& dataSrc)
 
 CalCoreMesh *CalLoader::loadCoreMesh(CalDataSource& dataSrc)
 {
+  (void)dataSrc;
 /*
   // check if this is a valid file
   char magic[4];
@@ -675,6 +679,7 @@ CalCoreMesh *CalLoader::loadCoreMesh(CalDataSource& dataSrc)
 
 CalCoreSkeleton *CalLoader::loadCoreSkeleton(CalDataSource& dataSrc)
 {
+  (void)dataSrc;
 /*
   // check if this is a valid file
   char magic[4];
@@ -739,7 +744,7 @@ CalCoreSkeleton *CalLoader::loadCoreSkeleton(CalDataSource& dataSrc)
 
 
 
- /*****************************************************************************/
+/*****************************************************************************/
 /** Loads a core bone instance.
   *
   * This function loads a core bone instance from a data source.
@@ -753,6 +758,7 @@ CalCoreSkeleton *CalLoader::loadCoreSkeleton(CalDataSource& dataSrc)
 
 CalCoreBone *CalLoader::loadCoreBones(CalDataSource& dataSrc)
 {
+  (void)dataSrc;
   /*if(!dataSrc.ok())
   {
     dataSrc.setError();
@@ -876,6 +882,7 @@ CalCoreBone *CalLoader::loadCoreBones(CalDataSource& dataSrc)
 
 CalCoreKeyframe *CalLoader::loadCoreKeyframe(CalDataSource& dataSrc)
 {
+  (void)dataSrc;
   /*if(!dataSrc.ok())
   {
     dataSrc.setError();
@@ -938,6 +945,7 @@ CalCoreKeyframe *CalLoader::loadCoreKeyframe(CalDataSource& dataSrc)
 
 CalCoreSubmesh *CalLoader::loadCoreSubmesh(CalDataSource& dataSrc)
 {
+  (void)dataSrc;
   /*if(!dataSrc.ok())
   {
     dataSrc.setError();
@@ -1230,6 +1238,8 @@ CalCoreSubmesh *CalLoader::loadCoreSubmesh(CalDataSource& dataSrc)
 
 CalCoreTrack *CalLoader::loadCoreTrack(CalDataSource& dataSrc, CalCoreSkeleton *skel)
 {
+  (void)dataSrc;
+  (void)skel;
   /*if(!dataSrc.ok())
   {
     dataSrc.setError();

@@ -240,6 +240,7 @@ std::list<CalCoreTrack *>& CalCoreAnimation_GetListCoreTrack(CalCoreAnimation *s
 
 CalCoreAnimation *CalCoreAnimation_New(CalCoreAnimation *self)
 {
+  (void)self;
   return new CalCoreAnimation();
 }
 
@@ -655,24 +656,35 @@ CalCoreModel *CalCoreModel_New(const char* name)
 
 Boolean CalCoreModel_SaveCoreAnimation(CalCoreModel *self, char *strFilename, int coreAnimationId)
 {
+  (void)self;
+  (void)strFilename;
+  (void)coreAnimationId;
   //return self->saveCoreAnimation(strFilename, coreAnimationId) ? True : False;
   return (Boolean)1;
 }
 
 Boolean CalCoreModel_SaveCoreMaterial(CalCoreModel *self, char *strFilename, int coreMaterialId)
 {
+  (void)self;
+  (void)strFilename;
+  (void)coreMaterialId;
 //  return self->saveCoreMaterial(strFilename, coreMaterialId) ? True : False;
 return (Boolean)1;
 }
 
 Boolean CalCoreModel_SaveCoreMesh(CalCoreModel *self, char *strFilename, int coreMeshId)
 {
+  (void)self;
+  (void)strFilename;
+  (void)coreMeshId;
   //return self->saveCoreMesh(strFilename, coreMeshId) ? True : False;
   return (Boolean)1;
 }
 
 Boolean CalCoreModel_SaveCoreSkeleton(CalCoreModel *self, char *strFilename)
 {
+  (void)self;
+  (void)strFilename;
   //return self->saveCoreSkeleton(strFilename) ? True : False;
   return (Boolean)1;
 }
@@ -1416,24 +1428,36 @@ CalSaver *CalSaver_New()
 
 Boolean CalSaver_SaveCoreAnimation(CalSaver *self, char *strFilename, CalCoreAnimation *pCoreAnimation)
 {
+  (void)self;
+  (void)strFilename;
+  (void)pCoreAnimation;
   return (Boolean)1;
   //return self->saveCoreAnimation(strFilename, pCoreAnimation) ? True : False;
 }
 
 Boolean CalSaver_SaveCoreMaterial(CalSaver *self, char *strFilename, CalCoreMaterial *pCoreMaterial)
 {
+  (void)self;
+  (void)strFilename;
+  (void)pCoreMaterial;
   //return self->saveCoreMaterial(strFilename, pCoreMaterial) ? True : False;
   return (Boolean)1;
 }
 
 Boolean CalSaver_SaveCoreMesh(CalSaver *self, char *strFilename, CalCoreMesh *pCoreMesh)
 {
+  (void)self;
+  (void)strFilename;
+  (void)pCoreMesh;
   //return self->saveCoreMesh(strFilename, pCoreMesh) ? True : False;
   return (Boolean)1;
 }
 
 Boolean CalSaver_SaveCoreSkeleton(CalSaver *self, char *strFilename, CalCoreSkeleton *pCoreSkeleton)
 {
+  (void)self;
+  (void)strFilename;
+  (void)pCoreSkeleton;
   //return self->saveCoreSkeleton(strFilename, pCoreSkeleton) ? True : False;
   return (Boolean)1;
 }

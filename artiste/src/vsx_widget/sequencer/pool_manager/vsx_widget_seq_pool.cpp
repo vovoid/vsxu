@@ -83,21 +83,21 @@ public:
 
   void event_mouse_move(vsx_widget_distance distance, vsx_widget_coords coords)
   {
-    //printf("mouse move");
-    //mod_i = i_rows_lookup[editor->selected_line];
-    //if (mod_i != -1)
-    //{
+    VSX_UNUSED(distance);
+
     if (get_selected_item() != "")
     {
       dragging = true;
-      //printf("found module %s\n",i_mod_info[mod_i]->identifier.c_str());
       drag_coords = coords;
     }
-//		}
   };
 
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
   {
+    VSX_UNUSED(distance);
+    VSX_UNUSED(coords);
+    VSX_UNUSED(button);
+
     if (dragging) dragging = false;
     //vsx_widget_base_edit::event_mouse_down(distance, coords, button);
     if (get_selected_item() != "")
@@ -158,6 +158,7 @@ public:
 
   void event_mouse_up(vsx_widget_distance distance, vsx_widget_coords coords, int button)
   {
+    VSX_UNUSED(button);
     if (dragging)
     {
       vsx_widget_distance l_distance;
@@ -189,7 +190,10 @@ public:
     }
   }
 
-void vsx_command_process_b(vsx_command_s *t) {}
+  void vsx_command_process_b(vsx_command_s *t)
+  {
+    VSX_UNUSED(t);
+  }
 };
 
 vsx_widget_seq_pool_manager::vsx_widget_seq_pool_manager() {
@@ -290,6 +294,11 @@ void vsx_widget_seq_pool_manager::set_server(vsx_widget* serv)
 
 bool vsx_widget_seq_pool_manager::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
 {
+  VSX_UNUSED(key);
+  VSX_UNUSED(alt);
+  VSX_UNUSED(ctrl);
+  VSX_UNUSED(shift);
+
   vsx_string filter = ((vsx_widget_base_edit*)search)->get_string();
   ((vsx_widget_base_editor*)edit)->editor->set_filter_string( filter );
   return true;

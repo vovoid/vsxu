@@ -238,7 +238,10 @@ __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 }
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
+
   glewInit();
   // as we have only one module available, don't look at the module variable, just return - for speed
   // otherwise you'd have something like,, switch(module) { case 0: break; }

@@ -58,6 +58,7 @@ AString SystemStringToOemString(const CSysString &srcString)
 
 UString MultiByteToUnicodeString(const AString &srcString, UINT codePage)
 {
+  (void)codePage;
   UString resultString;
   for (int i = 0; i < srcString.Length(); i++)
     resultString += wchar_t(srcString[i]);
@@ -66,6 +67,7 @@ UString MultiByteToUnicodeString(const AString &srcString, UINT codePage)
 
 AString UnicodeStringToMultiByte(const UString &srcString, UINT codePage)
 {
+  (void)codePage;
   AString resultString;
   for (int i = 0; i < srcString.Length(); i++)
     resultString += char(srcString[i]);

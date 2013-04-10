@@ -367,6 +367,8 @@ vsx_param_sequence::vsx_param_sequence()
 
 void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
 {
+  VSX_UNUSED(dest);
+  VSX_UNUSED(cmd_prefix);
 	total_time = 0.0f; // reset total time for re-calculation
 #ifdef VSXU_DEBUG
   printf("UPDATE_LINE in engine %s\n",cmd_in->raw.c_str());

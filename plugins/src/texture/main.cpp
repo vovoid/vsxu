@@ -103,6 +103,7 @@ public:
 
 	void output(vsx_module_param_abs* param)
 	{
+    VSX_UNUSED(param);
 		vsx_texture** t_a;
 			t_a = texture_a_in->get_addr();
 		vsx_texture** t_b;
@@ -1445,7 +1446,9 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   glewInit();
   switch(module) {
     case 0: return (vsx_module*)(new vsx_module_rendered_texture_single);

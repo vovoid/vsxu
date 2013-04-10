@@ -47,6 +47,7 @@ int vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info) {
 
     vxe_local->reset_time();
   }
+  return 0;
 }
 
 void vsx_statelist::add_visual_path(vsx_string new_visual_path)
@@ -519,7 +520,7 @@ void vsx_statelist::load_fx_levels_from_user()
       // got the file
       FILE* fpfx = fopen(fxlf.c_str(), "r");
       char dest[256];
-      char* ret_fgets = fgets(dest, 256, fpfx);
+      fgets(dest, 256, fpfx);
       fclose(fpfx);
       vsx_string ff = dest;
       state.fx_level = s2f(ff);
@@ -589,7 +590,7 @@ void vsx_statelist::save_fx_levels_from_user()
       // got the file
       FILE* fpfx = fopen(fxlf.c_str(), "r");
       char dest[256];
-      char* ret_fgets = fgets(dest, 256, fpfx);
+      fgets(dest, 256, fpfx);
       fclose(fpfx);
       vsx_string ff = dest;
       state.fx_level = s2f(ff);

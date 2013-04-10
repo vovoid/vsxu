@@ -92,6 +92,8 @@ int mouse_pos_type = 0;
 
 void GLFWCALL mouse_pos_event(int x, int y)
 {
+  VSX_UNUSED(x);
+  VSX_UNUSED(y);
   set_modifiers();
   glfwGetMousePos(&last_x, &last_y);
   if (mouse_state) mouse_pos_type = 1;
@@ -114,7 +116,7 @@ int main(int argc, char* argv[])
   app_argc = argc;
   app_argv = argv;
   int     width, height, running, frames, x, y;
-  double  t, t0, t1;
+  double  t, t1;
   char    titlestr[ 200 ];
 
   // Initialise GLFW
@@ -212,7 +214,6 @@ int main(int argc, char* argv[])
   // Main loop
   running = GL_TRUE;
   frames = 0;
-  t0 = glfwGetTime();
   //typedef BOOL (APIENTRY * wglSwapIntervalEXT_Func)(int);
   //wglSwapIntervalEXT_Func wglSwapIntervalEXT = wglSwapIntervalEXT_Func(wglGetProcAddress("wglSwapIntervalEXT"));
   //if (wglSwapIntervalEXT) wglSwapIntervalEXT(1);

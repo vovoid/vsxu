@@ -1090,6 +1090,7 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
+    VSX_UNUSED(in_parameters);
     l_param_updates = -1;
     loading_done = true;
 
@@ -1264,9 +1265,9 @@ public:
         mesh->data->vertex_tex_coords[ipos].t = ((float)z) * onedivwidth;
       }
     }
-    for (int x = 1; x < width; x++)
+    for (size_t x = 1; x < width; x++)
     {
-      for (int z = 1; z < width; z++)
+      for (size_t z = 1; z < width; z++)
       {
         vsx_face a;
         a.a = x-1 +  (z - 1) * width;
@@ -3338,7 +3339,7 @@ public:
       vsx_vector find = old->poly[i].pt[0];
       // try to find this vertex somewhere before
       int index_a = -1;
-      for (int j = 0; j < mesh->data->vertices.size(); j++)
+      for (size_t j = 0; j < mesh->data->vertices.size(); j++)
       {
         if (mesh->data->vertices[j] == find)
         {
@@ -3363,7 +3364,7 @@ public:
       find = old->poly[i].pt[1];
       // try to find this vertex somewhere before
       int index_b = -1;
-      for (int j = 0; j < mesh->data->vertices.size(); j++)
+      for (size_t j = 0; j < mesh->data->vertices.size(); j++)
       {
         if (mesh->data->vertices[j] == find)
         {
@@ -3388,7 +3389,7 @@ public:
       find = old->poly[i].pt[2];
       // try to find this vertex somewhere before
       int index_c = -1;
-      for (int j = 0; j < mesh->data->vertices.size(); j++)
+      for (size_t j = 0; j < mesh->data->vertices.size(); j++)
       {
         if (mesh->data->vertices[j] == find)
         {
@@ -3478,7 +3479,9 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   switch(module)
   {
     case 0: return (vsx_module*)(new vsx_module_mesh_needle);

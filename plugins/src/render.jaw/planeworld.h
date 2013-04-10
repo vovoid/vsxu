@@ -82,7 +82,7 @@ public:
     spline0.step(1);
     spos = spline0.calc_coord();
 
-    vsx_vector upv = vsx_vector(0,1);
+    //vsx_vector upv = vsx_vector(0,1);
 
     const float s = 0.008f;
 

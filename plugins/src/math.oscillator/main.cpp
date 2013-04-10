@@ -553,7 +553,9 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-vsx_module* MOD_CM(unsigned long module, void* args) {
+vsx_module* MOD_CM(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   switch (module) {
     case 0: return (vsx_module*)new vsx_module_plugin_maths_oscillator;
     case 1: return (vsx_module*)new vsx_module_plugin_maths_oscillators_float_sequencer;

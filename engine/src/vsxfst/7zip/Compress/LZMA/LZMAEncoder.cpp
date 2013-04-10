@@ -1093,6 +1093,7 @@ HRESULT CEncoder::ReadMatchDistances(UInt32 &lenRes)
 
 HRESULT CEncoder::GetOptimumFast(UInt32 position, UInt32 &backRes, UInt32 &lenRes)
 {
+  (void)position;
   UInt32 lenMain;
   if (!_longestMatchWasFound)
   {
@@ -1246,6 +1247,8 @@ HRESULT CEncoder::SetStreams(ISequentialInStream *inStream,
       ISequentialOutStream *outStream, 
       const UInt64 *inSize, const UInt64 *outSize)
 {
+  (void)inSize;
+  (void)outSize;
   _inStream = inStream;
   _finished = false;
   RINOK(Create());

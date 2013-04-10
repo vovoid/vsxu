@@ -6,6 +6,10 @@
 #ifndef VSX_PLATFORM_H
 #define VSX_PLATFORM_H
 
+// unused macro
+#define VSX_UNUSED(arg) (void)arg
+
+
 #define PLATFORM_WINDOWS          0
 #define PLATFORM_LINUX          1
 #define PLATFORM_MACINTOSH      2

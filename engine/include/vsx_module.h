@@ -314,7 +314,10 @@ public:
   // param notify, run whenever the engine sets a param from a command
   // not with the interpolator! added because of the need of redeclaring in-params
   // during state load before trying to make connections.
-  virtual void param_set_notify(const vsx_string& name) {};
+  virtual void param_set_notify(const vsx_string& name)
+  {
+    VSX_UNUSED(name);
+  }
 
   // is the module loaded and ready to render in high performance?
   // this will be used to determine if loading is completed for a demo for instance, or an effect.
@@ -325,12 +328,19 @@ public:
   // If you don't do heavy processing, set it to true in the declare_params() method.
   bool loading_done;
   // this is the function that the engine will call to get information about the module
-  virtual void module_info(vsx_module_info* info) {};
+  virtual void module_info(vsx_module_info* info)
+  {
+    VSX_UNUSED(info);
+  }
   // when it's time to allocate memory for parameters (when a module is to be used for real)
   // you have to implement this method to declare parameters. This is very related to the module_info function
   // as that one declares the GUI aspects of these parameters.
   // DO NOT allocate your own memory in here, do it in the init() function
-  virtual void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {};
+  virtual void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    VSX_UNUSED(in_parameters);
+    VSX_UNUSED(out_parameters);
+  }
 
   // Redeclaration of parameters
   // If you need to redeclare in our out parameters during runtime,
@@ -343,9 +353,16 @@ public:
   // When module_info is called again, you can supply new parameter specifications
   // for the GUI.
   bool redeclare_in;
-  virtual void redeclare_in_params(vsx_module_param_list& in_parameters) {};
+  virtual void redeclare_in_params(vsx_module_param_list& in_parameters)
+  {
+    VSX_UNUSED(in_parameters);
+  }
+
   bool redeclare_out;
-  virtual void redeclare_out_params(vsx_module_param_list& out_parameters) {};
+  virtual void redeclare_out_params(vsx_module_param_list& out_parameters)
+  {
+    VSX_UNUSED(out_parameters);
+  }
 
 
   // avector with all the filenames that this module needs
@@ -356,7 +373,10 @@ public:
   // - read configuration files
   // - calculate stuff.
   // Note though: this is called from the main thread so for heavy processing - create a thread instead.
-  virtual bool init() {return true;};
+  virtual bool init()
+  {
+    return true;
+  }
 
   // status screens, these are nice for the live performer as the module gets a chance to draw something
   // on top of everything else in a second render pass by the engine. This can be used for debugging modules
@@ -366,17 +386,29 @@ public:
   // module that gets sound from the soundcard.
 
   // first, you need to return how many different status screens you have
-  virtual unsigned long status_screen_get_count() {return 0;};
+  virtual unsigned long status_screen_get_count()
+  {
+    return 0;
+  }
   // keep track of wich one is active
   unsigned long status_screen_id;
   // get the name of the different status screens, this being declared like this
   // gives you the opportunity to dynamically name your status screens
-  virtual vsx_string status_screen_get_name(unsigned long id) {return "";};
+  virtual vsx_string status_screen_get_name(unsigned long id)
+  {
+    VSX_UNUSED(id);
+    return "";
+  }
   // the engine calls this one to tell the module wich one it wants to be drawn
-  virtual void status_screen_set(unsigned long id) {status_screen_id = id;};
+  virtual void status_screen_set(unsigned long id)
+  {
+    status_screen_id = id;
+  }
   // then if it's enabled at all (the engine keeps track of this) it will call
   // this draw method.
-  virtual void status_screen_draw() {};
+  virtual void status_screen_draw()
+  {
+  }
 
 
   // these methods are run before and after all the other methods.
@@ -389,29 +421,58 @@ public:
   // The opposite is also important, if you want to do stuff in here, don't forget to
   // either go return vsx_module::deactivate_offscree(); or return true yourself.
   // Deactivate offscreen will not be run if activate_offscreen returns false.
-  virtual bool activate_offscreen() { return true; };
-  virtual void deactivate_offscreen() {};
+  virtual bool activate_offscreen()
+  {
+    return true;
+  }
+  virtual void deactivate_offscreen()
+  {
+  }
 
   // validates wether or not this module can be run at all
   // If you need to check for certain hardware present, or OpenGL extensions - this is the function
   // to do it in. If you ccan't operate properly, simply implement this function and return false.
-  virtual bool can_run() { return true; };
+  virtual bool can_run()
+  {
+    return true;
+  }
 
   // the following methods are used a bit differently in different kinds of modules.
   // I suggest you see the different examples of modules to find out what's appropriate :)
   // run is run once per frame
-  virtual void run() {};
+  virtual void run()
+  {
+  }
   // output is run for each connection connected to the module
-  virtual void output(vsx_module_param_abs* param) {}; // this method usually performs what is going on screen and/or sets the outparams
+  // this method usually performs what is going on screen and/or sets the outparams
+  virtual void output(vsx_module_param_abs* param)
+  {
+    VSX_UNUSED(param);
+  }
 
   // this will be run when the engine stops, this will up until now only happen when going into
   // fullscreen mode so the modules with pbuffers in them can react to the mode change
-  virtual void stop() {};
-  virtual void start() {};
+  virtual void stop()
+  {
+  }
+  virtual void start()
+  {
+  }
   // clean up everything but the parameters in here - stuff you allocated yourself
-  virtual void on_delete() {};
-  vsx_module() { redeclare_in = false; redeclare_out = false; param_updates = 1; loading_done = false; engine = 0; };
-  virtual ~vsx_module() {};
+  virtual void on_delete()
+  {
+  }
+  vsx_module()
+  {
+    redeclare_in = false;
+    redeclare_out = false;
+    param_updates = 1;
+    loading_done = false;
+    engine = 0;
+  }
+  virtual ~vsx_module()
+  {
+  }
 };
 
 // hope this documentation isn't _that_ horrible ;)

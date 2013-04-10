@@ -81,7 +81,9 @@ renderer.\n\
 	  return true;
 	}  
 	
-	void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param)
+  {
+    VSX_UNUSED(param);
 	  render_result->set(render_in->get());
 	}
 };
@@ -129,7 +131,9 @@ public:
 	  return true;
 	}  
 	
-	void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param)
+  {
+    VSX_UNUSED(param);
 	  render_result->set(render_in->get());
 	}
 };
@@ -416,7 +420,9 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   // as we have only one module available, don't look at the module variable, just return - for speed
   // otherwise you'd have something like,, switch(module) { case 0: break; }
   switch(module) {

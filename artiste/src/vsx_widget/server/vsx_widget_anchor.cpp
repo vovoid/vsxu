@@ -164,8 +164,7 @@ void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t)
         delete_controllers();
         // add new connector
         vsx_widget *tt = add(new vsx_widget_connector_bezier,name+":conn");
-        vsx_vector u;
-        vsx_vector uu = get_pos_p();
+
         ((vsx_widget_connector_bezier*)tt)->alias_conn = false;
         if (ba->alias && io == -1 && ba->io == io) 
         {
@@ -1239,6 +1238,11 @@ map<vsx_string,vsx_string> parse_url_params(vsx_string input, char major='&', ch
 
 map<vsx_string,vsx_string> parse_url_params(vsx_string input, char major, char minor, char sublevelbegin, char sublevelend)
 {
+  VSX_UNUSED(major);
+  VSX_UNUSED(minor);
+  VSX_UNUSED(sublevelbegin);
+  VSX_UNUSED(sublevelend);
+
   map<vsx_string,vsx_string> values;
   int startpos=0, sublevel=0;
   vsx_string key="",val="",strip="";
@@ -1706,8 +1710,11 @@ void vsx_widget_anchor::toggle(int override)
   }
 } // toggle
 
-void vsx_widget_anchor::event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+void vsx_widget_anchor::event_mouse_double_click(vsx_widget_distance distance, vsx_widget_coords coords, int button)
 {
+  VSX_UNUSED(distance);
+  VSX_UNUSED(coords);
+
   if (button == 0)
   {
     {
@@ -1771,6 +1778,10 @@ void vsx_widget_anchor::event_mouse_double_click(vsx_widget_distance distance,vs
 
 bool vsx_widget_anchor::event_key_down(signed long key, bool alt, bool ctrl, bool shift) 
 {
+  VSX_UNUSED(key);
+  VSX_UNUSED(alt);
+  VSX_UNUSED(ctrl);
+  VSX_UNUSED(shift);
   return true;
 }
 
@@ -1835,6 +1846,8 @@ void vsx_widget_anchor::enumerate_children_get(int override)
 
 void vsx_widget_anchor::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords) 
 {
+  VSX_UNUSED(distance);
+  VSX_UNUSED(coords);
   if (m_o_focus != this) 
   {
     get_value();

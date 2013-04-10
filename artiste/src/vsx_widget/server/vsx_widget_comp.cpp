@@ -1093,7 +1093,10 @@ void vsx_widget_component::draw()
   }
 }
 
-void vsx_widget_component::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords) {
+void vsx_widget_component::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
+{
+  VSX_UNUSED(coords);
+
   message_pos = distance.center;
 }
 
@@ -1229,7 +1232,9 @@ void vsx_widget_component::event_mouse_down(vsx_widget_distance distance,vsx_wid
   vsx_widget::event_mouse_down(distance,coords,button);
 }
 
-void vsx_widget_component::event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
+void vsx_widget_component::event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+{
+  VSX_UNUSED(coords);
    //if (ctrl && button == GLUT_RIGHT_BUTTON) {
      //if (component_type != "screen") {
 //         command_q_b.add_raw("component_delete "+name);
@@ -1667,7 +1672,11 @@ void vsx_widget_component::perform_delete()
   server->vsx_command_queue_b(this);
 }
 
-bool vsx_widget_component::event_key_down(signed long key, bool alt, bool ctrl, bool shift) {
+bool vsx_widget_component::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+{
+  VSX_UNUSED(alt);
+  VSX_UNUSED(ctrl);
+  VSX_UNUSED(shift);
 #ifdef _WIN32
   if (abs(key) == 46) {
 #else

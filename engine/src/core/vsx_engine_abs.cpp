@@ -466,6 +466,7 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
   vsx_command_list tmp_param_set;
   vsx_command_list tmp_connections;
   vsx_command_list tmp_aliases;
+  tmp_aliases.add_raw("break");
   if (meta_information.size()) tmp_comp.add_raw("meta_set "+base64_encode(meta_information));
   for (forge_map_iter = forge_map.begin(); forge_map_iter != forge_map.end(); ++forge_map_iter)
   {
@@ -555,6 +556,7 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
   while ( (outc = tmp_comp.get()) ) {
     savelist.addc(outc);
   }
+  tmp_aliases.add_raw("break");
   tmp_aliases.reset();
   while ( (outc = tmp_aliases.pop_back()) ) {
     savelist.addc(outc);

@@ -68,6 +68,7 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
+    VSX_UNUSED(in_parameters);
     mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_result");
   }
 
@@ -137,7 +138,9 @@ class vsx_module_thorn : public vsx_module {
     return b*b;
   }
 
-  float gfunc(float b) {
+  float gfunc(float b)
+  {
+    VSX_UNUSED(b);
     return 0.4;
   }
 public:
@@ -169,6 +172,7 @@ void module_info(vsx_module_info* info)
 
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
+  VSX_UNUSED(in_parameters);
   mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_result");
   mesh_result->set(mesh);
 
@@ -538,7 +542,9 @@ __declspec(dllexport) unsigned long get_num_modules();
 
 
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   switch(module) {
     case 0: return (vsx_module*)(new vsx_module_thorn);
     case 1: return (vsx_module*)(new vsx_cloud_plane);

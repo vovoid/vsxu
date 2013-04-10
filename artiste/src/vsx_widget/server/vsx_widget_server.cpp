@@ -259,6 +259,7 @@ void vsx_widget_server::on_delete() {
 
 void vsx_widget_server::server_connect(vsx_string host, vsx_string port)
 {
+  VSX_UNUSED(port);
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
     client = new vsx_command_list_client;
     cmd_in = client->get_command_list_in();
@@ -1168,6 +1169,9 @@ void vsx_widget_server::param_alias_ok(vsx_string p_def, vsx_string io, vsx_stri
 
 bool vsx_widget_server::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
 {
+  VSX_UNUSED(alt);
+  VSX_UNUSED(shift);
+
   if (ctrl) {
     if (key == 'z' || key == 'Z') {
       //printf("undooooo\n");
@@ -1199,7 +1203,9 @@ void vsx_widget_server::event_mouse_down(vsx_widget_distance distance,vsx_widget
     vsx_widget::event_mouse_down(distance,coords,button);
   }
 
-void vsx_widget_server::event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
+void vsx_widget_server::event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+{
+  VSX_UNUSED(coords);
 	if (button == 0 && alt && !shift && !ctrl) {
 		command_q_b.add_raw("add_empty_macro "+f2s(distance.center.x)+","+f2s(distance.center.y));
 		vsx_command_queue_b(this);

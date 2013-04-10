@@ -8,6 +8,7 @@
 
 // --- FLOAT3
 bool vsx_module_param_interpolation_float3::set(vsx_module_param_abs* value, int arity, float interpolation_time) {
+  VSX_UNUSED(arity);
   dest_interp = interpolation_time;
   for(int i = 0; i < 3; ++i)
   destination_value[i] = ((vsx_module_param_float*)value)->get_internal(i);
@@ -37,6 +38,7 @@ bool vsx_module_param_interpolation_float3::interpolate(float dtime) {
 
 // --- FLOAT4
 bool vsx_module_param_interpolation_float4::set(vsx_module_param_abs* value, int arity, float interpolation_time) {
+  VSX_UNUSED(arity);
   dest_interp = interpolation_time;
   for(int i = 0; i < 4; ++i)
   destination_value[i] = ((vsx_module_param_float*)value)->get_internal(i);
@@ -67,6 +69,7 @@ bool vsx_module_param_interpolation_float4::interpolate(float dtime) {
 
 // --- QUATERNION
 bool vsx_module_param_interpolation_quaternion::set(vsx_module_param_abs* value, int arity, float interpolation_time) {
+  VSX_UNUSED(arity);
   dest_interp = interpolation_time;
   for(int i = 0; i < 4; ++i)
   destination_value[i] = ((vsx_module_param_float*)value)->get_internal(i);
@@ -74,6 +77,7 @@ bool vsx_module_param_interpolation_quaternion::set(vsx_module_param_abs* value,
 }
 
 bool vsx_module_param_interpolation_quaternion::set(vsx_string value, int arity, float interpolation_time) {
+  VSX_UNUSED(arity);
   dest_interp = interpolation_time;
   destination_value[arity] = s2f(value);
   return true;
@@ -132,6 +136,7 @@ bool vsx_module_param_interpolation_quaternion::interpolate(float dtime) {
 
 // --- FLOAT
 bool vsx_module_param_interpolation_float::set(vsx_module_param_abs* value, int arity, float interpolation_time) {
+  VSX_UNUSED(arity);
   iterations = 0;
   dest_interp = interpolation_time;
   destination_value = ((vsx_module_param_float*)value)->get_internal();
@@ -139,6 +144,7 @@ bool vsx_module_param_interpolation_float::set(vsx_module_param_abs* value, int 
 }
 
 bool vsx_module_param_interpolation_float::set(vsx_string value, int arity, float interpolation_time) {
+  VSX_UNUSED(arity);
   iterations = 0;
   dest_interp = interpolation_time;
   destination_value = s2f(value);

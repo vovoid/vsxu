@@ -166,18 +166,14 @@ void vsx_window_texture_viewer::draw_2d() {
     draw_children_2d();
 }
 
-bool vsx_window_texture_viewer::event_key_down(signed long key, bool alt, bool ctrl, bool shift) {
-  //printf("vsx_window_texture_viewer::event_key_down pressed %d %d %d \n",key,(int)alt,(int)ctrl);
-  //if (ctrl && (key == 'f' || key == 'F')) { fullwindow != fullwindow; if (fullwindow) mouse.hide_cursor(); else mouse.show_cursor(); run = true; return false;}
-  //if (alt && key == 20) {
-//	  fullscreen = !fullscreen; return false;}
+bool vsx_window_texture_viewer::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+{
+  VSX_UNUSED(alt);
+  VSX_UNUSED(shift);
+
   if (ctrl && key == 32) { run = !run; return false;}
   if (key == 32) { run = !run; return false;}
   if (key == 13) {fullwindow = !fullwindow; if (fullwindow) mouse.hide_cursor(); else mouse.show_cursor();}
-
-//  ((vsx_window_texture_viewer*)tv)->fullwindow = !((vsx_window_texture_viewer*)tv)->fullwindow;
-//  if (((vsx_window_texture_viewer*)tv)->fullwindow) mouse.hide_cursor(); else mouse.show_cursor();
-
   return false;
 }
 

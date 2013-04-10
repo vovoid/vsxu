@@ -96,7 +96,9 @@ public:
 	  gr.init();
 	}
 
-	void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param)
+  {
+    VSX_UNUSED(param);
 		gr.friction = friction->get();
 	  gr.color0[0] = color0->get(0);
 	  gr.color0[1] = color0->get(1);
@@ -198,7 +200,9 @@ public:
 
 	}
 
-	void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param)
+  {
+    VSX_UNUSED(param);
 		gr.masses[1].mass = gr.masses[0].mass + ribbon_width->get();
 		gr.length = length->get();
 		gr.friction = friction->get();
@@ -309,7 +313,9 @@ public:
 		render_result->set(0);
 	}
 
-	void output(vsx_module_param_abs* param) {
+  void output(vsx_module_param_abs* param)
+  {
+    VSX_UNUSED(param);
     particles = in_particlesystem->get_addr();
     if (particles) {
       if (prev_num_particles != particles->particles->size())
@@ -686,7 +692,9 @@ unsigned long get_num_modules() {
   return 4;
 }
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* create_new_module(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   // as we have only one module available, don't look at the module variable, just return - FOR SPEED (says jaw)
   // otherwise you'd have something like,, switch(module) { case 0: break; }
   switch (module) {

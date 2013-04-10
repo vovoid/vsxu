@@ -191,7 +191,7 @@ public:
       }
       if (!dual_monitor)
       {
-        vxe->process_message_queue(&internal_cmd_in,&internal_cmd_out);
+        vxe->process_message_queue(&internal_cmd_in,&internal_cmd_out,false,false,60.0f);
       }
 
       if (*gui_prod_fullwindow)
@@ -468,7 +468,7 @@ void app_print_cli_help()
     app_argv.serialize(),
         true
   );
-
+  VSX_UNUSED(module_list);
 }
 
 
@@ -675,7 +675,7 @@ void app_mouse_move_passive(int x, int y) {
     }
 
     desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
-    desktop->mouse_move_passive(x,y);
+    desktop->mouse_move_passive((float)x,(float)y);
   }
   //printf("mouse passive pos: %d :: %d\n",x,y);
 }
