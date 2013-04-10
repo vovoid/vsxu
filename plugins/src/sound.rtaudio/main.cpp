@@ -106,7 +106,7 @@ float fft[512];
 
 int rtaudio_type = 0;
 
-#include "vsx_listener_pulse.h"
+#include "vsx_listener_rtaudio.h"
 #include "vsx_listener_mediaplayer.h"
 
 
