@@ -170,10 +170,12 @@ void vsxf::archive_close() {
     return 0;
   }
 
-  int vsxf::archive_load(const char* filename) {
+  int vsxf::archive_load(const char* filename)
+  {
     // precaution, we don't wanna waste RAM
     if (type == VSXF_TYPE_ARCHIVE) archive_close();
     archive_name = filename;
+    FILE* archive_handle;
     archive_handle = fopen(filename,"rb");
     if (!archive_handle) {
       printf("error! \"%s\" is not a valid file handle!\n",filename);
@@ -217,7 +219,7 @@ void vsxf::archive_close() {
     archive_handle = 0;
     type = VSXF_TYPE_ARCHIVE;
     return 1;
-  };
+  }
 
 bool vsxf::is_archive()
 {
@@ -229,7 +231,8 @@ bool vsxf::is_archive_populated()
   return (archive_files.size() > 0);
 }
 
-  vsxf_handle* vsxf::f_open(const char* filename, const char* mode) {
+  vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
+  {
     vsx_string i_filename(filename);
     if (!i_filename.size()) return NULL;
     vsxf_handle* handle = new vsxf_handle;
@@ -239,7 +242,8 @@ bool vsxf::is_archive_populated()
     //     load/decompress filename from disk into ram
     // 1b. file:
     //     get a file descriptor from disk
-    if (type == VSXF_TYPE_FILESYSTEM) {
+    if (type == VSXF_TYPE_FILESYSTEM)
+    {
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
         i_filename = str_replace("\\","/",i_filename);
       #endif
@@ -255,18 +259,23 @@ bool vsxf::is_archive_populated()
         return NULL;
       } else
       return handle;
-    } else {
+    }
+    else
+    {
       FILE* l_handle = fopen(archive_name.c_str(),"rb");
 
       vsx_string mode_search(mode);
-      if (mode_search.find("r") != -1) {
+      if (mode_search.find("r") != -1)
+      {
         bool found = false;
         vsx_string fname(filename);
         unsigned long i = 0;
-
-        while (!found && i < archive_files.size()) {
+        get_lock();
+        while (!found && i < archive_files.size())
+        {
           //printf("trying file: %s\n",archive_files[i].filename.c_str());
-          if (archive_files[i].filename == fname) {
+          if (archive_files[i].filename == fname)
+          {
             found = true;
             handle = new vsxf_handle;
             handle->filename = fname;
@@ -280,6 +289,7 @@ bool vsxf::is_archive_populated()
             if (!fread(inBuffer,1,handle->size,l_handle))
             {
               delete handle;
+              release_lock();
               return NULL;
             }
             void* outBuffer = 0;
@@ -305,12 +315,14 @@ bool vsxf::is_archive_populated()
             }
             free(inBuffer);
             fclose(l_handle);
+            release_lock();
             return handle;
           }
           ++i;
         }
       } else
-      if (mode_search.find("w") != -1) {
+      if (mode_search.find("w") != -1)
+      {
         handle->position = 0;
         handle->size = 0;
         handle->file_data = (void*)(new vsx_avector<char>);
@@ -331,7 +343,11 @@ bool vsxf::is_archive_populated()
       if (type == VSXF_TYPE_ARCHIVE) {
         if (handle->mode == VSXF_MODE_WRITE) {
           (*(vsx_avector<char>*)(handle->file_data)).push_back(0);
-          archive_add_file(handle->filename, &((*((vsx_avector<char>*)(handle->file_data)))[0]),((vsx_avector<char>*)(handle->file_data))->size());
+          archive_add_file(
+            handle->filename,
+            &((*((vsx_avector<char>*)(handle->file_data)))[0]),
+            ((vsx_avector<char>*)(handle->file_data))->size()
+          );
         }
       }
       delete handle;

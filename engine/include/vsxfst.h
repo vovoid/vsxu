@@ -47,7 +47,7 @@
 #include <map>
 #include <list>
 #include <vector>
-
+#include <pthread.h>
 
 // FILESYSTEM OPERATIONS
 
@@ -101,6 +101,16 @@ class VSXFSTDLLIMPORT vsxf {
   vsx_string archive_name;
   // base path for opening file system files
   vsx_string base_path;
+
+  pthread_mutex_t mutex1;
+
+  void get_lock() {
+    pthread_mutex_lock( &mutex1 );
+  }
+  void release_lock() {
+    pthread_mutex_unlock( &mutex1 );
+  }
+
 public:
   vsxf();
   vsxf(const vsxf& f);
