@@ -102,8 +102,6 @@ i = 0..n	1.3 ^ i	   1.3 ^ i - 1	  1.3^i-1 / 1.3^n	  (1.3^i-1 / 1.3^n) * (n-1) + 
 //******************************************************************************
 //******************************************************************************
 
-float fft[512];
-
 int rtaudio_type = 0;
 
 #include "vsx_listener_rtaudio.h"
@@ -139,7 +137,10 @@ void print_help()
   printf("  -sound_type_alsa            - ALSA sound system\n");
   #endif
 
+  #if defined(__LINUX_JACK__)
   printf("  -sound_type_jack            - JACK sound system\n");
+  #endif
+
   #if defined(__LINUX_OSS__)
   printf("  -sound_type_oss             - OSS sound system\n");
   #endif
@@ -197,12 +198,6 @@ vsx_module* create_new_module(unsigned long module, void* args)
         rtaudio_type = RtAudio::WINDOWS_DS;
       }
       #endif
-
-      if (!rtaudio_started)
-      {
-        setup_rtaudio();
-        rtaudio_started++;
-      }
       sound_module_type = 0;
       return (vsx_module*)(new vsx_listener_pulse);
     }

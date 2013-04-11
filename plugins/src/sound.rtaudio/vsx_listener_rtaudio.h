@@ -1,6 +1,8 @@
 #include <RtAudio/RtAudio.h>
 #include <RtAudio/RtError.h>
 
+#include "rtaudio_handler.h"
+
 class vsx_listener_pulse : public vsx_module {
   // in
   vsx_module_param_int* quality;
@@ -164,10 +166,12 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 }
 
 bool init() {
+  setup_rtaudio();
   return true;
 }
 
 void on_delete() {
+  shutdown_rtaudio();
   delete spectrum.data;
 }
 
@@ -180,7 +184,8 @@ int echo_log(const char* message, int a) {
 
 int i;
 
-void run() {
+void run()
+{
   pa_audio_data.l_mul = multiplier->get()*engine->amp;
   // set wave
   if (0 == engine->param_float_arrays.size())
@@ -213,175 +218,3 @@ void run() {
 }
 };
 
-//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-#include <unistd.h>
-//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-static int worker_signal;
-
-int error;
-float fftbuf[1024];
-size_t fftbuf_it = 0;
-
-FFTReal* fftr = new FFTReal(512);
-
-int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
-         double streamTime, RtAudioStreamStatus status, void *userData )
-{
-  if ( status )
-  {
-    printf("Stream overflow detected!\n");
-  }
-
-  int16_t* buf = inputBuffer;
-
-  vsx_paudio_struct* pa_d = &pa_audio_data;
-
-  int j = 0;
-  // nab left channel for spectrum data
-  for (size_t i = 0; i < 512; i++)
-  {
-    const float &f = (float)buf[j] / 16384.0f;
-
-    (*(pa_d->wave[0].data))[i] = f * pa_d->l_mul;
-    fftbuf[fftbuf_it++] = f;
-    j++;
-    j++;
-  }
-  fftbuf_it = fftbuf_it % 1024;
-  j = 1;
-  for (size_t i = 0; i < 512; i++)
-  {
-    (*(pa_d->wave[1].data))[i] = (float)buf[j] / 16384.0f * pa_d->l_mul;
-    j++;
-    j++;
-  }
-  // do some FFT's
-  float spectrum[1024];
-  float spectrum_dest[512];
-  fftr->do_fft( (float*)&spectrum, (float*) &fftbuf[0]);
-  float re, im;
-
-  for(int ii = 0; ii < 256; ii++)
-  {
-    re = spectrum[ii];
-    im = spectrum[ii + 256];
-    spectrum_dest[ii] = (float)sqrt(re * re + im * im) / 256.0f * pa_d->l_mul;
-  }
-
-  // calc vu
-  float vu = 0.0f;
-  for (int ii = 0; ii < 256; ii++)
-  {
-    vu += spectrum_dest[ii];
-  }
-  pa_d->vu[0] = vu;
-  pa_d->vu[1] = vu;
-
-  for (size_t ii = 0; ii < 512; ii++)
-  {
-    (*(pa_d->spectrum[0].data))[ii] = spectrum_dest[ii >> 1] * 3.0f * pow(log( 10.0f + 44100.0f * (ii / 512.0f)) ,1.0f);
-  }
-
-
-
-  //normalize_fft( (float*)spectrum_dest, pa_d->spectrum[0]);
-
-  /*for (size_t ii = 0; ii < 512; ii++)
-  {
-    //float f = log( 2.0f + 8.0f * (ii / 512.0f) );
-    (*(pa_d->spectrum[0].data))[ii] *= pow(log( 2.0f + 8.0f * (ii / 512.0f)) ,3.0f);
-  }*/
-
-
-
-
-  #define spec_calc(cur_val, start, offset) \
-    cur_val = 0.0f;\
-    for (int ii = start * 50 + offset; ii < (start+1)*50; ii++) {\
-      cur_val += (*(pa_d->spectrum[0].data))[ii];\
-    }\
-    cur_val = (cur_val / 50.0f)
-
-  spec_calc(pa_d->octaves[0][0], 0, 10);
-  spec_calc(pa_d->octaves[0][1], 1, 0);
-  spec_calc(pa_d->octaves[0][2], 2, 0);
-  spec_calc(pa_d->octaves[0][3], 3, 0);
-  spec_calc(pa_d->octaves[0][4], 4, 0);
-  spec_calc(pa_d->octaves[0][5], 5, 0);
-  spec_calc(pa_d->octaves[0][6], 6, 0);
-  spec_calc(pa_d->octaves[0][7], 7, 0);
-
-
-}
-
-
-RtAudio* padc = 0x0;
-void setup_rtaudio()
-{
-  padc = new RtAudio(rtaudio_type);
-
-  if ( padc->getDeviceCount() < 1 )
-  {
-    printf("WARNING::::::::      No audio devices found!\n");
-    return;
-  }
-
-  vsx_paudio_struct* pa_d = &pa_audio_data;
-
-  pa_d->wave[0].data = new vsx_array<float>;
-  pa_d->wave[1].data = new vsx_array<float>;
-  for (int i = 0; i < 512; ++i) pa_d->wave[0].data->push_back(0);
-  for (int i = 0; i < 512; ++i) pa_d->wave[1].data->push_back(0);
-
-  pa_d->spectrum[0].data = new vsx_array<float>;
-  pa_d->spectrum[1].data = new vsx_array<float>;
-  for (int i = 0; i < 512; ++i) pa_d->spectrum[0].data->push_back(0);
-  for (int i = 0; i < 512; ++i) pa_d->spectrum[1].data->push_back(0);
-
-
-  RtAudio::StreamParameters parameters;
-  parameters.deviceId = padc->getDefaultInputDevice();
-  parameters.nChannels = 2;
-  parameters.firstChannel = 0;
-  unsigned int sampleRate = 44100;
-  unsigned int bufferFrames = 512;
-
-  RtAudio::StreamOptions options;
-      options.streamName = "vsxu";
-
-  try {
-    padc->openStream(
-      NULL,
-      &parameters,
-      RTAUDIO_SINT16,
-      sampleRate,
-      &bufferFrames,
-      &record,
-      NULL,
-      &options
-    );
-    padc->startStream();
-  }
-  catch ( RtError& e ) {
-    e.printMessage();
-  }
-}
-
-void shutdown_rtaudio()
-{
-  if (!padc) return;
-  try {
-    // Stop the stream
-    padc->stopStream();
-  }
-  catch (RtError& e) {
-    e.printMessage();
-  }
-
-  if ( padc->isStreamOpen() ) padc->closeStream();
-
-
-}

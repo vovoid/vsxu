@@ -16,9 +16,16 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     include_directories(${PULSEAUDIO_INCLUDE_DIRS})
     set( AUDIO_LIBRARIES ${PULSEAUDIO_LIBRARY} ${PULSEAUDIO_SIMPLE_LIBRARY})
   endif(PULSEAUDIO_FOUND)
-endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  find_package(JACK)
+  if(JACK_FOUND)
+    add_definitions(-D__LINUX_JACK__)
+    set( WITH_MIDI TRUE )
+
+    include_directories(${JACK_INCLUDE_DIRS})
+    set( AUDIO_LIBRARIES ${AUDIO_LIBRARIES} ${JACK_LIBRARY} )
+  endif(JACK_FOUND)
+
   find_package(ALSA)
   if(ALSA_FOUND)
     add_definitions(-D__LINUX_ALSA__)
