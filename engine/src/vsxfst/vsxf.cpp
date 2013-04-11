@@ -69,6 +69,7 @@ bool g_IsNT = false;
 vsxf::vsxf() {
   type = VSXF_TYPE_FILESYSTEM;
   archive_handle = 0;
+  pthread_mutex_init(&mutex1, NULL);
 }
 
 void vsxf::set_base_path(vsx_string new_base_path)
