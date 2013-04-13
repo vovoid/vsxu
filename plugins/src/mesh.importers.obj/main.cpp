@@ -278,72 +278,14 @@ void run() {
 	    }
     }
 
-    //for (int i = 0; i < texcoords.size(); ++i) {
-//      printf("%f %f\n",texcoords[i].s, texcoords[i].t);
-//    }
-    //for (int i = 0; i < mesh->data->vertex_tex_coords.size(); ++i) {
-//      printf("%f %f\n",mesh->data->vertex_tex_coords[i].s,mesh->data->vertex_tex_coords[i].t);
-    //}
-    //printf("num texcoords in face: %d\n",mesh->data->vertex_tex_coords.size());
     engine->filesystem->f_close(fp);
     loading_done = true;
     mesh->timestamp = (int)(engine->real_vtime*1000.0f);
-    printf("mesh timestamp: %d\n", (int)mesh->timestamp);
     #ifdef VSXU_DEBUG
-      printf("mesh timestamp: %d\n", (int)mesh->timestamp);
+      //printf("mesh timestamp: %d\n", (int)mesh->timestamp);
     #endif
   }
-  //printf("result_set\n");
   result->set_p(mesh);
-//  mesh->data->vertices[0] = vsx_vector__(0,0,0);
-//  mesh->data->vertex_colors[0] = vsx_color__(center_color->get(0),center_color->get(1),center_color->get(2),center_color->get(3));
-  //balls.Update(engine->real_dtime);
-//  a += 0.02;
-  //balls.Render();
-//  if (first_run || n_rays != (int)num_rays->get()) {
-//    mesh->data->vertex_tex_coords[0] = vsx_vector__(0,0,0);
-//    mesh->data->vertices.reset_used();
-//    mesh->data->faces.reset_used();
-    //printf("generating random points\n");
-/*    for (int i = 1; i < (int)num_rays->get(); ++i) {
-      mesh->data->vertices[i*2].x = (rand()%10000)*0.0001-0.5;
-      mesh->data->vertices[i*2].y = (rand()%10000)*0.0001-0.5;
-      mesh->data->vertices[i*2].z = (rand()%10000)*0.0001-0.5;
-      mesh->data->vertex_colors[i*2] = vsx_color__(0,0,0,0);
-      mesh->data->vertex_tex_coords[i*2] = vsx_vector__(0,1,0);
-      mesh->data->vertices[i*2+1].x = (rand()%10000)*0.0001-0.5;
-      mesh->data->vertices[i*2+1].y = (rand()%10000)*0.0001-0.5;
-      mesh->data->vertices[i*2+1].z = (rand()%10000)*0.0001-0.5;
-      mesh->data->vertex_colors[i*2+1] = vsx_color__(0,0,0,0);
-      mesh->data->vertex_tex_coords[i*2+1] = vsx_vector__(1,0,0);
-      mesh->data->faces[i-1].a = 0;
-      mesh->data->faces[i-1].b = i*2;
-      mesh->data->faces[i-1].c = i*2+1;
-      n_rays = (int)num_rays->get();
-    }
-    first_run = false;
-
-  } */
-  /*mesh->data->vertices = balls.vertices;
-  mesh->data->vertex_normals = balls.vertex_normals;
-  mesh->data->vertex_tex_coords = balls.vertex_tex_coords;
-  mesh->data->faces = balls.faces;
-  result->set_p(mesh);*/
-  /*else {
-    if (num_points->get() < mesh->data->vertices.size()) {
-      mesh->data->vertices.reset_used((int)num_points->get());
-    } else
-    if (num_points->get() > mesh->data->vertices.size()) {
-      for (int i = mesh->data->vertices.size(); i < (int)num_points->get(); ++i) {
-        mesh->data->vertices[i].x = (rand()%10000)*0.0001*scaling->get(0);
-        mesh->data->vertices[i].y = (rand()%10000)*0.0001*scaling->get(1);
-        mesh->data->vertices[i].z = (rand()%10000)*0.0001*scaling->get(2);
-      }
-    }
-  }
-    printf("randMesh done %d\n",mesh->data->vertices.size());*/
-
-  //  }
 }
 };
 

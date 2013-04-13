@@ -130,6 +130,9 @@ void setup_rtaudio()
     padc = new RtAudio(rtaudio_type);
     fftr = new FFTReal(512);
     rt_refcounter++;
+    #if (PLATFORM == PLATFORM_WINDOWS)
+    rt_refcounter++;
+    #endif
   }
 
   if ( padc->getDeviceCount() < 1 )

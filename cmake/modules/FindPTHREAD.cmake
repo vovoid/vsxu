@@ -20,6 +20,7 @@ FIND_LIBRARY(
 	PTHREAD_LIBRARY
 	NAMES pthread
 	PATHS
+	/usr/lib32
 	/usr/lib64
 	/usr/lib
 	/usr/local/lib64

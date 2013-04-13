@@ -663,7 +663,15 @@ vsx_statelist::~vsx_statelist()
   #ifdef VSXU_DEBUG
   printf("statelist destructor\n");
   #endif
-  
+  for (std::vector<state_info>::iterator it = statelist.begin(); it != statelist.end(); ++it)
+  {
+    if ((*it).engine)
+    {
+      (*it).engine->stop();
+      delete (*it).engine;
+    }
+  }
+
   for (size_t i = 0; i < faders.size(); i++)
   {
     #ifdef VSXU_DEBUG

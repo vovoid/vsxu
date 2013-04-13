@@ -30,13 +30,7 @@ void vsx_module_list::init(vsx_string args, bool print_help)
   std::list<vsx_string> mfiles;
   get_files_recursive
   (
-    vsx_string(CMAKE_INSTALL_PREFIX)
-    +
-    vsx_get_directory_separator()
-    +
-    vsx_string(VSXU_INSTALL_LIB_DIR)
-    +
-    "/vsxu/plugins"
+    VSXU_PLUGIN_LOCATION  // from CmakeLists.txt
     ,
     &mfiles
     ,
@@ -95,7 +89,7 @@ void vsx_module_list::init(vsx_string args, bool print_help)
 
     //-------------------------------------------------------------------------
     // look for the REQUIRED constructor (factory) method
-    if (vsx_dlopen::sym(plugin_handle, "create_module") == 0)
+    if (vsx_dlopen::sym(plugin_handle, "create_new_module") == 0)
     {
       printf(
             "vsx_module_list init: Error: trying to load the plugin \"%s\"\n"

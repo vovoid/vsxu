@@ -434,7 +434,6 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_depth_buffer
   GLuint existing_depth_texture_id
 )
 {
-  printf("reinit color depth buffer\n");
   deinit_buffer();
   init_color_depth_buffer
   (

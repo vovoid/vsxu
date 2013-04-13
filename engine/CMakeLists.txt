@@ -58,6 +58,15 @@ if (VSXU_DEBUG EQUAL 1)
 endif (VSXU_DEBUG EQUAL 1)
 
 
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+  add_definitions(-DVSXU_PLUGIN_LOCATION="${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_LIB_DIR}/vsxu/plugins")
+endif()
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  add_definitions(-DVSXU_PLUGIN_LOCATION="plugins")
+endif()
+
+
 ################################################################################
 # SOURCES ######################################################################
 ################################################################################

@@ -31,9 +31,6 @@
 #include "vsx_float_array.h"
 #include "vsx_math_3d.h"
 
-#include "pulse/simple.h"
-#include "pulse/error.h"
-#include "pulse/gccmacro.h"
 #include <pthread.h>
 #include "fftreal/fftreal.h"
 #include <unistd.h>
