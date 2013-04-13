@@ -89,6 +89,9 @@ SET(CPACK_PACKAGE_DESCRIPTION "VSXu Music Visualizer")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "VSXu Music Visualizer, Realtime Graphics Visual Programming Language, ")
 SET(CPACK_PACKAGE_CONTACT "Jonatan Wallmander <jonatan@vovoid.com> ")
 SET(CPACK_PACKAGE_FILE_NAME ${CMAKE_PROJECT_NAME}_${VSXU_VERSION}_${CPACK_DEBIAN_ARCHITECTURE})
+if (VSXU_DEBUG)
+  SET(CPACK_PACKAGE_FILE_NAME ${CMAKE_PROJECT_NAME}_${VSXU_VERSION}_${CPACK_DEBIAN_ARCHITECTURE}_debug)
+endif()
 
 SET(CPACK_COMPONENTS_ALL engine artiste player server)
 SET(CPACK_COMPONENT_ENGINE_DISPLAY_NAME "VSXu Engine")
@@ -96,25 +99,31 @@ SET(CPACK_COMPONENT_ENGINE_REQUIRED 1)
 SET(CPACK_COMPONENT_ARTISTE_DISPLAY_NAME "VSXu Artiste")
 SET(CPACK_COMPONENT_PLAYER_DISPLAY_NAME "VSXu Player")
 SET(CPACK_COMPONENT_PLAYER_REQUIRED 1)
-SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jonatan 'jaw' Wallmander / Vovoid Media Technologies")
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jonatan 'jaw' Wallmander / Vovoid Media Technologies AB")
 
 SET(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "VSXu ${CPACK_PACKAGE_VERSION}")
-##set(CPACK_PACKAGE_EXECUTABLES "vsxu_player;VSXu Player Window" "vsxu_artiste;VSXu Artiste" "vsxu_demo_player;Demo - Vovoid - Luna - Reactivation")
+##set(CPACK_PACKAGE_EXECUTABLES "vsxu_player;VSXu Player Window" "vsxu_artiste;VSXu Artiste")
 set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
-    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player Fullscreen.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_player.exe \\\" -f
+    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_player.exe \\\"
+    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Artiste.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_artiste.exe \\\"
 ")
 set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
-    Delete \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player Fullscreen.lnk\\\"
+    Delete \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player.lnk\\\"
+    Delete \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Artiste.lnk\\\"
 ")
 
 set(CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
 set(CPACK_PACKAGE_NAME VSXu ${CPACK_PACKAGE_VERSION})
-set(CPACK_PACKAGE_VENDOR "Vovoid Media Technologies")
+set(CPACK_PACKAGE_VENDOR "Vovoid Media Technologies AB")
 set(CPACK_PACKAGE_VERSION_MAJOR ${VSXU_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${VSXU_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${VSXU_VERSION_PATCH})
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "Vovoid VSXu ${CPACK_PACKAGE_VERSION}")
-set(CPACK_STRIP_FILES 1)
+if(VSXU_DEBUG)
+  set(CPACK_STRIP_FILES 0)
+else()
+  set(CPACK_STRIP_FILES 1)
+endif()
 
 INCLUDE(CPack)
 

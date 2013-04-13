@@ -203,9 +203,16 @@ endif()
 ################################################################################
 
 if(WIN32)
-# find pthreadGC2.dll (HACK!)
   find_file(pthread_dll pthreadGC2.dll)
   install(FILES ${pthread_dll} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT engine)
+  if (VSXU_BUILD_WINDOWS_32)
+    install(FILES /usr/lib/gcc/i686-w64-mingw32/4.6/libstdc++-6.dll DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT engine)
+    install(FILES /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT engine)
+  endif()
+  if (VSXU_BUILD_WINDOWS_64)
+    install(FILES /usr/lib/gcc/x86_64-w64-mingw32/4.6/libstdc++-6.dll DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT engine)
+    install(FILES /usr/lib/gcc/x86_64-w64-mingw32/4.6/libgcc_s_sjlj-1.dll DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT engine)
+  endif()
 endif()
 
 target_link_libraries(${module_id}

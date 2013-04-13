@@ -110,6 +110,20 @@ public:
     //#endif
   }
 
+  vsx_command_s(bool garbage_collectable) {
+    parsed = false;
+    type = 0;
+    iterations = 0;
+    ++id;
+    if (garbage_collectable)
+    {
+      //#ifndef VSX_CMD_GARBAGE_DISABLED
+      garbage_list.push_back(this);
+      garbage_pointer = &garbage_list;
+      //#endif
+    }
+  }
+
   // returns a string like "part1 part2 part3" if start was 1 and end was 3
   VSX_COMMAND_DLLIMPORT vsx_string get_parts(int start = 0, int end = -1);
 

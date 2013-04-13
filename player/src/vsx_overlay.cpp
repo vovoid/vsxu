@@ -54,7 +54,7 @@ void vsx_overlay::render() {
   
   if (intro_timer > 0.0f) {
     myf->color.a = intro_timer;
-    myf->print(vsx_vector(-0.55f,-0.95f),"Welcome to Vovoid VSX Ultra by jaw / cor / asterix - please press F1 for help to set up sound",0.04);
+    myf->print(vsx_vector(-0.75f,-0.95f),"Welcome to Vovoid VSX Ultra by jaw / cor / asterix / saidinesh5 - press F1 for help",0.04);
     intro_timer -= dt;
   }
   

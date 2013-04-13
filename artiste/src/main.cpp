@@ -28,6 +28,7 @@
 #include "vsxfst.h"
 #include "vsx_version.h"
 #include <stdlib.h>
+#include "vsx_platform.h"
 
 // implementation of app externals
 bool app_ctrl = false;
@@ -242,7 +243,13 @@ int main(int argc, char* argv[])
   running = GL_TRUE;
   frames = 0;
 
-  sprintf( titlestr, "Vovoid VSXu %s [GNU/Linux] [Visit us at http://vsxu.com]", vsxu_ver);
+
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+  sprintf( titlestr, "Vovoid VSXu Artiste %s [GNU/Linux %d-bit]", vsxu_ver, PLATFORM_BITS);
+  #endif
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+  sprintf( titlestr, "Vovoid VSXu Artiste %s [Windows %d-bit]", vsxu_ver, PLATFORM_BITS);
+  #endif
   glfwSetWindowTitle( titlestr );
 
 
