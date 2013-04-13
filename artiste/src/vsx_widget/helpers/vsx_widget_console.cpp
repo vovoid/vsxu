@@ -45,9 +45,6 @@
 #include "lib/vsx_widget_panel.h"
 #include "lib/vsx_widget_base_edit.h"
 
-#ifndef _WIN32
-#include "GL/glfw.h"
-#endif
 
 #include "vsx_widget_console.h"
 

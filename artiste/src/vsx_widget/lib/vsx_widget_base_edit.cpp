@@ -33,9 +33,7 @@
 #include "vsx_widget_panel.h"
 #include "vsx_widget_base_edit.h"
 #include <stdlib.h>
-#ifndef _WIN32
 #include "GL/glfw.h"
-#endif
 
 
 vsx_widget_base_edit::vsx_widget_base_edit() {
@@ -268,14 +266,9 @@ void vsx_widget_base_edit::set_filter_string(vsx_string &filter_string)
   filter_string_enabled = true;
 }
 
-void vsx_widget_base_edit::caret_goto_end() {
-#ifdef _WIN32
-  event_key_down(-35,false,false,false);
-#else
-#if defined(_LINUX) || defined (__APPLE__)
+void vsx_widget_base_edit::caret_goto_end()
+{
   event_key_down(-GLFW_KEY_END,false,false,false);
-#endif
-#endif
 }
 
 void vsx_widget_base_edit::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
@@ -308,13 +301,7 @@ void vsx_widget_base_edit::event_mouse_down(vsx_widget_distance distance,vsx_wid
     }
     }
     if (caretx > lines[(int)(carety+scroll_y)].size()-scroll_x) {
-#ifdef _WIN32
-    event_key_down(-35,false,false,false);
-#else
-#if defined(_LINUX) || defined (__APPLE__)
     event_key_down(-GLFW_KEY_END,false,false,false);
-#endif
-#endif
     }
     //printf("carety: %d\n", carety);
   }
@@ -631,13 +618,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
   } else
   switch(key) {
     // arrow left
-#ifdef _WIN32
-    case -37:
-#else
-#if defined(_LINUX) || defined (__APPLE__)
     case -GLFW_KEY_LEFT:
-#endif
-#endif
       --caretx;
       if (caretx < 0) {
         if (scroll_x) {
@@ -647,35 +628,16 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
         } else
         if (carety) {
           --carety;
-#ifdef _WIN32
-          event_key_down(-35,false,false,false);
-#else
-#if defined(_LINUX) || defined (__APPLE__)
         event_key_down(-GLFW_KEY_END);
-#endif
-#endif
         } else caretx = 0;
       }
       break;
     // arrow right
-#ifdef _WIN32
-    case -39:
-#else
-#if defined(_LINUX) || defined (__APPLE__)
     case -GLFW_KEY_RIGHT:
-#endif
-#endif
       ++caretx;
       if ((size_t)caretx > lines[carety+(int)scroll_y].size()-(int)scroll_x) {
-#ifdef _WIN32
-        event_key_down(-40,false,false,false);
-        event_key_down(-36,false,false,false);
-#else
-#if defined(_LINUX) || defined (__APPLE__)
         event_key_down(-GLFW_KEY_DOWN);
         event_key_down(-GLFW_KEY_HOME);
-#endif
-#endif
       }
       if (caretx > characters_width-3) {
         --caretx;
@@ -683,13 +645,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
       }
       break;
     // arrow up
-#ifdef _WIN32
-    case -38:
-#else
-#if defined(_LINUX) || defined (__APPLE__)
     case -GLFW_KEY_UP:
-#endif
-#endif
       if (!single_row) {
         --carety;
         if (carety < 0) {
@@ -700,44 +656,20 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
           }
         }
         if ((size_t)caretx > lines[carety+(int)scroll_y].size()-(int)scroll_x)
-#ifdef _WIN32
-          event_key_down(-35);
-#else
-#if defined(_LINUX) || defined (__APPLE__)
         event_key_down(-GLFW_KEY_END);
-#endif
-#endif
          //caretx = lines[carety+(int)scroll_y].size()-(int)scroll_x;
         }
       break;
     // page up
-#ifdef _WIN32
-    case -33:
-#else
-#if defined(_LINUX) || defined (__APPLE__)
     case -GLFW_KEY_PAGEUP:
-#endif
-#endif
       if (!single_row) {
         for (int zz = 0; zz < characters_height*0.95; ++zz) {
-#ifdef _WIN32
-          event_key_down(-38);
-#else
-#if defined(_LINUX) || defined (__APPLE__)
         event_key_down(-GLFW_KEY_UP);
-#endif
-#endif
         }
       }
       break;
     // arrow down
-#ifdef _WIN32
-    case -40:
-#else
-#if defined(_LINUX) || defined (__APPLE__)
     case -GLFW_KEY_DOWN:
-#endif
-#endif
       if (!single_row) {
         ++carety;
         if (carety > lines.size()-1-scroll_y) carety = (int)((float)lines.size()-1.0f-scroll_y);
@@ -750,45 +682,21 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
       }
       break;
     // page down
-#ifdef _WIN32
-    case -34:
-#else
-#if defined(_LINUX) || defined (__APPLE__)
     case -GLFW_KEY_PAGEDOWN:
-#endif
-#endif
       if (!single_row) {
         for (int zz = 0; zz < characters_height*0.95; ++zz) {
-#ifdef _WIN32
-          event_key_down(-40);
-#else
-#if defined(_LINUX) || defined (__APPLE__)
         event_key_down(-GLFW_KEY_DOWN,false,false,false);
-#endif
-#endif
         }
       }
       break;
     // home
-#ifdef _WIN32
-    case -36:
-#else
-#if defined(_LINUX) || defined (__APPLE__)
     case -GLFW_KEY_HOME:
-#endif
-#endif
       scroll_x = 0;
       caretx = 0;
       //fix_pos();
       break;
     // end
-#ifdef _WIN32
-    case -35:
-#else
-#if defined(_LINUX) || defined (__APPLE__)
     case -GLFW_KEY_END:
-#endif
-#endif
       caretx = lines[carety+(int)scroll_y].size()-(int)scroll_x;
       //if (caretx < 0) caretx = 0;
       if (caretx > characters_width-3) {
@@ -804,13 +712,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
       //fix_pos();
     break;
     // backspace
-#ifdef _WIN32
-    case 8:
-#else
-#if defined(_LINUX) || defined (__APPLE__)
     case -GLFW_KEY_BACKSPACE:
-#endif
-#endif
       if (caretx+(int)scroll_x) {
         lines[carety+(int)scroll_y].erase(caretx-1+(int)scroll_x,1);
         --caretx;
@@ -825,15 +727,8 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
           lines.erase(it);
           lines_p.erase(itp);
           lines_visible.erase(itlv);
-#ifdef _WIN32
-          event_key_down(-38,false,false,false);
-          event_key_down(-35,false,false,false);
-#else
-#if defined(_LINUX) || defined (__APPLE__)
         event_key_down(-GLFW_KEY_UP,false,false,false);
         event_key_down(-GLFW_KEY_END,false,false,false);
-#endif
-#endif
           lines[carety+(int)scroll_y] += tempstring;
           lines_p[carety+(int)scroll_y] += tempstring;
           process_line(carety+(int)scroll_y);
@@ -844,33 +739,14 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
       if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
     break;
     // delete
-#ifdef _WIN32
-    case -46:
-#else
-#if defined(_LINUX) || defined (__APPLE__)
     case -GLFW_KEY_DEL:
-#endif
-#endif
-#ifdef _WIN32
-      event_key_down(-39,false,false,false);
-      event_key_down(8,false,false,false);
-#else
-#if defined(_LINUX) || defined (__APPLE__)
-        event_key_down(-GLFW_KEY_RIGHT,false,false,false);
-        event_key_down(-GLFW_KEY_BACKSPACE,false,false,false);
-#endif
-#endif
+      event_key_down(-GLFW_KEY_RIGHT,false,false,false);
+      event_key_down(-GLFW_KEY_BACKSPACE,false,false,false);
       process_line(carety+(int)scroll_y);
       if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
     break;
     // enter
-#ifdef _WIN32
-    case 13:
-#else
-#if defined(_LINUX) || defined (__APPLE__)
     case -GLFW_KEY_ENTER:
-#endif
-#endif
       if (single_row) {
         vsx_string d;
         if (command_prefix.size()) d = command_prefix+" ";
@@ -893,29 +769,15 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
         lines_p[carety+(int)scroll_y] = tempstring2;
         lines_p.insert(itp,tempstring);
 
-#ifdef _WIN32
-        event_key_down(-40,false,false,false);
-        event_key_down(-36,false,false,false);
-#else
-#if defined(_LINUX) || defined (__APPLE__)
         event_key_down(-GLFW_KEY_DOWN,false,false,false);
         event_key_down(-GLFW_KEY_HOME,false,false,false);
-#endif
-#endif
-
         process_line(carety-1+(int)scroll_y);
         process_line(carety+(int)scroll_y);
       }
       if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
     break;
     // esc
-#ifdef _WIN32
-    case 27:
-#else
-#ifdef _LINUX
     case -GLFW_KEY_ESC:
-#endif
-#endif
     // da rest:
       if (single_row) {
         command_q_b.add_raw("cancel");

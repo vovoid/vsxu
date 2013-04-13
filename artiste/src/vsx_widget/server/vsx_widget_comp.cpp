@@ -45,9 +45,7 @@
 #include "controllers/vsx_widget_base_controller.h"
 #include "controllers/vsx_widget_editor.h"
 
-#ifndef _WIN32
 #include <GL/glfw.h>
-#endif
 
 using namespace std;
 // VSX_WIDGET_COMPONENT **************************************************************************************************>
@@ -1677,26 +1675,14 @@ bool vsx_widget_component::event_key_down(signed long key, bool alt, bool ctrl, 
   VSX_UNUSED(alt);
   VSX_UNUSED(ctrl);
   VSX_UNUSED(shift);
-#ifdef _WIN32
-  if (abs(key) == 46) {
-#else
-  if (abs(key) == GLFW_KEY_DEL) {
-#endif
+  if (abs(key) == GLFW_KEY_DEL)
+  {
     if (((vsx_widget_server*)(this->server))->selected_list.size())
     for (std::list<vsx_widget*>::iterator itx = ((vsx_widget_server*)server)->selected_list.begin(); itx != ((vsx_widget_server*)server)->selected_list.end(); ++itx) {
       if (!((vsx_widget_component*)(*itx))->internal_critical) {
-      //((vsx_widget_component*)(*itx))->component_type != "screen") {
-        //cout << "component_delete "+(*itx)->name << endl;
         ((vsx_widget_component*)(*itx))->begin_delete();
-        //!!command_q_b.add_raw("component_delete "+(*itx)->name);
-        //!!server->vsx_command_queue_b(this);
       }
     }
-
-/*      if (component_type != "screen") {
-        command_q_b.add_raw("component_delete "+name);
-        server->vsx_command_queue_b(this);
-      }*/
   }
   if (key == (signed long)'q') {
     show_titles = !show_titles;

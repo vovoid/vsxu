@@ -21,7 +21,7 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
     printf("Stream overflow detected!\n");
   }
 
-  int16_t* buf = inputBuffer;
+  int16_t* buf = (int16_t*)inputBuffer;
 
   vsx_paudio_struct* pa_d = &pa_audio_data;
 
@@ -114,6 +114,8 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   spec_calc(pa_d->octaves[0][5], 5, 0);
   spec_calc(pa_d->octaves[0][6], 6, 0);
   spec_calc(pa_d->octaves[0][7], 7, 0);
+
+  #undef spec_calc
 }
 
 
@@ -127,7 +129,7 @@ void setup_rtaudio()
   }
   else
   {
-    padc = new RtAudio(rtaudio_type);
+    padc = new RtAudio((RtAudio::Api)rtaudio_type);
     fftr = new FFTReal(512);
     rt_refcounter++;
     #if (PLATFORM == PLATFORM_WINDOWS)

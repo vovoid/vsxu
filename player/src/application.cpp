@@ -49,11 +49,7 @@ bool app_draw(int id)
     // init manager with the shared path and sound input type.
     // manual sound injection: manager->init( path.c_str() , "media_player");
     std::string path = PLATFORM_SHARED_FILES_STLSTRING;
-    #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-      manager->init( path.c_str(), "fmod");
-    #else
-      manager->init( path.c_str(), "pulseaudio");
-    #endif
+    manager->init( path.c_str(), "");
     // create a new text overlay
     overlay = new vsx_overlay;
     overlay->set_manager(manager);
@@ -110,11 +106,13 @@ void app_key_down(long key)
       overlay->set_help(1);
       break;
     // "F" key:
-    case 70:
+    case 'f':
+    case 'F':
       overlay->set_help(2);
       break;
     // "R" key:
-    case 82:
+    case 'r':
+    case 'R':
       if (app_ctrl)
       {
         manager->pick_random_visual();

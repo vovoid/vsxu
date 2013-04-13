@@ -265,6 +265,8 @@ int i;
     spec_calc(octaves_l_6_p, 6,0)
     spec_calc(octaves_l_7_p, 7,0)
 
+    #undef spec_calc
+
     octaves_r_0_p->set(octaves_l_0_p->get());
     octaves_r_1_p->set(octaves_l_1_p->get());
     octaves_r_2_p->set(octaves_l_2_p->get());

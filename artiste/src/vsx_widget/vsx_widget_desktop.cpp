@@ -58,10 +58,8 @@
 #include "lib/vsx_widget_base_edit.h"
 
 #include "vsx_widget_desktop.h"
-
-#ifndef _WIN32
 #include "GL/glfw.h"
-#endif
+
 // VSX_WIDGET_DESKTOP **************************************************************************************************
 // VSX_WIDGET_DESKTOP **************************************************************************************************
 // VSX_WIDGET_DESKTOP **************************************************************************************************
@@ -114,19 +112,22 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
 	this->shift = n_shift;
 
   if (k_focus) {
-    if (k_focus->event_key_down(key,alt,ctrl,shift)) {
-      if (ctrl) {
-#ifdef _WIN32
-        switch (tolower(abs(key))) {
-#else
-        switch (tolower(key)) {
-#endif
-          case ' ':
+    if (k_focus->event_key_down(key,alt,ctrl,shift))
+    {
+      if (ctrl)
+      {
+        printf("desktop key: %d\n",key);
+        printf("f:  %d",'f');
+        printf("F:  %d",'F');
+        printf("res: %d", tolower(abs(key)));
+        switch (key)
+        {
+          case -GLFW_KEY_SPACE:
             ((vsx_window_texture_viewer*)tv)->run = !((vsx_window_texture_viewer*)tv)->run;
             break;
           // fullwindow
-          case 'F':
-          case 'f': // F
+          case -'F':
+          case -'f': // F
           	//printf("going fullwindow\n");
             ((vsx_window_texture_viewer*)tv)->fullwindow = !((vsx_window_texture_viewer*)tv)->fullwindow;
             if (((vsx_window_texture_viewer*)tv)->fullwindow) mouse.hide_cursor(); else mouse.show_cursor();
@@ -134,11 +135,13 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
             //if (alt) this->performance_mode = !this->performance_mode;
           break;
           // close all controllers
-          case 'c':
+          case -'C':
+          case -'c':
             delete_all_by_type(VSX_WIDGET_TYPE_CONTROLLER);
           break;
           // close all open anchors
-          case 'd':
+          case -'D':
+          case -'d':
             for (std::map<int, vsx_widget*>::iterator it = ilist.begin();  it != ilist.end(); ++it) {
               if ((*it).second->widget_type == VSX_WIDGET_TYPE_ANCHOR) {
               	if ((*it).second->parent)
@@ -153,13 +156,10 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
 
       if (alt)
       {
-#ifdef _WIN32
-        switch (tolower(abs(key))) {
-#else
-        switch (tolower(key)) {
-#endif
-          case 'F':
-          case 'f': // F
+        switch (key)
+        {
+          case -'F':
+          case -'f': // F
           	if (((vsx_window_texture_viewer*)tv)->fullwindow)
           	{
           		mouse.show_cursor();
@@ -172,34 +172,24 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
       }
 
       if (!ctrl && !alt)
-#ifdef _WIN32
-      switch (tolower(abs(key))) {
-#else
-      switch (abs(key)) {
-#endif
-      case 0x08:
-        case ' ': {
-          //if (a_focus->type >= 100)
+      switch (key)
+      {
+        case -GLFW_KEY_SPACE:
+        {
           {
             if (a_focus->widget_type != VSX_WIDGET_TYPE_SERVER) {
               vsx_vector a = a_focus->get_pos_p();
               move_camera(vsx_vector(a.x,a.y,2.0f));
             } else move_camera(vsx_vector(xp,yp,2.0f));
-            /*zp = 2;
-            xp = a.x;
-            yp = a.y;
-            xps = 0;
-            yps = 0;
-            zps = 0;*/
           }
         }
         break;
-        case 'E': case 'e':{ interpolating = false;ypd=1.0;} break;
-        case 'D': case 'd':{ interpolating = false;ypd=-1.0;} break;
-        case 's': case 'S':{ interpolating = false;xpd=-1.0;} break;
-        case 'F': case 'f':{ interpolating = false;xpd=1.0;} break;
-        case 'R': case 'r':{ interpolating = false;zpd=-1.0;} break;
-        case 'W': case 'w':{ interpolating = false;zpd=1.0;} break;
+        case -GLFW_KEY_UP: case -'E': case -'e':{ interpolating = false;ypd=1.0;} break;
+        case -GLFW_KEY_DOWN: case -'D': case -'d':{ interpolating = false;ypd=-1.0;} break;
+        case -GLFW_KEY_LEFT: case -'s': case -'S':{ interpolating = false;xpd=-1.0;} break;
+        case -GLFW_KEY_RIGHT: case -'F': case -'f':{ interpolating = false;xpd=1.0;} break;
+        case -GLFW_KEY_PAGEUP: case -'R': case -'r':{ interpolating = false;zpd=-1.0;} break;
+        case -GLFW_KEY_PAGEDOWN: case -'W': case -'w':{ interpolating = false;zpd=1.0;} break;
       } // switch
     } else {
       return true;
@@ -215,23 +205,13 @@ bool vsx_widget_desktop::key_up(signed long key, bool alt, bool ctrl, bool shift
     if (k_focus->event_key_up(key,alt,ctrl,shift)) {
       //if (!ctrl)
       switch (key) {
-        case 'E': case 'e': ypd=0.0; break;
-        case 'D': case 'd': ypd=0.0; break;
-        case 'S': case 's': xpd=0.0; break;
-        case 'F': case 'f': xpd=0.0; break;
-        case 'R': case 'r': zpd=0.0; break;
-        case 'W': case 'w': zpd=0.0; break;
-#ifndef VSXU_PLAYER
-#ifndef _WIN32
-        case GLFW_KEY_TAB:
-#else
-        case 0x09:
-#endif
-        {
-          ((vsxu_assistant*)assistant)->toggle_size();
-        } break;
-#endif
-        //case 'c': tcp_main_client.connect(578); break;
+        case GLFW_KEY_UP:    case 'E': case 'e': ypd=0.0; break;
+        case GLFW_KEY_DOWN:  case 'D': case 'd': ypd=0.0; break;
+        case GLFW_KEY_LEFT:  case 'S': case 's': xpd=0.0; break;
+        case GLFW_KEY_RIGHT: case 'F': case 'f': xpd=0.0; break;
+        case GLFW_KEY_PAGEUP: case 'R': case 'r': zpd=0.0; break;
+        case GLFW_KEY_PAGEDOWN: case 'W': case 'w': zpd=0.0; break;
+        case GLFW_KEY_TAB: ((vsxu_assistant*)assistant)->toggle_size(); break;
       }
     } else {
       return false;

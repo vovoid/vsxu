@@ -194,7 +194,7 @@ public:
 //#ifndef VSX_STRING_TINY
   const vsx_string& operator=(const char* ss) {
     data.clear();
-    char* si = ss;
+    char* si = (char*)ss;
     while (si && *si != 0) {
       data.push_back(*si);
       ++si;

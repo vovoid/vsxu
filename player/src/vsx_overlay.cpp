@@ -210,7 +210,6 @@ one recording channel to be active at a time, others allow all simultaneously.\n
 \n\
 Keyboard shortcuts:\n\
  F                     - display fps and fx level information\n\
- ENTER                 - toggle fullscreen\n\
  R                     - toggle randomization mode\n\
  Ctrl+R                - pick a random visual\n\
  arrow keys left/right - switch visuals\n\
@@ -226,12 +225,11 @@ some visuals might be totally black! Please check http://doc.vsxu.com\n\
 and select \"VSXu Player\" for instructions!\n\
 \n\
 In GNU/Linux (Ubuntu) pulseaudio is normally used, you have to set the rec/routing\n\
-properly using the helper program \"Pulseaudio Volume Control\" (you might need to\n\
+properly using the helper program \"pavucontrol\" (you might need to\n\
 install it).\n\
 \n\
 Keyboard shortcuts:\n\
 F                     - display fps and fx level information\n\
-ENTER                 - toggle fullscreen\n\
 R                     - toggle randomization mode\n\
 Ctrl+R                - pick a random visual\n\
 arrow keys left/right - switch visuals\n\

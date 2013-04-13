@@ -99,7 +99,7 @@ SET(CPACK_COMPONENT_PLAYER_REQUIRED 1)
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jonatan 'jaw' Wallmander / Vovoid Media Technologies")
 
 SET(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "VSXu ${CPACK_PACKAGE_VERSION}")
-set(CPACK_PACKAGE_EXECUTABLES "vsxu_player;VSXu Player Window" "vsxu_artiste;VSXu Artiste" "vsxu_demo_player;Demo - Vovoid - Luna - Reactivation")
+##set(CPACK_PACKAGE_EXECUTABLES "vsxu_player;VSXu Player Window" "vsxu_artiste;VSXu Artiste" "vsxu_demo_player;Demo - Vovoid - Luna - Reactivation")
 set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
     CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player Fullscreen.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_player.exe \\\" -f
 ")
@@ -152,7 +152,9 @@ add_subdirectory(plugins)
 if (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
   add_subdirectory(artiste)
   add_subdirectory(player)
-  add_subdirectory(player_demo)
+  if (VSXU_DEMO_PLAYER)
+    add_subdirectory(player_demo)
+  endif()
 endif (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
 
 if(UNIX)

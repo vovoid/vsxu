@@ -542,7 +542,13 @@ bool app_draw(int id)
   return true;
 }
 
-void app_char(long key) {
+void app_char(long key)
+{
+  printf("char code: %d\n", key);
+  printf("alt: %d\n", (int)app_alt);
+  printf("ctrl: %d\n", (int)app_ctrl);
+  printf("shift: %d\n", (int)app_shift);
+  printf("\n\n");
   if (desktop) {
     if
       (
@@ -571,7 +577,13 @@ void app_char(long key) {
   }
 }
 
-void app_key_down(long key) {
+void app_key_down(long key)
+{
+    printf("key code: %d\n", key);
+    printf("alt: %d\n", (int)app_alt);
+    printf("ctrl: %d\n", (int)app_ctrl);
+    printf("shift: %d\n", (int)app_shift);
+    printf("\n\n");
   if (desktop) {
     if (app_alt && app_ctrl && app_shift && key == 80) {
       if (record_movie == false)
@@ -611,11 +623,12 @@ void app_key_down(long key) {
     if (*gui_prod_fullwindow && app_alt && !app_ctrl && !app_shift && key == 'T') gui_prod_fullwindow_helptext = !gui_prod_fullwindow_helptext;
     if (*gui_prod_fullwindow && !app_alt && app_ctrl && !app_shift && key == 'T') reset_time_measurements = true;
     desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
-    desktop->key_down(-key,app_alt, app_ctrl, app_shift);
+    desktop->key_down(-key, app_alt, app_ctrl, app_shift);
   }
 }
 
-void app_key_up(long key) {
+void app_key_up(long key)
+{
   //if (desktop)
   if (desktop) {
     if (
