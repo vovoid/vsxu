@@ -72,6 +72,7 @@ if(UNIX)
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
+    Xrandr
     vsxu_engine_audiovisual
     vsxu_engine_graphics
     vsxu_engine

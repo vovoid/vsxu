@@ -90,6 +90,7 @@ if(UNIX)
       ${OPENGL_LIBRARIES}
       ${PNG_LIBRARIES}
       ${JPEG_LIBRARIES}
+      Xrandr
     )
   endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 
