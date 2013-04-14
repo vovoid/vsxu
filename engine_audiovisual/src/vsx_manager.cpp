@@ -144,7 +144,6 @@ void vsx_manager::init(const char* base_path, const char* sound_type)
 
   if (s_type == "media_player")
   {
-    printf("manually setting sound type to media player\n");
     s_type = "-sound_type_media_player";
   }
 

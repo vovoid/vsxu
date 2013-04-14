@@ -99,7 +99,6 @@ private:
   vsx_command_list l_cmd_in;
   vsx_command_list l_cmd_out;
   unsigned long fade_id;
-  bool no_fbo_ati;
   bool randomizer;
   float randomizer_time;
   bool transitioning;
@@ -114,6 +113,8 @@ private:
 
   // options
   bool option_preload_all;
+
+  void preload_engines();
 
 public:
 

@@ -280,6 +280,29 @@ void vsx_statelist::random_state() {
   transition_time = 2.0f;
 }
 
+void vsx_statelist::preload_engines()
+{
+  // go through statelist and load and validate every plugin
+  std::vector<state_info> new_statelist;
+  for (state_iter = statelist.begin(); state_iter != statelist.end(); state_iter++)
+  {
+    if (init_current((*state_iter).engine, &(*state_iter)) > 0)
+    {
+      continue;
+    }
+    new_statelist.push_back(*state_iter);
+    if (option_preload_all == true)
+    {
+      while ( (*state_iter).engine->get_modules_left_to_load() )
+      {
+        (*state_iter).engine->process_message_queue( &(*state_iter).cmd_in, cmd_out = &(*state_iter).cmd_out,false, true);
+        (*state_iter).engine->render();
+      }
+    }
+  }
+  statelist = new_statelist;
+}
+
 void vsx_statelist::render() 
 {
   if (render_first)
@@ -316,25 +339,7 @@ void vsx_statelist::render()
       (*state_iter).is_volatile = true;
     }
 
-    // go through statelist and load and validate every plugin
-    std::vector<state_info> new_statelist;
-    for (state_iter = statelist.begin(); state_iter != statelist.end(); state_iter++)
-    {
-      if (init_current((*state_iter).engine, &(*state_iter)) > 0)
-      {
-        continue;
-      }
-      new_statelist.push_back(*state_iter);
-      if (option_preload_all == true)
-      {
-        while ( (*state_iter).engine->get_modules_left_to_load() )
-        {
-          (*state_iter).engine->process_message_queue( &(*state_iter).cmd_in, cmd_out = &(*state_iter).cmd_out,false, true);
-          (*state_iter).engine->render();
-        }
-      }
-    }
-    statelist = new_statelist;
+    preload_engines();
 
     // mark all state_info instances non-volatile (engine will be deleted when state_iter will be deleted)
     for (state_iter = statelist.begin(); state_iter != statelist.end(); state_iter++)
@@ -602,8 +607,6 @@ void vsx_statelist::save_fx_levels_from_user()
 
 void vsx_statelist::init(vsx_string base_path,vsx_string init_sound_type)
 {
-  no_fbo_ati = false;
-  if (vsx_string((char*)glGetString(GL_VENDOR)) == vsx_string("ATI Technologies Inc.")) no_fbo_ati = true;
   randomizer = true;
   srand ( time(NULL)+rand() );
   randomizer_time = (float)(rand()%1000)*0.001f*15.0f+10.0f;
