@@ -1,22 +1,22 @@
+meta_set fHx8fHw=
 component_create renderers;opengl_modifiers;gl_rotate gl_rotate -0.083201 -0.000500
-param_set gl_rotate axis 0.00000000000000000000,0.99999904632568359000,0.00000000019096030313
-param_set gl_rotate angle 0.26552107930183411000
+param_set gl_rotate axis 0.00000000000000000000,0.99999904632568359375,0.00000000019096030313
+param_set gl_rotate angle 0.26552107930183410645
 component_create texture;loaders;png_tex_load png_tex_load -0.519395 -0.007425
-ps64 png_tex_load filename cmVzb3VyY2VzL2ltYWdlcy9iaXNvdXgucG5n
+ps64 png_tex_load filename cmVzb3VyY2VzL2V4YW1wbGVzL2ltYWdlcy9iaXNvdXgucG5n
 component_create texture;modifiers;rotate rotate -0.276705 -0.005757
-param_set rotate rotation_angle -0.94219982624053955000
+param_set rotate rotation_angle -0.94219982624053955078
 component_create texture;modifiers;scale scale -0.420454 -0.002039
-param_set scale scale_vector 2.79384541511535640000,2.14149785041809080000,1.00000000000000000000
+param_set scale scale_vector 2.79384541511535644531,2.14149785041809082031,1.00000000000000000000
+cpp screen0 0.000000 0.000000
 component_create renderers;examples;simple_with_texture simple_with_texture -0.159497 -0.044477
-param_set simple_with_texture facing_camera 0
-param_set simple_with_texture angle 0.00000000000000000000
-param_set simple_with_texture position 0.00000000000000000000,0.00000000000000000000,0.00000000000000000000
 component_create texture;modifiers;tex_parameters tex_parameters -0.341750 0.000843
 param_set tex_parameters wrap_s 4
-param_set tex_parameters wrap_t 0
 param_set tex_parameters anisotropic_filtering 1
 component_create texture;modifiers;translate translate -0.194900 -0.017961
-param_set translate translation_vector -0.44332295656204224000,-0.50058609247207642000,0.00000000000000000000
+param_set translate translation_vector -0.44332295656204223633,-0.50058609247207641602,0.00000000000000000000
+break
+break
 param_connect translate texture_in rotate texture_rotate_out
 param_connect tex_parameters texture_in scale texture_scale_out
 param_connect simple_with_texture texture_in translate texture_translate_out
