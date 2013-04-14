@@ -134,13 +134,24 @@ vsx_manager::~vsx_manager()
 
 void vsx_manager::init(const char* base_path, const char* sound_type)
 {
+  vsx_string b_path;
   if(!base_path)
-    base_path =  std::string(PLATFORM_SHARED_FILES_STLSTRING).c_str();
+    b_path =  PLATFORM_SHARED_FILES;
+  else
+    b_path = base_path;
 
-  module_list = vsx_module_list_factory_create(vsx_string(sound_type), false);
+  vsx_string s_type(sound_type);
+
+  if (s_type == "media_player")
+  {
+    printf("manually setting sound type to media player\n");
+    s_type = "-sound_type_media_player";
+  }
+
+  module_list = vsx_module_list_factory_create(s_type, false);
   ((vsx_statelist*)int_state_manager)->set_module_list( module_list );
 
-  ((vsx_statelist*)int_state_manager)->init(vsx_string(base_path),vsx_string(sound_type));
+  ((vsx_statelist*)int_state_manager)->init(b_path,vsx_string(sound_type));
 }
 
 void vsx_manager::add_visual_path(const char* new_visual_path)
