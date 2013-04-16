@@ -253,7 +253,7 @@ size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024";
     }
     if (thread_state == 2) {
       if (bitm.valid && bitm_timestamp != bitm.timestamp) {
-        //pthread_join(worker_t,0);
+        pthread_join(worker_t,NULL);
         worker_running = false;
         // ok, new version
         //printf("uploading blob to vram\n");

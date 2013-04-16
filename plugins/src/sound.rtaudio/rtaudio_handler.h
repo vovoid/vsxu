@@ -1,3 +1,7 @@
+#if (PLATFORM == PLATFORM_LINUX)
+  #include <sys/prctl.h>
+#endif
+
 float fftbuf[1024];
 size_t fftbuf_it = 0;
 
@@ -13,6 +17,8 @@ const float one_div_32768 = 1.0f / 32768.0f;
 const float one_div_256 = 1.0f / 256.0f;
 const float one_div_512 = 1.0f / 512.0f;
 
+
+
 int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
          double streamTime, RtAudioStreamStatus status, void *userData )
 {
@@ -20,6 +26,11 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   {
     printf("Stream overflow detected!\n");
   }
+
+  #if (PLATFORM == PLATFORM_LINUX)
+    char* cal = "sound.rtaudio";
+    prctl(PR_SET_NAME,cal);
+  #endif
 
   int16_t* buf = (int16_t*)inputBuffer;
 

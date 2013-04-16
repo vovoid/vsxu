@@ -178,6 +178,8 @@ public:
       *p = 0xFF000000 | ((vsx_bitmap_32bt)SubPlasma[x]) << 16 | (vsx_bitmap_32bt)SubPlasma[x] << 8 | (vsx_bitmap_32bt)SubPlasma[x];// | 0 * 0x00000100 | 0;
 
     }
+
+    delete[] SubPlasma;
     /*for(y = -hsize; y < hsize; ++y)
       for(x = -hsize; x < hsize; ++x,p++)
       {
@@ -237,7 +239,6 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
     bitm.bformat = GL_RGBA;
     bitm.valid = false;
     my_ref = 0;
-    bitm.ref = &my_ref;
     bitm_timestamp = bitm.timestamp = rand();
     need_to_rebuild = true;
     //bitm.data = new vsx_bitmap_32bt[256*256];
@@ -265,14 +266,14 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
       thread_state = 1;
       worker_running = true;
       thread_created = true;
-      pthread_create(&worker_t, NULL, &worker, (void*)this);
+      pthread_create(&worker_t, &worker_t_attr, &worker, (void*)this);
 
-      
       //printf("done creating thread\n");
     }
     if (thread_state == 2) {
-      if (bitm.valid && bitm_timestamp != bitm.timestamp) {
-        //pthread_join(worker_t,0);
+      if (bitm.valid && bitm_timestamp != bitm.timestamp)
+      {
+        pthread_join(worker_t,0);
         worker_running = false;
         // ok, new version
         //printf("uploading subplasma to param\n");

@@ -852,7 +852,8 @@ void vsx_texture::load_png_thread(vsx_string fname, bool mipmaps)
 bool vsx_texture::bind()
 {
     if (pti_l)
-    if (((pti*)pti_l)->thread_state == 2) {
+    if (((pti*)pti_l)->thread_state == 2)
+    {
       if (texture_info.ogl_id != 0)
       unload();
       init_opengl_texture();
@@ -868,7 +869,7 @@ bool vsx_texture::bind()
       free((((pti*)pti_l)->pp)->Data);
       texture_info.type = 1; // png
       t_glist[name] = texture_info;
-      //pthread_join(((pti*)pti_l)->worker_t,0);
+      pthread_join(((pti*)pti_l)->worker_t,0);
       valid = true;
       delete (pti*)pti_l;
       pti_l = 0;

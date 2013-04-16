@@ -389,7 +389,6 @@ void vsx_widget_seq_pool_manager::vsx_command_process_b(vsx_command_s *t)
           command += t->parts[i];
         }
         command_q_b.add_raw(command);
-        printf("seq_pool command for sequencer: %s\n", command.c_str());
         sequencer->vsx_command_queue_b(this,true);
       }
     } else

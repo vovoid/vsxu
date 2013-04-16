@@ -291,11 +291,13 @@ public:
   void run() {
     // initialize our worker thread, we don't want to keep the renderloop waiting do we?
     if (!worker_running)
-    if (p_updates != param_updates) {
+    if (p_updates != param_updates)
+    {
       //need_to_rebuild = false;
       if (i_size != 8 << size->get() || old_bitmap_type != bitmap_type->get()) {
         i_size = 8 << size->get();
-        if (bitm.data) {
+        if (bitm.data)
+        {
           to_delete_type = bitm.bformat;
           to_delete_data = (void*)bitm.data;
         }
@@ -326,7 +328,7 @@ public:
     }
     if (thread_state == 2) {
       if (bitm.valid && bitm_timestamp != bitm.timestamp) {
-        //pthread_join(worker_t,0);
+        pthread_join(worker_t,0);
         worker_running = false;
         // ok, new version
         //printf("uploading subplasma to param\n");

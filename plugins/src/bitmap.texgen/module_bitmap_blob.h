@@ -77,60 +77,6 @@ public:
   float             work_color[4];
   int               work_alpha;
 
-  // our worker thread, to keep the tough generating work off the main loop
-  // this is a fairly simple operation, but when you want to generate fractals
-  // and decode film, you could run into several seconds of processing time.
-  static void* worker(void *ptr) {
-
-    ((module_bitmap_blob*)ptr)->worker_running = true;
-    int x,y;
-    float attenuation = ((module_bitmap_blob*)ptr)->attenuation->get();
-    float arms = ((module_bitmap_blob*)ptr)->arms->get()*0.5f;
-    float star_flower = ((module_bitmap_blob*)ptr)->star_flower->get();
-    float angle = ((module_bitmap_blob*)ptr)->angle->get();
-    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_blob*)ptr)->work_bitmap->data;
-    int size = ((module_bitmap_blob*)ptr)->i_size;
-    //float sp1 = (float)size + 1.0f;
-    float dist;
-    int hsize = size >> 1;
-  	for(y = -hsize; y < hsize; ++y)
-  		for(x = -hsize; x < hsize; ++x,p++)
-  		{
-  			float xx = (size/(size-2.0f))*((float)x)+0.5f;
-  			float yy = (size/(size-2.0f))*((float)y)+0.5f;
-  			float dd = sqrt(xx*xx + yy*yy);
-        float dstf = dd/((float)hsize+1);
-        float phase = (float)pow(1.0f - (float)fabs((float)cos(angle+arms*(float)atan2(xx,yy)))*(star_flower+(1-star_flower)*(((dstf)))),attenuation);
-        if (phase > 2.0f) phase = 1.0f;
-        float pf = (255.0f * (cos(((dstf * PI_FLOAT/2.0f)))*phase));
-        if (pf > 255.0f) pf = 255.0f;
-        if (pf < 0.0f) pf = 0.0f;
-        *p = (long)pf;
-        dist = cos(dstf * PI_FLOAT/2.0f)*phase;
-  			if (((module_bitmap_blob*)ptr)->work_alpha == 1)
-  			{
-          long pr = max(0,min(255,(long)(255.0f *  ((module_bitmap_blob*)ptr)->work_color[0])));
-          long pg = max(0,min(255,(long)(255.0f *  ((module_bitmap_blob*)ptr)->work_color[1])));
-          long pb = max(0,min(255,(long)(255.0f *  ((module_bitmap_blob*)ptr)->work_color[2])));
-          long pa = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_blob*)ptr)->work_color[3])));
-          *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
-//  			  *p = 0xFF000000 | *p * 0x00010000 | *p * 0x00000100 | *p;
-  			} else
-  			if (((module_bitmap_blob*)ptr)->work_alpha == 0) {
-          long pr = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_blob*)ptr)->work_color[0])));
-          long pg = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_blob*)ptr)->work_color[1])));
-          long pb = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_blob*)ptr)->work_color[2])));
-          long pa = (long)(255.0f * ((module_bitmap_blob*)ptr)->work_color[3]);
-  			  *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
-  			}
-  		}
-    ((module_bitmap_blob*)ptr)->work_bitmap->timestamp++;
-    ((module_bitmap_blob*)ptr)->work_bitmap->valid = true;
-    ((module_bitmap_blob*)ptr)->loading_done = true;
-    ((module_bitmap_blob*)ptr)->thread_state = 2;
-    // the thread will die here.
-    return 0;
-  }
 
   void module_info(vsx_module_info* info)
   {
@@ -194,7 +140,6 @@ public:
     bitm_timestamp = bitm.timestamp;
     need_to_rebuild = true;
     my_ref = 0;
-    bitm.ref = &my_ref;
     if (c_type == 1) {
       texture = new vsx_texture;
       texture->init_opengl_texture();
@@ -203,35 +148,104 @@ public:
     }
     to_delete_data = 0;
   }
+  pthread_attr_t attr;
   void *to_delete_data;
+
+
+
+  // our worker thread, to keep the tough generating work off the main loop
+  // this is a fairly simple operation, but when you want to generate fractals
+  // and decode film, you could run into several seconds of processing time.
+  static void* worker(void *ptr) {
+    ((module_bitmap_blob*)ptr)->worker_running = true;
+    int x,y;
+    float attenuation = ((module_bitmap_blob*)ptr)->attenuation->get();
+    float arms = ((module_bitmap_blob*)ptr)->arms->get()*0.5f;
+    float star_flower = ((module_bitmap_blob*)ptr)->star_flower->get();
+    float angle = ((module_bitmap_blob*)ptr)->angle->get();
+    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_blob*)ptr)->work_bitmap->data;
+    int size = ((module_bitmap_blob*)ptr)->i_size;
+    //float sp1 = (float)size + 1.0f;
+    float dist;
+    int hsize = size >> 1;
+    for(y = -hsize; y < hsize; ++y)
+      for(x = -hsize; x < hsize; ++x,p++)
+      {
+        float xx = (size/(size-2.0f))*((float)x)+0.5f;
+        float yy = (size/(size-2.0f))*((float)y)+0.5f;
+        float dd = sqrt(xx*xx + yy*yy);
+        float dstf = dd/((float)hsize+1);
+        float phase = (float)pow(1.0f - (float)fabs((float)cos(angle+arms*(float)atan2(xx,yy)))*(star_flower+(1-star_flower)*(((dstf)))),attenuation);
+        if (phase > 2.0f) phase = 1.0f;
+        float pf = (255.0f * (cos(((dstf * PI_FLOAT/2.0f)))*phase));
+        if (pf > 255.0f) pf = 255.0f;
+        if (pf < 0.0f) pf = 0.0f;
+        *p = (long)pf;
+        dist = cos(dstf * PI_FLOAT/2.0f)*phase;
+        if (((module_bitmap_blob*)ptr)->work_alpha == 1)
+        {
+          long pr = max(0,min(255,(long)(255.0f *  ((module_bitmap_blob*)ptr)->work_color[0])));
+          long pg = max(0,min(255,(long)(255.0f *  ((module_bitmap_blob*)ptr)->work_color[1])));
+          long pb = max(0,min(255,(long)(255.0f *  ((module_bitmap_blob*)ptr)->work_color[2])));
+          long pa = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_blob*)ptr)->work_color[3])));
+          *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
+//  			  *p = 0xFF000000 | *p * 0x00010000 | *p * 0x00000100 | *p;
+        } else
+        if (((module_bitmap_blob*)ptr)->work_alpha == 0) {
+          long pr = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_blob*)ptr)->work_color[0])));
+          long pg = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_blob*)ptr)->work_color[1])));
+          long pb = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_blob*)ptr)->work_color[2])));
+          long pa = (long)(255.0f * ((module_bitmap_blob*)ptr)->work_color[3]);
+          *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
+        }
+      }
+    ((module_bitmap_blob*)ptr)->work_bitmap->timestamp++;
+    ((module_bitmap_blob*)ptr)->work_bitmap->valid = true;
+    ((module_bitmap_blob*)ptr)->loading_done = true;
+    ((module_bitmap_blob*)ptr)->thread_state = 2;
+    int *retval = new int;
+    *retval = 0;
+    pthread_exit(NULL);
+    // the thread will die here.
+    return 0;
+  }
+
   void run() {
     //printf("param_updates: %d\n",param_updates);
     //printf("p_updates: %d\n",p_updates);
     // initialize our worker thread, we don't want to keep the renderloop waiting do we?
-    if (thread_state == 2) {
+    if (thread_state == 2)
+    {
       if (bitm.valid && bitm_timestamp != bitm.timestamp) {
         //pthread_join(worker_t,0);
         worker_running = false;
+        pthread_join(worker_t, NULL);
         // ok, new version
         //printf("uploading blob to vram\n");
         bitm_timestamp = bitm.timestamp;
         if (c_type == 1)
-        texture->upload_ram_bitmap(&bitm,true);
-        if (c_type == 1)
-        result_texture->set(texture);
+        {
+          texture->upload_ram_bitmap(&bitm,true);
+          result_texture->set(texture);
+        }
         result1->set_p(bitm);
       }
       thread_state = 3;
     }
 
     if (!worker_running)
-    if (p_updates != param_updates) {
+    if (p_updates != param_updates)
+    {
       //printf("param updates changed\n");
       //need_to_rebuild = false;
-      if (i_size != 8 << size->get()) {
+      if (i_size != 8 << size->get())
+      {
         i_size = 8 << size->get();
         //printf("i_size: %d\n",i_size);
-        if (bitm.data) to_delete_data = bitm.data;
+        if (bitm.data)
+        {
+          to_delete_data = bitm.data;
+        }
         bitm.data = new vsx_bitmap_32bt[i_size*i_size];
         bitm.size_y = bitm.size_x = i_size;
       }
@@ -245,13 +259,16 @@ public:
       work_color[2] = min(1.0f,color->get(2));
       work_color[3] = min(1.0f,color->get(3));
       thread_state = 1;
-      pthread_create(&worker_t, NULL, &worker, (void*)this);
+
+      pthread_attr_init(&attr);
+
+      pthread_create(&worker_t, &attr, &worker, (void*)this);
       thread_created = true;
 
       //printf("done creating thread\n");
     }
 
-    if (to_delete_data && my_ref == 0)
+    if (to_delete_data)
     {
       delete[] (vsx_bitmap_32bt*)to_delete_data;
       to_delete_data = 0;
