@@ -325,7 +325,6 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   result_bitm.bpp = 4;
   result_bitm.bformat = GL_RGBA;
   my_ref = 0;
-  result_bitm.ref = &my_ref;
   first = true;
   worker_running = false;
   buf = 0;

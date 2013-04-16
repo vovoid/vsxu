@@ -223,7 +223,6 @@ size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024";
     bitm.bformat = GL_RGBA;
     bitm.valid = false;
     my_ref = 0;
-    bitm.ref = &my_ref;    
     bitm_timestamp = bitm.timestamp = rand();
     need_to_rebuild = true;
     to_delete_data = 0;
@@ -247,6 +246,7 @@ size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024";
       //printf("creating thread\n");
       thread_state = 1;
       thread_created = true;
+      worker_running = true;
       pthread_create(&worker_t, NULL, &worker, (void*)this);
 
       //printf("done creating thread\n");
@@ -275,7 +275,7 @@ size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024";
   void stop() {}
   
   void on_delete() {
-    if (thread_created)
+    if (worker_running)
     {
       // wait for thread to finish
       void* ret;

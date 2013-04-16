@@ -278,7 +278,6 @@ public:
     bitm.bformat = GL_RGBA;
     bitm.valid = false;
     my_ref = 0;
-    bitm.ref = &my_ref;
     bitm_timestamp = bitm.timestamp = rand();
     need_to_rebuild = true;
     //bitm.data = new vsx_bitmap_32bt[256*256];

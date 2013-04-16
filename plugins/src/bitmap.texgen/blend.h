@@ -320,7 +320,6 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
     bitm.bformat = GL_RGBA;
     bitm.valid = false;
     my_ref = 0;
-    bitm.ref = &my_ref;    
     bitm_timestamp = bitm.timestamp = rand();
     need_to_rebuild = true;
     //bitm.data = new vsx_bitmap_32bt[256*256];
@@ -341,8 +340,6 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
     {
       if (bitm1->valid && bitm2->valid)
       if (timestamp1 != bitm1->timestamp || timestamp2 != bitm2->timestamp || p_updates != param_updates) {
-        *(bitm1->ref) = 1;
-        *(bitm2->ref) = 1;
         //printf("both bitmaps are OK it seems %d - %d\n",bitm1->timestamp,timestamp1);
         p_updates = param_updates;
         bitm.valid = false;
@@ -355,7 +352,6 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
           bitm.data = new vsx_bitmap_32bt[(int)target_size->get(0)*(int)target_size->get(1)];
           bitm.size_x = (int)target_size->get(0);
           bitm.size_y = (int)target_size->get(1);
-          
         }
         
         //printf("creating thread\n");
@@ -367,10 +363,12 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
       }
     }
     if (thread_state == 2) {
-      bitm1->ref = 0;
-      bitm2->ref = 0;
-      if (bitm.valid && bitm_timestamp != bitm.timestamp) {
-        //pthread_join(worker_t,0);
+      if (bitm.valid && bitm_timestamp != bitm.timestamp)
+      {
+        if (worker_running)
+        {
+          pthread_join(worker_t,0);
+        }
         worker_running = false;
         // ok, new version
         //printf("uploading subplasma to param\n");
@@ -381,7 +379,8 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
       thread_state = 3;
     }
     if (thread_state == 3)
-    if (to_delete_data && (*bitm.ref) == 0)
+    if (to_delete_data
+        )
     {
       delete[] (vsx_bitmap_32bt*)to_delete_data;
       to_delete_data = 0;
@@ -390,10 +389,9 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
   }
   
   void on_delete() {
-    if (thread_created)
+    if (worker_running)
     {
-      void* ret;
-      pthread_join(worker_t,&ret);
+      pthread_join(worker_t,NULL);
     }
     if (bitm.data)
     {

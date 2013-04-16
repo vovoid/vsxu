@@ -40,10 +40,8 @@ public:
   void *data;  //
   bool valid; // while this is false, don't upload it as a texture or read it, use your old copy
   int timestamp; // increased with 1 every time it's modified so others can now and react.
-  int* ref; // reference counter
   
   vsx_bitmap() {
-  	ref = 0;
     timestamp = 0;
     valid = false;
     size_x = size_y = 0;
