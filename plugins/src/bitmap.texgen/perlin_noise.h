@@ -348,7 +348,7 @@ public:
   void on_delete() {
     // wait for thread to finish
     void* ret;
-    if (thread_created)
+    if (worker_running)
     {
       pthread_join(worker_t,&ret);
     }

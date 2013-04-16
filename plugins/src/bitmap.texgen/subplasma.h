@@ -291,11 +291,10 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
   }
   
   void on_delete() {
-    if (thread_created)
+    if (worker_running)
     {
       // wait for thread to finish
-      void* ret;
-      pthread_join(worker_t,&ret);
+      pthread_join(worker_t,NULL);
     }
     if (bitm.data)
     {

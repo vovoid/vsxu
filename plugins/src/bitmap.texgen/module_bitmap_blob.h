@@ -157,7 +157,6 @@ public:
   // this is a fairly simple operation, but when you want to generate fractals
   // and decode film, you could run into several seconds of processing time.
   static void* worker(void *ptr) {
-    ((module_bitmap_blob*)ptr)->worker_running = true;
     int x,y;
     float attenuation = ((module_bitmap_blob*)ptr)->attenuation->get();
     float arms = ((module_bitmap_blob*)ptr)->arms->get()*0.5f;
@@ -262,6 +261,7 @@ public:
 
       pthread_attr_init(&attr);
 
+      worker_running = true;
       pthread_create(&worker_t, &attr, &worker, (void*)this);
       thread_created = true;
 
@@ -304,10 +304,10 @@ public:
 
   void on_delete() {
     // wait for thread to finish
-    void* ret;
-    if (thread_created)
+
+    if (worker_running)
     {
-      pthread_join(worker_t,&ret);
+      pthread_join(worker_t,NULL);
     }
 
     if (c_type == 1) {
