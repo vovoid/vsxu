@@ -238,7 +238,10 @@ int main(int argc, char* argv[])
   glfwSetMouseWheelCallback(&mouse_wheel);
   // Enable sticky keys
   glfwEnable( GLFW_STICKY_KEYS );
-  glfwSwapInterval(1);
+  if (!app_argv.has_param("novsync"))
+  {
+    glfwSwapInterval(1);
+  }
   // Main loop
   running = GL_TRUE;
   frames = 0;
