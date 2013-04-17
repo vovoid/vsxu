@@ -106,9 +106,9 @@ void app_init(int id)
   own_path = implode(parts2,deli);
   if (own_path.size()) own_path.push_back(deli[0]);
 
-  //#ifdef VSXU_DEBUG
+  #ifdef VSXU_DEBUG
   printf("own path: %s   \n", own_path.c_str() );
-  //#endif
+  #endif
 	//printf("argc: %d %s\n",app_argc,own_path.c_str());
 	vxe = new vsx_engine(own_path.c_str());
 //  myf.init(PLATFORM_SHARED_FILES+"font/font-ascii_output.png");

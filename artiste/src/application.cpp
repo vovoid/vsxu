@@ -432,9 +432,9 @@ void app_init(int id) {
   own_path = implode(parts2,deli);
   if (own_path.size()) own_path.push_back(deli[0]);
 
-  //#ifdef VSXU_DEBUG
+  #ifdef VSXU_DEBUG
   printf("own path: %s   \n", own_path.c_str() );
-  //#endif
+  #endif
   //printf("argc: %d %s\n",app_argc,own_path.c_str());
   //---------------------------------------------------------------------------
   vxe = new vsx_engine(own_path);
@@ -544,11 +544,14 @@ bool app_draw(int id)
 
 void app_char(long key)
 {
+  #ifdef VSXU_DEBUG
   printf("char code: %d\n", key);
   printf("alt: %d\n", (int)app_alt);
   printf("ctrl: %d\n", (int)app_ctrl);
   printf("shift: %d\n", (int)app_shift);
   printf("\n\n");
+  #endif
+
   if (desktop) {
     if
       (
@@ -579,11 +582,13 @@ void app_char(long key)
 
 void app_key_down(long key)
 {
+  #ifdef VSXU_DEBUG
     printf("key code: %d\n", key);
     printf("alt: %d\n", (int)app_alt);
     printf("ctrl: %d\n", (int)app_ctrl);
     printf("shift: %d\n", (int)app_shift);
     printf("\n\n");
+  #endif
   if (desktop) {
     if (app_alt && app_ctrl && app_shift && key == 80) {
       if (record_movie == false)

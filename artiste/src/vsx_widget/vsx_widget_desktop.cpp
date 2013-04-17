@@ -116,10 +116,12 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
     {
       if (ctrl)
       {
-        printf("desktop key: %d\n",key);
-        printf("f:  %d",'f');
-        printf("F:  %d",'F');
-        printf("res: %d", tolower(abs(key)));
+        #ifdef VSXU_DEBUG
+          printf("desktop key: %d\n",key);
+          printf("f:  %d",'f');
+          printf("F:  %d",'F');
+          printf("res: %d", tolower(abs(key)));
+        #endif
         switch (key)
         {
           case -GLFW_KEY_SPACE:
