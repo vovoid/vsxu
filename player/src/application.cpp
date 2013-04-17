@@ -73,7 +73,7 @@ bool app_draw(int id)
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   if (manager) manager->render();
-  if (overlay) overlay->render();
+  if (overlay && !no_overlay) overlay->render();
   return true;
 }
 

@@ -14,6 +14,7 @@ bool app_alt = false;
 bool app_shift = false;
 bool disable_randomizer = false;
 bool option_preload_all = false;
+bool no_overlay = false;
 
 int app_argc = 0;
 char** app_argv;
@@ -152,6 +153,9 @@ int main(int argc, char* argv[])
     } else
     if (arg1 == "-dr") {
       disable_randomizer = true;
+    } else
+    if (arg1 == "-no") {
+      no_overlay = true;
     } else
     if (arg1 == "-s") {
       if (i+1 < argc)
