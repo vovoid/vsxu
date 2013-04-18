@@ -16,6 +16,11 @@ find_package(GLEW REQUIRED)
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
 
+if(VSXU_TM)
+  find_package(Tm REQUIRED)
+endif()
+
+
 ################################################################################
 # INCLUDES #####################################################################
 ################################################################################
@@ -30,6 +35,12 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/artiste/src/vsx_widget
   ${CMAKE_SOURCE_DIR}/artiste/include
 )
+
+if (VSXU_TM)
+  include_directories(
+    ${TM_INCLUDE_PATH}
+  )
+endif()
 
 ################################################################################
 # DEFINES ######################################################################
@@ -54,6 +65,13 @@ add_definitions(
  -DVSXU_ARTISTE
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )
+
+if (VSXU_TM)
+  add_definitions(
+    -DVSXU_TM
+  )
+endif()
+
 
 ################################################################################
 # SOURCES ######################################################################
@@ -113,10 +131,18 @@ if(UNIX)
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
+    ${TM_LIBRARY}
     Xrandr
     vsxu_engine_graphics
     vsxu_engine
   )
+
+  if (VSXU_TM)
+    target_link_libraries(
+      ${module_id}
+      ${TM_LIBRARY}
+    )
+  endif()
 
 endif(UNIX)
 
@@ -192,6 +218,15 @@ install(
 )
 
 IF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  if (VSXU_TM)
+    install(FILES
+      ${TM_REDIST_LIBRARY}
+      DESTINATION
+      ${VSXU_INSTALL_BIN_DIR}
+    )
+  endif()
+
+
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/vsxu-artiste-fullscreen.desktop.in
                   ${CMAKE_CURRENT_BINARY_DIR}/vsxu-artiste-fullscreen.desktop
                   @ONLY)

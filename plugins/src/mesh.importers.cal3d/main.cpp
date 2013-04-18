@@ -35,6 +35,10 @@
   #include <sys/prctl.h>
 #endif
 
+#ifdef VSXU_TM
+#include "vsx_tm.h"
+#endif
+
 typedef struct {
   CalBone* bone;
   vsx_string name;
@@ -289,7 +293,8 @@ public:
     thread_info.class_pointer = (void*)this;
   }
 
-  void param_set_notify(const vsx_string& name) {
+  void param_set_notify(const vsx_string& name)
+  {
     pthread_mutex_lock(&mesh_mutex);
 
     #ifdef VSXU_DEBUG
@@ -669,6 +674,10 @@ public:
 
     //printf("cal3d module run!\n");
     // deal with changes in threading use
+    #ifdef VSXU_TM
+    ((vsx_tm*)engine->tm)->e( "cal3d_run_1" );
+    #endif
+
     if (thread_created && use_thread->get() == 0)
     {
       // this means the thread is running. kill it off.
@@ -684,6 +693,13 @@ public:
       thread_created = false;
       thread_info.is_thread = false;
     }
+    #ifdef VSXU_TM
+    ((vsx_tm*)engine->tm)->l();
+    #endif
+
+    #ifdef VSXU_TM
+    ((vsx_tm*)engine->tm)->e( "cal3d_run_2" );
+    #endif
     if (!thread_created && use_thread->get() == 1)
     {
       //printf("cal3d %d\n",__LINE__);
@@ -692,6 +708,9 @@ public:
       thread_created = true;
       thread_info.is_thread = true;
     }
+    #ifdef VSXU_TM
+    ((vsx_tm*)engine->tm)->l();
+    #endif
 
     if (0 == use_thread->get())
     {
@@ -699,8 +718,14 @@ public:
       worker((void*)&thread_info);
     }
 
+    #ifdef VSXU_TM
+    ((vsx_tm*)engine->tm)->e( "cal3d_run_consume_outer" );
+    #endif
     if (0 == pthread_mutex_trylock(&mesh_mutex) )
     {
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->e( "cal3d_run_consume_inner" );
+      #endif
       // lock ackquired. thread is waiting for us to set the semaphore before doing anything again.
       /*bool wait = true;
       if (!thread_has_something_to_deliver && have_sent_work_to_thread)
@@ -712,21 +737,42 @@ public:
           if (thread_has_something_to_deliver) wait = false;
         }
       }*/
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->e( "cal3d_thread_has_delivery" );
+      #endif
+
       if (thread_has_something_to_deliver)
       {
         thread_has_something_to_deliver = false;
         vsx_module_cal3d_loader_threaded* my = this;
+
+
+#ifdef VSXU_TM
+((vsx_tm*)engine->tm)->e( "cal3d_calculateboundingboxes" );
+#endif
         m_model->getSkeleton()->calculateBoundingBoxes();
+#ifdef VSXU_TM
+((vsx_tm*)engine->tm)->l();
+#endif
+
         if (!my->redeclare_out)
         {
           mesh_bbox->data->vertices.allocate(my->bones.size() * 8);
 
+          #ifdef VSXU_TM
+          ((vsx_tm*)engine->tm)->e( "cal3d_calcbones" );
+          #endif
           for (unsigned long j = 0; j < my->bones.size(); ++j)
           {
             if (my->bones[j].bone != 0)
             {
+
               CalVector t1 = my->bones[j].bone->getTranslationAbsolute();
+
               CalQuaternion q2 = my->bones[j].bone->getRotationAbsolute();
+
+              /*
+              // slow line!!!
               my->bones[j].bone->getCoreBone()->calculateBoundingBox(m_model->getCoreModel());
               my->bones[j].bone->calculateBoundingBox();
 
@@ -739,6 +785,9 @@ public:
                 mesh_bbox->data->vertices[j*8+bbi].y = bboxv[bbi].y;
                 mesh_bbox->data->vertices[j*8+bbi].z = bboxv[bbi].z;
               }
+            */
+
+
               my->bones[j].result_rotation   ->set( q2.x, 0 );
               my->bones[j].result_rotation   ->set( q2.y, 1 );
               my->bones[j].result_rotation   ->set( q2.z, 2 );
@@ -747,17 +796,36 @@ public:
               my->bones[j].result_translation->set( t1.x, 0 );
               my->bones[j].result_translation->set( t1.y, 1 );
               my->bones[j].result_translation->set( t1.z, 2 );
+
             }
           }
         }
+        #ifdef VSXU_TM
+        ((vsx_tm*)engine->tm)->l();
+        #endif
 
+        #ifdef VSXU_TM
+        ((vsx_tm*)engine->tm)->e( "cal3d_handle_mesh_pointers" );
+        #endif
         mesh->timestamp++;
         result->set(mesh);
 
         // toggle to the other mesh
-        if (mesh == mesh_a) mesh = mesh_b;
+        if (mesh == mesh_a)
+          mesh = mesh_b;
         else mesh = mesh_a;
+        #ifdef VSXU_TM
+        ((vsx_tm*)engine->tm)->l();
+        #endif
       }
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->l();
+      #endif
+
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->e( "cal3d_handle_p_updates" );
+      #endif
+
       if (p_updates != param_updates)
       {
         CalQuaternion q2;
@@ -808,7 +876,22 @@ public:
         //printf("cal3d %d\n",__LINE__);
       }
       pthread_mutex_unlock(&mesh_mutex);
+
+      // p_updates
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->l();
+      #endif
+
+
+      // inner
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->l();
+      #endif
     }
+    #ifdef VSXU_TM
+    ((vsx_tm*)engine->tm)->l();
+    #endif
+
   }
 };
 

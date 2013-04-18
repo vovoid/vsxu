@@ -39,7 +39,7 @@ extern bool dual_monitor;
 extern vsx_argvector app_argv;
 
 
-void app_init(int id); // which context is used?
+void app_init(int id, void* tm);
 
 void app_print_cli_help();
 

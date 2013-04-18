@@ -166,6 +166,9 @@ public:
   void time_stop();
   void time_rewind();
 
+  // set tm*
+  void set_tm(void* nt);
+
   // render
   //   module_output_only - if you don't want modules to run() - and thus only produce output
   //   good if you want to do multi pass rendering - most mesh and texture operations are done in run()

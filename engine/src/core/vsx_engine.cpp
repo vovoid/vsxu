@@ -41,6 +41,8 @@
 #include "scripting/vsxl_engine.h"
 #endif
 
+#include <vsx_tm.h>
+
 #include <vector>
 
 
@@ -401,6 +403,8 @@ bool vsx_engine::render()
 {
   if (!valid) return false;
 
+  ((vsx_tm*)tm)->e("engine::render");
+
   // reset dtime
   engine_info.dtime = 0;
 
@@ -611,10 +615,12 @@ bool vsx_engine::render()
 
     // reset input events counter
     reset_input_events();
+    ((vsx_tm*)tm)->l();
     return true;
   }
   // reset input events counter
   reset_input_events();
+  ((vsx_tm*)tm)->l();
   return false;
 }
 
@@ -735,6 +741,12 @@ void vsx_engine::unload_state() {
   i_clear();
 }
 
+
+void vsx_engine::set_tm(void *nt)
+{
+  tm = nt;
+  engine_info.tm = nt;
+}
 
 
 extern "C" vsx_engine* create_engine()

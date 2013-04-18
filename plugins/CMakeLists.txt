@@ -33,6 +33,15 @@ function(CREATE_STATIC_GLUE module_id)
   endif (VSXU_ENGINE_STATIC EQUAL 1)
 endfunction(CREATE_STATIC_GLUE)
 
+if (VSXU_TM)
+  find_package(Tm REQUIRED)
+  add_definitions(-DVSXU_TM)
+
+  include_directories(
+    ${TM_INCLUDE_PATH}
+  )
+endif()
+
 
 function (CREATE_MODULE ${module_id})
   if (VSXU_ENGINE_STATIC EQUAL 1)

@@ -410,7 +410,9 @@ void load_desktop_a(vsx_string state_name)
 }
 
 
-void app_init(int id) {
+void app_init(int id, void* tm)
+{
+
   if (dual_monitor && id == 0) return;
   //if (!dual_monitor && id == 0) return;
 
@@ -441,6 +443,8 @@ void app_init(int id) {
 
   vxe_module_list = vsx_module_list_factory_create(app_argv.serialize(),false);
   vxe->set_module_list(vxe_module_list);
+
+  vxe->set_tm(tm);
 
 
   gui_prod_fullwindow = &prod_fullwindow;

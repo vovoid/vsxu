@@ -25,6 +25,12 @@ include_directories(
   src/core
 )
 
+if (VSXU_TM)
+  include_directories(
+    ${TM_INCLUDE_PATH}
+  )
+endif()
+
 ################################################################################
 # DEFINES
 ################################################################################
@@ -64,6 +70,11 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_definitions(-DVSXU_PLUGIN_LOCATION="plugins")
+endif()
+
+
+if (VSXU_TM)
+  add_definitions(-DVSXU_TM)
 endif()
 
 

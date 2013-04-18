@@ -30,6 +30,13 @@
 #include <stdlib.h>
 #include "vsx_platform.h"
 
+#include "vsx_timer.h"
+
+#if PLATFORM == PLATFORM_LINUX
+#include <unistd.h>
+#endif
+
+
 // implementation of app externals
 bool app_ctrl = false;
 bool app_alt = false;
@@ -38,6 +45,8 @@ bool dual_monitor = false;
 
 
 vsx_argvector app_argv;
+
+#include "vsx_tm.h"
 
 /*
 void app_char(long key);
@@ -147,8 +156,12 @@ void GLFWCALL mouse_wheel(int pos)
 // main()
 //========================================================================
 
+vsx_tm* tm;
+
 int main(int argc, char* argv[])
 {
+  tm = new vsx_tm();
+
   for (size_t i = 0; i < (size_t)argc; i++)
   {
     vsx_string arg = vsx_string(argv[i]);
@@ -168,6 +181,7 @@ int main(int argc, char* argv[])
 
   int     width, height, running, frames, x, y;
   double  t, t1;
+  unsigned long usleep_framelimit;
   char    titlestr[ 200 ];
 
   bool start_fullscreen = false;
@@ -192,6 +206,12 @@ int main(int argc, char* argv[])
     manual_resolution_set = true;
   }
 
+  if (app_argv.has_param_with_value("frame_limit"))
+  {
+    vsx_string arg = app_argv.get_param_value("frame_limit");
+    usleep_framelimit = s2i(arg);
+  }
+
   if (start_fullscreen && !manual_resolution_set)
   {
     // try to get the resolution from the desktop for fullscreen
@@ -211,7 +231,7 @@ int main(int argc, char* argv[])
   }
 
   if (start_fullscreen) glfwEnable( GLFW_MOUSE_CURSOR );
-  app_init(0);
+  app_init(0, (void*)tm);
 
   glfwEnable(GLFW_AUTO_POLL_EVENTS);
 
@@ -238,7 +258,11 @@ int main(int argc, char* argv[])
   glfwSetMouseWheelCallback(&mouse_wheel);
   // Enable sticky keys
   glfwEnable( GLFW_STICKY_KEYS );
-  if (!app_argv.has_param("novsync"))
+  if (app_argv.has_param("novsync"))
+  {
+    glfwSwapInterval(0);
+  }
+  else
   {
     glfwSwapInterval(1);
   }
@@ -256,8 +280,12 @@ int main(int argc, char* argv[])
   glfwSetWindowTitle( titlestr );
 
 
+  vsx_timer frame_delay;
   while( running )
   {
+    frame_delay.start();
+    tm->z("main");
+
     if (mouse_pos_type)
     {
       if (mouse_pos_type == 1) app_mouse_move(last_x,last_y);
@@ -293,25 +321,50 @@ int main(int argc, char* argv[])
 
     frames ++;
 
-    // Get window size (may be different than the requested size)
-    glfwGetWindowSize( &width, &height );
-    height = height > 0 ? height : 1;
+    tm->e("window_management");
+      // Get window size (may be different than the requested size)
+      glfwGetWindowSize( &width, &height );
+      height = height > 0 ? height : 1;
 
-    // Set viewport
-    glViewport( 0, 0, width, height );
+      tm->e("viewport");
+      // Set viewport
+      glViewport( 0, 0, width, height );
+      tm->l();
 
-    // Clear color buffer
-    glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-    glClear( GL_COLOR_BUFFER_BIT );
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();											// Reset The Modelview Matrix
+      // Clear color buffer
+      tm->e("clearcolor");
+        glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+        glClear( GL_COLOR_BUFFER_BIT );
+      tm->l();
+      tm->e("matrices");
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();											// Reset The Modelview Matrix
+      tm->l();
+    tm->l();
 
+    tm->e("app_draw");
     app_draw(0);
+    tm->l();
 
+    tm->e("swapbuffers");
     // Swap buffers
     glfwSwapBuffers();
+    tm->l();
+
+    tm->e("frame_zzz", 0x0002);
+    float dtime = frame_delay.dtime();
+    if (dtime < 1.0f/60.0f)
+    {
+      float sleeptime = (1.0f / 60.0f - dtime)*1000000.0f;
+      usleep( (useconds_t) sleeptime );
+    }
+    tm->l();
+
+    tm->t();
+
+
 
     // Check if the ESC key was pressed or the window was closed
     running = /*!glfwGetKey( GLFW_KEY_ESC ) &&*/

@@ -138,6 +138,9 @@ public:
   // item 4..999 are reserved for Vovoid use
   vsx_avector<vsx_engine_float_array*> param_float_arrays;
 
+  // tm
+  void* tm;
+
   vsx_module_engine_info()
   {
     state = 0;
@@ -151,6 +154,7 @@ public:
     request_rewind = 0;
     request_set_time = -0.01f;
     num_input_events = 0;
+    tm = 0x0;
   }
 };
 
