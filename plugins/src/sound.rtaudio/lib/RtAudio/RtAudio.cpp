@@ -6708,10 +6708,13 @@ bool RtApiPulse::probeDeviceOpen( unsigned int device, StreamMode mode,
   switch ( mode ) {
   case INPUT:
 
+    pa_buffer_attr buffer_attr;
+    buffer_attr.fragsize = 512;
+    buffer_attr.maxlength = -1;
     if( options && (!options->streamName.empty()) )
-      pah->s_rec = pa_simple_new( NULL, options->streamName.c_str(), PA_STREAM_RECORD, NULL, "Record", &ss, NULL, NULL, &error );
+      pah->s_rec = pa_simple_new( NULL, options->streamName.c_str(), PA_STREAM_RECORD, NULL, "Record", &ss, NULL, &buffer_attr, &error );
     else
-      pah->s_rec = pa_simple_new( NULL, "RtAudio", PA_STREAM_RECORD, NULL, "Record", &ss, NULL, NULL, &error );
+      pah->s_rec = pa_simple_new( NULL, "RtAudio", PA_STREAM_RECORD, NULL, "Record", &ss, NULL, &buffer_attr, &error );
 
     if ( !pah->s_rec ) {
       errorText_ = "RtApiPulse::probeDeviceOpen: error connecting input to PulseAudio server.";
