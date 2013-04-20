@@ -218,14 +218,6 @@ install(
 )
 
 IF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  if (VSXU_TM)
-    install(FILES
-      ${TM_REDIST_LIBRARY}
-      DESTINATION
-      ${VSXU_INSTALL_BIN_DIR}
-    )
-  endif()
-
 
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/vsxu-artiste-fullscreen.desktop.in
                   ${CMAKE_CURRENT_BINARY_DIR}/vsxu-artiste-fullscreen.desktop
