@@ -183,13 +183,26 @@ int main(int argc, char* argv[])
 
   if (app_argv.has_param_with_value("s"))
   {
-    vsx_string arg = app_argv.get_param_value("s");
+    vsx_string arg2 = app_argv.get_param_value("s");
     vsx_avector<vsx_string> parts;
     vsx_string deli = ",";
-    explode(arg, deli, parts);
-    x_res = s2i(parts[0]);
-    y_res = s2i(parts[1]);
-    manual_resolution_set = true;
+    explode(arg2, deli, parts);
+    if (parts.size() == 2)
+    {
+      x_res = s2i(parts[0]);
+      y_res = s2i(parts[1]);
+      manual_resolution_set = true;
+    } else
+    {
+      deli = "x";
+      explode(arg2, deli, parts);
+      if ( parts.size() == 2 )
+      {
+        x_res = s2i(parts[0]);
+        y_res = s2i(parts[1]);
+        manual_resolution_set = true;
+      }
+    }
   }
 
   if (start_fullscreen && !manual_resolution_set)

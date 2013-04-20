@@ -157,7 +157,8 @@ int main(int argc, char* argv[])
     if (arg1 == "-no") {
       no_overlay = true;
     } else
-    if (arg1 == "-s") {
+    if (arg1 == "-s")
+    {
       if (i+1 < argc)
       {
         i++;
@@ -165,9 +166,22 @@ int main(int argc, char* argv[])
         vsx_avector<vsx_string> parts;
         vsx_string deli = ",";
         explode(arg2, deli, parts);
-        x_res = s2i(parts[0]);
-        y_res = s2i(parts[1]);
-        manual_resolution_set = true;
+        if (parts.size() == 2)
+        {
+          x_res = s2i(parts[0]);
+          y_res = s2i(parts[1]);
+          manual_resolution_set = true;
+        } else
+        {
+          deli = "x";
+          explode(arg2, deli, parts);
+          if ( parts.size() == 2 )
+          {
+            x_res = s2i(parts[0]);
+            y_res = s2i(parts[1]);
+            manual_resolution_set = true;
+          }
+        }
       }
     }
   }
