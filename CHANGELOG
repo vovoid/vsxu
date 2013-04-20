@@ -1,0 +1,881 @@
+
+***********************************************************************************************************************
+
+Welcome to the Change Log of the Vovoid VSXu Project
+
+  Some nomenclature:
+    + new feature
+    ' bug resolved
+
+***********************************************************************************************************************
+
+  ######################################
+  VSXu 0.4.0 (May 2013) - VSXu 10 years!
+  ######################################
+
+  General:
+    + audio backend was unified - the choice fell on RtAudio
+      This means we can do away with FMOD on windows release and maintain that module as an external project
+      apart from the VSXu project (will simplify things).
+    + time looping in main sequencer
+    ' various uninitialized memory fixes
+
+  VSXu Engine:
+    + much improved embedding API
+      vsx_engine.h got split into vsx_engine.h and vsx_engine_abs.h to make it easier for implementors to use
+      the class vsx_engine in vsx_engine.h (hide away some internal stuff)
+    + engine_helper class to quickly help you embed vsxu engine into your own OpenGL application
+    + License change: is now LGPL
+    + internal support for passing keyboard & mouse events to modules
+    + modules now see argc and argv (through argvector class)
+    + new refactored vsx_module_list system
+
+  VSXu Artiste:
+    + now using GLFW on all platforms
+    + more informative numbers seen in the status row in full screen mode
+
+
+  New modules:
+    + new FBO texture buffers - pure color and color + depth
+    + buffer_clear module clears these buffers
+    + experimental web cam / OpenCL module
+    + experimental video tracker module
+    + axis-angle to quaternion
+    + quaternion to axis-angle
+
+
+  Improved modules:
+    + particlesystems has new variable: origin-pos (vector)
+      useful to track distance travelled
+    + mesh renderer improved to always use VBOs (huge performance gain)
+    + cal3d supports post-rotate/post-translate
+    ' cal3d renderer now uses proper thread signaling (thanks to PetriW)
+    ' texgen modules now properly join threads (memory leak)
+
+
+***********************************************************************************************************************
+
+
+  ######################
+  VSXu 0.3.1  (May 2012)
+  ######################
+
+  The goal of this release was to better handle GPUs that couldn't run certain visuals
+  and the internals to make VSXu more stable.
+
+  General:
+    ' bugs on intel GPUs fixed
+    ' when FBO not supported handled much better (intel cards)
+
+  VSXu Player:
+    + preloading of all visuals
+
+  VSXu Artiste:
+    + macro background transparence now selectable with alt + mouse wheel
+    + new main server menu layout
+
+***********************************************************************************************************************
+
+  ###########################
+  VSXu 0.3.0  (February 2012)
+  ###########################
+
+  General (features affecting both engine / artiste and possibly player)
+    + merged everything developed and learnt from 0.2.1 into 0.3.0
+    + a lot of work fixing memory leaks. mesh infrastructure totally rewritten
+    + vsxu server - a standalone engine controllable via telnet and artiste.
+      This features is in its infancy but still useful.
+    + initial support for OpenGL ES 2.0 (we're ignoring 1.x as it's dying anyway)
+
+
+***********************************************************************************************************************
+
+  ###################################################
+  VSXu 0.2.1 (never released, made for the Luna demo)
+  ###################################################
+
+  General (features affecting both engine / artiste and possibly player)
+
+    + param updates (engine) now taking actual change into account. will prevent mesh generators from running
+      unnecesarily
+    + waveform viewing in sequencer
+    + cloth band simulation
+    ' uninitialized memory issues fixed
+    + ocean tunnel now running in thread
+    + cal3d module now has threading option (watch your cpu's people!)
+    ' sequencer had several memory initialization issues leading to random corrupted movement
+
+***********************************************************************************************************************
+
+  ####################################
+  VSXu 0.2.0 (ETA: End of August 2010)
+  ####################################
+
+  Note: Items marked “valgrind” were fixed thanks to this wonderful tool.
+
+  General (features affecting both engine / artiste and possibly player)
+    + cleaned up some module names
+    + heavily optimized mesh processing
+    + heavily optimized particlesystem processing
+    + using point sprites in the particle renderer really works now through help of GLSL.
+      you can also edit the GLSL shaders for the particle renderer for some really cool effects!
+    + particlesystems now support rotation for particles rendered with the mesh renderer! the "particlesystem
+      from mesh" generator can apply random values to the rotation
+    + sound sample viewer in the sequencer, click the timeline to see it when you have a stream player loaded
+      with an mp3
+    + user data separation on linux/windows to support Windows 7 and linux - the concept is read-only binaries
+      in /usr/bin/* and user data in ~/.vsxu/0.2.0/data   (On Windows it's C:\Users\[user]\vsxu\0.2.0\data)
+    + screenshot function now saves JPG's in data directory
+    ' screenshot function now saves images "the right way" (not flipped up-side-down)
+    ' memory leak in vsx_texture fixed
+    ' crash when empty animation pool and creating a module, bug in the undo function
+    ' right click knob: close all controllers = crash, due to a much larger problem in the gui engine, fixed (valgrind)
+    ' right click on any widget didn't always show the menu on the first click (had to click twice) (valgrind)
+
+  New modules:
+    + mesh_ribbon - pretty simple module that renders a ribbon between two 3D points
+    + float_interpolate - simple linear interpolation of a float value (useful sometimes)
+    + float4_interpolate - simple linear interpolation of a float4 value (useful sometimes)
+    + face_id renderer with a box limiting the rendering in 3 dimensions
+    + gravity_ribbon_mesh - use a mesh as source for the ribbons
+    + mesh_dummy - if you want to import a mesh into a macro instead of getting one line per module using
+      the mesh inside the macro
+    + mesh_quat_rotate_around_vertex - pick a vertex by id in a mesh and rotate the mesh around that
+        can be used for character rotations pretty nicely - simply pick the shoe if you want to rotate
+        the character when dancing etc
+    + mesh_scale: for completeness
+    + mesh generators: super_banana - generates a tube-lofted mesh from many sequences enabling you to form
+      many many different shapes. x/y/z distribution sequencer also, so that you can put the details where
+      you want them!
+    + math;acos
+    + quaternion_dummy - a dummy like float_dummy
+
+  Improved modules:
+    + cal3d importer now generates tangent space tangents
+    + caled importer now feeds bone rotation and position as outputs, useful for attaching other objects and
+      effects to characters
+    + gravity_ribbon* modules can now "reset pos" - which means they'll start
+      over from the point they're currently in
+    ' glsl loader had a bug in the attribute parser
+    ' glsl loader wouldn't run if called twice
+    ' dot product module was not doing what it should
+    ' fixed a bug in the grid mesh vertex normal calculator
+    ' mesh_to_float3_arrays crashes when you create it (valgrind)
+    ' modules making use of a shader would not always detect successful linking
+      due to a malformed parameter to a GL status function (valgrind)
+
+
+***********************************************************************************************************************
+
+  ##############################################
+  VSXu 0.1.18 (090901) [First NON-BETA release!]
+  ##############################################
+
+  General (features affecting both engine / artiste and possibly player)
+    + vsxu artiste for mac OS X
+    ' sequence parameter controller (editor) had a critical bug when loading a saved parameter value, FIXED
+    + new default skin preview - "vsxu luna" (will be updated in following version)
+
+  VSXu Player
+    ' a slight flickering in between visuals have been fixed
+    + slightly improved faders, added some sine-interpolation here and there
+
+  VSXu Artiste
+    ' moving modules into a macro now retains their individual positions
+    ' macro sizing down when creating an alias is now fixed
+    ' macro cloning now works correctly
+    ' sequence parameter editor: you can now only open one sequence editor for a sequence parameter
+    ' sequence parameter editor:
+    ' "macro error when you import a saved macro - click on an item within it and the position goes haywire"
+      this was due to the assigning of modules to a macro resizing it didn't tell the enging of the new size
+    ' "screen module" position when loading a state is now working as it should, previously the screen was never moved
+      into correct position
+    ' color chooser didn't correctly retrieve the value from the engine, now fixed
+    + clone value: ctrl+alt; drag to clone a value to another module. very useful!
+    + most controllers can now be closed by left-doubleclicking them
+    + easier to open complex types, also single-click to open enum data type menus and sequencer parameters
+    + alt+doubleclick a parameter to add/edit sequence
+    + ctrl+doubleclick to add parameter to the current sequence pool
+    + Performance Mode - view what you're doing with the modules on top, get to it: Ctrl+F (fullscreen)
+      then Alt+F to toggle performance mode
+
+  VSXu Engine
+    + improved internal message processor performance due to a few nasty coding errors
+      (allocating / deallocating memory per command, very bad)
+
+  New modules:
+    + mesh, modifiers, deformers, mesh_normal_randistort
+       This one distorts the vertex normals by a factor. 0 is no distortion. then you can distort as
+       much as you like upwards, but the normal vector is normalized so unless you're only messing
+       with one axis it's pretty pointless to go over 1.0...  This is a screenshot of how it can look,
+       the reflections (via normal-based texture coord generation) and lighting change quite a bit!
+       Works to distort imported meshes in realtime if it's not too many vertices..
+       For instance - hook it to the beat or something via a 3floattofloat3 module...
+    + sequencer module - takes a sequence and float as inputs so you can animate and have the animation
+      controlled by say, sound...
+
+  Improved modules:
+    ' cameras now properly calculate aspect ratio in artiste
+    ' obj loader had issues with parsing the face data if there was only normals or texture coordinates
+    ' gravity line strip particles had a vicious memory bug that crashed everything on windows.
+    + blob bitmap/tex now supports color and alpha option
+
+***********************************************************************************************************************
+
+  #################################
+  VSXu 0.1.17 (BETA 7) (2008-12-08)
+  #################################
+
+  General
+    + GNU/Linux support! Some of the underlying code needed to be rewritten, helps Windows platform improvement also on sound analysis and some other
+      engine / gui optimizations. Also a number of memory corruption bugs were found in this process which should make VSXu a lot more stable on both
+      platforms.
+
+  VSXu Artiste:
+    ' When moving multiple modules, only the first selected was moved. This is fixed now.
+    ' float3_to_3float had a bug in that only the first value would be copied, This is fixed
+    + New module chooser - "Module List". Should be easier to use for some, and good to have in any case.
+      This can also be used to quick-search for a module.
+    + You can't get enough eye-candy...! Module creation and deletion is now smooth like intended from the beginning.
+    + Modules and macros are now scaled down to fit the number of parameters they have, this makes it easier to identify
+      each module, and also to save space.
+    + Pad input for float3 parameters now works! You can set start/stop values for x and y also. Try it with camera
+      position for instance, or you can use 2 float3_to_3float to separate camera xz and y movement....
+      Quite useful for exploring values.
+
+  New modules:
+    Bitmaps & Textures:
+      New great features include basic texture generation (bitmap branch) with some generators and filters.
+      Still with these simple tools you can generate a lot of textures! Some of these were included in the
+      previous version, but were very buggy.
+      Also the annoying procedure when loading a JPEG as a texture is now simplified with a dedicated jpeg_tex_load
+      module!
+      + bitmaps -> filters -> *
+      + bitmaps -> generators -> plasma
+      + bitmaps -> generators -> subplasma
+      + texture -> loaders -> jpeg_tex_load
+
+    Mathematics:
+      + maths -> arithmetics -> quaternion -> quat_mult
+      + maths -> arithmetics -> quaternion -> quat_slerp
+
+    Mesh generation tools:
+      + mesh -> solid -> mesh_solid_supershape
+      + mesh -> modifiers -> deformers -> mesh_vertex_move
+      + mesh -> modifiers -> transforms -> mesh_rotate_quat
+      + mesh -> modifiers -> helpers -> mesh_compute_tangents
+
+    Particle Systems:
+      + particlesystems -> modifiers -> particle_fluid_deformer
+
+
+  Improved modules:
+    + renderers -> particlesystems -> simple
+      New feature is sequence-controlled color and alpha! This can be used to make cool fire effects or stuff that changes color
+      over the lifetime of a particle for some very nice effects. VSXu's particlesystems are now on par with costly commercial
+      packages!
+    + 3float to float3 now initials to 0.0, 0.0, 0.0;  This was very stupid before! Especially since this is often used for translations!
+    + GLSL module now supports uniforms in the vertex shader plus attributes.
+    + mesh to float3_array - this is useful to feed tangent space to GLSL from mesh. Beware though! If the mesh doesn't have a tangent space defined VSXu might crash! (this is a bit ugly I know but it's a very specific advanced feature)
+
+***********************************************************************************************************************
+
+  ###########################################################################
+  VSXu 0.1.16 (BETA 6) [multimonitor transitions for the masses] (2007-06-16)
+  ###########################################################################
+
+  VSXu Player:
+    + you can now choose which monitor to render to, start the player like this> vsxu_player -main 2
+        renders to the monitor with id "2"
+      + to find out which id's are available on your system, run vsxu_player -enum
+    + vsxu player now supports transitions between visuals in the player
+      these transitions can be created in vsxu artiste by anyone!
+      The way this works is it gives you 2 textures which contain the 2 visuals you need to blend
+      together, also you have a value going from 0.0 to 1.0 which is the time.
+
+  VSXu Artiste:
+    + support for separating gui and rendering on different monitors
+      + for instanse, starting vsxu artiste like this> vsxu_artiste -main 0 -out 2
+        renders to the monitor with id "2"
+      + to find out which id's are available on your system, run vsxu_artiste -enum
+    ' left-clicking & right-clicking on an anchor caused crash
+    + new helpful builtin templates that you can use to start different kinds of projects,
+        check the system right-click menu!
+    + you can place notes on the desktop, helpful for describing your project to others or keeping a changelog
+      of the state you're working on
+    + scripting language now works as it should, parameter filter scripts and component scripts
+      + to access it, right-click a float parameter and choose 'add/edit vsxl filter' or right-click a module and do the same
+      + parameter filters run in the same engine so you can share global variables between them
+      + component scripts have their own engine
+    + the browser has been tuned allowing more space in crowded lists
+    ' sequence parameter editing now fixed, see examples;particles;size_alpha_control for a howto
+    ' vsxl component filter now reported correctly, saving & loading as it should
+
+  New modules:
+    + render_mesh_dots - renders mesh vertices as dots with color and variable size
+    + limiters;float_limiter - limits a float value
+    + interpolators;float - value interpolation like in the knobs
+    + 4 floats to quaternion conversion module
+    + sphere mesh generator
+
+  Modified modules:
+    + avi player now supports external float param as time - you can play an avi forwards and backwards seamlessly with
+      an oscillator for instance :)
+    + mesh_rays can now limit fan size
+    + obj loader loading time reduced by 70%
+    ' metaballs generator had a memory deallocation bug when destroying it
+    ' memory leak in particles from mesh
+
+***********************************************************************************************************************
+
+  #################################
+  VSXu 0.1.15 (BETA 5) (2007-02-02)
+  #################################
+
+  General:
+
+    ' memory corruption fixed in vsxu artiste
+    ' screen area/coordinate corruption issues fixed (coordinates got smashed when taskbar was on top...)
+    ' GUI not clickable issue solved on latest nvidia drivers
+    ' gravity lines module speed/optimization
+    ' GLSL bug fix for latest nvidia drivers
+
+***********************************************************************************************************************
+
+  #################################
+  VSXu 0.1.14 (BETA 4) (2007-01-28)
+  #################################
+
+  General:
+    + dual-monitor support in win32 (editor on one screen, output on the other) [PAID VERSION ONLY]
+    + new platform layer, GLUT has been replaced with in-house code
+    + editor now supports mouswheel zooming
+    + even more size-optimized executables
+    + it's now impossible to connect to parameters that are bad to connect to like particle count and metaballs grid resolution
+      these re-allocate memory.
+    + Frame Buffer Objects now used for offscreen rendering where available, automatic fallback to pbuffers and on ATI cards which are
+      LAME.
+      This is used in the render_surface_single and blur module for instance.
+      It's implemented in the texture class should you need to use offscreen rendering in your modules.
+      Also, the old double-buffered module is gone.
+    + get value optimized.. not run as often - this was a command mayhem
+    + engine makes a log file for module loading instead of dumping it in the console (VSXU DEVELOPER)
+    ' installer bug: vsxu.conf gets overwritten by the installer, that should not happen by default!!
+    ' sometimes the sliders would lock at 0, turned out to be uninitialized obsolete variable
+    ' simple_with_texture now correctly initializes the z-component of the texcoords
+    ' state save now remembers name of state (very annoying)
+    ' semicolon in save edit box didn't accept ;   - it does now
+    ' Ctrl+D disabled ctrl+right-click on connections
+    ' texture preview window no window, broken
+    ' when re-loading a state, you would get double instances of every module/connection due to not clearing first
+    ' no longer possible to connect to a parameter that has a sequence
+    ' fullscreen/window switching does not work that well in the player
+    ' 'project->clear state' doesn't restore screen0 when having loaded a product
+
+  Modified modules:
+    + several renamed modules for easier understanding of what they do, especially the so commonly used
+      examples-simple which are now called basic;colored_rectangle and textured_rectangle.
+      Old names are still accessible for backwards-compatibility.
+    + file chooser module now has the editor as default controller, caused some annoyances before
+    + render_surface_single
+       - can toggle support for feedback saving vmem in all cases when you don't need feedbacks :)
+       - clear color added (try it with various alpha in feedback loops, very neat)
+    + kaleidoscope renderer got hemisphere parameter so it's not always flat.. now you can make your own
+      crazy kaleidoscopic dome!
+    ' object loader, jpeg/png loader and text_s now check the file suffix to avoid crashes
+    ' object loader texture coordinate bug fixed (maali's car exposed this bug, yay!)
+    ' many bugs fixed, cal3d loader crash, memory leaks in texture_buffer etc.
+    ' text_s wouldn't display the text until you had edited the textmass, fixed
+
+  New modules:
+    + res_to_str converter module, converts resource to string (for printing etc.)
+    + depth_buffer - merging depth_test and depth_mask into one module
+
+  Obsolete modules:
+    ++ Obsolete modules are now moved into a special DLL which is not needed if you don't need backwards compatibility with
+       previous versions of vsxu.
+    - depth_test
+    - depth_mask
+
+***********************************************************************************************************************
+
+  ##################################
+  VSXu 0.1.13  (BETA 3) (2006-04-23)
+  ##################################
+
+  Special thanks to wreg for finding such many bugs and coming up with great ideas!
+
+  General:
+    + basic undo (Ctrl+Z) function, works bad on big projects however so is possible to turn off
+    + left-click on desktop to pan around
+    + luna help texts updated for controllers, now mentions the close-all keyboard shortcut
+    + tool to help you identify non-loaded modules, this is needed when making a demo/sequenced production
+      to music, music doesn't start until the engine senses that all modules are loaded.
+      modules will flash red with the message "not loaded" if you select this from the menu, again
+      it will remove this if they have been loaded in the meantime and you check this from the menu once more.
+    ' bug fixed in the browser when adding module and hitting esc would leave the name dialog floating in space
+    ' box-selection of multiple modules (ctrl+drag) had a bug when the server was moved
+    ' preview window resize bug and behaviour fixed
+    ' screen gamma not set back in the stop() method of the engine, which left windows with a deformed gamma
+    ' rotation axis "jitterbug" eliminated
+    ' luna now gets out of the way when dragging a connection
+
+***********************************************************************************************************************
+
+  ##################################
+  VSXu 0.1.12  (BETA 2) (2006-04-22)
+  ##################################
+
+  + to close all open anchor trees, hit Ctrl+D on the keyboard
+  + single-click on controller without changing the value now closes controllers
+  ' selection position bug fixed
+
+***********************************************************************************************************************
+
+  ##################################
+  VSXu 0.1.11  (BETA 1) (2006-04-17)
+  ##################################
+
+  VSXu editor:
+    + right-click mouse and drag up/down on server zooms in/out
+    + to close all open controllers either press Ctr+C or choose it from any controller context menu
+    ' memory leak fixed when deleting a branch of widgets
+
+  Modified modules:
+    + stream play now includes parameter to turn on spectrum analyzer (as it consumes CPU it's turned off by default)
+      beware though that fmod's FFT update is slow!
+
+  Bugs Resolved:
+    ' small but annoying bug when having controllers open, moving a module would make it jump away a bit
+    ' browser left-drag + right click now cancels drop
+    ' luna right click doesn't work
+    ' luna pager was non-functional and invisible
+    ' png font loading in the font renderer = crash, moved the png font into the skin instead
+
+***********************************************************************************************************************
+
+  #################################
+  VSXu 0.1.10 (BETA 1) (2006-04-15)
+  #################################
+
+  General/New concepts:
+    + new datatype "quaternion" for interpolating rotations
+      this is implemented with realtime interpolation in the engine and support for quaternions in the sequencer
+    + support for sending strings between modules, next version will feature the beginnings of a string library of modules
+    + new interpolation type for float values - bezier curves
+    + vsx own packaging/compression format intended for distribution of visuals and demos - "VSXF" (vsxf.dll):
+      - LZMA-based (packs better than RAR in many cases, but not all)
+      - Filesystem abstracted away in the modules making it totally transparent for the module developer,
+        the module developer goes   engine->filesystem->f_open("filename.txt","r"); rather than just fopen();
+        and then the engine handles wether the file resides on disk (in the resources dir) or in the package.
+      - default behaviour is to look in the package (if such exist) then look in the resources dir
+    + project has been split as follows:
+      vsxu_artiste.exe     - 200kb - The state editor artistical tool
+      vsxu_dev.exe         - 200kb - Artiste with windows console window and a lot of debug commands for module devs
+      vsxu_player.exe      - 51kb  - The visual player (loads everything in _visuals/)
+      vsxu_demo.exe        - 15kb  - Demo player (loads _prods/demo.vsx)
+      vsxu_engine.dll      - 178kb - the engine, without any OpenGL code and only system modules
+      vsxu_demo_engine.dll - 79kb  - size-optimized engine for demo player (without stuff artiste needs, and no VSXL)
+      vsxg.dll             - 74kb  - JPEG/PNG loading library, used by player, artiste and several modules
+      vsxf.dll             - 51kb  - Packaging/Compression library, used by engine and all the modules that handle files
+      - Advantages of this new architecture is smaller module size (since many modules can share the same basic functions
+        in the VSX Ultra environment along with the engine, player and artiste. This also includes future DLL's like
+        media player plugins for winamp and windows media player etc.
+
+  Bugs Resolved:
+    ' when saving a macro that lies within a macro, the parent was saved instead
+    ' setting a string parameter of a macro crashes vsxu, also wasn't saved with macro (thanks to vjshow)
+    ' state->clear doesn't reset the screen position
+    ' in stream loader, no file browser in menu nor double-clicking (thanks to ogge)
+    ' accumulators broken, reset parameter access violation? (thanks to vjshow)
+    ' editor, when first clicking the bottom box and then typing something - vsxu crashes (thanks to ogge)
+    ' jpeg loader bug - thread deadlock error fixed
+    ' bitm2tex loading bug fixed
+    ' GLSL loader redeclaring of parameters fixed
+    ' blob bitmap/texture generator only used 1/4 of the available bitmap size thus wasting 3/4 fillrate
+    ' depth buffer clearing problem fixed (this was very annoying)
+    ' api_internal, file recursive get module didn't make a clean exit so leaked some memory
+    ' sequence marker (green square) is now shown on the anchors when loading a demo/project with sequences
+    ' memory corruption in channel memory management when redeclaring in-params
+    ' when redeclaring - sequences weren't kept for parameters that remained
+    ' blur module didn't use LINEAR texture interpolation so it looked blocky
+    ' buffer code upgraded, now uses newer libraries
+
+  VSXu editor:
+    + totally re-written coordinate system handling, has made it possible to reduce binary size of artiste dramatically
+    + all edit controllers updated with new codebase, including the knobs, and sliders' value edit field thus eliminating
+      a few instances of different editors. Now only one editor is used for both single- and multi-line text editing.
+      This also made the binary a lot smaller.
+    + improved sphere controller, quaternion-based rather than matrix-based [http://data.vsxu.com/0.1.1/images/new_sphere_controller.jpg]
+    + connection error 1 message altered (already something connected on 1-pipe in-port) (suggested by ion)
+    + pressing esc in the module browser now either cancels or exits the browser
+    + macros that are open can not be moved, only resized (alt+left-drag), this to prevent accidental movement when moving modules
+    + help text in the module browser when dropping module
+    + hovering over a module in the browser displays info about what it does from the DLL (written by module author)
+    + when a parameter (anchor) is sequenced, the menu is changed to reflect this so that you won't try
+      to control it when it's in fact not possible.
+    + luna assistant size is now saved, if you don't want her up - she'll stay minimized
+    + new data type 'resource', replacing all strings for handling filenames. this is so the package manager can add needed
+      files to the package
+
+  New modules:
+    + new quaternion-based rotation module (gl_rotate_quat) that can modify all matrices, moduleview, projection and texture.
+    + blur texture filter for use with glow etc.
+    + particle system gravity module (try to play with this and wind and mesh-generated particle systems for some fun)
+    + particle system floor module, supports bouncing particles, losing force for each bounce among other things
+    + mesh renderer that interconnects vertices with AAlines or from each vertex to the center
+    + file_chooser module that is used to iterate over the files in a dir - can be used to
+      dynamically load images from files.. (if you hook it to the png loader for instance) [http://data.vsxu.com/0.1.1/images/new_file_chooser.jpg]
+    + cube mapping module that takes 6 bitmaps and delivers a cubemap texture that integrates fully with the rest
+      of the rendering pipeline, cool to combine with GLSL cubemap lookups :)
+    + texture coordinate generation (opengl) which is useful to make realtime reflections, projections of textures onto
+      geometry and other cool effects
+    + texture2bitmap - use with caution as this is very slow! Downloads a texture to the primary RAM for processing
+    + particle system from bitmap - can be used to generate some cool effects, for instance - using a bitmap as generation
+      grid for a particle system together with gravity
+
+  Modified modules:
+    + all modules that handle file reading (including fmod and the text module) now use vsxf
+    + camera modules now don't reset the proj matrix which means you can premultiply the projection matrix with the normal matrix
+      modifiers
+    + blob module can now generate stars with [0..n] arms and supports attenuation and a cannabis (flower) mode
+    + text drawing module much improved, now can do texture-based fonts also (poly fonts are slow!) [http://data.vsxu.com/0.1.1/images/new_bitmap_text.jpg]
+    + skybox raytracer module now delivers 6 bitmaps that can be used to make a cubemap
+    + GLSL module now features a default OpenGL behaviour, makes it much easier to develop shaders having
+      this kind of starting point. A lot of times you only want to change a tiny piece of how OGL behaves,
+      now this is easier. Mad props to http://3dlabs.com for releasing shaderGen from which the shader code is snatched :)
+    + jpg/png loaders scream when wrong file format/missing file loaded
+    + metaballs module can now set grid size (not apropriate for changing in realtime however)
+  Module API Changes:
+    + prepare() and unprepare() were removed, not needed
+    + module factory in the engine could not delete properly before, now deletion is handled by the DLL's themselves thus
+      typecasting properly when deleting, this caused a major memory leak
+    + the output() method in the modules gained a new parameter - param, so you can see which param
+      is the result of the output call. Needed for multi-purpouse modules that can do both rendering
+      and texture generation for instance.. otherwise it'd render on call to texture which would be SLOW!
+    + now possible to re-declare output parameters, done the same way as input parameters by setting
+      a boolean and then getting callback from the engine
+
+***********************************************************************************************************************
+
+  ##############################
+  VSxu 0.1.04 ALPHA (2005-07-03)
+  ##############################
+
+  General:
+    + idle CPU usage reduced dramatically by sleeping between frames, this can be configured
+    + internal module counter added so that modules that do heavy processing
+      can use this in some scenarios to save cycles - it's incremented by the engine
+      when a param is updated with a new value and then the module can set it to 0
+
+  Bugs resolved:
+    ' when dropping a module on a closed macro it engulfs it so you can't select the macro
+    ' threading problems with png and jpeg loaders fixed
+    ' jpeg loader memory leak fixed (this was really bad, leaking 7Mb each starlight aurora load)
+    ' setting default value in a parameter encapsulated in a param group caused segfault
+    ' engine sequencer calculated the no interpolation values horribly wrong
+    ' double-click problem with context (first clicking on one widget than on another)
+
+  VSXu editor:
+    + new shiny hinting system when making connections, thanks to vjshow for this idea!
+    + completely overhauled text editor, now with limited syntax highlighting for GLSL and VSXL use
+    + popup menus improved
+    + connecting over a macro border now works correctly by creating missing aliases
+    + settings are now saved in vsxu.conf
+    + possible to control smoothness and speed of movement in the GUI, or turn off smoothness
+    + possible to cap framerate, useful if you want vsxu to consume less CPU
+    + when having a module selected and right-clicking another and choosing "delete" would delete both.
+      now it selects a module on right-click as well which solves this problem.
+    + module chooser: resources put in a separate browser for clarity and easier integration with other widgets
+    + resource chooser: support for jpeg images to view in preview window added
+    + module chooser: colors alpha lowered so not occluding (shining) more than the text
+    + module chooser: fixed length added to handle many items in the same level
+    + the screen module's position is now saved when saving a state
+    + when making a double-connection, check for this in the UI, not all the way down in the engine
+    + renaming components and macros now works (hopefully) plus some minor adjustments
+    ' builtin text editor window resizing now works properly
+    ' when saving VSXL in a state and loading it didn't display the red square denoting VSXL presence
+    ' when loading the main font in the resource browser the texture was unloaded rendering all characters as white blocks.
+
+  New modules:
+    + basic .OBJ mesh loader (tailored for loading blender obj files, 3 vertices per face)
+    + backface culling module
+    + texture parameters module to set repeat|clamp|clamp_to_edge|clamp_to_border|mirrored_repeat,
+      and anisotropic filtering
+    + triangle wave added to oscillator
+    + new names of modules, maths;parameters has been shortened to just maths;
+      so for instance maths;parameters;oscillators;oscillator is now
+      maths;oscillators;oscillator. If you macro/state won't load, just open it in a text editor and replace
+      "maths;parameters;" with "maths;"
+    + maths:
+      sin, cos, vector(float3) x float, abs,
+      boolean operations with float values: and, nand, or, nor, xor, not
+        (for smooth integration with the rest of vsxu, floats are rounded so -0.5 to 0.5 is 0 and the rest is 1)
+      float -> float3
+      float4 * float
+      float3 and float4 accumulators
+      average from float array range
+    + GLSL shader module that permits realtime deployment/development of shaders, uniform (parameters from GLSL)
+      are instantly exported into the VSXu environment making it possible to control shaders as part of existing
+      effects
+
+  Modified modules:
+    + blend_mode module updated with blend color and extension blend modes such as CONSTANT_COLOR_EXT
+      which is useful to color whole objects
+    ' font size was messed up when going fullscreen using truetype font rendering module
+
+***********************************************************************************************************************
+
+  ##############################
+  VSXu 0.1.03 ALPHA (2005-05-12)
+  ##############################
+
+  Bugs resolved:
+    ' right-click outside chooser edit dialog makes program crash
+    ' memory leak in png loader fixed
+    ' process not ending if you close the windows window pressing [X] in the top-right corner
+
+***********************************************************************************************************************
+
+  ##############################
+  VSXu 0.1.02 ALPHA (2005-05-11)
+  ##############################
+
+  General:
+    + starlight aurora state
+    + module code: dll size optimization - no need to initialize values anymore, all (int/float/float3/float4/render) are set to 0
+      if you don't set a value in your code. Prevents crashing due to this and makes module code more readable in addition
+      to smaller.
+
+  VSXu editor:
+    + parameter name display redone displays the value of a param
+    + when adding from the module browser a unique name is automatically generated
+    + various new pieces of documentation (thanks silvein for good pointers)
+
+  New modules:
+    + JPEG loading module (only generates a bitmap so far, use the bitmap2texture module)
+    + 4 floats conversion to float4 conversion module
+    + ring mesh generator
+    + experimental realtime bitmap processing test module: add_noise (try it with the blob bitmap generator and make
+      your CPU work all it can)
+
+  Modified modules:
+    + blendmode module now resets blending to previous blendmode after it's rendering chain has been run.
+    + texture coordinates of the simple_with_texture module was wrong and had to be shifted up-side-down, might require
+      parameter adjustments (mainly angle)
+    + various improvements in many modules (small bugs)
+
+  Bugs resolved:
+    ' anchor mouse-hovering bug selected component: fixed
+    ' pressing ESC problem resolved (exited when it shouldn't)
+    ' opening sequencer made the program crash, now fixed
+
+***********************************************************************************************************************
+
+  ##############################
+  VSXu 0.1.01 ALPHA (2005-05-06)
+  ##############################
+
+  + mouse-hover on anchors when dragging connection
+  + mouse-hover over complex should open it
+
+***********************************************************************************************************************
+
+  ##############################
+  VSXu 0.1.00 ALPHA (2005-05-05)
+  ##############################
+
+  First public Alpha release.
+
+  + vsxu player (vsx reborn)
+  + window resizing overhauled, works perfectly now
+  + right-click menu added to complex parameters
+  + facing camera BUG FIX and addition to swt module <3
+  + view information on component/macro in component chooser
+  + another large overhaul of the parameter handling, now handles memory management better and no parameter leaks.
+  + time module (system)
+  + sound analyzing module (vsx)
+  + remove `this´ from every parameter creation call
+  + mathematical modules
+    + add, sub, mul, div, pow
+    + round, floor, ceil  <-- all float outputs
+  + state load
+  + luna helper
+    + component help texts
+  + state clear
+  + deletion of modules didn't free up parameters' memory, this is now fixed
+  + add empty macro from server menu
+  + replaced std::string and eliminated stl from the modules to reduce them in size by 90%, vsxu reduced in size with 10%
+    + created vsx_string
+    + some major optimizations done on the way, added const and by reference where useful
+  + fixed that luna is now on top when vsxu starts
+  + make example modules WITH EXTENSIVE DOCUMENTATION!
+    + create and test output components [DONE]
+    + renderer [DONE]
+    + using texture [DONE]
+    + generating texture (by using a thread for the heavy processing) [DONE]
+    + loading png from disk [DONE]
+    + writing text with vsx_font (FTGL etc.) [DONE]
+    + opengl blendmode [DONE]
+    + openGL camera (float3 in) [DONE]
+    + spline interpolation (3d) (from starlight aurora) [DONE]
+    + spectrum (waveform) renderer using the float_array type [DONE]
+  + make controllers obey min/max restrictions
+  + optimize component types in the widget engine with constants, "vsx_widget_component" becomes #define VSX_WIDGET_COMPONENT 6 etc.<
+  + float_array datatype
+  + mesh class
+    + vertices
+    + vertex color
+    + face normals
+    + selected vertexes
+    + triangles
+    + methods
+  + fixed the window dragging area so it's easier to resize windows (per petriw's request)
+  + float3 input: color hsv/rgb -> rgb (no conversions from hsv/rgb in the engine kthx)
+  + system updated, for maximum abstraction away from GLUT api, also needed to do artiste and the viewer.
+  + connections and aliases sent when asking for components present on server (on connect or on startup), TOTAL overhaul. works better now.
+  + gamma correction on the screen module
+  + oldschool tracker (sequencer) that can change floats, float3 and similar values for programming/automation
+    + right-click-add-channel
+    + should work like a controller - a sub-window of the server, but basically should bring up a whole tracker.
+    + linear time (no pages in the tracker)
+    + visually vertical
+    + time handling overhauled, local time in components rather than global engine time.
+  + fix the real fullscreen support for the client
+  + macro dump now saves ints and vsxlp
+  + various improvements on the module chooser. it had bad support for many files in a single node
+  + object inspector
+    + auto resizing (smooth)
+  + bug in the feedback loop framework fixed ()
+  + image loading in thread for the image viewer
+  + no-interpolation for certain 2d_windows DONE
+  + file browser for the param type string, starting in the _resources/ dir
+    + "small component" implementation
+    + colored boxes in the module chooser
+    + interpolation fixes
+    + view textures supported in the object inspector
+      + object inspector resizes smoothly
+        + linear interpolation in the window class
+  + pressing 'home' in the module chooser translates to the origin of the tree.
+  + aliasing fixed when alias with name already exists, both for single aliases and when assigning components
+  + flickering error when moving components in/out of macros is now fixed
+  + fix vectors so that we use iterators instead of [ref] -- general coding error - for performance
+  + create a DLL interface and sample DLL for a module
+    + look over and test all the types of parameters.
+    + output modules  + scripting language
+    + param filter [DONE]
+    + component filter [DONE]
+    + interface to params [DONE]
+  + particle systems
+  + multiple modules in one DLL
+  + scripting language
+    + built-in simple editor
+  + settings file (vsxu commandlist?)
+  + skin support - skin chooser (by allowing multiple directories for textures)
+  + massive internal parameter/connection overhaul both in client and server (5 weeks of work)
+  + fix the preview so it uses glviewport rather than copy-to-texture LAMEASS CODING
+  + macro drop position when moving components into the macro should be used
+  + bugs related to dropping already connected components onto a macro involving the param spec resolved
+    + param_spec is now stored in vsx_param_abs as std::string spec, no engine component alias lists should hold
+      specs nor in the component.
+  + fix macros-in-macros when saving
+  + aliases when created are not checked for uniqueness in the engine, so multiple aliases can share the same name
+  + error reporting from the engine to the gui via message boxes
+  + space in the GUI moves the camera to the position of the a_focus component
+  + save macro size
+  + nice message box (general GUI stuff)
+  + interpolation for parameters serverside
+  + load macros from disk
+    + check if all modules can be created - parse for "create_component" calls
+  + anchor needs "reset to default value" menu command and implementation in the server
+    + requires special dealings with the parameter class, should it keep the default value internally?
+  + save macros to disk
+  + names of anchors now highlited
+  + linear interpolation of the component chooser (jaw extra special ultra deluxe)
+  + create macros
+    + move components into macro via drag'n'drop
+  + change p[""] into real variables for speed everywhere.
+  + pbuffer code overhauled for performance. also single/double-buffered texture surfaces were added :p
+  + png support for the texture class (YAY)
+  + select multiple components
+  + changing the order of connections
+  + float inputs
+    + edit box
+    + fix the feeling of the knob/slider and horiz/vert adjustments/fine adjustments
+    + get start value from server message
+    + knob
+    + slider with AMP and OFS is to replace the original slider
+      + the label of the second knob of the mixer bar is recieving mouse input and changes the value of the control
+  + float3 inputs
+    + sliders
+    + Cor's special-rotating-sphere 3d pizza supreme special input (?)
+  + parameters component type can't have sliders in the icon, it's prone to human misunderstanding
+  + create components
+    + module browser
+      + organize modules
+  + need to add support for component positioning and size (all components, size is only for the macro special case)
+  + delete components & macros
+  + object inspector
+    + rename components
+  + connectors to in-ports in the 4th quadrant are now fading out to show that they're behind a component
+  + multiple outputs of components in the production engine
+  + channels can carry any type of parameter as defined by the module
+  + a texture if used by many other components doesn't call its dependencies more than once per frame
+  + TCP: third implementation, had to remove all STL from the tcp thread
+  + TCP: second implementation, some problems with the threads
+  + TCP: first implementation done, doesn't actually interfer with the rendering yet
+    To test the tcp functions, telnet to the computer where vsxu is running (localhost maybe?) on port 578
+    in putty, select "raw" instead of telnet, this is not a full telnet implementation.
+    command list:
+    shutdown	+ to turn off vsxu
+    quit, bye + to close the client connection properly
+    bin
+  + to test the binary mode that we can use for different other commands (such as sound data and whatnot)
+    type "bin", hit enter and then type in the command string to be treated as a binary command "set 10202 texture data"
+    in the future maybe..
+    then it asks for the number of bytes that will be inserted... type that in and hit enter..
+    then you can add as much crap as you like.. when enough data (spanning multiple packets if needed)
+    has arrived it exits binary mode. Check the server console all the time, it tells you what it's doing.
+
+    Worth to know is also that you can disable some of the commands for the client which are really intended
+    for humans running telnet against the server. These help commands and the prompt should be turned off
+    when running with a real client program.
+  + server right-click menu, connect
+    + popup tree menus
+    + search for running servers
+  + create the popup menu widget
+    + command = id, owner takes care of command as owner issued it
+      + make the system console
+      + requires keyboard support for the widget system
+        + create edit box widget
+  + go over the code that uses integer/floating point to string conversions and fix the code to use the new functions s2f,s2i,i2s,f2s
+  + when modules are deleted, they're not cleaned up. esp. bad with surfaces who occupy a lot of RAM
+  ' infinite loop when dropping component where one with same name exists + some position errors fixed
+  ' fix memory leak when going fullscreen, only very small !! about 4k
+  ' screen component channel was broken due to not initializing the module's pointer in the params correctly
+  ' param disconnections needs to deal with macros' in-ports
+  ' the overlay topmost windows aren't always topmost
+  ' problem with menus not catching focus
+  ' connector distance is acting "funny" - not always receiving focus
+    <jaw> i fixed this by forcing the user to hit CTRL before being able to click the connections. They
+    were always in the way anyway, covering anchors and components.
+  ' problem with selection in non-debug mode fixed
+  ' select multiple also selected the menu due to error in the server mouse up method
+  ' connections in macros not working due to error in param_connect_volatile
+  ' component renaming fixed when moving from within a macro to a deeper macro.
+  ' when ctrl+alt-clicking and dragging a componen while it's parent macro is selected (white border) it goes crazy and stuff
+  ' click area problem in the module chooser fixed
+  ' fix the y-scale in the hyperbolic component browser, it's off by some 30% or something
+  ' enter when cursor beyond the end of the line in the editor caused vsxu to crash :(
+  ' when setting a name of a component it's not complaining if it gets ' ' or ' for instance. only allow a-zA-z0-9_
+  ' double-deletion error when deleting from right-click menu
+  ' when setting default value the knobs didn't get the new value. this was due to error in vsx_param.
+  ' right-click moved the windows (annoying when a window has a popup like the preview window)
+  ' when controller visible on an alias it's not deleted when the alias is unaliased
+  ' sequence wasn't deleted when component was deleted.
+  ' time for the vsxl filter wasn't from the component but from the engine.
+  ' collision detection on the connectors was a bit weird/broken. fixed now!
+  ' window (viewer/object inspector) gets below other windows sometimes
+  ' object inspector resizing fixed
+  ' mouse testing failed because vsx_engine destroyed the depth buffer (preview mode)
+  ' misc errors in vsx_command fixed
