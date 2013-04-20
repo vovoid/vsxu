@@ -1,8 +1,9 @@
-#ifndef VSX_NO_CLIENT
 /**
-* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+* Project: VSXu: Realtime modular visual programming language, music/audio visualizer.
 *
-* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies Copyright (C) 2003-2011
+* This file is part of Vovoid VSXu.
+*
+* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies AB Copyright (C) 2003-2013
 * @see The GNU Public License (GPL)
 *
 * This program is free software; you can redistribute it and/or modify
@@ -19,6 +20,8 @@
 * with this program; if not, write to the Free Software Foundation, Inc.,
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
+#ifndef VSX_NO_CLIENT
 
 /** KempoApi: The Turloc Toolkit *****************************/
 /** *    *                                                  **/

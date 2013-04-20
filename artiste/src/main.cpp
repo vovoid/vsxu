@@ -1,7 +1,9 @@
 /**
-* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+* Project: VSXu: Realtime modular visual programming language, music/audio visualizer.
 *
-* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies Copyright (C) 2003-2012
+* This file is part of Vovoid VSXu.
+*
+* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies AB Copyright (C) 2003-2013
 * @see The GNU Public License (GPL)
 *
 * This program is free software; you can redistribute it and/or modify
@@ -197,13 +199,26 @@ int main(int argc, char* argv[])
 
   if (app_argv.has_param_with_value("s"))
   {
-    vsx_string arg = app_argv.get_param_value("s");
+    vsx_string arg2 = app_argv.get_param_value("s");
     vsx_avector<vsx_string> parts;
     vsx_string deli = ",";
-    explode(arg, deli, parts);
-    x_res = s2i(parts[0]);
-    y_res = s2i(parts[1]);
-    manual_resolution_set = true;
+    explode(arg2, deli, parts);
+    if (parts.size() == 2)
+    {
+      x_res = s2i(parts[0]);
+      y_res = s2i(parts[1]);
+      manual_resolution_set = true;
+    } else
+    {
+      deli = "x";
+      explode(arg2, deli, parts);
+      if ( parts.size() == 2 )
+      {
+        x_res = s2i(parts[0]);
+        y_res = s2i(parts[1]);
+        manual_resolution_set = true;
+      }
+    }
   }
 
   if (app_argv.has_param_with_value("frame_limit"))
