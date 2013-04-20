@@ -1,7 +1,9 @@
 /**
-* Project: VSXu: Realtime visual programming language, music/audio visualizer, animation tool and much much more.
+* Project: VSXu: Realtime modular visual programming language, music/audio visualizer.
 *
-* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies Copyright (C) 2003-2012
+* This file is part of Vovoid VSXu.
+*
+* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies AB Copyright (C) 2003-2013
 * @see The GNU Public License (GPL)
 *
 * This program is free software; you can redistribute it and/or modify
