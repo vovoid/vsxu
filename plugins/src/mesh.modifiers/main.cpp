@@ -30,6 +30,13 @@
 #include <vsx_quaternion.h>
 #include <pthread.h>
 
+
+#ifdef VSXU_TM
+#include "vsx_tm.h"
+#endif
+
+
+
 /*
  * MESH DATA REFERENCE
   vsx_array<vsx_vector> vertices;
@@ -698,8 +705,19 @@ public:
   vsx_vector v;
   void run()
   {
+#ifdef VSXU_TM
+((vsx_tm*)engine->tm)->e( "mesh_translate" );
+#endif
+
     vsx_mesh** p = mesh_in->get_addr();
-    if (!p) { printf("error in vsx_module_mesh_translate: mesh_in is invalid\n"); return; }
+    if (!p)
+    {
+      printf("error in vsx_module_mesh_translate: mesh_in is invalid\n");
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->l();
+      #endif
+      return;
+    }
 
     if (param_updates || prev_timestamp != (*p)->timestamp)
     {
@@ -763,6 +781,10 @@ public:
       //for (int i = 0; i < (*p)->data->vertex_normals.size(); i++) mesh->data->vertex_normals[i] = (*p)->data->vertex_normals[i];
       param_updates = 0;
     }
+    #ifdef VSXU_TM
+    ((vsx_tm*)engine->tm)->l();
+    #endif
+
   }
 };
 

@@ -273,8 +273,13 @@ int main(int argc, char* argv[])
   glfwSetMouseWheelCallback(&mouse_wheel);
   // Enable sticky keys
   glfwEnable( GLFW_STICKY_KEYS );
+
+
+  // vsync handling
+  bool vsync = true;
   if (app_argv.has_param("novsync"))
   {
+    vsync = false;
     glfwSwapInterval(0);
   }
   else
@@ -368,14 +373,19 @@ int main(int argc, char* argv[])
     glfwSwapBuffers();
     tm->l();
 
-    tm->e("frame_zzz", 0x0002);
-    float dtime = frame_delay.dtime();
-    if (dtime < 1.0f/60.0f)
+    if (!vsync)
     {
-      float sleeptime = (1.0f / 60.0f - dtime)*1000000.0f;
-      usleep( (useconds_t) sleeptime );
+      tm->e("frame_zzz", 0x0002);
+
+      float dtime = frame_delay.dtime();
+
+      if (dtime < 1.0f/60.0f)
+      {
+        float sleeptime = (1.0f / 60.0f - dtime)*1000000.0f;
+        usleep( (useconds_t) sleeptime );
+      }
+      tm->l();
     }
-    tm->l();
 
     tm->t();
 

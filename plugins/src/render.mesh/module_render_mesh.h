@@ -25,6 +25,11 @@
 //#define HANDLE_GL_ERROR void
 //handle_gl_error(__FILE__,__LINE__)
 
+#ifdef VSXU_TM
+#include "vsx_tm.h"
+#endif
+
+
 #define printf
 
 class vsx_module_render_mesh : public vsx_module
@@ -651,21 +656,61 @@ public:
 
   void run()
   {
+    #ifdef VSXU_TM
+    ((vsx_tm*)engine->tm)->e( "mesh_render_upload" );
+    #endif
+
     mesh = mesh_in->get_addr();
     // sanity checks
-    if (!mesh) { message="module||Can not render: mesh is not set"; render_result->set(0); return; }
-    if (!(*mesh)->data) { message="module||Can not render: Mesh data is not set"; render_result->set(0); return; }
-    if (!(*mesh)->data->faces.get_used()) { message="module||Can not render: Mesh has no faces"; render_result->set(0); return; }
+    if (!mesh)
+    {
+      message="module||Can not render: mesh is not set"; render_result->set(0);
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->l();
+      #endif
+      return;
+    }
+    if (!(*mesh)->data)
+    {
+      message="module||Can not render: Mesh data is not set";
+      render_result->set(0);
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->l();
+      #endif
+      return;
+    }
+    if (!(*mesh)->data->faces.get_used())
+    {
+      message="module||Can not render: Mesh has no faces";
+      render_result->set(0);
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->l();
+      #endif
+      return;
+    }
     message="module||ok";
 
     // don't upload unless changed
     if
     (
       prev_mesh_timestamp == (*mesh)->timestamp
-    ) return;
+    )
+    {
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->l();
+      #endif
+      return;
+    }
 
 
-    if (check_if_need_to_reinit_vbo(current_vbo_draw_type)) return;
+    if (check_if_need_to_reinit_vbo(current_vbo_draw_type))
+    {
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->l();
+      #endif
+      return;
+    }
+
 
     // bind the vertex, normals buffer for use
     glBindBufferARB
@@ -733,6 +778,10 @@ public:
     }
     // unbind the VBO buffers
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+
+    #ifdef VSXU_TM
+    ((vsx_tm*)engine->tm)->l();
+    #endif
 
     prev_mesh_timestamp = (*mesh)->timestamp;
   }
@@ -887,7 +936,15 @@ public:
     }
     //enable_client_arrays_no_vbo();
 //    printf("output %d\n", __LINE__);
+
+#ifdef VSXU_TM
+((vsx_tm*)engine->tm)->e( "mesh_render_perform_draw" );
+#endif
+
     perform_draw();
+#ifdef VSXU_TM
+((vsx_tm*)engine->tm)->l();
+#endif
 //    printf("output %d\n", __LINE__);
     cleanup_successful_rendering();
 //    printf("output %d\n", __LINE__);
