@@ -26,6 +26,7 @@
 #include "vsx_string.h"
 #include <vsx_argvector.h>
 #include "application.h"
+#include <GL/glew.h>
 #include "GL/glfw.h"
 #include "vsxfst.h"
 #include "vsx_version.h"
@@ -154,6 +155,22 @@ void GLFWCALL mouse_wheel(int pos)
   app_mousewheel((float)(pos-mousewheel_prev_pos),last_x,last_y);
   mousewheel_prev_pos = pos;
 }
+
+
+void APIENTRY myErrorCallback
+(
+  GLenum _source,
+  GLenum _type,
+  GLuint _id,
+  GLenum _severity,
+  GLsizei _length,
+  const char* _message,
+  void* _user_param
+)
+{
+  printf("GLDEBUG: %s\n", _message);
+}
+
 //========================================================================
 // main()
 //========================================================================
@@ -291,6 +308,13 @@ int main(int argc, char* argv[])
   frames = 0;
 
 
+  // enable debug callback
+  if (__GLEW_ARB_debug_output)
+  {
+    glDebugMessageCallbackARB( myErrorCallback, NULL);
+  }
+
+
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   sprintf( titlestr, "Vovoid VSXu Artiste %s [GNU/Linux %d-bit]", vsxu_ver, PLATFORM_BITS);
   #endif
@@ -388,8 +412,6 @@ int main(int argc, char* argv[])
     }
 
     tm->t();
-
-
 
     // Check if the ESC key was pressed or the window was closed
     running = /*!glfwGetKey( GLFW_KEY_ESC ) &&*/
