@@ -49,6 +49,7 @@ const int gl_material_types[] =
   GL_SHININESS
   #endif
 };
+
 ///////////////////////////////////////////////////////////////////////////////
 // matrix modes
 #define VSX_GL_PROJECTION_MATRIX 0
@@ -57,9 +58,9 @@ const int gl_material_types[] =
 const int gl_matrix_modes[] =
 {
   #ifndef VSX_NO_GL
-  GL_PROJECTION,
-  GL_MODELVIEW,
-  GL_TEXTURE
+    GL_PROJECTION,
+    GL_MODELVIEW,
+    GL_TEXTURE
   #endif
 };
 
@@ -329,6 +330,7 @@ private:
     i_matrix_stack_index = 0;
     i_matrix_mode = 0;
   }
+
 public:
 
   inline void matrix_get_v(int mode, float* res)
@@ -430,7 +432,7 @@ public:
     #endif
   }
 
-  void matrix_mult_f(float* res)
+  inline void matrix_mult_f(float* res)
   {
     memcpy(&m_temp.m[0], res, sizeof(vsx_matrix) );
     memcpy(&m_temp_2.m[0], &core_matrix[i_matrix_mode].m[0], sizeof(vsx_matrix));
@@ -442,254 +444,7 @@ public:
 
   }
 
-  void test()
-  {
-#ifndef VSX_NO_GL
-    glMatrixMode(GL_MODELVIEW);
-    vsx_matrix result_our;
-    vsx_matrix result_opengl;
-
-    vsx_matrix identity;
-    for (size_t i = 0; i < 16; i++) identity.m[i] = rand()%1000*0.001f;
-    ///////////////////////////////////////////////////////////////////////////
-    // test matrix multiplication
-    vsx_matrix trans;
-    for (size_t i = 0; i < 16; i++) trans.m[i] = rand()%1000*0.001f;
-    // 1.1 our own mult
-    result_our.multiply( &trans, &identity);
-    // 1.2 opengl mult
-    glLoadIdentity();
-    glMultMatrixf( identity.m );
-    glMultMatrixf( trans.m );
-    glGetFloatv(GL_MODELVIEW_MATRIX, result_opengl.m);
-
-    printf("Test Matrix Multiplications\n");
-    printf("our    opengl\n");
-    for (size_t i = 0; i < 16; i++)
-    {
-      printf("%f ",result_our.m[i]);
-      printf("%f ",result_opengl.m[i]);
-      if (result_our.m[i] == result_opengl.m[i]) printf(" OK!");
-      printf("\n");
-    }
-    printf("---end of test---\n");
-    fflush(stdout);
-
-    ///////////////////////////////////////////////////////////////////////////
-    // test matrix translation
-    matrix_mode( VSX_GL_MODELVIEW_MATRIX );
-    core_matrix[ VSX_GL_MODELVIEW_MATRIX ] = trans;
-    matrix_translate_f(0.2816, -1.028, 7.819);
-    result_our = core_matrix[ VSX_GL_MODELVIEW_MATRIX ];
-
-    // 1.1 our own mult
-
-    // 1.2 opengl mult
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glMultMatrixf( trans.m );
-    glTranslatef(0.2816, -1.028, 7.819);
-    glGetFloatv(GL_MODELVIEW_MATRIX, result_opengl.m);
-
-    printf("Test Matrix Translation\n");
-    printf("our    opengl\n");
-    for (size_t i = 0; i < 16; i++)
-    {
-      printf("%f ",result_our.m[i]);
-      printf("%f ",result_opengl.m[i]);
-      if (result_our.m[i] == result_opengl.m[i]) printf(" OK!");
-      printf("\n");
-    }
-    printf("---end of test---\n");
-    fflush(stdout);
-
-    ///////////////////////////////////////////////////////////////////////////
-    // test matrix rotation
-    matrix_mode( VSX_GL_MODELVIEW_MATRIX );
-    core_matrix[ VSX_GL_MODELVIEW_MATRIX ] = trans;
-    matrix_rotate_f(77.2, 0.2816, -1.028, 7.819);
-    result_our = core_matrix[ VSX_GL_MODELVIEW_MATRIX ];
-
-    // 1.1 our own mult
-
-    // 1.2 opengl mult
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glMultMatrixf( trans.m );
-    glRotatef(77.2, 0.2816, -1.028, 7.819);
-    glGetFloatv(GL_MODELVIEW_MATRIX, result_opengl.m);
-
-    printf("Test Matrix Rotation");
-    printf("our    opengl\n");
-    for (size_t i = 0; i < 16; i++)
-    {
-      printf("%f ",result_our.m[i]);
-      printf("%f ",result_opengl.m[i]);
-      if (result_our.m[i] == result_opengl.m[i]) printf(" OK!");
-      printf("\n");
-    }
-    printf("---end of test---\n");
-    fflush(stdout);
-
-
-    ///////////////////////////////////////////////////////////////////////////
-    // test gluperspective with aspect = 1
-    printf("Test gluPerspective with aspect = 1\n");
-    // 2.1 our own
-    matrix_glu_perspective(60.0, 1.0, 0.01, 2000.0);
-    result_our = core_matrix[VSX_GL_PROJECTION_MATRIX];
-
-    // 2.2 opengl
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(60.0,1.0,0.01,2000.0);
-    glGetFloatv(GL_PROJECTION_MATRIX, result_opengl.m);
-
-    printf("our    opengl\n");
-    for (size_t i = 0; i < 16; i++)
-    {
-      printf("%f ",result_our.m[i]);
-      printf("%f ",result_opengl.m[i]);
-      if (result_our.m[i] == result_opengl.m[i]) printf(" OK!");
-
-      printf("\n");
-    }
-    printf("---end of test---\n");
-    fflush(stdout);
-
-    // 3. test gluperspective with aspect = 0.87
-    printf("Test gluPerspective with aspect = 0.87\n");
-    // 2.1 our own
-    matrix_glu_perspective(60.0, 0.87, 0.01, 2000.0);
-    result_our = core_matrix[VSX_GL_PROJECTION_MATRIX];
-
-    // 2.2 opengl
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(60.0,0.87,0.01,2000.0);
-    glGetFloatv(GL_PROJECTION_MATRIX, result_opengl.m);
-
-    printf("our    opengl\n");
-    for (size_t i = 0; i < 16; i++)
-    {
-      printf("%f ",result_our.m[i]);
-      printf("%f ",result_opengl.m[i]);
-      if (result_our.m[i] == result_opengl.m[i]) printf(" OK!");
-
-      printf("\n");
-    }
-    printf("---end of test---\n");
-    fflush(stdout);
-
-    ///////////////////////////////////////////////////////////////////////////
-    // test gluLookat with center = 0,0,0
-
-    printf("Test gluLookAt #1\n");
-    // 2.1 our own
-    matrix_mode( VSX_GL_MODELVIEW_MATRIX );
-    matrix_load_identity();
-    matrix_glu_lookat(
-      -1.87,  0.37, -0.2,
-      0.0,    0.0,   0.0,
-      0.0,    1.0,   0.0
-    );
-    result_our = core_matrix[VSX_GL_MODELVIEW_MATRIX];
-
-    // 2.2 opengl
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(
-      -1.87,  0.37, -0.2,
-      0.0,    0.0,   0.0,
-      0.0,    1.0,   0.0
-    );
-    glGetFloatv(GL_MODELVIEW_MATRIX, result_opengl.m);
-
-    printf("our    opengl\n");
-    for (size_t i = 0; i < 16; i++)
-    {
-      printf("%f ",result_our.m[i]);
-      printf("%f ",result_opengl.m[i]);
-      if (result_our.m[i] == result_opengl.m[i]) printf(" OK!");
-
-      printf("\n");
-    }
-    printf("---end of test---\n");
-    fflush(stdout);
-
-    ///////////////////////////////////////////////////////////////////////////
-    // test glOrtho
-
-    printf("Test glOrtho\n");
-    // 2.1 our own
-    matrix_mode( VSX_GL_MODELVIEW_MATRIX );
-    matrix_load_identity();
-    matrix_ortho(
-          -0.5,0.5,
-          -0.5,0.5,
-          0.01,2.0
-          );
-    result_our = core_matrix[VSX_GL_MODELVIEW_MATRIX];
-
-    // 2.2 opengl
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glOrtho(
-      -0.5,0.5,
-      -0.5,0.5,
-      0.01,2.0
-    );
-    glGetFloatv(GL_MODELVIEW_MATRIX, result_opengl.m);
-
-    printf("our    opengl\n");
-    for (size_t i = 0; i < 16; i++)
-    {
-      printf("%f ",result_our.m[i]);
-      printf("%f ",result_opengl.m[i]);
-      if (result_our.m[i] == result_opengl.m[i]) printf(" OK!");
-
-      printf("\n");
-    }
-    printf("---end of test---\n");
-    fflush(stdout);
-
-    ///////////////////////////////////////////////////////////////////////////
-    // test gluOrtho2D
-
-    printf("Test gluOrtho2D\n");
-    // 2.1 our own
-    matrix_glu_ortho_2d(
-          -0.5,0.5,
-          -0.5,0.5
-          );
-    result_our = core_matrix[VSX_GL_PROJECTION_MATRIX];
-
-    // 2.2 opengl
-    gluOrtho2D(
-      -0.5,0.5,
-      -0.5,0.5
-    );
-    glGetFloatv(GL_PROJECTION_MATRIX, result_opengl.m);
-
-    printf("our    opengl\n");
-    for (size_t i = 0; i < 16; i++)
-    {
-      printf("%f ",result_our.m[i]);
-      printf("%f ",result_opengl.m[i]);
-      if (result_our.m[i] == result_opengl.m[i]) printf(" OK!");
-
-      printf("\n");
-    }
-    printf("---end of test---\n");
-    fflush(stdout);
-
-
-    exit(0);
-
-#endif
-  }
-
-  void matrix_ortho(double left, double right, double bottom, double top, double near, double far)
+  inline void matrix_ortho(double left, double right, double bottom, double top, double near, double far)
   {
 
     #define TX (right+left) / (right-left)
@@ -728,8 +483,7 @@ public:
     #endif
   }
 
-
-  void matrix_glu_ortho_2d(
+  inline void matrix_glu_ortho_2d(
     float left,
     float right,
     float bottom,
@@ -743,7 +497,7 @@ public:
     matrix_load_identity();
   }
 
-  void matrix_glu_perspective(
+  inline void matrix_glu_perspective(
       double fovy,
       double aspect,
       double zNear,
@@ -778,10 +532,6 @@ public:
     double f = tan( HALF_PI - (fovy * (PI / 180.0f)) * 0.5 );
     double fdiva = f / aspect;
     #define m m_temp.m
-//    m[0] = fdiva;         m[1] = 0.0;      m[2] = 0.0;     m[3] = 0.0;
-//    m[4] = 0.0;          m[5] = f;         m[6] = 0.0;     m[7] = 0.0;
-//    m[8] = 0.0;          m[9] = 0.0;      m[10] = N0;      m[11] = N1;
-//    m[12] = 0.0;         m[13] = 0.0;     m[14] = -1.0;    m[15] = 0.0;
     m[0] = fdiva;         m[4] = 0.0;      m[8] = 0.0;     m[12] = 0.0;
     m[1] = 0.0;          m[5] = f;         m[9] = 0.0;     m[13] = 0.0;
     m[2] = 0.0;          m[6] = 0.0;      m[10] = N0;      m[14] = N1;
@@ -797,23 +547,10 @@ public:
   glMultMatrixf( core_matrix[i_matrix_mode].m );
 #endif
 
-//    double fW, fH;
-//    fH = tan( fovy / 360.0 * PI ) * zNear;
-//    fW = fH * aspect;
-//    matrix_frustum(-fW, fW, -fH, fH, zNear, zFar);
-/////////////////////////////////////////////
-//    double xmin, xmax, ymin, ymax;
-
-//    ymax = zNear * tan(fovy * PI * 0.0027778f );
-//    ymin = -ymax;
-//    xmin = ymin * aspect;
-//    xmax = ymax * aspect;
-
-//    matrix_frustum(xmin, xmax, ymin, ymax, zNear, zFar);
     matrix_mode(VSX_GL_MODELVIEW_MATRIX);
   }
 
-  void matrix_glu_lookat(
+  inline void matrix_glu_lookat(
       float eyex, float eyey, float eyez,
       float centerx, float centery, float centerz,
       float upx, float upy, float upz

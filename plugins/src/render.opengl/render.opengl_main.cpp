@@ -1160,7 +1160,8 @@ void deactivate_offscreen() {
 //--- FREELOOK CAMERA ---------------------------------------------------
 //-----------------------------------------------------------------------
 class vsx_freelook_camera : public vsx_module {
-  GLfloat tmpMat[16];
+  GLfloat matrix_projection[16];
+  GLfloat matrix_modelview[16];
   // in
   vsx_module_param_float3* position;
   vsx_module_param_float3* rotation;
@@ -1228,12 +1229,14 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 }
 
-bool activate_offscreen() {
-  glGetFloatv(GL_PROJECTION_MATRIX, tmpMat);
-  glMatrixMode(GL_PROJECTION);
-  //glLoadIdentity();
-  gluPerspective(fov->get(), 1.0, fabs(near_clipping->get()), far_clipping->get());
-	gluLookAt(
+bool activate_offscreen()
+{
+  engine->gl_state->matrix_get_v( VSX_GL_PROJECTION_MATRIX, matrix_projection );
+  engine->gl_state->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, matrix_modelview);
+
+  engine->gl_state->matrix_glu_perspective(fov->get(), 1.0, fabs(near_clipping->get()), far_clipping->get());
+  engine->gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+  engine->gl_state->matrix_glu_lookat(
 	  position->get(0),
 	  position->get(1),
 	  position->get(2),
@@ -1246,15 +1249,19 @@ bool activate_offscreen() {
 	  upvector->get(1),
 	  upvector->get(2)
 	);
-  glMatrixMode(GL_MODELVIEW);
+  engine->gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
   return true;
 }
 
 void deactivate_offscreen() {
   // reset the matrix to previous value
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glMultMatrixf(tmpMat);
+  engine->gl_state->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+  engine->gl_state->matrix_load_identity();
+  engine->gl_state->matrix_mult_f( matrix_projection );
+
+  engine->gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+  engine->gl_state->matrix_load_identity();
+  engine->gl_state->matrix_mult_f( matrix_modelview );
 }
 
 
@@ -1270,8 +1277,8 @@ void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
 //-----------------------------------------------------------------------
 
 class vsx_target_camera : public vsx_module {
-  GLfloat tmpMat_proj[16];
-  GLfloat tmpMat_model[16];
+  GLfloat matrix_projection[16];
+  GLfloat matrix_modelview[16];
   // in
   vsx_module_param_float3* position;
   vsx_module_param_float3* destination;
@@ -1342,32 +1349,33 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 	render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 }
 
-bool activate_offscreen() {
-  glGetFloatv(GL_PROJECTION_MATRIX, tmpMat_proj);
-  glGetFloatv(GL_MODELVIEW_MATRIX, tmpMat_model);
+bool activate_offscreen()
+{
+  engine->gl_state->matrix_get_v( VSX_GL_PROJECTION_MATRIX, matrix_projection );
+  engine->gl_state->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, matrix_modelview);
 
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-	if (perspective_correct->get())
+  if (perspective_correct->get())
   {
-    gluPerspective(
+    engine->gl_state->matrix_glu_perspective(
       fov->get(),
       (float)engine->gl_state->get_viewport_width()/(float)engine->gl_state->get_viewport_height(),
       fabs(near_clipping->get()),
       far_clipping->get()
     );
   }
-	else
+  else
   {
-    gluPerspective(
+    engine->gl_state->matrix_glu_perspective(
       fov->get(),
       1.0,
       fabs(near_clipping->get()),
       far_clipping->get()
     );
   }
-	glMatrixMode(GL_MODELVIEW);
-	gluLookAt(
+  engine->gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+
+  engine->gl_state->matrix_glu_lookat
+  (
 	  position->get(0),
 	  position->get(1),
 	  position->get(2),
@@ -1380,18 +1388,20 @@ bool activate_offscreen() {
 	  upvector->get(1),
 	  upvector->get(2)
 	);
-  glMatrixMode(GL_MODELVIEW);
+
   return true;
 }
 
-void deactivate_offscreen() {
+void deactivate_offscreen()
+{
   // reset the matrix to previous value
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glMultMatrixf(tmpMat_proj);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  glMultMatrixf(tmpMat_model);
+  engine->gl_state->matrix_mode(VSX_GL_PROJECTION_MATRIX);
+  engine->gl_state->matrix_load_identity();
+  engine->gl_state->matrix_mult_f(matrix_projection);
+
+  engine->gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
+  engine->gl_state->matrix_load_identity();
+  engine->gl_state->matrix_mult_f(matrix_modelview);
 }
 
 void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
@@ -1407,8 +1417,8 @@ void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
 
 class vsx_orbit_camera : public vsx_module {
   // in
-	GLfloat tmpMat_proj[16];
-	GLfloat tmpMat_model[16];
+  GLfloat matrix_projection[16];
+  GLfloat matrix_modelview[16];
 
 
   vsx_module_param_float3* rotation;
@@ -1496,9 +1506,8 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
 bool activate_offscreen()
 {
-//  engine->gl_state->test();
-  engine->gl_state->matrix_get_v(VSX_GL_PROJECTION_MATRIX, tmpMat_proj);
-  engine->gl_state->matrix_get_v(VSX_GL_MODELVIEW_MATRIX, tmpMat_model);
+  engine->gl_state->matrix_get_v(VSX_GL_PROJECTION_MATRIX, matrix_projection);
+  engine->gl_state->matrix_get_v(VSX_GL_MODELVIEW_MATRIX, matrix_modelview);
   float dist = distance->get();
 
   if (perspective_correct->get())
@@ -1551,11 +1560,11 @@ void deactivate_offscreen() {
   // reset the matrix to previous value
   engine->gl_state->matrix_mode(VSX_GL_PROJECTION_MATRIX);
   engine->gl_state->matrix_load_identity();
-  engine->gl_state->matrix_mult_f(tmpMat_proj);
+  engine->gl_state->matrix_mult_f(matrix_projection);
 
   engine->gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
   engine->gl_state->matrix_load_identity();
-  engine->gl_state->matrix_mult_f(tmpMat_model);
+  engine->gl_state->matrix_mult_f(matrix_modelview);
 }
 
 void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
@@ -1613,18 +1622,16 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
 bool activate_offscreen() {
   // save current matrix
- 	glGetFloatv(GL_PROJECTION_MATRIX, tmpMat);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-  gluOrtho2D(0, 1, 0, 1);
+  engine->gl_state->matrix_get_v( VSX_GL_PROJECTION_MATRIX, tmpMat );
+  engine->gl_state->matrix_glu_ortho_2d(0,1,0,1);
 	return true;
 }
 
 void deactivate_offscreen() {
   // reset the matrix to previous value
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glMultMatrixf(tmpMat);
+  engine->gl_state->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+  engine->gl_state->matrix_load_identity();
+  engine->gl_state->matrix_mult_f( tmpMat );
 }
 
 void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
