@@ -116,9 +116,9 @@ public:
     allocation_increment = 1;
   }
 
-  void memory_clear()
+  void memory_clear(int c = 0)
   {
-    memset(A, 0, sizeof(T) * allocated);
+    memset(A, c, sizeof(T) * allocated);
   }
 
   void reset_used(size_t val = 0) {

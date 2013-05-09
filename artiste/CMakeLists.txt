@@ -110,7 +110,7 @@ set(SOURCES
   src/vsx_widget/module_choosers/vsx_widget_module_chooser_list.cpp
   src/vsx_widget/vsx_widget_desktop.cpp
   src/application.cpp
-  src/main.cpp
+  src/artiste_main.cpp
   src/vsx_mouse.cpp
 )
 

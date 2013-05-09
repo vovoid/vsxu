@@ -705,9 +705,9 @@ public:
   vsx_vector v;
   void run()
   {
-#ifdef VSXU_TM
-((vsx_tm*)engine->tm)->e( "mesh_translate" );
-#endif
+    #ifdef VSXU_TM
+    ((vsx_tm*)engine->tm)->e( "mesh_translate" );
+    #endif
 
     vsx_mesh** p = mesh_in->get_addr();
     if (!p)
@@ -732,7 +732,7 @@ public:
       mesh->data->faces.reset_used(0);
 
       unsigned long end = (*p)->data->vertices.size();
-      vsx_vector* vs_p = &(*p)->data->vertices[0];//.get_pointer();
+      vsx_vector* vs_p = &(*p)->data->vertices[0];
       mesh->data->vertices.allocate(end);
       mesh->data->vertices.reset_used(end);
       vsx_vector* vs_d = mesh->data->vertices.get_pointer();
@@ -740,7 +740,6 @@ public:
 
       for (unsigned int i = 0; i < end; i++)
       {
-        //mesh->data->vertices[i] = (*p)->data->vertices[i] + v;
         vs_d[i] = vs_p[i] + v;
       }
 /*
@@ -751,8 +750,6 @@ public:
       vsx_array<vsx_face> faces;
 */
 
-      //if (prev_timestamp != (*p)->timestamp)
-      //{
       mesh->data->vertex_normals.set_volatile();
       mesh->data->vertex_normals.set_data((*p)->data->vertex_normals.get_pointer(), (*p)->data->vertex_normals.size());
 
@@ -767,20 +764,15 @@ public:
 
       mesh->data->faces.set_volatile();
       mesh->data->faces.set_data((*p)->data->faces.get_pointer(), (*p)->data->faces.size());
-//      }
 
 
-      //for (unsigned int i = 0; i < (*p)->data->vertex_normals.size(); i++) mesh->data->vertex_normals[i] = (*p)->data->vertex_normals[i];
-      //for (unsigned int i = 0; i < (*p)->data->vertex_tangents.size(); i++) mesh->data->vertex_tangents[i] = (*p)->data->vertex_tangents[i];
-      //for (unsigned int i = 0; i < (*p)->data->vertex_tex_coords.size(); i++) mesh->data->vertex_tex_coords[i] = (*p)->data->vertex_tex_coords[i];
-      //for (int i = 0; i < (*p)->data->vertex_normals.size(); i++) mesh->data->vertex_normals[i] = (*p)->data->vertex_normals[i];
-      //for (unsigned int i = 0; i < (*p)->data->vertex_colors.size(); i++) mesh->data->vertex_colors[i] = (*p)->data->vertex_colors[i];
-      //for (unsigned int i = 0; i < (*p)->data->faces.size(); i++) mesh->data->faces[i] = (*p)->data->faces[i];
+
       mesh->timestamp++;
       mesh_out->set_p(mesh);
-      //for (int i = 0; i < (*p)->data->vertex_normals.size(); i++) mesh->data->vertex_normals[i] = (*p)->data->vertex_normals[i];
+
       param_updates = 0;
     }
+
     #ifdef VSXU_TM
     ((vsx_tm*)engine->tm)->l();
     #endif

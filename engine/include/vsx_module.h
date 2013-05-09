@@ -40,6 +40,8 @@
   #include "vsx_gl_global.h"
 #endif
 
+#include <vsx_gl_state.h>
+
 #include "vsx_argvector.h"
 #include "vsxfst.h"
 
@@ -107,8 +109,12 @@ typedef struct
 class vsx_module_engine_info
 {
 public:
+  // OpenGL State
+  vsx_gl_state* gl_state;
+
   // filesystem handle to use in every module's file operations
   vsxf* filesystem;
+
   // module list - so that modules can construct their own vsx_engine's
   void* module_list;
 
@@ -121,6 +127,7 @@ public:
   // realtime values
   float real_dtime;
   float real_vtime;
+
   // time control from module
   int request_play;
   int request_stop;

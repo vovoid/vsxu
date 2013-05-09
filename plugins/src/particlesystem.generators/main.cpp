@@ -616,12 +616,15 @@ in sequence.\n\
         float rdb = random_deviation->get(1);
         float rdc = random_deviation->get(2);
         vsx_particle* pp =(*particles.particles).get_pointer();
-        for (i = 0; i < (size_t)nump; ++i) {
+        for (i = 0; i < (size_t)nump; ++i)
+        {
           // add the delta-time to the time of the particle
           (*pp).time+=dtime;
           // is the time got over the maximum lifetime of the particle, re-initialize it
-          if ((*pp).time > (*pp).lifetime) {
-            if (particles_to_go >= 1.0f) {
+          if ((*pp).time > (*pp).lifetime)
+          {
+            if (particles_to_go >= 1.0f)
+            {
               (*pp).size = size_base;
               (*pp).orig_size = size_base;//+((float)(rand()%1000)/1000.0f)*size_random_weight-size_random_weight*0.5;
               if ((*pp).size == 0.0f) {

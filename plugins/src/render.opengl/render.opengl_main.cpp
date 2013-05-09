@@ -30,17 +30,31 @@
 #include "vsx_math_3d.h"
 #include "vsx_quaternion.h"
 
+#ifdef VSXU_TM
+#include "vsx_tm.h"
+#endif
 
 
-const unsigned int matrix_target[] = {
-GL_MODELVIEW,
-GL_PROJECTION,
-GL_TEXTURE};
+const unsigned int matrix_target[] =
+{
+  GL_MODELVIEW,
+  GL_PROJECTION,
+  GL_TEXTURE
+};
 
-const unsigned int matrix_target_get[] = {
-GL_MODELVIEW_MATRIX,
-GL_PROJECTION_MATRIX,
-GL_TEXTURE_MATRIX};
+const unsigned int matrix_target_get[] =
+{
+  GL_MODELVIEW_MATRIX,
+  GL_PROJECTION_MATRIX,
+  GL_TEXTURE_MATRIX
+};
+
+const unsigned int matrix_target_get_vsx[] =
+{
+  VSX_GL_MODELVIEW_MATRIX,
+  VSX_GL_PROJECTION_MATRIX,
+  VSX_GL_TEXTURE_MATRIX
+};
 
 const unsigned int sfactors[] = {
 GL_ZERO,
@@ -304,7 +318,8 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 }
 
 
-bool activate_offscreen() {
+bool activate_offscreen()
+{
   glGetIntegerv(GL_BLEND_SRC, &prev_src);
   glGetIntegerv(GL_BLEND_DST, &prev_dst);
 #if !defined(__APPLE__)
@@ -318,17 +333,20 @@ bool activate_offscreen() {
     if (GLEW_EXT_blend_color)
     glBlendColor(blend_color->get(0),blend_color->get(1),blend_color->get(2),blend_color->get(3));
 #endif
-	return true;
+
+    return true;
 }
 
 void deactivate_offscreen() {
-	glBlendFunc(prev_src,prev_dst);
+
+  glBlendFunc(prev_src,prev_dst);
 #if !defined(__APPLE__)
   if (GLEW_EXT_blend_color)
   glBlendColor(col[0],col[1],col[2],col[3]);
 #endif
 	if (!isblend)
 	glDisable(GL_BLEND);
+
 }
 
 
@@ -555,7 +573,6 @@ void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
 }
 };
 #endif
-unsigned int faces_list[] = {GL_FRONT,GL_BACK,GL_FRONT_AND_BACK};
 
 //----------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------
@@ -575,11 +592,18 @@ class vsx_material_param : public vsx_module {
 	// out
 	vsx_module_param_render* render_result;
 	// internal
-	GLfloat ambient[4];
-	GLfloat diffuse[4];
-	GLfloat specular[4];
-	GLfloat emission[4];
-	GLfloat spec_exp;
+  GLfloat ambient_front[4];
+  GLfloat diffuse_front[4];
+  GLfloat specular_front[4];
+  GLfloat emission_front[4];
+  GLfloat spec_exp_front;
+
+  GLfloat ambient_back[4];
+  GLfloat diffuse_back[4];
+  GLfloat specular_back[4];
+  GLfloat emission_back[4];
+  GLfloat spec_exp_back;
+
 
 public:
 
@@ -595,7 +619,7 @@ public:
                             "diffuse_reflectance:float4?default_controller=controller_col,"
                             "specular_reflectance:float4?default_controller=controller_col,"
                             "emission_intensity:float4?default_controller=controller_col,"
-													  "specular_exponent:float"
+                            "specular_exponent:float?max=128&min=0"
 													"}";
 	  info->out_param_spec = "render_out:render";
 	  info->component_class = "render";
@@ -606,28 +630,49 @@ public:
 	{
 	  loading_done = true;
     // initialize memory to make valgrind happy
-    ambient[0] = 0.0f;
-    ambient[1] = 0.0f;
-    ambient[2] = 0.0f;
-    ambient[3] = 0.0f;
+    ambient_front[0] = 0.0f;
+    ambient_front[1] = 0.0f;
+    ambient_front[2] = 0.0f;
+    ambient_front[3] = 0.0f;
 
-    diffuse[0] = 0.0f;
-    diffuse[1] = 0.0f;
-    diffuse[2] = 0.0f;
-    diffuse[3] = 0.0f;
+    diffuse_front[0] = 0.0f;
+    diffuse_front[1] = 0.0f;
+    diffuse_front[2] = 0.0f;
+    diffuse_front[3] = 0.0f;
 
-    specular[0] = 0.0f;
-    specular[1] = 0.0f;
-    specular[2] = 0.0f;
-    specular[3] = 0.0f;
+    specular_front[0] = 0.0f;
+    specular_front[1] = 0.0f;
+    specular_front[2] = 0.0f;
+    specular_front[3] = 0.0f;
 
-    emission[0] = 0.0f;
-    emission[1] = 0.0f;
-    emission[2] = 0.0f;
-    emission[3] = 0.0f;
+    emission_front[0] = 0.0f;
+    emission_front[1] = 0.0f;
+    emission_front[2] = 0.0f;
+    emission_front[3] = 0.0f;
 
-    spec_exp = 0.0f;
+    spec_exp_front = 0.0f;
 
+    ambient_back[0] = 0.0f;
+    ambient_back[1] = 0.0f;
+    ambient_back[2] = 0.0f;
+    ambient_back[3] = 0.0f;
+
+    diffuse_back[0] = 0.0f;
+    diffuse_back[1] = 0.0f;
+    diffuse_back[2] = 0.0f;
+    diffuse_back[3] = 0.0f;
+
+    specular_back[0] = 0.0f;
+    specular_back[1] = 0.0f;
+    specular_back[2] = 0.0f;
+    specular_back[3] = 0.0f;
+
+    emission_back[0] = 0.0f;
+    emission_back[1] = 0.0f;
+    emission_back[2] = 0.0f;
+    emission_back[3] = 0.0f;
+
+    spec_exp_back = 0.0f;
 
 		render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
 	  faces_affected = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"faces_affected");
@@ -665,35 +710,59 @@ public:
 
   bool activate_offscreen()
   {
-	  unsigned int ff = faces_list[faces_affected->get()];
-		//GLfloat ambient[4];
-		//GLfloat diffuse[4];
-		//GLfloat specular[4];
-		//GLfloat emission[4];
-		//GLfloat spec_exp;
-		glGetMaterialfv(ff,GL_AMBIENT,&ambient[0]);
-		glGetMaterialfv(ff,GL_DIFFUSE,&diffuse[0]);
-		glGetMaterialfv(ff,GL_SPECULAR,&specular[0]);
-		glGetMaterialfv(ff,GL_EMISSION,&emission[0]);
-		glGetMaterialfv(ff,GL_SHININESS,&spec_exp);
+    unsigned int ff = faces_affected->get();
+    if (ff == 0 || ff == 2)
+    {
+      glGetMaterialfv(GL_FRONT,GL_AMBIENT,&ambient_front[0]);
+      glGetMaterialfv(GL_FRONT,GL_DIFFUSE,&diffuse_front[0]);
+      glGetMaterialfv(GL_FRONT,GL_SPECULAR,&specular_front[0]);
+      glGetMaterialfv(GL_FRONT,GL_EMISSION,&emission_front[0]);
+      glGetMaterialfv(GL_FRONT,GL_SHININESS,&spec_exp_front);
 
-	  glMaterialfv(ff,GL_AMBIENT,ambient_reflectance->get_addr());
-	  glMaterialfv(ff,GL_DIFFUSE,diffuse_reflectance->get_addr());
-	  glMaterialfv(ff,GL_SPECULAR,specular_reflectance->get_addr());
-	  glMaterialfv(ff,GL_EMISSION,emission_intensity->get_addr());
-	  glMaterialfv(ff,GL_SHININESS,specular_exponent->get_addr());
+      glMaterialfv(GL_FRONT,GL_AMBIENT,ambient_reflectance->get_addr());
+      glMaterialfv(GL_FRONT,GL_DIFFUSE,diffuse_reflectance->get_addr());
+      glMaterialfv(GL_FRONT,GL_SPECULAR,specular_reflectance->get_addr());
+      glMaterialfv(GL_FRONT,GL_EMISSION,emission_intensity->get_addr());
+      glMaterialfv(GL_FRONT,GL_SHININESS,specular_exponent->get_addr());
+    }
+    if (ff == 1 || ff == 2)
+    {
+      glGetMaterialfv(GL_BACK,GL_AMBIENT,&ambient_back[0]);
+      glGetMaterialfv(GL_BACK,GL_DIFFUSE,&diffuse_back[0]);
+      glGetMaterialfv(GL_BACK,GL_SPECULAR,&specular_back[0]);
+      glGetMaterialfv(GL_BACK,GL_EMISSION,&emission_back[0]);
+      glGetMaterialfv(GL_BACK,GL_SHININESS,&spec_exp_back);
+
+      glMaterialfv(GL_BACK,GL_AMBIENT,ambient_reflectance->get_addr());
+      glMaterialfv(GL_BACK,GL_DIFFUSE,diffuse_reflectance->get_addr());
+      glMaterialfv(GL_BACK,GL_SPECULAR,specular_reflectance->get_addr());
+      glMaterialfv(GL_BACK,GL_EMISSION,emission_intensity->get_addr());
+      glMaterialfv(GL_BACK,GL_SHININESS,specular_exponent->get_addr());
+    }
+
 	  return true;
 	}
 
   void deactivate_offscreen()
   {
-	  unsigned int ff = faces_list[faces_affected->get()];
-	  glMaterialfv(ff,GL_AMBIENT		,&ambient[0]);
-	  glMaterialfv(ff,GL_DIFFUSE		,&diffuse[0]);
-	  glMaterialfv(ff,GL_SPECULAR		,&specular[0]);
-	  glMaterialfv(ff,GL_EMISSION		,&emission[0]);
-	  glMaterialfv(ff,GL_SHININESS	,&spec_exp);
-	}
+    unsigned int ff = faces_affected->get();
+    if (ff == 0 || ff == 2)
+    {
+      glMaterialfv(GL_FRONT,GL_AMBIENT		,&ambient_front[0]);
+      glMaterialfv(GL_FRONT,GL_DIFFUSE		,&diffuse_front[0]);
+      glMaterialfv(GL_FRONT,GL_SPECULAR		,&specular_front[0]);
+      glMaterialfv(GL_FRONT,GL_EMISSION		,&emission_front[0]);
+      glMaterialfv(GL_FRONT,GL_SHININESS	,&spec_exp_front);
+    }
+    if (ff == 1 || ff == 2)
+    {      
+      glMaterialfv(GL_BACK,GL_AMBIENT		,&ambient_front[0]);
+      glMaterialfv(GL_BACK,GL_DIFFUSE		,&diffuse_front[0]);
+      glMaterialfv(GL_BACK,GL_SPECULAR		,&specular_front[0]);
+      glMaterialfv(GL_BACK,GL_EMISSION		,&emission_front[0]);
+      glMaterialfv(GL_BACK,GL_SHININESS	,&spec_exp_front);
+    }
+  }
 
   void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
 	  render_result->set(render_in->get());
@@ -1200,15 +1269,6 @@ void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
 //--- TARGET CAMERA -----------------------------------------------------
 //-----------------------------------------------------------------------
 
-void set_correct_perspective(float fov, float near_clip, float far_clip)
-{
-  GLint viewport[4];
-  glGetIntegerv(GL_VIEWPORT, viewport);
-  float screenx = (float)fabs((float)(viewport[2]));
-  float screeny = (float)fabs((float)(viewport[3]));
-  gluPerspective(fov, screenx/screeny, fabs(near_clip), far_clip);
-}
-
 class vsx_target_camera : public vsx_module {
   GLfloat tmpMat_proj[16];
   GLfloat tmpMat_model[16];
@@ -1289,9 +1349,23 @@ bool activate_offscreen() {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 	if (perspective_correct->get())
-	  set_correct_perspective(fov->get(),near_clipping->get(),far_clipping->get());
+  {
+    gluPerspective(
+      fov->get(),
+      (float)engine->gl_state->get_viewport_width()/(float)engine->gl_state->get_viewport_height(),
+      fabs(near_clipping->get()),
+      far_clipping->get()
+    );
+  }
 	else
-  gluPerspective(fov->get(), 1.0, fabs(near_clipping->get()), far_clipping->get());
+  {
+    gluPerspective(
+      fov->get(),
+      1.0,
+      fabs(near_clipping->get()),
+      far_clipping->get()
+    );
+  }
 	glMatrixMode(GL_MODELVIEW);
 	gluLookAt(
 	  position->get(0),
@@ -1420,28 +1494,44 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 	render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 }
 
-bool activate_offscreen() {
- 	glGetFloatv(GL_PROJECTION_MATRIX, tmpMat_proj);
- 	glGetFloatv(GL_MODELVIEW_MATRIX, tmpMat_model);
-
-
-	glMatrixMode(GL_PROJECTION);
+bool activate_offscreen()
+{
+//  engine->gl_state->test();
+  engine->gl_state->matrix_get_v(VSX_GL_PROJECTION_MATRIX, tmpMat_proj);
+  engine->gl_state->matrix_get_v(VSX_GL_MODELVIEW_MATRIX, tmpMat_model);
   float dist = distance->get();
-  glLoadIdentity();
+
   if (perspective_correct->get())
-  set_correct_perspective(fov->get(),near_clipping->get(),far_clipping->get());
+  {
+    engine->gl_state->matrix_glu_perspective(
+      fov->get(),
+      (float)engine->gl_state->get_viewport_width()/(float)engine->gl_state->get_viewport_height(),
+      fabs(near_clipping->get()),
+      far_clipping->get()
+    );
+  }
   else
-  gluPerspective(fov->get(), 1.0f, fabs(near_clipping->get()), far_clipping->get());
+  {
+    engine->gl_state->matrix_glu_perspective(
+      fov->get(),
+      1.0,
+      fabs(near_clipping->get()),
+      far_clipping->get()
+    );
+  }
+
   rotation_.x = rotation->get(0);
   rotation_.y = rotation->get(1);
   rotation_.z = rotation->get(2);
   rotation_.normalize();
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
+
+  engine->gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+  engine->gl_state->matrix_load_identity();
+
 #ifdef VSXU_OPENGL_ES
 	glRotatef(-90,0,0,1);
 #endif
-	gluLookAt(
+  engine->gl_state->matrix_glu_lookat(
 	  rotation_.x*dist+destination->get(0),
 	  rotation_.y*dist+destination->get(1),
 	  rotation_.z*dist+destination->get(2),
@@ -1453,18 +1543,19 @@ bool activate_offscreen() {
 	  upvector->get(0),
 	  upvector->get(1),
 	  upvector->get(2)
-	);
+  );
   return true;
 }
 
 void deactivate_offscreen() {
   // reset the matrix to previous value
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glMultMatrixf(tmpMat_proj);
-  glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glMultMatrixf(tmpMat_model);
+  engine->gl_state->matrix_mode(VSX_GL_PROJECTION_MATRIX);
+  engine->gl_state->matrix_load_identity();
+  engine->gl_state->matrix_mult_f(tmpMat_proj);
+
+  engine->gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
+  engine->gl_state->matrix_load_identity();
+  engine->gl_state->matrix_mult_f(tmpMat_model);
 }
 
 void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
@@ -1579,9 +1670,8 @@ public:
 
   void run()
   {
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    vx->set( (float)fabs((float)(viewport[2])) );
-    vy->set( (float)fabs((float)(viewport[3])) );
+    vx->set( (float)engine->gl_state->get_viewport_width() );
+    vy->set( (float)engine->gl_state->get_viewport_height() );
   }
 
 };
@@ -1743,17 +1833,17 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
 bool activate_offscreen() {
   // save current matrix
- 	glGetFloatv(GL_MODELVIEW_MATRIX, tmpMat);
-	glMatrixMode(GL_MODELVIEW);
-	glTranslatef(translation->get(0),translation->get(1),translation->get(2));
+  engine->gl_state->matrix_get_v(VSX_GL_MODELVIEW_MATRIX, tmpMat);
+  engine->gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
+  engine->gl_state->matrix_translate_f(translation->get(0),translation->get(1),translation->get(2));
 	return true;
 }
 
 void deactivate_offscreen() {
   // reset the matrix to previous value
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glMultMatrixf(tmpMat);
+  engine->gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
+  engine->gl_state->matrix_load_identity();
+  engine->gl_state->matrix_mult_f(tmpMat);
 }
 
 void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
@@ -1822,20 +1912,21 @@ void vsx_gl_rotate::declare_params(vsx_module_param_list& in_parameters, vsx_mod
 }
 
 bool vsx_gl_rotate::activate_offscreen() {
+  vsx_vector bb(axis->get(0),axis->get(1),axis->get(2));
+  bb.normalize();
+
   // save current matrix
- 	glGetFloatv(GL_MODELVIEW_MATRIX, tmpMat);
-	glMatrixMode(GL_MODELVIEW);
-	vsx_vector bb(axis->get(0),axis->get(1),axis->get(2));
-	bb.normalize();
-	glRotatef(angle->get()*360.0f,bb.x,bb.y,bb.z);
+  engine->gl_state->matrix_get_v(VSX_GL_MODELVIEW_MATRIX,tmpMat);
+  engine->gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
+  engine->gl_state->matrix_rotate_f(angle->get()*360.0f, bb.x, bb.y, bb.z);
   return true;
 }
 
 void vsx_gl_rotate::deactivate_offscreen() {
   // reset the matrix to previous value
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glMultMatrixf(tmpMat);
+  engine->gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
+  engine->gl_state->matrix_load_identity();
+  engine->gl_state->matrix_mult_f(tmpMat);
 }
 
 void vsx_gl_rotate::output(vsx_module_param_abs* param) { VSX_UNUSED(param);
@@ -1903,8 +1994,8 @@ public:
 
   bool activate_offscreen() {
     // save current matrix
-    glGetFloatv(matrix_target_get[matrix_target_l->get()], tmpMat);
-    glMatrixMode(matrix_target[matrix_target_l->get()]);
+    engine->gl_state->matrix_get_v(matrix_target_get_vsx[matrix_target_l->get()],tmpMat);
+    engine->gl_state->matrix_mode(matrix_target_get_vsx[matrix_target_l->get()]);
 
   	bb.x = rotation->get(0);
   	bb.y = rotation->get(1);
@@ -1922,15 +2013,16 @@ public:
     {
       mat = bb.matrix();
     }
-  	glMultMatrixf(mat.m);
+    engine->gl_state->matrix_mult_f(mat.m);
+//  	glMultMatrixf(mat.m);
     return true;
   }
 
   void deactivate_offscreen() {
     // reset the matrix to previous value
-    glMatrixMode(matrix_target[matrix_target_l->get()]);
-  	glLoadIdentity();
-  	glMultMatrixf(tmpMat);
+    engine->gl_state->matrix_mode(matrix_target_get_vsx[matrix_target_l->get()]);
+    engine->gl_state->matrix_load_identity();
+    engine->gl_state->matrix_mult_f(tmpMat);
   }
 
   void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
@@ -1984,7 +2076,7 @@ public:
   void output(vsx_module_param_abs* param) {
     if (param == render_result) {
       // save current matrix
- 	    glGetFloatv(matrix_target_get[matrix_target->get()], matrix.m);
+      engine->gl_state->matrix_get_v(matrix_target_get_vsx[matrix_target->get()],matrix.m);
    	  matrix_out->set(matrix);
       render_result->set(1);
     }
@@ -2049,9 +2141,9 @@ module for some interresting results.";
     mm = matrix_in->get_addr();
     if (mm) {
       active = true;
-      glGetFloatv(matrix_target_get[matrix_target_l->get()],tmpMat);
-      glMatrixMode(matrix_target[matrix_target_l->get()]);
-      glMultMatrixf(mm->m);
+      engine->gl_state->matrix_get_v(matrix_target_get_vsx[matrix_target_l->get()],tmpMat);
+      engine->gl_state->matrix_mode( matrix_target_get_vsx[matrix_target_l->get()] );
+      engine->gl_state->matrix_mult_f(mm->m);
     }
     return true;
   }
@@ -2059,22 +2151,10 @@ module for some interresting results.";
   void deactivate_offscreen() {
     // reset the matrix to previous value
     if (active)
-    switch (matrix_target_l->get()) {
-      case 0:
-    	glMatrixMode(GL_MODELVIEW);
-    	glLoadIdentity();
-    	glMultMatrixf(tmpMat);
-    	break;
-      case 1:
-    	glMatrixMode(GL_PROJECTION);
-    	glLoadIdentity();
-    	glMultMatrixf(tmpMat);
-    	break;
-      case 2:
-    	glMatrixMode(GL_TEXTURE);
-    	glLoadIdentity();
-    	glMultMatrixf(tmpMat);
-    	break;
+    {
+      engine->gl_state->matrix_mode( matrix_target_get_vsx[matrix_target_l->get()] );
+      engine->gl_state->matrix_load_identity();
+      engine->gl_state->matrix_mult_f( tmpMat );
     }
   }
 

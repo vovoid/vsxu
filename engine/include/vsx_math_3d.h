@@ -455,7 +455,7 @@ public:
     load_identity();
   }
 
-  void load_identity()
+  inline void load_identity()
   {
     m[0] = 1;   m[1] = 0;   m[2] = 0;   m[3] = 0;
     m[4] = 0;   m[5] = 1;   m[6] = 0;   m[7] = 0;
@@ -463,7 +463,7 @@ public:
     m[12] = 0;  m[13] = 0;  m[14] = 0;  m[15] = 1;
   }
 
-  void transpose() {
+  inline void transpose() {
     m[0] = m[0];   m[1] = m[4];   m[2] = m[8];   m[3] = m[12];
     m[4] = m[1];   m[5] = m[5];   m[6] = m[9];   m[7] = m[13];
     m[8] = m[2];   m[9] = m[6];   m[10] = m[10];  m[11] = m[14];
@@ -479,7 +479,7 @@ public:
   	return b;
   }
 
-  void assign_inverse(vsx_matrix *mm) {
+  inline void assign_inverse(vsx_matrix *mm) {
     float d00, d01, d02, d03;
     float d10, d11, d12, d13;
     float d20, d21, d22, d23;
@@ -525,7 +525,7 @@ public:
     m[3] = -d03*D; m[7] =  d13*D;  m[11]= -d23*D; m[15]=  d33*D;
   };
 
-  void invert()  {
+  inline void invert()  {
     int maxsize = 4;
     int actualsize = 4;
     if (actualsize <= 0) return;  // sanity check
@@ -574,8 +574,9 @@ public:
         }
     }
 
-  void multiply(vsx_matrix *a, vsx_matrix *b) {
+  inline void multiply(vsx_matrix *a, vsx_matrix *b) {
     int i, j;
+    // TODO: do this directly into m?
     float mm[16];
     for (i = 0; i < 4; i++)
     {
@@ -591,7 +592,7 @@ public:
     memcpy(&m,&mm,sizeof(float)*16);
   }
 
-  void rotation_from_vectors(vsx_vector* dir)
+  inline void rotation_from_vectors(vsx_vector* dir)
   {
   	vsx_vector x, y, z;
   	z = *dir;
@@ -607,7 +608,7 @@ public:
   	m[2] = z.x; m[6] = z.y; m[10] = z.z;
   }
 
-  void rotation_from_vectors_n(vsx_vector* xv, vsx_vector* yv)
+  inline void rotation_from_vectors_n(vsx_vector* xv, vsx_vector* yv)
   {
     vsx_vector x, y, z;
     x = *xv;

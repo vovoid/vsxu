@@ -27,8 +27,8 @@
 
 typedef struct
 {
-  vsx_vector creation_pos; // position the particle had when created
   vsx_vector pos; // current position
+  vsx_vector creation_pos; // position the particle had when created
   vsx_vector speed; // current speed
   vsx_color color; // color it starts out as (including alpha)
   vsx_color color_end; // color it interpolates to (including alpha)
@@ -46,7 +46,6 @@ typedef struct
 class vsx_particlesystem {
 public:
   int timestamp;
-//  unsigned long num_particles;
   vsx_array<vsx_particle>* particles;
   vsx_particlesystem() {
     particles = 0;

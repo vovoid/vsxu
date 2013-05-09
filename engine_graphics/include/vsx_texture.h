@@ -193,7 +193,25 @@ public:
     original_transform_obj = 0;
   }
   // return the transformation
-  vsx_transform_obj* get_transform(){return transform_obj;}
+  vsx_transform_obj* get_transform()
+  {
+    return transform_obj;
+  }
+
+  inline void begin_transform()
+  {
+    if ( !transform_obj->is_transform() ) return;
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+    (*transform_obj)();
+  }
+
+  inline void end_transform()
+  {
+    if ( !transform_obj->is_transform() ) return;
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix();
+  }
 
   // use this to bind the texture.
   VSX_TEXTURE_DLLIMPORT bool bind();

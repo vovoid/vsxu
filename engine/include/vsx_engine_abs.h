@@ -181,6 +181,12 @@ public:
   // set tm*
   virtual void set_tm(void* nt) = 0;
 
+  // get tm*
+  virtual void* get_tm() = 0;
+
+  // set gl state
+  virtual void set_gl_state(vsx_gl_state* gl_state) = 0;
+
   // get a list of all external-exposed parameters (parameters that we want to export from a sub-engine)
   virtual void get_external_exposed_parameters( vsx_avector< vsx_module_param_abs* >* result ) = 0;
 

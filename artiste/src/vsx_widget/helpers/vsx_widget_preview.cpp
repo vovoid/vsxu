@@ -33,6 +33,8 @@
 #include <vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
 
+#include "application.h"
+
 #include "vsx_widget_preview.h"
 
 void vsx_window_texture_viewer::draw_2d() {
@@ -84,35 +86,24 @@ void vsx_window_texture_viewer::draw_2d() {
         ((vsx_engine*)engine)->view_resx = ceil(size_.x*(screen_x-1))*screen_aspect;
         ((vsx_engine*)engine)->view_resy = ceil(size_.y*(screen_y-1));*/
 
+
+
         GLint	viewport[4];
-        glGetIntegerv(GL_VIEWPORT, viewport);
-#ifdef _WIN32
-        glViewport(
-          (int)ceil(pos_.x*(screen_x-1)),
-          (int)ceil(pos_.y*(screen_y-1)),
-          (int)ceil(size_.x*(screen_x-1)),
-          (int)ceil(size_.y*(screen_y-1))
-        );
-        glScissor(
-          (int)ceil(pos_.x*(screen_x-1)),
-          (int)ceil(pos_.y*(screen_y-1)),
-          (int)ceil(size_.x*(screen_x-1)),
-          (int)ceil(size_.y*(screen_y-1))
-        );
-#else
-        glViewport(
+        gl_state.get_viewport(viewport);
+        gl_state.set_viewport(
           (int)ceil(pos_.x*(screen_x-1)),
           (int)ceil((pos_.y)*(screen_y-1)),
           (int)ceil(size_.x*(screen_x-1)),
           (int)ceil((size_.y)*(screen_y-1))
         );
+
         glScissor(
           (int)ceil(pos_.x*(screen_x-1)),
           (int)ceil((pos_.y)*(screen_y-1)),
           (int)ceil(size_.x*(screen_x-1)),
           (int)ceil(size_.y*(screen_y-1))
         );
-#endif
+
         glEnable(GL_SCISSOR_TEST);
 
         // render the engine
@@ -123,11 +114,8 @@ void vsx_window_texture_viewer::draw_2d() {
         glDisable(GL_POLYGON_SMOOTH);
 
 
-//      glClear(GL_DEPTH_BUFFER_BIT);
-
         // reset the viewport
-        //printf("--reset viewport %d %d %d %d\n",viewport[0],viewport[1],viewport[2],viewport[3]);
-        glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
+        gl_state.set_viewport(viewport[0],viewport[1],viewport[2],viewport[3]);
 
         glScissor(viewport[0],viewport[1],viewport[2],viewport[3]);
         glDisable(GL_SCISSOR_TEST);

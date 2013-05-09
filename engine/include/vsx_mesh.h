@@ -33,11 +33,7 @@ typedef unsigned int GLuint;
 #endif
 
 typedef struct {
-#ifdef VSXU_OPENGL_ES
   GLuint a,b,c;
-#else
-	GLuint a,b,c;
-#endif
 } vsx_face;
 
 typedef struct {

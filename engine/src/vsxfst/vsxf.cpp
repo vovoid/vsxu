@@ -512,7 +512,8 @@ vsx_string vsx_get_data_path()
     if (access(base_path.c_str(),0) != 0)
     {
       mkdir( (base_path).c_str(), 0700 );
-      symlink ( (base_path).c_str(), (vsx_string(home_dir)+"/vsxu").c_str() );
+      int r = symlink ( (base_path).c_str(), (vsx_string(home_dir)+"/vsxu").c_str() );
+      (void)r;
     }
     base_path = base_path+vsxu_ver+"/";
     if (access(base_path.c_str(),0) != 0) mkdir( (base_path).c_str(),0700);
@@ -533,15 +534,17 @@ vsx_string vsx_get_data_path()
       mkdir( (base_path+"resources").c_str(),0700);
       // add symlinks to examples
 
-      symlink ( (PLATFORM_SHARED_FILES+"example-macros").c_str(), (base_path+"macros/examples").c_str() );
-      symlink ( (PLATFORM_SHARED_FILES+"example-states").c_str(), (base_path+"states/examples").c_str() );
-      symlink ( (PLATFORM_SHARED_FILES+"example-prods").c_str(), (base_path+"prods/examples").c_str() );
-      symlink ( (PLATFORM_SHARED_FILES+"example-visuals").c_str(), (base_path+"visuals/examples").c_str() );
-      symlink ( (PLATFORM_SHARED_FILES+"example-resources").c_str(), (base_path+"resources/examples").c_str() );
-      symlink ( (PLATFORM_SHARED_FILES+"example-faders").c_str(), (base_path+"visuals_faders/examples").c_str() );
+      int r;
+      r = symlink ( (PLATFORM_SHARED_FILES+"example-macros").c_str(), (base_path+"macros/examples").c_str() );
+      r = symlink ( (PLATFORM_SHARED_FILES+"example-states").c_str(), (base_path+"states/examples").c_str() );
+      r = symlink ( (PLATFORM_SHARED_FILES+"example-prods").c_str(), (base_path+"prods/examples").c_str() );
+      r = symlink ( (PLATFORM_SHARED_FILES+"example-visuals").c_str(), (base_path+"visuals/examples").c_str() );
+      r = symlink ( (PLATFORM_SHARED_FILES+"example-resources").c_str(), (base_path+"resources/examples").c_str() );
+      r = symlink ( (PLATFORM_SHARED_FILES+"example-faders").c_str(), (base_path+"visuals_faders/examples").c_str() );
       #if (VSXU_DEBUG)
         symlink ( (PLATFORM_SHARED_FILES+"debug-states").c_str(), (base_path+"states/debug").c_str() );
       #endif
+      (void)r;
     }
   #else // platform family = unix
     char* home_dir = getenv ("USERPROFILE");

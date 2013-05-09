@@ -161,10 +161,6 @@ void gravity_strip::generate_mesh(
     // 3. multiply by vector [0,0,0,1]
     // 4. profit
     vsx_matrix model_matrix = *modelview_matrix;
-    //vsx_matrix inverted_model_matrix;
-    //glGetFloatv(GL_MODELVIEW_MATRIX, model_matrix.m);
-    //modelview_matrix->dump();
-    //model_matrix = *modelview_matrix;
     model_matrix.transpose();//assign_inverse(modelview_matrix);
     vsx_vector eye_pos = model_matrix.multiply_vector(vsx_vector(upvector->x,upvector->y,upvector->z));
 
@@ -174,23 +170,6 @@ void gravity_strip::generate_mesh(
     float fnum = (float)num;
     int i_ofs = offs - num;
     if (i_ofs < 0) i_ofs += BUFF_LEN;
-
-    //int generated_vertices = 0;
-    /*int num2 = num << 1;
-    mesh.data->faces.allocate(num2);
-    mesh.data->vertices.allocate(num2);
-    mesh.data->vertex_normals.allocate(num2);
-    mesh.data->vertex_tex_coords.allocate(num2);
-
-    mesh.data->faces.reset_used(num2);
-    mesh.data->vertices.reset_used(num2);
-    mesh.data->vertex_normals.reset_used(num2);
-    mesh.data->vertex_tex_coords.reset_used(num2);
-*/
-    //vsx_face*      fs_d = &mesh.data->faces[0];
-    //vsx_vector*    vs_d = &mesh.data->vertices[0];
-    //vsx_vector*    ns_d = &mesh.data->vertex_normals[0];
-    //vsx_tex_coord* ts_d = &mesh.data->vertex_tex_coords[0];
 
     float m_width = width*0.1f;
     float d_inc = 1.0f / fnum;

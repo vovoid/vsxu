@@ -44,6 +44,7 @@
 #endif
 #include "vsx_comp_channel.h"
 #include "vsx_log.h"
+#include "vsx_tm.h"
 
 #ifdef VSXU_ENGINE_STATIC
 #include "vsx_module_static_factory.h"
@@ -382,6 +383,9 @@ bool vsx_comp::engine_info(vsx_module_engine_info* engine) {
 
 bool vsx_comp::prepare()
 {
+  vsx_tm* tm = (vsx_tm*)((vsx_engine*)engine_owner)->get_tm();
+  tm->e("vsx_comp::prepare A");
+
   if (parent)
   {
     LOG("comp prepare name: "+name+" of "+((vsx_comp_abs*)parent)->name)
@@ -390,8 +394,16 @@ bool vsx_comp::prepare()
   {
     LOG("comp prepare name: "+name)
   }
-  if (frame_status == frame_failed) return false;
-  if (frame_status != initial_status) return true;
+  if (frame_status == frame_failed)
+  {
+    tm->l();
+    return false;
+  }
+  if (frame_status != initial_status)
+  {
+    tm->l();
+    return true;
+  }
   frame_status = prepare_called;
   // it needs to prepare all parameters for the run function
   // this means it has to execute all channels to get texture id's etc
@@ -420,7 +432,9 @@ bool vsx_comp::prepare()
       all_valid = true;
     }
   }
+  tm->l();
 
+  tm->e("vsx_comp::prepare B");
   for (std::vector <vsx_channel*>::iterator it = channels.begin(); it != channels.end(); ++it)
   {
     // check time to speed up loading bar
@@ -437,6 +451,7 @@ bool vsx_comp::prepare()
       )
       {
         LOG("timer return")
+        tm->l();
         return false;
       }
     }
@@ -446,6 +461,7 @@ bool vsx_comp::prepare()
     {
       frame_status = frame_failed;
       //printf("failed channel execute : %s\n",name.c_str());
+      tm->l();
       return false;
     }
     #ifdef VSXU_MODULE_TIMING
@@ -461,6 +477,8 @@ bool vsx_comp::prepare()
     #endif
     ++i;
   }
+  tm->l();
+  tm->e("vsx_comp::prepare C");
   if (module_info->output)
   {
     LOG("module->run");
@@ -482,6 +500,7 @@ bool vsx_comp::prepare()
     frame_status = run_finished;
   }
   frame_status = prepare_finished;
+  tm->l();
   return true;
 }
 

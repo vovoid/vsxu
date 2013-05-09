@@ -457,11 +457,14 @@ public:
       // something needs to be done. lock the mesh.
       //printf("cal3d %d\n",__LINE__);
 
-      // lock mutex
-      pthread_mutex_lock(&my->mesh_mutex);
+      if (thread_info.is_thread)
+      {
+        // lock mutex
+        pthread_mutex_lock(&my->mesh_mutex);
 
-      // wait for more work
-      pthread_cond_wait(&my->count_threshold_cv, &my->mesh_mutex);
+        // wait for more work
+        pthread_cond_wait(&my->count_threshold_cv, &my->mesh_mutex);
+      }
 
       //printf("cal3d %d\n",__LINE__);
       CalSkeleton* m_skeleton = my->m_model->getSkeleton();
@@ -637,7 +640,11 @@ public:
 
       my->thread_has_something_to_deliver++;
       //printf("cal3d %d\n",__LINE__);
-      pthread_mutex_unlock(&my->mesh_mutex);
+      if (thread_info.is_thread)
+      {
+
+        pthread_mutex_unlock(&my->mesh_mutex);
+      }
       //printf("cal3d %d\n",__LINE__);
 
       // if we're not supposed to run in a thread

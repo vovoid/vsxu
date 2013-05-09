@@ -177,6 +177,11 @@ void myErrorCallback
   void* _user_param
 )
 {
+  VSX_UNUSED(_source);
+  VSX_UNUSED(_type);
+  VSX_UNUSED(_severity);
+  VSX_UNUSED(_length);
+  VSX_UNUSED(_user_param);
   vsx_printf("GLDEBUG: %s\n", _message);
 }
 

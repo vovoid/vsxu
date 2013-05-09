@@ -142,8 +142,8 @@ const unsigned int genmodes[] = {
 GL_OBJECT_LINEAR,
 GL_EYE_LINEAR,
 GL_SPHERE_MAP,
-GL_NORMAL_MAP_ARB,
-GL_REFLECTION_MAP_ARB
+GL_NORMAL_MAP,
+GL_REFLECTION_MAP
 };
 
 
@@ -201,19 +201,16 @@ parameter:float4\
       glEnable(GL_TEXTURE_GEN_S);
       int mode = genmodes[gen_s->get()-1];
       glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, mode);
-      glTexGenfv(GL_S,mode,params);
     }
     if (gen_t->get()) {
       glEnable(GL_TEXTURE_GEN_T);
       int mode = genmodes[gen_t->get()-1];
       glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, mode);
-      glTexGenfv(GL_T,mode,params);
     }
     if (gen_r->get()) {
       glEnable(GL_TEXTURE_GEN_R);
       int mode = genmodes[gen_r->get()-1];
       glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, mode);
-      glTexGenfv(GL_R,mode,params);
     }
     return true;
   }
