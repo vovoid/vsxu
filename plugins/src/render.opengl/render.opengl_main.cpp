@@ -57,36 +57,33 @@ const unsigned int matrix_target_get_vsx[] =
 };
 
 const unsigned int sfactors[] = {
-GL_ZERO,
-GL_ONE,
-GL_DST_COLOR,
-GL_ONE_MINUS_DST_COLOR,
-GL_SRC_ALPHA,
-GL_ONE_MINUS_SRC_ALPHA,
-GL_DST_ALPHA,
-GL_ONE_MINUS_DST_ALPHA,
-#ifndef VSXU_OPENGL_ES
-GL_CONSTANT_COLOR_EXT,
-GL_ONE_MINUS_CONSTANT_COLOR_EXT,
-GL_CONSTANT_ALPHA_EXT,
-GL_ONE_MINUS_CONSTANT_ALPHA_EXT,
-#endif
-GL_SRC_ALPHA_SATURATE};
+VSX_GL_ZERO,
+VSX_GL_ONE,
+VSX_GL_DST_COLOR,
+VSX_GL_ONE_MINUS_DST_COLOR,
+VSX_GL_SRC_ALPHA,
+VSX_GL_ONE_MINUS_SRC_ALPHA,
+VSX_GL_DST_ALPHA,
+VSX_GL_ONE_MINUS_DST_ALPHA,
+VSX_GL_CONSTANT_COLOR,
+VSX_GL_ONE_MINUS_CONSTANT_COLOR,
+VSX_GL_CONSTANT_ALPHA,
+VSX_GL_ONE_MINUS_CONSTANT_ALPHA,
+VSX_GL_SRC_ALPHA_SATURATE
+};
 const unsigned int dfactors[] = {
-GL_ZERO,
-GL_ONE,
-GL_SRC_COLOR,
-GL_ONE_MINUS_SRC_COLOR,
-GL_SRC_ALPHA,
-GL_ONE_MINUS_SRC_ALPHA,
-GL_DST_ALPHA,
-GL_ONE_MINUS_DST_ALPHA,
-#ifndef VSXU_OPENGL_ES
-GL_CONSTANT_COLOR_EXT,
-GL_ONE_MINUS_CONSTANT_COLOR_EXT,
-GL_CONSTANT_ALPHA_EXT,
-GL_ONE_MINUS_CONSTANT_ALPHA_EXT
-#endif
+VSX_GL_ZERO,
+VSX_GL_ONE,
+VSX_GL_SRC_COLOR,
+VSX_GL_ONE_MINUS_SRC_COLOR,
+VSX_GL_SRC_ALPHA,
+VSX_GL_ONE_MINUS_SRC_ALPHA,
+VSX_GL_DST_ALPHA,
+VSX_GL_ONE_MINUS_DST_ALPHA,
+VSX_GL_CONSTANT_COLOR,
+VSX_GL_ONE_MINUS_CONSTANT_COLOR,
+VSX_GL_CONSTANT_ALPHA,
+VSX_GL_ONE_MINUS_CONSTANT_ALPHA
 };
 
 
@@ -273,7 +270,7 @@ class vsx_module_blend_mode : public vsx_module {
 	// out
 	vsx_module_param_render* render_result;
 	// internal
-	GLfloat col[4];
+  GLfloat prev_blend_col[4];
 public:
 
 
@@ -320,33 +317,38 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
 bool activate_offscreen()
 {
-  glGetIntegerv(GL_BLEND_SRC, &prev_src);
-  glGetIntegerv(GL_BLEND_DST, &prev_dst);
-#if !defined(__APPLE__)
-  if (GLEW_EXT_blend_color)
-  glGetFloatv(GL_BLEND_COLOR_EXT,col);
-#endif
-  isblend = glIsEnabled(GL_BLEND);
-	glEnable(GL_BLEND);
-	glBlendFunc(sfactors[sfactor->get()], dfactors[dfactor->get()]);
-#if !defined(__APPLE__)
-    if (GLEW_EXT_blend_color)
-    glBlendColor(blend_color->get(0),blend_color->get(1),blend_color->get(2),blend_color->get(3));
-#endif
+  prev_src = engine->gl_state->blend_src_get();
+  prev_dst = engine->gl_state->blend_dst_get();
+  engine->gl_state->blend_color_v(prev_blend_col);
+  engine->gl_state->blend_func(
+    sfactors[sfactor->get()],
+    dfactors[dfactor->get()]
+  );
+  engine->gl_state->blend_color_set(
+    blend_color->get(0),
+    blend_color->get(1),
+    blend_color->get(2),
+    blend_color->get(3)
+  );
+  isblend = engine->gl_state->blend_get();
+  engine->gl_state->blend_set(1);
 
     return true;
 }
 
-void deactivate_offscreen() {
-
-  glBlendFunc(prev_src,prev_dst);
-#if !defined(__APPLE__)
-  if (GLEW_EXT_blend_color)
-  glBlendColor(col[0],col[1],col[2],col[3]);
-#endif
-	if (!isblend)
-	glDisable(GL_BLEND);
-
+void deactivate_offscreen()
+{
+  engine->gl_state->blend_func(
+    prev_src,
+    prev_dst
+  );
+  engine->gl_state->blend_color_set(
+    prev_blend_col[0],
+    prev_blend_col[1],
+    prev_blend_col[2],
+    prev_blend_col[3]
+  );
+  engine->gl_state->blend_set(isblend);
 }
 
 
@@ -380,8 +382,6 @@ class vsx_light : public vsx_module {
   vsx_module_param_render* render_result;
   // internal
 public:
-
-
 
   void module_info(vsx_module_info* info)
   {
@@ -445,8 +445,10 @@ public:
 
 
 
-bool activate_offscreen() {
-  if (enabled->get()) {
+bool activate_offscreen()
+{
+  if (enabled->get())
+  {
     ar[0] = position->get(0);
     ar[1] = position->get(1);
     ar[2] = position->get(2);
@@ -472,7 +474,6 @@ bool activate_offscreen() {
     glLightfv(lights[light_id->get()],GL_SPECULAR,ar);
   	glEnable(lights[light_id->get()]);
 	  glEnable(GL_LIGHTING);
-
   }
   return true;
 }
@@ -500,7 +501,12 @@ void output(vsx_module_param_abs* param)
 //----------------------------------------------------------------------------------------------------
 
 #ifndef VSXU_OPENGL_ES
-unsigned int rendermodes[] = {GL_POINT,GL_LINE,GL_FILL};
+unsigned int rendermodes[] =
+{
+  VSX_GL_POINT,
+  VSX_GL_LINE,
+  VSX_GL_FILL
+};
 
 class vsx_polygon_mode : public vsx_module {
   // in
@@ -532,45 +538,38 @@ smooth_edges:enum?no|yes\
   info->tunnel = true;
 }
 
-void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
-{
-  loading_done = true;
-	render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+    render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
 
-  front = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"front_facing");
-  front->set(2);
-  back = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"back_facing");
-  back->set(2);
-  smooth = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"smooth_edges");
-  smooth->set(0);
-	render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
-}
-
-bool activate_offscreen() {
-  glGetIntegerv(GL_POLYGON_MODE,&p_mode[0]);
-  glPolygonMode(GL_FRONT, rendermodes[front->get()]);
-  glPolygonMode(GL_BACK, rendermodes[back->get()]);
-  glGetBooleanv(GL_POLYGON_SMOOTH,&p_smooth);
-  if (smooth->get()) {
-    glHint(GL_POLYGON_SMOOTH_HINT,GL_NICEST);
-    glEnable(GL_POLYGON_SMOOTH);
+    front = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"front_facing");
+    front->set(2);
+    back = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"back_facing");
+    back->set(2);
+    smooth = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"smooth_edges");
+    smooth->set(0);
+    render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
   }
-  return true;
-}
 
-void deactivate_offscreen() {
-  glPolygonMode(GL_FRONT, p_mode[0]);
-  glPolygonMode(GL_BACK, p_mode[1]);
-  if (p_smooth != smooth->get()) {
-    if (p_smooth) glEnable(GL_POLYGON_SMOOTH);
-    else
-    glDisable(GL_POLYGON_SMOOTH);
+  bool activate_offscreen()
+  {
+    p_mode[0] = engine->gl_state->polygon_mode_get( VSX_GL_FRONT );
+    p_mode[1] = engine->gl_state->polygon_mode_get( VSX_GL_BACK );
+    engine->gl_state->polygon_mode_set(VSX_GL_FRONT, rendermodes[ front->get() ] );
+    engine->gl_state->polygon_mode_set(VSX_GL_BACK, rendermodes[ back->get() ] );
+    return true;
   }
-}
 
-void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
-  render_result->set(render_in->get());
-}
+  void deactivate_offscreen()
+  {
+    engine->gl_state->polygon_mode_set(VSX_GL_FRONT, p_mode[0] );
+    engine->gl_state->polygon_mode_set(VSX_GL_BACK, p_mode[1] );
+  }
+
+  void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
+    render_result->set(render_in->get());
+  }
 };
 #endif
 
@@ -596,13 +595,13 @@ class vsx_material_param : public vsx_module {
   GLfloat diffuse_front[4];
   GLfloat specular_front[4];
   GLfloat emission_front[4];
-  GLfloat spec_exp_front;
+  GLfloat spec_exp_front[4];
 
   GLfloat ambient_back[4];
   GLfloat diffuse_back[4];
   GLfloat specular_back[4];
   GLfloat emission_back[4];
-  GLfloat spec_exp_back;
+  GLfloat spec_exp_back[4];
 
 
 public:
@@ -650,7 +649,7 @@ public:
     emission_front[2] = 0.0f;
     emission_front[3] = 0.0f;
 
-    spec_exp_front = 0.0f;
+    spec_exp_front[0] = 0.0f;
 
     ambient_back[0] = 0.0f;
     ambient_back[1] = 0.0f;
@@ -672,7 +671,7 @@ public:
     emission_back[2] = 0.0f;
     emission_back[3] = 0.0f;
 
-    spec_exp_back = 0.0f;
+    spec_exp_back[0] = 0.0f;
 
 		render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
 	  faces_affected = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"faces_affected");
@@ -711,33 +710,38 @@ public:
   bool activate_offscreen()
   {
     unsigned int ff = faces_affected->get();
+
+    float specular[4];
+    specular[0] = specular_exponent->get();
+
     if (ff == 0 || ff == 2)
     {
-      glGetMaterialfv(GL_FRONT,GL_AMBIENT,&ambient_front[0]);
-      glGetMaterialfv(GL_FRONT,GL_DIFFUSE,&diffuse_front[0]);
-      glGetMaterialfv(GL_FRONT,GL_SPECULAR,&specular_front[0]);
-      glGetMaterialfv(GL_FRONT,GL_EMISSION,&emission_front[0]);
-      glGetMaterialfv(GL_FRONT,GL_SHININESS,&spec_exp_front);
+      engine->gl_state->material_get_fv( VSX_GL_FRONT, VSX_GL_AMBIENT, &ambient_front[0] );
+      engine->gl_state->material_get_fv( VSX_GL_FRONT, VSX_GL_DIFFUSE, &diffuse_front[0] );
+      engine->gl_state->material_get_fv( VSX_GL_FRONT, VSX_GL_SPECULAR, &specular_front[0] );
+      engine->gl_state->material_get_fv( VSX_GL_FRONT, VSX_GL_EMISSION, &emission_front[0] );
+      engine->gl_state->material_get_fv( VSX_GL_FRONT, VSX_GL_SHININESS, &spec_exp_front[0] );
 
-      glMaterialfv(GL_FRONT,GL_AMBIENT,ambient_reflectance->get_addr());
-      glMaterialfv(GL_FRONT,GL_DIFFUSE,diffuse_reflectance->get_addr());
-      glMaterialfv(GL_FRONT,GL_SPECULAR,specular_reflectance->get_addr());
-      glMaterialfv(GL_FRONT,GL_EMISSION,emission_intensity->get_addr());
-      glMaterialfv(GL_FRONT,GL_SHININESS,specular_exponent->get_addr());
+      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_AMBIENT, ambient_reflectance->get_addr() );
+      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_DIFFUSE, diffuse_reflectance->get_addr() );
+      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_SPECULAR, specular_reflectance->get_addr() );
+      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_EMISSION, emission_intensity->get_addr() );
+      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_SHININESS, specular );
+
     }
     if (ff == 1 || ff == 2)
     {
-      glGetMaterialfv(GL_BACK,GL_AMBIENT,&ambient_back[0]);
-      glGetMaterialfv(GL_BACK,GL_DIFFUSE,&diffuse_back[0]);
-      glGetMaterialfv(GL_BACK,GL_SPECULAR,&specular_back[0]);
-      glGetMaterialfv(GL_BACK,GL_EMISSION,&emission_back[0]);
-      glGetMaterialfv(GL_BACK,GL_SHININESS,&spec_exp_back);
+      engine->gl_state->material_get_fv( VSX_GL_BACK, VSX_GL_AMBIENT, &ambient_back[0] );
+      engine->gl_state->material_get_fv( VSX_GL_BACK, VSX_GL_DIFFUSE, &diffuse_back[0] );
+      engine->gl_state->material_get_fv( VSX_GL_BACK, VSX_GL_SPECULAR, &specular_back[0] );
+      engine->gl_state->material_get_fv( VSX_GL_BACK, VSX_GL_EMISSION, &emission_back[0] );
+      engine->gl_state->material_get_fv( VSX_GL_BACK, VSX_GL_SHININESS, &spec_exp_back[0] );
 
-      glMaterialfv(GL_BACK,GL_AMBIENT,ambient_reflectance->get_addr());
-      glMaterialfv(GL_BACK,GL_DIFFUSE,diffuse_reflectance->get_addr());
-      glMaterialfv(GL_BACK,GL_SPECULAR,specular_reflectance->get_addr());
-      glMaterialfv(GL_BACK,GL_EMISSION,emission_intensity->get_addr());
-      glMaterialfv(GL_BACK,GL_SHININESS,specular_exponent->get_addr());
+      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_AMBIENT, ambient_reflectance->get_addr() );
+      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_DIFFUSE, diffuse_reflectance->get_addr() );
+      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_SPECULAR, specular_reflectance->get_addr() );
+      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_EMISSION, emission_intensity->get_addr() );
+      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_SHININESS, specular );
     }
 
 	  return true;
@@ -748,23 +752,25 @@ public:
     unsigned int ff = faces_affected->get();
     if (ff == 0 || ff == 2)
     {
-      glMaterialfv(GL_FRONT,GL_AMBIENT		,&ambient_front[0]);
-      glMaterialfv(GL_FRONT,GL_DIFFUSE		,&diffuse_front[0]);
-      glMaterialfv(GL_FRONT,GL_SPECULAR		,&specular_front[0]);
-      glMaterialfv(GL_FRONT,GL_EMISSION		,&emission_front[0]);
-      glMaterialfv(GL_FRONT,GL_SHININESS	,&spec_exp_front);
+      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_AMBIENT, &ambient_front[0] );
+      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_DIFFUSE, &diffuse_front[0] );
+      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_SPECULAR, &specular_front[0] );
+      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_EMISSION, &emission_front[0] );
+      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_SHININESS, &spec_exp_front[0] );
     }
     if (ff == 1 || ff == 2)
     {      
-      glMaterialfv(GL_BACK,GL_AMBIENT		,&ambient_front[0]);
-      glMaterialfv(GL_BACK,GL_DIFFUSE		,&diffuse_front[0]);
-      glMaterialfv(GL_BACK,GL_SPECULAR		,&specular_front[0]);
-      glMaterialfv(GL_BACK,GL_EMISSION		,&emission_front[0]);
-      glMaterialfv(GL_BACK,GL_SHININESS	,&spec_exp_front);
+      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_AMBIENT, &ambient_back[0] );
+      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_DIFFUSE, &diffuse_back[0] );
+      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_SPECULAR, &specular_back[0] );
+      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_EMISSION, &emission_back[0] );
+      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_SHININESS, &spec_exp_back[0] );
     }
   }
 
-  void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
+  void output(vsx_module_param_abs* param)
+  {
+    VSX_UNUSED(param);
 	  render_result->set(render_in->get());
 	}
 
@@ -782,9 +788,13 @@ class vsx_depth_buffer : public vsx_module {
 	vsx_module_param_render* render_in;
 	vsx_module_param_int* depth_test;
 	vsx_module_param_int* depth_mask;
-	// out
+
+  // out
 	vsx_module_param_render* render_result;
-	// internal
+
+  // internal
+  int old_depth_mask;
+  int old_depth_test;
 public:
 
 	void module_info(vsx_module_info* info)
@@ -819,40 +829,22 @@ renderer.\n\
 		render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
 		render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 	}
-	GLboolean old_depth_mask;
-	GLboolean old_depth_test;
-	bool reset_test, reset_mask;
-	bool activate_offscreen() {
-		reset_mask = false;
-		reset_test = false;
-		glGetBooleanv(GL_DEPTH_WRITEMASK, &old_depth_mask);
-		if (depth_mask->get() != old_depth_mask) {
-			reset_mask = true;
-			glDepthMask(!old_depth_mask);
-		}
 
-	  old_depth_test = glIsEnabled(GL_DEPTH_TEST);
-	  if (depth_test->get() != old_depth_test) {
-	  	reset_test = true;
-	  	if (old_depth_test)
-	    glDisable(GL_DEPTH_TEST);
-	    else
-			{
-				glEnable(GL_DEPTH_TEST);
-			}
-	  }
+  bool activate_offscreen()
+  {
+    old_depth_mask = engine->gl_state->depth_mask_get();
+    old_depth_test = engine->gl_state->depth_test_get();
+
+    engine->gl_state->depth_mask_set( depth_mask->get() );
+    engine->gl_state->depth_test_set( depth_test->get() );
+
 	  return true;
 	}
 
-	void deactivate_offscreen() {
-		if (reset_mask) glDepthMask(!old_depth_mask);
-		if (reset_test)
-		{
-			if (old_depth_test)
-	    glEnable(GL_DEPTH_TEST);
-	    else
-	    glDisable(GL_DEPTH_TEST);
-		}
+  void deactivate_offscreen()
+  {
+    engine->gl_state->depth_mask_set( old_depth_mask );
+    engine->gl_state->depth_test_set( old_depth_test );
 	}
 
   void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
@@ -881,7 +873,10 @@ public:
     info->identifier = "renderers;opengl_modifiers;depth_function";
     info->description = "";
 
-    info->in_param_spec = "render_in:render,depth_func:enum?NEVER|LESS|EQUAL|LESS_OR_EQUAL|GREATER|NOT_EQUAL|GREATER_OR_EQUAL|ALWAYS";
+    info->in_param_spec =
+        "render_in:render,"
+        "depth_func:enum?NEVER|LESS|EQUAL|LESS_OR_EQUAL|GREATER|NOT_EQUAL|GREATER_OR_EQUAL|ALWAYS"
+    ;
     info->out_param_spec = "render_out:render";
     info->component_class = "render";
     info->tunnel = true;
@@ -891,26 +886,26 @@ public:
   {
     loading_done = true;
     depth_func = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"depth_func");
+    depth_func->set( 1 );
     render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
   }
-  GLint old_depth_func;
-  bool reset_func;
-  bool activate_offscreen() {
-    reset_func = false;
-    glGetIntegerv(GL_DEPTH_FUNC, &old_depth_func);
-    if (depth_func->get() + GL_NEVER != old_depth_func) {
-      reset_func = true;
-      glDepthFunc(depth_func->get() + GL_NEVER);
-    }
+  int old_depth_func;
+  bool activate_offscreen()
+  {
+    old_depth_func = engine->gl_state->depth_function_get();
+    engine->gl_state->depth_function_set( depth_func->get() );
     return true;
   }
 
-  void deactivate_offscreen() {
-    if (reset_func) glDepthFunc(old_depth_func);
+  void deactivate_offscreen()
+  {
+    engine->gl_state->depth_function_set( old_depth_func );
   }
 
-  void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
+  void output(vsx_module_param_abs* param)
+  {
+    VSX_UNUSED(param);
     render_result->set(render_in->get());
   }
 };
@@ -1707,84 +1702,99 @@ class vsx_gl_scale : public vsx_module {
 
 public:
 
-void module_info(vsx_module_info* info)
-{
-  info->identifier = "renderers;opengl_modifiers;gl_scale";
-  info->description = "Scales everything up using \n\
-OpenGL matrix transformations. \n\
-Useful to either scale or squish\n\
-an object/scene.\n\
-Experiment with this in combination with\n\
-gl_translate and gl_rotate.";
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier =
+        "renderers;opengl_modifiers;gl_scale";
 
-  info->in_param_spec =
-"\
-render_in:render,\
-scale:float3,\
-matrix:enum?MODELVIEW|PROJECTION|TEXTURE\
-";
-  info->out_param_spec = "render_out:render";
-  info->component_class = "render";
-  info->tunnel = true; // always run this
-}
+    info->description =
+      "Scales everything up using \n"
+      "OpenGL matrix transformations. \n"
+      "Useful to either scale or squish\n"
+      "an object/scene.\n"
+      "Experiment with this in combination with\n"
+      "gl_translate and gl_rotate."
+    ;
 
+    info->in_param_spec =
+      "render_in:render,"
+      "scale:float3,"
+      "matrix:enum?MODELVIEW|PROJECTION|TEXTURE"
+    ;
 
-void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
-{
-  loading_done = true;
-  scale = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"scale");
-  matrix = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"matrix");
-  matrix->set(0);
+    info->out_param_spec =
+      "render_out:render";
 
-  scale->set(1,0);
-  scale->set(1,1);
-  scale->set(1,2);
+    info->component_class =
+      "render";
 
-	render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
-
-	render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
-}
-
-bool activate_offscreen() {
-  // save current matrix
-  switch(matrix->get()) {
-  	case 0:
- 		glGetFloatv(GL_MODELVIEW_MATRIX, tmpMat);
-		glMatrixMode(GL_MODELVIEW);
-		break;
-  	case 1:
- 		glGetFloatv(GL_PROJECTION_MATRIX, tmpMat);
-		glMatrixMode(GL_PROJECTION);
-		break;
-  	case 2:
- 		glGetFloatv(GL_TEXTURE_MATRIX, tmpMat);
-		glMatrixMode(GL_TEXTURE);
-		break;
+    info->tunnel = true; // always run this
   }
-	glScalef(scale->get(0),scale->get(1),scale->get(2));
-	return true;
-}
 
-void deactivate_offscreen() {
-  // reset the matrix to previous value
-  switch(matrix->get()) {
-  	case 0:
-		glMatrixMode(GL_MODELVIEW);
-		break;
-  	case 1:
-		glMatrixMode(GL_PROJECTION);
-		break;
-  	case 2:
-		glMatrixMode(GL_TEXTURE);
-		break;
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+    scale = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"scale");
+    matrix = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"matrix");
+    matrix->set(0);
+
+    scale->set(1,0);
+    scale->set(1,1);
+    scale->set(1,2);
+
+    render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
+
+    render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
   }
-	glLoadIdentity();
-	glMultMatrixf(tmpMat);
-}
 
-void output(vsx_module_param_abs* param) { VSX_UNUSED(param);
-  render_result->set(render_in->get());
-}
+  bool activate_offscreen()
+  {
+    // save current matrix
+    switch(matrix->get())
+    {
+      case 0:
+        engine->gl_state->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, tmpMat );
+        engine->gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+      break;
+      case 1:
+        engine->gl_state->matrix_get_v( VSX_GL_PROJECTION_MATRIX, tmpMat );
+        engine->gl_state->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+      glMatrixMode(GL_PROJECTION);
+      break;
+      case 2:
+        engine->gl_state->matrix_get_v( VSX_GL_TEXTURE_MATRIX, tmpMat );
+        engine->gl_state->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+      break;
+    }
+    engine->gl_state->matrix_scale_f( scale->get(0),scale->get(1),scale->get(2) );
+    return true;
+  }
+
+  void deactivate_offscreen()
+  {
+    // reset the matrix to previous value
+    switch(matrix->get())
+    {
+      case 0:
+      engine->gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+      break;
+      case 1:
+      engine->gl_state->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+      break;
+      case 2:
+      engine->gl_state->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+      break;
+    }
+    engine->gl_state->matrix_load_identity();
+    engine->gl_state->matrix_mult_f( tmpMat );
+  }
+
+  void output(vsx_module_param_abs* param)
+  {
+    VSX_UNUSED(param);
+    render_result->set(render_in->get());
+  }
 
 };
 
@@ -2044,7 +2054,6 @@ public:
 //-----------------------------------------------------------------------
 class vsx_module_gl_matrix_get : public vsx_module {
   // in
-	//GLfloat tmpMat[16];
 	vsx_module_param_render* render_in;
 	vsx_module_param_int* matrix_target;
 	// out
@@ -2218,6 +2227,7 @@ class vsx_gl_line_width : public vsx_module {
 	// out
 	vsx_module_param_render* render_out;
 	// internal
+  GLfloat prev_width;
 public:
   void module_info(vsx_module_info* info) {
     info->identifier = "renderers;opengl_modifiers;gl_line_width";
@@ -2237,15 +2247,15 @@ public:
     render_in->set(0);
     render_out->set(0);
   }
-  GLfloat prev_width;
-	bool activate_offscreen() {
-    glGetFloatv(GL_LINE_WIDTH,&prev_width);
-    glLineWidth(width->get());
+  bool activate_offscreen()
+  {
+    prev_width = engine->gl_state->line_width_get();
+    engine->gl_state->line_width_set( width->get() );
     return true;
   }
 
 	void deactivate_offscreen() {
-    glLineWidth(prev_width);
+    engine->gl_state->line_width_set( prev_width );
   }
 };
 

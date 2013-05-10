@@ -126,44 +126,40 @@ public:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_SCISSOR_TEST);
 
-
-    // initialize matrices
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    // identity matrices
+    engine->gl_state->matrix_load_identities();
 
     // set up blending
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    engine->gl_state->blend_set(1);
+    engine->gl_state->blend_func(VSX_GL_SRC_ALPHA, VSX_GL_ONE_MINUS_SRC_ALPHA);
 
     // set up polygon mode
-    #ifndef VSXU_OPENGL_ES
-      glPolygonMode(GL_FRONT, GL_FILL);
-      glPolygonMode(GL_BACK, GL_FILL);
-      glDisable(GL_DEPTH_TEST);
-    #endif
+    engine->gl_state->polygon_mode_set(VSX_GL_FRONT, VSX_GL_FILL);
+    engine->gl_state->polygon_mode_set(VSX_GL_BACK, VSX_GL_FILL);
+
+    // set up depth test & mask
+    engine->gl_state->depth_mask_set(0);
+    engine->gl_state->depth_test_set(0);
+    engine->gl_state->depth_function_set( VSX_GL_LESS );
+
     // set up line width
-    glLineWidth(1.0f);
+    engine->gl_state->line_width_set( 1.0f );
 
-    #ifndef VSXU_OPENGL_ES_2_0
-      const unsigned int lights[] = {GL_LIGHT0,GL_LIGHT1,GL_LIGHT2,GL_LIGHT3,GL_LIGHT4,GL_LIGHT5,GL_LIGHT6,GL_LIGHT7};
-      glDisable(lights[0]);
-      glDisable(lights[1]);
-      glDisable(lights[2]);
-      glDisable(lights[3]);
-      glDisable(lights[4]);
-      glDisable(lights[5]);
-      glDisable(lights[6]);
-      glDisable(lights[7]);
+    const unsigned int lights[] = {GL_LIGHT0,GL_LIGHT1,GL_LIGHT2,GL_LIGHT3,GL_LIGHT4,GL_LIGHT5,GL_LIGHT6,GL_LIGHT7};
+    glDisable(lights[0]);
+    glDisable(lights[1]);
+    glDisable(lights[2]);
+    glDisable(lights[3]);
+    glDisable(lights[4]);
+    glDisable(lights[5]);
+    glDisable(lights[6]);
+    glDisable(lights[7]);
 
-      engine->gl_state->get_material_fv_all(&pre_material_colors[0][0][0]);
+    engine->gl_state->get_material_fv_all( &pre_material_colors[0][0][0] );
 
-      // Implement default material settings
-      engine->gl_state->set_default_material();
+    // Implement default material settings
+    engine->gl_state->material_set_default();
 
-    #endif
 
     return true;
   }
@@ -172,7 +168,7 @@ public:
   {
     if (opengl_silent->get() == 1) return;
     #ifndef VSXU_OPENGL_ES_2_0
-      engine->gl_state->set_material_fv_all(&pre_material_colors[0][0][0]);
+      engine->gl_state->material_set_fv_all(&pre_material_colors[0][0][0]);
     #endif
     glClearColor(0.0f,0.0f,0.0f,0.0f);
   }

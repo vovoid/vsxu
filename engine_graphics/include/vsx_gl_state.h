@@ -32,6 +32,32 @@ const int gl_face_direction[] =
 };
 
 ///////////////////////////////////////////////////////////////////////////////
+// depth functions
+#define VSX_GL_NEVER 0
+#define VSX_GL_LESS 1
+#define VSX_GL_EQUAL 2
+#define VSX_GL_LEQUAL 3
+#define VSX_GL_GREATER 4
+#define VSX_GL_NOTEQUAL 5
+#define VSX_GL_GEQUAL 6
+#define VSX_GL_ALWAYS 7
+
+const int gl_depth_functions[] =
+{
+  #ifndef VSX_NO_GL
+  GL_NEVER,
+  GL_LESS,
+  GL_EQUAL,
+  GL_LEQUAL,
+  GL_GREATER,
+  GL_NOTEQUAL,
+  GL_GEQUAL,
+  GL_ALWAYS
+  #endif
+};
+
+
+///////////////////////////////////////////////////////////////////////////////
 // material types
 #define VSX_GL_AMBIENT 0
 #define VSX_GL_DIFFUSE 1
@@ -64,6 +90,69 @@ const int gl_matrix_modes[] =
   #endif
 };
 
+///////////////////////////////////////////////////////////////////////////////
+// blend modes
+
+// source factors
+#define VSX_GL_ZERO 0
+#define VSX_GL_ONE 1
+#define VSX_GL_SRC_COLOR 2
+#define VSX_GL_ONE_MINUS_SRC_COLOR 3
+#define VSX_GL_DST_COLOR 4
+#define VSX_GL_ONE_MINUS_DST_COLOR 5
+#define VSX_GL_SRC_ALPHA 6
+#define VSX_GL_ONE_MINUS_SRC_ALPHA 7
+#define VSX_GL_DST_ALPHA 8
+#define VSX_GL_ONE_MINUS_DST_ALPHA 9
+#define VSX_GL_CONSTANT_COLOR 10
+#define VSX_GL_ONE_MINUS_CONSTANT_COLOR 11
+#define VSX_GL_CONSTANT_ALPHA 12
+#define VSX_GL_ONE_MINUS_CONSTANT_ALPHA 13
+#define VSX_GL_SRC_ALPHA_SATURATE 14
+#define VSX_GL_SRC1_COLOR 15
+#define VSX_GL_ONE_MINUS_SRC1_COLOR 16
+#define VSX_GL_SRC1_ALPHA 17
+#define VSX_GL_ONE_MINUS_SRC1_ALPHA 18
+
+const int gl_blend_factors[] =
+{
+  #ifndef VSX_NO_GL
+  GL_ZERO,
+  GL_ONE,
+  GL_SRC_COLOR,
+  GL_ONE_MINUS_SRC_COLOR,
+  GL_DST_COLOR,
+  GL_ONE_MINUS_DST_COLOR,
+  GL_SRC_ALPHA,
+  GL_ONE_MINUS_SRC_ALPHA,
+  GL_DST_ALPHA,
+  GL_ONE_MINUS_DST_ALPHA,
+  GL_CONSTANT_COLOR,
+  GL_ONE_MINUS_CONSTANT_COLOR,
+  GL_CONSTANT_ALPHA,
+  GL_ONE_MINUS_CONSTANT_ALPHA,
+  GL_SRC_ALPHA_SATURATE,
+  GL_SRC1_COLOR,
+  GL_ONE_MINUS_SRC1_COLOR,
+  GL_SRC1_ALPHA,
+  GL_ONE_MINUS_SRC1_ALPHA
+  #endif
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// polygon fill modes
+#define VSX_GL_POINT 0
+#define VSX_GL_LINE 1
+#define VSX_GL_FILL 2
+
+const int gl_polygon_fill[] =
+{
+  #ifndef VSX_NO_GL
+  GL_POINT,
+  GL_LINE,
+  GL_FILL
+  #endif
+};
 
 class vsx_gl_state
 {
@@ -71,9 +160,234 @@ public:
 
   vsx_gl_state()
   {
-    init_material_values_default();
-    init_viewport_values_default();
-    init_matrices();
+    _material_init_values_default();
+    _viewport_init_values_default();
+    _matrix_init();
+    _blend_mode_init_default();
+    _depth_init();
+    _line_width_init();
+  }
+
+//***************************************************************************
+//*** LINE WIDTH ************************************************************
+//***************************************************************************
+public:
+  inline void line_width_set(float n)
+  {
+    _line_width = n;
+    #ifndef VSX_NO_GL
+    glLineWidth( _line_width );
+    #endif
+  }
+
+  inline float line_width_get()
+  {
+    return _line_width;
+  }
+
+private:
+  float _line_width;
+
+  void _line_width_init()
+  {
+    _line_width = 1.0f;
+  }
+
+
+
+//***************************************************************************
+//*** DEPTH BUFFER **********************************************************
+//***************************************************************************
+public:
+
+  // depth mask
+  inline void depth_mask_set(int n)
+  {
+    if (n == _depth_mask_enabled) return;
+    _depth_mask_enabled = n;
+    #ifndef VSX_NO_GL
+    glDepthMask( (GLboolean) _depth_mask_enabled );
+    #endif
+  }
+
+  inline int depth_mask_get()
+  {
+    return _depth_mask_enabled;
+  }
+
+  // depth test
+  inline void depth_test_set(int n)
+  {
+    if (n == _depth_test_enabled)
+      return;
+    _depth_test_enabled = n;
+    #ifndef VSX_NO_GL
+    if (_depth_test_enabled)
+    {
+      glEnable(GL_DEPTH_TEST);
+    } else
+    {
+      glDisable(GL_DEPTH_TEST);
+    }
+    #endif
+  }
+
+  inline int depth_test_get()
+  {
+    return _depth_test_enabled;
+  }
+
+  // depth function
+  inline int depth_function_get()
+  {
+    return _depth_function;
+  }
+
+  inline void depth_function_set(int n)
+  {
+    if ( n == _depth_function )
+      return;
+    _depth_function = n;
+    #ifndef VSX_NO_GL
+    glDepthFunc( gl_depth_functions[_depth_function] );
+    #endif
+  }
+
+private:
+  int _depth_mask_enabled;
+  int _depth_test_enabled;
+  int _depth_function;
+
+  void _depth_init()
+  {
+    _depth_mask_enabled = -1;
+    _depth_test_enabled = -1;
+    _depth_function = -1;
+  }
+
+
+
+//***************************************************************************
+//*** FILL MODE *************************************************************
+//***************************************************************************
+public:
+  void polygon_mode_set(int face, int mode)
+  {
+    if (_polygon_mode[face] == mode) return;
+    _polygon_mode[face] = mode;
+    #ifndef VSX_NO_GL
+      glPolygonMode(
+        gl_face_direction[face],
+        gl_polygon_fill[mode]
+      );
+    #endif
+  }
+
+  int polygon_mode_get(int face)
+  {
+    return _polygon_mode[face];
+  }
+
+private:
+  int _polygon_mode[2];
+
+  void polygon_mode_init_default()
+  {
+    _polygon_mode[0] = -1;
+    _polygon_mode[1] = -1;
+  }
+
+//***************************************************************************
+//*** BLEND MODE ************************************************************
+//***************************************************************************
+
+public:
+  inline int blend_get()
+  {
+    return _blend_enabled;
+  }
+
+  inline void blend_set(int n)
+  {
+    if (n == _blend_enabled) return;
+    _blend_enabled = n;
+    #ifndef VSX_NO_GL
+    if (_blend_enabled)
+    {
+      glEnable(GL_BLEND);
+    } else
+    {
+      glDisable(GL_BLEND);
+    }
+    #endif
+  }
+
+  inline int blend_src_get()
+  {
+    return _blend_src;
+  }
+
+  inline int blend_dst_get()
+  {
+    return _blend_dst;
+  }
+
+  inline void blend_color_v(float* res)
+  {
+    memcpy( res, &_blend_color[0], sizeof(float)*4 );
+  }
+
+  inline void blend_color_set(float r, float g, float b, float a)
+  {
+    _blend_color[0] = r;
+    _blend_color[1] = g;
+    _blend_color[2] = b;
+    _blend_color[3] = a;
+    #ifndef VSX_NO_GL
+    if (!GLEW_EXT_blend_color) return;
+    glBlendColor(
+      _blend_color[0],
+      _blend_color[1],
+      _blend_color[2],
+      _blend_color[3]
+    );
+    #endif
+  }
+
+  inline void blend_func(int src, int dst)
+  {
+    if (
+        _blend_src == src
+        &&
+        _blend_dst == dst
+        ) return;
+    _blend_src = src;
+    _blend_dst = dst;
+    #ifndef VSX_NO_GL
+    glBlendFunc
+    (
+      gl_blend_factors[src],
+      gl_blend_factors[dst]
+    );
+    #endif
+  }
+
+private:
+
+  int _blend_enabled;
+  int _blend_src;
+  int _blend_dst;
+  float _blend_color[4];
+
+  void _blend_mode_init_default()
+  {
+    _blend_enabled = -1;
+    _blend_src = -1;
+    _blend_dst = -1;
+    _blend_color[0] = 0.0f;
+    _blend_color[1] = 0.0f;
+    _blend_color[2] = 0.0f;
+    _blend_color[3] = 1.0f;
   }
 
 //***************************************************************************
@@ -82,7 +396,7 @@ public:
 
 public:
   // res must be a float[4]
-  inline void set_material_fv(int face_direction, int type, float* res)
+  inline void material_set_fv(int face_direction, int type, float* res)
   {
     material_colors[type][face_direction][0] = res[0];
     material_colors[type][face_direction][1] = res[1];
@@ -98,7 +412,7 @@ public:
   }
 
   // res must be a float[4]
-  inline void get_material_fv(int face_direction, int type, float* res)
+  inline void material_get_fv(int face_direction, int type, float* res)
   {
     res[0] = material_colors[type][face_direction][0];
     res[1] = material_colors[type][face_direction][1];
@@ -111,21 +425,21 @@ public:
     memcpy(res, &material_colors[0][0][0], sizeof(material_colors));
   }
 
-  inline void set_material_fv_all(float* res)
+  inline void material_set_fv_all(float* res)
   {
     memcpy(&material_colors[0][0][0], res, sizeof(material_colors));
     for (size_t mat = 0; mat < 5; mat++)
     {
       for (size_t face = 0; face < 2; face++)
       {
-        set_material_fv(face, mat, material_colors[mat][face]);
+        material_set_fv(face, mat, material_colors[mat][face]);
       }
     }
   }
 
-  inline void set_default_material()
+  inline void material_set_default()
   {
-    init_material_values_default();
+    _material_init_values_default();
     #ifndef VSX_NO_GL
       // ambient
       glMaterialfv(
@@ -191,7 +505,7 @@ public:
 
 private:
 
-  inline void init_material_values_default()
+  inline void _material_init_values_default()
   {
     // ambient materials
     material_colors[VSX_GL_AMBIENT][VSX_GL_FRONT][0] = 0.2f;
@@ -252,16 +566,16 @@ public:
 
   inline int get_viewport_width()
   {
-    return viewport_size[2];
+    return _viewport_size[2];
   }
 
   inline int get_viewport_height()
   {
-    return viewport_size[3];
+    return _viewport_size[3];
   }
 
   // called from window change event
-  inline void change_viewport
+  inline void viewport_change
   (
     int x0,
     int y0,
@@ -269,24 +583,23 @@ public:
     int h
   )
   {
-    vsx_printf("change viewport internal %d %d\n", w, h);
-    viewport_size[0] = x0;
-    viewport_size[1] = y0;
-    viewport_size[2] = w;
-    viewport_size[3] = h;
+    _viewport_size[0] = x0;
+    _viewport_size[1] = y0;
+    _viewport_size[2] = w;
+    _viewport_size[3] = h;
   }
 
   // substitute for glGetIntegerv(GL_VIEWPORT)
-  inline void get_viewport(int* res)
+  inline void viewport_get(int* res)
   {
-    res[0] = viewport_size[0];
-    res[1] = viewport_size[1];
-    res[2] = viewport_size[2];
-    res[3] = viewport_size[3];
+    res[0] = _viewport_size[0];
+    res[1] = _viewport_size[1];
+    res[2] = _viewport_size[2];
+    res[3] = _viewport_size[3];
   }
 
   // substitute for glViewport()
-  inline void set_viewport
+  inline void viewport_set
   (
     const int x0,
     const int y0,
@@ -294,24 +607,24 @@ public:
     const int h
   )
   {
-    viewport_size[0] = x0;
-    viewport_size[1] = y0;
-    viewport_size[2] = w;
-    viewport_size[3] = h;
+    _viewport_size[0] = x0;
+    _viewport_size[1] = y0;
+    _viewport_size[2] = w;
+    _viewport_size[3] = h;
 #ifndef VSX_NO_GL
     glViewport(x0,y0,w,h);
 #endif
   }
 
 private:
-  int	viewport_size[4];
+  int	_viewport_size[4];
 
-  inline void init_viewport_values_default()
+  inline void _viewport_init_values_default()
   {
-    viewport_size[0] = 0;
-    viewport_size[1] = 0;
-    viewport_size[2] = 0;
-    viewport_size[3] = 0;
+    _viewport_size[0] = 0;
+    _viewport_size[1] = 0;
+    _viewport_size[2] = 0;
+    _viewport_size[3] = 0;
   }
 
 //***************************************************************************
@@ -325,13 +638,30 @@ private:
   vsx_matrix m_temp;
   vsx_matrix m_temp_2;
 
-  inline void init_matrices()
+  inline void _matrix_init()
   {
     i_matrix_stack_index = 0;
     i_matrix_mode = 0;
   }
 
 public:
+
+  inline void matrix_load_identities()
+  {
+    core_matrix[0].load_identity();
+    core_matrix[1].load_identity();
+    core_matrix[2].load_identity();
+    #ifndef VSX_NO_GL
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glMatrixMode(GL_TEXTURE);
+    glLoadIdentity();
+    #endif
+  }
 
   inline void matrix_get_v(int mode, float* res)
   {
@@ -354,6 +684,33 @@ public:
     #endif
   }
 
+  inline void matrix_scale_f(float x, float y, float z, bool gl = true)
+  {
+    /*
+    x 0 0 0
+    0 y 0 0
+    0 0 z 0
+    0 0 0 1
+    */
+    m_temp.m[0] = x;     m_temp.m[4] = 0.0f;   m_temp.m[8] = 0.0f;   m_temp.m[12] = 0.0f;
+    m_temp.m[1] = 0.0f;  m_temp.m[5] = y;      m_temp.m[9] = 0.0f;   m_temp.m[13] = 0.0f;
+    m_temp.m[2] = 0.0f;  m_temp.m[6] = 0.0f;   m_temp.m[10] = z;     m_temp.m[14] = 0.0f;
+    m_temp.m[3] = 0.0f;  m_temp.m[7] = 0.0f;   m_temp.m[11] = 0.0f;  m_temp.m[15] = 1.0f;
+
+    memcpy(m_temp_2.m, core_matrix[i_matrix_mode].m, sizeof(vsx_matrix));
+    core_matrix[i_matrix_mode].multiply( &m_temp, &m_temp_2);
+
+    #ifndef VSX_NO_GL
+    if (gl)
+    {
+      glLoadIdentity();
+      glMultMatrixf(core_matrix[i_matrix_mode].m);
+    }
+    #else
+    (void)gl;
+    #endif
+  }
+
   inline void matrix_translate_f(float x, float y, float z, bool gl = true)
   {
     /*
@@ -362,17 +719,19 @@ public:
     0 0 1 z
     0 0 0 1
     */
-    vsx_matrix m_trans;
-    m_temp = core_matrix[i_matrix_mode];
-    m_trans.m[12]  = x;
-    m_trans.m[13]  = y;
-    m_trans.m[14]  = z;
-    core_matrix[i_matrix_mode].multiply( &m_trans, &m_temp);
+    m_temp.m[0] = 1.0f;  m_temp.m[4] = 0.0f;   m_temp.m[8] = 0.0f;   m_temp.m[12] = x;
+    m_temp.m[1] = 0.0f;  m_temp.m[5] = 1.0f;   m_temp.m[9] = 0.0f;   m_temp.m[13] = y;
+    m_temp.m[2] = 0.0f;  m_temp.m[6] = 0.0f;   m_temp.m[10] = 1.0f;  m_temp.m[14] = z;
+    m_temp.m[3] = 0.0f;  m_temp.m[7] = 0.0f;   m_temp.m[11] = 0.0f;  m_temp.m[15] = 1.0f;
+
+    memcpy(m_temp_2.m, core_matrix[i_matrix_mode].m, sizeof(vsx_matrix));
+    core_matrix[i_matrix_mode].multiply( &m_temp, &m_temp_2);
 
     #ifndef VSX_NO_GL
     if (gl)
     {
-      glTranslatef(x,y,z);
+      glLoadIdentity();
+      glMultMatrixf(core_matrix[i_matrix_mode].m);
     }
     #else
     (void)gl;

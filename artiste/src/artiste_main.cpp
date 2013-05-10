@@ -163,7 +163,7 @@ void GLFWCALL mouse_wheel(int pos)
 void GLFWCALL window_size( int width, int height )
 {
   vsx_printf("change viewport %d %d\n", width, height);
-  gl_state.change_viewport(0,0,width, height);
+  gl_state.viewport_change(0,0,width, height);
 }
 
 void myErrorCallback
@@ -272,13 +272,10 @@ int main(int argc, char* argv[])
     printf("enabling GL DEBUG\n");
     glfwOpenWindowHint( GLFW_OPENGL_DEBUG_CONTEXT , GL_TRUE );
   }
-//  glfwOpenWindowHint( GLFW_FSAA_SAMPLES, 1);
 
-  // Open OpenGL window
-//  glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
-
+  // OpenGL version
   glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 2);
-  glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 0);
+  glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 1);
 
   if( !glfwOpenWindow( x_res, y_res, 0,0,0,0,16,0, start_fullscreen?GLFW_FULLSCREEN:GLFW_WINDOW ) ) // GLFW_FULLSCREEN
   {
@@ -410,7 +407,7 @@ int main(int argc, char* argv[])
 
       tm->e("viewport");
       // Set viewport
-      gl_state.set_viewport( 0, 0, width, height );
+      gl_state.viewport_set( 0, 0, width, height );
       tm->l();
 
       // Clear color buffer
