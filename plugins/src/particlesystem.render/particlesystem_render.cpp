@@ -35,15 +35,22 @@ GLfloat blobVec1[4];
 
 
 // this is the method used in starlight aurora vsx, quite handy actually
-void beginBlobs() {
+void beginBlobs(vsx_module_engine_info* engine)
+{
 	glEnable(GL_TEXTURE_2D);
 	GLfloat tmpMat[16];
 
-	glGetFloatv(GL_MODELVIEW_MATRIX, blobMat);
-	glMatrixMode(GL_PROJECTION);
+
+  glGetFloatv(GL_MODELVIEW_MATRIX, blobMat);
+
+
+  glMatrixMode(GL_PROJECTION);
+
 	glPushMatrix();
 
-	glGetFloatv(GL_PROJECTION_MATRIX, tmpMat);
+
+  glGetFloatv(GL_PROJECTION_MATRIX, tmpMat);
+
 	tmpMat[3] = 0;
 	tmpMat[7] = 0;
 	tmpMat[11] = 0;
@@ -56,8 +63,9 @@ void beginBlobs() {
 	v_norm(tmpMat + 4);
 	v_norm(tmpMat + 8);
 
-	glLoadIdentity();
-	glMultMatrixf(tmpMat);
+  glLoadIdentity();
+
+  glMultMatrixf(tmpMat);
 
 	blobMat[3] = 0;
 	blobMat[7] = 0;
@@ -71,9 +79,12 @@ void beginBlobs() {
 	v_norm(blobMat + 4);
 	v_norm(blobMat + 8);
 
-	glMultMatrixf(blobMat);
-	glGetFloatv(GL_PROJECTION_MATRIX, blobMat);
+  glMultMatrixf(blobMat);
+
+  glGetFloatv(GL_PROJECTION_MATRIX, blobMat);
+
 	glPopMatrix();
+
 	glMatrixMode(GL_MODELVIEW);
 
 	//inv_mat(blobMat, blobMatInv);
@@ -85,7 +96,8 @@ void beginBlobs() {
 	mat_vec_mult(blobMat, upRight, blobVec1);
 }
 
-inline void drawBlob(GLfloat x, GLfloat y, GLfloat z, GLfloat size) {
+inline void drawBlob(GLfloat x, GLfloat y, GLfloat z, GLfloat size)
+{
 	GLfloat tmpVec0[] = {blobVec0[0] * size, blobVec0[1] * size, blobVec0[2] * size};
 	GLfloat tmpVec1[] = {blobVec1[0] * size, blobVec1[1] * size, blobVec1[2] * size};
 		glTexCoord2f(1, 1);
@@ -98,7 +110,8 @@ inline void drawBlob(GLfloat x, GLfloat y, GLfloat z, GLfloat size) {
 		glVertex3f(x + tmpVec1[0], y + tmpVec1[1],  z + tmpVec1[2]);
 }
 
-inline void drawBlob_c(GLfloat x, GLfloat y, GLfloat z, GLfloat size, GLfloat dx, GLfloat dy, GLfloat dz) {
+inline void drawBlob_c(GLfloat x, GLfloat y, GLfloat z, GLfloat size, GLfloat dx, GLfloat dy, GLfloat dz)
+{
 	GLfloat tmpVec0[] = {blobVec0[0] * size, blobVec0[1] * size, blobVec0[2] * size};
 	GLfloat tmpVec1[] = {blobVec1[0] * size, blobVec1[1] * size, blobVec1[2] * size};
 		glTexCoord2f(1, 1);

@@ -140,7 +140,7 @@ public:
     // set up depth test & mask
     engine->gl_state->depth_mask_set(0);
     engine->gl_state->depth_test_set(0);
-    engine->gl_state->depth_function_set( VSX_GL_LESS );
+//    engine->gl_state->depth_function_set( VSX_GL_LESS );
 
     // set up line width
     engine->gl_state->line_width_set( 1.0f );

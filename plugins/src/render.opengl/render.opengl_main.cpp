@@ -713,6 +713,11 @@ public:
 
     float specular[4];
     specular[0] = specular_exponent->get();
+    if (specular[0] > 120.0f)
+      specular[0] = 120.0f;
+
+    if (specular[0] < 0.0f)
+      specular[0] = 0.0f;
 
     if (ff == 0 || ff == 2)
     {
@@ -835,8 +840,8 @@ renderer.\n\
     old_depth_mask = engine->gl_state->depth_mask_get();
     old_depth_test = engine->gl_state->depth_test_get();
 
-    engine->gl_state->depth_mask_set( depth_mask->get() );
-    engine->gl_state->depth_test_set( depth_test->get() );
+    engine->gl_state->depth_mask_set( depth_mask->get(), true );
+    engine->gl_state->depth_test_set( depth_test->get(), true );
 
 	  return true;
 	}

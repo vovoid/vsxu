@@ -41,7 +41,8 @@
   void* vsx_texture::t_glist;
 #endif
 
-#define HANDLE_GL_ERROR gl_error = glGetError(); if (gl_error != GL_NO_ERROR) { printf("%s GlGetError()=%d on line %d",__FILE__,gl_error,__LINE__); return; }
+#define HANDLE_GL_ERROR
+  //gl_error = glGetError(); if (gl_error != GL_NO_ERROR) { printf("%s GlGetError()=%d on line %d",__FILE__,gl_error,__LINE__); return; }
 
 vsx_texture::vsx_texture()
 {
@@ -494,12 +495,11 @@ void vsx_texture::deinit_buffer()
 
 void vsx_texture::begin_capture_to_buffer()
 {
-  GLenum gl_error; glGetError();
   if (!valid_fbo) return;
   if (locked) return;
   #ifndef VSXU_OPENGL_ES
-    glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf); HANDLE_GL_ERROR
-    glPushAttrib(GL_ALL_ATTRIB_BITS ); HANDLE_GL_ERROR
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf);
+    glPushAttrib(GL_ALL_ATTRIB_BITS );
   #endif
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
@@ -541,7 +541,7 @@ void vsx_texture::begin_capture_to_buffer()
 
 void vsx_texture::end_capture_to_buffer()
 {
-  GLenum gl_error; glGetError();
+//  GLenum gl_error; glGetError();
   if (!valid_fbo) return;
   if (locked)
   {

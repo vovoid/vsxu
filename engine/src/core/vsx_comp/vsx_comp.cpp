@@ -383,9 +383,6 @@ bool vsx_comp::engine_info(vsx_module_engine_info* engine) {
 
 bool vsx_comp::prepare()
 {
-  vsx_tm* tm = (vsx_tm*)((vsx_engine*)engine_owner)->get_tm();
-  tm->e("vsx_comp::prepare A");
-
   if (parent)
   {
     LOG("comp prepare name: "+name+" of "+((vsx_comp_abs*)parent)->name)
@@ -396,12 +393,10 @@ bool vsx_comp::prepare()
   }
   if (frame_status == frame_failed)
   {
-    tm->l();
     return false;
   }
   if (frame_status != initial_status)
   {
-    tm->l();
     return true;
   }
   frame_status = prepare_called;
@@ -432,9 +427,7 @@ bool vsx_comp::prepare()
       all_valid = true;
     }
   }
-  tm->l();
 
-  tm->e("vsx_comp::prepare B");
   for (std::vector <vsx_channel*>::iterator it = channels.begin(); it != channels.end(); ++it)
   {
     // check time to speed up loading bar
@@ -451,7 +444,6 @@ bool vsx_comp::prepare()
       )
       {
         LOG("timer return")
-        tm->l();
         return false;
       }
     }
@@ -461,7 +453,6 @@ bool vsx_comp::prepare()
     {
       frame_status = frame_failed;
       //printf("failed channel execute : %s\n",name.c_str());
-      tm->l();
       return false;
     }
     #ifdef VSXU_MODULE_TIMING
@@ -477,8 +468,6 @@ bool vsx_comp::prepare()
     #endif
     ++i;
   }
-  tm->l();
-  tm->e("vsx_comp::prepare C");
   if (module_info->output)
   {
     LOG("module->run");
@@ -500,7 +489,6 @@ bool vsx_comp::prepare()
     frame_status = run_finished;
   }
   frame_status = prepare_finished;
-  tm->l();
   return true;
 }
 

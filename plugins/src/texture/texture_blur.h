@@ -365,7 +365,7 @@ void deactivate_offscreen() {
     bool rebuild = false;
     if (texture_size->get() >= 10)
     {
-      glGetIntegerv (GL_VIEWPORT, viewport);
+      engine->gl_state->viewport_get(viewport);
       int t_res_x = abs(viewport[2] - viewport[0]);
       int t_res_y = abs(viewport[3] - viewport[1]);
 

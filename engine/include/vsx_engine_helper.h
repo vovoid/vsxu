@@ -53,6 +53,11 @@ public:
     delete engine;
   }
 
+  void set_gl_state(vsx_gl_state* n)
+  {
+    engine->set_gl_state(n);
+  }
+
   void render(float max_time = 120.0f)
   {
     engine->process_message_queue( &cmd_in, &cmd_out, false, false , max_time);

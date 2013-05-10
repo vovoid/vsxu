@@ -168,6 +168,7 @@ public:
     _line_width_init();
   }
 
+
 //***************************************************************************
 //*** LINE WIDTH ************************************************************
 //***************************************************************************
@@ -201,25 +202,35 @@ private:
 public:
 
   // depth mask
-  inline void depth_mask_set(int n)
+  void depth_mask_set(int n, bool debug = false)
   {
-    if (n == _depth_mask_enabled) return;
+//    if (n == _depth_mask_enabled)
+//    {
+//      vsx_printf("depth mask already this\n");
+//      return;
+//    }
     _depth_mask_enabled = n;
     #ifndef VSX_NO_GL
-    glDepthMask( (GLboolean) _depth_mask_enabled );
+    if (n)
+    {
+      glDepthMask( GL_TRUE );
+    } else
+    {
+      glDepthMask( GL_FALSE );
+    }
     #endif
   }
 
-  inline int depth_mask_get()
+  int depth_mask_get()
   {
     return _depth_mask_enabled;
   }
 
   // depth test
-  inline void depth_test_set(int n)
+  void depth_test_set(int n, bool debug = false)
   {
-    if (n == _depth_test_enabled)
-      return;
+//    if (n == _depth_test_enabled)
+//      return;
     _depth_test_enabled = n;
     #ifndef VSX_NO_GL
     if (_depth_test_enabled)
@@ -232,21 +243,21 @@ public:
     #endif
   }
 
-  inline int depth_test_get()
+  int depth_test_get()
   {
     return _depth_test_enabled;
   }
 
   // depth function
-  inline int depth_function_get()
+  int depth_function_get()
   {
     return _depth_function;
   }
 
-  inline void depth_function_set(int n)
+  void depth_function_set(int n)
   {
-    if ( n == _depth_function )
-      return;
+//    if ( n == _depth_function )
+//      return;
     _depth_function = n;
     #ifndef VSX_NO_GL
     glDepthFunc( gl_depth_functions[_depth_function] );
@@ -260,9 +271,9 @@ private:
 
   void _depth_init()
   {
-    _depth_mask_enabled = -1;
-    _depth_test_enabled = -1;
-    _depth_function = -1;
+    _depth_mask_enabled = 0;
+    _depth_test_enabled = 0;
+    _depth_function = 1;
   }
 
 
@@ -309,7 +320,7 @@ public:
 
   inline void blend_set(int n)
   {
-    if (n == _blend_enabled) return;
+//    if (n == _blend_enabled) return;
     _blend_enabled = n;
     #ifndef VSX_NO_GL
     if (_blend_enabled)
@@ -356,11 +367,11 @@ public:
 
   inline void blend_func(int src, int dst)
   {
-    if (
-        _blend_src == src
-        &&
-        _blend_dst == dst
-        ) return;
+//    if (
+//        _blend_src == src
+//        &&
+//        _blend_dst == dst
+//        ) return;
     _blend_src = src;
     _blend_dst = dst;
     #ifndef VSX_NO_GL

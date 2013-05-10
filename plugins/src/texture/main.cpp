@@ -323,7 +323,7 @@ void start() {
 
 bool activate_offscreen() {
   #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
-    glGetIntegerv (GL_VIEWPORT, viewport);
+    engine->gl_state->viewport_get( viewport );
   #endif
 
   bool rebuild = false;
@@ -360,7 +360,7 @@ bool activate_offscreen() {
 
   if (texture_size->get() >= 10)
   {
-    glGetIntegerv (GL_VIEWPORT, viewport);
+    engine->gl_state->viewport_get( viewport );
     int t_res_x = abs(viewport[2] - viewport[0]);
     int t_res_y = abs(viewport[3] - viewport[1]);
 
@@ -473,11 +473,7 @@ bool activate_offscreen() {
 	glClearColor(clear_color->get(0),clear_color->get(1),clear_color->get(2),clear_color->get(3));
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		// Clear Screen And Depth Buffer
 	glEnable(GL_BLEND);
-  glGetIntegerv(GL_CURRENT_PROGRAM, (GLint*)&glsl_prog);
-  if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
-    glUseProgram(0);
-  else
-    glUseProgramObjectARB(0);
+  glUseProgram(0);
 
   loading_done = true;
   return true;
@@ -485,11 +481,6 @@ bool activate_offscreen() {
 
 void deactivate_offscreen()
 {
-  if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
-    glUseProgram(glsl_prog);
-  else
-    glUseProgramObjectARB(glsl_prog);
-
   if (!which_buffer || support_feedback_int == 0)
   {
     if (texture)
@@ -681,7 +672,7 @@ public:
 
   bool activate_offscreen() {
     #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
-      glGetIntegerv (GL_VIEWPORT, viewport);
+      engine->gl_state->viewport_get( viewport );
     #endif
 
     bool rebuild = false;
@@ -726,7 +717,7 @@ public:
 
     if (texture_size->get() >= 10)
     {
-      glGetIntegerv (GL_VIEWPORT, viewport);
+      engine->gl_state->viewport_get( viewport );
       int t_res_x = abs(viewport[2] - viewport[0]);
       int t_res_y = abs(viewport[3] - viewport[1]);
 
@@ -803,15 +794,11 @@ public:
     texture->begin_capture_to_buffer();
 
     //printf("changing viewport to %d\n",res_x);
-    glViewport(0,0,res_x,res_y);
+//    glViewport(0,0,res_x,res_y);
     glDepthMask(GL_TRUE);
 
     glEnable(GL_BLEND);
-    glGetIntegerv(GL_CURRENT_PROGRAM, (GLint*)&glsl_prog);
-    if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
-      glUseProgram(0);
-    else
-      glUseProgramObjectARB(0);
+    glUseProgram(0);
 
     depth_buffer_texture.texture_info.ogl_id = texture->get_depth_buffer_handle();
     depth_buffer_texture.texture_info.ogl_type = GL_TEXTURE_2D;
@@ -826,11 +813,6 @@ public:
 
   void deactivate_offscreen()
   {
-    if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
-      glUseProgram(glsl_prog);
-    else
-      glUseProgramObjectARB(glsl_prog);
-
     if (texture)
     {
       texture->end_capture_to_buffer();
@@ -985,7 +967,7 @@ public:
 
   bool activate_offscreen() {
     #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
-      glGetIntegerv (GL_VIEWPORT, viewport);
+      engine->gl_state->viewport_get( viewport );
     #endif
 
     bool rebuild = false;
@@ -1016,7 +998,7 @@ public:
 
     if (texture_size->get() >= 10)
     {
-      glGetIntegerv (GL_VIEWPORT, viewport);
+      engine->gl_state->viewport_get( viewport );
       int t_res_x = abs(viewport[2] - viewport[0]);
       int t_res_y = abs(viewport[3] - viewport[1]);
 
@@ -1077,15 +1059,11 @@ public:
     texture->begin_capture_to_buffer();
 
     //printf("changing viewport to %d\n",res_x);
-    glViewport(0,0,res_x,res_y);
+//    glViewport(0,0,res_x,res_y);
     glDepthMask(GL_TRUE);
 
     glEnable(GL_BLEND);
-    glGetIntegerv(GL_CURRENT_PROGRAM, (GLint*)&glsl_prog);
-    if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
-      glUseProgram(0);
-    else
-      glUseProgramObjectARB(0);
+    glUseProgram(0);
 
     loading_done = true;
     return true;
@@ -1093,11 +1071,6 @@ public:
 
   void deactivate_offscreen()
   {
-    if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
-      glUseProgram(glsl_prog);
-    else
-      glUseProgramObjectARB(glsl_prog);
-
     if (texture)
     {
       texture->end_capture_to_buffer();
@@ -1107,7 +1080,7 @@ public:
 
 
     #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
-    //printf("resetting viewport to %d %d %d %d\n",viewport[0],viewport[1],viewport[2],viewport[3]);
+    printf("resetting viewport to %d %d %d %d\n",viewport[0],viewport[1],viewport[2],viewport[3]);
     glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
     #endif
   }

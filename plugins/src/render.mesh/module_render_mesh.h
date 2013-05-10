@@ -490,7 +490,7 @@ public:
       vbo_id_vertex_normals_texcoords
     );
 
-    if (!glIsBufferARB(vbo_id_vertex_normals_texcoords)) return false;
+//    if (!glIsBufferARB(vbo_id_vertex_normals_texcoords)) return false;
     //if (!HANDLE_GL_ERROR) return false;
 
     // enable vertex colors

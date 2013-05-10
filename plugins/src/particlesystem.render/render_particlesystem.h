@@ -431,31 +431,6 @@ public:
             glVertexPointer(3, GL_FLOAT, sizeof(vsx_particle), (*particles->particles).get_pointer());
             glDrawArrays(GL_POINTS,0,(*particles->particles).size()-1);
             glDisableClientState(GL_VERTEX_ARRAY);
-
-
-/*            for (unsigned long i = 0; i < particles->particles->size(); ++i) {
-              if ((*particles->particles)[i].size > 0.0f) {
-                float tt = ((*particles->particles)[i].time/(*particles->particles)[i].lifetime);
-                if (tt < 0.0f) tt = 0.0f;
-                if (tt > 1.0f) tt = 1.0f;
-
-                //vsx_array<float> shader_sizes_data;
-
-                //glPointSize( (*particles->particles)[i].size*(float)sizes[(int)round(8191.0f*tt)] );
-                set_color(
-                  (*particles->particles)[i].color.r,
-                  (*particles->particles)[i].color.g,
-                  (*particles->particles)[i].color.b,
-                  (*particles->particles)[i].color.a*(float)alphas[(int)round(8192.0f*tt)],
-                  tt
-                );
-                glVertex3f(
-                  (*particles->particles)[i].pos.x,
-                  (*particles->particles)[i].pos.y,
-                  (*particles->particles)[i].pos.z
-                );
-              }
-            }*/
           }
           glDisable(GL_POINT_SMOOTH);
           glDisable( GL_POINT_SPRITE_ARB );
@@ -463,7 +438,7 @@ public:
           glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
         } else
         {
-          beginBlobs();
+          beginBlobs(engine);
           glBegin(GL_QUADS);
           if (size_lifespan_type->get() == 0) {
             for (unsigned long i = 0; i < particles->particles->size(); ++i) {

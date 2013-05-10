@@ -695,10 +695,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
   void begin()
   {
     if (!linked) return;
-    if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
-      glUseProgram(prog);
-    else
-      glUseProgramObjectARB(prog);
+    glUseProgram(prog);
   }
   
   void stop() {
@@ -711,10 +708,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
   void end() {
     if (!linked) return;
     unset_uniforms();
-    if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
       glUseProgram(0);
-    else
-      glUseProgramObjectARB(0);
   }
   vsx_glsl() : 
       linked(false),
