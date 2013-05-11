@@ -35,17 +35,17 @@
   #endif
 #endif
 
+#include <vsx_gl_state.h>
+
 #ifdef VSXU_EXE
   std::map<vsx_string, vsx_texture_info> vsx_texture::t_glist;
 #else
   void* vsx_texture::t_glist;
 #endif
 
-#define HANDLE_GL_ERROR
-  //gl_error = glGetError(); if (gl_error != GL_NO_ERROR) { printf("%s GlGetError()=%d on line %d",__FILE__,gl_error,__LINE__); return; }
-
 vsx_texture::vsx_texture()
 {
+  gl_state = 0x0;
   pti_l = 0;
   valid = false;
   valid_fbo = false;
@@ -57,6 +57,7 @@ vsx_texture::vsx_texture()
 
 vsx_texture::vsx_texture(int id, int type)
 {
+  gl_state = 0x0;
   pti_l = 0;
   texture_info.ogl_id = id;
   texture_info.ogl_type = type;
@@ -69,6 +70,13 @@ vsx_texture::vsx_texture(int id, int type)
   #endif
   depth_buffer_local = true;
 }
+
+
+void vsx_texture::set_gl_state(void* n)
+{
+  gl_state = n;
+}
+
 
 void vsx_texture::init_opengl_texture()
 {
@@ -100,7 +108,7 @@ void vsx_texture::init_feedback_buffer(
   bool enable_multisample
 )
 {
-  GLenum gl_error; glGetError();
+  if (!gl_state) { vsx_printf("vsx_texture::init_feedback_buffer: vsx_texture gl_state not set!\n"); return; }
   locked = false;
   prev_buf = 0;
   #ifndef VSXU_OPENGL_ES
@@ -118,84 +126,87 @@ void vsx_texture::init_feedback_buffer(
   // set the buffer type (for deinit and capturing)
   frame_buffer_type = VSX_TEXTURE_BUFFER_TYPE_FEEDBACK_PBUFFER;
 
-  GLint prev_buf_l;
+  int prev_buf_l;
   GLuint tex_id;
-  glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l); HANDLE_GL_ERROR
+  prev_buf_l = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
+  //  glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l);
 
   // color buffer
-  glGenRenderbuffersEXT(1, &color_buffer_handle); HANDLE_GL_ERROR
+  glGenRenderbuffersEXT(1, &color_buffer_handle);
 
-  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, color_buffer_handle); HANDLE_GL_ERROR
+  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, color_buffer_handle);
 
   if(enable_multisample && GLEW_EXT_framebuffer_multisample)
   {
     if (float_texture)
     {
-      glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, alpha?GL_RGBA16F_ARB:GL_RGB16F_ARB, width, height); HANDLE_GL_ERROR
+      glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, alpha?GL_RGBA16F_ARB:GL_RGB16F_ARB, width, height);
     }
     else
     {
-      glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, alpha?GL_RGBA8:GL_RGB8, width, height); HANDLE_GL_ERROR
+      glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, alpha?GL_RGBA8:GL_RGB8, width, height);
     }
   }
   else
   {
     if (float_texture)
     {
-      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, alpha?GL_RGBA16F_ARB:GL_RGB16F_ARB, width, height); HANDLE_GL_ERROR
+      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, alpha?GL_RGBA16F_ARB:GL_RGB16F_ARB, width, height);
     }
     else
     {
-      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, alpha?GL_RGBA8:GL_RGB8, width, height); HANDLE_GL_ERROR
+      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, alpha?GL_RGBA8:GL_RGB8, width, height);
     }
   }
 
-  glGenRenderbuffersEXT(1, &depth_buffer_handle); HANDLE_GL_ERROR;
-  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depth_buffer_handle); HANDLE_GL_ERROR
+  glGenRenderbuffersEXT(1, &depth_buffer_handle); ;
+  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depth_buffer_handle);
   if(enable_multisample && GLEW_EXT_framebuffer_multisample)
   {
-    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_DEPTH_COMPONENT, width, height); HANDLE_GL_ERROR
+    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_DEPTH_COMPONENT, width, height);
   }
   else
   {
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, width, height); HANDLE_GL_ERROR
+    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, width, height);
   }
 
   // create fbo for multi sampled content and attach depth and color buffers to it
-  glGenFramebuffersEXT(1, &frame_buffer_handle); HANDLE_GL_ERROR
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle); HANDLE_GL_ERROR
-  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, color_buffer_handle); HANDLE_GL_ERROR
-  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depth_buffer_handle); HANDLE_GL_ERROR
+  glGenFramebuffersEXT(1, &frame_buffer_handle);
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle);
+  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, color_buffer_handle);
+  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depth_buffer_handle);
 
   // create texture
-  glGenTextures(1, &tex_id); HANDLE_GL_ERROR
-  glBindTexture(GL_TEXTURE_2D, tex_id); HANDLE_GL_ERROR
+  glGenTextures(1, &tex_id);
+  glBindTexture(GL_TEXTURE_2D, tex_id);
   if (float_texture)
   {
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, i_width, i_height, 0, GL_RGBA, GL_FLOAT, NULL); HANDLE_GL_ERROR
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, i_width, i_height, 0, GL_RGBA, GL_FLOAT, NULL);
   }
   else
   {
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, i_width, i_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); HANDLE_GL_ERROR
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, i_width, i_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
   }
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0); HANDLE_GL_ERROR
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); HANDLE_GL_ERROR
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); HANDLE_GL_ERROR
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); HANDLE_GL_ERROR
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); HANDLE_GL_ERROR
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   // set your texture parameters here if required ...
 
   // create final fbo and attach texture to it
-  glGenFramebuffersEXT(1, &frame_buffer_object_handle); HANDLE_GL_ERROR
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_object_handle); HANDLE_GL_ERROR
-  glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, tex_id, 0); HANDLE_GL_ERROR
+  glGenFramebuffersEXT(1, &frame_buffer_object_handle);
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_object_handle);
+  glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, tex_id, 0);
 
 
   texture_info.ogl_id = tex_id;
   texture_info.ogl_type = GL_TEXTURE_2D;
   texture_info.size_x = width;
   texture_info.size_y = height;
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf_l); HANDLE_GL_ERROR
+
+  ((vsx_gl_state*)gl_state)->framebuffer_bind(prev_buf_l);
+//  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf_l);
   valid = true; // valid for binding
   valid_fbo = true; // valid for capturing
 }
@@ -232,7 +243,7 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_buffer
 )
 {
   VSX_UNUSED(multisample);
-  GLenum gl_error; glGetError();
+  if (!gl_state) { vsx_printf("vsx_texture::init_color_buffer: vsx_texture gl_state not set!\n"); return; }
   locked = false;
   prev_buf = 0;
   #ifndef VSXU_OPENGL_ES
@@ -251,8 +262,9 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_buffer
   frame_buffer_type = VSX_TEXTURE_BUFFER_TYPE_COLOR;
 
   // save the previous FBO (stack behaviour)
-  GLint prev_buf_l;
-  glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l); HANDLE_GL_ERROR
+  int prev_buf_l;
+  prev_buf_l = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
+//  glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l);
 
   GLuint texture_storage_type;
 
@@ -291,13 +303,13 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_buffer
       texture_info.ogl_type = GL_TEXTURE_2D;
       texture_info.size_x = width;
       texture_info.size_y = height;
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf_l); HANDLE_GL_ERROR
-      valid = true; // valid for binding
+            valid = true; // valid for binding
       valid_fbo = true; // valid for capturing
       break;
     default:
     break;
   }
+  ((vsx_gl_state*)gl_state)->framebuffer_bind(prev_buf_l);
 }
 
 // run in stop/start or when changing resolution
@@ -335,7 +347,7 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
 )
 {
   VSX_UNUSED(multisample);
-  GLenum gl_error; glGetError();
+  if (!gl_state) { vsx_printf("vsx_texture::init_color_depth_buffer: vsx_texture gl_state not set!\n"); return; }
   locked = false;
   prev_buf = 0;
   #ifndef VSXU_OPENGL_ES
@@ -355,9 +367,10 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
 
 
   // save the previous FBO (stack behaviour)
-  GLint prev_buf_l;
+  int prev_buf_l;
+  prev_buf_l = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
   //GLuint tex_id;
-  glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l); HANDLE_GL_ERROR
+//  glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l);
 
   GLuint texture_storage_type;
 
@@ -418,13 +431,14 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
       texture_info.ogl_type = GL_TEXTURE_2D;
       texture_info.size_x = width;
       texture_info.size_y = height;
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf_l); HANDLE_GL_ERROR
+//      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf_l);
       valid = true; // valid for binding
       valid_fbo = true; // valid for capturing
       break;
     default:
     break;
   }
+  ((vsx_gl_state*)gl_state)->framebuffer_bind(prev_buf_l);
 }
 
 // run in stop/start or when changing resolution
@@ -452,15 +466,15 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_depth_buffer
 
 void vsx_texture::deinit_buffer()
 {
-  GLenum gl_error; glGetError();
   if (!valid_fbo) return;
+  if (!gl_state) { vsx_printf("vsx_texture::deinit_buffer: vsx_texture gl_state not set!\n"); return; }
   if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_FEEDBACK_PBUFFER)
   {
     #ifndef VSXU_OPENGL_ES
-      glDeleteRenderbuffersEXT(1,&color_buffer_handle); HANDLE_GL_ERROR
-      glDeleteRenderbuffersEXT(1,&depth_buffer_handle); HANDLE_GL_ERROR
-      glDeleteTextures(1,&texture_info.ogl_id); HANDLE_GL_ERROR
-      glDeleteFramebuffersEXT(1, &frame_buffer_handle); HANDLE_GL_ERROR
+      glDeleteRenderbuffersEXT(1,&color_buffer_handle);
+      glDeleteRenderbuffersEXT(1,&depth_buffer_handle);
+      glDeleteTextures(1,&texture_info.ogl_id);
+      glDeleteFramebuffersEXT(1, &frame_buffer_handle);
     #endif
     return;
   }
@@ -471,7 +485,7 @@ void vsx_texture::deinit_buffer()
     depth_buffer_handle = 0;
     depth_buffer_local = 0;
     //Bind 0, which means render to back buffer, as a result, fb is unbound
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+//    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     glDeleteFramebuffersEXT(1, &frame_buffer_handle);
     return;
   }
@@ -486,7 +500,9 @@ void vsx_texture::deinit_buffer()
     depth_buffer_handle = 0;
     depth_buffer_local = 0;
     //Bind 0, which means render to back buffer, as a result, fb is unbound
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    if ( ((vsx_gl_state*)gl_state)->framebuffer_bind_get() == frame_buffer_handle )
+      ((vsx_gl_state*)gl_state)->framebuffer_bind(0);
+    //    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     glDeleteFramebuffersEXT(1, &frame_buffer_handle);
     return;
   }
@@ -495,53 +511,69 @@ void vsx_texture::deinit_buffer()
 
 void vsx_texture::begin_capture_to_buffer()
 {
+  if (!gl_state) { vsx_printf("vsx_texture::begin_capture_to_buffer: vsx_texture gl_state not set!\n"); return; }
   if (!valid_fbo) return;
   if (locked) return;
   #ifndef VSXU_OPENGL_ES
-    glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf);
+    prev_buf = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
+//    glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf);
     glPushAttrib(GL_ALL_ATTRIB_BITS );
   #endif
-  glMatrixMode(GL_PROJECTION);
-  glPushMatrix();
-  glLoadIdentity();
-  glMatrixMode(GL_TEXTURE);
-  glPushMatrix();
-  glLoadIdentity();
-  glMatrixMode(GL_MODELVIEW);
-  glPushMatrix();
-  glLoadIdentity();
+    ((vsx_gl_state*)gl_state)->matrix_get_v( VSX_GL_PROJECTION_MATRIX, buffer_save_matrix[0].m );
+    ((vsx_gl_state*)gl_state)->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, buffer_save_matrix[1].m );
+    ((vsx_gl_state*)gl_state)->matrix_get_v( VSX_GL_TEXTURE_MATRIX, buffer_save_matrix[2].m );
 
-  GLfloat one_array[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-  GLfloat zero_array[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-  #ifndef VSXU_OPENGL_ES_2_0
-    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,&one_array[0]);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,&one_array[0]);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,&zero_array[0]);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,&zero_array[0]);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,&one_array[0]);
 
-    glDisable(GL_LIGHT0);
-    glDisable(GL_LIGHT1);
-    glDisable(GL_LIGHT2);
-    glDisable(GL_LIGHT3);
-  #endif
+    ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+    ((vsx_gl_state*)gl_state)->matrix_load_identity();
+    ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+    ((vsx_gl_state*)gl_state)->matrix_load_identity();
+    ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+    ((vsx_gl_state*)gl_state)->matrix_load_identity();
+
+//  glMatrixMode(GL_PROJECTION);
+//  glPushMatrix();
+//  glLoadIdentity();
+//  glMatrixMode(GL_TEXTURE);
+//  glPushMatrix();
+//  glLoadIdentity();
+//  glMatrixMode(GL_MODELVIEW);
+//  glPushMatrix();
+//  glLoadIdentity();
+
+//  GLfloat one_array[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+//  GLfloat zero_array[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+//  #ifndef VSXU_OPENGL_ES_2_0
+//    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,&one_array[0]);
+//    glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,&one_array[0]);
+//    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,&zero_array[0]);
+//    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,&zero_array[0]);
+//    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,&one_array[0]);
+
+//    glDisable(GL_LIGHT0);
+//    glDisable(GL_LIGHT1);
+//    glDisable(GL_LIGHT2);
+//    glDisable(GL_LIGHT3);
+//  #endif
   glEnable(GL_BLEND);
+//  glEnable(GL_LIGHTING);
   #ifdef VSXU_OPENGL_ES_1_0
     glBindTexture(GL_TEXTURE_2D,0);
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, framebuffer_id);
   #endif
   #ifndef VSXU_OPENGL_ES
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle); HANDLE_GL_ERROR
+    ((vsx_gl_state*)gl_state)->framebuffer_bind(frame_buffer_handle);
+//    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle);
   #endif
 
-  glViewport(0,0,(int)texture_info.size_x, (int)texture_info.size_y); HANDLE_GL_ERROR
+  glViewport(0,0,(int)texture_info.size_x, (int)texture_info.size_y);
 
   locked = true;
 }
 
 void vsx_texture::end_capture_to_buffer()
 {
-//  GLenum gl_error; glGetError();
+  if (!gl_state) { vsx_printf("vsx_texture::end_capture_to_buffer: vsx_texture gl_state not set!\n"); return; }
   if (!valid_fbo) return;
   if (locked)
   {
@@ -549,24 +581,35 @@ void vsx_texture::end_capture_to_buffer()
     if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_FEEDBACK_PBUFFER)
     {
     #ifndef VSXU_OPENGL_ES_2_0
-      glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, frame_buffer_handle); HANDLE_GL_ERROR
-      glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, frame_buffer_object_handle); HANDLE_GL_ERROR
-      glBlitFramebufferEXT(0, 0, (GLint)texture_info.size_x-1, (GLint)texture_info.size_y-1, 0, 0, (GLint)texture_info.size_x-1, (GLint)texture_info.size_y-1, GL_COLOR_BUFFER_BIT, GL_NEAREST); HANDLE_GL_ERROR
+      glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, frame_buffer_handle);
+      glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, frame_buffer_object_handle);
+      glBlitFramebufferEXT(0, 0, (GLint)texture_info.size_x-1, (GLint)texture_info.size_y-1, 0, 0, (GLint)texture_info.size_x-1, (GLint)texture_info.size_y-1, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     #endif
     }
     #ifdef VSXU_OPENGL_ES_1_0
       glBindFramebufferOES(GL_FRAMEBUFFER_OES, prev_buf);
     #endif
     #ifndef VSXU_OPENGL_ES
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf); HANDLE_GL_ERROR
+      ((vsx_gl_state*)gl_state)->framebuffer_bind(prev_buf);
+//      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf);
     #endif
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
-    glMatrixMode(GL_TEXTURE);
-    glPopMatrix();
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
+    ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+    ((vsx_gl_state*)gl_state)->matrix_load_identity();
+    ((vsx_gl_state*)gl_state)->matrix_mult_f( buffer_save_matrix[0].m );
+    ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+    ((vsx_gl_state*)gl_state)->matrix_load_identity();
+    ((vsx_gl_state*)gl_state)->matrix_mult_f( buffer_save_matrix[1].m );
+    ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+    ((vsx_gl_state*)gl_state)->matrix_load_identity();
+    ((vsx_gl_state*)gl_state)->matrix_mult_f( buffer_save_matrix[2].m );
+
+//    glMatrixMode(GL_MODELVIEW);
+//    glPopMatrix();
+//    glMatrixMode(GL_TEXTURE);
+//    glPopMatrix();
+//    glMatrixMode(GL_PROJECTION);
+//    glPopMatrix();
+//    glMatrixMode(GL_MODELVIEW);
     #ifndef VSXU_OPENGL_ES_2_0
       glPopAttrib();
     #endif
@@ -643,16 +686,10 @@ void vsx_texture::upload_ram_bitmap(void* data, unsigned long size_x, unsigned l
   //printf("GL_TEXTURE_2D 2\n");
   }
   GLboolean oldStatus = glIsEnabled(texture_info.ogl_type);
-  //printf("%d GL Error was: %x\n", __LINE__,glGetError());
   glEnable(texture_info.ogl_type);
-  //printf("%d GL Error was: %x\n", __LINE__,glGetError());
   glBindTexture(texture_info.ogl_type, texture_info.ogl_id);
-  //printf("Texture id is %d\n",texture_info.ogl_id);
-  //printf("%d GL Error was: %x\n", __LINE__,glGetError());
   glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  //printf("%d GL Error was: %x\n", __LINE__,glGetError());
   glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  //printf("%d GL Error was: %x\n", __LINE__,glGetError());
 
   if (upside_down) {
     //printf("texture is upside down\n");
@@ -914,15 +951,12 @@ void vsx_texture::unload()
       if (!locked)
       {
         t_glist.erase(name);
-        //printf("deleting GL texture\n");
         glDeleteTextures(1,&(texture_info.ogl_id));
       }
     } else
     if (locked)
     {
       glDeleteTextures(1,&(texture_info.ogl_id));
-      //GLenum ii = glGetError();
-      //printf("deletion error was: %d\n",ii);
     }
     texture_info.ogl_id = 0;
     texture_info.ogl_type = 0;

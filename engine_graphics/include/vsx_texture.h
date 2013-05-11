@@ -29,7 +29,7 @@
 #include <vsx_string.h>
 #include <vsx_bitmap.h>
 #include <vsxfst.h>
-
+#include <vsx_math_3d.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   #define VSX_TEXTURE_DLLIMPORT
@@ -57,6 +57,9 @@ class vsx_texture
   GLuint frame_buffer_object_handle;
   int original_transform_obj;
   int frame_buffer_type;
+  void* gl_state;
+  // save state for buffer capture
+  vsx_matrix buffer_save_matrix[3];
 public:
   // this is if another texture gets a texture already in the list, to prevent it from unloading.
   // if not locked it can safely delete it. This is an approximation of course, but should work
@@ -74,6 +77,9 @@ public:
 
   // our texture info
   vsx_texture_info texture_info;
+
+  // GL State
+  void set_gl_state(void* n);
 
   // FBO functions-------------------------------------------------------------
   // FBO is used to capture rendering output into a texture rather than to the

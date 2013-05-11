@@ -354,10 +354,9 @@ bool vsx_engine::start()
     comp->internal_critical = true;
     comp->engine_owner = (void*)this;
     comp->identifier = "outputs;screen";
-    comp->load_module("outputs;screen");
+    comp->load_module("outputs;screen", &engine_info);
     comp->component_class += ":critical";
     comp->name="screen0";
-    comp->engine_info(&engine_info);
 
     // add this to our forge and forge_map
     forge.push_back(comp);

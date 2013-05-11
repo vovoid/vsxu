@@ -613,6 +613,7 @@ public:
     //glDrawElements(GL_TRIANGLES,(*mesh)->data->faces.get_used()*3,GL_UNSIGNED_INT,(*mesh)->data->faces.get_pointer());
     //size_t face_count = (*mesh)->data->faces.get_used();
     glDrawElements(GL_TRIANGLES,(*mesh)->data->faces.get_used()*3,GL_UNSIGNED_INT,0);
+    glFlush();
     //glDrawElements(GL_TRIANGLES, face_count * 3, GL_UNSIGNED_INT, 0);
   }
 

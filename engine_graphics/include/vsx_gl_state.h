@@ -166,7 +166,38 @@ public:
     _blend_mode_init_default();
     _depth_init();
     _line_width_init();
+    _framebuffer_binding_init();
   }
+
+//***************************************************************************
+//*** FRAMEBUFFER BINDING ***************************************************
+//***************************************************************************
+public:
+  void framebuffer_bind(int id)
+  {
+    _framebuffer_binding = id;
+    #ifndef VSX_NO_GL
+//    vsx_printf("binding buffer %d\n", id);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, id);
+    #endif
+  }
+
+  int framebuffer_bind_get()
+  {
+//    vsx_printf("getting buffer %d\n", _framebuffer_binding);
+    return _framebuffer_binding;
+  }
+
+private:
+
+  int _framebuffer_binding;
+
+  void _framebuffer_binding_init()
+  {
+    _framebuffer_binding = 0;
+  }
+
+
 
 
 //***************************************************************************

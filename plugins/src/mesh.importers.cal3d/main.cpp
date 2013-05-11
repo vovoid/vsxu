@@ -731,7 +731,8 @@ public:
     #ifdef VSXU_TM
     ((vsx_tm*)engine->tm)->e( "cal3d_run_consume_outer" );
     #endif
-    if (0 == pthread_mutex_trylock(&mesh_mutex) )
+
+    if (0 == pthread_mutex_lock(&mesh_mutex) )
     {
       #ifdef VSXU_TM
       ((vsx_tm*)engine->tm)->e( "cal3d_run_consume_inner" );
