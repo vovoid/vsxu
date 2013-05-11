@@ -6,6 +6,16 @@ Welcome to the Change Log of the Vovoid VSXu Project
   Some nomenclature:
     + new feature
     ' bug resolved
+***********************************************************************************************************************
+
+  ######################################
+  VSXu 0.4.1 (Development)
+  ######################################
+
+  General:
+    + VSXu now supports NVIDIA's OpenGL "threaded optimizations". To enable, run vsxu like this:
+       __GL_THREADED_OPTIMIZATIONS=1 vsxu_artiste
+    + OpenGL debug callback implemented (and getting rid of glGetError() )
 
 ***********************************************************************************************************************
 
