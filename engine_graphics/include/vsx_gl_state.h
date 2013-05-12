@@ -12,10 +12,6 @@
 //   NO Range checking performed in this class.
 //   Be careful!
 ///////////////////////////////////////////////////////////////////////////////
-// TODO:
-//   get rid of all calls to glGet(...viewport in the code
-//
-///////////////////////////////////////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -335,8 +331,8 @@ private:
 
   void polygon_mode_init_default()
   {
-    _polygon_mode[0] = -1;
-    _polygon_mode[1] = -1;
+    _polygon_mode[0] = 0;
+    _polygon_mode[1] = 0;
   }
 
 //***************************************************************************
@@ -423,9 +419,9 @@ private:
 
   void _blend_mode_init_default()
   {
-    _blend_enabled = -1;
-    _blend_src = -1;
-    _blend_dst = -1;
+    _blend_enabled = 0;
+    _blend_src = 0;
+    _blend_dst = 0;
     _blend_color[0] = 0.0f;
     _blend_color[1] = 0.0f;
     _blend_color[2] = 0.0f;
