@@ -716,6 +716,15 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
       fs(0),
       prog(0) 
   {}
+  ~vsx_glsl()
+  {
+    if (linked)
+    {
+      glDeleteShader(vs);
+      glDeleteShader(fs);
+      glDeleteProgram(prog);
+    }
+  }
 };
 
 #endif // ifdef OPENGL_ES_2_0

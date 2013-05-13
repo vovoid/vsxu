@@ -349,6 +349,12 @@ int main(int argc, char* argv[])
     }
   }
 
+  int display_gpu_vram_stats = 0;
+  if (app_argv.has_param("gl_vram"))
+  {
+    display_gpu_vram_stats = 1;
+  }
+
 
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   sprintf( titlestr, "Vovoid VSXu Artiste %s [GNU/Linux %d-bit]", vsxu_ver, PLATFORM_BITS);
@@ -371,6 +377,36 @@ int main(int argc, char* argv[])
       else app_mouse_move_passive(last_x,last_y);
       mouse_pos_type = 0;
     }
+
+
+    if (__GLEW_NVX_gpu_memory_info && display_gpu_vram_stats)
+    {
+    //      #define GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX 0x9047
+    //      #define GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX 0x9048
+    //      #define GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX 0x9049
+    //      #define GL_GPU_MEMORY_INFO_EVICTION_COUNT_NVX 0x904A
+    //      #define GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX 0x904B
+
+          GLint total_memory;
+          GLint total_available;
+          GLint available_memory;
+          GLint eviction_count;
+          GLint eviction_size;
+//          glGetIntegerv(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &total_memory);
+//          glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &total_available);
+//          glGetIntegerv(GL_GPU_MEMORY_INFO_EVICTION_COUNT_NVX, &eviction_count);
+//          glGetIntegerv(GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX, &eviction_size);
+
+          glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &available_memory);
+          float available_memory_f = (float)available_memory;
+
+          vsx_printf("GPU MEMORY INFO: Before frame: available vram: %d MB\n", available_memory >> 10);
+
+          //if (gtm)
+          //((vsx_tm*)gtm)->plot( available_memory_f, "gpu memory free" );
+
+    }
+
 
     app_pre_draw();
 

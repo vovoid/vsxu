@@ -475,6 +475,7 @@ void vsx_texture::deinit_buffer()
       glDeleteRenderbuffersEXT(1,&depth_buffer_handle);
       glDeleteTextures(1,&texture_info.ogl_id);
       glDeleteFramebuffersEXT(1, &frame_buffer_handle);
+      glDeleteFramebuffersEXT(1, &frame_buffer_object_handle);
     #endif
     return;
   }
