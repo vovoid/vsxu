@@ -44,6 +44,7 @@
 #define VSX_TEXTURE_BUFFER_TYPE_FEEDBACK_PBUFFER 1
 #define VSX_TEXTURE_BUFFER_TYPE_COLOR 2
 #define VSX_TEXTURE_BUFFER_TYPE_COLOR_DEPTH 3
+#define VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER 4
 
 class vsx_texture
 {
@@ -158,6 +159,19 @@ public:
     GLuint existing_depth_texture_id = 0
   );
 
+
+  // init an offscreen feedback possible buffer
+  VSX_TEXTURE_DLLIMPORT void init_render_buffer
+  (
+    int width, // width in pixels
+    int height, // height in pixels
+    bool float_texture = false, // use floating point channels (8-bit is default)
+    bool alpha = true, // support alpha channel or not
+    bool multisample = false, // enable anti-aliasing
+    GLuint existing_depth_texture_id = 0
+  );
+
+
   // remove/delete the buffer
   VSX_TEXTURE_DLLIMPORT void deinit_buffer();
 
@@ -175,6 +189,7 @@ public:
   // allocate an openGL texture ID
   VSX_TEXTURE_DLLIMPORT void init_opengl_texture_1d();
   VSX_TEXTURE_DLLIMPORT void init_opengl_texture_2d();
+  VSX_TEXTURE_DLLIMPORT void init_opengl_texture_cubemap();
 
   // reuploads all textures in the t_glist so you don't have to bother :)
   // just use thie in the start function of the module and all should be ok unless you use
@@ -192,6 +207,9 @@ public:
   VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap_2d(vsx_bitmap* vbitmap,bool mipmaps = false, bool upside_down = true);
   VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
 
+  // assumes width is 6x height (maps in order: -x, z, x, -z, -y, y
+  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap_cube(void* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
+
 
   // load a tga file in the same thread as ours (why would anyone use tga when png's around? anyway..)
 //  void load_tga(vsx_string name, bool mipmaps = true);
@@ -201,6 +219,7 @@ public:
   VSX_TEXTURE_DLLIMPORT void load_png(vsx_string fname, bool mipmaps = true, vsxf* filesystem = 0x0);
   VSX_TEXTURE_DLLIMPORT void load_png_thread(vsx_string fname, bool mipmaps = true);
   VSX_TEXTURE_DLLIMPORT void load_jpeg(vsx_string fname, bool mipmaps = true);
+  VSX_TEXTURE_DLLIMPORT void load_png_cubemap(vsx_string fname, bool mipmaps = true, vsxf* filesystem = 0x0);
 
   // update the transform object with a new transformation
   void set_transform(vsx_transform_obj* new_transform_obj) {

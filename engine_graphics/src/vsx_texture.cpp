@@ -96,6 +96,13 @@ void vsx_texture::init_opengl_texture_2d()
   texture_info.ogl_type = GL_TEXTURE_2D;
 }
 
+void vsx_texture::init_opengl_texture_cubemap()
+{
+  GLuint tex_id;
+  glGenTextures(1, &tex_id);
+  texture_info.ogl_id = tex_id;
+  texture_info.ogl_type = GL_TEXTURE_CUBE_MAP_EXT;
+}
 
 bool vsx_texture::has_buffer_support()
 {
@@ -851,7 +858,8 @@ void vsx_texture::upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigne
         ++dy;
       }
       data = (GLfloat*)data2;
-    } else
+    }
+    else
     {
       unsigned char* data2 = new unsigned char[(size_x) * (size_y) * (bpp)];
       int dy = 0;
@@ -957,6 +965,212 @@ void vsx_texture::upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigne
   valid = true;
 }
 
+
+
+
+
+
+
+void vsx_texture::upload_ram_bitmap_cube(void* data, unsigned long size_x, unsigned long size_y, bool mipmaps, int bpp, int bpp2, bool upside_down)
+{
+  if ( size_x / 6 != size_y )
+  {
+    vsx_printf("vsx_texture::upload_ram_bitmap_cube Error: not cubemap, should be aspect 6:1");
+    return;
+  }
+
+  void* sides[6];
+
+  // prepare data
+  if (upside_down)
+  {
+    //printf("texture is upside down\n");
+    if (bpp == GL_RGBA32F_ARB)
+    {
+      GLfloat* data2 = new GLfloat[size_x * size_y * 4];
+      int dy = 0;
+      int sxbpp = size_x*4;
+      for (int y = size_y-1; y >= 0; --y) {
+        for (unsigned long x = 0; x < size_x*4; ++x) {
+          data2[dy*sxbpp + x] = ((GLfloat*)data)[y*sxbpp + x];
+        }
+        ++dy;
+      }
+      data = (GLfloat*)data2;
+
+
+      // split cubemap into 6 individual bitmaps
+
+      sides[0] = (void*)malloc( sizeof(GLfloat) * (size_y << 1) );
+      sides[1] = (void*)malloc( sizeof(GLfloat) * (size_y << 1) );
+      sides[2] = (void*)malloc( sizeof(GLfloat) * (size_y << 1) );
+      sides[3] = (void*)malloc( sizeof(GLfloat) * (size_y << 1) );
+      sides[4] = (void*)malloc( sizeof(GLfloat) * (size_y << 1) );
+      sides[5] = (void*)malloc( sizeof(GLfloat) * (size_y << 1) );
+
+      for (size_t side_offset = 0; side_offset < 6; side_offset++)
+      {
+        for (size_t y = 0; y < size_y; y++)
+        {
+          memcpy(
+            // destination
+            ((GLfloat*)sides[side_offset]) + y * size_y
+            ,
+
+            // souce
+            (GLfloat*)&((GLfloat*)data)[ size_x * y ] // row offset
+            +
+            size_y * side_offset,            // horiz offset
+
+            sizeof(GLfloat) * size_y // count
+          );
+        }
+      }
+
+    } else
+    {
+      unsigned char* data2 = new unsigned char[(size_x) * (size_y) * (bpp)];
+      int dy = 0;
+      int sxbpp = size_x*bpp;
+      for (int y = size_y-1; y >= 0; --y)
+      {
+        //printf("y: %d\n",y);
+        int dysxbpp = dy*sxbpp;
+        int ysxbpp = y * sxbpp;
+        for (size_t x = 0; x < size_x*bpp; ++x)
+        {
+          data2[dysxbpp + x] = ((unsigned char*)data)[ysxbpp + x];
+        }
+        ++dy;
+      }
+      data = (unsigned long*)data2;
+    }
+
+    // split cubemap into 6 individual bitmaps
+
+    sides[0] = (void*)malloc( sizeof(uint32_t) * (size_y << 1) );
+    sides[1] = (void*)malloc( sizeof(uint32_t) * (size_y << 1) );
+    sides[2] = (void*)malloc( sizeof(uint32_t) * (size_y << 1) );
+    sides[3] = (void*)malloc( sizeof(uint32_t) * (size_y << 1) );
+    sides[4] = (void*)malloc( sizeof(uint32_t) * (size_y << 1) );
+    sides[5] = (void*)malloc( sizeof(uint32_t) * (size_y << 1) );
+
+    for (size_t side_offset = 0; side_offset < 6; side_offset++)
+    {
+      for (size_t y = 0; y < size_y; y++)
+      {
+        memcpy(
+          // destination
+          ((uint32_t*)sides[side_offset]) + y * size_y
+          ,
+
+          // souce
+          (uint32_t*)&((uint32_t*)data)[ size_x * y ] // row offset
+          +
+          size_y * side_offset,            // horiz offset
+
+          sizeof(uint32_t) * size_y // count
+        );
+      }
+    }
+  }
+
+
+
+
+
+  GLboolean oldStatus = glIsEnabled(texture_info.ogl_type);
+
+  glEnable(texture_info.ogl_type);
+  glBindTexture(texture_info.ogl_type, texture_info.ogl_id);
+
+  if (mipmaps)
+  {
+    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(texture_info.ogl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+    float rMaxAniso;
+    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &rMaxAniso);
+    glTexParameterf( texture_info.ogl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
+
+  } else
+  {
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+  }
+
+
+  // no compression
+  if (bpp == GL_RGBA32F_ARB)
+  {
+    // TODO: upload!
+    glTexImage2D(texture_info.ogl_type, 0,bpp , size_x, size_y, 0, bpp2, GL_FLOAT, data);
+  } else
+  {
+    if (bpp == 3)
+    {
+      glTexImage2D(
+        texture_info.ogl_type,  // opengl type
+        0,  // mipmap level
+        GL_COMPRESSED_RGB_ARB, // storage type
+        size_x, // size x
+        size_y, // size y
+        0,      // border 0 or 1
+        bpp2,   // source data format
+        GL_UNSIGNED_BYTE, // source data type
+        data // pointer to data
+      );
+    }
+    else
+    {
+      glTexImage2D(
+        texture_info.ogl_type,  // opengl type
+        0,  // mipmap level
+        GL_COMPRESSED_RGBA_ARB, // storage type
+        size_x, // size x
+        size_y, // size y
+        0,      // border 0 or 1
+        bpp2,   // source data format
+        GL_UNSIGNED_BYTE, // source data type
+        data // pointer to data
+      );
+    }
+    // original:
+    //       glTexImage2D(texture_info.ogl_type, 0,bpp , size_x, size_y, 0, bpp2, GL_UNSIGNED_BYTE, data);
+  }
+
+  if (upside_down)
+  {
+    if (bpp == GL_RGBA32F_ARB)
+    {
+      delete[] (GLfloat*)data;
+    } else
+    {
+      delete[] (unsigned long*)data;
+    }
+  }
+
+  this->texture_info.size_x = size_x;
+  this->texture_info.size_y = size_y;
+
+  if(!oldStatus)
+  {
+    glDisable(texture_info.ogl_type);
+  }
+  valid = true;
+}
+
+
+
+
+
+
+
+
+
+
 void vsx_texture::load_png(vsx_string fname, bool mipmaps, vsxf* filesystem)
 {
   if (t_glist.find(fname) != t_glist.end()) {
@@ -987,7 +1201,61 @@ void vsx_texture::load_png(vsx_string fname, bool mipmaps, vsxf* filesystem)
       upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,pp->Components,GL_RGB);
       if (pp->Components == 4)
       upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,pp->Components,GL_RGBA);
+
       free(pp->Data);
+
+      if (pp->Palette)
+      {
+        free( pp->Palette );
+      }
+
+      texture_info.type = 1; // png
+
+      t_glist[fname] = texture_info;
+    }
+    delete pp;
+    if (i_filesystem) delete i_filesystem;
+  }
+}
+
+void vsx_texture::load_png_cubemap(vsx_string fname, bool mipmaps, vsxf* filesystem)
+{
+  if (t_glist.find(fname) != t_glist.end()) {
+    //printf("already found png: %s\n",fname.c_str());
+    locked = true;
+    texture_info = t_glist[fname];
+    return;
+  } else
+  {
+    locked = false;
+    vsxf* i_filesystem = 0x0;
+    //printf("processing png: %s\n",fname.c_str());
+    if (filesystem == 0x0)
+    {
+      i_filesystem = new vsxf;
+      filesystem = i_filesystem;
+    }
+    pngRawInfo* pp = new pngRawInfo;
+    if (pngLoadRaw(fname.c_str(), pp, filesystem))
+    {
+      this->name = fname;
+      init_opengl_texture_cubemap();
+      if (pp->Components == 1)
+      upload_ram_bitmap_cube((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,3,GL_RGB);
+      if (pp->Components == 2)
+      upload_ram_bitmap_cube((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,4,GL_RGBA);
+      if (pp->Components == 3)
+      upload_ram_bitmap_cube((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,pp->Components,GL_RGB);
+      if (pp->Components == 4)
+      upload_ram_bitmap_cube((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,pp->Components,GL_RGBA);
+
+      free(pp->Data);
+
+      if (pp->Palette)
+      {
+        free( pp->Palette );
+      }
+
       texture_info.type = 1; // png
 
       t_glist[fname] = texture_info;
