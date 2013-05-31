@@ -30,7 +30,7 @@ distribution.
 // Note tha "PutString" hardcodes the same list. This
 // is less flexible than it appears. Changing the entries
 // or order will break putstring.	
-TiXmlBase::Entity TiXmlBase::entity[ NUM_ENTITY ] = 
+vsxTiXmlBase::Entity vsxTiXmlBase::entity[ NUM_ENTITY ] = 
 {
 	{ "&amp;",  5, '&' },
 	{ "&lt;",   4, '<' },
@@ -40,19 +40,19 @@ TiXmlBase::Entity TiXmlBase::entity[ NUM_ENTITY ] =
 };
 
 
-class TiXmlParsingData
+class vsxTiXmlParsingData
 {
-	friend class TiXmlDocument;
+	friend class vsxTiXmlDocument;
   public:
-	//TiXmlParsingData( const char* now, const TiXmlParsingData* prevData );
+	//vsxTiXmlParsingData( const char* now, const vsxTiXmlParsingData* prevData );
 	void Stamp( const char* now );
 
-	const TiXmlCursor& Cursor()	{ return cursor; }
+	const vsxTiXmlCursor& Cursor()	{ return cursor; }
 	//void Update( const char* now );
 
   private:
 	// Only used by the document!
-	TiXmlParsingData( const char* start, int _tabsize, int row, int col )
+	vsxTiXmlParsingData( const char* start, int _tabsize, int row, int col )
 	{
 		assert( start );
 		stamp = start;
@@ -61,13 +61,13 @@ class TiXmlParsingData
 		cursor.col = col;
 	}
 
-	TiXmlCursor		cursor;
+	vsxTiXmlCursor		cursor;
 	const char*		stamp;
 	int				tabsize;
 };
 
 
-void TiXmlParsingData::Stamp( const char* now )
+void vsxTiXmlParsingData::Stamp( const char* now )
 {
 	assert( now );
 
@@ -147,7 +147,7 @@ void TiXmlParsingData::Stamp( const char* now )
 }
 
 
-const char* TiXmlBase::SkipWhiteSpace( const char* p )
+const char* vsxTiXmlBase::SkipWhiteSpace( const char* p )
 {
 	if ( !p || !*p )
 	{
@@ -164,8 +164,8 @@ const char* TiXmlBase::SkipWhiteSpace( const char* p )
 	return p;
 }
 
-#ifdef TIXML_USE_STL
-/*static*/ bool TiXmlBase::StreamWhiteSpace( TIXML_ISTREAM * in, TIXML_STRING * tag )
+#ifdef vsxTiXml_USE_STL
+/*static*/ bool vsxTiXmlBase::StreamWhiteSpace( vsxTiXml_ISTREAM * in, vsxTiXml_STRING * tag )
 {
 	for( ;; )
 	{
@@ -178,7 +178,7 @@ const char* TiXmlBase::SkipWhiteSpace( const char* p )
 	}
 }
 
-/*static*/ bool TiXmlBase::StreamTo( TIXML_ISTREAM * in, int character, TIXML_STRING * tag )
+/*static*/ bool vsxTiXmlBase::StreamTo( vsxTiXml_ISTREAM * in, int character, vsxTiXml_STRING * tag )
 {
 	while ( in->good() )
 	{
@@ -193,7 +193,7 @@ const char* TiXmlBase::SkipWhiteSpace( const char* p )
 }
 #endif
 
-const char* TiXmlBase::ReadName( const char* p, TIXML_STRING * name )
+const char* vsxTiXmlBase::ReadName( const char* p, vsxTiXml_STRING * name )
 {
 	*name = "";
 	assert( p );
@@ -220,10 +220,10 @@ const char* TiXmlBase::ReadName( const char* p, TIXML_STRING * name )
 	return 0;
 }
 
-const char* TiXmlBase::GetEntity( const char* p, char* value )
+const char* vsxTiXmlBase::GetEntity( const char* p, char* value )
 {
 	// Presume an entity, and pull it out.
-    TIXML_STRING ent;
+    vsxTiXml_STRING ent;
 	int i;
 
 	// Handle the &#x entities.
@@ -273,7 +273,7 @@ const char* TiXmlBase::GetEntity( const char* p, char* value )
 }
 
 
-bool TiXmlBase::StringEqual( const char* p,
+bool vsxTiXmlBase::StringEqual( const char* p,
 							 const char* tag,
 							 bool ignoreCase )
 {
@@ -318,8 +318,8 @@ bool TiXmlBase::StringEqual( const char* p,
 	return false;
 }
 
-const char* TiXmlBase::ReadText(	const char* p, 
-									TIXML_STRING * text, 
+const char* vsxTiXmlBase::ReadText(	const char* p, 
+									vsxTiXml_STRING * text, 
 									bool trimWhiteSpace, 
 									const char* endTag, 
 									bool caseInsensitive )
@@ -375,9 +375,9 @@ const char* TiXmlBase::ReadText(	const char* p,
 	return p + strlen( endTag );
 }
 
-#ifdef TIXML_USE_STL
+#ifdef vsxTiXml_USE_STL
 
-void TiXmlDocument::StreamIn( TIXML_ISTREAM * in, TIXML_STRING * tag )
+void vsxTiXmlDocument::StreamIn( vsxTiXml_ISTREAM * in, vsxTiXml_STRING * tag )
 {
 	// The basic issue with a document is that we don't know what we're
 	// streaming. Read something presumed to be a tag (and hope), then
@@ -388,7 +388,7 @@ void TiXmlDocument::StreamIn( TIXML_ISTREAM * in, TIXML_STRING * tag )
 
 	if ( !StreamTo( in, '<', tag ) ) 
 	{
-		SetError( TIXML_ERROR_PARSING_EMPTY, 0, 0 );
+		SetError( vsxTiXml_ERROR_PARSING_EMPTY, 0, 0 );
 		return;
 	}
 
@@ -406,7 +406,7 @@ void TiXmlDocument::StreamIn( TIXML_ISTREAM * in, TIXML_STRING * tag )
 			// We now have something we presume to be a node of 
 			// some sort. Identify it, and call the node to
 			// continue streaming.
-			TiXmlNode* node = Identify( tag->c_str() + tagIndex );
+			vsxTiXmlNode* node = Identify( tag->c_str() + tagIndex );
 
 			if ( node )
 			{
@@ -424,18 +424,18 @@ void TiXmlDocument::StreamIn( TIXML_ISTREAM * in, TIXML_STRING * tag )
 			}
 			else
 			{
-				SetError( TIXML_ERROR, 0, 0 );
+				SetError( vsxTiXml_ERROR, 0, 0 );
 				return;
 			}
 		}
 	}
 	// We should have returned sooner.
-	SetError( TIXML_ERROR, 0, 0 );
+	SetError( vsxTiXml_ERROR, 0, 0 );
 }
 
 #endif
 
-const char* TiXmlDocument::Parse( const char* p, TiXmlParsingData* prevData )
+const char* vsxTiXmlDocument::Parse( const char* p, vsxTiXmlParsingData* prevData )
 {
 	ClearError();
 
@@ -444,7 +444,7 @@ const char* TiXmlDocument::Parse( const char* p, TiXmlParsingData* prevData )
 	// here is skipping white space.
 	if ( !p || !*p )
 	{
-		SetError( TIXML_ERROR_DOCUMENT_EMPTY, 0, 0 );
+		SetError( vsxTiXml_ERROR_DOCUMENT_EMPTY, 0, 0 );
 		return 0;
 	}
 
@@ -462,19 +462,19 @@ const char* TiXmlDocument::Parse( const char* p, TiXmlParsingData* prevData )
 		location.row = 0;
 		location.col = 0;
 	}
-	TiXmlParsingData data( p, TabSize(), location.row, location.col );
+	vsxTiXmlParsingData data( p, TabSize(), location.row, location.col );
 	location = data.Cursor();
 
     p = SkipWhiteSpace( p );
 	if ( !p )
 	{
-		SetError( TIXML_ERROR_DOCUMENT_EMPTY, 0, 0 );
+		SetError( vsxTiXml_ERROR_DOCUMENT_EMPTY, 0, 0 );
 		return 0;
 	}
 
 	while ( p && *p )
 	{
-		TiXmlNode* node = Identify( p );
+		vsxTiXmlNode* node = Identify( p );
 		if ( node )
 		{
 			p = node->Parse( p, &data );
@@ -491,13 +491,13 @@ const char* TiXmlDocument::Parse( const char* p, TiXmlParsingData* prevData )
 	return p;
 }
 
-void TiXmlDocument::SetError( int err, const char* pError, TiXmlParsingData* data )
+void vsxTiXmlDocument::SetError( int err, const char* pError, vsxTiXmlParsingData* data )
 {	
 	// The first error in a chain is more accurate - don't set again!
 	if ( error )
 		return;
 
-	assert( err > 0 && err < TIXML_ERROR_STRING_COUNT );
+	assert( err > 0 && err < vsxTiXml_ERROR_STRING_COUNT );
 	error   = true;
 	errorId = err;
 	errorDesc = errorString[ errorId ];
@@ -505,16 +505,16 @@ void TiXmlDocument::SetError( int err, const char* pError, TiXmlParsingData* dat
 	errorLocation.Clear();
 	if ( pError && data )
 	{
-		//TiXmlParsingData data( pError, prevData );
+		//vsxTiXmlParsingData data( pError, prevData );
 		data->Stamp( pError );
 		errorLocation = data->Cursor();
 	}
 }
 
 
-TiXmlNode* TiXmlNode::Identify( const char* p )
+vsxTiXmlNode* vsxTiXmlNode::Identify( const char* p )
 {
-	TiXmlNode* returnNode = 0;
+	vsxTiXmlNode* returnNode = 0;
 
 	p = SkipWhiteSpace( p );
 	if( !p || !*p || *p != '<' )
@@ -522,7 +522,7 @@ TiXmlNode* TiXmlNode::Identify( const char* p )
 		return 0;
 	}
 
-	TiXmlDocument* doc = GetDocument();
+	vsxTiXmlDocument* doc = GetDocument();
 	p = SkipWhiteSpace( p );
 
 	if ( !p || !*p )
@@ -543,31 +543,31 @@ TiXmlNode* TiXmlNode::Identify( const char* p )
 	if ( StringEqual( p, xmlHeader, true ) )
 	{
 		#ifdef DEBUG_PARSER
-			TIXML_LOG( "XML parsing Declaration\n" );
+			vsxTiXml_LOG( "XML parsing Declaration\n" );
 		#endif
-		returnNode = new TiXmlDeclaration();
+		returnNode = new vsxTiXmlDeclaration();
 	}
 	else if (    isalpha( *(p+1) )
 			  || *(p+1) == '_' )
 	{
 		#ifdef DEBUG_PARSER
-			TIXML_LOG( "XML parsing Element\n" );
+			vsxTiXml_LOG( "XML parsing Element\n" );
 		#endif
-		returnNode = new TiXmlElement( "" );
+		returnNode = new vsxTiXmlElement( "" );
 	}
 	else if ( StringEqual( p, commentHeader, false ) )
 	{
 		#ifdef DEBUG_PARSER
-			TIXML_LOG( "XML parsing Comment\n" );
+			vsxTiXml_LOG( "XML parsing Comment\n" );
 		#endif
-		returnNode = new TiXmlComment();
+		returnNode = new vsxTiXmlComment();
 	}
 	else
 	{
 		#ifdef DEBUG_PARSER
-			TIXML_LOG( "XML parsing Unknown\n" );
+			vsxTiXml_LOG( "XML parsing Unknown\n" );
 		#endif
-		returnNode = new TiXmlUnknown();
+		returnNode = new vsxTiXmlUnknown();
 	}
 
 	if ( returnNode )
@@ -578,14 +578,14 @@ TiXmlNode* TiXmlNode::Identify( const char* p )
 	else
 	{
 		if ( doc )
-			doc->SetError( TIXML_ERROR_OUT_OF_MEMORY, 0, 0 );
+			doc->SetError( vsxTiXml_ERROR_OUT_OF_MEMORY, 0, 0 );
 	}
 	return returnNode;
 }
 
-#ifdef TIXML_USE_STL
+#ifdef vsxTiXml_USE_STL
 
-void TiXmlElement::StreamIn (TIXML_ISTREAM * in, TIXML_STRING * tag)
+void vsxTiXmlElement::StreamIn (vsxTiXml_ISTREAM * in, vsxTiXml_STRING * tag)
 {
 	// We're called with some amount of pre-parsing. That is, some of "this"
 	// element is in "tag". Go ahead and stream to the closing ">"
@@ -623,7 +623,7 @@ void TiXmlElement::StreamIn (TIXML_ISTREAM * in, TIXML_STRING * tag)
 			if ( in->good() && in->peek() != '<' ) 
 			{
 				// Yep, text.
-				TiXmlText text( "" );
+				vsxTiXmlText text( "" );
 				text.StreamIn( in, tag );
 
 				// What follows text is a closing tag or another node.
@@ -675,7 +675,7 @@ void TiXmlElement::StreamIn (TIXML_ISTREAM * in, TIXML_STRING * tag)
 			{
 				// If not a closing tag, id it, and stream.
 				const char* tagloc = tag->c_str() + tagIndex;
-				TiXmlNode* node = Identify( tagloc );
+				vsxTiXmlNode* node = Identify( tagloc );
 				if ( !node )
 					return;
 				node->StreamIn( in, tag );
@@ -689,18 +689,18 @@ void TiXmlElement::StreamIn (TIXML_ISTREAM * in, TIXML_STRING * tag)
 }
 #endif
 
-const char* TiXmlElement::Parse( const char* p, TiXmlParsingData* data )
+const char* vsxTiXmlElement::Parse( const char* p, vsxTiXmlParsingData* data )
 {
 	p = SkipWhiteSpace( p );
-	TiXmlDocument* document = GetDocument();
+	vsxTiXmlDocument* document = GetDocument();
 
 	if ( !p || !*p )
 	{
-		if ( document ) document->SetError( TIXML_ERROR_PARSING_ELEMENT, 0, 0 );
+		if ( document ) document->SetError( vsxTiXml_ERROR_PARSING_ELEMENT, 0, 0 );
 		return 0;
 	}
 
-//	TiXmlParsingData data( p, prevData );
+//	vsxTiXmlParsingData data( p, prevData );
 	if ( data )
 	{
 		data->Stamp( p );
@@ -709,7 +709,7 @@ const char* TiXmlElement::Parse( const char* p, TiXmlParsingData* data )
 
 	if ( *p != '<' )
 	{
-		if ( document ) document->SetError( TIXML_ERROR_PARSING_ELEMENT, p, data );
+		if ( document ) document->SetError( vsxTiXml_ERROR_PARSING_ELEMENT, p, data );
 		return 0;
 	}
 
@@ -721,11 +721,11 @@ const char* TiXmlElement::Parse( const char* p, TiXmlParsingData* data )
     p = ReadName( p, &value );
 	if ( !p || !*p )
 	{
-		if ( document )	document->SetError( TIXML_ERROR_FAILED_TO_READ_ELEMENT_NAME, pErr, data );
+		if ( document )	document->SetError( vsxTiXml_ERROR_FAILED_TO_READ_ELEMENT_NAME, pErr, data );
 		return 0;
 	}
 
-    TIXML_STRING endTag ("</");
+    vsxTiXml_STRING endTag ("</");
 	endTag += value;
 	endTag += ">";
 
@@ -737,7 +737,7 @@ const char* TiXmlElement::Parse( const char* p, TiXmlParsingData* data )
 		p = SkipWhiteSpace( p );
 		if ( !p || !*p )
 		{
-			if ( document ) document->SetError( TIXML_ERROR_READING_ATTRIBUTES, pErr, data );
+			if ( document ) document->SetError( vsxTiXml_ERROR_READING_ATTRIBUTES, pErr, data );
 			return 0;
 		}
 		if ( *p == '/' )
@@ -746,7 +746,7 @@ const char* TiXmlElement::Parse( const char* p, TiXmlParsingData* data )
 			// Empty tag.
 			if ( *p  != '>' )
 			{
-				if ( document ) document->SetError( TIXML_ERROR_PARSING_EMPTY, p, data );		
+				if ( document ) document->SetError( vsxTiXml_ERROR_PARSING_EMPTY, p, data );		
 				return 0;
 			}
 			return (p+1);
@@ -769,17 +769,17 @@ const char* TiXmlElement::Parse( const char* p, TiXmlParsingData* data )
 			}
 			else
 			{
-				if ( document ) document->SetError( TIXML_ERROR_READING_END_TAG, p, data );
+				if ( document ) document->SetError( vsxTiXml_ERROR_READING_END_TAG, p, data );
 				return 0;
 			}
 		}
 		else
 		{
 			// Try to read an attribute:
-			TiXmlAttribute* attrib = new TiXmlAttribute();
+			vsxTiXmlAttribute* attrib = new vsxTiXmlAttribute();
 			if ( !attrib )
 			{
-				if ( document ) document->SetError( TIXML_ERROR_OUT_OF_MEMORY, pErr, data );
+				if ( document ) document->SetError( vsxTiXml_ERROR_OUT_OF_MEMORY, pErr, data );
 				return 0;
 			}
 
@@ -789,13 +789,13 @@ const char* TiXmlElement::Parse( const char* p, TiXmlParsingData* data )
 
 			if ( !p || !*p )
 			{
-				if ( document ) document->SetError( TIXML_ERROR_PARSING_ELEMENT, pErr, data );
+				if ( document ) document->SetError( vsxTiXml_ERROR_PARSING_ELEMENT, pErr, data );
 				delete attrib;
 				return 0;
 			}
 
 			// Handle the strange case of double attributes:
-			TiXmlAttribute* node = attributeSet.Find( attrib->Name() );
+			vsxTiXmlAttribute* node = attributeSet.Find( attrib->Name() );
 			if ( node )
 			{
 				node->SetValue( attrib->Value() );
@@ -810,9 +810,9 @@ const char* TiXmlElement::Parse( const char* p, TiXmlParsingData* data )
 }
 
 
-const char* TiXmlElement::ReadValue( const char* p, TiXmlParsingData* data )
+const char* vsxTiXmlElement::ReadValue( const char* p, vsxTiXmlParsingData* data )
 {
-	TiXmlDocument* document = GetDocument();
+	vsxTiXmlDocument* document = GetDocument();
 
 	// Read in text and elements in any order.
 	p = SkipWhiteSpace( p );
@@ -821,11 +821,11 @@ const char* TiXmlElement::ReadValue( const char* p, TiXmlParsingData* data )
 		if ( *p != '<' )
 		{
 			// Take what we have, make a text element.
-			TiXmlText* textNode = new TiXmlText( "" );
+			vsxTiXmlText* textNode = new vsxTiXmlText( "" );
 
 			if ( !textNode )
 			{
-				if ( document ) document->SetError( TIXML_ERROR_OUT_OF_MEMORY, 0, 0 );
+				if ( document ) document->SetError( vsxTiXml_ERROR_OUT_OF_MEMORY, 0, 0 );
 				    return 0;
 			}
 
@@ -846,7 +846,7 @@ const char* TiXmlElement::ReadValue( const char* p, TiXmlParsingData* data )
 			}
 			else
 			{
-				TiXmlNode* node = Identify( p );
+				vsxTiXmlNode* node = Identify( p );
 				if ( node )
 				{
 					p = node->Parse( p, data );
@@ -863,14 +863,14 @@ const char* TiXmlElement::ReadValue( const char* p, TiXmlParsingData* data )
 
 	if ( !p )
 	{
-		if ( document ) document->SetError( TIXML_ERROR_READING_ELEMENT_VALUE, 0, 0 );
+		if ( document ) document->SetError( vsxTiXml_ERROR_READING_ELEMENT_VALUE, 0, 0 );
 	}	
 	return p;
 }
 
 
-#ifdef TIXML_USE_STL
-void TiXmlUnknown::StreamIn( TIXML_ISTREAM * in, TIXML_STRING * tag )
+#ifdef vsxTiXml_USE_STL
+void vsxTiXmlUnknown::StreamIn( vsxTiXml_ISTREAM * in, vsxTiXml_STRING * tag )
 {
 	while ( in->good() )
 	{
@@ -887,12 +887,12 @@ void TiXmlUnknown::StreamIn( TIXML_ISTREAM * in, TIXML_STRING * tag )
 #endif
 
 
-const char* TiXmlUnknown::Parse( const char* p, TiXmlParsingData* data )
+const char* vsxTiXmlUnknown::Parse( const char* p, vsxTiXmlParsingData* data )
 {
-	TiXmlDocument* document = GetDocument();
+	vsxTiXmlDocument* document = GetDocument();
 	p = SkipWhiteSpace( p );
 
-//	TiXmlParsingData data( p, prevData );
+//	vsxTiXmlParsingData data( p, prevData );
 	if ( data )
 	{
 		data->Stamp( p );
@@ -900,7 +900,7 @@ const char* TiXmlUnknown::Parse( const char* p, TiXmlParsingData* data )
 	}
 	if ( !p || !*p || *p != '<' )
 	{
-		if ( document ) document->SetError( TIXML_ERROR_PARSING_UNKNOWN, p, data );
+		if ( document ) document->SetError( vsxTiXml_ERROR_PARSING_UNKNOWN, p, data );
 		return 0;
 	}
 	++p;
@@ -914,15 +914,15 @@ const char* TiXmlUnknown::Parse( const char* p, TiXmlParsingData* data )
 
 	if ( !p )
 	{
-		if ( document )	document->SetError( TIXML_ERROR_PARSING_UNKNOWN, 0, 0 );
+		if ( document )	document->SetError( vsxTiXml_ERROR_PARSING_UNKNOWN, 0, 0 );
 	}
 	if ( *p == '>' )
 		return p+1;
 	return p;
 }
 
-#ifdef TIXML_USE_STL
-void TiXmlComment::StreamIn( TIXML_ISTREAM * in, TIXML_STRING * tag )
+#ifdef vsxTiXml_USE_STL
+void vsxTiXmlComment::StreamIn( vsxTiXml_ISTREAM * in, vsxTiXml_STRING * tag )
 {
 	while ( in->good() )
 	{
@@ -941,14 +941,14 @@ void TiXmlComment::StreamIn( TIXML_ISTREAM * in, TIXML_STRING * tag )
 #endif
 
 
-const char* TiXmlComment::Parse( const char* p, TiXmlParsingData* data )
+const char* vsxTiXmlComment::Parse( const char* p, vsxTiXmlParsingData* data )
 {
-	TiXmlDocument* document = GetDocument();
+	vsxTiXmlDocument* document = GetDocument();
 	value = "";
 
 	p = SkipWhiteSpace( p );
 
-//	TiXmlParsingData data( p, prevData );
+//	vsxTiXmlParsingData data( p, prevData );
 	if ( data )
 	{
 		data->Stamp( p );
@@ -959,7 +959,7 @@ const char* TiXmlComment::Parse( const char* p, TiXmlParsingData* data )
 
 	if ( !StringEqual( p, startTag, false ) )
 	{
-		document->SetError( TIXML_ERROR_PARSING_COMMENT, p, data );
+		document->SetError( vsxTiXml_ERROR_PARSING_COMMENT, p, data );
 		return 0;
 	}
 	p += strlen( startTag );
@@ -968,7 +968,7 @@ const char* TiXmlComment::Parse( const char* p, TiXmlParsingData* data )
 }
 
 
-const char* TiXmlAttribute::Parse( const char* p, TiXmlParsingData* data )
+const char* vsxTiXmlAttribute::Parse( const char* p, vsxTiXmlParsingData* data )
 {
 	p = SkipWhiteSpace( p );
 	if ( !p || !*p ) return 0;
@@ -977,7 +977,7 @@ const char* TiXmlAttribute::Parse( const char* p, TiXmlParsingData* data )
 //	if ( document )
 //		tabsize = document->TabSize();
 
-//	TiXmlParsingData data( p, prevData );
+//	vsxTiXmlParsingData data( p, prevData );
 	if ( data )
 	{
 		data->Stamp( p );
@@ -988,13 +988,13 @@ const char* TiXmlAttribute::Parse( const char* p, TiXmlParsingData* data )
 	p = ReadName( p, &name );
 	if ( !p || !*p )
 	{
-		if ( document ) document->SetError( TIXML_ERROR_READING_ATTRIBUTES, pErr, data );
+		if ( document ) document->SetError( vsxTiXml_ERROR_READING_ATTRIBUTES, pErr, data );
 		return 0;
 	}
 	p = SkipWhiteSpace( p );
 	if ( !p || !*p || *p != '=' )
 	{
-		if ( document ) document->SetError( TIXML_ERROR_READING_ATTRIBUTES, p, data );
+		if ( document ) document->SetError( vsxTiXml_ERROR_READING_ATTRIBUTES, p, data );
 		return 0;
 	}
 
@@ -1002,7 +1002,7 @@ const char* TiXmlAttribute::Parse( const char* p, TiXmlParsingData* data )
 	p = SkipWhiteSpace( p );
 	if ( !p || !*p )
 	{
-		if ( document ) document->SetError( TIXML_ERROR_READING_ATTRIBUTES, p, data );
+		if ( document ) document->SetError( vsxTiXml_ERROR_READING_ATTRIBUTES, p, data );
 		return 0;
 	}
 	
@@ -1037,8 +1037,8 @@ const char* TiXmlAttribute::Parse( const char* p, TiXmlParsingData* data )
 	return p;
 }
 
-#ifdef TIXML_USE_STL
-void TiXmlText::StreamIn( TIXML_ISTREAM * in, TIXML_STRING * tag )
+#ifdef vsxTiXml_USE_STL
+void vsxTiXmlText::StreamIn( vsxTiXml_ISTREAM * in, vsxTiXml_STRING * tag )
 {
 	while ( in->good() )
 	{
@@ -1052,10 +1052,10 @@ void TiXmlText::StreamIn( TIXML_ISTREAM * in, TIXML_STRING * tag )
 }
 #endif
 
-const char* TiXmlText::Parse( const char* p, TiXmlParsingData* data )
+const char* vsxTiXmlText::Parse( const char* p, vsxTiXmlParsingData* data )
 {
 	value = "";
-//	TiXmlParsingData data( p, prevData );
+//	vsxTiXmlParsingData data( p, prevData );
 	if ( data )
 	{
 		data->Stamp( p );
@@ -1070,8 +1070,8 @@ const char* TiXmlText::Parse( const char* p, TiXmlParsingData* data )
 	return 0;
 }
 
-#ifdef TIXML_USE_STL
-void TiXmlDeclaration::StreamIn( TIXML_ISTREAM * in, TIXML_STRING * tag )
+#ifdef vsxTiXml_USE_STL
+void vsxTiXmlDeclaration::StreamIn( vsxTiXml_ISTREAM * in, vsxTiXml_STRING * tag )
 {
 	while ( in->good() )
 	{
@@ -1087,18 +1087,18 @@ void TiXmlDeclaration::StreamIn( TIXML_ISTREAM * in, TIXML_STRING * tag )
 }
 #endif
 
-const char* TiXmlDeclaration::Parse( const char* p, TiXmlParsingData* data )
+const char* vsxTiXmlDeclaration::Parse( const char* p, vsxTiXmlParsingData* data )
 {
 	p = SkipWhiteSpace( p );
 	// Find the beginning, find the end, and look for
 	// the stuff in-between.
-	TiXmlDocument* document = GetDocument();
+	vsxTiXmlDocument* document = GetDocument();
 	if ( !p || !*p || !StringEqual( p, "<?xml", true ) )
 	{
-		if ( document ) document->SetError( TIXML_ERROR_PARSING_DECLARATION, 0, 0 );
+		if ( document ) document->SetError( vsxTiXml_ERROR_PARSING_DECLARATION, 0, 0 );
 		return 0;
 	}
-//	TiXmlParsingData data( p, prevData );
+//	vsxTiXmlParsingData data( p, prevData );
 	if ( data )
 	{
 		data->Stamp( p );
@@ -1121,19 +1121,19 @@ const char* TiXmlDeclaration::Parse( const char* p, TiXmlParsingData* data )
 		p = SkipWhiteSpace( p );
 		if ( StringEqual( p, "version", true ) )
 		{
-			TiXmlAttribute attrib;
+			vsxTiXmlAttribute attrib;
 			p = attrib.Parse( p, data );		
 			version = attrib.Value();
 		}
 		else if ( StringEqual( p, "encoding", true ) )
 		{
-			TiXmlAttribute attrib;
+			vsxTiXmlAttribute attrib;
 			p = attrib.Parse( p, data );		
 			encoding = attrib.Value();
 		}
 		else if ( StringEqual( p, "standalone", true ) )
 		{
-			TiXmlAttribute attrib;
+			vsxTiXmlAttribute attrib;
 			p = attrib.Parse( p, data );		
 			standalone = attrib.Value();
 		}
@@ -1147,7 +1147,7 @@ const char* TiXmlDeclaration::Parse( const char* p, TiXmlParsingData* data )
 	return 0;
 }
 
-bool TiXmlText::Blank() const
+bool vsxTiXmlText::Blank() const
 {
 	for ( unsigned i=0; i<value.length(); i++ )
 		if ( !isspace( value[i] ) )

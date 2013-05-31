@@ -27,6 +27,9 @@
 #include "vsx_math_3d.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
+#ifdef VSXU_TM
+#include "vsx_tm.h"
+#endif
 
 int echo_log(const char* message, int a) {
   FILE* fp = fopen("/tmp/vsxu_libvisual.log", "a");
@@ -35,7 +38,8 @@ int echo_log(const char* message, int a) {
   return 5;
 }
 
-class vsx_module_particle_gen_simple : public vsx_module {
+class vsx_module_particle_gen_simple : public vsx_module
+{
   int i;
   float time;
   bool first;
@@ -46,6 +50,9 @@ class vsx_module_particle_gen_simple : public vsx_module {
   vsx_quaternion q1;
   vsx_quaternion* q_out;
   vsx_rand rand;
+
+  float random_numbers[8192];
+  size_t random_number_index;
 
 
   vsx_particlesystem particles;
@@ -98,7 +105,8 @@ but you usually want a lot more.";
       speed_type:enum?random_balanced|directional,\
       size:complex{particle_size_base:float,particle_size_random_weight:float},\
       time_source:enum?sequencer|real,\
-      particle_rotation_dir:quaternion\
+      particle_rotation_dir:quaternion,\
+      enable_rotation:enum?true|false\
     },\
     appearance:complex{\
       color:float4?default_controller=controller_col,\
@@ -164,30 +172,52 @@ but you usually want a lot more.";
     particles.particles = new vsx_array<vsx_particle>;
     //result_particlesystem->set_p(particles);
     first = true;
+
+    for (size_t i = 0; i < 8192; i++)
+    {
+      random_numbers[i] = rand.frand();
+    }
+    random_number_index = 0;
   }
 
-  void run() {
-    float ddtime;
-    if (time_source->get()) {
-      ddtime = engine->real_dtime;
-    } else ddtime = engine->dtime;
+  void run()
+  {
+    #ifdef VSXU_TM
+    ((vsx_tm*)engine->tm)->e( "particle_bse_run" );
+    #endif
 
-    if (first || (ddtime < 0)) {
-      for (i = 0; i < particles_count->get(); ++i) {
+    float ddtime;
+    if (time_source->get())
+    {
+      ddtime = engine->real_dtime;
+    }
+    else
+    {
+      ddtime = engine->dtime;
+    }
+
+    if (first || (ddtime < 0))
+    {
+      for (i = 0; i < particles_count->get(); ++i)
+      {
         (*particles.particles)[i].color = vsx_color__(1,1,1,1);
         (*particles.particles)[i].orig_size = (*particles.particles)[i].size = 0;
         (*particles.particles)[i].pos.x = 0;
         (*particles.particles)[i].pos.y = 0;
         (*particles.particles)[i].pos.z = 0;
         (*particles.particles)[i].creation_pos = (*particles.particles)[i].pos;
-        (*particles.particles)[i].speed.x = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
-        (*particles.particles)[i].speed.y = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
-        (*particles.particles)[i].speed.z = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
-        (*particles.particles)[i].time = 3;//((float)(rand()%1000)/1000.0)*2;
-        (*particles.particles)[i].lifetime = 2;//((float)(rand()%1000)/1000.0)*2;
+        (*particles.particles)[i].speed.x = 0;
+        (*particles.particles)[i].speed.y = 0;
+        (*particles.particles)[i].speed.z = 0;
+        (*particles.particles)[i].time = 3;
+        (*particles.particles)[i].lifetime = 2;
         (*particles.particles)[i].rotation_dir = vsx_quaternion(0,0,0,0);
       }
       first = false;
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->l();
+      #endif
+
       return;
     }
 
@@ -204,6 +234,11 @@ but you usually want a lot more.";
     spd_x = speed_x->get();
     spd_y = speed_y->get();
     spd_z = speed_z->get();
+
+    float half_spd_x = spd_x * 0.5f;
+    float half_spd_y = spd_y * 0.5f;
+    float half_spd_z = spd_z * 0.5f;
+    float half_lifetime_random_weight = lifetime_random_weight*0.5f;
 
     // get positions from the user
     px = spray_pos->get(0);
@@ -228,21 +263,33 @@ but you usually want a lot more.";
     else
     p_to_go = (long)round(particles_per_second->get()*ddtime);
 
+    vsx_quaternion c_rotation_dir;
+    c_rotation_dir.x = particle_rotation_dir->get(0);
+    c_rotation_dir.y = particle_rotation_dir->get(1);
+    c_rotation_dir.z = particle_rotation_dir->get(2);
+    c_rotation_dir.w = particle_rotation_dir->get(3);
+    c_rotation_dir.normalize();
+
+    float c_lifetime = lifetime_base - half_lifetime_random_weight;
+
     // go through all particles
-    for (i = 0; i < nump; ++i) {
+    for (i = 0; i < nump; ++i)
+    {
       // add the delta-time to the time of the particle
-      (*particles.particles)[i].time+=ddtime;
+      (*particles.particles)[i].time += ddtime;
       // if the time got over the maximum lifetime of the particle, re-initialize it
-      if (p_to_go > 1)
-      if ((*particles.particles)[i].time > (*particles.particles)[i].lifetime)
+      if (
+          p_to_go > 1
+          &&
+          (*particles.particles)[i].time > (*particles.particles)[i].lifetime)
       {
         (*particles.particles)[i].size = (*particles.particles)[i].orig_size = size_base+rand.frand()*size_random_weight-size_random_weight*0.5f;
         (*particles.particles)[i].color = vsx_color__(rr,gg,bb,aa);
         switch (speed_type->get()) {
           case 0:
-            (*particles.particles)[i].speed.x = spd_x*rand.frand()-spd_x*0.5f;
-            (*particles.particles)[i].speed.y = spd_y*rand.frand()-spd_y*0.5f;
-            (*particles.particles)[i].speed.z = spd_z*rand.frand()-spd_z*0.5f;
+            (*particles.particles)[i].speed.x = spd_x * rand.frand() - half_spd_x;
+            (*particles.particles)[i].speed.y = spd_y * rand.frand() - half_spd_y;
+            (*particles.particles)[i].speed.z = spd_z * rand.frand() - half_spd_z;
           break;
           case 1:
             (*particles.particles)[i].speed.x = spd_x;
@@ -257,30 +304,30 @@ but you usually want a lot more.";
         (*particles.particles)[i].rotation.w = rand.frand()*2.0f-1.0f;
         (*particles.particles)[i].rotation.normalize();
 
-        (*particles.particles)[i].rotation_dir.x = particle_rotation_dir->get(0);
-        (*particles.particles)[i].rotation_dir.y = particle_rotation_dir->get(1);
-        (*particles.particles)[i].rotation_dir.z = particle_rotation_dir->get(2);
-        (*particles.particles)[i].rotation_dir.w = particle_rotation_dir->get(3);
-        (*particles.particles)[i].rotation_dir.normalize();
+        (*particles.particles)[i].rotation_dir = c_rotation_dir;
 
         (*particles.particles)[i].pos.x = px;
         (*particles.particles)[i].pos.y = py;
         (*particles.particles)[i].pos.z = pz;
         (*particles.particles)[i].creation_pos = (*particles.particles)[i].pos;
-        (*particles.particles)[i].time = 0;
-        (*particles.particles)[i].lifetime = lifetime_base+rand.frand()*lifetime_random_weight-lifetime_random_weight*0.5f;
+        (*particles.particles)[i].time = 0.0f;
+        (*particles.particles)[i].lifetime = c_lifetime + rand.frand() * lifetime_random_weight;
+        (*particles.particles)[i].one_div_lifetime = 1.0f / (*particles.particles)[i].lifetime;
         --p_to_go;
       }
       // add the speed component to the particles
-      (*particles.particles)[i].pos.x += (*particles.particles)[i].speed.x*ddtime;
-      (*particles.particles)[i].pos.y += (*particles.particles)[i].speed.y*ddtime;
-      (*particles.particles)[i].pos.z += (*particles.particles)[i].speed.z*ddtime;
+      (*particles.particles)[i].pos.x += (*particles.particles)[i].speed.x * ddtime;
+      (*particles.particles)[i].pos.y += (*particles.particles)[i].speed.y * ddtime;
+      (*particles.particles)[i].pos.z += (*particles.particles)[i].speed.z * ddtime;
+
+      if (random_number_index > 8000) random_number_index = 0;
 
       q_out = &(*particles.particles)[i].rotation;
       q1 = (*particles.particles)[i].rotation_dir;
       q1.normalize();
       q_out->mul(*q_out, q1);
     }
+
     (*particles.particles)[particles.particles->size()-1].color.a = nump-(float)floor(nump);
 
 
@@ -296,6 +343,10 @@ but you usually want a lot more.";
     // set the resulting value
     result_particlesystem->set_p(particles);
     // now all left is to render this, that will be done one of the modules of the rendering branch
+    #ifdef VSXU_TM
+    ((vsx_tm*)engine->tm)->l();
+    #endif
+
   }
 
   void on_delete() {
@@ -558,7 +609,7 @@ in sequence.\n\
           (*pp).orig_size = 0.01f;
           (*pp).size = 0.01f;
           (*pp).lifetime = lifetime_base+(*(f_randpool_pointer++))*lifetime_random_weight-lifetime_random_weight*0.5f;
-          //printf("setting lifetime: %f\n",(*particles.particles)[i].lifetime);
+          (*pp).one_div_lifetime = 1.0f / (*pp).lifetime;
           (*pp).time = (*(f_randpool_pointer++)) * (*pp).lifetime;
           (*pp).grounded = 0;
           pp++;
@@ -679,6 +730,7 @@ in sequence.\n\
               (*pp).creation_pos = (*pp).pos;
               (*pp).time = 0.0f;
               (*pp).lifetime = lifetime_base+(*(f_randpool_pointer++))*lifetime_random_weight-half_lifetime_random_weight;
+              (*pp).one_div_lifetime = 1.0f / (*pp).lifetime;
               if (pick_type->get() == 0) {
                 ++meshcoord;
               } else {

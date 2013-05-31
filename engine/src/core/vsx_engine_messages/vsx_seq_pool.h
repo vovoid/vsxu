@@ -27,7 +27,7 @@
 
 if (cmd == "seq_pool")
 {
-  c->dump_to_stdout();
+  //  c->dump_to_stdout();
   //printf("seq_pool %s\n", c->parts[1].c_str());
 
   if (c->parts[1] == "seq_list") {

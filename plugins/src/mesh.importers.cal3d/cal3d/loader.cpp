@@ -1329,7 +1329,7 @@ CalCoreTrack *CalLoader::loadCoreTrack(CalDataSource& dataSrc, CalCoreSkeleton *
 CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton(const std::string& strFilename)
 {
 
-  TiXmlDocument doc(strFilename);
+  vsxTiXmlDocument doc(strFilename);
   if(!doc.LoadFile())
   {
     CalError::setLastError(CalError::FILE_NOT_FOUND, __FILE__, __LINE__, strFilename);
@@ -1338,10 +1338,10 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton(const std::string& strFilename)
   return loadXmlCoreSkeleton_xml(doc);
 }
 
-CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(TiXmlDocument &doc) {
+CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
   std::stringstream str;
-  TiXmlNode* node;
-  TiXmlElement*skeleton = doc.FirstChildElement();
+  vsxTiXmlNode* node;
+  vsxTiXmlElement*skeleton = doc.FirstChildElement();
   if(!skeleton)
   {
     #ifdef CAL_DEBUG
@@ -1405,7 +1405,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(TiXmlDocument &doc) {
     return 0;
   }
 
-  TiXmlElement* bone;
+  vsxTiXmlElement* bone;
   for( bone = skeleton->FirstChildElement();bone;bone = bone->NextSiblingElement() )
   {
     if(stricmp(bone->Value(),"BONE")!=0)
@@ -1422,7 +1422,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(TiXmlDocument &doc) {
 
     // get the translation of the bone
 
-    TiXmlElement* translation = bone->FirstChildElement();
+    vsxTiXmlElement* translation = bone->FirstChildElement();
     if(!translation || stricmp( translation->Value(),"TRANSLATION")!=0)
     {
       #ifdef CAL_DEBUG
@@ -1443,7 +1443,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(TiXmlDocument &doc) {
                 delete pCoreSkeleton;    
                 return false;
     }    
-    TiXmlText* translationdata = node->ToText();
+    vsxTiXmlText* translationdata = node->ToText();
     if(!translationdata)
     {
       #ifdef CAL_DEBUG
@@ -1458,7 +1458,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(TiXmlDocument &doc) {
 
       // get the rotation of the bone
 
-    TiXmlElement* rotation = translation->NextSiblingElement();
+    vsxTiXmlElement* rotation = translation->NextSiblingElement();
     if(!rotation || stricmp(rotation->Value(),"ROTATION")!=0)
     {
       #ifdef CAL_DEBUG
@@ -1479,7 +1479,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(TiXmlDocument &doc) {
                 delete pCoreSkeleton;    
                 return false;
     }
-    TiXmlText* rotationdata = node->ToText();
+    vsxTiXmlText* rotationdata = node->ToText();
     if(!rotationdata)
     {
       #ifdef CAL_DEBUG
@@ -1495,7 +1495,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(TiXmlDocument &doc) {
     // get the bone space translation of the bone
       
     
-    TiXmlElement* translationBoneSpace = rotation->NextSiblingElement();
+    vsxTiXmlElement* translationBoneSpace = rotation->NextSiblingElement();
     if(!rotation || stricmp(translationBoneSpace->Value(),"LOCALTRANSLATION")!=0)
     {
       #ifdef CAL_DEBUG
@@ -1516,7 +1516,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(TiXmlDocument &doc) {
         delete pCoreSkeleton;    
         return false;
     }
-    TiXmlText* translationBoneSpacedata = node->ToText();
+    vsxTiXmlText* translationBoneSpacedata = node->ToText();
     if(!translationBoneSpacedata)
     {
       #ifdef CAL_DEBUG
@@ -1531,7 +1531,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(TiXmlDocument &doc) {
 
       // get the bone space rotation of the bone
 
-    TiXmlElement* rotationBoneSpace = translationBoneSpace->NextSiblingElement();
+    vsxTiXmlElement* rotationBoneSpace = translationBoneSpace->NextSiblingElement();
     if(!rotationBoneSpace || stricmp(rotationBoneSpace->Value(),"LOCALROTATION")!=0)
     { 
       #ifdef CAL_DEBUG
@@ -1552,7 +1552,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(TiXmlDocument &doc) {
         delete pCoreSkeleton;    
         return false;
     }
-    TiXmlText* rotationBoneSpacedata = node->ToText();
+    vsxTiXmlText* rotationBoneSpacedata = node->ToText();
     if(!rotationBoneSpacedata)
     {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -1565,7 +1565,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(TiXmlDocument &doc) {
 
     // get the parent bone id
 
-    TiXmlElement* parent = rotationBoneSpace->NextSiblingElement();
+    vsxTiXmlElement* parent = rotationBoneSpace->NextSiblingElement();
     if(!parent ||stricmp(parent->Value(),"PARENTID")!=0)
     {
       CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -1583,7 +1583,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(TiXmlDocument &doc) {
         delete pCoreSkeleton;    
         return false;
     }
-    TiXmlText* parentid = node->ToText();
+    vsxTiXmlText* parentid = node->ToText();
       if(!parentid)
     {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -1628,7 +1628,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(TiXmlDocument &doc) {
     pCoreBone->setRotationBoneSpace(CalQuaternion(rxBoneSpace, ryBoneSpace, rzBoneSpace, rwBoneSpace));
 
 
-    TiXmlElement* child;
+    vsxTiXmlElement* child;
     for( child = parent->NextSiblingElement();child;child = child->NextSiblingElement() )
     {
       if(stricmp(child->Value(),"CHILDID")!=0)
@@ -1639,7 +1639,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(TiXmlDocument &doc) {
         return false;
       }
 
-      TiXmlNode *node= child->FirstChild();
+      vsxTiXmlNode *node= child->FirstChild();
       if(!node)
       {
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -1647,7 +1647,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(TiXmlDocument &doc) {
         delete pCoreBone;
         return false;
       }
-      TiXmlText* childid = node->ToText();
+      vsxTiXmlText* childid = node->ToText();
       if(!childid)
       {
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -1690,7 +1690,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(TiXmlDocument &doc) {
   *****************************************************************************/
 
 CalCoreAnimation *CalLoader::loadXmlCoreAnimation(const std::string& strFilename, CalCoreSkeleton *skel) {
-  TiXmlDocument doc(strFilename);
+  vsxTiXmlDocument doc(strFilename);
   if(!doc.LoadFile())
   {
     CalError::setLastError(CalError::FILE_NOT_FOUND, __FILE__, __LINE__, strFilename);
@@ -1699,12 +1699,12 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation(const std::string& strFilename
   return loadXmlCoreAnimation_xml(doc,skel);
 }
 
-CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(TiXmlDocument &doc, CalCoreSkeleton *skel)
+CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(vsxTiXmlDocument &doc, CalCoreSkeleton *skel)
 {
   std::stringstream str;
-  TiXmlNode* node;
+  vsxTiXmlNode* node;
 
-  TiXmlElement*animation = doc.FirstChildElement();
+  vsxTiXmlElement*animation = doc.FirstChildElement();
   if(!animation)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -1768,7 +1768,7 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(TiXmlDocument &doc, CalCor
 
   // set the duration in the core animation instance
   pCoreAnimation->setDuration(duration);
-  TiXmlElement* track=animation->FirstChildElement();
+  vsxTiXmlElement* track=animation->FirstChildElement();
 
   // load all core bones
   int trackId;
@@ -1807,7 +1807,7 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(TiXmlDocument &doc, CalCor
       return 0;
     }
 
-    TiXmlElement* keyframe= track->FirstChildElement();
+    vsxTiXmlElement* keyframe= track->FirstChildElement();
 
     // load all core keyframes
     int keyframeId;
@@ -1824,7 +1824,7 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(TiXmlDocument &doc, CalCor
 
       float time= (float) atof(keyframe->Attribute("TIME"));
 
-      TiXmlElement* translation = keyframe->FirstChildElement();
+      vsxTiXmlElement* translation = keyframe->FirstChildElement();
       if(!translation || stricmp(translation->Value(),"TRANSLATION")!=0)
       {
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -1844,7 +1844,7 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(TiXmlDocument &doc, CalCor
         return false;
       }
 
-      TiXmlText* translationdata = node->ToText();
+      vsxTiXmlText* translationdata = node->ToText();
       if(!translationdata)
       {
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -1856,7 +1856,7 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(TiXmlDocument &doc, CalCor
       str << translationdata->Value();
       str >> tx >> ty >> tz;
 
-      TiXmlElement* rotation = translation->NextSiblingElement();
+      vsxTiXmlElement* rotation = translation->NextSiblingElement();
       if(!rotation || stricmp(rotation->Value(),"ROTATION")!=0)
       {
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -1875,7 +1875,7 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(TiXmlDocument &doc, CalCor
           delete pCoreTrack;
         return false;
       }
-      TiXmlText* rotationdata = node->ToText();
+      vsxTiXmlText* rotationdata = node->ToText();
       if(!rotationdata)
       {
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -1953,7 +1953,7 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(TiXmlDocument &doc, CalCor
   *****************************************************************************/
 CalCoreMesh *CalLoader::loadXmlCoreMesh(const std::string& strFilename)
 {
-  TiXmlDocument doc(strFilename);
+  vsxTiXmlDocument doc(strFilename);
   if(!doc.LoadFile())
   {
     CalError::setLastError(CalError::FILE_NOT_FOUND, __FILE__, __LINE__, strFilename);
@@ -1963,11 +1963,11 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh(const std::string& strFilename)
 }
 
 
-CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
-  TiXmlNode* node;
+CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
+  vsxTiXmlNode* node;
   std::stringstream str;
 
-  TiXmlElement*mesh = doc.FirstChildElement();
+  vsxTiXmlElement*mesh = doc.FirstChildElement();
   if(!mesh)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -2019,7 +2019,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
     return 0;
   }
 
-  TiXmlElement*submesh = mesh->FirstChildElement();
+  vsxTiXmlElement*submesh = mesh->FirstChildElement();
 
   // load all core submeshes
   int submeshId;
@@ -2070,7 +2070,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
       return 0;
     }
 
-    TiXmlElement *vertex = submesh->FirstChildElement();
+    vsxTiXmlElement *vertex = submesh->FirstChildElement();
     
     // load all vertices and their influences
     int vertexId;
@@ -2086,7 +2086,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
 
       CalCoreSubmesh::Vertex Vertex;
 
-      TiXmlElement *pos= vertex->FirstChildElement();
+      vsxTiXmlElement *pos= vertex->FirstChildElement();
       if(!pos || stricmp(pos->Value(),"POS")!=0)
       {
         delete pCoreMesh;
@@ -2103,7 +2103,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         return false;
       }      
-      TiXmlText* posdata = node->ToText();
+      vsxTiXmlText* posdata = node->ToText();
       if(!posdata)
       {
         delete pCoreMesh;
@@ -2115,7 +2115,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
       str << posdata->Value();
       str >> Vertex.position.x >> Vertex.position.y >> Vertex.position.z;  
 
-      TiXmlElement *norm= pos->NextSiblingElement();
+      vsxTiXmlElement *norm= pos->NextSiblingElement();
       if(!norm||stricmp(norm->Value(),"NORM")!=0)
       {
         delete pCoreMesh;
@@ -2132,7 +2132,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         return false;
       }
-      TiXmlText* normdata = node->ToText();
+      vsxTiXmlText* normdata = node->ToText();
       if(!normdata)
       {
         delete pCoreMesh;
@@ -2144,7 +2144,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
       str << normdata->Value();
       str >> Vertex.normal.x >> Vertex.normal.y >> Vertex.normal.z;
 
-      TiXmlElement *collapse= norm->NextSiblingElement();
+      vsxTiXmlElement *collapse= norm->NextSiblingElement();
       if(collapse && stricmp(collapse->Value(),"COLLAPSEID")==0)
       {
         node = collapse->FirstChild();
@@ -2155,7 +2155,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
             CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
             return false;
         }
-        TiXmlText* collapseid = node->ToText();
+        vsxTiXmlText* collapseid = node->ToText();
         if(!collapseid)
         {
             delete pCoreMesh;
@@ -2165,7 +2165,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
         }
         Vertex.collapseId = atoi(collapseid->Value());
 
-        TiXmlElement *collapseCount= collapse->NextSiblingElement();
+        vsxTiXmlElement *collapseCount= collapse->NextSiblingElement();
         if(!collapseCount|| stricmp(collapseCount->Value(),"COLLAPSECOUNT")!=0)
         {
             delete pCoreMesh;
@@ -2182,7 +2182,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
             CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
             return false;
         }
-        TiXmlText* collapseCountdata = node->ToText();
+        vsxTiXmlText* collapseCountdata = node->ToText();
         if(!collapseCountdata)
         {
             delete pCoreMesh;
@@ -2200,7 +2200,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
       }
 
 
-      TiXmlElement *texcoord = collapse;
+      vsxTiXmlElement *texcoord = collapse;
 
       // load all texture coordinates of the vertex
       int textureCoordinateId;
@@ -2224,7 +2224,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
           CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
           return false;
         }
-        TiXmlText* texcoorddata = node->ToText();
+        vsxTiXmlText* texcoorddata = node->ToText();
         if(!texcoorddata)
         {
           delete pCoreMesh;
@@ -2262,7 +2262,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
       Vertex.vectorInfluence.reserve(influenceCount);
       Vertex.vectorInfluence.resize(influenceCount);
 
-      TiXmlElement *influence = texcoord;
+      vsxTiXmlElement *influence = texcoord;
       
       // load all influences of the vertex
       int influenceId;
@@ -2284,7 +2284,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
           CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
           return false;
         }
-        TiXmlText* influencedata = node->ToText();
+        vsxTiXmlText* influencedata = node->ToText();
         if(!influencedata)
         {
           delete pCoreMesh;
@@ -2303,7 +2303,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
       // set vertex in the core submesh instance
       pCoreSubmesh->setVertex(vertexId, Vertex);
 
-      TiXmlElement *physique = influence;
+      vsxTiXmlElement *physique = influence;
 
         
 
@@ -2327,7 +2327,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
           CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
           return false;
         }
-        TiXmlText* physiquedata = node->ToText();
+        vsxTiXmlText* physiquedata = node->ToText();
         if(!physiquedata)
         {
           delete pCoreMesh;
@@ -2347,7 +2347,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
       vertex = vertex->NextSiblingElement();
    }
 
-   TiXmlElement *spring= vertex;
+   vsxTiXmlElement *spring= vertex;
 
    // load all springs
    int springId;
@@ -2372,7 +2372,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(TiXmlDocument &doc) {
       spring = spring->NextSiblingElement();
    }
 
-    TiXmlElement *face = spring;
+    vsxTiXmlElement *face = spring;
 
    // load all faces
    int faceId;
@@ -2444,7 +2444,7 @@ return pCoreMesh;
 
 CalCoreMaterial *CalLoader::loadXmlCoreMaterial(const std::string& strFilename)
 {
-  TiXmlDocument doc(strFilename);
+  vsxTiXmlDocument doc(strFilename);
   if(!doc.LoadFile())
   {
     CalError::setLastError(CalError::FILE_NOT_FOUND, __FILE__, __LINE__, strFilename);
@@ -2453,13 +2453,13 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial(const std::string& strFilename)
   return loadXmlCoreMaterial_xml(doc);
 }
 
-CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(TiXmlDocument &doc)
+CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(vsxTiXmlDocument &doc)
 {
   int r,g,b,a;
   std::stringstream str;
-  TiXmlNode* node;
+  vsxTiXmlNode* node;
 
-  TiXmlElement*material = doc.FirstChildElement();
+  vsxTiXmlElement*material = doc.FirstChildElement();
   if(!material)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -2509,7 +2509,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(TiXmlDocument &doc)
     return 0;
   }
 
-  TiXmlElement* ambient = material->FirstChildElement();
+  vsxTiXmlElement* ambient = material->FirstChildElement();
   if(!ambient ||stricmp(ambient->Value(),"AMBIENT")!=0)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -2525,7 +2525,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(TiXmlDocument &doc)
         delete pCoreMaterial;    
         return false;
   }
-  TiXmlText* ambientdata = node->ToText();
+  vsxTiXmlText* ambientdata = node->ToText();
   if(!ambientdata)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -2539,7 +2539,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(TiXmlDocument &doc)
   ambientColor.blue = (unsigned char)b;
   ambientColor.alpha = (unsigned char)a; 
 
-  TiXmlElement* diffuse = ambient->NextSiblingElement();
+  vsxTiXmlElement* diffuse = ambient->NextSiblingElement();
   if(!diffuse || stricmp(diffuse->Value(),"DIFFUSE")!=0)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -2555,7 +2555,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(TiXmlDocument &doc)
         delete pCoreMaterial;    
         return false;
   }
-  TiXmlText* diffusedata = node->ToText();
+  vsxTiXmlText* diffusedata = node->ToText();
   if(!diffusedata)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -2571,7 +2571,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(TiXmlDocument &doc)
   diffuseColor.alpha = (unsigned char)a;
   
 
-  TiXmlElement* specular = diffuse->NextSiblingElement();
+  vsxTiXmlElement* specular = diffuse->NextSiblingElement();
   if(!specular||stricmp(specular->Value(),"SPECULAR")!=0)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -2587,7 +2587,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(TiXmlDocument &doc)
         delete pCoreMaterial;    
         return false;
   }
-  TiXmlText* speculardata = node->ToText();
+  vsxTiXmlText* speculardata = node->ToText();
   if(!speculardata)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -2603,7 +2603,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(TiXmlDocument &doc)
   specularColor.alpha = (unsigned char)a;
 
 
-  TiXmlElement* shininess = specular->NextSiblingElement();
+  vsxTiXmlElement* shininess = specular->NextSiblingElement();
   if(!shininess||stricmp(shininess->Value(),"SHININESS")!=0)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -2619,7 +2619,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(TiXmlDocument &doc)
         delete pCoreMaterial;    
         return false;
   }
-  TiXmlText* shininessdata = node->ToText();
+  vsxTiXmlText* shininessdata = node->ToText();
   if(!shininessdata)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
@@ -2636,7 +2636,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(TiXmlDocument &doc)
   
   std::vector<std::string> MatFileName;
 
-  TiXmlElement* map;
+  vsxTiXmlElement* map;
 
   for( map = shininess->NextSiblingElement();map;map = map->NextSiblingElement() )
   {
@@ -2656,7 +2656,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(TiXmlDocument &doc)
       return false;
     }
 
-    TiXmlText* mapfile = node->ToText();
+    vsxTiXmlText* mapfile = node->ToText();
     if(!mapfile)
     {
       CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");

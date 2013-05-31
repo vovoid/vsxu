@@ -330,7 +330,7 @@ void vsx_window_object_inspector::load_file(vsx_string filename) {
       texture.texture_info.size_y = 0;
 //      if (texture.valid)
       texture.unload();
-      texture.init_opengl_texture();
+      texture.init_opengl_texture_2d();
       texture.load_jpeg(filename,false);
       //float screenaspect = screen_x/screen_y;
       //printf("%f, %f\n",texture.texture_info.size_x,texture.texture_info.size_y);

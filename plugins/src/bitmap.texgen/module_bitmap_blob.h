@@ -145,7 +145,7 @@ public:
     my_ref = 0;
     if (c_type == 1) {
       texture = new vsx_texture;
-      texture->init_opengl_texture();
+      texture->init_opengl_texture_2d();
       result_texture = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
       result_texture->set(texture);
     }
@@ -227,7 +227,7 @@ public:
         bitm_timestamp = bitm.timestamp;
         if (c_type == 1)
         {
-          texture->upload_ram_bitmap(&bitm,true);
+          texture->upload_ram_bitmap_2d(&bitm,true);
           result_texture->set(texture);
         }
         result1->set_p(bitm);
@@ -280,8 +280,8 @@ public:
   void start() {
     if (c_type == 1) {
       if (bitm.valid) {
-        texture->init_opengl_texture();
-        texture->upload_ram_bitmap(&bitm,true);
+        texture->init_opengl_texture_2d();
+        texture->upload_ram_bitmap_2d(&bitm,true);
       }
       result_texture->set(texture);
     }

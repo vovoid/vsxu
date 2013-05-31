@@ -527,7 +527,8 @@ void vsx_statelist::load_fx_levels_from_user()
       // got the file
       FILE* fpfx = fopen(fxlf.c_str(), "r");
       char dest[256];
-      fgets(dest, 256, fpfx);
+      char* cc = fgets(dest, 256, fpfx);
+      (void)cc;
       fclose(fpfx);
       vsx_string ff = dest;
       state.fx_level = s2f(ff);
@@ -597,7 +598,8 @@ void vsx_statelist::save_fx_levels_from_user()
       // got the file
       FILE* fpfx = fopen(fxlf.c_str(), "r");
       char dest[256];
-      fgets(dest, 256, fpfx);
+      char* cc = fgets(dest, 256, fpfx);
+      (void)cc;
       fclose(fpfx);
       vsx_string ff = dest;
       state.fx_level = s2f(ff);

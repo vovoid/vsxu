@@ -36,7 +36,7 @@ public:
   int addCoreAnimation(CalCoreAnimation *pCoreAnimation);
   CalCoreAnimation *getCoreAnimation(int coreAnimationId);
   int getCoreAnimationCount();
-  int loadCoreAnimation(TiXmlDocument &doc);
+  int loadCoreAnimation(vsxTiXmlDocument &doc);
   int loadCoreAnimation(const std::string& strFilename);
   int loadCoreAnimation(const std::string& strFilename, const std::string& strAnimationName);
   int unloadCoreAnimation(const std::string& name);
@@ -56,7 +56,7 @@ public:
   CalCoreMaterial *getCoreMaterial(int coreMaterialId);
   int getCoreMaterialCount();
   int getCoreMaterialId(int coreMaterialThreadId, int coreMaterialSetId);
-  int loadCoreMaterial(TiXmlDocument &doc);
+  int loadCoreMaterial(vsxTiXmlDocument &doc);
   int loadCoreMaterial(const std::string& strFilename);
   int loadCoreMaterial(const std::string& strFilename, const std::string& strMaterialName);
   int unloadCoreMaterial(const std::string& name);
@@ -70,7 +70,7 @@ public:
   int addCoreMesh(CalCoreMesh *pCoreMesh);
   CalCoreMesh *getCoreMesh(int coreMeshId);
   int getCoreMeshCount();
-  int loadCoreMesh(TiXmlDocument &doc);
+  int loadCoreMesh(vsxTiXmlDocument &doc);
   int loadCoreMesh(const std::string& strFilename);
   int loadCoreMesh(const std::string& strFilename, const std::string& strMeshName);
   int unloadCoreMesh(const std::string& name);
@@ -81,7 +81,7 @@ public:
 
   // skeleton
   CalCoreSkeleton *getCoreSkeleton();
-  bool loadCoreSkeleton(TiXmlDocument &doc);
+  bool loadCoreSkeleton(vsxTiXmlDocument &doc);
   bool loadCoreSkeleton(const std::string& strFilename);
   bool saveCoreSkeleton(const std::string& strFilename);
   void setCoreSkeleton(CalCoreSkeleton *pCoreSkeleton);

@@ -25,10 +25,10 @@ distribution.
 #include "tinyxml.h"
 
 
-#ifndef TIXML_USE_STL
+#ifndef vsxTiXml_USE_STL
 
-#ifndef TIXML_STRING_INCLUDED
-#define TIXML_STRING_INCLUDED
+#ifndef vsxTiXml_STRING_INCLUDED
+#define vsxTiXml_STRING_INCLUDED
 
 #pragma warning( disable : 4514 )
 
@@ -37,36 +37,36 @@ distribution.
 #include <assert.h>
 
 /*
-   TiXmlString is an emulation of the std::string template.
+   vsxTiXmlString is an emulation of the std::string template.
    Its purpose is to allow compiling TinyXML on compilers with no or poor STL support.
    Only the member functions relevant to the TinyXML project have been implemented.
    The buffer allocation is made by a simplistic power of 2 like mechanism : if we increase
    a string and there's no more room, we allocate a buffer twice as big as we need.
 */
-class TiXmlString
+class vsxTiXmlString
 {
   public :
-    // TiXmlString constructor, based on a string
-    TiXmlString (const char * instring);
+    // vsxTiXmlString constructor, based on a string
+    vsxTiXmlString (const char * instring);
 
-    // TiXmlString empty constructor
-    TiXmlString ()
+    // vsxTiXmlString empty constructor
+    vsxTiXmlString ()
     {
         allocated = 0;
         cstring = NULL;
         current_length = 0;
     }
 
-    // TiXmlString copy constructor
-    TiXmlString (const TiXmlString& copy);
+    // vsxTiXmlString copy constructor
+    vsxTiXmlString (const vsxTiXmlString& copy);
 
-    // TiXmlString destructor
-    ~ TiXmlString ()
+    // vsxTiXmlString destructor
+    ~ vsxTiXmlString ()
     {
         empty_it ();
     }
 
-    // Convert a TiXmlString into a classical char *
+    // Convert a vsxTiXmlString into a classical char *
     const char * c_str () const
     {
         if (allocated)
@@ -74,49 +74,49 @@ class TiXmlString
         return "";
     }
 
-    // Return the length of a TiXmlString
+    // Return the length of a vsxTiXmlString
     unsigned length () const
 	{
 		return ( allocated ) ? current_length : 0;
 	}
 
-    // TiXmlString = operator
+    // vsxTiXmlString = operator
     void operator = (const char * content);
 
     // = operator
-    void operator = (const TiXmlString & copy);
+    void operator = (const vsxTiXmlString & copy);
 
     // += operator. Maps to append
-    TiXmlString& operator += (const char * suffix)
+    vsxTiXmlString& operator += (const char * suffix)
     {
         append (suffix);
 		return *this;
     }
 
     // += operator. Maps to append
-    TiXmlString& operator += (char single)
+    vsxTiXmlString& operator += (char single)
     {
         append (single);
 		return *this;
     }
 
     // += operator. Maps to append
-    TiXmlString& operator += (TiXmlString & suffix)
+    vsxTiXmlString& operator += (vsxTiXmlString & suffix)
     {
         append (suffix);
 		return *this;
     }
-    bool operator == (const TiXmlString & compare) const;
-    bool operator < (const TiXmlString & compare) const;
-    bool operator > (const TiXmlString & compare) const;
+    bool operator == (const vsxTiXmlString & compare) const;
+    bool operator < (const vsxTiXmlString & compare) const;
+    bool operator > (const vsxTiXmlString & compare) const;
 
-    // Checks if a TiXmlString is empty
+    // Checks if a vsxTiXmlString is empty
     bool empty () const
     {
         return length () ? false : true;
     }
 
-    // Checks if a TiXmlString contains only whitespace (same rules as isspace)
+    // Checks if a vsxTiXmlString contains only whitespace (same rules as isspace)
 	// Not actually used in tinyxml. Conflicts with a C macro, "isblank",
 	// which is a problem. Commenting out. -lee
 //    bool isblank () const;
@@ -128,17 +128,17 @@ class TiXmlString
         return cstring [index];
     }
 
-    // find a char in a string. Return TiXmlString::notfound if not found
+    // find a char in a string. Return vsxTiXmlString::notfound if not found
     unsigned find (char lookup) const
     {
         return find (lookup, 0);
     }
 
-    // find a char in a string from an offset. Return TiXmlString::notfound if not found
+    // find a char in a string from an offset. Return vsxTiXmlString::notfound if not found
     unsigned find (char tofind, unsigned offset) const;
 
     /*	Function to reserve a big amount of data when we know we'll need it. Be aware that this
-		function clears the content of the TiXmlString if any exists.
+		function clears the content of the vsxTiXmlString if any exists.
     */
     void reserve (unsigned size)
     {
@@ -181,7 +181,7 @@ class TiXmlString
         return minimum_to_allocate * 2;
     }
 
-    // Internal function that clears the content of a TiXmlString
+    // Internal function that clears the content of a vsxTiXmlString
     void empty_it ()
     {
         if (cstring)
@@ -193,8 +193,8 @@ class TiXmlString
 
     void append (const char *suffix );
 
-    // append function for another TiXmlString
-    void append (const TiXmlString & suffix)
+    // append function for another vsxTiXmlString
+    void append (const vsxTiXmlString & suffix)
     {
         append (suffix . c_str ());
     }
@@ -211,28 +211,28 @@ class TiXmlString
 } ;
 
 /* 
-   TiXmlOutStream is an emulation of std::ostream. It is based on TiXmlString.
+   vsxTiXmlOutStream is an emulation of std::ostream. It is based on vsxTiXmlString.
    Only the operators that we need for TinyXML have been developped.
 */
-class TiXmlOutStream : public TiXmlString
+class vsxTiXmlOutStream : public vsxTiXmlString
 {
 public :
-    TiXmlOutStream () : TiXmlString () {}
+    vsxTiXmlOutStream () : vsxTiXmlString () {}
 
-    // TiXmlOutStream << operator. Maps to TiXmlString::append
-    TiXmlOutStream & operator << (const char * in)
+    // vsxTiXmlOutStream << operator. Maps to vsxTiXmlString::append
+    vsxTiXmlOutStream & operator << (const char * in)
     {
         append (in);
         return (* this);
     }
 
-    // TiXmlOutStream << operator. Maps to TiXmlString::append
-    TiXmlOutStream & operator << (const TiXmlString & in)
+    // vsxTiXmlOutStream << operator. Maps to vsxTiXmlString::append
+    vsxTiXmlOutStream & operator << (const vsxTiXmlString & in)
     {
         append (in . c_str ());
         return (* this);
     }
 } ;
 
-#endif	// TIXML_STRING_INCLUDED
-#endif	// TIXML_USE_STL
+#endif	// vsxTiXml_STRING_INCLUDED
+#endif	// vsxTiXml_USE_STL

@@ -82,7 +82,7 @@ public:
 	  bitm_timestamp = 0;
 	  texture = new vsx_texture;
 	  texture->locked = true;
-	  texture->init_opengl_texture();
+    texture->init_opengl_texture_2d();
 	
 	  result_texture = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");  
 	  loading_done = true;
@@ -101,9 +101,9 @@ public:
 	    bitm_timestamp = bitm->timestamp;
 	    //printf("u-");
 	    if (mipmaps->get() == 0)
-	    texture->upload_ram_bitmap(bitm,true);
+      texture->upload_ram_bitmap_2d(bitm,true);
 	    else
-	    texture->upload_ram_bitmap(bitm,false);
+      texture->upload_ram_bitmap_2d(bitm,false);
 	    result_texture->set(texture);
 	    //printf("-u");
 	  } 
@@ -115,10 +115,10 @@ public:
 	
 	void start() {
 	  //printf("starting textureuploader\n");
-	  texture->init_opengl_texture();
+    texture->init_opengl_texture_2d();
 	  bitm = bitm_in->get_addr();
 	  if (bitm) {
-	    texture->upload_ram_bitmap(bitm,mipmaps->get());
+      texture->upload_ram_bitmap_2d(bitm,mipmaps->get());
 	    result_texture->set(texture);
 	  }
 	}  
@@ -306,10 +306,10 @@ void output(vsx_module_param_abs* param)
       {
         texture = new vsx_texture;
         texture->locked = true;
-        texture->init_opengl_texture();
+        texture->init_opengl_texture_2d();
         texture->valid = false;
       }
-      texture->upload_ram_bitmap(&bitm,true);
+      texture->upload_ram_bitmap_2d(&bitm,true);
       texture->valid = true;
       texture_out->set(texture);
       texture_timestamp = bitm.timestamp;
@@ -325,8 +325,8 @@ void stop() {
 }
 
 void start() {
-  texture->init_opengl_texture();
-  texture->upload_ram_bitmap(&bitm,true);
+  texture->init_opengl_texture_2d();
+  texture->upload_ram_bitmap_2d(&bitm,true);
   texture->valid = true;
   texture_out->set(texture);
 }
@@ -464,7 +464,7 @@ public:
 
   	texture = new vsx_texture;
     texture->locked = true;
-    texture->init_opengl_texture();
+    texture->init_opengl_texture_2d();
   }
   
   void run()
@@ -514,7 +514,7 @@ public:
     {
       if (texture_timestamp != bitm.timestamp && bitm.valid)
       {
-        texture->upload_ram_bitmap(&bitm,true);
+        texture->upload_ram_bitmap_2d(&bitm,true);
         texture->valid = true;
         texture_out->set(texture);
         texture_timestamp = bitm.timestamp;
@@ -731,7 +731,7 @@ public:
 
     texture = new vsx_texture;
     texture->locked = true;
-    texture->init_opengl_texture();
+    texture->init_opengl_texture_2d();
   }
 
   void run()
@@ -783,7 +783,7 @@ public:
     {
       if (texture_timestamp != bitm.timestamp && bitm.valid)
       {
-        texture->upload_ram_bitmap(&bitm,true);
+        texture->upload_ram_bitmap_2d(&bitm,true);
         texture->valid = true;
         texture_out->set(texture);
         texture_timestamp = bitm.timestamp;

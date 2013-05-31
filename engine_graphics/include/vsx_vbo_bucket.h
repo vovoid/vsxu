@@ -30,13 +30,17 @@ template
   GLuint T_type = GL_TRIANGLES,
 
   // VBO upload strategy - GL_STATIC_DRAW || GL_DYNAMIC_DRAW || GL_STREAM_DRAW
-  GLuint T_vbo_usage = GL_STATIC_DRAW_ARB
+  GLuint T_vbo_usage = GL_STATIC_DRAW_ARB,
+
+  // Vertex data type
+  typename Tv = vsx_vector
+
 >
 class vsx_vbo_bucket
 {
 public:
   // 1. compute data into these buckets
-  vsx_array<vsx_vector>     vertices;
+  vsx_array<Tv>     vertices;
   vsx_array<vsx_vector>     vertex_normals;
   vsx_array<vsx_color>      vertex_colors;
   vsx_array<vsx_tex_coord>  vertex_tex_coords;
@@ -70,7 +74,7 @@ public:
   }
 
   // 4. call the draw command
-  inline void output()
+  inline void output( size_t n = 0 )
   {
     // sanity checks
     if ( !faces.get_used() ) return;
@@ -82,7 +86,7 @@ public:
     if ( !enable_client_arrays() ) return;
 
     // draw
-    perform_draw();
+    perform_draw(n);
 
     // disable arrays
     disable_client_arrays();
@@ -208,10 +212,7 @@ private:
       GL_ARRAY_BUFFER_ARB,
       vbo_id_vertex_normals_texcoords
     );
-    if (!glIsBufferARB(vbo_id_vertex_normals_texcoords))
-    {
-      return false;
-    }
+
     //-----------------------------------------------------------------------
     // allocate the buffer
     glBufferDataARB(
@@ -286,9 +287,6 @@ private:
 
     //-----------------------------------------------------------------------
 
-    int bufferSize;
-    glGetBufferParameterivARB(GL_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize);
-
     // unbind the array buffer
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
 
@@ -306,15 +304,6 @@ private:
       T_vbo_usage
     );
 
-    glGetBufferParameterivARB(GL_ELEMENT_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize);
-    // post-initialization sanity check
-    if(faces.get_sizeof() != bufferSize)
-    {
-      glDeleteBuffersARB(1, &vbo_id_draw_indices);
-      vbo_id_draw_indices = 0;
-      glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
-      return false;
-    }
     current_num_faces = faces.size();
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
     return true;
@@ -359,8 +348,6 @@ private:
       vbo_id_vertex_normals_texcoords
     );
 
-    if (!glIsBufferARB(vbo_id_vertex_normals_texcoords)) return false;
-
     // vertex colors
     if ( vertex_colors.get_used() )
     {
@@ -383,7 +370,7 @@ private:
     }
 
     // enable vertices
-    glVertexPointer(3,GL_FLOAT,0,(GLvoid*)offset_vertices);
+    glVertexPointer(sizeof(Tv)/sizeof(float),GL_FLOAT,0,(GLvoid*)offset_vertices);
 
     // bind the index array buffer buffer for use
     glBindBufferARB
@@ -425,9 +412,17 @@ private:
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
   }
 
-  inline void perform_draw()
+  inline void perform_draw( size_t num = 0 )
   {
-    glDrawElements(T_type,faces.get_used()*A,GL_UNSIGNED_INT,0);
+    if (num == 0)
+      num = faces.get_used() * A;
+    glDrawElements
+    (
+      T_type,
+      num,
+      GL_UNSIGNED_INT,
+      0
+    );
   }
 
   inline void update_inner()
@@ -455,7 +450,11 @@ private:
     );
 
     // if buffer type is "DYNAMIC_DRAW", upload new data
-    if (vertex_normals.get_used())
+    if (
+        invalidation_flags & VSX_VBOB_NORMALS
+        &&
+        vertex_normals.get_used()
+        )
     {
       glBufferSubDataARB
       (
@@ -466,7 +465,11 @@ private:
       );
     }
 
-    if (vertex_tex_coords.get_used())
+    if (
+        invalidation_flags & VSX_VBOB_TEXCOORDS
+        &&
+        vertex_tex_coords.get_used()
+        )
     {
       glBufferSubDataARB
       (
@@ -477,7 +480,11 @@ private:
       );
     }
 
-    if (vertex_colors.get_used())
+    if (
+        invalidation_flags & VSX_VBOB_COLORS
+        &&
+        vertex_colors.get_used()
+        )
     {
       glBufferSubDataARB
       (
@@ -488,13 +495,16 @@ private:
       );
     }
 
-    glBufferSubDataARB
-    (
-      GL_ARRAY_BUFFER_ARB,
-      offset_vertices,
-      vertices.get_sizeof(),
-      vertices.get_pointer()
-    );
+    if ( invalidation_flags & VSX_VBOB_VERTICES )
+    {
+      glBufferSubDataARB
+      (
+        GL_ARRAY_BUFFER_ARB,
+        offset_vertices,
+        vertices.get_sizeof(),
+        vertices.get_pointer()
+      );
+    }
 
     // unbind the VBO buffers
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);

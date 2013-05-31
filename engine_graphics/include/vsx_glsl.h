@@ -254,7 +254,8 @@ protected:
             n_info.param_type_id = VSX_MODULE_PARAM_ID_FLOAT4;
           break;
           case GL_SAMPLER_CUBE:
-          case GL_SAMPLER_2D_ARB:
+          case GL_SAMPLER_1D:
+          case GL_SAMPLER_2D:
             n_info.param_type = "texture";
             n_info.param_type_id = VSX_MODULE_PARAM_ID_TEXTURE;
           break;
@@ -355,7 +356,14 @@ public:
     return linked;
   }
 
-  vsx_string link() {
+
+  virtual void post_link()
+  {
+
+  }
+
+  vsx_string link()
+  {
     if (!(GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader)) return "module||Error! No GLSL hardware support!";
     if (linked) {
       uniform_list.clear();
@@ -367,19 +375,19 @@ public:
       glDeleteObjectARB(prog);
       linked = false;
     }
-#if (VSXU_DEBUG)
+    #if (VSXU_DEBUG)
     if (GLEW_EXT_gpu_shader4)
       printf("shader v4 support found\n");
     printf("linking glsl program...\n");
-#endif
+    #endif
     const char *vp = vertex_program.c_str();
     const char *fp = fragment_program.c_str();
 
     if ( atof((char*)glGetString(GL_VERSION)) >= 2.0 )
     {
-#if (VSXU_DEBUG)
+      #if (VSXU_DEBUG)
       printf("OpenGL 2.0\n");
-#endif
+      #endif
       vs = glCreateShader(GL_VERTEX_SHADER);
       fs = glCreateShader(GL_FRAGMENT_SHADER);
       glShaderSource(vs, 1, &vp,NULL);
@@ -427,6 +435,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
 
   	linked = true;
   	process_vars();
+    post_link();
   	return "";
   	//return "vertex_program||Compilation successful.&&fragment_program||Compilation successful.";
   }
@@ -579,14 +588,10 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
         case VSX_MODULE_PARAM_ID_TEXTURE:
           vsx_texture** ba;
           ba = ((vsx_module_param_texture*)uniform_list[i].module_param)->get_addr();
-          if (ba) {
-            //printf("GLSL:binding texture\n");
-            //if (GLEW_VERSION_1_3)
-#if defined(__linux__)
+          if (ba)
+          {
+//            vsx_printf("GLSL:binding texture %d\n", GL_TEXTURE0 + tex_i);
             glActiveTexture(GL_TEXTURE0 + tex_i);
-#else
-            glActiveTexture(GL_TEXTURE0 + tex_i);
-#endif
             (*ba)->bind();
             glUniform1iARB(uniform_list[i].glsl_location,tex_i);
             tex_i++;
@@ -596,8 +601,8 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
           //v_list[i].module_param = in_parameters.create(VSX_MODULE_PARAM_ID_MATRIX,v_list[i].name.c_str());
         break;
       }
-
     }
+
     for (unsigned long i = 0; i < attribute_list.size(); ++i) {
       if (attribute_list[i].module_param) {
         #ifdef VSXU_DEBUG
@@ -609,7 +614,14 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
             vsx_float_array* p = ((vsx_module_param_float_array*)attribute_list[i].module_param)->get_addr();
             if (p)
             {
-              glVertexAttribPointer(attribute_list[i].glsl_location,1,GL_FLOAT,GL_FALSE,0, (GLvoid*)(p->data->get_pointer()));
+              glVertexAttribPointer(
+                    attribute_list[i].glsl_location,  // index
+                    1,                                // size per vertex
+                    GL_FLOAT,                         // data type
+                    GL_FALSE,                         // auto normalize
+                    0,                                // stride
+                    (GLvoid*)(p->data->get_pointer())
+                    );
               glEnableVertexAttribArray(attribute_list[i].glsl_location);
             } else
             glDisableVertexAttribArray(attribute_list[i].glsl_location);

@@ -38,15 +38,15 @@ typedef struct
   float size; // rendering size
   float time; // how long it has lived
   float lifetime; // how long it can live
+  float one_div_lifetime;
   int grounded; // if a particle is grounded it shouldn't move or rotate anymore, lying on the floor
 } vsx_particle;
-
-
 
 class vsx_particlesystem {
 public:
   int timestamp;
   vsx_array<vsx_particle>* particles;
+
   vsx_particlesystem() {
     particles = 0;
     timestamp = 0;

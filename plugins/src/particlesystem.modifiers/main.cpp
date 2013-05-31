@@ -28,6 +28,9 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_quaternion.h"
+#ifdef VSXU_TM
+#include "vsx_tm.h"
+#endif
 
 
 class vsx_module_plugin_fluid : public vsx_module {
@@ -487,13 +490,25 @@ public:
     // default is 100 particles, should be enough for most effects (tm)
   }
   
-  void run() {
-  float ddtime;
-  if (time_source->get()) {
-     ddtime = engine->real_dtime;
-  } else ddtime = engine->dtime;
-    particles = in_particlesystem->get_addr();  
-    if (particles) {
+  void run()
+  {
+    #ifdef VSXU_TM
+    ((vsx_tm*)engine->tm)->e( "particle_gravity_run" );
+    #endif
+
+    float ddtime;
+    if (time_source->get())
+    {
+       ddtime = engine->real_dtime;
+    }
+    else
+    {
+      ddtime = engine->dtime;
+    }
+    particles = in_particlesystem->get_addr();
+
+    if (particles)
+    {
     
       // get positions from the user
       float cx = center->get(0);
@@ -550,10 +565,18 @@ public:
       
       // set the resulting value
       result_particlesystem->set_p(*particles);
+
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->l();
+      #endif
+
       return;
       // now all left is to render this, that will be done one of the modules of the rendering branch
     }
     result_particlesystem->valid = false;
+    #ifdef VSXU_TM
+    ((vsx_tm*)engine->tm)->l();
+    #endif
   }
 };
 

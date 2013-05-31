@@ -390,9 +390,7 @@ public:
           //s_param.sched_priority = 20;
           //pthread_setschedparam (worker_t[i],policy,&s_param);
 
-          result_tex[i].init_opengl_texture();
-    //      result_tex[i].upload_ram_bitmap(&result_bitm[i]);
-    //      loading_done = true;
+          result_tex[i].init_opengl_texture_2d();
         }
         bitm_timestamp = bitm->timestamp;
       }
@@ -405,7 +403,7 @@ public:
         if (count_finished == 6) {
           for (int i = 0; i < 6; ++i) {
             //printf("uploading plane %d\n",i);
-            result_tex[i].upload_ram_bitmap(&result_bitm[i]);
+            result_tex[i].upload_ram_bitmap_2d(&result_bitm[i]);
             result_bitm[i].valid = true;
             //delete[] result_bitm[i].data;
           }
@@ -543,8 +541,8 @@ public:
     }
     for (int i = 0; i < 6; ++i) {
       //printf("uploading plane %d\n",i);
-      result_tex[i].init_opengl_texture();
-      result_tex[i].upload_ram_bitmap(&result_bitm[i]);
+      result_tex[i].init_opengl_texture_2d();
+      result_tex[i].upload_ram_bitmap_2d(&result_bitm[i]);
     }
   }
 

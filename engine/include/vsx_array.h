@@ -37,7 +37,8 @@
 // Now you've been warned, use it for speed!
 
 template<class T>
-class vsx_array {
+class vsx_array
+{
   size_t allocated;
   size_t used;
   T* A;
@@ -126,7 +127,20 @@ public:
     used = val;
   }
 
-  void allocate(size_t index) {
+
+  void allocate_bytes(size_t b)
+  {
+    if (A)
+    {
+      free(A);
+    }
+    A = (T*)malloc( b );
+    used = b / sizeof(T);
+    allocated = used;
+  }
+
+  void allocate(size_t index)
+  {
     if (index >= allocated || allocated == 0)
     {
     	if (allocation_increment == 0) allocation_increment = 1;
@@ -145,6 +159,7 @@ public:
       used = index+1;
     }
   }
+
   T& operator[](unsigned long index) {
     allocate(index);
     return A[index];

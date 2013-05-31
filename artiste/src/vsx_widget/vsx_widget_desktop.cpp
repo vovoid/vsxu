@@ -101,7 +101,7 @@ void vsx_widget_desktop::init() {
 void vsx_widget_desktop::reinit() {
 	vsx_widget::reinit();
 #ifndef VSXU_PLAYER
-mtex.init_opengl_texture();
+mtex.init_opengl_texture_2d();
 mtex.load_jpeg(skin_path+"desktop.jpg");
 //    mtex.load_png(skin_path+"desktop.png");
 #endif
@@ -562,7 +562,7 @@ vsx_widget_desktop::vsx_widget_desktop() {
   ((vsx_widget_2d_console*)console)->set_destination(sv);
 
 #ifndef VSXU_PLAYER
-  mtex.init_opengl_texture();
+  mtex.init_opengl_texture_2d();
   mtex.load_jpeg(skin_path+"desktop.jpg");
 #endif
 

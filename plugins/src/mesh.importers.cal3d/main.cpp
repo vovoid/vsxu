@@ -349,7 +349,7 @@ public:
               if (h) {
                 resources.push_back(file_path+parts[1]);
                 char* a = engine->filesystem->f_gets_entire(h);
-                TiXmlDocument doc;
+                vsxTiXmlDocument doc;
                 doc.Parse(a);
                 free(a);
                 if (c_model->loadCoreSkeleton(doc)) {
@@ -369,7 +369,7 @@ public:
               if (h) {
                 resources.push_back(file_path+parts[1]);
                 char* a = engine->filesystem->f_gets_entire(h);
-                TiXmlDocument doc;
+                vsxTiXmlDocument doc;
                 doc.Parse(a);
                 free(a);
                 mesh_id = c_model->loadCoreMesh(doc);
@@ -446,7 +446,7 @@ public:
     #if (PLATFORM == PLATFORM_LINUX)
       if (thread_info.is_thread)
       {
-        char* cal = "cal3d::worker";
+        const char* cal = "cal3d::worker";
         prctl(PR_SET_NAME,cal);
       }
     #endif

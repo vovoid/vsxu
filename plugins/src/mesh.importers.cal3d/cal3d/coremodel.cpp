@@ -447,7 +447,7 @@ Cal::UserData CalCoreModel::getUserData()
 
 
 
-int CalCoreModel::loadCoreAnimation(TiXmlDocument &doc)
+int CalCoreModel::loadCoreAnimation(vsxTiXmlDocument &doc)
 {
   // the core skeleton has to be loaded already
   if(m_pCoreSkeleton == 0)
@@ -616,7 +616,7 @@ int CalCoreModel::unloadCoreAnimation(int coreAnimationId)
 
 
 
-int CalCoreModel::loadCoreMaterial(TiXmlDocument &doc)
+int CalCoreModel::loadCoreMaterial(vsxTiXmlDocument &doc)
 {
   // the core skeleton has to be loaded already
   if(m_pCoreSkeleton == 0)
@@ -785,7 +785,7 @@ int CalCoreModel::unloadCoreMaterial(int coreMaterialId)
  
 
 
-int CalCoreModel::loadCoreMesh(TiXmlDocument &doc) {
+int CalCoreModel::loadCoreMesh(vsxTiXmlDocument &doc) {
   // the core skeleton has to be loaded already
   if(m_pCoreSkeleton == 0)
   {
@@ -969,7 +969,7 @@ int CalCoreModel::unloadCoreMesh(int coreMeshId)
   *         \li \b false if an error happend
   *****************************************************************************/
 
-bool CalCoreModel::loadCoreSkeleton(TiXmlDocument &doc) {
+bool CalCoreModel::loadCoreSkeleton(vsxTiXmlDocument &doc) {
   // destroy the current core skeleton
   if(m_pCoreSkeleton != 0)
   {

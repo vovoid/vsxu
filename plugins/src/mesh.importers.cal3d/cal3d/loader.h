@@ -74,10 +74,10 @@ public:
   static CalCoreMesh *loadCoreMesh(CalDataSource& inputSrc);
   static CalCoreSkeleton *loadCoreSkeleton(CalDataSource& inputSrc);
 
-  static CalCoreAnimation *loadXmlCoreAnimation_xml(TiXmlDocument &doc, CalCoreSkeleton *skel=NULL);
-  static CalCoreSkeleton *loadXmlCoreSkeleton_xml(TiXmlDocument &doc);
-  static CalCoreMesh *loadXmlCoreMesh_xml(TiXmlDocument &doc);
-  static CalCoreMaterial *loadXmlCoreMaterial_xml(TiXmlDocument &doc);
+  static CalCoreAnimation *loadXmlCoreAnimation_xml(vsxTiXmlDocument &doc, CalCoreSkeleton *skel=NULL);
+  static CalCoreSkeleton *loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc);
+  static CalCoreMesh *loadXmlCoreMesh_xml(vsxTiXmlDocument &doc);
+  static CalCoreMaterial *loadXmlCoreMaterial_xml(vsxTiXmlDocument &doc);
 
 
   static void setLoadingMode(int flags);

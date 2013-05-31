@@ -366,6 +366,7 @@ int main(int argc, char* argv[])
 
 
   vsx_timer frame_delay;
+  int initial_vram_free = 0;
   while( running )
   {
     frame_delay.start();
@@ -398,9 +399,12 @@ int main(int argc, char* argv[])
 //          glGetIntegerv(GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX, &eviction_size);
 
           glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &available_memory);
-          float available_memory_f = (float)available_memory;
+//          float available_memory_f = (float)available_memory;
+
+          if (initial_vram_free == 0) initial_vram_free = available_memory >> 10;
 
           vsx_printf("GPU MEMORY INFO: Before frame: available vram: %d MB\n", available_memory >> 10);
+          vsx_printf("GPU MEMORY INFO: Probably used vram: %d MB\n", initial_vram_free - (available_memory >> 10));
 
           //if (gtm)
           //((vsx_tm*)gtm)->plot( available_memory_f, "gpu memory free" );

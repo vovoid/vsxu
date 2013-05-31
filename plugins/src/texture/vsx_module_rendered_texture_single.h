@@ -165,11 +165,6 @@ bool activate_offscreen() {
     rebuild = true;
   }
 
-  if (multisample->get() != multisample_int)
-  {
-    multisample_int = multisample->get();
-    rebuild = true;
-  }
 
   if (texture_size->get() >= 10)
   {

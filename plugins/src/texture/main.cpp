@@ -92,13 +92,13 @@ public:
 		bb.valid = true;
 
 		texture_a.locked = true;
-	  texture_a.init_opengl_texture();
+    texture_a.init_opengl_texture_2d();
 
 		texture_b.locked = true;
-	  texture_b.init_opengl_texture();
+    texture_b.init_opengl_texture_2d();
 
-		texture_a.upload_ram_bitmap(&ab,false);
-		texture_b.upload_ram_bitmap(&bb,false);
+    texture_a.upload_ram_bitmap_2d(&ab,false);
+    texture_b.upload_ram_bitmap_2d(&bb,false);
 
 		texture_a_out->set(&texture_a);
 		texture_b_out->set(&texture_b);

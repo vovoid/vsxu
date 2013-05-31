@@ -231,6 +231,7 @@ public:
   // depth mask
   void depth_mask_set(int n, bool debug = false)
   {
+    (void)debug;
 //    if (n == _depth_mask_enabled)
 //    {
 //      vsx_printf("depth mask already this\n");
@@ -245,6 +246,8 @@ public:
     {
       glDepthMask( GL_FALSE );
     }
+    #else
+    vsx_printf("warning: using depth mask without GL\n");
     #endif
   }
 
@@ -256,6 +259,7 @@ public:
   // depth test
   void depth_test_set(int n, bool debug = false)
   {
+    (void)debug;
 //    if (n == _depth_test_enabled)
 //      return;
     _depth_test_enabled = n;

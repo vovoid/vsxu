@@ -24,7 +24,7 @@ distribution.
 
 #include "tinyxml.h"
 
-#ifndef TIXML_USE_STL
+#ifndef vsxTiXml_USE_STL
 
 
 #include <stdlib.h>
@@ -33,8 +33,8 @@ distribution.
 
 #include "tinystr.h"
 
-// TiXmlString constructor, based on a C string
-TiXmlString::TiXmlString (const char* instring)
+// vsxTiXmlString constructor, based on a C string
+vsxTiXmlString::vsxTiXmlString (const char* instring)
 {
     unsigned newlen;
     char * newstring;
@@ -55,8 +55,8 @@ TiXmlString::TiXmlString (const char* instring)
     current_length = newlen - 1;
 }
 
-// TiXmlString copy constructor
-TiXmlString::TiXmlString (const TiXmlString& copy)
+// vsxTiXmlString copy constructor
+vsxTiXmlString::vsxTiXmlString (const vsxTiXmlString& copy)
 {
     unsigned newlen;
     char * newstring;
@@ -81,8 +81,8 @@ TiXmlString::TiXmlString (const TiXmlString& copy)
     current_length = newlen - 1;
 }
 
-// TiXmlString = operator. Safe when assign own content
-void TiXmlString ::operator = (const char * content)
+// vsxTiXmlString = operator. Safe when assign own content
+void vsxTiXmlString ::operator = (const char * content)
 {
     unsigned newlen;
     char * newstring;
@@ -103,7 +103,7 @@ void TiXmlString ::operator = (const char * content)
 }
 
 // = operator. Safe when assign own content
-void TiXmlString ::operator = (const TiXmlString & copy)
+void vsxTiXmlString ::operator = (const vsxTiXmlString & copy)
 {
     unsigned newlen;
     char * newstring;
@@ -124,8 +124,8 @@ void TiXmlString ::operator = (const TiXmlString & copy)
 }
 
 
-//// Checks if a TiXmlString contains only whitespace (same rules as isspace)
-//bool TiXmlString::isblank () const
+//// Checks if a vsxTiXmlString contains only whitespace (same rules as isspace)
+//bool vsxTiXmlString::isblank () const
 //{
 //    char * lookup;
 //    for (lookup = cstring; * lookup; lookup++)
@@ -134,8 +134,8 @@ void TiXmlString ::operator = (const TiXmlString & copy)
 //    return true;
 //}
 
-// append a const char * to an existing TiXmlString
-void TiXmlString::append( const char* str, int len )
+// append a const char * to an existing vsxTiXmlString
+void vsxTiXmlString::append( const char* str, int len )
 {
     char * new_string;
     unsigned new_alloc, new_size, size_suffix;
@@ -189,8 +189,8 @@ void TiXmlString::append( const char* str, int len )
 }
 
 
-// append a const char * to an existing TiXmlString
-void TiXmlString::append( const char * suffix )
+// append a const char * to an existing vsxTiXmlString
+void vsxTiXmlString::append( const char * suffix )
 {
     char * new_string;
     unsigned new_alloc, new_size;
@@ -236,13 +236,13 @@ void TiXmlString::append( const char * suffix )
     current_length = new_size - 1;
 }
 
-// Check for TiXmlString equuivalence
-//bool TiXmlString::operator == (const TiXmlString & compare) const
+// Check for vsxTiXmlString equuivalence
+//bool vsxTiXmlString::operator == (const vsxTiXmlString & compare) const
 //{
 //    return (! strcmp (c_str (), compare . c_str ()));
 //}
 
-//unsigned TiXmlString::length () const
+//unsigned vsxTiXmlString::length () const
 //{
 //    if (allocated)
 //        // return strlen (cstring);
@@ -251,7 +251,7 @@ void TiXmlString::append( const char * suffix )
 //}
 
 
-unsigned TiXmlString::find (char tofind, unsigned offset) const
+unsigned vsxTiXmlString::find (char tofind, unsigned offset) const
 {
     char * lookup;
 
@@ -264,7 +264,7 @@ unsigned TiXmlString::find (char tofind, unsigned offset) const
 }
 
 
-bool TiXmlString::operator == (const TiXmlString & compare) const
+bool vsxTiXmlString::operator == (const vsxTiXmlString & compare) const
 {
 	if ( allocated && compare.allocated )
 	{
@@ -276,7 +276,7 @@ bool TiXmlString::operator == (const TiXmlString & compare) const
 }
 
 
-bool TiXmlString::operator < (const TiXmlString & compare) const
+bool vsxTiXmlString::operator < (const vsxTiXmlString & compare) const
 {
 	if ( allocated && compare.allocated )
 	{
@@ -288,7 +288,7 @@ bool TiXmlString::operator < (const TiXmlString & compare) const
 }
 
 
-bool TiXmlString::operator > (const TiXmlString & compare) const
+bool vsxTiXmlString::operator > (const vsxTiXmlString & compare) const
 {
 	if ( allocated && compare.allocated )
 	{
@@ -300,4 +300,4 @@ bool TiXmlString::operator > (const TiXmlString & compare) const
 }
 
 
-#endif	// TIXML_USE_STL
+#endif	// vsxTiXml_USE_STL

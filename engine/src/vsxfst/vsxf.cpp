@@ -235,230 +235,258 @@ bool vsxf::is_archive_populated()
   return (archive_files.size() > 0);
 }
 
-  vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
+bool vsxf::is_file(const char* filename)
+{
+  vsxf_handle *fp;
+  fp = this->f_open(filename, "r");
+  if (fp == NULL)
   {
-    vsx_string i_filename(filename);
-    if (!i_filename.size()) return NULL;
-    vsxf_handle* handle = new vsxf_handle;
-    // 1.  are we archive or filesystem?
-    // 1a. archive:
-    //     find the file location in the disk archive in the archive specification
-    //     load/decompress filename from disk into ram
-    // 1b. file:
-    //     get a file descriptor from disk
-    if (type == VSXF_TYPE_FILESYSTEM)
-    {
-      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-        i_filename = str_replace("\\","/",i_filename);
-      #endif
-      #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-        i_filename = str_replace("/","\\",i_filename);
-      #endif
-      #ifdef VSXU_DEBUG
-        printf("vsxf::f_open %s base_path: %s\n\n", filename,base_path.c_str() );
-      #endif
-      handle->file_handle = fopen((base_path+i_filename).c_str(),mode);
-      if (handle->file_handle == NULL) {
-        delete handle;
-        return NULL;
-      } else
-      return handle;
-    }
-    else
-    {
-      FILE* l_handle = fopen(archive_name.c_str(),"rb");
+    return false;
+  }
+  this->f_close(fp);
+  return true;
+}
 
-      vsx_string mode_search(mode);
-      if (mode_search.find("r") != -1)
-      {
-        bool found = false;
-        vsx_string fname(filename);
-        unsigned long i = 0;
-        get_lock();
-        while (!found && i < archive_files.size())
-        {
-          //printf("trying file: %s\n",archive_files[i].filename.c_str());
-          if (archive_files[i].filename == fname)
-          {
-            found = true;
-            handle = new vsxf_handle;
-            handle->filename = fname;
-            handle->position = 0;
-            handle->size = archive_files[i].size;
-            handle->mode = VSXF_MODE_READ;
-            // decompress the data into the filehandle
-            //printf("nhandle size: %d\n",handle->size);
-            void* inBuffer = malloc(handle->size);
-            fseek(l_handle,archive_files[i].position-1,SEEK_SET);
-            if (!fread(inBuffer,1,handle->size,l_handle))
-            {
-              delete handle;
-              release_lock();
-              return NULL;
-            }
-            void* outBuffer = 0;
-            size_t outSize;
-            size_t outSizeProcessed;
-            if (LzmaRamGetUncompressedSize((unsigned char*)inBuffer, archive_files[i].size, &outSize) != 0)
-            {
-              printf("vsxf: lzma data error!");
-            }
-            if (outSize != 0)
-            {
-              outBuffer = malloc(outSize);
-            }
-            handle->file_data = 0;
-            if (outBuffer != 0)
-            {
-              LzmaRamDecompress((unsigned char*)inBuffer, archive_files[i].size, (unsigned char*)outBuffer, outSize, &outSizeProcessed, malloc, free);
-              handle->size = outSizeProcessed;
-              //printf("decompressed %d into %d bytes\n",handle->size, outSizeProcessed);
-              handle->file_data = outBuffer;
-              //printf("byte %s\n",outBuffer);
-              //FILE* ff = fmemopen (void *outBuffer, outSize, "r");
-            }
-            free(inBuffer);
-            fclose(l_handle);
-            release_lock();
-            return handle;
-          }
-          ++i;
-        }
-      } else
-      if (mode_search.find("w") != -1)
-      {
-        handle->position = 0;
-        handle->size = 0;
-        handle->file_data = (void*)(new vsx_avector<char>);
-        handle->filename = filename;
-        handle->mode = VSXF_MODE_WRITE;
-        return handle;
-      }
+
+bool vsxf::is_file(const vsx_string filename)
+{
+  vsxf_handle *fp;
+  fp = this->f_open(filename.c_str(), "r");
+  if (fp == NULL)
+  {
+    return false;
+  }
+  this->f_close(fp);
+  return true;
+}
+
+
+vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
+{
+  vsx_string i_filename(filename);
+  if (!i_filename.size()) return NULL;
+  vsxf_handle* handle = new vsxf_handle;
+  // 1.  are we archive or filesystem?
+  // 1a. archive:
+  //     find the file location in the disk archive in the archive specification
+  //     load/decompress filename from disk into ram
+  // 1b. file:
+  //     get a file descriptor from disk
+  if (type == VSXF_TYPE_FILESYSTEM)
+  {
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      i_filename = str_replace("\\","/",i_filename);
+    #endif
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+      i_filename = str_replace("/","\\",i_filename);
+    #endif
+    #ifdef VSXU_DEBUG
+      printf("vsxf::f_open %s base_path: %s\n\n", i_filename.c_str(),base_path.c_str() );
+    #endif
+    handle->file_handle = fopen((base_path+i_filename).c_str(),mode);
+    if (handle->file_handle == NULL)
+    {
+      vsx_printf("vsxf::f_open Error when opening \"%s\"\n", (base_path+i_filename).c_str());
       delete handle;
-      return 0;
+      return NULL;
+    } else
+    return handle;
+  }
+  else
+  {
+    FILE* l_handle = fopen(archive_name.c_str(),"rb");
+
+    vsx_string mode_search(mode);
+    if (mode_search.find("r") != -1)
+    {
+      bool found = false;
+      vsx_string fname(filename);
+      unsigned long i = 0;
+      get_lock();
+      while (!found && i < archive_files.size())
+      {
+        //printf("trying file: %s\n",archive_files[i].filename.c_str());
+        if (archive_files[i].filename == fname)
+        {
+          found = true;
+          handle = new vsxf_handle;
+          handle->filename = fname;
+          handle->position = 0;
+          handle->size = archive_files[i].size;
+          handle->mode = VSXF_MODE_READ;
+          // decompress the data into the filehandle
+          //printf("nhandle size: %d\n",handle->size);
+          void* inBuffer = malloc(handle->size);
+          fseek(l_handle,archive_files[i].position-1,SEEK_SET);
+          if (!fread(inBuffer,1,handle->size,l_handle))
+          {
+            delete handle;
+            release_lock();
+            return NULL;
+          }
+          void* outBuffer = 0;
+          size_t outSize;
+          size_t outSizeProcessed;
+          if (LzmaRamGetUncompressedSize((unsigned char*)inBuffer, archive_files[i].size, &outSize) != 0)
+          {
+            printf("vsxf: lzma data error!");
+          }
+          if (outSize != 0)
+          {
+            outBuffer = malloc(outSize);
+          }
+          handle->file_data = 0;
+          if (outBuffer != 0)
+          {
+            LzmaRamDecompress((unsigned char*)inBuffer, archive_files[i].size, (unsigned char*)outBuffer, outSize, &outSizeProcessed, malloc, free);
+            handle->size = outSizeProcessed;
+            //printf("decompressed %d into %d bytes\n",handle->size, outSizeProcessed);
+            handle->file_data = outBuffer;
+            //printf("byte %s\n",outBuffer);
+            //FILE* ff = fmemopen (void *outBuffer, outSize, "r");
+          }
+          free(inBuffer);
+          fclose(l_handle);
+          release_lock();
+          return handle;
+        }
+        ++i;
+      }
+    } else
+    if (mode_search.find("w") != -1)
+    {
+      handle->position = 0;
+      handle->size = 0;
+      handle->file_data = (void*)(new vsx_avector<char>);
+      handle->filename = filename;
+      handle->mode = VSXF_MODE_WRITE;
+      return handle;
     }
     delete handle;
     return 0;
   }
+  delete handle;
+  return 0;
+}
 
-  void vsxf::f_close(vsxf_handle* handle) {
-    if (handle) {
-      if (type == VSXF_TYPE_FILESYSTEM) fclose(handle->file_handle);
-      if (type == VSXF_TYPE_ARCHIVE) {
-        if (handle->mode == VSXF_MODE_WRITE) {
-          (*(vsx_avector<char>*)(handle->file_data)).push_back(0);
-          archive_add_file(
-            handle->filename,
-            &((*((vsx_avector<char>*)(handle->file_data)))[0]),
-            ((vsx_avector<char>*)(handle->file_data))->size()
-          );
-        }
-      }
-      delete handle;
-    }
-  }
-
-  int vsxf::f_puts(const char* buf, vsxf_handle* handle) {
-#ifndef VSXF_DEMO
-    //printf("fputs: %s\n",buf);
-    if (!handle) return 0;
-    if (type == VSXF_TYPE_FILESYSTEM) {
-      return fputs(buf,handle->file_handle);
-    }
+void vsxf::f_close(vsxf_handle* handle) {
+  if (handle) {
+    if (type == VSXF_TYPE_FILESYSTEM) fclose(handle->file_handle);
     if (type == VSXF_TYPE_ARCHIVE) {
-      //int run = 1;
-      int i = 0;
       if (handle->mode == VSXF_MODE_WRITE) {
-        while (buf[i]) {
-          //printf("i: %d\n",handle->position);
-          (*(vsx_avector<char>*)(handle->file_data))[handle->position = handle->size++] = buf[i++];
-          /*
-          char aa[2];
-          aa[0] = (*(vsx_avector<char>*)(handle->file_data))[handle->position];
-          aa[1] = 0;
-          printf("char added: %s",aa);
-          */
-        } // while
-      } // if
+        (*(vsx_avector<char>*)(handle->file_data)).push_back(0);
+        archive_add_file(
+          handle->filename,
+          &((*((vsx_avector<char>*)(handle->file_data)))[0]),
+          ((vsx_avector<char>*)(handle->file_data))->size()
+        );
+      }
     }
-#endif
-		return 0;
+    delete handle;
   }
+}
 
-  unsigned long vsxf::f_get_size(vsxf_handle* handle) {
-    if (type == VSXF_TYPE_FILESYSTEM) {
-      unsigned long size;
-      fseek (handle->file_handle, 0, SEEK_END);
-      size = ftell(handle->file_handle);
-      rewind(handle->file_handle);
-      return size;
-    } else {
-      return handle->size;
+int vsxf::f_puts(const char* buf, vsxf_handle* handle) {
+  //printf("fputs: %s\n",buf);
+  if (!handle) return 0;
+  if (type == VSXF_TYPE_FILESYSTEM) {
+    return fputs(buf,handle->file_handle);
+  }
+  if (type == VSXF_TYPE_ARCHIVE) {
+    //int run = 1;
+    int i = 0;
+    if (handle->mode == VSXF_MODE_WRITE) {
+      while (buf[i]) {
+        //printf("i: %d\n",handle->position);
+        (*(vsx_avector<char>*)(handle->file_data))[handle->position = handle->size++] = buf[i++];
+        /*
+        char aa[2];
+        aa[0] = (*(vsx_avector<char>*)(handle->file_data))[handle->position];
+        aa[1] = 0;
+        printf("char added: %s",aa);
+        */
+      } // while
+    } // if
+  }
+  return 0;
+}
+
+unsigned long vsxf::f_get_size(vsxf_handle* handle)
+{
+  if (type == VSXF_TYPE_FILESYSTEM) {
+    unsigned long size;
+    fseek (handle->file_handle, 0, SEEK_END);
+    size = ftell(handle->file_handle);
+    rewind(handle->file_handle);
+    return size;
+  } else {
+    return handle->size;
+  }
+}
+
+char* vsxf::f_gets_entire(vsxf_handle* handle)
+{
+  unsigned long size = f_get_size(handle);
+  char* buf = (char*)malloc(size+1);
+  if (buf) {
+    f_read((void*)buf, size, handle);
+    //printf("size aquired: %d\n",read_size);
+    buf[size] = 0;
+    return buf;
+  } else
+  {
+    printf("error opening file!\n");
+    exit(0);
+    return 0;
+  }
+}
+
+char* vsxf::f_gets(char* buf, unsigned long max_buf_size, vsxf_handle* handle) {
+  //printf("f_gets\n");
+  if (type == VSXF_TYPE_FILESYSTEM) {
+    return fgets(buf, max_buf_size, handle->file_handle);
+  } else {
+    unsigned long i = 0;
+    bool run = true;
+    //printf("handle->position: %d\n",handle->position);
+    //printf("handle->size: %d\n",handle->size);
+    while (handle->position < handle->size && i < max_buf_size && run) {
+      if (((char*)handle->file_data)[handle->position] == 0x0A) {
+        run = false;
+      }
+      buf[i] = ((char*)handle->file_data)[handle->position];
+      ++i;
+      ++handle->position;
     }
-  }
-
-  char* vsxf::f_gets_entire(vsxf_handle* handle) {
-    unsigned long size = f_get_size(handle);
-    char* buf = (char*)malloc(size+1);
-    if (buf) {
-      f_read((void*)buf, size, handle);
-      //printf("size aquired: %d\n",read_size);
-      buf[size] = 0;
+    if (handle->position < handle->size) {
+      buf[i] = 0;
+    }
+    if (i != 0) {
       return buf;
-    } else
-    {
-      printf("error opening file!\n");
-      exit(0);
-      return 0;
     }
+    return (char*)0;
   }
+}
 
-  char* vsxf::f_gets(char* buf, unsigned long max_buf_size, vsxf_handle* handle) {
-    //printf("f_gets\n");
-    if (type == VSXF_TYPE_FILESYSTEM) {
-      return fgets(buf, max_buf_size, handle->file_handle);
-    } else {
-      unsigned long i = 0;
-      bool run = true;
-      //printf("handle->position: %d\n",handle->position);
-      //printf("handle->size: %d\n",handle->size);
-      while (handle->position < handle->size && i < max_buf_size && run) {
-        if (((char*)handle->file_data)[handle->position] == 0x0A) {
-          run = false;
-        }
-        buf[i] = ((char*)handle->file_data)[handle->position];
-        ++i;
-        ++handle->position;
-      }
-      if (handle->position < handle->size) {
-        buf[i] = 0;
-      }
-      if (i != 0) {
-        return buf;
-      }
-      return (char*)0;
+int vsxf::f_read(void* buf, unsigned long num_bytes, vsxf_handle* handle) {
+  if (type == VSXF_TYPE_FILESYSTEM) {
+    //printf("reading up to %d bytes\n",num_bytes);
+    //printf("stream pos: %d\n",ftell(handle->file_handle));
+    unsigned long read_bytes = fread(buf,1,num_bytes,handle->file_handle);
+    //printf("ferror was: %d\n",ferror(handle->file_handle));
+    return read_bytes;
+  } else {
+    char* fd = (char*)handle->file_data;
+    if (fd == 0) return 0;
+    if (handle->position + num_bytes > handle->size) {
+      num_bytes = handle->size - handle->position;
     }
+    fd+=handle->position;
+    memcpy(buf,fd,num_bytes);
+    handle->position += num_bytes;
+    return num_bytes;
   }
-
-  int vsxf::f_read(void* buf, unsigned long num_bytes, vsxf_handle* handle) {
-    if (type == VSXF_TYPE_FILESYSTEM) {
-      //printf("reading up to %d bytes\n",num_bytes);
-      //printf("stream pos: %d\n",ftell(handle->file_handle));
-      unsigned long read_bytes = fread(buf,1,num_bytes,handle->file_handle);
-      //printf("ferror was: %d\n",ferror(handle->file_handle));
-      return read_bytes;
-    } else {
-      char* fd = (char*)handle->file_data;
-      if (fd == 0) return 0;
-      if (handle->position + num_bytes > handle->size) {
-        num_bytes = handle->size - handle->position;
-      }
-      fd+=handle->position;
-      memcpy(buf,fd,num_bytes);
-      handle->position += num_bytes;
-      return num_bytes;
-    }
-  }
+}
 
 // OTHER FUNCTIONS
 

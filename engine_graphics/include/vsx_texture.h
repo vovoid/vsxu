@@ -55,6 +55,14 @@ class vsx_texture
   bool depth_buffer_local;
   GLuint frame_buffer_handle;
   GLuint frame_buffer_object_handle;
+
+
+  bool is_multisample;
+  GLuint multisample_frame_buffer_handle;
+  GLuint multisample_render_buffer_color_handle;
+  GLuint multisample_render_buffer_depth_handle;
+
+
   int original_transform_obj;
   int frame_buffer_type;
   void* gl_state;
@@ -165,7 +173,8 @@ public:
 
   // General texture functions-------------------------------------------------
   // allocate an openGL texture ID
-  VSX_TEXTURE_DLLIMPORT void init_opengl_texture();
+  VSX_TEXTURE_DLLIMPORT void init_opengl_texture_1d();
+  VSX_TEXTURE_DLLIMPORT void init_opengl_texture_2d();
 
   // reuploads all textures in the t_glist so you don't have to bother :)
   // just use thie in the start function of the module and all should be ok unless you use
@@ -179,8 +188,10 @@ public:
 #ifdef VSXU_OPENGL_ES
 #define GL_BGRA_EXT 0
 #endif
-  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap(vsx_bitmap* vbitmap,bool mipmaps = false, bool upside_down = true);
-  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap(void* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
+  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap_1d(void* data, unsigned long size, bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT);
+  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap_2d(vsx_bitmap* vbitmap,bool mipmaps = false, bool upside_down = true);
+  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
+
 
   // load a tga file in the same thread as ours (why would anyone use tga when png's around? anyway..)
 //  void load_tga(vsx_string name, bool mipmaps = true);
