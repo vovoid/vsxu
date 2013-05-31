@@ -199,6 +199,8 @@ public:
   // process messages - this should be run once per physical frame
   virtual void process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive = false, bool ignore_timing = false, float max_time = 0.01f) = 0;
 
+  //virtual ~vsx_engine_abs() {}
+
 };
 
 #endif // VSX_ENGINE_ABS_H

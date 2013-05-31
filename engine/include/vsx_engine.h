@@ -190,7 +190,7 @@ public:
   bool stop();
 
   // destructor
-  ~vsx_engine();
+  virtual ~vsx_engine();
 };
 
 
