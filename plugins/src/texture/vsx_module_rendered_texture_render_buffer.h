@@ -1,10 +1,10 @@
-class vsx_module_rendered_texture_single : public vsx_module {
+class vsx_module_render_buffer : public vsx_module {
   // in
   vsx_module_param_render* my_render;
   vsx_module_param_int* texture_size;
-  vsx_module_param_int* support_feedback;
   vsx_module_param_int* float_texture;
   vsx_module_param_int* alpha_channel;
+  vsx_module_param_int* multisample;
   vsx_module_param_float4* clear_color;
   // out
   vsx_module_param_texture* texture_result;
@@ -13,21 +13,19 @@ class vsx_module_rendered_texture_single : public vsx_module {
   int dbuff;
   int tex_size_internal;
   vsx_texture* texture;
-  vsx_texture* texture2;
-  bool which_buffer;
   bool allocate_second_texture;
-  int support_feedback_int;
   int float_texture_int;
   int alpha_channel_int;
+  int multisample_int;
 
   GLuint glsl_prog;
 
   GLint	viewport[4];
 public:
-  vsx_module_rendered_texture_single() : texture(0),texture2(0),which_buffer(false) {};
+  vsx_module_render_buffer() : texture(0) {};
 
 void module_info(vsx_module_info* info) {
-  info->identifier = "texture;buffers;render_surface_single";
+  info->identifier = "texture;buffers;render_buffer";
   info->description =
     "This module captures rendering to a texture\n"
     "- color buffer RGBA\n"
@@ -39,8 +37,8 @@ void module_info(vsx_module_info* info) {
     "Via double-buffering, this module supports\n"
     "feedback loops - you can use its own texture\n"
     "to draw on itself.\n"
-    "It supports floating point textures\n"
-    "and optional alpha channel.\n"
+    "It supports floating point textures, optional\n"
+    "Alpha channel and optional multisampling.\n"
     "Dynamic textures can be very useful!";
 
 #ifndef VSX_NO_CLIENT
@@ -61,9 +59,9 @@ void module_info(vsx_module_info* info) {
       "VIEWPORT_SIZE_DIV_4|"
       "VIEWPORT_SIZEx2|"
       "VIEWPORT_SIZEx4,"
-    "support_feedback:enum?no|yes,"
     "float_texture:enum?no|yes,"
     "alpha_channel:enum?no|yes,"
+    "multisample:enum?no|yes,"
     "clear_color:float4"
   ;
   info->out_param_spec =
@@ -77,10 +75,6 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   my_render = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER, "render_in",false,false);
   res_x = 512;
 
-  support_feedback = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "support_feedback");
-  support_feedback->set(1);
-  support_feedback_int = 1;
-
   float_texture = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "float_texture");
   float_texture->set(0);
   float_texture_int = 0;
@@ -88,6 +82,9 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   alpha_channel = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "alpha_channel");
   alpha_channel->set(1);
   alpha_channel_int = 1;
+
+  multisample = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "multisample");
+  multisample_int = 0;
 
   clear_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4, "clear_color");
   clear_color->set(0,0);
@@ -113,19 +110,13 @@ bool can_run()
   return tex.has_buffer_support();
 }
 
-void start() {
-
-  which_buffer = false;
+void start()
+{
   texture = new vsx_texture;
   texture->set_gl_state(engine->gl_state);
-  texture->init_color_depth_buffer(res_x,res_x);
+  texture->init_render_buffer(res_x,res_x);
   texture->valid = false;
   texture_result->set(texture);
-
-  texture2 = new vsx_texture;
-  texture2->set_gl_state(engine->gl_state);
-  texture2->init_color_depth_buffer(res_x,res_x);
-  texture2->valid = false;
 }
 
 bool activate_offscreen() {
@@ -134,12 +125,6 @@ bool activate_offscreen() {
   #endif
 
   bool rebuild = false;
-
-  if (support_feedback->get() != support_feedback_int)
-  {
-    support_feedback_int = support_feedback->get();
-    rebuild = true;
-  }
 
   if (alpha_channel->get() != alpha_channel_int)
   {
@@ -150,6 +135,12 @@ bool activate_offscreen() {
   if (float_texture->get() != float_texture_int)
   {
     float_texture_int = float_texture->get();
+    rebuild = true;
+  }
+
+  if (multisample->get() != multisample_int)
+  {
+    multisample_int = multisample->get();
     rebuild = true;
   }
 
@@ -182,7 +173,8 @@ bool activate_offscreen() {
   }
 
 
-  if (texture_size->get() != tex_size_internal || rebuild) {
+  if (texture_size->get() != tex_size_internal || rebuild)
+  {
     //printf("generating new framebuffer\n");
     tex_size_internal = texture_size->get();
     switch (tex_size_internal) {
@@ -203,62 +195,25 @@ bool activate_offscreen() {
       case 14: res_x = abs(viewport[2] - viewport[0]) * 4; res_y = abs(viewport[3] - viewport[1]) * 4; break;
     };
 
-    if (0 == support_feedback_int)
-    {
-      texture->reinit_color_depth_buffer
-      (
-        res_x,
-        res_y,
-        float_texture_int,
-        alpha_channel_int
-      );
-      texture->bind();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      texture->_bind();
+    texture->reinit_render_buffer
+    (
+      res_x,
+      res_y,
+      float_texture_int,
+      alpha_channel_int,
+      multisample_int
+    );
+    texture->bind();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    texture->_bind();
 
-    }
-    if (1 == support_feedback_int)
-    {
-      // feedback textures ignores foreign depth buffer...
-      texture->reinit_color_depth_buffer
-      (
-        res_x,
-        res_y,
-        float_texture_int,
-        alpha_channel_int
-      );
-      texture->bind();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      texture->_bind();
-      texture2->reinit_color_depth_buffer
-      (
-        res_x,
-        res_y,
-        float_texture_int,
-        alpha_channel_int
-      );
-      texture2->bind();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      texture2->_bind();
-    }
   }
 
-  if (!which_buffer || support_feedback->get() == 0)
-    texture->begin_capture_to_buffer();
-  else
-    texture2->begin_capture_to_buffer();
+  texture->begin_capture_to_buffer();
 
   //printf("changing viewport to %d\n",res_x);
   glViewport(0,0,res_x,res_y);
@@ -274,26 +229,13 @@ bool activate_offscreen() {
 
 void deactivate_offscreen()
 {
-  if (!which_buffer || support_feedback_int == 0)
+  if (texture)
   {
-    if (texture)
-    {
-      texture->end_capture_to_buffer();
-      texture->valid = true;
-    }
-    ((vsx_module_param_texture*)texture_result)->set(texture);
-  }
-  else
-  {
-    if (texture2)
-    {
-      texture2->end_capture_to_buffer();
-      texture2->valid = true;
-    }
-    ((vsx_module_param_texture*)texture_result)->set(texture2);
+    texture->end_capture_to_buffer();
+    texture->valid = true;
   }
 
-  which_buffer = !which_buffer;
+  ((vsx_module_param_texture*)texture_result)->set(texture);
 
   #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
   //printf("resetting viewport to %d %d %d %d\n",viewport[0],viewport[1],viewport[2],viewport[3]);
@@ -311,12 +253,6 @@ void stop()
     #endif
     delete texture;
     texture = 0;
-
-    if (allocate_second_texture && texture2) {
-      texture2->deinit_buffer();
-      delete texture2;
-      texture2 = 0;
-    }
   }
 }
 
@@ -324,11 +260,9 @@ void on_delete() {
   stop();
 }
 
-~vsx_module_rendered_texture_single() {
+~vsx_module_render_buffer() {
   if (texture)
   delete texture;
-  if (texture2)
-  delete texture2;
 }
 
 };

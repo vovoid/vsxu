@@ -41,10 +41,10 @@
   #endif
 #endif
 
-#define VSX_TEXTURE_BUFFER_TYPE_FEEDBACK_PBUFFER 1
+#define VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER 1
 #define VSX_TEXTURE_BUFFER_TYPE_COLOR 2
 #define VSX_TEXTURE_BUFFER_TYPE_COLOR_DEPTH 3
-#define VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER 4
+
 
 class vsx_texture
 {
@@ -97,8 +97,11 @@ public:
   // query if the hardware has Frame Buffer Object support
   VSX_TEXTURE_DLLIMPORT bool has_buffer_support();
 
+
+
+
   // init an offscreen feedback possible buffer
-  VSX_TEXTURE_DLLIMPORT void init_feedback_buffer
+  VSX_TEXTURE_DLLIMPORT void init_render_buffer
   (
     int width, // width in pixels
     int height, // height in pixels
@@ -108,7 +111,7 @@ public:
   );
 
   // run in stop/start or when changing resolution
-  VSX_TEXTURE_DLLIMPORT void reinit_feedback_buffer
+  VSX_TEXTURE_DLLIMPORT void reinit_render_buffer
   (
     int width, // width in pixels
     int height, // height in pixels
@@ -117,14 +120,16 @@ public:
     bool multisample = false // enable anti-aliasing
   );
 
+
+
+
   // init an offscreen feedback possible buffer
   VSX_TEXTURE_DLLIMPORT void init_color_buffer
   (
     int width, // width in pixels
     int height, // height in pixels
     bool float_texture = false, // use floating point channels (8-bit is default)
-    bool alpha = true, // support alpha channel or not
-    bool multisample = false // enable anti-aliasing
+    bool alpha = true // support alpha channel or not
   );
 
   // run in stop/start or when changing resolution
@@ -133,9 +138,11 @@ public:
     int width, // width in pixels
     int height, // height in pixels
     bool float_texture = false, // use floating point channels (8-bit is default)
-    bool alpha = true, // support alpha channel or not
-    bool multisample = false // enable anti-aliasing
+    bool alpha = true // support alpha channel or not
   );
+
+
+
 
   // init an offscreen feedback possible buffer
   VSX_TEXTURE_DLLIMPORT void init_color_depth_buffer
@@ -144,7 +151,6 @@ public:
     int height, // height in pixels
     bool float_texture = false, // use floating point channels (8-bit is default)
     bool alpha = true, // support alpha channel or not
-    bool multisample = false, // enable anti-aliasing
     GLuint existing_depth_texture_id = 0
   );
 
@@ -155,31 +161,23 @@ public:
     int height, // height in pixels
     bool float_texture = false, // use floating point channels (8-bit is default)
     bool alpha = true, // support alpha channel or not
-    bool multisample = false, // enable anti-aliasing
     GLuint existing_depth_texture_id = 0
   );
 
 
-  // init an offscreen feedback possible buffer
-  VSX_TEXTURE_DLLIMPORT void init_render_buffer
-  (
-    int width, // width in pixels
-    int height, // height in pixels
-    bool float_texture = false, // use floating point channels (8-bit is default)
-    bool alpha = true, // support alpha channel or not
-    bool multisample = false, // enable anti-aliasing
-    GLuint existing_depth_texture_id = 0
-  );
 
 
   // remove/delete the buffer
   VSX_TEXTURE_DLLIMPORT void deinit_buffer();
+
+
 
   // begin capturing render output into the frame buffer object
   VSX_TEXTURE_DLLIMPORT void begin_capture_to_buffer();
 
   // end the capturing render output into the frame buffer object
   VSX_TEXTURE_DLLIMPORT void end_capture_to_buffer();
+
 
   VSX_TEXTURE_DLLIMPORT GLuint get_depth_buffer_handle();
 

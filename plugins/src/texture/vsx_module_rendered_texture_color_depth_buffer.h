@@ -5,7 +5,6 @@ class vsx_module_rendered_texture_color_depth_buffer : public vsx_module
   vsx_module_param_int* texture_size;
   vsx_module_param_int* float_texture;
   vsx_module_param_int* alpha_channel;
-  vsx_module_param_int* multisample;
   vsx_module_param_texture* depth_buffer_in;
   // out
   vsx_module_param_texture* texture_result;
@@ -19,7 +18,6 @@ class vsx_module_rendered_texture_color_depth_buffer : public vsx_module
 
   int float_texture_int;
   int alpha_channel_int;
-  int multisample_int;
   GLuint depth_buffer_in_int;
 
   GLuint glsl_prog;
@@ -44,8 +42,8 @@ public:
       "Another identical module to use (shared depth\n"
       "buffer, or it can (via the input) use another\n"
       "module's depth buffer.\n"
-      "It supports floating point textures, optional\n"
-      "Alpha channel and optional multisampling.\n"
+      "It supports floating point textures\n"
+      "and optional alpha channel.\n"
       "Dynamic textures can be very useful!";
 
   #ifndef VSX_NO_CLIENT
@@ -68,7 +66,6 @@ public:
         "VIEWPORT_SIZEx4,"
       "float_texture:enum?no|yes,"
       "alpha_channel:enum?no|yes,"
-      "multisample:enum?no|yes,"
       "depth_buffer:texture"
     ;
     info->out_param_spec =
@@ -90,9 +87,6 @@ public:
     alpha_channel = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "alpha_channel");
     alpha_channel->set(1);
     alpha_channel_int = 1;
-
-    multisample = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "multisample");
-    multisample_int = 0;
 
     texture_size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "texture_size");
     texture_size->set(2);
@@ -142,17 +136,6 @@ public:
       rebuild = true;
     }
 
-    if (multisample->get() != multisample_int)
-    {
-      multisample_int = multisample->get();
-      rebuild = true;
-    }
-
-    if (multisample->get() != multisample_int)
-    {
-      multisample_int = multisample->get();
-      rebuild = true;
-    }
     if (depth_buffer_in->connected && depth_buffer_in->valid)
     {
       vsx_texture* depth_in = depth_buffer_in->get();
@@ -239,7 +222,6 @@ public:
         res_y,
         float_texture_int,
         alpha_channel_int,
-        multisample_int,
         depth_buffer_in_int
       );
     }

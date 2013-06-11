@@ -314,8 +314,8 @@ void vsx_statelist::render()
     glGetIntegerv(GL_VIEWPORT, viewport);
     if (tex1.has_buffer_support())
     {
-      tex1.init_feedback_buffer(viewport[2], viewport[3]);
-      tex_to.init_feedback_buffer(viewport[2], viewport[3]);
+      tex1.init_render_buffer(viewport[2], viewport[3]);
+      tex_to.init_render_buffer(viewport[2], viewport[3]);
 
       get_files_recursive(own_path+"visuals_faders", &fader_file_list,"",".svn CVS");
       for (std::list<vsx_string>::iterator it = fader_file_list.begin(); it != fader_file_list.end(); ++it)

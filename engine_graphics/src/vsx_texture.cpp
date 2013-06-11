@@ -120,55 +120,10 @@ GLuint vsx_texture::get_depth_buffer_handle()
 }
 
 
-void init_render_buffer()
-{
-  uint fboID, ColorBufferID, DepthBufferID;
-    int samples;
-    char ErrorMessage[1024];
-    //We need to find out what the maximum supported samples is
-    glGetIntegerv(GL_MAX_SAMPLES_EXT, &samples);
-
-    //----------------------
-    //If for example, 16 is returned, then you can attempt to make a FBO with samples=0 to 16
-    //0 means no multisample. This is like using glFramebufferRenderbufferEXT instead of glRenderbufferStorageMultisampleEXT
-    //You can attempt to make sample from 1 to 16, but some of them might fail
-    //Now, let's make a FBO
-    glGenFramebuffersEXT(1, &fboID);
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboID);
 
 
 
-    //----------------------
-    //Now make a multisample color buffer
-    glGenRenderbuffersEXT(1, &ColorBufferID);
-    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, ColorBufferID);
-
-
-
-    //samples=4, format=GL_RGBA8, width=256, height=256
-    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_RGBA8, 256, 256);
-
-
-
-    //----------------------
-    //Make a depth multisample depth buffer
-    //You must give it the same samples as the color RB, same width and height as well
-    //else you will either get a GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT or some other error
-    glGenRenderbuffersEXT(1, &DepthBufferID);
-    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, DepthBufferID);
-
-
-    //samples=4, format=GL_DEPTH_COMPONENT24, width=256, height=256
-    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_DEPTH_COMPONENT24, 256, 256);
-
-
-    //----------------------
-    //It's time to attach the RBs to the FBO
-    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, ColorBufferID);
-    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, DepthBufferID);
-}
-
-void vsx_texture::init_feedback_buffer(
+void vsx_texture::init_render_buffer(
   int width,
   int height,
   bool float_texture,
@@ -192,18 +147,28 @@ void vsx_texture::init_feedback_buffer(
   }
 
   // set the buffer type (for deinit and capturing)
-  frame_buffer_type = VSX_TEXTURE_BUFFER_TYPE_FEEDBACK_PBUFFER;
+  frame_buffer_type = VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER;
 
   int prev_buf_l;
   GLuint tex_id;
   prev_buf_l = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
 
-  // color buffer
-  glGenRenderbuffersEXT(1, &color_buffer_handle);
 
-  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, color_buffer_handle);
 
-  if(enable_multisample && GLEW_EXT_framebuffer_multisample)
+  // create fbo for multi sampled content and attach depth and color buffers to it
+  glGenFramebuffersEXT(1, &frame_buffer_handle);
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle);
+
+
+
+
+
+  // color render buffer
+  glGenRenderbuffersEXT(1, &multisample_render_buffer_color_handle);
+  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, multisample_render_buffer_color_handle);
+
+
+  if(enable_multisample)
   {
     if (float_texture)
     {
@@ -226,8 +191,11 @@ void vsx_texture::init_feedback_buffer(
     }
   }
 
-  glGenRenderbuffersEXT(1, &depth_buffer_handle);
-  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depth_buffer_handle);
+
+  // depth render buffer
+  glGenRenderbuffersEXT(1, &multisample_render_buffer_depth_handle);
+  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, multisample_render_buffer_depth_handle);
+
   if(enable_multisample && GLEW_EXT_framebuffer_multisample)
   {
     glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_DEPTH_COMPONENT, width, height);
@@ -237,13 +205,15 @@ void vsx_texture::init_feedback_buffer(
     glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, width, height);
   }
 
-  // create fbo for multi sampled content and attach depth and color buffers to it
-  glGenFramebuffersEXT(1, &frame_buffer_handle);
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle);
-  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, color_buffer_handle);
-  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depth_buffer_handle);
+  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, multisample_render_buffer_color_handle);
+  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, multisample_render_buffer_depth_handle);
 
-  // create texture
+
+
+  // Texture and FBO to blit into
+
+
+  // create texture for blitting into
   glGenTextures(1, &tex_id);
   glBindTexture(GL_TEXTURE_2D, tex_id);
   if (float_texture)
@@ -261,7 +231,9 @@ void vsx_texture::init_feedback_buffer(
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   // set your texture parameters here if required ...
 
-  // create final fbo and attach texture to it
+
+
+  // create a normal fbo and attach texture to it
   glGenFramebuffersEXT(1, &frame_buffer_object_handle);
   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_object_handle);
   glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, tex_id, 0);
@@ -281,7 +253,7 @@ void vsx_texture::init_feedback_buffer(
 }
 
 
-void vsx_texture::reinit_feedback_buffer
+void vsx_texture::reinit_render_buffer
 (
   int width,
   int height,
@@ -291,7 +263,7 @@ void vsx_texture::reinit_feedback_buffer
 )
 {
   deinit_buffer();
-  init_feedback_buffer
+  init_render_buffer
   (
     width,
     height,
@@ -307,11 +279,9 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_buffer
   int width, // width in pixels
   int height, // height in pixels
   bool float_texture, // use floating point channels (8-bit is default)
-  bool alpha, // support alpha channel or not
-  bool multisample // enable anti-aliasing
+  bool alpha // support alpha channel or not
 )
 {
-  VSX_UNUSED(multisample);
   if (!gl_state) { vsx_printf("vsx_texture::init_color_buffer: vsx_texture gl_state not set!\n"); return; }
   locked = false;
   prev_buf = 0;
@@ -387,8 +357,7 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_buffer
   int width, // width in pixels
   int height, // height in pixels
   bool float_texture, // use floating point channels (8-bit is default)
-  bool alpha, // support alpha channel or not
-  bool multisample // enable anti-aliasing
+  bool alpha // support alpha channel or not
 )
 {
   deinit_buffer();
@@ -397,8 +366,7 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_buffer
     width,
     height,
     float_texture,
-    alpha,
-    multisample
+    alpha
   );
 
 }
@@ -411,7 +379,6 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
   int height, // height in pixels
   bool float_texture, // use floating point channels (8-bit is default)
   bool alpha, // support alpha channel or not
-  bool multisample, // enable anti-aliasing
   GLuint existing_depth_texture_id
 )
 {
@@ -602,7 +569,6 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_depth_buffer
   int height,
   bool float_texture,
   bool alpha,
-  bool multisample,
   GLuint existing_depth_texture_id
 )
 {
@@ -613,7 +579,6 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_depth_buffer
     height,
     float_texture,
     alpha,
-    multisample,
     existing_depth_texture_id
   );
 }
@@ -622,7 +587,7 @@ void vsx_texture::deinit_buffer()
 {
   if (!valid_fbo) return;
   if (!gl_state) { vsx_printf("vsx_texture::deinit_buffer: vsx_texture gl_state not set!\n"); return; }
-  if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_FEEDBACK_PBUFFER)
+  if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER)
   {
     #ifndef VSXU_OPENGL_ES
       glDeleteRenderbuffersEXT(1,&color_buffer_handle);
@@ -705,10 +670,10 @@ void vsx_texture::end_capture_to_buffer()
   if (locked)
   {
 
-    if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_FEEDBACK_PBUFFER)
+    if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER)
     {
     #ifndef VSXU_OPENGL_ES_2_0
-      glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, multisample_render_buffer_color_handle);
+      glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, frame_buffer_handle);
       glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, frame_buffer_object_handle);
       glBlitFramebufferEXT(0, 0, (GLint)texture_info.size_x-1, (GLint)texture_info.size_y-1, 0, 0, (GLint)texture_info.size_x-1, (GLint)texture_info.size_y-1, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     #endif

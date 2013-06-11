@@ -5,7 +5,6 @@ class vsx_module_rendered_texture_color_buffer : public vsx_module {
   vsx_module_param_int* texture_size;
   vsx_module_param_int* float_texture;
   vsx_module_param_int* alpha_channel;
-  vsx_module_param_int* multisample;
   // out
   vsx_module_param_texture* texture_result;
   // internal
@@ -16,7 +15,6 @@ class vsx_module_rendered_texture_color_buffer : public vsx_module {
 
   int float_texture_int;
   int alpha_channel_int;
-  int multisample_int;
 
   GLuint glsl_prog;
 
@@ -34,8 +32,8 @@ public:
       "Everything you render connected to this module\n"
       "is stored in the texture and can be reused when\n"
       "rendering other objects.\n"
-      "It supports floating point textures, optional\n"
-      "Alpha channel and optional multisampling.\n"
+      "It supports floating point textures and"
+      "optional Alpha channel.\n"
       "Dynamic textures can be very useful!";
   #ifndef VSX_NO_CLIENT
     info->in_param_spec = "render_in:render,"
@@ -56,8 +54,7 @@ public:
         "VIEWPORT_SIZEx2|"
         "VIEWPORT_SIZEx4,"
       "float_texture:enum?no|yes,"
-      "alpha_channel:enum?no|yes,"
-      "multisample:enum?no|yes"
+      "alpha_channel:enum?no|yes"
     ;
     info->out_param_spec =
       "color_buffer:texture"
@@ -77,9 +74,6 @@ public:
     alpha_channel = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "alpha_channel");
     alpha_channel->set(1);
     alpha_channel_int = 1;
-
-    multisample = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "multisample");
-    multisample_int = 0;
 
     texture_size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "texture_size");
     texture_size->set(2);
@@ -122,18 +116,6 @@ public:
     if (float_texture->get() != float_texture_int)
     {
       float_texture_int = float_texture->get();
-      rebuild = true;
-    }
-
-    if (multisample->get() != multisample_int)
-    {
-      multisample_int = multisample->get();
-      rebuild = true;
-    }
-
-    if (multisample->get() != multisample_int)
-    {
-      multisample_int = multisample->get();
       rebuild = true;
     }
 
@@ -191,8 +173,7 @@ public:
         res_x,
         res_y,
         float_texture_int,
-        alpha_channel_int,
-        multisample_int
+        alpha_channel_int
       );
     }
 

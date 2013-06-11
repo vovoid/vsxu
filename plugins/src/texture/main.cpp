@@ -187,9 +187,6 @@ public:
 
 //-----------------------------------------------------
 
-#include "vsx_module_rendered_texture_single.h"
-#include "vsx_module_rendered_texture_color_buffer.h"
-#include "vsx_module_rendered_texture_color_depth_buffer.h"
 
 
 //-------------------------------------------------------------------------------------- FU MO MO
@@ -509,6 +506,13 @@ public:
 #include "texture_blur.h"
 #endif    // OPENGL_ES
 
+#include "vsx_module_rendered_texture_single.h"
+#include "vsx_module_rendered_texture_color_buffer.h"
+#include "vsx_module_rendered_texture_color_depth_buffer.h"
+#include "vsx_module_rendered_texture_render_buffer.h"
+
+
+
 //******************************************************************************
 //*** F A C T O R Y ************************************************************
 //******************************************************************************
@@ -538,6 +542,7 @@ vsx_module* create_new_module(unsigned long module, void* args)
     case 6: return (vsx_module*)(new vsx_module_visual_fader);
     case 7: return (vsx_module*)(new vsx_module_rendered_texture_color_depth_buffer);
     case 8: return (vsx_module*)(new vsx_module_rendered_texture_color_buffer);
+    case 9: return (vsx_module*)(new vsx_module_render_buffer);
   };
   return 0;
 }
@@ -553,11 +558,12 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 6: delete (vsx_module_visual_fader*)m; break;
     case 7: delete (vsx_module_rendered_texture_color_depth_buffer*)m; break;
     case 8: delete (vsx_module_rendered_texture_color_buffer*)m; break;
+    case 9: delete (vsx_module_render_buffer*)m; break;
   }
 }
 
 unsigned long get_num_modules() {
-  return 9;
+  return 10;
 
 }
 
