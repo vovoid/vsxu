@@ -41,6 +41,8 @@
   #endif
 #endif
 
+
+// Frame Buffer Types (see frame_buffer_type)
 #define VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER 1
 #define VSX_TEXTURE_BUFFER_TYPE_COLOR 2
 #define VSX_TEXTURE_BUFFER_TYPE_COLOR_DEPTH 3
@@ -49,26 +51,34 @@
 class vsx_texture
 {
   static std::map<vsx_string, vsx_texture_info> t_glist;
+
   GLint prev_buf;
+
+
+  // FBO
   bool valid_fbo;
+  int frame_buffer_type;
+  GLuint frame_buffer_handle;
+
   GLuint color_buffer_handle;
+
   GLuint depth_buffer_handle;
   bool depth_buffer_local;
-  GLuint frame_buffer_handle;
-  GLuint frame_buffer_object_handle;
 
+  // Render buffer variables
+  GLuint render_buffer_color_handle;
+  GLuint render_buffer_depth_handle;
+  // temporary fbo handle to hold destination tex
+  GLuint frame_buffer_blit_handle;
 
-  bool is_multisample;
-  GLuint multisample_frame_buffer_handle;
-  GLuint multisample_render_buffer_color_handle;
-  GLuint multisample_render_buffer_depth_handle;
+  // save state for buffer capture
+  vsx_matrix buffer_save_matrix[3];
 
 
   int original_transform_obj;
-  int frame_buffer_type;
   void* gl_state;
-  // save state for buffer capture
-  vsx_matrix buffer_save_matrix[3];
+
+
 public:
   // this is if another texture gets a texture already in the list, to prevent it from unloading.
   // if not locked it can safely delete it. This is an approximation of course, but should work
@@ -119,10 +129,12 @@ public:
     bool alpha = true, // support alpha channel or not
     bool multisample = false // enable anti-aliasing
   );
+private:
+  VSX_TEXTURE_DLLIMPORT void deinit_render_buffer();
 
 
 
-
+public:
   // init an offscreen feedback possible buffer
   VSX_TEXTURE_DLLIMPORT void init_color_buffer
   (
@@ -141,9 +153,12 @@ public:
     bool alpha = true // support alpha channel or not
   );
 
+private:
+  VSX_TEXTURE_DLLIMPORT void deinit_color_buffer();
 
 
 
+public:
   // init an offscreen feedback possible buffer
   VSX_TEXTURE_DLLIMPORT void init_color_depth_buffer
   (
@@ -164,9 +179,12 @@ public:
     GLuint existing_depth_texture_id = 0
   );
 
+private:
+  VSX_TEXTURE_DLLIMPORT void deinit_color_depth_buffer();
 
 
 
+public:
   // remove/delete the buffer
   VSX_TEXTURE_DLLIMPORT void deinit_buffer();
 
@@ -180,7 +198,6 @@ public:
 
 
   VSX_TEXTURE_DLLIMPORT GLuint get_depth_buffer_handle();
-
 
 
   // General texture functions-------------------------------------------------
@@ -198,19 +215,12 @@ public:
   // upload a bitmap from RAM to the GPU
   // as an openGL texture. requires that init_opengl_texture
   // has been run.
-#ifdef VSXU_OPENGL_ES
-#define GL_BGRA_EXT 0
-#endif
   VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap_1d(void* data, unsigned long size, bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT);
   VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap_2d(vsx_bitmap* vbitmap,bool mipmaps = false, bool upside_down = true);
   VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
 
   // assumes width is 6x height (maps in order: -x, z, x, -z, -y, y
   VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap_cube(void* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
-
-
-  // load a tga file in the same thread as ours (why would anyone use tga when png's around? anyway..)
-//  void load_tga(vsx_string name, bool mipmaps = true);
 
   void* pti_l; // needed by the communication between the png thread and the texture. internal stuff.
   // load a png in the same thread as ours.

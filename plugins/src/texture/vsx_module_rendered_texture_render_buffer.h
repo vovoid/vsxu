@@ -203,23 +203,19 @@ bool activate_offscreen() {
       alpha_channel_int,
       multisample_int
     );
+
     texture->bind();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     texture->_bind();
-
   }
 
   texture->begin_capture_to_buffer();
 
-  //printf("changing viewport to %d\n",res_x);
-  glViewport(0,0,res_x,res_y);
   glDepthMask(GL_TRUE);
-  glClearColor(clear_color->get(0),clear_color->get(1),clear_color->get(2),clear_color->get(3));
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		// Clear Screen And Depth Buffer
   glEnable(GL_BLEND);
   glUseProgram(0);
 
@@ -232,15 +228,9 @@ void deactivate_offscreen()
   if (texture)
   {
     texture->end_capture_to_buffer();
-    texture->valid = true;
   }
 
   ((vsx_module_param_texture*)texture_result)->set(texture);
-
-  #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
-  //printf("resetting viewport to %d %d %d %d\n",viewport[0],viewport[1],viewport[2],viewport[3]);
-  glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
-  #endif
 }
 
 void stop()

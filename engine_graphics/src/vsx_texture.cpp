@@ -48,12 +48,21 @@ vsx_texture::vsx_texture()
   gl_state = 0x0;
   pti_l = 0;
   valid = false;
-  is_multisample = false;
+
   valid_fbo = false;
+  frame_buffer_type = 0;
+  frame_buffer_handle = 0;
+  color_buffer_handle = 0;
+  depth_buffer_handle = 0;
+  depth_buffer_local = true;
+
+  render_buffer_color_handle = 0;
+  render_buffer_depth_handle = 0;
+  frame_buffer_blit_handle = 0;
+
   locked = false;
   transform_obj = new vsx_transform_neutral;
   original_transform_obj = 1;
-  depth_buffer_local = true;
 }
 
 vsx_texture::vsx_texture(int id, int type)
@@ -63,7 +72,6 @@ vsx_texture::vsx_texture(int id, int type)
   texture_info.ogl_id = id;
   texture_info.ogl_type = type;
   transform_obj = new vsx_transform_neutral;
-  is_multisample = false;
   valid = true;
   valid_fbo = false;
   locked = false;
@@ -150,7 +158,6 @@ void vsx_texture::init_render_buffer(
   frame_buffer_type = VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER;
 
   int prev_buf_l;
-  GLuint tex_id;
   prev_buf_l = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
 
 
@@ -164,8 +171,8 @@ void vsx_texture::init_render_buffer(
 
 
   // color render buffer
-  glGenRenderbuffersEXT(1, &multisample_render_buffer_color_handle);
-  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, multisample_render_buffer_color_handle);
+  glGenRenderbuffersEXT(1, &render_buffer_color_handle);
+  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, render_buffer_color_handle);
 
 
   if(enable_multisample)
@@ -193,20 +200,42 @@ void vsx_texture::init_render_buffer(
 
 
   // depth render buffer
-  glGenRenderbuffersEXT(1, &multisample_render_buffer_depth_handle);
-  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, multisample_render_buffer_depth_handle);
+  glGenRenderbuffersEXT( 1, &render_buffer_depth_handle);
+  glBindRenderbufferEXT( GL_RENDERBUFFER_EXT, render_buffer_depth_handle);
 
   if(enable_multisample && GLEW_EXT_framebuffer_multisample)
   {
-    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_DEPTH_COMPONENT, width, height);
+    glRenderbufferStorageMultisampleEXT(
+      GL_RENDERBUFFER_EXT,
+      4,
+      GL_DEPTH_COMPONENT,
+      width,
+      height
+    );
   }
   else
   {
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, width, height);
+    glRenderbufferStorageEXT(
+      GL_RENDERBUFFER_EXT,
+      GL_DEPTH_COMPONENT,
+      width,
+      height
+    );
   }
 
-  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, multisample_render_buffer_color_handle);
-  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, multisample_render_buffer_depth_handle);
+  // attach the render buffers to the FBO handle
+  glFramebufferRenderbufferEXT(
+    GL_FRAMEBUFFER_EXT,
+    GL_COLOR_ATTACHMENT0_EXT,
+    GL_RENDERBUFFER_EXT,
+    render_buffer_color_handle
+  );
+  glFramebufferRenderbufferEXT(
+    GL_FRAMEBUFFER_EXT,
+    GL_DEPTH_ATTACHMENT_EXT,
+    GL_RENDERBUFFER_EXT,
+    render_buffer_depth_handle
+  );
 
 
 
@@ -214,8 +243,8 @@ void vsx_texture::init_render_buffer(
 
 
   // create texture for blitting into
-  glGenTextures(1, &tex_id);
-  glBindTexture(GL_TEXTURE_2D, tex_id);
+  glGenTextures(1, &color_buffer_handle);
+  glBindTexture(GL_TEXTURE_2D, color_buffer_handle);
   if (float_texture)
   {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, i_width, i_height, 0, GL_RGBA, GL_FLOAT, NULL);
@@ -234,22 +263,41 @@ void vsx_texture::init_render_buffer(
 
 
   // create a normal fbo and attach texture to it
-  glGenFramebuffersEXT(1, &frame_buffer_object_handle);
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_object_handle);
-  glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, tex_id, 0);
+  glGenFramebuffersEXT(1, &frame_buffer_blit_handle);
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_blit_handle);
+
+  // attach the texture to the FBO
+  glFramebufferTexture2DEXT(
+    GL_FRAMEBUFFER_EXT,
+    GL_COLOR_ATTACHMENT0_EXT,
+    GL_TEXTURE_2D,
+    color_buffer_handle,
+    0
+  );
 
   // TODO: create and attach depth buffer also
 
 
-  texture_info.ogl_id = tex_id;
+  texture_info.ogl_id = color_buffer_handle;
   texture_info.ogl_type = GL_TEXTURE_2D;
   texture_info.size_x = width;
   texture_info.size_y = height;
 
+  // restore eventual previous buffer
   ((vsx_gl_state*)gl_state)->framebuffer_bind(prev_buf_l);
 
-  valid = true; // valid for binding
-  valid_fbo = true; // valid for capturing
+  valid = true; // texture valid for binding
+  valid_fbo = true; // fbo valid for capturing
+}
+
+
+void vsx_texture::deinit_render_buffer()
+{
+  glDeleteRenderbuffersEXT(1,&render_buffer_color_handle);
+  glDeleteRenderbuffersEXT(1,&render_buffer_depth_handle);
+  glDeleteTextures(1,&color_buffer_handle);
+  glDeleteFramebuffersEXT(1, &frame_buffer_handle);
+  glDeleteFramebuffersEXT(1, &frame_buffer_blit_handle);
 }
 
 
@@ -273,8 +321,17 @@ void vsx_texture::reinit_render_buffer
   );
 }
 
+
+
+
+
+
+
+
+
+
 // init an offscreen color buffer, no depth
-VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_buffer
+void vsx_texture::init_color_buffer
 (
   int width, // width in pixels
   int height, // height in pixels
@@ -351,8 +408,20 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_buffer
   ((vsx_gl_state*)gl_state)->framebuffer_bind(prev_buf_l);
 }
 
+
+void vsx_texture::deinit_color_buffer()
+{
+  //Delete resources
+  glDeleteTextures(1, &color_buffer_handle);
+  depth_buffer_handle = 0;
+  depth_buffer_local = 0;
+  //Bind 0, which means render to back buffer, as a result, fb is unbound
+  glDeleteFramebuffersEXT(1, &frame_buffer_handle);
+
+}
+
 // run in stop/start or when changing resolution
-VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_buffer
+void vsx_texture::reinit_color_buffer
 (
   int width, // width in pixels
   int height, // height in pixels
@@ -371,9 +440,16 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_buffer
 
 }
 
+
+
+
+
+
+
+
 // init an offscreen color + depth buffer (as textures)
 // See http://www.opengl.org/wiki/Framebuffer_Object_Examples
-VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
+void vsx_texture::init_color_depth_buffer
 (
   int width, // width in pixels
   int height, // height in pixels
@@ -404,8 +480,6 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
   // save the previous FBO (stack behaviour)
   int prev_buf_l;
   prev_buf_l = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
-  //GLuint tex_id;
-//  glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l);
 
   GLuint texture_storage_type;
 
@@ -419,9 +493,7 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
   }
 
   GLuint texture_type;
-//  texture_type = GL_TEXTURE_2D;
-  texture_type = GL_TEXTURE_2D_MULTISAMPLE;
-
+  texture_type = GL_TEXTURE_2D;
 
 
 
@@ -447,7 +519,8 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
   {
     depth_buffer_handle = existing_depth_texture_id;
     depth_buffer_local = false;
-  } else
+  }
+  else
   {
     glGenTextures(1, &depth_buffer_handle);
     glBindTexture(GL_TEXTURE_2D, depth_buffer_handle);
@@ -466,51 +539,10 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
 
 
 
-
-
   // GENERATE FBO
   //-------------------------
   glGenFramebuffersEXT(1, &frame_buffer_handle);
   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle);
-
-
-
-//  if (multisample)
-//  {
-
-//    // CREATE RENDER BUFFERS
-
-
-//    //----------------------
-//    //Now make a multisample color buffer
-//    glGenRenderbuffersEXT(1, &render_buffer_color_handle);
-//    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, render_buffer_color_handle);
-
-
-
-//    //samples=4, format=GL_RGBA8, width=256, height=256
-//    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_RGBA8, i_width, i_height);
-
-
-
-//    //----------------------
-//    //Make a depth multisample depth buffer
-//    //You must give it the same samples as the color RB, same width and height as well
-//    //else you will either get a GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT or some other error
-//    glGenRenderbuffersEXT(1, &render_buffer_depth_handle);
-//    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, render_buffer_depth_handle);
-
-
-//    //samples=4, format=GL_DEPTH_COMPONENT24, width=256, height=256
-//    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_DEPTH_COMPONENT24, i_width, i_height);
-
-
-//    //----------------------
-//    //It's time to attach the RBs to the FBO
-//    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, render_buffer_color_handle);
-//    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, render_buffer_depth_handle);
-
-//  }
 
 
   // Attach textures to the FBO
@@ -518,20 +550,20 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
 
   //Attach 2D texture to this FBO
   glFramebufferTexture2DEXT(
-                              GL_FRAMEBUFFER_EXT,
-                              GL_COLOR_ATTACHMENT0_EXT,
-                              GL_TEXTURE_2D,
-                              color_buffer_handle,
-                              0/*mipmap level*/
-                           );
+    GL_FRAMEBUFFER_EXT,
+    GL_COLOR_ATTACHMENT0_EXT,
+    GL_TEXTURE_2D,
+    color_buffer_handle,
+    0/*mipmap level*/
+  );
   //-------------------------
   //Attach depth texture to FBO
   glFramebufferTexture2DEXT(
-        GL_FRAMEBUFFER_EXT,
-        GL_DEPTH_ATTACHMENT_EXT,
-        GL_TEXTURE_2D,
-        depth_buffer_handle,
-        0/*mipmap level*/
+    GL_FRAMEBUFFER_EXT,
+    GL_DEPTH_ATTACHMENT_EXT,
+    GL_TEXTURE_2D,
+    depth_buffer_handle,
+    0/*mipmap level*/
   );
   //-------------------------
 
@@ -547,7 +579,6 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
       texture_info.ogl_type = GL_TEXTURE_2D;
       texture_info.size_x = width;
       texture_info.size_y = height;
-//      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf_l);
       valid = true; // valid for binding
       valid_fbo = true; // valid for capturing
       break;
@@ -558,8 +589,22 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
 }
 
 
+void vsx_texture::deinit_color_depth_buffer()
+{
+  //Delete resources
+  glDeleteTextures(1, &color_buffer_handle);
+  if (depth_buffer_local)
+  {
+    glDeleteTextures(1, &depth_buffer_handle);
+  }
+  depth_buffer_handle = 0;
+  depth_buffer_local = 0;
+  //Bind 0, which means render to back buffer, as a result, fb is unbound
+  if ( ((vsx_gl_state*)gl_state)->framebuffer_bind_get() == frame_buffer_handle )
+    ((vsx_gl_state*)gl_state)->framebuffer_bind(0);
+  glDeleteFramebuffersEXT(1, &frame_buffer_handle);
 
-//http://www.opengl.org/wiki/GL_EXT_framebuffer_multisample
+}
 
 
 // run in stop/start or when changing resolution
@@ -583,48 +628,43 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_depth_buffer
   );
 }
 
+
+
+
+
+
+
 void vsx_texture::deinit_buffer()
 {
+  // sanity checks
   if (!valid_fbo) return;
-  if (!gl_state) { vsx_printf("vsx_texture::deinit_buffer: vsx_texture gl_state not set!\n"); return; }
+
+  if (!gl_state)
+  {
+    vsx_printf("vsx_texture::deinit_buffer: vsx_texture gl_state not set!\n");
+    return;
+  }
+
   if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER)
   {
-    #ifndef VSXU_OPENGL_ES
-      glDeleteRenderbuffersEXT(1,&color_buffer_handle);
-      glDeleteRenderbuffersEXT(1,&depth_buffer_handle);
-      glDeleteTextures(1,&texture_info.ogl_id);
-      glDeleteFramebuffersEXT(1, &frame_buffer_handle);
-      glDeleteFramebuffersEXT(1, &frame_buffer_object_handle);
-    #endif
-    return;
+    return deinit_render_buffer();
   }
+
   if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_COLOR)
   {
-    //Delete resources
-    glDeleteTextures(1, &color_buffer_handle);
-    depth_buffer_handle = 0;
-    depth_buffer_local = 0;
-    //Bind 0, which means render to back buffer, as a result, fb is unbound
-    glDeleteFramebuffersEXT(1, &frame_buffer_handle);
-    return;
+    deinit_color_buffer();
   }
+
   if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_COLOR_DEPTH)
   {
-    //Delete resources
-    glDeleteTextures(1, &color_buffer_handle);
-    if (depth_buffer_local)
-    {
-      glDeleteTextures(1, &depth_buffer_handle);
-    }
-    depth_buffer_handle = 0;
-    depth_buffer_local = 0;
-    //Bind 0, which means render to back buffer, as a result, fb is unbound
-    if ( ((vsx_gl_state*)gl_state)->framebuffer_bind_get() == frame_buffer_handle )
-      ((vsx_gl_state*)gl_state)->framebuffer_bind(0);
-    glDeleteFramebuffersEXT(1, &frame_buffer_handle);
-    return;
+    deinit_color_depth_buffer();
   }
+
 }
+
+
+
+
 
 
 void vsx_texture::begin_capture_to_buffer()
@@ -632,36 +672,30 @@ void vsx_texture::begin_capture_to_buffer()
   if (!gl_state) { vsx_printf("vsx_texture::begin_capture_to_buffer: vsx_texture gl_state not set!\n"); return; }
   if (!valid_fbo) return;
   if (locked) return;
-  #ifndef VSXU_OPENGL_ES
-    prev_buf = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
-    glPushAttrib(GL_ALL_ATTRIB_BITS );
-  #endif
-    ((vsx_gl_state*)gl_state)->matrix_get_v( VSX_GL_PROJECTION_MATRIX, buffer_save_matrix[0].m );
-    ((vsx_gl_state*)gl_state)->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, buffer_save_matrix[1].m );
-    ((vsx_gl_state*)gl_state)->matrix_get_v( VSX_GL_TEXTURE_MATRIX, buffer_save_matrix[2].m );
+
+  prev_buf = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
+  glPushAttrib(GL_ALL_ATTRIB_BITS );
+  ((vsx_gl_state*)gl_state)->matrix_get_v( VSX_GL_PROJECTION_MATRIX, buffer_save_matrix[0].m );
+  ((vsx_gl_state*)gl_state)->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, buffer_save_matrix[1].m );
+  ((vsx_gl_state*)gl_state)->matrix_get_v( VSX_GL_TEXTURE_MATRIX, buffer_save_matrix[2].m );
 
 
-    ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_PROJECTION_MATRIX );
-    ((vsx_gl_state*)gl_state)->matrix_load_identity();
-    ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
-    ((vsx_gl_state*)gl_state)->matrix_load_identity();
-    ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_TEXTURE_MATRIX );
-    ((vsx_gl_state*)gl_state)->matrix_load_identity();
+  ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+  ((vsx_gl_state*)gl_state)->matrix_load_identity();
+  ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+  ((vsx_gl_state*)gl_state)->matrix_load_identity();
+  ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+  ((vsx_gl_state*)gl_state)->matrix_load_identity();
 
   glEnable(GL_BLEND);
 
-  #ifdef VSXU_OPENGL_ES_1_0
-    glBindTexture(GL_TEXTURE_2D,0);
-    glBindFramebufferOES(GL_FRAMEBUFFER_OES, framebuffer_id);
-  #endif
-  #ifndef VSXU_OPENGL_ES
-    ((vsx_gl_state*)gl_state)->framebuffer_bind(frame_buffer_handle);
-  #endif
+  ((vsx_gl_state*)gl_state)->framebuffer_bind(frame_buffer_handle);
 
   glViewport(0,0,(int)texture_info.size_x, (int)texture_info.size_y);
 
   locked = true;
 }
+
 
 void vsx_texture::end_capture_to_buffer()
 {
@@ -672,19 +706,22 @@ void vsx_texture::end_capture_to_buffer()
 
     if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER)
     {
-    #ifndef VSXU_OPENGL_ES_2_0
       glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, frame_buffer_handle);
-      glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, frame_buffer_object_handle);
-      glBlitFramebufferEXT(0, 0, (GLint)texture_info.size_x-1, (GLint)texture_info.size_y-1, 0, 0, (GLint)texture_info.size_x-1, (GLint)texture_info.size_y-1, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-    #endif
+      glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, frame_buffer_blit_handle);
+      glBlitFramebufferEXT(
+        0,
+        0,
+        (GLint)texture_info.size_x-1,
+        (GLint)texture_info.size_y-1,
+        0,
+        0,
+        (GLint)texture_info.size_x-1,
+        (GLint)texture_info.size_y-1,
+        GL_COLOR_BUFFER_BIT,
+        GL_NEAREST
+      );
     }
-    #ifdef VSXU_OPENGL_ES_1_0
-      glBindFramebufferOES(GL_FRAMEBUFFER_OES, prev_buf);
-    #endif
-    #ifndef VSXU_OPENGL_ES
-      ((vsx_gl_state*)gl_state)->framebuffer_bind(prev_buf);
-//      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf);
-    #endif
+    ((vsx_gl_state*)gl_state)->framebuffer_bind(prev_buf);
     ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_PROJECTION_MATRIX );
     ((vsx_gl_state*)gl_state)->matrix_load_identity();
     ((vsx_gl_state*)gl_state)->matrix_mult_f( buffer_save_matrix[0].m );
@@ -695,9 +732,7 @@ void vsx_texture::end_capture_to_buffer()
     ((vsx_gl_state*)gl_state)->matrix_load_identity();
     ((vsx_gl_state*)gl_state)->matrix_mult_f( buffer_save_matrix[2].m );
 
-    #ifndef VSXU_OPENGL_ES_2_0
-      glPopAttrib();
-    #endif
+    glPopAttrib();
     locked = false;
   }
 }
