@@ -27,13 +27,13 @@
 
 typedef struct
 {
-  vsx_vector creation_pos; // position the particle had when created
   vsx_vector pos; // current position
   vsx_vector speed; // current speed
   vsx_color color; // color it starts out as (including alpha)
   vsx_color color_end; // color it interpolates to (including alpha)
   vsx_quaternion rotation; // rotation vector
   vsx_quaternion rotation_dir; // rotation vector
+  vsx_vector creation_pos; // position the particle had when created
   float orig_size; // size upon creation (also used for weight)
   float size; // rendering size
   float time; // how long it has lived

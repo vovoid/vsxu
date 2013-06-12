@@ -295,7 +295,7 @@ public:
     	size_lifespan_sequence->updates = 0;
       seq_size.reset();
       for (int i = 0; i < 8192; ++i) {
-        sizes[i] = seq_size.execute(1.0f/8192.0f);
+        sizes[i] = seq_size.execute(1.0f/8191.0f);
       }
     }
   }
@@ -307,7 +307,7 @@ public:
   		alpha_lifespan_sequence->updates = 0;
       seq_alpha.reset();
       for (int i = 0; i < 8192; ++i) {
-        alphas[i] = seq_alpha.execute(1.0f/8192.0f);
+        alphas[i] = seq_alpha.execute(1.0f/8191.0f);
       }
     }
   }
@@ -323,9 +323,9 @@ public:
       seq_g.reset();
       seq_b.reset();
       for (int i = 0; i < 8192; ++i) {
-        rs[i] = seq_r.execute(1.0f/8192.0f);
-        gs[i] = seq_g.execute(1.0f/8192.0f);
-        bs[i] = seq_b.execute(1.0f/8192.0f);
+        rs[i] = seq_r.execute(1.0f/8191.0f);
+        gs[i] = seq_g.execute(1.0f/8191.0f);
+        bs[i] = seq_b.execute(1.0f/8191.0f);
       }
     }
   }
@@ -334,8 +334,8 @@ public:
   {
     if (color_lifespan_type->get())
     {
-      //int index = (int)round(8192.0f*tt);
-      int index = (int)(8192.0f*tt);
+      //int index = (int)round(8191.0f*tt);
+      int index = (int)(8191.0f*tt);
       glColor4f(
           rs[index],
           gs[index],
@@ -478,7 +478,7 @@ public:
 
                   //int index8192 = (int)round(8192.0f*tt);
                   //printf("tt: %f %f\n",tt,pp->lifetime);
-                  int index8192 = (int)(8192.0f*tt);
+                  int index8192 = (int)(8191.0f*tt);
 
                   float ss = sizes[index8192];
                   shader_sizes_dp[i] = pp->size * ss;
@@ -500,7 +500,7 @@ public:
                   if (tt > 1.0f) tt = 1.0f;
 
                   //int index8192 = (int)round(8192.0f*tt);
-                  int index8192 = (int)(8192.0f*tt);
+                  int index8192 = (int)(8191.0f*tt);
                   shader_sizes_dp[i] = pp->size*(float)sizes[index8192];
                   shader_alphas_dp[i] = pp->color.a*(float)alphas[index8192];
 
@@ -647,7 +647,7 @@ public:
                     (*particles->particles)[i].color.g,
                     (*particles->particles)[i].color.b,
                     //(*particles->particles)[i].color.a*(float)alphas[(int)round(8192.0f*tt)],
-                    (*particles->particles)[i].color.a*(float)alphas[(int)(8192.0f*tt)],
+                    (*particles->particles)[i].color.a*(float)alphas[(int)(8191.0f*tt)],
                     tt
                   );
                   drawBlob(
