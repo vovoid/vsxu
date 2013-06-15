@@ -28,7 +28,7 @@ Compilation Instructions for a basic version of VSXu Ubuntu/Debian:
 
 Make sure you have met the build dependencies:
 
-      sudo apt-get install libglew1.6-dev libglfw-dev libpng12-dev libftgl-dev libjpeg-dev libpulse-dev libxrandr-dev make cmake g++ gcc git-core
+      sudo apt-get install libglew-dev libglfw-dev libpng12-dev libftgl-dev libjpeg-dev libpulse-dev libxrandr-dev make cmake g++ gcc git-core
 
 Optional dependencies:
 
