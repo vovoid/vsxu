@@ -354,5 +354,23 @@ public:
 };
 
 
+#undef sqr5
+#undef phi
+
+#undef ratio
 #undef ia
 #undef ib
+
+
+#undef v0
+#undef v1
+#undef v2
+#undef v3
+#undef v4
+#undef v5
+#undef v6
+#undef v7
+#undef v8
+#undef v9
+#undef v10
+#undef v11

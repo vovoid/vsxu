@@ -49,6 +49,9 @@
 #include "module_mesh_plane_uv_distort.h"
 #include "module_mesh_sphere_octahedron.h"
 #include "module_mesh_sphere_icosahedron.h"
+#include "module_mesh_kaleidoscope.h"
+#include "module_mesh_star.h"
+
 
 
 
@@ -90,7 +93,9 @@ vsx_module* create_new_module(unsigned long module, void* args)
     case 14: return (vsx_module*)(new module_mesh_grid);
     case 15: return (vsx_module*)(new module_mesh_plane_uv_distort);
     case 16: return (vsx_module*)(new module_mesh_sphere_octahedron);
-    case 17: return(vsx_module*)(new module_mesh_sphere_icosahedron);
+    case 17: return (vsx_module*)(new module_mesh_sphere_icosahedron);
+    case 18: return (vsx_module*)(new module_mesh_kaleidoscope);
+    case 19: return (vsx_module*)(new module_mesh_star);
   }
   return 0;
 }
@@ -115,9 +120,11 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 15: delete (module_mesh_plane_uv_distort*)m; break;
     case 16: delete (module_mesh_sphere_octahedron*)m; break;
     case 17: delete (module_mesh_sphere_icosahedron*)m; break;
+    case 18: delete (module_mesh_kaleidoscope*)m; break;
+    case 19: delete (module_mesh_star*)m; break;
   }
 } 
 
 unsigned long get_num_modules() {
-  return 18;
+  return 20;
 }

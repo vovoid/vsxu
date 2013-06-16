@@ -213,9 +213,9 @@ public:
           f.c = i2+1;
           mesh->data->faces.push_back(f);
 
-          vsx_vector v0 = mesh->data->vertices[f.a];
-          vsx_vector v1 = mesh->data->vertices[f.b];
-          vsx_vector v2 = mesh->data->vertices[f.c];
+          v0 = mesh->data->vertices[f.a];
+          v1 = mesh->data->vertices[f.b];
+          v2 = mesh->data->vertices[f.c];
 
           len.x = fabs( (v1 - v0).length()+(float)(rand()%1000)*0.0001f );
           len.y = fabs( (v2 - v1).length()+(float)(rand()%1000)*0.0001f );
