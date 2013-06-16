@@ -28,7 +28,8 @@
 #include "vsx_math_3d.h"
 
 #ifndef VSXU_OPENGL_ES
-class vsx_module_kaleido_star : public vsx_module {
+class vsx_module_kaleido_star : public vsx_module
+{
   // in
 	vsx_module_param_float* hemispheric;
 	vsx_module_param_texture* tex_a;
@@ -66,9 +67,6 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
 void output(vsx_module_param_abs* param) {
   VSX_UNUSED(param);
-  //glBlendFunc(GL_ONE, GL_ONE);
-
-  //float time = engine->vtime*4;
   if (tex_a) {
 
   	vsx_texture** ta;
@@ -78,31 +76,7 @@ void output(vsx_module_param_abs* param) {
       return;
     }
 
-  	//vsx_texture* tb;
-  	//tb = tex_b->get_addr();
-    //if (!tb) {
-//      render_result->set(0);
-//      return;
-//    }
   glDisable(GL_DEPTH_TEST);
-
-
-/*	glMatrixMode(GL_TEXTURE);
-	glPushMatrix();
-	glLoadIdentity();
-
-	glTranslatef(
-		(float)sin(time * 0.0053f),
-		(float)sin(time * 0.003f), 0);
-
-	glRotatef(time * 1, 0, 0, 1);
-	glRotatef(sin(time * 0.036f) * 60, 0, 1, 0);
-
-	glScalef(
-		1.850f + (float)sin(time * 0.0014f) * 0.07f,
-		1.850f + (float)sin(time * 0.0010f) * 0.07f,
-		1.850f + (float)sin(time * 0.0007f) * 0.07f);
-*/
 
   if (param_updates)
   {
@@ -123,17 +97,13 @@ void output(vsx_module_param_abs* param) {
   	static const int tessU = 4, tessV = 4;
   	int i, j;
 
-  //	glEnable(GL_TEXTURE_2D);
-  	//glColor3f(0.7f, 0.7f, 0.7f);
   	glColor3f(1, 1, 1);
-  //	glDisable(GL_BLEND);
-
-  //	glBindTexture(GL_TEXTURE_2D, tex[1]);
     float hemispheric_v = hemispheric->get();
 
   	glBegin(GL_TRIANGLES);
   	for(j = 0; j < nRings; j++)
-  		for(i = 0; i < nSectors; i++) {
+      for(i = 0; i < nSectors; i++)
+      {
   			float dist0  =  (float)j      * (1.0f   / nRings);
   			float angle0 =  (float)i      * (2.0f * (float)PI / nSectors);
   			float dist1  = ((float)j + 1.0f) * (1.0f   / nRings);
@@ -176,9 +146,6 @@ void output(vsx_module_param_abs* param) {
   					glTexCoord2f(u1, v0/*d1*/);	glVertex3f(x1, y1,(float)sqrt(fabs(1.0f-(x1*x1+y1*y1)))*hemispheric_v);
   					glTexCoord2f(u1, v1/*d1*/);	glVertex3f(x2, y2, r2);
 
-  					//glTexCoord3f(u0, v0, d0);	glVertex3f(x0, y0, -0.8f);
-  					//glTexCoord3f(u1, v0, d1);	glVertex3f(x1, y1, -0.8f);
-  					//glTexCoord3f(u1, v1, d1);	glVertex3f(x2, y2, -0.8f);
 
   					glTexCoord2f(u1, v1/*d1*/);	glVertex3f(x2, y2,r2);
   					glTexCoord2f(u0, v1/*d0*/);	glVertex3f(x3, y3,(float)sqrt(fabs(1.0f-(x3*x3+y3*y3)))*hemispheric_v);
@@ -188,98 +155,13 @@ void output(vsx_module_param_abs* param) {
   	glEnd();
   	glEndList();
     list_built = true;
-  } else
+  }
+  else
   {
     glCallList(dlist);
   }
 
 	(*ta)->_bind();
-
-//	glBindTexture(GL_TEXTURE_2D, tex[0]);
-
-/*	glEnable(GL_BLEND);
-	tb->bind();
-
-	glMatrixMode(GL_TEXTURE);
-	glLoadIdentity();
-	glTranslatef(
-		(float)sin(time * 0.023f),
-		(float)sin(time * 0.031f), 0);
-	glRotatef(time / 2, 0, 0, 1);
-	glScalef(
-		0.710f + (float)sin(time * 0.54f) * 0.05f,
-		0.710f + (float)sin(time * 0.70f) * 0.05f, 1);
-
-//	static const int nRings2 = 5;  tex7
-//	static const int nSectors2 = 26;
-//	static const int tessU2 = 6, tessV2 = 6;
-	static const int nRings2 = 8;
-	static const int nSectors2 = 24;
-	static const int tessU2 = 4, tessV2 = 4;
-
-	glBegin(GL_TRIANGLES);
-	for(j = 0; j < nRings2; j++)
-		for(i = 0; i < nSectors2; i++) {
-			float dist0  =  j      * (1.0f   / nRings2);
-			float angle0 =  i      * (2 * PI / nSectors2);
-			float dist1  = (j + 1) * (1.0f   / nRings2);
-			float angle1 = (i + 1) * (2 * PI / nSectors2);
-
-			float uFact = j&1?1:-1;
-			float vFact = i&1?1:-1;
-			float uOffs = j&1?0:1;
-			float vOffs = i&1?0:1;
-
-			for(int k = 0; k < tessV2; k++)
-				for(int l = 0; l < tessU2; l++) {
-					float u0 = (float)l / tessU2;
-					float v0 = (float)k / tessV2;
-					float u1 = (float)(l + 1) / tessU2;
-					float v1 = (float)(k + 1) / tessV2;
-					float d0 = dist0 * (1 - u0) + dist1 * u0;
-					float a0 = angle0 * (1 - v0) + angle1 * v0;
-					float d1 = dist0 * (1 - u1) + dist1 * u1;
-					float a1 = angle0 * (1 - v1) + angle1 * v1;
-
-					float x0 = cos(a0) * d0;
-					float y0 = sin(a0) * d0;
-					float x1 = cos(a0) * d1;
-					float y1 = sin(a0) * d1;
-					float x2 = cos(a1) * d1;
-					float y2 = sin(a1) * d1;
-					float x3 = cos(a1) * d0;
-					float y3 = sin(a1) * d0;
-
-					u0 = u0 * uFact + uOffs;
-					v0 = v0 * vFact + vOffs;
-					u1 = u1 * uFact + uOffs;
-					v1 = v1 * vFact + vOffs;
-
-					glTexCoord2f(u0, v0);	glVertex2f(x0, y0);
-					glTexCoord2f(u1, v0);	glVertex2f(x1, y1);
-					glTexCoord2f(u1, v1);	glVertex2f(x2, y2);
-
-					glTexCoord2f(u1, v1);	glVertex2f(x2, y2);
-					glTexCoord2f(u0, v1);	glVertex2f(x3, y3);
-					glTexCoord2f(u0, v0);	glVertex2f(x0, y0);
-				}
-		}
-	glEnd();
-	tb->_bind();*/
-
-/* glPopMatrix(); */
-
-
-	//glLoadIdentity();
-//	glMatrixMode(GL_MODELVIEW);
-//	glLoadIdentity();
-//	glMatrixMode(GL_PROJECTION) ;
-//	glLoadIdentity() ;
-//	gluPerspective(90.0, 1.0, 0.01, 30.0) ;
-//	glTranslatef(0.0f, 0.0f, -1.0f) ;
-
-//	glColor3f(1, 1, 1);
-
 
   }
   else render_result->set(0);
@@ -287,9 +169,7 @@ void output(vsx_module_param_abs* param) {
 }
 };
 #endif
-//////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////
+
 
 const int nRings = 6;
 const int nSectors = 16;
@@ -435,16 +315,7 @@ void run() {
       			mesh->data->faces[face_pos].b = vert_pos-2;
       			mesh->data->faces[face_pos].c = vert_pos-1;
             ++face_pos;
-//            printf("%d facepos\n",face_pos);
 
-
-  //					glTexCoord3f(u0, v0, d0);	glVertex2f(x0, y0);
-  //					glTexCoord3f(u1, v0, d1);	glVertex2f(x1, y1);
-  //					glTexCoord3f(u1, v1, d1);	glVertex2f(x2, y2);
-
-  //					glTexCoord3f(u1, v1, d1);	glVertex2f(x2, y2);
-  //					glTexCoord3f(u0, v1, d0);	glVertex2f(x3, y3);
-  //					glTexCoord3f(u0, v0, d0);	glVertex2f(x0, y0);
 				}
  		  loading_done = true;
  		  mesh->timestamp++;
