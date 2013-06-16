@@ -725,7 +725,7 @@ vsx_engine_param_connection* vsx_engine_param::get_conn_by_src(vsx_engine_param*
       return (*it);
     }
   }
-  return false;
+  return NULL;
 }
 
 vsx_engine_param_connection* vsx_engine_param::get_conn_by_dest(vsx_engine_param* dest) {
@@ -734,7 +734,7 @@ vsx_engine_param_connection* vsx_engine_param::get_conn_by_dest(vsx_engine_param
       return (*it);
     }
   }
-  return false;
+  return NULL;
 }
 
 vsx_engine_param::~vsx_engine_param() {
