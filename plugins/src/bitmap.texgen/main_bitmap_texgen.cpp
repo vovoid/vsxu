@@ -45,10 +45,10 @@
 // pixel[x,y] = (temp^7) mod 257;
 
 #include "module_bitmap_blob.h"
-#include "perlin_noise.h"
-#include "plasma.h"
-#include "subplasma.h"
-#include "blend.h"
+#include "module_bitmap_perlin_noise.h"
+#include "module_bitmap_plasma.h"
+#include "module_bitmap_subplasma.h"
+#include "module_bitmap_blend.h"
 
 
 //******************************************************************************
@@ -82,7 +82,7 @@ vsx_module* create_new_module(unsigned long module, void* args)
     case 1: { module_bitmap_blob* b = new module_bitmap_blob; b->c_type = 1; return (vsx_module*)b; }
     case 2: return (vsx_module*)(new module_bitmap_plasma);
     case 3: return (vsx_module*)(new module_bitmap_subplasma);
-    case 4: return (vsx_module*)(new module_bitmap_texgen_perlin_noise);
+    case 4: return (vsx_module*)(new module_bitmap_perlin_noise);
   }
   return 0;
 }
@@ -98,7 +98,7 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 1: case 0: delete (module_bitmap_blob*)m; break;
     case 2: delete (module_bitmap_plasma*)m; break;
     case 3: delete (module_bitmap_subplasma*)m; break;
-    case 4: delete (module_bitmap_texgen_perlin_noise*)m; break;
+    case 4: delete (module_bitmap_perlin_noise*)m; break;
   }
 }
 

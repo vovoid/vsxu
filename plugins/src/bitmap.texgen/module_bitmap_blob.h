@@ -43,7 +43,9 @@ inline float min (float x, float b)
 }
 #endif
 
-class module_bitmap_blob : public vsx_module {
+class module_bitmap_blob : public vsx_module
+{
+public:
   // in
 
 	// out
@@ -61,8 +63,6 @@ class module_bitmap_blob : public vsx_module {
   int p_updates;
   int my_ref;
 
-public:
-  //vsx_module_param_float* star_offset;
   vsx_module_param_float* arms;
   vsx_module_param_float* attenuation;
   vsx_module_param_float* star_flower;

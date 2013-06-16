@@ -27,7 +27,9 @@
 #include <vsx_bitmap.h>
 
 
-class module_bitmap_texgen_perlin_noise : public vsx_module {
+class module_bitmap_perlin_noise : public vsx_module
+{
+public:
   // in
 
   // out
@@ -43,7 +45,6 @@ class module_bitmap_texgen_perlin_noise : public vsx_module {
   int p_updates;
   int my_ref;
 
-public:
   vsx_module_param_float* rand_seed;
 
   // blob settings
@@ -73,7 +74,7 @@ public:
   // and decode film, you could run into several seconds of processing time.
   static void* worker(void *ptr) {
 
-    module_bitmap_texgen_perlin_noise* mod = ((module_bitmap_texgen_perlin_noise*)ptr);
+    module_bitmap_perlin_noise* mod = ((module_bitmap_perlin_noise*)ptr);
 
     Perlin* perlin = new Perlin(
                            mod->octave->get()+1,

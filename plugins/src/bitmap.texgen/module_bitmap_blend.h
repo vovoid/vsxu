@@ -111,10 +111,23 @@ typedef unsigned char uint8;
 
 // 0..24 blend types
 
-class module_bitmap_blend : public vsx_module {
-  
+class module_bitmap_blend : public vsx_module
+{
+public:
+
+  // in
+  vsx_module_param_bitmap* in1;
+  vsx_module_param_bitmap* in2;
+  vsx_module_param_int* filter_type;
+  vsx_module_param_int* bitmap_type;
+  vsx_module_param_float3* bitm1_ofs;
+  vsx_module_param_float3* bitm2_ofs;
+  vsx_module_param_float3* target_size;
+  vsx_module_param_float* bitm2_opacity;
+
   // out
   vsx_module_param_bitmap* result1;
+
   // internal
   bool need_to_rebuild;
 
@@ -122,32 +135,22 @@ class module_bitmap_blend : public vsx_module {
 
   pthread_t	worker_t;
 
-
   int p_updates;
 
-public:
+
   vsx_bitmap bitm;
   vsx_bitmap *bitm1;
   vsx_bitmap *bitm2;
-  // in
-  vsx_module_param_bitmap* in1;
-  vsx_module_param_bitmap* in2;
 
-  vsx_module_param_int* filter_type;
-  vsx_module_param_int* bitmap_type;
-
-  vsx_module_param_float3* bitm1_ofs;
-  vsx_module_param_float3* bitm2_ofs;
-  vsx_module_param_float3* target_size;
-  vsx_module_param_float* bitm2_opacity;
-  
   int blend_type;
-  
+
   vsx_bitmap*       work_bitmap;
   bool              worker_running;
   bool              thread_created;
   int               thread_state;
   int my_ref;
+
+
 
   // our worker thread, to keep the tough generating work off the main loop
   // this is a fairly simple operation, but when you want to generate fractals
@@ -162,12 +165,6 @@ public:
     unsigned long x,y,ix,iy;
 
     for (x = 0; x < bitm->size_x * bitm->size_y; x++) ((vsx_bitmap_32bt*)bitm->data)[x] = 0;
-    //TEEEEMP!
-    //bitm->timestamp++;
-    //bitm->valid = true;
-    //mod->thread_state = 2;
-    //return 0;
-    // END TEEEEEMP
     
     bool ixbound = false, iybound = false;
     iy = 0;
@@ -187,71 +184,90 @@ public:
 
     iybound = false;
     iy = 0;
+
     for (y = (unsigned long)mod->bitm2_ofs->get(1); y < bitm->size_y && !iybound; y++)
     {
       ix = 0;
       ixbound = false;
+
       for (x = (unsigned long)mod->bitm2_ofs->get(0); x < bitm->size_x && !ixbound; x++)
       {
         vsx_bitmap_32bt* data = (vsx_bitmap_32bt*)bitm->data;
         vsx_bitmap_32bt* data2 = (vsx_bitmap_32bt*)bitm2->data;
 
-#define BLEND_FUNC(BLT) \
-      for (int a = 0; a < 4; a++)\
-      {\
-        ((unsigned char*)&data[x + y * bitm->size_x])[a] = Blend_Opacity(((unsigned char*)&data2[ix + iy * bitm2->size_x])[a],((unsigned char*)&data[x + y * bitm->size_x])[a],BLT,mod->bitm2_opacity->get());\
-      }\
+        #define BLEND_FUNC(BLT) \
+        for (int a = 0; a < 4; a++)\
+        {\
+          ((unsigned char*)&data[x + y * bitm->size_x])[a] = Blend_Opacity(((unsigned char*)&data2[ix + iy * bitm2->size_x])[a],((unsigned char*)&data[x + y * bitm->size_x])[a],BLT,mod->bitm2_opacity->get());\
+        }\
       
-  switch (mod->filter_type->get())
-  {
-    case BLEND_NORMAL       : BLEND_FUNC(Blend_Normal) break;
-    case BLEND_LIGHTEN      : BLEND_FUNC(Blend_Lighten) break;
-    case BLEND_DARKEN       : BLEND_FUNC(Blend_Darken) break;
-    case BLEND_MULTIPLY     : BLEND_FUNC(Blend_Multiply) break;
-    case BLEND_AVERAGE      : BLEND_FUNC(Blend_Average) break;
-    case BLEND_ADD          : BLEND_FUNC(Blend_Add) break;
-    case BLEND_SUBTRACT     : BLEND_FUNC(Blend_Subtract) break;
-    case BLEND_DIFFERENCE   : BLEND_FUNC(Blend_Difference) break;
-    case BLEND_NEGATION     : BLEND_FUNC(Blend_Negation) break;
-    case BLEND_SCREEN       : BLEND_FUNC(Blend_Screen) break;
-    case BLEND_EXCLUSION    : BLEND_FUNC(Blend_Exclusion) break;
-    case BLEND_OVERLAY      : BLEND_FUNC(Blend_Overlay) break;
-    case BLEND_SOFT_LIGHT   : BLEND_FUNC(Blend_Soft_Light) break;
-    case BLEND_HARD_LIGHT   : BLEND_FUNC(Blend_Hard_Light) break;
-    case BLEND_COLOR_DODGE  : BLEND_FUNC(Blend_Color_Dodge) break;
-    case BLEND_COLOR_BURN   : BLEND_FUNC(Blend_Color_Burn) break;
-    case BLEND_LINEAR_DODGE : BLEND_FUNC(Blend_Linear_Dodge) break;
-    case BLEND_LINEAR_BURN  : BLEND_FUNC(Blend_Linear_Burn) break;
-    case BLEND_LINEAR_LIGHT : BLEND_FUNC(Blend_Linear_Light) break;
-    case BLEND_VIVID_LIGHT  : BLEND_FUNC(Blend_Vivid_Light) break;
-    case BLEND_PIN_LIGHT    : BLEND_FUNC(Blend_Pin_Light) break;
-    case BLEND_HARD_MIX     : BLEND_FUNC(Blend_Hard_Mix) break;
-    case BLEND_REFLECT      : BLEND_FUNC(Blend_Reflect) break;
-    case BLEND_GLOW         : BLEND_FUNC(Blend_Glow) break;
-    case BLEND_PHOENIX      : BLEND_FUNC(Blend_Phoenix) break;
-  }
+        switch (mod->filter_type->get())
+        {
+          case BLEND_NORMAL       : BLEND_FUNC(Blend_Normal) break;
+          case BLEND_LIGHTEN      : BLEND_FUNC(Blend_Lighten) break;
+          case BLEND_DARKEN       : BLEND_FUNC(Blend_Darken) break;
+          case BLEND_MULTIPLY     : BLEND_FUNC(Blend_Multiply) break;
+          case BLEND_AVERAGE      : BLEND_FUNC(Blend_Average) break;
+          case BLEND_ADD          : BLEND_FUNC(Blend_Add) break;
+          case BLEND_SUBTRACT     : BLEND_FUNC(Blend_Subtract) break;
+          case BLEND_DIFFERENCE   : BLEND_FUNC(Blend_Difference) break;
+          case BLEND_NEGATION     : BLEND_FUNC(Blend_Negation) break;
+          case BLEND_SCREEN       : BLEND_FUNC(Blend_Screen) break;
+          case BLEND_EXCLUSION    : BLEND_FUNC(Blend_Exclusion) break;
+          case BLEND_OVERLAY      : BLEND_FUNC(Blend_Overlay) break;
+          case BLEND_SOFT_LIGHT   : BLEND_FUNC(Blend_Soft_Light) break;
+          case BLEND_HARD_LIGHT   : BLEND_FUNC(Blend_Hard_Light) break;
+          case BLEND_COLOR_DODGE  : BLEND_FUNC(Blend_Color_Dodge) break;
+          case BLEND_COLOR_BURN   : BLEND_FUNC(Blend_Color_Burn) break;
+          case BLEND_LINEAR_DODGE : BLEND_FUNC(Blend_Linear_Dodge) break;
+          case BLEND_LINEAR_BURN  : BLEND_FUNC(Blend_Linear_Burn) break;
+          case BLEND_LINEAR_LIGHT : BLEND_FUNC(Blend_Linear_Light) break;
+          case BLEND_VIVID_LIGHT  : BLEND_FUNC(Blend_Vivid_Light) break;
+          case BLEND_PIN_LIGHT    : BLEND_FUNC(Blend_Pin_Light) break;
+          case BLEND_HARD_MIX     : BLEND_FUNC(Blend_Hard_Mix) break;
+          case BLEND_REFLECT      : BLEND_FUNC(Blend_Reflect) break;
+          case BLEND_GLOW         : BLEND_FUNC(Blend_Glow) break;
+          case BLEND_PHOENIX      : BLEND_FUNC(Blend_Phoenix) break;
+        }
       
-      ix++;
-      if (ix >= bitm2->size_x) ixbound = true;
+        ix++;
+        if (ix >= bitm2->size_x) ixbound = true;
+      }
+      iy++;
+      if (iy >= bitm2->size_y) iybound = true;
     }
-    iy++;
-    if (iy >= bitm2->size_y) iybound = true;
-  }
 
     bitm->timestamp++;
     bitm->valid = true;
     mod->thread_state = 2;
-    //printf("blob thread done\n");
-    // the thread will die here.
+
     return 0;
   }
   
   void module_info(vsx_module_info* info)
   {
-    info->in_param_spec = "bmp1:complex{in1:bitmap,bitm1_ofs:float3},bmp2:complex{in2:bitmap,bitm2_ofs:float3,bitm2_opacity:float},target_size:float3,\
-blend_type:enum?BLEND_NORMAL|BLEND_LIGHTEN|BLEND_DARKEN|BLEND_MULTIPLY|BLEND_AVERAGE|BLEND_ADD|BLEND_SUBTRACT|BLEND_DIFFERENCE|BLEND_NEGATION|\
-BLEND_SCREEN|BLEND_EXCLUSION|BLEND_OVERLAY|BLEND_SOFT_LIGHT|BLEND_HARD_LIGHT|BLEND_COLOR_DODGE|BLEND_COLOR_BURN|BLEND_LINEAR_DODGE|\
-BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HARD_MIX|BLEND_REFLECT|BLEND_GLOW|BLEND_PHOENIX,bitmap_type:enum?integer|float";
+    info->in_param_spec =
+      "bmp1:complex"
+      "{"
+        "in1:bitmap,"
+      "bitm1_ofs:float3"
+      "},"
+      "bmp2:complex"
+      "{"
+        "in2:bitmap,"
+        "bitm2_ofs:float3,"
+        "bitm2_opacity:float"
+      "},"
+      "target_size:float3,"
+      "blend_type:enum?"
+        "BLEND_NORMAL|BLEND_LIGHTEN|BLEND_DARKEN|BLEND_MULTIPLY|BLEND_AVERAGE|"
+        "BLEND_ADD|BLEND_SUBTRACT|BLEND_DIFFERENCE|BLEND_NEGATION|BLEND_SCREEN|"
+        "BLEND_EXCLUSION|BLEND_OVERLAY|BLEND_SOFT_LIGHT|BLEND_HARD_LIGHT|"
+        "BLEND_COLOR_DODGE|BLEND_COLOR_BURN|BLEND_LINEAR_DODGE|"
+        "BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|"
+        "BLEND_PIN_LIGHT|BLEND_HARD_MIX|BLEND_REFLECT|BLEND_GLOW|BLEND_PHOENIX,"
+      "bitmap_type:enum?integer|float"
+    ;
     vsx_string nn;
     switch (blend_type)
     {
@@ -281,15 +297,13 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
       case BLEND_GLOW         :nn = "blend_glow"; break;
       case BLEND_PHOENIX      :nn = "blend_phoenix"; break;
     }
+
     info->identifier = "bitmaps;filters;bitm_"+nn;
     info->out_param_spec = "bitmap:bitmap";
     info->component_class = "bitmap";
     info->description = "Multiplies bitmaps with each other\nMust be of same size!";
   }
   
-  /*void param_set_notify(const vsx_string& name) {
-    need_to_rebuild = true;
-  };*/
   int timestamp1;
   int timestamp2;
 
@@ -299,13 +313,30 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
     worker_running = false;
     thread_created = false;
     p_updates = -1;
+    work_bitmap = &bitm;
+    bitm.data = 0;
+    bitm.bpp = 4;
+    bitm.bformat = GL_RGBA;
+    bitm.valid = false;
+    my_ref = 0;
+    bitm_timestamp = bitm.timestamp = rand();
+    need_to_rebuild = true;
+    bitm.size_y = bitm.size_x = 0;
+    timestamp1 = timestamp2 = -1;
+    to_delete_data = 0;
+
+    //--------------------------------------------------------------------------------------------------
+
     in1 = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"in1");
+
     in2 = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"in2");
+
     result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
     
     target_size = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"target_size");
     target_size->set(512.0f,0);
     target_size->set(512.0f,1);
+
     bitm1_ofs = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"bitm1_ofs");
     bitm2_ofs = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"bitm2_ofs");
 
@@ -317,33 +348,25 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
 
     bitmap_type = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"bitmap_type");
     
-    work_bitmap = &bitm;
-    bitm.data = 0;
-    bitm.bpp = 4;
-    bitm.bformat = GL_RGBA;
-    bitm.valid = false;
-    my_ref = 0;
-    bitm_timestamp = bitm.timestamp = rand();
-    need_to_rebuild = true;
-    //bitm.data = new vsx_bitmap_32bt[256*256];
-    //bitm.size_y = bitm.size_x = 256;
-    bitm.size_y = bitm.size_x = 0;
-    timestamp1 = timestamp2 = -1;
-    to_delete_data = 0;
+    //--------------------------------------------------------------------------------------------------
+
     result1->set_p(bitm);
   }
+
   void *to_delete_data;
 
-  void run() {
+  void run()
+  {
     bitm1 = in1->get_addr();
     bitm2 = in2->get_addr();
+
     // initialize our worker thread, we don't want to keep the renderloop waiting do we?
     if (!worker_running)
     if (bitm1 && bitm2 && !to_delete_data)
     {
       if (bitm1->valid && bitm2->valid)
-      if (timestamp1 != bitm1->timestamp || timestamp2 != bitm2->timestamp || p_updates != param_updates) {
-        //printf("both bitmaps are OK it seems %d - %d\n",bitm1->timestamp,timestamp1);
+      if (timestamp1 != bitm1->timestamp || timestamp2 != bitm2->timestamp || p_updates != param_updates)
+      {
         p_updates = param_updates;
         bitm.valid = false;
         timestamp1 = bitm1->timestamp;
@@ -357,15 +380,15 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
           bitm.size_y = (int)target_size->get(1);
         }
         
-        //printf("creating thread\n");
         thread_state = 1;
         worker_running = true;
         thread_created = true;
         pthread_create(&worker_t, NULL, &worker, (void*)this);
-        //printf("done creating thread\n");
       }
     }
-    if (thread_state == 2) {
+
+    if (thread_state == 2)
+    {
       if (bitm.valid && bitm_timestamp != bitm.timestamp)
       {
         if (worker_running)
@@ -373,8 +396,8 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
           pthread_join(worker_t,0);
         }
         worker_running = false;
+
         // ok, new version
-        //printf("uploading subplasma to param\n");
         bitm_timestamp = bitm.timestamp;
         result1->set_p(bitm);
         loading_done = true;
@@ -382,8 +405,7 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
       thread_state = 3;
     }
     if (thread_state == 3)
-    if (to_delete_data
-        )
+    if ( to_delete_data )
     {
       delete[] (vsx_bitmap_32bt*)to_delete_data;
       to_delete_data = 0;
@@ -391,7 +413,8 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
     
   }
   
-  void on_delete() {
+  void on_delete()
+  {
     if (worker_running)
     {
       pthread_join(worker_t,NULL);
@@ -401,4 +424,5 @@ BLEND_LINEAR_BURN|BLEND_LINEAR_LIGHT|BLEND_VIVID_LIGHT|BLEND_PIN_LIGHT|BLEND_HAR
       delete[] (vsx_bitmap_32bt*)bitm.data;
     }
   }
+
 };

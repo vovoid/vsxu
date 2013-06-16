@@ -33,7 +33,7 @@
   PARAM_NAME_IN1, PARAM_NAME_IN2, PARAM_NAME_OUT, \
   PARAM_ID_IN1,   PARAM_ID_IN2,   PARAM_ID_OUT, \
   PARAM_DEFAULTS, OP_CODE, DESCRIPTION) \
-class vsx_arith_ ## OP_TYPE : public vsx_module {\
+class module_arith_ ## OP_TYPE : public vsx_module {\
   /* in*/\
 	vsx_module_param_ ## PARAM_TYPE_IN1* param1;\
 	vsx_module_param_ ## PARAM_TYPE_IN2* param2;\

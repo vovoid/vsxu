@@ -51,11 +51,17 @@ unsigned char catmullrom_interpolate(int v0, int v1, int v2, int v3, float xx)
 
 
 
-class module_bitmap_subplasma : public vsx_module {
+class module_bitmap_subplasma : public vsx_module
+{
+public:
   // in
-	
+  vsx_module_param_float* rand_seed;
+  vsx_module_param_int* size;
+  vsx_module_param_int* amplitude;
+
 	// out
 	vsx_module_param_bitmap* result1;
+
 	// internal
 	bool need_to_rebuild;
 	
@@ -67,12 +73,6 @@ class module_bitmap_subplasma : public vsx_module {
 
   int p_updates;
   int my_ref;
-
-public:
-  vsx_module_param_float* rand_seed;
-
-  vsx_module_param_int* size;
-  vsx_module_param_int* amplitude;
   
   vsx_bitmap*       work_bitmap;
   bool              thread_created;
@@ -83,122 +83,67 @@ public:
   // our worker thread, to keep the tough generating work off the main loop
   // this is a fairly simple operation, but when you want to generate fractals
   // and decode film, you could run into several seconds of processing time. 
-  static void* worker(void *ptr) {
-    
+  static void* worker(void *ptr)
+  {
     int x,y;
     module_bitmap_subplasma* mod = ((module_bitmap_subplasma*)ptr);
-    /*float rpx = mod->r_period->get(0);
-    float rpy = mod->r_period->get(1);
-    float gpx = mod->g_period->get(0);
-    float gpy = mod->g_period->get(1);
-    float bpx = mod->b_period->get(0);
-    float bpy = mod->b_period->get(1);
-    float apx = mod->a_period->get(0);
-    float apy = mod->a_period->get(1);
+    unsigned char* SubPlasma = new unsigned char[mod->i_size * mod->i_size];
+    for (x = 0; x < mod->i_size*mod->i_size; ++x) { SubPlasma[x] = 0; }
+    int np=2 << mod->amplitude->get();
 
-    float rox = mod->r_ofs->get(0);
-    float roy = mod->r_ofs->get(1);
-    float gox = mod->g_ofs->get(0);
-    float goy = mod->g_ofs->get(1);
-    float box = mod->b_ofs->get(0);
-    float boy = mod->b_ofs->get(1);
-    float aox = mod->a_ofs->get(0);
-    float aoy = mod->a_ofs->get(1);
-    
-    float ramp = mod->col_amp->get(0)*127.0;
-    float gamp = mod->col_amp->get(1)*127.0;
-    float bamp = mod->col_amp->get(2)*127.0;
-    float aamp = mod->col_amp->get(3)*127.0;
+    unsigned int musize = mod->i_size-1;
 
-    float rofs = mod->col_ofs->get(0)*127.0;
-    float gofs = mod->col_ofs->get(1)*127.0;
-    float bofs = mod->col_ofs->get(2)*127.0;
-    float aofs = mod->col_ofs->get(3)*127.0;
 
-    float attenuation = ((module_bitmap_subplasma*)ptr)->attenuation->get();
-    float arms = ((module_bitmap_subplasma*)ptr)->arms->get()*0.5f;
-    float star_flower = ((module_bitmap_subplasma*)ptr)->star_flower->get();
-    float angle = ((module_bitmap_subplasma*)ptr)->angle->get();*/
-//    int gsize = ((module_bitmap_subplasma*)ptr)->i_size;
-    //int hsize = ssize >> 1;
-    //float sp1 = (float)size + 1.0f;
-    //float size = (2.0f*pi)/(float)ssize;
-  
-  unsigned char* SubPlasma = new unsigned char[mod->i_size * mod->i_size];
-  for (x = 0; x < mod->i_size*mod->i_size; ++x) { SubPlasma[x] = 0; }
-  int np=2 << mod->amplitude->get();
-  //int rx=256;
-  //int ry=256;
+    unsigned int mmu = (unsigned int)(((float)mod->i_size/(float)np));
+    unsigned int mm1 = mmu-1;
+    unsigned int mm2 = mmu*2;
+    float mmf = (float)mmu;
 
-  unsigned int musize = mod->i_size-1;
+    vsx_rand rand;
 
-  //int ssize=rx/np;
+    rand.srand((int)mod->rand_seed->get());
+    for (y=0; y < np; y++)
+      for (x=0; x < np; x++)
+        SubPlasma[x*mmu+y*mmu*mod->i_size] = rand.rand();
 
-  unsigned int mmu = (unsigned int)(((float)mod->i_size/(float)np));
-  //printf("mmu: %d\n", mmu);
-  unsigned int mm1 = mmu-1;
-  unsigned int mm2 = mmu*2;
-  float mmf = (float)mmu;
+    for (y=0; y<np; y++)
+      for (x=0; x<mod->i_size; x++)
+      {
+        int p=x&(~mm1);
+        int zy=y*mmu*mod->i_size;
+        SubPlasma[x+zy] = catmullrom_interpolate(
+          SubPlasma[((p-mmu)&musize)+zy],
+          SubPlasma[((p   )&musize)+zy],
+          SubPlasma[((p+mmu)&musize)+zy],
+          SubPlasma[((p+mm2)&musize)+zy],
+          (x&mm1)/mmf);
+      }
 
-  vsx_rand rand;
+    int sl = mod->size->get()+3;
+    for (y=0; y<mod->i_size; y++)
+      for (x=0; x<mod->i_size; x++) {
+        int p=y&(~(mm1));
+        SubPlasma[x+y*mod->i_size] = catmullrom_interpolate(
+          SubPlasma[x+(((p-mmu)&musize)<<sl)],
+          SubPlasma[x+(((p   )&musize)<<sl)],
+          SubPlasma[x+(((p+mmu)&musize)<<sl)],
+          SubPlasma[x+(((p+mm2)&musize)<<sl)],
+          (y&(mm1))/mmf);
+      }
 
-  rand.srand((int)mod->rand_seed->get());
-  for (y=0; y < np; y++)
-    for (x=0; x < np; x++)
-      SubPlasma[x*mmu+y*mmu*mod->i_size] = rand.rand();
-
-  for (y=0; y<np; y++)
-    for (x=0; x<mod->i_size; x++) {
-      int p=x&(~mm1);
-      int zy=y*mmu*mod->i_size;
-      SubPlasma[x+zy] = catmullrom_interpolate(
-        SubPlasma[((p-mmu)&musize)+zy],
-        SubPlasma[((p   )&musize)+zy],
-        SubPlasma[((p+mmu)&musize)+zy],
-        SubPlasma[((p+mm2)&musize)+zy],
-        (x&mm1)/mmf);
-    }
-
-  int sl = mod->size->get()+3;
-  for (y=0; y<mod->i_size; y++)
-    for (x=0; x<mod->i_size; x++) {
-      int p=y&(~(mm1));
-      SubPlasma[x+y*mod->i_size] = catmullrom_interpolate(
-        SubPlasma[x+(((p-mmu)&musize)<<sl)],
-        SubPlasma[x+(((p   )&musize)<<sl)],
-        SubPlasma[x+(((p+mmu)&musize)<<sl)],
-        SubPlasma[x+(((p+mm2)&musize)<<sl)],
-        (y&(mm1))/mmf);
-    }
-
-  vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_subplasma*)ptr)->work_bitmap->data;
+    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_subplasma*)ptr)->work_bitmap->data;
 
 
     for (x = 0; x < mod->i_size * (mod->i_size); ++x, p++)
     {
-      //if (SubPlasma[x] != 0)
-      //printf("SubPlasma[x] = %d,", SubPlasma[x]);
       *p = 0xFF000000 | ((vsx_bitmap_32bt)SubPlasma[x]) << 16 | (vsx_bitmap_32bt)SubPlasma[x] << 8 | (vsx_bitmap_32bt)SubPlasma[x];// | 0 * 0x00000100 | 0;
 
     }
 
     delete[] SubPlasma;
-    /*for(y = -hsize; y < hsize; ++y)
-      for(x = -hsize; x < hsize; ++x,p++)
-      {
-        float xx = (size/(size-2.0f))*((float)x)+0.5f;
-        float yy = (size/(size-2.0f))*((float)y)+0.5f;
-        long r = (long)round(fmod(fabs((sin((x*size+rox)*rpx)*sin((y*size+roy)*rpy)+1.0f)*ramp+rofs),255.0));
-        long g = (long)round(fmod(fabs((sin((x*size+gox)*gpx)*sin((y*size+goy)*gpy)+1.0f)*gamp+gofs),255.0));
-        long b = (long)round(fmod(fabs((sin((x*size+box)*bpx)*sin((y*size+boy)*bpy)+1.0f)*bamp+bofs),255.0));
-        long a = (long)round(fmod(fabs((sin((x*size+aox)*apx)*sin((y*size+aoy)*apy)+1.0f)*aamp+aofs),255.0));
-        *p = 0x01000000 * a | b * 0x00010000 | g * 0x00000100 | r;
-      }*/
     ((module_bitmap_subplasma*)ptr)->work_bitmap->timestamp++;
     ((module_bitmap_subplasma*)ptr)->work_bitmap->valid = true;
     ((module_bitmap_subplasma*)ptr)->thread_state = 2;
-    //printf("blob thread done\n");
-    // the thread will die here.
     return 0;
   }
   
