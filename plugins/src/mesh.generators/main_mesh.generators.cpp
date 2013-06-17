@@ -28,7 +28,8 @@
 #include "vsx_math_3d.h"
 #include "vsx_sequence.h"
 #include "vsx_bspline.h"
-
+#include <pthread.h>
+#include <semaphore.h>
 
 
 #include "module_mesh_rand_points.h"
@@ -51,14 +52,11 @@
 #include "module_mesh_sphere_icosahedron.h"
 #include "module_mesh_kaleidoscope.h"
 #include "module_mesh_star.h"
+#include "module_mesh_metaballs.h"
+#include "module_mesh_ocean_threaded.h"
+#include "module_mesh_ocean_tunnel_threaded.h"
 
 
-
-
-
-//******************************************************************************
-//*** F A C T O R Y ************************************************************
-//******************************************************************************
 
 #ifndef _WIN32
 #define __declspec(a)
@@ -96,11 +94,15 @@ vsx_module* create_new_module(unsigned long module, void* args)
     case 17: return (vsx_module*)(new module_mesh_sphere_icosahedron);
     case 18: return (vsx_module*)(new module_mesh_kaleidoscope);
     case 19: return (vsx_module*)(new module_mesh_star);
+    case 20: return (vsx_module*)(new module_mesh_metaballs);
+    case 21: return (vsx_module*)(new module_mesh_ocean_threaded);
+    case 22: return (vsx_module*)(new module_mesh_ocean_tunnel_threaded);
   }
   return 0;
 }
 
-void destroy_module(vsx_module* m,unsigned long module) {
+void destroy_module(vsx_module* m,unsigned long module)
+{
   switch(module) {
     case 0: delete (module_mesh_needle*)m; break;
     case 1: delete (module_mesh_rand_points*)m; break;
@@ -122,9 +124,13 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 17: delete (module_mesh_sphere_icosahedron*)m; break;
     case 18: delete (module_mesh_kaleidoscope*)m; break;
     case 19: delete (module_mesh_star*)m; break;
+    case 20: delete (module_mesh_metaballs*)m; break;
+    case 21: delete (module_mesh_ocean_threaded*)m; break;
+    case 22: delete (module_mesh_ocean_tunnel_threaded*)m; break;
   }
 } 
 
-unsigned long get_num_modules() {
-  return 20;
+unsigned long get_num_modules()
+{
+  return 23;
 }
