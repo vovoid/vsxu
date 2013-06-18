@@ -2,7 +2,7 @@
 Name=VSXu Artiste [fullscreen]
 GenericName=Real Time OpenGL Graphics Editor
 Comment=VSXu Artiste - Create Real Time Graphics
-Exec=LD_LIBRARY_PATH=@CMAKE_INSTALL_PREFIX@/lib @CMAKE_INSTALL_PREFIX@/bin/vsxu_artiste -f
+Exec=/usr/bin/env LD_LIBRARY_PATH=@CMAKE_INSTALL_PREFIX@/lib @CMAKE_INSTALL_PREFIX@/bin/vsxu_artiste -f
 Icon=vsxu
 Type=Application
 Categories=Graphics;

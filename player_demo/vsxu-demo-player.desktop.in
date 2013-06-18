@@ -2,7 +2,7 @@
 Name=VSXu Player [fullscreen]
 GenericName=Music Visualizer
 Comment=VSXu Demo
-Exec=LD_LIBRARY_PATH=@CMAKE_INSTALL_PREFIX@/lib @CMAKE_INSTALL_PREFIX@/bin/vsxu_demo_player
+Exec=/usr/bin/env LD_LIBRARY_PATH=@CMAKE_INSTALL_PREFIX@/lib @CMAKE_INSTALL_PREFIX@/bin/vsxu_demo_player
 Icon=vsxu
 Type=Application
 Categories=AudioVideo;Audio;Player;

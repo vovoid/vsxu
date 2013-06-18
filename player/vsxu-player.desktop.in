@@ -2,7 +2,7 @@
 Name=VSXu Player [windowed]
 GenericName=Music Visualizer
 Comment=VSXu Player
-Exec=LD_LIBRARY_PATH=@CMAKE_INSTALL_PREFIX@/lib @CMAKE_INSTALL_PREFIX@/bin/vsxu_player
+Exec=/usr/bin/env LD_LIBRARY_PATH=@CMAKE_INSTALL_PREFIX@/lib @CMAKE_INSTALL_PREFIX@/bin/vsxu_player
 Icon=vsxu
 Type=Application
 Categories=AudioVideo;Audio;Player;
