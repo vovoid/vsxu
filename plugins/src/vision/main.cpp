@@ -45,17 +45,22 @@ vsx_module* create_new_module(unsigned long module) {
       return (vsx_module*)(new input_video_camera);
     case 2:
       return (vsx_module*)(new tracker_bitmap_color);
+    default:
+      return NULL;
   }
 }
 
 void destroy_module(vsx_module* m,unsigned long module) {
   switch(module){
     case 0:
-      return delete (input_video_file*)m;
+      delete (input_video_file*)m;
+      break;
     case 1:
-      return delete (input_video_camera*)m;
+      delete (input_video_camera*)m;
+      break;
     case 2:
-      return delete (tracker_bitmap_color*)m;
+      delete (tracker_bitmap_color*)m;
+      break;
   }
 }
 

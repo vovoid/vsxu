@@ -574,6 +574,7 @@ vsx_string vsx_get_data_path()
       r = symlink ( (PLATFORM_SHARED_FILES+"example-visuals").c_str(), (base_path+"visuals/examples").c_str() );
       r = symlink ( (PLATFORM_SHARED_FILES+"example-resources").c_str(), (base_path+"resources/examples").c_str() );
       r = symlink ( (PLATFORM_SHARED_FILES+"example-faders").c_str(), (base_path+"visuals_faders/examples").c_str() );
+      (void)r;
       #if (VSXU_DEBUG)
         symlink ( (PLATFORM_SHARED_FILES+"debug-states").c_str(), (base_path+"states/debug").c_str() );
       #endif
