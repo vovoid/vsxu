@@ -8,7 +8,7 @@ project (${module_id})
 ################################################################################
 # CMAKE PACKAGES ###############################################################
 ################################################################################
-find_package(PTHREAD REQUIRED)
+find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(PNG REQUIRED)
@@ -108,15 +108,15 @@ else(WIN32)
 #  target_link_libraries(${module_id} X11 GLEW.a GL GLU png.a jpeg.a z.a)
 endif(WIN32)
 
-if (NOT ${CMAKE_THREAD_LIBS_INIT}) # and crosscompile
-  set(CMAKE_THREAD_LIBS_INIT pthread)
-endif (NOT ${CMAKE_THREAD_LIBS_INIT})
+#if (NOT ${CMAKE_THREAD_LIBS_INIT}) # and crosscompile
+#  set(CMAKE_THREAD_LIBS_INIT pthread)
+#endif (NOT ${CMAKE_THREAD_LIBS_INIT})
 
 target_link_libraries(${module_id}
   ${PNG_LIBRARIES}
   ${JPEG_LIBRARIES}
   ${OPENGL_LIBRARIES}
-  ${PTHREAD_LIBRARY}
+  ${CMAKE_THREAD_LIBS_INIT}
   ${GLEW_LIBRARY}
   vsxu_engine
 )

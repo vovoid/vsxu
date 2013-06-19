@@ -10,7 +10,7 @@ project (${module_id})
 # CMAKE PACKAGES ###############################################################
 ################################################################################
 find_package(GLFW REQUIRED)
-find_package(PTHREAD REQUIRED)
+find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(PNG REQUIRED)
@@ -90,7 +90,6 @@ if(UNIX)
       ${OPENGL_LIBRARIES}
       ${PNG_LIBRARIES}
       ${JPEG_LIBRARIES}
-      Xrandr
     )
   endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 

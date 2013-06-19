@@ -10,7 +10,7 @@ project (${module_id})
 # CMAKE PACKAGES ###############################################################
 ################################################################################
 find_package(GLFW REQUIRED)
-find_package(PTHREAD REQUIRED)
+find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(PNG REQUIRED)
@@ -126,13 +126,12 @@ if(UNIX)
   target_link_libraries(
     ${module_id}
     ${GLFW_LIBRARY}
-    ${PTHREAD_LIBRARY}
+    ${CMAKE_THREAD_LIBS_INIT}
     ${GLEW_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
     ${TM_LIBRARY}
-    Xrandr
     vsxu_engine_graphics
     vsxu_engine
   )
@@ -156,7 +155,7 @@ if(WIN32)
     vsxu_engine
     vsxu_engine_graphics
     ${GLEW_LIBRARY}
-    ${PTHREAD_LIBRARY}
+    ${CMAKE_THREAD_LIBS_INIT}
     gdi32
     ${OPENGL_LIBRARIES}
   )

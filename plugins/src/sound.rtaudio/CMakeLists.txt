@@ -58,7 +58,7 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 #TODO: Add in the needed definitions for each Audio/Midi Library on each platform
 if(AUDIO_LIBRARIES)
   project (${module_id})
-  find_package(PTHREAD)
+  find_package(Threads)
   include (../cmake_globals.txt)
   include_directories ( lib/
                         fftreal/ )
@@ -74,6 +74,6 @@ if(AUDIO_LIBRARIES)
 
   add_library(${module_id} MODULE ${SOURCES})
   include(../cmake_suffix.txt)
-  target_link_libraries(${module_id} ${AUDIO_LIBRARIES} ${PTHREAD_LIBRARY})
+  target_link_libraries(${module_id} ${AUDIO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 endif(AUDIO_LIBRARIES)
 

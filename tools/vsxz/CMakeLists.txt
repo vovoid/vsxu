@@ -24,6 +24,7 @@ string(REGEX MATCH "[a-z._-]*$" module_id ${list_file_path})
 
 message("configuring            " ${module_id})
 
+find_package( Threads )
 
 set(SOURCES
   main.cpp
@@ -45,17 +46,11 @@ set_target_properties(
         vsxz
 )
 
+target_link_libraries(${module_id}
+  vsxu_engine
+  ${CMAKE_THREAD_LIBS_INIT}
+)
+
 if(UNIX)
-  target_link_libraries(${module_id}
-    vsxu_engine
-    pthread
-  )
   install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 endif(UNIX)
-
-
-if(WIN32)
-  target_link_libraries(${module_id}
-    vsxu_engine
-  )
-endif(WIN32)

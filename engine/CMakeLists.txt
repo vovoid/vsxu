@@ -228,5 +228,5 @@ endif()
 
 target_link_libraries(${module_id}
   ${DL_LIBRARY}
-  ${PTHREAD_LIBRARY}
+  ${CMAKE_THREAD_LIBS_INIT}
 )
