@@ -50,7 +50,7 @@
 
 class vsx_texture
 {
-  static std::map<vsx_string, vsx_texture_info> t_glist;
+  static std::map<vsx_string, vsx_texture_glist_holder> t_glist;
 
   GLint prev_buf;
 
@@ -74,16 +74,18 @@ class vsx_texture
   // save state for buffer capture
   vsx_matrix buffer_save_matrix[3];
 
+  // to prevent double-begins, lock the buffer
+  bool capturing_to_buffer;
+
 
   int original_transform_obj;
   void* gl_state;
 
 
 public:
-  // this is if another texture gets a texture already in the list, to prevent it from unloading.
-  // if not locked it can safely delete it. This is an approximation of course, but should work
-  // in most cases.
-  bool locked;
+  // This is a hint to tell the unload function this is an alias of another
+  // texture, found in the glist. Thus, we don't own the opengl texture id.
+  bool is_glist_alias;
 
   // name of the texture
   vsx_string name;
@@ -269,11 +271,7 @@ public:
 
   VSX_TEXTURE_DLLIMPORT vsx_texture();
   VSX_TEXTURE_DLLIMPORT vsx_texture(int id, int type);
-  ~vsx_texture()
-  {
-    if (original_transform_obj)
-    delete transform_obj;
-  }
+  VSX_TEXTURE_DLLIMPORT ~vsx_texture();
 
   VSX_TEXTURE_DLLIMPORT void unload();
 };

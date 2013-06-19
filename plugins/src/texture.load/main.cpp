@@ -81,7 +81,6 @@ public:
 	  //bitm.valid = false;
 	  bitm_timestamp = 0;
 	  texture = new vsx_texture;
-	  texture->locked = true;
     texture->init_opengl_texture_2d();
 	
 	  result_texture = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");  
@@ -306,7 +305,6 @@ void output(vsx_module_param_abs* param)
       if (texture == 0x0)
       {
         texture = new vsx_texture;
-        texture->locked = true;
         texture->init_opengl_texture_2d();
         texture->valid = false;
       }
@@ -464,7 +462,6 @@ public:
     texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
 
   	texture = new vsx_texture;
-    texture->locked = true;
     texture->init_opengl_texture_2d();
   }
   
@@ -731,7 +728,6 @@ public:
     texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
 
     texture = new vsx_texture;
-    texture->locked = true;
     texture->init_opengl_texture_2d();
   }
 

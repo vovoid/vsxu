@@ -223,7 +223,6 @@ vsx_logo_intro::vsx_logo_intro() {
   destroy_textures = true;
   // sweet sweet luuuuuu <3
   luna = new vsx_texture;
-  luna->locked = true;
   luna->init_opengl_texture_2d();
   #ifdef VSXU_DEBUG
     printf("shared files: %s\n", (PLATFORM_SHARED_FILES).c_str() );
@@ -231,7 +230,6 @@ vsx_logo_intro::vsx_logo_intro() {
   //printf("%s\n",(vsx_string(PLATFORM_SHARED_FILES)+vsx_string("gfx/vsxu_logo.jpg")).c_str());
   luna->load_jpeg(PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo.jpg",false);
   luna_bkg = new vsx_texture;
-  luna_bkg->locked = true;
   luna_bkg->init_opengl_texture_2d();
   luna_bkg->load_jpeg(PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo_bkg.jpg",false);
   timer.start();

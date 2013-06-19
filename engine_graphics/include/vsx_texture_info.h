@@ -152,30 +152,47 @@ public:
 	}
 };
 
+
+
 //--------------------------------------------------
 
-class vsx_texture_info {
+#define VSX_TEXTURE_INFO_TYPE_OTHER 0
+#define VSX_TEXTURE_INFO_TYPE_PNG 1
+#define VSX_TEXTURE_INFO_TYPE_JPG 2
+
+class vsx_texture_info
+{
 public:
+
   // size of the texture in pixels
   float size_x;
   float size_y;
 
-  int type; // 0 = tga, 1 = png
+  int type;
 	GLuint ogl_id;
 	GLuint ogl_type;
-
-	void set_id(GLuint id) {ogl_id = id;}
-	void set_type(GLuint ntype) {ogl_type = ntype;}
-
-	GLuint get_id() {return ogl_id;}
-	GLuint get_type() {return ogl_type;}
 
   vsx_texture_info() :
     size_x(0.0f),
     size_y(0.0f),
+    type(VSX_TEXTURE_INFO_TYPE_OTHER),
     ogl_id(0),
     ogl_type(0)
   {}
 };
+
+class vsx_texture_glist_holder
+{
+public:
+  // glist reference counter
+  size_t references;
+  vsx_texture_info* texture_info;
+  vsx_texture_glist_holder() :
+    references(0),
+    texture_info(0x0)
+  {
+  }
+};
+
 
 #endif
