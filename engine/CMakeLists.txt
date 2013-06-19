@@ -9,7 +9,15 @@ project (${module_id})
 ################################################################################
 # CMAKE PACKAGES ###############################################################
 ################################################################################
-include(cmake_packages.txt)
+find_package(DL REQUIRED)
+find_package(Threads REQUIRED)
+
+if(VSXU_TM)
+  find_package(Tm REQUIRED)
+  include_directories(
+    ${TM_INCLUDE_PATH}
+  )
+endif()
 
 ################################################################################
 # INCLUDES #####################################################################
@@ -24,12 +32,6 @@ include_directories(
   src/core/vsx_comp
   src/core
 )
-
-if (VSXU_TM)
-  include_directories(
-    ${TM_INCLUDE_PATH}
-  )
-endif()
 
 ################################################################################
 # DEFINES
