@@ -2,8 +2,10 @@
 #define MAX_PARTICLES 300
 #define ARRAY_STEPS 20.0f
 
-class module_render_particlesystem_sparks : public vsx_module {
-  unsigned long i;
+class module_particlesystem_render_sparks : public vsx_module
+{
+public:
+
   // in
   vsx_module_param_particlesystem* particles_in;
   vsx_module_param_float_array* float_array_in;
@@ -12,14 +14,17 @@ class module_render_particlesystem_sparks : public vsx_module {
 
   // out
   vsx_module_param_render* render_result;
+
   // internal
+  unsigned long i;
+  bool charges_init;
+
   vsx_particlesystem* particles;
   vsx_float_array* data;
-  bool charges_init;
+
   vsx_avector<float> charges;
   vsx_avector<float> delta_charges;
   vsx_avector<int> discharged_particles;
-public:
 
   void module_info(vsx_module_info* info)
   {
@@ -144,7 +149,8 @@ public:
             perpendicular_mult.cross(last_dist, upv);
             perpendicular_mult.normalize();
             //perpendicular_mult *= 0.1f; // might use a parameter here?
-            // ok, time to draw a line
+
+            // ok, time to draw
             glBegin(GL_LINE_STRIP);
             //vsx_vector tv = (*particles->particles)[0].pos;
             for (int k = 0; k < ARRAY_STEPS; k++)

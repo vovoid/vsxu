@@ -14,7 +14,6 @@ file(GLOB API_STUBS "api_stubs/*.cpp")
 
 project (${module_id})
 include(../cmake_globals.txt)
-include(./_sources)
 
 CREATE_MODULE(${module_id})
 

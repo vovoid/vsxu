@@ -1,62 +1,26 @@
-/**
-* Project: VSXu: Realtime modular visual programming engine.
-*
-* This file is part of Vovoid VSXu.
-*
-* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies AB Copyright (C) 2003-2013
-* @see The GNU Lesser General Public License (LGPL)
-*
-* VSXu Engine is free software; you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful, but
-* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
-* for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License along
-* with this program; if not, write to the Free Software Foundation, Inc.,
-* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-
-
-#include "_configuration.h"
-#include "vsx_param.h"
-#include "vsx_module.h"
 #ifdef _WIN32
-#include "windows.h"
-#include "wingdi.h"
-#endif
-
-#ifdef VSXU_MAC_XCODE
-#include <syslog.h>
-#endif
-
-#include <vsx_tm.h>
-
 typedef struct {
   unsigned short r[256];
   unsigned short g[256];
   unsigned short b[256];
 } gamma_s;
+#endif
 
-
-class vsx_module_output_screen : public vsx_module {
+class module_output_screen_opengl : public vsx_module
+{
   float internal_gamma;
-	
+
   vsx_module_param_render* my_render;
   vsx_module_param_float* gamma_correction;
-	vsx_module_param_float4* clear_color;
+  vsx_module_param_float4* clear_color;
 
   float pre_material_colors[5][2][4];
 
   // don't mess with viewport or any opengl settings
   vsx_module_param_int* opengl_silent;
-  
+
 public:
-	  
+
   void module_info(vsx_module_info* info)
   {
     info->identifier = "outputs;screen";
@@ -98,7 +62,7 @@ public:
    HDC hdc = wglGetCurrentDC();
     gamma_s mygamma;
     gamma_s* mgp = &mygamma;
-    
+
     for (int i = 0; i < 256; ++i) {
       int v = (int)round((double)255 * pow(((double)i)/(double)255, mgamma));
       if (v > 255) v = 255;
@@ -106,13 +70,13 @@ public:
       mygamma.r[i] = v << 8;
       mygamma.g[i] = v << 8;
       mygamma.b[i] = v << 8;
-    }  
+    }
     SetDeviceGammaRamp(hdc, (void*)mgp);
   #else
     VSX_UNUSED(mgamma);
   #endif
  }
- 
+
   bool activate_offscreen()
   {
     if (opengl_silent->get() == 1) return true;
@@ -140,7 +104,7 @@ public:
     // set up depth test & mask
     engine->gl_state->depth_mask_set(0);
     engine->gl_state->depth_test_set(0);
-//    engine->gl_state->depth_function_set( VSX_GL_LESS );
+    //engine->gl_state->depth_function_set( VSX_GL_LESS );
 
     // set up line width
     engine->gl_state->line_width_set( 1.0f );
@@ -178,41 +142,3 @@ public:
     set_gamma(1.0f);
   }
 };
-
-
-
-
-//******************************************************************************
-//*** F A C T O R Y ************************************************************
-//******************************************************************************
-
-#ifndef _WIN32
-#define __declspec(a)
-#endif
-
-extern "C" {
-__declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
-__declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
-__declspec(dllexport) unsigned long get_num_modules();
-}
-
-
-vsx_module* MOD_CM(unsigned long module, void* args)
-{
-  VSX_UNUSED(args);
-  switch(module) {
-    case 0: return (vsx_module*)(new vsx_module_output_screen);
-  }
-  return 0;
-}
-
-void MOD_DM(vsx_module* m,unsigned long module) {
-  switch(module) {
-    case 0: delete (vsx_module_output_screen*)m; break;
-  }
-}
-
-unsigned long MOD_NM() {
-  return 1;
-}
-

@@ -3,7 +3,10 @@
 #include "vsx_tm.h"
 #endif
 
-class module_render_particlesystem_ext : public vsx_module {
+class module_particlesystem_render_ext : public vsx_module
+{
+public:
+
   // in
   vsx_module_param_particlesystem* particles_in;
   vsx_module_param_texture* tex_inf;
@@ -19,6 +22,7 @@ class module_render_particlesystem_ext : public vsx_module {
   vsx_module_param_int* ignore_particles_at_center;
   // out
   vsx_module_param_render* render_result;
+
   // internal
   vsx_particlesystem* particles;
   vsx_texture** tex;
@@ -38,7 +42,6 @@ class module_render_particlesystem_ext : public vsx_module {
 
   vsx_vbo_bucket<GLuint, 1, GL_POINTS, GL_STREAM_DRAW, vsx_quaternion> point_bucket;
 
-public:
 
   void module_info(vsx_module_info* info)
   {

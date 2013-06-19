@@ -12,7 +12,6 @@ CREATE_STATIC_GLUE(${module_id})
 file(GLOB LOCAL_SOURCES "*.cpp")
 
 project (${module_id})
-include(./_sources)
 include (../cmake_globals.txt)
 CREATE_MODULE(${module_id} LOCAL_SOURCES)
 

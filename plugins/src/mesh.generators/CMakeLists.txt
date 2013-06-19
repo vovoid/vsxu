@@ -7,10 +7,11 @@ message("configuring vsxu module            " ${module_id})
 
 
 file(GLOB LOCAL_SOURCES "*.cpp")
-file(GLOB API_STUBS "api_stubs/*.cpp")
+file(GLOB OCEAN "ocean/*.cpp")
+file(GLOB METABALLS "metaballs/*.cpp")
 
 project (${module_id})
 include (../cmake_globals.txt)
-add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES})
+add_library(${module_id} MODULE ${LOCAL_SOURCES} ${OCEAN} ${METABALLS} ${SOURCES})
 include(../cmake_suffix.txt)
 target_link_libraries(${module_id} vsxu_engine)

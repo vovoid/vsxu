@@ -1,17 +1,22 @@
-class module_render_particlesystem_c : public vsx_module {
-  unsigned long i;
+class module_particlesystem_render_c : public vsx_module
+{
+public:
+
   // in
   vsx_module_param_particlesystem* particles_in;
   vsx_module_param_texture* tex_inf;
   vsx_module_param_float3* position;
   vsx_module_param_float* alpha;
   vsx_module_param_float* size;
+
   // out
   vsx_module_param_render* render_result;
+
   // internal
   vsx_particlesystem* particles;
   vsx_texture** tex;
-public:
+  unsigned long i;
+
   void module_info(vsx_module_info* info)
   {
     info->identifier = "renderers;particlesystems;render_particle_center";
@@ -46,8 +51,10 @@ public:
     {
       tex = tex_inf->get_addr();
       float local_alpha = alpha->get();
-      if (tex) {
-        if (!((*tex)->valid)) {
+      if (tex)
+      {
+        if (!((*tex)->valid))
+        {
           return;
         }
         float cx = position->get(0);
@@ -66,10 +73,10 @@ public:
 
         float sz = size->get();
         int count = 0;
-        for (i = 0; i < particles->particles->size(); ++i) {
-          //a = (1-((*particles->particles)[i].time/(*particles->particles)[i].lifetime));
-          //if (a < 0.0f) a = 0.0f;
-          if ((*particles->particles)[i].size > 0.0f) {
+        for (i = 0; i < particles->particles->size(); ++i)
+        {
+          if ((*particles->particles)[i].size > 0.0f)
+          {
             glColor4f(
               (*particles->particles)[i].color.r*local_alpha,
               (*particles->particles)[i].color.g*local_alpha,
@@ -92,7 +99,6 @@ public:
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
         render_result->set(1);
-        //printf("rendered %d particles\n",count);
       }
     }
     render_result->set(0);

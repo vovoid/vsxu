@@ -11,6 +11,5 @@ file(GLOB LOCAL_SOURCES "*.cpp")
 
 project (${module_id})
 include(../cmake_globals.txt)
-include(./_sources)
-add_library(${module_id} MODULE ${LOCAL_SOURCES} ${SOURCES})
+add_library(${module_id} MODULE ${LOCAL_SOURCES})
 include(../cmake_suffix.txt)

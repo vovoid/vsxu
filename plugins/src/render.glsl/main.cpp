@@ -422,7 +422,8 @@ bool init() {
 #define __declspec(a)
 #endif
 
-extern "C" {
+extern "C"
+{
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
@@ -433,10 +434,10 @@ __declspec(dllexport) void set_environment_info(vsx_engine_environment* environm
 vsx_module* MOD_CM(unsigned long module, void* args)
 {
   VSX_UNUSED(args);
-  if (module) {
+  if (module)
+  {
     vsx_module* v = (vsx_module*)(new vsx_module_glsl());
     ((vsx_module_glsl*)v)->shader_source = (long)module;
-//		load_shader(((vsx_module_glsl*)v)->shader,"_plugins/render.glsl/blenders/test.glsl");
     return v;
   } else
   return (vsx_module*)(new vsx_module_glsl()); // module 0
@@ -452,7 +453,8 @@ void MOD_DM(vsx_module* m,unsigned long module)
 
 
 
-unsigned long MOD_NM() {
+unsigned long MOD_NM()
+{
   #ifndef VSXU_OPENGL_ES
   glewInit();
   #endif

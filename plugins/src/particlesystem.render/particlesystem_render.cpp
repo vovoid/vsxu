@@ -124,13 +124,11 @@ inline void drawBlob_c(GLfloat x, GLfloat y, GLfloat z, GLfloat size, GLfloat dx
 		glVertex3f(dx + tmpVec1[0], dy+tmpVec1[1], dz+tmpVec1[2]);
 }
 
-#include "render_particlesystem.h"
+#include "module_particlesystem_render.h"
+#include "module_particlesystem_render_c.h"
+#include "module_particlesystem_render_ext.h"
+#include "module_particlesystem_render_sparks.h"
 
-#include "render_particlesystem_c.h"
-
-#include "render_particlesystem_sparks.h"
-
-#include "render_particlesystem_ext.h"
 
 //******************************************************************************
 //*** F A C T O R Y ************************************************************
@@ -151,10 +149,10 @@ vsx_module* create_new_module(unsigned long module, void* args)
 {
   VSX_UNUSED(args);
   switch (module) {
-    case 0: return (vsx_module*)(new module_render_particlesystem);
-    case 1: return (vsx_module*)(new module_render_particlesystem_c);
-    case 2: return (vsx_module*)(new module_render_particlesystem_sparks);
-    case 3: return (vsx_module*)(new module_render_particlesystem_ext);
+    case 0: return (vsx_module*)(new module_particlesystem_render);
+    case 1: return (vsx_module*)(new module_particlesystem_render_c);
+    case 2: return (vsx_module*)(new module_particlesystem_render_sparks);
+    case 3: return (vsx_module*)(new module_particlesystem_render_ext);
   }
   return 0;
 }
@@ -162,10 +160,10 @@ vsx_module* create_new_module(unsigned long module, void* args)
 
 void destroy_module(vsx_module* m,unsigned long module) {
   switch(module) {
-    case 0: delete (module_render_particlesystem*)m; break;
-    case 1: delete (module_render_particlesystem_c*)m; break;
-    case 2: delete (module_render_particlesystem_sparks*)m; break;
-    case 3: delete (module_render_particlesystem_ext*)m; break;
+    case 0: delete (module_particlesystem_render*)m; break;
+    case 1: delete (module_particlesystem_render_c*)m; break;
+    case 2: delete (module_particlesystem_render_sparks*)m; break;
+    case 3: delete (module_particlesystem_render_ext*)m; break;
   }
 }
 

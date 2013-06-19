@@ -155,7 +155,8 @@ class module_load_png : public vsx_module {
   
   vsx_texture* texture;
   
-  static void* png_worker_v(void *ptr) {
+  static void* png_worker_v(void *ptr)
+  {
     //printf("thread starting\n");
     //if (((module_load_png*)ptr)->bitm.data) {
       //delete ((module_load_png*)ptr)->bitm.data;

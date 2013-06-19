@@ -274,6 +274,7 @@ vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
   //     get a file descriptor from disk
   if (type == VSXF_TYPE_FILESYSTEM)
   {
+    get_lock();
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
       i_filename = str_replace("\\","/",i_filename);
     #endif
@@ -288,12 +289,15 @@ vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
     {
       vsx_printf("vsxf::f_open Error when opening \"%s\"\n", (base_path+i_filename).c_str());
       delete handle;
+      release_lock();
       return NULL;
-    } else
+    }
+    release_lock();
     return handle;
   }
   else
   {
+    get_lock();
     FILE* l_handle = fopen(archive_name.c_str(),"rb");
 
     vsx_string mode_search(mode);
@@ -302,7 +306,6 @@ vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
       bool found = false;
       vsx_string fname(filename);
       unsigned long i = 0;
-      get_lock();
       while (!found && i < archive_files.size())
       {
         //printf("trying file: %s\n",archive_files[i].filename.c_str());
@@ -360,8 +363,10 @@ vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
       handle->file_data = (void*)(new vsx_avector<char>);
       handle->filename = filename;
       handle->mode = VSXF_MODE_WRITE;
+      release_lock();
       return handle;
     }
+    release_lock();
     delete handle;
     return 0;
   }
