@@ -9,7 +9,15 @@ project (${module_id})
 ################################################################################
 # CMAKE PACKAGES ###############################################################
 ################################################################################
-include(cmake_packages.txt)
+find_package(DL REQUIRED)
+find_package(Threads REQUIRED)
+
+if(VSXU_TM)
+  find_package(Tm REQUIRED)
+  include_directories(
+    ${TM_INCLUDE_PATH}
+  )
+endif()
 
 ################################################################################
 # INCLUDES #####################################################################
@@ -64,6 +72,11 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_definitions(-DVSXU_PLUGIN_LOCATION="plugins")
+endif()
+
+
+if (VSXU_TM)
+  add_definitions(-DVSXU_TM)
 endif()
 
 
@@ -217,5 +230,5 @@ endif()
 
 target_link_libraries(${module_id}
   ${DL_LIBRARY}
-  ${PTHREAD_LIBRARY}
+  ${CMAKE_THREAD_LIBS_INIT}
 )

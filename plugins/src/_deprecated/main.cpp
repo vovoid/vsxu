@@ -93,6 +93,149 @@ renderer.\n\
 
 
 
+class vsx_module_kaleido_star : public vsx_module
+{
+  // in
+  vsx_module_param_float* hemispheric;
+  vsx_module_param_texture* tex_a;
+  //vsx_module_param_texture* tex_b;
+  // out
+  vsx_module_param_render* render_result;
+  // internal
+  vsx_vector cm;
+  GLuint dlist;
+  bool list_built;
+public:
+
+void module_info(vsx_module_info* info)
+{
+  info->identifier = "!renderers;vovoid;kaleidoscope";
+  info->in_param_spec = "\
+texture_a:texture,\
+hemispheric:float";
+
+  info->out_param_spec = "render_out:render";
+  info->component_class = "render";
+}
+
+void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+{
+  list_built = false;
+  hemispheric = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"hemispheric");
+  hemispheric->set(0.0f);
+  tex_a = (vsx_module_param_texture*)in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture_a");
+  //tex_b = (vsx_module_param_texture*)in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture_b");
+  render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+  render_result->set(0);
+  loading_done = true;
+}
+
+void output(vsx_module_param_abs* param) {
+  VSX_UNUSED(param);
+  if (tex_a) {
+
+    vsx_texture** ta;
+    ta = tex_a->get_addr();
+    if (!ta) {
+      render_result->set(0);
+      return;
+    }
+
+  glDisable(GL_DEPTH_TEST);
+
+  if (param_updates)
+  {
+    if (list_built)
+    glDeleteLists(dlist,1);
+    list_built = false;
+    param_updates = 0;
+  }
+  (*ta)->bind();
+
+  if (!list_built) {
+
+    dlist = glGenLists(1);
+    glNewList(dlist,GL_COMPILE);
+
+    static const int nRings = 6;
+    static const int nSectors = 16;
+    static const int tessU = 4, tessV = 4;
+    int i, j;
+
+    glColor3f(1, 1, 1);
+    float hemispheric_v = hemispheric->get();
+
+    glBegin(GL_TRIANGLES);
+    for(j = 0; j < nRings; j++)
+      for(i = 0; i < nSectors; i++)
+      {
+        float dist0  =  (float)j      * (1.0f   / nRings);
+        float angle0 =  (float)i      * (2.0f * (float)PI / nSectors);
+        float dist1  = ((float)j + 1.0f) * (1.0f   / nRings);
+        float angle1 = ((float)i + 1.0f) * (2.0f * (float)PI / nSectors);
+
+        float uFact = j&1?1:-1;
+        float vFact = i&1?1:-1;
+        float uOffs = j&1?0:1;
+        float vOffs = i&1?0:1;
+
+        for(int k = 0; k < tessV; k++)
+          for(int l = 0; l < tessU; l++) {
+            float u0 = (float)l / tessU;
+            float v0 = (float)k / tessV;
+            float u1 = (float)(l + 1) / tessU;
+            float v1 = (float)(k + 1) / tessV;
+            float d0 = dist0 * (1 - u0) + dist1 * u0;
+            float a0 = angle0 * (1 - v0) + angle1 * v0;
+            float d1 = dist0 * (1 - u1) + dist1 * u1;
+            float a1 = angle0 * (1 - v1) + angle1 * v1;
+
+            float x0 = (float)cos(a0) * d0;
+            float y0 = (float)sin(a0) * d0;
+            float x1 = (float)cos(a0) * d1;
+            float y1 = (float)sin(a0) * d1;
+            float x2 = (float)cos(a1) * d1;
+            float y2 = (float)sin(a1) * d1;
+            float x3 = (float)cos(a1) * d0;
+            float y3 = (float)sin(a1) * d0;
+
+            u0 = u0 * uFact + uOffs;
+            v0 = v0 * vFact + vOffs;
+            u1 = u1 * uFact + uOffs;
+            v1 = v1 * vFact + vOffs;
+
+            float r0 = (float)sqrt(fabs(1.0f-(x0*x0+y0*y0)))*hemispheric_v;
+            float r2 = (float)sqrt(fabs(1.0f-(x2*x2+y2*y2)))*hemispheric_v;
+
+            glTexCoord2f(u0, v0/*d0*/);	glVertex3f(x0, y0, r0);
+            glTexCoord2f(u1, v0/*d1*/);	glVertex3f(x1, y1,(float)sqrt(fabs(1.0f-(x1*x1+y1*y1)))*hemispheric_v);
+            glTexCoord2f(u1, v1/*d1*/);	glVertex3f(x2, y2, r2);
+
+
+            glTexCoord2f(u1, v1/*d1*/);	glVertex3f(x2, y2,r2);
+            glTexCoord2f(u0, v1/*d0*/);	glVertex3f(x3, y3,(float)sqrt(fabs(1.0f-(x3*x3+y3*y3)))*hemispheric_v);
+            glTexCoord2f(u0, v0/*d0*/);	glVertex3f(x0, y0,r0);
+          }
+      }
+    glEnd();
+    glEndList();
+    list_built = true;
+  }
+  else
+  {
+    glCallList(dlist);
+  }
+
+  (*ta)->_bind();
+
+  }
+  else render_result->set(0);
+
+}
+};
+
+
+
 //-----------------------------------------------------------------------
 //-----------------------------------------------------------------------
 //--- DEPTH MASK --------------------------------------------------------
@@ -432,6 +575,7 @@ vsx_module* create_new_module(unsigned long module, void* args)
     case 0: return (vsx_module*)(new vsx_depth_test);
     case 1: return (vsx_module*)(new vsx_depth_mask);
     case 2: return (vsx_module*)(new vsx_module_mesh_old_supershape);
+    case 3: return (vsx_module*)(new vsx_module_kaleido_star);
   }
   return 0;
 }
@@ -441,12 +585,11 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 0: delete (vsx_depth_test*)m; break;
     case 1: delete (vsx_depth_mask*)m; break;
     case 2: delete (vsx_module_mesh_old_supershape*)m; break;
+    case 3: delete (vsx_module_kaleido_star*)m; break;
   }
 }
 
 unsigned long get_num_modules() {
-  // we have only one module. it's id is 0
-  //glewInit();
-  return 3;
+  return 4;
 }  
 

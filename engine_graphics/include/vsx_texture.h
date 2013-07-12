@@ -29,7 +29,7 @@
 #include <vsx_string.h>
 #include <vsx_bitmap.h>
 #include <vsxfst.h>
-
+#include <vsx_math_3d.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   #define VSX_TEXTURE_DLLIMPORT
@@ -41,27 +41,51 @@
   #endif
 #endif
 
-#define VSX_TEXTURE_BUFFER_TYPE_FEEDBACK_PBUFFER 1
+
+// Frame Buffer Types (see frame_buffer_type)
+#define VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER 1
 #define VSX_TEXTURE_BUFFER_TYPE_COLOR 2
 #define VSX_TEXTURE_BUFFER_TYPE_COLOR_DEPTH 3
 
+
 class vsx_texture
 {
-  static std::map<vsx_string, vsx_texture_info> t_glist;
+  static std::map<vsx_string, vsx_texture_glist_holder> t_glist;
+
   GLint prev_buf;
+
+
+  // FBO
   bool valid_fbo;
+  int frame_buffer_type;
+  GLuint frame_buffer_handle;
+
   GLuint color_buffer_handle;
+
   GLuint depth_buffer_handle;
   bool depth_buffer_local;
-  GLuint frame_buffer_handle;
-  GLuint frame_buffer_object_handle;
+
+  // Render buffer variables
+  GLuint render_buffer_color_handle;
+  GLuint render_buffer_depth_handle;
+  // temporary fbo handle to hold destination tex
+  GLuint frame_buffer_blit_handle;
+
+  // save state for buffer capture
+  vsx_matrix buffer_save_matrix[3];
+
+  // to prevent double-begins, lock the buffer
+  bool capturing_to_buffer;
+
+
   int original_transform_obj;
-  int frame_buffer_type;
+  void* gl_state;
+
+
 public:
-  // this is if another texture gets a texture already in the list, to prevent it from unloading.
-  // if not locked it can safely delete it. This is an approximation of course, but should work
-  // in most cases.
-  bool locked;
+  // This is a hint to tell the unload function this is an alias of another
+  // texture, found in the glist. Thus, we don't own the opengl texture id.
+  bool is_glist_alias;
 
   // name of the texture
   vsx_string name;
@@ -75,6 +99,9 @@ public:
   // our texture info
   vsx_texture_info texture_info;
 
+  // GL State
+  void set_gl_state(void* n);
+
   // FBO functions-------------------------------------------------------------
   // FBO is used to capture rendering output into a texture rather than to the
   // screen for re-use in other rendering operations.
@@ -82,8 +109,11 @@ public:
   // query if the hardware has Frame Buffer Object support
   VSX_TEXTURE_DLLIMPORT bool has_buffer_support();
 
+
+
+
   // init an offscreen feedback possible buffer
-  VSX_TEXTURE_DLLIMPORT void init_feedback_buffer
+  VSX_TEXTURE_DLLIMPORT void init_render_buffer
   (
     int width, // width in pixels
     int height, // height in pixels
@@ -93,7 +123,7 @@ public:
   );
 
   // run in stop/start or when changing resolution
-  VSX_TEXTURE_DLLIMPORT void reinit_feedback_buffer
+  VSX_TEXTURE_DLLIMPORT void reinit_render_buffer
   (
     int width, // width in pixels
     int height, // height in pixels
@@ -101,15 +131,19 @@ public:
     bool alpha = true, // support alpha channel or not
     bool multisample = false // enable anti-aliasing
   );
+private:
+  VSX_TEXTURE_DLLIMPORT void deinit_render_buffer();
 
+
+
+public:
   // init an offscreen feedback possible buffer
   VSX_TEXTURE_DLLIMPORT void init_color_buffer
   (
     int width, // width in pixels
     int height, // height in pixels
     bool float_texture = false, // use floating point channels (8-bit is default)
-    bool alpha = true, // support alpha channel or not
-    bool multisample = false // enable anti-aliasing
+    bool alpha = true // support alpha channel or not
   );
 
   // run in stop/start or when changing resolution
@@ -118,10 +152,15 @@ public:
     int width, // width in pixels
     int height, // height in pixels
     bool float_texture = false, // use floating point channels (8-bit is default)
-    bool alpha = true, // support alpha channel or not
-    bool multisample = false // enable anti-aliasing
+    bool alpha = true // support alpha channel or not
   );
 
+private:
+  VSX_TEXTURE_DLLIMPORT void deinit_color_buffer();
+
+
+
+public:
   // init an offscreen feedback possible buffer
   VSX_TEXTURE_DLLIMPORT void init_color_depth_buffer
   (
@@ -129,7 +168,6 @@ public:
     int height, // height in pixels
     bool float_texture = false, // use floating point channels (8-bit is default)
     bool alpha = true, // support alpha channel or not
-    bool multisample = false, // enable anti-aliasing
     GLuint existing_depth_texture_id = 0
   );
 
@@ -140,12 +178,19 @@ public:
     int height, // height in pixels
     bool float_texture = false, // use floating point channels (8-bit is default)
     bool alpha = true, // support alpha channel or not
-    bool multisample = false, // enable anti-aliasing
     GLuint existing_depth_texture_id = 0
   );
 
+private:
+  VSX_TEXTURE_DLLIMPORT void deinit_color_depth_buffer();
+
+
+
+public:
   // remove/delete the buffer
   VSX_TEXTURE_DLLIMPORT void deinit_buffer();
+
+
 
   // begin capturing render output into the frame buffer object
   VSX_TEXTURE_DLLIMPORT void begin_capture_to_buffer();
@@ -153,13 +198,15 @@ public:
   // end the capturing render output into the frame buffer object
   VSX_TEXTURE_DLLIMPORT void end_capture_to_buffer();
 
-  VSX_TEXTURE_DLLIMPORT GLuint get_depth_buffer_handle();
 
+  VSX_TEXTURE_DLLIMPORT GLuint get_depth_buffer_handle();
 
 
   // General texture functions-------------------------------------------------
   // allocate an openGL texture ID
-  VSX_TEXTURE_DLLIMPORT void init_opengl_texture();
+  VSX_TEXTURE_DLLIMPORT void init_opengl_texture_1d();
+  VSX_TEXTURE_DLLIMPORT void init_opengl_texture_2d();
+  VSX_TEXTURE_DLLIMPORT void init_opengl_texture_cubemap();
 
   // reuploads all textures in the t_glist so you don't have to bother :)
   // just use thie in the start function of the module and all should be ok unless you use
@@ -170,20 +217,19 @@ public:
   // upload a bitmap from RAM to the GPU
   // as an openGL texture. requires that init_opengl_texture
   // has been run.
-#ifdef VSXU_OPENGL_ES
-#define GL_BGRA_EXT 0
-#endif
-  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap(vsx_bitmap* vbitmap,bool mipmaps = false, bool upside_down = true);
-  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap(void* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
+  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap_1d(void* data, unsigned long size, bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT);
+  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap_2d(vsx_bitmap* vbitmap,bool mipmaps = false, bool upside_down = true);
+  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
 
-  // load a tga file in the same thread as ours (why would anyone use tga when png's around? anyway..)
-//  void load_tga(vsx_string name, bool mipmaps = true);
+  // assumes width is 6x height (maps in order: -x, z, x, -z, -y, y
+  VSX_TEXTURE_DLLIMPORT void upload_ram_bitmap_cube(void* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
 
   void* pti_l; // needed by the communication between the png thread and the texture. internal stuff.
   // load a png in the same thread as ours.
   VSX_TEXTURE_DLLIMPORT void load_png(vsx_string fname, bool mipmaps = true, vsxf* filesystem = 0x0);
   VSX_TEXTURE_DLLIMPORT void load_png_thread(vsx_string fname, bool mipmaps = true);
   VSX_TEXTURE_DLLIMPORT void load_jpeg(vsx_string fname, bool mipmaps = true);
+  VSX_TEXTURE_DLLIMPORT void load_png_cubemap(vsx_string fname, bool mipmaps = true, vsxf* filesystem = 0x0);
 
   // update the transform object with a new transformation
   void set_transform(vsx_transform_obj* new_transform_obj) {
@@ -193,7 +239,25 @@ public:
     original_transform_obj = 0;
   }
   // return the transformation
-  vsx_transform_obj* get_transform(){return transform_obj;}
+  vsx_transform_obj* get_transform()
+  {
+    return transform_obj;
+  }
+
+  inline void begin_transform()
+  {
+    if ( !transform_obj->is_transform() ) return;
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+    (*transform_obj)();
+  }
+
+  inline void end_transform()
+  {
+    if ( !transform_obj->is_transform() ) return;
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix();
+  }
 
   // use this to bind the texture.
   VSX_TEXTURE_DLLIMPORT bool bind();
@@ -207,11 +271,7 @@ public:
 
   VSX_TEXTURE_DLLIMPORT vsx_texture();
   VSX_TEXTURE_DLLIMPORT vsx_texture(int id, int type);
-  ~vsx_texture()
-  {
-    if (original_transform_obj)
-    delete transform_obj;
-  }
+  VSX_TEXTURE_DLLIMPORT ~vsx_texture();
 
   VSX_TEXTURE_DLLIMPORT void unload();
 };

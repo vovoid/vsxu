@@ -26,6 +26,13 @@
 
 #include <sys/time.h>
 
+
+// TM wrapper
+#include "vsx_tm.h"
+
+// GL state
+#include "vsx_gl_state.h"
+
 //extern vsx_engine* vme;
 //#define vsxu_version "VSXu 0.1.14 beta"
 //extern vsx_string vsxu_name;
@@ -37,11 +44,13 @@ extern bool app_ctrl;
 extern bool app_alt;
 extern bool app_shift;
 extern bool dual_monitor;
+extern vsx_tm* tm;
+extern vsx_gl_state gl_state;
 
 extern vsx_argvector app_argv;
 
 
-void app_init(int id); // which context is used?
+void app_init(int id);
 
 void app_print_cli_help();
 

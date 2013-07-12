@@ -168,7 +168,7 @@ void vsx_font::reinit_all_active() {
 
             if (*stc == 0x0A)
             {
-              dy += ddy;
+              dy -= ddy;
               dx = 0;
             }
             else

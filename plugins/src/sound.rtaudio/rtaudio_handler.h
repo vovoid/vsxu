@@ -51,7 +51,7 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   }
 
   #if (PLATFORM == PLATFORM_LINUX)
-    char* cal = "sound.rtaudio";
+    const char* cal = "sound.rtaudio";
     prctl(PR_SET_NAME,cal);
   #endif
 

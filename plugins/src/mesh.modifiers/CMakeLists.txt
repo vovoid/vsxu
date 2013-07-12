@@ -7,9 +7,8 @@ string(REGEX MATCH "[a-z.-]*$" module_id ${list_file_path})
 message("configuring vsxu module            " ${module_id})
 
 
-set(LOCAL_SOURCES "main.cpp")
+set(LOCAL_SOURCES "main_mesh.modifiers.cpp")
 include (../cmake_globals.txt)
 project (${module_id})
-include(./_sources)
-add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES})
+add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS})
 include(../cmake_suffix.txt)

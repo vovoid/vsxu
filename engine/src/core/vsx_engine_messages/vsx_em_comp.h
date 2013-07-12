@@ -29,7 +29,7 @@
           if (module_list->find(c->parts[1])) {
           	LOG("create 1")
             vsx_comp* comp = add(c->parts[2]);
-            comp->load_module(c->parts[1]);
+            comp->load_module(c->parts[1],&engine_info);
             comp->identifier = c->parts[1];
          		if (comp->module_info->output) {
         		  //printf("outputs d00d\n");
@@ -37,7 +37,6 @@
             }
   					LOG("create 2")
 
-            comp->engine_info(&engine_info);
             comp->position.x = s2f(c->parts[3]);
             comp->position.y = s2f(c->parts[4]);
             LOG("create 3")

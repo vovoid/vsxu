@@ -126,6 +126,8 @@ public:
   bool is_archive();
   bool is_archive_populated();
 
+  bool          is_file(const char* filename);
+  bool          is_file(const vsx_string filename);
   vsxf_handle*  f_open(const char* filename, const char* mode);
   void          f_close(vsxf_handle* handle);  
   int           f_puts(const char* buf, vsxf_handle* handle);

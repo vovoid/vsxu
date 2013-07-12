@@ -41,6 +41,7 @@ class vsx_module_render_basic_colored_rectangle : public vsx_module {
 	// out
 	vsx_module_param_render* render_result;
 	// internal
+  vsx_matrix saved_modelview;
 	
 public:
 	
@@ -135,12 +136,17 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   void output(vsx_module_param_abs* param)
   {
     VSX_UNUSED(param);
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glTranslatef(position->get(0),position->get(1),position->get(2));
-    glRotatef((float)angle->get()*360, rotation_axis->get(0), rotation_axis->get(1), rotation_axis->get(2));
+    engine->gl_state->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, saved_modelview.m );
+//    glMatrixMode(GL_MODELVIEW);
+//    glPushMatrix();
+    engine->gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX);
+    engine->gl_state->matrix_translate_f( position->get(0),position->get(1),position->get(2) );
+    engine->gl_state->matrix_rotate_f( (float)angle->get()*360, rotation_axis->get(0), rotation_axis->get(1), rotation_axis->get(2) );
+    engine->gl_state->matrix_scale_f( size->get(0), size->get(1), size->get(2) );
+//    glTranslatef(position->get(0),position->get(1),position->get(2));
+//    glRotatef((float)angle->get()*360, rotation_axis->get(0), rotation_axis->get(1), rotation_axis->get(2));
     
-    glScalef(size->get(0), size->get(1), size->get(2));
+//    glScalef(size->get(0), size->get(1), size->get(2));
 
     #ifndef VSXU_OPENGL_ES_2_0
       glColor4f(color_rgb->get(0),color_rgb->get(1),color_rgb->get(2),color_rgb->get(3));
@@ -185,7 +191,8 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
         glVertex3f( 1.0f, -1.0f, 0.0f);
       glEnd();
 
-      if (border->get()) {
+      if (border->get())
+      {
         glEnable(GL_LINE_SMOOTH);
         glLineWidth(border_width->get());
         glBegin(GL_LINE_STRIP);
@@ -198,7 +205,9 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
         glEnd();
       }
     #endif
-  	glPopMatrix();
+    engine->gl_state->matrix_load_identity();
+    engine->gl_state->matrix_mult_f( saved_modelview.m );
+//  	glPopMatrix();
     render_result->set(1);
     loading_done = true;
   }

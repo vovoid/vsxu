@@ -44,6 +44,7 @@
 #endif
 #include "vsx_comp_channel.h"
 #include "vsx_log.h"
+#include "vsx_tm.h"
 
 #ifdef VSXU_ENGINE_STATIC
 #include "vsx_module_static_factory.h"
@@ -96,10 +97,11 @@ vsx_comp::~vsx_comp() {
   #endif
 }
 
-void vsx_comp::load_module(const vsx_string& module_name)
+void vsx_comp::load_module(const vsx_string& module_name, vsx_module_engine_info* engine_info)
 {
   vsx_module_list_abs* module_list = ((vsx_engine*)engine_owner)->get_module_list();
   module = module_list->load_module_by_name( module_name );
+  r_engine_info = engine_info;
 
   /*#ifdef VSXU_MODULES_STATIC
     #ifdef VSXU_MAC_XCODE
@@ -341,6 +343,7 @@ void vsx_comp::init_channels() {
 
 void vsx_comp::init_module()
 {
+  module->engine = r_engine_info;
   module->declare_params(*in_module_parameters, *out_module_parameters);
 //  str_replace("\n","",str_replace(" ","",str_replace("\t","",module_info->in_param_spec)));
 //str_replace("\n","",str_replace(" ","",str_replace("\t","",module_info->out_param_spec)));
@@ -371,14 +374,6 @@ void vsx_comp::init_module()
   //local_engine_info.vtime = 0;
 }
 
-bool vsx_comp::engine_info(vsx_module_engine_info* engine) {
-  if (module) {
-    r_engine_info = engine;
-    module->engine = engine;
-    return true;
-  }
-  return false;
-}
 
 bool vsx_comp::prepare()
 {
@@ -390,8 +385,14 @@ bool vsx_comp::prepare()
   {
     LOG("comp prepare name: "+name)
   }
-  if (frame_status == frame_failed) return false;
-  if (frame_status != initial_status) return true;
+  if (frame_status == frame_failed)
+  {
+    return false;
+  }
+  if (frame_status != initial_status)
+  {
+    return true;
+  }
   frame_status = prepare_called;
   // it needs to prepare all parameters for the run function
   // this means it has to execute all channels to get texture id's etc

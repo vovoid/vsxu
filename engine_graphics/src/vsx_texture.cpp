@@ -35,47 +35,103 @@
   #endif
 #endif
 
-#ifdef VSXU_EXE
-  std::map<vsx_string, vsx_texture_info> vsx_texture::t_glist;
-#else
-  void* vsx_texture::t_glist;
-#endif
+#include <vsx_gl_state.h>
 
-#define HANDLE_GL_ERROR gl_error = glGetError(); if (gl_error != GL_NO_ERROR) { printf("%s GlGetError()=%d on line %d",__FILE__,gl_error,__LINE__); return; }
+//#ifdef VSXU_EXE
+  std::map<vsx_string, vsx_texture_glist_holder> vsx_texture::t_glist;
+//#else
+//  void* vsx_texture::t_glist;
+//#endif
 
 vsx_texture::vsx_texture()
 {
+  gl_state = 0x0;
   pti_l = 0;
   valid = false;
+
   valid_fbo = false;
-  locked = false;
+  frame_buffer_type = 0;
+  frame_buffer_handle = 0;
+  color_buffer_handle = 0;
+  depth_buffer_handle = 0;
+  depth_buffer_local = true;
+
+  render_buffer_color_handle = 0;
+  render_buffer_depth_handle = 0;
+  frame_buffer_blit_handle = 0;
+
+  capturing_to_buffer = false;
+  is_glist_alias = false;
   transform_obj = new vsx_transform_neutral;
   original_transform_obj = 1;
-  depth_buffer_local = true;
 }
 
 vsx_texture::vsx_texture(int id, int type)
 {
+  gl_state = 0x0;
   pti_l = 0;
   texture_info.ogl_id = id;
   texture_info.ogl_type = type;
   transform_obj = new vsx_transform_neutral;
   valid = true;
   valid_fbo = false;
-  locked = false;
+  capturing_to_buffer = false;
+  is_glist_alias = false;
   #ifndef VSXU_OPENGL_ES
     glewInit();
   #endif
   depth_buffer_local = true;
 }
 
-void vsx_texture::init_opengl_texture()
+vsx_texture::~vsx_texture()
+{
+  unload();
+  if (original_transform_obj)
+  delete transform_obj;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+void vsx_texture::set_gl_state(void* n)
+{
+  gl_state = n;
+}
+
+void vsx_texture::init_opengl_texture_1d()
+{
+  GLuint tex_id;
+  glGenTextures(1, &tex_id);
+  texture_info.ogl_id = tex_id;
+  texture_info.ogl_type = GL_TEXTURE_1D;
+}
+
+
+void vsx_texture::init_opengl_texture_2d()
 {
   GLuint tex_id;
   glGenTextures(1, &tex_id);
   texture_info.ogl_id = tex_id;
   texture_info.ogl_type = GL_TEXTURE_2D;
 }
+
+void vsx_texture::init_opengl_texture_cubemap()
+{
+  GLuint tex_id;
+  glGenTextures(1, &tex_id);
+  texture_info.ogl_id = tex_id;
+  texture_info.ogl_type = GL_TEXTURE_CUBE_MAP_EXT;
+}
+
 bool vsx_texture::has_buffer_support()
 {
   bool fbo = GLEW_EXT_framebuffer_object;
@@ -91,7 +147,11 @@ GLuint vsx_texture::get_depth_buffer_handle()
   return depth_buffer_handle;
 }
 
-void vsx_texture::init_feedback_buffer(
+
+
+
+
+void vsx_texture::init_render_buffer(
   int width,
   int height,
   bool float_texture,
@@ -99,8 +159,7 @@ void vsx_texture::init_feedback_buffer(
   bool enable_multisample
 )
 {
-  GLenum gl_error; glGetError();
-  locked = false;
+  if (!gl_state) { vsx_printf("vsx_texture::init_feedback_buffer: vsx_texture gl_state not set!\n"); return; }
   prev_buf = 0;
   #ifndef VSXU_OPENGL_ES
     glewInit();
@@ -115,92 +174,157 @@ void vsx_texture::init_feedback_buffer(
   }
 
   // set the buffer type (for deinit and capturing)
-  frame_buffer_type = VSX_TEXTURE_BUFFER_TYPE_FEEDBACK_PBUFFER;
+  frame_buffer_type = VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER;
 
-  GLint prev_buf_l;
-  GLuint tex_id;
-  glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l); HANDLE_GL_ERROR
+  int prev_buf_l;
+  prev_buf_l = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
 
-  // color buffer
-  glGenRenderbuffersEXT(1, &color_buffer_handle); HANDLE_GL_ERROR
 
-  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, color_buffer_handle); HANDLE_GL_ERROR
-
-  if(enable_multisample && GLEW_EXT_framebuffer_multisample)
-  {
-    if (float_texture)
-    {
-      glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, alpha?GL_RGBA16F_ARB:GL_RGB16F_ARB, width, height); HANDLE_GL_ERROR
-    }
-    else
-    {
-      glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, alpha?GL_RGBA8:GL_RGB8, width, height); HANDLE_GL_ERROR
-    }
-  }
-  else
-  {
-    if (float_texture)
-    {
-      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, alpha?GL_RGBA16F_ARB:GL_RGB16F_ARB, width, height); HANDLE_GL_ERROR
-    }
-    else
-    {
-      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, alpha?GL_RGBA8:GL_RGB8, width, height); HANDLE_GL_ERROR
-    }
-  }
-
-  glGenRenderbuffersEXT(1, &depth_buffer_handle); HANDLE_GL_ERROR;
-  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depth_buffer_handle); HANDLE_GL_ERROR
-  if(enable_multisample && GLEW_EXT_framebuffer_multisample)
-  {
-    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_DEPTH_COMPONENT, width, height); HANDLE_GL_ERROR
-  }
-  else
-  {
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, width, height); HANDLE_GL_ERROR
-  }
 
   // create fbo for multi sampled content and attach depth and color buffers to it
-  glGenFramebuffersEXT(1, &frame_buffer_handle); HANDLE_GL_ERROR
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle); HANDLE_GL_ERROR
-  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, color_buffer_handle); HANDLE_GL_ERROR
-  glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depth_buffer_handle); HANDLE_GL_ERROR
+  glGenFramebuffersEXT(1, &frame_buffer_handle);
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle);
 
-  // create texture
-  glGenTextures(1, &tex_id); HANDLE_GL_ERROR
-  glBindTexture(GL_TEXTURE_2D, tex_id); HANDLE_GL_ERROR
-  if (float_texture)
+
+
+
+
+  // color render buffer
+  glGenRenderbuffersEXT(1, &render_buffer_color_handle);
+  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, render_buffer_color_handle);
+
+
+  if(enable_multisample)
   {
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, i_width, i_height, 0, GL_RGBA, GL_FLOAT, NULL); HANDLE_GL_ERROR
+    if (float_texture)
+    {
+      glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, alpha?GL_RGBA16F_ARB:GL_RGB16F_ARB, width, height);
+    }
+    else
+    {
+      glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, alpha?GL_RGBA8:GL_RGB8, width, height);
+    }
   }
   else
   {
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, i_width, i_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); HANDLE_GL_ERROR
+    if (float_texture)
+    {
+      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, alpha?GL_RGBA16F_ARB:GL_RGB16F_ARB, width, height);
+    }
+    else
+    {
+      glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, alpha?GL_RGBA8:GL_RGB8, width, height);
+    }
   }
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0); HANDLE_GL_ERROR
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); HANDLE_GL_ERROR
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); HANDLE_GL_ERROR
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); HANDLE_GL_ERROR
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); HANDLE_GL_ERROR
+
+
+  // depth render buffer
+  glGenRenderbuffersEXT( 1, &render_buffer_depth_handle);
+  glBindRenderbufferEXT( GL_RENDERBUFFER_EXT, render_buffer_depth_handle);
+
+  if(enable_multisample && GLEW_EXT_framebuffer_multisample)
+  {
+    glRenderbufferStorageMultisampleEXT(
+      GL_RENDERBUFFER_EXT,
+      4,
+      GL_DEPTH_COMPONENT,
+      width,
+      height
+    );
+  }
+  else
+  {
+    glRenderbufferStorageEXT(
+      GL_RENDERBUFFER_EXT,
+      GL_DEPTH_COMPONENT,
+      width,
+      height
+    );
+  }
+
+  // attach the render buffers to the FBO handle
+  glFramebufferRenderbufferEXT(
+    GL_FRAMEBUFFER_EXT,
+    GL_COLOR_ATTACHMENT0_EXT,
+    GL_RENDERBUFFER_EXT,
+    render_buffer_color_handle
+  );
+  glFramebufferRenderbufferEXT(
+    GL_FRAMEBUFFER_EXT,
+    GL_DEPTH_ATTACHMENT_EXT,
+    GL_RENDERBUFFER_EXT,
+    render_buffer_depth_handle
+  );
+
+
+
+  // Texture and FBO to blit into
+
+
+  // create texture for blitting into
+  glGenTextures(1, &color_buffer_handle);
+  glBindTexture(GL_TEXTURE_2D, color_buffer_handle);
+  if (float_texture)
+  {
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, i_width, i_height, 0, GL_RGBA, GL_FLOAT, NULL);
+  }
+  else
+  {
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, i_width, i_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+  }
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   // set your texture parameters here if required ...
 
-  // create final fbo and attach texture to it
-  glGenFramebuffersEXT(1, &frame_buffer_object_handle); HANDLE_GL_ERROR
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_object_handle); HANDLE_GL_ERROR
-  glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, tex_id, 0); HANDLE_GL_ERROR
 
 
-  texture_info.ogl_id = tex_id;
+  // create a normal fbo and attach texture to it
+  glGenFramebuffersEXT(1, &frame_buffer_blit_handle);
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_blit_handle);
+
+  // attach the texture to the FBO
+  glFramebufferTexture2DEXT(
+    GL_FRAMEBUFFER_EXT,
+    GL_COLOR_ATTACHMENT0_EXT,
+    GL_TEXTURE_2D,
+    color_buffer_handle,
+    0
+  );
+
+  // TODO: create and attach depth buffer also
+
+
+  texture_info.ogl_id = color_buffer_handle;
   texture_info.ogl_type = GL_TEXTURE_2D;
   texture_info.size_x = width;
   texture_info.size_y = height;
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf_l); HANDLE_GL_ERROR
-  valid = true; // valid for binding
-  valid_fbo = true; // valid for capturing
+
+  // restore eventual previous buffer
+  ((vsx_gl_state*)gl_state)->framebuffer_bind(prev_buf_l);
+
+  valid = true; // texture valid for binding
+  valid_fbo = true; // fbo valid for capturing
 }
 
 
-void vsx_texture::reinit_feedback_buffer
+void vsx_texture::deinit_render_buffer()
+{
+  glDeleteRenderbuffersEXT(1,&render_buffer_color_handle);
+  glDeleteRenderbuffersEXT(1,&render_buffer_depth_handle);
+  glDeleteTextures(1,&color_buffer_handle);
+  glDeleteFramebuffersEXT(1, &frame_buffer_handle);
+  glDeleteFramebuffersEXT(1, &frame_buffer_blit_handle);
+  valid = false;
+  valid_fbo = false;
+  texture_info.ogl_id = 0;
+  texture_info.ogl_type = 0;
+}
+
+
+void vsx_texture::reinit_render_buffer
 (
   int width,
   int height,
@@ -210,7 +334,7 @@ void vsx_texture::reinit_feedback_buffer
 )
 {
   deinit_buffer();
-  init_feedback_buffer
+  init_render_buffer
   (
     width,
     height,
@@ -220,19 +344,25 @@ void vsx_texture::reinit_feedback_buffer
   );
 }
 
+
+
+
+
+
+
+
+
+
 // init an offscreen color buffer, no depth
-VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_buffer
+void vsx_texture::init_color_buffer
 (
   int width, // width in pixels
   int height, // height in pixels
   bool float_texture, // use floating point channels (8-bit is default)
-  bool alpha, // support alpha channel or not
-  bool multisample // enable anti-aliasing
+  bool alpha // support alpha channel or not
 )
 {
-  VSX_UNUSED(multisample);
-  GLenum gl_error; glGetError();
-  locked = false;
+  if (!gl_state) { vsx_printf("vsx_texture::init_color_buffer: vsx_texture gl_state not set!\n"); return; }
   prev_buf = 0;
   #ifndef VSXU_OPENGL_ES
     glewInit();
@@ -250,8 +380,9 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_buffer
   frame_buffer_type = VSX_TEXTURE_BUFFER_TYPE_COLOR;
 
   // save the previous FBO (stack behaviour)
-  GLint prev_buf_l;
-  glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l); HANDLE_GL_ERROR
+  int prev_buf_l;
+  prev_buf_l = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
+//  glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l);
 
   GLuint texture_storage_type;
 
@@ -290,23 +421,38 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_buffer
       texture_info.ogl_type = GL_TEXTURE_2D;
       texture_info.size_x = width;
       texture_info.size_y = height;
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf_l); HANDLE_GL_ERROR
-      valid = true; // valid for binding
+            valid = true; // valid for binding
       valid_fbo = true; // valid for capturing
       break;
     default:
     break;
   }
+  ((vsx_gl_state*)gl_state)->framebuffer_bind(prev_buf_l);
+}
+
+
+void vsx_texture::deinit_color_buffer()
+{
+  //Delete resources
+  glDeleteTextures(1, &color_buffer_handle);
+  depth_buffer_handle = 0;
+  depth_buffer_local = 0;
+  //Bind 0, which means render to back buffer, as a result, fb is unbound
+  glDeleteFramebuffersEXT(1, &frame_buffer_handle);
+
+  valid = false;
+  valid_fbo = false;
+  texture_info.ogl_id = 0;
+  texture_info.ogl_type = 0;
 }
 
 // run in stop/start or when changing resolution
-VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_buffer
+void vsx_texture::reinit_color_buffer
 (
   int width, // width in pixels
   int height, // height in pixels
   bool float_texture, // use floating point channels (8-bit is default)
-  bool alpha, // support alpha channel or not
-  bool multisample // enable anti-aliasing
+  bool alpha // support alpha channel or not
 )
 {
   deinit_buffer();
@@ -315,27 +461,30 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_buffer
     width,
     height,
     float_texture,
-    alpha,
-    multisample
+    alpha
   );
 
 }
 
+
+
+
+
+
+
+
 // init an offscreen color + depth buffer (as textures)
 // See http://www.opengl.org/wiki/Framebuffer_Object_Examples
-VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
+void vsx_texture::init_color_depth_buffer
 (
   int width, // width in pixels
   int height, // height in pixels
   bool float_texture, // use floating point channels (8-bit is default)
   bool alpha, // support alpha channel or not
-  bool multisample, // enable anti-aliasing
   GLuint existing_depth_texture_id
 )
 {
-  VSX_UNUSED(multisample);
-  GLenum gl_error; glGetError();
-  locked = false;
+  if (!gl_state) { vsx_printf("vsx_texture::init_color_depth_buffer: vsx_texture gl_state not set!\n"); return; }
   prev_buf = 0;
   #ifndef VSXU_OPENGL_ES
     glewInit();
@@ -354,9 +503,8 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
 
 
   // save the previous FBO (stack behaviour)
-  GLint prev_buf_l;
-  //GLuint tex_id;
-  glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l); HANDLE_GL_ERROR
+  int prev_buf_l;
+  prev_buf_l = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
 
   GLuint texture_storage_type;
 
@@ -369,6 +517,12 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
     texture_storage_type = alpha?GL_RGBA8:GL_RGB8;
   }
 
+  GLuint texture_type;
+  texture_type = GL_TEXTURE_2D;
+
+
+
+  // Generate Color Texture
   //RGBA8 2D texture, 24 bit depth texture, 256x256
   glGenTextures(1, &color_buffer_handle);
   glBindTexture(GL_TEXTURE_2D, color_buffer_handle);
@@ -379,11 +533,19 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
   //NULL means reserve texture memory, but texels are undefined
   glTexImage2D(GL_TEXTURE_2D, 0, texture_storage_type, i_width, i_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
 
+
+
+
+
+
+
+  // Generate Depth Texture
   if (existing_depth_texture_id != 0)
   {
     depth_buffer_handle = existing_depth_texture_id;
     depth_buffer_local = false;
-  } else
+  }
+  else
   {
     glGenTextures(1, &depth_buffer_handle);
     glBindTexture(GL_TEXTURE_2D, depth_buffer_handle);
@@ -398,15 +560,40 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, i_width, i_height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
     depth_buffer_local = true;
   }
+
+
+
+
+  // GENERATE FBO
   //-------------------------
   glGenFramebuffersEXT(1, &frame_buffer_handle);
   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle);
+
+
+  // Attach textures to the FBO
+
+
   //Attach 2D texture to this FBO
-  glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, color_buffer_handle, 0/*mipmap level*/);
+  glFramebufferTexture2DEXT(
+    GL_FRAMEBUFFER_EXT,
+    GL_COLOR_ATTACHMENT0_EXT,
+    GL_TEXTURE_2D,
+    color_buffer_handle,
+    0/*mipmap level*/
+  );
   //-------------------------
   //Attach depth texture to FBO
-  glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depth_buffer_handle, 0/*mipmap level*/);
+  glFramebufferTexture2DEXT(
+    GL_FRAMEBUFFER_EXT,
+    GL_DEPTH_ATTACHMENT_EXT,
+    GL_TEXTURE_2D,
+    depth_buffer_handle,
+    0/*mipmap level*/
+  );
   //-------------------------
+
+
+
   //Does the GPU support current FBO configuration?
   GLenum status;
   status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
@@ -417,14 +604,37 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::init_color_depth_buffer
       texture_info.ogl_type = GL_TEXTURE_2D;
       texture_info.size_x = width;
       texture_info.size_y = height;
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf_l); HANDLE_GL_ERROR
       valid = true; // valid for binding
       valid_fbo = true; // valid for capturing
       break;
     default:
     break;
   }
+  ((vsx_gl_state*)gl_state)->framebuffer_bind(prev_buf_l);
 }
+
+
+void vsx_texture::deinit_color_depth_buffer()
+{
+  //Delete resources
+  glDeleteTextures(1, &color_buffer_handle);
+  if (depth_buffer_local)
+  {
+    glDeleteTextures(1, &depth_buffer_handle);
+  }
+  depth_buffer_handle = 0;
+  depth_buffer_local = 0;
+  //Bind 0, which means render to back buffer, as a result, fb is unbound
+  if ( ((vsx_gl_state*)gl_state)->framebuffer_bind_get() == frame_buffer_handle )
+    ((vsx_gl_state*)gl_state)->framebuffer_bind(0);
+  glDeleteFramebuffersEXT(1, &frame_buffer_handle);
+
+  valid = false;
+  valid_fbo = false;
+  texture_info.ogl_id = 0;
+  texture_info.ogl_type = 0;
+}
+
 
 // run in stop/start or when changing resolution
 VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_depth_buffer
@@ -433,7 +643,6 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_depth_buffer
   int height,
   bool float_texture,
   bool alpha,
-  bool multisample,
   GLuint existing_depth_texture_id
 )
 {
@@ -444,217 +653,235 @@ VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_depth_buffer
     height,
     float_texture,
     alpha,
-    multisample,
     existing_depth_texture_id
   );
 }
 
+
+
+
+
+
+
 void vsx_texture::deinit_buffer()
 {
-  GLenum gl_error; glGetError();
+  // sanity checks
   if (!valid_fbo) return;
-  if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_FEEDBACK_PBUFFER)
+
+  if (!gl_state)
   {
-    #ifndef VSXU_OPENGL_ES
-      glDeleteRenderbuffersEXT(1,&color_buffer_handle); HANDLE_GL_ERROR
-      glDeleteRenderbuffersEXT(1,&depth_buffer_handle); HANDLE_GL_ERROR
-      glDeleteTextures(1,&texture_info.ogl_id); HANDLE_GL_ERROR
-      glDeleteFramebuffersEXT(1, &frame_buffer_handle); HANDLE_GL_ERROR
-    #endif
+    vsx_printf("vsx_texture::deinit_buffer: vsx_texture gl_state not set!\n");
     return;
   }
+
+  if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER)
+  {
+    return deinit_render_buffer();
+  }
+
   if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_COLOR)
   {
-    //Delete resources
-    glDeleteTextures(1, &color_buffer_handle);
-    depth_buffer_handle = 0;
-    depth_buffer_local = 0;
-    //Bind 0, which means render to back buffer, as a result, fb is unbound
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-    glDeleteFramebuffersEXT(1, &frame_buffer_handle);
-    return;
+    deinit_color_buffer();
   }
+
   if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_COLOR_DEPTH)
   {
-    //Delete resources
-    glDeleteTextures(1, &color_buffer_handle);
-    if (depth_buffer_local)
-    {
-      glDeleteTextures(1, &depth_buffer_handle);
-    }
-    depth_buffer_handle = 0;
-    depth_buffer_local = 0;
-    //Bind 0, which means render to back buffer, as a result, fb is unbound
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-    glDeleteFramebuffersEXT(1, &frame_buffer_handle);
-    return;
+    deinit_color_depth_buffer();
   }
+
 }
+
+
+
+
 
 
 void vsx_texture::begin_capture_to_buffer()
 {
-  GLenum gl_error; glGetError();
+  if (!gl_state) { vsx_printf("vsx_texture::begin_capture_to_buffer: vsx_texture gl_state not set!\n"); return; }
   if (!valid_fbo) return;
-  if (locked) return;
-  #ifndef VSXU_OPENGL_ES
-    glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf); HANDLE_GL_ERROR
-    glPushAttrib(GL_ALL_ATTRIB_BITS ); HANDLE_GL_ERROR
-  #endif
-  glMatrixMode(GL_PROJECTION);
-  glPushMatrix();
-  glLoadIdentity();
-  glMatrixMode(GL_TEXTURE);
-  glPushMatrix();
-  glLoadIdentity();
-  glMatrixMode(GL_MODELVIEW);
-  glPushMatrix();
-  glLoadIdentity();
+  if (capturing_to_buffer) return;
 
-  GLfloat one_array[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-  GLfloat zero_array[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-  #ifndef VSXU_OPENGL_ES_2_0
-    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,&one_array[0]);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,&one_array[0]);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,&zero_array[0]);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,&zero_array[0]);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,&one_array[0]);
+  prev_buf = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
+  glPushAttrib(GL_ALL_ATTRIB_BITS );
+  ((vsx_gl_state*)gl_state)->matrix_get_v( VSX_GL_PROJECTION_MATRIX, buffer_save_matrix[0].m );
+  ((vsx_gl_state*)gl_state)->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, buffer_save_matrix[1].m );
+  ((vsx_gl_state*)gl_state)->matrix_get_v( VSX_GL_TEXTURE_MATRIX, buffer_save_matrix[2].m );
 
-    glDisable(GL_LIGHT0);
-    glDisable(GL_LIGHT1);
-    glDisable(GL_LIGHT2);
-    glDisable(GL_LIGHT3);
-  #endif
+
+  ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+  ((vsx_gl_state*)gl_state)->matrix_load_identity();
+  ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+  ((vsx_gl_state*)gl_state)->matrix_load_identity();
+  ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+  ((vsx_gl_state*)gl_state)->matrix_load_identity();
+
   glEnable(GL_BLEND);
-  #ifdef VSXU_OPENGL_ES_1_0
-    glBindTexture(GL_TEXTURE_2D,0);
-    glBindFramebufferOES(GL_FRAMEBUFFER_OES, framebuffer_id);
-  #endif
-  #ifndef VSXU_OPENGL_ES
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle); HANDLE_GL_ERROR
-  #endif
 
-  glViewport(0,0,(int)texture_info.size_x, (int)texture_info.size_y); HANDLE_GL_ERROR
+  ((vsx_gl_state*)gl_state)->framebuffer_bind(frame_buffer_handle);
 
-  locked = true;
+  glViewport(0,0,(int)texture_info.size_x, (int)texture_info.size_y);
+
+  capturing_to_buffer = true;
 }
+
 
 void vsx_texture::end_capture_to_buffer()
 {
-  GLenum gl_error; glGetError();
+  if (!gl_state) { vsx_printf("vsx_texture::end_capture_to_buffer: vsx_texture gl_state not set!\n"); return; }
   if (!valid_fbo) return;
-  if (locked)
+  if (capturing_to_buffer)
   {
 
-    if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_FEEDBACK_PBUFFER)
+    if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER)
     {
-    #ifndef VSXU_OPENGL_ES_2_0
-      glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, frame_buffer_handle); HANDLE_GL_ERROR
-      glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, frame_buffer_object_handle); HANDLE_GL_ERROR
-      glBlitFramebufferEXT(0, 0, (GLint)texture_info.size_x-1, (GLint)texture_info.size_y-1, 0, 0, (GLint)texture_info.size_x-1, (GLint)texture_info.size_y-1, GL_COLOR_BUFFER_BIT, GL_NEAREST); HANDLE_GL_ERROR
-    #endif
+      glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, frame_buffer_handle);
+      glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, frame_buffer_blit_handle);
+      glBlitFramebufferEXT(
+        0,
+        0,
+        (GLint)texture_info.size_x-1,
+        (GLint)texture_info.size_y-1,
+        0,
+        0,
+        (GLint)texture_info.size_x-1,
+        (GLint)texture_info.size_y-1,
+        GL_COLOR_BUFFER_BIT,
+        GL_NEAREST
+      );
     }
-    #ifdef VSXU_OPENGL_ES_1_0
-      glBindFramebufferOES(GL_FRAMEBUFFER_OES, prev_buf);
-    #endif
-    #ifndef VSXU_OPENGL_ES
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, prev_buf); HANDLE_GL_ERROR
-    #endif
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
-    glMatrixMode(GL_TEXTURE);
-    glPopMatrix();
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    #ifndef VSXU_OPENGL_ES_2_0
-      glPopAttrib();
-    #endif
-    locked = false;
+    ((vsx_gl_state*)gl_state)->framebuffer_bind(prev_buf);
+    ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+    ((vsx_gl_state*)gl_state)->matrix_load_identity();
+    ((vsx_gl_state*)gl_state)->matrix_mult_f( buffer_save_matrix[0].m );
+    ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+    ((vsx_gl_state*)gl_state)->matrix_load_identity();
+    ((vsx_gl_state*)gl_state)->matrix_mult_f( buffer_save_matrix[1].m );
+    ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+    ((vsx_gl_state*)gl_state)->matrix_load_identity();
+    ((vsx_gl_state*)gl_state)->matrix_mult_f( buffer_save_matrix[2].m );
+
+    glPopAttrib();
+    capturing_to_buffer = false;
   }
 }
 
 void vsx_texture::unload_all_active()
 {
-  for (std::map<vsx_string, vsx_texture_info>::iterator it = t_glist.begin(); it != t_glist.end(); ++it) {
-    glDeleteTextures(1,&((*it).second.ogl_id));
+  for (std::map<vsx_string, vsx_texture_glist_holder>::iterator it = t_glist.begin(); it != t_glist.end(); ++it)
+  {
+    glDeleteTextures(1,&((*it).second.texture_info->ogl_id));
   }
 }
 
 void vsx_texture::reinit_all_active()
 {
-  std::map<vsx_string, vsx_texture_info> temp_glist = t_glist;
+  std::map<vsx_string, vsx_texture_glist_holder> temp_glist = t_glist;
   vsx_string tname;
-  for (std::map<vsx_string, vsx_texture_info>::iterator it = temp_glist.begin(); it != temp_glist.end(); ++it) {
-    if ((*it).second.type == 1)
+  for (std::map<vsx_string, vsx_texture_glist_holder>::iterator it = temp_glist.begin(); it != temp_glist.end(); ++it)
+  {
+    if ((*it).second.texture_info->type == VSX_TEXTURE_INFO_TYPE_PNG)
     {
       tname = (*it).first;
       t_glist.erase(tname);
       load_png(tname);
     }
-  }
-}
-
-
-void vsx_texture::upload_ram_bitmap(vsx_bitmap* vbitmap,bool mipmaps, bool upside_down)
-{
-  upload_ram_bitmap(vbitmap->data, vbitmap->size_x, vbitmap->size_y,mipmaps,vbitmap->bpp, vbitmap->bformat,upside_down);
-}
-
-void vsx_texture::upload_ram_bitmap(void* data, unsigned long size_x, unsigned long size_y, bool mipmaps, int bpp, int bpp2, bool upside_down)
-{
-  if (!mipmaps)
-  {
-    if ((float)size_x/(float)size_y != 1.0) {
-      #ifdef VSXU_OPENGL_ES
-      texture_info.ogl_type = GL_TEXTURE_2D;
-      #endif
-      #ifndef VSXU_OPENGL_ES  // TODO: add support for irregularly shaped textures
-        // irregularly shaped texture
-        glewInit();
-        if (GLEW_ARB_texture_rectangle) {
-          #if defined(VSXU_DEBUG)
-          printf("GL_TEXTURE_RECTANGLE_EXT 1\n");
-          #endif
-          texture_info.ogl_type = GL_TEXTURE_RECTANGLE_ARB;
-          mipmaps = false;
-        } else
-        {
-          #if defined(VSXU_DEBUG)
-          printf("GL_TEXTURE_MIPMAP FALLBACK 1\n");
-          #endif
-          texture_info.ogl_type = GL_TEXTURE_2D;
-          mipmaps = true;
-        }
-      #endif
-    } else
+    if ((*it).second.texture_info->type == VSX_TEXTURE_INFO_TYPE_JPG)
     {
-      #if defined(VSXU_DEBUG)
-      printf("no mipmaps, GL_TEXTURE_2D\n");
-      #endif
-      texture_info.ogl_type = GL_TEXTURE_2D;
+      tname = (*it).first;
+      t_glist.erase(tname);
+      load_jpeg(tname);
     }
-  } else
-  { // we do want mipmaps
-    #if defined(VSXU_DEBUG)
-    printf("mipmaps, GL_TEXTURE_2D\n");
-    #endif
-    texture_info.ogl_type = GL_TEXTURE_2D;
-  //printf("GL_TEXTURE_2D 2\n");
   }
-  GLboolean oldStatus = glIsEnabled(texture_info.ogl_type);
-  //printf("%d GL Error was: %x\n", __LINE__,glGetError());
-  glEnable(texture_info.ogl_type);
-  //printf("%d GL Error was: %x\n", __LINE__,glGetError());
-  glBindTexture(texture_info.ogl_type, texture_info.ogl_id);
-  //printf("Texture id is %d\n",texture_info.ogl_id);
-  //printf("%d GL Error was: %x\n", __LINE__,glGetError());
-  glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  //printf("%d GL Error was: %x\n", __LINE__,glGetError());
-  glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  //printf("%d GL Error was: %x\n", __LINE__,glGetError());
+}
 
-  if (upside_down) {
+
+void vsx_texture::upload_ram_bitmap_1d( void* data, unsigned long size, bool mipmaps, int bpp, int bpp2 )
+{
+  GLboolean oldStatus = glIsEnabled(texture_info.ogl_type);
+
+  glEnable(texture_info.ogl_type);
+  glBindTexture(texture_info.ogl_type, texture_info.ogl_id);
+
+
+
+
+  if (mipmaps)
+  {
+    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(texture_info.ogl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+  } else
+  {
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+  }
+
+  // no compression
+  if (bpp == GL_RGBA32F_ARB)
+  {
+    glTexImage1D(
+      texture_info.ogl_type,  // opengl type
+      0, // mipmap level
+      GL_RGBA32F_ARB, // internal format
+      size, // size
+      0, // border
+      bpp2, // source data format
+      GL_FLOAT, // source data type
+      data
+    );
+  } else
+  {
+    if (bpp == 3)
+    {
+      glTexImage1D(
+        texture_info.ogl_type,  // opengl type
+        0,  // mipmap level
+        GL_COMPRESSED_RGB_ARB, // storage type
+        size, // size x
+        0,      // border 0 or 1
+        bpp2,   // source data format
+        GL_UNSIGNED_BYTE, // source data type
+        data // pointer to data
+      );
+    }
+    else
+    {
+      glTexImage1D(
+        texture_info.ogl_type,  // opengl type
+        0,  // mipmap level
+        GL_COMPRESSED_RGBA_ARB, // storage type
+        size, // size x
+        0,      // border 0 or 1
+        bpp2,   // source data format
+        GL_UNSIGNED_BYTE, // source data type
+        data // pointer to data
+      );
+    }
+  }
+
+
+
+  if(!oldStatus)
+  {
+    glDisable(texture_info.ogl_type);
+  }
+  valid = true;
+
+}
+
+void vsx_texture::upload_ram_bitmap_2d(vsx_bitmap* vbitmap,bool mipmaps, bool upside_down)
+{
+  upload_ram_bitmap_2d(vbitmap->data, vbitmap->size_x, vbitmap->size_y,mipmaps,vbitmap->bpp, vbitmap->bformat,upside_down);
+}
+
+void vsx_texture::upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigned long size_y, bool mipmaps, int bpp, int bpp2, bool upside_down)
+{
+  // prepare data
+  if (upside_down)
+  {
     //printf("texture is upside down\n");
     if (bpp == GL_RGBA32F_ARB)
     {
@@ -668,7 +895,8 @@ void vsx_texture::upload_ram_bitmap(void* data, unsigned long size_x, unsigned l
         ++dy;
       }
       data = (GLfloat*)data2;
-    } else
+    }
+    else
     {
       unsigned char* data2 = new unsigned char[(size_x) * (size_y) * (bpp)];
       int dy = 0;
@@ -687,54 +915,74 @@ void vsx_texture::upload_ram_bitmap(void* data, unsigned long size_x, unsigned l
       data = (unsigned long*)data2;
     }
   }
-  //glTexParameteri(texture_info.ogl_type, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  //glTexParameteri(texture_info.ogl_type, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-  //glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  //glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-  //printf("before upload %d\n",bpp);
+
+
+
+
+  GLboolean oldStatus = glIsEnabled(texture_info.ogl_type);
+
+  glEnable(texture_info.ogl_type);
+  glBindTexture(texture_info.ogl_type, texture_info.ogl_id);
+
   if (mipmaps)
   {
-    //printf("texture: trying to use mipmaps\n");
-    #ifdef VSXU_OPENGL_ES
-      printf("texture: running glTExImage2D\n");
-      glTexImage2D(texture_info.ogl_type, 0, GL_RGBA, size_x, size_y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-      printf("%d GL Error was: %x\n", __LINE__,glGetError());
-      printf("GL NOError is: %d\n", GL_NO_ERROR);
-    #endif
-    #ifndef VSXU_OPENGL_ES
-      if (bpp == GL_RGBA32F_ARB)
-      gluBuild2DMipmaps(texture_info.ogl_type,bpp,size_x,size_y,bpp2,GL_FLOAT,data);
-      else
-      gluBuild2DMipmaps(texture_info.ogl_type,bpp,size_x,size_y,bpp2,GL_UNSIGNED_BYTE,data);
-    #endif
-  }
-  else
+    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(texture_info.ogl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+    float rMaxAniso;
+    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &rMaxAniso);
+    glTexParameterf( texture_info.ogl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
+
+  } else
   {
-    //printf("NO mipmaps. Size.x : %d, size.y: %d bpp: %d, bpp2: %d\n",size_x, size_y,bpp,bpp2);
-    #ifndef VSXU_OPENGL_ES
-      glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAX_LEVEL,0);
-    #endif
-    
-    // no compression
-    if (bpp == GL_RGBA32F_ARB)
-    {
-      glTexImage2D(texture_info.ogl_type, 0,bpp , size_x, size_y, 0, bpp2, GL_FLOAT, data);
-    } else
-    {
-      glTexImage2D(texture_info.ogl_type, 0,bpp , size_x, size_y, 0, bpp2, GL_UNSIGNED_BYTE, data);
-    }
-    // use compression
-    /*if (bpp == 3)
-    glTexImage2D(texture_info.ogl_type, 0,GL_COMPRESSED_RGB_S3TC_DXT1_EXT , size_x, size_y, 0, bpp2, GL_UNSIGNED_BYTE, data);
-    else
-    glTexImage2D(texture_info.ogl_type, 0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT , size_x, size_y, 0, bpp2, GL_UNSIGNED_BYTE, data);
-    // end compression block
-    */
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
   }
-  //printf("before cleaning up of upside down\n");
-  if (upside_down) {
+
+  // no compression
+  if (bpp == GL_RGBA32F_ARB)
+  {
+    glTexImage2D(texture_info.ogl_type, 0,bpp , size_x, size_y, 0, bpp2, GL_FLOAT, data);
+  } else
+  {
+    if (bpp == 3)
+    {
+      glTexImage2D(
+        texture_info.ogl_type,  // opengl type
+        0,  // mipmap level
+        GL_COMPRESSED_RGB_ARB, // storage type
+        size_x, // size x
+        size_y, // size y
+        0,      // border 0 or 1
+        bpp2,   // source data format
+        GL_UNSIGNED_BYTE, // source data type
+        data // pointer to data
+      );
+    }
+    else
+    {
+      glTexImage2D(
+        texture_info.ogl_type,  // opengl type
+        0,  // mipmap level
+        GL_COMPRESSED_RGBA_ARB, // storage type
+        size_x, // size x
+        size_y, // size y
+        0,      // border 0 or 1
+        bpp2,   // source data format
+        GL_UNSIGNED_BYTE, // source data type
+        data // pointer to data
+      );
+    }
+    // original:
+    //       glTexImage2D(texture_info.ogl_type, 0,bpp , size_x, size_y, 0, bpp2, GL_UNSIGNED_BYTE, data);
+  }
+
+  if (upside_down)
+  {
     if (bpp == GL_RGBA32F_ARB)
     {
       delete[] (GLfloat*)data;
@@ -743,64 +991,332 @@ void vsx_texture::upload_ram_bitmap(void* data, unsigned long size_x, unsigned l
       delete[] (unsigned long*)data;
     }
   }
-  //printf("after upload\n");
 
   this->texture_info.size_x = size_x;
   this->texture_info.size_y = size_y;
-  if(!oldStatus) glDisable(texture_info.ogl_type);
+
+  if(!oldStatus)
+  {
+    glDisable(texture_info.ogl_type);
+  }
   valid = true;
 }
 
-void vsx_texture::load_png(vsx_string fname, bool mipmaps, vsxf* filesystem)
+
+
+
+
+
+
+void vsx_texture::upload_ram_bitmap_cube(void* data, unsigned long size_x, unsigned long size_y, bool mipmaps, int bpp, int bpp2, bool upside_down)
 {
-  if (t_glist.find(fname) != t_glist.end()) {
-    //printf("already found png: %s\n",fname.c_str());
-    locked = true;
-    texture_info = t_glist[fname];
+  if ( size_x / 6 != size_y )
+  {
+    vsx_printf("vsx_texture::upload_ram_bitmap_cube Error: not cubemap, should be aspect 6:1");
     return;
+  }
+
+  void* sides[6];
+
+  // prepare data
+  if (upside_down)
+  {
+    //printf("texture is upside down\n");
+    if (bpp == GL_RGBA32F_ARB)
+    {
+      GLfloat* data2 = new GLfloat[size_x * size_y * 4];
+      int dy = 0;
+      int sxbpp = size_x*4;
+      for (int y = size_y-1; y >= 0; --y) {
+        for (unsigned long x = 0; x < size_x*4; ++x) {
+          data2[dy*sxbpp + x] = ((GLfloat*)data)[y*sxbpp + x];
+        }
+        ++dy;
+      }
+      data = (GLfloat*)data2;
+
+
+      // split cubemap into 6 individual bitmaps
+
+      sides[0] = (void*)malloc( sizeof(GLfloat) * (size_y << 1) );
+      sides[1] = (void*)malloc( sizeof(GLfloat) * (size_y << 1) );
+      sides[2] = (void*)malloc( sizeof(GLfloat) * (size_y << 1) );
+      sides[3] = (void*)malloc( sizeof(GLfloat) * (size_y << 1) );
+      sides[4] = (void*)malloc( sizeof(GLfloat) * (size_y << 1) );
+      sides[5] = (void*)malloc( sizeof(GLfloat) * (size_y << 1) );
+
+      for (size_t side_offset = 0; side_offset < 6; side_offset++)
+      {
+        for (size_t y = 0; y < size_y; y++)
+        {
+          memcpy(
+            // destination
+            ((GLfloat*)sides[side_offset]) + y * size_y
+            ,
+
+            // souce
+            (GLfloat*)&((GLfloat*)data)[ size_x * y ] // row offset
+            +
+            size_y * side_offset,            // horiz offset
+
+            sizeof(GLfloat) * size_y // count
+          );
+        }
+      }
+
+    } else
+    {
+      unsigned char* data2 = new unsigned char[(size_x) * (size_y) * (bpp)];
+      int dy = 0;
+      int sxbpp = size_x*bpp;
+      for (int y = size_y-1; y >= 0; --y)
+      {
+        //printf("y: %d\n",y);
+        int dysxbpp = dy*sxbpp;
+        int ysxbpp = y * sxbpp;
+        for (size_t x = 0; x < size_x*bpp; ++x)
+        {
+          data2[dysxbpp + x] = ((unsigned char*)data)[ysxbpp + x];
+        }
+        ++dy;
+      }
+      data = (unsigned long*)data2;
+    }
+
+    // split cubemap into 6 individual bitmaps
+
+    sides[0] = (void*)malloc( sizeof(uint32_t) * (size_y << 1) );
+    sides[1] = (void*)malloc( sizeof(uint32_t) * (size_y << 1) );
+    sides[2] = (void*)malloc( sizeof(uint32_t) * (size_y << 1) );
+    sides[3] = (void*)malloc( sizeof(uint32_t) * (size_y << 1) );
+    sides[4] = (void*)malloc( sizeof(uint32_t) * (size_y << 1) );
+    sides[5] = (void*)malloc( sizeof(uint32_t) * (size_y << 1) );
+
+    for (size_t side_offset = 0; side_offset < 6; side_offset++)
+    {
+      for (size_t y = 0; y < size_y; y++)
+      {
+        memcpy(
+          // destination
+          ((uint32_t*)sides[side_offset]) + y * size_y
+          ,
+
+          // souce
+          (uint32_t*)&((uint32_t*)data)[ size_x * y ] // row offset
+          +
+          size_y * side_offset,            // horiz offset
+
+          sizeof(uint32_t) * size_y // count
+        );
+      }
+    }
+  }
+
+
+
+
+
+  GLboolean oldStatus = glIsEnabled(texture_info.ogl_type);
+
+  glEnable(texture_info.ogl_type);
+  glBindTexture(texture_info.ogl_type, texture_info.ogl_id);
+
+  if (mipmaps)
+  {
+    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(texture_info.ogl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+    float rMaxAniso;
+    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &rMaxAniso);
+    glTexParameterf( texture_info.ogl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
+
   } else
   {
-    locked = false;
-    vsxf* i_filesystem = 0x0;
-    //printf("processing png: %s\n",fname.c_str());
-    if (filesystem == 0x0)
-    {
-      i_filesystem = new vsxf;
-      filesystem = i_filesystem;
-    }
-    pngRawInfo* pp = new pngRawInfo;
-    if (pngLoadRaw(fname.c_str(), pp, filesystem))
-    {
-      this->name = fname;
-      init_opengl_texture();
-      if (pp->Components == 1)
-      upload_ram_bitmap((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,3,GL_RGB);
-      if (pp->Components == 2)
-      upload_ram_bitmap((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,4,GL_RGBA);
-      if (pp->Components == 3)
-      upload_ram_bitmap((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,pp->Components,GL_RGB);
-      if (pp->Components == 4)
-      upload_ram_bitmap((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,pp->Components,GL_RGBA);
-      free(pp->Data);
-      texture_info.type = 1; // png
-      //printf("name: %s\n",fname.c_str());
-      t_glist[fname] = texture_info;
-    }
-    delete pp;
-    if (i_filesystem) delete i_filesystem;
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_info.ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
   }
+
+
+  // no compression
+  if (bpp == GL_RGBA32F_ARB)
+  {
+    // TODO: upload!
+    glTexImage2D(texture_info.ogl_type, 0,bpp , size_x, size_y, 0, bpp2, GL_FLOAT, data);
+  } else
+  {
+    if (bpp == 3)
+    {
+      glTexImage2D(
+        texture_info.ogl_type,  // opengl type
+        0,  // mipmap level
+        GL_COMPRESSED_RGB_ARB, // storage type
+        size_x, // size x
+        size_y, // size y
+        0,      // border 0 or 1
+        bpp2,   // source data format
+        GL_UNSIGNED_BYTE, // source data type
+        data // pointer to data
+      );
+    }
+    else
+    {
+      glTexImage2D(
+        texture_info.ogl_type,  // opengl type
+        0,  // mipmap level
+        GL_COMPRESSED_RGBA_ARB, // storage type
+        size_x, // size x
+        size_y, // size y
+        0,      // border 0 or 1
+        bpp2,   // source data format
+        GL_UNSIGNED_BYTE, // source data type
+        data // pointer to data
+      );
+    }
+    // original:
+    //       glTexImage2D(texture_info.ogl_type, 0,bpp , size_x, size_y, 0, bpp2, GL_UNSIGNED_BYTE, data);
+  }
+
+  if (upside_down)
+  {
+    if (bpp == GL_RGBA32F_ARB)
+    {
+      delete[] (GLfloat*)data;
+    } else
+    {
+      delete[] (unsigned long*)data;
+    }
+  }
+
+  this->texture_info.size_x = size_x;
+  this->texture_info.size_y = size_y;
+
+  if(!oldStatus)
+  {
+    glDisable(texture_info.ogl_type);
+  }
+  valid = true;
 }
 
-void vsx_texture::load_jpeg(vsx_string fname, bool mipmaps) {
+
+
+
+
+
+
+
+
+
+void vsx_texture::load_png(vsx_string fname, bool mipmaps, vsxf* filesystem)
+{
+  if (t_glist.find(fname) != t_glist.end())
+  {
+    printf("vsx_texture::t_glist MATCH! On: %s\n",fname.c_str());
+    is_glist_alias = true;
+    texture_info = *(t_glist[fname].texture_info);
+    t_glist[fname].references++;
+    return;
+  }
+  is_glist_alias = false;
+  vsxf* i_filesystem = 0x0;
+  //printf("processing png: %s\n",fname.c_str());
+  if (filesystem == 0x0)
+  {
+    i_filesystem = new vsxf;
+    filesystem = i_filesystem;
+  }
+  pngRawInfo* pp = new pngRawInfo;
+  if (pngLoadRaw(fname.c_str(), pp, filesystem))
+  {
+    this->name = fname;
+    init_opengl_texture_2d();
+    if (pp->Components == 1)
+    upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,3,GL_RGB);
+    if (pp->Components == 2)
+    upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,4,GL_RGBA);
+    if (pp->Components == 3)
+    upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,pp->Components,GL_RGB);
+    if (pp->Components == 4)
+    upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,pp->Components,GL_RGBA);
+
+    free(pp->Data);
+
+    if (pp->Palette)
+    {
+      free( pp->Palette );
+    }
+
+    texture_info.type = VSX_TEXTURE_INFO_TYPE_PNG; // png
+
+    t_glist[fname].texture_info = &texture_info;
+    t_glist[fname].references++;
+  }
+  delete pp;
+  if (i_filesystem) delete i_filesystem;
+}
+
+void vsx_texture::load_png_cubemap(vsx_string fname, bool mipmaps, vsxf* filesystem)
+{
+  if (t_glist.find(fname) != t_glist.end())
+  {
+    //printf("already found png: %s\n",fname.c_str());
+    is_glist_alias = true;
+    texture_info = *(t_glist[fname].texture_info);
+    t_glist[fname].references++;
+    return;
+  }
+  is_glist_alias = false;
+  vsxf* i_filesystem = 0x0;
+  //printf("processing png: %s\n",fname.c_str());
+  if (filesystem == 0x0)
+  {
+    i_filesystem = new vsxf;
+    filesystem = i_filesystem;
+  }
+  pngRawInfo* pp = new pngRawInfo;
+  if (pngLoadRaw(fname.c_str(), pp, filesystem))
+  {
+    this->name = fname;
+    init_opengl_texture_cubemap();
+    if (pp->Components == 1)
+    upload_ram_bitmap_cube((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,3,GL_RGB);
+    if (pp->Components == 2)
+    upload_ram_bitmap_cube((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,4,GL_RGBA);
+    if (pp->Components == 3)
+    upload_ram_bitmap_cube((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,pp->Components,GL_RGB);
+    if (pp->Components == 4)
+    upload_ram_bitmap_cube((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,pp->Components,GL_RGBA);
+
+    free(pp->Data);
+
+    if (pp->Palette)
+    {
+      free( pp->Palette );
+    }
+
+    texture_info.type = VSX_TEXTURE_INFO_TYPE_PNG; // png
+
+    t_glist[fname].texture_info = &texture_info;
+    t_glist[fname].references++;
+  }
+  delete pp;
+  if (i_filesystem) delete i_filesystem;
+}
+
+void vsx_texture::load_jpeg(vsx_string fname, bool mipmaps)
+{
     CJPEGTest cj;
     vsx_string ret;
     vsxf filesystem;
     cj.LoadJPEG(fname,ret,&filesystem);
-    upload_ram_bitmap((unsigned long*)cj.m_pBuf, cj.GetResX(), cj.GetResY(), mipmaps, 3, GL_RGB);
+    upload_ram_bitmap_2d((unsigned long*)cj.m_pBuf, cj.GetResX(), cj.GetResY(), mipmaps, 3, GL_RGB);
+    texture_info.type = VSX_TEXTURE_INFO_TYPE_JPG;
 }
 
 // PNG THREAD STUFF
-typedef struct {
+typedef struct
+{
   pngRawInfo*       pp;
   int               thread_state;
   pthread_t					worker_t;
@@ -824,60 +1340,61 @@ void* png_worker(void *ptr) {
 // load a png but put the heavy processing in a thread
 void vsx_texture::load_png_thread(vsx_string fname, bool mipmaps)
 {
-  if (t_glist.find(fname) != t_glist.end()) {
-    locked = true;
-    texture_info = t_glist[fname];
+  if (t_glist.find(fname) != t_glist.end())
+  {
+    is_glist_alias = true;
+    texture_info = *(t_glist[fname].texture_info);
     this->name = fname;
     return;
-  } else
-  {
-    locked = false;
-    if (pti_l) {
-      if (((pti*)pti_l)->thread_state == 1) {
-        long* aa;
-        pthread_join(((pti*)pti_l)->worker_t, (void **)&aa);
-      }
-      free(((pti*)pti_l)->pp->Data);
-      free(pti_l);
-    }
-    this->name = fname;
-    valid = false;
-    pti* pt = new pti;
-    pt->filename = fname;
-    pt->mipmaps = mipmaps;
-    pthread_attr_init(&pt->worker_t_attr);
-    pt->thread_state = 1;
-    pti_l = (void*)pt;
-    pthread_create(&(pt->worker_t), &(pt->worker_t_attr), &png_worker, (void*)this);
   }
+  is_glist_alias = false;
+  if (pti_l) {
+    if (((pti*)pti_l)->thread_state == 1) {
+      long* aa;
+      pthread_join(((pti*)pti_l)->worker_t, (void **)&aa);
+    }
+    free(((pti*)pti_l)->pp->Data);
+    free(pti_l);
+  }
+  this->name = fname;
+  valid = false;
+  pti* pt = new pti;
+  pt->filename = fname;
+  pt->mipmaps = mipmaps;
+  pthread_attr_init(&pt->worker_t_attr);
+  pt->thread_state = 1;
+  pti_l = (void*)pt;
+  pthread_create(&(pt->worker_t), &(pt->worker_t_attr), &png_worker, (void*)this);
 }
 
 bool vsx_texture::bind()
 {
-    if (pti_l)
-    if (((pti*)pti_l)->thread_state == 2)
-    {
-      if (texture_info.ogl_id != 0)
-      unload();
-      init_opengl_texture();
-      pngRawInfo* pp = (pngRawInfo*)(((pti*)pti_l)->pp);
-      if (pp->Components == 1)
-      upload_ram_bitmap((unsigned long*)(pp->Data),pp->Width,pp->Height,false,3,GL_RGB); else
-      if (pp->Components == 2)
-      upload_ram_bitmap((unsigned long*)(pp->Data),pp->Width,pp->Height,false,4,GL_RGBA); else
-      if (pp->Components == 3)
-      upload_ram_bitmap((unsigned long*)(pp->Data),pp->Width,pp->Height,false,pp->Components,GL_RGB); else
-      if (pp->Components == 4)
-      upload_ram_bitmap((unsigned long*)(pp->Data),pp->Width,pp->Height,false,pp->Components,GL_RGBA);
-      free((((pti*)pti_l)->pp)->Data);
-      texture_info.type = 1; // png
-      t_glist[name] = texture_info;
-      pthread_join(((pti*)pti_l)->worker_t,0);
-      valid = true;
-      delete (pti*)pti_l;
-      pti_l = 0;
-    }
-  if (texture_info.ogl_id == 0) {
+  if (pti_l)
+  if (((pti*)pti_l)->thread_state == 2)
+  {
+    if (texture_info.ogl_id != 0) unload();
+
+    init_opengl_texture_2d();
+    pngRawInfo* pp = (pngRawInfo*)(((pti*)pti_l)->pp);
+    if (pp->Components == 1)
+    upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,((pti*)pti_l)->mipmaps,3,GL_RGB); else
+    if (pp->Components == 2)
+    upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,((pti*)pti_l)->mipmaps,4,GL_RGBA); else
+    if (pp->Components == 3)
+    upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,((pti*)pti_l)->mipmaps,pp->Components,GL_RGB); else
+    if (pp->Components == 4)
+    upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,((pti*)pti_l)->mipmaps,pp->Components,GL_RGBA);
+    free((((pti*)pti_l)->pp)->Data);
+    texture_info.type = VSX_TEXTURE_INFO_TYPE_PNG; // png
+    t_glist[name].texture_info = &texture_info;
+    t_glist[name].references++;
+    pthread_join(((pti*)pti_l)->worker_t,0);
+    valid = true;
+    delete (pti*)pti_l;
+    pti_l = 0;
+  }
+  if ( 0 == texture_info.ogl_id )
+  {
     return false;
   }
   glEnable(texture_info.ogl_type);
@@ -893,39 +1410,57 @@ void vsx_texture::_bind()
   glDisable(texture_info.ogl_type);
 }
 
-void vsx_texture::texcoord2f(float x, float y) {
+void vsx_texture::texcoord2f(float x, float y)
+{
   #ifdef VSXU_OPENGL_ES
     printf("NO vsx_texture::texcoord2f support on OpenGL ES!\n");
   #else
-    if (texture_info.ogl_type == GL_TEXTURE_RECTANGLE_EXT) {
+    if (texture_info.ogl_type == GL_TEXTURE_RECTANGLE_EXT)
+    {
       glTexCoord2i((GLuint)(x*texture_info.size_x),(GLuint)(y*texture_info.size_y));
-    } else {
-      glTexCoord2f(x,y);
+      return;
     }
+    glTexCoord2f(x,y);
   #endif
 }
 
 void vsx_texture::unload()
 {
-  if (texture_info.ogl_id != 0)
+  if (texture_info.ogl_id == 0) return;
+
+  if (!valid) return;
+
+  if ( valid_fbo )
   {
-    if (name != "" && t_glist.find(name) != t_glist.end())
+    deinit_buffer();
+    return;
+  }
+
+  // deal with reference counted textures
+  if
+  (
+    name != ""
+    &&
+    t_glist.find(name) != t_glist.end()
+  )
+  {
+    t_glist[name].references--;
+    if (0 == t_glist[name].references)
     {
-      if (!locked)
-      {
-        t_glist.erase(name);
-        //printf("deleting GL texture\n");
-        glDeleteTextures(1,&(texture_info.ogl_id));
-      }
-    } else
-    if (locked)
-    {
-      glDeleteTextures(1,&(texture_info.ogl_id));
-      //GLenum ii = glGetError();
-      //printf("deletion error was: %d\n",ii);
+      // safe to delete this texture
+      t_glist.erase( name );
+      glDeleteTextures( 1, &(texture_info.ogl_id) );
     }
     texture_info.ogl_id = 0;
     texture_info.ogl_type = 0;
     valid = false;
+    is_glist_alias = false;
+    return;
   }
+
+  glDeleteTextures(1,&(texture_info.ogl_id));
+  texture_info.ogl_id = 0;
+  texture_info.ogl_type = 0;
+  valid = false;
 }
+

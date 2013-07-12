@@ -10,11 +10,16 @@ project (${module_id})
 # CMAKE PACKAGES ###############################################################
 ################################################################################
 find_package(GLFW REQUIRED)
-find_package(PTHREAD REQUIRED)
+find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
+
+if(VSXU_TM)
+  find_package(Tm REQUIRED)
+endif()
+
 
 ################################################################################
 # INCLUDES #####################################################################
@@ -30,6 +35,12 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/artiste/src/vsx_widget
   ${CMAKE_SOURCE_DIR}/artiste/include
 )
+
+if (VSXU_TM)
+  include_directories(
+    ${TM_INCLUDE_PATH}
+  )
+endif()
 
 ################################################################################
 # DEFINES ######################################################################
@@ -54,6 +65,13 @@ add_definitions(
  -DVSXU_ARTISTE
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )
+
+if (VSXU_TM)
+  add_definitions(
+    -DVSXU_TM
+  )
+endif()
+
 
 ################################################################################
 # SOURCES ######################################################################
@@ -92,7 +110,7 @@ set(SOURCES
   src/vsx_widget/module_choosers/vsx_widget_module_chooser_list.cpp
   src/vsx_widget/vsx_widget_desktop.cpp
   src/application.cpp
-  src/main.cpp
+  src/artiste_main.cpp
   src/vsx_mouse.cpp
 )
 
@@ -108,15 +126,22 @@ if(UNIX)
   target_link_libraries(
     ${module_id}
     ${GLFW_LIBRARY}
-    ${PTHREAD_LIBRARY}
+    ${CMAKE_THREAD_LIBS_INIT}
     ${GLEW_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
-    Xrandr
+    ${TM_LIBRARY}
     vsxu_engine_graphics
     vsxu_engine
   )
+
+  if (VSXU_TM)
+    target_link_libraries(
+      ${module_id}
+      ${TM_LIBRARY}
+    )
+  endif()
 
 endif(UNIX)
 
@@ -130,7 +155,7 @@ if(WIN32)
     vsxu_engine
     vsxu_engine_graphics
     ${GLEW_LIBRARY}
-    ${PTHREAD_LIBRARY}
+    ${CMAKE_THREAD_LIBS_INIT}
     gdi32
     ${OPENGL_LIBRARIES}
   )
@@ -192,6 +217,7 @@ install(
 )
 
 IF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/vsxu-artiste-fullscreen.desktop.in
                   ${CMAKE_CURRENT_BINARY_DIR}/vsxu-artiste-fullscreen.desktop
                   @ONLY)

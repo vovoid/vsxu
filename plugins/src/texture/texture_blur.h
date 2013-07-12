@@ -43,14 +43,12 @@ class vsx_module_texture_blur : public vsx_module {
 public:
 
 
-  ~vsx_module_texture_blur() {
-    if (texture)
-    delete texture;
+  ~vsx_module_texture_blur()
+  {
   }
 
 void module_info(vsx_module_info* info) {
   glewInit();
-  texture = 0;
   info->identifier = "texture;effects;blur";
 #ifndef VSX_NO_CLIENT
   info->in_param_spec =
@@ -78,11 +76,13 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   passes->set(0);
 
   texture = new vsx_texture;
+  texture->set_gl_state( engine->gl_state );
   res_x = res_y = 256;
   texture->reinit_color_buffer(res_x,res_y,true,false);
   texture->valid = true;
 
   texture2 = new vsx_texture;
+  texture2->set_gl_state( engine->gl_state );
   texture2->reinit_color_buffer(res_x,res_y,true,false);
   texture2->valid = true;
 
@@ -353,19 +353,21 @@ void deactivate_offscreen() {
     {
       //printf("############################# texture is 0 and creating new one...\n");
       texture = new vsx_texture;
+      texture->set_gl_state( engine->gl_state );
 
       tex_size_internal = 3;
       texture->reinit_color_buffer(res_x,res_y,true,false);
       //texture->valid = false;
 
       texture2 = new vsx_texture;
+      texture2->set_gl_state( engine->gl_state );
       texture2->reinit_color_buffer(res_x,res_y,true,false);
       //texture2->valid = false;
     }
     bool rebuild = false;
     if (texture_size->get() >= 10)
     {
-      glGetIntegerv (GL_VIEWPORT, viewport);
+      engine->gl_state->viewport_get(viewport);
       int t_res_x = abs(viewport[2] - viewport[0]);
       int t_res_y = abs(viewport[3] - viewport[1]);
 
@@ -405,8 +407,8 @@ void deactivate_offscreen() {
         case 12: res_x = abs(viewport[2] - viewport[0]) / 4; res_y = abs(viewport[3] - viewport[1]) / 4; break;
         case 13: res_x = abs(viewport[2] - viewport[0]) * 2; res_y = abs(viewport[3] - viewport[1]) * 2; break;
       };
-      texture->reinit_feedback_buffer(res_x,res_y);
-      texture2->reinit_feedback_buffer(res_x,res_y);
+      texture->reinit_color_buffer(res_x,res_y,true,false);
+      texture2->reinit_color_buffer(res_x,res_y,true,false);
     }
 
 
@@ -610,7 +612,8 @@ void deactivate_offscreen() {
     glsl_attenuation = glGetUniformLocationARB(shader.prog,"attenuation");
   }
 
-  void on_delete() {
+  void on_delete()
+  {
     if (texture) {
       texture->deinit_buffer();
       texture2->deinit_buffer();

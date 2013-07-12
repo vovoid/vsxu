@@ -65,10 +65,12 @@
 #endif
 
 
+
+
 // global vars
 vsx_string fpsstring = "VSX Ultra "+vsx_string(vsxu_version)+" - 2012 Vovoid";
 vsx_module_list_abs* vxe_module_list;
-vsx_engine* vxe = 0;
+vsx_engine* vxe = 0x0;
 
 // from the perspective (both for gui/server) from here towards the tcp thread
 vsx_command_list system_command_queue;
@@ -185,11 +187,13 @@ public:
       gui_f_time = 0;
       if (!*gui_prod_fullwindow)
       {
+        tm->e("artiste_gui");
         if (desktop) {
           desktop->init_frame();
           desktop->draw();
           desktop->draw_2d();
         }
+        tm->l();
       }
       if (!dual_monitor)
       {
@@ -264,11 +268,14 @@ public:
             //"("+f2s(frame_time)+")
           }
         }
-        if (desktop && desktop->performance_mode) {
+        if (desktop && desktop->performance_mode)
+        {
+          tm->e("artiste_gui");
           glClear(GL_DEPTH_BUFFER_BIT);
           desktop->init_frame();
           desktop->draw();
           desktop->draw_2d();
+          tm->l();
         }
       }
       #ifndef NO_INTRO
@@ -412,7 +419,9 @@ void load_desktop_a(vsx_string state_name)
 }
 
 
-void app_init(int id) {
+void app_init(int id)
+{
+
   if (dual_monitor && id == 0) return;
   //if (!dual_monitor && id == 0) return;
 
@@ -443,6 +452,9 @@ void app_init(int id) {
 
   vxe_module_list = vsx_module_list_factory_create(app_argv.serialize(),false);
   vxe->set_module_list(vxe_module_list);
+
+  vxe->set_gl_state( &gl_state );
+  vxe->set_tm(tm);
 
 
   gui_prod_fullwindow = &prod_fullwindow;

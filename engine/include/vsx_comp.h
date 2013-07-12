@@ -93,7 +93,7 @@ public:
   
 	//void load_module(vsx_string module_class, vsx_string name);
 
-  void load_module(const vsx_string& module_name);
+  void load_module(const vsx_string& module_name, vsx_module_engine_info* engine_info);
   void unload_module();
 	void init_module();
 	
@@ -108,9 +108,7 @@ public:
 
 	bool disconnect(vsx_string param_name, vsx_comp_abs* other_component, vsx_string other_param_name);
 	void disconnect(vsx_string param_name);
-	
-  bool engine_info(vsx_module_engine_info* engine);
-  
+	  
   void re_init_in_params();
   void re_init_out_params();
   void init_channels();

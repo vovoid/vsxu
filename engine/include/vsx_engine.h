@@ -169,6 +169,15 @@ public:
   void time_stop();
   void time_rewind();
 
+  // set tm*
+  void set_tm(void* nt);
+
+  // get tm*
+  void* get_tm();
+
+  // set gl state
+  void set_gl_state(vsx_gl_state* gl_state);
+
   // render
   //   module_output_only - if you don't want modules to run() - and thus only produce output
   //   good if you want to do multi pass rendering - most mesh and texture operations are done in run()
@@ -181,7 +190,7 @@ public:
   bool stop();
 
   // destructor
-  ~vsx_engine();
+  virtual ~vsx_engine();
 };
 
 

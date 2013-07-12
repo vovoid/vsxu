@@ -647,6 +647,68 @@ class vsx_module_block_chain_load : public vsx_module {
     
 };
 
+
+#include "vsx_tm.h"
+
+#ifdef VSXU_TM
+class vsx_module_tm_m : public vsx_module
+{
+  // in
+  vsx_module_param_string* handle_name;
+  vsx_module_param_render* render_in;
+  // out
+  vsx_module_param_render* render_result;
+  // internal
+  vsx_string sname;
+  char* iname;
+public:
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier = "system;tm_measure";
+    info->description = "";
+    info->in_param_spec = "render_in:render,handle_name:string";
+    info->out_param_spec = "render_out:render";
+    info->component_class = "system";
+    info->tunnel = true; // always run this
+  }
+
+
+  void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+  {
+    loading_done = true;
+    handle_name = (vsx_module_param_string*)in_parameters.create(VSX_MODULE_PARAM_ID_STRING,"handle_name");
+    handle_name->set("default");
+
+    render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
+    render_in->set(0);
+    render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+    render_result->set(0);
+  }
+
+  void param_set_notify(const vsx_string& name)
+  {
+    if (name == "handle_name")
+    {
+      sname = handle_name->get();
+      iname = (char*)sname.c_str();
+    }
+  }
+
+  bool activate_offscreen()
+  {
+    if (!engine->tm) return true;
+    ((vsx_tm*)engine->tm)->e( iname );
+    return true;
+  }
+
+  void deactivate_offscreen()
+  {
+    if (!engine->tm) return;
+    ((vsx_tm*)engine->tm)->l();
+  }
+
+};
+#endif
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -676,6 +738,9 @@ vsx_module* create_new_module(unsigned long module, void* args) {
     case 5: return (vsx_module*)(new vsx_module_block_chain_load);
 #if PLATFORM == PLATFORM_LINUX
     case 6: return (vsx_module*)(new vsx_module_system_joystick);
+    #ifdef VSXU_TM
+    case 7: return (vsx_module*)(new vsx_module_tm_m);
+    #endif
 #endif
   }
   return 0;
@@ -691,15 +756,23 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 5: delete (vsx_module_block_chain_load*)m; break;
 #if PLATFORM == PLATFORM_LINUX
     case 6: delete (vsx_module_system_joystick*)m; break;
+    #ifdef VSXU_TM
+    case 7: delete (vsx_module_tm_m*)m; break;
+    #endif
+
 #endif
   }
 }
 
-unsigned long get_num_modules() {
+unsigned long get_num_modules() 
+{
+unsigned long n = 6;
 #if PLATFORM == PLATFORM_LINUX
-  return 7;
-#else
-  return 6;
+  n++;
+  #ifdef VSXU_TM
+  n++;
+  #endif
 #endif
+  return n;
 }  
 
