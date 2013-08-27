@@ -4995,7 +4995,8 @@ static BOOL CALLBACK deviceQueryCallback( LPGUID lpguid,
 
   // If good device, then save its name and guid.
   std::string name = convertTChar( description );
-  if ( name == "Primary Sound Driver" || name == "Primary Sound Capture Driver" )
+  //if ( name == "Primary Sound Driver" || name == "Primary Sound Capture Driver" )
+  if ( lpguid == NULL )
     name = "Default Device";
   if ( validDevice ) {
     for ( unsigned int i=0; i<dsDevices.size(); i++ ) {
