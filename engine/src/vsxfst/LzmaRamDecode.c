@@ -41,7 +41,7 @@ int LzmaRamDecompress(
     void * (*allocFunc)(size_t size), 
     void (*freeFunc)(void *))
 {
-  CLzmaDecoderState state;  /* it's about 24 bytes structure, if int is 32-bit */
+  VSX_CLzmaDecoderState state;  /* it's about 24 bytes structure, if int is 32-bit */
   int result;
   SizeT outSizeProcessedLoc;
   SizeT inProcessed;
@@ -55,13 +55,13 @@ int LzmaRamDecompress(
   if (useFilter > 1)
     return 1;
 
-  if (LzmaDecodeProperties(&state.Properties, inBuffer + 1, LZMA_PROPERTIES_SIZE) != LZMA_RESULT_OK)
+  if (VSX_LzmaDecodeProperties(&state.Properties, inBuffer + 1, LZMA_PROPERTIES_SIZE) != LZMA_RESULT_OK)
     return 1;
   state.Probs = (CProb *)allocFunc(LzmaGetNumProbs(&state.Properties) * sizeof(CProb));
   if (state.Probs == 0)
     return SZE_OUTOFMEMORY;
   
-  result = LzmaDecode(&state,
+  result = VSX_LzmaDecode(&state,
     inBuffer + LZMA_PROPS_SIZE, (SizeT)inSize - LZMA_PROPS_SIZE, &inProcessed,
     outBuffer, (SizeT)outSize, &outSizeProcessedLoc);
   freeFunc(state.Probs);
