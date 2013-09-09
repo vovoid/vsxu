@@ -86,7 +86,7 @@ typedef struct _CLzmaProperties
   #endif
 }CLzmaProperties;
 
-int LzmaDecodeProperties(CLzmaProperties *propsRes, const unsigned char *propsData, int size);
+int VSX_LzmaDecodeProperties(CLzmaProperties *propsRes, const unsigned char *propsData, int size);
 
 #define LzmaGetNumProbs(Properties) (LZMA_BASE_SIZE + (LZMA_LIT_SIZE << ((Properties)->lc + (Properties)->lp)))
 
@@ -114,13 +114,13 @@ typedef struct _CLzmaDecoderState
   int RemainLen;
   unsigned char TempDictionary[4];
   #endif
-} CLzmaDecoderState;
+} VSX_CLzmaDecoderState;
 
 #ifdef _LZMA_OUT_READ
 #define LzmaDecoderInit(vs) { (vs)->RemainLen = kLzmaNeedInitId; }
 #endif
 
-int LzmaDecode(CLzmaDecoderState *vs,
+int VSX_LzmaDecode(VSX_CLzmaDecoderState *vs,
     #ifdef _LZMA_IN_CB
     ILzmaInCallback *inCallback,
     #else
