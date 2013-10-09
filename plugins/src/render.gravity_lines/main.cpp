@@ -197,16 +197,18 @@ public:
 		length = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "length");
 		length->set(1.0f);
 
-
 		render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 		render_result->set(0);
+
+    gr.init_strip();
 
 	}
 
   void output(vsx_module_param_abs* param)
   {
     VSX_UNUSED(param);
-		gr.masses[1].mass = gr.masses[0].mass + ribbon_width->get();
+    //gr.masses[1].mass = gr.masses[0].mass + ribbon_width->get();
+    gr.width = ribbon_width->get();
 		gr.length = length->get();
 		gr.friction = friction->get();
 	  gr.color0[0] = color0->get(0);
