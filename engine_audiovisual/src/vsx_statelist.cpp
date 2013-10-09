@@ -229,19 +229,25 @@ void vsx_statelist::stop()
 
 vsx_string vsx_statelist::get_meta_visual_filename()
 {
-  return (*state_iter).state_name;
+    return (*state_iter).state_name;
 }
 vsx_string vsx_statelist::get_meta_visual_name()
 {
-  return (*state_iter).engine->get_meta_information(0);
+    if((*state_iter).engine)
+        return (*state_iter).engine->get_meta_information(0);
+    return vsx_string();
 }
 vsx_string vsx_statelist::get_meta_visual_creator()
 {
-  return (*state_iter).engine->get_meta_information(1);
+    if((*state_iter).engine)
+        return (*state_iter).engine->get_meta_information(1);
+    return vsx_string();
 }
 vsx_string vsx_statelist::get_meta_visual_company()
 {
-  return (*state_iter).engine->get_meta_information(2);
+    if((*state_iter).engine)
+        return (*state_iter).engine->get_meta_information(2);
+    return vsx_string();
 }
 
 
@@ -656,7 +662,7 @@ void vsx_statelist::init(vsx_string base_path,vsx_string init_sound_type)
     state.engine = 0;
     statelist.push_back(state);
   }
-
+  state_iter = statelist.begin();
   load_fx_levels_from_user();
 }
 
