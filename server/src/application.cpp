@@ -37,7 +37,8 @@
 #include "vsxfst.h"
 #include "vsx_font.h"
 #include <vsx_version.h>
-#include "vsx_engine.h"
+#include <vsx_engine.h>
+#include <vsx_module_list_factory.h>
 
 
 #include "application.h"
@@ -55,6 +56,8 @@ vsx_command_list_server cl_server;
 // global vars
 vsx_string fpsstring = "VSX Ultra "+vsx_string(vsxu_version)+" - 2010 Vovoid";
 vsx_engine* vxe = 0;
+vsx_module_list_abs* vxe_module_list;
+
 
 // from the perspective (both for gui/server) from here towards the tcp thread
 vsx_command_list internal_cmd_in;
@@ -113,8 +116,36 @@ void app_init(int id)
   #endif
 	//printf("argc: %d %s\n",app_argc,own_path.c_str());
 	vxe = new vsx_engine(own_path.c_str());
-//  myf.init(PLATFORM_SHARED_FILES+"font/font-ascii_output.png");
+
+  vxe_module_list = vsx_module_list_factory_create(app_argv.serialize(),false);
+  vxe->set_module_list(vxe_module_list);
+
+  vxe->set_gl_state( &gl_state );
+  vxe->set_tm(tm);
+
 }
+
+
+/*
+ print out help texts
+*/
+void app_print_cli_help()
+{
+  printf(
+         "VSXu Artiste command syntax:\n"
+         "  -f             fullscreen mode\n"
+         "  -s 1920,1080   screen/window size\n"
+         "  -p 100,100     window posision\n"
+         "\n"
+        );
+  vsx_module_list_abs* module_list = vsx_module_list_factory_create
+  (
+    app_argv.serialize(),
+        true
+  );
+  VSX_UNUSED(module_list);
+}
+
 
 
 void app_pre_draw() {
