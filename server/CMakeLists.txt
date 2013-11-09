@@ -16,12 +16,51 @@ find_package(GLEW REQUIRED)
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
 
+if(VSXU_TM)
+  find_package(Tm REQUIRED)
+endif()
+
+################################################################################
+# INCLUDES #####################################################################
+################################################################################
+
 include_directories(
   ../
   ../engine/include
   ../engine_graphics/include
   src
 )
+
+if (VSXU_TM)
+  include_directories(
+    ${TM_INCLUDE_PATH}
+  )
+endif()
+
+################################################################################
+# DEFINES ######################################################################
+################################################################################
+if (VSXU_TM)
+  add_definitions(
+    -DVSXU_TM
+  )
+endif()
+
+if(VSXU_DEBUG)
+add_definitions(-DDEBUG)
+endif(VSXU_DEBUG)
+
+add_definitions(
+ -DVSXU_EXE
+ -DVSXU_ARTISTE
+ -DVSX_FONT_NO_FT
+ -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
+)
+
+
+################################################################################
+# SOURCES ######################################################################
+################################################################################
 
 set(OS_SOURCES "")
 
@@ -49,16 +88,6 @@ if(UNIX)
 endif(UNIX)
 
 
-if(VSXU_DEBUG)
-add_definitions(-DDEBUG)
-endif(VSXU_DEBUG)
-
-add_definitions(
- -DVSXU_EXE
- -DVSXU_ARTISTE
- -DVSX_FONT_NO_FT
- -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
-)
 
 set(SOURCES
   src/application.cpp
@@ -92,6 +121,14 @@ if(UNIX)
       ${JPEG_LIBRARIES}
     )
   endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
+
+  if (VSXU_TM)
+    target_link_libraries(
+      ${module_id}
+      ${TM_LIBRARY}
+    )
+  endif()
+
 
   if (VSXU_ENGINE_STATIC EQUAL 1)
     message("ENGINE STATIC")

@@ -21,12 +21,17 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-
 #ifndef VSX_APPLICATION_H
 #define VSX_APPLICATION_H
 
 #include <sys/time.h>
 
+
+// TM wrapper
+#include "vsx_tm.h"
+
+// GL state
+#include "vsx_gl_state.h"
 
 //extern vsx_engine* vme;
 //#define vsxu_version "VSXu 0.1.14 beta"
@@ -39,15 +44,15 @@ extern bool app_ctrl;
 extern bool app_alt;
 extern bool app_shift;
 extern bool dual_monitor;
+extern vsx_tm* tm;
+extern vsx_gl_state gl_state;
 
-extern int app_argc;
-extern char** app_argv;
-
-//extern int app_num_displays; // 0 means the primary one used, 1 the extra
-
+extern vsx_argvector app_argv;
 
 
-void app_init(int id); // which context is used?
+void app_init(int id);
+
+void app_print_cli_help();
 
 void app_pre_draw();
 
