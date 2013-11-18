@@ -210,11 +210,7 @@ int i;
 void run()
 {
   pa_audio_data.l_mul = multiplier->get()*engine->amp;
-  // set wave
-  if (0 == engine->param_float_arrays.size())
-  {
-    wave_p->set_p(pa_audio_data.wave[0]);
-  }
+  wave_p->set_p(pa_audio_data.wave[0]);
   spectrum_p->set_p(pa_audio_data.spectrum[0]);
   spectrum_p_hq->set_p(pa_audio_data.spectrum[0]);
   vu_l_p->set(pa_audio_data.vu[0]);
