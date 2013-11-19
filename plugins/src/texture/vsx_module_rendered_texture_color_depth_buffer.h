@@ -139,9 +139,9 @@ public:
     if (depth_buffer_in->connected && depth_buffer_in->valid)
     {
       vsx_texture* depth_in = depth_buffer_in->get();
-      if ( depth_buffer_in_int != depth_in->texture_info.ogl_id )
+      if ( depth_buffer_in_int != depth_in->texture_info->ogl_id )
       {
-        depth_buffer_in_int = depth_in->texture_info.ogl_id;
+        depth_buffer_in_int = depth_in->texture_info->ogl_id;
         rebuild = true;
       }
       // check if the sizes differ, if they do we can't proceed
@@ -207,12 +207,12 @@ public:
       {
         vsx_texture* depth_in = depth_buffer_in->get();
         if (
-            depth_in->texture_info.size_x != res_x ||
-            depth_in->texture_info.size_y != res_y
+            depth_in->texture_info->size_x != res_x ||
+            depth_in->texture_info->size_y != res_y
           )
         {
-          res_x = depth_in->texture_info.size_x;
-          res_y = depth_in->texture_info.size_y;
+          res_x = depth_in->texture_info->size_x;
+          res_y = depth_in->texture_info->size_y;
         }
       }
 
@@ -235,10 +235,10 @@ public:
     glEnable(GL_BLEND);
     glUseProgram(0);
 
-    depth_buffer_texture.texture_info.ogl_id = texture->get_depth_buffer_handle();
-    depth_buffer_texture.texture_info.ogl_type = GL_TEXTURE_2D;
-    depth_buffer_texture.texture_info.size_x = res_x;
-    depth_buffer_texture.texture_info.size_y = res_y;
+    depth_buffer_texture.texture_info->ogl_id = texture->get_depth_buffer_handle();
+    depth_buffer_texture.texture_info->ogl_type = GL_TEXTURE_2D;
+    depth_buffer_texture.texture_info->size_x = res_x;
+    depth_buffer_texture.texture_info->size_y = res_y;
     depth_buffer_out->set(&depth_buffer_texture);
 
 

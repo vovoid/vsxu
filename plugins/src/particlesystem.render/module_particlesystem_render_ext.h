@@ -195,11 +195,11 @@ public:
       texture_lookup_sizes_data[i] = seq_size.execute(1.0f/8192.0f);
     }
     texture_lookup_sizes->bind();
-    glTexParameteri(texture_lookup_sizes->texture_info.ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexParameteri(texture_lookup_sizes->texture_info.ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_lookup_sizes->texture_info.ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_sizes->texture_info->ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(texture_lookup_sizes->texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_sizes->texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexImage1D(
-      texture_lookup_sizes->texture_info.ogl_type,  // opengl type
+      texture_lookup_sizes->texture_info->ogl_type,  // opengl type
       0, // mipmap level
       1, // internal format
       8191, // size
@@ -227,11 +227,11 @@ public:
 //      alphas[i] = seq_alpha.execute(1.0f/8192.0f);
     }
     texture_lookup_color->bind();
-    glTexParameteri(texture_lookup_color->texture_info.ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexParameteri(texture_lookup_color->texture_info.ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_lookup_color->texture_info.ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexImage1D(
-      texture_lookup_color->texture_info.ogl_type,  // opengl type
+      texture_lookup_color->texture_info->ogl_type,  // opengl type
       0, // mipmap level
       4, // internal format
       8191, // size
@@ -267,12 +267,12 @@ public:
       texture_lookup_color_data[i].b = seq_b.execute(1.0f/8192.0f);
     }
     texture_lookup_color->bind();
-    glTexParameteri(texture_lookup_color->texture_info.ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexParameteri(texture_lookup_color->texture_info.ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_lookup_color->texture_info.ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
     glTexImage1D(
-      texture_lookup_color->texture_info.ogl_type,  // opengl type
+      texture_lookup_color->texture_info->ogl_type,  // opengl type
       0, // mipmap level
       4, // internal format
       8191, // size

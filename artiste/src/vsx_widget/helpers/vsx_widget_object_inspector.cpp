@@ -59,13 +59,13 @@ void vsx_window_object_inspector::draw_2d() {
     pos_.x = pos.x+dragborder;
     size_.x = size.x-dragborder*2;
     //printf("size: %f\n",size_.x);
-    title = filename_loaded+" "+i2s((int)texture.texture_info.size_x)+"x"+i2s((int)texture.texture_info.size_y);
+    title = filename_loaded+" "+i2s((int)texture.texture_info->size_x)+"x"+i2s((int)texture.texture_info->size_y);
 #ifndef VSXU_PLAYER
    	texture.bind();
     glColor4f(1,1,1,1);
     if (texture.valid) {
     	glBegin(GL_QUADS);
-    	if (texture.texture_info.ogl_type == GL_TEXTURE_2D) {
+      if (texture.texture_info->ogl_type == GL_TEXTURE_2D) {
       	glTexCoord2i(0, 1);
         glVertex3f(pos_.x,pos_.y,0);
       	glTexCoord2i(1, 1);
@@ -75,11 +75,11 @@ void vsx_window_object_inspector::draw_2d() {
       	glTexCoord2i(0, 0);
         glVertex3f(pos_.x,pos_.y-size_.y,0);
       } else {
-      	glTexCoord2i(0, (int)texture.texture_info.size_y);
+        glTexCoord2i(0, (int)texture.texture_info->size_y);
         glVertex3f(pos_.x,pos_.y,0);
-      	glTexCoord2i((int)texture.texture_info.size_x, (int)texture.texture_info.size_y);
+        glTexCoord2i((int)texture.texture_info->size_x, (int)texture.texture_info->size_y);
         glVertex3f(pos_.x+size_.x,pos_.y,0);
-      	glTexCoord2i((int)texture.texture_info.size_x, 0);
+        glTexCoord2i((int)texture.texture_info->size_x, 0);
         glVertex3f(pos_.x+size_.x,pos_.y-size_.y,0);
       	glTexCoord2i(0, 0);
         glVertex3f(pos_.x,pos_.y-size_.y,0);
@@ -92,15 +92,15 @@ void vsx_window_object_inspector::draw_2d() {
     //printf("ts %f\n",texture.size_x);
 #ifndef VSXU_PLAYER
     if (texture_loaded == false)
-    if (texture.texture_info.size_y != 0.0) {
+    if (texture.texture_info->size_y != 0.0) {
       texture_loaded = true;
       vsx_vector aa;
-      aa.x = 0.4/screenaspect*(texture.texture_info.size_x/texture.texture_info.size_y);
+      aa.x = 0.4/screenaspect*(texture.texture_info->size_x/texture.texture_info->size_y);
       aa.y = 0.4;
       aa.z = 0;
       printf("resizing to tex\n");
       resize_to(aa);
-      move(1*screen_aspect-0.4/screenaspect*(texture.texture_info.size_x/texture.texture_info.size_y),1.0f-aa.y,0);
+      move(1*screen_aspect-0.4/screenaspect*(texture.texture_info->size_x/texture.texture_info->size_y),1.0f-aa.y,0);
     }
 #endif
   }
@@ -327,7 +327,7 @@ void vsx_window_object_inspector::load_file(vsx_string filename) {
       view_type = 1; // image viewer
       texture_loaded = false;
 #ifndef VSXU_PLAYER
-      texture.texture_info.size_y = 0;
+      texture.texture_info->size_y = 0;
 //      if (texture.valid)
       texture.unload();
       texture.init_opengl_texture_2d();
@@ -343,7 +343,7 @@ void vsx_window_object_inspector::load_file(vsx_string filename) {
       view_type = 1; // image viewer
       texture_loaded = false;
 #ifndef VSXU_PLAYER
-      texture.texture_info.size_y = 0;
+      texture.texture_info->size_y = 0;
 //      if (texture.valid)
       texture.unload();
       texture.load_png(filename,false);

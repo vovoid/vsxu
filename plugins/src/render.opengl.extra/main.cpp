@@ -99,8 +99,8 @@ public:
                 gluBuild2DMipmaps( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_ARB, GL_RGB, n_z->size_x, n_z->size_y, n_z->bformat, GL_UNSIGNED_BYTE, n_z->data );
 
                 glDisable(GL_TEXTURE_CUBE_MAP_EXT);
-                my_tex.texture_info.ogl_id = texture;
-                my_tex.texture_info.ogl_type = GL_TEXTURE_CUBE_MAP_EXT;
+                my_tex.texture_info->ogl_id = texture;
+                my_tex.texture_info->ogl_type = GL_TEXTURE_CUBE_MAP_EXT;
                 my_tex.valid = true;
                 texture_out->set(&my_tex);
                 need_to_run = 0;
