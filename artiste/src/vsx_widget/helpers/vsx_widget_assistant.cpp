@@ -151,6 +151,7 @@ void vsxu_assistant::i_draw() {
       text = course[((vsx_widget_2d_pager*)pager)->cur_page];
       //else text = "";
       myf.color.a = alpha;
+      myf.mode_2d = false;
       myf.print(vsx_vector((pos.x+size.x*0.06)*screen_aspect,pos.y+size.y-size.y*0.12),text,0.012*clickpoint.x);
     }
   }
