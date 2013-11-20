@@ -10,7 +10,11 @@ project (${module_id})
 # CMAKE PACKAGES ###############################################################
 ################################################################################
 find_package(DL REQUIRED)
-find_package(Threads REQUIRED)
+if (WIN32)
+  find_package(PTHREAD REQUIRED)
+else()
+  find_package(Threads REQUIRED)
+endif()
 
 if(VSXU_TM)
   find_package(Tm REQUIRED)
@@ -215,7 +219,7 @@ if (UNIX)
 endif()
 ################################################################################
 
-if(VSXU_BUILD_WINDOWS_32 EQUAL 1 OR VSXU_BUILD_WINDOWS_64 EQUAL 1)
+if (WIN32)
   find_file(pthread_dll pthreadGC2.dll)
   install(FILES ${pthread_dll} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT engine)
   if (VSXU_BUILD_WINDOWS_32)
@@ -228,9 +232,8 @@ if(VSXU_BUILD_WINDOWS_32 EQUAL 1 OR VSXU_BUILD_WINDOWS_64 EQUAL 1)
   endif()
 endif()
 
-message( "Pthread lib flag: ${CMAKE_THREAD_LIBS_INIT}" )
-
 target_link_libraries(${module_id}
   ${DL_LIBRARY}
   ${CMAKE_THREAD_LIBS_INIT}
+  ${PTHREAD_LIBRARY}
 )
