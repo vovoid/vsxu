@@ -471,6 +471,7 @@ int main(int argc, char* argv[])
     glfwSwapBuffers();
     tm->l();
 
+#if (PLATFORM != PLATFORM_WINDOWS)
     if (!vsync)
     {
       tm->e("frame_zzz", 0x0002);
@@ -484,6 +485,7 @@ int main(int argc, char* argv[])
       }
       tm->l();
     }
+#endif
 
     tm->t();
 

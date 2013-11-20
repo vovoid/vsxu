@@ -104,7 +104,7 @@ public:
   vsx_texture_info* texture_info;
 
   // GL State
-  void set_gl_state(void* n);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void set_gl_state(void* n);
 
   // FBO functions-------------------------------------------------------------
   // FBO is used to capture rendering output into a texture rather than to the
@@ -236,14 +236,14 @@ public:
   VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png_cubemap(vsx_string fname, bool mipmaps = true, vsxf* filesystem = 0x0);
 
   // update the transform object with a new transformation
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void set_transform(vsx_transform_obj* new_transform_obj) {
+  void set_transform(vsx_transform_obj* new_transform_obj) {
     if(transform_obj == new_transform_obj) return;
     if(transform_obj) delete transform_obj;
     transform_obj = new_transform_obj;
     original_transform_obj = 0;
   }
   // return the transformation
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_transform_obj* get_transform()
+  vsx_transform_obj* get_transform()
   {
     return transform_obj;
   }

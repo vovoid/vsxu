@@ -845,15 +845,15 @@ public:
 
   }
 
-  inline void matrix_ortho(double left, double right, double bottom, double top, double near, double far)
+  inline void matrix_ortho(double left, double right, double bottom, double top, double near_limit, double far_limit)
   {
 
-    #define TX (right+left) / (right-left)
-    #define TY (top + bottom) / (top - bottom)
-    #define TZ (far + near) / (far - near)
-    #define N0 2.0 / (right-left)
-    #define N1 2.0 / (top-bottom)
-    #define N2 -2.0 / (far-near)
+    #define TX (right + left) / (right - left)
+    #define TY ((top + bottom) / (top - bottom))
+    #define TZ ((far_limit + near_limit) / (far_limit - near_limit))
+    #define N0 2.0 / (right - left)
+    #define N1 2.0 / (top - bottom)
+    #define N2 -2.0 / (far_limit - near_limit)
 
     #define m m_temp.m
 

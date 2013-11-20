@@ -215,7 +215,7 @@ if (UNIX)
 endif()
 ################################################################################
 
-if(WIN32)
+if(VSXU_BUILD_WINDOWS_32 EQUAL 1 OR VSXU_BUILD_WINDOWS_64 EQUAL 1)
   find_file(pthread_dll pthreadGC2.dll)
   install(FILES ${pthread_dll} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT engine)
   if (VSXU_BUILD_WINDOWS_32)
@@ -227,6 +227,8 @@ if(WIN32)
     install(FILES /usr/lib/gcc/x86_64-w64-mingw32/4.6/libgcc_s_sjlj-1.dll DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT engine)
   endif()
 endif()
+
+message( "Pthread lib flag: ${CMAKE_THREAD_LIBS_INIT}" )
 
 target_link_libraries(${module_id}
   ${DL_LIBRARY}
