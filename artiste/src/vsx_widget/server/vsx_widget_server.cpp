@@ -297,9 +297,6 @@ void vsx_widget_server::vsx_command_process_f() {
 			if (c->cmd == "component_create_ok") {
 				// syntax:
 				//  component_create_ok [name] [component_info] [x-pos] [y-pos] [size] [extra]
-        vsx_printf("command %s\n", c->cmd.c_str() );
-        vsx_printf("command->cmd_data %s\n", c->cmd_data.c_str() );
-
 
 				vsx_widget* cm = 0;
 				vsx_widget* p = this;
@@ -332,10 +329,8 @@ void vsx_widget_server::vsx_command_process_f() {
 					real_name = comp_realname[comp_realname.size()-1];
 				}
 
-        vsx_printf("added module %s as child of %s\n", c->parts[1].c_str() , p->name.c_str());
         cm = p->add(new vsx_widget_component,c->cmd_data);
 				comp_list[c->cmd_data] = cm;
-        vsx_printf("added module to comp_list as %s\n", c->cmd_data.c_str());
 				if (!cm)
 				{
 					return;

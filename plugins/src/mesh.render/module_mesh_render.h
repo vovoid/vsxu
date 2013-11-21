@@ -549,7 +549,6 @@ public:
   void perform_draw()
   {
     glDrawElements(GL_TRIANGLES,(*mesh)->data->faces.get_used()*3,GL_UNSIGNED_INT,0);
-    glFlush();
   }
 
   void cleanup_successful_rendering()
