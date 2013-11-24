@@ -48,7 +48,7 @@ class vsx_window_object_inspector : public vsx_widget_window {
 public:
   void draw_2d();
   void draw();
-  void vsx_command_process_b(vsx_command_s *t);
+  void command_process_back_queue(vsx_command_s *t);
   void init() {
     if (!init_run) vsx_widget_window::init();
   }

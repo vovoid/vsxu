@@ -56,10 +56,10 @@ public:
 //  double mdx, mdy; // delta mouse move
   vsx_widget *destination;
   
-  void vsx_command_process_b(vsx_command_s *t);
+  void command_process_back_queue(vsx_command_s *t);
   
-  void show_children() {};
-  void hide_children() {};
+  void show_children() {}
+  void hide_children() {}
 
   void before_delete();
   void on_delete();

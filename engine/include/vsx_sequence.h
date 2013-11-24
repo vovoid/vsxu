@@ -27,6 +27,7 @@
 
 
 #include <vsx_platform.h>
+#include <vsx_vector.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #define VSX_SEQUENCE_DLLIMPORT
@@ -38,7 +39,8 @@
   #endif
 #endif
 
-class vsx_sequence_item {
+class vsx_sequence_item
+{
 public:
   float value;
   float delay; // in seconds (float)
@@ -64,7 +66,8 @@ public:
   vsx_sequence_item():value(1),delay(1),interpolation(0) {}
 };
 
-class vsx_sequence {
+class vsx_sequence
+{
 	vsx_bezier_calc bez_calc;
 public:
   vsx_avector<vsx_sequence_item> items;

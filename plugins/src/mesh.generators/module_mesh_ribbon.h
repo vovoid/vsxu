@@ -148,36 +148,34 @@ public:
       mesh->data->vertex_colors[i2+2] = vsx_color(1, 1, 1, 1);
       mesh->data->vertex_colors[i2+3] = vsx_color(1, 1, 1, 1);
 
-      mesh->data->vertex_tex_coords[i2]   = vsx_tex_coord__(it, 0);
-      mesh->data->vertex_tex_coords[i2+1] = vsx_tex_coord__(it, 1);
-      mesh->data->vertex_tex_coords[i2+2] = vsx_tex_coord__(it, 0);
-      mesh->data->vertex_tex_coords[i2+3] = vsx_tex_coord__(it, 1);
+      mesh->data->vertex_tex_coords[i2]   = vsx_tex_coord(it, 0);
+      mesh->data->vertex_tex_coords[i2+1] = vsx_tex_coord(it, 1);
+      mesh->data->vertex_tex_coords[i2+2] = vsx_tex_coord(it, 0);
+      mesh->data->vertex_tex_coords[i2+3] = vsx_tex_coord(it, 1);
 
-      if (i)
-      {
-        vsx_face a;
-        a.a = i2;
-        a.b = i2 - 3;
-        a.c = i2 - 4;
-        mesh->data->faces.push_back(a);
+      if (!i) continue;
 
-        a.a = i2;
-        a.b = i2 + 1;
-        a.c = i2 - 3;
-        mesh->data->faces.push_back(a);
+      vsx_face a;
+      a.a = i2;
+      a.b = i2 - 3;
+      a.c = i2 - 4;
+      mesh->data->faces.push_back(a);
 
-        a.a = i2 + 2;
-        a.b = i2 - 1;
-        a.c = i2 - 2;
-        mesh->data->faces.push_back(a);
+      a.a = i2;
+      a.b = i2 + 1;
+      a.c = i2 - 3;
+      mesh->data->faces.push_back(a);
 
-        a.a = i2 + 2;
-        a.b = i2 + 3;
-        a.c = i2 - 1;
-        mesh->data->faces.push_back(a);
+      a.a = i2 + 2;
+      a.b = i2 - 1;
+      a.c = i2 - 2;
+      mesh->data->faces.push_back(a);
 
+      a.a = i2 + 2;
+      a.b = i2 + 3;
+      a.c = i2 - 1;
+      mesh->data->faces.push_back(a);
 
-      }
     }
     #undef COUNT
 

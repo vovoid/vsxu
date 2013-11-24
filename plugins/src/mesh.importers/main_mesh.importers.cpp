@@ -25,7 +25,6 @@
 #include "_configuration.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
-#include "vsx_math_3d.h"
 #include <pthread.h>
 #include <semaphore.h>
 

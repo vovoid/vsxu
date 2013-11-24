@@ -133,6 +133,12 @@ public:
     return res;
   }
 
+  static vsx_argvector* get_instance()
+  {
+    static vsx_argvector argvector;
+    return &argvector;
+  }
+
   vsx_argvector() {}
 };
 

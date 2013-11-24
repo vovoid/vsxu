@@ -34,7 +34,7 @@ class dialog_query_string : public vsx_widget_window {
 public:
   vsx_string extra_value; // appended at the end of the command
   vsx_widget *edit1;
-  void vsx_command_process_b(vsx_command_s *t);
+  void command_process_back_queue(vsx_command_s *t);
   
   void set_value(vsx_string value);
   void show(vsx_string value);
@@ -53,7 +53,7 @@ class dialog_messagebox : public vsx_widget_window {
 public:
   bool allow_resize_y;
 
-  void vsx_command_process_b(vsx_command_s *t) {
+  void command_process_back_queue(vsx_command_s *t) {
     if (t->cmd == "ok") {
       k_focus = parent;
       a_focus = parent;

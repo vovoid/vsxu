@@ -35,6 +35,7 @@ class module_mesh_ribbon_cloth : public vsx_module
   vsx_module_param_float* step_size;
   vsx_module_param_float* stiffness;
   vsx_module_param_float* floor_y;
+  vsx_module_param_int* reinit;
 
   // out
   vsx_module_param_mesh* result;
@@ -69,10 +70,15 @@ public:
     info->in_param_spec =
         "start_point:float3,"
         "end_point:float3,"
+        "up_vector:float3,"
+        "width:float,"
+        "skew_amp:float,"
+        "time_amp:float,"
         "damping_Factor:float,"
         "step_size:float,"
         "stiffness:float,"
-        "floor_y:float"
+        "floor_y:float,"
+        "reinit:enum?no|yes"
         ;
     info->out_param_spec = "mesh:mesh";
     info->component_class = "mesh";
@@ -105,15 +111,27 @@ public:
     time_amp = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"time_amp");
     time_amp->set(1.0f);
     width->set(0.1f);
+
+    reinit = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"reinit");
+    reinit->set(0);
+
+
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
     regen = true;
     num_runs = 0;
   }
 
 
+
   void run()
   {
     mesh->data->vertices[0] = vsx_vector(0);
+
+    if (reinit->get())
+    {
+      regen = true;
+      reinit->set(0);
+    }
 
     vsx_vector a(start_point->get(0), start_point->get(1), start_point->get(2));
     vsx_vector b(end_point->get(0), end_point->get(1), end_point->get(2));
@@ -174,16 +192,18 @@ public:
         vertices_orig[i2] = mesh->data->vertices[i2    ];
         vertices_orig[i2+1] = mesh->data->vertices[i2   +1];
 
-        mesh->data->vertex_normals[i2    ] = normal;
-        mesh->data->vertex_normals[i2 + 1] = normal;
+        vsx_vector norm_a;
+        norm_a.cross(up_n, pos);
+        mesh->data->vertex_normals[i2    ] = norm_a;
+        mesh->data->vertex_normals[i2 + 1] = norm_a;
 
         pos += diff;
 
         mesh->data->vertex_colors[i2] = vsx_color(1, 1, 1, 1);
         mesh->data->vertex_colors[i2+1] = vsx_color(1, 1, 1, 1);
 
-        mesh->data->vertex_tex_coords[i2]   = vsx_tex_coord__(it, 0);
-        mesh->data->vertex_tex_coords[i2+1] = vsx_tex_coord__(it, 1);
+        mesh->data->vertex_tex_coords[i2]   = vsx_tex_coord(it, 0);
+        mesh->data->vertex_tex_coords[i2+1] = vsx_tex_coord(it, 1);
 
         vsx_vector len;
         if (i>1)
@@ -198,9 +218,9 @@ public:
           vsx_vector v1 = mesh->data->vertices[f.b];
           vsx_vector v2 = mesh->data->vertices[f.c];
 
-          len.x = fabs( (v1 - v0).length()+(float)(rand()%1000)*0.0001f);
-          len.y = fabs( (v2 - v1).length()+(float)(rand()%1000)*0.0001f);
-          len.z = fabs( (v0 - v2).length()+(float)(rand()%1000)*0.00005f);
+          len.x = fabs( (v1 - v0).length()/*+(float)(rand()%1000)*0.0001f*/);
+          len.y = fabs( (v2 - v1).length()/*+(float)(rand()%1000)*0.0001f*/);
+          len.z = fabs( (v0 - v2).length()/*+(float)(rand()%1000)*0.00005f*/);
           #define TRESH 0.04f
           if (len.x < TRESH) len.x = TRESH;
           if (len.y < TRESH) len.y = TRESH;
@@ -217,9 +237,9 @@ public:
           v1 = mesh->data->vertices[f.b];
           v2 = mesh->data->vertices[f.c];
 
-          len.x = fabs( (v1 - v0).length()+(float)(rand()%1000)*0.0001f );
-          len.y = fabs( (v2 - v1).length()+(float)(rand()%1000)*0.0001f );
-          len.z = fabs( (v0 - v2).length()+(float)(rand()%1000)*0.00005f );
+          len.x = fabs( (v1 - v0).length()/*+(float)(rand()%1000)*0.0001f */);
+          len.y = fabs( (v2 - v1).length()/*+(float)(rand()%1000)*0.0001f */);
+          len.z = fabs( (v0 - v2).length()/*+(float)(rand()%1000)*0.00005f */);
           #define TRESH 0.04f
           if (len.x < TRESH) len.x = TRESH;
           if (len.y < TRESH) len.y = TRESH;
@@ -236,7 +256,8 @@ public:
     float dirx = -b.x*0.05f;
     float dirz = -b.z*0.05f;
     float stepsizemultiplier = 0.02f * step_size->get();
-    float gravity_pull = -0.01f;
+    //float gravity_pull = -0.01f;
+    float gravity_pull = -0.003f;
     vsx_face* face_p = mesh->data->faces.get_pointer();
     vsx_vector* vertices_speed_p = vertices_speed.get_pointer();
     vsx_vector* faces_length_p = face_lengths.get_pointer();
@@ -279,7 +300,7 @@ public:
         vsx_vector accB = edgeB * edgeAccB;
         vsx_vector accC = edgeC * edgeAccC;
 
-        float ii = 1.0f - (float)i * fcount;
+        float ii = 0.5f - (float)i * fcount*0.5f;
 
         vertices_speed_p[fa] -= (accA - accC)*stiffness->get();
         vertices_speed_p[fb] -= (accB - accA)*stiffness->get();

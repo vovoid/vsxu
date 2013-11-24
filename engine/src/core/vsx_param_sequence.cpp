@@ -23,6 +23,8 @@
 
 #include "vsx_engine.h"
 #include "vsx_param_sequence.h"
+#include <vsx_vector_aux.h>
+#include <vsx_string_aux.h>
 
 vsx_bezier_calc bez_calc;
 
@@ -296,7 +298,7 @@ void vsx_param_sequence::inject(vsx_string ij)
     explode((*it),pdeli,pld);
     vsx_param_sequence_item pa;
     pa.total_length = s2f(pld[0]);
-    pa.interpolation = s2i(pld[1]);
+    pa.interpolation = vsx_string_aux::s2i(pld[1]);
     if (pa.interpolation < 4) {
       pa.value = base64_decode(pld[2]);
     } else
@@ -307,8 +309,8 @@ void vsx_param_sequence::inject(vsx_string ij)
       //printf("value: %s\n",vtemp.c_str());
       explode(vtemp,pdeli_l,pld_l);
       pa.value = pld_l[0];
-      pa.handle1.from_string(pld_l[1]);
-      pa.handle2.from_string(pld_l[2]);
+      pa.handle1 = vsx_vector_aux::from_string(pld_l[1]);
+      pa.handle2 = vsx_vector_aux::from_string(pld_l[2]);
     }
     items.push_back(pa);
     //printf("inject delay: %s\n",pld[0].c_str());
@@ -398,7 +400,7 @@ void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_
 #endif
   vsx_param_sequence_item pa;
   pa.total_length = s2f(cmd_in->parts[5]);
-  pa.interpolation = s2i(cmd_in->parts[6]);
+  pa.interpolation = vsx_string_aux::s2i(cmd_in->parts[6]);
   if (pa.interpolation < 4)
   {
     pa.value = base64_decode(cmd_in->parts[4]);
@@ -412,11 +414,11 @@ void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_
     //printf("value: %s\n",vtemp.c_str());
     explode(vtemp,pdeli_l,pld_l);
     pa.value = pld_l[0];
-    pa.handle1.from_string(pld_l[1]);
-    pa.handle2.from_string(pld_l[2]);
+    pa.handle1 = vsx_vector_aux::from_string(pld_l[1]);
+    pa.handle2 = vsx_vector_aux::from_string(pld_l[2]);
   }
 
-  items[s2i(cmd_in->parts[7])] = pa;
+  items[ vsx_string_aux::s2i(cmd_in->parts[7]) ] = pa;
   //dest->add_raw(cmd_prefix+"pseq_r_ok update "+cmd_in->parts[2]+" "+cmd_in->parts[3]+" "+cmd_in->parts[4]+" "+cmd_in->parts[5]+" "+cmd_in->parts[6]+" "+cmd_in->parts[7]);
   cur_val = to_val = "";
   last_time = 0.0;
@@ -430,7 +432,7 @@ void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_
 {
 	total_time = 0.0f; // reset total time for re-calculation
   //printf("INSERT_LINE in engine %s\n",cmd_in->raw.c_str());
-  long after_pos = s2i(cmd_in->parts[7]);
+  long after_pos = vsx_string_aux::s2i(cmd_in->parts[7]);
   float delay = s2f(cmd_in->parts[5]);
   //printf("delay: %f\n",delay);
   std::vector<vsx_param_sequence_item>::iterator it = items.begin();
@@ -440,7 +442,7 @@ void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_
     vsx_param_sequence_item pa;
     pa.value = base64_decode(cmd_in->parts[4]);
     pa.total_length = 1;
-    pa.interpolation = s2i(cmd_in->parts[6]);
+    pa.interpolation = vsx_string_aux::s2i(cmd_in->parts[6]);
     items.push_back(pa);
   } else {
     int i;
@@ -453,7 +455,7 @@ void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_
     vsx_param_sequence_item pa;
     pa.total_length = (*it).total_length-delay;
     (*it).total_length = delay;
-    pa.interpolation = s2i(cmd_in->parts[6]);
+    pa.interpolation = vsx_string_aux::s2i(cmd_in->parts[6]);
     if (pa.interpolation < 4) {
       pa.value = base64_decode(cmd_in->parts[4]);
     } else
@@ -464,8 +466,8 @@ void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_
       //printf("value: %s\n",vtemp.c_str());
       explode(vtemp,pdeli_l,pld_l);
       pa.value = pld_l[0];
-      pa.handle1.from_string(pld_l[1]);
-      pa.handle2.from_string(pld_l[2]);
+      pa.handle1 = vsx_vector_aux::from_string(pld_l[1]);
+      pa.handle2 = vsx_vector_aux::from_string(pld_l[2]);
     }
 
     ++it;
@@ -508,8 +510,7 @@ void vsx_param_sequence::remove_line(vsx_command_list* dest, vsx_command_s* cmd_
   p_time = 0.0f;
   interp_time = 0.0f;
 
-  //printf("REMOVE_LINE in engine %s\n",cmd_in->raw.c_str());
-  long pos = s2i(cmd_in->parts[4]);
+  long pos = vsx_string_aux::s2i(cmd_in->parts[4]);
   std::vector<vsx_param_sequence_item>::iterator it = items.begin();
   if (pos != 0)
   {

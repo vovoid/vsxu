@@ -511,9 +511,14 @@ bool vsx_comp::run(vsx_module_param_abs* param)
     #ifdef VSXU_MODULE_TIMING
       run_timer.start();
     #endif
-    if ( false == ((vsx_engine*)engine_owner)->get_render_hint_module_output_only() )
+    if (
+      false == ((vsx_engine*)engine_owner)->get_render_hint_module_output_only()
+      ||
+      false == has_run
+    )
     {
       module->run();
+      has_run = true;
     }
     #ifdef VSXU_MODULE_TIMING
       new_time_run += run_timer.dtime();
@@ -533,11 +538,6 @@ bool vsx_comp::run(vsx_module_param_abs* param)
   #ifdef VSXU_MODULE_TIMING
     new_time_output += run_timer.dtime();
   #endif
-  //    printf("%s new_time_output = %f\n",name.c_str(),new_time_output);
-  //    printf("c:%s:module_post_output\n",name.c_str());
-  //		output_finished = true;
-  //    printf("c:d\n");
-  //    param = param_internal;
   return true;
 }
 

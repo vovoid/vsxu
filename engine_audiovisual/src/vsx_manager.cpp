@@ -39,8 +39,6 @@ private:
 void * int_state_manager;
 vsx_module_list_abs* module_list;
 
-
-
 public:
 
 
@@ -104,6 +102,8 @@ public:
   // returns information about currently playing effect
   int get_engine_num_modules();
 
+  void set_gl_state(vsx_gl_state* n);
+
   vsx_manager();
   ~vsx_manager();
 };
@@ -150,7 +150,7 @@ void vsx_manager::init(const char* base_path, const char* sound_type)
     s_type = "-sound_type_media_player";
   }
 
-  module_list = vsx_module_list_factory_create(s_type, false);
+  module_list = vsx_module_list_factory_create();
   ((vsx_statelist*)int_state_manager)->set_module_list( module_list );
 
   ((vsx_statelist*)int_state_manager)->init(b_path,vsx_string(sound_type));
@@ -330,4 +330,10 @@ int vsx_manager::get_engine_num_modules()
   return 0;
 }
 
-
+/****************************************************************
+G L   S T A T E
+*****************************************************************/
+void vsx_manager::set_gl_state(vsx_gl_state* n)
+{
+  ((vsx_statelist*)int_state_manager)->set_a_gl_state(n);
+}

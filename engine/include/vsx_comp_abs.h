@@ -26,7 +26,8 @@
 
 class vsx_engine_param_list;
 
-class vsx_comp_abs {
+class vsx_comp_abs
+{
 public:
   // the name of the component
   vsx_string name;
@@ -61,8 +62,8 @@ public:
   vsx_string component_class;
   vsx_string in_param_spec;
   vsx_string out_param_spec;
-  //virtual bool connect(vsx_string param_name, vsx_comp_abs* other_component, vsx_string other_param_name, int* ord = 0) = 0;
-  virtual ~vsx_comp_abs() {};
+
+  virtual ~vsx_comp_abs() {}
 };
 
 #endif

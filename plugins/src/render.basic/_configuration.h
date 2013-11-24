@@ -22,7 +22,7 @@
 /*
  * _configuration.h
  */
-#ifdef BUILDING_DLL
+
 #ifndef _CONFIGURATION_H_
 #define _CONFIGURATION_H_
 
@@ -40,7 +40,7 @@
 #define VSX_P_FLOAT4
 //#define VSX_P_DOUBLE
 //#define VSX_P_MATRIX
-//#define VSX_P_FLOAT_ARRAY
+#define VSX_P_FLOAT_ARRAY
 //#define VSX_P_FLOAT3_ARRAY
 //#define VSX_P_STRING
 //#define VSX_P_SEQUENCE
@@ -56,4 +56,4 @@
 //#define VSX_P_RESOURCE
 
 #endif /* _CONFIGURATION_H_ */
-#endif
+

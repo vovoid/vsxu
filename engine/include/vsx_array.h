@@ -26,6 +26,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <vsx_platform.h>
 // VSX Array class
 //
 // This is a special case array aimed at speed - for mesh data etc.
@@ -41,31 +42,35 @@ class vsx_array
 {
   size_t allocated;
   size_t used;
-  T* A;
   size_t allocation_increment;
   size_t data_volatile;
+  size_t timestamp;
+  __attribute__((aligned(64))) T* A;
 
 public:
-  size_t timestamp;
 
-  void set_allocation_increment(unsigned long new_increment) {
+  void set_allocation_increment(unsigned long new_increment) VSX_ALWAYS_INLINE
+  {
   	allocation_increment = new_increment;
   }
 
-  void set_data(T* nA, int nsize)
+  void set_data(T* nA, int nsize) VSX_ALWAYS_INLINE
   {
+    if (A && !data_volatile)
+      free(A);
   	A = nA;
   	used = allocated = nsize;
   }
 
   // clones another array of same type into this one
-  void clone(vsx_array<T>* F)
+  void clone(vsx_array<T>* F) VSX_ALWAYS_INLINE
   {
     allocate(F->size());
     memcpy((void*)A, (void*)(F->get_pointer()), sizeof(T) * used);
   }
 
-  void set_volatile() {
+  void set_volatile() VSX_ALWAYS_INLINE
+  {
     if (0 == data_volatile && A && allocated)
     {
       clear();
@@ -73,42 +78,54 @@ public:
     data_volatile = 1;
   }
 
-  void unset_volatile()
+  void unset_volatile() VSX_ALWAYS_INLINE
   {
-    if (data_volatile) {
-      A = 0;
-      allocated = 0;
-      data_volatile = 0;
-    }
+    if (!data_volatile)
+      return;
+    A = 0;
+    allocated = 0;
+    data_volatile = 0;
   }
 
-  T* get_pointer() {
+  inline T* get_pointer() VSX_ALWAYS_INLINE
+  {
     return A;
   }
-  T* get_end_pointer() {
+
+  inline T* get_end_pointer() VSX_ALWAYS_INLINE
+  {
     return &A[used-1];
   }
-  size_t get_allocated() {
+
+  inline size_t get_allocated() VSX_ALWAYS_INLINE
+  {
     return allocated;
   }
-  size_t get_used() {
+
+  inline size_t get_used() VSX_ALWAYS_INLINE
+  {
     return used;
   }
+
   // std::vector compatibility
-  size_t push_back(T val) {
+  inline size_t push_back(T val) VSX_ALWAYS_INLINE
+  {
     (*this)[used] = val;
     return used;
   }
-  size_t size() {
+
+  inline size_t size() VSX_ALWAYS_INLINE
+  {
     return used;
   }
 
-  size_t get_sizeof()
+  inline size_t get_sizeof() VSX_ALWAYS_INLINE
   {
     return used * sizeof(T);
   }
 
-  void clear() {
+  inline void clear() VSX_ALWAYS_INLINE
+  {
     if (data_volatile) { return; }
   	if (A)
     free(A);
@@ -117,18 +134,19 @@ public:
     allocation_increment = 1;
   }
 
-  void memory_clear(int c = 0)
+  inline void memory_clear(int c = 0) VSX_ALWAYS_INLINE
   {
     memset(A, c, sizeof(T) * allocated);
   }
 
-  void reset_used(size_t val = 0) {
+  inline void reset_used(size_t val = 0) VSX_ALWAYS_INLINE
+  {
   	// TODO: if value larger than count of allocated items in memory handle this some way
     used = val;
   }
 
 
-  void allocate_bytes(size_t b)
+  inline void allocate_bytes(size_t b) VSX_ALWAYS_INLINE
   {
     if (A)
     {
@@ -139,7 +157,7 @@ public:
     allocated = used;
   }
 
-  void allocate(size_t index)
+  inline void allocate(size_t index) VSX_ALWAYS_INLINE
   {
     if (index >= allocated || allocated == 0)
     {
@@ -160,13 +178,24 @@ public:
     }
   }
 
-  T& operator[](unsigned long index) {
+  T& operator[](unsigned long index)
+  {
     allocate(index);
     return A[index];
   }
 
-  vsx_array() : allocated(0),used(0),A(0),allocation_increment(1),data_volatile(0),timestamp(0) {};
-  ~vsx_array() {
+  vsx_array() :
+    allocated(0),
+    used(0),
+    allocation_increment(1),
+    data_volatile(0),
+    timestamp(0),
+    A(0)
+  {
+  }
+
+  ~vsx_array()
+  {
     if (data_volatile) return;
   	if (A) free(A);
   }

@@ -1,3 +1,5 @@
+#include <vsx_rand.h>
+
 class module_particlesystem_generate_simple : public vsx_module
 {
   int i;
@@ -160,7 +162,7 @@ but you usually want a lot more.";
     {
       for (i = 0; i < particles_count->get(); ++i)
       {
-        (*particles.particles)[i].color = vsx_color__(1,1,1,1);
+        (*particles.particles)[i].color = vsx_color(1,1,1,1);
         (*particles.particles)[i].orig_size = (*particles.particles)[i].size = 0;
         (*particles.particles)[i].pos.x = 0;
         (*particles.particles)[i].pos.y = 0;
@@ -244,7 +246,7 @@ but you usually want a lot more.";
           (*particles.particles)[i].time > (*particles.particles)[i].lifetime)
       {
         (*particles.particles)[i].size = (*particles.particles)[i].orig_size = size_base+rand.frand()*size_random_weight-size_random_weight*0.5f;
-        (*particles.particles)[i].color = vsx_color__(rr,gg,bb,aa);
+        (*particles.particles)[i].color = vsx_color(rr,gg,bb,aa);
         switch (speed_type->get()) {
           case 0:
             (*particles.particles)[i].speed.x = spd_x * rand.frand() - half_spd_x;

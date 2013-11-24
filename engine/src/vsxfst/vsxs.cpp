@@ -42,10 +42,6 @@
 
 char string_res[256] = "";
 
-int s2i(const vsx_string& in)
-{
-  return atoi(in.c_str());
-}
 
 vsx_string i2s(int in)
 {
@@ -407,14 +403,16 @@ bool verify_filesuffix(vsx_string& input, const char* type) {
 }
 
 #ifndef _WIN32
-void get_files_recursive_(vsx_string startpos, std::list<vsx_string>* filenames,vsx_string include_filter,vsx_string exclude_filter);
-void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,vsx_string include_filter,vsx_string exclude_filter) {
-	get_files_recursive_(startpos,filenames,include_filter,exclude_filter);
+void get_files_recursive_(vsx_string startpos, std::list<vsx_string>* filenames,vsx_string include_filter,vsx_string exclude_filter,vsx_string dir_ignore_token);
+void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,vsx_string include_filter,vsx_string exclude_filter,vsx_string dir_ignore_token)
+{
+  get_files_recursive_(startpos,filenames,include_filter,exclude_filter,dir_ignore_token);
 	(*filenames).sort();
 }
-void get_files_recursive_(vsx_string startpos, std::list<vsx_string>* filenames,vsx_string include_filter,vsx_string exclude_filter) {
+void get_files_recursive_(vsx_string startpos, std::list<vsx_string>* filenames,vsx_string include_filter,vsx_string exclude_filter,vsx_string dir_ignore_token)
+{
 #else
-void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,vsx_string include_filter,vsx_string exclude_filter) {
+void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,vsx_string include_filter,vsx_string exclude_filter,vsx_string dir_ignore_token) {
 #endif
 	
 #ifdef _WIN32
@@ -423,6 +421,8 @@ void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,v
   DIR* dir;
   dirent* dp;
 #endif
+
+  vsxf filesystem;
 
   long fhandle = 0;
   bool run = true;   
@@ -444,14 +444,14 @@ void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,v
 #endif
   if (fhandle != -1)
   while (run) {
-  vsx_string ss;
+  vsx_string cur_directory_item;
 #ifdef _WIN32
     ss = fdp.name;
 #else
-    ss = dp->d_name;
+    cur_directory_item = dp->d_name;
     // stat the file to see if it's a dir or not
     struct stat stbuf;
-    vsx_string full_path = fstring + "/" + ss;
+    vsx_string full_path = fstring + "/" + cur_directory_item;
     stat(full_path.c_str(), &stbuf);
 #endif
 #ifdef VSXS_DEBUG
@@ -465,7 +465,7 @@ void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,v
       if (!S_ISDIR(stbuf.st_mode) && !S_ISLNK(stbuf.st_mode))
 #endif
       {
-        if (ss.find(include_filter) != -1) 
+        if (cur_directory_item.find(include_filter) != -1)
         {
           include = true;
         }
@@ -489,13 +489,13 @@ void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,v
       unsigned long i = 0;
       while (i < parts.size() && !exclude)
       {
-        if (ss.find(parts[i]) != -1) exclude = true;
+        if (cur_directory_item.find(parts[i]) != -1) exclude = true;
         ++i;
 				//printf("get_files_recursive:%d\n",__LINE__);
       }
     }
 
-    if ((ss != ".") && (ss != "..") && !exclude)
+    if ((cur_directory_item != ".") && (cur_directory_item != "..") && !exclude)
     {
       #ifdef VSXS_DEBUG
         fprintf(fp,"ss = %s  ___ include %d exclude %d  link: %d \n",ss.c_str(),include,exclude,(int)(stbuf.st_mode));
@@ -508,11 +508,15 @@ void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,v
       if (S_ISDIR(stbuf.st_mode) || S_ISLNK(stbuf.st_mode))
 #endif
       {
-        get_files_recursive(startpos+"/"+ss,filenames,include_filter,exclude_filter);
+        if (!filesystem.is_file( startpos + "/" + cur_directory_item + "/" + dir_ignore_token) )
+        {
+          // recurse into the subdirectory
+          get_files_recursive(startpos+"/"+cur_directory_item,filenames,include_filter,exclude_filter,dir_ignore_token);
+        }
       } else {
       	if (include)
       	{
-        	filenames->push_back(startpos+"/"+ss);
+          filenames->push_back(startpos+"/"+cur_directory_item);
         	//printf("adding %s\n", vsx_string(startpos+"/"+ss).c_str());
       	}
       }

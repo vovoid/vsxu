@@ -36,7 +36,8 @@ public:
     first_run = true;
   }
 
-  bool init() {
+  bool init()
+  {
     mesh = new vsx_mesh;
     balls.vertices = &(mesh->data->vertices);
     balls.vertex_normals = &(mesh->data->vertex_normals);
@@ -59,15 +60,16 @@ public:
       balls.SetGridSize(l_grid_size);
       i_grid_size = l_grid_size;
     }
-    if (engine->dtime != 0.0f) {
-      float dd = engine->dtime;
-      if (dd < 0) dd = 0;
+    if (!(engine->dtime > 0.0f))
+      return;
+
+    float dd = engine->dtime;
+    if (dd < 0) dd = 0;
     balls.Update(dd);
 
     balls.Render();
 
     mesh->timestamp++;
-    }
     result->set_p(mesh);
   }
 };

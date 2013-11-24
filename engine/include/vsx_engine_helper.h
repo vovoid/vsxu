@@ -32,12 +32,10 @@ class vsx_engine_helper
 public:
   vsx_engine* engine;
 
-  vsx_engine_helper(vsx_string state_name, vsx_module_list_abs* module_list, vsx_gl_state* gl_state)
+  vsx_engine_helper(vsx_string state_name, vsx_module_list_abs* module_list)
   {
     // create the new engine
-    engine = new vsx_engine();
-    engine->set_module_list( module_list );
-    engine->set_gl_state(gl_state);
+    engine = new vsx_engine(module_list);
     engine->set_no_send_client_time(true);
     engine->start();
 

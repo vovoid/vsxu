@@ -24,7 +24,6 @@
 
 #include "_configuration.h"
 #include "vsx_gl_global.h"
-#include "vsx_math_3d.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_quaternion.h"
@@ -39,6 +38,7 @@
 #include "module_particlesystem_modifier_fluid.h"
 #include "module_particlesystem_modifier_gravity.h"
 #include "module_particlesystem_modifier_size_noise.h"
+#include "module_particlesystem_modifier_size_mult.h"
 #include "module_particlesystem_modifier_wind.h"
 
 
@@ -59,7 +59,7 @@ __declspec(dllexport) unsigned long get_num_modules();
 
 
 unsigned long get_num_modules() {
-  return 5;
+  return 6;
 }  
 
 vsx_module* create_new_module(unsigned long module, void* args)
@@ -71,6 +71,7 @@ vsx_module* create_new_module(unsigned long module, void* args)
     case 2: return (vsx_module*)(new module_particlesystem_modifier_gravity);
     case 3: return (vsx_module*)(new module_particlesystem_modifier_floor);
     case 4: return (vsx_module*)(new module_particlesystem_modifier_fluid);
+    case 5: return (vsx_module*)(new module_particlesystem_modifier_size_mult);
   }
   return 0;
 }
@@ -82,5 +83,6 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 2: delete (module_particlesystem_modifier_gravity*)m; break;
     case 3: delete (module_particlesystem_modifier_floor*)m; break;
     case 4: delete (module_particlesystem_modifier_fluid*)m; break;
+    case 5: delete (module_particlesystem_modifier_size_mult*)m; break;
   }
 }

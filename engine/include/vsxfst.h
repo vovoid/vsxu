@@ -139,13 +139,18 @@ public:
 
 VSXFSTDLLIMPORT bool verify_filesuffix(vsx_string& input, const char* type);
 VSXFSTDLLIMPORT void create_directory(char* path);
-VSXFSTDLLIMPORT void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,vsx_string include_filter = "",vsx_string exclude_filter = "CVS");
+VSXFSTDLLIMPORT void get_files_recursive(
+    vsx_string startpos,
+    std::list<vsx_string>* filenames,
+    vsx_string include_filter = "",
+    vsx_string exclude_filter = "CVS",
+    vsx_string dir_ignore_token = ".vsx_hidden"
+    );
 VSXFSTDLLIMPORT vsx_string get_path_from_filename(vsx_string filename);
 
 
 // STRING OPERATIONS
 
-VSXFSTDLLIMPORT int s2i(const vsx_string& in);
 VSXFSTDLLIMPORT vsx_string i2s(int in);
 VSXFSTDLLIMPORT float s2f(const vsx_string& in);
 VSXFSTDLLIMPORT vsx_string f2s(float in);

@@ -25,6 +25,7 @@
 class module_mesh_disc : public vsx_module
 {
 public:
+
   // in
   vsx_module_param_float* num_segments;
   vsx_module_param_float* width;
@@ -43,7 +44,11 @@ public:
   {
     info->identifier = "mesh;particles;mesh_disc";
     info->description = "A disc. simple as that.";
-    info->in_param_spec = "num_segments:float,diameter:float,border_width:float";
+    info->in_param_spec =
+      "num_segments:float,"
+      "diameter:float,"
+      "border_width:float"
+    ;
     info->out_param_spec = "mesh:mesh";
     info->component_class = "mesh";
   }
@@ -54,10 +59,13 @@ public:
     loading_done = true;
     num_segments = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"num_segments");
     num_segments->set(20);
+
     width = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"border_width");
     width->set(1);
+
     diameter = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"diameter");
     diameter->set(1);
+
     n_segs = 20;
 
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
@@ -81,7 +89,8 @@ public:
     if (l_param_updates != param_updates) first_run = true;
     mesh->data->vertices[0] = vsx_vector(0);
 
-    if (first_run || n_segs != num_segments->get()) {
+    if (first_run || n_segs != num_segments->get())
+    {
       l_param_updates = param_updates;
       mesh->data->vertices.reset_used();
       mesh->data->faces.reset_used();
@@ -95,28 +104,28 @@ public:
         mesh->data->vertices[i4].x = (float)cos(ip)*dia;
         mesh->data->vertices[i4].y = 0.0f;
         mesh->data->vertices[i4].z = (float)sin(ip)*dia;
-        mesh->data->vertex_colors[i4] = vsx_color__(1,1,1,1);
+        mesh->data->vertex_colors[i4] = vsx_color(1,1,1,1);
         mesh->data->vertex_tex_coords[i4].s = t;
         mesh->data->vertex_tex_coords[i4].t = 0;
 
         mesh->data->vertices[i4+1].x = (float)cos(ip)*(dia+0.15f*width->get());
         mesh->data->vertices[i4+1].y = 0.0f;
         mesh->data->vertices[i4+1].z = (float)sin(ip)*(dia+0.15f*width->get());
-        mesh->data->vertex_colors[i4+1] = vsx_color__(1,1,1,1);
+        mesh->data->vertex_colors[i4+1] = vsx_color(1,1,1,1);
         mesh->data->vertex_tex_coords[i4+1].s = t;
         mesh->data->vertex_tex_coords[i4+1].t = 1;
 
         mesh->data->vertices[i4+2].x = (float)cos(ip+inc)*(dia+0.15f*width->get());
         mesh->data->vertices[i4+2].y = 0.0f;
         mesh->data->vertices[i4+2].z = (float)sin(ip+inc)*(dia+0.15f*width->get());
-        mesh->data->vertex_colors[i4+2] = vsx_color__(1,1,1,1);
+        mesh->data->vertex_colors[i4+2] = vsx_color(1,1,1,1);
         mesh->data->vertex_tex_coords[i4+2].s = t+t_inc;
         mesh->data->vertex_tex_coords[i4+2].t = 1;
 
         mesh->data->vertices[i4+3].x = (float)cos(ip+inc)*dia;
         mesh->data->vertices[i4+3].y = 0.0f;
         mesh->data->vertices[i4+3].z = (float)sin(ip+inc)*dia;
-        mesh->data->vertex_colors[i4+3] = vsx_color__(1,1,1,1);
+        mesh->data->vertex_colors[i4+3] = vsx_color(1,1,1,1);
         mesh->data->vertex_tex_coords[i4+3].s = t+t_inc;
         mesh->data->vertex_tex_coords[i4+3].t = 0;
 

@@ -26,6 +26,7 @@
 
 #include <sys/time.h>
 
+#include <GL/glew.h>
 
 //extern vsx_engine* vme;
 //#define vsxu_version "VSXu 0.1.14 beta"
@@ -33,6 +34,7 @@
 //extern vsx_string vsxu_version;
 //extern char* vsxu_ver;
 
+#include <vsx_gl_state.h>
 
 extern bool app_ctrl;
 extern bool app_alt;
@@ -44,6 +46,8 @@ extern bool no_overlay;
 
 extern int app_argc;
 extern char** app_argv;
+
+extern vsx_gl_state gl_state;
 
 //extern int app_num_displays; // 0 means the primary one used, 1 the extra
 extern void (*app_set_fullscreen)(int,bool);

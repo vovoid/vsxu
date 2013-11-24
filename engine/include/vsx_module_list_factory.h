@@ -36,7 +36,7 @@
 
 
 extern "C" {
- VSX_MODULE_LIST_DLLIMPORT vsx_module_list_abs* vsx_module_list_factory_create(vsx_string arguments, bool print_help);
+ VSX_MODULE_LIST_DLLIMPORT vsx_module_list_abs* vsx_module_list_factory_create();
  VSX_MODULE_LIST_DLLIMPORT void vsx_module_list_factory_destroy( vsx_module_list_abs* object );
 }
 

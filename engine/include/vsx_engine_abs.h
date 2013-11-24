@@ -85,13 +85,21 @@ protected:
   int current_state; // stopped or playing?
   bool valid; // if engine has managed to start, can run at all
   bool first_start;
-  bool stopped;
+  bool disabled;
   int modules_left_to_load;
   int modules_loaded;
 
 //-- engine rendering / behaviour hints
+
+
+  // Output Only  -  default: false
   bool render_hint_module_output_only;
+
+  // Run Only     -  default: false
   bool render_hint_module_run_only;
+
+  // Reset Component Status   -  default: true
+  bool render_hint_post_render_reset_component_status;
 
 //-- module list
   vsx_module_list_abs* module_list;
@@ -176,6 +184,7 @@ public:
   virtual vsx_comp* get_component_by_name(vsx_string label) = 0;
   virtual vsx_comp* get_by_id(unsigned long id) = 0;
   virtual vsx_module_param_abs* get_in_param_by_name(vsx_string module_name, vsx_string param_name) = 0;
+  virtual vsx_module* get_module_by_name(vsx_string module_name) = 0;
 
 
   // set tm*
@@ -183,9 +192,6 @@ public:
 
   // get tm*
   virtual void* get_tm() = 0;
-
-  // set gl state
-  virtual void set_gl_state(vsx_gl_state* gl_state) = 0;
 
   // get a list of all external-exposed parameters (parameters that we want to export from a sub-engine)
   virtual void get_external_exposed_parameters( vsx_avector< vsx_module_param_abs* >* result ) = 0;
@@ -198,8 +204,6 @@ public:
 
   // process messages - this should be run once per physical frame
   virtual void process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive = false, bool ignore_timing = false, float max_time = 0.01f) = 0;
-
-  //virtual ~vsx_engine_abs() {}
 
 };
 

@@ -237,8 +237,8 @@ in sequence.\n\
           (*pp).speed.x = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
           (*pp).speed.y = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
           (*pp).speed.z = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
-          (*pp).color = vsx_color__(0,0,0,0);
-          (*pp).color_end = vsx_color__(0,0,0,0);
+          (*pp).color = vsx_color(0,0,0,0);
+          (*pp).color_end = vsx_color(0,0,0,0);
           (*pp).rotation.x = 0.0f;
           (*pp).rotation.y = 0.0f;
           (*pp).rotation.z = 0.0f;

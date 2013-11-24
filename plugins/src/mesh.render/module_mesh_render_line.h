@@ -122,8 +122,8 @@ public:
 
     if (center->get())
     {
-      vsx_color l_center_color = vsx_color__(center_color->get(0)+center_color_add->get(0),center_color->get(1)+center_color_add->get(1),center_color->get(2)+center_color_add->get(2),center_color->get(3)+center_color_add->get(3));
-      vsx_color main_color = vsx_color__(base_color->get(0)+base_color_add->get(0),base_color->get(1)+base_color_add->get(1),base_color->get(2)+base_color_add->get(2),base_color->get(3)+base_color_add->get(3));
+      vsx_color l_center_color = vsx_color(center_color->get(0)+center_color_add->get(0),center_color->get(1)+center_color_add->get(1),center_color->get(2)+center_color_add->get(2),center_color->get(3)+center_color_add->get(3));
+      vsx_color main_color = vsx_color(base_color->get(0)+base_color_add->get(0),base_color->get(1)+base_color_add->get(1),base_color->get(2)+base_color_add->get(2),base_color->get(3)+base_color_add->get(3));
 
       glBegin(GL_LINES);
       if (override_base_color->get())
@@ -131,9 +131,19 @@ public:
 
         for (unsigned long i = 0; i < (*mesh)->data->vertices.size(); ++i)
         {
-          l_center_color.gl_color();
+          glColor4f(
+            l_center_color.r,
+            l_center_color.g,
+            l_center_color.b,
+            l_center_color.a
+          );
           glVertex3f(0.0f,0.0f,0.0f);
-          main_color.gl_color();
+          glColor4f(
+            main_color.r,
+            main_color.g,
+            main_color.b,
+            main_color.a
+          );
           glVertex3f((*mesh)->data->vertices[i].x,(*mesh)->data->vertices[i].y,(*mesh)->data->vertices[i].z);
         }
       }
@@ -141,9 +151,20 @@ public:
       {
         for (unsigned long i = 0; i < (*mesh)->data->vertices.size(); ++i)
         {
-            l_center_color.gl_color();
+          glColor4f(
+            l_center_color.r,
+            l_center_color.g,
+            l_center_color.b,
+            l_center_color.a
+          );
             glVertex3f(0.0f,0.0f,0.0f);
-            (*mesh)->data->vertex_colors[i].gl_color();
+            glColor4f(
+              (*mesh)->data->vertex_colors[i].r,
+              (*mesh)->data->vertex_colors[i].g,
+              (*mesh)->data->vertex_colors[i].b,
+              (*mesh)->data->vertex_colors[i].a
+            );
+
             glVertex3f((*mesh)->data->vertices[i].x,(*mesh)->data->vertices[i].y,(*mesh)->data->vertices[i].z);
         }
       }
@@ -165,7 +186,12 @@ public:
         {
           if ((*mesh)->data->vertex_colors.size())
           {
-            (*mesh)->data->vertex_colors[i].gl_color();
+            glColor4f(
+              (*mesh)->data->vertex_colors[i].r,
+              (*mesh)->data->vertex_colors[i].g,
+              (*mesh)->data->vertex_colors[i].b,
+              (*mesh)->data->vertex_colors[i].a
+            );
           }
           glVertex3f((*mesh)->data->vertices[i].x,(*mesh)->data->vertices[i].y,(*mesh)->data->vertices[i].z);
         }

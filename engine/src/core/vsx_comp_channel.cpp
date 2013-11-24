@@ -23,7 +23,7 @@
 
 #include "vsx_string.h"
 #include "vsx_command.h"
-#include "vsx_math_3d.h"
+#include "vsx_command_list.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_timer.h"
@@ -178,7 +178,7 @@ bool vsx_channel_render::execute()
   {
     if (my_param->critical) return false; else return true;
   }
-  if (!my_module->activate_offscreen()) return false;
+  if ( my_param->module_param->run_activate_offscreen && !my_module->activate_offscreen()) return false;
 
 	vector<vsx_channel_connection_info*>::iterator it;
   // printf("channel:render:this-name: %s\n",component->name.c_str());
@@ -210,7 +210,7 @@ bool vsx_channel_render::execute()
     ((vsx_module_param_render*)my_param->module_param)->set_internal(((vsx_module_param_render*)(*it)->module_param)->get());
     //printf("channel:render:post-param_set\n");
 	}
-	my_module->deactivate_offscreen();
+  if (my_param->module_param->run_activate_offscreen) my_module->deactivate_offscreen();
   #ifdef VSXU_MODULE_TIMING
     channel_execution_time += int_timer.dtime();
   #endif
@@ -247,7 +247,7 @@ bool name::execute() { \
 	if(connections.size() == 0) { \
     if (my_param->critical) return false; else return true; \
   } \
-	if (!my_module->activate_offscreen()) return false;\
+  if (my_param->module_param->run_activate_offscreen && !my_module->activate_offscreen()) return false;\
 	vector<vsx_channel_connection_info*>::iterator it; \
 	for (it = connections.begin(); it != connections.end(); ++it) \
   { \
@@ -259,7 +259,7 @@ bool name::execute() { \
     ((type*)my_param->module_param)\
         ->set_internal_from_param((type*)(*it)->module_param); \
 	} \
-	my_module->deactivate_offscreen();\
+  if (my_param->module_param->run_activate_offscreen) my_module->deactivate_offscreen();\
 	++my_param->module_param->updates;\
 	return true; \
 }
@@ -270,14 +270,14 @@ bool name::execute() { \
 	if(connections.size() == 0) { \
     if (my_param->critical) return false; else return true; \
   } \
-	if (!my_module->activate_offscreen()) return false;\
+  if (my_param->module_param->run_activate_offscreen && !my_module->activate_offscreen()) return false;\
 	vector<vsx_channel_connection_info*>::iterator it = connections.begin(); \
   if(!(*it)->src_comp->prepare() && my_param->all_required) return false; \
   if(!(*it)->src_comp->run((*it)->module_param) && my_param->all_required) return false; \
   (((type*)my_param->module_param)->set_internal_from_param((type*)(*it)->module_param)); \
 	  ++my_module->param_updates;\
 	  ++my_param->module_param->updates;\
-	my_module->deactivate_offscreen();\
+  if (my_param->module_param->run_activate_offscreen) my_module->deactivate_offscreen();\
 	return true; \
 }
 
@@ -287,7 +287,7 @@ bool name::execute() { \
   if(connections.size() == 0) { \
     if (my_param->critical) return false; else return true; \
   } \
-  if (!my_module->activate_offscreen()) return false;\
+  if (my_param->module_param->run_activate_offscreen && !my_module->activate_offscreen()) return false;\
   vector<vsx_channel_connection_info*>::iterator it = connections.begin(); \
   if(!(*it)->src_comp->prepare() && my_param->all_required) return false; \
   if(!(*it)->src_comp->run((*it)->module_param) && my_param->all_required) return false; \
@@ -296,7 +296,7 @@ bool name::execute() { \
     ++my_module->param_updates;\
     ++my_param->module_param->updates;\
   }\
-  my_module->deactivate_offscreen();\
+  if (my_param->module_param->run_activate_offscreen) my_module->deactivate_offscreen();\
   return true; \
 }
 
@@ -322,7 +322,7 @@ bool vsx_channel_segment_mesh::execute()
   {
     if (my_param->critical) return false; else return true; 
   } 
-	if (!my_module->activate_offscreen()) return false;
+  if (my_param->module_param->run_activate_offscreen && !my_module->activate_offscreen()) return false;
 	vector<vsx_channel_connection_info*>::iterator it; 
   for (it = connections.begin(); it != connections.end(); ++it)
   { 
@@ -338,6 +338,6 @@ bool vsx_channel_segment_mesh::execute()
     ((vsx_module_param_segment_mesh*)my_param->module_param)->
         set_internal_from_param((vsx_module_param_segment_mesh*)(*it)->module_param);
 	} 
-	my_module->deactivate_offscreen();
+  if (my_param->module_param->run_activate_offscreen) my_module->deactivate_offscreen();
 	return true; 
 }

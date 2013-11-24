@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include "vsx_avector.h"
 #include "vsx_string.h"
+#include <vsx_string_aux.h>
 #include <vsx_argvector.h>
 #include <GL/glew.h>
 #include "GL/glfw.h"
@@ -38,15 +39,12 @@
 #include "vsx_platform.h"
 
 
-
-
 // implementation of app externals
 bool app_ctrl = false;
 bool app_alt = false;
 bool app_shift = false;
 bool dual_monitor = false;
 
-vsx_argvector app_argv;
 vsx_tm* tm;
 
 vsx_gl_state gl_state;
@@ -197,10 +195,10 @@ int main(int argc, char* argv[])
   for (size_t i = 0; i < (size_t)argc; i++)
   {
     vsx_string arg = vsx_string(argv[i]);
-    app_argv.push_back( arg );
+    vsx_argvector::get_instance()->push_back( arg );
   }
 
-  if (app_argv.has_param("help"))
+  if (vsx_argvector::get_instance()->has_param("help"))
   {
     app_print_cli_help();
     exit(0);
@@ -222,21 +220,21 @@ int main(int argc, char* argv[])
   int y_res = 720;
 
 
-  if (app_argv.has_param("f"))
+  if (vsx_argvector::get_instance()->has_param("f"))
   {
     start_fullscreen = true;
   }
 
-  if (app_argv.has_param_with_value("s"))
+  if (vsx_argvector::get_instance()->has_param_with_value("s"))
   {
-    vsx_string arg2 = app_argv.get_param_value("s");
+    vsx_string arg2 = vsx_argvector::get_instance()->get_param_value("s");
     vsx_avector<vsx_string> parts;
     vsx_string deli = ",";
     explode(arg2, deli, parts);
     if (parts.size() == 2)
     {
-      x_res = s2i(parts[0]);
-      y_res = s2i(parts[1]);
+      x_res = vsx_string_aux::s2i(parts[0]);
+      y_res = vsx_string_aux::s2i(parts[1]);
       manual_resolution_set = true;
     } else
     {
@@ -244,17 +242,17 @@ int main(int argc, char* argv[])
       explode(arg2, deli, parts);
       if ( parts.size() == 2 )
       {
-        x_res = s2i(parts[0]);
-        y_res = s2i(parts[1]);
+        x_res = vsx_string_aux::s2i(parts[0]);
+        y_res = vsx_string_aux::s2i(parts[1]);
         manual_resolution_set = true;
       }
     }
   }
 
-  if (app_argv.has_param_with_value("frame_limit"))
+  if (vsx_argvector::get_instance()->has_param_with_value("frame_limit"))
   {
-    vsx_string arg = app_argv.get_param_value("frame_limit");
-    usleep_framelimit = s2i(arg);
+    vsx_string arg = vsx_argvector::get_instance()->get_param_value("frame_limit");
+    usleep_framelimit = vsx_string_aux::s2i(arg);
   }
 
   if (start_fullscreen && !manual_resolution_set)
@@ -267,7 +265,7 @@ int main(int argc, char* argv[])
   }
 
 
-  if (app_argv.has_param("gl_debug"))
+  if (vsx_argvector::get_instance()->has_param("gl_debug"))
   {
     printf("enabling GL DEBUG\n");
     glfwOpenWindowHint( GLFW_OPENGL_DEBUG_CONTEXT , GL_TRUE );
@@ -300,7 +298,7 @@ int main(int argc, char* argv[])
         vsx_avector<vsx_string> parts;
         vsx_string deli = ",";
         explode(arg2, deli, parts);
-        glfwSetWindowPos(s2i(parts[0]), s2i(parts[1]));
+        glfwSetWindowPos( vsx_string_aux::s2i(parts[0]), vsx_string_aux::s2i(parts[1]) );
       }
     }
   }
@@ -318,7 +316,7 @@ int main(int argc, char* argv[])
 
   // vsync handling
   bool vsync = true;
-  if (app_argv.has_param("novsync"))
+  if (vsx_argvector::get_instance()->has_param("novsync"))
   {
     vsync = false;
     glfwSwapInterval(0);
@@ -331,7 +329,7 @@ int main(int argc, char* argv[])
   running = GL_TRUE;
   frames = 0;
 
-  if (app_argv.has_param("gl_debug"))
+  if (vsx_argvector::get_instance()->has_param("gl_debug"))
   {
     // enable debug callback
     if (__GLEW_ARB_debug_output)
@@ -350,7 +348,7 @@ int main(int argc, char* argv[])
   }
 
   int display_gpu_vram_stats = 0;
-  if (app_argv.has_param("gl_vram"))
+  if (vsx_argvector::get_instance()->has_param("gl_vram"))
   {
     display_gpu_vram_stats = 1;
   }

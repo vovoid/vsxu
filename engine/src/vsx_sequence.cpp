@@ -26,19 +26,15 @@
 #include<conio.h>
 #endif
 #include<stdlib.h>
-//#ifndef VSX_STRINGLIB_NOSTL
-//  #include <list>
-//  #include <vector>
-//#endif
 #include "vsxfst.h"
-#include "vsx_math_3d.h"
 #include "vsx_array.h"
 #include "vsx_avector.h"
 #include "vsx_bezier_calc.h"
 #include "vsx_sequence.h"
+#include <vsx_vector_aux.h>
 
-vsx_sequence::vsx_sequence() {
-  //printf("vsx_sequence main constructor %d\n",this);
+vsx_sequence::vsx_sequence()
+{
   reset();
   vsx_sequence_item a;
   a.delay = 0.5f;
@@ -87,15 +83,13 @@ vsx_sequence::~vsx_sequence() {
   //printf("vsx sequence destructor %d\n",this);
 }
 
-float vsx_sequence::execute(float t_incr) {
-  //printf("-----------\nt_incr: %f\ni_time: %f\n",t_incr,i_time);
-  //printf("items.size: %d\n",items.size());
+float vsx_sequence::execute(float t_incr)
+{
 
   if (!items.size()) return 0;
   if (items.size() < 2)
   {
     i_time += t_incr;
-    //printf("return %d\n",__LINE__);
     return items[0].value;
   }
   else
@@ -103,21 +97,15 @@ float vsx_sequence::execute(float t_incr) {
     // if run for the first time
     if (i_time == 0 && i_cur == 0)
     {
-      //printf("running first foobar\n");
       cur_val = items[0].value;
       cur_delay = items[0].delay;
       cur_interpolation = items[0].interpolation;
-      //if (items.size() > 1)
       to_val = items[1].value;
     }
     i_time += t_incr;
-    //printf("a\n");
+
     int c = 0;
     line_time += t_incr;
-    //printf("line_cur: %d\n",line_cur);
-    //printf("cur_delay: %f\n",cur_delay);
-    //printf("cur_val: %f\n",cur_val);
-    //printf("line_time: %f\n",line_time);
 
     // The assumption for this algorithm is that you seldom jump quickly from beginning to end,
     // if you were to do that you could use a plain oscillator.
@@ -130,9 +118,7 @@ float vsx_sequence::execute(float t_incr) {
     {
       //bool stop = false;
       if (
-      				(line_time) < 0
-      			/*&&
-      				line_cur != 0*/
+          line_time < 0
       	 )
       {
         // we've passed behind our line, but how long?
@@ -141,22 +127,13 @@ float vsx_sequence::execute(float t_incr) {
         {
           ++c;
           --line_cur;
-          if (line_cur < 0) {
-            //printf("__f__ %d ",c);
+          if (line_cur < 0)
+          {
             line_cur = 0;
             line_time = 0;
-            //cur_val = items[line_cur].value;
-            //cur_delay = items[line_cur].delay;
-            //cur_interpolation = items[line_cur].interpolation;
-            //to_val = items[line_cur+1].value;
-          } else {
-            //printf("__a__ %d ",c);
-            line_time +=  items[line_cur].delay;
-            //cur_val = items[line_cur].value;
-            //cur_delay = items[line_cur].delay;
-            //cur_interpolation = items[line_cur].interpolation;
-            //to_val = items[line_cur+1].value;
+            continue;
           }
+          line_time +=  items[line_cur].delay;
         }
       }
       // newly calculated line_cur
@@ -200,7 +177,6 @@ float vsx_sequence::execute(float t_incr) {
     float cv = cur_val;
     float ev = to_val;
     float dv = ev-cv;
-    //printf("line_time: %f\n",line_time);
 
     // 0 = no interpolation
     // 1 = linear interpolation
@@ -211,7 +187,6 @@ float vsx_sequence::execute(float t_incr) {
     {
       float t = (line_time/cur_delay);
 
-      //printf("handle1.x: %f\n",lines[line_cur].handle1.x);
       bez_calc.x0 = 0.0f;
       bez_calc.y0 = cv;
       bez_calc.x1 = items[line_cur].handle1.x;
@@ -223,29 +198,19 @@ float vsx_sequence::execute(float t_incr) {
       bez_calc.init();
       float tt = bez_calc.t_from_x(t);
       float rv = bez_calc.y_from_t(tt);
-      //printf("return %d\n",__LINE__);
       return rv;
-      //printf("rv: %f\n",rv);
-      //param->set_string(f2s(rv));
-
     } else
     if (cur_interpolation == 0)
     {
       if (line_time/cur_delay < 0.99)
       {
-      	//printf("return %d\n",__LINE__);
-      return cv;
+        return cv;
       }
-      else
-      {
-//      	printf("return %d\n",__LINE__);
       return ev;
-      }
     }
     else
     if (cur_interpolation == 1)
     {
-      //printf("return %d\n",__LINE__);
       if (cur_delay != 0.0f)
       return cv+dv*(line_time/cur_delay);
       else return cv+dv;
@@ -255,7 +220,6 @@ float vsx_sequence::execute(float t_incr) {
     {
       float ft = line_time/cur_delay*PI_FLOAT;
       float f = (1 - (float)cos(ft)) * 0.5f;
-      //printf("return %d\n",__LINE__);
       return cv*(1-f) + ev*f;
     }
   }
@@ -305,8 +269,8 @@ void vsx_sequence::set_string(vsx_string str) {
       vsx_string pdeli_l = ":";
       explode(ff, pdeli_l, pld_l);
       n_i.value = s2f(pld_l[0]);
-      n_i.handle1.from_string(pld_l[1]);
-      n_i.handle2.from_string(pld_l[2]);
+      n_i.handle1 = vsx_vector_aux::from_string(pld_l[1]);
+      n_i.handle2 = vsx_vector_aux::from_string(pld_l[2]);
     }
     items.push_back(n_i);
   }
@@ -321,7 +285,8 @@ void vsx_sequence::set_string(vsx_string str) {
 //  _sleep(1000);
 }
 
-void vsx_sequence::reset() {
+void vsx_sequence::reset()
+{
 //  timestamp = 0;
   i_time = 0;
   i_cur = 0;

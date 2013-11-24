@@ -24,8 +24,10 @@
 #ifndef VSX_WIDGET_CONTROLLER_SEQ_H
 #define VSX_WIDGET_CONTROLLER_SEQ_H
 
+#include "vsx_widget_controller_base.h"
 
-class vsx_widget_controller_sequence : public vsx_widget_base_controller {
+class vsx_widget_controller_sequence : public vsx_widget_controller_base
+{
 private:
   vsx_widget* seq_chan;
   int size_controlled_from_outside;
@@ -33,7 +35,7 @@ private:
   int parent_removal;
 public:
   void init();
-  virtual void vsx_command_process_b(vsx_command_s *t);
+  virtual void command_process_back_queue(vsx_command_s *t);
   void set_size_controlled_from_outside(int new_value) { size_controlled_from_outside = new_value; }
   void set_span(float, float);
   void set_view_time(float, float);
@@ -53,7 +55,7 @@ public:
   		size_controlled_from_outside(0),
   		draw_base(1),
   		parent_removal(0)
-	{};
+  {}
 };
 
 

@@ -160,7 +160,8 @@ public:
   void run()
   {
 
-    if (param_updates == 0) return;
+    if (param_updates == 0)
+      return;
 
     param_updates = 0;
 

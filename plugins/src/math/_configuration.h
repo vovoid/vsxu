@@ -29,7 +29,7 @@
 // size optimization togglers
 #define VSX_NO_TEXTURE
 #define VSX_NO_SEQUENCE
-#define VSX_NO_MESH
+//#define VSX_NO_MESH
 //#define VSX_STRINGLIB_NOSTL
 #define VSX_NO_GL
 
@@ -51,7 +51,7 @@
 //#define VSX_P_BITMAP
 //#define VSX_P_PARTICLESYSTEM
 //#define VSX_P_SEGMENT_MESH
-//#define VSX_P_MESH
+#define VSX_P_MESH
 //#define VSX_P_RENDER
 //#define VSX_P_RESOURCE
 

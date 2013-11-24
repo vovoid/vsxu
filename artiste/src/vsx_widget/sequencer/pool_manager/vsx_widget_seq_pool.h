@@ -47,7 +47,7 @@ class vsx_widget_seq_pool_manager : public vsx_widget_window {
   vsx_widget *sequencer;
 
 public:
-  void vsx_command_process_b(vsx_command_s *t);
+  void command_process_back_queue(vsx_command_s *t);
 
   void show(vsx_string value);
   void show();

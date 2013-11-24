@@ -17,6 +17,8 @@ public:
   vsx_texture** tex;
   unsigned long i;
 
+  vsx_gl_state* gl_state;
+
   void module_info(vsx_module_info* info)
   {
     info->identifier = "renderers;particlesystems;render_particle_center";
@@ -41,6 +43,8 @@ public:
 
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     render_result->set(0);
+
+    gl_state = vsx_gl_state::get_instance();
   }
 
   void output(vsx_module_param_abs* param)
@@ -68,7 +72,7 @@ public:
         if ((*tex)->get_transform()) texture_transform();
 
         (*tex)->bind();
-        beginBlobs(engine);
+        beginBlobs( gl_state );
         glBegin(GL_QUADS);
 
         float sz = size->get();

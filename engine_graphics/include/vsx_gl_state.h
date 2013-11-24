@@ -3,9 +3,9 @@
 
 // shadow state of OpenGL to avoid glGet* calls
 
-#include "vsx_platform.h"
+#include <vsx_platform.h>
+#include <vsx_matrix.h>
 
-#include "vsx_math_3d.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // WARNING:
@@ -162,6 +162,7 @@ public:
     _blend_mode_init_default();
     _depth_init();
     _line_width_init();
+    _point_size_init();
     _framebuffer_binding_init();
   }
 
@@ -188,11 +189,36 @@ private:
 
   int _framebuffer_binding;
 
-  void _framebuffer_binding_init()
+  inline void _framebuffer_binding_init()
   {
     _framebuffer_binding = 0;
   }
 
+
+//***************************************************************************
+//*** POINT SIZE ************************************************************
+//***************************************************************************
+public:
+  inline void point_size_set(float n)
+  {
+    _point_size = n;
+    #ifndef VSX_NO_GL
+    glPointSize( _line_width );
+    #endif
+  }
+
+  inline float point_size_get()
+  {
+    return _point_size;
+  }
+
+private:
+  float _point_size;
+
+  inline void _point_size_init()
+  {
+    _point_size = 1.0f;
+  }
 
 
 
@@ -216,7 +242,7 @@ public:
 private:
   float _line_width;
 
-  void _line_width_init()
+  inline void _line_width_init()
   {
     _line_width = 1.0f;
   }
@@ -606,12 +632,12 @@ private:
 
 public:
 
-  inline int get_viewport_width()
+  inline int viewport_get_width()
   {
     return _viewport_size[2];
   }
 
-  inline int get_viewport_height()
+  inline int viewport_get_height()
   {
     return _viewport_size[3];
   }
@@ -675,14 +701,16 @@ private:
 
   vsx_matrix core_matrix[3];
   vsx_matrix matrix_stack[3][32];
-  int i_matrix_stack_index;
+  int i_matrix_stack_index[3];
   int i_matrix_mode;
   vsx_matrix m_temp;
   vsx_matrix m_temp_2;
 
   inline void _matrix_init()
   {
-    i_matrix_stack_index = 0;
+    i_matrix_stack_index[0] = 0;
+    i_matrix_stack_index[1] = 0;
+    i_matrix_stack_index[2] = 0;
     i_matrix_mode = 0;
   }
 
@@ -725,6 +753,29 @@ public:
       glLoadIdentity();
     #endif
   }
+
+  // push and pop
+  inline void matrix_push()
+  {
+    matrix_stack[i_matrix_mode][i_matrix_stack_index[i_matrix_mode]] = core_matrix[i_matrix_mode];
+    i_matrix_stack_index[i_matrix_mode]++;
+    #ifndef VSX_NO_GL
+      glPushMatrix();
+    #endif
+  }
+
+  inline void matrix_pop()
+  {
+    if (!i_matrix_stack_index)
+      return;
+    i_matrix_stack_index[i_matrix_mode]--;
+    core_matrix[i_matrix_mode] = matrix_stack[i_matrix_mode][i_matrix_stack_index[i_matrix_mode]];
+    #ifndef VSX_NO_GL
+      glPopMatrix();
+    #endif
+  }
+
+
 
   inline void matrix_scale_f(float x, float y, float z, bool gl = true)
   {
@@ -1010,8 +1061,15 @@ public:
     #endif
   }
 
+  static vsx_gl_state* get_instance()
+  {
+    static vsx_gl_state state;
+    return &state;
+  }
+
 
 };
+
 
 
 #endif

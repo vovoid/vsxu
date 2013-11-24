@@ -24,7 +24,8 @@
 #ifndef VSX_BSPLINE_H
 #define VSX_BSPLINE_H
 
-class vsx_bspline {
+class vsx_bspline
+{
 public:
   float		current_pos;
   float   real_pos;
@@ -36,12 +37,26 @@ public:
   long old_pos;
   vsx_array<vsx_vector> points;
   
-  vsx_bspline() : real_pos(0.0f),old_pos(0) {
+  vsx_bspline() :
+    real_pos(0.0f),
+    old_pos(0)
+  {
  		current_pos = 0.0f;
-  };
+  }
   
-  void init_random_points() {
-    for (int i = 0; i < 250; ++i) {
+  vsx_bspline(vsx_vector _center, float _radius, float _minDistNext, float _maxDistNext)
+  {
+		current_pos = 0.0f;
+		center = _center;
+		radius = _radius;
+		minDistNext = _minDistNext;
+		maxDistNext = _maxDistNext;
+  }
+
+  inline void init_random_points()
+  {
+    for (int i = 0; i < 250; ++i)
+    {
       points.push_back(
         vsx_vector(
           ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f),
@@ -54,31 +69,23 @@ public:
     p1 = points[1];
     p2 = points[2];
     p3 = points[3];
-
   }
 
-  ~vsx_bspline() {
-  }
-  
-	vsx_bspline(vsx_vector _center, float _radius, float _minDistNext, float _maxDistNext) {
-		current_pos = 0.0f;
+
+  inline void init(vsx_vector _center, float _radius, float _minDistNext, float _maxDistNext)
+  {
 		center = _center;
 		radius = _radius;
 		minDistNext = _minDistNext;
 		maxDistNext = _maxDistNext;
-	};
-
-	void init(vsx_vector _center, float _radius, float _minDistNext, float _maxDistNext) {
-		center = _center;
-		radius = _radius;
-		minDistNext = _minDistNext;
-		maxDistNext = _maxDistNext;
-	};
+  }
 	
-	void set_pos(float t) {
+  inline void set_pos(float t)
+  {
     int tt = (int)t;
     //float tt = fmod(t,(float)points.size()-4);
-    if (tt != old_pos) {
+    if (tt != old_pos)
+    {
       old_pos = tt;
       p0 = points[(old_pos)%points.size()];
       p1 = points[(old_pos+1)%points.size()];
@@ -89,11 +96,13 @@ public:
     if (current_pos > 1.0f) current_pos -= (int)current_pos;
   }
   
-  void step(float stepn) {
+  inline void step(float stepn)
+  {
     set_pos(real_pos+stepn);
   }
 
-	vsx_vector calc_coord() {
+  inline vsx_vector calc_coord()
+  {
     vsx_vector v;
 		float t = current_pos;
 		float t2 = t * t;
@@ -108,7 +117,7 @@ public:
 				p2 * k3 + 
 				p3 * t3) * (1.0f / 6.0f);
 		return v;
-	};
+  }
 };
 
 #endif

@@ -31,6 +31,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
+#include <GL/glew.h>
+#include <vsx_gl_state.h>
 
 #include "vsx_engine.h"
 
@@ -47,14 +49,16 @@ public:
   bool need_reload;
   bool is_volatile;
 
-  state_info() {
+  state_info()
+  {
     speed = 1.0f;
     engine = 0;
     need_stop = false;
     need_reload = false;
     is_volatile = false;
   }
-  ~state_info() {
+  ~state_info()
+  {
     if (is_volatile) return;
     if (engine) delete engine;
   }
@@ -65,8 +69,10 @@ public:
 
 
 
-class vsx_statelist {
+class vsx_statelist
+{
 private:
+  vsx_gl_state* b_gl_state;
   vsx_string own_path;
   std::list<vsx_string> state_file_list;
   std::list<vsx_string> fader_file_list;
@@ -183,6 +189,12 @@ public:
   vsx_string get_meta_visual_creator();
   vsx_string get_meta_visual_company();
   
+  void set_a_gl_state( vsx_gl_state* n)
+  {
+    b_gl_state = n;
+    tex1.set_gl_state( n );
+    tex_to.set_gl_state( n );
+  }
 
   vsx_statelist();
   ~vsx_statelist();

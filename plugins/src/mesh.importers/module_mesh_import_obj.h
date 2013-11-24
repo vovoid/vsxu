@@ -1,3 +1,6 @@
+#include <vsx_string_aux.h>
+
+
 class module_mesh_import_obj : public vsx_module
 {
 public:
@@ -121,37 +124,37 @@ void run() {
 
 
               int id;
-              id = s2i(parts2[0])-1; if (id < 0) id=0;
+              id = vsx_string_aux::s2i(parts2[0])-1; if (id < 0) id=0;
               mesh->data->vertices[ff.a] = vertices[id];
-              id = s2i(parts3[0])-1; if (id < 0) id=0;
+              id = vsx_string_aux::s2i(parts3[0])-1; if (id < 0) id=0;
               mesh->data->vertices[ff.b] = vertices[id];
-              id = s2i(parts4[0])-1; if (id < 0) id=0;
+              id = vsx_string_aux::s2i(parts4[0])-1; if (id < 0) id=0;
               mesh->data->vertices[ff.c] = vertices[id];
 
               if (found_texcoords && found_normals) {
                 if (parts2[1] != "") {
-                  mesh->data->vertex_tex_coords[ff.a] = texcoords[s2i(parts2[1])-1];
-                  mesh->data->vertex_tex_coords[ff.b] = texcoords[s2i(parts3[1])-1];
-                  mesh->data->vertex_tex_coords[ff.c] = texcoords[s2i(parts4[1])-1];
+                  mesh->data->vertex_tex_coords[ff.a] = texcoords[ vsx_string_aux::s2i(parts2[1])-1 ];
+                  mesh->data->vertex_tex_coords[ff.b] = texcoords[ vsx_string_aux::s2i(parts3[1])-1 ];
+                  mesh->data->vertex_tex_coords[ff.c] = texcoords[ vsx_string_aux::s2i(parts4[1])-1 ];
                 }
                 if (parts2[2] != "") {
-                  mesh->data->vertex_normals[ff.a] = normals[s2i(parts2[2])-1];
-                  mesh->data->vertex_normals[ff.b] = normals[s2i(parts3[2])-1];
-                  mesh->data->vertex_normals[ff.c] = normals[s2i(parts4[2])-1];
+                  mesh->data->vertex_normals[ff.a] = normals[ vsx_string_aux::s2i(parts2[2])-1 ];
+                  mesh->data->vertex_normals[ff.b] = normals[ vsx_string_aux::s2i(parts3[2])-1 ];
+                  mesh->data->vertex_normals[ff.c] = normals[ vsx_string_aux::s2i(parts4[2])-1 ];
                 }
               } else
               if (found_normals) {
                 if (parts2[2] != "") {
-                  mesh->data->vertex_normals[ff.a] = normals[s2i(parts2[2])-1];
-                  mesh->data->vertex_normals[ff.b] = normals[s2i(parts3[2])-1];
-                  mesh->data->vertex_normals[ff.c] = normals[s2i(parts4[2])-1];
+                  mesh->data->vertex_normals[ff.a] = normals[ vsx_string_aux::s2i(parts2[2])-1 ];
+                  mesh->data->vertex_normals[ff.b] = normals[ vsx_string_aux::s2i(parts3[2])-1 ];
+                  mesh->data->vertex_normals[ff.c] = normals[ vsx_string_aux::s2i(parts4[2])-1 ];
                 }
               } else
               if (found_texcoords) {
                 if (parts2[1] != "") {
-                  mesh->data->vertex_tex_coords[ff.a] = texcoords[s2i(parts2[1])-1];
-                  mesh->data->vertex_tex_coords[ff.b] = texcoords[s2i(parts3[1])-1];
-                  mesh->data->vertex_tex_coords[ff.c] = texcoords[s2i(parts4[1])-1];
+                  mesh->data->vertex_tex_coords[ff.a] = texcoords[ vsx_string_aux::s2i(parts2[1])-1 ];
+                  mesh->data->vertex_tex_coords[ff.b] = texcoords[ vsx_string_aux::s2i(parts3[1])-1 ];
+                  mesh->data->vertex_tex_coords[ff.c] = texcoords[ vsx_string_aux::s2i(parts4[1])-1 ];
                 }
               }
 
@@ -186,9 +189,9 @@ void run() {
               vsx_avector<vsx_string> parts4;
               explode(parts[3], deli2, parts4);
 
-              ff.c = s2i(parts2[0])-1;
-              ff.b = s2i(parts3[0])-1;
-              ff.a = s2i(parts4[0])-1;
+              ff.c = vsx_string_aux::s2i(parts2[0])-1;
+              ff.b = vsx_string_aux::s2i(parts3[0])-1;
+              ff.a = vsx_string_aux::s2i(parts4[0])-1;
 
               mesh->data->faces.push_back(ff);
           }

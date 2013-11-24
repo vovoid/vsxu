@@ -39,6 +39,7 @@ class module_mesh_render : public vsx_module
   vsx_module_param_int* use_vertex_colors;
   vsx_module_param_int* use_display_list;
   vsx_module_param_int* particles_size_center;
+  vsx_module_param_int* particles_size_from_color;
   vsx_module_param_int* ignore_uvs_in_vbo_updates;
   vsx_module_param_particlesystem* particles_in;
 
@@ -301,6 +302,7 @@ public:
           "use_display_list:enum?no|yes,"
           "use_vertex_colors:enum?no|yes,"
           "particles_size_center:enum?no|yes,"
+          "particles_size_from_color:enum?no|yes,"
           "ignore_uvs_in_vbo_updates:enum?no|yes"
         "}";
     info->out_param_spec = "render_out:render";
@@ -328,6 +330,9 @@ public:
 
     particles_size_center = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"particles_size_center");
     particles_size_center->set(0);
+
+    particles_size_from_color = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"particles_size_from_color");
+    particles_size_from_color->set(0);
 
     ignore_uvs_in_vbo_updates = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"ignore_uvs_in_vbo_updates");
     ignore_uvs_in_vbo_updates->set(0);
@@ -734,7 +739,12 @@ public:
     #endif
     mesh = mesh_in->get_addr();
     // sanity checks
-    if (!mesh) { message="module||Can not render: mesh is not set"; render_result->set(0); return; }
+    if (!mesh)
+    {
+      message="module||Can not render: mesh is not set";
+      render_result->set(0);
+      return;
+    }
     if (!(*mesh)->data) { message="module||Can not render: Mesh data is not set"; render_result->set(0); return; }
     if (!(*mesh)->data->faces.get_used()) { message="module||Can not render: Mesh has no faces"; render_result->set(0); return; }
     message="module||ok";
@@ -766,11 +776,20 @@ public:
       glMatrixMode(GL_MODELVIEW);
       for (unsigned long i = 0; i < (*particle_mesh)->data->vertices.size(); ++i) {
         glPushMatrix();
+
         glTranslatef(
           (*particle_mesh)->data->vertices[i].x,
           (*particle_mesh)->data->vertices[i].y,
           (*particle_mesh)->data->vertices[i].z
         );
+        if (particles_size_from_color->get() && (*particle_mesh)->data->vertex_colors.size())
+        {
+          glScalef(
+            (*particle_mesh)->data->vertex_colors[i].r,
+            (*particle_mesh)->data->vertex_colors[i].g,
+            (*particle_mesh)->data->vertex_colors[i].b
+          );
+        }
         perform_draw();
         glPopMatrix();
       }
@@ -790,11 +809,21 @@ public:
       enable_client_arrays_vbo();
       float ss;
       glMatrixMode(GL_MODELVIEW);
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->e( "mesh_render_perform_draw_particles" );
+      #endif
 
       for (unsigned long i = 0; i < particles->particles->size(); ++i)
       {
         (*particles->particles)[i].color.a = (1-((*particles->particles)[i].time/(*particles->particles)[i].lifetime));
-        (*particles->particles)[i].color.gl_color();
+
+        glColor4f(
+          (*particles->particles)[i].color.r,
+          (*particles->particles)[i].color.g,
+          (*particles->particles)[i].color.b,
+          (*particles->particles)[i].color.a
+        );
+
         glPushMatrix();
 
         ma = (*particles->particles)[i].rotation.matrix();
@@ -840,6 +869,9 @@ public:
       }
 
       cleanup_successful_rendering();
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->l();
+      #endif
       return;
     }
 

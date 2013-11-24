@@ -27,7 +27,6 @@
 #include <list>
 #include <vector>
 #include <math.h>
-#include "vsx_math_3d.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_command.h"
@@ -36,8 +35,8 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 // local includes
-#include "lib/vsx_widget_lib.h"
 #include "vsx_widget_base.h"
+#include "vsx_widget_popup_menu.h"
 #include "window/vsx_widget_window.h"
 #include "vsx_widget_desktop.h"
 #include "vsx_widget_anchor.h"
@@ -46,13 +45,20 @@
 #include "module_choosers/vsx_widget_module_chooser.h"
 #include "vsx_widget_connector_bezier.h"
 #include "helpers/vsx_widget_assistant.h"
-#include "controllers/vsx_widget_base_controller.h"
-#include "controllers/vsx_widget_controller.h"
+#include "controllers/vsx_widget_controller_base.h"
 #include "controllers/vsx_widget_controller_seq.h"
 #include "controllers/vsx_widget_controller_ab.h"
-#include "controllers/vsx_widget_editor.h"
+#include "controllers/vsx_widget_controller_editor.h"
+#include "controllers/vsx_widget_controller_dialog.h"
+#include "controllers/vsx_widget_controller_knob.h"
+#include "controllers/vsx_widget_controller_channel.h"
+#include "controllers/vsx_widget_controller_mixer.h"
+#include "controllers/vsx_widget_controller_color.h"
+#include "controllers/vsx_widget_controller_pad.h"
 #include "vsx_widget_comp.h"
 #include "dialogs/vsx_widget_window_statics.h"
+#include <gl_helper.h>
+
 using namespace std;
 
 bool vsx_widget_anchor::drag_status = false;
@@ -64,7 +70,7 @@ vsx_widget_anchor* vsx_widget_anchor::drag_clone_anchor;
 //-- b a c k e n d -----------------------------------------------------------------------------------------------------
 
 
-void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t) 
+void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t) 
 {
 //    t->parse();
   if (t->cmd == "anchor_unalias") {
@@ -90,8 +96,8 @@ void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t)
 
     for (std::vector<vsx_string>::iterator it = order_list.begin(); it != order_list.end(); ++it) 
     {
-      ((vsx_widget_connector_bezier*)connection_map[s2i(*it)])->order = c;
-      ((vsx_widget_connector_bezier*)connection_map[s2i(*it)])->move(vsx_vector(0));
+      ((vsx_widget_connector_bezier*)connection_map[ vsx_string_aux::s2i(*it) ])->order = c;
+      ((vsx_widget_connector_bezier*)connection_map[ vsx_string_aux::s2i(*it) ])->move(vsx_vector(0));
       ++c;
     }
   } else
@@ -128,7 +134,7 @@ void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t)
       if (b->p_l_list_out.find(t->parts[4]) != b->p_l_list_out.end()) 
       {
         vsx_widget_anchor *ba = (vsx_widget_anchor*)b->p_l_list_out[t->parts[4]];
-        connect_far(ba,s2i(t->parts[5]));
+        connect_far( ba, vsx_string_aux::s2i(t->parts[5]) );
       }
     }
     return;
@@ -183,7 +189,7 @@ void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t)
         tt->size.x = 1;
         tt->size.y = 1;
         tt->init();
-        ((vsx_widget_connector_bezier*)tt)->order = s2i(t->parts[5]);
+        ((vsx_widget_connector_bezier*)tt)->order = vsx_string_aux::s2i(t->parts[5]);
         ((vsx_widget_connector_bezier*)tt)->receiving_focus = true;
         ((vsx_widget_connector_bezier*)tt)->destination = ba;
         ((vsx_widget_connector_bezier*)tt)->open = conn_open;
@@ -379,10 +385,10 @@ void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t)
   } else
   if (t->cmd == "vsxl_pfl_s") 
   {
-    vsx_widget* tt = add(new vsx_widget_editor,name+".edit");
-    ((vsx_widget_editor*)tt)->target_param = name;
-    ((vsx_widget_editor*)tt)->return_command = "ps64";
-    ((vsx_widget_editor*)tt)->return_component = this;
+    vsx_widget* tt = add(new vsx_widget_controller_editor,name+".edit");
+    ((vsx_widget_controller_editor*)tt)->target_param = name;
+    ((vsx_widget_controller_editor*)tt)->return_command = "ps64";
+    ((vsx_widget_controller_editor*)tt)->return_component = this;
     tt->widget_type = VSX_WIDGET_TYPE_CONTROLLER;
     tt->set_render_type(VSX_WIDGET_RENDER_3D);
     tt->set_font_size(0.002);
@@ -390,9 +396,9 @@ void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t)
     #ifndef VSXU_PLAYER
       tt->title = "VSXL [param filter] : "+component->name+"->"+name;
     #endif
-  ((vsx_widget_editor*)tt)->return_command = "vsxl_pfi";
-  ((vsx_widget_editor*)tt)->return_component = this;
-  ((vsx_widget_editor*)tt)->load_text(base64_decode(t->parts[3]));
+  ((vsx_widget_controller_editor*)tt)->return_command = "vsxl_pfi";
+  ((vsx_widget_controller_editor*)tt)->return_component = this;
+  ((vsx_widget_controller_editor*)tt)->load_text(base64_decode(t->parts[3]));
   } 
   else
   if (t->cmd == "pseq_p" && t->cmd_data == "remove") 
@@ -453,11 +459,11 @@ void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t)
   } else
   if (t->cmd == "controller_edit" && !find_child_by_type(VSX_WIDGET_TYPE_CONTROLLER)) 
   {
-    vsx_widget* tt = add(new vsx_widget_editor,name+".edit");
+    vsx_widget* tt = add(new vsx_widget_controller_editor,name+".edit");
     tt->widget_type = VSX_WIDGET_TYPE_CONTROLLER;
-    ((vsx_widget_editor*)tt)->target_param = name;
-    ((vsx_widget_editor*)tt)->return_command = "ps64";
-    ((vsx_widget_editor*)tt)->return_component = this;
+    ((vsx_widget_controller_editor*)tt)->target_param = name;
+    ((vsx_widget_controller_editor*)tt)->return_command = "ps64";
+    ((vsx_widget_controller_editor*)tt)->return_component = this;
     tt->set_render_type(VSX_WIDGET_RENDER_3D);
     tt->set_font_size(0.002);
     tt->set_border(0.0005);
@@ -479,10 +485,10 @@ void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t)
     }
     if (t->cmd == "controller_knob" && !find_child_by_type(VSX_WIDGET_TYPE_CONTROLLER)) 
     {
-      vsx_widget* tt = add(new vsx_widget_knob,name+".knob");
-      ((vsx_widget_knob*)tt)->target_param=name;
-      ((vsx_widget_knob*)tt)->param_spec = &options;
-      ((vsx_widget_knob*)tt)->init();
+      vsx_widget* tt = add(new vsx_widget_controller_knob,name+".knob");
+      ((vsx_widget_controller_knob*)tt)->target_param=name;
+      ((vsx_widget_controller_knob*)tt)->param_spec = &options;
+      ((vsx_widget_controller_knob*)tt)->init();
       a_focus = tt;
       k_focus = tt;
       return;
@@ -493,7 +499,7 @@ void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t)
       ((vsx_widget_controller_ab*)tt)->target_param = name;
       ((vsx_widget_controller_ab*)tt)->param_spec = &options;
       ((vsx_widget_controller_ab*)tt)->init();
-      ((vsx_widget_controller_ab*)tt)->type = s2i(t->cmd_data);
+      ((vsx_widget_controller_ab*)tt)->set_tuple_type( vsx_string_aux::s2i(t->cmd_data) );
       a_focus = tt;
       k_focus = tt;
     } else
@@ -512,25 +518,25 @@ void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t)
       vsx_widget* tt = add(new vsx_widget_controller_pad,name+".pad");
       if (p_type == "float3") ((vsx_widget_controller_pad*)tt)->ptype = 0;
       else ((vsx_widget_controller_pad*)tt)->ptype = 1;
-      ((vsx_widget_knob*)tt)->param_spec = &options;
+      ((vsx_widget_controller_knob*)tt)->param_spec = &options;
       ((vsx_widget_controller_pad*)tt)->init();
     } else
     if (t->cmd == "controller_slider" && !find_child_by_type(VSX_WIDGET_TYPE_CONTROLLER)) 
     {
-      vsx_widget* tt = add(new vsx_widget_channel,name+".mixer");
-      ((vsx_widget_channel*)tt)->target_param=name;
-      ((vsx_widget_channel*)tt)->param_spec = &options;
-      ((vsx_widget_channel*)tt)->init();
+      vsx_widget* tt = add(new vsx_widget_controller_channel,name+".mixer");
+      ((vsx_widget_controller_channel*)tt)->target_param=name;
+      ((vsx_widget_controller_channel*)tt)->param_spec = &options;
+      ((vsx_widget_controller_channel*)tt)->init();
       a_focus = tt;
       k_focus = tt;
     } else
     if (t->cmd == "controller_slider_multi" && !find_child_by_type(VSX_WIDGET_TYPE_CONTROLLER)) 
     {
-      vsx_widget* tt = add(new vsx_widget_mixer,name+".mixer");
-      ((vsx_widget_mixer*)tt)->target_param=name;
-      ((vsx_widget_mixer*)tt)->nummixers = s2i(t->cmd_data);
-      ((vsx_widget_mixer*)tt)->param_spec = &options;
-      ((vsx_widget_mixer*)tt)->init();
+      vsx_widget* tt = add(new vsx_widget_controller_mixer,name+".mixer");
+      ((vsx_widget_controller_mixer*)tt)->target_param=name;
+      ((vsx_widget_controller_mixer*)tt)->nummixers = vsx_string_aux::s2i(t->cmd_data);
+      ((vsx_widget_controller_mixer*)tt)->param_spec = &options;
+      ((vsx_widget_controller_mixer*)tt)->init();
       a_focus = tt;
       k_focus = tt;
     } else
@@ -550,11 +556,11 @@ void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t)
   } else
   if (t->cmd == "settings_dialog" && !find_child_by_type(VSX_WIDGET_TYPE_CONTROLLER)) 
   {
-    vsx_widget* tt = add(new vsx_widget_dialog,name+"."+t->parts.at(1));
-    ((vsx_widget_dialog*)tt)->target_param=name;
-    ((vsx_widget_dialog*)tt)->in_param_spec=t->parts.at(2);
+    vsx_widget* tt = add(new vsx_widget_controller_dialog,name+"."+t->parts.at(1));
+    ((vsx_widget_controller_dialog*)tt)->target_param=name;
+    ((vsx_widget_controller_dialog*)tt)->in_param_spec=t->parts.at(2);
     tt->pos.x = -size.x*4;
-    ((vsx_widget_dialog*)tt)->init();
+    ((vsx_widget_controller_dialog*)tt)->init();
   } else
   if (t->cmd == "enum") 
   {
@@ -606,11 +612,11 @@ void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t)
     }
     if (p_type == "enum") 
     {
-      int ii = s2i(display_value);
+      int ii = vsx_string_aux::s2i(display_value);
 
       if (ii >= 0 && ii < (int)enum_items.size())
       {
-        display_value = enum_items[s2i(display_value)];
+        display_value = enum_items[ vsx_string_aux::s2i(display_value) ];
       }
       else
       {
@@ -655,7 +661,7 @@ void vsx_widget_anchor::vsx_command_process_b(vsx_command_s *t)
     command_q_b.add_raw(t->parts[0] + " " + component->name + " " + t->parts[1] + " " + t->parts[2]);
     component->vsx_command_queue_b(this);
   } else
-  vsx_widget::vsx_command_process_b(t);
+  vsx_widget::command_process_back_queue(t);
 }
 
 bool vsx_widget_anchor::connect(vsx_widget* other_anchor) {
@@ -1372,9 +1378,6 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
         menu_->commands.adds(VSX_COMMAND_MENU, "sliders", "controller_slider_multi","4");
         menu_->commands.adds(VSX_COMMAND_MENU, "rotation axis sphere", "controller_ab","4");
       }
-      menu_->commands.adds(VSX_COMMAND_MENU, "--Sequencer-----------", "","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "add/edit sequence", "pseq_a_m","");
-      menu_->commands.adds(VSX_COMMAND_MENU, "remove sequence", "pseq_p","remove");
       if (!alias)
       {
         menu_->commands.adds(VSX_COMMAND_MENU, "--Sub-engine export--------", "","");
@@ -2092,7 +2095,13 @@ void vsx_widget_anchor::draw()
 {
   if (visible > 0)
   {
-    color.gl_color();
+    glColor4f(
+      color.r,
+      color.g,
+      color.b,
+      color.a
+    );
+
     #ifndef VSXU_PLAYER
     mtex_d.bind();
     #endif
@@ -2148,20 +2157,21 @@ void vsx_widget_anchor::draw()
 
     float sx06 = size.x * 0.6f;
 
-    myf_size = myf.get_size(name,size.x*(0.3+t_size));
+    myf_size = font.get_size(name,size.x*(0.3+t_size));
     myf_pos = vsx_vector(pos.x+pp.x+sx06,pos.y+pp.y-size.y*0.5);
     glColor4f(0.0f,0.0f,0.0f,0.5f*color.a);
-    myf.color.a = color.a;
-    if (io == -1) {
+    font.color.a = color.a;
+    if (io == -1)
+    {
       if (!drag_status) draw_box(myf_pos, myf_size.x, myf_size.y);
-      myf.print(myf_pos, name,size.x*(0.3+t_size));
+      font.print(myf_pos, name,size.x*(0.3+t_size));
     }
     else 
     {
       myf_pos.x -= size.x;
       if (!drag_status)
       draw_box(myf_pos-vsx_vector(myf_size.x) , myf_size.x, myf_size.y);
-      myf.print_right(myf_pos, name,size.x*(0.3+t_size));
+      font.print_right(myf_pos, name,size.x*(0.3+t_size));
     }
     if (d_size > 0.3 && frames%7 == 1) 
     {
@@ -2213,21 +2223,21 @@ void vsx_widget_anchor::draw()
         get_value();
       }
     }
-    myf.color.a = color.a;
-    myf_size = myf.get_size(display_value,size.x*(d_size));
+    font.color.a = color.a;
+    myf_size = font.get_size(display_value,size.x*(d_size));
     if (d_size > 0.1) 
     {
       if (io == -1)
       {
         myf_pos.x -= size.x;
         //draw_box(myf_pos-vsx_vector(myf_size.x), myf_size.x, myf_size.y);
-        myf.print_right(myf_pos, display_value,size.x*(d_size));
+        font.print_right(myf_pos, display_value,size.x*(d_size));
       }
       else
       {
         myf_pos.x += size.x;
         //draw_box(myf_pos, myf_size.x, myf_size.y);
-        myf.print(myf_pos, display_value,size.x*(d_size));
+        font.print(myf_pos, display_value,size.x*(d_size));
       }
     }
   }

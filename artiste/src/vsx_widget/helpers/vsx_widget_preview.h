@@ -46,12 +46,12 @@ public:
  	bool run;
   vsx_vector pos_, size_;
   vsx_command_list modestring_commands;
-	void draw() {};
+  void draw() {}
   void draw_2d();
   void init();
   void set_server(vsx_widget* new_server);
   virtual bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
-  virtual void vsx_command_process_b(vsx_command_s *t);
+  virtual void command_process_back_queue(vsx_command_s *t);
 
   vsx_window_texture_viewer();
 };

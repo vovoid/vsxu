@@ -26,14 +26,7 @@
 #define VSX_COMP_H
 
 #include "vsx_comp_abs.h"
-/*includes required for including this file:
-  
-#include "vsx_command.h"
-#include "vsx_module.h"
-#include "vsx_math_3d.h"
-#include "gfx_prod/vsx_param_abstraction.h"
 
-*/
 vsx_string process_module_param_spec(vsx_string& input);
 
 
@@ -44,9 +37,11 @@ class vsx_channel;
 // join another component with the first
 // 
 
-class vsx_comp : public vsx_comp_abs {
+class vsx_comp : public vsx_comp_abs
+{
 protected:
-	enum frame_status_enum {
+  enum frame_status_enum
+  {
 		initial_status,
 		prepare_called,
 		prepare_finished,
@@ -55,9 +50,9 @@ protected:
 	};
 
 	frame_status_enum frame_status;
+  bool has_run;
   
   bool all_valid;
-	bool output_finished;
 	vsx_timer run_timer;
 	
 public:
@@ -113,30 +108,16 @@ public:
   void re_init_out_params();
   void init_channels();
 
-	void reset_frame_status() {
-    output_finished = false;
-#ifdef VSXU_MODULE_TIMING    
-    time_output = new_time_output;
-    time_run = new_time_run;
-    new_time_output = 0.0f;
-    new_time_run = 0.0f;
-#endif
-    //if (frame_status != initial_status)
-    //{
-      /*if (dtime+vtime == 0)
-      {
-        local_engine_info.dtime = -local_engine_info.vtime+local_engine_info.dtime;
-        local_engine_info.vtime = 0;
-      } else  */
-      //		local_engine_info.vtime += local_engine_info.dtime = time_multiplier*dtime;
-/*      local_engine_info.real_vtime = e->real_vtime;
-      local_engine_info.real_dtime = e->real_dtime;
-      local_engine_info.vtime = e->vtime;
-      local_engine_info.dtime = e->dtime;
-      local_engine_info.state = e->state;
-    }		*/
+  void reset_has_run_status()
+  {
+    has_run = false;
+  }
+
+  void reset_frame_status()
+  {
 		frame_status = initial_status;
 	}
+
   vsx_comp();
   ~vsx_comp();
 };

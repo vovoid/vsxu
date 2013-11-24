@@ -152,7 +152,7 @@ public:
                 c.y = sin(gr)*gz;
                 c.z = g.y*2.0f;
                 b = my->mesh->data->vertices.push_back(c);
-                my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord__(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
+                my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
                 ++a;
                 if (a >= 3) {
                   face.a = b-3;
@@ -185,7 +185,7 @@ public:
                 c.z = g.y*2.0f;
                 b = my->mesh->data->vertices.push_back(c);
 
-                my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord__(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
+                my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
 
                 ++a;
 

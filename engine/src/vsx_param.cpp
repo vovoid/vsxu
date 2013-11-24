@@ -122,7 +122,8 @@ vsx_module_param_abs* vsx_module_param_list::create(int type, const char* name, 
 
 }
 
-vsx_module_param_list::~vsx_module_param_list() {
+vsx_module_param_list::~vsx_module_param_list()
+{
 #ifdef VSXU_EXE
   #ifdef VSXU_DEVELOPER
   //printf("Removing internal parameters created by the module\nNumber of params: %d\n",id_vec.size());

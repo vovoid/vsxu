@@ -10,7 +10,7 @@ class module_output_screen_opengl : public vsx_module
 {
   float internal_gamma;
 
-  vsx_module_param_render* my_render;
+  vsx_module_param_render* render_in;
   vsx_module_param_float* gamma_correction;
   vsx_module_param_float4* clear_color;
 
@@ -18,6 +18,8 @@ class module_output_screen_opengl : public vsx_module
 
   // don't mess with viewport or any opengl settings
   vsx_module_param_int* opengl_silent;
+
+  vsx_gl_state* gl_state;
 
 public:
 
@@ -32,7 +34,7 @@ public:
     ;
     info->in_param_spec = "screen:render,"
                           "gamma_correction:float?max=4&min=0&nc=1,"
-                          "clear_color:float4?nc=1";
+                          "clear_color:float4";
     info->component_class = "screen";
   }
 
@@ -40,7 +42,8 @@ public:
   {
     VSX_UNUSED(out_parameters);
     loading_done = true;
-    my_render = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER, "screen");
+    render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER, "screen");
+    render_in->run_activate_offscreen = true;
 
     opengl_silent = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "opengl_silent");
     opengl_silent->set(0);
@@ -54,6 +57,8 @@ public:
     clear_color->set(0.0f,1);
     clear_color->set(0.0f,2);
     clear_color->set(1.0f,3);
+
+    gl_state = vsx_gl_state::get_instance();
   }
 
   void set_gamma(float mgamma)
@@ -91,23 +96,23 @@ public:
     glDisable(GL_SCISSOR_TEST);
 
     // identity matrices
-    engine->gl_state->matrix_load_identities();
+    gl_state->matrix_load_identities();
 
     // set up blending
-    engine->gl_state->blend_set(1);
-    engine->gl_state->blend_func(VSX_GL_SRC_ALPHA, VSX_GL_ONE_MINUS_SRC_ALPHA);
+    gl_state->blend_set(1);
+    gl_state->blend_func(VSX_GL_SRC_ALPHA, VSX_GL_ONE_MINUS_SRC_ALPHA);
 
     // set up polygon mode
-    engine->gl_state->polygon_mode_set(VSX_GL_FRONT, VSX_GL_FILL);
-    engine->gl_state->polygon_mode_set(VSX_GL_BACK, VSX_GL_FILL);
+    gl_state->polygon_mode_set(VSX_GL_FRONT, VSX_GL_FILL);
+    gl_state->polygon_mode_set(VSX_GL_BACK, VSX_GL_FILL);
 
     // set up depth test & mask
-    engine->gl_state->depth_mask_set(0);
-    engine->gl_state->depth_test_set(0);
-    //engine->gl_state->depth_function_set( VSX_GL_LESS );
+    gl_state->depth_mask_set(0);
+    gl_state->depth_test_set(0);
+    //gl_state->depth_function_set( VSX_GL_LESS );
 
     // set up line width
-    engine->gl_state->line_width_set( 1.0f );
+    gl_state->line_width_set( 1.0f );
 
     const unsigned int lights[] = {GL_LIGHT0,GL_LIGHT1,GL_LIGHT2,GL_LIGHT3,GL_LIGHT4,GL_LIGHT5,GL_LIGHT6,GL_LIGHT7};
     glDisable(lights[0]);
@@ -119,10 +124,10 @@ public:
     glDisable(lights[6]);
     glDisable(lights[7]);
 
-    engine->gl_state->get_material_fv_all( &pre_material_colors[0][0][0] );
+    gl_state->get_material_fv_all( &pre_material_colors[0][0][0] );
 
     // Implement default material settings
-    engine->gl_state->material_set_default();
+    gl_state->material_set_default();
 
 
     return true;
@@ -132,9 +137,8 @@ public:
   {
     if (opengl_silent->get() == 1) return;
     #ifndef VSXU_OPENGL_ES_2_0
-      engine->gl_state->material_set_fv_all(&pre_material_colors[0][0][0]);
+      gl_state->material_set_fv_all(&pre_material_colors[0][0][0]);
     #endif
-    glClearColor(0.0f,0.0f,0.0f,0.0f);
   }
 
   void stop()

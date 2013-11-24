@@ -31,7 +31,7 @@ vsx_overlay::vsx_overlay() {
   manager = 0;
   myf = new vsx_font(PLATFORM_SHARED_FILES);
   myf->init(vsx_string("font/font-ascii.png"));
-  myf->mode_2d = true;
+  myf->mode_2d = false;
   frame_counter = 0;
   delta_frame_counter = 0;
   delta_frame_time = 0.0f;
@@ -76,7 +76,7 @@ void vsx_overlay::render() {
   
   if (intro_timer > 0.0f) {
     myf->color.a = intro_timer;
-    myf->print(vsx_vector(-0.75f,-0.95f),"Welcome to Vovoid VSX Ultra by jaw / cor / asterix / saidinesh5 - press F1 for help",0.04);
+    myf->print(vsx_vector(-0.60f,-0.95f),"Press F1 for help   |    Welcome to Vovoid VSXu by jaw / cor / asterix / saidinesh5",0.04);
     intro_timer -= dt;
   }
   
@@ -223,8 +223,8 @@ void vsx_overlay::print_help()
 #if PLATFORM == PLATFORM_WINDOWS
       myf->print(vsx_vector(-0.8,0.4f),"\
 Doesn't VSX react to sound? If sound isn't set up properly in Windows\n\
-some visuals might be totally black! Please check http://doc.vsxu.com\n\
-and select \"VSXu Player\" for instructions!\n\
+some visuals might be totally black! Please check http://www.vsxu.com/documentation/faq\n\
+and select \"VSXu is not reacting to sound\" for instructions!\n\
 \n\
 In brief, what you need to do is set the recording properties of the\n\
 mixer to something like 'Stereo Mix' or similar. Some soundcards only allow\n\
@@ -243,8 +243,8 @@ Keyboard shortcuts:\n\
 #if PLATFORM == PLATFORM_LINUX
       myf->print(vsx_vector(-0.8,0.4f),"\
 Doesn't VSX react to sound? If sound isn't set up properly\n\
-some visuals might be totally black! Please check http://doc.vsxu.com\n\
-and select \"VSXu Player\" for instructions!\n\
+some visuals might be totally black! Please check http://www.vsxu.com/documentation/faq\n\
+and select \"VSXu is not reacting to sound\" for instructions!\n\
 \n\
 In GNU/Linux (Ubuntu) pulseaudio is normally used, you have to set the rec/routing\n\
 properly using the helper program \"pavucontrol\" (you might need to\n\

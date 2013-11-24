@@ -4,7 +4,8 @@
 #include "gravity_lines.h"
 
 
-class gravity_strip : public gravity_lines {
+class gravity_strip : public gravity_lines
+{
 public:
   float length;
   bool thin_edges;

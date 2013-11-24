@@ -31,12 +31,10 @@
 #include "vsx_command.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
-#include "vsx_math_3d.h"
 #include "vsx_font.h"
 #include "vsx_command.h"
 #include "vsx_widget_base.h"
 #include "window/vsx_widget_window.h"
-#include "lib/vsx_widget_lib.h"
 #include "lib/vsx_widget_panel.h"
 #include "lib/vsx_widget_base_edit.h"
 #include <vsx_command_client_server.h>
@@ -44,8 +42,9 @@
 #include "server/vsx_widget_comp.h"
 #include "dialogs/vsx_widget_window_statics.h"
 #include "vsx_widget_module_chooser_list.h"
+#include <gl_helper.h>
 //
-class vsx_widget_chooser_editor : public vsx_widget_base_editor {
+class vsx_widget_chooser_editor : public vsx_widget_editor {
   vsx_texture mtex_blob;
   vsx_widget* name_dialog;
   bool dragging;
@@ -139,7 +138,7 @@ public:
 
   virtual void i_draw()
   {
-    vsx_widget_base_editor::i_draw();
+    vsx_widget_editor::i_draw();
 
   }
 
@@ -162,18 +161,18 @@ public:
     }
 
     if (draw_tooltip && m_o_focus == editor && !dragging) {
-      myf.color.a = 0.0f;
-      myf.mode_2d = true;
-      vsx_vector sz = myf.get_size(tooltip_text, 0.025f);
+      font.color.a = 0.0f;
+      font.mode_2d = true;
+      vsx_vector sz = font.get_size(tooltip_text, 0.025f);
       //sz = sz-tooltip_pos;
       glColor4f(0.0f,0.0f,0.0f,0.6f);
       draw_box(vsx_vector(tooltip_pos.x,tooltip_pos.y+0.025*1.05), sz.x, -sz.y);
       glColor4f(1.0f,1.0f,1.0f,0.6f);
-      myf.color.r = 1.0f;
-      myf.color.a = 1.0f;
+      font.color.r = 1.0f;
+      font.color.a = 1.0f;
       tooltip_pos.z = 0;
       //printf("z: %f ",tooltip_pos.z);
-      myf.print(tooltip_pos, tooltip_text, 0.022f);
+      font.print(tooltip_pos, tooltip_text, 0.022f);
 
     }
   }
@@ -210,7 +209,7 @@ public:
     }
   }
 
-void vsx_command_process_b(vsx_command_s *t) {
+void command_process_back_queue(vsx_command_s *t) {
   if (t->cmd == "cancel" || t->cmd == "component_create_name_cancel") {
     visible = 1;
     m_focus = this;
@@ -369,7 +368,7 @@ bool vsx_module_chooser_list::event_key_down(signed long key, bool alt, bool ctr
   VSX_UNUSED(ctrl);
   VSX_UNUSED(shift);
   vsx_string filter = ((vsx_widget_base_edit*)search)->get_string();
-  ((vsx_widget_base_editor*)edit)->editor->set_filter_string( filter );
+  ((vsx_widget_editor*)edit)->editor->set_filter_string( filter );
   return true;
 }
 
@@ -380,8 +379,8 @@ void vsx_module_chooser_list::show() {
 }
 
 void vsx_module_chooser_list::show(vsx_string value) {
-  ((vsx_widget_base_editor*)edit)->set_string(value);
-  ((vsx_widget_base_editor*)edit)->editor->caret_goto_end();
+  ((vsx_widget_editor*)edit)->set_string(value);
+  ((vsx_widget_editor*)edit)->editor->caret_goto_end();
   show();
 }
 
@@ -394,7 +393,7 @@ void vsx_module_chooser_list::i_draw()
   search->set_pos(vsx_vector(size.x/2,size.y-0.04f));
 }
 
-void vsx_module_chooser_list::vsx_command_process_b(vsx_command_s *t) {
+void vsx_module_chooser_list::command_process_back_queue(vsx_command_s *t) {
   if (t->cmd == "cancel") {
     command_q_b.add(name+"_cancel","cancel");
     parent->vsx_command_queue_b(this);

@@ -1641,7 +1641,7 @@ public:
   double smx, smy; // coordinate where mouse has been clicked
   double mdx, mdy; // delta mouse move
   int inside_xy_l(vsx_vector &test, vsx_vector &global);
-  void vsx_command_process_b(vsx_command_s *t);
+  void command_process_back_queue(vsx_command_s *t);
   
   void show();
   void hide();

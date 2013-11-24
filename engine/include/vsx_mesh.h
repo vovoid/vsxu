@@ -25,8 +25,10 @@
 #ifndef VSX_API_MESH_H
 #define VSX_API_MESH_H
 
-#include "vsx_array.h"
-#include "vsx_quaternion.h"
+#include <vsx_array.h>
+#include <vsx_quaternion.h>
+#include <vsx_vector.h>
+#include <vsx_color.h>
 
 #ifndef __gl_h_
 typedef unsigned int GLuint;
@@ -36,16 +38,17 @@ typedef struct {
   GLuint a,b,c;
 } vsx_face;
 
-typedef struct {
+class vsx_tex_coord
+{
+public:
   GLfloat s,t;
-} vsx_tex_coord;
-
-inline vsx_tex_coord vsx_tex_coord__(float x, float y) {
-  vsx_tex_coord a;
-  a.s = x;
-  a.t = y;
-  return a;
-}
+  vsx_tex_coord(float ss = 0.0f, float tt = 0.0f)
+    :
+      s(ss),
+      t(tt)
+  {
+  }
+};
 
 // the mesh contains vertices stored in a local coordinate system.
 #ifndef VSX_NO_MESH

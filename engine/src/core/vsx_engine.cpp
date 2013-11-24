@@ -41,6 +41,7 @@
 
 #include "vsx_module_list_factory.h"
 #include "vsx_note.h"
+#include <vsx_string_aux.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include <stdio.h>
@@ -69,6 +70,7 @@
 #include <vector>
 
 
+
 #ifdef VSXU_ENGINE_INFO_STATIC
 vsx_module_engine_info vsx_engine::engine_info;
 #endif
@@ -76,18 +78,14 @@ vsx_module_engine_info vsx_engine::engine_info;
 using namespace std;
 
 
-vsx_engine::vsx_engine()
+vsx_engine::vsx_engine(vsx_module_list_abs* initial_module_list)
 {
+  module_list = initial_module_list;
+  engine_info.module_list = (void*) module_list;
   constructor_set_default_values();
   loop_point_end = -1.0f;
 }
 
-vsx_engine::vsx_engine(vsx_string path)
-{
-  constructor_set_default_values();
-  loop_point_end = -1.0f;
-  log_dir = path;
-}
 
 vsx_engine::~vsx_engine()
 {
@@ -168,6 +166,15 @@ vsx_module_engine_info* vsx_engine::get_engine_info()
   return &engine_info;
 }
 
+bool vsx_engine::get_render_hint_post_render_reset_component_status()
+{
+  return render_hint_post_render_reset_component_status;
+}
+
+void vsx_engine::set_render_hint_post_render_reset_component_status( bool new_value )
+{
+  render_hint_post_render_reset_component_status = new_value;
+}
 
 bool vsx_engine::get_render_hint_module_output_only()
 {
@@ -247,6 +254,16 @@ vsx_comp* vsx_engine::get_by_id(unsigned long id)
 }
 
 
+vsx_module* vsx_engine::get_module_by_name(vsx_string module_name)
+{
+  if (forge_map.find(module_name) != forge_map.end())
+  {
+    return forge_map[module_name]->module;
+  }
+  return 0x0;
+}
+
+
 void vsx_engine::input_event(vsx_engine_input_event &new_input_event)
 {
   if (!valid) return;
@@ -272,7 +289,7 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string)
 
   LOG("load_state 2")
   vsx_command_list load1;
-  load1.filesystem = &filesystem;
+  load1.set_filesystem(&filesystem);
   vsx_string i_filename = filename;
   LOG("load_state 3")
 
@@ -337,10 +354,14 @@ void vsx_engine::set_amp(float amp)
 bool vsx_engine::start()
 {
   // a few assertions
-  if (0x0 == module_list) return false;
+  if (0x0 == module_list)
+  {
+    vsx_printf("vsx_engine::start() error: not starting; module_list is 0x0h\n");
+    return false;
+  }
 
-  if (!stopped) return false;
-  if (stopped) stopped = false;
+  if (!disabled) return false;
+  if (disabled) disabled = false;
   if (first_start)
   {
     valid = true;
@@ -379,12 +400,12 @@ bool vsx_engine::stop()
 {
   if (!valid) return false;
   #ifndef VSX_DEMO_MINI
-    if (!stopped)
+    if (!disabled)
     {
       for (unsigned long i = 0; i < forge.size(); ++i) {
         forge[i]->stop();
       }
-      stopped = true;
+      disabled = true;
       return true;
     }
     return false;
@@ -425,10 +446,9 @@ bool vsx_engine::render()
 {
   if (!valid) return false;
 
+  #if VSXU_TM
   ((vsx_tm*)tm)->e("engine::render");
-
-  // reset dtime
-  engine_info.dtime = 0;
+  #endif
 
   // check for time control requests from the modules
   if
@@ -469,7 +489,7 @@ bool vsx_engine::render()
     }
   }
 
-  if (!stopped)
+  if (!disabled)
   {
     frame_timer.start();
 
@@ -596,10 +616,19 @@ bool vsx_engine::render()
     }
     
     // post-rendering reset frame status of the components
+    if (render_hint_post_render_reset_component_status)
+    {
+      for(std::vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it)
+      {
+        (*it)->reset_has_run_status();
+      }
+    }
+
     for(std::vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it)
     {
       (*it)->reset_frame_status();
     }
+
 
     // when we're loading, we need to reset every component
     if (current_state == VSX_ENGINE_LOADING)
@@ -635,14 +664,23 @@ bool vsx_engine::render()
     //printf("MODULES LEFT TO LOAD: %d\n",i);
     last_frame_time = (float)frame_timer.dtime();
 
+    if (current_state == VSX_ENGINE_STOPPED)
+    {
+      engine_info.dtime = 0.0f;
+    }
+
     // reset input events counter
     reset_input_events();
+    #if VSXU_TM
     ((vsx_tm*)tm)->l();
+    #endif
     return true;
   }
   // reset input events counter
   reset_input_events();
+  #if VSXU_TM
   ((vsx_tm*)tm)->l();
+  #endif
   return false;
 }
 
@@ -772,11 +810,6 @@ void vsx_engine::set_tm(void *nt)
 {
   tm = nt;
   engine_info.tm = nt;
-}
-
-void vsx_engine::set_gl_state(vsx_gl_state* gl_state)
-{
-  engine_info.gl_state = gl_state;
 }
 
 

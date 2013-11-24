@@ -78,35 +78,38 @@ public:
   {
     texture = texture_in->get_addr();
 
-    if (!texture) return;
+    if (!texture)
+      return;
 
     (*texture)->bind();
-    GLint components;
-    glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_COMPONENTS,&components);
-    GLint pack;
-    glGetIntegerv(GL_PACK_ALIGNMENT,&pack);
-    if (pack == 4)
-    {
-      GLint width;
-      GLint height;
-      glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_WIDTH,&width);
-      glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_HEIGHT,&height);
-      if (bitm.size_x != (unsigned int)width || bitm.size_y != (unsigned int)height) {
+      GLint components;
+      glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_COMPONENTS,&components);
+      GLint pack;
+      glGetIntegerv(GL_PACK_ALIGNMENT,&pack);
+      if (pack == 4)
+      {
+        GLint width;
+        GLint height;
+        glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_WIDTH,&width);
+        glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_HEIGHT,&height);
+        if (bitm.size_x != (unsigned int)width || bitm.size_y != (unsigned int)height)
+        {
 
-        if (bitm.data) delete[] (vsx_bitmap_32bt*)bitm.data;
-        bitm.data = new vsx_bitmap_32bt[width*height];
-        bitm.size_x = width;
-        bitm.size_y = height;
+          if (bitm.data)
+            delete[] (vsx_bitmap_32bt*)bitm.data;
+          bitm.data = new vsx_bitmap_32bt[width*height];
+          bitm.size_x = width;
+          bitm.size_y = height;
+        }
+        glGetTexImage(GL_TEXTURE_2D,
+                   0,
+                   GL_RGBA,
+                   GL_UNSIGNED_BYTE,
+                   bitm.data);
+        bitm.valid = true;
+        ++bitm.timestamp;
+        result1->set_p(bitm);
       }
-      glGetTexImage(GL_TEXTURE_2D,
-                 0,
-                 GL_RGBA,
-                 GL_UNSIGNED_BYTE,
-                 bitm.data);
-      bitm.valid = true;
-      ++bitm.timestamp;
-      result1->set_p(bitm);
-    }
     (*texture)->_bind();
   }
 

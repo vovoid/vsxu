@@ -62,7 +62,7 @@ if(AUDIO_LIBRARIES)
   include (../cmake_globals.txt)
   include_directories ( lib/
                         fftreal/ )
-  set(SOURCES main.cpp
+  set(SOURCES main_sound.rtaudio.cpp
               fftreal/fftreal.cpp
               lib/RtAudio/RtAudio.cpp
               lib/RtMidi/RtMidi.cpp

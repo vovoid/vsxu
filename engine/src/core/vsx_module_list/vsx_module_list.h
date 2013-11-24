@@ -33,14 +33,14 @@ class vsx_module_list : public vsx_module_list_abs
 {
 private:
   std::vector< vsx_dynamic_object_handle > plugin_handles;
-  vsx_argvector arguments;
 public:
-  void init(vsx_string args = "", bool print_help = false);
+  void init();
   void destroy();
   std::vector< vsx_module_info* >* get_module_list( bool include_hidden = false);
   vsx_module* load_module_by_name(vsx_string name);
   void unload_module( vsx_module* module_pointer );
   bool find( const vsx_string &module_name_to_look_for);
+  void print_help();
 };
 
 #endif

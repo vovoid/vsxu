@@ -38,9 +38,11 @@ class module_mesh_abstract_hand : public vsx_module
   vsx_module_param_float* z_shape_multiplier;
   vsx_module_param_float* size_shape_x_multiplier;
   vsx_module_param_float* size_shape_y_multiplier;
+
   // out
   vsx_module_param_mesh* result;
   vsx_module_param_float* last_vertex_index;
+
   // internal
   vsx_mesh* mesh;
   int l_param_updates;
@@ -64,7 +66,8 @@ class module_mesh_abstract_hand : public vsx_module
   float size_shape_y[8192];
 
 
-  void calc_shapes() {
+  void calc_shapes()
+  {
     #define CALCS(var_name) \
     if (param_##var_name->updates)\
     {\
@@ -91,26 +94,34 @@ public:
   void module_info(vsx_module_info* info)
   {
     info->identifier = "mesh;solid;mesh_super_banana";
+
     info->description = "";
-    info->in_param_spec = "num_sectors:float?min=2,"
-                          "num_stacks:float?min=2,"
-                          "shape:complex{"
-                            "x_shape:sequence,"
-                            "x_shape_multiplier:float,"
-                            "y_shape:sequence,"
-                            "y_shape_multiplier:float,"
-                            "z_shape:sequence,"
-                            "z_shape_multiplier:float"
-                          "},"
-                          "size:complex{"
-                            "size_shape_x:sequence,"
-                            "size_shape_x_multiplier:float,"
-                            "size_shape_y:sequence,"
-                            "size_shape_y_multiplier:float"
-                          "}"
-        ;
-    info->out_param_spec = "mesh:mesh,"
-                           "last_vertex_index:float";
+
+    info->in_param_spec =
+      "num_sectors:float?min=2,"
+      "num_stacks:float?min=2,"
+      "shape:complex"
+      "{"
+        "x_shape:sequence,"
+        "x_shape_multiplier:float,"
+        "y_shape:sequence,"
+        "y_shape_multiplier:float,"
+        "z_shape:sequence,"
+        "z_shape_multiplier:float"
+      "},"
+      "size:complex"
+      "{"
+        "size_shape_x:sequence,"
+        "size_shape_x_multiplier:float,"
+        "size_shape_y:sequence,"
+        "size_shape_y_multiplier:float"
+      "}"
+    ;
+
+    info->out_param_spec =
+      "mesh:mesh,"
+      "last_vertex_index:float"
+    ;
     info->component_class = "mesh";
   }
 
@@ -120,15 +131,19 @@ public:
     loading_done = true;
 
     param_x_shape = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "x_shape");
-    param_y_shape = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "y_shape");
-    param_z_shape = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "z_shape");
     param_x_shape->set(seq_x_shape);
+
+    param_y_shape = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "y_shape");
     param_y_shape->set(seq_y_shape);
+
+    param_z_shape = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "z_shape");
     param_z_shape->set(seq_z_shape);
+
 
     x_shape_multiplier = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "x_shape_multiplier"); x_shape_multiplier->set(1.0f);
     y_shape_multiplier = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "y_shape_multiplier"); y_shape_multiplier->set(1.0f);
     z_shape_multiplier = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "z_shape_multiplier"); z_shape_multiplier->set(1.0f);
+
     size_shape_x_multiplier = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "size_shape_x_multiplier"); size_shape_x_multiplier->set(1.0f);
     size_shape_y_multiplier = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "size_shape_y_multiplier"); size_shape_y_multiplier->set(1.0f);
 
@@ -145,7 +160,6 @@ public:
     num_stacks->set(4.0f);
 
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-
 
     last_vertex_index = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "last_vertex_index");
 
@@ -168,11 +182,14 @@ public:
   {
     int new_num_stacks = (int)num_stacks->get();
     int new_num_sectors = (int)num_sectors->get();
-    if (param_updates == 0) return;
+
+    if (param_updates == 0)
+      return;
 
     param_updates = 0;
 
     mesh->data->reset();
+
     calc_shapes();
 
     current_num_sectors = new_num_sectors;
@@ -181,6 +198,7 @@ public:
     float x_shape_multiplier_f = x_shape_multiplier->get();
     float y_shape_multiplier_f = y_shape_multiplier->get();
     float z_shape_multiplier_f = z_shape_multiplier->get();
+
     float size_shape_x_multiplier_f = size_shape_x_multiplier->get();
     float size_shape_y_multiplier_f = size_shape_y_multiplier->get();
 
@@ -190,6 +208,7 @@ public:
     mesh->data->faces.reset_used();
 
     float one_div_num_stacks = 1.0f / (float)current_num_stacks;
+
     float one_div_num_sectors_minus_one = 1.0f / (float)(current_num_sectors - 1);
 
     for(int i = 0; i < current_num_stacks; i++)
@@ -199,19 +218,22 @@ public:
       float ip = (float)i * one_div_num_stacks;
       int index8192 = (int)round(8192.0f*ip);
 
-      vsx_vector circle_base_pos = vsx_vector(
-                                                x_shape[index8192] * x_shape_multiplier_f,
-                                                y_shape[index8192] * y_shape_multiplier_f,
-                                                z_shape[index8192] * z_shape_multiplier_f
-                                                );
+      vsx_vector circle_base_pos = vsx_vector
+      (
+        x_shape[index8192] * x_shape_multiplier_f,
+        y_shape[index8192] * y_shape_multiplier_f,
+        z_shape[index8192] * z_shape_multiplier_f
+      );
+
       int j;
       for(j = 0; j < current_num_sectors; j++)
       {
         double j1 = (float)j * one_div_num_sectors_minus_one;
-        vsx_vector tmp_vec(
-            circle_base_pos.x + cos(j1 * TWO_PI) * size_shape_x[index8192] * size_shape_x_multiplier_f,
-            circle_base_pos.y + sin(j1 * TWO_PI) * size_shape_y[index8192] * size_shape_y_multiplier_f,
-            circle_base_pos.z
+        vsx_vector tmp_vec
+        (
+          circle_base_pos.x + cos(j1 * TWO_PI) * size_shape_x[index8192] * size_shape_x_multiplier_f,
+          circle_base_pos.y + sin(j1 * TWO_PI) * size_shape_y[index8192] * size_shape_y_multiplier_f,
+          circle_base_pos.z
         );
         mesh->data->vertices[vi] = tmp_vec;
         mesh->data->vertex_normals[vi] = tmp_vec - circle_base_pos;
@@ -227,6 +249,7 @@ public:
           a.b = vi-1;
           a.c = vi - current_num_sectors-1;
           mesh->data->faces.push_back(a);
+
           a.a = vi - current_num_sectors;
           a.b = vi;
           a.c = vi-1;

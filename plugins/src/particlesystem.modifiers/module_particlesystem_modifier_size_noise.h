@@ -1,3 +1,5 @@
+#include <vsx_rand.h>
+
 class module_particlesystem_modifier_size_noise : public vsx_module
 {
   int i;

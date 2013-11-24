@@ -25,25 +25,13 @@
 #ifndef VSX_FONT_H
 #define VSX_FONT_H
 
-//#include "ftgl/FTGLExtrdFont.h"
+#include <vsx_platform.h>
+#include <_engine_graphics_dllimport.h>
 
-//#include "ftgl/FTGLOutlineFont.h"
-//#include "ftgl/FTGLPolygonFont.h"
-#include "vsx_gl_global.h"
-#include "vsx_math_3d.h"
-#include "vsx_texture.h"
+#include <vsx_texture.h>
+#include <vsx_color.h>
 
 #include <vsx_platform.h>
-
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-#define VSX_FONT_DLLIMPORT
-#else
-  #if defined(VSX_ENG_DLL)
-    #define VSX_FONT_DLLIMPORT __declspec (dllexport)
-  #else 
-    #define VSX_FONT_DLLIMPORT __declspec (dllimport)
-  #endif
-#endif
 
 struct vsx_font_info {
   int type; // 0 = texture (old) 1 = new (FtGL)
@@ -71,7 +59,8 @@ class vsx_font {
   char* colc;
   float sx,sy,ex,ey;
 
-  void init_vars() {
+  void init_vars()
+  {
     mode_2d = false;
     list_built = false;
     my_font_info = 0;
@@ -82,7 +71,7 @@ class vsx_font {
     align = 1.0f;
   }
 public:
-  VSX_FONT_DLLIMPORT vsx_font_info* init(vsx_string font, vsxf* filesystem = 0x0);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_font_info* init(vsx_string font, vsxf* filesystem = 0x0);
 
   vsx_avector<vsx_color> syntax_colors;
   // is in 2d mode?
@@ -96,15 +85,12 @@ public:
   float align;
   
   
-  VSX_FONT_DLLIMPORT vsx_vector print(vsx_vector p, const vsx_string& str, const float size, const vsx_string colors = "");  
-  VSX_FONT_DLLIMPORT vsx_vector print(vsx_vector p, const vsx_string& str, const vsx_string& font, float size, const vsx_string colors = "");  
-  VSX_FONT_DLLIMPORT vsx_vector print_center(vsx_vector p, const vsx_string& str, float size);
-  //vsx_vector print_center(vsx_vector p, const vsx_string& str, const vsx_string& font, float size);
-  VSX_FONT_DLLIMPORT vsx_vector print_right(vsx_vector p, const vsx_string& str, float size);
-  //vsx_vector print_right(vsx_vector p, const vsx_string& str, const vsx_string& font, float size);
-  //vsx_vector get_size(vsx_vector p, const vsx_string& str, const vsx_string& font, float size);
-  VSX_FONT_DLLIMPORT vsx_vector get_size(const vsx_string& str, float size);
-  VSX_FONT_DLLIMPORT void reinit_all_active();
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector print(vsx_vector p, const vsx_string& str, const float size, const vsx_string colors = "");
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector print(vsx_vector p, const vsx_string& str, const vsx_string& font, float size, const vsx_string colors = "");
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector print_center(vsx_vector p, const vsx_string& str, float size);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector print_right(vsx_vector p, const vsx_string& str, float size);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector get_size(const vsx_string& str, float size);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void reinit_all_active();
   
   vsx_font(vsx_string path) {
     base_path = path;

@@ -24,7 +24,6 @@
 
 #include "_configuration.h"
 #include "vsx_gl_global.h"
-#include "vsx_math_3d.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
 #ifdef VSXU_TM

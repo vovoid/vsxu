@@ -25,24 +25,13 @@
 #ifndef VSX_TEXTURE_LIB_H
 #define VSX_TEXTURE_LIB_H
 #include <vsx_platform.h>
+#include <_engine_graphics_dllimport.h>
 #include <map>
 #include <vsx_texture_info.h>
 #include <vsx_string.h>
 #include <vsx_bitmap.h>
-#include "vsx_math_3d.h"
+#include <vsx_matrix.h>
 #include <vsxfst.h>
-
-
-
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-  #define VSX_ENGINE_GRAPHICS_DLLIMPORT
-#else
-  #if defined(VSX_ENG_DLL)
-    #define VSX_ENGINE_GRAPHICS_DLLIMPORT __declspec (dllexport)
-  #else
-    #define VSX_ENGINE_GRAPHICS_DLLIMPORT __declspec (dllimport)
-  #endif
-#endif
 
 // Frame Buffer Types (see frame_buffer_type)
 #define VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER 1

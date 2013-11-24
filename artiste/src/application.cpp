@@ -33,7 +33,6 @@
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_timer.h"
-#include "vsx_math_3d.h"
 #include "vsxfst.h"
 #include "vsx_font.h"
 #include <vsx_version.h>
@@ -45,7 +44,6 @@
 #ifndef VSX_NO_CLIENT
 #include "vsx_widget/vsx_widget_base.h"
 #include "vsx_widget/window/vsx_widget_window.h"
-#include "vsx_widget/lib/vsx_widget_lib.h"
 #include "vsx_widget/vsx_widget_desktop.h"
 #include <vsx_command_client_server.h>
 #include "vsx_widget/server/vsx_widget_server.h"
@@ -69,7 +67,6 @@
 
 // global vars
 vsx_string fpsstring = "VSX Ultra "+vsx_string(vsxu_version)+" - 2012 Vovoid";
-vsx_module_list_abs* vxe_module_list;
 vsx_engine* vxe = 0x0;
 
 // from the perspective (both for gui/server) from here towards the tcp thread
@@ -398,20 +395,20 @@ void load_desktop_a(vsx_string state_name)
   internal_cmd_in.clear();
   internal_cmd_out.clear();
   // connect server widget to command lists
-  ((vsx_widget_server*)desktop->f("desktop_local"))->cmd_in = &internal_cmd_out;
-  ((vsx_widget_server*)desktop->f("desktop_local"))->cmd_out = &internal_cmd_in;
-  if (state_name != "") ((vsx_widget_server*)desktop->f("desktop_local"))->state_name = str_replace("/",";",str_replace("//",";",str_replace("_states/","",state_name)));
+  ((vsx_widget_server*)desktop->find("desktop_local"))->cmd_in = &internal_cmd_out;
+  ((vsx_widget_server*)desktop->find("desktop_local"))->cmd_out = &internal_cmd_in;
+  if (state_name != "") ((vsx_widget_server*)desktop->find("desktop_local"))->state_name = str_replace("/",";",str_replace("//",";",str_replace("_states/","",state_name)));
   internal_cmd_out.add_raw(vsx_string("vsxu_welcome ")+vsx_string(vsxu_ver)+" 0");
   desktop->system_command_queue = &system_command_queue;
-  vsx_widget* t_viewer = desktop->f("vsxu_preview");
+  vsx_widget* t_viewer = desktop->find("vsxu_preview");
   if (t_viewer)
   {
-    gui_prod_fullwindow = &((vsx_window_texture_viewer*)desktop->f("vsxu_preview"))->fullwindow;
+    gui_prod_fullwindow = &((vsx_window_texture_viewer*)desktop->find("vsxu_preview"))->fullwindow;
     LOG_A("found vsxu_preview widget")
   }
   if (!dual_monitor)
-  ((vsx_widget_server*)desktop->f("desktop_local"))->engine = (void*)vxe;
-  desktop->front(desktop->f("vsxu_preview"));
+  ((vsx_widget_server*)desktop->find("desktop_local"))->engine = (void*)vxe;
+  desktop->front(desktop->find("vsxu_preview"));
 
   //printf("{CLIENT} starting desktop:");
   desktop->init();
@@ -421,41 +418,12 @@ void load_desktop_a(vsx_string state_name)
 
 void app_init(int id)
 {
+  if (dual_monitor && id == 0)
+    return;
 
-  if (dual_monitor && id == 0) return;
-  //if (!dual_monitor && id == 0) return;
+  vxe = new vsx_engine();
 
-  vsx_string own_path;
-  vsx_avector<vsx_string> parts;
-  vsx_avector<vsx_string> parts2;
-
-  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-    vsx_string deli = "/";
-  #else
-    vsx_string deli = "\\";
-  #endif
-  own_path = app_argv[0];
-  //printf("own_path: %s\n", own_path.c_str() );
-  explode(own_path, deli, parts);
-  for (unsigned long i = 0; i < parts.size()-1; ++i) {
-    parts2.push_back(parts[i]);
-  }
-  own_path = implode(parts2,deli);
-  if (own_path.size()) own_path.push_back(deli[0]);
-
-  #ifdef VSXU_DEBUG
-  printf("own path: %s   \n", own_path.c_str() );
-  #endif
-  //printf("argc: %d %s\n",app_argc,own_path.c_str());
-  //---------------------------------------------------------------------------
-  vxe = new vsx_engine(own_path);
-
-  vxe_module_list = vsx_module_list_factory_create(app_argv.serialize(),false);
-  vxe->set_module_list(vxe_module_list);
-
-  vxe->set_gl_state( &gl_state );
   vxe->set_tm(tm);
-
 
   gui_prod_fullwindow = &prod_fullwindow;
   //---------------------------------------------------------------------------
@@ -477,12 +445,8 @@ void app_print_cli_help()
          "  -p 100,100     window posision\n"
          "\n"
         );
-  vsx_module_list_abs* module_list = vsx_module_list_factory_create
-  (
-    app_argv.serialize(),
-        true
-  );
-  VSX_UNUSED(module_list);
+
+  vsx_module_list_factory_create()->print_help();
 }
 
 

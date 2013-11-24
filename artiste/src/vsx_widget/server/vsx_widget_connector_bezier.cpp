@@ -27,25 +27,25 @@
 #include <list>
 #include <vector>
 #include <math.h>
-#include "vsx_math_3d.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_command.h"
+#include "vsx_command_list.h"
 #include "vsx_font.h"
 #include "vsxfst.h"
-// local includes
-#include "lib/vsx_widget_lib.h"
 #include "vsx_widget_anchor.h"
 #include "vsx_widget_desktop.h"
 #include "vsx_widget_comp.h"
 #include <vsx_bezier_calc.h>
 
+#include "lib/vsx_widget_popup_menu.h"
 #include "vsx_widget_connector_bezier.h"
+#include <gl_helper.h>
 
 bool vsx_widget_connector_bezier::receiving_focus;
 float vsx_widget_connector_bezier::dim_alpha = 1.0f;
 
-void vsx_widget_connector_bezier::vsx_command_process_b(vsx_command_s *t) {
+void vsx_widget_connector_bezier::command_process_back_queue(vsx_command_s *t) {
   if (t->cmd == "disconnect") {
     // syntax:
     //   param_unalias [-1/1] [component] [param_name]
@@ -281,44 +281,44 @@ void vsx_widget_connector_bezier::draw()
     vsx_string p_type = ((vsx_widget_anchor*)parent)->p_type;
     if (p_type == "complex")
     {
-      color = vsx_color__(216.0f/255.0f,76.0f/255.0f,202.0f/255.0f,1.0f);
+      color = vsx_color(216.0f/255.0f,76.0f/255.0f,202.0f/255.0f,1.0f);
     } else
     if (p_type == "float" || p_type == "float_array")
     {
-      color = vsx_color__(20.0f/255.0f,121.0f/255.0f,72.0f/255.0f,1.0f);
+      color = vsx_color(20.0f/255.0f,121.0f/255.0f,72.0f/255.0f,1.0f);
     } else
     if (p_type == "float3" || p_type == "float3_array")
     {
-      color = vsx_color__(64.0f/255.0f,190.0f/255.0f,78.0f/255.0f,0.8f);
+      color = vsx_color(64.0f/255.0f,190.0f/255.0f,78.0f/255.0f,0.8f);
     } else
     if (p_type == "float4")
     {
-      color = vsx_color__(142.0f/255.0f,49.0f/255.0f,168.0f/255.0f,1.0f);
+      color = vsx_color(142.0f/255.0f,49.0f/255.0f,168.0f/255.0f,1.0f);
     } else
     if (p_type == "texture")
     {
-      color = vsx_color__(15.0f/255.0f,99.0f/255.0f,206.0f/255.0f,1.0f);
+      color = vsx_color(15.0f/255.0f,99.0f/255.0f,206.0f/255.0f,1.0f);
     } else
     if (p_type == "render")
     {
-      color = vsx_color__(236.0f/255.0f,70.0f/255.0f,70.0f/255.0f,1.0f);
+      color = vsx_color(236.0f/255.0f,70.0f/255.0f,70.0f/255.0f,1.0f);
     } else
     if (p_type == "mesh")
     {
-      color = vsx_color__(0.0f/255.0f,255.0f/255.0f,255.0f/255.0f,1.0f);
+      color = vsx_color(0.0f/255.0f,255.0f/255.0f,255.0f/255.0f,1.0f);
     }
     else
     if (p_type == "bitmap")
     {
-      color = vsx_color__(255.0f/255.0f,0.0f/255.0f,255.0f/255.0f,1.0f);
+      color = vsx_color(255.0f/255.0f,0.0f/255.0f,255.0f/255.0f,1.0f);
     } else
     if (p_type == "particlesystem")
     {
-      color = vsx_color__(160.0f/255.0f,38.0f/255.0f,190.0f/255.0f,1.0f);
+      color = vsx_color(160.0f/255.0f,38.0f/255.0f,190.0f/255.0f,1.0f);
     } else
     if (p_type == "quaternion")
     {
-      color = vsx_color__(249.0f/255.0f,167.0f/255.0f,86.0f/255.0f,1.0f);
+      color = vsx_color(249.0f/255.0f,167.0f/255.0f,86.0f/255.0f,1.0f);
     }
     color_initialized = true;
   }
@@ -410,7 +410,12 @@ void vsx_widget_connector_bezier::draw()
     }
   }
 
-  color.gl_color();
+  glColor4f(
+    color.r,
+    color.g,
+    color.b,
+    color.a
+  );
 
   glBegin(GL_LINE_STRIP);
     for (size_t i = 0; i < 21; i++)

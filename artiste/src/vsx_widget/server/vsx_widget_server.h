@@ -97,7 +97,7 @@ public:
 
   // command processor
   void vsx_command_process_f();
-  void vsx_command_process_b(vsx_command_s *t);
+  void command_process_back_queue(vsx_command_s *t);
 
 
   // component selection

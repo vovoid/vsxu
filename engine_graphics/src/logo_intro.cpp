@@ -28,7 +28,6 @@
 #include "vsx_gl_global.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
-#include "vsx_math_3d.h"
 #include "vsx_timer.h"
 #include "logo_intro.h"
 

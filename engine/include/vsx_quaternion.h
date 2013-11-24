@@ -25,15 +25,16 @@
 #ifndef VSX_QUATERNION_H
 #define VSX_QUATERNION_H
 
-#include "vsx_math_3d.h"
-
+#include <vsx_vector.h>
+#include <vsx_matrix.h>
 
 inline float vsx_math_3d_max(const float& x, const float& y)
 {
   return ( x > y ) ? x : y;
 }
 
-class vsx_quaternion {
+class vsx_quaternion
+{
 public:
   float x;
   float y;
@@ -48,13 +49,15 @@ public:
     w = 1.0f;
   }
 
-  vsx_quaternion(float xx, float yy, float zz) {
+  vsx_quaternion(float xx, float yy, float zz)
+  {
     x = xx;
     y = yy;
     z = zz;
   }
 
-  vsx_quaternion(float xx, float yy, float zz, float ww) {
+  vsx_quaternion(float xx, float yy, float zz, float ww)
+  {
     x = xx;
     y = yy;
     z = zz;
@@ -86,13 +89,16 @@ public:
   		to1[3] = to.w;
     }
     // calculate coefficients
-    if ( (1.0 - cosom) > 0.00001f ) {
+    if ( (1.0 - cosom) > 0.00001f )
+    {
       // standard case (slerp)
       omega = acos(cosom);
       sinom = sin(omega);
       scale0 = sin((1.0 - t) * omega) / sinom;
       scale1 = sin(t * omega) / sinom;
-    } else {        
+    }
+    else
+    {
       // "from" and "to" quaternions are very close 
       //  ... so we can do a linear interpolation
       scale0 = 1.0 - t;
@@ -105,7 +111,8 @@ public:
   	w = (float)(scale0 * from.w + scale1 * to1[3]);
   }
   
-  vsx_quaternion operator +=(const vsx_quaternion &t) {
+  vsx_quaternion operator +=(const vsx_quaternion &t)
+  {
     x+=t.x;
     y+=t.y;
     z+=t.z;
@@ -113,7 +120,8 @@ public:
     return *this;
   }
 
-  vsx_quaternion operator -(const vsx_quaternion &t) {
+  vsx_quaternion operator -(const vsx_quaternion &t)
+  {
     vsx_quaternion temp;
     temp.x = x-t.x;
     temp.y = y-t.y;
@@ -121,7 +129,8 @@ public:
     return temp;
   }
 
-  vsx_quaternion operator -(const vsx_vector &t) {
+  vsx_quaternion operator -(const vsx_vector &t)
+  {
     vsx_quaternion temp;
     temp.x = x-t.x;
     temp.y = y-t.y;
@@ -130,7 +139,8 @@ public:
   }
 
 
-  vsx_quaternion operator *(const vsx_vector &t) {
+  vsx_quaternion operator *(const vsx_vector &t) const
+  {
     vsx_quaternion temp;
     temp.x = x*t.x;
     temp.y = y*t.y;
@@ -139,36 +149,37 @@ public:
   }
 
 
-  inline float dot_product(vsx_vector* ov) {
+  inline float dot_product(vsx_vector* ov) const
+  {
     return x * ov->x   +   y * ov->y   +   z * ov->z;
   }
 
 
   inline void from_axis_angle( vsx_vector &source_axis, float &source_angle)
   {
-    w = sin( source_angle / 2.0f );
+    w = sin( source_angle * 0.5f );
     x = source_axis.x * w;
     y = source_axis.y * w;
     z = source_axis.z * w;
-    w = cos( source_angle / 2.0f);
+    w = cos( source_angle * 0.5f );
   }
 
   inline void to_axis_angle( vsx_vector &result_axis, float &result_angle)
   {
     result_angle = 2 * acos(w);
-    result_axis.x = x / sqrt(1-w*w);
-    result_axis.y = y / sqrt(1-w*w);
-    result_axis.z = z / sqrt(1-w*w);
+    float sq = 1.0f / sqrt(1-w*w);
+    result_axis.x = x * sq;
+    result_axis.y = y * sq;
+    result_axis.z = z * sq;
   }
 
-  // OPTIMIZATION PENALTY!!!
-  // Since we want to be able to multiply with ourselves, q1 is not by reference.
-  inline void mul(vsx_quaternion q1, vsx_quaternion &q2) {
+  inline void mul(const vsx_quaternion &q1, const vsx_quaternion &q2)
+  {
     x =  q1.x * q2.w + q1.y * q2.z - q1.z * q2.y + q1.w * q2.x;
     y = -q1.x * q2.z + q1.y * q2.w + q1.z * q2.x + q1.w * q2.y;
     z =  q1.x * q2.y - q1.y * q2.x + q1.z * q2.w + q1.w * q2.z;
     w = -q1.x * q2.x - q1.y * q2.y - q1.z * q2.z + q1.w * q2.w;
-}
+  }
   
   inline vsx_matrix matrix()
   {
@@ -229,10 +240,10 @@ public:
     #define m32 mm->m[14]
     #define m33 mm->m[15]
 */
-    w = sqrt( vsx_math_3d_max( 0, 1 + m00 + m11 + m22 ) ) / 2;
-    x = sqrt( vsx_math_3d_max( 0, 1 + m00 - m11 - m22 ) ) / 2;
-    y = sqrt( vsx_math_3d_max( 0, 1 - m00 + m11 - m22 ) ) / 2;
-    z = sqrt( vsx_math_3d_max( 0, 1 - m00 - m11 + m22 ) ) / 2;
+    w = sqrt( vsx_math_3d_max( 0, 1 + m00 + m11 + m22 ) ) * 0.5;
+    x = sqrt( vsx_math_3d_max( 0, 1 + m00 - m11 - m22 ) ) * 0.5;
+    y = sqrt( vsx_math_3d_max( 0, 1 - m00 + m11 - m22 ) ) * 0.5;
+    z = sqrt( vsx_math_3d_max( 0, 1 - m00 - m11 + m22 ) ) * 0.5;
 
     x = copysign( x, m21 - m12 );
     y = copysign( y, m02 - m20 );
@@ -242,7 +253,8 @@ public:
 
   
   // normalizes the quaternion ensuring it stays a unit-quaternion
-  inline void normalize() {
+  inline void normalize()
+  {
     float len = (float)(1.0 / sqrt(
       x*x +
       y*y +
@@ -255,7 +267,7 @@ public:
     w *= len;
   }
 
-  vsx_vector transform(vsx_vector p1)
+  vsx_vector transform(const vsx_vector &p1)
   {
     vsx_vector p2;
     p2.x = w*w*p1.x + 2*y*w*p1.z - 2*z*w*p1.y + x*x*p1.x + 2*y*x*p1.y + 2*z*x*p1.z - z*z*p1.x - y*y*p1.x;
@@ -265,7 +277,6 @@ public:
   }
 
 
-//#ifdef VSX_STRING_LIB_H
 #ifdef VSXFST_H
  /*****************************************************************************/
 /** Initializes the quaternion from a vsx_string

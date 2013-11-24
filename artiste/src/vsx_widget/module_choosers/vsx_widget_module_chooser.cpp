@@ -23,11 +23,11 @@
 
 #ifndef VSX_NO_CLIENT
 #include "vsx_gl_global.h"
+#include <gl_helper.h>
 #include <map>
 #include <list>
 #include <vector>
 #include <math.h>
-#include "vsx_math_3d.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_command.h"
@@ -39,7 +39,6 @@
 #include "log/vsx_log_a.h"
 #include "vsx_widget_base.h"
 #include "window/vsx_widget_window.h"
-#include "lib/vsx_widget_lib.h"
 #include "vsx_widget_desktop.h"
 #include <vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
@@ -391,8 +390,8 @@ void vsx_widget_hyperbolic_tree::translateToOrigin(vsx_widget_hyperbolic_tree* n
             #endif
             glColor4f(0,0,0,draw_root->color.a);//box_size*children[i]->node->node->color.a);
             //myf.outline_transparency = 0.1;
-            myf.color.a = draw_root->color.a;
-            myf.print_center(vsx_vector(gg->b.x,gg->b.y-diffy),children[i]->node->node->getName(),diffy*0.8);
+            font.color.a = draw_root->color.a;
+            font.print_center(vsx_vector(gg->b.x,gg->b.y-diffy),children[i]->node->node->getName(),diffy*0.8);
 
             if (root->selected == children[i]) {
               glColor4f(1,1,1,draw_root->color.a);
@@ -599,7 +598,7 @@ bool vsx_widget_ultra_chooser::event_key_down(signed long key, bool alt, bool ct
   return true;
 }
 
-void vsx_widget_ultra_chooser::vsx_command_process_b(vsx_command_s *t) {
+void vsx_widget_ultra_chooser::command_process_back_queue(vsx_command_s *t) {
   if (t->cmd == "cancel" || t->cmd == "component_create_name_cancel") {
     visible = 1;
     m_focus = this;
@@ -947,7 +946,6 @@ void vsx_widget_ultra_chooser::draw_2d()
   // SHOW ME YOUR HIDE!
   if (show_)
   if (visible != 1) {
-    root->l_list["vsxu_preview"]->visible = 0;
     visible += dtime*6;
     if (visible > 1.0f) {
       visible = 1;
@@ -958,7 +956,6 @@ void vsx_widget_ultra_chooser::draw_2d()
   }
   if (hide_)
   if (visible != 0) {
-    root->l_list["vsxu_preview"]->visible = 1;
     visible -= dtime*6;
     if (visible < 0.0f) {
       visible = 0;
@@ -1048,28 +1045,28 @@ void vsx_widget_ultra_chooser::draw_2d()
       //myf.print_center(pos, "DIVE NOT ACTIVE: NO DATA","ascii",0.02);
     }*/
     glColor4f(1,1,1,visible);
-    myf.color.a = visible*0.3;
+    font.color.a = visible*0.3;
     if (message != "")
-    myf.print_center(a, message,0.035);
+    font.print_center(a, message,0.035);
     if (drag_dropped) {
-      myf.color.a = (sin(PI+time*13)+1)*0.4f+0.2f;
-      myf.print_center(vsx_vector(a.x,a.y+0.16), "* Dropping "+treedraw->selected->node->node->module_info->identifier+" *",0.025);
-      myf.print_center(vsx_vector(a.x,a.y+0.13), "Hold the mouse button, move/drag the module where you want to place it.",0.025);
-      myf.print_center(vsx_vector(a.x,a.y+0.1), "Then release the left mouse button to drop it.",0.025);
-      myf.print_center(vsx_vector(a.x,a.y-0.15), "Press right mouse button or ESC to cancel drop.",0.035);
+      font.color.a = (sin(PI+time*13)+1)*0.4f+0.2f;
+      font.print_center(vsx_vector(a.x,a.y+0.16), "* Dropping "+treedraw->selected->node->node->module_info->identifier+" *",0.025);
+      font.print_center(vsx_vector(a.x,a.y+0.13), "Hold the mouse button, move/drag the module where you want to place it.",0.025);
+      font.print_center(vsx_vector(a.x,a.y+0.1), "Then release the left mouse button to drop it.",0.025);
+      font.print_center(vsx_vector(a.x,a.y-0.15), "Press right mouse button or ESC to cancel drop.",0.035);
 
 
 
 //\n\n
     }
     if (draw_tooltip) {
-      myf.color.a = 0.0f;
-      vsx_vector sz = myf.get_size(tooltip_text, 0.025);
+      font.color.a = 0.0f;
+      vsx_vector sz = font.get_size(tooltip_text, 0.025);
       //sz = sz-tooltip_pos;
       glColor4f(0.0f,0.0f,0.0f,0.6f*visible);
       draw_box(vsx_vector(tooltip_pos.x,tooltip_pos.y+0.025*1.05), sz.x, -sz.y);
-      myf.color.a = 1.0f*visible;
-      myf.print(tooltip_pos, tooltip_text,0.022);
+      font.color.a = 1.0f*visible;
+      font.print(tooltip_pos, tooltip_text,0.022);
     }
   }
   draw_children_2d();
@@ -1077,7 +1074,7 @@ void vsx_widget_ultra_chooser::draw_2d()
 
 void vsx_widget_ultra_chooser::show() {
   if (!object_inspector) {
-    object_inspector = f("object_inspector");
+    object_inspector = find("object_inspector");
   }
   a_focus = this;
   k_focus = this;
@@ -1115,7 +1112,7 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
   size.y = 1.0f;
   visible = 0;
   topmost = true;
-  myf.mode_2d = true;
+  font.mode_2d = true;
   name_dialog = add(new dialog_query_string("name of component","Choose a unique name for your component"),"component_create_name");
   init_children();
   set_render_type(VSX_WIDGET_RENDER_2D);

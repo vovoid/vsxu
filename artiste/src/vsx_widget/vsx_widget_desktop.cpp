@@ -27,7 +27,6 @@
 #include <vector>
 #include <math.h>
 #include "vsx_gl_global.h"
-#include "vsx_math_3d.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_command.h"
@@ -49,12 +48,9 @@
 #include "helpers/vsx_widget_preview.h"
 #include "helpers/vsx_widget_assistant.h"
 #include "helpers/vsx_widget_console.h"
-#include "lib/vsx_widget_lib.h"
-//#include "vsx_widget_comp.h"
 #include "server/vsx_widget_anchor.h"
 #include <vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
-//#include "vsx_widget_module_chooser.h"
 #include "dialogs/vsx_widget_window_statics.h"
 #include "lib/vsx_widget_panel.h"
 #include "lib/vsx_widget_base_edit.h"
@@ -146,7 +142,7 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
           // close all open anchors
           case -'D':
           case -'d':
-            for (std::map<int, vsx_widget*>::iterator it = ilist.begin();  it != ilist.end(); ++it) {
+            for (std::map<int, vsx_widget*>::iterator it = global_index_list.begin();  it != global_index_list.end(); ++it) {
               if ((*it).second->widget_type == VSX_WIDGET_TYPE_ANCHOR) {
               	if ((*it).second->parent)
                 if ((*it).second->parent->widget_type == VSX_WIDGET_TYPE_COMPONENT) {
@@ -348,7 +344,7 @@ void vsx_widget_desktop::draw() {
 		#ifndef VSXU_PLAYER
     if (!mtex.bind())
 		#endif
-    glColor4f(skin_color[13].r,skin_color[13].g,skin_color[13].b,skin_color[13].a);
+    glColor4f(skin_colors[13].r,skin_colors[13].g,skin_colors[13].b,skin_colors[13].a);
     //else
      	glBegin(GL_QUADS);
       	glTexCoord2f(0, 0);
@@ -445,7 +441,7 @@ void vsx_widget_desktop::load_configuration()
       global_interpolation_speed = s2f(mc->cmd_data);
     } else
     if (mc->cmd == "automatic_undo") {
-      auto_undo = s2i(mc->cmd_data);
+      auto_undo = vsx_string_aux::s2i(mc->cmd_data);
     } else
     if (mc->cmd == "global_framerate_limit") {
       global_framerate_limit = s2f(mc->cmd_data);
@@ -469,7 +465,7 @@ void vsx_widget_desktop::save_configuration() {
   s_conf.save_to_file(save_filename);
 }
 
-  void vsx_widget_desktop::vsx_command_process_b(vsx_command_s *t) {
+  void vsx_widget_desktop::command_process_back_queue(vsx_command_s *t) {
     if (
       t->cmd == "system.shutdown" ||
       t->cmd == "fullscreen" ||
@@ -502,7 +498,7 @@ vsx_widget_desktop::vsx_widget_desktop() {
   vsx_command_list modelist;
   vsx_command_s* mc = 0;
   load_configuration();
-  myf.init(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png");
+  font.init(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png");
   vsx_command_list skin_conf;
   skin_conf.load_from_file(skin_path+"skin.conf",true,4);
 #ifdef VSXU_PLAYER
@@ -534,7 +530,7 @@ vsx_widget_desktop::vsx_widget_desktop() {
       p.g = s2f(parts[1]);
       p.b = s2f(parts[2]);
       p.a = s2f(parts[3]);
-      skin_color[s2i(mc->parts[1])] = p;
+      skin_colors[ vsx_string_aux::s2i(mc->parts[1]) ] = p;
     }
   }
   // server widget

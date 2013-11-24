@@ -38,8 +38,8 @@
 #include <vsx_platform.h>
 
 #include "vsxfst.h"
-#include "vsx_math_3d.h"
 #include "vsx_command.h"
+#include "vsx_command_list.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_timer.h"
@@ -52,6 +52,7 @@
 #include "vsx_param_sequence_list.h"
 #include "vsx_sequence_pool.h"
 #include "vsx_module_list_abs.h"
+#include "vsx_module_list_factory.h"
 
 
 class vsx_timer;
@@ -117,6 +118,10 @@ public:
   bool get_render_hint_module_run_only();
   void set_render_hint_module_run_only(bool new_value);
 
+  // don't reset frame status when done rendering
+  bool get_render_hint_post_render_reset_component_status();
+  void set_render_hint_post_render_reset_component_status( bool new_value );
+
 
 
 //-- time manipulation and status
@@ -145,6 +150,7 @@ public:
   vsx_comp* get_component_by_name(vsx_string label);
   vsx_comp* get_by_id(unsigned long id);
   vsx_module_param_abs* get_in_param_by_name(vsx_string module_name, vsx_string param_name);
+  vsx_module* get_module_by_name(vsx_string module_name);
 
   // get a list of all external-exposed parameters (parameters that we want to export from a sub-engine)
   void get_external_exposed_parameters( vsx_avector< vsx_module_param_abs* >* result );
@@ -152,8 +158,7 @@ public:
 
 //-- engine function / lifecycle presented in the order they should happen
   // constructors
-  vsx_engine();
-  vsx_engine(vsx_string path);
+  vsx_engine(vsx_module_list_abs* initial_module_list = vsx_module_list_factory_create() );
 
   // should be run soon after the GL surface is initialized
   bool start();
@@ -174,9 +179,6 @@ public:
 
   // get tm*
   void* get_tm();
-
-  // set gl state
-  void set_gl_state(vsx_gl_state* gl_state);
 
   // render
   //   module_output_only - if you don't want modules to run() - and thus only produce output

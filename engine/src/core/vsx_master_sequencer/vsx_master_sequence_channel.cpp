@@ -27,6 +27,8 @@
 #include "vsx_timer.h"
 #include <list>
 #include "vsx_command.h"
+#include <vsx_string_aux.h>
+#include "vsx_command_list.h"
 #include "vsx_comp_abs.h"
 #include "vsx_param_abstraction.h"
 #include "vsx_param_sequence.h"
@@ -166,7 +168,7 @@ void vsx_master_sequence_channel::update_line(vsx_command_list* dest, vsx_comman
 	float p_vtime = i_vtime;
 
   //printf("UPDATE_MASTER_LINE in engine %s\n",cmd_in->raw.c_str());
-  vsx_sequence_master_channel_item* pa = (items[ s2i(cmd_in->parts[4]) ]);
+  vsx_sequence_master_channel_item* pa = (items[ vsx_string_aux::s2i(cmd_in->parts[4]) ]);
 
   // time distance (to next item)
   float local_time_distance;
@@ -199,7 +201,7 @@ void vsx_master_sequence_channel::insert_line(vsx_command_list* dest, vsx_comman
 {
 #ifndef VSX_NO_CLIENT
 	float p_vtime = i_vtime;
-  long after_this_id = s2i(cmd_in->parts[4]); // item_action_id
+  long after_this_id = vsx_string_aux::s2i(cmd_in->parts[4]); // item_action_id
   float time_diff = s2f(cmd_in->parts[5]);
   vsx_sequence_master_channel_item* pa;
   std::vector<vsx_sequence_master_channel_item*>::iterator it = items.begin();
@@ -295,7 +297,7 @@ void vsx_master_sequence_channel::i_remove_line(int pos)
 void vsx_master_sequence_channel::remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
 {
   //printf("REMOVE_LINE in engine %s\n",cmd_in->raw.c_str());
-  long pos = s2i(cmd_in->parts[4]);
+  long pos = vsx_string_aux::s2i(cmd_in->parts[4]);
 
 	i_remove_line(pos);
 
@@ -325,7 +327,7 @@ void vsx_master_sequence_channel::remove_all_lines_referring_to_sequence_list(vs
 void vsx_master_sequence_channel::time_sequence(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
 {
   //printf("TIME_SEQUENCE_MASTER_LINE in engine %s\n",cmd_in->raw.c_str());
-  vsx_sequence_master_channel_item* pa = (items[ s2i(cmd_in->parts[4]) ]);
+  vsx_sequence_master_channel_item* pa = (items[ vsx_string_aux::s2i(cmd_in->parts[4]) ]);
 
   if (cmd_in->parts[5] == "set")
   {

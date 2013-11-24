@@ -27,6 +27,7 @@
 #include "vsx_timer.h"
 #include <list>
 #include "vsx_command.h"
+#include "vsx_command_list.h"
 #include "vsx_comp_abs.h"
 #include "vsx_param_abstraction.h"
 #include "vsx_param_sequence.h"

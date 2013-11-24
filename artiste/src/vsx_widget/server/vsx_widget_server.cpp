@@ -23,6 +23,7 @@
 
 #ifndef VSX_NO_CLIENT
 #include "vsx_gl_global.h"
+#include <gl_helper.h>
 #include <map>
 #include <list>
 #include <vector>
@@ -33,7 +34,6 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include "vsxfst.h"
-#include "vsx_math_3d.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_command.h"
@@ -42,11 +42,11 @@
 #include "vsx_module.h"
 #include "vsx_version.h"
 #include "vsx_platform.h"
+#include <vsx_string_aux.h>
 // local includes
 #include "log/vsx_log_a.h"
 #include "vsx_widget_base.h"
 #include "window/vsx_widget_window.h"
-#include "lib/vsx_widget_lib.h"
 #include "dialogs/vsx_widget_window_statics.h"
 #include "module_choosers/vsx_widget_module_chooser.h"
 #include "module_choosers/vsx_widget_module_chooser_list.h"
@@ -58,11 +58,11 @@
 #include "vsx_widget_connector_bezier.h"
 #include "sequencer/vsx_widget_sequence.h"
 #include "sequencer/pool_manager/vsx_widget_seq_pool.h"
-#include "controllers/vsx_widget_base_controller.h"
-#include "controllers/vsx_widget_controller.h"
-#include "controllers/vsx_widget_editor.h"
+#include "controllers/vsx_widget_controller_base.h"
+#include "controllers/vsx_widget_controller_editor.h"
 #include "helpers/vsx_widget_note.h"
 #include "application.h"
+#include "vsx_widget_popup_menu.h"
 
 
 using namespace std;
@@ -218,9 +218,9 @@ Free text comments (max 300 characters)|\
   cmd_out->add_raw("get_list visuals");
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_INTERNAL)
   {
-    if (app_argv.has_param_with_value("state"))
+    if ( vsx_argvector::get_instance()->has_param_with_value("state") )
     {
-      cmd_out->add_raw("state_load "+base64_encode("states;"+app_argv.get_param_value("state")));
+      cmd_out->add_raw("state_load "+base64_encode("states;"+vsx_argvector::get_instance()->get_param_value("state")));
     } else
     cmd_out->add_raw("state_load "+base64_encode("states;_default"));
   }
@@ -331,6 +331,7 @@ void vsx_widget_server::vsx_command_process_f() {
 
         cm = p->add(new vsx_widget_component,c->cmd_data);
 				comp_list[c->cmd_data] = cm;
+        vsx_printf("added module to comp_list as %s\n", c->cmd_data.c_str());
 				if (!cm)
 				{
 					return;
@@ -391,7 +392,7 @@ void vsx_widget_server::vsx_command_process_f() {
 				//  param_get [component] [param] [value] [gui-id]
 				if (c->parts.size() == 5) {
 				//printf("%s",c->raw.c_str());
-					vsx_widget* t = f(s2i(c->parts[4]));
+          vsx_widget* t = find( vsx_string_aux::s2i(c->parts[4]) );
 					if (t) {
 						//printf("found comp\n");
 						command_q_b.add(c);
@@ -659,7 +660,7 @@ void vsx_widget_server::vsx_command_process_f() {
 			}
 			else
 			if (c->cmd == "component_timing_ok") {
-					vsx_widget* t = f(s2i(c->parts[1]));
+          vsx_widget* t = find( vsx_string_aux::s2i(c->parts[1]) );
 					if (t) {
 						command_q_b.add(c);
 						t->vsx_command_queue_b(this);
@@ -900,7 +901,7 @@ void vsx_widget_server::vsx_command_process_f() {
 }
 
 // messages to the engine from other widgets
-void vsx_widget_server::vsx_command_process_b(vsx_command_s *t) {
+void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
   // process messages from the children, to the engine and to the system
   // cmd_out messages sent to engine
 	if (
@@ -1383,7 +1384,7 @@ void vsx_widget_server::draw() {
 			#endif
 		}
 		if (selection) {
-			glColor4f(skin_color[0].r,skin_color[0].g,skin_color[0].b,0.3*skin_color[0].a);
+			glColor4f(skin_colors[0].r,skin_colors[0].g,skin_colors[0].b,0.3*skin_colors[0].a);
 			vsx_vector s_s = selection_start+pos;
 			vsx_vector s_e = selection_end+pos;
 			draw_box(s_s, s_e.x-s_s.x,s_e.y-s_s.y);
@@ -1408,7 +1409,7 @@ void vsx_widget_server::draw() {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		if (server_message.size()) {
-			myf.print_center(vsx_vector(x,y), server_message,0.03);
+      font.print_center(vsx_vector(x,y), server_message,0.03);
 		}
 		draw_children();
 	}
@@ -1492,7 +1493,7 @@ vsx_string vsx_widget_server::get_unique_name(vsx_string name) {
   }
   if (final_is_valid_number && i_val.size())
   {
-  	i = s2i(i_val);
+    i = vsx_string_aux::s2i(i_val);
   }
 
   // put together the string again

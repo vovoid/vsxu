@@ -24,6 +24,8 @@
 #ifndef VSX_WIDGET_SEQ_CHAN_H
 #define VSX_WIDGET_SEQ_CHAN_H
 
+#include "sequencer/vsx_widget_sequence.h"
+#include "vsx_widget_param_sequence_item.h"
 
 #define VSX_WIDGET_SEQ_CHANNEL_TYPE_PARAMETER 0
 #define VSX_WIDGET_SEQ_CHANNEL_TYPE_MASTER 1
@@ -31,43 +33,9 @@
 #define SEQ_CHAN_BOX_SIZE 0.0014f
 #define SEQ_CHAN_BOX_SIZE05 0.0007f
 
-class vsx_widget_param_sequence_item {
-public:
-  //float accum_time; // the time on wich this row starts
-	int type; // 0 = param, 1 = master
-  float total_length; // in seconds (float)
-  float length; // for master channel, this is the length of the block
-  vsx_string value; // if master, this is the name of the sequence_pool
-  float interpolation;
-  vsx_vector handle1;
-  vsx_vector handle2;
-  // child controller for setting the sequence for a master channel item
-  vsx_widget* master_channel_time_sequence;
-  vsx_string pool_name;
 
-  vsx_string get_value() {
-    if (interpolation == 4) {
-      return value+":"+f2s(handle1.x)+","+f2s(handle1.y)+":"+f2s(handle2.x)+","+f2s(handle2.y);
-    } else {
-      return value;
-    }
-  }
-
-  vsx_widget_param_sequence_item() {
-  	length = 0.1f;
-    total_length = 1.0f;
-    value = "";
-    interpolation = 0.0f;
-    handle1.x = 0.1f;
-    handle1.y = 1.5f;
-    handle2.x = 0.9f;
-    handle2.y = 1.5f;
-  	master_channel_time_sequence = 0x0;
-  }
-};
-
-
-class vsx_widget_seq_channel : public vsx_widget {
+class vsx_widget_seq_channel : public vsx_widget
+{
 
   float view_time_start, view_time_end, cur_time;
 
@@ -162,13 +130,14 @@ public:
   float m_pos;
   int mouse_clicked_id;
 
+  bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);
   void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords);
   void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_wheel(float y);
-  void vsx_command_process_b(vsx_command_s *t);
+  void command_process_back_queue(vsx_command_s *t);
 
   void i_draw();
 
@@ -183,14 +152,19 @@ public:
   void draw_chan_box(float t0, float y0, float c_size = SEQ_CHAN_BOX_SIZE);
   void draw_selection_box(float t0, float y0);
 
-  bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
 
   void drop_master_channel(vsx_widget_distance distance, vsx_widget_coords coords, vsx_string name);
 
   void set_view_time(float, float);
   void remove_master_channel_items_with_name(vsx_string name);
 
-  vsx_widget_seq_channel():owner(0),channel_type(VSX_WIDGET_SEQ_CHANNEL_TYPE_PARAMETER) {};
+  vsx_widget_seq_channel()
+    :
+      owner(0),
+      channel_type(VSX_WIDGET_SEQ_CHANNEL_TYPE_PARAMETER)
+  {
+  }
+
 };
 
 #endif

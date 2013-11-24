@@ -53,12 +53,12 @@ public:
   {
     info->identifier = "mesh;vertices;bspline_vertices";
     info->description = "";
-    info->out_param_spec = "mesh:mesh";
+    info->out_param_spec =
+      "mesh:mesh";
     info->in_param_spec =
-    "\
-    source:mesh,\
-    density:float\
-    ";
+      "source:mesh,"
+      "density:float"
+    ;
     info->component_class = "mesh";
   }
 

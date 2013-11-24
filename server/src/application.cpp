@@ -33,7 +33,6 @@
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_timer.h"
-#include "vsx_math_3d.h"
 #include "vsxfst.h"
 #include "vsx_font.h"
 #include <vsx_version.h>
@@ -97,32 +96,8 @@ void load_desktop_a()
 void app_init(int id)
 {
   VSX_UNUSED(id);
-
-	vsx_string own_path;
-  vsx_avector<vsx_string> parts;
-  vsx_avector<vsx_string> parts2;
-  vsx_string deli = "/";
-  own_path = app_argv[0];
-  //printf("own_path: %s\n", own_path.c_str() );
-  explode(own_path, deli, parts);
-  for (unsigned long i = 0; i < parts.size()-1; ++i) {
-    parts2.push_back(parts[i]);
-  }
-  own_path = implode(parts2,deli);
-  if (own_path.size()) own_path.push_back(deli[0]);
-
-  #ifdef VSXU_DEBUG
-  printf("own path: %s   \n", own_path.c_str() );
-  #endif
-	//printf("argc: %d %s\n",app_argc,own_path.c_str());
-	vxe = new vsx_engine(own_path.c_str());
-
-  vxe_module_list = vsx_module_list_factory_create(app_argv.serialize(),false);
-  vxe->set_module_list(vxe_module_list);
-
-  vxe->set_gl_state( &gl_state );
+  vxe = new vsx_engine();
   vxe->set_tm(tm);
-
 }
 
 
@@ -138,12 +113,7 @@ void app_print_cli_help()
          "  -p 100,100     window posision\n"
          "\n"
         );
-  vsx_module_list_abs* module_list = vsx_module_list_factory_create
-  (
-    app_argv.serialize(),
-        true
-  );
-  VSX_UNUSED(module_list);
+  vsx_module_list_factory_create()->print_help();
 }
 
 

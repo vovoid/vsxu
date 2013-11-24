@@ -27,14 +27,12 @@
 #include <list>
 #include <vector>
 #include <math.h>
-#include "vsx_math_3d.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_command.h"
 #include "vsx_font.h"
 // local includes
 #include "vsx_widget_base.h"
-#include "lib/vsx_widget_lib.h"
 #include "dialogs/vsx_widget_window_statics.h"
 #include "vsx_widget_desktop.h"
 #include "vsx_widget_object_inspector.h"
@@ -45,8 +43,10 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_timer.h"
-#include "lib/vsx_widget_panel.h"
-#include "lib/vsx_widget_base_edit.h"
+#include "vsx_widget_panel.h"
+#include "vsx_widget_base_edit.h"
+#include "vsx_widget_button.h"
+#include "vsx_widget_2d_label.h"
 
 
 void vsx_window_object_inspector::draw_2d() {
@@ -190,7 +190,7 @@ void vsx_window_object_inspector::draw() {
   }
 }
 
-void vsx_window_object_inspector::vsx_command_process_b(vsx_command_s *t) {
+void vsx_window_object_inspector::command_process_back_queue(vsx_command_s *t) {
   if (k_focus == component_rename_edit || t->cmd == "component_rename_button") {
     if (inspected->widget_type == VSX_WIDGET_TYPE_COMPONENT) {
       vsx_widget_component* cc = (vsx_widget_component*)inspected;

@@ -25,14 +25,12 @@
 #include "_configuration.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
-#include "vsx_math_3d.h"
 #include "vsx_sequence.h"
 #include "vsx_bspline.h"
 #include <pthread.h>
 #include <semaphore.h>
 
 
-#include "module_mesh_rand_points.h"
 #include "module_mesh_bspline_vertices.h"
 #include "module_mesh_lightning_vertices.h"
 #include "module_mesh_rays.h"
@@ -55,6 +53,16 @@
 #include "module_mesh_metaballs.h"
 #include "module_mesh_ocean_threaded.h"
 #include "module_mesh_ocean_tunnel_threaded.h"
+#include "module_mesh_cloud_plane.h"
+#include "module_mesh_planeworld.h"
+#include "module_mesh_thorn.h"
+#include "module_segmesh_loft.h"
+#include "module_segmesh_map_bspline.h"
+#include "module_segmesh_shape_basic.h"
+
+// vertices generators
+#include "module_mesh_vertices_rand_points.h"
+#include "module_mesh_vertices_ribbon.h"
 
 
 
@@ -75,7 +83,7 @@ vsx_module* create_new_module(unsigned long module, void* args)
   switch(module)
   {
     case 0: return (vsx_module*)(new module_mesh_needle);
-    case 1: return (vsx_module*)(new module_mesh_rand_points);
+    case 1: return (vsx_module*)(new module_mesh_vertices_rand_points);
     case 2: return (vsx_module*)(new module_mesh_rays);
     case 3: return (vsx_module*)(new module_mesh_disc);
     case 4: return (vsx_module*)(new module_mesh_planes);
@@ -97,6 +105,13 @@ vsx_module* create_new_module(unsigned long module, void* args)
     case 20: return (vsx_module*)(new module_mesh_metaballs);
     case 21: return (vsx_module*)(new module_mesh_ocean_threaded);
     case 22: return (vsx_module*)(new module_mesh_ocean_tunnel_threaded);
+    case 23: return (vsx_module*)(new module_mesh_cloud_plane);
+    case 24: return (vsx_module*)(new module_mesh_planeworld);
+    case 25: return (vsx_module*)(new module_mesh_thorn);
+    case 26: return (vsx_module*)(new module_segmesh_loft);
+    case 27: return (vsx_module*)(new module_segmesh_map_bspline);
+    case 28: return (vsx_module*)(new module_segmesh_shape_basic);
+    case 29: return (vsx_module*)(new module_mesh_vertices_ribbon);
   }
   return 0;
 }
@@ -105,7 +120,7 @@ void destroy_module(vsx_module* m,unsigned long module)
 {
   switch(module) {
     case 0: delete (module_mesh_needle*)m; break;
-    case 1: delete (module_mesh_rand_points*)m; break;
+    case 1: delete (module_mesh_vertices_rand_points*)m; break;
     case 2: delete (module_mesh_rays*)m; break;
     case 3: delete (module_mesh_disc*)m; break;
     case 4: delete (module_mesh_planes*)m; break;
@@ -127,10 +142,17 @@ void destroy_module(vsx_module* m,unsigned long module)
     case 20: delete (module_mesh_metaballs*)m; break;
     case 21: delete (module_mesh_ocean_threaded*)m; break;
     case 22: delete (module_mesh_ocean_tunnel_threaded*)m; break;
+    case 23: delete (module_mesh_cloud_plane*)m; break;
+    case 24: delete (module_mesh_planeworld*)m; break;
+    case 25: delete (module_mesh_thorn*)m; break;
+    case 26: delete (module_segmesh_loft*)m; break;
+    case 27: delete (module_segmesh_map_bspline*)m; break;
+    case 28: delete (module_segmesh_shape_basic*)m; break;
+    case 29: delete (module_mesh_vertices_ribbon*)m; break;
   }
 } 
 
 unsigned long get_num_modules()
 {
-  return 23;
+  return 30;
 }

@@ -22,7 +22,7 @@
 /*
  * _configuration.h
  */
-#ifdef BUILDING_DLL
+
 #ifndef _CONFIGURATION_H_
 #define _CONFIGURATION_H_
 
@@ -56,4 +56,4 @@
 //#define VSX_P_RESOURCE
 
 #endif /* _CONFIGURATION_H_ */
-#endif
+

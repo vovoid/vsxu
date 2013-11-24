@@ -25,21 +25,20 @@
 #include "_configuration.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
-#include "vsx_math_3d.h"
 #define VSX_FONT_NO_FT 1
 #include "vsx_font.h"
 #include "vsx_glsl.h"
 
 
 
-
+#pragma GCC visibility push(hidden)
 #include "module_mesh_render.h"
 #include "module_mesh_render_billboards.h"
 #include "module_mesh_render_dots.h"
 #include "module_mesh_render_face_id.h"
 #include "module_mesh_render_line.h"
 #include "module_mesh_render_zsort.h"
-
+#pragma GCC visibility pop
 
 //******************************************************************************
 //*** F A C T O R Y ************************************************************

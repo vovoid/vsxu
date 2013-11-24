@@ -26,7 +26,6 @@
 // local includes
 #include "vsx_engine.h"
 
-#include "lib/vsx_widget_lib.h"
 
 #include "vsx_widget_base.h"
 #include "dialogs/vsx_widget_window_statics.h"
@@ -37,9 +36,12 @@
 
 #include "vsx_widget_preview.h"
 
-void vsx_window_texture_viewer::draw_2d() {
+void vsx_window_texture_viewer::draw_2d()
+{
 	visible = !performance_mode;
-	if (performance_mode) return;
+  if (performance_mode)
+    return;
+
     frame_delta += dtime;
     ++frame_count;
     if (frame_count == 50) {
@@ -47,28 +49,22 @@ void vsx_window_texture_viewer::draw_2d() {
       frame_count = 0;
       frame_delta = 0;
     }
-    //printf("-\n");
     title = "vsxu preview (slow) @ "+i2s((int)round(fps))+" fps, Ctrl+F(ullscreen)";
     float vis = visible;
     if (!visible) color.a = 0.3; else color.a = 1;
     visible = 1;
     vsx_widget_window::draw_2d();
     visible = vis;
-    /*pos.x = 0;
-    pos.y = 1;//384/(screen_y-1);
-    size.y = 384/(screen_y-1);
-    size.x = 512/(screen_x-1);*/
     pos_.y = pos.y+dragborder;
     size_.y = size.y-font_size-dragborder;
     pos_.x = pos.x+dragborder;
     size_.x = size.x-dragborder*2;
 
-    //if (texture.texture_info.get_id() != -1) {
       if (visible)
       glColor4f(0,0,0,1);
       else
       glColor4f(0,0,0,0.3);
-//      draw_box(pos_,size_.x,size_.y);
+
       glMatrixMode(GL_PROJECTION);
       glLoadIdentity();
       glMatrixMode(GL_MODELVIEW);
@@ -79,18 +75,12 @@ void vsx_window_texture_viewer::draw_2d() {
       }
       // set new viewport
       if (run)
-      if (*engine) {
+      if (*engine)
+      {
         // get viewport
-        /*((vsx_engine*)engine)->view_x = ceil(pos_.x*(screen_x-1))*screen_aspect;
-        ((vsx_engine*)engine)->view_y = ceil((pos_.y-size_.y)*(screen_y-1));
-        ((vsx_engine*)engine)->view_resx = ceil(size_.x*(screen_x-1))*screen_aspect;
-        ((vsx_engine*)engine)->view_resy = ceil(size_.y*(screen_y-1));*/
-
-
-
         GLint	viewport[4];
-        gl_state.viewport_get(viewport);
-        gl_state.viewport_set(
+        gl_state->viewport_get(viewport);
+        gl_state->viewport_set(
           (int)ceil(pos_.x*(screen_x-1)),
           (int)ceil((pos_.y)*(screen_y-1)),
           (int)ceil(size_.x*(screen_x-1)),
@@ -115,17 +105,14 @@ void vsx_window_texture_viewer::draw_2d() {
 
 
         // reset the viewport
-        gl_state.viewport_set(viewport[0],viewport[1],viewport[2],viewport[3]);
+        gl_state->viewport_set(viewport[0],viewport[1],viewport[2],viewport[3]);
 
         glScissor(viewport[0],viewport[1],viewport[2],viewport[3]);
         glDisable(GL_SCISSOR_TEST);
       }
       glDepthMask(GL_TRUE);
       glDisable(GL_DEPTH_TEST);
-      //glMatrixMode(GL_MODELVIEW);
-    	//glPopMatrix();
     	glMatrixMode(GL_PROJECTION);
-      //glPopMatrix();
       glLoadIdentity();
       gluOrtho2D(0, 1, 0, 1);
       glMatrixMode(GL_MODELVIEW);
@@ -133,26 +120,6 @@ void vsx_window_texture_viewer::draw_2d() {
       glEnable (GL_BLEND);
       glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-/*''     	texture.bind();
-  //    glEnable(texture.texture_info.get_type());
-  //  	glBindTexture(texture.texture_info.get_type(), texture.texture_info.get_id());
-      if (visible)
-      glColor4f(1,1,1,1);
-      else
-      glColor4f(1,1,1,0.3);
-     	glBegin(GL_QUADS);
-      	glTexCoord2f(0, 1);
-        glVertex3f(pos_.x,pos_.y,0);
-      	glTexCoord2f(1, 1);
-        glVertex3f(pos_.x+size_.x,pos_.y,0);
-      	glTexCoord2f(1, 0);
-        glVertex3f(pos_.x+size_.x,pos_.y-size_.y,0);
-      	glTexCoord2f(0, 0);
-        glVertex3f(pos_.x,pos_.y-size_.y,0);
-      glEnd();
-      texture._bind();*/
-  // 	  glDisable(texture.texture_info.get_type());
-   //	}
     draw_children_2d();
 }
 
@@ -167,11 +134,11 @@ bool vsx_window_texture_viewer::event_key_down(signed long key, bool alt, bool c
   return false;
 }
 
-void vsx_window_texture_viewer::vsx_command_process_b(vsx_command_s *t) {
+void vsx_window_texture_viewer::command_process_back_queue(vsx_command_s *t) {
 //  printf("command: %s\n",t->cmd.c_str());
   if (t->cmd == "fullwindow") fullwindow = !fullwindow; else
   if (t->cmd == "toggle") run = !run; else
-  vsx_widget::vsx_command_process_b(t);
+  vsx_widget::command_process_back_queue(t);
 
 //  printf("run %i\n",run);
 }

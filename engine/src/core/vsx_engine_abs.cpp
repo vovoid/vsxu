@@ -69,7 +69,6 @@ using namespace std;
 
 void vsx_engine_abs::constructor_set_default_values()
 {
-  module_list = 0x0;
   valid = false;
   no_send_client_time = false;
   g_timer_amp = 1.0f;
@@ -83,10 +82,11 @@ void vsx_engine_abs::constructor_set_default_values()
   frame_cfp_time = 0.0f;
   last_m_time_synch = 0;
   first_start = true;
-  stopped = true;
+  disabled = true;
   // rendering hints
   render_hint_module_output_only = false;
   render_hint_module_run_only = false;
+  render_hint_post_render_reset_component_status = true;
   frame_dcount = 0;
   frame_dtime = 0;
   frame_dprev = -1;
@@ -209,7 +209,7 @@ void vsx_engine_abs::tell_client_time(vsx_command_list *cmd_out)
   #ifndef VSX_NO_CLIENT
     bool send = false;
 
-    if (lastsent < 0 || lastsent > 0.05 ) {
+    if (lastsent < 0 || lastsent > 0.01 ) {
       send = true;
       lastsent = 0;
     }

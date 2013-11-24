@@ -9,6 +9,13 @@
 // unused macro
 #define VSX_UNUSED(arg) (void)arg
 
+// inlining macro
+#ifdef VSX_OPTIMIZATIONS
+#define VSX_ALWAYS_INLINE __attribute__((always_inline))
+#else
+#define VSX_ALWAYS_INLINE
+#endif
+
 
 #define PLATFORM_WINDOWS          0
 #define PLATFORM_LINUX          1

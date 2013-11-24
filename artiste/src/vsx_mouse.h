@@ -26,8 +26,8 @@
 #ifdef _WIN32
 #include <windows.h>
 #endif
-#include "vsx_math_3d.h"
 
+#include <vsx_vector.h>
 
 #define MOUSE_CURSOR_ARROW 0
 #define MOUSE_CURSOR_HAND 1

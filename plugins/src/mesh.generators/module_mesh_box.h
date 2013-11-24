@@ -51,7 +51,8 @@ public:
     first_run = true;
   }
 
-  bool init() {
+  bool init()
+  {
     mesh = new vsx_mesh;
     return true;
   }
@@ -61,9 +62,11 @@ public:
     delete mesh;
   }
 
-  void run() {
+  void run()
+  {
     if (!first_run) return;
     vsx_face a;
+
     //right
     mesh->data->vertices[0] = vsx_vector( 0.5f,-0.5f, 0.5f);
     mesh->data->vertices[1] = vsx_vector( 0.5f, 0.5f, 0.5f);
@@ -145,9 +148,6 @@ public:
     a.b = 22;
     a.c = 20;
     mesh->data->faces.push_back(a);
-
-
-
 
     first_run = false;
     mesh->timestamp++;

@@ -6571,13 +6571,13 @@ void RtApiPulse::stopStream( void )
 
   if ( pah && pah->s_play ) {
     int pa_error;
-    if ( pa_simple_drain( pah->s_play, &pa_error ) < 0 ) {
+    /*if ( pa_simple_drain( pah->s_play, &pa_error ) < 0 ) {
       errorStream_ << "RtApiPulse::stopStream: error draining output device, " <<
         pa_strerror( pa_error ) << ".";
       errorText_ = errorStream_.str();
       MUTEX_UNLOCK( &stream_.mutex );
       error( RtError::SYSTEM_ERROR );
-    }
+    }*/
   }
 
   stream_.state = STREAM_STOPPED;
@@ -6724,15 +6724,22 @@ bool RtApiPulse::probeDeviceOpen( unsigned int device, StreamMode mode,
     break;
   case OUTPUT:
 
+      buffer_attr.tlength = *bufferSize;
+      buffer_attr.minreq = *bufferSize;
+      buffer_attr.maxlength = -1;
+
+
     if( options && (!options->streamName.empty()) )
-      pah->s_play = pa_simple_new( NULL, options->streamName.c_str(), PA_STREAM_PLAYBACK, NULL, "Playback", &ss, NULL, NULL, &error );
+      pah->s_play = pa_simple_new( NULL, options->streamName.c_str(), PA_STREAM_PLAYBACK, NULL, "Playback", &ss, NULL, &buffer_attr, &error );
     else
-      pah->s_play = pa_simple_new( NULL, "RtAudio", PA_STREAM_PLAYBACK, NULL, "Playback", &ss, NULL, NULL, &error );
+      pah->s_play = pa_simple_new( NULL, "RtAudio", PA_STREAM_PLAYBACK, NULL, "Playback", &ss, NULL, &buffer_attr, &error );
 
     if ( !pah->s_play ) {
       errorText_ = "RtApiPulse::probeDeviceOpen: error connecting output to PulseAudio server.";
       goto error;
     }
+    pa_usec_t latency;
+    latency = pa_simple_get_latency(pah->s_play, &error);
     break;
   default:
     goto error;

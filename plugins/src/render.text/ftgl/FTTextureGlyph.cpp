@@ -77,11 +77,11 @@ FTTextureGlyph::~FTTextureGlyph()
 
 float FTTextureGlyph::Render( const FTPoint& pen)
 {
-    glGetIntegerv( GL_TEXTURE_2D_BINDING_EXT, &activeTextureID);
-    if( activeTextureID != glTextureID)
-    {
+    //glGetIntegerv( GL_TEXTURE_2D_BINDING_EXT, &activeTextureID);
+    //if( activeTextureID != glTextureID)
+    //{
         glBindTexture( GL_TEXTURE_2D, (GLuint)glTextureID);
-    }
+    //}
     
     glBegin( GL_QUADS);
         glTexCoord2f( uv[0].x, uv[0].y);

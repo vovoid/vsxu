@@ -25,7 +25,6 @@
 #include "vsx_gl_global.h"
 #include <map>
 #include <list>
-#include "vsx_math_3d.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_font.h"
@@ -99,13 +98,20 @@ void vsx_font::reinit_all_active() {
     return print(p,str,size,colors);
   }
 
-  vsx_vector vsx_font::print(vsx_vector p, const vsx_string& str, const float size = 1, vsx_string colors) {
+  vsx_vector vsx_font::print(vsx_vector p, const vsx_string& str, const float size = 1, vsx_string colors)
+  {
     #ifndef VSXU_OPENGL_ES
-      if (!my_font_info) return vsx_vector();
-      if (str == "") return p;
+      if (!my_font_info)
+        return vsx_vector();
+
+      if (str == "")
+        return p;
 
       bool use_colors = false;
-      if (colors.size()) use_colors = true;
+
+      if (colors.size())
+        use_colors = true;
+
       char current_color = 1;
 
       if (my_font_info->type == 0)
@@ -117,51 +123,52 @@ void vsx_font::reinit_all_active() {
         //dz = 0;
 
         glPushMatrix();
-        //glLoadIdentity();
         glTranslatef(p.x,p.y,p.z);
-        //if (background) {
-          //background_color.gl_color();
-            /*glBegin(GL_QUADS);
-          for (int i = 0; i < str.size(); ++i) {
-            if (str[i] == 0x0A) {
-              if (mode_2d)
-              dy -= size*1.05; else
-              dy += size*1.05;
-              dx = 0;
-            }
-                glVertex3f(dx,dy,0);
-                glVertex3f(dx,dy+size,0);
-                glVertex3f(dx+size_s,dy+size,0);
-                glVertex3f(dx+size_s,dy,0);
-            dx += align*size_s;
+
+          if (!(*(my_font_info->texture)).bind())
+          {
+            vsx_printf("font could not bind texture!\n");
+            return vsx_vector();
           }
-            glEnd();*/
-        //}
 
-          //dx = 0;
-          //dy = 0;
-
-
-          (*(my_font_info->texture)).bind();
-          //stc = str.c_str();
           colc = (char*)colors.c_str();
 
           if (use_colors)
-          syntax_colors[*colc-1].gl_color();
+          {
+            glColor4f(
+              syntax_colors[*colc-1].r,
+              syntax_colors[*colc-1].g,
+              syntax_colors[*colc-1].b,
+              syntax_colors[*colc-1].a
+            );
+          }
           else
           glColor4f(color.r,color.g,color.b,color.a);
 
           glBegin(GL_QUADS);
 
-          if (mode_2d)
-          ddy = -size*1.05f; else
           ddy = size*1.05f;
+          if (mode_2d)
+          {
+            ddy = -size*1.05f;
+          }
+
+
           ddx = align*size_s;
-          for (stc = (char*)str.c_str(); *stc; ++stc) {
-            if (use_colors) {
-              if (*colc != current_color) {
+          for (stc = (char*)str.c_str(); *stc; ++stc)
+          {
+            if (use_colors)
+            {
+              if (*colc != current_color)
+              {
                 current_color = *colc;
-                syntax_colors[*colc-1].gl_color();
+
+                glColor4f(
+                  syntax_colors[*colc-1].r,
+                  syntax_colors[*colc-1].g,
+                  syntax_colors[*colc-1].b,
+                  syntax_colors[*colc-1].a
+                );
               }
               ++colc;
             }
@@ -178,7 +185,6 @@ void vsx_font::reinit_all_active() {
               ex = sx+cw;
               ey = -(sy+ch)+1.0f;
               sy = -sy+0.995f;
-              //-ey+1.0f
 
                 glTexCoord2f(sx, ey);  glVertex2f(dx       ,  dy);
                 glTexCoord2f(sx, sy);  glVertex2f(dx       ,  dy+size);
@@ -186,17 +192,13 @@ void vsx_font::reinit_all_active() {
                 glTexCoord2f(ex, ey);  glVertex2f(dx+size_s,  dy);
               dx += ddx;
             }
-            //++stc;
+
           }
-              glEnd();
+          glEnd();
           (*(my_font_info->texture))._bind();
-          //old_string = str;
-          //old_size = size;
-          //list_built = true;
         glPopMatrix();
         ep.x = dx+p.x;  // this might need to be fixed
         ep.y = dy+p.y;
-        //ep.z = p.z;
         return ep;
       } else {
   #ifndef VSX_FONT_NO_FT

@@ -66,9 +66,10 @@ public:
   bool editing_enabled; // can the text be edited?
   bool single_row; // is single row editor only?
   std::map<vsx_string,char> keywords;
-  vsx_widget_base_edit();
+
+
   int inside_xy_l(vsx_vector &test, vsx_vector &global) { return vsx_widget::inside_xy_l(test,global); }
-  void vsx_command_process_b(vsx_command_s *t);
+  void command_process_back_queue(vsx_command_s *t);
   vsx_widget* mirror_keystrokes_object; // vsx_widget that gets a key event when the string has been modified (not on arrow keys), default: 0
   vsx_widget* mirror_mouse_move_passive_object;
   vsx_widget* mirror_mouse_move_object;
@@ -95,15 +96,17 @@ public:
   void event_mouse_wheel(float y);
   void set_filter_string(vsx_string &filter_string);
   void fold_all();
+  vsx_widget_base_edit();
+
 };
 
-class vsx_widget_base_editor : public vsx_widget_panel {
+class vsx_widget_editor : public vsx_widget_panel {
 public:
   vsx_widget_scrollbar* scrollbar_horiz;
   vsx_widget_scrollbar* scrollbar_vert;
   vsx_widget_base_edit* editor;
 
-  vsx_widget_base_editor();
+  vsx_widget_editor();
   void set_string(const vsx_string& str);
   vsx_string get_string();
   virtual void i_draw();

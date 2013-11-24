@@ -26,12 +26,12 @@
 #include <list>
 #include <vector>
 #include "vsx_command.h"
-#include "vsx_math_3d.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_font.h"
 #include "../vsx_widget_base.h"
 #include "vsx_widget_panel.h"
+#include <gl_helper.h>
 
 void vsx_widget_panel::calc_size() {
   if (size_from_parent) return;
@@ -71,11 +71,11 @@ void vsx_widget_panel::base_draw() {
   vsx_color b(0,0,0,0);
   vsx_color w(0,0,0,1);
   //draw_box_gradient(p, dragborder, target_size.y, skin_color[0], skin_color[1], skin_color[1], skin_color[0]);
-  draw_box_gradient(p, dragborder, target_size.y, skin_color[0], skin_color[1], skin_color[1], skin_color[0]);
+  draw_box_gradient(p, dragborder, target_size.y, skin_colors[0], skin_colors[1], skin_colors[1], skin_colors[0]);
 //  draw_box_gradient(p, target_size.x, dragborder, r, b, b, r);
   draw_box_gradient(p, target_size.x, dragborder, w, b, b, w);
   p.y += size.y-dragborder;
-  draw_box_gradient(p, target_size.x, dragborder, skin_color[0], skin_color[0], skin_color[1], skin_color[1]);
+  draw_box_gradient(p, target_size.x, dragborder, skin_colors[0], skin_colors[0], skin_colors[1], skin_colors[1]);
 //  draw_box_gradient(p, target_size.x, dragborder, skin_color[0], skin_color[0], skin_color[1], gr);
   p.x += size.x-dragborder;
   //p.y += 

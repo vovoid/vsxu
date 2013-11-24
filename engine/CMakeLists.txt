@@ -179,7 +179,6 @@ set(SOURCES
   src/core/vsx_module_list/vsx_module_list_factory.cpp
   src/core/vsx_module_list/vsx_module_list.cpp
   src/core/vsx_module_list/vsx_dlopen.cpp
-  src/vsx_math_3d.cpp
   src/mtwist.c
   src/vsx_param.cpp
   src/vsx_sequence.cpp

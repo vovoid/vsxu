@@ -104,7 +104,7 @@ protected:
       ++i;
     }
     //for (unsigned int i = 0; i < parts.size(); ++i) {
-     // printf("f_part: %s\n",parts[i].c_str());
+    //  printf("f_part: %s\n",parts[i].c_str());
     //}
 
     //vsx_avector<vsx_string> parts;
@@ -225,7 +225,6 @@ protected:
       if (vars.find(sn) != vars.end()) {
         vsx_glsl_type_info n_info;
         n_info.name = sn;
-        //printf("sn: %s\n",sn.c_str());
         n_info.glsl_id = i;
         n_info.glsl_type = type;
         n_info.glsl_location = glGetUniformLocationARB(prog,name);
@@ -298,7 +297,6 @@ protected:
       if (attributes.find(sn) != attributes.end()) {
         vsx_glsl_type_info n_info;
         n_info.name = sn;
-        //printf("sn: %s\n",sn.c_str());
         n_info.glsl_id = i;
         n_info.glsl_type = type;
         n_info.glsl_location = glGetAttribLocationARB(prog,name);
@@ -319,9 +317,6 @@ protected:
           case GL_BOOL_VEC4:
           case GL_FLOAT_VEC4:
           case GL_INT_VEC4:
-//#if (VSXU_DEBUG)
-            printf("got quat array\n");
-//#endif
             n_info.param_type = "quaternion_array";
             n_info.param_type_id = VSX_MODULE_PARAM_ID_QUATERNION_ARRAY;
           break;
@@ -593,6 +588,14 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
 //            vsx_printf("GLSL:binding texture %d\n", GL_TEXTURE0 + tex_i);
             glActiveTexture(GL_TEXTURE0 + tex_i);
             (*ba)->bind();
+            vsx_transform_obj& texture_transform = *(*ba)->get_transform();
+            if ((*ba)->get_transform())
+            {
+              glMatrixMode(GL_TEXTURE);
+              glLoadIdentity();
+              texture_transform();
+            }
+
             glUniform1iARB(uniform_list[i].glsl_location,tex_i);
             tex_i++;
           }
@@ -629,7 +632,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
           break;
           case VSX_MODULE_PARAM_ID_FLOAT3_ARRAY:
           {
-            vsx_float3_array* p = ((vsx_module_param_float3_array*)attribute_list[i].module_param)->get_addr();
+            vsx_vector_array* p = ((vsx_module_param_float3_array*)attribute_list[i].module_param)->get_addr();
             if (p)
             {
               #ifdef VSXU_DEBUG
@@ -667,17 +670,17 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
         switch(uniform_list[i].param_type_id) {
           case VSX_MODULE_PARAM_ID_TEXTURE:
           vsx_texture** ba;
-          //glBindTexture(GL_TEXTURE_2D, my_texture_object);
           ba = ((vsx_module_param_texture*)uniform_list[i].module_param)->get_addr();
           if (ba) {
-        	//if (GLEW_VERSION_1_3)
 #if defined(__linux__)
             glActiveTexture(GL_TEXTURE0 + tex_i);
 #else
             glActiveTextureARB(GL_TEXTURE0 + tex_i);
 #endif
-            //printf("unbinding tex\n");
             (*ba)->_bind();
+            glMatrixMode(GL_TEXTURE);
+            glLoadIdentity();
+
             ++tex_i;
           }
         }

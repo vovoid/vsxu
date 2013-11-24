@@ -87,7 +87,7 @@ public:
         my_worm->phs.y = (rand()%10000)*0.0001-0.5;
         my_worm->phs.z = (rand()%10000)*0.0001-0.5;
         my_worm->phs.w = (rand()%10000)*0.0001-0.5;
-        my_worm->color = vsx_color__((rand()%10000)*0.0001,(rand()%10000)*0.0001,(rand()%10000)*0.0001,0.5f);
+        my_worm->color = vsx_color((rand()%10000)*0.0001,(rand()%10000)*0.0001,(rand()%10000)*0.0001,0.5f);
         worms.push_back(my_worm);
       }
       first_run = false;

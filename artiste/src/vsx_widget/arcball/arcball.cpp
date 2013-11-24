@@ -67,10 +67,6 @@ void ArcBall_t::_mapToSphere(const Point2fT* NewPt, Vector3fT* NewVec)
     //Copy paramter into temp point
     TempPt = *NewPt;
 
-    //Adjust point coords and scale down to range of [-1 ... 1]
-    //TempPt.s.X  =        (TempPt.s.X * this->AdjustWidth)  - 1.0f;
-    //TempPt.s.Y  = 1.0f - (TempPt.s.Y * this->AdjustHeight);
-
     //Compute the square of the length of the vector to the point from the center
     length      = (TempPt.s.X * TempPt.s.X) + (TempPt.s.Y * TempPt.s.Y);
 
@@ -129,34 +125,23 @@ void    ArcBall_t::drag(const Point2fT* NewPt, Quat4fT* NewRot)
     if (NewRot)
     {
         Vector3fT  Perp; 
-        
-        //this->StVec.s.X     = 0;
-        //this->StVec.s.Y     = 0;
-        //this->StVec.s.Z     =  1;
 
-        //Compute the vector perpendicular to the begin and end vectors
         Vector3fCross(&Perp, &this->StVec, &this->EnVec);
-        //printf("perp.z = %f\n",Perp.s.Z);
-        //Compute the length of the perpendicular vector
         if (Vector3fLength(&Perp) > Epsilon)    //if its non-zero
         {
-            //We're ok, so return the perpendicular vector as the transform after all
             NewRot->s.X = Perp.s.X;
             NewRot->s.Y = Perp.s.Y;
             NewRot->s.Z = Perp.s.Z;
 
-            //In the quaternion values, w is cosine (theta / 2), where theta is rotation angle
             NewRot->s.W= -Vector3fDot(&this->StVec, &this->EnVec);
         }
         else                                    //if its zero
         {
-            //The begin and end vectors coincide, so return an identity transform
             NewRot->s.X = 
             NewRot->s.Y = 
-            NewRot->s.Z = 
-            NewRot->s.W = 0.0f;
+            NewRot->s.Z = 0.0f;
+            NewRot->s.W = -1.0f;
         }
-        //printf("new rot quat = %f,%f,%f,%f\n",NewRot->s.X,NewRot->s.Y,NewRot->s.Z,NewRot->s.W);
     }
 }
 

@@ -26,17 +26,18 @@
 #include <list>
 #include <vector>
 #include "vsx_command.h"
-#include "vsx_math_3d.h"
+#include <vsx_string_aux.h>
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_font.h"
-#include "../vsx_widget_base.h"
-#include "vsx_widget_lib.h"
+#include "vsx_widget_base.h"
 #include "vsx_widget_panel.h"
 #include "vsx_widget_base_edit.h"
+#include "vsx_widget_popup_menu.h"
 #include <stdlib.h>
+#include "vsx_widget_button.h"
 #include "GL/glfw.h"
-
+#include <gl_helper.h>
 
 vsx_widget_base_edit::vsx_widget_base_edit() {
   enable_syntax_highlighting = true;
@@ -94,10 +95,10 @@ vsx_widget_base_edit::vsx_widget_base_edit() {
   updates = 0;
   process_characters = true;
   num_hidden_lines = 0;
-  myf.syntax_colors[0] = skin_color[14]; // base color
-  myf.syntax_colors[1] = vsx_color__(0.8,0.8,0.8,1); // comment
-  myf.syntax_colors[2] = vsx_color__(0,1,1,1);
-  myf.syntax_colors[3] = vsx_color__(153.0f/255.0f,204.0f/255.0f,1,1);
+  font.syntax_colors[0] = skin_colors[14]; // base color
+  font.syntax_colors[1] = vsx_color(0.8,0.8,0.8,1); // comment
+  font.syntax_colors[2] = vsx_color(0,1,1,1);
+  font.syntax_colors[3] = vsx_color(153.0f/255.0f,204.0f/255.0f,1,1);
 
   menu = add(new vsx_widget_popup_menu,".edit_menu");
   menu->commands.adds(VSX_COMMAND_MENU, "clear", "clear","a"); //build a menu
@@ -110,16 +111,16 @@ vsx_widget_base_edit::vsx_widget_base_edit() {
   menu->size.x = 0.2;
   menu->size.y = 0.5;
   menu->init();
-  //lines.push_back("");
-  //lines.push_back("test22223423498llkjsalfjaskdfoi2u348239429342934782347292384293842849237978");
+
+  calculate_scroll_size();
 }
 
-void vsx_widget_base_edit::vsx_command_process_b(vsx_command_s *t) {
+void vsx_widget_base_edit::command_process_back_queue(vsx_command_s *t) {
   updates++;
   if (t->cmd == "action")
   {
     // TODO: take into account hidden lines
-    backwards_message("editor_action "+i2s(id)+" "+lines[scroll_y+s2i(t->parts[1])]);
+    backwards_message("editor_action "+i2s(id)+" "+lines[scroll_y + vsx_string_aux::s2i(t->parts[1])]);
   }
   else
   if (t->cmd == "font_size")
@@ -215,7 +216,8 @@ void vsx_widget_base_edit::calculate_scroll_size() {
 //    }
 
   longest_y = 0;
-  if (longest_y < (float)lines.size()+3) longest_y = (float)lines.size()+3-num_hidden_lines;
+  if (longest_y < (float)lines.size()+3)
+    longest_y = (float)lines.size()+3-num_hidden_lines;
 
   if (scroll_x_size > 1) scroll_x_size = 1;
 
@@ -468,7 +470,13 @@ void vsx_widget_base_edit::i_draw() {
   } else {
     p.z = 0.0f;
   }
-  skin_color[18].gl_color();
+  glColor4f(
+    skin_colors[18].r,
+    skin_colors[18].g,
+    skin_colors[18].b,
+    skin_colors[18].a
+  );
+
   draw_box(p, target_size.x, target_size.y);
   //int ypos = 0;
   p.y += target_size.y-font_size;
@@ -487,9 +495,9 @@ void vsx_widget_base_edit::i_draw() {
   int curline = real_line;
   vsx_vector pp = p;
   //std::vector<vsx_string>::iterator it = lines.begin();
-  myf.syntax_colors[0] = skin_color[14];
+  font.syntax_colors[0] = skin_colors[14];
   int cur_render_line = 0;
-  if (selected_line_highlight) myf.color = skin_color[14];
+  if (selected_line_highlight) font.color = skin_colors[14];
   if (scroll_y < lines.size())
   if (curline < (int)lines.size())
   while (run)
@@ -504,15 +512,21 @@ void vsx_widget_base_edit::i_draw() {
       //printf("cursize: %d\n",cursize);
       if (selected_line_highlight && curline == selected_line)
       {
-        skin_color[15].gl_color();
-        myf.syntax_colors[0] = skin_color[16]; // base color
+        glColor4f(
+          skin_colors[15].r,
+          skin_colors[15].g,
+          skin_colors[15].b,
+          skin_colors[15].a
+        );
+
+        font.syntax_colors[0] = skin_colors[16]; // base color
         draw_box(pp,target_size.x,font_size);
       }
       if (cursize-(long)scroll_x >= (long)characters_width) {
-        myf.print(pp,lines[curline].substr((int)scroll_x,(int)characters_width),font_size,lines_p[curline].substr((int)scroll_x,(int)characters_width));
+        font.print(pp,lines[curline].substr((int)scroll_x,(int)characters_width),font_size,lines_p[curline].substr((int)scroll_x,(int)characters_width));
       } else
       if (scroll_x < cursize)
-      myf.print(pp,lines[curline].substr((int)scroll_x,(int)(lines[curline].size()-floor(scroll_x))),font_size,lines_p[curline].substr((int)scroll_x,(int)(lines[curline].size()-scroll_x)));
+      font.print(pp,lines[curline].substr((int)scroll_x,(int)(lines[curline].size()-floor(scroll_x))),font_size,lines_p[curline].substr((int)scroll_x,(int)(lines[curline].size()-scroll_x)));
 
       if (enable_line_action_buttons)
       {
@@ -535,7 +549,7 @@ void vsx_widget_base_edit::i_draw() {
 
       if (selected_line_highlight && curline == selected_line)
       {
-        myf.syntax_colors[0] = skin_color[14]; // base color
+        font.syntax_colors[0] = skin_colors[14]; // base color
       }
       cur_render_line++;
     }
@@ -550,12 +564,12 @@ void vsx_widget_base_edit::i_draw() {
     pp.x = p.x+(float)caretx*font_size*0.37;
     pp.y = p.y-font_size*(float)(carety);
     float tt = (float)((int)(time*3000) % 1000)*0.001;
-    if (selected_line_highlight) myf.color = skin_color[17];
-    myf.color.a = 1-tt;
-    myf.print(pp,"_",font_size);
-    myf.color.a = 1;
+    if (selected_line_highlight) font.color = skin_colors[17];
+    font.color.a = 1-tt;
+    font.print(pp,"_",font_size);
+    font.color.a = 1;
   }
-  myf.color = vsx_color__(1,1,1,1);
+  font.color = vsx_color(1,1,1,1);
 }
 
 
@@ -843,39 +857,39 @@ vsx_string vsx_widget_base_edit::get_line(unsigned long line)
 //***************************************************************************************
 //***************************************************************************************
 
-vsx_widget_base_editor::vsx_widget_base_editor() {
+vsx_widget_editor::vsx_widget_editor() {
   scrollbar_horiz = (vsx_widget_scrollbar*)add(new vsx_widget_scrollbar,"horiz");
   scrollbar_vert = (vsx_widget_scrollbar*)add(new vsx_widget_scrollbar,"vert");
   editor = (vsx_widget_base_edit*)add(new vsx_widget_base_edit,"edit");
   init_children();
   editor->size_from_parent = true;
-  scrollbar_horiz->scroll_type = 0;
-  scrollbar_vert->scroll_type = 1;
-  scrollbar_horiz->control_value = &editor->scrollbar_pos_x;
-  scrollbar_vert->control_value = &editor->scrollbar_pos_y;
+  scrollbar_horiz->set_scroll_type(0);
+  scrollbar_vert->set_scroll_type(1);
+  scrollbar_horiz->set_control_value( &editor->scrollbar_pos_x );
+  scrollbar_vert->set_control_value( &editor->scrollbar_pos_y );
   allow_move_y = allow_move_x = false;
 }
 
-void vsx_widget_base_editor::set_string(const vsx_string& str) {
+void vsx_widget_editor::set_string(const vsx_string& str) {
   editor->set_string(str);
 }
-vsx_string vsx_widget_base_editor::get_string() {
+vsx_string vsx_widget_editor::get_string() {
   return editor->get_string();
 }
 
 
-void vsx_widget_base_editor::i_draw() {
+void vsx_widget_editor::i_draw() {
   calc_pos();
   calc_size();
   //vsx_widget_panel::base_draw();
   float db15 = dragborder*2.5f;
   scrollbar_horiz->set_pos(vsx_vector(-size.x*0.5,-size.y*0.5));
   scrollbar_horiz->set_size(vsx_vector(target_size.x-db15, db15));
-  scrollbar_horiz->scroll_window_size = editor->scroll_x_size;
+  scrollbar_horiz->set_window_size( editor->scroll_x_size );
 
   scrollbar_vert->set_pos(vsx_vector(size.x*0.5-db15,-size.y*0.5+db15));
   scrollbar_vert->set_size(vsx_vector(db15,target_size.y-scrollbar_horiz->size.y));
-  scrollbar_vert->scroll_window_size = editor->scroll_y_size;
+  scrollbar_vert->set_window_size( editor->scroll_y_size );
   editor->set_pos(vsx_vector(-scrollbar_vert->size.x*0.5f,scrollbar_horiz->size.y*0.5f));
 
   editor->target_size.x = target_size.x-scrollbar_vert->size.x;

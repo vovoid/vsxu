@@ -95,6 +95,8 @@ public:
     myf->align = font_align->get();
     glColor4f(base_color->get(0),base_color->get(1),base_color->get(2),base_color->get(3));
 
+
+
     for (unsigned long i = 0; i < (*mesh)->data->vertices.size(); ++i)
     {
       if ( !( (*mesh)->data->vertices[i].x > minx && (*mesh)->data->vertices[i].x < maxx ) ) continue;

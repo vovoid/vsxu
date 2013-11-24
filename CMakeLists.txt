@@ -131,6 +131,15 @@ INCLUDE(CPack)
 ################################################################################
 # DEFINES ######################################################################
 ################################################################################
+
+
+
+
+if(VSXU_DEBUG_SYMBOLS)
+  add_definitions(-g)
+endif()
+
+
 if(VSXU_DEBUG)
   message("All warnings are enabled")
   add_definitions(-g -Wall -Wtype-limits -fpermissive -Wuninitialized -Wignored-qualifiers -Wempty-body -Wunused-parameter)

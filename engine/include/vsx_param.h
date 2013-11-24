@@ -21,17 +21,8 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-
 #ifndef VSX_PARAM_H
 #define VSX_PARAM_H
-
-#if BUILDING_DLL
-  #ifndef WIN32_LEAN_AND_MEAN
-  #define WIN32_LEAN_AND_MEAN
-  #endif
-  //#include <windows.h>
-#endif
-
 
 #include <vsx_platform.h>
 
@@ -45,14 +36,10 @@
   #endif
 #endif
 
-
 #include "vsx_avector.h"
 #include "vsx_avector_nd.h"
 #include "vsx_string.h"
 
-#ifdef VSXU_EXE
-  #include <map>
-#endif
 #ifndef VSX_NO_GL
   #include "vsx_gl_global.h"
   #include "vsx_texture_info.h"
@@ -60,13 +47,14 @@
     #include "vsx_texture.h"
   #endif
 #endif
-#include "vsx_math_3d.h"
 #include "vsx_mesh.h"
 #include "vsx_grid_mesh.h"
 #include "vsx_bitmap.h"
 #include "vsx_particlesystem.h"
 #include "vsx_quaternion.h"
 #include "vsx_float_array.h"
+#include "vsx_vector_array.h"
+#include "vsx_quaternion_array.h"
 #include "vsx_bezier_calc.h"
 #include "vsx_sequence.h"
 #include "vsx_abstract.h"
@@ -75,7 +63,6 @@
 
 class vsx_module;
 class vsx_module_param_abs;
-//typedef vsx_module_param_abs* (*VSX_MODULE_PARAM_CREATE_METHOD)(vsx_string name);
 
 //////////////////////////////////////////////////////////////////////
 #define VSX_MODULE_PARAM_ID_INT                0
@@ -113,6 +100,7 @@ public:
   bool value_from_module;
   bool critical; // is this critical for whatever purpouse it exists?
   bool all_required; // when multiple stuff connected to this, do all have to return true in order to run the module?
+  bool run_activate_offscreen; // wether to run activate/deactivate offscreen methods for this parameter (default is true)
 
   const vsx_string& get_name() const {return name;}
 
@@ -127,7 +115,8 @@ public:
     valid(false),
     value_from_module(false),
     critical(false),
-    all_required(false)
+    all_required(false),
+    run_activate_offscreen(false)
   {}
   virtual ~vsx_module_param_abs() {}
 };
@@ -324,7 +313,7 @@ typedef vsx_module_param<0, vsx_2dgrid_mesh,     1,0 > vsx_module_param_segment_
 typedef vsx_module_param<0, vsx_abstract,        1,0 > vsx_module_param_abstract; // use get_addr() / set_p()
 typedef vsx_module_param<1, float,               4,1 > vsx_module_param_quaternion; // use get_addr() / set_p()
 typedef vsx_module_param<1, vsx_string,          1,0 > vsx_module_param_resource; // use get() / set()
-typedef vsx_module_param<0, vsx_float3_array,    1,0 > vsx_module_param_float3_array; // use get_addr() set_p()
+typedef vsx_module_param<0, vsx_vector_array,    1,0 > vsx_module_param_float3_array; // use get_addr() set_p()
 typedef vsx_module_param<0, vsx_quaternion_array,1,0 > vsx_module_param_quaternion_array; // use get_addr() set_p()
 
 #endif

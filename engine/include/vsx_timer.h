@@ -34,7 +34,13 @@
 #include <windows.h>
 #endif
 
-class vsx_timer {
+
+
+
+
+
+class vsx_timer
+{
   double startt;
   double lastt;
   double dtimet;

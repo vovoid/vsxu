@@ -49,7 +49,7 @@ public:
   void temp_hide();
   void temp_show();
   void i_draw();
-  void vsx_command_process_b(vsx_command_s *t);
+  void command_process_back_queue(vsx_command_s *t);
   void init();
   void reinit();
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);

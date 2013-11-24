@@ -33,13 +33,32 @@
 #include "vsx_module_plugin_info.h"
 
 
+void vsx_module_list::print_help()
+{
+  if (!module_list.size())
+    return;
 
-void vsx_module_list::init(vsx_string args, bool print_help)
+  for (size_t i = 0; i < plugin_handles.size(); i++)
+  {
+    if ( vsx_dlopen::sym(plugin_handles[i], "print_help") )
+    {
+      void(*print_help)() =
+          (void(*)())
+          vsx_dlopen::sym(
+            plugin_handles[i],
+            "print_help"
+          );
+      print_help();
+      printf("\n-----------------------------------------\n\n");
+    }
+  }
+}
+
+void vsx_module_list::init()
 {
   // woops, looks like we already built the list
-  if (module_list.size()) return;
-
-  arguments.init_from_string(args);
+  if (module_list.size())
+    return;
 
   // statistics counter - how many modules are loaded in total?
   //unsigned long total_num_modules = 0;
@@ -92,22 +111,6 @@ void vsx_module_list::init(vsx_string args, bool print_help)
 
     // add this module handle to our list of module handles
     plugin_handles.push_back(plugin_handle);
-
-    if (print_help)
-    {
-      if ( vsx_dlopen::sym(plugin_handle, "print_help") )
-      {
-        void(*print_help)() =
-            (void(*)())
-            vsx_dlopen::sym(
-              plugin_handle,
-              "print_help"
-            );
-        print_help();
-        printf("\n-----------------------------------------\n\n");
-      }
-      continue;
-    }
 
 
     //-------------------------------------------------------------------------
@@ -202,7 +205,7 @@ void vsx_module_list::init(vsx_string args, bool print_help)
     {
       // ask the constructor / factory to create a module instance for us
       vsx_module* module_object =
-          create_new_module(module_index_iterator, (void*)&arguments);
+          create_new_module(module_index_iterator, (void*)vsx_argvector::get_instance() );
       // check for error
       if (0x0 == module_object)
       {
@@ -329,7 +332,7 @@ vsx_module* vsx_module_list::load_module_by_name(vsx_string name)
     create_new_module
     (
       ((vsx_module_plugin_info*)module_plugin_list[ name ])->module_id,
-      (void*)&arguments
+      (void*)vsx_argvector::get_instance()
     )
   ;
   module->module_id = ((vsx_module_plugin_info*)module_plugin_list[ name ])->module_id;

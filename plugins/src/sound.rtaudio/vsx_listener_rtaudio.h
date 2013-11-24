@@ -21,10 +21,8 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <RtAudio/RtAudio.h>
-#include <RtAudio/RtError.h>
 
-#include "rtaudio_handler.h"
+#include "rtaudio_record.h"
 
 class vsx_listener_pulse : public vsx_module {
   // in
@@ -189,12 +187,12 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 }
 
 bool init() {
-  setup_rtaudio();
+  setup_rtaudio_record();
   return true;
 }
 
 void on_delete() {
-  shutdown_rtaudio();
+  shutdown_rtaudio_record();
   delete spectrum.data;
 }
 

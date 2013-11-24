@@ -28,14 +28,14 @@
 #include "vsx_command.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
-#include "vsx_math_3d.h"
 #include "vsx_font.h"
 #include "vsx_command.h"
 #include "vsx_widget_base.h"
-#include "lib/vsx_widget_lib.h"
 #include "vsx_widget_window_statics.h"
-#include "lib/vsx_widget_panel.h"
-#include "lib/vsx_widget_base_edit.h"
+#include "vsx_widget_panel.h"
+#include "vsx_widget_base_edit.h"
+#include "vsx_widget_button.h"
+#include "vsx_widget_2d_label.h"
 //
 
 
@@ -126,7 +126,7 @@ void dialog_query_string::show(vsx_string value)
 }
 
 
-void dialog_query_string::vsx_command_process_b(vsx_command_s *t)
+void dialog_query_string::command_process_back_queue(vsx_command_s *t)
 {
   if (t->cmd == "cancel")
   {

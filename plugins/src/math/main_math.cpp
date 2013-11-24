@@ -27,7 +27,6 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "math_binary_ops.h"
-#include "vsx_math_3d.h"
 #include "vsx_quaternion.h"
 
 
@@ -79,6 +78,7 @@ float clip (float x, float a, float b)
 #include "module_bool_not.h"
 #include "module_bool_or.h"
 #include "module_bool_xor.h"
+#include "module_bspline_matrix.h"
 #include "module_f4_hsl_to_rgb_f4.h"
 #include "module_float3_accumulator.h"
 #include "module_float3_dummy.h"
@@ -200,11 +200,13 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 56: return (vsx_module*)(new module_float4_dummy);
     case 57: return (vsx_module*)(new module_axis_angle_to_quaternion);
     case 58: return (vsx_module*)(new module_quaternion_to_axis_angle);
+    case 59: return (vsx_module*)(new module_bspline_matrix);
   }
   return 0;
 }
 
-void MOD_DM(vsx_module* m,unsigned long module) {
+void MOD_DM(vsx_module* m,unsigned long module)
+{
   switch(module) {
     case 0: delete (module_3float_to_float3*)m; break;
     case 1: delete (module_4float_to_float4*)m; break;
@@ -265,12 +267,11 @@ void MOD_DM(vsx_module* m,unsigned long module) {
     case 56: delete (module_float4_dummy*)m; break;
     case 57: delete (module_axis_angle_to_quaternion*)m; break;
     case 58: delete (module_quaternion_to_axis_angle*)m; break;
+    case 59: delete (module_bspline_matrix*)m; break;
   }
 }
 
-unsigned long MOD_NM() {
-  return 59;
+unsigned long MOD_NM()
+{
+  return 60;
 }
-
-
-//module_vector_float4_to_4float

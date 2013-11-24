@@ -109,8 +109,6 @@ typedef struct
 class vsx_module_engine_info
 {
 public:
-  // OpenGL State
-  vsx_gl_state* gl_state;
 
   // filesystem handle to use in every module's file operations
   vsxf* filesystem;
@@ -137,8 +135,6 @@ public:
   size_t num_input_events;
   vsx_engine_input_event input_events[VSX_ENGINE_INPUT_EVENT_BUFSIZE];
 
-  // this is used to send delta hints to control a sequencer in recording mode
-  vsx_avector<float> sequencer_hints;
   // this is to send parameters from the implementor of the engine down to the modules, like sound data etc
   // should only be used for implementation-specific modules that are not part of a normal vsxu distribution.
   // item 0 is reserved for realtime PCM data for visualization (from host app to module)
@@ -199,7 +195,8 @@ public:
 */
 
 
-class vsx_module_info {
+class vsx_module_info
+{
 public:
 //-----internal:
   vsx_string location; // internal or external - for internal use only, don't care about this
@@ -287,14 +284,16 @@ public:
   int output;
 
   // constructor
-  vsx_module_info() {
+  vsx_module_info()
+  {
     output = 0; // being an input type is the default
     tunnel = false;
   }
 
 };
 
-class vsx_module {
+class vsx_module
+{
 public:
   //-----internal:
     int module_id; // module id, used when destroying a module. Managed by engine. Should be treated as read-only!
@@ -469,6 +468,7 @@ public:
   virtual void stop()
   {
   }
+
   virtual void start()
   {
   }
@@ -476,6 +476,7 @@ public:
   virtual void on_delete()
   {
   }
+
   vsx_module()
   {
     redeclare_in = false;
@@ -484,6 +485,7 @@ public:
     loading_done = false;
     engine = 0;
   }
+
   virtual ~vsx_module()
   {
   }
@@ -491,8 +493,6 @@ public:
 
 // hope this documentation isn't _that_ horrible ;)
 // oh, it is. well whaaatever!
-
-
 
 
 #endif

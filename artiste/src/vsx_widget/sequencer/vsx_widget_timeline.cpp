@@ -26,7 +26,6 @@
 #include <vector>
 #include <math.h>
 #include "vsx_gl_global.h"
-#include "vsx_math_3d.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_command.h"
@@ -37,7 +36,6 @@
 #include "vsx_module.h"
 // local includes
 #include "vsx_widget_base.h"
-#include "lib/vsx_widget_lib.h"
 #include "vsx_widget_sequence.h"
 #include "vsx_widget_seq_chan.h"
 #include "vsx_widget_timeline.h"
@@ -45,6 +43,7 @@
 #include "server/vsx_widget_server.h"
 // engine includes
 #include "vsx_engine.h"
+#include <gl_helper.h>
 
 
 void vsx_widget_timeline::move_time(vsx_vector world) {
@@ -144,11 +143,11 @@ void vsx_widget_timeline::i_draw() {
   glColor3f(0.5f,0.5f,0.5f);
   draw_box_border(vsx_vector(parentpos.x+pos.x-size.x*0.5,y_mid-y_size_half), vsx_vector(size.x,y_size), dragborder*0.5);
 
-  levelstart = ((float)z_round(owner->tstart) - owner->tstart)/totalsize;
+  levelstart = ((float)(int)(trunc(owner->tstart+(owner->tstart>=0.0?0.5:-0.5))) - owner->tstart)/totalsize;
   //printf("levelstart: %f\n",levelstart);
   levelstart = 0;
 
-  myf.color.a = 0.8f;
+  font.color.a = 0.8f;
 
   float one_div_totalsize_times_sizex = 1.0f / totalsize * size.x;
 	for (int i = (int)owner->tstart; i < (int)(owner->tend)+1; ++i)
@@ -162,7 +161,7 @@ void vsx_widget_timeline::i_draw() {
         glVertex2f(x,y_mid+y_size*0.416666667f);
         glVertex2f(x,y_mid-y_size*0.416666667f);
       glEnd();
-      myf.print_center(vsx_vector(x,y_mid), i2s(i),0.005);
+      font.print_center(vsx_vector(x,y_mid), i2s(i),0.005);
     }
 	}
 

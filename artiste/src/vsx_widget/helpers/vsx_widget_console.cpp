@@ -26,7 +26,6 @@
 #include <vector>
 #include <math.h>
 #include "vsx_gl_global.h"
-#include "vsx_math_3d.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_command.h"
@@ -39,10 +38,6 @@
 #include "window/vsx_widget_window.h"
 #include "vsx_widget_object_inspector.h" 
 #include "vsx_widget_desktop.h"
-#include "lib/vsx_widget_lib.h"
-//#include "vsx_widget_comp.h"
-//#include "vsx_widget_server.h"
-//#include "vsx_widget_module_chooser.h"
 #include "dialogs/vsx_widget_window_statics.h"
 #include "lib/vsx_widget_panel.h"
 #include "lib/vsx_widget_base_edit.h"
@@ -113,7 +108,7 @@
     return 0;
   }
   
-  void vsx_widget_2d_console::vsx_command_process_b(vsx_command_s *t) {
+  void vsx_widget_2d_console::command_process_back_queue(vsx_command_s *t) {
     cmd_parent = destination;
     ((vsx_widget_base_edit*)editor)->set_string("");
     ((vsx_widget_base_edit*)editor)->caret_goto_end();
@@ -164,33 +159,33 @@
   	glColor4f(1,1,1,1);
   	target_pos.y = pos.y = yposs+ypos;
   	glBegin(GL_QUADS);
-      glColor4f(skin_color[7].r,skin_color[7].g,skin_color[7].b,skin_color[7].a);
+      glColor4f(skin_colors[7].r,skin_colors[7].g,skin_colors[7].b,skin_colors[7].a);
   			glVertex3f(0, pos.y-size.y, 0);
-      glColor4f(skin_color[8].r,skin_color[8].g,skin_color[8].b,skin_color[8].a);
+      glColor4f(skin_colors[8].r,skin_colors[8].g,skin_colors[8].b,skin_colors[8].a);
   			glVertex3f(0, pos.y, 0);
   			glVertex3f(1.0f*screen_aspect, pos.y, 0);
-      glColor4f(skin_color[7].r,skin_color[7].g,skin_color[7].b,skin_color[7].a);
+      glColor4f(skin_colors[7].r,skin_colors[7].g,skin_colors[7].b,skin_colors[7].a);
    			glVertex3f(1.0f*screen_aspect, pos.y-size.y, 0);
   	glEnd();
-    glColor4f(skin_color[10].r,skin_color[10].g,skin_color[10].b,skin_color[10].a);
+    glColor4f(skin_colors[10].r,skin_colors[10].g,skin_colors[10].b,skin_colors[10].a);
     texty = pos.y-size.y+fontsize+fontsize/4;
     if (tx != 0) {
       double c = 0;
       if (destination)
       for (int x = destination->log_cmd.size()-1; ((x >= 0) && (c < rows-1)); x--) {
-        myf.print(vsx_vector(0,texty+fontsize*c*0.9),destination->log_cmd[x],fontsize);
+        font.print(vsx_vector(0,texty+fontsize*c*0.9),destination->log_cmd[x],fontsize);
         ++c;
       }
     }
-    glColor4f(skin_color[9].r,skin_color[9].g,skin_color[9].b,skin_color[9].a);
+    glColor4f(skin_colors[9].r,skin_colors[9].g,skin_colors[9].b,skin_colors[9].a);
     if (destination)
-    myf.print(vsx_vector(0,pos.y-0.025),h+"console:"+destination->name,0.025); 
+    font.print(vsx_vector(0,pos.y-0.025),h+"console:"+destination->name,0.025); 
     glLineWidth(1.0);
    	glBegin(GL_LINE_STRIP);
    	  glVertex3f(0,pos.y-0.025,0);
-      glColor4f(skin_color[11].r,skin_color[11].g,skin_color[11].b,skin_color[11].a);
+      glColor4f(skin_colors[11].r,skin_colors[11].g,skin_colors[11].b,skin_colors[11].a);
    	  glVertex3f(0.41*screen_aspect,pos.y-0.025,0);
-      glColor4f(skin_color[12].r,skin_color[12].g,skin_color[12].b,skin_color[12].a);
+      glColor4f(skin_colors[12].r,skin_colors[12].g,skin_colors[12].b,skin_colors[12].a);
    	  glVertex3f(screen_aspect,pos.y-0.025,0);
    	  
  	  glEnd();

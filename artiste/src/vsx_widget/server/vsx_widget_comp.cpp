@@ -28,24 +28,24 @@
 #include <list>
 #include <vector>
 #include <math.h>
-#include "vsx_math_3d.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_command.h"
+#include "vsx_command_list.h"
 #include "vsx_font.h"
 #include "vsxfst.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
 // local includes
-#include "lib/vsx_widget_lib.h"
 #include "vsx_widget_comp.h"
 #include "vsx_widget_anchor.h"
 #include <vsx_command_client_server.h>
 #include "vsx_widget_server.h"
-//#include "vsx_widget_module_chooser.h"
 #include "dialogs/vsx_widget_window_statics.h"
-#include "controllers/vsx_widget_base_controller.h"
-#include "controllers/vsx_widget_editor.h"
+#include "controllers/vsx_widget_controller_base.h"
+#include "controllers/vsx_widget_controller_editor.h"
+#include "vsx_widget_popup_menu.h"
+#include <gl_helper.h>
 
 #include <GL/glfw.h>
 
@@ -63,7 +63,7 @@ int vsx_widget_component::inside_xy_l(vsx_vector &test, vsx_vector &global) {
   return vsx_widget::inside_xy_l(test, global);
 }
 
-void vsx_widget_component::vsx_command_process_b(vsx_command_s *t)
+void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
 {
   if (t->cmd == "pseq_p_ok")
   {
@@ -253,7 +253,6 @@ void vsx_widget_component::vsx_command_process_b(vsx_command_s *t)
   } else
   if (t->cmd == "in_param_spec" || t->cmd == "out_param_spec" || t->cmd == "ipsa" || t->cmd == "opsa")
   {
-    //printf("widget_comp::vsx_command_process_b command in_param_spec: param part 1: %s----:::\n",t->raw.c_str());
     bool fix_anchors = false;
     if (t->parts.size() < 3) return;
     int l_io = 0;
@@ -549,19 +548,19 @@ void vsx_widget_component::vsx_command_process_b(vsx_command_s *t)
   } else
   if (t->cmd == "vsxl_cfl_s")
   {
-    vsx_widget* tt = add(new vsx_widget_editor,name+".edit");
-    ((vsx_widget_editor*)tt)->target_param = name;
-    ((vsx_widget_editor*)tt)->return_command = "ps64";
-    ((vsx_widget_editor*)tt)->return_component = this;
+    vsx_widget* tt = add(new vsx_widget_controller_editor,name+".edit");
+    ((vsx_widget_controller_editor*)tt)->target_param = name;
+    ((vsx_widget_controller_editor*)tt)->return_command = "ps64";
+    ((vsx_widget_controller_editor*)tt)->return_component = this;
     tt->set_render_type(VSX_WIDGET_RENDER_3D);
     tt->widget_type = VSX_WIDGET_TYPE_CONTROLLER;
     tt->set_font_size(0.002);
     tt->set_border(0.0005);
     tt->set_pos(vsx_vector(0,-0.08f));
 
-    ((vsx_widget_editor*)tt)->return_command = "vsxl_cfi";
-    ((vsx_widget_editor*)tt)->return_component = this;
-    ((vsx_widget_editor*)tt)->load_text(base64_decode(t->parts[2]));
+    ((vsx_widget_controller_editor*)tt)->return_command = "vsxl_cfi";
+    ((vsx_widget_controller_editor*)tt)->return_component = this;
+    ((vsx_widget_controller_editor*)tt)->load_text(base64_decode(t->parts[2]));
 
     //tt->title = "VSXL [compfilter] : "+name;
     //((vsx_widget_2d_editor*)tt)->return_command = "vsxl_cfi";
@@ -690,9 +689,9 @@ void vsx_widget_component::init()
   anchor_order[1] = 0;
   widget_type = VSX_WIDGET_TYPE_COMPONENT;
   parent_name = "";
-  //myf.background_color.a = 0.5;
-  //myf.background = true;
-  myf.mode_2d = true;
+  //font.background_color.a = 0.5;
+  //font.background = true;
+  font.mode_2d = true;
   init_run = true;
   macro = false;
   scaled = false;
@@ -953,7 +952,12 @@ void vsx_widget_component::draw()
       glColor4f(1,1,1,0.3);
     } else
     {
-      color.gl_color();
+      glColor4f(
+        color.r,
+        color.g,
+        color.b,
+        color.a
+      );
     }
     if (macro)
     {
@@ -1054,9 +1058,9 @@ void vsx_widget_component::draw()
     if (font_size > max_size) font_size = max_size;
     t.y -= size.y*0.5;
 
-    //myf.background = true;
-    //myf.background_color.a = color.a*0.4f;
-    myf.print_center(t, real_name,font_size);
+    //font.background = true;
+    //font.background_color.a = color.a*0.4f;
+    font.print_center(t, real_name,font_size);
     t.y += size.y*0.5;
     if (message.size())
     {
@@ -1069,9 +1073,9 @@ void vsx_widget_component::draw()
         draw_box(rp, 0.008*20, -0.008*10);
         rp.x += 0.0008;
         rp.y -= 0.001;
-        //myf.background = true;
-        myf.color = vsx_color__(1,0.5,0.5,1.0f-fmod(time*2.0f,1.0f));
-        myf.print(rp, "\nModule status:\n"+message, 0.008);
+        //font.background = true;
+        font.color = vsx_color(1,0.5,0.5,1.0f-fmod(time*2.0f,1.0f));
+        font.print(rp, "\nModule status:\n"+message, 0.008);
       } else
       if (m_o_focus == this && !mouse_down_l && !mouse_down_r) {
         glColor4f(0,0,0,0.8);
@@ -1080,12 +1084,12 @@ void vsx_widget_component::draw()
         draw_box(rp, 0.004*20, -0.004*10);
         rp.x += 0.0008;
         rp.y -= 0.001;
-        //myf.background = false;
-        myf.color = vsx_color__(1,0.5,0.5,color.a);
-        myf.print(rp, "\nModule status:\n"+message, 0.004);
+        //font.background = false;
+        font.color = vsx_color(1,0.5,0.5,color.a);
+        font.print(rp, "\nModule status:\n"+message, 0.004);
       }
     }
-    myf.color = vsx_color(1.0f,1.0f,1.0f,1.0f);
+    font.color = vsx_color(1.0f,1.0f,1.0f,1.0f);
   }
   if (a_focus != this) {
     pre_draw_children();

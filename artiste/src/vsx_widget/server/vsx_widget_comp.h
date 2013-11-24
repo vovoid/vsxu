@@ -25,6 +25,9 @@
 #ifndef VSX_WIDGET_COMP_H
 #define VSX_WIDGET_COMP_H
 
+#include "vsx_widget_base.h"
+#include "vsx_widget_connector_info.h"
+
 #define COMPONENT_MOVE 1
 #define COMPONENT_SCALE 2
 
@@ -84,7 +87,7 @@ public:
   std::map<vsx_string, vsx_widget*>::const_iterator p_l_list_out_iter;
   std::map<vsx_string, vsx_widget*> t_list; // temporary list for rescuing of re-inited anchors
 
-  void vsx_command_process_b(vsx_command_s *t);
+  void command_process_back_queue(vsx_command_s *t);
   void vsx_command_process_f();
   void init();
   void reinit();

@@ -22,30 +22,10 @@
 */
 
 #ifndef VSX_NO_CLIENT
-#include "vsx_gl_global.h"
-//#include <string>
-//#include <iostream>
-#include <iomanip>
-#include <map>
-#include <list>
-#include <vector>
-#include <math.h>
-#include "vsx_math_3d.h"
-#include "vsx_texture_info.h"
-#include "vsx_texture.h"
-#include "vsx_command.h"
-#include "vsx_font.h"
-#include "vsxfst.h"
-#include "vsx_mouse.h"
-#include "vsx_param.h"
-#include "vsx_module.h"
 
-#include "vsx_widget_base.h"
-#include "vsx_widget_base_controller.h"
-#include "vsx_widget_controller.h"
 #include "vsx_widget_controller_seq.h"
-#include "sequencer/vsx_widget_sequence.h"
 #include "sequencer/vsx_widget_seq_chan.h"
+
 
 void vsx_widget_controller_sequence::init()
 {
@@ -79,7 +59,7 @@ void vsx_widget_controller_sequence::set_size(vsx_vector new_size)
   vsx_widget::set_size(new_size);
 }
 
-void vsx_widget_controller_sequence::vsx_command_process_b(vsx_command_s *t) {
+void vsx_widget_controller_sequence::command_process_back_queue(vsx_command_s *t) {
   if (t->cmd == "update")
   {
     //printf("command gotten from chan: %s\n",t->raw.c_str());
@@ -116,7 +96,7 @@ void vsx_widget_controller_sequence::i_draw()
 {
 	if (draw_base)
 	{
-		vsx_widget_base_controller::i_draw();
+    vsx_widget_controller_base::i_draw();
 	}
 }
 

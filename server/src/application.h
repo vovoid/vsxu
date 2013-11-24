@@ -47,9 +47,6 @@ extern bool dual_monitor;
 extern vsx_tm* tm;
 extern vsx_gl_state gl_state;
 
-extern vsx_argvector app_argv;
-
-
 void app_init(int id);
 
 void app_print_cli_help();

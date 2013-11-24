@@ -497,10 +497,6 @@ public:
 
       for (unsigned long i = 0; i < end; i++)
       {
-        // scaling
-//          *vs_v *= 0.95f;
-        //vs_v->y *= 0.9f;
-
         // pre rotation
         vs_v->multiply_matrix_other_vec
         (

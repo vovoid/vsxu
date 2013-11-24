@@ -25,7 +25,6 @@
 #include "_configuration.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
-#include "vsx_math_3d.h"
 #include "vsx_glsl.h"
 
 GLfloat blobMat[16];
@@ -35,66 +34,63 @@ GLfloat blobVec1[4];
 
 
 // this is the method used in starlight aurora vsx, quite handy actually
-void beginBlobs(vsx_module_engine_info* engine)
+
+void beginBlobs(vsx_gl_state* gl_state)
 {
-	glEnable(GL_TEXTURE_2D);
-	GLfloat tmpMat[16];
+  GLfloat tmpMat[16];
+
+  gl_state->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, blobMat );
+
+  gl_state->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+
+  gl_state->matrix_push();
+
+  gl_state->matrix_get_v( VSX_GL_PROJECTION_MATRIX, tmpMat );
+
+  tmpMat[3] = 0;
+  tmpMat[7] = 0;
+  tmpMat[11] = 0;
+  tmpMat[12] = 0;
+  tmpMat[13] = 0;
+  tmpMat[14] = 0;
+  tmpMat[15] = 1;
+
+  v_norm(tmpMat);
+  v_norm(tmpMat + 4);
+  v_norm(tmpMat + 8);
+
+  gl_state->matrix_load_identity();
+
+  gl_state->matrix_mult_f(tmpMat);
+
+  blobMat[3] = 0;
+  blobMat[7] = 0;
+  blobMat[11] = 0;
+  blobMat[12] = 0;
+  blobMat[13] = 0;
+  blobMat[14] = 0;
+  blobMat[15] = 1;
+
+  v_norm(blobMat);
+  v_norm(blobMat + 4);
+  v_norm(blobMat + 8);
+
+  gl_state->matrix_mult_f(blobMat);
 
 
-  glGetFloatv(GL_MODELVIEW_MATRIX, blobMat);
+  gl_state->matrix_get_v( VSX_GL_PROJECTION_MATRIX, blobMat );
 
+  gl_state->matrix_pop();
 
-  glMatrixMode(GL_PROJECTION);
+  gl_state->matrix_mode (VSX_GL_MODELVIEW_MATRIX );
 
-	glPushMatrix();
+  GLfloat upLeft[] = {-0.5f, 0.5f, 0.0f, 1.0f};
+  GLfloat upRight[] = {0.5f, 0.5f, 0.0f, 1.0f};
 
-
-  glGetFloatv(GL_PROJECTION_MATRIX, tmpMat);
-
-	tmpMat[3] = 0;
-	tmpMat[7] = 0;
-	tmpMat[11] = 0;
-	tmpMat[12] = 0;
-	tmpMat[13] = 0;
-	tmpMat[14] = 0;
-	tmpMat[15] = 1;
-
-	v_norm(tmpMat);
-	v_norm(tmpMat + 4);
-	v_norm(tmpMat + 8);
-
-  glLoadIdentity();
-
-  glMultMatrixf(tmpMat);
-
-	blobMat[3] = 0;
-	blobMat[7] = 0;
-	blobMat[11] = 0;
-	blobMat[12] = 0;
-	blobMat[13] = 0;
-	blobMat[14] = 0;
-	blobMat[15] = 1;
-
-	v_norm(blobMat);
-	v_norm(blobMat + 4);
-	v_norm(blobMat + 8);
-
-  glMultMatrixf(blobMat);
-
-  glGetFloatv(GL_PROJECTION_MATRIX, blobMat);
-
-	glPopMatrix();
-
-	glMatrixMode(GL_MODELVIEW);
-
-	//inv_mat(blobMat, blobMatInv);
-
-	GLfloat upLeft[] = {-0.5f, 0.5f, 0.0f, 1.0f};
-	GLfloat upRight[] = {0.5f, 0.5f, 0.0f, 1.0f};
-
-	mat_vec_mult(blobMat, upLeft, blobVec0);
-	mat_vec_mult(blobMat, upRight, blobVec1);
+  mat_vec_mult(blobMat, upLeft, blobVec0);
+  mat_vec_mult(blobMat, upRight, blobVec1);
 }
+
 
 inline void drawBlob(GLfloat x, GLfloat y, GLfloat z, GLfloat size)
 {

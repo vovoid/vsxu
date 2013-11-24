@@ -49,24 +49,7 @@ public:
   // Init / Build Module List
   //   This method looks on disk for plugins, enumerates them
   //   and stores the results.
-  //   Parameters:
-  //
-  //     args:
-  //       Can be used for config/things like:
-  //         - Preferred driver (if dealing with hardware)
-  //         - Config like OpenGL vsync on/off, FSAA on/off etc.
-  //       Should only be used for stuff that has to stay the
-  //       same during the whole instance of an engine. For everything
-  //       else - use normal module parameters (maybe even hidden ones).
-  //
-  //     print_help:
-  //       Tell the module so's to print out (to cli) documentation for
-  //       all flags supported.
-  //
-  //   Example use:
-  //     build_module_list("-sound_driver pulse -opengl_vsync 1", false);
-  //     build_module_list("", true);
-  virtual void init(vsx_string args = "", bool print_help = false) = 0;
+  virtual void init() = 0;
 
   virtual void destroy() = 0;
 
@@ -88,6 +71,9 @@ public:
 
   // Check presence of module
   virtual bool find( const vsx_string &module_name_to_look_for) = 0;
+
+  // Print help text for all loaded modules
+  virtual void print_help() = 0;
 };
 
 #endif

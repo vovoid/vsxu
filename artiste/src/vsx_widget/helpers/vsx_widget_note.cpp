@@ -27,17 +27,16 @@
 #include <list>
 #include <vector>
 #include "vsx_command.h"
-#include "vsx_math_3d.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_font.h"
 #include "vsx_widget_base.h"
-#include "lib/vsx_widget_lib.h"
 #include "lib/vsx_widget_panel.h"
 #include "lib/vsx_widget_scrollbar.h"
 #include "lib/vsx_widget_base_edit.h"
 #include "window/vsx_widget_window.h"
 #include "vsx_widget_note.h"
+#include <vsx_vector_aux.h>
 
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
@@ -87,9 +86,9 @@ bool vsx_widget_note::init_from_command(vsx_command_s* c)
 {
  	set_render_type(VSX_WIDGET_RENDER_3D);
  	vsx_vector np;
- 	np.from_string(c->parts[2]);
+  np = vsx_vector_aux::from_string(c->parts[2]);
 	set_pos(np);
-	np.from_string(c->parts[3]);
+  np = vsx_vector_aux::from_string(c->parts[3]);
 	set_size(np);
   set_font_size(s2f(c->parts[5]));
   set_border(font_size*0.15f);
@@ -158,7 +157,7 @@ void vsx_widget_note::init() {
 }
 
 
-void vsx_widget_note::vsx_command_process_b(vsx_command_s *t) { 
+void vsx_widget_note::command_process_back_queue(vsx_command_s *t) {
   if (t->cmd == "close") {
   	command_q_b.add_raw("note_delete "+name);
   	parent->vsx_command_queue_b(this);
@@ -176,7 +175,7 @@ void vsx_widget_note::vsx_command_process_b(vsx_command_s *t) {
 }
 
 void vsx_widget_note::save() {
-  command_q_b.add_raw("note_update "+name+" "+target_pos.to_string()+" "+target_size.to_string()+" "+base64_encode(((vsx_widget_base_edit*)editor)->get_string())+" "+f2s(font_size));
+  command_q_b.add_raw("note_update "+name+" "+ vsx_vector_aux::to_string(target_pos) +" " + vsx_vector_aux::to_string(target_size) +" "+base64_encode(((vsx_widget_base_edit*)editor)->get_string())+" "+f2s(font_size));
   parent->vsx_command_queue_b(this);
 }  
 

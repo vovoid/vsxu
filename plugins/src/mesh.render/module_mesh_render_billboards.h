@@ -41,6 +41,8 @@ public:
   vsx_matrix ma;
   vsx_vector upv;
 
+  vsx_gl_state* gl_state;
+
   unsigned long mesh_timestamp;
 
   GLuint dlist;
@@ -135,6 +137,7 @@ public:
     vsx_string h = shader.link();
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     redeclare_in_params(in_parameters);
+    gl_state = vsx_gl_state::get_instance();
   }
 
   void output(vsx_module_param_abs* param)
@@ -145,15 +148,11 @@ public:
 
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
       shader.begin();
-      GLint viewport[4];
-      glGetIntegerv (GL_VIEWPORT, viewport);
-      float t_res_x = (float)abs(viewport[2] - viewport[0]);
-
 
       if (shader.uniform_map.find("_vx") != shader.uniform_map.end())
       {
         vsx_module_param_float* p = (vsx_module_param_float*)shader.uniform_map["_vx"]->module_param;
-        if (p) p->set(t_res_x);
+        if (p) p->set(gl_state->viewport_get_width());
       }
 
     shader.set_uniforms();

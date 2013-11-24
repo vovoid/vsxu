@@ -24,6 +24,8 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_command.h"
+#include "vsx_command_list.h"
+#include <vsx_string_aux.h>
 class vsx_engine_param_list;
 #include "vsx_comp_abs.h"
 #include "vsx_comp_channel.h"
@@ -1376,7 +1378,7 @@ int vsx_engine_param_list::order(vsx_string param, vsx_string new_order) {
     // 1. Re-order our own little connection list
     std::vector<vsx_engine_param_connection*> new_connection_list;
     for (std::vector<vsx_string>::iterator it = order_source.begin(); it != order_source.end(); ++it) {
-      new_connection_list.push_back(my_param->connections[s2i(*it)]);
+      new_connection_list.push_back(my_param->connections[ vsx_string_aux::s2i(*it) ]);
     }
     my_param->connections = new_connection_list;
 

@@ -36,13 +36,16 @@ class module_particlesystem_render : public vsx_module
   vsx_float_array shader_sizes;
   vsx_array<float> shader_sizes_data;
 
-  vsx_float3_array shader_colors;
+  vsx_vector_array shader_colors;
   vsx_array<vsx_vector> shader_colors_data;
 
   vsx_float_array shader_alphas;
   vsx_array<float> shader_alphas_data;
 
   vsx_glsl shader;
+
+  vsx_gl_state* gl_state;
+
 public:
 
   void module_info(vsx_module_info* info)
@@ -149,6 +152,7 @@ public:
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     render_result->set(0);
 
+    gl_state = vsx_gl_state::get_instance();
   }
 
 
@@ -395,7 +399,7 @@ public:
         {
           //printf("found vx\n");
           vsx_module_param_float* p = (vsx_module_param_float*)shader.uniform_map["_vx"]->module_param;
-          if (p) p->set( engine->gl_state->get_viewport_width() );
+          if (p) p->set( gl_state->viewport_get_width() );
         }
 
         if (shader.attribute_map.find("_s") != shader.attribute_map.end())
@@ -435,7 +439,7 @@ public:
       glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
     } else
     {
-      beginBlobs(engine);
+      beginBlobs(gl_state);
       glBegin(GL_QUADS);
       if (size_lifespan_type->get() == 0) {
         for (unsigned long i = 0; i < particles->particles->size(); ++i) {

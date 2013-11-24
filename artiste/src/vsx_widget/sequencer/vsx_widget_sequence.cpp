@@ -27,7 +27,6 @@
 #include <vector>
 #include <math.h>
 #include "vsx_gl_global.h"
-#include "vsx_math_3d.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_command.h"
@@ -36,21 +35,24 @@
 #include "vsx_mouse.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
+#include <vsx_string_aux.h>
 // local includes
 #include "vsx_widget_base.h"
-#include "lib/vsx_widget_lib.h"
 #include "vsx_widget_sequence.h"
 #include "vsx_widget_seq_chan.h"
 #include "vsx_widget_timeline.h"
+#include "vsx_widget_button.h"
+#include "vsx_widget_popup_menu.h"
 #include "lib/vsx_widget_base_edit.h"
 #include "dialogs/vsx_widget_window_statics.h"
+#include <gl_helper.h>
 
 #define VSX_ENGINE_STOPPED 0
 #define VSX_ENGINE_PLAYING 1
 #define VSX_ENGINE_REWIND 2
 
 
-class vsx_widget_sequence_tree : public vsx_widget_base_editor {
+class vsx_widget_sequence_tree : public vsx_widget_editor {
 
 public:
 	vsx_widget_sequence_editor* sequence_editor;
@@ -188,18 +190,18 @@ void vsx_widget_sequence_editor::load_sequence_list()
 void vsx_widget_sequence_editor::i_draw() {
   parentpos = get_pos_p();
   glBegin(GL_QUADS);
-		glColor4f(skin_color[1].r,skin_color[1].g,skin_color[1].b,skin_color[1].b);
+		glColor4f(skin_colors[1].r,skin_colors[1].g,skin_colors[1].b,skin_colors[1].b);
 		glVertex3f(parentpos.x-size.x*0.5f, parentpos.y+size.y*0.5f,pos.z);
 		glVertex3f(parentpos.x+size.x*0.5f, parentpos.y+size.y*0.5f,pos.z);
 		glVertex3f(parentpos.x+size.x*0.5f, parentpos.y+-size.y*0.5f,pos.z);
 		glVertex3f(parentpos.x-size.x*0.5f, parentpos.y+-size.y*0.5f,pos.z);
   glEnd();
-  glColor4f(skin_color[0].r,skin_color[0].g,skin_color[0].b,skin_color[0].a);
+  glColor4f(skin_colors[0].r,skin_colors[0].g,skin_colors[0].b,skin_colors[0].a);
   draw_box_border(vsx_vector(parentpos.x-size.x*0.5,parentpos.y-size.y*0.5f), vsx_vector(size.x,size.y), dragborder);
 
-	myf.color = vsx_color(1.0f,1.0f,1.0f,0.7f);
-	myf.print(vsx_vector(parentpos.x-size.x*0.5+0.3f,parentpos.y+size.y*0.5f-0.015f), name,0.01);
-	myf.color = vsx_color(1.0f,1.0f,1.0f,1.0f);
+	font.color = vsx_color(1.0f,1.0f,1.0f,0.7f);
+	font.print(vsx_vector(parentpos.x-size.x*0.5+0.3f,parentpos.y+size.y*0.5f-0.015f), name,0.01);
+	font.color = vsx_color(1.0f,1.0f,1.0f,1.0f);
 
   vsx_widget::i_draw();
 }
@@ -343,7 +345,7 @@ void vsx_widget_sequence_editor::remove_master_channel_items_with_name(vsx_strin
 	}
 }
 
-void vsx_widget_sequence_editor::vsx_command_process_b(vsx_command_s *t) {
+void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
   //printf("t->cmd: %s\n",t->cmd.c_str());
   // internal operations
 	if (t->cmd == "seq_pool")
@@ -557,7 +559,7 @@ void vsx_widget_sequence_editor::vsx_command_process_b(vsx_command_s *t) {
       check_timeline();
     }
     //printf("ff: %s\n",t->parts[2].c_str());
-    engine_status = s2i(t->parts[2]);
+    engine_status = vsx_string_aux::s2i(t->parts[2]);
   } else
 	if (t->cmd == "mseq_channel_ok")
 	{
@@ -632,7 +634,7 @@ void vsx_widget_sequence_editor::vsx_command_process_b(vsx_command_s *t) {
 		}
 	} else
 
-  vsx_widget::vsx_command_process_b(t);
+  vsx_widget::command_process_back_queue(t);
 }
 
 bool vsx_widget_sequence_editor::event_key_down(signed long key, bool alt, bool ctrl, bool shift)

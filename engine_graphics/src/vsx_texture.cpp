@@ -1331,12 +1331,11 @@ void vsx_texture::load_png_thread(vsx_string fname, bool mipmaps)
 void vsx_texture::load_png_cubemap(vsx_string fname, bool mipmaps, vsxf* filesystem)
 {
   if (load_from_glist(fname))
-    return true;
+    return;
 
   is_glist_alias = false;
 
   vsxf* i_filesystem = 0x0;
-  //printf("processing png: %s\n",fname.c_str());
   if (filesystem == 0x0)
   {
     i_filesystem = new vsxf;

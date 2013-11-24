@@ -25,11 +25,15 @@
 #ifndef VSX_WIDGET_ANCHOR_H
 #define VSX_WIDGET_ANCHOR_H
 
+#include "vsx_widget_base.h"
+#include "vsx_widget_connector_info.h"
+
 // VSX_WIDGET_ANCHOR ************************************************************************************************
 // VSX_WIDGET_ANCHOR ************************************************************************************************
 // VSX_WIDGET_ANCHOR ************************************************************************************************
 // VSX_WIDGET_ANCHOR ************************************************************************************************
-class vsx_widget_anchor : public vsx_widget {
+class vsx_widget_anchor : public vsx_widget
+{
   vsx_widget *t;
   vsx_string display_value;
   vsx_avector<vsx_string> enum_items;
@@ -96,7 +100,7 @@ public:
 
   virtual void init();
   void reinit();
-  virtual void vsx_command_process_b(vsx_command_s *t);
+  virtual void command_process_back_queue(vsx_command_s *t);
 
   bool connect(vsx_widget* other_anchor);
 

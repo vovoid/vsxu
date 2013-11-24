@@ -55,7 +55,7 @@ public:
   // vsx widget methods
   void init();
   
-  virtual void vsx_command_process_b(vsx_command_s *t);
+  virtual void command_process_back_queue(vsx_command_s *t);
   
   // custom methods
   bool load_text(vsx_string new_text);

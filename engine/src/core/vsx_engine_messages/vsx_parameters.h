@@ -238,7 +238,7 @@
         {
           if (c->parts[3] == "external_expose")
           {
-            param->external_expose = s2i( c->parts[4] );
+            param->external_expose = vsx_string_aux::s2i( c->parts[4] );
           }
         }
       }

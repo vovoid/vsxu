@@ -21,32 +21,28 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-
-#ifndef VSX_NO_CLIENT
 #ifndef VSX_WIDGET_BASE_H
 #define VSX_WIDGET_BASE_H
 
+// engine
+#include <vsx_string.h>
+#include <vsx_string_aux.h>
+#include <vsx_color.h>
+#include <vsx_command_list.h>
+
+// engine_graphics
+#include <vsx_font.h>
+
+// stl
 #include <map>
+#include <list>
 
-#include "vsx_gl_global.h"
-#include "vsx_mouse.h"
-#include "gl_helper.h"
-#include "vsx_command.h"
-#include "vsxfst.h"
-#include "vsx_math_3d.h"
-#include "vsx_texture_info.h"
-#include "vsx_texture.h"
-#include "vsx_font.h"
+// artiste
 #include "log/vsx_log_a.h"
-#include <vsx_platform.h>
+#include "vsx_mouse.h"
+#include "vsx_widget_coords.h"
+#include "vsx_widget_distance.h"
 
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-#include <stdio.h>
-#include <stdlib.h>
-#include <string>
-#include <sys/stat.h>
-#include <unistd.h>
-#endif
 
 
 // different widget types
@@ -67,49 +63,37 @@
 #define VSX_WIDGET_RENDER_2D 0
 #define VSX_WIDGET_RENDER_3D 1
 
-// coordinate-system types
-#define VSX_WIDGET_COORD_CENTER 1
-#define VSX_WIDGET_COORD_CORNER 2
 
-
-class vsx_widget_coords {
-  static GLdouble modelMatrix[16];
-  static GLdouble projMatrix[16];
-  static GLint viewport[4];
-public:
-  vsx_vector world_local; // in local widget coordinates
-  vsx_vector world_global; // untouched global coordinates
-  vsx_vector screen_local; // in local widget coordinates
-  vsx_vector screen_global; // untouched global coordinates
-  void init(float x, float y);
-};
-
-// distance from center and corner for mouse event handlers
-typedef struct {
-  vsx_vector center;
-  vsx_vector corner;
-} vsx_widget_distance;
-
-class vsx_widget {
+class vsx_widget
+{
   void calculate_mouse_distance(float x, float y, vsx_widget_coords &coord, vsx_widget_distance &distance);
 public:
   // GLOBALS
   static bool global_delete;
-// style
+  // style
   static vsx_string skin_path;
-  static vsx_color skin_color[20];
+  static vsx_color skin_colors[20];
   static vsx_mouse mouse;
-  static int static_id; // each widget object must have a unique id
   static float screen_x;
   static float screen_y;
   static float screen_aspect;
   static vsx_widget *root; // root widget
+
   static vsx_widget *a_focus; // application focus
   static vsx_widget *m_focus; // mouse focus (used while mouse is pressed on a widget)
   static vsx_widget *m_o_focus; // mouse over focus
-  static vsx_widget *k_focus; // key focus
-  static std::map<vsx_string, vsx_widget*> glist;
-  static std::map<int, vsx_widget*> ilist;
+  static vsx_widget *k_focus; // keyboard focus
+
+
+  // global list of widgets, by name
+  static std::map<vsx_string, vsx_widget*> global_widget_list;
+  static int static_widget_id_accumulator; // each widget object must have a unique id
+
+  // global list of widgets, by id
+  static std::map<int, vsx_widget*> global_index_list;
+
+
+
   static vsx_widget* last_clicked;
   static float global_interpolation_speed;
   static float global_key_speed;
@@ -122,16 +106,18 @@ public:
   static float mouse_down_l_y;
   static vsx_widget_distance mouse_down_pos;  // in coordinates 2d/3d depending on render type
   float double_click_d[5]; // delta time value for determining double clicks
-  static GLint viewport[4];
-  static GLdouble modelMatrix[16];
-  static GLdouble projMatrix[16];
-// time
+  static int viewport[4];
+  static double modelMatrix[16];
+  static double projMatrix[16];
+
+  // time
   // these have to be set from outside, by using #include "vsx_timer.h" and using the timer class
   static int frames;
   static double time; // elapsed time
   static double dtime; // time since last frame
   static bool ctrl, alt, shift;
 
+  //
   static bool performance_mode;
 
 // LOCALS
@@ -148,17 +134,20 @@ public:
   vsx_vector mouse_pos; // last translated mouse pos
 
   // widget relations to other widgets
-  std::map<vsx_string, vsx_widget*>::const_iterator glist_iter;
+
+  // local by-name lookup list
   std::map<vsx_string, vsx_widget*> l_list;
-  std::map<vsx_string, vsx_widget*>::const_iterator l_list_iter;
+
   std::list <vsx_widget*> children;
   std::list <vsx_widget*>::iterator children_iter;
-  vsx_widget* parent;
-  vsx_widget* cmd_parent;
 
-  // my font, useful sometimes
-  static vsx_font myf;
+  vsx_widget* parent;
+
+
+  // font
+  static vsx_font font;
   float font_size;
+
 // space
   // in 3-dimensional space widgets' pos should be at the center and size should be the radius of the circle
   // of course there exists exceptions from this, such as the vsx_widget_connector but this is a general rule of
@@ -179,7 +168,6 @@ public:
   float interpolation_speed;
   bool interpolating_pos;
   bool interpolating_size;
-//  bool shade;
   vsx_vector scaling_start;
   vsx_vector scaling_start_size;
   vsx_vector scaling_start_pos;
@@ -210,21 +198,31 @@ public:
 
   // logging
   vsx_avector<vsx_string> log_cmd;
-  virtual void log(const vsx_string& t) {
+  virtual void log(const vsx_string& t)
+  {
     if (widget_type >= 100)
     log_cmd.push_back(t);
   }
+
+
+
+
+
 // internal command processing
   // backwards queue
   // this is what a child that issues a command runs on its parent. it starts a cycle that goes back and fills up
   // its parent with the command which in turn deals with it accordingly. For instance, a server does not run
   // the "parent" that is called to deal with commands that have been issued within this widget
+
+  vsx_widget* cmd_parent;
   vsx_command_list command_q_b;
-  virtual void vsx_command_process_b(vsx_command_s *t) {
+  virtual void command_process_back_queue(vsx_command_s *t)
+  {
     command_q_b.add(t);
   }
   // direct is when you don't want to run the parent command queue, just process the list
-  virtual void vsx_command_queue_b(vsx_widget* source, bool direct = false, int iterations = 0) {
+  virtual void vsx_command_queue_b(vsx_widget* source, bool direct = false, int iterations = 0)
+  {
     // call parent
     vsx_command_s *t;
     while ( (t = source->command_q_b.pop()) )
@@ -233,7 +231,7 @@ public:
       // ... default is just send back
       log(t->str());
       LOG_A(vsx_string("message_b: ")+t->str());
-      vsx_command_process_b(t);
+      command_process_back_queue(t);
     }
     // ok, we've processed the commands, now call our parent to go through our list
     if (
@@ -249,7 +247,8 @@ public:
     }
   }
 
-  inline void backwards_message(const vsx_string &message) {
+  inline void backwards_message(const vsx_string &message)
+  {
 		command_q_b.add_raw(message);
     if (cmd_parent)
     {
@@ -257,84 +256,132 @@ public:
     }
   }
 
-  inline void message(const vsx_string &message) {
+  inline void message(const vsx_string &message)
+  {
 		command_q_b.add_raw(message);
   	this->vsx_command_queue_b(this);
   }
+
+
+
+
+
 
 
   // foward queue
   // does each-frame maintanence
   vsx_command_list command_q_f;
   virtual void vsx_command_process_f(); // implemented in .cpp
-  void vsx_command_queue_f() {
+  void vsx_command_queue_f()
+  {
     for (children_iter=children.begin(); children_iter != children.end(); ++children_iter)
     (*children_iter)->vsx_command_process_f();
   }
 	//-------------------------------------------------------------
 
+
+  // find operations
+  bool find_child_by_type(unsigned long t);
+  bool find_child_by_name(vsx_string n);
+
   // this is used to get a pointer by knowing the name of the widget - searches the global list
-  vsx_widget *f(vsx_string t) {
-    if (glist.find(t) != glist.end())
-    return glist[t];
+  vsx_widget *find(vsx_string t)
+  {
+    if (global_widget_list.find(t) != global_widget_list.end())
+    return global_widget_list[t];
     else return 0;
   }
+
+
   // find by id
-  vsx_widget *f(int t) {
-    if (ilist.find(t) != ilist.end())
-    return ilist[t];
+  vsx_widget *find(int t)
+  {
+    if (global_index_list.find(t) != global_index_list.end())
+    return global_index_list[t];
     else return 0;
   }
+
+
+
 
   virtual void show_children();
   virtual void hide_children();
 
 
+
+
+
+
   // draw functions
-  virtual void init_frame() {
-    if (support_interpolation) {
-      if (interpolating_size) {
+  virtual void init_frame()
+  {
+    if (support_interpolation)
+    {
+      if (interpolating_size)
+      {
         interpolate_size();
       }
-      if (interpolating_pos) {
+      if (interpolating_pos)
+      {
         interpolate_pos();
       }
     }
     for (children_iter=children.begin(); children_iter != children.end(); ++children_iter)
-    if ((*children_iter)->visible)
-    (*children_iter)->init_frame();
+    {
+      if ((*children_iter)->visible)
+      (*children_iter)->init_frame();
+    }
   }
+
+
   void set_render_type(unsigned long new_render_type);
   virtual void set_border(float border);
   void set_font_size(float fsize);
 
 
   // special case draw, only used when children may implement this
-  virtual void pre_draw() {}
-  void pre_draw_children() {
-    for (children_iter=children.begin(); children_iter != children.end(); ++children_iter) {
+  virtual void pre_draw()
+  {
+  }
+
+  void pre_draw_children()
+  {
+    for (children_iter=children.begin(); children_iter != children.end(); ++children_iter)
+    {
       (*children_iter)->pre_draw();
     }
   }
 
 
-  virtual void i_draw() {}
-
-  virtual void draw();// { if (render_type == VSX_WIDGET_RENDER_3D) { if (visible) i_draw(); } if (visible) draw_children_3d();}
-  virtual void draw_2d();// { if (render_type == VSX_WIDGET_RENDER_2D) { if (visible) i_draw(); } if (visible) draw_children_2d();}
-
-  void draw_children() {
-    if (render_type == VSX_WIDGET_RENDER_3D) draw_children_3d();
-    else draw_children_2d();
+  virtual void i_draw()
+  {
   }
 
-  void draw_children_3d() {
-    for (children_iter=children.begin(); children_iter != children.end(); ++children_iter) {
+  virtual void draw();
+  virtual void draw_2d();
+
+  void draw_children()
+  {
+    if (render_type == VSX_WIDGET_RENDER_3D)
+      draw_children_3d();
+    else
+      draw_children_2d();
+  }
+
+  void draw_children_3d()
+  {
+    for (children_iter=children.begin(); children_iter != children.end(); ++children_iter)
+    {
       (*children_iter)->draw();
     }
   }
-  void draw_children_2d() {
-    for (children_iter=children.begin(); children_iter != children.end(); ++children_iter) (*children_iter)->draw_2d();
+
+  void draw_children_2d()
+  {
+    for (children_iter=children.begin(); children_iter != children.end(); ++children_iter)
+    {
+      (*children_iter)->draw_2d();
+    }
   }
 
   virtual void interpolate_pos();
@@ -349,8 +396,6 @@ public:
   virtual int inside_xy_l(vsx_vector &test, vsx_vector &global);
   virtual vsx_widget *find_component(vsx_widget_coords coords, vsx_widget_distance &result_distance, int depth = 0);
 
-  bool find_child_by_type(unsigned long t);
-  bool find_child_by_name(vsx_string n);
 
   void delete_all_by_type(unsigned long t);
 
@@ -390,6 +435,7 @@ public:
     VSX_UNUSED(shift);
     return true;
   }
+
   virtual bool event_key_up(signed long key, bool alt = false, bool ctrl = false, bool shift = false)
   {
     VSX_UNUSED(key);
@@ -398,6 +444,8 @@ public:
     VSX_UNUSED(shift);
     return true;
   }
+
+
   // new events
   virtual void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   virtual void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button);
@@ -423,30 +471,41 @@ public:
     VSX_UNUSED(c);
     return false;
   }
-  virtual void init_children() {
-    for (children_iter=children.begin(); children_iter != children.end(); ++children_iter) (*children_iter)->init();
+
+  virtual void init_children()
+  {
+    for (children_iter=children.begin(); children_iter != children.end(); ++children_iter)
+    {
+      (*children_iter)->init();
+    }
   }
+
   // called after just switching openGL context, reuploads all textures and rebuilds
   // call lists in fonts etc.
   virtual void stop();
   virtual void reinit();
 
   // move/scaling/resizing functions
-  virtual void set_size(vsx_vector new_size) {
+  virtual void set_size(vsx_vector new_size)
+  {
     size = target_size = new_size;
   }
-  void set_pos(vsx_vector new_pos) {
+
+  void set_pos(vsx_vector new_pos)
+  {
     pos = target_pos = new_pos;
   }
+
   virtual void resize(vsx_widget_distance distance);
   virtual void resize_to(vsx_vector to_size);
   // move the widget, world coordinates
   virtual void move(double x, double y, double z = 0.0f);
+
   // move by vector - for convenience
   virtual void move(vsx_vector t);
+
   // move delta by vector
   virtual void move_d(vsx_vector t);
-  //virtual bool scale_to(vsx_vector t);
 
   virtual void move_camera(vsx_vector world)
   {
@@ -464,22 +523,16 @@ public:
 
   // ask the object to delete itself and all its children (nice)
   virtual void delete_();
-  // deletion event
-  virtual void on_delete();
+
   // event reacting on marking widget for deletion
   virtual void before_delete();
+
+  // deletion event
+  virtual void on_delete();
 
   vsx_widget();
   virtual ~vsx_widget();
 };
 
 
-
-class vsx_widget_connector_info {
-public:
-  vsx_widget* source;
-  vsx_widget* dest;
-  int order;
-};
-#endif
 #endif

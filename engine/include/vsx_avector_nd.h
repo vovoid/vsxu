@@ -25,10 +25,11 @@
 #define VSX_AVECTOR_ND_H
 
 template<class T>
-class vsx_avector_nd {
+class vsx_avector_nd
+{
   size_t allocated;
   size_t used;
-  T* A;
+  __attribute__((aligned(64))) T* A;
   size_t allocation_increment;
 public:
   size_t timestamp;
@@ -94,7 +95,16 @@ public:
     }
     return A[index];
   }
-  vsx_avector_nd() : allocated(0),used(0),A(0),allocation_increment(1),timestamp(0) {};
+
+  vsx_avector_nd()
+    :
+      allocated(0),
+      used(0),
+      A(0),
+      allocation_increment(1),
+      timestamp(0)
+  {
+  }
 };
 
 #endif

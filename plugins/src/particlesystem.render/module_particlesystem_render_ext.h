@@ -40,6 +40,9 @@ public:
 
   vsx_glsl shader;
 
+  vsx_gl_state* gl_state;
+
+
   vsx_vbo_bucket<GLuint, 1, GL_POINTS, GL_STREAM_DRAW, vsx_quaternion> point_bucket;
 
 
@@ -153,11 +156,12 @@ public:
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     render_result->set(0);
 
-
+    gl_state = vsx_gl_state::get_instance();
   }
 
   bool init()
   {
+    return true;
   }
 
   void on_delete()
@@ -192,8 +196,9 @@ public:
     seq_size.reset();
     for (int i = 0; i < 8192; ++i)
     {
-      texture_lookup_sizes_data[i] = seq_size.execute(1.0f/8192.0f);
+      texture_lookup_sizes_data[i] = seq_size.execute(1.0f/8191.0f);
     }
+    texture_lookup_sizes->valid = true;
     texture_lookup_sizes->bind();
     glTexParameteri(texture_lookup_sizes->texture_info->ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
     glTexParameteri(texture_lookup_sizes->texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -210,7 +215,7 @@ public:
     );
 
     texture_lookup_sizes->_bind();
-    texture_lookup_sizes->valid = true;
+
   }
 
   vsx_array<vsx_color> texture_lookup_color_data;
@@ -223,9 +228,9 @@ public:
     seq_alpha.reset();
     for (int i = 0; i < 8192; ++i)
     {
-      texture_lookup_color_data[i].a = seq_alpha.execute(1.0f/8192.0f);
-//      alphas[i] = seq_alpha.execute(1.0f/8192.0f);
+      texture_lookup_color_data[i].a = seq_alpha.execute(1.0f/8191.0f);
     }
+    texture_lookup_color->valid = true;
     texture_lookup_color->bind();
     glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
     glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -241,7 +246,7 @@ public:
       texture_lookup_color_data.get_pointer()
     );
     texture_lookup_color->_bind();
-    texture_lookup_color->valid = true;
+
   }
 
   inline void calc_colors()
@@ -262,10 +267,11 @@ public:
     seq_b.reset();
     for (int i = 0; i < 8192; ++i)
     {
-      texture_lookup_color_data[i].r = seq_r.execute(1.0f/8192.0f);
-      texture_lookup_color_data[i].g = seq_g.execute(1.0f/8192.0f);
-      texture_lookup_color_data[i].b = seq_b.execute(1.0f/8192.0f);
+      texture_lookup_color_data[i].r = seq_r.execute(1.0f/8191.0f);
+      texture_lookup_color_data[i].g = seq_g.execute(1.0f/8191.0f);
+      texture_lookup_color_data[i].b = seq_b.execute(1.0f/8191.0f);
     }
+    texture_lookup_color->valid = true;
     texture_lookup_color->bind();
     glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
     glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -282,7 +288,6 @@ public:
       texture_lookup_color_data.get_pointer()
     );
     texture_lookup_color->_bind();
-    texture_lookup_color->valid = true;
   }
 
 
@@ -388,7 +393,10 @@ public:
 
 
     (*tex)->begin_transform();
-    (*tex)->bind();
+    if (!(*tex)->bind())
+    {
+      vsx_printf("bind failed\n");
+    }
 
     if ( !shader.get_linked() )
     {
@@ -408,7 +416,7 @@ public:
     if (shader.uniform_map.find("_vx") != shader.uniform_map.end())
     {
       vsx_module_param_float* p = (vsx_module_param_float*)shader.uniform_map["_vx"]->module_param;
-      if (p) p->set( engine->gl_state->get_viewport_width() );
+      if (p) p->set( gl_state->viewport_get_width() );
     }
 
     if (shader.uniform_map.find("_tex") != shader.uniform_map.end())

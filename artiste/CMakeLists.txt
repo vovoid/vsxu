@@ -33,6 +33,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/engine_graphics/include
   ${CMAKE_SOURCE_DIR}/artiste/src
   ${CMAKE_SOURCE_DIR}/artiste/src/vsx_widget
+  ${CMAKE_SOURCE_DIR}/artiste/src/vsx_widget/lib
   ${CMAKE_SOURCE_DIR}/artiste/include
 )
 
@@ -80,15 +81,22 @@ endif()
 set(SOURCES
   src/log/vsx_log_a.cpp
   src/vsx_widget/vsx_widget_base.cpp
+  src/vsx_widget/vsx_widget_coords.cpp
   src/vsx_widget/server/vsx_widget_comp.cpp
   src/vsx_widget/server/vsx_widget_connector_bezier.cpp
   src/vsx_widget/server/vsx_widget_anchor.cpp
   src/vsx_widget/server/vsx_widget_server.cpp
-  src/vsx_widget/controllers/vsx_widget_controller.cpp
-  src/vsx_widget/controllers/vsx_widget_base_controller.cpp
   src/vsx_widget/controllers/vsx_widget_controller_ab.cpp
-  src/vsx_widget/controllers/vsx_widget_editor.cpp
+  src/vsx_widget/controllers/vsx_widget_controller_base.cpp
+  src/vsx_widget/controllers/vsx_widget_controller_channel.cpp
+  src/vsx_widget/controllers/vsx_widget_controller_color.cpp
+  src/vsx_widget/controllers/vsx_widget_controller_dialog.cpp
+  src/vsx_widget/controllers/vsx_widget_controller_editor.cpp
+  src/vsx_widget/controllers/vsx_widget_controller_knob.cpp
+  src/vsx_widget/controllers/vsx_widget_controller_mixer.cpp
+  src/vsx_widget/controllers/vsx_widget_controller_pad.cpp
   src/vsx_widget/controllers/vsx_widget_controller_seq.cpp
+  src/vsx_widget/controllers/vsx_widget_controller_slider.cpp
   src/vsx_widget/window/vsx_widget_window.cpp
   src/vsx_widget/helpers/vsx_widget_preview.cpp
   src/vsx_widget/helpers/vsx_widget_assistant.cpp
@@ -96,7 +104,10 @@ set(SOURCES
   src/vsx_widget/helpers/vsx_widget_console.cpp
   src/vsx_widget/helpers/vsx_widget_note.cpp
   src/vsx_widget/lib/vsx_widget_scrollbar.cpp
-  src/vsx_widget/lib/vsx_widget_lib.cpp
+  src/vsx_widget/lib/vsx_widget_2d_label.cpp
+  src/vsx_widget/lib/vsx_widget_2d_pager.cpp
+  src/vsx_widget/lib/vsx_widget_button.cpp
+  src/vsx_widget/lib/vsx_widget_popup_menu.cpp
   src/vsx_widget/lib/vsx_widget_panel.cpp
   src/vsx_widget/lib/vsx_widget_base_edit.cpp
   src/vsx_widget/dialogs/vsx_widget_window_statics.cpp

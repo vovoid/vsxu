@@ -38,8 +38,9 @@ public:
   vsx_matrix ma;
   vsx_vector upv;
 
-  GLint prev_psize;
+  float prev_psize;
   bool list_built;
+  vsx_gl_state* gl_state;
 
   void module_info(vsx_module_info* info)
   {
@@ -62,13 +63,18 @@ public:
     dot_size = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"dot_size");
     dot_size->set(1.0f);
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+
+    gl_state = vsx_gl_state::get_instance();
   }
 
   void output(vsx_module_param_abs* param)
   {
     VSX_UNUSED(param);
-    glGetIntegerv(GL_POINT_SIZE, &prev_psize);
-    glPointSize(dot_size->get());
+
+    prev_psize = gl_state->point_size_get();
+
+    gl_state->point_size_set( dot_size->get() );
+
     glEnable(GL_POINT_SMOOTH);
     mesh = mesh_in->get_addr();
     if (mesh)
@@ -80,7 +86,7 @@ public:
       glDrawArrays(GL_POINTS,0,(*mesh)->data->vertices.size());
       glDisableClientState(GL_VERTEX_ARRAY);
     }
-    glPointSize(prev_psize);
+    gl_state->point_size_set(prev_psize);
 
     render_out->set(1);
   }
