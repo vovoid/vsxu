@@ -33,12 +33,6 @@
 // GL state
 #include "vsx_gl_state.h"
 
-//extern vsx_engine* vme;
-//#define vsxu_version "VSXu 0.1.14 beta"
-//extern vsx_string vsxu_name;
-//extern vsx_string vsxu_version;
-//extern char* vsxu_ver;
-
 
 extern bool app_ctrl;
 extern bool app_alt;
@@ -49,6 +43,7 @@ extern vsx_gl_state gl_state;
 
 extern vsx_argvector app_argv;
 
+extern vsx_gl_state gl_state;
 
 void app_init(int id);
 

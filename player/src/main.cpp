@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include "application.h"
+#include <GL/glew.h>
 #include <GL/glfw.h>
 #include <vsx_avector.h>
 #include <vsx_string.h>
@@ -30,6 +31,7 @@
 #include <vsx_version.h>
 #include <stdlib.h>
 #include "vsx_platform.h"
+#include <vsx_gl_state.h>
 
 // implementation of app externals
 bool app_ctrl = false;
@@ -42,6 +44,7 @@ bool no_overlay = false;
 int app_argc = 0;
 char** app_argv;
 
+vsx_gl_state gl_state;
 
 void set_modifiers()
 {
@@ -132,6 +135,13 @@ void GLFWCALL mouse_wheel(int pos)
   app_mousewheel((float)(pos-mousewheel_prev_pos),last_x,last_y);
   mousewheel_prev_pos = pos;
 }
+
+void GLFWCALL window_size( int width, int height )
+{
+  vsx_printf("change viewport %d %d\n", width, height);
+  gl_state.viewport_change(0,0,width, height);
+}
+
 //========================================================================
 // main()
 //========================================================================
@@ -250,15 +260,16 @@ int main(int argc, char* argv[])
   glfwSetMousePosCallback(&mouse_pos_event);
   glfwSetCharCallback(&key_char_event);
   glfwSetMouseWheelCallback(&mouse_wheel);
+  // set window size callback function
+  glfwSetWindowSizeCallback(window_size);
+
   // Enable sticky keys
   glfwEnable( GLFW_STICKY_KEYS );
   glfwSwapInterval(1);
+
   // Main loop
   running = GL_TRUE;
   frames = 0;
-  //typedef BOOL (APIENTRY * wglSwapIntervalEXT_Func)(int);
-  //wglSwapIntervalEXT_Func wglSwapIntervalEXT = wglSwapIntervalEXT_Func(wglGetProcAddress("wglSwapIntervalEXT"));
-  //if (wglSwapIntervalEXT) wglSwapIntervalEXT(1);
 
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
     sprintf( titlestr, "Vovoid VSXu Player %s [GNU/Linux %d-bit]", vsxu_ver, PLATFORM_BITS);
@@ -310,7 +321,7 @@ int main(int argc, char* argv[])
     height = height > 0 ? height : 1;
 
     // Set viewport
-    glViewport( 0, 0, width, height );
+    gl_state.viewport_set( 0, 0, width, height );
 
     // Clear color buffer
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );

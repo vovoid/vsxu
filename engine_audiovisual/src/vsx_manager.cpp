@@ -39,8 +39,6 @@ private:
 void * int_state_manager;
 vsx_module_list_abs* module_list;
 
-
-
 public:
 
 
@@ -103,6 +101,8 @@ public:
   // arbitrary engine information (statistics etc)
   // returns information about currently playing effect
   int get_engine_num_modules();
+
+  void set_gl_state(vsx_gl_state* n);
 
   vsx_manager();
   ~vsx_manager();
@@ -330,4 +330,10 @@ int vsx_manager::get_engine_num_modules()
   return 0;
 }
 
-
+/****************************************************************
+G L   S T A T E
+*****************************************************************/
+void vsx_manager::set_gl_state(vsx_gl_state* n)
+{
+  ((vsx_statelist*)int_state_manager)->set_a_gl_state(n);
+}
