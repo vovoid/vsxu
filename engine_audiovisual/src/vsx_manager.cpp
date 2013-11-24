@@ -330,10 +330,3 @@ int vsx_manager::get_engine_num_modules()
   return 0;
 }
 
-/****************************************************************
-G L   S T A T E
-*****************************************************************/
-void vsx_manager::set_gl_state(vsx_gl_state* n)
-{
-  ((vsx_statelist*)int_state_manager)->set_a_gl_state(n);
-}

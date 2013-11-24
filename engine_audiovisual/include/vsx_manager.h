@@ -118,12 +118,6 @@ public:
   virtual void set_sound_freq(float* data) = 0;
   virtual void set_sound_wave(float* data) = 0;
 
-  // **************************************************************************
-  // GL STATE
-  //
-  // vsx_gl_state maintained by the OpenGL provider
-  virtual void set_gl_state(vsx_gl_state* n) = 0;
-
 
   // arbitrary engine information (statistics etc)
   // returns information about currently playing effect

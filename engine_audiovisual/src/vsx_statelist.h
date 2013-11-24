@@ -32,7 +32,6 @@
 #include <unistd.h>
 #endif
 #include <GL/glew.h>
-#include <vsx_gl_state.h>
 
 #include "vsx_engine.h"
 
@@ -72,7 +71,6 @@ public:
 class vsx_statelist
 {
 private:
-  vsx_gl_state* b_gl_state;
   vsx_string own_path;
   std::list<vsx_string> state_file_list;
   std::list<vsx_string> fader_file_list;
@@ -189,13 +187,6 @@ public:
   vsx_string get_meta_visual_creator();
   vsx_string get_meta_visual_company();
   
-  void set_a_gl_state( vsx_gl_state* n)
-  {
-    b_gl_state = n;
-    tex1.set_gl_state( n );
-    tex_to.set_gl_state( n );
-  }
-
   vsx_statelist();
   ~vsx_statelist();
 };

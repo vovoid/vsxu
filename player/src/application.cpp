@@ -68,7 +68,6 @@ bool app_draw(int id)
     // create a new manager
     manager = manager_factory();
     manager->set_option_preload_all(option_preload_all);
-    manager->set_gl_state( &gl_state );
 
     // init manager with the shared path and sound input type.
     // manual sound injection: manager->init( path.c_str() , "media_player");
