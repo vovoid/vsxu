@@ -55,15 +55,15 @@ class vsx_widget_seq_channel : public vsx_widget
   }
 
   // supply a center coordinate
-	inline float pos_to_time(float x) {
-		return 	(x / size.x + 0.5f)
-							* (view_time_end - view_time_start)
-							+ view_time_start;
-	}
+  inline float pos_to_time(float x) {
+    return 	(x / size.x + 0.5f)
+              * (view_time_end - view_time_start)
+              + view_time_start;
+  }
 /*
  * B = view_time_end - view_time_start
 
-	t = (x / size.x + 0.5f) * B + view_time_start
+  t = (x / size.x + 0.5f) * B + view_time_start
 
   t - view_time_start = (x / size.x + 0.5f) * B
 
@@ -73,17 +73,17 @@ class vsx_widget_seq_channel : public vsx_widget
 
   x = size.x * ((t - view_time_start) / B - 0.5f)
 
-	*/
+  */
 
-	// returns a center coordinate
-	inline float time_to_pos(float t) {
-		float B = view_time_end - view_time_start;
-		return 	size.x * ( (t-view_time_start) / B - 0.5f);
-	}
+  // returns a center coordinate
+  inline float time_to_pos(float t) {
+    float B = view_time_end - view_time_start;
+    return 	size.x * ( (t-view_time_start) / B - 0.5f);
+  }
 
-	vsx_vector passive_mouse_pos;
-	vsx_string passive_time;
-	vsx_string passive_value;
+  vsx_vector passive_mouse_pos;
+  vsx_string passive_time;
+  vsx_string passive_value;
   vsx_vector parentpos;
   std::vector<vsx_widget_param_sequence_item> items; // the actual sequence
   int cur_x, cur_y;
@@ -110,7 +110,7 @@ class vsx_widget_seq_channel : public vsx_widget
   static vsx_texture* mtex_blob;
 
 public:
-	bool hidden_by_sequencer;
+  bool hidden_by_sequencer;
   bool is_controller; // true if to act as a controller
   vsx_widget_sequence_editor* owner;
   int channel_type; // 0 = parameter, 1 = master

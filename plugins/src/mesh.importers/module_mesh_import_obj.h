@@ -18,7 +18,8 @@ public:
   vsx_string current_filename;
 
 
-  bool init() {
+  bool init()
+  {
     mesh = new vsx_mesh;
     return true;
   }

@@ -82,6 +82,9 @@ public:
     if (!p)
       return;
 
+    if (!*p)
+      return;
+
     // only run if timestamp differs
     if (prev_timestamp == (*p)->timestamp)
       return;

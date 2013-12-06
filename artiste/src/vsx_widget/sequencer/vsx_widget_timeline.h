@@ -28,17 +28,17 @@ class vsx_widget_timeline : public vsx_widget {
   vsx_vector parentpos;
 public:
   vsx_widget_sequence_editor* owner;
-  
+
   void init() {
     auto_move_dir = 0;
   }
-  
+
   float dd_time;
   float auto_move_dir;
   float a_dist;
   bool show_wave_data;
   void move_time(vsx_vector world);
-  
+
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
   {
     VSX_UNUSED(coords);
@@ -62,19 +62,19 @@ public:
   {
     VSX_UNUSED(coords);
     move_time(distance.center);
-  } 
-  
+  }
+
   float totalsize;
   float ff;
   float levelstart;
 
   void i_draw();
-  
+
   bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
-  
+
   vsx_widget_timeline()
   {
-  	show_wave_data = false;
+    show_wave_data = false;
   }
 };
 

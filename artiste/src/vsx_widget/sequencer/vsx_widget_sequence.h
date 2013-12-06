@@ -45,7 +45,7 @@ class vsx_widget_sequence_editor : public vsx_widget {
   vsx_widget* name_dialog;
   vsx_widget* loop_point_dialog;
 public:
-	bool disable_master_channel;
+  bool disable_master_channel;
 
   vsx_widget* timeline;
   void check_timeline();
@@ -57,7 +57,7 @@ public:
   float tend;
   float curtime;
 
-	virtual void init();
+  virtual void init();
   void i_draw();
   void toggle_channel_visible(vsx_string name);
   // removes all sequence channels, used when switching seqpool etc.
@@ -69,8 +69,8 @@ public:
   vsx_widget* get_server();
   void remove_master_channel_items_with_name(vsx_string name);
   vsx_widget_sequence_editor() {
-  	disable_master_channel = false;
-  	but_add_master_channel = 0;
+    disable_master_channel = false;
+    but_add_master_channel = 0;
   }
 };
 

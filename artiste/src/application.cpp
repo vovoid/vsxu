@@ -184,13 +184,12 @@ public:
       gui_f_time = 0;
       if (!*gui_prod_fullwindow)
       {
-        tm->e("artiste_gui");
-        if (desktop) {
+        if (desktop)
+        {
           desktop->init_frame();
           desktop->draw();
           desktop->draw_2d();
         }
-        tm->l();
       }
       if (!dual_monitor)
       {
@@ -267,12 +266,10 @@ public:
         }
         if (desktop && desktop->performance_mode)
         {
-          tm->e("artiste_gui");
           glClear(GL_DEPTH_BUFFER_BIT);
           desktop->init_frame();
           desktop->draw();
           desktop->draw_2d();
-          tm->l();
         }
       }
       #ifndef NO_INTRO

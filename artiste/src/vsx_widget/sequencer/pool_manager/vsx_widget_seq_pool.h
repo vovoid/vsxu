@@ -53,8 +53,8 @@ public:
   void show();
   void init();
   void i_draw();
-	bool event_key_down(signed long key, bool alt = false, bool ctrl = false, bool shift = false);
-	void set_server(vsx_widget* serv);
+  bool event_key_down(signed long key, bool alt = false, bool ctrl = false, bool shift = false);
+  void set_server(vsx_widget* serv);
   vsx_widget_seq_pool_manager();
 };
 

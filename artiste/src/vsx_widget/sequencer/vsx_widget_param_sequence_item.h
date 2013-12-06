@@ -95,7 +95,7 @@ public:
     length = v;
   }
 
-  void increase_length(float v)
+  void increase_length(const float v)
   {
     length += v;
     if (length > total_length)
@@ -125,8 +125,40 @@ public:
     return interpolation;
   }
 
-  void set_interpolation(size_t v)
+  void set_interpolation(const size_t v, vsx_widget_param_sequence_item* next_value = 0x0)
   {
+    // if we change to bezier, we want special handling.
+    if
+    (
+      interpolation != VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_BEZIER
+      &&
+      v == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_BEZIER
+    )
+    {
+      switch (interpolation)
+      {
+        case VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_NONE:
+        case VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_LINEAR:
+          handle1.x = 0.1;
+          handle2.x = 0.9;
+          if (next_value)
+          {
+            float diff = s2f(next_value->get_value() ) - s2f(value);
+
+            handle1.y = 0.1 *  diff;
+            handle2.y = -0.1 *  diff;
+          }
+          break;
+        case VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_COSINE:
+          handle1.y = 0;
+          handle2.y = 0;
+          handle1.x = 0.6;
+          handle2.x = 0.4;
+          break;
+
+      }
+    }
+
     interpolation = v;
   }
 

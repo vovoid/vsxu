@@ -446,10 +446,6 @@ bool vsx_engine::render()
 {
   if (!valid) return false;
 
-  #if VSXU_TM
-  ((vsx_tm*)tm)->e("engine::render");
-  #endif
-
   // check for time control requests from the modules
   if
   (
@@ -671,16 +667,10 @@ bool vsx_engine::render()
 
     // reset input events counter
     reset_input_events();
-    #if VSXU_TM
-    ((vsx_tm*)tm)->l();
-    #endif
     return true;
   }
   // reset input events counter
   reset_input_events();
-  #if VSXU_TM
-  ((vsx_tm*)tm)->l();
-  #endif
   return false;
 }
 

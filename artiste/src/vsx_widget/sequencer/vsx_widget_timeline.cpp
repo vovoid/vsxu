@@ -91,7 +91,7 @@ void vsx_widget_timeline::move_time(vsx_vector world) {
 
 void vsx_widget_timeline::i_draw() {
   parentpos = parent->get_pos_p();
-	float time_diff = owner->tend - owner->tstart;
+  float time_diff = owner->tend - owner->tstart;
   totalsize = (owner->tend - owner->tstart);
 
   float y_mid = parentpos.y+pos.y;
@@ -113,32 +113,32 @@ void vsx_widget_timeline::i_draw() {
     parent->vsx_command_queue_b(this);
   }
 
- 	glBegin(GL_QUADS);
+  glBegin(GL_QUADS);
     if (owner->tstart < 0) {
-   	  glColor4f(0.4,0.3,0.3f,0.5f);
-   	  ff = size.x*(fabs(owner->tstart)/totalsize);
-  		glVertex2f(parentpos.x+pos.x-size.x*0.5f, y_mid+y_size_half);
-  		glVertex2f(parentpos.x+pos.x-size.x*0.5f+ff, y_mid+y_size_half);
-  		glVertex2f(parentpos.x+pos.x-size.x*0.5f+ff, y_mid-y_size_half);
-  		glVertex2f(parentpos.x+pos.x-size.x*0.5f, y_mid-y_size_half);
+      glColor4f(0.4,0.3,0.3f,0.5f);
+      ff = size.x*(fabs(owner->tstart)/totalsize);
+      glVertex2f(parentpos.x+pos.x-size.x*0.5f, y_mid+y_size_half);
+      glVertex2f(parentpos.x+pos.x-size.x*0.5f+ff, y_mid+y_size_half);
+      glVertex2f(parentpos.x+pos.x-size.x*0.5f+ff, y_mid-y_size_half);
+      glVertex2f(parentpos.x+pos.x-size.x*0.5f, y_mid-y_size_half);
       if (owner->tend > 0) {
-    	  glColor4f(0.3,0.4,0.3,0.5f);
-    		glVertex2f(parentpos.x+pos.x-size.x*0.5f+ff, y_mid+y_size_half);
-    		glVertex2f(parentpos.x+pos.x+size.x*0.5f, y_mid+y_size_half);
-    		glVertex2f(parentpos.x+pos.x+size.x*0.5f, y_mid-y_size_half);
-    		glVertex2f(parentpos.x+pos.x-size.x*0.5f+ff, y_mid-y_size_half);
+        glColor4f(0.3,0.4,0.3,0.5f);
+        glVertex2f(parentpos.x+pos.x-size.x*0.5f+ff, y_mid+y_size_half);
+        glVertex2f(parentpos.x+pos.x+size.x*0.5f, y_mid+y_size_half);
+        glVertex2f(parentpos.x+pos.x+size.x*0.5f, y_mid-y_size_half);
+        glVertex2f(parentpos.x+pos.x-size.x*0.5f+ff, y_mid-y_size_half);
       }
     } else {
-   	  glColor4f(0.3,0.4,0.3,0.5f);
-  		glVertex2f(parentpos.x+pos.x-size.x*0.5f, y_mid+y_size_half);
-  		glVertex2f(parentpos.x+pos.x+size.x*0.5f, y_mid+y_size_half);
-  		glVertex2f(parentpos.x+pos.x+size.x*0.5f, y_mid-y_size_half);
-  		glVertex2f(parentpos.x+pos.x-size.x*0.5f, y_mid-y_size_half);
+      glColor4f(0.3,0.4,0.3,0.5f);
+      glVertex2f(parentpos.x+pos.x-size.x*0.5f, y_mid+y_size_half);
+      glVertex2f(parentpos.x+pos.x+size.x*0.5f, y_mid+y_size_half);
+      glVertex2f(parentpos.x+pos.x+size.x*0.5f, y_mid-y_size_half);
+      glVertex2f(parentpos.x+pos.x-size.x*0.5f, y_mid-y_size_half);
     }
-	glEnd();
+  glEnd();
 
   if (a_focus == this) {
- 	  glColor3f(1.0f,1.0f,1.0f);
+    glColor3f(1.0f,1.0f,1.0f);
   } else
   glColor3f(0.5f,0.5f,0.5f);
   draw_box_border(vsx_vector(parentpos.x+pos.x-size.x*0.5,y_mid-y_size_half), vsx_vector(size.x,y_size), dragborder*0.5);
@@ -150,8 +150,8 @@ void vsx_widget_timeline::i_draw() {
   font.color.a = 0.8f;
 
   float one_div_totalsize_times_sizex = 1.0f / totalsize * size.x;
-	for (int i = (int)owner->tstart; i < (int)(owner->tend)+1; ++i)
-	{
+  for (int i = (int)owner->tstart; i < (int)(owner->tend)+1; ++i)
+  {
     glColor3f(0.5,0.5,0.5);
     float x =  (float)(i-owner->tstart) * one_div_totalsize_times_sizex;
     if (x > 0)
@@ -163,7 +163,7 @@ void vsx_widget_timeline::i_draw() {
       glEnd();
       font.print_center(vsx_vector(x,y_mid), i2s(i),0.005);
     }
-	}
+  }
 
   glColor3f(1,1,1);
   float f = ((owner->curtime-owner->tstart)/(owner->tend-owner->tstart))*size.x;
@@ -174,76 +174,76 @@ void vsx_widget_timeline::i_draw() {
 
   // ************************************************************
   // sound waveform display
-	// ************************************************************
+  // ************************************************************
   if (show_wave_data)
   {
-		vsx_widget_server* server = (vsx_widget_server*)owner->get_server();
-		vsx_engine* engine = (vsx_engine*)(server->engine);
+    vsx_widget_server* server = (vsx_widget_server*)owner->get_server();
+    vsx_engine* engine = (vsx_engine*)(server->engine);
     vsx_module_engine_info* engine_info = engine->get_engine_info();
 
     if (engine_info->param_float_arrays.size() >= 4 && a_focus == this)
-		{
-			vsx_engine_float_array *full_pcm_data_l;
-			vsx_engine_float_array *full_pcm_data_r;
+    {
+      vsx_engine_float_array *full_pcm_data_l;
+      vsx_engine_float_array *full_pcm_data_r;
       full_pcm_data_l = engine_info->param_float_arrays[2];
       full_pcm_data_r = engine_info->param_float_arrays[3];
-			if (full_pcm_data_l->array.size() > 0)
-			{
-				// assuming we have 44100 samples per second
-				float x_start = parentpos.x+pos.x-size.x*0.5f;
-				float x_end   = parentpos.x+pos.x+size.x*0.5f;
-				float t_start = owner->tstart;
-				float t_end = owner->tend;
-				size_t data_end = (size_t) (t_end * 44100.0f);
-				if (owner->tstart < 0)
-				{
-					x_start += fabs(t_start / (t_end - t_start)) * size.x;
-					//data_end -= fabs(t_start) * 44100.0f;
-					t_start = 0.0f;
-				}
-				size_t data_start = (size_t) (t_start * 44100.0f);
+      if (full_pcm_data_l->array.size() > 0)
+      {
+        // assuming we have 44100 samples per second
+        float x_start = parentpos.x+pos.x-size.x*0.5f;
+        float x_end   = parentpos.x+pos.x+size.x*0.5f;
+        float t_start = owner->tstart;
+        float t_end = owner->tend;
+        size_t data_end = (size_t) (t_end * 44100.0f);
+        if (owner->tstart < 0)
+        {
+          x_start += fabs(t_start / (t_end - t_start)) * size.x;
+          //data_end -= fabs(t_start) * 44100.0f;
+          t_start = 0.0f;
+        }
+        size_t data_start = (size_t) (t_start * 44100.0f);
 
-				size_t data_count = data_end - data_start;
-				float x_dist = x_end - x_start;
-				double x_diff = (double)x_dist / (double)data_count;
+        size_t data_count = data_end - data_start;
+        float x_dist = x_end - x_start;
+        double x_diff = (double)x_dist / (double)data_count;
 
-	//			printf("data_start: %d\n", data_start);
-				//printf("data_end: %d\n", data_end);
-				//printf("data_count: %d\n", data_count);
+  //			printf("data_start: %d\n", data_start);
+        //printf("data_end: %d\n", data_end);
+        //printf("data_count: %d\n", data_count);
 
-				glColor4f(1.0f,0.2f,0.2f,0.15f);
-				double x_pos = x_start;
-				glBegin(GL_LINE_STRIP);
-					for (
-								size_t i = data_start;
-								i < data_end;
-								i++
-							)
-					{
-						glVertex2f(x_pos, y_mid + (*full_pcm_data_l).array[i] * y_size_half );
-						x_pos += x_diff;
-					}
-				glEnd();
+        glColor4f(1.0f,0.2f,0.2f,0.15f);
+        double x_pos = x_start;
+        glBegin(GL_LINE_STRIP);
+          for (
+                size_t i = data_start;
+                i < data_end;
+                i++
+              )
+          {
+            glVertex2f(x_pos, y_mid + (*full_pcm_data_l).array[i] * y_size_half );
+            x_pos += x_diff;
+          }
+        glEnd();
 
 
-				glColor4f(0.2f,1.0f,0.2f,0.1f);
-				x_pos = x_start;
-				glBegin(GL_LINE_STRIP);
-					for (
-								size_t i = data_start;
-								i < data_end;
-								i++
-							)
-					{
-						glVertex2f(x_pos, y_mid + (*full_pcm_data_r).array[i] * y_size_half );
-						x_pos += x_diff;
-					}
-				glEnd();
-			} // pcm data pool size
-		}
+        glColor4f(0.2f,1.0f,0.2f,0.1f);
+        x_pos = x_start;
+        glBegin(GL_LINE_STRIP);
+          for (
+                size_t i = data_start;
+                i < data_end;
+                i++
+              )
+          {
+            glVertex2f(x_pos, y_mid + (*full_pcm_data_r).array[i] * y_size_half );
+            x_pos += x_diff;
+          }
+        glEnd();
+      } // pcm data pool size
+    }
   }
 
-	vsx_widget::i_draw();
+  vsx_widget::i_draw();
 }
 
 bool vsx_widget_timeline::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
@@ -253,13 +253,13 @@ bool vsx_widget_timeline::event_key_down(signed long key, bool alt, bool ctrl, b
 
   float dt = (owner->tend-owner->tstart)*0.5;
   switch(key) {
-		case 'a':
-		{
-			if (ctrl)
-				backwards_message("play");
-			else
-				backwards_message("stop");
-		}
+    case 'a':
+    {
+      if (ctrl)
+        backwards_message("play");
+      else
+        backwards_message("stop");
+    }
   }
 
   if (key == 't') show_wave_data = !show_wave_data;
