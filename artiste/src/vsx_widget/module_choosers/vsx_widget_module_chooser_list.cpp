@@ -250,95 +250,31 @@ void command_process_back_queue(vsx_command_s *t) {
 
 vsx_module_chooser_list::vsx_module_chooser_list() {
   // buttons, always needed
-  //vsx_widget *button1 = add(new vsx_widget_button,".b1");
-  //vsx_widget *button2 = add(new vsx_widget_button,".b2");
+
   // now for the edit fields
   vsx_widget_window::init();
   allow_resize_x = allow_resize_y = true;
   set_size(vsx_vector(0.15f, 0.7f));
-  //float yp = target_size.y - 0.04f;
+
+  // set up list
   vsx_widget_chooser_editor *e = (vsx_widget_chooser_editor*)add(new vsx_widget_chooser_editor,"e");
   e->init();
   e->set_render_type(VSX_WIDGET_RENDER_2D);
   e->coord_type = VSX_WIDGET_COORD_CORNER;
   coord_related_parent = false;
-  //e->set_size(vsx_vector(size.x-0.04f, 0.12f));
-  //e->set_pos(vsx_vector(size.x-e->target_size.x*0.5-0.02,yp-0.12f));
   e->set_pos(vsx_vector(size.x/2,size.y/2));
   e->editor->set_font_size(0.016f);
   e->size_from_parent = true;
   e->editor->editing_enabled = false;
   e->editor->selected_line_highlight = true;
-  //e->editor->single_row = false;
   e->set_pos(vsx_vector(size.x/2,size.y/2));
   e->pos_from_parent = true;
+  e->extra_init();
+  e->extra_init();
+  widget_list = (vsx_widget*)e;
 
-  /*e->set_string(
-      "+ renderers\n"
-      " + basic\n"
-      "   colored_rectangle\n"
-      "   textured_rectangle\n"
-      "+ renderers2\n"
-      " + basic2\n"
-      "   colored_rectangle2\n"
-      "   textured_rectangle2\n"
-      "+ renderers3\n"
-      " + basic3\n"
-      "   colored_rectangle3\n"
-      "   textured_rectangle3\n"
-      "+ renderers\n"
-      " + basic\n"
-      "   colored_rectangle\n"
-      "   textured_rectangle\n"
-      "+ renderers2\n"
-      " + basic2\n"
-      "   colored_rectangle2\n"
-      "   textured_rectangle2\n"
-      "+ renderers3\n"
-      " + basic3\n"
-      "   colored_rectangle3\n"
-      "   textured_rectangle3\n"
-      "+ renderers\n"
-      " + basic\n"
-      "   colored_rectangle\n"
-      "   textured_rectangle\n"
-      "+ renderers2\n"
-      " + basic2\n"
-      "   colored_rectangle2\n"
-      "   textured_rectangle2\n"
-      "+ renderers3\n"
-      " + basic3\n"
-      "   colored_rectangle3\n"
-      "   textured_rectangle3\n"
-      "+ renderers\n"
-      " + basic\n"
-      "   colored_rectangle\n"
-      "   textured_rectangle\n"
-      "+ renderers2\n"
-      " + basic2\n"
-      "   colored_rectangle2\n"
-      "   textured_rectangle2\n"
-      "+ renderers3\n"
-      " + basic3\n"
-      "   colored_rectangle3\n"
-      "   textured_rectangle3\n"
-      "+ renderers\n"
-      " + basic\n"
-      "   colored_rectangle\n"
-      "   textured_rectangle\n"
-      "+ renderers2\n"
-      " + basic2\n"
-      "   colored_rectangle2\n"
-      "   textured_rectangle2\n"
-      "+ renderers3\n"
-      " + basic3\n"
-      "   colored_rectangle3\n"
-      "   textured_rectangle3\n"
-      );*/
-  //e->caret_goto_end();
-  e->extra_init();
-  edit = (vsx_widget*)e;
-  e->extra_init();
+
+
   vsx_widget_base_edit *s = (vsx_widget_base_edit*)add(new vsx_widget_base_edit,"e");
   s->init();
   s->set_font_size(0.02f);
@@ -348,7 +284,7 @@ vsx_module_chooser_list::vsx_module_chooser_list() {
   s->caret_goto_end();
   s->allowed_chars = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#�%&()=+?-_.,:/;";
   s->mirror_keystrokes_object = this;
-  search = (vsx_widget*)s;
+  widget_search = (vsx_widget*)s;
 
   title = "Module List";
 
@@ -358,7 +294,7 @@ vsx_module_chooser_list::vsx_module_chooser_list() {
 
 void vsx_module_chooser_list::set_server(vsx_widget* serv)
 {
-  ((vsx_widget_chooser_editor*)edit)->set_server(serv);
+  ((vsx_widget_chooser_editor*)widget_list)->set_server(serv);
 }
 
 bool vsx_module_chooser_list::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
@@ -367,30 +303,30 @@ bool vsx_module_chooser_list::event_key_down(signed long key, bool alt, bool ctr
   VSX_UNUSED(alt);
   VSX_UNUSED(ctrl);
   VSX_UNUSED(shift);
-  vsx_string filter = ((vsx_widget_base_edit*)search)->get_string();
-  ((vsx_widget_editor*)edit)->editor->set_filter_string( filter );
+  vsx_string filter = ((vsx_widget_base_edit*)widget_search)->get_string();
+  ((vsx_widget_editor*)widget_list)->editor->set_filter_string( filter );
   return true;
 }
 
 void vsx_module_chooser_list::show() {
-  a_focus = k_focus = edit;
+  a_focus = k_focus = widget_list;
   visible = 1;
   set_pos(vsx_vector(0.0f, 0.0f/*0.5-size.y*0.75f*/,0));
 }
 
 void vsx_module_chooser_list::show(vsx_string value) {
-  ((vsx_widget_editor*)edit)->set_string(value);
-  ((vsx_widget_editor*)edit)->editor->caret_goto_end();
+  ((vsx_widget_editor*)widget_list)->set_string(value);
+  ((vsx_widget_editor*)widget_list)->editor->caret_goto_end();
   show();
 }
 
 void vsx_module_chooser_list::i_draw()
 {
   vsx_widget_window::i_draw();
-  edit->set_pos(vsx_vector(size.x/2,size.y/2-font_size+dragborder*0.5f));
-  edit->set_size(vsx_vector(size.x-dragborder*2,size.y-font_size*2-dragborder*2));
-  search->set_size(vsx_vector(size.x-dragborder*2, 0.02f));
-  search->set_pos(vsx_vector(size.x/2,size.y-0.04f));
+  widget_list->set_pos(vsx_vector(size.x/2,size.y/2-font_size+dragborder*0.5f));
+  widget_list->set_size(vsx_vector(size.x-dragborder*2,size.y-font_size*2-dragborder*2));
+  widget_search->set_size(vsx_vector(size.x-dragborder*2, 0.02f));
+  widget_search->set_pos(vsx_vector(size.x/2,size.y-0.04f));
 }
 
 void vsx_module_chooser_list::command_process_back_queue(vsx_command_s *t) {
@@ -430,7 +366,7 @@ void vsx_module_chooser_list::command_process_back_queue(vsx_command_s *t) {
 void vsx_module_chooser_list::add_item(vsx_string name,vsx_module_info* m_info)
 {
   i_rows.push_back(name);
-  ((vsx_widget_chooser_editor*)edit)->i_mod_info.push_back(m_info);
+  ((vsx_widget_chooser_editor*)widget_list)->i_mod_info.push_back(m_info);
 }
 
 void vsx_module_chooser_list::build_tree()
@@ -474,18 +410,18 @@ void vsx_module_chooser_list::build_tree()
       // add string
       result += "+ ";
       result += (parts[j]+"\n");
-      ((vsx_widget_chooser_editor*)edit)->i_rows_lookup.push_back(-1);
+      ((vsx_widget_chooser_editor*)widget_list)->i_rows_lookup.push_back(-1);
     }
     for (unsigned long k = 0; k < (p_stack.size()) * 4; k++) result += " ";
     // add string
     result += (parts[parts.size()-1]+"\n");
-    ((vsx_widget_chooser_editor*)edit)->i_rows_lookup.push_back(module_id);
+    ((vsx_widget_chooser_editor*)widget_list)->i_rows_lookup.push_back(module_id);
     module_id++;
   }
   i_rows.clear();
 //	printf("RESULT\nRESULT\nRESULT\nRESULT\n\n%s",result.c_str());
-  ((vsx_widget_chooser_editor*)edit)->set_string(result);
-  ((vsx_widget_chooser_editor*)edit)->editor->fold_all();
+  ((vsx_widget_chooser_editor*)widget_list)->set_string(result);
+  ((vsx_widget_chooser_editor*)widget_list)->editor->fold_all();
 }
 
 

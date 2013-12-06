@@ -330,10 +330,16 @@ void vsx_widget_base_edit::event_mouse_move_passive(vsx_widget_distance distance
 
 void vsx_widget_base_edit::event_mouse_wheel(float y)
 {
+  if (single_row)
+    return;
+
   float ff = longest_y - characters_height;
   scrollbar_pos_y -= y / ff;
-  if (scrollbar_pos_y < 0) scrollbar_pos_y = 0;
-  if (scrollbar_pos_y > 1.0f) scrollbar_pos_y = 1.0f;
+  if (scrollbar_pos_y < 0)
+    scrollbar_pos_y = 0;
+
+  if (scrollbar_pos_y > 1.0f)
+    scrollbar_pos_y = 1.0f;
 }
 
 int count_whitespaces(vsx_string& s)

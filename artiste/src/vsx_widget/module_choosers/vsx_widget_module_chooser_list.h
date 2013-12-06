@@ -30,8 +30,8 @@
 class vsx_module_chooser_list : public vsx_widget_window {
   vsx_string i_hint;
   //std::map<vsx_string, vsx_widget*> fields;
-  vsx_widget *edit;
-  vsx_widget *search;
+  vsx_widget *widget_list;
+  vsx_widget *widget_search;
   
   std::vector<vsx_string> i_rows;
 
