@@ -79,7 +79,7 @@ void input_video_file::worker()
 
   IplImage *frame;
   Tasks task = INITIALIZE_CAPTURE;
-  double delay = 1000000.0/cvGetCaptureProperty(capture,CV_CAP_PROP_FPS); //To maintain the needed fps
+  //double delay = 1000000.0/cvGetCaptureProperty(capture,CV_CAP_PROP_FPS); //To maintain the needed fps
 
   while( task != TERMINATE_CAPTURE ){
 
