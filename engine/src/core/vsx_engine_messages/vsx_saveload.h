@@ -21,111 +21,137 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
-    if (cmd == "state_load")
-    {
-      vsx_string base_path = vsx_get_data_path();
 
-      vsx_string errmsg;
-      state_name = c->parts[1];
-      if (load_state(base_path+str_replace(";","/",base64_decode(c->parts[1])),&errmsg)) {
-        cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Could not load state. Error message was:|"+errmsg));
-      } //else
+
+if (cmd == "state_load")
+{
+  vsx_string base_path = vsx_get_data_path();
+
+  vsx_string errmsg;
+  state_name = c->parts[1];
+  if (load_state(base_path+str_replace(";","/",base64_decode(c->parts[1])),&errmsg))
+  {
+    cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Could not load state. Error message was:|"+errmsg));
+  } //else
+  {
+    cmd_out->add_raw("clear_ok");
+  }
+  goto process_message_queue_end;
+}
+
+
+
+if (cmd == "state_load_done")
+{
+  commands_out_cache.add_raw("state_load_ok "+state_name);
+  send_state_to_client(&commands_out_cache);
+  goto process_message_queue_end;
+}
+
+
+// deletes every single component in the whole engine
+if (cmd == "clear")
+{
+  i_clear(&commands_out_cache);
+  cmd_out->add_raw(cmd+"_ok "+cmd_data);
+  goto process_message_queue_end;
+}
+
+
+
+if (cmd == "meta_set") {
+  meta_information = base64_decode(c->parts[1]);
+  vsx_string deli("|");
+  explode(meta_information, deli, meta_fields);
+  goto process_message_queue_end;
+}
+
+
+
+if (cmd == "meta_get") {
+  cmd_out->add_raw("meta_get_ok "+base64_encode(meta_information));
+  goto process_message_queue_end;
+}
+
+
+
+if (cmd == "set_silent") {
+  if (c->parts[1] == "1")
+  cmd_out->set_accept_commands(0);
+  else
+  if (c->parts[1] == "0")
+  cmd_out->set_accept_commands(1);
+  goto process_message_queue_end;
+}
+
+
+
+if (cmd == "package_export")
+{
+  #ifndef SAVE_PRODUCTION
+  if (filesystem.type != VSXF_TYPE_FILESYSTEM) {
+    cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Can not save a production!"));
+  } else
+  #endif
+  if (c->parts.size() == 3) {
+    vsx_string base_path = vsx_get_data_path();
+
+    vsxf tfs;
+    vsx_string filename = (c->parts[2]+str_replace(";","",c->parts[1]));
+    tfs.archive_create((base_path+filename).c_str());
+    vsx_command_list savelist;
+    get_state_as_commandlist(savelist);
+    savelist.set_filesystem(&tfs);
+    savelist.save_to_file("_states/_default");
+    for (forge_map_iter = forge_map.begin(); forge_map_iter != forge_map.end(); ++forge_map_iter)
+    {
+      vsx_comp* comp = (*forge_map_iter).second;
+      if (comp->component_class != "macro")
       {
-        cmd_out->add_raw("clear_ok");
-      }
-    } else
-    if (cmd == "state_load_done") {
-      commands_out_cache.add_raw("state_load_ok "+state_name);
-      send_state_to_client(&commands_out_cache);
-    } else
-#endif
-    // deletes every single component in the whole engine
-    if (cmd == "clear") {
-      i_clear(&commands_out_cache);
-#ifndef VSX_NO_CLIENT
-      cmd_out->add_raw(cmd+"_ok "+cmd_data);
-#endif
-    } else
-    if (cmd == "meta_set") {
-      meta_information = base64_decode(c->parts[1]);
-      vsx_string deli("|");
-      explode(meta_information, deli, meta_fields);
-    } else
-#ifndef VSX_NO_CLIENT
-    if (cmd == "meta_get") {
-      cmd_out->add_raw("meta_get_ok "+base64_encode(meta_information));
-    } else
-    if (cmd == "set_silent") {
-      if (c->parts[1] == "1")
-      cmd_out->set_accept_commands(0);
-      else
-      if (c->parts[1] == "0")
-      cmd_out->set_accept_commands(1);
-    } else
-    if (cmd == "package_export") {
-    	#ifndef SAVE_PRODUCTION
-      if (filesystem.type != VSXF_TYPE_FILESYSTEM) {
-        cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Can not save a production!"));
-      } else
-      #endif
-      if (c->parts.size() == 3) {
-        vsx_string base_path = vsx_get_data_path();
-        
-        vsxf tfs;
-        vsx_string filename = (c->parts[2]+str_replace(";","",c->parts[1]));
-#ifdef VSXU_DEBUG
-        printf("exporting vsx filename: %s\n", (base_path+filename).c_str() );
-#endif
-        tfs.archive_create((base_path+filename).c_str());
-        vsx_command_list savelist;
-        get_state_as_commandlist(savelist);
-        savelist.set_filesystem(&tfs);
-        savelist.save_to_file("_states/_default");
-        for (forge_map_iter = forge_map.begin(); forge_map_iter != forge_map.end(); ++forge_map_iter) 
+        for (unsigned long i = 0; i < comp->get_params_in()->param_id_list.size(); ++i)
         {
-          vsx_comp* comp = (*forge_map_iter).second;
-          if (comp->component_class != "macro") 
+          if (comp->get_params_in()->param_id_list[i]->module_param->type == VSX_MODULE_PARAM_ID_RESOURCE)
           {
-            for (unsigned long i = 0; i < comp->get_params_in()->param_id_list.size(); ++i) 
+            if (comp->get_params_in()->param_id_list[i]->get_string() != comp->get_params_in()->param_id_list[i]->get_default_string())
             {
-              if (comp->get_params_in()->param_id_list[i]->module_param->type == VSX_MODULE_PARAM_ID_RESOURCE) 
-              {
-                if (comp->get_params_in()->param_id_list[i]->get_string() != comp->get_params_in()->param_id_list[i]->get_default_string()) 
-                {
-                  tfs.archive_add_file(comp->get_params_in()->param_id_list[i]->get_string(),0,0,vsx_get_data_path()+comp->get_params_in()->param_id_list[i]->get_string());
-                }
-              }
-            }
-            for (unsigned long i = 0; i < comp->module->resources.size(); ++i) {
-              printf("engine resource add: %s\n", comp->module->resources[i].c_str() );
-              tfs.archive_add_file(comp->module->resources[i],0,0,vsx_get_data_path()+comp->module->resources[i]);
+              tfs.archive_add_file(comp->get_params_in()->param_id_list[i]->get_string(),0,0,vsx_get_data_path()+comp->get_params_in()->param_id_list[i]->get_string());
             }
           }
         }
-        cmd_out->add_raw(vsx_string(cmd+"_ok ")+c->parts[1]);
-        tfs.archive_close();
+        for (unsigned long i = 0; i < comp->module->resources.size(); ++i) {
+          printf("engine resource add: %s\n", comp->module->resources[i].c_str() );
+          tfs.archive_add_file(comp->module->resources[i],0,0,vsx_get_data_path()+comp->module->resources[i]);
+        }
       }
-    } else
-    if (cmd == "state_save") {
-			#ifndef SAVE_PRODUCTION
-      if (filesystem.type != VSXF_TYPE_FILESYSTEM) {
-        cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Can not save a production!"));
-      } else
-      #endif
-      if (c->parts.size() == 2) {
-        vsx_string base_path = vsx_get_data_path();
-        vsxf tfs;
-        vsx_command_list savelist;
-        get_state_as_commandlist(savelist);
-        savelist.set_filesystem(&tfs);
-        vsx_string filename = base_path+"states/"+str_replace(";","/",c->parts[1]);
-        savelist.save_to_file(filename);
-        cmd_out->add_raw(vsx_string(cmd+"_ok ")+c->parts[1]);
+    }
+    cmd_out->add_raw(vsx_string(cmd+"_ok ")+c->parts[1]);
+    tfs.archive_close();
+  }
+  goto process_message_queue_end;
+}
 
-        vsx_string s2 = str_replace(" ","\\ ",c->parts[1]);
-        cmd_out->add_raw("states_list "+s2);
-        cmd_out->add_raw("states_list_end");
-      }
-    } else
-#endif
+
+
+if (cmd == "state_save")
+{
+  #ifndef SAVE_PRODUCTION
+  if (filesystem.type != VSXF_TYPE_FILESYSTEM) {
+    cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Can not save a production!"));
+  } else
+  #endif
+  if (c->parts.size() == 2) {
+    vsx_string base_path = vsx_get_data_path();
+    vsxf tfs;
+    vsx_command_list savelist;
+    get_state_as_commandlist(savelist);
+    savelist.set_filesystem(&tfs);
+    vsx_string filename = base_path+"states/"+str_replace(";","/",c->parts[1]);
+    savelist.save_to_file(filename);
+    cmd_out->add_raw(vsx_string(cmd+"_ok ")+c->parts[1]);
+
+    vsx_string s2 = str_replace(" ","\\ ",c->parts[1]);
+    cmd_out->add_raw("states_list "+s2);
+    cmd_out->add_raw("states_list_end");
+  }
+  goto process_message_queue_end;
+}

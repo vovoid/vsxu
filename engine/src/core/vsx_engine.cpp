@@ -328,10 +328,10 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string)
 // set engine speed
 void vsx_engine::set_speed(float spd)
 {
-  if (!valid) return;
-  #ifndef VSX_DEMO_MINI
-    g_timer_amp = spd;
-  #endif
+  if (!valid)
+    return;
+
+  g_timer_amp = spd;
 }
 
 // set internal float parameter
@@ -717,29 +717,29 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
 
   vsx_command_list* cmd_out = cmd_out_res;
 
-  //#ifdef VSXU_DEBUG
   max_time = 120.0f;
-  //#endif
-  //printf("max time: %f\n", max_time);
-  //while (total_time < 0.01 || ignore_timing)
+
   while (total_time < max_time || ignore_timing)
   {
     c = commands_internal.pop();
-    if (!c) break;
+
+    // handle null pointers
+    if (!c)
+      break;
+
+    // break command
     if (c->cmd == "break")
     {
       (*(c->garbage_pointer)).remove(c);
       delete c;
       return;
     }
-    //LOG3(vsx_string("cmd_in: ")+c->cmd+" ::: "+c->raw);
-    //printf("%s\n", vsx_string(vsx_string("cmd_in: ")+c->cmd+" ::: "+c->raw).c_str());
-    //printf("c type %d\n",c->type);
+
+    // internal command
     if (c->type == 1)
       cmd_out = &commands_res_internal;
-    //else
-//    	cmd_out = cmd_out_res;
 
+    // process main message
     #define cmd c->cmd
     #define cmd_data c->cmd_data
 
@@ -752,13 +752,20 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
     #include "vsx_engine_messages/vsx_seq_pool.h"
     #include "vsx_engine_messages/vsx_engine_time.h"
     #include "vsx_engine_messages/vsx_em_script.h"
-    #ifndef VSX_NO_CLIENT
-      #include "vsx_engine_messages/vsx_note.h"
-    #endif
+    #include "vsx_engine_messages/vsx_note.h"
     #include "vsx_engine_messages/vsx_em_system.h"
+
+    // this shouldn't be reached unless no command is performed and thus jumped
+    // to process_message_queue_end
+    cmd_out->add("invalid","command");
+
 
     #undef cmd
     #undef cmd_data
+
+    process_message_queue_end:
+
+
 
     if (current_state != VSX_ENGINE_LOADING)
     {
@@ -767,6 +774,7 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
 
 
     total_time+=vsx_command_timer.dtime();
+
     // internal garbage collection
     (*(c->garbage_pointer)).remove(c);
     delete c;

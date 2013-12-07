@@ -22,118 +22,134 @@
 */
 
 
-#ifndef VSX_EM_SYSTEM_H_
-#define VSX_EM_SYSTEM_H_
+if (cmd == "get_module_list")
+{
+  std::vector< vsx_module_info* >* my_module_list = module_list->get_module_list();
 
-#ifndef VSX_NO_CLIENT
-    if (cmd == "get_module_list")
+  for
+  (
+    size_t i = 0;
+    i < my_module_list->size();
+    i++
+  )
+  {
+    if
+    (
+        (*my_module_list)[i]->identifier != "outputs;screen"
+    )
     {
-      std::vector< vsx_module_info* >* my_module_list = module_list->get_module_list();
-
-      for
-      (
-        size_t i = 0;
-        i < my_module_list->size();
-        i++
-      )
-      {
-        if
-        (
-            (*my_module_list)[i]->identifier != "outputs;screen"
-        )
-        {
-          cmd_out->add_raw(
-                vsx_string("module_list ")
-                +
-                (*my_module_list)[i]->component_class
-                +
-                " "
-                +
-                (*my_module_list)[i]->identifier
-                +
-                " "
-                +
-                base64_encode(
-                  (*my_module_list)[i]->description
-                  +
-                  " "
-                )
-          );
-        }
-      }
-      cmd_out->add_raw("module_list_end");
-      delete my_module_list;
+      cmd_out->add_raw(
+            vsx_string("module_list ")
+            +
+            (*my_module_list)[i]->component_class
+            +
+            " "
+            +
+            (*my_module_list)[i]->identifier
+            +
+            " "
+            +
+            base64_encode(
+              (*my_module_list)[i]->description
+              +
+              " "
+            )
+      );
     }
-    else
-    if (cmd == "get_list") {
-      std::list<vsx_string> mfiles;
-      vsx_string path;
-      vsx_string base_path = vsx_get_data_path();
-      if (c->parts[1] == "resources") path = base_path+c->parts[1];
-      if (c->parts[1] == "states" || c->parts[1] == "prods" || c->parts[1] == "visuals") path = base_path+c->parts[1];
-      get_files_recursive(path,&mfiles,"",".hidden");
-      for (std::list<vsx_string>::iterator it = mfiles.begin(); it != mfiles.end(); ++it) 
-	  {
-        //printf("internal file: %s\n",(*it).c_str());
-        //vsx_string s2 = str_replace("/",";",*it);
-        //vsx_string s3 = str_replace("resources;","","resources;foo;bar");
-        //vsx_string s2 = str_replace(str_replace("/",";",path)+";","",str_replace(" ",":20:",str_replace("/",";",*it)));
-        vsx_string s2 = str_replace(str_replace("/",";",path)+";","",str_replace(" ",":20:",str_replace("/",";",str_replace(path,"",*it))));
-        //printf("s2: %s\n",s2.c_str());
-        cmd_out->add_raw(c->parts[1]+"_list "+s2);
-      }
-      cmd_out->add_raw(c->parts[1]+"_list_end");
-    } else
-    if (cmd == "get_state") {
-      send_state_to_client(cmd_out);
-    } else
-		#ifndef VSX_NO_CLIENT
-    if (cmd == "undo_s") {
-        vsx_command_list savelist;
-        get_state_as_commandlist(savelist);
-        undo_buffer.push_back(savelist);
-    } else
-    if (cmd == "undo") {
-      //printf("undo in engine\n");
-      vsx_string error_string;
-      if (undo_buffer.size()) {
-        i_load_state(undo_buffer[undo_buffer.size()-1],&error_string);
-        undo_buffer.reset_used(undo_buffer.size()-1);
-      }
-    } else
-#endif
-    if (cmd == "system.shutdown") {
-      stop();
-      exit(0);
-    } else
-    if (cmd == "kwok") {
-      cmd_out->add_raw("o< KWAK");
-    } else
+  }
+  cmd_out->add_raw("module_list_end");
+  delete my_module_list;
+  goto process_message_queue_end;
+}
 
-    if (cmd == "hallo") {
-      cmd_out->add_raw("WAS?");
-    } else
-#endif // NO CLIENT
-    /* else
-    if (cmd == "help") {
-cmd_out->add(
-"VSXU Command Syntax:\n","\n\
-   q, quit {disconnect from server}\n\
-   dn, shutdown {shut down server}\n\
-   stats {get statictics dump from gfx/dsp engine}\n\
-   fps_d  {gets the current framerate}\n\
-   fps_d_set [frames] {sets maximum frames per interval for framerate\n\
-                       calculations}\n\
-   fullscreen [mode-str] {GLUT GameMode string, for instance 800x600:32@85\n\
-                          To return to window mode, just go \"fullscreen\"}\n\
-___________________________________________________________________________\n"
-);
-		} else*/
-    {
-#ifndef VSX_NO_CLIENT
-		  cmd_out->add("invalid","command");
-#endif
-		}
-		#
 
-#endif /* VSX_EM_SYSTEM_H_ */
+
+
+
+if (cmd == "get_list")
+{
+  std::list<vsx_string> file_list;
+  vsx_string path;
+  vsx_string base_path = vsx_get_data_path();
+
+  if (c->parts[1] == "resources")
+    path = base_path+c->parts[1];
+
+  if (c->parts[1] == "states" || c->parts[1] == "prods" || c->parts[1] == "visuals")
+    path = base_path+c->parts[1];
+
+  get_files_recursive(path, &file_list, "", ".hidden");
+
+  for (std::list<vsx_string>::iterator it = file_list.begin(); it != file_list.end(); ++it)
+  {
+    vsx_string s2 = str_replace(str_replace("/",";",path)+";","",str_replace(" ",":20:",str_replace("/",";",str_replace(path,"",*it))));
+    cmd_out->add_raw(c->parts[1]+"_list "+s2);
+  }
+
+  cmd_out->add_raw(c->parts[1]+"_list_end");
+  goto process_message_queue_end;
+}
+
+
+
+
+if (cmd == "get_state")
+{
+  send_state_to_client(cmd_out);
+  goto process_message_queue_end;
+}
+
+
+
+
+
+if (cmd == "undo_s")
+{
+  vsx_command_list savelist;
+  get_state_as_commandlist(savelist);
+  undo_buffer.push_back(savelist);
+  goto process_message_queue_end;
+}
+
+
+
+
+if (cmd == "undo")
+{
+  vsx_string error_string;
+  if (undo_buffer.size())
+  {
+    i_load_state(undo_buffer[undo_buffer.size()-1],&error_string);
+    undo_buffer.reset_used(undo_buffer.size()-1);
+  }
+  goto process_message_queue_end;
+}
+
+
+
+
+
+if (cmd == "system.shutdown")
+{
+  stop();
+  exit(0);
+}
+
+
+
+
+if (cmd == "kwok")
+{
+  cmd_out->add_raw("o< KWAK");
+  goto process_message_queue_end;
+}
+
+if (cmd == "hallo")
+{
+  cmd_out->add_raw("WAS?");
+  goto process_message_queue_end;
+}
+
+
+
+

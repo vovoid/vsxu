@@ -27,20 +27,25 @@
 
 if (cmd == "seq_pool")
 {
-  //  c->dump_to_stdout();
-  //printf("seq_pool %s\n", c->parts[1].c_str());
-
-  if (c->parts[1] == "seq_list") {
+  if (c->parts[1] == "seq_list")
+  {
     cmd_out->add_raw(c->parts[0]+" "+c->parts[1]+"_ok "+sequence_pool.get_selected()->get_channel_names());
-  } else
+    goto process_message_queue_end;
+  }
+
+
 
   // ***************************************
   // Dump names request
   // ***************************************
   // 0=seq_pool 1=dump_names
-  if (c->parts[1] == "dump_names") {
+  if (c->parts[1] == "dump_names")
+  {
     cmd_out->add_raw("seq_pool dump_names "+sequence_pool.dump_names());
-  } else
+    goto process_message_queue_end;
+  }
+
+
 
   // ***************************************
   // Set time loop point
@@ -49,26 +54,32 @@ if (cmd == "seq_pool")
   if (c->parts[1] == "time_set_loop_point")
   {
     sequence_pool.set_loop_point(s2f(c->parts[2]));
-    c->dump_to_stdout();
-  } else
+    goto process_message_queue_end;
+  }
 
 
   // ***************************************
   // Set time
   // ***************************************
   // 0=seq_pool 1=time_set 2=[time:float]
-  if (c->parts[1] == "time_set") {
+  if (c->parts[1] == "time_set")
+  {
     //printf("time_set: %f\n", s2f(c->parts[2]));
     sequence_pool.set_time(s2f(c->parts[2]));
-  } else
+    goto process_message_queue_end;
+  }
+
 
   // ***************************************
   // Play
   // ***************************************
   // 0=seq_pool 1=play
-  if (c->parts[1] == "play") {
+  if (c->parts[1] == "play")
+  {
     sequence_pool.play();
-  } else
+    goto process_message_queue_end;
+  }
+
 
   // ***************************************
   // Stop
@@ -76,27 +87,36 @@ if (cmd == "seq_pool")
   // 0=seq_pool 1=stop
   if (c->parts[1] == "stop") {
     sequence_pool.stop();
-  } else
+    goto process_message_queue_end;
+  }
+
 
   // ***************************************
   // Stop
   // ***************************************
   // 0=seq_pool 1=stop
-  if (c->parts[1] == "rewind") {
+  if (c->parts[1] == "rewind")
+  {
     sequence_pool.rewind();
-  } else
+    goto process_message_queue_end;
+  }
+
 
   // ***************************************
   // Add new sequencer pool
   // ***************************************
   // 0=seq_pool 1=add 2=[name]
-  if (c->parts[1] == "add") {
+  if (c->parts[1] == "add")
+  {
     // 1. add
     if (sequence_pool.add(c->parts[2]))
     {
       cmd_out->add_raw("seq_pool dump_names "+sequence_pool.dump_names());
     }
-  } else
+    goto process_message_queue_end;
+  }
+
+
   // ***************************************
   // Remove sequencer pool
   // ***************************************
@@ -112,7 +132,11 @@ if (cmd == "seq_pool")
       cmd_out->add_raw("seq_pool del "+c->parts[2]);
       cmd_out->add_raw("seq_pool dump_names "+sequence_pool.dump_names());
     }
-  } else
+    goto process_message_queue_end;
+  }
+
+
+
   // ***************************************
   // Clone sequencer pool
   // ***************************************
@@ -120,14 +144,16 @@ if (cmd == "seq_pool")
   if (c->parts[1] == "clone")
   {
     // 1. clone
-    //printf("clone seq_pool\n");
     if (sequence_pool.clone(c->parts[2], c->parts[3]))
     {
       cmd_out->add_raw("seq_pool dump_names "+sequence_pool.dump_names());
     }
     else
       FAIL("Sequence Pool", "No sequence found or duplicate name!");
-  } else
+    goto process_message_queue_end;
+  }
+
+
 
   // ***************************************
   // Export sequencer list to file
@@ -135,12 +161,12 @@ if (cmd == "seq_pool")
   // 0=seq_pool 1=export 2=[filename]
   if (c->parts[1] == "export")
   {
-    //printf("export seq_pool\n");
     if (!sequence_pool.export_to_file(c->parts[2]))
     {
       FAIL("Sequence Pool", "Export failed...");
     }
-  } else
+    goto process_message_queue_end;
+  }
 
   // ***************************************
   // Import sequencer list from file
@@ -153,13 +179,17 @@ if (cmd == "seq_pool")
     {
       FAIL("Sequence Pool", "Import failed...");
     }
-  } else
+    goto process_message_queue_end;
+  }
+
+
 
   // ***************************************
   // Add parameter to current selected sequencer pool
   // ***************************************
   // 0=seq_pool 1=add_param 2=[component] 3=[parameter]
-  if (c->parts[1] == "add_param") {
+  if (c->parts[1] == "add_param")
+  {
     vsx_comp* component = get_component_by_name(c->parts[2]);
     if (component) {
       vsx_engine_param* param = component->get_params_in()->get_by_name(c->parts[3]);
@@ -170,21 +200,30 @@ if (cmd == "seq_pool")
       } else
         FAIL("Sequence Pool", "No sequence pool selected!");
     }
-  } else
+    goto process_message_queue_end;
+  }
+
+
+
   // ***************************************
   // Toggle EDIT on/off
   // ***************************************
   // 0=seq_pool 1=toggle_edit
-  if (c->parts[1] == "toggle_edit") {
+  if (c->parts[1] == "toggle_edit")
+  {
     bool value = sequence_pool.toggle_edit();
     cmd_out->add_raw("seq_pool toggle_edit "+i2s((int)value));
-  } else
+    goto process_message_queue_end;
+  }
+
+
 
   // ***************************************
   // Select a pool
   // ***************************************
   // 0=seq_pool 1=select 2=[name]
-  if (c->parts[1] == "select") {
+  if (c->parts[1] == "select")
+  {
     // 1. select
     //printf("select seq_pool\n");
     if (sequence_pool.select(c->parts[2])) {
@@ -192,19 +231,29 @@ if (cmd == "seq_pool")
       cmd_out->add_raw("seq_pool clear_sequencer ");
       cmd_out->add_raw("seq_pool dump_names "+sequence_pool.dump_names());
     }
-  } else
-  //
-  if (c->parts[1] == "pseq_l_dump") {
+    goto process_message_queue_end;
+  }
+
+
+
+
+  if (c->parts[1] == "pseq_l_dump")
+  {
     // dump all the sequences present in the current sequence pool
     if (sequence_pool.get_selected())
     {
       vsx_string a = sequence_pool.get_selected()->get_sequence_list_dump();
-      //printf("a is: %s\n", a.c_str());
       cmd_out->add_raw("seq_pool "+c->parts[1]+"_ok "+a);
     }
-  } else
+    goto process_message_queue_end;
+  }
+
+
+
+
   // 0=seq_pool 1=pseq_inject 2=[seq_pool_name] 3=[component] 4=[param] 5=[data]
-  if (c->parts[1] == "pseq_inject") {
+  if (c->parts[1] == "pseq_inject")
+  {
     if (sequence_pool.get_sequence_list_by_name(c->parts[2]))
     {
       vsx_comp* component = get_component_by_name(c->parts[3]);
@@ -219,7 +268,8 @@ if (cmd == "seq_pool")
         }
       }
     }
-  } else
+    goto process_message_queue_end;
+  }
 
 
   // ***************************************
@@ -236,11 +286,6 @@ if (cmd == "seq_pool")
         vsx_engine_param* param = component->get_params_in()->get_by_name(c->parts[4]);
         if (param)
         {
-          if (c->parts[2] == "inject")
-          {
-            //param->sequence = true;
-            //sequence_list.inject_param(param, dest, c->parts[4]);
-          } else
           // ***************************************
           // Inject Get (dump a sequencer up to the GUI)
           // ***************************************
@@ -268,7 +313,12 @@ if (cmd == "seq_pool")
         }
       }
     }
+    goto process_message_queue_end;
   }
+
+
+
+
   // ***************************************
   // Legacy sequence pattern modifier
   // ***************************************
@@ -304,6 +354,8 @@ if (cmd == "seq_pool")
         }
       }
     }
+    goto process_message_queue_end;
   }
+  goto process_message_queue_end;
 }
-else
+

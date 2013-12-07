@@ -62,10 +62,6 @@ vsx_texture* vsx_widget_seq_channel::mtex_blob = 0;
 void vsx_widget_seq_channel::init()
 {
   index_hit = -1; // none hit
-  //if (mtex_blob == 0) {
-  //mtex_blob = new vsx_texture;
-  //mtex_blob->load_png_thread(skin_path+"interface_extras/highlight_blob.png");
-  //}
 
   widget_type = VSX_WIDGET_TYPE_SEQUENCE_CHANNEL;
 
@@ -151,7 +147,6 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
   int item_action_id = -1;
   index_hit = -1; // we don't know which index has been hit
   extra_hit = -1;
-  //printf("world.x %f world.y %f \n", distance.center.x, distance.center.y);
 
   // first position the iterator and time just outside the viewing area so we don't
   // do unnecesarry heavy calculations
@@ -176,8 +171,8 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
       time_iterator -= items[item_iterator].get_total_length();
     }
   }
-  // now line_iterator and t_cur are next to outside our iteration phase
 
+  // now line_iterator and t_cur are next to outside our iteration phase
   float o_dlx = -1000;
   float dlx = 0.0f, dly = 0.0f;
   float i_distance = 0.0f;
@@ -188,11 +183,10 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
     clicked_time_pos = pos_to_time(distance.center.x);
     while (item_iterator < (int) items.size() && time_iterator < view_time_end)
     {
-      float local_time = clicked_time_pos - time_iterator; // skinka³
+      float local_time = clicked_time_pos - time_iterator;
       float total_length = items[item_iterator].get_total_length();
       float item_length = items[item_iterator].get_length();
-      printf("local time: %f\n",local_time);
-      printf("item_iterator: %d\n",item_iterator);
+
       if (local_time > 0.0f && local_time < total_length)
       {
         mouse_clicked_id = item_iterator;
@@ -227,7 +221,6 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
         dlx = (time_iterator - view_time_start) / totalsize * size.x - size.x
             * 0.5f;
         dly = (vv - y_start) / totalysize * size.y - size.y / 2;
-        //printf("dlx%f %f v: %f \n",td,dlx,dly);
 
         // check position of NEW point
         if (shift || (shift && ctrl && !alt) || (shift && alt && !ctrl))
@@ -242,22 +235,16 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
                 i_distance = (totalsize * ((distance.center.x - size.x * 0.5f)
                     / (size.x)));
                 item_action_id = item_iterator - 1;
-                //printf("wohoooohohohohohoho %f\n",td);
               }
             }
             else if (distance.center.x > o_dlx && distance.center.x < dlx)
             {
-              //printf("grufix ultra deluxe %f\n",td);
               i_distance = (totalsize * ((distance.center.x - o_dlx) / (size.x)));
               item_action_id = item_iterator - 1;
             }
             o_dlx = dlx;
           }
         }
-#ifdef VSXU_DEBUG
-        printf("dlx: %f\n", dlx);
-        printf("dly: %f\n", dly);
-#endif
 
         // check if we've hit a point
         if (!ctrl || (shift && button == 2))
@@ -265,14 +252,11 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
               && distance.center.y > dly - 0.001 && distance.center.y < dly
               + 0.001)
           {
-            //printf("HIT on %f !!\n",td);
             clicked_item_x_diff = dlx - distance.center.x;
-            m_pos = pos_to_time(distance.center.x);// (1 - (-distance.center.x + size.x * 0.5f) / size.x)
-                //* totalsize + view_time_start;
+            m_pos = pos_to_time(distance.center.x);
             if (display_exclusive == i + 1 || !display_exclusive)
             {
               index_hit = i;
-              //printf("hit on index %d\n",index_hit);
               mouse_clicked_id = item_iterator;
             }
           }
@@ -291,7 +275,6 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
               + 0.001f && distance.center.y > dly - 0.001f && distance.center.y
               < dly + 0.001f)
           {
-            //printf("EXTRAHIT on handle1 !!\n");
             if (display_exclusive == 1 || !display_exclusive)
             {
               extra_hit = 1;
@@ -310,7 +293,6 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
                 + 0.001 && distance.center.y > dly - 0.001 && distance.center.y
                 < dly + 0.001)
             {
-              //printf("EXTRAHIT on handle2 !!\n");
               if (display_exclusive == 1 || !display_exclusive)
               {
                 extra_hit = 2;
@@ -400,13 +382,10 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
       }
       return;
     }
-    //float f = ;//+pos.y+padrentpos.y)/size.y)*totalysize+ystart;
-    //printf("f: %f %f\n",f,size.y);
 
     // should we bring up the menu?
     if (mouse_clicked_id != -1 && !ctrl && !alt && !shift && button == 2)
     {
-      //vsx_widget::event_mouse_down(distance,coords,button);
       front(menu_interpolation);
       if (parent != root)
         parent->front(this);
@@ -433,8 +412,6 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
 void vsx_widget_seq_channel::event_mouse_up(vsx_widget_distance distance,
     vsx_widget_coords coords, int button)
 {
-  //auto_move_dir = 0;
-  //owner->update_time_from_engine = true;
   if (!shift && !ctrl && !alt)
   vsx_widget::event_mouse_up(distance, coords, button);
 }
@@ -451,25 +428,19 @@ void vsx_widget_seq_channel::event_mouse_double_click(
     if (mouse_clicked_id != -1)
     {
       {
-        #ifdef VSXU_DEBUG
-          printf("seq_channel: double-clicked an item with hit %d\n",extra_hit);
-        #endif
         if (extra_hit == 1)
         {
           vsx_widget** time_controller = &(items[mouse_clicked_id].get_master_channel_time_sequence());
           if (!*time_controller)
           {
-            //add(new vsx_widget_controller_sequence,name+".seq_edit");
             *time_controller = add((vsx_widget*)new vsx_widget_controller_sequence,name+"seq_edit");
             ((vsx_widget_controller_sequence*)*time_controller)->set_size_controlled_from_outside(1);
             ((vsx_widget_controller_sequence*)*time_controller)->set_command_suffix(vsx_string(" ")+i2s(mouse_clicked_id));
             ((vsx_widget_controller_sequence*)*time_controller)->init();
             ((vsx_widget_controller_sequence*)*time_controller)->set_span(0.0f, 1.0f);
-            //((vsx_widget_controller_sequence*)*time_controller)->set_view_time(-0.000000001f, 1.01f);
             ((vsx_widget_controller_sequence*)*time_controller)->set_view_time(-0.000000001f, 1.0f);
             ((vsx_widget_controller_sequence*)*time_controller)->set_draw_base(0);
             ((vsx_widget_controller_sequence*)*time_controller)->set_parent_removal(1);
-            printf("mouse clicked id: %d\n", mouse_clicked_id);
             (*time_controller)->coord_related_parent = false;
           } else
           {
@@ -492,7 +463,6 @@ void vsx_widget_seq_channel::event_mouse_double_click(
     command_q_b.add_raw("remove_chan " + channel_name + " " + param_name);
     parent->vsx_command_queue_b(this);
   }
-  //hidden_by_sequencer = !hidden_by_sequencer;
 }
 
 void vsx_widget_seq_channel::event_mouse_wheel(float y)
@@ -508,7 +478,6 @@ void vsx_widget_seq_channel::event_mouse_wheel(float y)
 
 void vsx_widget_seq_channel::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
 {
-  //vsx_vector drop_pos_local = coords.world_global - get_pos_p();
   float value_pos = (distance.center.y / size.y + 0.5f) * (y_end - y_start) + y_start;
   float time_pos = (distance.center.x / size.x + 0.5f) * (view_time_end - view_time_start) + view_time_start;
 
@@ -744,8 +713,8 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
 
           }
         }
-        // regular sequencer
 
+        // regular sequencer
         items[mouse_clicked_id - 1].increase_total_length( -d );
         if (mouse_clicked_id != (int) items.size() - 1)
         {
@@ -845,16 +814,12 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
           {
             distance.center.x = pos_iterated;
             ((vsx_widget_timeline*)(owner->timeline))->move_time(distance.center);
-            //printf("%d pos accum: %f\n", i, time_to_pos(time_start));
-            //printf("%d pos clicked: %f\n", i, distance.center.x);
           }
         }
       }
 
     }
   }
-  //world = world - parent->get_pos_p();
-  //move_time(world);
 }
 
 void vsx_widget_seq_channel::i_remove_line(long i_td)
@@ -966,7 +931,6 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
   {
     if (!is_controller)
     {
-      //printf("menu_remove");
       backwards_message("pseq_p remove " + channel_name + " " + param_name);
     }
     return;
@@ -1026,7 +990,6 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
           std::vector<vsx_string> pld_l;
           vsx_string pdeli_l = ":";
           vsx_string vtemp = base64_decode(pld[2]);
-          //printf("value: %s\n",vtemp.c_str());
           explode(vtemp, pdeli_l, pld_l);
           pa.set_value( pld_l[0] );
           pa.set_handle1( vsx_vector_aux::from_string( pld_l[1] ) );
@@ -1035,7 +998,6 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
         else
         {
           pa.set_value( base64_decode(pld[2]) );
-          //printf(" adding value: %s\n",pa.value.c_str());
         }
         pa.set_total_length( s2f(pld[0]) );
         items.push_back(pa);
@@ -1069,7 +1031,6 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
         std::vector<vsx_string> pld_l;
         vsx_string pdeli_l = ":";
         vsx_string vtemp = base64_decode(t->parts[4]);
-        //printf("value: %s\n",vtemp.c_str());
         explode(vtemp, pdeli_l, pld_l);
         pa.set_value( pld_l[0] );
         pa.set_handle1( vsx_vector_aux::from_string(pld_l[1]) );
@@ -1097,7 +1058,8 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
   {
     if (t->cmd == "mseq_channel_ok")
     {
-      if (t->parts[1] == "row") {
+      if (t->parts[1] == "row")
+      {
         // 0=mseq_channel 1=row 2=remove 3=[channel_name] 4=[item_action_id]
         if (t->parts[2] == "remove")
         {
@@ -1115,12 +1077,11 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
           items.erase(it);
         } else
         // 0=mseq_channel_ok 1=row 2=insert 3=[channel_name] 4=[after_this_id] 5=[local_time_distance] 6=[length] 7=[pool_name]
-        if (t->parts[2] == "insert") {
-          //printf("insert in channel\n");
+        if (t->parts[2] == "insert")
+        {
           long after_this_id = vsx_string_aux::s2i(t->parts[4]);
           if (after_this_id == (long)items.size()-1)
           {
-            printf("gui: last position\n");
             items[items.size()-1].set_total_length( s2f(t->parts[5]) );
             vsx_widget_param_sequence_item pa;
             pa.set_total_length( s2f(t->parts[6]) );
@@ -1172,11 +1133,9 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
         explode(t->parts[3], deli, pl);
         for (std::list<vsx_string>::iterator it = pl.begin(); it != pl.end(); ++it)
         {
-          printf("it = %s\n", (*it).c_str());
           std::vector<vsx_string> pld;
           vsx_string pdeli = ";";
           explode((*it), pdeli, pld);
-          printf("pld size: %lx\n", pld.size());
           vsx_widget_param_sequence_item pa;
           pa.set_type( VSX_WIDGET_SEQ_CHANNEL_TYPE_MASTER );
           pa.set_total_length( s2f(pld[0]) );
@@ -1240,7 +1199,7 @@ void vsx_widget_seq_channel::i_draw()
   {
     glColor4f(0.15f, 0.1f, 0.1f, 0.1f);
     ff = size.x * (fabs(view_time_start) / totalsize);
-    //      printf("ff: %f\n",ff);
+
     glVertex2f(self_pos.x - sizex_div_2, self_pos.y + sizey_div_2);
     glVertex2f(self_pos.x - sizex_div_2 + ff, self_pos.y + sizey_div_2);
     glVertex2f(self_pos.x - sizex_div_2 + ff, self_pos.y	- sizey_div_2);
@@ -1325,7 +1284,8 @@ void vsx_widget_seq_channel::i_draw()
       float time_iterator = 0;
       int item_iterator = 0;
       font.color.a = 0.4f;
-      while (
+      while
+      (
         item_iterator < (int) items.size()
         &&
         time_iterator < view_time_start
@@ -1381,7 +1341,6 @@ void vsx_widget_seq_channel::i_draw()
         {
           // position the time sequence controller kthx
           // it'll get drawn later..
-
           float sc_x = items[item_iterator].get_length()   // block length, not total length
               *
               size_calc;
@@ -1436,14 +1395,11 @@ void vsx_widget_seq_channel::i_draw()
     {
       if (w != 0)
       {
-        //glLineWidth(1.0f);
         draw_h_line(w, 0.6, 0.6, 1, 0.7);
       }
       if (inc == 1)
         if (w + 0.5 < y_end)
         {
-          //glLineWidth(1);
-
           draw_h_line(w + 0.5f, 1, 1, 1, 0.4);
         }
       font.color.a = 0.1f;
@@ -1455,7 +1411,6 @@ void vsx_widget_seq_channel::i_draw()
     glColor3f(1, 1, 1);
     if (items.size() >= 2)
     {
-      //printf("guuurk\n");
       float time_iterator = 0;
       int item_iterator = 0;
       float sv = 0.0f;
@@ -1499,7 +1454,6 @@ void vsx_widget_seq_channel::i_draw()
               vsx_bezier_calc calc;
               vsx_color lb_color = vsx_color(0.2f, 1.0f, 0.8f, 1.0f);
               float ev = s2f(items[item_iterator + 1].get_value() );
-              //glLineWidth(1.0f);
               draw_line(
                 time_iterator,
                 sv,
@@ -1546,8 +1500,6 @@ void vsx_widget_seq_channel::i_draw()
                     * delay, yp, l_color);
                 sv = yp;
               }
-              //draw_line(t_cur,sv, t_cur+lines[td].delay,sv,l_color);
-              //draw_line(t_cur+lines[td].delay,sv, t_cur+lines[td].delay,ev,l_color);
             }
             else if (items[item_iterator].get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_COSINE)
             {
@@ -1694,27 +1646,26 @@ void vsx_widget_seq_channel::draw_h_line(float y0 = 0, float r, float g,
 {
   glColor4f(r, g, b, a);
   glBegin(GL_LINE_STRIP);
-  dly = (y0 - y_start) / totalysize * size.y + parentpos.y + pos.y - size.y / 2;
-  glVertex2f(parentpos.x + pos.x - size.x / 2, dly);
-  glVertex2f(parentpos.x + pos.x + size.x / 2, dly);
+    dly = (y0 - y_start) / totalysize * size.y + parentpos.y + pos.y - size.y / 2;
+    glVertex2f(parentpos.x + pos.x - size.x / 2, dly);
+    glVertex2f(parentpos.x + pos.x + size.x / 2, dly);
   glEnd();
 }
 
 void vsx_widget_seq_channel::draw_red_line(float t0, float t1, float y0)
 {
   glBegin(GL_LINE_STRIP);
-  totalysize = y_end - y_start;
-  dlx = (t0 - view_time_start) / totalsize * size.x + parentpos.x + pos.x
-      - size.x / 2;
-  dly = (y0 - y_start) / totalysize * size.y + parentpos.y + pos.y - size.y / 2;
-  //printf("dlx: %f dly: %f\n",dlx, dly);
-  glColor4f(col_temp_1.r, col_temp_1.g, col_temp_1.b, col_temp_1.a);
-  glVertex2f(dlx, dly);
-  dlx = (t1 - view_time_start) / totalsize * size.x + parentpos.x + pos.x
-      - size.x / 2;
-  //dly = (y1-ystart)/totalysize*size.y+parentpos.y+pos.y-size.y/2;
-  glColor4f(col_temp_2.r, col_temp_2.g, col_temp_2.b, col_temp_2.a);
-  glVertex2f(dlx, dly);
+    totalysize = y_end - y_start;
+    dlx = (t0 - view_time_start) / totalsize * size.x + parentpos.x + pos.x
+        - size.x / 2;
+    dly = (y0 - y_start) / totalysize * size.y + parentpos.y + pos.y - size.y / 2;
+    glColor4f(col_temp_1.r, col_temp_1.g, col_temp_1.b, col_temp_1.a);
+    glVertex2f(dlx, dly);
+    dlx = (t1 - view_time_start) / totalsize * size.x + parentpos.x + pos.x
+        - size.x / 2;
+
+    glColor4f(col_temp_2.r, col_temp_2.g, col_temp_2.b, col_temp_2.a);
+    glVertex2f(dlx, dly);
   glEnd();
 
 }
@@ -1722,7 +1673,6 @@ void vsx_widget_seq_channel::draw_red_line(float t0, float t1, float y0)
 void vsx_widget_seq_channel::draw_line(float t0, float y0, float t1, float y1,
     vsx_color& l_color)
 {
-  //printf("t0: %f y0: %f, t1: %f, y1:%f\n",t0,y0,t1,y1);
   if (t0 < view_time_start)
   {
     if (t1 < view_time_start)
@@ -1732,7 +1682,6 @@ void vsx_widget_seq_channel::draw_line(float t0, float y0, float t1, float y1,
       float dt = fabs(t1 - t0);
       float a = view_time_start - t0;
       float dd = (1 - (a / dt));
-      //printf("dd: %f\n",dd);
       t0 = view_time_start;
       y0 = y1 - (y1 - y0) * dd;
     }
@@ -1748,7 +1697,6 @@ void vsx_widget_seq_channel::draw_line(float t0, float y0, float t1, float y1,
       float dt = fabs(t1 - t0);
       float a = view_time_end - t0;
       float dd = a / dt;
-      //printf("dd: %f\n",dd);
       t1 = view_time_end;
 
       y1 = y0 + (y1 - y0) * dd;
@@ -1850,7 +1798,7 @@ void vsx_widget_seq_channel::draw_line(float t0, float y0, float t1, float y1,
   dlx = (t0 - view_time_start) / totalsize * size.x + parentpos.x + pos.x
       - size.x / 2;
   dly = (y0 - y_start) / totalysize * size.y + parentpos.y + pos.y - size.y / 2;
-  //printf("dlx: %f dly: %f\n",dlx, dly);
+
   glVertex2f(dlx, dly);
   dlx = (t1 - view_time_start) / totalsize * size.x + parentpos.x + pos.x
       - size.x / 2;
@@ -1894,15 +1842,6 @@ void vsx_widget_seq_channel::draw_chan_box(float t0, float y0, float c_size)
   glVertex2f(dlx - c_size, dly - c_size);
   glEnd();
   font.print(vsx_vector(dlx + 0.002, dly), f2s(y0), c_size * 2.14f);
-  /*glBegin(GL_QUADS);
-   totalysize = yend - ystart;
-   dlx = (t0-tstart)/totalsize*size.x+parentpos.x+pos.x-size.x/2;
-   dly = (y0-ystart)/totalysize*size.y+parentpos.y+pos.y-size.y/2;
-   glVertex3f(dlx-c_size,dly-c_size,pos.z);
-   glVertex3f(dlx+c_size,dly-c_size,pos.z);
-   glVertex3f(dlx+c_size,dly+c_size,pos.z);
-   glVertex3f(dlx-c_size,dly+c_size,pos.z);
-   glEnd();*/
 }
 
 void vsx_widget_seq_channel::draw_selection_box(float t0, float y0)
@@ -1949,7 +1888,6 @@ bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
   VSX_UNUSED(shift);
 
   if (is_controller) return true;
-  //printf("key: %d\n",key);
   switch (key)
   {
   case '1':
@@ -1958,7 +1896,6 @@ bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
   case '4':
   case '5':
     toggle_exclusive(key - 48);
-    printf("exclusive: %d\n", display_exclusive);
     break;
   case 'a':
   {
@@ -1966,9 +1903,6 @@ bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
       backwards_message("play");
     else
       backwards_message("stop");
-    //a_focus = parent;
-    //k_focus = parent;
-    //mouse_clicked_id = -1;
   }
     break;
   case 'E':
@@ -2009,10 +1943,6 @@ bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
         return ((vsx_widget_timeline*) owner->timeline)->event_key_down(key,
             false, false, false);
     }
-    else
-    {
-
-    }
   }
     break;
   case 'r':
@@ -2028,9 +1958,6 @@ bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
       float dt = (y_end - y_start) * 0.5;
       y_start = y_start + dt - dt * 0.97;
       y_end = y_end - dt + dt * 0.97;
-      //printf("r ys %f dt %f\n",ystart,dt);
-      //if (owner)
-      //((vsx_widget_timeline*)owner->timeline)->event_key_down(key,false,false,false);
     }
     return false;
   }
@@ -2048,9 +1975,6 @@ bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
       float dt = (y_end - y_start) * 0.5;
       y_start = y_start + dt - dt * 1.03;
       y_end = y_end - dt + dt * 1.03;
-      //if (owner)
-      //((vsx_widget_timeline*)owner->timeline)->event_key_down(key,false,false,false);
-
     }
     return false;
   }
@@ -2064,9 +1988,7 @@ void vsx_widget_seq_channel::drop_master_channel(vsx_widget_distance distance,
 {
   VSX_UNUSED(distance);
   float time_iterator = 0;
-  //float accumulated_time = 0.0f;
   unsigned long item_iterator = 0;
-  //int item_action_id = -1;
   vsx_vector drop_pos_local = coords.world_global - get_pos_p();
   float time_pos = (drop_pos_local.x / size.x + 0.5f) * (view_time_end
       - view_time_start) + view_time_start;
@@ -2091,8 +2013,6 @@ void vsx_widget_seq_channel::drop_master_channel(vsx_widget_distance distance,
   command_q_b.add_raw("mseq_channel row insert " + channel_name + " " + i2s(item_iterator) + " " + f2s(
       time_diff) + " 0.1 " +name);
   parent->vsx_command_queue_b(this);
-
-  printf("Time drop pos: %f\n", time_pos);
 }
 
 void vsx_widget_seq_channel::set_view_time(float start, float end)

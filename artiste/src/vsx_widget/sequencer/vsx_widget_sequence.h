@@ -25,7 +25,8 @@
 #ifndef VSX_WIDGET_SEQUENCE_H
 #define VSX_WIDGET_SEQUENCE_H
 
-class vsx_widget_sequence_editor : public vsx_widget {
+class vsx_widget_sequence_editor : public vsx_widget
+{
   vsx_widget *server;
 
   vsx_vector parentpos;
@@ -35,6 +36,7 @@ class vsx_widget_sequence_editor : public vsx_widget {
   vsx_widget* but_add_master_channel;
   vsx_widget* but_remove_master_channel;
   vsx_widget* but_set_loop_point;
+
   std::vector<vsx_widget*> channels;
   std::map<vsx_string,vsx_widget*> channels_map;
   float channels_visible;
@@ -60,6 +62,7 @@ public:
   virtual void init();
   void i_draw();
   void toggle_channel_visible(vsx_string name);
+
   // removes all sequence channels, used when switching seqpool etc.
   void clear_sequencer();
   virtual void command_process_back_queue(vsx_command_s *t);

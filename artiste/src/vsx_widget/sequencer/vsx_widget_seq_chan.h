@@ -49,34 +49,23 @@ class vsx_widget_seq_channel : public vsx_widget
 
   float clicked_item_x_diff;
 
-  void toggle_exclusive(int value) {
+  void toggle_exclusive(int value)
+  {
     if (display_exclusive == value) { display_exclusive = 0; return; }
     display_exclusive = value;
   }
 
   // supply a center coordinate
-  inline float pos_to_time(float x) {
+  inline float pos_to_time(float x)
+  {
     return 	(x / size.x + 0.5f)
               * (view_time_end - view_time_start)
               + view_time_start;
   }
-/*
- * B = view_time_end - view_time_start
-
-  t = (x / size.x + 0.5f) * B + view_time_start
-
-  t - view_time_start = (x / size.x + 0.5f) * B
-
-  (t - view_time_start) / B = x / size.x + 0.5f
-
-  (t - view_time_start) / B - 0.5f = x / size.x
-
-  x = size.x * ((t - view_time_start) / B - 0.5f)
-
-  */
 
   // returns a center coordinate
-  inline float time_to_pos(float t) {
+  inline float time_to_pos(float t)
+  {
     float B = view_time_end - view_time_start;
     return 	size.x * ( (t-view_time_start) / B - 0.5f);
   }
@@ -91,7 +80,8 @@ class vsx_widget_seq_channel : public vsx_widget
   int num_rows;
   bool edit_mode;
   vsx_string edit_str;
-  void server_message(vsx_string msg,vsx_string data) {
+  void server_message(vsx_string msg,vsx_string data)
+  {
     command_q_b.add_raw(msg+" "+channel_name+" "+param_name+" "+data);
     parent->vsx_command_queue_b(this);
   }
@@ -102,7 +92,6 @@ class vsx_widget_seq_channel : public vsx_widget
   // temp values for color calculations
   static vsx_color col_temp_1;
   static vsx_color col_temp_2;
-  //vsx_font myf2;
 
   vsx_widget* menu_interpolation;
   vsx_widget* value_dialog;
