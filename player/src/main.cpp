@@ -45,7 +45,6 @@ bool no_overlay = false;
 int app_argc = 0;
 char** app_argv;
 
-vsx_gl_state gl_state;
 
 void set_modifiers()
 {
@@ -140,7 +139,7 @@ void GLFWCALL mouse_wheel(int pos)
 void GLFWCALL window_size( int width, int height )
 {
   vsx_printf("change viewport %d %d\n", width, height);
-  gl_state.viewport_change(0,0,width, height);
+  vsx_gl_state::get_instance()->viewport_change(0,0,width, height);
 }
 
 //========================================================================
@@ -322,7 +321,7 @@ int main(int argc, char* argv[])
     height = height > 0 ? height : 1;
 
     // Set viewport
-    gl_state.viewport_set( 0, 0, width, height );
+    vsx_gl_state::get_instance()->viewport_set( 0, 0, width, height );
 
     // Clear color buffer
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );

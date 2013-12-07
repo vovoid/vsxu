@@ -102,8 +102,6 @@ public:
   // returns information about currently playing effect
   int get_engine_num_modules();
 
-  void set_gl_state(vsx_gl_state* n);
-
   vsx_manager();
   ~vsx_manager();
 };

@@ -27,7 +27,6 @@ class module_render_basic_textured_rectangle : public vsx_module
   GLfloat blobVec0[4];
   GLfloat blobVec1[4];
 
-  vsx_gl_state* gl_state;
 
 public:
 
@@ -75,8 +74,9 @@ public:
 
 
 
-  void beginBlobs(vsx_gl_state* gl_state)
+  void beginBlobs()
   {
+    vsx_gl_state* gl_state = vsx_gl_state::get_instance();
     GLfloat tmpMat[16];
     gl_state->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, blobMat );
     gl_state->matrix_mode( VSX_GL_PROJECTION_MATRIX );
@@ -190,8 +190,6 @@ public:
 
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     render_result->set(0);
-
-    gl_state = vsx_gl_state::get_instance();
   }
 
   void output(vsx_module_param_abs* param)
@@ -246,7 +244,7 @@ public:
     tbx = tex_coord_b->get(0);
     tby = tex_coord_b->get(1);
     if (facing_camera->get()) {
-      beginBlobs(gl_state);
+      beginBlobs();
 
       GLfloat tmpVec0[] = {blobVec0[0]*2, blobVec0[1]*2, blobVec0[2]*2};
       GLfloat tmpVec1[] = {blobVec1[0]*2, blobVec1[1]*2, blobVec1[2]*2};

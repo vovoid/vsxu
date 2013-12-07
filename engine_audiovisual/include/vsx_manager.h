@@ -27,7 +27,6 @@
 #include <vsx_string.h>
 #include <vsx_platform.h>
 #include <GL/glew.h>
-#include <vsx_gl_state.h>
 #include <string>
 #include <vector>
 

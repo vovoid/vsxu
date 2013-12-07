@@ -47,7 +47,6 @@ bool dual_monitor = false;
 
 vsx_tm* tm;
 
-vsx_gl_state gl_state;
 
 #include "vsx_tm.h"
 
@@ -161,7 +160,7 @@ void GLFWCALL mouse_wheel(int pos)
 void GLFWCALL window_size( int width, int height )
 {
   vsx_printf("change viewport %d %d\n", width, height);
-  gl_state.viewport_change(0,0,width, height);
+  vsx_gl_state::get_instance()->viewport_change(0,0,width, height);
 }
 
 void myErrorCallback
@@ -445,7 +444,7 @@ int main(int argc, char* argv[])
 
       tm->e("viewport");
       // Set viewport
-      gl_state.viewport_set( 0, 0, width, height );
+      vsx_gl_state::get_instance()->viewport_set( 0, 0, width, height );
       tm->l();
 
       // Clear color buffer
@@ -457,7 +456,7 @@ int main(int argc, char* argv[])
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();											// Reset The Modelview Matrix
+        glLoadIdentity();	// Reset The Modelview Matrix
       tm->l();
     tm->l();
 
