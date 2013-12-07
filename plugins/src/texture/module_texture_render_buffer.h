@@ -119,7 +119,6 @@ bool can_run()
 void start()
 {
   texture = new vsx_texture;
-  texture->set_gl_state(gl_state);
   texture->init_render_buffer(res_x,res_x);
   texture->valid = false;
   texture_result->set(texture);

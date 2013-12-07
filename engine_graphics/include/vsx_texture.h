@@ -71,7 +71,6 @@ class vsx_texture
 
 
   int original_transform_obj;
-  void* gl_state;
 
   bool load_from_glist(vsx_string fname);
 
@@ -91,9 +90,6 @@ public:
 
   // our texture info
   vsx_texture_info* texture_info;
-
-  // GL State
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void set_gl_state(void* n);
 
   // FBO functions-------------------------------------------------------------
   // FBO is used to capture rendering output into a texture rather than to the

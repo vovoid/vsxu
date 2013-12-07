@@ -41,7 +41,6 @@ std::map<vsx_string, vsx_texture_glist_holder> vsx_texture::t_glist;
 
 vsx_texture::vsx_texture()
 {
-  gl_state = 0x0;
   pti_l = 0;
   valid = false;
 
@@ -65,7 +64,6 @@ vsx_texture::vsx_texture()
 
 vsx_texture::vsx_texture(int id, int type)
 {
-  gl_state = 0x0;
   pti_l = 0;
   texture_info = new vsx_texture_info;
   texture_info->ogl_id = id;
@@ -98,14 +96,6 @@ vsx_texture::~vsx_texture()
 
 
 
-
-
-
-
-void vsx_texture::set_gl_state(void* n)
-{
-  gl_state = n;
-}
 
 void vsx_texture::init_opengl_texture_1d()
 {
@@ -159,7 +149,6 @@ void vsx_texture::init_render_buffer(
   bool enable_multisample
 )
 {
-  if (!gl_state) { vsx_printf("vsx_texture::init_feedback_buffer: vsx_texture gl_state not set!\n"); return; }
   prev_buf = 0;
   #ifndef VSXU_OPENGL_ES
     glewInit();
@@ -177,7 +166,7 @@ void vsx_texture::init_render_buffer(
   frame_buffer_type = VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER;
 
   int prev_buf_l;
-  prev_buf_l = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
+  prev_buf_l = vsx_gl_state::get_instance()->framebuffer_bind_get();
 
 
 
@@ -303,7 +292,7 @@ void vsx_texture::init_render_buffer(
   texture_info->size_y = height;
 
   // restore eventual previous buffer
-  ((vsx_gl_state*)gl_state)->framebuffer_bind(prev_buf_l);
+  vsx_gl_state::get_instance()->framebuffer_bind(prev_buf_l);
 
   valid = true; // texture valid for binding
   valid_fbo = true; // fbo valid for capturing
@@ -362,7 +351,6 @@ void vsx_texture::init_color_buffer
   bool alpha // support alpha channel or not
 )
 {
-  if (!gl_state) { vsx_printf("vsx_texture::init_color_buffer: vsx_texture gl_state not set!\n"); return; }
   prev_buf = 0;
   #ifndef VSXU_OPENGL_ES
     glewInit();
@@ -381,7 +369,7 @@ void vsx_texture::init_color_buffer
 
   // save the previous FBO (stack behaviour)
   int prev_buf_l;
-  prev_buf_l = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
+  prev_buf_l = vsx_gl_state::get_instance()->framebuffer_bind_get();
 //  glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, (GLint *)&prev_buf_l);
 
   GLuint texture_storage_type;
@@ -427,7 +415,7 @@ void vsx_texture::init_color_buffer
     default:
     break;
   }
-  ((vsx_gl_state*)gl_state)->framebuffer_bind(prev_buf_l);
+  vsx_gl_state::get_instance()->framebuffer_bind(prev_buf_l);
 }
 
 
@@ -484,7 +472,6 @@ void vsx_texture::init_color_depth_buffer
   GLuint existing_depth_texture_id
 )
 {
-  if (!gl_state) { vsx_printf("vsx_texture::init_color_depth_buffer: vsx_texture gl_state not set!\n"); return; }
   prev_buf = 0;
   #ifndef VSXU_OPENGL_ES
     glewInit();
@@ -504,7 +491,7 @@ void vsx_texture::init_color_depth_buffer
 
   // save the previous FBO (stack behaviour)
   int prev_buf_l;
-  prev_buf_l = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
+  prev_buf_l = vsx_gl_state::get_instance()->framebuffer_bind_get();
 
   GLuint texture_storage_type;
 
@@ -610,7 +597,7 @@ void vsx_texture::init_color_depth_buffer
     default:
     break;
   }
-  ((vsx_gl_state*)gl_state)->framebuffer_bind(prev_buf_l);
+  vsx_gl_state::get_instance()->framebuffer_bind(prev_buf_l);
 }
 
 
@@ -625,8 +612,8 @@ void vsx_texture::deinit_color_depth_buffer()
   depth_buffer_handle = 0;
   depth_buffer_local = 0;
   //Bind 0, which means render to back buffer, as a result, fb is unbound
-  if ( ((vsx_gl_state*)gl_state)->framebuffer_bind_get() == frame_buffer_handle )
-    ((vsx_gl_state*)gl_state)->framebuffer_bind(0);
+  if ( vsx_gl_state::get_instance()->framebuffer_bind_get() == frame_buffer_handle )
+    vsx_gl_state::get_instance()->framebuffer_bind(0);
   glDeleteFramebuffersEXT(1, &frame_buffer_handle);
 
   valid = false;
@@ -668,12 +655,6 @@ void vsx_texture::deinit_buffer()
   // sanity checks
   if (!valid_fbo) return;
 
-  if (!gl_state)
-  {
-    vsx_printf("vsx_texture::deinit_buffer: vsx_texture gl_state not set!\n");
-    return;
-  }
-
   if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER)
   {
     return deinit_render_buffer();
@@ -698,28 +679,30 @@ void vsx_texture::deinit_buffer()
 
 void vsx_texture::begin_capture_to_buffer()
 {
-  if (!gl_state) { vsx_printf("vsx_texture::begin_capture_to_buffer: vsx_texture gl_state not set!\n"); return; }
-  if (!valid_fbo) return;
-  if (capturing_to_buffer) return;
+  if (!valid_fbo)
+    return;
 
-  prev_buf = ((vsx_gl_state*)gl_state)->framebuffer_bind_get();
+  if (capturing_to_buffer)
+    return;
+
+  prev_buf = vsx_gl_state::get_instance()->framebuffer_bind_get();
   glPushAttrib(GL_ALL_ATTRIB_BITS );
-  ((vsx_gl_state*)gl_state)->matrix_get_v( VSX_GL_PROJECTION_MATRIX, buffer_save_matrix[0].m );
-  ((vsx_gl_state*)gl_state)->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, buffer_save_matrix[1].m );
-  ((vsx_gl_state*)gl_state)->matrix_get_v( VSX_GL_TEXTURE_MATRIX, buffer_save_matrix[2].m );
+  vsx_gl_state::get_instance()->matrix_get_v( VSX_GL_PROJECTION_MATRIX, buffer_save_matrix[0].m );
+  vsx_gl_state::get_instance()->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, buffer_save_matrix[1].m );
+  vsx_gl_state::get_instance()->matrix_get_v( VSX_GL_TEXTURE_MATRIX, buffer_save_matrix[2].m );
 
 
-  ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_PROJECTION_MATRIX );
-  ((vsx_gl_state*)gl_state)->matrix_load_identity();
-  ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
-  ((vsx_gl_state*)gl_state)->matrix_load_identity();
-  ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_TEXTURE_MATRIX );
-  ((vsx_gl_state*)gl_state)->matrix_load_identity();
+  vsx_gl_state::get_instance()->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+  vsx_gl_state::get_instance()->matrix_load_identity();
+  vsx_gl_state::get_instance()->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+  vsx_gl_state::get_instance()->matrix_load_identity();
+  vsx_gl_state::get_instance()->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+  vsx_gl_state::get_instance()->matrix_load_identity();
 
-  buffer_save_blend = ((vsx_gl_state*)gl_state)->blend_get();
-  ((vsx_gl_state*)gl_state)->blend_set(1);
+  buffer_save_blend = vsx_gl_state::get_instance()->blend_get();
+  vsx_gl_state::get_instance()->blend_set(1);
 
-  ((vsx_gl_state*)gl_state)->framebuffer_bind(frame_buffer_handle);
+  vsx_gl_state::get_instance()->framebuffer_bind(frame_buffer_handle);
 
   glViewport(0,0,(int)texture_info->size_x, (int)texture_info->size_y);
 
@@ -729,8 +712,9 @@ void vsx_texture::begin_capture_to_buffer()
 
 void vsx_texture::end_capture_to_buffer()
 {
-  if (!gl_state) { vsx_printf("vsx_texture::end_capture_to_buffer: vsx_texture gl_state not set!\n"); return; }
-  if (!valid_fbo) return;
+  if (!valid_fbo)
+    return;
+
   if (capturing_to_buffer)
   {
 
@@ -751,17 +735,17 @@ void vsx_texture::end_capture_to_buffer()
         GL_NEAREST
       );
     }
-    ((vsx_gl_state*)gl_state)->framebuffer_bind(prev_buf);
-    ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_PROJECTION_MATRIX );
-    ((vsx_gl_state*)gl_state)->matrix_load_identity();
-    ((vsx_gl_state*)gl_state)->matrix_mult_f( buffer_save_matrix[0].m );
-    ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
-    ((vsx_gl_state*)gl_state)->matrix_load_identity();
-    ((vsx_gl_state*)gl_state)->matrix_mult_f( buffer_save_matrix[1].m );
-    ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_TEXTURE_MATRIX );
-    ((vsx_gl_state*)gl_state)->matrix_load_identity();
-    ((vsx_gl_state*)gl_state)->matrix_mult_f( buffer_save_matrix[2].m );
-    ((vsx_gl_state*)gl_state)->blend_set(buffer_save_blend);
+    vsx_gl_state::get_instance()->framebuffer_bind(prev_buf);
+    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+    vsx_gl_state::get_instance()->matrix_load_identity();
+    vsx_gl_state::get_instance()->matrix_mult_f( buffer_save_matrix[0].m );
+    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+    vsx_gl_state::get_instance()->matrix_load_identity();
+    vsx_gl_state::get_instance()->matrix_mult_f( buffer_save_matrix[1].m );
+    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+    vsx_gl_state::get_instance()->matrix_load_identity();
+    vsx_gl_state::get_instance()->matrix_mult_f( buffer_save_matrix[2].m );
+    vsx_gl_state::get_instance()->blend_set(buffer_save_blend);
 
 
     glPopAttrib();

@@ -82,13 +82,11 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   gl_state = vsx_gl_state::get_instance();
 
   texture = new vsx_texture;
-  texture->set_gl_state( gl_state );
   res_x = res_y = 256;
   texture->reinit_color_buffer(res_x,res_y,true,false);
   texture->valid = true;
 
   texture2 = new vsx_texture;
-  texture2->set_gl_state( gl_state );
   texture2->reinit_color_buffer(res_x,res_y,true,false);
   texture2->valid = true;
 
@@ -352,18 +350,13 @@ void main(void)\n\
     }
     if (texture == 0)
     {
-      //printf("############################# texture is 0 and creating new one...\n");
       texture = new vsx_texture;
-      texture->set_gl_state( gl_state );
 
       tex_size_internal = 3;
       texture->reinit_color_buffer(res_x,res_y,true,false);
-      //texture->valid = false;
 
       texture2 = new vsx_texture;
-      texture2->set_gl_state( gl_state );
       texture2->reinit_color_buffer(res_x,res_y,true,false);
-      //texture2->valid = false;
     }
     bool rebuild = false;
     if (texture_size->get() >= 10)
