@@ -7,13 +7,13 @@ extern vsx_string log_dir;
 void log(vsx_string message, int level = 1);
 
 
-#define LOG(mess) 
+#define LOG(mess)
 //log(mess);
-#define LOG2(mess, lvl) 
+#define LOG2(mess, lvl)
 //log(mess, lvl);
 
 #define LOG3(mess) log(mess);
 
-  
+
 
 #endif /*VSX_LOG_H_*/
