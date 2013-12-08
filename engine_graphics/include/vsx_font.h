@@ -37,10 +37,8 @@ struct vsx_font_info {
   int type; // 0 = texture (old) 1 = new (FtGL)
   vsx_texture* texture;  // pointer to either vsx_texture or ftgl font
 #ifndef VSX_FONT_NO_FT
-#ifndef VSX_NO_CLIENT
   FTFont* ftfont;
   FTFont* ftfont_outline;
-#endif
 #endif
 };  
 
@@ -80,7 +78,6 @@ public:
   vsx_font_info* my_font_info;
   float outline_transparency;
   // is it translucent or not?
-//  bool background;
   vsx_color color;
   float align;
   
@@ -92,12 +89,14 @@ public:
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector get_size(const vsx_string& str, float size);
   VSX_ENGINE_GRAPHICS_DLLIMPORT void reinit_all_active();
   
-  vsx_font(vsx_string path) {
+  vsx_font(vsx_string path)
+  {
     base_path = path;
     init_vars();
   }
 
-  vsx_font() {
+  vsx_font()
+  {
     init_vars();
   }
 };

@@ -264,112 +264,111 @@ bool vsxf::is_file(const vsx_string filename)
 vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
 {
   vsx_string i_filename(filename);
-  if (!i_filename.size()) return NULL;
+
+  // sanity check
+  if (!i_filename.size())
+    return NULL;
+
   vsxf_handle* handle = new vsxf_handle;
+
   // 1.  are we archive or filesystem?
   // 1a. archive:
   //     find the file location in the disk archive in the archive specification
   //     load/decompress filename from disk into ram
   // 1b. file:
   //     get a file descriptor from disk
+
+  // lock the class
+  aquire_lock();
+
   if (type == VSXF_TYPE_FILESYSTEM)
   {
-    get_lock();
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
       i_filename = str_replace("\\","/",i_filename);
     #endif
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
       i_filename = str_replace("/","\\",i_filename);
     #endif
-    #ifdef VSXU_DEBUG
-      printf("vsxf::f_open %s base_path: %s\n\n", i_filename.c_str(),base_path.c_str() );
-    #endif
+
     handle->file_handle = fopen((base_path+i_filename).c_str(),mode);
+
     if (handle->file_handle == NULL)
     {
-      vsx_printf("vsxf::f_open Error when opening \"%s\"\n", (base_path+i_filename).c_str());
       delete handle;
-      release_lock();
-      return NULL;
+      handle = 0x0;
     }
     release_lock();
     return handle;
   }
-  else
-  {
-    get_lock();
-    FILE* l_handle = fopen(archive_name.c_str(),"rb");
 
-    vsx_string mode_search(mode);
-    if (mode_search.find("r") != -1)
+
+  FILE* l_handle = fopen(archive_name.c_str(),"rb");
+
+  vsx_string mode_search(mode);
+  if (mode_search.find("r") != -1)
+  {
+    bool found = false;
+    vsx_string fname(filename);
+    unsigned long i = 0;
+    while (!found && i < archive_files.size())
     {
-      bool found = false;
-      vsx_string fname(filename);
-      unsigned long i = 0;
-      while (!found && i < archive_files.size())
+      if (archive_files[i].filename == fname)
       {
-        //printf("trying file: %s\n",archive_files[i].filename.c_str());
-        if (archive_files[i].filename == fname)
+        found = true;
+        handle = new vsxf_handle;
+        handle->filename = fname;
+        handle->position = 0;
+        handle->size = archive_files[i].size;
+        handle->mode = VSXF_MODE_READ;
+
+        // decompress the data into the filehandle
+        void* inBuffer = malloc(handle->size);
+        fseek(l_handle,archive_files[i].position-1,SEEK_SET);
+        if (!fread(inBuffer,1,handle->size,l_handle))
         {
-          found = true;
-          handle = new vsxf_handle;
-          handle->filename = fname;
-          handle->position = 0;
-          handle->size = archive_files[i].size;
-          handle->mode = VSXF_MODE_READ;
-          // decompress the data into the filehandle
-          //printf("nhandle size: %d\n",handle->size);
-          void* inBuffer = malloc(handle->size);
-          fseek(l_handle,archive_files[i].position-1,SEEK_SET);
-          if (!fread(inBuffer,1,handle->size,l_handle))
-          {
-            delete handle;
-            release_lock();
-            return NULL;
-          }
-          void* outBuffer = 0;
-          size_t outSize;
-          size_t outSizeProcessed;
-          if (LzmaRamGetUncompressedSize((unsigned char*)inBuffer, archive_files[i].size, &outSize) != 0)
-          {
-            printf("vsxf: lzma data error!");
-          }
-          if (outSize != 0)
-          {
-            outBuffer = malloc(outSize);
-          }
-          handle->file_data = 0;
-          if (outBuffer != 0)
-          {
-            LzmaRamDecompress((unsigned char*)inBuffer, archive_files[i].size, (unsigned char*)outBuffer, outSize, &outSizeProcessed, malloc, free);
-            handle->size = outSizeProcessed;
-            //printf("decompressed %d into %d bytes\n",handle->size, outSizeProcessed);
-            handle->file_data = outBuffer;
-            //printf("byte %s\n",outBuffer);
-            //FILE* ff = fmemopen (void *outBuffer, outSize, "r");
-          }
-          free(inBuffer);
-          fclose(l_handle);
+          delete handle;
           release_lock();
-          return handle;
+          return NULL;
         }
-        ++i;
+        void* outBuffer = 0;
+        size_t outSize;
+        size_t outSizeProcessed;
+        if (LzmaRamGetUncompressedSize((unsigned char*)inBuffer, archive_files[i].size, &outSize) != 0)
+        {
+          printf("vsxf: lzma data error!");
+        }
+        if (outSize != 0)
+        {
+          outBuffer = malloc(outSize);
+        }
+        handle->file_data = 0;
+        if (outBuffer != 0)
+        {
+          LzmaRamDecompress((unsigned char*)inBuffer, archive_files[i].size, (unsigned char*)outBuffer, outSize, &outSizeProcessed, malloc, free);
+          handle->size = outSizeProcessed;
+          handle->file_data = outBuffer;
+        }
+        free(inBuffer);
+        fclose(l_handle);
+        release_lock();
+        return handle;
       }
-    } else
-    if (mode_search.find("w") != -1)
-    {
-      handle->position = 0;
-      handle->size = 0;
-      handle->file_data = (void*)(new vsx_avector<char>);
-      handle->filename = filename;
-      handle->mode = VSXF_MODE_WRITE;
-      release_lock();
-      return handle;
+      ++i;
     }
+  } else
+  if (mode_search.find("w") != -1)
+  {
+    handle->position = 0;
+    handle->size = 0;
+    handle->file_data = (void*)(new vsx_avector<char>);
+    handle->filename = filename;
+    handle->mode = VSXF_MODE_WRITE;
     release_lock();
-    delete handle;
-    return 0;
+    return handle;
   }
+
+  // safeguard
+  release_lock();
   delete handle;
   return 0;
 }

@@ -41,7 +41,6 @@
 
 #include "log/vsx_log_a.h"
 
-#ifndef VSX_NO_CLIENT
 #include "vsx_widget/vsx_widget_base.h"
 #include "vsx_widget/window/vsx_widget_window.h"
 #include "vsx_widget/vsx_widget_desktop.h"
@@ -50,7 +49,6 @@
 #include "vsx_widget/module_choosers/vsx_widget_module_chooser.h"
 #include "vsx_widget/helpers/vsx_widget_object_inspector.h"
 #include "vsx_widget/helpers/vsx_widget_preview.h"
-#endif
 #include "logo_intro.h"
 //#define NO_INTRO
 #include "application.h"
@@ -673,9 +671,8 @@ void app_mouse_move_passive(int x, int y) {
   //printf("mouse passive pos: %d :: %d\n",x,y);
 }
 
-void app_mouse_move(int x, int y) {
-  //if (*gui_prod_fullwindow) return;
-
+void app_mouse_move(int x, int y)
+{
   GLint	viewport[4];
   glGetIntegerv(GL_VIEWPORT, viewport);
 
@@ -685,7 +682,6 @@ void app_mouse_move(int x, int y) {
   if (yy < 0) yy = 0;
   if (xx > viewport[2]) xx = viewport[2]-1;
   if (yy > viewport[3]) yy = viewport[3]-1;
-#ifndef VSX_NO_CLIENT
   if (desktop) {
 
     if (
@@ -705,16 +701,12 @@ void app_mouse_move(int x, int y) {
       {
         vxe->input_event(eie);
       }
-
-      //printf("would send mouse move to engine\n");
       return;
     }
 
     desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
     desktop->mouse_move(xx,yy);
   }
-#endif
-  //printf("mouse pos: %d :: %d\n",x,y);
 }
 
 void app_mouse_down(unsigned long button,int x,int y)

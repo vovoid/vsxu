@@ -74,27 +74,26 @@ vsx_comp::vsx_comp() {
   out_module_parameters = new vsx_module_param_list;
 }
 
-vsx_comp::~vsx_comp() {
-  #ifndef VSX_DEMO_MINI
-    LOG("component destructor1");
-    delete in_module_parameters;
-    LOG("component destructor2");
-    delete out_module_parameters;
-    LOG("component destructor3");
-    delete module_info;
-    LOG("component destructor4");
-    delete in_parameters;
-    LOG("component destructor5");
-    delete out_parameters;
-    LOG("component destructor6");
-    for (std::vector <vsx_channel*>::iterator it = channels.begin(); it != channels.end(); ++it) {
-      delete *it;
-    }
-    #ifndef VSXE_NO_GM
-      if (vsxl_modifier) delete (vsx_comp_vsxl*)vsxl_modifier;
-    #endif
-    LOG("component destructor7\n");
+vsx_comp::~vsx_comp()
+{
+  LOG("component destructor1");
+  delete in_module_parameters;
+  LOG("component destructor2");
+  delete out_module_parameters;
+  LOG("component destructor3");
+  delete module_info;
+  LOG("component destructor4");
+  delete in_parameters;
+  LOG("component destructor5");
+  delete out_parameters;
+  LOG("component destructor6");
+  for (std::vector <vsx_channel*>::iterator it = channels.begin(); it != channels.end(); ++it) {
+    delete *it;
+  }
+  #ifndef VSXE_NO_GM
+    if (vsxl_modifier) delete (vsx_comp_vsxl*)vsxl_modifier;
   #endif
+  LOG("component destructor7\n");
 }
 
 void vsx_comp::load_module(const vsx_string& module_name, vsx_module_engine_info* engine_info)
@@ -128,17 +127,13 @@ void vsx_comp::load_module(const vsx_string& module_name, vsx_module_engine_info
   {
     printf("vsx_comp::load_module failed\n");
   }
-  /*
-LOG("load_module finished")
-*/
 }
 
-void vsx_comp::unload_module() {
+void vsx_comp::unload_module()
+{
   LOG("before unload1")
-#ifdef VSXU_DEBUG
-  printf("unloading %s\n",name.c_str());
-#endif
-  if (module) {
+  if (module)
+  {
     module->on_delete();
   }
   vsx_module_list_abs* module_list = ((vsx_engine*)engine_owner)->get_module_list();

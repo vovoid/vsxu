@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #pragma once
 
 class vsx_widget_note : public vsx_widget_window {
@@ -65,7 +64,3 @@ public:
 
 //-------------------------------------------------------------------------
 
-
-
-
-#endif

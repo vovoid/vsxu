@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #ifndef VSX_WIDGET_OBJECT_INSPECTOR_H
 #define VSX_WIDGET_OBJECT_INSPECTOR_H
 
@@ -37,9 +36,7 @@ class vsx_window_object_inspector : public vsx_widget_window {
   
 //-----------------------------------------------
   std::vector<vsx_widget*> component_list;
-#ifndef VSXU_PLAYER  
   vsx_texture texture;
-#endif
   bool texture_loaded;
   vsx_string filename_loaded;
   int view_type;
@@ -65,5 +62,4 @@ public:
 
 
 
-#endif
 #endif

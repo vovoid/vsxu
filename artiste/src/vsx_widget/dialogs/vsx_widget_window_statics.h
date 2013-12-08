@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #ifndef VSX_WINDOW_STATICS_H
 #define VSX_WINDOW_STATICS_H
 
@@ -98,5 +97,4 @@ public:
   dialog_messagebox(vsx_string title_,vsx_string hint);
 };
 
-#endif
 #endif

@@ -21,11 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
-
-
-
-
 #include <vsx_vector.h>
 #include <math.h>
 #include <vsx_gl_global.h>
@@ -38,87 +33,87 @@ void vsx_widget_controller_ab::init()
   tuple_type = 3; // float3 datatype
   get_value();
   quadratic = gluNewQuadric();										    // Create A Pointer To The Quadric Object
-	gluQuadricNormals(quadratic, GLU_SMOOTH);						// Create Smooth Normals
-	gluQuadricTexture(quadratic, GL_TRUE);							// Create Texture Coords
-	vsx_widget::init();
+  gluQuadricNormals(quadratic, GLU_SMOOTH);						// Create Smooth Normals
+  gluQuadricTexture(quadratic, GL_TRUE);							// Create Texture Coords
+  vsx_widget::init();
   constrained_x = false;
   constrained_y = false;
   set_pos(vsx_vector(-sizeunit*1.2));
   set_size(vsx_vector(0.02f, 0.02f));
 
-	ball_size.y = ball_size.x = size.x/2;
+  ball_size.y = ball_size.x = size.x/2;
 
-	dest_quat.s.X = 0;
-	dest_quat.s.Y = 1;
-	dest_quat.s.Z = 0;
-	dest_quat.s.W = 0;
+  dest_quat.s.X = 0;
+  dest_quat.s.Y = 1;
+  dest_quat.s.Z = 0;
+  dest_quat.s.W = 0;
 
-	Transform.M[0] = 1.0f;
-	Transform.M[1] = 0.0f;
-	Transform.M[2] = 0.0f;
-	Transform.M[3] = 0.0f;
+  Transform.M[0] = 1.0f;
+  Transform.M[1] = 0.0f;
+  Transform.M[2] = 0.0f;
+  Transform.M[3] = 0.0f;
 
-	Transform.M[4] = 0.0f;
-	Transform.M[5] = 1.0f;
-	Transform.M[6] = 0.0f;
-	Transform.M[7] = 0.0f;
+  Transform.M[4] = 0.0f;
+  Transform.M[5] = 1.0f;
+  Transform.M[6] = 0.0f;
+  Transform.M[7] = 0.0f;
 
-	Transform.M[8] = 0.0f;
-	Transform.M[9] = 0.0f;
-	Transform.M[10] = 1.0f;
-	Transform.M[11] = 0.0f;
+  Transform.M[8] = 0.0f;
+  Transform.M[9] = 0.0f;
+  Transform.M[10] = 1.0f;
+  Transform.M[11] = 0.0f;
 
-	Transform.M[12] = 0.0f;
-	Transform.M[13] = 0.0f;
-	Transform.M[14] = 0.0f;
-	Transform.M[15] = 1.0f;
-
-
-	LastRot.M[0] = 1.0f;
-	LastRot.M[1] = 0.0f;
-	LastRot.M[2] = 0.0f;
-
-	LastRot.M[3] = 0.0f;
-	LastRot.M[4] = 1.0f;
-	LastRot.M[5] = 0.0f;
-
-	LastRot.M[6] = 0.0f;
-	LastRot.M[7] = 0.0f;
-	LastRot.M[8] = 1.0f;
+  Transform.M[12] = 0.0f;
+  Transform.M[13] = 0.0f;
+  Transform.M[14] = 0.0f;
+  Transform.M[15] = 1.0f;
 
 
-	ThisRot.M[0] = 1.0f;
-	ThisRot.M[1] = 0.0f;
-	ThisRot.M[2] = 0.0f;
+  LastRot.M[0] = 1.0f;
+  LastRot.M[1] = 0.0f;
+  LastRot.M[2] = 0.0f;
 
-	ThisRot.M[3] = 0.0f;
-	ThisRot.M[4] = 1.0f;
-	ThisRot.M[5] = 0.0f;
+  LastRot.M[3] = 0.0f;
+  LastRot.M[4] = 1.0f;
+  LastRot.M[5] = 0.0f;
 
-	ThisRot.M[6] = 0.0f;
-	ThisRot.M[7] = 0.0f;
-	ThisRot.M[8] = 1.0f;
+  LastRot.M[6] = 0.0f;
+  LastRot.M[7] = 0.0f;
+  LastRot.M[8] = 1.0f;
 
 
-	int_rot.M[0] = 1.0f;
-	int_rot.M[1] = 0.0f;
-	int_rot.M[2] = 0.0f;
-	int_rot.M[3] = 0.0f;
+  ThisRot.M[0] = 1.0f;
+  ThisRot.M[1] = 0.0f;
+  ThisRot.M[2] = 0.0f;
 
-	int_rot.M[4] = 0.0f;
-	int_rot.M[5] = 1.0f;
-	int_rot.M[6] = 0.0f;
-	int_rot.M[7] = 0.0f;
+  ThisRot.M[3] = 0.0f;
+  ThisRot.M[4] = 1.0f;
+  ThisRot.M[5] = 0.0f;
 
-	int_rot.M[8] = 0.0f;
-	int_rot.M[9] = 0.0f;
-	int_rot.M[10] = 1.0f;
-	int_rot.M[11] = 0.0f;
+  ThisRot.M[6] = 0.0f;
+  ThisRot.M[7] = 0.0f;
+  ThisRot.M[8] = 1.0f;
 
-	int_rot.M[12] = 0.0f;
-	int_rot.M[13] = 0.0f;
-	int_rot.M[14] = 0.0f;
-	int_rot.M[15] = 1.0f;
+
+  int_rot.M[0] = 1.0f;
+  int_rot.M[1] = 0.0f;
+  int_rot.M[2] = 0.0f;
+  int_rot.M[3] = 0.0f;
+
+  int_rot.M[4] = 0.0f;
+  int_rot.M[5] = 1.0f;
+  int_rot.M[6] = 0.0f;
+  int_rot.M[7] = 0.0f;
+
+  int_rot.M[8] = 0.0f;
+  int_rot.M[9] = 0.0f;
+  int_rot.M[10] = 1.0f;
+  int_rot.M[11] = 0.0f;
+
+  int_rot.M[12] = 0.0f;
+  int_rot.M[13] = 0.0f;
+  int_rot.M[14] = 0.0f;
+  int_rot.M[15] = 1.0f;
 
 
   mtex.load_png(skin_path+"controllers/sphere.png");
@@ -184,7 +179,7 @@ void vsx_widget_controller_ab::draw()
 
 
   glLineWidth(2);
-	glBegin(GL_LINES);
+  glBegin(GL_LINES);
     glColor4f(1,1,1,0.5);
     glVertex3f(parentpos.x,parentpos.y,pos.z);
     glColor4f(1,1,1,0);
@@ -196,37 +191,37 @@ void vsx_widget_controller_ab::draw()
   vsx_widget_controller_base::draw();
 
 
-	glPushMatrix();
+  glPushMatrix();
     glTranslatef(parentpos.x+pos.x, parentpos.y+pos.y, pos.z);
     glMultMatrixf(int_rot.M);
 
     glLineWidth(3);
     glBegin(GL_LINE_STRIP);
       glColor4f(1.0,1.0,1.0,1.0);
-  	   	  glVertex3f(0,-size.x/2*0.87,0);
+          glVertex3f(0,-size.x/2*0.87,0);
       glColor4f(1.0,1.0,1.0,0.0);
-  	   	  glVertex3f(0,0,0);
+          glVertex3f(0,0,0);
       glColor4f(1.0,1.0,1.0,1.0);
-  	   	  glVertex3f(0,size.x/2*0.87,0);
-  	glEnd();
+          glVertex3f(0,size.x/2*0.87,0);
+    glEnd();
 
     glBegin(GL_LINE_STRIP);
       glColor4f(1.0,0.5,1.0,1.0);
-  	   	  glVertex3f(-size.x/2*0.87,0,0);
+          glVertex3f(-size.x/2*0.87,0,0);
       glColor4f(1.0,1.0,1.0,0.0);
-  	   	  glVertex3f(0,0,0);
+          glVertex3f(0,0,0);
       glColor4f(1.0,0.5,1.0,1.0);
-  	   	  glVertex3f(size.x/2*0.87,0,0);
-  	glEnd();
+          glVertex3f(size.x/2*0.87,0,0);
+    glEnd();
 
     glBegin(GL_LINE_STRIP);
       glColor4f(1.0,0.5,1.0,1.0);
-  	   	  glVertex3f(0,0,-size.x/2*0.87);
+          glVertex3f(0,0,-size.x/2*0.87);
       glColor4f(1.0,1.0,1.0,0.0);
-  	   	  glVertex3f(0,0,0);
+          glVertex3f(0,0,0);
       glColor4f(1.0,0.5,1.0,1.0);
-  	   	  glVertex3f(0,0,size.x/2*0.87);
-  	glEnd();
+          glVertex3f(0,0,size.x/2*0.87);
+    glEnd();
 
     glLineWidth(1);
 
@@ -240,10 +235,10 @@ void vsx_widget_controller_ab::draw()
       glDisable(GL_CULL_FACE);
     }
 
-  	glPushMatrix();
-  	glColor4f(1.0f,1.0f,1.0f,1.0f);
-  	glTranslatef(0,size.x/2*0.9,0);
-  	gluSphere(quadratic,size.x/2*0.09,3,3);
+    glPushMatrix();
+    glColor4f(1.0f,1.0f,1.0f,1.0f);
+    glTranslatef(0,size.x/2*0.9,0);
+    gluSphere(quadratic,size.x/2*0.09,3,3);
     glPopMatrix();
 
   // after line
@@ -257,7 +252,7 @@ void vsx_widget_controller_ab::draw()
       mtex._bind();
       glDisable(GL_CULL_FACE);
     }
-	glPopMatrix();
+  glPopMatrix();
 }
 
 void vsx_widget_controller_ab::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
@@ -267,9 +262,9 @@ void vsx_widget_controller_ab::event_mouse_up(vsx_widget_distance distance,vsx_w
       mouse.set_cursor_pos(remPointer.x,remPointer.y);
     }
     mouse.show_cursor();
-		LastRot = ThisRot;
-		controlling = false;
-		vsx_widget::event_mouse_up(distance,coords,button);
+    LastRot = ThisRot;
+    controlling = false;
+    vsx_widget::event_mouse_up(distance,coords,button);
   //vsx_widget::event_mouse_up(distance,coords,button);
 }
 
@@ -277,10 +272,10 @@ void vsx_widget_controller_ab::event_mouse_down(vsx_widget_distance distance,vsx
   if (button == 0) {
     MousePt.s.X = distance.center.x/size.x;
     MousePt.s.Y = distance.center.y/size.y;
-		m_focus = this;
-		a_focus = this;
-		k_focus = this;
-		ArcBall->click(&MousePt);
+    m_focus = this;
+    a_focus = this;
+    k_focus = this;
+    ArcBall->click(&MousePt);
     if (sqrt(MousePt.s.X*MousePt.s.X + MousePt.s.Y*MousePt.s.Y) < 0.4f)
     {
       controlling = true;
@@ -364,7 +359,3 @@ void vsx_widget_controller_ab::command_process_back_queue(vsx_command_s *t) {
     }
   } else vsx_widget_controller_base::command_process_back_queue(t);
 }
-
-
-
-#endif

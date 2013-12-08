@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #include <map>
 #include <list>
 #include "vsx_gl_global.h"
@@ -213,5 +212,3 @@ dialog_messagebox::dialog_messagebox(vsx_string title_,vsx_string hint) {
   set_pos(vsx_vector(0.5-size.x/2,0.5-size.y/2));
   k_focus = this;
 }
-
-#endif

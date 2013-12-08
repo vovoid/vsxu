@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #include "vsx_gl_global.h"
 #include <gl_helper.h>
 #include <map>
@@ -326,57 +325,35 @@ void vsx_widget_hyperbolic_tree::translateToOrigin(vsx_widget_hyperbolic_tree* n
         }
 
 
-        //if (geodesics.find(child) != geodesics.end()) {
-          HTGeodesic* gg = child->mygeodesic;//geodesics[children[i]];
-          //printf("child.geodesics = %d\n",children[i]->geodesics.size());
-          //HTCoord zz = *(draw_root->ze);
-          //zz.x = 10;
-          //zz.y -=0.25;
-            //double box_size = sqrt(zz.d(gg->zb));
+          HTGeodesic* gg = child->mygeodesic;
             double x = gg->b.x-0.5;
             double y = gg->b.y-0.5;
             double box_size = 1-sqrt(x*x + y*y)*2;
 
             box_size = 5*(box_size);
 
-//          double box_size = draw_root->ze->d(gg->zb);
           if (box_size > 1) box_size = 1;
             float bs = box_size*box_size*box_size;
-          //gg->intensity = bs*draw_root->color.a*0.4;
           gg->intensity = draw_root->color.a*0.5f;
-          //if (box_size > 0.5) {
-            gg->draw();
-          //}
+          gg->draw();
 
-          //box_size = draw_root->ze->d(gg->zb);
           if (box_size > 0.2) {
-//            float bs = box_size*1.5;
             if (bs > 1) bs = 1;
-            // TEMP!
             bs = 1.0f;
-            // --TEMP
-            //root->mtex->bind();
-            #ifndef VSXU_PLAYER
             root->mtex->bind();
-            #else
-            bs *= 0.2;
-            #endif
             glColor4f(
               children[i]->node->node->color.r,
               children[i]->node->node->color.g,
               children[i]->node->node->color.b,
               bs*draw_root->color.a*children[i]->node->node->color.a
-            );//*children[i]->node->node->color.a
+            );
             if (child->ntype) box_size*=0.8; else box_size*=1.2;
 
-            //box_size *=0.1;
             double diffx = box_size*children[i]->node->node->size.x;
             double diffy = box_size*children[i]->node->node->size.y;
-            //if (children[i]->node->node->getName() == "texture") printf("box_size: %f\n",box_size);
-//            glColor4f(0.1,0.1,0.3,draw_root->color.a);
-            //printf("%d \n",mtex.texture_info.ogl_id);
+
             glBegin(GL_QUADS);
-            	glTexCoord2f(0,1);
+              glTexCoord2f(0,1);
               glVertex3f(gg->b.x-diffx*1.2, gg->b.y - diffy*1.5,0);
               glTexCoord2f(1,1);
               glVertex3f(gg->b.x+diffx*1.2, gg->b.y - diffy*1.5,0);
@@ -385,11 +362,8 @@ void vsx_widget_hyperbolic_tree::translateToOrigin(vsx_widget_hyperbolic_tree* n
               glTexCoord2f(0,0);
               glVertex3f(gg->b.x-diffx*1.2, gg->b.y+diffy*0.5,0);
             glEnd();
-            #ifndef VSXU_PLAYER
             root->mtex->_bind();
-            #endif
-            glColor4f(0,0,0,draw_root->color.a);//box_size*children[i]->node->node->color.a);
-            //myf.outline_transparency = 0.1;
+            glColor4f(0,0,0,draw_root->color.a);
             font.color.a = draw_root->color.a;
             font.print_center(vsx_vector(gg->b.x,gg->b.y-diffy),children[i]->node->node->getName(),diffy*0.8);
 
@@ -411,7 +385,7 @@ void vsx_widget_hyperbolic_tree::translateToOrigin(vsx_widget_hyperbolic_tree* n
 
   }
 
-//  vsx_font vsx_widget_hyperbolic_tree::myf;
+
   vsx_widget_hyperbolic_tree* vsx_widget_hyperbolic_tree::findNode__(HTCoord zs) {
     if (ntype) {
       for (int i = children.size()-1; i >= 0; --i) {
@@ -423,10 +397,8 @@ void vsx_widget_hyperbolic_tree::translateToOrigin(vsx_widget_hyperbolic_tree* n
           if (box_size > 1) box_size = 1;
           if (box_size > 0.00001) {
             if (child->ntype) box_size*=0.8; else box_size*=1.2;
-            //box_size *=0.1;
             double diffx = 1.3*box_size*children[i]->node->node->size.x;
             double diffy = box_size*children[i]->node->node->size.y;
-            //gg->b.y -= diffy*0.5;
 
             if (
               (zs.x > gg->b.x-diffx)
@@ -439,7 +411,6 @@ void vsx_widget_hyperbolic_tree::translateToOrigin(vsx_widget_hyperbolic_tree* n
               )
               {
 
-              //printf("child fx %s\n",child->node->node->getName().c_str());
                 vsx_widget_hyperbolic_tree* search_result = 0;
                 if (child->ntype) {
                   search_result = child->findNode__(zs);
@@ -645,7 +616,7 @@ void vsx_widget_ultra_chooser::event_mouse_double_click(vsx_widget_distance dist
   VSX_UNUSED(coords);
   VSX_UNUSED(button);
 
-	LOG_A("begin doubleclix\n");
+  LOG_A("begin doubleclix\n");
   if (!treedraw) return;
   allow_move = false;
   HTCoord test_coord;
@@ -689,7 +660,7 @@ void vsx_widget_ultra_chooser::event_mouse_double_click(vsx_widget_distance dist
       // act on impulse!
       if (mode == 1)
       if (test->node->node->isLeaf()) {
-      	LOG_A("command_q_b.add_raw("+command+" "+test->node->node->module_info->identifier+");");
+        LOG_A("command_q_b.add_raw("+command+" "+test->node->node->module_info->identifier+");");
         command_q_b.add_raw(command+" "+base64_encode(test->node->node->module_info->identifier));
         LOG_A("command_receiver->vsx_command_queue_b(this);")
         command_receiver->vsx_command_queue_b(this);
@@ -758,7 +729,7 @@ void vsx_widget_ultra_chooser::event_mouse_down(vsx_widget_distance distance,vsx
 {
   VSX_UNUSED(coords);
 
-	//printf("chooser mouse down\n");
+  //printf("chooser mouse down\n");
   if (drag_module) { cancel_drop(); return; }
   HTCoord test_coord;
   test_coord.x = distance.corner.x;
@@ -831,7 +802,7 @@ void vsx_widget_ultra_chooser::event_mouse_down(vsx_widget_distance distance,vsx
 
 void vsx_widget_ultra_chooser::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
 {
-	//printf("mouse move begin\n");
+  //printf("mouse move begin\n");
   if (hide_) return;
   if (!treedraw) return;
   if (!allow_move) return;
@@ -895,16 +866,16 @@ void vsx_widget_ultra_chooser::event_mouse_up(vsx_widget_distance distance,vsx_w
             if (treedraw->selected) {
               if (server) {
                 drag_dropped = false;
-			          if (ctrl)
-								((dialog_query_string*)name_dialog)->show(((vsx_widget_server*)server)->get_unique_name(treedraw->selected->getName()));
-			          else
-			          {
-			          	command_q_b.add_raw("component_create_name "+((vsx_widget_server*)server)->get_unique_name(treedraw->selected->getName()));
-			          	vsx_command_queue_b(this);
-			          	visible = 1;
-              		drag_dropped = false;
-              		return;
-			          }
+                if (ctrl)
+                ((dialog_query_string*)name_dialog)->show(((vsx_widget_server*)server)->get_unique_name(treedraw->selected->getName()));
+                else
+                {
+                  command_q_b.add_raw("component_create_name "+((vsx_widget_server*)server)->get_unique_name(treedraw->selected->getName()));
+                  vsx_command_queue_b(this);
+                  visible = 1;
+                  drag_dropped = false;
+                  return;
+                }
               }
               visible = 0.3;
             } else {
@@ -971,10 +942,10 @@ void vsx_widget_ultra_chooser::draw_2d()
     if (tt > 1) tt = 1;
 
   /*float ft = tt * 3.1415927;
-	float ff = (1 - cos(ft)) * .5;
+  float ff = (1 - cos(ft)) * .5;
 
-	clickpoint.x = clickpoint.x*(1-ff) + endpoint.x*ff;
-	clickpoint.y = clickpoint.y*(1-ff) + endpoint.y*ff;
+  clickpoint.x = clickpoint.x*(1-ff) + endpoint.x*ff;
+  clickpoint.y = clickpoint.y*(1-ff) + endpoint.y*ff;
     */
     if (clickpoint.x != endpoint.x && clickpoint.y != endpoint.y)
     {
@@ -1170,7 +1141,6 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
     }
   }
   module_chooser_colors.clear();
-#ifndef VSXU_PLAYER
   help_text = "This is the browser:\n\
 - right-click to close\n\
 - click+drag or double-click to create\n\
@@ -1180,8 +1150,6 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
 - press [home] to return to the middle\n\
 - left-double-click to travel to\n\
   a new destination";
-#endif
-  //init_children();
 }
 
 vsx_widget_ultra_chooser::~vsx_widget_ultra_chooser() {
@@ -1205,21 +1173,14 @@ void vsx_widget_ultra_chooser::build_tree() {
   allow_move = true;
   mymodel = new HTModel(module_tree);
   treedraw = new vsx_widget_hyperbolic_tree(0,0,mymodel);
-  //printf("building tex %s\n",skin_path.c_str());
   treedraw->size.x = size.x;
   treedraw->size.y = size.y;
   treedraw->pos = vsx_vector(0.5f*size.x, 0.5f*size.y);
   treedraw->changeProjType(0);
-  #ifndef VSXU_PLAYER
-  //printf("loading label %s\n",vsx_string(skin_path+"label.png").c_str());
   treedraw->mtex = new vsx_texture;
   treedraw->mtex->load_png(skin_path+"label.png");
-  #endif
 }
-#ifndef VSXU_PLAYER
 void vsx_widget_ultra_chooser::reinit() {
   treedraw->mtex->load_png(skin_path+"label.png");
 }
-#endif
 
-#endif

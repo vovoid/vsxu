@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #include <vector>
 #include <map>
 #include <list>
@@ -423,6 +422,3 @@ void vsx_module_chooser_list::build_tree()
   ((vsx_widget_chooser_editor*)widget_list)->set_string(result);
   ((vsx_widget_chooser_editor*)widget_list)->editor->fold_all();
 }
-
-
-#endif

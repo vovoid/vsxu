@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #include "vsx_gl_global.h"
 #include <map>
 #include <list>
@@ -393,9 +392,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     tt->set_render_type(VSX_WIDGET_RENDER_3D);
     tt->set_font_size(0.002);
     tt->set_border(0.0005);
-    #ifndef VSXU_PLAYER
-      tt->title = "VSXL [param filter] : "+component->name+"->"+name;
-    #endif
+    tt->title = "VSXL [param filter] : "+component->name+"->"+name;
   ((vsx_widget_controller_editor*)tt)->return_command = "vsxl_pfi";
   ((vsx_widget_controller_editor*)tt)->return_component = this;
   ((vsx_widget_controller_editor*)tt)->load_text(base64_decode(t->parts[3]));
@@ -545,9 +542,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
       vsx_widget_ultra_chooser* chooser= (vsx_widget_ultra_chooser*)(((vsx_widget_server*)((vsx_widget_component*)component)->server)->resource_chooser);
       ((vsx_widget_server*)((vsx_widget_component*)component)->server)->front(chooser);
       chooser->mode = 1;
-      #ifndef VSXU_PLAYER
         chooser->message = "CHOOSE A RESOURCE BY DOUBLE-CLICKING ON IT";
-      #endif
       chooser->command = "chooser_ok";
       chooser->command_receiver = this;
       chooser->center_on_item("resources");
@@ -582,7 +577,6 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     }
     else
     {
-      //printf("parts 2 : %s\n", t->parts[2].c_str());
       command_q_b.add_raw("param_set_interpolate " + component->name + " " + name + " " + t->parts[1]+ " "+t->parts[2]);
       component->vsx_command_queue_b(this);
     }
@@ -1505,36 +1499,6 @@ void vsx_widget_anchor::init()
   {
     help_text += "\nParameter info (from the module):\n"+base64_decode(options["help"]);
   }
-  #ifdef VSXU_PLAYER
-    color = vsx_color__(0.4,0.5,0.6,0.4);
-    #ifdef VSX_DEBUG
-    printf("p_type: %s\n",p_type.c_str());
-    #endif
-    if (p_type == "complex") 
-    {
-      color = vsx_color__(216.0f/255.0f,76.0f/255.0f,202.0f/255.0f,0.8f);
-    } else
-    if (p_type == "float") 
-    {
-      color = vsx_color__(20.0f/255.0f,121.0f/255.0f,72.0f/255.0f,0.8f);
-    } else
-    if (p_type == "float3") 
-    {
-      color = vsx_color__(64.0f/255.0f,190.0f/255.0f,78.0f/255.0f,0.8f);
-    } else
-    if (p_type == "float4") 
-    {
-      color = vsx_color__(142.0f/255.0f,49.0f/255.0f,168.0f/255.0f,0.8f);
-    } else
-    if (p_type == "texture") 
-    {
-      color = vsx_color__(15.0f/255.0f,99.0f/255.0f,206.0f/255.0f,0.8f);
-    } else
-    if (p_type == "render") 
-    {
-      color = vsx_color__(236.0f/255.0f,102.0f/255.0f,127.0f/255.0f,0.8f);
-    }
-  #endif
   
   dialogs=parse_url_params(p_type_suffix);
   // default is to allow connections to this anchor
@@ -1558,11 +1522,9 @@ void vsx_widget_anchor::init()
   anchor_order[1] = 0;
 
   title = name+":"+p_type;
-  #ifndef VSXU_PLAYER
-    mtex_d.load_png(skin_path+"datatypes/"+p_type+".png",true);
-    mtex_blob.load_png(skin_path+"interface_extras/highlight_blob.png",true);
-    mtex_blob_small.load_png(skin_path+"interface_extras/connection_blob.png",true);
-  #endif
+  mtex_d.load_png(skin_path+"datatypes/"+p_type+".png",true);
+  mtex_blob.load_png(skin_path+"interface_extras/highlight_blob.png",true);
+  mtex_blob_small.load_png(skin_path+"interface_extras/connection_blob.png",true);
   color.r = 1.0f;
   color.g = 1.0f;
   color.b = 1.0f;
@@ -1578,9 +1540,7 @@ void vsx_widget_anchor::init()
 
 void vsx_widget_anchor::reinit() 
 {
-  #ifndef VSXU_PLAYER
-    mtex_d.load_png(skin_path+"datatypes/"+p_type+".png",true);
-  #endif
+  mtex_d.load_png(skin_path+"datatypes/"+p_type+".png",true);
   vsx_widget::reinit();
 }
 
@@ -2076,13 +2036,8 @@ void vsx_widget_anchor::pre_draw()
     }
     ax = pp.x+pos.x;
     ay = pp.y+pos.y;
-    #ifdef VSXU_PLAYER
-      sx = (size.x/2.0f);
-      sy = (size.x/2.0f);
-    #else
-      sx = 1.8f*(size.x/2.0f);
-      sy = 1.8f*(size.x/2.0f);
-    #endif
+    sx = 1.8f*(size.x/2.0f);
+    sy = 1.8f*(size.x/2.0f);
     if (!interpolating_size)
     {
       target_size = size;
@@ -2102,13 +2057,9 @@ void vsx_widget_anchor::draw()
       color.a
     );
 
-    #ifndef VSXU_PLAYER
     mtex_d.bind();
-    #endif
     draw_box_texf(ax,ay,pos.z,sx,sy);
-    #ifndef VSXU_PLAYER
     mtex_d._bind();
-    #endif
 
     if (vsxl_filter) 
     {
@@ -2290,4 +2241,3 @@ vsx_vector vsx_widget_anchor::get_pos_p()
   t.z = pos.z;
   return t + tt;
 }
-#endif

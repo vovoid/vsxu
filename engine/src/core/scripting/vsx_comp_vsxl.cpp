@@ -81,15 +81,14 @@ void vsx_comp_vsxl_driver::unload() {
 
 
 // load gaymonkay with new code
-void *vsx_comp_vsxl_driver::load(vsx_module_param_list* module_list,vsx_string program) {
+void *vsx_comp_vsxl_driver::load(vsx_module_param_list* module_list,vsx_string program)
+{
 #ifndef VSXE_NO_GM
-  //printf("float::load\n");
   my_param_list = module_list;
 
   if (p_list.size() == 0) {
     // go through the module params and build gmvariables for them :)
 
-//    for (std::vector<vsx_module_param_abs*>::iterator it = module_list->id_vec.begin(); it != module_list->id_vec.end(); ++it) {
     for (size_t i = 0;  i < module_list->id_vec.size(); ++i) {
       if (module_list->id_vec[i]->type == VSX_MODULE_PARAM_ID_FLOAT) {
         p_info* mp = new p_info;
@@ -111,7 +110,6 @@ void *vsx_comp_vsxl_driver::load(vsx_module_param_list* module_list,vsx_string p
     //gmBindMathLib(machine);
   }
 
-#ifndef VSX_NO_CLIENT
   if (program == "") {
     script = "// available parameters:\n";
     for (std::vector<p_info*>::iterator it = p_list.begin(); it != p_list.end(); ++it) {
@@ -130,10 +128,9 @@ global vsxl_cf = function()\n\
   } else {
     script = program;
   }
-#endif
   // Compile and execute the script
   machine->ExecuteString(script.c_str(), 0, true);
-  
+
 #endif // no gm
 }
 
@@ -159,8 +156,8 @@ void vsx_comp_vsxl_driver::run() {
   //machine->GetGlobals()->Set(machine, "size_x", mt_var);
   gmCall call;
 
-	machine->Execute(0);
-	if(call.BeginGlobalFunction(machine, "vsxl_cf"))
+  machine->Execute(0);
+  if(call.BeginGlobalFunction(machine, "vsxl_cf"))
   {
     //call.AddParamFloat(realvalue);
     //call.AddParamInt(valueB);
@@ -221,17 +218,17 @@ vsx_comp_vsxl::vsx_comp_vsxl() {
 } */
 void vsx_comp_vsxl::unload() {
 #ifndef VSXE_NO_GM
-	if (my_driver)
-	{
-  	my_driver->unload();
-  	delete my_driver;
-  	my_driver = 0;
-	}
+  if (my_driver)
+  {
+    my_driver->unload();
+    delete my_driver;
+    my_driver = 0;
+  }
 #endif
 }
 
 vsx_comp_vsxl::~vsx_comp_vsxl() {
-	unload();
+  unload();
 }
 
 void* vsx_comp_vsxl::load(vsx_module_param_list* module_list, vsx_string program) {
@@ -253,6 +250,6 @@ vsx_comp_vsxl_driver_abs* vsx_comp_vsxl::get_driver() {
 void vsx_comp_vsxl::execute() {
 #ifndef VSXE_NO_GM
   my_driver->run();
-  
+
 #endif
 }

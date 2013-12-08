@@ -46,7 +46,6 @@ void module_info(vsx_module_info* info) {
     "and optional alpha channel.\n"
     "Dynamic textures can be very useful!";
 
-#ifndef VSX_NO_CLIENT
   info->in_param_spec = "render_in:render,"
     "texture_size:enum?"
       "2048x2048|"
@@ -73,7 +72,6 @@ void module_info(vsx_module_info* info) {
     "texture_out:texture"
   ;
   info->component_class = "texture";
-#endif
 }
 
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {

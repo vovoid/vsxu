@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #ifndef VSX_WIDGET_SERVER_H
 #define VSX_WIDGET_SERVER_H
 // VSX_WIDGET_SERVER ***************************************************************************************************
@@ -33,17 +32,16 @@
 #define VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET 2
 
 class vsx_widget_server : public vsx_widget {
-#ifndef VSXU_PLAYER  
   vsx_texture mtex;
-#endif
-//module selection stuff
-	std::map<vsx_string,vsx_module_info*> module_list;
-	std::map<vsx_string,vsx_module_info*>::const_iterator module_iter;
-	
-	bool selection;
-	float delta_move,delta_zoom;
-	vsx_vector remPointer;
-	vsx_vector selection_start,selection_end;
+
+  //module selection stuff
+  std::map<vsx_string,vsx_module_info*> module_list;
+  std::map<vsx_string,vsx_module_info*>::const_iterator module_iter;
+
+  bool selection;
+  float delta_move,delta_zoom;
+  vsx_vector remPointer;
+  vsx_vector selection_start,selection_end;
 
   vsx_command_list dump_commands;
   // dialogs
@@ -52,7 +50,7 @@ class vsx_widget_server : public vsx_widget {
   vsx_widget* connect_dialog;
   vsx_widget* sequencer;
   vsx_widget* seq_pool;
-  
+
   vsx_vector alert_delta;
   vsx_string server_message;
   unsigned int server_type; // 1 is internal, 2 is connected via socket
@@ -63,12 +61,12 @@ class vsx_widget_server : public vsx_widget {
 public:
   float server_vtime;
   float server_fps;
-  
+
   // vsx_engine holder
   void *engine;
 
   vsx_string state_name;
-  
+
   vsx_string connection_id; // the unique id of this connection in the event that multiple clients are connected to one server
   vsx_string server_version; // the server version of vsxu
   std::list<vsx_widget*> selected_list;
@@ -104,7 +102,7 @@ public:
   void select(vsx_widget* comp);
   bool select_add(vsx_widget* comp);
   void select_add_gui(vsx_widget* comp);
-  
+
   void param_alias_ok(vsx_string p_def, vsx_string io, vsx_string comp, vsx_string param, vsx_string source_comp, vsx_string source_param, vsx_string seven);
   bool event_key_down(signed long key, bool alt = false, bool ctrl = false, bool shift = false);
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);
@@ -122,4 +120,4 @@ public:
 };
 
 #endif
-#endif
+

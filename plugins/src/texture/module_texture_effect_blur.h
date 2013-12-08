@@ -54,7 +54,6 @@ public:
 void module_info(vsx_module_info* info) {
   glewInit();
   info->identifier = "texture;effects;blur";
-#ifndef VSX_NO_CLIENT
   info->in_param_spec =
       "glow_source:texture,"
       "start_value:float,"
@@ -64,10 +63,10 @@ void module_info(vsx_module_info* info) {
   ;
   info->out_param_spec = "texture_out:texture";
   info->component_class = "texture";
-#endif
 }
 
-void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {
+void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
+{
   glewInit();
   glow_source = (vsx_module_param_texture*)in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE, "glow_source",false,false);
   texture_result = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture_out");

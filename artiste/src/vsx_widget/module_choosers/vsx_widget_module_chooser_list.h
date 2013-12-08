@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #ifndef VSX_MODULE_CHOOSER_LIST_H
 #define VSX_MODULE_CHOOSER_LIST_H
 
@@ -49,5 +48,4 @@ public:
   vsx_module_chooser_list();
 };
 
-#endif
 #endif

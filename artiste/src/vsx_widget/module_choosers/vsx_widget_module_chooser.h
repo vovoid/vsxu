@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #ifndef VSX_WIDGET_MODULE_CHOOSER_H
 #define VSX_WIDGET_MODULE_CHOOSER_H
 
@@ -1004,10 +1003,8 @@ public:
   HTCoord*            oldZe;  // old euclidian coords
   HTCoord*            zs;  // current screen coords
   HTGeodesic* mygeodesic;
-#ifndef VSXU_PLAYER
   vsx_texture* mtex;
-#endif
-  //static vsx_font myf;
+
   vsx_widget_hyperbolic_tree* selected;  // selected node
   HTModel*         node;  // encapsulated HTModelNode
   vsx_color color;
@@ -1649,9 +1646,7 @@ public:
   void center_on_item(vsx_string target);
   
   void init();
-#ifndef VSXU_PLAYER  
   void reinit();
-#endif
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button);
@@ -1664,5 +1659,4 @@ public:
   void on_delete();
 };
 
-#endif
 #endif

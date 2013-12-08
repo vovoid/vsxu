@@ -105,14 +105,12 @@ bool vsx_channel::disconnect(vsx_engine_param* src)
 
 void vsx_channel::update_connections_order()
 {
-//#ifndef VSX_NO_CLIENT
   int i = 0;
   for (vector<vsx_channel_connection_info*>::iterator it=connections.begin(); it != connections.end(); ++it)
   {
     (*it)->engine_connection->connection_order = i;
     ++i;
   }  
-//#endif
 }  
 
 //---------------------------------------------------------

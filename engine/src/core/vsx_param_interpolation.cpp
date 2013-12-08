@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #include <list>
 #include "vsx_param.h"
 #include "vsx_module.h"
@@ -308,5 +307,3 @@ void vsx_module_param_interpolation_list::run(float d_time) {
     }  
   }
 }
-
-#endif

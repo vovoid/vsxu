@@ -21,8 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
-
 #include "vsx_widget_controller_seq.h"
 #include "sequencer/vsx_widget_seq_chan.h"
 
@@ -110,5 +108,3 @@ void vsx_widget_controller_sequence::set_view_time(float start, float end)
 {
 	((vsx_widget_seq_channel*)seq_chan)->set_view_time(start, end);
 }
-
-#endif

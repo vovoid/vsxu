@@ -106,7 +106,7 @@ class VSXFSTDLLIMPORT vsxf {
 
   pthread_mutex_t mutex1;
 
-  void get_lock() {
+  void aquire_lock() {
     pthread_mutex_lock( &mutex1 );
   }
   void release_lock() {

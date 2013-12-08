@@ -344,10 +344,10 @@ void vsx_engine::set_float_array_param(int id, vsx_engine_float_array* float_arr
 // set FX level amplification (sound, etc)
 void vsx_engine::set_amp(float amp)
 {
-  if (!valid) return;
-  #ifndef VSX_DEMO_MINI
-    engine_info.amp = amp;
-  #endif
+  if (!valid)
+    return;
+
+  engine_info.amp = amp;
 }
 
 // start the engine and sending all the modules the start signal
@@ -360,8 +360,12 @@ bool vsx_engine::start()
     return false;
   }
 
-  if (!disabled) return false;
-  if (disabled) disabled = false;
+  if (!disabled)
+    return false;
+
+  if (disabled)
+    disabled = false;
+
   if (first_start)
   {
     valid = true;
@@ -395,21 +399,23 @@ bool vsx_engine::start()
   lastsent = 0;
   return true;
 }
+
 // stop the engine
 bool vsx_engine::stop()
 {
-  if (!valid) return false;
-  #ifndef VSX_DEMO_MINI
-    if (!disabled)
-    {
-      for (unsigned long i = 0; i < forge.size(); ++i) {
-        forge[i]->stop();
-      }
-      disabled = true;
-      return true;
-    }
+  if (!valid)
     return false;
-  #endif
+
+  if (!disabled)
+  {
+    for (unsigned long i = 0; i < forge.size(); ++i)
+    {
+      forge[i]->stop();
+    }
+    disabled = true;
+    return true;
+  }
+  return false;
 }
 
 void vsx_engine::set_constant_frame_progression(float new_frame_cfp_time)
@@ -788,14 +794,14 @@ float vsx_engine::get_last_frame_time()
   return last_frame_time;
 }
 
-double vsx_engine::get_fps() {
-  #ifndef VSX_DEMO_MINI
+double vsx_engine::get_fps()
+{
   return frame_delta_fps;
-  #endif
 }
 
 
-void vsx_engine::unload_state() {
+void vsx_engine::unload_state()
+{
   i_clear();
 }
 

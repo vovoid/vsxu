@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #include "vsxfst.h"
 #include "vsx_gl_global.h"
 #include <vsx_vector_aux.h>
@@ -2020,4 +2019,3 @@ void vsx_widget_seq_channel::set_view_time(float start, float end)
   view_time_start = start;
   view_time_end = end;
 }
-#endif

@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #ifndef VSX_WIDGET_PREVIEW_H
 #define VSX_WIDGET_PREVIEW_H
 
@@ -35,9 +34,7 @@ class vsx_window_texture_viewer : public vsx_widget_window {
   void** engine;
 
 public:
-#ifndef VSXU_PLAYER  
   vsx_texture texture;
-#endif
 
  	bool fullscreen;
  	bool fullwindow;
@@ -57,5 +54,4 @@ public:
 };
 
 
-#endif
 #endif

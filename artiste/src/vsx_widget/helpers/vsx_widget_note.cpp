@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #include "vsx_gl_global.h"
 #include <map>
 #include <list>
@@ -45,18 +44,18 @@
 //---------------------------------------------------------------------------------------
 
 vsx_widget_note::vsx_widget_note() {
-	vsx_widget_window::init();
+  vsx_widget_window::init();
   init();
   check_time = 0.0f;
   allow_resize_x = true;
   allow_resize_y = true;
-	editor = add(new vsx_widget_base_edit,"e1");
-	//editor->size_from_parent = true;
-	
+  editor = add(new vsx_widget_base_edit,"e1");
+  //editor->size_from_parent = true;
+
   size.x = 0.11;
-	size.y = 0.11;
-	target_size = size;
-	//bgcolor.a = 0.0f;
+  size.y = 0.11;
+  target_size = size;
+  //bgcolor.a = 0.0f;
   visible = 1;
   constrained_x = false;
   constrained_y = false;
@@ -70,10 +69,10 @@ vsx_widget_note::vsx_widget_note() {
 
   size_min.x = 0.06;
   size_min.y = 0.035;
-  
+
   pos.x -= size.x*0.7;
   target_pos = pos;
-  
+
   longest_line = 0;
   support_interpolation = true;
   ((vsx_widget_base_edit*)editor)->set_string("test0r");
@@ -84,17 +83,17 @@ vsx_widget_note::vsx_widget_note() {
 
 bool vsx_widget_note::init_from_command(vsx_command_s* c)
 {
- 	set_render_type(VSX_WIDGET_RENDER_3D);
- 	vsx_vector np;
+  set_render_type(VSX_WIDGET_RENDER_3D);
+  vsx_vector np;
   np = vsx_vector_aux::from_string(c->parts[2]);
-	set_pos(np);
+  set_pos(np);
   np = vsx_vector_aux::from_string(c->parts[3]);
-	set_size(np);
+  set_size(np);
   set_font_size(s2f(c->parts[5]));
   set_border(font_size*0.15f);
-	size_min.x = font_size*3.0f;
-	size_min.y = font_size*4.0f;
-  
+  size_min.x = font_size*3.0f;
+  size_min.y = font_size*4.0f;
+
   //new_note->target_size = new_note->size;
   load_text(base64_decode(c->parts[4]));
   return true;
@@ -102,25 +101,25 @@ bool vsx_widget_note::init_from_command(vsx_command_s* c)
 
 void vsx_widget_note::set_editor_font_size(float new_size)
 {
-	((vsx_widget_base_edit*)editor)->font_size = new_size;
+  ((vsx_widget_base_edit*)editor)->font_size = new_size;
 }
 
 void vsx_widget_note::i_draw() {
-  if (font_size != editor->font_size) 
+  if (font_size != editor->font_size)
   {
-  	for (children_iter = children.begin(); children_iter != children.end(); children_iter++)
-  	{
-  		//if ( (*children_iter)->name == "bc1" )
-  		//::MessageBox(0, "note has bc1", (*children_iter)->name.c_str(), MB_OK);
-  	}
-  	font_size = editor->font_size;
-		size_min.x = font_size*3.0f;
-		size_min.y = font_size*4.0f;
-		resize_to(target_size);
+    for (children_iter = children.begin(); children_iter != children.end(); children_iter++)
+    {
+      //if ( (*children_iter)->name == "bc1" )
+      //::MessageBox(0, "note has bc1", (*children_iter)->name.c_str(), MB_OK);
+    }
+    font_size = editor->font_size;
+    size_min.x = font_size*3.0f;
+    size_min.y = font_size*4.0f;
+    resize_to(target_size);
   }
   editor->set_pos(vsx_vector(size.x*0.5f,size.y*0.5f-0.5f*font_size+dragborder*0.5f));
   editor->resize_to(vsx_vector(size.x-dragborder*2, size.y-font_size-dragborder));
-		
+
   vsx_vector parentpos;
   parentpos = parent->get_pos_p();
   //float sx05 = size.x*0.5;
@@ -132,13 +131,13 @@ void vsx_widget_note::i_draw() {
   } else {
   }
   if (((vsx_widget_base_edit*)editor)->updates) {
-  	check_time -= dtime;
-  	if (check_time < 0.01f)
-  	{ 
-  		save();
-  		((vsx_widget_base_edit*)editor)->updates = 0;
-  		check_time = 1.0f;
-  	}
+    check_time -= dtime;
+    if (check_time < 0.01f)
+    {
+      save();
+      ((vsx_widget_base_edit*)editor)->updates = 0;
+      check_time = 1.0f;
+    }
   }
 //  printf("pos.x: %f\n",parentpos.x);
 //  parentpos.x = 0;
@@ -159,10 +158,10 @@ void vsx_widget_note::init() {
 
 void vsx_widget_note::command_process_back_queue(vsx_command_s *t) {
   if (t->cmd == "close") {
-  	command_q_b.add_raw("note_delete "+name);
-  	parent->vsx_command_queue_b(this);
+    command_q_b.add_raw("note_delete "+name);
+    parent->vsx_command_queue_b(this);
     _delete();
-  } else 
+  } else
   if (t->cmd == "save") {
     save();
   } else
@@ -171,13 +170,13 @@ void vsx_widget_note::command_process_back_queue(vsx_command_s *t) {
     load_text(base64_decode(t->parts[3]));
     a_focus = this;
     k_focus = this;
-  }  
+  }
 }
 
 void vsx_widget_note::save() {
   command_q_b.add_raw("note_update "+name+" "+ vsx_vector_aux::to_string(target_pos) +" " + vsx_vector_aux::to_string(target_size) +" "+base64_encode(((vsx_widget_base_edit*)editor)->get_string())+" "+f2s(font_size));
   parent->vsx_command_queue_b(this);
-}  
+}
 
 bool vsx_widget_note::load_text(vsx_string new_text) {
   ((vsx_widget_base_edit*)editor)->set_string(new_text);
@@ -186,7 +185,5 @@ bool vsx_widget_note::load_text(vsx_string new_text) {
 
 void vsx_widget_note::event_move_scale()
 {
-	((vsx_widget_base_edit*)editor)->updates++;
+  ((vsx_widget_base_edit*)editor)->updates++;
 }
-
-#endif

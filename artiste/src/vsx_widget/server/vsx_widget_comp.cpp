@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #include "vsx_gl_global.h"
 
 #include <map>
@@ -703,9 +702,7 @@ void vsx_widget_component::init()
 
 void vsx_widget_component::reinit()
 {
-  #ifndef VSXU_PLAYER
   mtex.load_png(skin_path+"component_types/"+component_type+".png");
-  #endif
   vsx_widget::reinit();
 }
 
@@ -941,13 +938,9 @@ void vsx_widget_component::draw()
         glColor4f(0.4,0.4,0.5,0.7);
         glTranslatef(real_pos.x+pp.x,real_pos.y+pp.y,real_pos.z);
         glScaled(size.x/2,size.y/2,1);
-        #ifndef VSXU_PLAYER
-          mtex.bind();
-        #endif
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        #ifndef VSXU_PLAYER
-          mtex._bind();
-        #endif
+        mtex.bind();
+          glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        mtex._bind();
       glPopMatrix();
       glColor4f(1,1,1,0.3);
     } else
@@ -1700,4 +1693,3 @@ void vsx_widget_component::before_delete() {
   ((vsx_widget_server*)(server))->selected_list.remove(this);
   ((vsx_widget_server*)server)->comp_list.erase(name);
 }
-#endif

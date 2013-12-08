@@ -21,12 +21,11 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #ifndef VSX_WIDGET_ASSISTANT_H
 #define VSX_WIDGET_ASSISTANT_H
 
 
-#ifndef VSXU_PLAYER
+
 class vsxu_assistant : public vsx_widget {
   vsx_widget *inspected;
 //-----------------------------------------------
@@ -56,7 +55,5 @@ public:
   void toggle_size();
   vsxu_assistant();
 };
-#endif
 
-#endif
 #endif

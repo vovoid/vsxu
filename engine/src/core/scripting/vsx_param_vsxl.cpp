@@ -149,7 +149,6 @@ void* vsx_param_vsxl_driver_float::load(vsx_module_param_abs* engine_param,vsx_s
   	engine->vsxl->pf_id++;
   }
   printf("float::load8\n");
-#ifndef VSX_NO_CLIENT
   if (program == "") { //engine_param->name
   script = "// this script modifies the float param called \""+engine_param->name+"\"\n\
 // it's generated and maintained by the engine.\n\
@@ -177,7 +176,6 @@ global vsxl_pf"+i2s(id)+" = function(param)\n\
   	printf("load_8b\n");
     script = program;
   }
-#endif
   // Compile and execute the script
   //MessageBox(0, "pre-execute", "status", MB_OK);
   printf("load_9\n");

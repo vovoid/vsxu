@@ -77,7 +77,7 @@ public:
     engine->filesystem->f_read((void*)&vert_size,sizeof(size_t) * 1,fp);
     if (vert_size)
     {
-      vsx_printf("vertex bytes: %d\n",vert_size);
+      vsx_printf("vertex bytes: %ld\n",vert_size);
       void* vert_p = malloc(vert_size);
       engine->filesystem->f_read(vert_p,vert_size,fp);
       mesh->data->vertices.set_data( (vsx_vector*)vert_p, vert_size / sizeof(vsx_vector) );
@@ -87,7 +87,7 @@ public:
     engine->filesystem->f_read((void*)&normals_size,sizeof(size_t) * 1,fp);
     if (normals_size)
     {
-      vsx_printf("normals bytes: %d\n",normals_size);
+      vsx_printf("normals bytes: %ld\n",normals_size);
       void* norm_p = malloc( normals_size);
       engine->filesystem->f_read(norm_p,normals_size,fp);
       mesh->data->vertex_normals.set_data((vsx_vector*)norm_p,normals_size / sizeof(vsx_vector));
@@ -97,7 +97,7 @@ public:
     engine->filesystem->f_read((void*)&tex_coords_size,sizeof(size_t) * 1,fp);
     if (tex_coords_size)
     {
-      vsx_printf("texcoord count: %d\n",tex_coords_size);
+      vsx_printf("texcoord count: %ld\n",tex_coords_size);
       void* texcoords_p = malloc(tex_coords_size);
       engine->filesystem->f_read(texcoords_p,tex_coords_size,fp);
       mesh->data->vertex_tex_coords.set_data((vsx_tex_coord*)texcoords_p,tex_coords_size / sizeof(vsx_tex_coord));
@@ -107,7 +107,7 @@ public:
     engine->filesystem->f_read((void*)&faces_size,sizeof(size_t) * 1,fp);
     if (faces_size)
     {
-      vsx_printf("face count: %d\n",faces_size);
+      vsx_printf("face count: %ld\n",faces_size);
       void* faces_p = malloc(faces_size);
       engine->filesystem->f_read(faces_p,faces_size,fp);
       mesh->data->faces.set_data((vsx_face*)faces_p,faces_size / sizeof(vsx_face));

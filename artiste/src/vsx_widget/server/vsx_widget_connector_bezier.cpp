@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #include "vsx_gl_global.h"
 #include <map>
 #include <list>
@@ -518,4 +517,3 @@ bool vsx_widget_connector_bezier::event_key_down(signed long key, bool alt, bool
   }
   return true;
 }
-#endif

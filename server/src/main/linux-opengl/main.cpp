@@ -159,7 +159,6 @@ void GLFWCALL mouse_wheel(int pos)
 
 void GLFWCALL window_size( int width, int height )
 {
-  vsx_printf("change viewport %d %d\n", width, height);
   vsx_gl_state::get_instance()->viewport_change(0,0,width, height);
 }
 

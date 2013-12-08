@@ -72,7 +72,6 @@ void module_info(vsx_module_info* info)
 {
   info->output = 1;
   info->identifier = "sound;input_visualization_listener||system;sound;vsx_listener";
-#ifndef VSX_NO_CLIENT
   info->description = "Simple fft runs at 86.13 fps\n\
 HQ fft runs at 43.07 fps\n\
 The octaves are 0 = bass, 7 = treble";
@@ -118,7 +117,6 @@ octaves:complex{\
 wave:float_array,\
 normal:complex{spectrum:float_array},hq:complex{spectrum_hq:float_array}";
   info->component_class = "output";
-#endif
 }
 
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

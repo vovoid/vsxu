@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 /** KempoApi: The Turloc Toolkit *****************************/
 /** *    *                                                  **/
 /** **  **  Filename: ArcBall.h                             **/
@@ -627,5 +626,4 @@ inline void QuatFromMat(Matrix3fT* a, Quat4fT& quat ) {
 
     };
 
-#endif
 #endif

@@ -18,11 +18,6 @@ class module_texture_load_png : public vsx_module
   
   static void* png_worker_v(void *ptr)
   {
-    //printf("thread starting\n");
-    //if (((module_load_png*)ptr)->bitm.data) {
-      //delete ((module_load_png*)ptr)->bitm.data;
-    //}
-
     module_texture_load_png* module = ((module_texture_load_png*)ptr);
     
     ((module_texture_load_png*)ptr)->pp = new pngRawInfo;
@@ -30,12 +25,10 @@ class module_texture_load_png : public vsx_module
       ((module_texture_load_png*)ptr)->bitm.valid = true;
       ((module_texture_load_png*)ptr)->thread_state = 2;
     } else {
-      //printf("thread: bitmap not valid\n");
       ((module_texture_load_png*)ptr)->bitm.valid = false;
       ((module_texture_load_png*)ptr)->thread_state = -1;
       ((module_texture_load_png*)ptr)->last_modify_time = 0;
     }
-    //printf("png thread ending\n");
     return 0;
   }
   
@@ -55,11 +48,10 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-  #ifndef VSX_NO_CLIENT
     info->description = "Loads a PNG image from\ndisk and outputs a \n - VSXu bitmap \n and\n - texture.\nTexture is only loaded when used.\nThis is to preserve memory.";
     info->in_param_spec = "filename:resource,reload:enum?no|yes";
     info->out_param_spec = "texture:texture,bitmap:bitmap";
-#endif
+
     if (m_type == 0)
     {
       info->identifier = "bitmaps;loaders;png_bitm_load";
@@ -127,7 +119,7 @@ public:
       thread_state = 1;
       pthread_create(&(worker_t), &(worker_t_attr), &png_worker_v, (void*)this);
     }
-    //printf("foobar\n");
+
     if (thread_state == 2) {
       thread_state = 3;
       if (bitm.valid) {

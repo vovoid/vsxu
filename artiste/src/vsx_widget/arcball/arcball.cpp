@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 
 /** KempoApi: The Turloc Toolkit *****************************/
 /** *    *                                                  **/
@@ -144,6 +143,3 @@ void    ArcBall_t::drag(const Point2fT* NewPt, Quat4fT* NewRot)
         }
     }
 }
-
-
-#endif

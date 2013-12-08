@@ -21,7 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
+
 #include "vsx_gl_global.h"
 #include <map>
 #include <list>
@@ -60,7 +60,6 @@ void vsx_window_object_inspector::draw_2d() {
     size_.x = size.x-dragborder*2;
     //printf("size: %f\n",size_.x);
     title = filename_loaded+" "+i2s((int)texture.texture_info->size_x)+"x"+i2s((int)texture.texture_info->size_y);
-#ifndef VSXU_PLAYER
    	texture.bind();
     glColor4f(1,1,1,1);
     if (texture.valid) {
@@ -87,10 +86,7 @@ void vsx_window_object_inspector::draw_2d() {
       glEnd();
     }
     texture._bind();
-#endif
     float screenaspect = screen_x/screen_y;
-    //printf("ts %f\n",texture.size_x);
-#ifndef VSXU_PLAYER
     if (texture_loaded == false)
     if (texture.texture_info->size_y != 0.0) {
       texture_loaded = true;
@@ -102,7 +98,6 @@ void vsx_window_object_inspector::draw_2d() {
       resize_to(aa);
       move(1*screen_aspect-0.4/screenaspect*(texture.texture_info->size_x/texture.texture_info->size_y),1.0f-aa.y,0);
     }
-#endif
   }
 }
 
@@ -305,19 +300,15 @@ void vsx_window_object_inspector::show() {
 void vsx_window_object_inspector::unload() {
   resize_to(vsx_vector(0.001,0.001));
   move(1-0.001,1,0);
-#ifndef VSXU_PLAYER
   texture.unload();
-#endif
   filename_loaded = "";
   view_type = 0;
 }
 
-void vsx_window_object_inspector::load_file(vsx_string filename) {
-  //cout << "trying to load " << filename << endl;
+void vsx_window_object_inspector::load_file(vsx_string filename)
+{
   filename = vsx_get_data_path()+filename;
-#ifdef VSXU_DEBUG
-  printf("filename: %s\n", filename.c_str());
-#endif
+
   std::vector<vsx_string> parts;
   vsx_string deli = ".";
   explode(filename, deli, parts);
@@ -326,43 +317,22 @@ void vsx_window_object_inspector::load_file(vsx_string filename) {
     if (parts[parts.size()-1] == "jpg") {
       view_type = 1; // image viewer
       texture_loaded = false;
-#ifndef VSXU_PLAYER
       texture.texture_info->size_y = 0;
-//      if (texture.valid)
       texture.unload();
       texture.init_opengl_texture_2d();
       texture.load_jpeg(filename,false);
-      //float screenaspect = screen_x/screen_y;
-      //printf("%f, %f\n",texture.texture_info.size_x,texture.texture_info.size_y);
-#endif
       filename_loaded = filename;
     } else
-    if (parts[parts.size()-1] == "png") {
-      //printf("png");
-      //texture.unload();
+    if (parts[parts.size()-1] == "png")
+    {
       view_type = 1; // image viewer
       texture_loaded = false;
-#ifndef VSXU_PLAYER
       texture.texture_info->size_y = 0;
-//      if (texture.valid)
       texture.unload();
       texture.load_png(filename,false);
-      //float screenaspect = screen_x/screen_y;
 
-      //printf("%f, %f\n",texture.texture_info.size_x,texture.texture_info.size_y);
-#endif
       filename_loaded = filename;
-
-      //vsx_vector aa;
-      //aa.x = 0.4/screenaspect*(texture.size_x/texture.size_y);
-      //aa.y = 0.4;
-      //aa.z = 0;
-      //resize_to(aa);
-      //move(1-0.4/screenaspect*(texture.size_x/texture.size_y),1,0);
-      //resize_to(vsx_vector(0.1,0.1,0));
-      //move(0.9,1,0);
     }
   }
 }
 
-#endif

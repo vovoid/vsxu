@@ -204,25 +204,30 @@ vsx_comp* vsx_engine_abs::add(vsx_string label)
 // send our current time to the client
 void vsx_engine_abs::tell_client_time(vsx_command_list *cmd_out)
 {
-  if (!valid) return;
-  if (no_send_client_time) return;
-  #ifndef VSX_NO_CLIENT
-    bool send = false;
+  if (!valid)
+    return;
 
-    if (lastsent < 0 || lastsent > 0.01 ) {
-      send = true;
-      lastsent = 0;
-    }
-    if (current_state != last_e_state) send = true;
+  if (no_send_client_time)
+    return;
 
-    if (send)
-    {
-      cmd_out->add_raw("time_upd " + f2s(engine_info.vtime)+" "+i2s(current_state));
-      // check to see if we should send our sequence pool too
-      cmd_out->add_raw("seq_pool time_upd " + f2s(sequence_pool.get_time())+" "+i2s(sequence_pool.get_state()));
-    }
-    last_e_state = current_state;
-  #endif
+  bool send = false;
+
+  if (lastsent < 0 || lastsent > 0.01 )
+  {
+    send = true;
+    lastsent = 0;
+  }
+  if (current_state != last_e_state)
+    send = true;
+
+  if (send)
+  {
+    cmd_out->add_raw("time_upd " + f2s(engine_info.vtime)+" "+i2s(current_state));
+    // check to see if we should send our sequence pool too
+    cmd_out->add_raw("seq_pool time_upd " + f2s(sequence_pool.get_time())+" "+i2s(sequence_pool.get_state()));
+  }
+
+  last_e_state = current_state;
 }
 
 void vsx_engine_abs::redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_out) {
@@ -262,64 +267,52 @@ void vsx_engine_abs::redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_o
     }
   }
 
-  for (list<vsx_engine_param_connection_info*>::iterator it2 = abs_connections_in.begin(); it2 != abs_connections_in.end(); ++it2) {
-    //printf("trying to connect %s\n",(*it2)->dest_name.c_str());
+  for (list<vsx_engine_param_connection_info*>::iterator it2 = abs_connections_in.begin(); it2 != abs_connections_in.end(); ++it2)
+  {
     vsx_engine_param* dparam = in->get_by_name((*it2)->dest_name);
 
-    if (dparam) {
+    if (dparam)
+    {
       int order = dparam->connect((*it2)->src);
-      //printf("internal order: %d\n",order);
-#ifndef VSX_DEMO_MINI
       cmd_out->add_raw("param_connect_volatile "+comp->name+" "+dparam->name+" "+(*it2)->src->owner->component->name+" "+(*it2)->src->name+" "+i2s(order));
-#endif
     }
   }
 }
 
-void vsx_engine_abs::redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_out) {
+void vsx_engine_abs::redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_out)
+{
   // 1. get all connections in a list
-  #ifdef VSXU_DEBUG
-  printf("+++redeclaring out for component named: %s\n",comp->name.c_str());
-  #endif
   list<vsx_engine_param_connection_info*> abs_connections_out;
   vsx_engine_param_list* out = comp->get_params_out();
   out->get_abs_connections(&abs_connections_out);
 
   // will nuke all the internal params.
   comp->re_init_out_params();
-#ifndef VSX_DEMO_MINI
   cmd_out->add_raw("out_param_spec "+comp->name+" "+comp->out_param_spec+" c");
-#endif
-  #ifdef VSXU_DEBUG
-    //printf("outparamspec: %s\n",("out_param_spec "+comp->name+" "+comp->out_param_spec+" c").c_str());
-  #endif
   comp->module->redeclare_out = false;
   out = comp->get_params_out();
 
-  for (list<vsx_engine_param_connection_info*>::iterator it2 = abs_connections_out.begin(); it2 != abs_connections_out.end(); ++it2) {
-    #ifdef VSXU_DEBUG
-      //printf("(*it2)->dest_name: %s\n",(*it2)->dest_name.c_str());
-      //printf("(*it2)->src_name:  %s    %s\n",(*it2)->src_name.c_str(),(*it2)->dest_name.c_str());
-    #endif
+  for (list<vsx_engine_param_connection_info*>::iterator it2 = abs_connections_out.begin(); it2 != abs_connections_out.end(); ++it2)
+  {
     vsx_engine_param* dparam = out->get_by_name((*it2)->src_name);
-    if (dparam) {
-      int order = (*it2)->dest->connect(dparam);
-//      printf("internal command: %d\n",order);
-#ifndef VSX_DEMO_MINI
-      vsx_string dest_comp_name = (*it2)->dest->owner->component->name;
-      vsx_string srcn = (*it2)->src_name;
-      vsx_string cn = comp->name;
-      vsx_string dpn = dparam->name;
-      vsx_string os = i2s(order);
-      cmd_out->add_raw("param_connect_volatile "+dest_comp_name+" "+srcn+" "+cn+" "+dpn+" "+os);
-#endif
-    }
+
+    if (!dparam)
+      continue;
+
+    int order = (*it2)->dest->connect(dparam);
+    vsx_string dest_comp_name = (*it2)->dest->owner->component->name;
+    vsx_string srcn = (*it2)->src_name;
+    vsx_string cn = comp->name;
+    vsx_string dpn = dparam->name;
+    vsx_string os = i2s(order);
+    cmd_out->add_raw("param_connect_volatile "+dest_comp_name+" "+srcn+" "+cn+" "+dpn+" "+os);
   }
 }
 
 void vsx_engine_abs::process_message_queue_redeclare(vsx_command_list *cmd_out_res)
 {
-  for (vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
+  for (vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it)
+  {
     if ((*it)->module) {
       if ((*it)->module->redeclare_in) {
         redeclare_in_params(*it,cmd_out_res);
@@ -335,17 +328,18 @@ void vsx_engine_abs::process_message_queue_redeclare(vsx_command_list *cmd_out_r
   }
 }
 
-void vsx_engine_abs::send_state_to_client(vsx_command_list *cmd_out) {
-#ifndef VSX_DEMO_MINI
-  #ifndef SAVE_PRODUCTION
-  if (filesystem.type != VSXF_TYPE_FILESYSTEM)  {
+void vsx_engine_abs::send_state_to_client(vsx_command_list *cmd_out)
+{
+  if (filesystem.type != VSXF_TYPE_FILESYSTEM)
+  {
     cmd_out->add_raw("server_message "+base64_encode("Packages not possible to edit, ask author for state!"));
     return;
   }
-  #endif
+
   vsx_command_list temp_conn;
   vsx_command_list temp_conn_alias;
-  for (unsigned long i = 0; i < forge.size(); ++i) {
+  for (unsigned long i = 0; i < forge.size(); ++i)
+  {
     vsx_string xs,ys;
     xs = f2s(forge[i]->position.x);
     ys = f2s(forge[i]->position.y);
@@ -374,30 +368,28 @@ void vsx_engine_abs::send_state_to_client(vsx_command_list *cmd_out) {
       cmd_out->add_raw("vsxl_cfi_ok "+forge[i]->name);
     }
   }
+
   // conns
   vsx_command_s* outc;
   temp_conn_alias.reset();
   while ( (outc = temp_conn_alias.get()) ) {
     cmd_out->addc(outc);
   }
+
   temp_conn.reset();
   while ( (outc = temp_conn.get()) ) {
     cmd_out->addc(outc);
   }
-  //printf("************ GETTING SEQUENCES ************");
+
   sequence_list.get_sequences(cmd_out);
-  //printf("state sent to client end++\n");
-  //cmd_out->add_raw("server_message "+base64_encode(""));
+
   // notes
   for (note_iter = note_map.begin(); note_iter != note_map.end(); note_iter++)
   cmd_out->add_raw(vsx_string((*note_iter).second.serialize()));
-#endif
 }
 
-void vsx_engine_abs::i_clear(vsx_command_list *cmd_out,bool clear_critical) {
-#ifndef VSX_DEMO_MINI
-  //if (filesystem.type == VSXF_TYPE_ARCHIVE) filesystem.archive_close();
-
+void vsx_engine_abs::i_clear(vsx_command_list *cmd_out,bool clear_critical)
+{
   std::map<vsx_string,vsx_comp*> forge_map_save;
   std::vector<vsx_comp*> forge_save;
   for (std::map<vsx_string,vsx_comp*>::iterator fit = forge_map.begin(); fit != forge_map.end(); ++fit) {
@@ -422,9 +414,7 @@ void vsx_engine_abs::i_clear(vsx_command_list *cmd_out,bool clear_critical) {
           sequence_list.remove_param_sequence((*it));
           //cmd_out->add_raw("pseq_p_ok remove "+(*fit).second->name+" "+(*it)->name);
         }
-#ifndef VSX_NO_CLIENT
         interpolation_list.remove(*it);
-#endif
       }
       // remove aliases AND connections
     LOG("delete step 2b");
@@ -463,7 +453,6 @@ void vsx_engine_abs::i_clear(vsx_command_list *cmd_out,bool clear_critical) {
   sequence_pool.clear();
   sequence_list.clear_master_sequences();
 
-  //printf("forge save size: %d\n",forge.size());
   last_m_time_synch = 0;
   engine_info.vtime = 0;
   engine_info.dtime = 0;
@@ -473,18 +462,15 @@ void vsx_engine_abs::i_clear(vsx_command_list *cmd_out,bool clear_critical) {
   {
     if (cmd_out)
     {
-      //printf("clear not filesystem\n");
       filesystem.archive_close();
       send_state_to_client(cmd_out);
     }
   }
-#endif
 }
 
 
 int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
 {
-  #ifndef VSX_NO_CLIENT
   vsx_command_list tmp_comp;
   vsx_command_list tmp_param_set;
   vsx_command_list tmp_connections;
@@ -523,10 +509,7 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
         } else
         {
           // or dump the value
-          //printf("component name: %sparam name:\n",comp->name.c_str(),param->module_param->name.c_str());
-          //printf("name:%s\nval: %s\ndef: %s\n",param->module_param->name.c_str(),param->module_param->get_string().c_str(),param->module_param->get_default_string().c_str());
           vsx_string pval = param->get_string();
-          //printf("val: %s  default: %s\n",pval.c_str(),param->get_default_string().c_str());
           if (!param->alias) {
             if (
               pval !=
@@ -551,7 +534,6 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
         // dump pflags
         param->dump_pflags(&tmp_comp);
       }
-      //printf("running pre vsxlmf %s\n", param->name.c_str());
       #ifndef VSXE_NO_GM
       if (param->module_param->vsxl_modifier) {
         //printf("vsxl modifier present\n");
@@ -600,7 +582,6 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
   {
     savelist.add_raw("time_set_loop_point "+f2s(loop_point_end));
   }
-  #endif
   return 0;
 }
 
@@ -610,8 +591,6 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
 
 int vsx_engine_abs::rename_component(vsx_string old_identifier, vsx_string new_base, vsx_string new_name)
 {
-#ifndef VSX_NO_CLIENT
-  //printf("new base: %s\n",new_base.c_str());
   // first we need to split up the name so we have the old base and the old name
   vsx_string old_base;
   vsx_string old_name;
@@ -623,10 +602,13 @@ int vsx_engine_abs::rename_component(vsx_string old_identifier, vsx_string new_b
   if (parts.size())
   old_base = implode(parts,deli);
   else old_base = "";
-  //printf("old_name: %s\nold_base: %s\nnew base: %s\nnew name: %s\n",old_name.c_str(),old_base.c_str(),new_base.c_str(),new_name.c_str());
+
   // we have the basic names set up now find the component
-  vsx_comp* t = get_component_by_name(old_identifier);
-  if (!t) return 0;
+  vsx_comp* old_identifier_component = get_component_by_name(old_identifier);
+
+  if (!old_identifier_component)
+    return 0;
+
   // if we don't want to either move or rename
   if (new_base == "$") new_base = old_base;
   if (new_name == "$") new_name = old_name;
@@ -637,7 +619,7 @@ int vsx_engine_abs::rename_component(vsx_string old_identifier, vsx_string new_b
   if (assign_first) dest = get_component_by_name(new_base);
 
   int max_loop = 0;
-  if (t->component_class == "macro") max_loop = 0; else max_loop = 1;
+  if (old_identifier_component->component_class == "macro") max_loop = 0; else max_loop = 1;
 
   std::list<vsx_string> macro_comps;
   std::list<vsx_comp*> macro_comp_p;
@@ -663,10 +645,6 @@ int vsx_engine_abs::rename_component(vsx_string old_identifier, vsx_string new_b
     if (runs >= max_loop) drun = false;
   }
 
-  /*vsx_string parent_name;
-  if (t->parent) {
-    parent_name = t->parent->name;
-  } else parent_name = "";*/
   vsx_string new_name_ = "";
   // do the actual renaming
   std::list<vsx_comp*>::iterator it_c = macro_comp_p.begin();
@@ -676,12 +654,10 @@ int vsx_engine_abs::rename_component(vsx_string old_identifier, vsx_string new_b
     forge_map.erase(*it2);
     if (new_base.size()) {
       if (old_base.size()) {
-        //printf("p1\n");
         // moving from macro to macro
         new_name_ = new_base+"."+str_replace(old_name,new_name,str_replace(old_base+".","",*it2,1,0),1,0);
       }
       else {
-        //printf("p2 %s  %s   %s\n",old_name.c_str(),new_name.c_str(),(*it2).c_str());
         // moving from root to macro
         new_name_ = new_base+"."+str_replace(old_name,new_name,*it2,1,0);
       }
@@ -691,34 +667,29 @@ int vsx_engine_abs::rename_component(vsx_string old_identifier, vsx_string new_b
       // from macro to root
       if (old_base.size()) {
         // "old_base.component_name" -> "new_component_name"
-        //printf("p3 %s \n",str_replace(old_base+".","",*it2,1,0).c_str());
         new_name_ = str_replace(old_name,new_name,str_replace(old_base+".","",*it2,1,0),1,0);
         new_name = new_name;
       } else {
         // plain renaming
-        //printf("p4\n");
         new_name_ = str_replace(old_name,new_name,*it2,1,0);
       }
     }
-    //printf("new name is: %s\n",new_name_.c_str());
     forge_map[new_name_] = *it_c;
     (*it_c)->name = new_name_;
     ++it_c;
   }
 
   // actually move the component
-  if (assign_first) {
-    //printf("moving component\n");
-    if (t->parent) {
-      ((vsx_comp*)t->parent)->children.remove(t);
+  if (assign_first)
+  {
+    if (old_identifier_component->parent)
+    {
+      ((vsx_comp*)old_identifier_component->parent)->children.remove(old_identifier_component);
     }
     if (dest)
-    t->parent = dest;
+    old_identifier_component->parent = dest;
     else
-    t->parent = 0;
+    old_identifier_component->parent = 0;
   }
   return 1;
-  #else
-  return 0;
-#endif
 }

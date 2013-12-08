@@ -21,7 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_NO_CLIENT
 #ifndef VSX_WIDGET_ANCHOR_H
 #define VSX_WIDGET_ANCHOR_H
 
@@ -47,13 +46,11 @@ class vsx_widget_anchor : public vsx_widget
   static vsx_widget_anchor* drag_anchor;
   static vsx_widget_anchor* drag_clone_anchor;
   float ax,ay,sx,sy;
-	vsx_widget_coords drag_coords;
+  vsx_widget_coords drag_coords;
 
-#ifndef VSXU_PLAYER
   vsx_texture mtex_d;
   vsx_texture mtex_blob;
   vsx_texture mtex_blob_small;
-#endif
 
   vsx_vector pp;
   vsx_vector myf_size, myf_pos;
@@ -138,4 +135,4 @@ public:
 };
 
 #endif
-#endif
+

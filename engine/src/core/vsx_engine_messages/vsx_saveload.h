@@ -88,11 +88,12 @@ if (cmd == "set_silent") {
 
 if (cmd == "package_export")
 {
-  #ifndef SAVE_PRODUCTION
-  if (filesystem.type != VSXF_TYPE_FILESYSTEM) {
+  if (filesystem.type != VSXF_TYPE_FILESYSTEM)
+  {
     cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Can not save a production!"));
-  } else
-  #endif
+  }
+  else
+
   if (c->parts.size() == 3) {
     vsx_string base_path = vsx_get_data_path();
 
@@ -134,11 +135,11 @@ if (cmd == "package_export")
 
 if (cmd == "state_save")
 {
-  #ifndef SAVE_PRODUCTION
-  if (filesystem.type != VSXF_TYPE_FILESYSTEM) {
+  if (filesystem.type != VSXF_TYPE_FILESYSTEM)
+  {
     cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Can not save a production!"));
-  } else
-  #endif
+  }
+  else
   if (c->parts.size() == 2) {
     vsx_string base_path = vsx_get_data_path();
     vsxf tfs;

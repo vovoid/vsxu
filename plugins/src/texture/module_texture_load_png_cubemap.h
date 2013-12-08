@@ -18,11 +18,6 @@ class module_texture_load_png_cubemap : public vsx_module
 
   static void* png_worker_v(void *ptr)
   {
-    //printf("thread starting\n");
-    //if (((module_load_png*)ptr)->bitm.data) {
-      //delete ((module_load_png*)ptr)->bitm.data;
-    //}
-
     module_texture_load_png_cubemap* module = ((module_texture_load_png_cubemap*)ptr);
 
     module->pp = new pngRawInfo;
@@ -30,12 +25,10 @@ class module_texture_load_png_cubemap : public vsx_module
       module->bitm.valid = true;
       module->thread_state = 2;
     } else {
-      //printf("thread: bitmap not valid\n");
       module->bitm.valid = false;
       module->thread_state = -1;
       module->last_modify_time = 0;
     }
-    //printf("png thread ending\n");
     return 0;
   }
 
@@ -54,11 +47,9 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-  #ifndef VSX_NO_CLIENT
     info->description = "Loads a PNG image from\ndisk and outputs a \n - VSXu bitmap \n and\n - texture.\nTexture is only loaded when used.\nThis is to preserve memory.";
     info->in_param_spec = "filename:resource,reload:enum?no|yes";
     info->out_param_spec = "texture:texture";
-#endif
     info->identifier = "texture;loaders;png_cubemap_load";
     info->component_class = "texture";
   }
