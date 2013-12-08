@@ -108,6 +108,9 @@ class module_texture_load_jpeg_alpha : public vsx_module
 
     delete cj;
 
+    // memory barrier
+    asm volatile("":::"memory");
+
     mod->thread_state = 2;
 
     return 0;
@@ -121,7 +124,7 @@ public:
 
   vsx_bitmap bitm;
   int bitm_timestamp; // keep track of the timestamp for the bitmap internally
-  int               thread_state;
+  volatile int               thread_state;
   bool              thread_working;
   pthread_t         worker_t;
   pthread_attr_t    worker_t_attr;

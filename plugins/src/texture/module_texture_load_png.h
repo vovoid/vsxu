@@ -23,12 +23,22 @@ class module_texture_load_png : public vsx_module
     ((module_texture_load_png*)ptr)->pp = new pngRawInfo;
     if (pngLoadRaw( module->current_filename.c_str(), ((module_texture_load_png*)ptr)->pp,((module_texture_load_png*)ptr)->engine->filesystem)) {
       ((module_texture_load_png*)ptr)->bitm.valid = true;
+
+      // memory barrier
+      asm volatile("":::"memory");
+
       ((module_texture_load_png*)ptr)->thread_state = 2;
-    } else {
-      ((module_texture_load_png*)ptr)->bitm.valid = false;
-      ((module_texture_load_png*)ptr)->thread_state = -1;
-      ((module_texture_load_png*)ptr)->last_modify_time = 0;
+      return 0;
     }
+
+    ((module_texture_load_png*)ptr)->bitm.valid = false;
+    ((module_texture_load_png*)ptr)->last_modify_time = 0;
+
+    // memory barrier
+    asm volatile("":::"memory");
+
+    ((module_texture_load_png*)ptr)->thread_state = -1;
+
     return 0;
   }
   
@@ -38,7 +48,7 @@ public:
   vsx_string current_filename;
   vsx_bitmap bitm;
   int bitm_timestamp; // keep track of the timestamp for the bitmap internally 
-  int               thread_state;
+  volatile int               thread_state;
   bool              thread_working;
   pngRawInfo*       pp;
   pthread_t         worker_t;

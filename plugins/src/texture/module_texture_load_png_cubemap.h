@@ -21,14 +21,27 @@ class module_texture_load_png_cubemap : public vsx_module
     module_texture_load_png_cubemap* module = ((module_texture_load_png_cubemap*)ptr);
 
     module->pp = new pngRawInfo;
-    if (pngLoadRaw( module->current_filename.c_str(), module->pp,module->engine->filesystem)) {
+
+    if (pngLoadRaw( module->current_filename.c_str(), module->pp,module->engine->filesystem))
+    {
       module->bitm.valid = true;
+
+      // memory barrier
+      asm volatile("":::"memory");
+
       module->thread_state = 2;
-    } else {
-      module->bitm.valid = false;
-      module->thread_state = -1;
-      module->last_modify_time = 0;
     }
+    else
+    {
+      module->bitm.valid = false;
+      module->last_modify_time = 0;
+
+      // memory barrier
+      asm volatile("":::"memory");
+
+      module->thread_state = -1;
+    }
+
     return 0;
   }
 
@@ -37,7 +50,7 @@ public:
   vsx_string current_filename;
   vsx_bitmap bitm;
   int bitm_timestamp; // keep track of the timestamp for the bitmap internally
-  int               thread_state;
+  volatile int               thread_state;
   bool              thread_working;
   pngRawInfo*       pp;
   pthread_t         worker_t;
