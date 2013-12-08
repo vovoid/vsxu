@@ -144,10 +144,6 @@ but you usually want a lot more.";
 
   void run()
   {
-    #ifdef VSXU_TM
-    ((vsx_tm*)engine->tm)->e( "particle_bse_run" );
-    #endif
-
     float ddtime;
     if (time_source->get())
     {
@@ -176,10 +172,6 @@ but you usually want a lot more.";
         (*particles.particles)[i].rotation_dir = vsx_quaternion(0,0,0,0);
       }
       first = false;
-      #ifdef VSXU_TM
-      ((vsx_tm*)engine->tm)->l();
-      #endif
-
       return;
     }
 
@@ -305,10 +297,6 @@ but you usually want a lot more.";
     // set the resulting value
     result_particlesystem->set_p(particles);
     // now all left is to render this, that will be done one of the modules of the rendering branch
-    #ifdef VSXU_TM
-    ((vsx_tm*)engine->tm)->l();
-    #endif
-
   }
 
   void on_delete() {

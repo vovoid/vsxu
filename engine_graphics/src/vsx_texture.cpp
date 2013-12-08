@@ -611,6 +611,7 @@ void vsx_texture::deinit_color_depth_buffer()
   }
   depth_buffer_handle = 0;
   depth_buffer_local = 0;
+
   //Bind 0, which means render to back buffer, as a result, fb is unbound
   if ( vsx_gl_state::get_instance()->framebuffer_bind_get() == frame_buffer_handle )
     vsx_gl_state::get_instance()->framebuffer_bind(0);
