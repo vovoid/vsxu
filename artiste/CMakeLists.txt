@@ -54,15 +54,12 @@ endif(UNIX)
 if(VSXU_DEBUG)
   add_definitions(
   -DDEBUG
-  # -DVSXU_DEBUG
-  # -DVSX_DEBUG
   )
 endif(VSXU_DEBUG)
 
 
 add_definitions(
  -DVSX_FONT_NO_FT
- -DVSXU_EXE
  -DVSXU_ARTISTE
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )

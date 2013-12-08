@@ -243,7 +243,8 @@ public:
     tay = tex_coord_a->get(1);
     tbx = tex_coord_b->get(0);
     tby = tex_coord_b->get(1);
-    if (facing_camera->get()) {
+    if (facing_camera->get())
+    {
       beginBlobs();
 
       GLfloat tmpVec0[] = {blobVec0[0]*2, blobVec0[1]*2, blobVec0[2]*2};

@@ -28,7 +28,6 @@ include_directories(
 ################################################################################
 
 add_definitions(
- -DVSXU_EXE
  -DVSX_AUDOVISUAL_DLL
  -DVSXU_DEVELOPER
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"

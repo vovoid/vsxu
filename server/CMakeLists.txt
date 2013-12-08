@@ -51,7 +51,6 @@ add_definitions(-DDEBUG)
 endif(VSXU_DEBUG)
 
 add_definitions(
- -DVSXU_EXE
  -DVSXU_ARTISTE
  -DVSX_FONT_NO_FT
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"

@@ -15,7 +15,6 @@ endif(VSXU_DEBUG)
 
 #definitions
 add_definitions(
- -DVSXU_EXE
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )
 

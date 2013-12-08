@@ -49,7 +49,10 @@ public:
   bool has_param(const vsx_string& param)
   {
     size_t data_num_elements = size();
-    if (data_num_elements == 0) return false;
+
+    if (data_num_elements == 0)
+      return false;
+
     for (size_t i = 0; i < data_num_elements; i++)
     {
       if (data[i] == "-"+param)
@@ -63,7 +66,10 @@ public:
   bool has_param_with_value(const vsx_string& param)
   {
     size_t data_num_elements = size();
-    if (data_num_elements == 0) return false;
+
+    if (data_num_elements == 0)
+      return false;
+
     for (size_t i = 0; i < data_num_elements; i++)
     {
       if (data[i] == "-"+param)
