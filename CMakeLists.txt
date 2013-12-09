@@ -142,19 +142,76 @@ endif()
 
 if(VSXU_DEBUG)
   message("All warnings are enabled")
-  add_definitions(-g -Wall -Wtype-limits -fpermissive -Wuninitialized -Wignored-qualifiers -Wempty-body -Wunused-parameter)
+  add_definitions(
+    -g
+    -Wall
+    -Wtype-limits
+    -fpermissive
+    -Wuninitialized
+    -Wignored-qualifiers
+    -Wempty-body
+    -Wunused-parameter
+  )
 else(VSXU_DEBUG)
   if (OPTIMIZATION_FLAGS EQUAL 1)
-    add_definitions(-lrt -lm -O1 -march=opteron -fno-thread-jumps -fno-if-conversion2 -fno-delayed-branch -fno-loop-optimize -ftree-dce -ftree-sra -ftree-copyrename -ftree-fre -ftree-ch -fmerge-constants -fcrossjumping -fcse-follow-jumps -fcse-skip-blocks -fexpensive-optimizations -fstrength-reduce -frerun-cse-after-loop -frerun-loop-opt -fforce-addr -fpeephole2 -fschedule-insns2 -fregmove -freorder-blocks -fsched-interblock -funit-at-a-time -falign-functions -falign-jumps -falign-loops -falign-labels -finline-functions -fno-inline -ftracer -fmodulo-sched -fgcse-sm -freschedule-modulo-scheduled-loops -ftree-loop-im -ftree-loop-ivcanon -maccumulate-outgoing-args -mno-align-stringops -D__NO_MATH_INLINES -funsafe-math-optimizations -fno-signaling-nans)
+    add_definitions(
+      -DVSX_OPTIMIZATIONS=1
+      -lrt 
+      -lm 
+      -O3
+      -fno-thread-jumps 
+      -fno-if-conversion2 
+      -fno-delayed-branch 
+      -fno-loop-optimize 
+      -ftree-dce 
+      -ftree-sra 
+      -ftree-copyrename 
+      -ftree-fre 
+      -ftree-ch 
+      -fmerge-constants 
+      -fcrossjumping 
+      -fcse-follow-jumps
+      -fcse-skip-blocks
+      -fexpensive-optimizations
+      -fstrength-reduce
+      -frerun-cse-after-loop
+      -frerun-loop-opt
+      -fforce-addr
+      -fpeephole2
+      -fschedule-insns2
+      -fregmove
+      -freorder-blocks
+      -fsched-interblock
+      -funit-at-a-time
+      -falign-functions
+      -falign-jumps
+      -falign-loops
+      -falign-labels
+      -finline-functions
+      -ftracer
+      -fmodulo-sched
+      -fgcse-sm
+      -freschedule-modulo-scheduled-loops
+      -ftree-loop-im
+      -ftree-loop-ivcanon
+      -maccumulate-outgoing-args
+      -mno-align-stringops
+      -funsafe-math-optimizations
+      -fno-signaling-nans
+    )
   else (OPTIMIZATION_FLAGS EQUAL 1)
-    add_definitions(-O3 -c -fmessage-length=0 -fpermissive -finline-functions)
+    add_definitions(
+      -O3
+      -c
+      -fmessage-length=0
+      -fpermissive
+      -finline-functions
+    )
   endif (OPTIMIZATION_FLAGS EQUAL 1)
 endif(VSXU_DEBUG)
 
 add_definitions(-DVSXU_INSTALL_LIB_DIR="${VSXU_INSTALL_LIB_DIR}")
 
-#add_definitions(-Os -c -fmessage-length=0 -finline-functions)
-#add_definitions(-O3 -c -fmessage-length=0 -finline-functions)
 
 ################################################################################
 # VSXU LIBRARIES ###############################################################
