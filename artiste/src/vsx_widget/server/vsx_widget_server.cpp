@@ -279,17 +279,17 @@ void vsx_widget_server::vsx_command_process_f() {
     // messages from the engine
     while ( (c = cmd_in->pop()) )
     {
-      //c->dump_to_stdout();
       if (c->cmd == "vsxu_welcome") {
         server_version = c->parts[1];
         connection_id = c->parts[2];
       } else
-      if (c->cmd == "component_create_ok") {
+
+      if (c->cmd == "component_create_ok")
+      {
         // syntax:
         //  component_create_ok [name] [component_info] [x-pos] [y-pos] [size] [extra]
-
-        vsx_widget* cm = 0;
-        vsx_widget* p = this;
+        vsx_widget* component = 0;
+        vsx_widget* macro_parent = this;
 
         vsx_string real_name = c->cmd_data;
         vsx_string parent_name = "";
@@ -304,58 +304,54 @@ void vsx_widget_server::vsx_command_process_f() {
           parent_name = implode(add_c,".");
 
           vsx_widget* f = find_component(parent_name);
-          if (f) {
-            p = f;
-          } else {
+          if (f)
+          {
+            macro_parent = f;
+          }
+          else
+          {
             command_q_f.addc(c);
             continue;
           }
         }
 
-        std::vector<vsx_string> comp_realname;
-        deli = ";";
-        split_string(real_name,deli,comp_realname);
-        if (comp_realname.size()) {
-          real_name = comp_realname[comp_realname.size()-1];
-        }
-
-        cm = p->add(new vsx_widget_component,c->cmd_data);
-        comp_list[c->cmd_data] = cm;
-        if (!cm)
+        component = macro_parent->add(new vsx_widget_component, c->cmd_data);
+        comp_list[c->cmd_data] = component;
+        if (!component)
         {
           return;
         }
-        cm->init();
-        if (cm->parent->widget_type == VSX_WIDGET_TYPE_COMPONENT) {
-          cm->enabled = ((vsx_widget_component*)cm->parent)->open;
-          cm->visible = ((vsx_widget_component*)cm->parent)->open;
+        component->init();
+        if (component->parent->widget_type == VSX_WIDGET_TYPE_COMPONENT) {
+          component->enabled = ((vsx_widget_component*)component->parent)->open;
+          component->visible = ((vsx_widget_component*)component->parent)->open;
         }
         if (c->parts.size() >= 6)
         {
           if (c->parts[2] == "macro") {
-            ((vsx_widget_component*)cm)->old_size.y = ((vsx_widget_component*)cm)->old_size.x = s2f(c->parts[5]);
+            ((vsx_widget_component*)component)->old_size.y = ((vsx_widget_component*)component)->old_size.x = s2f(c->parts[5]);
           }
           else
           {
-            cm->help_text = build_comp_helptext(c->parts[5]);
-            ((vsx_widget_component*)cm)->module_path = c->parts[5];
+            component->help_text = build_comp_helptext(c->parts[5]);
+            ((vsx_widget_component*)component)->module_path = c->parts[5];
           }
         }
-        cm->set_size(vsx_vector(0.05f*0.45f,0.05f*0.45f));
+        component->set_size(vsx_vector(0.05f*0.45f,0.05f*0.45f));
         if (c->parts.size() >= 7) {
           if (c->parts[6] == "out") {
-            ((vsx_widget_component*)cm)->not_movable = true;
+            ((vsx_widget_component*)component)->not_movable = true;
           }
         }
-        ((vsx_widget_component*)cm)->server = this;
-        ((vsx_widget_component*)cm)->real_name = real_name;
-        ((vsx_widget_component*)cm)->parent_name = parent_name;
+        ((vsx_widget_component*)component)->server = this;
+        ((vsx_widget_component*)component)->real_name = real_name;
+        ((vsx_widget_component*)component)->parent_name = parent_name;
 
-        cm->set_pos(vsx_vector(s2f(c->parts[3]),s2f(c->parts[4])));
+        component->set_pos(vsx_vector(s2f(c->parts[3]),s2f(c->parts[4])));
 
         // send in the component_info
-        command_q_b.add_raw("component_info "+cm->name+" "+c->parts[2]);
-        cm->vsx_command_queue_b(this);
+        command_q_b.add_raw("component_info "+component->name+" "+c->parts[2]);
+        component->vsx_command_queue_b(this);
         if (module_chooser->visible != 0) front(module_chooser);
       }
       else

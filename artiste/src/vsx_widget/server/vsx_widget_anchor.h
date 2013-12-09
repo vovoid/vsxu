@@ -103,7 +103,6 @@ public:
   bool connect(vsx_widget* other_anchor);
 
   void update_connection_order();
-  void fix_connection_order();
 
   void get_connections_abs(vsx_widget* base, std::list<vsx_widget_connector_info*>* mlist);
   void disconnect_abs();

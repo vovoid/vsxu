@@ -336,7 +336,6 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
         // look for old anchor
         if ( ((vsx_widget_component*)component)->t_list.find(add_c[0]) != ((vsx_widget_component*)component)->t_list.end()) 
         {
-          //printf("found old anchor: %s\n",add_c[0].c_str());
           tt = ((vsx_widget_component*)component)->t_list[add_c[0]];
           if (l_io < 0) {
             ((vsx_widget_anchor*)tt)->a_order = anchor_order[0]++;
@@ -844,26 +843,18 @@ bool vsx_widget_anchor::connect(vsx_widget* other_anchor) {
   // we know that
   // - we're not the same type as the other component,
   // - we're the same type (wether or not a complex or normal)
-  //    printf("anchor connect\n");
+
   if (io == 1) 
   {
     return ((vsx_widget_anchor *)other_anchor)->connect(this);
   }
   if (p_type != "complex") 
   {
-    if (((vsx_widget_anchor*)other_anchor)->component->name == component->name) return false;
-    #ifdef VSX_DEBUG
-    printf("connecting other %s\n",name.c_str());
-    #endif
+    if (((vsx_widget_anchor*)other_anchor)->component->name == component->name)
+      return false;
 
-    for (map<vsx_string,vsx_string>::iterator ito = options.begin(); ito != options.end(); ++ito) 
+    if (options.find("nc") != options.end())
     {
-      #ifdef VSX_DEBUG
-      printf("options: %s\n",(*ito).second.c_str());
-      #endif
-    }
-
-    if (options.find("nc") != options.end()) {
       a_focus->add(new dialog_messagebox("Error: connecting","Target parameter '"+name+"' is a config-only parameter."),"foo");
       return false;
     }
@@ -885,9 +876,6 @@ bool vsx_widget_anchor::connect(vsx_widget* other_anchor) {
 
 void vsx_widget_anchor::before_delete() 
 {
-  #ifdef VSX_DEBUG
-    printf("before_delete anchor: %s\n",name.c_str());
-  #endif
   // go through our children and
   if (io == -1)
   {
@@ -909,32 +897,17 @@ void vsx_widget_anchor::before_delete()
   if (connectors.size()) 
   {
     std::list <vsx_widget*> connectors2 = connectors;
-    #ifdef VSX_DEBUG
-      printf("connectors > 1 %d\n",connectors2.size());
-    #endif
     for (std::list <vsx_widget*>::iterator it = connectors2.begin(); it != connectors2.end(); ++it) 
     {
       ((vsx_widget_connector_bezier*)(*it))->destination = 0;
       if (((vsx_widget_anchor*)(*it)->parent)->io == 1)
       {
-        #ifdef VSX_DEBUG
-          printf("parent: %s\n",(*it)->parent->name.c_str());
-        #endif
         if (((vsx_widget_anchor*)(*it)->parent)->alias && ((vsx_widget_anchor*)(*it)->parent)->component->parent != component->parent) 
         {
-          #ifdef VSX_DEBUG
-            printf("asking %s to delete itself\n",(*it)->parent->name.c_str());
-          #endif
           (*it)->parent->_delete();
-          #ifdef VSX_DEBUG
-            printf("anchor fix %s\n",((vsx_widget_component*)((vsx_widget_anchor*)(*it)->parent)->component)->name.c_str());
-          #endif
           ((vsx_widget_component*)((vsx_widget_anchor*)(*it)->parent)->component)->macro_fix_anchors();
         }
       }
-      #ifdef VSX_DEBUG
-        printf("before _delete for connector\n");
-      #endif
       (*it)->_delete();
     }
     connectors.clear();
@@ -976,10 +949,8 @@ void vsx_widget_anchor::get_connections_abs(vsx_widget* base, std::list<vsx_widg
 {
   if (io == -1) 
   {
-    //printf("connsize: %d\n",connections.size());
     for (unsigned long i = 0; i < connections.size(); ++i) 
     {
-      //printf("koko %d\n",i);
       bool found = false;
       std::list<vsx_widget*>::iterator it;
       for (std::list<vsx_widget*>::iterator itb = connections.begin(); itb != connections.end(); ++itb) 
@@ -1040,7 +1011,6 @@ void vsx_widget_anchor::get_connections_abs(vsx_widget* base, std::list<vsx_widg
 
 void vsx_widget_anchor::disconnect_abs() 
 {
-  //  printf("anchor::disconnect_abs %s\n",name.c_str());
   if (io == -1) 
   {
     for (std::list<vsx_widget*>::iterator it = children.begin(); it != children.end(); ++it) 
@@ -1048,7 +1018,6 @@ void vsx_widget_anchor::disconnect_abs()
       if ((*it)->widget_type == VSX_WIDGET_TYPE_CONNECTOR)
       if (!((vsx_widget_component*)((vsx_widget_anchor*)((vsx_widget_connector_bezier*)*it)->destination)->component)->is_moving)
       {
-        //printf("abs_disconnect -1 %s\n",(*it)->name.c_str());
         (*it)->_delete();
       }
     }
@@ -1057,7 +1026,6 @@ void vsx_widget_anchor::disconnect_abs()
     std::list <vsx_widget*> connectors_temp = connectors;
     for (std::list <vsx_widget*>::iterator it = connectors_temp.begin(); it != connectors_temp.end(); ++it) 
     {
-      //printf("abs_disconnect +1 %s\n",(*it)->name.c_str());
       if (!((vsx_widget_component*)((vsx_widget_anchor*)((vsx_widget_connector_bezier*)*it)->parent)->component)->is_moving)
       {
         if (
@@ -1076,20 +1044,8 @@ void vsx_widget_anchor::disconnect_abs()
   }
 }
 
-void vsx_widget_anchor::fix_connection_order() {
-//std::vector<vsx_widget*> ll;
-//int c = 0;
-//for (std::list<vsx_widget*>::iterator it = connections.begin(); it != connections.end(); ++it) {
-//    if ((*it)->type == "vsx_widget_connector") {
-//      ((vsx_widget_connector*)(*it))->order = c;
-//      ++c;
-//    }
-//  }
-}
 
 void vsx_widget_anchor::param_connect_abs(vsx_string c_component, vsx_string c_param, int c_order) {
-  //printf("param_connect_abs running order: %d\n",c_order);
-  //printf("connections.size = %d\n",connections.size());
   // syntax:
   //   param_connect_ok [component] [param] [dest-comp] [dest-param] [order]
   // we're the first 2 parts of the command, so just find the other component and create the link
@@ -1110,6 +1066,7 @@ void vsx_widget_anchor::param_connect_abs(vsx_string c_component, vsx_string c_p
         }
         if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_CONTROLLER) (*children_iter)->_delete();
       }
+
       // add new connection
       vsx_widget_connector_bezier *connection = (vsx_widget_connector_bezier *)add(new vsx_widget_connector_bezier,name+":conn");
 
@@ -1131,58 +1088,7 @@ void vsx_widget_anchor::param_connect_abs(vsx_string c_component, vsx_string c_p
       connection->init();
 
       connection->order = c_order;
-      /*
-      if (!connections.size() && io == -1) 
-      {
-        if (c_order == -1) 
-        {
-        } else
-        if (c_order == -2) 
-        {
-          printf("got c_order == -2\n");
-          c_order = 0;
-        } else
-        {
-          ((vsx_widget_connector*)tt)->order = c_order;
-        }
-      }
 
-      if (io == -1 && connections.size())
-      {
-        if (c_order == -1)
-        {
-          for (std::list<vsx_widget*>::iterator it = connections.begin(); it != connections.end(); ++it)
-          {
-            if (!(*it)->marked_for_deletion)
-            {
-              ++((vsx_widget_connector*)(*it))->order;
-            }
-          }
-          c_order = ((vsx_widget_connector*)tt)->order = 0;
-        }
-        else
-        if (c_order == -2)
-        {
-          printf("got c_order == -2\n");
-          c_order = ((vsx_widget_connector*)tt)->order = connections.size();
-        }
-        else
-        {
-          //((vsx_widget_connector*)tt)->order = c_order;
-          //for (std::list<vsx_widget*>::iterator it = connections.begin(); it != connections.end(); ++it)
-          //{
-            //if (!(*it)->marked_for_deletion)
-            //{
-              //if (((vsx_widget_connector*)(*it))->order != c_order && ((vsx_widget_connector*)(*it))->order > c_order)
-              //{
-              //	++((vsx_widget_connector*)(*it))->order;
-              //}
-              //}
-              //++((vsx_widget_connector*)tt)->order;
-              //}
-        }
-      }
-      */
       connection->receiving_focus = true;
       connection->destination = other_anchor;
       connection->open = conn_open;
@@ -1196,33 +1102,24 @@ void vsx_widget_anchor::param_connect_abs(vsx_string c_component, vsx_string c_p
 
 void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widget_anchor* referrer) 
 {
-  //printf("vsx_widget_anchor::connect_far %s owned by %s order %d\n",name.c_str(),component->name.c_str(),corder);
   // 1. find out the common name for us, to see if we're at the end of the alias chain
   vsx_string src_name = src->component->name;
   vsx_string dest_name = component->name;
-  //  printf("src_name = %s\n",src_name.c_str());
-  //  printf("dest_name = %s\n",dest_name.c_str());
   str_remove_equal_prefix(&src_name, &dest_name, ".");
-  //  printf("src_name = %s\n",src_name.c_str());
-  //  printf("dest_name = %s\n",dest_name.c_str());
-  //  printf("'''''''''''\n");
+
   if (src_name == "" && src->alias) 
   {
-    //    printf("moment 22\n");
-    //    cout << "alias_parent name: "+src->alias_parent->name <<endl;
     return connect_far(src->alias_parent,corder);
-  } else
+  }
+
   if (dest_name == "" && alias) 
   {
-    //printf("moment dest 22 -- alias parent is %s\n",alias_parent->name.c_str());
     int num_conn = 0;
     for (std::list<vsx_widget*>::iterator cit = children.begin(); cit != children.end(); ++cit)
     if ((*cit)->widget_type == VSX_WIDGET_TYPE_CONNECTOR)  ++num_conn;
 
-    //if (!referrer) {
     if (corder+1 > num_conn/2)
     {
-      //printf("second half of alias\n");
       // find wich of the connections in the alias-parent go here
       int oo = 0;
       for (std::list<vsx_widget*>::iterator it = alias_parent->children.begin(); it != alias_parent->children.end(); ++it) 
@@ -1232,8 +1129,6 @@ void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widg
           if (((vsx_widget_connector_bezier*)(*it))->destination == this) 
           {
             oo = ((vsx_widget_connector_bezier*)(*it))->order;
-            //printf("found oo, %d\n",oo);
-            //it = alias_parent->children.end();
           }
         }
       }
@@ -1244,7 +1139,6 @@ void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widg
     {
       // first half of the alias, THIS IS AN APPROXIMATION
       // find wich of the connections in the alias-parent go here
-      //printf("first half of alias\n");
       int oo = 0;
       for (std::list<vsx_widget*>::iterator it = alias_parent->children.begin(); it != alias_parent->children.end(); ++it) 
       {
@@ -1253,14 +1147,9 @@ void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widg
           if (((vsx_widget_connector_bezier*)(*it))->destination == this) 
           {
           oo = ((vsx_widget_connector_bezier*)(*it))->order;
-          //printf("found oo %d\n",oo);
-          //it = alias_parent->children.end();
           }
         }
       }
-      //if (oo == 0)
-      //return alias_parent->connect_far(src,0,this);
-      //else
       return alias_parent->connect_far(src, oo-1, this);
     }
   }
@@ -1282,9 +1171,9 @@ void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widg
     vsx_widget_anchor* new_src = src;
     if (src_name != "") 
     {
-      //printf("we need the src to alias itself down to our level\n");
       new_src = src->alias_to_level(this);
     }
+
     // we need the src to alias itself down to our level
     if (new_src) 
     {
@@ -1319,8 +1208,6 @@ void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widg
       //
       if ((*it)->widget_type == VSX_WIDGET_TYPE_CONNECTOR && !(*it)->marked_for_deletion) 
       {
-        //printf("dest: %s\n",((vsx_widget_connector*)*it)->destination->name.c_str());
-
         if (
           ((vsx_widget_anchor*)((vsx_widget_connector_bezier*)*it)->destination)->alias
           &&  ((vsx_widget_anchor*)((vsx_widget_connector_bezier*)*it)->destination)->io == io
@@ -1335,22 +1222,17 @@ void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widg
     if (our_alias) 
     {
       int neworder;
-      //printf("our_connection_order: %d  order : %d\n",our_connection->order,order);
       if (corder >= 0) 
       {
         if (our_connection->order > corder) neworder = -1;  // put it in the very beginning
         else neworder = -2; // put it in the end
       } else neworder = corder;
       // alias already exists, send our request further down the chain
-      //printf("alias already exists, send our request further down the chain\n");
       our_alias->connect_far(src,neworder,this);
     } else 
     {
 
       // we need to create this alias
-      //printf("creating new alias %s\n",("alias_"+name).c_str());
-      //      printf("our p_def is: %s\n",p_def.c_str());
-      //      std::cout << "param_alias " << "alias_"+name+":"+p_def+" " << i2s(io)+" " << component->parent->name+" " << "alias_"+name+" "+component->name+" " << name << std::endl;
       int num_connections = 0;
       for (std::list<vsx_widget*>::iterator cit = children.begin(); cit != children.end(); ++cit)
       {
@@ -1665,6 +1547,7 @@ void vsx_widget_anchor::init()
   support_interpolation = true;
   alias_parent = 0;
   set_glow(false);
+
   // process options
   options = parse_url_params(p_type_suffix);
   help_text = "Data type:  "+p_type+"\n";
@@ -2124,8 +2007,6 @@ void vsx_widget_anchor::event_mouse_up(vsx_widget_distance distance,vsx_widget_c
         {
           //make it so that the connector is owned by the in-anchor
           //check that the type of input is not the same as ours
-          //printf("ioooo %d\n",((vsx_widget_anchor*)tt)->io);
-          //printf("name: %s\n",((vsx_widget_anchor*)tt)->name.c_str());
 
           if
           (

@@ -714,6 +714,7 @@ void vsx_widget_component::draw()
     deleting++;
     return;
   }
+
   if (!enabled) return;
   vsx_vector pp = parent->get_pos_p();
   size.y = size.x;
@@ -1043,7 +1044,10 @@ void vsx_widget_component::draw()
     pre_draw_children();
     draw_children();
   }
-  if (show_titles) {
+
+
+  if (show_titles)
+  {
     vsx_vector t = pos + pp;
     float font_size = size.y*0.3;
     float max_size = 0.006;
@@ -1051,8 +1055,6 @@ void vsx_widget_component::draw()
     if (font_size > max_size) font_size = max_size;
     t.y -= size.y*0.5;
 
-    //font.background = true;
-    //font.background_color.a = color.a*0.4f;
     font.print_center(t, real_name,font_size);
     t.y += size.y*0.5;
     if (message.size())
