@@ -33,7 +33,7 @@
 // VSX_WIDGET_ANCHOR ************************************************************************************************
 class vsx_widget_anchor : public vsx_widget
 {
-  vsx_widget *t;
+  vsx_widget *temp_drag_connector;
   vsx_string display_value;
   vsx_avector<vsx_string> enum_items;
   bool draw_glow;
@@ -97,29 +97,34 @@ public:
 
   virtual void init();
   void reinit();
-  virtual void command_process_back_queue(vsx_command_s *t);
+
+  virtual void command_process_back_queue(vsx_command_s *temp_drag_connector);
 
   bool connect(vsx_widget* other_anchor);
 
   void update_connection_order();
   void fix_connection_order();
+
   void get_connections_abs(vsx_widget* base, std::list<vsx_widget_connector_info*>* mlist);
   void disconnect_abs();
   void param_connect_abs(vsx_string c_component, vsx_string c_param, int c_order);
   void connect_far(vsx_widget_anchor* src, int corder, vsx_widget_anchor* referrer = 0);
   vsx_widget_anchor* alias_to_level(vsx_widget_anchor* dest);
-  //vsx_widget* find_component(vsx_vector world, vsx_vector screen, bool translated);
+
   void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);
   void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords);
   void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
+
+
   void before_delete();
   void toggle(int override = 0); // 1 = close, 2 = open
   void get_value();
   void fix_anchors();
   bool get_drag_status();
+  void clone_our_value_to_other_anchor_via_server( const vsx_widget_anchor* other_anchor );
 
 
   virtual void hide_children() {

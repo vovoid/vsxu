@@ -212,7 +212,8 @@ void vsx_widget_connector_bezier::event_mouse_move(vsx_widget_distance distance,
 
 void vsx_widget_connector_bezier::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
 {
-  if (open) {
+  if (open)
+  {
     command_q_b.add_raw("connections_order_int 1");
     parent->vsx_command_queue_b(this);
     set_pos(vsx_vector(0));

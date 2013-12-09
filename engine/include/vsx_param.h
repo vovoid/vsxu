@@ -92,7 +92,7 @@ class vsx_module_param_abs {
 public:
   void* vsxl_modifier;
 
-  int type;
+  int type; // parameter type: VSX_MODULE_PARAM_ID_INT, VSX_MODULE_PARAM_ID_RENDER etc.
   vsx_string name;
   unsigned long updates; // number of writes, incremented each time the parameter is written to
   bool connected;

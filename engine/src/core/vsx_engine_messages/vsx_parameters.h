@@ -180,6 +180,81 @@ if (cmd == "ps")
 
 
 
+if ( cmd == "param_clone_value" )
+{
+  // To copy a value internally in the engine between 2 modules' parameters.
+  // Will only work if they are the same type...
+  //
+  // syntax:
+  //   param_clone_value [source_component] [source_parameter] [destination_component] [destination_parameter]
+
+  // 1. verify message length
+  if (c->parts.size() != 5)
+    goto process_message_queue_end;
+
+
+  // 2. look for source component
+  vsx_comp* source_component = get_component_by_name( c->parts[1] );
+  if (!source_component)
+  {
+    cmd_out->add_raw("alert_fail " + base64_encode(c->raw) + " Error "+base64_encode("Source module does not exist") );
+    goto process_message_queue_end;
+  }
+
+
+  // 3. look for source parameter
+  vsx_engine_param* source_parameter = source_component->get_params_in()->get_by_name( c->parts[2] );
+  if (!source_parameter)
+  {
+    cmd_out->add_raw("alert_fail " + base64_encode(c->raw) + " Error "+base64_encode("Source parameter does not exist") );
+    goto process_message_queue_end;
+  }
+
+
+  // 4. look for destination component
+  vsx_comp* destination_component = get_component_by_name( c->parts[3] );
+  if (!destination_component)
+  {
+    cmd_out->add_raw("alert_fail " + base64_encode(c->raw) + " Error "+base64_encode("Destination module does not exist") );
+    goto process_message_queue_end;
+  }
+
+
+  // 5. look for destination parameter
+  vsx_engine_param* destination_parameter = destination_component->get_params_in()->get_by_name( c->parts[4] );
+  if (!destination_parameter)
+  {
+    cmd_out->add_raw("alert_fail " + base64_encode(c->raw) + " Error "+base64_encode("Destination parameter does not exist") );
+    goto process_message_queue_end;
+  }
+
+  // 6. make sure both are of same type
+  if (source_parameter->module_param->type != destination_parameter->module_param->type)
+  {
+    cmd_out->add_raw("alert_fail " + base64_encode(c->raw) + " Error "+base64_encode("Parameter type mismatch") );
+    goto process_message_queue_end;
+  }
+
+  // 7. everything should be OK and ready for copying
+  // go via string to avoid data sharing
+  destination_parameter->set_string( source_parameter->get_string() );
+
+  // 8. notify the module of a parameter update
+  destination_parameter->module->param_set_notify( destination_parameter->name );
+
+  // 9. handle eventual redeclarations
+  if (destination_parameter->module->redeclare_in)
+  {
+    redeclare_in_params(destination_component, cmd_out);
+  }
+
+
+  goto process_message_queue_end;
+}
+
+
+
+
 
 
 if (cmd == "param_set")

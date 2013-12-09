@@ -71,13 +71,28 @@ vsx_widget_anchor* vsx_widget_anchor::drag_clone_anchor;
 
 void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t) 
 {
-//    t->parse();
-  if (t->cmd == "anchor_unalias") {
+  // command:
+  //   anchor_unalias
+  //
+  // source:
+  //   menu; ours
+  if (t->cmd == "anchor_unalias")
+  {
     command_q_b.add_raw("param_unalias "+i2s(io)+" "+component->name+" "+name);
-  } else
-  if (t->cmd == "connections_order_ok") {
-    //syntax:
-    //  connections_order_ok [component] [anchor] [specification]
+    return;
+  }
+
+
+
+
+
+  // command:
+  //   connections_order_ok [component] [anchor] [specification]
+  //
+  // source:
+  //   engine
+  if (t->cmd == "connections_order_ok")
+  {
     std::vector<vsx_string> order_list;
     vsx_string deli = ",";
     split_string(t->parts[3],deli,order_list);
@@ -99,8 +114,20 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
       ((vsx_widget_connector_bezier*)connection_map[ vsx_string_aux::s2i(*it) ])->move(vsx_vector(0));
       ++c;
     }
-  } else
-  if (t->cmd == "connections_order_int") 
+
+    return;
+  }
+
+
+
+
+
+  // command:
+  //   connections_order_int 1
+  //
+  // source:
+  //   vsx_widget_connector_bezier
+  if (t->cmd == "connections_order_int")
   {
     std::map<float, vsx_widget*> position_map;
     
@@ -119,12 +146,21 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     vsx_string order_list_finished = implode(order_list,",");
     command_q_b.add_raw("connections_order "+component->name+" "+name+" "+order_list_finished);
     ((vsx_widget_component*)component)->server->vsx_command_queue_b(this);
-  } else
-  if (t->cmd == "param_connect_ok") {
-  // syntax:
+    return;
+  }
+
+
+
+
+
+  // command:
   //   param_connect_ok [component] [param] [dest-comp] [dest-param] [order]
-  // we're the first 2 parts of the command, so just find the other component and create the link
-  // first find the server.
+  // source:
+  //   engine
+  if (t->cmd == "param_connect_ok")
+  {
+    // we're the first 2 parts of the command, so just find the other component and create the link
+    // first find the server.
 
     vsx_widget_component *b = (vsx_widget_component*)((vsx_widget_server*)((vsx_widget_component*)component)->server)->find_component(t->parts[3]);
     if (b) 
@@ -137,13 +173,18 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
       }
     }
     return;
-  } else
+  }
 
-  if (t->cmd == "pca") 
+
+
+
+
+  // command:
+  //   pca [component] [param] [dest-comp] [dest-param] [order]
+  // source:
+  //   vsx_widget_component
+  if (t->cmd == "pca")
   {
-    //printf("pca running\n");
-    // syntax:
-    //   pca [component] [param] [dest-comp] [dest-param] [order]
     // we're the first 2 parts of the command, so just find the other component and create the link
     // first find the server.
     vsx_widget_component *b = (vsx_widget_component*)((vsx_widget_server*)((vsx_widget_component*)component)->server)->find_component(t->parts[3]);
@@ -198,11 +239,18 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
       }
     }
     return;
-  } else
-  if (t->cmd == "param_disconnect_ok") 
+  }
+
+
+
+
+
+  // command:
+  //   param_disconnect_ok [component] [anchor] [destination_component] [destination-anchor]
+  // source:
+  //   engine
+  if (t->cmd == "param_disconnect_ok")
   {
-    // syntax:
-    //  param_disconnect_ok [component] [anchor] [destination_component] [destination-anchor]
     for (children_iter = children.begin(); children_iter != children.end(); ++children_iter) 
     {
       if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_CONNECTOR)
@@ -216,11 +264,23 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
         }
       }
     }
-  } else
-  if (t->cmd == "in_param_spec" || t->cmd == "out_param_spec") 
+    return;
+  }
+
+
+
+
+
+  if (t->cmd == "in_param_spec" || t->cmd == "out_param_spec")
   {
+    // determine in or out
     int l_io = 0;
-    if (t->cmd == "in_param_spec") l_io = -1; else l_io = 1;
+    if (t->cmd == "in_param_spec")
+      l_io = -1;
+    else
+      l_io = 1;
+
+
     // p[0]: in_param_spec
     // p[1]: osc2
     // p[2]: actual command
@@ -235,10 +295,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
       }
     }
     std::vector<vsx_string> add_c;
-    //    anchor_order[0] = 0;
-    //    anchor_order[1] = 0;
     vsx_string cd = t->parts[2];
-    //printf("\nanchparsing %s\n",t->parts[2].c_str());
     vsx_string cm = "";
     vsx_string cms = "";
     int state = 0;
@@ -272,12 +329,9 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
       {
         // we have our first part covered, and the command-sub
         // 1. find the name of this anchor
-
-        //printf("internal anchor parsing of %s",cm.c_str());
         add_c.clear();
         vsx_string deli = ":";
         split_string(cm,deli,add_c,-1);
-        //printf("adding component %s\n",add_c[0].c_str());
         vsx_widget *tt = 0;
         // look for old anchor
         if ( ((vsx_widget_component*)component)->t_list.find(add_c[0]) != ((vsx_widget_component*)component)->t_list.end()) 
@@ -358,31 +412,57 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     }
     init_children();
     return;
-  } else
-  if (t->cmd == "vsxl_load_script") 
+  }
+
+
+
+
+
+  if (t->cmd == "vsxl_load_script")
   {
     // vsxl param filter load
     command_q_b.add_raw("vsxl_pfl "+component->name+" "+name);
     component->vsx_command_queue_b(this);
-  } 
-  else
+    return;
+  }
+
+
+
+
+
   if (t->cmd == "vsxl_remove_script") 
   {
     // vsxl param filter load
     command_q_b.add_raw("vsxl_pfr "+component->name+" "+name);
     component->vsx_command_queue_b(this);
+    return;
   } 
-  else
+
+
+
+
+
   if (t->cmd == "vsxl_pfi_ok") 
   {
     vsxl_filter = true;
+    return;
   } 
-  else
+
+
+
+
+
   if (t->cmd == "vsxl_pfr_ok") 
   {
     vsxl_filter = false;
-  } else
-  if (t->cmd == "vsxl_pfl_s") 
+    return;
+  }
+
+
+
+
+
+  if (t->cmd == "vsxl_pfl_s")
   {
     vsx_widget* tt = add(new vsx_widget_controller_editor,name+".edit");
     ((vsx_widget_controller_editor*)tt)->target_param = name;
@@ -393,17 +473,25 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     tt->set_font_size(0.002);
     tt->set_border(0.0005);
     tt->title = "VSXL [param filter] : "+component->name+"->"+name;
-  ((vsx_widget_controller_editor*)tt)->return_command = "vsxl_pfi";
-  ((vsx_widget_controller_editor*)tt)->return_component = this;
-  ((vsx_widget_controller_editor*)tt)->load_text(base64_decode(t->parts[3]));
+    ((vsx_widget_controller_editor*)tt)->return_command = "vsxl_pfi";
+    ((vsx_widget_controller_editor*)tt)->return_component = this;
+    ((vsx_widget_controller_editor*)tt)->load_text(base64_decode(t->parts[3]));
+    return;
   } 
-  else
+
+
+
   if (t->cmd == "pseq_p" && t->cmd_data == "remove") 
   {
     command_q_b.add_raw("pseq_p remove "+component->name+" "+name);
     parent->vsx_command_queue_b(this);
+    return;
   } 
-  else
+
+
+
+
+
   if (t->cmd == "pseq_p_ok") 
   {
     if (t->parts[1] == "list" || t->parts[1] == "init") 
@@ -418,30 +506,57 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
       init_menu(true);
       sequenced = false;
     }
-  } else
-  if (t->cmd == "vsxl_pfi") 
+    return;
+  }
+
+
+
+
+
+  if (t->cmd == "vsxl_pfi")
   {
     command_q_b.add_raw("vsxl_pfi "+component->name+" "+name+" -1 "+t->parts[1]);
     component->vsx_command_queue_b(this);
-  } else
-  if (t->cmd == "pseq_a_m") 
+    return;
+  }
+
+
+
+  if (t->cmd == "pseq_a_m")
   {
     command_q_b.add_raw("pseq_p add "+component->name+" "+name);
     component->vsx_command_queue_b(this);
     command_q_b.add_raw("sequence_menu");
     component->vsx_command_queue_b(this);
-  } else
-  if (t->cmd == "seq_pool_add") 
+    return;
+  }
+
+
+
+
+
+  if (t->cmd == "seq_pool_add")
   {
     command_q_b.add_raw("seq_pool add_param "+component->name+" "+name);
     component->vsx_command_queue_b(this);
-  } else
+    return;
+  }
+
+
+
+
+
   if (t->cmd == "pflag")
   {
     command_q_b.add_raw("pflag "+component->name+" "+name+" "+t->parts[1]+" "+t->parts[2]);
     component->vsx_command_queue_b(this);
+    return;
   }
-  else
+
+
+
+
+
   if (t->cmd == "controller_seq_edit") 
   {
     for (children_iter = children.begin(); children_iter != children.end(); ++children_iter) 
@@ -453,8 +568,13 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     ((vsx_widget_controller_sequence*)tt)->init();
     tt->pos.x = tt->target_pos.x -= tt->target_size.x * 0.6f;
     return;
-  } else
-  if (t->cmd == "controller_edit" && !find_child_by_type(VSX_WIDGET_TYPE_CONTROLLER)) 
+  }
+
+
+
+
+
+  if (t->cmd == "controller_edit" && !find_child_by_type(VSX_WIDGET_TYPE_CONTROLLER))
   {
     vsx_widget* tt = add(new vsx_widget_controller_editor,name+".edit");
     tt->widget_type = VSX_WIDGET_TYPE_CONTROLLER;
@@ -467,12 +587,24 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
 
     command_q_b.add_raw("pg64 "+component->name+" "+name+" "+i2s(tt->id));
     component->vsx_command_queue_b(this);
-  } else
-  if (t->cmd == "tg") 
+    return;
+  }
+
+
+
+
+
+  if (t->cmd == "tg")
   {
     toggle();
-  } else
-  if (t->cmd.find("controller") != -1) 
+    return;
+  }
+
+
+
+
+
+  if (t->cmd.find("controller") != -1)
   {
     if (sequenced || connections.size()) 
     {
@@ -548,27 +680,61 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
       chooser->center_on_item("resources");
       chooser->show();
     }
-  } else
-  if (t->cmd == "settings_dialog" && !find_child_by_type(VSX_WIDGET_TYPE_CONTROLLER)) 
+    return;
+  }
+
+
+
+
+
+  if (t->cmd == "settings_dialog" && !find_child_by_type(VSX_WIDGET_TYPE_CONTROLLER))
   {
     vsx_widget* tt = add(new vsx_widget_controller_dialog,name+"."+t->parts.at(1));
     ((vsx_widget_controller_dialog*)tt)->target_param=name;
     ((vsx_widget_controller_dialog*)tt)->in_param_spec=t->parts.at(2);
     tt->pos.x = -size.x*4;
     ((vsx_widget_controller_dialog*)tt)->init();
-  } else
-  if (t->cmd == "enum") 
+    return;
+  }
+
+
+
+
+
+  if (t->cmd == "enum")
   {
     command_q_b.add_raw("param_set "+component->name+" "+alias_owner->name+" "+t->parts[1]);
     component->vsx_command_queue_b(this);
-  } else
-  if (t->cmd == "chooser_ok") 
+    return;
+  }
+
+
+
+
+
+  if (t->cmd == "chooser_ok")
   {
     vsx_string ns = base64_encode("resources/"+str_replace(";","/",base64_decode(t->parts[1])));
     command_q_b.add_raw("ps64 "+component->name+" "+alias_owner->name+" "+ns);
     component->vsx_command_queue_b(this);
-  } else
-  if (t->cmd == "param_set_interpolate") 
+    return;
+  }
+
+
+
+
+
+  if (t->cmd == "param_set_default" && p_type != "complex")
+  {
+    command_q_b.add_raw(t->cmd+" "+component->name+" "+name);
+    return;
+  }
+
+
+
+
+
+  if (t->cmd == "param_set_interpolate")
   {
     if (p_type == "complex")
     {
@@ -580,17 +746,62 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
       command_q_b.add_raw("param_set_interpolate " + component->name + " " + name + " " + t->parts[1]+ " "+t->parts[2]);
       component->vsx_command_queue_b(this);
     }
-  } else
-  if (t->cmd == "param_get_ok") 
+    return;
+  }
+
+
+
+
+
+  if (t->cmd == "param_set" || t->cmd == "ps64")
+  {
+    if (p_type != "complex")
+    {
+      if (t->parts.size() == 4) 
+      {
+        command_q_b.add_raw(t->parts[0] + " " + component->name + " " + t->parts[3] + " " + t->parts[1]);
+        component->vsx_command_queue_b(this);
+      }
+      else
+      if (t->parts.size() == 3) 
+      {
+        command_q_b.add_raw(t->parts[0] + " " + component->name + " " + t->parts[1] + " " + t->parts[2]);
+        component->vsx_command_queue_b(this);
+      }
+    }
+    else
+    {
+      command_q_b.add_raw(t->parts[0] + " " + component->name + " " + name + " " + t->parts[1]);
+      component->vsx_command_queue_b(this);
+    }
+    return;
+  }
+
+
+
+
+
+  if (t->cmd == "param_get" || t->cmd == "pg64")
+  {
+    command_q_b.add_raw(t->parts[0] + " " + component->name + " " + t->parts[1] + " " + t->parts[2]);
+    component->vsx_command_queue_b(this);
+    return;
+  }
+
+
+
+
+
+  if (t->cmd == "param_get_ok")
   {
     display_value = base64_decode(t->parts[3]);
     std::vector<vsx_string> parts;
     vsx_string deli = ",";
-    if (p_type == "float") 
+    if (p_type == "float")
     {
       display_value = f2s(s2f(display_value),5);
     }
-    if (p_type == "float3") 
+    if (p_type == "float3")
     {
       explode(display_value,deli, parts);
       if (parts.size() == 3)
@@ -598,13 +809,13 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
         display_value = f2s(s2f(parts[0]),5)+","+f2s(s2f(parts[1]),5)+","+f2s(s2f(parts[2]),5);
       }
     }
-    if (p_type == "float4") 
+    if (p_type == "float4")
     {
       explode(display_value,deli, parts);
       if (parts.size() == 4)
       display_value = f2s(s2f(parts[0]),5)+","+f2s(s2f(parts[1]),5)+","+f2s(s2f(parts[2]),5)+","+f2s(s2f(parts[3]),5);
     }
-    if (p_type == "enum") 
+    if (p_type == "enum")
     {
       int ii = vsx_string_aux::s2i(display_value);
 
@@ -621,42 +832,13 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     {
       display_value += " ";
     }
-  } else
-  if (t->cmd == "param_set_default" && p_type != "complex") 
-  {
-    command_q_b.add_raw(t->cmd+" "+component->name+" "+name);
-  } else
-  if (t->cmd == "param_set" || t->cmd == "ps64") 
-  {
-    if (p_type != "complex")
-    {
-      if (t->parts.size() == 4) 
-      {
-        command_q_b.add_raw(t->parts[0] + " " + component->name + " " + t->parts[3] + " " + t->parts[1]);
-        component->vsx_command_queue_b(this);
-      } else
-      if (t->parts.size() == 3) 
-      {
-        #ifdef VSX_DEBUG
-        printf("sending paramset to server\n");
-        #endif
-        command_q_b.add_raw(t->parts[0] + " " + component->name + " " + t->parts[1] + " " + t->parts[2]);
-        component->vsx_command_queue_b(this);
-      }
-    }
-    else
-    {
-      command_q_b.add_raw(t->parts[0] + " " + component->name + " " + name + " " + t->parts[1]);
-      component->vsx_command_queue_b(this);
-    }
-  } else
-  if (t->cmd == "param_get" || t->cmd == "pg64") 
-  {
-    command_q_b.add_raw(t->parts[0] + " " + component->name + " " + t->parts[1] + " " + t->parts[2]);
-    component->vsx_command_queue_b(this);
-  } else
+    return;
+  }
+
+
   vsx_widget::command_process_back_queue(t);
 }
+
 
 bool vsx_widget_anchor::connect(vsx_widget* other_anchor) {
   // we know that
@@ -1544,72 +1726,6 @@ void vsx_widget_anchor::reinit()
   vsx_widget::reinit();
 }
 
-void vsx_widget_anchor::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) 
-{
-  if (button == 0) 
-  {
-    m_focus = this;
-    a_focus = this;
-    k_focus = this;
-    parent->front(this);
-
-    if (p_type != "complex") 
-    {
-      if (t) 
-      {
-        ((vsx_widget_connector_bezier*)t)->receiving_focus = true;
-        t->_delete();
-        t = 0;
-      }
-      if (ctrl && alt)
-      {
-        clone_value = true;
-        drag_anchor = 0;
-        drag_clone_anchor = this;
-      } else
-      {
-        if (forbid_connections) return;
-        if (io == -1 && connections.size() && p_type != "render") return;
-        t = add(new vsx_widget_connector_bezier,name+":ct");
-        ((vsx_widget_connector_bezier*)t)->receiving_focus = false;
-        t->size = distance.center;
-        t->init();
-      }
-    } else
-    {
-      if (parent == component)
-      {
-        ((vsx_widget_component*)component)->hide_all_complex_anchors_but_me(this);
-      }
-      else
-      {
-        toggle();
-      }
-    }
-  } else 
-  {
-    drag_status = false;
-    ((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_show();
-    vsx_widget_connector_bezier::dim_alpha = 1.0f;
-    vsx_widget_connector_bezier::receiving_focus = true;
-    if (t) 
-    {
-      t->_delete();
-      t = 0;
-    }
-    if (alias) 
-    {
-      if (!menu) 
-      {
-        menu = add(new vsx_widget_popup_menu,".alias_menu");
-        menu->commands.adds(VSX_COMMAND_MENU, "unalias", "anchor_unalias","");
-        menu->title = name;
-        menu->init();
-      }
-    }
-    vsx_widget::event_mouse_down(distance,coords,button);
-  }
-} // event_mouse_down
 
 void vsx_widget_anchor::fix_anchors() 
 {
@@ -1674,6 +1790,180 @@ void vsx_widget_anchor::toggle(int override)
     enumerate_children_get(1);
   }
 } // toggle
+
+
+bool vsx_widget_anchor::event_key_down(signed long key, bool alt, bool ctrl, bool shift) 
+{
+  VSX_UNUSED(key);
+  VSX_UNUSED(alt);
+  VSX_UNUSED(ctrl);
+  VSX_UNUSED(shift);
+  return true;
+}
+
+void vsx_widget_anchor::get_value() 
+{
+  if (io == -1)
+  {
+    command_q_b.add_raw("param_get " + component->name+" "+name+" "+i2s(id));
+  }
+  else
+  {
+    if (p_type != "render")
+    {
+      command_q_b.add_raw("pgo " + component->name+" "+name+" "+i2s(id));
+    }
+  }
+  component->vsx_command_queue_b(this);
+}
+
+bool vsx_widget_anchor::get_drag_status()
+{
+  return drag_status;
+}
+
+
+void vsx_widget_anchor::clone_our_value_to_other_anchor_via_server( const vsx_widget_anchor* other_anchor )
+{
+  if (!other_anchor)
+    return;
+
+  if (search_anchor->widget_type != VSX_WIDGET_TYPE_ANCHOR)
+    return;
+
+  if (p_type != ((vsx_widget_anchor*)other_anchor)->p_type)
+    return;
+
+  // send clone message to server
+  command_q_b.add_raw
+  (
+    vsx_string("param_clone_value ") +
+      component->name + " " +
+      name + " " +
+      other_anchor->component->name +" " +
+      other_anchor->name
+  );
+  ((vsx_widget_component*)component)->server->vsx_command_queue_b(this);
+}
+
+void vsx_widget_anchor::delete_controllers() 
+{
+  for (children_iter = children.begin(); children_iter != children.end(); ++children_iter) 
+  {
+    if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_CONTROLLER) (*children_iter)->_delete();
+  }
+}
+
+void vsx_widget_anchor::enumerate_children_get(int override) 
+{
+  for (std::list <vsx_widget*>::iterator it=children.begin(); it != children.end(); ++it)
+  {
+    if ((*it)->widget_type == VSX_WIDGET_TYPE_ANCHOR)
+    {
+      if (((vsx_widget_anchor*)(*it))->p_type != "complex") 
+      {
+        ((vsx_widget_anchor*)(*it))->display_value_t = 2;
+        ((vsx_widget_anchor*)(*it))->text_size = 2;
+        bool gvl = false;
+        if (((vsx_widget_anchor*)(*it))->io == 1) 
+        {
+          gvl = true;
+        }
+        else
+        if (((vsx_widget_anchor*)(*it))->io == -1 && ((vsx_widget_anchor*)(*it))->connections.size()) 
+        {
+          gvl = true;
+        }
+
+        if (gvl || override == 1)
+        {
+          ((vsx_widget_anchor*)(*it))->get_value();
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+void vsx_widget_anchor::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+{
+  if (button == 0)
+  {
+    m_focus = this;
+    a_focus = this;
+    k_focus = this;
+    parent->front(this);
+
+    if (p_type != "complex")
+    {
+      if (temp_drag_connector)
+      {
+        ((vsx_widget_connector_bezier*)temp_drag_connector)->receiving_focus = true;
+        temp_drag_connector->_delete();
+        temp_drag_connector = 0;
+      }
+      if (ctrl && alt)
+      {
+        clone_value = true;
+        drag_anchor = 0;
+        drag_clone_anchor = this;
+      } else
+      {
+        if (forbid_connections) return;
+        if (io == -1 && connections.size() && p_type != "render") return;
+        temp_drag_connector = add(new vsx_widget_connector_bezier,name+":ct");
+        ((vsx_widget_connector_bezier*)temp_drag_connector)->receiving_focus = false;
+        temp_drag_connector->size = distance.center;
+        temp_drag_connector->init();
+      }
+    } else
+    {
+      if (parent == component)
+      {
+        ((vsx_widget_component*)component)->hide_all_complex_anchors_but_me(this);
+      }
+      else
+      {
+        toggle();
+      }
+    }
+  } else
+  {
+    drag_status = false;
+    ((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_show();
+    vsx_widget_connector_bezier::dim_alpha = 1.0f;
+    vsx_widget_connector_bezier::receiving_focus = true;
+    if (temp_drag_connector)
+    {
+      temp_drag_connector->_delete();
+      temp_drag_connector = 0;
+    }
+    if (alias)
+    {
+      if (!menu)
+      {
+        menu = add(new vsx_widget_popup_menu,".alias_menu");
+        menu->commands.adds(VSX_COMMAND_MENU, "unalias", "anchor_unalias","");
+        menu->title = name;
+        menu->init();
+      }
+    }
+    vsx_widget::event_mouse_down(distance,coords,button);
+  }
+} // event_mouse_down
+
+
 
 void vsx_widget_anchor::event_mouse_double_click(vsx_widget_distance distance, vsx_widget_coords coords, int button)
 {
@@ -1741,105 +2031,25 @@ void vsx_widget_anchor::event_mouse_double_click(vsx_widget_distance distance, v
   }
 }
 
-bool vsx_widget_anchor::event_key_down(signed long key, bool alt, bool ctrl, bool shift) 
-{
-  VSX_UNUSED(key);
-  VSX_UNUSED(alt);
-  VSX_UNUSED(ctrl);
-  VSX_UNUSED(shift);
-  return true;
-}
-
-void vsx_widget_anchor::get_value() 
-{
-  if (io == -1)
-  {
-    command_q_b.add_raw("param_get " + component->name+" "+name+" "+i2s(id));
-  }
-  else
-  {
-    if (p_type != "render")
-    {
-      command_q_b.add_raw("pgo " + component->name+" "+name+" "+i2s(id));
-    }
-  }
-  component->vsx_command_queue_b(this);
-}
-
-bool vsx_widget_anchor::get_drag_status()
-{
-  return drag_status;
-}
-
-void vsx_widget_anchor::delete_controllers() 
-{
-  for (children_iter = children.begin(); children_iter != children.end(); ++children_iter) 
-  {
-    if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_CONTROLLER) (*children_iter)->_delete();
-  }
-}
-
-void vsx_widget_anchor::enumerate_children_get(int override) 
-{
-  for (std::list <vsx_widget*>::iterator it=children.begin(); it != children.end(); ++it)
-  {
-    if ((*it)->widget_type == VSX_WIDGET_TYPE_ANCHOR)
-    {
-      if (((vsx_widget_anchor*)(*it))->p_type != "complex") 
-      {
-        ((vsx_widget_anchor*)(*it))->display_value_t = 2;
-        ((vsx_widget_anchor*)(*it))->text_size = 2;
-        bool gvl = false;
-        if (((vsx_widget_anchor*)(*it))->io == 1) 
-        {
-          gvl = true;
-        }
-        else
-        if (((vsx_widget_anchor*)(*it))->io == -1 && ((vsx_widget_anchor*)(*it))->connections.size()) 
-        {
-          gvl = true;
-        }
-
-        if (gvl || override == 1)
-        {
-          ((vsx_widget_anchor*)(*it))->get_value();
-        }
-      }
-    }
-  }
-}
-
-void vsx_widget_anchor::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords) 
-{
-  VSX_UNUSED(distance);
-  VSX_UNUSED(coords);
-  if (m_o_focus != this) 
-  {
-    get_value();
-    display_value_t = 2;
-    text_size = 2;
-  }
-  parent->front(this);
-}
 
 void vsx_widget_anchor::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords) 
 {
   text_size = 2;
-  if (t || clone_value) 
+  if (temp_drag_connector || clone_value)
   {
     drag_status = true;
     drag_coords = coords;
     ((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_hide();
-    if (t)
+    if (temp_drag_connector)
     {
       vsx_widget_connector_bezier::dim_alpha = 0.25f;
     }
 
     drag_anchor = this;
-    if (t)
+    if (temp_drag_connector)
     {
-      t->size.x = distance.center.x;
-      t->size.y = distance.center.y;
+      temp_drag_connector->size.x = distance.center.x;
+      temp_drag_connector->size.y = distance.center.y;
     }
     vsx_widget_distance distance2;
     search_anchor = root->find_component(coords,distance2);
@@ -1856,6 +2066,20 @@ void vsx_widget_anchor::event_mouse_move(vsx_widget_distance distance,vsx_widget
     }
   }
 }
+
+void vsx_widget_anchor::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
+{
+  VSX_UNUSED(distance);
+  VSX_UNUSED(coords);
+  if (m_o_focus != this)
+  {
+    get_value();
+    display_value_t = 2;
+    text_size = 2;
+  }
+  parent->front(this);
+}
+
 
 void vsx_widget_anchor::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button) 
 {
@@ -1876,28 +2100,24 @@ void vsx_widget_anchor::event_mouse_up(vsx_widget_distance distance,vsx_widget_c
     ((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_show();
     vsx_widget_connector_bezier::dim_alpha = 1.0f;
     vsx_widget_connector_bezier::receiving_focus = true;
+
+
+
+    // handle cloning of values
     if (clone_value)
     {
-      if (search_anchor)
-      {
-        if (search_anchor->widget_type == VSX_WIDGET_TYPE_ANCHOR)
-        {
-          if (p_type == ((vsx_widget_anchor*)search_anchor)->p_type)
-          {
-          vsx_string cm = vsx_string("param_set_interpolate ")+display_value+vsx_string("10.0 ")+search_anchor->name;
-          command_q_b.add_raw(cm);
-          search_anchor->vsx_command_queue_b(this);
-          }
-        }
-      }
+      clone_our_value_to_other_anchor_via_server((vsx_widget_anchor*)search_anchor);
+      clone_value = false;
+      drag_clone_anchor = 0x0;
     }
-    clone_value = false;
-    drag_clone_anchor = 0;
-    if (t) 
+
+
+
+
+    if (temp_drag_connector)
     {
-      t->_delete();
-      t = 0;
-      //vsx_widget *tt = 0;//!!!root->find_component(world,screen,true);
+      temp_drag_connector->_delete();
+      temp_drag_connector = 0;
       if (search_anchor) 
       {
         if (search_anchor->widget_type == VSX_WIDGET_TYPE_ANCHOR) 
@@ -1944,15 +2164,29 @@ void vsx_widget_anchor::event_mouse_up(vsx_widget_distance distance,vsx_widget_c
   vsx_widget::event_mouse_up(distance,coords,button);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void vsx_widget_anchor::pre_draw() 
 {
   if (visible > 0) 
   {
-    if (t) if (a_focus != this) 
+    if (temp_drag_connector) if (a_focus != this)
     {
-      ((vsx_widget_connector_bezier*)t)->receiving_focus = true;
-      t->_delete();
-      t = 0;
+      ((vsx_widget_connector_bezier*)temp_drag_connector)->receiving_focus = true;
+      temp_drag_connector->_delete();
+      temp_drag_connector = 0;
     }
 
     // dim down component and other helpful stuff if dragging connection
@@ -2211,7 +2445,6 @@ void vsx_widget_anchor::draw()
   {
     mtex_blob_small.bind();
       glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-      //printf("screen aspect: %f\n",screen_aspect);
       glColor4f(0.5f,1,1,1);
       draw_box_tex_c(drag_coords.world_global, 0.01f*(1.0f - fmod(time * 10.0f, 1.0f)), 0.01f*(1.0f - fmod(time * 10.0f, 1.0f)));
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -2223,7 +2456,7 @@ vsx_widget_anchor::vsx_widget_anchor()
 {
   alias = vsxl_filter = sequenced = tree_open = false;
   alias_for_component = alias_for_anchor = "";
-  menu = search_anchor = t = 0;
+  menu = search_anchor = temp_drag_connector = 0;
   display_value_t = 0.0f;
   widget_type = VSX_WIDGET_TYPE_ANCHOR;
 }

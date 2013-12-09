@@ -93,7 +93,7 @@ public:
   bool sequence; // is a sequence active for this parameter?
 
   vsx_string name; // name of our anchor
-	vsx_string spec; // specification string, filled out by the module in the form :float
+  vsx_string spec; // specification string, filled out by the module in the form :float
 
   bool alias; // is this an alias or a source anchor?
 
@@ -109,7 +109,7 @@ public:
   bool disconnect();
 
   // disconnect all connections in this and aliased without disconnecting the engine
-	void disconnect_abs_connections();
+  void disconnect_abs_connections();
 
   // dump/serialize values
   void dump_aliases_and_connections(vsx_string base_macro, vsx_command_list* command_result);
@@ -149,27 +149,27 @@ public:
 };
 
 class vsx_engine_param_list {
-	vsx_string single_param_spec(vsx_string param_name, int startpos = 0);
-	vsx_module_param_list* module_param_list;
+  vsx_string single_param_spec(vsx_string param_name, int startpos = 0);
+  vsx_module_param_list* module_param_list;
 public:
   // input or output type
   int io; // -1 or 1
   // our owner - our component
   vsx_comp_abs* component;
   // name mapped onto the param
-	std::map<vsx_string, vsx_engine_param*> param_name_list;
-	// a plain list of the parameters
-	std::vector<vsx_engine_param*> param_id_list;
+  std::map<vsx_string, vsx_engine_param*> param_name_list;
+  // a plain list of the parameters
+  std::vector<vsx_engine_param*> param_id_list;
   // init - run once from the component to build engine_params from module_params
-	void init(vsx_module_param_list* module_param_list);
+  void init(vsx_module_param_list* module_param_list);
 
-	// delete a param from our list
-	void delete_param(vsx_engine_param* param);
+  // delete a param from our list
+  void delete_param(vsx_engine_param* param);
 
-	//---------------------------------------
+  //---------------------------------------
   // Various Dump Routines
-	//---------------------------------------
-	// dump commands describing our aliases/connections
+  //---------------------------------------
+  // dump commands describing our aliases/connections
   void dump_aliases_and_connections(vsx_string base_macro, vsx_command_list* command_result);
   void dump_aliases_and_connections_rc(vsx_command_list* command_result);
   void dump_aliases(vsx_string base_macro, vsx_command_list* command_result);
@@ -180,43 +180,43 @@ public:
   // connection - that is, not the aliases
   void get_abs_connections(std::list<vsx_engine_param_connection_info*>* abs_connections);
 
-	//---------------------------------------
+  //---------------------------------------
   // Aliasing
-	//---------------------------------------
-	// alias another component into us - mimic/alias the param found in src
-	int alias(vsx_engine_param* src, vsx_string name, int order = -1);
-	bool unalias(vsx_string name);
-	vsx_string alias_get_unique_name(vsx_string base_name, int tried = 0); // find a free name for the alias
-	bool alias_rename(vsx_string ren_name,vsx_string to_name);
+  //---------------------------------------
+  // alias another component into us - mimic/alias the param found in src
+  int alias(vsx_engine_param* src, vsx_string name, int order = -1);
+  bool unalias(vsx_string name);
+  vsx_string alias_get_unique_name(vsx_string base_name, int tried = 0); // find a free name for the alias
+  bool alias_rename(vsx_string ren_name,vsx_string to_name);
 
-	//---------------------------------------
+  //---------------------------------------
   // Connections
-	//---------------------------------------
-	// Disconnect all connections in this and aliased without disconnecting the engine
-	void disconnect_abs_connections();
+  //---------------------------------------
+  // Disconnect all connections in this and aliased without disconnecting the engine
+  void disconnect_abs_connections();
 
-	// clear our parameters from other param_list's
-	void unalias_aliased();
+  // clear our parameters from other param_list's
+  void unalias_aliased();
 
-	// changes the order of the parameters in this list and maps the connections onto the channel recursively
-	int order(vsx_string param, vsx_string new_order);
+  // changes the order of the parameters in this list and maps the connections onto the channel recursively
+  int order(vsx_string param, vsx_string new_order);
 
-	//---------------------------------------
+  //---------------------------------------
 
   // returns an engine_param by name
-	vsx_engine_param* get_by_name(vsx_string name);
+  vsx_engine_param* get_by_name(vsx_string name);
 
   vsx_string get_name_by_param(vsx_engine_param* param);
 
-	vsx_engine_param* get_by_id(unsigned long id) {
-	  return param_id_list[id];
+  vsx_engine_param* get_by_id(unsigned long id) {
+    return param_id_list[id];
 //		return module_param_list->id_vec[id];
-	}
+  }
 
-	unsigned long count() {
-		return param_id_list.size();
-	}
-	~vsx_engine_param_list();
+  unsigned long count() {
+    return param_id_list.size();
+  }
+  ~vsx_engine_param_list();
 };
 
 

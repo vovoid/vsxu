@@ -1139,9 +1139,6 @@ void vsx_widget_server::param_alias_ok(vsx_string p_def, vsx_string io, vsx_stri
   }
 
   // find the anchor that should own the connector
-  // Specification:
-  //          vsx_widget_component* conn_dest = (vsx_widget_component*)find_component(c->parts[5]);
-  //          command_q_b.add_raw("param_connect_ok "+c->parts[5]+" "+c->parts[6]+" "+c->parts[3]+" "+c->parts[4]);
   for (std::list<vsx_widget*>::iterator it = dest->children.begin(); it != dest->children.end(); ++it) {
     if ((*it)->widget_type == VSX_WIDGET_TYPE_ANCHOR) {
       ((vsx_widget_anchor*)*it)->alias = true;

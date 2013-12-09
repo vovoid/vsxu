@@ -958,29 +958,31 @@ public:
   {
     matrix_mode(VSX_GL_PROJECTION_MATRIX);
     matrix_load_identity();
+
+
     /*
+      f is  cot( fovy / 2 )
 
-    f is  cot( fovy / 2 )
+      cot(x) = tan(HALF_PI - x)
 
-    cot(x) = tan(HALF_PI - x)
+      The generated matrix is
 
-    The generated matrix is
-                 f
-            ------------       0              0              0
-               aspect
+           f
+      ------------       0              0              0
+         aspect
 
 
-                0              f              0              0
+          0              f              0              0
 
-                                          zFar+zNear    2*zFar*zNear
-                0              0          ----------    ------------
-                                          zNear-zFar     zNear-zFar
+                                    zFar+zNear    2*zFar*zNear
+          0              0          ----------    ------------
+                                    zNear-zFar     zNear-zFar
 
-                0              0              -1             0
-      */
+          0              0              -1             0
+    */
 
-#define N0 (zFar + zNear) / (zNear - zFar)
-#define N1 (2.0 * zFar * zNear) / (zNear - zFar)
+    #define N0 (zFar + zNear) / (zNear - zFar)
+    #define N1 (2.0 * zFar * zNear) / (zNear - zFar)
     double f = tan( HALF_PI - (fovy * (PI / 180.0f)) * 0.5 );
     double fdiva = f / aspect;
     #define m m_temp.m
@@ -988,16 +990,16 @@ public:
     m[1] = 0.0;          m[5] = f;         m[9] = 0.0;     m[13] = 0.0;
     m[2] = 0.0;          m[6] = 0.0;      m[10] = N0;      m[14] = N1;
     m[3] = 0.0;         m[7] = 0.0;     m[11] = -1.0;    m[15] = 0.0;
+    #undef m
+    #undef N0
+    #undef N1
 
-#undef m
-#undef N0
-#undef N1
-  memcpy(&m_temp_2.m[0], &core_matrix[i_matrix_mode].m[0], sizeof(vsx_matrix));
-  core_matrix[i_matrix_mode].multiply(&m_temp, &m_temp_2);
-  #ifndef VSX_NO_GL
-  glLoadIdentity();
-  glMultMatrixf( core_matrix[i_matrix_mode].m );
-#endif
+    memcpy(&m_temp_2.m[0], &core_matrix[i_matrix_mode].m[0], sizeof(vsx_matrix));
+    core_matrix[i_matrix_mode].multiply(&m_temp, &m_temp_2);
+    #ifndef VSX_NO_GL
+      glLoadIdentity();
+      glMultMatrixf( core_matrix[i_matrix_mode].m );
+    #endif
 
     matrix_mode(VSX_GL_MODELVIEW_MATRIX);
   }
@@ -1014,42 +1016,52 @@ public:
     z[0] = eyex - centerx;
     z[1] = eyey - centery;
     z[2] = eyez - centerz;
+
+
     mag = sqrt(z[0] * z[0] + z[1] * z[1] + z[2] * z[2]);
-    if (mag) {
+    if (mag)
+    {
       z[0] /= mag;
       z[1] /= mag;
       z[2] /= mag;
     }
 
+
     y[0] = upx;
     y[1] = upy;
     y[2] = upz;
 
-    x[0] = y[1] * z[2] - y[2] * z[1];
+    x[0] =  y[1] * z[2] - y[2] * z[1];
     x[1] = -y[0] * z[2] + y[2] * z[0];
-    x[2] = y[0] * z[1] - y[1] * z[0];
+    x[2] =  y[0] * z[1] - y[1] * z[0];
 
-    y[0] = z[1] * x[2] - z[2] * x[1];
+    y[0] =  z[1] * x[2] - z[2] * x[1];
     y[1] = -z[0] * x[2] + z[2] * x[0];
-    y[2] = z[0] * x[1] - z[1] * x[0];
+    y[2] =  z[0] * x[1] - z[1] * x[0];
+
 
     mag = sqrt(x[0] * x[0] + x[1] * x[1] + x[2] * x[2]);
-    if (mag) {
+    if (mag)
+    {
       x[0] /= mag;
       x[1] /= mag;
       x[2] /= mag;
     }
+
     mag = sqrt(y[0] * y[0] + y[1] * y[1] + y[2] * y[2]);
-    if (mag) {
+    if (mag)
+    {
       y[0] /= mag;
       y[1] /= mag;
       y[2] /= mag;
     }
+
+
     #define M(row,col)  m_temp.m[col*4+row]
-       M(0,0) = x[0];  M(0,1) = x[1];  M(0,2) = x[2];  M(0,3) = 0.0;
-       M(1,0) = y[0];  M(1,1) = y[1];  M(1,2) = y[2];  M(1,3) = 0.0;
-       M(2,0) = z[0];  M(2,1) = z[1];  M(2,2) = z[2];  M(2,3) = 0.0;
-       M(3,0) = 0.0;   M(3,1) = 0.0;   M(3,2) = 0.0;   M(3,3) = 1.0;
+      M(0,0) = x[0];  M(0,1) = x[1];  M(0,2) = x[2];  M(0,3) = 0.0;
+      M(1,0) = y[0];  M(1,1) = y[1];  M(1,2) = y[2];  M(1,3) = 0.0;
+      M(2,0) = z[0];  M(2,1) = z[1];  M(2,2) = z[2];  M(2,3) = 0.0;
+      M(3,0) = 0.0;   M(3,1) = 0.0;   M(3,2) = 0.0;   M(3,3) = 1.0;
     #undef M
 
     memcpy(&m_temp_2.m[0], &core_matrix[i_matrix_mode].m[0], sizeof(vsx_matrix));
