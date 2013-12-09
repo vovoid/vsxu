@@ -1,0 +1,225 @@
+src/_deprecated/main.cpp:class vsx_depth_test : public vsx_module {
+src/_deprecated/main.cpp:class vsx_module_kaleido_star : public vsx_module
+src/_deprecated/main.cpp:class vsx_depth_mask : public vsx_module {
+src/_deprecated/main.cpp:class vsx_module_mesh_old_supershape : public vsx_module {
+src/bitmap.import.avi/main.cpp:class module_bitmap_avi : public vsx_module {
+src/bitmap.modifiers/module_bitmap_add_noise.h:class module_bitmap_add_noise : public vsx_module
+src/bitmap.modifiers/module_bitmap_to_particlesystem.h:class module_bitmap_to_particlesystem : public vsx_module
+src/bitmap.modifiers/module_texture_to_bitmap.h:class module_texture_to_bitmap : public vsx_module
+src/mesh.generators/module_mesh_grid.h:class module_mesh_grid : public vsx_module
+src/mesh.generators/module_mesh_kaleidoscope.h:class module_mesh_kaleidoscope : public vsx_module
+src/mesh.generators/module_mesh_needle.h:class module_mesh_needle : public vsx_module {
+src/mesh.generators/module_mesh_ocean_threaded.h:class module_mesh_ocean_threaded : public vsx_module
+src/mesh.generators/module_mesh_plane_uv_distort.h:class module_mesh_plane_uv_distort : public vsx_module
+src/mesh.generators/module_mesh_sphere.h:class module_mesh_sphere : public vsx_module
+src/mesh.generators/module_mesh_sphere_icosahedron.h:class module_mesh_sphere_icosahedron : public vsx_module
+src/mesh.generators/module_mesh_sphere_octahedron.h:class module_mesh_sphere_octahedron : public vsx_module
+src/mesh.generators/module_mesh_supershape.h:class module_mesh_supershape : public vsx_module
+src/mesh.generators/module_mesh_abstract_hand.h:class module_mesh_abstract_hand : public vsx_module
+src/mesh.generators/module_mesh_box.h:class module_mesh_box : public vsx_module {
+src/mesh.generators/module_mesh_bspline_vertices.h:class module_mesh_bspline_vertices : public vsx_module
+src/mesh.generators/module_mesh_cloud_plane.h:class module_mesh_cloud_plane : public vsx_module
+src/mesh.generators/module_mesh_disc.h:class module_mesh_disc : public vsx_module
+src/mesh.generators/module_mesh_lightning_vertices.h:class module_mesh_lightning_vertices : public vsx_module
+src/mesh.generators/module_mesh_metaballs.h:class module_mesh_metaballs : public vsx_module
+src/mesh.generators/module_mesh_ocean_tunnel_threaded.h:class module_mesh_ocean_tunnel_threaded : public vsx_module
+src/mesh.generators/module_mesh_planes.h:class module_mesh_planes : public vsx_module
+src/mesh.generators/module_mesh_planeworld.h:class module_mesh_planeworld : public vsx_module
+src/mesh.generators/module_mesh_rays.h:class module_mesh_rays : public vsx_module
+src/mesh.generators/module_mesh_ribbon.h:class module_mesh_ribbon : public vsx_module
+src/mesh.generators/module_mesh_ribbon_cloth.h:class module_mesh_ribbon_cloth : public vsx_module
+src/mesh.generators/module_mesh_star.h:class module_mesh_star : public vsx_module {
+src/mesh.generators/module_mesh_thorn.h:class module_mesh_thorn : public vsx_module
+src/mesh.generators/module_mesh_torus_knot.h:class module_mesh_torus_knot : public vsx_module
+src/mesh.generators/module_mesh_vertices_rand_points.h:class module_mesh_vertices_rand_points : public vsx_module
+src/mesh.generators/module_mesh_vertices_ribbon.h:class module_mesh_vertices_ribbon : public vsx_module
+src/mesh.generators/module_segmesh_loft.h:class module_segmesh_loft : public vsx_module
+src/mesh.generators/module_segmesh_map_bspline.h:class module_segmesh_map_bspline : public vsx_module
+src/mesh.generators/module_segmesh_shape_basic.h:class module_segmesh_shape_basic : public vsx_module
+src/mesh.modifiers/module_mesh_translate.h:class module_mesh_translate : public vsx_module
+src/mesh.modifiers/module_mesh_translate_edge_wraparound.h:class module_mesh_translate_edge_wraparound : public vsx_module
+src/mesh.modifiers/module_mesh_vertex_picker.h:class module_mesh_vertex_picker : public vsx_module
+src/mesh.modifiers/module_segmesh_to_mesh.h:class module_mesh_segmesh_to_mesh : public vsx_module
+src/mesh.modifiers/module_mesh_compute_tangents.h:class module_mesh_compute_tangents : public vsx_module
+src/mesh.modifiers/module_mesh_to_float3_arrays.h:class module_mesh_to_float3_arrays : public vsx_module
+src/mesh.modifiers/module_mesh_calc_attachment.h:class module_mesh_calc_attachment : public vsx_module
+src/mesh.modifiers/module_mesh_deformers_mesh_vertex_move.h:class module_mesh_deformers_mesh_vertex_move : public vsx_module
+src/mesh.modifiers/module_mesh_deformers_random_normal_distort.h:class module_mesh_deformers_random_normal_distort : public vsx_module
+src/mesh.modifiers/module_mesh_dummy.h:class module_mesh_dummy : public vsx_module
+src/mesh.modifiers/module_mesh_inflate_thread.h:class module_mesh_inflate_thread : public vsx_module
+src/mesh.modifiers/module_mesh_noise.h:class module_mesh_noise : public vsx_module
+src/mesh.modifiers/module_mesh_quat_rotate.h:class module_mesh_quat_rotate : public vsx_module
+src/mesh.modifiers/module_mesh_quat_rotate_around_vertex.h:class module_mesh_quat_rotate_around_vertex : public vsx_module
+src/mesh.modifiers/module_mesh_rain_down.h:class module_mesh_rain_down : public vsx_module
+src/mesh.modifiers/module_mesh_scale.h:class module_mesh_scale : public vsx_module
+src/mesh.modifiers/module_mesh_scale_normalize.h:class module_mesh_scale_normalize : public vsx_module
+src/mesh.modifiers/module_mesh_vertex_distance_sort.h:class module_mesh_vertex_distance_sort : public vsx_module
+src/mesh.modifiers/module_mesh_vortex.h:class module_mesh_vortex : public vsx_module
+src/mesh.modifiers/module_mesh_compute_tangents_vertex_color_array.h:class module_mesh_compute_tangents_vertex_color_array : public vsx_module
+src/particlesystem.generators/module_particlesystem_generate_mesh.h:class module_particlesystem_generate_mesh : public vsx_module
+src/particlesystem.generators/module_particlesystem_generate_simple.h:class module_particlesystem_generate_simple : public vsx_module
+src/particlesystem.modifiers/module_particlesystem_modifier_2d_rotator.h:class module_particlesystem_modifier_2d_rotator : public vsx_module
+src/particlesystem.modifiers/module_particlesystem_modifier_floor.h:class module_particlesystem_modifier_floor : public vsx_module
+src/particlesystem.modifiers/module_particlesystem_modifier_fluid.h:class module_particlesystem_modifier_fluid : public vsx_module
+src/particlesystem.modifiers/module_particlesystem_modifier_gravity.h:class module_particlesystem_modifier_gravity : public vsx_module
+src/particlesystem.modifiers/module_particlesystem_modifier_wind.h:class module_particlesystem_modifier_wind : public vsx_module
+src/particlesystem.modifiers/module_particlesystem_modifier_size_mult.h:class module_particlesystem_modifier_size_mult : public vsx_module
+src/particlesystem.modifiers/module_particlesystem_modifier_size_noise.h:class module_particlesystem_modifier_size_noise : public vsx_module
+src/particlesystem.render/module_particlesystem_render_sparks.h:class module_particlesystem_render_sparks : public vsx_module
+src/particlesystem.render/module_particlesystem_render.h:class module_particlesystem_render : public vsx_module
+src/particlesystem.render/module_particlesystem_render_c.h:class module_particlesystem_render_c : public vsx_module
+src/particlesystem.render/module_particlesystem_render_ext.h:class module_particlesystem_render_ext : public vsx_module
+src/render.basic/module_render_basic_oscilloscope.h:class module_render_basic_oscilloscope : public vsx_module {
+src/render.basic/module_render_line.h:class module_render_line : public vsx_module
+src/render.basic/module_render_basic_textured_rectangle.h:class module_render_basic_textured_rectangle : public vsx_module
+src/render.basic/module_render_basic_colored_rectangle.h:class module_render_basic_colored_rectangle : public vsx_module
+src/render.glsl/main.cpp:class vsx_module_glsl : public vsx_module
+src/render.gravity_lines/vsx_module_render_gravity_ribbon.h:class vsx_module_render_gravity_ribbon : public vsx_module
+src/render.gravity_lines/vsx_module_render_gravity_ribbon.h:public:
+src/render.gravity_lines/vsx_module_render_gravity_ribbon_mesh.h:class vsx_module_render_gravity_ribbon_mesh : public vsx_module
+src/render.gravity_lines/vsx_module_render_gravity_ribbon_mesh.h:public:
+src/render.gravity_lines/vsx_module_render_gravity_ribbon_particles.h:class vsx_module_render_gravity_ribbon_particles : public vsx_module
+src/render.gravity_lines/vsx_module_render_gravity_ribbon_particles.h:public:
+src/render.gravity_lines/vsx_module_render_gravity_lines.h:class vsx_module_render_gravity_lines : public vsx_module
+src/render.gravity_lines/vsx_module_render_gravity_lines.h:public:
+src/render.opengl/module_render_gl_backface_culling.h:class module_render_gl_backface_culling : public vsx_module
+src/render.opengl/module_render_gl_blend_mode.h:class module_render_gl_blend_mode : public vsx_module
+src/render.opengl/module_render_gl_buffer_clear.h:class module_render_gl_buffer_clear : public vsx_module
+src/render.opengl/module_render_gl_build_cubemap_texture.h:class module_render_gl_build_cubemap_texture : public vsx_module {
+src/render.opengl/module_render_gl_color.h:class module_render_gl_color : public vsx_module
+src/render.opengl/module_render_gl_depth_buffer.h:class module_render_gl_depth_buffer : public vsx_module
+src/render.opengl/module_render_gl_depth_buffer_clear.h:class module_render_gl_depth_buffer_clear : public vsx_module
+src/render.opengl/module_render_gl_depth_func.h:class module_render_gl_depth_func : public vsx_module 
+src/render.opengl/module_render_gl_fog.h:class module_render_gl_fog : public vsx_module
+src/render.opengl/module_render_gl_freelook_camera.h:class module_render_gl_freelook_camera : public vsx_module
+src/render.opengl/module_render_gl_light_directional.h:class module_render_gl_light_directional : public vsx_module
+src/render.opengl/module_render_gl_line_width.h:class module_render_gl_line_width : public vsx_module
+src/render.opengl/module_render_gl_material_param.h:class module_render_gl_material_param : public vsx_module
+src/render.opengl/module_render_gl_matrix_get.h:class module_render_gl_matrix_get : public vsx_module
+src/render.opengl/module_render_gl_matrix_multiply.h:class module_render_gl_matrix_multiply : public vsx_module
+src/render.opengl/module_render_gl_normalize.h:class module_render_gl_normalize : public vsx_module
+src/render.opengl/module_render_gl_orbit_camera.h:class module_render_gl_orbit_camera : public vsx_module
+src/render.opengl/module_render_gl_ortho_2d.h:class module_render_gl_ortho_2d : public vsx_module
+src/render.opengl/module_render_gl_rendering_mode.h:class module_render_gl_rendering_mode : public vsx_module
+src/render.opengl/module_render_gl_rotate.h:class module_render_gl_rotate : public vsx_module
+src/render.opengl/module_render_gl_rotate_quat.h:class module_render_gl_rotate_quat : public vsx_module
+src/render.opengl/module_render_gl_scale.h:class module_render_gl_scale : public vsx_module
+src/render.opengl/module_render_gl_target_camera.h:class module_render_gl_target_camera : public vsx_module
+src/render.opengl/module_render_gl_texture_bind.h:class module_render_gl_texture_bind : public vsx_module
+src/render.opengl/module_render_gl_texture_coord_gen.h:class module_render_gl_texture_coord_gen : public vsx_module {
+src/render.opengl/module_render_gl_translate.h:class module_render_gl_translate : public vsx_module
+src/render.opengl/module_render_gl_viewport_size.h:class module_render_gl_viewport_size : public vsx_module
+src/render.text/render_text.cpp:class vsx_module_text_s : public vsx_module {
+src/system/module_system_file_chooser.h:class module_system_file_chooser : public vsx_module 
+src/system/module_system_joystick.h:class module_system_joystick : public vsx_module
+src/system/module_system_shutdown.h:class module_system_shutdown : public vsx_module
+src/system/module_system_tm_m.h:class module_system_tm_m : public vsx_module
+src/system/module_system_trig_sequencer.h:class module_system_trig_sequencer : public vsx_module 
+src/system/module_system_clock.h:class module_system_clock : public vsx_module
+src/system/module_system_time.h:class module_system_time : public vsx_module 
+src/system/module_string_resource_to_string.h:class module_string_resource_to_string : public vsx_module
+src/system/module_system_blocker.h:class module_system_blocker : public vsx_module
+src/system/module_system_blocker_loading.h:class module_system_blocker_loading : public vsx_module
+src/texture/module_texture_load_openexr.h:class module_texture_load_openexr : public vsx_module
+src/texture/module_texture_load_jpeg_alpha.h:class module_texture_load_jpeg_alpha : public vsx_module
+src/texture/module_texture_visual_fader.h:class module_texture_visual_fader : public vsx_module
+src/texture/module_texture_parameter.h:class module_texture_parameter : public vsx_module {
+src/texture/module_texture_render_buffer.h:class module_texture_render_buffer : public vsx_module {
+src/texture/module_texture_render_surface_color_buffer.h:class module_texture_render_surface_color_buffer : public vsx_module {
+src/texture/module_texture_render_surface_color_depth_buffer.h:class module_texture_render_surface_color_depth_buffer : public vsx_module
+src/texture/module_texture_render_surface_single.h:class vsx_module_rendered_texture_single : public vsx_module {
+src/texture/module_texture_rotate.h:class module_texture_rotate : public vsx_module
+src/texture/module_texture_scale.h:class module_texture_scale : public vsx_module
+src/texture/module_texture_translate.h:class module_texture_translate : public vsx_module
+src/texture/module_texture_effect_blur.h:class module_texture_effect_blur : public vsx_module
+src/texture/module_texture_load_jpeg.h:class module_texture_load_jpeg : public vsx_module
+src/texture/module_texture_load_bitmap2texture.h:class module_texture_load_bitmap2texture : public vsx_module
+src/texture/module_texture_load_png_cubemap.h:class module_texture_load_png_cubemap : public vsx_module
+src/texture/module_texture_load_png.h:class module_texture_load_png : public vsx_module 
+src/sensors.accelerometer/main.cpp:class module_sensors_local_accelerometer : public vsx_module {
+src/sensors.accelerometer/main.cpp:class module_sensors_remote_accelerometer : public vsx_module {
+src/sound.rtaudio/vsx_module_midi_akai_apc.h:public:
+src/sound.rtaudio/vsx_module_ogg_sample_play.h:class vsx_module_ogg_sample_play : public vsx_module
+src/sound.rtaudio/vsx_module_ogg_sample_play.h:public:
+src/sound.rtaudio/vsx_module_ogg_sample_trigger.h:class vsx_module_ogg_sample_trigger : public vsx_module
+src/sound.rtaudio/vsx_module_ogg_sample_trigger.h:public:
+src/sound.rtaudio/vsx_module_raw_sample_play.h:class vsx_module_raw_sample_play : public vsx_module
+src/sound.rtaudio/vsx_module_raw_sample_play.h:public:
+src/sound.rtaudio/vsx_module_raw_sample_trigger.h:class vsx_module_raw_sample_trigger : public vsx_module
+src/sound.rtaudio/vsx_module_raw_sample_trigger.h:public:
+src/sound.rtaudio/vsx_listener_mediaplayer.h:class vsx_listener_mediaplayer : public vsx_module {
+src/sound.rtaudio/vsx_listener_rtaudio.h:class vsx_listener_pulse : public vsx_module {
+src/vision/input/input_video.h:class module_video_input : public vsx_module {
+src/vision/trackers/tracker_bitmap_color.h:class tracker_bitmap_color : public vsx_module
+src/bitmap.generators/module_bitmap_blend.h:class module_bitmap_blend : public vsx_module
+src/bitmap.generators/module_bitmap_blob.h:class module_bitmap_blob : public vsx_module
+src/bitmap.generators/module_bitmap_perlin_noise.h:class module_bitmap_perlin_noise : public vsx_module
+src/bitmap.generators/module_bitmap_plasma.h:class module_bitmap_plasma : public vsx_module
+src/bitmap.generators/module_bitmap_subplasma.h:class module_bitmap_subplasma : public vsx_module
+src/math.oscillators/module_plugin_maths_oscillator.h:class module_plugin_maths_oscillator : public vsx_module
+src/math.oscillators/module_plugin_maths_oscillators_float_sequencer.h:class module_plugin_maths_oscillators_float_sequencer : public vsx_module
+src/math.oscillators/module_plugin_maths_oscillators_inside_range.h:class module_plugin_maths_oscillators_inside_range : public vsx_module
+src/math.oscillators/module_plugin_maths_oscillators_pulse_oscillator.h:class module_plugin_maths_oscillators_pulse_oscillator : public vsx_module
+src/math/math_binary_ops.h:class module_arith_ ## OP_TYPE : public vsx_module {\
+src/math/math_binary_ops.h:class vsx_arith_add : public vsx_module {
+src/math/module_3float_to_float3.h:class module_3float_to_float3 : public vsx_module
+src/math/module_4f_hsv_to_rgb_f4.h:class module_4f_hsv_to_rgb_f4 : public vsx_module
+src/math/module_4float_to_float4.h:class module_4float_to_float4 : public vsx_module
+src/math/module_axis_angle_to_quaternion.h:class module_axis_angle_to_quaternion : public vsx_module
+src/math/module_bool_and.h:class module_bool_and : public vsx_module {
+src/math/module_bool_nand.h:class module_bool_nand : public vsx_module
+src/math/module_bool_nor.h:class module_bool_nor : public vsx_module
+src/math/module_bool_not.h:class module_bool_not : public vsx_module
+src/math/module_bool_or.h:class module_bool_or : public vsx_module
+src/math/module_bool_xor.h:class module_bool_xor : public vsx_module
+src/math/module_f4_hsl_to_rgb_f4.h:class module_f4_hsl_to_rgb_f4 : public vsx_module
+src/math/module_float3_accumulator.h:class module_float3_accumulator : public vsx_module
+src/math/module_float3_dummy.h:class module_float3_dummy : public vsx_module
+src/math/module_float3_interpolate.h:class module_float3_interpolate : public vsx_module
+src/math/module_float3to3float.h:class module_float3to3float : public vsx_module
+src/math/module_float4_accumulator.h:class module_float4_accumulator : public vsx_module
+src/math/module_float4_add.h:class module_float4_add : public vsx_module
+src/math/module_float4_dummy.h:class module_float4_dummy : public vsx_module
+src/math/module_float4_interpolate.h:class module_float4_interpolate : public vsx_module
+src/math/module_float4_mul_float.h:class module_float4_mul_float : public vsx_module {
+src/math/module_float_abs.h:class module_float_abs : public vsx_module
+src/math/module_float_accumulator.h:class module_float_accumulator : public vsx_module
+src/math/module_float_accumulator_limits.h:class module_float_accumulator_limits : public vsx_module
+src/math/module_float_acos.h:class module_float_acos : public vsx_module
+src/math/module_float_array_average.h:class module_float_array_average : public vsx_module
+src/math/module_float_array_pick.h:class module_float_array_pick : public vsx_module
+src/math/module_float_cos.h:class module_float_cos : public vsx_module
+src/math/module_float_dummy.h:class module_float_dummy : public vsx_module
+src/math/module_float_interpolate.h:class module_float_interpolate : public vsx_module
+src/math/module_float_limit.h:class module_float_limit : public vsx_module
+src/math/module_float_sin.h:class module_float_sin : public vsx_module
+src/math/module_float_smooth.h:class module_float_smooth : public vsx_module
+src/math/module_float_to_float3.h:class module_float_to_float3 : public vsx_module
+src/math/module_quaternion_dummy.h:class module_quaternion_dummy : public vsx_module {
+src/math/module_quaternion_mul.h:class module_quaternion_mul : public vsx_module {
+src/math/module_quaternion_rotation_accumulator_2d.h:class module_quaternion_rotation_accumulator_2d : public vsx_module {
+src/math/module_quaternion_slerp_2.h:class module_quaternion_slerp_2 : public vsx_module
+src/math/module_quaternion_slerp_3.h:class module_quaternion_slerp_3 : public vsx_module
+src/math/module_quaternion_to_axis_angle.h:class module_quaternion_to_axis_angle : public vsx_module
+src/math/module_vector_4float_to_quaternion.h:class module_vector_4float_to_quaternion : public vsx_module
+src/math/module_vector_add.h:class module_vector_add : public vsx_module
+src/math/module_vector_add_float.h:class module_vector_add_float : public vsx_module
+src/math/module_vector_cross_product.h:class module_vector_cross_product : public vsx_module
+src/math/module_vector_dot_product.h:class module_vector_dot_product : public vsx_module
+src/math/module_vector_float4_to_4float.h:class module_vector_float4_to_4float : public vsx_module {
+src/math/module_vector_from_points.h:class module_vector_from_points : public vsx_module
+src/math/module_vector_mul_float.h:class module_vector_mul_float : public vsx_module
+src/math/module_vector_normalize.h:class module_vector_normalize : public vsx_module
+src/math/module_vector_quaternion_to_4float.h:class module_vector_quaternion_to_4float : public vsx_module
+src/math/module_bspline_matrix.h:class module_bspline_matrix : public vsx_module
+src/mesh.importers/module_mesh_cal3d_loader_threaded.h:class module_mesh_cal3d_import : public vsx_module {
+src/mesh.importers/module_mesh_import_obj.h:class module_mesh_import_obj : public vsx_module
+src/mesh.importers/module_mesh_import_vxm.h:class module_mesh_import_vxm : public vsx_module
+src/mesh.render/module_mesh_render_zsort.h:class module_mesh_render_zsort : public vsx_module
+src/mesh.render/module_mesh_render.h:class module_mesh_render : public vsx_module
+src/mesh.render/module_mesh_render_billboards.h:class module_mesh_render_billboards : public vsx_module
+src/mesh.render/module_mesh_render_dots.h:class module_mesh_render_dots : public vsx_module
+src/mesh.render/module_mesh_render_face_id.h:class module_mesh_render_face_id : public vsx_module
+src/mesh.render/module_mesh_render_line.h:class module_mesh_render_line : public vsx_module
+src/outputs.screen_opengl/module_output_screen_opengl.h:class module_output_screen_opengl : public vsx_module
+src/render.skybox/main.cpp:class module_render_skybox : public vsx_module
