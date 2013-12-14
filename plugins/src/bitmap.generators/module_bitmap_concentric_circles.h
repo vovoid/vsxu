@@ -23,6 +23,7 @@
 
 #ifndef MIN_MAX_STATIC
   #define MIN_MAX_STATIC
+
 inline float max (float x, float a)
 {
    x -= a;
@@ -42,12 +43,11 @@ inline float min (float x, float b)
 }
 #endif
 
-class module_bitmap_generators_blob : public vsx_module
+class module_bitmap_generators_concentric_circles : public vsx_module
 {
   // in
-  vsx_module_param_float* arms;
+  vsx_module_param_float* frequency;
   vsx_module_param_float* attenuation;
-  vsx_module_param_float* star_flower;
   vsx_module_param_float* angle;
   vsx_module_param_float4* color;
   vsx_module_param_int* alpha;
@@ -88,28 +88,28 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "bitmaps;generators;blob||bitmaps;generators;particles;blob";
+    info->identifier = "bitmaps;generators;concentric_circles||bitmaps;generators;particles;concentric_circles";
     info->in_param_spec = ""
         "settings:complex{"
-          "arms:float,"
-          "attenuation:float,"
-          "star_flower:float,"
-          "angle:float,"
+          "frequency:float?min=0.0,"
+          "attenuation:float?default_controller=controller_slider&min=0.0,"
           "color:float4?default_controller=controller_col,"
           "alpha:enum?no|yes"
         "},"
         "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024|2048x2048"
         ;
-    if (c_type == 0) {
+
+    if (c_type == 0)
+    {
       info->out_param_spec = "bitmap:bitmap";
       info->component_class = "bitmap";
     } else
     {
-      info->identifier = "texture;particles;blob";
+      info->identifier = "texture;particles;concentric_circles";
       info->out_param_spec = "texture:texture";
       info->component_class = "texture";
     }
-    info->description = "Generates blobs,stars or leaf\ndepending on parameters.\nPlay with the params :)";
+    info->description = "Generates a texture with concentric circles.";
   }
 
 
@@ -120,19 +120,24 @@ public:
     worker_running = false;
     thread_created = false;
     p_updates = -1;
-    arms = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"arms");
+    frequency = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"frequency");
+    frequency->set(1.0f);
+
     attenuation = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
-    attenuation->set(0.1f);
+    attenuation->set(2.0f);
+
     size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
     size->set(4);
+
     alpha = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"alpha");
     alpha->set(0);
+
     color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"color");
     color->set(1.0f,0);
     color->set(1.0f,1);
     color->set(1.0f,2);
     color->set(1.0f,3);
-    star_flower = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"star_flower");
+
     angle = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"angle");
     i_size = 0;
   	result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
@@ -161,49 +166,50 @@ public:
   static void* worker(void *ptr)
   {
     int x,y;
-    float attenuation = ((module_bitmap_generators_blob*)ptr)->attenuation->get();
-    float arms = ((module_bitmap_generators_blob*)ptr)->arms->get()*0.5f;
-    float star_flower = ((module_bitmap_generators_blob*)ptr)->star_flower->get();
-    float angle = ((module_bitmap_generators_blob*)ptr)->angle->get();
-    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_generators_blob*)ptr)->work_bitmap->data;
-    int size = ((module_bitmap_generators_blob*)ptr)->i_size;
-    //float sp1 = (float)size + 1.0f;
+    float attenuation = ((module_bitmap_generators_concentric_circles*)ptr)->attenuation->get();
+    float frequency = ((module_bitmap_generators_concentric_circles*)ptr)->frequency->get() * 2.0f;
+
+    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_generators_concentric_circles*)ptr)->work_bitmap->data;
+
+    int size = ((module_bitmap_generators_concentric_circles*)ptr)->i_size;
+
     float dist;
     int hsize = size >> 1;
-    for(y = -hsize; y < hsize; ++y)
-      for(x = -hsize; x < hsize; ++x,p++)
+    float one_div_hsize = 1.0f / ((float)hsize+1);
+
+    vsx_printf("%f        %f\n", attenuation, frequency);
+
+    for (y = -hsize; y < hsize; ++y)
+      for (x = -hsize; x < hsize; ++x,p++)
       {
         float xx = (size/(size-2.0f))*((float)x)+0.5f;
         float yy = (size/(size-2.0f))*((float)y)+0.5f;
         float dd = sqrt(xx*xx + yy*yy);
-        float dstf = dd/((float)hsize+1);
-        float phase = (float)pow(1.0f - (float)fabs((float)cos(angle+arms*(float)atan2(xx,yy)))*(star_flower+(1-star_flower)*(((dstf)))),attenuation);
-        if (phase > 2.0f) phase = 1.0f;
-        float pf = (255.0f * (cos(((dstf * PI_FLOAT/2.0f)))*phase));
-        if (pf > 255.0f) pf = 255.0f;
-        if (pf < 0.0f) pf = 0.0f;
-        *p = (long)pf;
-        dist = cos(dstf * PI_FLOAT/2.0f)*phase;
-        if (((module_bitmap_generators_blob*)ptr)->work_alpha == 1)
+
+        float dstf = dd * one_div_hsize;
+
+        dist = pow(fabs(cos(dstf * PI * frequency)), attenuation) * cos(dstf * PI * 0.5);
+
+        if (((module_bitmap_generators_concentric_circles*)ptr)->work_alpha == 1)
         {
-          long pr = max(0,min(255,(long)(255.0f *  ((module_bitmap_generators_blob*)ptr)->work_color[0])));
-          long pg = max(0,min(255,(long)(255.0f *  ((module_bitmap_generators_blob*)ptr)->work_color[1])));
-          long pb = max(0,min(255,(long)(255.0f *  ((module_bitmap_generators_blob*)ptr)->work_color[2])));
-          long pa = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_generators_blob*)ptr)->work_color[3])));
+          long pr = max(0,min(255,(long)(255.0f *  ((module_bitmap_generators_concentric_circles*)ptr)->work_color[0])));
+          long pg = max(0,min(255,(long)(255.0f *  ((module_bitmap_generators_concentric_circles*)ptr)->work_color[1])));
+          long pb = max(0,min(255,(long)(255.0f *  ((module_bitmap_generators_concentric_circles*)ptr)->work_color[2])));
+          long pa = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[3])));
           *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
         } else
-        if (((module_bitmap_generators_blob*)ptr)->work_alpha == 0) {
-          long pr = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_generators_blob*)ptr)->work_color[0])));
-          long pg = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_generators_blob*)ptr)->work_color[1])));
-          long pb = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_generators_blob*)ptr)->work_color[2])));
-          long pa = (long)(255.0f * ((module_bitmap_generators_blob*)ptr)->work_color[3]);
+        if (((module_bitmap_generators_concentric_circles*)ptr)->work_alpha == 0) {
+          long pr = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[0])));
+          long pg = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[1])));
+          long pb = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[2])));
+          long pa = (long)(255.0f * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[3]);
           *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
         }
       }
-    ((module_bitmap_generators_blob*)ptr)->work_bitmap->timestamp++;
-    ((module_bitmap_generators_blob*)ptr)->work_bitmap->valid = true;
-    ((module_bitmap_generators_blob*)ptr)->loading_done = true;
-    ((module_bitmap_generators_blob*)ptr)->thread_state = 2;
+    ((module_bitmap_generators_concentric_circles*)ptr)->work_bitmap->timestamp++;
+    ((module_bitmap_generators_concentric_circles*)ptr)->work_bitmap->valid = true;
+    ((module_bitmap_generators_concentric_circles*)ptr)->loading_done = true;
+    ((module_bitmap_generators_concentric_circles*)ptr)->thread_state = 2;
     int *retval = new int;
     *retval = 0;
     pthread_exit(NULL);

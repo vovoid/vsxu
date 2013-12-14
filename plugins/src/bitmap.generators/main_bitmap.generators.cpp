@@ -44,10 +44,10 @@
 // pixel[x,y] = (temp^7) mod 257;
 
 #include "module_bitmap_blob.h"
+#include "module_bitmap_concentric_circles.h"
 #include "module_bitmap_perlin_noise.h"
 #include "module_bitmap_plasma.h"
 #include "module_bitmap_subplasma.h"
-#include "module_bitmap_blend.h"
 
 
 //******************************************************************************
@@ -69,39 +69,34 @@ __declspec(dllexport) unsigned long get_num_modules();
 vsx_module* create_new_module(unsigned long module, void* args)
 {
   VSX_UNUSED(args);
-  if (module > 4)
-  {
-    module_bitmap_blend* b = new module_bitmap_blend;
-    b->blend_type = module-5;
-    return (vsx_module*)b;
-  }
 
-  switch(module) {
-    case 0: { module_bitmap_blob* b = new module_bitmap_blob; b->c_type = 0; return (vsx_module*)b; }
-    case 1: { module_bitmap_blob* b = new module_bitmap_blob; b->c_type = 1; return (vsx_module*)b; }
-    case 2: return (vsx_module*)(new module_bitmap_plasma);
-    case 3: return (vsx_module*)(new module_bitmap_subplasma);
-    case 4: return (vsx_module*)(new module_bitmap_perlin_noise);
+  switch(module)
+  {
+    case 0: { module_bitmap_generators_blob* b = new module_bitmap_generators_blob; b->c_type = 0; return (vsx_module*)b; }
+    case 1: { module_bitmap_generators_blob* b = new module_bitmap_generators_blob; b->c_type = 1; return (vsx_module*)b; }
+    case 2: { module_bitmap_generators_concentric_circles* b = new module_bitmap_generators_concentric_circles; b->c_type = 0; return (vsx_module*)b; }
+    case 3: { module_bitmap_generators_concentric_circles* b = new module_bitmap_generators_concentric_circles; b->c_type = 1; return (vsx_module*)b; }
+    case 4: return (vsx_module*)(new module_bitmap_plasma);
+    case 5: return (vsx_module*)(new module_bitmap_subplasma);
+    case 6: return (vsx_module*)(new module_bitmap_perlin_noise);
   }
   return 0;
 }
 
 void destroy_module(vsx_module* m,unsigned long module) {
-  if (module > 4)
-  {
-    delete (module_bitmap_blend*)m;
-    return;
-  }
 
   switch(module) {
-    case 1: case 0: delete (module_bitmap_blob*)m; break;
-    case 2: delete (module_bitmap_plasma*)m; break;
-    case 3: delete (module_bitmap_subplasma*)m; break;
-    case 4: delete (module_bitmap_perlin_noise*)m; break;
+    case 0:
+    case 1: delete (module_bitmap_generators_blob*)m; break;
+    case 2:
+    case 3: delete (module_bitmap_generators_concentric_circles*)m; break;
+
+    case 4: delete (module_bitmap_plasma*)m; break;
+    case 5: delete (module_bitmap_subplasma*)m; break;
+    case 6: delete (module_bitmap_perlin_noise*)m; break;
   }
 }
 
 unsigned long get_num_modules() {
-  // we have only one module. it's id is 0
-  return 5+24;
+  return 7;
 }

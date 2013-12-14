@@ -35,6 +35,9 @@
 #endif
 
 
+
+#include "module_bitmap_blend.h"
+
 #include "module_texture_to_bitmap.h"
 
 #include "module_bitmap_to_particlesystem.h"
@@ -59,16 +62,31 @@ __declspec(dllexport) unsigned long get_num_modules();
 vsx_module* create_new_module(unsigned long module, void* args)
 {
   VSX_UNUSED(args);
-  switch(module) {
+
+	if (module > 2)
+	{
+		module_bitmap_blend* b = new module_bitmap_blend;
+		b->blend_type = module-3;
+		return (vsx_module*)b;
+	}
+
+	switch(module) {
     case 0: return (vsx_module*)(new module_texture_to_bitmap);
     case 1: return (vsx_module*)(new module_bitmap_to_particlesystem);
     case 2: return (vsx_module*)(new module_bitmap_add_noise);
-
   }
+
   return 0;
 }
 
-void destroy_module(vsx_module* m,unsigned long module) {
+void destroy_module(vsx_module* m,unsigned long module)
+{
+	if (module > 2)
+	{
+		delete (module_bitmap_blend*)m;
+		return;
+	}
+
   switch(module) {
     case 0: delete (module_texture_to_bitmap*)m; break;
     case 1: delete (module_bitmap_to_particlesystem*)m; break;
@@ -78,8 +96,7 @@ void destroy_module(vsx_module* m,unsigned long module) {
 
 
 unsigned long get_num_modules() {
-  // we have only one module. it's id is 0
-  return 3;
+	return 3 + BLEND_MODES_COUNT;
 }
 
 

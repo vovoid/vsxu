@@ -51,6 +51,8 @@ typedef unsigned char uint8;
 #define BLEND_GLOW         23
 #define BLEND_PHOENIX      24
 
+#define BLEND_MODES_COUNT 24
+
 #define min(A,B) A<B?A:B
 #define max(A,B) A>B?A:B
 
@@ -82,34 +84,6 @@ typedef unsigned char uint8;
 #define Blend_Opacity(A,B,F,O)  ((uint8)(O * F(A,B) + (1 - O) * B))
 
 
-/*#define fl_Blend_Normal(A,B) ((unsigned char)(A))
-#define fl_Blend_Lighten(A,B)  ((unsigned char)((B > A) ? B:A))
-#define fl_Blend_Darken(A,B) ((unsigned char)((B > A) ? A:B))*/
-#define fl_Blend_Multiply(A,B) ((unsigned char)((A * B) / 255))
-/*#define fl_Blend_Average(A,B)  ((unsigned char)((A + B) / 2))
-#define fl_Blend_Add(A,B)  ((unsigned char)((A + B > 255) ? 255:(A + B)))
-#define fl_Blend_Subtract(A,B) ((unsigned char)((A + B < 255) ? 0:(A + B - 255)))
-#define fl_Blend_Difference(A,B) ((unsigned char)(abs(A - B)))
-#define fl_Blend_Negation(A,B) ((unsigned char)(255 - abs(255 - A - B)))
-#define fl_Blend_Screen(A,B) ((unsigned char)(255 - (((255 - A) * (255 - B)) >> 8)))
-#define fl_Blend_Exclusion(A,B)  ((unsigned char)(A + B - 2 * A * B / 255))
-#define fl_Blend_Overlay(A,B)  ((unsigned char)((B < 128) ? (2 * A * B / 255):(255 - 2 * (255 - A) * (255 - B) / 255)))
-#define fl_Blend_Soft_Light(A,B)  ((uint8)((B < 128) ? (2*((A >> 1)+64)) * (B/255):(255 - (2*(255-((A >> 1) + 64))*(255-B)/255))))
-#define fl_Blend_Hard_Light(A,B)  (Blend_Overlay(B,A))
-#define fl_Blend_Color_Dodge(A,B) ((uint8)((A == 255) ? A:((B << 8 ) / (255 - A) > 255) ? 255:((B << 8 ) / (255 - A))))
-#define fl_Blend_Color_Burn(A,B)  ((uint8)((A == 0) ? 0:((255 - (((255 - B) << 8 ) / A)) < 0) ? 0:(255 - (((255 - B) << 8 ) / A))))
-#define fl_Blend_Linear_Dodge(A,B)  (Blend_Add(A,B))
-#define fl_Blend_Linear_Burn(A,B) (Blend_Subtract(A,B))
-#define fl_Blend_Linear_Light(A,B)  ((uint8)(A < 128) ? Blend_Linear_Burn((2 * A),B):Blend_Linear_Dodge((2 * (A - 128)),B))
-#define fl_Blend_Vivid_Light(A,B) ((uint8)(A < 128) ? Blend_Color_Burn((2 * A),B):Blend_Color_Dodge((2 * (A - 128)),B))
-#define fl_Blend_Pin_Light(A,B) ((uint8)(A < 128) ? Blend_Darken((2 * A),B):Blend_Lighten((2 *(A - 128)),B))
-#define fl_Blend_Hard_Mix(A,B)  ((uint8)(A < 255 - B) ? 0:255)
-#define fl_Blend_Reflect(A,B)  ((uint8)((B == 255) ? B:((A * A / (255 - B) > 255) ? 255:(A * A / (255 - B)))))
-#define fl_Blend_Glow(A,B) (Blend_Reflect(B,A))
-#define fl_Blend_Phoenix(A,B)  ((uint8)(min(A,B) - max(A,B) + 255))*/
-#define fl_Blend_Opacity(A,B,F,O)  ((O * F(A,B) + (1 - O) * B))
-
-// 0..24 blend types
 
 class module_bitmap_blend : public vsx_module
 {
@@ -301,7 +275,7 @@ public:
     info->identifier = "bitmaps;filters;bitm_"+nn;
     info->out_param_spec = "bitmap:bitmap";
     info->component_class = "bitmap";
-    info->description = "Multiplies bitmaps with each other\nMust be of same size!";
+		info->description = "Mixes bitmaps with each other\nMust be of same size!";
   }
   
   int timestamp1;

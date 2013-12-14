@@ -32,21 +32,6 @@ class module_bitmap_perlin_noise : public vsx_module
 public:
   // in
 
-  // out
-  vsx_module_param_bitmap* result1;
-  // internal
-  bool need_to_rebuild;
-
-  vsx_bitmap bitm;
-  int bitm_timestamp;
-
-  pthread_t         worker_t;
-
-  int p_updates;
-  int my_ref;
-
-  vsx_module_param_float* rand_seed;
-
   // blob settings
   vsx_module_param_int* enable_blob;
   vsx_module_param_float* arms;
@@ -61,6 +46,23 @@ public:
   vsx_module_param_int* alpha;
   vsx_module_param_float* perlin_strength;
   vsx_module_param_float4* color;
+
+  // out
+  vsx_module_param_bitmap* result1;
+
+  // internal
+  bool need_to_rebuild;
+
+  vsx_bitmap bitm;
+  int bitm_timestamp;
+
+  pthread_t         worker_t;
+
+  int p_updates;
+  int my_ref;
+
+  vsx_module_param_float* rand_seed;
+
 
   vsx_bitmap*       work_bitmap;
   bool              worker_running;
