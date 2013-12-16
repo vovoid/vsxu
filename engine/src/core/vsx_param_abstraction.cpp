@@ -865,7 +865,7 @@ vsx_string vsx_engine_param::get_default_string()
   return "";
 }
 
-void vsx_engine_param::set_compound_string(vsx_string data)
+void vsx_engine_param::set_string(vsx_string data)
 {
   if (!data.size()) return;
   switch (module_param->type) {
@@ -876,7 +876,7 @@ void vsx_engine_param::set_compound_string(vsx_string data)
     case VSX_MODULE_PARAM_ID_RESOURCE:
     case VSX_MODULE_PARAM_ID_SEQUENCE:
     case VSX_MODULE_PARAM_ID_FLOAT_ARRAY:
-    set_string(data);
+    set_string_index(data);
     return;
     case VSX_MODULE_PARAM_ID_FLOAT3:
     case VSX_MODULE_PARAM_ID_FLOAT4:
@@ -888,14 +888,14 @@ void vsx_engine_param::set_compound_string(vsx_string data)
   explode(data,deli,data_parts);
   for (size_t i = 0; i < data_parts.size(); i++)
   {
-    set_string(data_parts[i],i);
+    set_string_index(data_parts[i],i);
   }
 
 }
 
-void vsx_engine_param::set_string(vsx_string data, int index) {
+void vsx_engine_param::set_string_index(vsx_string data, int index) {
   if (alias) {
-    alias_owner->set_string(data,index);
+    alias_owner->set_string_index(data,index);
     return;
   }
   ++module->param_updates;

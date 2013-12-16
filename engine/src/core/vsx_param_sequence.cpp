@@ -47,7 +47,7 @@ void vsx_param_sequence::execute(float ptime, float blend)
   {
     if (items.size())
     {
-      param->set_string(items[0].value);
+      param->set_string_index(items[0].value);
     }
   }
   if

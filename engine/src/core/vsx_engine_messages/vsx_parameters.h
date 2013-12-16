@@ -22,6 +22,73 @@
 */
 
 
+
+
+if ( cmd == "help" )
+{
+  while (1)
+  {
+    if (cmd_data != "" && cmd_data != "param_set")
+      break;
+
+    if (cmd_data != "")
+      cmd_out->add_raw("help> ");
+
+    cmd_out->add_raw("help> param_set [module] [parameter] [value]");
+
+    if (cmd_data == "")
+      break;
+
+    cmd_out->add_raw("help>   Sets the module's parameter value.");
+    cmd_out->add_raw("help>   The value can look like this:");
+    cmd_out->add_raw("help>     0.5862                               (float)");
+    cmd_out->add_raw("help>     0.5862,0.981,2.0                     (float3)");
+    cmd_out->add_raw("help>     0.5862,0.981,2.0,1.0                 (float4)");
+    cmd_out->add_raw("help>   For the (string) and (resource) data type, the string");
+    cmd_out->add_raw("help>   data must be base64 encoded.");
+    cmd_out->add_raw("help> ");
+    break;
+  }
+}
+
+
+if (cmd == "param_set")
+{
+  // this is for float3 and such where multiple arity values have to be set in one command.
+  // as the last argument is a comma-separated list of values the character "," is banned
+  // from values.
+  // syntax:
+  //   param_set [module] [parameter] [value],[value],
+  // 1. verify argument count
+  if (c->parts.size() != 4)
+  {
+    cmd_out->add_raw("alert_fail " + base64_encode(c->raw) + " Error "+base64_encode("Wrong number of arguments for param_set") );
+    goto process_message_queue_end;
+  }
+
+  vsx_comp* dest = get_component_by_name(c->parts[1]);
+  if (dest) {
+    vsx_engine_param* ep = dest->get_params_in()->get_by_name(c->parts[2]);
+    if (ep) {
+      ep->set_string(c->parts[3]);
+      ep->module->param_set_notify(c->parts[2]);
+      if (ep->module->redeclare_in) {
+        redeclare_in_params(dest,cmd_out);
+      }
+    }
+  }
+  goto process_message_queue_end;
+}
+
+
+
+
+
+
+
+
+
+
 if (cmd == "pa_ren")
 {
   vsx_comp* dest = get_component_by_name(c->parts[1]);
@@ -178,6 +245,27 @@ if (cmd == "ps")
 
 
 
+if ( cmd == "help" )
+{
+  while (1)
+  {
+    if (cmd_data != "" && cmd_data != "param_clone_value")
+      break;
+
+    if (cmd_data != "")
+      cmd_out->add_raw("help> ");
+
+    cmd_out->add_raw("help> param_clone_value [source_module] [source_parameter] [destination_module] [destination_parameter]");
+
+    if (cmd_data == "")
+      break;
+
+    cmd_out->add_raw("help>   Copies a parameter value from one module to the other.");
+    cmd_out->add_raw("help> ");
+    // break out
+    break;
+  }
+}
 
 
 if ( cmd == "param_clone_value" )
@@ -188,9 +276,12 @@ if ( cmd == "param_clone_value" )
   // syntax:
   //   param_clone_value [source_component] [source_parameter] [destination_component] [destination_parameter]
 
-  // 1. verify message length
+  // 1. verify argument count
   if (c->parts.size() != 5)
+  {
+    cmd_out->add_raw("alert_fail " + base64_encode(c->raw) + " Error "+base64_encode("Wrong number of arguments for param_clone_value") );
     goto process_message_queue_end;
+  }
 
 
   // 2. look for source component
@@ -237,7 +328,8 @@ if ( cmd == "param_clone_value" )
 
   // 7. everything should be OK and ready for copying
   // go via string to avoid data sharing
-  destination_parameter->set_string( source_parameter->get_string() );
+  vsx_string temp_value = source_parameter->get_string();
+  destination_parameter->set_string( temp_value );
 
   // 8. notify the module of a parameter update
   destination_parameter->module->param_set_notify( destination_parameter->name );
@@ -255,43 +347,6 @@ if ( cmd == "param_clone_value" )
 
 
 
-
-
-if (cmd == "param_set")
-{
-  // this is for float3 and such where multiple arity values have to be set in one command.
-  // as the last argument is a comma-separated list of values the character "," is banned
-  // from values.
-  // syntax:
-  //   param_set [component] [parameter] [value],[value],
-  if (c->parts.size() == 4)
-  {
-    vsx_comp* dest = get_component_by_name(c->parts[1]);
-    if (dest) {
-      vsx_engine_param* ep = dest->get_params_in()->get_by_name(c->parts[2]);
-      if (ep) {
-        vsx_string a = c->parts[3];
-        vsx_string deli = ",";
-        std::vector<vsx_string> pp;
-        explode(a,deli,pp);
-        if (!pp.size()) pp.push_back(c->parts[3]);
-        int cc = 0;
-
-        interpolation_list.remove(ep);
-
-        for (std::vector<vsx_string>::iterator it = pp.begin(); it != pp.end(); ++it) {
-          ep->set_string(*it,cc);
-          ++cc;
-        }
-        ep->module->param_set_notify(c->parts[2]);
-        if (ep->module->redeclare_in) {
-          redeclare_in_params(dest,cmd_out);
-        }
-      }
-    }
-  }
-  goto process_message_queue_end;
-}
 
 
 

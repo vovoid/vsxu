@@ -262,7 +262,7 @@ void vsx_engine_abs::redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_o
     } else
     {
       if (values.find(in->param_id_list[i]->name) != values.end()) {
-        in->param_id_list[i]->set_compound_string(values[in->param_id_list[i]->name]);
+        in->param_id_list[i]->set_string(values[in->param_id_list[i]->name]);
       }
     }
   }

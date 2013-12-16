@@ -761,6 +761,11 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
     #include "vsx_engine_messages/vsx_note.h"
     #include "vsx_engine_messages/vsx_em_system.h"
 
+    if (cmd == "help")
+    {
+      goto process_message_queue_end;
+    }
+
     // this shouldn't be reached unless no command is performed and thus jumped
     // to process_message_queue_end
     cmd_out->add("invalid","command");
