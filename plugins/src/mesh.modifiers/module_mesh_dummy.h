@@ -36,7 +36,7 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;dummies;mesh_dummy";
+    info->identifier = "mesh;dummies;mesh_dummy||dummies;mesh_dummy";
     info->description = "dummy for mesh (useful in macros)";
     info->in_param_spec = "mesh_in:mesh";
     info->out_param_spec = "mesh_out:mesh";

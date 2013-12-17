@@ -54,6 +54,7 @@ typedef struct stat t_stat;
 #include "module_texture_load_png_cubemap.h"
 #include "module_texture_load_png.h"
 #include "module_texture_load_openexr.h"
+#include "module_texture_dummy.h"
 
 
 //******************************************************************************
@@ -112,6 +113,7 @@ vsx_module* create_new_module(unsigned long module, void* args)
     case 16: return (vsx_module*)(new module_texture_render_surface_color_buffer);
     case 17: return (vsx_module*)(new module_texture_render_buffer);
     case 18: return (vsx_module*)(new module_texture_load_openexr);
+    case 19: return (vsx_module*)(new module_texture_dummy);
   };
   return 0;
 }
@@ -134,11 +136,12 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 16: delete (module_texture_render_surface_color_buffer*)m; break;
     case 17: delete (module_texture_render_buffer*)m; break;
     case 18: delete (module_texture_load_openexr*)m; break;
+    case 19: delete (module_texture_dummy*)m; break;
   }
 }
 
 unsigned long get_num_modules() {
-  return 19;
+  return 20;
 
 }
 
