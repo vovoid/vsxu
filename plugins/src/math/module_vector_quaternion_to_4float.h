@@ -40,15 +40,24 @@ public:
   void module_info(vsx_module_info* info)
   {
     info->identifier = "maths;converters;quaternion_to_4float";
-    info->description = "takes quaternion\n"
-                        "outputs 4 floats\n";
 
-    info->in_param_spec = "in_quat:quaternion";
-    info->out_param_spec = "param1:float,"
-                           "param2:float,"
-                           "param3:float,"
-                           "param4:float";
-    info->component_class = "parameters";
+    info->description =
+      "takes quaternion\n"
+      "outputs 4 floats\n"
+    ;
+
+    info->in_param_spec =
+      "in_quat:quaternion";
+
+    info->out_param_spec =
+      "param1:float,"
+      "param2:float,"
+      "param3:float,"
+      "param4:float"
+    ;
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

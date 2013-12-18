@@ -42,23 +42,29 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;oscillators;pulse_oscillator";
+    info->identifier =
+      "maths;oscillators;pulse_oscillator";
+
     info->description =
       "Like a normal oscillator,/n"
-    "but it pulses to 50% and /n "
-    "pauses until the next pulse /n";
-    info->in_param_spec =
+      "but it pulses to 50% and /n "
+      "pauses until the next pulse /n"
+    ;
 
+    info->in_param_spec =
       "osc:complex"
       "{"
-    "trigger:float,"
-      "fade_speed:float,"
-      "amp:float,"
+        "trigger:float,"
+        "fade_speed:float,"
+        "amp:float,"
       "}"
-      ;
-    info->out_param_spec = "result1:float";
+    ;
 
-    info->component_class = "parameters";
+    info->out_param_spec =
+      "result1:float";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

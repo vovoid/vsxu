@@ -52,10 +52,16 @@ public:
 
 void module_info(vsx_module_info* info)
 {
-  info->identifier = "mesh;vovoid;thorn";
+  info->identifier =
+    "mesh;vovoid;thorn";
+
   info->in_param_spec = "";
-  info->out_param_spec = "mesh_result:mesh";
-  info->component_class = "mesh";
+
+  info->out_param_spec =
+    "mesh_result:mesh";
+
+  info->component_class =
+    "mesh";
 }
 
 

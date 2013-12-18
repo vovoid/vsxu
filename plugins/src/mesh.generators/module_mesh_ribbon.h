@@ -42,17 +42,22 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;generators;ribbon";
+    info->identifier =
+      "mesh;generators;ribbon";
+
     info->description = "";
+
     info->in_param_spec =
-        "start_point:float3,"
-        "end_point:float3,"
-        "up_vector:float3,"
-        "width:float,"
-        "skew_amp:float,"
-        "time_amp:float"
-        ;
+      "start_point:float3,"
+      "end_point:float3,"
+      "up_vector:float3,"
+      "width:float,"
+      "skew_amp:float,"
+      "time_amp:float"
+    ;
+
     info->out_param_spec = "mesh:mesh";
+
     info->component_class = "mesh";
   }
 

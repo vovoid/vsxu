@@ -50,24 +50,30 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;oscillators;float_sequencer";
+    info->identifier =
+      "maths;oscillators;float_sequencer";
+
     info->description = "";
+
     info->in_param_spec =
       "float_sequence:sequence,"
       "length:float,"
       "options:complex"
       "{"
-      "  behaviour:enum?oscillating|trigger|trigger_pingpong,"
-      "  time_source:enum?operating_system|sequence,"
-      "  trigger:float,"
-      "  trigger_reverse:float,"
-      "  drive_type:enum?time_internal_relative|external,"
-      "  drive:float"
+        "behaviour:enum?oscillating|trigger|trigger_pingpong,"
+        "time_source:enum?operating_system|sequence,"
+        "trigger:float,"
+        "trigger_reverse:float,"
+        "drive_type:enum?time_internal_relative|external,"
+        "drive:float"
       "}"
-      ;
-    info->out_param_spec = "float:float";
+    ;
 
-    info->component_class = "parameters";
+    info->out_param_spec =
+      "float:float";
+
+    info->component_class =
+      "parameters";
   }
 
 

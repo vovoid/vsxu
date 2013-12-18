@@ -31,11 +31,21 @@ public:
 
 void module_info(vsx_module_info* info)
 {
-  info->identifier = "mesh;importers;obj_importer";
+  info->identifier =
+    "mesh;importers;obj_importer";
+
   info->description = "";
-  info->in_param_spec = "filename:resource,preserve_uv_coords:enum?NO|YES";
-  info->out_param_spec = "mesh:mesh";
-  info->component_class = "mesh";
+
+  info->in_param_spec =
+    "filename:resource,"
+    "preserve_uv_coords:enum?NO|YES"
+  ;
+
+  info->out_param_spec =
+    "mesh:mesh";
+
+  info->component_class =
+    "mesh";
 }
 
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

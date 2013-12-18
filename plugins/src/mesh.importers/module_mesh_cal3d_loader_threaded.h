@@ -133,22 +133,30 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;importers;cal3d_importer";
+    info->identifier =
+      "mesh;importers;cal3d_importer";
+
     info->description = "";
+
     info->in_param_spec =
-        "filename:resource,use_thread:enum?no|yes,"
-        "transforms:complex{"
-          "pre_rotation:quaternion,"
-          "pre_rotation_center:float3,"
-          "rotation:quaternion,"
-          "rotation_center:float3,"
-          "post_rot_translate:float3"
-        "}"
-        ;
+      "filename:resource,use_thread:enum?no|yes,"
+      "transforms:complex{"
+        "pre_rotation:quaternion,"
+        "pre_rotation_center:float3,"
+        "rotation:quaternion,"
+        "rotation_center:float3,"
+        "post_rot_translate:float3"
+      "}"
+    ;
+
     info->out_param_spec =
         "mesh:mesh,"
         "bones_bounding_box:mesh"
     ;
+
+    info->component_class =
+      "mesh";
+
     if (bones.size()) {
       info->in_param_spec += ",bones:complex{";
       info->out_param_spec += ",absolutes:complex{";
@@ -164,8 +172,7 @@ public:
       info->in_param_spec += "}";
       info->out_param_spec += "}";
     }
-    //printf("inparamspec: %s\n",info->in_param_spec.c_str());
-    info->component_class = "mesh";
+
   }
 
   void redeclare_in_params(vsx_module_param_list& in_parameters) {

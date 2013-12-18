@@ -65,15 +65,23 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;segmesh;segmesh_loft";
-    info->in_param_spec = "segment_mesh_in:segment_mesh,"
-        "loft_x:sequence,"
-        "loft_y:sequence,"
-        "loft_z:sequence,"
-        "segments:float?min=2,"
-        "length:float";
-    info->out_param_spec = "segment_mesh_out:segment_mesh";
-    info->component_class = "mesh";
+    info->identifier =
+      "mesh;segmesh;segmesh_loft";
+
+    info->in_param_spec =
+      "segment_mesh_in:segment_mesh,"
+      "loft_x:sequence,"
+      "loft_y:sequence,"
+      "loft_z:sequence,"
+      "segments:float?min=2,"
+      "length:float"
+    ;
+
+    info->out_param_spec =
+      "segment_mesh_out:segment_mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

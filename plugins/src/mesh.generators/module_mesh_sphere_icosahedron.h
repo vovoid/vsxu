@@ -64,22 +64,29 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;solid;mesh_sphere_icosahedron";
+    info->identifier =
+      "mesh;solid;mesh_sphere_icosahedron";
+
     info->description =
-        "A sphere based on an icosahedron\n"
-        "subdivided [subdivision_level]\n"
-        "number of times. You can set\n"
-        "[max_normalization_leve] to stop\n"
-        "normalizing the vertices making\n"
-        "a more bulky surface."
+      "A sphere based on an icosahedron\n"
+      "subdivided [subdivision_level]\n"
+      "number of times. You can set\n"
+      "[max_normalization_leve] to stop\n"
+      "normalizing the vertices making\n"
+      "a more bulky surface."
     ;
+
     info->in_param_spec =
-        "subdivision_level:float?min=1&nc=1,"
-        "max_normalization_level:float?nc=1,"
-        "initial_ico_scale:float?nc=1"
+      "subdivision_level:float?min=1&nc=1,"
+      "max_normalization_level:float?nc=1,"
+      "initial_ico_scale:float?nc=1"
     ;
-    info->out_param_spec = "mesh:mesh";
-    info->component_class = "mesh";
+
+    info->out_param_spec =
+      "mesh:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

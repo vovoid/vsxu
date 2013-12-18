@@ -49,14 +49,21 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;segmesh;map_segmesh_bspline";
-    info->in_param_spec = ""
+    info->identifier =
+      "mesh;segmesh;map_segmesh_bspline";
+
+    info->in_param_spec =
       "seg_mesh_in:segment_mesh,"
       "bspline_vertices_mesh:mesh,"
       "b_pos:float,"
-      "length:float";
-    info->out_param_spec = "mesh_result:mesh";
-    info->component_class = "mesh";
+      "length:float"
+    ;
+
+    info->out_param_spec =
+      "mesh_result:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

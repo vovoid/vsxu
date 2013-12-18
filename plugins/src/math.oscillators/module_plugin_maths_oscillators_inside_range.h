@@ -43,7 +43,9 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;oscillators;inside_range";
+    info->identifier =
+      "maths;oscillators;inside_range";
+
     info->description =
       "outputs 1 when Sound levels\n"
       "are inside the min / max range \n"
@@ -55,11 +57,16 @@ public:
       "range_low:float,"
       "range_high:float,"
       "randomness:float"
-      ;
-    info->out_param_spec =
-        "every_beat:float, random_beat:float, in_range:float";
+    ;
 
-    info->component_class = "parameters";
+    info->out_param_spec =
+      "every_beat:float,"
+      "random_beat:float,"
+      "in_range:float"
+    ;
+
+    info->component_class =
+      "parameters";
   }
 
 

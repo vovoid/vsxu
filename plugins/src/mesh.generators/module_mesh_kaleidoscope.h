@@ -16,15 +16,23 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;generators;vovoid;kaleido_mesh";
-    info->in_param_spec = "hemispheric:float";
-    info->out_param_spec = "mesh_out:mesh";
-    info->component_class = "mesh";
-    loading_done = true;
+    info->identifier =
+      "mesh;generators;vovoid;kaleido_mesh";
+
+    info->in_param_spec =
+      "hemispheric:float";
+
+    info->out_param_spec =
+      "mesh_out:mesh";
+
+    info->component_class =
+      "mesh";
+
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
+    loading_done = true;
     hemispheric = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"hemispheric");
     hemispheric->set(0.0f);
     mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");

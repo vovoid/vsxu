@@ -41,20 +41,30 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;vertices;random_vertices";
-    info->description = "Generates [num_points] vertices\nconfined within the box\ndefined by [scaling]\ndelivered as a mesh.\n"
+    info->identifier =
+      "mesh;vertices;random_vertices";
+
+    info->description =
+      "Generates [num_points] vertices\n"
+      "confined within the box\n"
+      "defined by [scaling]\n"
+      "delivered as a mesh.\n"
       "Colors, faces etc. are not genarated.\n"
       "Primarily for use with particle systems\n"
       "and point renderers and data source for\n"
       "the b-spline generator.";
-    info->out_param_spec = "mesh:mesh";
+
     info->in_param_spec =
-  "\
-  rand_seed:float,\
-  num_points:float,\
-  scaling:float3?nc=1\
-  ";
-    info->component_class = "mesh";
+      "rand_seed:float,"
+      "num_points:float,"
+      "scaling:float3?nc=1"
+    ;
+
+    info->out_param_spec =
+      "mesh:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

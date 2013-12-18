@@ -40,11 +40,26 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;particles;mesh_rays";
-    info->description = "A bunch of random triangles with edges alpha = 0";
-    info->in_param_spec = "num_rays:float,center_color:float4,options:complex{limit_ray_size:float}";
-    info->out_param_spec = "mesh:mesh";
-    info->component_class = "mesh";
+    info->identifier =
+      "mesh;particles;mesh_rays";
+
+    info->description =
+      "A bunch of random triangles with edges alpha = 0";
+
+    info->in_param_spec =
+      "num_rays:float,"
+      "center_color:float4,"
+      "options:complex"
+      "{"
+        "limit_ray_size:float"
+      "}"
+    ;
+
+    info->out_param_spec =
+      "mesh:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

@@ -73,19 +73,27 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;solid;plane_uv_distort";
+    info->identifier =
+      "mesh;solid;plane_uv_distort";
+
     info->description = "";
-    info->in_param_spec = "x_res:float?min=2,"
-                          "y_res:float?min=2,"
-                          "distortion:complex{"
-                            "x_shape:sequence,"
-                            "x_shape_multiplier:float,"
-                            "z_shape:sequence,"
-                            "z_shape_multiplier:float"
-                          "}"
-        ;
-    info->out_param_spec = "mesh:mesh";
-    info->component_class = "mesh";
+
+    info->in_param_spec =
+      "x_res:float?min=2,"
+      "y_res:float?min=2,"
+      "distortion:complex{"
+        "x_shape:sequence,"
+        "x_shape_multiplier:float,"
+        "z_shape:sequence,"
+        "z_shape_multiplier:float"
+      "}"
+    ;
+
+    info->out_param_spec =
+      "mesh:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

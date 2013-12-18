@@ -77,18 +77,25 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;generators;ocean";
+    info->identifier =
+      "mesh;generators;ocean";
+
     info->description = "";
+
     info->in_param_spec =
-        "time_speed:float,"
-        "wave_speed:float,"
-        "wind_speed_x:float,"
-        "wind_speed_y:float,"
-        "wind_speed:float,"
-        "normals_only:enum?no|yes"
-        ;
-    info->out_param_spec = "mesh:mesh";
-    info->component_class = "mesh";
+      "time_speed:float,"
+      "wave_speed:float,"
+      "wind_speed_x:float,"
+      "wind_speed_y:float,"
+      "wind_speed:float,"
+      "normals_only:enum?no|yes"
+  ;
+
+    info->out_param_spec =
+      "mesh:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

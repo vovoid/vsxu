@@ -36,15 +36,20 @@ class module_mesh_needle : public vsx_module {
 public:
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;vertices;needle";
+    info->identifier =
+      "mesh;vertices;needle";
+
     info->description = "";
+
     info->out_param_spec = "mesh:mesh";
+
     info->in_param_spec =
-  "\
-num_points:float,\
-size:float\
-";
-    info->component_class = "mesh";
+      "num_points:float,"
+      "size:float"
+    ;
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

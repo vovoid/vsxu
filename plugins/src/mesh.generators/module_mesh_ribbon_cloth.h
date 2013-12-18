@@ -65,23 +65,30 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;generators;ribbon_cloth";
+    info->identifier =
+      "mesh;generators;ribbon_cloth";
+
     info->description = "";
+
     info->in_param_spec =
-        "start_point:float3,"
-        "end_point:float3,"
-        "up_vector:float3,"
-        "width:float,"
-        "skew_amp:float,"
-        "time_amp:float,"
-        "damping_Factor:float,"
-        "step_size:float,"
-        "stiffness:float,"
-        "floor_y:float,"
-        "reinit:enum?no|yes"
-        ;
-    info->out_param_spec = "mesh:mesh";
-    info->component_class = "mesh";
+      "start_point:float3,"
+      "end_point:float3,"
+      "up_vector:float3,"
+      "width:float,"
+      "skew_amp:float,"
+      "time_amp:float,"
+      "damping_Factor:float,"
+      "step_size:float,"
+      "stiffness:float,"
+      "floor_y:float,"
+      "reinit:enum?no|yes"
+    ;
+
+    info->out_param_spec =
+      "mesh:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

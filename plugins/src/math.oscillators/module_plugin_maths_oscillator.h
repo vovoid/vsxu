@@ -46,8 +46,10 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;oscillators;oscillator";
-    info->description = ""
+    info->identifier =
+      "maths;oscillators;oscillator";
+
+    info->description =
       "This oscillator can iterate over\n"
       "time, random or by external source\n"
       "(float param). It can give noise\n"
@@ -55,27 +57,31 @@ public:
       "square.\n"
       "The resulting float value ranges from\n"
       "ofs-amp up to ofs+amp.";
+
     info->in_param_spec =
       "osc:complex"
       "{"
-      "  osc_type:enum?"
-      "    noise|sin|saw|square|triangle|quadratic,"
-      "  freq:float,"
-      "  amp:float,"
-      "  ofs:float,"
-      "  phase:float?help=`Not often useful,\nbut it shifts time back and forth.`,"
+        "osc_type:enum?"
+        "noise|sin|saw|square|triangle|quadratic,"
+        "freq:float,"
+        "amp:float,"
+        "ofs:float,"
+        "phase:float?help=`Not often useful,\nbut it shifts time back and forth.`,"
       "}"
       ","
       "options:complex"
       "{"
-      "  time_source:enum?operating_system|sequence,"
-      "  drive_type:enum?time_internal_absolute|time_internal_relative|external,"
-      "  drive:float"
+        "time_source:enum?operating_system|sequence,"
+        "drive_type:enum?time_internal_absolute|time_internal_relative|external,"
+        "drive:float"
       "}"
-      ;
-    info->out_param_spec = "float:float";
+    ;
 
-    info->component_class = "parameters";
+    info->out_param_spec =
+      "float:float";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

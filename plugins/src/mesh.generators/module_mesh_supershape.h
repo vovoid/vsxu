@@ -103,23 +103,30 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;solid;mesh_solid_supershape";
-    info->description = "";
-    info->in_param_spec = "x:complex{"
-                            "x_num_segments:float?min=2"
-                            ",x_start:float?muin=-1.570794&muax=1.570794"
-                            ",x_stop:float?muin=-1.570794&muax=1.570794"
-                            ",y_start:float?muin=-1.570794&muax=1.570794"
-                            ",y_stop:float?muin=-1.570794&muax=1.570794"
-                            ",x_a:float"
-                            ",x_b:float"
-                            ",x_n1:float"
-                            ",x_n2:float"
-                            ",x_n3:float"
-                            ",x_m:float"
-                          "}";
+    info->identifier =
+      "mesh;solid;mesh_solid_supershape";
 
-    info->out_param_spec = "mesh:mesh";
+    info->description = "";
+
+    info->in_param_spec =
+      "x:complex{"
+        "x_num_segments:float?min=2"
+        ",x_start:float?muin=-1.570794&muax=1.570794"
+        ",x_stop:float?muin=-1.570794&muax=1.570794"
+        ",y_start:float?muin=-1.570794&muax=1.570794"
+        ",y_stop:float?muin=-1.570794&muax=1.570794"
+        ",x_a:float"
+        ",x_b:float"
+        ",x_n1:float"
+        ",x_n2:float"
+        ",x_n3:float"
+        ",x_m:float"
+      "}"
+    ;
+
+    info->out_param_spec =
+      "mesh:mesh";
+
     info->component_class = "mesh";
   }
 

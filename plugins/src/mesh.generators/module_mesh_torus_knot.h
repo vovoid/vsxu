@@ -90,22 +90,31 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;solid;mesh_torus_knot";
+    info->identifier =
+      "mesh;solid;mesh_torus_knot";
+
     info->description = "";
-    info->in_param_spec = "num_sectors:float?min=2,"
+
+    info->in_param_spec =
+        "num_sectors:float?min=2,"
         "num_stacks:float?min=2,"
         "p:float,"
         "q:float,"
         "phi_offset:float,"
-        "size:complex{"
-        "size_shape_x:sequence,"
-        "size_shape_x_multiplier:float,"
-        "size_shape_y:sequence,"
-        "size_shape_y_multiplier:float"
+        "size:complex"
+        "{"
+          "size_shape_x:sequence,"
+          "size_shape_x_multiplier:float,"
+          "size_shape_y:sequence,"
+          "size_shape_y_multiplier:float"
         "}"
         ;
-    info->out_param_spec = "mesh:mesh";
-    info->component_class = "mesh";
+
+    info->out_param_spec =
+      "mesh:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

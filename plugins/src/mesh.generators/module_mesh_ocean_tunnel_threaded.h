@@ -71,11 +71,19 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;generators;ocean_tunnel";
+    info->identifier =
+      "mesh;generators;ocean_tunnel";
+
     info->description = "";
-    info->in_param_spec = "time_speed:float";
-    info->out_param_spec = "mesh:mesh";
-    info->component_class = "mesh";
+
+    info->in_param_spec =
+      "time_speed:float";
+
+    info->out_param_spec =
+      "mesh:mesh";
+
+    info->component_class =
+      "mesh";
   }
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {

@@ -36,12 +36,20 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;arithmetics;vector;vector_normalize";
-    info->description = "Normalizes the vector (length = 1.0)\n";
+    info->identifier =
+      "maths;arithmetics;vector;vector_normalize";
 
-    info->out_param_spec = "result_float3:float3";
-    info->in_param_spec = "param1:float3";
-    info->component_class = "parameters";
+    info->description =
+      "Normalizes the vector (length = 1.0)\n";
+
+    info->out_param_spec =
+      "result_float3:float3";
+
+    info->in_param_spec =
+      "param1:float3";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

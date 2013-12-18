@@ -39,11 +39,19 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;solid;mesh_grid";
+    info->identifier =
+      "mesh;solid;mesh_grid";
+
     info->description = "";
-    info->in_param_spec = "power_of_two_size:float";
-    info->out_param_spec = "mesh:mesh";
-    info->component_class = "mesh";
+
+    info->in_param_spec =
+      "power_of_two_size:float";
+
+    info->out_param_spec =
+      "mesh:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

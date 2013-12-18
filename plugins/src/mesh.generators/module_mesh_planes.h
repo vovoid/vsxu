@@ -42,11 +42,24 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;solid;mesh_planes";
-    info->description = "Multiple planes layered on top of each other";
-    info->in_param_spec = "num_planes:float,space_between:float,diameter:float,normals:float3";
-    info->out_param_spec = "mesh:mesh";
-    info->component_class = "mesh";
+    info->identifier =
+      "mesh;solid;mesh_planes";
+
+    info->description =
+      "Multiple planes layered on top of each other";
+
+    info->in_param_spec =
+      "num_planes:float,"
+      "space_between:float,"
+      "diameter:float,"
+      "normals:float3"
+    ;
+
+    info->out_param_spec =
+      "mesh:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

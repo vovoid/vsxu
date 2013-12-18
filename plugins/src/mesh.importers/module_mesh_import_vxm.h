@@ -25,11 +25,20 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;importers;vxm_importer";
-    info->description = "VXM loader";
-    info->in_param_spec = "filename:resource";
-    info->out_param_spec = "mesh:mesh";
-    info->component_class = "mesh";
+    info->identifier =
+      "mesh;importers;vxm_importer";
+
+    info->description =
+      "VXM loader";
+
+    info->in_param_spec =
+      "filename:resource";
+
+    info->out_param_spec =
+      "mesh:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

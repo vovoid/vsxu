@@ -93,7 +93,8 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;solid;mesh_super_banana";
+    info->identifier =
+      "mesh;solid;mesh_super_banana";
 
     info->description = "";
 
@@ -122,7 +123,9 @@ public:
       "mesh:mesh,"
       "last_vertex_index:float"
     ;
-    info->component_class = "mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

@@ -44,21 +44,28 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;vertices;ribbon_vertices";
-    info->description = "Useful for feeding particle cloud.";
-    info->in_param_spec =
-        "start_point:float3,"
-        "end_point:float3,"
-        "up_vector:float3,"
+    info->identifier =
+      "mesh;vertices;ribbon_vertices";
 
-        "num_segments:float,"
-        "particle_scale:float,"
-        "width:float,"
-        "skew_amp:float,"
-        "time_amp:float"
-        ;
-    info->out_param_spec = "mesh:mesh";
-    info->component_class = "mesh";
+    info->description =
+      "Useful for feeding particle cloud.";
+
+    info->in_param_spec =
+      "start_point:float3,"
+      "end_point:float3,"
+      "up_vector:float3,"
+      "num_segments:float,"
+      "particle_scale:float,"
+      "width:float,"
+      "skew_amp:float,"
+      "time_amp:float"
+    ;
+
+    info->out_param_spec =
+      "mesh:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

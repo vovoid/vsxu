@@ -37,14 +37,24 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;arithmetics;vector;vector_add||maths;arithmetics;float3;float3_add_float3";
+    info->identifier =
+      "maths;arithmetics;vector;vector_add"
+      "||"
+      "maths;arithmetics;float3;float3_add_float3"
+    ;
+
     info->description = "";
 
-    info->out_param_spec = "result_float3:float3";
-    info->in_param_spec = "\
-  param1:float3,\
-  param2:float3";
-    info->component_class = "parameters";
+    info->out_param_spec =
+      "result_float3:float3";
+
+    info->in_param_spec =
+      "param1:float3,"
+      "param2:float3"
+    ;
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

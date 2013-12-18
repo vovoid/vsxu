@@ -34,7 +34,6 @@ public:
   vsx_module_param_float* num_points;
   vsx_module_param_float3* scaling;
   vsx_module_param_mesh* mesh_a;
-  vsx_module_param_mesh* mesh_b;
 
   // out
   vsx_module_param_mesh* result;
@@ -52,20 +51,28 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;vertices;lightning_vertices";
-    info->description = "Generates a line with random offset\n"
-      "vertices from one mesh to another.";
-    info->out_param_spec = "mesh:mesh";
+    info->identifier =
+      "mesh;vertices;lightning_vertices";
+
+    info->description =
+      "Generates a line with random offset\n"
+      "vertices from one mesh to another."
+    ;
+
     info->in_param_spec =
       "rand_seed:float,"
       "lifetime:float,"
       "length:float,"
       "mesh_a:mesh,"
-      //"mesh_b:mesh,"
       "num_points:float,"
       "scaling:float3?nc=1"
     ;
-    info->component_class = "mesh";
+
+    info->out_param_spec =
+      "mesh:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

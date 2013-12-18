@@ -51,15 +51,21 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;vertices;bspline_vertices";
+    info->identifier =
+      "mesh;vertices;bspline_vertices";
+
     info->description = "";
-    info->out_param_spec =
-      "mesh:mesh";
+
     info->in_param_spec =
       "source:mesh,"
       "density:float"
     ;
-    info->component_class = "mesh";
+
+    info->out_param_spec =
+      "mesh:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

@@ -20,11 +20,20 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;solid;metaballs";
-    info->description = "Generates a metaballs mesh";
-    info->in_param_spec = "grid_size:float?nc=1";
-    info->out_param_spec = "mesh:mesh";
-    info->component_class = "mesh";
+    info->identifier =
+      "mesh;solid;metaballs";
+
+    info->description =
+      "Generates a metaballs mesh";
+
+    info->in_param_spec =
+      "grid_size:float?nc=1";
+
+    info->out_param_spec =
+      "mesh:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

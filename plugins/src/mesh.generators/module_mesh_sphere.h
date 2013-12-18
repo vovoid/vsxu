@@ -41,11 +41,22 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;solid;mesh_sphere";
-    info->description = "";
-    info->in_param_spec = "num_sectors:float?min=2,num_stacks:float?min=2";
-    info->out_param_spec = "mesh:mesh";
-    info->component_class = "mesh";
+    info->identifier =
+      "mesh;solid;mesh_sphere";
+
+    info->description =
+      "U/V Sphere generatr";
+
+    info->in_param_spec =
+      "num_sectors:float?min=2,"
+      "num_stacks:float?min=2"
+    ;
+
+    info->out_param_spec =
+      "mesh:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
