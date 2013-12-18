@@ -36,7 +36,10 @@ public:
   void module_info(vsx_module_info* info)
   {
     info->identifier =
-      "maths;dummies;float4_dummy";
+      "maths;dummies;float4_dummy"
+      "||"
+      "dummies;float4_dummy"
+    ;
 
     info->description =
       "This is only to gather connections\n"

@@ -37,14 +37,25 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;accumulators;quat_rotation_accum_2d";
-    info->description = "It's like the rotation sphere,\n"
-                        "you can rotate it step by step\n"
-                        "by x or y";
-    info->out_param_spec = "result_quat:quaternion";
-    info->in_param_spec = "param_x:float,"
-                          "param_y:float";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;accumulators;quat_rotation_accum_2d";
+
+    info->description =
+      "It's like the rotation sphere,\n"
+      "you can rotate it step by step\n"
+      "by x or y"
+    ;
+
+    info->out_param_spec =
+      "result_quat:quaternion";
+
+    info->in_param_spec =
+        "param_x:float,"
+        "param_y:float"
+    ;
+
+    info->component_class =
+      "parameters";
   }
 
 

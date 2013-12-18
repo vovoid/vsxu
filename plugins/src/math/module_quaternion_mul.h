@@ -37,11 +37,20 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;arithmetics;quaternion;quat_mul";
-    info->description = "Rotate quaternion a by quaternion b";
-    info->out_param_spec = "result_quat:quaternion";
-    info->in_param_spec = "quat_a:quaternion,"
-                          "quat_b:quaternion";
+    info->identifier =
+      "maths;arithmetics;quaternion;quat_mul";
+
+    info->description =
+      "Rotate quaternion a by quaternion b";
+
+    info->out_param_spec =
+      "result_quat:quaternion";
+
+    info->in_param_spec =
+      "quat_a:quaternion,"
+      "quat_b:quaternion"
+    ;
+
     info->component_class = "parameters";
   }
 

@@ -39,13 +39,23 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;interpolation;quat_slerp_2p";
-    info->description = "Rotate seamlessly between 2 angles/rotations";
-    info->out_param_spec = "result_quat:quaternion";
-    info->in_param_spec = "quat_a:quaternion,"
-                          "quat_b:quaternion,"
-                          "pos:float";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;interpolation;quat_slerp_2p";
+
+    info->description =
+      "Rotate seamlessly between 2 angles/rotations";
+
+    info->out_param_spec =
+      "result_quat:quaternion";
+
+    info->in_param_spec =
+      "quat_a:quaternion,"
+      "quat_b:quaternion,"
+      "pos:float"
+    ;
+
+    info->component_class =
+      "parameters";
   }
 
 

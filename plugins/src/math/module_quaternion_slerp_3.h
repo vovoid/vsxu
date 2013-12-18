@@ -40,14 +40,26 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;interpolation;quat_slerp_3p";
-    info->description = "Rotate seamlessly between 3 angles/rotations\nCan be used to make full laps/rotations.";
-    info->out_param_spec = "result_quat:quaternion";
-    info->in_param_spec = "quat_a:quaternion,"
-                          "quat_b:quaternion,"
-                          "quat_c:quaternion,"
-                          "pos:float";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;interpolation;quat_slerp_3p";
+
+    info->description =
+      "Rotate seamlessly between 3 angles/rotations\n"
+      "Can be used to make full laps/rotations."
+    ;
+
+    info->out_param_spec =
+      "result_quat:quaternion";
+
+    info->in_param_spec =
+      "quat_a:quaternion,"
+      "quat_b:quaternion,"
+      "quat_c:quaternion,"
+      "pos:float"
+    ;
+
+    info->component_class =
+      "parameters";
   }
 
 

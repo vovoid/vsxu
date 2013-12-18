@@ -37,7 +37,10 @@ public:
   void module_info(vsx_module_info* info)
   {
     info->identifier =
-      "maths;dummies;float_dummy||dummies;float_dummy";
+      "maths;dummies;float_dummy"
+      "||"
+      "dummies;float_dummy"
+    ;
 
     info->description =
       "[floatin] is copied without modification into\n"
