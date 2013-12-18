@@ -38,12 +38,25 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "!maths;interpolation;float_interpolation||maths;interpolation;float_smoother";
-    info->description = "Smoothens a value over time\n"
-                        " - same algorith as the knobs/sliders";
-    info->out_param_spec = "result_float:float";
-    info->in_param_spec = "value_in:float,speed:float";
-    info->component_class = "parameters";
+    info->identifier =
+      "!maths;interpolation;float_interpolation"
+      "||"
+      "maths;interpolation;float_smoother"
+    ;
+
+    info->description =
+      "Smoothens a value over time\n"
+      " - same algorith as the knobs/sliders"
+    ;
+
+    info->out_param_spec =
+      "result_float:float";
+
+    info->in_param_spec =
+      "value_in:float,speed:float";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

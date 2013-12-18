@@ -35,14 +35,24 @@ class module_float_sin : public vsx_module
 public:
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;arithmetics;binary;sin";
-    info->description = "sin:\n"
-                        "result = sin( float_in )\n"
-                        "returns the sine of float_in given\n"
-                        "in radians";
-    info->out_param_spec = "result_float:float";
-    info->in_param_spec = "float_in:float";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;arithmetics;binary;sin";
+
+    info->description =
+      "sin:\n"
+      "result = sin( float_in )\n"
+      "returns the sine of float_in given\n"
+      "in radians"
+    ;
+
+    info->out_param_spec =
+      "result_float:float";
+
+    info->in_param_spec =
+      "float_in:float";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

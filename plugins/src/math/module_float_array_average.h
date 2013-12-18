@@ -41,12 +41,24 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;array;float_array_average";
-    info->description = "Calculates the average of all\n\
-values in the array";
-    info->in_param_spec = "float_in:float_array,start:float,end:float";
-    info->out_param_spec = "result_float:float";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;array;float_array_average";
+
+    info->description =
+      "Calculates the average of all\n"
+      "values in the array"
+    ;
+
+    info->in_param_spec =
+      "float_in:float_array,"
+      "start:float,end:float"
+    ;
+
+    info->out_param_spec =
+      "result_float:float";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

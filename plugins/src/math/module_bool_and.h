@@ -36,20 +36,29 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;arithmetics;boolean;and";
-    info->description = "boolean and:\n"
-                        "result = a and b\n"
-                        "the logic operation and:\n"
-                        "1 and 0 = 0\n"
-                        "0 and 1 = 0\n"
-                        "0 and 0 = 0\n"
-                        "1 and 1 = 1\n"
-                        "\n"
-                        "Note: 1 is defined as\n"
-                        "larger than +/-0.5";
-    info->in_param_spec = "a:float,b:float";
-    info->out_param_spec = "result_float:float";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;arithmetics;boolean;and";
+
+    info->description =
+      "boolean and:\n"
+      "result = a and b\n"
+      "the logic operation and:\n"
+      "1 and 0 = 0\n"
+      "0 and 1 = 0\n"
+      "0 and 0 = 0\n"
+      "1 and 1 = 1\n"
+    ;
+
+    info->in_param_spec =
+      "a:float,"
+      "b:float"
+    ;
+
+    info->out_param_spec =
+      "result_float:float";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

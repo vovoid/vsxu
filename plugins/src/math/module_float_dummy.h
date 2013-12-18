@@ -36,7 +36,9 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;dummies;float_dummy||dummies;float_dummy";
+    info->identifier =
+      "maths;dummies;float_dummy||dummies;float_dummy";
+
     info->description =
       "[floatin] is copied without modification into\n"
       "[result_float]\n"
@@ -48,9 +50,12 @@ public:
       "the same value but you don't want 10\n"
       "aliases going out, it's a good idea to\n"
       "keep one inside your macro.\n"
-      ;
+    ;
+
     info->out_param_spec = "result_float:float";
+
     info->in_param_spec = "float_in:float";
+
     info->component_class = "parameters";
   }
 

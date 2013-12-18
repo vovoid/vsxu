@@ -226,10 +226,15 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->in_param_spec = "filename:resource,drive:enum?engine_time|parameter,time:float";
-      info->identifier = "bitmaps;loaders;avi";
-      info->out_param_spec = "bitmap:bitmap";
-      info->component_class = "bitmap";
+    info->in_param_spec =
+      "filename:resource,"
+      "drive:enum?engine_time|parameter,"
+      "time:float"
+    ;
+
+    info->identifier = "bitmaps;loaders;avi";
+    info->out_param_spec = "bitmap:bitmap";
+    info->component_class = "bitmap";
     info->description = "Plays AVI video";
   }
   

@@ -38,12 +38,24 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;array;float_array_pick";
-    info->description = "picks the value from the array/list\n"
-                        "and delivers it as out parameter";
-    info->in_param_spec = "float_in:float_array,which:float";
-    info->out_param_spec = "result_float:float";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;array;float_array_pick";
+
+    info->description =
+      "picks the value from the array/list\n"
+      "and delivers it as out parameter"
+    ;
+
+    info->in_param_spec =
+      "float_in:float_array,"
+      "which:float"
+    ;
+
+    info->out_param_spec =
+      "result_float:float";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

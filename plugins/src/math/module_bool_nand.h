@@ -37,20 +37,31 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;arithmetics;boolean;nand";
-    info->description = "boolean nand:\n"
-                        "result = !(a and b)\n"
-                        "the logic operation nand:\n"
-                        "1 nand 0 = 1\n"
-                        "0 nand 1 = 1\n"
-                        "0 nand 0 = 1\n"
-                        "1 nand 1 = 0\n"
-                        "\n"
-                        "Note: 1 is defined as\n"
-                        "larger than +/-0.5";
-    info->in_param_spec = "a:float,b:float";
-    info->out_param_spec = "result_float:float";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;arithmetics;boolean;nand";
+
+    info->description =
+      "boolean nand:\n"
+      "result = !(a and b)\n"
+      "the logic operation nand:\n"
+      "1 nand 0 = 1\n"
+      "0 nand 1 = 1\n"
+      "0 nand 0 = 1\n"
+      "1 nand 1 = 0\n"
+      "\n"
+      "Note: 1 is defined as\n"
+      "larger than +/-0.5"
+    ;
+    info->in_param_spec =
+      "a:float,"
+      "b:float"
+    ;
+
+    info->out_param_spec =
+      "result_float:float";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

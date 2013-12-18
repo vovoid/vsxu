@@ -34,18 +34,28 @@ class module_bool_not : public vsx_module
 public:
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;arithmetics;boolean;not";
-    info->description = "boolean not:\n"
-                        "result = !a\n"
-                        "the logic operation not:\n"
-                        "not 1 = 0\n"
-                        "not 0 = 1\n"
-                        "\n"
-                        "Note: 1 is defined as\n"
-                        "larger than +/-0.5";
-    info->in_param_spec = "a:float";
-    info->out_param_spec = "result_float:float";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;arithmetics;boolean;not";
+
+    info->description =
+      "boolean not:\n"
+      "result = !a\n"
+      "the logic operation not:\n"
+      "not 1 = 0\n"
+      "not 0 = 1\n"
+      "\n"
+      "Note: 1 is defined as\n"
+      "larger than +/-0.5"
+    ;
+
+    info->in_param_spec =
+      "a:float";
+
+    info->out_param_spec =
+      "result_float:float";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

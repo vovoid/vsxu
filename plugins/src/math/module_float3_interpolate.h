@@ -38,11 +38,25 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;interpolation;float3_interpolate";
-    info->description = "linear interpolation for the value\npos ranges from 0.0 to 1.0";
-    info->in_param_spec = "float3_in_a:float3,float3_in_b:float3,pos:float";
-    info->out_param_spec = "result_float3:float3";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;interpolation;float3_interpolate";
+
+    info->description =
+      "linear interpolation for the value\n"
+      "pos ranges from 0.0 to 1.0"
+    ;
+
+    info->in_param_spec =
+      "float3_in_a:float3,"
+      "float3_in_b:float3,"
+      "pos:float"
+    ;
+
+    info->out_param_spec =
+      "result_float3:float3";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

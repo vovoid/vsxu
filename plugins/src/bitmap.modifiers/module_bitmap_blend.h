@@ -128,18 +128,18 @@ public:
 
   // our worker thread, to keep the tough generating work off the main loop
   // this is a fairly simple operation, but when you want to generate fractals
-  // and decode film, you could run into several seconds of processing time. 
+  // and decode film, you could run into several seconds of processing time.
   static void* worker(void *ptr)
   {
     module_bitmap_blend* mod = ((module_bitmap_blend*)ptr);
     vsx_bitmap* bitm = mod->work_bitmap;
     vsx_bitmap* bitm1 = mod->bitm1;
     vsx_bitmap* bitm2 = mod->bitm2;
-    
+
     unsigned long x,y,ix,iy;
 
     for (x = 0; x < bitm->size_x * bitm->size_y; x++) ((vsx_bitmap_32bt*)bitm->data)[x] = 0;
-    
+
     bool ixbound = false, iybound = false;
     iy = 0;
     for (y = (unsigned long)mod->bitm1_ofs->get(1); y < bitm->size_y && !iybound; y++)
@@ -174,7 +174,7 @@ public:
         {\
           ((unsigned char*)&data[x + y * bitm->size_x])[a] = Blend_Opacity(((unsigned char*)&data2[ix + iy * bitm2->size_x])[a],((unsigned char*)&data[x + y * bitm->size_x])[a],BLT,mod->bitm2_opacity->get());\
         }\
-      
+
         switch (mod->filter_type->get())
         {
           case BLEND_NORMAL       : BLEND_FUNC(Blend_Normal) break;
@@ -203,7 +203,7 @@ public:
           case BLEND_GLOW         : BLEND_FUNC(Blend_Glow) break;
           case BLEND_PHOENIX      : BLEND_FUNC(Blend_Phoenix) break;
         }
-      
+
         ix++;
         if (ix >= bitm2->size_x) ixbound = true;
       }
@@ -217,7 +217,7 @@ public:
 
     return 0;
   }
-  
+
   void module_info(vsx_module_info* info)
   {
     info->in_param_spec =
@@ -275,9 +275,12 @@ public:
     info->identifier = "bitmaps;filters;bitm_"+nn;
     info->out_param_spec = "bitmap:bitmap";
     info->component_class = "bitmap";
-		info->description = "Mixes bitmaps with each other\nMust be of same size!";
+    info->description =
+      "Blends two bitmaps.\n"
+      "Must be of same size!"
+     ;
   }
-  
+
   int timestamp1;
   int timestamp2;
 
@@ -306,7 +309,7 @@ public:
     in2 = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"in2");
 
     result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-    
+
     target_size = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"target_size");
     target_size->set(512.0f,0);
     target_size->set(512.0f,1);
@@ -321,7 +324,7 @@ public:
     filter_type->set(blend_type);
 
     bitmap_type = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"bitmap_type");
-    
+
     //--------------------------------------------------------------------------------------------------
 
     result1->set_p(bitm);
@@ -345,7 +348,7 @@ public:
         bitm.valid = false;
         timestamp1 = bitm1->timestamp;
         timestamp2 = bitm2->timestamp;
-        
+
         if (bitm.size_x != (unsigned long)target_size->get(0) || bitm.size_y != (unsigned long)target_size->get(1))
         {
           if (bitm.data != 0) to_delete_data = bitm.data;
@@ -353,7 +356,7 @@ public:
           bitm.size_x = (int)target_size->get(0);
           bitm.size_y = (int)target_size->get(1);
         }
-        
+
         thread_state = 1;
         worker_running = true;
         thread_created = true;
@@ -384,9 +387,9 @@ public:
       delete[] (vsx_bitmap_32bt*)to_delete_data;
       to_delete_data = 0;
     }
-    
+
   }
-  
+
   void on_delete()
   {
     if (worker_running)

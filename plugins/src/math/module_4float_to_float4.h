@@ -39,23 +39,29 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;converters;4float_to_float4";
-    info->description = ""
-                        "[floata, floatb, floatc, floatd] are copied and \n"
-                        "converted into \n"
-                        "[result_float4] which is a float3\n"
-                        "\n"
-                        "This is a simple conversion module.\n"
-                        "Whenever possible, try to set values\n"
-                        "with sliders, this is only good if you\n"
-                        "really need to convert";
+    info->identifier =
+      "maths;converters;4float_to_float4";
 
-    info->out_param_spec = "result_float4:float4";
-    info->in_param_spec = "\
-  floata:float,\
-  floatb:float,\
-  floatc:float,\
-  floatd:float";
+    info->description =
+      "[floata, floatb, floatc, floatd] are copied and \n"
+      "converted into \n"
+      "[result_float4] which is a float3\n"
+      "\n"
+      "This is a simple conversion module.\n"
+      "Whenever possible, try to set values\n"
+      "with sliders, this is only good if you\n"
+      "really need to convert"
+    ;
+
+    info->out_param_spec =
+      "result_float4:float4";
+
+    info->in_param_spec =
+      "floata:float,"
+      "floatb:float,"
+      "floatc:float,"
+      "floatd:float"
+    ;
 
     info->component_class = "parameters";
   }

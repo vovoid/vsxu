@@ -26,27 +26,14 @@
 
 unsigned char catmullrom_interpolate(int v0, int v1, int v2, int v3, float xx)
 {
-  
-  
-	int a =v0 - v1;
-	int P =v3 - v2 - a;
-	int Q =a - P;
-	int R =v2 - v0;
-	int t=(int)(v1+xx*(R+xx*(Q+xx*P)));
-//	int b;
-	/*asm
-	(	"movd %%mm0 , %1\n\t"
-		"packuswb %%mm0, %%mm0\n\t"
-		"movd %0, %%mm0\n\t"
-		"emms\n\t"
-		: "=r"(b)
-		: "r"(t)
-		:
-	);*/
-	if (t > 255) return 255; else
-	if (t < 0) return 0; else
-//	return (unsigned char)t;
-	return (unsigned char)t;
+  int a =v0 - v1;
+  int P =v3 - v2 - a;
+  int Q =a - P;
+  int R =v2 - v0;
+  int t=(int)(v1+xx*(R+xx*(Q+xx*P)));
+  if (t > 255) return 255; else
+  if (t < 0) return 0; else
+  return (unsigned char)t;
 }
 
 
@@ -59,21 +46,21 @@ public:
   vsx_module_param_int* size;
   vsx_module_param_int* amplitude;
 
-	// out
-	vsx_module_param_bitmap* result1;
+  // out
+  vsx_module_param_bitmap* result1;
 
-	// internal
-	bool need_to_rebuild;
-	
-	vsx_bitmap bitm;
-	int bitm_timestamp;
-	
+  // internal
+  bool need_to_rebuild;
+
+  vsx_bitmap bitm;
+  int bitm_timestamp;
+
   pthread_t					worker_t;
   pthread_attr_t		worker_t_attr;
 
   int p_updates;
   int my_ref;
-  
+
   vsx_bitmap*       work_bitmap;
   bool              thread_created;
   bool              worker_running;
@@ -82,7 +69,7 @@ public:
 
   // our worker thread, to keep the tough generating work off the main loop
   // this is a fairly simple operation, but when you want to generate fractals
-  // and decode film, you could run into several seconds of processing time. 
+  // and decode film, you could run into several seconds of processing time.
   static void* worker(void *ptr)
   {
     int x,y;
@@ -146,21 +133,23 @@ public:
     ((module_bitmap_subplasma*)ptr)->thread_state = 2;
     return 0;
   }
-  
+
   void module_info(vsx_module_info* info)
   {
-    info->in_param_spec = "rand_seed:float,size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024,\
-amplitude:enum?2|4|8|16|32|64|128|256|512";
-      info->identifier = "bitmaps;generators;subplasma";
-      info->out_param_spec = "bitmap:bitmap";
-      info->component_class = "bitmap";
-    info->description = "Generates a plasma bitmap\nThanks to BoyC of Conspiracy \nfor the base code of this!";
+    info->in_param_spec =
+      "rand_seed:float,"
+      "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024,"
+      "amplitude:enum?2|4|8|16|32|64|128|256|512"
+    ;
+    info->identifier = "bitmaps;generators;subplasma";
+    info->out_param_spec = "bitmap:bitmap";
+    info->component_class = "bitmap";
+    info->description =
+      "Generates a plasma bitmap\n"
+      "Thanks to BoyC of Conspiracy \n"
+      "for the base code of this!";
   }
-  
-  /*void param_set_notify(const vsx_string& name) {
-    need_to_rebuild = true;
-  };*/
-  
+
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
     thread_state = 0;
@@ -171,15 +160,14 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
 
     rand_seed = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"rand_seed");
     rand_seed->set(4.0f);
-    
+
     size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
     size->set(4);
 
     amplitude = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"amplitude");
 
-
     i_size = 0;
-  	result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
+    result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
     result1->set_p(bitm);
     work_bitmap = &bitm;
     bitm.data = 0;
@@ -201,7 +189,7 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
       //need_to_rebuild = false;
       if (i_size != 8 << size->get()) {
         i_size = 8 << size->get();
-        if (bitm.data) to_delete_data = bitm.data;   
+        if (bitm.data) to_delete_data = bitm.data;
           //delete[] bitm.data;
         bitm.data = new vsx_bitmap_32bt[i_size*i_size];
         bitm.size_y = bitm.size_x = i_size;
@@ -230,14 +218,14 @@ amplitude:enum?2|4|8|16|32|64|128|256|512";
         loading_done = true;
       }
       thread_state = 3;
-    }  
+    }
     if (to_delete_data && my_ref == 0)
     {
       delete[] (vsx_bitmap_32bt*)to_delete_data;
       to_delete_data = 0;
     }
   }
-  
+
   void on_delete() {
     if (worker_running)
     {

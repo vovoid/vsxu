@@ -36,16 +36,26 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;dummies;float3_dummy";
-    info->description = "This is only to gather connections\n"
-                        " - inside a macro for instance if \n"
-                        "you have many components which need\n"
-                        "to read the same value but you don't\n"
-                        "want 10 aliases going out.\n[floatin]\n"
-                        "is copied to [result_float].";
-    info->out_param_spec = "out_float3:float3";
-    info->in_param_spec = "float3_in:float3";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;dummies;float3_dummy";
+
+    info->description =
+      "This is only to gather connections\n"
+      " - inside a macro for instance if \n"
+      "you have many components which need\n"
+      "to read the same value but you don't\n"
+      "want 10 aliases going out.\n[floatin]\n"
+      "is copied to [result_float]."
+    ;
+
+    info->out_param_spec =
+      "out_float3:float3";
+
+    info->in_param_spec =
+      "float3_in:float3";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

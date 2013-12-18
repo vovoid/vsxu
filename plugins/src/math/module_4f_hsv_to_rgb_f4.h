@@ -41,16 +41,18 @@ public:
   {
     info->identifier = "maths;color;converters;4f_hsv_to_f4_rgb";
 
-    info->description = "\
-  This module converts color provided in\n\
-  HSV colorspace into RGB along with alpha.\n\
-  It takes 4 floats,\n\
-    [H]ue (color - red/green etc.),\n\
-    [S]aturation (vibrancy)\n\
-    [V]alue (brightness)\n\
-    [A]lpha\n\
-  and converts to an RedGreenBlueAlpha float4";
-    info->out_param_spec = "result_float4:float4";
+    info->description =
+      "This module converts color provided in\n"
+      "HSV colorspace into RGB along with alpha.\n"
+      "It takes 4 floats,\n"
+      "  [H]ue (color - red/green etc.),\n"
+      "  [S]aturation (vibrancy)\n"
+      "  [V]alue (brightness)\n"
+      "  [A]lpha\n"
+      "and converts to an RedGreenBlueAlpha float4"
+    ;
+    info->out_param_spec =
+      "result_float4:float4";
     info->in_param_spec =
       "h:float,"
       "s:float,"

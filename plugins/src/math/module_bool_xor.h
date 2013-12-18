@@ -36,11 +36,19 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;arithmetics;boolean;xor";
+    info->identifier =
+      "maths;arithmetics;boolean;xor";
+
     info->description = "";
-    info->in_param_spec = "a:float,b:float";
-    info->out_param_spec = "result_float:float";
-    info->component_class = "parameters";
+
+    info->in_param_spec =
+      "a:float,b:float";
+
+    info->out_param_spec =
+      "result_float:float";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

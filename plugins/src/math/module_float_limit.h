@@ -38,14 +38,27 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;limiters;float_limiter";
-    info->description = "If value_in is la\n"
-                        "limit_value, result is set to\n"
-                        "limit_value, otherwise result\n"
-                        "is set to value_in.\n";
-    info->out_param_spec = "result_float:float";
-    info->in_param_spec = "value_in:float,limit_value:float,type:enum?max|min";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;limiters;float_limiter";
+
+    info->description =
+      "If value_in is la\n"
+      "limit_value, result is set to\n"
+      "limit_value, otherwise result\n"
+      "is set to value_in.\n"
+    ;
+
+    info->out_param_spec =
+      "result_float:float";
+
+    info->in_param_spec =
+      "value_in:float,"
+      "limit_value:float,"
+      "type:enum?max|min"
+    ;
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

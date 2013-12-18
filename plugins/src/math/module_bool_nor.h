@@ -36,20 +36,30 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;arithmetics;boolean;nor";
-    info->description = "boolean or:\n"
-                        "result = !(a or b)\n"
-                        "the logic operation or:\n"
-                        "1 nor 0 = 0\n"
-                        "0 nor 1 = 0\n"
-                        "0 nor 0 = 1\n"
-                        "1 nor 1 = 0\n"
-                        "\n"
-                        "Note: 1 is defined as\n"
-                        "larger than +/-0.5";
-    info->in_param_spec = "a:float,b:float";
-    info->out_param_spec = "result_float:float";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;arithmetics;boolean;nor";
+
+    info->description =
+      "boolean or:\n"
+      "result = !(a or b)\n"
+      "the logic operation or:\n"
+      "1 nor 0 = 0\n"
+      "0 nor 1 = 0\n"
+      "0 nor 0 = 1\n"
+      "1 nor 1 = 0\n"
+      "\n"
+      "Note: 1 is defined as\n"
+      "larger than +/-0.5"
+    ;
+
+    info->in_param_spec =
+      "a:float,b:float";
+
+    info->out_param_spec =
+      "result_float:float";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

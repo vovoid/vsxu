@@ -48,7 +48,12 @@ public:
   void module_info(vsx_module_info* info)
   {
     info->identifier = "particlesystems;generators;bitmap2particlesystem";
-    info->in_param_spec = "bitmap_in:bitmap,size:float,blobsize:float,random_weight:float";
+    info->in_param_spec =
+      "bitmap_in:bitmap,"
+      "size:float,"
+      "blobsize:float,"
+      "random_weight:float"
+    ;
     info->out_param_spec = "particlesystem_out:particlesystem";
     info->component_class = "particlesystem";
     info->description = "";

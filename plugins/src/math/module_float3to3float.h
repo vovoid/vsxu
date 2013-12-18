@@ -38,11 +38,25 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;converters;float3to3float";
-    info->description = "This is only to gather connections - inside a macro for instance if you have many components which need to read the same value but you don't want 10 aliases going out.\n[floatin] is copied to [result_float].";
-    info->out_param_spec = "a:float,b:float,c:float";
-    info->in_param_spec = "float3_in:float3";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;converters;float3to3float";
+
+    info->description =
+      "Data type conversion\n"
+      "  float3 to 3 x float values."
+    ;
+
+    info->in_param_spec =
+      "float3_in:float3";
+
+    info->out_param_spec =
+      "a:float,"
+      "b:float,"
+      "c:float"
+    ;
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

@@ -104,39 +104,19 @@ public:
     float bofs = mod->col_ofs->get(2)*127.0f;
     float aofs = mod->col_ofs->get(3)*127.0f;
 
-    //float attenuation = ((module_bitmap_plasma*)ptr)->attenuation->get();
-    //float arms = ((module_bitmap_plasma*)ptr)->arms->get()*0.5f;
-    //float star_flower = ((module_bitmap_plasma*)ptr)->star_flower->get();
-    //float angle = ((module_bitmap_plasma*)ptr)->angle->get();
     vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_plasma*)ptr)->work_bitmap->data;
     int ssize = ((module_bitmap_plasma*)ptr)->i_size;
     int hsize = ssize >> 1;
-    //float sp1 = (float)size + 1.0f;
     float size = (float)(2.0f*PI)/(float)ssize;
     
     for(y = -hsize; y < hsize; ++y)
     {
       for(x = -hsize; x < hsize; ++x,p++)
       {
-        //float xx = (size/(size-2.0f))*((float)x)+0.5f;
-        //float yy = (size/(size-2.0f))*((float)y)+0.5f;
         long r = (long)round(fmod(fabs((sin((x*size+rox)*rpx)*sin((y*size+roy)*rpy)+1.0f)*ramp+rofs),255.0));
         long g = (long)round(fmod(fabs((sin((x*size+gox)*gpx)*sin((y*size+goy)*gpy)+1.0f)*gamp+gofs),255.0));
         long b = (long)round(fmod(fabs((sin((x*size+box)*bpx)*sin((y*size+boy)*bpy)+1.0f)*bamp+bofs),255.0));
         long a = (long)round(fmod(fabs((sin((x*size+aox)*apx)*sin((y*size+aoy)*apy)+1.0f)*aamp+aofs),255.0));
-        //long a = 255;
-        //long g = 0;
-        //long b = 0;
-        //if((long)(dd) > hsize) *p = 0;
-        //else {
-/*          float phase;
-          float dstf = dd/((float)hsize+1);
-          phase = pow(1 - fabs(cos(angle+arms*atan2(xx,yy)))*(star_flower+(1-star_flower)*(((dstf)))),attenuation);
-          if (phase > 2.0) phase = 1.0;
-          *p = (long)(255.0f * (cos(((dstf * PI/2.0f)))*phase));
-          if (*p > 255) *p = 255;
-          if (*p < 0) *p = 0;
-        }*/
         *p = 0x01000000 * a | b * 0x00010000 | g * 0x00000100 | r;
 
       }
@@ -144,39 +124,37 @@ public:
     ((module_bitmap_plasma*)ptr)->work_bitmap->timestamp++;
     ((module_bitmap_plasma*)ptr)->work_bitmap->valid = true;
     ((module_bitmap_plasma*)ptr)->thread_state = 2;
-    //printf("blob thread done\n");
-    // the thread will die here.
     return 0;
   }
   
   void module_info(vsx_module_info* info)
   {
-    info->in_param_spec = "settings:complex{\
-col_amp:float4?default_controller=controller_col,\
-col_ofs:float4?default_controller=controller_col,\
-period:complex{\
-r_period:float3,\
-g_period:float3,\
-b_period:float3,\
-a_period:float3\
-},\
-ofs:complex{\
-r_ofs:float3,\
-g_ofs:float3,\
-b_ofs:float3,\
-a_ofs:float3\
-}\
-},\
-size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024";
-      info->identifier = "bitmaps;generators;plasma";
-      info->out_param_spec = "bitmap:bitmap";
-      info->component_class = "bitmap";
-    info->description = "Generates a plasma bitmap";
+    info->in_param_spec =
+      "settings:complex{"
+        "col_amp:float4?default_controller=controller_col,"
+        "col_ofs:float4?default_controller=controller_col,"
+        "period:complex{"
+          "r_period:float3,"
+          "g_period:float3,"
+          "b_period:float3,"
+          "a_period:float3"
+        "},"
+        "ofs:complex{"
+          "r_ofs:float3,"
+          "g_ofs:float3,"
+          "b_ofs:float3,"
+          "a_ofs:float3"
+        "}"
+      "},"
+      "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024"
+    ;
+
+    info->identifier = "bitmaps;generators;plasma";
+    info->out_param_spec = "bitmap:bitmap";
+    info->component_class = "bitmap";
+    info->description = "Generates a Sin-plasma bitmap";
   }
   
-  /*void param_set_notify(const vsx_string& name) {
-    need_to_rebuild = true;
-  };*/
   
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {

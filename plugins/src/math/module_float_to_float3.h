@@ -35,16 +35,26 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;converters;float_to_float3";
-    info->description = "float to float3 (vector) conversion\n"
-                        "param1 is copied into all 3 of the\n"
-                        "values in the float3 parameter\n"
-                        "\n"
-                        "useful for generating a uniform\n"
-                        "scaling vector for instance";
-    info->in_param_spec = "param1:float";
-    info->out_param_spec = "result_float3:float3";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;converters;float_to_float3";
+
+    info->description =
+      "float to float3 (vector) conversion\n"
+      "param1 is copied into all 3 of the\n"
+      "values in the float3 parameter\n"
+      "\n"
+      "useful for generating a uniform\n"
+      "scaling vector for instance"
+    ;
+
+    info->in_param_spec =
+      "param1:float";
+
+    info->out_param_spec =
+      "result_float3:float3";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

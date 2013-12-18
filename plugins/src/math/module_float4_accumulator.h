@@ -38,16 +38,28 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;accumulators;float4_accumulator";
-    info->description = "accumulator - float4\n"
-                        "result += in\n"
-                        "\n"
-                        "adds the value in float4_in\n"
-                        "to its current value once\n"
-                        "per frame";
-    info->out_param_spec = "result_float4:float4";
-    info->in_param_spec = "float4_in:float4,reset:enum?ok";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;accumulators;float4_accumulator";
+
+    info->description =
+      "accumulator - float4\n"
+      "result += in\n"
+      "\n"
+      "adds the value in float4_in\n"
+      "to its current value once\n"
+      "per frame"
+    ;
+
+    info->in_param_spec =
+      "float4_in:float4,"
+      "reset:enum?ok"
+    ;
+
+    info->out_param_spec =
+      "result_float4:float4";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

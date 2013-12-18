@@ -86,7 +86,7 @@ public:
     info->in_param_spec = "bitmap_in:bitmap";
     info->out_param_spec = "bitmap:bitmap";
     info->component_class = "bitmap";
-    info->description = "";
+    info->description = "Adds noise to the bitmap.";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

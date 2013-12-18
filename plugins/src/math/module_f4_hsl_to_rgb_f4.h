@@ -48,19 +48,28 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;color;converters;f4_hsl_to_f4_rgb";
-    info->description = "\
-This module converts color provided in\n\
-HSL colorspace into RGB along with alpha.\n\
-It takes a float4,\n\
-  [H]ue (color - red/green etc.),\n\
-  [S]aturation (vibrancy)\n\
-  [L]ightness (1 = white)\n\
-  [A]lpha\n\
-and converts to an RedGreenBlueAlpha float4";
-    info->out_param_spec = "result_float4:float4";
-    info->in_param_spec = "hsl:float4";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;color;converters;f4_hsl_to_f4_rgb";
+
+    info->description =
+      "This module converts color provided in\n"
+      "HSL colorspace into RGB along with alpha.\n"
+      "It takes a float4,\n"
+      "  [H]ue (color - red/green etc.),\n"
+      "  [S]aturation (vibrancy)\n"
+      "  [L]ightness (1 = white)\n"
+      "  [A]lpha\n"
+      "and converts to an RedGreenBlueAlpha float4"
+    ;
+
+    info->out_param_spec =
+      "result_float4:float4";
+
+    info->in_param_spec =
+      "hsl:float4";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

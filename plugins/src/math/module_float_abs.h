@@ -35,14 +35,24 @@ class module_float_abs : public vsx_module
 public:
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;arithmetics;binary;abs";
-    info->description = "abs:\n"
-                        "result = abs( float_in )\n"
-                        "turns negative values into positive\n"
-                        "for instance, -0.67 becomes 0.67";
-    info->out_param_spec = "result_float:float";
-    info->in_param_spec = "float_in:float";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;arithmetics;binary;abs";
+
+    info->description =
+      "abs:\n"
+      "result = abs( float_in )\n"
+      "turns negative values into positive\n"
+      "for instance, -0.67 becomes 0.67"
+    ;
+
+    info->out_param_spec =
+      "result_float:float";
+
+    info->in_param_spec =
+      "float_in:float";
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

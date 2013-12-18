@@ -13,16 +13,26 @@ class module_bspline_matrix : public vsx_module
   vsx_bspline spline0;
   vsx_matrix matrix;
   vsx_vector pos1, pos2, e, upv;
+
 public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "maths;bspline;bspline_matrix";
-    info->in_param_spec = "\
-      bspline_vertices_mesh:mesh,\
-      b_pos:float";
-    info->out_param_spec = "matrix_result:matrix,position:float3";
-    info->component_class = "parameters";
+    info->identifier =
+      "maths;bspline;bspline_matrix";
+
+    info->in_param_spec =
+      "bspline_vertices_mesh:mesh,"
+      "b_pos:float"
+    ;
+
+    info->out_param_spec =
+      "matrix_result:matrix,"
+      "position:float3"
+    ;
+
+    info->component_class =
+      "parameters";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
