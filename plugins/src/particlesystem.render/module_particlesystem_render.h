@@ -50,23 +50,36 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;particlesystems;simple";
+    info->identifier =
+      "renderers;particlesystems;simple";
+
     info->in_param_spec = ""
-    "particlesystem:particlesystem,texture:texture,options:complex{"
-      "render_type:enum?quads|point_sprites,"
-      "size_lifespan_type:enum?normal|sequence,"
-      "size_lifespan_sequence:sequence,"
-      "alpha_lifespan_sequence:sequence,"
-      "color_lifespan_type:enum?normal|sequence,"
-      "r_lifespan_sequence:sequence,"
-      "g_lifespan_sequence:sequence,"
-      "b_lifespan_sequence:sequence,"
-      "ignore_particles_at_center:enum?no|yes"
-    "},shader_params:complex{vertex_program:string,fragment_program:string"
-    +shader.get_param_spec()+"}";
-    //printf("in_param_spec: %s\n", info->in_param_spec.c_str() );
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
+      "particlesystem:particlesystem,"
+      "texture:texture,options:complex
+      "{"
+        "render_type:enum?quads|point_sprites,"
+        "size_lifespan_type:enum?normal|sequence,"
+        "size_lifespan_sequence:sequence,"
+        "alpha_lifespan_sequence:sequence,"
+        "color_lifespan_type:enum?normal|sequence,"
+        "r_lifespan_sequence:sequence,"
+        "g_lifespan_sequence:sequence,"
+        "b_lifespan_sequence:sequence,"
+        "ignore_particles_at_center:enum?no|yes"
+      "},
+      "shader_params:complex
+      "{"
+        "vertex_program:string,
+        "fragment_program:string"
+        +shader.get_param_spec()+
+      "}"
+    ;
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
   }
 
 

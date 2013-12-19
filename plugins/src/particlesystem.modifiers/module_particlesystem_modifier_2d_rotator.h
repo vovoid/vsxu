@@ -15,11 +15,22 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "particlesystems;modifiers;particle_2d_rotator";
-    info->description = "";
-    info->out_param_spec = "particlesystem:particlesystem";
-    info->in_param_spec = "in_particlesystem:particlesystem,rotation_dir:quaternion";
-    info->component_class = "particlesystem";
+    info->identifier =
+      "particlesystems;modifiers;particle_2d_rotator";
+
+    info->description =
+      "";
+
+    info->out_param_spec =
+      "particlesystem:particlesystem";
+
+    info->in_param_spec =
+      "in_particlesystem:particlesystem,"
+      "rotation_dir:quaternion"
+    ;
+
+    info->component_class =
+      "particlesystem";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

@@ -10,15 +10,25 @@ public:
 
 void module_info(vsx_module_info* info)
 {
-  info->identifier = "renderers;opengl_modifiers;gl_color";
-  info->description = "Sets the color for modules\n\
-that don't do this themselves.";
+  info->identifier =
+    "renderers;opengl_modifiers;gl_color";
+
+  info->description =
+    "Sets the color for modules\n
+    "that doesn't do this themselves."
+  ;
+
   info->in_param_spec =
     "render_in:render,"
     "color:float4?default_controller=controller_col"
   ;
-  info->out_param_spec = "render_out:render";
-  info->component_class = "render";
+
+  info->out_param_spec =
+    "render_out:render";
+
+  info->component_class =
+    "render";
+
   info->tunnel = true; // always run this
 }
 

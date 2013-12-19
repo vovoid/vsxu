@@ -48,10 +48,14 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;particlesystems;render_particlesystem_ext";
+    info->identifier =
+      "renderers;particlesystems;render_particlesystem_ext";
 
     info->in_param_spec =
-      "particlesystem:particlesystem,texture:texture,options:complex{"
+      "particlesystem:particlesystem,"
+      "texture:texture,"
+      "options:complex
+      "{"
         "size_lifespan_sequence:sequence,"
         "alpha_lifespan_sequence:sequence,"
         "r_lifespan_sequence:sequence,"
@@ -59,13 +63,15 @@ public:
         "b_lifespan_sequence:sequence,"
         "ignore_particles_at_center:enum?no|yes"
       "},"
-        "vertex_program:string,"
-        "fragment_program:string"
+      "vertex_program:string,"
+      "fragment_program:string"
     ;
 
-    info->out_param_spec = "render_out:render";
+    info->out_param_spec =
+      "render_out:render";
 
-    info->component_class = "render";
+    info->component_class =
+      "render";
   }
 
 

@@ -44,16 +44,28 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;mesh;mesh_dot_render";
-    info->description = "Renders a dot at each vertex in the mesh.";
-    info->in_param_spec = "mesh_in:mesh,base_color:float4,dot_size:float";
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
-    loading_done = true;
+    info->identifier =
+      "renderers;mesh;mesh_dot_render";
+
+    info->description =
+      "Renders a dot at each vertex in the mesh.";
+
+    info->in_param_spec =
+      "mesh_in:mesh,"
+      "base_color:float4,"
+      "dot_size:float"
+    ;
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
+
     mesh_in = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_in");
     base_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"base_color");
     base_color->set(1.0f,0);
@@ -64,6 +76,7 @@ public:
     dot_size->set(1.0f);
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 
+    loading_done = true;
     gl_state = vsx_gl_state::get_instance();
   }
 

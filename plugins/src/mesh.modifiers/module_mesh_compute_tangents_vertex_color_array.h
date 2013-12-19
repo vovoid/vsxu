@@ -50,7 +50,9 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;modifiers;helpers;mesh_compute_tangents_vertex_color_array";
+    info->identifier =
+      "mesh;modifiers;helpers;mesh_compute_tangents_vertex_color_array";
+
     info->description =
       "Computes tangent space for the mesh.\n"
       "Stores in color array of the mesh.\n"
@@ -58,9 +60,15 @@ public:
       "since they can be part of VBO\n"
       "when sending to shader."
     ;
-    info->in_param_spec = "mesh_in:mesh";
-    info->out_param_spec = "mesh_out:mesh";
-    info->component_class = "mesh";
+
+    info->in_param_spec =
+      "mesh_in:mesh";
+
+    info->out_param_spec =
+      "mesh_out:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

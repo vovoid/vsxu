@@ -51,11 +51,24 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;modifiers;transforms;mesh_translate_edge_wraparound";
-    info->description = "Translates/moves mesh";
-    info->in_param_spec = "mesh_in:mesh,translation:float3,edge_min:float3,edge_max:float3";
-    info->out_param_spec = "mesh_out:mesh";
-    info->component_class = "mesh";
+    info->identifier =
+      "mesh;modifiers;transforms;mesh_translate_edge_wraparound";
+
+    info->description =
+      "Translates/moves mesh";
+
+    info->in_param_spec =
+      "mesh_in:mesh,"
+      "translation:float3,"
+      "edge_min:float3,"
+      "edge_max:float3"
+    ;
+
+    info->out_param_spec =
+      "mesh_out:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

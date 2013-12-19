@@ -50,11 +50,23 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;modifiers;deformers;mesh_vortex";
-    info->description = "Scales mesh";
-    info->in_param_spec = "mesh_in:mesh,amount:float3,area:float3";
-    info->out_param_spec = "mesh_out:mesh";
-    info->component_class = "mesh";
+    info->identifier =
+      "mesh;modifiers;deformers;mesh_vortex";
+
+    info->description =
+      "Sucks the vertices into a point.";
+
+    info->in_param_spec =
+      "mesh_in:mesh,"
+      "amount:float3,"
+      "area:float3"
+    ;
+
+    info->out_param_spec =
+      "mesh_out:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

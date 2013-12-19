@@ -25,16 +25,22 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "outputs;screen";
+    info->identifier =
+      "outputs;screen";
+
     info->output = 1;
+
     info->description =
       "The screen is the visual output of VSXu.\n"
       "Components that are not in a chain connected\n"
       "in the end to the server will not be run.\n"
     ;
-    info->in_param_spec = "screen:render,"
-                          "gamma_correction:float?max=4&min=0&nc=1,"
-                          "clear_color:float4";
+
+    info->in_param_spec =
+      "screen:render,"
+      "gamma_correction:float?max=4&min=0&nc=1,"
+      "clear_color:float4"
+    ;
     info->component_class = "screen";
   }
 

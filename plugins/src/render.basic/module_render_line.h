@@ -16,16 +16,24 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;basic;render_line";
-    info->description = "Renders a line\n"
-          "with width and start/stop color.";
+    info->identifier =
+      "renderers;basic;render_line";
 
-    info->in_param_spec = "spatial:complex{"
-                            "point_a:float3,"
-                            "point_b:float3,"
-                            "color_a:float4?default_controller=controller_col,"
-                            "color_b:float4?default_controller=controller_col,"
-                            "width:float}";
+    info->description =
+      "Renders a line\n"
+      "with width and start/stop color."
+    ;
+
+    info->in_param_spec =
+    "spatial:complex"
+    "{"
+      "point_a:float3,"
+      "point_b:float3,"
+      "color_a:float4?default_controller=controller_col,"
+      "color_b:float4?default_controller=controller_col,"
+      "width:float
+    "}"
+    ;
 
     info->out_param_spec = "render_out:render";
     info->component_class = "render";

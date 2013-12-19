@@ -119,9 +119,18 @@ public:
       info->identifier = "renderers;shaders;"+ext_shaders[shader_source-1].module_name;
     }
 
-    info->in_param_spec = "render_in:render,vertex_program:string,fragment_program:string" + shader.get_param_spec();
+    info->in_param_spec =
+      "render_in:render,"
+      "vertex_program:string,"
+      "fragment_program:string"
+      +
+      shader.get_param_spec()
+    ;
+
     info->out_param_spec = "render_out:render";
+
     info->component_class = "render";
+
     info->tunnel = false;
   }
 

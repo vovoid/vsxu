@@ -60,11 +60,24 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;modifiers;deformers;mesh_vertex_move";
-    info->description = "Moves a single vertex with falloff";
-    info->in_param_spec = "mesh_in:mesh,index:float,offset:float3,falloff_range:float";
-    info->out_param_spec = "mesh_out:mesh";
-    info->component_class = "mesh";
+    info->identifier =
+      "mesh;modifiers;deformers;mesh_vertex_move";
+
+    info->description =
+      "Moves a single vertex with falloff";
+
+    info->in_param_spec =
+      "mesh_in:mesh,"
+      "index:float,"
+      "offset:float3,"
+      "falloff_range:float"
+    ;
+
+    info->out_param_spec =
+      "mesh_out:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
@@ -74,8 +87,6 @@ public:
     offset = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "offset");
     falloff_range = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "falloff_range");
     falloff_range->set(0.0f);
-    //id = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"id");
-    //id->set(0.0f);
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
   }

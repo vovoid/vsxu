@@ -39,7 +39,8 @@ public:
     ;
 
     info->in_param_spec =
-      "spatial:complex{"
+      "spatial:complex
+      "{"
         "position:float3,"
         "size:float,"
         "angle:float,"
@@ -48,7 +49,8 @@ public:
         "tex_coord_b:float3,"
         "facing_camera:enum?no|yes&nc=1" // don't allow connections to this, pure config only
       "},"
-      "color:complex{"
+      "color:complex
+      "{"
         "global_alpha:float,"
         "color_multiplier:float4?default_controller=controller_col,"
         "color_center:float4?default_controller=controller_col,"
@@ -68,8 +70,11 @@ public:
       "- colors in center and 4 corners"
     ;
 
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
   }
 
 

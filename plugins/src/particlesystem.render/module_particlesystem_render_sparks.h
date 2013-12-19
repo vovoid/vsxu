@@ -28,13 +28,21 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;particlesystems;sparks";
-    info->in_param_spec = "particlesystem:particlesystem,"
-                          "float_array_in:float_array,"
-                          "proximity_level:float,"
-                          "color:float4";
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
+    info->identifier =
+      "renderers;particlesystems;sparks";
+
+    info->in_param_spec =
+      "particlesystem:particlesystem,"
+      "float_array_in:float_array,"
+      "proximity_level:float,"
+      "color:float4"
+    ;
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
   }
 
 

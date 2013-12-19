@@ -17,24 +17,27 @@ public:
 
 void module_info(vsx_module_info* info)
 {
-  info->identifier = "renderers;oscilloscopes;simple_oscilloscope";
-  info->in_param_spec = 
-"\
-data_in:float_array,\
-spatial:complex\
-{\
-  position:float3,\
-  angle:float?\
-    smooth=2,\
-  rotation_axis:float3,\
-  size:float3\
-},\
-color:float4,\
-line_width:float\
-";
+  info->identifier =
+    "renderers;oscilloscopes;simple_oscilloscope";
+
+  info->in_param_spec =
+    "data_in:float_array,"
+    "spatial:complex"
+    "{"
+      "position:float3,"
+      "angle:float?smooth=2,"
+      "rotation_axis:float3,"
+      "size:float3"
+    "},"
+    "color:float4,"
+    "line_width:float"
+  ;
   
-  info->out_param_spec = "render_out:render";
-  info->component_class = "render";
+  info->out_param_spec =
+    "render_out:render";
+
+  info->component_class =
+    "render";
 }
 
 

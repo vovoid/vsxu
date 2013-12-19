@@ -24,9 +24,10 @@ public:
   void module_info(vsx_module_info* info)
   {
     info->identifier =
-    "renderers;basic;colored_rectangle"
-    "||"
-    "renderers;examples;simple";
+      "renderers;basic;colored_rectangle"
+      "||"
+      "renderers;examples;simple"
+    ;
 
     info->description =
       "Renders a filled rectangle\n"
@@ -36,13 +37,15 @@ public:
     ;
 
     info->in_param_spec =
-      "spatial:complex{"
+      "spatial:complex
+      "{"
         "position:float3,"
         "angle:float,"
         "rotation_axis:float3,"
         "size:float3"
       "},"
-      "border:complex{"
+      "border:complex
+      "{"
         "border_enable:enum?no|yes,"
         "border_width:float,"
         "border_color:float4?default_controller=controller_col"
@@ -50,8 +53,11 @@ public:
       "color:float4?default_controller=controller_col"
     ;
 
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
   }
 
 

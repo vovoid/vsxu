@@ -19,19 +19,25 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;vovoid;gravity_lines";
+    info->identifier =
+      "renderers;vovoid;gravity_lines";
 
-    info->in_param_spec = "pos:float3,"
-                          "params:complex"
-                          "{"
-                            "friction:float,"
-                            "step_length:float,"
-                            "color0:float4?default_controller=controller_col,"
-                            "color1:float4?default_controller=controller_col"
-                          "}";
+    info->in_param_spec =
+      "pos:float3,"
+      "params:complex"
+      "{"
+        "friction:float,"
+        "step_length:float,"
+        "color0:float4?default_controller=controller_col,"
+        "color1:float4?default_controller=controller_col"
+      "}"
+    ;
 
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
   }
 
 

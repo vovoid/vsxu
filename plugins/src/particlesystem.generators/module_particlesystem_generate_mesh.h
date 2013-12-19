@@ -56,42 +56,63 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "particlesystems;generators;particles_mesh_spray";
-    info->description = "\
-Uses the vertices of a mesh \n\
-as origins to spray particles.\n\
-The locations can be picked randomly or\n\
-in sequence.\n\
-";
-    info->out_param_spec = "particlesystem:particlesystem";
-    info->in_param_spec = "\
-    mesh_in:mesh,\
-    num_particles:float,\
-    particles_per_second:float,\
-    mesh_properties:complex{\
-      pick_type:enum?sequential|random,\
-      center:float3,\
-      spread:float3,\
-      random_deviation:float3\
-    },\
-    spatial:complex{\
-      speed_type:enum?random_balanced|directional|mesh_beam,\
-      speed_multiplier:float,\
-      speed_random_value:float,\
-      speed:complex{\
-        speed_x:float,\
-        speed_y:float,\
-        speed_z:float\
-      },\
-      add_vector:float3,\
-      size:complex{particle_size_base:float,particle_size_random_weight:float}\
-    },\
-    appearance:complex{\
-      color:float4?default_controller=controller_col,\
-      time:complex{particle_lifetime_base:float,particle_lifetime_random_weight:float},\
-      time_source:enum?sequencer|real\
-    }";
-    info->component_class = "particlesystem";
+    info->identifier =
+      "particlesystems;generators;particles_mesh_spray";
+
+    info->description =
+      "Uses the vertices of a mesh \n"
+      "as origins to spray particles.\n"
+      "The locations can be picked randomly or\n"
+      "in sequence.\n"
+    ;
+
+
+    info->in_param_spec =
+      "mesh_in:mesh,"
+      "num_particles:float,"
+      "particles_per_second:float,"
+      "mesh_properties:complex"
+      "{"
+        "pick_type:enum?sequential|random,"
+        "center:float3,"
+        "spread:float3,"
+        "random_deviation:float3"
+      "},"
+      "spatial:complex"
+      "{"
+        "speed_type:enum?random_balanced|directional|mesh_beam,"
+        "speed_multiplier:float,"
+        "speed_random_value:float,"
+        "speed:complex"
+        "{"
+          "speed_x:float,"
+          "speed_y:float,"
+          "speed_z:float"
+        "},"
+        "add_vector:float3,"
+        "size:complex"
+        "{"
+          "particle_size_base:float,"
+          "particle_size_random_weight:float"
+        "}"
+      "},"
+      "appearance:complex"
+      "{"
+        "color:float4?default_controller=controller_col,"
+        "time:complex
+        "{"
+          "particle_lifetime_base:float,"
+          "particle_lifetime_random_weight:float
+        "},"
+        "time_source:enum?sequencer|real
+      "}"
+    ;
+
+    info->out_param_spec =
+      "particlesystem:particlesystem";
+
+    info->component_class =
+      "particlesystem";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

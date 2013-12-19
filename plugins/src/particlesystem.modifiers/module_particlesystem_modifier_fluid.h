@@ -195,11 +195,24 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "particlesystems;modifiers;particle_fluid_deformer";
-    info->description = "";
-    info->out_param_spec = "particlesystem:particlesystem";
-    info->in_param_spec = "in_particlesystem:particlesystem,actor:float3,strength:float,draw_velocity:enum?no|yes";
-    info->component_class = "particlesystem";
+    info->identifier =
+      "particlesystems;modifiers;particle_fluid_deformer";
+
+    info->description =
+      "";
+
+    info->out_param_spec =
+      "particlesystem:particlesystem";
+
+    info->in_param_spec =
+      "in_particlesystem:particlesystem,"
+      "actor:float3,"
+      "strength:float,"
+      "draw_velocity:enum?no|yes"
+    ;
+
+    info->component_class =
+      "particlesystem";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

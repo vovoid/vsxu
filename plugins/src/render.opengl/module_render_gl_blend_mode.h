@@ -55,23 +55,32 @@ public:
 
 void module_info(vsx_module_info* info)
 {
-  info->identifier = "renderers;opengl_modifiers;blend_mode";
-  info->description = "Changes the way pixels are blended.\n\
-Default is normal transparency:\n\
-  GL_SRC_ALPHA,\n\
-  GL_ONE_MINUS_SRC_ALPHA\n\
-To get sat adding, choose:\n\
-  GL_SRC_ALPHA,\n\
-  GL_ONE";
+  info->identifier =
+    "renderers;opengl_modifiers;blend_mode";
+
+  info->description =
+    "Changes the way pixels are blended.\n"
+    "Default is normal transparency:\n"
+    "  GL_SRC_ALPHA,\n"
+    "  GL_ONE_MINUS_SRC_ALPHA\n"
+    "To get sat adding, choose:\n"
+    "  GL_SRC_ALPHA,\n"
+    "  GL_ONE"
+  ;
 
   info->in_param_spec =
-"render_in:render,"
-"source_blend:enum?ZERO|ONE|DST_COLOR|ONE_MINUS_DST_COLOR|SRC_ALPHA|ONE_MINUS_SRC_ALPHA|DST_ALPHA|ONE_MINUS_DST_ALPHA|CONSTANT_COLOR_EXT|ONE_MINUS_CONSTANT_COLOR_EXT|CONSTANT_ALPHA_EXT|ONE_MINUS_CONSTANT_ALPHA_EXT|SRC_ALPHA_SATURATE&nc=1,"
-"dest_blend:enum?ZERO|ONE|SRC_COLOR|ONE_MINUS_SRC_COLOR|SRC_ALPHA|ONE_MINUS_SRC_ALPHA|DST_ALPHA|ONE_MINUS_DST_ALPHA|CONSTANT_COLOR_EXT|ONE_MINUS_CONSTANT_COLOR_EXT|CONSTANT_ALPHA_EXT|ONE_MINUS_CONSTANT_ALPHA_EXT&nc=1,"
-"blend_color:float4?default_controller=controller_col"
-;
-  info->out_param_spec = "render_out:render";
-  info->component_class = "render";
+    "render_in:render,"
+    "source_blend:enum?ZERO|ONE|DST_COLOR|ONE_MINUS_DST_COLOR|SRC_ALPHA|ONE_MINUS_SRC_ALPHA|DST_ALPHA|ONE_MINUS_DST_ALPHA|CONSTANT_COLOR_EXT|ONE_MINUS_CONSTANT_COLOR_EXT|CONSTANT_ALPHA_EXT|ONE_MINUS_CONSTANT_ALPHA_EXT|SRC_ALPHA_SATURATE&nc=1,"
+    "dest_blend:enum?ZERO|ONE|SRC_COLOR|ONE_MINUS_SRC_COLOR|SRC_ALPHA|ONE_MINUS_SRC_ALPHA|DST_ALPHA|ONE_MINUS_DST_ALPHA|CONSTANT_COLOR_EXT|ONE_MINUS_CONSTANT_COLOR_EXT|CONSTANT_ALPHA_EXT|ONE_MINUS_CONSTANT_ALPHA_EXT&nc=1,"
+    "blend_color:float4?default_controller=controller_col"
+  ;
+
+  info->out_param_spec =
+    "render_out:render";
+
+  info->component_class =
+    "render";
+
   info->tunnel = true;
 }
 

@@ -75,20 +75,29 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;modifiers;deformers;mesh_inflate";
-    info->description = "Inflates a mesh";
-    info->in_param_spec = "mesh_in:mesh,"
-              "steps_per_second:float,"
-              "step_size:float,"
-              "gas_amount:float,"
-              "gas_expansion_factor:float,"
-              "grid_stiffness_factor:float,"
-              "damping_factor:float,"
-              "material_weight:float,"
-              "lower_boundary:float";
+    info->identifier =
+      "mesh;modifiers;deformers;mesh_inflate";
 
-    info->out_param_spec = "mesh_out:mesh,volume_out:float";
-    info->component_class = "mesh";
+    info->description =
+      "Inflates a mesh";
+
+    info->in_param_spec =
+      "mesh_in:mesh,"
+      "steps_per_second:float,"
+      "step_size:float,"
+      "gas_amount:float,"
+      "gas_expansion_factor:float,"
+      "grid_stiffness_factor:float,"
+      "damping_factor:float,"
+      "material_weight:float,"
+      "lower_boundary:float"
+    ;
+
+    info->out_param_spec =
+      "mesh_out:mesh,volume_out:float";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

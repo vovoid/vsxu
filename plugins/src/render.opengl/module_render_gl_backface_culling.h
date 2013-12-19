@@ -11,12 +11,23 @@ public:
 
 void module_info(vsx_module_info* info)
 {
-  info->identifier = "renderers;opengl_modifiers;backface_culling";
-  info->description = "Enables/Disables backfacing faces.";
+  info->identifier =
+    "renderers;opengl_modifiers;backface_culling";
+
+  info->description =
+    "Enables/Disables rendering of backfacing faces.";
+
   info->in_param_spec =
-"render_in:render,status:enum?DISABLED|ENABLED";
-  info->out_param_spec = "render_out:render";
-  info->component_class = "render";
+    "render_in:render,"
+    "status:enum?DISABLED|ENABLED"
+  ;
+
+  info->out_param_spec =
+    "render_out:render";
+
+  info->component_class =
+    "render";
+
   info->tunnel = true;
 }
 

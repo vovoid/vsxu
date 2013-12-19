@@ -11,11 +11,23 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "particlesystems;modifiers;size_mult";
-    info->description = "Makes particles differ in size.";
-    info->out_param_spec = "particlesystem:particlesystem";
-    info->in_param_spec = "in_particlesystem:particlesystem,strength:float?min=0,size_type:enum?multiply|add";
-    info->component_class = "particlesystem";
+    info->identifier =
+      "particlesystems;modifiers;size_mult";
+
+    info->description =
+      "Makes particles differ in size.";
+
+    info->in_param_spec =
+      "in_particlesystem:particlesystem,"
+      "strength:float?min=0,"
+      "size_type:enum?multiply|add"
+    ;
+
+    info->out_param_spec =
+      "particlesystem:particlesystem";
+
+    info->component_class =
+      "particlesystem";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

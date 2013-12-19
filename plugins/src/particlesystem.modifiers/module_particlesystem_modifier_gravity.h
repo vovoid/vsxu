@@ -16,21 +16,33 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "particlesystems;modifiers;basic_gravity";
-    info->description = "";
-    info->out_param_spec = "particlesystem:particlesystem";
-    info->in_param_spec = "in_particlesystem:particlesystem,\
-    basic_parameters:complex{\
-      center:float3,\
-      amount:float3,\
-      friction:float3,\
-      time_source:enum?sequencer|real\
-    },\
-    mass_calculations:complex{\
-      mass_type:enum?individual|uniform,\
-      uniform_mass:float\
-    }";
-    info->component_class = "particlesystem";
+    info->identifier =
+      "particlesystems;modifiers;basic_gravity";
+
+    info->description =
+      "";
+
+    info->out_param_spec =
+      "particlesystem:particlesystem";
+
+    info->in_param_spec =
+      "in_particlesystem:particlesystem,"
+      "basic_parameters:complex"
+      "{"
+        "center:float3,"
+        "amount:float3,"
+        "friction:float3,"
+        "time_source:enum?sequencer|real"
+      "},"
+      "mass_calculations:complex"
+      "{"
+        "mass_type:enum?individual|uniform,"
+        "uniform_mass:float"
+      "}"
+    ;
+
+    info->component_class =
+      "particlesystem";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

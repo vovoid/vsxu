@@ -44,12 +44,26 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;mesh;mesh_face_id_render";
-    info->description = "";
-    info->in_param_spec = "mesh_in:mesh,base_color:float4,font_size:float,min_box:float3,max_box:float3,font_align:float";
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
-    loading_done = true;
+    info->identifier =
+      "renderers;mesh;mesh_face_id_render";
+
+    info->description =
+      "";
+
+    info->in_param_spec =
+      "mesh_in:mesh,"
+      "base_color:float4,"
+      "font_size:float,"
+      "min_box:float3,"
+      "max_box:float3,"
+      "font_align:float"
+    ;
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
@@ -73,6 +87,8 @@ public:
     font_align = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"font_align");
     font_size->set(1.0f);
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+
+    loading_done = true;
     myf = new vsx_font();
     myf->init("/home/jaw/vsxu-dev/vsxu/share/font/font-ascii.png");
   }

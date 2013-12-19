@@ -68,13 +68,30 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;mesh;mesh_dot_billboards";
-    info->description = "Renders a texture billboard at each vertex in the mesh.";
-    info->in_param_spec = "mesh_in:mesh,base_color:float4,dot_size:float,use_display_list:enum?no|yes,shader_params:complex{vertex_program:string,fragment_program:string"+shader.get_param_spec()+"}";
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
-    loading_done = true;
-    mesh_timestamp = 0;
+    info->identifier =
+      "renderers;mesh;mesh_dot_billboards";
+
+    info->description =
+      "Renders a texture billboard at each vertex in the mesh.";
+
+    info->in_param_spec =
+      "mesh_in:mesh,"
+      "base_color:float4,"
+      "dot_size:float,"
+      "use_display_list:enum?no|yes,"
+      "shader_params:complex"
+      "{"
+        "vertex_program:string,"
+        "fragment_program:string"
+        +shader.get_param_spec()+
+      "}"
+    ;
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
   }
 
   void redeclare_in_params(vsx_module_param_list& in_parameters)
@@ -96,6 +113,8 @@ public:
     i_vertex_program->set(shader.vertex_program.c_str());
 
     shader.declare_params(in_parameters);
+    loading_done = true;
+    mesh_timestamp = 0;
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

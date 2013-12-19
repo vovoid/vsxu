@@ -42,14 +42,24 @@ class module_mesh_to_float3_arrays : public vsx_module
 public:
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;modifiers;converters;mesh_to_float3_arrays";
-    info->description = "Pick out the vector data from a mesh";
-    info->in_param_spec = "mesh_in:mesh";
-    info->out_param_spec = "vertices:float3_array,"
+    info->identifier =
+      "mesh;modifiers;converters;mesh_to_float3_arrays";
+
+    info->description =
+      "Pick out the vector data from a mesh";
+
+    info->in_param_spec =
+      "mesh_in:mesh";
+
+    info->out_param_spec =
+      "vertices:float3_array,"
       "vertex_normals:float3_array,"
       "face_normals:float3_array,"
-      "face_centers:float3_array";
-    info->component_class = "mesh";
+      "face_centers:float3_array"
+    ;
+
+    info->component_class =
+      "mesh";
   }
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {

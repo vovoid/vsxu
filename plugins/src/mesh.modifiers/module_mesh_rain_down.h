@@ -53,11 +53,25 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;modifiers;deformers;mesh_rain_down";
-    info->description = "Slowly rains the mesh down on the floor";
-    info->in_param_spec = "mesh_in:mesh,start:float,floor_level:float,explosion_factor:float,landing_fluffiness:float";
-    info->out_param_spec = "mesh_out:mesh";
-    info->component_class = "mesh";
+    info->identifier =
+      "mesh;modifiers;deformers;mesh_rain_down";
+
+    info->description =
+      "Slowly rains the mesh down on the floor";
+
+    info->in_param_spec =
+      "mesh_in:mesh,"
+      "start:float,"
+      "floor_level:float,"
+      "explosion_factor:float,"
+      "landing_fluffiness:float"
+    ;
+
+    info->out_param_spec =
+      "mesh_out:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

@@ -30,11 +30,19 @@ class module_mesh_segmesh_to_mesh : public vsx_module
   vsx_mesh* mesh;
 public:
 
-  void module_info(vsx_module_info* info) {
-    info->identifier = "mesh;segmesh;segmesh_to_mesh";
-    info->in_param_spec = "seg_mesh_in:segment_mesh";
-    info->out_param_spec = "mesh_out:mesh";
-    info->component_class = "mesh";
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier =
+      "mesh;segmesh;segmesh_to_mesh";
+
+    info->in_param_spec =
+      "seg_mesh_in:segment_mesh";
+
+    info->out_param_spec =
+      "mesh_out:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {

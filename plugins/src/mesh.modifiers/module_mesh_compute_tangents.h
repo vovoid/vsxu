@@ -47,11 +47,20 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;modifiers;helpers;mesh_compute_tangents";
-    info->description = "Computes tangent space for the mesh";
-    info->in_param_spec = "mesh_in:mesh";
-    info->out_param_spec = "tangents:quaternion_array";
-    info->component_class = "mesh";
+    info->identifier =
+      "mesh;modifiers;helpers;mesh_compute_tangents";
+
+    info->description =
+      "Computes tangent space for the mesh";
+
+    info->in_param_spec =
+      "mesh_in:mesh";
+
+    info->out_param_spec =
+      "tangents:quaternion_array";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

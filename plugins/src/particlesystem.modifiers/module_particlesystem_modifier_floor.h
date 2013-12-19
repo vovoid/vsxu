@@ -29,33 +29,45 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "particlesystems;modifiers;floor";
-    info->description = "Stops particles when they reach either of the walls";
-    info->out_param_spec = "particlesystem:particlesystem";
-    info->in_param_spec = "in_particlesystem:particlesystem,\
-    axis:complex{\
-      x:complex{\
-        x_floor:enum?no|yes,\
-        x_bounce:enum?no|yes,\
-        x_loss:float\
-      },\
-      y:complex{\
-        y_floor:enum?no|yes,\
-        y_bounce:enum?no|yes,\
-        y_loss:float\
-      },\
-      z:complex{\
-        z_floor:enum?no|yes,\
-        z_bounce:enum?no|yes,\
-        z_loss:float\
-      },\
-      refraction:enum?no|yes,\
-      refraction_amount:float3\
-    }\
-    ,\
-    floor:float3\
-    ";
-    info->component_class = "particlesystem";
+    info->identifier =
+      "particlesystems;modifiers;floor";
+
+    info->description =
+      "Stops particles when they reach either of the walls";
+
+    info->out_param_spec =
+      "particlesystem:particlesystem";
+
+    info->in_param_spec =
+      "in_particlesystem:particlesystem,"
+      "axis:complex"
+      "{"
+        "x:complex"
+        "{"
+          "x_floor:enum?no|yes,"
+          "x_bounce:enum?no|yes,"
+          "x_loss:float"
+        "},"
+        "y:complex"
+        "{"
+          "y_floor:enum?no|yes,"
+          "y_bounce:enum?no|yes,"
+          "y_loss:float"
+        "},"
+        "z:complex"
+        "{"
+          "z_floor:enum?no|yes,"
+          "z_bounce:enum?no|yes,"
+          "z_loss:float"
+        "},"
+        "refraction:enum?no|yes,"
+        "refraction_amount:float3"
+      "},"
+      "floor:float3"
+    ;
+
+    info->component_class =
+      "particlesystem";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

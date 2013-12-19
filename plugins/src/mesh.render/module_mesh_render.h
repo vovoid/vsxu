@@ -292,20 +292,26 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;mesh;mesh_basic_render";
+    info->identifier =
+      "renderers;mesh;mesh_basic_render";
+
     info->in_param_spec =
-        "tex_a:texture,mesh_in:mesh,"
-        "particles:particlesystem,"
-        "particle_cloud:mesh,"
-        "options:complex{"
-          "vertex_colors:enum?no|yes,"
-          "use_display_list:enum?no|yes,"
-          "use_vertex_colors:enum?no|yes,"
-          "particles_size_center:enum?no|yes,"
-          "particles_size_from_color:enum?no|yes,"
-          "ignore_uvs_in_vbo_updates:enum?no|yes"
-        "}";
+      "tex_a:texture,mesh_in:mesh,"
+      "particles:particlesystem,"
+      "particle_cloud:mesh,"
+      "options:complex"
+      "{"
+        "vertex_colors:enum?no|yes,"
+        "use_display_list:enum?no|yes,"
+        "use_vertex_colors:enum?no|yes,"
+        "particles_size_center:enum?no|yes,"
+        "particles_size_from_color:enum?no|yes,"
+        "ignore_uvs_in_vbo_updates:enum?no|yes"
+      "}"
+    ;
+
     info->out_param_spec = "render_out:render";
+
     info->component_class = "render";
   }
 

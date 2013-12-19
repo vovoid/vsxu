@@ -49,7 +49,9 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;mesh;mesh_line_render";
+    info->identifier =
+      "renderers;mesh;mesh_line_render";
+
     info->description =
       "Draws lines between points in a mesh.\n"
       "Faces data is ignored.\n"
@@ -59,7 +61,8 @@ public:
 
     info->in_param_spec =
       "mesh_in:mesh,"
-      "base_options:complex{"
+      "base_options:complex"
+      "{"
         "line_width:float,"
         "override_base_color:enum?no|yes,"
         "base_color:float4,"
@@ -71,9 +74,12 @@ public:
         "center_color_add:float4"
       "}"
     ;
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
-    loading_done = true;
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
@@ -106,6 +112,7 @@ public:
     center = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"each_to_center");
     center->set(0);
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+    loading_done = true;
   }
 
   void output(vsx_module_param_abs* param)

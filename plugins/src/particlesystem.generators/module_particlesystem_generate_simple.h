@@ -46,36 +46,52 @@ class module_particlesystem_generate_simple : public vsx_module
 public:
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "particlesystems;generators;basic_spray_emitter";
-    info->description = "\
-Generates a particlesystem emitting\n\
-from one point/vertex.\n\
-With num_particles you set how many\n\
-particles you want. Default is 100,\n\
-but you usually want a lot more.";
+    info->identifier =
+      "particlesystems;generators;basic_spray_emitter";
+
+    info->description =
+      "Generates a particlesystem emitting\n"
+      "from one point/vertex.\n"
+      "With num_particles you set how many\n"
+      "particles you want. Default is 100,\n"
+      "but you usually want a lot more."
+    ;
+
     info->out_param_spec = "particlesystem:particlesystem";
-    info->in_param_spec = "\
-    num_particles:float?nc=1,\
-    particles_per_second:float,\
-    spatial:complex{\
-      emitter_position:float3,\
-      speed:complex{\
-        speed_x:float,\
-        speed_y:float,\
-        speed_z:float\
-      },\
-      speed_type:enum?random_balanced|directional,\
-      size:complex{particle_size_base:float,particle_size_random_weight:float},\
-      time_source:enum?sequencer|real,\
-      particle_rotation_dir:quaternion,\
-      enable_rotation:enum?true|false\
-    },\
-    appearance:complex{\
-      color:float4?default_controller=controller_col,\
-      time:complex{particle_lifetime_base:float,particle_lifetime_random_weight:float}\
-    }\
-    ";
-    info->component_class = "particlesystem";
+    info->in_param_spec =
+      "num_particles:float?nc=1,"
+      "particles_per_second:float,"
+      "spatial:complex"
+      "{"
+        "emitter_position:float3,"
+        "speed:complex"
+        "{"
+          "speed_x:float,"
+          "speed_y:float,"
+          "speed_z:float"
+        "},"
+        "speed_type:enum?random_balanced|directional,"
+        "size:complex"
+        "{"
+          "particle_size_base:float,particle_size_random_weight:float"
+        "},"
+        "time_source:enum?sequencer|real,"
+        "particle_rotation_dir:quaternion,"
+        "enable_rotation:enum?true|false"
+      "},"
+      "appearance:complex"
+      "{"
+        "color:float4?default_controller=controller_col,"
+        "time:complex"
+        "{"
+          "particle_lifetime_base:float,"
+          "particle_lifetime_random_weight:float"
+        "}"
+      "}"
+    ;
+
+    info->component_class =
+      "particlesystem";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

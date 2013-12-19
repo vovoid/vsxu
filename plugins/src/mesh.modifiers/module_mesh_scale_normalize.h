@@ -47,11 +47,20 @@ public:
   }
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;modifiers;transforms;mesh_norm_scale";
-    info->description = "Scales mesh to within 0..1 size";
-    info->in_param_spec = "mesh_in:mesh";
-    info->out_param_spec = "mesh_out:mesh";
-    info->component_class = "mesh";
+    info->identifier =
+      "mesh;modifiers;transforms;mesh_norm_scale";
+
+    info->description =
+      "Scales mesh to within 0..1 size";
+
+    info->in_param_spec =
+      "mesh_in:mesh";
+
+    info->out_param_spec =
+      "mesh_out:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

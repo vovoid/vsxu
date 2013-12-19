@@ -37,20 +37,27 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;particlesystems;render_particle_ribbon";
-    info->in_param_spec = "in_particlesystem:particlesystem,"
-                          "params:complex"
-                          "{"
-                            "ribbon_width:float,"
-                            "length:float,"
-                            "friction:float,"
-                            "step_length:float,"
-                            "color0:float4,"
-                            "color1:float4"
-                          "}";
+    info->identifier =
+      "renderers;particlesystems;render_particle_ribbon";
 
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
+    info->in_param_spec =
+      "in_particlesystem:particlesystem,"
+      "params:complex"
+      "{"
+        "ribbon_width:float,"
+        "length:float,"
+        "friction:float,"
+        "step_length:float,"
+        "color0:float4,"
+        "color1:float4"
+      "}"
+    ;
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
   }
 
 

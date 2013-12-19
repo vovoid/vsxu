@@ -26,21 +26,27 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;vovoid;gravity_ribbon";
+    info->identifier =
+      "renderers;vovoid;gravity_ribbon";
 
-    info->in_param_spec = "pos:float3,"
-                          "params:complex"
-                          "{"
-                            "ribbon_width:float,"
-                            "length:float,"
-                            "friction:float,"
-                            "step_length:float,"
-                            "color0:float4,"
-                            "color1:float4"
-                          "}";
+    info->in_param_spec =
+      "pos:float3,"
+      "params:complex"
+      "{"
+        "ribbon_width:float,"
+        "length:float,"
+        "friction:float,"
+        "step_length:float,"
+        "color0:float4,"
+        "color1:float4"
+      "}"
+    ;
 
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
   }
 
 

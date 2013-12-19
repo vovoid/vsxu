@@ -47,11 +47,24 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;modifiers;transforms;mesh_rotate_quat_around_vertex";
-    info->description = "Rotates mesh around vertex id by Quaternion";
-    info->in_param_spec = "mesh_in:mesh,quat_in:quaternion,vertex_rot_id:float,offset_pos:float3";
-    info->out_param_spec = "mesh_out:mesh";
-    info->component_class = "mesh";
+    info->identifier =
+      "mesh;modifiers;transforms;mesh_rotate_quat_around_vertex";
+
+    info->description =
+      "Rotates mesh around vertex id by Quaternion";
+
+    info->in_param_spec =
+      "mesh_in:mesh,"
+      "quat_in:quaternion,"
+      "vertex_rot_id:float,"
+      "offset_pos:float3"
+    ;
+
+    info->out_param_spec =
+      "mesh_out:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

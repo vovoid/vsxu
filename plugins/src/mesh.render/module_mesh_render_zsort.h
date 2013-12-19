@@ -55,10 +55,19 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;mesh;mesh_transparency_render";
-    info->in_param_spec = "tex_a:texture,mesh_in:mesh,vertex_colors:enum?no|yes";
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
+    info->identifier =
+      "renderers;mesh;mesh_transparency_render";
+
+    info->in_param_spec =
+      "tex_a:texture,"
+      "mesh_in:mesh,"
+      "vertex_colors:enum?no|yes";
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

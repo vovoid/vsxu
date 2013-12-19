@@ -12,7 +12,9 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;opengl_modifiers;buffer_clear";
+    info->identifier =
+      "renderers;opengl_modifiers;buffer_clear";
+
     info->description = "";
 
     info->in_param_spec =
@@ -21,8 +23,13 @@ public:
       "clear_color:float4?default_controller=controller_col,"
       "depth_buffer:enum?no|yes"
     ;
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
+
     info->tunnel = true;
   }
 

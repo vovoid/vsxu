@@ -149,12 +149,26 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;vertices;modifiers;mesh_vertex_distance_sort";
-    info->description = "Sorts vertices by distance to a point\n"
-                        " - camera/eye for instance";
-    info->in_param_spec = "mesh_in:mesh,distance_to:float3";
-    info->out_param_spec = "mesh_out:mesh,original_ids:float_array";
-    info->component_class = "mesh";
+    info->identifier =
+      "mesh;vertices;modifiers;mesh_vertex_distance_sort";
+
+    info->description =
+      "Sorts vertices by distance to a point\n"
+      " - camera/eye for instance"
+    ;
+
+    info->in_param_spec =
+      "mesh_in:mesh,"
+      "distance_to:float3"
+    ;
+
+    info->out_param_spec =
+      "mesh_out:mesh,"
+      "original_ids:float_array"
+    ;
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

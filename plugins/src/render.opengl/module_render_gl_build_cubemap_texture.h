@@ -18,12 +18,32 @@ class module_render_gl_build_cubemap_texture : public vsx_module {
 	vsx_bitmap* p_z;
 	vsx_bitmap* n_z;
 public:
-  void module_info(vsx_module_info* info) {
+  void module_info(vsx_module_info* info)
+  {
     info->identifier = "texture;opengl;6bitm2cubemap";
-    info->description = "Takes 6 bitmaps and builds a cubemap\ntexture.";
-    info->in_param_spec = "bitmaps:complex{positive_x:bitmap,negative_x:bitmap,positive_y:bitmap,negative_y:bitmap,positive_z:bitmap,negative_z:bitmap}";
-    info->out_param_spec = "texture_out:texture";
-    info->component_class = "texture";
+
+    info->description =
+      "Takes 6 bitmaps and builds a cubemap\n"
+      "texture."
+    ;
+
+    info->in_param_spec =
+      "bitmaps:complex"
+      "{"
+        "positive_x:bitmap,"
+        "negative_x:bitmap,"
+        "positive_y:bitmap,"
+        "negative_y:bitmap,"
+        "positive_z:bitmap,"
+        "negative_z:bitmap"
+      "}"
+    ;
+
+    info->out_param_spec =
+      "texture_out:texture";
+
+    info->component_class =
+      "texture";
   }
 
 	void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {

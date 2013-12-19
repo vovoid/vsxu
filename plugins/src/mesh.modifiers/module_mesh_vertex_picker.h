@@ -38,11 +38,27 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;modifiers;pickers;mesh_vertex_picker";
-    info->description = "Picks out a vertex from a mesh";
-    info->in_param_spec = "mesh_in:mesh,id:float";
-    info->out_param_spec = "vertex:float3,normal:float3,color:float4,texcoords:float3,passthru:mesh";
-    info->component_class = "mesh";
+    info->identifier =
+      "mesh;modifiers;pickers;mesh_vertex_picker";
+
+    info->description =
+      "Picks out a vertex from a mesh";
+
+    info->in_param_spec =
+      "mesh_in:mesh,"
+      "id:float"
+    ;
+
+    info->out_param_spec =
+      "vertex:float3,"
+      "normal:float3,"
+      "color:float4,"
+      "texcoords:float3,"
+      "passthru:mesh"
+    ;
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

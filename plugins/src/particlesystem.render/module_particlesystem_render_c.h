@@ -21,10 +21,22 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;particlesystems;render_particle_center";
-    info->in_param_spec = "particlesystem:particlesystem,texture:texture,position:float3,alpha:float,size:float";
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
+    info->identifier =
+      "renderers;particlesystems;render_particle_center";
+
+    info->in_param_spec =
+      "particlesystem:particlesystem,"
+      "texture:texture,"
+      "position:float3,"
+      "alpha:float,"
+      "size:float"
+    ;
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

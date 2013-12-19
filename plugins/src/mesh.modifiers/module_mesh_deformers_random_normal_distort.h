@@ -54,17 +54,26 @@ public:
   }
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;modifiers;deformers;mesh_normal_randistort";
-    info->description = "Distorts the normals of the mesh, useful for crapping up the lighting of a mesh";
+    info->identifier =
+      "mesh;modifiers;deformers;mesh_normal_randistort";
+
+    info->description =
+        "Distorts the normals & vertices\n"
+        "Makes fore some interesting effects.";
+
     info->in_param_spec =
       "mesh_in:mesh,"
       "distortion_factor:float3,"
       "distort_normals:enum?no|yes,"
       "distort_vertices:enum?no|yes,"
       "vertex_distortion_factor:float"
-      ;
-    info->out_param_spec = "mesh_out:mesh";
-    info->component_class = "mesh";
+    ;
+
+    info->out_param_spec =
+      "mesh_out:mesh";
+
+    info->component_class =
+      "mesh";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
