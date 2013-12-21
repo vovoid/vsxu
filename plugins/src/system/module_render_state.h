@@ -31,6 +31,7 @@ public:
       filename_in = (vsx_module_param_resource*)in_parameters.create(VSX_MODULE_PARAM_ID_RESOURCE,"filename");
       filename_in->set("");
       current_filename = "";
+      helper = 0;
   }
 
   void run()
@@ -38,6 +39,10 @@ public:
     if(filename_in->get() != current_filename)
     {
         current_filename = filename_in->get();
+	if(helper)
+	{
+	  delete helper;
+	}
         helper = new vsx_engine_helper(vsx_get_data_path() + current_filename,engine->module_list);
     }
   }
@@ -52,6 +57,13 @@ public:
     }
   }
 
+  void on_delete()
+  {
+    if(helper)
+    {
+      delete helper;
+    }
+  }
 private:
 
 };
