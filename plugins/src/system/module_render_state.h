@@ -16,15 +16,15 @@ class module_render_state : vsx_module
 public:
   void module_info(vsx_module_info* info)
   {
-    info->identifier = 
+    info->identifier =
       "renderers;state_loader"
       "||"
       "system;state_loader";
-    info->in_param_spec = 
+    info->in_param_spec =
       "filename:resource";
-    info->out_param_spec = 
+    info->out_param_spec =
       "render_out:render";
-    info->component_class = 
+    info->component_class =
       "system";
   }
 
@@ -42,19 +42,26 @@ public:
   {
     if(filename_in->get() != current_filename)
     {
-      current_filename = filename_in->get();
-      if(helper)
+      if (verify_filesuffix(current_filename,"vsx"))
       {
-        delete helper;
+        current_filename = filename_in->get();
+        if(helper)
+        {
+          delete helper;
+        }
+        helper = new vsx_engine_helper(vsx_get_data_path() + current_filename,engine->module_list);
       }
-      helper = new vsx_engine_helper(vsx_get_data_path() + current_filename,engine->module_list);
+      else
+      {
+      message = "module||ERROR!! File not .vsx!";
+      }
     }
   }
 
   void output(vsx_module_param_abs* param)
   {
     VSX_UNUSED(param);
-    if(verify_filesuffix(current_filename,"vsx"))
+    if(helper)
     {
        helper->render();
        render_result->set(1);
