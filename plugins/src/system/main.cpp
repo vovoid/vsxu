@@ -45,6 +45,7 @@
 #include "module_system_trig_sequencer.h"
 #include "module_system_file_chooser.h"
 #include "module_string_resource_to_string.h"
+#include "module_render_state.h"
 
 
 
@@ -74,10 +75,10 @@ vsx_module* create_new_module(unsigned long module, void* args) {
     case 5: return (vsx_module*)(new module_system_blocker_loading);
     case 6: return (vsx_module*)(new module_system_file_chooser);
     case 7: return (vsx_module*)(new module_string_resource_to_string);
-
+    case 8: return (vsx_module*)(new module_render_state);
 #if PLATFORM == PLATFORM_LINUX
-    case 8: return (vsx_module*)(new module_system_joystick);
-    case 9: return (vsx_module*)(new module_system_tm_m);
+    case 9: return (vsx_module*)(new module_system_joystick);
+    case 10: return (vsx_module*)(new module_system_tm_m);
 #endif
   }
   return 0;
@@ -93,9 +94,10 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 5: delete (module_system_blocker_loading*)m; break;
     case 6: delete (module_system_file_chooser*)m; break;
     case 7: delete (module_string_resource_to_string*)m; break;
+    case 8: delete (module_render_state*)m; break;
 #if PLATFORM == PLATFORM_LINUX
-    case 8: delete (module_system_joystick*)m; break;
-    case 9: delete (module_system_tm_m*)m; break;
+    case 9: delete (module_system_joystick*)m; break;
+    case 10: delete (module_system_tm_m*)m; break;
 #endif
   }
 }
