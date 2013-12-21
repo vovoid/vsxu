@@ -16,7 +16,9 @@ class module_render_state : vsx_module
 public:
   void module_info(vsx_module_info* info)
   {
-      info->identifier = "renderers;state_loader||system;state_loader";
+      info->identifier = "renderers;state_loader
+                         "||"
+			 "system;state_loader";
       info->in_param_spec = "filename:resource";
       info->out_param_spec = "render_out:render";
       info->component_class = "system";
