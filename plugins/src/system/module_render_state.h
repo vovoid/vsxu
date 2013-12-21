@@ -57,6 +57,13 @@ public:
     }
   }
 
+  void on_delete()
+  {
+    if(helper)
+    {
+      delete helper;
+    }
+  }
 private:
 
 };
