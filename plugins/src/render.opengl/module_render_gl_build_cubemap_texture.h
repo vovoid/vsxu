@@ -20,7 +20,8 @@ class module_render_gl_build_cubemap_texture : public vsx_module {
 public:
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "texture;opengl;6bitm2cubemap";
+    info->identifier =
+      "texture;opengl;6bitm2cubemap";
 
     info->description =
       "Takes 6 bitmaps and builds a cubemap\n"

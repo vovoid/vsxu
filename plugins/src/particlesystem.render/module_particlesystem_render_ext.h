@@ -54,7 +54,7 @@ public:
     info->in_param_spec =
       "particlesystem:particlesystem,"
       "texture:texture,"
-      "options:complex
+      "options:complex"
       "{"
         "size_lifespan_sequence:sequence,"
         "alpha_lifespan_sequence:sequence,"

@@ -39,7 +39,7 @@ public:
     ;
 
     info->in_param_spec =
-      "spatial:complex
+      "spatial:complex"
       "{"
         "position:float3,"
         "size:float,"
@@ -49,7 +49,7 @@ public:
         "tex_coord_b:float3,"
         "facing_camera:enum?no|yes&nc=1" // don't allow connections to this, pure config only
       "},"
-      "color:complex
+      "color:complex"
       "{"
         "global_alpha:float,"
         "color_multiplier:float4?default_controller=controller_col,"

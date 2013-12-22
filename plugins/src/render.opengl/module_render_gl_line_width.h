@@ -13,13 +13,26 @@ class module_render_gl_line_width : public vsx_module
   vsx_gl_state* gl_state;
 
 public:
-  void module_info(vsx_module_info* info) {
-    info->identifier = "renderers;opengl_modifiers;gl_line_width";
-    info->description = "";
-    info->in_param_spec = "render_in:render,width:float";
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier =
+      "renderers;opengl_modifiers;gl_line_width";
+
+    info->description =
+      "";
+
+    info->in_param_spec =
+      "render_in:render,width:float";
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
+
     loading_done = true;
+
     info->tunnel = true; // always run this
   }
 

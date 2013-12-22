@@ -20,22 +20,32 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;opengl_modifiers;gl_matrix_multiply";
-    info->description = "If a module outputs a matrix\n\
-as a result of a mathematical \n\
-operation and you want to use it\n\
-to transform a scene, this is the module\n\
-for you.\n\
-\n\
-Try it with the bspline_matrix math\n\
-module for some interresting results.";
+    info->identifier =
+      "renderers;opengl_modifiers;gl_matrix_multiply";
+
+    info->description =
+      "If a module outputs a matrix\n"
+      "as a result of a mathematical \n"
+      "operation and you want to use it\n"
+      "to transform a scene, this is the module\n"
+      "for you.\n"
+      "\n"
+      "Try it with the bspline_matrix math\n"
+      "module for some interresting results."
+    ;
+
     info->in_param_spec =
-  "\
-  render_in:render,\
-  matrix_in:matrix,\
-  matrix_target:enum?MODELVIEW|PROJECTION|TEXTURE";
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
+      "render_in:render,"
+      "matrix_in:matrix,"
+      "matrix_target:enum?MODELVIEW|PROJECTION|TEXTURE"
+    ;
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
+
     info->tunnel = true; // always run this
   }
 

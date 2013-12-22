@@ -55,7 +55,7 @@ public:
 
     info->in_param_spec = ""
       "particlesystem:particlesystem,"
-      "texture:texture,options:complex
+      "texture:texture,options:complex"
       "{"
         "render_type:enum?quads|point_sprites,"
         "size_lifespan_type:enum?normal|sequence,"
@@ -66,10 +66,10 @@ public:
         "g_lifespan_sequence:sequence,"
         "b_lifespan_sequence:sequence,"
         "ignore_particles_at_center:enum?no|yes"
-      "},
-      "shader_params:complex
+      "},"
+      "shader_params:complex"
       "{"
-        "vertex_program:string,
+        "vertex_program:string,"
         "fragment_program:string"
         +shader.get_param_spec()+
       "}"

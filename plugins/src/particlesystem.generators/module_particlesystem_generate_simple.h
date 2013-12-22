@@ -57,7 +57,9 @@ public:
       "but you usually want a lot more."
     ;
 
-    info->out_param_spec = "particlesystem:particlesystem";
+    info->out_param_spec =
+      "particlesystem:particlesystem";
+
     info->in_param_spec =
       "num_particles:float?nc=1,"
       "particles_per_second:float,"

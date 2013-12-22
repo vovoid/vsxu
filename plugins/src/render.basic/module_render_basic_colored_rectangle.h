@@ -37,14 +37,14 @@ public:
     ;
 
     info->in_param_spec =
-      "spatial:complex
+      "spatial:complex"
       "{"
         "position:float3,"
         "angle:float,"
         "rotation_axis:float3,"
         "size:float3"
       "},"
-      "border:complex
+      "border:complex"
       "{"
         "border_enable:enum?no|yes,"
         "border_width:float,"

@@ -13,12 +13,26 @@ public:
 
 void module_info(vsx_module_info* info)
 {
-  info->identifier = "renderers;opengl_modifiers;gl_fog";
-  info->description = "Enables the fog built into OpenGL";
+  info->identifier =
+    "renderers;opengl_modifiers;gl_fog";
+
+  info->description =
+    "Enables the fog built into OpenGL";
+
   info->in_param_spec =
-"render_in:render,status:enum?DISABLED|ENABLED,fog_color:float4?default_controller=controller_col,fog_start:float,fog_end:float";
-  info->out_param_spec = "render_out:render";
-  info->component_class = "render";
+    "render_in:render,"
+    "status:enum?DISABLED|ENABLED,"
+    "fog_color:float4?default_controller=controller_col,"
+    "fog_start:float,"
+    "fog_end:float"
+  ;
+
+  info->out_param_spec =
+    "render_out:render";
+
+  info->component_class =
+    "render";
+
   info->tunnel = true;
 }
 

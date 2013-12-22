@@ -19,18 +19,22 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;opengl_modifiers;light_directional";
+    info->identifier =
+      "renderers;opengl_modifiers;light_directional";
+
     info->description =
-    "A light always hitting the triangles\n"
-    "from the same direction given\n"
-    "in [position]. This module modifies \n"
-    "one lightsource, you can have 8 lights\n"
-    "(nested) at the same time depending\n"
-    "on your OpenGL drivers.\n";
+      "A light always hitting the triangles\n"
+      "from the same direction given\n"
+      "in [position]. This module modifies \n"
+      "one lightsource, you can have 8 lights\n"
+      "(nested) at the same time depending\n"
+      "on your OpenGL drivers.\n"
+    ;
 
     info->in_param_spec =
       "render_in:render,"
-      "properties:complex{"
+      "properties:complex"
+      "{"
         "light_id:enum?0|1|2|3|4|5|6|7,"
         "enabled:enum?NO|YES,"
         "position:float3,"
@@ -39,8 +43,13 @@ public:
         "specular_color:float4?default_controller=controller_col"
       "}"
     ;
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
+
     info->tunnel = true;
   }
 

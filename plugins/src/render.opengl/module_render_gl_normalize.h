@@ -2,17 +2,33 @@ class module_render_gl_normalize : public vsx_module
 {
   // in
   vsx_module_param_render* render_in;
+
   // out
   vsx_module_param_render* render_out;
+
   // internal
+
 public:
-  void module_info(vsx_module_info* info) {
-    info->identifier = "renderers;opengl_modifiers;auto_normalize";
-    info->description = "";
-    info->in_param_spec = "render_in:render";
-    info->out_param_spec = "render_out:render";
-    info->component_class = "render";
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier =
+      "renderers;opengl_modifiers;auto_normalize";
+
+    info->description =
+      "";
+
+    info->in_param_spec =
+      "render_in:render";
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "render";
+
     loading_done = true;
+
     info->tunnel = true; // always run this
   }
 

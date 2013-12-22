@@ -31,7 +31,7 @@ public:
       "point_b:float3,"
       "color_a:float4?default_controller=controller_col,"
       "color_b:float4?default_controller=controller_col,"
-      "width:float
+      "width:float"
     "}"
     ;
 

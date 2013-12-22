@@ -22,23 +22,34 @@ public:
 
 void module_info(vsx_module_info* info)
 {
-  info->identifier = "renderers;opengl_modifiers;cameras;freelook_camera";
-  info->description = "A camera that has a position and a rotation\n\
-axis set by the user.\nUseful for static cameras.";
+  info->identifier =
+    "renderers;opengl_modifiers;cameras;freelook_camera";
+
+  info->description =
+    "A camera that has a position and a rotation\n"
+    "axis set by the user.\n"
+    "Useful for static cameras."
+  ;
+
   info->in_param_spec =
-"\
-render_in:render,\
-camera:complex{\
-  position:float3,\
-  rotation:float3,\
-  upvector:float3,\
-  fov:float,\
-  near_clipping:float,\
-  far_clipping:float,\
-}\
-";
-  info->out_param_spec = "render_out:render";
-  info->component_class = "render";
+    "render_in:render,"
+    "camera:complex"
+    "{"
+      "position:float3,"
+      "rotation:float3,"
+      "upvector:float3,"
+      "fov:float,"
+      "near_clipping:float,"
+      "far_clipping:float,"
+    "}"
+  ;
+
+  info->out_param_spec =
+    "render_out:render";
+
+  info->component_class =
+    "render";
+
   info->tunnel = true;
 }
 

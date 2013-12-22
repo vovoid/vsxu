@@ -14,7 +14,7 @@ void module_info(vsx_module_info* info)
     "renderers;opengl_modifiers;gl_color";
 
   info->description =
-    "Sets the color for modules\n
+    "Sets the color for modules\n"
     "that doesn't do this themselves."
   ;
 

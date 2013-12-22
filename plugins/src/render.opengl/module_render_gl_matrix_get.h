@@ -17,14 +17,22 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;opengl_modifiers;gl_matrix_get";
-    info->description = "Gets the current matrix from openGL";
+    info->identifier =
+      "renderers;opengl_modifiers;gl_matrix_get";
+
+    info->description =
+      "Gets the current matrix from openGL";
+
     info->in_param_spec =
-  "\
-  render_in:render,\
-  matrix_target:enum?MODELVIEW|PROJECTION|TEXTURE";
-    info->out_param_spec = "render_out:render,matrix_out:matrix";
-    info->component_class = "render";
+      "render_in:render,"
+      "matrix_target:enum?MODELVIEW|PROJECTION|TEXTURE"
+    ;
+
+    info->out_param_spec =
+      "render_out:render,matrix_out:matrix";
+
+    info->component_class =
+      "render";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

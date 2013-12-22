@@ -99,12 +99,12 @@ public:
       "appearance:complex"
       "{"
         "color:float4?default_controller=controller_col,"
-        "time:complex
+        "time:complex"
         "{"
           "particle_lifetime_base:float,"
-          "particle_lifetime_random_weight:float
+          "particle_lifetime_random_weight:float"
         "},"
-        "time_source:enum?sequencer|real
+        "time_source:enum?sequencer|real"
       "}"
     ;
 
