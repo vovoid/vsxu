@@ -37,7 +37,6 @@
 #define MOUSE_CURSOR_WE 5 
 #define MOUSE_CURSOR_NESW 6
 #define MOUSE_CURSOR_NWSE 7
-
 class vsx_mouse
 {
   public:
@@ -52,5 +51,6 @@ class vsx_mouse
   void hide_cursor();
   vsx_mouse();
 };
+
 #endif
 

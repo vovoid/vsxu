@@ -112,8 +112,18 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
       case -'F':
       case -'f': // F
         ((vsx_window_texture_viewer*)tv)->fullwindow = !((vsx_window_texture_viewer*)tv)->fullwindow;
-        if (((vsx_window_texture_viewer*)tv)->fullwindow) mouse.hide_cursor(); else mouse.show_cursor();
-        if (!((vsx_window_texture_viewer*)tv)->fullwindow) this->performance_mode = false;
+
+        if (((vsx_window_texture_viewer*)tv)->fullwindow)
+        {
+          mouse.hide_cursor();
+        }
+        else
+        {
+          mouse.show_cursor();
+        }
+
+        if (!((vsx_window_texture_viewer*)tv)->fullwindow)
+          this->performance_mode = false;
       break;
       // close all controllers
       case -'C':
@@ -143,8 +153,14 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
       case -'f': // F
         if (((vsx_window_texture_viewer*)tv)->fullwindow)
         {
-          mouse.show_cursor();
           this->performance_mode = !this->performance_mode;
+        }
+        if (this->performance_mode)
+        {
+          mouse.show_cursor();
+        } else
+        {
+          mouse.hide_cursor();
         }
 
       default:
