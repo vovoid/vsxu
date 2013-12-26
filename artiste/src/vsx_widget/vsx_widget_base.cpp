@@ -380,7 +380,6 @@ void vsx_widget::mouse_move_passive(float x, float y)
     t->event_mouse_move_passive(result,coord);
     m_o_focus = t;
   }
-	mouse.set_cursor_implement();
 }
 
 
@@ -406,7 +405,7 @@ void vsx_widget::mouse_down(float x, float y, int button)
   {
     // set up coordinates for
     mouse_down_pos = result;
-    mouse.position.set(x,y);
+    mouse.set_cursor_pos(x,y);
     k_focus = t;
     m_focus = t;
     t->event_mouse_down(result,coord,button);
@@ -422,7 +421,6 @@ void vsx_widget::mouse_down(float x, float y, int button)
       last_clicked = t;
     }
   }
-	mouse.set_cursor_implement();
 }
 
 void vsx_widget::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
@@ -457,12 +455,11 @@ void vsx_widget::mouse_move(float x, float y)
   if (m_focus)
   {
     vsx_widget_coords coord;
-    mouse.position.set(x,y);
+    mouse.set_cursor_pos(x,y);
     vsx_widget_distance distance;
     m_focus->calculate_mouse_distance(x,y,coord,distance);
     m_focus->event_mouse_move(distance,coord);
   }
-  mouse.set_cursor_implement();
 }
 
 void vsx_widget::mouse_up(float x, float y, int button)
@@ -483,7 +480,6 @@ void vsx_widget::mouse_up(float x, float y, int button)
     m_focus->event_mouse_up(distance,coord,button);
     m_focus = 0;
   }
-  mouse.set_cursor_implement();
 }
 
 

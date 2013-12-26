@@ -1170,7 +1170,7 @@ void vsx_widget_server::event_mouse_down(vsx_widget_distance distance,vsx_widget
   selection = false;
   delta_move = delta_zoom = 0.0f;
   selection_start = distance.center;
-  remPointer=mouse.position;
+  remPointer = mouse.get_cursor_pos();
   if (button == 0) {
       //printf("selection start\n");
       selection_end = selection_start;// = distance.center;
@@ -1250,10 +1250,8 @@ void vsx_widget_server::event_mouse_move(vsx_widget_distance distance,vsx_widget
   } else
   {
     if (mouse_down_r && !mouse_down_l) {
-      if (mouse.position != remPointer) {
-//          float dz = (distance.center.y-selection_start.y);
-        float dz = (mouse.position.y-remPointer.y);
-        //printf("dz: %f\n",dz);
+      if (mouse.get_cursor_pos() != remPointer) {
+        float dz = (mouse.get_cursor_pos().y-remPointer.y);
         ((vsx_widget_desktop*)root)->zpp += -dz*0.0005f;
         delta_zoom += fabs(dz*0.005f);
         if (delta_zoom > 0.09f) mouse.hide_cursor();
@@ -1261,10 +1259,10 @@ void vsx_widget_server::event_mouse_move(vsx_widget_distance distance,vsx_widget
       }
     }
     if (!mouse_down_r && mouse_down_l && server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_INTERNAL) {
-      if (mouse.position != remPointer) {
-        float dx = (mouse.position.x-remPointer.x);
-        float dy = (mouse.position.y-remPointer.y);
-        //printf("dz: %f\n",dz);
+      if (mouse.get_cursor_pos() != remPointer) {
+        float dx = (mouse.get_cursor_pos().x-remPointer.x);
+        float dy = (mouse.get_cursor_pos().y-remPointer.y);
+
         ((vsx_widget_desktop*)root)->xpp += -dx*0.0003f;
         ((vsx_widget_desktop*)root)->ypp += dy*0.0003f;
         delta_move += fabs(dx*0.005f);

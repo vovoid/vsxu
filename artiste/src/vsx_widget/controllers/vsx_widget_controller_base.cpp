@@ -227,7 +227,7 @@ void vsx_widget_controller_base::event_mouse_down(vsx_widget_distance distance,v
 {
   mouse_moves = 0;
 
-  remPointer=mouse.position;
+  remPointer = mouse.get_cursor_pos();
 
   if (!owned)
   {
@@ -273,9 +273,9 @@ void vsx_widget_controller_base::event_mouse_move(vsx_widget_distance distance,v
   ++mouse_moves;  
   if (controlling)
   {
-      if (remPointer!=mouse.position) //don't send unnecessary messages
-        // send target_value to the engine or parent widget
-        send_to_server();
+    if (remPointer != mouse.get_cursor_pos()) //don't send unnecessary messages
+      // send target_value to the engine or parent widget
+      send_to_server();
   }
   allow_move_x = allow_move_y = !owned;
   if (!controlling)

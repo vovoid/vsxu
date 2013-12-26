@@ -242,7 +242,7 @@ void vsx_widget_controller_color::event_mouse_move(vsx_widget_distance distance,
 
   if (angle_down)
   {
-    if (mouse.position!=remPointer)
+    if (mouse.get_cursor_pos() != remPointer)
     {
       angle_dest -= (distance.center.x-remWorld.x)*20;
       while (angle_dest > 1) angle_dest -= 1.0;
@@ -296,7 +296,7 @@ void vsx_widget_controller_color::event_mouse_down(vsx_widget_distance distance,
     {
       //printf("angle down\n");
       angle_down = true;
-      remPointer=mouse.position;
+      remPointer = mouse.get_cursor_pos();
       mouse.hide_cursor();
     } else
     if (((distance.center.x > -size.x/2+base_size*size.x) && (distance.center.x < size.x/2))

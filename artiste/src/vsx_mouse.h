@@ -34,21 +34,32 @@
 #define MOUSE_CURSOR_IBEAM 2
 #define MOUSE_CURSOR_SIZE 3
 #define MOUSE_CURSOR_NS 4
-#define MOUSE_CURSOR_WE 5 
+#define MOUSE_CURSOR_WE 5
 #define MOUSE_CURSOR_NESW 6
 #define MOUSE_CURSOR_NWSE 7
 class vsx_mouse
 {
-  public:
   int cursor;
   bool visible;
   vsx_vector position;
-  vsx_vector get_cursor_pos() {return position;}
+
   void set_cursor_implement();
+
+public:
+
   void set_cursor(int id);
+
+  vsx_vector get_cursor_pos()
+  {
+    return position;
+  }
+
   void set_cursor_pos(float x, float y);
+
+
   void show_cursor();
   void hide_cursor();
+// Constructor
   vsx_mouse();
 };
 

@@ -279,7 +279,7 @@ void vsx_widget_controller_ab::event_mouse_down(vsx_widget_distance distance,vsx
     if (sqrt(MousePt.s.X*MousePt.s.X + MousePt.s.Y*MousePt.s.Y) < 0.4f)
     {
       controlling = true;
-      remPointer=mouse.position;
+      remPointer=mouse.get_cursor_pos();
       mouse.hide_cursor();
     }
   }
@@ -289,7 +289,7 @@ void vsx_widget_controller_ab::event_mouse_down(vsx_widget_distance distance,vsx
 
 void vsx_widget_controller_ab::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
 {
-  if (mouse.position!=remPointer && controlling)
+  if (mouse.get_cursor_pos() != remPointer && controlling)
   {
     Point2fT    oldMousePt = MousePt;
 

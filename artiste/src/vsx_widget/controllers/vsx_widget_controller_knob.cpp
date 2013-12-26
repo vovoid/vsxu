@@ -92,7 +92,7 @@ void vsx_widget_controller_knob::event_mouse_down(vsx_widget_distance distance,v
 
 void vsx_widget_controller_knob::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
 {
-  if (mouse.position != remPointer && controlling)
+  if (mouse.get_cursor_pos() != remPointer && controlling)
   {
     deltamove=(distance.center-remWorld)/size;
     if (fabs(deltamove.x)>fabs(deltamove.y)) deltamove.y=0.0f; else deltamove.x=0.0f;
