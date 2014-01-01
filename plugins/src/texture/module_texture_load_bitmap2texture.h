@@ -17,11 +17,20 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "texture;loaders;bitmap2texture";
-    info->description = "";
-    info->in_param_spec = "bitmap:bitmap,mipmaps:enum?yes|no";
-    info->out_param_spec = "texture:texture";
-    info->component_class = "texture";
+    info->identifier =
+      "texture;loaders;bitmap2texture";
+
+    info->description =
+      "";
+
+    info->in_param_spec =
+      "bitmap:bitmap,mipmaps:enum?yes|no";
+
+    info->out_param_spec =
+      "texture:texture";
+
+    info->component_class =
+      "texture";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

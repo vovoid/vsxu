@@ -13,21 +13,32 @@ class module_system_clock : public vsx_module
 
 public:
 
-void module_info(vsx_module_info* info)
-{
-  info->identifier = "system;clock";
-  info->in_param_spec ="";
-  info->out_param_spec = "clock:complex{year:float,\
-month:float,\
-dayofweek:float,\
-day:float,\
-hour:float,\
-hour12:float,\
-minute:float,\
-second:float,\
-millisecond:float}";
-  info->component_class = "system";
-}
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier =
+      "system;clock";
+
+    info->in_param_spec =
+      "";
+
+    info->out_param_spec =
+      "clock:complex"
+      "{"
+        "year:float,"
+        "month:float,"
+        "dayofweek:float,"
+        "day:float,"
+        "hour:float,"
+        "hour12:float,"
+        "minute:float,"
+        "second:float,"
+        "millisecond:float"
+      "}"
+    ;
+
+    info->component_class =
+      "system";
+  }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {

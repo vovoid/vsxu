@@ -51,18 +51,26 @@ public:
   {
   }
 
-void module_info(vsx_module_info* info) {
+void module_info(vsx_module_info* info)
+{
   glewInit();
-  info->identifier = "texture;effects;blur";
+
+  info->identifier =
+    "texture;effects;blur";
+
   info->in_param_spec =
-      "glow_source:texture,"
-      "start_value:float,"
-      "attenuation:float,"
-      "texture_size:enum?2048x2048|1024x1024|512x512|256x256|128x128|64x64|32x32|16x16|8x8|4x4|VIEWPORT_SIZE|VIEWPORT_SIZE_DIV_2|VIEWPORT_SIZE_DIV_4|VIEWPORT_SIZEx2,"
-      "passes:enum?ONE|TWO"
+    "glow_source:texture,"
+    "start_value:float,"
+    "attenuation:float,"
+    "texture_size:enum?2048x2048|1024x1024|512x512|256x256|128x128|64x64|32x32|16x16|8x8|4x4|VIEWPORT_SIZE|VIEWPORT_SIZE_DIV_2|VIEWPORT_SIZE_DIV_4|VIEWPORT_SIZEx2,"
+    "passes:enum?ONE|TWO"
   ;
-  info->out_param_spec = "texture_out:texture";
-  info->component_class = "texture";
+
+  info->out_param_spec =
+    "texture_out:texture";
+
+  info->component_class =
+    "texture";
 }
 
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

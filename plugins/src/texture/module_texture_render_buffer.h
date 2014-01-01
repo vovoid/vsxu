@@ -28,7 +28,9 @@ public:
   module_texture_render_buffer() : texture(0) {}
 
 void module_info(vsx_module_info* info) {
-  info->identifier = "texture;buffers;render_buffer";
+  info->identifier =
+    "texture;buffers;render_buffer";
+
   info->description =
     "This module captures rendering to a texture\n"
     "- color buffer RGBA\n"
@@ -44,7 +46,8 @@ void module_info(vsx_module_info* info) {
     "Alpha channel and optional multisampling.\n"
     "Dynamic textures can be very useful!";
 
-  info->in_param_spec = "render_in:render,"
+  info->in_param_spec =
+    "render_in:render,"
     "texture_size:enum?"
       "2048x2048|"
       "1024x1024|"
@@ -69,7 +72,8 @@ void module_info(vsx_module_info* info) {
   info->out_param_spec =
     "texture_out:texture"
   ;
-  info->component_class = "texture";
+  info->component_class =
+    "texture";
 }
 
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {

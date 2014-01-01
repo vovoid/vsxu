@@ -25,18 +25,29 @@ public:
 
 void module_info(vsx_module_info* info)
 {
-  info->identifier = "renderers;opengl_modifiers;rendering_mode";
-  info->description = "Changes the way triangles are drawn\n - either as points, lines (wireframe\nor solid (default)";
+  info->identifier =
+    "renderers;opengl_modifiers;rendering_mode";
+
+  info->description =
+    "Changes the way triangles are drawn\n"
+    "either as points,\n"
+    "lines (wireframe)\n"
+    "or solid (default)"
+  ;
 
   info->in_param_spec =
-"\
-render_in:render,\
-back_facing:enum?points|lines|solid,\
-front_facing:enum?points|lines|solid,\
-smooth_edges:enum?no|yes\
-";
-  info->out_param_spec = "render_out:render";
-  info->component_class = "render";
+    "render_in:render,"
+    "back_facing:enum?points|lines|solid,"
+    "front_facing:enum?points|lines|solid,"
+    "smooth_edges:enum?no|yes"
+  ;
+
+  info->out_param_spec =
+    "render_out:render";
+
+  info->component_class =
+    "render";
+
   info->tunnel = true;
 }
 

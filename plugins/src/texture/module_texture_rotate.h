@@ -25,10 +25,20 @@ public:
 
 void module_texture_rotate::module_info(vsx_module_info* info)
 {
-  info->identifier = "texture;modifiers;rotate";
-  info->in_param_spec = "texture_in:texture,rotation_angle:float,rotation_axis:float3";
-  info->out_param_spec = "texture_rotate_out:texture";
-  info->component_class = "texture";
+  info->identifier =
+    "texture;modifiers;rotate";
+
+  info->in_param_spec =
+    "texture_in:texture,"
+    "rotation_angle:float,"
+    "rotation_axis:float3"
+  ;
+
+  info->out_param_spec =
+    "texture_rotate_out:texture";
+
+  info->component_class =
+    "texture";
 }
 
 void module_texture_rotate::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

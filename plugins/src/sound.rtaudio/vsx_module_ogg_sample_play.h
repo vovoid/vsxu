@@ -41,8 +41,9 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->output = 1;
-    info->identifier = "sound;ogg_sample_play";
+    info->identifier =
+      "sound;ogg_sample_play";
+
     info->description =
       "Plays 16-bit signed int PCM\n"
       "OGG vorbis files; mono or stereo."
@@ -52,8 +53,14 @@ public:
       "filename:resource,"
       "format:enum?mono|stereo"
     ;
-    info->out_param_spec = "";
-    info->component_class = "output";
+
+    info->out_param_spec =
+      "";
+
+    info->component_class =
+      "output";
+
+    info->output = 1;
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

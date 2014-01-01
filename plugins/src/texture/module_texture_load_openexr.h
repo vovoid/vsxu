@@ -28,16 +28,23 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "texture;loaders;exr_tex_load";
-    info->description = "";
+    info->identifier =
+      "texture;loaders;exr_tex_load";
+
+    info->description =
+      "";
+
     info->in_param_spec =
         "filename:resource"
     ;
-    info->out_param_spec = "texture:texture";
-    info->component_class = "texture";
+
+    info->out_param_spec =
+      "texture:texture";
+
+    info->component_class =
+      "texture";
   }
 
-  // ----
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
 

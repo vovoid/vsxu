@@ -252,12 +252,14 @@ public:
 
   /*
   Param specifications - used for the GUI (artiste)
+
   Looks like:
     name:type?param1=val1&param2=val2
 
     Notable extra params for a param are:
       nc=1                       - don't allow connections to this param
       default_controller=knob    - what happens when double-clicking on the param
+      help=`Helpful Text`        - help text
   */
   vsx_string in_param_spec;
   vsx_string out_param_spec;

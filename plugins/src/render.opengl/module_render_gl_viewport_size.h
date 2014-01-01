@@ -14,11 +14,25 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "system;viewport_size";
-    info->description = "Gets current viewport size. Hook\nit to the screen or a texture buffer.";
-    info->in_param_spec = "";
-    info->out_param_spec = "vx:float,vy:float";
-    info->component_class = "render";
+    info->identifier =
+      "system;viewport_size";
+
+    info->description =
+      "Gets current viewport size. Hook\n"
+      "it to the screen or a texture buffer."
+    ;
+
+    info->in_param_spec =
+      "";
+
+    info->out_param_spec =
+      "vx:float,"
+      "vy:float"
+    ;
+
+    info->component_class =
+      "render";
+
     info->tunnel = true;
   }
 

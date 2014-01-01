@@ -75,10 +75,6 @@ public:
   
   void module_info(vsx_module_info* info)
   {
-    info->description = "Loads a JPEG image from\ndisk and outputs a \n - VSXu bitmap \n and\n - texture.\nTexture is only loaded when used.\nThis is to preserve memory.";
-    info->in_param_spec = "filename:resource";
-    info->out_param_spec = "texture:texture,bitmap:bitmap";
-
     if (m_type == 0)
     {
       info->identifier = "bitmaps;loaders;jpeg_bitm_load";
@@ -89,6 +85,22 @@ public:
       info->identifier = "texture;loaders;jpeg_tex_load";
       info->component_class = "texture";
     }
+
+    info->description =
+      "Loads a JPEG image from\ndisk and outputs a \n"
+      "- VSXu bitmap \n "
+      "and\n "
+      "- texture.\n"
+      "Texture is only loaded when used.\n"
+      "This is to preserve memory."
+    ;
+
+    info->in_param_spec =
+      "filename:resource";
+
+    info->out_param_spec =
+      "texture:texture,bitmap:bitmap";
+
   }
   
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

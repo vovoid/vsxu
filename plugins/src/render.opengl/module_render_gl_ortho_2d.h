@@ -16,16 +16,23 @@ public:
 
 void module_info(vsx_module_info* info)
 {
-  info->identifier = "renderers;opengl_modifiers;gl_ortho2d";
-  info->description = "";
+  info->identifier =
+    "renderers;opengl_modifiers;gl_ortho2d";
+
+  info->description =
+    "";
 
   info->in_param_spec =
-"\
-render_in:render,\
-scale:float3\
-";
-  info->out_param_spec = "render_out:render";
-  info->component_class = "render";
+    "render_in:render,"
+    "scale:float3"
+  ;
+
+  info->out_param_spec =
+    "render_out:render";
+
+  info->component_class =
+    "render";
+
   info->tunnel = true; // always run this
 }
 

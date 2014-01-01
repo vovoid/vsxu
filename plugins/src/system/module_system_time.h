@@ -1,31 +1,51 @@
 class module_system_time : public vsx_module 
 {
   // in
+
   // out
   vsx_module_param_float* time_out;
   vsx_module_param_float* dtime_out;
   vsx_module_param_float* r_time_out;
   vsx_module_param_float* r_dtime_out;
+
   // internal
 
 void module_info(vsx_module_info* info)
 {
-  info->identifier = "system;time";
-  info->description = "The outputs of this module need some\n\
-explanation. The normal time is bound\n\
-to the timeline used when creating a\n\
-presentation. The 'real' is pure\n\
-operating system time, that is -\n\
-will be updated even if the sequenced\n\
-time is stopped. In most cases you\n\
-|||\n\
-want to use the normal time unless you're\n\
-creating a presentation and know that\n\
-you need real time. Time is total\n\
-time elapsed, dtime is the time that\n\
-passed since the last frame.";
-  info->out_param_spec = "normal:complex{time:float,dtime:float},real:complex{r_time:float,r_dtime:float}";
-  info->component_class = "system";
+  info->identifier =
+    "system;time";
+
+  info->description =
+    "The outputs of this module need some\n"
+    "explanation. The normal time is bound\n"
+    "to the timeline used when creating a\n"
+    "presentation. The 'real' is pure\n"
+    "operating system time, that is -\n"
+    "will be updated even if the sequenced\n"
+    "time is stopped. In most cases you\n"
+    "|||\n"
+    "want to use the normal time unless you're\n"
+    "creating a presentation and know that\n"
+    "you need real time. Time is total\n"
+    "time elapsed, dtime is the time that\n"
+    "passed since the last frame."
+  ;
+
+  info->out_param_spec =
+    "normal:complex"
+    "{"
+      "time:float,"
+      "dtime:float"
+    "},"
+    "real:complex"
+    "{"
+      "r_time:float,"
+      "r_dtime:float"
+    "}"
+  ;
+
+  info->component_class =
+    "system";
 }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

@@ -5,20 +5,34 @@ class module_system_tm_m : public vsx_module
   // in
   vsx_module_param_string* handle_name;
   vsx_module_param_render* render_in;
+
   // out
   vsx_module_param_render* render_result;
+
   // internal
   vsx_string sname;
   char* iname;
+
 public:
+
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "system;tm_measure";
-    info->description = "";
-    info->in_param_spec = "render_in:render,handle_name:string";
-    info->out_param_spec = "render_out:render";
-    info->component_class = "system";
-    info->tunnel = true; // always run this
+    info->identifier =
+      "system;tm_measure";
+
+    info->description =
+      "";
+
+    info->in_param_spec =
+      "render_in:render,handle_name:string";
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "system";
+
+    info->tunnel = true;
   }
 
 

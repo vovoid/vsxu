@@ -3,20 +3,41 @@ class module_render_gl_texture_bind : public vsx_module
   // in
   vsx_module_param_render* render_in;
   vsx_module_param_texture* tex_in;
+
   // out
   vsx_module_param_render* render_out;
+
   // internal
   vsx_texture** t_tex;
 
 public:
-  void module_info(vsx_module_info* info) {
-    info->identifier = "texture;opengl;texture_bind";
-    info->description = "Uses OpenGL to bind a texture.\nAll connected to it (unless \n\
-    it declares its own textures) \nwill use the texture \nprovided in the tex_in.";
-    info->in_param_spec = "render_in:render,tex_in:texture";
-    info->out_param_spec = "render_out:render";
-    info->component_class = "texture";
+
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier =
+      "texture;opengl;texture_bind";
+
+    info->description =
+      "Uses OpenGL to bind a texture.\n"
+      "All connected to it (unless \n"
+      "it declares its own textures) \n"
+      "will use the texture \n"
+      "provided in the tex_in."
+    ;
+
+    info->in_param_spec =
+      "render_in:render,"
+      "tex_in:texture"
+    ;
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "texture";
+
     loading_done = true;
+
     info->tunnel = true;
   }
 

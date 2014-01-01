@@ -89,11 +89,14 @@ vsx_widget_server::vsx_widget_server() {
   log(" (c) 2003-2011 vovoid || http://vovoid.com || http://vsxu.com");
 }
 
-void vsx_widget_server::init() {
-  help_text = "The server is selected:\n\
-- left-double-click to get the\n\
-module browser\n\
-- ctrl+left-double_click to load a state\n";
+void vsx_widget_server::init()
+{
+  help_text =
+    "The server is selected:\n"
+    "- left-double-click to get the\n"
+    "module browser\n"
+    "- ctrl+left-double_click to load a state\n"
+  ;
 
   menu = add(new vsx_widget_popup_menu,name+".server_menu");
   support_interpolation = true;
@@ -157,8 +160,10 @@ module browser\n\
     menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
     menu->commands.adds(VSX_COMMAND_MENU,"exit", "system.shutdown","");
   }
+
   if (state_name == "")
-  state_name ="_default";
+    state_name ="_default";
+
   menu->set_size(vsx_vector(0.4f,0.5f));
 
   module_chooser = add(new vsx_widget_ultra_chooser,"module_browser");
@@ -169,27 +174,44 @@ module browser\n\
 
   state_chooser = add(new vsx_widget_ultra_chooser,"state_browser");
   resource_chooser = add(new vsx_widget_ultra_chooser,"resource_browser");
-  export_dialog_ext = add(new dialog_query_string("visualization package export","\
-Filename to export to, will end up in visuals/ (ex. 'mypackage.vsx')|\
-Title of the visual (ex. 'Starlight Aurora')|\
-Your handle/nick/vsxu-id, (ex. 'jaw' or multiple: 'jaw, cor')|\
-Your group/company (ex. 'vovoid')|\
-Your country (ex. 'Sweden')|\
-Your homepage (ex. 'http://vovoid.com')|\
-Free text comments (max 300 characters)|\
-"),"package_visual_export");
 
-  export_dialog_state = add(new dialog_query_string("save state","\
-Filename to save to, will end up in states/ (ex. 'my_state')|\
-Title of the state (ex. 'My funky state')|\
-Your handle/nick/vsxu-id, (ex. 'jaw' or multiple: 'jaw, cor')|\
-Your group/company (ex. 'vovoid')|\
-Your country (ex. 'Sweden')|\
-Your homepage (ex. 'http://vovoid.com')|\
-Free text comments (max 300 characters)|\
-"),"package_visual_export");
+  export_dialog_ext =
+    add
+    (
+      new dialog_query_string(
+        "visualization package export",
+        "Filename to export to, will end up in visuals/ (ex. 'mypackage.vsx')|"
+        "Title of the visual (ex. 'Starlight Aurora')|"
+        "Your handle/nick/vsxu-id, (ex. 'jaw' or multiple: 'jaw, cor')|"
+        "Your group/company (ex. 'vovoid')|"
+        "Your country (ex. 'Sweden')|"
+        "Your homepage (ex. 'http://vovoid.com')|"
+        "Free text comments (max 300 characters)|"
+      ),
+      "package_visual_export"
+    )
+  ;
 
-  connect_dialog = add(new dialog_query_string("connect to server","hostname or ip"),"connect_dialog");
+  export_dialog_state =
+    add
+    (
+      new dialog_query_string(
+        "save state",
+        "Filename to save to, will end up in states/ (ex. 'my_state')|"
+        "Title of the state (ex. 'My funky state')|"
+        "Your handle/nick/vsxu-id, (ex. 'jaw' or multiple: 'jaw, cor')|"
+        "Your group/company (ex. 'vovoid')|"
+        "Your country (ex. 'Sweden')|"
+        "Your homepage (ex. 'http://vovoid.com')|"
+        "Free text comments (max 300 characters)|"
+      ),
+      "package_visual_export"
+    )
+  ;
+
+  connect_dialog =
+    add(new dialog_query_string("connect to server","hostname or ip"),"connect_dialog");
+
   // very extremely unfortunate for us the macros have to be in each and one of the
   // servers' browsers so we blatantly add pointers to them here, tee hee! ;) this to mimimize
   // the memory abuse but it will still be a lot :(
@@ -209,6 +231,7 @@ Free text comments (max 300 characters)|\
   cmd_out->add_raw("get_list states");
   cmd_out->add_raw("get_list prods");
   cmd_out->add_raw("get_list visuals");
+
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_INTERNAL)
   {
     if ( vsx_argvector::get_instance()->has_param_with_value("state") )
@@ -1157,45 +1180,51 @@ bool vsx_widget_server::event_key_down(signed long key, bool alt, bool ctrl, boo
   VSX_UNUSED(alt);
   VSX_UNUSED(shift);
 
-  if (ctrl) {
-    if (key == 'z' || key == 'Z') {
-      //printf("undooooo\n");
+  if (ctrl)
+  {
+    if (key == 'z' || key == 'Z')
+    {
       cmd_out->add_raw("undo");
     }
   }
   return true;
 }
 
-void vsx_widget_server::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
+void vsx_widget_server::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+{
   selection = false;
   delta_move = delta_zoom = 0.0f;
   selection_start = distance.center;
   remPointer = mouse.get_cursor_pos();
-  if (button == 0) {
-      //printf("selection start\n");
-      selection_end = selection_start;// = distance.center;
-      if (ctrl && !alt) {
-        //selection_end = selection_start = distance.center;
-        selection = true;
-      } else
-      if (!ctrl && !alt) {
-        for (std::list<vsx_widget*>::iterator it = selected_list.begin(); it != selected_list.end(); ++it) {
+  if (button == 0)
+  {
+    selection_end = selection_start;
+    if (ctrl && !alt)
+    {
+      selection = true;
+    } else
+    if (!ctrl && !alt)
+    {
+      for (std::list<vsx_widget*>::iterator it = selected_list.begin(); it != selected_list.end(); ++it)
+      {
           ((vsx_widget_component*)(*it))->selected = false;
-        }
-        selected_list.clear();
       }
+      selected_list.clear();
     }
-    vsx_widget::event_mouse_down(distance,coords,button);
   }
+  vsx_widget::event_mouse_down(distance,coords,button);
+}
 
 void vsx_widget_server::event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button)
 {
   VSX_UNUSED(coords);
-  if (button == 0 && alt && !shift && !ctrl) {
+  if (button == 0 && alt && !shift && !ctrl)
+  {
     command_q_b.add_raw("add_empty_macro "+f2s(distance.center.x)+","+f2s(distance.center.y));
     vsx_command_queue_b(this);
   } else
-  if (button == 0 && ctrl && !shift && !alt) {
+  if (button == 0 && ctrl && !shift && !alt)
+  {
     command_q_b.add_raw("state_menu_load");
     vsx_command_queue_b(this);
   } else
@@ -1208,8 +1237,10 @@ void vsx_widget_server::event_mouse_double_click(vsx_widget_distance distance,vs
   }
 }
 
-void vsx_widget_server::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords) {
-  if (selection) {
+void vsx_widget_server::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
+{
+  if (selection)
+  {
 
     selection_end = distance.center;
     vsx_vector a;
@@ -1276,24 +1307,30 @@ void vsx_widget_server::event_mouse_move(vsx_widget_distance distance,vsx_widget
   }
 }
 
-void vsx_widget_server::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
+void vsx_widget_server::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+{
   mouse.show_cursor();
-  if (selection) {
+  if (selection)
+  {
     vsx_vector a = selection_start - parent->get_pos_p() - pos;
     vsx_vector b = selection_end - parent->get_pos_p() - pos;
-    for (std::list <vsx_widget*>::iterator it=children.begin(); it != children.end(); ++it) {
+    for (std::list <vsx_widget*>::iterator it=children.begin(); it != children.end(); ++it)
+    {
       if (
         ((*it)->pos.x > a.x) &&
         ((*it)->pos.y > a.y) &&
         ((*it)->pos.x < b.x) &&
         ((*it)->pos.y < b.y)
-        ) {
+        )
+      {
         if ((*it)->widget_type == VSX_WIDGET_TYPE_COMPONENT)
         select_add(*it);
       }
     }
     selection = false;
-  } else {
+  }
+  else
+  {
     if (delta_zoom < 0.09f && delta_move < 0.09f)
     vsx_widget::event_mouse_up(distance,coords,button);
   }
@@ -1304,72 +1341,76 @@ void vsx_widget_server::event_mouse_wheel(float y)
   parent->event_mouse_wheel(y);
 }
 
-void vsx_widget_server::draw() {
+void vsx_widget_server::draw()
+{
   glEnable(GL_BLEND);
 
+  if (!init_run)
+    return;
 
-  if (!init_run) return;
-  //this->init();
-  //if (!performance_mode)
-  if (visible) {
-    float x = pos.x+parent->pos.x;
-    float y = pos.y+parent->pos.y;
+  if (!visible)
+    return;
 
-    if (!performance_mode || server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
+  float x = pos.x+parent->pos.x;
+  float y = pos.y+parent->pos.y;
+
+  if (!performance_mode || server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
+  {
+    mtex.bind();
+    glColor4f(color.r,color.g,color.b,color.a);
+    if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
     {
-      mtex.bind();
-      glColor4f(color.r,color.g,color.b,color.a);
-      if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
-      {
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      }
-      else
-      {
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-      }
-
-      glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-        glVertex2f(x-size.x/1.6,y-size.y/1.6);
-        glTexCoord2f(0, 1);
-        glVertex2f(x-size.x/1.6,y+size.y/1.6);
-        glTexCoord2f(1, 1);
-        glVertex2f(x+size.x/1.6,y+size.y/1.6);
-        glTexCoord2f(1, 0);
-        glVertex2f(x+size.x/1.6,y-size.y/1.6);
-      glEnd();
-      mtex._bind();
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
-
-    if (selection)
+    else
     {
-      glColor4f(skin_colors[0].r,skin_colors[0].g,skin_colors[0].b,0.3*skin_colors[0].a);
-      vsx_vector s_s = selection_start+pos;
-      vsx_vector s_e = selection_end+pos;
-      draw_box(s_s, s_e.x-s_s.x,s_e.y-s_s.y);
-      glLineWidth(1);
-      glColor4f(0.4,0.4,0.6,0.7);
-      glBegin(GL_LINE_STRIP);
-        glVertex2f(s_s.x,s_s.y);
-        glVertex2f(s_e.x,s_s.y);
-        glVertex2f(s_e.x,s_e.y);
-        glVertex2f(s_s.x,s_e.y);
-        glVertex2f(s_s.x,s_s.y);
-      glEnd();
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     }
 
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    if (server_message.size()) {
-      font.print_center(vsx_vector(x,y), server_message,0.03);
-    }
-    draw_children();
+    glBegin(GL_QUADS);
+      glTexCoord2f(0, 0);
+      glVertex2f(x-size.x/1.6,y-size.y/1.6);
+      glTexCoord2f(0, 1);
+      glVertex2f(x-size.x/1.6,y+size.y/1.6);
+      glTexCoord2f(1, 1);
+      glVertex2f(x+size.x/1.6,y+size.y/1.6);
+      glTexCoord2f(1, 0);
+      glVertex2f(x+size.x/1.6,y-size.y/1.6);
+    glEnd();
+    mtex._bind();
   }
+
+  if (selection)
+  {
+    glColor4f(skin_colors[0].r,skin_colors[0].g,skin_colors[0].b,0.3*skin_colors[0].a);
+    vsx_vector s_s = selection_start+pos;
+    vsx_vector s_e = selection_end+pos;
+    draw_box(s_s, s_e.x-s_s.x,s_e.y-s_s.y);
+    glLineWidth(1);
+    glColor4f(0.4,0.4,0.6,0.7);
+    glBegin(GL_LINE_STRIP);
+      glVertex2f(s_s.x,s_s.y);
+      glVertex2f(s_e.x,s_s.y);
+      glVertex2f(s_e.x,s_e.y);
+      glVertex2f(s_s.x,s_e.y);
+      glVertex2f(s_s.x,s_s.y);
+    glEnd();
+  }
+
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  if (server_message.size()) {
+    font.print_center(vsx_vector(x,y), server_message,0.03);
+  }
+
+  draw_children();
+
 }
 
 
 
-vsx_widget* vsx_widget_server::find_component(vsx_string name) {
+vsx_widget* vsx_widget_server::find_component(vsx_string name)
+{
   // support "containers" here in the future
   if (comp_list.find(name) != comp_list.end()) return comp_list[name]; else return 0;
 }

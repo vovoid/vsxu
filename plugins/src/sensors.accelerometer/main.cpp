@@ -100,7 +100,8 @@ public:
     Net::ShutdownSockets();
   }
 
-  bool init(){
+  bool init()
+  {
     if(!socket.Open(port)){
       printf("Failed to create a Socket on Port : %d\n", port);
       return false;
@@ -111,12 +112,20 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "sensors;remote;accelerometer";
-    info->description = "returns [ax,ay,az] values of a remote accelerometer connected to port 5555\n";
-    info->out_param_spec = "ax:float,"
-                           "ay:float,"
-                           "az:float";
-    info->component_class = "system";
+    info->identifier =
+      "sensors;remote;accelerometer";
+
+    info->description =
+      "returns [ax,ay,az] values of a remote accelerometer connected to port 5555\n";
+
+    info->out_param_spec =
+      "ax:float,"
+      "ay:float,"
+      "az:float"
+    ;
+
+    info->component_class =
+      "system";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

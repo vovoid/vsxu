@@ -24,7 +24,9 @@
 class vsx_sample : public vsx_audio_mixer_channel
 {
   double position;
+
 protected:
+
   vsx_array<int16_t> data;
   double pitch_bend;
   double gain;
@@ -122,10 +124,8 @@ public:
 
   inline void goto_time(float t)
   {
-    //vsx_printf("t: %f, rate: %f, stereo_type: %f\n", t, (float)rate, (float)stereo_type);
     position = t * (float)rate * (float)stereo_type;
 
-    //vsx_printf("playbit in goto time: %f\n", play_bit);
     if (play_bit < 0.0 && state == VSX_SAMPLE_STATE_STOPPED)
     {
       play_bit = PB_LENGTH;

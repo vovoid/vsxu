@@ -29,8 +29,11 @@ class vsx_module_rendered_texture_single : public vsx_module {
 public:
   vsx_module_rendered_texture_single() : texture(0),texture2(0),which_buffer(false) {};
 
-void module_info(vsx_module_info* info) {
-  info->identifier = "texture;buffers;render_surface_single";
+void module_info(vsx_module_info* info)
+{
+  info->identifier =
+    "texture;buffers;render_surface_single";
+
   info->description =
     "This module captures rendering to a texture\n"
     "- color buffer RGBA\n"
@@ -68,10 +71,13 @@ void module_info(vsx_module_info* info) {
     "alpha_channel:enum?no|yes,"
     "clear_color:float4"
   ;
+
   info->out_param_spec =
     "texture_out:texture"
   ;
-  info->component_class = "texture";
+
+  info->component_class =
+    "texture";
 }
 
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {

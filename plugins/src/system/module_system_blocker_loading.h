@@ -3,23 +3,35 @@ class module_system_blocker_loading : public vsx_module
   // in
   vsx_module_param_float* fadeout_time;
   vsx_module_param_render* render_in;
+
   // out
   vsx_module_param_render* render_result;
   vsx_module_param_float* fadeout_out;
-  // internal
 
+  // internal
 
 public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "system;blocker_loading";
-    info->description = "Runs a rendering chain\
-    Only when the engine is loading and time\
-    seconds after that. Useful for \"loading\" overlays.";
-    info->in_param_spec = "render_in:render,fadeout_time:float";
-    info->out_param_spec = "render_out:render,fadeout_out:float";
-    info->component_class = "system";
+    info->identifier =
+      "system;blocker_loading";
+
+    info->description =
+      "Runs a rendering chain"
+      "Only when the engine is loading and time"
+      "seconds after that. Useful for \"loading\" overlays."
+    ;
+
+    info->in_param_spec =
+      "render_in:render,fadeout_time:float";
+
+    info->out_param_spec =
+      "render_out:render,fadeout_out:float";
+
+    info->component_class =
+      "system";
+
     info->tunnel = true; // always run this
   }
 

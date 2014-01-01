@@ -31,6 +31,7 @@ class vsx_module_ogg_sample_trigger : public vsx_module
   vsx_module_param_float* pitch;
   vsx_module_param_float* gain;
   vsx_module_param_int* format;
+
   // out
 
   // private
@@ -41,8 +42,9 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->output = 1;
-    info->identifier = "sound;ogg_sample_trigger";
+    info->identifier =
+      "sound;ogg_sample_trigger";
+
     info->description =
       "Plays 16-bit signed int PCM\n"
       "OGG vorbis files; mono or stereo."
@@ -55,8 +57,14 @@ public:
       "gain:float,"
       "format:enum?mono|stereo"
     ;
-    info->out_param_spec = "";
-    info->component_class = "output";
+
+    info->out_param_spec =
+      "";
+
+    info->component_class =
+      "output";
+
+    info->output = 1;
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

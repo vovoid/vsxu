@@ -46,29 +46,29 @@ class vsx_module_text_s : public vsx_module {
   vsx_string cur_font;
   int cur_render_type;
   float cur_glyph_size;
-  
-  // in
-	vsx_module_param_float* glyph_size;
-	vsx_module_param_float* size;
-	vsx_module_param_float* angle;
-	vsx_module_param_float* red;
-	vsx_module_param_float* green;
-	vsx_module_param_float* blue;
-	vsx_module_param_float3* rotation_axis;
-	vsx_module_param_string* text_in;
-	vsx_module_param_resource* font_in;	
-	vsx_module_param_int* render_type;
-	vsx_module_param_int* align;
-	vsx_module_param_float* leading;
-	vsx_module_param_float* limit_line;
 
-	vsx_module_param_float* text_alpha;
-	vsx_module_param_float4* outline_color;
-	vsx_module_param_float* outline_alpha;	
-	vsx_module_param_float* outline_thickness;	
-	// out
-	vsx_module_param_render* render_result;
-	// internal
+  // in
+  vsx_module_param_float* glyph_size;
+  vsx_module_param_float* size;
+  vsx_module_param_float* angle;
+  vsx_module_param_float* red;
+  vsx_module_param_float* green;
+  vsx_module_param_float* blue;
+  vsx_module_param_float3* rotation_axis;
+  vsx_module_param_string* text_in;
+  vsx_module_param_resource* font_in;
+  vsx_module_param_int* render_type;
+  vsx_module_param_int* align;
+  vsx_module_param_float* leading;
+  vsx_module_param_float* limit_line;
+
+  vsx_module_param_float* text_alpha;
+  vsx_module_param_float4* outline_color;
+  vsx_module_param_float* outline_alpha;
+  vsx_module_param_float* outline_thickness;
+  // out
+  vsx_module_param_render* render_result;
+  // internal
 
   vsx_avector<text_info> lines;
 
@@ -80,87 +80,91 @@ public:
 void module_info(vsx_module_info* info)
 {
 
-  info->identifier = "renderers;text;text_s";
-  info->in_param_spec = 
-"\
-text_in:string,\
-font_in:resource?nc=1,\
-render_type:enum?BITMAP|POLYGON,\
-align:enum?LEFT|CENTER|RIGHT,\
-limits:complex\
-{\
-	limit_line:float\
-},\
-appearance:complex\
-{\
-  glyph_size:float,\
-  size:float,\
-  leading:float,\
-  angle:float,\
-  rotation_axis:float3,\
-  text_alpha:float,\
-  outline_alpha:float,\
-  outline_color:float4,\
-  outline_thickness:float,\
-  color:complex\
-  {\
-    red:float,\
-    green:float,\
-    blue:float\
-  }\
-}\
-";
-  
-  info->out_param_spec = "render_out:render";
-  info->component_class = "render";
+  info->identifier =
+    "renderers;text;text_s";
+
+  info->in_param_spec =
+    "text_in:string,"
+    "font_in:resource?nc=1,"
+    "render_type:enum?BITMAP|POLYGON,"
+    "align:enum?LEFT|CENTER|RIGHT,"
+    "limits:complex"
+    "{"
+      "limit_line:float"
+    "},"
+    "appearance:complex"
+    "{"
+      "glyph_size:float,"
+      "size:float,"
+      "leading:float,"
+      "angle:float,"
+      "rotation_axis:float3,"
+      "text_alpha:float,"
+      "outline_alpha:float,"
+      "outline_color:float4,"
+      "outline_thickness:float,"
+      "color:complex"
+      "{"
+        "red:float,"
+        "green:float,"
+        "blue:float"
+      "}"
+    "}"
+  ;
+
+  info->out_param_spec =
+    "render_out:render";
+
+  info->component_class =
+    "render";
 }
 
 bool declare_run;
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
 {
   declare_run = false;
-	size = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "size");
-	size->set(1.0f);
-	angle = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "angle");
-	angle->set(0.0f);
-	
-	text_in = (vsx_module_param_string*)in_parameters.create(VSX_MODULE_PARAM_ID_STRING, "text_in");
-	text_in->set("Vovoid VSX Ultra");
-	text_in->updates = 1;
-	font_in = (vsx_module_param_resource*)in_parameters.create(VSX_MODULE_PARAM_ID_RESOURCE, "font_in");
+  size = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "size");
+  size->set(1.0f);
+  angle = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "angle");
+  angle->set(0.0f);
+
+  text_in = (vsx_module_param_string*)in_parameters.create(VSX_MODULE_PARAM_ID_STRING, "text_in");
+  text_in->set("Vovoid VSX Ultra");
+  text_in->updates = 1;
+  font_in = (vsx_module_param_resource*)in_parameters.create(VSX_MODULE_PARAM_ID_RESOURCE, "font_in");
   font_in->set("resources/fonts/pala.ttf");
-	cur_font = "";
-	
-	limit_line = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "limit_line");
-	limit_line->set(-1.0f);
-	
+  cur_font = "";
 
-	leading = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "leading");
-	leading->set(1.0f);
+  limit_line = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "limit_line");
+  limit_line->set(-1.0f);
 
-	glyph_size = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "glyph_size");
-	glyph_size->set(24.0f);
-	cur_glyph_size = 24.0f;
-	render_type = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"render_type");
-	render_type->set(0);
-	align = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"align");
-	align->set(0);
-	cur_render_type = 0;
-	
-	ftfont = 0;
-	ftfont2 = 0;
 
-	rotation_axis = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "rotation_axis");
-	rotation_axis->set(0.0f, 0);
-	rotation_axis->set(1.0f, 1);
-	rotation_axis->set(0.0f, 2);
+  leading = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "leading");
+  leading->set(1.0f);
+
+  glyph_size = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "glyph_size");
+  glyph_size->set(24.0f);
+  cur_glyph_size = 24.0f;
+  render_type = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"render_type");
+  render_type->set(0);
+  align = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"align");
+  align->set(0);
+  cur_render_type = 0;
+
+  ftfont = 0;
+  ftfont2 = 0;
+
+  rotation_axis = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "rotation_axis");
+  rotation_axis->set(0.0f, 0);
+  rotation_axis->set(1.0f, 1);
+  rotation_axis->set(0.0f, 2);
   red = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "red");
   red->set(1.0f);
   green = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "green");
   green->set(1.0f);
   blue = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "blue");
   blue->set(1.0f);
-  
+
   text_alpha = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "text_alpha");
   text_alpha->set(1.0);
   outline_alpha = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "outline_alpha");
@@ -172,13 +176,13 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   outline_color->set(0.0f, 1);
   outline_color->set(0.0f, 2);
   outline_color->set(0.0f, 3);
-	
-	render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
-	render_result->set(0);
-  declare_run = true;	
+
+  render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+  render_result->set(0);
+  declare_run = true;
 
   gl_state = vsx_gl_state::get_instance();
-}	
+}
 
 
   int process_lines()
@@ -422,7 +426,7 @@ vsx_module* create_new_module(unsigned long module, void* args) {
   switch(module) {
     case 0: return (vsx_module*)(new vsx_module_text_s);
   }
-  return 0;  
+  return 0;
 }
 
 void destroy_module(vsx_module* m,unsigned long module) {
@@ -434,4 +438,4 @@ void destroy_module(vsx_module* m,unsigned long module) {
 unsigned long get_num_modules() {
   // we have only one module. it's id is 0
   return 1;
-}  
+}

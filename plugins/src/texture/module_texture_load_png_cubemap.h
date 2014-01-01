@@ -60,11 +60,27 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->description = "Loads a PNG image from\ndisk and outputs a \n - VSXu bitmap \n and\n - texture.\nTexture is only loaded when used.\nThis is to preserve memory.";
-    info->in_param_spec = "filename:resource,reload:enum?no|yes";
-    info->out_param_spec = "texture:texture";
-    info->identifier = "texture;loaders;png_cubemap_load";
-    info->component_class = "texture";
+    info->identifier =
+      "texture;loaders;png_cubemap_load";
+
+    info->description =
+      "Loads a PNG image from\n"
+      "disk and outputs a \n"
+      " - VSXu bitmap \n "
+      "  and\n"
+      " - texture.\n"
+      "Texture is only loaded when used.\n"
+      "This is to preserve memory."
+    ;
+
+    info->in_param_spec =
+      "filename:resource,reload:enum?no|yes";
+
+    info->out_param_spec =
+      "texture:texture";
+
+    info->component_class =
+      "texture";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

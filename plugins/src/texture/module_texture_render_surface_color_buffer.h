@@ -27,7 +27,9 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "texture;buffers;render_surface_color_buffer";
+    info->identifier =
+      "texture;buffers;render_surface_color_buffer";
+
     info->description =
       "This module captures rendering to a texture\n"
       "- only color buffer\n"
@@ -38,7 +40,9 @@ public:
       "It supports floating point textures and"
       "optional Alpha channel.\n"
       "Dynamic textures can be very useful!";
-    info->in_param_spec = "render_in:render,"
+
+    info->in_param_spec =
+      "render_in:render,"
       "texture_size:enum?"
         "2048x2048|"
         "1024x1024|"
@@ -58,10 +62,13 @@ public:
       "float_texture:enum?no|yes,"
       "alpha_channel:enum?no|yes"
     ;
+
     info->out_param_spec =
       "color_buffer:texture"
     ;
-    info->component_class = "texture";
+
+    info->component_class =
+      "texture";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {

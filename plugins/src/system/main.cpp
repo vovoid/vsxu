@@ -76,9 +76,9 @@ vsx_module* create_new_module(unsigned long module, void* args) {
     case 6: return (vsx_module*)(new module_system_file_chooser);
     case 7: return (vsx_module*)(new module_string_resource_to_string);
     case 8: return (vsx_module*)(new module_render_state);
+    case 9: return (vsx_module*)(new module_system_tm_m);
 #if PLATFORM == PLATFORM_LINUX
-    case 9: return (vsx_module*)(new module_system_joystick);
-    case 10: return (vsx_module*)(new module_system_tm_m);
+    case 10: return (vsx_module*)(new module_system_joystick);
 #endif
   }
   return 0;
@@ -95,18 +95,17 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 6: delete (module_system_file_chooser*)m; break;
     case 7: delete (module_string_resource_to_string*)m; break;
     case 8: delete (module_render_state*)m; break;
+    case 9: delete (module_system_tm_m*)m; break;
 #if PLATFORM == PLATFORM_LINUX
-    case 9: delete (module_system_joystick*)m; break;
-    case 10: delete (module_system_tm_m*)m; break;
+    case 10: delete (module_system_joystick*)m; break;
 #endif
   }
 }
 
 unsigned long get_num_modules() 
 {
-  unsigned long n = 8;
+  unsigned long n = 10;
   #if PLATFORM == PLATFORM_LINUX
-    n++;
     n++;
   #endif
   return n;

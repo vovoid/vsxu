@@ -132,6 +132,17 @@ public:
 
   void module_info(vsx_module_info* info)
   {
+    if (m_type == 0)
+    {
+      info->identifier = "bitmaps;loaders;jpeg_bitm_load_alpha";
+      info->component_class = "bitmap";
+    }
+    else
+    {
+      info->identifier = "texture;loaders;jpeg_tex_load_alpha";
+      info->component_class = "texture";
+    }
+
     info->description =
       "Loads 2 JPEGs from\n"
       "disk and outputs a \n"
@@ -153,17 +164,6 @@ public:
       "texture:texture,"
       "bitmap:bitmap"
     ;
-
-    if (m_type == 0)
-    {
-      info->identifier = "bitmaps;loaders;jpeg_bitm_load_alpha";
-      info->component_class = "bitmap";
-    }
-    else
-    {
-      info->identifier = "texture;loaders;jpeg_tex_load_alpha";
-      info->component_class = "texture";
-    }
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

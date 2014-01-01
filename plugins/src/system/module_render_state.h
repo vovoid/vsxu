@@ -20,10 +20,13 @@ public:
       "renderers;state_loader"
       "||"
       "system;state_loader";
+
     info->in_param_spec =
       "filename:resource";
+
     info->out_param_spec =
       "render_out:render";
+
     info->component_class =
       "system";
   }

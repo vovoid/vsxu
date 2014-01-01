@@ -3,23 +3,37 @@ class module_system_blocker : public vsx_module
   // in
   vsx_module_param_float* block;
   vsx_module_param_render* render_in;
+
   // out
   vsx_module_param_render* render_result;
+
   // internal
+
 public:
 
-void module_info(vsx_module_info* info)
-{
-  info->identifier = "system;blocker";
-  info->description = "Blocks a rendering chain.\
-If the control value is less\
-than 0.5 the chain is blocked,\
-if higher or equal it's run.";
-  info->in_param_spec = "render_in:render,block:float";
-  info->out_param_spec = "render_out:render";
-  info->component_class = "system";
-  info->tunnel = true; // always run this
-}
+  void module_info(vsx_module_info* info)
+  {
+    info->identifier =
+      "system;blocker";
+
+    info->description =
+      "Blocks a rendering chain."
+      "If the control value is less"
+      "than 0.5 the chain is blocked,"
+      "if higher or equal it's run."
+    ;
+
+    info->in_param_spec =
+      "render_in:render,block:float";
+
+    info->out_param_spec =
+      "render_out:render";
+
+    info->component_class =
+      "system";
+
+    info->tunnel = true;
+  }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
@@ -36,10 +50,12 @@ if higher or equal it's run.";
 
   bool activate_offscreen()
   {
-    if (engine->state == VSX_ENGINE_LOADING) return true;
+    if (engine->state == VSX_ENGINE_LOADING)
+      return true;
+
     if (block->get() >= 0.5)
-    return true;
-    else
+      return true;
+
     return false;
   }
 

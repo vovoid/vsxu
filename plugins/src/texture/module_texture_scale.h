@@ -22,11 +22,17 @@ public:
 
 void module_texture_scale::module_info(vsx_module_info* info)
 {
+  info->identifier =
+    "texture;modifiers;scale";
 
-  info->identifier = "texture;modifiers;scale";
-  info->in_param_spec = "scale_vector:float3,texture_in:texture";
-  info->out_param_spec = "texture_scale_out:texture";
-  info->component_class = "texture";
+  info->in_param_spec =
+    "scale_vector:float3,texture_in:texture";
+
+  info->out_param_spec =
+    "texture_scale_out:texture";
+
+  info->component_class =
+    "texture";
 }
 
 void module_texture_scale::declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

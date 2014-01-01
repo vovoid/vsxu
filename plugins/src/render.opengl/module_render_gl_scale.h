@@ -1,14 +1,14 @@
 class module_render_gl_scale : public vsx_module
 {
   // in
-	GLfloat tmpMat[16];
+  GLfloat tmpMat[16];
 
   vsx_module_param_float3* scale;
   vsx_module_param_int* matrix;
 
-	vsx_module_param_render* render_in;
-	// out
-	vsx_module_param_render* render_result;
+  vsx_module_param_render* render_in;
+  // out
+  vsx_module_param_render* render_result;
 
   // internal
   vsx_gl_state* gl_state;
@@ -18,7 +18,7 @@ public:
   void module_info(vsx_module_info* info)
   {
     info->identifier =
-        "renderers;opengl_modifiers;gl_scale";
+      "renderers;opengl_modifiers;gl_scale";
 
     info->description =
       "Scales everything up using \n"

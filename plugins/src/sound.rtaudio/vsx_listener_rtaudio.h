@@ -29,7 +29,6 @@ class vsx_listener_pulse : public vsx_module {
   vsx_module_param_int* quality;
   // out
   vsx_module_param_float* multiplier;
-  float old_mult;
 
   vsx_module_param_float* vu_l_p;
   vsx_module_param_float* vu_r_p;
@@ -65,57 +64,85 @@ class vsx_listener_pulse : public vsx_module {
   vsx_float_array octave_spectrum_hq;
   vsx_module_param_float_array* octave_spectrum_p_hq;
 
+  float old_mult;
+
 public:
 
 void module_info(vsx_module_info* info)
 {
+  info->identifier =
+    "sound;input_visualization_listener"
+    "||"
+    "system;sound;vsx_listener"
+  ;
+
+  info->description =
+    "Simple fft runs at 86.13 fps\n"
+    "HQ fft runs at 43.07 fps\n"
+    "The octaves are 0 = bass, 7 = treble"
+  ;
+
+  info->in_param_spec =
+    "quality:enum?normal_only|high_only|both"
+    "&help="
+      "`"
+        "If you don't need both FFT's to run,\n"
+        "disable either of them here. It's a\n"
+        "somewhat CPU-intensive task to do\n"
+        "the FFT for both every frame. \n"
+        "Default is to only run\n"
+        "the normal one."
+      "`"
+    ","
+    "multiplier:float"
+  ;
+
+  info->out_param_spec =
+    "vu:complex"
+    "{"
+      "vu_l:float,"
+      "vu_r:float"
+    "},"
+    "octaves:complex"
+    "{"
+      "left:complex"
+      "{"
+        "octaves_l_0:float,"
+        "octaves_l_1:float,"
+        "octaves_l_2:float,"
+        "octaves_l_3:float,"
+        "octaves_l_4:float,"
+        "octaves_l_5:float,"
+        "octaves_l_6:float,"
+        "octaves_l_7:float"
+      "},"
+      "right:complex"
+      "{"
+        "octaves_r_0:float,"
+        "octaves_r_1:float,"
+        "octaves_r_2:float,"
+        "octaves_r_3:float,"
+        "octaves_r_4:float,"
+        "octaves_r_5:float,"
+        "octaves_r_6:float,"
+        "octaves_r_7:float"
+      "}"
+    "},"
+    "wave:float_array,"
+    "normal:complex"
+    "{"
+      "spectrum:float_array"
+    "},"
+    "hq:complex"
+    "{"
+      "spectrum_hq:float_array"
+    "}"
+  ;
+
+  info->component_class =
+    "output";
+
   info->output = 1;
-  info->identifier = "sound;input_visualization_listener||system;sound;vsx_listener";
-  info->description = "Simple fft runs at 86.13 fps\n\
-HQ fft runs at 43.07 fps\n\
-The octaves are 0 = bass, 7 = treble";
-  info->in_param_spec = "\
-quality:enum?\
-  normal_only|high_only|both&help=\
-`\
-If you don't need both FFT's to run,\n\
-disable either of them here. It's a\n\
-somewhat CPU-intensive task to do\n\
-the FFT for both every frame. \n\
-Default is to only run\n\
-the normal one.`\
-,multiplier:float\
-";
-  info->out_param_spec = "\
-vu:complex{\
-vu_l:float,\
-vu_r:float\
-},\
-octaves:complex{\
-  left:complex{\
-    octaves_l_0:float,\
-    octaves_l_1:float,\
-    octaves_l_2:float,\
-    octaves_l_3:float,\
-    octaves_l_4:float,\
-    octaves_l_5:float,\
-    octaves_l_6:float,\
-    octaves_l_7:float\
-  },\
-  right:complex{\
-    octaves_r_0:float,\
-    octaves_r_1:float,\
-    octaves_r_2:float,\
-    octaves_r_3:float,\
-    octaves_r_4:float,\
-    octaves_r_5:float,\
-    octaves_r_6:float,\
-    octaves_r_7:float\
-  }\
-},\
-wave:float_array,\
-normal:complex{spectrum:float_array},hq:complex{spectrum_hq:float_array}";
-  info->component_class = "output";
 }
 
 void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

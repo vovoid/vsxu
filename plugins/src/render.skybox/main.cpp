@@ -216,18 +216,27 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "renderers;vovoid;skybox";
-    info->in_param_spec = "bitmap:bitmap";
-    info->out_param_spec =  "render_out:render,"
-                            "bitmaps:complex{"
-                              "positive_x:bitmap,"
-                              "negative_x:bitmap,"
-                              "positive_y:bitmap,"
-                              "negative_y:bitmap,"
-                              "positive_z:bitmap,"
-                              "negative_z:bitmap"
-                            "}";
-    info->component_class = "render";
+    info->identifier =
+      "renderers;vovoid;skybox";
+
+    info->in_param_spec =
+      "bitmap:bitmap";
+
+    info->out_param_spec =
+      "render_out:render,"
+      "bitmaps:complex"
+      "{"
+        "positive_x:bitmap,"
+        "negative_x:bitmap,"
+        "positive_y:bitmap,"
+        "negative_y:bitmap,"
+        "positive_z:bitmap,"
+        "negative_z:bitmap"
+      "}"
+    ;
+
+    info->component_class =
+      "render";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

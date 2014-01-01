@@ -41,8 +41,9 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->output = 1;
-    info->identifier = "sound;raw_sample_trigger";
+    info->identifier =
+      "sound;raw_sample_trigger";
+
     info->description =
       "Plays 16-bit signed int PCM\n"
       "RAW files; mono or stereo."
@@ -55,8 +56,14 @@ public:
       "gain:float,"
       "format:enum?mono|stereo"
     ;
-    info->out_param_spec = "";
-    info->component_class = "output";
+
+    info->out_param_spec =
+      "";
+
+    info->component_class =
+      "output";
+
+    info->output = 1;
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

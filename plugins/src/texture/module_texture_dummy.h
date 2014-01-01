@@ -16,10 +16,20 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "texture;dummies;texture_dummy||dummies;texture_dummy";
-    info->in_param_spec = "texture_in:texture";
-    info->out_param_spec = "texture_out:texture";
-    info->component_class = "texture";
+    info->identifier =
+      "texture;dummies;texture_dummy"
+      "||"
+      "dummies;texture_dummy"
+    ;
+
+    info->in_param_spec =
+      "texture_in:texture";
+
+    info->out_param_spec =
+      "texture_out:texture";
+
+    info->component_class =
+      "texture";
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
@@ -36,9 +46,8 @@ public:
     vsx_texture** texture_info_in = texture_in->get_addr();
 
     if (!texture_info_in)
-    {
       return;
-    }
+
     texture_out->set( *texture_info_in );
   }
 
