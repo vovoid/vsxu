@@ -1,3 +1,6 @@
+#ifndef VSX_VBO_BUCKET_H
+#define VSX_VBO_BUCKET_H
+
 /*
   VSXu VBO Bucket helper class
 
@@ -512,3 +515,6 @@ private:
     invalidation_flags = 0;
   }
 }; // end VBO Bucket
+
+
+#endif

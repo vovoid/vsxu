@@ -25,6 +25,9 @@
 #ifndef VSX_ENGINE_HELPER_H
 #define VSX_ENGINE_HELPER_H
 
+#include <vsx_command_list.h>
+#include <vsx_engine.h>
+
 class vsx_engine_helper
 {
   vsx_command_list cmd_in;
