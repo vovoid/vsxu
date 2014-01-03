@@ -25,7 +25,7 @@
 #define VSX_ARGVECTOR_H
 
 #include <vsx_avector.h>
-
+#include <vsx_string.h>
 
 class vsx_argvector
 {
