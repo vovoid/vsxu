@@ -52,7 +52,9 @@ int main(int argc, char* argv[])
 
   printf("Vovoid VSX OBJ 2 VSXMESH\n");
 
-  getcwd(cur_path,4096);
+  char* c = getcwd(cur_path,4096);
+  (void)c;
+
   printf("current path is: %s\n", cur_path);
 
   printf("sizeof vsx_vector: %ld\n",sizeof(vsx_vector));

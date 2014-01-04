@@ -55,7 +55,7 @@ public:
       {
         delete helper;
       }
-      helper = new vsx_engine_helper(vsx_get_data_path() + current_filename,engine->module_list);
+      helper = new vsx_engine_helper(vsx_get_data_path() + current_filename, (vsx_module_list_abs*) engine->module_list);
     }
   }
 

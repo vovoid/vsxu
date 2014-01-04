@@ -77,7 +77,7 @@ vsx_audio_record_buf pa_audio_data;
 #include "vsx_module_ogg_sample_play.h"
 #include "vsx_module_midi_akai_apc.h"
 
-static int vsx_module_midi_akai_apc_40_controller::num_modules = 0;
+int vsx_module_midi_akai_apc_40_controller::num_modules = 0;
 
 //******************************************************************************
 //*** F A C T O R Y ************************************************************
