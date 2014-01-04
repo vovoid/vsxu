@@ -24,6 +24,8 @@
 #ifndef VSX_BEZIER_CALC_H
 #define VSX_BEZIER_CALC_H
 
+#include <vsx_math.h>
+
 //
 // recursive two dimensional third-grade newton raphson numerical analysis solver
 // and bezier curve
@@ -89,6 +91,15 @@ public:
   inline float y_from_t(float t)
   {
     return t * ( t * ( e * t + f ) + g ) + h;
+  }
+
+  inline float distance_0( const vsx_bezier_calc& o )
+  {
+    return sqrt
+    (
+       (o.x0 - x0) * (o.x0 - x0)
+     + (o.y0 - y0) * (o.y0 - y0)
+    );
   }
 
 };

@@ -77,6 +77,7 @@ public:
   }
 
   // 4. call the draw command
+  // n=0 means draw all elements
   inline void output( size_t n = 0 )
   {
     // sanity checks

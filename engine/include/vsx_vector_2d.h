@@ -27,6 +27,11 @@
 
 #include <vsx_math.h>
 
+class vsx_vector_2d;
+
+#include <vsx_vector.h>
+
+
 class vsx_vector_2d
 {
 public:
@@ -180,7 +185,13 @@ public:
       y(0.0f)
   {}
 
-  vsx_vector_2d(float nx, float ny = 0.0f)
+  vsx_vector_2d(const vsx_vector &n)
+  {
+    x = n.x;
+    y = n.y;
+  }
+
+  vsx_vector_2d(const float nx, const float ny = 0.0f)
   {
     x = nx;
     y = ny;

@@ -25,7 +25,9 @@
 #ifndef VSX_VECTOR_H
 #define VSX_VECTOR_H
 
+
 #include <vsx_math.h>
+
 
 class vsx_vector
 {
@@ -232,7 +234,7 @@ public:
     double dx = otherpoint.x - x;
     double dy = otherpoint.y - y;
     double dz = otherpoint.z - z;
-    return sqrt(dx*dx+dy*dy+dz*dz);
+    return sqrt(dx*dx + dy*dy + dz*dz);
   }
 
 
