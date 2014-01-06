@@ -170,8 +170,6 @@ public:
     } else {
       load_shader(shader,ext_shaders[shader_source-1].name);
     }
-    printf("vert = %s\n",shader.vertex_program.c_str());
-    printf("frag = %s\n",shader.fragment_program.c_str());
 
     vsx_string h = shader.link();
 
