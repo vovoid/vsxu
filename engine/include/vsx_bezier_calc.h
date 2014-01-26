@@ -93,13 +93,58 @@ public:
     return t * ( t * ( e * t + f ) + g ) + h;
   }
 
+  inline float midpoint_x()
+  {
+    return (x3 - x0) * 0.5;
+  }
+
+  inline float midpoint_y()
+  {
+    return (y3 - y0) * 0.5;
+  }
+
   inline float distance_0( const vsx_bezier_calc& o )
   {
+    // our mid-point x
+    #define MP_X (x0 + (x3-x0)*0.5)
+    // our mid-point y
+    #define MP_Y (y0 + (y3-y0)*0.5)
+
+    // other's mid-point x
+    #define MP_OX (o.x0 + (o.x3-o.x0)*0.5)
+    // other's mid-point y
+    #define MP_OY (o.y0 + (o.y3-o.y0)*0.5)
+
     return sqrt
     (
-       (o.x0 - x0) * (o.x0 - x0)
-     + (o.y0 - y0) * (o.y0 - y0)
+       pow((MP_OX - MP_X),2.0)
+     + pow((MP_OY - MP_Y),2.0)
     );
+    #undef MP_X
+    #undef MP_Y
+    #undef MP_OX
+    #undef MP_OY
+  }
+
+  inline void mirror()
+  {
+    float ix0 = x3;
+    float iy0 = y3;
+
+    float ix1 = x2;
+    float iy1 = y2;
+
+    x2 = x1;
+    y2 = y1;
+
+    x3 = x0;
+    y3 = y0;
+
+    x0 = ix0;
+    y0 = iy0;
+
+    x1 = ix1;
+    y1 = iy1;
   }
 
 };
