@@ -398,7 +398,7 @@ void load_desktop_a(vsx_string state_name)
   vsx_widget* t_viewer = desktop->find("vsxu_preview");
   if (t_viewer)
   {
-    gui_prod_fullwindow = &((vsx_window_texture_viewer*)desktop->find("vsxu_preview"))->fullwindow;
+    gui_prod_fullwindow = ((vsx_window_texture_viewer*)desktop->find("vsxu_preview"))->get_fullwindow_ptr();
     LOG_A("found vsxu_preview widget")
   }
   if (!dual_monitor)

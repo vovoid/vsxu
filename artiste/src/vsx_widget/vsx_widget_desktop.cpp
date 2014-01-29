@@ -106,14 +106,14 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
     switch (key)
     {
       case -GLFW_KEY_SPACE:
-        ((vsx_window_texture_viewer*)tv)->run = !((vsx_window_texture_viewer*)tv)->run;
+        ((vsx_window_texture_viewer*)tv)->toggle_run();
         break;
       // fullwindow
       case -'F':
       case -'f': // F
-        ((vsx_window_texture_viewer*)tv)->fullwindow = !((vsx_window_texture_viewer*)tv)->fullwindow;
+        ((vsx_window_texture_viewer*)tv)->toggle_fullwindow();
 
-        if (((vsx_window_texture_viewer*)tv)->fullwindow)
+        if (((vsx_window_texture_viewer*)tv)->get_fullwindow())
         {
           mouse.hide_cursor();
         }
@@ -122,7 +122,7 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
           mouse.show_cursor();
         }
 
-        if (!((vsx_window_texture_viewer*)tv)->fullwindow)
+        if (!((vsx_window_texture_viewer*)tv)->get_fullwindow())
           this->performance_mode = false;
       break;
       // close all controllers
@@ -151,7 +151,7 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
     {
       case -'F':
       case -'f': // F
-        if (((vsx_window_texture_viewer*)tv)->fullwindow)
+        if (((vsx_window_texture_viewer*)tv)->get_fullwindow())
         {
           this->performance_mode = !this->performance_mode;
         }

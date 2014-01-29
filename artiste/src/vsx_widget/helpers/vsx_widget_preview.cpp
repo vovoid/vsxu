@@ -194,7 +194,9 @@ void vsx_window_texture_viewer::init()
 
   // start in fullwindow mode (from command line arguments)
   if (vsx_argvector::get_instance()->has_param("ff") )
+  {
     fullwindow = true;
+  }
 }
 
 void vsx_window_texture_viewer::set_server(vsx_widget* new_server)
@@ -202,6 +204,27 @@ void vsx_window_texture_viewer::set_server(vsx_widget* new_server)
   server = new_server;
   engine = & ((vsx_widget_server*)new_server)->engine;
 }
+
+void vsx_window_texture_viewer::toggle_run()
+{
+  run =! run;
+}
+
+void vsx_window_texture_viewer::toggle_fullwindow()
+{
+  fullwindow =! fullwindow;
+}
+
+bool vsx_window_texture_viewer::get_fullwindow()
+{
+  return fullwindow;
+}
+
+bool* vsx_window_texture_viewer::get_fullwindow_ptr()
+{
+  return &fullwindow;
+}
+
 
 vsx_window_texture_viewer::vsx_window_texture_viewer()
 {
@@ -211,7 +234,6 @@ vsx_window_texture_viewer::vsx_window_texture_viewer()
   frame_delta = 0;
   init_run = false;
   run = true;
-  fullscreen = false;
   fullwindow = false;
   modestring = "";
 }
