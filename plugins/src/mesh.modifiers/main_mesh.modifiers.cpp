@@ -47,6 +47,7 @@
 #include "module_mesh_quat_rotate_around_vertex.h"
 #include "module_mesh_translate.h"
 #include "module_mesh_scale.h"
+#include "module_mesh_mirror.h"
 #include "module_mesh_scale_normalize.h"
 #include "module_mesh_translate_edge_wraparound.h"
 #include "module_mesh_noise.h"
@@ -100,6 +101,7 @@ vsx_module* create_new_module(unsigned long module, void* args)
     case 17: return (vsx_module*)(new module_mesh_scale_normalize);
     case 18: return (vsx_module*)(new module_mesh_segmesh_to_mesh);
     case 19: return (vsx_module*)(new module_mesh_compute_tangents_vertex_color_array);
+    case 20: return (vsx_module*)(new module_mesh_mirror);
   }
   return 0;
 }
@@ -127,9 +129,10 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 17: delete (module_mesh_scale_normalize*)m; break;
     case 18: delete (module_mesh_segmesh_to_mesh*)m; break;
     case 19: delete (module_mesh_compute_tangents_vertex_color_array*)m; break;
+    case 20: delete (module_mesh_mirror*)m; break;
   }
 }
 
 unsigned long get_num_modules() {
-  return 20;
+  return 21;
 }
