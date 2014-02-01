@@ -35,12 +35,15 @@ void vsx_mouse::set_cursor_implement()
 
 void vsx_mouse::show_cursor()
 {
-  glfwEnable(GLFW_MOUSE_CURSOR);
+  // This causes problems with knobs & arcballs, mouse visibility is disabled for now
+  //glfwEnable(GLFW_MOUSE_CURSOR);
+  //glfwSetMousePos((int)(position.x), (int)(position.y));
 }
 
 void vsx_mouse::hide_cursor()
 {
-  glfwDisable(GLFW_MOUSE_CURSOR);
+  // This causes problems with knobs & arcballs, mouse visibility is disabled for now
+  //  glfwDisable(GLFW_MOUSE_CURSOR);
 }
 
 
