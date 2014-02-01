@@ -78,9 +78,21 @@ public:
   void run()
   {
     my_array = float_in->get_addr();
-    if (!my_array) return;
 
-    result_float->set((*(my_array->data))[(int)which->get()]);
+    if (!my_array)
+      return;
+
+    if ( which->get() < 0.0f )
+      return;
+
+    if ( (size_t)which->get() >= my_array->data->size() )
+      return;
+
+    size_t index = (size_t)which->get();
+
+    result_float->set(
+      (*(my_array->data))[ index ]
+    );
   }
 
 };
