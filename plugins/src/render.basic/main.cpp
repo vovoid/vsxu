@@ -30,6 +30,7 @@
 #include "module_render_line.h"
 #include "module_render_basic_textured_rectangle.h"
 #include "module_render_basic_oscilloscope.h"
+#include "module_render_basic_simple_colorline.h"
 
 
 //******************************************************************************
@@ -55,6 +56,7 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 1: return (vsx_module*)new module_render_basic_colored_rectangle;
     case 2: return (vsx_module*)new module_render_line;
     case 3: return (vsx_module*)new module_render_basic_oscilloscope;
+    case 4: return (vsx_module*)new module_render_basic_simple_colorline;
   } // switch
   return 0;
 }
@@ -66,11 +68,12 @@ void MOD_DM(vsx_module* m,unsigned long module) {
     case 1: delete (module_render_basic_colored_rectangle*)m; break;
     case 2: delete (module_render_line*)m; break;
     case 3: delete (module_render_basic_oscilloscope*)m; break;
+    case 4: delete (module_render_basic_simple_colorline*)m; break;
   }
 }
 
 
 unsigned long MOD_NM() {
-  return 4;
+  return 5;
 }  
 
