@@ -48,42 +48,43 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-    loading_done = true;
+    loading_done = false;
+
     data_in = (vsx_module_param_float_array*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"data_in");
 
-      position = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "position");
-      position->set(0.0f, 0);
-      position->set(0.0f, 1);
-      position->set(0.0f, 2);
+    position = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "position");
+    position->set(0.0f, 0);
+    position->set(0.0f, 1);
+    position->set(0.0f, 2);
 
-      size = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "size");
-      size->set(1.0f,0);
-      size->set(1.0f,1);
-      angle = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "angle");
-      angle->set(0.5f);
+    size = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "size");
+    size->set(1.0f,0);
+    size->set(1.0f,1);
+    angle = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "angle");
+    angle->set(0.5f);
 
-      line_width = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "line_width");
-      line_width->set(2.0f);
+    line_width = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "line_width");
+    line_width->set(2.0f);
 
-      rotation_axis = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "rotation_axis");
-      rotation_axis->set(1.0f, 0);
-      rotation_axis->set(1.0f, 1);
-      rotation_axis->set(0.0f, 2);
+    rotation_axis = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "rotation_axis");
+    rotation_axis->set(1.0f, 0);
+    rotation_axis->set(1.0f, 1);
+    rotation_axis->set(0.0f, 2);
 
-      color_a_rgb = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4, "color_a");
-      color_a_rgb->set(1.0f,0);
-      color_a_rgb->set(1.0f,1);
-      color_a_rgb->set(1.0f,2);
-      color_a_rgb->set(1.0f,3);
+    color_a_rgb = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4, "color_a");
+    color_a_rgb->set(1.0f,0);
+    color_a_rgb->set(1.0f,1);
+    color_a_rgb->set(1.0f,2);
+    color_a_rgb->set(1.0f,3);
 
-      color_b_rgb = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4, "color_b");
-      color_b_rgb->set(.5f,0);
-      color_b_rgb->set(.5f,1);
-      color_b_rgb->set(.0f,2);
-      color_b_rgb->set(.0f,3);
+    color_b_rgb = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4, "color_b");
+    color_b_rgb->set(.5f,0);
+    color_b_rgb->set(.5f,1);
+    color_b_rgb->set(.0f,2);
+    color_b_rgb->set(.0f,3);
 
-      render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
-      render_result->set(0);
+    render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+    render_result->set(0);
   }
 
   void output(vsx_module_param_abs* param)
