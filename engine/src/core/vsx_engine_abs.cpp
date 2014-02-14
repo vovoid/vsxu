@@ -330,11 +330,11 @@ void vsx_engine_abs::process_message_queue_redeclare(vsx_command_list *cmd_out_r
 
 void vsx_engine_abs::send_state_to_client(vsx_command_list *cmd_out)
 {
-  if (filesystem.is_archive())
-  {
-    cmd_out->add_raw("server_message "+base64_encode("Packages not possible to edit, ask author for state!"));
-    return;
-  }
+//  if (filesystem.is_archive())
+//  {
+//    cmd_out->add_raw("server_message "+base64_encode("Packages not possible to edit, ask author for state!"));
+//    return;
+//  }
 
   vsx_command_list temp_conn;
   vsx_command_list temp_conn_alias;
