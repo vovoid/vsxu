@@ -95,6 +95,7 @@ float clip (float x, float a, float b)
 #include "module_float_acos.h"
 #include "module_float_array_average.h"
 #include "module_float_array_pick.h"
+#include "module_float_array_memory_buffer.h"
 #include "module_float_cos.h"
 #include "module_float_dummy.h"
 #include "module_float_interpolate.h"
@@ -201,6 +202,7 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 57: return (vsx_module*)(new module_axis_angle_to_quaternion);
     case 58: return (vsx_module*)(new module_quaternion_to_axis_angle);
     case 59: return (vsx_module*)(new module_bspline_matrix);
+    case 60: return (vsx_module*)(new module_float_array_memory_buffer);
   }
   return 0;
 }
@@ -268,10 +270,11 @@ void MOD_DM(vsx_module* m,unsigned long module)
     case 57: delete (module_axis_angle_to_quaternion*)m; break;
     case 58: delete (module_quaternion_to_axis_angle*)m; break;
     case 59: delete (module_bspline_matrix*)m; break;
+    case 60: delete (module_float_array_memory_buffer*)m; break;
   }
 }
 
 unsigned long MOD_NM()
 {
-  return 60;
+  return 61;
 }
