@@ -150,7 +150,9 @@ public:
   vsx_widget_seq_channel()
     :
       owner(0),
-      channel_type(VSX_WIDGET_SEQ_CHANNEL_TYPE_PARAMETER)
+      channel_type(VSX_WIDGET_SEQ_CHANNEL_TYPE_PARAMETER),
+      mouse_clicked_id(0)
+
   {
   }
 

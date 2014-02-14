@@ -246,7 +246,18 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
         }
 
         // check if we've hit a point
-        if (!ctrl || (shift && button == 2))
+        if (
+            (!ctrl && !alt && !shift)
+            ||
+            (ctrl && alt && shift)
+            ||
+            (ctrl && alt)
+            ||
+            (alt && !ctrl && !shift)
+            ||
+            (shift && button == 2)
+        )
+        {
           if (distance.center.x > dlx - 0.001 && distance.center.x < dlx + 0.001
               && distance.center.y > dly - 0.001 && distance.center.y < dly
               + 0.001)
@@ -259,6 +270,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
               mouse_clicked_id = item_iterator;
             }
           }
+        }
       }
       // if nothing found, check if any of the handles of a bezier has been hit
       if (mouse_clicked_id == -1)
@@ -316,16 +328,26 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
         item_action_id = item_iterator - 1;
       }
     }
-    if (item_action_id != -1)
+    if
+    (
+      item_action_id != -1
+      &&
+      button == 0
+      &&
+      (
+          (shift && ctrl && !alt)
+          ||
+          (shift && !ctrl && !alt)
+          ||
+          (ctrl && !shift && !alt)
+      )
+    )
     {
       // code for adding a new keyframe/point, relies on above code
       size_t interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_LINEAR;
-      if (shift && ctrl && !alt)
-        interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_COSINE;
-      else if (shift && !ctrl && !alt)
-        interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_LINEAR;
-      else if (!shift && ctrl && !alt)
-        interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_NONE;
+      if (shift && ctrl && !alt)  interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_COSINE;
+      if (shift && !ctrl && !alt) interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_LINEAR;
+      if (!shift && ctrl && !alt) interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_NONE;
 
       double_click_d[0] = 0.0f;
 
@@ -360,6 +382,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
                        i2s( interpolation_type) + " " + i2s(item_action_id));
       }
     }
+
     // code for removing a keyframe
     if (shift && button == 2)
     {
@@ -379,7 +402,6 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
           mouse_clicked_id = -1;
         }
       }
-      return;
     }
 
     // should we bring up the menu?
@@ -392,15 +414,13 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
       menu_interpolation->set_pos(coords.screen_global);
       run_event_mouse_down = false;
       menu_temp_disable = true;
-    } else
-    if (mouse_clicked_id == -1)
+    }
+
+    if (mouse_clicked_id == -1 && alt && !ctrl && !shift)
     {
-      if (alt)
-      {
         // set time
         if (owner)
         ((vsx_widget_timeline*)( (static_cast<vsx_widget_sequence_editor*>(owner))->timeline))->move_time(distance.center);
-      }
     }
   }
 
@@ -491,6 +511,8 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
     vsx_widget_coords coords)
 {
   event_mouse_move_passive(distance, coords);
+
+  // handling of Master channels
   if (channel_type == VSX_WIDGET_SEQ_CHANNEL_TYPE_MASTER)
   {
     if (index_hit != -1 && mouse_clicked_id != -1)
@@ -590,10 +612,18 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
     return;
   }
 
+
+
+
+
+
   // extra hit = bezier spline handles
   if (extra_hit != -1)
   {
     // this applies only to bezier splines, not actual value points
+
+    int other_item_id_to_update = -1;
+
     float t_delay = 0.0f;
     for (int i = 0; i < mouse_clicked_id; ++i)
       t_delay += items[i].get_total_length();
@@ -602,62 +632,114 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
 
     float y = ((distance.center.y + size.y / 2) / size.y) * totalysize + y_start;
     m_pos = f;
+    // first bezier handle
     if (extra_hit == 1)
     {
       items[mouse_clicked_id].set_handle1( vsx_vector(f / items[mouse_clicked_id].get_total_length(), y	- s2f(items[mouse_clicked_id].get_value()) ) );
 
       // move the previous bezier handle
-      if (mouse_clicked_id > 0 && ctrl && !shift && !alt)
+      if ( ctrl && !shift && !alt)
       {
+        vsx_widget_param_sequence_item* other_item = 0x0;
         float cur_time_x = items[mouse_clicked_id].get_handle1().x * items[mouse_clicked_id].get_total_length();
 
-        items[mouse_clicked_id-1].set_handle2(
-          vsx_vector(
-            1.0 - cur_time_x / items[mouse_clicked_id-1].get_total_length(),
-            -items[mouse_clicked_id].get_handle1().y
-          )
-        );
-      }
+        if ( mouse_clicked_id > 0 )
+        {
+          other_item_id_to_update = mouse_clicked_id-1;
+          other_item = &items[other_item_id_to_update];
+        }
 
+        if ( mouse_clicked_id == 0 )
+        {
+          other_item_id_to_update = items.size()-2;
+          other_item = &items[other_item_id_to_update];
+        }
+
+        if (other_item)
+        {
+          other_item->set_handle2(
+            vsx_vector(
+              1.0 - cur_time_x / other_item->get_total_length(),
+              -items[mouse_clicked_id].get_handle1().y
+            )
+          );
+        }
+      }
     }
 
+    // second bezier handle
     if (extra_hit == 2)
     {
       items[mouse_clicked_id].set_handle2( vsx_vector(f / items[mouse_clicked_id].get_total_length(), y - s2f(items[mouse_clicked_id + 1].get_value()) ) );
 
       // move the next bezier handle
-      if (mouse_clicked_id + 1 < items.size() && ctrl && !shift && !alt)
+      if (ctrl && !shift && !alt)
       {
+        vsx_widget_param_sequence_item* other_item = 0x0;
         float cur_time_x = (1.0 - items[mouse_clicked_id].get_handle2().x ) * items[mouse_clicked_id].get_total_length();
 
-        items[mouse_clicked_id+1].set_handle1(
-          vsx_vector(
-            cur_time_x / items[mouse_clicked_id+1].get_total_length(),
-            -items[mouse_clicked_id].get_handle2().y
-          )
-        );
-      }
 
+        if ( mouse_clicked_id + 2 >= items.size() )
+        {
+          other_item_id_to_update = 0;
+          other_item = &items[other_item_id_to_update];
+        }
+
+        if (mouse_clicked_id + 2 < items.size() )
+        {
+          other_item_id_to_update = mouse_clicked_id+1;
+          other_item = &items[other_item_id_to_update];
+        }
+
+
+        if (other_item)
+        {
+          other_item->set_handle1(
+            vsx_vector(
+              cur_time_x / other_item->get_total_length(),
+              -items[mouse_clicked_id].get_handle2().y
+            )
+          );
+        }
+      }
     }
 
     if (!is_controller)
+    {
+      if (other_item_id_to_update != -1)
+        server_message("pseq_r update",
+          base64_encode( items[other_item_id_to_update].get_value_interpolation() ) + " " +
+                       f2s(items[other_item_id_to_update].get_total_length()) + " " +
+                       i2s(items[other_item_id_to_update].get_interpolation()) + " " +
+          i2s(other_item_id_to_update)
+        );
+
       server_message("pseq_r update",
         base64_encode( items[mouse_clicked_id].get_value_interpolation() ) + " " +
                      f2s(items[mouse_clicked_id].get_total_length()) + " " +
                      i2s(items[mouse_clicked_id].get_interpolation()) + " " +
         i2s(mouse_clicked_id)
       );
+    }
     else
       send_parent_dump();
-
+    return;
   }
-  else
+
+
+
+
+
+
+
+  // Regular Point clicked
   if (mouse_clicked_id != -1)
   {
+    int other_item_id_to_update = -1;
+
     // mouse is pressed on a regular value-point
-    //totalsize*size.x-size.x/2+pos.x
-    float f = 0.0f;
-    float d = 0.0f;
+    float absolute_clicked_time = 0.0f;
+    float delta_time_movement = 0.0f;
 
     float cur_time_line_pos_x = time_to_pos(cur_time);
     float cur_hover_pos = distance.center.x;
@@ -672,23 +754,24 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
     {
         distance.center.x = cur_time_line_pos_x - clicked_item_x_diff;
 
-        f = (1 - (-distance.center.x + size.x / 2) / size.x) * totalsize
+        absolute_clicked_time = (1 - (-distance.center.x + size.x / 2) / size.x) * totalsize
           + view_time_start;
-        d = m_pos - f;
-        m_pos = f;
+        delta_time_movement = m_pos - absolute_clicked_time;
+        m_pos = absolute_clicked_time;
     } else
     {
-      f = (1 - (-distance.center.x + size.x / 2) / size.x) * totalsize
+      absolute_clicked_time = (1 - (-distance.center.x + size.x / 2) / size.x) * totalsize
           + view_time_start;
-      d = m_pos - f;
-      m_pos = f;
+      delta_time_movement = m_pos - absolute_clicked_time;
+      m_pos = absolute_clicked_time;
     }
+
     // delta time calculations for updating the engine
     if (
         (
-          items[mouse_clicked_id - 1].get_total_length() - d > 0
+          items[mouse_clicked_id - 1].get_total_length() - delta_time_movement > 0
           &&
-          items[mouse_clicked_id].get_total_length() + d > 0
+          items[mouse_clicked_id].get_total_length() + delta_time_movement > 0
         )
         ||
         mouse_clicked_id == 0
@@ -696,7 +779,8 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
         mouse_clicked_id == (int) items.size() - 1
       )
     {
-      if (mouse_clicked_id != 0 && !alt)
+
+      if (mouse_clicked_id != 0 && (!alt && !ctrl ))
       {
         // update the previous one
         if (is_controller)
@@ -706,18 +790,20 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
           {
             accum_time += items[ii].get_total_length();
           }
-          if (accum_time + items[mouse_clicked_id - 1].get_total_length() - d > 1.0f)
+          // make sure time doesn't extend beyond 1.0
+          if (accum_time + items[mouse_clicked_id - 1].get_total_length() - delta_time_movement > 1.0f)
           {
-            d += accum_time + items[mouse_clicked_id - 1].get_total_length() - d -1.0f;
-
+            delta_time_movement += accum_time + items[mouse_clicked_id - 1].get_total_length() - delta_time_movement -1.0f;
           }
         }
 
         // regular sequencer
-        items[mouse_clicked_id - 1].increase_total_length( -d );
+        items[mouse_clicked_id - 1].increase_total_length( -delta_time_movement );
+
+        // special handling of last element
         if (mouse_clicked_id != (int) items.size() - 1)
         {
-          items[mouse_clicked_id].increase_total_length( d );
+          items[mouse_clicked_id].increase_total_length( delta_time_movement );
         }
         else
         {
@@ -726,7 +812,6 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
 
         if (!is_controller)
         {
-
           server_message("pseq_r update",
             base64_encode( items[mouse_clicked_id - 1].get_value_interpolation() ) + " " +
               f2s( items[mouse_clicked_id - 1].get_total_length()) + " " +
@@ -737,11 +822,12 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
         else
           send_parent_dump();
       }
-      else if (alt)
+      else if (alt && !ctrl)
       {
-        items[mouse_clicked_id].increase_total_length( d );
+        items[mouse_clicked_id].increase_total_length( delta_time_movement );
       }
-      if (!alt)
+
+      if ( (!alt && !ctrl) || (alt && ctrl))
       {
         float y = ((distance.center.y + size.y / 2) / size.y) * totalysize
             + y_start;
@@ -753,14 +839,14 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
         }
 
         // prepare existing value with updated value
-        vsx_avector<vsx_string> parts;
-        vsx_string deli = ",";
-        vsx_string value = items[mouse_clicked_id].get_value();
-        explode(value, deli, parts);
-        parts[index_hit] = f2s(y);
-
         if (param_type == VSX_MODULE_PARAM_ID_QUATERNION)
         {
+          vsx_avector<vsx_string> parts;
+          vsx_string deli = ",";
+          vsx_string value = items[mouse_clicked_id].get_value();
+          explode(value, deli, parts);
+          parts[index_hit] = f2s(y);
+
           vsx_string t = implode(parts, deli);
           vsx_quaternion q;
           q.from_string(t);
@@ -769,54 +855,79 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
           parts[1] = f2s(q.y);
           parts[2] = f2s(q.z);
           parts[3] = f2s(q.w);
+
+          items[mouse_clicked_id].set_value( implode(parts, deli) );
         }
 
-        items[mouse_clicked_id].set_value( implode(parts, deli) );
+        items[mouse_clicked_id].set_value(f2s(y));
+
+        if (ctrl && alt && shift)
+        {
+          if (mouse_clicked_id == 0)
+          {
+            // update the last point as well
+            other_item_id_to_update = items.size()-1;
+            items[other_item_id_to_update].set_value(f2s(y));
+          }
+        }
       }
 
       if (!is_controller)
+      {
+        if (other_item_id_to_update != -1)
+          server_message("pseq_r update",
+            base64_encode( items[other_item_id_to_update].get_value_interpolation() ) + " " +
+                         f2s(items[other_item_id_to_update].get_total_length()) + " " +
+                         i2s(items[other_item_id_to_update].get_interpolation()) + " " +
+            i2s(other_item_id_to_update)
+          );
+
         server_message("pseq_r update",
           base64_encode( items[mouse_clicked_id].get_value_interpolation()) + " " +
                        f2s( items[mouse_clicked_id].get_total_length()) + " " +
                        i2s( items[mouse_clicked_id].get_interpolation()) + " " +
           i2s(mouse_clicked_id)
         );
+      }
       else
         send_parent_dump();
     }
+    return;
   }
-  else
-  if (alt)
+
+
+
+
+
+
+  // No point clicked, maybe move timeline
+  if (alt && owner)
   {
     // set time
-    if (owner)
+    ((vsx_widget_timeline*)(owner->timeline))->move_time(distance.center);
+    if (shift && !is_controller)
     {
-      ((vsx_widget_timeline*)(owner->timeline))->move_time(distance.center);
-      if (shift && !is_controller)
+      // look through all items
+      bool run = true;
+      float time_start = 0.0f;
+      float pos_clicked = distance.center.x;
+
+      for (size_t i = 0; i < items.size()-1 && run; i++)
       {
-        // look through all items
-        bool run = true;
-        float time_start = 0.0f;
-        float pos_clicked = distance.center.x;
+        time_start += items[i].get_total_length();
+        float pos_iterated = time_to_pos(time_start);
 
-        for (size_t i = 0; i < items.size()-1 && run; i++)
+        if
+          (
+              pos_iterated + 0.001f > pos_clicked
+              &&
+              pos_iterated - 0.001f < pos_clicked
+          )
         {
-          time_start += items[i].get_total_length();
-          float pos_iterated = time_to_pos(time_start);
-
-          if
-            (
-                pos_iterated + 0.001f > pos_clicked
-                &&
-                pos_iterated - 0.001f < pos_clicked
-            )
-          {
-            distance.center.x = pos_iterated;
-            ((vsx_widget_timeline*)(owner->timeline))->move_time(distance.center);
-          }
+          distance.center.x = pos_iterated;
+          ((vsx_widget_timeline*)(owner->timeline))->move_time(distance.center);
         }
       }
-
     }
   }
 }
