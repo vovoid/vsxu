@@ -32,6 +32,7 @@ public:
   vsx_module_param_float3* max_box;
   vsx_module_param_float* font_size;
   vsx_module_param_float* font_align;
+  vsx_module_param_float* max_id;
 
   // out
   vsx_module_param_render* render_out;
@@ -56,7 +57,8 @@ public:
       "font_size:float,"
       "min_box:float3,"
       "max_box:float3,"
-      "font_align:float"
+      "font_align:float,"
+      "max_id:float"
     ;
 
     info->out_param_spec =
@@ -86,6 +88,10 @@ public:
     font_size = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"font_size");
     font_align = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"font_align");
     font_size->set(1.0f);
+
+    max_id = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"max_id");
+    max_id->set(-1.0f);
+
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 
     loading_done = true;
@@ -97,7 +103,8 @@ public:
   {
     VSX_UNUSED(param);
     mesh = mesh_in->get_addr();
-    if (!mesh) return;
+    if (!mesh)
+      return;
 
     float minx = min_box->get(0);
     float miny = min_box->get(1);
@@ -112,12 +119,16 @@ public:
     glColor4f(base_color->get(0),base_color->get(1),base_color->get(2),base_color->get(3));
 
 
+    size_t max = 0;
+    if (max_id->get() > 0.0f)
+      max = (size_t)max_id->get();
 
-    for (unsigned long i = 0; i < (*mesh)->data->vertices.size(); ++i)
+    for (size_t i = 0; i < (*mesh)->data->vertices.size(); ++i)
     {
       if ( !( (*mesh)->data->vertices[i].x > minx && (*mesh)->data->vertices[i].x < maxx ) ) continue;
       if ( !( (*mesh)->data->vertices[i].y > miny && (*mesh)->data->vertices[i].y < maxy ) ) continue;
       if ( !((*mesh)->data->vertices[i].z > minz && (*mesh)->data->vertices[i].z < maxz) ) continue;
+      if ( max && max < i) return;
 
       myf->print(
           (*mesh)->data->vertices[i],
