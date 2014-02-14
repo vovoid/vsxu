@@ -47,6 +47,9 @@ class vsx_widget_seq_channel : public vsx_widget
   int index_count; // how many parts are this type made up of?
   int display_exclusive; // dim other than this
 
+  float hover_value_pos;
+  float hover_time_pos;
+
   float clicked_item_x_diff;
 
   void toggle_exclusive(int value)
@@ -94,7 +97,8 @@ class vsx_widget_seq_channel : public vsx_widget
   static vsx_color col_temp_2;
 
   vsx_widget* menu_interpolation;
-  vsx_widget* value_dialog;
+  vsx_widget* manual_value_input_dialog;
+  vsx_widget* manual_time_input_dialog;
 
   static vsx_texture* mtex_blob;
 

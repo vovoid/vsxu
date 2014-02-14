@@ -94,8 +94,10 @@ void vsx_widget_seq_channel::init()
 
   menu_interpolation = add(new vsx_widget_popup_menu, ".interp_menu");
   menu_interpolation->size.x = size.x * 0.4;
-  menu_interpolation->commands.adds(VSX_COMMAND_MENU, "enter value with keyboard",
+  menu_interpolation->commands.adds(VSX_COMMAND_MENU, "enter value manually",
       "menu_interp_keyboard", "0");
+  menu_interpolation->commands.adds(VSX_COMMAND_MENU, "enter time manually",
+      "menu_time_keyboard", "0");
   menu_interpolation->commands.adds(VSX_COMMAND_MENU, "----------",
       "-", "0");
   menu_interpolation->commands.adds(VSX_COMMAND_MENU, "no interpolation",
@@ -108,8 +110,14 @@ void vsx_widget_seq_channel::init()
       "menu_interp", "4");
   menu_interpolation->init();
 
-  value_dialog = add(new dialog_query_string("set value","set value"),"menu_interp_keyboard_value");
-  ((dialog_query_string*)value_dialog)->init();
+  manual_value_input_dialog = add(new dialog_query_string("set value","set value"),"menu_interp_keyboard_value");
+  ((dialog_query_string*)manual_value_input_dialog)->init();
+  manual_value_input_dialog->set_render_type(VSX_WIDGET_RENDER_2D);
+
+
+  manual_time_input_dialog = add(new dialog_query_string("set time position","set time position"),"menu_time_keyboard_value");
+  ((dialog_query_string*)manual_time_input_dialog)->init();
+  manual_time_input_dialog->set_render_type(VSX_WIDGET_RENDER_2D);
 }
 
 // sends a full inject dump to the parent in the widget chain
@@ -488,21 +496,31 @@ void vsx_widget_seq_channel::event_mouse_wheel(float y)
 {
   if (ctrl)
     y *= 10.0f;
+
   float dt = (y_end - y_start) * 0.5;
-  y_start += y * dt * 0.05;
+
+  if (!alt)
+  {
+    y_start += y * dt * 0.05;
+    y_end += y * dt * 0.05;
+  }
+
   if (alt)
-    y = -y;
-  y_end += y * dt * 0.05;
+  {
+    float center_y = (hover_value_pos - y_start) / (y_end - y_start);
+    y_start += y * dt * 0.05 * (center_y);
+    y_end -= y * dt * 0.05 * (1 - center_y);
+  }
 }
 
 void vsx_widget_seq_channel::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
 {
-  float value_pos = (distance.center.y / size.y + 0.5f) * (y_end - y_start) + y_start;
-  float time_pos = (distance.center.x / size.x + 0.5f) * (view_time_end - view_time_start) + view_time_start;
+  hover_value_pos = (distance.center.y / size.y + 0.5f) * (y_end - y_start) + y_start;
+  hover_time_pos = (distance.center.x / size.x + 0.5f) * (view_time_end - view_time_start) + view_time_start;
 
-  passive_time = "  "+f2s(time_pos);
+  passive_time = "  "+f2s(hover_time_pos);
   passive_time[0] = 26;
-  passive_value = "  "+f2s(value_pos);
+  passive_value = "  "+f2s(hover_value_pos);
   passive_value[0] = 24;
   passive_mouse_pos = coords.world_global;
 }
@@ -825,6 +843,9 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
       else if (alt && !ctrl)
       {
         items[mouse_clicked_id].increase_total_length( delta_time_movement );
+        if (mouse_clicked_id > 0)
+          items[mouse_clicked_id-1].increase_total_length( -delta_time_movement );
+
       }
 
       if ( (!alt && !ctrl) || (alt && ctrl))
@@ -867,6 +888,12 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
           {
             // update the last point as well
             other_item_id_to_update = items.size()-1;
+            items[other_item_id_to_update].set_value(f2s(y));
+          }
+          if (mouse_clicked_id == items.size()-1)
+          {
+            // update the last point as well
+            other_item_id_to_update = 0;
             items[other_item_id_to_update].set_value(f2s(y));
           }
         }
@@ -971,12 +998,12 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
   // keyboard entry of value
   if (t->cmd == "menu_interp_keyboard")
   {
-    if (mouse_clicked_id != -1)
-    {
-      vsx_string val = items[mouse_clicked_id].get_value();
-      value_dialog->set_render_type(VSX_WIDGET_RENDER_2D);
-      ((dialog_query_string*)value_dialog)->show(val);
-    }
+    if (mouse_clicked_id == -1)
+      return;
+
+    vsx_string val = items[mouse_clicked_id].get_value();
+    ((dialog_query_string*)manual_value_input_dialog)->show(val);
+
     return;
   }
 
@@ -985,21 +1012,97 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
   // keyboard entry of value
   if (t->cmd == "menu_interp_keyboard_value")
   {
-    if (mouse_clicked_id != -1)
+    if (mouse_clicked_id == -1)
+      return;
+
+    items[mouse_clicked_id].set_value( t->cmd_data );
+    if (is_controller)
     {
-      items[mouse_clicked_id].set_value( t->cmd_data );
-      if (!is_controller)
-        server_message("pseq_r update",
-          base64_encode(
-            items[mouse_clicked_id].get_value_interpolation()) + " " +
-                       f2s( items[mouse_clicked_id].get_total_length()) + " " +
-                       i2s( items[mouse_clicked_id].get_interpolation()) + " " +
-            i2s( mouse_clicked_id));
-      else
-        send_parent_dump();
+      send_parent_dump();
+      return;
     }
+
+    server_message("pseq_r update",
+      base64_encode(items[mouse_clicked_id].get_value_interpolation()) + " " +
+      f2s( items[mouse_clicked_id].get_total_length()) + " " +
+      i2s( items[mouse_clicked_id].get_interpolation()) + " " +
+      i2s( mouse_clicked_id)
+    );
     return;
   }
+
+
+  // keyboard entry of time
+  if (t->cmd == "menu_time_keyboard")
+  {
+    if (mouse_clicked_id < 1)
+      return;
+
+    // convert local value time to global time
+    float accumulated_time = 0.0f;
+    for (size_t i = 0; i < (size_t)mouse_clicked_id; i++)
+    {
+      accumulated_time += items[i].get_total_length();
+    }
+
+    vsx_string val = f2s(accumulated_time);
+    ((dialog_query_string*)manual_time_input_dialog)->show(val);
+    manual_time_input_dialog->set_render_type(VSX_WIDGET_RENDER_2D);
+
+    return;
+  }
+
+
+  // keyboard entry of time
+  if (t->cmd == "menu_time_keyboard_value")
+  {
+    if (mouse_clicked_id == -1)
+      return;
+
+    // find the minimum possible time
+    float min_time_possible = 0.0f;
+    for (size_t i = 0; i < mouse_clicked_id-1; i++)
+    {
+      min_time_possible += items[i].get_total_length();
+    }
+
+    float proposed_new_time = s2f( t->cmd_data );
+    if (proposed_new_time < min_time_possible)
+      // TODO: display error here
+      return;
+
+    float new_delta_time = (proposed_new_time - min_time_possible) - items[mouse_clicked_id-1].get_total_length();
+
+    // modify the previous time
+    items[mouse_clicked_id-1].increase_total_length( new_delta_time );
+    // modify after time
+    items[mouse_clicked_id].increase_total_length( -new_delta_time );
+
+    if (is_controller)
+    {
+      send_parent_dump();
+      return;
+    }
+
+    size_t updated_id = mouse_clicked_id -1;
+
+    server_message("pseq_r update",
+      base64_encode(items[updated_id].get_value_interpolation()) + " " +
+      f2s( items[updated_id].get_total_length()) + " " +
+      i2s( items[updated_id].get_interpolation()) + " " +
+      i2s( updated_id)
+    );
+    server_message("pseq_r update",
+      base64_encode(items[mouse_clicked_id].get_value_interpolation()) + " " +
+      f2s( items[mouse_clicked_id].get_total_length()) + " " +
+      i2s( items[mouse_clicked_id].get_interpolation()) + " " +
+      i2s( mouse_clicked_id)
+    );
+    return;
+  }
+
+
+
 
 
 

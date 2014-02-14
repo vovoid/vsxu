@@ -180,6 +180,7 @@ void myErrorCallback
   VSX_UNUSED(_severity);
   VSX_UNUSED(_length);
   VSX_UNUSED(_user_param);
+  VSX_UNUSED(_id);
   vsx_printf("GLDEBUG: %s\n", _message);
 }
 
@@ -213,7 +214,6 @@ int main(int argc, char* argv[])
 
   int     width, height, running, frames, x, y;
   double  t, t1;
-  unsigned long usleep_framelimit;
   char    titlestr[ 200 ];
 
   bool start_fullscreen = false;
@@ -251,11 +251,6 @@ int main(int argc, char* argv[])
     }
   }
 
-  if (vsx_argvector::get_instance()->has_param_with_value("frame_limit"))
-  {
-    vsx_string arg = vsx_argvector::get_instance()->get_param_value("frame_limit");
-    usleep_framelimit = vsx_string_aux::s2i(arg);
-  }
 
   if (start_fullscreen && !manual_resolution_set)
   {
@@ -388,11 +383,11 @@ int main(int argc, char* argv[])
     //      #define GL_GPU_MEMORY_INFO_EVICTION_COUNT_NVX 0x904A
     //      #define GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX 0x904B
 
-          GLint total_memory;
-          GLint total_available;
+//          GLint total_memory;
+//          GLint total_available;
           GLint available_memory;
-          GLint eviction_count;
-          GLint eviction_size;
+//          GLint eviction_count;
+//          GLint eviction_size;
 //          glGetIntegerv(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &total_memory);
 //          glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &total_available);
 //          glGetIntegerv(GL_GPU_MEMORY_INFO_EVICTION_COUNT_NVX, &eviction_count);
