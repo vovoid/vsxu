@@ -210,10 +210,6 @@ public:
     {
       for (unsigned long i = 0; i < bones.size(); ++i)
       {
-        #ifdef VSXU_DEBUG
-        printf(" declaring parameter for bone: \"%s\"\n", bones[i].name.c_str());
-        fflush(stdout);
-        #endif
         bones[i].param = (vsx_module_param_quaternion*)in_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION,(bones[i].name+"_rotation").c_str());
         bones[i].translation = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,(bones[i].name+"_translation").c_str());
         CalQuaternion q2;
@@ -270,10 +266,6 @@ public:
   {
     pthread_mutex_lock(&mesh_mutex);
 
-    #ifdef VSXU_DEBUG
-    printf("cal3d param set notify..\n");
-    #endif
-
     if (name == "filename") {
       if (filename->get() != current_filename) {
         current_filename = filename->get();
@@ -286,18 +278,12 @@ public:
           fparts.reset_used(fparts.get_used()-1);
           file_path = implode(fparts,fdeli)+"/";
         }
-        #ifdef VSXU_DEBUG
-        printf("file path: %s\n",file_path.c_str());
-        #endif
         //-------------------------------------------------
         vsx_avector<int> mesh_parts;
         vsx_avector<int> material_parts;
         vsxf_handle *fp;
         fp = engine->filesystem->f_open(current_filename.c_str(), "r");
         if (!fp) {
-          #ifdef VSXU_DEBUG
-          printf("cal3d: could not open filename: %s\n", current_filename.c_str() );
-          #endif
           return;
         }
 
@@ -309,7 +295,6 @@ public:
           line = buf;
           if (line[line.size()-1] == 0x0A) line.pop_back();
           if (line[line.size()-1] == 0x0D) line.pop_back();
-          //printf("reading line: %s\n",line.c_str());
           if (line.size()) {
             vsx_avector<vsx_string> parts;
             vsx_string deli = "=";
@@ -323,13 +308,7 @@ public:
                 doc.Parse(a);
                 free(a);
                 if (c_model->loadCoreSkeleton(doc)) {
-                  #ifdef VSXU_DEBUG
-                  printf("loaded skeleton: %s\n",parts[1].c_str());
-                  #endif
                 } else {
-                  #ifdef VSXU_DEBUG
-                  printf("failed loading skeleton.. %s \n",(file_path+parts[1]).c_str());
-                  #endif
                 }
                 engine->filesystem->f_close(h);
               }
@@ -344,14 +323,8 @@ public:
                 free(a);
                 mesh_id = c_model->loadCoreMesh(doc);
                 if (mesh_id == -1) {
-                  #ifdef VSXU_DEBUG
-                  printf("failed loading mesh.. %s \n",(file_path+parts[1]).c_str());
-                  #endif
                 } else
                 {
-                  #ifdef VSXU_DEBUG
-                  printf("loaded mesh: %s\n",parts[1].c_str());
-                  #endif
                   mesh_parts.push_back(mesh_id);
                 }
                 engine->filesystem->f_close(h);
@@ -360,9 +333,6 @@ public:
           }
         }
         engine->filesystem->f_close(fp);
-        #ifdef VSXU_DEBUG
-        printf("creating new model\n");
-        #endif
         m_model = new CalModel(c_model);
         m_model->attachMesh(mesh_id);
 
@@ -431,7 +401,6 @@ public:
         pthread_cond_wait(&my->count_threshold_cv, &my->mesh_mutex);
       }
 
-      //printf("cal3d %d\n",__LINE__);
       CalSkeleton* m_skeleton = my->m_model->getSkeleton();
       m_skeleton->calculateState();
 
@@ -447,7 +416,6 @@ public:
         // get the number of submeshes
         int submeshCount;
         submeshCount = pCalRenderer->getSubmeshCount(meshId);
-        //printf("submesh count: %d\n",submeshCount);
 
         // loop through all submeshes of the mesh
         int submeshId;
@@ -466,9 +434,7 @@ public:
             {
               //my->mesh->data->vertex_tangents[pCalRenderer->getVertexCount()+1].x = 0;// = vsx_vector(0,0,0);
               //int num_tagentspaces = pCalRenderer->getTangentSpaces(0,&my->mesh->data->vertex_tangents[0].x);
-              //printf("fetched %d tangents\n", num_tagentspaces);
             }
-            //else printf("Tangents are NOT enabled\n");
 
 
             if (first_rendering < 4)
@@ -535,7 +501,6 @@ public:
         vs_v++;
         vs_n++;
       }
-      //printf("thread dtime: %f\n", time.dtime());
 
       // ********************************************************************
       // calculate tangent space coordinates
@@ -600,13 +565,10 @@ public:
       }
 
       my->thread_has_something_to_deliver++;
-      //printf("cal3d %d\n",__LINE__);
       if (thread_info.is_thread)
       {
-
         pthread_mutex_unlock(&my->mesh_mutex);
       }
-      //printf("cal3d %d\n",__LINE__);
 
       // if we're not supposed to run in a thread
       if (false == thread_info.is_thread)
@@ -617,13 +579,9 @@ public:
       {
         exit_check_counter = 0;
         // see if the exit flag is set (user changed from threaded to non-threaded mode)
-        //printf("cal3d %d\n",__LINE__);
         pthread_mutex_lock(&my->thread_exit_mutex);
-        //printf("cal3d %d\n",__LINE__);
         int time_to_exit = my->thread_exit;
-        //printf("cal3d %d\n",__LINE__);
         pthread_mutex_unlock(&my->thread_exit_mutex);
-        //printf("cal3d %d\n",__LINE__);
         if (time_to_exit) {
           int *retval = new int;
           *retval = 0;
@@ -643,7 +601,6 @@ public:
     if (!bones.size())
       return;
 
-    //printf("cal3d module run!\n");
     // deal with changes in threading use
     #ifdef VSXU_TM
     ((vsx_tm*)engine->tm)->e( "cal3d_run_1" );
@@ -652,13 +609,9 @@ public:
     if (thread_created && use_thread->get() == 0)
     {
       // this means the thread is running. kill it off.
-      //printf("cal3d %d\n",__LINE__);
       pthread_mutex_lock(&thread_exit_mutex);
-      //printf("cal3d %d\n",__LINE__);
         thread_exit = 1;
-      //printf("cal3d %d\n",__LINE__);
       pthread_mutex_unlock(&thread_exit_mutex);
-      //printf("cal3d %d\n",__LINE__);
       void* ret;
       pthread_join(worker_t,&ret);
       thread_created = false;
@@ -673,9 +626,7 @@ public:
     #endif
     if (!thread_created && use_thread->get() == 1)
     {
-      //printf("cal3d %d\n",__LINE__);
       pthread_create(&worker_t, NULL, &worker, (void*)&thread_info);
-      //printf("cal3d %d\n",__LINE__);
       thread_created = true;
       thread_info.is_thread = true;
     }
@@ -840,12 +791,9 @@ public:
         post_rot_translate_vec.z = post_rot_translate->get(2);
 
         p_updates = param_updates;
-        //printf("cal3d %d\n",__LINE__);
         have_sent_work_to_thread = 1;
         //sem_post(&sem_worker_todo);
         pthread_cond_signal(&count_threshold_cv);
-
-        //printf("cal3d %d\n",__LINE__);
       }
       pthread_mutex_unlock(&mesh_mutex);
 
@@ -853,7 +801,6 @@ public:
       #ifdef VSXU_TM
       ((vsx_tm*)engine->tm)->l();
       #endif
-
 
       // inner
       #ifdef VSXU_TM
