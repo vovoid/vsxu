@@ -26,6 +26,7 @@
 
 #include <vsx_fifo.h>
 #include <sys/types.h>
+#include <vsx_string.h>
 
 // configuring options
 
@@ -52,6 +53,10 @@
  * ---
  **/
 
+pid_t gettid( void )
+{
+  return syscall( __NR_gettid );
+}
 
 
 
@@ -63,7 +68,7 @@ __inline__ uint64_t vsx_profiler_rdtsc() __attribute__((always_inline))
   return x;
 }
 #elif __amd64
-__inline__ uint64_t vsx_profiler_rdtsc() __attribute__((always_inline))
+uint64_t vsx_profiler_rdtsc()
 {
   uint64_t a, d;
   __asm__ volatile ("rdtsc" : "=a" (a), "=d" (d));
@@ -86,23 +91,16 @@ public:
  /*8 */ uint64_t   flags;      // bit-mask
  /*4 */ pid_t      tid;        // thread id
  /*44*/ char       tag[44];    // text describing the section
+ // TODO: spin-waste
 };
 
 
 // Profiler Class
 class vsx_profiler
 {
-  vsx_fifo<vsx_profile_chunk,4096> queue;
-
-  vsx_profiler* get_profilers()
-  {
-    static vsx_profiler profiler_list[VSX_PROFILER_MAX_THREADS];
-    return &profiler_list[0];
-  }
-
-  pid_t thread_id;
-
 public:
+  vsx_fifo<vsx_profile_chunk,4096> queue;
+  pid_t thread_id;
 
   inline void set_thread_id(pid_t new_id)
   {
@@ -115,7 +113,7 @@ public:
     chunk.flags = 0;
     for (size_t i = 0; i < 44; i++)
     {
-      if (tag[i-1] == 0)
+      if (i && tag[i-1] == 0)
         break;
       chunk.tag[i] = tag[i];
     }
@@ -135,54 +133,190 @@ public:
     chunk.tid = thread_id;
     chunk.rdtsc_cycles = t;
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_END;
+    size_t spin_write = 0;
     while (!queue.produce(chunk))
     {
+      spin_write++;
+      // todo: spin-waste
     }
+    if (spin_write)
+      vsx_printf("spin write ran for %ld cycles\n", spin_write);
+  }
+};
+
+#define RECIEVE_BUFFER_PAGES 32
+#define RECIEVE_BUFFER_ITEMS 32
+
+class vsx_profiler_manager
+{
+public:
+
+  volatile __attribute__((aligned(64))) int64_t run_threads;
+
+  pthread_mutex_t profiler_thread_lock;
+  pthread_t consumer_pthread;
+  pthread_t io_pthread;
+  vsx_profiler profiler_list[VSX_PROFILER_MAX_THREADS];
+  pid_t thread_list [VSX_PROFILER_MAX_THREADS];
+
+  vsx_fifo<vsx_profile_chunk*,RECIEVE_BUFFER_PAGES> io_pool;
+
+  vsx_profiler_manager()
+  {
+    run_threads = 1;
+
+    vsx_printf("vsx_profiler_manager constructor\n");
+    pthread_mutex_init(&profiler_thread_lock, NULL);
+
+    for (size_t i = 0; i < VSX_PROFILER_MAX_THREADS; i++)
+    {
+      thread_list[i] = 0;
+    }
+
+    vsx_printf("starting consumer thread\n");
+
+    pthread_create(
+      &consumer_pthread,
+      NULL,
+      vsx_profiler_manager::consumer_thread,
+      NULL
+    );
+
+    vsx_printf("starting io thread\n");
+
+    pthread_create(
+      &io_pthread,
+      NULL,
+      vsx_profiler_manager::io_thread,
+      NULL
+    );
+  }
+
+  ~vsx_profiler_manager()
+  {
+    vsx_printf("setting run threads to false in profiler manager\n");
+    run_threads = false;
+    pthread_join(io_pthread, NULL);
+    pthread_join(consumer_pthread, NULL);
+  }
+
+
+  static void* io_thread(void* arg)
+  {
+    VSX_UNUSED(arg);
+
+    vsx_profiler_manager* pm = vsx_profiler_manager::get_instance();
+
+    FILE* fp = fopen("/tmp/vsx_profile.dat", "wb");
+    while ( __sync_fetch_and_add( &pm->run_threads, 0) )
+    {
+      vsx_profile_chunk* r;
+      while ( pm->io_pool.consume(r) )
+      {
+        fwrite(r,sizeof(vsx_profile_chunk)*RECIEVE_BUFFER_ITEMS,1,fp);
+      }
+    }
+    fclose(fp);
+    pthread_exit(0);
+    return NULL;
   }
 
   static void* consumer_thread(void* profiler)
   {
-    vsx_profiler* my_profiler = (vsx_profiler*) profiler;
-    vsx_profile_chunk recieve_buffer[16];
-    while (1)
+    VSX_UNUSED(profiler);
+    vsx_profiler_manager* pm = vsx_profiler_manager::get_instance();
+
+    vsx_profiler* profilers = &pm->profiler_list[0];
+    pid_t* producer_threads = &pm->thread_list[0];
+
+    vsx_profile_chunk recieve_buffer[RECIEVE_BUFFER_PAGES][RECIEVE_BUFFER_ITEMS];
+    size_t recieve_buffer_iterator = 0;
+
+    size_t current_buffer_page = 0;
+
+    while ( __sync_fetch_and_add( &pm->run_threads, 0) )
     {
       // collect from all threads
       for ( size_t i = 0; i < VSX_PROFILER_MAX_THREADS; i++)
       {
+        if (producer_threads[i] == 0)
+          break;
+
         // write the data to disk
+        size_t max_iterations = 0;
+        while (
+          profilers[i].queue.consume( recieve_buffer[current_buffer_page][recieve_buffer_iterator] )
+          &&
+          max_iterations++ < 4
+        )
+        {
+          recieve_buffer_iterator++;
 
+          if (recieve_buffer_iterator != RECIEVE_BUFFER_ITEMS)
+            continue;
+
+          // send to io
+          pm->io_pool.produce(&recieve_buffer[current_buffer_page][0]);
+
+          recieve_buffer_iterator = 0;
+          current_buffer_page++;
+
+          if (current_buffer_page == RECIEVE_BUFFER_PAGES)
+            current_buffer_page = 0;
+        }
       }
-      // Flush to disk
     }
+    pthread_exit(0);
+    return 0x0;
   }
-
 
 
   // Call this once per thread
   // - make sure to call it from inside the thread
   //
   // It does lookups per thread to give you the correct pointer
-  static vsx_profiler* get_instance()
+  vsx_profiler* get_profiler()
   {
-    static pid_t thread_list [VSX_PROFILER_MAX_THREADS] = {0,0,0,0,0,0,0,0};
-    vsx_profiler* profilers = get_profilers();
-
     // identify thread, if reaching 0 = first time, cache the value
     pid_t local_thread_id = gettid();
 
-    // is consumer thread running?
-    //    if not: start up consumer thread
+    pthread_mutex_lock(&profiler_thread_lock);
+    size_t i = 0;
+    for (i = 0; i < VSX_PROFILER_MAX_THREADS; i++)
+    {
+      if (thread_list[i] != 0 && thread_list[i] != local_thread_id)
+        continue;
+      if (thread_list[i] == local_thread_id)
+      {
+        pthread_mutex_unlock(&profiler_thread_lock);
+        return &profiler_list[i];
+      }
+      if (thread_list[i] == 0)
+        break;
+    }
+
+    thread_list[i] = local_thread_id;
+    profiler_list[i].set_thread_id( local_thread_id );
+
+    pthread_mutex_unlock(&profiler_thread_lock);
+    return &profiler_list[i];
   }
 
   // Call this when exiting a thread.
   // Ensures the profiler slot can be re-used.
   void recycle_instance( vsx_profiler* p )
   {
+    VSX_UNUSED(p);
     // find the pointer and set the corresponding thread id to 0
   }
 
-};
+  static vsx_profiler_manager* get_instance()
+  {
+    static vsx_profiler_manager pm;
+    return &pm;
+  }
 
+};
 
 
 #endif

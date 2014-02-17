@@ -21,6 +21,8 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#ifndef VSX_FIFO_H
+#define VSX_FIFO_H
 
 template<
     typename T = int64_t,   // your data type
@@ -110,3 +112,5 @@ public:
 
 
 };
+
+#endif

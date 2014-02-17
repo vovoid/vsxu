@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 2.8)
+
+  add_definitions(
+    -g
+    -Wall
+    -Wtype-limits
+    -fpermissive
+    -Wuninitialized
+    -Wignored-qualifiers
+    -Wempty-body
+    -Wunused-parameter
+  )
+
+include_directories(
+${CMAKE_SOURCE_DIR}/../include
+${CMAKE_SOURCE_DIR}/../../
+ )
+
+add_executable(test_vsx_profiler test_vsx_profiler.cpp )
+
+target_link_libraries( test_vsx_profiler  pthread )
