@@ -99,7 +99,6 @@ public:
     vsx_array<vsx_vector> vertices;
     vsx_array<vsx_vector> normals;
     vsx_array<vsx_tex_coord> texcoords;
-    //mesh->data->clear();
 
     int face_cur = 0;
     bool found_normals = false;
@@ -114,8 +113,6 @@ public:
       while (engine->filesystem->f_gets(buf,65535,fp))
       {
         line = buf;
-
-        vsx_printf("line: %s\n", line.c_str());
 
         if (line[line.size()-1] == 0x0A) line.pop_back();
         if (line[line.size()-1] == 0x0D) line.pop_back();
@@ -153,9 +150,9 @@ public:
             vsx_avector<vsx_string> parts4;
             explode(parts[3], deli2, parts4);
 
-            ff.c = face_cur;   //s2i(parts2[0])-1;
-            ff.b = face_cur+1; //s2i(parts3[0])-1;
-            ff.a = face_cur+2; //s2i(parts4[0])-1;
+            ff.c = face_cur;
+            ff.b = face_cur+1;
+            ff.a = face_cur+2;
 
 
             int id;
