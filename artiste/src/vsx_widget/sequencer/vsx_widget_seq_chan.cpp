@@ -1003,7 +1003,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
 
     vsx_string val = items[mouse_clicked_id].get_value();
     ((dialog_query_string*)manual_value_input_dialog)->show(val);
-
+    manual_value_input_dialog->set_render_type(VSX_WIDGET_RENDER_2D);
     return;
   }
 
