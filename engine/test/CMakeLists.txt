@@ -18,4 +18,7 @@ ${CMAKE_SOURCE_DIR}/../../
 
 add_executable(test_vsx_profiler test_vsx_profiler.cpp )
 
+add_executable(test_cpu_info test_cpu_info.cpp )
+
 target_link_libraries( test_vsx_profiler  pthread )
+
