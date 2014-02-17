@@ -93,6 +93,7 @@ public:
     max_id->set(-1.0f);
 
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+    render_out->set(1);
 
     loading_done = true;
     myf = new vsx_font();
