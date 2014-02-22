@@ -891,6 +891,7 @@ void vsx_widget_ultra_chooser::event_mouse_up(vsx_widget_distance distance,vsx_w
 
 void vsx_widget_ultra_chooser::draw_2d()
 {
+  float dtime = vsx_widget_time::get_instance()->get_dtime();
   vsx_vector a(0.5f*size.x,0.5f*size.y);
   if (animating) {
     anim_x += dtime*2;
@@ -938,7 +939,7 @@ void vsx_widget_ultra_chooser::draw_2d()
   if (visible != 0)
   {
     // interpolation magic
-    float tt = dtime*interpolation_speed*global_interpolation_speed;
+    float tt = dtime*interpolation_speed * vsx_widget_global_interpolation::get_instance()->get();
     if (tt > 1) tt = 1;
 
   /*float ft = tt * 3.1415927;
@@ -1020,7 +1021,7 @@ void vsx_widget_ultra_chooser::draw_2d()
     if (message != "")
     font.print_center(a, message,0.035);
     if (drag_dropped) {
-      font.color.a = (sin(PI+time*13)+1)*0.4f+0.2f;
+      font.color.a = (sin(PI + vsx_widget_time::get_instance()->get_time() *13)+1)*0.4f+0.2f;
       font.print_center(vsx_vector(a.x,a.y+0.16), "* Dropping "+treedraw->selected->node->node->module_info->identifier+" *",0.025);
       font.print_center(vsx_vector(a.x,a.y+0.13), "Hold the mouse button, move/drag the module where you want to place it.",0.025);
       font.print_center(vsx_vector(a.x,a.y+0.1), "Then release the left mouse button to drop it.",0.025);

@@ -44,7 +44,7 @@ void vsx_window_texture_viewer::draw_2d()
   if (performance_mode)
     return;
 
-  frame_delta += dtime;
+  frame_delta += vsx_widget_time::get_instance()->get_dtime();
   ++frame_count;
 
   if (frame_count == 50)

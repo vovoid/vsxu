@@ -2213,9 +2213,9 @@ void vsx_widget_anchor::draw()
       glEnd();
     }
 
-    text_size -= dtime;
+    text_size -= vsx_widget_time::get_instance()->get_dtime();
     if (drag_status) text_size = 0.5f;
-    display_value_t -= dtime;
+    display_value_t -= vsx_widget_time::get_instance()->get_dtime();
     if (display_value_t < 0) display_value_t = 0;
     if (text_size < 0) text_size = 0;
     float d_size = display_value_t > 0.8f?0.8f:display_value_t;
@@ -2309,11 +2309,11 @@ void vsx_widget_anchor::draw()
   }
   if (draw_glow) 
   {
-    glColor4f(0.8,0.8,1,0.8*(0.5+sin(time*15)*0.5)+0.2f);
+    glColor4f(0.8,0.8,1,0.8*(0.5+sin(vsx_widget_time::get_instance()->get_time()*15)*0.5)+0.2f);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glPushMatrix();
     glTranslatef(ax,ay,pos.z);
-    glRotatef(time*100,0,0,1);
+    glRotatef(vsx_widget_time::get_instance()->get_time() * 100,0,0,1);
     mtex_blob.bind();
       draw_box_texf(0,0,0,0.03f,0.03f);
     mtex_blob._bind();
@@ -2327,7 +2327,9 @@ void vsx_widget_anchor::draw()
     mtex_blob_small.bind();
       glBlendFunc(GL_SRC_ALPHA, GL_ONE);
       glColor4f(0.5f,1,1,1);
-      draw_box_tex_c(drag_coords.world_global, 0.01f*(1.0f - fmod(time * 10.0f, 1.0f)), 0.01f*(1.0f - fmod(time * 10.0f, 1.0f)));
+      draw_box_tex_c(drag_coords.world_global, 0.01f*(1.0f - fmod(vsx_widget_time::get_instance()->get_time()
+                                                                  * 10.0f, 1.0f)),
+                     0.01f*(1.0f - fmod(vsx_widget_time::get_instance()->get_time() * 10.0f, 1.0f)));
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     mtex_blob_small._bind();
   }

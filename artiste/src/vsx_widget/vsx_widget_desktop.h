@@ -29,18 +29,8 @@ class vsx_widget_desktop : public vsx_widget
 {
   float logo_time;
   bool first_draw;
-
-  // move-around-the-desktop stuff
-  double xp, yp;
-  double xps, yps, zps; //current speed
-  double xpd, ypd, zpd; //current direction
-  double zp;
-  double zpf;
-  double zpa;
   vsx_widget *tv; // vme television (tm)
 
-  bool interpolating;
-  vsx_vector camera_target;
 	vsx_widget* sv;
 
 public:
@@ -60,7 +50,6 @@ public:
   void command_process_back_queue(vsx_command_s *t);
   void draw();
   void draw_2d();
-  void move_camera(vsx_vector world);
   vsx_widget_desktop();
 };
 

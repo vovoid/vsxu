@@ -34,6 +34,12 @@
 #define PI_FLOAT 3.1415926535897932384626433832795f
 #define HALF_PI 1.5707963267948966192313216916398
 
+#define SGN(N) (N >= 0 ? 1 : -1)
+#define MAX(N, M) ((N) >= (M) ? (N) : (M))
+#define MIN(N, M) ((N) <= (M) ? (N) : (M))
+#define CLAMP(N, L, U) (MAX(MIN((N), (U)), (L)))
+
+
 #ifndef __gl_h_
 typedef float GLfloat;
 #endif

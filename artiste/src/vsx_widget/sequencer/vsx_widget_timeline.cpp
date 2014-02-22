@@ -56,22 +56,12 @@ void vsx_widget_timeline::move_time(vsx_vector world) {
     if (c_time < 0) c_time = 0;
 
     float a = (c_time-owner->tstart)/(owner->tend-owner->tstart);
-    //printf("a: %f\n",a);
     if (a > 0.95) {
-      //dd_time = (0.001)*(owner->tend-owner->tstart);
-      //owner->tend += dd_time;
-      //owner->tstart += dd_time;
-      //c_time = owner->tstart+(owner->tend-owner->tstart)*0.851;
-      //owner->curtime + dd_time*2;
       auto_move_dir = 1;
       owner->update_time_from_engine = false;
       a_dist = a-0.95;
     } else
     if (a < 0.05) {
-      //dd_time = (0.001)*(owner->tend-owner->tstart);
-      //owner->tend -= dd_time;
-      //owner->tstart -= dd_time;
-      //c_time = owner->tstart+(owner->tend-owner->tstart)*0.149;
       auto_move_dir = -1;
       a_dist = 0.05-a;
       owner->update_time_from_engine = false;
@@ -82,28 +72,28 @@ void vsx_widget_timeline::move_time(vsx_vector world) {
       parent->vsx_command_queue_b(this);
       owner->update_time_from_engine = false;
     }
-    //owner->check_timeline();
   } else {
     auto_move_dir = 0;
     owner->update_time_from_engine = true;
   }
 }
 
-void vsx_widget_timeline::i_draw() {
+void vsx_widget_timeline::i_draw()
+{
   parentpos = parent->get_pos_p();
   float time_diff = owner->tend - owner->tstart;
   totalsize = (owner->tend - owner->tstart);
 
-  float y_mid = parentpos.y+pos.y;
+  float y_mid = parentpos.y + pos.y;
   float y_size = size.y;
   if (a_focus == this) y_size *= 3.0f;
   float y_size_half = y_size * 0.5f;
 
   if (auto_move_dir) {
-    //float c_time = owner->curtime;
-    float curtime = owner->curtime + auto_move_dir*dtime*time_diff*10.0f*a_dist;//totalsize*0.01;
-    float tstart = owner->tstart + auto_move_dir*dtime*time_diff*10.0f*a_dist;//totalsize*0.01;
-    float tend = owner->tend + auto_move_dir*dtime*time_diff*10.0f*a_dist;//totalsize*0.01;
+    float dtime = vsx_widget_time::get_instance()->get_dtime();
+    float curtime = owner->curtime + auto_move_dir * dtime * time_diff*10.0f*a_dist;
+    float tstart = owner->tstart + auto_move_dir*dtime*time_diff*10.0f*a_dist;
+    float tend = owner->tend + auto_move_dir*dtime*time_diff*10.0f*a_dist;
     if (curtime >= 0) {
       owner->curtime = curtime;
       owner->tstart = tstart;
@@ -137,14 +127,15 @@ void vsx_widget_timeline::i_draw() {
     }
   glEnd();
 
-  if (a_focus == this) {
+  if (a_focus == this)
     glColor3f(1.0f,1.0f,1.0f);
-  } else
-  glColor3f(0.5f,0.5f,0.5f);
+  else
+    glColor3f(0.5f,0.5f,0.5f);
+
   draw_box_border(vsx_vector(parentpos.x+pos.x-size.x*0.5,y_mid-y_size_half), vsx_vector(size.x,y_size), dragborder*0.5);
 
   levelstart = ((float)(int)(trunc(owner->tstart+(owner->tstart>=0.0?0.5:-0.5))) - owner->tstart)/totalsize;
-  //printf("levelstart: %f\n",levelstart);
+
   levelstart = 0;
 
   font.color.a = 0.8f;
@@ -166,12 +157,21 @@ void vsx_widget_timeline::i_draw() {
   }
 
   glColor3f(1,1,1);
-  float f = ((owner->curtime-owner->tstart)/(owner->tend-owner->tstart))*size.x;
+  float f = ((owner->curtime - owner->tstart) /
+             (owner->tend - owner->tstart))
+            * size.x;
+
   glBegin(GL_LINES);
     glVertex2f(parentpos.x+pos.x-size.x*0.5f+f,y_mid+y_size*0.416666667);
     glVertex2f(parentpos.x+pos.x-size.x*0.5f+f,y_mid-y_size*0.416666667);
   glEnd();
 
+  draw_waveform_data( y_mid, y_size_half );
+}
+
+
+void vsx_widget_timeline::draw_waveform_data(float y_mid, float y_size_half)
+{
   // ************************************************************
   // sound waveform display
   // ************************************************************
@@ -207,10 +207,6 @@ void vsx_widget_timeline::i_draw() {
         float x_dist = x_end - x_start;
         double x_diff = (double)x_dist / (double)data_count;
 
-  //			printf("data_start: %d\n", data_start);
-        //printf("data_end: %d\n", data_end);
-        //printf("data_count: %d\n", data_count);
-
         glColor4f(1.0f,0.2f,0.2f,0.15f);
         double x_pos = x_start;
         glBegin(GL_LINE_STRIP);
@@ -242,8 +238,6 @@ void vsx_widget_timeline::i_draw() {
       } // pcm data pool size
     }
   }
-
-  vsx_widget::i_draw();
 }
 
 bool vsx_widget_timeline::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
@@ -262,26 +256,26 @@ bool vsx_widget_timeline::event_key_down(signed long key, bool alt, bool ctrl, b
     }
   }
 
-  if (key == 't') show_wave_data = !show_wave_data;
+  if (key == 't')
+    show_wave_data = !show_wave_data;
 
-  if (!ctrl) return true;
+  if (!ctrl)
+    return true;
+
   switch(key) {
     case 'f':
-      {
         owner->tstart += dt*0.03;
         owner->tend += dt*0.03;
         return false;
-      }
     break;
+
     case 's':
-      {
         owner->tstart -= dt*0.03;
         owner->tend -= dt*0.03;
         return false;
-      }
     break;
+
     case 'w':
-      {
         if (owner->curtime < owner->tstart) {
           owner->tstart = owner->curtime;
           owner->tend = owner->curtime + dt*2;
@@ -293,40 +287,17 @@ bool vsx_widget_timeline::event_key_down(signed long key, bool alt, bool ctrl, b
         owner->tstart -= (owner->curtime-owner->tstart)/(dt)*dt*0.03;
         owner->tend += (owner->tend-owner->curtime)/(dt)*dt*0.03;
         return false;
-      }
     break;
+
     case 'r':
-      {
-
-        if (owner->curtime < owner->tstart || owner->curtime > owner->tend) {
-          //ddt = (owner->tend - owner->tstart)*0.5;
-          owner->tstart = owner->curtime - dt;
-          owner->tend = owner->curtime + dt;
-        }
-        //float ndt = dt*1.1;
-
-
-
-        //float _tstart = owner->tstart+dt-dt*1.1;
-        owner->tstart += (owner->curtime-owner->tstart)/(dt)*dt*0.03;
-        owner->tend -= (owner->tend-owner->curtime)/(dt)*dt*0.03;
-        //float _tend = owner->tend-dt+dt*1.1;
-        //owner->tstart = owner->tstart+dt-dt*1.1;
-        //owner->tend = owner->tend-dt+dt*1.1;
-        //if (_tend - _tstart < 40) {
-          //owner->tstart = _tstart;
-          //owner->tend = _tend;
-
-
-//          float dt = (owner->tend-owner->tstart)*0.5;
-        /*float _tstart = owner->tstart+dt-dt*0.9;
-        float _tend = owner->tend-dt+dt*0.9;
-        if (owner->curtime > _tstart) {
-          owner->tstart = _tstart;
-          owner->tend = _tend;
-        } */
-        return false;
+      if (owner->curtime < owner->tstart || owner->curtime > owner->tend) {
+        owner->tstart = owner->curtime - dt;
+        owner->tend = owner->curtime + dt;
       }
+
+      owner->tstart += (owner->curtime-owner->tstart)/(dt)*dt*0.03;
+      owner->tend -= (owner->tend-owner->curtime)/(dt)*dt*0.03;
+      return false;
     break;
   }
   return true;

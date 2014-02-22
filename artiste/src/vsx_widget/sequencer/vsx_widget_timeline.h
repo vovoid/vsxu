@@ -69,6 +69,7 @@ public:
   float levelstart;
 
   void i_draw();
+  void draw_waveform_data(float y_mid, float y_size_half);
 
   bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
 

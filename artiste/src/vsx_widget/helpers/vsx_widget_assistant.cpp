@@ -85,7 +85,9 @@ void vsxu_assistant::i_draw()
     }
   }
 
-	tt = dtime*10.0f*global_interpolation_speed;
+  tt = vsx_widget_time::get_instance()->get_dtime() * 10.0f *
+      vsx_widget_global_interpolation::get_instance()->get()
+      ;
   if (tt > 1) tt = 1;
 	clickpoint.x = clickpoint.x*(1-tt)+size_multiplier*tt;
 

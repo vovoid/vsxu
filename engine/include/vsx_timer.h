@@ -36,9 +36,6 @@
 
 
 
-
-
-
 class vsx_timer
 {
   double startt;
@@ -81,6 +78,7 @@ double atime() {
 }
 
 vsx_timer() {
+  start();
 #ifdef _WIN32
  	LARGE_INTEGER time;
  	QueryPerformanceCounter(&time);

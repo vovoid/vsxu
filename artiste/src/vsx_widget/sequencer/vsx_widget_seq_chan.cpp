@@ -2074,7 +2074,7 @@ void vsx_widget_seq_channel::draw_selection_box(float t0, float y0)
     y0 = y_start;
     c_size *= 0.5;
   }
-  glColor4f(1.0f, 0.0f, 0.0f, 1.0f - fmod(time * 4.5, 1.0f));
+  glColor4f(1.0f, 0.0f, 0.0f, 1.0f - fmod(vsx_widget_time::get_instance()->get_time() * 4.5, 1.0f));
   glBegin(GL_TRIANGLE_FAN);
   totalysize = y_end - y_start;
   dlx = (t0 - view_time_start) / totalsize * size.x + parentpos.x + pos.x
@@ -2088,7 +2088,7 @@ void vsx_widget_seq_channel::draw_selection_box(float t0, float y0)
   glVertex2f(dlx - c_size, dly + c_size);
   glVertex2f(dlx - c_size, dly - c_size);
   glEnd();
-  glColor4f(1.0f, 0.0f, 0.0f, 1.0f - fmod(time * 4.5, 1.0f));
+  glColor4f(1.0f, 0.0f, 0.0f, 1.0f - fmod(vsx_widget_time::get_instance()->get_time() * 4.5, 1.0f));
   glBegin(GL_LINES);
   glVertex2f(dlx, size.y * 0.5 + parentpos.y + pos.y);
   glVertex2f(dlx, -size.y * 0.5 + parentpos.y + pos.y);

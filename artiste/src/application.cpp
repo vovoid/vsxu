@@ -166,9 +166,10 @@ public:
     {
       ++frame_count;
 
+      vsx_widget_time::get_instance()->set_dtime( dt );
+      vsx_widget_time::get_instance()->increase_time( dt );
+
       if (desktop) {
-        desktop->dtime = gui_f_time;
-        desktop->time += desktop->dtime;
         desktop->frames = frame_count;
       }
       gui_fullscreen_fpstimer += gui_f_time;

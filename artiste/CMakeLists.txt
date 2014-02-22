@@ -78,6 +78,8 @@ endif()
 set(SOURCES
   src/log/vsx_log_a.cpp
   src/vsx_widget/vsx_widget_base.cpp
+  src/vsx_widget/vsx_widget_camera.cpp
+  src/vsx_widget/vsx_widget_time.cpp
   src/vsx_widget/vsx_widget_coords.cpp
   src/vsx_widget/server/vsx_widget_comp.cpp
   src/vsx_widget/server/vsx_widget_connector_bezier.cpp
@@ -112,8 +114,9 @@ set(SOURCES
   src/vsx_widget/sequencer/vsx_widget_seq_chan.cpp
   src/vsx_widget/sequencer/pool_manager/vsx_widget_seq_pool.cpp
   src/vsx_widget/sequencer/vsx_widget_sequence.cpp
-  src/vsx_widget/sequencer/vsx_widget_sequence_tree.cpp
   src/vsx_widget/sequencer/vsx_widget_timeline.cpp
+  src/vsx_widget/profiler/vsx_widget_profiler.cpp
+  src/vsx_widget/profiler/vsx_widget_profiler_timeline.cpp
   src/vsx_widget/arcball/arcball.cpp
   src/vsx_widget/module_choosers/vsx_widget_module_chooser.cpp
   src/vsx_widget/module_choosers/vsx_widget_module_chooser_list.cpp

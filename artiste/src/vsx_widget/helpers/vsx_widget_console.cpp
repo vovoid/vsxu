@@ -144,14 +144,14 @@
     }
     
   	if (ythrust > 0) {
-    	tx += dtime*1.5f;
+      tx += vsx_widget_time::get_instance()->get_dtime() * 1.5f;
     	if (tx > htime) { ythrust = 0; tx = htime; topmost = true; 
       k_focus = editor;
       }
     	ypos = htime*htime-(htime-tx)*(htime-tx);
   	}
   	if (ythrust < 0) {
-    	tx -= dtime*1.5f;
+      tx -= vsx_widget_time::get_instance()->get_dtime() * 1.5f;
     	if (tx < 0) { ythrust = 0; tx = 0; topmost = true; k_focus = root;}
     	ypos = htime*htime-(htime-tx)*(htime-tx);
   	}

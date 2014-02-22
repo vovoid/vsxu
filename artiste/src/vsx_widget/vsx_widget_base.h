@@ -42,7 +42,9 @@
 #include "vsx_mouse.h"
 #include "vsx_widget_coords.h"
 #include "vsx_widget_distance.h"
-
+#include "vsx_widget_camera.h"
+#include "vsx_widget_time.h"
+#include "vsx_widget_global_interpolation.h"
 
 
 // different widget types
@@ -84,6 +86,9 @@ public:
   static vsx_widget *m_o_focus; // mouse over focus
   static vsx_widget *k_focus; // keyboard focus
 
+  // camera
+  static vsx_widget_camera camera;
+
 
   // global list of widgets, by name
   static std::map<vsx_string, vsx_widget*> global_widget_list;
@@ -95,8 +100,6 @@ public:
 
 
   static vsx_widget* last_clicked;
-  static float global_interpolation_speed;
-  static float global_key_speed;
   static float global_framerate_limit;
   static std::map<vsx_string, vsx_string> configuration;
   static unsigned long help_timestamp;
@@ -113,8 +116,6 @@ public:
   // time
   // these have to be set from outside, by using #include "vsx_timer.h" and using the timer class
   static int frames;
-  static double time; // elapsed time
-  static double dtime; // time since last frame
   static bool ctrl, alt, shift;
 
   //
@@ -181,8 +182,8 @@ public:
 
   // 2d gui stuff
   float visible;
-  virtual void show() {}
-  virtual void hide() {}
+  virtual void show() { visible = 1.0f; }
+  virtual void hide() { visible = 0.0f; }
   // popup menu support
   vsx_widget* menu;
   bool menu_temp_disable; // temporary disable showing the menu
@@ -353,9 +354,7 @@ public:
   }
 
 
-  virtual void i_draw()
-  {
-  }
+  virtual void i_draw() {}
 
   virtual void draw();
   virtual void draw_2d();
@@ -517,18 +516,20 @@ public:
   //
   vsx_widget *add(vsx_widget *t,vsx_string name);
 
+protected:
   // actual deletion event, don't use this unless you know what you are doing!
-  virtual void _delete();
-  virtual void mark_for_deletion();
-
-  // ask the object to delete itself and all its children (nice)
   virtual void delete_();
+  virtual void mark_for_deletion();
 
   // event reacting on marking widget for deletion
   virtual void before_delete();
 
   // deletion event
   virtual void on_delete();
+public:
+  // ask the object to delete itself and all its children (nice)
+  virtual void _delete();
+
 
   vsx_widget();
   virtual ~vsx_widget();

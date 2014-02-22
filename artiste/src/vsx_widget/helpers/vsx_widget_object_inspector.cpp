@@ -172,7 +172,7 @@ void vsx_window_object_inspector::draw() {
     } else view_type = 0;
     // image viewer
   }
-  vsx_status_timer -= dtime;
+  vsx_status_timer -= vsx_widget_time::get_instance()->get_dtime();
   if (inspected->widget_type == VSX_WIDGET_TYPE_COMPONENT)
   {
   	if (vsx_status_timer < 0.0f) {

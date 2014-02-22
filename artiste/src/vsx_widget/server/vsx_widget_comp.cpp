@@ -1060,7 +1060,7 @@ void vsx_widget_component::draw()
     if (message.size())
     {
       if (message_time > 0.0f) {
-        message_time -= dtime;
+        message_time -= vsx_widget_time::get_instance()->get_dtime();
         glColor4f(0,0,0,0.8);
         vsx_vector rp = t;
         rp.x -= 0.008f*10;
@@ -1069,7 +1069,7 @@ void vsx_widget_component::draw()
         rp.x += 0.0008;
         rp.y -= 0.001;
         //font.background = true;
-        font.color = vsx_color(1,0.5,0.5,1.0f-fmod(time*2.0f,1.0f));
+        font.color = vsx_color(1,0.5,0.5,1.0f-fmod(vsx_widget_time::get_instance()->get_time()*2.0f,1.0f));
         font.print(rp, "\nModule status:\n"+message, 0.008);
       } else
       if (m_o_focus == this && !mouse_down_l && !mouse_down_r) {
@@ -1180,7 +1180,7 @@ void vsx_widget_component::event_mouse_down(vsx_widget_distance distance,vsx_wid
       ((vsx_widget_component*)(*itx))->real_pos = ((vsx_widget_component*)(*itx))->target_pos;
       ((vsx_widget_component*)(*itx))->ethereal = true;
       ethereal_all = true;
-      move_time = time;
+      move_time = vsx_widget_time::get_instance()->get_time();
       transform_state = COMPONENT_MOVE;
     }
 //      real_pos = pos;
@@ -1189,7 +1189,7 @@ void vsx_widget_component::event_mouse_down(vsx_widget_distance distance,vsx_wid
   if (ctrl && alt && !shift && button == 0) {
     real_pos = target_pos;
     ethereal = true;
-    move_time = time;
+    move_time = vsx_widget_time::get_instance()->get_time();
     transform_state = COMPONENT_MOVE;
   } else
   if (ctrl && !alt && !shift && button == 0) {
@@ -1213,7 +1213,7 @@ void vsx_widget_component::event_mouse_down(vsx_widget_distance distance,vsx_wid
     if (support_scaling) {
       //printf("supporting scaling\n");
       if (transform_state == COMPONENT_SCALE) scaled = true;
-      move_time = time;
+      move_time = vsx_widget_time::get_instance()->get_time();
       transform_state = COMPONENT_SCALE;
     }// else printf("doesn't support scaling\n");
 //      printf("component scale transform state set\n");
@@ -1221,7 +1221,7 @@ void vsx_widget_component::event_mouse_down(vsx_widget_distance distance,vsx_wid
   if (button == 0) {
     if (transform_state == 0) {
       //printf("moving\n");
-      move_time = time;
+      move_time = vsx_widget_time::get_instance()->get_time();
       transform_state = COMPONENT_MOVE;
       scaled = false;
     }
@@ -1362,19 +1362,19 @@ void vsx_widget_component::event_mouse_up(vsx_widget_distance distance,vsx_widge
   } else {
     //printf("transform_state: %d\n",transform_state);
     if (transform_state == COMPONENT_MOVE) {
-      time += 4;
+//      time += 4;
       if (support_interpolation)
       move(target_pos.x,target_pos.y,target_pos.z);
       else
       move(pos.x,pos.y,pos.z);
-      time -=4;
+//      time -=4;
       server_move_notify();
     } else
     if (support_scaling)
     if (transform_state == COMPONENT_SCALE) {
-      time += 4;
+//      time += 4;
       resize_to(target_size);
-      time -=4;
+//      time -=4;
       scaled = false;
     }
   }
@@ -1426,18 +1426,18 @@ void vsx_widget_component::resize_to(vsx_vector to_size) {
 }
 
 void vsx_widget_component::server_move_notify() {
-  if (time - move_time > 1) {
+  if (vsx_widget_time::get_instance()->get_time() - move_time > 1) {
     command_q_b.add_raw("cpp "+name+" "+f2s(pos.x)+" "+f2s(pos.y));
     server->vsx_command_queue_b(this);
-    move_time = time;
+    move_time = vsx_widget_time::get_instance()->get_time();
   }
 }
 
 void vsx_widget_component::server_scale_notify() {
-  if (time - move_time > 1) {
+  if (vsx_widget_time::get_instance()->get_time() - move_time > 1) {
     command_q_b.add_raw("component_size "+name+" "+f2s(target_size.x));
     server->vsx_command_queue_b(this);
-    move_time = time;
+    move_time = vsx_widget_time::get_instance()->get_time();
     scaled = true;
   }
 }

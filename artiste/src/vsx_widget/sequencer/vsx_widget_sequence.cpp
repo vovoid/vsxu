@@ -67,7 +67,9 @@ void vsx_widget_sequence_editor::init()
   set_size(vsx_vector(1.0f,0.5f));
   size_min.x = 0.2;
   size_min.y = 0.2;
-  target_pos = pos;
+  target_pos = pos = camera.get_pos_2d() + vsx_vector(0.25);
+  camera.set_distance(1.9);
+
   engine_status = VSX_ENGINE_STOPPED;
 
   channels_start = 0;
@@ -132,14 +134,19 @@ void vsx_widget_sequence_editor::init()
 
   set_render_type(render_type);
 
-  menu = add(new vsx_widget_popup_menu,".comp_menu");
   title = "sequencer";
+
+  // Menu
+  menu = add(new vsx_widget_popup_menu,".comp_menu");
   menu->commands.adds(VSX_COMMAND_MENU, "close", "menu_close","");
   menu->size.x = size.x*0.4;
   menu->init();
+
+  // Name Dialog
   name_dialog = add(new dialog_query_string("name of channel","Choose a unique name for your Master Channel"),"dialog_add");
   ((dialog_query_string*)name_dialog)->set_allowed_chars("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_");
 
+  // Loop Time Dialog
   loop_point_dialog = add(new dialog_query_string("loop point in seconds","-1.0 to disable, 2.0 for 2 seconds etc"),"dialog_set_loop_point");
   ((dialog_query_string*)loop_point_dialog)->set_allowed_chars("0123456789-.");
   ((dialog_query_string*)loop_point_dialog)->set_value("1.0");

@@ -35,11 +35,13 @@ std::map<int, vsx_widget*> vsx_widget::global_index_list;
 vsx_mouse vsx_widget::mouse;
 vsx_widget *vsx_widget::root;
 
+vsx_widget_camera vsx_widget::camera;
 
 vsx_widget *vsx_widget::m_focus = 0;
 vsx_widget *vsx_widget::m_o_focus = 0;
 vsx_widget *vsx_widget::k_focus = 0;
 vsx_widget *vsx_widget::a_focus = 0;
+
 float vsx_widget::mouse_down_l_x;
 float vsx_widget::mouse_down_l_y;
 bool vsx_widget::mouse_down_l;
@@ -48,10 +50,6 @@ bool vsx_widget::mouse_down_r;
 bool vsx_widget::ctrl;
 bool vsx_widget::alt;
 bool vsx_widget::shift;
-
-
-double vsx_widget::time;
-double vsx_widget::dtime;
 
 int vsx_widget::frames;
 
@@ -67,8 +65,7 @@ double vsx_widget::modelMatrix[16];
 double vsx_widget::projMatrix[16];
 
 std::map<vsx_string, vsx_string> vsx_widget::configuration;
-float vsx_widget::global_interpolation_speed = 10.0f;
-float vsx_widget::global_key_speed = 3.0f;
+
 float vsx_widget::global_framerate_limit = -1;
 vsx_widget* vsx_widget::last_clicked;
 vsx_font vsx_widget::font;
@@ -95,11 +92,11 @@ vsx_widget::vsx_widget()
   ++static_widget_id_accumulator;
   visible = 1;
   parent = this;
-  double_click_d[0] = time;
-  double_click_d[1] = time;
-  double_click_d[2] = time;
-  double_click_d[3] = time;
-  double_click_d[4] = time;
+  double_click_d[0] =
+  double_click_d[1] =
+  double_click_d[2] =
+  double_click_d[3] =
+  double_click_d[4] = vsx_widget_time::get_instance()->get_time();
   mouse_down_l = false;
   mouse_down_r = false;
   mouse_down_l_x = 0;
@@ -396,30 +393,38 @@ void vsx_widget::mouse_down(float x, float y, int button)
 	mouse.set_cursor(MOUSE_CURSOR_ARROW);
   mouse.show_cursor();
 
-
   vsx_widget_coords coord;
   coord.init(x,y);
   vsx_widget_distance result;
-  vsx_widget *t = find_component(coord,result);
-  if (t != 0)
+  vsx_widget *widget_obj_at_cursor = find_component(coord,result);
+  if (!widget_obj_at_cursor)
+    return;
+
+  // set up coordinates for
+  mouse_down_pos = result;
+  mouse.set_cursor_pos(x,y);
+  k_focus = widget_obj_at_cursor;
+  m_focus = widget_obj_at_cursor;
+  widget_obj_at_cursor->event_mouse_down(result,coord,button);
+
+  double itime = (vsx_widget_time::get_instance()->get_time());
+
+  if (
+      itime
+      -
+      widget_obj_at_cursor->double_click_d[button]
+      < 0.3
+      &&
+      (last_clicked == widget_obj_at_cursor))
   {
-    // set up coordinates for
-    mouse_down_pos = result;
-    mouse.set_cursor_pos(x,y);
-    k_focus = t;
-    m_focus = t;
-    t->event_mouse_down(result,coord,button);
-    if (time - t->double_click_d[button] < 0.3 && (last_clicked == t))
-    {
-      t->double_click_d[button] = 0;
-      t->event_mouse_double_click(result,coord,button);
-      last_clicked = 0;
-    }
-    else
-    {
-      t->double_click_d[button] = time;
-      last_clicked = t;
-    }
+    widget_obj_at_cursor->event_mouse_double_click(result,coord,button);
+    widget_obj_at_cursor->double_click_d[button] = 0;
+    last_clicked = 0;
+  }
+  else
+  {
+    widget_obj_at_cursor->double_click_d[button] = vsx_widget_time::get_instance()->get_time();
+    last_clicked = widget_obj_at_cursor;
   }
 }
 
@@ -974,30 +979,10 @@ void vsx_widget::delete_()
 {
   for (std::list <vsx_widget*>::iterator it=children.begin(); it != children.end(); ++it)
   {
-  	#ifdef VSX_DEBUG
-  	//printf("delete_ %s\n",(*it)->name.c_str());
-  	//printf("1");
-  	#endif
     (*it)->marked_for_deletion = true;
-    #ifdef VSX_DEBUG
-    //printf("2");
-    #endif
     (*it)->before_delete();
-    #ifdef VSX_DEBUG
-    //printf("3");
-    #endif
     (*it)->delete_();
-    #ifdef VSX_DEBUG
-    //printf("4");
-    #endif
     (*it)->on_delete();
-    #ifdef VSX_DEBUG
-    //printf("5");
-    #endif
-    #ifdef VSX_DEBUG
-    //printf("6\n");
-    #endif
-
     delete *it;
   }
 }
@@ -1096,7 +1081,9 @@ void vsx_widget::reinit()
 
 void vsx_widget::interpolate_pos()
 {
-  float tt = dtime*interpolation_speed*global_interpolation_speed;
+  float tt =
+      vsx_widget_time::get_instance()->get_dtime() * interpolation_speed *
+      vsx_widget_global_interpolation::get_instance()->get();
   if (tt > 1)
   {
     tt = 1;
@@ -1115,7 +1102,8 @@ void vsx_widget::interpolate_pos()
 
 void vsx_widget::interpolate_size()
 {
-  float tt = dtime*interpolation_speed*global_interpolation_speed;
+  float tt = vsx_widget_time::get_instance()->get_dtime() * interpolation_speed
+      * vsx_widget_global_interpolation::get_instance()->get();
   if (tt > 1)
   {
     tt = 1;

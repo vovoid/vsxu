@@ -293,10 +293,12 @@ void vsx_widget_controller_base::i_draw() //include first, don't forget to add d
 {
   //interpolation
   float dtime;
-  if (r_time == 0) dtime = this->dtime; else
+  if (r_time == 0)
+    dtime = vsx_widget_time::get_instance()->get_dtime();
+  else
   {
-    dtime = time - r_time;
-    r_time = time;
+    dtime = vsx_widget_time::get_instance()->get_time() - r_time;
+    r_time = vsx_widget_time::get_instance()->get_dtime();
   }
   {
     if (value != target_value)
@@ -427,7 +429,7 @@ void vsx_widget_controller_base::i_draw() //include first, don't forget to add d
   void vsx_widget_3d_hint::draw()
   {
     if (!visible) return;
-    if (color.a>0) color.a-=dtime;
+    if (color.a>0) color.a -= vsx_widget_time::get_instance()->get_dtime();
     else color.a=0;
     vsx_vector p = parent->get_pos_p()+pos;
     p.y -= size.y*0.5;

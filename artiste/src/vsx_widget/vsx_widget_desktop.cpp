@@ -174,19 +174,35 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
     case -GLFW_KEY_SPACE:
     {
       {
-        if (a_focus->widget_type != VSX_WIDGET_TYPE_SERVER) {
+        if (a_focus->widget_type != VSX_WIDGET_TYPE_SERVER)
+        {
           vsx_vector a = a_focus->get_pos_p();
-          move_camera(vsx_vector(a.x,a.y,2.0f));
-        } else move_camera(vsx_vector(xp,yp,2.0f));
+          camera.move_camera(vsx_vector(a.x,a.y,2.0f));
+        }
+        else
+          camera.set_distance(2.0f);;
       }
     }
     break;
-    case -GLFW_KEY_UP: case -'E': case -'e':{ interpolating = false;ypd=1.0;} break;
-    case -GLFW_KEY_DOWN: case -'D': case -'d':{ interpolating = false;ypd=-1.0;} break;
-    case -GLFW_KEY_LEFT: case -'s': case -'S':{ interpolating = false;xpd=-1.0;} break;
-    case -GLFW_KEY_RIGHT: case -'F': case -'f':{ interpolating = false;xpd=1.0;} break;
-    case -GLFW_KEY_PAGEUP: case -'R': case -'r':{ interpolating = false;zpd=-1.0;} break;
-    case -GLFW_KEY_PAGEDOWN: case -'W': case -'w':{ interpolating = false;zpd=1.0;} break;
+    case -GLFW_KEY_UP: case -'E': case -'e':
+      camera.set_movement_y( 1.0 );
+    break;
+
+    case -GLFW_KEY_DOWN: case -'D': case -'d':
+      camera.set_movement_y( -1.0 );
+    break;
+    case -GLFW_KEY_LEFT: case -'s': case -'S':
+      camera.set_movement_x( -1.0 );
+    break;
+    case -GLFW_KEY_RIGHT: case -'F': case -'f':
+      camera.set_movement_x( 1.0 );
+    break;
+    case -GLFW_KEY_PAGEUP: case -'R': case -'r':
+      camera.set_movement_z( -1.0 );
+    break;
+    case -GLFW_KEY_PAGEDOWN: case -'W': case -'w':
+      camera.set_movement_z( 1.0 );
+    break;
   } // switch
   return false;
 }
@@ -204,13 +220,24 @@ bool vsx_widget_desktop::key_up(signed long key, bool alt, bool ctrl, bool shift
 
   switch (key)
   {
-    case GLFW_KEY_UP:    case 'E': case 'e': ypd=0.0; break;
-    case GLFW_KEY_DOWN:  case 'D': case 'd': ypd=0.0; break;
-    case GLFW_KEY_LEFT:  case 'S': case 's': xpd=0.0; break;
-    case GLFW_KEY_RIGHT: case 'F': case 'f': xpd=0.0; break;
-    case GLFW_KEY_PAGEUP: case 'R': case 'r': zpd=0.0; break;
-    case GLFW_KEY_PAGEDOWN: case 'W': case 'w': zpd=0.0; break;
-    case GLFW_KEY_TAB: ((vsxu_assistant*)assistant)->toggle_size(); break;
+    case GLFW_KEY_UP: case 'E': case 'e':
+    case GLFW_KEY_DOWN: case 'D': case 'd':
+      camera.set_movement_y( 0.0 );
+    break;
+
+    case GLFW_KEY_LEFT: case 'S': case 's':
+    case GLFW_KEY_RIGHT: case 'F': case 'f':
+      camera.set_movement_x( 0.0 );
+    break;
+
+    case GLFW_KEY_PAGEUP: case 'R': case 'r':
+    case GLFW_KEY_PAGEDOWN: case 'W': case 'w':
+      camera.set_movement_z( 0.0 );
+    break;
+
+    case GLFW_KEY_TAB:
+      ((vsxu_assistant*)assistant)->toggle_size();
+    break;
   }
 
   return false;
@@ -218,104 +245,24 @@ bool vsx_widget_desktop::key_up(signed long key, bool alt, bool ctrl, bool shift
 
 void vsx_widget_desktop::event_mouse_wheel(float y)
 {
-  zps += -y;
-
-  if (zps > 2.0f) zps = 2.0f;
-  if (zps < -2.0f) zps = -2.0f;
-}
-
-void vsx_widget_desktop::move_camera(vsx_vector world)
-{
-  camera_target = world;
-  interpolating = true;
+  camera.increase_zps( -y );
 }
 
 void vsx_widget_desktop::draw() {
-  if (!init_run) return;
-  // this is designed to be root, so set up things
+  if (!init_run)
+    return;
 
-  // Deal with movement around the desktop
-
-  #define SGN(N) (N >= 0 ? 1 : -1)
-  #define MAX(N, M) ((N) >= (M) ? (N) : (M))
-  #define MIN(N, M) ((N) <= (M) ? (N) : (M))
-  #define CLAMP(N, L, U) (MAX(MIN((N), (U)), (L)))
-  if (!interpolating)
-  {
-    double acc = 4, dec = 3, spd = global_key_speed;
-    // interpolation falloff control
-    float tt = dtime*interpolation_speed*global_interpolation_speed;
-    if (tt > 1) { tt = 1; }
-
-    if(zpd != 0.0) {
-      double sgn = SGN(zpd);
-      zps += dtime * acc * sgn * global_interpolation_speed;
-      zps = CLAMP(zps, -1.2f, 1.2f);
-    }
-    if(zpd == 0.0) {
-      double sgn = SGN(zps);
-      zps -= dtime * dec * sgn * global_interpolation_speed;
-      zps = MAX(zps * sgn, 0) * sgn;
-    }
-
-    zp += zps * fabs(zp - 1.1)* spd * dtime + zpp*(zp - 1.0f);
-    zpp = zpp*(1-tt);
-
-    if (zp > 100) {zp = 100; zps = 0;}
-    if (zp < 1.2) {zp = 1.2; zps = 0;}
-
-    if(xpd != 0.0) {
-      double sgn = SGN(xpd);
-      xps += dtime * acc * sgn * global_interpolation_speed;
-      xps = CLAMP(xps, -1, 1);
-    }
-    if(xpd == 0.0) {
-      double sgn = SGN(xps);
-      xps -= dtime * dec * sgn * global_interpolation_speed;
-      xps = MAX(xps * sgn, 0) * sgn;
-    }
-    xp += xps * fabs(zp - 1.1)* spd * dtime*0.6 + xpp*(zp-1.0f);
-    xpp = xpp*(1-tt);
-
-    if (xp > 10) {xp = 10; xps = 0;}
-    if (xp < -10) {xp = -10; xps = 0;}
-
-    if(ypd != 0.0) {
-      double sgn = SGN(ypd);
-      yps += dtime * acc * sgn * global_interpolation_speed;
-      yps = CLAMP(yps, -1, 1);
-    }
-    if(ypd == 0.0) {
-      double sgn = SGN(yps);
-      yps -= dtime * dec * sgn * global_interpolation_speed;
-      yps = MAX(yps * sgn, 0) * sgn;
-    }
-    yp += yps * fabs(zp - 1.1)* spd * dtime*0.6 + ypp*(zp-1.0f);
-    ypp = ypp*(1-tt);
-
-    if (yp > 10) {yp = 10; yps = 0;}
-    if (yp < -10) {yp = -10; yps = 0;}
-
-  }
-  else
-  {
-    float tt = dtime*10.0f*global_interpolation_speed;
-    if (tt > 1) { tt = 1; interpolating = false;}
-    xp = xp*(1-tt)+camera_target.x*tt;
-    yp = yp*(1-tt)+camera_target.y*tt;
-    zp = zp*(1-tt)+camera_target.z*tt;
-    if (
-      (round(xp*2000) == round(camera_target.x*2000)) &&
-      (round(yp*2000) == round(camera_target.y*2000)) &&
-      (round(zp*2000) == round(camera_target.z*2000))
-    ) interpolating = false;
-  }
+  camera.run();
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   gluPerspective(45,screen_x/screen_y,0.001,120.0);
 
-  gluLookAt(xp,yp,zp-1.1f,xp,yp,-1.1f,0.0,1.0,0.0);
+  gluLookAt(
+        camera.get_pos_x(), camera.get_pos_y(), camera.get_pos_z() - 1.1f,
+        camera.get_pos_x(), camera.get_pos_y(), -1.1f,
+        0.0,1.0,0.0
+  );
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -345,8 +292,6 @@ void vsx_widget_desktop::draw() {
 }
 
 
-
-
 void vsx_widget_desktop::draw_2d()
 {
   GLint	viewport[4];
@@ -372,7 +317,13 @@ void vsx_widget_desktop::draw_2d()
   glLoadIdentity();
   gluPerspective(45,(float)screen_x/(float)screen_y,0.001,120.0);
   glMatrixMode(GL_MODELVIEW);
-  gluLookAt(xp,yp,zp-1.1f,xp,yp,0.0-1.1f,0.0,1.0,0.0);
+
+  gluLookAt(
+        camera.get_pos_x(), camera.get_pos_y(), camera.get_pos_z() - 1.1f,
+        camera.get_pos_x(), camera.get_pos_y(), -1.1f,
+        0.0,1.0,0.0
+  );
+
 
   glBlendFunc(GL_ONE, GL_ONE);
   glDepthMask(GL_TRUE);
@@ -408,7 +359,7 @@ void vsx_widget_desktop::load_configuration()
       skin_path = PLATFORM_SHARED_FILES+vsx_string("gfx")+DIRECTORY_SEPARATOR+mc->cmd_data+DIRECTORY_SEPARATOR;
     } else
     if (mc->cmd == "global_interpolation_speed") {
-      global_interpolation_speed = s2f(mc->cmd_data);
+      vsx_widget_global_interpolation::get_instance()->set( s2f(mc->cmd_data) );
     } else
     if (mc->cmd == "automatic_undo") {
       auto_undo = vsx_string_aux::s2i(mc->cmd_data);
@@ -417,7 +368,7 @@ void vsx_widget_desktop::load_configuration()
       global_framerate_limit = s2f(mc->cmd_data);
     } else
     if (mc->cmd == "global_key_speed") {
-      global_key_speed = s2f(mc->cmd_data);
+      camera.set_key_speed( s2f(mc->cmd_data) );
     }
     if (mc->cmd != "" && mc->cmd != "#")
     configuration[mc->cmd] = mc->cmd_data;
@@ -454,8 +405,6 @@ void vsx_widget_desktop::save_configuration() {
 
 vsx_widget_desktop::vsx_widget_desktop()
 {
-
-  interpolating = false;
   root = this;
   enabled = false;
 
@@ -509,19 +458,4 @@ vsx_widget_desktop::vsx_widget_desktop()
 
   k_focus = this;
   m_focus = this;
-
-  zpf = 0.0;
-  zpa = 0.0;
-  xpd = 0.0;
-  ypd = 0.0;
-  zpd = 0.0;
-  zps = 0.0;
-  yps = 0.0;
-  xps = 0.0;
-  yp = 0.0;
-  xp = 0.0;
-  zp = 2.0;
-  ypp = zpp = xpp = 0.0f;
-
-
 }

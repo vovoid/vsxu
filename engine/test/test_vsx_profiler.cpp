@@ -16,12 +16,14 @@ void *thread_producer( void *arg )
   vsx_profiler* p = vsx_profiler_manager::get_instance()->get_profiler();
   while ( __sync_fetch_and_add( &run_threads, 0) )
   {
-    p->begin("1 test1");
+    p->maj_begin();
+    p->sub_begin("1 test1");
     usleep(20);
-    p->begin("1 test2");
+    p->sub_begin("1 test2");
     usleep(200);
-    p->end();
-    p->end();
+    p->sub_end();
+    p->sub_end();
+    p->maj_end();
   }
   vsx_printf("exiting p1\n");
   pthread_exit(0);
@@ -34,13 +36,15 @@ void *thread_producer2( void *arg )
   vsx_profiler* p = vsx_profiler_manager::get_instance()->get_profiler();
   while ( __sync_fetch_and_add( &run_threads, 0) )
   {
-    p->begin("2 test1");
+    p->maj_begin();
+    p->sub_begin("2 test1");
     usleep(100);
-    p->begin("2 test2");
+    p->sub_begin("2 test2");
     usleep(300);
-    p->end();
+    p->sub_end();
     usleep(50);
-    p->end();
+    p->sub_end();
+    p->maj_end();
   }
   vsx_printf("exiting p2\n");
   pthread_exit(0);
@@ -87,7 +91,7 @@ int main()
   );
 
 
-  sleep( 2 );
+  sleep( 20 );
 
   __sync_fetch_and_sub( &run_threads, 1);
 

@@ -569,7 +569,7 @@ void vsx_widget_base_edit::i_draw() {
   if (k_focus == this && editing_enabled) {
     pp.x = p.x+(float)caretx*font_size*0.37;
     pp.y = p.y-font_size*(float)(carety);
-    float tt = (float)((int)(time*3000) % 1000)*0.001;
+    float tt = (float)((int)(vsx_widget_time::get_instance()->get_time()*3000) % 1000)*0.001;
     if (selected_line_highlight) font.color = skin_colors[17];
     font.color.a = 1-tt;
     font.print(pp,"_",font_size);

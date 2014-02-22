@@ -131,7 +131,7 @@ void vsx_widget_note::i_draw() {
   } else {
   }
   if (((vsx_widget_base_edit*)editor)->updates) {
-    check_time -= dtime;
+    check_time -= vsx_widget_time::get_instance()->get_dtime();
     if (check_time < 0.01f)
     {
       save();

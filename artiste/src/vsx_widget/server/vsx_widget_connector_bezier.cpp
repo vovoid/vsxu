@@ -384,7 +384,7 @@ void vsx_widget_connector_bezier::draw()
 
   if (m_focus == this || a_focus == this || k_focus == this)
   {
-    lw = 1.0f+fmod(time*20.0f,5.0f);
+    lw = 1.0f+fmod(vsx_widget_time::get_instance()->get_time()*20.0f,5.0f);
     glLineWidth(lw);
   }
   else
@@ -429,7 +429,7 @@ void vsx_widget_connector_bezier::draw()
   glBegin(GL_LINE_STRIP);
   for (size_t i = 0; i < 21; i++)
   {
-    glColor4f(1.0,1.0,1.0,fabs(0.8f*sin(((float)i/21.0f) * PI + time*2.5f)));
+    glColor4f(1.0,1.0,1.0,fabs(0.8f*sin(((float)i/21.0f) * PI + vsx_widget_time::get_instance()->get_time() * 2.5f)));
     glVertex3f(cached_spline[i].x,cached_spline[i].y,pos.z);
   }
   glEnd();

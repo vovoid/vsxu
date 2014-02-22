@@ -61,14 +61,14 @@ pid_t gettid( void )
 
 
 #ifdef __i386
-__inline__ uint64_t vsx_profiler_rdtsc() __attribute__((always_inline))
+__inline__ uint64_t vsx_profiler_rdtsc()
 {
   uint64_t x;
   __asm__ volatile ("rdtsc" : "=A" (x));
   return x;
 }
 #elif __amd64
-uint64_t vsx_profiler_rdtsc()
+inline uint64_t vsx_profiler_rdtsc()
 {
   uint64_t a, d;
   __asm__ volatile ("rdtsc" : "=a" (a), "=d" (d));
@@ -78,20 +78,21 @@ uint64_t vsx_profiler_rdtsc()
 
 
 
+#define VSX_PROFILE_CHUNK_FLAG_START 0
 #define VSX_PROFILE_CHUNK_FLAG_END 1
-
-
+#define VSX_PROFILE_CHUNK_FLAG_SECTION_START 2
+#define VSX_PROFILE_CHUNK_FLAG_SECTION_END 3
 
 // Profiler data chunk
 // Occupies exactly one cache line
 class vsx_profile_chunk
 {
 public:
- /*8 */ uint64_t   rdtsc_cycles;       // cpu cycles
+ /*8 */ uint64_t   cycles;     // cpu cycles
  /*8 */ uint64_t   flags;      // bit-mask
  /*4 */ pid_t      tid;        // thread id
- /*44*/ char       tag[44];    // text describing the section
- // TODO: spin-waste
+ /*8 */ uint64_t   spin_waste; // cycles wasted spinning waiting for a full buffer
+ /*36*/ char       tag[36];    // text describing the section
 };
 
 
@@ -107,40 +108,69 @@ public:
     thread_id = new_id;
   }
 
-  inline void begin( const char* tag ) __attribute__((always_inline))
+  inline void sub_begin( const char* tag ) __attribute__((always_inline))
   {
     vsx_profile_chunk chunk;
-    chunk.flags = 0;
+    chunk.flags = VSX_PROFILE_CHUNK_FLAG_START;
+    chunk.spin_waste = 0;
     for (size_t i = 0; i < 44; i++)
     {
       if (i && tag[i-1] == 0)
         break;
       chunk.tag[i] = tag[i];
     }
-    chunk.tid = gettid();
-    chunk.rdtsc_cycles = vsx_profiler_rdtsc();
+    chunk.tid = thread_id;
+    asm volatile("": : :"memory");
+    chunk.cycles = vsx_profiler_rdtsc();
     while (!queue.produce(chunk))
     {
+      chunk.spin_waste++;
       // try to get as close to our target code as possible
-      chunk.rdtsc_cycles = vsx_profiler_rdtsc();
+      chunk.cycles = vsx_profiler_rdtsc();
     }
   }
 
-  inline void end() __attribute__((always_inline))
+  inline void sub_end() __attribute__((always_inline))
   {
     uint64_t t = vsx_profiler_rdtsc();
     vsx_profile_chunk chunk;
+    chunk.spin_waste = 0;
     chunk.tid = thread_id;
-    chunk.rdtsc_cycles = t;
+    chunk.cycles = t;
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_END;
-    size_t spin_write = 0;
     while (!queue.produce(chunk))
     {
-      spin_write++;
-      // todo: spin-waste
+      chunk.spin_waste++;
     }
-    if (spin_write)
-      vsx_printf("spin write ran for %ld cycles\n", spin_write);
+  }
+
+  inline void maj_begin() __attribute__((always_inline))
+  {
+    vsx_profile_chunk chunk;
+    chunk.spin_waste = 0;
+    chunk.tid = thread_id;
+    chunk.flags = VSX_PROFILE_CHUNK_FLAG_SECTION_START;
+    asm volatile("": : :"memory");
+    chunk.cycles = vsx_profiler_rdtsc();
+    while (!queue.produce(chunk))
+    {
+      chunk.spin_waste++;
+      chunk.cycles = vsx_profiler_rdtsc();
+    }
+  }
+
+  inline void maj_end() __attribute__((always_inline))
+  {
+    uint64_t t = vsx_profiler_rdtsc();
+    vsx_profile_chunk chunk;
+    chunk.spin_waste = 0;
+    chunk.tid = thread_id;
+    chunk.cycles = t;
+    chunk.flags = VSX_PROFILE_CHUNK_FLAG_SECTION_END;
+    while (!queue.produce(chunk))
+    {
+      chunk.spin_waste++;
+    }
   }
 };
 

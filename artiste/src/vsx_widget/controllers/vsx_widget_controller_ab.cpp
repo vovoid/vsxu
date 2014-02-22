@@ -154,7 +154,7 @@ void vsx_widget_controller_ab::draw()
 
   if (smoothness>=0)
   {
-    float tt = dtime*smoothness;
+    float tt = vsx_widget_time::get_instance()->get_dtime() * smoothness;
     if (tt > 1) tt = 1;
     Quat4fT temp_quat;
     QuatSlerp(&inter_quat, &dest_quat,tt, &temp_quat);
