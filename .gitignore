@@ -20,3 +20,4 @@ install_manifest.txt
 /inst/*
 *.user
 *.kdev*
+.DS_Store
