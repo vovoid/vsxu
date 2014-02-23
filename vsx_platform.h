@@ -39,7 +39,7 @@
         #define PLATFORM_FAMILY                                 PLATFORM_FAMILY_UNIX
         #define PLATFORM_SHARED_FILES                           vsx_string("")
         #define DIRECTORY_SEPARATOR                             "/"
-        #define PLATFORM_DLL_SUFFIX                             ".dylib"
+        #define PLATFORM_DLL_SUFFIX                             ".so" // as plugins are using .so in osx also
         #ifdef PLATFORM_SHARED_FILES_STL
           #define PLATFORM_SHARED_FILES_STLSTRING                         std::string("")
         #endif
