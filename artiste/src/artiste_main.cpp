@@ -35,6 +35,9 @@
 #if PLATFORM == PLATFORM_LINUX
 #include <unistd.h>
 #endif
+#if PLATFORM == PLATFORM_MACINTOSH
+#include <unistd.h>
+#endif
 #include <stdlib.h>
 #include "vsx_platform.h"
 
