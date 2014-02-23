@@ -138,7 +138,6 @@ void vsx_sequence_pool::run(float dtime, bool run_from_channel)
         {
           vtime = fmod(vtime, loop_point);
         }
-        //printf("inner_run %f\n",vtime);
       }
       cur_sequence_list->run_absolute(vtime);
     }

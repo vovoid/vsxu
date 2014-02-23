@@ -453,6 +453,7 @@ void vsx_engine_abs::i_clear(vsx_command_list *cmd_out,bool clear_critical)
   sequence_pool.clear();
   sequence_list.clear_master_sequences();
 
+  loop_point_end = -1.0f;
   last_m_time_synch = 0;
   engine_info.vtime = 0;
   engine_info.dtime = 0;
