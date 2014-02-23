@@ -32,10 +32,7 @@
 #include "vsxfst.h"
 #include "vsx_version.h"
 #include "vsx_timer.h"
-#if PLATFORM == PLATFORM_LINUX
-#include <unistd.h>
-#endif
-#if PLATFORM == PLATFORM_MACINTOSH
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include <unistd.h>
 #endif
 #include <stdlib.h>
