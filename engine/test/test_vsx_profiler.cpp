@@ -67,6 +67,8 @@ int main()
     return -1;
   }
 
+  typedef char       tag[36];
+
   vsx_printf("This system has %d cores available\n", procs);
 
   thrs = (pthread_t*)malloc( sizeof( pthread_t ) * procs );

@@ -85,15 +85,14 @@ inline uint64_t vsx_profiler_rdtsc()
 
 // Profiler data chunk
 // Occupies exactly one cache line
-class vsx_profile_chunk
+typedef struct
 {
-public:
  /*8 */ uint64_t   cycles;     // cpu cycles
  /*8 */ uint64_t   flags;      // bit-mask
- /*4 */ pid_t      tid;        // thread id
+ /*8 */ uint64_t   tid;        // thread id
  /*8 */ uint64_t   spin_waste; // cycles wasted spinning waiting for a full buffer
- /*36*/ char       tag[36];    // text describing the section
-};
+ /*32*/ char       tag[32];    // text describing the section
+} vsx_profile_chunk;
 
 
 // Profiler Class
