@@ -68,6 +68,7 @@ const unsigned int matrix_target_get_vsx[] =
 #include "module_render_gl_build_cubemap_texture.h"
 #include "module_render_gl_texture_coord_gen.h"
 #include "module_render_gl_normalize.h"
+#include "module_render_gl_get_camera_orientation.h"
 
 
 
@@ -119,6 +120,7 @@ vsx_module* create_new_module(unsigned long module, void* args)
     case 24: return (vsx_module*)(new module_render_gl_buffer_clear);
     case 25: return (vsx_module*)(new module_render_gl_build_cubemap_texture);
     case 26: return (vsx_module*)(new module_render_gl_texture_coord_gen);
+    case 27: return (vsx_module*)(new module_render_gl_get_camera_orientation);
   }
   return 0;
 }
@@ -154,12 +156,13 @@ void destroy_module(vsx_module* m,unsigned long module)
     case 24: delete (module_render_gl_buffer_clear*)m; break;
     case 25: delete (module_render_gl_build_cubemap_texture*)m; break;
     case 26: delete (module_render_gl_texture_coord_gen*)m; break;
+    case 27: delete (module_render_gl_get_camera_orientation*)m; break;
   }
 }
 
 unsigned long get_num_modules()
 {
   glewInit();
-  return 27;
+  return 28;
 }
 
