@@ -2,8 +2,8 @@
 #define VSX_LOG_H_
 
 // logging
-extern int log_level;
-extern vsx_string log_dir;
+//extern int engine_log_level;
+//extern vsx_string engine_log_dir;
 void log(vsx_string message, int level = 1);
 
 

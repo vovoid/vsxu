@@ -58,6 +58,10 @@ add_definitions(
  -DMOD_GNM=get_num_modules
 ) 
 
+if (VSXU_ENGINE_STATIC EQUAL 1)
+  add_definitions(-DVSX_ENGINE_STATIC)
+endif()
+
 if (VSXU_OPENGL_ES_2_0 EQUAL 1)
   add_definitions(-DVSXU_OPENGL_ES -DVSXU_OPENGL_ES_2_0)
 endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
@@ -175,7 +179,6 @@ set(SOURCES
   src/core/vsx_param_sequence_list.cpp
   src/core/vsx_module_static.cpp
   src/core/vsx_module_list/vsx_module_list_factory.cpp
-  src/core/vsx_module_list/vsx_module_list.cpp
   src/core/vsx_module_list/vsx_dlopen.cpp
   src/mtwist.c
   src/vsx_param.cpp
@@ -188,23 +191,21 @@ set(SOURCES
   src/vsxfst/LzmaRamDecode.c
 )
 
-set(STATIC_SOURCES
-  src/core/vsx_module_static_factory/vsx_module_static_factory.cpp
-)
-
 ################################################################################
 # LINKAGE ######################################################################
 ################################################################################
 
 if (VSXU_ENGINE_STATIC EQUAL 1)
+
   #static build
-  add_library(${module_id}_static STATIC ${STATIC_SOURCES} ${SOURCES} ${GAME_MONKEY})
-  add_library(${module_id} SHARED ${STATIC_SOURCES} ${SOURCES} ${GAME_MONKEY})
+  add_library(${module_id} STATIC ${SOURCES} ${GAME_MONKEY})
   include(../plugins/static_factory_cmake_target_link_libraries)
-else (VSXU_ENGINE_STATIC EQUAL 1)
+
+else ()
+
   #dynamic build
   add_library(${module_id} SHARED ${SOURCES} ${GAME_MONKEY})
-endif (VSXU_ENGINE_STATIC EQUAL 1)
+endif ()
 
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)
 

@@ -66,34 +66,23 @@ vsx_comp::vsx_comp() {
   parent = 0;
   all_valid = true;
   time_multiplier = 1.0f;
-  //local_engine_info.dtime = 0;
-  //local_engine_info.vtime = 0;
-  //local_engine_info.real_dtime = 0;
-  //local_engine_info.real_vtime = 0;
   in_module_parameters = new vsx_module_param_list;
   out_module_parameters = new vsx_module_param_list;
 }
 
 vsx_comp::~vsx_comp()
 {
-  LOG("component destructor1");
   delete in_module_parameters;
-  LOG("component destructor2");
   delete out_module_parameters;
-  LOG("component destructor3");
   delete module_info;
-  LOG("component destructor4");
   delete in_parameters;
-  LOG("component destructor5");
   delete out_parameters;
-  LOG("component destructor6");
   for (std::vector <vsx_channel*>::iterator it = channels.begin(); it != channels.end(); ++it) {
     delete *it;
   }
   #ifndef VSXE_NO_GM
     if (vsxl_modifier) delete (vsx_comp_vsxl*)vsxl_modifier;
   #endif
-  LOG("component destructor7\n");
 }
 
 void vsx_comp::load_module(const vsx_string& module_name, vsx_module_engine_info* engine_info)
@@ -102,24 +91,6 @@ void vsx_comp::load_module(const vsx_string& module_name, vsx_module_engine_info
   module = module_list->load_module_by_name( module_name );
   r_engine_info = engine_info;
 
-  /*#ifdef VSXU_MODULES_STATIC
-    #ifdef VSXU_MAC_XCODE
-      syslog(LOG_ERR,"vsx_comp::load_module %s\n",(char*)(module_dll->module_handle));
-    #else
-      printf("vsx_comp::load_module %s\n",(char*)(module_dll->module_handle));
-    #endif
-    module = create_named_module((char*)(module_dll->module_handle));
-  #else
-    #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-      vsx_module*(*factory_create)(unsigned long) = (vsx_module*(*)(unsigned long))GetProcAddress(module_dll->module_handle, "create_new_module");
-    #endif
-    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-      vsx_module*(*factory_create)(unsigned long) = (vsx_module*(*)(unsigned long))dlsym(module_dll->module_handle, "create_new_module");
-    #endif
-      LOG("load_module 1")
-      module = factory_create(module_dll->module_id);
-      LOG("load_module 2")
-  #endif*/
   if (module)
   {
     init_module();
@@ -138,26 +109,6 @@ void vsx_comp::unload_module()
   }
   vsx_module_list_abs* module_list = ((vsx_engine*)engine_owner)->get_module_list();
   module_list->unload_module( module );
-
-  /*
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-    if (GetProcAddress(module_dll->module_handle, "destroy_module") == 0) {
-      LOG("unload module ERROR! couldn't find handle for destroy_module!")
-      return;
-    }
-    void(*unload)(vsx_module*,unsigned long) = (void(*)(vsx_module*,unsigned long))GetProcAddress(module_dll->module_handle, "destroy_module");
-  #endif
-  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-    if (dlsym(module_dll->module_handle, "destroy_module") == 0)
-    {
-      LOG("unload module ERROR! couldn't find handle for destroy_module!")
-      return;
-    }
-    void(*unload)(vsx_module*,unsigned long) = (void(*)(vsx_module*,unsigned long))dlsym(module_dll->module_handle, "destroy_module");
-  #endif
-  LOG("before unload2")
-  unload(module,module_dll->module_id);*/
-
   module = 0;
 }
 

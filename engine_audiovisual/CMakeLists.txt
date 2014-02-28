@@ -46,7 +46,12 @@ set(SOURCES
   src/vsx_manager.cpp
 )
 
-add_library(${module_id} SHARED ${SOURCES})
+if (VSXU_ENGINE_STATIC EQUAL 1)
+  add_library(${module_id} STATIC ${SOURCES})
+else()
+  add_library(${module_id} SHARED ${SOURCES})
+endif()
+
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)
 
 ######################################################################################

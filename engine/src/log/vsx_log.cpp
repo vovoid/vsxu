@@ -8,9 +8,9 @@
 #endif
 #include "vsx_log.h"
 
-int log_level = 1;
-vsx_string log_dir;
-int first = 1;
+//int log_level = 1;
+//vsx_string log_dir;
+//int first = 1;
 
 void log(vsx_string message, int level)
 {

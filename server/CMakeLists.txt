@@ -130,7 +130,6 @@ if(UNIX)
 
 
   if (VSXU_ENGINE_STATIC EQUAL 1)
-    message("ENGINE STATIC")
     target_link_libraries(${module_id} vsxu_engine)
     target_link_libraries(${module_id} vsxu_engine_graphics)
     include(../plugins/static_factory_cmake_target_link_libraries)

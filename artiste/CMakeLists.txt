@@ -148,6 +148,10 @@ if(UNIX)
     vsxu_engine
   )
 
+  if (VSXU_ENGINE_STATIC EQUAL 1)
+    include(../plugins/static_factory_cmake_target_link_libraries)
+  endif()
+
   if (VSXU_TM)
     target_link_libraries(
       ${module_id}

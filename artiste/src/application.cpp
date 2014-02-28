@@ -38,6 +38,7 @@
 #include <vsx_version.h>
 #include <vsx_engine.h>
 #include <vsx_module_list_factory.h>
+#include <vsx_error.h>
 
 #include "log/vsx_log_a.h"
 
@@ -381,7 +382,7 @@ public:
   } // ::draw()
 };
 
-vsxu_draw my_draw;
+vsxu_draw* my_draw = 0x0;
 
 void load_desktop_a(vsx_string state_name)
 {
@@ -417,13 +418,17 @@ void app_init(int id)
   if (dual_monitor && id == 0)
     return;
 
+
   vxe = new vsx_engine();
 
   vxe->set_tm(tm);
 
+  my_draw = new vsxu_draw();
+
   gui_prod_fullwindow = &prod_fullwindow;
   //---------------------------------------------------------------------------
-  myf.init(PLATFORM_SHARED_FILES+"font/font-ascii_output.png");
+  myf.init( vsx_string(PLATFORM_SHARED_FILES) + "font/font-ascii_output.png");
+
   if (dual_monitor) {
     vxe->start();
   }
@@ -478,7 +483,9 @@ void app_pre_draw() {
 bool app_draw(int id)
 {
   if (id == 0) {
-    my_draw.draw();
+    if (!my_draw)
+      ERROR_RETURN("my draw is 0x0");
+    my_draw->draw();
   } else
   {
     if (dual_monitor) {
@@ -567,7 +574,7 @@ void app_key_down(long key)
     if (app_alt && app_ctrl && app_shift && key == 80) {
       if (record_movie == false)
       {
-        my_draw.movie_frame_count = 0;
+        my_draw->movie_frame_count = 0;
       }
       record_movie = !record_movie;
     }

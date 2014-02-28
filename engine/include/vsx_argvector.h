@@ -106,6 +106,14 @@ public:
     return "";
   }
 
+  void init_from_argc_argv(int argc, char *argv[])
+  {
+    for (int i = 0; i < argc; i++)
+    {
+      push_back(argv[i]);
+    }
+  }
+
   void init_from_string(vsx_string new_string)
   {
     vsx_string res;
