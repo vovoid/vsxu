@@ -1,31 +1,31 @@
 cmake_minimum_required(VERSION 2.6)
-#message("current list file is: " ${CMAKE_CURRENT_LIST_FILE})
 
+# compute module id from compilation path
 get_filename_component(list_file_path ${CMAKE_CURRENT_LIST_FILE} PATH)
-string(REGEX MATCH "[a-z.-]*$" module_id ${list_file_path})
+string(REGEX MATCH "[a-z0-9.-]*$" module_id ${list_file_path})
+
+project (${module_id})
 
 message("configuring vsxu module            " ${module_id})
 
 include_directories(/usr/include/OpenEXR)
 
+# set defines for MOD_CM, MOD_DM, MOD_NM
+CREATE_STATIC_GLUE(${module_id})
 
+# find the local source files
 file(GLOB LOCAL_SOURCES "*.cpp")
-file(GLOB API_STUBS "api_stubs/*.cpp")
 
-project (${module_id})
-include (../cmake_globals.txt)
-include(./_sources)
+# include common
+include(../cmake_globals.txt)
+
+# actual compilation target
+CREATE_MODULE(${module_id})
 
 
-
-add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES})
-
-target_link_libraries(
-  ${module_id}
-  IlmThread.a
-  Imath.a
-  IlmImf
+CREATE_TARGET_LINK_LIBRARIES(
+  IlmThread.a Imath.a IlmImf Iex
 )
 
+# include common
 include(../cmake_suffix.txt)
-

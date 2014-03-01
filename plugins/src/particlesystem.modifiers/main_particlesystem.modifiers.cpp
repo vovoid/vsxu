@@ -58,11 +58,8 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-unsigned long get_num_modules() {
-  return 6;
-}  
 
-vsx_module* create_new_module(unsigned long module, void* args)
+vsx_module* MOD_CM(unsigned long module, void* args)
 {
   VSX_UNUSED(args);
   switch (module) {
@@ -76,7 +73,7 @@ vsx_module* create_new_module(unsigned long module, void* args)
   return 0;
 }
 
-void destroy_module(vsx_module* m,unsigned long module) {
+void MOD_DM(vsx_module* m,unsigned long module) {
   switch(module) {
     case 0: delete (module_particlesystem_modifier_wind*)m; break;
     case 1: delete (module_particlesystem_modifier_size_noise*)m; break;
@@ -85,4 +82,9 @@ void destroy_module(vsx_module* m,unsigned long module) {
     case 4: delete (module_particlesystem_modifier_fluid*)m; break;
     case 5: delete (module_particlesystem_modifier_size_mult*)m; break;
   }
+}
+
+unsigned long MOD_NM()
+{
+  return 6;
 }

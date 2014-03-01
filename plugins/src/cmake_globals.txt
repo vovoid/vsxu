@@ -25,11 +25,12 @@ add_definitions(
 
 include_directories(
   ${GLEW_INCLUDE_PATH}
-../include
-../../include
-${CMAKE_SOURCE_DIR}/engine/include
-${CMAKE_SOURCE_DIR}/engine_graphics/include
-../../../
+  ./
+  ../include
+  ../../include
+  ${CMAKE_SOURCE_DIR}/engine/include
+  ${CMAKE_SOURCE_DIR}/engine_graphics/include
+  ../../../
 )
 
 

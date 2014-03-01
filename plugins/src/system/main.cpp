@@ -63,8 +63,7 @@ __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 }
 
-
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* MOD_CM(unsigned long module, void* args) {
   VSX_UNUSED(args);
   switch(module) {
     case 0: return (vsx_module*)(new module_system_shutdown);
@@ -84,7 +83,7 @@ vsx_module* create_new_module(unsigned long module, void* args) {
   return 0;
 }
 
-void destroy_module(vsx_module* m,unsigned long module) {
+void MOD_DM(vsx_module* m,unsigned long module) {
   switch(module) {
     case 0: delete (module_system_shutdown*)m; break;
     case 1: delete (module_system_time*)m; break;
@@ -102,7 +101,7 @@ void destroy_module(vsx_module* m,unsigned long module) {
   }
 }
 
-unsigned long get_num_modules() 
+unsigned long MOD_NM()
 {
   unsigned long n = 10;
   #if PLATFORM == PLATFORM_LINUX

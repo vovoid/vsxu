@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
 
 get_filename_component(list_file_path ${CMAKE_CURRENT_LIST_FILE} PATH)
-string(REGEX MATCH "[a-z._-]*$" module_id ${list_file_path})
+string(REGEX MATCH "[a-z0-9.-]*$" module_id ${list_file_path})
+
 message("configuring vsxu module            " ${module_id})
 
 
@@ -62,18 +63,31 @@ if(AUDIO_LIBRARIES)
   include (../cmake_globals.txt)
   include_directories ( lib/
                         fftreal/ )
-  set(SOURCES main_sound.rtaudio.cpp
-              fftreal/fftreal.cpp
-              lib/RtAudio/RtAudio.cpp
-              lib/RtMidi/RtMidi.cpp
-)
+
+  # set defines for MOD_CM, MOD_DM, MOD_NM
+  CREATE_STATIC_GLUE(${module_id})
+
+  set(SOURCES
+    main_sound.rtaudio.cpp
+    fftreal/fftreal.cpp
+    lib/RtAudio/RtAudio.cpp
+    lib/RtMidi/RtMidi.cpp
+  )
 
   #if(WITH_MIDI)
 #    list(APPEND SOURCES input/input_audio_midi.cpp)
 #  endif(WITH_MIDI)
 
-  add_library(${module_id} MODULE ${SOURCES})
+  # actual compilation target
+  CREATE_MODULE(${module_id})
+
   include(../cmake_suffix.txt)
-  target_link_libraries(${module_id} ${AUDIO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+
+  set(libs ${AUDIO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+
+  CREATE_TARGET_LINK_LIBRARIES(
+    ${libs}
+  )
+
 endif(AUDIO_LIBRARIES)
 

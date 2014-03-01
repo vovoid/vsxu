@@ -66,7 +66,7 @@ __declspec(dllexport) unsigned long get_num_modules();
 
 
 
-vsx_module* create_new_module(unsigned long module, void* args)
+vsx_module* MOD_CM(unsigned long module, void* args)
 {
   VSX_UNUSED(args);
 
@@ -83,7 +83,8 @@ vsx_module* create_new_module(unsigned long module, void* args)
   return 0;
 }
 
-void destroy_module(vsx_module* m,unsigned long module) {
+void MOD_DM(vsx_module* m,unsigned long module)
+{
 
   switch(module) {
     case 0:
@@ -97,6 +98,7 @@ void destroy_module(vsx_module* m,unsigned long module) {
   }
 }
 
-unsigned long get_num_modules() {
+unsigned long MOD_NM()
+{
   return 7;
 }

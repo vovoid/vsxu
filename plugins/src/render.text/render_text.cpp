@@ -418,7 +418,8 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-vsx_module* create_new_module(unsigned long module, void* args) {
+vsx_module* MOD_CM(unsigned long module, void* args)
+{
   VSX_UNUSED(args);
 
   // as we have only one module available, don't look at the module variable, just return - for speed
@@ -429,13 +430,15 @@ vsx_module* create_new_module(unsigned long module, void* args) {
   return 0;
 }
 
-void destroy_module(vsx_module* m,unsigned long module) {
+void MOD_DM(vsx_module* m,unsigned long module)
+{
   switch(module) {
     case 0: delete (vsx_module_text_s*)m; break;
   }
 }
 
-unsigned long get_num_modules() {
+unsigned long MOD_NM()
+{
   // we have only one module. it's id is 0
   return 1;
 }

@@ -308,15 +308,18 @@ __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 }
  
-vsx_module* create_new_module(unsigned long module) {
+vsx_module* MOD_CM(unsigned long module, void* args)
+{
   return (vsx_module*)(new module_bitmap_avi);
 }
 
-void destroy_module(vsx_module* m,unsigned long module) {
+void MOD_DM(vsx_module* m,unsigned long module)
+{
   delete (module_bitmap_avi*)m;
 }
 
-unsigned long get_num_modules() {
+unsigned long MOD_NM()
+{
   return 1;
 }  
 

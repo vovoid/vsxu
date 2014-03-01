@@ -1,20 +1,40 @@
 cmake_minimum_required(VERSION 2.6)
 
+# compute module id from compilation path
 get_filename_component(list_file_path ${CMAKE_CURRENT_LIST_FILE} PATH)
-string(REGEX MATCH "[a-z.-]*$" module_id ${list_file_path})
+string(REGEX MATCH "[a-z0-9.-]*$" module_id ${list_file_path})
+
+project (${module_id})
 
 message("configuring vsxu module            " ${module_id})
 
-
 find_package(Freetype REQUIRED)
 include_directories(${FREETYPE_INCLUDE_DIRS})
-file(GLOB LOCAL_SOURCES "*.cpp")
-file(GLOB API_STUBS "api_stubs/*.cpp")
 
-project (${module_id})
-include (../cmake_globals.txt)
-include(./_sources)
-add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES})
+# set defines for MOD_CM, MOD_DM, MOD_NM
+CREATE_STATIC_GLUE(${module_id})
+
+# find the local source files
+file(GLOB SOURCES "*.cpp" "ftgl/*.cpp")
+
+if(WIN32)
+  include_directories(lib/win32/include)
+  include_directories(lib/win32/include/freetype2)
+endif(WIN32)
+
+if(UNIX)
+  include_directories(/usr/include/freetype2)
+endif(UNIX)
+
+# include common
+include(../cmake_globals.txt)
+
+# actual compilation target
+CREATE_MODULE(${module_id})
+
+message(${FREETYPE_LIBRARIES})
+
+CREATE_TARGET_LINK_LIBRARIES(${FREETYPE_LIBRARIES})
+
+# include common
 include(../cmake_suffix.txt)
-
-target_link_libraries(${module_id} vsxu_engine ${FREETYPE_LIBRARIES})

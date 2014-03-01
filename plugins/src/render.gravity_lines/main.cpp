@@ -50,11 +50,7 @@ __declspec(dllexport) unsigned long get_num_modules();
 }
 
 
-unsigned long get_num_modules() {
-  return 4;
-}
-
-vsx_module* create_new_module(unsigned long module, void* args)
+vsx_module* MOD_CM(unsigned long module, void* args)
 {
   VSX_UNUSED(args);
   switch (module) {
@@ -66,11 +62,16 @@ vsx_module* create_new_module(unsigned long module, void* args)
   return 0;
 }
 
-void destroy_module(vsx_module* m,unsigned long module) {
+void MOD_DM(vsx_module* m,unsigned long module) {
   switch (module) {
     case 0: delete (vsx_module_render_gravity_lines*)m; break;
     case 1: delete (vsx_module_render_gravity_ribbon*)m; break;
     case 2: delete (vsx_module_render_gravity_ribbon_particles*)m; break;
     case 3: delete (vsx_module_render_gravity_ribbon_mesh*)m; break;
   }
+}
+
+unsigned long MOD_NM()
+{
+  return 4;
 }

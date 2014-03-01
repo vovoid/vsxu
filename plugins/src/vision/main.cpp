@@ -37,7 +37,9 @@ __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules();
 }
 
-vsx_module* create_new_module(unsigned long module) {
+vsx_module* MOD_CM(unsigned long module, void* args)
+{
+  VSX_UNUSED(args);
   switch(module){
     case 0:
       return (vsx_module*)(new input_video_file);
@@ -50,7 +52,7 @@ vsx_module* create_new_module(unsigned long module) {
   }
 }
 
-void destroy_module(vsx_module* m,unsigned long module) {
+void MOD_DM(vsx_module* m,unsigned long module) {
   switch(module){
     case 0:
       delete (input_video_file*)m;
@@ -64,6 +66,6 @@ void destroy_module(vsx_module* m,unsigned long module) {
   }
 }
 
-unsigned long get_num_modules() {
+unsigned long MOD_NM() {
   return 3;
 }
