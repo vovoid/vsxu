@@ -32,8 +32,6 @@
 #include <vsx_platform.h>
 
 
-vsx_engine_environment* engine_environment = 0;
-
 // stuff for loading pre-defined shaders from the file system
 typedef struct {
   vsx_string name;
@@ -229,7 +227,7 @@ extern "C"
 {
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
-__declspec(dllexport) unsigned long get_num_modules();
+__declspec(dllexport) unsigned long get_num_modules(vsx_engine_environment* environment);
 __declspec(dllexport) void set_environment_info(vsx_engine_environment* environment);
 }
 
@@ -248,7 +246,7 @@ vsx_module* MOD_CM(unsigned long module, void* args)
   return 0;
 }
 
-void MOD_DM(vsx_module* m,unsigned long module)
+void MOD_DM(vsx_module* m, unsigned long module)
 {
   VSX_UNUSED(module);
   delete (vsx_module_glsl*)m;
@@ -256,7 +254,7 @@ void MOD_DM(vsx_module* m,unsigned long module)
 
 
 
-unsigned long MOD_NM()
+unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   #ifndef VSXU_OPENGL_ES
   glewInit();
@@ -266,9 +264,9 @@ unsigned long MOD_NM()
   init_run.push_back(0);
   std::list<vsx_string> i_shaders;
   vsx_string base_path;
-  if (engine_environment)
+  if (environment)
   {
-    base_path = engine_environment->engine_parameter[0];
+    base_path = environment->engine_parameter[0];
     get_files_recursive(base_path+"render.glsl",&i_shaders,".glsl",".svn");
   }
   else
@@ -301,9 +299,4 @@ unsigned long MOD_NM()
     }
   }
   return 1 + num_shaders;
-}
-
-void set_environment_info(vsx_engine_environment* environment)
-{
-  engine_environment = environment;
 }

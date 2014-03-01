@@ -414,7 +414,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 extern "C" {
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
-__declspec(dllexport) unsigned long get_num_modules();
+__declspec(dllexport) unsigned long get_num_modules(vsx_engine_environment* environment);
 }
 
 
@@ -437,7 +437,7 @@ void MOD_DM(vsx_module* m,unsigned long module)
   }
 }
 
-unsigned long MOD_NM()
+unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   // we have only one module. it's id is 0
   return 1;

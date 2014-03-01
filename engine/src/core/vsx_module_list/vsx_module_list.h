@@ -160,8 +160,8 @@ public:
         continue; // try to load the next plugin
       }
       // init get_num_modules method
-      unsigned long(*get_num_modules)(void) =
-          (unsigned long(*)(void))
+      unsigned long(*get_num_modules)(vsx_engine_environment*) =
+          (unsigned long(*)(vsx_engine_environment*))
           vsx_dlopen::sym(
             plugin_handle,
             "get_num_modules"
@@ -171,21 +171,9 @@ public:
 
 
       //-------------------------------------------------------------------------
-      // check for and if found, set the optional environment_info support
-      if (vsx_dlopen::sym(plugin_handle,"set_environment_info"))
-      {
-        void(*set_env)(vsx_engine_environment*) =
-            (void(*)(vsx_engine_environment*))
-            vsx_dlopen::sym(
-              plugin_handle,
-              "set_environment_info"
-            );
-        set_env(&engine_environment);
-      }
-      //-------------------------------------------------------------------------
 
       // get the number of modules in this plugin
-      unsigned long num_modules_in_this_plugin = get_num_modules();
+      unsigned long num_modules_in_this_plugin = get_num_modules(&engine_environment);
 
       // iterate through modules in this plugin
       for (

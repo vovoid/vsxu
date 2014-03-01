@@ -60,7 +60,7 @@
 extern "C" {
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
-__declspec(dllexport) unsigned long get_num_modules();
+__declspec(dllexport) unsigned long get_num_modules(vsx_engine_environment* environment);
 }
 
 vsx_module* MOD_CM(unsigned long module, void* args) {
@@ -101,7 +101,7 @@ void MOD_DM(vsx_module* m,unsigned long module) {
   }
 }
 
-unsigned long MOD_NM()
+unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   unsigned long n = 10;
   #if PLATFORM == PLATFORM_LINUX

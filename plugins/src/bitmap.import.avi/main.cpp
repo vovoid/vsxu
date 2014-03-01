@@ -305,7 +305,7 @@ public:
 extern "C" {
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
-__declspec(dllexport) unsigned long get_num_modules();
+__declspec(dllexport) unsigned long get_num_modules(vsx_engine_environment* environment);
 }
  
 vsx_module* MOD_CM(unsigned long module, void* args)
@@ -318,7 +318,7 @@ void MOD_DM(vsx_module* m,unsigned long module)
   delete (module_bitmap_avi*)m;
 }
 
-unsigned long MOD_NM()
+unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   return 1;
 }  

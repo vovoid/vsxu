@@ -31,13 +31,14 @@ set(SOURCES main.cpp
 # include common
 include(../cmake_globals.txt)
 
-CREATE_TARGET_LINK_LIBRARIES(
-  ${OpenCV_LIBS} ${CMAKE_THREAD_LIBS_INIT}
-)
 
 # actual compilation target
 CREATE_MODULE(${module_id})
 
+
+CREATE_TARGET_LINK_LIBRARIES(
+  ${OpenCV_LIBS} ${CMAKE_THREAD_LIBS_INIT}
+)
 
 # include common
 include(../cmake_suffix.txt)

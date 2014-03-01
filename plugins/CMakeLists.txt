@@ -15,7 +15,7 @@ function(CREATE_STATIC_GLUE module_id)
     file(APPEND ../../static_factory_funcmapping.h
       "vsx_module* " vsx_module_${module_id_f}_cm "(unsigned long module, void* args);\n"
       "void " vsx_module_${module_id_f}_dm "(vsx_module* m, unsigned long module);\n"
-      "unsigned long " vsx_module_${module_id_f}_nm "();\n"
+      "unsigned long " vsx_module_${module_id_f}_nm "(vsx_engine_environment* environment);\n"
     )
     # create a cpp include file for calls
     file(APPEND ../../static_factory_funcmapping.cpp "  VSXM_SF_ADD_MODULE(\"${module_id}\"," vsx_module_${module_id_f}_cm "," vsx_module_${module_id_f}_dm "," vsx_module_${module_id_f}_nm ");\n")
@@ -80,9 +80,10 @@ function( CREATE_TARGET_LINK_DIRECTORIES la)
     if (NOT ${ARGV6} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "link_directories(" ${ARGV6} ")\n" )
     endif()
-
+    return()
   endif()
-  link_directories(${module_id} ${ARGV0} ${ARGV1} ${ARGV2} ${ARGV3} ${ARGV4} ${ARGV5} ${ARGV6})
+
+  link_directories(${ARGV0} ${ARGV1} ${ARGV2} ${ARGV3} ${ARGV4} ${ARGV5} ${ARGV6})
 
 endfunction()
 
@@ -163,10 +164,8 @@ if (VSXU_OPENGL_ES_2_0 EQUAL 1)
   add_definitions(-DVSXU_OPENGL_ES_2_0)
 endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 
-
-#GROWL
 if (VSXU_ENGINE_STATIC EQUAL 1)
-  # 1. create the file for static factory
+  # 1. create the files for static factory
   file(WRITE static_factory_funcmapping.cpp "")
   file(WRITE static_factory_funcmapping.h "")
   file(WRITE static_factory_cmake_link_directories "")

@@ -53,7 +53,6 @@ typedef struct stat t_stat;
 #include "module_texture_load_jpeg.h"
 #include "module_texture_load_png_cubemap.h"
 #include "module_texture_load_png.h"
-#include "module_texture_load_openexr.h"
 #include "module_texture_dummy.h"
 
 
@@ -68,7 +67,7 @@ typedef struct stat t_stat;
 extern "C" {
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
-__declspec(dllexport) unsigned long get_num_modules();
+__declspec(dllexport) unsigned long get_num_modules(vsx_engine_environment* environment);
 }
 
 
@@ -112,8 +111,7 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 15: return (vsx_module*)(new module_texture_render_surface_color_depth_buffer);
     case 16: return (vsx_module*)(new module_texture_render_surface_color_buffer);
     case 17: return (vsx_module*)(new module_texture_render_buffer);
-    case 18: return (vsx_module*)(new module_texture_load_openexr);
-    case 19: return (vsx_module*)(new module_texture_dummy);
+    case 18: return (vsx_module*)(new module_texture_dummy);
   };
   return 0;
 }
@@ -135,13 +133,12 @@ void MOD_DM(vsx_module* m,unsigned long module) {
     case 15: delete (module_texture_render_surface_color_depth_buffer*)m; break;
     case 16: delete (module_texture_render_surface_color_buffer*)m; break;
     case 17: delete (module_texture_render_buffer*)m; break;
-    case 18: delete (module_texture_load_openexr*)m; break;
-    case 19: delete (module_texture_dummy*)m; break;
+    case 18: delete (module_texture_dummy*)m; break;
   }
 }
 
-unsigned long MOD_NM() {
-  return 20;
+unsigned long MOD_NM(vsx_engine_environment* environment) {
+  return 19;
 
 }
 
