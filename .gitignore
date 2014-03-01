@@ -16,6 +16,7 @@ install_manifest.txt
 /plugins/static_factory_cmake_target_link_libraries
 /plugins/static_factory_funcmapping.cpp
 /plugins/static_factory_funcmapping.h
+/plugins/plugins/static_factory_pkgconfig_libs
 /build/*
 /inst/*
 *.user

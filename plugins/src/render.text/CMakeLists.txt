@@ -32,8 +32,6 @@ include(../cmake_globals.txt)
 # actual compilation target
 CREATE_MODULE(${module_id})
 
-message(${FREETYPE_LIBRARIES})
-
 CREATE_TARGET_LINK_LIBRARIES(${FREETYPE_LIBRARIES})
 
 # include common

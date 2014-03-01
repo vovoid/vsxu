@@ -4,8 +4,12 @@ function(CREATE_STATIC_GLUE module_id)
   if (VSXU_ENGINE_STATIC EQUAL 1)
     # create a link directory
     file(APPEND ../../static_factory_cmake_link_directories "link_directories(" ${CMAKE_SOURCE_DIR}/plugins/src/${module_id}/")\n" )
+
     # link library
     file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${module_id} ")\n" )
+
+    # pkgconfig lib
+    file(APPEND ../../static_factory_pkgconfig_libs "-l:${module_id}.a ")
 
     # make a C++-friendly name out of the module name
     string(REPLACE "." "_" module_id_f ${module_id} )
@@ -24,14 +28,22 @@ function(CREATE_STATIC_GLUE module_id)
       -DMOD_DM=vsx_module_${module_id_f}_dm
       -DMOD_NM=vsx_module_${module_id_f}_nm
     )
+
+
   else  (VSXU_ENGINE_STATIC EQUAL 1)
+
+
     add_definitions(
       -DMOD_CM=create_new_module
       -DMOD_DM=destroy_module
       -DMOD_NM=get_num_modules
     )
   endif (VSXU_ENGINE_STATIC EQUAL 1)
+
 endfunction(CREATE_STATIC_GLUE)
+
+
+
 
 if (VSXU_TM)
   find_package(Tm REQUIRED)
@@ -55,30 +67,37 @@ function( CREATE_TARGET_LINK_DIRECTORIES la)
   if (VSXU_ENGINE_STATIC EQUAL 1)
     if (NOT ${ARGV0} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "link_directories(" ${ARGV0} ")\n" )
+      file(APPEND ../../static_factory_pkgconfig_libs "-L${ARGV0} " )
     endif()
 
     if (NOT ${ARGV1} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "link_directories(" ${ARGV1} ")\n" )
+      file(APPEND ../../static_factory_pkgconfig_libs "-L${ARGV1} " )
     endif()
 
     if (NOT ${ARGV2} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "link_directories(" ${ARGV2} ")\n" )
+      file(APPEND ../../static_factory_pkgconfig_libs "-L${ARGV2} " )
     endif()
 
     if (NOT ${ARGV3} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "link_directories(" ${ARGV3} ")\n" )
+      file(APPEND ../../static_factory_pkgconfig_libs "-L${ARGV3} " )
     endif()
 
     if (NOT ${ARGV4} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "link_directories(" ${ARGV4} ")\n" )
+      file(APPEND ../../static_factory_pkgconfig_libs "-L${ARGV4} " )
     endif()
 
     if (NOT ${ARGV5} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "link_directories(" ${ARGV5} ")\n" )
+      file(APPEND ../../static_factory_pkgconfig_libs "-L${ARGV5} " )
     endif()
 
     if (NOT ${ARGV6} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "link_directories(" ${ARGV6} ")\n" )
+      file(APPEND ../../static_factory_pkgconfig_libs "-L${ARGV6} " )
     endif()
     return()
   endif()
@@ -87,67 +106,109 @@ function( CREATE_TARGET_LINK_DIRECTORIES la)
 
 endfunction()
 
+set( CREATE_TARGET_LINK_LIBRARIES_LIBIFY "" )
+
+function( LIBIFY la)
+  string(SUBSTRING ${la} 0 1 LIBIFY_FC)
+  #message("Libify substring FC: ${LIBIFY_FC}\n")
+  if (${LIBIFY_FC} STREQUAL "/" OR ${LIBIFY_FC} STREQUAL "-")
+    set( CREATE_TARGET_LINK_LIBRARIES_LIBIFY "${la} " PARENT_SCOPE)
+  else()
+    set( CREATE_TARGET_LINK_LIBRARIES_LIBIFY "-l${la} " PARENT_SCOPE)
+  endif()
+endfunction()
+
 
 function( CREATE_TARGET_LINK_LIBRARIES la)
   if (VSXU_ENGINE_STATIC EQUAL 1)
     if (NOT ${ARGV0} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${ARGV0} ")\n" )
+      LIBIFY( ${ARGV0} )
+      file(APPEND ../../static_factory_pkgconfig_libs ${CREATE_TARGET_LINK_LIBRARIES_LIBIFY} )
     endif()
 
     if (NOT ${ARGV1} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${ARGV1} ")\n" )
+      LIBIFY( ${ARGV1} )
+      file(APPEND ../../static_factory_pkgconfig_libs ${CREATE_TARGET_LINK_LIBRARIES_LIBIFY} )
     endif()
 
     if (NOT ${ARGV2} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${ARGV2} ")\n" )
+      LIBIFY( ${ARGV2} )
+      file(APPEND ../../static_factory_pkgconfig_libs ${CREATE_TARGET_LINK_LIBRARIES_LIBIFY} )
     endif()
 
     if (NOT ${ARGV3} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${ARGV3} ")\n" )
+      LIBIFY( ${ARGV3} )
+      file(APPEND ../../static_factory_pkgconfig_libs ${CREATE_TARGET_LINK_LIBRARIES_LIBIFY} )
     endif()
 
     if (NOT ${ARGV4} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${ARGV4} ")\n" )
+      LIBIFY( ${ARGV4} )
+      file(APPEND ../../static_factory_pkgconfig_libs ${CREATE_TARGET_LINK_LIBRARIES_LIBIFY} )
     endif()
 
     if (NOT ${ARGV5} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${ARGV5} ")\n" )
+      LIBIFY( ${ARGV5} )
+      file(APPEND ../../static_factory_pkgconfig_libs ${CREATE_TARGET_LINK_LIBRARIES_LIBIFY} )
     endif()
 
     if (NOT ${ARGV6} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${ARGV6} ")\n" )
+      LIBIFY( ${ARGV6} )
+      file(APPEND ../../static_factory_pkgconfig_libs ${CREATE_TARGET_LINK_LIBRARIES_LIBIFY} )
     endif()
 
     if (NOT ${ARGV7} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${ARGV7} ")\n" )
+      LIBIFY( ${ARGV7} )
+      file(APPEND ../../static_factory_pkgconfig_libs ${CREATE_TARGET_LINK_LIBRARIES_LIBIFY} )
     endif()
 
     if (NOT ${ARGV8} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${ARGV8} ")\n" )
+      LIBIFY( ${ARGV8} )
+      file(APPEND ../../static_factory_pkgconfig_libs ${CREATE_TARGET_LINK_LIBRARIES_LIBIFY} )
     endif()
 
     if (NOT ${ARGV9} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${ARGV9} ")\n" )
+      LIBIFY( ${ARGV9} )
+      file(APPEND ../../static_factory_pkgconfig_libs ${CREATE_TARGET_LINK_LIBRARIES_LIBIFY} )
     endif()
 
     if (NOT ${ARGV10} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${ARGV10} ")\n" )
+      LIBIFY( ${ARGV10} )
+      file(APPEND ../../static_factory_pkgconfig_libs ${CREATE_TARGET_LINK_LIBRARIES_LIBIFY} )
     endif()
 
     if (NOT ${ARGV11} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${ARGV11} ")\n" )
+      LIBIFY( ${ARGV11} )
+      file(APPEND ../../static_factory_pkgconfig_libs ${CREATE_TARGET_LINK_LIBRARIES_LIBIFY} )
     endif()
 
     if (NOT ${ARGV12} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${ARGV12} ")\n" )
+      LIBIFY( ${ARGV12} )
+      file(APPEND ../../static_factory_pkgconfig_libs ${CREATE_TARGET_LINK_LIBRARIES_LIBIFY} )
     endif()
 
     if (NOT ${ARGV13} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${ARGV13} ")\n" )
+      LIBIFY( ${ARGV13} )
+      file(APPEND ../../static_factory_pkgconfig_libs ${CREATE_TARGET_LINK_LIBRARIES_LIBIFY} )
     endif()
 
     if (NOT ${ARGV14} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${ARGV14} ")\n" )
+      LIBIFY( ${ARGV14} )
+      file(APPEND ../../static_factory_pkgconfig_libs ${CREATE_TARGET_LINK_LIBRARIES_LIBIFY} )
     endif()
 
     return()
@@ -170,6 +231,7 @@ if (VSXU_ENGINE_STATIC EQUAL 1)
   file(WRITE static_factory_funcmapping.h "")
   file(WRITE static_factory_cmake_link_directories "")
   file(WRITE static_factory_cmake_target_link_libraries "")
+  file(WRITE static_factory_pkgconfig_libs "")
 endif()
 
 add_subdirectory(src/bitmap.import.avi)
