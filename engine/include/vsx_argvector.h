@@ -24,6 +24,19 @@
 #ifndef VSX_ARGVECTOR_H
 #define VSX_ARGVECTOR_H
 
+
+#include <vsx_platform.h>
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+#include <windows.h>
+#endif
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+  #include "vsx_math.h"
+  #include <sys/types.h>
+  #include <unistd.h>
+#endif
+
 #include <vsx_avector.h>
 #include <vsx_string.h>
 
@@ -145,6 +158,27 @@ public:
       res += data[i];
     }
     return res;
+  }
+
+  static vsx_string get_executable_directory()
+  {
+    char pBuf[512];
+    const size_t len = 512;
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+    int bytes = GetModuleFileName(NULL, pBuf, len);
+    if(bytes == 0)
+      return -1;
+    else
+      return bytes;
+#else
+    char szTmp[32];
+    sprintf(szTmp, "/proc/%d/exe", getpid());
+    int bytes = MIN(readlink(szTmp, pBuf, len), len - 1);
+    if(bytes >= 0)
+      pBuf[bytes] = '\0';
+#endif
+    return vsx_string(pBuf);
   }
 
   static vsx_argvector* get_instance()

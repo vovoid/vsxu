@@ -35,8 +35,15 @@
 #define HALF_PI 1.5707963267948966192313216916398
 
 #define SGN(N) (N >= 0 ? 1 : -1)
-#define MAX(N, M) ((N) >= (M) ? (N) : (M))
-#define MIN(N, M) ((N) <= (M) ? (N) : (M))
+
+#ifndef MAX
+  #define MAX(N, M) ((N) >= (M) ? (N) : (M))
+#endif
+
+#ifndef MIN
+  #define MIN(N, M) ((N) <= (M) ? (N) : (M))
+#endif
+
 #define CLAMP(N, L, U) (MAX(MIN((N), (U)), (L)))
 
 

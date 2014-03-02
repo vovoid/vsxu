@@ -24,9 +24,6 @@
 #define PAULSLIB_H
 
 #define ABS(x) (x < 0 ? -(x) : (x))
-#define MIN(x,y) (x < y ? x : y)
-#define MAX(x,y) (x > y ? x : y)
-#define SIGN(x) (x < 0 ? (-1) : 1)
 #define MODULUS(p) (sqrt(p.x*p.x + p.y*p.y + p.z*p.z))
 #define DISTANCE(p1,p2) \
 	(sqrt((p1.x-p2.x)*(p1.x-p2.x) + \
