@@ -44,7 +44,6 @@
 #endif
 #include "vsx_comp_channel.h"
 #include "vsx_log.h"
-#include "vsx_tm.h"
 
 #ifdef VSXU_ENGINE_STATIC
 #include "vsx_module_static_factory.h"

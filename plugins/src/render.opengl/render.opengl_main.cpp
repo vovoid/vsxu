@@ -27,10 +27,6 @@
 #include <vsx_module.h>
 #include <vsx_quaternion.h>
 
-#ifdef VSXU_TM
-#include "vsx_tm.h"
-#endif
-
 
 const unsigned int matrix_target_get_vsx[] =
   {

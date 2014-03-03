@@ -97,7 +97,6 @@ void app_init(int id)
 {
   VSX_UNUSED(id);
   vxe = new vsx_engine();
-  vxe->set_tm(tm);
 }
 
 

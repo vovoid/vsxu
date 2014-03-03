@@ -16,10 +16,6 @@ find_package(GLEW REQUIRED)
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
 
-if(VSXU_TM)
-  find_package(Tm REQUIRED)
-endif()
-
 
 ################################################################################
 # INCLUDES #####################################################################
@@ -36,12 +32,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/artiste/src/vsx_widget/lib
   ${CMAKE_SOURCE_DIR}/artiste/include
 )
-
-if (VSXU_TM)
-  include_directories(
-    ${TM_INCLUDE_PATH}
-  )
-endif()
 
 ################################################################################
 # DEFINES ######################################################################
@@ -63,12 +53,6 @@ add_definitions(
  -DVSXU_ARTISTE
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )
-
-if (VSXU_TM)
-  add_definitions(
-    -DVSXU_TM
-  )
-endif()
 
 
 ################################################################################
@@ -150,13 +134,6 @@ if(UNIX)
 
   if (VSXU_ENGINE_STATIC EQUAL 1)
     include(../plugins/static_factory_cmake_target_link_libraries)
-  endif()
-
-  if (VSXU_TM)
-    target_link_libraries(
-      ${module_id}
-      ${TM_LIBRARY}
-    )
   endif()
 
 endif(UNIX)

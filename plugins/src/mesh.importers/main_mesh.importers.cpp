@@ -28,10 +28,6 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-#ifdef VSXU_TM
-#include "vsx_tm.h"
-#endif
-
 
 #include "module_mesh_cal3d_loader_threaded.h"
 #include "module_mesh_import_obj.h"

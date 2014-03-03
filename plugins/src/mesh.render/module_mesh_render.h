@@ -24,10 +24,6 @@
 
 
 
-#ifdef VSXU_TM
-#include "vsx_tm.h"
-#endif
-
 
 class module_mesh_render : public vsx_module
 {
@@ -602,36 +598,23 @@ public:
 
   void run()
   {
-    #ifdef VSXU_TM
-    ((vsx_tm*)engine->tm)->e( "mesh_render_upload" );
-    #endif
-
     mesh = mesh_in->get_addr();
     // sanity checks
     if (!mesh)
     {
       message="module||Can not render: mesh is not set"; render_result->set(0);
-      #ifdef VSXU_TM
-      ((vsx_tm*)engine->tm)->l();
-      #endif
       return;
     }
     if (!(*mesh)->data)
     {
       message="module||Can not render: Mesh data is not set";
       render_result->set(0);
-      #ifdef VSXU_TM
-      ((vsx_tm*)engine->tm)->l();
-      #endif
       return;
     }
     if (!(*mesh)->data->faces.get_used())
     {
       message="module||Can not render: Mesh has no faces";
       render_result->set(0);
-      #ifdef VSXU_TM
-      ((vsx_tm*)engine->tm)->l();
-      #endif
       return;
     }
     message="module||ok";
@@ -642,18 +625,12 @@ public:
       prev_mesh_timestamp == (*mesh)->timestamp
     )
     {
-      #ifdef VSXU_TM
-      ((vsx_tm*)engine->tm)->l();
-      #endif
       return;
     }
 
 
     if (check_if_need_to_reinit_vbo(current_vbo_draw_type))
     {
-      #ifdef VSXU_TM
-      ((vsx_tm*)engine->tm)->l();
-      #endif
       return;
     }
 
@@ -724,10 +701,6 @@ public:
     }
     // unbind the VBO buffers
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-
-    #ifdef VSXU_TM
-    ((vsx_tm*)engine->tm)->l();
-    #endif
 
     prev_mesh_timestamp = (*mesh)->timestamp;
   }
@@ -815,9 +788,6 @@ public:
       enable_client_arrays_vbo();
       float ss;
       glMatrixMode(GL_MODELVIEW);
-      #ifdef VSXU_TM
-      ((vsx_tm*)engine->tm)->e( "mesh_render_perform_draw_particles" );
-      #endif
 
       for (unsigned long i = 0; i < particles->particles->size(); ++i)
       {
@@ -875,9 +845,6 @@ public:
       }
 
       cleanup_successful_rendering();
-      #ifdef VSXU_TM
-      ((vsx_tm*)engine->tm)->l();
-      #endif
       return;
     }
 
@@ -888,13 +855,7 @@ public:
       return;
     }
 
-    #ifdef VSXU_TM
-    ((vsx_tm*)engine->tm)->e( "mesh_render_perform_draw" );
-    #endif
       perform_draw();
-    #ifdef VSXU_TM
-    ((vsx_tm*)engine->tm)->l();
-    #endif
 
     cleanup_successful_rendering();
   }

@@ -421,8 +421,6 @@ void app_init(int id)
 
   vxe = new vsx_engine();
 
-  vxe->set_tm(tm);
-
   my_draw = new vsxu_draw();
 
   gui_prod_fullwindow = &prod_fullwindow;

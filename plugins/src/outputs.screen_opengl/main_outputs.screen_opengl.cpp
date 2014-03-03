@@ -34,8 +34,6 @@
 #include <syslog.h>
 #endif
 
-#include <vsx_tm.h>
-
 
 
 #include "module_output_screen_opengl.h"

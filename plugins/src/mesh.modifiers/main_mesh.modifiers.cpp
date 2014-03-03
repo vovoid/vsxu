@@ -29,10 +29,6 @@
 #include <vsx_quaternion.h>
 #include <pthread.h>
 
-#ifdef VSXU_TM
-#include "vsx_tm.h"
-#endif
-
 // TODO: optimize the mesh_quat_rotate to also use volatile arrays for speed
 // TODO: optimize the inflation mesh modifier to use volatile arrays for passthru arrays
 // TODO: add a real spheremapping module

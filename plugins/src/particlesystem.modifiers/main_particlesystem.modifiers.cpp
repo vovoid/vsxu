@@ -27,9 +27,6 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_quaternion.h"
-#ifdef VSXU_TM
-#include "vsx_tm.h"
-#endif
 
 
 

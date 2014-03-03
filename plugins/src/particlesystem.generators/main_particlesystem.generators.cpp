@@ -26,9 +26,6 @@
 #include "vsx_gl_global.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
-#ifdef VSXU_TM
-#include "vsx_tm.h"
-#endif
 
 
 #include "module_particlesystem_generate_simple.h"

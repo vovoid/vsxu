@@ -1,7 +1,4 @@
 #include "vsx_vbo_bucket.h"
-#ifdef VSXU_TM
-#include "vsx_tm.h"
-#endif
 
 class module_particlesystem_render_ext : public vsx_module
 {
@@ -301,17 +298,10 @@ public:
 
   void run()
   {
-    #ifdef VSXU_TM
-    ((vsx_tm*)engine->tm)->e( "particle_ext_run" );
-    #endif
-
     num_active_particles = 0;
     particles = particles_in->get_addr();
     if (!particles)
     {
-      #ifdef VSXU_TM
-      ((vsx_tm*)engine->tm)->l();
-      #endif
       return;
     }
 
@@ -359,23 +349,13 @@ public:
 
     // set sizes into normals
     point_bucket.update();
-    #ifdef VSXU_TM
-    ((vsx_tm*)engine->tm)->l();
-    #endif
-
   }
 
   void output(vsx_module_param_abs* param)
   {
-#ifdef VSXU_TM
-((vsx_tm*)engine->tm)->e( "particle_ext_output" );
-#endif
 
     if (num_active_particles == 0)
     {
-      #ifdef VSXU_TM
-      ((vsx_tm*)engine->tm)->l();
-      #endif
       return;
     }
     VSX_UNUSED(param);
@@ -384,16 +364,10 @@ public:
     if (!particles || !tex)
     {
       render_result->set(0);
-      #ifdef VSXU_TM
-      ((vsx_tm*)engine->tm)->l();
-      #endif
       return;
     }
     if ( !((*tex)->valid))
     {
-      #ifdef VSXU_TM
-      ((vsx_tm*)engine->tm)->l();
-      #endif
       return;
     }
 
@@ -462,9 +436,5 @@ public:
     (*tex)->end_transform();
 
     render_result->set(1);
-    #ifdef VSXU_TM
-    ((vsx_tm*)engine->tm)->l();
-    #endif
-
   }
 };

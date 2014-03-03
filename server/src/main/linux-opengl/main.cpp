@@ -45,10 +45,7 @@ bool app_alt = false;
 bool app_shift = false;
 bool dual_monitor = false;
 
-vsx_tm* tm;
 
-
-#include "vsx_tm.h"
 
 
 
@@ -188,8 +185,6 @@ void myErrorCallback
 
 int main(int argc, char* argv[])
 {
-  tm = new vsx_tm();
-
   for (size_t i = 0; i < (size_t)argc; i++)
   {
     vsx_string arg = vsx_string(argv[i]);
@@ -366,7 +361,6 @@ int main(int argc, char* argv[])
   while( running )
   {
     frame_delay.start();
-    tm->z("main");
 
     if (mouse_pos_type)
     {
@@ -436,40 +430,27 @@ int main(int argc, char* argv[])
 
     frames ++;
 
-    tm->e("window_management");
       // Get window size (may be different than the requested size)
       glfwGetWindowSize( &width, &height );
       height = height > 0 ? height : 1;
 
-      tm->e("viewport");
       // Set viewport
       vsx_gl_state::get_instance()->viewport_set( 0, 0, width, height );
-      tm->l();
 
       // Clear color buffer
-      tm->e("clearcolor");
         glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      tm->l();
-      tm->e("matrices");
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();	// Reset The Modelview Matrix
-      tm->l();
-    tm->l();
 
-    tm->e("app_draw");
     app_draw(0);
-    tm->l();
 
-    tm->e("swapbuffers");
     glfwSwapBuffers();
-    tm->l();
 
     if (!vsync)
     {
-      tm->e("frame_zzz", 0x0002);
 
       float dtime = frame_delay.dtime();
 
@@ -478,10 +459,8 @@ int main(int argc, char* argv[])
         float sleeptime = (1.0f / 60.0f - dtime)*1000000.0f;
         usleep( (useconds_t) sleeptime );
       }
-      tm->l();
     }
 
-    tm->t();
 
     // Check if the ESC key was pressed or the window was closed
     running = /*!glfwGetKey( GLFW_KEY_ESC ) &&*/

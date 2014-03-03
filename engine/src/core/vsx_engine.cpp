@@ -65,7 +65,6 @@
 #include "scripting/vsxl_engine.h"
 #endif
 
-#include <vsx_tm.h>
 
 #include <vector>
 
@@ -808,17 +807,6 @@ double vsx_engine::get_fps()
 void vsx_engine::unload_state()
 {
   i_clear();
-}
-
-void* vsx_engine::get_tm()
-{
-  return tm;
-}
-
-void vsx_engine::set_tm(void *nt)
-{
-  tm = nt;
-  engine_info.tm = nt;
 }
 
 

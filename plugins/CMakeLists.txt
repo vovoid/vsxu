@@ -45,16 +45,6 @@ endfunction(CREATE_STATIC_GLUE)
 
 
 
-if (VSXU_TM)
-  find_package(Tm REQUIRED)
-  add_definitions(-DVSXU_TM)
-
-  include_directories(
-    ${TM_INCLUDE_PATH}
-  )
-endif()
-
-
 function( CREATE_MODULE ${module_id} )
   if (VSXU_ENGINE_STATIC EQUAL 1)
     add_library(${module_id} STATIC ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES})
@@ -257,7 +247,7 @@ add_subdirectory(src/render.text)
 add_subdirectory(src/sound.rtaudio)
 add_subdirectory(src/system)
 add_subdirectory(src/texture)
-add_subdirectory(src/vision)
+#add_subdirectory(src/vision)
 
 if (PLUGINS_EXPERIMENTAL_SENSORS)
   add_subdirectory(src/sensors.accelerometer)

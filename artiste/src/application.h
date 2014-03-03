@@ -27,9 +27,6 @@
 #include <sys/time.h>
 
 
-// TM wrapper
-#include "vsx_tm.h"
-
 // GL state
 #include "vsx_gl_state.h"
 
@@ -38,7 +35,6 @@ extern bool app_ctrl;
 extern bool app_alt;
 extern bool app_shift;
 extern bool dual_monitor;
-extern vsx_tm* tm;
 
 void app_init(int id);
 

@@ -16,13 +16,6 @@ else()
   find_package(Threads REQUIRED)
 endif()
 
-if(VSXU_TM)
-  find_package(Tm REQUIRED)
-  include_directories(
-    ${TM_INCLUDE_PATH}
-  )
-endif()
-
 ################################################################################
 # INCLUDES #####################################################################
 ################################################################################
@@ -78,11 +71,6 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_definitions(-DVSXU_PLUGIN_LOCATION="plugins")
-endif()
-
-
-if (VSXU_TM)
-  add_definitions(-DVSXU_TM)
 endif()
 
 

@@ -75,10 +75,6 @@ public:
 
   void run()
   {
-    #ifdef VSXU_TM
-    ((vsx_tm*)engine->tm)->e( "particle_gravity_run" );
-    #endif
-
     float ddtime;
     if (time_source->get())
     {
@@ -149,16 +145,9 @@ public:
       // set the resulting value
       result_particlesystem->set_p(*particles);
 
-      #ifdef VSXU_TM
-      ((vsx_tm*)engine->tm)->l();
-      #endif
-
       return;
       // now all left is to render this, that will be done one of the modules of the rendering branch
     }
     result_particlesystem->valid = false;
-    #ifdef VSXU_TM
-    ((vsx_tm*)engine->tm)->l();
-    #endif
   }
 };
