@@ -364,13 +364,30 @@ public:
       #endif
       #ifndef VSXU_OPENGL_ES
         glBegin(GL_TRIANGLE_FAN);
-          glColor4f(cm.r*color_center->get(0), cm.g*color_center->get(1) , cm.b*color_center->get(2),cm.a*color_center->get(3));  (*t_inf)->texcoord2f((tbx-tax)*0.5f+tax,(tby-tay)*0.5f+tay);
+          glColor4f(cm.r*color_center->get(0), cm.g*color_center->get(1) , cm.b*color_center->get(2),cm.a*color_center->get(3));
+          (*t_inf)->texcoord2f((tbx-tax)*0.5f+tax,(tby-tay)*0.5f+tay);
           glVertex3i(0,0,0);
-          glColor4f(cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3));	(*t_inf)->texcoord2f(tax, tay);	glVertex3f(-1, -1, 0);
-          glColor4f(cm.r*color_b->get(0), cm.g*color_b->get(1)   , cm.b*color_b->get(2),cm.a*color_b->get(3));	(*t_inf)->texcoord2f(tax, tby);	glVertex3f(-1,  1, 0);
-          glColor4f(cm.r*color_c->get(0), cm.g*color_c->get(1)   , cm.b*color_c->get(2),cm.a*color_c->get(3));	(*t_inf)->texcoord2f(tbx, tby);	glVertex3f( 1,  1, 0);
-          glColor4f(cm.r*color_d->get(0), cm.g*color_d->get(1)   , cm.b*color_d->get(2),cm.a*color_d->get(3));	(*t_inf)->texcoord2f(tbx, tay);	glVertex3f( 1, -1, 0);
-          glColor4f(cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3));	(*t_inf)->texcoord2f(tax, tay);	glVertex3f(-1, -1, 0);
+
+          glColor4f(cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3));
+          (*t_inf)->texcoord2f(tax, tay);
+          glVertex3f(-1, -1, 0);
+
+          glColor4f(cm.r*color_b->get(0), cm.g*color_b->get(1)   , cm.b*color_b->get(2),cm.a*color_b->get(3));
+          (*t_inf)->texcoord2f(tax, tby);
+          glVertex3f(-1,  1, 0);
+
+          glColor4f(cm.r*color_c->get(0), cm.g*color_c->get(1)   , cm.b*color_c->get(2),cm.a*color_c->get(3));
+          (*t_inf)->texcoord2f(tbx, tby);
+          glVertex3f( 1,  1, 0);
+
+          glColor4f(cm.r*color_d->get(0), cm.g*color_d->get(1)   , cm.b*color_d->get(2),cm.a*color_d->get(3));
+          (*t_inf)->texcoord2f(tbx, tay);
+          glVertex3f( 1, -1, 0);
+
+          glColor4f(cm.r*color_a->get(0), cm.g*color_a->get(1)   , cm.b*color_a->get(2),cm.a*color_a->get(3));
+          (*t_inf)->texcoord2f(tax, tay);
+          glVertex3f(-1, -1, 0);
+
         glEnd();
       #endif
     }

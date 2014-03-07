@@ -655,6 +655,7 @@ public:
     _viewport_size[1] = y0;
     _viewport_size[2] = w;
     _viewport_size[3] = h;
+    _viewport_w_d_h = (float)w / (float)h;
   }
 
   // substitute for glGetIntegerv(GL_VIEWPORT)
@@ -664,6 +665,11 @@ public:
     res[1] = _viewport_size[1];
     res[2] = _viewport_size[2];
     res[3] = _viewport_size[3];
+  }
+
+  inline float viewport_width_div_height_get()
+  {
+    return _viewport_w_d_h;
   }
 
   // substitute for glViewport()
@@ -679,13 +685,16 @@ public:
     _viewport_size[1] = y0;
     _viewport_size[2] = w;
     _viewport_size[3] = h;
+    _viewport_w_d_h = (float)w / (float)h;
 #ifndef VSX_NO_GL
     glViewport(x0,y0,w,h);
 #endif
   }
 
 private:
-  int	_viewport_size[4];
+  int _viewport_size[4];
+  float _viewport_w_d_h; // width divided by height
+
 
   inline void _viewport_init_values_default()
   {
@@ -693,6 +702,7 @@ private:
     _viewport_size[1] = 0;
     _viewport_size[2] = 0;
     _viewport_size[3] = 0;
+    _viewport_w_d_h = 1.0f;
   }
 
 //***************************************************************************

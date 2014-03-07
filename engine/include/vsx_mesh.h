@@ -34,9 +34,20 @@
 typedef unsigned int GLuint;
 #endif
 
-typedef struct {
+class vsx_face {
+public:
+
+  vsx_face() {}
+
+  vsx_face(GLuint ia, GLuint ib, GLuint ic)
+    :
+    a(ia),
+    b(ib),
+    c(ic)
+  {}
+
   GLuint a,b,c;
-} vsx_face;
+};
 
 class vsx_tex_coord
 {

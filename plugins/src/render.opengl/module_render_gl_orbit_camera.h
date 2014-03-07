@@ -1,10 +1,6 @@
 class module_render_gl_orbit_camera : public vsx_module
 {
   // in
-  GLfloat matrix_projection[16];
-  GLfloat matrix_modelview[16];
-
-
   vsx_module_param_float3* rotation;
   vsx_module_param_float* distance;
   vsx_module_param_float3 * destination;
@@ -21,6 +17,8 @@ class module_render_gl_orbit_camera : public vsx_module
   vsx_module_param_render* render_result;
 
   // internal
+  GLfloat matrix_projection[16];
+  GLfloat matrix_modelview[16];
   vsx_vector rotation_;
   vsx_gl_state* gl_state;
 

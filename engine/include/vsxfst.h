@@ -25,8 +25,24 @@
 #define VSXFST_H
 
 #include <vsx_platform.h>
+
+
 #include <stdlib.h>
 #include <inttypes.h>
+
+
+// Directory Separators
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+  #define DIRECTORY_SEPARATOR                             "\\"
+  #define DIRECTORY_SEPARATOR_CHAR                             '\\'
+#endif
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+  #define DIRECTORY_SEPARATOR                             "/"
+  #define DIRECTORY_SEPARATOR_CHAR                        '/'
+#endif
+
+
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #define VSXFSTDLLIMPORT

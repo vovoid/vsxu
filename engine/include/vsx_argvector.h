@@ -165,19 +165,26 @@ public:
     char pBuf[512];
     const size_t len = 512;
 
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-    int bytes = GetModuleFileName(NULL, pBuf, len);
-    if(bytes == 0)
-      return -1;
-    else
-      return bytes;
-#else
-    char szTmp[32];
-    sprintf(szTmp, "/proc/%d/exe", getpid());
-    int bytes = MIN(readlink(szTmp, pBuf, len), len - 1);
-    if(bytes >= 0)
-      pBuf[bytes] = '\0';
-#endif
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+      int bytes = GetModuleFileName(NULL, pBuf, len);
+      if(bytes == 0)
+        return -1;
+      else
+        return bytes;
+    #else
+
+      // if packed with UPX
+      if (getenv("   "))
+        return vsx_string(getenv("   "));
+
+      char szTmp[32];
+      sprintf(szTmp, "/proc/self/exe");
+      int bytes = MIN(readlink(szTmp, pBuf, len), len - 1);
+
+      if(bytes >= 0)
+        pBuf[bytes] = '\0';
+
+    #endif
     return vsx_string(pBuf);
   }
 
