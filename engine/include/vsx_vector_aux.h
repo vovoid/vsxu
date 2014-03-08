@@ -8,11 +8,9 @@
 #include <vsx_string.h>
 #include <vsxfst.h>
 
-class vsx_vector_aux
+namespace vsx_vector_aux
 {
-public:
-
-  static inline vsx_vector from_string(vsx_string &val) VSX_ALWAYS_INLINE
+  inline vsx_vector from_string(vsx_string &val) VSX_ALWAYS_INLINE
   {
     vsx_vector res;
     vsx_string deli = ",";
@@ -27,7 +25,7 @@ public:
     return res;
   }
 
-  static inline vsx_string to_string(const vsx_vector &v, const int num_values = 3) VSX_ALWAYS_INLINE
+  inline vsx_string to_string(const vsx_vector &v, const int num_values = 3) VSX_ALWAYS_INLINE
   {
     vsx_string local = f2s(v.x);
 
@@ -40,14 +38,12 @@ public:
     return local;
   }
 
-
-  static inline void dump(const vsx_vector &v, char* label="n/a")
+  inline void dump(const vsx_vector &v, char* label="n/a")
   {
     printf( "Name: %s. x: %f y: %f z: %f\n",label, v.x, v.y, v.z );
   }
 
-
-};
+}
 
 
 #endif

@@ -24,13 +24,16 @@
 #ifdef _WIN32
 #include <windows.h>
 #endif
-#include <vector>
-#include "vsx_avector.h"
-#include "vsx_string.h"
-using namespace std;
-#include "vsxfst.h"
+
+#include <vsx_avector.h>
+#include <vsx_argvector.h>
+#include <vsx_string.h>
+#include <vsxfst.h>
+#include <vsx_error.h>
+
 #include <stdio.h>
 #include <stdlib.h>
+
 #ifndef _WIN32
 #include <unistd.h>
 #endif
@@ -38,65 +41,78 @@ using namespace std;
 #include <io.h>
 #endif
 
+vsx_string current_path = vsx_argvector::get_executable_directory();
+vsxf filesystem;
+vsx_argvector* arg = vsx_argvector::get_instance();
 
-char cur_path[4096];
-vsx_string current_path = cur_path;
+void extract()
+{
+  vsx_string filename = arg->get_param_value("x");
+
+  // Sanitize file
+  if (!filesystem.is_file(filename))
+    ERROR_EXIT( (vsx_string("Invalid archive supplied,")+filename).c_str(), 1);
+
+  filesystem.archive_load( filename.c_str() );
+
+  // Sanitize archive
+  if (!filesystem.is_archive_populated())
+    ERROR_EXIT("Archive contains no files or failed to load", 2);
+
+  vsx_avector<vsxf_archive_info>* archive_files = filesystem.get_archive_files();
+  for (unsigned long i = 0; i < (*archive_files).size(); ++i)
+  {
+    vsx_string out_filename = (*archive_files)[i].filename;
+    vsx_string out_dir = get_path_from_filename(out_filename);
+    vsx_string full_out_path = current_path + "/" + out_filename;
+    vsx_string out_directory = current_path + "/" + out_dir;
+    vsx_printf("Creating directory: %s\n", out_directory.c_str());
+    create_directory( (char*) (current_path + "/" + out_dir).c_str() );
+
+    printf("Extracting:%s\n", (*archive_files)[i].filename.c_str() );
+
+    vsxf_handle* fpi = filesystem.f_open((*archive_files)[i].filename.c_str(), "r");
+
+      if (!fpi)
+        ERROR_EXIT( (vsx_string("Internal Error: fpi invalid when reading ")+(*archive_files)[i].filename).c_str(), 3);
+
+      FILE* fpo = fopen(full_out_path.c_str(), "wb");
+        if (!fpo)
+          ERROR_EXIT( (vsx_string("Internal Error: fpo invalid when opening file for writing: ")+full_out_path).c_str(), 3 );
+
+        char* buf = filesystem.f_gets_entire(fpi);
+          if (!buf)
+          {
+            fclose(fpo);
+            ERROR_EXIT("Internal Error: buf invalid", 4);
+          }
+          fwrite(buf,sizeof(char),fpi->size-1,fpo);
+        free(buf);
+      fclose(fpo);
+
+    filesystem.f_close(fpi);
+  }
+}
+
 
 int main(int argc, char* argv[])
 {
-	vsx_string base_path = get_path_from_filename(vsx_string(argv[0]));
+  arg->init_from_argc_argv(argc, argv);
 
-	printf("Vovoid VSX Zip\n");
+  printf("-- Vovoid VSXu Packer --\n");
 
-  //char* ret_getcwd = getcwd(cur_path,4096);
-	printf("current path is: %s\n", cur_path);
-
-	//srand ( time(NULL)+rand() );
-
-	if (argc == 1)
-		printf(" * add \"-help\" for command syntax\n");
-	//printf("\n\n");
-  if (argc > 1)
+  if (argc == 1 || vsx_argvector::get_instance()->has_param("help"))
   {
-	  if (vsx_string(argv[1]) == "-help") {
-			printf("VSXzip command line syntax:\n"
-			 			 "-x [filename] (extract)\n");
-			return 0;
-	  }
-
-		if (vsx_string(argv[1]) == "-x")
-		{
-			vsxf filesystem; // our master filesystem handler
-			//printf("trying to load %s\n", argv[2]);
-			filesystem.archive_load(argv[2]);
-      if (filesystem.is_archive_populated()) {
-        vsx_avector<vsxf_archive_info>* archive_files = filesystem.get_archive_files();
-	    	for (unsigned long i = 0; i < (*archive_files).size(); ++i)
-	    	{
-	    		vsx_string out_filename = (*archive_files)[i].filename;
-	    		vsx_string out_dir = get_path_from_filename(out_filename);
-	    		vsx_string full_out_path = vsx_string(cur_path) + "/" + out_filename;
-	    		create_directory( (char*) (vsx_string(cur_path) + "/" + out_dir).c_str() );
-	    		printf("%s/%s\n", cur_path,  (*archive_files)[i].filename.c_str() );
-	    		vsxf_handle* fpi = filesystem.f_open((*archive_files)[i].filename.c_str(), "r");
-	    		if (fpi)
-	    		{
-	    			FILE* fpo = fopen(full_out_path.c_str(), "wb");
-	    			if (fpo)
-	    			{
-	    				char* buf = filesystem.f_gets_entire(fpi);
-	    				if (buf)
-	    				{
-	    					fwrite(buf,sizeof(char),fpi->size-1,fpo);
-	    					free(buf);
-	    				}
-	    				fclose(fpo);
-	    			}
-	    			filesystem.f_close(fpi);
-	    		}
-	    	}
-	    }
-		}
+    printf(
+      "syntax: \n"
+      "  vsxz -x [filename] (extract) \n"
+    );
   }
-	return 0;
+
+  if ( arg->has_param_with_value("x") )
+  {
+    extract();
+  }
+
+  return 0;
 }

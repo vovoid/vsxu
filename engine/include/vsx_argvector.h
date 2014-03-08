@@ -26,6 +26,7 @@
 
 
 #include <vsx_platform.h>
+#include <vsxfst.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
 #include <windows.h>
@@ -35,6 +36,7 @@
   #include "vsx_math.h"
   #include <sys/types.h>
   #include <unistd.h>
+  #include <stdlib.h>
 #endif
 
 #include <vsx_avector.h>
@@ -175,7 +177,7 @@ public:
 
       // if packed with UPX
       if (getenv("   "))
-        return vsx_string(getenv("   "));
+        return get_path_from_filename(vsx_string(getenv("   ")));
 
       char szTmp[32];
       sprintf(szTmp, "/proc/self/exe");
@@ -185,7 +187,7 @@ public:
         pBuf[bytes] = '\0';
 
     #endif
-    return vsx_string(pBuf);
+    return get_path_from_filename(vsx_string(pBuf));
   }
 
   static vsx_argvector* get_instance()

@@ -499,11 +499,11 @@ void create_directory(char* path)
 	char dir_name[4096];
 	char* p = path;
 	char* q = dir_name;
-	while(*p)
+  while( *p )
 	{
-		if (('\\' == *p) || ('/' == *p))
+    if ( DIRECTORY_SEPARATOR_CHAR == *p )
 		{
-			if (':' != *(p-1))
+      if (':' != *( p-1 ) )
 			{
 #ifdef __linux__
     	 mkdir(dir_name,0700);
