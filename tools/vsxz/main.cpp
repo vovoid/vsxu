@@ -47,6 +47,13 @@ vsx_argvector* arg = vsx_argvector::get_instance();
 
 void extract()
 {
+  // Sanitize current_path
+  if (!current_path.size())
+    ERROR_EXIT("Fatal error: current_path is empty",1);
+
+  if (access(current_path.c_str(),W_OK))
+    ERROR_EXIT("current_path is not accessible for writing",1);
+
   vsx_string filename = arg->get_param_value("x");
 
   // Sanitize file
@@ -66,13 +73,13 @@ void extract()
     vsx_string out_dir = get_path_from_filename(out_filename);
     vsx_string full_out_path = current_path + "/" + out_filename;
     vsx_string out_directory = current_path + "/" + out_dir;
+
     vsx_printf("Creating directory: %s\n", out_directory.c_str());
     create_directory( (char*) (current_path + "/" + out_dir).c_str() );
 
     printf("Extracting:%s\n", (*archive_files)[i].filename.c_str() );
 
     vsxf_handle* fpi = filesystem.f_open((*archive_files)[i].filename.c_str(), "r");
-
       if (!fpi)
         ERROR_EXIT( (vsx_string("Internal Error: fpi invalid when reading ")+(*archive_files)[i].filename).c_str(), 3);
 
@@ -89,30 +96,82 @@ void extract()
           fwrite(buf,sizeof(char),fpi->size-1,fpo);
         free(buf);
       fclose(fpo);
-
     filesystem.f_close(fpi);
   }
+
+  // success
+  exit(0);
 }
 
+void create()
+{
+  // Sanitize the presence of -f
+  if (!arg->has_param_with_value("f"))
+    ERROR_EXIT("Error, you must supply files to be added to the archive", 100);
+
+
+  vsx_string filenames = arg->get_param_value("f");
+  vsx_string deli = ":";
+  vsx_avector<vsx_string> parts;
+
+  explode(filenames, deli, parts);
+
+  if (!parts.size())
+    ERROR_EXIT("There seems to be no entries in the file list", 101);
+
+  // Make sure we can read all the files
+  for (size_t i = 0; i < parts.size(); i++)
+  {
+    if (access(parts[i].c_str(),R_OK))
+      ERROR_EXIT( ( vsx_string("Pre-check failed, error accessing file: ") + parts[i]).c_str()  ,1);
+  }
+
+  vsx_string archive_filename = arg->get_param_value("c");
+
+  filesystem.archive_create(archive_filename.c_str());
+
+  for (size_t i = 0; i < parts.size(); i++)
+  {
+    vsx_printf("* adding: %s \n", parts[i].c_str() );
+    int ret = filesystem.archive_add_file( parts[i] );
+    if ( ret )
+      ERROR_EXIT( "archive_add_file failed", ret );
+  }
+
+  filesystem.archive_close();
+
+  vsx_printf("-- successfully created the archive: %s\n", archive_filename.c_str());
+
+  // success
+  exit(0);
+}
 
 int main(int argc, char* argv[])
 {
   arg->init_from_argc_argv(argc, argv);
 
-  printf("-- Vovoid VSXu Packer --\n");
-
-  if (argc == 1 || vsx_argvector::get_instance()->has_param("help"))
-  {
-    printf(
-      "syntax: \n"
-      "  vsxz -x [filename] (extract) \n"
-    );
-  }
-
   if ( arg->has_param_with_value("x") )
   {
     extract();
   }
+
+  if ( arg->has_param_with_value("c") )
+  {
+    create();
+  }
+
+
+  printf(
+    "VSXz packer (operates on .vsx files)\n"
+    "\n"
+    "\n"
+    "Extract archive: \n"
+    "  vsxz -x [archive filename] \n"
+    "\n"
+    "Create archive: \n"
+    "  vsxz -c [archive filename] -f file1:file2:file3 \n"
+  );
+
 
   return 0;
 }

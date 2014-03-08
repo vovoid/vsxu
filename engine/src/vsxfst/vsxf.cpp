@@ -48,6 +48,7 @@
 
 #include "vsx_platform.h"
 #include "vsx_version.h"
+#include "vsx_error.h"
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include <stdio.h>
@@ -86,13 +87,11 @@ vsx_string vsxf::get_base_path()
 }
 
 void vsxf::archive_create(const char* filename) {
-#ifndef VSXF_DEMO
   archive_name = filename;
   type = VSXF_TYPE_ARCHIVE;
   archive_handle = fopen(filename,"wb");
   const char header[5] = "VSXz";
   fwrite(header,sizeof(char),4,archive_handle);
-#endif
 }
 
 vsx_avector<vsxf_archive_info>* vsxf::get_archive_files()
@@ -100,7 +99,8 @@ vsx_avector<vsxf_archive_info>* vsxf::get_archive_files()
   return &archive_files;
 }
 
-void vsxf::archive_close() {
+void vsxf::archive_close()
+{
   if (type == VSXF_TYPE_ARCHIVE)
   {
     archive_name = "";
@@ -113,66 +113,76 @@ void vsxf::archive_close() {
   }
 }
 
-  int vsxf::archive_add_file(
-                             vsx_string filename, 
-                             char* data, 
-                             uint32_t data_size, 
-                             vsx_string disk_filename
-  ) {
-#ifndef VSXF_DEMO
-    if (!archive_handle) return 1;
-    unsigned long i = 0;
-    while (i < archive_files.size()) {
-      if (archive_files[i].filename == filename) {
-        return 1;
-      }
-      ++i;
-    }
-    vsx_string fopen_filename = filename;
-    if (disk_filename != "") fopen_filename = disk_filename;
-    printf("vsxz adding file: %s\n", fopen_filename.c_str());
-    FILE* fp = 0;
-    if (data == 0) {
-      fp = fopen(fopen_filename.c_str(),"rb");
-      if (fp) {
-        fseek (fp, 0, SEEK_END);
-        data_size = ftell(fp);
-        fseek(fp,0,SEEK_SET);
-        data = new char[data_size];
-        if (!fread(data,sizeof(char),data_size,fp)) { return 2;};
-        // write it to disk
-        fseek(archive_handle,0,SEEK_END);
-      }
-    }
-    fseek(archive_handle,0,SEEK_END);
-    // time to allocate ram for compression
-    UInt32 dictionary = 1 << 21;
-    size_t outSize = (size_t)data_size / 20 * 21 + (1 << 16);
-    size_t outSizeProcessed;
-    Byte *outBuffer = 0;
-    if (outSize != 0) outBuffer = (Byte *)MyAlloc(outSize);
-    //dictionary = 1 << 21;
-    LzmaRamEncode((Byte*)data, data_size, outBuffer, outSize, &outSizeProcessed, dictionary, SZ_FILTER_AUTO);
-    data_size = outSizeProcessed+filename.size()+1;
-    fwrite(&data_size,sizeof(uint32_t),1,archive_handle);
-    fputs(filename.c_str(),archive_handle);
-    char nn = 0;
-    fwrite(&nn,sizeof(char),1,archive_handle);
-    fwrite(outBuffer,sizeof(Byte),outSizeProcessed,archive_handle);
-    delete outBuffer;
+int vsxf::archive_add_file
+(
+  vsx_string filename,
+  char* data,
+  uint32_t data_size,
+  vsx_string disk_filename
+)
+{
+  if (!archive_handle)
+    return 1;
 
-    vsxf_archive_info finfo;
-    finfo.filename = filename;
-    archive_files.push_back(finfo);
-
-
-    if (fp) {
-      delete data;
-      fclose(fp);
-    }
-#endif
-    return 0;
+  unsigned long i = 0;
+  while (i < archive_files.size())
+  {
+    if (archive_files[i].filename == filename)
+       return 1;
+    ++i;
   }
+
+  vsx_string fopen_filename = filename;
+  if (disk_filename != "")
+    fopen_filename = disk_filename;
+
+  FILE* fp = 0;
+  if (data == 0)
+  {
+    fp = fopen(fopen_filename.c_str(),"rb");
+    if (!fp)
+      ERROR_RETURN_V("fp is not valid", 1);
+
+    fseek (fp, 0, SEEK_END);
+    data_size = ftell(fp);
+    fseek(fp,0,SEEK_SET);
+    data = new char[data_size];
+
+    if ( !fread(data, sizeof(char), data_size, fp) )
+      ERROR_RETURN_V("Error reading file!", 2);
+   }
+
+  fseek(archive_handle,0,SEEK_END);
+
+  // time to allocate ram for compression
+  UInt32 dictionary = 1 << 21;
+  size_t outSize = (size_t)data_size / 20 * 21 + (1 << 16);
+  size_t outSizeProcessed;
+  Byte *outBuffer = 0;
+
+  if (outSize != 0)
+    outBuffer = (Byte *)MyAlloc(outSize);
+
+  LzmaRamEncode((Byte*)data, data_size, outBuffer, outSize, &outSizeProcessed, dictionary, SZ_FILTER_AUTO);
+  data_size = outSizeProcessed+filename.size()+1;
+  fwrite(&data_size,sizeof(uint32_t),1,archive_handle);
+  fputs(filename.c_str(),archive_handle);
+  char nn = 0;
+  fwrite(&nn,sizeof(char),1,archive_handle);
+  fwrite(outBuffer,sizeof(Byte),outSizeProcessed,archive_handle);
+  delete outBuffer;
+
+  vsxf_archive_info finfo;
+  finfo.filename = filename;
+  archive_files.push_back(finfo);
+
+  if (fp)
+  {
+    delete data;
+    fclose(fp);
+  }
+  return 0;
+}
 
   int vsxf::archive_load(const char* filename)
   {
