@@ -315,7 +315,8 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string)
 #endif
 
   if (!is_archive)
-  filesystem.set_base_path(vsx_get_data_path());
+    filesystem.set_base_path(vsx_get_data_path());
+
   int res = i_load_state(load1,error_string,filename);
   load1.clear(true);
 
@@ -659,6 +660,9 @@ bool vsx_engine::render()
       if (modules_left_to_load == 0 && commands_internal.count() == 0)
       {
         current_state = VSX_ENGINE_PLAYING;
+
+        if (filesystem.is_archive())
+        filesystem.archive_close();
       }
     }
 

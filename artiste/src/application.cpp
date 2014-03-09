@@ -482,7 +482,7 @@ bool app_draw(int id)
 {
   if (id == 0) {
     if (!my_draw)
-      ERROR_RETURN("my draw is 0x0");
+      ERROR_RETURN_V("my draw is 0x0", false);
     my_draw->draw();
   } else
   {

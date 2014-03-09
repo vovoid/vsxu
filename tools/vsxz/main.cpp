@@ -47,6 +47,10 @@ vsx_argvector* arg = vsx_argvector::get_instance();
 
 void extract()
 {
+  bool preload_compressed_data = arg->has_param("preload");
+  bool dry_run = arg->has_param("dry");
+
+
   // Sanitize current_path
   if (!current_path.size())
     ERROR_EXIT("Fatal error: current_path is empty",1);
@@ -60,7 +64,10 @@ void extract()
   if (!filesystem.is_file(filename))
     ERROR_EXIT( (vsx_string("Invalid archive supplied,")+filename).c_str(), 1);
 
-  filesystem.archive_load( filename.c_str() );
+  if (arg->has_param("mt"))
+    filesystem.archive_load_all_mt( filename.c_str() );
+  else
+    filesystem.archive_load( filename.c_str(), preload_compressed_data );
 
   // Sanitize archive
   if (!filesystem.is_archive_populated())
@@ -74,30 +81,45 @@ void extract()
     vsx_string full_out_path = current_path + "/" + out_filename;
     vsx_string out_directory = current_path + "/" + out_dir;
 
-    vsx_printf("Creating directory: %s\n", out_directory.c_str());
-    create_directory( (char*) (current_path + "/" + out_dir).c_str() );
+    if (!dry_run)
+    {
+//      vsx_printf("Creating directory: %s\n", out_directory.c_str());
+      create_directory( out_directory.c_str() );
+    }
 
-    printf("Extracting:%s\n", (*archive_files)[i].filename.c_str() );
+//    printf("Extracting:%s\n", (*archive_files)[i].filename.c_str() );
 
     vsxf_handle* fpi = filesystem.f_open((*archive_files)[i].filename.c_str(), "r");
       if (!fpi)
         ERROR_EXIT( (vsx_string("Internal Error: fpi invalid when reading ")+(*archive_files)[i].filename).c_str(), 3);
 
-      FILE* fpo = fopen(full_out_path.c_str(), "wb");
+      FILE* fpo = 0;
+      if (!dry_run)
+      {
+        fpo = fopen(full_out_path.c_str(), "wb");
         if (!fpo)
           ERROR_EXIT( (vsx_string("Internal Error: fpo invalid when opening file for writing: ")+full_out_path).c_str(), 3 );
+      }
 
         char* buf = filesystem.f_gets_entire(fpi);
           if (!buf)
           {
+            if (!dry_run)
             fclose(fpo);
             ERROR_EXIT("Internal Error: buf invalid", 4);
           }
-          fwrite(buf,sizeof(char),fpi->size-1,fpo);
+
+          if (!dry_run)
+            fwrite(buf,sizeof(char),fpi->size-1,fpo);
+
         free(buf);
-      fclose(fpo);
+
+      if (!dry_run)
+        fclose(fpo);
     filesystem.f_close(fpi);
   }
+
+  filesystem.archive_close();
 
   // success
   exit(0);
@@ -108,7 +130,6 @@ void create()
   // Sanitize the presence of -f
   if (!arg->has_param_with_value("f"))
     ERROR_EXIT("Error, you must supply files to be added to the archive", 100);
-
 
   vsx_string filenames = arg->get_param_value("f");
   vsx_string deli = ":";
@@ -160,13 +181,17 @@ int main(int argc, char* argv[])
     create();
   }
 
-
-  printf(
+  printf
+  (
     "VSXz packer (operates on .vsx files)\n"
     "\n"
     "\n"
     "Extract archive: \n"
     "  vsxz -x [archive filename] \n"
+    "\n"
+    "OPTIONS:\n"
+    "  -preload\n"
+    "        Reads all the compressed data into RAM upon loading the archive\n"
     "\n"
     "Create archive: \n"
     "  vsxz -c [archive filename] -f file1:file2:file3 \n"

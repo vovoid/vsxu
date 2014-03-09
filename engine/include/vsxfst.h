@@ -72,43 +72,84 @@
 class vsxf_handle {
 public:
   vsx_string filename;
-  unsigned long position;   // position in the data stream
-  unsigned long size;       // size of the data stream in bytes
+  size_t position;   // position in the data stream
+  size_t size;       // size of the data stream in bytes
   int mode;        // 0 = undefined,  1 = read, 2 = write
-  void* file_data; // in the case of type == 1 this is the actual decompressed file in RAM
+  void* file_data; // in the case of VSXF_TYPE_ARCHIVE this is the actual decompressed file in RAM
                    // don't mess with this! the file class will handle it.. 
   FILE* file_handle;
-  vsxf_handle() : position(0), size(0),mode(0), file_data(0), file_handle(0) {}
-  ~vsxf_handle() {
-    #ifdef VSXU_DEBUG
-      printf("vsxf_handle destructor, %s\n", filename.c_str() );
-    #endif
-    if (file_data) {
-      if (mode == VSXF_MODE_WRITE)
-      {
-        #ifdef VSXU_DEBUG
-          printf(">>> deleting file data #1, %s\n", filename.c_str() );
-        #endif
-        delete (vsx_avector<char>*)file_data;
-      }
-      else
-      {
-        #ifdef VSXU_DEBUG
-          printf(">>> deleting file data #2, %s\n", filename.c_str() );
-        #endif
-        free(file_data);
-      }
+
+  vsxf_handle()
+    :
+      position(0),
+      size(0),
+      mode(0),
+      file_data(0),
+      file_handle(0)
+  {}
+
+  ~vsxf_handle()
+  {
+    if (!file_data)
+      return;
+
+    if (mode == VSXF_MODE_WRITE)
+    {
+      delete (vsx_avector<char>*)file_data;
+      return;
     }
+
+    free(file_data);
   }
 };
 
 
 
-typedef struct {
+class vsxf_archive_info {
+
+  void* compressed_data;
+
+
+public:
+
   vsx_string filename;
-  long position;
-  long size;
-} vsxf_archive_info;
+  size_t archive_position;
+  size_t compressed_size;
+  void* uncompressed_data;
+  size_t uncompressed_size;
+
+  void* get_compressed_data()
+  {
+    return compressed_data;
+  }
+
+  void set_compressed_data(void* n)
+  {
+    compressed_data = n;
+  }
+
+  void clear_compressed_data()
+  {
+    if (compressed_data)
+      free(compressed_data);
+    compressed_data = 0;
+  }
+
+
+
+  vsxf_archive_info()
+    :
+      compressed_data(0x0),
+      archive_position(0),
+      compressed_size(0),
+      uncompressed_data(0x0),
+      uncompressed_size(0)
+  {}
+
+  ~vsxf_archive_info()
+  {
+  }
+};
 
 
 class VSXFSTDLLIMPORT vsxf {
@@ -135,12 +176,15 @@ public:
   void set_base_path(vsx_string new_base_path);
   vsx_string get_base_path();
   vsx_avector<vsxf_archive_info>* get_archive_files();
-  int archive_load(const char* filename);
+  int archive_load(const char* filename, bool preload_compressed_data = true);
+  void archive_load_all_mt(const char* filename);
   void archive_create(const char* filename);
   void archive_close();
   int archive_add_file(vsx_string filename, char* data = 0, uint32_t data_size = 0, vsx_string disk_filename = "");
   bool is_archive();
   bool is_archive_populated();
+
+  static void* worker(void* p);
 
   bool          is_file(const char* filename);
   bool          is_file(const vsx_string filename);

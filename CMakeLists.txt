@@ -245,10 +245,8 @@ if(UNIX)
   add_subdirectory(server)
 endif(UNIX)
 
-if (NOT VSXU_ENGINE_STATIC EQUAL 1)
-  add_subdirectory(tools/vsxz)
-  add_subdirectory(tools/obj2vxm)
-endif (NOT VSXU_ENGINE_STATIC EQUAL 1)
+add_subdirectory(tools/vsxz)
+add_subdirectory(tools/obj2vxm)
 
 
 

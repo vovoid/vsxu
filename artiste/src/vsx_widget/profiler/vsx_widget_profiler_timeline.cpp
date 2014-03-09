@@ -189,7 +189,7 @@ bool vsx_widget_profiler_timeline::event_key_down(signed long key, bool alt, boo
   VSX_UNUSED(shift);
 
   if (!time_holder)
-    ERROR_RETURN("time_holder not set");
+    ERROR_RETURN_V("time_holder not set", true);
 
 
   if (!ctrl)

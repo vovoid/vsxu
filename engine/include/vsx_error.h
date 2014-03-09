@@ -6,6 +6,14 @@
   return; \
 }
 
+#define ERROR_CONTINUE(s) \
+{ \
+  vsx_printf("**********************************************************************************\n");\
+  vsx_printf("ERROR in %s on %d, %s:    %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, s); \
+  continue; \
+}
+
+
 #define ERROR_EXIT(s,i) \
 { \
   vsx_printf("**********************************************************************************\n");\
@@ -19,4 +27,10 @@
   vsx_printf("**********************************************************************************\n");\
   vsx_printf("ERROR in %s on %d, %s:    %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, s); \
   return iret; \
+}
+
+#define ERROR_INFO(s) \
+{ \
+  vsx_printf("**********************************************************************************\n");\
+  vsx_printf("INFO in %s on %d, %s:    %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, s); \
 }
