@@ -274,6 +274,19 @@ bool vsxf::is_archive_populated()
 
 bool vsxf::is_file(const char* filename)
 {
+  if (is_archive())
+  {
+    vsx_string s(filename);
+    for (size_t i = 0; i < archive_files.size(); i++)
+    {
+      if (archive_files[i].filename == s)
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
   vsxf_handle *fp;
   fp = this->f_open(filename, "r");
   if (fp == NULL)
@@ -287,6 +300,19 @@ bool vsxf::is_file(const char* filename)
 
 bool vsxf::is_file(const vsx_string filename)
 {
+
+  if (is_archive())
+  {
+    for (size_t i = 0; i < archive_files.size(); i++)
+    {
+      if (archive_files[i].filename == filename)
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
   vsxf_handle *fp;
   fp = this->f_open(filename.c_str(), "r");
   if (fp == NULL)
