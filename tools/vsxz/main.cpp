@@ -110,7 +110,7 @@ void extract()
           }
 
           if (!dry_run)
-            fwrite(buf,sizeof(char),fpi->size-1,fpo);
+            fwrite(buf,sizeof(char),fpi->size,fpo);
 
         free(buf);
 

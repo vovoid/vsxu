@@ -482,6 +482,12 @@ vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
         if (LzmaRamGetUncompressedSize((unsigned char*)inBuffer, archive_files[i].compressed_size, &outSize) != 0)
           ERROR_RETURN_V("LZMA Data Error Getting Uncompressed size", 0x0);
 
+
+        if (outSize == 0)
+        {
+          handle->size = 0;
+          return handle;
+        }
         if (outSize != 0)
         {
           outBuffer = malloc(outSize);
@@ -611,7 +617,7 @@ char* vsxf::f_gets(char* buf, unsigned long max_buf_size, vsxf_handle* handle)
     ++handle->position;
   }
 
-  if (handle->position < handle->size)
+  if (i < max_buf_size)
   {
     buf[i] = 0;
   }
