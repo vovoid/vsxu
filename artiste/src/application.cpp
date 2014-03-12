@@ -425,7 +425,8 @@ void app_init(int id)
 
   gui_prod_fullwindow = &prod_fullwindow;
   //---------------------------------------------------------------------------
-  myf.init( vsx_string(PLATFORM_SHARED_FILES) + "font/font-ascii_output.png");
+  vsxf filesystem;
+  myf.init( vsx_string(PLATFORM_SHARED_FILES) + "font/font-ascii_output.png", &filesystem);
 
   if (dual_monitor) {
     vxe->start();

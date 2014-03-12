@@ -598,11 +598,12 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
 
       component_type = parts[0];
 
-      mtex.load_png(skin_path+"component_types/"+component_type+".png");
+      vsxf filesystem;
+      mtex.load_png(skin_path+"component_types/"+component_type+".png", true, &filesystem);
       if (component_type == "macro")
       {
         // load overlay texture
-        mtex_overlay.load_png(skin_path+"component_types/"+component_type+"_overlay.png");
+        mtex_overlay.load_png(skin_path+"component_types/"+component_type+"_overlay.png",true, &filesystem);
       }
 
       if (!internal_critical)
@@ -697,12 +698,14 @@ void vsx_widget_component::init()
   transform_state = 0;
   size_min.x = 0.1f;
 
-  mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png");
+  vsxf filesystem;
+  mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png",true, &filesystem);
 }
 
 void vsx_widget_component::reinit()
 {
-  mtex.load_png(skin_path+"component_types/"+component_type+".png");
+  vsxf filesystem;
+  mtex.load_png(skin_path+"component_types/"+component_type+".png", true, &filesystem);
   vsx_widget::reinit();
 }
 

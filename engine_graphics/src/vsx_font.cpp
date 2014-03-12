@@ -64,7 +64,8 @@ void vsx_font::reinit(vsx_font_info* f_info,vsx_string font)
 {
   if (f_info->type == 0)
   {
-    f_info->texture->load_png(base_path+font,true);
+    vsxf filesystem;
+    f_info->texture->load_png(base_path+font,true, &filesystem);
     return;
   }
 
@@ -96,7 +97,8 @@ void vsx_font::reinit_all_active()
       if (glist.find(font) != glist.end()) {
         my_font_info = glist[font];
       } else {
-        my_font_info = init(font);
+        vsxf filesystem;
+        my_font_info = init(font, &filesystem);
       }
     }
     return print(p,str,size,colors);

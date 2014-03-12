@@ -1179,9 +1179,12 @@ void vsx_widget_ultra_chooser::build_tree() {
   treedraw->pos = vsx_vector(0.5f*size.x, 0.5f*size.y);
   treedraw->changeProjType(0);
   treedraw->mtex = new vsx_texture;
-  treedraw->mtex->load_png(skin_path+"label.png");
+
+  vsxf filesystem;
+  treedraw->mtex->load_png(skin_path+"label.png", true, &filesystem);
 }
 void vsx_widget_ultra_chooser::reinit() {
-  treedraw->mtex->load_png(skin_path+"label.png");
+  vsxf filesystem;
+  treedraw->mtex->load_png(skin_path+"label.png", true, &filesystem);
 }
 

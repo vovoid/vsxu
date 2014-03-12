@@ -81,8 +81,9 @@ public:
     editor->enable_syntax_highlighting = false;
     editor->font_size = 0.014;
     name_dialog = add(new dialog_query_string("name of component","Choose a unique name for your component"),"component_create_name");
-    //((dialog_query_string*)name_dialog)->init();
-    mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png");
+
+    vsxf filesystem;
+    mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png", true, &filesystem);
     set_render_type(VSX_WIDGET_RENDER_2D);
   }
 

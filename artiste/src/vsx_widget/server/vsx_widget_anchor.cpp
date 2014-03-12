@@ -1587,9 +1587,11 @@ void vsx_widget_anchor::init()
   anchor_order[1] = 0;
 
   title = name+":"+p_type;
-  mtex_d.load_png(skin_path+"datatypes/"+p_type+".png",true);
-  mtex_blob.load_png(skin_path+"interface_extras/highlight_blob.png",true);
-  mtex_blob_small.load_png(skin_path+"interface_extras/connection_blob.png",true);
+
+  vsxf filesystem;
+  mtex_d.load_png(skin_path+"datatypes/"+p_type+".png",true, &filesystem);
+  mtex_blob.load_png(skin_path+"interface_extras/highlight_blob.png",true, &filesystem);
+  mtex_blob_small.load_png(skin_path+"interface_extras/connection_blob.png",true, &filesystem);
   color.r = 1.0f;
   color.g = 1.0f;
   color.b = 1.0f;
@@ -1605,7 +1607,8 @@ void vsx_widget_anchor::init()
 
 void vsx_widget_anchor::reinit() 
 {
-  mtex_d.load_png(skin_path+"datatypes/"+p_type+".png",true);
+  vsxf filesystem;
+  mtex_d.load_png(skin_path+"datatypes/"+p_type+".png",true, &filesystem);
   vsx_widget::reinit();
 }
 

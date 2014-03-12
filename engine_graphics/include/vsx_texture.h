@@ -29,6 +29,7 @@
 #include <map>
 #include <vsx_texture_info.h>
 #include <vsx_string.h>
+#include <vsxg.h>
 #include <vsx_bitmap.h>
 #include <vsx_matrix.h>
 #include <vsxfst.h>
@@ -37,6 +38,35 @@
 #define VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER 1
 #define VSX_TEXTURE_BUFFER_TYPE_COLOR 2
 #define VSX_TEXTURE_BUFFER_TYPE_COLOR_DEPTH 3
+
+#define VSX_TEXTURE_LOADING_TYPE_2D 1
+#define VSX_TEXTURE_LOADING_TYPE_CUBE 2
+
+
+
+
+
+class vsx_texture_load_thread_info
+{
+public:
+  vsxf*             filesystem;
+  pngRawInfo*       pp;
+  int               thread_created;
+  pthread_t					worker_t;
+  pthread_attr_t		worker_t_attr;
+  vsx_bitmap        bitmap;
+  vsx_string        filename;
+  bool              mipmaps;
+
+  vsx_texture_load_thread_info()
+    :
+      filesystem(0x0),
+      pp(0x0),
+      thread_created(0)
+  {}
+
+}; // png thread info
+
 
 
 class vsx_texture
@@ -70,11 +100,18 @@ class vsx_texture
   bool capturing_to_buffer;
 
 
+
   int original_transform_obj;
 
   bool load_from_glist(vsx_string fname);
 
 public:
+
+  // needed by the communication between the png thread and the texture. internal stuff.
+  vsx_texture_load_thread_info* pti_l;
+  volatile size_t deferred_loading_type;
+
+
   // This is a hint to tell the unload function this is an alias of another
   // texture, found in the glist. Thus, we don't own the opengl texture id.
   bool is_glist_alias;
@@ -213,10 +250,9 @@ public:
   // assumes width is 6x height (maps in order: -x, z, x, -z, -y, y
   VSX_ENGINE_GRAPHICS_DLLIMPORT void upload_ram_bitmap_cube(void* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
 
-  void* pti_l; // needed by the communication between the png thread and the texture. internal stuff.
   // load a png in the same thread as ours.
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png(vsx_string fname, bool mipmaps = true, vsxf* filesystem = 0x0);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png_thread(vsx_string fname, bool mipmaps = true);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png(vsx_string fname, bool mipmaps, vsxf* filesystem);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png_thread(vsx_string fname, bool mipmaps, vsxf* filesystem);
   VSX_ENGINE_GRAPHICS_DLLIMPORT void load_jpeg(vsx_string fname, bool mipmaps = true);
   VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png_cubemap(vsx_string fname, bool mipmaps = true, vsxf* filesystem = 0x0);
 

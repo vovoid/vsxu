@@ -480,7 +480,9 @@ void vsx_widget_connector_bezier::init()
   menu->size.x = 0.3;
   menu->size.y = 0.5;
   init_children();
-  mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png");
+
+  vsxf filesystem;
+  mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png", true, &filesystem);
 
   constrained_x = false;
   constrained_y = false;

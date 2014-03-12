@@ -248,21 +248,22 @@ void vsx_widget_server::init()
   sequencer = 0;
   seq_pool = 0; // TODO: remove the auto-init
 
-
+  vsxf filesystem;
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
   {
-    mtex.load_png(skin_path+"server.png",true);
+    mtex.load_png(skin_path+"server.png",true, &filesystem);
     color.a = 1.0; // a
   } else
   {
-    mtex.load_png(skin_path+"server.png",true);
+    mtex.load_png(skin_path+"server.png",true, &filesystem);
   }
   init_run = true;
 }
 
 void vsx_widget_server::reinit()
 {
-    mtex.load_png(skin_path+"server.png");
+  vsxf filesystem;
+  mtex.load_png(skin_path+"server.png", true, &filesystem);
   vsx_widget::reinit();
 }
 

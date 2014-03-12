@@ -34,7 +34,7 @@
     #include <pthread.h>
   #endif
 #endif
-
+#include <vsx_error.h>
 #include <vsx_gl_state.h>
 
 std::map<vsx_string, vsx_texture_glist_holder> vsx_texture::t_glist;
@@ -56,10 +56,15 @@ vsx_texture::vsx_texture()
   frame_buffer_blit_handle = 0;
 
   capturing_to_buffer = false;
+
+  pti_l = 0x0;
+  deferred_loading_type = 0;
+
+  original_transform_obj = 1;
+
   is_glist_alias = false;
   texture_info = new vsx_texture_info;
   transform_obj = new vsx_transform_neutral;
-  original_transform_obj = 1;
 }
 
 vsx_texture::vsx_texture(int id, int type)
@@ -772,7 +777,8 @@ void vsx_texture::reinit_all_active()
     {
       tname = (*it).first;
       t_glist.erase(tname);
-      load_png(tname);
+      vsxf filesystem;
+      load_png(tname,true, &filesystem);
     }
     if ((*it).second.texture_info.type == VSX_TEXTURE_INFO_TYPE_JPG)
     {
@@ -1217,147 +1223,119 @@ bool vsx_texture::load_from_glist(vsx_string fname)
 
 
 
+
+// thread run by the load_png_thread
+void* png_worker(void *ptr)
+{
+  ((vsx_texture*)ptr)->pti_l->pp = new pngRawInfo;
+
+  if (!pngLoadRaw(
+        ((vsx_texture*)ptr)->pti_l->filename.c_str(), ((vsx_texture*)ptr)->pti_l->pp, ((vsx_texture*)ptr)->pti_l->filesystem))
+  {
+    delete ((vsx_texture*)ptr)->pti_l->pp;
+    return 0;
+  }
+
+  __sync_fetch_and_add( &((vsx_texture*)ptr)->deferred_loading_type, VSX_TEXTURE_LOADING_TYPE_2D );
+
+  return 0;
+}
+
+void png_worker_cleanup(vsx_texture_load_thread_info* pti_l)
+{
+  pthread_join( pti_l->worker_t, 0 );
+  pthread_attr_destroy(&pti_l->worker_t_attr);
+}
+
+
+
+
+
+
+
 void vsx_texture::load_png(vsx_string fname, bool mipmaps, vsxf* filesystem)
 {
   if (load_from_glist(fname))
     return;
 
+  // reset state
+  valid = false;
   is_glist_alias = false;
-  vsxf* i_filesystem = 0x0;
-  //printf("processing png: %s\n",fname.c_str());
-  if (filesystem == 0x0)
-  {
-    i_filesystem = new vsxf;
-    filesystem = i_filesystem;
-  }
+  deferred_loading_type = 0;
+
   pngRawInfo* pp = new pngRawInfo;
-  if (pngLoadRaw(fname.c_str(), pp, filesystem))
+  if (!pngLoadRaw(fname.c_str(), pp, filesystem))
   {
-    this->name = fname;
-    init_opengl_texture_2d();
-    if (pp->Components == 1)
-    upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,3,GL_RGB);
-    if (pp->Components == 2)
-    upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,4,GL_RGBA);
-    if (pp->Components == 3)
-    upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,pp->Components,GL_RGB);
-    if (pp->Components == 4)
-    upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,pp->Components,GL_RGBA);
-
-    free(pp->Data);
-
-    if (pp->Palette)
-    {
-      free( pp->Palette );
-    }
-
-    texture_info->type = VSX_TEXTURE_INFO_TYPE_PNG; // png
-
-    t_glist[fname].texture_info = *texture_info;
-    delete texture_info;
-    texture_info = &t_glist[fname].texture_info;
-    t_glist[fname].references++;
-    is_glist_alias = true;
+    delete pp;
+    return;
   }
-  delete pp;
-  if (i_filesystem) delete i_filesystem;
-}
 
-// PNG THREAD STUFF
-typedef struct
-{
-  pngRawInfo*       pp;
-  int               thread_state;
-  pthread_t					worker_t;
-  pthread_attr_t		worker_t_attr;
-  vsx_bitmap        bitmap;
-  vsx_string       filename;
-  bool              mipmaps;
-} pti; // png thread info
+  pti_l = new vsx_texture_load_thread_info();
+  pti_l->filename = fname;
+  pti_l->mipmaps = mipmaps;
+  pti_l->filesystem = filesystem;
+  pti_l->pp = pp;
 
-// thread run by the load_png_thread
-void* png_worker(void *ptr) {
-  ((pti*)((vsx_texture*)ptr)->pti_l)->pp = new pngRawInfo;
-  vsxf filesystem;
-  if (pngLoadRaw(((pti*)((vsx_texture*)ptr)->pti_l)->filename.c_str(), ((pti*)((vsx_texture*)ptr)->pti_l)->pp,&filesystem))
-  {
-    ((pti*)((vsx_texture*)ptr)->pti_l)->thread_state = 2;
-  }
-  return 0;
+  deferred_loading_type = VSX_TEXTURE_LOADING_TYPE_2D;
+
 }
 
 // load a png but put the heavy processing in a thread
-void vsx_texture::load_png_thread(vsx_string fname, bool mipmaps)
+void vsx_texture::load_png_thread(vsx_string fname, bool mipmaps, vsxf* filesystem)
 {
   if (load_from_glist(fname))
     return;
 
+  // reset state
+  valid = false;
   is_glist_alias = false;
-  if (pti_l) {
-    if (((pti*)pti_l)->thread_state == 1) {
-      long* aa;
-      pthread_join(((pti*)pti_l)->worker_t, (void **)&aa);
-    }
-    free(((pti*)pti_l)->pp->Data);
+  deferred_loading_type = 0;
+
+
+  // If thread already running, wait for it to finish and clean up after it
+  if ( pti_l && pti_l->thread_created && __sync_fetch_and_add(&deferred_loading_type, 0) )
+  {
+    png_worker_cleanup(pti_l);
+    free(((vsx_texture_load_thread_info*)pti_l)->pp->Data);
     free(pti_l);
   }
-  is_glist_alias = true;
-  this->name = fname;
-  valid = false;
-  pti* pt = new pti;
-  pt->filename = fname;
-  pt->mipmaps = mipmaps;
-  pthread_attr_init(&pt->worker_t_attr);
-  pt->thread_state = 1;
-  pti_l = (void*)pt;
-  pthread_create(&(pt->worker_t), &(pt->worker_t_attr), &png_worker, (void*)this);
+
+  pti_l = new vsx_texture_load_thread_info();
+  pti_l->filename = fname;
+  pti_l->mipmaps = mipmaps;
+  pti_l->filesystem = filesystem;
+
+  pti_l->thread_created = 1;
+  pthread_attr_init(&pti_l->worker_t_attr);
+
+  pthread_create(&(pti_l->worker_t), &(pti_l->worker_t_attr), &png_worker, (void*)this);
 }
+
 
 void vsx_texture::load_png_cubemap(vsx_string fname, bool mipmaps, vsxf* filesystem)
 {
   if (load_from_glist(fname))
     return;
 
+  // reset state
+  valid = false;
   is_glist_alias = false;
+  deferred_loading_type = 0;
 
-  vsxf* i_filesystem = 0x0;
-  if (filesystem == 0x0)
-  {
-    i_filesystem = new vsxf;
-    filesystem = i_filesystem;
-  }
   pngRawInfo* pp = new pngRawInfo;
-  if (pngLoadRaw(fname.c_str(), pp, filesystem))
+  if (!pngLoadRaw(fname.c_str(), pp, filesystem))
   {
-    this->name = fname;
-    init_opengl_texture_cubemap();
-    if (pp->Components == 1)
-    upload_ram_bitmap_cube((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,3,GL_RGB);
-    if (pp->Components == 2)
-    upload_ram_bitmap_cube((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,4,GL_RGBA);
-    if (pp->Components == 3)
-    upload_ram_bitmap_cube((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,pp->Components,GL_RGB);
-    if (pp->Components == 4)
-    upload_ram_bitmap_cube((unsigned long*)(pp->Data),pp->Width,pp->Height,mipmaps,pp->Components,GL_RGBA);
-
-    free(pp->Data);
-
-    if (pp->Palette)
-    {
-      free( pp->Palette );
-    }
-
-    texture_info->type = VSX_TEXTURE_INFO_TYPE_PNG; // png
-
-    is_glist_alias = true;
-
-    t_glist[fname].texture_info = *texture_info;
-    delete texture_info;
-    texture_info = &t_glist[fname].texture_info;
-    t_glist[fname].references++;
+    delete pp;
+    return;
   }
-  delete pp;
-  if (i_filesystem) delete i_filesystem;
+
+  pti_l = new vsx_texture_load_thread_info();
+  pti_l->filename = fname;
+  pti_l->mipmaps = mipmaps;
+  pti_l->filesystem = filesystem;
+  pti_l->pp = pp;
+
+  deferred_loading_type = VSX_TEXTURE_LOADING_TYPE_CUBE;
 }
 
 
@@ -1373,47 +1351,84 @@ void vsx_texture::load_png_cubemap(vsx_string fname, bool mipmaps, vsxf* filesys
 
 void vsx_texture::load_jpeg(vsx_string fname, bool mipmaps)
 {
-    CJPEGTest cj;
-    vsx_string ret;
-    vsxf filesystem;
-    cj.LoadJPEG(fname,ret,&filesystem);
-    upload_ram_bitmap_2d((unsigned long*)cj.m_pBuf, cj.GetResX(), cj.GetResY(), mipmaps, 3, GL_RGB);
-    texture_info->type = VSX_TEXTURE_INFO_TYPE_JPG;
+  valid = false;
+
+  CJPEGTest cj;
+  vsx_string ret;
+  vsxf filesystem;
+  cj.LoadJPEG(fname,ret,&filesystem);
+  upload_ram_bitmap_2d((unsigned long*)cj.m_pBuf, cj.GetResX(), cj.GetResY(), mipmaps, 3, GL_RGB);
+  texture_info->type = VSX_TEXTURE_INFO_TYPE_JPG;
+
 }
 
 
 bool vsx_texture::bind()
 {
-  if (pti_l)
-  if (((pti*)pti_l)->thread_state == 2)
+  if (!valid && deferred_loading_type)
   {
-    if (texture_info->ogl_id != 0) unload();
+    if (!pti_l)
+      ERROR_EXIT("PTI is not valid!",1);
 
-    init_opengl_texture_2d();
-    pngRawInfo* pp = (pngRawInfo*)(((pti*)pti_l)->pp);
-    if (pp->Components == 1)
-    upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,((pti*)pti_l)->mipmaps,3,GL_RGB); else
-    if (pp->Components == 2)
-    upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,((pti*)pti_l)->mipmaps,4,GL_RGBA); else
-    if (pp->Components == 3)
-    upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,((pti*)pti_l)->mipmaps,pp->Components,GL_RGB); else
-    if (pp->Components == 4)
-    upload_ram_bitmap_2d((unsigned long*)(pp->Data),pp->Width,pp->Height,((pti*)pti_l)->mipmaps,pp->Components,GL_RGBA);
-    free((((pti*)pti_l)->pp)->Data);
+    if (texture_info->ogl_id != 0)
+      unload();
 
+    switch(deferred_loading_type)
+    {
+      case VSX_TEXTURE_LOADING_TYPE_2D:
+        init_opengl_texture_2d();
+        if (pti_l->pp->Components == 1)
+        upload_ram_bitmap_2d((unsigned long*)(pti_l->pp->Data),pti_l->pp->Width,pti_l->pp->Height,pti_l->mipmaps,3,GL_RGB); else
+        if (pti_l->pp->Components == 2)
+        upload_ram_bitmap_2d((unsigned long*)(pti_l->pp->Data),pti_l->pp->Width,pti_l->pp->Height,pti_l->mipmaps,4,GL_RGBA); else
+        if (pti_l->pp->Components == 3)
+        upload_ram_bitmap_2d((unsigned long*)(pti_l->pp->Data),pti_l->pp->Width,pti_l->pp->Height,pti_l->mipmaps,pti_l->pp->Components,GL_RGB); else
+        if (pti_l->pp->Components == 4)
+        upload_ram_bitmap_2d((unsigned long*)(pti_l->pp->Data),pti_l->pp->Width,pti_l->pp->Height,pti_l->mipmaps,pti_l->pp->Components,GL_RGBA);
+      break;
 
+      case VSX_TEXTURE_LOADING_TYPE_CUBE:
+        init_opengl_texture_cubemap();
+        if (pti_l->pp->Components == 1)
+        upload_ram_bitmap_cube((unsigned long*)(pti_l->pp->Data),pti_l->pp->Width,pti_l->pp->Height,pti_l->mipmaps,3,GL_RGB);
+        if (pti_l->pp->Components == 2)
+        upload_ram_bitmap_cube((unsigned long*)(pti_l->pp->Data),pti_l->pp->Width,pti_l->pp->Height,pti_l->mipmaps,4,GL_RGBA);
+        if (pti_l->pp->Components == 3)
+        upload_ram_bitmap_cube((unsigned long*)(pti_l->pp->Data),pti_l->pp->Width,pti_l->pp->Height,pti_l->mipmaps,pti_l->pp->Components,GL_RGB);
+        if (pti_l->pp->Components == 4)
+        upload_ram_bitmap_cube((unsigned long*)(pti_l->pp->Data),pti_l->pp->Width,pti_l->pp->Height,pti_l->mipmaps,pti_l->pp->Components,GL_RGBA);
+      break;
+    }
+
+    this->name = pti_l->filename;
+
+    // Cleanup memory
+    free( pti_l->pp->Data );
+
+    if ( pti_l->pp->Palette )
+    {
+      free( pti_l->pp->Palette );
+    }
+
+    // Cleanup pti
+    delete pti_l->pp;
+    delete pti_l;
+    pti_l = 0;
+
+    // Handle texture info & glist
+    is_glist_alias = true;
     texture_info->type = VSX_TEXTURE_INFO_TYPE_PNG; // png
     t_glist[name].texture_info = *texture_info;
     t_glist[name].references++;
 
     delete texture_info;
 
+    // Handle glist
     texture_info = &t_glist[name].texture_info;
 
-    pthread_join(((pti*)pti_l)->worker_t,0);
     valid = true;
-    delete (pti*)pti_l;
-    pti_l = 0;
+
+    deferred_loading_type = 0;
   }
 
   if (!valid)
@@ -1422,6 +1437,7 @@ bool vsx_texture::bind()
   if ( 0 == texture_info->ogl_id )
     return false;
 
+  // Enable the texture
   glEnable(texture_info->ogl_type);
   glBindTexture(texture_info->ogl_type,texture_info->ogl_id);
   return true;

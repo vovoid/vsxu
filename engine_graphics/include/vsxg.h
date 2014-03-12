@@ -80,14 +80,14 @@ typedef struct {
 } pngInfo;
 
 typedef struct {
-	unsigned int Width;
-	unsigned int Height;
-	unsigned int Depth;
-	unsigned int Alpha;
+  unsigned int Width;
+  unsigned int Height;
+  unsigned int Depth;
+  unsigned int Alpha;
 
-	unsigned int Components;
-	unsigned char *Data;
-	unsigned char *Palette;
+  unsigned int Components;
+  unsigned char *Data;
+  unsigned char *Palette;
 } pngRawInfo;
 
 extern int VSXG_DLLIMPORT pngLoadRaw(const char* filename, pngRawInfo *rawinfo, vsxf* filesystem);

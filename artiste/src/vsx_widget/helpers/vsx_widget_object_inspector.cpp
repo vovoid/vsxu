@@ -329,7 +329,8 @@ void vsx_window_object_inspector::load_file(vsx_string filename)
       texture_loaded = false;
       texture.texture_info->size_y = 0;
       texture.unload();
-      texture.load_png(filename,false);
+      vsxf filesystem;
+      texture.load_png(filename,false,&filesystem);
 
       filename_loaded = filename;
     }
