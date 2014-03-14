@@ -170,7 +170,7 @@ public:
 //*** FRAMEBUFFER BINDING ***************************************************
 //***************************************************************************
 public:
-  void framebuffer_bind(int id)
+  void framebuffer_bind(unsigned int id)
   {
     _framebuffer_binding = id;
     #ifndef VSX_NO_GL
@@ -179,7 +179,7 @@ public:
     #endif
   }
 
-  int framebuffer_bind_get()
+  unsigned int framebuffer_bind_get()
   {
 //    vsx_printf("getting buffer %d\n", _framebuffer_binding);
     return _framebuffer_binding;
@@ -187,7 +187,7 @@ public:
 
 private:
 
-  int _framebuffer_binding;
+  unsigned int _framebuffer_binding;
 
   inline void _framebuffer_binding_init()
   {
