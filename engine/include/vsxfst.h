@@ -77,6 +77,7 @@ public:
   int mode;        // 0 = undefined,  1 = read, 2 = write
   void* file_data; // in the case of VSXF_TYPE_ARCHIVE this is the actual decompressed file in RAM
                    // don't mess with this! the file class will handle it.. 
+  bool file_data_volatile;
   FILE* file_handle;
 
   vsxf_handle()
@@ -85,6 +86,7 @@ public:
       size(0),
       mode(0),
       file_data(0),
+      file_data_volatile(false),
       file_handle(0)
   {}
 
@@ -98,6 +100,10 @@ public:
       delete (vsx_avector<char>*)file_data;
       return;
     }
+
+
+    if (file_data_volatile)
+      return;
 
     free(file_data);
   }
@@ -135,6 +141,12 @@ public:
     compressed_data = 0;
   }
 
+  void clear_uncompressed_data()
+  {
+    if (uncompressed_data)
+      free(uncompressed_data);
+    uncompressed_data = 0;
+  }
 
 
   vsxf_archive_info()

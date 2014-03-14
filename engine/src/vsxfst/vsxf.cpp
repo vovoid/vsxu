@@ -119,6 +119,13 @@ void vsxf::archive_close()
     fclose(archive_handle);
     archive_handle = 0;
   }
+
+  for (size_t i = 0; i < archive_files.size(); i++)
+  {
+    archive_files[i].clear_compressed_data();
+    archive_files[i].clear_uncompressed_data();
+  }
+
   type = VSXF_TYPE_FILESYSTEM;
   archive_files.clear();
 }
@@ -498,6 +505,7 @@ vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
         {
           handle->size = archive_files[i].uncompressed_size;
           handle->file_data = archive_files[i].uncompressed_data;
+          handle->file_data_volatile = true;
           return handle;
         }
 
