@@ -483,6 +483,7 @@ void vsx_widget_connector_bezier::init()
 
   vsxf filesystem;
   mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png", true, &filesystem);
+  mtex_blob.bind_load_gl();
 
   constrained_x = false;
   constrained_y = false;

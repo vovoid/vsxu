@@ -1590,8 +1590,11 @@ void vsx_widget_anchor::init()
 
   vsxf filesystem;
   mtex_d.load_png(skin_path+"datatypes/"+p_type+".png",true, &filesystem);
+  mtex_d.bind_load_gl();
   mtex_blob.load_png(skin_path+"interface_extras/highlight_blob.png",true, &filesystem);
+  mtex_blob.bind_load_gl();
   mtex_blob_small.load_png(skin_path+"interface_extras/connection_blob.png",true, &filesystem);
+  mtex_blob_small.bind_load_gl();
   color.r = 1.0f;
   color.g = 1.0f;
   color.b = 1.0f;

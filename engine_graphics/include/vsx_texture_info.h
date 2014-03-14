@@ -29,6 +29,7 @@
 #include <windows.h>
 #endif
 #include "vsx_gl_global.h"
+#include <vsx_string.h>
 
 //--------------------------------------------------
 
@@ -164,6 +165,7 @@ class vsx_texture_info
 {
 public:
 
+  vsx_string name;
   // size of the texture in pixels
   float size_x;
   float size_y;
@@ -172,12 +174,15 @@ public:
 	GLuint ogl_id;
 	GLuint ogl_type;
 
+  bool ogl_valid;
+
   vsx_texture_info() :
     size_x(0.0f),
     size_y(0.0f),
     type(VSX_TEXTURE_INFO_TYPE_OTHER),
     ogl_id(0),
-    ogl_type(0)
+    ogl_type(0),
+    ogl_valid(false)
   {}
 };
 

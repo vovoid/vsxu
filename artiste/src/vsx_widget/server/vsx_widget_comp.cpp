@@ -600,6 +600,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
 
       vsxf filesystem;
       mtex.load_png(skin_path+"component_types/"+component_type+".png", true, &filesystem);
+      mtex.bind_load_gl();
       if (component_type == "macro")
       {
         // load overlay texture
@@ -700,6 +701,7 @@ void vsx_widget_component::init()
 
   vsxf filesystem;
   mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png",true, &filesystem);
+  mtex_blob.bind_load_gl();
 }
 
 void vsx_widget_component::reinit()

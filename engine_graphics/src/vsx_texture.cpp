@@ -62,31 +62,20 @@ vsx_texture::vsx_texture()
 
   original_transform_obj = 1;
 
-  is_glist_alias = false;
-  texture_info = new vsx_texture_info;
-  transform_obj = new vsx_transform_neutral;
-}
+  loaded_from_glist = false;
 
-vsx_texture::vsx_texture(int id, int type)
-{
-  pti_l = 0;
-  texture_info = new vsx_texture_info;
-  texture_info->ogl_id = id;
-  texture_info->ogl_type = type;
-  transform_obj = new vsx_transform_neutral;
-  valid = true;
-  valid_fbo = false;
-  capturing_to_buffer = false;
+  prev_buf = 0;
+
   is_glist_alias = false;
-  #ifndef VSXU_OPENGL_ES
-    glewInit();
-  #endif
-  depth_buffer_local = true;
+  texture_info = new vsx_texture_info;
+  transform_obj = new vsx_transform_neutral;
 }
 
 vsx_texture::~vsx_texture()
 {
   unload();
+
+  if (!is_glist_alias)
   delete texture_info;
 
   if (original_transform_obj)
@@ -509,8 +498,6 @@ void vsx_texture::init_color_depth_buffer
     texture_storage_type = alpha?GL_RGBA8:GL_RGB8;
   }
 
-  GLuint texture_type;
-  texture_type = GL_TEXTURE_2D;
 
 
 
@@ -1014,6 +1001,9 @@ void vsx_texture::upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigne
 
 void vsx_texture::upload_ram_bitmap_cube(void* data, unsigned long size_x, unsigned long size_y, bool mipmaps, int bpp, int bpp2, bool upside_down)
 {
+  VSX_UNUSED(mipmaps);
+  VSX_UNUSED(upside_down);
+
   if ( size_x / 6 != size_y )
   {
     vsx_printf("vsx_texture::upload_ram_bitmap_cube Error: not cubemap, should be aspect 6:1");
@@ -1200,7 +1190,27 @@ void vsx_texture::upload_ram_bitmap_cube(void* data, unsigned long size_x, unsig
 
 
 
-bool vsx_texture::load_from_glist(vsx_string fname)
+//bool vsx_texture::load_from_glist(vsx_string fname)
+//{
+//  if (t_glist.find(fname) == t_glist.end())
+//    return false;
+
+//  if (!is_glist_alias)
+//    delete texture_info;
+
+//  texture_info = &t_glist[fname].texture_info;
+
+//  t_glist[fname].references++;
+
+//  this->name = fname;
+
+//  is_glist_alias = true;
+//  valid = true;
+//  return true;
+//}
+
+
+bool vsx_texture::load_from_glist_deferred(vsx_string fname)
 {
   if (t_glist.find(fname) == t_glist.end())
     return false;
@@ -1212,12 +1222,29 @@ bool vsx_texture::load_from_glist(vsx_string fname)
 
   t_glist[fname].references++;
 
-  this->name = fname;
+  name = fname;
+  loaded_from_glist = true;
 
   is_glist_alias = true;
-  valid = true;
   return true;
 }
+
+void vsx_texture::add_to_glist_deferred(vsx_string fname)
+{
+  if (t_glist.find(fname) == t_glist.end())
+  {
+    t_glist[fname].texture_info = *texture_info;
+    t_glist[fname].texture_info.name = fname;
+    delete texture_info;
+    texture_info = &t_glist[fname].texture_info;
+  }
+  // set glist alias
+  is_glist_alias = true; // we own the original texture_info
+
+  // increase refcount
+  t_glist[fname].references++;
+}
+
 
 
 
@@ -1255,7 +1282,7 @@ void png_worker_cleanup(vsx_texture_load_thread_info* pti_l)
 
 void vsx_texture::load_png(vsx_string fname, bool mipmaps, vsxf* filesystem)
 {
-  if (load_from_glist(fname))
+  if (load_from_glist_deferred(fname))
     return;
 
   // reset state
@@ -1278,12 +1305,13 @@ void vsx_texture::load_png(vsx_string fname, bool mipmaps, vsxf* filesystem)
 
   deferred_loading_type = VSX_TEXTURE_LOADING_TYPE_2D;
 
+  add_to_glist_deferred(fname);
 }
 
 // load a png but put the heavy processing in a thread
 void vsx_texture::load_png_thread(vsx_string fname, bool mipmaps, vsxf* filesystem)
 {
-  if (load_from_glist(fname))
+  if (load_from_glist_deferred(fname))
     return;
 
   // reset state
@@ -1306,6 +1334,9 @@ void vsx_texture::load_png_thread(vsx_string fname, bool mipmaps, vsxf* filesyst
   pti_l->filesystem = filesystem;
 
   pti_l->thread_created = 1;
+
+  add_to_glist_deferred(fname);
+
   pthread_attr_init(&pti_l->worker_t_attr);
 
   pthread_create(&(pti_l->worker_t), &(pti_l->worker_t_attr), &png_worker, (void*)this);
@@ -1314,7 +1345,7 @@ void vsx_texture::load_png_thread(vsx_string fname, bool mipmaps, vsxf* filesyst
 
 void vsx_texture::load_png_cubemap(vsx_string fname, bool mipmaps, vsxf* filesystem)
 {
-  if (load_from_glist(fname))
+  if (load_from_glist_deferred(fname))
     return;
 
   // reset state
@@ -1336,6 +1367,7 @@ void vsx_texture::load_png_cubemap(vsx_string fname, bool mipmaps, vsxf* filesys
   pti_l->pp = pp;
 
   deferred_loading_type = VSX_TEXTURE_LOADING_TYPE_CUBE;
+  add_to_glist_deferred(fname);
 }
 
 
@@ -1363,7 +1395,10 @@ void vsx_texture::load_jpeg(vsx_string fname, bool mipmaps)
 }
 
 
-bool vsx_texture::bind()
+
+
+
+void vsx_texture::bind_load_gl()
 {
   if (!valid && deferred_loading_type)
   {
@@ -1415,21 +1450,24 @@ bool vsx_texture::bind()
     delete pti_l;
     pti_l = 0;
 
-    // Handle texture info & glist
-    is_glist_alias = true;
     texture_info->type = VSX_TEXTURE_INFO_TYPE_PNG; // png
-    t_glist[name].texture_info = *texture_info;
-    t_glist[name].references++;
-
-    delete texture_info;
-
-    // Handle glist
-    texture_info = &t_glist[name].texture_info;
-
-    valid = true;
+    texture_info->ogl_valid = true;
 
     deferred_loading_type = 0;
   }
+  if (!valid && is_glist_alias)
+  {
+    if ( !texture_info->ogl_valid )
+      return false;
+    valid = texture_info->ogl_valid;
+  }
+
+}
+
+
+bool vsx_texture::bind()
+{
+  bind_load_gl();
 
   if (!valid)
     return false;

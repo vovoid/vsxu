@@ -103,7 +103,10 @@ class vsx_texture
 
   int original_transform_obj;
 
-  bool load_from_glist(vsx_string fname);
+
+  bool loaded_from_glist;
+  bool load_from_glist_deferred(vsx_string fname);
+  void add_to_glist_deferred(vsx_string fname);
 
 public:
 
@@ -227,6 +230,11 @@ public:
 
   VSX_ENGINE_GRAPHICS_DLLIMPORT GLuint get_depth_buffer_handle();
 
+  // load a png in the same thread as ours. These can be called outside from a GL Context (deferred loading)
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png(vsx_string fname, bool mipmaps, vsxf* filesystem);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png_thread(vsx_string fname, bool mipmaps, vsxf* filesystem);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_jpeg(vsx_string fname, bool mipmaps = true);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png_cubemap(vsx_string fname, bool mipmaps = true, vsxf* filesystem = 0x0);
 
   // General texture functions-------------------------------------------------
   // allocate an openGL texture ID
@@ -249,12 +257,6 @@ public:
 
   // assumes width is 6x height (maps in order: -x, z, x, -z, -y, y
   VSX_ENGINE_GRAPHICS_DLLIMPORT void upload_ram_bitmap_cube(void* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
-
-  // load a png in the same thread as ours.
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png(vsx_string fname, bool mipmaps, vsxf* filesystem);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png_thread(vsx_string fname, bool mipmaps, vsxf* filesystem);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_jpeg(vsx_string fname, bool mipmaps = true);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png_cubemap(vsx_string fname, bool mipmaps = true, vsxf* filesystem = 0x0);
 
   // update the transform object with a new transformation
   void set_transform(vsx_transform_obj* new_transform_obj) {
@@ -286,6 +288,11 @@ public:
 
   // use this to bind the texture.
   VSX_ENGINE_GRAPHICS_DLLIMPORT bool bind();
+
+  // use this to load the texture when in OpenGL context
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void bind_load_gl();
+
+
   // use this when you're done with the texture
   VSX_ENGINE_GRAPHICS_DLLIMPORT void _bind();
 
@@ -295,7 +302,6 @@ public:
   // constructors
 
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_texture();
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_texture(int id, int type);
   VSX_ENGINE_GRAPHICS_DLLIMPORT ~vsx_texture();
 
   VSX_ENGINE_GRAPHICS_DLLIMPORT void unload();

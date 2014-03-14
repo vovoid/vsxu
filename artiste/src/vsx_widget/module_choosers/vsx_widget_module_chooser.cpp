@@ -1182,6 +1182,7 @@ void vsx_widget_ultra_chooser::build_tree() {
 
   vsxf filesystem;
   treedraw->mtex->load_png(skin_path+"label.png", true, &filesystem);
+  treedraw->mtex->bind_load_gl();
 }
 void vsx_widget_ultra_chooser::reinit() {
   vsxf filesystem;

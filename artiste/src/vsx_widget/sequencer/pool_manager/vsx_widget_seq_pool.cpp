@@ -80,6 +80,7 @@ public:
 
     vsxf filesystem;
     mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png", true, &filesystem);
+    mtex_blob.bind_load_gl();
     set_render_type(VSX_WIDGET_RENDER_2D);
   }
 
