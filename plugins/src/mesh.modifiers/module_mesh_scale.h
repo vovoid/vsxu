@@ -75,7 +75,8 @@ public:
 
   void run() {
     vsx_mesh** p = mesh_in->get_addr();
-    if (!p) { printf("error in vsx_module_mesh_scale: mesh_in is invalid\n"); return; }
+    if (!p)
+      ERROR_RETURN("mesh is invalid");
 
     if
     (

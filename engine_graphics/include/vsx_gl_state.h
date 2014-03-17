@@ -449,8 +449,8 @@ public:
   {
     _blend_func_stack_pointer--;
     blend_func(
-      _blend_src = _blend_func_stack[0][_blend_func_stack_pointer],
-      _blend_src = _blend_func_stack[1][_blend_func_stack_pointer]
+      _blend_func_stack[0][_blend_func_stack_pointer],
+      _blend_func_stack[1][_blend_func_stack_pointer]
     );
   }
 

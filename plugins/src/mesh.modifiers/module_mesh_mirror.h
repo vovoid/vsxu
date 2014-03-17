@@ -80,7 +80,7 @@ public:
     vsx_mesh** p = mesh_in->get_addr();
 
     if (!p)
-      ERROR_RETURN("error in vsx_module_mesh_scale: mesh_in is invalid\n");
+      ERROR_RETURN("mesh_in is invalid\n");
 
     // check if there's work to do, otherwise return
     if
