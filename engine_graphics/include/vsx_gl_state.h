@@ -13,6 +13,7 @@
 //   Be careful!
 ///////////////////////////////////////////////////////////////////////////////
 
+#define VSX_GL_STATE_STACK_DEPTH 32
 
 ///////////////////////////////////////////////////////////////////////////////
 // face direction
@@ -411,6 +412,7 @@ public:
     _blend_color[1] = g;
     _blend_color[2] = b;
     _blend_color[3] = a;
+
     #ifndef VSX_NO_GL
     if (!GLEW_EXT_blend_color) return;
     glBlendColor(
@@ -424,13 +426,9 @@ public:
 
   inline void blend_func(int src, int dst)
   {
-//    if (
-//        _blend_src == src
-//        &&
-//        _blend_dst == dst
-//        ) return;
     _blend_src = src;
     _blend_dst = dst;
+
     #ifndef VSX_NO_GL
     glBlendFunc
     (
@@ -440,6 +438,22 @@ public:
     #endif
   }
 
+  inline void blend_func_push()
+  {
+    _blend_func_stack[0][_blend_func_stack_pointer] = _blend_src;
+    _blend_func_stack[1][_blend_func_stack_pointer] = _blend_dst;
+    _blend_func_stack_pointer++;
+  }
+
+  inline void blend_func_pop()
+  {
+    _blend_func_stack_pointer--;
+    blend_func(
+      _blend_src = _blend_func_stack[0][_blend_func_stack_pointer],
+      _blend_src = _blend_func_stack[1][_blend_func_stack_pointer]
+    );
+  }
+
 private:
 
   int _blend_enabled;
@@ -447,8 +461,13 @@ private:
   int _blend_dst;
   float _blend_color[4];
 
+  int _blend_func_stack[2][VSX_GL_STATE_STACK_DEPTH];
+  size_t _blend_func_stack_pointer;
+
+
   void _blend_mode_init_default()
   {
+    _blend_func_stack_pointer = 0;
     _blend_enabled = 0;
     _blend_src = 0;
     _blend_dst = 0;
@@ -710,17 +729,17 @@ private:
 //***************************************************************************
 
   vsx_matrix core_matrix[3];
-  vsx_matrix matrix_stack[3][32];
-  int i_matrix_stack_index[3];
+  vsx_matrix matrix_stack[3][VSX_GL_STATE_STACK_DEPTH];
+  int i_matrix_stack_pointer[3];
   int i_matrix_mode;
   vsx_matrix m_temp;
   vsx_matrix m_temp_2;
 
   inline void _matrix_init()
   {
-    i_matrix_stack_index[0] = 0;
-    i_matrix_stack_index[1] = 0;
-    i_matrix_stack_index[2] = 0;
+    i_matrix_stack_pointer[0] = 0;
+    i_matrix_stack_pointer[1] = 0;
+    i_matrix_stack_pointer[2] = 0;
     i_matrix_mode = 0;
   }
 
@@ -767,8 +786,8 @@ public:
   // push and pop
   inline void matrix_push()
   {
-    matrix_stack[i_matrix_mode][i_matrix_stack_index[i_matrix_mode]] = core_matrix[i_matrix_mode];
-    i_matrix_stack_index[i_matrix_mode]++;
+    matrix_stack[i_matrix_mode][i_matrix_stack_pointer[i_matrix_mode]] = core_matrix[i_matrix_mode];
+    i_matrix_stack_pointer[i_matrix_mode]++;
     #ifndef VSX_NO_GL
       glPushMatrix();
     #endif
@@ -776,10 +795,10 @@ public:
 
   inline void matrix_pop()
   {
-    if (!i_matrix_stack_index)
+    if (!i_matrix_stack_pointer)
       return;
-    i_matrix_stack_index[i_matrix_mode]--;
-    core_matrix[i_matrix_mode] = matrix_stack[i_matrix_mode][i_matrix_stack_index[i_matrix_mode]];
+    i_matrix_stack_pointer[i_matrix_mode]--;
+    core_matrix[i_matrix_mode] = matrix_stack[i_matrix_mode][i_matrix_stack_pointer[i_matrix_mode]];
     #ifndef VSX_NO_GL
       glPopMatrix();
     #endif
