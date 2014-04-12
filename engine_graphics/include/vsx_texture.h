@@ -93,7 +93,7 @@ class vsx_texture
   GLuint frame_buffer_blit_handle;
 
   // save state for buffer capture
-  vsx_matrix buffer_save_matrix[3];
+  vsx_matrix<> buffer_save_matrix[3];
   int buffer_save_blend;
 
   // to prevent double-begins, lock the buffer

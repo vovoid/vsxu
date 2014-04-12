@@ -98,10 +98,10 @@ public:
       q.z = quat_in->get(2);
       q.w = quat_in->get(3);
       q.normalize();
-      vsx_matrix mat;
+      vsx_matrix<float> mat;
       if ( invert_rotation->get())
       {
-        vsx_matrix mat2 = q.matrix();
+        vsx_matrix<float> mat2 = q.matrix();
         mat.assign_inverse(&mat2);
       } else
       {

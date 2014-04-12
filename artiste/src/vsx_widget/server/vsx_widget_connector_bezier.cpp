@@ -127,7 +127,7 @@ int vsx_widget_connector_bezier::inside_xy_l(vsx_vector<> &test, vsx_vector<> &g
   }
   // calculate t position from y
 
-  vsx_bezier_calc bez_calc;
+  vsx_bezier_calc<float> bez_calc;
   bez_calc.x0 = sx;
   bez_calc.y0 = sy;
 
@@ -341,7 +341,7 @@ void vsx_widget_connector_bezier::draw()
   if (old_sx != sx || old_sy != sy || old_ex != ex || old_ey != ey)
   {
     // recalc
-    vsx_bezier_calc bez_calc;
+    vsx_bezier_calc<float> bez_calc;
     bez_calc.x0 = sx;
     bez_calc.y0 = sy;
     

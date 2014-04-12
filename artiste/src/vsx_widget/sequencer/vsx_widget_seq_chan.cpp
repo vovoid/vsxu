@@ -1664,7 +1664,7 @@ void vsx_widget_seq_channel::i_draw()
             if (items[item_iterator].get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_BEZIER)
             {
               // BEZIER (x⁴ INTERPOLATION)
-              vsx_bezier_calc calc;
+              vsx_bezier_calc<float> calc;
               vsx_color<> lb_color = vsx_color<>(0.2f, 1.0f, 0.8f, 1.0f);
               float ev = s2f(items[item_iterator + 1].get_value() );
               draw_line(

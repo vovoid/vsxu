@@ -26,10 +26,11 @@
 
 #include <vsx_vector.h>
 
+template<typename T = float>
 class vsx_matrix
 {
 public:
-  float m[16];
+  T m[16];
 
   vsx_matrix() {
     load_identity();
@@ -50,26 +51,26 @@ public:
     m[12] = m[3];  m[13] = m[7];  m[14] = m[11];  m[15] = m[15];
   }
 
-  inline vsx_vector<> multiply_vector(const vsx_vector<> &a)
+  inline vsx_vector<> multiply_vector(const vsx_vector<T> &a)
   {
-    vsx_vector<> b;
+    vsx_vector<T> b;
     b.x = m[0] * a.x + m[1] * a.y + m[2]  * a.z + m[3];
     b.y = m[4] * a.x + m[5] * a.y + m[6]  * a.z + m[7];
     b.z = m[8] * a.x + m[9] * a.y + m[10] * a.z + m[11];
     return b;
   }
 
-  inline void assign_inverse(vsx_matrix *mm) {
-    float d00, d01, d02, d03;
-    float d10, d11, d12, d13;
-    float d20, d21, d22, d23;
-    float d30, d31, d32, d33;
+  inline void assign_inverse(vsx_matrix<T> *mm) {
+    T d00, d01, d02, d03;
+    T d10, d11, d12, d13;
+    T d20, d21, d22, d23;
+    T d30, d31, d32, d33;
 
-    float m00, m01, m02, m03;
-    float m10, m11, m12, m13;
-    float m20, m21, m22, m23;
-    float m30, m31, m32, m33;
-    float D;
+    T m00, m01, m02, m03;
+    T m10, m11, m12, m13;
+    T m20, m21, m22, m23;
+    T m30, m31, m32, m33;
+    T D;
 
     m00 = mm->m[0];  m01 = mm->m[4];  m02 = mm->m[8];  m03 = mm->m[12];
     m10 = mm->m[1];  m11 = mm->m[5];  m12 = mm->m[9];  m13 = mm->m[13];
@@ -113,14 +114,14 @@ public:
     for (int i=1; i < actualsize; i++) m[i] /= m[0]; // normalize row 0
     for (int i=1; i < actualsize; i++)  {
       for (int j=i; j < actualsize; j++)  { // do a column of L
-        float sum = 0.0;
+        T sum = 0.0;
         for (int k = 0; k < i; k++)
             sum += m[j*maxsize+k] * m[k*maxsize+i];
         m[j*maxsize+i] -= sum;
         }
       if (i == 3) continue;
       for (int j=i+1; j < 4; j++)  {  // do a row of U
-        float sum = 0.0;
+        T sum = 0.0;
         for (int k = 0; k < i; k++)
             sum += m[i*maxsize+k]*m[k*maxsize+j];
         m[i*maxsize+j] =
@@ -129,7 +130,7 @@ public:
       }
     for ( int i = 0; i < actualsize; i++ )  // invert L
       for ( int j = i; j < actualsize; j++ )  {
-        float x = 1.0;
+        T x = 1.0;
         if ( i != j ) {
           x = 0.0;
           for ( int k = i; k < j; k++ )
@@ -140,24 +141,24 @@ public:
     for ( int i = 0; i < actualsize; i++ )   // invert U
       for ( int j = i; j < actualsize; j++ )  {
         if ( i == j ) continue;
-        float sum = 0.0;
+        T sum = 0.0;
         for ( int k = i; k < j; k++ )
             sum += m[k*maxsize+j]*( (i==k) ? 1.0 : m[i*maxsize+k] );
         m[i*maxsize+j] = -sum;
         }
     for ( int i = 0; i < actualsize; i++ )   // final inversion
       for ( int j = 0; j < actualsize; j++ )  {
-        float sum = 0.0;
+        T sum = 0.0;
         for ( int k = ((i>j)?i:j); k < actualsize; k++ )
           sum += ((j==k)?1.0:m[j*maxsize+k])*m[k*maxsize+i];
         m[j*maxsize+i] = sum;
         }
     }
 
-  inline void multiply(vsx_matrix *a, vsx_matrix *b) {
+  inline void multiply(vsx_matrix<T> *a, vsx_matrix<T> *b) {
     int i, j;
     // TODO: do this directly into m?
-    float mm[16];
+    T mm[16];
     for (i = 0; i < 4; i++)
     {
       int ii = i*4;
@@ -169,7 +170,7 @@ public:
                   a->m[ii+3] * b->m[12+j];
       }
     }
-    memcpy(&m,&mm,sizeof(float)*16);
+    memcpy(&m,&mm,sizeof(T)*16);
   }
 
   inline void rotation_from_vectors(vsx_vector<>* dir)

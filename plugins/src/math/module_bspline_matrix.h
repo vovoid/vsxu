@@ -11,7 +11,7 @@ class module_bspline_matrix : public vsx_module
   vsx_module_param_float3* position;
   // internal
   vsx_bspline spline0;
-  vsx_matrix matrix;
+  vsx_matrix<float> matrix;
   vsx_vector<> pos1, pos2, e, upv;
 
 public:

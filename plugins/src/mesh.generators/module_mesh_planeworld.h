@@ -111,7 +111,7 @@ public:
     vsx_vector<> old;
     vsx_vector<> e;
     vsx_vector<> d;
-    vsx_matrix ma;
+    vsx_matrix<float> ma;
     //-----
     for (unsigned long i = 0; i < spline0.points.size()*(int)iterations_p; ++i) {
       spline0.step(step);

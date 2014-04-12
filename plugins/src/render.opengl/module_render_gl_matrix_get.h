@@ -9,7 +9,7 @@ class module_render_gl_matrix_get : public vsx_module
   vsx_module_param_matrix* matrix_out;
 
   // internal
-	vsx_matrix matrix;
+  vsx_matrix<float> matrix;
 
   vsx_gl_state* gl_state;
 

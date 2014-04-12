@@ -35,7 +35,7 @@ public:
 
   // internal
   vsx_mesh<>** mesh;
-  vsx_matrix ma;
+  vsx_matrix<float> ma;
   vsx_vector<> upv;
 
   float prev_psize;

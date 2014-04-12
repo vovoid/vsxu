@@ -30,28 +30,29 @@
 // recursive two dimensional third-grade newton raphson numerical analysis solver
 // and bezier curve
 
+template <typename T = float>
 class vsx_bezier_calc
 {
 public:
 
-  float a;
-  float b;
-  float c;
-  float d;
-  float e;
-  float f;
-  float g;
-  float h;
+  T a;
+  T b;
+  T c;
+  T d;
+  T e;
+  T f;
+  T g;
+  T h;
 
-  float x0; // first coordinate
-  float y0;
-  float x1; // first handle
-  float y1;
+  T x0; // first coordinate
+  T y0;
+  T x1; // first handle
+  T y1;
 
-  float x2; // second handle
-  float y2;
-  float x3; // second coordinate
-  float y3;
+  T x2; // second handle
+  T y2;
+  T x3; // second coordinate
+  T y3;
 
   void init()
   {
@@ -67,7 +68,7 @@ public:
   
    
 
-  float t_from_x(float x_find, float t = 0.5f, int iter = 5)
+  float t_from_x(T x_find, T t = 0.5f, int iter = 5)
   {
     if (iter < 0)
       return t;
@@ -76,34 +77,34 @@ public:
     {
       t = x_find;
     }
-    float current_slope = 1.0f/(3.0f*a*t*t + 2.0f*b*t + c);
-    float cur_x = t*(t*(a*t + b) + c) + d;
-    float nextguess = t + (x_find-cur_x)*(current_slope);
+    T current_slope = 1.0f/(3.0f*a*t*t + 2.0f*b*t + c);
+    T cur_x = t*(t*(a*t + b) + c) + d;
+    T nextguess = t + (x_find-cur_x)*(current_slope);
 
     return t_from_x(x_find,nextguess,iter-1);
   }
   
-  inline float x_from_t(float t)
+  inline T x_from_t(T t)
   {
     return t * ( t * ( a * t + b ) + c ) + d;
   }
 
-  inline float y_from_t(float t)
+  inline T y_from_t(T t)
   {
     return t * ( t * ( e * t + f ) + g ) + h;
   }
 
-  inline float midpoint_x()
+  inline T midpoint_x()
   {
     return (x3 - x0) * 0.5;
   }
 
-  inline float midpoint_y()
+  inline T midpoint_y()
   {
     return (y3 - y0) * 0.5;
   }
 
-  inline float distance_0( const vsx_bezier_calc& o )
+  inline T distance_0( const vsx_bezier_calc<T>& o )
   {
     // our mid-point x
     #define MP_X (x0 + (x3-x0)*0.5)
@@ -128,11 +129,11 @@ public:
 
   inline void mirror()
   {
-    float ix0 = x3;
-    float iy0 = y3;
+    T ix0 = x3;
+    T iy0 = y3;
 
-    float ix1 = x2;
-    float iy1 = y2;
+    T ix1 = x2;
+    T iy1 = y2;
 
     x2 = x1;
     y2 = y1;

@@ -27,11 +27,12 @@
 
 #include <vsx_math.h>
 
+template<typename T = float>
 class vsx_vector_2d;
 
 #include <vsx_vector.h>
 
-template<typename T = float>
+template<typename T>
 class vsx_vector_2d
 {
 public:
@@ -185,7 +186,7 @@ public:
       y(0.0f)
   {}
 
-  vsx_vector_2d(const vsx_vector &n)
+  vsx_vector_2d(const vsx_vector<T> &n)
   {
     x = n.x;
     y = n.y;

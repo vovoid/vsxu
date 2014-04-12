@@ -26,7 +26,7 @@ class vsx_module_render_gravity_ribbon_mesh : public vsx_module
   vsx_mesh<>** mesh;
   vsx_mesh<>* mesh_out;
 
-  vsx_matrix modelview_matrix_no_connection;
+  vsx_matrix<float> modelview_matrix_no_connection;
   float last_update;
   unsigned long prev_num_vertices;
 
@@ -156,7 +156,7 @@ public:
 
     size_t mesh_index = (size_t)mesh_id_start->get() % (*mesh)->data->vertices.size();
 
-    vsx_matrix* matrix_result = modelview_matrix->get_addr();
+    vsx_matrix<float>* matrix_result = modelview_matrix->get_addr();
     if (!matrix_result)
     {
       matrix_result = &modelview_matrix_no_connection;

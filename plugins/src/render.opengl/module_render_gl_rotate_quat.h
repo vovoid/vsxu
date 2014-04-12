@@ -81,10 +81,10 @@ public:
     bb.w = rotation->get(3);
     bb.normalize();
 
-    vsx_matrix mat;
+    vsx_matrix<float> mat;
     if (invert_rotation->get())
     {
-      vsx_matrix mat2;
+      vsx_matrix<float> mat2;
       mat2 = bb.matrix();
       mat.assign_inverse( &mat2 );
     } else
@@ -92,7 +92,6 @@ public:
       mat = bb.matrix();
     }
     gl_state->matrix_mult_f(mat.m);
-//  	glMultMatrixf(mat.m);
     return true;
   }
 

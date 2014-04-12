@@ -69,11 +69,11 @@ public:
 
     // transform
     vsx_quaternion<> pre_rotation_quaternion;
-    vsx_matrix pre_rotation_mat;
+    vsx_matrix<float> pre_rotation_mat;
     vsx_vector<> pre_rot_center;
 
     vsx_quaternion<> rotation_quaternion;
-    vsx_matrix rotation_mat;
+    vsx_matrix<float> rotation_mat;
     vsx_vector<> rot_center;
     vsx_vector<> post_rot_translate_vec;
 

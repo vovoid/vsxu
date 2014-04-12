@@ -50,9 +50,9 @@ class module_mesh_render : public vsx_module
   vsx_mesh<>** mesh;
   vsx_texture** ta;
   bool m_normals, m_tex_coords, m_colors;
-  vsx_matrix mod_mat, proj_mat;
+  vsx_matrix<float> mod_mat, proj_mat;
   vsx_particlesystem<>* particles;
-  vsx_matrix ma;
+  vsx_matrix<float> ma;
 
   unsigned long prev_mesh_timestamp;
 

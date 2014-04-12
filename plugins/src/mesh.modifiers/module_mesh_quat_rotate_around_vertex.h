@@ -109,7 +109,7 @@ public:
         q.z *= len;
         q.w *= len;
       }
-      vsx_matrix mat = q.matrix();
+      vsx_matrix<float> mat = q.matrix();
 
 
       vsx_vector<> neg_vec;

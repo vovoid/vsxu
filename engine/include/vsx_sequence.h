@@ -68,7 +68,7 @@ public:
 
 class vsx_sequence
 {
-	vsx_bezier_calc bez_calc;
+  vsx_bezier_calc<float> bez_calc;
 public:
   vsx_avector<vsx_sequence_item> items;
   float i_time;

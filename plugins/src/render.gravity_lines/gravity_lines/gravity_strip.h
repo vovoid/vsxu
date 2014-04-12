@@ -18,7 +18,7 @@ public:
       vsx_vector<>*    &vs_d,
       vsx_vector<>*    &ns_d,
       vsx_tex_coord* &ts_d,
-      vsx_matrix*    modelview_matrix,
+      vsx_matrix<float>*    modelview_matrix,
       vsx_vector<>*    upvector,
       int &generated_vertices,
       int &generated_faces

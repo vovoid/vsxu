@@ -189,9 +189,9 @@ public:
     w = -q1.x * q2.x - q1.y * q2.y - q1.z * q2.z + q1.w * q2.w;
   }
   
-  inline vsx_matrix matrix()
+  inline vsx_matrix<T> matrix()
   {
-    vsx_matrix mat;
+    vsx_matrix<T> mat;
     T n, s;
     T xs, ys, zs;
     T wx, wy, wz;
@@ -212,7 +212,7 @@ public:
     return mat;
   }
 
-  inline void from_matrix(vsx_matrix* mm)
+  inline void from_matrix(vsx_matrix<T>* mm)
   {
     #define m00 mm->m[0]
     #define m01 mm->m[4]

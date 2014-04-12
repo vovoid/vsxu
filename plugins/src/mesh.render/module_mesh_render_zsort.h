@@ -47,7 +47,7 @@ class module_mesh_render_zsort : public vsx_module
   vsx_mesh<>** mesh;
   vsx_texture** ta;
   bool m_normals, m_tex, m_colors;
-  vsx_matrix mod_mat, proj_mat;
+  vsx_matrix<float> mod_mat, proj_mat;
   vsx_avector_nd<face_holder> f_distances;
   vsx_avector_nd<vsx_face> f_result;
 

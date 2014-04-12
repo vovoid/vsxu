@@ -26,7 +26,7 @@
 #include <vsx_vector_aux.h>
 #include <vsx_string_aux.h>
 
-vsx_bezier_calc bez_calc;
+vsx_bezier_calc<float> bez_calc;
 
 vsx_param_sequence_item::vsx_param_sequence_item()
 {

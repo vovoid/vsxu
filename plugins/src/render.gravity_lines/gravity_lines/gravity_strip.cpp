@@ -85,7 +85,7 @@ void gravity_strip::generate_mesh(
        vsx_vector<>*    &vs_d,
        vsx_vector<>*    &ns_d,
        vsx_tex_coord* &ts_d,
-       vsx_matrix*    modelview_matrix,
+       vsx_matrix<float>*    modelview_matrix,
        vsx_vector<>*    upvector,
        int &generated_vertices,
        int &generated_faces
@@ -100,7 +100,7 @@ void gravity_strip::generate_mesh(
   // 1. get the modelview matrix
   // 2. invert it
   // 3. multiply by vector [0,0,0,1]
-  vsx_matrix model_matrix = *modelview_matrix;
+  vsx_matrix<float> model_matrix = *modelview_matrix;
   model_matrix.transpose();
   vsx_vector<> eye_pos = model_matrix.multiply_vector(vsx_vector<>(upvector->x,upvector->y,upvector->z));
 

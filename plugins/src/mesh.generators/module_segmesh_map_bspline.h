@@ -27,7 +27,7 @@ class module_segmesh_map_bspline : public vsx_module
   vsx_vector<> e;
   vsx_vector<> f;
   vsx_vector<> d;
-  vsx_matrix ma;
+  vsx_matrix<float> ma;
   vsx_vector<> old_vec;
   vsx_vector<> spos;
   vsx_vector<> upv;

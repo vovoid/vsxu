@@ -10,7 +10,7 @@ class module_render_gl_get_camera_orientation : public vsx_module
   vsx_module_param_float3* direction_out;
 
   // internal
-  vsx_matrix matrix;
+  vsx_matrix<float> matrix;
 
   vsx_gl_state* gl_state;
 

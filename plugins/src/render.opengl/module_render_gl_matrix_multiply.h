@@ -11,7 +11,7 @@ class module_render_gl_matrix_multiply : public vsx_module
 	vsx_module_param_render* render_result;
 
   // internal
-	vsx_matrix* mm;
+  vsx_matrix<float>* mm;
 	int active;
 
   vsx_gl_state* gl_state;

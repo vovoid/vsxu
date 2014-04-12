@@ -15,7 +15,7 @@ class module_render_basic_colored_rectangle : public vsx_module
   vsx_module_param_render* render_result;
 
   // internal
-  vsx_matrix saved_modelview;
+  vsx_matrix<float> saved_modelview;
 
   vsx_gl_state* gl_state;
 

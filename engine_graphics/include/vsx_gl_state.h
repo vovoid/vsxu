@@ -728,12 +728,12 @@ private:
 //*** MATRIX OPS ************************************************************
 //***************************************************************************
 
-  vsx_matrix core_matrix[3];
-  vsx_matrix matrix_stack[3][VSX_GL_STATE_STACK_DEPTH];
+  vsx_matrix<float> core_matrix[3];
+  vsx_matrix<float> matrix_stack[3][VSX_GL_STATE_STACK_DEPTH];
   int i_matrix_stack_pointer[3];
   int i_matrix_mode;
-  vsx_matrix m_temp;
-  vsx_matrix m_temp_2;
+  vsx_matrix<float> m_temp;
+  vsx_matrix<float> m_temp_2;
 
   inline void _matrix_init()
   {
@@ -764,7 +764,7 @@ public:
 
   inline void matrix_get_v(int mode, float* res)
   {
-    memcpy(res, &core_matrix[mode].m[0], sizeof(vsx_matrix) );
+    memcpy(res, &core_matrix[mode].m[0], sizeof(vsx_matrix<float>) );
   }
 
   inline void matrix_mode(int new_mode)
@@ -819,7 +819,7 @@ public:
     m_temp.m[2] = 0.0f;  m_temp.m[6] = 0.0f;   m_temp.m[10] = z;     m_temp.m[14] = 0.0f;
     m_temp.m[3] = 0.0f;  m_temp.m[7] = 0.0f;   m_temp.m[11] = 0.0f;  m_temp.m[15] = 1.0f;
 
-    memcpy(m_temp_2.m, core_matrix[i_matrix_mode].m, sizeof(vsx_matrix));
+    memcpy(m_temp_2.m, core_matrix[i_matrix_mode].m, sizeof(vsx_matrix<float>));
     core_matrix[i_matrix_mode].multiply( &m_temp, &m_temp_2);
 
     #ifndef VSX_NO_GL
@@ -846,7 +846,7 @@ public:
     m_temp.m[2] = 0.0f;  m_temp.m[6] = 0.0f;   m_temp.m[10] = 1.0f;  m_temp.m[14] = z;
     m_temp.m[3] = 0.0f;  m_temp.m[7] = 0.0f;   m_temp.m[11] = 0.0f;  m_temp.m[15] = 1.0f;
 
-    memcpy(m_temp_2.m, core_matrix[i_matrix_mode].m, sizeof(vsx_matrix));
+    memcpy(m_temp_2.m, core_matrix[i_matrix_mode].m, sizeof(vsx_matrix<float>));
     core_matrix[i_matrix_mode].multiply( &m_temp, &m_temp_2);
 
     #ifndef VSX_NO_GL
@@ -862,7 +862,7 @@ public:
 
   inline void matrix_rotate_f(float angle, float x, float y, float z)
   {
-    vsx_matrix m_rotate;
+    vsx_matrix<float> m_rotate;
     /*
       Rotation matrix:
       xx(1-c)+c   xy(1-c)-zs  xz(1-c)+ys   0
@@ -903,7 +903,7 @@ public:
     m_rotate.m[6 ] = y*z*(c1)+x*s;
     m_rotate.m[10] = z*z*(c1)+c;
 
-    memcpy(&m_temp.m[0], &core_matrix[i_matrix_mode].m[0], sizeof(vsx_matrix) );
+    memcpy(&m_temp.m[0], &core_matrix[i_matrix_mode].m[0], sizeof(vsx_matrix<float>) );
     core_matrix[i_matrix_mode].multiply( &m_rotate, &m_temp);
 
     #ifndef VSX_NO_GL
@@ -915,8 +915,8 @@ public:
 
   inline void matrix_mult_f(float* res)
   {
-    memcpy(&m_temp.m[0], res, sizeof(vsx_matrix) );
-    memcpy(&m_temp_2.m[0], &core_matrix[i_matrix_mode].m[0], sizeof(vsx_matrix));
+    memcpy(&m_temp.m[0], res, sizeof(vsx_matrix<float>) );
+    memcpy(&m_temp_2.m[0], &core_matrix[i_matrix_mode].m[0], sizeof(vsx_matrix<float>));
     core_matrix[i_matrix_mode].multiply( &m_temp, &m_temp_2 );
     #ifndef VSX_NO_GL
       glLoadIdentity();
@@ -953,7 +953,7 @@ public:
     #undef N2
 
     // prepare for multiplication
-    memcpy(&m_temp_2.m[0], &core_matrix[i_matrix_mode].m[0], sizeof(vsx_matrix));
+    memcpy(&m_temp_2.m[0], &core_matrix[i_matrix_mode].m[0], sizeof(vsx_matrix<float>));
 
     // multiply
     core_matrix[i_matrix_mode].multiply(&m_temp, &m_temp_2);
@@ -1023,7 +1023,7 @@ public:
     #undef N0
     #undef N1
 
-    memcpy(&m_temp_2.m[0], &core_matrix[i_matrix_mode].m[0], sizeof(vsx_matrix));
+    memcpy(&m_temp_2.m[0], &core_matrix[i_matrix_mode].m[0], sizeof(vsx_matrix<float>));
     core_matrix[i_matrix_mode].multiply(&m_temp, &m_temp_2);
     #ifndef VSX_NO_GL
       glLoadIdentity();
@@ -1093,7 +1093,7 @@ public:
       M(3,0) = 0.0;   M(3,1) = 0.0;   M(3,2) = 0.0;   M(3,3) = 1.0;
     #undef M
 
-    memcpy(&m_temp_2.m[0], &core_matrix[i_matrix_mode].m[0], sizeof(vsx_matrix));
+    memcpy(&m_temp_2.m[0], &core_matrix[i_matrix_mode].m[0], sizeof(vsx_matrix<float>));
     core_matrix[i_matrix_mode].multiply(&m_temp,&m_temp_2);
     matrix_translate_f(-eyex, -eyey, -eyez, false);
     #ifndef VSX_NO_GL

@@ -116,7 +116,7 @@ public:
         vsx_quaternion<> qq = worms[i]->lines[k].pos;
         float tt = engine->dtime * worms[i]->lines[k].speed;
         worms[i]->lines[k].pos.slerp(qq, quat, tt);
-        vsx_matrix mat2 = worms[i]->lines[k].pos.matrix();
+        vsx_matrix<float> mat2 = worms[i]->lines[k].pos.matrix();
         mesh->data->vertices[jj] = mat2.multiply_vector(vsx_vector<>(1.0f,0,0));
         mesh->data->vertex_colors[jj] = worms[i]->color;
         ++jj;
