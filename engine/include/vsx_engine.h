@@ -163,8 +163,13 @@ public:
   // should be run soon after the GL surface is initialized
   bool start();
 
-  // loads a new state (clearing out the previous one)
+  // load a new state (clearing out the previous one)
   int load_state(vsx_string filename, vsx_string *error_string = 0);
+
+  // load a new state from external archive, via pre-existing filesystem pointer
+  // This is if you don't want engine to maintain its own filesystem, and if you put
+  // for instance 3 state files into one .vsx file with vsxz, and want to load them into 3 different engines
+  int load_state_filesystem(vsx_string filename, vsx_string *error_string, vsxf* filesystem);
 
   // process messages - this should be run once per physical frame
   void process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive = false, bool ignore_timing = false, float max_time = 0.01f);

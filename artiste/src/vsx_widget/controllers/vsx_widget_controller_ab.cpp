@@ -38,8 +38,8 @@ void vsx_widget_controller_ab::init()
   vsx_widget::init();
   constrained_x = false;
   constrained_y = false;
-  set_pos(vsx_vector(-sizeunit*1.2));
-  set_size(vsx_vector(0.02f, 0.02f));
+  set_pos(vsx_vector<>(-sizeunit*1.2));
+  set_size(vsx_vector<>(0.02f, 0.02f));
 
   ball_size.y = ball_size.x = size.x/2;
 

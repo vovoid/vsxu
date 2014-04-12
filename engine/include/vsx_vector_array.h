@@ -26,10 +26,11 @@
 #define VSX_VECTOR_ARRAY_H
 
 
+template<typename T = float>
 class vsx_vector_array
 {
 public:
-  vsx_array<vsx_vector>* data;
+  vsx_array< vsx_vector<T> >* data;
   unsigned long timestamp;
   vsx_vector_array()
   {

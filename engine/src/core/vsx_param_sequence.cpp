@@ -200,7 +200,7 @@ void vsx_param_sequence::execute(float ptime, float blend)
     } else
     if (param->module_param->type == VSX_MODULE_PARAM_ID_QUATERNION)
     {
-      vsx_quaternion cv, ev;
+      vsx_quaternion<> cv, ev;
       cv.from_string(cur_val);
       ev.from_string(to_val);
 
@@ -220,7 +220,7 @@ void vsx_param_sequence::execute(float ptime, float blend)
       {
         cv.normalize();
         ev.normalize();
-        vsx_quaternion iq;
+        vsx_quaternion<> iq;
         iq.slerp(cv, ev, t);
         ((vsx_module_param_quaternion*)param->module_param)->set_internal(iq.x,0);
         ((vsx_module_param_quaternion*)param->module_param)->set_internal(iq.y,1);
@@ -232,7 +232,7 @@ void vsx_param_sequence::execute(float ptime, float blend)
       {
         cv.normalize();
         ev.normalize();
-        vsx_quaternion iq;
+        vsx_quaternion<> iq;
         iq.cos_slerp(cv, ev, t);
         ((vsx_module_param_quaternion*)param->module_param)->set_internal(iq.x,0);
         ((vsx_module_param_quaternion*)param->module_param)->set_internal(iq.y,1);
@@ -309,8 +309,8 @@ void vsx_param_sequence::inject(vsx_string ij)
       //printf("value: %s\n",vtemp.c_str());
       explode(vtemp,pdeli_l,pld_l);
       pa.value = pld_l[0];
-      pa.handle1 = vsx_vector_aux::from_string(pld_l[1]);
-      pa.handle2 = vsx_vector_aux::from_string(pld_l[2]);
+      pa.handle1 = vsx_vector_aux::from_string<float>(pld_l[1]);
+      pa.handle2 = vsx_vector_aux::from_string<float>(pld_l[2]);
     }
     items.push_back(pa);
     //printf("inject delay: %s\n",pld[0].c_str());
@@ -414,8 +414,8 @@ void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_
     //printf("value: %s\n",vtemp.c_str());
     explode(vtemp,pdeli_l,pld_l);
     pa.value = pld_l[0];
-    pa.handle1 = vsx_vector_aux::from_string(pld_l[1]);
-    pa.handle2 = vsx_vector_aux::from_string(pld_l[2]);
+    pa.handle1 = vsx_vector_aux::from_string<float>(pld_l[1]);
+    pa.handle2 = vsx_vector_aux::from_string<float>(pld_l[2]);
   }
 
   items[ vsx_string_aux::s2i(cmd_in->parts[7]) ] = pa;
@@ -466,8 +466,8 @@ void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_
       //printf("value: %s\n",vtemp.c_str());
       explode(vtemp,pdeli_l,pld_l);
       pa.value = pld_l[0];
-      pa.handle1 = vsx_vector_aux::from_string(pld_l[1]);
-      pa.handle2 = vsx_vector_aux::from_string(pld_l[2]);
+      pa.handle1 = vsx_vector_aux::from_string<float>(pld_l[1]);
+      pa.handle2 = vsx_vector_aux::from_string<float>(pld_l[2]);
     }
 
     ++it;

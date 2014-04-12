@@ -30,7 +30,7 @@ class vsx_widget_controller_editor : public vsx_widget_controller_base
 {
   vsx_widget* button_close;
   vsx_widget* button_save;
-  vsx_vector pos_, size_;
+  vsx_vector<> pos_, size_;
   
   int longest_line;
   int characters_width;

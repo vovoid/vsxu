@@ -50,11 +50,11 @@ class vsx_widget_chooser_editor : public vsx_widget_editor {
   vsx_widget_coords drag_coords;
   int mod_i;
   vsx_string macro_name;
-  vsx_vector drop_pos;
+  vsx_vector<> drop_pos;
   vsx_widget* server;
   int draw_tooltip;
   vsx_string tooltip_text;
-  vsx_vector tooltip_pos;
+  vsx_vector<> tooltip_pos;
 
 public:
   std::vector<int> i_rows_lookup;
@@ -164,10 +164,10 @@ public:
     if (draw_tooltip && m_o_focus == editor && !dragging) {
       font.color.a = 0.0f;
       font.mode_2d = true;
-      vsx_vector sz = font.get_size(tooltip_text, 0.025f);
+      vsx_vector<> sz = font.get_size(tooltip_text, 0.025f);
       //sz = sz-tooltip_pos;
       glColor4f(0.0f,0.0f,0.0f,0.6f);
-      draw_box(vsx_vector(tooltip_pos.x,tooltip_pos.y+0.025*1.05), sz.x, -sz.y);
+      draw_box(vsx_vector<>(tooltip_pos.x,tooltip_pos.y+0.025*1.05), sz.x, -sz.y);
       glColor4f(1.0f,1.0f,1.0f,0.6f);
       font.color.r = 1.0f;
       font.color.a = 1.0f;
@@ -255,7 +255,7 @@ vsx_module_chooser_list::vsx_module_chooser_list() {
   // now for the edit fields
   vsx_widget_window::init();
   allow_resize_x = allow_resize_y = true;
-  set_size(vsx_vector(0.15f, 0.7f));
+  set_size(vsx_vector<>(0.15f, 0.7f));
 
   // set up list
   vsx_widget_chooser_editor *e = (vsx_widget_chooser_editor*)add(new vsx_widget_chooser_editor,"e");
@@ -263,12 +263,12 @@ vsx_module_chooser_list::vsx_module_chooser_list() {
   e->set_render_type(VSX_WIDGET_RENDER_2D);
   e->coord_type = VSX_WIDGET_COORD_CORNER;
   coord_related_parent = false;
-  e->set_pos(vsx_vector(size.x/2,size.y/2));
+  e->set_pos(vsx_vector<>(size.x/2,size.y/2));
   e->editor->set_font_size(0.016f);
   e->size_from_parent = true;
   e->editor->editing_enabled = false;
   e->editor->selected_line_highlight = true;
-  e->set_pos(vsx_vector(size.x/2,size.y/2));
+  e->set_pos(vsx_vector<>(size.x/2,size.y/2));
   e->pos_from_parent = true;
   e->extra_init();
   e->extra_init();
@@ -312,7 +312,7 @@ bool vsx_module_chooser_list::event_key_down(signed long key, bool alt, bool ctr
 void vsx_module_chooser_list::show() {
   a_focus = k_focus = widget_list;
   visible = 1;
-  set_pos(vsx_vector(0.0f, 0.0f/*0.5-size.y*0.75f*/,0));
+  set_pos(vsx_vector<>(0.0f, 0.0f/*0.5-size.y*0.75f*/,0));
 }
 
 void vsx_module_chooser_list::show(vsx_string value) {
@@ -324,10 +324,10 @@ void vsx_module_chooser_list::show(vsx_string value) {
 void vsx_module_chooser_list::i_draw()
 {
   vsx_widget_window::i_draw();
-  widget_list->set_pos(vsx_vector(size.x/2,size.y/2-font_size+dragborder*0.5f));
-  widget_list->set_size(vsx_vector(size.x-dragborder*2,size.y-font_size*2-dragborder*2));
-  widget_search->set_size(vsx_vector(size.x-dragborder*2, 0.02f));
-  widget_search->set_pos(vsx_vector(size.x/2,size.y-0.04f));
+  widget_list->set_pos(vsx_vector<>(size.x/2,size.y/2-font_size+dragborder*0.5f));
+  widget_list->set_size(vsx_vector<>(size.x-dragborder*2,size.y-font_size*2-dragborder*2));
+  widget_search->set_size(vsx_vector<>(size.x-dragborder*2, 0.02f));
+  widget_search->set_pos(vsx_vector<>(size.x/2,size.y-0.04f));
 }
 
 void vsx_module_chooser_list::command_process_back_queue(vsx_command_s *t) {

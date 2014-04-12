@@ -9,15 +9,15 @@ class module_particlesystem_generate_simple : public vsx_module
   float nump;
   float size_base, size_random_weight;
   float lifetime_base, lifetime_random_weight;
-  vsx_quaternion q1;
-  vsx_quaternion* q_out;
+  vsx_quaternion<> q1;
+  vsx_quaternion<>* q_out;
   vsx_rand rand;
 
   float random_numbers[8192];
   size_t random_number_index;
 
 
-  vsx_particlesystem particles;
+  vsx_particlesystem<> particles;
 
   vsx_module_param_float* particles_per_second;
   float particles_to_go;
@@ -149,7 +149,7 @@ public:
     // default is 100 particles, should be enough for most effects (tm)
     particles_count->set(100);
     particles.timestamp = 0;
-    particles.particles = new vsx_array<vsx_particle>;
+    particles.particles = new vsx_array< vsx_particle<> >;
     //result_particlesystem->set_p(particles);
     first = true;
 
@@ -176,7 +176,7 @@ public:
     {
       for (i = 0; i < particles_count->get(); ++i)
       {
-        (*particles.particles)[i].color = vsx_color(1,1,1,1);
+        (*particles.particles)[i].color = vsx_color<>(1,1,1,1);
         (*particles.particles)[i].orig_size = (*particles.particles)[i].size = 0;
         (*particles.particles)[i].pos.x = 0;
         (*particles.particles)[i].pos.y = 0;
@@ -187,7 +187,7 @@ public:
         (*particles.particles)[i].speed.z = 0;
         (*particles.particles)[i].time = 3;
         (*particles.particles)[i].lifetime = 2;
-        (*particles.particles)[i].rotation_dir = vsx_quaternion(0,0,0,0);
+        (*particles.particles)[i].rotation_dir = vsx_quaternion<>(0,0,0,0);
       }
       first = false;
       return;
@@ -235,7 +235,7 @@ public:
     else
     p_to_go = (long)round(particles_per_second->get()*ddtime);
 
-    vsx_quaternion c_rotation_dir;
+    vsx_quaternion<> c_rotation_dir;
     c_rotation_dir.x = particle_rotation_dir->get(0);
     c_rotation_dir.y = particle_rotation_dir->get(1);
     c_rotation_dir.z = particle_rotation_dir->get(2);
@@ -256,7 +256,7 @@ public:
           (*particles.particles)[i].time > (*particles.particles)[i].lifetime)
       {
         (*particles.particles)[i].size = (*particles.particles)[i].orig_size = size_base+rand.frand()*size_random_weight-size_random_weight*0.5f;
-        (*particles.particles)[i].color = vsx_color(rr,gg,bb,aa);
+        (*particles.particles)[i].color = vsx_color<>(rr,gg,bb,aa);
         switch (speed_type->get()) {
           case 0:
             (*particles.particles)[i].speed.x = spd_x * rand.frand() - half_spd_x;

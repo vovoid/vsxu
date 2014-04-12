@@ -42,7 +42,7 @@ typedef struct
 class vsx_module_text_s : public vsx_module {
   FTFont* ftfont;
   FTFont* ftfont2;
-  vsx_vector mf_location;
+  vsx_vector<> mf_location;
   vsx_string cur_font;
   int cur_render_type;
   float cur_glyph_size;

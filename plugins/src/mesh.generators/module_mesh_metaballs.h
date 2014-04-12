@@ -12,7 +12,7 @@ class module_mesh_metaballs : public vsx_module
   vsx_module_param_mesh* result;
 
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   bool first_run;
   int i_grid_size;
 
@@ -47,7 +47,7 @@ public:
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     balls.vertices = &(mesh->data->vertices);
     balls.vertex_normals = &(mesh->data->vertex_normals);
     balls.vertex_tex_coords = &(mesh->data->vertex_tex_coords);

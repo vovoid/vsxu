@@ -19,7 +19,7 @@ class module_particlesystem_render : public vsx_module
   vsx_module_param_render* render_result;
 
   // internal
-  vsx_particlesystem* particles;
+  vsx_particlesystem<>* particles;
   vsx_texture** tex;
   vsx_sequence seq_size;
   vsx_sequence seq_alpha;
@@ -36,8 +36,8 @@ class module_particlesystem_render : public vsx_module
   vsx_float_array shader_sizes;
   vsx_array<float> shader_sizes_data;
 
-  vsx_vector_array shader_colors;
-  vsx_array<vsx_vector> shader_colors_data;
+  vsx_vector_array<> shader_colors;
+  vsx_array< vsx_vector<> > shader_colors_data;
 
   vsx_float_array shader_alphas;
   vsx_array<float> shader_alphas_data;
@@ -351,19 +351,19 @@ public:
 
         calc_colors();
         shader_colors_data.allocate(particles->particles->size());
-        vsx_vector* shader_colors_dp = shader_colors_data.get_pointer();
+        vsx_vector<>* shader_colors_dp = shader_colors_data.get_pointer();
 
         calc_alphas();
         shader_alphas_data.allocate(particles->particles->size());
         float* shader_alphas_dp = shader_alphas_data.get_pointer();
 
-        vsx_particle* particle_p = (*particles->particles).get_pointer();
+        vsx_particle<>* particle_p = (*particles->particles).get_pointer();
 
         if (color_lifespan_type->get()) // color lifespan sequence
         {
           for (size_t i = 0; i < (*particles->particles).size(); ++i)
           {
-            vsx_particle* pp = &particle_p[i];
+            vsx_particle<>* pp = &particle_p[i];
             if (pp->lifetime != 0.0f) {
               float tt = pp->time/pp->lifetime;
               if (tt < 0.0f) tt = 0.0f;
@@ -386,7 +386,7 @@ public:
         { // normal
           for (size_t i = 0; i < (*particles->particles).size(); ++i)
           {
-            vsx_particle* pp = &particle_p[i];
+            vsx_particle<>* pp = &particle_p[i];
             if (pp->lifetime != 0.0f) {
               float tt = pp->time/pp->lifetime;
               if (tt < 0.0f) tt = 0.0f;
@@ -442,7 +442,7 @@ public:
 
         glColor4f(1.0,1.0,1.0,1.0);
         glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(3, GL_FLOAT, sizeof(vsx_particle), (*particles->particles).get_pointer());
+        glVertexPointer(3, GL_FLOAT, sizeof(vsx_particle<>), (*particles->particles).get_pointer());
         glDrawArrays(GL_POINTS,0,(*particles->particles).size()-1);
         glDisableClientState(GL_VERTEX_ARRAY);
       }

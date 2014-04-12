@@ -28,18 +28,26 @@
 #include <vsx_vector.h>
 #include <vsx_matrix.h>
 
+
+
 inline float vsx_math_3d_max(const float& x, const float& y)
 {
   return ( x > y ) ? x : y;
 }
 
+inline double vsx_math_3d_max(const double& x, const double& y)
+{
+  return ( x > y ) ? x : y;
+}
+
+template<typename T = float>
 class vsx_quaternion
 {
 public:
-  float x;
-  float y;
-  float z;
-  float w;
+  T x;
+  T y;
+  T z;
+  T w;
   
   vsx_quaternion()
   {
@@ -49,14 +57,14 @@ public:
     w = 1.0f;
   }
 
-  vsx_quaternion(float xx, float yy, float zz)
+  vsx_quaternion(T xx, T yy, T zz)
   {
     x = xx;
     y = yy;
     z = zz;
   }
 
-  vsx_quaternion(float xx, float yy, float zz, float ww)
+  vsx_quaternion(T xx, T yy, T zz, T ww)
   {
     x = xx;
     y = yy;
@@ -64,14 +72,14 @@ public:
     w = ww;
   }
 
-  inline void cos_slerp(vsx_quaternion& from, vsx_quaternion& to, float t)
+  inline void cos_slerp(vsx_quaternion& from, vsx_quaternion& to, T t)
   {
-    slerp(from,to,(float)sin(t*HALF_PI));
+    slerp(from,to,(T)sin(t*HALF_PI));
   }
 
-  inline void slerp(vsx_quaternion& from, vsx_quaternion& to, float t)
+  inline void slerp(vsx_quaternion& from, vsx_quaternion& to, T t)
   {
-    float         to1[4];
+    T         to1[4];
     double        omega, cosom, sinom, scale0, scale1;
     // calc cosine
     cosom = from.x * to.x + from.y * to.y + from.z * to.z + from.w * to.w;
@@ -105,10 +113,10 @@ public:
       scale1 = t;
     }
   	// calculate final values
-  	x = (float)(scale0 * from.x + scale1 * to1[0]);
-  	y = (float)(scale0 * from.y + scale1 * to1[1]);
-  	z = (float)(scale0 * from.z + scale1 * to1[2]);
-  	w = (float)(scale0 * from.w + scale1 * to1[3]);
+    x = (T)(scale0 * from.x + scale1 * to1[0]);
+    y = (T)(scale0 * from.y + scale1 * to1[1]);
+    z = (T)(scale0 * from.z + scale1 * to1[2]);
+    w = (T)(scale0 * from.w + scale1 * to1[3]);
   }
   
   vsx_quaternion operator +=(const vsx_quaternion &t)
@@ -129,7 +137,7 @@ public:
     return temp;
   }
 
-  vsx_quaternion operator -(const vsx_vector &t)
+  vsx_quaternion operator -(const vsx_vector<T> &t)
   {
     vsx_quaternion temp;
     temp.x = x-t.x;
@@ -139,7 +147,7 @@ public:
   }
 
 
-  vsx_quaternion operator *(const vsx_vector &t) const
+  vsx_quaternion operator *(const vsx_vector<T> &t) const
   {
     vsx_quaternion temp;
     temp.x = x*t.x;
@@ -149,13 +157,13 @@ public:
   }
 
 
-  inline float dot_product(vsx_vector* ov) const
+  inline T dot_product(vsx_vector<T>* ov) const
   {
     return x * ov->x   +   y * ov->y   +   z * ov->z;
   }
 
 
-  inline void from_axis_angle( vsx_vector &source_axis, float &source_angle)
+  inline void from_axis_angle( vsx_vector<T> &source_axis, T &source_angle)
   {
     w = sin( source_angle * 0.5f );
     x = source_axis.x * w;
@@ -164,10 +172,10 @@ public:
     w = cos( source_angle * 0.5f );
   }
 
-  inline void to_axis_angle( vsx_vector &result_axis, float &result_angle)
+  inline void to_axis_angle( vsx_vector<T> &result_axis, T &result_angle)
   {
     result_angle = 2 * acos(w);
-    float sq = 1.0f / sqrt(1-w*w);
+    T sq = 1.0f / sqrt(1-w*w);
     result_axis.x = x * sq;
     result_axis.y = y * sq;
     result_axis.z = z * sq;
@@ -184,11 +192,11 @@ public:
   inline vsx_matrix matrix()
   {
     vsx_matrix mat;
-    GLfloat n, s;
-    GLfloat xs, ys, zs;
-    GLfloat wx, wy, wz;
-    GLfloat xx, xy, xz;
-    GLfloat yy, yz, zz;
+    T n, s;
+    T xs, ys, zs;
+    T wx, wy, wz;
+    T xx, xy, xz;
+    T yy, yz, zz;
 
     n = (x * x) + (y * y) + (z * z) + (w * w);
     s = (n > 0.0f) ? (2.0f / n) : 0.0f;
@@ -255,7 +263,7 @@ public:
   // normalizes the quaternion ensuring it stays a unit-quaternion
   inline void normalize()
   {
-    float len = (float)(1.0 / sqrt(
+    T len = (T)(1.0 / sqrt(
       x*x +
       y*y +
       z*z +
@@ -267,9 +275,9 @@ public:
     w *= len;
   }
 
-  vsx_vector transform(const vsx_vector &p1)
+  vsx_vector<T> transform(const vsx_vector<T> &p1)
   {
-    vsx_vector p2;
+    vsx_vector<T> p2;
     p2.x = w*w*p1.x + 2*y*w*p1.z - 2*z*w*p1.y + x*x*p1.x + 2*y*x*p1.y + 2*z*x*p1.z - z*z*p1.x - y*y*p1.x;
     p2.y = 2*x*y*p1.x + y*y*p1.y + 2*z*y*p1.z + 2*w*z*p1.x - z*z*p1.y + w*w*p1.y - 2*x*w*p1.z - x*x*p1.y;
     p2.z = 2*x*z*p1.x + 2*y*z*p1.y + z*z*p1.z - 2*w*y*p1.x - y*y*p1.z + 2*w*x*p1.y - x*x*p1.z + w*w*p1.z;

@@ -73,10 +73,10 @@ class vsx_widget_seq_channel : public vsx_widget
     return 	size.x * ( (t-view_time_start) / B - 0.5f);
   }
 
-  vsx_vector passive_mouse_pos;
+  vsx_vector<> passive_mouse_pos;
   vsx_string passive_time;
   vsx_string passive_value;
-  vsx_vector parentpos;
+  vsx_vector<> parentpos;
   std::vector<vsx_widget_param_sequence_item> items; // the actual sequence
   int cur_x, cur_y;
   int scroll_y;
@@ -93,8 +93,8 @@ class vsx_widget_seq_channel : public vsx_widget
   void send_parent_dump();
 
   // temp values for color calculations
-  static vsx_color col_temp_1;
-  static vsx_color col_temp_2;
+  static vsx_color<> col_temp_1;
+  static vsx_color<> col_temp_2;
 
   vsx_widget* menu_interpolation;
   vsx_widget* manual_value_input_dialog;
@@ -115,8 +115,8 @@ public:
   float y_start; // visual y range of the "functional view"
   float y_end;
 
-  vsx_color graph_color; // line graph color
-  vsx_color graph_oob_color; // out of bounds
+  vsx_color<> graph_color; // line graph color
+  vsx_color<> graph_oob_color; // out of bounds
 
   void init();
 
@@ -140,7 +140,7 @@ public:
   void draw_h_line(float y0,float r = 0.5, float g = 0.5, float b = 0.5, float a = 1);
   void draw_red_line(float t0, float t1, float y0);
 
-  void draw_line(float t0, float y0, float t1, float y1, vsx_color& l_color);
+  void draw_line(float t0, float y0, float t1, float y1, vsx_color<>& l_color);
 
   void draw_chan_box(float t0, float y0, float c_size = SEQ_CHAN_BOX_SIZE);
   void draw_selection_box(float t0, float y0);

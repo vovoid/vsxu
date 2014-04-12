@@ -216,8 +216,8 @@ if (cmd == "component_assign")
     // the first component is the 'MASTER' - the one the user moves.
     // Thus we can calculate the distance between all selected components and this one and then apply this
     // delta value to the new position
-    vsx_vector new_position(s2f(c->parts[3]),s2f(c->parts[4]));
-    vsx_vector master_position = ((*(components.begin()))->position);
+    vsx_vector<> new_position(s2f(c->parts[3]),s2f(c->parts[4]));
+    vsx_vector<> master_position = ((*(components.begin()))->position);
 
     for (std::vector<vsx_comp*>::iterator it = components.begin(); it != components.end(); ++it) {
       // 2. Unalias/Disconnect all in the engine level

@@ -23,8 +23,8 @@ class vsx_module_render_gravity_ribbon_mesh : public vsx_module
   // internal
   vsx_avector<gravity_strip*> gr;
   gravity_strip* grp;
-  vsx_mesh** mesh;
-  vsx_mesh* mesh_out;
+  vsx_mesh<>** mesh;
+  vsx_mesh<>* mesh_out;
 
   vsx_matrix modelview_matrix_no_connection;
   float last_update;
@@ -34,7 +34,7 @@ public:
 
   bool init()
   {
-    mesh_out = new vsx_mesh;
+    mesh_out = new vsx_mesh<>;
     last_update = 0;
     return true;
   }
@@ -220,8 +220,8 @@ public:
       mesh_out->data->vertex_tex_coords.reset_used(num2);
 
       vsx_face*      fs_d = mesh_out->data->faces.get_pointer();
-      vsx_vector*    vs_d = mesh_out->data->vertices.get_pointer();
-      vsx_vector*    ns_d = mesh_out->data->vertex_normals.get_pointer();
+      vsx_vector<>*    vs_d = mesh_out->data->vertices.get_pointer();
+      vsx_vector<>*    ns_d = mesh_out->data->vertex_normals.get_pointer();
       vsx_tex_coord* ts_d = mesh_out->data->vertex_tex_coords.get_pointer();
       int generated_vertices = 0;
       int generated_faces = 0;
@@ -230,7 +230,7 @@ public:
       generated_vertices = 0;
       generated_vertices = 0;
       generated_vertices = 0;
-      vsx_vector upv;
+      vsx_vector<> upv;
       upv.x = upvector->get(0);
       upv.y = upvector->get(1);
       upv.z = upvector->get(2);

@@ -1,16 +1,16 @@
 class module_particlesystem_modifier_2d_rotator : public vsx_module
 {
   float time;
-  vsx_particlesystem* particles;
+  vsx_particlesystem<>* particles;
   vsx_module_param_particlesystem* in_particlesystem;
   vsx_module_param_quaternion* rotation_dir;
   // out
   vsx_module_param_particlesystem* result_particlesystem;
 
-  vsx_array<vsx_quaternion> rotation;
-  vsx_array<vsx_quaternion> rotation_delta;
-  vsx_quaternion q1;
-  vsx_quaternion* q_out;
+  vsx_array< vsx_quaternion<> > rotation;
+  vsx_array< vsx_quaternion<> > rotation_delta;
+  vsx_quaternion<> q1;
+  vsx_quaternion<>* q_out;
 public:
 
   void module_info(vsx_module_info* info)

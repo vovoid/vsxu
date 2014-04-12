@@ -44,7 +44,7 @@ struct vsx_font_info {
 
 class vsx_font {
   static std::map<vsx_string, vsx_font_info*> glist;
-  vsx_vector ep;
+  vsx_vector<> ep;
   void reinit(vsx_font_info* f_info,vsx_string font);
   bool list_built;
   GLuint dlist;
@@ -71,22 +71,22 @@ class vsx_font {
 public:
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_font_info* init(vsx_string font, vsxf* filesystem);
 
-  vsx_avector<vsx_color> syntax_colors;
+  vsx_avector< vsx_color<> > syntax_colors;
   // is in 2d mode?
   bool mode_2d;
   // keeping track of our font
   vsx_font_info* my_font_info;
   float outline_transparency;
   // is it translucent or not?
-  vsx_color color;
+  vsx_color<> color;
   float align;
   
   
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector print(vsx_vector p, const vsx_string& str, const float size, const vsx_string colors = "");
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector print(vsx_vector p, const vsx_string& str, const vsx_string& font, float size, const vsx_string colors = "");
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector print_center(vsx_vector p, const vsx_string& str, float size);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector print_right(vsx_vector p, const vsx_string& str, float size);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector get_size(const vsx_string& str, float size);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector<> print(vsx_vector<> p, const vsx_string& str, const float size, const vsx_string colors = "");
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector<> print(vsx_vector<> p, const vsx_string& str, const vsx_string& font, float size, const vsx_string colors = "");
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector<> print_center(vsx_vector<> p, const vsx_string& str, float size);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector<> print_right(vsx_vector<> p, const vsx_string& str, float size);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector<> get_size(const vsx_string& str, float size);
   VSX_ENGINE_GRAPHICS_DLLIMPORT void reinit_all_active();
   
   vsx_font(vsx_string path)

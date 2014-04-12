@@ -11,9 +11,9 @@ public:
   vsx_module_param_mesh* result;
 
   // internal
-  vsx_mesh* mesh;
-  vsx_mesh* mesh_a;
-  vsx_mesh* mesh_b;
+  vsx_mesh<>* mesh;
+  vsx_mesh<>* mesh_a;
+  vsx_mesh<>* mesh_b;
   //bool first_run;
   Alaska ocean;
   float t;
@@ -87,8 +87,8 @@ public:
   }
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-    mesh_a = new vsx_mesh;
-    mesh_b = new vsx_mesh;
+    mesh_a = new vsx_mesh<>;
+    mesh_b = new vsx_mesh<>;
     mesh = mesh_a;
     thread_state = 0;
     thread_exit = 0;
@@ -119,8 +119,8 @@ public:
         my->mesh->data->vertex_tex_coords.reset_used(0);
         my->mesh->data->faces.reset_used(0);
         vsx_face face;
-        vsx_vector g;
-        vsx_vector c;
+        vsx_vector<> g;
+        vsx_vector<> c;
         for (int L=-1;L<2;L++)
         {
           for (int i=0;i<(BIG_NX-1);i++)
@@ -144,11 +144,11 @@ public:
                 float nra = gr + 90.0f / 360.0f * 2*PI;
 
 
-                vsx_vector nn;
+                vsx_vector<> nn;
                 nn.x = my->ocean.big_normals[i][j][0];
                 nn.y = my->ocean.big_normals[i][j][1];
                 nn.normalize();
-                my->mesh->data->vertex_normals.push_back(vsx_vector(\
+                my->mesh->data->vertex_normals.push_back(vsx_vector<>(\
                   nn.x* cos(nra) + nn.y * -sin(nra),\
                   nn.x* sin(nra) + nn.y * cos(nra),\
                   my->ocean.big_normals[i][j][2]));
@@ -180,7 +180,7 @@ public:
                 nn.x = my->ocean.big_normals[i+1][j][0];
                 nn.y = my->ocean.big_normals[i+1][j][1];
                 nn.normalize();
-                my->mesh->data->vertex_normals.push_back(vsx_vector(\
+                my->mesh->data->vertex_normals.push_back(vsx_vector<>(\
                   nn.x* cos(nra) + nn.y * -sin(nra),\
                   nn.x* sin(nra) + nn.y * cos(nra),\
                   my->ocean.big_normals[i+1][j][2]));

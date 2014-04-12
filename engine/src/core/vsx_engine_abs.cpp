@@ -77,7 +77,6 @@ void vsx_engine_abs::constructor_set_default_values()
   lastsent = 0;
   sequence_pool.set_engine((void*)this);
   last_e_state = current_state = VSX_ENGINE_STOPPED;
-  // on unix/linux, resources are now stored in ~/.vsxu/data/resources
   filesystem.set_base_path(vsx_get_data_path());
   frame_cfp_time = 0.0f;
   last_m_time_synch = 0;
@@ -104,7 +103,6 @@ void vsx_engine_abs::reset_input_events()
 int vsx_engine_abs::i_load_state(vsx_command_list& load1,vsx_string *error_string, vsx_string info_filename)
 {
   if (!valid) return 2;
-  LOG("i_load_state 1")
   vsx_command_list load2,loadr2;
   load1.reset();
   vsx_command_s* mc = 0;

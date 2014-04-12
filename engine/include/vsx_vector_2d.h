@@ -31,12 +31,12 @@ class vsx_vector_2d;
 
 #include <vsx_vector.h>
 
-
+template<typename T = float>
 class vsx_vector_2d
 {
 public:
-    GLfloat x;
-    GLfloat y;
+    T x;
+    T y;
 
   inline vsx_vector_2d operator +(const vsx_vector_2d &t)
   {
@@ -53,7 +53,7 @@ public:
     return *this;
   }
 
-  inline vsx_vector_2d operator *=(const float &t)
+  inline vsx_vector_2d operator *=(const T &t)
   {
     x*=t;
     y*=t;
@@ -91,7 +91,7 @@ public:
     return temp;
   }
 
-  inline vsx_vector_2d operator *(const float &t)
+  inline vsx_vector_2d operator *(const T &t)
   {
     vsx_vector_2d temp;
     temp.x = x*t;
@@ -110,8 +110,8 @@ public:
   inline vsx_vector_2d operator /(int t)
   {
     vsx_vector_2d temp;
-    temp.x = x/(GLfloat)t;
-    temp.y = y/(GLfloat)t;
+    temp.x = x/(T)t;
+    temp.y = y/(T)t;
     return temp;
   }
 
@@ -125,41 +125,41 @@ public:
     return (x != t.x || y != t.y);
   }
 
-  inline float length()
+  inline T length()
   {
     return norm();
   }
 
-  inline float norm()
+  inline T norm()
   {
-    return (float)sqrt(x*x + y*y);
+    return (T)sqrt(x*x + y*y);
   }
 
   inline void normalize()
   {
-    float a = 1.0f/(float)sqrt(x*x + y*y);
+    T a = 1.0f/(T)sqrt(x*x + y*y);
     x*=a;
     y*=a;
   }
 
-  inline void normalize(float len)
+  inline void normalize(T len)
   {
-    float a = 1.0f/(float)sqrt(x*x + y*y)*len;
+    T a = 1.0f/(T)sqrt(x*x + y*y)*len;
     x*=a;
     y*=a;
   }
 
 
-  inline void multiply_matrix(const float *m)
+  inline void multiply_matrix(const T *m)
   {
-    float nx, ny;
+    T nx, ny;
     nx = m[0] * x + m[1] * y  + m[3];
     ny = m[4] * x + m[5] * y  + m[7];
     x = nx;
     y = ny;
   }
 
-  inline void multiply_matrix_other_vec(const float *m, const vsx_vector_2d& b)
+  inline void multiply_matrix_other_vec(const T *m, const vsx_vector_2d& b)
   {
     x = m[0] * b.x + m[1] * b.y +  m[3];
     y = m[4] * b.x + m[5] * b.y +  m[7];
@@ -173,7 +173,7 @@ public:
   }
 
 
-  void set(const float ix=0, const float iy=0)
+  void set(const T ix=0, const T iy=0)
   {
     x=ix;
     y=iy;
@@ -191,7 +191,7 @@ public:
     y = n.y;
   }
 
-  vsx_vector_2d(const float nx, const float ny = 0.0f)
+  vsx_vector_2d(const T nx, const T ny = 0.0f)
   {
     x = nx;
     y = ny;

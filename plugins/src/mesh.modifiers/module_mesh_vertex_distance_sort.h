@@ -44,7 +44,7 @@ public:
   vsx_module_param_float_array* original_ids;
 
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   vsx_array<vertex_holder*> distances;
 
   // previous id maintanence
@@ -137,7 +137,7 @@ public:
 
 
   bool init() {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -187,7 +187,7 @@ public:
 
   unsigned long prev_timestamp;
   void run() {
-    vsx_mesh** p = mesh_in->get_addr();
+    vsx_mesh<>** p = mesh_in->get_addr();
     if (p && (param_updates || prev_timestamp != (*p)->timestamp)) {
       prev_timestamp = (*p)->timestamp;
 
@@ -214,7 +214,7 @@ public:
       }
       //-----------------------------------------------------------
       vertex_holder** vf = distances.get_pointer();
-      vsx_vector* vp = (*p)->data->vertices.get_pointer();
+      vsx_vector<>* vp = (*p)->data->vertices.get_pointer();
       //
 
       for (unsigned int i = 0; i < (*p)->data->vertices.size(); i++)
@@ -233,8 +233,8 @@ public:
       // put it back into our private mesh, payload order is calculated by id
       mesh->data->vertices.allocate(vertex_count);
       vertex_holder** ddp = distances.get_pointer();
-      vsx_vector* dp = mesh->data->vertices.get_end_pointer();
-      vsx_vector* ds = (*p)->data->vertices.get_pointer();
+      vsx_vector<>* dp = mesh->data->vertices.get_end_pointer();
+      vsx_vector<>* ds = (*p)->data->vertices.get_pointer();
       size_t i = 0;
       while (i < vertex_count)
       {

@@ -48,7 +48,7 @@ vsx_widget_time_holder* vsx_widget_profiler_timeline::time_holder_get()
 
 
 
-void vsx_widget_profiler_timeline::move_time(vsx_vector world)
+void vsx_widget_profiler_timeline::move_time(vsx_vector<> world)
 {
   if (!time_holder)
     ERROR_RETURN("time_holder not set");
@@ -147,8 +147,8 @@ void vsx_widget_profiler_timeline::i_draw()
     glColor3f(0.5f,0.5f,0.5f);
 
   draw_box_border(
-    vsx_vector( parentpos.x+pos.x - size.x * 0.5, y_mid-y_size_half ),
-    vsx_vector( size.x, y_size ), dragborder * 0.5
+    vsx_vector<>( parentpos.x+pos.x - size.x * 0.5, y_mid-y_size_half ),
+    vsx_vector<>( size.x, y_size ), dragborder * 0.5
   );
 
   float levelstart = 0;
@@ -167,7 +167,7 @@ void vsx_widget_profiler_timeline::i_draw()
         glVertex2f(x,y_mid+y_size*0.416666667f);
         glVertex2f(x,y_mid-y_size*0.416666667f);
       glEnd();
-      font.print_center(vsx_vector(x,y_mid), i2s(i),0.005);
+      font.print_center(vsx_vector<>(x,y_mid), i2s(i),0.005);
     }
   }
 

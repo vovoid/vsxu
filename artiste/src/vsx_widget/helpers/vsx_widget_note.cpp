@@ -84,10 +84,10 @@ vsx_widget_note::vsx_widget_note() {
 bool vsx_widget_note::init_from_command(vsx_command_s* c)
 {
   set_render_type(VSX_WIDGET_RENDER_3D);
-  vsx_vector np;
-  np = vsx_vector_aux::from_string(c->parts[2]);
+  vsx_vector<> np;
+  np = vsx_vector_aux::from_string<float>(c->parts[2]);
   set_pos(np);
-  np = vsx_vector_aux::from_string(c->parts[3]);
+  np = vsx_vector_aux::from_string<float>(c->parts[3]);
   set_size(np);
   set_font_size(s2f(c->parts[5]));
   set_border(font_size*0.15f);
@@ -117,10 +117,10 @@ void vsx_widget_note::i_draw() {
     size_min.y = font_size*4.0f;
     resize_to(target_size);
   }
-  editor->set_pos(vsx_vector(size.x*0.5f,size.y*0.5f-0.5f*font_size+dragborder*0.5f));
-  editor->resize_to(vsx_vector(size.x-dragborder*2, size.y-font_size-dragborder));
+  editor->set_pos(vsx_vector<>(size.x*0.5f,size.y*0.5f-0.5f*font_size+dragborder*0.5f));
+  editor->resize_to(vsx_vector<>(size.x-dragborder*2, size.y-font_size-dragborder));
 
-  vsx_vector parentpos;
+  vsx_vector<> parentpos;
   parentpos = parent->get_pos_p();
   //float sx05 = size.x*0.5;
   //float sy05 = size.y*0.5;

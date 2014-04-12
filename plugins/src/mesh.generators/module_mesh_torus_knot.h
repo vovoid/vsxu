@@ -42,7 +42,7 @@ public:
   // out
   vsx_module_param_mesh* result;
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   int l_param_updates;
   int current_num_stacks;
   int current_num_sectors;
@@ -157,7 +157,7 @@ public:
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -213,21 +213,21 @@ public:
 
       int index8192 = (int)round(8192.0f*ip) % 8192;
 
-      vsx_vector circle_base_pos = vsx_vector(
+      vsx_vector<> circle_base_pos = vsx_vector<>(
                                                 r * cos ( P * phi + phiofs),
                                                 r * cos ( Q * phi + phiofs),
                                                 r * sin ( P * phi + phiofs)
                                                 );
-      vsx_vector circle_base_pos_phi2 = vsx_vector(
+      vsx_vector<> circle_base_pos_phi2 = vsx_vector<>(
                                                 r * cos ( P * phi2 +phiofs),
                                                 r * cos ( Q * phi2 +phiofs),
                                                 r * sin ( P * phi2 +phiofs)
                                                 );
 
       // rotation calculation
-      vsx_vector T = circle_base_pos_phi2 - circle_base_pos;
-      vsx_vector N = circle_base_pos_phi2 + circle_base_pos;
-      vsx_vector B;
+      vsx_vector<> T = circle_base_pos_phi2 - circle_base_pos;
+      vsx_vector<> N = circle_base_pos_phi2 + circle_base_pos;
+      vsx_vector<> B;
       B.cross(T, N);
       N.cross(B, T);
       B.normalize();
@@ -243,7 +243,7 @@ public:
         float px = cos(j1 * TWO_PI) * size_shape_x[index8192] * size_shape_x_multiplier_f;
         float py = sin(j1 * TWO_PI) * size_shape_y[index8192] * size_shape_y_multiplier_f;
 
-        vsx_vector tmp_vec(
+        vsx_vector<> tmp_vec(
             circle_base_pos.x,
             circle_base_pos.y,
             circle_base_pos.z
@@ -254,7 +254,7 @@ public:
         mesh->data->vertices[vi] = tmp_vec;
         mesh->data->vertex_normals[vi] = tmp_vec - circle_base_pos;
         mesh->data->vertex_normals[vi].normalize();
-        mesh->data->vertex_colors[vi] = vsx_color(1, 1, 1, 1);
+        mesh->data->vertex_colors[vi] = vsx_color<>(1, 1, 1, 1);
 
         if (i && j)
         {

@@ -1,7 +1,7 @@
 class module_particlesystem_modifier_wind : public vsx_module
 {
   float time;
-  vsx_particlesystem* particles;
+  vsx_particlesystem<>* particles;
   vsx_module_param_particlesystem* in_particlesystem;
   vsx_module_param_float3* wind;
   // out

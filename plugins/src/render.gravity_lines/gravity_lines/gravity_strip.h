@@ -13,13 +13,13 @@ public:
   void init_strip();
   void render();
   void generate_mesh(
-      vsx_mesh       &mesh,
+      vsx_mesh<>       &mesh,
       vsx_face*      &fs_d,
-      vsx_vector*    &vs_d,
-      vsx_vector*    &ns_d,
+      vsx_vector<>*    &vs_d,
+      vsx_vector<>*    &ns_d,
       vsx_tex_coord* &ts_d,
       vsx_matrix*    modelview_matrix,
-      vsx_vector*    upvector,
+      vsx_vector<>*    upvector,
       int &generated_vertices,
       int &generated_faces
   );

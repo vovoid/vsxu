@@ -27,7 +27,7 @@ class module_mesh_segmesh_to_mesh : public vsx_module
   vsx_module_param_segment_mesh* seg_mesh_in;
   vsx_module_param_mesh* mesh_out;
   vsx_2dgrid_mesh* mesh_in;
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
 public:
 
   void module_info(vsx_module_info* info)
@@ -55,7 +55,7 @@ public:
   }
 
   bool init() {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
   void on_delete()

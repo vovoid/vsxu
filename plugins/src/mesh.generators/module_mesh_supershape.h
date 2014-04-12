@@ -95,7 +95,7 @@ public:
   // out
   vsx_module_param_mesh* result;
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   bool first_run;
   int n_segs;
   int l_param_updates;
@@ -164,7 +164,7 @@ public:
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -179,7 +179,7 @@ public:
     {
       first_run = true;
     }
-    mesh->data->vertices[0] = vsx_vector(10);
+    mesh->data->vertices[0] = vsx_vector<>(10);
 
     if (!first_run) return;
 
@@ -233,9 +233,8 @@ public:
 
     float phi = _y_start;
 
-    vsx_avector<vsx_vector> prev_row_normals;
-    vsx_avector<vsx_vector*> prev_row_threes;
-    vsx_vector prev_norm;
+    vsx_avector< vsx_vector<> > prev_row_normals;
+    vsx_vector<> prev_norm;
 
     for (int i = 0; i < _x_num_segments+1; i++)
     {
@@ -259,15 +258,15 @@ public:
         float nz = (v1x * v2y) - (v1y * v2x);
         // Normalise final vector
         float vLen = (float)sqrt( (nx * nx) + (ny * ny) + (nz * nz) );
-        vsx_vector norm(-nx/vLen,  -ny/vLen,  -nz/vLen);
+        vsx_vector<> norm(-nx/vLen,  -ny/vLen,  -nz/vLen);
         mesh->data->vertex_normals[vi] = norm;
-        mesh->data->vertices[vi] = vsx_vector(x1*scale, y1*scale, z1*scale);
+        mesh->data->vertices[vi] = vsx_vector<>(x1*scale, y1*scale, z1*scale);
         vi++;
 
         // per-vertex normals (try)
         if (i > 0 && j > 0)
         {
-          vsx_vector sum_norm = norm + prev_norm + prev_row_normals[j] + prev_row_normals[j-1];
+          vsx_vector<> sum_norm = norm + prev_norm + prev_row_normals[j] + prev_row_normals[j-1];
           sum_norm.normalize();
           mesh->data->vertex_normals[vi-2] = sum_norm;
           mesh->data->vertex_normals[vi-3] = sum_norm;

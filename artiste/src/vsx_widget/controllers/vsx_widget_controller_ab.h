@@ -31,7 +31,7 @@ class vsx_widget_controller_ab : public vsx_widget_controller_base
 {
 private:
   GLUquadricObj *quadratic;
-  vsx_vector clickpos,deltamove,remPointer,remWorld;
+  vsx_vector<> clickpos,deltamove,remPointer,remWorld;
   float v2[3];
   float v2_int[3];
   
@@ -46,7 +46,7 @@ private:
   bool        isClicked;
   bool        isRClicked;
   bool        isDragging;
-  vsx_vector  ball_size;
+  vsx_vector<>  ball_size;
   vsx_widget* label;
 
   vsx_texture mtex;

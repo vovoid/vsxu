@@ -35,7 +35,7 @@ class vsx_logo_intro {
   vsx_texture* luna_bkg;
   
   float logo_time;
-  vsx_vector logo_pos, logo_size;
+  vsx_vector<> logo_pos, logo_size;
   float logo_rot1, logo_rot2, logo_rot3;
   vsx_timer timer;
   bool destroy_textures;

@@ -109,7 +109,7 @@ void vsx_widget_scrollbar::i_draw()
   if (size.x < 0)
     return;
 
-  vsx_vector p = parent->get_pos_p()+pos;
+  vsx_vector<> p = parent->get_pos_p()+pos;
   p.z = pos.z;
   shz = scroll_handle_size/(scroll_max);
 

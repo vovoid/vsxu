@@ -41,20 +41,20 @@ class module_mesh_ribbon_cloth : public vsx_module
   vsx_module_param_mesh* result;
 
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   int l_param_updates;
   bool regen;
-  vsx_array<vsx_vector> face_lengths;
-  vsx_array<vsx_vector> vertices_speed;
-  vsx_array<vsx_vector> vertices_orig;
+  vsx_array< vsx_vector<> > face_lengths;
+  vsx_array< vsx_vector<> > vertices_speed;
+  vsx_array< vsx_vector<> > vertices_orig;
   int num_runs;
-  vsx_vector prev_pos;
+  vsx_vector<> prev_pos;
 
 public:
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -132,7 +132,7 @@ public:
 
   void run()
   {
-    mesh->data->vertices[0] = vsx_vector(0);
+    mesh->data->vertices[0] = vsx_vector<>(0);
 
     if (reinit->get())
     {
@@ -140,23 +140,23 @@ public:
       reinit->set(0);
     }
 
-    vsx_vector a(start_point->get(0), start_point->get(1), start_point->get(2));
-    vsx_vector b(end_point->get(0), end_point->get(1), end_point->get(2));
-    vsx_vector up(up_vector->get(0), up_vector->get(1), up_vector->get(2));
+    vsx_vector<> a(start_point->get(0), start_point->get(1), start_point->get(2));
+    vsx_vector<> b(end_point->get(0), end_point->get(1), end_point->get(2));
+    vsx_vector<> up(up_vector->get(0), up_vector->get(1), up_vector->get(2));
     up *= width->get();
 
 
-    vsx_vector pos = vsx_vector(0.0f,0.0f,0.0f);
-    vsx_vector diff = b-a;
-    vsx_vector diff_n = diff;
+    vsx_vector<> pos = vsx_vector<>(0.0f,0.0f,0.0f);
+    vsx_vector<> diff = b-a;
+    vsx_vector<> diff_n = diff;
     diff_n.normalize();
 
-    vsx_vector normal;
-    vsx_vector up_n = up;
+    vsx_vector<> normal;
+    vsx_vector<> up_n = up;
     up_n.normalize();
     normal.cross(diff_n, up_n);
 
-    vsx_vector up_side = normal;
+    vsx_vector<> up_side = normal;
     up_side *= up.length();
 
     float t = engine->vtime * time_amp->get();
@@ -171,7 +171,7 @@ public:
     //       x---x---x---x---x---x---x---x---x---x
     //       1   3   5   7   9   11  13  15  17  19
 
-    vsx_vector addpos;
+    vsx_vector<> addpos;
 
     if (regen)
     {
@@ -192,27 +192,27 @@ public:
         float it = (float)i / COUNT;
         float ft = sin(it * 3.14159f + t) * sin(-it * 5.18674f - t);
         float thick = 0.58f*0.11f;
-        vsx_vector skew = up * ft * skew_amount * thick;
+        vsx_vector<> skew = up * ft * skew_amount * thick;
 
         mesh->data->vertices[i2    ] = pos + up * thick + skew;
         mesh->data->vertices[i2 + 1] = pos - up * thick + skew;
         vertices_orig[i2] = mesh->data->vertices[i2    ];
         vertices_orig[i2+1] = mesh->data->vertices[i2   +1];
 
-        vsx_vector norm_a;
+        vsx_vector<> norm_a;
         norm_a.cross(up_n, pos);
         mesh->data->vertex_normals[i2    ] = norm_a;
         mesh->data->vertex_normals[i2 + 1] = norm_a;
 
         pos += diff;
 
-        mesh->data->vertex_colors[i2] = vsx_color(1, 1, 1, 1);
-        mesh->data->vertex_colors[i2+1] = vsx_color(1, 1, 1, 1);
+        mesh->data->vertex_colors[i2] = vsx_color<>(1, 1, 1, 1);
+        mesh->data->vertex_colors[i2+1] = vsx_color<>(1, 1, 1, 1);
 
         mesh->data->vertex_tex_coords[i2]   = vsx_tex_coord(it, 0);
         mesh->data->vertex_tex_coords[i2+1] = vsx_tex_coord(it, 1);
 
-        vsx_vector len;
+        vsx_vector<> len;
         if (i>1)
         {
           vsx_face f;
@@ -221,9 +221,9 @@ public:
           f.c = i2 - 2;
           mesh->data->faces.push_back(f);
 
-          vsx_vector v0 = mesh->data->vertices[f.a];
-          vsx_vector v1 = mesh->data->vertices[f.b];
-          vsx_vector v2 = mesh->data->vertices[f.c];
+          vsx_vector<> v0 = mesh->data->vertices[f.a];
+          vsx_vector<> v1 = mesh->data->vertices[f.b];
+          vsx_vector<> v2 = mesh->data->vertices[f.c];
 
           len.x = fabs( (v1 - v0).length()/*+(float)(rand()%1000)*0.0001f*/);
           len.y = fabs( (v2 - v1).length()/*+(float)(rand()%1000)*0.0001f*/);
@@ -266,9 +266,9 @@ public:
     //float gravity_pull = -0.01f;
     float gravity_pull = -0.003f;
     vsx_face* face_p = mesh->data->faces.get_pointer();
-    vsx_vector* vertices_speed_p = vertices_speed.get_pointer();
-    vsx_vector* faces_length_p = face_lengths.get_pointer();
-    vsx_vector* vertex_p = mesh->data->vertices.get_pointer();
+    vsx_vector<>* vertices_speed_p = vertices_speed.get_pointer();
+    vsx_vector<>* faces_length_p = face_lengths.get_pointer();
+    vsx_vector<>* vertex_p = mesh->data->vertices.get_pointer();
 
     for (int j = 0; j < 8; j++)
     {
@@ -282,13 +282,13 @@ public:
         face_p_it++;
         // ---
 
-        vsx_vector v0 = vertex_p[fa];
-        vsx_vector v1 = vertex_p[fb];
-        vsx_vector v2 = vertex_p[fc];
+        vsx_vector<> v0 = vertex_p[fa];
+        vsx_vector<> v1 = vertex_p[fb];
+        vsx_vector<> v2 = vertex_p[fc];
 
-        vsx_vector edgeA = (v1 - v0);
-        vsx_vector edgeB = (v2 - v1);
-        vsx_vector edgeC = (v0 - v2);
+        vsx_vector<> edgeA = (v1 - v0);
+        vsx_vector<> edgeB = (v2 - v1);
+        vsx_vector<> edgeC = (v0 - v2);
 
         float lenA = edgeA.length();
         float lenB = edgeB.length();
@@ -303,9 +303,9 @@ public:
         float edgeAccA = edgeForceA / lenA;
         float edgeAccB = edgeForceB / lenB;
         float edgeAccC = edgeForceC / lenC;
-        vsx_vector accA = edgeA * edgeAccA;
-        vsx_vector accB = edgeB * edgeAccB;
-        vsx_vector accC = edgeC * edgeAccC;
+        vsx_vector<> accA = edgeA * edgeAccA;
+        vsx_vector<> accB = edgeB * edgeAccB;
+        vsx_vector<> accC = edgeC * edgeAccC;
 
         float ii = 0.5f - (float)i * fcount*0.5f;
 
@@ -326,7 +326,7 @@ public:
         vertices_speed_p[fb].z -= dirz*sp2;
         vertices_speed_p[fc].z -= dirz*sp2;
       }
-      vsx_vector mdist = a-prev_pos;  // prev_pos-------->a
+      vsx_vector<> mdist = a-prev_pos;  // prev_pos-------->a
       float mdl = mdist.length();
       if (mdl > 0.07f)
       {
@@ -356,9 +356,9 @@ public:
     }
     for(unsigned long i = 0; i < mesh->data->faces.size(); i++)
     {
-      vsx_vector a = mesh->data->vertices[mesh->data->faces[i].b] - mesh->data->vertices[mesh->data->faces[i].a];
-      vsx_vector b = mesh->data->vertices[mesh->data->faces[i].c] - mesh->data->vertices[mesh->data->faces[i].a];
-      vsx_vector normal;
+      vsx_vector<> a = mesh->data->vertices[mesh->data->faces[i].b] - mesh->data->vertices[mesh->data->faces[i].a];
+      vsx_vector<> b = mesh->data->vertices[mesh->data->faces[i].c] - mesh->data->vertices[mesh->data->faces[i].a];
+      vsx_vector<> normal;
       normal.cross(a,b);
 
       normal = -normal;

@@ -13,7 +13,7 @@ public:
   vsx_module_param_mesh* result;
 
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   bool first_run;
   int n_rays;
   vsx_string current_filename;
@@ -21,7 +21,7 @@ public:
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -96,8 +96,8 @@ public:
 
     char buf[65535];
     vsx_string line;
-    vsx_array<vsx_vector> vertices;
-    vsx_array<vsx_vector> normals;
+    vsx_array<vsx_vector<> > vertices;
+    vsx_array<vsx_vector<> > normals;
     vsx_array<vsx_tex_coord> texcoords;
 
     int face_cur = 0;
@@ -124,7 +124,7 @@ public:
         vsx_string deli = " ";
         explode(line, deli, parts);
         if (parts[0] == "v") {
-          vertices.push_back(vsx_vector(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
+          vertices.push_back(vsx_vector<>(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
         } else
         if (parts[0] == "vt") {
           vsx_tex_coord a;
@@ -135,7 +135,7 @@ public:
 
         } else
         if (parts[0] == "vn") {
-          normals.push_back(vsx_vector(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
+          normals.push_back(vsx_vector<>(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
           found_normals = true;
         } else
         if (parts[0] == "f") {
@@ -211,7 +211,7 @@ public:
           explode(line, deli, parts);
           if (parts[0] == "v")
           {
-            mesh->data->vertices.push_back(vsx_vector(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
+            mesh->data->vertices.push_back(vsx_vector<>(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
           } else
           if (parts[0] == "f")
           {
@@ -238,10 +238,10 @@ public:
     if (center_object->get())
     {
       // calculate middle of object and move accordingly
-      vsx_vector minima;
-      vsx_vector maxima;
+      vsx_vector<> minima;
+      vsx_vector<> maxima;
 
-      vsx_vector* vs_p;
+      vsx_vector<>* vs_p;
       vs_p = &mesh->data->vertices[0];
 
       minima = vs_p[0];
@@ -266,14 +266,14 @@ public:
           maxima.z = vs_p[i].z;
       }
 
-      vsx_vector midpoint
+      vsx_vector<> midpoint
       (
         -(minima.x + (maxima.x - minima.x) * 0.5),
         -(minima.y + (maxima.y - minima.y) * 0.5),
         -(minima.z + (maxima.z - minima.z) * 0.5)
       );
 
-      vsx_vector move
+      vsx_vector<> move
       (
         midpoint.x,
         midpoint.y,

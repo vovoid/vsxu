@@ -35,8 +35,8 @@ void vsx_widget_controller_color::init()
   type = VSX_WIDGET_TYPE_CONTROLLER;
   base_size = 0.8;
   alpha_down = angle_down = color_down = false;
-  set_size(vsx_vector(0.03,0.03));
-  set_pos(vsx_vector(-0.02));
+  set_size(vsx_vector<>(0.03,0.03));
+  set_pos(vsx_vector<>(-0.02));
   bgcolor.r = 0;
   bgcolor.g = 0;
   bgcolor.b = 0;
@@ -81,7 +81,7 @@ void vsx_widget_controller_color::command_process_back_queue(vsx_command_s *t) {
     // RGB
     if (parts.size() == 3)
     {
-      vsx_color t;
+      vsx_color<> t;
       color.r = s2f(parts[0]);
       color.g = s2f(parts[1]);
       color.b = s2f(parts[2]);
@@ -94,7 +94,7 @@ void vsx_widget_controller_color::command_process_back_queue(vsx_command_s *t) {
     // RGBA
     if (parts.size() == 4)
     {
-      vsx_color t;
+      vsx_color<> t;
       color.r = s2f(parts[0]);
       color.g = s2f(parts[1]);
       color.b = s2f(parts[2]);
@@ -135,7 +135,7 @@ void vsx_widget_controller_color::draw()
   if (cur_angle >= 1.0) cur_angle -=1.0;
   for (float i = 0; i < 1.0; i+=gi) {
       glBegin(GL_QUADS);
-        vsx_color aa;
+        vsx_color<> aa;
         aa.hsv(cur_angle,1,1); glColor3f(aa.r, aa.g, aa.b);
         glVertex3f(-sx+i*ss,sy,0);
         glVertex3f(-sx+i*ss,sy-wheel_h,0);
@@ -168,7 +168,7 @@ void vsx_widget_controller_color::draw()
   for (float i = 0; i < 1.0; i+=gi) {
     for (float j = 0; j < 1.0; j+=gi) {
       glBegin(GL_QUADS);
-        vsx_color aa;
+        vsx_color<> aa;
         aa.hsv(cur_angle,i,j); glColor3f(aa.r, aa.g, aa.b);
         glVertex3f(-sx+i*ss,-sy+j*ss,0);
 

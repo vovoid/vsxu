@@ -30,14 +30,14 @@ class module_mesh_mirror : public vsx_module
   // out
   vsx_module_param_mesh* mesh_out;
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   unsigned long prev_timestamp;
-  vsx_vector v;
+  vsx_vector<> v;
 
 public:
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -77,7 +77,7 @@ public:
 
   void run()
   {
-    vsx_mesh** p = mesh_in->get_addr();
+    vsx_mesh<>** p = mesh_in->get_addr();
 
     if (!p)
       ERROR_RETURN("mesh_in is invalid\n");
@@ -116,10 +116,10 @@ public:
 
     // mirror vertices
     unsigned long v_end = (*p)->data->vertices.size();
-    vsx_vector* vs_p = &(*p)->data->vertices[0];
+    vsx_vector<>* vs_p = &(*p)->data->vertices[0];
     mesh->data->vertices.allocate(v_end);
     mesh->data->vertices.reset_used(v_end);
-    vsx_vector* vs_d = mesh->data->vertices.get_pointer();
+    vsx_vector<>* vs_d = mesh->data->vertices.get_pointer();
 
     for (unsigned int i = 0; i < v_end; i++)
     {
@@ -128,10 +128,10 @@ public:
 
     // mirror normals
     unsigned long n_end = (*p)->data->vertex_normals.size();
-    vsx_vector* ns_p = &(*p)->data->vertex_normals[0];
+    vsx_vector<>* ns_p = &(*p)->data->vertex_normals[0];
     mesh->data->vertex_normals.allocate(n_end);
     mesh->data->vertex_normals.reset_used(n_end);
-    vsx_vector* ns_d = mesh->data->vertex_normals.get_pointer();
+    vsx_vector<>* ns_d = mesh->data->vertex_normals.get_pointer();
 
     for (unsigned int i = 0; i < n_end; i++)
     {
@@ -140,10 +140,10 @@ public:
 
     // mirror tangents
     unsigned long t_end = (*p)->data->vertex_tangents.size();
-    vsx_quaternion* ts_p = &(*p)->data->vertex_tangents[0];
+    vsx_quaternion<>* ts_p = &(*p)->data->vertex_tangents[0];
     mesh->data->vertex_tangents.allocate(t_end);
     mesh->data->vertex_tangents.reset_used(t_end);
-    vsx_quaternion* ts_d = mesh->data->vertex_tangents.get_pointer();
+    vsx_quaternion<>* ts_d = mesh->data->vertex_tangents.get_pointer();
 
     for (unsigned int i = 0; i < t_end; i++)
     {

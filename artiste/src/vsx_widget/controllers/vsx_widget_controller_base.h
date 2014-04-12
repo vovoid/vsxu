@@ -41,8 +41,8 @@ public:
   double mdx, mdy; // delta mouse move
   bool controlling, isolate;
   //float xd;
-  vsx_vector parentpos;
-  vsx_vector deltamove,remPointer,remWorld;
+  vsx_vector<> parentpos;
+  vsx_vector<> deltamove,remPointer,remWorld;
   float temp;
   std::map<vsx_string,vsx_string>* param_spec;
 //----
@@ -53,7 +53,7 @@ public:
   bool dest_value;
 
   vsx_string in_param_spec,target_param /*used if sending data to complex anchor*/;
-  vsx_color bgcolor;
+  vsx_color<> bgcolor;
   float value, target_value, presentation_value, send_value;
   float old_snap_value;
   bool capmin, capmax;

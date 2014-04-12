@@ -73,7 +73,7 @@ bool vsx_widget::performance_mode = false;
 
 // skin support
 vsx_string vsx_widget::skin_path;
-vsx_color vsx_widget::skin_colors[20];
+vsx_color<> vsx_widget::skin_colors[20];
 
 
 vsx_widget::vsx_widget()
@@ -160,9 +160,9 @@ vsx_widget::~vsx_widget()
 
 
 
-vsx_vector vsx_widget::get_pos_p() {
+vsx_vector<> vsx_widget::get_pos_p() {
   if (parent != this && coord_related_parent) {
-    vsx_vector tt = pos;
+    vsx_vector<> tt = pos;
     if (parent->render_type == render_type )
     tt = tt + parent->get_pos_p();
     return tt;
@@ -170,9 +170,9 @@ vsx_vector vsx_widget::get_pos_p() {
   return pos;
 }
 
-vsx_vector vsx_widget::get_target_pos_p() {
+vsx_vector<> vsx_widget::get_target_pos_p() {
   if (parent != this && coord_related_parent) {
-    vsx_vector tt = target_pos;
+    vsx_vector<> tt = target_pos;
     if (parent->render_type == render_type)
     tt = tt + parent->get_target_pos_p();
     return tt;
@@ -201,7 +201,7 @@ bool vsx_widget::find_child_by_name(vsx_string n)
 // MOUSE MOVE PASSIVE
 //------------------------------------------------------------------------------
 
-int vsx_widget::inside_xy_l(vsx_vector &test, vsx_vector &global)
+int vsx_widget::inside_xy_l(vsx_vector<> &test, vsx_vector<> &global)
 {
    if (coord_type == VSX_WIDGET_COORD_CENTER)
    {
@@ -230,8 +230,8 @@ int vsx_widget::inside_xy_l(vsx_vector &test, vsx_vector &global)
 
 bool vsx_widget::inside_xy(vsx_widget_coords &coords, vsx_widget_distance &result)
 {
-  vsx_vector* test;
-  vsx_vector* global;
+  vsx_vector<>* test;
+  vsx_vector<>* global;
 
   if (!coord_related_parent)
   {
@@ -535,7 +535,7 @@ void vsx_widget::event_mouse_move_passive(vsx_widget_distance distance,vsx_widge
 void vsx_widget::calculate_mouse_distance(float x, float y, vsx_widget_coords &coord, vsx_widget_distance &distance)
 {
   coord.init(x,y);
-  vsx_vector world;
+  vsx_vector<> world;
   if (render_type == VSX_WIDGET_RENDER_2D)
   {
     world = coord.screen_global;
@@ -611,7 +611,7 @@ void vsx_widget::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords
   }
   else
   {
-    move_d(vsx_vector(distance.center.x-mouse_down_pos.center.x,distance.center.y-mouse_down_pos.center.y));
+    move_d(vsx_vector<>(distance.center.x-mouse_down_pos.center.x,distance.center.y-mouse_down_pos.center.y));
   }
 }
 
@@ -817,12 +817,12 @@ void vsx_widget::move(double x, double y, double z)
   }
 }
 
-void vsx_widget::move(vsx_vector t)
+void vsx_widget::move(vsx_vector<> t)
 {
   move(t.x,t.y,t.z);
 }
 
-void vsx_widget::move_d(vsx_vector t)
+void vsx_widget::move_d(vsx_vector<> t)
 {
   if (support_interpolation)
   {
@@ -1119,7 +1119,7 @@ void vsx_widget::interpolate_size()
 
 
 
-void vsx_widget::resize_to(vsx_vector to_size)
+void vsx_widget::resize_to(vsx_vector<> to_size)
 {
   if (target_size.x < size_min.x)
     to_size.x = size_min.x;

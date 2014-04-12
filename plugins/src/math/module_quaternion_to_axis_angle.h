@@ -79,7 +79,7 @@ public:
 
   void run()
   {
-    vsx_quaternion i_quat(
+    vsx_quaternion<> i_quat(
           source_quaternion->get(0),
           source_quaternion->get(1),
           source_quaternion->get(2),
@@ -89,7 +89,7 @@ public:
     i_quat.normalize();
 
     float r_angle;
-    vsx_vector r_axis;
+    vsx_vector<> r_axis;
     i_quat.to_axis_angle( r_axis, r_angle);
 
     result_axis->set( r_axis.x, 0);

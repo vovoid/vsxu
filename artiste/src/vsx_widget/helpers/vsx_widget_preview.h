@@ -38,7 +38,7 @@ class vsx_window_texture_viewer : public vsx_widget_window {
   vsx_string modestring;
   vsx_string modestring_default;
   bool run;
-  vsx_vector pos_, size_;
+  vsx_vector<> pos_, size_;
   vsx_command_list modestring_commands;
 
 public:

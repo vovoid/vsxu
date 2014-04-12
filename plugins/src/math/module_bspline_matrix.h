@@ -12,7 +12,7 @@ class module_bspline_matrix : public vsx_module
   // internal
   vsx_bspline spline0;
   vsx_matrix matrix;
-  vsx_vector pos1, pos2, e, upv;
+  vsx_vector<> pos1, pos2, e, upv;
 
 public:
 
@@ -45,12 +45,12 @@ public:
     position->set(0,0);
     position->set(0,1);
     position->set(0,2);
-    upv = vsx_vector(0,1);
+    upv = vsx_vector<>(0,1);
     loading_done = true;
   }
 
   void run() {
-    vsx_mesh** spline_mesh = bspline_vertices_mesh->get_addr();
+    vsx_mesh<>** spline_mesh = bspline_vertices_mesh->get_addr();
     if (spline_mesh)
     {
       spline0.points.set_volatile();
@@ -64,7 +64,7 @@ public:
       e = pos2-pos1;
       e.normalize();
 
-      vsx_quaternion q;
+      vsx_quaternion<> q;
       q.x = e.x * (float)sin(1/2);
       q.y = e.y * (float)sin(1/2);
       q.z = e.z * (float)sin(1/2);

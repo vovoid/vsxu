@@ -39,9 +39,9 @@ public:
   vsx_module_param_render* render_out;
 
   // internal
-  vsx_mesh** mesh;
+  vsx_mesh<>** mesh;
   vsx_matrix ma;
-  vsx_vector upv;
+  vsx_vector<> upv;
 
   GLuint dlist;
   bool list_built;
@@ -129,8 +129,8 @@ public:
 
     if (center->get())
     {
-      vsx_color l_center_color = vsx_color(center_color->get(0)+center_color_add->get(0),center_color->get(1)+center_color_add->get(1),center_color->get(2)+center_color_add->get(2),center_color->get(3)+center_color_add->get(3));
-      vsx_color main_color = vsx_color(base_color->get(0)+base_color_add->get(0),base_color->get(1)+base_color_add->get(1),base_color->get(2)+base_color_add->get(2),base_color->get(3)+base_color_add->get(3));
+      vsx_color<> l_center_color = vsx_color<>(center_color->get(0)+center_color_add->get(0),center_color->get(1)+center_color_add->get(1),center_color->get(2)+center_color_add->get(2),center_color->get(3)+center_color_add->get(3));
+      vsx_color<> main_color = vsx_color<>(base_color->get(0)+base_color_add->get(0),base_color->get(1)+base_color_add->get(1),base_color->get(2)+base_color_add->get(2),base_color->get(3)+base_color_add->get(3));
 
       glBegin(GL_LINES);
       if (override_base_color->get())

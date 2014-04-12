@@ -62,7 +62,7 @@ using namespace std;
 
 bool vsx_widget_anchor::drag_status = false;
 bool vsx_widget_anchor::clone_value = false;
-vsx_vector vsx_widget_anchor::drag_position;
+vsx_vector<> vsx_widget_anchor::drag_position;
 vsx_widget_anchor* vsx_widget_anchor::drag_anchor;
 vsx_widget_anchor* vsx_widget_anchor::drag_clone_anchor;
 
@@ -111,7 +111,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     for (std::vector<vsx_string>::iterator it = order_list.begin(); it != order_list.end(); ++it) 
     {
       ((vsx_widget_connector_bezier*)connection_map[ vsx_string_aux::s2i(*it) ])->order = c;
-      ((vsx_widget_connector_bezier*)connection_map[ vsx_string_aux::s2i(*it) ])->move(vsx_vector(0));
+      ((vsx_widget_connector_bezier*)connection_map[ vsx_string_aux::s2i(*it) ])->move(vsx_vector<>(0));
       ++c;
     }
 
@@ -2230,7 +2230,7 @@ void vsx_widget_anchor::draw()
     float sx06 = size.x * 0.6f;
 
     myf_size = font.get_size(name,size.x*(0.3+t_size));
-    myf_pos = vsx_vector(pos.x+pp.x+sx06,pos.y+pp.y-size.y*0.5);
+    myf_pos = vsx_vector<>(pos.x+pp.x+sx06,pos.y+pp.y-size.y*0.5);
     glColor4f(0.0f,0.0f,0.0f,0.5f*color.a);
     font.color.a = color.a;
     if (io == -1)
@@ -2242,7 +2242,7 @@ void vsx_widget_anchor::draw()
     {
       myf_pos.x -= size.x;
       if (!drag_status)
-      draw_box(myf_pos-vsx_vector(myf_size.x) , myf_size.x, myf_size.y);
+      draw_box(myf_pos-vsx_vector<>(myf_size.x) , myf_size.x, myf_size.y);
       font.print_right(myf_pos, name,size.x*(0.3+t_size));
     }
     if (d_size > 0.3 && frames%7 == 1) 
@@ -2350,15 +2350,15 @@ vsx_widget_anchor::vsx_widget_anchor()
   widget_type = VSX_WIDGET_TYPE_ANCHOR;
 }
 
-vsx_vector vsx_widget_anchor::get_pos_p() 
+vsx_vector<> vsx_widget_anchor::get_pos_p()
 {
   if (!visible) return parent->get_pos_p();
 
-  vsx_vector t;
+  vsx_vector<> t;
   t.x = pos.x;
   t.y = pos.y;
   t.z = pos.z;
-  vsx_vector tt;
+  vsx_vector<> tt;
   if (parent != this) tt = parent->get_pos_p();
   t.z = pos.z;
   return t + tt;

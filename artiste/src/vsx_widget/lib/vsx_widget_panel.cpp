@@ -39,8 +39,8 @@ void vsx_widget_panel::calc_size() {
   size.y = target_size.y = parent->size.y-dragborder*2;
 }
 
-vsx_vector vsx_widget_panel::calc_pos() {
-  vsx_vector p = get_pos_p();
+vsx_vector<> vsx_widget_panel::calc_pos() {
+  vsx_vector<> p = get_pos_p();
   if (pos_from_parent) {
     p.x += target_pos.x;
     p.y += target_pos.y;
@@ -56,7 +56,7 @@ vsx_vector vsx_widget_panel::calc_pos() {
   return p;
 }
 
-int vsx_widget_panel::inside_xy_l(vsx_vector &test, vsx_vector &global)
+int vsx_widget_panel::inside_xy_l(vsx_vector<> &test, vsx_vector<> &global)
 {
   VSX_UNUSED(test);
   VSX_UNUSED(global);
@@ -66,10 +66,10 @@ int vsx_widget_panel::inside_xy_l(vsx_vector &test, vsx_vector &global)
 
 void vsx_widget_panel::base_draw() {
   calc_size();
-  vsx_vector p = calc_pos();
+  vsx_vector<> p = calc_pos();
   //vsx_color b(0,0,0,0), w(0,0,0,1), gr(0,1,0,1), r(1,0,0,1);
-  vsx_color b(0,0,0,0);
-  vsx_color w(0,0,0,1);
+  vsx_color<> b(0,0,0,0);
+  vsx_color<> w(0,0,0,1);
   //draw_box_gradient(p, dragborder, target_size.y, skin_color[0], skin_color[1], skin_color[1], skin_color[0]);
   draw_box_gradient(p, dragborder, target_size.y, skin_colors[0], skin_colors[1], skin_colors[1], skin_colors[0]);
 //  draw_box_gradient(p, target_size.x, dragborder, r, b, b, r);
@@ -127,7 +127,7 @@ void vsx_widget_split_panel::event_mouse_move(vsx_widget_distance distance,vsx_w
 }
 
 
-int vsx_widget_split_panel::inside_xy_l(vsx_vector &test, vsx_vector &global)
+int vsx_widget_split_panel::inside_xy_l(vsx_vector<> &test, vsx_vector<> &global)
 {
   if (coord_type == VSX_WIDGET_COORD_CENTER) {
     if (
@@ -156,7 +156,7 @@ int vsx_widget_split_panel::inside_xy_l(vsx_vector &test, vsx_vector &global)
 void vsx_widget_split_panel::i_draw()
 {
   calc_size();
-  vsx_vector p = calc_pos();
+  vsx_vector<> p = calc_pos();
   if (render_type == VSX_WIDGET_RENDER_2D)
   p.z = 0.0f;
   if (orientation == VSX_WIDGET_SPLIT_PANEL_VERT) {
@@ -206,6 +206,6 @@ void vsx_widget_split_panel::i_draw()
 
     glColor4f(1,1,1,1);
     if (splitter_size != 0)
-    draw_box(p+vsx_vector(0,split_pos*sy),sx,splitter_size);
+    draw_box(p+vsx_vector<>(0,split_pos*sy),sx,splitter_size);
   }
 }

@@ -52,7 +52,7 @@ dialog_query_string::dialog_query_string(vsx_string window_title, vsx_string in_
     vsx_string deli = "|";
     explode(in_fields, deli, f_parts);
     if (f_parts.size() == 0) f_parts.push_back("");
-    set_size(vsx_vector(0.45f, 0.10f+(float)(f_parts.size())*0.04f));
+    set_size(vsx_vector<>(0.45f, 0.10f+(float)(f_parts.size())*0.04f));
     float yp = target_size.y - 0.04f-0.02f;
     edit1 = 0;
     for (unsigned int i = 0; i < f_parts.size(); ++i)
@@ -62,8 +62,8 @@ dialog_query_string::dialog_query_string(vsx_string window_title, vsx_string in_
       if (!edit1) edit1 = (vsx_widget*)e;
       edits.push_back((vsx_widget*)e);
       e->init();
-      e->set_size(vsx_vector(size.x-0.04f, 0.02f));
-      e->set_pos(vsx_vector(size.x-e->target_size.x*0.5-0.02,yp));
+      e->set_size(vsx_vector<>(size.x-0.04f, 0.02f));
+      e->set_pos(vsx_vector<>(size.x-e->target_size.x*0.5-0.02,yp));
       e->set_font_size(0.02f);
       e->size_from_parent = true;
       e->single_row = true;
@@ -75,7 +75,7 @@ dialog_query_string::dialog_query_string(vsx_string window_title, vsx_string in_
       vsx_widget_2d_label *l = (vsx_widget_2d_label*)add(new vsx_widget_2d_label,"l");
       l->init();
       l->halign = a_left;
-      l->set_pos(vsx_vector(e->pos.x-e->size.x*0.5,yp+0.02f));
+      l->set_pos(vsx_vector<>(e->pos.x-e->size.x*0.5,yp+0.02f));
       l->set_font_size(0.015f);
       l->title = f_parts[i];
       
@@ -85,11 +85,11 @@ dialog_query_string::dialog_query_string(vsx_string window_title, vsx_string in_
   title = window_title;
 
   button1->title = "ok";
-  button1->set_pos(vsx_vector(0.055,0.03));
+  button1->set_pos(vsx_vector<>(0.055,0.03));
   button1->commands.adds(4,"ok","ok","");
 
   button2->title = "cancel";
-  button2->set_pos(vsx_vector(size.x-0.005-button2->size.x,0.03));
+  button2->set_pos(vsx_vector<>(size.x-0.005-button2->size.x,0.03));
   button2->commands.adds(4,"cancel","cancel","cancel");
   init_run = true;
   coord_related_parent = false;
@@ -107,7 +107,7 @@ void dialog_query_string::show()
   a_focus = k_focus = edit1;
   // set ourselves visible
   visible = 1;
-  set_pos(vsx_vector(0.5f-size.x/2, 0.5-size.y/2,0));
+  set_pos(vsx_vector<>(0.5f-size.x/2, 0.5-size.y/2,0));
   parent->front(this);
 }
 
@@ -188,13 +188,13 @@ dialog_messagebox::dialog_messagebox(vsx_string title_,vsx_string hint) {
     if (lines[i].size() > max_len) max_len = lines[i].size();
   }
 
-  set_size(vsx_vector((float)max_len * 0.0094 , 0.10+(float)lines.size() * 0.017));
+  set_size(vsx_vector<>((float)max_len * 0.0094 , 0.10+(float)lines.size() * 0.017));
 //  size.x = (float)max_len * 0.0094;
 
   float y = size.y*0.5+0.02;
   unsigned long i;
   for (i = 0; i < lines.size(); ++i) {
-    labels[i]->set_pos(vsx_vector(size.x*0.5, y));
+    labels[i]->set_pos(vsx_vector<>(size.x*0.5, y));
     labels[i]->target_size.y = labels[i]->size.y = 0.018;
     labels[i]->title = lines[i];
     y -= 0.017;
@@ -202,13 +202,13 @@ dialog_messagebox::dialog_messagebox(vsx_string title_,vsx_string hint) {
   y -= 0.017;
 
   button1->title = "ok";
-  button1->set_pos(vsx_vector(size.x*0.5,y));//(size.x-button1->size.x*0.5)*0.5,y));
+  button1->set_pos(vsx_vector<>(size.x*0.5,y));//(size.x-button1->size.x*0.5)*0.5,y));
   button1->commands.adds(4,"ok","ok","");
 
   title = title_;
   allow_resize_x = false;
   allow_resize_y = false;
   visible = 1;
-  set_pos(vsx_vector(0.5-size.x/2,0.5-size.y/2));
+  set_pos(vsx_vector<>(0.5-size.x/2,0.5-size.y/2));
   k_focus = this;
 }

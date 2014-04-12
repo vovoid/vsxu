@@ -3,7 +3,7 @@
 class module_particlesystem_modifier_size_noise : public vsx_module
 {
   int i;
-  vsx_particlesystem* particles;
+  vsx_particlesystem<>* particles;
   vsx_module_param_particlesystem* in_particlesystem;
   vsx_module_param_float* strength;
   vsx_module_param_int* size_type;
@@ -67,13 +67,13 @@ public:
       }
       f_randpool_pointer = f_randpool.get_pointer() + rand.rand()%nump;
       if (size_type->get()) {
-        vsx_particle* pp = particles->particles->get_pointer();
+        vsx_particle<>* pp = particles->particles->get_pointer();
 
         for (unsigned long i = 0; i <  nump; ++i) {
           (*pp).size = (*pp).orig_size + ( (*(f_randpool_pointer++)) *sx);
         }
       } else {
-        vsx_particle* pp = particles->particles->get_pointer();
+        vsx_particle<>* pp = particles->particles->get_pointer();
         for (unsigned long i = 0; i <  nump; ++i) {
           (*pp).size = (*pp).orig_size * ( (*(f_randpool_pointer++)) *sx);
           pp++;

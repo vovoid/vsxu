@@ -42,7 +42,7 @@ class vsx_widget_anchor : public vsx_widget
   static bool drag_status;
   static bool clone_value;
   float drag_size_mul;
-  static vsx_vector drag_position;
+  static vsx_vector<> drag_position;
   static vsx_widget_anchor* drag_anchor;
   static vsx_widget_anchor* drag_clone_anchor;
   float ax,ay,sx,sy;
@@ -52,8 +52,8 @@ class vsx_widget_anchor : public vsx_widget
   vsx_texture mtex_blob;
   vsx_texture mtex_blob_small;
 
-  vsx_vector pp;
-  vsx_vector myf_size, myf_pos;
+  vsx_vector<> pp;
+  vsx_vector<> myf_size, myf_pos;
   void delete_controllers();
   void init_menu(bool include_controllers);
 
@@ -131,7 +131,7 @@ public:
     tree_open = false;
   };
 
-  virtual vsx_vector get_pos_p();
+  virtual vsx_vector<> get_pos_p();
 
   virtual void pre_draw();
   virtual void draw();

@@ -92,7 +92,7 @@ void vsx_font::reinit_all_active()
   }
 }  
 
-  vsx_vector vsx_font::print(vsx_vector p, const vsx_string& str, const vsx_string& font, float size = 1, vsx_string colors) {
+  vsx_vector<> vsx_font::print(vsx_vector<> p, const vsx_string& str, const vsx_string& font, float size = 1, vsx_string colors) {
     if (!my_font_info) {
       if (glist.find(font) != glist.end()) {
         my_font_info = glist[font];
@@ -104,11 +104,11 @@ void vsx_font::reinit_all_active()
     return print(p,str,size,colors);
   }
 
-  vsx_vector vsx_font::print(vsx_vector p, const vsx_string& str, const float size = 1, vsx_string colors)
+  vsx_vector<> vsx_font::print(vsx_vector<> p, const vsx_string& str, const float size = 1, vsx_string colors)
   {
     #ifndef VSXU_OPENGL_ES
       if (!my_font_info)
-        return vsx_vector();
+        return vsx_vector<>();
 
       if (str == "")
         return p;
@@ -134,7 +134,7 @@ void vsx_font::reinit_all_active()
           if (!(*(my_font_info->texture)).bind())
           {
             vsx_printf("font could not bind texture!\n");
-            return vsx_vector();
+            return vsx_vector<>();
           }
 
           colc = (char*)colors.c_str();
@@ -240,10 +240,10 @@ void vsx_font::reinit_all_active()
         #endif
       }
     #endif // VSXU_OPENGL_ES
-    return vsx_vector();
+    return vsx_vector<>();
   }
 
-vsx_vector vsx_font::get_size(const vsx_string& str, float size = 1)
+vsx_vector<> vsx_font::get_size(const vsx_string& str, float size = 1)
 {
   #ifndef VSX_FONT_NO_FT
     if (!my_font_info) {
@@ -270,11 +270,11 @@ vsx_vector vsx_font::get_size(const vsx_string& str, float size = 1)
       } else
       if (cur_pos > max_char) max_char = cur_pos;
     }
-    return vsx_vector(((float)max_char)*0.37f*size,size*1.05f*(float)lines);
+    return vsx_vector<>(((float)max_char)*0.37f*size,size*1.05f*(float)lines);
   }  
 
 
-vsx_vector vsx_font::print_center(vsx_vector p, const vsx_string& str, float size = 1)
+vsx_vector<> vsx_font::print_center(vsx_vector<> p, const vsx_string& str, float size = 1)
 {
   p.x -= (align*0.37f*size*(float)str.size())*0.5f;
   #ifndef VSX_FONT_NO_FT
@@ -288,7 +288,7 @@ vsx_vector vsx_font::print_center(vsx_vector p, const vsx_string& str, float siz
   return print(p,str,size);
 }
 
-vsx_vector vsx_font::print_right(vsx_vector p, const vsx_string& str, float size = 1)
+vsx_vector<> vsx_font::print_right(vsx_vector<> p, const vsx_string& str, float size = 1)
 {
   p.x -= (align*0.37f*size*(float)str.size());
   #ifndef VSX_FONT_NO_FT

@@ -46,7 +46,7 @@
 #include <gl_helper.h>
 
 
-void vsx_widget_timeline::move_time(vsx_vector world) {
+void vsx_widget_timeline::move_time(vsx_vector<> world) {
   if (owner->engine_status == VSX_ENGINE_STOPPED) {
     float f = (world.x+size.x/2)/(size.x);
     if (f < 0) f = 0;
@@ -132,7 +132,7 @@ void vsx_widget_timeline::i_draw()
   else
     glColor3f(0.5f,0.5f,0.5f);
 
-  draw_box_border(vsx_vector(parentpos.x+pos.x-size.x*0.5,y_mid-y_size_half), vsx_vector(size.x,y_size), dragborder*0.5);
+  draw_box_border(vsx_vector<>(parentpos.x+pos.x-size.x*0.5,y_mid-y_size_half), vsx_vector<>(size.x,y_size), dragborder*0.5);
 
   levelstart = ((float)(int)(trunc(owner->tstart+(owner->tstart>=0.0?0.5:-0.5))) - owner->tstart)/totalsize;
 
@@ -152,7 +152,7 @@ void vsx_widget_timeline::i_draw()
         glVertex2f(x,y_mid+y_size*0.416666667f);
         glVertex2f(x,y_mid-y_size*0.416666667f);
       glEnd();
-      font.print_center(vsx_vector(x,y_mid), i2s(i),0.005);
+      font.print_center(vsx_vector<>(x,y_mid), i2s(i),0.005);
     }
   }
 

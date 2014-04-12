@@ -33,13 +33,13 @@ public:
   vsx_module_param_mesh* mesh_out;
 
   // internal
-  vsx_mesh* mesh;
-  vsx_quaternion_array i_tangents;
-  vsx_array<vsx_quaternion> data;
+  vsx_mesh<>* mesh;
+  vsx_quaternion_array<> i_tangents;
+  vsx_array< vsx_quaternion<> > data;
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -79,12 +79,12 @@ public:
   }
 
   unsigned long prev_timestamp;
-  vsx_vector v;
+  vsx_vector<> v;
 
   void run()
   {
     // mesh pointer
-    vsx_mesh** p = mesh_in->get_addr();
+    vsx_mesh<>** p = mesh_in->get_addr();
 
     // is connected / valid ?
     if (!p)
@@ -103,7 +103,7 @@ public:
     mesh->data->vertex_colors.allocate((*p)->data->vertices.size());
     mesh->data->vertex_colors.reset_used((*p)->data->vertices.size());
     mesh->data->vertex_colors.memory_clear();
-    vsx_quaternion* vec_d = (vsx_quaternion*)mesh->data->vertex_colors.get_pointer();
+    vsx_quaternion<>* vec_d = (vsx_quaternion<>*)mesh->data->vertex_colors.get_pointer();
 
     for (unsigned long a = 0; a < (*p)->data->faces.size(); a++)
     {
@@ -111,9 +111,9 @@ public:
       long i2 = (*p)->data->faces[a].b;
       long i3 = (*p)->data->faces[a].c;
 
-      const vsx_vector& v1 = (*p)->data->vertices[i1];
-      const vsx_vector& v2 = (*p)->data->vertices[i2];
-      const vsx_vector& v3 = (*p)->data->vertices[i3];
+      const vsx_vector<>& v1 = (*p)->data->vertices[i1];
+      const vsx_vector<>& v2 = (*p)->data->vertices[i2];
+      const vsx_vector<>& v3 = (*p)->data->vertices[i3];
 
       const vsx_tex_coord& w1 = (*p)->data->vertex_tex_coords[i1];
       const vsx_tex_coord& w2 = (*p)->data->vertex_tex_coords[i2];
@@ -132,7 +132,7 @@ public:
       float t2 = w3.t - w1.t;
 
       float r = 1.0f / (s1 * t2 - s2 * t1);
-      vsx_quaternion sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r, (t2 * z1 - t1 * z2) * r);
+      vsx_quaternion<> sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r, (t2 * z1 - t1 * z2) * r);
 
       vec_d[i1] += sdir;
       vec_d[i2] += sdir;
@@ -140,8 +140,8 @@ public:
     }
     for (unsigned long a = 0; a < (*p)->data->vertices.size(); a++)
     {
-      vsx_vector& n = (*p)->data->vertex_normals[a];
-      vsx_quaternion& t = vec_d[a];
+      vsx_vector<>& n = (*p)->data->vertex_normals[a];
+      vsx_quaternion<>& t = vec_d[a];
 
       // Gram-Schmidt orthogonalize
       //vec_d[a] = (t - n * t.dot_product(&n) );

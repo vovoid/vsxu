@@ -29,7 +29,7 @@ vsx_widget_controller_slider::vsx_widget_controller_slider()
   generate_menu();
   menu->init();
   color.set(85.0f/255.0f,170.0f/255.0f,1,1);
-  set_size(vsx_vector(sizeunit, sizeunit* 4.0f));
+  set_size(vsx_vector<>(sizeunit, sizeunit* 4.0f));
   handlesize=0.5*sizeunit;
   value=0.0f;target_value=0.0f;
   capminv=0;
@@ -49,8 +49,8 @@ void vsx_widget_controller_slider::init()
   editor = add(new vsx_widget_base_edit,name+".edit");
   editor->init();
   editor->render_type = VSX_WIDGET_RENDER_3D;
-  editor->set_size(vsx_vector(sizeunit,sizeunit*0.23f));
-  editor->set_pos(vsx_vector(0,size.y*0.5f+sizeunit*0.125f));
+  editor->set_size(vsx_vector<>(sizeunit,sizeunit*0.23f));
+  editor->set_pos(vsx_vector<>(0,size.y*0.5f+sizeunit*0.125f));
   editor->set_font_size(0.003);
 }
 
@@ -68,7 +68,7 @@ void vsx_widget_controller_slider::cap_value()
   vsx_widget_controller_base::cap_value();
 }
 
-int vsx_widget_controller_slider::inside_xy_l(vsx_vector &test, vsx_vector &global)
+int vsx_widget_controller_slider::inside_xy_l(vsx_vector<> &test, vsx_vector<> &global)
 {
   float ypos = get_y_pos();
   if (coord_type == VSX_WIDGET_COORD_CENTER)

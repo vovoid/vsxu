@@ -24,7 +24,7 @@
 
 // UGLY HACKS GALORE:
 typedef struct {
-    vsx_vector pt[3];
+    vsx_vector<> pt[3];
 } tri;
 
 typedef struct {
@@ -33,12 +33,12 @@ typedef struct {
 } obj;
 
 /* Six equidistant points lying on the unit sphere */
-#define XPLUS vsx_vector( 1,  0,  0  ) /*  X */
-#define XMIN  vsx_vector( -1,  0,  0 ) /* -X */
-#define YPLUS vsx_vector(  0,  1,  0 ) /*  Y */
-#define YMIN  vsx_vector(  0, -1,  0 ) /* -Y */
-#define ZPLUS vsx_vector(  0,  0,  1 ) /*  Z */
-#define ZMIN  vsx_vector(  0,  0, -1 ) /* -Z */
+#define XPLUS vsx_vector<>( 1,  0,  0  ) /*  X */
+#define XMIN  vsx_vector<>( -1,  0,  0 ) /* -X */
+#define YPLUS vsx_vector<>(  0,  1,  0 ) /*  Y */
+#define YMIN  vsx_vector<>(  0, -1,  0 ) /* -Y */
+#define ZPLUS vsx_vector<>(  0,  0,  1 ) /*  Z */
+#define ZMIN  vsx_vector<>(  0,  0, -1 ) /* -Z */
 
 tri octahedron[] = {
     { { XPLUS, ZPLUS, YPLUS } },
@@ -77,7 +77,7 @@ public:
   vsx_module_param_mesh* result;
 
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   int l_param_updates;
   int current_subdivision_level;
   int current_max_normalization_level;
@@ -128,7 +128,7 @@ public:
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -198,7 +198,7 @@ public:
       {
         tri *oldt = &old->poly[i];
         tri *newt = &nnew->poly[i*4];
-        vsx_vector a, b, c;
+        vsx_vector<> a, b, c;
 
         a.midpoint(oldt->pt[0], oldt->pt[2]);
         b.midpoint(oldt->pt[0], oldt->pt[1]);
@@ -245,7 +245,7 @@ public:
       mesh->data->vertices.push_back(old->poly[i].pt[0]);
       mesh->data->vertices.push_back(old->poly[i].pt[1]);
       mesh->data->vertices.push_back(old->poly[i].pt[2]);
-      vsx_vector n;
+      vsx_vector<> n;
       n = old->poly[i].pt[0];
       n.normalize();
       mesh->data->vertex_normals.push_back(n);

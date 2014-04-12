@@ -38,9 +38,9 @@ public:
     vsx_module_param_mesh* result;
     vsx_module_param_mesh* bones_bounding_box;
     // internal
-    vsx_mesh* mesh_a;
-    vsx_mesh* mesh_b;
-    vsx_mesh* mesh_bbox;
+    vsx_mesh<>* mesh_a;
+    vsx_mesh<>* mesh_b;
+    vsx_mesh<>* mesh_bbox;
     bool first_run;
     int n_rays;
     vsx_string current_filename;
@@ -54,7 +54,7 @@ public:
     pthread_cond_t count_threshold_cv;
     int               thread_has_something_to_deliver; // locked by the mesh mutex
     int               have_sent_work_to_thread;
-    vsx_mesh*         mesh; // locked by the mesh mutex
+    vsx_mesh<>*         mesh; // locked by the mesh mutex
 
     pthread_mutex_t   thread_exit_mutex;
     sem_t sem_worker_todo; // indicates wether the worker should do anything.
@@ -68,14 +68,14 @@ public:
     cal3d_thread_info thread_info;
 
     // transform
-    vsx_quaternion pre_rotation_quaternion;
+    vsx_quaternion<> pre_rotation_quaternion;
     vsx_matrix pre_rotation_mat;
-    vsx_vector pre_rot_center;
+    vsx_vector<> pre_rot_center;
 
-    vsx_quaternion rotation_quaternion;
+    vsx_quaternion<> rotation_quaternion;
     vsx_matrix rotation_mat;
-    vsx_vector rot_center;
-    vsx_vector post_rot_translate_vec;
+    vsx_vector<> rot_center;
+    vsx_vector<> post_rot_translate_vec;
 
 
   module_mesh_cal3d_import() {
@@ -248,10 +248,10 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-    mesh_a = new vsx_mesh;
-    mesh_b = new vsx_mesh;
+    mesh_a = new vsx_mesh<>;
+    mesh_b = new vsx_mesh<>;
     mesh = mesh_a;
-    mesh_bbox = new vsx_mesh;
+    mesh_bbox = new vsx_mesh<>;
 
     loading_done = false;
     current_filename = "";
@@ -380,7 +380,6 @@ public:
   {
     cal3d_thread_info thread_info= *(cal3d_thread_info*)ptr;
     module_mesh_cal3d_import* my = ((module_mesh_cal3d_import*)  thread_info.class_pointer);
-    unsigned long exit_check_counter = 0;
     int first_rendering = 0;
 
     #if (PLATFORM == PLATFORM_LINUX)
@@ -424,10 +423,10 @@ public:
           // select mesh and submesh for further data access
           if(pCalRenderer->selectMeshSubmesh(meshId, submeshId))
           {
-            my->mesh->data->vertices[pCalRenderer->getVertexCount()+1] = vsx_vector(0,0,0);
+            my->mesh->data->vertices[pCalRenderer->getVertexCount()+1] = vsx_vector<>(0,0,0);
             pCalRenderer->getVertices(&my->mesh->data->vertices[0].x);
 
-            my->mesh->data->vertex_normals[pCalRenderer->getVertexCount()+1] = vsx_vector(0,0,0);
+            my->mesh->data->vertex_normals[pCalRenderer->getVertexCount()+1] = vsx_vector<>(0,0,0);
             pCalRenderer->getNormals(&my->mesh->data->vertex_normals[0].x);
 
             if (pCalRenderer->isTangentsEnabled(0))
@@ -464,8 +463,8 @@ public:
       my->rotation_mat = my->rotation_quaternion.matrix();
 
       unsigned long end = (my->mesh)->data->vertices.size();
-      vsx_vector* vs_v = &(my->mesh)->data->vertices[0];
-      vsx_vector* vs_n = &(my->mesh)->data->vertex_normals[0];
+      vsx_vector<>* vs_v = &(my->mesh)->data->vertices[0];
+      vsx_vector<>* vs_n = &(my->mesh)->data->vertex_normals[0];
 
 
       for (unsigned long i = 0; i < end; i++)
@@ -477,7 +476,7 @@ public:
           *vs_v - my->pre_rot_center
         );
         (*vs_v) += my->pre_rot_center;
-        vsx_vector n = *vs_n;
+        vsx_vector<> n = *vs_n;
         vs_n->multiply_matrix_other_vec(
           &my->pre_rotation_mat.m[0],
           n
@@ -505,12 +504,12 @@ public:
       // ********************************************************************
       // calculate tangent space coordinates
 
-      vsx_mesh* mesh = my->mesh;
+      vsx_mesh<>* mesh = my->mesh;
 
       mesh->data->vertex_colors.allocate( mesh->data->vertices.size() );
       mesh->data->vertex_colors.memory_clear();
 
-      vsx_quaternion* vec_d = (vsx_quaternion*)mesh->data->vertex_colors.get_pointer();
+      vsx_quaternion<>* vec_d = (vsx_quaternion<>*)mesh->data->vertex_colors.get_pointer();
 
       for (unsigned long a = 0; a < mesh->data->faces.size(); a++)
       {
@@ -518,9 +517,9 @@ public:
         long i2 = mesh->data->faces[a].b;
         long i3 = mesh->data->faces[a].c;
 
-        const vsx_vector& v1 = mesh->data->vertices[i1];
-        const vsx_vector& v2 = mesh->data->vertices[i2];
-        const vsx_vector& v3 = mesh->data->vertices[i3];
+        const vsx_vector<>& v1 = mesh->data->vertices[i1];
+        const vsx_vector<>& v2 = mesh->data->vertices[i2];
+        const vsx_vector<>& v3 = mesh->data->vertices[i3];
 
         const vsx_tex_coord& w1 = mesh->data->vertex_tex_coords[i1];
         const vsx_tex_coord& w2 = mesh->data->vertex_tex_coords[i2];
@@ -539,7 +538,7 @@ public:
         float t2 = w3.t - w1.t;
 
         float r = 1.0f / (s1 * t2 - s2 * t1);
-        vsx_quaternion sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r, (t2 * z1 - t1 * z2) * r);
+        vsx_quaternion<> sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r, (t2 * z1 - t1 * z2) * r);
         //vsx_vector sdir((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r,(s1 * z2 - s2 * z1) * r);
 
         vec_d[i1] += sdir;
@@ -552,8 +551,8 @@ public:
       }
       for (unsigned long a = 0; a < mesh->data->vertices.size(); a++)
       {
-          vsx_vector& n = mesh->data->vertex_normals[a];
-          vsx_quaternion& t = vec_d[a];
+          vsx_vector<>& n = mesh->data->vertex_normals[a];
+          vsx_quaternion<>& t = vec_d[a];
 
           // Gram-Schmidt orthogonalize
           //vec_d[a] = (t - n * t.dot_product(&n) );
@@ -577,7 +576,6 @@ public:
       }
 
       {
-        exit_check_counter = 0;
         // see if the exit flag is set (user changed from threaded to non-threaded mode)
         pthread_mutex_lock(&my->thread_exit_mutex);
         int time_to_exit = my->thread_exit;

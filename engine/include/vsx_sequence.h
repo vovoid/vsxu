@@ -45,8 +45,8 @@ public:
   float value;
   float delay; // in seconds (float)
   int interpolation;
-  vsx_vector handle1;
-  vsx_vector handle2;
+  vsx_vector<> handle1;
+  vsx_vector<> handle2;
 
   vsx_string f2s(float in)
   {

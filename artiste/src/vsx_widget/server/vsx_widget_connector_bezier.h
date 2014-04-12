@@ -33,18 +33,18 @@
 class vsx_widget_connector_bezier : public vsx_widget {
   bool macro_child;
   bool transparent;
-  vsx_vector pv;
+  vsx_vector<> pv;
   double sx,sy,ex,ey; // internal coordinates
   double old_sx, old_sy, old_ex, old_ey;
-  vsx_vector cached_spline[25];
+  vsx_vector<> cached_spline[25];
   vsx_texture mtex_blob;
   bool color_initialized;
-  vsx_color color;
+  vsx_color<> color;
   
 public:
   static float dim_alpha;
   float dim_my_alpha;
-  vsx_vector real_pos; // storing the value of the position of the drawing
+  vsx_vector<> real_pos; // storing the value of the position of the drawing
                        // so that the anchor can order them in the order they
                        // appear visually. Updated on each frame in the draw func.
   bool alias_conn; // is this an alias connection?
@@ -63,7 +63,7 @@ public:
   void before_delete();
   void on_delete();
   void init();
-  int inside_xy_l(vsx_vector &test, vsx_vector &global);
+  int inside_xy_l(vsx_vector<> &test, vsx_vector<> &global);
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);

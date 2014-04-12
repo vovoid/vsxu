@@ -63,17 +63,18 @@ public:
 
 // the mesh contains vertices stored in a local coordinate system.
 #ifndef VSX_NO_MESH
+template<typename T = float>
 class vsx_mesh_data {
 public:
   // vertices
-  vsx_array<vsx_vector> vertices;
-  vsx_array<vsx_vector> vertex_normals;
-  vsx_array<vsx_color> vertex_colors;
-  vsx_array<vsx_tex_coord> vertex_tex_coords;
-  vsx_array<vsx_face> faces;
-  vsx_array<vsx_vector> face_normals;
-  vsx_array<vsx_quaternion> vertex_tangents; // tangent space, for normal mapping
-  vsx_array<vsx_vector> face_centers; // centers of the faces - the average of each face's v1+v2+v3/3
+  vsx_array< vsx_vector<T> > vertices;
+  vsx_array< vsx_vector<T> > vertex_normals;
+  vsx_array< vsx_color<T> > vertex_colors;
+  vsx_array< vsx_tex_coord > vertex_tex_coords;
+  vsx_array< vsx_face > faces;
+  vsx_array< vsx_vector<T> > face_normals;
+  vsx_array< vsx_quaternion<T> > vertex_tangents; // tangent space, for normal mapping
+  vsx_array< vsx_vector<T> > face_centers; // centers of the faces - the average of each face's v1+v2+v3/3
   // selected vertices, whom wich should be modified when run through a mesh deformer that modifies the
   // vertex coordinates
   vsx_array<unsigned long>* selected_vertices;
@@ -88,16 +89,16 @@ public:
     }
   }
   
-  inline vsx_vector get_face_normal(unsigned long index)
+  inline vsx_vector<T> get_face_normal(unsigned long index)
   {
     // counter-clockwise faces
     //  c
     //  ^
     //  |
     //  b<----a
-    vsx_vector a = vertices[faces[index].b] - vertices[faces[index].a];  
-    vsx_vector b = vertices[faces[index].c] - vertices[faces[index].a];
-    vsx_vector res;
+    vsx_vector<T> a = vertices[faces[index].b] - vertices[faces[index].a];
+    vsx_vector<T> b = vertices[faces[index].c] - vertices[faces[index].a];
+    vsx_vector<T> res;
     res.cross(a,b);
     return res;
   }
@@ -139,23 +140,24 @@ public:
 };
 #endif
 
+template<typename T = float>
 class vsx_mesh {
 public:
   unsigned long timestamp;
 #ifndef VSX_NO_MESH
-  vsx_mesh_data* data;
+  vsx_mesh_data<T>* data;
 #else
   void* data;
 #endif
   vsx_mesh() {
 #ifndef VSX_NO_MESH
-    data = new vsx_mesh_data;
+    data = new vsx_mesh_data<T>;
     timestamp = rand();
 #endif
   }
   ~vsx_mesh() {
 #ifndef VSX_NO_MESH
-    delete (vsx_mesh_data*)data;
+    delete (vsx_mesh_data<T>*)data;
 #endif
   }
 };

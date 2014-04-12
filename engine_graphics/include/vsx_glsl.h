@@ -632,7 +632,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
           break;
           case VSX_MODULE_PARAM_ID_FLOAT3_ARRAY:
           {
-            vsx_vector_array* p = ((vsx_module_param_float3_array*)attribute_list[i].module_param)->get_addr();
+            vsx_vector_array<>* p = ((vsx_module_param_float3_array*)attribute_list[i].module_param)->get_addr();
             if (p)
             {
               #ifdef VSXU_DEBUG
@@ -646,7 +646,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
           break;
           case VSX_MODULE_PARAM_ID_QUATERNION_ARRAY:
           {
-            vsx_quaternion_array* p = ((vsx_module_param_quaternion_array*)attribute_list[i].module_param)->get_addr();
+            vsx_quaternion_array<>* p = ((vsx_module_param_quaternion_array*)attribute_list[i].module_param)->get_addr();
             if (p)
             {
               //#ifdef VSXU_DEBUG

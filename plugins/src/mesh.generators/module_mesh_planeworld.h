@@ -34,14 +34,14 @@ class module_mesh_planeworld : public vsx_module
   vsx_module_param_mesh* mesh_result;
 
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   vsx_bspline spline0;
   vsx_2dgrid_mesh gmesh;
 
 public:
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
   void on_delete()
@@ -69,13 +69,13 @@ public:
   {
     mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_result");
     bspline_vertices_mesh = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"bspline_vertices_mesh");
-    spline0.init(vsx_vector(0), 0.7f, 0.3f, 0.6f);
+    spline0.init(vsx_vector<>(0), 0.7f, 0.3f, 0.6f);
     srand ( time(NULL) );
   }
 
   void run()
   {
-    vsx_mesh** spline_mesh = bspline_vertices_mesh->get_addr();
+    vsx_mesh<>** spline_mesh = bspline_vertices_mesh->get_addr();
     if (!spline_mesh) return;
     if (mesh->data->faces.get_used() && (*spline_mesh)->timestamp == mesh->timestamp) return;
     mesh->timestamp = (*spline_mesh)->timestamp;
@@ -90,7 +90,7 @@ public:
 
     if (!spline0.points.size()) return;
 
-    vsx_vector spos;
+    vsx_vector<> spos;
 
     spline0.step(1);
     spos = spline0.calc_coord();
@@ -100,17 +100,17 @@ public:
     const float s = 0.008f;
 
 
-    gmesh.vertices[0][0].coord = vsx_vector(-1*s,-1*s);
-    gmesh.vertices[0][1].coord = vsx_vector(1*s,-1*s);
-    gmesh.vertices[0][2].coord = vsx_vector(1*s,1*s);
-    gmesh.vertices[0][3].coord = vsx_vector(-1*s,1*s);
+    gmesh.vertices[0][0].coord = vsx_vector<>(-1*s,-1*s);
+    gmesh.vertices[0][1].coord = vsx_vector<>(1*s,-1*s);
+    gmesh.vertices[0][2].coord = vsx_vector<>(1*s,1*s);
+    gmesh.vertices[0][3].coord = vsx_vector<>(-1*s,1*s);
 
     float step = 0.05f;
     float iterations_p = 1.0f/step;
 
-    vsx_vector old;
-    vsx_vector e;
-    vsx_vector d;
+    vsx_vector<> old;
+    vsx_vector<> e;
+    vsx_vector<> d;
     vsx_matrix ma;
     //-----
     for (unsigned long i = 0; i < spline0.points.size()*(int)iterations_p; ++i) {
@@ -128,17 +128,17 @@ public:
       gmesh.vertices[i+1][2].coord = ma.multiply_vector(gmesh.vertices[0][2].coord)+spos;
       gmesh.vertices[i+1][3].coord = ma.multiply_vector(gmesh.vertices[0][3].coord)+spos;
 
-      gmesh.vertices[i+1][0].tex_coord = vsx_vector(0);
-      gmesh.vertices[i+1][1].tex_coord = vsx_vector(1,0);
-      gmesh.vertices[i+1][2].tex_coord = vsx_vector(1,1);
-      gmesh.vertices[i+1][3].tex_coord = vsx_vector(0,1);
+      gmesh.vertices[i+1][0].tex_coord = vsx_vector<>(0);
+      gmesh.vertices[i+1][1].tex_coord = vsx_vector<>(1,0);
+      gmesh.vertices[i+1][2].tex_coord = vsx_vector<>(1,1);
+      gmesh.vertices[i+1][3].tex_coord = vsx_vector<>(0,1);
 
 
 
-      gmesh.vertices[i+1][0].color = vsx_color(1,1,1,0.5f);
-      gmesh.vertices[i+1][1].color = vsx_color(1,1,1,0.5f);
-      gmesh.vertices[i+1][2].color = vsx_color(1,1,1,0.5f);
-      gmesh.vertices[i+1][3].color = vsx_color(1,1,1,0.5f);
+      gmesh.vertices[i+1][0].color = vsx_color<>(1,1,1,0.5f);
+      gmesh.vertices[i+1][1].color = vsx_color<>(1,1,1,0.5f);
+      gmesh.vertices[i+1][2].color = vsx_color<>(1,1,1,0.5f);
+      gmesh.vertices[i+1][3].color = vsx_color<>(1,1,1,0.5f);
 
       gmesh.add_face(i+1,1, i+1,3, i+1,0);
       gmesh.add_face(i+1,1, i+1,2, i+1,3);

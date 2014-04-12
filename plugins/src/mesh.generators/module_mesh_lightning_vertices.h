@@ -39,14 +39,14 @@ public:
   vsx_module_param_mesh* result;
 
   // internal
-  vsx_mesh* mesh;
-  vsx_vector old_scaling;
+  vsx_mesh<>* mesh;
+  vsx_vector<> old_scaling;
   bool first_run;
   unsigned long id_a;
   unsigned long id_b;
   unsigned long lifetime;
-  vsx_vector delta;
-  vsx_vector start;
+  vsx_vector<> delta;
+  vsx_vector<> start;
   vsx_rand rand;
 
   void module_info(vsx_module_info* info)
@@ -96,7 +96,7 @@ public:
   }
 
   bool init() {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -107,7 +107,7 @@ public:
 
   void run()
   {
-    vsx_mesh** p_a = mesh_a->get_addr();
+    vsx_mesh<>** p_a = mesh_a->get_addr();
 
     if (p_a)
     {

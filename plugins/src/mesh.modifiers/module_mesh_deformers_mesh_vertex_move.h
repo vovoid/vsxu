@@ -36,20 +36,20 @@ public:
 
   // internal
   float p_index;
-  vsx_vector p_offset;
+  vsx_vector<> p_offset;
   float p_falloff_range;
   unsigned long p_timestamp;
-  vsx_mesh* mesh;
-  vsx_quaternion q;
+  vsx_mesh<>* mesh;
+  vsx_quaternion<> q;
   vsx_avector<unsigned long> moved_vertices;
   vsx_avector<int> vertices_needing_normal_calc;
   float falloff;
   int first_index;
-  vsx_mesh** p;
+  vsx_mesh<>** p;
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -129,7 +129,7 @@ public:
               j++;
             }
             if (!found) {
-              vsx_vector dist = (*p)->data->vertices[a] - (*p)->data->vertices[first_index];
+              vsx_vector<> dist = (*p)->data->vertices[a] - (*p)->data->vertices[first_index];
               float len = dist.length();
               if (len > falloff)
               do_falloff(len, a,true);
@@ -147,7 +147,7 @@ public:
               j++;
             }
             if (!found) {
-              vsx_vector dist = (*p)->data->vertices[b] - (*p)->data->vertices[first_index];
+              vsx_vector<> dist = (*p)->data->vertices[b] - (*p)->data->vertices[first_index];
               float len = dist.length();
               if (len > falloff)
               do_falloff(len, b,true);
@@ -165,7 +165,7 @@ public:
               j++;
             }
             if (!found) {
-              vsx_vector dist = (*p)->data->vertices[c] - (*p)->data->vertices[first_index];
+              vsx_vector<> dist = (*p)->data->vertices[c] - (*p)->data->vertices[first_index];
               float len = dist.length();
               if (len > falloff)
               do_falloff(len, c,true);
@@ -180,7 +180,7 @@ public:
     {
       // find distance between this index and center vertex
 
-      mesh->data->vertices[ind] = (*p)->data->vertices[ind] + vsx_vector(offset->get(0),offset->get(1),offset->get(2))*(1.0f-pp);
+      mesh->data->vertices[ind] = (*p)->data->vertices[ind] + vsx_vector<>(offset->get(0),offset->get(1),offset->get(2))*(1.0f-pp);
     }
     vertices_needing_normal_calc.push_back(ind);
   }
@@ -191,13 +191,13 @@ public:
     if (!p) return;
     bool run = false;
     if (p_index != index->get()) run = true;
-    if (!run) if (p_offset != vsx_vector(offset->get(0), offset->get(1), offset->get(2))) run = true;
+    if (!run) if (p_offset != vsx_vector<>(offset->get(0), offset->get(1), offset->get(2))) run = true;
     if (p_falloff_range != falloff_range->get()) run = true;
 
     if ((*p)->timestamp != p_timestamp || run) {
       p_timestamp = (*p)->timestamp;
       p_falloff_range = falloff_range->get();
-      p_offset = vsx_vector(offset->get(0), offset->get(1), offset->get(2));
+      p_offset = vsx_vector<>(offset->get(0), offset->get(1), offset->get(2));
       p_index = index->get();
 
       mesh->data->vertices.reset_used(0);
@@ -237,7 +237,7 @@ public:
       for (unsigned long k = 0; k < vertices_needing_normal_calc.size(); k++)
       {
         unsigned long indi = vertices_needing_normal_calc[k];
-        vsx_vector norm_accum;
+        vsx_vector<> norm_accum;
         for (unsigned long i = 0; i < mesh->data->faces.size(); i++)
         {
           if (

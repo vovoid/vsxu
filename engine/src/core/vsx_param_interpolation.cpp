@@ -111,18 +111,18 @@ bool vsx_module_param_interpolation_quaternion::interpolate(float dtime) {
   float tt = dtime * dest_interp;
   if (tt > 1) tt = 1;
   int done = 0;
-  vsx_quaternion from_quat;
+  vsx_quaternion<> from_quat;
   from_quat.x = ((vsx_module_param_quaternion*)target_param)->get_internal(0);
   from_quat.y = ((vsx_module_param_quaternion*)target_param)->get_internal(1);
   from_quat.z = ((vsx_module_param_quaternion*)target_param)->get_internal(2);
   from_quat.w = ((vsx_module_param_quaternion*)target_param)->get_internal(3);
-  vsx_quaternion dest_quat;
+  vsx_quaternion<> dest_quat;
   //printf("destination value 0: %f\n",destination_value[0]);
   dest_quat.x = destination_value[0];
   dest_quat.y = destination_value[1];
   dest_quat.z = destination_value[2];
   dest_quat.w = destination_value[3];
-  vsx_quaternion result_quat;
+  vsx_quaternion<> result_quat;
   result_quat.slerp(from_quat,dest_quat,tt);
   
   float len = 1.0 / (float)sqrt(

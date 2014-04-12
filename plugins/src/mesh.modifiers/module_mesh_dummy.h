@@ -63,7 +63,7 @@ public:
   }
 
   void run() {
-    vsx_mesh** p = mesh_in->get_addr();
+    vsx_mesh<>** p = mesh_in->get_addr();
     if (p)
     {
       mesh_out->set_p(*p);

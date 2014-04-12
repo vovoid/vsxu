@@ -40,8 +40,8 @@ class vsx_widget_server : public vsx_widget {
 
   bool selection;
   float delta_move,delta_zoom;
-  vsx_vector remPointer;
-  vsx_vector selection_start,selection_end;
+  vsx_vector<> remPointer;
+  vsx_vector<> selection_start,selection_end;
 
   vsx_command_list dump_commands;
   // dialogs
@@ -52,7 +52,7 @@ class vsx_widget_server : public vsx_widget {
   vsx_widget* seq_pool;
   vsx_widget* profiler;
 
-  vsx_vector alert_delta;
+  vsx_vector<> alert_delta;
   vsx_string server_message;
   unsigned int server_type; // 1 is internal, 2 is connected via socket
 

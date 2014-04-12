@@ -91,7 +91,7 @@ public:
 
   void run()
   {
-    vsx_mesh** p = mesh_in->get_addr();
+    vsx_mesh<>** p = mesh_in->get_addr();
     if (!p) return;
 
     long id_a_ = (unsigned long)floor(id_a->get());
@@ -112,7 +112,7 @@ public:
       )
     {
       // 1. calculate vector
-      vsx_vector k,n,c;
+      vsx_vector<> k,n,c;
       vsx_matrix m,mr;
 
       k = (*p)->data->vertices[id_b_] - (*p)->data->vertices[id_a_];
@@ -135,7 +135,7 @@ public:
 
 
       //m.rotation_from_vectors(&k, &(p->data->vertex_normals[id_a_]) );
-      vsx_quaternion q;
+      vsx_quaternion<> q;
       q.from_matrix(&mr);
       q.normalize();
       position->set((*p)->data->vertices[id_a_].x,0);

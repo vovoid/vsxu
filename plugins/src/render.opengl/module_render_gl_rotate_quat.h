@@ -68,7 +68,7 @@ public:
     gl_state = vsx_gl_state::get_instance();
 
   }
-  vsx_quaternion bb;
+  vsx_quaternion<> bb;
 
   bool activate_offscreen() {
     // save current matrix

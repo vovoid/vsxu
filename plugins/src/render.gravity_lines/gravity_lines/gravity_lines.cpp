@@ -23,7 +23,7 @@ void gravity_lines::init()
 
 	first = true;
 	num_lines = 40;
-	vsx_vector v;
+  vsx_vector<> v;
 	
   for(int i = 0; i < num_lines / 3; i++)
   {
@@ -58,7 +58,7 @@ void gravity_lines::update(float delta_time, float x, float y, float z) {
 	if (delta_time > 0.16667f) delta_time = 0.16667f;
 	while (oldPos.size() != (unsigned long)num_lines)
 	{
-		oldPos.push_back(new vsx_vector[BUFF_LEN]);
+    oldPos.push_back(new vsx_vector<>[BUFF_LEN]);
 	}
 	
   curr_time += (float)fabs(delta_time);
@@ -71,7 +71,7 @@ void gravity_lines::update(float delta_time, float x, float y, float z) {
 
   last_step_time += num_steps / step_freq;
   
-  vsx_vector pos;
+  vsx_vector<> pos;
 
   for(int j = 0; j < num_steps; j++) {
     for(int i = 0; i < num_lines; i++) {

@@ -13,7 +13,7 @@ public:
   vsx_module_param_render* render_result;
 
   // internal
-  vsx_particlesystem* particles;
+  vsx_particlesystem<>* particles;
   vsx_texture** tex;
   unsigned long i;
 

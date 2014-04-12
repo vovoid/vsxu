@@ -32,7 +32,7 @@ class module_axis_angle_to_quaternion : public vsx_module
   vsx_module_param_quaternion* result;
 
   // internal
-  vsx_quaternion q;
+  vsx_quaternion<> q;
 
 public:
 
@@ -78,7 +78,7 @@ public:
 
   void run()
   {
-    vsx_vector i_axis(
+    vsx_vector<> i_axis(
           axis->get(0),
           axis->get(1),
           axis->get(2)

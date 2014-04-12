@@ -91,7 +91,7 @@ class vsx_module_glsl : public vsx_module
   float tax, tay, tbx, tby;
   std::map<vsx_string, vsx_module_param_abs*> shader_params;
   bool first;
-  vsx_color cm;
+  vsx_color<> cm;
   int cc;
 
 public:

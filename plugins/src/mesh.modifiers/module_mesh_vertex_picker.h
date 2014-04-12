@@ -93,7 +93,7 @@ public:
   }
 
   void run() {
-    vsx_mesh** p = mesh_in->get_addr();
+    vsx_mesh<>** p = mesh_in->get_addr();
     if (!p) return;
     passthru->set(*p);
     long id_ = (unsigned long)floor(id->get());

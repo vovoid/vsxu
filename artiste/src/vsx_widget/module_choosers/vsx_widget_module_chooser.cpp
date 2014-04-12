@@ -67,8 +67,8 @@ HTNode::~HTNode() {
 }
 
 vsx_command_list module_chooser_colors;
-std::map<vsx_string,vsx_color> mc_colors;
-std::map<vsx_string,vsx_color> mc_r_colors;
+std::map<vsx_string,vsx_color<> > mc_colors;
+std::map<vsx_string,vsx_color<> > mc_r_colors;
 
 
 // this function will build a tree structure out of a string
@@ -365,7 +365,7 @@ void vsx_widget_hyperbolic_tree::translateToOrigin(vsx_widget_hyperbolic_tree* n
             root->mtex->_bind();
             glColor4f(0,0,0,draw_root->color.a);
             font.color.a = draw_root->color.a;
-            font.print_center(vsx_vector(gg->b.x,gg->b.y-diffy),children[i]->node->node->getName(),diffy*0.8);
+            font.print_center(vsx_vector<>(gg->b.x,gg->b.y-diffy),children[i]->node->node->getName(),diffy*0.8);
 
             if (root->selected == children[i]) {
               glColor4f(1,1,1,draw_root->color.a);
@@ -476,7 +476,7 @@ void vsx_widget_hyperbolic_tree::translateToOrigin(vsx_widget_hyperbolic_tree* n
 
 //----------------------------------------------------------------------------------------------------------------------
 
-int vsx_widget_ultra_chooser::inside_xy_l(vsx_vector &test, vsx_vector &global)
+int vsx_widget_ultra_chooser::inside_xy_l(vsx_vector<> &test, vsx_vector<> &global)
 {
   VSX_UNUSED(test);
   VSX_UNUSED(global);
@@ -892,7 +892,7 @@ void vsx_widget_ultra_chooser::event_mouse_up(vsx_widget_distance distance,vsx_w
 void vsx_widget_ultra_chooser::draw_2d()
 {
   float dtime = vsx_widget_time::get_instance()->get_dtime();
-  vsx_vector a(0.5f*size.x,0.5f*size.y);
+  vsx_vector<> a(0.5f*size.x,0.5f*size.y);
   if (animating) {
     anim_x += dtime*2;
     double lx = anim_endpoint.x - anim_startpoint.x;
@@ -1022,10 +1022,10 @@ void vsx_widget_ultra_chooser::draw_2d()
     font.print_center(a, message,0.035);
     if (drag_dropped) {
       font.color.a = (sin(PI + vsx_widget_time::get_instance()->get_time() *13)+1)*0.4f+0.2f;
-      font.print_center(vsx_vector(a.x,a.y+0.16), "* Dropping "+treedraw->selected->node->node->module_info->identifier+" *",0.025);
-      font.print_center(vsx_vector(a.x,a.y+0.13), "Hold the mouse button, move/drag the module where you want to place it.",0.025);
-      font.print_center(vsx_vector(a.x,a.y+0.1), "Then release the left mouse button to drop it.",0.025);
-      font.print_center(vsx_vector(a.x,a.y-0.15), "Press right mouse button or ESC to cancel drop.",0.035);
+      font.print_center(vsx_vector<>(a.x,a.y+0.16), "* Dropping "+treedraw->selected->node->node->module_info->identifier+" *",0.025);
+      font.print_center(vsx_vector<>(a.x,a.y+0.13), "Hold the mouse button, move/drag the module where you want to place it.",0.025);
+      font.print_center(vsx_vector<>(a.x,a.y+0.1), "Then release the left mouse button to drop it.",0.025);
+      font.print_center(vsx_vector<>(a.x,a.y-0.15), "Press right mouse button or ESC to cancel drop.",0.035);
 
 
 
@@ -1033,10 +1033,10 @@ void vsx_widget_ultra_chooser::draw_2d()
     }
     if (draw_tooltip) {
       font.color.a = 0.0f;
-      vsx_vector sz = font.get_size(tooltip_text, 0.025);
+      vsx_vector<> sz = font.get_size(tooltip_text, 0.025);
       //sz = sz-tooltip_pos;
       glColor4f(0.0f,0.0f,0.0f,0.6f*visible);
-      draw_box(vsx_vector(tooltip_pos.x,tooltip_pos.y+0.025*1.05), sz.x, -sz.y);
+      draw_box(vsx_vector<>(tooltip_pos.x,tooltip_pos.y+0.025*1.05), sz.x, -sz.y);
       font.color.a = 1.0f*visible;
       font.print(tooltip_pos, tooltip_text,0.022);
     }
@@ -1122,7 +1122,7 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
       std::vector<vsx_string> parts;
       vsx_string deli = ",";
       explode(mc->parts[2],deli, parts);
-      vsx_color p;
+      vsx_color<> p;
       p.r = s2f(parts[0]);
       p.g = s2f(parts[1]);
       p.b = s2f(parts[2]);
@@ -1133,7 +1133,7 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
       std::vector<vsx_string> parts;
       vsx_string deli = ",";
       explode(mc->parts[2],deli, parts);
-      vsx_color p;
+      vsx_color<> p;
       p.r = s2f(parts[0]);
       p.g = s2f(parts[1]);
       p.b = s2f(parts[2]);
@@ -1176,7 +1176,7 @@ void vsx_widget_ultra_chooser::build_tree() {
   treedraw = new vsx_widget_hyperbolic_tree(0,0,mymodel);
   treedraw->size.x = size.x;
   treedraw->size.y = size.y;
-  treedraw->pos = vsx_vector(0.5f*size.x, 0.5f*size.y);
+  treedraw->pos = vsx_vector<>(0.5f*size.x, 0.5f*size.y);
   treedraw->changeProjType(0);
   treedraw->mtex = new vsx_texture;
 

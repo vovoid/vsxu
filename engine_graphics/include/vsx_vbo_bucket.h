@@ -36,18 +36,18 @@ template
   GLuint T_vbo_usage = GL_STATIC_DRAW_ARB,
 
   // Vertex data type
-  typename Tv = vsx_vector
+  typename Tv = vsx_vector<>
 
 >
 class vsx_vbo_bucket
 {
 public:
   // 1. compute data into these buckets
-  vsx_array<Tv>     vertices;
-  vsx_array<vsx_vector>     vertex_normals;
-  vsx_array<vsx_color>      vertex_colors;
-  vsx_array<vsx_tex_coord>  vertex_tex_coords;
-  vsx_array<T>              faces;
+  vsx_array< Tv >     vertices;
+  vsx_array< vsx_vector<> >     vertex_normals;
+  vsx_array< vsx_color<> >      vertex_colors;
+  vsx_array< vsx_tex_coord >  vertex_tex_coords;
+  vsx_array< T >              faces;
 
   // 2. call any of the invalidation functions after changing the data
   inline void invalidate_vertices()

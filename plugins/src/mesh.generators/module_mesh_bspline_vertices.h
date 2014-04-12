@@ -32,7 +32,7 @@ class module_mesh_bspline_vertices : public vsx_module
   vsx_module_param_mesh* result;
 
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   vsx_bspline spline0;
   bool first_run;
 
@@ -40,7 +40,7 @@ public:
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -80,12 +80,12 @@ public:
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH, "mesh" );
 
     first_run = true;
-    spline0.init(vsx_vector(0), 0.7f, 0.3f, 0.6f);
+    spline0.init(vsx_vector<>(0), 0.7f, 0.3f, 0.6f);
   }
 
   void run()
   {
-    vsx_mesh** in = source->get_addr();
+    vsx_mesh<>** in = source->get_addr();
     if (!in) return;
     spline0.points.set_volatile();
     spline0.points.set_data((*in)->data->vertices.get_pointer(), (*in)->data->vertices.size() );

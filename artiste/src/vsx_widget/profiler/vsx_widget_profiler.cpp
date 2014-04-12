@@ -38,23 +38,23 @@ void vsx_widget_profiler::init()
   support_interpolation = true;
   allow_resize_x = true;
   allow_resize_y = true;
-  set_size(vsx_vector(1.0f,0.5f));
+  set_size(vsx_vector<>(1.0f,0.5f));
   size_min.x = 0.2;
   size_min.y = 0.2;
-  target_pos = pos = camera.get_pos_2d() + vsx_vector(0.25);
+  target_pos = pos = camera.get_pos_2d() + vsx_vector<>(0.25);
   camera.set_distance(1.9);
 
   // Init Timeline
   timeline = add(new vsx_widget_profiler_timeline, name+".timeline");
   timeline->init();
-  timeline->set_size(vsx_vector(size.x*0.995f,size.y*0.04f));
+  timeline->set_size(vsx_vector<>(size.x*0.995f,size.y*0.04f));
   ((vsx_widget_profiler_timeline*)timeline)->time_holder_set( &time );
 
   // Init File List
   vsx_widget_profiler_tree* profile_tree = (vsx_widget_profiler_tree*)add(new vsx_widget_profiler_tree, "profile_list");
   profile_tree->init();
   profile_tree->coord_type = VSX_WIDGET_COORD_CORNER;
-  profile_tree->set_pos(vsx_vector(size.x/2,size.y/2)-dragborder*2);
+  profile_tree->set_pos(vsx_vector<>(size.x/2,size.y/2)-dragborder*2);
   profile_tree->editor->set_font_size(0.008f);
   profile_tree->size_from_parent = true;
   profile_tree->editor->editing_enabled = false;
@@ -96,7 +96,7 @@ void vsx_widget_profiler::i_draw()
     glVertex3f(parentpos.x-size.x*0.5f, parentpos.y+-size.y*0.5f,pos.z);
   glEnd();
   glColor4f( skin_colors[0].r, skin_colors[0].g, skin_colors[0].b, skin_colors[0].a );
-  draw_box_border(vsx_vector(parentpos.x-size.x*0.5,parentpos.y-size.y*0.5f), vsx_vector(size.x,size.y), dragborder);
+  draw_box_border(vsx_vector<>(parentpos.x-size.x*0.5,parentpos.y-size.y*0.5f), vsx_vector<>(size.x,size.y), dragborder);
 
   vsx_widget::i_draw();
 }
@@ -127,8 +127,8 @@ bool vsx_widget_profiler::event_key_down(signed long key, bool alt, bool ctrl, b
 void vsx_widget_profiler::interpolate_size()
 {
   vsx_widget::interpolate_size();
-  file_list->set_pos(vsx_vector(-size.x/2+0.05f+dragborder));
-  file_list->set_size(vsx_vector(0.1f,size.y-dragborder*2));
+  file_list->set_pos(vsx_vector<>(-size.x/2+0.05f+dragborder));
+  file_list->set_size(vsx_vector<>(0.1f,size.y-dragborder*2));
 
   timeline->target_size.x = timeline->size.x = size.x-0.1f-dragborder*4;
   timeline->pos.x = timeline->target_pos.x = 0.05f;

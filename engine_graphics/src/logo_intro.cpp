@@ -100,7 +100,7 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
       glLoadIdentity();
       gluLookAt(0,0,20,0,0,0.0,0.0,1.0,0.0);
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      vsx_vector luna_size;
+      vsx_vector<> luna_size;
       luna_size.x = 15;
       luna_size.y = 15;
       logo_pos.x = 0;

@@ -27,7 +27,7 @@
 #include "vsx_widget_time_holder.h"
 
 class vsx_widget_profiler_timeline : public vsx_widget {
-  vsx_vector parentpos;
+  vsx_vector<> parentpos;
 
   float dd_time;
   float auto_move_dir;
@@ -47,7 +47,7 @@ public:
   void time_holder_set(vsx_widget_time_holder* n);
   vsx_widget_time_holder* time_holder_get();
 
-  void move_time(vsx_vector world);
+  void move_time(vsx_vector<> world);
   void auto_move_time();
 
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)

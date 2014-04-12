@@ -40,7 +40,7 @@ public:
   vsx_bitmap bitm2;
   int bitm_timestamp;
 
-  vsx_particlesystem particles;
+  vsx_particlesystem<> particles;
 
   int p_updates;
   bool first;
@@ -63,7 +63,7 @@ public:
   {
 
     particles.timestamp = 0;
-    particles.particles = new vsx_array<vsx_particle>;
+    particles.particles = new vsx_array< vsx_particle<> >;
     loading_done = true;
     first = true;
     p_updates = param_updates;

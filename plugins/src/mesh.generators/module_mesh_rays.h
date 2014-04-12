@@ -34,7 +34,7 @@ public:
   vsx_module_param_mesh* result;
 
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   bool first_run;
   int n_rays;
 
@@ -82,7 +82,7 @@ public:
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -93,8 +93,8 @@ public:
 
   void run()
   {
-    mesh->data->vertices[0] = vsx_vector(0);
-    mesh->data->vertex_colors[0] = vsx_color(center_color->get(0),center_color->get(1),center_color->get(2),center_color->get(3));
+    mesh->data->vertices[0] = vsx_vector<>(0);
+    mesh->data->vertex_colors[0] = vsx_color<>(center_color->get(0),center_color->get(1),center_color->get(2),center_color->get(3));
 
     if (first_run || n_rays != (int)num_rays->get() || limit_ray_size->updates)
     {
@@ -109,7 +109,7 @@ public:
         mesh->data->vertices[i*2].x = (rand()%10000)*0.0001f-0.5f;
         mesh->data->vertices[i*2].y = (rand()%10000)*0.0001f-0.5f;
         mesh->data->vertices[i*2].z = (rand()%10000)*0.0001f-0.5f;
-        mesh->data->vertex_colors[i*2] = vsx_color(0,0,0,0);
+        mesh->data->vertex_colors[i*2] = vsx_color<>(0,0,0,0);
         mesh->data->vertex_tex_coords[i*2].s = 0.0f;
         mesh->data->vertex_tex_coords[i*2].t = 1.0f;
         if (limit_ray_size->get() > 0.0f )
@@ -125,7 +125,7 @@ public:
           mesh->data->vertices[i*2+1].z = (rand()%10000)*0.0001f-0.5f;
         }
 
-        mesh->data->vertex_colors[i*2+1] = vsx_color(0,0,0,0);
+        mesh->data->vertex_colors[i*2+1] = vsx_color<>(0,0,0,0);
         mesh->data->vertex_tex_coords[i*2+1].s = 1.0f;
         mesh->data->vertex_tex_coords[i*2+1].t = 0.0f;
         mesh->data->faces[i-1].a = 0;

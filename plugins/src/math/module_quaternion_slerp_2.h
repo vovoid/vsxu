@@ -33,7 +33,7 @@ class module_quaternion_slerp_2 : public vsx_module
   vsx_module_param_quaternion* result_quat;
 
   // internal
-  vsx_quaternion q1,q2,q_out;
+  vsx_quaternion<> q1,q2,q_out;
 
 public:
 

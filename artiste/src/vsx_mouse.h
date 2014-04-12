@@ -41,7 +41,7 @@ class vsx_mouse
 {
   int cursor;
   bool visible;
-  vsx_vector position;
+  vsx_vector<> position;
 
   void set_cursor_implement();
 
@@ -49,7 +49,7 @@ public:
 
   void set_cursor(int id);
 
-  vsx_vector get_cursor_pos()
+  vsx_vector<> get_cursor_pos()
   {
     return position;
   }

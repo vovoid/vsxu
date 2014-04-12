@@ -18,7 +18,7 @@ public:
 
   vsx_module_param_mesh* mesh_in;
 
-  vsx_particlesystem particles;
+  vsx_particlesystem<> particles;
   vsx_module_param_float* particles_per_second;
   float particles_to_go;
 
@@ -179,7 +179,7 @@ public:
     // default is 100 particles, should be enough for most effects (tm)
     particles_count->set(100);
     //particles.num_particles = 100;
-    particles.particles = new vsx_array<vsx_particle>;
+    particles.particles = new vsx_array<vsx_particle<> >;
     //particles.particles->allocation_increment = 1000;
     particles.timestamp = 0;
 
@@ -200,7 +200,7 @@ public:
     if (ddtime < 0) first = true;
     float dtime = ddtime;
     // get the mesh
-    vsx_mesh** our_mesh;
+    vsx_mesh<>** our_mesh;
     our_mesh = mesh_in->get_addr();
     if (our_mesh) {
 
@@ -237,7 +237,7 @@ public:
         }
         f_randpool_pointer = f_randpool.get_pointer();
 
-        vsx_particle* pp =(*particles.particles).get_pointer();
+        vsx_particle<>* pp =(*particles.particles).get_pointer();
         for (i = 0; i < particle_count; ++i) {
           /*vsx_vector pos; // current position
           vsx_vector speed; // current speed
@@ -258,8 +258,8 @@ public:
           (*pp).speed.x = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
           (*pp).speed.y = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
           (*pp).speed.z = 0;//((float)(rand()%1000)/1000.0)*0.01-0.005;
-          (*pp).color = vsx_color(0,0,0,0);
-          (*pp).color_end = vsx_color(0,0,0,0);
+          (*pp).color = vsx_color<>(0,0,0,0);
+          (*pp).color_end = vsx_color<>(0,0,0,0);
           (*pp).rotation.x = 0.0f;
           (*pp).rotation.y = 0.0f;
           (*pp).rotation.z = 0.0f;
@@ -319,8 +319,8 @@ public:
       float avz = add_vector->get(2);
       unsigned long num_vertices = (*our_mesh)->data->vertices.size();
       if (num_vertices) {
-        vsx_vector* vertex_pool = (*our_mesh)->data->vertices.get_pointer();
-        vsx_vector* vertex_cur = &vertex_pool[meshcoord];
+        vsx_vector<>* vertex_pool = (*our_mesh)->data->vertices.get_pointer();
+        vsx_vector<>* vertex_cur = &vertex_pool[meshcoord];
           //printf("something to do\n");
         // go through all particles
         float speed_multv = speed_multiplier->get();
@@ -328,7 +328,7 @@ public:
         float rda = random_deviation->get(0);
         float rdb = random_deviation->get(1);
         float rdc = random_deviation->get(2);
-        vsx_particle* pp =(*particles.particles).get_pointer();
+        vsx_particle<>* pp =(*particles.particles).get_pointer();
         for (i = 0; i < (size_t)nump; ++i)
         {
           // add the delta-time to the time of the particle
@@ -369,7 +369,7 @@ public:
                   (*pp).speed.z = speed_mult*spd_z;
                 break;
                 case 2:  // fixed vector direction
-                  vsx_vector dir = (*our_mesh)->data->vertices[meshcoord];
+                  vsx_vector<> dir = (*our_mesh)->data->vertices[meshcoord];
                   dir.normalize();
                   (*pp).speed = dir * speed_mult;
                   (*pp).speed.x += avx;

@@ -50,9 +50,9 @@ public:
     m[12] = m[3];  m[13] = m[7];  m[14] = m[11];  m[15] = m[15];
   }
 
-  inline vsx_vector multiply_vector(const vsx_vector &a)
+  inline vsx_vector<> multiply_vector(const vsx_vector<> &a)
   {
-    vsx_vector b;
+    vsx_vector<> b;
     b.x = m[0] * a.x + m[1] * a.y + m[2]  * a.z + m[3];
     b.y = m[4] * a.x + m[5] * a.y + m[6]  * a.z + m[7];
     b.z = m[8] * a.x + m[9] * a.y + m[10] * a.z + m[11];
@@ -172,12 +172,12 @@ public:
     memcpy(&m,&mm,sizeof(float)*16);
   }
 
-  inline void rotation_from_vectors(vsx_vector* dir)
+  inline void rotation_from_vectors(vsx_vector<>* dir)
   {
-    vsx_vector x, y, z;
+    vsx_vector<> x, y, z;
     z = *dir;
     z.normalize();
-    y = vsx_vector(-z.y*z.x, 1-z.y*z.y, -z.y*z.z);
+    y = vsx_vector<>(-z.y*z.x, 1-z.y*z.y, -z.y*z.z);
     y.normalize();
 
     x.cross(y,z);
@@ -188,9 +188,9 @@ public:
     m[2] = z.x; m[6] = z.y; m[10] = z.z;
   }
 
-  inline void rotation_from_vectors_n(vsx_vector* xv, vsx_vector* yv)
+  inline void rotation_from_vectors_n(vsx_vector<>* xv, vsx_vector<>* yv)
   {
-    vsx_vector x, y, z;
+    vsx_vector<> x, y, z;
     x = *xv;
     x.normalize();
     y = *yv;

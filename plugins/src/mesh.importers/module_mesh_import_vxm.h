@@ -8,13 +8,13 @@ public:
   vsx_module_param_mesh* result;
 
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
 
   vsx_string current_filename;
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -89,7 +89,7 @@ public:
       vsx_printf("vertex bytes: %ld\n",vert_size);
       void* vert_p = malloc(vert_size);
       engine->filesystem->f_read(vert_p,vert_size,fp);
-      mesh->data->vertices.set_data( (vsx_vector*)vert_p, vert_size / sizeof(vsx_vector) );
+      mesh->data->vertices.set_data( (vsx_vector<>*)vert_p, vert_size / sizeof(vsx_vector<>) );
     }
 
     size_t normals_size;
@@ -99,7 +99,7 @@ public:
       vsx_printf("normals bytes: %ld\n",normals_size);
       void* norm_p = malloc( normals_size);
       engine->filesystem->f_read(norm_p,normals_size,fp);
-      mesh->data->vertex_normals.set_data((vsx_vector*)norm_p,normals_size / sizeof(vsx_vector));
+      mesh->data->vertex_normals.set_data((vsx_vector<>*)norm_p,normals_size / sizeof(vsx_vector<>));
     }
 
     size_t tex_coords_size;

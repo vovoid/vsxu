@@ -265,8 +265,8 @@ void vsx_sequence::set_string(vsx_string str)
       vsx_string pdeli_l = ":";
       explode(ff, pdeli_l, pld_l);
       n_i.value = s2f(pld_l[0]);
-      n_i.handle1 = vsx_vector_aux::from_string(pld_l[1]);
-      n_i.handle2 = vsx_vector_aux::from_string(pld_l[2]);
+      n_i.handle1 = vsx_vector_aux::from_string<float>(pld_l[1]);
+      n_i.handle2 = vsx_vector_aux::from_string<float>(pld_l[2]);
     }
     items.push_back(n_i);
   }

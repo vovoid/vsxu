@@ -32,8 +32,8 @@ public:
   float total_length; // in seconds (float)
   vsx_string value;
   int interpolation;
-  vsx_vector handle1;
-  vsx_vector handle2;
+  vsx_vector<> handle1;
+  vsx_vector<> handle2;
   vsx_string get_value()
   {
     if (interpolation == 4)

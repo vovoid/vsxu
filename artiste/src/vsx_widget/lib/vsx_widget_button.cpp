@@ -66,7 +66,7 @@ void vsx_widget_button::i_draw()
   if (!visible)
     return;
 
-  vsx_vector i_pos = get_pos_p();
+  vsx_vector<> i_pos = get_pos_p();
 
   if (coord_type == VSX_WIDGET_COORD_CENTER)
   {
@@ -157,11 +157,11 @@ void vsx_widget_button::i_draw()
     dd = 0;
   }
 
-  font.color = vsx_color(1,1,1,1);
+  font.color = vsx_color<>(1,1,1,1);
 
   font.print_center
   (
-    vsx_vector( (i_pos.x + size.x * 0.5 + dd),  i_pos.y-size.y+size.y * 0.25),
+    vsx_vector<>( (i_pos.x + size.x * 0.5 + dd),  i_pos.y-size.y+size.y * 0.25),
     title,
     size.y * 0.4f * font_size_smaller
   );

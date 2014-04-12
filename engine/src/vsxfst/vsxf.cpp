@@ -684,10 +684,10 @@ int vsxf::f_read(void* buf, unsigned long num_bytes, vsxf_handle* handle)
   return num_bytes;
 }
 
-void create_directory(char* path)
+void create_directory(const char* path)
 {
 	char dir_name[4096];
-	char* p = path;
+  char* p = (char*)path;
 	char* q = dir_name;
   while( *p )
 	{

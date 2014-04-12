@@ -22,7 +22,7 @@ class module_render_basic_textured_rectangle : public vsx_module
 
   // internal
   float tax, tay, tbx, tby;
-  vsx_color cm;
+  vsx_color<> cm;
   GLfloat blobMat[16];
   GLfloat blobVec0[4];
   GLfloat blobVec1[4];

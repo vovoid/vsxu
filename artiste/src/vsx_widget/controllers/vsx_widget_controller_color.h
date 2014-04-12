@@ -30,7 +30,7 @@ class vsx_widget_controller_color : public vsx_widget_controller_base
 {
 private:
   vsx_widget* old_k_focus;
-  vsx_color color;
+  vsx_color<> color;
   float angle_dest;
   float angle;
   float color_x, color_y;

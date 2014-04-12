@@ -7,6 +7,6 @@ includedir=@VSXU_INSTALL_INCLUDE_DIR@
 Name: libvsxu
 Description: VSXu is an OpenGL-based modular programming environment, mainly to visualize music and create graphic effects in real-time.
 Version: @VSXU_VERSION@
-Requires: glew libpng
+Requires:
 Libs: -L${prefix}/${libdir} -lvsxu_engine -lvsxu_engine_graphics -lvsxu_engine_audiovisual -L${prefix}/${libdir_plugins} @VSXU_PLUGIN_PKGCONFIG_LIBS@
 Cflags: -I${prefix}/${includedir}/ -I${prefix}/${includedir}/engine -I${prefix}/${includedir}/engine_graphics -I${prefix}/${includedir}/engine_audiovisual

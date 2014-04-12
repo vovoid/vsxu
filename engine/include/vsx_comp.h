@@ -75,7 +75,7 @@ public:
 	
   //---- g u i   s t u f f -------------------------------------------------------------------------
   // the relative position in the gui, just stored here
-  vsx_vector position;
+  vsx_vector<> position;
   // the size of the macro (only macros support scaling)
   float size;
   

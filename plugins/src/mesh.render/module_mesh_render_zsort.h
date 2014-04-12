@@ -44,7 +44,7 @@ class module_mesh_render_zsort : public vsx_module
   vsx_module_param_render* render_result;
 
   // internal
-  vsx_mesh** mesh;
+  vsx_mesh<>** mesh;
   vsx_texture** ta;
   bool m_normals, m_tex, m_colors;
   vsx_matrix mod_mat, proj_mat;
@@ -136,11 +136,11 @@ public:
     glGetFloatv(GL_PROJECTION_MATRIX, mod_mat.m);
     glPopMatrix();
 
-    vsx_vector center(0);
-    vsx_vector deep(0,0,1);
-    vsx_vector istart = mod_mat.multiply_vector(center);
-    vsx_vector end = mod_mat.multiply_vector(deep);
-    vsx_vector sort_vec = end - istart;
+    vsx_vector<> center(0);
+    vsx_vector<> deep(0,0,1);
+    vsx_vector<> istart = mod_mat.multiply_vector(center);
+    vsx_vector<> end = mod_mat.multiply_vector(deep);
+    vsx_vector<> sort_vec = end - istart;
 
     if (!(*mesh)->data->face_centers.size())
     {

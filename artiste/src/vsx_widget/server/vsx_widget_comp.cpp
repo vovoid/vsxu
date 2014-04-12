@@ -57,7 +57,7 @@ using namespace std;
 bool vsx_widget_component::show_titles = true;
 bool vsx_widget_component::ethereal_all = false;
 
-int vsx_widget_component::inside_xy_l(vsx_vector &test, vsx_vector &global) {
+int vsx_widget_component::inside_xy_l(vsx_vector<> &test, vsx_vector<> &global) {
   if (ethereal || (ethereal_all && !macro)) return 0;
   return vsx_widget::inside_xy_l(test, global);
 }
@@ -555,7 +555,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
     tt->widget_type = VSX_WIDGET_TYPE_CONTROLLER;
     tt->set_font_size(0.002);
     tt->set_border(0.0005);
-    tt->set_pos(vsx_vector(0,-0.08f));
+    tt->set_pos(vsx_vector<>(0,-0.08f));
 
     ((vsx_widget_controller_editor*)tt)->return_command = "vsxl_cfi";
     ((vsx_widget_controller_editor*)tt)->return_component = this;
@@ -721,7 +721,7 @@ void vsx_widget_component::draw()
   }
 
   if (!enabled) return;
-  vsx_vector pp = parent->get_pos_p();
+  vsx_vector<> pp = parent->get_pos_p();
   size.y = size.x;
   glPushMatrix();
   #define FF 1.2f
@@ -1053,7 +1053,7 @@ void vsx_widget_component::draw()
 
   if (show_titles)
   {
-    vsx_vector t = pos + pp;
+    vsx_vector<> t = pos + pp;
     float font_size = size.y*0.3;
     float max_size = 0.006;
     if (selected) max_size = 0.012;
@@ -1067,29 +1067,29 @@ void vsx_widget_component::draw()
       if (message_time > 0.0f) {
         message_time -= vsx_widget_time::get_instance()->get_dtime();
         glColor4f(0,0,0,0.8);
-        vsx_vector rp = t;
+        vsx_vector<> rp = t;
         rp.x -= 0.008f*10;
         //rp.y -= 0.004;
         draw_box(rp, 0.008*20, -0.008*10);
         rp.x += 0.0008;
         rp.y -= 0.001;
         //font.background = true;
-        font.color = vsx_color(1,0.5,0.5,1.0f-fmod(vsx_widget_time::get_instance()->get_time()*2.0f,1.0f));
+        font.color = vsx_color<>(1,0.5,0.5,1.0f-fmod(vsx_widget_time::get_instance()->get_time()*2.0f,1.0f));
         font.print(rp, "\nModule status:\n"+message, 0.008);
       } else
       if (m_o_focus == this && !mouse_down_l && !mouse_down_r) {
         glColor4f(0,0,0,0.8);
-        vsx_vector rp = t + message_pos;
+        vsx_vector<> rp = t + message_pos;
         rp.y -= 0.004;
         draw_box(rp, 0.004*20, -0.004*10);
         rp.x += 0.0008;
         rp.y -= 0.001;
         //font.background = false;
-        font.color = vsx_color(1,0.5,0.5,color.a);
+        font.color = vsx_color<>(1,0.5,0.5,color.a);
         font.print(rp, "\nModule status:\n"+message, 0.004);
       }
     }
-    font.color = vsx_color(1.0f,1.0f,1.0f,1.0f);
+    font.color = vsx_color<>(1.0f,1.0f,1.0f,1.0f);
   }
   if (a_focus != this) {
     pre_draw_children();
@@ -1263,8 +1263,8 @@ void vsx_widget_component::event_mouse_double_click(vsx_widget_distance distance
     }
   } else {
     if (!alt && button == 0 && !ctrl && !shift) {
-      vsx_vector pp = get_pos_p();
-      root->move_camera(vsx_vector(pp.x, pp.y, 1.2f+size.x*3.0f));
+      vsx_vector<> pp = get_pos_p();
+      root->move_camera(vsx_vector<>(pp.x, pp.y, 1.2f+size.x*3.0f));
       transform_state = -1;
       ((vsx_widget_server*)server)->select(this);
       return;
@@ -1391,7 +1391,7 @@ void vsx_widget_component::move(double x, double y, double z) {
   //printf("comp_move\n");
   //if (macro && open) return;
   if (transform_state <= 0) return;
-  vsx_vector a;
+  vsx_vector<> a;
   a.x = x-pos.x;
   a.y = y-pos.y;
   a.z = 0;
@@ -1418,7 +1418,7 @@ void vsx_widget_component::move(double x, double y, double z) {
   server_move_notify();
 }
 
-void vsx_widget_component::resize_to(vsx_vector to_size) {
+void vsx_widget_component::resize_to(vsx_vector<> to_size) {
   to_size.y = to_size.x;
   printf("tosizex: %f\n", to_size.x);
   if (parent->widget_type == VSX_WIDGET_TYPE_COMPONENT) {

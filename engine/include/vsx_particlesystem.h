@@ -25,27 +25,30 @@
 #ifndef VSX_PARTICLESYSTEM_H
 #define VSX_PARTICLESYSTEM_H
 
-typedef struct
+template<typename T = float>
+class vsx_particle
 {
-  vsx_vector pos; // current position
-  vsx_vector creation_pos; // position the particle had when created
-  vsx_vector speed; // current speed
-  vsx_color color; // color it starts out as (including alpha)
-  vsx_color color_end; // color it interpolates to (including alpha)
-  vsx_quaternion rotation; // rotation vector
-  vsx_quaternion rotation_dir; // rotation vector
+public:
+  vsx_vector<T> pos; // current position
+  vsx_vector<T> creation_pos; // position the particle had when created
+  vsx_vector<T> speed; // current speed
+  vsx_color<T> color; // color it starts out as (including alpha)
+  vsx_color<T> color_end; // color it interpolates to (including alpha)
+  vsx_quaternion<T> rotation; // rotation vector
+  vsx_quaternion<T> rotation_dir; // rotation vector
   float orig_size; // size upon creation (also used for weight)
   float size; // rendering size
   float time; // how long it has lived
   float lifetime; // how long it can live
   float one_div_lifetime;
   int grounded; // if a particle is grounded it shouldn't move or rotate anymore, lying on the floor
-} vsx_particle;
+};
 
+template<typename T = float>
 class vsx_particlesystem {
 public:
   int timestamp;
-  vsx_array<vsx_particle>* particles;
+  vsx_array< vsx_particle<T> >* particles;
 
   vsx_particlesystem() {
     particles = 0;

@@ -34,13 +34,13 @@ class module_mesh_translate_edge_wraparound : public vsx_module
   vsx_module_param_mesh* mesh_out;
 
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
 
 public:
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -87,9 +87,9 @@ public:
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
   }
   unsigned long prev_timestamp;
-  vsx_vector v;
+  vsx_vector<> v;
   void run() {
-    vsx_mesh** p = mesh_in->get_addr();
+    vsx_mesh<>** p = mesh_in->get_addr();
     if (!p)
     {
       prev_timestamp = 0xFFFFFFFF;
@@ -109,10 +109,10 @@ public:
       mesh->data->faces.reset_used(0);
 
       unsigned long end = (*p)->data->vertices.size();
-      vsx_vector* vs_p = &(*p)->data->vertices[0];
+      vsx_vector<>* vs_p = &(*p)->data->vertices[0];
       mesh->data->vertices.allocate(end);
       mesh->data->vertices.reset_used(end);
-      vsx_vector* vs_d = mesh->data->vertices.get_pointer();
+      vsx_vector<>* vs_d = mesh->data->vertices.get_pointer();
 
       float eminx = edge_min->get(0);
       float eminy = edge_min->get(1);

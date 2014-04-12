@@ -38,13 +38,13 @@ void vsx_widget_controller_mixer::init()
 {
   if (init_run) return;
   vsx_widget_controller_base::init();
-  set_size(vsx_vector(sizeunit*nummixers,sizeunit*6.75));
+  set_size(vsx_vector<>(sizeunit*nummixers,sizeunit*6.75));
   target_pos.x = (pos.x -= size.x*0.5);
 
   for (int t=0;t<nummixers;++t)
   {
     vsx_widget* newmixer=add(new vsx_widget_controller_channel,name+".channel"+i2s(nummixers-t));
-    newmixer->set_pos(vsx_vector(-size.x*0.5+sizeunit*0.5 + (float)t*sizeunit));
+    newmixer->set_pos(vsx_vector<>(-size.x*0.5+sizeunit*0.5 + (float)t*sizeunit));
     //newmixer->pos.x = -size.x*0.5+sizeunit*0.5;
     //newmixer->pos.x+=(float)t*sizeunit;
     ((vsx_widget_controller_channel*)newmixer)->owned=true;

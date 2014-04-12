@@ -19,8 +19,8 @@ class vsx_widget_param_sequence_item
   float length; // for master channel, this is the length of the block
   vsx_string value; // if master, this is the name of the sequence_pool
   size_t interpolation;
-  vsx_vector handle1;
-  vsx_vector handle2;
+  vsx_vector<> handle1;
+  vsx_vector<> handle2;
 
   // child controller for setting the sequence for a master channel item
   vsx_widget* master_channel_time_sequence;
@@ -167,12 +167,12 @@ public:
 
 
 
-  const vsx_vector& get_handle1()
+  const vsx_vector<>& get_handle1()
   {
     return handle1;
   }
 
-  void set_handle1(const vsx_vector &v)
+  void set_handle1(const vsx_vector<> &v)
   {
     handle1 = v;
     if (handle1.x < 0.0)
@@ -186,12 +186,12 @@ public:
 
 
 
-  const vsx_vector& get_handle2()
+  const vsx_vector<>& get_handle2()
   {
     return handle2;
   }
 
-  void set_handle2(const vsx_vector &v)
+  void set_handle2(const vsx_vector<> &v)
   {
     handle2 = v;
     if (handle1.x < 0.0)

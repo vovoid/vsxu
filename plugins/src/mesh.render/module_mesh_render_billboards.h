@@ -37,9 +37,9 @@ public:
   vsx_module_param_render* render_out;
 
   // internal
-  vsx_mesh** mesh;
+  vsx_mesh<>** mesh;
   vsx_matrix ma;
-  vsx_vector upv;
+  vsx_vector<> upv;
 
   vsx_gl_state* gl_state;
 

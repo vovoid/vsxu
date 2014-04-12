@@ -42,18 +42,37 @@ protected:
 
 public:
 
-  void init(vsx_string state_name, vsx_module_list_abs* module_list)
+  void init(vsx_string state_name, vsx_module_list_abs* module_list, vsxf* filesystem = 0x0)
   {
     for (size_t i = 0; i < num_engines; i++)
     {
       engines[i] = new vsx_engine_helper(
-            state_name,
-            module_list
+        state_name,
+        module_list,
+        filesystem
       );
       this->on_create(i);
       engines[i]->render(100.0f);
+      engines[i]->render(100.0f);
+      engines[i]->render(100.0f);
+      engines[i]->render(100.0f);
+      engines[i]->render(100.0f);
 
       engines_idle[i] = 100;
+    }
+  }
+
+  void init_render_engines_loaded()
+  {
+
+    for (size_t i = 0; i < num_engines; i++)
+    {
+      size_t j = 0;
+      while (engines[i]->engine->get_modules_left_to_load() && j < 100)
+      {
+        engines[i]->render(100.0);
+        j++;
+      }
     }
   }
 

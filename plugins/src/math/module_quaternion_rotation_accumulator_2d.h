@@ -31,7 +31,7 @@ class module_quaternion_rotation_accumulator_2d : public vsx_module {
   vsx_module_param_quaternion* result_quat;
 
   // internal
-  vsx_quaternion q1,q_out;
+  vsx_quaternion<> q1,q_out;
 
 public:
 

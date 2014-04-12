@@ -1,7 +1,7 @@
 class module_particlesystem_modifier_gravity : public vsx_module
 {
   float time;
-  vsx_particlesystem* particles;
+  vsx_particlesystem<>* particles;
   vsx_module_param_particlesystem* in_particlesystem;
   vsx_module_param_float3* center;
   vsx_module_param_float3* amount;
@@ -104,7 +104,7 @@ public:
       float az = amount->get(2)*ddtime;
       if (mass_type->get() == 0) {
         unsigned long nump = particles->particles->size();
-        vsx_particle* pp = particles->particles->get_pointer();
+        vsx_particle<>* pp = particles->particles->get_pointer();
         for (unsigned long i = 0; i <  nump; ++i) {
           if ((*pp).time < (*pp).lifetime) {
             // add the delta-time to the time of the particle
@@ -125,7 +125,7 @@ public:
       {
         orig_size = 1.0f / uniform_mass->get();
         unsigned long nump = particles->particles->size();
-        vsx_particle* pp = particles->particles->get_pointer();
+        vsx_particle<>* pp = particles->particles->get_pointer();
         for (unsigned long i = 0; i <  nump; ++i) {
           if ((*pp).time < (*pp).lifetime) {
             // add the delta-time to the time of the particle

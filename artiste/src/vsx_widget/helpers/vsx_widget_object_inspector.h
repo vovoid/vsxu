@@ -40,7 +40,7 @@ class vsx_window_object_inspector : public vsx_widget_window {
   bool texture_loaded;
   vsx_string filename_loaded;
   int view_type;
-  vsx_vector pos_, size_;
+  vsx_vector<> pos_, size_;
   float vsx_status_timer;
 public:
   void draw_2d();

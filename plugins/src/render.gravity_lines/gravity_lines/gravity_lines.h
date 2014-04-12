@@ -12,7 +12,7 @@ class Mass
 public:
   Mass() : friction(0.07f), mass(1.0f) {}
 
-  void init(vsx_vector pos, vsx_vector spd, float m = 1.0f) {
+  void init(vsx_vector<> pos, vsx_vector<> spd, float m = 1.0f) {
     position = pos;
     speed = spd;
     mass = m;
@@ -32,14 +32,14 @@ public:
   }
 
 
-  const vsx_vector& getPos() const {return position;}
+  const vsx_vector<>& getPos() const {return position;}
 
   void setCenter(const float &x, const float &y, const float &z);
 
   float friction;
   float mass;
-  vsx_vector position, speed;
-  vsx_vector center;
+  vsx_vector<> position, speed;
+  vsx_vector<> center;
 };
 
 #define BUFF_LEN 1024
@@ -71,7 +71,7 @@ public:
 
   unsigned long offs;
   std::vector<Mass> masses;
-  std::vector<vsx_vector*> oldPos;
+  std::vector<vsx_vector<>*> oldPos;
 
   ~gravity_lines();
 };

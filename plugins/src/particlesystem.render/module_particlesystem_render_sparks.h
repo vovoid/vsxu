@@ -19,7 +19,7 @@ public:
   unsigned long i;
   bool charges_init;
 
-  vsx_particlesystem* particles;
+  vsx_particlesystem<>* particles;
   vsx_float_array* data;
 
   vsx_avector<float> charges;
@@ -83,8 +83,8 @@ public:
 
       int array_pos = 0;
 
-      vsx_vector perpendicular_mult;
-      vsx_vector upv(0, 1.0f);
+      vsx_vector<> perpendicular_mult;
+      vsx_vector<> upv(0, 1.0f);
       glColor4f(color->get(0), color->get(1), color->get(2), color->get(3) );
       if (!charges_init) {
         for (int i = 0; i < run_particles; ++i) {
@@ -98,10 +98,10 @@ public:
       {
         int found = -1;
         float last_length = 1000.0f;
-        vsx_vector last_dist;
+        vsx_vector<> last_dist;
         charges[i] += delta_charges[i] * engine->dtime;
         //if (i == 0) printf("%f\n", charges[i]);
-        vsx_vector dist;
+        vsx_vector<> dist;
         for (int j = 0; j < run_particles; j++)
         {
           if (j != i)
@@ -163,7 +163,7 @@ public:
             //vsx_vector tv = (*particles->particles)[0].pos;
             for (int k = 0; k < ARRAY_STEPS; k++)
             {
-              vsx_vector tv = (*particles->particles)[found].pos + last_dist * ((float)k / ARRAY_STEPS);
+              vsx_vector<> tv = (*particles->particles)[found].pos + last_dist * ((float)k / ARRAY_STEPS);
               tv += perpendicular_mult * (*(data->data))[array_pos] * (float)sin(PI * ((float)k / ARRAY_STEPS)) * 0.1f;
               glVertex3f(tv.x, tv.y, tv.z);
               if (array_pos++ > (int)data->data->size()-2) array_pos = 0;

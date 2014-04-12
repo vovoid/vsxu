@@ -51,7 +51,7 @@ vsx_widget_camera::vsx_widget_camera()
 {
 }
 
-void vsx_widget_camera::move_camera(vsx_vector world)
+void vsx_widget_camera::move_camera(vsx_vector<> world)
 {
   camera_target = world;
   interpolating = true;

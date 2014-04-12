@@ -48,7 +48,7 @@ public:
   vsx_widget *destination;
   void init();
   void command_process_back_queue(vsx_command_s *t);
-  int inside_xy_l(vsx_vector &test, vsx_vector &global);
+  int inside_xy_l(vsx_vector<> &test, vsx_vector<> &global);
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void draw_2d();
   void set_destination(vsx_widget* dest);

@@ -34,8 +34,8 @@ public:
   vsx_module_param_mesh* result;
 
   // internal
-  vsx_mesh* mesh;
-  vsx_vector old_scaling;
+  vsx_mesh<>* mesh;
+  vsx_vector<> old_scaling;
   bool first_run;
   vsx_rand rand;
 
@@ -83,7 +83,7 @@ public:
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 

@@ -10,9 +10,10 @@
 
 namespace vsx_vector_aux
 {
-  inline vsx_vector from_string(vsx_string &val) VSX_ALWAYS_INLINE
+  template<typename T>
+  inline vsx_vector<T> from_string(vsx_string &val) VSX_ALWAYS_INLINE
   {
-    vsx_vector res;
+    vsx_vector<T> res;
     vsx_string deli = ",";
     vsx_avector<vsx_string> pp;
     explode(val,deli,pp);
@@ -25,7 +26,8 @@ namespace vsx_vector_aux
     return res;
   }
 
-  inline vsx_string to_string(const vsx_vector &v, const int num_values = 3) VSX_ALWAYS_INLINE
+  template<typename T>
+  inline vsx_string to_string(const vsx_vector<T> &v, const int num_values = 3) VSX_ALWAYS_INLINE
   {
     vsx_string local = f2s(v.x);
 
@@ -38,7 +40,8 @@ namespace vsx_vector_aux
     return local;
   }
 
-  inline void dump(const vsx_vector &v, char* label="n/a")
+  template<typename T>
+  inline void dump(const vsx_vector<T> &v, char* label="n/a")
   {
     printf( "Name: %s. x: %f y: %f z: %f\n",label, v.x, v.y, v.z );
   }

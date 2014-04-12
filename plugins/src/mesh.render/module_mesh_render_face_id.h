@@ -38,9 +38,9 @@ public:
   vsx_module_param_render* render_out;
 
   // internal
-  vsx_mesh** mesh;
+  vsx_mesh<>** mesh;
   vsx_matrix ma;
-  vsx_vector upv;
+  vsx_vector<> upv;
   vsx_font* myf;
 
   void module_info(vsx_module_info* info)

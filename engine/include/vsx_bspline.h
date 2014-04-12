@@ -29,13 +29,13 @@ class vsx_bspline
 public:
   float		current_pos;
   float   real_pos;
-  vsx_vector	p0, p1, p2, p3;
+  vsx_vector<>	p0, p1, p2, p3;
   float		minDistNext;
   float		maxDistNext;
-  vsx_vector center;
+  vsx_vector<> center;
   float		radius;
   long old_pos;
-  vsx_array<vsx_vector> points;
+  vsx_array< vsx_vector<> > points;
   
   vsx_bspline() :
     real_pos(0.0f),
@@ -44,7 +44,7 @@ public:
  		current_pos = 0.0f;
   }
   
-  vsx_bspline(vsx_vector _center, float _radius, float _minDistNext, float _maxDistNext)
+  vsx_bspline(vsx_vector<> _center, float _radius, float _minDistNext, float _maxDistNext)
   {
 		current_pos = 0.0f;
 		center = _center;
@@ -58,7 +58,7 @@ public:
     for (int i = 0; i < 250; ++i)
     {
       points.push_back(
-        vsx_vector(
+        vsx_vector<>(
           ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f),
           ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f),
           ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f)
@@ -72,7 +72,7 @@ public:
   }
 
 
-  inline void init(vsx_vector _center, float _radius, float _minDistNext, float _maxDistNext)
+  inline void init(vsx_vector<> _center, float _radius, float _minDistNext, float _maxDistNext)
   {
 		center = _center;
 		radius = _radius;
@@ -101,9 +101,9 @@ public:
     set_pos(real_pos+stepn);
   }
 
-  inline vsx_vector calc_coord()
+  inline vsx_vector<> calc_coord()
   {
-    vsx_vector v;
+    vsx_vector<> v;
 		float t = current_pos;
 		float t2 = t * t;
 		float t3 = t2 * t;

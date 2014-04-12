@@ -37,7 +37,7 @@ public:
   vsx_module_param_mesh* result;
 
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   int l_param_updates;
 
   void module_info(vsx_module_info* info)
@@ -75,7 +75,7 @@ public:
     time_amp->set(1.0f);
     width->set(0.1f);
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
   }
 
   bool init()
@@ -92,25 +92,25 @@ public:
 
   void run()
   {
-    mesh->data->vertices[0] = vsx_vector(0);
+    mesh->data->vertices[0] = vsx_vector<>(0);
 
-    vsx_vector a(start_point->get(0), start_point->get(1), start_point->get(2));
-    vsx_vector b(end_point->get(0), end_point->get(1), end_point->get(2));
-    vsx_vector up(up_vector->get(0), up_vector->get(1), up_vector->get(2));
+    vsx_vector<> a(start_point->get(0), start_point->get(1), start_point->get(2));
+    vsx_vector<> b(end_point->get(0), end_point->get(1), end_point->get(2));
+    vsx_vector<> up(up_vector->get(0), up_vector->get(1), up_vector->get(2));
     up *= width->get();
 
 
-    vsx_vector pos = a;
-    vsx_vector diff = b-a;
-    vsx_vector diff_n = diff;
+    vsx_vector<> pos = a;
+    vsx_vector<> diff = b-a;
+    vsx_vector<> diff_n = diff;
     diff_n.normalize();
 
-    vsx_vector normal;
-    vsx_vector up_n = up;
+    vsx_vector<> normal;
+    vsx_vector<> up_n = up;
     up_n.normalize();
     normal.cross(diff_n, up_n);
 
-    vsx_vector up_side = normal;
+    vsx_vector<> up_side = normal;
     up_side *= up.length();
 
     float t = engine->vtime * time_amp->get();
@@ -133,7 +133,7 @@ public:
       float it = (float)i * one_div_count;
       float ft = sin(it * 3.14159f + t) * sin(-it * 5.18674f - t);
       float thick = sin(it * 3.14159f);
-      vsx_vector skew = up * ft * skew_amount * thick;
+      vsx_vector<> skew = up * ft * skew_amount * thick;
 
       mesh->data->vertices[i2    ] = pos + up * thick + skew;
       mesh->data->vertices[i2 + 1] = pos - up * thick + skew;
@@ -148,10 +148,10 @@ public:
 
       pos += diff;
 
-      mesh->data->vertex_colors[i2] = vsx_color(1, 1, 1, 1);
-      mesh->data->vertex_colors[i2+1] = vsx_color(1, 1, 1, 1);
-      mesh->data->vertex_colors[i2+2] = vsx_color(1, 1, 1, 1);
-      mesh->data->vertex_colors[i2+3] = vsx_color(1, 1, 1, 1);
+      mesh->data->vertex_colors[i2] = vsx_color<>(1, 1, 1, 1);
+      mesh->data->vertex_colors[i2+1] = vsx_color<>(1, 1, 1, 1);
+      mesh->data->vertex_colors[i2+2] = vsx_color<>(1, 1, 1, 1);
+      mesh->data->vertex_colors[i2+3] = vsx_color<>(1, 1, 1, 1);
 
       mesh->data->vertex_tex_coords[i2]   = vsx_tex_coord(it, 0);
       mesh->data->vertex_tex_coords[i2+1] = vsx_tex_coord(it, 1);

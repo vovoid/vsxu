@@ -248,10 +248,10 @@ public:
             if (delta_fps < min_fps) min_fps = delta_fps;
             if (frame_time > max_render_time) max_render_time = frame_time;
             if (frame_time < min_render_time) min_render_time = frame_time;
-            myf.print(vsx_vector(-0.99f,0.92f),"VSXu (c) 2003-2013 Vovoid - Alt+T=toggle this text, Ctrl+Alt+P=screenshot (data dir), Alt+F=performance mode || FrameCounter "+i2s(frame_counter) + "   Elapsed time: "+f2s(total_time)+"   Module Count: "+i2s(vxe->get_num_modules())+"Average FPS "+f2s(frame_counter/total_time),0.025f);
+            myf.print(vsx_vector<>(-0.99f,0.92f),"VSXu (c) 2003-2013 Vovoid - Alt+T=toggle this text, Ctrl+Alt+P=screenshot (data dir), Alt+F=performance mode || FrameCounter "+i2s(frame_counter) + "   Elapsed time: "+f2s(total_time)+"   Module Count: "+i2s(vxe->get_num_modules())+"Average FPS "+f2s(frame_counter/total_time),0.025f);
             myf.print
             (
-              vsx_vector(
+              vsx_vector<>(
                 -0.99f,
                 0.88f
               ),
@@ -516,7 +516,7 @@ bool app_draw(int id)
         glVertex3f( 1.0f,0.92f, 0.0f);					// Bottom Right
         glVertex3f(-1.0f,0.92f, 0.0f);					// Bottom Left
       glEnd();											// Done Drawing The Quad
-      myf.print(vsx_vector(-1.0f,0.92f)," Fc "+i2s(frame_counter)+" Fps "+f2s(delta_fps)+" T "+f2s(total_time)+" Tfps "+f2s(frame_counter/total_time)+" MC "+i2s(vxe->get_num_modules())+" VSX Ultra (c) Vovoid",0.07);
+      myf.print(vsx_vector<>(-1.0f,0.92f)," Fc "+i2s(frame_counter)+" Fps "+f2s(delta_fps)+" T "+f2s(total_time)+" Tfps "+f2s(frame_counter/total_time)+" MC "+i2s(vxe->get_num_modules())+" VSX Ultra (c) Vovoid",0.07);
     }
   }
   return true;

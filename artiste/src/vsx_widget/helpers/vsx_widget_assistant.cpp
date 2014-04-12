@@ -94,10 +94,10 @@ void vsxu_assistant::i_draw()
   size.x = 0.3*clickpoint.x*(screen_aspect);
   size.y = 0.5*clickpoint.x;
   alpha = (clickpoint.x-0.2)*2;
-  set_pos(vsx_vector((screen_aspect-size.x),-0.03));
+  set_pos(vsx_vector<>((screen_aspect-size.x),-0.03));
 
-  pager->set_pos(vsx_vector(0.065f*clickpoint.x,clickpoint.x*0.14f));
-  pager->set_size(vsx_vector(0.1f*clickpoint.x,0.03f*clickpoint.x));
+  pager->set_pos(vsx_vector<>(0.065f*clickpoint.x,clickpoint.x*0.14f));
+  pager->set_size(vsx_vector<>(0.1f*clickpoint.x,0.03f*clickpoint.x));
 
   texture.bind();
     glColor3f(1,1,1);
@@ -114,7 +114,7 @@ void vsxu_assistant::i_draw()
       font.mode_2d = false;
       font.print
       (
-        vsx_vector(
+        vsx_vector<>(
           (pos.x + size.x * 0.06) * screen_aspect,
           pos.y + size.y - (size.y * 0.12)
         ),

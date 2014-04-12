@@ -55,11 +55,11 @@ class vsx_widget_pool_tree : public vsx_widget_editor {
   vsx_widget_coords drag_coords;
   int mod_i;
   vsx_string macro_name;
-  vsx_vector drop_pos;
+  vsx_vector<> drop_pos;
   vsx_widget* server;
   int draw_tooltip;
   vsx_string tooltip_text;
-  vsx_vector tooltip_pos;
+  vsx_vector<> tooltip_pos;
 
 public:
 
@@ -145,10 +145,10 @@ public:
     if (draw_tooltip && m_o_focus == editor && !dragging) {
       font.color.a = 0.0f;
       font.mode_2d = true;
-      vsx_vector sz = font.get_size(tooltip_text, 0.025f);
+      vsx_vector<> sz = font.get_size(tooltip_text, 0.025f);
       //sz = sz-tooltip_pos;
       glColor4f(0.0f,0.0f,0.0f,0.6f);
-      draw_box(vsx_vector(tooltip_pos.x,tooltip_pos.y+0.025*1.05), sz.x, -sz.y);
+      draw_box(vsx_vector<>(tooltip_pos.x,tooltip_pos.y+0.025*1.05), sz.x, -sz.y);
       glColor4f(1.0f,1.0f,1.0f,0.6f);
       font.color.r = 1.0f;
       font.color.a = 1.0f;
@@ -207,7 +207,7 @@ vsx_widget_seq_pool_manager::vsx_widget_seq_pool_manager() {
     visible = 0;
     title = "Animation Clips";
     allow_resize_x = allow_resize_y = true;
-    set_size(vsx_vector(0.15f, 0.7f));
+    set_size(vsx_vector<>(0.15f, 0.7f));
     coord_related_parent = false;
   // tree init
     vsx_widget_pool_tree *e = (vsx_widget_pool_tree*)add(new vsx_widget_pool_tree,"e");
@@ -215,12 +215,12 @@ vsx_widget_seq_pool_manager::vsx_widget_seq_pool_manager() {
     e->set_string("[none defined]");
     e->set_render_type(render_type);
     e->coord_type = VSX_WIDGET_COORD_CORNER;
-    e->set_pos(vsx_vector(size.x/2,size.y/2));
+    e->set_pos(vsx_vector<>(size.x/2,size.y/2));
     e->editor->set_font_size(0.016f);
     e->size_from_parent = true;
     e->editor->editing_enabled = false;
     e->editor->selected_line_highlight = true;
-    e->set_pos(vsx_vector(size.x/2,size.y/2));
+    e->set_pos(vsx_vector<>(size.x/2,size.y/2));
     e->pos_from_parent = true;
     e->extra_init();
     edit = (vsx_widget*)e;
@@ -310,7 +310,7 @@ bool vsx_widget_seq_pool_manager::event_key_down(signed long key, bool alt, bool
 void vsx_widget_seq_pool_manager::show() {
   a_focus = k_focus = edit;
   visible = 1;
-  set_pos(vsx_vector(0.15f, 0.0f));
+  set_pos(vsx_vector<>(0.15f, 0.0f));
   init();
 }
 
@@ -323,24 +323,24 @@ void vsx_widget_seq_pool_manager::show(vsx_string value) {
 void vsx_widget_seq_pool_manager::i_draw()
 {
   vsx_widget_window::i_draw();
-  button_add->set_size(vsx_vector(0.02f,font_size));
-  button_del->set_size(vsx_vector(0.02f,font_size));
-  button_clone->set_size(vsx_vector(0.02f,font_size));
-  button_toggle_edit->set_size(vsx_vector(0.02f,font_size));
-  button_import->set_size(vsx_vector(0.02f,font_size));
-  button_export->set_size(vsx_vector(0.02f,font_size));
+  button_add->set_size(vsx_vector<>(0.02f,font_size));
+  button_del->set_size(vsx_vector<>(0.02f,font_size));
+  button_clone->set_size(vsx_vector<>(0.02f,font_size));
+  button_toggle_edit->set_size(vsx_vector<>(0.02f,font_size));
+  button_import->set_size(vsx_vector<>(0.02f,font_size));
+  button_export->set_size(vsx_vector<>(0.02f,font_size));
 
-  button_add->set_pos(vsx_vector(button_add->size.x*0.5+dragborder,size.y-font_size*2.5f));
-  button_del->set_pos(vsx_vector(button_add->size.x*1.5+dragborder,size.y-font_size*2.5f));
-  button_toggle_edit->set_pos(vsx_vector(button_add->size.x*2.5+dragborder, size.y-font_size*2.5f));
-  button_clone->set_pos(vsx_vector(button_add->size.x*3.5+dragborder,size.y-font_size*2.5f));
-  button_import->set_pos(vsx_vector(button_add->size.x*4.5+dragborder,size.y-font_size*2.5f));
-  button_export->set_pos(vsx_vector(button_add->size.x*5.5+dragborder,size.y-font_size*2.5f));
+  button_add->set_pos(vsx_vector<>(button_add->size.x*0.5+dragborder,size.y-font_size*2.5f));
+  button_del->set_pos(vsx_vector<>(button_add->size.x*1.5+dragborder,size.y-font_size*2.5f));
+  button_toggle_edit->set_pos(vsx_vector<>(button_add->size.x*2.5+dragborder, size.y-font_size*2.5f));
+  button_clone->set_pos(vsx_vector<>(button_add->size.x*3.5+dragborder,size.y-font_size*2.5f));
+  button_import->set_pos(vsx_vector<>(button_add->size.x*4.5+dragborder,size.y-font_size*2.5f));
+  button_export->set_pos(vsx_vector<>(button_add->size.x*5.5+dragborder,size.y-font_size*2.5f));
 
-  edit->set_pos(vsx_vector(size.x/2,size.y/2-font_size*1.5f+dragborder*0.5f));//+dragborder*0.5f
-  edit->set_size(vsx_vector(size.x-dragborder*2,size.y-font_size*3-dragborder));
-  search->set_size(vsx_vector(size.x-dragborder*2, font_size));
-  search->set_pos(vsx_vector(size.x/2,size.y-font_size*1.5f));
+  edit->set_pos(vsx_vector<>(size.x/2,size.y/2-font_size*1.5f+dragborder*0.5f));//+dragborder*0.5f
+  edit->set_size(vsx_vector<>(size.x-dragborder*2,size.y-font_size*3-dragborder));
+  search->set_size(vsx_vector<>(size.x-dragborder*2, font_size));
+  search->set_pos(vsx_vector<>(size.x/2,size.y-font_size*1.5f));
 }
 
 void vsx_widget_seq_pool_manager::command_process_back_queue(vsx_command_s *t)
@@ -405,7 +405,7 @@ void vsx_widget_seq_pool_manager::command_process_back_queue(vsx_command_s *t)
         ((vsx_widget_sequence_editor*)sequencer)->disable_master_channel = true;
         sequencer->constrained_y = sequencer->constrained_x = false;
         sequencer->coord_related_parent = false;
-        sequencer->set_pos(vsx_vector(0.0f,-0.6f));
+        sequencer->set_pos(vsx_vector<>(0.0f,-0.6f));
         sequencer->init();
       } else
       {

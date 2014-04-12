@@ -102,7 +102,7 @@ class vsx_module_kaleido_star : public vsx_module
   // out
   vsx_module_param_render* render_result;
   // internal
-  vsx_vector cm;
+  vsx_vector<> cm;
   GLuint dlist;
   bool list_built;
 public:
@@ -312,7 +312,7 @@ class vsx_module_mesh_old_supershape : public vsx_module {
   // out
   vsx_module_param_mesh* result;
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   bool first_run;
   int n_segs;
   int l_param_updates;
@@ -399,7 +399,7 @@ public:
   }
 
   bool init() {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
   void on_delete()
@@ -410,12 +410,12 @@ public:
 
   void run() {
     if (l_param_updates != param_updates) first_run = true;
-    mesh->data->vertices[0] = vsx_vector(10);
+    mesh->data->vertices[0] = vsx_vector<>(10);
 
     if (first_run) {
       l_param_updates = param_updates;
       //printf("generating random points\n");
-      mesh = new vsx_mesh;
+      mesh = new vsx_mesh<>;
       mesh->data->vertices.reset_used();
       mesh->data->faces.reset_used();
       int vi = 0; // vertex index
@@ -497,14 +497,14 @@ public:
                         , _y_n3)
                     , -1.0f/_y_n1);
 
-          vsx_vector tmp_vec;//(sin(angle) * rad, y, cos(angle) * rad);
+          vsx_vector<> tmp_vec;//(sin(angle) * rad, y, cos(angle) * rad);
           tmp_vec.x = r1 * cos(phi) * r2 * cos(theta);
           tmp_vec.y = r1 * sin(phi) * r2 * cos(theta);
           tmp_vec.z = r2 * sin(theta);
           //printf("%f %f %f\n", tmp_vec.x, tmp_vec.y, tmp_vec.z);
           mesh->data->vertices[vi] = tmp_vec;
           mesh->data->vertex_normals[vi] = tmp_vec;
-          mesh->data->vertex_colors[vi] = vsx_color(1, 1, 1, 1);
+          mesh->data->vertex_colors[vi] = vsx_color<>(1, 1, 1, 1);
           phi += phi_step;
           vi++;
         }
@@ -521,9 +521,9 @@ public:
           if (a.a > mesh->data->vertices.size()) a.a = 0;
           if (a.b > mesh->data->vertices.size()) a.b = 0;
           if (a.c > mesh->data->vertices.size()) a.c = 0;
-          vsx_vector aa = mesh->data->vertices[a.b] - mesh->data->vertices[a.a];
-          vsx_vector b = mesh->data->vertices[a.c] - mesh->data->vertices[a.a];
-          vsx_vector n;
+          vsx_vector<> aa = mesh->data->vertices[a.b] - mesh->data->vertices[a.a];
+          vsx_vector<> b = mesh->data->vertices[a.c] - mesh->data->vertices[a.a];
+          vsx_vector<> n;
           n.cross(aa,b);
           n.normalize();
           mesh->data->vertex_normals[a.a] = mesh->data->vertex_normals[a.b] = mesh->data->vertex_normals[a.c] = n;
@@ -590,6 +590,7 @@ void MOD_DM(vsx_module* m,unsigned long module) {
 }
 
 unsigned long MOD_NM(vsx_engine_environment* environment) {
+  VSX_UNUSED(environment);
   return 4;
 }  
 

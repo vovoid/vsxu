@@ -65,16 +65,16 @@
     //size.y = fontsize*rows+0.01;
     tx = 0;
     //pos.y = yposs;
-    set_pos(vsx_vector(0,yposs));
-    set_size(vsx_vector(1,fontsize*rows+0.01));
+    set_pos(vsx_vector<>(0,yposs));
+    set_size(vsx_vector<>(1,fontsize*rows+0.01));
     ythrust = 0;
     htime = sqrt(size.y-yposs);
     vsx_widget_base_edit* edit = (vsx_widget_base_edit*)add(new vsx_widget_base_edit,".e");
 
 //    edit->set_pos(vsx_vector(0, -size.y-fontsize+0.003)); 
-    edit->set_pos(vsx_vector(size.x*0.5f, -size.y+fontsize*0.5f)); 
+    edit->set_pos(vsx_vector<>(size.x*0.5f, -size.y+fontsize*0.5f));
     edit->size_from_parent = true;
-    edit->set_size(vsx_vector(1.0f, fontsize));
+    edit->set_size(vsx_vector<>(1.0f, fontsize));
     edit->single_row = true;
     edit->set_font_size(fontsize);
     edit->init();
@@ -96,7 +96,7 @@
     destination = a_focus;
   }
   
-  int vsx_widget_2d_console::inside_xy_l(vsx_vector &test, vsx_vector &global) {
+  int vsx_widget_2d_console::inside_xy_l(vsx_vector<> &test, vsx_vector<> &global) {
     if (coord_type == VSX_WIDGET_COORD_CORNER) {
       if ( test.y < global.y && 
           test.y > global.y-size.y) 
@@ -173,13 +173,13 @@
       double c = 0;
       if (destination)
       for (int x = destination->log_cmd.size()-1; ((x >= 0) && (c < rows-1)); x--) {
-        font.print(vsx_vector(0,texty+fontsize*c*0.9),destination->log_cmd[x],fontsize);
+        font.print(vsx_vector<>(0,texty+fontsize*c*0.9),destination->log_cmd[x],fontsize);
         ++c;
       }
     }
     glColor4f(skin_colors[9].r,skin_colors[9].g,skin_colors[9].b,skin_colors[9].a);
     if (destination)
-    font.print(vsx_vector(0,pos.y-0.025),h+"console:"+destination->name,0.025); 
+    font.print(vsx_vector<>(0,pos.y-0.025),h+"console:"+destination->name,0.025);
     glLineWidth(1.0);
    	glBegin(GL_LINE_STRIP);
    	  glVertex3f(0,pos.y-0.025,0);

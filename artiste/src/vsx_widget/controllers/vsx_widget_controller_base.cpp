@@ -63,8 +63,8 @@ vsx_widget_controller_base::vsx_widget_controller_base() //include first
   dest_value = true;
   constrained_x = false;
   constrained_y = false;
-  set_pos(vsx_vector(-sizeunit*1.2));
-  set_size(vsx_vector(sizeunit, sizeunit));
+  set_pos(vsx_vector<>(-sizeunit*1.2));
+  set_size(vsx_vector<>(sizeunit, sizeunit));
   drawconnection=true; //draw line between this controll and it's parent
   target_param="";
   param_spec = 0;
@@ -410,7 +410,7 @@ void vsx_widget_controller_base::i_draw() //include first, don't forget to add d
   vsx_widget_3d_hint::vsx_widget_3d_hint()
   {
 //    bgcolor.a=0;
-    color = vsx_color(1,1,1,1);
+    color = vsx_color<>(1,1,1,1);
     color.a=0;
     secdelay=4;
   }
@@ -431,13 +431,13 @@ void vsx_widget_controller_base::i_draw() //include first, don't forget to add d
     if (!visible) return;
     if (color.a>0) color.a -= vsx_widget_time::get_instance()->get_dtime();
     else color.a=0;
-    vsx_vector p = parent->get_pos_p()+pos;
+    vsx_vector<> p = parent->get_pos_p()+pos;
     p.y -= size.y*0.5;
     font.color=color;
     //print_center(vsx_vector p, const vsx_string& str, float size);
     //if (color.a > 0) printf("drawing %s",title.c_str());
-    font.print_center(vsx_vector(p.x,p.y), title,size.y);
-    font.color = vsx_color(1,1,1,1);
+    font.print_center(vsx_vector<>(p.x,p.y), title,size.y);
+    font.color = vsx_color<>(1,1,1,1);
     //vsx_widget_3d_label::draw();
   }
 

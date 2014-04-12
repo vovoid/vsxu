@@ -35,7 +35,7 @@ public:
   vsx_widget* slider;
   vsx_widget* label;
   vsx_widget_controller_channel();
-  int inside_xy_l(vsx_vector &test, vsx_vector &global)
+  int inside_xy_l(vsx_vector<> &test, vsx_vector<> &global)
   {
     if (owned)
       return 0;

@@ -36,8 +36,8 @@ vsx_widget_controller_pad::vsx_widget_controller_pad()
 
   widget_type = VSX_WIDGET_TYPE_CONTROLLER;
   coord_type = VSX_WIDGET_COORD_CENTER;
-  set_size(vsx_vector(0.1,0.1));
-  set_pos(vsx_vector(-0.06));
+  set_size(vsx_vector<>(0.1,0.1));
+  set_pos(vsx_vector<>(-0.06));
 
   generate_menu();
   menu->init();
@@ -49,27 +49,27 @@ void vsx_widget_controller_pad::init()
   prev_pos = 0;
   draw_area = size.x*0.5-sizeunit*1.3*0.5f;
   knob_x1 = add(new vsx_widget_controller_knob,"x1");
-  knob_x1->set_pos(vsx_vector(-draw_area-sizeunit*0.25,0));
+  knob_x1->set_pos(vsx_vector<>(-draw_area-sizeunit*0.25,0));
   ((vsx_widget_controller_knob*)knob_x1)->target_param = "x1";
   ((vsx_widget_controller_knob*)knob_x1)->bgcolor.a=0;
   ((vsx_widget_controller_knob*)knob_x1)->owned=true;
   ((vsx_widget_controller_knob*)knob_x1)->drawconnection=false;
   ((vsx_widget_controller_knob*)knob_x1)->isolate=true;
-  knob_x1->set_size(vsx_vector(sizeunit*0.5,sizeunit*0.5));
+  knob_x1->set_size(vsx_vector<>(sizeunit*0.5,sizeunit*0.5));
   knob_x1->init();
 
   knob_y1 = add(new vsx_widget_controller_knob,"y1");
-  knob_y1->set_pos(vsx_vector(0,draw_area+sizeunit*0.25));
+  knob_y1->set_pos(vsx_vector<>(0,draw_area+sizeunit*0.25));
   ((vsx_widget_controller_knob*)knob_y1)->bgcolor.a=0;
   ((vsx_widget_controller_knob*)knob_y1)->owned=true;
   ((vsx_widget_controller_knob*)knob_y1)->drawconnection=false;
   ((vsx_widget_controller_knob*)knob_y1)->isolate=true;
   ((vsx_widget_controller_knob*)knob_y1)->target_param = "y1";
-  knob_y1->set_size(vsx_vector(sizeunit*0.5,sizeunit*0.5));
+  knob_y1->set_size(vsx_vector<>(sizeunit*0.5,sizeunit*0.5));
   knob_y1->init();
 
   knob_x2 = add(new vsx_widget_controller_knob,"x2");
-  knob_x2->set_pos(vsx_vector(draw_area+sizeunit*0.25,0));
+  knob_x2->set_pos(vsx_vector<>(draw_area+sizeunit*0.25,0));
   ((vsx_widget_controller_knob*)knob_x2)->target_param = "x2";
   ((vsx_widget_controller_knob*)knob_x2)->bgcolor.a=0;
   ((vsx_widget_controller_knob*)knob_x2)->owned=true;
@@ -77,11 +77,11 @@ void vsx_widget_controller_pad::init()
   ((vsx_widget_controller_knob*)knob_x2)->isolate=true;
   ((vsx_widget_controller_knob*)knob_x2)->target_value = 1.0;
   ((vsx_widget_controller_knob*)knob_x2)->value = 1.0;
-  knob_x2->set_size(vsx_vector(sizeunit*0.5,sizeunit*0.5));
+  knob_x2->set_size(vsx_vector<>(sizeunit*0.5,sizeunit*0.5));
   knob_x2->init();
 
   knob_y2 = add(new vsx_widget_controller_knob,"y2");
-  knob_y2->set_pos(vsx_vector(0,-draw_area-sizeunit*0.38));
+  knob_y2->set_pos(vsx_vector<>(0,-draw_area-sizeunit*0.38));
   ((vsx_widget_controller_knob*)knob_y2)->bgcolor.a=0;
   ((vsx_widget_controller_knob*)knob_y2)->owned=true;
   ((vsx_widget_controller_knob*)knob_y2)->drawconnection=false;
@@ -89,7 +89,7 @@ void vsx_widget_controller_pad::init()
   ((vsx_widget_controller_knob*)knob_y2)->target_param = "y2";
   ((vsx_widget_controller_knob*)knob_y2)->value = 1.0;
   ((vsx_widget_controller_knob*)knob_y2)->target_value = 1.0;
-  knob_y2->set_size(vsx_vector(sizeunit*0.5,sizeunit*0.5));
+  knob_y2->set_size(vsx_vector<>(sizeunit*0.5,sizeunit*0.5));
   knob_y2->init();
 
 }

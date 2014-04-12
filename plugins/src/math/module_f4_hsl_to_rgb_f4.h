@@ -31,7 +31,7 @@ class module_f4_hsl_to_rgb_f4 : public vsx_module
   vsx_module_param_float4* result4;
 
   // internal
-  vsx_color color;
+  vsx_color<> color;
 
   float Hue_2_RGB(float v1, float v2, float vH)
   {

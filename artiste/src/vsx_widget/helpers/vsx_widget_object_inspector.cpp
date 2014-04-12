@@ -90,7 +90,7 @@ void vsx_window_object_inspector::draw_2d() {
     if (texture_loaded == false)
     if (texture.texture_info->size_y != 0.0) {
       texture_loaded = true;
-      vsx_vector aa;
+      vsx_vector<> aa;
       aa.x = 0.4/screenaspect*(texture.texture_info->size_x/texture.texture_info->size_y);
       aa.y = 0.4;
       aa.z = 0;
@@ -125,7 +125,7 @@ void vsx_window_object_inspector::draw() {
       //((vsx_widget_2d_edit*)component_rename_edit)->value.clear();
       title = "anchor "+((vsx_widget_anchor*)a_focus)->name;
       view_type = 0;
-      set_size(vsx_vector(0.2f, 0.175f, 0.0f));
+      set_size(vsx_vector<>(0.2f, 0.175f, 0.0f));
       move(1.0f - 0.2f , 1.0f - 0.175f, 0.0f);
     }
     else
@@ -154,7 +154,7 @@ void vsx_window_object_inspector::draw() {
       title = ((vsx_widget_component*)a_focus)->real_name;
       view_type = 0;
       //printf("resize to\n");
-      set_size(vsx_vector(0.2f, 0.175f, 0.0f));
+      set_size(vsx_vector<>(0.2f, 0.175f, 0.0f));
       move(1.0f - 0.2f , 1.0f - 0.175f, 0.0f);
       // request timing data
       label2->title = "This build of the engine does not\nsupport timing. The reason?\nTiming slows down performance.\n";
@@ -244,22 +244,22 @@ vsx_window_object_inspector::vsx_window_object_inspector()
 
   vsx_widget::init_children();
   title = "object inspector";
-	set_pos(vsx_vector(1.0f,1.0f));
-	set_size(vsx_vector(0.25f,0.05f));
+  set_pos(vsx_vector<>(1.0f,1.0f));
+  set_size(vsx_vector<>(0.25f,0.05f));
   allow_resize_x = allow_resize_y = 1;
 
   //-- COMPONENT INSPECTOR ---------------------------------------------------------------------------------------------
 
   component_rename_button->visible = 0;
-  component_rename_button->set_size(vsx_vector(0.033,0.020));
-  component_rename_button->set_pos(vsx_vector(0.18,0.025));
+  component_rename_button->set_size(vsx_vector<>(0.033,0.020));
+  component_rename_button->set_pos(vsx_vector<>(0.18,0.025));
   component_rename_button->title = "RENAME";
   component_rename_button->commands.adds(4,"component_rename_button","component_rename_button","");
   ((vsx_widget_button*)component_rename_button)->border = 0.0003;
 
   component_rename_edit->visible = 1;
-	component_rename_edit->set_pos(vsx_vector(0.085f,0.025f));
-	component_rename_edit->set_size(vsx_vector(0.155f,0.02f));
+  component_rename_edit->set_pos(vsx_vector<>(0.085f,0.025f));
+  component_rename_edit->set_size(vsx_vector<>(0.155f,0.02f));
   component_rename_edit->set_font_size(0.018f);
   ((vsx_widget_base_edit*)component_rename_edit)->size_from_parent = true;
   ((vsx_widget_base_edit*)component_rename_edit)->single_row = true;
@@ -298,7 +298,7 @@ void vsx_window_object_inspector::show() {
 }
 
 void vsx_window_object_inspector::unload() {
-  resize_to(vsx_vector(0.001,0.001));
+  resize_to(vsx_vector<>(0.001,0.001));
   move(1-0.001,1,0);
   texture.unload();
   filename_loaded = "";

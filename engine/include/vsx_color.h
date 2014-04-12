@@ -27,12 +27,13 @@
 #include <vsx_vector.h>
 #include <vsx_platform.h>
 
-class vsx_color : public vsx_vector
+template<typename T = float>
+class vsx_color : public vsx_vector<>
 {
 public:
-  float a;
+  T a;
 
-  inline void hsv(float h, float s, float v)
+  inline void hsv(T h, T s, T v)
   {
     if ( s == 0 )                       //HSV values = From 0 to 1
     {

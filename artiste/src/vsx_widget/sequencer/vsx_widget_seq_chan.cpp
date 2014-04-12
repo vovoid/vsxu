@@ -50,8 +50,8 @@
 #include "dialogs/vsx_widget_window_statics.h"
 
 
-vsx_color vsx_widget_seq_channel::col_temp_1;
-vsx_color vsx_widget_seq_channel::col_temp_2;
+vsx_color<> vsx_widget_seq_channel::col_temp_1;
+vsx_color<> vsx_widget_seq_channel::col_temp_2;
 vsx_texture* vsx_widget_seq_channel::mtex_blob = 0;
 
 // WARNING: OVER BOOLEAN ASPHYXIATION IN THIS FILE!!!
@@ -67,8 +67,8 @@ void vsx_widget_seq_channel::init()
   hidden_by_sequencer = true;
   display_exclusive = 0;
   is_controller = false;
-  graph_color = vsx_color(1.0f, 1.0f, 1.0f);
-  graph_oob_color = vsx_color(1, 0, 0, 1);
+  graph_color = vsx_color<>(1.0f, 1.0f, 1.0f);
+  graph_oob_color = vsx_color<>(1, 0, 0, 1);
   y_start = -2;
   y_end = 2;
   if (channel_type == VSX_WIDGET_SEQ_CHANNEL_TYPE_PARAMETER)
@@ -653,7 +653,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
     // first bezier handle
     if (extra_hit == 1)
     {
-      items[mouse_clicked_id].set_handle1( vsx_vector(f / items[mouse_clicked_id].get_total_length(), y	- s2f(items[mouse_clicked_id].get_value()) ) );
+      items[mouse_clicked_id].set_handle1( vsx_vector<>(f / items[mouse_clicked_id].get_total_length(), y	- s2f(items[mouse_clicked_id].get_value()) ) );
 
       // move the previous bezier handle
       if ( ctrl && !shift && !alt)
@@ -676,7 +676,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
         if (other_item)
         {
           other_item->set_handle2(
-            vsx_vector(
+            vsx_vector<>(
               1.0 - cur_time_x / other_item->get_total_length(),
               -items[mouse_clicked_id].get_handle1().y
             )
@@ -688,7 +688,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
     // second bezier handle
     if (extra_hit == 2)
     {
-      items[mouse_clicked_id].set_handle2( vsx_vector(f / items[mouse_clicked_id].get_total_length(), y - s2f(items[mouse_clicked_id + 1].get_value()) ) );
+      items[mouse_clicked_id].set_handle2( vsx_vector<>(f / items[mouse_clicked_id].get_total_length(), y - s2f(items[mouse_clicked_id + 1].get_value()) ) );
 
       // move the next bezier handle
       if (ctrl && !shift && !alt)
@@ -713,7 +713,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
         if (other_item)
         {
           other_item->set_handle1(
-            vsx_vector(
+            vsx_vector<>(
               cur_time_x / other_item->get_total_length(),
               -items[mouse_clicked_id].get_handle2().y
             )
@@ -869,7 +869,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
           parts[index_hit] = f2s(y);
 
           vsx_string t = implode(parts, deli);
-          vsx_quaternion q;
+          vsx_quaternion<> q;
           q.from_string(t);
           q.normalize();
           parts[0] = f2s(q.x);
@@ -1205,8 +1205,8 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
           vsx_string vtemp = base64_decode(pld[2]);
           explode(vtemp, pdeli_l, pld_l);
           pa.set_value( pld_l[0] );
-          pa.set_handle1( vsx_vector_aux::from_string( pld_l[1] ) );
-          pa.set_handle2( vsx_vector_aux::from_string( pld_l[2] ) );
+          pa.set_handle1( vsx_vector_aux::from_string<float>( pld_l[1] ) );
+          pa.set_handle2( vsx_vector_aux::from_string<float>( pld_l[2] ) );
         }
         else
         {
@@ -1246,8 +1246,8 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
         vsx_string vtemp = base64_decode(t->parts[4]);
         explode(vtemp, pdeli_l, pld_l);
         pa.set_value( pld_l[0] );
-        pa.set_handle1( vsx_vector_aux::from_string(pld_l[1]) );
-        pa.set_handle2( vsx_vector_aux::from_string(pld_l[2]) );
+        pa.set_handle1( vsx_vector_aux::from_string<float>(pld_l[1]) );
+        pa.set_handle2( vsx_vector_aux::from_string<float>(pld_l[2]) );
       }
       else
       {
@@ -1399,7 +1399,7 @@ void vsx_widget_seq_channel::i_draw()
   parentpos = parent->get_pos_p();
 
   // position + size calculations
-  vsx_vector self_pos = parentpos + pos;
+  vsx_vector<> self_pos = parentpos + pos;
   float sizex_div_2 = size.x * 0.5f;
   float sizey_div_2 = size.y * 0.5f;
 
@@ -1520,8 +1520,8 @@ void vsx_widget_seq_channel::i_draw()
             time_iterator < view_time_end
       )
       {
-        vsx_vector corner_pos =
-          vsx_vector(
+        vsx_vector<> corner_pos =
+          vsx_vector<>(
             self_pos.x + time_to_pos(
                   time_iterator
             ),
@@ -1558,13 +1558,13 @@ void vsx_widget_seq_channel::i_draw()
               *
               size_calc;
           items[item_iterator].get_master_channel_time_sequence()->set_size(
-            vsx_vector(
+            vsx_vector<>(
               sc_x
               ,
               size.y
             )
           );
-          items[item_iterator].get_master_channel_time_sequence()->set_pos(corner_pos+vsx_vector(sc_x * 0.5f, size.y * 0.5f));
+          items[item_iterator].get_master_channel_time_sequence()->set_pos(corner_pos+vsx_vector<>(sc_x * 0.5f, size.y * 0.5f));
         }
         glColor4f(0.4f,0.5f,0.7f,0.9f);
         glBegin(GL_LINE_STRIP);
@@ -1578,7 +1578,7 @@ void vsx_widget_seq_channel::i_draw()
         font.print(
           corner_pos
           +
-          vsx_vector(
+          vsx_vector<>(
             items[item_iterator].get_length()   // block length, not total length
             *
             size_calc*0.3f
@@ -1616,7 +1616,7 @@ void vsx_widget_seq_channel::i_draw()
           draw_h_line(w + 0.5f, 1, 1, 1, 0.4);
         }
       font.color.a = 0.1f;
-      font.print_center(vsx_vector(self_pos.x - size.x * 0.3,
+      font.print_center(vsx_vector<>(self_pos.x - size.x * 0.3,
           self_pos.y - size.y / 2 + (w - y_start) / (y_end - y_start)
               * size.y), f2s(w), font_size * 0.2f);
       w += inc;
@@ -1654,7 +1654,7 @@ void vsx_widget_seq_channel::i_draw()
       {
       case VSX_MODULE_PARAM_ID_FLOAT:
       {
-        vsx_color l_color = vsx_color(1.0f, 1.0f, 1.0f, 1.0f);
+        vsx_color<> l_color = vsx_color<>(1.0f, 1.0f, 1.0f, 1.0f);
         while (item_iterator < (int) items.size() && time_iterator
             <= view_time_end)
         {
@@ -1665,7 +1665,7 @@ void vsx_widget_seq_channel::i_draw()
             {
               // BEZIER (x⁴ INTERPOLATION)
               vsx_bezier_calc calc;
-              vsx_color lb_color = vsx_color(0.2f, 1.0f, 0.8f, 1.0f);
+              vsx_color<> lb_color = vsx_color<>(0.2f, 1.0f, 0.8f, 1.0f);
               float ev = s2f(items[item_iterator + 1].get_value() );
               draw_line(
                 time_iterator,
@@ -1818,15 +1818,15 @@ void vsx_widget_seq_channel::i_draw()
     if (m_o_focus == this)
     {
       //TODO: work here
-      font.print(passive_mouse_pos+vsx_vector(0.001,0.002), passive_value, 0.003);
-      font.print(passive_mouse_pos+vsx_vector(-0.015,-0.002), passive_time, 0.003);
+      font.print(passive_mouse_pos+vsx_vector<>(0.001,0.002), passive_value, 0.003);
+      font.print(passive_mouse_pos+vsx_vector<>(-0.015,-0.002), passive_time, 0.003);
     }
   } // if channel type is parameter
   if (!is_controller)
   {
     font.color.a = 0.1f;
     font.print(
-          vsx_vector(
+          vsx_vector<>(
                 parentpos.x + pos.x - size.x * 0.5,
                 parentpos.y + pos.y - size.y / 2
           ),
@@ -1839,7 +1839,7 @@ void vsx_widget_seq_channel::i_draw()
           size.y * 0.5f
         );
     if (display_exclusive)
-      font.print(vsx_vector(parentpos.x + pos.x - size.x * 0.5, parentpos.y
+      font.print(vsx_vector<>(parentpos.x + pos.x - size.x * 0.5, parentpos.y
           + pos.y + size.y / 2 - 0.01f),
           "only editing " + i2s(display_exclusive), 0.007);
   }
@@ -1849,8 +1849,8 @@ void vsx_widget_seq_channel::i_draw()
   }
   else
     glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-  draw_box_border(vsx_vector(parentpos.x + pos.x - size.x * 0.5, parentpos.y
-      + pos.y - size.y * 0.5f), vsx_vector(size.x, size.y), 0.0001);
+  draw_box_border(vsx_vector<>(parentpos.x + pos.x - size.x * 0.5, parentpos.y
+      + pos.y - size.y * 0.5f), vsx_vector<>(size.x, size.y), 0.0001);
   glPopMatrix();
 }
 
@@ -1884,7 +1884,7 @@ void vsx_widget_seq_channel::draw_red_line(float t0, float t1, float y0)
 }
 
 void vsx_widget_seq_channel::draw_line(float t0, float y0, float t1, float y1,
-    vsx_color& l_color)
+    vsx_color<>& l_color)
 {
   if (t0 < view_time_start)
   {
@@ -2054,7 +2054,7 @@ void vsx_widget_seq_channel::draw_chan_box(float t0, float y0, float c_size)
   glVertex2f(dlx - c_size, dly + c_size);
   glVertex2f(dlx - c_size, dly - c_size);
   glEnd();
-  font.print(vsx_vector(dlx + 0.002, dly), f2s(y0), c_size * 2.14f);
+  font.print(vsx_vector<>(dlx + 0.002, dly), f2s(y0), c_size * 2.14f);
 }
 
 void vsx_widget_seq_channel::draw_selection_box(float t0, float y0)
@@ -2202,7 +2202,7 @@ void vsx_widget_seq_channel::drop_master_channel(vsx_widget_distance distance,
   VSX_UNUSED(distance);
   float time_iterator = 0;
   unsigned long item_iterator = 0;
-  vsx_vector drop_pos_local = coords.world_global - get_pos_p();
+  vsx_vector<> drop_pos_local = coords.world_global - get_pos_p();
   float time_pos = (drop_pos_local.x / size.x + 0.5f) * (view_time_end
       - view_time_start) + view_time_start;
   while (item_iterator < items.size() && time_iterator < time_pos)

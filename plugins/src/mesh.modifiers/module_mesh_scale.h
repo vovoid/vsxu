@@ -30,13 +30,13 @@ class module_mesh_scale : public vsx_module
   // out
   vsx_module_param_mesh* mesh_out;
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   unsigned long prev_timestamp;
-  vsx_vector v;
+  vsx_vector<> v;
 
 public:
   bool init() {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -74,7 +74,7 @@ public:
   }
 
   void run() {
-    vsx_mesh** p = mesh_in->get_addr();
+    vsx_mesh<>** p = mesh_in->get_addr();
     if (!p)
       ERROR_RETURN("mesh is invalid");
 
@@ -96,10 +96,10 @@ public:
       mesh->data->faces.reset_used(0);
 
       unsigned long end = (*p)->data->vertices.size();
-      vsx_vector* vs_p = &(*p)->data->vertices[0];
+      vsx_vector<>* vs_p = &(*p)->data->vertices[0];
       mesh->data->vertices.allocate(end);
       mesh->data->vertices.reset_used(end);
-      vsx_vector* vs_d = mesh->data->vertices.get_pointer();
+      vsx_vector<>* vs_d = mesh->data->vertices.get_pointer();
 
 
       for (unsigned int i = 0; i < end; i++)

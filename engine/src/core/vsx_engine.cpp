@@ -277,42 +277,30 @@ void vsx_engine::input_event(vsx_engine_input_event &new_input_event)
 int vsx_engine::load_state(vsx_string filename, vsx_string *error_string)
 {
   if (!valid) return 2;
-  LOG("load_state 1")
   filesystem.set_base_path("");
   if (filesystem.is_archive())
   {
-    LOG("vsx_engine::load_state closing filesystem archive")
     filesystem.archive_close();
   }
 
 
-  LOG("load_state 2")
   vsx_command_list load1;
   load1.set_filesystem(&filesystem);
   vsx_string i_filename = filename;
-  LOG("load_state 3")
 
   bool is_archive = false;
   if (filename.size() >= 4) {
-    LOG("load_state 4")
     if (filename.substr(filename.size()-4,4) == ".vsx") {
-      LOG("file is .VSX\n")
       filesystem.archive_load(filename.c_str());
       if (filesystem.is_archive_populated()) {
         is_archive = true;
         // state has to lie first in the archive!!!
-        LOG("engine loading archive: "+filename)
         i_filename = "_states/_default";//filesystem.archive_files[0].filename;
       } else
       { filesystem.archive_close(); return 0; }
     }
   }
-  LOG("engine loading state: "+i_filename);
   load1.load_from_file(i_filename,true);
-  LOG("load_state after")
-#ifdef VSXU_MAC_XCODE
-  syslog(LOG_ERR,"load1.count() = %d\n", load1.count());
-#endif
 
   if (!is_archive)
     filesystem.set_base_path(vsx_get_data_path());
@@ -322,6 +310,26 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string)
 
   return res;
 }
+
+
+int vsx_engine::load_state_filesystem(vsx_string filename, vsx_string *error_string, vsxf* fs)
+{
+  if (!valid)
+    return 2;
+
+  engine_info.filesystem = fs;
+
+  vsx_command_list load1;
+  load1.set_filesystem( fs );
+
+  load1.load_from_file(filename, true);
+
+  int res = i_load_state(load1, error_string, filename);
+  load1.clear(true);
+
+  return res;
+}
+
 
 
 

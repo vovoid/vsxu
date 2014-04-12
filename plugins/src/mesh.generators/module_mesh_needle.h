@@ -31,7 +31,7 @@ class module_mesh_needle : public vsx_module {
   vsx_module_param_mesh* result;
 
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
 
 public:
   void module_info(vsx_module_info* info)
@@ -65,7 +65,7 @@ public:
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 

@@ -30,7 +30,7 @@ class vsx_widget_profiler : public vsx_widget
 {
   vsx_widget_time_holder time;
 
-  vsx_vector parentpos;
+  vsx_vector<> parentpos;
   std::vector<vsx_widget*> threads;
   vsx_widget* file_list;
   vsx_widget* timeline;

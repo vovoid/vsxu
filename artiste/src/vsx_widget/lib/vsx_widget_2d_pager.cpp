@@ -32,7 +32,7 @@ vsx_widget_2d_pager::vsx_widget_2d_pager()
 
 void vsx_widget_2d_pager::init()
 {
-  set_size(vsx_vector(0.06,0.1));
+  set_size(vsx_vector<>(0.06,0.1));
   pos.x = 0.0f;
   pos.y = 0.0f;
   render_type = VSX_WIDGET_RENDER_2D;

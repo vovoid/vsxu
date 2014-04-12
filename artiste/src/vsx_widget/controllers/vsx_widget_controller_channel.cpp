@@ -38,7 +38,7 @@ void vsx_widget_controller_channel::init()
   vsx_widget_controller_base::init();
   get_value();
   amp = add(new vsx_widget_controller_knob,"amp");
-  amp->set_pos(vsx_vector(0,pos.y+size.y/2-amp->size.y*0.75));
+  amp->set_pos(vsx_vector<>(0,pos.y+size.y/2-amp->size.y*0.75));
   //amp->pos.y=pos.y+size.y/2-amp->size.y*0.75;
   //amp->pos.x=0;
   ((vsx_widget_controller_knob*)amp)->bgcolor.a=0;
@@ -51,7 +51,7 @@ void vsx_widget_controller_channel::init()
   //((vsx_widget_3d_hint*)((vsx_widget_knob*)amp)->hint)->title="Amp";
 
   offset = add(new vsx_widget_controller_knob,"offset");
-  offset->set_pos(vsx_vector(0,amp->pos.y-offset->size.y-offset->size.y*0.25));
+  offset->set_pos(vsx_vector<>(0,amp->pos.y-offset->size.y-offset->size.y*0.25));
   //offset->pos.y=amp->pos.y-offset->size.y-offset->size.y*0.25;
   //offset->pos.x=0;
   ((vsx_widget_controller_knob*)offset)->bgcolor.a=0;
@@ -62,7 +62,7 @@ void vsx_widget_controller_channel::init()
   //((vsx_widget_3d_hint*)((vsx_widget_knob*)offset)->hint)->title="Ofs";
 
   slider = add(new vsx_widget_controller_slider,"slider");
-  slider->set_pos(vsx_vector(0,offset->pos.y-(offset->size.y/2)-(slider->size.y/2)-(sizeunit/4)));
+  slider->set_pos(vsx_vector<>(0,offset->pos.y-(offset->size.y/2)-(slider->size.y/2)-(sizeunit/4)));
   //slider->pos.y=offset->pos.y-(offset->size.y/2)-(slider->size.y/2)-(sizeunit/4);
   //slider->pos.x=0;
   ((vsx_widget_controller_slider*)slider)->bgcolor.a=0;

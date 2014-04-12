@@ -44,7 +44,7 @@ class module_mesh_abstract_hand : public vsx_module
   vsx_module_param_float* last_vertex_index;
 
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   int l_param_updates;
   int current_num_stacks;
   int current_num_sectors;
@@ -172,7 +172,7 @@ public:
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -221,7 +221,7 @@ public:
       float ip = (float)i * one_div_num_stacks;
       int index8192 = (int)round(8192.0f*ip);
 
-      vsx_vector circle_base_pos = vsx_vector
+      vsx_vector<> circle_base_pos = vsx_vector<>
       (
         x_shape[index8192] * x_shape_multiplier_f,
         y_shape[index8192] * y_shape_multiplier_f,
@@ -232,7 +232,7 @@ public:
       for(j = 0; j < current_num_sectors; j++)
       {
         double j1 = (float)j * one_div_num_sectors_minus_one;
-        vsx_vector tmp_vec
+        vsx_vector<> tmp_vec
         (
           circle_base_pos.x + cos(j1 * TWO_PI) * size_shape_x[index8192] * size_shape_x_multiplier_f,
           circle_base_pos.y + sin(j1 * TWO_PI) * size_shape_y[index8192] * size_shape_y_multiplier_f,
@@ -241,7 +241,7 @@ public:
         mesh->data->vertices[vi] = tmp_vec;
         mesh->data->vertex_normals[vi] = tmp_vec - circle_base_pos;
         mesh->data->vertex_normals[vi].normalize();
-        mesh->data->vertex_colors[vi] = vsx_color(1, 1, 1, 1);
+        mesh->data->vertex_colors[vi] = vsx_color<>(1, 1, 1, 1);
         mesh->data->vertex_tex_coords[vi].s = j1;
         mesh->data->vertex_tex_coords[vi].t = ip;
 

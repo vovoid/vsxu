@@ -22,7 +22,7 @@ public:
 
   // internal
   int i;
-  vsx_particlesystem* particles;
+  vsx_particlesystem<>* particles;
   vsx_array<float> f_randpool;
   float* f_randpool_pointer;
 
@@ -141,7 +141,7 @@ public:
       }
       f_randpool_pointer = f_randpool.get_pointer() + rand()%nump;
 
-      vsx_particle* pp = particles->particles->get_pointer();
+      vsx_particle<>* pp = particles->particles->get_pointer();
       for (unsigned long i = 0; i < nump; ++i) {
         if (xf) {
           if ((*pp).pos.x < fx) {

@@ -96,9 +96,9 @@ vsx_widget_base_edit::vsx_widget_base_edit() {
   process_characters = true;
   num_hidden_lines = 0;
   font.syntax_colors[0] = skin_colors[14]; // base color
-  font.syntax_colors[1] = vsx_color(0.8,0.8,0.8,1); // comment
-  font.syntax_colors[2] = vsx_color(0,1,1,1);
-  font.syntax_colors[3] = vsx_color(153.0f/255.0f,204.0f/255.0f,1,1);
+  font.syntax_colors[1] = vsx_color<>(0.8,0.8,0.8,1); // comment
+  font.syntax_colors[2] = vsx_color<>(0,1,1,1);
+  font.syntax_colors[3] = vsx_color<>(153.0f/255.0f,204.0f/255.0f,1,1);
 
   menu = add(new vsx_widget_popup_menu,".edit_menu");
   menu->commands.adds(VSX_COMMAND_MENU, "clear", "clear","a"); //build a menu
@@ -468,7 +468,7 @@ void vsx_widget_base_edit::i_draw() {
   float ff = longest_y - characters_height;
   if (ff < 0) ff = 0;
   scroll_y = round(scrollbar_pos_y*(ff));
-  vsx_vector p = get_pos_p();
+  vsx_vector<> p = get_pos_p();
   p.x -= target_size.x*0.5;
   p.y -= target_size.y*0.5;
   if (render_type == VSX_WIDGET_RENDER_3D) {
@@ -499,7 +499,7 @@ void vsx_widget_base_edit::i_draw() {
   while (lines_visible[real_line] != 0 && real_line < (int)(lines.size()-1)) real_line++;
 
   int curline = real_line;
-  vsx_vector pp = p;
+  vsx_vector<> pp = p;
   //std::vector<vsx_string>::iterator it = lines.begin();
   font.syntax_colors[0] = skin_colors[14];
   int cur_render_line = 0;
@@ -540,14 +540,14 @@ void vsx_widget_base_edit::i_draw() {
         {
           vsx_widget* new_action_button = add(new vsx_widget_button,"ab_"+i2s(cur_render_line));
           new_action_button->init();
-          new_action_button->set_size( vsx_vector(0.005f, font_size) );
+          new_action_button->set_size( vsx_vector<>(0.005f, font_size) );
           new_action_button->coord_related_parent = false;
           new_action_button->render_type = this->render_type;
           new_action_button->title = "x";
           new_action_button->commands.adds(4,"","action",i2s(cur_render_line));
           action_buttons.push_back(new_action_button);
         }
-        action_buttons[cur_render_line]->set_pos(pp + vsx_vector(target_size.x-0.0025f,font_size*0.5f));
+        action_buttons[cur_render_line]->set_pos(pp + vsx_vector<>(target_size.x-0.0025f,font_size*0.5f));
         action_buttons[cur_render_line]->visible = 1.0f;
       }
 
@@ -575,7 +575,7 @@ void vsx_widget_base_edit::i_draw() {
     font.print(pp,"_",font_size);
     font.color.a = 1;
   }
-  font.color = vsx_color(1,1,1,1);
+  font.color = vsx_color<>(1,1,1,1);
 }
 
 
@@ -889,14 +889,14 @@ void vsx_widget_editor::i_draw() {
   calc_size();
   //vsx_widget_panel::base_draw();
   float db15 = dragborder*2.5f;
-  scrollbar_horiz->set_pos(vsx_vector(-size.x*0.5,-size.y*0.5));
-  scrollbar_horiz->set_size(vsx_vector(target_size.x-db15, db15));
+  scrollbar_horiz->set_pos(vsx_vector<>(-size.x*0.5,-size.y*0.5));
+  scrollbar_horiz->set_size(vsx_vector<>(target_size.x-db15, db15));
   scrollbar_horiz->set_window_size( editor->scroll_x_size );
 
-  scrollbar_vert->set_pos(vsx_vector(size.x*0.5-db15,-size.y*0.5+db15));
-  scrollbar_vert->set_size(vsx_vector(db15,target_size.y-scrollbar_horiz->size.y));
+  scrollbar_vert->set_pos(vsx_vector<>(size.x*0.5-db15,-size.y*0.5+db15));
+  scrollbar_vert->set_size(vsx_vector<>(db15,target_size.y-scrollbar_horiz->size.y));
   scrollbar_vert->set_window_size( editor->scroll_y_size );
-  editor->set_pos(vsx_vector(-scrollbar_vert->size.x*0.5f,scrollbar_horiz->size.y*0.5f));
+  editor->set_pos(vsx_vector<>(-scrollbar_vert->size.x*0.5f,scrollbar_horiz->size.y*0.5f));
 
   editor->target_size.x = target_size.x-scrollbar_vert->size.x;
   editor->target_size.y = target_size.y-scrollbar_horiz->size.y;

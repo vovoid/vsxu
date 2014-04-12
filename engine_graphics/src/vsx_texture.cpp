@@ -1458,7 +1458,7 @@ void vsx_texture::bind_load_gl()
   if (!valid && is_glist_alias)
   {
     if ( !texture_info->ogl_valid )
-      return false;
+      return;
     valid = texture_info->ogl_valid;
   }
 

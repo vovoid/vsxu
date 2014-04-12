@@ -33,12 +33,12 @@ class module_mesh_to_float3_arrays : public vsx_module
   vsx_module_param_float3_array* face_normals;
   vsx_module_param_float3_array* face_centers;
   // internal
-  vsx_array<vsx_vector> int_empty_array;
-  vsx_vector_array int_vertices;
-  vsx_vector_array int_vertex_normals;
-  vsx_vector_array int_vertex_tangents;
-  vsx_vector_array int_face_normals;
-  vsx_vector_array int_face_centers;
+  vsx_array< vsx_vector<> > int_empty_array;
+  vsx_vector_array<> int_vertices;
+  vsx_vector_array<> int_vertex_normals;
+  vsx_vector_array<> int_vertex_tangents;
+  vsx_vector_array<> int_face_normals;
+  vsx_vector_array<> int_face_centers;
 public:
   void module_info(vsx_module_info* info)
   {
@@ -82,7 +82,7 @@ public:
     face_centers->set_p(int_face_centers);
   }
   void run() {
-    vsx_mesh** p = mesh_in->get_addr();
+    vsx_mesh<>** p = mesh_in->get_addr();
     if (!p) return;
 
     int_vertices.data = &((*p)->data->vertices);

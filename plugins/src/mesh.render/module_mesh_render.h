@@ -46,12 +46,12 @@ class module_mesh_render : public vsx_module
   vsx_module_param_render* render_result;
 
   // internal
-  vsx_mesh** particle_mesh;
-  vsx_mesh** mesh;
+  vsx_mesh<>** particle_mesh;
+  vsx_mesh<>** mesh;
   vsx_texture** ta;
   bool m_normals, m_tex_coords, m_colors;
   vsx_matrix mod_mat, proj_mat;
-  vsx_particlesystem* particles;
+  vsx_particlesystem<>* particles;
   vsx_matrix ma;
 
   unsigned long prev_mesh_timestamp;
@@ -811,7 +811,7 @@ public:
             (*particles->particles)[i].creation_pos.z
           );
           glMultMatrixf(ma.m);
-          vsx_vector ipos = (*particles->particles)[i].pos;
+          vsx_vector<> ipos = (*particles->particles)[i].pos;
           ipos.x -= (*particles->particles)[i].creation_pos.x;
           ipos.y -= (*particles->particles)[i].creation_pos.y;
           ipos.z -= (*particles->particles)[i].creation_pos.z;

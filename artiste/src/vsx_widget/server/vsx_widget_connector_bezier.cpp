@@ -70,9 +70,9 @@ void vsx_widget_connector_bezier::command_process_back_queue(vsx_command_s *t) {
   }
 }
 
-int vsx_widget_connector_bezier::inside_xy_l(vsx_vector &test, vsx_vector &global)
+int vsx_widget_connector_bezier::inside_xy_l(vsx_vector<> &test, vsx_vector<> &global)
 {
-  vsx_vector world = test-global;
+  vsx_vector<> world = test-global;
   if (!visible) return false;
   if (((vsx_widget_component*)((vsx_widget_anchor*)parent)->component)->ethereal_all) return false;
   if (!receiving_focus) return false;
@@ -207,7 +207,7 @@ void vsx_widget_connector_bezier::event_mouse_down(vsx_widget_distance distance,
 void vsx_widget_connector_bezier::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
 {
   VSX_UNUSED(coords);
-  move_d(vsx_vector(0.0f,(distance.center.y-mouse_down_pos.center.y)));
+  move_d(vsx_vector<>(0.0f,(distance.center.y-mouse_down_pos.center.y)));
 }
 
 void vsx_widget_connector_bezier::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
@@ -216,7 +216,7 @@ void vsx_widget_connector_bezier::event_mouse_up(vsx_widget_distance distance,vs
   {
     command_q_b.add_raw("connections_order_int 1");
     parent->vsx_command_queue_b(this);
-    set_pos(vsx_vector(0));
+    set_pos(vsx_vector<>(0));
   }
   vsx_widget::event_mouse_up(distance,coords,button);
 }
@@ -270,7 +270,7 @@ void vsx_widget_connector_bezier::draw()
     ex = pv.x+size.x;
     ey = pv.y+size.y;
   } else {
-    vsx_vector dv = destination->get_pos_p();
+    vsx_vector<> dv = destination->get_pos_p();
     ex = dv.x;
     ey = dv.y;
   }
@@ -281,44 +281,44 @@ void vsx_widget_connector_bezier::draw()
     vsx_string p_type = ((vsx_widget_anchor*)parent)->p_type;
     if (p_type == "complex")
     {
-      color = vsx_color(216.0f/255.0f,76.0f/255.0f,202.0f/255.0f,1.0f);
+      color = vsx_color<>(216.0f/255.0f,76.0f/255.0f,202.0f/255.0f,1.0f);
     } else
     if (p_type == "float" || p_type == "float_array")
     {
-      color = vsx_color(20.0f/255.0f,121.0f/255.0f,72.0f/255.0f,1.0f);
+      color = vsx_color<>(20.0f/255.0f,121.0f/255.0f,72.0f/255.0f,1.0f);
     } else
     if (p_type == "float3" || p_type == "float3_array")
     {
-      color = vsx_color(64.0f/255.0f,190.0f/255.0f,78.0f/255.0f,0.8f);
+      color = vsx_color<>(64.0f/255.0f,190.0f/255.0f,78.0f/255.0f,0.8f);
     } else
     if (p_type == "float4")
     {
-      color = vsx_color(142.0f/255.0f,49.0f/255.0f,168.0f/255.0f,1.0f);
+      color = vsx_color<>(142.0f/255.0f,49.0f/255.0f,168.0f/255.0f,1.0f);
     } else
     if (p_type == "texture")
     {
-      color = vsx_color(15.0f/255.0f,99.0f/255.0f,206.0f/255.0f,1.0f);
+      color = vsx_color<>(15.0f/255.0f,99.0f/255.0f,206.0f/255.0f,1.0f);
     } else
     if (p_type == "render")
     {
-      color = vsx_color(236.0f/255.0f,70.0f/255.0f,70.0f/255.0f,1.0f);
+      color = vsx_color<>(236.0f/255.0f,70.0f/255.0f,70.0f/255.0f,1.0f);
     } else
     if (p_type == "mesh")
     {
-      color = vsx_color(0.0f/255.0f,255.0f/255.0f,255.0f/255.0f,1.0f);
+      color = vsx_color<>(0.0f/255.0f,255.0f/255.0f,255.0f/255.0f,1.0f);
     }
     else
     if (p_type == "bitmap")
     {
-      color = vsx_color(255.0f/255.0f,0.0f/255.0f,255.0f/255.0f,1.0f);
+      color = vsx_color<>(255.0f/255.0f,0.0f/255.0f,255.0f/255.0f,1.0f);
     } else
     if (p_type == "particlesystem")
     {
-      color = vsx_color(160.0f/255.0f,38.0f/255.0f,190.0f/255.0f,1.0f);
+      color = vsx_color<>(160.0f/255.0f,38.0f/255.0f,190.0f/255.0f,1.0f);
     } else
     if (p_type == "quaternion")
     {
-      color = vsx_color(249.0f/255.0f,167.0f/255.0f,86.0f/255.0f,1.0f);
+      color = vsx_color<>(249.0f/255.0f,167.0f/255.0f,86.0f/255.0f,1.0f);
     }
     color_initialized = true;
   }

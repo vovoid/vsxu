@@ -21,7 +21,7 @@ public:
   vsx_module_param_render* render_result;
 
   // internal
-  vsx_particlesystem* particles;
+  vsx_particlesystem<>* particles;
   vsx_texture** tex;
 
   // sequences
@@ -40,7 +40,7 @@ public:
   vsx_gl_state* gl_state;
 
 
-  vsx_vbo_bucket<GLuint, 1, GL_POINTS, GL_STREAM_DRAW, vsx_quaternion> point_bucket;
+  vsx_vbo_bucket<GLuint, 1, GL_POINTS, GL_STREAM_DRAW, vsx_quaternion<> > point_bucket;
 
 
   void module_info(vsx_module_info* info)
@@ -221,7 +221,7 @@ public:
 
   }
 
-  vsx_array<vsx_color> texture_lookup_color_data;
+  vsx_array< vsx_color<> > texture_lookup_color_data;
 
   inline void calc_alphas()
   {
@@ -313,7 +313,7 @@ public:
 
 
 
-    vsx_particle* pp = (*particles->particles).get_pointer();
+    vsx_particle<>* pp = (*particles->particles).get_pointer();
 
     if (point_bucket.faces.get_used() != (*particles->particles).size())
     {

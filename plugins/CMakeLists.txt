@@ -247,7 +247,7 @@ add_subdirectory(src/render.text)
 add_subdirectory(src/sound.rtaudio)
 add_subdirectory(src/system)
 add_subdirectory(src/texture)
-#add_subdirectory(src/vision)
+add_subdirectory(src/vision)
 
 if (PLUGINS_EXPERIMENTAL_SENSORS)
   add_subdirectory(src/sensors.accelerometer)

@@ -23,21 +23,21 @@ class module_segmesh_map_bspline : public vsx_module
   // the step for each spline segment - defined as number of length/segments
   float spline_step;
 
-  vsx_vector old;
-  vsx_vector e;
-  vsx_vector f;
-  vsx_vector d;
+  vsx_vector<> old;
+  vsx_vector<> e;
+  vsx_vector<> f;
+  vsx_vector<> d;
   vsx_matrix ma;
-  vsx_vector old_vec;
-  vsx_vector spos;
-  vsx_vector upv;
+  vsx_vector<> old_vec;
+  vsx_vector<> spos;
+  vsx_vector<> upv;
   // the resulting mesh
-  vsx_mesh* result_mesh;
+  vsx_mesh<>* result_mesh;
 public:
 
   bool init()
   {
-    result_mesh = new vsx_mesh;
+    result_mesh = new vsx_mesh<>;
     return true;
   }
   void on_delete()
@@ -84,10 +84,10 @@ public:
     mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_result");
     mesh_result->set_p(result_mesh);
 
-    spline0.init(vsx_vector(0), 0.7f, 0.3f, 0.6f);
-    spline0.points[0] = vsx_vector(0);
+    spline0.init(vsx_vector<>(0), 0.7f, 0.3f, 0.6f);
+    spline0.points[0] = vsx_vector<>(0);
 
-    upv = vsx_vector(0,1);
+    upv = vsx_vector<>(0,1);
   }
 
   void run()
@@ -95,7 +95,7 @@ public:
     base_mesh = seg_mesh_in->get_addr();
     if (!base_mesh) return;
 
-    vsx_mesh** spline_mesh = bspline_vertices_mesh->get_addr();
+    vsx_mesh<>** spline_mesh = bspline_vertices_mesh->get_addr();
 
     if (!spline_mesh) return;
 
@@ -131,7 +131,7 @@ public:
       for (j = 0; j < (int)sides; ++j)
       {
         gmesh.vertices[i][j].coord = ma.multiply_vector(base_mesh->vertices[i][j].coord)+spos;
-        gmesh.vertices[i][j].color = vsx_color(0.5f,0.5f,0.5f,1.0f);
+        gmesh.vertices[i][j].color = vsx_color<>(0.5f,0.5f,0.5f,1.0f);
       }
     }
 

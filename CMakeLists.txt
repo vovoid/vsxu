@@ -154,6 +154,7 @@ if(VSXU_DEBUG)
   add_definitions(
     -g
     -Wall
+    -mtune=nocona
     -Wtype-limits
     -fpermissive
     -Wuninitialized
@@ -165,6 +166,7 @@ else(VSXU_DEBUG)
   if (OPTIMIZATION_FLAGS EQUAL 1)
     add_definitions(
       -DVSX_OPTIMIZATIONS=1
+      -mtune=nocona
       -lrt 
       -lm 
       -O3
@@ -212,6 +214,7 @@ else(VSXU_DEBUG)
     add_definitions(
       -O3
       -c
+      -mtune=nocona
       -fmessage-length=0
       -fpermissive
       -finline-functions
@@ -220,6 +223,7 @@ else(VSXU_DEBUG)
 endif(VSXU_DEBUG)
 
 add_definitions(-DVSXU_INSTALL_LIB_DIR="${VSXU_INSTALL_LIB_DIR}")
+#add_definitions(-DVSX_VECTOR_TYPE_DOUBLE=1)
 
 
 ################################################################################

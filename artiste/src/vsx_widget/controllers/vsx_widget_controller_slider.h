@@ -32,15 +32,15 @@ class vsx_widget_controller_slider : public vsx_widget_controller_base
 {
 public:
   float amp, ofs;
-  vsx_vector clickpos,deltamove,remPointer,remWorld;
-  vsx_color marker_color;
+  vsx_vector<> clickpos,deltamove,remPointer,remWorld;
+  vsx_color<> marker_color;
   float handlesize;
   vsx_widget* hint;
   vsx_widget* editor;
   void init();
   void draw();
   void cap_value();
-  int inside_xy_l(vsx_vector &test, vsx_vector &global);
+  int inside_xy_l(vsx_vector<> &test, vsx_vector<> &global);
   void command_process_back_queue(vsx_command_s *t);
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);

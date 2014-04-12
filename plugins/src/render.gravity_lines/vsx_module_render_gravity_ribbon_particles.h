@@ -7,7 +7,7 @@ class vsx_module_render_gravity_ribbon_particles : public vsx_module
   vsx_module_param_float* step_length;
   vsx_module_param_float* ribbon_width;
   vsx_module_param_float* length;
-  vsx_particlesystem* particles;
+  vsx_particlesystem<>* particles;
   vsx_module_param_particlesystem* in_particlesystem;
 
   // out

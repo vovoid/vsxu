@@ -77,7 +77,7 @@ void vsx_overlay::render() {
   
   if (intro_timer > 0.0f) {
     myf->color.a = intro_timer;
-    myf->print(vsx_vector(-0.60f,-0.95f),"Press F1 for help   |    Welcome to Vovoid VSXu by jaw / cor / asterix / saidinesh5",0.04);
+    myf->print(vsx_vector<>(-0.60f,-0.95f),"Press F1 for help   |    Welcome to Vovoid VSXu by jaw / cor / asterix / saidinesh5",0.04);
     intro_timer -= dt;
   }
   
@@ -92,7 +92,7 @@ void vsx_overlay::render() {
     {
       message = "Disabling randomizer...";
     }
-    myf->print(vsx_vector(-1.0f,-0.95f),message,0.04);
+    myf->print(vsx_vector<>(-1.0f,-0.95f),message,0.04);
     
     show_randomizer_timer -= dt;
   }
@@ -114,7 +114,7 @@ void vsx_overlay::render() {
       }
       output = vsx_string(manager->get_meta_visual_filename().substr(i+1, output.size()-i-5).c_str());
     }
-    myf->print(vsx_vector(-1.0f,0.96f),output,0.04);
+    myf->print(vsx_vector<>(-1.0f,0.96f),output,0.04);
   }
   //myf->print(vsx_vector(0.75f,0.96f),"Vovoid VSXu",0.04);
   myf->color.a = 1.0f;
@@ -163,8 +163,8 @@ void vsx_overlay::render() {
     glEnd();
     myf->color.r = myf->color.g = myf->color.b = 1.0f;
     myf->color.a = local_alpha;
-    myf->print(vsx_vector(0.915f,-0.98f),"FX LVL",0.035);
-    myf->print(vsx_vector(0.85f,0.1f),f2s(manager->get_fx_level()),0.035);
+    myf->print(vsx_vector<>(0.915f,-0.98f),"FX LVL",0.035);
+    myf->print(vsx_vector<>(0.85f,0.1f),f2s(manager->get_fx_level()),0.035);
   }
   myf->color.r = myf->color.g = myf->color.b = myf->color.a = 1.0f;
   fx_alpha -= dt*4;
@@ -242,7 +242,7 @@ Keyboard shortcuts:\n\
 ",0.05);
 #endif
 #if PLATFORM == PLATFORM_LINUX
-      myf->print(vsx_vector(-0.8,0.4f),"\
+      myf->print(vsx_vector<>(-0.8,0.4f),"\
 Doesn't VSX react to sound? If sound isn't set up properly\n\
 some visuals might be totally black! Please check http://www.vsxu.com/documentation/faq\n\
 and select \"VSXu is not reacting to sound\" for instructions!\n\
@@ -269,7 +269,7 @@ pgup/pgdn             - increase/decrease speed (per visual)\n\
       break; 
     case 2:
       if (manager) { 
-        myf->print(vsx_vector(-0.8,0.4),"\
+        myf->print(vsx_vector<>(-0.8,0.4),"\
 Current visual  :\n\
 Current FPS     :\n\
 FX level        :\n\
@@ -279,7 +279,7 @@ Frames rendered :\n\
 Modules in state:","ascii",0.06);
         if (manager)
         myf->print(
-          vsx_vector(-0.1,0.4),
+          vsx_vector<>(-0.1,0.4),
           vsx_string(manager->get_meta_visual_filename().c_str())+"\n"+
           f2s(delta_fps)+"\n"+
           f2s(manager->get_fx_level(),3)+"\n"+

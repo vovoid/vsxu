@@ -81,8 +81,8 @@ void vsx_window_texture_viewer::draw_2d()
   glLoadIdentity();
   if (*engine == 0)
   {
-    set_pos(vsx_vector(0.0,2.0,0.0));
-    set_size(vsx_vector(0.0,0.0,0.0));
+    set_pos(vsx_vector<>(0.0,2.0,0.0));
+    set_size(vsx_vector<>(0.0,0.0,0.0));
   }
   // set new viewport
   if (run)

@@ -72,6 +72,7 @@ void MOD_DM(vsx_module* m,unsigned long module) {
 }
 
 unsigned long MOD_NM(vsx_engine_environment* environment) {
+  VSX_UNUSED(environment);
   return 4;
 }  
 

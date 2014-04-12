@@ -164,6 +164,7 @@ void MOD_DM(vsx_module* m,unsigned long module) {
 }
 
 unsigned long MOD_NM(vsx_engine_environment* environment) {
+  VSX_UNUSED(environment);
   glewInit();
   // we have only one module. it's id is 0
   return 4;

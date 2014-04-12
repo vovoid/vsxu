@@ -34,12 +34,12 @@ public:
   vsx_module_param_mesh* mesh_out;
 
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   unsigned long prev_timestamp;
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -81,7 +81,7 @@ public:
 
   void run()
   {
-    vsx_mesh** p = mesh_in->get_addr();
+    vsx_mesh<>** p = mesh_in->get_addr();
     if (!p)
     {
       return;
@@ -90,7 +90,7 @@ public:
     if (p && (param_updates || prev_timestamp != (*p)->timestamp))
     {
       prev_timestamp = (*p)->timestamp;
-      vsx_vector am;
+      vsx_vector<> am;
       am.x = amount->get(0);
       am.y = amount->get(1);
       am.z = amount->get(2);
@@ -101,12 +101,12 @@ public:
       mesh->data->faces.reset_used(0);
 
       unsigned long end = (*p)->data->vertices.size();
-      vsx_vector* vs_p = &(*p)->data->vertices[0];
+      vsx_vector<>* vs_p = &(*p)->data->vertices[0];
       mesh->data->vertices.allocate(end);
       mesh->data->vertices.reset_used(end);
-      vsx_vector* vs_d = mesh->data->vertices.get_pointer();
+      vsx_vector<>* vs_d = mesh->data->vertices.get_pointer();
 
-      vsx_vector v;
+      vsx_vector<> v;
       for ( unsigned int i = 0; i < end; i++ )
       {
         float len = vs_p[i].length();

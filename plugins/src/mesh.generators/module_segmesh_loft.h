@@ -139,7 +139,7 @@ public:
       }
         for (unsigned long i = num_vertices+1; i < floor(segments->get()); ++i) {
           for (j = 0; j < (int)sides; ++j) {
-            base_mesh.vertices[i][j].color = vsx_color((float)(rand()%1000)*0.001f,(float)(rand()%1000)*0.001f,(float)(rand()%1000)*0.001f,1.0f);
+            base_mesh.vertices[i][j].color = vsx_color<>((float)(rand()%1000)*0.001f,(float)(rand()%1000)*0.001f,(float)(rand()%1000)*0.001f,1.0f);
           }
         }
 

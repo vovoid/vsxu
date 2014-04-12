@@ -17,7 +17,7 @@ class module_mesh_thorn : public vsx_module
   vsx_module_param_mesh* mesh_result;
   // internal
   GLUquadricObj *quadratic;
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
 
 
   float mfunc(float b) {
@@ -41,7 +41,7 @@ class module_mesh_thorn : public vsx_module
   }
 public:
   bool init() {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -80,13 +80,13 @@ void run()
 
   unsigned long v_pos = 0;
   unsigned long f_pos = 0;
-  vsx_vector vtemp;
+  vsx_vector<> vtemp;
 
   float r = 0.2f;
   for (float b = -0.999999f; b < b_end; b+=b_mult) {
     r = mfunc(b);
 
-    vsx_vector p[8];
+    vsx_vector<> p[8];
     p[0].y = sfunc(b+b_mult*2);
     p[1].y = sfunc(b+b_mult*2);
     p[2].y = sfunc(b+b_mult);
@@ -95,14 +95,14 @@ void run()
     p[5].y = sfunc(b-b_mult);
     p[6].y = sfunc(b);
     p[7].y = sfunc(b+b_mult);
-    vsx_vector i[4];
+    vsx_vector<> i[4];
     i[0].y = sfunc(b+b_mult);
     i[1].y = sfunc(b+b_mult);
     i[2].y = sfunc(b);
     i[3].y = sfunc(b);
-    vsx_vector fn[8];
-    vsx_vector fi;
-    vsx_vector vn[4];
+    vsx_vector<> fn[8];
+    vsx_vector<> fi;
+    vsx_vector<> vn[4];
 
 
     for (float a = incr; a < f_end+incr; a+=incr) {

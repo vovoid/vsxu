@@ -176,8 +176,8 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
       {
         if (a_focus->widget_type != VSX_WIDGET_TYPE_SERVER)
         {
-          vsx_vector a = a_focus->get_pos_p();
-          camera.move_camera(vsx_vector(a.x,a.y,2.0f));
+          vsx_vector<> a = a_focus->get_pos_p();
+          camera.move_camera(vsx_vector<>(a.x,a.y,2.0f));
         }
         else
           camera.set_distance(2.0f);;
@@ -424,7 +424,7 @@ vsx_widget_desktop::vsx_widget_desktop()
       vsx_avector<vsx_string> parts;
       vsx_string deli = ",";
       explode(mc->parts[2],deli, parts);
-      vsx_color p;
+      vsx_color<> p;
       p.r = s2f(parts[0]);
       p.g = s2f(parts[1]);
       p.b = s2f(parts[2]);

@@ -35,7 +35,7 @@ public:
   vsx_module_param_mesh* result;
 
   // internal
-  vsx_mesh* mesh;
+  vsx_mesh<>* mesh;
   bool first_run;
   int n_segs;
   int l_param_updates;
@@ -83,7 +83,7 @@ public:
 
   bool init()
   {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -95,7 +95,7 @@ public:
   void run()
   {
     if (l_param_updates != param_updates) first_run = true;
-    mesh->data->vertices[0] = vsx_vector(0);
+    mesh->data->vertices[0] = vsx_vector<>(0);
 
     if (first_run || n_segs != num_segments->get())
     {
@@ -112,28 +112,28 @@ public:
         mesh->data->vertices[i4].x = (float)cos(ip)*dia;
         mesh->data->vertices[i4].y = 0.0f;
         mesh->data->vertices[i4].z = (float)sin(ip)*dia;
-        mesh->data->vertex_colors[i4] = vsx_color(1,1,1,1);
+        mesh->data->vertex_colors[i4] = vsx_color<>(1,1,1,1);
         mesh->data->vertex_tex_coords[i4].s = t;
         mesh->data->vertex_tex_coords[i4].t = 0;
 
         mesh->data->vertices[i4+1].x = (float)cos(ip)*(dia+0.15f*width->get());
         mesh->data->vertices[i4+1].y = 0.0f;
         mesh->data->vertices[i4+1].z = (float)sin(ip)*(dia+0.15f*width->get());
-        mesh->data->vertex_colors[i4+1] = vsx_color(1,1,1,1);
+        mesh->data->vertex_colors[i4+1] = vsx_color<>(1,1,1,1);
         mesh->data->vertex_tex_coords[i4+1].s = t;
         mesh->data->vertex_tex_coords[i4+1].t = 1;
 
         mesh->data->vertices[i4+2].x = (float)cos(ip+inc)*(dia+0.15f*width->get());
         mesh->data->vertices[i4+2].y = 0.0f;
         mesh->data->vertices[i4+2].z = (float)sin(ip+inc)*(dia+0.15f*width->get());
-        mesh->data->vertex_colors[i4+2] = vsx_color(1,1,1,1);
+        mesh->data->vertex_colors[i4+2] = vsx_color<>(1,1,1,1);
         mesh->data->vertex_tex_coords[i4+2].s = t+t_inc;
         mesh->data->vertex_tex_coords[i4+2].t = 1;
 
         mesh->data->vertices[i4+3].x = (float)cos(ip+inc)*dia;
         mesh->data->vertices[i4+3].y = 0.0f;
         mesh->data->vertices[i4+3].z = (float)sin(ip+inc)*dia;
-        mesh->data->vertex_colors[i4+3] = vsx_color(1,1,1,1);
+        mesh->data->vertex_colors[i4+3] = vsx_color<>(1,1,1,1);
         mesh->data->vertex_tex_coords[i4+3].s = t+t_inc;
         mesh->data->vertex_tex_coords[i4+3].t = 0;
 

@@ -28,31 +28,31 @@
 
 #include <vsx_math.h>
 
-
+template<typename T = float>
 class vsx_vector
 {
 public:
   union
   {
-    GLfloat x;
-    GLfloat h;
-    GLfloat r;
-    GLfloat pitch;
+    T x;
+    T h;
+    T r;
+    T pitch;
   };
   union
   {
-    GLfloat y;
-    GLfloat s;
-    GLfloat g;
-    GLfloat roll;
+    T y;
+    T s;
+    T g;
+    T roll;
   };
   union
   {
-    GLfloat z;
-    GLfloat v;
-    GLfloat b;
-    GLfloat w;
-    GLfloat yaw;
+    T z;
+    T v;
+    T b;
+    T w;
+    T yaw;
   };
 
   inline vsx_vector operator +(const vsx_vector &t)
@@ -136,9 +136,9 @@ public:
   inline vsx_vector operator /(int t)
   {
     vsx_vector temp;
-    temp.x = x/(GLfloat)t;
-    temp.y = y/(GLfloat)t;
-    temp.z = z/(GLfloat)t;
+    temp.x = x/(T)t;
+    temp.y = y/(T)t;
+    temp.z = z/(T)t;
     return temp;
   }
 
@@ -159,32 +159,32 @@ public:
     z = (u.x*vv.y) - (u.y*vv.x);
   }
 
-  inline float dot_product(const vsx_vector* ov)
+  inline T dot_product(const vsx_vector* ov)
   {
     return x * ov->x   +   y * ov->y   +   z * ov->z;
   }
 
-  inline float length()
+  inline T length()
   {
     return norm();
   }
 
-  inline float norm()
+  inline T norm()
   {
-    return (float)sqrt(x*x + y*y + z*z);
+    return (T)sqrt(x*x + y*y + z*z);
   }
 
   inline void normalize()
   {
-    float a = 1.0f/(float)sqrt(x*x + y*y + z*z);
+    T a = 1.0f/(T)sqrt(x*x + y*y + z*z);
     x*=a;
     y*=a;
     z*=a;
   }
 
-  inline void normalize(float len)
+  inline void normalize(T len)
   {
-    float a = 1.0f/(float)sqrt(x*x + y*y + z*z)*len;
+    T a = 1.0f/(T)sqrt(x*x + y*y + z*z)*len;
     x*=a;
     y*=a;
     z*=a;
@@ -200,7 +200,7 @@ public:
 
   inline void assign_face_normal(vsx_vector *a, vsx_vector*bb, vsx_vector*c)
   {
-    float relx1 = bb->x - a->x,
+    T relx1 = bb->x - a->x,
     rely1 = bb->y - a->y,
     relz1 = bb->z - a->z,
     relx2 = c->x - a->x,
@@ -211,9 +211,9 @@ public:
     z = (relx1 * rely2 - rely1 * relx2);
   }
 
-  inline void multiply_matrix(const float *m)
+  inline void multiply_matrix(const T *m)
   {
-    float nx, ny, nz;
+    T nx, ny, nz;
     nx = m[0] * x + m[1] * y + m[2]  * z + m[3];
     ny = m[4] * x + m[5] * y + m[6]  * z + m[7];
     nz = m[8] * x + m[9] * y + m[10] * z + m[11];
@@ -222,7 +222,7 @@ public:
     z = nz;
   }
 
-  inline void multiply_matrix_other_vec(const float *m,const vsx_vector& b)
+  inline void multiply_matrix_other_vec(const T *m,const vsx_vector& b)
   {
     x = m[0] * b.x + m[1] * b.y + m[2]  * b.z + m[3];
     y = m[4] * b.x + m[5] * b.y + m[6]  * b.z + m[7];
@@ -238,7 +238,7 @@ public:
   }
 
 
-  void set(const float ix=0, const float iy=0, const float iz=0)
+  void set(const T ix=0, const T iy=0, const T iz=0)
   {
     x=ix;
     y=iy;
@@ -252,7 +252,7 @@ public:
       z(0.0f)
   {}
 
-  vsx_vector(float a, float bb = 0.0f, float c = 0.0f)
+  vsx_vector(T a, T bb = 0.0f, T c = 0.0f)
   {
     x = a;
     y = bb;

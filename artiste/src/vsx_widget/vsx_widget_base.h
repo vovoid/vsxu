@@ -74,7 +74,7 @@ public:
   static bool global_delete;
   // style
   static vsx_string skin_path;
-  static vsx_color skin_colors[20];
+  static vsx_color<> skin_colors[20];
   static vsx_mouse mouse;
   static float screen_x;
   static float screen_y;
@@ -132,7 +132,7 @@ public:
   unsigned int coord_type; // centralized or corner-based coordinates?
   bool coord_related_parent; // coordinate relation with parent? or standalone?
 
-  vsx_vector mouse_pos; // last translated mouse pos
+  vsx_vector<> mouse_pos; // last translated mouse pos
 
   // widget relations to other widgets
 
@@ -154,11 +154,11 @@ public:
   // of course there exists exceptions from this, such as the vsx_widget_connector but this is a general rule of
   // thumb.
   // in 2-dimensional space the pos is the top left (screen-wise) coordinate and size is height/width of the widget.
-  vsx_vector pos;
-  vsx_vector target_pos;
-  vsx_vector size;
-  vsx_vector target_size;
-  vsx_vector size_min, size_max;
+  vsx_vector<> pos;
+  vsx_vector<> target_pos;
+  vsx_vector<> size;
+  vsx_vector<> target_size;
+  vsx_vector<> size_min, size_max;
   bool allow_resize_x;
   bool allow_resize_y;
   bool allow_move_x;
@@ -169,14 +169,14 @@ public:
   float interpolation_speed;
   bool interpolating_pos;
   bool interpolating_size;
-  vsx_vector scaling_start;
-  vsx_vector scaling_start_size;
-  vsx_vector scaling_start_pos;
+  vsx_vector<> scaling_start;
+  vsx_vector<> scaling_start_size;
+  vsx_vector<> scaling_start_pos;
 
   bool support_interpolation;
   bool support_scaling;
 
-  vsx_color color;
+  vsx_color<> color;
   // topmost, right now only one widget can be topmost (and its children)
   bool topmost;
 
@@ -388,11 +388,11 @@ public:
 
   // moves the widget to the front (first in the draw list)
   void front(vsx_widget* t);
-  virtual vsx_vector get_pos_p();
-  virtual vsx_vector get_target_pos_p();
+  virtual vsx_vector<> get_pos_p();
+  virtual vsx_vector<> get_target_pos_p();
 
   bool inside_xy(vsx_widget_coords &coords, vsx_widget_distance &result);
-  virtual int inside_xy_l(vsx_vector &test, vsx_vector &global);
+  virtual int inside_xy_l(vsx_vector<> &test, vsx_vector<> &global);
   virtual vsx_widget *find_component(vsx_widget_coords coords, vsx_widget_distance &result_distance, int depth = 0);
 
 
@@ -485,28 +485,28 @@ public:
   virtual void reinit();
 
   // move/scaling/resizing functions
-  virtual void set_size(vsx_vector new_size)
+  virtual void set_size(vsx_vector<> new_size)
   {
     size = target_size = new_size;
   }
 
-  void set_pos(vsx_vector new_pos)
+  void set_pos(vsx_vector<> new_pos)
   {
     pos = target_pos = new_pos;
   }
 
   virtual void resize(vsx_widget_distance distance);
-  virtual void resize_to(vsx_vector to_size);
+  virtual void resize_to(vsx_vector<> to_size);
   // move the widget, world coordinates
   virtual void move(double x, double y, double z = 0.0f);
 
   // move by vector - for convenience
-  virtual void move(vsx_vector t);
+  virtual void move(vsx_vector<> t);
 
   // move delta by vector
-  virtual void move_d(vsx_vector t);
+  virtual void move_d(vsx_vector<> t);
 
-  virtual void move_camera(vsx_vector world)
+  virtual void move_camera(vsx_vector<> world)
   {
     VSX_UNUSED(world);
   }

@@ -31,13 +31,13 @@ class module_mesh_quat_rotate : public vsx_module
   // out
   vsx_module_param_mesh* mesh_out;
   // internal
-  vsx_mesh* mesh;
-  vsx_quaternion q;
+  vsx_mesh<>* mesh;
+  vsx_quaternion<> q;
   unsigned long prev_timestamp;
 public:
 
   bool init() {
-    mesh = new vsx_mesh;
+    mesh = new vsx_mesh<>;
     return true;
   }
 
@@ -84,7 +84,7 @@ public:
 
   void run()
   {
-    vsx_mesh** p = mesh_in->get_addr();
+    vsx_mesh<>** p = mesh_in->get_addr();
     if (!p) { printf("error in vsx_module_mesh_quat_rotate: mesh_in is invalid\n"); return; }
     if (
         param_updates

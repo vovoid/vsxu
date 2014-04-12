@@ -38,7 +38,7 @@ class vsx_widget_scrollbar : public vsx_widget
   float* control_value;
   float shz;
   int scroll_type; // 0 = horizontal, 1 = vertical
-  vsx_vector click_down;
+  vsx_vector<> click_down;
 
 public:
 
