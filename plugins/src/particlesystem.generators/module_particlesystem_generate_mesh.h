@@ -48,6 +48,8 @@ public:
 
   vsx_module_param_float* particle_lifetime_base;
   vsx_module_param_float* particle_lifetime_random_weight;
+  vsx_module_param_int* initial_lifetime_random;
+
   // out
   vsx_module_param_particlesystem* result_particlesystem;
   vsx_array<float> f_randpool;
@@ -102,7 +104,8 @@ public:
         "time:complex"
         "{"
           "particle_lifetime_base:float,"
-          "particle_lifetime_random_weight:float"
+          "particle_lifetime_random_weight:float,"
+          "initial_lifetime_random:enum?no|yes"
         "},"
         "time_source:enum?sequencer|real"
       "}"
@@ -172,6 +175,10 @@ public:
     particle_lifetime_base->set(2.0f);
     particle_lifetime_random_weight = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"particle_lifetime_random_weight");
     particle_lifetime_random_weight->set(1.0f);
+
+    initial_lifetime_random = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "initial_lifetime_random");
+    initial_lifetime_random->set(1);
+
     // out
 
     meshcoord = 0;
@@ -270,9 +277,18 @@ public:
           (*pp).rotation_dir.w = 1.0f;
           (*pp).orig_size = 0.01f;
           (*pp).size = 0.01f;
-          (*pp).lifetime = lifetime_base+(*(f_randpool_pointer++))*lifetime_random_weight-lifetime_random_weight*0.5f;
-          (*pp).one_div_lifetime = 1.0f / (*pp).lifetime;
-          (*pp).time = (*(f_randpool_pointer++)) * (*pp).lifetime;
+
+          if (initial_lifetime_random->get())
+          {
+            (*pp).lifetime = lifetime_base + (*(f_randpool_pointer++))*lifetime_random_weight-lifetime_random_weight*0.5f;
+            (*pp).one_div_lifetime = 1.0f / (*pp).lifetime;
+            (*pp).time = (*(f_randpool_pointer++)) * (*pp).lifetime;
+          } else
+          {
+            (*pp).lifetime = 0.0001;
+            (*pp).one_div_lifetime = 1.0f / (*pp).lifetime;
+            (*pp).time = 0.0;
+          }
           (*pp).grounded = 0;
           pp++;
         }

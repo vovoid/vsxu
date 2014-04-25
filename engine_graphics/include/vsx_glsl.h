@@ -452,8 +452,8 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
     bool first = true;
     for (int i = uniform_list.size()-1; i >= 0; --i) {
 
-//      if (uniform_list[i].name.size() && uniform_list[i].name[0] == '_')
-//        continue;
+      if (uniform_list[i].name.size() && uniform_list[i].name[0] == '_')
+        continue;
 
       if (first)
         first = false;
