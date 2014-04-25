@@ -451,8 +451,15 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
     vsx_string res = ",uniforms:complex{";
     bool first = true;
     for (int i = uniform_list.size()-1; i >= 0; --i) {
-      if (first) first = false;
+
+      if (uniform_list[i].name.size() && uniform_list[i].name[0] == '_')
+        continue;
+
+      if (first)
+        first = false;
       else res = res + ",";
+
+
       res = res +uniform_list[i].name+":"+uniform_list[i].param_type;
     }
     res = res + "},attributes:complex{";

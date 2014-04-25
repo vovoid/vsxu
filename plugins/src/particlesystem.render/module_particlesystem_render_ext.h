@@ -61,7 +61,9 @@ public:
         "ignore_particles_at_center:enum?no|yes"
       "},"
       "vertex_program:string,"
-      "fragment_program:string"
+      "fragment_program:string" + 
+      shader.get_param_spec()
+
     ;
 
     info->out_param_spec =
