@@ -66,13 +66,13 @@ void vsx_widget_window::i_draw() {
     font.color.a = color.a;
 
 
-    vsx_widget_skin::get_instance()->set_color(1);
+    vsx_widget_skin::get_instance()->set_color_gl(1);
     draw_box(pos,size.x,size.y);
-    vsx_widget_skin::get_instance()->set_color(2);
+    vsx_widget_skin::get_instance()->set_color_gl(2);
     draw_box(pos+vsx_vector<>(0.0f,size.y-font_size),size.x,font_size);
 
     // border
-    vsx_widget_skin::get_instance()->set_color(0);
+    vsx_widget_skin::get_instance()->set_color_gl(0);
 
     // left
     draw_box(pos+vsx_vector<>(0,dragborder),dragborder,size.y-dragborder-dragborder);
@@ -86,7 +86,7 @@ void vsx_widget_window::i_draw() {
     // top
     draw_box(pos+vsx_vector<>(0.0f,size.y-dragborder),size.x,dragborder);
 
-    vsx_widget_skin::get_instance()->set_color(3);
+    vsx_widget_skin::get_instance()->set_color_gl(3);
 
     font.print(vsx_vector<>((pos.x+font_size*0.1)*screen_aspect,pos.y+size.y-font_size*0.85),title,font_size*0.6);
 	}

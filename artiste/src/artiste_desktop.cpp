@@ -22,7 +22,6 @@
 */
 
 #include <map>
-#include <list>
 #include <vector>
 #include <math.h>
 #include "vsx_gl_global.h"
@@ -33,12 +32,8 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-#include <io.h>
-#endif
-#include <fcntl.h>
+// engine
+#include <vsx_data_path.h>
 
 // local includes
 #include "vsx_widget_base.h"
@@ -344,7 +339,7 @@ void vsx_widget_desktop::draw_2d()
 void vsx_widget_desktop::load_configuration()
 {
   vsx_command_list main_conf;
-  vsx_string config_file = vsx_get_data_path() + "vsxu.conf";
+  vsx_string config_file = vsx_data_path::get_instance()->data_path_get() + "vsxu.conf";
 
   if (access(config_file.c_str(),0) == 0)
   {
@@ -382,7 +377,7 @@ void vsx_widget_desktop::load_configuration()
 
 void vsx_widget_desktop::save_configuration() {
   // final destination for the configuration data
-  vsx_string save_filename = vsx_get_data_path() + "vsxu.conf";
+  vsx_string save_filename = vsx_data_path::get_instance()->data_path_get() + "vsxu.conf";
 
   vsx_command_list s_conf;
   for (std::map<vsx_string, vsx_string>::iterator it = configuration.begin(); it != configuration.end(); ++it) {

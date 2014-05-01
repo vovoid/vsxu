@@ -42,24 +42,19 @@ class vsx_mouse
   int cursor;
   bool visible;
   vsx_vector<> position;
-
   void set_cursor_implement();
 
 public:
 
   void set_cursor(int id);
-
-  vsx_vector<> get_cursor_pos()
+  vsx_vector<> get_cursor_pos() __attribute__((always_inline))
   {
     return position;
   }
 
   void set_cursor_pos(float x, float y);
-
-
   void show_cursor();
   void hide_cursor();
-// Constructor
   vsx_mouse();
 };
 

@@ -45,6 +45,7 @@
 #include "widgets/vsx_widget_base_edit.h"
 #include "vsx_widget_assistant.h"
 #include "artiste_desktop.h"
+#include <vsx_data_path.h>
 // -------------------------------------------------------------------------------------------------------------------
 //-- VSXU ASSISTANT -----------------------------------------------------------------------------------------------
 
@@ -164,7 +165,7 @@ void vsxu_assistant::init()
 
   vsx_command_s* c;
   vsx_command_list cla;
-  cla.load_from_file(vsx_get_data_path()+"help_settings.conf",true,4);
+  cla.load_from_file( vsx_data_path::get_instance()->data_path_get() + "help_settings.conf",true,4);
   auto_ = false;
   while ( (c = cla.pop()) ) {
     if (c->cmd == "auto") {
@@ -234,7 +235,7 @@ void vsxu_assistant::command_process_back_queue(vsx_command_s *t) {
       inspected = 0;
       vsx_command_list cla;
       cla.add_raw("auto");
-      cla.save_to_file(vsx_get_data_path()+"help_settings.conf");
+      cla.save_to_file( vsx_data_path::get_instance()->data_path_get() + "help_settings.conf");
       auto_ = true;
       course.clear();
       ((vsx_widget_2d_pager*)pager)->set_max_page( 0 );//course.size();

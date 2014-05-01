@@ -254,7 +254,6 @@ VSXFSTDLLIMPORT vsx_string implode(std::list<vsx_string> in,vsx_string delimiter
 VSXFSTDLLIMPORT vsx_string base64_encode(vsx_string data);
 VSXFSTDLLIMPORT vsx_string base64_decode(vsx_string data);
 
-VSXFSTDLLIMPORT vsx_string vsx_get_data_path();
 VSXFSTDLLIMPORT vsx_string vsx_get_directory_separator();
 
 #endif

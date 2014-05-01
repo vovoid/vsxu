@@ -70,7 +70,7 @@ if (cmd == "get_list")
 {
   std::list<vsx_string> file_list;
   vsx_string path;
-  vsx_string base_path = vsx_get_data_path();
+  vsx_string base_path = vsx_data_path::get_instance()->data_path_get();
 
   if (c->parts[1] == "resources")
     path = base_path+c->parts[1];

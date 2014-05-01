@@ -41,6 +41,7 @@
 
 #include "vsx_module_list_factory.h"
 #include "vsx_note.h"
+#include "vsx_data_path.h"
 #include <vsx_string_aux.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
@@ -299,7 +300,7 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string)
   load1.load_from_file(i_filename,true);
 
   if (!is_archive)
-    filesystem.set_base_path(vsx_get_data_path());
+    filesystem.set_base_path( vsx_data_path::get_instance()->data_path_get() );
 
   int res = i_load_state(load1,error_string,filename);
   load1.clear(true);

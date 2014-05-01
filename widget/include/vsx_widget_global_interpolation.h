@@ -32,17 +32,17 @@ public:
       interpolation_speed( 10.0f )
   {}
 
-  float get()
+  float get() __attribute__((always_inline))
   {
     return interpolation_speed;
   }
 
-  void set(float f)
+  void set(float f) __attribute__((always_inline))
   {
     interpolation_speed = f;
   }
 
-  static vsx_widget_global_interpolation* get_instance()
+  static vsx_widget_global_interpolation* get_instance() __attribute__((always_inline))
   {
     static vsx_widget_global_interpolation gi;
     return &gi;

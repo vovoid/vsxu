@@ -20,6 +20,7 @@
 #include <vsxfst.h>
 #include <highgui.h>
 #include "input_video_file.h"
+#include "vsx_data_path.h"
 
 input_video_file::input_video_file():
   module_video_input(),
@@ -57,19 +58,19 @@ bool input_video_file::isValid()
   if( !m_filename || m_filename->get() == "")
     return false;
 
-  if (FILE *f = fopen((vsx_get_data_path() + m_filename->get()).c_str(), "r")){
+  if (FILE *f = fopen(( vsx_data_path::get_instance()->data_path_get() + m_filename->get()).c_str(), "r")){
     fclose(f);
     return true;
   }
 
-  printf( "Cannot open %s !!\n", (vsx_get_data_path() + m_filename->get()).c_str() );
+  printf( "Cannot open %s !!\n", ( vsx_data_path::get_instance()->data_path_get() + m_filename->get()).c_str() );
   return false;
 }
 
 void input_video_file::worker()
 {
   // Create a fresh capture device
-  CvCapture* capture = cvCaptureFromFile((vsx_get_data_path() + m_filename->get()).c_str());
+  CvCapture* capture = cvCaptureFromFile(( vsx_data_path::get_instance()->data_path_get() + m_filename->get()).c_str());
   if(!capture || currentTask() != INITIALIZE_CAPTURE ){
     message = "module||ERROR! Cannot initialize video file reader!!";
     addTask(CLEANUP_CAPTURE);

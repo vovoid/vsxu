@@ -39,6 +39,7 @@
 #include <vsx_engine.h>
 #include <vsx_module_list_factory.h>
 #include <vsx_error.h>
+#include <vsx_data_path.h>
 
 #include "log/vsx_log_a.h"
 
@@ -324,14 +325,14 @@ public:
 
       //char filename[32768];
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-      if (access((vsx_get_data_path()+"videos").c_str(),0) != 0) mkdir((vsx_get_data_path()+"/videos").c_str(),0700);
+      if (access((vsx_data_path::get_instance()->data_path_get() + "videos").c_str(),0) != 0) mkdir((vsx_data_path::get_instance()->data_path_get()+"/videos").c_str(),0700);
         //sprintf(filename, "%sscreenshots/%d_%d_%d_rgb.jpg",vsx_get_data_path().c_str(),(int)time(0),viewport[2],viewport[3]);
       #endif
       vsx_string err;
       char mfilename[32];
       sprintf(mfilename, "%05d", movie_frame_count);
 
-      jpeg.SaveJPEG( vsx_get_data_path()+"videos"+DIRECTORY_SEPARATOR+vsx_string(mfilename)+"_"+ i2s(viewport[2]) + "_" + i2s(viewport[3])+".jpg", err, 100 );
+      jpeg.SaveJPEG( vsx_data_path::get_instance()->data_path_get() + "videos"+DIRECTORY_SEPARATOR+vsx_string(mfilename)+"_"+ i2s(viewport[2]) + "_" + i2s(viewport[3])+".jpg", err, 100 );
       jpeg.m_pBuf = 0;
       free(pixeldata);
       free(pixeldata_flipped);
@@ -368,14 +369,13 @@ public:
 
       //char filename[32768];
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-      if (access((vsx_get_data_path()+"screenshots").c_str(),0) != 0) mkdir((vsx_get_data_path()+"/screenshots").c_str(),0700);
-        //sprintf(filename, "%sscreenshots/%d_%d_%d_rgb.jpg",vsx_get_data_path().c_str(),(int)time(0),viewport[2],viewport[3]);
+      if (access((vsx_data_path::get_instance()->data_path_get()+"screenshots").c_str(),0) != 0) mkdir((vsx_data_path::get_instance()->data_path_get()+"/screenshots").c_str(),0700);
       #endif
       /*FILE* fp = fopen(filename,"wb");
       fwrite(pixeldata_flipped, 1, viewport[2] * viewport[3] * 3, fp);
       fclose(fp);*/
       vsx_string err;
-      jpeg.SaveJPEG( vsx_get_data_path()+"screenshots"+DIRECTORY_SEPARATOR+i2s(time(0))+"_"+ i2s(viewport[2]) + "_" + i2s(viewport[3])+".jpg", err, 100 );
+      jpeg.SaveJPEG( vsx_data_path::get_instance()->data_path_get()+"screenshots"+DIRECTORY_SEPARATOR+i2s(time(0))+"_"+ i2s(viewport[2]) + "_" + i2s(viewport[3])+".jpg", err, 100 );
       jpeg.m_pBuf = 0;
       free(pixeldata);
       free(pixeldata_flipped);

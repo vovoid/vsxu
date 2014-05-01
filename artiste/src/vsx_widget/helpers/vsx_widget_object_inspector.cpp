@@ -31,6 +31,7 @@
 #include "vsx_texture.h"
 #include "vsx_command.h"
 #include "vsx_font.h"
+#include <vsx_data_path.h>
 // local includes
 #include "vsx_widget_base.h"
 #include "vsx_widget_object_inspector.h"
@@ -305,7 +306,7 @@ void vsx_window_object_inspector::unload() {
 
 void vsx_window_object_inspector::load_file(vsx_string filename)
 {
-  filename = vsx_get_data_path()+filename;
+  filename = vsx_data_path::get_instance()->data_path_get() + filename;
 
   std::vector<vsx_string> parts;
   vsx_string deli = ".";

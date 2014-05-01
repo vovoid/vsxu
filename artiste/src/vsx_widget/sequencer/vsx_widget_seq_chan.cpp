@@ -698,13 +698,13 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
         float cur_time_x = (1.0 - items[mouse_clicked_id].get_handle2().x ) * items[mouse_clicked_id].get_total_length();
 
 
-        if ( mouse_clicked_id + 2 >= items.size() )
+        if ( (size_t)(mouse_clicked_id + 2) >= items.size() )
         {
           other_item_id_to_update = 0;
           other_item = &items[other_item_id_to_update];
         }
 
-        if (mouse_clicked_id + 2 < items.size() )
+        if ( (size_t)(mouse_clicked_id + 2) < items.size() )
         {
           other_item_id_to_update = mouse_clicked_id+1;
           other_item = &items[other_item_id_to_update];
@@ -890,7 +890,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
             other_item_id_to_update = items.size()-1;
             items[other_item_id_to_update].set_value(f2s(y));
           }
-          if (mouse_clicked_id == items.size()-1)
+          if ((size_t)mouse_clicked_id == items.size()-1)
           {
             // update the last point as well
             other_item_id_to_update = 0;
@@ -1061,7 +1061,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
 
     // find the minimum possible time
     float min_time_possible = 0.0f;
-    for (size_t i = 0; i < mouse_clicked_id-1; i++)
+    for (int i = 0; i < mouse_clicked_id-1; i++)
     {
       min_time_possible += items[i].get_total_length();
     }

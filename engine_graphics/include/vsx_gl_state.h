@@ -1102,7 +1102,7 @@ public:
     #endif
   }
 
-  static vsx_gl_state* get_instance()
+  static vsx_gl_state* get_instance() __attribute__((always_inline))
   {
     static vsx_gl_state state;
     return &state;

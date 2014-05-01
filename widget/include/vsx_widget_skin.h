@@ -11,12 +11,12 @@ class vsx_widget_skin
 
 public:
 
-  void set_color_gl(const size_t &index)
+  void set_color_gl(const size_t &index) __attribute__((always_inline))
   {
     glColor4fv(&skin_colors[index].r);
   }
 
-  void set_color_gl_a(const size_t &index, float a)
+  void set_color_gl_a(const size_t &index, float a) __attribute__((always_inline))
   {
     glColor4f(
       skin_colors[index].r,
@@ -26,12 +26,12 @@ public:
     );
   }
 
-  vsx_color<> get_color(size_t index)
+  vsx_color<> get_color(size_t index) __attribute__((always_inline))
   {
     return skin_colors[index];
   }
 
-  vsx_color<> get_color(size_t index, float rm, float gm = 1.0, float bm = 1.0, float am = 1.0)
+  vsx_color<> get_color(size_t index, float rm, float gm = 1.0, float bm = 1.0, float am = 1.0) __attribute__((always_inline))
   {
     return vsx_color<>(
       skin_colors[index].r * rm,
@@ -46,7 +46,7 @@ public:
     skin_path = n;
   }
 
-  vsx_string& skin_path_get()
+  vsx_string& skin_path_get() __attribute__((always_inline))
   {
     return skin_path;
   }
@@ -72,10 +72,9 @@ public:
         skin_colors[ vsx_string_aux::s2i(mc->parts[1]) ] = p;
       }
     }
-
   }
 
-  static vsx_widget_skin* get_instance()
+  static vsx_widget_skin* get_instance() __attribute__((always_inline))
   {
     static vsx_widget_skin s;
     return &s;

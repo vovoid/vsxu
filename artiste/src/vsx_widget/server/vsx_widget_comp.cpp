@@ -43,6 +43,7 @@
 #include "controllers/vsx_widget_controller_base.h"
 #include "controllers/vsx_widget_controller_editor.h"
 #include "widgets/vsx_widget_popup_menu.h"
+#include "vsx_data_path.h"
 #include <gl_helper.h>
 #include <GL/glfw.h>
 
@@ -162,7 +163,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
   if (t->cmd == "macro_dump_complete")
   {
     printf("macro dump complete\n");
-    macro_commands.save_to_file(vsx_get_data_path()+"macros/"+t->parts[2]);
+    macro_commands.save_to_file( vsx_data_path::get_instance()->data_path_get() + "macros/"+t->parts[2]);
     macro_commands.clear();
     command_q_b.add_raw("module_info_add macros;"+t->parts[2]);
     server->vsx_command_queue_b(this);

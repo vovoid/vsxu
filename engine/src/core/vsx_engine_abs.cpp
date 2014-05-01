@@ -38,8 +38,8 @@
 #include "vsx_log.h"
 #include "vsx_engine.h"
 #include "vsx_master_sequencer/vsx_master_sequence_channel.h"
-//#include "vsx_module_dll_info.h"
 #include "vsx_note.h"
+#include "vsx_data_path.h"
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include <stdio.h>
@@ -73,7 +73,7 @@ void vsx_engine_abs::constructor_set_default_values()
   lastsent = 0;
   sequence_pool.set_engine((void*)this);
   last_e_state = current_state = VSX_ENGINE_STOPPED;
-  filesystem.set_base_path(vsx_get_data_path());
+  filesystem.set_base_path( vsx_data_path::get_instance()->data_path_get() );
   frame_cfp_time = 0.0f;
   last_m_time_synch = 0;
   first_start = true;

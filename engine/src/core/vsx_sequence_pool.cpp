@@ -23,6 +23,7 @@
 
 #include "vsx_engine.h"
 #include "vsx_sequence_pool.h"
+#include "vsx_data_path.h"
 
 void vsx_sequence_pool::set_engine(void* new_engine)
 {
@@ -224,14 +225,14 @@ bool vsx_sequence_pool::export_to_file(vsx_string filename)
       savelist.add_raw("pseq_inject "+i_parts[0]+" "+i_parts[1]+" "+i_parts[2]);
     }
   }
-  savelist.save_to_file(vsx_get_data_path()+"animations/"+filename);
+  savelist.save_to_file(vsx_data_path::get_instance()->data_path_get()+"animations/"+filename);
   return true;
 }
 
 bool vsx_sequence_pool::import_from_file(vsx_string filename)
 {
   vsx_command_list import_list;
-  import_list.load_from_file(vsx_get_data_path()+"animations/"+filename);
+  import_list.load_from_file( vsx_data_path::get_instance()->data_path_get() + "animations/"+filename);
   while (vsx_command_s* c = import_list.pop())
   {
     c->parse();

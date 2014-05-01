@@ -339,7 +339,7 @@ public:
     // find the pointer and set the corresponding thread id to 0
   }
 
-  static vsx_profiler_manager* get_instance()
+  static vsx_profiler_manager* get_instance() __attribute__((always_inline))
   {
     static vsx_profiler_manager pm;
     return &pm;
