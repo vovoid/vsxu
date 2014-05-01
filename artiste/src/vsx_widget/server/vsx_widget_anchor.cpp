@@ -35,8 +35,8 @@
 #include "vsx_module.h"
 // local includes
 #include "vsx_widget_base.h"
-#include "vsx_widget_popup_menu.h"
-#include "window/vsx_widget_window.h"
+#include "widgets/vsx_widget_popup_menu.h"
+#include "vsx_widget_window.h"
 #include "vsx_widget_desktop.h"
 #include "vsx_widget_anchor.h"
 #include <vsx_command_client_server.h>
@@ -55,8 +55,10 @@
 #include "controllers/vsx_widget_controller_color.h"
 #include "controllers/vsx_widget_controller_pad.h"
 #include "vsx_widget_comp.h"
-#include "dialogs/vsx_widget_window_statics.h"
 #include <gl_helper.h>
+
+// widget
+#include <dialogs/dialog_messagebox.h>
 
 using namespace std;
 

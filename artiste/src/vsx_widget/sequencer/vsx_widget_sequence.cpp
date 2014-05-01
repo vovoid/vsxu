@@ -43,10 +43,12 @@
 #include "vsx_widget_sequence_tree.h"
 #include "vsx_widget_seq_chan.h"
 #include "vsx_widget_timeline.h"
-#include "vsx_widget_button.h"
-#include "vsx_widget_popup_menu.h"
-#include "dialogs/vsx_widget_window_statics.h"
+#include "widgets/vsx_widget_button.h"
+#include "widgets/vsx_widget_popup_menu.h"
 #include <gl_helper.h>
+
+// widget
+#include <dialogs/dialog_query_string.h>
 
 #define VSX_ENGINE_STOPPED 0
 #define VSX_ENGINE_PLAYING 1

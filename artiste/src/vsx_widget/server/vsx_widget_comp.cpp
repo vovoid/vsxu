@@ -40,13 +40,16 @@
 #include "vsx_widget_anchor.h"
 #include <vsx_command_client_server.h>
 #include "vsx_widget_server.h"
-#include "dialogs/vsx_widget_window_statics.h"
 #include "controllers/vsx_widget_controller_base.h"
 #include "controllers/vsx_widget_controller_editor.h"
-#include "vsx_widget_popup_menu.h"
+#include "widgets/vsx_widget_popup_menu.h"
 #include <gl_helper.h>
-
 #include <GL/glfw.h>
+
+// widget
+#include <dialogs/dialog_query_string.h>
+#include <dialogs/dialog_messagebox.h>
+
 
 using namespace std;
 // VSX_WIDGET_COMPONENT **************************************************************************************************>

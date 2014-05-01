@@ -42,13 +42,14 @@
 #include "vsx_widget_sequence.h"
 #include "vsx_widget_seq_chan.h"
 #include "vsx_widget_timeline.h"
-#include "vsx_widget_popup_menu.h"
+#include "widgets/vsx_widget_popup_menu.h"
 #include "vsx_quaternion.h"
 #include "vsx_bezier_calc.h"
 #include "controllers/vsx_widget_controller_base.h"
 #include "controllers/vsx_widget_controller_seq.h"
-#include "dialogs/vsx_widget_window_statics.h"
 
+// widget
+#include <dialogs/dialog_query_string.h>
 
 vsx_color<> vsx_widget_seq_channel::col_temp_1;
 vsx_color<> vsx_widget_seq_channel::col_temp_2;
@@ -708,7 +709,6 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
           other_item_id_to_update = mouse_clicked_id+1;
           other_item = &items[other_item_id_to_update];
         }
-
 
         if (other_item)
         {

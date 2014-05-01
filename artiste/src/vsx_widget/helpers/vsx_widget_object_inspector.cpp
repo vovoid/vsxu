@@ -33,7 +33,6 @@
 #include "vsx_font.h"
 // local includes
 #include "vsx_widget_base.h"
-#include "dialogs/vsx_widget_window_statics.h"
 #include "vsx_widget_desktop.h"
 #include "vsx_widget_object_inspector.h"
 #include "server/vsx_widget_anchor.h"
@@ -43,10 +42,10 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_timer.h"
-#include "vsx_widget_panel.h"
-#include "vsx_widget_base_edit.h"
-#include "vsx_widget_button.h"
-#include "vsx_widget_2d_label.h"
+#include "widgets/vsx_widget_panel.h"
+#include "widgets/vsx_widget_base_edit.h"
+#include "widgets/vsx_widget_button.h"
+#include "widgets/vsx_widget_2d_label.h"
 
 
 void vsx_window_object_inspector::draw_2d() {

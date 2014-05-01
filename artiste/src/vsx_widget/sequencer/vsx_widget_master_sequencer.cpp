@@ -39,7 +39,7 @@
 #include "vsx_widget_sequence.h"
 #include "vsx_widget_seq_chan.h"
 #include "vsx_widget_timeline.h"
-#include "lib/vsx_widget_base_edit.h"
+#include "widgets/vsx_widget_base_edit.h"
 
 #define VSX_ENGINE_STOPPED 0
 #define VSX_ENGINE_PLAYING 1

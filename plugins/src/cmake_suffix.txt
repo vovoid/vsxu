@@ -14,11 +14,11 @@ target_link_libraries(
 )
 
 if (UNIX)
-  if (VSXU_ENGINE_STATIC EQUAL 1)
+  if (VSXU_STATIC EQUAL 1)
     install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR}/vsxu/plugins)
-  else (VSXU_ENGINE_STATIC EQUAL 1)
+  else ()
     install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR}/vsxu/plugins)
-  endif (VSXU_ENGINE_STATIC EQUAL 1)
+  endif ()
 endif(UNIX)
 
 

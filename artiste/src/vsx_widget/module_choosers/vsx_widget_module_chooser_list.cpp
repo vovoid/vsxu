@@ -33,16 +33,18 @@
 #include "vsx_font.h"
 #include "vsx_command.h"
 #include "vsx_widget_base.h"
-#include "window/vsx_widget_window.h"
-#include "lib/vsx_widget_panel.h"
-#include "lib/vsx_widget_base_edit.h"
+#include "vsx_widget_window.h"
+#include "widgets/vsx_widget_panel.h"
+#include "widgets/vsx_widget_base_edit.h"
 #include <vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
 #include "server/vsx_widget_comp.h"
-#include "dialogs/vsx_widget_window_statics.h"
 #include "vsx_widget_module_chooser_list.h"
 #include <gl_helper.h>
-//
+
+// widget
+#include <dialogs/dialog_query_string.h>
+
 class vsx_widget_chooser_editor : public vsx_widget_editor {
   vsx_texture mtex_blob;
   vsx_widget* name_dialog;

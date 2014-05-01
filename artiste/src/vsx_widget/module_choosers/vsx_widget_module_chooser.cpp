@@ -37,7 +37,7 @@
 // local includes
 #include "log/vsx_log_a.h"
 #include "vsx_widget_base.h"
-#include "window/vsx_widget_window.h"
+#include "vsx_widget_window.h"
 #include "vsx_widget_desktop.h"
 #include <vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
@@ -45,7 +45,9 @@
 #include "vsx_widget_module_chooser.h"
 #include "helpers/vsx_widget_assistant.h"
 #include "helpers/vsx_widget_object_inspector.h"
-#include "dialogs/vsx_widget_window_statics.h"
+
+// widget
+#include <dialogs/dialog_query_string.h>
 
 using namespace std;
 

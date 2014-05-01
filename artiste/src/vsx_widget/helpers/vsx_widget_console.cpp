@@ -35,12 +35,11 @@
 
 // local includes
 #include "vsx_widget_base.h"
-#include "window/vsx_widget_window.h"
+#include "vsx_widget_window.h"
 #include "vsx_widget_object_inspector.h" 
 #include "vsx_widget_desktop.h"
-#include "dialogs/vsx_widget_window_statics.h"
-#include "lib/vsx_widget_panel.h"
-#include "lib/vsx_widget_base_edit.h"
+#include "widgets/vsx_widget_panel.h"
+#include "widgets/vsx_widget_base_edit.h"
 
 
 #include "vsx_widget_console.h"

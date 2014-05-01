@@ -33,9 +33,8 @@
 #include "vsx_font.h"
 // local includes
 #include "vsx_widget_base.h"
-#include "vsx_widget_2d_pager.h"
-#include "vsx_widget_popup_menu.h"
-#include "dialogs/vsx_widget_window_statics.h"
+#include "widgets/vsx_widget_2d_pager.h"
+#include "widgets/vsx_widget_popup_menu.h"
 #include "vsx_widget_desktop.h"
 #include "vsx_widget_object_inspector.h"
 #include "vsxfst.h"
@@ -43,8 +42,8 @@
 #include "vsx_module.h"
 #include "vsx_timer.h"
 #include "vsx_engine.h"
-#include "lib/vsx_widget_panel.h"
-#include "lib/vsx_widget_base_edit.h"
+#include "widgets/vsx_widget_panel.h"
+#include "widgets/vsx_widget_base_edit.h"
 #include "vsx_widget_assistant.h"
 
 // -------------------------------------------------------------------------------------------------------------------

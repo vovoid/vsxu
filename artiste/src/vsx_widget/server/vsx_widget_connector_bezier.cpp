@@ -37,7 +37,7 @@
 #include "vsx_widget_comp.h"
 #include <vsx_bezier_calc.h>
 
-#include "lib/vsx_widget_popup_menu.h"
+#include "widgets/vsx_widget_popup_menu.h"
 #include "vsx_widget_connector_bezier.h"
 #include <gl_helper.h>
 

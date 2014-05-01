@@ -25,6 +25,8 @@
 #define VSX_WIDGET_OBJECT_INSPECTOR_H
 
 
+#include <vsx_widget_window.h>
+
 class vsx_window_object_inspector : public vsx_widget_window {
   vsx_widget *inspected;
   vsx_widget *label1,*label2,*label3;

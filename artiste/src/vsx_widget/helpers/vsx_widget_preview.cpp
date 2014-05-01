@@ -28,7 +28,6 @@
 
 
 #include "vsx_widget_base.h"
-#include "dialogs/vsx_widget_window_statics.h"
 #include <vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
 #include <vsx_gl_state.h>

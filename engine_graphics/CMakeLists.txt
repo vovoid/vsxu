@@ -13,6 +13,8 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
+find_package(Freetype REQUIRED)
+
 
 ################################################################################
 # INCLUDES #####################################################################
@@ -24,8 +26,16 @@ include_directories(
   ${JPEG_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/engine_graphics/include
+  ${CMAKE_SOURCE_DIR}/engine_graphics/include/ftgl
   ${CMAKE_SOURCE_DIR}/engine/include
 )
+
+include_directories(${FREETYPE_INCLUDE_DIRS})
+
+if(WIN32)
+  include_directories(lib/win32/include)
+  include_directories(lib/win32/include/freetype2)
+endif(WIN32)
 
 
 ################################################################################
@@ -58,6 +68,31 @@ set(SOURCES
   src/vsx_font.cpp
   src/vsx_texture.cpp
   src/gl_helper.cpp
+
+  src/ftgl/FTBitmapGlyph.cpp
+  src/ftgl/FTBufferGlyph.cpp
+  src/ftgl/FTCharmap.cpp
+  src/ftgl/FTContour.cpp
+  src/ftgl/FTExtrdGlyph.cpp
+  src/ftgl/FTFace.cpp
+  src/ftgl/FTFont.cpp
+  src/ftgl/FTGLBitmapFont.cpp
+  src/ftgl/FTGLBufferFont.cpp
+  src/ftgl/FTGLExtrdFont.cpp
+  src/ftgl/FTGLGlyph.cpp
+  src/ftgl/FTGLOutlineFont.cpp
+  src/ftgl/FTGLPixmapFont.cpp
+  src/ftgl/FTGLPolygonFont.cpp
+  src/ftgl/FTGLTextureFont.cpp
+  src/ftgl/FTGlyphContainer.cpp
+  src/ftgl/FTLibrary.cpp
+  src/ftgl/FTOutlineGlyph.cpp
+  src/ftgl/FTPixmapGlyph.cpp
+  src/ftgl/FTPoint.cpp
+  src/ftgl/FTPolyGlyph.cpp
+  src/ftgl/FTSize.cpp
+  src/ftgl/FTTextureGlyph.cpp
+  src/ftgl/FTVectoriser.cpp
 )
 
 if (VSXU_OPENGL_ES_2_0 EQUAL 1)
@@ -69,7 +104,7 @@ if (VSXU_OPENGL_ES_2_0 EQUAL 1)
 endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 
 
-if (VSXU_ENGINE_STATIC EQUAL 1)  
+if (VSXU_STATIC EQUAL 1)  
   #static build  
   add_library(${module_id} STATIC ${SOURCES} ${PNG_SOURCES} ${JPG_SOURCES} ${ZLIG_SOURCES})
 else ()
@@ -112,6 +147,8 @@ else(WIN32)
   endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 #  target_link_libraries(${module_id} X11 GLEW.a GL GLU png.a jpeg.a z.a)
 endif(WIN32)
+
+target_link_libraries(${FREETYPE_LIBRARIES})
 
 #if (NOT ${CMAKE_THREAD_LIBS_INIT}) # and crosscompile
 #  set(CMAKE_THREAD_LIBS_INIT pthread)

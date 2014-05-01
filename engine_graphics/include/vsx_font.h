@@ -33,13 +33,19 @@
 
 #include <vsx_platform.h>
 
+#ifndef VSX_FONT_NO_FT
+#include "ftgl/FTGLPolygonFont.h"
+#include "ftgl/FTGLBitmapFont.h"
+#include "ftgl/FTGLOutlineFont.h"
+#include "ftgl/FTGLTextureFont.h"
+#endif
+
 struct vsx_font_info {
   int type; // 0 = texture (old) 1 = new (FtGL)
   vsx_texture* texture;  // pointer to either vsx_texture or ftgl font
-#ifndef VSX_FONT_NO_FT
-  FTFont* ftfont;
-  FTFont* ftfont_outline;
-#endif
+
+  void* ftfont;
+  void* ftfont_outline;
 };  
 
 class vsx_font {

@@ -21,9 +21,9 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "../vsx_widget_base.h"
-#include "window/vsx_widget_window.h"
-#include "lib/vsx_widget_button.h"
+#include "vsx_widget_base.h"
+#include "vsx_widget_window.h"
+#include "vsx_widget_button.h"
 #include <gl_helper.h>
 
 vsx_widget_window::vsx_widget_window()

@@ -45,8 +45,7 @@
 // local includes
 #include "log/vsx_log_a.h"
 #include "vsx_widget_base.h"
-#include "window/vsx_widget_window.h"
-#include "dialogs/vsx_widget_window_statics.h"
+#include "vsx_widget_window.h"
 #include "module_choosers/vsx_widget_module_chooser.h"
 #include "module_choosers/vsx_widget_module_chooser_list.h"
 #include "vsx_widget_desktop.h"
@@ -56,14 +55,16 @@
 #include "vsx_widget_anchor.h"
 #include "vsx_widget_connector_bezier.h"
 #include "sequencer/vsx_widget_sequence.h"
-#include "profiler/vsx_widget_profiler.h"
 #include "sequencer/pool_manager/vsx_widget_seq_pool.h"
 #include "controllers/vsx_widget_controller_base.h"
 #include "controllers/vsx_widget_controller_editor.h"
 #include "helpers/vsx_widget_note.h"
 #include "application.h"
-#include "vsx_widget_popup_menu.h"
 
+// widget
+#include <dialogs/dialog_query_string.h>
+#include <dialogs/dialog_messagebox.h>
+#include <widgets/vsx_widget_popup_menu.h>
 
 using namespace std;
 
@@ -121,7 +122,6 @@ void vsx_widget_server::init()
   menu->commands.adds(VSX_COMMAND_MENU,"----------------------", "","");
   menu->commands.adds(VSX_COMMAND_MENU,"sequencer >;sequencer...","sequence_menu","");
   menu->commands.adds(VSX_COMMAND_MENU,"sequencer >;animation clips...","seq_pool_menu","");
-  menu->commands.adds(VSX_COMMAND_MENU,"profiler >;profiler...","profiler_menu","");
   menu->commands.adds(VSX_COMMAND_MENU,"time >;rewind","rewind","");
   menu->commands.adds(VSX_COMMAND_MENU,"time >;play","play","");
   menu->commands.adds(VSX_COMMAND_MENU,"time >;stop","stop","");
@@ -1088,16 +1088,6 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
       }
       sequencer->visible = 1;
       front(sequencer);
-    }
-    else
-    if (t->cmd == "profiler_menu") {
-      if (!profiler)
-      {
-        profiler = (vsx_widget*)add(new vsx_widget_profiler, "Profiler");
-        profiler->init();
-      }
-      profiler->visible = 1;
-      front(profiler);
     }
     else
     if (t->cmd == "seq_pool_menu") {

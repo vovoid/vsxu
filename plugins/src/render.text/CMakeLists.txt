@@ -8,9 +8,6 @@ project (${module_id})
 
 message("configuring vsxu module            " ${module_id})
 
-find_package(Freetype REQUIRED)
-include_directories(${FREETYPE_INCLUDE_DIRS})
-
 # set defines for MOD_CM, MOD_DM, MOD_NM
 CREATE_STATIC_GLUE(${module_id})
 
@@ -31,8 +28,6 @@ include(../cmake_globals.txt)
 
 # actual compilation target
 CREATE_MODULE(${module_id})
-
-CREATE_TARGET_LINK_LIBRARIES(${FREETYPE_LIBRARIES})
 
 # include common
 include(../cmake_suffix.txt)

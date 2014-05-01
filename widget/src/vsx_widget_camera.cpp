@@ -24,7 +24,7 @@
 // global includes
 #include <vsx_vector.h>
 
-// local includes
+// widget
 #include "vsx_widget_camera.h"
 #include "vsx_widget_time.h"
 #include "vsx_widget_global_interpolation.h"

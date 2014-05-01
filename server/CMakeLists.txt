@@ -78,9 +78,9 @@ set(SOURCES
   src/application.cpp
 )
 
-if (VSXU_ENGINE_STATIC EQUAL 1)
+if (VSXU_STATIC EQUAL 1)
   include(../plugins/static_factory_cmake_link_directories)
-endif (VSXU_ENGINE_STATIC EQUAL 1)
+endif (VSXU_STATIC EQUAL 1)
 
 
 if(UNIX)
@@ -108,14 +108,15 @@ if(UNIX)
   endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 
 
-  if (VSXU_ENGINE_STATIC EQUAL 1)
+  if (VSXU_STATIC EQUAL 1)
     target_link_libraries(${module_id} vsxu_engine)
     target_link_libraries(${module_id} vsxu_engine_graphics)
     include(../plugins/static_factory_cmake_target_link_libraries)
-  else (VSXU_ENGINE_STATIC EQUAL 1)
+  else ()
     target_link_libraries(${module_id} vsxu_engine)
     target_link_libraries(${module_id} vsxu_engine_graphics)
-  endif (VSXU_ENGINE_STATIC EQUAL 1)
+  endif ()
+
   install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT server)
 endif(UNIX)
 

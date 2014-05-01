@@ -3,7 +3,7 @@
 *
 * This file is part of Vovoid VSXu.
 *
-* @author Jonatan Wallmander, Vovoid Media Technologies AB Copyright (C) 2014
+* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies AB Copyright (C) 2003-2013
 * @see The GNU Public License (GPL)
 *
 * This program is free software; you can redistribute it and/or modify
@@ -21,31 +21,32 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_WIDGET_PROFILER_H
-#define VSX_WIDGET_PROFILER_H
 
-#include "vsx_widget_time_holder.h"
+#include "widgets/vsx_widget_2d_label.h"
 
-class vsx_widget_profiler : public vsx_widget
+void vsx_widget_2d_label::init()
 {
-  vsx_widget_time_holder time;
+  halign = a_center;
+  font_size = size.y = 0.014;
 
-  vsx_vector<> parentpos;
-  std::vector<vsx_widget*> threads;
-  vsx_widget* file_list;
-  vsx_widget* timeline;
+}
 
-public:
+void vsx_widget_2d_label::draw_2d()
+{
+  if (!visible) return;
+  glColor3f(1,1,1);
+  vsx_vector<> p = parent->get_pos_p()+pos;
+  p.y -= font_size*0.5f;
+  switch ((align)halign) {
+    case a_left:
+      font.print(p, title,font_size);
+    break;
+    case a_center:
+      font.print_center(p, title,font_size);
+    break;
+    case a_right:
+      font.print_right(p, title,font_size);
+    break;
+  }
+}
 
-  void init();
-  void update_list();
-
-  void i_draw();
-  void load_profile(vsx_string name);
-
-  void command_process_back_queue(vsx_command_s *t);
-  bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
-  void interpolate_size();
-};
-
-#endif

@@ -27,6 +27,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/engine/include
   ${CMAKE_SOURCE_DIR}/engine_graphics/include
+  ${CMAKE_SOURCE_DIR}/widget/include
   ${CMAKE_SOURCE_DIR}/artiste/src
   ${CMAKE_SOURCE_DIR}/artiste/src/vsx_widget
   ${CMAKE_SOURCE_DIR}/artiste/src/vsx_widget/lib
@@ -61,10 +62,6 @@ add_definitions(
 
 set(SOURCES
   src/log/vsx_log_a.cpp
-  src/vsx_widget/vsx_widget_base.cpp
-  src/vsx_widget/vsx_widget_camera.cpp
-  src/vsx_widget/vsx_widget_time.cpp
-  src/vsx_widget/vsx_widget_coords.cpp
   src/vsx_widget/server/vsx_widget_comp.cpp
   src/vsx_widget/server/vsx_widget_connector_bezier.cpp
   src/vsx_widget/server/vsx_widget_anchor.cpp
@@ -80,34 +77,22 @@ set(SOURCES
   src/vsx_widget/controllers/vsx_widget_controller_pad.cpp
   src/vsx_widget/controllers/vsx_widget_controller_seq.cpp
   src/vsx_widget/controllers/vsx_widget_controller_slider.cpp
-  src/vsx_widget/window/vsx_widget_window.cpp
   src/vsx_widget/helpers/vsx_widget_preview.cpp
   src/vsx_widget/helpers/vsx_widget_assistant.cpp
   src/vsx_widget/helpers/vsx_widget_object_inspector.cpp
   src/vsx_widget/helpers/vsx_widget_console.cpp
   src/vsx_widget/helpers/vsx_widget_note.cpp
-  src/vsx_widget/lib/vsx_widget_scrollbar.cpp
-  src/vsx_widget/lib/vsx_widget_2d_label.cpp
-  src/vsx_widget/lib/vsx_widget_2d_pager.cpp
-  src/vsx_widget/lib/vsx_widget_button.cpp
-  src/vsx_widget/lib/vsx_widget_popup_menu.cpp
-  src/vsx_widget/lib/vsx_widget_panel.cpp
-  src/vsx_widget/lib/vsx_widget_base_edit.cpp
-  src/vsx_widget/dialogs/vsx_widget_window_statics.cpp
   src/vsx_widget/sequencer/vsx_widget_master_sequencer.cpp
   src/vsx_widget/sequencer/vsx_widget_seq_chan.cpp
   src/vsx_widget/sequencer/pool_manager/vsx_widget_seq_pool.cpp
   src/vsx_widget/sequencer/vsx_widget_sequence.cpp
   src/vsx_widget/sequencer/vsx_widget_timeline.cpp
-  src/vsx_widget/profiler/vsx_widget_profiler.cpp
-  src/vsx_widget/profiler/vsx_widget_profiler_timeline.cpp
   src/vsx_widget/arcball/arcball.cpp
   src/vsx_widget/module_choosers/vsx_widget_module_chooser.cpp
   src/vsx_widget/module_choosers/vsx_widget_module_chooser_list.cpp
   src/vsx_widget/vsx_widget_desktop.cpp
   src/application.cpp
   src/artiste_main.cpp
-  src/vsx_mouse.cpp
 )
 
 ################################################################################
@@ -130,9 +115,10 @@ if(UNIX)
     ${TM_LIBRARY}
     vsxu_engine_graphics
     vsxu_engine
+    vsx_widget
   )
 
-  if (VSXU_ENGINE_STATIC EQUAL 1)
+  if (VSXU_STATIC EQUAL 1)
     include(../plugins/static_factory_cmake_target_link_libraries)
   endif()
 

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 function(CREATE_STATIC_GLUE module_id)
-  if (VSXU_ENGINE_STATIC EQUAL 1)
+  if (VSXU_STATIC EQUAL 1)
     # create a link directory
     file(APPEND ../../static_factory_cmake_link_directories "link_directories(" ${CMAKE_SOURCE_DIR}/plugins/src/${module_id}/")\n" )
 
@@ -30,7 +30,7 @@ function(CREATE_STATIC_GLUE module_id)
     )
 
 
-  else  (VSXU_ENGINE_STATIC EQUAL 1)
+  else  ()
 
 
     add_definitions(
@@ -38,7 +38,7 @@ function(CREATE_STATIC_GLUE module_id)
       -DMOD_DM=destroy_module
       -DMOD_NM=get_num_modules
     )
-  endif (VSXU_ENGINE_STATIC EQUAL 1)
+  endif ()
 
 endfunction(CREATE_STATIC_GLUE)
 
@@ -46,15 +46,15 @@ endfunction(CREATE_STATIC_GLUE)
 
 
 function( CREATE_MODULE ${module_id} )
-  if (VSXU_ENGINE_STATIC EQUAL 1)
+  if (VSXU_STATIC EQUAL 1)
     add_library(${module_id} STATIC ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES})
-  else (VSXU_ENGINE_STATIC EQUAL 1)
+  else (VSXU_STATIC EQUAL 1)
     add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES})
-  endif (VSXU_ENGINE_STATIC EQUAL 1)
+  endif (VSXU_STATIC EQUAL 1)
 endfunction(CREATE_MODULE)
 
 function( CREATE_TARGET_LINK_DIRECTORIES la)
-  if (VSXU_ENGINE_STATIC EQUAL 1)
+  if (VSXU_STATIC EQUAL 1)
     if (NOT ${ARGV0} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "link_directories(" ${ARGV0} ")\n" )
       file(APPEND ../../static_factory_pkgconfig_libs "-L${ARGV0} " )
@@ -110,7 +110,7 @@ endfunction()
 
 
 function( CREATE_TARGET_LINK_LIBRARIES la)
-  if (VSXU_ENGINE_STATIC EQUAL 1)
+  if (VSXU_STATIC EQUAL 1)
     if (NOT ${ARGV0} STREQUAL "")
       file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${ARGV0} ")\n" )
       LIBIFY( ${ARGV0} )
@@ -215,7 +215,7 @@ if (VSXU_OPENGL_ES_2_0 EQUAL 1)
   add_definitions(-DVSXU_OPENGL_ES_2_0)
 endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 
-if (VSXU_ENGINE_STATIC EQUAL 1)
+if (VSXU_STATIC EQUAL 1)
   # 1. create the files for static factory
   file(WRITE static_factory_funcmapping.cpp "")
   file(WRITE static_factory_funcmapping.h "")

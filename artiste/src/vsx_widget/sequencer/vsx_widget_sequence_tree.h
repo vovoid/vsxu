@@ -1,7 +1,7 @@
 #ifndef VSX_WIDGET_SEQUENCE_TREE_H
 #define VSX_WIDGET_SEQUENCE_TREE_H
 
-#include "lib/vsx_widget_base_edit.h"
+#include "widgets/vsx_widget_base_edit.h"
 
 class vsx_widget_sequence_tree : public vsx_widget_editor
 {

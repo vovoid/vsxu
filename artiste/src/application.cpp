@@ -42,9 +42,10 @@
 
 #include "log/vsx_log_a.h"
 
-#include "vsx_widget/vsx_widget_base.h"
-#include "vsx_widget/window/vsx_widget_window.h"
-#include "vsx_widget/vsx_widget_desktop.h"
+#include <vsx_widget_base.h>
+
+#include "vsx_widget_window.h"
+#include "vsx_widget_desktop.h"
 #include <vsx_command_client_server.h>
 #include "vsx_widget/server/vsx_widget_server.h"
 #include "vsx_widget/module_choosers/vsx_widget_module_chooser.h"

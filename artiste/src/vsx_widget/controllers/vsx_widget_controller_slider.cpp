@@ -22,7 +22,7 @@
 */
 
 #include "vsx_widget_controller_slider.h"
-#include "lib/vsx_widget_base_edit.h"
+#include "widgets/vsx_widget_base_edit.h"
 
 vsx_widget_controller_slider::vsx_widget_controller_slider()
 {

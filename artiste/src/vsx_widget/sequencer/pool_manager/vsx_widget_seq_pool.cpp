@@ -33,19 +33,21 @@
 #include "vsx_font.h"
 #include "vsx_command.h"
 #include "vsx_widget_base.h"
-#include "vsx_widget_button.h"
-#include "window/vsx_widget_window.h"
-#include "lib/vsx_widget_panel.h"
-#include "lib/vsx_widget_base_edit.h"
+#include "widgets/vsx_widget_button.h"
+#include "vsx_widget_window.h"
+#include "widgets/vsx_widget_panel.h"
+#include "widgets/vsx_widget_base_edit.h"
 #include <vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
 #include "server/vsx_widget_comp.h"
-#include "dialogs/vsx_widget_window_statics.h"
 
 #include "sequencer/vsx_widget_sequence.h"
 #include "sequencer/vsx_widget_seq_chan.h"
 #include "vsx_widget_seq_pool.h"
 #include <gl_helper.h>
+
+// widget
+#include <dialogs/dialog_query_string.h>
 
 
 class vsx_widget_pool_tree : public vsx_widget_editor {

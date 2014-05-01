@@ -93,7 +93,7 @@ if(WIN32)
 endif()
 
 
-if (VSXU_ENGINE_STATIC EQUAL 1)
+if (VSXU_STATIC EQUAL 1)
   include(../plugins/static_factory_cmake_target_link_libraries)
 endif()
 

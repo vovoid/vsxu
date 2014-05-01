@@ -24,10 +24,9 @@
 #ifndef VSX_WIDGET_BASE_EDIT_H
 #define VSX_WIDGET_BASE_EDIT_H
 
-#include "lib/vsx_widget_scrollbar.h"
-#ifndef VSX_WIDGET_PANEL_H
-#include "lib/vsx_widget_panel.h"
-#endif
+#include "vsx_widget_scrollbar.h"
+#include "vsx_widget_panel.h"
+
 /* Base Edit
  * ---------
  * This widget serves as a text editor and item picker. If you turn editing off

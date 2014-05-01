@@ -51,7 +51,7 @@ endif()
 # The pkg-config file
 ################################################################################
 IF (UNIX)
-  if (VSXU_ENGINE_STATIC EQUAL 1 AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/plugins/static_factory_pkgconfig_libs")
+  if (VSXU_STATIC EQUAL 1 AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/plugins/static_factory_pkgconfig_libs")
     file (STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/plugins/static_factory_pkgconfig_libs" VSXU_PLUGIN_PKGCONFIG_LIBS)
     CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/libvsxu.pc.in.static
                     ${CMAKE_CURRENT_BINARY_DIR}/libvsxu.pc
@@ -233,6 +233,7 @@ add_subdirectory(engine)
 add_subdirectory(engine_audiovisual)
 add_subdirectory(engine_graphics)
 add_subdirectory(plugins)
+add_subdirectory(widget)
 
 ################################################################################
 # VSXU IMPLEMENTATIONS/BINARIES ################################################

@@ -21,9 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#if defined(__linux__) || defined(__APPLE__)
-#include <dlfcn.h>
-#endif
 #include "vsx_string.h"
 #include "vsx_command.h"
 #include "vsx_timer.h"
@@ -38,16 +35,14 @@
 #include "vsx_sequence_pool.h"
 #include "vsxfst.h"
 #include "vsx_param_abstraction.h"
+
 #ifndef VSXE_NO_GM
 #include "scripting/vsx_param_vsxl.h"
 #include "scripting/vsx_comp_vsxl.h"
 #endif
+
 #include "vsx_comp_channel.h"
 #include "vsx_log.h"
-
-#ifdef VSXU_ENGINE_STATIC
-#include "vsx_module_static_factory.h"
-#endif
 
 vsx_comp::vsx_comp() {
   module = 0;

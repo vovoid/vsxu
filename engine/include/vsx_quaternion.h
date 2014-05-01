@@ -165,10 +165,10 @@ public:
 
   inline void from_axis_angle( vsx_vector<T> &source_axis, T &source_angle)
   {
-    w = sin( source_angle * 0.5f );
-    x = source_axis.x * w;
-    y = source_axis.y * w;
-    z = source_axis.z * w;
+    T f = sin( source_angle * 0.5f );
+    x = source_axis.x * f;
+    y = source_axis.y * f;
+    z = source_axis.z * f;
     w = cos( source_angle * 0.5f );
   }
 

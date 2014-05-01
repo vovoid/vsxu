@@ -51,10 +51,6 @@
 #include <unistd.h>
 #endif
 
-#ifdef VSXU_ENGINE_STATIC
-#include "vsx_module_static_factory.h"
-#endif
-
 #ifndef VSXE_NO_GM
 #include "gm/gmThread.h"    // Game monkey script machine and thread
 #include "gm/gmMachine.h"

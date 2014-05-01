@@ -24,6 +24,8 @@
 #ifndef VSX_WIDGET_PREVIEW_H
 #define VSX_WIDGET_PREVIEW_H
 
+#include <vsx_widget_window.h>
+
 class vsx_window_texture_viewer : public vsx_widget_window {
   vsx_widget *inspected;
   vsx_widget *label1;

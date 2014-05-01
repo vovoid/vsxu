@@ -22,7 +22,6 @@
 */
 
 #include "vsx_widget_base.h"
-#include <vsx_string_aux.h>
 
 bool vsx_widget::global_delete = false;
 

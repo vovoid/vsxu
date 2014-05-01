@@ -23,7 +23,7 @@
 
 #include <math.h>
 #include "vsx_widget_controller_base.h"
-#include "lib/vsx_widget_popup_menu.h"
+#include "widgets/vsx_widget_popup_menu.h"
 
 using namespace std;
 

@@ -30,10 +30,10 @@
 #include "vsx_texture.h"
 #include "vsx_font.h"
 #include "vsx_widget_base.h"
-#include "lib/vsx_widget_panel.h"
-#include "lib/vsx_widget_scrollbar.h"
-#include "lib/vsx_widget_base_edit.h"
-#include "window/vsx_widget_window.h"
+#include "widgets/vsx_widget_panel.h"
+#include "widgets/vsx_widget_scrollbar.h"
+#include "widgets/vsx_widget_base_edit.h"
+#include "vsx_widget_window.h"
 #include "vsx_widget_note.h"
 #include <vsx_vector_aux.h>
 

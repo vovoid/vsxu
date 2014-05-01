@@ -30,7 +30,7 @@
 #include "vsx_module_list_abs.h"
 #include "vsx_module_list_factory.h"
 
-#ifdef VSX_ENGINE_STATIC
+#ifdef VSXU_STATIC
   #include "vsx_module_list_static.h"
 #else
   #include "vsx_module_list.h"

@@ -51,8 +51,8 @@ add_definitions(
  -DMOD_GNM=get_num_modules
 ) 
 
-if (VSXU_ENGINE_STATIC EQUAL 1)
-  add_definitions(-DVSX_ENGINE_STATIC)
+if (VSXU_STATIC EQUAL 1)
+  add_definitions(-DVSXU_STATIC)
 endif()
 
 if (VSXU_OPENGL_ES_2_0 EQUAL 1)
@@ -183,7 +183,7 @@ set(SOURCES
 # LINKAGE ######################################################################
 ################################################################################
 
-if (VSXU_ENGINE_STATIC EQUAL 1)
+if (VSXU_STATIC EQUAL 1)
 
   #static build
   add_library(${module_id} STATIC ${SOURCES} ${GAME_MONKEY})

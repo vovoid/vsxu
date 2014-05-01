@@ -37,8 +37,7 @@
 #include <map>
 #include <list>
 
-// artiste
-#include "log/vsx_log_a.h"
+// widget
 #include "vsx_mouse.h"
 #include "vsx_widget_coords.h"
 #include "vsx_widget_distance.h"
@@ -231,7 +230,6 @@ public:
       // deal with the command
       // ... default is just send back
       log(t->str());
-      LOG_A(vsx_string("message_b: ")+t->str());
       command_process_back_queue(t);
     }
     // ok, we've processed the commands, now call our parent to go through our list
