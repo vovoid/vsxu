@@ -79,21 +79,11 @@ void vsx_widget_button::i_draw()
   if ((m_focus == this) && (!outside))
   {
     font_size_smaller = 0.75f;
-    glColor4f(
-      skin_colors[0].r,
-      skin_colors[0].g,
-      skin_colors[0].b,
-      skin_colors[0].a
-    );
+    vsx_widget_skin::get_instance()->set_color_gl(0);
   }
   else
   {
-    glColor4f(
-      skin_colors[6].r,
-      skin_colors[6].g,
-      skin_colors[6].b,
-      skin_colors[6].a
-    );
+    vsx_widget_skin::get_instance()->set_color_gl(6);
   }
 
   glBegin(GL_QUADS);
@@ -108,19 +98,11 @@ void vsx_widget_button::i_draw()
   // white border
   if ((m_focus == this) && (!outside))
   {
-    glColor4f(skin_colors[1].r,
-          skin_colors[1].g,
-        skin_colors[1].b,
-        skin_colors[1].a
-        );
+    vsx_widget_skin::get_instance()->set_color_gl(1);
   }
   else
   {
-    glColor4f(skin_colors[4].r,
-          skin_colors[4].g,
-        skin_colors[4].b,
-        skin_colors[4].a
-        );
+    vsx_widget_skin::get_instance()->set_color_gl(4);
   }
 
   glBegin(GL_QUADS);

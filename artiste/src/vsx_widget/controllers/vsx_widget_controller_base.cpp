@@ -326,49 +326,41 @@ void vsx_widget_controller_base::i_draw() //include first, don't forget to add d
   float sx05 = size.x*0.5f;
   float sy05 = size.y*0.5f;
 
-    /*glColor3f(1,1,1);
-    glLineWidth(2);
-  	glBegin(GL_LINES);
- 	   	  glVertex3f(parentpos.x,parentpos.y,parent->pos.z);
- 	   	  glVertex3f(parentpos.x+pos.x,parentpos.y+pos.y,pos.z);
-  	glEnd();*/
-	//PERFORMANCE_MODE_CHANGE if (!performance_mode)
-  //glBlendFunc(GL_SRC_ALPHA,GL_ONE);
   if (pos.x < -sx05) {
   	glBegin(GL_TRIANGLES);
-    glColor4f(skin_colors[0].r,skin_colors[0].g,skin_colors[0].b,0.8f*skin_colors[0].a);
-		  glVertex3f(parentpos.x+sx05+pos.x,parentpos.y+sy05+pos.y, pos.z);
+      vsx_widget_skin::get_instance()->set_color_gl_a(0, 0.8);
+      glVertex3f(parentpos.x+sx05+pos.x,parentpos.y+sy05+pos.y, pos.z);
 		  glVertex3f(parentpos.x+sx05+pos.x,parentpos.y-sy05+pos.y, pos.z);
-  glColor4f(skin_colors[1].r,skin_colors[1].g,skin_colors[1].b,0.6*skin_colors[1].a);
+      vsx_widget_skin::get_instance()->set_color_gl_a(1, 0.6);
 		  glVertex3f(parentpos.x,parentpos.y, pos.z);
   	glEnd();
   } else
   if (pos.x > sx05) {
   	glBegin(GL_TRIANGLES);
-    glColor4f(skin_colors[0].r,skin_colors[0].g,skin_colors[0].b,0.8*skin_colors[0].a);
-		  glVertex3f(parentpos.x-sx05+pos.x,parentpos.y+sy05+pos.y, pos.z);
-		  glVertex3f(parentpos.x-sx05+pos.x,parentpos.y-sy05+pos.y, pos.z);
-  glColor4f(skin_colors[1].r,skin_colors[1].g,skin_colors[1].b,0.6*skin_colors[1].a);
-		  glVertex3f(parentpos.x,parentpos.y, pos.z);
+      vsx_widget_skin::get_instance()->set_color_gl_a(0, 0.8);
+      glVertex3f(parentpos.x-sx05+pos.x,parentpos.y+sy05+pos.y, pos.z);
+      glVertex3f(parentpos.x-sx05+pos.x,parentpos.y-sy05+pos.y, pos.z);
+      vsx_widget_skin::get_instance()->set_color_gl_a(1, 0.6);
+      glVertex3f(parentpos.x,parentpos.y, pos.z);
   	glEnd();
   }
 
   if (pos.y < -sy05) {
   	glBegin(GL_TRIANGLES);
-    glColor4f(skin_colors[0].r,skin_colors[0].g,skin_colors[0].b,0.8f*skin_colors[0].a);
-		  glVertex3f(parentpos.x+sx05+pos.x,parentpos.y+sy05+pos.y, pos.z);
-		  glVertex3f(parentpos.x-sx05+pos.x,parentpos.y+sy05+pos.y, pos.z);
-  glColor4f(skin_colors[1].r,skin_colors[1].g,skin_colors[1].b,0.6*skin_colors[1].a);
-		  glVertex3f(parentpos.x,parentpos.y, pos.z);
+      vsx_widget_skin::get_instance()->set_color_gl_a(0, 0.8);
+      glVertex3f(parentpos.x+sx05+pos.x,parentpos.y+sy05+pos.y, pos.z);
+      glVertex3f(parentpos.x-sx05+pos.x,parentpos.y+sy05+pos.y, pos.z);
+      vsx_widget_skin::get_instance()->set_color_gl_a(1, 0.6);
+      glVertex3f(parentpos.x,parentpos.y, pos.z);
   	glEnd();
   }
   if (pos.y > sy05) {
   	glBegin(GL_TRIANGLES);
-    glColor4f(skin_colors[0].r,skin_colors[0].g,skin_colors[0].b,0.8*skin_colors[0].a);
-		  glVertex3f(parentpos.x+sx05+pos.x,parentpos.y-sy05+pos.y, pos.z);
-		  glVertex3f(parentpos.x-sx05+pos.x,parentpos.y-sy05+pos.y, pos.z);
-  glColor4f(skin_colors[1].r,skin_colors[1].g,skin_colors[1].b,0.6*skin_colors[1].a);
-		  glVertex3f(parentpos.x,parentpos.y, pos.z);
+      vsx_widget_skin::get_instance()->set_color_gl_a(0, 0.8);
+      glVertex3f(parentpos.x+sx05+pos.x,parentpos.y-sy05+pos.y, pos.z);
+      glVertex3f(parentpos.x-sx05+pos.x,parentpos.y-sy05+pos.y, pos.z);
+      vsx_widget_skin::get_instance()->set_color_gl_a(1, 0.6);
+      glVertex3f(parentpos.x,parentpos.y, pos.z);
   	glEnd();
   }
   //PERFORMANCE_MODE_CHANGE if (!performance_mode)
@@ -378,12 +370,7 @@ void vsx_widget_controller_base::i_draw() //include first, don't forget to add d
 	if (bgcolor.a>0)
 	{
        	glBegin(GL_QUADS);
-            glColor4f(
-              skin_colors[1].r,
-              skin_colors[1].g,
-              skin_colors[1].b,
-              skin_colors[1].a
-            );
+          vsx_widget_skin::get_instance()->set_color_gl(1);
         		glVertex3f(parentpos.x+pos.x-size.x/2, parentpos.y+pos.y+size.y/2,pos.z);
         		glVertex3f(parentpos.x+pos.x+size.x/2, parentpos.y+pos.y+size.y/2,pos.z);
         		glVertex3f(parentpos.x+pos.x+size.x/2, parentpos.y+pos.y-size.y/2,pos.z);
@@ -409,7 +396,6 @@ void vsx_widget_controller_base::i_draw() //include first, don't forget to add d
 
   vsx_widget_3d_hint::vsx_widget_3d_hint()
   {
-//    bgcolor.a=0;
     color = vsx_color<>(1,1,1,1);
     color.a=0;
     secdelay=4;
@@ -417,7 +403,6 @@ void vsx_widget_controller_base::i_draw() //include first, don't forget to add d
 
   vsx_widget_3d_hint::~vsx_widget_3d_hint()
   {
-//  	printf("hint destructor\n");
   }
 
 
@@ -434,10 +419,7 @@ void vsx_widget_controller_base::i_draw() //include first, don't forget to add d
     vsx_vector<> p = parent->get_pos_p()+pos;
     p.y -= size.y*0.5;
     font.color=color;
-    //print_center(vsx_vector p, const vsx_string& str, float size);
-    //if (color.a > 0) printf("drawing %s",title.c_str());
     font.print_center(vsx_vector<>(p.x,p.y), title,size.y);
     font.color = vsx_color<>(1,1,1,1);
-    //vsx_widget_3d_label::draw();
   }
 

@@ -81,7 +81,7 @@ public:
     editor->enable_syntax_highlighting = false;
 
     vsxf filesystem;
-    mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png", true, &filesystem);
+    mtex_blob.load_png( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", true, &filesystem);
     mtex_blob.bind_load_gl();
     set_render_type(VSX_WIDGET_RENDER_2D);
   }

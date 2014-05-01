@@ -53,7 +53,7 @@
 #include "widgets/vsx_widget_panel.h"
 #include "widgets/vsx_widget_base_edit.h"
 
-#include "vsx_widget_desktop.h"
+#include "artiste_desktop.h"
 #include "GL/glfw.h"
 
 // VSX_WIDGET_DESKTOP **************************************************************************************************
@@ -74,6 +74,9 @@ void vsx_widget_desktop::init()
 
   init_children();
 
+  vsxf filesystem;
+  font.init(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png", &filesystem);
+
   log("welcome to vsxu");
 
   init_run = true;
@@ -85,7 +88,7 @@ void vsx_widget_desktop::reinit()
 {
   vsx_widget::reinit();
   mtex.init_opengl_texture_2d();
-  mtex.load_jpeg(skin_path+"desktop.jpg");
+  mtex.load_jpeg(vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg");
 }
 
 bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool n_shift)
@@ -274,7 +277,7 @@ void vsx_widget_desktop::draw() {
     glDepthMask(GL_FALSE);
     glColor4f(1,1,1,1);
     if (!mtex.bind())
-    glColor4f(skin_colors[13].r,skin_colors[13].g,skin_colors[13].b,skin_colors[13].a);
+    vsx_widget_skin::get_instance()->set_color_gl(13);
       glBegin(GL_QUADS);
         glTexCoord2f(0, 0);
         glVertex3f(pos.x-size.x/2,pos.y-size.y/2,-10.0f);
@@ -353,9 +356,12 @@ void vsx_widget_desktop::load_configuration()
   main_conf.reset();
   vsx_command_s* mc = 0;
   auto_undo = 1;
-  while ( (mc = main_conf.get()) ) {
-    if (mc->cmd == "skin") {
-      skin_path = PLATFORM_SHARED_FILES+vsx_string("gfx")+DIRECTORY_SEPARATOR+mc->cmd_data+DIRECTORY_SEPARATOR;
+  while ( (mc = main_conf.get()) )
+  {
+    if (mc->cmd == "skin")
+    {
+      vsx_widget_skin::get_instance()->skin_path_set( PLATFORM_SHARED_FILES+vsx_string("gfx")+DIRECTORY_SEPARATOR + mc->cmd_data+DIRECTORY_SEPARATOR );
+      vsx_widget_skin::get_instance()->init();
     } else
     if (mc->cmd == "global_interpolation_speed") {
       vsx_widget_global_interpolation::get_instance()->set( s2f(mc->cmd_data) );
@@ -408,29 +414,10 @@ vsx_widget_desktop::vsx_widget_desktop()
   enabled = false;
 
   // messing with the configuration
-  skin_path = "_gfx/vsxu/";
-  vsx_command_list modelist;
-  vsx_command_s* mc = 0;
-  load_configuration();
-  vsxf filesystem;
-  font.init(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png", &filesystem);
-  vsx_command_list skin_conf;
-  skin_conf.load_from_file(skin_path+"skin.conf",true,4);
 
-  skin_conf.reset();
-  while ( (mc = skin_conf.get()) ) {
-    if (mc->cmd == "color") {
-      vsx_avector<vsx_string> parts;
-      vsx_string deli = ",";
-      explode(mc->parts[2],deli, parts);
-      vsx_color<> p;
-      p.r = s2f(parts[0]);
-      p.g = s2f(parts[1]);
-      p.b = s2f(parts[2]);
-      p.a = s2f(parts[3]);
-      skin_colors[ vsx_string_aux::s2i(mc->parts[1]) ] = p;
-    }
-  }
+  load_configuration();
+
+
   // server widget
   sv = add(new vsx_widget_server,"desktop_local");
 
@@ -454,7 +441,7 @@ vsx_widget_desktop::vsx_widget_desktop()
   ((vsx_widget_2d_console*)console)->set_destination(sv);
 
   mtex.init_opengl_texture_2d();
-  mtex.load_jpeg(skin_path+"desktop.jpg");
+  mtex.load_jpeg(vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg");
 
   k_focus = this;
   m_focus = this;

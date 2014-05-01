@@ -117,7 +117,7 @@ void vsx_widget_controller_ab::init()
 
 
   vsxf filesystem;
-  mtex.load_png(skin_path+"controllers/sphere.png",true, &filesystem);
+  mtex.load_png( vsx_widget_skin::get_instance()->skin_path_get() + "controllers/sphere.png",true, &filesystem);
 
   generate_menu();
   menu->init();

@@ -58,21 +58,23 @@ void vsx_widget_popup_menu::i_draw()
       }
     }
     float sx = target_pos.x;
-    float alpha = 0.8f;
 
     font.color = vsx_color<>(1,1,1,1);
 
 
+
+    vsx_widget_skin::get_instance()->set_color_gl(0);
+
     if (parent->widget_type == VSX_WIDGET_TYPE_2D_MENU_POPUP) {
       if (((vsx_widget_popup_menu*)parent)->over && ((vsx_widget_popup_menu*)parent)->over != id_over)
-      visible = 0; else
+        visible = 0;
+      else
       {
-        alpha = 1.0f;
-      glColor4f(skin_colors[0].r*alpha,skin_colors[0].g,skin_colors[0].b,skin_colors[0].a*alpha);
-      draw_box(vsx_vector<>((sx-0.001)*screen_aspect,target_pos.y+0.001+target_size.y),(size.x+0.002)*screen_aspect,-((float)menu_items.count())*row_size-0.002);
+        draw_box(vsx_vector<>((sx-0.001)*screen_aspect,target_pos.y+0.001+target_size.y),(size.x+0.002)*screen_aspect,-((float)menu_items.count())*row_size-0.002);
       }
-    } else {
-      glColor4f(skin_colors[0].r*alpha,skin_colors[0].g,skin_colors[0].b,skin_colors[0].a*alpha);
+    }
+    else
+    {
       draw_box(vsx_vector<>((sx-0.001)*screen_aspect,target_pos.y+0.001+target_size.y),(size.x+0.002)*screen_aspect,-((float)menu_items.count())*row_size-0.002);
       font.print(vsx_vector<>(sx*screen_aspect,target_pos.y+target_size.y),parent->title,row_size);
     }
@@ -87,7 +89,8 @@ void vsx_widget_popup_menu::i_draw()
       if (c == over && over != 0)
       {
         current_command_over = t;
-        glColor4f(skin_colors[4].r,skin_colors[4].g,skin_colors[4].b,skin_colors[4].a);
+        vsx_widget_skin::get_instance()->set_color_gl(4);
+
         if (t->cmd == "" && l_list.find(t->title) != l_list.end())
         {
           vsx_widget_popup_menu* sub = ((vsx_widget_popup_menu*)l_list[t->title]);
@@ -104,7 +107,8 @@ void vsx_widget_popup_menu::i_draw()
         }
       }
       else
-      glColor4f(skin_colors[1].r,skin_colors[1].g,skin_colors[1].b,skin_colors[1].a*alpha);
+        vsx_widget_skin::get_instance()->set_color_gl(1);
+
       draw_box(vsx_vector<>((sx)*screen_aspect,y),size.x*screen_aspect,-row_size);
       font.print(vsx_vector<>((sx+0.003)*screen_aspect,y-row_size),t->title,row_size*0.8);
       y-=row_size;

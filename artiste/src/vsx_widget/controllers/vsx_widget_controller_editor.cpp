@@ -97,7 +97,7 @@ void vsx_widget_controller_editor::i_draw()
     parentpos.x = parentpos.y = 0.0f;
   }
 
-  glColor4f(skin_colors[1].r,skin_colors[1].g,skin_colors[1].b,skin_colors[1].a);
+  vsx_widget_skin::get_instance()->set_color_gl(1);
   draw_box_c(pos+parentpos,sx05,sy05);
 }
 

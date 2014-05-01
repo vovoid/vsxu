@@ -29,6 +29,14 @@
 #include "vsx_texture.h"
 #include "vsx_font.h"
 
+#ifndef VSX_FONT_NO_FT
+#include "ftgl/FTGLPolygonFont.h"
+#include "ftgl/FTGLBitmapFont.h"
+#include "ftgl/FTGLOutlineFont.h"
+#include "ftgl/FTGLTextureFont.h"
+#endif
+
+
 std::map<vsx_string, vsx_font_info*> vsx_font::glist;
 
 vsx_font_info* vsx_font::init(vsx_string font, vsxf* filesystem)

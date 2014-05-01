@@ -70,10 +70,6 @@ vsx_widget* vsx_widget::last_clicked;
 vsx_font vsx_widget::font;
 bool vsx_widget::performance_mode = false;
 
-// skin support
-vsx_string vsx_widget::skin_path;
-vsx_color<> vsx_widget::skin_colors[20];
-
 
 vsx_widget::vsx_widget()
 {

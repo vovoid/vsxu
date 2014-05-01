@@ -35,7 +35,6 @@
 #include "vsx_widget_base.h"
 #include "widgets/vsx_widget_2d_pager.h"
 #include "widgets/vsx_widget_popup_menu.h"
-#include "vsx_widget_desktop.h"
 #include "vsx_widget_object_inspector.h"
 #include "vsxfst.h"
 #include "vsx_param.h"
@@ -45,7 +44,7 @@
 #include "widgets/vsx_widget_panel.h"
 #include "widgets/vsx_widget_base_edit.h"
 #include "vsx_widget_assistant.h"
-
+#include "artiste_desktop.h"
 // -------------------------------------------------------------------------------------------------------------------
 //-- VSXU ASSISTANT -----------------------------------------------------------------------------------------------
 

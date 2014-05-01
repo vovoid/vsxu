@@ -33,7 +33,6 @@
 #include "vsx_font.h"
 #include "vsxfst.h"
 #include "vsx_widget_anchor.h"
-#include "vsx_widget_desktop.h"
 #include "vsx_widget_comp.h"
 #include <vsx_bezier_calc.h>
 
@@ -482,7 +481,7 @@ void vsx_widget_connector_bezier::init()
   init_children();
 
   vsxf filesystem;
-  mtex_blob.load_png(skin_path+"interface_extras/connection_blob.png", true, &filesystem);
+  mtex_blob.load_png( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", true, &filesystem);
   mtex_blob.bind_load_gl();
 
   constrained_x = false;

@@ -28,7 +28,7 @@
 #include <vsx_argvector.h>
 #include <GL/glew.h>
 #include "GL/glfw.h"
-#include "application.h"
+#include "artiste_application.h"
 #include "vsxfst.h"
 #include "vsx_version.h"
 #include "vsx_timer.h"

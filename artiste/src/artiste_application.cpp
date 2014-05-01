@@ -45,7 +45,7 @@
 #include <vsx_widget_base.h>
 
 #include "vsx_widget_window.h"
-#include "vsx_widget_desktop.h"
+#include "artiste_desktop.h"
 #include <vsx_command_client_server.h>
 #include "vsx_widget/server/vsx_widget_server.h"
 #include "vsx_widget/module_choosers/vsx_widget_module_chooser.h"
@@ -53,7 +53,7 @@
 #include "vsx_widget/helpers/vsx_widget_preview.h"
 #include "logo_intro.h"
 //#define NO_INTRO
-#include "application.h"
+#include "artiste_application.h"
 #include "vsxg.h"
 #include <sys/types.h>
 #include <sys/stat.h>

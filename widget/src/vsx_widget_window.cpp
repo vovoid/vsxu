@@ -61,28 +61,33 @@ void vsx_widget_window::i_draw() {
     button_close->set_size(vsx_vector<>(font_size*0.4f,font_size*0.8f-dragborder));
 	}
 
-  if (visible) {
+  if (visible)
+  {
     font.color.a = color.a;
-  glColor4f(skin_colors[1].r,skin_colors[1].g,skin_colors[1].b,skin_colors[1].a);
-  draw_box(pos,size.x,size.y);
-  glColor4f(skin_colors[2].r,skin_colors[2].g,skin_colors[2].b,skin_colors[2].a);
-  draw_box(pos+vsx_vector<>(0.0f,size.y-font_size),size.x,font_size);
 
-  // border
-  glColor4f(skin_colors[0].r,skin_colors[0].g,skin_colors[0].b,skin_colors[0].a);
 
-  // left
-  draw_box(pos+vsx_vector<>(0,dragborder),dragborder,size.y-dragborder-dragborder);
+    vsx_widget_skin::get_instance()->set_color(1);
+    draw_box(pos,size.x,size.y);
+    vsx_widget_skin::get_instance()->set_color(2);
+    draw_box(pos+vsx_vector<>(0.0f,size.y-font_size),size.x,font_size);
 
-  // right
-  draw_box(pos+vsx_vector<>(size.x-dragborder,dragborder),dragborder,size.y-dragborder-dragborder);
+    // border
+    vsx_widget_skin::get_instance()->set_color(0);
 
-  // bottom
-  draw_box(pos,size.x,dragborder);
+    // left
+    draw_box(pos+vsx_vector<>(0,dragborder),dragborder,size.y-dragborder-dragborder);
 
-  // top
-  draw_box(pos+vsx_vector<>(0.0f,size.y-dragborder),size.x,dragborder);
-  glColor4f(skin_colors[3].r,skin_colors[3].g,skin_colors[3].b,skin_colors[3].a);
-  font.print(vsx_vector<>((pos.x+font_size*0.1)*screen_aspect,pos.y+size.y-font_size*0.85),title,font_size*0.6);
+    // right
+    draw_box(pos+vsx_vector<>(size.x-dragborder,dragborder),dragborder,size.y-dragborder-dragborder);
+
+    // bottom
+    draw_box(pos,size.x,dragborder);
+
+    // top
+    draw_box(pos+vsx_vector<>(0.0f,size.y-dragborder),size.x,dragborder);
+
+    vsx_widget_skin::get_instance()->set_color(3);
+
+    font.print(vsx_vector<>((pos.x+font_size*0.1)*screen_aspect,pos.y+size.y-font_size*0.85),title,font_size*0.6);
 	}
 }

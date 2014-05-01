@@ -44,6 +44,7 @@
 #include "vsx_widget_camera.h"
 #include "vsx_widget_time.h"
 #include "vsx_widget_global_interpolation.h"
+#include "vsx_widget_skin.h"
 
 
 // different widget types
@@ -72,8 +73,6 @@ public:
   // GLOBALS
   static bool global_delete;
   // style
-  static vsx_string skin_path;
-  static vsx_color<> skin_colors[20];
   static vsx_mouse mouse;
   static float screen_x;
   static float screen_y;

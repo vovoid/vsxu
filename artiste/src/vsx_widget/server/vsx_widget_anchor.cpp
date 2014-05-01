@@ -37,7 +37,6 @@
 #include "vsx_widget_base.h"
 #include "widgets/vsx_widget_popup_menu.h"
 #include "vsx_widget_window.h"
-#include "vsx_widget_desktop.h"
 #include "vsx_widget_anchor.h"
 #include <vsx_command_client_server.h>
 #include "vsx_widget_server.h"
@@ -56,6 +55,8 @@
 #include "controllers/vsx_widget_controller_pad.h"
 #include "vsx_widget_comp.h"
 #include <gl_helper.h>
+
+#include "artiste_desktop.h"
 
 // widget
 #include <dialogs/dialog_messagebox.h>
@@ -1591,11 +1592,11 @@ void vsx_widget_anchor::init()
   title = name+":"+p_type;
 
   vsxf filesystem;
-  mtex_d.load_png(skin_path+"datatypes/"+p_type+".png",true, &filesystem);
+  mtex_d.load_png( vsx_widget_skin::get_instance()->skin_path_get() + "datatypes/"+p_type+".png",true, &filesystem);
   mtex_d.bind_load_gl();
-  mtex_blob.load_png(skin_path+"interface_extras/highlight_blob.png",true, &filesystem);
+  mtex_blob.load_png( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/highlight_blob.png",true, &filesystem);
   mtex_blob.bind_load_gl();
-  mtex_blob_small.load_png(skin_path+"interface_extras/connection_blob.png",true, &filesystem);
+  mtex_blob_small.load_png( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",true, &filesystem);
   mtex_blob_small.bind_load_gl();
   color.r = 1.0f;
   color.g = 1.0f;
@@ -1613,7 +1614,7 @@ void vsx_widget_anchor::init()
 void vsx_widget_anchor::reinit() 
 {
   vsxf filesystem;
-  mtex_d.load_png(skin_path+"datatypes/"+p_type+".png",true, &filesystem);
+  mtex_d.load_png( vsx_widget_skin::get_instance()->skin_path_get() + "datatypes/"+p_type+".png",true, &filesystem);
   vsx_widget::reinit();
 }
 

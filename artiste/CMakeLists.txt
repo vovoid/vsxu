@@ -30,7 +30,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/widget/include
   ${CMAKE_SOURCE_DIR}/artiste/src
   ${CMAKE_SOURCE_DIR}/artiste/src/vsx_widget
-  ${CMAKE_SOURCE_DIR}/artiste/src/vsx_widget/lib
   ${CMAKE_SOURCE_DIR}/artiste/include
 )
 
@@ -90,8 +89,8 @@ set(SOURCES
   src/vsx_widget/arcball/arcball.cpp
   src/vsx_widget/module_choosers/vsx_widget_module_chooser.cpp
   src/vsx_widget/module_choosers/vsx_widget_module_chooser_list.cpp
-  src/vsx_widget/vsx_widget_desktop.cpp
-  src/application.cpp
+  src/artiste_desktop.cpp
+  src/artiste_application.cpp
   src/artiste_main.cpp
 )
 

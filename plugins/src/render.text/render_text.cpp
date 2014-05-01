@@ -26,6 +26,10 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include <vsx_font.h>
+#include "ftgl/FTGLPolygonFont.h"
+#include "ftgl/FTGLBitmapFont.h"
+#include "ftgl/FTGLOutlineFont.h"
+#include "ftgl/FTGLTextureFont.h"
 
 typedef struct
 {

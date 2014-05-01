@@ -32,7 +32,6 @@
 #include "server/vsx_widget_server.h"
 #include <vsx_gl_state.h>
 
-#include "application.h"
 
 #include "vsx_widget_preview.h"
 

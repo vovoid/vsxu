@@ -46,6 +46,8 @@
 
 #define CLAMP(N, L, U) (MAX(MIN((N), (U)), (L)))
 
+#define clamp(N, L, U) (MAX(MIN((N), (U)), (L)))
+
 
 #ifndef __gl_h_
 typedef float GLfloat;

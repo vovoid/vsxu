@@ -95,7 +95,8 @@ vsx_widget_base_edit::vsx_widget_base_edit() {
   updates = 0;
   process_characters = true;
   num_hidden_lines = 0;
-  font.syntax_colors[0] = skin_colors[14]; // base color
+
+  font.syntax_colors[0] = vsx_widget_skin::get_instance()->get_color(14); // base color
   font.syntax_colors[1] = vsx_color<>(0.8,0.8,0.8,1); // comment
   font.syntax_colors[2] = vsx_color<>(0,1,1,1);
   font.syntax_colors[3] = vsx_color<>(153.0f/255.0f,204.0f/255.0f,1,1);
@@ -476,12 +477,8 @@ void vsx_widget_base_edit::i_draw() {
   } else {
     p.z = 0.0f;
   }
-  glColor4f(
-    skin_colors[18].r,
-    skin_colors[18].g,
-    skin_colors[18].b,
-    skin_colors[18].a
-  );
+
+  vsx_widget_skin::get_instance()->set_color_gl(18);
 
   draw_box(p, target_size.x, target_size.y);
   //int ypos = 0;
@@ -501,9 +498,9 @@ void vsx_widget_base_edit::i_draw() {
   int curline = real_line;
   vsx_vector<> pp = p;
   //std::vector<vsx_string>::iterator it = lines.begin();
-  font.syntax_colors[0] = skin_colors[14];
+  font.syntax_colors[0] = vsx_widget_skin::get_instance()->get_color(14);
   int cur_render_line = 0;
-  if (selected_line_highlight) font.color = skin_colors[14];
+  if (selected_line_highlight) font.color = vsx_widget_skin::get_instance()->get_color(14);
   if (scroll_y < lines.size())
   if (curline < (int)lines.size())
   while (run)
@@ -518,14 +515,9 @@ void vsx_widget_base_edit::i_draw() {
       //printf("cursize: %d\n",cursize);
       if (selected_line_highlight && curline == selected_line)
       {
-        glColor4f(
-          skin_colors[15].r,
-          skin_colors[15].g,
-          skin_colors[15].b,
-          skin_colors[15].a
-        );
+        vsx_widget_skin::get_instance()->set_color_gl(15);
 
-        font.syntax_colors[0] = skin_colors[16]; // base color
+        font.syntax_colors[0] = vsx_widget_skin::get_instance()->get_color(16); // base color
         draw_box(pp,target_size.x,font_size);
       }
       if (cursize-(long)scroll_x >= (long)characters_width) {
@@ -555,7 +547,7 @@ void vsx_widget_base_edit::i_draw() {
 
       if (selected_line_highlight && curline == selected_line)
       {
-        font.syntax_colors[0] = skin_colors[14]; // base color
+        font.syntax_colors[0] = vsx_widget_skin::get_instance()->get_color(14);
       }
       cur_render_line++;
     }
@@ -570,7 +562,10 @@ void vsx_widget_base_edit::i_draw() {
     pp.x = p.x+(float)caretx*font_size*0.37;
     pp.y = p.y-font_size*(float)(carety);
     float tt = (float)((int)(vsx_widget_time::get_instance()->get_time()*3000) % 1000)*0.001;
-    if (selected_line_highlight) font.color = skin_colors[17];
+
+    if (selected_line_highlight)
+      font.color = vsx_widget_skin::get_instance()->get_color(17);
+
     font.color.a = 1-tt;
     font.print(pp,"_",font_size);
     font.color.a = 1;

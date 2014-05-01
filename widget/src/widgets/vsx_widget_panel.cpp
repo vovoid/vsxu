@@ -71,14 +71,18 @@ void vsx_widget_panel::base_draw() {
   vsx_color<> b(0,0,0,0);
   vsx_color<> w(0,0,0,1);
   //draw_box_gradient(p, dragborder, target_size.y, skin_color[0], skin_color[1], skin_color[1], skin_color[0]);
-  draw_box_gradient(p, dragborder, target_size.y, skin_colors[0], skin_colors[1], skin_colors[1], skin_colors[0]);
-//  draw_box_gradient(p, target_size.x, dragborder, r, b, b, r);
+
+  draw_box_gradient(p, dragborder, target_size.y, vsx_widget_skin::get_instance()->get_color(0), vsx_widget_skin::get_instance()->get_color(1), vsx_widget_skin::get_instance()->get_color(1), vsx_widget_skin::get_instance()->get_color(0));
+
+  //  draw_box_gradient(p, target_size.x, dragborder, r, b, b, r);
   draw_box_gradient(p, target_size.x, dragborder, w, b, b, w);
   p.y += size.y-dragborder;
-  draw_box_gradient(p, target_size.x, dragborder, skin_colors[0], skin_colors[0], skin_colors[1], skin_colors[1]);
-//  draw_box_gradient(p, target_size.x, dragborder, skin_color[0], skin_color[0], skin_color[1], gr);
+  draw_box_gradient(p, target_size.x, dragborder, vsx_widget_skin::get_instance()->get_color(0), vsx_widget_skin::get_instance()->get_color(0), vsx_widget_skin::get_instance()->get_color(1), vsx_widget_skin::get_instance()->get_color(1));
+
+  //  draw_box_gradient(p, target_size.x, dragborder, skin_color[0], skin_color[0], skin_color[1], gr);
   p.x += size.x-dragborder;
-  //p.y += 
+
+  //p.y +=
   //draw_box_gradient(p, dragborder, -(target_size.y-dragborder), gr, skin_color[0], skin_color[1], skin_color[1]);
 }
 

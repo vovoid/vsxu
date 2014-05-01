@@ -69,30 +69,30 @@ set(SOURCES
   src/vsx_texture.cpp
   src/gl_helper.cpp
 
-  src/ftgl/FTBitmapGlyph.cpp
-  src/ftgl/FTBufferGlyph.cpp
-  src/ftgl/FTCharmap.cpp
-  src/ftgl/FTContour.cpp
-  src/ftgl/FTExtrdGlyph.cpp
-  src/ftgl/FTFace.cpp
-  src/ftgl/FTFont.cpp
-  src/ftgl/FTGLBitmapFont.cpp
-  src/ftgl/FTGLBufferFont.cpp
-  src/ftgl/FTGLExtrdFont.cpp
-  src/ftgl/FTGLGlyph.cpp
-  src/ftgl/FTGLOutlineFont.cpp
-  src/ftgl/FTGLPixmapFont.cpp
-  src/ftgl/FTGLPolygonFont.cpp
-  src/ftgl/FTGLTextureFont.cpp
-  src/ftgl/FTGlyphContainer.cpp
-  src/ftgl/FTLibrary.cpp
-  src/ftgl/FTOutlineGlyph.cpp
-  src/ftgl/FTPixmapGlyph.cpp
-  src/ftgl/FTPoint.cpp
-  src/ftgl/FTPolyGlyph.cpp
-  src/ftgl/FTSize.cpp
-  src/ftgl/FTTextureGlyph.cpp
-  src/ftgl/FTVectoriser.cpp
+#  src/ftgl/FTBitmapGlyph.cpp
+#  src/ftgl/FTBufferGlyph.cpp
+#  src/ftgl/FTCharmap.cpp
+#  src/ftgl/FTContour.cpp
+#  src/ftgl/FTExtrdGlyph.cpp
+#  src/ftgl/FTFace.cpp
+#  src/ftgl/FTFont.cpp
+#  src/ftgl/FTGLBitmapFont.cpp
+#  src/ftgl/FTGLBufferFont.cpp
+#  src/ftgl/FTGLExtrdFont.cpp
+#  src/ftgl/FTGLGlyph.cpp
+#  src/ftgl/FTGLOutlineFont.cpp
+#  src/ftgl/FTGLPixmapFont.cpp
+#  src/ftgl/FTGLPolygonFont.cpp
+#  src/ftgl/FTGLTextureFont.cpp
+#  src/ftgl/FTGlyphContainer.cpp
+#  src/ftgl/FTLibrary.cpp
+#  src/ftgl/FTOutlineGlyph.cpp
+#  src/ftgl/FTPixmapGlyph.cpp
+#  src/ftgl/FTPoint.cpp
+#  src/ftgl/FTPolyGlyph.cpp
+#  src/ftgl/FTSize.cpp
+#  src/ftgl/FTTextureGlyph.cpp
+#  src/ftgl/FTVectoriser.cpp
 )
 
 if (VSXU_OPENGL_ES_2_0 EQUAL 1)

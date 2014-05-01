@@ -114,7 +114,8 @@ void vsx_widget_scrollbar::i_draw()
   shz = scroll_handle_size/(scroll_max);
 
   // draw background
-  glColor4f(skin_colors[0].r,skin_colors[0].g,skin_colors[0].b,skin_colors[0].a);
+  vsx_widget_skin::get_instance()->set_color_gl(0);
+
   draw_box(p,size.x,size.y);
 
   // draw handle

@@ -176,13 +176,14 @@ void vsx_widget_sequence_editor::i_draw()
 {
   parentpos = get_pos_p();
   glBegin(GL_QUADS);
-    glColor4f(skin_colors[1].r,skin_colors[1].g,skin_colors[1].b,skin_colors[1].b);
+  vsx_widget_skin::get_instance()->set_color_gl(1);
     glVertex3f(parentpos.x-size.x*0.5f, parentpos.y+size.y*0.5f,pos.z);
     glVertex3f(parentpos.x+size.x*0.5f, parentpos.y+size.y*0.5f,pos.z);
     glVertex3f(parentpos.x+size.x*0.5f, parentpos.y+-size.y*0.5f,pos.z);
     glVertex3f(parentpos.x-size.x*0.5f, parentpos.y+-size.y*0.5f,pos.z);
   glEnd();
-  glColor4f(skin_colors[0].r,skin_colors[0].g,skin_colors[0].b,skin_colors[0].a);
+  vsx_widget_skin::get_instance()->set_color_gl(0);
+
   draw_box_border(vsx_vector<>(parentpos.x-size.x*0.5,parentpos.y-size.y*0.5f), vsx_vector<>(size.x,size.y), dragborder);
 
   font.color = vsx_color<>(1.0f,1.0f,1.0f,0.7f);

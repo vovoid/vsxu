@@ -38,13 +38,13 @@
 #include "log/vsx_log_a.h"
 #include "vsx_widget_base.h"
 #include "vsx_widget_window.h"
-#include "vsx_widget_desktop.h"
 #include <vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
 #include "server/vsx_widget_comp.h"
 #include "vsx_widget_module_chooser.h"
 #include "helpers/vsx_widget_assistant.h"
 #include "helpers/vsx_widget_object_inspector.h"
+#include "artiste_desktop.h"
 
 // widget
 #include <dialogs/dialog_query_string.h>
@@ -1092,7 +1092,7 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
   set_render_type(VSX_WIDGET_RENDER_2D);
 
 //  printf("%s\n\n",(root->skin_path+"module_chooser.conf").c_str());
-  module_chooser_colors.load_from_file(root->skin_path+"module_chooser.conf",true,4);
+  module_chooser_colors.load_from_file( vsx_widget_skin::get_instance()->skin_path_get() +"module_chooser.conf",true,4);
 
   if (!module_chooser_colors.count()) {
     module_chooser_colors.add_raw("ccolor default 0.2,0.2,0.6,1");
@@ -1183,11 +1183,11 @@ void vsx_widget_ultra_chooser::build_tree() {
   treedraw->mtex = new vsx_texture;
 
   vsxf filesystem;
-  treedraw->mtex->load_png(skin_path+"label.png", true, &filesystem);
+  treedraw->mtex->load_png( vsx_widget_skin::get_instance()->skin_path_get() + "label.png", true, &filesystem);
   treedraw->mtex->bind_load_gl();
 }
 void vsx_widget_ultra_chooser::reinit() {
   vsxf filesystem;
-  treedraw->mtex->load_png(skin_path+"label.png", true, &filesystem);
+  treedraw->mtex->load_png( vsx_widget_skin::get_instance()->skin_path_get() + "label.png", true, &filesystem);
 }
 

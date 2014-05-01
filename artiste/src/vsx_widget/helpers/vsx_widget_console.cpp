@@ -37,7 +37,6 @@
 #include "vsx_widget_base.h"
 #include "vsx_widget_window.h"
 #include "vsx_widget_object_inspector.h" 
-#include "vsx_widget_desktop.h"
 #include "widgets/vsx_widget_panel.h"
 #include "widgets/vsx_widget_base_edit.h"
 
@@ -158,15 +157,15 @@
   	glColor4f(1,1,1,1);
   	target_pos.y = pos.y = yposs+ypos;
   	glBegin(GL_QUADS);
-      glColor4f(skin_colors[7].r,skin_colors[7].g,skin_colors[7].b,skin_colors[7].a);
-  			glVertex3f(0, pos.y-size.y, 0);
-      glColor4f(skin_colors[8].r,skin_colors[8].g,skin_colors[8].b,skin_colors[8].a);
+      vsx_widget_skin::get_instance()->set_color_gl(7);
+        glVertex3f(0, pos.y-size.y, 0);
+      vsx_widget_skin::get_instance()->set_color_gl(8);
   			glVertex3f(0, pos.y, 0);
   			glVertex3f(1.0f*screen_aspect, pos.y, 0);
-      glColor4f(skin_colors[7].r,skin_colors[7].g,skin_colors[7].b,skin_colors[7].a);
+      vsx_widget_skin::get_instance()->set_color_gl(7);
    			glVertex3f(1.0f*screen_aspect, pos.y-size.y, 0);
   	glEnd();
-    glColor4f(skin_colors[10].r,skin_colors[10].g,skin_colors[10].b,skin_colors[10].a);
+    vsx_widget_skin::get_instance()->set_color_gl(10);
     texty = pos.y-size.y+fontsize+fontsize/4;
     if (tx != 0) {
       double c = 0;
@@ -176,15 +175,15 @@
         ++c;
       }
     }
-    glColor4f(skin_colors[9].r,skin_colors[9].g,skin_colors[9].b,skin_colors[9].a);
+    vsx_widget_skin::get_instance()->set_color_gl(9);
     if (destination)
     font.print(vsx_vector<>(0,pos.y-0.025),h+"console:"+destination->name,0.025);
     glLineWidth(1.0);
    	glBegin(GL_LINE_STRIP);
    	  glVertex3f(0,pos.y-0.025,0);
-      glColor4f(skin_colors[11].r,skin_colors[11].g,skin_colors[11].b,skin_colors[11].a);
+      vsx_widget_skin::get_instance()->set_color_gl(11);
    	  glVertex3f(0.41*screen_aspect,pos.y-0.025,0);
-      glColor4f(skin_colors[12].r,skin_colors[12].g,skin_colors[12].b,skin_colors[12].a);
+      vsx_widget_skin::get_instance()->set_color_gl(12);
    	  glVertex3f(screen_aspect,pos.y-0.025,0);
    	  
  	  glEnd();

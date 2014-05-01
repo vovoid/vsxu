@@ -33,7 +33,6 @@
 #include "vsx_font.h"
 // local includes
 #include "vsx_widget_base.h"
-#include "vsx_widget_desktop.h"
 #include "vsx_widget_object_inspector.h"
 #include "server/vsx_widget_anchor.h"
 #include "server/vsx_widget_connector_bezier.h"

@@ -48,7 +48,6 @@
 #include "vsx_widget_window.h"
 #include "module_choosers/vsx_widget_module_chooser.h"
 #include "module_choosers/vsx_widget_module_chooser_list.h"
-#include "vsx_widget_desktop.h"
 #include "vsx_widget_comp.h"
 #include <vsx_command_client_server.h>
 #include "vsx_widget_server.h"
@@ -59,7 +58,7 @@
 #include "controllers/vsx_widget_controller_base.h"
 #include "controllers/vsx_widget_controller_editor.h"
 #include "helpers/vsx_widget_note.h"
-#include "application.h"
+#include "artiste_desktop.h"
 
 // widget
 #include <dialogs/dialog_query_string.h>
@@ -251,11 +250,11 @@ void vsx_widget_server::init()
   vsxf filesystem;
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
   {
-    mtex.load_png(skin_path+"server.png",true, &filesystem);
+    mtex.load_png( vsx_widget_skin::get_instance()->skin_path_get() +"server.png",true, &filesystem);
     color.a = 1.0; // a
   } else
   {
-    mtex.load_png(skin_path+"server.png",true, &filesystem);
+    mtex.load_png( vsx_widget_skin::get_instance()->skin_path_get() +"server.png",true, &filesystem);
   }
   init_run = true;
 }
@@ -263,7 +262,7 @@ void vsx_widget_server::init()
 void vsx_widget_server::reinit()
 {
   vsxf filesystem;
-  mtex.load_png(skin_path+"server.png", true, &filesystem);
+  mtex.load_png(vsx_widget_skin::get_instance()->skin_path_get() + "server.png", true, &filesystem);
   vsx_widget::reinit();
 }
 
@@ -1384,7 +1383,7 @@ void vsx_widget_server::draw()
 
   if (selection)
   {
-    glColor4f(skin_colors[0].r,skin_colors[0].g,skin_colors[0].b,0.3*skin_colors[0].a);
+    vsx_widget_skin::get_instance()->set_color_gl_a(0, 0.3);
     vsx_vector<> s_s = selection_start+pos;
     vsx_vector<> s_e = selection_end+pos;
     draw_box(s_s, s_e.x-s_s.x,s_e.y-s_s.y);
