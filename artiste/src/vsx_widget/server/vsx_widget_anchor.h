@@ -24,7 +24,7 @@
 #ifndef VSX_WIDGET_ANCHOR_H
 #define VSX_WIDGET_ANCHOR_H
 
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "vsx_widget_connector_info.h"
 
 // VSX_WIDGET_ANCHOR ************************************************************************************************

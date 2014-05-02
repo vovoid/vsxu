@@ -29,7 +29,7 @@
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_font.h"
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "vsx_widget_scrollbar.h"
 #include <gl_helper.h>
 

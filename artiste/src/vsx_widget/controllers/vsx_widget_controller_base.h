@@ -24,7 +24,7 @@
 #ifndef vsx_widget_base_controller_H
 #define vsx_widget_base_controller_H
 
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 
 const float ALMOST_ZERO = 0.00001;
 const float sizeunit = 0.014f;

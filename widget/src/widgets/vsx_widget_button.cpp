@@ -27,7 +27,7 @@
 void vsx_widget_button::init()
 {
   coord_type = VSX_WIDGET_COORD_CENTER;
-  if (render_type == VSX_WIDGET_RENDER_2D)
+  if (render_type == render_2d)
   {
     border = 0.0023;
     size.x = 0.06;

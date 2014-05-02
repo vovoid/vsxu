@@ -24,12 +24,28 @@
 #ifndef VSX_WIDGET_WINDOW_H_
 #define VSX_WIDGET_WINDOW_H_
 
+#include <vsx_widget.h>
+
 class vsx_widget_window : public vsx_widget {
 	vsx_widget* button_close;
+
 public:
+
 	vsx_widget_window();
   virtual void init();
   virtual void i_draw();
+
+  virtual vsx_vector<> get_inner_size()
+  {
+    return vsx_vector<>( size.x - dragborder * 2, size.y - font_size - dragborder * 2.0 );
+  }
+
+  virtual vsx_vector<> get_inner_pos()
+  {
+    return vsx_vector<>(size.x * 0.5,size.y * 0.5 - font_size * 0.5 + dragborder*0.5f);
+  }
+
+
 };
 
 

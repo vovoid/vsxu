@@ -24,7 +24,7 @@
 #ifndef VSX_WIDGET_DESKTOP_H
 #define VSX_WIDGET_DESKTOP_H
 
-#include <vsx_widget_base.h>
+#include <vsx_widget.h>
 
 #include "profiler/vsx_widget_profiler.h"
 

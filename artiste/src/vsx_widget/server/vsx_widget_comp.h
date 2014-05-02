@@ -24,7 +24,7 @@
 #ifndef VSX_WIDGET_COMP_H
 #define VSX_WIDGET_COMP_H
 
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "vsx_widget_connector_info.h"
 
 #define COMPONENT_MOVE 1

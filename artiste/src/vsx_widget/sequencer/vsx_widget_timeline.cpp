@@ -35,7 +35,7 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 // local includes
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "vsx_widget_sequence.h"
 #include "vsx_widget_seq_chan.h"
 #include "vsx_widget_timeline.h"

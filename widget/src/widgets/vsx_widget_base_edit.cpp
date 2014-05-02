@@ -30,7 +30,7 @@
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_font.h"
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "vsx_widget_panel.h"
 #include "vsx_widget_base_edit.h"
 #include "vsx_widget_popup_menu.h"
@@ -44,7 +44,7 @@ vsx_widget_base_edit::vsx_widget_base_edit() {
   enable_line_action_buttons = false;
   title ="edit";
   widget_type = VSX_WIDGET_TYPE_EDITOR;
-  render_type = VSX_WIDGET_RENDER_2D;
+  render_type = render_2d;
   coord_type = VSX_WIDGET_COORD_CENTER;
   keywords["{"] = 3;
   keywords["}"] = 3;
@@ -459,8 +459,10 @@ void vsx_widget_base_edit::fold_all()
   _  _ | | _______ ( (_| || |    ( ( | || | | |
  (_)(_)|_|(_______) \____||_|     \_||_| \____|
 ********************************************************************************/
-void vsx_widget_base_edit::i_draw() {
-  if (!lines.size()) return;
+void vsx_widget_base_edit::i_draw()
+{
+  if (!lines.size())
+    return;
 
   allow_move_y = allow_move_x = false;
   //base_draw();
@@ -472,7 +474,7 @@ void vsx_widget_base_edit::i_draw() {
   vsx_vector<> p = get_pos_p();
   p.x -= target_size.x*0.5;
   p.y -= target_size.y*0.5;
-  if (render_type == VSX_WIDGET_RENDER_3D) {
+  if (render_type == render_3d) {
     p.z = pos.z;
   } else {
     p.z = 0.0f;
@@ -822,10 +824,8 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
         process_line(carety+(int)scroll_y);
         if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
       }
-    // FROO
   }
   calculate_scroll_size();
-  //process_lines();
   if (longest_line-characters_width <= 0) {
     scrollbar_pos_x = 0;
   } else {
@@ -880,9 +880,8 @@ vsx_string vsx_widget_editor::get_string() {
 
 
 void vsx_widget_editor::i_draw() {
-  calc_pos();
   calc_size();
-  //vsx_widget_panel::base_draw();
+
   float db15 = dragborder*2.5f;
   scrollbar_horiz->set_pos(vsx_vector<>(-size.x*0.5,-size.y*0.5));
   scrollbar_horiz->set_size(vsx_vector<>(target_size.x-db15, db15));
@@ -891,11 +890,10 @@ void vsx_widget_editor::i_draw() {
   scrollbar_vert->set_pos(vsx_vector<>(size.x*0.5-db15,-size.y*0.5+db15));
   scrollbar_vert->set_size(vsx_vector<>(db15,target_size.y-scrollbar_horiz->size.y));
   scrollbar_vert->set_window_size( editor->scroll_y_size );
-  editor->set_pos(vsx_vector<>(-scrollbar_vert->size.x*0.5f,scrollbar_horiz->size.y*0.5f));
 
+  editor->set_pos(vsx_vector<>(-scrollbar_vert->size.x*0.5f,scrollbar_horiz->size.y*0.5f));
   editor->target_size.x = target_size.x-scrollbar_vert->size.x;
   editor->target_size.y = target_size.y-scrollbar_horiz->size.y;
 }
-
 
 

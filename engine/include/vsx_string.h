@@ -103,9 +103,10 @@ public:
   inline size_t size() const VSX_ALWAYS_INLINE
   {
     if (!data.size()) return 0;
+
     if (data[data.get_used()-1])
     return data.get_used(); else
-    return data.get_used()-1; 
+      return data.get_used()-1;
   }
 
   inline void clear() VSX_ALWAYS_INLINE
@@ -121,6 +122,7 @@ public:
   char& operator[](int index) const VSX_ALWAYS_INLINE
   {
   	if (index < 0) index = 0;
+
     return data[index];
   }
 
@@ -145,7 +147,7 @@ public:
   {
 //    printf("copy constructor\n");
     *this = foo;
-  };
+  }
 //#
 
 //----------------------------------------------------------------------------

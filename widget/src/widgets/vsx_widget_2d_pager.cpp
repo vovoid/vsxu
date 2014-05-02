@@ -35,7 +35,7 @@ void vsx_widget_2d_pager::init()
   set_size(vsx_vector<>(0.06,0.1));
   pos.x = 0.0f;
   pos.y = 0.0f;
-  render_type = VSX_WIDGET_RENDER_2D;
+  render_type = render_2d;
   coord_type = VSX_WIDGET_COORD_CENTER;
 }
 

@@ -21,7 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "vsx_widget_window.h"
 #include "vsx_widget_button.h"
 #include <gl_helper.h>
@@ -32,8 +32,9 @@ vsx_widget_window::vsx_widget_window()
 }
 
 void vsx_widget_window::init() {
-  render_type = VSX_WIDGET_RENDER_2D;
+  render_type = render_2d;
   coord_type = VSX_WIDGET_COORD_CORNER;
+  widget_type = VSX_WIDGET_TYPE_WINDOW;
   pos.y = 0.7f;
   set_size(vsx_vector<>(0.3f,0.3f));
   topmost = true;

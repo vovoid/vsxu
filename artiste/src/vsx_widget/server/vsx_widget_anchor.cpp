@@ -34,7 +34,7 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 // local includes
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "widgets/vsx_widget_popup_menu.h"
 #include "vsx_widget_window.h"
 #include "vsx_widget_anchor.h"
@@ -471,7 +471,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     ((vsx_widget_controller_editor*)tt)->return_command = "ps64";
     ((vsx_widget_controller_editor*)tt)->return_component = this;
     tt->widget_type = VSX_WIDGET_TYPE_CONTROLLER;
-    tt->set_render_type(VSX_WIDGET_RENDER_3D);
+    tt->set_render_type(render_3d);
     tt->set_font_size(0.002);
     tt->set_border(0.0005);
     tt->title = "VSXL [param filter] : "+component->name+"->"+name;
@@ -583,7 +583,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     ((vsx_widget_controller_editor*)tt)->target_param = name;
     ((vsx_widget_controller_editor*)tt)->return_command = "ps64";
     ((vsx_widget_controller_editor*)tt)->return_component = this;
-    tt->set_render_type(VSX_WIDGET_RENDER_3D);
+    tt->set_render_type(render_3d);
     tt->set_font_size(0.002);
     tt->set_border(0.0005);
 

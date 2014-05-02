@@ -36,7 +36,7 @@
 #include <vsx_data_path.h>
 
 // local includes
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "vsx_widget_window.h"
 #include "helpers/vsx_widget_object_inspector.h"
 #include "helpers/vsx_widget_preview.h"

@@ -29,15 +29,23 @@
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_font.h"
-#include "../vsx_widget_base.h"
+#include "../vsx_widget.h"
 #include "vsx_widget_panel.h"
 #include <gl_helper.h>
 
 void vsx_widget_panel::calc_size() {
-  if (size_from_parent) return;
-  size.x = target_size.x = parent->size.x-dragborder*2;
-  size.y = target_size.y = parent->size.y-dragborder*2;
+  if (size_from_parent)
+    return;
+
+  vsx_vector<> psize = parent->get_inner_size();
+
+  size = target_size = psize;
+
+//  size.x = target_size.x = psize;
+//  size.y = target_size.y = parent->size.y-dragborder*2;
 }
+
+
 
 vsx_vector<> vsx_widget_panel::calc_pos() {
   vsx_vector<> p = get_pos_p();
@@ -47,8 +55,7 @@ vsx_vector<> vsx_widget_panel::calc_pos() {
   }
   p.x -= target_size.x*0.5;
   p.y -= target_size.y*0.5;
-  //p.y -= dragborder;
-  if (render_type == VSX_WIDGET_RENDER_3D) {
+  if (render_type == render_3d) {
     p.z = pos.z;
   } else {
     p.z = 0.0f;
@@ -56,6 +63,28 @@ vsx_vector<> vsx_widget_panel::calc_pos() {
   return p;
 }
 
+/*vsx_vector<> vsx_widget_panel::calc_pos()
+{
+  vsx_vector<> p = get_pos_p();
+
+  if (pos_from_parent) {
+    return pos - target_size * 0.5;
+//    p.x += target_pos.x;
+//    p.y += target_pos.y;
+      p.x -= target_size.x*0.5;
+      p.y -= target_size.y*0.5;
+  } else
+  p = parent->get_inner_pos();
+
+
+  if (render_type == render_3d) {
+    p.z = pos.z;
+  } else {
+    p.z = 0.0f;
+  }
+  return p;
+}
+*/
 int vsx_widget_panel::inside_xy_l(vsx_vector<> &test, vsx_vector<> &global)
 {
   VSX_UNUSED(test);
@@ -161,7 +190,7 @@ void vsx_widget_split_panel::i_draw()
 {
   calc_size();
   vsx_vector<> p = calc_pos();
-  if (render_type == VSX_WIDGET_RENDER_2D)
+  if (render_type == render_2d)
   p.z = 0.0f;
   if (orientation == VSX_WIDGET_SPLIT_PANEL_VERT) {
     sy = size.y-splitter_size;

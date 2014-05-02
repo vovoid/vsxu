@@ -22,7 +22,7 @@
 */
 
 
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "vsx_widget_profiler_timeline.h"
 #include <vsx_error.h>
 #include <gl_helper.h>
@@ -90,9 +90,6 @@ void vsx_widget_profiler_timeline::auto_move_time()
       time_holder->cur_set( ncurtime );
       time_holder->start_set( ntstart );
       time_holder->end_set( ntend );
-//      curtime = ncurtime;
-//      tstart = ntstart;
-//      tend = ntend;
     }
   }
 

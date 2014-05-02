@@ -38,7 +38,7 @@
 #include <vsx_string_aux.h>
 
 // local includes
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "vsx_widget_sequence.h"
 #include "vsx_widget_sequence_tree.h"
 #include "vsx_widget_seq_chan.h"
@@ -82,21 +82,21 @@ void vsx_widget_sequence_editor::init()
   ((vsx_widget_timeline*)timeline)->owner = this;
 
   but_rew = add(new vsx_widget_button,name+"rewind");
-  but_rew->render_type = VSX_WIDGET_RENDER_3D;
+  but_rew->render_type = render_3d;
   but_rew->init();
   but_rew->title = "|<";
   but_rew->target_size.x = but_rew->size.x = 0.015;
   but_rew->commands.adds(4,"rewind","rewind","");
 
   but_play = add(new vsx_widget_button,name+"play");
-  but_play->render_type = VSX_WIDGET_RENDER_3D;
+  but_play->render_type = render_3d;
   but_play->init();
   but_play->title = ">";
   but_play->target_size.x = but_play->size.x = 0.015;
   but_play->commands.adds(4,"play","play","");
 
   but_stop = add(new vsx_widget_button,name+"stop");
-  but_stop->render_type = VSX_WIDGET_RENDER_3D;
+  but_stop->render_type = render_3d;
   but_stop->init();
   but_stop->title = "[]";
   but_stop->target_size.x = but_stop->size.x = 0.015;
@@ -104,7 +104,7 @@ void vsx_widget_sequence_editor::init()
   if (!disable_master_channel)
   {
     but_add_master_channel = add(new vsx_widget_button,name+"stop");
-    but_add_master_channel->render_type = VSX_WIDGET_RENDER_3D;
+    but_add_master_channel->render_type = render_3d;
     but_add_master_channel->init();
     but_add_master_channel->title = "master channel+";
     but_add_master_channel->target_size.x = but_add_master_channel->size.x = 0.045;
@@ -112,7 +112,7 @@ void vsx_widget_sequence_editor::init()
   }
 
   but_set_loop_point= add(new vsx_widget_button,"but_set_loop_point");
-  but_set_loop_point->render_type = VSX_WIDGET_RENDER_3D;
+  but_set_loop_point->render_type = render_3d;
   but_set_loop_point->init();
   but_set_loop_point->title = "end loop point";
   but_set_loop_point->target_size.x = but_set_loop_point->size.x = 0.040;
@@ -234,7 +234,7 @@ void vsx_widget_sequence_editor::interpolate_size()
       if (ypos-channels[i]->size.y > -size.y*0.5)
       {
         channels[i]->size.x = timeline->size.x;
-        if (render_type == VSX_WIDGET_RENDER_2D)
+        if (render_type == render_2d)
           channels[i]->size.y = 0.16f;
         channels[i]->target_size = channels[i]->size;
         channels[i]->pos.x = 0.05f;

@@ -44,7 +44,7 @@
 #include <vsx_string_aux.h>
 // local includes
 #include "log/vsx_log_a.h"
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "vsx_widget_window.h"
 #include "module_choosers/vsx_widget_module_chooser.h"
 #include "module_choosers/vsx_widget_module_chooser_list.h"
@@ -1098,7 +1098,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
         seq_pool->init();
       }
       seq_pool->show();
-      //seq_pool->set_render_type(VSX_WIDGET_RENDER_3D);
+      //seq_pool->set_render_type(render_3d);
       front(seq_pool);
     }
     else

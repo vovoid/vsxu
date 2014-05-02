@@ -24,7 +24,7 @@
 #ifndef VSX_WIDGET_BUTTON_H
 #define VSX_WIDGET_BUTTON_H
 
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 
 class vsx_widget_button : public vsx_widget
 {
@@ -36,7 +36,7 @@ public:
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);
   void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void i_draw();
-  vsx_widget_button() {render_type=VSX_WIDGET_RENDER_2D;}
+  vsx_widget_button() {render_type=render_2d;}
 };
 
 

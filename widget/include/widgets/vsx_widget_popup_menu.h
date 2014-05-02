@@ -24,7 +24,7 @@
 #ifndef VSX_WIDGET_POPUP_MENU_H
 #define VSX_WIDGET_POPUP_MENU_H
 
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 
 class vsx_widget_popup_menu : public vsx_widget
 {

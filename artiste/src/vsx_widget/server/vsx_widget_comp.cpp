@@ -555,7 +555,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
     ((vsx_widget_controller_editor*)tt)->target_param = name;
     ((vsx_widget_controller_editor*)tt)->return_command = "ps64";
     ((vsx_widget_controller_editor*)tt)->return_component = this;
-    tt->set_render_type(VSX_WIDGET_RENDER_3D);
+    tt->set_render_type(render_3d);
     tt->widget_type = VSX_WIDGET_TYPE_CONTROLLER;
     tt->set_font_size(0.002);
     tt->set_border(0.0005);

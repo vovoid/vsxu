@@ -32,7 +32,7 @@
 #include "vsx_command.h"
 #include "vsx_font.h"
 // local includes
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "widgets/vsx_widget_2d_pager.h"
 #include "widgets/vsx_widget_popup_menu.h"
 #include "vsx_widget_object_inspector.h"
@@ -137,7 +137,7 @@ void vsxu_assistant::init()
 {
   temp_size = -1.0f;
   if (!init_run) vsx_widget::init();
-  render_type = VSX_WIDGET_RENDER_2D;
+  render_type = render_2d;
   coord_type = VSX_WIDGET_COORD_CORNER;
   topmost = true;
 

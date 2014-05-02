@@ -25,7 +25,7 @@
 #ifndef VSX_WIDGET_2D_LABEL_H
 #define VSX_WIDGET_2D_LABEL_H
 
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 
 enum align{
   a_left,

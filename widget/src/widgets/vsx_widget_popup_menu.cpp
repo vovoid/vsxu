@@ -28,7 +28,7 @@
 
 void vsx_widget_popup_menu::i_draw()
 {
-  render_type =   VSX_WIDGET_RENDER_2D;
+  render_type =   render_2d;
 
   target_size.y = (float)(menu_items.count())*row_size;
 

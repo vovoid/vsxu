@@ -34,7 +34,7 @@
 #include "vsx_module.h"
 
 // local includes
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "vsx_widget_window.h"
 #include "vsx_widget_object_inspector.h" 
 #include "widgets/vsx_widget_panel.h"
@@ -50,7 +50,7 @@
 
   void vsx_widget_2d_console::init() {
     up = false;
-    render_type = VSX_WIDGET_RENDER_2D;
+    render_type = render_2d;
     coord_type = VSX_WIDGET_COORD_CORNER;
     topmost = true;
     fontsize = 0.02;

@@ -29,7 +29,7 @@
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_font.h"
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "widgets/vsx_widget_panel.h"
 #include "widgets/vsx_widget_scrollbar.h"
 #include "widgets/vsx_widget_base_edit.h"
@@ -83,7 +83,7 @@ vsx_widget_note::vsx_widget_note() {
 
 bool vsx_widget_note::init_from_command(vsx_command_s* c)
 {
-  set_render_type(VSX_WIDGET_RENDER_3D);
+  set_render_type(render_3d);
   vsx_vector<> np;
   np = vsx_vector_aux::from_string<float>(c->parts[2]);
   set_pos(np);

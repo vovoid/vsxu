@@ -24,7 +24,11 @@
 #ifndef VSX_WIDGET_PROFILER_TIMELINE_H
 #define VSX_WIDGET_PROFILER_TIMELINE_H
 
+// widget
+#include <vsx_widget_window.h>
+
 #include "vsx_widget_time_holder.h"
+
 
 class vsx_widget_profiler_timeline : public vsx_widget {
   vsx_vector<> parentpos;
@@ -79,5 +83,40 @@ public:
   bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
 
 };
+
+
+class vsx_widget_profiler_timeline_window : public vsx_widget_window
+{
+  vsx_widget_profiler_timeline* timeline;
+
+public:
+
+  virtual void init()
+  {
+    vsx_widget_window::init();
+
+    timeline = (vsx_widget_profiler_timeline*)add((vsx_widget*)(new vsx_widget_profiler_timeline),"timeline");
+    timeline->init();
+    timeline->set_render_type(render_2d);
+    timeline->show();
+  }
+
+  virtual void i_draw()
+  {
+    timeline->set_size( vsx_vector<>( size.x , size.y )  );
+    timeline->pos.x = timeline->target_pos.x = 0.0;
+    timeline->target_pos.y = timeline->pos.y =  size.y*0.5f - dragborder-timeline->size.y*0.5f;
+
+    vsx_widget_window::i_draw();
+  }
+
+  void time_holder_set(vsx_widget_time_holder* n)
+  {
+    timeline->time_holder_set( n );
+  }
+
+
+};
+
 
 #endif

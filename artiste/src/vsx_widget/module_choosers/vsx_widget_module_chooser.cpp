@@ -36,7 +36,7 @@
 #include "vsx_module.h"
 // local includes
 #include "log/vsx_log_a.h"
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "vsx_widget_window.h"
 #include <vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
@@ -1089,7 +1089,7 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
   font.mode_2d = true;
   name_dialog = add(new dialog_query_string("name of component","Choose a unique name for your component"),"component_create_name");
   init_children();
-  set_render_type(VSX_WIDGET_RENDER_2D);
+  set_render_type(render_2d);
 
 //  printf("%s\n\n",(root->skin_path+"module_chooser.conf").c_str());
   module_chooser_colors.load_from_file( vsx_widget_skin::get_instance()->skin_path_get() +"module_chooser.conf",true,4);

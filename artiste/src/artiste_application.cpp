@@ -43,7 +43,7 @@
 
 #include "log/vsx_log_a.h"
 
-#include <vsx_widget_base.h>
+#include <vsx_widget.h>
 
 #include "vsx_widget_window.h"
 #include "artiste_desktop.h"

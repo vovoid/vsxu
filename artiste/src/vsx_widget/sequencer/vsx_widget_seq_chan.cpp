@@ -38,7 +38,7 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 // local includes
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "vsx_widget_sequence.h"
 #include "vsx_widget_seq_chan.h"
 #include "vsx_widget_timeline.h"
@@ -113,12 +113,12 @@ void vsx_widget_seq_channel::init()
 
   manual_value_input_dialog = add(new dialog_query_string("set value","set value"),"menu_interp_keyboard_value");
   ((dialog_query_string*)manual_value_input_dialog)->init();
-  manual_value_input_dialog->set_render_type(VSX_WIDGET_RENDER_2D);
+  manual_value_input_dialog->set_render_type(render_2d);
 
 
   manual_time_input_dialog = add(new dialog_query_string("set time position","set time position"),"menu_time_keyboard_value");
   ((dialog_query_string*)manual_time_input_dialog)->init();
-  manual_time_input_dialog->set_render_type(VSX_WIDGET_RENDER_2D);
+  manual_time_input_dialog->set_render_type(render_2d);
 }
 
 // sends a full inject dump to the parent in the widget chain
@@ -1003,7 +1003,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
 
     vsx_string val = items[mouse_clicked_id].get_value();
     ((dialog_query_string*)manual_value_input_dialog)->show(val);
-    manual_value_input_dialog->set_render_type(VSX_WIDGET_RENDER_2D);
+    manual_value_input_dialog->set_render_type(render_2d);
     return;
   }
 
@@ -1047,7 +1047,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
 
     vsx_string val = f2s(accumulated_time);
     ((dialog_query_string*)manual_time_input_dialog)->show(val);
-    manual_time_input_dialog->set_render_type(VSX_WIDGET_RENDER_2D);
+    manual_time_input_dialog->set_render_type(render_2d);
 
     return;
   }

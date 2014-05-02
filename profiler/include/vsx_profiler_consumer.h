@@ -5,6 +5,15 @@
 #include <vsx_profiler.h>
 #include <vsxfst.h>
 
+class vsx_profiler_consumer_chunk
+{
+public:
+  double time_start;
+  double time_end;
+  double depth;
+  vsx_string tag;
+};
+
 
 class vsx_profiler_consumer
 {
@@ -85,8 +94,16 @@ public:
     vsx_printf("max time: %f\n", current_max_time);
 
     vsx_printf("clock frequency: %f\n", (double)(cpu_clock_end-cpu_clock_start) / current_max_time );
-
   }
+
+  void get_chunks(double t_start, double t_end, vsx_avector<vsx_profiler_consumer_chunk> &chunks_result)
+  {
+    if (current_profile.size() < 2)
+      ERROR_RETURN("Not enough chunks in loaded profile data");
+
+    // now find the first major chunk
+  }
+
 
 
   static vsx_profiler_consumer* get_instance()

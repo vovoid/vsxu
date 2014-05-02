@@ -48,8 +48,8 @@ endif (VSXU_DEBUG EQUAL 1)
 ################################################################################
 
 set(SOURCES
+  src/vsx_widget.cpp
   src/vsx_mouse.cpp
-  src/vsx_widget_base.cpp
   src/vsx_widget_camera.cpp
   src/vsx_widget_coords.cpp
   src/vsx_widget_time.cpp

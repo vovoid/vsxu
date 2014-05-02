@@ -28,7 +28,7 @@
 #include "vsx_profiler_consumer.h"
 
 // Generic Widget
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "widgets/vsx_widget_popup_menu.h"
 
 // Local widgets
@@ -45,28 +45,37 @@ void vsx_widget_profiler::init()
   size_min.x = 0.2;
   size_min.y = 0.2;
   target_pos = pos = camera.get_pos_2d() + vsx_vector<>(0.25);
-  camera.set_distance(1.9);
+  camera.set_distance(2.9);
 
   // Init Timeline
-  timeline = add(new vsx_widget_profiler_timeline, name+".timeline");
-  timeline->init();
-  timeline->set_size(vsx_vector<>(size.x*0.995f,size.y*0.04f));
-  ((vsx_widget_profiler_timeline*)timeline)->time_holder_set( &time );
+  timeline_window = add(new vsx_widget_profiler_timeline_window, name+".timeline");
+  timeline_window->init();
+  timeline_window->set_size(vsx_vector<>(0.2,0.1));
+  timeline_window->set_render_type( render_2d );
+  ((vsx_widget_profiler_timeline_window*)timeline_window)->time_holder_set( &time );
 
   // Init File List
-  vsx_widget_profiler_tree* profile_tree = (vsx_widget_profiler_tree*)add(new vsx_widget_profiler_tree, "profile_list");
+  vsx_widget_profiler_tree_window* profile_tree = (vsx_widget_profiler_tree_window*)add(new vsx_widget_profiler_tree_window, "profile_list");
   profile_tree->init();
-  profile_tree->coord_type = VSX_WIDGET_COORD_CORNER;
-  profile_tree->set_pos(vsx_vector<>(size.x/2,size.y/2)-dragborder*2);
-  profile_tree->editor->set_font_size(0.008f);
-  profile_tree->size_from_parent = true;
-  profile_tree->editor->editing_enabled = false;
-  profile_tree->editor->selected_line_highlight = true;
-  profile_tree->editor->enable_syntax_highlighting = false;
-  profile_tree->editor->enable_line_action_buttons = true;
-  profile_tree->pos_from_parent = true;
-  profile_tree->extra_init();
+  profile_tree->set_size(vsx_vector<>(0.2,0.1));
+  profile_tree->set_pos( vsx_vector<>(0.5, 0.5) );
+  profile_tree->show();
+  profile_tree->set_render_type(render_2d);
+
+
+
+//  profile_tree->coord_type = VSX_WIDGET_COORD_CORNER;
+//  profile_tree->set_pos(vsx_vector<>(size.x/2,size.y/2)-dragborder*2);
+//  profile_tree->editor->set_font_size(0.008f);
+//  profile_tree->size_from_parent = true;
+//  profile_tree->editor->editing_enabled = false;
+//  profile_tree->editor->selected_line_highlight = true;
+//  profile_tree->editor->enable_syntax_highlighting = false;
+//  profile_tree->editor->enable_line_action_buttons = true;
+//  profile_tree->pos_from_parent = true;
+//  profile_tree->extra_init();
   profile_tree->set_profiler( this );
+//
 
 
 
@@ -81,9 +90,7 @@ void vsx_widget_profiler::init()
 
   // make sure interpolation is called
   this->interpolate_size();
-
-  // recursively populate render type
-  set_render_type(render_type);
+  init_run = true;
 }
 
 void vsx_widget_profiler::update_list()
@@ -136,12 +143,12 @@ bool vsx_widget_profiler::event_key_down(signed long key, bool alt, bool ctrl, b
 void vsx_widget_profiler::interpolate_size()
 {
   vsx_widget::interpolate_size();
-  file_list->set_pos(vsx_vector<>(-size.x/2+0.05f+dragborder));
-  file_list->set_size(vsx_vector<>(0.1f,size.y-dragborder*2));
+//  file_list->set_pos(vsx_vector<>(-size.x/2+0.05f+dragborder));
+//  file_list->set_size(vsx_vector<>(0.1f,size.y-dragborder*2));
 
-  timeline->target_size.x = timeline->size.x = size.x-0.1f-dragborder*4;
-  timeline->pos.x = timeline->target_pos.x = 0.05f;
-  timeline->target_pos.y = timeline->pos.y =  size.y*0.5f - dragborder-timeline->size.y*0.5f;
+//  timeline_window->target_size.x = timeline_window->size.x = size.x-0.1f-dragborder*4;
+//  timeline_window->pos.x = timeline_window->target_pos.x = 0.05f;
+//  timeline_window->target_pos.y = timeline_window->pos.y =  size.y*0.5f - dragborder-timeline_window->size.y*0.5f;
 
 //  float ypos = size.y*0.5-dragborder*2-but_rew->size.y-timeline->size.y-dragborder;//-0.027-0.025;
 //  for (int i = 0; i < channels_start; ++i) channels[i]->visible = false;
@@ -157,7 +164,7 @@ void vsx_widget_profiler::interpolate_size()
 //      if (ypos-channels[i]->size.y > -size.y*0.5)
 //      {
 //        channels[i]->size.x = timeline->size.x;
-//        if (render_type == VSX_WIDGET_RENDER_2D)
+//        if (render_type == render_2d)
 //          channels[i]->size.y = 0.16f;
 //        channels[i]->target_size = channels[i]->size;
 //        channels[i]->pos.x = 0.05f;

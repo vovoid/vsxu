@@ -24,6 +24,8 @@
 #ifndef VSX_WIDGET_PANEL_H
 #define VSX_WIDGET_PANEL_H
 
+#include <vsx_widget.h>
+
 class vsx_widget_panel : public vsx_widget {
 public:
   bool size_from_parent;

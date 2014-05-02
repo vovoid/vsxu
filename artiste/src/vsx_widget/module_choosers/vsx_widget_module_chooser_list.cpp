@@ -32,7 +32,7 @@
 #include "vsx_texture.h"
 #include "vsx_font.h"
 #include "vsx_command.h"
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "vsx_widget_window.h"
 #include "widgets/vsx_widget_panel.h"
 #include "widgets/vsx_widget_base_edit.h"
@@ -87,7 +87,7 @@ public:
     vsxf filesystem;
     mtex_blob.load_png( vsx_widget_skin::get_instance()->skin_path_get() +"interface_extras/connection_blob.png", true, &filesystem);
     mtex_blob.bind_load_gl();
-    set_render_type(VSX_WIDGET_RENDER_2D);
+    set_render_type(render_2d);
   }
 
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
@@ -145,7 +145,7 @@ public:
 
   }
 
-  virtual void draw_2d()// { if (render_type == VSX_WIDGET_RENDER_2D) { if (visible) i_draw(); } if (visible) draw_children_2d();}
+  virtual void draw_2d()// { if (render_type == render_2d) { if (visible) i_draw(); } if (visible) draw_children_2d();}
   {
     i_draw();
     draw_children_2d();
@@ -262,7 +262,7 @@ vsx_module_chooser_list::vsx_module_chooser_list() {
   // set up list
   vsx_widget_chooser_editor *e = (vsx_widget_chooser_editor*)add(new vsx_widget_chooser_editor,"e");
   e->init();
-  e->set_render_type(VSX_WIDGET_RENDER_2D);
+  e->set_render_type(render_2d);
   e->coord_type = VSX_WIDGET_COORD_CORNER;
   coord_related_parent = false;
   e->set_pos(vsx_vector<>(size.x/2,size.y/2));

@@ -24,6 +24,7 @@
 #ifndef VSX_MODULE_CHOOSER_LIST_H
 #define VSX_MODULE_CHOOSER_LIST_H
 
+#include <vsx_widget_window.h>
 
 
 class vsx_module_chooser_list : public vsx_widget_window {

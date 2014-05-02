@@ -25,7 +25,7 @@
 #ifndef VSX_WIDGET_2D_PAGER_H
 #define VSX_WIDGET_2D_PAGER_H
 
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 
 class vsx_widget_2d_pager : public vsx_widget
 {

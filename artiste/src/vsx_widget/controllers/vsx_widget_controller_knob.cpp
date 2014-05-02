@@ -46,7 +46,7 @@ void vsx_widget_controller_knob::init()
   get_value();
   editor = add(new vsx_widget_base_edit,name+".label");
   editor->init();
-  editor->render_type = VSX_WIDGET_RENDER_3D;
+  editor->render_type = render_3d;
   editor->set_size(vsx_vector<>(size.x,size.y*0.23f));
   editor->set_pos(vsx_vector<>(0,size.y*0.5f+size.y*0.25f-editor->size.y*0.6f));
   editor->set_font_size(0.214286 * size.y); // sizeunit = 0.014f

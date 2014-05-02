@@ -108,6 +108,7 @@ public:
   vsx_widget_editor();
   void set_string(const vsx_string& str);
   vsx_string get_string();
+
   virtual void i_draw();
 };
 

@@ -32,7 +32,7 @@
 #include "vsx_texture.h"
 #include "vsx_font.h"
 #include "vsx_command.h"
-#include "vsx_widget_base.h"
+#include "vsx_widget.h"
 #include "widgets/vsx_widget_button.h"
 #include "vsx_widget_window.h"
 #include "widgets/vsx_widget_panel.h"
@@ -83,7 +83,7 @@ public:
     vsxf filesystem;
     mtex_blob.load_png( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", true, &filesystem);
     mtex_blob.bind_load_gl();
-    set_render_type(VSX_WIDGET_RENDER_2D);
+    set_render_type(render_2d);
   }
 
   void event_mouse_move(vsx_widget_distance distance, vsx_widget_coords coords)
@@ -126,7 +126,7 @@ public:
 
   }
 
-  virtual void draw_2d()// { if (render_type == VSX_WIDGET_RENDER_2D) { if (visible) i_draw(); } if (visible) draw_children_2d();}
+  virtual void draw_2d()// { if (render_type == render_2d) { if (visible) i_draw(); } if (visible) draw_children_2d();}
   {
     i_draw();
     draw_children_2d();
@@ -203,7 +203,7 @@ public:
 
 vsx_widget_seq_pool_manager::vsx_widget_seq_pool_manager() {
   // common init
-  render_type = VSX_WIDGET_RENDER_3D;
+  render_type = render_3d;
     vsx_widget_window::init();
     init_run = true;
     visible = 0;
