@@ -115,6 +115,7 @@ if(UNIX)
     vsxu_engine_graphics
     vsxu_engine
     vsx_widget
+    rt
   )
 
   if (VSXU_STATIC EQUAL 1)

@@ -47,6 +47,7 @@ set_target_properties(
 
 target_link_libraries(${module_id}
   vsxu_engine
+  rt
   ${CMAKE_THREAD_LIBS_INIT}
 )
 

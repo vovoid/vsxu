@@ -129,7 +129,7 @@ public:
     for (unsigned long i = 0; i < data.size(); ++i)
     {
 			data[i] = tolower(data[i]);
-		}
+    }
 	}
   
   // constructors
@@ -154,7 +154,16 @@ public:
   vsx_string(const char* ss)
   {
     *this = ss;
-  };
+  }
+
+  vsx_string(const char* ss, size_t max_len)
+  {
+    for (size_t i = 0; i < max_len; i++)
+    {
+      push_back( ss[i] );
+    }
+    zero_add();
+  }
 
   inline const vsx_string& operator=(const vsx_string& ss) VSX_ALWAYS_INLINE
   {

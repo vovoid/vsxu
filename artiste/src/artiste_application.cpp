@@ -375,7 +375,7 @@ public:
       fwrite(pixeldata_flipped, 1, viewport[2] * viewport[3] * 3, fp);
       fclose(fp);*/
       vsx_string err;
-      jpeg.SaveJPEG( vsx_data_path::get_instance()->data_path_get()+"screenshots"+DIRECTORY_SEPARATOR+i2s(time(0))+"_"+ i2s(viewport[2]) + "_" + i2s(viewport[3])+".jpg", err, 100 );
+      jpeg.SaveJPEG( vsx_data_path::get_instance()->data_path_get()+"screenshots"+DIRECTORY_SEPARATOR+i2s(time(0x0))+"_"+ i2s(viewport[2]) + "_" + i2s(viewport[3])+".jpg", err, 100 );
       jpeg.m_pBuf = 0;
       free(pixeldata);
       free(pixeldata_flipped);

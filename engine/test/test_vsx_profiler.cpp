@@ -13,6 +13,8 @@ volatile __attribute__((aligned(64))) int64_t run_threads = 1;
 void *thread_producer( void *arg )
 {
   VSX_UNUSED(arg);
+  vsx_profiler_manager::get_instance()->init_profiler();
+
   vsx_profiler* p = vsx_profiler_manager::get_instance()->get_profiler();
   while ( __sync_fetch_and_add( &run_threads, 0) )
   {

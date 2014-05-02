@@ -25,8 +25,22 @@
 #define VSX_PROFILER_H
 
 #include <vsx_fifo.h>
+#include <unistd.h>
 #include <sys/types.h>
+#include <linux/unistd.h>
+#include <sys/syscall.h>
+#include <sys/stat.h>
+#include <pthread.h>
+#include <vsxfst.h>
+#include <vsx_error.h>
+#include <vsx_timer.h>
+#include <errno.h>
+
+#include <inttypes.h>
+
 #include <vsx_string.h>
+
+#include <vsx_data_path.h>
 
 // configuring options
 
@@ -53,13 +67,6 @@
  * ---
  **/
 
-pid_t gettid( void )
-{
-  return syscall( __NR_gettid );
-}
-
-
-
 #ifdef __i386
 __inline__ uint64_t vsx_profiler_rdtsc()
 {
@@ -82,6 +89,7 @@ inline uint64_t vsx_profiler_rdtsc()
 #define VSX_PROFILE_CHUNK_FLAG_END 1
 #define VSX_PROFILE_CHUNK_FLAG_SECTION_START 2
 #define VSX_PROFILE_CHUNK_FLAG_SECTION_END 3
+#define VSX_PROFILE_CHUNK_FLAG_TIMESTAMP 4  // written by I/O thread at the end of the run to calculate frequency
 
 // Profiler data chunk
 // Occupies exactly one cache line
@@ -194,7 +202,7 @@ public:
   {
     run_threads = 1;
 
-    vsx_printf("vsx_profiler_manager constructor\n");
+    vsx_printf("VSX PROFILER: constructor\n");
     pthread_mutex_init(&profiler_thread_lock, NULL);
 
     for (size_t i = 0; i < VSX_PROFILER_MAX_THREADS; i++)
@@ -202,7 +210,7 @@ public:
       thread_list[i] = 0;
     }
 
-    vsx_printf("starting consumer thread\n");
+    vsx_printf("VSX PROFILER: starting consumer thread\n");
 
     pthread_create(
       &consumer_pthread,
@@ -211,7 +219,7 @@ public:
       NULL
     );
 
-    vsx_printf("starting io thread\n");
+    vsx_printf("VSX PROFILER: starting io thread\n");
 
     pthread_create(
       &io_pthread,
@@ -223,10 +231,15 @@ public:
 
   ~vsx_profiler_manager()
   {
-    vsx_printf("setting run threads to false in profiler manager\n");
+    vsx_printf("VSX PROFILER: shutting down nicely\n");
     run_threads = false;
     pthread_join(io_pthread, NULL);
     pthread_join(consumer_pthread, NULL);
+  }
+
+  static vsx_string profiler_directory_get()
+  {
+    return vsx_data_path::get_instance()->data_path_get()+"profiler";
   }
 
 
@@ -236,15 +249,35 @@ public:
 
     vsx_profiler_manager* pm = vsx_profiler_manager::get_instance();
 
-    FILE* fp = fopen("/tmp/vsx_profile.dat", "wb");
+    vsx_string profiler_directory = profiler_directory_get();
+
+    if (access(profiler_directory.c_str(),0) != 0)
+      mkdir( (profiler_directory).c_str(), 0700);
+
+    vsx_string filename = profiler_directory + "/" + vsx_string(program_invocation_short_name) + "_" +i2s(time(0x0)) + ".dat";
+
+    vsx_timer timer;
+
+    FILE* fp = fopen( filename.c_str() , "wb");
+
+    timer.start();
     while ( __sync_fetch_and_add( &pm->run_threads, 0) )
     {
       vsx_profile_chunk* r;
       while ( pm->io_pool.consume(r) )
       {
-        fwrite(r,sizeof(vsx_profile_chunk)*RECIEVE_BUFFER_ITEMS,1,fp);
+        fwrite(r,sizeof(vsx_profile_chunk) * RECIEVE_BUFFER_ITEMS,1,fp);
       }
     }
+    double d = timer.dtime();
+
+    vsx_profile_chunk c;
+    c.cycles = vsx_profiler_rdtsc();
+    c.flags = VSX_PROFILE_CHUNK_FLAG_TIMESTAMP;
+    memset(c.tag,0,32);
+    sprintf(c.tag,"%f", d );
+    fwrite(&c,sizeof(vsx_profile_chunk),1,fp);
+
     fclose(fp);
     pthread_exit(0);
     return NULL;
@@ -300,11 +333,16 @@ public:
   }
 
 
+  static pid_t gettid( void )
+  {
+    return syscall( __NR_gettid );
+  }
+
   // Call this once per thread
   // - make sure to call it from inside the thread
   //
   // It does lookups per thread to give you the correct pointer
-  vsx_profiler* get_profiler()
+  void init_profiler()
   {
     // identify thread, if reaching 0 = first time, cache the value
     pid_t local_thread_id = gettid();
@@ -315,11 +353,14 @@ public:
     {
       if (thread_list[i] != 0 && thread_list[i] != local_thread_id)
         continue;
+
       if (thread_list[i] == local_thread_id)
       {
         pthread_mutex_unlock(&profiler_thread_lock);
-        return &profiler_list[i];
+        vsx_printf("VSX PROFILER: WARNING *** Profiler already initialized for thread id %d.\n",local_thread_id);
+        return;
       }
+
       if (thread_list[i] == 0)
         break;
     }
@@ -328,7 +369,28 @@ public:
     profiler_list[i].set_thread_id( local_thread_id );
 
     pthread_mutex_unlock(&profiler_thread_lock);
-    return &profiler_list[i];
+  }
+
+  // Call as many times per thread as needed to get local pointers
+  // However try to minimize it.
+  vsx_profiler* get_profiler() __attribute__((always_inline))
+  {
+    // identify thread, if reaching 0 = first time, cache the value
+    pid_t local_thread_id = gettid();
+
+    size_t i = 0;
+    for (i = 0; i < VSX_PROFILER_MAX_THREADS; i++)
+    {
+      if (thread_list[i] != 0 && thread_list[i] != local_thread_id)
+        continue;
+
+      if (thread_list[i] == local_thread_id)
+        return &profiler_list[i];
+
+      if (thread_list[i] == 0)
+        ERROR_EXIT("VSX PROFILER: Trying to get profiler without initializing it first. Reached end of profiler array.", 1);
+    }
+    return 0x0;
   }
 
   // Call this when exiting a thread.

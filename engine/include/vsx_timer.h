@@ -66,14 +66,19 @@ double ntime() {
 // accurate time
 double atime() {
 #ifdef _WIN32
-  	LARGE_INTEGER freq, time;
-  	QueryPerformanceFrequency(&freq);
-  	QueryPerformanceCounter(&time);  	
-    return (double)((double)(time.QuadPart-init_time) / (double)freq.QuadPart);; 
+  LARGE_INTEGER freq, time;
+  QueryPerformanceFrequency(&freq);
+  QueryPerformanceCounter(&time);
+  return (double)((double)(time.QuadPart-init_time) / (double)freq.QuadPart);;
 #else
-    struct timeval now;
-    gettimeofday(&now, 0);
-    return (double)now.tv_sec+0.000001*(double)now.tv_usec;
+  //struct timeval now;
+  //    gettimeofday(&now, 0);
+  //return (double)now.tv_sec + 0.000001*(double)now.tv_usec;
+
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  return (double)now.tv_sec + (double)now.tv_nsec * (1.0 / 1000000000.0);
+
 #endif
 }
 

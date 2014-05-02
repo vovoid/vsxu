@@ -1,4 +1,4 @@
-set(module_id vsxu_player)
+set(module_id vsxu_profiler)
 
 message("configuring            " ${module_id})
 
@@ -16,50 +16,62 @@ find_package(GLEW REQUIRED)
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
 
+
 ################################################################################
 # INCLUDES #####################################################################
 ################################################################################
+
 include_directories(
   ${OPENGL_INCLUDE_DIR}
   ${GLEW_INCLUDE_PATH}
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/engine/include
   ${CMAKE_SOURCE_DIR}/engine_graphics/include
-  ${CMAKE_SOURCE_DIR}/engine_audiovisual/include
-  ${CMAKE_SOURCE_DIR}/player/src
+  ${CMAKE_SOURCE_DIR}/widget/include
+  ${CMAKE_SOURCE_DIR}/profiler/src
+  ${CMAKE_SOURCE_DIR}/profiler/include
 )
 
 ################################################################################
 # DEFINES ######################################################################
 ################################################################################
+
+if(UNIX)
+  add_definitions(-D_LINUX)
+endif(UNIX)
+
+if(VSXU_DEBUG)
+  add_definitions(
+  -DDEBUG
+  )
+endif(VSXU_DEBUG)
+
+
 add_definitions(
- -DVSX_FONT_NO_FT
- -DDEBUG
- -DVSXU_DEVELOPER
- -DVSXU_ARTISTE
- -DVSXU_MULTIMONITOR
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )
 
-if(VSXU_DEBUG EQUAL 1)
-  add_definitions( -DVSXU_DEBUG )
-endif()
 
 ################################################################################
 # SOURCES ######################################################################
 ################################################################################
 
 set(SOURCES
-  src/main.cpp
-  src/application.cpp
-  src/vsx_overlay.cpp
+  src/profiler_main.cpp
+  src/profiler_application.cpp
+  src/profiler_desktop.cpp
+
+  src/profiler/vsx_widget_profiler.cpp
+  src/profiler/vsx_widget_profiler_timeline.cpp
+  src/profiler/vsx_widget_profiler_thread.cpp
 )
 
 ################################################################################
 # LINK #########################################################################
 ################################################################################
 
-add_executable(${module_id} ${SOURCES})
+add_executable(${module_id} ${SOURCES} )
+
 include(../cmake_suffix.txt)
 
 if(UNIX)
@@ -71,60 +83,16 @@ if(UNIX)
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
-    vsxu_engine_audiovisual
     vsxu_engine_graphics
-    vsxu_engine
+    vsx_widget
     rt
   )
-endif()
 
-if(WIN32)
-  target_link_libraries(
-  ${module_id}
-    ${GLFW_LIBRARY}
-    wsock32
-    ws2_32
-    ${CMAKE_THREAD_LIBS_INIT}
-    vsxu_engine_audiovisual
-    vsxu_engine_graphics
-    vsxu_engine
-    gdi32
-    ${OPENGL_LIBRARIES}
-)
-endif()
-
-
-if (VSXU_STATIC EQUAL 1)
-  include(../plugins/static_factory_cmake_target_link_libraries)
-endif()
-
+endif(UNIX)
 
 ################################################################################
 ## INSTALL #####################################################################
 ################################################################################
 
-install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT player)
-install(
-  DIRECTORY
-    ${CMAKE_SOURCE_DIR}/share/visuals_faders
-    ${CMAKE_SOURCE_DIR}/share/visuals_player
-    ${CMAKE_SOURCE_DIR}/share/font
-  DESTINATION
-    ${VSXU_INSTALL_SHARE_DIR}
-  COMPONENT player
-)
-
-
-IF (UNIX)
-  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/vsxu-player-fullscreen.desktop.in
-                  ${CMAKE_CURRENT_BINARY_DIR}/vsxu-player-fullscreen.desktop
-                  @ONLY)
-  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/vsxu-player.desktop.in
-                  ${CMAKE_CURRENT_BINARY_DIR}/vsxu-player.desktop
-                  @ONLY)
-
-  INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/vsxu-player-fullscreen.desktop
-                 ${CMAKE_CURRENT_BINARY_DIR}/vsxu-player.desktop
-           DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications/)
-ENDIF (UNIX)
+install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT profiler)
 
