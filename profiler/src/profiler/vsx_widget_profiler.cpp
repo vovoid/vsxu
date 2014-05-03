@@ -48,17 +48,17 @@ void vsx_widget_profiler::init()
   camera.set_distance(2.9);
 
   // Init Timeline
-  timeline_window = add(new vsx_widget_profiler_timeline_window, name+".timeline");
-  timeline_window->init();
-  timeline_window->set_size(vsx_vector<>(0.2,0.1));
-  timeline_window->set_render_type( render_2d );
-  ((vsx_widget_profiler_timeline_window*)timeline_window)->time_holder_set( &time );
+//  timeline_window = add(new vsx_widget_profiler_timeline_window, name+".timeline");
+//  timeline_window->init();
+//  timeline_window->set_size(vsx_vector<>(0.2,0.1));
+//  timeline_window->set_render_type( render_2d );
+//  ((vsx_widget_profiler_timeline_window*)timeline_window)->time_holder_set( &time );
 
   // Init File List
   vsx_widget_profiler_tree_window* profile_tree = (vsx_widget_profiler_tree_window*)add(new vsx_widget_profiler_tree_window, "profile_list");
   profile_tree->init();
-  profile_tree->set_size(vsx_vector<>(0.2,0.1));
-  profile_tree->set_pos( vsx_vector<>(0.5, 0.5) );
+  profile_tree->set_size(vsx_vector<>(0.15,1.0));
+  profile_tree->set_pos( vsx_vector<>(0.0, 0.0) );
   profile_tree->show();
   profile_tree->set_render_type(render_2d);
 
@@ -73,7 +73,7 @@ void vsx_widget_profiler::init()
 //  profile_tree->editor->enable_syntax_highlighting = false;
 //  profile_tree->editor->enable_line_action_buttons = true;
 //  profile_tree->pos_from_parent = true;
-//  profile_tree->extra_init();
+  profile_tree->extra_init();
   profile_tree->set_profiler( this );
 //
 
@@ -118,6 +118,8 @@ void vsx_widget_profiler::load_profile(int id)
 {
   vsx_printf("load profile %d\n", id);
   vsx_profiler_consumer::get_instance()->load_profile((size_t)id);
+
+  vsx_profiler_consumer::get_instance()->get_chunks(0.0, 5.0, consumer_chunks);
 }
 
 void vsx_widget_profiler::command_process_back_queue(vsx_command_s *t)

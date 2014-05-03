@@ -48,7 +48,7 @@ public:
     tree->init();
 
     font_size = 0.03;
-    tree->editor->set_font_size(0.008f);
+    tree->editor->set_font_size(0.012f);
     tree->editor->editing_enabled = false;
     tree->editor->selected_line_highlight = true;
     tree->editor->enable_syntax_highlighting = false;
@@ -64,7 +64,7 @@ public:
   {
     vsx_widget_window::i_draw();
 
-//    tree->set_pos(vsx_vector<>(size.x * 0.5,size.y * 0.5 - font_size + dragborder*0.5f));
+    tree->set_pos(vsx_vector<>(size.x * 0.5,size.y * 0.5 - font_size * 0.5 + dragborder*0.5f));
 //    tree->set_size(vsx_vector<>(size.x - dragborder * 2, size.y - 0.2 - font_size * 2.0 - dragborder * 2.0));
 
 
@@ -73,15 +73,19 @@ public:
 //    timeline->target_pos.y = timeline->pos.y =  size.y*0.5f - dragborder-timeline->size.y*0.5f;
 
   }
+  void extra_init()
+  {
+    tree->extra_init();
+  }
 
   void set_profiler( vsx_widget_profiler* p )
   {
-//    tree->set_profiler( p );
+    tree->set_profiler( p );
   }
 
   void set_string( vsx_string s )
   {
-//    tree->set_string( s );
+    tree->set_string( s );
   }
 
 

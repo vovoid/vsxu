@@ -91,7 +91,7 @@ public:
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);
   void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords);
   bool event_key_down(signed long key, bool alt = false, bool ctrl = false, bool shift = false);
-  void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button);
+  virtual void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_wheel(float y);
   void set_filter_string(vsx_string &filter_string);
   void fold_all();

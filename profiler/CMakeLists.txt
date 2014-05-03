@@ -83,6 +83,7 @@ if(UNIX)
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
+    vsxu_engine
     vsxu_engine_graphics
     vsx_widget
     rt

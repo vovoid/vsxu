@@ -8,9 +8,9 @@
 
 namespace vsx_color_aux
 {
-  inline vsx_color from_string(vsx_string &val) VSX_ALWAYS_INLINE
+  inline vsx_color<> from_string(vsx_string &val) VSX_ALWAYS_INLINE
   {
-    vsx_color res;
+    vsx_color<> res;
     vsx_string deli = ",";
     vsx_avector<vsx_string> pp;
     explode(val,deli,pp);
@@ -30,7 +30,7 @@ namespace vsx_color_aux
     return res;
   }
 
-  inline vsx_string to_string(const vsx_color &v, const int num_values = 4) VSX_ALWAYS_INLINE
+  inline vsx_string to_string(const vsx_color<> &v, const int num_values = 4) VSX_ALWAYS_INLINE
   {
     vsx_string local = f2s(v.r);
 
@@ -46,7 +46,7 @@ namespace vsx_color_aux
     return local;
   }
 
-  inline void dump(const vsx_color &v, char* label="n/a")
+  inline void dump(const vsx_color<> &v, char* label="n/a")
   {
     printf( "Name: %s. r: %f b: %f b: %f a: %f\n",label, v.r, v.g, v.b, v.a );
   }

@@ -15,7 +15,7 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
-
+find_package(Freetype REQUIRED)
 
 ################################################################################
 # INCLUDES #####################################################################
@@ -49,7 +49,7 @@ endif(VSXU_DEBUG)
 
 
 add_definitions(
- -DVSX_FONT_NO_FT
+# -DVSX_FONT_NO_FT
  -DVSXU_ARTISTE
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )
@@ -112,6 +112,7 @@ if(UNIX)
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
     ${TM_LIBRARY}
+    ${FREETYPE_LIBRARY}
     vsxu_engine_graphics
     vsxu_engine
     vsx_widget
@@ -137,6 +138,7 @@ if(WIN32)
     ${CMAKE_THREAD_LIBS_INIT}
     gdi32
     ${OPENGL_LIBRARIES}
+    vsxu_engine_graphics
   )
 endif(WIN32)
 

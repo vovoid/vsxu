@@ -26,6 +26,8 @@
 
 #include "vsx_widget_time_holder.h"
 
+#include "vsx_profiler_consumer.h"
+
 class vsx_widget_profiler : public vsx_widget
 {
   vsx_widget_time_holder time;
@@ -34,6 +36,10 @@ class vsx_widget_profiler : public vsx_widget
   std::vector<vsx_widget*> threads;
   vsx_widget* file_list;
   vsx_widget* timeline_window;
+
+
+
+  vsx_avector<vsx_profiler_consumer_chunk> consumer_chunks;
 
 public:
 
