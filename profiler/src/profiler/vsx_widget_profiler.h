@@ -53,7 +53,17 @@ class vsx_widget_profiler : public vsx_widget
   float time_scale;
   float time_offset;
 
+  float chunk_time_end;
 
+  float time_size_x;
+
+  vsx_vector<> mouse_pos;
+
+
+  float world_to_time_factor(float x)
+  {
+    return (x - time_offset) / time_size_x;
+  }
 
   vsx_avector<vsx_profiler_consumer_chunk> consumer_chunks;
   vsx_vbo_bucket<line_index, 2, GL_LINES, GL_STREAM_DRAW> draw_bucket;
@@ -71,6 +81,12 @@ public:
   void command_process_back_queue(vsx_command_s *t);
   bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
   void event_mouse_wheel(float y);
+
+  void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
+  {
+    VSX_UNUSED(distance);
+    mouse_pos = coords.world_global;
+  }
 
   void interpolate_size();
 };

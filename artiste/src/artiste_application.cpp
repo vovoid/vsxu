@@ -804,6 +804,8 @@ void app_mousewheel(float diff,int x,int y)
       //printf("would send mouse wheel to engine \n");
       return;
     }
+
+    desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
     desktop->mouse_wheel(diff);
   }
 }

@@ -41,12 +41,15 @@ void vsx_widget_profiler::init()
   support_interpolation = true;
   allow_resize_x = true;
   allow_resize_y = true;
-  set_size(vsx_vector<>(2.0f,1.5f));
+  set_size(vsx_vector<>(20.0f,20.0f));
   size_min.x = 0.2;
   size_min.y = 0.2;
 
-  time_scale = 30.0;
-  time_offset = -2.0;
+  time_scale = 1.0;
+  time_offset = 0.0;
+
+  allow_move_x = false;
+  allow_move_y = false;
 
 
   target_pos = pos = camera.get_pos_2d() + vsx_vector<>(0.25);
@@ -66,24 +69,8 @@ void vsx_widget_profiler::init()
   profile_tree->set_pos( vsx_vector<>(0.0, 0.0) );
   profile_tree->show();
   profile_tree->set_render_type(render_2d);
-
-
-
-//  profile_tree->coord_type = VSX_WIDGET_COORD_CORNER;
-//  profile_tree->set_pos(vsx_vector<>(size.x/2,size.y/2)-dragborder*2);
-//  profile_tree->editor->set_font_size(0.008f);
-//  profile_tree->size_from_parent = true;
-//  profile_tree->editor->editing_enabled = false;
-//  profile_tree->editor->selected_line_highlight = true;
-//  profile_tree->editor->enable_syntax_highlighting = false;
-//  profile_tree->editor->enable_line_action_buttons = true;
-//  profile_tree->pos_from_parent = true;
   profile_tree->extra_init();
   profile_tree->set_profiler( this );
-//
-
-
-
   profile_tree->set_string( vsx_profiler_consumer::get_instance()->get_filenames() );
   file_list = (vsx_widget*)profile_tree;
 
@@ -110,7 +97,6 @@ void vsx_widget_profiler::load_profile(int id)
 
   vsx_profiler_consumer::get_instance()->get_chunks(0.0, 5.0, consumer_chunks);
   update_vbo();
-
 }
 
 void vsx_widget_profiler::update_vbo()
@@ -125,13 +111,16 @@ void vsx_widget_profiler::update_vbo()
     vsx_profiler_consumer_chunk& chunk = consumer_chunks[i];
     float depth = -(chunk.depth + 1.0) * 0.1;
 
-    float cts = (chunk.time_start + time_offset) * time_scale;
-    float cte = (chunk.time_end + time_offset) * time_scale;
+    float cts = (chunk.time_start ) * time_scale + time_offset;
+    float cte = (chunk.time_end ) * time_scale + time_offset;
 
     draw_bucket.vertices.push_back( vsx_vector<>( cts, depth ) );
     draw_bucket.vertices.push_back( vsx_vector<>( cts, depth - 0.1 ) );
     draw_bucket.vertices.push_back( vsx_vector<>( cte, depth - 0.1 ) );
     draw_bucket.vertices.push_back( vsx_vector<>( cte, depth ) );
+
+    chunk_time_end = chunk.time_end;
+    time_size_x = chunk.time_end * time_scale;
 
     line_index idx;
     idx.a = draw_bucket.vertices.size() - 4;
@@ -167,6 +156,15 @@ void vsx_widget_profiler::i_draw()
   glColor4f(1,1,1,1);
   draw_bucket.output();
 
+  glColor4f(1,1,1,0.25);
+  glBegin(GL_LINES);
+    glVertex2f(mouse_pos.x, mouse_pos.y - 1000.0);
+    glVertex2f(mouse_pos.x, mouse_pos.y + 1000.0);
+
+    glVertex2f(mouse_pos.x - 1000.0, mouse_pos.y);
+    glVertex2f(mouse_pos.x + 1000.0, mouse_pos.y);
+  glEnd();
+
   vsx_widget::i_draw();
 }
 
@@ -191,49 +189,32 @@ bool vsx_widget_profiler::event_key_down(signed long key, bool alt, bool ctrl, b
   return true;
 }
 
+
+
 void vsx_widget_profiler::event_mouse_wheel(float y)
 {
-  vsx_printf(" mouse wheel: %f\n ", y);
-  time_scale += y;
+  if (ctrl)
+  {
+    time_offset += (1.0 / time_scale) * 0.025 * y * fabs(camera.get_pos_z());
+    update_vbo();
+    return;
+  }
+
+  float f = (mouse_pos.x + size.x * 0.5) / (size.x);
+
+  float factor = world_to_time_factor( mouse_pos.x );
+
+  float time_scale_pre = time_scale;
+
+  time_scale *= 1.0 + 0.05 * y;
+
+  time_offset -= factor * ( time_scale * chunk_time_end - time_scale_pre * chunk_time_end );
+
   update_vbo();
+
 }
 
 void vsx_widget_profiler::interpolate_size()
 {
   vsx_widget::interpolate_size();
-//  file_list->set_pos(vsx_vector<>(-size.x/2+0.05f+dragborder));
-//  file_list->set_size(vsx_vector<>(0.1f,size.y-dragborder*2));
-
-//  timeline_window->target_size.x = timeline_window->size.x = size.x-0.1f-dragborder*4;
-//  timeline_window->pos.x = timeline_window->target_pos.x = 0.05f;
-//  timeline_window->target_pos.y = timeline_window->pos.y =  size.y*0.5f - dragborder-timeline_window->size.y*0.5f;
-
-//  float ypos = size.y*0.5-dragborder*2-but_rew->size.y-timeline->size.y-dragborder;//-0.027-0.025;
-//  for (int i = 0; i < channels_start; ++i) channels[i]->visible = false;
-//  unsigned long i = channels_start;
-
-//  while (i < channels.size())
-//  {
-//    if (((vsx_widget_seq_channel*)channels[i])->hidden_by_sequencer)
-//    {
-//      channels[i]->visible = false;
-//    } else
-//    {
-//      if (ypos-channels[i]->size.y > -size.y*0.5)
-//      {
-//        channels[i]->size.x = timeline->size.x;
-//        if (render_type == render_2d)
-//          channels[i]->size.y = 0.16f;
-//        channels[i]->target_size = channels[i]->size;
-//        channels[i]->pos.x = 0.05f;
-//        channels[i]->pos.y = ypos-channels[i]->size.y*0.5;
-//        channels[i]->target_pos = channels[i]->pos;
-//        ypos -= channels[i]->size.y+dragborder;
-//        channels[i]->visible = true;
-//      } else {
-//        channels[i]->visible = false;
-//      }
-//    }
-//    ++i;
-//  }
 }

@@ -272,6 +272,8 @@ void app_mousewheel(float diff,int x,int y)
   if (!desktop)
     return;
 
+  desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
+
   desktop->mouse_move_passive((float)x,(float)y);
   desktop->mouse_wheel(diff);
 }
