@@ -15,7 +15,7 @@ class vsx_profiler_consumer_chunk
 public:
   double time_start;
   double time_end;
-  double depth;
+  long depth;
   vsx_string tag;
 };
 
@@ -151,6 +151,7 @@ public:
       if (chunk.flags == VSX_PROFILE_CHUNK_FLAG_START /*&& chunk.cycles > cycles_begin_time*/)
       {
         compute_stack[compute_stack_pointer].time_start = cycles_to_time( chunk.cycles );
+        compute_stack[compute_stack_pointer].tag = chunk.tag;
 //        vsx_printf("starting time inner: %f\n", compute_stack[compute_stack_pointer].time_start);
         compute_stack_pointer++;
         if (compute_stack_pointer == compute_stack_depth)

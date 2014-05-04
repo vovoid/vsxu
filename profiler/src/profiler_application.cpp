@@ -122,17 +122,28 @@ public:
     profiler->maj_begin();
     usleep(1000);
       profiler->sub_begin("init_frame");
-        desktop->init_frame();
+      usleep(200);
+        profiler->sub_begin("inner_init");
+
+          desktop->init_frame();
+        profiler->sub_end();
       profiler->sub_end();
 
       usleep(1000);
       profiler->sub_begin("desktop draw");
-        desktop->draw();
+        usleep(300);
+        profiler->sub_begin("inner_draw");
+          desktop->draw();
+        profiler->sub_end();
       profiler->sub_end();
       usleep(1000);
 
       profiler->sub_begin("draw 2d");
-        desktop->draw_2d();
+        usleep(100);
+
+        profiler->sub_begin("inner_draw");
+          desktop->draw_2d();
+        profiler->sub_end();
       profiler->sub_end();
       usleep(1000);
     profiler->maj_end();

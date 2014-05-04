@@ -41,6 +41,9 @@ typedef struct
 } line_index;
 
 
+const double chunk_height = 0.03;
+
+
 class vsx_widget_profiler : public vsx_widget
 {
   vsx_widget_time_holder time;
@@ -50,23 +53,40 @@ class vsx_widget_profiler : public vsx_widget
   vsx_widget* file_list;
   vsx_widget* timeline_window;
 
-  float time_scale;
-  float time_offset;
+  // profiler for profiling ourselves
+  vsx_profiler* profiler;
 
-  float chunk_time_end;
 
-  float time_size_x;
+
+
+  double time_scale;
+  double time_offset;
+
+  double chunk_time_end;
+  double one_div_chunk_time_end;
+
+  double time_size_x;
+  double one_div_time_size_x;
 
   vsx_vector<> mouse_pos;
 
-
-  float world_to_time_factor(float x)
+  double world_to_time_factor(double x)
   {
     return (x - time_offset) / time_size_x;
   }
 
+  int depth_from_mouse_position()
+  {
+    return (int)floor(-mouse_pos.y / chunk_height) - 1;
+  }
+
   vsx_avector<vsx_profiler_consumer_chunk> consumer_chunks;
+
+  vsx_profiler_consumer_chunk* selected_chunk;
+
   vsx_vbo_bucket<line_index, 2, GL_LINES, GL_STREAM_DRAW> draw_bucket;
+
+  vsx_avector<vsx_profiler_consumer_chunk*> tag_draw_chunks;
 
 public:
 
@@ -74,19 +94,21 @@ public:
   void update_list();
 
   void i_draw();
+  void draw_tags();
+
   void load_profile(int id);
 
   void update_vbo();
+  void update_tag_draw_chunks();
 
   void command_process_back_queue(vsx_command_s *t);
   bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
+
+
+  void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_wheel(float y);
 
-  void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
-  {
-    VSX_UNUSED(distance);
-    mouse_pos = coords.world_global;
-  }
+  void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords);
 
   void interpolate_size();
 };

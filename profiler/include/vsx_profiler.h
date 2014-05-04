@@ -120,12 +120,14 @@ public:
     vsx_profile_chunk chunk;
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_START;
     chunk.spin_waste = 0;
-    for (size_t i = 0; i < 44; i++)
+    size_t i;
+    for (i = 0; i < 32; i++)
     {
       if (i && tag[i-1] == 0)
         break;
       chunk.tag[i] = tag[i];
     }
+    chunk.tag[i-1] = 0;
     chunk.tid = thread_id;
     asm volatile("": : :"memory");
     chunk.cycles = vsx_profiler_rdtsc();

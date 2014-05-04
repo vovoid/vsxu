@@ -36,6 +36,9 @@
 #include "vsx_widget_profiler_tree.h"
 #include "vsx_widget_profiler_timeline.h"
 
+
+
+
 void vsx_widget_profiler::init()
 {
   support_interpolation = true;
@@ -51,6 +54,10 @@ void vsx_widget_profiler::init()
   allow_move_x = false;
   allow_move_y = false;
 
+  selected_chunk = 0x0;
+
+
+  profiler = vsx_profiler_manager::get_instance()->get_profiler();
 
   target_pos = pos = camera.get_pos_2d() + vsx_vector<>(0.25);
   camera.set_distance(2.9);
@@ -109,15 +116,22 @@ void vsx_widget_profiler::update_vbo()
   for (size_t i = 0; i < consumer_chunks.size(); i++)
   {
     vsx_profiler_consumer_chunk& chunk = consumer_chunks[i];
-    float depth = -(chunk.depth + 1.0) * 0.1;
+    float depth = -(chunk.depth + 1.0) * chunk_height;
 
     float cts = (chunk.time_start ) * time_scale + time_offset;
     float cte = (chunk.time_end ) * time_scale + time_offset;
 
+    //if (chunk.)
+
     draw_bucket.vertices.push_back( vsx_vector<>( cts, depth ) );
-    draw_bucket.vertices.push_back( vsx_vector<>( cts, depth - 0.1 ) );
-    draw_bucket.vertices.push_back( vsx_vector<>( cte, depth - 0.1 ) );
+    draw_bucket.vertices.push_back( vsx_vector<>( cts, depth - chunk_height ) );
+    draw_bucket.vertices.push_back( vsx_vector<>( cte, depth - chunk_height ) );
     draw_bucket.vertices.push_back( vsx_vector<>( cte, depth ) );
+
+    draw_bucket.vertex_colors.push_back( vsx_color<>(1.0, 1.0, 1.0, 0.5) );
+    draw_bucket.vertex_colors.push_back( vsx_color<>(1.0, 1.0, 1.0, 0.5) );
+    draw_bucket.vertex_colors.push_back( vsx_color<>(1.0, 1.0, 1.0, 0.5) );
+    draw_bucket.vertex_colors.push_back( vsx_color<>(1.0, 1.0, 1.0, 0.5) );
 
     chunk_time_end = chunk.time_end;
     time_size_x = chunk.time_end * time_scale;
@@ -135,10 +149,46 @@ void vsx_widget_profiler::update_vbo()
     idx.b = draw_bucket.vertices.size() - 1;
     draw_bucket.faces.push_back( idx );
   }
+
+  one_div_chunk_time_end = 1.0 / chunk_time_end;
+  one_div_time_size_x = 1.0 / time_size_x;
+
   draw_bucket.invalidate_vertices();
+  draw_bucket.invalidate_colors();
   draw_bucket.update();
+}
+
+void vsx_widget_profiler::update_tag_draw_chunks()
+{
+  tag_draw_chunks.reset_used();
+
+  for (size_t i = 0; i < consumer_chunks.size(); i++)
+  {
+    if
+    (
+      consumer_chunks[i].time_start * time_scale + time_offset > -15.0
+      &&
+      (consumer_chunks[i].time_end * time_scale) - (consumer_chunks[i].time_start * time_scale ) > 0.02
+    )
+    {
+      vsx_printf("adding chunk to tag print: %ld\n", i);
+      tag_draw_chunks.push_back( &consumer_chunks[i] );
+    }
+
+    if (consumer_chunks[i].time_start * time_scale + time_offset > 15.0)
+      break;
+  }
+}
+
+void vsx_widget_profiler::draw_tags()
+{
+  for (size_t i = 0; i < tag_draw_chunks.size(); i++)
+  {
+    font.print( vsx_vector<>( tag_draw_chunks[i]->time_start * time_scale + time_offset,  -(tag_draw_chunks[i]->depth + 1) * chunk_height - 0.01   ), tag_draw_chunks[i]->tag, 0.01 );
+  }
 
 }
+
 
 void vsx_widget_profiler::i_draw()
 {
@@ -156,6 +206,13 @@ void vsx_widget_profiler::i_draw()
   glColor4f(1,1,1,1);
   draw_bucket.output();
 
+
+  glColor4f(0,1,0,1);
+  glBegin(GL_LINES);
+    glVertex2f( - 1000.0, -chunk_height + 0.001);
+    glVertex2f(   1000.0, -chunk_height + 0.001);
+  glEnd();
+
   glColor4f(1,1,1,0.25);
   glBegin(GL_LINES);
     glVertex2f(mouse_pos.x, mouse_pos.y - 1000.0);
@@ -165,6 +222,30 @@ void vsx_widget_profiler::i_draw()
     glVertex2f(mouse_pos.x + 1000.0, mouse_pos.y);
   glEnd();
 
+  if (selected_chunk != 0x0)
+  {
+    float depth = -(selected_chunk->depth + 1.0) * chunk_height;
+
+    float cts = (selected_chunk->time_start ) * time_scale + time_offset;
+    float cte = (selected_chunk->time_end )   * time_scale + time_offset;
+
+    glColor4f(1, 0.25,0.25,0.95);
+    glBegin(GL_LINES);
+      glVertex2f( cts, depth);
+      glVertex2f( cts, depth - chunk_height );
+
+      glVertex2f( cts, depth - chunk_height );
+      glVertex2f( cte, depth - chunk_height );
+
+      glVertex2f( cte, depth - chunk_height );
+      glVertex2f( cte, depth );
+
+      glVertex2f( cte, depth );
+      glVertex2f( cts, depth);
+    glEnd();
+
+  }
+  draw_tags();
   vsx_widget::i_draw();
 }
 
@@ -189,14 +270,120 @@ bool vsx_widget_profiler::event_key_down(signed long key, bool alt, bool ctrl, b
   return true;
 }
 
+void vsx_widget_profiler::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+{
+  profiler->sub_begin("prof::event_mouse_down");
+
+  double x = coords.world_global.x;
+  double factor = world_to_time_factor(x);
+
+  // decide which way to iterate
+  long index = (long)(factor * consumer_chunks.size());
+
+
+  selected_chunk = 0x0;
+
+  int mouse_depth = depth_from_mouse_position();
+
+  vsx_printf("mouse depth: %d\n", mouse_depth);
+
+  if (mouse_depth < 0)
+  {
+    profiler->sub_end();
+    return;
+  }
+
+
+
+
+
+  for (size_t i = 0; i < consumer_chunks.size(); i++)
+  {
+    if
+    (
+      factor < consumer_chunks[i].time_end * one_div_chunk_time_end
+      &&
+      factor > consumer_chunks[i].time_start * one_div_chunk_time_end
+      &&
+      mouse_depth == consumer_chunks[i].depth
+    )
+    {
+      selected_chunk = &consumer_chunks[i];
+      profiler->sub_end();
+      return;
+    }
+  }
+
+  profiler->sub_end();
+
+
+
+//  if
+//  (
+//    factor < consumer_chunks[index].time_end * one_div_chunk_time_end
+//    &&
+//    factor > consumer_chunks[index].time_start * one_div_chunk_time_end
+//    &&
+//    mouse_depth == consumer_chunks[index].depth
+//  )
+//  {
+//    selected_chunk = &consumer_chunks[index];
+//  }
+
+//  int traversion = -1;
+//  if
+//  (
+//    factor > consumer_chunks[index].time_end * one_div_chunk_time_end
+//    &&
+//    factor > consumer_chunks[index].time_start * one_div_chunk_time_end
+//  )
+//  {
+//    traversion = 1;
+//  }
+
+//  while (1)
+//  {
+//    index += traversion;
+
+//    if (index > consumer_chunks.size() -1)
+//      break;
+
+//    if (index == -1)
+//      break;
+
+//    if
+//    (
+//      factor < consumer_chunks[index].time_end * one_div_chunk_time_end
+//      &&
+//      factor > consumer_chunks[index].time_start * one_div_chunk_time_end
+//      &&
+//      mouse_depth == consumer_chunks[index].depth
+//    )
+//    {
+//      selected_chunk = &consumer_chunks[index];
+//      break;
+//    }
+//  }
+
+
+}
+
+void vsx_widget_profiler::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
+{
+  VSX_UNUSED(distance);
+  mouse_pos = coords.world_global;
+}
 
 
 void vsx_widget_profiler::event_mouse_wheel(float y)
 {
   if (ctrl)
   {
-    time_offset += (1.0 / time_scale) * 0.025 * y * fabs(camera.get_pos_z());
+    vsx_printf("camera z: %f\n", camera.get_pos_z());
+
+    time_offset -= 0.025 * y * (camera.get_pos_z() - 1.1);
     update_vbo();
+    update_tag_draw_chunks();
     return;
   }
 
@@ -206,11 +393,12 @@ void vsx_widget_profiler::event_mouse_wheel(float y)
 
   float time_scale_pre = time_scale;
 
-  time_scale *= 1.0 + 0.05 * y;
+  time_scale *= 1.0 + chunk_height * y;
 
   time_offset -= factor * ( time_scale * chunk_time_end - time_scale_pre * chunk_time_end );
 
   update_vbo();
+  update_tag_draw_chunks();
 
 }
 
