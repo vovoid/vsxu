@@ -29,37 +29,8 @@
 #include <vsx_quaternion.h>
 #include <vsx_vector.h>
 #include <vsx_color.h>
-
-#ifndef __gl_h_
-typedef unsigned int GLuint;
-#endif
-
-class vsx_face {
-public:
-
-  vsx_face() {}
-
-  vsx_face(GLuint ia, GLuint ib, GLuint ic)
-    :
-    a(ia),
-    b(ib),
-    c(ic)
-  {}
-
-  GLuint a,b,c;
-};
-
-class vsx_tex_coord
-{
-public:
-  GLfloat s,t;
-  vsx_tex_coord(float ss = 0.0f, float tt = 0.0f)
-    :
-      s(ss),
-      t(tt)
-  {
-  }
-};
+#include <vsx_face.h>
+#include <vsx_texcoord.h>
 
 // the mesh contains vertices stored in a local coordinate system.
 #ifndef VSX_NO_MESH

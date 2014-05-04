@@ -130,21 +130,43 @@ public:
     {
       vsx_profile_chunk& chunk = current_profile[i];
 
-      if (chunk.flags == VSX_PROFILE_CHUNK_FLAG_SECTION_START && chunk.cycles > cycles_begin_time)
+      if (chunk.flags == VSX_PROFILE_CHUNK_FLAG_SECTION_START /* && chunk.cycles > cycles_begin_time*/)
       {
         compute_stack[compute_stack_pointer].time_start = cycles_to_time( chunk.cycles );
-        vsx_printf("starting time: %f\n", compute_stack[compute_stack_pointer].time_start);
+//        vsx_printf("starting time: %f\n", compute_stack[compute_stack_pointer].time_start);
         compute_stack_pointer++;
         if (compute_stack_pointer == compute_stack_depth)
           compute_stack_pointer--;
       }
-      if (chunk.flags == VSX_PROFILE_CHUNK_FLAG_SECTION_END && chunk.cycles > cpu_clock_start)
+
+      if (chunk.flags == VSX_PROFILE_CHUNK_FLAG_SECTION_END /*&& chunk.cycles > cycles_begin_time*/)
       {
         compute_stack_pointer--;
         compute_stack[compute_stack_pointer].time_end = cycles_to_time( chunk.cycles );
+        compute_stack[compute_stack_pointer].depth = compute_stack_pointer;
         chunks_result.push_back( compute_stack[compute_stack_pointer] );
-        vsx_printf("ending time: %f\n", compute_stack[compute_stack_pointer].time_end);
+//        vsx_printf("ending time: %f\n", compute_stack[compute_stack_pointer].time_end);
       }
+
+      if (chunk.flags == VSX_PROFILE_CHUNK_FLAG_START /*&& chunk.cycles > cycles_begin_time*/)
+      {
+        compute_stack[compute_stack_pointer].time_start = cycles_to_time( chunk.cycles );
+//        vsx_printf("starting time inner: %f\n", compute_stack[compute_stack_pointer].time_start);
+        compute_stack_pointer++;
+        if (compute_stack_pointer == compute_stack_depth)
+          compute_stack_pointer--;
+      }
+
+      if (chunk.flags == VSX_PROFILE_CHUNK_FLAG_END /*&& chunk.cycles > cycles_begin_time*/)
+      {
+        compute_stack_pointer--;
+        compute_stack[compute_stack_pointer].time_end = cycles_to_time( chunk.cycles );
+        compute_stack[compute_stack_pointer].depth = compute_stack_pointer;
+        chunks_result.push_back( compute_stack[compute_stack_pointer] );
+//        vsx_printf("ending time inner: %f\n", compute_stack[compute_stack_pointer].time_end);
+      }
+      //vsx_printf("stack pointer: %d\n", compute_stack_pointer);
+
     }
 
   }

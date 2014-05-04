@@ -44,6 +44,11 @@ void vsx_widget_profiler::init()
   set_size(vsx_vector<>(2.0f,1.5f));
   size_min.x = 0.2;
   size_min.y = 0.2;
+
+  time_scale = 30.0;
+  time_offset = -2.0;
+
+
   target_pos = pos = camera.get_pos_2d() + vsx_vector<>(0.25);
   camera.set_distance(2.9);
 
@@ -98,6 +103,54 @@ void vsx_widget_profiler::update_list()
 
 }
 
+void vsx_widget_profiler::load_profile(int id)
+{
+  vsx_printf("load profile %d\n", id);
+  vsx_profiler_consumer::get_instance()->load_profile((size_t)id);
+
+  vsx_profiler_consumer::get_instance()->get_chunks(0.0, 5.0, consumer_chunks);
+  update_vbo();
+
+}
+
+void vsx_widget_profiler::update_vbo()
+{
+  draw_bucket.vertices.reset_used();
+  draw_bucket.faces.reset_used();
+
+  vsx_printf("time scale: %f\n", time_scale);
+
+  for (size_t i = 0; i < consumer_chunks.size(); i++)
+  {
+    vsx_profiler_consumer_chunk& chunk = consumer_chunks[i];
+    float depth = -(chunk.depth + 1.0) * 0.1;
+
+    float cts = (chunk.time_start + time_offset) * time_scale;
+    float cte = (chunk.time_end + time_offset) * time_scale;
+
+    draw_bucket.vertices.push_back( vsx_vector<>( cts, depth ) );
+    draw_bucket.vertices.push_back( vsx_vector<>( cts, depth - 0.1 ) );
+    draw_bucket.vertices.push_back( vsx_vector<>( cte, depth - 0.1 ) );
+    draw_bucket.vertices.push_back( vsx_vector<>( cte, depth ) );
+
+    line_index idx;
+    idx.a = draw_bucket.vertices.size() - 4;
+    idx.b = draw_bucket.vertices.size() - 3;
+    draw_bucket.faces.push_back( idx );
+
+    idx.a = draw_bucket.vertices.size() - 3;
+    idx.b = draw_bucket.vertices.size() - 2;
+    draw_bucket.faces.push_back( idx );
+
+    idx.a = draw_bucket.vertices.size() - 2;
+    idx.b = draw_bucket.vertices.size() - 1;
+    draw_bucket.faces.push_back( idx );
+  }
+  draw_bucket.invalidate_vertices();
+  draw_bucket.update();
+
+}
+
 void vsx_widget_profiler::i_draw()
 {
   parentpos = get_pos_p();
@@ -111,16 +164,12 @@ void vsx_widget_profiler::i_draw()
   vsx_widget_skin::get_instance()->set_color_gl(0);
   draw_box_border(vsx_vector<>(parentpos.x-size.x*0.5,parentpos.y-size.y*0.5f), vsx_vector<>(size.x,size.y), dragborder);
 
+  glColor4f(1,1,1,1);
+  draw_bucket.output();
+
   vsx_widget::i_draw();
 }
 
-void vsx_widget_profiler::load_profile(int id)
-{
-  vsx_printf("load profile %d\n", id);
-  vsx_profiler_consumer::get_instance()->load_profile((size_t)id);
-
-  vsx_profiler_consumer::get_instance()->get_chunks(0.0, 5.0, consumer_chunks);
-}
 
 void vsx_widget_profiler::command_process_back_queue(vsx_command_s *t)
 {
@@ -140,6 +189,13 @@ bool vsx_widget_profiler::event_key_down(signed long key, bool alt, bool ctrl, b
   VSX_UNUSED(ctrl);
   VSX_UNUSED(shift);
   return true;
+}
+
+void vsx_widget_profiler::event_mouse_wheel(float y)
+{
+  vsx_printf(" mouse wheel: %f\n ", y);
+  time_scale += y;
+  update_vbo();
 }
 
 void vsx_widget_profiler::interpolate_size()

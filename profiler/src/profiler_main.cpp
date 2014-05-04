@@ -197,7 +197,6 @@ int main(int argc, char* argv[])
 
   if (vsx_argvector::get_instance()->has_param("help"))
   {
-    glewInit();
     app_print_cli_help();
     exit(0);
   }
@@ -272,6 +271,9 @@ int main(int argc, char* argv[])
     glfwTerminate();
     return 0;
   }
+
+  glewInit();
+
 
   if (start_fullscreen) glfwEnable( GLFW_MOUSE_CURSOR );
   app_init();

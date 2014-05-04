@@ -24,9 +24,22 @@
 #ifndef VSX_WIDGET_PROFILER_H
 #define VSX_WIDGET_PROFILER_H
 
+// widget
+#include <vsx_widget.h>
+
+// engine_graphics
+#include <vsx_vbo_bucket.h>
+
+
 #include "vsx_widget_time_holder.h"
 
 #include "vsx_profiler_consumer.h"
+typedef struct
+{
+  GLuint a;
+  GLuint b;
+} line_index;
+
 
 class vsx_widget_profiler : public vsx_widget
 {
@@ -37,9 +50,13 @@ class vsx_widget_profiler : public vsx_widget
   vsx_widget* file_list;
   vsx_widget* timeline_window;
 
+  float time_scale;
+  float time_offset;
+
 
 
   vsx_avector<vsx_profiler_consumer_chunk> consumer_chunks;
+  vsx_vbo_bucket<line_index, 2, GL_LINES, GL_STREAM_DRAW> draw_bucket;
 
 public:
 
@@ -49,8 +66,12 @@ public:
   void i_draw();
   void load_profile(int id);
 
+  void update_vbo();
+
   void command_process_back_queue(vsx_command_s *t);
   bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
+  void event_mouse_wheel(float y);
+
   void interpolate_size();
 };
 

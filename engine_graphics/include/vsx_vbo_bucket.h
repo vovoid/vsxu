@@ -1,6 +1,12 @@
 #ifndef VSX_VBO_BUCKET_H
 #define VSX_VBO_BUCKET_H
 
+#include <vsx_array.h>
+#include <vsx_vector.h>
+#include <vsx_face.h>
+#include <vsx_texcoord.h>
+
+
 /*
   VSXu VBO Bucket helper class
 
