@@ -191,6 +191,25 @@ int main(int argc, char* argv[])
 
   vsx_profiler_manager::get_instance()->init_profiler();
   vsx_profiler* profiler = vsx_profiler_manager::get_instance()->get_profiler();
+  profiler->maj_begin();
+
+    profiler->sub_begin("prepare physics");
+
+      profiler->sub_begin("calculate level");
+
+      profiler->sub_end();
+
+      // prepare physics...
+    profiler->sub_end();
+
+    profiler->sub_begin("draw frame");
+      // here we draw the frame
+    profiler->sub_end();
+
+
+  profiler->maj_end();
+
+
 
   for (size_t i = 0; i < (size_t)argc; i++)
   {
@@ -365,6 +384,7 @@ int main(int argc, char* argv[])
   int initial_vram_free = 0;
   while( running )
   {
+    profiler->maj_begin();
 
     frame_delay.start();
 
@@ -374,40 +394,6 @@ int main(int argc, char* argv[])
       else app_mouse_move_passive(last_x,last_y);
       mouse_pos_type = 0;
     }
-
-
-    if (__GLEW_NVX_gpu_memory_info && display_gpu_vram_stats)
-    {
-    //      #define GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX 0x9047
-    //      #define GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX 0x9048
-    //      #define GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX 0x9049
-    //      #define GL_GPU_MEMORY_INFO_EVICTION_COUNT_NVX 0x904A
-    //      #define GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX 0x904B
-
-//          GLint total_memory;
-//          GLint total_available;
-          GLint available_memory;
-//          GLint eviction_count;
-//          GLint eviction_size;
-//          glGetIntegerv(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &total_memory);
-//          glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &total_available);
-//          glGetIntegerv(GL_GPU_MEMORY_INFO_EVICTION_COUNT_NVX, &eviction_count);
-//          glGetIntegerv(GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX, &eviction_size);
-
-          glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &available_memory);
-//          float available_memory_f = (float)available_memory;
-
-          if (initial_vram_free == 0) initial_vram_free = available_memory >> 10;
-
-          vsx_printf("GPU MEMORY INFO: Before frame: available vram: %d MB\n", available_memory >> 10);
-          vsx_printf("GPU MEMORY INFO: Probably used vram: %d MB\n", initial_vram_free - (available_memory >> 10));
-
-          //if (gtm)
-          //((vsx_tm*)gtm)->plot( available_memory_f, "gpu memory free" );
-
-    }
-
-    profiler->maj_begin();
 
     app_pre_draw();
 
@@ -461,17 +447,17 @@ int main(int argc, char* argv[])
 
 
 #if (PLATFORM != PLATFORM_WINDOWS)
-    if (!vsync)
-    {
+//    if (!vsync)
+//    {
 
-      float dtime = frame_delay.dtime();
+//      float dtime = frame_delay.dtime();
 
-      if (dtime < 1.0f/60.0f)
-      {
-        float sleeptime = (1.0f / 60.0f - dtime)*1000000.0f;
-        usleep( (useconds_t) sleeptime );
-      }
-    }
+//      if (dtime < 1.0f/60.0f)
+//      {
+//        float sleeptime = (1.0f / 60.0f - dtime)*1000000.0f;
+//        usleep( (useconds_t) sleeptime );
+//      }
+//    }
 #endif
 
 

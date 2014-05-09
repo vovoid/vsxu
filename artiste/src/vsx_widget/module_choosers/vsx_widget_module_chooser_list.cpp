@@ -128,14 +128,10 @@ public:
     draw_tooltip = 0;
     if (mod_i != -1)
     {
-      //if (i_mod_info[mod_i]->description.size()>1)
-      //{
-        tooltip_pos = coords.screen_global;
-        tooltip_pos.x += 0.08;
-        tooltip_text = i_mod_info[mod_i]->identifier+"\n---------------------\n"+i_mod_info[mod_i]->description;
-        draw_tooltip = 1;
-      //}
-      //printf("hovering over %s\n", i_mod_info[mod_i]->description.c_str() );
+      tooltip_pos = coords.screen_global;
+      tooltip_pos.x += 0.08;
+      tooltip_text = i_mod_info[mod_i]->identifier+"\n---------------------\n"+i_mod_info[mod_i]->description;
+      draw_tooltip = 1;
     }
   }
 
@@ -338,31 +334,6 @@ void vsx_module_chooser_list::command_process_back_queue(vsx_command_s *t) {
     parent->vsx_command_queue_b(this);
     visible = 0; return;
   }
-/*    vsx_string first_res;
-      vsx_avector<vsx_string> res;
-      for (unsigned long i = 0; i < edits.size(); ++i) {
-        if (!first_res.size()) first_res = ((vsx_widget_base_edit*)(edits[i]))->get_string();
-        else
-        {
-          printf("res pushback\n");
-          res.push_back( ((vsx_widget_base_edit*)(edits[i]))->get_string() );
-          ((vsx_widget_base_edit*)(edits[i]))->set_string("");
-        }
-      }
-      vsx_string i("|");
-      vsx_string ress = implode(res, i);
-      printf("ress. %s\n",ress.c_str());
-      vsx_string cmd = name+" "+first_res;
-      if (ress.size()) {
-        cmd += " "+base64_encode(ress);
-      }
-      command_q_b.add_raw(cmd);*/
-//    } else {
-//      command_q_b.add_raw(name+" "+((vsx_widget_base_edit*)edit1)->get_string());
-//      parent->vsx_command_queue_b(this);
-//      ((vsx_widget_base_edit*)edit1)->set_string("");
-//    }
-  //}
   visible = 0;
 }
 
@@ -382,15 +353,16 @@ void vsx_module_chooser_list::build_tree()
   for (i = 0; i < i_rows.size(); i++) {
     std::vector<vsx_string> parts;
     vsx_string deli = ";";
-    //printf("i_rows[i]: %s     %d\n", i_rows[i].c_str(),p_stack.size());
     explode(i_rows[i], deli, parts);
     for (j = 0; j < parts.size()-1; j++)
     {
       bool change = false;
       if (j == parts.size()-2 && p_stack.size() >= j+2)
       {
-        while (p_stack.size() != j+1) p_stack.pop_back();
+        while (p_stack.size() != j+1)
+          p_stack.pop_back();
       }
+
       if (p_stack.size() >= j+1)
       {
         // stack has something, check if it's the same as we got
@@ -407,22 +379,29 @@ void vsx_module_chooser_list::build_tree()
         p_stack.push_back(parts[j]);
         change = true;
       }
-      if (!change) continue;
+      if (!change)
+        continue;
+
       // add whitespaces
-      for (unsigned long k = 0; k < (p_stack.size()-1) * 4; k++) result += " ";
+      for (unsigned long k = 0; k < (p_stack.size()-1) * 4; k++)
+        result += " ";
+
       // add string
       result += "+ ";
       result += (parts[j]+"\n");
       ((vsx_widget_chooser_editor*)widget_list)->i_rows_lookup.push_back(-1);
     }
-    for (unsigned long k = 0; k < (p_stack.size()) * 4; k++) result += " ";
+
+    for (unsigned long k = 0; k < (p_stack.size()) * 4; k++)
+      result += " ";
+
     // add string
     result += (parts[parts.size()-1]+"\n");
     ((vsx_widget_chooser_editor*)widget_list)->i_rows_lookup.push_back(module_id);
     module_id++;
   }
   i_rows.clear();
-//	printf("RESULT\nRESULT\nRESULT\nRESULT\n\n%s",result.c_str());
+
   ((vsx_widget_chooser_editor*)widget_list)->set_string(result);
   ((vsx_widget_chooser_editor*)widget_list)->editor->fold_all();
 }

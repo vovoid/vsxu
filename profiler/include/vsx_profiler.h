@@ -30,7 +30,6 @@
 #include <linux/unistd.h>
 #include <sys/syscall.h>
 #include <sys/stat.h>
-//#include <errno.h>
 
 #include <inttypes.h>
 
@@ -40,13 +39,22 @@
  * ---
  * void thread_worker(void* ptr)
  * {
+ *
  *   vsx_profiler* profiler = vsx_profiler::get_instance();
+ *   profiler->thread_name("main thread");
+ *
  *   // set up
- *   profiler->begin("calculating stuff");
- *   //
+ *
+ *   profiler->maj_begin();
+ *   profiler->sub_begin("calculating stuff");
  *   // do your work here
- *   //
- *   profiler->end();
+ *   profiler->sub_end();
+ *   profiler->sub_begin("calculating more");
+ *     profiler->sub_begin("calculating inner");
+ *       // do more complicated work here
+ *     profiler->sub_end();
+ *   profiler->sub_end();
+ *   profiler->maj_end();
  * }
  * ---
  **/
@@ -74,7 +82,9 @@ inline uint64_t vsx_profiler_rdtsc()
 #define VSX_PROFILE_CHUNK_FLAG_SECTION_START 2
 #define VSX_PROFILE_CHUNK_FLAG_SECTION_END 3
 #define VSX_PROFILE_CHUNK_FLAG_TIMESTAMP 4  // written by I/O thread at the end of the run to calculate frequency
+#define VSX_PROFILE_CHUNK_FLAG_THREAD_NAME 10
 
+#define VSX_PROFILE_CHUNK_FLAG_PLOT_NAME 100 // plot name
 #define VSX_PROFILE_CHUNK_FLAG_PLOT_1 101 // plot 1 double
 #define VSX_PROFILE_CHUNK_FLAG_PLOT_2 102 // plot 2 doubles
 #define VSX_PROFILE_CHUNK_FLAG_PLOT_3 103 // plot 3 doubles
@@ -84,10 +94,10 @@ inline uint64_t vsx_profiler_rdtsc()
 // Occupies exactly one cache line
 typedef struct
 {
- /*8 */ uint64_t   cycles;     // cpu cycles
- /*8 */ uint64_t   flags;      // bit-mask
- /*8 */ uint64_t   id;         // thread or plot/other id
- /*8 */ uint64_t   spin_waste; // cycles wasted spinning waiting for a full buffer
+ /*8 */ u_int64_t   cycles;     // cpu cycles
+ /*8 */ u_int64_t   flags;      // bit-mask
+ /*8 */ u_int64_t   id;         // thread or plot/other id
+ /*8 */ u_int64_t   spin_waste; // cycles wasted spinning waiting for a full buffer
  /*32*/ char       tag[32];    // text describing the section
 } vsx_profile_chunk;
 
@@ -104,6 +114,34 @@ public:
     thread_id = new_id;
   }
 
+  /**
+   * @brief thread_name If you don't name a thread, the GUI will not display it.
+   * @param tag
+   */
+  inline void thread_name( const char* tag ) __attribute__((always_inline))
+  {
+    vsx_profile_chunk chunk;
+    chunk.flags = VSX_PROFILE_CHUNK_FLAG_THREAD_NAME;
+    chunk.spin_waste = 0;
+    size_t i;
+    for (i = 0; i < 32; i++)
+    {
+      if (i && tag[i-1] == 0)
+        break;
+      chunk.tag[i] = tag[i];
+    }
+    chunk.tag[i-1] = 0;
+    chunk.id = thread_id;
+    // get dizzy
+    while (!queue.produce(chunk)) {}
+  }
+
+  /**
+   * @brief sub_begin
+   * Call this (paired with sub_end) around anything you want to measure.
+   *7
+   * @param tag
+   */
   inline void sub_begin( const char* tag ) __attribute__((always_inline))
   {
     vsx_profile_chunk chunk;
@@ -142,6 +180,11 @@ public:
     }
   }
 
+  /**
+   * @brief maj_begin
+   * Call this once per major cycle (graphics frame, sound buffer turnover etc)
+   * Should not be nested!
+   */
   inline void maj_begin()
   {
     vsx_profile_chunk chunk;
@@ -157,6 +200,9 @@ public:
     }
   }
 
+  /**
+   * @brief maj_end Call this once per major cycle (graphics frame, sound buffer turnover etc)
+   */
   inline void maj_end()
   {
     uint64_t t = vsx_profiler_rdtsc();
@@ -171,10 +217,35 @@ public:
     }
   }
 
+  /**
+   * @brief thread_name If you don't name a thread, the GUI will not display it.
+   * @param tag
+   */
+  inline void plot_name(uint64_t id, const char* tag ) __attribute__((always_inline))
+  {
+    vsx_profile_chunk chunk;
+    chunk.flags = VSX_PROFILE_CHUNK_FLAG_THREAD_NAME;
+    chunk.spin_waste = 0;
+    size_t i;
+    for (i = 0; i < 32; i++)
+    {
+      if (i && tag[i-1] == 0)
+        break;
+      chunk.tag[i] = tag[i];
+    }
+    chunk.tag[i-1] = 0;
+    chunk.id = id;
+
+    // get dizzy
+    while (!queue.produce(chunk)) {}
+  }
+
+
+
   inline void plot_1(uint64_t id, double a)
   {
     vsx_profile_chunk chunk;
-    memcpy( (void*)&chunk.tag[0], &a, sizeof(double) );
+    *(double*)(&chunk.tag[0]) = a;
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_1;
     chunk.id = id;
     chunk.cycles = vsx_profiler_rdtsc();
@@ -188,8 +259,8 @@ public:
   inline void plot_2(uint64_t id, double a, double b)
   {
     vsx_profile_chunk chunk;
-    memcpy( (void*)&chunk.tag[0], &a, sizeof(double) );
-    memcpy( (void*)&chunk.tag[8], &b, sizeof(double) );
+    *(double*)(&chunk.tag[0]) = a;
+    *(double*)(&chunk.tag[8]) = b;
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_2;
     chunk.id = id;
     chunk.cycles = vsx_profiler_rdtsc();

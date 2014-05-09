@@ -437,15 +437,14 @@ void vsx_widget_base_edit::fold_all()
   for (unsigned long i = 0; i < lines_visible.size(); i++)
   {
     int white = count_whitespaces(lines[i]);
-    if (white_frac == 0 && white > prev_white) white_frac = white;
-    //if (white < prev_white) val--;
-    //prev_white = white;
-    //if (val < 0) val = 0;
-    //if (white == 0) val = 0;
-    if (white_frac == 0) val = 0;
+    if (white_frac == 0 && white > prev_white)
+      white_frac = white;
+
+    if (white_frac == 0)
+      val = 0;
     else
-    val = white / white_frac;
-    //printf("%d %s\n", val,lines[i].c_str());
+      val = white / white_frac;
+
     lines_visible[i] = val;
   }
   calculate_scroll_size();

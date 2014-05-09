@@ -50,7 +50,12 @@ class vsx_profiler_consumer
 {
   vsx_avector<vsx_string> filenames;
 
+
   vsx_avector<vsx_profile_chunk> current_profile;
+
+  vsx_avector<u_int64_t> current_threads;
+  vsx_avector<u_int64_t> current_plots;
+
   vsxf filesystem;
 
   double current_max_time;
@@ -133,6 +138,50 @@ public:
 
     cycles_per_second = (cpu_clock_end-cpu_clock_start) / current_max_time;
     one_div_cycles_per_second = 1.0 / cycles_per_second;
+
+    for (size_t i = 0; i < current_profile.size()-2; i++)
+    {
+      vsx_profile_chunk& chunk = current_profile[i];
+
+      if (chunk.flags < 100) // regular
+      {
+        bool found = false;
+        size_t j = 0;
+        while (!found && j < current_threads.size())
+        {
+          if (current_threads[j] == chunk.id)
+            found = true;
+          j++;
+        }
+
+        if (!found)
+          current_threads.push_back(chunk.id);
+      }
+      if (chunk.flags > 100) // plot
+      {
+        bool found = false;
+        size_t j = 0;
+        while (!found && j < current_plots.size())
+        {
+          if (current_plots[j] == chunk.id)
+            found = true;
+          j++;
+        }
+
+        if (!found)
+          current_plots.push_back(chunk.id);
+      }
+    }
+
+    for (size_t i = 0; i < current_threads.size(); i++)
+    {
+      vsx_printf("Current thread: %ld\n", current_threads[i]);
+    }
+    for (size_t i = 0; i < current_plots.size(); i++)
+    {
+      vsx_printf("Current plot: %ld\n", current_plots[i]);
+    }
+
 
     vsx_printf("max time: %f\n", current_max_time);
     vsx_printf("clock frequency: %f\n", (double)(cpu_clock_end-cpu_clock_start) / current_max_time );

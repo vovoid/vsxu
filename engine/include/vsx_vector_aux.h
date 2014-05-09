@@ -43,7 +43,7 @@ namespace vsx_vector_aux
   template<typename T>
   inline void dump(const vsx_vector<T> &v, char* label="n/a")
   {
-    printf( "Name: %s. x: %f y: %f z: %f\n",label, v.x, v.y, v.z );
+    vsx_printf( "Name: %s. x: %f y: %f z: %f\n",label, v.x, v.y, v.z );
   }
 
 }

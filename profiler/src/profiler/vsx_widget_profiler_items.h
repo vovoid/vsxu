@@ -27,7 +27,7 @@
 #include <vsx_widget_window.h>
 #include <widgets/vsx_widget_base_edit.h>
 
-class vsx_widget_profiler_tree : public vsx_widget_editor
+class vsx_widget_profiler_items : public vsx_widget_editor
 {
   vsx_widget_profiler* profiler;
 
@@ -54,7 +54,7 @@ public:
   }
 };
 
-class vsx_widget_profiler_tree_window : public vsx_widget_window
+class vsx_widget_profiler_items_window : public vsx_widget_window
 {
   vsx_widget_profiler_tree* tree;
 
