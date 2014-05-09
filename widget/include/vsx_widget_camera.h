@@ -56,6 +56,12 @@ public:
     return vsx_vector<>(xp, yp, zp);
   }
 
+  void set_pos( vsx_vector<> destination )
+  {
+    camera_target = destination;
+    interpolating = true;
+  }
+
   vsx_vector<> get_pos_2d()
   {
     return vsx_vector<>(xp, yp, 0.0);

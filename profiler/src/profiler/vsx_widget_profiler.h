@@ -106,6 +106,8 @@ public:
 
 
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
+  void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button);
+
   void event_mouse_wheel(float y);
 
   void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords);

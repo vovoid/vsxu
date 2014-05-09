@@ -5,7 +5,7 @@
 
 #include <vsxfst.h>
 #include <vsx_avector.h>
-#include <vsx_profiler.h>
+#include <vsx_profiler_manager.h>
 #include <vsxfst.h>
 
 const size_t compute_stack_depth = 128;
@@ -16,6 +16,9 @@ public:
   double time_start;
   double time_end;
   long depth;
+  uint64_t   flags;
+  uint64_t   cyclea_start;
+  uint64_t   cycles_end;
   vsx_string tag;
 };
 
@@ -117,13 +120,22 @@ public:
     return (double)(cycles - cpu_clock_start) * one_div_cycles_per_second;
   }
 
+  /**
+   * @brief get_chunks
+   * @param t_start
+   * @param t_end
+   * @param chunks_result
+   */
   void get_chunks(double t_start, double t_end, vsx_avector<vsx_profiler_consumer_chunk> &chunks_result)
   {
+    VSX_UNUSED(t_start);
+    VSX_UNUSED(t_end);
+
     if (current_profile.size() < 2)
       ERROR_RETURN("Not enough chunks in loaded profile data");
 
-    uint64_t cycles_begin_time = cpu_clock_start + (uint64_t)(t_start * cycles_per_second);
-    uint64_t cycles_end_time = cpu_clock_start + (uint64_t)(t_end * cycles_per_second);
+//    uint64_t cycles_begin_time = cpu_clock_start + (uint64_t)(t_start * cycles_per_second);
+//    uint64_t cycles_end_time = cpu_clock_start + (uint64_t)(t_end * cycles_per_second);
 
     // now find the first major chunk
     for (size_t i = 0; i < current_profile.size(); i++)
@@ -133,6 +145,7 @@ public:
       if (chunk.flags == VSX_PROFILE_CHUNK_FLAG_SECTION_START /* && chunk.cycles > cycles_begin_time*/)
       {
         compute_stack[compute_stack_pointer].time_start = cycles_to_time( chunk.cycles );
+        compute_stack[compute_stack_pointer].cyclea_start = chunk.cycles;
 //        vsx_printf("starting time: %f\n", compute_stack[compute_stack_pointer].time_start);
         compute_stack_pointer++;
         if (compute_stack_pointer == compute_stack_depth)
@@ -141,9 +154,12 @@ public:
 
       if (chunk.flags == VSX_PROFILE_CHUNK_FLAG_SECTION_END /*&& chunk.cycles > cycles_begin_time*/)
       {
-        compute_stack_pointer--;
+        if (compute_stack_pointer != 0)
+          compute_stack_pointer--;
+
         compute_stack[compute_stack_pointer].time_end = cycles_to_time( chunk.cycles );
         compute_stack[compute_stack_pointer].depth = compute_stack_pointer;
+        compute_stack[compute_stack_pointer].cycles_end = chunk.cycles;
         chunks_result.push_back( compute_stack[compute_stack_pointer] );
 //        vsx_printf("ending time: %f\n", compute_stack[compute_stack_pointer].time_end);
       }
@@ -152,6 +168,7 @@ public:
       {
         compute_stack[compute_stack_pointer].time_start = cycles_to_time( chunk.cycles );
         compute_stack[compute_stack_pointer].tag = chunk.tag;
+        compute_stack[compute_stack_pointer].cyclea_start = chunk.cycles;
 //        vsx_printf("starting time inner: %f\n", compute_stack[compute_stack_pointer].time_start);
         compute_stack_pointer++;
         if (compute_stack_pointer == compute_stack_depth)
@@ -160,9 +177,12 @@ public:
 
       if (chunk.flags == VSX_PROFILE_CHUNK_FLAG_END /*&& chunk.cycles > cycles_begin_time*/)
       {
-        compute_stack_pointer--;
+        if (compute_stack_pointer != 0)
+          compute_stack_pointer--;
+
         compute_stack[compute_stack_pointer].time_end = cycles_to_time( chunk.cycles );
         compute_stack[compute_stack_pointer].depth = compute_stack_pointer;
+        compute_stack[compute_stack_pointer].cycles_end = chunk.cycles;
         chunks_result.push_back( compute_stack[compute_stack_pointer] );
 //        vsx_printf("ending time inner: %f\n", compute_stack[compute_stack_pointer].time_end);
       }
