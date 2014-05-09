@@ -1,5 +1,5 @@
 /**
-* Project: VSXu: Realtime modular visual programming language, music/audio visualizer.
+* Project: VSXu Profiler - Data collection and data visualizer
 *
 * This file is part of Vovoid VSXu.
 *

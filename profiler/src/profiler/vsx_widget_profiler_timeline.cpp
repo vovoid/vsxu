@@ -1,5 +1,5 @@
 /**
-* Project: VSXu: Realtime modular visual programming language, music/audio visualizer.
+* Project: VSXu Profiler - Data collection and data visualizer
 *
 * This file is part of Vovoid VSXu.
 *
@@ -20,7 +20,6 @@
 * with this program; if not, write to the Free Software Foundation, Inc.,
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-
 
 #include "vsx_widget.h"
 #include "vsx_widget_profiler_timeline.h"
