@@ -29,6 +29,7 @@ include_directories(
   ../include
   ../../include
   ${CMAKE_SOURCE_DIR}/engine/include
+  ${CMAKE_SOURCE_DIR}/profiler/include
   ${CMAKE_SOURCE_DIR}/engine_graphics/include
   ../../../
 )

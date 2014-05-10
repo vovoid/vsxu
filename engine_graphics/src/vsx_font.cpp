@@ -43,6 +43,7 @@ vsx_font_info* vsx_font::init(vsx_string font, vsxf* filesystem)
 {
   my_font_info = glist[font] = new vsx_font_info;
 
+
   if (font[0] != '-')
   {
     my_font_info->type = 0;
@@ -134,7 +135,6 @@ void vsx_font::reinit_all_active()
 
         dx = 0;
         dy = 0;
-        //dz = 0;
 
         glPushMatrix();
         glTranslatef(p.x,p.y,p.z);
@@ -142,6 +142,7 @@ void vsx_font::reinit_all_active()
           if (!(*(my_font_info->texture)).bind())
           {
             vsx_printf("font could not bind texture!\n");
+
             return vsx_vector<>();
           }
 
@@ -206,7 +207,6 @@ void vsx_font::reinit_all_active()
                 glTexCoord2f(ex, ey);  glVertex2f(dx+size_s,  dy);
               dx += ddx;
             }
-
           }
           glEnd();
           (*(my_font_info->texture))._bind();

@@ -24,6 +24,7 @@ include_directories(
   ${GLEW_INCLUDE_PATH}
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/engine/include
+  ${CMAKE_SOURCE_DIR}/profiler/include
   ${CMAKE_SOURCE_DIR}/engine_graphics/include
   ${CMAKE_SOURCE_DIR}/engine_audiovisual/include
   ${CMAKE_SOURCE_DIR}/player/src

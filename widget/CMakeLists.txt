@@ -21,6 +21,7 @@ include_directories(
   ../
   ../engine/include
   ../engine_graphics/include
+  ../profiler/include
   include
   include/widgets
 )

@@ -191,25 +191,6 @@ int main(int argc, char* argv[])
 
   vsx_profiler_manager::get_instance()->init_profiler();
   vsx_profiler* profiler = vsx_profiler_manager::get_instance()->get_profiler();
-  profiler->maj_begin();
-
-    profiler->sub_begin("prepare physics");
-
-      profiler->sub_begin("calculate level");
-
-      profiler->sub_end();
-
-      // prepare physics...
-    profiler->sub_end();
-
-    profiler->sub_begin("draw frame");
-      // here we draw the frame
-    profiler->sub_end();
-
-
-  profiler->maj_end();
-
-
 
   for (size_t i = 0; i < (size_t)argc; i++)
   {

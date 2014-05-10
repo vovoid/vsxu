@@ -48,6 +48,7 @@ class vsx_font {
   bool list_built;
   GLuint dlist;
 
+
   float dx, dy, dz;
   vsx_string base_path;
   float ch, cw, size_s;

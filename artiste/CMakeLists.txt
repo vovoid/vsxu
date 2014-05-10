@@ -27,6 +27,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/engine/include
   ${CMAKE_SOURCE_DIR}/engine_graphics/include
+  ${CMAKE_SOURCE_DIR}/profiler/include
   ${CMAKE_SOURCE_DIR}/widget/include
   ${CMAKE_SOURCE_DIR}/artiste/src
   ${CMAKE_SOURCE_DIR}/artiste/src/vsx_widget

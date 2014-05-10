@@ -97,3 +97,10 @@ endif(UNIX)
 
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT profiler)
 
+######################################################################################
+# Install the Headers so as to install VSXu as a library
+if (UNIX)
+  file(GLOB HEADERS "include/*.h")
+  install (FILES ${HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/profiler COMPONENT Devel)
+endif()
+################################################################################

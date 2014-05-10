@@ -24,6 +24,7 @@ include_directories(
   ../
   ../engine/include
   ../engine_graphics/include
+  ${CMAKE_SOURCE_DIR}/profiler/include
   src
 )
 

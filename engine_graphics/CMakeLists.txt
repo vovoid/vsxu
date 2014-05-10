@@ -28,6 +28,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/engine_graphics/include
   ${CMAKE_SOURCE_DIR}/engine_graphics/include/ftgl
   ${CMAKE_SOURCE_DIR}/engine/include
+  ${CMAKE_SOURCE_DIR}/profiler/include
 )
 
 include_directories(${FREETYPE_INCLUDE_DIRS})

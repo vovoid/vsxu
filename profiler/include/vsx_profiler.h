@@ -109,6 +109,8 @@ public:
   vsx_fifo<vsx_profile_chunk,4096> queue;
   pid_t thread_id;
 
+
+
   inline void set_thread_id(pid_t new_id)
   {
     thread_id = new_id;
@@ -168,6 +170,8 @@ public:
 
   inline void sub_end() __attribute__((always_inline))
   {
+
+
     uint64_t t = vsx_profiler_rdtsc();
     vsx_profile_chunk chunk;
     chunk.spin_waste = 0;
@@ -187,6 +191,8 @@ public:
    */
   inline void maj_begin()
   {
+
+
     vsx_profile_chunk chunk;
     chunk.spin_waste = 0;
     chunk.id = thread_id;
@@ -274,9 +280,9 @@ public:
   inline void plot_3(uint64_t id, double a, double b, double c)
   {
     vsx_profile_chunk chunk;
-    memcpy( (void*)&chunk.tag[0], &a, sizeof(double) );
-    memcpy( (void*)&chunk.tag[8], &b, sizeof(double) );
-    memcpy( (void*)&chunk.tag[16], &c, sizeof(double) );
+    *(double*)(&chunk.tag[0]) = a;
+    *(double*)(&chunk.tag[8]) = b;
+    *(double*)(&chunk.tag[16]) = c;
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_3;
     chunk.id = id;
     chunk.cycles = vsx_profiler_rdtsc();
@@ -290,10 +296,10 @@ public:
   inline void plot_4(uint64_t id, double a, double b, double c, double d)
   {
     vsx_profile_chunk chunk;
-    memcpy( (void*)&chunk.tag[0], &a, sizeof(double) );
-    memcpy( (void*)&chunk.tag[8], &b, sizeof(double) );
-    memcpy( (void*)&chunk.tag[16], &c, sizeof(double) );
-    memcpy( (void*)&chunk.tag[24], &d, sizeof(double) );
+    *(double*)(&chunk.tag[0]) = a;
+    *(double*)(&chunk.tag[8]) = b;
+    *(double*)(&chunk.tag[16]) = c;
+    *(double*)(&chunk.tag[24]) = d;
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_4;
     chunk.id = id;
     chunk.cycles = vsx_profiler_rdtsc();

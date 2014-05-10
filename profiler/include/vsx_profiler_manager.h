@@ -152,6 +152,9 @@ public:
 
     size_t current_buffer_page = 0;
 
+    int64_t current_depth = 0;
+    int64_t max_depth = 0;
+
     while ( __sync_fetch_and_add( &pm->run_threads, 0) )
     {
       // collect from all threads
@@ -160,27 +163,67 @@ public:
         if (producer_threads[i] == 0)
           break;
 
+
+        vsx_profile_chunk recieve_chunk;
+
         // write the data to disk
         size_t max_iterations = 0;
-        while (
-          profilers[i].queue.consume( recieve_buffer[current_buffer_page][recieve_buffer_iterator] )
-          &&
-          max_iterations++ < 4
-        )
+        while (1)
         {
+          if (!profilers[i].queue.consume( recieve_chunk ))
+            break;
+
+
+          if (
+              recieve_chunk.flags == VSX_PROFILE_CHUNK_FLAG_SECTION_START
+              ||
+              recieve_chunk.flags == VSX_PROFILE_CHUNK_FLAG_START
+              )
+          {
+            current_depth++;
+            if (current_depth > max_depth)
+            {
+              max_depth = current_depth;
+              vsx_printf("VSX PROFILER: CONSUMER THREAD: max depth increased to: %ld\n", max_depth);
+            }
+          }
+
+          if (
+              recieve_chunk.flags == VSX_PROFILE_CHUNK_FLAG_SECTION_END
+              ||
+              recieve_chunk.flags == VSX_PROFILE_CHUNK_FLAG_END
+              )
+          {
+            current_depth--;
+            if (current_depth < 0)
+              vsx_printf("VSX PROFILER: CONSUMER THREAD: warning: stack depth below zero\n");
+          }
+
+          recieve_buffer[current_buffer_page][recieve_buffer_iterator] = recieve_chunk;
+
           recieve_buffer_iterator++;
 
-          if (recieve_buffer_iterator != RECIEVE_BUFFER_ITEMS)
-            continue;
+          if (recieve_buffer_iterator == RECIEVE_BUFFER_ITEMS)
+          {
+            recieve_buffer_iterator = 0;
 
-          // send to io
-          pm->io_pool.produce(&recieve_buffer[current_buffer_page][0]);
+            // send to io
+            while (!pm->io_pool.produce(&recieve_buffer[current_buffer_page][0]))
+            {
+              vsx_printf("spinning on i/o pool\n");
+            }
 
-          recieve_buffer_iterator = 0;
-          current_buffer_page++;
+            current_buffer_page++;
 
-          if (current_buffer_page == RECIEVE_BUFFER_PAGES)
-            current_buffer_page = 0;
+            if (current_buffer_page == RECIEVE_BUFFER_PAGES)
+              current_buffer_page = 0;
+          }
+
+          // read max 4 packets per thread
+          if ( max_iterations++ > 4)
+            break;
+
+
         }
       }
     }

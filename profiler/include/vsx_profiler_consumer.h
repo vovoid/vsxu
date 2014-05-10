@@ -258,7 +258,7 @@ public:
         chunks_result.push_back( compute_stack[compute_stack_pointer] );
 //        vsx_printf("ending time inner: %f\n", compute_stack[compute_stack_pointer].time_end);
       }
-      //vsx_printf("stack pointer: %d\n", compute_stack_pointer);
+//      vsx_printf("stack pointer: %d\n", compute_stack_pointer);
 
     }
 

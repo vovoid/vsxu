@@ -63,8 +63,6 @@ void vsx_widget_profiler_thread::update_vbo()
     double cts = (chunk.time_start ) * time_scale::get_instance()->time_scale_x;
     double cte = (chunk.time_end ) * time_scale::get_instance()->time_scale_x;
 
-    if (cte - cts < 0.0001)
-      continue;
 
     if (chunk.depth > max_depth)
       max_depth = chunk.depth;
@@ -72,6 +70,15 @@ void vsx_widget_profiler_thread::update_vbo()
     float depth = -(chunk.depth + 1.0) * chunk_height;
     cts += time_scale::get_instance()->time_offset;
     cte += time_scale::get_instance()->time_offset;
+
+    if (cte < -15.0)
+      continue;
+
+    if (cts > 15.0)
+      break;
+
+    if (cte - cts < 0.001)
+      continue;
 
     draw_bucket.vertices.push_back( vsx_vector<>( cts, depth ) );
     draw_bucket.vertices.push_back( vsx_vector<>( cts, depth - chunk_height ) );
@@ -118,7 +125,7 @@ void vsx_widget_profiler_thread::update_tag_draw_chunks()
   {
     if
     (
-      consumer_chunks[i].time_start * time_scale::get_instance()->time_scale_x + time_scale::get_instance()->time_offset > -15.0
+      consumer_chunks[i].time_start * time_scale::get_instance()->time_scale_x + time_scale::get_instance()->time_offset > -10.0
       &&
       (consumer_chunks[i].time_end * time_scale::get_instance()->time_scale_x) - (consumer_chunks[i].time_start * time_scale::get_instance()->time_scale_x ) > 0.02
     )
@@ -126,7 +133,7 @@ void vsx_widget_profiler_thread::update_tag_draw_chunks()
       tag_draw_chunks.push_back( &consumer_chunks[i] );
     }
 
-    if (consumer_chunks[i].time_start * time_scale::get_instance()->time_scale_x + time_scale::get_instance()->time_offset > 15.0)
+    if (consumer_chunks[i].time_start * time_scale::get_instance()->time_scale_x + time_scale::get_instance()->time_offset > 10.0)
       break;
   }
 }

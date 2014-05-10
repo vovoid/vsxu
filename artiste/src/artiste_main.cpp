@@ -37,6 +37,7 @@
 #endif
 #include <stdlib.h>
 #include "vsx_platform.h"
+#include <vsx_profiler_manager.h>
 
 
 
@@ -189,6 +190,8 @@ void myErrorCallback
 
 int main(int argc, char* argv[])
 {
+  vsx_profiler_manager::get_instance()->init_profiler();
+  vsx_profiler* profiler = vsx_profiler_manager::get_instance()->get_profiler();
 
   for (size_t i = 0; i < (size_t)argc; i++)
   {
@@ -361,6 +364,8 @@ int main(int argc, char* argv[])
   int initial_vram_free = 0;
   while( running )
   {
+    profiler->maj_begin();
+
     frame_delay.start();
 
     if (mouse_pos_type)
@@ -468,6 +473,7 @@ int main(int argc, char* argv[])
     // Check if the ESC key was pressed or the window was closed
     running = /*!glfwGetKey( GLFW_KEY_ESC ) &&*/
     glfwGetWindowParam( GLFW_OPENED );
+    profiler->maj_end();
   }
 
   // Close OpenGL window and terminate GLFW
