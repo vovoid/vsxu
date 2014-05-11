@@ -21,8 +21,8 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_WIDGET_SEQUENCE_TREE_H
-#define VSX_WIDGET_SEQUENCE_TREE_H
+#ifndef VSX_WIDGET_PROFILER_ITEMS_H
+#define VSX_WIDGET_PROFILER_ITEMS_H
 
 #include <vsx_widget_window.h>
 #include <widgets/vsx_widget_base_edit.h>
@@ -50,13 +50,23 @@ public:
     VSX_UNUSED(coords);
     VSX_UNUSED(button);
 
-    profiler->load_profile( editor->selected_line );
+    vsx_string deli = " ";
+    vsx_string cur = editor->get_line(editor->selected_line);
+    cur.trim_lf();
+    vsx_avector<vsx_string> parts;
+    explode(cur, deli, parts, 2);
+
+    if (parts[0] == "thread")
+      profiler->load_thread( vsx_string_aux::s2i( parts[1] ) );
+
+    if (parts[0] == "plot")
+      profiler->load_plot( vsx_string_aux::s2i( parts[1] ) );
   }
 };
 
 class vsx_widget_profiler_items_window : public vsx_widget_window
 {
-  vsx_widget_profiler_tree* tree;
+  vsx_widget_profiler_items* items;
 
 public:
 
@@ -67,41 +77,42 @@ public:
     allow_resize_x = true;
     allow_resize_y = true;
 
-    tree = (vsx_widget_profiler_tree*)add((vsx_widget*)(new vsx_widget_profiler_tree),"tree");
-    tree->init();
+    items = (vsx_widget_profiler_items*)add((vsx_widget*)(new vsx_widget_profiler_items),"tree");
+    items->init();
 
-    font_size = 0.03;
-    tree->editor->set_font_size(0.012f);
-    tree->editor->editing_enabled = false;
-    tree->editor->selected_line_highlight = true;
-    tree->editor->enable_syntax_highlighting = false;
-    tree->editor->enable_line_action_buttons = true;
+    font_size = 0.02;
+    items->editor->set_font_size(0.012f);
+    items->editor->editing_enabled = false;
+    items->editor->selected_line_highlight = true;
+    items->editor->enable_syntax_highlighting = false;
+    items->editor->enable_line_action_buttons = true;
 
+    title ="Profile Items";
 
-    tree->set_render_type(render_2d);
-    tree->show();
+    items->set_render_type(render_2d);
+    items->show();
   }
 
   virtual void i_draw()
   {
     vsx_widget_window::i_draw();
 
-    tree->set_pos(vsx_vector<>(size.x * 0.5,size.y * 0.5 - font_size * 0.5 + dragborder*0.5f));
+    items->set_pos(vsx_vector<>(size.x * 0.5,size.y * 0.5 - font_size * 0.5 + dragborder*0.5f));
   }
 
   void extra_init()
   {
-    tree->extra_init();
+    items->extra_init();
   }
 
   void set_profiler( vsx_widget_profiler* p )
   {
-    tree->set_profiler( p );
+    items->set_profiler( p );
   }
 
   void set_string( vsx_string s )
   {
-    tree->set_string( s );
+    items->set_string( s );
   }
 
 

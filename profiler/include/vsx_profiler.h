@@ -251,7 +251,7 @@ public:
   inline void plot_1(uint64_t id, double a)
   {
     vsx_profile_chunk chunk;
-    *(double*)(&chunk.tag[0]) = a;
+    memcpy(&chunk.tag[0],&a, sizeof(double));
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_1;
     chunk.id = id;
     chunk.cycles = vsx_profiler_rdtsc();
@@ -265,8 +265,8 @@ public:
   inline void plot_2(uint64_t id, double a, double b)
   {
     vsx_profile_chunk chunk;
-    *(double*)(&chunk.tag[0]) = a;
-    *(double*)(&chunk.tag[8]) = b;
+    memcpy(&chunk.tag[0],&a, sizeof(double));
+    memcpy(&chunk.tag[8],&b, sizeof(double));
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_2;
     chunk.id = id;
     chunk.cycles = vsx_profiler_rdtsc();
@@ -280,9 +280,9 @@ public:
   inline void plot_3(uint64_t id, double a, double b, double c)
   {
     vsx_profile_chunk chunk;
-    *(double*)(&chunk.tag[0]) = a;
-    *(double*)(&chunk.tag[8]) = b;
-    *(double*)(&chunk.tag[16]) = c;
+    memcpy(&chunk.tag[0],&a, sizeof(double));
+    memcpy(&chunk.tag[8],&b, sizeof(double));
+    memcpy(&chunk.tag[16],&c, sizeof(double));
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_3;
     chunk.id = id;
     chunk.cycles = vsx_profiler_rdtsc();
@@ -296,10 +296,11 @@ public:
   inline void plot_4(uint64_t id, double a, double b, double c, double d)
   {
     vsx_profile_chunk chunk;
-    *(double*)(&chunk.tag[0]) = a;
-    *(double*)(&chunk.tag[8]) = b;
-    *(double*)(&chunk.tag[16]) = c;
-    *(double*)(&chunk.tag[24]) = d;
+
+    memcpy(&chunk.tag[0],&a, sizeof(double));
+    memcpy(&chunk.tag[8],&b, sizeof(double));
+    memcpy(&chunk.tag[16],&c, sizeof(double));
+    memcpy(&chunk.tag[24],&d, sizeof(double));
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_4;
     chunk.id = id;
     chunk.cycles = vsx_profiler_rdtsc();

@@ -64,6 +64,7 @@ set(SOURCES
   src/profiler/vsx_widget_profiler.cpp
   src/profiler/vsx_widget_profiler_timeline.cpp
   src/profiler/vsx_widget_profiler_thread.cpp
+  src/profiler/vsx_widget_profiler_plot.cpp
 )
 
 ################################################################################

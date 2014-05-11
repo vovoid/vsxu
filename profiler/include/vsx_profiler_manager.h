@@ -173,6 +173,14 @@ public:
           if (!profilers[i].queue.consume( recieve_chunk ))
             break;
 
+          if (recieve_chunk.flags == VSX_PROFILE_CHUNK_FLAG_PLOT_2)
+          {
+            double a;
+            double b;
+            memcpy(&a, &recieve_chunk.tag[0], sizeof(double));
+            vsx_printf("consumer thread, got float: %f\n", a);
+          }
+
 
           if (
               recieve_chunk.flags == VSX_PROFILE_CHUNK_FLAG_SECTION_START
@@ -222,8 +230,6 @@ public:
           // read max 4 packets per thread
           if ( max_iterations++ > 4)
             break;
-
-
         }
       }
     }

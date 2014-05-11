@@ -28,6 +28,7 @@
 
 #include <vsxfst.h>
 #include <vsx_avector.h>
+#include <vsx_color.h>
 #include <vsx_profiler_manager.h>
 #include <vsxfst.h>
 
@@ -40,9 +41,35 @@ public:
   double time_end;
   long depth;
   uint64_t   flags;
-  uint64_t   cyclea_start;
+  uint64_t   cycles_start;
   uint64_t   cycles_end;
   vsx_string tag;
+
+  vsx_profiler_consumer_chunk()
+    :
+      time_start(0.0),
+      time_end(0.0),
+      depth(0),
+      flags(0),
+      cycles_start(0),
+      cycles_end(0),
+      tag("")
+  {}
+};
+
+class vsx_profiler_consumer_plot
+{
+public:
+
+  double time;
+  size_t plot_type;
+  vsx_color<double> v;
+
+  vsx_profiler_consumer_plot()
+    :
+      time(0.0),
+      plot_type (1)
+  {}
 };
 
 
@@ -98,14 +125,41 @@ public:
     }
   }
 
-  vsx_string get_filenames()
+  vsx_string get_filenames_list()
   {
     vsx_string deli = "\n";
     return implode(filenames, deli);
   }
 
+  vsx_string get_items_list()
+  {
+    vsx_string res;
+    for (size_t i = 0; i < current_threads.size(); i++)
+    {
+      res += "thread " + i2s(current_threads[i]) + "\n";
+    }
+    for (size_t i = 0; i < current_plots.size(); i++)
+    {
+      res += "plot " + i2s(current_plots[i]) + "\n";
+    }
+    return res;
+  }
+
   void load_profile(size_t index)
   {
+    current_max_time = 0.0;
+    cycles_per_second = 0.0;
+    one_div_cycles_per_second = 0.0;
+
+    cycles_begin_time = 0.0;
+
+    cpu_clock_start = 0;
+    cpu_clock_end = 0;
+
+    current_profile.reset_used();
+    current_threads.reset_used();
+    current_plots.reset_used();
+
     vsx_string filename = vsx_profiler_manager::profiler_directory_get() + DIRECTORY_SEPARATOR + filenames[index];
     vsxf_handle* fp = filesystem.f_open( filename.c_str() , "r" );
 
@@ -198,7 +252,7 @@ public:
    * @param t_end
    * @param chunks_result
    */
-  void get_chunks(double t_start, double t_end, vsx_avector<vsx_profiler_consumer_chunk> &chunks_result)
+  void get_thread(double t_start, double t_end, uint64_t thread_id, vsx_avector<vsx_profiler_consumer_chunk> &chunks_result)
   {
     VSX_UNUSED(t_start);
     VSX_UNUSED(t_end);
@@ -214,10 +268,16 @@ public:
     {
       vsx_profile_chunk& chunk = current_profile[i];
 
+      if (chunk.id != thread_id)
+      {
+        vsx_printf("chunk id: %ld\n", chunk.id);
+        continue;
+      }
+
       if (chunk.flags == VSX_PROFILE_CHUNK_FLAG_SECTION_START /* && chunk.cycles > cycles_begin_time*/)
       {
         compute_stack[compute_stack_pointer].time_start = cycles_to_time( chunk.cycles );
-        compute_stack[compute_stack_pointer].cyclea_start = chunk.cycles;
+        compute_stack[compute_stack_pointer].cycles_start = chunk.cycles;
 //        vsx_printf("starting time: %f\n", compute_stack[compute_stack_pointer].time_start);
         compute_stack_pointer++;
         if (compute_stack_pointer == compute_stack_depth)
@@ -240,7 +300,7 @@ public:
       {
         compute_stack[compute_stack_pointer].time_start = cycles_to_time( chunk.cycles );
         compute_stack[compute_stack_pointer].tag = chunk.tag;
-        compute_stack[compute_stack_pointer].cyclea_start = chunk.cycles;
+        compute_stack[compute_stack_pointer].cycles_start = chunk.cycles;
 //        vsx_printf("starting time inner: %f\n", compute_stack[compute_stack_pointer].time_start);
         compute_stack_pointer++;
         if (compute_stack_pointer == compute_stack_depth)
@@ -260,6 +320,50 @@ public:
       }
 //      vsx_printf("stack pointer: %d\n", compute_stack_pointer);
 
+    }
+
+  }
+
+  void get_plot(u_int64_t index, vsx_avector<vsx_profiler_consumer_plot> &chunks_result)
+  {
+    for (size_t i = 0; i < current_profile.size(); i++)
+    {
+      vsx_profile_chunk& chunk = current_profile[i];
+
+      if (chunk.flags < 100)
+        continue;
+
+      if (chunk.flags > 200)
+        continue;
+
+      vsx_profiler_consumer_plot plot;
+
+      if (chunk.id == index)
+      {
+        plot.plot_type = chunk.flags - 100; // 101, 102, 103, 104
+        plot.time = cycles_to_time( chunk.cycles );
+
+        double a;
+        memcpy(&a, &chunk.tag[0], sizeof(double));
+        plot.v.x = a;
+        if (plot.plot_type > 1)
+        {
+          memcpy(&a, &chunk.tag[8], sizeof(double));
+          plot.v.y = a;
+        }
+        if (plot.plot_type > 2)
+        {
+          memcpy(&a, &chunk.tag[16], sizeof(double));
+          plot.v.z = a;
+        }
+        if (plot.plot_type > 3)
+        {
+          memcpy(&a, &chunk.tag[24], sizeof(double));
+          plot.v.w = a;
+        }
+
+        chunks_result.push_back( plot );
+      }
     }
 
   }

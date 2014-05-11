@@ -70,13 +70,14 @@ public:
     tree = (vsx_widget_profiler_tree*)add((vsx_widget*)(new vsx_widget_profiler_tree),"tree");
     tree->init();
 
-    font_size = 0.03;
+    font_size = 0.02;
     tree->editor->set_font_size(0.012f);
     tree->editor->editing_enabled = false;
     tree->editor->selected_line_highlight = true;
     tree->editor->enable_syntax_highlighting = false;
     tree->editor->enable_line_action_buttons = true;
 
+    title = "Profiler Data Files";
 
     tree->set_render_type(render_2d);
     tree->show();

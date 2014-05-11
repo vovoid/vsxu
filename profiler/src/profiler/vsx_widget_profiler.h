@@ -35,14 +35,19 @@
 #include "vsx_profiler_consumer.h"
 
 #include "vsx_widget_profiler_thread.h"
+#include "vsx_widget_profiler_plot.h"
 
 
 class vsx_widget_profiler : public vsx_widget
 {
   vsx_widget_time_holder time;
 
-  std::vector<vsx_widget_profiler_thread*> threads;
+  vsx_avector<vsx_widget_profiler_thread*> threads;
+  vsx_avector<vsx_widget_profiler_plot*> plots;
+
   vsx_widget* file_list;
+  vsx_widget* item_list;
+
   vsx_widget* timeline_window;
 
   // profiler for profiling ourselves
@@ -53,12 +58,14 @@ public:
   void init();
   void update_list();
 
+  void update_children();
+
   void i_draw();
 
   void load_profile(int id);
 
-  void load_thread(int id);
-  void load_plot(int id);
+  void load_thread(uint64_t id);
+  void load_plot(size_t id);
 
   void command_process_back_queue(vsx_command_s *t);
   bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);

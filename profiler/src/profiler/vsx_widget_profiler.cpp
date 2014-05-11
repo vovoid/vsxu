@@ -34,8 +34,10 @@
 // Local widgets
 #include "vsx_widget_profiler.h"
 #include "vsx_widget_profiler_tree.h"
+#include "vsx_widget_profiler_items.h"
 #include "vsx_widget_profiler_timeline.h"
 #include "vsx_widget_profiler_thread.h"
+#include "vsx_widget_profiler_plot.h"
 #include "time_scale.h"
 #include "cursor.h"
 
@@ -80,8 +82,19 @@ void vsx_widget_profiler::init()
   profile_tree->set_render_type(render_2d);
   profile_tree->extra_init();
   profile_tree->set_profiler( this );
-  profile_tree->set_string( vsx_profiler_consumer::get_instance()->get_filenames() );
+  profile_tree->set_string( vsx_profiler_consumer::get_instance()->get_filenames_list() );
   file_list = (vsx_widget*)profile_tree;
+
+  // Init Item List
+  vsx_widget_profiler_items_window* items = (vsx_widget_profiler_items_window*)add(new vsx_widget_profiler_items_window, "item list");
+  items->init();
+  items->set_size(vsx_vector<>(0.10,1.0));
+  items->set_pos( vsx_vector<>(1.0- 0.10, 0.0) );
+  items->show();
+  items->set_render_type(render_2d);
+  items->extra_init();
+  items->set_profiler( this );
+  item_list = (vsx_widget*)items;
 
   // Menu
   menu = add(new vsx_widget_popup_menu, ".comp_menu");
@@ -101,19 +114,43 @@ void vsx_widget_profiler::update_list()
 
 void vsx_widget_profiler::load_profile(int id)
 {
+  for (size_t i = 0; i < threads.size(); i++)
+  {
+    threads[i]->_delete();
+  }
+  threads.reset_used();
+
+  for (size_t i = 0; i < plots.size(); i++)
+  {
+    plots[i]->_delete();
+  }
+  plots.reset_used();
+
+  vsx_profiler_consumer::get_instance()->load_profile(id);
+
+  ((vsx_widget_profiler_items_window*)item_list)->set_string( vsx_profiler_consumer::get_instance()->get_items_list() );
+
+
+//  vsx_widget_profiler_thread* thread = (vsx_widget_profiler_thread*)add( new vsx_widget_profiler_thread, "thread" );
+//  thread->init();
+//  thread->load_profile(id);
+//  threads.push_back(thread);
+}
+
+void vsx_widget_profiler::load_thread(uint64_t id)
+{
   vsx_widget_profiler_thread* thread = (vsx_widget_profiler_thread*)add( new vsx_widget_profiler_thread, "thread" );
   thread->init();
-  thread->load_profile(id);
+  thread->load_thread(id);
   threads.push_back(thread);
 }
 
-void vsx_widget_profiler::load_thread(int id)
+void vsx_widget_profiler::load_plot(size_t id)
 {
-
-}
-
-void vsx_widget_profiler::load_plot(int id)
-{
+  vsx_widget_profiler_plot* plot = (vsx_widget_profiler_plot*)add( new vsx_widget_profiler_plot, "plot" );
+  plot->init();
+  plot->load_plot(id);
+  plots.push_back(plot);
 
 }
 
@@ -171,6 +208,18 @@ void vsx_widget_profiler::event_mouse_move_passive(vsx_widget_distance distance,
   cursor::get_instance()->pos = coords.world_global;
 }
 
+void vsx_widget_profiler::update_children()
+{
+  for (size_t i = 0; i <  threads.size(); i++)
+  {
+    threads[i]->update();
+  }
+  for (size_t i = 0; i <  plots.size(); i++)
+  {
+    plots[i]->update();
+  }
+}
+
 void vsx_widget_profiler::event_mouse_wheel(float y)
 {
   if (ctrl)
@@ -178,10 +227,8 @@ void vsx_widget_profiler::event_mouse_wheel(float y)
     vsx_printf("camera z: %f\n", camera.get_pos_z());
 
     time_scale::get_instance()->time_offset -= 0.025 * y * (camera.get_pos_z() - 1.1);
-    for (size_t i = 0; i <  threads.size(); i++)
-    {
-      threads[i]->update();
-    }
+
+    update_children();
 
     return;
   }
@@ -194,10 +241,7 @@ void vsx_widget_profiler::event_mouse_wheel(float y)
 
   time_scale::get_instance()->time_offset -= factor * ( time_scale::get_instance()->time_scale_x * time_scale::get_instance()->chunk_time_end - time_scale_pre * time_scale::get_instance()->chunk_time_end );
 
-  for (size_t i = 0; i <  threads.size(); i++)
-  {
-    threads[i]->update();
-  }
+  update_children();
 }
 
 void vsx_widget_profiler::interpolate_size()

@@ -19,25 +19,20 @@ void vsx_widget_profiler_thread::init()
 
   profiler = vsx_profiler_manager::get_instance()->get_profiler();
 
-
   title = "thread";
 
   allow_move_x = false;
-//  allow_move_y = false;
 
   this->interpolate_size();
   init_run = true;
-
 }
 
 
-void vsx_widget_profiler_thread::load_profile(int id)
+void vsx_widget_profiler_thread::load_thread(uint64_t id)
 {
-  vsx_printf("load profile %d\n", id);
-  vsx_profiler_consumer::get_instance()->load_profile((size_t)id);
-
-  vsx_profiler_consumer::get_instance()->get_chunks(0.0, 5.0, consumer_chunks);
-  update_vbo();
+  vsx_printf("load profile thread %ld\n", id);
+  vsx_profiler_consumer::get_instance()->get_thread(0.0, 5.0, id, consumer_chunks);
+  update();
 }
 
 void vsx_widget_profiler_thread::update()
@@ -71,13 +66,13 @@ void vsx_widget_profiler_thread::update_vbo()
     cts += time_scale::get_instance()->time_offset;
     cte += time_scale::get_instance()->time_offset;
 
-    if (cte < -15.0)
+    if (cte < -15.0 && cts < -15.0)
       continue;
 
-    if (cts > 15.0)
-      break;
+    if (cte > 15.0 && cts > 15.0)
+      continue;
 
-    if (cte - cts < 0.001)
+    if (cte - cts < 0.002)
       continue;
 
     draw_bucket.vertices.push_back( vsx_vector<>( cts, depth ) );
@@ -146,7 +141,7 @@ void vsx_widget_profiler_thread::draw_tags()
     vsx_vector<> dpos( tag_draw_chunks[i]->time_start * time_scale::get_instance()->time_scale_x + time_scale::get_instance()->time_offset,  -(tag_draw_chunks[i]->depth + 1) * chunk_height - 0.005 );
     font.print( dpos, tag_draw_chunks[i]->tag, 0.005 );
     dpos.y -= 0.005;
-    font.print( dpos, i2s(tag_draw_chunks[i]->cycles_end-tag_draw_chunks[i]->cyclea_start) + " CPU cycles", 0.005 );
+    font.print( dpos, i2s(tag_draw_chunks[i]->cycles_end-tag_draw_chunks[i]->cycles_start) + " CPU cycles", 0.005 );
     dpos.y -= 0.005;
     font.print( dpos, f2s(tag_draw_chunks[i]->time_end - tag_draw_chunks[i]->time_start) + " seconds", 0.005 );
   }
@@ -241,7 +236,6 @@ void vsx_widget_profiler_thread::event_mouse_down(vsx_widget_distance distance,v
     vsx_widget::event_mouse_down(distance, coords, button);
     return;
   }
-
 
   for (size_t i = 0; i < consumer_chunks.size(); i++)
   {

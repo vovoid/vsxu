@@ -21,8 +21,8 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_WIDGET_PROFILER_THREAD_H
-#define VSX_WIDGET_PROFILER_THREAD_H
+#ifndef VSX_WIDGET_PROFILER_PLOT_H
+#define VSX_WIDGET_PROFILER_PLOT_H
 
 // widget
 #include <vsx_widget.h>
@@ -37,46 +37,33 @@
 typedef struct
 {
   GLuint a;
-  GLuint b;
-} line_index;
+} line_index_single;
 
 
-const double chunk_height = 0.03;
-
-
-class vsx_widget_profiler_thread : public vsx_widget
+class vsx_widget_profiler_plot : public vsx_widget
 {
   // profiler for profiling ourselves
   vsx_profiler* profiler;
 
-  vsx_vbo_bucket<line_index, 2, GL_LINES, GL_STREAM_DRAW> draw_bucket;
+  vsx_vbo_bucket<line_index_single, 1, GL_LINE_STRIP, GL_STREAM_DRAW> draw_bucket;
   vsx_profiler_consumer_chunk* selected_chunk;
 
-  vsx_avector<vsx_profiler_consumer_chunk> consumer_chunks;
-
-  vsx_avector<vsx_profiler_consumer_chunk*> tag_draw_chunks;
+  vsx_avector<vsx_profiler_consumer_plot> consumer_chunks;
 
   vsx_vector<> mouse_pos;
 
-  int depth_from_mouse_position()
-  {
-    return (int)floor(-(mouse_pos.y-size.y * 0.5) / chunk_height) - 1;
-  }
-
   void update_vbo();
-  void update_tag_draw_chunks();
-  void draw_tags();
 
 public:
 
-  vsx_widget_profiler_thread()
+  vsx_widget_profiler_plot()
     :
       selected_chunk( 0x0 )
   {}
 
   void init();
 
-  void load_thread(uint64_t thread_id);
+  void load_plot(uint64_t plot_id);
 
   void update();
 

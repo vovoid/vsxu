@@ -206,10 +206,6 @@ int main(int argc, char* argv[])
     exit(0);
   }
 
-  vsx_printf("sizeof float: %d\n", sizeof(double));
-
-
-
   // Initialise GLFW
   glfwInit();
   set_modifiers();
