@@ -46,6 +46,7 @@ public:
 
     move_time(distance.center);
     a_focus = this;
+    k_focus = this;
   }
 
   void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)

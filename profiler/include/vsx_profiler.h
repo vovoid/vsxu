@@ -85,10 +85,10 @@ inline uint64_t vsx_profiler_rdtsc()
 #define VSX_PROFILE_CHUNK_FLAG_THREAD_NAME 10
 
 #define VSX_PROFILE_CHUNK_FLAG_PLOT_NAME 100 // plot name
-#define VSX_PROFILE_CHUNK_FLAG_PLOT_1 101 // plot 1 double
-#define VSX_PROFILE_CHUNK_FLAG_PLOT_2 102 // plot 2 doubles
-#define VSX_PROFILE_CHUNK_FLAG_PLOT_3 103 // plot 3 doubles
-#define VSX_PROFILE_CHUNK_FLAG_PLOT_4 104 // plot 4 doubles
+#define VSX_PROFILE_CHUNK_FLAG_PLOT_1_DOUBLE 101 // plot 1 double
+#define VSX_PROFILE_CHUNK_FLAG_PLOT_2_DOUBLE 102 // plot 2 doubles
+#define VSX_PROFILE_CHUNK_FLAG_PLOT_3_DOUBLE 103 // plot 3 doubles
+#define VSX_PROFILE_CHUNK_FLAG_PLOT_4_DOUBLE 104 // plot 4 doubles
 
 // Profiler data chunk
 // Occupies exactly one cache line
@@ -98,7 +98,7 @@ typedef struct
  /*8 */ u_int64_t   flags;      // bit-mask
  /*8 */ u_int64_t   id;         // thread or plot/other id
  /*8 */ u_int64_t   spin_waste; // cycles wasted spinning waiting for a full buffer
- /*32*/ char       tag[32];    // text describing the section
+ /*32*/ char        tag[32];    // text describing the section
 } vsx_profile_chunk;
 
 
@@ -117,7 +117,7 @@ public:
   }
 
   /**
-   * @brief thread_name If you don't name a thread, the GUI will not display it.
+   * @brief thread_name Optional thread name
    * @param tag
    */
   inline void thread_name( const char* tag ) __attribute__((always_inline))
@@ -141,7 +141,7 @@ public:
   /**
    * @brief sub_begin
    * Call this (paired with sub_end) around anything you want to measure.
-   *7
+   *
    * @param tag
    */
   inline void sub_begin( const char* tag ) __attribute__((always_inline))
@@ -170,9 +170,8 @@ public:
 
   inline void sub_end() __attribute__((always_inline))
   {
-
-
     uint64_t t = vsx_profiler_rdtsc();
+    asm volatile("": : :"memory");
     vsx_profile_chunk chunk;
     chunk.spin_waste = 0;
     chunk.id = thread_id;
@@ -191,8 +190,6 @@ public:
    */
   inline void maj_begin()
   {
-
-
     vsx_profile_chunk chunk;
     chunk.spin_waste = 0;
     chunk.id = thread_id;
@@ -224,7 +221,7 @@ public:
   }
 
   /**
-   * @brief thread_name If you don't name a thread, the GUI will not display it.
+   * @brief plot_name Optional plot name
    * @param tag
    */
   inline void plot_name(uint64_t id, const char* tag ) __attribute__((always_inline))
@@ -252,7 +249,7 @@ public:
   {
     vsx_profile_chunk chunk;
     memcpy(&chunk.tag[0],&a, sizeof(double));
-    chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_1;
+    chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_1_DOUBLE;
     chunk.id = id;
     chunk.cycles = vsx_profiler_rdtsc();
     while (!queue.produce(chunk))
@@ -267,7 +264,7 @@ public:
     vsx_profile_chunk chunk;
     memcpy(&chunk.tag[0],&a, sizeof(double));
     memcpy(&chunk.tag[8],&b, sizeof(double));
-    chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_2;
+    chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_2_DOUBLE;
     chunk.id = id;
     chunk.cycles = vsx_profiler_rdtsc();
     while (!queue.produce(chunk))
@@ -283,7 +280,7 @@ public:
     memcpy(&chunk.tag[0],&a, sizeof(double));
     memcpy(&chunk.tag[8],&b, sizeof(double));
     memcpy(&chunk.tag[16],&c, sizeof(double));
-    chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_3;
+    chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_3_DOUBLE;
     chunk.id = id;
     chunk.cycles = vsx_profiler_rdtsc();
     while (!queue.produce(chunk))
@@ -301,7 +298,7 @@ public:
     memcpy(&chunk.tag[8],&b, sizeof(double));
     memcpy(&chunk.tag[16],&c, sizeof(double));
     memcpy(&chunk.tag[24],&d, sizeof(double));
-    chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_4;
+    chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_4_DOUBLE;
     chunk.id = id;
     chunk.cycles = vsx_profiler_rdtsc();
     while (!queue.produce(chunk))

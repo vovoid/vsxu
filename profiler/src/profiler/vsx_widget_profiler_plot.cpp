@@ -43,12 +43,13 @@ void vsx_widget_profiler_plot::update()
 
 void vsx_widget_profiler_plot::update_vbo()
 {
-  draw_bucket.vertices.reset_used();
-  draw_bucket.faces.reset_used();
 
   vsx_printf("time scale: %f\n", time_scale::get_instance()->time_scale_x);
 
   size_t max_depth = 1;
+
+  draw_bucket_a.vertices.reset_used();
+  draw_bucket_a.faces.reset_used();
 
   for (size_t i = 0; i < consumer_chunks.size(); i++)
   {
@@ -64,22 +65,55 @@ void vsx_widget_profiler_plot::update_vbo()
     if (ct > 15.0)
       continue;
 
-    draw_bucket.vertices.push_back( vsx_vector<>( ct, plot.v.y ) );
+    draw_bucket_a.vertices.push_back( vsx_vector<>( ct, plot.v.x ) );
 
-    draw_bucket.vertex_colors.push_back( vsx_color<>(1.0, 1.0, 1.0, 0.5) );
+    draw_bucket_a.vertex_colors.push_back( vsx_color<>(1.0, 0.5, 0.5, 0.5) );
 
 
     line_index_single idx;
-    idx.a = draw_bucket.vertices.size() - 1;
-    draw_bucket.faces.push_back( idx );
+    idx.a = draw_bucket_a.vertices.size() - 1;
+    draw_bucket_a.faces.push_back( idx );
   }
+
+  draw_bucket_b.vertices.reset_used();
+  draw_bucket_b.faces.reset_used();
+
+  for (size_t i = 0; i < consumer_chunks.size(); i++)
+  {
+    vsx_profiler_consumer_plot& plot = consumer_chunks[i];
+
+    double ct = (plot.time ) * time_scale::get_instance()->time_scale_x;
+
+    ct += time_scale::get_instance()->time_offset;
+
+    if (ct < -15.0)
+      continue;
+
+    if (ct > 15.0)
+      continue;
+
+    draw_bucket_b.vertices.push_back( vsx_vector<>( ct, plot.v.y ) );
+
+    draw_bucket_b.vertex_colors.push_back( vsx_color<>(0.5, 0.5, 1.0, 0.5) );
+
+
+    line_index_single idx;
+    idx.a = draw_bucket_b.vertices.size() - 1;
+    draw_bucket_b.faces.push_back( idx );
+  }
+
 
   time_scale::get_instance()->one_div_chunk_time_end = 1.0 / time_scale::get_instance()->chunk_time_end;
   time_scale::get_instance()->one_div_time_size_x = 1.0 / time_scale::get_instance()->time_size_x;
 
-  draw_bucket.invalidate_vertices();
-  draw_bucket.invalidate_colors();
-  draw_bucket.update();
+  draw_bucket_a.invalidate_vertices();
+  draw_bucket_a.invalidate_colors();
+  draw_bucket_a.update();
+
+  draw_bucket_b.invalidate_vertices();
+  draw_bucket_b.invalidate_colors();
+  draw_bucket_b.update();
+
 
   set_size(vsx_vector<>(20.0f,0.3f));
 }
@@ -106,7 +140,8 @@ void vsx_widget_profiler_plot::i_draw()
     glTranslatef( 0, parentpos.y + size.y * 0.5, 0.0 );
     profiler->sub_begin("draw vbo bucket");
 
-    draw_bucket.output();
+    draw_bucket_a.output();
+    draw_bucket_b.output();
     profiler->sub_end();
 
 

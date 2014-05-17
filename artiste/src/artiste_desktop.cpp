@@ -95,7 +95,10 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
   if (!k_focus)
     return true;
 
-  if (!k_focus->event_key_down(key,alt,ctrl,shift))
+  bool k_focus_result = k_focus->event_key_down(key,alt,ctrl,shift);
+  vsx_printf("k_focus_result: %d\n", k_focus_result);
+
+  if (!k_focus_result)
     return true;
 
   if (ctrl)
@@ -106,8 +109,8 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
         ((vsx_window_texture_viewer*)tv)->toggle_run();
         break;
       // fullwindow
-      case -'F':
-      case -'f': // F
+      case 'F':
+      case 'f': // F
         ((vsx_window_texture_viewer*)tv)->toggle_fullwindow();
 
         if (((vsx_window_texture_viewer*)tv)->get_fullwindow())
