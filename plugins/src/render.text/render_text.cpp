@@ -40,7 +40,6 @@ typedef struct
 class vsx_module_text_s : public vsx_module {
   FTFont* ftfont;
   FTFont* ftfont2;
-  vsx_vector<> mf_location;
   vsx_string cur_font;
   int cur_render_type;
   float cur_glyph_size;
@@ -225,11 +224,6 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
       (cur_glyph_size != glyph_size->get())
     )
     {
-      if (!verify_filesuffix(font_in->get(),"ttf")) {
-        message = "module||ERROR! This is not a TrueType font file!";
-        font_in->set(cur_font);
-        return;
-      } else message = "module||ok";
       vsxf_handle *fp;
       if ((fp = engine->filesystem->f_open(font_in->get().c_str(), "rb")) == NULL)
       {
@@ -302,18 +296,14 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
     float obj_size = size->get();
 
     gl_state->matrix_mode (VSX_GL_MODELVIEW_MATRIX );
-    //glMatrixMode(GL_MODELVIEW);
     gl_state->matrix_push();
-    //glPushMatrix();
 
     gl_state->matrix_rotate_f( (float)angle->get()*360, rotation_axis->get(0), rotation_axis->get(1), rotation_axis->get(2) );
-    //glRotatef((float)angle->get()*360, rotation_axis->get(0), rotation_axis->get(1), rotation_axis->get(2));
 
     if (obj_size < 0)
       obj_size = 0;
 
     gl_state->matrix_scale_f( obj_size*0.8*0.01, obj_size*0.01, obj_size*0.01 );
-    //glScalef(obj_size*0.8*0.01, obj_size*0.01, obj_size*0.01);
 
     int l_align = align->get();
     float l_leading = leading->get();
@@ -332,21 +322,17 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
         if (trunc(ll) != i) continue;
       }
       gl_state->matrix_push();
-      //glPushMatrix();
       if (l_align == 0)
       {
         gl_state->matrix_translate_f( 0, ypos, 0 );
-        //glTranslatef(0,ypos,0);
       } else
       if (l_align == 1)
       {
         gl_state->matrix_translate_f( -lines[i].size_x*0.5f,ypos,0 );
-        //glTranslatef(-lines[i].size_x*0.5f,ypos,0);
       }
       if (l_align == 2)
       {
         gl_state->matrix_translate_f( -lines[i].size_x,ypos,0 );
-        //glTranslatef(-lines[i].size_x,ypos,0);
       }
 
       if (cur_render_type == 1)
@@ -354,20 +340,16 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
         if (outline_alpha->get() > 0.0f && ftfont2) {
           float pre_linew;
           pre_linew = gl_state->line_width_get();
-          //glGetFloatv(GL_LINE_WIDTH, &pre_linew);
           gl_state->line_width_set( outline_thickness->get() );
-          //glLineWidth(outline_thickness->get());
-          glColor4f(outline_color->get(0),outline_color->get(1),outline_color->get(2),outline_alpha->get()*outline_color->get(3)*text_alpha->get());
+          glColor4f(outline_color->get(0),outline_color->get(1),outline_color->get(2),outline_alpha->get()*outline_color->get(3));
           ftfont2->Render(lines[i].string.c_str());
           gl_state->line_width_set( pre_linew );
-          //glLineWidth(pre_linew);
         }
         glColor4f(red->get(),green->get(),blue->get(),text_alpha->get());
       }
 
       ftfont->Render(lines[i].string.c_str());
       gl_state->matrix_pop();
-      //glPopMatrix();
       ypos += l_leading;
     }
 
@@ -376,8 +358,6 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
 
     gl_state->matrix_pop();
-    //glPopMatrix();
-    //glMatrixMode(GL_MODELVIEW);
 
     render_result->set(1);
     loading_done = true;
