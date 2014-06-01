@@ -70,7 +70,7 @@ void vsx_widget_profiler_plot::update_vbo()
     draw_bucket_a.vertex_colors.push_back( vsx_color<>(1.0, 0.5, 0.5, 0.5) );
 
 
-    line_index_single idx;
+    vsx_face1 idx;
     idx.a = draw_bucket_a.vertices.size() - 1;
     draw_bucket_a.faces.push_back( idx );
   }
@@ -97,7 +97,7 @@ void vsx_widget_profiler_plot::update_vbo()
     draw_bucket_b.vertex_colors.push_back( vsx_color<>(0.5, 0.5, 1.0, 0.5) );
 
 
-    line_index_single idx;
+    vsx_face1 idx;
     idx.a = draw_bucket_b.vertices.size() - 1;
     draw_bucket_b.faces.push_back( idx );
   }

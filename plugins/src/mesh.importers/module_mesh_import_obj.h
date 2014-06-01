@@ -98,7 +98,7 @@ public:
     vsx_string line;
     vsx_array<vsx_vector<> > vertices;
     vsx_array<vsx_vector<> > normals;
-    vsx_array<vsx_tex_coord> texcoords;
+    vsx_array<vsx_tex_coord2f> texcoords;
 
     int face_cur = 0;
     bool found_normals = false;
@@ -127,7 +127,7 @@ public:
           vertices.push_back(vsx_vector<>(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
         } else
         if (parts[0] == "vt") {
-          vsx_tex_coord a;
+          vsx_tex_coord2f a;
           a.s = (s2f(parts[1]));
           a.t = (s2f(parts[2]));
           texcoords.push_back(a);
@@ -139,7 +139,7 @@ public:
           found_normals = true;
         } else
         if (parts[0] == "f") {
-            vsx_face ff;
+            vsx_face3 ff;
             vsx_string deli2 = "/";
 
 
@@ -215,7 +215,7 @@ public:
           } else
           if (parts[0] == "f")
           {
-              vsx_face ff;
+              vsx_face3 ff;
               vsx_string deli2 = "/";
 
               vsx_avector<vsx_string> parts2;

@@ -258,7 +258,7 @@ public:
 
         if (i && j)
         {
-          vsx_face a;
+          vsx_face3 a;
 
           a.c = vi - current_num_sectors;
           a.b = vi - current_num_sectors-1;
@@ -275,7 +275,7 @@ public:
       }
       if (i > 1 && i < current_num_stacks-1)
       {
-        vsx_face a;
+        vsx_face3 a;
        {
           a.c = vi - current_num_sectors ;
           a.b = vi - current_num_sectors - 1;
@@ -295,7 +295,7 @@ public:
     {
       if (j)
       {
-        vsx_face a;
+        vsx_face3 a;
         a.c = vi - current_num_sectors;
         a.b = vi - current_num_sectors-1;
         a.a = j-1;
@@ -309,7 +309,7 @@ public:
       vi++;
     }
     {
-      vsx_face a;
+      vsx_face3 a;
       a.c = vi - current_num_sectors ;
       a.b = vi - current_num_sectors - 1;
       a.a = current_num_sectors - 1;

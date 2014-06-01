@@ -34,10 +34,6 @@
 #include "vsx_widget_time_holder.h"
 
 #include "vsx_profiler_consumer.h"
-typedef struct
-{
-  GLuint a;
-} line_index_single;
 
 
 class vsx_widget_profiler_plot : public vsx_widget
@@ -45,10 +41,10 @@ class vsx_widget_profiler_plot : public vsx_widget
   // profiler for profiling ourselves
   vsx_profiler* profiler;
 
-  vsx_vbo_bucket<line_index_single, 1, GL_LINE_STRIP, GL_STREAM_DRAW> draw_bucket_a;
-  vsx_vbo_bucket<line_index_single, 1, GL_LINE_STRIP, GL_STREAM_DRAW> draw_bucket_b;
-  vsx_vbo_bucket<line_index_single, 1, GL_LINE_STRIP, GL_STREAM_DRAW> draw_bucket_c;
-  vsx_vbo_bucket<line_index_single, 1, GL_LINE_STRIP, GL_STREAM_DRAW> draw_bucket_d;
+  vsx_vbo_bucket<vsx_face1, GL_LINE_STRIP, GL_STREAM_DRAW> draw_bucket_a;
+  vsx_vbo_bucket<vsx_face1, GL_LINE_STRIP, GL_STREAM_DRAW> draw_bucket_b;
+  vsx_vbo_bucket<vsx_face1, GL_LINE_STRIP, GL_STREAM_DRAW> draw_bucket_c;
+  vsx_vbo_bucket<vsx_face1, GL_LINE_STRIP, GL_STREAM_DRAW> draw_bucket_d;
 
   vsx_profiler_consumer_chunk* selected_chunk;
 

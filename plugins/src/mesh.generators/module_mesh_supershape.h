@@ -275,7 +275,7 @@ public:
 
         if (i > 0 && j > 0)
         {
-          vsx_face a;
+          vsx_face3 a;
           a.a = vi - 1; // (0)
           a.b = vi - _x_num_segments-1;
           a.c = vi - _x_num_segments-2;

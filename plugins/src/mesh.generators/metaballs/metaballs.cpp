@@ -317,7 +317,7 @@ float xx, yy, zz;
 float fSqDist;
 float fsqr;
 //=============================================================================
-void inline CMetaballs::ComputeNormal(vsx_vector<>* vv, vsx_vector<>* vn, vsx_tex_coord* vt)
+void inline CMetaballs::ComputeNormal(vsx_vector<>* vv, vsx_vector<>* vn, vsx_tex_coord2f* vt)
 {
 	
 

@@ -72,6 +72,11 @@ public:
     w = ww;
   }
 
+  static size_t arity()
+  {
+    return 4;
+  }
+
   inline void cos_slerp(vsx_quaternion& from, vsx_quaternion& to, T t)
   {
     slerp(from,to,(T)sin(t*HALF_PI));
@@ -128,7 +133,7 @@ public:
     return *this;
   }
 
-  vsx_quaternion operator -(const vsx_quaternion &t)
+  vsx_quaternion operator -(const vsx_quaternion &t) const
   {
     vsx_quaternion temp;
     temp.x = x-t.x;
@@ -137,13 +142,32 @@ public:
     return temp;
   }
 
-  vsx_quaternion operator -(const vsx_vector<T> &t)
+  vsx_quaternion operator -(const vsx_vector<T> &t) const
   {
     vsx_quaternion temp;
     temp.x = x-t.x;
     temp.y = y-t.y;
     temp.z = z-t.z;
     return temp;
+  }
+
+  vsx_quaternion operator *(const vsx_quaternion<T> &t) const
+  {
+    vsx_quaternion temp;
+    temp.x =  x * t.w + y * t.z - z * t.y + w * t.x;
+    temp.y = -x * t.z + y * t.w + z * t.x + w * t.y;
+    temp.z =  x * t.y - y * t.x + z * t.w + w * t.z;
+    temp.w = -x * t.x - y * t.y - z * t.z + w * t.w;
+    return temp;
+  }
+
+  vsx_quaternion operator *=(const vsx_quaternion<T> &t)
+  {
+    x =  x * t.w + y * t.z - z * t.y + w * t.x;
+    y = -x * t.z + y * t.w + z * t.x + w * t.y;
+    z =  x * t.y - y * t.x + z * t.w + w * t.z;
+    w = -x * t.x - y * t.y - z * t.z + w * t.w;
+    return *this;
   }
 
 

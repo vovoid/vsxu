@@ -247,7 +247,7 @@ public:
 
         if (i && j)
         {
-          vsx_face a;
+          vsx_face3 a;
           a.a = vi - current_num_sectors;
           a.b = vi-1;
           a.c = vi - current_num_sectors-1;

@@ -34,11 +34,17 @@
 #include "vsx_widget_time_holder.h"
 
 #include "vsx_profiler_consumer.h"
-typedef struct
+class line_index
 {
+public:
   GLuint a;
   GLuint b;
-} line_index;
+
+  static size_t arity()
+  {
+    return 2;
+  }
+};
 
 
 const double chunk_height = 0.03;
@@ -49,7 +55,7 @@ class vsx_widget_profiler_thread : public vsx_widget
   // profiler for profiling ourselves
   vsx_profiler* profiler;
 
-  vsx_vbo_bucket<line_index, 2, GL_LINES, GL_STREAM_DRAW> draw_bucket;
+  vsx_vbo_bucket<line_index, GL_LINES, GL_STREAM_DRAW> draw_bucket;
   vsx_profiler_consumer_chunk* selected_chunk;
 
   vsx_avector<vsx_profiler_consumer_chunk> consumer_chunks;

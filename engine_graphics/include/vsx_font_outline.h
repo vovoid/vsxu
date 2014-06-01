@@ -95,6 +95,11 @@ public:
     color_outline = c;
   }
 
+  void outline_thickness_set(float n)
+  {
+    outline_thickness = n;
+  }
+
   vsx_string text_get()
   {
     return text;

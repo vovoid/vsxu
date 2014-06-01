@@ -41,8 +41,8 @@ public:
   vsx_array< vsx_vector<T> > vertices;
   vsx_array< vsx_vector<T> > vertex_normals;
   vsx_array< vsx_color<T> > vertex_colors;
-  vsx_array< vsx_tex_coord > vertex_tex_coords;
-  vsx_array< vsx_face > faces;
+  vsx_array< vsx_tex_coord2f > vertex_tex_coords;
+  vsx_array< vsx_face3 > faces;
   vsx_array< vsx_vector<T> > face_normals;
   vsx_array< vsx_quaternion<T> > vertex_tangents; // tangent space, for normal mapping
   vsx_array< vsx_vector<T> > face_centers; // centers of the faces - the average of each face's v1+v2+v3/3

@@ -118,7 +118,7 @@ public:
         my->mesh->data->vertex_normals.reset_used(0);
         my->mesh->data->vertex_tex_coords.reset_used(0);
         my->mesh->data->faces.reset_used(0);
-        vsx_face face;
+        vsx_face3 face;
         vsx_vector<> g;
         vsx_vector<> c;
         for (int L=-1;L<2;L++)
@@ -160,7 +160,7 @@ public:
                 c.y = sin(gr)*gz;
                 c.z = g.y*2.0f;
                 b = my->mesh->data->vertices.push_back(c);
-                my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
+                my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord2f(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
                 ++a;
                 if (a >= 3) {
                   face.a = b-3;
@@ -193,7 +193,7 @@ public:
                 c.z = g.y*2.0f;
                 b = my->mesh->data->vertices.push_back(c);
 
-                my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
+                my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord2f(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
 
                 ++a;
 

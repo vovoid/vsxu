@@ -40,7 +40,7 @@ public:
   vsx_gl_state* gl_state;
 
 
-  vsx_vbo_bucket<GLuint, 1, GL_POINTS, GL_STREAM_DRAW, vsx_quaternion<> > point_bucket;
+  vsx_vbo_bucket<vsx_face1, GL_POINTS, GL_STREAM_DRAW, vsx_quaternion<> > point_bucket;
 
 
   void module_info(vsx_module_info* info)
@@ -321,7 +321,7 @@ public:
     {
       for (size_t i = 0; i < (*particles->particles).size(); ++i)
       {
-        point_bucket.faces[i] = i;
+        point_bucket.faces[i].a = i;
       }
     }
 

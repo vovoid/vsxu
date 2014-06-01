@@ -209,13 +209,13 @@ public:
         mesh->data->vertex_colors[i2] = vsx_color<>(1, 1, 1, 1);
         mesh->data->vertex_colors[i2+1] = vsx_color<>(1, 1, 1, 1);
 
-        mesh->data->vertex_tex_coords[i2]   = vsx_tex_coord(it, 0);
-        mesh->data->vertex_tex_coords[i2+1] = vsx_tex_coord(it, 1);
+        mesh->data->vertex_tex_coords[i2]   = vsx_tex_coord2f(it, 0);
+        mesh->data->vertex_tex_coords[i2+1] = vsx_tex_coord2f(it, 1);
 
         vsx_vector<> len;
         if (i>1)
         {
-          vsx_face f;
+          vsx_face3 f;
           f.a = i2;
           f.b = i2 - 1;
           f.c = i2 - 2;
@@ -265,14 +265,14 @@ public:
     float stepsizemultiplier = 0.02f * step_size->get();
     //float gravity_pull = -0.01f;
     float gravity_pull = -0.003f;
-    vsx_face* face_p = mesh->data->faces.get_pointer();
+    vsx_face3* face_p = mesh->data->faces.get_pointer();
     vsx_vector<>* vertices_speed_p = vertices_speed.get_pointer();
     vsx_vector<>* faces_length_p = face_lengths.get_pointer();
     vsx_vector<>* vertex_p = mesh->data->vertices.get_pointer();
 
     for (int j = 0; j < 8; j++)
     {
-      vsx_face* face_p_it = face_p;
+      vsx_face3* face_p_it = face_p;
       for(unsigned int i = 0; i < mesh->data->faces.size(); i++)
       {
         // face fetching

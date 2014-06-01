@@ -514,7 +514,7 @@ public:
 
       for(int i = 0; i < _y_num_segments - 2; i++) {
         for(int j = 0; j < _x_num_segments; j++) {
-          vsx_face a;
+          vsx_face3 a;
           a.a = i * _x_num_segments + j;
           a.b = (i + 1) * _x_num_segments + j;
           a.c = i * _x_num_segments + ((j + 1) % _x_num_segments);

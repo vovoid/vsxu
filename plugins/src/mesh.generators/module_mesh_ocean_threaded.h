@@ -151,7 +151,7 @@ public:
         my->mesh->data->vertex_normals.reset_used(0);
         my->mesh->data->vertex_tex_coords.reset_used(0);
         my->mesh->data->faces.reset_used(0);
-        vsx_face face;
+        vsx_face3 face;
         for (int L=-1;L<2;L++)
         {
           for (int i=0;i<(BIG_NX-1);i++)

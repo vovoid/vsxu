@@ -81,10 +81,10 @@ void gravity_strip::render()
 
 void gravity_strip::generate_mesh(
        vsx_mesh<>       &mesh,
-       vsx_face*      &fs_d,
+       vsx_face3*      &fs_d,
        vsx_vector<>*    &vs_d,
        vsx_vector<>*    &ns_d,
-       vsx_tex_coord* &ts_d,
+       vsx_tex_coord2f* &ts_d,
        vsx_matrix<float>*    modelview_matrix,
        vsx_vector<>*    upvector,
        int &generated_vertices,

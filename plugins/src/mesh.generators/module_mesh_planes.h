@@ -117,31 +117,31 @@ public:
         mesh->data->vertices[i4].y = -1.0f*diameter->get();
         mesh->data->vertices[i4].z = ip;
         mesh->data->vertex_colors[i4] = vsx_color<>(1,1,1,1);
-        mesh->data->vertex_tex_coords[i4] = vsx_tex_coord(0,0);
+        mesh->data->vertex_tex_coords[i4] = vsx_tex_coord2f(0,0);
         mesh->data->vertex_normals[i4] = vertex_normals;
 
         mesh->data->vertices[i4+1].x = 1.0f*diameter->get();
         mesh->data->vertices[i4+1].y = -1.0f*diameter->get();
         mesh->data->vertices[i4+1].z = ip;
         mesh->data->vertex_colors[i4+1] = vsx_color<>(1,1,1,1);
-        mesh->data->vertex_tex_coords[i4+1] = vsx_tex_coord(1,0);
+        mesh->data->vertex_tex_coords[i4+1] = vsx_tex_coord2f(1,0);
         mesh->data->vertex_normals[i4+1] = vertex_normals;
 
         mesh->data->vertices[i4+2].x = 1.0f*diameter->get();
         mesh->data->vertices[i4+2].y = 1.0f*diameter->get();
         mesh->data->vertices[i4+2].z = ip;
         mesh->data->vertex_colors[i4+2] = vsx_color<>(1,1,1,1);
-        mesh->data->vertex_tex_coords[i4+2] = vsx_tex_coord(1,1);
+        mesh->data->vertex_tex_coords[i4+2] = vsx_tex_coord2f(1,1);
         mesh->data->vertex_normals[i4+2] = vertex_normals;
 
         mesh->data->vertices[i4+3].x = -1.0f*diameter->get();
         mesh->data->vertices[i4+3].y = 1.0f*diameter->get();
         mesh->data->vertices[i4+3].z = ip;
         mesh->data->vertex_colors[i4+3] = vsx_color<>(1,1,1,1);
-        mesh->data->vertex_tex_coords[i4+3] = vsx_tex_coord(0,1);
+        mesh->data->vertex_tex_coords[i4+3] = vsx_tex_coord2f(0,1);
         mesh->data->vertex_normals[i4+3] = vertex_normals;
 
-        vsx_face a;
+        vsx_face3 a;
         a.a = i4+2; a.b = i4; a.c = i4+1;
         mesh->data->faces.push_back(a);
         a.a = i4+2; a.b = i4+3; a.c = i4;

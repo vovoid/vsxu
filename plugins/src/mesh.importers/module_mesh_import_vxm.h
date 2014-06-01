@@ -109,7 +109,7 @@ public:
       vsx_printf("texcoord count: %ld\n",tex_coords_size);
       void* texcoords_p = malloc(tex_coords_size);
       engine->filesystem->f_read(texcoords_p,tex_coords_size,fp);
-      mesh->data->vertex_tex_coords.set_data((vsx_tex_coord*)texcoords_p,tex_coords_size / sizeof(vsx_tex_coord));
+      mesh->data->vertex_tex_coords.set_data((vsx_tex_coord2f*)texcoords_p,tex_coords_size / sizeof(vsx_tex_coord2f));
     }
 
     size_t faces_size;
@@ -119,7 +119,7 @@ public:
       vsx_printf("face count: %ld\n",faces_size);
       void* faces_p = malloc(faces_size);
       engine->filesystem->f_read(faces_p,faces_size,fp);
-      mesh->data->faces.set_data((vsx_face*)faces_p,faces_size / sizeof(vsx_face));
+      mesh->data->faces.set_data((vsx_face3*)faces_p,faces_size / sizeof(vsx_face3));
     }
 
     engine->filesystem->f_close(fp);

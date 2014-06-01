@@ -158,7 +158,7 @@ public:
 
       mesh->data->vertex_colors[i2] = vsx_color<>(thick * p_scale, thick * p_scale, thick * p_scale, 1.0);
 
-      mesh->data->vertex_tex_coords[i2]   = vsx_tex_coord(it, 0);
+      mesh->data->vertex_tex_coords[i2]   = vsx_tex_coord2f(it, 0);
 
     }
     #undef COUNT

@@ -25,7 +25,7 @@
 #ifndef VSX_VECTOR_H
 #define VSX_VECTOR_H
 
-
+#include <inttypes.h>
 #include <vsx_math.h>
 
 template<typename T = float>
@@ -54,6 +54,11 @@ public:
     T w;
     T yaw;
   };
+
+  static size_t arity()
+  {
+    return 3;
+  }
 
   inline vsx_vector operator +(const vsx_vector &t)
   {

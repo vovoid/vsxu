@@ -174,7 +174,7 @@ public:
       vsx_vector<> normal;
       vsx_vector<> len;
       for (unsigned int i = 0; i < (*p)->data->faces.size(); i++) {
-        vsx_face& f = mesh->data->faces[i];
+        vsx_face3& f = mesh->data->faces[i];
         vsx_vector<>& v0 = mesh->data->vertices[f.a];
         vsx_vector<>& v1 = mesh->data->vertices[f.b];
         vsx_vector<>& v2 = mesh->data->vertices[f.c];
@@ -209,7 +209,7 @@ public:
 
     //calculate volume
     float volume = 0.0f;
-    vsx_face* face_p = mesh->data->faces.get_pointer();
+    vsx_face3* face_p = mesh->data->faces.get_pointer();
     vsx_vector<>* vertex_p = mesh->data->vertices.get_pointer();
     vsx_vector<>* faces_length_p = faceLengths.get_pointer();
 
@@ -218,7 +218,7 @@ public:
 
     float onedivsix = (1.0f / 6.0f);
     for(unsigned int i = 0; i < mesh->data->faces.size(); i++) {
-      vsx_face& f = face_p[i];
+      vsx_face3& f = face_p[i];
       vsx_vector<>& v0 = vertex_p[f.a];
       vsx_vector<>& v2 = vertex_p[f.b];
       vsx_vector<>& v1 = vertex_p[f.c];
@@ -238,7 +238,7 @@ public:
 
     //calculate face areas, normals, forces and add to speed
     for(unsigned int i = 0; i < mesh->data->faces.size(); i++) {
-      vsx_face& f = face_p[i];
+      vsx_face3& f = face_p[i];
       vsx_vector<>& v0 = vertex_p[f.a];
       vsx_vector<>& v1 = vertex_p[f.b];
       vsx_vector<>& v2 = vertex_p[f.c];

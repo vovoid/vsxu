@@ -40,12 +40,12 @@ public:
 
   vsx_array< vsx_vector<> >* vertices;
   vsx_array< vsx_vector<> >* vertex_normals;
-  vsx_array<vsx_tex_coord>* vertex_tex_coords;
-  vsx_array<vsx_face>* faces;
+  vsx_array<vsx_tex_coord2f>* vertex_tex_coords;
+  vsx_array<vsx_face3>* faces;
 
 protected:
 	float ComputeEnergy(float x, float y, float z);
-  void  ComputeNormal(vsx_vector<>* vv, vsx_vector<>* vn, vsx_tex_coord* vt);
+  void  ComputeNormal(vsx_vector<>* vv, vsx_vector<>* vn, vsx_tex_coord2f* vt);
 	float ComputeGridPointEnergy(int x, int y, int z);
 	int   ComputeGridVoxel(int x, int y, int z);
 

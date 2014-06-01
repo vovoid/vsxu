@@ -256,7 +256,7 @@ public:
       n.normalize();
       mesh->data->vertex_normals.push_back(n);
 
-      vsx_face a;
+      vsx_face3 a;
       a.a = i*3+1;
       a.b = i*3;
       a.c = i*3+2;

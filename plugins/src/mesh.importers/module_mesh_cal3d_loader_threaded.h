@@ -521,9 +521,9 @@ public:
         const vsx_vector<>& v2 = mesh->data->vertices[i2];
         const vsx_vector<>& v3 = mesh->data->vertices[i3];
 
-        const vsx_tex_coord& w1 = mesh->data->vertex_tex_coords[i1];
-        const vsx_tex_coord& w2 = mesh->data->vertex_tex_coords[i2];
-        const vsx_tex_coord& w3 = mesh->data->vertex_tex_coords[i3];
+        const vsx_tex_coord2f& w1 = mesh->data->vertex_tex_coords[i1];
+        const vsx_tex_coord2f& w2 = mesh->data->vertex_tex_coords[i2];
+        const vsx_tex_coord2f& w3 = mesh->data->vertex_tex_coords[i3];
 
         float x1 = v2.x - v1.x;
         float x2 = v3.x - v1.x;

@@ -127,7 +127,7 @@ public:
 
     for(int i = 0; i < current_num_stacks - 2; i++) {
       for(int j = 0; j < current_num_sectors; j++) {
-        vsx_face a;
+        vsx_face3 a;
         a.a = i * current_num_sectors + j;
         a.b = (i + 1) * current_num_sectors + j;
         a.c = i * current_num_sectors + ((j + 1) % current_num_sectors);
@@ -140,7 +140,7 @@ public:
     }
 
     for(int j = 0; j < current_num_sectors; j++) {
-      vsx_face a;
+      vsx_face3 a;
       a.a = vi - 2;
       a.b = 0 * current_num_sectors + j;
       a.c = 0 * current_num_sectors + ((j + 1) % current_num_sectors);

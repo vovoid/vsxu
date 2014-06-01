@@ -153,10 +153,10 @@ public:
 
     // mirror faces
     unsigned long f_end = (*p)->data->faces.size();
-    vsx_face* fs_p = &(*p)->data->faces[0];
+    vsx_face3* fs_p = &(*p)->data->faces[0];
     mesh->data->faces.allocate(f_end);
     mesh->data->faces.reset_used(f_end);
-    vsx_face* fs_d = mesh->data->faces.get_pointer();
+    vsx_face3* fs_d = mesh->data->faces.get_pointer();
 
     for (unsigned int i = 0; i < f_end; i++)
     {

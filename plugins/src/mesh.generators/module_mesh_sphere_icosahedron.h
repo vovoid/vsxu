@@ -327,7 +327,7 @@ public:
       }
 
 
-      vsx_face face;
+      vsx_face3 face;
       face.a = index_b;
       face.b = index_a;
       face.c = index_c;

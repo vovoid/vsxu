@@ -74,7 +74,7 @@ public:
     if (!first_run)
       return;
 
-    vsx_face a;
+    vsx_face3 a;
 
     //right
     mesh->data->vertex_normals[0] = mesh->data->vertices[0] = vsx_vector<>( 0.5f,-0.5f, 0.5f);

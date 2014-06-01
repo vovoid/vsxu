@@ -197,7 +197,7 @@ public:
     }
     if (mesh->data->faces.size() != faces.size()) {
       mesh->data->faces.reset_used();
-      vsx_face f;
+      vsx_face3 f;
       for (unsigned long a = 0; a < faces.size(); ++a) {
         //printf("abc: %d %d %d\n",vertices[faces[a].ax][faces[a].ay].id,vertices[faces[a].bx][faces[a].by].id,vertices[faces[a].cx][faces[a].cy].id);
         f.a = vertices[faces[a].ax][faces[a].ay].id;

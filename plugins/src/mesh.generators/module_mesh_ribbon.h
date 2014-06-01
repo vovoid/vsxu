@@ -153,14 +153,14 @@ public:
       mesh->data->vertex_colors[i2+2] = vsx_color<>(1, 1, 1, 1);
       mesh->data->vertex_colors[i2+3] = vsx_color<>(1, 1, 1, 1);
 
-      mesh->data->vertex_tex_coords[i2]   = vsx_tex_coord(it, 0);
-      mesh->data->vertex_tex_coords[i2+1] = vsx_tex_coord(it, 1);
-      mesh->data->vertex_tex_coords[i2+2] = vsx_tex_coord(it, 0);
-      mesh->data->vertex_tex_coords[i2+3] = vsx_tex_coord(it, 1);
+      mesh->data->vertex_tex_coords[i2]   = vsx_tex_coord2f(it, 0);
+      mesh->data->vertex_tex_coords[i2+1] = vsx_tex_coord2f(it, 1);
+      mesh->data->vertex_tex_coords[i2+2] = vsx_tex_coord2f(it, 0);
+      mesh->data->vertex_tex_coords[i2+3] = vsx_tex_coord2f(it, 1);
 
       if (!i) continue;
 
-      vsx_face a;
+      vsx_face3 a;
       a.a = i2;
       a.b = i2 - 3;
       a.c = i2 - 4;

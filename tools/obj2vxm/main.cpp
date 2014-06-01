@@ -58,8 +58,8 @@ int main(int argc, char* argv[])
   printf("current path is: %s\n", cur_path);
 
   printf("sizeof vsx_vector: %ld\n",sizeof(vsx_vector<float>));
-  printf("sizeof vsx_tex_coord: %ld\n",sizeof(vsx_tex_coord));
-  printf("sizeof vsx_face: %ld\n",sizeof(vsx_face));
+  printf("sizeof vsx_tex_coord: %ld\n",sizeof(vsx_tex_coord2f));
+  printf("sizeof vsx_face: %ld\n",sizeof(vsx_face3));
 
   if
   (
@@ -85,8 +85,8 @@ int main(int argc, char* argv[])
   vsx_string line;
   vsx_array< vsx_vector<> > vertices;
   vsx_array< vsx_vector<> > normals;
-  vsx_array< vsx_tex_coord > texcoords;
-  vsx_array< vsx_face > faces;
+  vsx_array< vsx_tex_coord2f > texcoords;
+  vsx_array< vsx_face3 > faces;
   mesh.data->vertex_tex_coords.reset_used();
   int face_cur = 0;
   while (fgets(buf,65535,fp))
@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
 
     if (parts[0] == "vt")
     {
-      vsx_tex_coord a;
+      vsx_tex_coord2f a;
       a.s = (s2f(parts[1]));
       a.t = (s2f(parts[2]));
       texcoords.push_back(a);
@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
 
     if (parts[0] == "f")
     {
-      vsx_face ff;
+      vsx_face3 ff;
       vsx_string deli2 = "/";
 
       vsx_avector<vsx_string> parts2;
@@ -194,20 +194,20 @@ int main(int argc, char* argv[])
 
 
 
-  size_t tex_coords_size = mesh.data->vertex_tex_coords.size() * sizeof(vsx_tex_coord);
+  size_t tex_coords_size = mesh.data->vertex_tex_coords.size() * sizeof(vsx_tex_coord2f);
   printf("writing %ld texcoord bytes\n",tex_coords_size);
   fwrite((void*)&tex_coords_size,sizeof(size_t),1,fp);
 
-  fwrite((void*)mesh.data->vertex_tex_coords.get_pointer(),sizeof(vsx_tex_coord), mesh.data->vertex_tex_coords.size(),fp);
+  fwrite((void*)mesh.data->vertex_tex_coords.get_pointer(),sizeof(vsx_tex_coord2f), mesh.data->vertex_tex_coords.size(),fp);
 
 
 
 
-  size_t faces_size = mesh.data->faces.size() * sizeof(vsx_face);
+  size_t faces_size = mesh.data->faces.size() * sizeof(vsx_face3);
   printf("writing %ld face bytes\n",faces_size);
   fwrite((void*)&faces_size,sizeof(size_t),1,fp);
 
-  fwrite((void*)mesh.data->faces.get_pointer(),sizeof(vsx_face),mesh.data->faces.size(),fp);
+  fwrite((void*)mesh.data->faces.get_pointer(),sizeof(vsx_face3),mesh.data->faces.size(),fp);
 
   fclose(fp);
 
