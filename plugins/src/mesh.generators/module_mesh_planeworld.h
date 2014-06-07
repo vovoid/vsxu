@@ -69,7 +69,7 @@ public:
   {
     mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_result");
     bspline_vertices_mesh = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"bspline_vertices_mesh");
-    spline0.init(vsx_vector<>(0), 0.7f, 0.3f, 0.6f);
+    spline0.init(vsx_vector3<>(0), 0.7f, 0.3f, 0.6f);
     srand ( time(NULL) );
   }
 
@@ -90,7 +90,7 @@ public:
 
     if (!spline0.points.size()) return;
 
-    vsx_vector<> spos;
+    vsx_vector3<> spos;
 
     spline0.step(1);
     spos = spline0.calc_coord();
@@ -100,17 +100,17 @@ public:
     const float s = 0.008f;
 
 
-    gmesh.vertices[0][0].coord = vsx_vector<>(-1*s,-1*s);
-    gmesh.vertices[0][1].coord = vsx_vector<>(1*s,-1*s);
-    gmesh.vertices[0][2].coord = vsx_vector<>(1*s,1*s);
-    gmesh.vertices[0][3].coord = vsx_vector<>(-1*s,1*s);
+    gmesh.vertices[0][0].coord = vsx_vector3<>(-1*s,-1*s);
+    gmesh.vertices[0][1].coord = vsx_vector3<>(1*s,-1*s);
+    gmesh.vertices[0][2].coord = vsx_vector3<>(1*s,1*s);
+    gmesh.vertices[0][3].coord = vsx_vector3<>(-1*s,1*s);
 
     float step = 0.05f;
     float iterations_p = 1.0f/step;
 
-    vsx_vector<> old;
-    vsx_vector<> e;
-    vsx_vector<> d;
+    vsx_vector3<> old;
+    vsx_vector3<> e;
+    vsx_vector3<> d;
     vsx_matrix<float> ma;
     //-----
     for (unsigned long i = 0; i < spline0.points.size()*(int)iterations_p; ++i) {
@@ -128,10 +128,10 @@ public:
       gmesh.vertices[i+1][2].coord = ma.multiply_vector(gmesh.vertices[0][2].coord)+spos;
       gmesh.vertices[i+1][3].coord = ma.multiply_vector(gmesh.vertices[0][3].coord)+spos;
 
-      gmesh.vertices[i+1][0].tex_coord = vsx_vector<>(0);
-      gmesh.vertices[i+1][1].tex_coord = vsx_vector<>(1,0);
-      gmesh.vertices[i+1][2].tex_coord = vsx_vector<>(1,1);
-      gmesh.vertices[i+1][3].tex_coord = vsx_vector<>(0,1);
+      gmesh.vertices[i+1][0].tex_coord = vsx_vector3<>(0);
+      gmesh.vertices[i+1][1].tex_coord = vsx_vector3<>(1,0);
+      gmesh.vertices[i+1][2].tex_coord = vsx_vector3<>(1,1);
+      gmesh.vertices[i+1][3].tex_coord = vsx_vector3<>(0,1);
 
 
 

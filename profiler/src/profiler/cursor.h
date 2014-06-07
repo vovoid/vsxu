@@ -4,7 +4,7 @@
 class cursor
 {
 public:
-  vsx_vector<> pos;
+  vsx_vector3<> pos;
 
   inline static cursor* get_instance() __attribute__((always_inline))
   {

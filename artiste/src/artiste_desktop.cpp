@@ -176,8 +176,8 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
       {
         if (a_focus->widget_type != VSX_WIDGET_TYPE_SERVER)
         {
-          vsx_vector<> a = a_focus->get_pos_p();
-          camera.move_camera(vsx_vector<>(a.x,a.y,2.0f));
+          vsx_vector3<> a = a_focus->get_pos_p();
+          camera.move_camera(vsx_vector3<>(a.x,a.y,2.0f));
         }
         else
           camera.set_distance(2.0f);;
@@ -362,16 +362,16 @@ void vsx_widget_desktop::load_configuration()
       vsx_widget_skin::get_instance()->init();
     } else
     if (mc->cmd == "global_interpolation_speed") {
-      vsx_widget_global_interpolation::get_instance()->set( s2f(mc->cmd_data) );
+      vsx_widget_global_interpolation::get_instance()->set( vsx_string_helper::s2f(mc->cmd_data) );
     } else
     if (mc->cmd == "automatic_undo") {
-      auto_undo = vsx_string_aux::s2i(mc->cmd_data);
+      auto_undo = vsx_string_helper::s2i(mc->cmd_data);
     } else
     if (mc->cmd == "global_framerate_limit") {
-      global_framerate_limit = s2f(mc->cmd_data);
+      global_framerate_limit = vsx_string_helper::s2f(mc->cmd_data);
     } else
     if (mc->cmd == "global_key_speed") {
-      camera.set_key_speed( s2f(mc->cmd_data) );
+      camera.set_key_speed( vsx_string_helper::s2f(mc->cmd_data) );
     }
     if (mc->cmd != "" && mc->cmd != "#")
     configuration[mc->cmd] = mc->cmd_data;

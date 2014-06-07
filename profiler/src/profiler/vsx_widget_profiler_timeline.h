@@ -32,7 +32,7 @@
 
 
 class vsx_widget_profiler_timeline : public vsx_widget {
-  vsx_vector<> parentpos;
+  vsx_vector3<> parentpos;
 
   float dd_time;
   float auto_move_dir;
@@ -52,7 +52,7 @@ public:
   void time_holder_set(vsx_widget_time_holder* n);
   vsx_widget_time_holder* time_holder_get();
 
-  void move_time(vsx_vector<> world);
+  void move_time(vsx_vector3<> world);
   void auto_move_time();
 
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
@@ -104,7 +104,7 @@ public:
 
   virtual void i_draw()
   {
-    timeline->set_size( vsx_vector<>( size.x , size.y )  );
+    timeline->set_size( vsx_vector3<>( size.x , size.y )  );
     timeline->pos.x = timeline->target_pos.x = 0.0;
     timeline->target_pos.y = timeline->pos.y =  size.y*0.5f - dragborder-timeline->size.y*0.5f;
 

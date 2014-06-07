@@ -25,7 +25,7 @@
 
 class vsx_widget_note : public vsx_widget_window {
   
-  vsx_vector<> pos_, size_;
+  vsx_vector3<> pos_, size_;
   
   int longest_line;
   int characters_width;

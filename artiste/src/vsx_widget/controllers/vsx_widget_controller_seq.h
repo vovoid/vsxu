@@ -47,7 +47,7 @@ public:
   {
   	parent_removal = new_val;
   }
-  virtual void set_size(vsx_vector<> new_size);
+  virtual void set_size(vsx_vector3<> new_size);
 
   virtual void i_draw();
   vsx_widget_controller_sequence() :

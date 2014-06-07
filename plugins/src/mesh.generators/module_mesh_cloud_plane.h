@@ -59,8 +59,8 @@ public:
     {
       for (int y = 0; y < 50; ++y)
       {
-        gmesh.vertices[x][y].coord = vsx_vector<>(((float)x-25)*0.8f,(float(rand()%1000))*0.0002f,(float(y)-25)*0.8f);
-        gmesh.vertices[x][y].tex_coord = vsx_vector<>(((float)x)/50.0f,((float)y)/50.0f,0);
+        gmesh.vertices[x][y].coord = vsx_vector3<>(((float)x-25)*0.8f,(float(rand()%1000))*0.0002f,(float(y)-25)*0.8f);
+        gmesh.vertices[x][y].tex_coord = vsx_vector3<>(((float)x)/50.0f,((float)y)/50.0f,0);
         gmesh.vertices[x][y].color = vsx_color<>((float)(rand()%1000)*0.001f,(float)(rand()%1000)*0.001f,(float)(rand()%1000)*0.001f,(float)(rand()%1000)*0.0005f);
       }
     }

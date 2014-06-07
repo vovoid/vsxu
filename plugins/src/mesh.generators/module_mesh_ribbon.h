@@ -92,25 +92,25 @@ public:
 
   void run()
   {
-    mesh->data->vertices[0] = vsx_vector<>(0);
+    mesh->data->vertices[0] = vsx_vector3<>(0);
 
-    vsx_vector<> a(start_point->get(0), start_point->get(1), start_point->get(2));
-    vsx_vector<> b(end_point->get(0), end_point->get(1), end_point->get(2));
-    vsx_vector<> up(up_vector->get(0), up_vector->get(1), up_vector->get(2));
+    vsx_vector3<> a(start_point->get(0), start_point->get(1), start_point->get(2));
+    vsx_vector3<> b(end_point->get(0), end_point->get(1), end_point->get(2));
+    vsx_vector3<> up(up_vector->get(0), up_vector->get(1), up_vector->get(2));
     up *= width->get();
 
 
-    vsx_vector<> pos = a;
-    vsx_vector<> diff = b-a;
-    vsx_vector<> diff_n = diff;
+    vsx_vector3<> pos = a;
+    vsx_vector3<> diff = b-a;
+    vsx_vector3<> diff_n = diff;
     diff_n.normalize();
 
-    vsx_vector<> normal;
-    vsx_vector<> up_n = up;
+    vsx_vector3<> normal;
+    vsx_vector3<> up_n = up;
     up_n.normalize();
     normal.cross(diff_n, up_n);
 
-    vsx_vector<> up_side = normal;
+    vsx_vector3<> up_side = normal;
     up_side *= up.length();
 
     float t = engine->vtime * time_amp->get();
@@ -133,7 +133,7 @@ public:
       float it = (float)i * one_div_count;
       float ft = sin(it * 3.14159f + t) * sin(-it * 5.18674f - t);
       float thick = sin(it * 3.14159f);
-      vsx_vector<> skew = up * ft * skew_amount * thick;
+      vsx_vector3<> skew = up * ft * skew_amount * thick;
 
       mesh->data->vertices[i2    ] = pos + up * thick + skew;
       mesh->data->vertices[i2 + 1] = pos - up * thick + skew;

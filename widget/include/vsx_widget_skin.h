@@ -65,11 +65,11 @@ public:
         vsx_string deli = ",";
         explode(mc->parts[2],deli, parts);
         vsx_color<> p;
-        p.r = s2f(parts[0]);
-        p.g = s2f(parts[1]);
-        p.b = s2f(parts[2]);
-        p.a = s2f(parts[3]);
-        skin_colors[ vsx_string_aux::s2i(mc->parts[1]) ] = p;
+        p.r = vsx_string_helper::s2f(parts[0]);
+        p.g = vsx_string_helper::s2f(parts[1]);
+        p.b = vsx_string_helper::s2f(parts[2]);
+        p.a = vsx_string_helper::s2f(parts[3]);
+        skin_colors[ vsx_string_helper::s2i(mc->parts[1]) ] = p;
       }
     }
   }

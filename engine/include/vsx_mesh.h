@@ -25,9 +25,9 @@
 #ifndef VSX_API_MESH_H
 #define VSX_API_MESH_H
 
-#include <vsx_array.h>
+#include <container/vsx_array.h>
 #include <vsx_quaternion.h>
-#include <vsx_vector.h>
+#include <vector/vsx_vector3.h>
 #include <vsx_color.h>
 #include <vsx_face.h>
 #include <vsx_texcoord.h>
@@ -38,14 +38,14 @@ template<typename T = float>
 class vsx_mesh_data {
 public:
   // vertices
-  vsx_array< vsx_vector<T> > vertices;
-  vsx_array< vsx_vector<T> > vertex_normals;
+  vsx_array< vsx_vector3<T> > vertices;
+  vsx_array< vsx_vector3<T> > vertex_normals;
   vsx_array< vsx_color<T> > vertex_colors;
   vsx_array< vsx_tex_coord2f > vertex_tex_coords;
   vsx_array< vsx_face3 > faces;
-  vsx_array< vsx_vector<T> > face_normals;
+  vsx_array< vsx_vector3<T> > face_normals;
   vsx_array< vsx_quaternion<T> > vertex_tangents; // tangent space, for normal mapping
-  vsx_array< vsx_vector<T> > face_centers; // centers of the faces - the average of each face's v1+v2+v3/3
+  vsx_array< vsx_vector3<T> > face_centers; // centers of the faces - the average of each face's v1+v2+v3/3
   // selected vertices, whom wich should be modified when run through a mesh deformer that modifies the
   // vertex coordinates
   vsx_array<unsigned long>* selected_vertices;
@@ -60,16 +60,16 @@ public:
     }
   }
   
-  inline vsx_vector<T> get_face_normal(unsigned long index)
+  inline vsx_vector3<T> get_face_normal(unsigned long index)
   {
     // counter-clockwise faces
     //  c
     //  ^
     //  |
     //  b<----a
-    vsx_vector<T> a = vertices[faces[index].b] - vertices[faces[index].a];
-    vsx_vector<T> b = vertices[faces[index].c] - vertices[faces[index].a];
-    vsx_vector<T> res;
+    vsx_vector3<T> a = vertices[faces[index].b] - vertices[faces[index].a];
+    vsx_vector3<T> b = vertices[faces[index].c] - vertices[faces[index].a];
+    vsx_vector3<T> res;
     res.cross(a,b);
     return res;
   }

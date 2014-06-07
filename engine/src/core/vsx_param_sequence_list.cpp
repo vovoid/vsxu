@@ -47,7 +47,7 @@ void vsx_param_sequence_list::get_init(vsx_engine_param* param, vsx_command_list
   if (parameter_channel_map.find(param) != parameter_channel_map.end())
   {
     vsx_param_sequence* p = (*parameter_channel_map.find(param)).second;
-    dest->add_raw(prefix+"pseq_p_ok init "+comp_name+" "+param->name+" "+f2s(p->items.size()));
+    dest->add_raw(prefix+"pseq_p_ok init "+comp_name+" "+param->name+" "+vsx_string_helper::f2s(p->items.size()));
   }
 }
 

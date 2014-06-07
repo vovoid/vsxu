@@ -136,11 +136,11 @@ public:
     glGetFloatv(GL_PROJECTION_MATRIX, mod_mat.m);
     glPopMatrix();
 
-    vsx_vector<> center(0);
-    vsx_vector<> deep(0,0,1);
-    vsx_vector<> istart = mod_mat.multiply_vector(center);
-    vsx_vector<> end = mod_mat.multiply_vector(deep);
-    vsx_vector<> sort_vec = end - istart;
+    vsx_vector3<> center(0);
+    vsx_vector3<> deep(0,0,1);
+    vsx_vector3<> istart = mod_mat.multiply_vector(center);
+    vsx_vector3<> end = mod_mat.multiply_vector(deep);
+    vsx_vector3<> sort_vec = end - istart;
 
     if (!(*mesh)->data->face_centers.size())
     {

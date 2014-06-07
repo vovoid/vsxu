@@ -213,21 +213,21 @@ public:
 
       int index8192 = (int)round(8192.0f*ip) % 8192;
 
-      vsx_vector<> circle_base_pos = vsx_vector<>(
+      vsx_vector3<> circle_base_pos = vsx_vector3<>(
                                                 r * cos ( P * phi + phiofs),
                                                 r * cos ( Q * phi + phiofs),
                                                 r * sin ( P * phi + phiofs)
                                                 );
-      vsx_vector<> circle_base_pos_phi2 = vsx_vector<>(
+      vsx_vector3<> circle_base_pos_phi2 = vsx_vector3<>(
                                                 r * cos ( P * phi2 +phiofs),
                                                 r * cos ( Q * phi2 +phiofs),
                                                 r * sin ( P * phi2 +phiofs)
                                                 );
 
       // rotation calculation
-      vsx_vector<> T = circle_base_pos_phi2 - circle_base_pos;
-      vsx_vector<> N = circle_base_pos_phi2 + circle_base_pos;
-      vsx_vector<> B;
+      vsx_vector3<> T = circle_base_pos_phi2 - circle_base_pos;
+      vsx_vector3<> N = circle_base_pos_phi2 + circle_base_pos;
+      vsx_vector3<> B;
       B.cross(T, N);
       N.cross(B, T);
       B.normalize();
@@ -243,7 +243,7 @@ public:
         float px = cos(j1 * TWO_PI) * size_shape_x[index8192] * size_shape_x_multiplier_f;
         float py = sin(j1 * TWO_PI) * size_shape_y[index8192] * size_shape_y_multiplier_f;
 
-        vsx_vector<> tmp_vec(
+        vsx_vector3<> tmp_vec(
             circle_base_pos.x,
             circle_base_pos.y,
             circle_base_pos.z

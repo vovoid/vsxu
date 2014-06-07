@@ -93,10 +93,10 @@ void vsxu_assistant::i_draw()
   size.x = 0.3*clickpoint.x*(screen_aspect);
   size.y = 0.5*clickpoint.x;
   alpha = (clickpoint.x-0.2)*2;
-  set_pos(vsx_vector<>((screen_aspect-size.x),-0.03));
+  set_pos(vsx_vector3<>((screen_aspect-size.x),-0.03));
 
-  pager->set_pos(vsx_vector<>(0.065f*clickpoint.x,clickpoint.x*0.14f));
-  pager->set_size(vsx_vector<>(0.1f*clickpoint.x,0.03f*clickpoint.x));
+  pager->set_pos(vsx_vector3<>(0.065f*clickpoint.x,clickpoint.x*0.14f));
+  pager->set_size(vsx_vector3<>(0.1f*clickpoint.x,0.03f*clickpoint.x));
 
   texture.bind();
     glColor3f(1,1,1);
@@ -113,7 +113,7 @@ void vsxu_assistant::i_draw()
       font.mode_2d = false;
       font.print
       (
-        vsx_vector<>(
+        vsx_vector3<>(
           (pos.x + size.x * 0.06) * screen_aspect,
           pos.y + size.y - (size.y * 0.12)
         ),
@@ -145,7 +145,7 @@ void vsxu_assistant::init()
   texture.load_png(PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"luna.png", false, &filesystem);
   if (configuration.find("assistant_size") != configuration.end())
   {
-    size_multiplier = s2f(configuration["assistant_size"]);
+    size_multiplier = vsx_string_helper::s2f(configuration["assistant_size"]);
   } else
   size_multiplier = 1.0f;
 
@@ -196,7 +196,7 @@ void vsxu_assistant::toggle_size()
     size_multiplier = 1.3f;
   }
   printf("assistant size is now: %f\n",size_multiplier);
-  configuration["assistant_size"] = f2s(size_multiplier);
+  configuration["assistant_size"] = vsx_string_helper::f2s(size_multiplier);
   ((vsx_widget_desktop*)root)->save_configuration();
 }
 

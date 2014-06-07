@@ -21,7 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <vsx_vector.h>
+#include <vector/vsx_vector3.h>
 #include <math.h>
 #include <vsx_gl_global.h>
 #include "vsx_widget_controller_ab.h"
@@ -38,8 +38,8 @@ void vsx_widget_controller_ab::init()
   vsx_widget::init();
   constrained_x = false;
   constrained_y = false;
-  set_pos(vsx_vector<>(-sizeunit*1.2));
-  set_size(vsx_vector<>(0.02f, 0.02f));
+  set_pos(vsx_vector3<>(-sizeunit*1.2));
+  set_size(vsx_vector3<>(0.02f, 0.02f));
 
   ball_size.y = ball_size.x = size.x/2;
 
@@ -317,12 +317,12 @@ void vsx_widget_controller_ab::event_mouse_move(vsx_widget_distance distance,vsx
     QuatFromMat(&ThisRot, dest_quat );
 
     if (tuple_type == 3) {
-      if (smoothness>=0) command_q_b.add_raw("param_set_interpolate "+ f2s(v2[0])+","+f2s(v2[1])+","+f2s(v2[2])  + " " + f2s(smoothness) + " "+target_param);
-      else command_q_b.add_raw("param_set "+ f2s(v2[0])+","+f2s(v2[1])+","+f2s(v2[2]) + " "+target_param);
+      if (smoothness>=0) command_q_b.add_raw("param_set_interpolate "+ vsx_string_helper::f2s(v2[0])+","+vsx_string_helper::f2s(v2[1])+","+vsx_string_helper::f2s(v2[2])  + " " + vsx_string_helper::f2s(smoothness) + " "+target_param);
+      else command_q_b.add_raw("param_set "+ vsx_string_helper::f2s(v2[0])+","+vsx_string_helper::f2s(v2[1])+","+vsx_string_helper::f2s(v2[2]) + " "+target_param);
     } else
     {
-      if (smoothness>=0) command_q_b.add_raw("param_set_interpolate "+ f2s(dest_quat.s.X)+","+f2s(dest_quat.s.Y)+","+f2s(dest_quat.s.Z)+","+f2s(dest_quat.s.W)  + " " + f2s(smoothness) + " "+target_param);
-      else command_q_b.add_raw("param_set "+ f2s(dest_quat.s.X)+","+f2s(dest_quat.s.Y)+","+f2s(dest_quat.s.Z)+","+f2s(dest_quat.s.W)  + " " + target_param);
+      if (smoothness>=0) command_q_b.add_raw("param_set_interpolate "+ vsx_string_helper::f2s(dest_quat.s.X)+","+vsx_string_helper::f2s(dest_quat.s.Y)+","+vsx_string_helper::f2s(dest_quat.s.Z)+","+vsx_string_helper::f2s(dest_quat.s.W)  + " " + vsx_string_helper::f2s(smoothness) + " "+target_param);
+      else command_q_b.add_raw("param_set "+ vsx_string_helper::f2s(dest_quat.s.X)+","+vsx_string_helper::f2s(dest_quat.s.Y)+","+vsx_string_helper::f2s(dest_quat.s.Z)+","+vsx_string_helper::f2s(dest_quat.s.W)  + " " + target_param);
     }
     parent->vsx_command_queue_b(this);
 
@@ -352,10 +352,10 @@ void vsx_widget_controller_ab::command_process_back_queue(vsx_command_s *t) {
     t->parts[3] = base64_decode(t->parts[3]);
     explode(t->parts[3],deli, parts);
     if (parts.size() == 4) {
-      dest_quat.s.X = inter_quat.s.X = s2f(parts[0]);
-      dest_quat.s.Y = inter_quat.s.Y = s2f(parts[1]);
-      dest_quat.s.Z = inter_quat.s.Z = s2f(parts[2]);
-      dest_quat.s.W = inter_quat.s.W = s2f(parts[3]);
+      dest_quat.s.X = inter_quat.s.X = vsx_string_helper::s2f(parts[0]);
+      dest_quat.s.Y = inter_quat.s.Y = vsx_string_helper::s2f(parts[1]);
+      dest_quat.s.Z = inter_quat.s.Z = vsx_string_helper::s2f(parts[2]);
+      dest_quat.s.W = inter_quat.s.W = vsx_string_helper::s2f(parts[3]);
       Matrix3fSetRotationFromQuat4f(&LastRot, &dest_quat);
     }
   } else vsx_widget_controller_base::command_process_back_queue(t);

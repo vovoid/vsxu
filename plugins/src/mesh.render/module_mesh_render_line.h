@@ -41,7 +41,7 @@ public:
   // internal
   vsx_mesh<>** mesh;
   vsx_matrix<float> ma;
-  vsx_vector<> upv;
+  vsx_vector3<> upv;
 
   GLuint dlist;
   bool list_built;

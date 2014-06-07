@@ -24,7 +24,7 @@
 #ifndef VSX_STRING_H
 #define VSX_STRING_H
 
-#include "vsx_avector.h"
+#include <container/vsx_avector.h>
 #include <cstring>
 #include <ctype.h>
 #include <vsx_platform.h>

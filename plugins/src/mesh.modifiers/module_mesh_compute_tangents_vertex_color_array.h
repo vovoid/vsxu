@@ -79,7 +79,7 @@ public:
   }
 
   unsigned long prev_timestamp;
-  vsx_vector<> v;
+  vsx_vector3<> v;
 
   void run()
   {
@@ -111,9 +111,9 @@ public:
       long i2 = (*p)->data->faces[a].b;
       long i3 = (*p)->data->faces[a].c;
 
-      const vsx_vector<>& v1 = (*p)->data->vertices[i1];
-      const vsx_vector<>& v2 = (*p)->data->vertices[i2];
-      const vsx_vector<>& v3 = (*p)->data->vertices[i3];
+      const vsx_vector3<>& v1 = (*p)->data->vertices[i1];
+      const vsx_vector3<>& v2 = (*p)->data->vertices[i2];
+      const vsx_vector3<>& v3 = (*p)->data->vertices[i3];
 
       const vsx_tex_coord2f& w1 = (*p)->data->vertex_tex_coords[i1];
       const vsx_tex_coord2f& w2 = (*p)->data->vertex_tex_coords[i2];
@@ -140,7 +140,7 @@ public:
     }
     for (unsigned long a = 0; a < (*p)->data->vertices.size(); a++)
     {
-      vsx_vector<>& n = (*p)->data->vertex_normals[a];
+      vsx_vector3<>& n = (*p)->data->vertex_normals[a];
       vsx_quaternion<>& t = vec_d[a];
 
       // Gram-Schmidt orthogonalize

@@ -24,13 +24,29 @@
 #ifndef VSX_COLOR_H
 #define VSX_COLOR_H
 
-#include <vsx_vector.h>
+#include <vector/vsx_vector3.h>
 #include <vsx_platform.h>
 
 template<typename T = float>
-class vsx_color : public vsx_vector<>
+class vsx_color
 {
 public:
+
+  union
+  {
+    T h;
+    T r;
+  };
+  union
+  {
+    T s;
+    T g;
+  };
+  union
+  {
+    T v;
+    T b;
+  };
   T a;
 
   inline void hsv(T h, T s, T v)
@@ -117,11 +133,11 @@ public:
     a = aa->a*(1-p)+bb->a*p;
   }
 
-  void set(const float &ix=0, const float &iy=0, const float &iz=0, const float &ia=0)
+  void set(const float &ir=0, const float &ig=0, const float &ib=0, const float &ia=0)
   {
-    x=ix;
-    y=iy;
-    z=iz;
+    r=ir;
+    g=ig;
+    b=ib;
     a=ia;
   }
 

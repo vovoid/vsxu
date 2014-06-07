@@ -33,7 +33,7 @@ class module_mesh_to_float3_arrays : public vsx_module
   vsx_module_param_float3_array* face_normals;
   vsx_module_param_float3_array* face_centers;
   // internal
-  vsx_array< vsx_vector<> > int_empty_array;
+  vsx_array< vsx_vector3<> > int_empty_array;
   vsx_vector_array<> int_vertices;
   vsx_vector_array<> int_vertex_normals;
   vsx_vector_array<> int_vertex_tangents;

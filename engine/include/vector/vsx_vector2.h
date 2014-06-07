@@ -30,7 +30,7 @@
 template<typename T = float>
 class vsx_vector_2d;
 
-#include <vsx_vector.h>
+#include <vector/vsx_vector3.h>
 
 template<typename T>
 class vsx_vector_2d
@@ -191,7 +191,7 @@ public:
       y(0.0f)
   {}
 
-  vsx_vector_2d(const vsx_vector<T> &n)
+  vsx_vector_2d(const vsx_vector3<T> &n)
   {
     x = n.x;
     y = n.y;

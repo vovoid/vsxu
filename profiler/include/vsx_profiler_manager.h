@@ -29,6 +29,7 @@
 #include <vsx_data_path.h>
 #include <vsx_timer.h>
 #include <vsxfst.h>
+#include <vsx_string_helper.h>
 #include <vsx_error.h>
 
 // You can set VSX_PROFILER_MAX_THREADS in your make script as well
@@ -110,7 +111,8 @@ public:
     if (access(profiler_directory.c_str(),0) != 0)
       mkdir( (profiler_directory).c_str(), 0700);
 
-    vsx_string filename = profiler_directory + "/" + vsx_string(program_invocation_short_name) + "_" +i2s(time(0x0)) + ".dat";
+    vsx_string filename = profiler_directory + "/" + vsx_string(program_invocation_short_name) +
+        "_" +vsx_string_helper::i2s(time(0x0)) + ".dat";
 
     vsx_timer timer;
 

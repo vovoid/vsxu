@@ -176,7 +176,7 @@ void vsx_statelist::inc_amp()
   FILE* fxfp = fopen( fxlf.c_str(), "w");
   if (fxfp)
   {
-    fputs(f2s((*state_iter).fx_level).c_str(), fxfp);
+    fputs(vsx_string_helper::f2s((*state_iter).fx_level).c_str(), fxfp);
     fclose(fxfp);
   }
 #endif
@@ -194,7 +194,7 @@ void vsx_statelist::dec_amp()
   FILE* fxfp = fopen( fxlf.c_str(), "w");
   if (fxfp)
   {
-    fputs(f2s((*state_iter).fx_level).c_str(), fxfp);
+    fputs(vsx_string_helper::f2s((*state_iter).fx_level).c_str(), fxfp);
     fclose(fxfp);
   }
 #endif
@@ -537,7 +537,7 @@ void vsx_statelist::load_fx_levels_from_user()
       (void)cc;
       fclose(fpfx);
       vsx_string ff = dest;
-      state.fx_level = s2f(ff);
+      state.fx_level = vsx_string_helper::s2f(ff);
     }
   }
 #endif
@@ -608,7 +608,7 @@ void vsx_statelist::save_fx_levels_from_user()
       (void)cc;
       fclose(fpfx);
       vsx_string ff = dest;
-      state.fx_level = s2f(ff);
+      state.fx_level = vsx_string_helper::s2f(ff);
     }
   }
 #endif

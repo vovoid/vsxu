@@ -38,7 +38,7 @@ void vsx_widget_controller_channel::init()
   vsx_widget_controller_base::init();
   get_value();
   amp = add(new vsx_widget_controller_knob,"amp");
-  amp->set_pos(vsx_vector<>(0,pos.y+size.y/2-amp->size.y*0.75));
+  amp->set_pos(vsx_vector3<>(0,pos.y+size.y/2-amp->size.y*0.75));
   //amp->pos.y=pos.y+size.y/2-amp->size.y*0.75;
   //amp->pos.x=0;
   ((vsx_widget_controller_knob*)amp)->bgcolor.a=0;
@@ -51,7 +51,7 @@ void vsx_widget_controller_channel::init()
   //((vsx_widget_3d_hint*)((vsx_widget_knob*)amp)->hint)->title="Amp";
 
   offset = add(new vsx_widget_controller_knob,"offset");
-  offset->set_pos(vsx_vector<>(0,amp->pos.y-offset->size.y-offset->size.y*0.25));
+  offset->set_pos(vsx_vector3<>(0,amp->pos.y-offset->size.y-offset->size.y*0.25));
   //offset->pos.y=amp->pos.y-offset->size.y-offset->size.y*0.25;
   //offset->pos.x=0;
   ((vsx_widget_controller_knob*)offset)->bgcolor.a=0;
@@ -62,7 +62,7 @@ void vsx_widget_controller_channel::init()
   //((vsx_widget_3d_hint*)((vsx_widget_knob*)offset)->hint)->title="Ofs";
 
   slider = add(new vsx_widget_controller_slider,"slider");
-  slider->set_pos(vsx_vector<>(0,offset->pos.y-(offset->size.y/2)-(slider->size.y/2)-(sizeunit/4)));
+  slider->set_pos(vsx_vector3<>(0,offset->pos.y-(offset->size.y/2)-(slider->size.y/2)-(sizeunit/4)));
   //slider->pos.y=offset->pos.y-(offset->size.y/2)-(slider->size.y/2)-(sizeunit/4);
   //slider->pos.x=0;
   ((vsx_widget_controller_slider*)slider)->bgcolor.a=0;
@@ -82,7 +82,7 @@ void vsx_widget_controller_channel::init()
   ((vsx_widget_controller_knob*)amp)->set_value(x-i);
   smooth(smoothness);
 
-  if (!isolate) command_q_b.add_raw("param_get "+target_param + " " + i2s(slider->id));
+  if (!isolate) command_q_b.add_raw("param_get "+target_param + " " + vsx_string_helper::i2s(slider->id));
 }
 
 void vsx_widget_controller_channel::smooth(float newval)
@@ -98,7 +98,7 @@ void vsx_widget_controller_channel::smooth(float newval)
 void vsx_widget_controller_channel::command_process_back_queue(vsx_command_s *t)
 {
   if (t->cmd=="pg64_ok" && !isolate) {
-    set_value(s2f(base64_decode(t->parts[3])));
+    set_value(vsx_string_helper::s2f(base64_decode(t->parts[3])));
     if (target_value > ((vsx_widget_controller_slider*)slider)->amp)
     {
       ((vsx_widget_controller_knob*)amp)->target_value = ((vsx_widget_controller_slider*)slider)->amp = target_value*2;
@@ -130,8 +130,8 @@ void vsx_widget_controller_channel::command_process_back_queue(vsx_command_s *t)
       if (((vsx_widget_controller_slider*)slider)->value != ((vsx_widget_controller_slider*)slider)->target_value)
       {
         set_value(((vsx_widget_controller_slider*)slider)->target_value);
-        if (((vsx_widget_controller_knob*)amp)->smoothness>=0) command_q_b.add_raw("param_set_interpolate "+ f2s(((vsx_widget_controller_slider*)slider)->target_value)  + " " + f2s(((vsx_widget_controller_knob*)amp)->smoothness) + " "+target_param);
-        else command_q_b.add_raw("param_set "+ f2s(((vsx_widget_controller_slider*)slider)->target_value) + " "+target_param);
+        if (((vsx_widget_controller_knob*)amp)->smoothness>=0) command_q_b.add_raw("param_set_interpolate "+ vsx_string_helper::f2s(((vsx_widget_controller_slider*)slider)->target_value)  + " " + vsx_string_helper::f2s(((vsx_widget_controller_knob*)amp)->smoothness) + " "+target_param);
+        else command_q_b.add_raw("param_set "+ vsx_string_helper::f2s(((vsx_widget_controller_slider*)slider)->target_value) + " "+target_param);
         parent->vsx_command_queue_b(this);
       }
     } else
@@ -145,8 +145,8 @@ void vsx_widget_controller_channel::command_process_back_queue(vsx_command_s *t)
       {
         //target_value = value = ((vsx_widget_slider*)slider)->value;
         set_value(((vsx_widget_controller_slider*)slider)->target_value);
-        if (((vsx_widget_controller_knob*)offset)->smoothness>=0) command_q_b.add_raw("param_set_interpolate "+ f2s(((vsx_widget_controller_slider*)slider)->target_value)  + " " + f2s(((vsx_widget_controller_knob*)offset)->smoothness) + " "+target_param);
-        else command_q_b.add_raw("param_set "+ f2s(((vsx_widget_controller_slider*)slider)->target_value) + " "+target_param);
+        if (((vsx_widget_controller_knob*)offset)->smoothness>=0) command_q_b.add_raw("param_set_interpolate "+ vsx_string_helper::f2s(((vsx_widget_controller_slider*)slider)->target_value)  + " " + vsx_string_helper::f2s(((vsx_widget_controller_knob*)offset)->smoothness) + " "+target_param);
+        else command_q_b.add_raw("param_set "+ vsx_string_helper::f2s(((vsx_widget_controller_slider*)slider)->target_value) + " "+target_param);
         parent->vsx_command_queue_b(this);
       }
     } else
@@ -159,8 +159,8 @@ void vsx_widget_controller_channel::command_process_back_queue(vsx_command_s *t)
         //printf("set value: %f\n",((vsx_widget_slider*)slider)->target_value);
         set_value(((vsx_widget_controller_slider*)slider)->target_value);
         smoothness = ((vsx_widget_controller_slider*)slider)->smoothness;
-        if (smoothness>=0) command_q_b.add_raw("param_set_interpolate "+ f2s(((vsx_widget_controller_slider*)slider)->target_value)  + " " + f2s(smoothness) + " "+target_param);
-        else command_q_b.add_raw("param_set "+ f2s(((vsx_widget_controller_slider*)slider)->target_value) + " "+target_param);
+        if (smoothness>=0) command_q_b.add_raw("param_set_interpolate "+ vsx_string_helper::f2s(((vsx_widget_controller_slider*)slider)->target_value)  + " " + vsx_string_helper::f2s(smoothness) + " "+target_param);
+        else command_q_b.add_raw("param_set "+ vsx_string_helper::f2s(((vsx_widget_controller_slider*)slider)->target_value) + " "+target_param);
         parent->vsx_command_queue_b(this);
       }
     }

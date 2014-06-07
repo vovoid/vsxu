@@ -63,8 +63,8 @@ vsx_widget_controller_base::vsx_widget_controller_base() //include first
   dest_value = true;
   constrained_x = false;
   constrained_y = false;
-  set_pos(vsx_vector<>(-sizeunit*1.2));
-  set_size(vsx_vector<>(sizeunit, sizeunit));
+  set_pos(vsx_vector3<>(-sizeunit*1.2));
+  set_size(vsx_vector3<>(sizeunit, sizeunit));
   drawconnection=true; //draw line between this controll and it's parent
   target_param="";
   param_spec = 0;
@@ -131,7 +131,7 @@ void vsx_widget_controller_base::get_value()
   if (!isolate)
   {
   	//printf("command suffix: %s\n", command_suffix.c_str());
-    command_q_b.add_raw("pg64 "+target_param + " " + i2s(id)+command_suffix);
+    command_q_b.add_raw("pg64 "+target_param + " " + vsx_string_helper::i2s(id)+command_suffix);
     parent->vsx_command_queue_b(this);
   }
 }
@@ -139,13 +139,13 @@ void vsx_widget_controller_base::get_value()
 void vsx_widget_controller_base::get_in_param_spec(pair<vsx_string,vsx_string> parampair)
 {
     if (parampair.first=="param") target_param=parampair.second;
-    if (parampair.first=="pos_x") pos.x=s2f(parampair.second)*sizeunit;
-    if (parampair.first=="pos_y") pos.y=s2f(parampair.second)*sizeunit;
-    if (parampair.first=="size_x") size.x=s2f(parampair.second)*sizeunit;
-    if (parampair.first=="size_y") size.y=s2f(parampair.second)*sizeunit;
-    if (parampair.first=="max") { capmaxv=s2f(parampair.second); capmax=true; }
-    if (parampair.first=="min") { capminv=s2f(parampair.second); capmin=true; }
-    if (parampair.first=="smooth") smooth(s2f(parampair.second));
+    if (parampair.first=="pos_x") pos.x=vsx_string_helper::s2f(parampair.second)*sizeunit;
+    if (parampair.first=="pos_y") pos.y=vsx_string_helper::s2f(parampair.second)*sizeunit;
+    if (parampair.first=="size_x") size.x=vsx_string_helper::s2f(parampair.second)*sizeunit;
+    if (parampair.first=="size_y") size.y=vsx_string_helper::s2f(parampair.second)*sizeunit;
+    if (parampair.first=="max") { capmaxv=vsx_string_helper::s2f(parampair.second); capmax=true; }
+    if (parampair.first=="min") { capminv=vsx_string_helper::s2f(parampair.second); capmin=true; }
+    if (parampair.first=="smooth") smooth(vsx_string_helper::s2f(parampair.second));
 }
 
 float vsx_widget_controller_base::snap(float newval)
@@ -181,9 +181,9 @@ void vsx_widget_controller_base::command_process_back_queue(vsx_command_s *t)
   } else
   if (t->cmd == "si") {
     //printf("setting interpolation\n");
-    smooth(s2f(t->cmd_data));
+    smooth(vsx_string_helper::s2f(t->cmd_data));
   } else
-  if (t->cmd == "pg64_ok" && !isolate) set_value(s2f(base64_decode(t->parts[3])));
+  if (t->cmd == "pg64_ok" && !isolate) set_value(vsx_string_helper::s2f(base64_decode(t->parts[3])));
   else
   if (t->cmd == "delete" && !owned) {
     //printf("closing...\n");
@@ -245,9 +245,9 @@ void vsx_widget_controller_base::send_to_server()
   if (!isolate)
   {
     if (smoothness >= 0) {
-      command_q_b.add_raw("param_set_interpolate "+ f2s(send_value)  + " " + f2s(smoothness) + " "+target_param);
+      command_q_b.add_raw("param_set_interpolate "+ vsx_string_helper::f2s(send_value)  + " " + vsx_string_helper::f2s(smoothness) + " "+target_param);
     }
-    else command_q_b.add_raw("param_set "+ f2s(send_value) + " "+target_param);
+    else command_q_b.add_raw("param_set "+ vsx_string_helper::f2s(send_value) + " "+target_param);
     parent->vsx_command_queue_b(this);
   } else {
     command_q_b.add_raw("update "+name);
@@ -416,10 +416,10 @@ void vsx_widget_controller_base::i_draw() //include first, don't forget to add d
     if (!visible) return;
     if (color.a>0) color.a -= vsx_widget_time::get_instance()->get_dtime();
     else color.a=0;
-    vsx_vector<> p = parent->get_pos_p()+pos;
+    vsx_vector3<> p = parent->get_pos_p()+pos;
     p.y -= size.y*0.5;
     font.color=color;
-    font.print_center(vsx_vector<>(p.x,p.y), title,size.y);
+    font.print_center(vsx_vector3<>(p.x,p.y), title,size.y);
     font.color = vsx_color<>(1,1,1,1);
   }
 

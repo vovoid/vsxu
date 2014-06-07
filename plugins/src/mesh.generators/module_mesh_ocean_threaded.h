@@ -162,8 +162,8 @@ public:
               unsigned long a = 0;
               for (int j=0;j<(BIG_NY);j++)
               {
-                my->mesh->data->vertex_normals.push_back(vsx_vector<>(my->ocean.big_normals[i][j][0],my->ocean.big_normals[i][j][1],my->ocean.big_normals[i][j][2]));
-                b = my->mesh->data->vertices.push_back(vsx_vector<>(my->ocean.sea[i][j][0]+L*MAX_WORLD_X,my->ocean.sea[i][j][1]+k*MAX_WORLD_Y,my->ocean.sea[i][j][2]*my->ocean.scale_height));
+                my->mesh->data->vertex_normals.push_back(vsx_vector3<>(my->ocean.big_normals[i][j][0],my->ocean.big_normals[i][j][1],my->ocean.big_normals[i][j][2]));
+                b = my->mesh->data->vertices.push_back(vsx_vector3<>(my->ocean.sea[i][j][0]+L*MAX_WORLD_X,my->ocean.sea[i][j][1]+k*MAX_WORLD_Y,my->ocean.sea[i][j][2]*my->ocean.scale_height));
                 ++a;
                 if (a >= 3) {
                   face.a = b-3;
@@ -172,8 +172,8 @@ public:
                   my->mesh->data->faces.push_back(face);
                 }
 
-                my->mesh->data->vertex_normals.push_back(vsx_vector<>(my->ocean.big_normals[i+1][j][0],my->ocean.big_normals[i+1][j][1],my->ocean.big_normals[i+1][j][2]));
-                b = my->mesh->data->vertices.push_back(vsx_vector<>(my->ocean.sea[i+1][j][0]+L*MAX_WORLD_X,my->ocean.sea[i+1][j][1]+k*MAX_WORLD_Y,my->ocean.sea[i+1][j][2]*my->ocean.scale_height));
+                my->mesh->data->vertex_normals.push_back(vsx_vector3<>(my->ocean.big_normals[i+1][j][0],my->ocean.big_normals[i+1][j][1],my->ocean.big_normals[i+1][j][2]));
+                b = my->mesh->data->vertices.push_back(vsx_vector3<>(my->ocean.sea[i+1][j][0]+L*MAX_WORLD_X,my->ocean.sea[i+1][j][1]+k*MAX_WORLD_Y,my->ocean.sea[i+1][j][2]*my->ocean.scale_height));
                 ++a;
                 if (a >= 4) {
                   face.a = b-3;

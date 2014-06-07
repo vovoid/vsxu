@@ -335,8 +335,8 @@ public:
       float avz = add_vector->get(2);
       unsigned long num_vertices = (*our_mesh)->data->vertices.size();
       if (num_vertices) {
-        vsx_vector<>* vertex_pool = (*our_mesh)->data->vertices.get_pointer();
-        vsx_vector<>* vertex_cur = &vertex_pool[meshcoord];
+        vsx_vector3<>* vertex_pool = (*our_mesh)->data->vertices.get_pointer();
+        vsx_vector3<>* vertex_cur = &vertex_pool[meshcoord];
           //printf("something to do\n");
         // go through all particles
         float speed_multv = speed_multiplier->get();
@@ -385,7 +385,7 @@ public:
                   (*pp).speed.z = speed_mult*spd_z;
                 break;
                 case 2:  // fixed vector direction
-                  vsx_vector<> dir = (*our_mesh)->data->vertices[meshcoord];
+                  vsx_vector3<> dir = (*our_mesh)->data->vertices[meshcoord];
                   dir.normalize();
                   (*pp).speed = dir * speed_mult;
                   (*pp).speed.x += avx;

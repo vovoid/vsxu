@@ -42,7 +42,7 @@
 #include "vsx_module_list_factory.h"
 #include "vsx_note.h"
 #include "vsx_data_path.h"
-#include <vsx_string_aux.h>
+#include <vsx_string_helper.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include <stdio.h>

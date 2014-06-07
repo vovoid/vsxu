@@ -43,7 +43,7 @@
 #include "7zip/Compress/LZMA/LZMAEncoder.h"
 
 #include "vsx_string.h"
-#include "vsx_avector.h"
+#include <container/vsx_avector.h>
 
 #include "LzmaRam.h"
 

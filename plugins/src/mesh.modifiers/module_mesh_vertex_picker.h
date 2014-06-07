@@ -116,10 +116,10 @@ public:
       }
       if ((*p)->data->vertex_colors.size() > (unsigned long)id_)
       {
-        color->set((*p)->data->vertex_colors[id_].x,0);
-        color->set((*p)->data->vertex_colors[id_].y,1);
-        color->set((*p)->data->vertex_colors[id_].z,2);
-        color->set((*p)->data->vertex_colors[id_].z,3);
+        color->set((*p)->data->vertex_colors[id_].r,0);
+        color->set((*p)->data->vertex_colors[id_].g,1);
+        color->set((*p)->data->vertex_colors[id_].b,2);
+        color->set((*p)->data->vertex_colors[id_].a,3);
       }
 
       if ((*p)->data->vertex_tex_coords.size() > (unsigned long)id_)

@@ -37,7 +37,7 @@ class module_particlesystem_render : public vsx_module
   vsx_array<float> shader_sizes_data;
 
   vsx_vector_array<> shader_colors;
-  vsx_array< vsx_vector<> > shader_colors_data;
+  vsx_array< vsx_vector3<> > shader_colors_data;
 
   vsx_float_array shader_alphas;
   vsx_array<float> shader_alphas_data;
@@ -351,7 +351,7 @@ public:
 
         calc_colors();
         shader_colors_data.allocate(particles->particles->size());
-        vsx_vector<>* shader_colors_dp = shader_colors_data.get_pointer();
+        vsx_vector3<>* shader_colors_dp = shader_colors_data.get_pointer();
 
         calc_alphas();
         shader_alphas_data.allocate(particles->particles->size());

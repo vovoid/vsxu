@@ -49,7 +49,7 @@ void vsx_widget_profiler::init()
   support_interpolation = true;
   allow_resize_x = true;
   allow_resize_y = true;
-  set_size(vsx_vector<>(20.0f,20.0f));
+  set_size(vsx_vector3<>(20.0f,20.0f));
   size_min.x = 0.2;
   size_min.y = 0.2;
 
@@ -63,21 +63,21 @@ void vsx_widget_profiler::init()
 
   profiler = vsx_profiler_manager::get_instance()->get_profiler();
 
-  target_pos = pos = camera.get_pos_2d() + vsx_vector<>(0.25);
+  target_pos = pos = camera.get_pos_2d() + vsx_vector3<>(0.25);
   camera.set_distance(2.9);
 
   // Init Timeline
 //  timeline_window = add(new vsx_widget_profiler_timeline_window, name+".timeline");
 //  timeline_window->init();
-//  timeline_window->set_size(vsx_vector<>(0.2,0.1));
+//  timeline_window->set_size(vsx_vector3<>(0.2,0.1));
 //  timeline_window->set_render_type( render_2d );
 //  ((vsx_widget_profiler_timeline_window*)timeline_window)->time_holder_set( &time );
 
   // Init File List
   vsx_widget_profiler_tree_window* profile_tree = (vsx_widget_profiler_tree_window*)add(new vsx_widget_profiler_tree_window, "profile_list");
   profile_tree->init();
-  profile_tree->set_size(vsx_vector<>(0.15,1.0));
-  profile_tree->set_pos( vsx_vector<>(0.0, 0.0) );
+  profile_tree->set_size(vsx_vector3<>(0.15,1.0));
+  profile_tree->set_pos( vsx_vector3<>(0.0, 0.0) );
   profile_tree->show();
   profile_tree->set_render_type(render_2d);
   profile_tree->extra_init();
@@ -88,8 +88,8 @@ void vsx_widget_profiler::init()
   // Init Item List
   vsx_widget_profiler_items_window* items = (vsx_widget_profiler_items_window*)add(new vsx_widget_profiler_items_window, "item list");
   items->init();
-  items->set_size(vsx_vector<>(0.10,1.0));
-  items->set_pos( vsx_vector<>(1.0- 0.10, 0.0) );
+  items->set_size(vsx_vector3<>(0.10,1.0));
+  items->set_pos( vsx_vector3<>(1.0- 0.10, 0.0) );
   items->show();
   items->set_render_type(render_2d);
   items->extra_init();
@@ -156,7 +156,7 @@ void vsx_widget_profiler::load_plot(size_t id)
 
 void vsx_widget_profiler::i_draw()
 {
-  vsx_vector<> parentpos = get_pos_p();
+  vsx_vector3<> parentpos = get_pos_p();
   glBegin(GL_QUADS);
     vsx_widget_skin::get_instance()->set_color_gl(1);
     glVertex3f(parentpos.x-size.x*0.5f, parentpos.y+size.y*0.5f,pos.z);
@@ -165,7 +165,7 @@ void vsx_widget_profiler::i_draw()
     glVertex3f(parentpos.x-size.x*0.5f, parentpos.y+-size.y*0.5f,pos.z);
   glEnd();
   vsx_widget_skin::get_instance()->set_color_gl(0);
-  draw_box_border(vsx_vector<>(parentpos.x-size.x*0.5,parentpos.y-size.y*0.5f), vsx_vector<>(size.x,size.y), dragborder);
+  draw_box_border(vsx_vector3<>(parentpos.x-size.x*0.5,parentpos.y-size.y*0.5f), vsx_vector3<>(size.x,size.y), dragborder);
 
   glColor4f(1,1,1,1);
 

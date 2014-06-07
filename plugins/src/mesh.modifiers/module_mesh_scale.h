@@ -32,7 +32,7 @@ class module_mesh_scale : public vsx_module
   // internal
   vsx_mesh<>* mesh;
   unsigned long prev_timestamp;
-  vsx_vector<> v;
+  vsx_vector3<> v;
 
 public:
   bool init() {
@@ -96,10 +96,10 @@ public:
       mesh->data->faces.reset_used(0);
 
       unsigned long end = (*p)->data->vertices.size();
-      vsx_vector<>* vs_p = &(*p)->data->vertices[0];
+      vsx_vector3<>* vs_p = &(*p)->data->vertices[0];
       mesh->data->vertices.allocate(end);
       mesh->data->vertices.reset_used(end);
-      vsx_vector<>* vs_d = mesh->data->vertices.get_pointer();
+      vsx_vector3<>* vs_d = mesh->data->vertices.get_pointer();
 
 
       for (unsigned int i = 0; i < end; i++)

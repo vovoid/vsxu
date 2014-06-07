@@ -1,5 +1,5 @@
-#include "vsx_avector.h"
-#include "vsx_array.h"
+#include <container/vsx_avector.h>
+#include <container/vsx_array.h>
 #include "vsx_mesh.h"
 #include "gravity_strip.h"
 #include "vsx_timer.h"
@@ -15,7 +15,7 @@ void gravity_strip::init_strip()
 
 
 	num_lines = 1;
-  vsx_vector<> v;
+  vsx_vector3<> v;
 
 	Mass m;
 	m.init(v,v,7 / (rand() / (float)RAND_MAX * 2.5f + 0.35f));
@@ -48,8 +48,8 @@ void gravity_strip::render()
     {
       int k = (i_ofs + j) % (BUFF_LEN-1);
 
-      vsx_vector<> d;
-      vsx_vector<> kk = oldPos[0][k+1] - oldPos[0][k];
+      vsx_vector3<> d;
+      vsx_vector3<> kk = oldPos[0][k+1] - oldPos[0][k];
       if (kk.norm() > 0.000001f)
       {
         d.cross( oldPos[0][k], oldPos[0][k+1] - oldPos[0][k] );
@@ -57,15 +57,15 @@ void gravity_strip::render()
         d = d * width*0.1f;
         float w = 1.0f;
 
-        vsx_vector<> res = oldPos[0][k] + d * 0.5f;
-        vsx_vector<> res_a = res + d * w;
-        vsx_vector<> res_b = res - d * w;
+        vsx_vector3<> res = oldPos[0][k] + d * 0.5f;
+        vsx_vector3<> res_a = res + d * w;
+        vsx_vector3<> res_b = res - d * w;
 
         glColor4f(color0[0], color0[1], color0[2], color0[3]);
         glTexCoord2f(0.0f, (float)j / fnum);
         glVertex3f(res_a.x, res_a.y, res_a.z);
 
-        vsx_vector<> res_n = res_a;
+        vsx_vector3<> res_n = res_a;
         res_n.normalize();
         glNormal3f(res_n.x, res_n.y, res_n.z);
 
@@ -82,11 +82,11 @@ void gravity_strip::render()
 void gravity_strip::generate_mesh(
        vsx_mesh<>       &mesh,
        vsx_face3*      &fs_d,
-       vsx_vector<>*    &vs_d,
-       vsx_vector<>*    &ns_d,
+       vsx_vector3<>*    &vs_d,
+       vsx_vector3<>*    &ns_d,
        vsx_tex_coord2f* &ts_d,
        vsx_matrix<float>*    modelview_matrix,
-       vsx_vector<>*    upvector,
+       vsx_vector3<>*    upvector,
        int &generated_vertices,
        int &generated_faces
      )
@@ -102,7 +102,7 @@ void gravity_strip::generate_mesh(
   // 3. multiply by vector [0,0,0,1]
   vsx_matrix<float> model_matrix = *modelview_matrix;
   model_matrix.transpose();
-  vsx_vector<> eye_pos = model_matrix.multiply_vector(vsx_vector<>(upvector->x,upvector->y,upvector->z));
+  vsx_vector3<> eye_pos = model_matrix.multiply_vector(vsx_vector3<>(upvector->x,upvector->y,upvector->z));
 
 
   int num = (int)((float)BUFF_LEN * length);
@@ -117,18 +117,18 @@ void gravity_strip::generate_mesh(
   for(int j = 0; j < num; j++)
   {
     int k = (i_ofs + j) % (BUFF_LEN-1);
-    vsx_vector<> kk = oldPos[0][k+1] - oldPos[0][k];
+    vsx_vector3<> kk = oldPos[0][k+1] - oldPos[0][k];
     if (kk.norm() > 0.0001f)
     {
-      vsx_vector<> a;
+      vsx_vector3<> a;
       a.cross( -kk, eye_pos );
 
       a.normalize();
-      vsx_vector<> d;
+      vsx_vector3<> d;
 
       d = a * m_width;
 
-      vsx_vector<> res = oldPos[0][k] + d * 0.5f;
+      vsx_vector3<> res = oldPos[0][k] + d * 0.5f;
       //#
       *vs_d = res + d;
       *ns_d = *vs_d;

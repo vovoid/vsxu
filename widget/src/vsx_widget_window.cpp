@@ -36,7 +36,7 @@ void vsx_widget_window::init() {
   coord_type = VSX_WIDGET_COORD_CORNER;
   widget_type = VSX_WIDGET_TYPE_WINDOW;
   pos.y = 0.7f;
-  set_size(vsx_vector<>(0.3f,0.3f));
+  set_size(vsx_vector3<>(0.3f,0.3f));
   topmost = true;
   title = "window";
   constrained_x = false;
@@ -58,8 +58,8 @@ void vsx_widget_window::i_draw() {
 	if (button_close)
 	{
 		((vsx_widget_button*)button_close)->border = 0.0001;
-    button_close->set_pos(vsx_vector<>(size.x-font_size*0.4f,size.y-font_size*0.5f-0.5f*dragborder));
-    button_close->set_size(vsx_vector<>(font_size*0.4f,font_size*0.8f-dragborder));
+    button_close->set_pos(vsx_vector3<>(size.x-font_size*0.4f,size.y-font_size*0.5f-0.5f*dragborder));
+    button_close->set_size(vsx_vector3<>(font_size*0.4f,font_size*0.8f-dragborder));
 	}
 
   if (visible)
@@ -70,25 +70,25 @@ void vsx_widget_window::i_draw() {
     vsx_widget_skin::get_instance()->set_color_gl(1);
     draw_box(pos,size.x,size.y);
     vsx_widget_skin::get_instance()->set_color_gl(2);
-    draw_box(pos+vsx_vector<>(0.0f,size.y-font_size),size.x,font_size);
+    draw_box(pos+vsx_vector3<>(0.0f,size.y-font_size),size.x,font_size);
 
     // border
     vsx_widget_skin::get_instance()->set_color_gl(0);
 
     // left
-    draw_box(pos+vsx_vector<>(0,dragborder),dragborder,size.y-dragborder-dragborder);
+    draw_box(pos+vsx_vector3<>(0,dragborder),dragborder,size.y-dragborder-dragborder);
 
     // right
-    draw_box(pos+vsx_vector<>(size.x-dragborder,dragborder),dragborder,size.y-dragborder-dragborder);
+    draw_box(pos+vsx_vector3<>(size.x-dragborder,dragborder),dragborder,size.y-dragborder-dragborder);
 
     // bottom
     draw_box(pos,size.x,dragborder);
 
     // top
-    draw_box(pos+vsx_vector<>(0.0f,size.y-dragborder),size.x,dragborder);
+    draw_box(pos+vsx_vector3<>(0.0f,size.y-dragborder),size.x,dragborder);
 
     vsx_widget_skin::get_instance()->set_color_gl(3);
 
-    font.print(vsx_vector<>((pos.x+font_size*0.1)*screen_aspect,pos.y+size.y-font_size*0.85),title,font_size*0.6);
+    font.print(vsx_vector3<>((pos.x+font_size*0.1)*screen_aspect,pos.y+size.y-font_size*0.85),title,font_size*0.6);
 	}
 }

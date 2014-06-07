@@ -27,7 +27,7 @@
 #include "vsx_timer.h"
 #include <list>
 #include "vsx_command.h"
-#include <vsx_string_aux.h>
+#include <vsx_string_helper.h>
 #include "vsx_command_list.h"
 #include "vsx_comp_abs.h"
 #include "vsx_param_abstraction.h"
@@ -121,18 +121,18 @@ void vsx_master_sequence_channel::update_line(vsx_command_list* dest, vsx_comman
 
   float p_vtime = i_vtime;
 
-  vsx_sequence_master_channel_item* pa = (items[ vsx_string_aux::s2i(cmd_in->parts[4]) ]);
+  vsx_sequence_master_channel_item* pa = (items[ vsx_string_helper::s2i(cmd_in->parts[4]) ]);
 
   // time distance (to next item)
   float local_time_distance;
-  if ( (local_time_distance = s2f(cmd_in->parts[5])) != -1.0f)
+  if ( (local_time_distance = vsx_string_helper::s2f(cmd_in->parts[5])) != -1.0f)
   {
     pa->total_length = local_time_distance;
   }
 
   // time length (internal length)
   float local_length;
-  if ( (local_length = s2f(cmd_in->parts[6]))  !=  -1.0f )
+  if ( (local_length = vsx_string_helper::s2f(cmd_in->parts[6]))  !=  -1.0f )
   {
     pa->length = local_length;
   }
@@ -148,8 +148,8 @@ void vsx_master_sequence_channel::update_line(vsx_command_list* dest, vsx_comman
 void vsx_master_sequence_channel::insert_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
 {
   float p_vtime = i_vtime;
-  long after_this_id = vsx_string_aux::s2i(cmd_in->parts[4]); // item_action_id
-  float time_diff = s2f(cmd_in->parts[5]);
+  long after_this_id = vsx_string_helper::s2i(cmd_in->parts[4]); // item_action_id
+  float time_diff = vsx_string_helper::s2f(cmd_in->parts[5]);
   vsx_sequence_master_channel_item* pa;
   std::vector<vsx_sequence_master_channel_item*>::iterator it = items.begin();
   float item_length = 0.1f;
@@ -206,7 +206,7 @@ void vsx_master_sequence_channel::insert_line(vsx_command_list* dest, vsx_comman
         cmd_in->parts[3]+" "+
         cmd_in->parts[4]+" "+
         cmd_in->parts[5]+" "+
-        f2s(pa->length) +" "+ // [length]
+        vsx_string_helper::f2s(pa->length) +" "+ // [length]
         cmd_in->parts[7]//+" "+
 
   );
@@ -239,7 +239,7 @@ void vsx_master_sequence_channel::i_remove_line(int pos)
 // 0=mseq_channel 1=row 2=remove 3=[channel_name] 4=[item_action_id]
 void vsx_master_sequence_channel::remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
 {
-  long pos = vsx_string_aux::s2i(cmd_in->parts[4]);
+  long pos = vsx_string_helper::s2i(cmd_in->parts[4]);
 
   i_remove_line(pos);
 
@@ -268,7 +268,7 @@ void vsx_master_sequence_channel::remove_all_lines_referring_to_sequence_list(vs
 // 0=mseq_channel 1=row 2=time_sequence 3=[name] 4=[item_id] 5=[get]/[set] 6(optional)=[sequence_dump]
 void vsx_master_sequence_channel::time_sequence(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
 {
-  vsx_sequence_master_channel_item* pa = (items[ vsx_string_aux::s2i(cmd_in->parts[4]) ]);
+  vsx_sequence_master_channel_item* pa = (items[ vsx_string_helper::s2i(cmd_in->parts[4]) ]);
 
   if (cmd_in->parts[5] == "set")
   {
@@ -305,8 +305,8 @@ vsx_string vsx_master_sequence_channel::dump()
   for (std::vector<vsx_sequence_master_channel_item*>::iterator it = items.begin(); it != items.end(); ++it)
   {
     ml.push_back(
-          f2s((*it)->total_length)+";"+
-          f2s((*it)->length)+";"+
+          vsx_string_helper::f2s((*it)->total_length)+";"+
+          vsx_string_helper::f2s((*it)->length)+";"+
           base64_encode((*it)->pool_name)+";"+
               base64_encode((*it)->time_sequence.get_string())
     );
@@ -333,8 +333,8 @@ void vsx_master_sequence_channel::inject(vsx_string inject_string)
     explode(parts[i], ideli, iparts);
     // 0 = total_length, 1 = internal_length, 2 = pool_name, 3 = time_sequence_data
     vsx_sequence_master_channel_item* pa = new vsx_sequence_master_channel_item;
-    pa->total_length = s2f(iparts[0]);
-    pa->length = s2f(iparts[1]);
+    pa->total_length = vsx_string_helper::s2f(iparts[0]);
+    pa->length = vsx_string_helper::s2f(iparts[1]);
     pa->pool_sequence_list = ((vsx_engine*)engine)->get_sequence_pool()->get_sequence_list_by_name(base64_decode(iparts[2]));
     pa->pool_name = base64_decode(iparts[2]);
 

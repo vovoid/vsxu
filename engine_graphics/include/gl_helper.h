@@ -27,17 +27,17 @@
 
 
 #include <vsx_platform.h>
-#include <vsx_vector.h>
+#include <vector/vsx_vector3.h>
 #include <vsx_color.h>
 #include <_engine_graphics_dllimport.h>
 
 
 
 
-VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box(const vsx_vector<> &pos, const float &width, const float &height);
-VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_c(const vsx_vector<> &pos, const float &width, const float &height);
-VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_tex(const vsx_vector<> &pos, const float &width, const float &height);
-VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_tex_c(const vsx_vector<> &pos, const float &width, const float &height);
+VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box(const vsx_vector3<> &pos, const float &width, const float &height);
+VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_c(const vsx_vector3<> &pos, const float &width, const float &height);
+VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_tex(const vsx_vector3<> &pos, const float &width, const float &height);
+VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_tex_c(const vsx_vector3<> &pos, const float &width, const float &height);
 
 
 #define draw_box_texf(pos_x, pos_y, pos_z, width, height) {\
@@ -66,8 +66,8 @@ VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_tex_c(const vsx_vector<> &pos, const
 }
 
 
-VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_gradient(const vsx_vector<> &pos, float width, float height, const vsx_color<> &a, const vsx_color<> &b, const vsx_color<> &c, const vsx_color<> &d);
-VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_border(const vsx_vector<> &pos, const vsx_vector<> &size, const float &dragborder);
+VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_gradient(const vsx_vector3<> &pos, float width, float height, const vsx_color<> &a, const vsx_color<> &b, const vsx_color<> &c, const vsx_color<> &d);
+VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_border(const vsx_vector3<> &pos, const vsx_vector3<> &size, const float &dragborder);
 
 
 #endif

@@ -41,8 +41,8 @@ public:
   double mdx, mdy; // delta mouse move
   bool controlling, isolate;
   //float xd;
-  vsx_vector<> parentpos;
-  vsx_vector<> deltamove,remPointer,remWorld;
+  vsx_vector3<> parentpos;
+  vsx_vector3<> deltamove,remPointer,remWorld;
   float temp;
   std::map<vsx_string,vsx_string>* param_spec;
 //----

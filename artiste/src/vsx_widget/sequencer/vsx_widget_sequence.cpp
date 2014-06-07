@@ -35,7 +35,7 @@
 #include "vsx_mouse.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
-#include <vsx_string_aux.h>
+#include <vsx_string_helper.h>
 
 // local includes
 #include "vsx_widget.h"
@@ -66,10 +66,10 @@ void vsx_widget_sequence_editor::init()
   support_interpolation = true;
   allow_resize_x = true;
   allow_resize_y = true;
-  set_size(vsx_vector<>(1.0f,0.5f));
+  set_size(vsx_vector3<>(1.0f,0.5f));
   size_min.x = 0.2;
   size_min.y = 0.2;
-  target_pos = pos = camera.get_pos_2d() + vsx_vector<>(0.25);
+  target_pos = pos = camera.get_pos_2d() + vsx_vector3<>(0.25);
   camera.set_distance(1.9);
 
   engine_status = VSX_ENGINE_STOPPED;
@@ -78,7 +78,7 @@ void vsx_widget_sequence_editor::init()
 
   timeline = add(new vsx_widget_timeline,name+".timeline");
   timeline->init();
-  timeline->set_size(vsx_vector<>(size.x*0.995f,size.y*0.04f));
+  timeline->set_size(vsx_vector3<>(size.x*0.995f,size.y*0.04f));
   ((vsx_widget_timeline*)timeline)->owner = this;
 
   but_rew = add(new vsx_widget_button,name+"rewind");
@@ -121,7 +121,7 @@ void vsx_widget_sequence_editor::init()
   vsx_widget_sequence_tree* sequence_tree = (vsx_widget_sequence_tree*)add(new vsx_widget_sequence_tree, "sequence_list");
   sequence_tree->init();
   sequence_tree->coord_type = VSX_WIDGET_COORD_CORNER;
-  sequence_tree->set_pos(vsx_vector<>(size.x/2,size.y/2)-dragborder*2);
+  sequence_tree->set_pos(vsx_vector3<>(size.x/2,size.y/2)-dragborder*2);
   sequence_tree->editor->set_font_size(0.008f);
   sequence_tree->size_from_parent = true;
   sequence_tree->editor->editing_enabled = false;
@@ -184,10 +184,10 @@ void vsx_widget_sequence_editor::i_draw()
   glEnd();
   vsx_widget_skin::get_instance()->set_color_gl(0);
 
-  draw_box_border(vsx_vector<>(parentpos.x-size.x*0.5,parentpos.y-size.y*0.5f), vsx_vector<>(size.x,size.y), dragborder);
+  draw_box_border(vsx_vector3<>(parentpos.x-size.x*0.5,parentpos.y-size.y*0.5f), vsx_vector3<>(size.x,size.y), dragborder);
 
   font.color = vsx_color<>(1.0f,1.0f,1.0f,0.7f);
-  font.print(vsx_vector<>(parentpos.x-size.x*0.5+0.3f,parentpos.y+size.y*0.5f-0.015f), name,0.01);
+  font.print(vsx_vector3<>(parentpos.x-size.x*0.5+0.3f,parentpos.y+size.y*0.5f-0.015f), name,0.01);
   font.color = vsx_color<>(1.0f,1.0f,1.0f,1.0f);
 
   vsx_widget::i_draw();
@@ -208,13 +208,13 @@ void vsx_widget_sequence_editor::update_list()
 void vsx_widget_sequence_editor::interpolate_size()
 {
   vsx_widget::interpolate_size();
-  sequence_list->set_pos(vsx_vector<>(-size.x/2+0.05f+dragborder));
-  sequence_list->set_size(vsx_vector<>(0.1f,size.y-dragborder*2));
-  but_rew->set_pos(vsx_vector<>( -size.x * 0.5f + 0.1f + but_rew->size.x*0.5f + dragborder*2 ,size.y*0.5f-but_rew->size.x*0.5f-dragborder*2));
-  but_play->set_pos(vsx_vector<>(but_rew->pos.x+but_rew->size.x+dragborder, but_rew->pos.y));
-  but_stop->set_pos(vsx_vector<>(but_play->pos.x + but_play->size.x + dragborder, but_rew->pos.y));
-  but_set_loop_point->set_pos(vsx_vector<>(-size.x*0.5f +0.23f,but_rew->pos.y));
-  if (but_add_master_channel) but_add_master_channel->set_pos(vsx_vector<>(but_stop->pos.x + but_stop->size.x  + but_add_master_channel->size.x / 2, but_rew->pos.y));
+  sequence_list->set_pos(vsx_vector3<>(-size.x/2+0.05f+dragborder));
+  sequence_list->set_size(vsx_vector3<>(0.1f,size.y-dragborder*2));
+  but_rew->set_pos(vsx_vector3<>( -size.x * 0.5f + 0.1f + but_rew->size.x*0.5f + dragborder*2 ,size.y*0.5f-but_rew->size.x*0.5f-dragborder*2));
+  but_play->set_pos(vsx_vector3<>(but_rew->pos.x+but_rew->size.x+dragborder, but_rew->pos.y));
+  but_stop->set_pos(vsx_vector3<>(but_play->pos.x + but_play->size.x + dragborder, but_rew->pos.y));
+  but_set_loop_point->set_pos(vsx_vector3<>(-size.x*0.5f +0.23f,but_rew->pos.y));
+  if (but_add_master_channel) but_add_master_channel->set_pos(vsx_vector3<>(but_stop->pos.x + but_stop->size.x  + but_add_master_channel->size.x / 2, but_rew->pos.y));
   timeline->target_size.x = timeline->size.x = size.x-0.1f-dragborder*4;
   timeline->pos.x = timeline->target_pos.x = 0.05f;
   timeline->target_pos.y = timeline->pos.y = but_rew->pos.y-dragborder-but_rew->size.y*0.5-timeline->size.y*0.5f;
@@ -510,10 +510,10 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
   } else
   if (t->cmd == "time_upd") {
     if (update_time_from_engine) {
-      curtime = s2f(t->parts[1]);
+      curtime = vsx_string_helper::s2f(t->parts[1]);
       check_timeline();
     }
-    engine_status = vsx_string_aux::s2i(t->parts[2]);
+    engine_status = vsx_string_helper::s2i(t->parts[2]);
   } else
   if (t->cmd == "mseq_channel_ok")
   {

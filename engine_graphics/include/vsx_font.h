@@ -43,7 +43,7 @@ struct vsx_font_info {
 
 class vsx_font {
   static std::map<vsx_string, vsx_font_info*> glist;
-  vsx_vector<> ep;
+  vsx_vector3<> ep;
   void reinit(vsx_font_info* f_info,vsx_string font);
   bool list_built;
   GLuint dlist;
@@ -82,11 +82,11 @@ public:
   float align;
   
   
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector<> print(vsx_vector<> p, const vsx_string& str, const float size, const vsx_string colors = "");
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector<> print(vsx_vector<> p, const vsx_string& str, const vsx_string& font, float size, const vsx_string colors = "");
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector<> print_center(vsx_vector<> p, const vsx_string& str, float size);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector<> print_right(vsx_vector<> p, const vsx_string& str, float size);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector<> get_size(const vsx_string& str, float size);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print(vsx_vector3<> p, const vsx_string& str, const float size, const vsx_string colors = "");
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print(vsx_vector3<> p, const vsx_string& str, const vsx_string& font, float size, const vsx_string colors = "");
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print_center(vsx_vector3<> p, const vsx_string& str, float size);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print_right(vsx_vector3<> p, const vsx_string& str, float size);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> get_size(const vsx_string& str, float size);
   VSX_ENGINE_GRAPHICS_DLLIMPORT void reinit_all_active();
   
   vsx_font(vsx_string path)

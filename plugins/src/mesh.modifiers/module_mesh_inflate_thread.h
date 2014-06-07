@@ -48,9 +48,9 @@ public:
 
   // internal
   vsx_mesh<>* mesh;
-  vsx_array< vsx_vector<> > faceLengths;
+  vsx_array< vsx_vector3<> > faceLengths;
   vsx_array<float> faceAreas;
-  vsx_array< vsx_vector<> > verticesSpeed;
+  vsx_array< vsx_vector3<> > verticesSpeed;
 
   bool debug;
   bool init()
@@ -64,7 +64,7 @@ public:
     delete mesh;
   }
 
-  void _printVector(const char* name, int faceInd, vsx_vector<> vec) {
+  void _printVector(const char* name, int faceInd, vsx_vector3<> vec) {
     if(debug) printf("%d %s: %f %f %f \n", faceInd, name, vec.x, vec.y, vec.z);
   }
 
@@ -132,7 +132,7 @@ public:
   }
 
   unsigned long prev_timestamp;
-  vsx_vector<> v;
+  vsx_vector3<> v;
   float dtimeRest;
 
   void run()
@@ -159,7 +159,7 @@ public:
       for (unsigned int i = 0; i < (*p)->data->vertices.size(); i++)
       {
         mesh->data->vertices[i] = (*p)->data->vertices[i] + v;
-        verticesSpeed[i] = vsx_vector<>(0, 0, 0);
+        verticesSpeed[i] = vsx_vector3<>(0, 0, 0);
       }
 
       for (unsigned int i = 0; i < (*p)->data->vertex_normals.size(); i++) mesh->data->vertex_normals[i] = (*p)->data->vertex_normals[i];
@@ -171,13 +171,13 @@ public:
 
       //calc and store original face lengths
       faceLengths.reset_used();
-      vsx_vector<> normal;
-      vsx_vector<> len;
+      vsx_vector3<> normal;
+      vsx_vector3<> len;
       for (unsigned int i = 0; i < (*p)->data->faces.size(); i++) {
         vsx_face3& f = mesh->data->faces[i];
-        vsx_vector<>& v0 = mesh->data->vertices[f.a];
-        vsx_vector<>& v1 = mesh->data->vertices[f.b];
-        vsx_vector<>& v2 = mesh->data->vertices[f.c];
+        vsx_vector3<>& v0 = mesh->data->vertices[f.a];
+        vsx_vector3<>& v1 = mesh->data->vertices[f.b];
+        vsx_vector3<>& v2 = mesh->data->vertices[f.c];
         //calc face area
         normal.assign_face_normal(&v0, &v1, &v2);
         float area = normal.length() / 2.0f;
@@ -210,18 +210,18 @@ public:
     //calculate volume
     float volume = 0.0f;
     vsx_face3* face_p = mesh->data->faces.get_pointer();
-    vsx_vector<>* vertex_p = mesh->data->vertices.get_pointer();
-    vsx_vector<>* faces_length_p = faceLengths.get_pointer();
+    vsx_vector3<>* vertex_p = mesh->data->vertices.get_pointer();
+    vsx_vector3<>* faces_length_p = faceLengths.get_pointer();
 
     verticesSpeed.allocate(mesh->data->vertices.size());
-    vsx_vector<>* vertices_speed_p = verticesSpeed.get_pointer();
+    vsx_vector3<>* vertices_speed_p = verticesSpeed.get_pointer();
 
     float onedivsix = (1.0f / 6.0f);
     for(unsigned int i = 0; i < mesh->data->faces.size(); i++) {
       vsx_face3& f = face_p[i];
-      vsx_vector<>& v0 = vertex_p[f.a];
-      vsx_vector<>& v2 = vertex_p[f.b];
-      vsx_vector<>& v1 = vertex_p[f.c];
+      vsx_vector3<>& v0 = vertex_p[f.a];
+      vsx_vector3<>& v2 = vertex_p[f.b];
+      vsx_vector3<>& v1 = vertex_p[f.c];
 
       volume += (v0.x * (v1.y - v2.y) +
            v1.x * (v2.y - v0.y) +
@@ -239,17 +239,17 @@ public:
     //calculate face areas, normals, forces and add to speed
     for(unsigned int i = 0; i < mesh->data->faces.size(); i++) {
       vsx_face3& f = face_p[i];
-      vsx_vector<>& v0 = vertex_p[f.a];
-      vsx_vector<>& v1 = vertex_p[f.b];
-      vsx_vector<>& v2 = vertex_p[f.c];
+      vsx_vector3<>& v0 = vertex_p[f.a];
+      vsx_vector3<>& v1 = vertex_p[f.b];
+      vsx_vector3<>& v2 = vertex_p[f.c];
 
               printVector("v0", i, v0);
               printVector("v1", i, v1);
               printVector("v2", i, v2);
 
-      vsx_vector<> a = vertex_p[face_p[i].b] - vertex_p[face_p[i].a];
-      vsx_vector<> b = vertex_p[face_p[i].c] - vertex_p[face_p[i].a];
-      vsx_vector<> normal;
+      vsx_vector3<> a = vertex_p[face_p[i].b] - vertex_p[face_p[i].a];
+      vsx_vector3<> b = vertex_p[face_p[i].c] - vertex_p[face_p[i].a];
+      vsx_vector3<> normal;
       normal.cross(a,b);
 
 
@@ -259,9 +259,9 @@ public:
               printFloat("length", i, len);
               printFloat("area", i, len);
 
-      vsx_vector<> edgeA = (v1 - v0);
-      vsx_vector<> edgeB = (v2 - v1);
-      vsx_vector<> edgeC = (v0 - v2);
+      vsx_vector3<> edgeA = (v1 - v0);
+      vsx_vector3<> edgeB = (v2 - v1);
+      vsx_vector3<> edgeC = (v0 - v2);
 
               printVector("edgeA", i, edgeA);
               printVector("edgeB", i, edgeB);
@@ -292,9 +292,9 @@ public:
               printFloat("edgeAccB", i, edgeAccB);
               printFloat("edgeAccC", i, edgeAccC);
 
-      vsx_vector<> accA = edgeA * edgeAccA;
-      vsx_vector<> accB = edgeB * edgeAccB;
-      vsx_vector<> accC = edgeC * edgeAccC;
+      vsx_vector3<> accA = edgeA * edgeAccA;
+      vsx_vector3<> accB = edgeB * edgeAccB;
+      vsx_vector3<> accC = edgeC * edgeAccC;
 
               printVector("accA", i, accA);
               printVector("accB", i, accB);
@@ -305,7 +305,7 @@ public:
       vertices_speed_p[f.c] -= (accC - accB) * gridStiffnessFactor;
 
       //applying pressure to areas of faces
-      vsx_vector<> pressureAcc = normal * pressure * gasExpansionFactor;
+      vsx_vector3<> pressureAcc = normal * pressure * gasExpansionFactor;
       vertices_speed_p[f.a] -= pressureAcc;
       vertices_speed_p[f.b] -= pressureAcc;
       vertices_speed_p[f.c] -= pressureAcc;
@@ -330,14 +330,14 @@ public:
 
     mesh->data->vertex_normals.allocate(mesh->data->vertices.size());
     mesh->data->vertex_normals.memory_clear();
-    vsx_vector<>* vertex_normals_p = mesh->data->vertex_normals.get_pointer();
+    vsx_vector3<>* vertex_normals_p = mesh->data->vertex_normals.get_pointer();
 
     //TODO: create vertex normals, for rendering... should be a separate module...
     for(unsigned int i = 0; i < mesh->data->faces.size(); i++)
     {
-      vsx_vector<> a = vertex_p[face_p[i].b] - vertex_p[face_p[i].a];
-      vsx_vector<> b = vertex_p[face_p[i].c] - vertex_p[face_p[i].a];
-      vsx_vector<> normal;
+      vsx_vector3<> a = vertex_p[face_p[i].b] - vertex_p[face_p[i].a];
+      vsx_vector3<> b = vertex_p[face_p[i].c] - vertex_p[face_p[i].a];
+      vsx_vector3<> normal;
       normal.cross(a,b);
 
       normal = -normal;

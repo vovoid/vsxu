@@ -203,7 +203,7 @@ public:
 
     T* t = new T;
     t->cmd = cmd;
-    t->cmd_data = i2s(cmd_data);
+    t->cmd_data = vsx_string_helper::i2s(cmd_data);
     get_lock();
       commands.push_back(t);
     release_lock();

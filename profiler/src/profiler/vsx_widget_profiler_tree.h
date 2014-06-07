@@ -87,7 +87,7 @@ public:
   {
     vsx_widget_window::i_draw();
 
-    tree->set_pos(vsx_vector<>(size.x * 0.5,size.y * 0.5 - font_size * 0.5 + dragborder*0.5f));
+    tree->set_pos(vsx_vector3<>(size.x * 0.5,size.y * 0.5 - font_size * 0.5 + dragborder*0.5f));
   }
 
   void extra_init()

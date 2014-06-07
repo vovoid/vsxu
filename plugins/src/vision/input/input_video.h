@@ -24,7 +24,7 @@
 #include <cv.h>
 #include <pthread.h>
 #include "vsx_gl_global.h"
-#include <vsx_vector.h>
+#include <vector/vsx_vector3.h>
 #include "vsx_param.h"
 #include "vsx_module.h"
 

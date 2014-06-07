@@ -811,7 +811,7 @@ public:
             (*particles->particles)[i].creation_pos.z
           );
           glMultMatrixf(ma.m);
-          vsx_vector<> ipos = (*particles->particles)[i].pos;
+          vsx_vector3<> ipos = (*particles->particles)[i].pos;
           ipos.x -= (*particles->particles)[i].creation_pos.x;
           ipos.y -= (*particles->particles)[i].creation_pos.y;
           ipos.z -= (*particles->particles)[i].creation_pos.z;

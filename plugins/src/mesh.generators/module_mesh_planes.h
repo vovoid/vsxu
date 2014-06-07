@@ -99,7 +99,7 @@ public:
   {
     if (l_param_updates != param_updates)
       first_run = true;
-    mesh->data->vertices[0] = vsx_vector<>(0);
+    mesh->data->vertices[0] = vsx_vector3<>(0);
 
     if (first_run || n_segs != num_planes->get())
     {
@@ -108,7 +108,7 @@ public:
       mesh->data->vertices.reset_used();
       mesh->data->faces.reset_used();
       float inc = space_between->get();
-      vsx_vector<> vertex_normals = vsx_vector<>(normals->get(0),normals->get(1),normals->get(2));
+      vsx_vector3<> vertex_normals = vsx_vector3<>(normals->get(0),normals->get(1),normals->get(2));
       float ip = 0.0f;
       for (int i = 0; i < (int)num_planes->get(); ++i)
       {

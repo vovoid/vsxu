@@ -62,7 +62,7 @@ class vsx_widget_profiler_thread : public vsx_widget
 
   vsx_avector<vsx_profiler_consumer_chunk*> tag_draw_chunks;
 
-  vsx_vector<> mouse_pos;
+  vsx_vector3<> mouse_pos;
 
   int depth_from_mouse_position()
   {

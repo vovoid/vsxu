@@ -23,14 +23,14 @@ class module_segmesh_map_bspline : public vsx_module
   // the step for each spline segment - defined as number of length/segments
   float spline_step;
 
-  vsx_vector<> old;
-  vsx_vector<> e;
-  vsx_vector<> f;
-  vsx_vector<> d;
+  vsx_vector3<> old;
+  vsx_vector3<> e;
+  vsx_vector3<> f;
+  vsx_vector3<> d;
   vsx_matrix<float> ma;
-  vsx_vector<> old_vec;
-  vsx_vector<> spos;
-  vsx_vector<> upv;
+  vsx_vector3<> old_vec;
+  vsx_vector3<> spos;
+  vsx_vector3<> upv;
   // the resulting mesh
   vsx_mesh<>* result_mesh;
 public:
@@ -84,10 +84,10 @@ public:
     mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_result");
     mesh_result->set_p(result_mesh);
 
-    spline0.init(vsx_vector<>(0), 0.7f, 0.3f, 0.6f);
-    spline0.points[0] = vsx_vector<>(0);
+    spline0.init(vsx_vector3<>(0), 0.7f, 0.3f, 0.6f);
+    spline0.points[0] = vsx_vector3<>(0);
 
-    upv = vsx_vector<>(0,1);
+    upv = vsx_vector3<>(0,1);
   }
 
   void run()

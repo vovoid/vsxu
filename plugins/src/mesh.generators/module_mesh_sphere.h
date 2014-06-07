@@ -106,7 +106,7 @@ public:
       float y = (float)cos(angle_stack);
       for(int j = 0; j < current_num_sectors; j++) {
         double angle = (double)j / current_num_sectors * 2 * PI;
-        vsx_vector<> tmp_vec((float)sin(angle) * rad, y, (float)cos(angle) * rad);
+        vsx_vector3<> tmp_vec((float)sin(angle) * rad, y, (float)cos(angle) * rad);
         mesh->data->vertices[vi] = tmp_vec;
         mesh->data->vertex_normals[vi] = tmp_vec;
         mesh->data->vertex_colors[vi] = vsx_color<>(1, 1, 1, 1);
@@ -114,12 +114,12 @@ public:
       }
     }
 
-    vsx_vector<> tmp_vec = vsx_vector<>(0, 1, 0);
+    vsx_vector3<> tmp_vec = vsx_vector3<>(0, 1, 0);
     mesh->data->vertices[vi] = tmp_vec;
     mesh->data->vertex_normals[vi] = tmp_vec;
     mesh->data->vertex_colors[vi] = vsx_color<>(1, 1, 1, 1);
     vi++;
-    tmp_vec = vsx_vector<>(0, -1, 0);
+    tmp_vec = vsx_vector3<>(0, -1, 0);
     mesh->data->vertices[vi] = tmp_vec;
     mesh->data->vertex_normals[vi] = tmp_vec;
     mesh->data->vertex_colors[vi] = vsx_color<>(1, 1, 1, 1);

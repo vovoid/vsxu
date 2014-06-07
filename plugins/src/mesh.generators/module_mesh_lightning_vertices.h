@@ -40,13 +40,13 @@ public:
 
   // internal
   vsx_mesh<>* mesh;
-  vsx_vector<> old_scaling;
+  vsx_vector3<> old_scaling;
   bool first_run;
   unsigned long id_a;
   unsigned long id_b;
   unsigned long lifetime;
-  vsx_vector<> delta;
-  vsx_vector<> start;
+  vsx_vector3<> delta;
+  vsx_vector3<> start;
   vsx_rand rand;
 
   void module_info(vsx_module_info* info)

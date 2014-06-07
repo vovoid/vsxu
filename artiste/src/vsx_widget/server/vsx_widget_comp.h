@@ -33,7 +33,7 @@
 class vsx_widget_component : public vsx_widget {
 // for making it "ethereal" when putting it in a macro
   //vsx_font myf;
-  vsx_vector<> message_pos;
+  vsx_vector3<> message_pos;
   vsx_texture mtex_blob;
 public:
   bool macro;
@@ -47,7 +47,7 @@ public:
   bool internal_critical;
 
   bool vsxl_filter;
-  vsx_vector<> real_pos;
+  vsx_vector3<> real_pos;
   static bool ethereal_all;
   bool ethereal;
   static bool show_titles;
@@ -69,7 +69,7 @@ public:
 
   // macro specific stuff
   bool open; // for containers - macros.
-  vsx_vector<> old_size; // the previous size to return to..
+  vsx_vector3<> old_size; // the previous size to return to..
   vsx_texture mtex_overlay;
   float macro_overlay_opacity;
 
@@ -111,10 +111,10 @@ public:
   // to keep track of our position and send it to the server
   float move_time;
 
-  int inside_xy_l(vsx_vector<> &test, vsx_vector<> &global);
+  int inside_xy_l(vsx_vector3<> &test, vsx_vector3<> &global);
   int transform_state;
   void move(double x, double y, double z);
-  void resize_to(vsx_vector<> to_size);
+  void resize_to(vsx_vector3<> to_size);
   void server_move_notify();
   void server_scale_notify();
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);

@@ -25,11 +25,11 @@
 #include <windows.h>
 #endif
 #include <vector>
-#include "vsx_array.h"
-#include "vsx_vector.h"
-#include "vsx_avector.h"
+#include <container/vsx_array.h>
+#include <vector/vsx_vector3.h>
+#include <container/vsx_avector.h>
 #include "vsx_string.h"
-#include "vsx_string_aux.h"
+#include <vsx_string_helper.h>
 using namespace std;
 #include <unistd.h>
 #include <sys/types.h>
@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 
   printf("current path is: %s\n", cur_path);
 
-  printf("sizeof vsx_vector: %ld\n",sizeof(vsx_vector<float>));
+  printf("sizeof vsx_vector: %ld\n",sizeof(vsx_vector3<float>));
   printf("sizeof vsx_tex_coord: %ld\n",sizeof(vsx_tex_coord2f));
   printf("sizeof vsx_face: %ld\n",sizeof(vsx_face3));
 
@@ -83,8 +83,8 @@ int main(int argc, char* argv[])
 
   char buf[65535];
   vsx_string line;
-  vsx_array< vsx_vector<> > vertices;
-  vsx_array< vsx_vector<> > normals;
+  vsx_array< vsx_vector3<> > vertices;
+  vsx_array< vsx_vector3<> > normals;
   vsx_array< vsx_tex_coord2f > texcoords;
   vsx_array< vsx_face3 > faces;
   mesh.data->vertex_tex_coords.reset_used();
@@ -103,7 +103,7 @@ int main(int argc, char* argv[])
     explode(line, deli, parts);
     if (parts[0] == "v")
     {
-      vertices.push_back(vsx_vector<>(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
+      vertices.push_back(vsx_vector3<>(vsx_string_helper::s2f(parts[1]),vsx_string_helper::s2f(parts[2]),vsx_string_helper::s2f(parts[3])));
       continue;
     }
 
@@ -111,8 +111,8 @@ int main(int argc, char* argv[])
     if (parts[0] == "vt")
     {
       vsx_tex_coord2f a;
-      a.s = (s2f(parts[1]));
-      a.t = (s2f(parts[2]));
+      a.s = (vsx_string_helper::s2f(parts[1]));
+      a.t = (vsx_string_helper::s2f(parts[2]));
       texcoords.push_back(a);
       continue;
     }
@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
 
     if (parts[0] == "vn")
     {
-      normals.push_back(vsx_vector<>(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
+      normals.push_back(vsx_vector3<>(vsx_string_helper::s2f(parts[1]),vsx_string_helper::s2f(parts[2]),vsx_string_helper::s2f(parts[3])));
       continue;
     }
 
@@ -143,21 +143,21 @@ int main(int argc, char* argv[])
       ff.b = face_cur+1;
       ff.a = face_cur+2;
 
-      mesh.data->vertices[ff.a] = vertices[vsx_string_aux::s2i(parts2[0])-1];
-      mesh.data->vertices[ff.b] = vertices[vsx_string_aux::s2i(parts3[0])-1];
-      mesh.data->vertices[ff.c] = vertices[vsx_string_aux::s2i(parts4[0])-1];
+      mesh.data->vertices[ff.a] = vertices[vsx_string_helper::s2i(parts2[0])-1];
+      mesh.data->vertices[ff.b] = vertices[vsx_string_helper::s2i(parts3[0])-1];
+      mesh.data->vertices[ff.c] = vertices[vsx_string_helper::s2i(parts4[0])-1];
 
       if (parts2[2] != "")
       {
-        mesh.data->vertex_normals[ff.a] = normals[vsx_string_aux::s2i(parts2[2])-1];
-        mesh.data->vertex_normals[ff.b] = normals[vsx_string_aux::s2i(parts3[2])-1];
-        mesh.data->vertex_normals[ff.c] = normals[vsx_string_aux::s2i(parts4[2])-1];
+        mesh.data->vertex_normals[ff.a] = normals[vsx_string_helper::s2i(parts2[2])-1];
+        mesh.data->vertex_normals[ff.b] = normals[vsx_string_helper::s2i(parts3[2])-1];
+        mesh.data->vertex_normals[ff.c] = normals[vsx_string_helper::s2i(parts4[2])-1];
       }
       if (parts2[1] != "")
       {
-        mesh.data->vertex_tex_coords[ff.a] = texcoords[vsx_string_aux::s2i(parts2[1])-1];
-        mesh.data->vertex_tex_coords[ff.b] = texcoords[vsx_string_aux::s2i(parts3[1])-1];
-        mesh.data->vertex_tex_coords[ff.c] = texcoords[vsx_string_aux::s2i(parts4[1])-1];
+        mesh.data->vertex_tex_coords[ff.a] = texcoords[vsx_string_helper::s2i(parts2[1])-1];
+        mesh.data->vertex_tex_coords[ff.b] = texcoords[vsx_string_helper::s2i(parts3[1])-1];
+        mesh.data->vertex_tex_coords[ff.c] = texcoords[vsx_string_helper::s2i(parts4[1])-1];
       }
 
       face_cur += 3;
@@ -178,19 +178,19 @@ int main(int argc, char* argv[])
   fwrite((void*)&tag,sizeof(char),4,fp);
 
 
-  size_t vert_size = mesh.data->vertices.size() * sizeof(vsx_vector<>);
+  size_t vert_size = mesh.data->vertices.size() * sizeof(vsx_vector3<>);
   printf("writing %ld vertex bytes\n",vert_size);
   fwrite((void*)&vert_size,sizeof(size_t),1,fp);
 
-  fwrite((void*)mesh.data->vertices.get_pointer(),sizeof(vsx_vector<>),mesh.data->vertices.size(),fp);
+  fwrite((void*)mesh.data->vertices.get_pointer(),sizeof(vsx_vector3<>),mesh.data->vertices.size(),fp);
 
 
 
-  size_t normals_size = mesh.data->vertex_normals.size() * sizeof(vsx_vector<>);
+  size_t normals_size = mesh.data->vertex_normals.size() * sizeof(vsx_vector3<>);
   printf("writing %ld normals bytes\n",normals_size);
   fwrite((void*)&normals_size,sizeof(size_t),1,fp);
 
-  fwrite((void*)mesh.data->vertex_normals.get_pointer(),sizeof(vsx_vector<>),mesh.data->vertex_normals.size(),fp);
+  fwrite((void*)mesh.data->vertex_normals.get_pointer(),sizeof(vsx_vector3<>),mesh.data->vertex_normals.size(),fp);
 
 
 

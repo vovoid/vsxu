@@ -180,7 +180,7 @@ public:
         uv_skew.s = ix1 + x_shape[x_index8192] * x_shape_multiplier_f;
         uv_skew.t = iz1 + z_shape[z_index8192] * z_shape_multiplier_f;
 
-        mesh->data->vertices[vi] =  vsx_vector<>
+        mesh->data->vertices[vi] =  vsx_vector3<>
                                     (
                                       2.0f * (ix1 - 0.5f),
                                       2.0f * (iz1 - 0.5f),

@@ -28,7 +28,7 @@ class vsx_widget_sequence_editor : public vsx_widget
 {
   vsx_widget *server;
 
-  vsx_vector<> parentpos;
+  vsx_vector3<> parentpos;
   vsx_widget* but_rew;
   vsx_widget* but_play;
   vsx_widget* but_stop;

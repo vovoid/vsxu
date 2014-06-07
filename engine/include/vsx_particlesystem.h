@@ -29,9 +29,9 @@ template<typename T = float>
 class vsx_particle
 {
 public:
-  vsx_vector<T> pos; // current position
-  vsx_vector<T> creation_pos; // position the particle had when created
-  vsx_vector<T> speed; // current speed
+  vsx_vector3<T> pos; // current position
+  vsx_vector3<T> creation_pos; // position the particle had when created
+  vsx_vector3<T> speed; // current speed
   vsx_color<T> color; // color it starts out as (including alpha)
   vsx_color<T> color_end; // color it interpolates to (including alpha)
   vsx_quaternion<T> rotation; // rotation vector

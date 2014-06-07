@@ -48,7 +48,7 @@
 #define _GLPNG_H_
 
 #include <stdio.h>
-#include "vsx_avector.h"
+#include <container/vsx_avector.h>
 #include "vsxfst.h"
 
 #ifdef _WIN32

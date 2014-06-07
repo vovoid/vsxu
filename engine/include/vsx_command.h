@@ -29,6 +29,7 @@
 #include <list>
 #include <vector>
 #include "vsxfst.h"
+#include <vsx_string_helper.h>
 
 
 

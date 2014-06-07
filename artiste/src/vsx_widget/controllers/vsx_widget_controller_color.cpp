@@ -35,8 +35,8 @@ void vsx_widget_controller_color::init()
   type = VSX_WIDGET_TYPE_CONTROLLER;
   base_size = 0.8;
   alpha_down = angle_down = color_down = false;
-  set_size(vsx_vector<>(0.03,0.03));
-  set_pos(vsx_vector<>(-0.02));
+  set_size(vsx_vector3<>(0.03,0.03));
+  set_pos(vsx_vector3<>(-0.02));
   bgcolor.r = 0;
   bgcolor.g = 0;
   bgcolor.b = 0;
@@ -55,16 +55,16 @@ void vsx_widget_controller_color::send_to_server()
   if (type == 0)
   {
     if (smoothness>=0)
-      command_q_b.add_raw("param_set_interpolate "+ f2s(color.r)+","+f2s(color.g)+","+f2s(color.b)  + " " + f2s(smoothness) + " "+target_param);
+      command_q_b.add_raw("param_set_interpolate "+ vsx_string_helper::f2s(color.r)+","+vsx_string_helper::f2s(color.g)+","+vsx_string_helper::f2s(color.b)  + " " + vsx_string_helper::f2s(smoothness) + " "+target_param);
     else
-      command_q_b.add_raw("param_set "+ f2s(color.r)+","+f2s(color.g)+","+f2s(color.b) + " "+target_param);
+      command_q_b.add_raw("param_set "+ vsx_string_helper::f2s(color.r)+","+vsx_string_helper::f2s(color.g)+","+vsx_string_helper::f2s(color.b) + " "+target_param);
   }
   else
   {
     if (smoothness>=0)
-      command_q_b.add_raw("param_set_interpolate "+ f2s(color.r)+","+f2s(color.g)+","+f2s(color.b)+","+f2s(color.a)  + " " + f2s(smoothness) + " "+target_param);
+      command_q_b.add_raw("param_set_interpolate "+ vsx_string_helper::f2s(color.r)+","+vsx_string_helper::f2s(color.g)+","+vsx_string_helper::f2s(color.b)+","+vsx_string_helper::f2s(color.a)  + " " + vsx_string_helper::f2s(smoothness) + " "+target_param);
     else
-      command_q_b.add_raw("param_set "+ f2s(color.r)+","+f2s(color.g)+","+f2s(color.b)+","+f2s(color.a) + " "+target_param);
+      command_q_b.add_raw("param_set "+ vsx_string_helper::f2s(color.r)+","+vsx_string_helper::f2s(color.g)+","+vsx_string_helper::f2s(color.b)+","+vsx_string_helper::f2s(color.a) + " "+target_param);
   }
   parent->vsx_command_queue_b(this);
 }
@@ -82,9 +82,9 @@ void vsx_widget_controller_color::command_process_back_queue(vsx_command_s *t) {
     if (parts.size() == 3)
     {
       vsx_color<> t;
-      color.r = s2f(parts[0]);
-      color.g = s2f(parts[1]);
-      color.b = s2f(parts[2]);
+      color.r = vsx_string_helper::s2f(parts[0]);
+      color.g = vsx_string_helper::s2f(parts[1]);
+      color.b = vsx_string_helper::s2f(parts[2]);
       color.get_hsv(&t);
       angle_dest = t.h;
       color_x = t.s;
@@ -95,18 +95,18 @@ void vsx_widget_controller_color::command_process_back_queue(vsx_command_s *t) {
     if (parts.size() == 4)
     {
       vsx_color<> t;
-      color.r = s2f(parts[0]);
-      color.g = s2f(parts[1]);
-      color.b = s2f(parts[2]);
+      color.r = vsx_string_helper::s2f(parts[0]);
+      color.g = vsx_string_helper::s2f(parts[1]);
+      color.b = vsx_string_helper::s2f(parts[2]);
 
       color.get_hsv(&t);
       angle_dest = t.h;
       color_x = t.s;
       color_y = t.v;
-      color.a = s2f(parts[3]);
+      color.a = vsx_string_helper::s2f(parts[3]);
     }
 
-    set_value(s2f(t->parts[3]));
+    set_value(vsx_string_helper::s2f(t->parts[3]));
 
   //cout <<"got value: "<<t->parts[3]<<endl;}
   //else if (t->cmd=="delete" && !owned) _delete();

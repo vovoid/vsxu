@@ -50,7 +50,7 @@ class vsx_widget_profiler_plot : public vsx_widget
 
   vsx_avector<vsx_profiler_consumer_plot> consumer_chunks;
 
-  vsx_vector<> mouse_pos;
+  vsx_vector3<> mouse_pos;
 
   void update_vbo();
 

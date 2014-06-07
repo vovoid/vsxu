@@ -30,7 +30,7 @@ class vsx_widget_camera
   double xpd, ypd, zpd; //current direction
   double xpp, ypp, zpp;
 
-  vsx_vector<> camera_target;
+  vsx_vector3<> camera_target;
 
   double xp;
   double yp;
@@ -47,24 +47,24 @@ public:
 
   vsx_widget_camera();
 
-  void move_camera(vsx_vector<> world);
+  void move_camera(vsx_vector3<> world);
   void start_interpolation();
   void stop_interpolation();
 
-  vsx_vector<> get_pos()
+  vsx_vector3<> get_pos()
   {
-    return vsx_vector<>(xp, yp, zp);
+    return vsx_vector3<>(xp, yp, zp);
   }
 
-  void set_pos( vsx_vector<> destination )
+  void set_pos( vsx_vector3<> destination )
   {
     camera_target = destination;
     interpolating = true;
   }
 
-  vsx_vector<> get_pos_2d()
+  vsx_vector3<> get_pos_2d()
   {
-    return vsx_vector<>(xp, yp, 0.0);
+    return vsx_vector3<>(xp, yp, 0.0);
   }
 
   void set_distance(double d);

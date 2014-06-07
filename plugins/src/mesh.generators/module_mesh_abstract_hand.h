@@ -221,7 +221,7 @@ public:
       float ip = (float)i * one_div_num_stacks;
       int index8192 = (int)round(8192.0f*ip);
 
-      vsx_vector<> circle_base_pos = vsx_vector<>
+      vsx_vector3<> circle_base_pos = vsx_vector3<>
       (
         x_shape[index8192] * x_shape_multiplier_f,
         y_shape[index8192] * y_shape_multiplier_f,
@@ -232,7 +232,7 @@ public:
       for(j = 0; j < current_num_sectors; j++)
       {
         double j1 = (float)j * one_div_num_sectors_minus_one;
-        vsx_vector<> tmp_vec
+        vsx_vector3<> tmp_vec
         (
           circle_base_pos.x + cos(j1 * TWO_PI) * size_shape_x[index8192] * size_shape_x_multiplier_f,
           circle_base_pos.y + sin(j1 * TWO_PI) * size_shape_y[index8192] * size_shape_y_multiplier_f,

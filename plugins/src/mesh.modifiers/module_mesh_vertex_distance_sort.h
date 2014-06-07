@@ -214,7 +214,7 @@ public:
       }
       //-----------------------------------------------------------
       vertex_holder** vf = distances.get_pointer();
-      vsx_vector<>* vp = (*p)->data->vertices.get_pointer();
+      vsx_vector3<>* vp = (*p)->data->vertices.get_pointer();
       //
 
       for (unsigned int i = 0; i < (*p)->data->vertices.size(); i++)
@@ -233,8 +233,8 @@ public:
       // put it back into our private mesh, payload order is calculated by id
       mesh->data->vertices.allocate(vertex_count);
       vertex_holder** ddp = distances.get_pointer();
-      vsx_vector<>* dp = mesh->data->vertices.get_end_pointer();
-      vsx_vector<>* ds = (*p)->data->vertices.get_pointer();
+      vsx_vector3<>* dp = mesh->data->vertices.get_end_pointer();
+      vsx_vector3<>* ds = (*p)->data->vertices.get_pointer();
       size_t i = 0;
       while (i < vertex_count)
       {

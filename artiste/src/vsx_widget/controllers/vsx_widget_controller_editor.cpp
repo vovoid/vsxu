@@ -62,14 +62,14 @@ vsx_widget_controller_editor::vsx_widget_controller_editor()
   vsx_widget::init_children();
 
   ((vsx_widget_button*)button_close)->border = 0.0005;
-  button_close->set_pos(vsx_vector<>(-0.012f,0.0f));
-  button_close->set_size(vsx_vector<>(0.010f,0.005f));
+  button_close->set_pos(vsx_vector3<>(-0.012f,0.0f));
+  button_close->set_size(vsx_vector3<>(0.010f,0.005f));
   button_close->title = "close";
   button_close->commands.adds(4,"close","close","b1");
 
   ((vsx_widget_button*)button_save)->border = 0.0005f;
-  button_save->set_size(vsx_vector<>(0.010f,0.005f));
-  button_save->set_pos(vsx_vector<>(0.012f,0.0f));
+  button_save->set_size(vsx_vector3<>(0.010f,0.005f));
+  button_save->set_pos(vsx_vector3<>(0.012f,0.0f));
   button_save->title = "save";
   button_save->commands.adds(4,"save","save","b2");
 
@@ -87,7 +87,7 @@ vsx_widget_controller_editor::vsx_widget_controller_editor()
 
 void vsx_widget_controller_editor::i_draw()
 {
-  vsx_vector<> parentpos;
+  vsx_vector3<> parentpos;
   parentpos = parent->get_pos_p();
   float sx05 = size.x*0.5;
   float sy05 = size.y*0.5;

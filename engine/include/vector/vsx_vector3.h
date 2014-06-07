@@ -28,48 +28,30 @@
 #include <inttypes.h>
 #include <vsx_math.h>
 
+
 template<typename T = float>
-class vsx_vector
+class vsx_vector3
 {
 public:
-  union
-  {
-    T x;
-    T h;
-    T r;
-    T pitch;
-  };
-  union
-  {
-    T y;
-    T s;
-    T g;
-    T roll;
-  };
-  union
-  {
-    T z;
-    T v;
-    T b;
-    T w;
-    T yaw;
-  };
+  T x;
+  T y;
+  T z;
 
   static size_t arity()
   {
     return 3;
   }
 
-  inline vsx_vector operator +(const vsx_vector &t)
+  inline vsx_vector3 operator +(const vsx_vector3 &t)
   {
-    vsx_vector temp;
+    vsx_vector3 temp;
     temp.x = x+t.x;
     temp.y = y+t.y;
     temp.z = z+t.z;
     return temp;
   }
 
-  inline vsx_vector operator +=(const vsx_vector &t)
+  inline vsx_vector3 operator +=(const vsx_vector3 &t)
   {
     x+=t.x;
     y+=t.y;
@@ -77,7 +59,7 @@ public:
     return *this;
   }
 
-  inline vsx_vector operator *=(const float &t)
+  inline vsx_vector3 operator *=(const float &t)
   {
     x*=t;
     y*=t;
@@ -85,7 +67,7 @@ public:
     return *this;
   }
 
-  inline vsx_vector operator -=(const vsx_vector &t)
+  inline vsx_vector3 operator -=(const vsx_vector3 &t)
   {
     x-=t.x;
     y-=t.y;
@@ -93,78 +75,78 @@ public:
     return *this;
   }
 
-  inline vsx_vector operator -()
+  inline vsx_vector3 operator -()
   {
-    vsx_vector temp;
+    vsx_vector3 temp;
     temp.x = -x;
     temp.y = -y;
     temp.z = -z;
     return temp;
   }
 
-  inline vsx_vector operator -(const vsx_vector &t)
+  inline vsx_vector3 operator -(const vsx_vector3 &t)
   {
-    vsx_vector temp;
+    vsx_vector3 temp;
     temp.x = x-t.x;
     temp.y = y-t.y;
     temp.z = z-t.z;
     return temp;
   }
 
-  inline vsx_vector operator *(const vsx_vector &t)
+  inline vsx_vector3 operator *(const vsx_vector3 &t)
   {
-    vsx_vector temp;
+    vsx_vector3 temp;
     temp.x = x*t.x;
     temp.y = y*t.y;
     temp.z = z*t.z;
     return temp;
   }
 
-  inline vsx_vector operator *(const float &t)
+  inline vsx_vector3 operator *(const float &t)
   {
-    vsx_vector temp;
+    vsx_vector3 temp;
     temp.x = x*t;
     temp.y = y*t;
     temp.z = z*t;
     return temp;
   }
 
-  inline vsx_vector operator /(const vsx_vector &t)
+  inline vsx_vector3 operator /(const vsx_vector3 &t)
   {
-    vsx_vector temp;
+    vsx_vector3 temp;
     temp.x = x/t.x;
     temp.y = y/t.y;
     temp.z = z/t.z;
     return temp;
   }
 
-  inline vsx_vector operator /(int t)
+  inline vsx_vector3 operator /(int t)
   {
-    vsx_vector temp;
+    vsx_vector3 temp;
     temp.x = x/(T)t;
     temp.y = y/(T)t;
     temp.z = z/(T)t;
     return temp;
   }
 
-  inline bool operator ==(const vsx_vector &t)
+  inline bool operator ==(const vsx_vector3 &t)
   {
     return (x==t.x&&y==t.y&&z==t.z);
   }
 
-  inline bool operator !=(const vsx_vector &t)
+  inline bool operator !=(const vsx_vector3 &t)
   {
     return (x!=t.x||y!=t.y||z!=t.z);
   }
 
   // calculates the cross product of the two other vectors and stores it here
-  inline void cross(const vsx_vector &u, const vsx_vector &vv) {
+  inline void cross(const vsx_vector3 &u, const vsx_vector3 &vv) {
     x = (u.y*vv.z) - (u.z*vv.y);
     y = (u.z*vv.x) - (u.x*vv.z);
     z = (u.x*vv.y) - (u.y*vv.x);
   }
 
-  inline T dot_product(const vsx_vector* ov)
+  inline T dot_product(const vsx_vector3* ov)
   {
     return x * ov->x   +   y * ov->y   +   z * ov->z;
   }
@@ -195,7 +177,7 @@ public:
     z*=a;
   }
 
-  inline void midpoint(const vsx_vector& a, const vsx_vector& b)
+  inline void midpoint(const vsx_vector3& a, const vsx_vector3& b)
   {
     x = (a.x + b.x) * 0.5;
     y = (a.y + b.y) * 0.5;
@@ -203,7 +185,7 @@ public:
   }
 
 
-  inline void assign_face_normal(vsx_vector *a, vsx_vector*bb, vsx_vector*c)
+  inline void assign_face_normal(vsx_vector3 *a, vsx_vector3* bb, vsx_vector3*c)
   {
     T relx1 = bb->x - a->x,
     rely1 = bb->y - a->y,
@@ -227,14 +209,14 @@ public:
     z = nz;
   }
 
-  inline void multiply_matrix_other_vec(const T *m,const vsx_vector& b)
+  inline void multiply_matrix_other_vec(const T *m,const vsx_vector3& b)
   {
     x = m[0] * b.x + m[1] * b.y + m[2]  * b.z + m[3];
     y = m[4] * b.x + m[5] * b.y + m[6]  * b.z + m[7];
     z = m[8] * b.x + m[9] * b.y + m[10] * b.z + m[11];
   }
 
-  inline double distance(const vsx_vector &otherpoint)
+  inline double distance(const vsx_vector3 &otherpoint)
   {
     double dx = otherpoint.x - x;
     double dy = otherpoint.y - y;
@@ -250,14 +232,14 @@ public:
     z=iz;
   }
 
-  vsx_vector()
+  vsx_vector3()
     :
       x(0.0f),
       y(0.0f),
       z(0.0f)
   {}
 
-  vsx_vector(T a, T bb = 0.0f, T c = 0.0f)
+  vsx_vector3(T a, T bb = 0.0f, T c = 0.0f)
   {
     x = a;
     y = bb;

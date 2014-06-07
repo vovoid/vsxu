@@ -67,7 +67,7 @@ public:
   std::map<vsx_string,char> keywords;
 
 
-  int inside_xy_l(vsx_vector<> &test, vsx_vector<> &global) { return vsx_widget::inside_xy_l(test,global); }
+  int inside_xy_l(vsx_vector3<> &test, vsx_vector3<> &global) { return vsx_widget::inside_xy_l(test,global); }
   void command_process_back_queue(vsx_command_s *t);
   vsx_widget* mirror_keystrokes_object; // vsx_widget that gets a key event when the string has been modified (not on arrow keys), default: 0
   vsx_widget* mirror_mouse_move_passive_object;

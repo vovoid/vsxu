@@ -1,5 +1,5 @@
 #include <gl_helper.h>
-#include <vsx_vector_aux.h>
+#include <vector/vsx_vector3_helper.h>
 
 #include "vsx_widget_profiler_plot.h"
 #include "time_scale.h"
@@ -12,8 +12,8 @@ void vsx_widget_profiler_plot::init()
   support_interpolation = true;
   allow_resize_x = true;
   allow_resize_y = true;
-  set_size(vsx_vector<>(20.0f,0.3f));
-  set_pos(vsx_vector<>(0,0));
+  set_size(vsx_vector3<>(20.0f,0.3f));
+  set_pos(vsx_vector3<>(0,0));
   size_min.x = 0.2;
   size_min.y = 0.2;
 
@@ -65,7 +65,7 @@ void vsx_widget_profiler_plot::update_vbo()
     if (ct > 15.0)
       continue;
 
-    draw_bucket_a.vertices.push_back( vsx_vector<>( ct, plot.v.x ) );
+    draw_bucket_a.vertices.push_back( vsx_vector3<>( ct, plot.v.x ) );
 
     draw_bucket_a.vertex_colors.push_back( vsx_color<>(1.0, 0.5, 0.5, 0.5) );
 
@@ -92,7 +92,7 @@ void vsx_widget_profiler_plot::update_vbo()
     if (ct > 15.0)
       continue;
 
-    draw_bucket_b.vertices.push_back( vsx_vector<>( ct, plot.v.y ) );
+    draw_bucket_b.vertices.push_back( vsx_vector3<>( ct, plot.v.y ) );
 
     draw_bucket_b.vertex_colors.push_back( vsx_color<>(0.5, 0.5, 1.0, 0.5) );
 
@@ -115,13 +115,13 @@ void vsx_widget_profiler_plot::update_vbo()
   draw_bucket_b.update();
 
 
-  set_size(vsx_vector<>(20.0f,0.3f));
+  set_size(vsx_vector3<>(20.0f,0.3f));
 }
 
 
 void vsx_widget_profiler_plot::i_draw()
 {
-  vsx_vector<> parentpos = get_pos_p();
+  vsx_vector3<> parentpos = get_pos_p();
   glBegin(GL_QUADS);
     vsx_widget_skin::get_instance()->set_color_gl(1);
     glVertex3f(parentpos.x-size.x*0.5f, parentpos.y+size.y*0.5f,pos.z);
@@ -130,7 +130,7 @@ void vsx_widget_profiler_plot::i_draw()
     glVertex3f(parentpos.x-size.x*0.5f, parentpos.y+-size.y*0.5f,pos.z);
   glEnd();
   vsx_widget_skin::get_instance()->set_color_gl(0);
-  draw_box_border(vsx_vector<>(parentpos.x-size.x*0.5,parentpos.y-size.y*0.5f), vsx_vector<>(size.x,size.y), dragborder);
+  draw_box_border(vsx_vector3<>(parentpos.x-size.x*0.5,parentpos.y-size.y*0.5f), vsx_vector3<>(size.x,size.y), dragborder);
 
   glColor4f(1,1,1,1);
   glMatrixMode(GL_MODELVIEW);
@@ -183,7 +183,7 @@ void vsx_widget_profiler_plot::event_mouse_double_click(vsx_widget_distance dist
   time_scale::get_instance()->time_scale_x = 0.5 / (tdiff) ;
   time_scale::get_instance()->time_offset = -time_scale::get_instance()->time_scale_x * (selected_chunk->time_start + 0.5 * tdiff);
 
-  camera.set_pos( vsx_vector<>(0.0, 0.0, 1.9) );
+  camera.set_pos( vsx_vector3<>(0.0, 0.0, 1.9) );
   update_vbo();
 }
 

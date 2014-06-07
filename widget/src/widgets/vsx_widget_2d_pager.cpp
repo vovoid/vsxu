@@ -32,7 +32,7 @@ vsx_widget_2d_pager::vsx_widget_2d_pager()
 
 void vsx_widget_2d_pager::init()
 {
-  set_size(vsx_vector<>(0.06,0.1));
+  set_size(vsx_vector3<>(0.06,0.1));
   pos.x = 0.0f;
   pos.y = 0.0f;
   render_type = render_2d;
@@ -74,7 +74,7 @@ void vsx_widget_2d_pager::i_draw()
 {
   if (!visible) return;
   if (max_page == 0) cur_page = -1;
-  font.print_center(get_pos_p(), "<< "+i2s(cur_page+1)+" / "+i2s(max_page)+" >>",size.y*0.6);
+  font.print_center(get_pos_p(), "<< "+vsx_string_helper::i2s(cur_page+1)+" / "+vsx_string_helper::i2s(max_page)+" >>",size.y*0.6);
 }
 
 void vsx_widget_2d_pager::increase()

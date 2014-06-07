@@ -36,7 +36,7 @@ public:
   // internal
   vsx_mesh<>** mesh;
   vsx_matrix<float> ma;
-  vsx_vector<> upv;
+  vsx_vector3<> upv;
 
   float prev_psize;
   bool list_built;
@@ -95,7 +95,7 @@ public:
       glColor4f(base_color->get(0),base_color->get(1),base_color->get(2),base_color->get(3));
 
       glEnableClientState(GL_VERTEX_ARRAY);
-      glVertexPointer(3, GL_FLOAT, sizeof(vsx_vector<>), (*mesh)->data->vertices.get_pointer());
+      glVertexPointer(3, GL_FLOAT, sizeof(vsx_vector3<>), (*mesh)->data->vertices.get_pointer());
       glDrawArrays(GL_POINTS,0,(*mesh)->data->vertices.size());
       glDisableClientState(GL_VERTEX_ARRAY);
     }

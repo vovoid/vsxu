@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "application.h"
 #include <GL/glfw.h>
-#include <vsx_avector.h>
+#include <container/vsx_avector.h>
 #include <vsx_string.h>
 #include <vsxfst.h>
 #include <vsx_version.h>

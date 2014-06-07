@@ -119,8 +119,8 @@ public:
         my->mesh->data->vertex_tex_coords.reset_used(0);
         my->mesh->data->faces.reset_used(0);
         vsx_face3 face;
-        vsx_vector<> g;
-        vsx_vector<> c;
+        vsx_vector3<> g;
+        vsx_vector3<> c;
         for (int L=-1;L<2;L++)
         {
           for (int i=0;i<(BIG_NX-1);i++)
@@ -144,11 +144,11 @@ public:
                 float nra = gr + 90.0f / 360.0f * 2*PI;
 
 
-                vsx_vector<> nn;
+                vsx_vector3<> nn;
                 nn.x = my->ocean.big_normals[i][j][0];
                 nn.y = my->ocean.big_normals[i][j][1];
                 nn.normalize();
-                my->mesh->data->vertex_normals.push_back(vsx_vector<>(\
+                my->mesh->data->vertex_normals.push_back(vsx_vector3<>(\
                   nn.x* cos(nra) + nn.y * -sin(nra),\
                   nn.x* sin(nra) + nn.y * cos(nra),\
                   my->ocean.big_normals[i][j][2]));
@@ -180,7 +180,7 @@ public:
                 nn.x = my->ocean.big_normals[i+1][j][0];
                 nn.y = my->ocean.big_normals[i+1][j][1];
                 nn.normalize();
-                my->mesh->data->vertex_normals.push_back(vsx_vector<>(\
+                my->mesh->data->vertex_normals.push_back(vsx_vector3<>(\
                   nn.x* cos(nra) + nn.y * -sin(nra),\
                   nn.x* sin(nra) + nn.y * cos(nra),\
                   my->ocean.big_normals[i+1][j][2]));

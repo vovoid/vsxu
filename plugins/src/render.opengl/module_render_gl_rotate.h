@@ -65,7 +65,7 @@ void module_info(vsx_module_info* info)
 
   bool activate_offscreen()
   {
-    vsx_vector<> bb(axis->get(0),axis->get(1),axis->get(2));
+    vsx_vector3<> bb(axis->get(0),axis->get(1),axis->get(2));
     bb.normalize();
 
     // save current matrix

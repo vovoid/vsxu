@@ -7,11 +7,11 @@ double vsx_widget_coords::modelMatrix[16];
 double vsx_widget_coords::projMatrix[16];
 int vsx_widget_coords::viewport[4];
 
-vsx_vector<> vsx_vec_viewport()
+vsx_vector3<> vsx_vec_viewport()
 {
   GLint viewport[4];
   glGetIntegerv(GL_VIEWPORT, viewport);
-  return vsx_vector<>(viewport[2],viewport[3],0);
+  return vsx_vector3<>(viewport[2],viewport[3],0);
 }
 
 

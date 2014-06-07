@@ -61,7 +61,7 @@ using namespace std;
 bool vsx_widget_component::show_titles = true;
 bool vsx_widget_component::ethereal_all = false;
 
-int vsx_widget_component::inside_xy_l(vsx_vector<> &test, vsx_vector<> &global) {
+int vsx_widget_component::inside_xy_l(vsx_vector3<> &test, vsx_vector3<> &global) {
   if (ethereal || (ethereal_all && !macro)) return 0;
   return vsx_widget::inside_xy_l(test, global);
 }
@@ -559,7 +559,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
     tt->widget_type = VSX_WIDGET_TYPE_CONTROLLER;
     tt->set_font_size(0.002);
     tt->set_border(0.0005);
-    tt->set_pos(vsx_vector<>(0,-0.08f));
+    tt->set_pos(vsx_vector3<>(0,-0.08f));
 
     ((vsx_widget_controller_editor*)tt)->return_command = "vsxl_cfi";
     ((vsx_widget_controller_editor*)tt)->return_component = this;
@@ -725,7 +725,7 @@ void vsx_widget_component::draw()
   }
 
   if (!enabled) return;
-  vsx_vector<> pp = parent->get_pos_p();
+  vsx_vector3<> pp = parent->get_pos_p();
   size.y = size.x;
   glPushMatrix();
   #define FF 1.2f
@@ -1057,7 +1057,7 @@ void vsx_widget_component::draw()
 
   if (show_titles)
   {
-    vsx_vector<> t = pos + pp;
+    vsx_vector3<> t = pos + pp;
     float font_size = size.y*0.3;
     float max_size = 0.006;
     if (selected) max_size = 0.012;
@@ -1071,7 +1071,7 @@ void vsx_widget_component::draw()
       if (message_time > 0.0f) {
         message_time -= vsx_widget_time::get_instance()->get_dtime();
         glColor4f(0,0,0,0.8);
-        vsx_vector<> rp = t;
+        vsx_vector3<> rp = t;
         rp.x -= 0.008f*10;
         //rp.y -= 0.004;
         draw_box(rp, 0.008*20, -0.008*10);
@@ -1083,7 +1083,7 @@ void vsx_widget_component::draw()
       } else
       if (m_o_focus == this && !mouse_down_l && !mouse_down_r) {
         glColor4f(0,0,0,0.8);
-        vsx_vector<> rp = t + message_pos;
+        vsx_vector3<> rp = t + message_pos;
         rp.y -= 0.004;
         draw_box(rp, 0.004*20, -0.004*10);
         rp.x += 0.0008;
@@ -1251,7 +1251,7 @@ void vsx_widget_component::event_mouse_double_click(vsx_widget_distance distance
 //     } else
   if (component_type == "macro") {
     if (button == 0 && alt && !shift && !ctrl) {
-      command_q_b.add_raw("add_empty_macro "+f2s(distance.center.x)+","+f2s(distance.center.y));
+      command_q_b.add_raw("add_empty_macro "+vsx_string_helper::f2s(distance.center.x)+","+vsx_string_helper::f2s(distance.center.y));
       vsx_command_queue_b(this);
     } else
 
@@ -1267,8 +1267,8 @@ void vsx_widget_component::event_mouse_double_click(vsx_widget_distance distance
     }
   } else {
     if (!alt && button == 0 && !ctrl && !shift) {
-      vsx_vector<> pp = get_pos_p();
-      root->move_camera(vsx_vector<>(pp.x, pp.y, 1.2f+size.x*3.0f));
+      vsx_vector3<> pp = get_pos_p();
+      root->move_camera(vsx_vector3<>(pp.x, pp.y, 1.2f+size.x*3.0f));
       transform_state = -1;
       ((vsx_widget_server*)server)->select(this);
       return;
@@ -1281,7 +1281,7 @@ void vsx_widget_component::event_mouse_up(vsx_widget_distance distance,vsx_widge
   if (ethereal) {
     // do stuff
     if (ctrl && !shift && alt) {
-      command_q_b.add_raw("component_clone "+name+" "+name+"_clone "+f2s(target_pos.x)+" "+f2s(target_pos.y));
+      command_q_b.add_raw("component_clone "+name+" "+name+"_clone "+vsx_string_helper::f2s(target_pos.x)+" "+vsx_string_helper::f2s(target_pos.y));
       server->vsx_command_queue_b(this);
       target_pos = real_pos;
       interpolating_pos = true;
@@ -1353,7 +1353,7 @@ void vsx_widget_component::event_mouse_up(vsx_widget_distance distance,vsx_widge
             ((vsx_widget_server*)server)->selected_list.push_front(this);
             vsx_string comps_s = implode(comps,",");
 
-            command_q_b.add_raw("component_assign "+dest_macro_component->name+" "+comps_s+" "+f2s(l_distance.center.x)+" "+f2s(l_distance.center.y));
+            command_q_b.add_raw("component_assign "+dest_macro_component->name+" "+comps_s+" "+vsx_string_helper::f2s(l_distance.center.x)+" "+vsx_string_helper::f2s(l_distance.center.y));
             server->vsx_command_queue_b(this);
           }
         } else
@@ -1395,7 +1395,7 @@ void vsx_widget_component::move(double x, double y, double z) {
   //printf("comp_move\n");
   //if (macro && open) return;
   if (transform_state <= 0) return;
-  vsx_vector<> a;
+  vsx_vector3<> a;
   a.x = x-pos.x;
   a.y = y-pos.y;
   a.z = 0;
@@ -1422,7 +1422,7 @@ void vsx_widget_component::move(double x, double y, double z) {
   server_move_notify();
 }
 
-void vsx_widget_component::resize_to(vsx_vector<> to_size) {
+void vsx_widget_component::resize_to(vsx_vector3<> to_size) {
   to_size.y = to_size.x;
   printf("tosizex: %f\n", to_size.x);
   if (parent->widget_type == VSX_WIDGET_TYPE_COMPONENT) {
@@ -1436,7 +1436,7 @@ void vsx_widget_component::resize_to(vsx_vector<> to_size) {
 
 void vsx_widget_component::server_move_notify() {
   if (vsx_widget_time::get_instance()->get_time() - move_time > 1) {
-    command_q_b.add_raw("cpp "+name+" "+f2s(pos.x)+" "+f2s(pos.y));
+    command_q_b.add_raw("cpp "+name+" "+vsx_string_helper::f2s(pos.x)+" "+vsx_string_helper::f2s(pos.y));
     server->vsx_command_queue_b(this);
     move_time = vsx_widget_time::get_instance()->get_time();
   }
@@ -1444,7 +1444,7 @@ void vsx_widget_component::server_move_notify() {
 
 void vsx_widget_component::server_scale_notify() {
   if (vsx_widget_time::get_instance()->get_time() - move_time > 1) {
-    command_q_b.add_raw("component_size "+name+" "+f2s(target_size.x));
+    command_q_b.add_raw("component_size "+name+" "+vsx_string_helper::f2s(target_size.x));
     server->vsx_command_queue_b(this);
     move_time = vsx_widget_time::get_instance()->get_time();
     scaled = true;
@@ -1488,8 +1488,8 @@ vsx_string vsx_widget_component::alias_get_unique_name_in(vsx_string base_name, 
     }
   } else {
     // ok, we already know we need to do stuff
-    if (p_l_list_in.find(base_name+"_"+i2s(tried)) ==  p_l_list_in.end()) {
-      return base_name+"_"+i2s(tried);
+    if (p_l_list_in.find(base_name+"_"+vsx_string_helper::i2s(tried)) ==  p_l_list_in.end()) {
+      return base_name+"_"+vsx_string_helper::i2s(tried);
     } else {
       // oops, trouble!
       return alias_get_unique_name_in(base_name,tried+1);
@@ -1508,8 +1508,8 @@ vsx_string vsx_widget_component::alias_get_unique_name_out(vsx_string base_name,
     }
   } else {
     // ok, we already know we need to do stuff
-    if (p_l_list_out.find(base_name+"_"+i2s(tried)) ==  p_l_list_out.end()) {
-      return base_name+"_"+i2s(tried);
+    if (p_l_list_out.find(base_name+"_"+vsx_string_helper::i2s(tried)) ==  p_l_list_out.end()) {
+      return base_name+"_"+vsx_string_helper::i2s(tried);
     } else {
       // oops, trouble!
       return alias_get_unique_name_out(base_name,tried+1);

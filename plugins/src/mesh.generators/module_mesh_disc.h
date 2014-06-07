@@ -95,7 +95,7 @@ public:
   void run()
   {
     if (l_param_updates != param_updates) first_run = true;
-    mesh->data->vertices[0] = vsx_vector<>(0);
+    mesh->data->vertices[0] = vsx_vector3<>(0);
 
     if (first_run || n_segs != num_segments->get())
     {

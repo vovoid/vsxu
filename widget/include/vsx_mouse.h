@@ -27,7 +27,7 @@
 #include <windows.h>
 #endif
 
-#include <vsx_vector.h>
+#include <vector/vsx_vector3.h>
 
 #define MOUSE_CURSOR_ARROW 0
 #define MOUSE_CURSOR_HAND 1
@@ -41,13 +41,13 @@ class vsx_mouse
 {
   int cursor;
   bool visible;
-  vsx_vector<> position;
+  vsx_vector3<> position;
   void set_cursor_implement();
 
 public:
 
   void set_cursor(int id);
-  vsx_vector<> get_cursor_pos() __attribute__((always_inline))
+  vsx_vector3<> get_cursor_pos() __attribute__((always_inline))
   {
     return position;
   }

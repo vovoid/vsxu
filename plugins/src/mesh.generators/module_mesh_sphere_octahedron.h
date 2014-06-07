@@ -24,7 +24,7 @@
 
 // UGLY HACKS GALORE:
 typedef struct {
-    vsx_vector<> pt[3];
+    vsx_vector3<> pt[3];
 } tri;
 
 typedef struct {
@@ -33,12 +33,12 @@ typedef struct {
 } obj;
 
 /* Six equidistant points lying on the unit sphere */
-#define XPLUS vsx_vector<>( 1,  0,  0  ) /*  X */
-#define XMIN  vsx_vector<>( -1,  0,  0 ) /* -X */
-#define YPLUS vsx_vector<>(  0,  1,  0 ) /*  Y */
-#define YMIN  vsx_vector<>(  0, -1,  0 ) /* -Y */
-#define ZPLUS vsx_vector<>(  0,  0,  1 ) /*  Z */
-#define ZMIN  vsx_vector<>(  0,  0, -1 ) /* -Z */
+#define XPLUS vsx_vector3<>( 1,  0,  0  ) /*  X */
+#define XMIN  vsx_vector3<>( -1,  0,  0 ) /* -X */
+#define YPLUS vsx_vector3<>(  0,  1,  0 ) /*  Y */
+#define YMIN  vsx_vector3<>(  0, -1,  0 ) /* -Y */
+#define ZPLUS vsx_vector3<>(  0,  0,  1 ) /*  Z */
+#define ZMIN  vsx_vector3<>(  0,  0, -1 ) /* -Z */
 
 tri octahedron[] = {
     { { XPLUS, ZPLUS, YPLUS } },
@@ -198,7 +198,7 @@ public:
       {
         tri *oldt = &old->poly[i];
         tri *newt = &nnew->poly[i*4];
-        vsx_vector<> a, b, c;
+        vsx_vector3<> a, b, c;
 
         a.midpoint(oldt->pt[0], oldt->pt[2]);
         b.midpoint(oldt->pt[0], oldt->pt[1]);
@@ -245,7 +245,7 @@ public:
       mesh->data->vertices.push_back(old->poly[i].pt[0]);
       mesh->data->vertices.push_back(old->poly[i].pt[1]);
       mesh->data->vertices.push_back(old->poly[i].pt[2]);
-      vsx_vector<> n;
+      vsx_vector3<> n;
       n = old->poly[i].pt[0];
       n.normalize();
       mesh->data->vertex_normals.push_back(n);

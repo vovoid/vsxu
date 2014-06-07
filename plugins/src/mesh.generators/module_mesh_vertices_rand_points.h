@@ -35,7 +35,7 @@ public:
 
   // internal
   vsx_mesh<>* mesh;
-  vsx_vector<> old_scaling;
+  vsx_vector3<> old_scaling;
   bool first_run;
   vsx_rand rand;
 
