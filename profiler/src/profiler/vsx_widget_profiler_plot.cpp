@@ -1,29 +1,38 @@
 #include <gl_helper.h>
 #include <vsx_vector_aux.h>
+#include <widgets/vsx_widget_popup_menu.h>
 
 #include "vsx_widget_profiler_plot.h"
 #include "time_scale.h"
 
-
-
-
 void vsx_widget_profiler_plot::init()
 {
   support_interpolation = true;
+
   allow_resize_x = true;
   allow_resize_y = true;
   set_size(vsx_vector<>(20.0f,0.3f));
-  set_pos(vsx_vector<>(0,0));
+  this->interpolate_size();
   size_min.x = 0.2;
   size_min.y = 0.2;
+
+  allow_move_x = false;
+  set_pos(vsx_vector<>(0,0));
+
+  plot_type = v_t;
+  plot_tuple_depth = one_dimension;
 
   profiler = vsx_profiler_manager::get_instance()->get_profiler();
 
   title = "plot";
 
-  allow_move_x = false;
+  // Menu
+  menu = add(new vsx_widget_popup_menu, ".comp_menu");
+  menu->commands.adds(VSX_COMMAND_MENU, "close", "menu_close", "");
+  menu->commands.adds(VSX_COMMAND_MENU, "Plot Type;v_t", "plot_type", "v_t");
+  menu->size.x = size.x * 0.4;
+  menu->init();
 
-  this->interpolate_size();
   init_run = true;
 }
 
@@ -40,16 +49,8 @@ void vsx_widget_profiler_plot::update()
   update_vbo();
 }
 
-
-void vsx_widget_profiler_plot::update_vbo()
+void vsx_widget_profiler_plot::update_plot_v_t()
 {
-  draw_bucket.vertices.reset_used();
-  draw_bucket.faces.reset_used();
-
-  vsx_printf("time scale: %f\n", time_scale::get_instance()->time_scale_x);
-
-  size_t max_depth = 1;
-
   for (size_t i = 0; i < consumer_chunks.size(); i++)
   {
     vsx_profiler_consumer_plot& plot = consumer_chunks[i];
@@ -64,14 +65,36 @@ void vsx_widget_profiler_plot::update_vbo()
     if (ct > 15.0)
       continue;
 
-    draw_bucket.vertices.push_back( vsx_vector<>( ct, plot.v.y ) );
+    draw_bucket.vertices.push_back( vsx_vector<>( ct, plot.v.x ) );
 
     draw_bucket.vertex_colors.push_back( vsx_color<>(1.0, 1.0, 1.0, 0.5) );
-
 
     line_index_single idx;
     idx.a = draw_bucket.vertices.size() - 1;
     draw_bucket.faces.push_back( idx );
+  }
+}
+
+void vsx_widget_profiler_plot::update_plot_x_y()
+{
+
+}
+
+void vsx_widget_profiler_plot::update_vbo()
+{
+  draw_bucket.vertices.reset_used();
+  draw_bucket.faces.reset_used();
+
+  vsx_printf("time scale: %f\n", time_scale::get_instance()->time_scale_x);
+
+  switch (plot_type)
+  {
+    case v_t:
+      update_plot_v_t();
+      break;
+    case x_y:
+      update_plot_x_y();
+      break;
   }
 
   time_scale::get_instance()->one_div_chunk_time_end = 1.0 / time_scale::get_instance()->chunk_time_end;
@@ -84,6 +107,23 @@ void vsx_widget_profiler_plot::update_vbo()
   set_size(vsx_vector<>(20.0f,0.3f));
 }
 
+void vsx_widget_profiler_plot::command_process_back_queue(vsx_command_s *t)
+{
+  if (t->cmd == "plot_type")
+  {
+    if (t->cmd_data == "v_t")
+    {
+      plot_type = v_t;
+    }
+    if (t->cmd_data == "x_y")
+    {
+      plot_type = x_y;
+    }
+
+    update();
+    return;
+  }
+}
 
 void vsx_widget_profiler_plot::i_draw()
 {

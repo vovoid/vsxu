@@ -42,6 +42,18 @@ typedef struct
 
 class vsx_widget_profiler_plot : public vsx_widget
 {
+  enum  {
+    v_t, //  value by time
+    x_y  //  value by value
+  } plot_type;
+
+  enum {
+    one_dimension = 1,
+    two_dimensions = 2,
+    three_dimensions = 3,
+    four_dimensions = 4
+  } plot_tuple_depth;
+
   // profiler for profiling ourselves
   vsx_profiler* profiler;
 
@@ -53,6 +65,8 @@ class vsx_widget_profiler_plot : public vsx_widget
   vsx_vector<> mouse_pos;
 
   void update_vbo();
+  void update_plot_v_t();
+  void update_plot_x_y();
 
 public:
 
@@ -68,6 +82,8 @@ public:
   void update();
 
   void i_draw();
+
+  void command_process_back_queue(vsx_command_s *t);
 
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button);
