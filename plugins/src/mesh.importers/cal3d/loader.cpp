@@ -1357,7 +1357,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
     #ifdef CAL_DEBUG
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
     #endif
-    return false;
+    return 0;
   }
 
   if(atoi(skeleton->Attribute("VERSION")) < Cal::EARLIEST_COMPATIBLE_FILE_VERSION )
@@ -1365,7 +1365,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
     #ifdef CAL_DEBUG
     CalError::setLastError(CalError::INCOMPATIBLE_FILE_VERSION, __FILE__, __LINE__, "xml");
     #endif
-          return false;
+          return 0;
   }
 
   skeleton = skeleton->NextSiblingElement();
@@ -1376,7 +1376,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
     #ifdef CAL_DEBUG
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
     #endif
-        return false;
+        return 0;
   }
 
   if(skeleton->Attribute("MAGIC")!=NULL && stricmp(skeleton->Attribute("MAGIC"),Cal::SKELETON_XMLFILE_MAGIC)!=0)
@@ -1384,7 +1384,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
     #ifdef CAL_DEBUG
   CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
   #endif
-  return false;
+  return 0;
   }
 
   if(skeleton->Attribute("VERSION")!=NULL && atoi(skeleton->Attribute("VERSION")) < Cal::EARLIEST_COMPATIBLE_FILE_VERSION )
@@ -1392,7 +1392,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
     #ifdef CAL_DEBUG
   CalError::setLastError(CalError::INCOMPATIBLE_FILE_VERSION, __FILE__, __LINE__, "xml");
   #endif
-         return false;
+         return 0;
   }
 
 
@@ -1414,7 +1414,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
     #endif
         delete pCoreSkeleton;    
-        return false;
+        return 0;
     }    
     
     std::string strName=bone->Attribute("NAME");
@@ -1429,7 +1429,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
       CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
       #endif
           delete pCoreSkeleton;    
-      return false;
+      return 0;
     }
 
     float tx, ty, tz;
@@ -1441,7 +1441,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
     #endif
                 delete pCoreSkeleton;    
-                return false;
+                return 0;
     }    
     vsxTiXmlText* translationdata = node->ToText();
     if(!translationdata)
@@ -1450,7 +1450,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
     #endif
         delete pCoreSkeleton;    
-        return false;
+        return 0;
     }    
     str.clear();
     str << translationdata->Value();
@@ -1465,7 +1465,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
       CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
       #endif
           delete pCoreSkeleton;    
-      return false;
+      return 0;
     }
 
     float rx, ry, rz, rw;
@@ -1477,7 +1477,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
     #endif
                 delete pCoreSkeleton;    
-                return false;
+                return 0;
     }
     vsxTiXmlText* rotationdata = node->ToText();
     if(!rotationdata)
@@ -1486,7 +1486,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
     #endif
                 delete pCoreSkeleton;    
-                return false;
+                return 0;
     }
     str.clear();
     str << rotationdata->Value();
@@ -1502,7 +1502,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
       CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
       #endif
                   delete pCoreSkeleton;     
-      return false;
+      return 0;
     }
 
     float txBoneSpace, tyBoneSpace, tzBoneSpace;
@@ -1514,7 +1514,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
     #endif
         delete pCoreSkeleton;    
-        return false;
+        return 0;
     }
     vsxTiXmlText* translationBoneSpacedata = node->ToText();
     if(!translationBoneSpacedata)
@@ -1523,7 +1523,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
     #endif
                 delete pCoreSkeleton;    
-                return false;
+                return 0;
     }
     str.clear();
     str << translationBoneSpacedata->Value();
@@ -1538,7 +1538,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
       CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
       #endif
                   delete pCoreSkeleton;      
-      return false;
+      return 0;
     }
 
     float rxBoneSpace, ryBoneSpace, rzBoneSpace, rwBoneSpace;
@@ -1550,14 +1550,14 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
     #endif
         delete pCoreSkeleton;    
-        return false;
+        return 0;
     }
     vsxTiXmlText* rotationBoneSpacedata = node->ToText();
     if(!rotationBoneSpacedata)
     {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreSkeleton;    
-        return false;
+        return 0;
     }
     str.clear();
     str << rotationBoneSpacedata->Value();
@@ -1570,7 +1570,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
     {
       CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
           delete pCoreSkeleton;       
-      return false;
+      return 0;
     }
     
 
@@ -1581,14 +1581,14 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
     {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreSkeleton;    
-        return false;
+        return 0;
     }
     vsxTiXmlText* parentid = node->ToText();
       if(!parentid)
     {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreSkeleton;    
-        return false;
+        return 0;
     }
     parentId = atoi(parentid->Value());
 
@@ -1636,7 +1636,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreSkeleton;
         delete pCoreBone;
-        return false;
+        return 0;
       }
 
       vsxTiXmlNode *node= child->FirstChild();
@@ -1645,7 +1645,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreSkeleton;
         delete pCoreBone;
-        return false;
+        return 0;
       }
       vsxTiXmlText* childid = node->ToText();
       if(!childid)
@@ -1653,7 +1653,7 @@ CalCoreSkeleton *CalLoader::loadXmlCoreSkeleton_xml(vsxTiXmlDocument &doc) {
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreSkeleton;
         delete pCoreBone;
-        return false;
+        return 0;
       }
       
       int childId = atoi(childid->Value());
@@ -1708,7 +1708,7 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(vsxTiXmlDocument &doc, Cal
   if(!animation)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-        return false;
+        return 0;
   }
 
   if(stricmp(animation->Value(),"HEADER")==0)
@@ -1716,13 +1716,13 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(vsxTiXmlDocument &doc, Cal
     if(stricmp(animation->Attribute("MAGIC"),Cal::ANIMATION_XMLFILE_MAGIC)!=0)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-          return false;
+          return 0;
   }
 
   if(atoi(animation->Attribute("VERSION")) < Cal::EARLIEST_COMPATIBLE_FILE_VERSION )
   {
     CalError::setLastError(CalError::INCOMPATIBLE_FILE_VERSION, __FILE__, __LINE__, "xml");
-    return false;
+    return 0;
   }
 
   animation = animation->NextSiblingElement();
@@ -1731,19 +1731,19 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(vsxTiXmlDocument &doc, Cal
   if(!animation || stricmp(animation->Value(),"ANIMATION")!=0)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-      return false;
+      return 0;
   }
 
   if(animation->Attribute("MAGIC") !=NULL && stricmp(animation->Attribute("MAGIC"),Cal::ANIMATION_XMLFILE_MAGIC)!=0)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-        return false;
+        return 0;
   }
 
   if(animation->Attribute("VERSION")!=NULL && atoi(animation->Attribute("VERSION")) < Cal::EARLIEST_COMPATIBLE_FILE_VERSION )
   {
     CalError::setLastError(CalError::INCOMPATIBLE_FILE_VERSION, __FILE__, __LINE__, "xml");
-        return false;
+        return 0;
   }
 
   int trackCount= atoi(animation->Attribute("NUMTRACKS"));
@@ -1778,7 +1778,7 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(vsxTiXmlDocument &doc, Cal
     {
       CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
       delete pCoreAnimation;
-      return false;
+      return 0;
     }
 
     CalCoreTrack *pCoreTrack;
@@ -1819,7 +1819,7 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(vsxTiXmlDocument &doc, Cal
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
           delete pCoreAnimation;
           delete pCoreTrack;
-        return false;
+        return 0;
       }
 
       float time= (float) atof(keyframe->Attribute("TIME"));
@@ -1830,7 +1830,7 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(vsxTiXmlDocument &doc, Cal
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
           delete pCoreAnimation;
           delete pCoreTrack;
-        return false;
+        return 0;
       }
 
       float tx, ty, tz;
@@ -1841,7 +1841,7 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(vsxTiXmlDocument &doc, Cal
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
           delete pCoreAnimation;
           delete pCoreTrack;
-        return false;
+        return 0;
       }
 
       vsxTiXmlText* translationdata = node->ToText();
@@ -1850,7 +1850,7 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(vsxTiXmlDocument &doc, Cal
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
           delete pCoreAnimation;
           delete pCoreTrack;
-        return false;
+        return 0;
       }
       str.clear();
       str << translationdata->Value();
@@ -1862,7 +1862,7 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(vsxTiXmlDocument &doc, Cal
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
           delete pCoreAnimation;
           delete pCoreTrack;
-        return false;
+        return 0;
       }
 
       float rx, ry, rz, rw;
@@ -1873,7 +1873,7 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(vsxTiXmlDocument &doc, Cal
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
           delete pCoreAnimation;
           delete pCoreTrack;
-        return false;
+        return 0;
       }
       vsxTiXmlText* rotationdata = node->ToText();
       if(!rotationdata)
@@ -1881,7 +1881,7 @@ CalCoreAnimation *CalLoader::loadXmlCoreAnimation_xml(vsxTiXmlDocument &doc, Cal
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
           delete pCoreAnimation;
           delete pCoreTrack;
-        return false;
+        return 0;
       }
       str.clear();
       str << rotationdata->Value();
@@ -1971,7 +1971,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
   if(!mesh)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-        return false;
+        return 0;
   }
 
   if(stricmp(mesh->Value(),"HEADER")==0)
@@ -1979,13 +1979,13 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
     if(stricmp(mesh->Attribute("MAGIC"),Cal::MESH_XMLFILE_MAGIC)!=0)
     {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-          return false;
+          return 0;
   }
 
   if(atoi(mesh->Attribute("VERSION")) < Cal::EARLIEST_COMPATIBLE_FILE_VERSION )
   {
     CalError::setLastError(CalError::INCOMPATIBLE_FILE_VERSION, __FILE__, __LINE__, "xml");
-          return false;
+          return 0;
   }
 
   mesh = mesh->NextSiblingElement();
@@ -1993,19 +1993,19 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
   if(!mesh || stricmp(mesh->Value(),"MESH")!=0)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-      return false;
+      return 0;
   }
 
   if(mesh->Attribute("MAGIC")!=NULL && stricmp(mesh->Attribute("MAGIC"),Cal::MESH_XMLFILE_MAGIC)!=0)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-         return false;
+         return 0;
   }
 
   if(mesh->Attribute("VERSION")!=NULL && atoi(mesh->Attribute("VERSION")) < Cal::EARLIEST_COMPATIBLE_FILE_VERSION )
   {
   CalError::setLastError(CalError::INCOMPATIBLE_FILE_VERSION, __FILE__, __LINE__, "xml");
-         return false;
+         return 0;
   }
 
   // get the number of submeshes
@@ -2029,7 +2029,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
     {
       delete pCoreMesh;
       CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-      return false;
+      return 0;
     }
 
     // get the material thread id of the submesh
@@ -2081,7 +2081,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
         delete pCoreMesh;
           delete pCoreSubmesh;
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-        return false;
+        return 0;
       }      
 
       CalCoreSubmesh::Vertex Vertex;
@@ -2092,7 +2092,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
         delete pCoreMesh;
           delete pCoreSubmesh;
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-        return false;
+        return 0;
       }
       
       node = pos->FirstChild();
@@ -2101,7 +2101,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
         delete pCoreMesh;
           delete pCoreSubmesh;
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-        return false;
+        return 0;
       }      
       vsxTiXmlText* posdata = node->ToText();
       if(!posdata)
@@ -2109,7 +2109,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
         delete pCoreMesh;
           delete pCoreSubmesh;
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-        return false;
+        return 0;
       }
       str.clear();
       str << posdata->Value();
@@ -2121,7 +2121,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
         delete pCoreMesh;
           delete pCoreSubmesh;
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-        return false;
+        return 0;
       }
       
       node = norm->FirstChild();
@@ -2130,7 +2130,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
         delete pCoreMesh;
           delete pCoreSubmesh;
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-        return false;
+        return 0;
       }
       vsxTiXmlText* normdata = node->ToText();
       if(!normdata)
@@ -2138,7 +2138,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
         delete pCoreMesh;
           delete pCoreSubmesh;
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-        return false;
+        return 0;
       }
       str.clear();
       str << normdata->Value();
@@ -2153,7 +2153,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
             delete pCoreMesh;
               delete pCoreSubmesh;
             CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-            return false;
+            return 0;
         }
         vsxTiXmlText* collapseid = node->ToText();
         if(!collapseid)
@@ -2161,7 +2161,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
             delete pCoreMesh;
               delete pCoreSubmesh;
             CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-            return false;
+            return 0;
         }
         Vertex.collapseId = atoi(collapseid->Value());
 
@@ -2171,7 +2171,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
             delete pCoreMesh;
             delete pCoreSubmesh;
             CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-            return false;
+            return 0;
         }
 
         node = collapseCount->FirstChild();
@@ -2180,7 +2180,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
             delete pCoreMesh;
               delete pCoreSubmesh;
             CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-            return false;
+            return 0;
         }
         vsxTiXmlText* collapseCountdata = node->ToText();
         if(!collapseCountdata)
@@ -2188,7 +2188,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
             delete pCoreMesh;
               delete pCoreSubmesh;
             CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-            return false;
+            return 0;
         }
         Vertex.faceCollapseCount= atoi(collapseCountdata->Value());
         collapse = collapseCount->NextSiblingElement();        
@@ -2213,7 +2213,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
           delete pCoreMesh;
           delete pCoreSubmesh;
           CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-          return false;
+          return 0;
         }
 
         node = texcoord->FirstChild();
@@ -2222,7 +2222,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
           delete pCoreMesh;
           delete pCoreSubmesh;
           CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-          return false;
+          return 0;
         }
         vsxTiXmlText* texcoorddata = node->ToText();
         if(!texcoorddata)
@@ -2230,7 +2230,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
           delete pCoreMesh;
           delete pCoreSubmesh;
           CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-          return false;
+          return 0;
         }
         str.clear();
         str << texcoorddata->Value();
@@ -2273,7 +2273,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
           delete pCoreMesh;
           delete pCoreSubmesh;
           CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-          return false;
+          return 0;
         }
 
         node = influence->FirstChild();
@@ -2282,7 +2282,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
           delete pCoreMesh;
           delete pCoreSubmesh;
           CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-          return false;
+          return 0;
         }
         vsxTiXmlText* influencedata = node->ToText();
         if(!influencedata)
@@ -2290,7 +2290,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
           delete pCoreMesh;
           delete pCoreSubmesh;
           CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-          return false;
+          return 0;
         }
 
         Vertex.vectorInfluence[influenceId].boneId = atoi(influence->Attribute("ID"));
@@ -2317,7 +2317,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
           delete pCoreMesh;
           delete pCoreSubmesh;
           CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-          return false;
+          return 0;
         }
         node = physique->FirstChild();
         if(!node)
@@ -2325,7 +2325,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
           delete pCoreMesh;
           delete pCoreSubmesh;
           CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-          return false;
+          return 0;
         }
         vsxTiXmlText* physiquedata = node->ToText();
         if(!physiquedata)
@@ -2333,7 +2333,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
           delete pCoreMesh;
           delete pCoreSubmesh;
           CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-          return false;
+          return 0;
         }
 
         physicalProperty.weight = (float) atof(physiquedata->Value());
@@ -2359,7 +2359,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
         delete pCoreMesh;
         delete pCoreSubmesh;
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-        return false;
+        return 0;
       }
       str.clear();
       str << spring->Attribute("VERTEXID");
@@ -2385,7 +2385,7 @@ CalCoreMesh *CalLoader::loadXmlCoreMesh_xml(vsxTiXmlDocument &doc) {
         delete pCoreMesh;
         delete pCoreSubmesh;
         CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-        return false;
+        return 0;
       }
 
       int tmp[3];
@@ -2463,7 +2463,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(vsxTiXmlDocument &doc)
   if(!material)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-        return false;
+        return 0;
   }
 
   if(stricmp(material->Value(),"HEADER")==0)
@@ -2471,13 +2471,13 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(vsxTiXmlDocument &doc)
     if(stricmp(material->Attribute("MAGIC"),Cal::MATERIAL_XMLFILE_MAGIC)!=0)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-          return false;
+          return 0;
     }
 
     if(atoi(material->Attribute("VERSION")) < Cal::EARLIEST_COMPATIBLE_FILE_VERSION )
     {
     CalError::setLastError(CalError::INCOMPATIBLE_FILE_VERSION, __FILE__, __LINE__, "xml");
-          return false;
+          return 0;
     }
 
     material = material->NextSiblingElement();
@@ -2486,19 +2486,19 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(vsxTiXmlDocument &doc)
   if(!material||stricmp(material->Value(),"MATERIAL")!=0)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-      return false;
+      return 0;
   }
 
   if(material->Attribute("MAGIC")!=NULL && stricmp(material->Attribute("MAGIC"),Cal::MATERIAL_XMLFILE_MAGIC)!=0)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
-        return false;
+        return 0;
   }
 
   if(material->Attribute("VERSION") != NULL && atoi(material->Attribute("VERSION")) < Cal::EARLIEST_COMPATIBLE_FILE_VERSION )
   {
     CalError::setLastError(CalError::INCOMPATIBLE_FILE_VERSION, __FILE__, __LINE__, "xml");
-        return false;
+        return 0;
   }
 
   CalCoreMaterial *pCoreMaterial;
@@ -2514,7 +2514,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(vsxTiXmlDocument &doc)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreMaterial;    
-        return false;
+        return 0;
   }
 
   CalCoreMaterial::Color ambientColor; 
@@ -2523,14 +2523,14 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(vsxTiXmlDocument &doc)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreMaterial;    
-        return false;
+        return 0;
   }
   vsxTiXmlText* ambientdata = node->ToText();
   if(!ambientdata)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreMaterial;    
-        return false;
+        return 0;
   }
   str << ambientdata->Value();
   str >> r >> g >> b >> a;
@@ -2544,7 +2544,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(vsxTiXmlDocument &doc)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreMaterial;    
-        return false;
+        return 0;
   }
 
   CalCoreMaterial::Color diffuseColor; 
@@ -2553,14 +2553,14 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(vsxTiXmlDocument &doc)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreMaterial;    
-        return false;
+        return 0;
   }
   vsxTiXmlText* diffusedata = node->ToText();
   if(!diffusedata)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreMaterial;    
-        return false;
+        return 0;
   }
   str.clear();
   str << diffusedata->Value();
@@ -2576,7 +2576,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(vsxTiXmlDocument &doc)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreMaterial;    
-        return false;
+        return 0;
   }
 
   CalCoreMaterial::Color specularColor; 
@@ -2585,14 +2585,14 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(vsxTiXmlDocument &doc)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreMaterial;    
-        return false;
+        return 0;
   }
   vsxTiXmlText* speculardata = node->ToText();
   if(!speculardata)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreMaterial;    
-        return false;
+        return 0;
   }
   str.clear();
   str << speculardata->Value();
@@ -2608,7 +2608,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(vsxTiXmlDocument &doc)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreMaterial;    
-        return false;
+        return 0;
   }
 
   float fshininess;
@@ -2617,14 +2617,14 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(vsxTiXmlDocument &doc)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreMaterial;    
-        return false;
+        return 0;
   }
   vsxTiXmlText* shininessdata = node->ToText();
   if(!shininessdata)
   {
     CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
         delete pCoreMaterial;    
-        return false;
+        return 0;
   }
   fshininess = (float)atof(shininessdata->Value());
 
@@ -2644,7 +2644,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(vsxTiXmlDocument &doc)
     {
       CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
       delete pCoreMaterial;    
-      return false;
+      return 0;
     }
     
 
@@ -2653,7 +2653,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(vsxTiXmlDocument &doc)
     {
       CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
       delete pCoreMaterial;    
-      return false;
+      return 0;
     }
 
     vsxTiXmlText* mapfile = node->ToText();
@@ -2661,7 +2661,7 @@ CalCoreMaterial *CalLoader::loadXmlCoreMaterial_xml(vsxTiXmlDocument &doc)
     {
       CalError::setLastError(CalError::INVALID_FILE_FORMAT, __FILE__, __LINE__, "xml");
       delete pCoreMaterial;    
-      return false;
+      return 0;
     }
 
     MatFileName.push_back(mapfile->Value());
