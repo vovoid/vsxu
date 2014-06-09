@@ -36,10 +36,10 @@ class vsx_grid_vertex {
 public:
   bool valid;
   unsigned long id; // used when dumping faces into vsx_mesh
-  vsx_vector<> coord;  // xyz
+  vsx_vector3<> coord;  // xyz
   vsx_color<> color;  // color
-  vsx_vector<> normal; // vertex normal
-  vsx_vector <>tex_coord;  // texture coordinate
+  vsx_vector3<> normal; // vertex normal
+  vsx_vector3<> tex_coord;  // texture coordinate
   vsx_avector<unsigned long> faces;
   vsx_array<unsigned long> lines;
   vsx_grid_vertex()
@@ -54,8 +54,8 @@ public:
                 bx,by,
                 cx,cy;
                 
-  vsx_vector<> normal;
-  vsx_vector<> center;
+  vsx_vector3<> normal;
+  vsx_vector3<> center;
   vsx_array<unsigned long> lines;
 };
 
@@ -197,7 +197,7 @@ public:
     }
     if (mesh->data->faces.size() != faces.size()) {
       mesh->data->faces.reset_used();
-      vsx_face f;
+      vsx_face3 f;
       for (unsigned long a = 0; a < faces.size(); ++a) {
         //printf("abc: %d %d %d\n",vertices[faces[a].ax][faces[a].ay].id,vertices[faces[a].bx][faces[a].by].id,vertices[faces[a].cx][faces[a].cy].id);
         f.a = vertices[faces[a].ax][faces[a].ay].id;

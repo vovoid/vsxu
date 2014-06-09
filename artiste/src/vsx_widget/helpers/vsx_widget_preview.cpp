@@ -52,7 +52,7 @@ void vsx_window_texture_viewer::draw_2d()
     frame_delta = 0;
   }
 
-  title = "vsxu preview (slow) @ "+i2s((int)round(fps))+" fps, Ctrl+F(ullscreen)";
+  title = "vsxu preview (slow) @ "+vsx_string_helper::i2s((int)round(fps))+" fps, Ctrl+F(ullscreen)";
   float vis = visible;
 
   if (!visible)
@@ -79,8 +79,8 @@ void vsx_window_texture_viewer::draw_2d()
   glLoadIdentity();
   if (*engine == 0)
   {
-    set_pos(vsx_vector<>(0.0,2.0,0.0));
-    set_size(vsx_vector<>(0.0,0.0,0.0));
+    set_pos(vsx_vector3<>(0.0,2.0,0.0));
+    set_size(vsx_vector3<>(0.0,0.0,0.0));
   }
   // set new viewport
   if (run)

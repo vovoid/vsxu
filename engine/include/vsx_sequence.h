@@ -27,7 +27,8 @@
 
 
 #include <vsx_platform.h>
-#include <vsx_vector.h>
+#include <vsx_string_helper.h>
+#include <vector/vsx_vector3.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #define VSX_SEQUENCE_DLLIMPORT
@@ -45,21 +46,14 @@ public:
   float value;
   float delay; // in seconds (float)
   int interpolation;
-  vsx_vector<> handle1;
-  vsx_vector<> handle2;
-
-  vsx_string f2s(float in)
-  {
-    char string_res[256];
-    sprintf(string_res,"%f",in);
-    return vsx_string(string_res);
-  }
+  vsx_vector3<> handle1;
+  vsx_vector3<> handle2;
 
   vsx_string get_value() {
     if (interpolation == 4) {
-      return f2s(value)+":"+f2s(handle1.x)+","+f2s(handle1.y)+":"+f2s(handle2.x)+","+f2s(handle2.y);
+      return vsx_string_helper::f2s(value)+":"+vsx_string_helper::f2s(handle1.x)+","+vsx_string_helper::f2s(handle1.y)+":"+vsx_string_helper::f2s(handle2.x)+","+vsx_string_helper::f2s(handle2.y);
     } else {
-      return f2s(value);
+      return vsx_string_helper::f2s(value);
     }
   }
 

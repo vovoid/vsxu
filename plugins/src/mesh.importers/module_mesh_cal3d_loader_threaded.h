@@ -70,12 +70,12 @@ public:
     // transform
     vsx_quaternion<> pre_rotation_quaternion;
     vsx_matrix<float> pre_rotation_mat;
-    vsx_vector<> pre_rot_center;
+    vsx_vector3<> pre_rot_center;
 
     vsx_quaternion<> rotation_quaternion;
     vsx_matrix<float> rotation_mat;
-    vsx_vector<> rot_center;
-    vsx_vector<> post_rot_translate_vec;
+    vsx_vector3<> rot_center;
+    vsx_vector3<> post_rot_translate_vec;
 
 
   module_mesh_cal3d_import() {
@@ -423,10 +423,10 @@ public:
           // select mesh and submesh for further data access
           if(pCalRenderer->selectMeshSubmesh(meshId, submeshId))
           {
-            my->mesh->data->vertices[pCalRenderer->getVertexCount()+1] = vsx_vector<>(0,0,0);
+            my->mesh->data->vertices[pCalRenderer->getVertexCount()+1] = vsx_vector3<>(0,0,0);
             pCalRenderer->getVertices(&my->mesh->data->vertices[0].x);
 
-            my->mesh->data->vertex_normals[pCalRenderer->getVertexCount()+1] = vsx_vector<>(0,0,0);
+            my->mesh->data->vertex_normals[pCalRenderer->getVertexCount()+1] = vsx_vector3<>(0,0,0);
             pCalRenderer->getNormals(&my->mesh->data->vertex_normals[0].x);
 
             if (pCalRenderer->isTangentsEnabled(0))
@@ -463,8 +463,8 @@ public:
       my->rotation_mat = my->rotation_quaternion.matrix();
 
       unsigned long end = (my->mesh)->data->vertices.size();
-      vsx_vector<>* vs_v = &(my->mesh)->data->vertices[0];
-      vsx_vector<>* vs_n = &(my->mesh)->data->vertex_normals[0];
+      vsx_vector3<>* vs_v = &(my->mesh)->data->vertices[0];
+      vsx_vector3<>* vs_n = &(my->mesh)->data->vertex_normals[0];
 
 
       for (unsigned long i = 0; i < end; i++)
@@ -476,7 +476,7 @@ public:
           *vs_v - my->pre_rot_center
         );
         (*vs_v) += my->pre_rot_center;
-        vsx_vector<> n = *vs_n;
+        vsx_vector3<> n = *vs_n;
         vs_n->multiply_matrix_other_vec(
           &my->pre_rotation_mat.m[0],
           n
@@ -517,13 +517,13 @@ public:
         long i2 = mesh->data->faces[a].b;
         long i3 = mesh->data->faces[a].c;
 
-        const vsx_vector<>& v1 = mesh->data->vertices[i1];
-        const vsx_vector<>& v2 = mesh->data->vertices[i2];
-        const vsx_vector<>& v3 = mesh->data->vertices[i3];
+        const vsx_vector3<>& v1 = mesh->data->vertices[i1];
+        const vsx_vector3<>& v2 = mesh->data->vertices[i2];
+        const vsx_vector3<>& v3 = mesh->data->vertices[i3];
 
-        const vsx_tex_coord& w1 = mesh->data->vertex_tex_coords[i1];
-        const vsx_tex_coord& w2 = mesh->data->vertex_tex_coords[i2];
-        const vsx_tex_coord& w3 = mesh->data->vertex_tex_coords[i3];
+        const vsx_tex_coord2f& w1 = mesh->data->vertex_tex_coords[i1];
+        const vsx_tex_coord2f& w2 = mesh->data->vertex_tex_coords[i2];
+        const vsx_tex_coord2f& w3 = mesh->data->vertex_tex_coords[i3];
 
         float x1 = v2.x - v1.x;
         float x2 = v3.x - v1.x;
@@ -551,7 +551,7 @@ public:
       }
       for (unsigned long a = 0; a < mesh->data->vertices.size(); a++)
       {
-          vsx_vector<>& n = mesh->data->vertex_normals[a];
+          vsx_vector3<>& n = mesh->data->vertex_normals[a];
           vsx_quaternion<>& t = vec_d[a];
 
           // Gram-Schmidt orthogonalize

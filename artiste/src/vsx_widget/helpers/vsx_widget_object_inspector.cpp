@@ -58,7 +58,7 @@ void vsx_window_object_inspector::draw_2d() {
     pos_.x = pos.x+dragborder;
     size_.x = size.x-dragborder*2;
     //printf("size: %f\n",size_.x);
-    title = filename_loaded+" "+i2s((int)texture.texture_info->size_x)+"x"+i2s((int)texture.texture_info->size_y);
+    title = filename_loaded+" "+vsx_string_helper::i2s((int)texture.texture_info->size_x)+"x"+vsx_string_helper::i2s((int)texture.texture_info->size_y);
    	texture.bind();
     glColor4f(1,1,1,1);
     if (texture.valid) {
@@ -89,7 +89,7 @@ void vsx_window_object_inspector::draw_2d() {
     if (texture_loaded == false)
     if (texture.texture_info->size_y != 0.0) {
       texture_loaded = true;
-      vsx_vector<> aa;
+      vsx_vector3<> aa;
       aa.x = 0.4/screenaspect*(texture.texture_info->size_x/texture.texture_info->size_y);
       aa.y = 0.4;
       aa.z = 0;
@@ -124,7 +124,7 @@ void vsx_window_object_inspector::draw() {
       //((vsx_widget_2d_edit*)component_rename_edit)->value.clear();
       title = "anchor "+((vsx_widget_anchor*)a_focus)->name;
       view_type = 0;
-      set_size(vsx_vector<>(0.2f, 0.175f, 0.0f));
+      set_size(vsx_vector3<>(0.2f, 0.175f, 0.0f));
       move(1.0f - 0.2f , 1.0f - 0.175f, 0.0f);
     }
     else
@@ -153,12 +153,12 @@ void vsx_window_object_inspector::draw() {
       title = ((vsx_widget_component*)a_focus)->real_name;
       view_type = 0;
       //printf("resize to\n");
-      set_size(vsx_vector<>(0.2f, 0.175f, 0.0f));
+      set_size(vsx_vector3<>(0.2f, 0.175f, 0.0f));
       move(1.0f - 0.2f , 1.0f - 0.175f, 0.0f);
       // request timing data
       label2->title = "This build of the engine does not\nsupport timing. The reason?\nTiming slows down performance.\n";
 #ifdef VSXU_MODULE_TIMING
-			command_q_b.add_raw("component_timing "+((vsx_widget_component*)a_focus)->real_name+" "+i2s(id));
+			command_q_b.add_raw("component_timing "+((vsx_widget_component*)a_focus)->real_name+" "+vsx_string_helper::i2s(id));
 #endif
   		((vsx_widget_component*)a_focus)->server->vsx_command_queue_b(this);
     } else
@@ -177,7 +177,7 @@ void vsx_window_object_inspector::draw() {
   	if (vsx_status_timer < 0.0f) {
   		vsx_status_timer = 1.0f;
 #ifdef VSXU_MODULE_TIMING
-			command_q_b.add_raw("component_timing "+((vsx_widget_component*)inspected)->real_name+" "+i2s(id));
+			command_q_b.add_raw("component_timing "+((vsx_widget_component*)inspected)->real_name+" "+vsx_string_helper::i2s(id));
   		((vsx_widget_component*)inspected)->server->vsx_command_queue_b(this);
 #endif
   	}
@@ -205,7 +205,7 @@ void vsx_window_object_inspector::command_process_back_queue(vsx_command_s *t) {
         ((vsx_widget_anchor*)inspected)->component->name+" "+ // component
         ((vsx_widget_anchor*)inspected)->name+" "+
         ((vsx_widget_base_edit*)component_rename_edit)->get_string()+" "+
-        i2s(((vsx_widget_anchor*)inspected)->io)
+        vsx_string_helper::i2s(((vsx_widget_anchor*)inspected)->io)
       );
       ((vsx_widget_component*)((vsx_widget_anchor*)inspected)->component)->server->vsx_command_queue_b(this);
     }
@@ -213,7 +213,7 @@ void vsx_window_object_inspector::command_process_back_queue(vsx_command_s *t) {
   if (t->cmd == "component_timing_ok")
   {
   	label2->title = vsx_string("run time:   ")+t->parts[2] + " seconds\noutput time:" + t->parts[3] + " seconds\n";
-  	label2->title = label2->title + "% of total frame time: "+f2s( (s2f(t->parts[2])+s2f(t->parts[3]))*100.0f / s2f(t->parts[4]),3);
+  	label2->title = label2->title + "% of total frame time: "+vsx_string_helper::f2s( (vsx_string_helper::s2f(t->parts[2])+vsx_string_helper::s2f(t->parts[3]))*100.0f / vsx_string_helper::s2f(t->parts[4]),3);
 
   }
   //if (t->cmd == "cancel") { visible = 0; return; }
@@ -243,22 +243,22 @@ vsx_window_object_inspector::vsx_window_object_inspector()
 
   vsx_widget::init_children();
   title = "object inspector";
-  set_pos(vsx_vector<>(1.0f,1.0f));
-  set_size(vsx_vector<>(0.25f,0.05f));
+  set_pos(vsx_vector3<>(1.0f,1.0f));
+  set_size(vsx_vector3<>(0.25f,0.05f));
   allow_resize_x = allow_resize_y = 1;
 
   //-- COMPONENT INSPECTOR ---------------------------------------------------------------------------------------------
 
   component_rename_button->visible = 0;
-  component_rename_button->set_size(vsx_vector<>(0.033,0.020));
-  component_rename_button->set_pos(vsx_vector<>(0.18,0.025));
+  component_rename_button->set_size(vsx_vector3<>(0.033,0.020));
+  component_rename_button->set_pos(vsx_vector3<>(0.18,0.025));
   component_rename_button->title = "RENAME";
   component_rename_button->commands.adds(4,"component_rename_button","component_rename_button","");
   ((vsx_widget_button*)component_rename_button)->border = 0.0003;
 
   component_rename_edit->visible = 1;
-  component_rename_edit->set_pos(vsx_vector<>(0.085f,0.025f));
-  component_rename_edit->set_size(vsx_vector<>(0.155f,0.02f));
+  component_rename_edit->set_pos(vsx_vector3<>(0.085f,0.025f));
+  component_rename_edit->set_size(vsx_vector3<>(0.155f,0.02f));
   component_rename_edit->set_font_size(0.018f);
   ((vsx_widget_base_edit*)component_rename_edit)->size_from_parent = true;
   ((vsx_widget_base_edit*)component_rename_edit)->single_row = true;
@@ -297,7 +297,7 @@ void vsx_window_object_inspector::show() {
 }
 
 void vsx_window_object_inspector::unload() {
-  resize_to(vsx_vector<>(0.001,0.001));
+  resize_to(vsx_vector3<>(0.001,0.001));
   move(1-0.001,1,0);
   texture.unload();
   filename_loaded = "";

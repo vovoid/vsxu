@@ -37,7 +37,7 @@ void vsx_widget_panel::calc_size() {
   if (size_from_parent)
     return;
 
-  vsx_vector<> psize = parent->get_inner_size();
+  vsx_vector3<> psize = parent->get_inner_size();
 
   size = target_size = psize;
 
@@ -47,8 +47,8 @@ void vsx_widget_panel::calc_size() {
 
 
 
-vsx_vector<> vsx_widget_panel::calc_pos() {
-  vsx_vector<> p = get_pos_p();
+vsx_vector3<> vsx_widget_panel::calc_pos() {
+  vsx_vector3<> p = get_pos_p();
   if (pos_from_parent) {
     p.x += target_pos.x;
     p.y += target_pos.y;
@@ -63,9 +63,9 @@ vsx_vector<> vsx_widget_panel::calc_pos() {
   return p;
 }
 
-/*vsx_vector<> vsx_widget_panel::calc_pos()
+/*vsx_vector3<> vsx_widget_panel::calc_pos()
 {
-  vsx_vector<> p = get_pos_p();
+  vsx_vector3<> p = get_pos_p();
 
   if (pos_from_parent) {
     return pos - target_size * 0.5;
@@ -85,7 +85,7 @@ vsx_vector<> vsx_widget_panel::calc_pos() {
   return p;
 }
 */
-int vsx_widget_panel::inside_xy_l(vsx_vector<> &test, vsx_vector<> &global)
+int vsx_widget_panel::inside_xy_l(vsx_vector3<> &test, vsx_vector3<> &global)
 {
   VSX_UNUSED(test);
   VSX_UNUSED(global);
@@ -95,7 +95,7 @@ int vsx_widget_panel::inside_xy_l(vsx_vector<> &test, vsx_vector<> &global)
 
 void vsx_widget_panel::base_draw() {
   calc_size();
-  vsx_vector<> p = calc_pos();
+  vsx_vector3<> p = calc_pos();
   //vsx_color b(0,0,0,0), w(0,0,0,1), gr(0,1,0,1), r(1,0,0,1);
   vsx_color<> b(0,0,0,0);
   vsx_color<> w(0,0,0,1);
@@ -160,7 +160,7 @@ void vsx_widget_split_panel::event_mouse_move(vsx_widget_distance distance,vsx_w
 }
 
 
-int vsx_widget_split_panel::inside_xy_l(vsx_vector<> &test, vsx_vector<> &global)
+int vsx_widget_split_panel::inside_xy_l(vsx_vector3<> &test, vsx_vector3<> &global)
 {
   if (coord_type == VSX_WIDGET_COORD_CENTER) {
     if (
@@ -189,7 +189,7 @@ int vsx_widget_split_panel::inside_xy_l(vsx_vector<> &test, vsx_vector<> &global
 void vsx_widget_split_panel::i_draw()
 {
   calc_size();
-  vsx_vector<> p = calc_pos();
+  vsx_vector3<> p = calc_pos();
   if (render_type == render_2d)
   p.z = 0.0f;
   if (orientation == VSX_WIDGET_SPLIT_PANEL_VERT) {
@@ -239,6 +239,6 @@ void vsx_widget_split_panel::i_draw()
 
     glColor4f(1,1,1,1);
     if (splitter_size != 0)
-    draw_box(p+vsx_vector<>(0,split_pos*sy),sx,splitter_size);
+    draw_box(p+vsx_vector3<>(0,split_pos*sy),sx,splitter_size);
   }
 }

@@ -65,7 +65,7 @@ using namespace std;
 
 bool vsx_widget_anchor::drag_status = false;
 bool vsx_widget_anchor::clone_value = false;
-vsx_vector<> vsx_widget_anchor::drag_position;
+vsx_vector3<> vsx_widget_anchor::drag_position;
 vsx_widget_anchor* vsx_widget_anchor::drag_anchor;
 vsx_widget_anchor* vsx_widget_anchor::drag_clone_anchor;
 
@@ -81,7 +81,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
   //   menu; ours
   if (t->cmd == "anchor_unalias")
   {
-    command_q_b.add_raw("param_unalias "+i2s(io)+" "+component->name+" "+name);
+    command_q_b.add_raw("param_unalias "+vsx_string_helper::i2s(io)+" "+component->name+" "+name);
     return;
   }
 
@@ -113,8 +113,8 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
 
     for (std::vector<vsx_string>::iterator it = order_list.begin(); it != order_list.end(); ++it) 
     {
-      ((vsx_widget_connector_bezier*)connection_map[ vsx_string_aux::s2i(*it) ])->order = c;
-      ((vsx_widget_connector_bezier*)connection_map[ vsx_string_aux::s2i(*it) ])->move(vsx_vector<>(0));
+      ((vsx_widget_connector_bezier*)connection_map[ vsx_string_helper::s2i(*it) ])->order = c;
+      ((vsx_widget_connector_bezier*)connection_map[ vsx_string_helper::s2i(*it) ])->move(vsx_vector3<>(0));
       ++c;
     }
 
@@ -144,7 +144,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     std::vector<vsx_string> order_list;
     for (std::map<float,vsx_widget*>::reverse_iterator it = position_map.rbegin(); it != position_map.rend(); ++it) 
     {
-      order_list.push_back(i2s(((vsx_widget_connector_bezier*)((*it).second))->order));
+      order_list.push_back(vsx_string_helper::i2s(((vsx_widget_connector_bezier*)((*it).second))->order));
     }
     vsx_string order_list_finished = implode(order_list,",");
     command_q_b.add_raw("connections_order "+component->name+" "+name+" "+order_list_finished);
@@ -172,7 +172,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
       if (b->p_l_list_out.find(t->parts[4]) != b->p_l_list_out.end()) 
       {
         vsx_widget_anchor *ba = (vsx_widget_anchor*)b->p_l_list_out[t->parts[4]];
-        connect_far( ba, vsx_string_aux::s2i(t->parts[5]) );
+        connect_far( ba, vsx_string_helper::s2i(t->parts[5]) );
       }
     }
     return;
@@ -232,7 +232,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
         tt->size.x = 1;
         tt->size.y = 1;
         tt->init();
-        ((vsx_widget_connector_bezier*)tt)->order = vsx_string_aux::s2i(t->parts[5]);
+        ((vsx_widget_connector_bezier*)tt)->order = vsx_string_helper::s2i(t->parts[5]);
         ((vsx_widget_connector_bezier*)tt)->receiving_focus = true;
         ((vsx_widget_connector_bezier*)tt)->destination = ba;
         ((vsx_widget_connector_bezier*)tt)->open = conn_open;
@@ -587,7 +587,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     tt->set_font_size(0.002);
     tt->set_border(0.0005);
 
-    command_q_b.add_raw("pg64 "+component->name+" "+name+" "+i2s(tt->id));
+    command_q_b.add_raw("pg64 "+component->name+" "+name+" "+vsx_string_helper::i2s(tt->id));
     component->vsx_command_queue_b(this);
     return;
   }
@@ -630,7 +630,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
       ((vsx_widget_controller_ab*)tt)->target_param = name;
       ((vsx_widget_controller_ab*)tt)->param_spec = &options;
       ((vsx_widget_controller_ab*)tt)->init();
-      ((vsx_widget_controller_ab*)tt)->set_tuple_type( vsx_string_aux::s2i(t->cmd_data) );
+      ((vsx_widget_controller_ab*)tt)->set_tuple_type( vsx_string_helper::s2i(t->cmd_data) );
       a_focus = tt;
       k_focus = tt;
     } else
@@ -665,7 +665,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     {
       vsx_widget* tt = add(new vsx_widget_controller_mixer,name+".mixer");
       ((vsx_widget_controller_mixer*)tt)->target_param=name;
-      ((vsx_widget_controller_mixer*)tt)->nummixers = vsx_string_aux::s2i(t->cmd_data);
+      ((vsx_widget_controller_mixer*)tt)->nummixers = vsx_string_helper::s2i(t->cmd_data);
       ((vsx_widget_controller_mixer*)tt)->param_spec = &options;
       ((vsx_widget_controller_mixer*)tt)->init();
       a_focus = tt;
@@ -801,29 +801,29 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     vsx_string deli = ",";
     if (p_type == "float")
     {
-      display_value = f2s(s2f(display_value),5);
+      display_value = vsx_string_helper::f2s(vsx_string_helper::s2f(display_value),5);
     }
     if (p_type == "float3")
     {
       explode(display_value,deli, parts);
       if (parts.size() == 3)
       {
-        display_value = f2s(s2f(parts[0]),5)+","+f2s(s2f(parts[1]),5)+","+f2s(s2f(parts[2]),5);
+        display_value = vsx_string_helper::f2s(vsx_string_helper::s2f(parts[0]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[1]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[2]),5);
       }
     }
     if (p_type == "float4")
     {
       explode(display_value,deli, parts);
       if (parts.size() == 4)
-      display_value = f2s(s2f(parts[0]),5)+","+f2s(s2f(parts[1]),5)+","+f2s(s2f(parts[2]),5)+","+f2s(s2f(parts[3]),5);
+      display_value = vsx_string_helper::f2s(vsx_string_helper::s2f(parts[0]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[1]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[2]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[3]),5);
     }
     if (p_type == "enum")
     {
-      int ii = vsx_string_aux::s2i(display_value);
+      int ii = vsx_string_helper::s2i(display_value);
 
       if (ii >= 0 && ii < (int)enum_items.size())
       {
-        display_value = enum_items[ vsx_string_aux::s2i(display_value) ];
+        display_value = enum_items[ vsx_string_helper::s2i(display_value) ];
       }
       else
       {
@@ -1247,11 +1247,11 @@ void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widg
       vsx_string newname = ((vsx_widget_component*)component->parent)->alias_get_unique_name_out("alias_"+name);
       ((vsx_widget_server*)((vsx_widget_component*)component)->server)->param_alias_ok(
         newname+":"+p_def,
-        i2s(io),
+        vsx_string_helper::i2s(io),
         component->parent->name,
         newname,
         component->name,
-        name, i2s(corder)
+        name, vsx_string_helper::i2s(corder)
       );
 
       vsx_widget_anchor* new_alias = ((vsx_widget_anchor*)((vsx_widget_component*)component->parent)->p_l_list_in["alias_"+name]);
@@ -1290,7 +1290,7 @@ vsx_widget_anchor* vsx_widget_anchor::alias_to_level(vsx_widget_anchor* dest)
     vsx_string newname = ((vsx_widget_component*)component->parent)->alias_get_unique_name_out("alias_"+name);
     ((vsx_widget_server*)((vsx_widget_component*)component)->server)->param_alias_ok(
       newname+":"+p_def,
-      i2s(io),
+      vsx_string_helper::i2s(io),
       component->parent->name,
       newname,
       component->name,
@@ -1527,7 +1527,7 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
       explode(parts[0],deli,enumerations);
       for (unsigned long i = 0; i < enumerations.size(); ++i) 
       {
-        menu_->commands.adds(VSX_COMMAND_MENU, enumerations[i],"enum",i2s(i));
+        menu_->commands.adds(VSX_COMMAND_MENU, enumerations[i],"enum",vsx_string_helper::i2s(i));
         enum_items.push_back(enumerations[i]);
       }
     }
@@ -1697,13 +1697,13 @@ void vsx_widget_anchor::get_value()
 {
   if (io == -1)
   {
-    command_q_b.add_raw("param_get " + component->name+" "+name+" "+i2s(id));
+    command_q_b.add_raw("param_get " + component->name+" "+name+" "+vsx_string_helper::i2s(id));
   }
   else
   {
     if (p_type != "render")
     {
-      command_q_b.add_raw("pgo " + component->name+" "+name+" "+i2s(id));
+      command_q_b.add_raw("pgo " + component->name+" "+name+" "+vsx_string_helper::i2s(id));
     }
   }
   component->vsx_command_queue_b(this);
@@ -2233,7 +2233,7 @@ void vsx_widget_anchor::draw()
     float sx06 = size.x * 0.6f;
 
     myf_size = font.get_size(name,size.x*(0.3+t_size));
-    myf_pos = vsx_vector<>(pos.x+pp.x+sx06,pos.y+pp.y-size.y*0.5);
+    myf_pos = vsx_vector3<>(pos.x+pp.x+sx06,pos.y+pp.y-size.y*0.5);
     glColor4f(0.0f,0.0f,0.0f,0.5f*color.a);
     font.color.a = color.a;
     if (io == -1)
@@ -2245,7 +2245,7 @@ void vsx_widget_anchor::draw()
     {
       myf_pos.x -= size.x;
       if (!drag_status)
-      draw_box(myf_pos-vsx_vector<>(myf_size.x) , myf_size.x, myf_size.y);
+      draw_box(myf_pos-vsx_vector3<>(myf_size.x) , myf_size.x, myf_size.y);
       font.print_right(myf_pos, name,size.x*(0.3+t_size));
     }
     if (d_size > 0.3 && frames%7 == 1) 
@@ -2353,15 +2353,15 @@ vsx_widget_anchor::vsx_widget_anchor()
   widget_type = VSX_WIDGET_TYPE_ANCHOR;
 }
 
-vsx_vector<> vsx_widget_anchor::get_pos_p()
+vsx_vector3<> vsx_widget_anchor::get_pos_p()
 {
   if (!visible) return parent->get_pos_p();
 
-  vsx_vector<> t;
+  vsx_vector3<> t;
   t.x = pos.x;
   t.y = pos.y;
   t.z = pos.z;
-  vsx_vector<> tt;
+  vsx_vector3<> tt;
   if (parent != this) tt = parent->get_pos_p();
   t.z = pos.z;
   return t + tt;

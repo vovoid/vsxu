@@ -118,9 +118,9 @@ public:
         my->mesh->data->vertex_normals.reset_used(0);
         my->mesh->data->vertex_tex_coords.reset_used(0);
         my->mesh->data->faces.reset_used(0);
-        vsx_face face;
-        vsx_vector<> g;
-        vsx_vector<> c;
+        vsx_face3 face;
+        vsx_vector3<> g;
+        vsx_vector3<> c;
         for (int L=-1;L<2;L++)
         {
           for (int i=0;i<(BIG_NX-1);i++)
@@ -144,11 +144,11 @@ public:
                 float nra = gr + 90.0f / 360.0f * 2*PI;
 
 
-                vsx_vector<> nn;
+                vsx_vector3<> nn;
                 nn.x = my->ocean.big_normals[i][j][0];
                 nn.y = my->ocean.big_normals[i][j][1];
                 nn.normalize();
-                my->mesh->data->vertex_normals.push_back(vsx_vector<>(\
+                my->mesh->data->vertex_normals.push_back(vsx_vector3<>(\
                   nn.x* cos(nra) + nn.y * -sin(nra),\
                   nn.x* sin(nra) + nn.y * cos(nra),\
                   my->ocean.big_normals[i][j][2]));
@@ -160,7 +160,7 @@ public:
                 c.y = sin(gr)*gz;
                 c.z = g.y*2.0f;
                 b = my->mesh->data->vertices.push_back(c);
-                my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
+                my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord2f(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
                 ++a;
                 if (a >= 3) {
                   face.a = b-3;
@@ -180,7 +180,7 @@ public:
                 nn.x = my->ocean.big_normals[i+1][j][0];
                 nn.y = my->ocean.big_normals[i+1][j][1];
                 nn.normalize();
-                my->mesh->data->vertex_normals.push_back(vsx_vector<>(\
+                my->mesh->data->vertex_normals.push_back(vsx_vector3<>(\
                   nn.x* cos(nra) + nn.y * -sin(nra),\
                   nn.x* sin(nra) + nn.y * cos(nra),\
                   my->ocean.big_normals[i+1][j][2]));
@@ -193,7 +193,7 @@ public:
                 c.z = g.y*2.0f;
                 b = my->mesh->data->vertices.push_back(c);
 
-                my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
+                my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord2f(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
 
                 ++a;
 

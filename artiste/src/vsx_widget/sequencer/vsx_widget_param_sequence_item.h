@@ -19,8 +19,8 @@ class vsx_widget_param_sequence_item
   float length; // for master channel, this is the length of the block
   vsx_string value; // if master, this is the name of the sequence_pool
   size_t interpolation;
-  vsx_vector<> handle1;
-  vsx_vector<> handle2;
+  vsx_vector3<> handle1;
+  vsx_vector3<> handle2;
 
   // child controller for setting the sequence for a master channel item
   vsx_widget* master_channel_time_sequence;
@@ -44,7 +44,7 @@ public:
   {
     if (interpolation == 4)
     {
-      return value+":"+f2s(handle1.x)+","+f2s(handle1.y)+":"+f2s(handle2.x)+","+f2s(handle2.y);
+      return value+":"+vsx_string_helper::f2s(handle1.x)+","+vsx_string_helper::f2s(handle1.y)+":"+vsx_string_helper::f2s(handle2.x)+","+vsx_string_helper::f2s(handle2.y);
     } else {
       return value;
     }
@@ -143,7 +143,7 @@ public:
           handle2.x = 0.9;
           if (next_value)
           {
-            float diff = s2f(next_value->get_value() ) - s2f(value);
+            float diff = vsx_string_helper::s2f(next_value->get_value() ) - vsx_string_helper::s2f(value);
 
             handle1.y = 0.1 *  diff;
             handle2.y = -0.1 *  diff;
@@ -167,12 +167,12 @@ public:
 
 
 
-  const vsx_vector<>& get_handle1()
+  const vsx_vector3<>& get_handle1()
   {
     return handle1;
   }
 
-  void set_handle1(const vsx_vector<> &v)
+  void set_handle1(const vsx_vector3<> &v)
   {
     handle1 = v;
     if (handle1.x < 0.0)
@@ -186,12 +186,12 @@ public:
 
 
 
-  const vsx_vector<>& get_handle2()
+  const vsx_vector3<>& get_handle2()
   {
     return handle2;
   }
 
-  void set_handle2(const vsx_vector<> &v)
+  void set_handle2(const vsx_vector3<> &v)
   {
     handle2 = v;
     if (handle1.x < 0.0)

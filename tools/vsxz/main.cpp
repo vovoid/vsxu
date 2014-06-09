@@ -25,7 +25,7 @@
 #include <windows.h>
 #endif
 
-#include <vsx_avector.h>
+#include <container/vsx_avector.h>
 #include <vsx_argvector.h>
 #include <vsx_string.h>
 #include <vsxfst.h>

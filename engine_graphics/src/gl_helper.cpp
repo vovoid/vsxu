@@ -25,7 +25,7 @@
 #include <vsx_gl_global.h>
 #include <gl_helper.h>
 
-void draw_box(const vsx_vector<> &pos, const float &width, const float &height)
+void draw_box(const vsx_vector3<> &pos, const float &width, const float &height)
 {
   const GLfloat squareVertices[] =
   {
@@ -43,7 +43,7 @@ void draw_box(const vsx_vector<> &pos, const float &width, const float &height)
   glDisableClientState(GL_VERTEX_ARRAY);
   
 }
-void draw_box_c(const vsx_vector<> &pos, const float &width, const float &height)
+void draw_box_c(const vsx_vector3<> &pos, const float &width, const float &height)
 {
   const GLfloat squareVertices[] = {
     pos.x-width, pos.y-width,
@@ -61,7 +61,7 @@ void draw_box_c(const vsx_vector<> &pos, const float &width, const float &height
   glDisableClientState(GL_VERTEX_ARRAY);
 
 }
-void draw_box_tex_c(const vsx_vector<> &pos, const float &width, const float &height)
+void draw_box_tex_c(const vsx_vector3<> &pos, const float &width, const float &height)
 {
 
   const GLshort squareTexcoords[] =
@@ -92,7 +92,7 @@ void draw_box_tex_c(const vsx_vector<> &pos, const float &width, const float &he
   
 }
 
-void draw_box_tex(const vsx_vector<> &pos, const float &width, const float &height)
+void draw_box_tex(const vsx_vector3<> &pos, const float &width, const float &height)
 {
   const GLshort squareTexcoords[] =
   {
@@ -123,7 +123,7 @@ void draw_box_tex(const vsx_vector<> &pos, const float &width, const float &heig
 
 }
 
-void draw_box_gradient(const vsx_vector<> &pos, float width, float height, const vsx_color<> &a, const vsx_color<> &b, const vsx_color<> &c, const vsx_color<> &d)
+void draw_box_gradient(const vsx_vector3<> &pos, float width, float height, const vsx_color<> &a, const vsx_color<> &b, const vsx_color<> &c, const vsx_color<> &d)
 {
 	glBegin(GL_QUADS);
     glColor4f(
@@ -157,7 +157,7 @@ void draw_box_gradient(const vsx_vector<> &pos, float width, float height, const
 	glEnd();
 }
 
-void draw_box_border(const vsx_vector<> &pos, const vsx_vector<> &size, const float &dragborder)
+void draw_box_border(const vsx_vector3<> &pos, const vsx_vector3<> &size, const float &dragborder)
 {
   float pysy = pos.y+size.y;
   float pxsx = pos.x+size.x;

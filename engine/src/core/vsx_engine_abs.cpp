@@ -216,9 +216,9 @@ void vsx_engine_abs::tell_client_time(vsx_command_list *cmd_out)
 
   if (send)
   {
-    cmd_out->add_raw("time_upd " + f2s(engine_info.vtime)+" "+i2s(current_state));
+    cmd_out->add_raw("time_upd " + vsx_string_helper::f2s(engine_info.vtime)+" "+vsx_string_helper::i2s(current_state));
     // check to see if we should send our sequence pool too
-    cmd_out->add_raw("seq_pool time_upd " + f2s(sequence_pool.get_time())+" "+i2s(sequence_pool.get_state()));
+    cmd_out->add_raw("seq_pool time_upd " + vsx_string_helper::f2s(sequence_pool.get_time())+" "+vsx_string_helper::i2s(sequence_pool.get_state()));
   }
 
   last_e_state = current_state;
@@ -268,7 +268,7 @@ void vsx_engine_abs::redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_o
     if (dparam)
     {
       int order = dparam->connect((*it2)->src);
-      cmd_out->add_raw("param_connect_volatile "+comp->name+" "+dparam->name+" "+(*it2)->src->owner->component->name+" "+(*it2)->src->name+" "+i2s(order));
+      cmd_out->add_raw("param_connect_volatile "+comp->name+" "+dparam->name+" "+(*it2)->src->owner->component->name+" "+(*it2)->src->name+" "+vsx_string_helper::i2s(order));
     }
   }
 }
@@ -298,7 +298,7 @@ void vsx_engine_abs::redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_
     vsx_string srcn = (*it2)->src_name;
     vsx_string cn = comp->name;
     vsx_string dpn = dparam->name;
-    vsx_string os = i2s(order);
+    vsx_string os = vsx_string_helper::i2s(order);
     cmd_out->add_raw("param_connect_volatile "+dest_comp_name+" "+srcn+" "+cn+" "+dpn+" "+os);
   }
 }
@@ -335,12 +335,12 @@ void vsx_engine_abs::send_state_to_client(vsx_command_list *cmd_out)
   for (unsigned long i = 0; i < forge.size(); ++i)
   {
     vsx_string xs,ys;
-    xs = f2s(forge[i]->position.x);
-    ys = f2s(forge[i]->position.y);
+    xs = vsx_string_helper::f2s(forge[i]->position.x);
+    ys = vsx_string_helper::f2s(forge[i]->position.y);
     vsx_string command = "component_create_ok "+forge[i]->name+" "+forge[i]->component_class+" "+xs+" "+ys+" ";
 
     if (forge[i]->component_class == "macro")
-      command += f2s(forge[i]->size);
+      command += vsx_string_helper::f2s(forge[i]->size);
       else
       command += forge[i]->module_info->identifier;
     if (forge[i]->module_info->output) command += " out";
@@ -476,13 +476,13 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
   {
     vsx_comp* comp = (*forge_map_iter).second;
     if (((*forge_map_iter).second->component_class == "macro"))
-    tmp_comp.add_raw(vsx_string("macro_create ")+(*forge_map_iter).first+" "+f2s(comp->position.x)+" "+f2s(comp->position.y)+" "+f2s((*forge_map_iter).second->size));
+    tmp_comp.add_raw(vsx_string("macro_create ")+(*forge_map_iter).first+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y)+" "+vsx_string_helper::f2s((*forge_map_iter).second->size));
     else
     {
       if ((*forge_map_iter).first != "screen0")
-      tmp_comp.add_raw("component_create "+comp->identifier+" "+comp->name+" "+f2s(comp->position.x)+" "+f2s(comp->position.y));
+      tmp_comp.add_raw("component_create "+comp->identifier+" "+comp->name+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y));
       else
-      tmp_comp.add_raw("cpp screen0 "+f2s(((*forge_map_iter).second)->position.x)+" "+f2s(((*forge_map_iter).second)->position.y));
+      tmp_comp.add_raw("cpp screen0 "+vsx_string_helper::f2s(((*forge_map_iter).second)->position.x)+" "+vsx_string_helper::f2s(((*forge_map_iter).second)->position.y));
       comp->get_params_in()->dump_aliases_and_connections("", &tmp_connections);
       comp->get_params_out()->dump_aliases("", &tmp_aliases);
     }
@@ -534,7 +534,7 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
         //printf("vsxl modifier present\n");
         vsx_param_vsxl_driver_abs* driver;
         driver = (vsx_param_vsxl_driver_abs*)((vsx_param_vsxl*)param->module_param->vsxl_modifier)->get_driver();
-        tmp_comp.add_raw(vsx_string("vsxl_pfi ")+comp->name+" "+param->name+" "+i2s(driver->id)+" "+base64_encode(driver->script));
+        tmp_comp.add_raw(vsx_string("vsxl_pfi ")+comp->name+" "+param->name+" "+vsx_string_helper::i2s(driver->id)+" "+base64_encode(driver->script));
       }
       #endif
     }
@@ -575,7 +575,7 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
   // dump the loop point
   if (loop_point_end > 0.0f)
   {
-    savelist.add_raw("time_set_loop_point "+f2s(loop_point_end));
+    savelist.add_raw("time_set_loop_point "+vsx_string_helper::f2s(loop_point_end));
   }
   return 0;
 }

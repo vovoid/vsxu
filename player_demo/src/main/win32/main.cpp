@@ -6,7 +6,7 @@
 #include <GL/glu.h>
 #include <vector>
 #include <map>
-#include "vsx_avector.h"
+#include <container/vsx_avector.h>
 #include "vsx_string.h"
 using namespace std;
 #include "includes/nehegl.h"
@@ -524,7 +524,7 @@ The following displays are available on this system:\n";
 #endif
   for (unsigned long i = 0; i < myscreens.size(); ++i) {
 #ifdef VSXU_MULTIMONITOR
-    if (enumd) enumd_message += "id "+i2s(i)+"    -     "+myscreens[i].m_DeviceName.c_str()+"\n";
+    if (enumd) enumd_message += "id "+vsx_string_helper::i2s(i)+"    -     "+myscreens[i].m_DeviceName.c_str()+"\n";
 #endif
     vector<DisplayMode> modes = myscreens[i].GetDisplayModes();
     pmd.push_back(get_display_properties(myscreens[i].m_DeviceName));
@@ -535,7 +535,7 @@ The following displays are available on this system:\n";
   }
 #ifdef VSXU_MULTIMONITOR
   if (enumd) {
-    enumd_message += "Use ID for the -main and -out parameters.\n\nYour primary display is id: "+i2s(primary_display);
+    enumd_message += "Use ID for the -main and -out parameters.\n\nYour primary display is id: "+vsx_string_helper::i2s(primary_display);
     MessageBox(0, enumd_message.c_str(), "Display enumeration", MB_OK);
     exit(0);
   }

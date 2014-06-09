@@ -12,7 +12,7 @@ class module_bspline_matrix : public vsx_module
   // internal
   vsx_bspline spline0;
   vsx_matrix<float> matrix;
-  vsx_vector<> pos1, pos2, e, upv;
+  vsx_vector3<> pos1, pos2, e, upv;
 
 public:
 
@@ -45,7 +45,7 @@ public:
     position->set(0,0);
     position->set(0,1);
     position->set(0,2);
-    upv = vsx_vector<>(0,1);
+    upv = vsx_vector3<>(0,1);
     loading_done = true;
   }
 

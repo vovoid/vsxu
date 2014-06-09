@@ -25,7 +25,7 @@
 #ifndef VSX_QUATERNION_H
 #define VSX_QUATERNION_H
 
-#include <vsx_vector.h>
+#include <vector/vsx_vector3.h>
 #include <vsx_matrix.h>
 
 
@@ -70,6 +70,11 @@ public:
     y = yy;
     z = zz;
     w = ww;
+  }
+
+  static size_t arity()
+  {
+    return 4;
   }
 
   inline void cos_slerp(vsx_quaternion& from, vsx_quaternion& to, T t)
@@ -128,7 +133,7 @@ public:
     return *this;
   }
 
-  vsx_quaternion operator -(const vsx_quaternion &t)
+  vsx_quaternion operator -(const vsx_quaternion &t) const
   {
     vsx_quaternion temp;
     temp.x = x-t.x;
@@ -137,7 +142,7 @@ public:
     return temp;
   }
 
-  vsx_quaternion operator -(const vsx_vector<T> &t)
+  vsx_quaternion operator -(const vsx_vector3<T> &t) const
   {
     vsx_quaternion temp;
     temp.x = x-t.x;
@@ -146,8 +151,27 @@ public:
     return temp;
   }
 
+  vsx_quaternion operator *(const vsx_quaternion<T> &t) const
+  {
+    vsx_quaternion temp;
+    temp.x =  x * t.w + y * t.z - z * t.y + w * t.x;
+    temp.y = -x * t.z + y * t.w + z * t.x + w * t.y;
+    temp.z =  x * t.y - y * t.x + z * t.w + w * t.z;
+    temp.w = -x * t.x - y * t.y - z * t.z + w * t.w;
+    return temp;
+  }
 
-  vsx_quaternion operator *(const vsx_vector<T> &t) const
+  vsx_quaternion operator *=(const vsx_quaternion<T> &t)
+  {
+    x =  x * t.w + y * t.z - z * t.y + w * t.x;
+    y = -x * t.z + y * t.w + z * t.x + w * t.y;
+    z =  x * t.y - y * t.x + z * t.w + w * t.z;
+    w = -x * t.x - y * t.y - z * t.z + w * t.w;
+    return *this;
+  }
+
+
+  vsx_quaternion operator *(const vsx_vector3<T> &t) const
   {
     vsx_quaternion temp;
     temp.x = x*t.x;
@@ -157,13 +181,13 @@ public:
   }
 
 
-  inline T dot_product(vsx_vector<T>* ov) const
+  inline T dot_product(vsx_vector3<T>* ov) const
   {
     return x * ov->x   +   y * ov->y   +   z * ov->z;
   }
 
 
-  inline void from_axis_angle( vsx_vector<T> &source_axis, T &source_angle)
+  inline void from_axis_angle( vsx_vector3<T> &source_axis, T &source_angle)
   {
     T f = sin( source_angle * 0.5f );
     x = source_axis.x * f;
@@ -172,7 +196,7 @@ public:
     w = cos( source_angle * 0.5f );
   }
 
-  inline void to_axis_angle( vsx_vector<T> &result_axis, T &result_angle)
+  inline void to_axis_angle( vsx_vector3<T> &result_axis, T &result_angle)
   {
     result_angle = 2 * acos(w);
     T sq = 1.0f / sqrt(1-w*w);
@@ -275,36 +299,14 @@ public:
     w *= len;
   }
 
-  vsx_vector<T> transform(const vsx_vector<T> &p1)
+  vsx_vector3<T> transform(const vsx_vector3<T> &p1)
   {
-    vsx_vector<T> p2;
+    vsx_vector3<T> p2;
     p2.x = w*w*p1.x + 2*y*w*p1.z - 2*z*w*p1.y + x*x*p1.x + 2*y*x*p1.y + 2*z*x*p1.z - z*z*p1.x - y*y*p1.x;
     p2.y = 2*x*y*p1.x + y*y*p1.y + 2*z*y*p1.z + 2*w*z*p1.x - z*z*p1.y + w*w*p1.y - 2*x*w*p1.z - x*x*p1.y;
     p2.z = 2*x*z*p1.x + 2*y*z*p1.y + z*z*p1.z - 2*w*y*p1.x - y*y*p1.z + 2*w*x*p1.y - x*x*p1.z + w*w*p1.z;
     return p2;
   }
-
-
-#ifdef VSXFST_H
- /*****************************************************************************/
-/** Initializes the quaternion from a vsx_string
-  *
-  * 
-  *****************************************************************************/
-  void from_string(vsx_string& str) {
-    vsx_avector<vsx_string> parts;
-    vsx_string deli = ",";
-    explode(str, deli, parts);
-    if (parts.size() == 4) {
-      x = s2f(parts[0]);
-      y = s2f(parts[1]);
-      z = s2f(parts[2]);
-      w = s2f(parts[3]);
-    }
-  }
-#endif
-
-  
 };
 
 

@@ -25,20 +25,21 @@
 #ifndef VSX_WIDGET_CONTROLLER_PAD_H
 #define VSX_WIDGET_CONTROLLER_PAD_H
 
+#include <vector/vsx_vector4.h>
 #include "vsx_widget_controller_base.h"
 
 
 class vsx_widget_controller_pad : public vsx_widget_controller_base
 {
   bool drawing;
-  vsx_color<> tracer;
-  vsx_vector<> a,b;
+  vsx_vector4<> tracer;
+  vsx_vector3<> a,b;
   vsx_widget* knob_x1;
   vsx_widget* knob_y1;
   vsx_widget* knob_x2;
   vsx_widget* knob_y2;
   float draw_area;
-  vsx_avector<vsx_vector<> > prev_draw;
+  vsx_avector<vsx_vector3<> > prev_draw;
   int prev_pos;
   void send_to_server();
 public:

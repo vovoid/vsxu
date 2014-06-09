@@ -32,13 +32,13 @@ public:
   float total_length; // in seconds (float)
   vsx_string value;
   int interpolation;
-  vsx_vector<> handle1;
-  vsx_vector<> handle2;
+  vsx_vector3<> handle1;
+  vsx_vector3<> handle2;
   vsx_string get_value()
   {
     if (interpolation == 4)
     {
-      return value+":"+f2s(handle1.x)+","+f2s(handle1.y)+":"+f2s(handle2.x)+","+f2s(handle2.y);
+      return value+":"+vsx_string_helper::f2s(handle1.x)+","+vsx_string_helper::f2s(handle1.y)+":"+vsx_string_helper::f2s(handle2.x)+","+vsx_string_helper::f2s(handle2.y);
     }
     return value;
   }

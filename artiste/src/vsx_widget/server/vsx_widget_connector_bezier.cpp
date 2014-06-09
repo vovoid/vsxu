@@ -69,9 +69,9 @@ void vsx_widget_connector_bezier::command_process_back_queue(vsx_command_s *t) {
   }
 }
 
-int vsx_widget_connector_bezier::inside_xy_l(vsx_vector<> &test, vsx_vector<> &global)
+int vsx_widget_connector_bezier::inside_xy_l(vsx_vector3<> &test, vsx_vector3<> &global)
 {
-  vsx_vector<> world = test-global;
+  vsx_vector3<> world = test-global;
   if (!visible) return false;
   if (((vsx_widget_component*)((vsx_widget_anchor*)parent)->component)->ethereal_all) return false;
   if (!receiving_focus) return false;
@@ -206,7 +206,7 @@ void vsx_widget_connector_bezier::event_mouse_down(vsx_widget_distance distance,
 void vsx_widget_connector_bezier::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
 {
   VSX_UNUSED(coords);
-  move_d(vsx_vector<>(0.0f,(distance.center.y-mouse_down_pos.center.y)));
+  move_d(vsx_vector3<>(0.0f,(distance.center.y-mouse_down_pos.center.y)));
 }
 
 void vsx_widget_connector_bezier::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
@@ -215,7 +215,7 @@ void vsx_widget_connector_bezier::event_mouse_up(vsx_widget_distance distance,vs
   {
     command_q_b.add_raw("connections_order_int 1");
     parent->vsx_command_queue_b(this);
-    set_pos(vsx_vector<>(0));
+    set_pos(vsx_vector3<>(0));
   }
   vsx_widget::event_mouse_up(distance,coords,button);
 }
@@ -269,7 +269,7 @@ void vsx_widget_connector_bezier::draw()
     ex = pv.x+size.x;
     ey = pv.y+size.y;
   } else {
-    vsx_vector<> dv = destination->get_pos_p();
+    vsx_vector3<> dv = destination->get_pos_p();
     ex = dv.x;
     ey = dv.y;
   }

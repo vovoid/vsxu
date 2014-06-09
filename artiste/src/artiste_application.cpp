@@ -176,7 +176,7 @@ public:
         desktop->frames = frame_count;
       }
       gui_fullscreen_fpstimer += gui_f_time;
-      current_fps = f2s(round(1.0f/gui_f_time),2);
+      current_fps = vsx_string_helper::f2s(round(1.0f/gui_f_time),2);
       if (gui_fullscreen_fpstimer > 1)
       {
         vsx_string h = fpsstring + " @ "+ current_fps+ "fps";
@@ -250,20 +250,20 @@ public:
             if (delta_fps < min_fps) min_fps = delta_fps;
             if (frame_time > max_render_time) max_render_time = frame_time;
             if (frame_time < min_render_time) min_render_time = frame_time;
-            myf.print(vsx_vector<>(-0.99f,0.92f),"VSXu (c) 2003-2013 Vovoid - Alt+T=toggle this text, Ctrl+Alt+P=screenshot (data dir), Alt+F=performance mode || FrameCounter "+i2s(frame_counter) + "   Elapsed time: "+f2s(total_time)+"   Module Count: "+i2s(vxe->get_num_modules())+"Average FPS "+f2s(frame_counter/total_time),0.025f);
+            myf.print(vsx_vector3<>(-0.99f,0.92f),"VSXu (c) 2003-2013 Vovoid - Alt+T=toggle this text, Ctrl+Alt+P=screenshot (data dir), Alt+F=performance mode || FrameCounter "+vsx_string_helper::i2s(frame_counter) + "   Elapsed time: "+vsx_string_helper::f2s(total_time)+"   Module Count: "+vsx_string_helper::i2s(vxe->get_num_modules())+"Average FPS "+vsx_string_helper::f2s(frame_counter/total_time),0.025f);
             myf.print
             (
-              vsx_vector<>(
+              vsx_vector3<>(
                 -0.99f,
                 0.88f
               ),
               "[Cur/Min/Max] "
-              "FPS: ("+f2s(delta_fps)+"/"+f2s(min_fps)+"/"+f2s(max_fps)+") "
-              "Frame render time: ("+f2s(frame_time)+"/"+f2s(min_render_time)+"/"+f2s(max_render_time)+") "
+              "FPS: ("+vsx_string_helper::f2s(delta_fps)+"/"+vsx_string_helper::f2s(min_fps)+"/"+vsx_string_helper::f2s(max_fps)+") "
+              "Frame render time: ("+vsx_string_helper::f2s(frame_time)+"/"+vsx_string_helper::f2s(min_render_time)+"/"+vsx_string_helper::f2s(max_render_time)+") "
               "Ctrl+T to reset"
               ,0.025f
             );
-            //"("+f2s(frame_time)+")
+            //"("+vsx_string_helper::f2s(frame_time)+")
           }
         }
         if (desktop && desktop->performance_mode)
@@ -332,7 +332,7 @@ public:
       char mfilename[32];
       sprintf(mfilename, "%05d", movie_frame_count);
 
-      jpeg.SaveJPEG( vsx_data_path::get_instance()->data_path_get() + "videos"+DIRECTORY_SEPARATOR+vsx_string(mfilename)+"_"+ i2s(viewport[2]) + "_" + i2s(viewport[3])+".jpg", err, 100 );
+      jpeg.SaveJPEG( vsx_data_path::get_instance()->data_path_get() + "videos"+DIRECTORY_SEPARATOR+vsx_string(mfilename)+"_"+ vsx_string_helper::i2s(viewport[2]) + "_" + vsx_string_helper::i2s(viewport[3])+".jpg", err, 100 );
       jpeg.m_pBuf = 0;
       free(pixeldata);
       free(pixeldata_flipped);
@@ -375,7 +375,7 @@ public:
       fwrite(pixeldata_flipped, 1, viewport[2] * viewport[3] * 3, fp);
       fclose(fp);*/
       vsx_string err;
-      jpeg.SaveJPEG( vsx_data_path::get_instance()->data_path_get()+"screenshots"+DIRECTORY_SEPARATOR+i2s(time(0x0))+"_"+ i2s(viewport[2]) + "_" + i2s(viewport[3])+".jpg", err, 100 );
+      jpeg.SaveJPEG( vsx_data_path::get_instance()->data_path_get()+"screenshots"+DIRECTORY_SEPARATOR+vsx_string_helper::i2s(time(0x0))+"_"+ vsx_string_helper::i2s(viewport[2]) + "_" + vsx_string_helper::i2s(viewport[3])+".jpg", err, 100 );
       jpeg.m_pBuf = 0;
       free(pixeldata);
       free(pixeldata_flipped);
@@ -517,7 +517,7 @@ bool app_draw(int id)
         glVertex3f( 1.0f,0.92f, 0.0f);					// Bottom Right
         glVertex3f(-1.0f,0.92f, 0.0f);					// Bottom Left
       glEnd();											// Done Drawing The Quad
-      myf.print(vsx_vector<>(-1.0f,0.92f)," Fc "+i2s(frame_counter)+" Fps "+f2s(delta_fps)+" T "+f2s(total_time)+" Tfps "+f2s(frame_counter/total_time)+" MC "+i2s(vxe->get_num_modules())+" VSX Ultra (c) Vovoid",0.07);
+      myf.print(vsx_vector3<>(-1.0f,0.92f)," Fc "+vsx_string_helper::i2s(frame_counter)+" Fps "+vsx_string_helper::f2s(delta_fps)+" T "+vsx_string_helper::f2s(total_time)+" Tfps "+vsx_string_helper::f2s(frame_counter/total_time)+" MC "+vsx_string_helper::i2s(vxe->get_num_modules())+" VSX Ultra (c) Vovoid",0.07);
     }
   }
   return true;

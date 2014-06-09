@@ -57,10 +57,10 @@ public:
     explode(cur, deli, parts, 2);
 
     if (parts[0] == "thread")
-      profiler->load_thread( vsx_string_aux::s2i( parts[1] ) );
+      profiler->load_thread( vsx_string_helper::s2i( parts[1] ) );
 
     if (parts[0] == "plot")
-      profiler->load_plot( vsx_string_aux::s2i( parts[1] ) );
+      profiler->load_plot( vsx_string_helper::s2i( parts[1] ) );
   }
 };
 
@@ -97,7 +97,7 @@ public:
   {
     vsx_widget_window::i_draw();
 
-    items->set_pos(vsx_vector<>(size.x * 0.5,size.y * 0.5 - font_size * 0.5 + dragborder*0.5f));
+    items->set_pos(vsx_vector3<>(size.x * 0.5,size.y * 0.5 - font_size * 0.5 + dragborder*0.5f));
   }
 
   void extra_init()

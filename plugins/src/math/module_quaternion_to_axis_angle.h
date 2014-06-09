@@ -89,7 +89,7 @@ public:
     i_quat.normalize();
 
     float r_angle;
-    vsx_vector<> r_axis;
+    vsx_vector3<> r_axis;
     i_quat.to_axis_angle( r_axis, r_angle);
 
     result_axis->set( r_axis.x, 0);

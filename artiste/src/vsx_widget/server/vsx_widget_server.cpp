@@ -41,7 +41,7 @@
 #include "vsx_module.h"
 #include "vsx_version.h"
 #include "vsx_platform.h"
-#include <vsx_string_aux.h>
+#include <vsx_string_helper.h>
 // local includes
 #include "log/vsx_log_a.h"
 #include "vsx_widget.h"
@@ -168,7 +168,7 @@ void vsx_widget_server::init()
   if (state_name == "")
     state_name ="_default";
 
-  menu->set_size(vsx_vector<>(0.4f,0.5f));
+  menu->set_size(vsx_vector3<>(0.4f,0.5f));
 
   module_chooser = add(new vsx_widget_ultra_chooser,"module_browser");
   ((vsx_widget_ultra_chooser*)module_chooser)->server = this;
@@ -225,7 +225,7 @@ void vsx_widget_server::init()
 
   selection = false;
 
-  set_size(vsx_vector<>(10.0f,10.0f));
+  set_size(vsx_vector3<>(10.0f,10.0f));
   color.a = 0.6;
   init_children();
 
@@ -357,7 +357,7 @@ void vsx_widget_server::vsx_command_process_f() {
         if (c->parts.size() >= 6)
         {
           if (c->parts[2] == "macro") {
-            ((vsx_widget_component*)component)->old_size.y = ((vsx_widget_component*)component)->old_size.x = s2f(c->parts[5]);
+            ((vsx_widget_component*)component)->old_size.y = ((vsx_widget_component*)component)->old_size.x = vsx_string_helper::s2f(c->parts[5]);
           }
           else
           {
@@ -365,7 +365,7 @@ void vsx_widget_server::vsx_command_process_f() {
             ((vsx_widget_component*)component)->module_path = c->parts[5];
           }
         }
-        component->set_size(vsx_vector<>(0.05f*0.45f,0.05f*0.45f));
+        component->set_size(vsx_vector3<>(0.05f*0.45f,0.05f*0.45f));
         if (c->parts.size() >= 7) {
           if (c->parts[6] == "out") {
             ((vsx_widget_component*)component)->not_movable = true;
@@ -375,7 +375,7 @@ void vsx_widget_server::vsx_command_process_f() {
         ((vsx_widget_component*)component)->real_name = real_name;
         ((vsx_widget_component*)component)->parent_name = parent_name;
 
-        component->set_pos(vsx_vector<>(s2f(c->parts[3]),s2f(c->parts[4])));
+        component->set_pos(vsx_vector3<>(vsx_string_helper::s2f(c->parts[3]),vsx_string_helper::s2f(c->parts[4])));
 
         // send in the component_info
         command_q_b.add_raw("component_info "+component->name+" "+c->parts[2]);
@@ -405,7 +405,7 @@ void vsx_widget_server::vsx_command_process_f() {
         //  param_get [component] [param] [value] [gui-id]
         if (c->parts.size() == 5) {
         //printf("%s",c->raw.c_str());
-          vsx_widget* t = find( vsx_string_aux::s2i(c->parts[4]) );
+          vsx_widget* t = find( vsx_string_helper::s2i(c->parts[4]) );
           if (t) {
             //printf("found comp\n");
             command_q_b.add(c);
@@ -551,8 +551,8 @@ void vsx_widget_server::vsx_command_process_f() {
         }
 
         // calculate distance
-        vsx_vector<> master_pos = (*(components_list.begin()))->real_pos;
-        vsx_vector<> dst_pos(s2f(c->parts[3]),s2f(c->parts[4]));
+        vsx_vector3<> master_pos = (*(components_list.begin()))->real_pos;
+        vsx_vector3<> dst_pos(vsx_string_helper::s2f(c->parts[3]),vsx_string_helper::s2f(c->parts[4]));
         float max_size = 0.0f;
 
         for (std::list<vsx_widget_component*>::iterator it = components_list.begin(); it != components_list.end(); ++it)
@@ -604,10 +604,10 @@ void vsx_widget_server::vsx_command_process_f() {
         max_size *= 2.2f;
         // now resize the macro accordingly
         if (dest_macro_component->size.x < max_size) {
-          dest_macro_component->set_size(vsx_vector<>(max_size,max_size));
+          dest_macro_component->set_size(vsx_vector3<>(max_size,max_size));
           // send this to the engine so that when we dump this macro we'll get the proper size, yo!
           // this was fixed in 0.1.18
-          cmd_out->add_raw("component_size "+c->parts[1]+" "+f2s(max_size));
+          cmd_out->add_raw("component_size "+c->parts[1]+" "+vsx_string_helper::f2s(max_size));
         }
 
         for (std::list<vsx_widget_component*>::iterator it = components_list.begin(); it != components_list.end(); ++it) {
@@ -672,7 +672,7 @@ void vsx_widget_server::vsx_command_process_f() {
       }
       else
       if (c->cmd == "component_timing_ok") {
-          vsx_widget* t = find( vsx_string_aux::s2i(c->parts[1]) );
+          vsx_widget* t = find( vsx_string_helper::s2i(c->parts[1]) );
           if (t) {
             command_q_b.add(c);
             t->vsx_command_queue_b(this);
@@ -820,7 +820,7 @@ void vsx_widget_server::vsx_command_process_f() {
         ((vsx_widget_ultra_chooser*)resource_chooser)->build_tree();
       } else
       if (c->cmd == "alert_fail") {
-        vsx_vector<> a;
+        vsx_vector3<> a;
         for (std::list <vsx_widget*>::iterator it = root->children.begin(); it != root->children.end(); ++it) {
           a = (*it)->pos;
         }
@@ -977,7 +977,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
       #endif
       // 1. create a new server widget
       vsx_widget* ns = add( new vsx_widget_server, "server "+t->parts[1] );
-      ns->set_pos(vsx_vector<>(1.0f,0.0f));
+      ns->set_pos(vsx_vector3<>(1.0f,0.0f));
       ns->color.b = 255.0/255.0;
       ns->color.g = 200.0/255.0;
       ns->color.r = 200.0/255.0;
@@ -986,7 +986,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
 
       ((vsx_widget_server*)ns)->server_connect(t->parts[1],"1234");
       ns->init();
-      ns->set_size(vsx_vector<>(2.0f,2.0f));
+      ns->set_size(vsx_vector3<>(2.0f,2.0f));
       // 2. tell the new server to connect its command lists
     } else
     // 1: menu choice is done
@@ -1224,7 +1224,7 @@ void vsx_widget_server::event_mouse_double_click(vsx_widget_distance distance,vs
   VSX_UNUSED(coords);
   if (button == 0 && alt && !shift && !ctrl)
   {
-    command_q_b.add_raw("add_empty_macro "+f2s(distance.center.x)+","+f2s(distance.center.y));
+    command_q_b.add_raw("add_empty_macro "+vsx_string_helper::f2s(distance.center.x)+","+vsx_string_helper::f2s(distance.center.y));
     vsx_command_queue_b(this);
   } else
   if (button == 0 && ctrl && !shift && !alt)
@@ -1247,8 +1247,8 @@ void vsx_widget_server::event_mouse_move(vsx_widget_distance distance,vsx_widget
   {
 
     selection_end = distance.center;
-    vsx_vector<> a;
-    vsx_vector<> b;
+    vsx_vector3<> a;
+    vsx_vector3<> b;
     a = selection_start;// - pos;
     b = selection_end;// - parent->get_pos_p() - pos;
 
@@ -1316,8 +1316,8 @@ void vsx_widget_server::event_mouse_up(vsx_widget_distance distance,vsx_widget_c
   mouse.show_cursor();
   if (selection)
   {
-    vsx_vector<> a = selection_start - parent->get_pos_p() - pos;
-    vsx_vector<> b = selection_end - parent->get_pos_p() - pos;
+    vsx_vector3<> a = selection_start - parent->get_pos_p() - pos;
+    vsx_vector3<> b = selection_end - parent->get_pos_p() - pos;
     for (std::list <vsx_widget*>::iterator it=children.begin(); it != children.end(); ++it)
     {
       if (
@@ -1387,8 +1387,8 @@ void vsx_widget_server::draw()
   if (selection)
   {
     vsx_widget_skin::get_instance()->set_color_gl_a(0, 0.3);
-    vsx_vector<> s_s = selection_start+pos;
-    vsx_vector<> s_e = selection_end+pos;
+    vsx_vector3<> s_s = selection_start+pos;
+    vsx_vector3<> s_e = selection_end+pos;
     draw_box(s_s, s_e.x-s_s.x,s_e.y-s_s.y);
     glLineWidth(1);
     glColor4f(0.4,0.4,0.6,0.7);
@@ -1404,7 +1404,7 @@ void vsx_widget_server::draw()
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   if (server_message.size()) {
-    font.print_center(vsx_vector<>(x,y), server_message,0.03);
+    font.print_center(vsx_vector3<>(x,y), server_message,0.03);
   }
 
   draw_children();
@@ -1490,7 +1490,7 @@ vsx_string vsx_widget_server::get_unique_name(vsx_string name) {
   }
   if (final_is_valid_number && i_val.size())
   {
-    i = vsx_string_aux::s2i(i_val);
+    i = vsx_string_helper::s2i(i_val);
   }
 
   // put together the string again
@@ -1504,7 +1504,7 @@ vsx_string vsx_widget_server::get_unique_name(vsx_string name) {
   while (comp_list.find(i_name+a) != comp_list.end())
   {
     ++i;
-    a = "_"+i2s(i);
+    a = "_"+vsx_string_helper::i2s(i);
   }
   return vsx_string(i_name+a);
 }

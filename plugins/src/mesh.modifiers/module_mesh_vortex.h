@@ -90,7 +90,7 @@ public:
     if (p && (param_updates || prev_timestamp != (*p)->timestamp))
     {
       prev_timestamp = (*p)->timestamp;
-      vsx_vector<> am;
+      vsx_vector3<> am;
       am.x = amount->get(0);
       am.y = amount->get(1);
       am.z = amount->get(2);
@@ -101,12 +101,12 @@ public:
       mesh->data->faces.reset_used(0);
 
       unsigned long end = (*p)->data->vertices.size();
-      vsx_vector<>* vs_p = &(*p)->data->vertices[0];
+      vsx_vector3<>* vs_p = &(*p)->data->vertices[0];
       mesh->data->vertices.allocate(end);
       mesh->data->vertices.reset_used(end);
-      vsx_vector<>* vs_d = mesh->data->vertices.get_pointer();
+      vsx_vector3<>* vs_d = mesh->data->vertices.get_pointer();
 
-      vsx_vector<> v;
+      vsx_vector3<> v;
       for ( unsigned int i = 0; i < end; i++ )
       {
         float len = vs_p[i].length();

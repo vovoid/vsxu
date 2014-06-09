@@ -47,8 +47,8 @@ void vsx_widget_controller_knob::init()
   editor = add(new vsx_widget_base_edit,name+".label");
   editor->init();
   editor->render_type = render_3d;
-  editor->set_size(vsx_vector<>(size.x,size.y*0.23f));
-  editor->set_pos(vsx_vector<>(0,size.y*0.5f+size.y*0.25f-editor->size.y*0.6f));
+  editor->set_size(vsx_vector3<>(size.x,size.y*0.23f));
+  editor->set_pos(vsx_vector3<>(0,size.y*0.5f+size.y*0.25f-editor->size.y*0.6f));
   editor->set_font_size(0.214286 * size.y); // sizeunit = 0.014f
   ((vsx_widget_base_edit*)editor)->allowed_chars = "0123456789.-";
   ((vsx_widget_base_edit*)editor)->command_prefix = "u";
@@ -79,7 +79,7 @@ void vsx_widget_controller_knob::event_mouse_up(vsx_widget_distance distance,vsx
 void vsx_widget_controller_knob::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
 {
   remWorld=distance.center;
-  vsx_vector<> a;
+  vsx_vector3<> a;
   a.x=distance.center.x/size.x;
   a.y=distance.center.y/size.y;
   if (a.length() <0.5 && button == 0)
@@ -107,7 +107,7 @@ void vsx_widget_controller_knob::event_mouse_move(vsx_widget_distance distance,v
 void vsx_widget_controller_knob::command_process_back_queue(vsx_command_s *t)
 {
   if (t->cmd == "u") {
-    target_value = s2f(t->cmd_data);
+    target_value = vsx_string_helper::s2f(t->cmd_data);
     cap_value();
     send_to_server();
     k_focus = this;
@@ -122,7 +122,7 @@ void vsx_widget_controller_knob::draw()
 
   presentation_value /= multiplier;
   if (k_focus != editor)
-  ((vsx_widget_base_edit*)editor)->set_string(f2s(presentation_value,15));
+  ((vsx_widget_base_edit*)editor)->set_string(vsx_string_helper::f2s(presentation_value,15));
   float angle=(fmod(presentation_value,1)*PI)*2;
   float target_angle=(fmod(target_value,1)*PI)*2;
   glBegin(GL_TRIANGLE_FAN);

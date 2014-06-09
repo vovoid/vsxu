@@ -159,7 +159,7 @@ void* vsx_param_vsxl_driver_float::load(vsx_module_param_abs* engine_param,vsx_s
 //global f = table(0.0);\n\
 \n\
 // vsx language parameter filter (acronyme is:vsxl_pf)\n\
-global vsxl_pf"+i2s(id)+" = function(param)\n\
+global vsxl_pf"+vsx_string_helper::i2s(id)+" = function(param)\n\
 {\n\
   // param is the param ready to use in code, i.e. param += 1;\n\
   // param_abs can be used as parameter to the vsxu parameter functions - stuff that you ask vsxu to do.\n\
@@ -206,7 +206,7 @@ void vsx_param_vsxl_driver_float::run() {
   gmCall call;
 
 	engine->vsxl->machine.Execute(0);
-	if(call.BeginGlobalFunction(&(engine->vsxl->machine), ("vsxl_pf"+i2s(id)).c_str()))
+	if(call.BeginGlobalFunction(&(engine->vsxl->machine), ("vsxl_pf"+vsx_string_helper::i2s(id)).c_str()))
   {
     call.AddParamFloat(realvalue);
     //call.AddParamInt(valueB);
@@ -215,7 +215,7 @@ void vsx_param_vsxl_driver_float::run() {
   }
 
   /*gmCallScript::SetMachine(machine);
-  if (gmCallScript::BeginGlobal(("vsxl_pf"+i2s(id)).c_str()))
+  if (gmCallScript::BeginGlobal(("vsxl_pf"+vsx_string_helper::i2s(id)).c_str()))
   {
     gmCallScript::SetReturnFloat(resultfloat);
     gmCallScript::AddParamFloat(realvalue);

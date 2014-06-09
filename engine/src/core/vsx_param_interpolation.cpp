@@ -40,7 +40,7 @@ bool vsx_module_param_interpolation_float3::set(vsx_module_param_abs* value, int
 
 bool vsx_module_param_interpolation_float3::set(vsx_string value, int arity, float interpolation_time) {
   dest_interp = interpolation_time;
-  destination_value[arity] = s2f(value);
+  destination_value[arity] = vsx_string_helper::s2f(value);
   return true;
 }
 
@@ -70,7 +70,7 @@ bool vsx_module_param_interpolation_float4::set(vsx_module_param_abs* value, int
 
 bool vsx_module_param_interpolation_float4::set(vsx_string value, int arity, float interpolation_time) {
   dest_interp = interpolation_time;
-  destination_value[arity] = s2f(value);
+  destination_value[arity] = vsx_string_helper::s2f(value);
   return true;
 }
 
@@ -102,7 +102,7 @@ bool vsx_module_param_interpolation_quaternion::set(vsx_module_param_abs* value,
 bool vsx_module_param_interpolation_quaternion::set(vsx_string value, int arity, float interpolation_time) {
   VSX_UNUSED(arity);
   dest_interp = interpolation_time;
-  destination_value[arity] = s2f(value);
+  destination_value[arity] = vsx_string_helper::s2f(value);
   return true;
 }
 
@@ -170,7 +170,7 @@ bool vsx_module_param_interpolation_float::set(vsx_string value, int arity, floa
   VSX_UNUSED(arity);
   iterations = 0;
   dest_interp = interpolation_time;
-  destination_value = s2f(value);
+  destination_value = vsx_string_helper::s2f(value);
   return true;
 }
 

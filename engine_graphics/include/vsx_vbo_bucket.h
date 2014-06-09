@@ -1,9 +1,10 @@
 #ifndef VSX_VBO_BUCKET_H
 #define VSX_VBO_BUCKET_H
 
-#include <vsx_array.h>
-#include <vsx_vector.h>
+#include <container/vsx_array.h>
+#include <vector/vsx_vector3.h>
 #include <vsx_face.h>
+#include <vsx_color.h>
 #include <vsx_texcoord.h>
 
 
@@ -29,11 +30,7 @@
 template
 <
   // Face storage type. Must match sizeof in A
-  typename T = vsx_face,
-
-  // Arity - how many GLuint's does T comprise
-  // 1 for points and line strips, 2 for lines, 3 for triangles
-  int A = 3,
+  typename Tf = vsx_face3,
 
   // What OpenGL native draw type to use
   GLuint T_type = GL_TRIANGLES,
@@ -42,18 +39,20 @@ template
   GLuint T_vbo_usage = GL_STATIC_DRAW_ARB,
 
   // Vertex data type
-  typename Tv = vsx_vector<>
+  typename Tv = vsx_vector3<>,
 
+  // TexCoord data type
+  typename Tuv = vsx_tex_coord2f
 >
 class vsx_vbo_bucket
 {
 public:
   // 1. compute data into these buckets
   vsx_array< Tv >     vertices;
-  vsx_array< vsx_vector<> >     vertex_normals;
+  vsx_array< vsx_vector3<> >     vertex_normals;
   vsx_array< vsx_color<> >      vertex_colors;
-  vsx_array< vsx_tex_coord >  vertex_tex_coords;
-  vsx_array< T >              faces;
+  vsx_array< Tuv >  vertex_tex_coords;
+  vsx_array< Tf >              faces;
 
   // 2. call any of the invalidation functions after changing the data
   inline void invalidate_vertices()
@@ -171,8 +170,6 @@ private:
   GLuint current_vbo_draw_type;
   size_t current_num_vertices;
   size_t current_num_faces;
-
-
 
   inline void i_invalidate_vertices()
   {
@@ -375,7 +372,7 @@ private:
     // tex coords
     if ( vertex_tex_coords.get_used() )
     {
-      glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)offset_texcoords);
+      glTexCoordPointer(Tuv::arity(),GL_FLOAT,0,(GLvoid*)offset_texcoords);
       m_flags |= VSX_VBOB_TEXCOORDS;
     }
 
@@ -425,7 +422,7 @@ private:
   inline void perform_draw( size_t num = 0 )
   {
     if (num == 0)
-      num = faces.get_used() * A;
+      num = faces.get_used() * Tf::arity();
     glDrawElements
     (
       T_type,

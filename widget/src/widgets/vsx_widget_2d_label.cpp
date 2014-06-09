@@ -35,7 +35,7 @@ void vsx_widget_2d_label::draw_2d()
 {
   if (!visible) return;
   glColor3f(1,1,1);
-  vsx_vector<> p = parent->get_pos_p()+pos;
+  vsx_vector3<> p = parent->get_pos_p()+pos;
   p.y -= font_size*0.5f;
   switch ((align)halign) {
     case a_left:

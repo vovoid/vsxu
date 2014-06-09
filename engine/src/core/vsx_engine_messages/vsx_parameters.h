@@ -377,7 +377,7 @@ if (cmd == "param_set_interpolate")
 
           float interp_time = 16;
           if (c->parts.size() == 5)
-          interp_time = s2f(c->parts[4]);
+          interp_time = vsx_string_helper::s2f(c->parts[4]);
 
           for (std::vector<vsx_string>::iterator it = pp.begin(); it != pp.end(); ++it) {
             interpolation_list.set_target_value(e_param, *it, cc, interp_time);
@@ -439,7 +439,7 @@ if (cmd == "pflag")
     {
       if (c->parts[3] == "external_expose")
       {
-        param->external_expose = vsx_string_aux::s2i( c->parts[4] );
+        param->external_expose = vsx_string_helper::s2i( c->parts[4] );
       }
     }
   }

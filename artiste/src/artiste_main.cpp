@@ -22,9 +22,9 @@
 */
 
 #include <stdio.h>
-#include "vsx_avector.h"
+#include <container/vsx_avector.h>
 #include "vsx_string.h"
-#include <vsx_string_aux.h>
+#include <vsx_string_helper.h>
 #include <vsx_argvector.h>
 #include <GL/glew.h>
 #include "GL/glfw.h"
@@ -235,8 +235,8 @@ int main(int argc, char* argv[])
     explode(arg2, deli, parts);
     if (parts.size() == 2)
     {
-      x_res = vsx_string_aux::s2i(parts[0]);
-      y_res = vsx_string_aux::s2i(parts[1]);
+      x_res = vsx_string_helper::s2i(parts[0]);
+      y_res = vsx_string_helper::s2i(parts[1]);
       manual_resolution_set = true;
     } else
     {
@@ -244,8 +244,8 @@ int main(int argc, char* argv[])
       explode(arg2, deli, parts);
       if ( parts.size() == 2 )
       {
-        x_res = vsx_string_aux::s2i(parts[0]);
-        y_res = vsx_string_aux::s2i(parts[1]);
+        x_res = vsx_string_helper::s2i(parts[0]);
+        y_res = vsx_string_helper::s2i(parts[1]);
         manual_resolution_set = true;
       }
     }
@@ -295,7 +295,7 @@ int main(int argc, char* argv[])
         vsx_avector<vsx_string> parts;
         vsx_string deli = ",";
         explode(arg2, deli, parts);
-        glfwSetWindowPos( vsx_string_aux::s2i(parts[0]), vsx_string_aux::s2i(parts[1]) );
+        glfwSetWindowPos( vsx_string_helper::s2i(parts[0]), vsx_string_helper::s2i(parts[1]) );
       }
     }
   }

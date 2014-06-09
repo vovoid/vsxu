@@ -39,33 +39,6 @@
 #include "vsxfst.h"
 
 
-
-char string_res[256] = "";
-
-
-vsx_string i2s(int in)
-{
-  sprintf(string_res,"%d",in);
-  return vsx_string(string_res);
-}
-
-float s2f(const vsx_string& in)
-{
-  return atof(in.c_str());
-}
-
-vsx_string f2s(float in)
-{
-  sprintf(string_res,"%f",in);
-  return vsx_string(string_res);
-}
-
-vsx_string f2s(float in, int decimals)
-{
-  sprintf(string_res,vsx_string("%."+i2s(decimals)+"f").c_str(),in);
-  return vsx_string(string_res);
-}
-
 bool crlf(char *buffer,int len) {
   bool cr = 0;
   bool lf = 0;

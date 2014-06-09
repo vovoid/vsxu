@@ -27,10 +27,11 @@
 #include <list>
 
 #include <vsxfst.h>
-#include <vsx_avector.h>
-#include <vsx_color.h>
+#include <container/vsx_avector.h>
+#include <vector/vsx_vector4.h>
 #include <vsx_profiler_manager.h>
 #include <vsxfst.h>
+
 
 const size_t compute_stack_depth = 128;
 
@@ -63,7 +64,7 @@ public:
 
   double time;
   size_t plot_type;
-  vsx_color<double> v;
+  vsx_vector4<double> v;
 
   vsx_profiler_consumer_plot()
     :
@@ -136,11 +137,11 @@ public:
     vsx_string res;
     for (size_t i = 0; i < current_threads.size(); i++)
     {
-      res += "thread " + i2s(current_threads[i]) + "\n";
+      res += "thread " + vsx_string_helper::i2s(current_threads[i]) + "\n";
     }
     for (size_t i = 0; i < current_plots.size(); i++)
     {
-      res += "plot " + i2s(current_plots[i]) + "\n";
+      res += "plot " + vsx_string_helper::i2s(current_plots[i]) + "\n";
     }
     return res;
   }
@@ -187,7 +188,7 @@ public:
     if (last_profile.flags != VSX_PROFILE_CHUNK_FLAG_TIMESTAMP)
       ERROR_RETURN("No timestamp in data file, can't analyze it.");
 
-    current_max_time = s2f( vsx_string( last_profile.tag, 32) );
+    current_max_time = vsx_string_helper::s2f( vsx_string( last_profile.tag, 32) );
     cpu_clock_end = last_profile.cycles;
 
     cycles_per_second = (cpu_clock_end-cpu_clock_start) / current_max_time;

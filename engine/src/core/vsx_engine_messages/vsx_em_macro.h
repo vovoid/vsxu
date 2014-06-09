@@ -51,7 +51,7 @@ if (cmd == "macro_dump" || cmd == "component_clone")
   bool macro = ((*forge_map_iter).second->component_class == "macro");
   if (macro)
   {
-    tmp_comp.add_raw(vsx_string("macro_create $$name ")+f2s((*forge_map_iter).second->size));
+    tmp_comp.add_raw(vsx_string("macro_create $$name ")+vsx_string_helper::f2s((*forge_map_iter).second->size));
     ++forge_map_iter;
     while (drun)
     {
@@ -62,9 +62,9 @@ if (cmd == "macro_dump" || cmd == "component_clone")
         if (t.find(c->parts[1]+".") == 0)
         {
           if (comp->component_class == "macro") {
-            tmp_comp.add_raw(vsx_string("macro_create ")+str_replace(my_name+".","$$name.",t,1)+" "+f2s(comp->position.x)+" "+f2s(comp->position.y)+" "+f2s(comp->size));
+            tmp_comp.add_raw(vsx_string("macro_create ")+str_replace(my_name+".","$$name.",t,1)+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y)+" "+vsx_string_helper::f2s(comp->size));
           } else {
-            tmp_comp.add_raw(vsx_string("component_create ")+comp->identifier+" "+str_replace(my_name+".","$$name.",t,1)+" "+f2s(comp->position.x)+" "+f2s(comp->position.y));
+            tmp_comp.add_raw(vsx_string("component_create ")+comp->identifier+" "+str_replace(my_name+".","$$name.",t,1)+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y));
             comp->get_params_in()->dump_aliases_and_connections(c->parts[1], &tmp_connections);
             comp->get_params_out()->dump_aliases(c->parts[1], &tmp_aliases);
             comp->get_params_in()->dump_param_values(str_replace(my_name+".","$$name.",t,1),&tmp_comp);
@@ -77,7 +77,7 @@ if (cmd == "macro_dump" || cmd == "component_clone")
   else
   {
     vsx_comp* comp = (*forge_map_iter).second;
-    tmp_comp.add_raw(vsx_string("component_create ")+comp->identifier+" $$name "+f2s(comp->position.x)+" "+f2s(comp->position.y));
+    tmp_comp.add_raw(vsx_string("component_create ")+comp->identifier+" $$name "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y));
     comp->get_params_in()->dump_param_values("$$name",&tmp_comp);
   }
   vsx_command_s* outc;
@@ -137,9 +137,9 @@ if (cmd == "macro_create")
       vsx_comp* comp = add(c->parts[1]);
       // ok we force this to boo macrooo
       comp->component_class = "macro";
-      comp->position.x = s2f(c->parts[2]);
-      comp->position.y = s2f(c->parts[3]);
-      comp->size = s2f(c->parts[4]);
+      comp->position.x = vsx_string_helper::s2f(c->parts[2]);
+      comp->position.y = vsx_string_helper::s2f(c->parts[3]);
+      comp->size = vsx_string_helper::s2f(c->parts[4]);
       // the code creating the macro seems pretty similar to that of the component eh?
       cmd_out->add_raw(vsx_string("component_create_ok ")+c->parts[1]+" "+get_component_by_name(c->parts[1])->component_class+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4]);
       goto process_message_queue_end;

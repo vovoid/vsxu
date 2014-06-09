@@ -38,20 +38,20 @@ void vsx_widget_controller_mixer::init()
 {
   if (init_run) return;
   vsx_widget_controller_base::init();
-  set_size(vsx_vector<>(sizeunit*nummixers,sizeunit*6.75));
+  set_size(vsx_vector3<>(sizeunit*nummixers,sizeunit*6.75));
   target_pos.x = (pos.x -= size.x*0.5);
 
   for (int t=0;t<nummixers;++t)
   {
-    vsx_widget* newmixer=add(new vsx_widget_controller_channel,name+".channel"+i2s(nummixers-t));
-    newmixer->set_pos(vsx_vector<>(-size.x*0.5+sizeunit*0.5 + (float)t*sizeunit));
+    vsx_widget* newmixer=add(new vsx_widget_controller_channel,name+".channel"+vsx_string_helper::i2s(nummixers-t));
+    newmixer->set_pos(vsx_vector3<>(-size.x*0.5+sizeunit*0.5 + (float)t*sizeunit));
     //newmixer->pos.x = -size.x*0.5+sizeunit*0.5;
     //newmixer->pos.x+=(float)t*sizeunit;
     ((vsx_widget_controller_channel*)newmixer)->owned=true;
     ((vsx_widget_controller_channel*)newmixer)->drawconnection=false;
     ((vsx_widget_controller_channel*)newmixer)->isolate=true;
     ((vsx_widget_controller_channel*)newmixer)->init();
-    //((vsx_widget_3d_hint*)((vsx_widget_slider*)((vsx_widget_channel*)newmixer)->slider)->hint)->title=target_param+'['+i2s(t)+']';
+    //((vsx_widget_3d_hint*)((vsx_widget_slider*)((vsx_widget_channel*)newmixer)->slider)->hint)->title=target_param+'['+vsx_string_helper::i2s(t)+']';
     mixers.push_back(newmixer);
   }
   std::vector<vsx_string> parts;
@@ -60,7 +60,7 @@ void vsx_widget_controller_mixer::init()
   for (unsigned int i = 0; i < parts.size(); ++i) {
     if (parts[i] != "x" && parts[i] != "") {
       ((vsx_widget_controller_slider*)((vsx_widget_controller_channel*)mixers[i])->slider)->capmax = true;
-      ((vsx_widget_controller_slider*)((vsx_widget_controller_channel*)mixers[i])->slider)->capmaxv = s2f(parts[i]);
+      ((vsx_widget_controller_slider*)((vsx_widget_controller_channel*)mixers[i])->slider)->capmaxv = vsx_string_helper::s2f(parts[i]);
     }
   }
   parts.clear();
@@ -68,7 +68,7 @@ void vsx_widget_controller_mixer::init()
   for (unsigned int i = 0; i < parts.size(); ++i) {
     if (parts[i] != "x" && parts[i] != "") {
       ((vsx_widget_controller_slider*)((vsx_widget_controller_channel*)mixers[i])->slider)->capmin = true;
-      ((vsx_widget_controller_slider*)((vsx_widget_controller_channel*)mixers[i])->slider)->capminv = s2f(parts[i]);
+      ((vsx_widget_controller_slider*)((vsx_widget_controller_channel*)mixers[i])->slider)->capminv = vsx_string_helper::s2f(parts[i]);
     }
   }
   smooth(smoothness);
@@ -107,7 +107,7 @@ void vsx_widget_controller_mixer::command_process_back_queue(vsx_command_s *t)
     explode(t->parts[3],deli, parts);
     for (unsigned long i = 0; i < parts.size(); ++i)
     {
-      ((vsx_widget_controller_channel*)mixers[i])->set_value(s2f(parts[i]));
+      ((vsx_widget_controller_channel*)mixers[i])->set_value(vsx_string_helper::s2f(parts[i]));
       command_q_b.add_raw("set_value_i");
       ((vsx_widget_controller_channel*)mixers[i])->vsx_command_queue_b(this);
     }
@@ -121,14 +121,14 @@ void vsx_widget_controller_mixer::command_process_back_queue(vsx_command_s *t)
       if (ctrl && shift)
       {
         cmd += t->parts[1];
-        ((vsx_widget_controller_channel*)mixers[i])->set_value(s2f(t->parts[1]));
+        ((vsx_widget_controller_channel*)mixers[i])->set_value(vsx_string_helper::s2f(t->parts[1]));
         command_q_b.add_raw("set_value_i");
         ((vsx_widget_controller_channel*)mixers[i])->vsx_command_queue_b(this);
 
-        //((vsx_widget_controller_channel*)mixers[i])->smooth(s2f( t->parts[1] ));
+        //((vsx_widget_controller_channel*)mixers[i])->smooth(vsx_string_helper::s2f( t->parts[1] ));
       } else
       {
-        cmd += f2s( ( (vsx_widget_controller_channel*)mixers[i])->target_value );
+        cmd += vsx_string_helper::f2s( ( (vsx_widget_controller_channel*)mixers[i])->target_value );
       }
       if ( i < mixers.size()-1 ) cmd += ",";
     }

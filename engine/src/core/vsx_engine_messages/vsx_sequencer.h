@@ -51,7 +51,7 @@ if (cmd == "pseq_l_dump")
 if (cmd == "pseq_l_rescale_time")
 {
   // dump all the sequences present in the engine
-  sequence_list.rescale_time(s2f(c->parts[1]),s2f(c->parts[2]));
+  sequence_list.rescale_time(vsx_string_helper::s2f(c->parts[1]),vsx_string_helper::s2f(c->parts[2]));
   goto process_message_queue_end;
 }
 
@@ -79,7 +79,7 @@ if (cmd == "pseq_p")
         if (c->parts[1] == "inject_get") {
           vsx_string a = sequence_list.dump_param(param);
           if (a != "") {
-            cmd_out->add_raw("pseq_p_ok inject_get "+c->parts[2]+" "+c->parts[3]+" "+a+" "+i2s(param->module_param->type));
+            cmd_out->add_raw("pseq_p_ok inject_get "+c->parts[2]+" "+c->parts[3]+" "+a+" "+vsx_string_helper::i2s(param->module_param->type));
           }
         } else
         if (c->parts[1] == "add") {

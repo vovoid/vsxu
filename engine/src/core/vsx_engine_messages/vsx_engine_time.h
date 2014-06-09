@@ -27,7 +27,7 @@
 // 0=time_set_loop_point 1=[time:float]
 if (cmd == "time_set_loop_point")
 {
-  loop_point_end = s2f(c->parts[1]);
+  loop_point_end = vsx_string_helper::s2f(c->parts[1]);
   goto process_message_queue_end;
 }
 
@@ -43,7 +43,7 @@ if (cmd == "time_set_speed")
   if ( c->parts.size() <= 1 )
     goto process_message_queue_end;
 
-  set_speed( s2f(c->parts[1]) );
+  set_speed( vsx_string_helper::s2f(c->parts[1]) );
 
   goto process_message_queue_end;
 }
@@ -77,7 +77,7 @@ if (cmd == "rewind")
 
 if (cmd == "fps_d" || cmd == "fps")
 {
-  cmd_out->add("fps_d",f2s(frame_delta_fps));
+  cmd_out->add("fps_d",vsx_string_helper::f2s(frame_delta_fps));
   goto process_message_queue_end;
 }
 
@@ -86,7 +86,7 @@ if (cmd == "fps_d" || cmd == "fps")
 
 if (cmd == "time_set")
 {
-  float dd = engine_info.vtime - s2f(c->parts[1]);
+  float dd = engine_info.vtime - vsx_string_helper::s2f(c->parts[1]);
   if (dd > 0.0f)
   {
     engine_info.dtime = -dd;

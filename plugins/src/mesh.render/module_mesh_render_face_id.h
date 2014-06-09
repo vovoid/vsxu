@@ -40,7 +40,7 @@ public:
   // internal
   vsx_mesh<>** mesh;
   vsx_matrix<float> ma;
-  vsx_vector<> upv;
+  vsx_vector3<> upv;
   vsx_font* myf;
 
   void module_info(vsx_module_info* info)
@@ -134,7 +134,7 @@ public:
 
       myf->print(
           (*mesh)->data->vertices[i],
-          i2s(i), 0.007f * fs
+          vsx_string_helper::i2s(i), 0.007f * fs
       );
     }
 

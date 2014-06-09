@@ -36,7 +36,7 @@ enum align{
 class vsx_widget_2d_label : public vsx_widget
 {
 public:
-  bool inside_xyd(vsx_vector<> world, vsx_vector<> screen)
+  bool inside_xyd(vsx_vector3<> world, vsx_vector3<> screen)
   {
     VSX_UNUSED(world);
     VSX_UNUSED(screen);

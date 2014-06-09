@@ -367,7 +367,7 @@ void vsx_widget_hyperbolic_tree::translateToOrigin(vsx_widget_hyperbolic_tree* n
             root->mtex->_bind();
             glColor4f(0,0,0,draw_root->color.a);
             font.color.a = draw_root->color.a;
-            font.print_center(vsx_vector<>(gg->b.x,gg->b.y-diffy),children[i]->node->node->getName(),diffy*0.8);
+            font.print_center(vsx_vector3<>(gg->b.x,gg->b.y-diffy),children[i]->node->node->getName(),diffy*0.8);
 
             if (root->selected == children[i]) {
               glColor4f(1,1,1,draw_root->color.a);
@@ -478,7 +478,7 @@ void vsx_widget_hyperbolic_tree::translateToOrigin(vsx_widget_hyperbolic_tree* n
 
 //----------------------------------------------------------------------------------------------------------------------
 
-int vsx_widget_ultra_chooser::inside_xy_l(vsx_vector<> &test, vsx_vector<> &global)
+int vsx_widget_ultra_chooser::inside_xy_l(vsx_vector3<> &test, vsx_vector3<> &global)
 {
   VSX_UNUSED(test);
   VSX_UNUSED(global);
@@ -595,7 +595,7 @@ void vsx_widget_ultra_chooser::command_process_back_queue(vsx_command_s *t) {
       // everything else will be contained in this macro, so modify the macro_name var
       vsx_string local_macro_name = t->cmd_data;
       // first create the macro
-      command_q_b.add_raw("macro_create "+treedraw->selected->node->node->module_info->identifier+" "+macro_name+local_macro_name+" "+f2s(drop_pos.x)+" "+f2s(drop_pos.y));
+      command_q_b.add_raw("macro_create "+treedraw->selected->node->node->module_info->identifier+" "+macro_name+local_macro_name+" "+vsx_string_helper::f2s(drop_pos.x)+" "+vsx_string_helper::f2s(drop_pos.y));
       // in here, send all the commands contained in the macro to the server..
       // this is terrible yes, but it will hopefully work :)
       parent->vsx_command_queue_b(this);
@@ -604,7 +604,7 @@ void vsx_widget_ultra_chooser::command_process_back_queue(vsx_command_s *t) {
     {
       // syntax:
       //  component_create math_logic;oscillator_dlux macro1.my_oscillator 0.013 0.204
-      command_q_b.add_raw("component_create "+treedraw->selected->node->node->module_info->identifier+" "+macro_name+t->cmd_data+" "+f2s(drop_pos.x)+" "+f2s(drop_pos.y));
+      command_q_b.add_raw("component_create "+treedraw->selected->node->node->module_info->identifier+" "+macro_name+t->cmd_data+" "+vsx_string_helper::f2s(drop_pos.x)+" "+vsx_string_helper::f2s(drop_pos.y));
       parent->vsx_command_queue_b(this);
       ((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_show();
     }
@@ -894,7 +894,7 @@ void vsx_widget_ultra_chooser::event_mouse_up(vsx_widget_distance distance,vsx_w
 void vsx_widget_ultra_chooser::draw_2d()
 {
   float dtime = vsx_widget_time::get_instance()->get_dtime();
-  vsx_vector<> a(0.5f*size.x,0.5f*size.y);
+  vsx_vector3<> a(0.5f*size.x,0.5f*size.y);
   if (animating) {
     anim_x += dtime*2;
     double lx = anim_endpoint.x - anim_startpoint.x;
@@ -1024,10 +1024,10 @@ void vsx_widget_ultra_chooser::draw_2d()
     font.print_center(a, message,0.035);
     if (drag_dropped) {
       font.color.a = (sin(PI + vsx_widget_time::get_instance()->get_time() *13)+1)*0.4f+0.2f;
-      font.print_center(vsx_vector<>(a.x,a.y+0.16), "* Dropping "+treedraw->selected->node->node->module_info->identifier+" *",0.025);
-      font.print_center(vsx_vector<>(a.x,a.y+0.13), "Hold the mouse button, move/drag the module where you want to place it.",0.025);
-      font.print_center(vsx_vector<>(a.x,a.y+0.1), "Then release the left mouse button to drop it.",0.025);
-      font.print_center(vsx_vector<>(a.x,a.y-0.15), "Press right mouse button or ESC to cancel drop.",0.035);
+      font.print_center(vsx_vector3<>(a.x,a.y+0.16), "* Dropping "+treedraw->selected->node->node->module_info->identifier+" *",0.025);
+      font.print_center(vsx_vector3<>(a.x,a.y+0.13), "Hold the mouse button, move/drag the module where you want to place it.",0.025);
+      font.print_center(vsx_vector3<>(a.x,a.y+0.1), "Then release the left mouse button to drop it.",0.025);
+      font.print_center(vsx_vector3<>(a.x,a.y-0.15), "Press right mouse button or ESC to cancel drop.",0.035);
 
 
 
@@ -1035,10 +1035,10 @@ void vsx_widget_ultra_chooser::draw_2d()
     }
     if (draw_tooltip) {
       font.color.a = 0.0f;
-      vsx_vector<> sz = font.get_size(tooltip_text, 0.025);
+      vsx_vector3<> sz = font.get_size(tooltip_text, 0.025);
       //sz = sz-tooltip_pos;
       glColor4f(0.0f,0.0f,0.0f,0.6f*visible);
-      draw_box(vsx_vector<>(tooltip_pos.x,tooltip_pos.y+0.025*1.05), sz.x, -sz.y);
+      draw_box(vsx_vector3<>(tooltip_pos.x,tooltip_pos.y+0.025*1.05), sz.x, -sz.y);
       font.color.a = 1.0f*visible;
       font.print(tooltip_pos, tooltip_text,0.022);
     }
@@ -1125,10 +1125,10 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
       vsx_string deli = ",";
       explode(mc->parts[2],deli, parts);
       vsx_color<> p;
-      p.r = s2f(parts[0]);
-      p.g = s2f(parts[1]);
-      p.b = s2f(parts[2]);
-      p.a = s2f(parts[3]);
+      p.r = vsx_string_helper::s2f(parts[0]);
+      p.g = vsx_string_helper::s2f(parts[1]);
+      p.b = vsx_string_helper::s2f(parts[2]);
+      p.a = vsx_string_helper::s2f(parts[3]);
       mc_colors[mc->parts[1]] = p;
     } else
     if (mc->cmd == "rcolor") {
@@ -1136,10 +1136,10 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
       vsx_string deli = ",";
       explode(mc->parts[2],deli, parts);
       vsx_color<> p;
-      p.r = s2f(parts[0]);
-      p.g = s2f(parts[1]);
-      p.b = s2f(parts[2]);
-      p.a = s2f(parts[3]);
+      p.r = vsx_string_helper::s2f(parts[0]);
+      p.g = vsx_string_helper::s2f(parts[1]);
+      p.b = vsx_string_helper::s2f(parts[2]);
+      p.a = vsx_string_helper::s2f(parts[3]);
       mc_r_colors[mc->parts[1]] = p;
     }
   }
@@ -1178,7 +1178,7 @@ void vsx_widget_ultra_chooser::build_tree() {
   treedraw = new vsx_widget_hyperbolic_tree(0,0,mymodel);
   treedraw->size.x = size.x;
   treedraw->size.y = size.y;
-  treedraw->pos = vsx_vector<>(0.5f*size.x, 0.5f*size.y);
+  treedraw->pos = vsx_vector3<>(0.5f*size.x, 0.5f*size.y);
   treedraw->changeProjType(0);
   treedraw->mtex = new vsx_texture;
 

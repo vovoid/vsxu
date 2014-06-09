@@ -43,7 +43,7 @@
 #include "7zip/Compress/LZMA/LZMAEncoder.h"
 
 #include "vsx_string.h"
-#include "vsx_avector.h"
+#include <container/vsx_avector.h>
 
 #include "LzmaRam.h"
 
@@ -370,7 +370,7 @@ void* vsxf::worker(void* p)
 void vsxf::archive_load_all_mt(const char* filename)
 {
   // Options
-  const size_t num_threads = 8;
+  const size_t num_threads = 4;
   const size_t work_chunk_size = 1024*1024 * 5;
 
   // 1. load the archive into memory (compressed)

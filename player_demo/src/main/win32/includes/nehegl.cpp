@@ -21,7 +21,7 @@
 #include <GL/glu.h>
 #include <vector>
 #include <map>
-#include "vsx_avector.h"
+#include <container/vsx_avector.h>
 #include "vsx_string.h"
 using namespace std;
 #include "nehegl.h"

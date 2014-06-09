@@ -159,7 +159,7 @@ public:
       ++frame_count;
 
 	    gui_fullscreen_fpstimer += gui_f_time;
-	      current_fps = f2s(round(1.0f/gui_f_time),2);
+	      current_fps = vsx_string_helper::f2s(round(1.0f/gui_f_time),2);
 	    if (gui_fullscreen_fpstimer > 1) {
 	      vsx_string h = fpsstring + " @ "+ current_fps+ "fps";
 	      gui_fullscreen_fpstimer = 0;

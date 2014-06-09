@@ -45,7 +45,7 @@ if (cmd == "param_connect")
           {
             if (c->parts.size() != 6)
             {
-              cmd_out->add_raw("param_connect_volatile "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4]+" "+i2s(order));
+              cmd_out->add_raw("param_connect_volatile "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4]+" "+vsx_string_helper::i2s(order));
             }
           }
         }
@@ -133,7 +133,7 @@ if (cmd == "param_alias")
         parts[0] = new_name;
         c->parts[1] = implode(parts, deli);
 
-        cmd_out->add_raw("param_alias_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+new_name+" "+c->parts[5]+" "+c->parts[6]+" "+i2s(order));
+        cmd_out->add_raw("param_alias_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+new_name+" "+c->parts[5]+" "+c->parts[6]+" "+vsx_string_helper::i2s(order));
 
       }
     }

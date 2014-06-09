@@ -25,7 +25,7 @@
 #include "vsx_module.h"
 #include "vsx_command.h"
 #include "vsx_command_list.h"
-#include <vsx_string_aux.h>
+#include <vsx_string_helper.h>
 class vsx_engine_param_list;
 #include "vsx_comp_abs.h"
 #include "vsx_comp_channel.h"
@@ -483,7 +483,7 @@ void vsx_engine_param::dump_aliases(vsx_string base_macro, vsx_command_list* com
       (*it)->dest->dump_aliases(base_macro, command_result);
       command_result->add_raw("param_alias "+
       (*it)->dest->name+":"+(*it)->dest->spec+" "+
-      i2s(owner->io)+" "+
+      vsx_string_helper::i2s(owner->io)+" "+
       str_replace(base_macro,"$$name",str_replace(base_macro+".","$$name.",(*it)->dest->owner->component->name,1,0),1,0)+" "+
       (*it)->dest->name+" "+
       str_replace(base_macro,"$$name",str_replace(base_macro+".","$$name.",(*it)->src->owner->component->name,1,0),1,0)+" "+
@@ -504,12 +504,12 @@ void vsx_engine_param::dump_aliases_rc(vsx_command_list* command_result) {
     (*it)->dest->dump_aliases_rc(command_result);
     command_result->add_raw("param_alias_ok "+
     (*it)->dest->name+":"+(*it)->dest->spec+" "+
-    i2s(owner->io)+" "+
+    vsx_string_helper::i2s(owner->io)+" "+
     (*it)->dest->owner->component->name+" "+
     (*it)->dest->name+" "+
     (*it)->src->owner->component->name+" "+
     (*it)->src->name+" "+
-    i2s((*it)->connection_order)
+    vsx_string_helper::i2s((*it)->connection_order)
     );
   }
 }
@@ -523,7 +523,7 @@ void vsx_engine_param::dump_aliases_and_connections(vsx_string base_macro, vsx_c
       (*it)->dest->dump_aliases_and_connections(base_macro, command_result);
       command_result->add_raw("param_alias "+
       (*it)->dest->name+":"+(*it)->dest->spec+" "+
-      i2s(owner->io)+" "+
+      vsx_string_helper::i2s(owner->io)+" "+
       str_replace(base_macro,"$$name",str_replace(base_macro+".","$$name.",(*it)->dest->owner->component->name,1,0),1,0)+" "+
       (*it)->dest->name+" "+
       str_replace(base_macro,"$$name",str_replace(base_macro+".","$$name.",(*it)->src->owner->component->name,1,0),1,0)+" "+
@@ -557,12 +557,12 @@ void vsx_engine_param::dump_aliases_and_connections_rc(vsx_command_list* command
       //   param_alias [p_def] [-1=in / 1=out] [component] [parameter] [source_component] [source_parameter]
       command_result->add_raw("param_alias_ok "+
       (*it)->dest->name+":"+(*it)->dest->spec+" "+
-      i2s(owner->io)+" "+
+      vsx_string_helper::i2s(owner->io)+" "+
       (*it)->dest->owner->component->name+" "+
       (*it)->dest->name+" "+
       (*it)->src->owner->component->name+" "+
       (*it)->src->name+" "+
-      i2s((connections.size() - c) -1)//connections.size()-1-c)
+      vsx_string_helper::i2s((connections.size() - c) -1)//connections.size()-1-c)
       );
       (*it)->dest->dump_aliases_and_connections_rc(command_result);
     } else
@@ -574,7 +574,7 @@ void vsx_engine_param::dump_aliases_and_connections_rc(vsx_command_list* command
       (*it)->dest->name+" "+
       (*it)->src->owner->component->name+" "+
       (*it)->src->name+" "+
-      i2s((connections.size() - c) -1)//connections.size()-1-c)
+      vsx_string_helper::i2s((connections.size() - c) -1)//connections.size()-1-c)
       );
     }
     ++c;
@@ -954,7 +954,7 @@ void vsx_engine_param::set_string_index(vsx_string data, int index) {
       explode(data,deli,parts);
       ((vsx_module_param_float_array*)module_param)->param_data[0].data->clear();
       for (unsigned long i = 0; i < parts.size(); ++i) {
-        (*((vsx_module_param_float_array*)module_param)->param_data[0].data).push_back(s2f(parts[i]));
+        (*((vsx_module_param_float_array*)module_param)->param_data[0].data).push_back(vsx_string_helper::s2f(parts[i]));
       }
       ((vsx_module_param_float_array*)module_param)->valid = true;
       return;
@@ -1208,8 +1208,8 @@ vsx_string vsx_engine_param_list::alias_get_unique_name(vsx_string base_name, in
     }
   } else {
     // ok, we already know we need to do stuff
-    if (param_name_list.find(base_name+"_"+i2s(tried)) ==  param_name_list.end()) {
-      return base_name+"_"+i2s(tried);
+    if (param_name_list.find(base_name+"_"+vsx_string_helper::i2s(tried)) ==  param_name_list.end()) {
+      return base_name+"_"+vsx_string_helper::i2s(tried);
     } else {
       // oops, trouble!
       return alias_get_unique_name(base_name,tried+1);
@@ -1273,7 +1273,7 @@ int vsx_engine_param_list::order(vsx_string param, vsx_string new_order)
   std::vector<vsx_engine_param_connection*> new_connection_list;
   for (std::vector<vsx_string>::iterator it = order_source.begin(); it != order_source.end(); ++it)
   {
-    new_connection_list.push_back(my_param->connections[ vsx_string_aux::s2i(*it) ]);
+    new_connection_list.push_back(my_param->connections[ vsx_string_helper::s2i(*it) ]);
   }
   my_param->connections = new_connection_list;
 

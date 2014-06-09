@@ -60,7 +60,7 @@
 #define VSXF_MODE_READ 1
 #define VSXF_MODE_WRITE 2
 
-#include "vsx_avector.h"
+#include <container/vsx_avector.h>
 #include "vsx_string.h"
 #include <map>
 #include <list>
@@ -223,10 +223,6 @@ VSXFSTDLLIMPORT vsx_string get_path_from_filename(vsx_string filename);
 
 // STRING OPERATIONS
 
-VSXFSTDLLIMPORT vsx_string i2s(int in);
-VSXFSTDLLIMPORT float s2f(const vsx_string& in);
-VSXFSTDLLIMPORT vsx_string f2s(float in);
-VSXFSTDLLIMPORT vsx_string f2s(float in, int decimals);
 VSXFSTDLLIMPORT bool crlf(char *buffer,int len);
 
 #define STR_PAD_LEFT 0

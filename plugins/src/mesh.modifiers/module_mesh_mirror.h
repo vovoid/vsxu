@@ -32,7 +32,7 @@ class module_mesh_mirror : public vsx_module
   // internal
   vsx_mesh<>* mesh;
   unsigned long prev_timestamp;
-  vsx_vector<> v;
+  vsx_vector3<> v;
 
 public:
   bool init()
@@ -116,10 +116,10 @@ public:
 
     // mirror vertices
     unsigned long v_end = (*p)->data->vertices.size();
-    vsx_vector<>* vs_p = &(*p)->data->vertices[0];
+    vsx_vector3<>* vs_p = &(*p)->data->vertices[0];
     mesh->data->vertices.allocate(v_end);
     mesh->data->vertices.reset_used(v_end);
-    vsx_vector<>* vs_d = mesh->data->vertices.get_pointer();
+    vsx_vector3<>* vs_d = mesh->data->vertices.get_pointer();
 
     for (unsigned int i = 0; i < v_end; i++)
     {
@@ -128,10 +128,10 @@ public:
 
     // mirror normals
     unsigned long n_end = (*p)->data->vertex_normals.size();
-    vsx_vector<>* ns_p = &(*p)->data->vertex_normals[0];
+    vsx_vector3<>* ns_p = &(*p)->data->vertex_normals[0];
     mesh->data->vertex_normals.allocate(n_end);
     mesh->data->vertex_normals.reset_used(n_end);
-    vsx_vector<>* ns_d = mesh->data->vertex_normals.get_pointer();
+    vsx_vector3<>* ns_d = mesh->data->vertex_normals.get_pointer();
 
     for (unsigned int i = 0; i < n_end; i++)
     {
@@ -153,10 +153,10 @@ public:
 
     // mirror faces
     unsigned long f_end = (*p)->data->faces.size();
-    vsx_face* fs_p = &(*p)->data->faces[0];
+    vsx_face3* fs_p = &(*p)->data->faces[0];
     mesh->data->faces.allocate(f_end);
     mesh->data->faces.reset_used(f_end);
-    vsx_face* fs_d = mesh->data->faces.get_pointer();
+    vsx_face3* fs_d = mesh->data->faces.get_pointer();
 
     for (unsigned int i = 0; i < f_end; i++)
     {

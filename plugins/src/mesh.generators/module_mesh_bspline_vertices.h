@@ -80,7 +80,7 @@ public:
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH, "mesh" );
 
     first_run = true;
-    spline0.init(vsx_vector<>(0), 0.7f, 0.3f, 0.6f);
+    spline0.init(vsx_vector3<>(0), 0.7f, 0.3f, 0.6f);
   }
 
   void run()

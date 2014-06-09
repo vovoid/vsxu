@@ -39,7 +39,7 @@ public:
   // internal
   vsx_mesh<>** mesh;
   vsx_matrix<float> ma;
-  vsx_vector<> upv;
+  vsx_vector3<> upv;
 
   vsx_gl_state* gl_state;
 

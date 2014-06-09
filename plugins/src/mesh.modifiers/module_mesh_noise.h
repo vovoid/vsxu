@@ -35,7 +35,7 @@ public:
   // internal
   vsx_mesh<>* mesh;
 
-  vsx_avector< vsx_vector<> > random_distort_points;
+  vsx_avector< vsx_vector3<> > random_distort_points;
 
   bool init()
   {
@@ -76,7 +76,7 @@ public:
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
   }
   unsigned long prev_timestamp;
-  vsx_vector<> v;
+  vsx_vector3<> v;
   void run() {
     vsx_mesh<>** p = mesh_in->get_addr();
     if (p && (param_updates || prev_timestamp != (*p)->timestamp)) {

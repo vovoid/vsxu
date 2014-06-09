@@ -38,14 +38,14 @@ public:
 
 	void  SetGridSize(int nSize);
 
-  vsx_array< vsx_vector<> >* vertices;
-  vsx_array< vsx_vector<> >* vertex_normals;
-  vsx_array<vsx_tex_coord>* vertex_tex_coords;
-  vsx_array<vsx_face>* faces;
+  vsx_array< vsx_vector3<> >* vertices;
+  vsx_array< vsx_vector3<> >* vertex_normals;
+  vsx_array<vsx_tex_coord2f>* vertex_tex_coords;
+  vsx_array<vsx_face3>* faces;
 
 protected:
 	float ComputeEnergy(float x, float y, float z);
-  void  ComputeNormal(vsx_vector<>* vv, vsx_vector<>* vn, vsx_tex_coord* vt);
+  void  ComputeNormal(vsx_vector3<>* vv, vsx_vector3<>* vn, vsx_tex_coord2f* vt);
 	float ComputeGridPointEnergy(int x, int y, int z);
 	int   ComputeGridVoxel(int x, int y, int z);
 
@@ -80,7 +80,7 @@ int    m_nNumBalls;
 	int             m_nNumVertices;
 	int             m_nNumIndices;
 	int             m_nFacePart;
-  vsx_avector_nd< vsx_vector<> > m_pVertices;
+  vsx_avector_nd< vsx_vector3<> > m_pVertices;
 
 //	vsx_vector     *m_pVertices;
 //	unsigned short *m_pIndices;

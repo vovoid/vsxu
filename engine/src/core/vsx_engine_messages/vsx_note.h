@@ -25,7 +25,7 @@
 if (cmd == "note_create")
 {
   static unsigned long note_counter = 0;
-  c->parts[1] = "n"+i2s(note_counter);
+  c->parts[1] = "n"+vsx_string_helper::i2s(note_counter);
   vsx_note new_note;
   note_counter++;
   if (new_note.set(c))

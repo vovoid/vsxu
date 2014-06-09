@@ -1,5 +1,5 @@
 #include <gl_helper.h>
-#include <vsx_vector_aux.h>
+#include <vector/vsx_vector3_helper.h>
 
 #include "vsx_widget_profiler_thread.h"
 #include "time_scale.h"
@@ -12,8 +12,8 @@ void vsx_widget_profiler_thread::init()
   support_interpolation = true;
   allow_resize_x = true;
   allow_resize_y = true;
-  set_size(vsx_vector<>(20.0f,0.3f));
-  set_pos(vsx_vector<>(0,0));
+  set_size(vsx_vector3<>(20.0f,0.3f));
+  set_pos(vsx_vector3<>(0,0));
   size_min.x = 0.2;
   size_min.y = 0.2;
 
@@ -75,10 +75,10 @@ void vsx_widget_profiler_thread::update_vbo()
     if (cte - cts < 0.002)
       continue;
 
-    draw_bucket.vertices.push_back( vsx_vector<>( cts, depth ) );
-    draw_bucket.vertices.push_back( vsx_vector<>( cts, depth - chunk_height ) );
-    draw_bucket.vertices.push_back( vsx_vector<>( cte, depth - chunk_height ) );
-    draw_bucket.vertices.push_back( vsx_vector<>( cte, depth ) );
+    draw_bucket.vertices.push_back( vsx_vector3<>( cts, depth ) );
+    draw_bucket.vertices.push_back( vsx_vector3<>( cts, depth - chunk_height ) );
+    draw_bucket.vertices.push_back( vsx_vector3<>( cte, depth - chunk_height ) );
+    draw_bucket.vertices.push_back( vsx_vector3<>( cte, depth ) );
 
     draw_bucket.vertex_colors.push_back( vsx_color<>(1.0, 1.0, 1.0, 0.5) );
     draw_bucket.vertex_colors.push_back( vsx_color<>(1.0, 1.0, 1.0, 0.5) );
@@ -109,7 +109,7 @@ void vsx_widget_profiler_thread::update_vbo()
   draw_bucket.invalidate_colors();
   draw_bucket.update();
 
-  set_size(vsx_vector<>(20.0f,chunk_height * (float)(max_depth+3)));
+  set_size(vsx_vector3<>(20.0f,chunk_height * (float)(max_depth+3)));
 }
 
 void vsx_widget_profiler_thread::update_tag_draw_chunks()
@@ -138,19 +138,19 @@ void vsx_widget_profiler_thread::draw_tags()
   profiler->sub_begin("draw tags");
   for (size_t i = 0; i < tag_draw_chunks.size(); i++)
   {
-    vsx_vector<> dpos( tag_draw_chunks[i]->time_start * time_scale::get_instance()->time_scale_x + time_scale::get_instance()->time_offset,  -(tag_draw_chunks[i]->depth + 1) * chunk_height - 0.005 );
+    vsx_vector3<> dpos( tag_draw_chunks[i]->time_start * time_scale::get_instance()->time_scale_x + time_scale::get_instance()->time_offset,  -(tag_draw_chunks[i]->depth + 1) * chunk_height - 0.005 );
     font.print( dpos, tag_draw_chunks[i]->tag, 0.005 );
     dpos.y -= 0.005;
-    font.print( dpos, i2s(tag_draw_chunks[i]->cycles_end-tag_draw_chunks[i]->cycles_start) + " CPU cycles", 0.005 );
+    font.print( dpos, vsx_string_helper::i2s(tag_draw_chunks[i]->cycles_end-tag_draw_chunks[i]->cycles_start) + " CPU cycles", 0.005 );
     dpos.y -= 0.005;
-    font.print( dpos, f2s(tag_draw_chunks[i]->time_end - tag_draw_chunks[i]->time_start) + " seconds", 0.005 );
+    font.print( dpos, vsx_string_helper::f2s(tag_draw_chunks[i]->time_end - tag_draw_chunks[i]->time_start) + " seconds", 0.005 );
   }
   profiler->sub_end();
 }
 
 void vsx_widget_profiler_thread::i_draw()
 {
-  vsx_vector<> parentpos = get_pos_p();
+  vsx_vector3<> parentpos = get_pos_p();
   glBegin(GL_QUADS);
     vsx_widget_skin::get_instance()->set_color_gl(1);
     glVertex3f(parentpos.x-size.x*0.5f, parentpos.y+size.y*0.5f,pos.z);
@@ -159,7 +159,7 @@ void vsx_widget_profiler_thread::i_draw()
     glVertex3f(parentpos.x-size.x*0.5f, parentpos.y+-size.y*0.5f,pos.z);
   glEnd();
   vsx_widget_skin::get_instance()->set_color_gl(0);
-  draw_box_border(vsx_vector<>(parentpos.x-size.x*0.5,parentpos.y-size.y*0.5f), vsx_vector<>(size.x,size.y), dragborder);
+  draw_box_border(vsx_vector3<>(parentpos.x-size.x*0.5,parentpos.y-size.y*0.5f), vsx_vector3<>(size.x,size.y), dragborder);
 
   glColor4f(1,1,1,1);
   glMatrixMode(GL_MODELVIEW);
@@ -326,7 +326,7 @@ void vsx_widget_profiler_thread::event_mouse_double_click(vsx_widget_distance di
   time_scale::get_instance()->time_scale_x = 0.5 / (tdiff) ;
   time_scale::get_instance()->time_offset = -time_scale::get_instance()->time_scale_x * (selected_chunk->time_start + 0.5 * tdiff);
 
-  camera.set_pos( vsx_vector<>(0.0, 0.0, 1.9) );
+  camera.set_pos( vsx_vector3<>(0.0, 0.0, 1.9) );
   update_vbo();
   update_tag_draw_chunks();
 }

@@ -112,20 +112,20 @@ public:
       vsx_matrix<float> mat = q.matrix();
 
 
-      vsx_vector<> neg_vec;
+      vsx_vector3<> neg_vec;
       int n_i = (int)floor( vertex_rot_id->get() ) % (*p)->data->vertices.size();
       neg_vec = (*p)->data->vertices[n_i];
-      vsx_vector<> ofs_vec;
+      vsx_vector3<> ofs_vec;
       ofs_vec.x = offset_pos->get(0);
       ofs_vec.y = offset_pos->get(1);
       ofs_vec.z = offset_pos->get(2);
       ofs_vec += neg_vec;
 
       unsigned long end = (*p)->data->vertices.size();
-      vsx_vector<>* vs_p = &(*p)->data->vertices[0];
+      vsx_vector3<>* vs_p = &(*p)->data->vertices[0];
       mesh->data->vertices.allocate(end);
       mesh->data->vertices.reset_used(end);
-      vsx_vector<>* vs_d = mesh->data->vertices.get_pointer();
+      vsx_vector3<>* vs_d = mesh->data->vertices.get_pointer();
 
 
 

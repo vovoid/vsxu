@@ -1,4 +1,4 @@
-#include <vsx_string_aux.h>
+#include <vsx_string_helper.h>
 
 
 class module_mesh_import_obj : public vsx_module
@@ -96,9 +96,9 @@ public:
 
     char buf[65535];
     vsx_string line;
-    vsx_array<vsx_vector<> > vertices;
-    vsx_array<vsx_vector<> > normals;
-    vsx_array<vsx_tex_coord> texcoords;
+    vsx_array<vsx_vector3<> > vertices;
+    vsx_array<vsx_vector3<> > normals;
+    vsx_array<vsx_tex_coord2f> texcoords;
 
     int face_cur = 0;
     bool found_normals = false;
@@ -124,22 +124,22 @@ public:
         vsx_string deli = " ";
         explode(line, deli, parts);
         if (parts[0] == "v") {
-          vertices.push_back(vsx_vector<>(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
+          vertices.push_back(vsx_vector3<>(vsx_string_helper::s2f(parts[1]),vsx_string_helper::s2f(parts[2]),vsx_string_helper::s2f(parts[3])));
         } else
         if (parts[0] == "vt") {
-          vsx_tex_coord a;
-          a.s = (s2f(parts[1]));
-          a.t = (s2f(parts[2]));
+          vsx_tex_coord2f a;
+          a.s = (vsx_string_helper::s2f(parts[1]));
+          a.t = (vsx_string_helper::s2f(parts[2]));
           texcoords.push_back(a);
           found_texcoords = true;
 
         } else
         if (parts[0] == "vn") {
-          normals.push_back(vsx_vector<>(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
+          normals.push_back(vsx_vector3<>(vsx_string_helper::s2f(parts[1]),vsx_string_helper::s2f(parts[2]),vsx_string_helper::s2f(parts[3])));
           found_normals = true;
         } else
         if (parts[0] == "f") {
-            vsx_face ff;
+            vsx_face3 ff;
             vsx_string deli2 = "/";
 
 
@@ -156,37 +156,37 @@ public:
 
 
             int id;
-            id = vsx_string_aux::s2i(parts2[0])-1; if (id < 0) id=0;
+            id = vsx_string_helper::s2i(parts2[0])-1; if (id < 0) id=0;
             mesh->data->vertices[ff.a] = vertices[id];
-            id = vsx_string_aux::s2i(parts3[0])-1; if (id < 0) id=0;
+            id = vsx_string_helper::s2i(parts3[0])-1; if (id < 0) id=0;
             mesh->data->vertices[ff.b] = vertices[id];
-            id = vsx_string_aux::s2i(parts4[0])-1; if (id < 0) id=0;
+            id = vsx_string_helper::s2i(parts4[0])-1; if (id < 0) id=0;
             mesh->data->vertices[ff.c] = vertices[id];
 
             if (found_texcoords && found_normals) {
               if (parts2[1] != "") {
-                mesh->data->vertex_tex_coords[ff.a] = texcoords[ vsx_string_aux::s2i(parts2[1])-1 ];
-                mesh->data->vertex_tex_coords[ff.b] = texcoords[ vsx_string_aux::s2i(parts3[1])-1 ];
-                mesh->data->vertex_tex_coords[ff.c] = texcoords[ vsx_string_aux::s2i(parts4[1])-1 ];
+                mesh->data->vertex_tex_coords[ff.a] = texcoords[ vsx_string_helper::s2i(parts2[1])-1 ];
+                mesh->data->vertex_tex_coords[ff.b] = texcoords[ vsx_string_helper::s2i(parts3[1])-1 ];
+                mesh->data->vertex_tex_coords[ff.c] = texcoords[ vsx_string_helper::s2i(parts4[1])-1 ];
               }
               if (parts2[2] != "") {
-                mesh->data->vertex_normals[ff.a] = normals[ vsx_string_aux::s2i(parts2[2])-1 ];
-                mesh->data->vertex_normals[ff.b] = normals[ vsx_string_aux::s2i(parts3[2])-1 ];
-                mesh->data->vertex_normals[ff.c] = normals[ vsx_string_aux::s2i(parts4[2])-1 ];
+                mesh->data->vertex_normals[ff.a] = normals[ vsx_string_helper::s2i(parts2[2])-1 ];
+                mesh->data->vertex_normals[ff.b] = normals[ vsx_string_helper::s2i(parts3[2])-1 ];
+                mesh->data->vertex_normals[ff.c] = normals[ vsx_string_helper::s2i(parts4[2])-1 ];
               }
             } else
             if (found_normals) {
               if (parts2[2] != "") {
-                mesh->data->vertex_normals[ff.a] = normals[ vsx_string_aux::s2i(parts2[2])-1 ];
-                mesh->data->vertex_normals[ff.b] = normals[ vsx_string_aux::s2i(parts3[2])-1 ];
-                mesh->data->vertex_normals[ff.c] = normals[ vsx_string_aux::s2i(parts4[2])-1 ];
+                mesh->data->vertex_normals[ff.a] = normals[ vsx_string_helper::s2i(parts2[2])-1 ];
+                mesh->data->vertex_normals[ff.b] = normals[ vsx_string_helper::s2i(parts3[2])-1 ];
+                mesh->data->vertex_normals[ff.c] = normals[ vsx_string_helper::s2i(parts4[2])-1 ];
               }
             } else
             if (found_texcoords) {
               if (parts2[1] != "") {
-                mesh->data->vertex_tex_coords[ff.a] = texcoords[ vsx_string_aux::s2i(parts2[1])-1 ];
-                mesh->data->vertex_tex_coords[ff.b] = texcoords[ vsx_string_aux::s2i(parts3[1])-1 ];
-                mesh->data->vertex_tex_coords[ff.c] = texcoords[ vsx_string_aux::s2i(parts4[1])-1 ];
+                mesh->data->vertex_tex_coords[ff.a] = texcoords[ vsx_string_helper::s2i(parts2[1])-1 ];
+                mesh->data->vertex_tex_coords[ff.b] = texcoords[ vsx_string_helper::s2i(parts3[1])-1 ];
+                mesh->data->vertex_tex_coords[ff.c] = texcoords[ vsx_string_helper::s2i(parts4[1])-1 ];
               }
             }
 
@@ -211,11 +211,11 @@ public:
           explode(line, deli, parts);
           if (parts[0] == "v")
           {
-            mesh->data->vertices.push_back(vsx_vector<>(s2f(parts[1]),s2f(parts[2]),s2f(parts[3])));
+            mesh->data->vertices.push_back(vsx_vector3<>(vsx_string_helper::s2f(parts[1]),vsx_string_helper::s2f(parts[2]),vsx_string_helper::s2f(parts[3])));
           } else
           if (parts[0] == "f")
           {
-              vsx_face ff;
+              vsx_face3 ff;
               vsx_string deli2 = "/";
 
               vsx_avector<vsx_string> parts2;
@@ -225,9 +225,9 @@ public:
               vsx_avector<vsx_string> parts4;
               explode(parts[3], deli2, parts4);
 
-              ff.c = vsx_string_aux::s2i(parts2[0])-1;
-              ff.b = vsx_string_aux::s2i(parts3[0])-1;
-              ff.a = vsx_string_aux::s2i(parts4[0])-1;
+              ff.c = vsx_string_helper::s2i(parts2[0])-1;
+              ff.b = vsx_string_helper::s2i(parts3[0])-1;
+              ff.a = vsx_string_helper::s2i(parts4[0])-1;
 
               mesh->data->faces.push_back(ff);
           }
@@ -238,10 +238,10 @@ public:
     if (center_object->get())
     {
       // calculate middle of object and move accordingly
-      vsx_vector<> minima;
-      vsx_vector<> maxima;
+      vsx_vector3<> minima;
+      vsx_vector3<> maxima;
 
-      vsx_vector<>* vs_p;
+      vsx_vector3<>* vs_p;
       vs_p = &mesh->data->vertices[0];
 
       minima = vs_p[0];
@@ -266,14 +266,14 @@ public:
           maxima.z = vs_p[i].z;
       }
 
-      vsx_vector<> midpoint
+      vsx_vector3<> midpoint
       (
         -(minima.x + (maxima.x - minima.x) * 0.5),
         -(minima.y + (maxima.y - minima.y) * 0.5),
         -(minima.z + (maxima.z - minima.z) * 0.5)
       );
 
-      vsx_vector<> move
+      vsx_vector3<> move
       (
         midpoint.x,
         midpoint.y,

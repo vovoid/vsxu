@@ -32,18 +32,18 @@
 #define ib (42.0 / ratio) / (2.0 * phi)
 
 
-#define v0  vsx_vector<>(    0,   (ib),  -(ia)  )
-#define v1  vsx_vector<>(  (ib),   (ia),     0  )
-#define v2  vsx_vector<>( -(ib),   (ia),     0  )
-#define v3  vsx_vector<>(    0,   (ib),   (ia)  )
-#define v4  vsx_vector<>(    0,  -(ib),   (ia)  )
-#define v5  vsx_vector<>( -(ia),     0,   (ib)  )
-#define v6  vsx_vector<>(     0,  -(ib),  -(ia)  )
-#define v7  vsx_vector<>(    ia,     0,  -(ib)  )
-#define v8  vsx_vector<>(    ia,     0,     ib  )
-#define v9  vsx_vector<>( -(ia),     0,  -(ib)  )
-#define v10 vsx_vector<>(    ib,   -(ia),    0  )
-#define v11 vsx_vector<>( -(ib),   -(ia),    0  )
+#define v0  vsx_vector3<>(    0,   (ib),  -(ia)  )
+#define v1  vsx_vector3<>(  (ib),   (ia),     0  )
+#define v2  vsx_vector3<>( -(ib),   (ia),     0  )
+#define v3  vsx_vector3<>(    0,   (ib),   (ia)  )
+#define v4  vsx_vector3<>(    0,  -(ib),   (ia)  )
+#define v5  vsx_vector3<>( -(ia),     0,   (ib)  )
+#define v6  vsx_vector3<>(     0,  -(ib),  -(ia)  )
+#define v7  vsx_vector3<>(    ia,     0,  -(ib)  )
+#define v8  vsx_vector3<>(    ia,     0,     ib  )
+#define v9  vsx_vector3<>( -(ia),     0,  -(ib)  )
+#define v10 vsx_vector3<>(    ib,   -(ia),    0  )
+#define v11 vsx_vector3<>( -(ib),   -(ia),    0  )
 
 
 // thanks to Jon Leech (code from 1989!) for the base for this module.
@@ -213,7 +213,7 @@ public:
       {
         tri *oldt = &old->poly[i];
         tri *newt = &nnew->poly[i*4];
-        vsx_vector<> xa, xb, xc;
+        vsx_vector3<> xa, xb, xc;
 
         xa.midpoint(oldt->pt[0], oldt->pt[2]);
         xb.midpoint(oldt->pt[0], oldt->pt[1]);
@@ -258,7 +258,7 @@ public:
     size_t vertex_index = 0;
     for (i = 0; i < old->npoly; i++)
     {
-      vsx_vector<> find = old->poly[i].pt[0];
+      vsx_vector3<> find = old->poly[i].pt[0];
       // try to find this vertex somewhere before
       int index_a = -1;
       for (size_t j = 0; j < mesh->data->vertices.size(); j++)
@@ -273,7 +273,7 @@ public:
       {
         mesh->data->vertices.push_back(old->poly[i].pt[0]);
 
-        vsx_vector<> n(0,0,0);
+        vsx_vector3<> n(0,0,0);
         mesh->data->vertex_normals.push_back(n);
 
         index_a = vertex_index;
@@ -296,7 +296,7 @@ public:
       {
         mesh->data->vertices.push_back(old->poly[i].pt[1]);
 
-        vsx_vector<> n(0,0,0);
+        vsx_vector3<> n(0,0,0);
         mesh->data->vertex_normals.push_back(n);
 
         index_b = vertex_index;
@@ -319,7 +319,7 @@ public:
       {
         mesh->data->vertices.push_back(old->poly[i].pt[2]);
 
-        vsx_vector<> n(0,0,0);
+        vsx_vector3<> n(0,0,0);
         mesh->data->vertex_normals.push_back(n);
 
         index_c = vertex_index;
@@ -327,12 +327,12 @@ public:
       }
 
 
-      vsx_face face;
+      vsx_face3 face;
       face.a = index_b;
       face.b = index_a;
       face.c = index_c;
 
-      vsx_vector<> an;
+      vsx_vector3<> an;
       an.assign_face_normal
       (
             &mesh->data->vertices[index_b],

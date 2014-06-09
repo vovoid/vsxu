@@ -112,7 +112,7 @@ public:
       )
     {
       // 1. calculate vector
-      vsx_vector<> k,n,c;
+      vsx_vector3<> k,n,c;
       vsx_matrix<float> m,mr;
 
       k = (*p)->data->vertices[id_b_] - (*p)->data->vertices[id_a_];

@@ -700,7 +700,7 @@ public:
   int value;
   vsx_string name;
   vsx_color<> color;
-  vsx_vector<> size;
+  vsx_vector3<> size;
     std::vector<HTNode*> children;
     HTNode();
     virtual ~HTNode();
@@ -1008,7 +1008,7 @@ public:
   vsx_widget_hyperbolic_tree* selected;  // selected node
   HTModel*         node;  // encapsulated HTModelNode
   vsx_color<> color;
-  vsx_vector<> pos, size;
+  vsx_vector3<> pos, size;
   // previously static
   vsx_widget_hyperbolic_tree* root;  // drawing model
   vsx_widget_hyperbolic_tree* draw_root;  // the root of the drawing tree
@@ -1603,7 +1603,7 @@ class vsx_widget_ultra_chooser : public vsx_widget {
  bool moved;
  
  HTCoord anim_startpoint, anim_endpoint, anim_curpoint;
- vsx_vector<> v_anim_startpoint, v_anim_endpoint;
+ vsx_vector3<> v_anim_startpoint, v_anim_endpoint;
  double anim_x;
  
  bool animating;
@@ -1611,10 +1611,10 @@ class vsx_widget_ultra_chooser : public vsx_widget {
  bool drag_module;
  bool drag_dropped;
  bool allow_move;
- vsx_vector<> drag_pos;
- vsx_vector<> drop_pos;
+ vsx_vector3<> drag_pos;
+ vsx_vector3<> drop_pos;
  vsx_string macro_name;
- vsx_vector<> tooltip_pos;
+ vsx_vector3<> tooltip_pos;
  int draw_tooltip;
  vsx_string tooltip_text;
  
@@ -1637,7 +1637,7 @@ public:
   double sx,sy,ex,ey; // internal coordinates
   double smx, smy; // coordinate where mouse has been clicked
   double mdx, mdy; // delta mouse move
-  int inside_xy_l(vsx_vector<> &test, vsx_vector<> &global);
+  int inside_xy_l(vsx_vector3<> &test, vsx_vector3<> &global);
   void command_process_back_queue(vsx_command_s *t);
   
   void show();

@@ -30,7 +30,7 @@ void vsx_widget_controller_sequence::init()
   if (init_run) return;
   init_children();
   init_run = true;
-  set_size(vsx_vector<>(0.12f,0.1f));
+  set_size(vsx_vector3<>(0.12f,0.1f));
   seq_chan = add(new vsx_widget_seq_channel,"chan");
   if (size_controlled_from_outside)
   {
@@ -50,7 +50,7 @@ void vsx_widget_controller_sequence::init()
   get_value();
 }
 
-void vsx_widget_controller_sequence::set_size(vsx_vector<> new_size)
+void vsx_widget_controller_sequence::set_size(vsx_vector3<> new_size)
 {
 	if (seq_chan)
 	seq_chan->set_size(new_size);
@@ -84,7 +84,7 @@ void vsx_widget_controller_sequence::command_process_back_queue(vsx_command_s *t
 			_delete();
 //		} else
 //		{
-//			command_q_b.add_raw("controller_sequence_close "+i2s(id)+command_suffix);
+//			command_q_b.add_raw("controller_sequence_close "+vsx_string_helper::i2s(id)+command_suffix);
 //			parent->vsx_command_queue_b(this);
 //		}
   }

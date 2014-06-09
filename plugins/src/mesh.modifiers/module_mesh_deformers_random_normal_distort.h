@@ -37,9 +37,9 @@ public:
 
   // internal
   vsx_mesh<>* mesh;
-  vsx_array< vsx_vector<> > normals_dist_array;
+  vsx_array< vsx_vector3<> > normals_dist_array;
   unsigned long int prev_timestamp;
-  vsx_vector<> v, v_;
+  vsx_vector3<> v, v_;
   float vertex_distortion_factor_;
 
   bool init()
@@ -162,11 +162,11 @@ public:
 
       if (1 == distort_normals->get())
       {
-        vsx_vector<>* ndap = normals_dist_array.get_pointer();
-        vsx_vector<>* vnp = (*p)->data->vertex_normals.get_pointer();
+        vsx_vector3<>* ndap = normals_dist_array.get_pointer();
+        vsx_vector3<>* vnp = (*p)->data->vertex_normals.get_pointer();
         mesh->data->vertex_normals.unset_volatile();
         mesh->data->vertex_normals.allocate( (*p)->data->vertex_normals.size() );
-        vsx_vector<>* vnd = mesh->data->vertex_normals.get_pointer();
+        vsx_vector3<>* vnd = mesh->data->vertex_normals.get_pointer();
         for (unsigned int i = 0; i < (*p)->data->vertex_normals.size(); i++)
         {
           // linear interpolation here
@@ -185,11 +185,11 @@ public:
       if (1 == distort_vertices->get())
       {
         v *= vertex_distortion_factor->get();
-        vsx_vector<>* ndap = normals_dist_array.get_pointer();
-        vsx_vector<>* vp = (*p)->data->vertices.get_pointer();
+        vsx_vector3<>* ndap = normals_dist_array.get_pointer();
+        vsx_vector3<>* vp = (*p)->data->vertices.get_pointer();
         mesh->data->vertices.unset_volatile();
         mesh->data->vertices.allocate( (*p)->data->vertices.size() );
-        vsx_vector<>* vd = mesh->data->vertices.get_pointer();
+        vsx_vector3<>* vd = mesh->data->vertices.get_pointer();
 
         for (unsigned int i = 0; i < (*p)->data->vertices.size(); i++)
         {

@@ -109,7 +109,7 @@ public:
       quat.z = sin(worms[i]->freq.z*engine->vtime+worms[i]->phs.z);
       quat.w = sin(worms[i]->freq.w*engine->vtime+worms[i]->phs.w);
       quat.normalize();
-      mesh->data->vertices[jj] = vsx_vector<>(0);
+      mesh->data->vertices[jj] = vsx_vector3<>(0);
       mesh->data->vertex_colors[jj] = vsx_color<>();
       ++jj;
       for (unsigned long k = 0; k < worms[i]->lines.size(); ++k) {
@@ -117,7 +117,7 @@ public:
         float tt = engine->dtime * worms[i]->lines[k].speed;
         worms[i]->lines[k].pos.slerp(qq, quat, tt);
         vsx_matrix<float> mat2 = worms[i]->lines[k].pos.matrix();
-        mesh->data->vertices[jj] = mat2.multiply_vector(vsx_vector<>(1.0f,0,0));
+        mesh->data->vertices[jj] = mat2.multiply_vector(vsx_vector3<>(1.0f,0,0));
         mesh->data->vertex_colors[jj] = worms[i]->color;
         ++jj;
       }

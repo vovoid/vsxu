@@ -36,8 +36,8 @@ if (cmd == "component_create")
           outputs.push_back(comp);
         }
 
-        comp->position.x = s2f(c->parts[3]);
-        comp->position.y = s2f(c->parts[4]);
+        comp->position.x = vsx_string_helper::s2f(c->parts[3]);
+        comp->position.y = vsx_string_helper::s2f(c->parts[4]);
         cmd_out->add_raw("component_create_ok "+c->parts[2]+" "+get_component_by_name(c->parts[2])->component_class+" "+c->parts[3]+" "+c->parts[4]+" "+c->parts[1]);
         cmd_out->add_raw("in_param_spec "+comp->name+" "+comp->in_param_spec);
         cmd_out->add_raw("out_param_spec "+comp->name+" "+comp->out_param_spec);
@@ -216,8 +216,8 @@ if (cmd == "component_assign")
     // the first component is the 'MASTER' - the one the user moves.
     // Thus we can calculate the distance between all selected components and this one and then apply this
     // delta value to the new position
-    vsx_vector<> new_position(s2f(c->parts[3]),s2f(c->parts[4]));
-    vsx_vector<> master_position = ((*(components.begin()))->position);
+    vsx_vector3<> new_position(vsx_string_helper::s2f(c->parts[3]),vsx_string_helper::s2f(c->parts[4]));
+    vsx_vector3<> master_position = ((*(components.begin()))->position);
 
     for (std::vector<vsx_comp*>::iterator it = components.begin(); it != components.end(); ++it) {
       // 2. Unalias/Disconnect all in the engine level
@@ -233,8 +233,8 @@ if (cmd == "component_assign")
       (*it)->position = new_position + (*it)->position - master_position;
 
       // old positioning code, TODO: remove this in 0.1.19
-      //(*it)->position.x = s2f(c->parts[3]);
-      //(*it)->position.y = s2f(c->parts[4]);
+      //(*it)->position.x = vsx_string_helper::s2f(c->parts[3]);
+      //(*it)->position.y = vsx_string_helper::s2f(c->parts[4]);
 
     }
 
@@ -282,8 +282,8 @@ if (cmd == "cpp" || cmd == "component_pos")
   if (c->parts.size() == 4) {
     vsx_comp* dest = get_component_by_name(c->parts[1]);
     if (dest) {
-      dest->position.x = s2f(c->parts[2]);
-      dest->position.y = s2f(c->parts[3]);
+      dest->position.x = vsx_string_helper::s2f(c->parts[2]);
+      dest->position.y = vsx_string_helper::s2f(c->parts[3]);
     }
   }
   goto process_message_queue_end;
@@ -299,7 +299,7 @@ if (cmd == "component_size")
   if (c->parts.size() == 3) {
     vsx_comp* dest = get_component_by_name(c->parts[1]);
     if (dest) {
-      dest->size = s2f(c->parts[2]);
+      dest->size = vsx_string_helper::s2f(c->parts[2]);
     }
   }
   goto process_message_queue_end;
@@ -334,7 +334,7 @@ if (cmd == "component_timing")
   if (c->parts.size() == 3) {
     vsx_comp* src = get_component_by_name(c->parts[1]);
     if (src) {
-      cmd_out->add_raw(vsx_string("component_timing_ok ")+c->parts[2]+" "+f2s(src->time_run,12)+" "+f2s(src->time_output,12)+" "+f2s(last_frame_time,12));
+      cmd_out->add_raw(vsx_string("component_timing_ok ")+c->parts[2]+" "+vsx_string_helper::f2s(src->time_run,12)+" "+vsx_string_helper::f2s(src->time_output,12)+" "+vsx_string_helper::f2s(last_frame_time,12));
     }
   }
   goto process_message_queue_end;

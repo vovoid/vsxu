@@ -98,13 +98,13 @@ public:
       if (lines[i].size() > max_len) max_len = lines[i].size();
     }
 
-    set_size(vsx_vector<>((float)max_len * 0.0094 , 0.10+(float)lines.size() * 0.017));
+    set_size(vsx_vector3<>((float)max_len * 0.0094 , 0.10+(float)lines.size() * 0.017));
   //  size.x = (float)max_len * 0.0094;
 
     float y = size.y*0.5+0.02;
     unsigned long i;
     for (i = 0; i < lines.size(); ++i) {
-      labels[i]->set_pos(vsx_vector<>(size.x*0.5, y));
+      labels[i]->set_pos(vsx_vector3<>(size.x*0.5, y));
       labels[i]->target_size.y = labels[i]->size.y = 0.018;
       labels[i]->title = lines[i];
       y -= 0.017;
@@ -112,14 +112,14 @@ public:
     y -= 0.017;
 
     button1->title = "ok";
-    button1->set_pos(vsx_vector<>(size.x*0.5,y));//(size.x-button1->size.x*0.5)*0.5,y));
+    button1->set_pos(vsx_vector3<>(size.x*0.5,y));//(size.x-button1->size.x*0.5)*0.5,y));
     button1->commands.adds(4,"ok","ok","");
 
     title = title_;
     allow_resize_x = false;
     allow_resize_y = false;
     visible = 1;
-    set_pos(vsx_vector<>(0.5-size.x/2,0.5-size.y/2));
+    set_pos(vsx_vector3<>(0.5-size.x/2,0.5-size.y/2));
     k_focus = this;
 
   }

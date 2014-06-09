@@ -95,7 +95,7 @@ public:
   void run()
   {
     if (l_param_updates != param_updates) first_run = true;
-    mesh->data->vertices[0] = vsx_vector<>(0);
+    mesh->data->vertices[0] = vsx_vector3<>(0);
 
     if (first_run || n_segs != num_segments->get())
     {
@@ -137,7 +137,7 @@ public:
         mesh->data->vertex_tex_coords[i4+3].s = t+t_inc;
         mesh->data->vertex_tex_coords[i4+3].t = 0;
 
-        vsx_face a;
+        vsx_face3 a;
         a.a = i4+2; a.b = i4; a.c = i4+1;
         mesh->data->faces.push_back(a);
         a.a = i4+2; a.b = i4+3; a.c = i4;

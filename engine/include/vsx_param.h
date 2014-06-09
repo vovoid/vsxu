@@ -36,8 +36,8 @@
   #endif
 #endif
 
-#include "vsx_avector.h"
-#include "vsx_avector_nd.h"
+#include <container/vsx_avector.h>
+#include <container/vsx_avector_nd.h>
 #include "vsx_string.h"
 
 #ifndef VSX_NO_GL

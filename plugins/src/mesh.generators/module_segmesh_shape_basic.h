@@ -43,7 +43,7 @@ public:
         {
           incr = PI_FLOAT*2.0f/sides->get();
           for (float a = 0; a < sides->get(); ++a) {
-            gmesh.vertices[0][(int)a].coord = vsx_vector<>((float)cos(a*incr)*ss,(float)sin(a*incr)*ss,0);
+            gmesh.vertices[0][(int)a].coord = vsx_vector3<>((float)cos(a*incr)*ss,(float)sin(a*incr)*ss,0);
             gmesh.vertices[0][(int)a].color = vsx_color<>((float)(rand()%1000)*0.001f,(float)(rand()%1000)*0.001f,(float)(rand()%1000)*0.001f,0.8f);
             //vsx_color__(0.5,0.5,0.5,0.5);
           }

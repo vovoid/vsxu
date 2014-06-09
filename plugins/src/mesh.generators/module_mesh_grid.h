@@ -103,7 +103,7 @@ public:
     {
       for (size_t z = 1; z < width; z++)
       {
-        vsx_face a;
+        vsx_face3 a;
         a.a = x-1 +  (z - 1) * width;
         a.b = x   +  (z - 1) * width;
         a.c = x-1 +  (z    ) * width;

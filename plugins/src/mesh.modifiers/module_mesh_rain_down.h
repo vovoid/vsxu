@@ -35,7 +35,7 @@ class module_mesh_rain_down : public vsx_module
   // internal
   vsx_mesh<>* mesh;
   unsigned long prev_timestamp;
-  vsx_vector<> v;
+  vsx_vector3<> v;
   float prev_start;
   vsx_array<float> vertex_weight_array;
   vsx_array<float> vertex_explosion_array_x;
@@ -111,7 +111,7 @@ public:
         mesh->data->faces.unset_volatile();
         for (size_t face_iterator = 0; face_iterator < (*p)->data->faces.size(); face_iterator++)
         {
-          vsx_vector<> a,b,c,ab,ac;
+          vsx_vector3<> a,b,c,ab,ac;
           mesh->data->vertices[i_vertex_iter] = (*p)->data->vertices[(*p)->data->faces[face_iterator].a];
           a = mesh->data->vertices[i_vertex_iter];
           mesh->data->vertex_normals[i_vertex_iter] = (*p)->data->vertex_normals[(*p)->data->faces[face_iterator].a];
@@ -133,7 +133,7 @@ public:
           ac = c-a;
           a.cross(ab,ac);
           float weight=pow(a.length(),0.2f);
-          vsx_vector<> exp_dist;
+          vsx_vector3<> exp_dist;
 
           exp_dist.x = (float)(rand()%1000) * 0.001f-0.5f;
           exp_dist.z = (float)(rand()%1000) * 0.001f-0.5f;
@@ -158,7 +158,7 @@ public:
           i_face_iter++;
         }
       }
-      vsx_vector<>* vp = mesh->data->vertices.get_pointer();
+      vsx_vector3<>* vp = mesh->data->vertices.get_pointer();
       float* v_weight_p = vertex_weight_array.get_pointer();
       float* v_ex_p = vertex_explosion_array_x.get_pointer();
       float* v_ez_p = vertex_explosion_array_z.get_pointer();

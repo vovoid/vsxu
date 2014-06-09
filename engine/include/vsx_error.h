@@ -6,6 +6,13 @@
   return; \
 }
 
+#define ERROR_RETURN_S(s,s2) \
+{ \
+  vsx_printf("**********************************************************************************\n");\
+  vsx_printf("ERROR in %s#%d, %s:    %s, %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, s, s2); \
+  return; \
+}
+
 #define ERROR_CONTINUE(s) \
 { \
   vsx_printf("**********************************************************************************\n");\

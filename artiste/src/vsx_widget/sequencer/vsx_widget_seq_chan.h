@@ -73,10 +73,10 @@ class vsx_widget_seq_channel : public vsx_widget
     return 	size.x * ( (t-view_time_start) / B - 0.5f);
   }
 
-  vsx_vector<> passive_mouse_pos;
+  vsx_vector3<> passive_mouse_pos;
   vsx_string passive_time;
   vsx_string passive_value;
-  vsx_vector<> parentpos;
+  vsx_vector3<> parentpos;
   std::vector<vsx_widget_param_sequence_item> items; // the actual sequence
   int cur_x, cur_y;
   int scroll_y;

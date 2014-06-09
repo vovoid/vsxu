@@ -49,7 +49,7 @@ public:
     {
       joystick_info ji;
       if (joysticks[i].joy_fd == -2) // uninitialized!
-      if ( ( ji.joy_fd = open( (vsx_string(JOY_DEV)+i2s(i)).c_str() , O_RDONLY)) != -1 )
+      if ( ( ji.joy_fd = open( (vsx_string(JOY_DEV)+vsx_string_helper::i2s(i)).c_str() , O_RDONLY)) != -1 )
       {
         // enumerate joystick
         fcntl( ji.joy_fd, F_SETFL, O_NONBLOCK );
@@ -88,16 +88,16 @@ public:
     for (int j = 0; j < joystick_count; j++)
     {
       if (j != 0) info->out_param_spec += ",";
-      info->out_param_spec += "joystick_"+i2s(j)+":complex{j_"+i2s(j)+"_name:string,axes:complex{";
+      info->out_param_spec += "joystick_"+vsx_string_helper::i2s(j)+":complex{j_"+vsx_string_helper::i2s(j)+"_name:string,axes:complex{";
       for (int i = 0; i < joysticks[j].num_of_axis; i++) {
         if (i != 0) info->out_param_spec += ",";
-        info->out_param_spec += "j_"+i2s(j)+"_axis"+i2s(i)+":float";
+        info->out_param_spec += "j_"+vsx_string_helper::i2s(j)+"_axis"+vsx_string_helper::i2s(i)+":float";
       }
       info->out_param_spec += "},";
       info->out_param_spec += "buttons:complex{";
       for (int i = 0; i < joysticks[j].num_of_buttons; i++) {
         if (i != 0) info->out_param_spec += ",";
-        info->out_param_spec += "j_"+i2s(j)+"_button"+i2s(i)+":float";
+        info->out_param_spec += "j_"+vsx_string_helper::i2s(j)+"_button"+vsx_string_helper::i2s(i)+":float";
       }
       info->out_param_spec += "}}";
     }
@@ -118,14 +118,14 @@ public:
       joysticks[j].axis = (int *) calloc( joysticks[j].num_of_axis, sizeof( int ) );
       joysticks[j].button = (char *) calloc( joysticks[j].num_of_buttons, sizeof( char ) );
 
-      joysticks[j].name = (vsx_module_param_string*)out_parameters.create(VSX_MODULE_PARAM_ID_STRING, vsx_string("j_"+i2s(j)+"_name").c_str());
+      joysticks[j].name = (vsx_module_param_string*)out_parameters.create(VSX_MODULE_PARAM_ID_STRING, vsx_string("j_"+vsx_string_helper::i2s(j)+"_name").c_str());
       joysticks[j].name->set(vsx_string(joysticks[j].name_of_joystick));
       for (int i = 0; i < joysticks[j].num_of_buttons; i++) {
-        joysticks[j].buttons[i] = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,(vsx_string("j_"+i2s(j)+"_button")+i2s(i)).c_str());
+        joysticks[j].buttons[i] = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,(vsx_string("j_"+vsx_string_helper::i2s(j)+"_button")+vsx_string_helper::i2s(i)).c_str());
         joysticks[j].buttons[i]->set(0.0f);
       }
       for (int i = 0; i < joysticks[j].num_of_axis; i++) {
-        joysticks[j].axes[i] = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,(vsx_string("j_"+i2s(j)+"_axis")+i2s(i)).c_str());
+        joysticks[j].axes[i] = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,(vsx_string("j_"+vsx_string_helper::i2s(j)+"_axis")+vsx_string_helper::i2s(i)).c_str());
         joysticks[j].axes[i]->set(0.0f);
       }
     }

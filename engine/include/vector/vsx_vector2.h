@@ -30,7 +30,7 @@
 template<typename T = float>
 class vsx_vector_2d;
 
-#include <vsx_vector.h>
+#include <vector/vsx_vector3.h>
 
 template<typename T>
 class vsx_vector_2d
@@ -38,6 +38,11 @@ class vsx_vector_2d
 public:
     T x;
     T y;
+
+  static size_t arity()
+  {
+    return 2;
+  }
 
   inline vsx_vector_2d operator +(const vsx_vector_2d &t)
   {
@@ -186,7 +191,7 @@ public:
       y(0.0f)
   {}
 
-  vsx_vector_2d(const vsx_vector<T> &n)
+  vsx_vector_2d(const vsx_vector3<T> &n)
   {
     x = n.x;
     y = n.y;

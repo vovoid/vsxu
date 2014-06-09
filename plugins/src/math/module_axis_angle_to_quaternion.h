@@ -78,7 +78,7 @@ public:
 
   void run()
   {
-    vsx_vector<> i_axis(
+    vsx_vector3<> i_axis(
           axis->get(0),
           axis->get(1),
           axis->get(2)

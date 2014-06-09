@@ -72,7 +72,7 @@ public:
   }
 
   unsigned long prev_timestamp;
-  vsx_vector<> v;
+  vsx_vector3<> v;
   void run() {
     vsx_mesh<>** p = mesh_in->get_addr();
     if (!p)
@@ -89,16 +89,16 @@ public:
       mesh->data->faces.reset_used(0);
 
       // 1. find out the minima and maxima of the mesh
-      vsx_vector<> minima;
-      vsx_vector<> maxima;
+      vsx_vector3<> minima;
+      vsx_vector3<> maxima;
 
 
-      vsx_vector<>* vs_p;
+      vsx_vector3<>* vs_p;
       unsigned long end = (*p)->data->vertices.size();
       vs_p = &(*p)->data->vertices[0];
       mesh->data->vertices.allocate(end);
       mesh->data->vertices.reset_used(end);
-      vsx_vector<>* vs_d = mesh->data->vertices.get_pointer();
+      vsx_vector3<>* vs_d = mesh->data->vertices.get_pointer();
 
 
       for (unsigned int i = 0; i < end; i++)
@@ -131,7 +131,7 @@ public:
       vs_p = &(*p)->data->vertices[0];
       for (unsigned int i = 0; i < end; i++)
       {
-        vs_d[i] = vs_p[i] * scaling + vsx_vector<>(xmove, ymove, zmove);
+        vs_d[i] = vs_p[i] * scaling + vsx_vector3<>(xmove, ymove, zmove);
       }
       //vsx_array<vsx_vector> vertices;
       //vsx_array<vsx_vector> vertex_normals;

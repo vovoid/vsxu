@@ -32,8 +32,8 @@ public:
   bool pos_from_parent;
 
   void calc_size();
-  virtual int inside_xy_l(vsx_vector<> &test, vsx_vector<> &global);
-  vsx_vector<> calc_pos();
+  virtual int inside_xy_l(vsx_vector3<> &test, vsx_vector3<> &global);
+  vsx_vector3<> calc_pos();
   void base_draw();
   virtual void i_draw() { base_draw(); }
   vsx_widget_panel();
@@ -47,7 +47,7 @@ class vsx_widget_split_panel : public vsx_widget_panel {
 public:
   float split_pos; // 0 -> 1
   float splitter_size;
-  vsx_vector<> size_max;
+  vsx_vector3<> size_max;
   vsx_widget_panel* one;
   vsx_widget_panel* two;
   int orientation;
@@ -59,7 +59,7 @@ public:
   
   void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords);
 
-  int inside_xy_l(vsx_vector<> &test, vsx_vector<> &global);
+  int inside_xy_l(vsx_vector3<> &test, vsx_vector3<> &global);
 
   vsx_widget_split_panel();
 

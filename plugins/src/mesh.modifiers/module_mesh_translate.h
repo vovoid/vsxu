@@ -75,7 +75,7 @@ public:
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
     prev_timestamp = 0xFFFF;
   }
-  vsx_vector<> v;
+  vsx_vector3<> v;
   void run()
   {
 
@@ -99,10 +99,10 @@ public:
       mesh->data->faces.reset_used(0);
 
       unsigned long end = (*p)->data->vertices.size();
-      vsx_vector<>* vs_p = &(*p)->data->vertices[0];
+      vsx_vector3<>* vs_p = &(*p)->data->vertices[0];
       mesh->data->vertices.allocate(end);
       mesh->data->vertices.reset_used(end);
-      vsx_vector<>* vs_d = mesh->data->vertices.get_pointer();
+      vsx_vector3<>* vs_d = mesh->data->vertices.get_pointer();
 
 
       for (unsigned int i = 0; i < end; i++)

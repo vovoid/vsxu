@@ -74,13 +74,13 @@ public:
     if (!first_run)
       return;
 
-    vsx_face a;
+    vsx_face3 a;
 
     //right
-    mesh->data->vertex_normals[0] = mesh->data->vertices[0] = vsx_vector<>( 0.5f,-0.5f, 0.5f);
-    mesh->data->vertex_normals[1] = mesh->data->vertices[1] = vsx_vector<>( 0.5f, 0.5f, 0.5f);
-    mesh->data->vertex_normals[2] = mesh->data->vertices[2] = vsx_vector<>( 0.5f, 0.5f,-0.5f);
-    mesh->data->vertex_normals[3] = mesh->data->vertices[3] = vsx_vector<>( 0.5f,-0.5f,-0.5f);
+    mesh->data->vertex_normals[0] = mesh->data->vertices[0] = vsx_vector3<>( 0.5f,-0.5f, 0.5f);
+    mesh->data->vertex_normals[1] = mesh->data->vertices[1] = vsx_vector3<>( 0.5f, 0.5f, 0.5f);
+    mesh->data->vertex_normals[2] = mesh->data->vertices[2] = vsx_vector3<>( 0.5f, 0.5f,-0.5f);
+    mesh->data->vertex_normals[3] = mesh->data->vertices[3] = vsx_vector3<>( 0.5f,-0.5f,-0.5f);
 
     a.a = 2;
     a.b = 1;
@@ -91,10 +91,10 @@ public:
     a.c = 0;
     mesh->data->faces.push_back(a);
     //left
-    mesh->data->vertex_normals[4] = mesh->data->vertices[4] = vsx_vector<>(-0.5f,-0.5f, 0.5f);
-    mesh->data->vertex_normals[5] = mesh->data->vertices[5] = vsx_vector<>(-0.5f, 0.5f, 0.5f);
-    mesh->data->vertex_normals[6] = mesh->data->vertices[6] = vsx_vector<>(-0.5f, 0.5f,-0.5f);
-    mesh->data->vertex_normals[7] = mesh->data->vertices[7] = vsx_vector<>(-0.5f,-0.5f,-0.5f);
+    mesh->data->vertex_normals[4] = mesh->data->vertices[4] = vsx_vector3<>(-0.5f,-0.5f, 0.5f);
+    mesh->data->vertex_normals[5] = mesh->data->vertices[5] = vsx_vector3<>(-0.5f, 0.5f, 0.5f);
+    mesh->data->vertex_normals[6] = mesh->data->vertices[6] = vsx_vector3<>(-0.5f, 0.5f,-0.5f);
+    mesh->data->vertex_normals[7] = mesh->data->vertices[7] = vsx_vector3<>(-0.5f,-0.5f,-0.5f);
     a.a = 4;
     a.b = 5;
     a.c = 6;
@@ -104,10 +104,10 @@ public:
     a.c = 7;
     mesh->data->faces.push_back(a);
     // bottom
-    mesh->data->vertex_normals[8] = mesh->data->vertices[ 8] = vsx_vector<>(-0.5f,-0.5f,-0.5f);
-    mesh->data->vertex_normals[9] = mesh->data->vertices[ 9] = vsx_vector<>(-0.5f,-0.5f, 0.5f);
-    mesh->data->vertex_normals[10] = mesh->data->vertices[10] = vsx_vector<>( 0.5f,-0.5f, 0.5f);
-    mesh->data->vertex_normals[11] = mesh->data->vertices[11] = vsx_vector<>( 0.5f,-0.5f,-0.5f);
+    mesh->data->vertex_normals[8] = mesh->data->vertices[ 8] = vsx_vector3<>(-0.5f,-0.5f,-0.5f);
+    mesh->data->vertex_normals[9] = mesh->data->vertices[ 9] = vsx_vector3<>(-0.5f,-0.5f, 0.5f);
+    mesh->data->vertex_normals[10] = mesh->data->vertices[10] = vsx_vector3<>( 0.5f,-0.5f, 0.5f);
+    mesh->data->vertex_normals[11] = mesh->data->vertices[11] = vsx_vector3<>( 0.5f,-0.5f,-0.5f);
     a.a = 10;
     a.b = 9;
     a.c = 8;
@@ -118,10 +118,10 @@ public:
     mesh->data->faces.push_back(a);
 
     // top
-    mesh->data->vertex_normals[12] = mesh->data->vertices[12] = vsx_vector<>(-0.5f, 0.5f,-0.5f);
-    mesh->data->vertex_normals[13] = mesh->data->vertices[13] = vsx_vector<>(-0.5f, 0.5f, 0.5f);
-    mesh->data->vertex_normals[14] = mesh->data->vertices[14] = vsx_vector<>( 0.5f, 0.5f, 0.5f);
-    mesh->data->vertex_normals[15] = mesh->data->vertices[15] = vsx_vector<>( 0.5f, 0.5f,-0.5f);
+    mesh->data->vertex_normals[12] = mesh->data->vertices[12] = vsx_vector3<>(-0.5f, 0.5f,-0.5f);
+    mesh->data->vertex_normals[13] = mesh->data->vertices[13] = vsx_vector3<>(-0.5f, 0.5f, 0.5f);
+    mesh->data->vertex_normals[14] = mesh->data->vertices[14] = vsx_vector3<>( 0.5f, 0.5f, 0.5f);
+    mesh->data->vertex_normals[15] = mesh->data->vertices[15] = vsx_vector3<>( 0.5f, 0.5f,-0.5f);
     a.a = 12;
     a.b = 13;
     a.c = 14;
@@ -132,10 +132,10 @@ public:
     mesh->data->faces.push_back(a);
 
     // near
-    mesh->data->vertex_normals[16] = mesh->data->vertices[16] = vsx_vector<>(-0.5f,-0.5f,-0.5f);
-    mesh->data->vertex_normals[17] = mesh->data->vertices[17] = vsx_vector<>(-0.5f, 0.5f,-0.5f);
-    mesh->data->vertex_normals[18] = mesh->data->vertices[18] = vsx_vector<>( 0.5f, 0.5f,-0.5f);
-    mesh->data->vertex_normals[19] = mesh->data->vertices[19] = vsx_vector<>( 0.5f,-0.5f,-0.5f);
+    mesh->data->vertex_normals[16] = mesh->data->vertices[16] = vsx_vector3<>(-0.5f,-0.5f,-0.5f);
+    mesh->data->vertex_normals[17] = mesh->data->vertices[17] = vsx_vector3<>(-0.5f, 0.5f,-0.5f);
+    mesh->data->vertex_normals[18] = mesh->data->vertices[18] = vsx_vector3<>( 0.5f, 0.5f,-0.5f);
+    mesh->data->vertex_normals[19] = mesh->data->vertices[19] = vsx_vector3<>( 0.5f,-0.5f,-0.5f);
     a.a = 16;
     a.b = 17;
     a.c = 18;
@@ -146,10 +146,10 @@ public:
     mesh->data->faces.push_back(a);
 
     // far
-    mesh->data->vertex_normals[20] = mesh->data->vertices[20] = vsx_vector<>(-0.5f,-0.5f, 0.5f);
-    mesh->data->vertex_normals[21] = mesh->data->vertices[21] = vsx_vector<>(-0.5f, 0.5f, 0.5f);
-    mesh->data->vertex_normals[22] = mesh->data->vertices[22] = vsx_vector<>( 0.5f, 0.5f, 0.5f);
-    mesh->data->vertex_normals[23] = mesh->data->vertices[23] = vsx_vector<>( 0.5f,-0.5f, 0.5f);
+    mesh->data->vertex_normals[20] = mesh->data->vertices[20] = vsx_vector3<>(-0.5f,-0.5f, 0.5f);
+    mesh->data->vertex_normals[21] = mesh->data->vertices[21] = vsx_vector3<>(-0.5f, 0.5f, 0.5f);
+    mesh->data->vertex_normals[22] = mesh->data->vertices[22] = vsx_vector3<>( 0.5f, 0.5f, 0.5f);
+    mesh->data->vertex_normals[23] = mesh->data->vertices[23] = vsx_vector3<>( 0.5f,-0.5f, 0.5f);
     a.a = 22;
     a.b = 21;
     a.c = 20;

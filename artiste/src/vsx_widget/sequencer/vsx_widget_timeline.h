@@ -25,7 +25,7 @@
 #define VSX_WIDGET_TIMELINE_H
 
 class vsx_widget_timeline : public vsx_widget {
-  vsx_vector<> parentpos;
+  vsx_vector3<> parentpos;
 public:
   vsx_widget_sequence_editor* owner;
 
@@ -37,7 +37,7 @@ public:
   float auto_move_dir;
   float a_dist;
   bool show_wave_data;
-  void move_time(vsx_vector<> world);
+  void move_time(vsx_vector3<> world);
 
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
   {
@@ -46,6 +46,7 @@ public:
 
     move_time(distance.center);
     a_focus = this;
+    k_focus = this;
   }
 
   void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)

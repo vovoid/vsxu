@@ -53,7 +53,7 @@ if (cmd == "seq_pool")
   // 0=seq_pool 1=time_set_loop_point 2=[time:float]
   if (c->parts[1] == "time_set_loop_point")
   {
-    sequence_pool.set_loop_point(s2f(c->parts[2]));
+    sequence_pool.set_loop_point(vsx_string_helper::s2f(c->parts[2]));
     goto process_message_queue_end;
   }
 
@@ -64,8 +64,8 @@ if (cmd == "seq_pool")
   // 0=seq_pool 1=time_set 2=[time:float]
   if (c->parts[1] == "time_set")
   {
-    //printf("time_set: %f\n", s2f(c->parts[2]));
-    sequence_pool.set_time(s2f(c->parts[2]));
+    //printf("time_set: %f\n", vsx_string_helper::s2f(c->parts[2]));
+    sequence_pool.set_time(vsx_string_helper::s2f(c->parts[2]));
     goto process_message_queue_end;
   }
 
@@ -212,7 +212,7 @@ if (cmd == "seq_pool")
   if (c->parts[1] == "toggle_edit")
   {
     bool value = sequence_pool.toggle_edit();
-    cmd_out->add_raw("seq_pool toggle_edit "+i2s((int)value));
+    cmd_out->add_raw("seq_pool toggle_edit "+vsx_string_helper::i2s((int)value));
     goto process_message_queue_end;
   }
 
@@ -297,7 +297,7 @@ if (cmd == "seq_pool")
               vsx_string sequence_specification = sequence_pool.get_selected()->dump_param(param);
               if (sequence_specification != "")
               {
-                cmd_out->add_raw("seq_pool pseq_p_ok inject_get "+c->parts[3]+" "+c->parts[4]+" "+sequence_specification+" "+i2s(param->module_param->type));
+                cmd_out->add_raw("seq_pool pseq_p_ok inject_get "+c->parts[3]+" "+c->parts[4]+" "+sequence_specification+" "+vsx_string_helper::i2s(param->module_param->type));
               }
             }
           } else

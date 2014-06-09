@@ -369,9 +369,9 @@ bool vsx_comp::prepare()
     {
       //LOG("engine is loading, time to test")
       //double atime = ((vsx_engine*)engine_owner)->g_timer.atime();
-      //LOG("atime: "+f2s(atime));
-      //LOG("fstarttime: "+f2s(((vsx_engine*)engine_owner)->frame_start_time));
-      //printf("frame_start_time: %f\n",f2s(((vsx_engine*)engine_owner)->frame_start_time));
+      //LOG("atime: "+vsx_string_helper::f2s(atime));
+      //LOG("fstarttime: "+vsx_string_helper::f2s(((vsx_engine*)engine_owner)->frame_start_time));
+      //printf("frame_start_time: %f\n",vsx_string_helper::f2s(((vsx_engine*)engine_owner)->frame_start_time));
       if
       (
         ((vsx_engine*)engine_owner)->get_frame_elapsed_time() > 0.4
