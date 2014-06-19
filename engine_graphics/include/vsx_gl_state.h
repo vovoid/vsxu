@@ -710,6 +710,24 @@ public:
 #endif
   }
 
+
+  // substitute for glViewport()
+  inline void viewport_set
+  (
+    int* values
+  )
+  {
+    _viewport_size[0] = values[0];
+    _viewport_size[1] = values[1];
+    _viewport_size[2] = values[2];
+    _viewport_size[3] = values[3];
+    _viewport_w_d_h = (float)values[2] / (float)values[3];
+#ifndef VSX_NO_GL
+    glViewport(values[0],values[1],values[2],values[3]);
+#endif
+  }
+
+
 private:
   int _viewport_size[4];
   float _viewport_w_d_h; // width divided by height

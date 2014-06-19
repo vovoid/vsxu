@@ -16,7 +16,7 @@ class module_output_screen_opengl : public vsx_module
 
   float pre_material_colors[5][2][4];
 
-  // don't mess with viewport or any opengl settings
+  // don't reset opengl state to default values
   vsx_module_param_int* opengl_silent;
 
   vsx_gl_state* gl_state;

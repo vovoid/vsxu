@@ -1,3 +1,6 @@
+#include <vsx_texture.h>
+
+
 class module_texture_render_surface_color_depth_buffer : public vsx_module
 {
   // in
@@ -23,8 +26,6 @@ class module_texture_render_surface_color_depth_buffer : public vsx_module
   GLuint depth_buffer_in_int;
 
   GLuint glsl_prog;
-
-  GLint	viewport[4];
 
   vsx_gl_state* gl_state;
 
@@ -123,10 +124,6 @@ public:
   }
 
   bool activate_offscreen() {
-    #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
-      gl_state->viewport_get( viewport );
-    #endif
-
     bool rebuild = false;
 
     if (alpha_channel->get() != alpha_channel_int)
@@ -158,9 +155,8 @@ public:
 
     if (texture_size->get() >= 10)
     {
-      gl_state->viewport_get( viewport );
-      int t_res_x = abs(viewport[2] - viewport[0]);
-      int t_res_y = abs(viewport[3] - viewport[1]);
+      int t_res_x = gl_state->viewport_get_width();
+      int t_res_y = gl_state->viewport_get_height();
 
       if (texture_size->get() == 10) {
         if (t_res_x != res_x || t_res_y != res_y) rebuild = true;
@@ -199,11 +195,26 @@ public:
         case 7: res_y = res_x = 16; break;
         case 8: res_y = res_x = 8; break;
         case 9: res_y = res_x = 4; break;
-        case 10: res_x = abs(viewport[2] - viewport[0]); res_y = abs(viewport[3] - viewport[1]); break;
-        case 11: res_x = abs(viewport[2] - viewport[0]) / 2; res_y = abs(viewport[3] - viewport[1]) / 2; break;
-        case 12: res_x = abs(viewport[2] - viewport[0]) / 4; res_y = abs(viewport[3] - viewport[1]) / 4; break;
-        case 13: res_x = abs(viewport[2] - viewport[0]) * 2; res_y = abs(viewport[3] - viewport[1]) * 2; break;
-        case 14: res_x = abs(viewport[2] - viewport[0]) * 4; res_y = abs(viewport[3] - viewport[1]) * 4; break;
+        case 10:
+          res_x = gl_state->viewport_get_width();
+          res_y = gl_state->viewport_get_height();
+        break;
+        case 11:
+          res_x = gl_state->viewport_get_width() * 0.5;
+          res_y = gl_state->viewport_get_height() * 0.5;
+        break;
+        case 12:
+          res_x = gl_state->viewport_get_width() * 0.25;
+          res_y = gl_state->viewport_get_height() * 0.25;
+        break;
+        case 13:
+          res_x = gl_state->viewport_get_width() * 2.0;
+          res_y = gl_state->viewport_get_height() * 2.0;
+        break;
+        case 14:
+          res_x = gl_state->viewport_get_width() * 4.0;
+          res_y = gl_state->viewport_get_height() * 4.0;
+        break;
       };
 
       if (

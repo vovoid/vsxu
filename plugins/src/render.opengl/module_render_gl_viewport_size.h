@@ -1,6 +1,5 @@
 class module_render_gl_viewport_size : public vsx_module
 {
-  GLint viewport[4];
   // in
 
   // out

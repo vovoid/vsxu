@@ -31,7 +31,6 @@
 
 // vertices are arranged in a grid so that you can check if a vertex is already calculated
 // 
-#ifndef VSX_NO_MESH
 class vsx_grid_vertex {
 public:
   bool valid;
@@ -83,10 +82,6 @@ Notes:
 
 
 class vsx_2dgrid_mesh {
-  /*void allocate_vertices(unsigned long a, unsigned long b) {
-    if (a > vertices.size()) vertices.resize(a);
-    if (b > vertices[a].size()) vertices[a].resize(b);
-  } */ 
 public:
   // vertices array, access it like this:
   // grid_mesh.vertices[segment_id][vertex_id].coord = vsx_vector__(0,0,0);
@@ -112,17 +107,10 @@ public:
     f.by = by;
     f.cx = cx;
     f.cy = cy;
-    //f.normal.assign_face_normal(&vertices[ax][ay].coord,&vertices[bx][by].coord,&vertices[cx][cy].coord);
-    //f.normal.normalize(); 
-    //printf("adding face_2\n");
     faces.push_back(f);
-    //printf("adding face_3 %d ax: %d, ay %d\n",faces.size()-1,ax,ay);
     vertices[ax][ay].faces.push_back(faces.size()-1);
-    //printf("adding face_4\n");
     vertices[bx][by].faces.push_back(faces.size()-1);
-    //printf("adding face_5\n");
     vertices[cx][cy].faces.push_back(faces.size()-1);
-    //printf("adding face_6\n");
   }
   
   // run this when you have defined all vertices and faces  
@@ -157,11 +145,8 @@ public:
 
   // run this after you've run the calculate_face_normals.
   void calculate_vertex_normals() {
-    //printf("cvn vertices size: %d\n",vertices.size());
     for (unsigned long a = 0; a < vertices.size(); ++a) {
-      //printf("cvn a: %d, b.size: %d\n",a);
       for (unsigned long b = 0; b < vertices[a].size(); ++b) {
-        //printf("cvn b: %d\n",b);
         vertices[a][b].normal.x = 0.0f;
         vertices[a][b].normal.y = 0.0f;
         vertices[a][b].normal.z = 0.0f;
@@ -174,18 +159,13 @@ public:
   }
   // when you're ready to send it to rendering, give it a pointer to a vsx_mesh
   void dump_vsx_mesh(vsx_mesh<>* mesh) {
-#ifndef VSX_NO_MESH
     // 1. vertices
-    //printf("vertices size: %d\n",vertices.size());
     mesh->data->vertices.reset_used();
     mesh->data->vertex_normals.reset_used();
     mesh->data->vertex_tex_coords.reset_used();
     unsigned long mvid = 0;
     for (unsigned long a = 0; a < vertices.size(); ++a) {
-      //printf("foo a %d\n",a);
       for (unsigned long b = 0; b < vertices[a].size(); ++b) {
-        //printf("foo %d\n",b);
-        //unsigned long mvid = mesh->data->vertices.push_back(vertices[a][b].coord)-1;
         mesh->data->vertices[mvid] = vertices[a][b].coord;
         vertices[a][b].id = mvid;
         mesh->data->vertex_normals[mvid] = vertices[a][b].normal;
@@ -199,20 +179,12 @@ public:
       mesh->data->faces.reset_used();
       vsx_face3 f;
       for (unsigned long a = 0; a < faces.size(); ++a) {
-        //printf("abc: %d %d %d\n",vertices[faces[a].ax][faces[a].ay].id,vertices[faces[a].bx][faces[a].by].id,vertices[faces[a].cx][faces[a].cy].id);
         f.a = vertices[faces[a].ax][faces[a].ay].id;
         f.b = vertices[faces[a].bx][faces[a].by].id;
         f.c = vertices[faces[a].cx][faces[a].cy].id;
-        /*vertices[faces[a].ax][faces[a].ay].coord.dump("a");
-        vertices[faces[a].bx][faces[a].by].coord.dump("b");
-        vertices[faces[a].cx][faces[a].cy].coord.dump("c");
-        mesh->data->vertices[f.a].dump("ra");
-        mesh->data->vertices[f.b].dump("rb");
-        mesh->data->vertices[f.c].dump("rc");*/
         mesh->data->faces.push_back(f);
       }
     }
-#endif    
   }
   
   void cleanup() {
@@ -225,9 +197,6 @@ public:
   }
   
 };  
-#else
-class vsx_2dgrid_mesh {};
-#endif
 
 
 #endif

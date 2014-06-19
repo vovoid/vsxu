@@ -31,7 +31,6 @@ class module_particlesystem_render : public vsx_module
   float rs[8192];
   float gs[8192];
   float bs[8192];
-  GLint viewport[4];
 
   vsx_float_array shader_sizes;
   vsx_array<float> shader_sizes_data;
@@ -412,7 +411,8 @@ public:
         {
           //printf("found vx\n");
           vsx_module_param_float* p = (vsx_module_param_float*)shader.uniform_map["_vx"]->module_param;
-          if (p) p->set( gl_state->viewport_get_width() );
+          if (p)
+            p->set( gl_state->viewport_get_width() );
         }
 
         if (shader.attribute_map.find("_s") != shader.attribute_map.end())

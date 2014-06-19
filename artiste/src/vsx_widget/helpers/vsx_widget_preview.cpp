@@ -88,7 +88,7 @@ void vsx_window_texture_viewer::draw_2d()
   {
     // get viewport
     GLint	viewport[4];
-    vsx_gl_state::get_instance()->viewport_get(viewport);
+    vsx_gl_state::get_instance()->viewport_get(&viewport[0]);
     vsx_gl_state::get_instance()->viewport_set(
       (int)ceil(pos_.x*(screen_x-1)),
       (int)ceil((pos_.y)*(screen_y-1)),
@@ -114,7 +114,7 @@ void vsx_window_texture_viewer::draw_2d()
 
 
     // reset the viewport
-    vsx_gl_state::get_instance()->viewport_set(viewport[0],viewport[1],viewport[2],viewport[3]);
+    vsx_gl_state::get_instance()->viewport_set(&viewport[0]);
 
     glScissor(viewport[0],viewport[1],viewport[2],viewport[3]);
     glDisable(GL_SCISSOR_TEST);

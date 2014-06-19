@@ -130,7 +130,6 @@
   }
 
   void vsx_widget_2d_console::draw_2d() {
-    //glGetIntegerv(GL_VIEWPORT, viewport);
     if (a_focus != destination) {
       if (a_focus->widget_type == VSX_WIDGET_TYPE_COMPONENT || a_focus->widget_type == VSX_WIDGET_TYPE_SERVER) {
         destination = a_focus;

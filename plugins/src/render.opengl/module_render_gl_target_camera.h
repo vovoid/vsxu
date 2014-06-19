@@ -97,7 +97,7 @@ public:
     {
       gl_state->matrix_glu_perspective(
         fov->get(),
-        (float)gl_state->viewport_get_width()/(float)gl_state->viewport_get_height(),
+        gl_state->viewport_width_div_height_get(),
         fabs(near_clipping->get()),
         far_clipping->get()
       );

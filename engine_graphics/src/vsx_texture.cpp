@@ -678,6 +678,9 @@ void vsx_texture::begin_capture_to_buffer()
   if (capturing_to_buffer)
     return;
 
+
+  vsx_gl_state::get_instance()->viewport_get( &viewport_size[0] );
+
   prev_buf = vsx_gl_state::get_instance()->framebuffer_bind_get();
   glPushAttrib(GL_ALL_ATTRIB_BITS );
   vsx_gl_state::get_instance()->matrix_get_v( VSX_GL_PROJECTION_MATRIX, buffer_save_matrix[0].m );
@@ -696,8 +699,7 @@ void vsx_texture::begin_capture_to_buffer()
   vsx_gl_state::get_instance()->blend_set(1);
 
   vsx_gl_state::get_instance()->framebuffer_bind(frame_buffer_handle);
-
-  glViewport(0,0,(int)texture_info->size_x, (int)texture_info->size_y);
+  vsx_gl_state::get_instance()->viewport_set(0,0,(int)texture_info->size_x, (int)texture_info->size_y);
 
   capturing_to_buffer = true;
 }
@@ -742,6 +744,9 @@ void vsx_texture::end_capture_to_buffer()
 
 
     glPopAttrib();
+
+    vsx_gl_state::get_instance()->viewport_set( &viewport_size[0] );
+
     capturing_to_buffer = false;
   }
 }

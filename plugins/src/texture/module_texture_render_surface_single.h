@@ -22,8 +22,6 @@ class vsx_module_rendered_texture_single : public vsx_module {
 
   GLuint glsl_prog;
 
-  GLint	viewport[4];
-
   vsx_gl_state* gl_state;
 
 public:
@@ -139,10 +137,6 @@ void start()
 }
 
 bool activate_offscreen() {
-  #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
-    gl_state->viewport_get( viewport );
-  #endif
-
   bool rebuild = false;
 
   if (support_feedback->get() != support_feedback_int)
@@ -166,9 +160,8 @@ bool activate_offscreen() {
 
   if (texture_size->get() >= 10)
   {
-    gl_state->viewport_get( viewport );
-    int t_res_x = abs(viewport[2] - viewport[0]);
-    int t_res_y = abs(viewport[3] - viewport[1]);
+    int t_res_x = gl_state->viewport_get_width();
+    int t_res_y = gl_state->viewport_get_height();
 
     if (texture_size->get() == 10) {
       if (t_res_x != res_x || t_res_y != res_y) rebuild = true;
@@ -206,11 +199,26 @@ bool activate_offscreen() {
       case 7: res_y = res_x = 16; break;
       case 8: res_y = res_x = 8; break;
       case 9: res_y = res_x = 4; break;
-      case 10: res_x = abs(viewport[2] - viewport[0]); res_y = abs(viewport[3] - viewport[1]); break;
-      case 11: res_x = abs(viewport[2] - viewport[0]) / 2; res_y = abs(viewport[3] - viewport[1]) / 2; break;
-      case 12: res_x = abs(viewport[2] - viewport[0]) / 4; res_y = abs(viewport[3] - viewport[1]) / 4; break;
-      case 13: res_x = abs(viewport[2] - viewport[0]) * 2; res_y = abs(viewport[3] - viewport[1]) * 2; break;
-      case 14: res_x = abs(viewport[2] - viewport[0]) * 4; res_y = abs(viewport[3] - viewport[1]) * 4; break;
+      case 10:
+        res_x = gl_state->viewport_get_width();
+        res_y = gl_state->viewport_get_height();
+      break;
+      case 11:
+        res_x = gl_state->viewport_get_width() * 0.5;
+        res_y = gl_state->viewport_get_height() * 0.5;
+      break;
+      case 12:
+        res_x = gl_state->viewport_get_width() * 0.25;
+        res_y = gl_state->viewport_get_height() * 0.25;
+      break;
+      case 13:
+        res_x = gl_state->viewport_get_width() * 2.0;
+        res_y = gl_state->viewport_get_height() * 2.0;
+      break;
+      case 14:
+        res_x = gl_state->viewport_get_width() * 4.0;
+        res_y = gl_state->viewport_get_height() * 4.0;
+      break;
     };
 
     if (0 == support_feedback_int)
@@ -271,7 +279,6 @@ bool activate_offscreen() {
     texture2->begin_capture_to_buffer();
 
   //printf("changing viewport to %d\n",res_x);
-  glViewport(0,0,res_x,res_y);
   glDepthMask(GL_TRUE);
   glClearColor(clear_color->get(0),clear_color->get(1),clear_color->get(2),clear_color->get(3));
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		// Clear Screen And Depth Buffer
@@ -304,11 +311,6 @@ void deactivate_offscreen()
   }
 
   which_buffer = !which_buffer;
-
-  #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
-  //printf("resetting viewport to %d %d %d %d\n",viewport[0],viewport[1],viewport[2],viewport[3]);
-  glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
-  #endif
 }
 
 void stop()

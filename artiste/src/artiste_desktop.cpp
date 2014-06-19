@@ -294,10 +294,8 @@ void vsx_widget_desktop::draw() {
 
 void vsx_widget_desktop::draw_2d()
 {
-  GLint	viewport[4];
-  glGetIntegerv(GL_VIEWPORT, viewport);
-  screen_x = (float)viewport[2];
-  screen_y = (float)viewport[3];
+  screen_x = vsx_gl_state::get_instance()->viewport_get_width();
+  screen_y = vsx_gl_state::get_instance()->viewport_get_height();
 
   glDisable(GL_DEPTH_TEST);
   glDepthMask(GL_FALSE);

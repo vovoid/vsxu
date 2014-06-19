@@ -30,7 +30,6 @@
 #define VSX_TEXTURE_NO_GLPNG_THREAD
 //#define VSX_NO_TEXTURE
 #define VSX_NO_SEQUENCE
-//#define VSX_NO_MESH
 //#define VSX_STRINGLIB_NOSTL
 //#define VSX_NO_GL
 

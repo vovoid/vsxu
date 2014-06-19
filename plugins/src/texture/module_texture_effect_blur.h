@@ -41,7 +41,6 @@ class module_texture_effect_blur : public vsx_module
   vsx_glsl shader;
   GLuint tex_id;
   GLuint glsl_offset_id,glsl_tex_id,glsl_attenuation;
-  GLint	viewport[4];
   vsx_gl_state* gl_state;
 
 public:
@@ -107,46 +106,6 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
 
 
-#ifdef __APPLE__
-  return;
-  shader.vertex_program = "\
-  void main()\n\
-  {\n\
-    gl_TexCoord[0] = gl_MultiTexCoord0;\n\
-    gl_Position = ftransform();\n\
-  }\n\
-  ";
-
-  shader.fragment_program = "\
-  uniform sampler2D GlowTexture;\n\
-  uniform vec2      texOffset;\n\
-  uniform float     attenuation;\n\
-  void main(void)\n\
-  {\n\
-    vec4  finalColor = vec4(0.0,0.0,0.0,0.0);\n\
-  \n\
-    vec2 offset = vec2(-4.0,-4.0) * (texOffset) + gl_TexCoord[0].xy;\n\
-    finalColor += 0.0217 * texture2D(GlowTexture, offset);\n\
-    offset += texOffset;\n\
-    finalColor += 0.0434 * texture2D(GlowTexture, offset);\n\
-    offset += texOffset;\n\
-    finalColor += 0.0869 * texture2D(GlowTexture, offset);\n\
-    offset += texOffset;\n\
-    finalColor += 0.1739 * texture2D(GlowTexture, offset);\n\
-    offset += texOffset;\n\
-    finalColor += 0.3478 * texture2D(GlowTexture, offset);\n\
-    offset += texOffset;\n\
-    finalColor += 0.1739 * texture2D(GlowTexture, offset);\n\
-    offset += texOffset;\n\
-    finalColor += 0.0869 * texture2D(GlowTexture, offset);\n\
-    offset += texOffset;\n\
-    finalColor += 0.0434 * texture2D(GlowTexture, offset);\n\
-    offset += texOffset;\n\
-    finalColor += 0.0217 * texture2D(GlowTexture, offset);\n\
-    gl_FragColor = finalColor * attenuation; \n\
-  }\n\
-  ";
-#else
 shader.vertex_program = "\
 varying vec2 texcoord;\n\
 void main()\n\
@@ -155,38 +114,6 @@ void main()\n\
   gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n\
 }\n\
 ";
-
-/*shader.fragment_program = "\
-uniform sampler2D GlowTexture;\n\
-uniform vec2      texOffset;\n\
-uniform float     attenuation;\n\
-varying vec2 texcoord;\n\
-void main(void)\n\
-{\n\
-  vec4  finalColor = vec4(0.0,0.0,0.0,0.0);\n\
-\n\
-  vec2 offset = vec2(-4.0,-4.0) * (texOffset) + texcoord;\n\
-  finalColor += 0.0217 * texture2D(GlowTexture, offset);\n\
-  offset += texOffset;\n\
-  finalColor += 0.0434 * texture2D(GlowTexture, offset);\n\
-  offset += texOffset;\n\
-  finalColor += 0.0869 * texture2D(GlowTexture, offset);\n\
-  offset += texOffset;\n\
-  finalColor += 0.1739 * texture2D(GlowTexture, offset);\n\
-  offset += texOffset;\n\
-  finalColor += 0.3478 * texture2D(GlowTexture, offset);\n\
-  offset += texOffset;\n\
-  finalColor += 0.1739 * texture2D(GlowTexture, offset);\n\
-  offset += texOffset;\n\
-  finalColor += 0.0869 * texture2D(GlowTexture, offset);\n\
-  offset += texOffset;\n\
-  finalColor += 0.0434 * texture2D(GlowTexture, offset);\n\
-  offset += texOffset;\n\
-  finalColor += 0.0217 * texture2D(GlowTexture, offset);\n\
-  gl_FragColor = finalColor * attenuation; \n\
-}\n\
-";
-*/
 
 shader.fragment_program = "\
 uniform sampler2D GlowTexture;\n\
@@ -235,110 +162,6 @@ void main(void)\n\
 }\n\
 ";
 
-/*
-    shader.fragment_program =
-    "uniform float sigma;     // The sigma value for the gaussian function: higher value means more blur\n"
-    "                        // A good value for 9x9 is around 3 to 5\n"
-    "                        // A good value for 7x7 is around 2.5 to 4\n"
-    "                        // A good value for 5x5 is around 2 to 3.5\n"
-    "                             // ... play around with this based on what you need :)\n"
-    "    \n"
-    "    uniform float blurSize;  // This should usually be equal to\n"
-    "                             // 1.0f / texture_pixel_width for a horizontal blur, and\n"
-    "                             // 1.0f / texture_pixel_height for a vertical blur.\n"
-    "\n"
-    "    uniform sampler2D GlowTexture;  // Texture that will be blurred by this shader\n"
-    "\n"
-    "    const float pi = 3.14159265f;\n"
-    "    \n"
-    "    // The following are all mutually exclusive macros for various \n"
-    "    // seperable blurs of varying kernel size\n"
-    "    #if defined(VERTICAL_BLUR_9)\n"
-    "    const float numBlurPixelsPerSide = 4.0f;\n"
-    "    const vec2  blurMultiplyVec      = vec2(0.0f, 1.0f);\n"
-    "    #elif defined(HORIZONTAL_BLUR_9)\n"
-    "    const float numBlurPixelsPerSide = 4.0f;\n"
-    "    const vec2  blurMultiplyVec      = vec2(1.0f, 0.0f);\n"
-    "    #elif defined(VERTICAL_BLUR_7)\n"
-    "    const float numBlurPixelsPerSide = 3.0f;\n"
-    "    const vec2  blurMultiplyVec      = vec2(0.0f, 1.0f);\n"
-    "    #elif defined(HORIZONTAL_BLUR_7)\n"
-    "    const float numBlurPixelsPerSide = 3.0f;\n"
-    "    const vec2  blurMultiplyVec      = vec2(1.0f, 0.0f);\n"
-    "    #elif defined(VERTICAL_BLUR_5)\n"
-    "    const float numBlurPixelsPerSide = 2.0f;\n"
-    "    const vec2  blurMultiplyVec      = vec2(0.0f, 1.0f);\n"
-    "    #elif defined(HORIZONTAL_BLUR_5)\n"
-    "    const float numBlurPixelsPerSide = 2.0f;\n"
-    "    const vec2  blurMultiplyVec      = vec2(1.0f, 0.0f);\n"
-    "    #else\n"
-    "    // This only exists to get this shader to compile when no macros are defined\n"
-    "    const float numBlurPixelsPerSide = 0.0f;\n"
-    "    const vec2  blurMultiplyVec      = vec2(0.0f, 0.0f);\n"
-    "    #endif\n"
-    "    \n"
-    "    void main() {\n"
-    "    \n"
-    "      // Incremental Gaussian Coefficent Calculation (See GPU Gems 3 pp. 877 - 889)\n"
-    "      vec3 incrementalGaussian;\n"
-    "      incrementalGaussian.x = 1.0f / (sqrt(2.0f * pi) * sigma);\n"
-    "      incrementalGaussian.y = exp(-0.5f / (sigma * sigma));\n"
-    "      incrementalGaussian.z = incrementalGaussian.y * incrementalGaussian.y;\n"
-    "    \n"
-    "      vec4 avgValue = vec4(0.0f, 0.0f, 0.0f, 0.0f);\n"
-    "      float coefficientSum = 0.0f;\n"
-    "    \n"
-    "      // Take the central sample first...\n"
-    "      avgValue += texture2D(blurSampler, gl_TexCoord[0].xy) * incrementalGaussian.x;\n"
-    "      coefficientSum += incrementalGaussian.x;\n"
-    "      incrementalGaussian.xy *= incrementalGaussian.yz;\n"
-    "    \n"
-    "      // Go through the remaining 8 vertical samples (4 on each side of the center)\n"
-    "      for (float i = 1.0f; i <= numBlurPixelsPerSide; i++) { \n"
-    "        avgValue += texture2D(blurSampler, gl_TexCoord[0].xy - i * blurSize * \n"
-    "                              blurMultiplyVec) * incrementalGaussian.x;         \n"
-    "        avgValue += texture2D(blurSampler, gl_TexCoord[0].xy + i * blurSize * \n"
-    "                              blurMultiplyVec) * incrementalGaussian.x;         \n"
-    "        coefficientSum += 2 * incrementalGaussian.x;\n"
-    "        incrementalGaussian.xy *= incrementalGaussian.yz;\n"
-    "      }\n"
-    "       \n"
-    "      gl_FragColor = avgValue / coefficientSum;\n"
-    "    }\n"
-    "    \n"
-    ;
-
-*/
-#endif
-
-/*shader.fragment_program = "\
-uniform sampler2D GlowTexture;\n\
-uniform vec2      texOffset;\n\
-void main(void)\n\
-{\n\
-  vec4  blurFilter[9],\n\
-        finalColor = vec4(0.0,0.0,0.0,0.0);\n\
-\n\
-  float xOffset    = texOffset.x,\n\
-        yOffset    = texOffset.y;\n\
-\n\
-  blurFilter[0]  = vec4( 4.0*xOffset, 4.0*yOffset, 0.0, 0.0217);\n\
-  blurFilter[1]  = vec4( 3.0*xOffset, 3.0*yOffset, 0.0, 0.0434);\n\
-  blurFilter[2]  = vec4( 2.0*xOffset, 2.0*yOffset, 0.0, 0.0869);\n\
-  blurFilter[3]  = vec4( 1.0*xOffset, 1.0*yOffset, 0.0, 0.1739);\n\
-  blurFilter[4]  = vec4(         0.0,         0.0, 0.0, 0.3478);\n\
-  blurFilter[5]  = vec4(-1.0*xOffset,-1.0*yOffset, 0.0, 0.1739);\n\
-  blurFilter[6]  = vec4(-2.0*xOffset,-2.0*yOffset, 0.0, 0.0869);\n\
-  blurFilter[7]  = vec4(-3.0*xOffset,-3.0*yOffset, 0.0, 0.0434);\n\
-  blurFilter[8]  = vec4(-4.0*xOffset,-4.0*yOffset, 0.0, 0.0217);\n\
-\n\
-  for (int i = 0;i< 9;i++)\n\
-    finalColor += texture2D(GlowTexture, gl_TexCoord[0].xy + blurFilter[i].xy) * blurFilter[i].w;\n\
-\n\
-  gl_FragColor = finalColor*1.15;\n\
-}\n\
-";
-*/
   vsx_string shader_res = shader.link();
 //  printf("shader res: %s\n",shader_res.c_str());
   glsl_tex_id = glGetUniformLocationARB(shader.prog,"GlowTexture");
@@ -368,9 +191,8 @@ void main(void)\n\
     bool rebuild = false;
     if (texture_size->get() >= 10)
     {
-      gl_state->viewport_get(viewport);
-      int t_res_x = abs(viewport[2] - viewport[0]);
-      int t_res_y = abs(viewport[3] - viewport[1]);
+      int t_res_x = gl_state->viewport_get_width();
+      int t_res_y = gl_state->viewport_get_height();
 
       if (texture_size->get() == 10) {
         if (t_res_x != res_x || t_res_y != res_y) rebuild = true;
@@ -403,15 +225,26 @@ void main(void)\n\
         case 7: res_y = res_x = 16; break;
         case 8: res_y = res_x = 8; break;
         case 9: res_y = res_x = 4; break;
-        case 10: res_x = abs(viewport[2] - viewport[0]); res_y = abs(viewport[3] - viewport[1]); break;
-        case 11: res_x = abs(viewport[2] - viewport[0]) / 2; res_y = abs(viewport[3] - viewport[1]) / 2; break;
-        case 12: res_x = abs(viewport[2] - viewport[0]) / 4; res_y = abs(viewport[3] - viewport[1]) / 4; break;
-        case 13: res_x = abs(viewport[2] - viewport[0]) * 2; res_y = abs(viewport[3] - viewport[1]) * 2; break;
+        case 10:
+          res_x = gl_state->viewport_get_width();
+          res_y = gl_state->viewport_get_height();
+        break;
+        case 11:
+          res_x = gl_state->viewport_get_width() * 0.5;
+          res_y = gl_state->viewport_get_height() * 0.5;
+        break;
+        case 12:
+          res_x = gl_state->viewport_get_width() * 0.25;
+          res_y = gl_state->viewport_get_height() * 0.25;
+        break;
+        case 13:
+          res_x = gl_state->viewport_get_width() * 2.0;
+          res_y = gl_state->viewport_get_height() * 2.0;
+        break;
       };
       texture->reinit_color_buffer(res_x,res_y,true,false);
       texture2->reinit_color_buffer(res_x,res_y,true,false);
     }
-
 
     vsx_texture** ti = glow_source->get_addr();
 
@@ -448,7 +281,6 @@ void main(void)\n\
     float pixel_offset_size_y = start_value->get() * 0.1f / (float)res_y;
 
     texture->begin_capture_to_buffer();
-      glViewport(0,0,res_x,res_y);
       loading_done = true;
       glColor4f(1,1,1,1);
       glDisable(GL_BLEND);
@@ -479,7 +311,6 @@ void main(void)\n\
 
     //
     texture2->begin_capture_to_buffer();
-      glViewport(0,0,res_x,res_y);
       loading_done = true;
       glColor4f(1,1,1,1);
       glDisable(GL_BLEND);
@@ -523,7 +354,6 @@ void main(void)\n\
 
     // 2nd pass
     texture->begin_capture_to_buffer();
-      glViewport(0,0,res_x,res_y);
       loading_done = true;
       glColor4f(1,1,1,1);
       glDisable(GL_BLEND);
@@ -553,7 +383,6 @@ void main(void)\n\
     texture->valid = true;
 
     texture2->begin_capture_to_buffer();
-      glViewport(0,0,res_x,res_y);
       loading_done = true;
       glColor4f(1,1,1,1);
       glDisable(GL_BLEND);
@@ -589,9 +418,6 @@ void main(void)\n\
   }
 
   void stop() {
-  #ifdef __APPLE__
-    return;
-  #endif
     shader.stop();
     if (texture) {
       texture->deinit_buffer();
@@ -604,9 +430,6 @@ void main(void)\n\
   }
 
   void start() {
-  #ifdef __APPLE__
-    return;
-  #endif
     shader.link();
     glsl_offset_id = glGetUniformLocationARB(shader.prog,"texOffset");
     glsl_tex_id = glGetUniformLocationARB(shader.prog,"GlowTexture");
