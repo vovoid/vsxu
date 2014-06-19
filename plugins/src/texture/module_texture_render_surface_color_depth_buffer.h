@@ -9,6 +9,8 @@ class module_texture_render_surface_color_depth_buffer : public vsx_module
   vsx_module_param_int* float_texture;
   vsx_module_param_int* alpha_channel;
   vsx_module_param_texture* depth_buffer_in;
+  vsx_module_param_float* size_x;
+  vsx_module_param_float* size_y;
 
   // out
   vsx_module_param_texture* texture_result;
@@ -52,26 +54,32 @@ public:
       "and optional alpha channel.\n"
       "Dynamic textures can be very useful!";
 
-    info->in_param_spec = "render_in:render,"
-      "texture_size:enum?"
-        "2048x2048|"
-        "1024x1024|"
-        "512x512|"
-        "256x256|"
-        "128x128|"
-        "64x64|"
-        "32x32|"
-        "16x16|"
-        "8x8|"
-        "4x4|"
-        "VIEWPORT_SIZE|"
-        "VIEWPORT_SIZE_DIV_2|"
-        "VIEWPORT_SIZE_DIV_4|"
-        "VIEWPORT_SIZEx2|"
-        "VIEWPORT_SIZEx4,"
-      "float_texture:enum?no|yes,"
-      "alpha_channel:enum?no|yes,"
-      "depth_buffer:texture"
+    info->in_param_spec =
+      "render_in:render,"
+      "options:complex"
+      "{"
+        "texture_size:enum?"
+          "2048x2048|"
+          "1024x1024|"
+          "512x512|"
+          "256x256|"
+          "128x128|"
+          "64x64|"
+          "32x32|"
+          "16x16|"
+          "8x8|"
+          "4x4|"
+          "VIEWPORT_SIZE|"
+          "VIEWPORT_SIZE_DIV_2|"
+          "VIEWPORT_SIZE_DIV_4|"
+          "VIEWPORT_SIZEx2|"
+          "VIEWPORT_SIZEx4|"
+          "CUSTOM_SIZE&nc=1,"
+        "size_x:float,"
+        "size_y:float,"
+        "float_texture:enum?no|yes&nc=1,"
+        "alpha_channel:enum?no|yes&nc=1"
+      "}"
     ;
     info->out_param_spec =
       "color_buffer:texture,"
@@ -95,6 +103,12 @@ public:
 
     texture_size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "texture_size");
     texture_size->set(2);
+
+    size_x = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "size_x");
+    size_x->set(32.0);
+
+    size_y = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "size_y");
+    size_y->set(32.0);
 
     tex_size_internal = -1;
 
@@ -180,10 +194,32 @@ public:
     }
 
 
+    if (texture_size->get() == 15)
+    {
+      tex_size_internal = texture_size->get();
+
+      float i_size_x = size_x->get();
+      float i_size_y = size_y->get();
+
+      if (i_size_x < 1.0)
+        i_size_x = 1.0;
+
+      if (i_size_y < 1.0)
+        i_size_y = 1.0;
+
+      if ((int)i_size_x != res_x || (int)i_size_y != res_y)
+      {
+        res_x = (int)i_size_x;
+        res_y = (int)i_size_y;
+        rebuild = true;
+      }
+    }
+
+
     if (texture_size->get() != tex_size_internal || rebuild)
     {
-      //printf("generating new framebuffer\n");
       tex_size_internal = texture_size->get();
+
       switch (tex_size_internal) {
         case 0: res_y = res_x = 2048; break;
         case 1: res_y = res_x = 1024; break;
