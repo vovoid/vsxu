@@ -250,12 +250,21 @@ public:
             if (delta_fps < min_fps) min_fps = delta_fps;
             if (frame_time > max_render_time) max_render_time = frame_time;
             if (frame_time < min_render_time) min_render_time = frame_time;
-            myf.print(vsx_vector3<>(-0.99f,0.92f),"VSXu (c) 2003-2013 Vovoid - Alt+T=toggle this text, Ctrl+Alt+P=screenshot (data dir), Alt+F=performance mode || FrameCounter "+vsx_string_helper::i2s(frame_counter) + "   Elapsed time: "+vsx_string_helper::f2s(total_time)+"   Module Count: "+vsx_string_helper::i2s(vxe->get_num_modules())+"Average FPS "+vsx_string_helper::f2s(frame_counter/total_time),0.025f);
+            myf.print(vsx_vector3<>(-0.99f,0.92f+0.04f),
+                      vsxu_version " (c) 2003-2013 Vovoid "
+                      "- Alt+T=toggle this text - "
+                      "Ctrl+Alt+P (take screenshot) - "
+                      "Alt+F (toggle perf. mode) :: "
+                      "Frame count: "+vsx_string_helper::i2s(frame_counter)+" | "+
+                      "Elapsed time: "+vsx_string_helper::f2s(total_time)+" | "+
+                      "Modules: "+vsx_string_helper::i2s(vxe->get_num_modules())+" | "
+                      "Avg. FPS: "+vsx_string_helper::f2s(frame_counter/total_time)
+                      ,0.025f);
             myf.print
             (
               vsx_vector3<>(
                 -0.99f,
-                0.88f
+                0.88f + 0.05f
               ),
               "[Cur/Min/Max] "
               "FPS: ("+vsx_string_helper::f2s(delta_fps)+"/"+vsx_string_helper::f2s(min_fps)+"/"+vsx_string_helper::f2s(max_fps)+") "
@@ -263,7 +272,6 @@ public:
               "Ctrl+T to reset"
               ,0.025f
             );
-            //"("+vsx_string_helper::f2s(frame_time)+")
           }
         }
         if (desktop && desktop->performance_mode)

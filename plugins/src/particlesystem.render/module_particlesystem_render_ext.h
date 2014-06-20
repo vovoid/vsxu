@@ -354,7 +354,7 @@ public:
         pbcv++;
         *pbcv = pp->creation_pos.z;
         pbcv++;
-        *pbcv = tt;
+        *pbcv = pp->lifetime;
         pbcv++;
 
         num_active_particles++;

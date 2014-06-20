@@ -26,6 +26,7 @@
 // local includes
 #include "vsx_engine.h"
 
+#include "vsx_version.h"
 
 #include "vsx_widget.h"
 #include <vsx_command_client_server.h>
@@ -52,7 +53,6 @@ void vsx_window_texture_viewer::draw_2d()
     frame_delta = 0;
   }
 
-  title = "vsxu preview (slow) @ "+vsx_string_helper::i2s((int)round(fps))+" fps, Ctrl+F(ullscreen)";
   float vis = visible;
 
   if (!visible)
@@ -67,6 +67,11 @@ void vsx_window_texture_viewer::draw_2d()
   size_.y = size.y-font_size-dragborder;
   pos_.x = pos.x+dragborder;
   size_.x = size.x-dragborder*2;
+
+  title = vsxu_version " @ "+
+      vsx_string_helper::i2s( (int)ceil(size_.x*(screen_x-1)) )+"x"+
+      vsx_string_helper::i2s( (int)ceil(size_.y*(screen_y-1)) )+", "+
+      vsx_string_helper::i2s((int)round(fps))+" FPS, Ctrl+F(ullscreen)";
 
   if (visible)
     glColor4f(0,0,0,1);
