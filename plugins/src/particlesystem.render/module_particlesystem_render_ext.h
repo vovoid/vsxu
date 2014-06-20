@@ -1,3 +1,4 @@
+#include "vsx_particlesystem.h"
 #include "vsx_vbo_bucket.h"
 
 class module_particlesystem_render_ext : public vsx_module
@@ -325,9 +326,12 @@ public:
       }
     }
 
+    point_bucket.vertex_colors.allocate( (*particles->particles).size() );
+
     point_bucket.vertices.allocate( (*particles->particles).size() );
 
     float* pbv = (float*)point_bucket.vertices.get_pointer();
+    float* pbcv = (float*)point_bucket.vertex_colors.get_pointer();
 
     for (size_t i = 0; i < (*particles->particles).size(); ++i)
     {
@@ -343,11 +347,23 @@ public:
         pbv++;
         *pbv = tt;
         pbv++;
+
+        *pbcv = pp->creation_pos.x;
+        pbcv++;
+        *pbcv = pp->creation_pos.y;
+        pbcv++;
+        *pbcv = pp->creation_pos.z;
+        pbcv++;
+        *pbcv = tt;
+        pbcv++;
+
         num_active_particles++;
       }
       pp++;
     }
+
     point_bucket.invalidate_vertices();
+    point_bucket.invalidate_colors();
 
     // set sizes into normals
     point_bucket.update();
