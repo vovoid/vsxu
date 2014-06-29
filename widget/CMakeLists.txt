@@ -10,6 +10,7 @@ project (${module_id})
 # CMAKE PACKAGES ###############################################################
 ################################################################################
 find_package(Freetype REQUIRED)
+find_package(GLFW REQUIRED)
 
 
 ################################################################################
@@ -89,3 +90,26 @@ if (UNIX)
   install (FILES ${HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/widget COMPONENT Devel)
 endif()
 ################################################################################
+
+target_link_libraries(${module_id}
+  ${PNG_LIBRARIES}
+  ${JPEG_LIBRARIES}
+  ${OPENGL_LIBRARIES}
+  ${CMAKE_THREAD_LIBS_INIT}
+  ${GLEW_LIBRARY}
+  vsxu_engine
+)
+
+if(WIN32)
+  target_link_libraries(
+    ${module_id}
+    ${GLFW_LIBRARY}
+    vsxu_engine
+    vsxu_engine_graphics
+    ${GLEW_LIBRARY}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${OPENGL_LIBRARIES}
+    vsxu_engine_graphics
+  )
+endif(WIN32)
+

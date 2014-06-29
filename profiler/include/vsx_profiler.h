@@ -27,7 +27,7 @@
 #include <vsx_fifo.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <linux/unistd.h>
+#include <unistd.h>
 #include <sys/syscall.h>
 #include <sys/stat.h>
 

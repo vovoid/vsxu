@@ -100,7 +100,19 @@ typedef float    FTGL_FLOAT;
 #else
     // Compiler that is not MS Visual C++.
     // Ensure that the export symbol is defined (and blank)
+    //#define FTGL_EXPORT
+
+    #ifdef _WIN32
+    #if VSX_ENG_DLL
+    # define FTGL_EXPORT __declspec (dllexport)
+    #else /* Not BUILDING_DLL */
+    # define FTGL_EXPORT __declspec (dllimport)
+    #endif /* Not BUILDING_DLL */
+    #else
     #define FTGL_EXPORT
+    #endif
+
+
 #endif  
 
 

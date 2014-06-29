@@ -22,11 +22,5 @@ include(../cmake_globals.txt)
 # actual compilation target
 CREATE_MODULE(${module_id})
 
-# Used for OpenEXR stuff, experimental stuff
-CREATE_TARGET_LINK_LIBRARIES(
- jpeg png
-)
-#  IlmThread.a Imath.a IlmImf Iex
-
 # include common
 include(../cmake_suffix.txt)

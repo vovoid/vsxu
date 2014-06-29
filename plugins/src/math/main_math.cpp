@@ -103,6 +103,7 @@ float clip (float x, float a, float b)
 #include "module_float_sin.h"
 #include "module_float_smooth.h"
 #include "module_float_to_float3.h"
+#include "module_matrix_to_quaternion.h"
 #include "module_quaternion_dummy.h"
 #include "module_quaternion_mul.h"
 #include "module_quaternion_rotation_accumulator_2d.h"
@@ -203,6 +204,7 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 58: return (vsx_module*)(new module_quaternion_to_axis_angle);
     case 59: return (vsx_module*)(new module_bspline_matrix);
     case 60: return (vsx_module*)(new module_float_array_memory_buffer);
+    case 61: return (vsx_module*)(new module_matrix_to_quaternion);
   }
   return 0;
 }
@@ -271,11 +273,12 @@ void MOD_DM(vsx_module* m,unsigned long module)
     case 58: delete (module_quaternion_to_axis_angle*)m; break;
     case 59: delete (module_bspline_matrix*)m; break;
     case 60: delete (module_float_array_memory_buffer*)m; break;
+    case 61: delete (module_matrix_to_quaternion*)m; break;
   }
 }
 
 unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   VSX_UNUSED(environment);
-  return 61;
+  return 62;
 }

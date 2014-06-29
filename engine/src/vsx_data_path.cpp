@@ -1,12 +1,12 @@
 #include "vsx_data_path.h"
 #include "vsx_version.h"
 
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <string>
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include <string>
   #include <sys/stat.h>
-  #include <unistd.h>
 #endif
 
 #include <stdio.h>

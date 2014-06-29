@@ -11,6 +11,8 @@ target_link_libraries(
   ${CMAKE_THREAD_LIBS_INIT}
   ${GLEW_LIBRARY}
   ${OPENGL_LIBRARIES}
+  ${PNG_LIBRARIES}
+  ${JPEG_LIBRARIES}
 )
 
 if (UNIX)

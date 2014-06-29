@@ -24,6 +24,7 @@
 #include <map>
 #include <vector>
 #include <math.h>
+#include <unistd.h>
 #include "vsx_gl_global.h"
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"

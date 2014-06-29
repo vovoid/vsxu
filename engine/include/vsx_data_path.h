@@ -3,13 +3,25 @@
 
 #include <vsx_string.h>
 
-class vsx_data_path
+
+#ifdef _WIN32
+#if VSX_ENG_DLL
+# define DLLIMPORT __declspec (dllexport)
+#else /* Not BUILDING_DLL */
+# define DLLIMPORT __declspec (dllimport)
+#endif /* Not BUILDING_DLL */
+#else
+#define DLLIMPORT
+#endif
+
+
+DLLIMPORT class vsx_data_path
 {
   vsx_string data_path;
 
 public:
 
-  vsx_data_path();
+  DLLIMPORT vsx_data_path();
 
   vsx_string& data_path_get() __attribute__((always_inline))
   {

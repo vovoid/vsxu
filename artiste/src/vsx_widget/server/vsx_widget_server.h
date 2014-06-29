@@ -50,7 +50,6 @@ class vsx_widget_server : public vsx_widget {
   vsx_widget* connect_dialog;
   vsx_widget* sequencer;
   vsx_widget* seq_pool;
-  vsx_widget* profiler;
 
   vsx_vector3<> alert_delta;
   vsx_string server_message;

@@ -132,6 +132,19 @@
 #define __STDC_LIMIT_MACROS
 #include <stdint.h>
 
+
+
+#ifdef _WIN32
+#if VSX_ENG_DLL
+# define DLLIMPORT __declspec (dllexport)
+#else /* Not BUILDING_DLL */
+# define DLLIMPORT __declspec (dllimport)
+#endif /* Not BUILDING_DLL */
+#else
+#define DLLIMPORT
+#endif
+
+
 /*
  * The following value is a fundamental parameter of the algorithm.
  * It was found experimentally using methods described in Matsumoto
@@ -172,27 +185,27 @@ extern "C"
 /*
  * Functions for manipulating any generator (given a state pointer).
  */
-extern void		mts_mark_initialized(mt_state* state);
+DLLIMPORT extern void		mts_mark_initialized(mt_state* state);
 					/* Mark a PRNG state as initialized */
-extern void		mts_seed32(mt_state* state, uint32_t seed);
+DLLIMPORT extern void		mts_seed32(mt_state* state, uint32_t seed);
 					/* Set random seed for any generator */
-extern void		mts_seed32new(mt_state* state, uint32_t seed);
+DLLIMPORT extern void		mts_seed32new(mt_state* state, uint32_t seed);
 					/* Set random seed for any generator */
-extern void		mts_seedfull(mt_state* state,
+DLLIMPORT extern void		mts_seedfull(mt_state* state,
 			  uint32_t seeds[MT_STATE_SIZE]);
 					/* Set complicated seed for any gen. */
-extern void		mts_seed(mt_state* state);
+DLLIMPORT extern void		mts_seed(mt_state* state);
 					/* Choose seed from random input. */
 					/* ..Prefers /dev/urandom; uses time */
 					/* ..if /dev/urandom unavailable. */
 					/* ..Only gives 32 bits of entropy. */
-extern void		mts_goodseed(mt_state* state);
+DLLIMPORT extern void		mts_goodseed(mt_state* state);
 					/* Choose seed from more random */
 					/* ..input than mts_seed.  Prefers */
 					/* ../dev/random; uses time if that */
 					/* ..is unavailable.  Only gives 32 */
 					/* ..bits of entropy. */
-extern void		mts_bestseed(mt_state* state);
+DLLIMPORT extern void		mts_bestseed(mt_state* state);
 					/* Choose seed from extremely random */
 					/* ..input (can be *very* slow). */
 					/* ..Prefers /dev/random and reads */
@@ -200,12 +213,12 @@ extern void		mts_bestseed(mt_state* state);
 					/* ..If /dev/random is unavailable, */
 					/* ..falls back to mt_goodseed().  */
 					/* ..Not usually worth the cost.  */
-extern void		mts_refresh(mt_state* state);
+DLLIMPORT extern void		mts_refresh(mt_state* state);
 					/* Generate 624 more random values */
-extern int		mts_savestate(FILE* statefile, mt_state* state);
+DLLIMPORT extern int		mts_savestate(FILE* statefile, mt_state* state);
 					/* Save state to a file (ASCII). */
 					/* ..Returns NZ if succeeded. */
-extern int		mts_loadstate(FILE* statefile, mt_state* state);
+DLLIMPORT extern int		mts_loadstate(FILE* statefile, mt_state* state);
 					/* Load state from a file (ASCII). */
 					/* ..Returns NZ if succeeded. */
 
@@ -332,11 +345,11 @@ extern double		mt_ldrand(void);
 	}								\
 	while (0)
 
-extern mt_state		mt_default_state;
+DLLIMPORT extern mt_state		mt_default_state;
 					/* State of the default generator */
-extern double		mt_32_to_double;
+DLLIMPORT extern double		mt_32_to_double;
 					/* Multiplier to convert long to dbl */
-extern double		mt_64_to_double;
+DLLIMPORT extern double		mt_64_to_double;
 					/* Mult'r to cvt long long to dbl */
 
 /*

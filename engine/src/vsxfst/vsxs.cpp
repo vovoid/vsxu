@@ -403,7 +403,7 @@ void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,v
   while (run) {
   vsx_string cur_directory_item;
 #ifdef _WIN32
-    ss = fdp.name;
+    cur_directory_item = fdp.name;
 #else
     cur_directory_item = dp->d_name;
     // stat the file to see if it's a dir or not

@@ -56,6 +56,7 @@ public:
 
     info->in_param_spec =
       "render_in:render,"
+      "depth_buffer:texture,"
       "options:complex"
       "{"
         "texture_size:enum?"
