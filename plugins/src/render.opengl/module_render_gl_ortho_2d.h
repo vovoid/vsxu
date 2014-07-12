@@ -57,6 +57,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 bool activate_offscreen() {
   // save current matrix
   gl_state->matrix_get_v( VSX_GL_PROJECTION_MATRIX, tmpMat );
+  gl_state->matrix_mode( VSX_GL_PROJECTION_MATRIX );
   gl_state->matrix_glu_ortho_2d(0,1,0,1);
 	return true;
 }

@@ -46,6 +46,7 @@ const unsigned int matrix_target_get_vsx[] =
 #include "module_render_gl_depth_func.h"
 #include "module_render_gl_fog.h"
 #include "module_render_gl_freelook_camera.h"
+#include "module_render_gl_frustum.h"
 #include "module_render_gl_light_directional.h"
 #include "module_render_gl_line_width.h"
 #include "module_render_gl_material_param.h"
@@ -117,6 +118,7 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 25: return (vsx_module*)(new module_render_gl_build_cubemap_texture);
     case 26: return (vsx_module*)(new module_render_gl_texture_coord_gen);
     case 27: return (vsx_module*)(new module_render_gl_get_camera_orientation);
+    case 28: return (vsx_module*)(new module_render_gl_frustum);
   }
   return 0;
 }
@@ -153,6 +155,7 @@ void MOD_DM(vsx_module* m,unsigned long module)
     case 25: delete (module_render_gl_build_cubemap_texture*)m; break;
     case 26: delete (module_render_gl_texture_coord_gen*)m; break;
     case 27: delete (module_render_gl_get_camera_orientation*)m; break;
+    case 28: delete (module_render_gl_frustum*)m; break;
   }
 }
 
@@ -160,6 +163,6 @@ unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   VSX_UNUSED(environment);
   glewInit();
-  return 28;
+  return 29;
 }
 

@@ -982,6 +982,42 @@ public:
     #endif
   }
 
+  inline void matrix_frustum(double left, double right, double bottom, double top, double near, double far) {
+    #define N0 (2.0 * near) / (right - left)
+    #define N1 (2.0 * near) / (top - bottom)
+    #define A (right + left) / (right - left)
+    #define B (top + bottom) / (top - bottom)
+    #define C -(far + near) / (far - near)
+    #define D -(2.0 * far * near) / (far - near)
+
+    #define m m_temp.m
+
+    // set up the matrix
+    m[0] = N0;   m[4] = 0;    m[8]  =  A;    m[12]  = 0;
+    m[1] = 0;    m[5] = N1;   m[9]  =  B;    m[13]  = 0;
+    m[2] = 0;    m[6] = 0;    m[10] =  C;    m[14]  = D;
+    m[3] = 0;    m[7] = 0;    m[11] = -1;    m[15]  = 0;
+
+    #undef m
+    #undef N0
+    #undef N1
+    #undef A
+    #undef B
+    #undef C
+    #undef D
+
+    // prepare for multiplication
+    memcpy(&m_temp_2.m[0], &core_matrix[i_matrix_mode].m[0], sizeof(vsx_matrix<float>));
+
+    // multiply
+    core_matrix[i_matrix_mode].multiply(&m_temp, &m_temp_2);
+
+    // implement in OpenGL
+    #ifndef VSX_NO_GL
+      glMultMatrixf(m_temp.m);
+    #endif
+  }
+
   inline void matrix_glu_ortho_2d(
     float left,
     float right,
