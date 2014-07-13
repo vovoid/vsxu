@@ -29,7 +29,8 @@ class vsx_module_rendered_texture_single : public vsx_module {
   vsx_gl_state* gl_state;
 
 public:
-  vsx_module_rendered_texture_single() : texture(0),texture2(0),which_buffer(false) {};
+  vsx_module_rendered_texture_single() : texture(0),texture2(0),which_buffer(false)
+  {}
 
 void module_info(vsx_module_info* info)
 {

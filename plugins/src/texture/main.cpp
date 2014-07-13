@@ -54,6 +54,7 @@ typedef struct stat t_stat;
 #include "module_texture_load_png_cubemap.h"
 #include "module_texture_load_png.h"
 #include "module_texture_dummy.h"
+#include "module_texture_screenshot_hires.h"
 
 
 //******************************************************************************
@@ -112,7 +113,9 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 16: return (vsx_module*)(new module_texture_render_surface_color_buffer);
     case 17: return (vsx_module*)(new module_texture_render_buffer);
     case 18: return (vsx_module*)(new module_texture_dummy);
+    case 19: return (vsx_module*)(new module_texture_screenshot_hires);
   };
+
   return 0;
 }
 
@@ -134,12 +137,13 @@ void MOD_DM(vsx_module* m,unsigned long module) {
     case 16: delete (module_texture_render_surface_color_buffer*)m; break;
     case 17: delete (module_texture_render_buffer*)m; break;
     case 18: delete (module_texture_dummy*)m; break;
+    case 19: delete (module_texture_screenshot_hires*)m; break;
   }
 }
 
 unsigned long MOD_NM(vsx_engine_environment* environment) {
   VSX_UNUSED(environment);
-  return 19;
+  return 20;
 
 }
 
