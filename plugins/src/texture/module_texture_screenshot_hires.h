@@ -85,8 +85,8 @@ public:
 
     gl_state = vsx_gl_state::get_instance();
     capture_in_progress = 0;
-    M = 4;
-    N = 4;
+    M = 16;
+    N = 16;
 
     texture = new vsx_texture;
     texture->init_color_depth_buffer(512,512);
@@ -106,8 +106,10 @@ public:
     double near = 0.01;
     double far = 2000.0;
     double aspect = 1.0 / gl_state->viewport_width_div_height_get();
+    if (capture_in_progress)
+      aspect = 1.0;
     double fovy = clamp(fov->get(),1.0,180.0);
-    double right = -1.0 * tan( PI - (fovy * (PI / 180.0f)) * 0.5 ) * near;
+    double right = -0.5 * tan( PI - (fovy * (PI / 180.0f)) * 0.5 ) * near;
     double left = -right;
     double top = aspect * right;
     double bottom = -top;
@@ -128,8 +130,14 @@ public:
 
     // save current matrix
     gl_state->matrix_get_v( VSX_GL_PROJECTION_MATRIX, tmpMat );
+
+    gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+    gl_state->matrix_load_identity();
+
     gl_state->matrix_mode( VSX_GL_PROJECTION_MATRIX );
     gl_state->matrix_load_identity();
+
+
 
     if (!capture_in_progress)
     {
@@ -146,7 +154,21 @@ public:
       far
     );
 
+
+    int old_depth_mask;
+    int old_depth_test;
+
+    old_depth_mask = gl_state->depth_mask_get();
+    old_depth_test = gl_state->depth_test_get();
+
+    gl_state->depth_mask_set( 1, true );
+    gl_state->depth_test_set( 1, true );
+
     glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
+
+    gl_state->depth_mask_set( old_depth_mask, true );
+    gl_state->depth_test_set( old_depth_test, true );
+
     return true;
 
   }
@@ -162,7 +184,7 @@ public:
 
     char filename[512];
 
-    glReadPixels(0,0,512,512,GL_RGBA,GL_UNSIGNED_BYTE, pixeldata);
+    glReadPixels(0,0,512,512,GL_BGRA,GL_UNSIGNED_BYTE, pixeldata);
 
     size_t row_size = 512 * 4 * M;
     size_t subrow_size = 512*4;

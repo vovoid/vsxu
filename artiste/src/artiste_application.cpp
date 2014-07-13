@@ -375,7 +375,6 @@ public:
       jpeg.m_nResY = viewport[3];
       jpeg.m_pBuf = (unsigned char*)pixeldata_flipped;
 
-      //char filename[32768];
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
       if (access((vsx_data_path::get_instance()->data_path_get()+"screenshots").c_str(),0) != 0) mkdir((vsx_data_path::get_instance()->data_path_get()+"/screenshots").c_str(),0700);
       #endif
