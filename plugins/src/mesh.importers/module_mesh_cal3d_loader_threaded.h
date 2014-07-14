@@ -558,6 +558,7 @@ public:
           //vec_d[a] = (t - n * t.dot_product(&n) );
           vec_d[a] = (t - n * t.dot_product(&n) );
           vec_d[a].normalize();
+          vec_d[a].w = (float)a;
 
           // Calculate handedness
           //tangent[a].w = (Dot(Cross(n, t), tan2[a]) < 0.0F) ? -1.0F : 1.0F;
