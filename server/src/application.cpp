@@ -136,7 +136,7 @@ public:
 	double gui_fullscreen_fpstimer;
 	vsx_command_s pgv;
 	vsxu_draw() : first(true),frame_count(0), gui_g_time(0), gui_f_time(0), gui_fullscreen_fpstimer(0)
-	{};
+  {}
 
 	void draw() {
 	  dt = gui_t.dtime();

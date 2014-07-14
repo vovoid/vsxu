@@ -357,12 +357,9 @@ int main(int argc, char* argv[])
   glfwSetWindowTitle( titlestr );
 
 
-  vsx_timer frame_delay;
   int initial_vram_free = 0;
   while( running )
   {
-    frame_delay.start();
-
     if (mouse_pos_type)
     {
       if (mouse_pos_type == 1) app_mouse_move(last_x,last_y);
@@ -402,9 +399,6 @@ int main(int argc, char* argv[])
 
     }
 
-
-    app_pre_draw();
-
     // Get time and mouse position
     t = glfwGetTime();
     glfwGetMousePos( &x, &y );
@@ -440,27 +434,10 @@ int main(int argc, char* argv[])
 
       // Clear color buffer
         glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();	// Reset The Modelview Matrix
 
     app_draw(0);
 
     glfwSwapBuffers();
-
-    if (!vsync)
-    {
-
-      float dtime = frame_delay.dtime();
-
-      if (dtime < 1.0f/60.0f)
-      {
-        float sleeptime = (1.0f / 60.0f - dtime)*1000000.0f;
-        usleep( (useconds_t) sleeptime );
-      }
-    }
 
 
     // Check if the ESC key was pressed or the window was closed
