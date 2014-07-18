@@ -85,8 +85,8 @@ public:
 
     gl_state = vsx_gl_state::get_instance();
     capture_in_progress = 0;
-    M = 16;
-    N = 16;
+    M = 32;
+    N = 32;
 
     texture = new vsx_texture;
     texture->init_color_depth_buffer(512,512);
@@ -164,6 +164,7 @@ public:
     gl_state->depth_mask_set( 1, true );
     gl_state->depth_test_set( 1, true );
 
+    glClearColor(0,0,0,0);
     glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
 
     gl_state->depth_mask_set( old_depth_mask, true );
