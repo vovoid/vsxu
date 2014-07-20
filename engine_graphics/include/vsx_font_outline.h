@@ -26,7 +26,7 @@
 
 #include "vsx_color.h"
 #include "vsxfst.h"
-#include "vsx_error.h"
+#include "debug/vsx_error.h"
 
 typedef struct
 {

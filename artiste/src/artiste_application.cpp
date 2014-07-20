@@ -38,7 +38,8 @@
 #include <vsx_version.h>
 #include <vsx_engine.h>
 #include <vsx_module_list_factory.h>
-#include <vsx_error.h>
+#include <debug/vsx_error.h>
+#include <debug/vsx_backtrace.h>
 #include <vsx_data_path.h>
 
 #include "log/vsx_log_a.h"

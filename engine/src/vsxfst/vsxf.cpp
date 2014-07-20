@@ -49,7 +49,7 @@
 
 #include "vsx_platform.h"
 #include "vsx_version.h"
-#include "vsx_error.h"
+#include "debug/vsx_error.h"
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   #include <stdio.h>

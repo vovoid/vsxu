@@ -44,7 +44,7 @@
 
 #include "vsx_argvector.h"
 #include "vsxfst.h"
-#include "vsx_error.h"
+#include "debug/vsx_error.h"
 
 #ifdef _WIN32
 #include <windows.h>

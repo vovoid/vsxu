@@ -23,7 +23,7 @@
 
 #include "vsx_widget.h"
 #include "vsx_widget_profiler_timeline.h"
-#include <vsx_error.h>
+#include <debug/vsx_error.h>
 #include <gl_helper.h>
 
 vsx_widget_profiler_timeline::vsx_widget_profiler_timeline()

@@ -30,7 +30,7 @@
 #include <vsx_timer.h>
 #include <vsxfst.h>
 #include <vsx_string_helper.h>
-#include <vsx_error.h>
+#include <debug/vsx_error.h>
 
 // You can set VSX_PROFILER_MAX_THREADS in your make script as well
 
@@ -271,7 +271,7 @@ public:
 
   // Call as many times per thread as needed to get local pointers
   // However try to minimize it.
-  vsx_profiler* get_profiler() __attribute__((always_inline))
+  vsx_profiler* get_profiler(bool try_to_initialize = true)
   {
     // identify thread, if reaching 0 = first time, cache the value
     pid_t local_thread_id = gettid();
@@ -285,8 +285,15 @@ public:
       if (thread_list[i] == local_thread_id)
         return &profiler_list[i];
 
+      if (thread_list[i] == 0 && try_to_initialize)
+      {
+        init_profiler();
+        return get_profiler(false);
+      }
+
       if (thread_list[i] == 0)
         ERROR_EXIT("VSX PROFILER: Trying to get profiler without initializing it first. Reached end of profiler array.", 1);
+
     }
     return 0x0;
   }

@@ -22,7 +22,7 @@
 */
 
 // engine
-#include <vsx_error.h>
+#include <debug/vsx_error.h>
 
 // engine graphics
 

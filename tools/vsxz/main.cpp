@@ -29,7 +29,7 @@
 #include <vsx_argvector.h>
 #include <vsx_string.h>
 #include <vsxfst.h>
-#include <vsx_error.h>
+#include <debug/vsx_error.h>
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -34,7 +34,7 @@
     #include <pthread.h>
   #endif
 #endif
-#include <vsx_error.h>
+#include <debug/vsx_error.h>
 #include <vsx_gl_state.h>
 
 std::map<vsx_string, vsx_texture_glist_holder> vsx_texture::t_glist;
