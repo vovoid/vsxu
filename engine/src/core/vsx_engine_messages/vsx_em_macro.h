@@ -124,18 +124,16 @@ if (cmd == "macro_prerun")
 
 
 
-
-
 if (cmd == "macro_create")
 {
+  // macro_create [macro_name] [pos_x] [pos_y] [size]
+
   if (c->parts.size() != 5)
   {
     cmd_out->add_raw("invalid_command wrong_number_of_arguments "+base64_encode(c->raw));
     goto process_message_queue_end;
   }
 
-  // syntax:
-  //  macro_create macro1 [pos_x] [pos_y] [size]
   if (!get_component_by_name(c->parts[1]))
   {
     vsx_comp* comp = add(c->parts[1]);

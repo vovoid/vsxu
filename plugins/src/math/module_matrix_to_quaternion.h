@@ -31,6 +31,7 @@ class module_matrix_to_quaternion: public vsx_module
   vsx_module_param_quaternion* result_quaternion;
 
   //internal
+  vsx_matrix<> m;
 
 public:
 
@@ -58,6 +59,7 @@ public:
     //--------------------------------------------------------------------------------------------------
 
     source_matrix = (vsx_module_param_matrix*)in_parameters.create(VSX_MODULE_PARAM_ID_MATRIX,"source_matrix");
+    source_matrix->set(m);
 
 
     //--------------------------------------------------------------------------------------------------
@@ -74,7 +76,6 @@ public:
   {
     vsx_quaternion<> res_quat;
 
-    vsx_matrix<> m;
     m = source_matrix->get();
     res_quat.from_matrix(&m);
     result_quaternion->set(res_quat.x, 0);
