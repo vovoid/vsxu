@@ -161,8 +161,19 @@ if (cmd == "component_assign")
   // 3. Move/rename the components
   // 4. Go through all connection infos and reconnect as best we can with the VSXu CONNECT_FAR algorithm, create aliases when needed
 
+  if (c->parts.size() != 5)
+  {
+    cmd_out->add_raw("invalid_command wrong_number_of_arguments "+base64_encode(c->raw));
+    goto process_message_queue_end;
+  }
+
+
+
+
   vsx_comp* dest = get_component_by_name(c->parts[1]);
-  if (!dest) c->parts[1] = "";
+  if (!dest)
+    c->parts[1] = "";
+
   vsx_string deli = ",";
   std::vector<vsx_string> comp_source;
   explode(c->parts[2],deli,comp_source);
@@ -196,57 +207,60 @@ if (cmd == "component_assign")
     }
   }
   if (!namecheck)
-    cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Error, there is already a component named "+first_part+comp_name));
-  else
   {
-    list<vsx_engine_param_connection_info*> abs_connections_in;
-    list<vsx_engine_param_connection_info*> abs_connections_out;
-    for (std::vector<vsx_comp*>::iterator it = components.begin(); it != components.end(); ++it) {
-      // 0. Check that we actually CAN move it - that there isn't already a component on the same level sharing the same name
-      //bool already_there = false;
-      // 1. Get a list of connections on the engine level.
-      //    this needs to contain info on to what engine_param_list the connection is headed, and wich is the real owner in our component
-      // 1a. Start with the in-bound paramlist
-      vsx_engine_param_list* in = (*it)->get_params_in();
-      vsx_engine_param_list* out = (*it)->get_params_out();
-      in->get_abs_connections(&abs_connections_in);
-      out->get_abs_connections(&abs_connections_out);
-    }
-
-    // the first component is the 'MASTER' - the one the user moves.
-    // Thus we can calculate the distance between all selected components and this one and then apply this
-    // delta value to the new position
-    vsx_vector3<> new_position(vsx_string_helper::s2f(c->parts[3]),vsx_string_helper::s2f(c->parts[4]));
-    vsx_vector3<> master_position = ((*(components.begin()))->position);
-
-    for (std::vector<vsx_comp*>::iterator it = components.begin(); it != components.end(); ++it) {
-      // 2. Unalias/Disconnect all in the engine level
-      vsx_engine_param_list* in = (*it)->get_params_in();
-      vsx_engine_param_list* out = (*it)->get_params_out();
-      in->disconnect_abs_connections();
-      out->disconnect_abs_connections();
-
-      // 3. Move/rename the component
-      rename_component((*it)->name,c->parts[1],"$");
-
-      // a true vector operation \o/
-      (*it)->position = new_position + (*it)->position - master_position;
-
-      // old positioning code, TODO: remove this in 0.1.19
-      //(*it)->position.x = vsx_string_helper::s2f(c->parts[3]);
-      //(*it)->position.y = vsx_string_helper::s2f(c->parts[4]);
-
-    }
-
-    for (list<vsx_engine_param_connection_info*>::iterator it = abs_connections_in.begin(); it != abs_connections_in.end(); ++it) {
-      (*it)->dest->connect_far_abs(*it,(*it)->localorder);
-      delete *it;
-    }
-    for (list<vsx_engine_param_connection_info*>::iterator it = abs_connections_out.begin(); it != abs_connections_out.end(); ++it) {
-      (*it)->dest->connect_far_abs(*it,(*it)->localorder);
-      delete *it;
-    }
+    cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Error, there is already a component named "+first_part+comp_name));
+    goto process_message_queue_end;
   }
+
+  list<vsx_engine_param_connection_info*> abs_connections_in;
+  list<vsx_engine_param_connection_info*> abs_connections_out;
+  for (std::vector<vsx_comp*>::iterator it = components.begin(); it != components.end(); ++it) {
+    // 0. Check that we actually CAN move it - that there isn't already a component on the same level sharing the same name
+    //bool already_there = false;
+    // 1. Get a list of connections on the engine level.
+    //    this needs to contain info on to what engine_param_list the connection is headed, and wich is the real owner in our component
+    // 1a. Start with the in-bound paramlist
+    vsx_engine_param_list* in = (*it)->get_params_in();
+    vsx_engine_param_list* out = (*it)->get_params_out();
+    in->get_abs_connections(&abs_connections_in);
+    out->get_abs_connections(&abs_connections_out);
+  }
+
+  // the first component is the 'MASTER' - the one the user moves.
+  // Thus we can calculate the distance between all selected components and this one and then apply this
+  // delta value to the new position
+  vsx_vector3<> new_position(vsx_string_helper::s2f(c->parts[3]),vsx_string_helper::s2f(c->parts[4]));
+  vsx_vector3<> master_position = ((*(components.begin()))->position);
+
+  for (std::vector<vsx_comp*>::iterator it = components.begin(); it != components.end(); ++it) {
+    // 2. Unalias/Disconnect all in the engine level
+    vsx_engine_param_list* in = (*it)->get_params_in();
+    vsx_engine_param_list* out = (*it)->get_params_out();
+    in->disconnect_abs_connections();
+    out->disconnect_abs_connections();
+
+    // 3. Move/rename the component
+    rename_component((*it)->name,c->parts[1],"$");
+
+    // a true vector operation \o/
+    (*it)->position = new_position + (*it)->position - master_position;
+
+    // old positioning code, TODO: remove this in 0.1.19
+    //(*it)->position.x = vsx_string_helper::s2f(c->parts[3]);
+    //(*it)->position.y = vsx_string_helper::s2f(c->parts[4]);
+
+  }
+
+  for (list<vsx_engine_param_connection_info*>::iterator it = abs_connections_in.begin(); it != abs_connections_in.end(); ++it) {
+    (*it)->dest->connect_far_abs(*it,(*it)->localorder);
+    delete *it;
+  }
+
+  for (list<vsx_engine_param_connection_info*>::iterator it = abs_connections_out.begin(); it != abs_connections_out.end(); ++it) {
+    (*it)->dest->connect_far_abs(*it,(*it)->localorder);
+    delete *it;
+  }
+
   cmd_out->add_raw(c->parts[0]+"_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4]);
   goto process_message_queue_end;
 }

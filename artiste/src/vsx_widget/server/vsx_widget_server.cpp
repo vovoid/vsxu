@@ -938,11 +938,9 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
   if (cmd_out)
   {
     if (t->cmd == "add_empty_macro") {
-      //printf("empty: %s\n",t->cmd_data.c_str());
       cmd_out->add_raw("macro_create "+get_unique_name("empty")+" "+str_replace(","," ",t->cmd_data)+" 0.1");
     } else
     if (t->cmd == "add_note") {
-      //printf("empty: %s\n",t->cmd_data.c_str());
       cmd_out->add_raw("note_create "+get_unique_name("note")+" "+t->cmd_data+",0.0 0.05,0.05,0.0 "+base64_encode("text")+" 0.004");
     } else
     if (t->cmd == "delete_sequencer") {
@@ -958,12 +956,9 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
     else
     if (t->cmd == "show_module_browser_list") {
       front(module_chooser_list);
-      //((vsx_module_chooser*)module_chooser_list)->message = "DRAG MODULE ONTO DESKTOP";
-      //((vsx_widget_ultra_chooser*)module_chooser)->mode = 0;
       ((vsx_module_chooser_list*)module_chooser_list)->show();
     }
     else
-    //
     if (t->cmd == "show_connect_dialog")
     {
       ((dialog_query_string*)connect_dialog)->name = "connect";

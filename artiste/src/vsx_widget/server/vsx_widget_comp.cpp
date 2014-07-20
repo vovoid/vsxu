@@ -143,7 +143,6 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
   } else
   if (t->cmd == "add_empty_macro")
   {
-    printf("empty: %s\n",t->cmd_data.c_str());
     command_q_b.add_raw("macro_create macros;empty "+name+"."+"empty"+" "+str_replace(","," ",t->cmd_data)+" 0.1");
     server->vsx_command_queue_b(this);
     return;
@@ -1243,12 +1242,6 @@ void vsx_widget_component::event_mouse_down(vsx_widget_distance distance,vsx_wid
 void vsx_widget_component::event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button)
 {
   VSX_UNUSED(coords);
-   //if (ctrl && button == GLUT_RIGHT_BUTTON) {
-     //if (component_type != "screen") {
-//         command_q_b.add_raw("component_delete "+name);
-//         server->vsx_command_queue_b(this);
-//       }
-//     } else
   if (component_type == "macro") {
     if (button == 0 && alt && !shift && !ctrl) {
       command_q_b.add_raw("add_empty_macro "+vsx_string_helper::f2s(distance.center.x)+","+vsx_string_helper::f2s(distance.center.y));
@@ -1256,7 +1249,6 @@ void vsx_widget_component::event_mouse_double_click(vsx_widget_distance distance
     } else
 
     if (alt && button == 2 && !ctrl && !shift) {
-      //macro_toggle();
       return;
     } else
     if (button == 0 && !ctrl && !shift && !alt) {

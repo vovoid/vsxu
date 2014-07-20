@@ -776,7 +776,7 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
 
     // this shouldn't be reached unless no command is performed and thus jumped
     // to process_message_queue_end
-    cmd_out->add("invalid","command");
+    cmd_out->add_raw("invalid_command unknown_command");
 
 
     #undef cmd

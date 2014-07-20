@@ -128,24 +128,28 @@ if (cmd == "macro_prerun")
 
 if (cmd == "macro_create")
 {
-  if (c->parts.size() == 5)
+  if (c->parts.size() != 5)
   {
-    // syntax:
-    //  macro_create macro1 [pos_x] [pos_y] [size]
-    if (!get_component_by_name(c->parts[1]))
-    {
-      vsx_comp* comp = add(c->parts[1]);
-      // ok we force this to boo macrooo
-      comp->component_class = "macro";
-      comp->position.x = vsx_string_helper::s2f(c->parts[2]);
-      comp->position.y = vsx_string_helper::s2f(c->parts[3]);
-      comp->size = vsx_string_helper::s2f(c->parts[4]);
-      // the code creating the macro seems pretty similar to that of the component eh?
-      cmd_out->add_raw(vsx_string("component_create_ok ")+c->parts[1]+" "+get_component_by_name(c->parts[1])->component_class+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4]);
-      goto process_message_queue_end;
-    }
-    cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("There is already a macro '"+c->parts[1]));
+    cmd_out->add_raw("invalid_command wrong_number_of_arguments "+base64_encode(c->raw));
+    goto process_message_queue_end;
   }
+
+  // syntax:
+  //  macro_create macro1 [pos_x] [pos_y] [size]
+  if (!get_component_by_name(c->parts[1]))
+  {
+    vsx_comp* comp = add(c->parts[1]);
+    // ok we force this to boo macrooo
+    comp->component_class = "macro";
+    comp->position.x = vsx_string_helper::s2f(c->parts[2]);
+    comp->position.y = vsx_string_helper::s2f(c->parts[3]);
+    comp->size = vsx_string_helper::s2f(c->parts[4]);
+    // the code creating the macro seems pretty similar to that of the component eh?
+    cmd_out->add_raw(vsx_string("component_create_ok ")+c->parts[1]+" "+get_component_by_name(c->parts[1])->component_class+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4]);
+    goto process_message_queue_end;
+  }
+  cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("There is already a macro '"+c->parts[1]));
+
   goto process_message_queue_end;
 }
 
