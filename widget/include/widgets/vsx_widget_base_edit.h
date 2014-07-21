@@ -27,6 +27,8 @@
 #include "vsx_widget_scrollbar.h"
 #include "vsx_widget_panel.h"
 
+#include "vsx_widget_dllimport.h"
+
 /* Base Edit
  * ---------
  * This widget serves as a text editor and item picker. If you turn editing off
@@ -36,7 +38,7 @@
  *
  */
 
-class vsx_widget_base_edit : public vsx_widget_panel {
+class WIDGET_DLLIMPORT vsx_widget_base_edit : public vsx_widget_panel {
   std::vector<vsx_string> lines;
   std::vector<vsx_string> lines_p;
   std::vector<int> lines_visible;
@@ -99,7 +101,7 @@ public:
 
 };
 
-class vsx_widget_editor : public vsx_widget_panel {
+class WIDGET_DLLIMPORT vsx_widget_editor : public vsx_widget_panel {
 public:
   vsx_widget_scrollbar* scrollbar_horiz;
   vsx_widget_scrollbar* scrollbar_vert;

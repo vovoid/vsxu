@@ -1,14 +1,17 @@
 #ifndef VSX_BACKTRACE_H
 #define VSX_BACKTRACE_H
 
-
 #include <vsx_platform.h>
+
+#if (PLATFORM_FAMILY != PLATFORM_FAMILY_WINDOWS)
+
 #include <stdio.h>
 #include <errno.h>
 #include <execinfo.h>
 #include <unistd.h>
 #include <string.h>
 #include <malloc.h>
+#endif
 
 namespace vsx_backtrace
 {

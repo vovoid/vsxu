@@ -190,7 +190,7 @@ void vsx_widget_desktop::draw()
   glColor4f(1,1,1,1);
 
   if (!mtex.bind())
-    ERROR_RETURN("Could not bind texture");
+    VSX_ERROR_RETURN("Could not bind texture");
 
     glBegin(GL_QUADS);
       glTexCoord2f(0, 0);

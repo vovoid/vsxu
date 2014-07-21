@@ -33,7 +33,7 @@ enum align{
   a_right
 };
 
-class vsx_widget_2d_label : public vsx_widget
+class WIDGET_DLLIMPORT vsx_widget_2d_label : public vsx_widget
 {
 public:
   bool inside_xyd(vsx_vector3<> world, vsx_vector3<> screen)

@@ -21,6 +21,8 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include "vsx_widget_dllimport.h"
+
 class vsx_widget_time
 {
 
@@ -55,5 +57,5 @@ public:
     return delta_time;
   }
 
-  static vsx_widget_time* get_instance();
+  WIDGET_DLLIMPORT static vsx_widget_time* get_instance();
 };

@@ -5,8 +5,8 @@ class module_render_gl_frustum : public vsx_module
   vsx_module_param_float* right;
   vsx_module_param_float* bottom;
   vsx_module_param_float* top;
-  vsx_module_param_float* near;
-  vsx_module_param_float* far;
+  vsx_module_param_float* z_near;
+  vsx_module_param_float* z_far;
 
   vsx_module_param_render* render_in;
   // out
@@ -57,10 +57,10 @@ public:
     bottom->set(-0.5);
     top = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"top");
     top->set(0.5);
-    near = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"near");
-    near->set(0.01);
-    far = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"far");
-    far->set(2000.0);
+    z_near = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"near");
+    z_near->set(0.01);
+    z_far = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"far");
+    z_far->set(2000.0);
 
     render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
     render_in->run_activate_offscreen = true;
@@ -79,7 +79,7 @@ public:
 
     gl_state->matrix_frustum(left->get(), right->get(),
                              bottom->get(), top->get(),
-                             near->get(), far->get()
+                             z_near->get(), z_far->get()
                              );
     return true;
   }

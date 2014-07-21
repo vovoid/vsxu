@@ -24,7 +24,9 @@
 #ifndef VSX_WIDGET_CAMERA_H
 #define VSX_WIDGET_CAMERA_H
 
-class vsx_widget_camera
+#include "vsx_widget_dllimport.h"
+
+class WIDGET_DLLIMPORT vsx_widget_camera
 {
   double xps, yps, zps; //current speed
   double xpd, ypd, zpd; //current direction

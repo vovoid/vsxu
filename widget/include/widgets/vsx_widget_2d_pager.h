@@ -27,7 +27,7 @@
 
 #include "vsx_widget.h"
 
-class vsx_widget_2d_pager : public vsx_widget
+class WIDGET_DLLIMPORT vsx_widget_2d_pager : public vsx_widget
 {
   bool outside;
   //vsx_font myf;

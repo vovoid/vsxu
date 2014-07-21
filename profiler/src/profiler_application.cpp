@@ -190,7 +190,7 @@ void app_pre_draw()
 bool app_draw()
 {
   if (!my_draw)
-    ERROR_RETURN_V("my draw is 0x0", false);
+    VSX_ERROR_RETURN_V("my draw is 0x0", false);
 
   my_draw->draw();
   return true;

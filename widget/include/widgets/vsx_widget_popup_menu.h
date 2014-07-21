@@ -25,8 +25,10 @@
 #define VSX_WIDGET_POPUP_MENU_H
 
 #include "vsx_widget.h"
+#include "vsx_widget_dllimport.h"
 
-class vsx_widget_popup_menu : public vsx_widget
+
+class WIDGET_DLLIMPORT vsx_widget_popup_menu : public vsx_widget
 {
   bool oversub;
 public:

@@ -29,7 +29,6 @@
 
 #include "vsx_string.h"
 #include "vsxg.h"
-//#include "glew.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>

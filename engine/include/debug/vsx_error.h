@@ -4,7 +4,7 @@
 #include "vsx_backtrace.h"
 
 // Error macro
-#define ERROR_RETURN(s) \
+#define VSX_ERROR_RETURN(s) \
 { \
   vsx_printf("**********************************************************************************\n");\
   vsx_printf("ERROR in %s#%d, %s:    %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, s); \
@@ -12,7 +12,7 @@
   return; \
 }
 
-#define ERROR_RETURN_S(s,s2) \
+#define VSX_ERROR_RETURN_S(s,s2) \
 { \
   vsx_printf("**********************************************************************************\n");\
   vsx_printf("ERROR in %s#%d, %s:    %s, %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, s, s2); \
@@ -20,7 +20,7 @@
   return; \
 }
 
-#define ERROR_CONTINUE(s) \
+#define VSX_ERROR_CONTINUE(s) \
 { \
   vsx_printf("**********************************************************************************\n");\
   vsx_printf("ERROR in %s#%d, %s:    %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, s); \
@@ -29,7 +29,7 @@
 }
 
 
-#define ERROR_EXIT(s,i) \
+#define VSX_ERROR_EXIT(s,i) \
 { \
   vsx_printf("**********************************************************************************\n");\
   vsx_printf("ERROR in %s#%d, %s:    %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, s); \
@@ -38,7 +38,7 @@
   exit(i); \
 }
 
-#define ERROR_RETURN_V(s,iret) \
+#define VSX_ERROR_RETURN_V(s,iret) \
 { \
   vsx_printf("**********************************************************************************\n");\
   vsx_printf("ERROR in %s#%d, %s:    %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, s); \
@@ -46,7 +46,7 @@
   return iret; \
 }
 
-#define ERROR_INFO(s) \
+#define VSX_ERROR_INFO(s) \
 { \
   vsx_printf("**********************************************************************************\n");\
   vsx_printf("INFO in %s#%d, %s:    %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, s); \

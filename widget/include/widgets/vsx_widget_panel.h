@@ -26,7 +26,7 @@
 
 #include <vsx_widget.h>
 
-class vsx_widget_panel : public vsx_widget {
+class WIDGET_DLLIMPORT vsx_widget_panel : public vsx_widget {
 public:
   bool size_from_parent;
   bool pos_from_parent;
@@ -42,7 +42,7 @@ public:
 #define VSX_WIDGET_SPLIT_PANEL_VERT 0 
 #define VSX_WIDGET_SPLIT_PANEL_HORIZ 1 
 
-class vsx_widget_split_panel : public vsx_widget_panel {
+class WIDGET_DLLIMPORT vsx_widget_split_panel : public vsx_widget_panel {
   // 2 x base_editor
 public:
   float split_pos; // 0 -> 1

@@ -133,8 +133,9 @@ if(WIN32)
     wsock32
     ws2_32
     vsxu_engine
-    vsxu_engine_graphics
+    vsx_widget
     ${GLEW_LIBRARY}
+    vsxu_engine_graphics
     ${CMAKE_THREAD_LIBS_INIT}
     gdi32
     ${OPENGL_LIBRARIES}

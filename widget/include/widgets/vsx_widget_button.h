@@ -26,7 +26,7 @@
 
 #include "vsx_widget.h"
 
-class vsx_widget_button : public vsx_widget
+class WIDGET_DLLIMPORT vsx_widget_button : public vsx_widget
 {
   bool outside;
 public:

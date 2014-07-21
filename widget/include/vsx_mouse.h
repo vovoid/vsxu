@@ -29,6 +29,7 @@
 
 #include <vector/vsx_vector3.h>
 
+#include "vsx_widget_dllimport.h"
 #define MOUSE_CURSOR_ARROW 0
 #define MOUSE_CURSOR_HAND 1
 #define MOUSE_CURSOR_IBEAM 2
@@ -37,7 +38,7 @@
 #define MOUSE_CURSOR_WE 5
 #define MOUSE_CURSOR_NESW 6
 #define MOUSE_CURSOR_NWSE 7
-class vsx_mouse
+class WIDGET_DLLIMPORT vsx_mouse
 {
   int cursor;
   bool visible;

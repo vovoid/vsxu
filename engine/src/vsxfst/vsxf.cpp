@@ -158,7 +158,7 @@ int vsxf::archive_add_file
   {
     fp = fopen(fopen_filename.c_str(),"rb");
     if (!fp)
-      ERROR_RETURN_V("fp is not valid", 1);
+      VSX_ERROR_RETURN_V("fp is not valid", 1);
 
     fseek (fp, 0, SEEK_END);
     data_size = ftell(fp);
@@ -166,7 +166,7 @@ int vsxf::archive_add_file
     data = new char[data_size];
 
     if ( !fread(data, sizeof(char), data_size, fp) && data_size != 0 )
-      ERROR_RETURN_V("Error reading file!", 2);
+      VSX_ERROR_RETURN_V("Error reading file!", 2);
    }
 
   fseek(archive_handle,0,SEEK_END);
@@ -230,11 +230,11 @@ int vsxf::archive_load(const char* filename, bool preload_compressed_data)
   char header[5];
   header[4] = 0;
   if (!fread(header,sizeof(char),4,archive_handle))
-    ERROR_RETURN_V("VSXz Reading header size with fread failed!",2);
+    VSX_ERROR_RETURN_V("VSXz Reading header size with fread failed!",2);
 
   vsx_string hs(header);
   if (hs != "VSXz")
-    ERROR_RETURN_V("VSXz tag is wrong",2);
+    VSX_ERROR_RETURN_V("VSXz tag is wrong",2);
 
   while (fread(&size,sizeof(uint32_t),1,archive_handle) != 0)
   {
@@ -257,7 +257,7 @@ int vsxf::archive_load(const char* filename, bool preload_compressed_data)
       finfo.set_compressed_data( malloc(finfo.compressed_size) );
       size_t rb = fread(finfo.get_compressed_data(), 1, size, archive_handle);
       if (!rb)
-        ERROR_EXIT("Could not read compressed data",100)
+        VSX_ERROR_EXIT("Could not read compressed data",100)
       archive_files.push_back(finfo);
       continue;
     }
@@ -339,13 +339,13 @@ void* vsxf::worker(void* p)
     vsxf_archive_info* handle = (*my_work_list)[i];
 
     if ( 0x0 == handle->get_compressed_data() )
-      ERROR_CONTINUE("Compressed data is NULL.");
+      VSX_ERROR_CONTINUE("Compressed data is NULL.");
 
     void* outBuffer = 0;
     size_t outSize;
     size_t outSizeProcessed;
     if (LzmaRamGetUncompressedSize((unsigned char*) handle->get_compressed_data() , handle->compressed_size, &outSize) != 0)
-      ERROR_CONTINUE("LZMA Data Error Getting Uncompressed size");
+      VSX_ERROR_CONTINUE("LZMA Data Error Getting Uncompressed size");
 
     if (outSize != 0)
     {
@@ -453,7 +453,7 @@ vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
   }
 
   if (!archive_handle)
-    ERROR_RETURN_V("archive handle not valid",0x0);
+    VSX_ERROR_RETURN_V("archive handle not valid",0x0);
 
   vsx_string mode_search(mode);
   if (mode_search.find("r") != -1)
@@ -514,7 +514,7 @@ vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
         size_t outSize;
         size_t outSizeProcessed;
         if (LzmaRamGetUncompressedSize((unsigned char*)inBuffer, archive_files[i].compressed_size, &outSize) != 0)
-          ERROR_RETURN_V("LZMA Data Error Getting Uncompressed size", 0x0);
+          VSX_ERROR_RETURN_V("LZMA Data Error Getting Uncompressed size", 0x0);
 
 
         if (outSize == 0)
@@ -629,7 +629,7 @@ char* vsxf::f_gets_entire(vsxf_handle* handle)
     buf[size] = 0;
     return buf;
   }
-  ERROR_EXIT("Error allocating memory",1);
+  VSX_ERROR_EXIT("Error allocating memory",1);
 }
 
 char* vsxf::f_gets(char* buf, unsigned long max_buf_size, vsxf_handle* handle)

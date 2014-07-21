@@ -168,7 +168,7 @@ public:
 
     // Some sanity checks
     if ( file_size % sizeof(vsx_profile_chunk) )
-      ERROR_RETURN("Profile data file is not a multiple of chunk size.");
+      VSX_ERROR_RETURN("Profile data file is not a multiple of chunk size.");
 
     size_t chunks_in_file = file_size / sizeof(vsx_profile_chunk);
 
@@ -178,7 +178,7 @@ public:
     vsx_printf("VSX PROFILER: loaded profile with %ld chunks\n", chunks_in_file);
 
     if (current_profile.size() < 3)
-      ERROR_RETURN("not enough data in profile");
+      VSX_ERROR_RETURN("not enough data in profile");
 
     vsx_profile_chunk& first_profile = current_profile[0];
     vsx_profile_chunk& last_profile = current_profile[current_profile.size()-2];
@@ -186,7 +186,7 @@ public:
     cpu_clock_start = first_profile.cycles;
 
     if (last_profile.flags != VSX_PROFILE_CHUNK_FLAG_TIMESTAMP)
-      ERROR_RETURN("No timestamp in data file, can't analyze it.");
+      VSX_ERROR_RETURN("No timestamp in data file, can't analyze it.");
 
     current_max_time = vsx_string_helper::s2f( vsx_string( last_profile.tag, 32) );
     cpu_clock_end = last_profile.cycles;
@@ -259,7 +259,7 @@ public:
     VSX_UNUSED(t_end);
 
     if (current_profile.size() < 2)
-      ERROR_RETURN("Not enough chunks in loaded profile data");
+      VSX_ERROR_RETURN("Not enough chunks in loaded profile data");
 
 //    uint64_t cycles_begin_time = cpu_clock_start + (uint64_t)(t_start * cycles_per_second);
 //    uint64_t cycles_end_time = cpu_clock_start + (uint64_t)(t_end * cycles_per_second);

@@ -76,7 +76,7 @@ public:
   void run() {
     vsx_mesh<>** p = mesh_in->get_addr();
     if (!p)
-      ERROR_RETURN("mesh is invalid");
+      VSX_ERROR_RETURN("mesh is invalid");
 
     if
     (

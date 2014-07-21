@@ -36,12 +36,12 @@ int vsx_font_outline::process_lines()
 void vsx_font_outline::load_font(vsx_string font_path)
 {
   if (!filesystem)
-    ERROR_RETURN("filesystem not set");
+    VSX_ERROR_RETURN("filesystem not set");
 
   vsxf_handle *fp;
 
   if ((fp = filesystem->f_open(font_path.c_str(), "rb")) == NULL)
-    ERROR_RETURN_S("font not found: ",cur_font.c_str());
+    VSX_ERROR_RETURN_S("font not found: ",cur_font.c_str());
 
   if (ftfont) {
     delete (FTFont*)ftfont;
@@ -83,7 +83,7 @@ void vsx_font_outline::load_font(vsx_string font_path)
 void vsx_font_outline::render()
 {
   if (!ftfont)
-    ERROR_RETURN("Font not initialized");
+    VSX_ERROR_RETURN("Font not initialized");
 
   if (gl_state == 0x0)
     gl_state = vsx_gl_state::get_instance();
@@ -129,7 +129,7 @@ void vsx_font_outline::render()
       {
         gl_state->matrix_pop();
         gl_state->matrix_pop();
-        ERROR_RETURN("Font Outline not initialized");
+        VSX_ERROR_RETURN("Font Outline not initialized");
       }
 
       float pre_linew = gl_state->line_width_get();

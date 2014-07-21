@@ -26,7 +26,7 @@
 
 #include <vsx_widget.h>
 
-class vsx_widget_window : public vsx_widget {
+class WIDGET_DLLIMPORT vsx_widget_window : public vsx_widget {
 	vsx_widget* button_close;
 
 public:

@@ -982,13 +982,13 @@ public:
     #endif
   }
 
-  inline void matrix_frustum(double left, double right, double bottom, double top, double near, double far) {
-    #define N0 (2.0 * near) / (right - left)
-    #define N1 (2.0 * near) / (top - bottom)
+  inline void matrix_frustum(double left, double right, double bottom, double top, double z_near, double z_far) {
+    #define N0 (2.0 * z_near) / (right - left)
+    #define N1 (2.0 * z_near) / (top - bottom)
     #define A (right + left) / (right - left)
     #define B (top + bottom) / (top - bottom)
-    #define C -(far + near) / (far - near)
-    #define D -(2.0 * far * near) / (far - near)
+    #define C -(z_far + z_near) / (z_far - z_near)
+    #define D -(2.0 * z_far * z_near) / (z_far - z_near)
 
     #define m m_temp.m
 

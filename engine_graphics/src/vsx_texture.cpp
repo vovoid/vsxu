@@ -144,9 +144,6 @@ void vsx_texture::init_render_buffer(
 )
 {
   prev_buf = 0;
-  #ifndef VSXU_OPENGL_ES
-    glewInit();
-  #endif
   int i_width = width;
   int i_height = height;
 
@@ -346,9 +343,6 @@ void vsx_texture::init_color_buffer
 )
 {
   prev_buf = 0;
-  #ifndef VSXU_OPENGL_ES
-    glewInit();
-  #endif
   int i_width = width;
   int i_height = height;
 
@@ -467,9 +461,6 @@ void vsx_texture::init_color_depth_buffer
 )
 {
   prev_buf = 0;
-  #ifndef VSXU_OPENGL_ES
-    glewInit();
-  #endif
   int i_width = width;
   int i_height = height;
 
@@ -1408,7 +1399,7 @@ void vsx_texture::bind_load_gl()
   if (!valid && deferred_loading_type)
   {
     if (!pti_l)
-      ERROR_EXIT("PTI is not valid!",1);
+      VSX_ERROR_EXIT("PTI is not valid!",1);
 
     if (texture_info->ogl_id != 0)
       unload();

@@ -103,13 +103,13 @@ public:
 
   bool activate_offscreen()
   {
-    double near = 0.01;
-    double far = 2000.0;
+    double z_near = 0.01;
+    double z_far = 2000.0;
     double aspect = 1.0 / gl_state->viewport_width_div_height_get();
     if (capture_in_progress)
       aspect = 1.0;
     double fovy = clamp(fov->get(),1.0,180.0);
-    double right = -0.5 * tan( PI - (fovy * (PI / 180.0f)) * 0.5 ) * near;
+    double right = -0.5 * tan( PI - (fovy * (PI / 180.0f)) * 0.5 ) * z_near;
     double left = -right;
     double top = aspect * right;
     double bottom = -top;
@@ -141,7 +141,7 @@ public:
 
     if (!capture_in_progress)
     {
-      gl_state->matrix_frustum(left, right, bottom, top, near, far);
+      gl_state->matrix_frustum(left, right, bottom, top, z_near, z_far);
       return true;
     }
 
@@ -150,8 +150,8 @@ public:
       left + frustum_segment_x * (double)(m + 1),
       bottom + frustum_segment_y * (double)(n),
       bottom + frustum_segment_y * (double)(n + 1),
-      near,
-      far
+      z_near,
+      z_far
     );
 
 

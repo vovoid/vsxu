@@ -48,10 +48,13 @@ set_target_properties(
 target_link_libraries(${module_id}
   vsxu_engine
   vsxu_engine_graphics
-  rt
+
   ${CMAKE_THREAD_LIBS_INIT}
 )
 
 if(UNIX)
+  target_link_libraries(${module_id}
+    rt
+  )
   install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 endif(UNIX)

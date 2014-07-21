@@ -27,7 +27,7 @@
 #define VSX_WIDGET_SCROLLBAR_TYPE_HORIZONTAL 0
 #define VSX_WIDGET_SCROLLBAR_TYPE_VERTICAL 1
 
-class vsx_widget_scrollbar : public vsx_widget
+class WIDGET_DLLIMPORT vsx_widget_scrollbar : public vsx_widget
 {
   float scroll_handle_size;
   float cur_pos_click_down;

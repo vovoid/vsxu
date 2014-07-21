@@ -38,6 +38,7 @@ include_directories(${FREETYPE_INCLUDE_DIRS})
 
 add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
+ -DBUILDING_DLL=1
 ) 
 
 if (VSXU_DEBUG EQUAL 1)

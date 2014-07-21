@@ -91,7 +91,7 @@ public:
 
     if ((fp = engine->filesystem->f_open(current_filename.c_str(), "r")) == NULL)
     {
-      ERROR_RETURN("Could not open file");
+      VSX_ERROR_RETURN("Could not open file");
     }
 
     char buf[65535];

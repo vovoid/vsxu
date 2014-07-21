@@ -50,7 +50,7 @@ vsx_widget_time_holder* vsx_widget_profiler_timeline::time_holder_get()
 void vsx_widget_profiler_timeline::move_time(vsx_vector3<> world)
 {
   if (!time_holder)
-    ERROR_RETURN("time_holder not set");
+    VSX_ERROR_RETURN("time_holder not set");
 
   float f = (world.x+size.x/2)/(size.x);
   if (f < 0) f = 0;
@@ -76,7 +76,7 @@ void vsx_widget_profiler_timeline::move_time(vsx_vector3<> world)
 void vsx_widget_profiler_timeline::auto_move_time()
 {
   if (!time_holder)
-    ERROR_RETURN("time_holder not set");
+    VSX_ERROR_RETURN("time_holder not set");
 
   float time_diff = time_holder->diff();
   if (auto_move_dir) {
@@ -97,7 +97,7 @@ void vsx_widget_profiler_timeline::auto_move_time()
 void vsx_widget_profiler_timeline::i_draw()
 {
   if (!time_holder)
-    ERROR_RETURN("time_holder not set");
+    VSX_ERROR_RETURN("time_holder not set");
 
   auto_move_time();
 
@@ -185,7 +185,7 @@ bool vsx_widget_profiler_timeline::event_key_down(signed long key, bool alt, boo
   VSX_UNUSED(shift);
 
   if (!time_holder)
-    ERROR_RETURN_V("time_holder not set", true);
+    VSX_ERROR_RETURN_V("time_holder not set", true);
 
 
   if (!ctrl)

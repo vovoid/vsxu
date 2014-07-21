@@ -292,7 +292,7 @@ public:
       }
 
       if (thread_list[i] == 0)
-        ERROR_EXIT("VSX PROFILER: Trying to get profiler without initializing it first. Reached end of profiler array.", 1);
+        VSX_ERROR_EXIT("VSX PROFILER: Trying to get profiler without initializing it first. Reached end of profiler array.", 1);
 
     }
     return 0x0;

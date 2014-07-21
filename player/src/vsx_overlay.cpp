@@ -221,9 +221,9 @@ void vsx_overlay::print_help()
   switch(help_id) 
   {
     case 1:
-      scroll_pos -= dt*0.25f;//fmod(gui_d_time*0.25f,30.0f)
+      scroll_pos -= dt*0.25f;
 #if PLATFORM == PLATFORM_WINDOWS
-      myf->print(vsx_vector(-0.8,0.4f),"\
+      myf->print(vsx_vector3<>(-0.8,0.4f),"\
 Doesn't VSX react to sound? If sound isn't set up properly in Windows\n\
 some visuals might be totally black! Please check http://www.vsxu.com/documentation/faq\n\
 and select \"VSXu is not reacting to sound\" for instructions!\n\
@@ -262,11 +262,6 @@ pgup/pgdn             - increase/decrease speed (per visual)\n\
 \n\
 ",0.05);
 #endif
-      //myf.color = vsx_color(1.0f,1.0f,1.0f,1.0f);
-      //for (size_t i = 0; i < message.size(); ++i) {
-      //  myf->color = vsx_color(sin((float)i*0.5f+total_time*3.5f)*0.4f+0.6f,cos((float)i*0.2f+total_time*0.72f)*0.4f+0.6f,sin((float)i*0.25f+total_time*2.01f)*0.4f+0.6f,1.0f);
-      //  myf->print(vsx_vector(0.5+scroll_pos+0.035*(float)i,-0.85f+sin(total_time*2.5f+(float)i*0.2f)*sin(total_time*1.7f+(float)i*0.1f)*0.1f),message[i],0.07);
-      //}
       break; 
     case 2:
       if (manager) { 

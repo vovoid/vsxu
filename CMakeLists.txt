@@ -240,7 +240,6 @@ add_subdirectory(widget)
 ################################################################################
 if (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
   add_subdirectory(artiste)
-  add_subdirectory(profiler)
   add_subdirectory(player)
   if (VSXU_DEMO_PLAYER)
     add_subdirectory(player_demo)
@@ -248,6 +247,7 @@ if (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
 endif (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
 
 if(UNIX)
+  add_subdirectory(profiler)
   add_subdirectory(server)
 endif(UNIX)
 

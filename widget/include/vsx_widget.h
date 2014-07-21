@@ -38,6 +38,7 @@
 #include <list>
 
 // widget
+#include "vsx_widget_dllimport.h"
 #include "vsx_mouse.h"
 #include "vsx_widget_coords.h"
 #include "vsx_widget_distance.h"
@@ -70,58 +71,60 @@ enum vsx_widget_render_type
 
 
 
-class vsx_widget
+class WIDGET_DLLIMPORT vsx_widget
 {
   void calculate_mouse_distance(float x, float y, vsx_widget_coords &coord, vsx_widget_distance &distance);
 public:
   // GLOBALS
-  static bool global_delete;
+  WIDGET_DLLIMPORT static bool global_delete;
   // style
-  static vsx_mouse mouse;
-  static float screen_x;
-  static float screen_y;
-  static float screen_aspect;
-  static vsx_widget *root; // root widget
+  WIDGET_DLLIMPORT static vsx_mouse mouse;
+  WIDGET_DLLIMPORT static float screen_x;
+  WIDGET_DLLIMPORT static float screen_y;
+  WIDGET_DLLIMPORT static float screen_aspect;
+  WIDGET_DLLIMPORT static vsx_widget *root; // root widget
 
-  static vsx_widget *a_focus; // application focus
-  static vsx_widget *m_focus; // mouse focus (used while mouse is pressed on a widget)
-  static vsx_widget *m_o_focus; // mouse over focus
-  static vsx_widget *k_focus; // keyboard focus
+  WIDGET_DLLIMPORT static vsx_widget *a_focus; // application focus
+  WIDGET_DLLIMPORT static vsx_widget *m_focus; // mouse focus (used while mouse is pressed on a widget)
+  WIDGET_DLLIMPORT static vsx_widget *m_o_focus; // mouse over focus
+  WIDGET_DLLIMPORT static vsx_widget *k_focus; // keyboard focus
 
   // camera
-  static vsx_widget_camera camera;
+  WIDGET_DLLIMPORT static vsx_widget_camera camera;
 
 
   // global list of widgets, by name
-  static std::map<vsx_string, vsx_widget*> global_widget_list;
-  static int static_widget_id_accumulator; // each widget object must have a unique id
+  WIDGET_DLLIMPORT static std::map<vsx_string, vsx_widget*> global_widget_list;
+  WIDGET_DLLIMPORT static int static_widget_id_accumulator; // each widget object must have a unique id
 
   // global list of widgets, by id
-  static std::map<int, vsx_widget*> global_index_list;
+  WIDGET_DLLIMPORT static std::map<int, vsx_widget*> global_index_list;
 
 
 
-  static vsx_widget* last_clicked;
-  static float global_framerate_limit;
-  static std::map<vsx_string, vsx_string> configuration;
-  static unsigned long help_timestamp;
-  static bool mouse_down_l;
-  static bool mouse_down_r;
-  static float mouse_down_l_x; // TBD
-  static float mouse_down_l_y;
-  static vsx_widget_distance mouse_down_pos;  // in coordinates 2d/3d depending on render type
+  WIDGET_DLLIMPORT static vsx_widget* last_clicked;
+  WIDGET_DLLIMPORT static float global_framerate_limit;
+  WIDGET_DLLIMPORT static std::map<vsx_string, vsx_string> configuration;
+  WIDGET_DLLIMPORT static unsigned long help_timestamp;
+  WIDGET_DLLIMPORT static bool mouse_down_l;
+  WIDGET_DLLIMPORT static bool mouse_down_r;
+  WIDGET_DLLIMPORT static float mouse_down_l_x; // TBD
+  WIDGET_DLLIMPORT static float mouse_down_l_y;
+  WIDGET_DLLIMPORT static vsx_widget_distance mouse_down_pos;  // in coordinates 2d/3d depending on render type
   float double_click_d[5]; // delta time value for determining double clicks
-  static int viewport[4];
-  static double modelMatrix[16];
-  static double projMatrix[16];
+  WIDGET_DLLIMPORT static int viewport[4];
+  WIDGET_DLLIMPORT static double modelMatrix[16];
+  WIDGET_DLLIMPORT static double projMatrix[16];
 
   // time
   // these have to be set from outside, by using #include "vsx_timer.h" and using the timer class
-  static int frames;
-  static bool ctrl, alt, shift;
+  WIDGET_DLLIMPORT static int frames;
+  WIDGET_DLLIMPORT static bool ctrl;
+  WIDGET_DLLIMPORT static bool alt;
+  WIDGET_DLLIMPORT static bool shift;
 
   //
-  static bool performance_mode;
+  WIDGET_DLLIMPORT static bool performance_mode;
 
 // LOCALS
   // information
@@ -148,7 +151,7 @@ public:
 
 
   // font
-  static vsx_font font;
+  WIDGET_DLLIMPORT static vsx_font font;
   float font_size;
 
 // space
