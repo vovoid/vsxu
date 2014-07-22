@@ -180,11 +180,18 @@ public:
       // trigger
       case 1:
         i_time = time;
-        if (i_time > length->get()) i_time = length->get();
+
+        if (i_time > length->get())
+          i_time = length->get();
+
         if (prev_trig_val <= 0.0f && trigger->get() > 0.0f)
         {
           time = 0.0f;
+          i_time = 0.0f;
         }
+
+        prev_trig_val = trigger->get();
+
         break;
 
 
