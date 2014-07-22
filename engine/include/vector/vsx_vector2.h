@@ -26,14 +26,10 @@
 #define VSX_VECTOR_2D_H
 
 #include <vsx_math.h>
-
-template<typename T = float>
-class vsx_vector_2d;
-
 #include <vector/vsx_vector3.h>
 
 template<typename T>
-class vsx_vector_2d
+class vsx_vector2
 {
 public:
     T x;
@@ -44,89 +40,89 @@ public:
     return 2;
   }
 
-  inline vsx_vector_2d operator +(const vsx_vector_2d &t)
+  inline vsx_vector2 operator +(const vsx_vector2 &t)
   {
-    vsx_vector_2d temp;
+    vsx_vector2 temp;
     temp.x = x+t.x;
     temp.y = y+t.y;
     return temp;
   }
 
-  inline vsx_vector_2d operator +=(const vsx_vector_2d &t)
+  inline vsx_vector2 operator +=(const vsx_vector2 &t)
   {
     x+=t.x;
     y+=t.y;
     return *this;
   }
 
-  inline vsx_vector_2d operator *=(const T &t)
+  inline vsx_vector2 operator *=(const T &t)
   {
     x*=t;
     y*=t;
     return *this;
   }
 
-  inline vsx_vector_2d operator -=(const vsx_vector_2d &t)
+  inline vsx_vector2 operator -=(const vsx_vector2 &t)
   {
     x-=t.x;
     y-=t.y;
     return *this;
   }
 
-  inline vsx_vector_2d operator -()
+  inline vsx_vector2 operator -()
   {
-    vsx_vector_2d temp;
+    vsx_vector2 temp;
     temp.x = -x;
     temp.y = -y;
     return temp;
   }
 
-  inline vsx_vector_2d operator -(const vsx_vector_2d &t)
+  inline vsx_vector2 operator -(const vsx_vector2 &t)
   {
-    vsx_vector_2d temp;
+    vsx_vector2 temp;
     temp.x = x-t.x;
     temp.y = y-t.y;
     return temp;
   }
 
-  inline vsx_vector_2d operator *(const vsx_vector_2d &t)
+  inline vsx_vector2 operator *(const vsx_vector2 &t)
   {
-    vsx_vector_2d temp;
+    vsx_vector2 temp;
     temp.x = x*t.x;
     temp.y = y*t.y;
     return temp;
   }
 
-  inline vsx_vector_2d operator *(const T &t)
+  inline vsx_vector2 operator *(const T &t)
   {
-    vsx_vector_2d temp;
+    vsx_vector2 temp;
     temp.x = x*t;
     temp.y = y*t;
     return temp;
   }
 
-  inline vsx_vector_2d operator /(const vsx_vector_2d &t)
+  inline vsx_vector2 operator /(const vsx_vector2 &t)
   {
-    vsx_vector_2d temp;
+    vsx_vector2 temp;
     temp.x = x/t.x;
     temp.y = y/t.y;
     return temp;
   }
 
-  inline vsx_vector_2d operator /(int t)
+  inline vsx_vector2 operator /(int t)
   {
-    vsx_vector_2d temp;
+    vsx_vector2 temp;
     temp.x = x/(T)t;
     temp.y = y/(T)t;
     return temp;
   }
 
-  inline bool operator ==(const vsx_vector_2d &t)
+  inline bool operator ==(const vsx_vector2 &t)
   {
     return (x==t.x&&y==t.y);
   }
 
-  inline bool operator !=(const vsx_vector_2d &t)
+  inline bool operator !=(const vsx_vector2 &t)
   {
     return (x != t.x || y != t.y);
   }
@@ -165,13 +161,13 @@ public:
     y = ny;
   }
 
-  inline void multiply_matrix_other_vec(const T *m, const vsx_vector_2d& b)
+  inline void multiply_matrix_other_vec(const T *m, const vsx_vector2& b)
   {
     x = m[0] * b.x + m[1] * b.y +  m[3];
     y = m[4] * b.x + m[5] * b.y +  m[7];
   }
 
-  inline double distance(const vsx_vector_2d &otherpoint)
+  inline double distance(const vsx_vector2 &otherpoint)
   {
     double dx = otherpoint.x - x;
     double dy = otherpoint.y - y;
@@ -185,24 +181,26 @@ public:
     y=iy;
   }
 
-  vsx_vector_2d()
+  vsx_vector2()
     :
       x(0.0f),
       y(0.0f)
   {}
 
-  vsx_vector_2d(const vsx_vector3<T> &n)
+  vsx_vector2(const vsx_vector3<T> &n)
   {
     x = n.x;
     y = n.y;
   }
 
-  vsx_vector_2d(const T nx, const T ny = 0.0f)
+  vsx_vector2(const T nx, const T ny = 0.0f)
   {
     x = nx;
     y = ny;
   }
 };
 
+typedef vsx_vector2<float> vsx_vector2f;
+typedef vsx_vector2<double> vsx_vector2d;
 
 #endif

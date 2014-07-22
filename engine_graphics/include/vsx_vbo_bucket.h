@@ -2,8 +2,13 @@
 #define VSX_VBO_BUCKET_H
 
 #include <container/vsx_array.h>
+#include <vector/vsx_vector2.h>
 #include <vector/vsx_vector3.h>
-#include <vsx_face.h>
+#include <vector/vsx_vector4.h>
+#include <face/vsx_face1.h>
+#include <face/vsx_face2.h>
+#include <face/vsx_face3.h>
+#include <face/vsx_face4.h>
 #include <vsx_color.h>
 #include <vsx_texcoord.h>
 

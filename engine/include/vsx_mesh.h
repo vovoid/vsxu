@@ -29,7 +29,10 @@
 #include <vsx_quaternion.h>
 #include <vector/vsx_vector3.h>
 #include <vsx_color.h>
-#include <vsx_face.h>
+#include <face/vsx_face1.h>
+#include <face/vsx_face2.h>
+#include <face/vsx_face3.h>
+#include <face/vsx_face4.h>
 #include <vsx_texcoord.h>
 
 // the mesh contains vertices stored in a local coordinate system.

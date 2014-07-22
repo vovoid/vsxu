@@ -45,5 +45,8 @@ public:
 
 };
 
+typedef vsx_vector4<float> vsx_vector4f;
+typedef vsx_vector4<double> vsx_vector4d;
+
 
 #endif
