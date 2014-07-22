@@ -97,7 +97,6 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
     return true;
 
   bool k_focus_result = k_focus->event_key_down(key,alt,ctrl,shift);
-  vsx_printf("k_focus_result: %d\n", k_focus_result);
 
   if (!k_focus_result)
     return true;

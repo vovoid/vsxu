@@ -98,6 +98,7 @@ float clip (float x, float a, float b)
 #include "module_float_array_memory_buffer.h"
 #include "module_float_compare.h"
 #include "module_float_cos.h"
+#include "module_float_clamp.h"
 #include "module_float_dummy.h"
 #include "module_float_interpolate.h"
 #include "module_float_limit.h"
@@ -207,6 +208,7 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 60: return (vsx_module*)(new module_float_array_memory_buffer);
     case 61: return (vsx_module*)(new module_matrix_to_quaternion);
     case 62: return (vsx_module*)(new module_float_compare);
+    case 63: return (vsx_module*)(new module_float_clamp);
   }
 
   return 0;
@@ -278,6 +280,7 @@ void MOD_DM(vsx_module* m,unsigned long module)
     case 60: delete (module_float_array_memory_buffer*)m; break;
     case 61: delete (module_matrix_to_quaternion*)m; break;
     case 62: delete (module_float_compare*)m; break;
+    case 63: delete (module_float_clamp*)m; break;
   }
 
 }
@@ -285,5 +288,5 @@ void MOD_DM(vsx_module* m,unsigned long module)
 unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   VSX_UNUSED(environment);
-  return 63;
+  return 64;
 }
