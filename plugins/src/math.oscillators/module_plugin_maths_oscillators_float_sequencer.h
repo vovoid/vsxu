@@ -46,6 +46,8 @@ public:
   int trigger_state;
   vsx_sequence seq_int;
   float sequence_cache[8192];
+  float delta_multiplier;
+  float prev_time;
 
 
   void module_info(vsx_module_info* info)
@@ -60,7 +62,7 @@ public:
       "length:float,"
       "options:complex"
       "{"
-        "behaviour:enum?oscillating|trigger|trigger_pingpong,"
+        "behaviour:enum?oscillating|trigger|trigger_pingpong|trigger_sync,"
         "time_source:enum?operating_system|sequence,"
         "trigger:float,"
         "trigger_reverse:float,"
@@ -82,6 +84,8 @@ public:
     loading_done = true;
     prev_trig_val = 0.0f;
     trigger_state = 0;
+    dtime = 0.0f;
+    prev_time = 0.0f;
 
     float_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"float_sequence");
     float_sequence->set(seq_int);
@@ -107,18 +111,17 @@ public:
 
   inline void calc_cache()
   {
-    if (float_sequence->updates)
-    {
-      seq_int = float_sequence->get();
-      float_sequence->updates = 0;
-      seq_int.reset();
-      for (int i = 0; i < 8192; ++i) {
-        sequence_cache[i] = seq_int.execute(1.0f/8192.0f);
-      }
+    if (!float_sequence->updates)
+      return;
+
+    seq_int = float_sequence->get();
+    float_sequence->updates = 0;
+    seq_int.reset();
+    for (int i = 0; i < 8192; ++i) {
+      sequence_cache[i] = seq_int.execute(1.0f/8192.0f);
     }
   }
 
-  float delta_multiplier;
 
   void run()
   {
@@ -154,12 +157,17 @@ public:
         {
           time +=  dtime;
         }
+
         break;
 
       // external
-      case 1: time = drive->get();
-
+      case 1:
+        time = drive->get();
+        if (prev_time > 0.0f)
+          dtime = drive->get() - prev_time;
+        prev_time = time;
     }
+
 
 
     if (time < 0.0f)
@@ -184,7 +192,7 @@ public:
         if (i_time > length->get())
           i_time = length->get();
 
-        if (prev_trig_val <= 0.0f && trigger->get() > 0.0f)
+        if (prev_trig_val <= 0.00001f && trigger->get() > 0.0f)
         {
           time = 0.0f;
           i_time = 0.0f;
@@ -224,12 +232,43 @@ public:
           i_time = length->get() - time;
         }
         prev_trig_val = trigger->get();
-        break;
+      break;
+
+      // trigger_sync
+      case 3:
+
+        if (trigger->get() > 0.000001)
+          i_time = time;
+
+        if (trigger->get() < 0.000001)
+        {
+          time -= dtime;
+          time -= dtime;
+          i_time = time;
+        }
+
+        if (i_time > length->get())
+        {
+
+          time = i_time = length->get();
+        }
+
+        if (i_time < 0.0f)
+        {
+          time = i_time = 0.0f;
+        }
+
+
+        vsx_printf("i_time: %f\n", i_time);
+
+
+      break;
 
     }
 
 
     float tt = i_time / length->get();
+
     calc_cache();
     result1->set(sequence_cache[(int)round(8191.0f*tt)]);
   }
