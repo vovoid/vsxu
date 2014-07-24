@@ -31,14 +31,19 @@
 #include <vector>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-#define VSX_MANAGER_DLLIMPORT
+  #define VSX_MANAGER_DLLIMPORT
 #else
-  #if defined(VSX_AUDOVISUAL_DLL)
-    #define VSX_MANAGER_DLLIMPORT __declspec (dllexport)
-  #else 
-    #define VSX_MANAGER_DLLIMPORT __declspec (dllimport)
+  #ifdef VSXU_STATIC
+    #define VSX_MANAGER_DLLIMPORT
+  #else
+    #if defined(VSX_AUDOVISUAL_DLL)
+      #define VSX_MANAGER_DLLIMPORT __declspec (dllexport)
+    #else
+      #define VSX_MANAGER_DLLIMPORT __declspec (dllimport)
+    #endif
   #endif
 #endif
+
 class vsx_manager_abs
 {
 public:

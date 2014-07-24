@@ -1,8 +1,14 @@
+#include <vsx_platform.h>
+
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-  #ifdef VSX_ENG_DLL
-    #define VSX_ENGINE_GRAPHICS_DLLIMPORT __declspec (dllexport)
+  #if VSXU_STATIC
+    #define VSX_ENGINE_GRAPHICS_DLLIMPORT
   #else
-    #define VSX_ENGINE_GRAPHICS_DLLIMPORT __declspec (dllimport)
+    #if BUILDING_DLL
+      # define VSX_ENGINE_GRAPHICS_DLLIMPORT __declspec (dllexport)
+    #else /* Not BUILDING_DLL */
+      # define VSX_ENGINE_GRAPHICS_DLLIMPORT __declspec (dllimport)
+    #endif /* Not BUILDING_DLL */
   #endif
 #else
   #define VSX_ENGINE_GRAPHICS_DLLIMPORT

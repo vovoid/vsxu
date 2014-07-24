@@ -94,6 +94,11 @@ if(WIN32)
 )
 endif()
 
+if (VSXU_STATIC EQUAL 1)
+  add_definitions(-DVSXU_STATIC)
+endif()
+
+
 
 if (VSXU_STATIC EQUAL 1)
   include(../plugins/static_factory_cmake_target_link_libraries)

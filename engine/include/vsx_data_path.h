@@ -2,26 +2,17 @@
 #define VSX_DATA_PATH_H
 
 #include <vsx_string.h>
+#include "vsx_engine.h"
 
 
-#ifdef _WIN32
-#if VSX_ENG_DLL
-# define DLLIMPORT __declspec (dllexport)
-#else /* Not BUILDING_DLL */
-# define DLLIMPORT __declspec (dllimport)
-#endif /* Not BUILDING_DLL */
-#else
-#define DLLIMPORT
-#endif
 
-
-DLLIMPORT class vsx_data_path
+ENGINE_DLLIMPORT class vsx_data_path
 {
   vsx_string data_path;
 
 public:
 
-  DLLIMPORT vsx_data_path();
+  ENGINE_DLLIMPORT vsx_data_path();
 
   vsx_string& data_path_get() __attribute__((always_inline))
   {

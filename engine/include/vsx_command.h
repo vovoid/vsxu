@@ -30,18 +30,7 @@
 #include <vector>
 #include "vsxfst.h"
 #include <vsx_string_helper.h>
-
-
-
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-#define VSX_COMMAND_DLLIMPORT
-#else
-  #if defined(VSX_ENG_DLL)
-    #define VSX_COMMAND_DLLIMPORT __declspec (dllexport)
-  #else 
-    #define VSX_COMMAND_DLLIMPORT __declspec (dllimport)
-  #endif
-#endif
+#include "vsx_engine_dllimport.h"
 
 
 // different types of commands
@@ -67,15 +56,15 @@
 
 //**********************************************************************************************************************
 
-VSX_COMMAND_DLLIMPORT class vsx_command_s
+ENGINE_DLLIMPORT class vsx_command_s
 {
-  VSX_COMMAND_DLLIMPORT static std::list<vsx_command_s*> garbage_list; // the parts of the command
-  VSX_COMMAND_DLLIMPORT static std::list<vsx_command_s*>::iterator it;
-  VSX_COMMAND_DLLIMPORT static std::list<vsx_command_s*>::iterator it_2;
+  ENGINE_DLLIMPORT static std::list<vsx_command_s*> garbage_list; // the parts of the command
+  ENGINE_DLLIMPORT static std::list<vsx_command_s*>::iterator it;
+  ENGINE_DLLIMPORT static std::list<vsx_command_s*>::iterator it_2;
 public:
-  VSX_COMMAND_DLLIMPORT void process_garbage();
+  ENGINE_DLLIMPORT void process_garbage();
   std::list<vsx_command_s*>* garbage_pointer;
-  VSX_COMMAND_DLLIMPORT static int id;
+  ENGINE_DLLIMPORT static int id;
   bool parsed;
   int owner; // for color-coding this command
   int type; // type of command
@@ -103,7 +92,7 @@ public:
     return raw; else
     return cmd + " " + cmd_data;
   }
-  VSX_COMMAND_DLLIMPORT void parse();
+  ENGINE_DLLIMPORT void parse();
   vsx_command_s() {
     parsed = false;
     type = 0;
@@ -130,7 +119,7 @@ public:
   }
 
   // returns a string like "part1 part2 part3" if start was 1 and end was 3
-  VSX_COMMAND_DLLIMPORT vsx_string get_parts(int start = 0, int end = -1);
+  ENGINE_DLLIMPORT vsx_string get_parts(int start = 0, int end = -1);
 
   void dump_to_stdout()
   {
@@ -139,10 +128,10 @@ public:
   	printf("\n");
   }
 
-  VSX_COMMAND_DLLIMPORT ~vsx_command_s();
+  ENGINE_DLLIMPORT ~vsx_command_s();
 };
 
-VSX_COMMAND_DLLIMPORT vsx_command_s* vsx_command_parse(vsx_string& cmd_raw);
+ENGINE_DLLIMPORT vsx_command_s* vsx_command_parse(vsx_string& cmd_raw);
 
 
 

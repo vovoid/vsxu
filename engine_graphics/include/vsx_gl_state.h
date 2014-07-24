@@ -1156,11 +1156,15 @@ public:
     #endif
   }
 
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+  static vsx_gl_state* get_instance();
+#else
   static vsx_gl_state* get_instance() __attribute__((always_inline))
   {
     static vsx_gl_state state;
     return &state;
   }
+#endif
 
 
 };

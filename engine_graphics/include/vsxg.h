@@ -51,16 +51,7 @@
 #include <container/vsx_avector.h>
 #include "vsxfst.h"
 
-#ifdef _WIN32
-#if VSX_GLPNG_DLL
-# define VSXG_DLLIMPORT __declspec (dllexport)
-#else /* Not BUILDING_DLL */
-# define VSXG_DLLIMPORT __declspec (dllimport)
-#endif /* Not BUILDING_DLL */
-
-#else
-#define VSXG_DLLIMPORT
-#endif
+#include "_engine_graphics_dllimport.h"
 
 /* Mipmapping parameters */
 #define PNG_NOMIPMAPS      0 /* No mipmapping                        */
@@ -90,9 +81,9 @@ typedef struct {
   unsigned char *Palette;
 } pngRawInfo;
 
-extern int VSXG_DLLIMPORT pngLoadRaw(const char* filename, pngRawInfo *rawinfo, vsxf* filesystem);
+extern int VSX_ENGINE_GRAPHICS_DLLIMPORT pngLoadRaw(const char* filename, pngRawInfo *rawinfo, vsxf* filesystem);
 
-class VSXG_DLLIMPORT CJPEGTest
+class VSX_ENGINE_GRAPHICS_DLLIMPORT CJPEGTest
 {
 public:
     CJPEGTest();

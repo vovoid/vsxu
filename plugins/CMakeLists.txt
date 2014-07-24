@@ -205,8 +205,6 @@ function( CREATE_TARGET_LINK_LIBRARIES la)
   endif()
 
   target_link_libraries(${module_id} ${ARGV0} ${ARGV1} ${ARGV2} ${ARGV3} ${ARGV4} ${ARGV5} ${ARGV6})
-
-
 endfunction()
 
 
@@ -222,6 +220,10 @@ if (VSXU_STATIC EQUAL 1)
   file(WRITE static_factory_cmake_link_directories "")
   file(WRITE static_factory_cmake_target_link_libraries "")
   file(WRITE static_factory_pkgconfig_libs "")
+endif()
+
+if (WIN32 AND VSXU_STATIC EQUAL 1)
+  add_definitions(-DGLEW_STATIC=1)
 endif()
 
 add_subdirectory(src/bitmap.modifiers)

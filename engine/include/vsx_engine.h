@@ -25,16 +25,7 @@
 #ifndef VSX_ENGINE_H
 #define VSX_ENGINE_H
 
-#ifdef _WIN32
-#if VSX_ENG_DLL
-# define DLLIMPORT __declspec (dllexport)
-#else /* Not BUILDING_DLL */
-# define DLLIMPORT __declspec (dllimport)
-#endif /* Not BUILDING_DLL */
-#else
-#define DLLIMPORT
-#endif
-
+#include "vsx_engine.h"
 #include <vsx_platform.h>
 
 #include "vsxfst.h"
@@ -65,7 +56,7 @@ class vsxl_engine;
 
 
 //////////////////////////////////////////////////////////////////////
-class DLLIMPORT vsx_engine : public vsx_engine_abs
+class ENGINE_DLLIMPORT vsx_engine : public vsx_engine_abs
 {
 public:
 

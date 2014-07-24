@@ -37,6 +37,12 @@ if (VSXU_DEBUG EQUAL 1)
   add_definitions( -DVSXU_DEBUG -DDEBUG )
 endif (VSXU_DEBUG EQUAL 1)
 
+if (VSXU_STATIC EQUAL 1)
+  add_definitions(-DGLEW_STATIC=1)
+  add_definitions(-DVSXU_STATIC)
+endif()
+
+
 ################################################################################
 # SOURCES ######################################################################
 ################################################################################

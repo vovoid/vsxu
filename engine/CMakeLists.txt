@@ -41,7 +41,7 @@ include_directories(
 # )
 
 add_definitions(
- -DVSX_ENG_DLL=1
+ -DBUILDING_DLL
  -DVSXU_MODULE_TIMING
  -DVSXU_ARTISTE
  -DVSXU_DEVELOPER

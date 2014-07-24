@@ -21,28 +21,6 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef MIN_MAX_STATIC
-  #define MIN_MAX_STATIC
-
-inline float max (float x, float a)
-{
-   x -= a;
-   x += fabs (x);
-   x *= 0.5;
-   x += a;
-   return (x);
-}
-
-inline float min (float x, float b)
-{
-   x = b - x;
-   x += fabs (x);
-   x *= 0.5;
-   x = b - x;
-   return (x);
-}
-#endif
-
 class module_bitmap_generators_concentric_circles : public vsx_module
 {
   // in
@@ -192,16 +170,16 @@ public:
 
         if (((module_bitmap_generators_concentric_circles*)ptr)->work_alpha == 1)
         {
-          long pr = max(0,min(255,(long)(255.0f *  ((module_bitmap_generators_concentric_circles*)ptr)->work_color[0])));
-          long pg = max(0,min(255,(long)(255.0f *  ((module_bitmap_generators_concentric_circles*)ptr)->work_color[1])));
-          long pb = max(0,min(255,(long)(255.0f *  ((module_bitmap_generators_concentric_circles*)ptr)->work_color[2])));
-          long pa = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[3])));
+          long pr = MAX(0,MIN(255,(long)(255.0f *  ((module_bitmap_generators_concentric_circles*)ptr)->work_color[0])));
+          long pg = MAX(0,MIN(255,(long)(255.0f *  ((module_bitmap_generators_concentric_circles*)ptr)->work_color[1])));
+          long pb = MAX(0,MIN(255,(long)(255.0f *  ((module_bitmap_generators_concentric_circles*)ptr)->work_color[2])));
+          long pa = MAX(0,MIN(255,(long)(255.0f * dist * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[3])));
           *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
         } else
         if (((module_bitmap_generators_concentric_circles*)ptr)->work_alpha == 0) {
-          long pr = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[0])));
-          long pg = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[1])));
-          long pb = max(0,min(255,(long)(255.0f * dist * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[2])));
+          long pr = MAX(0,MIN(255,(long)(255.0f * dist * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[0])));
+          long pg = MAX(0,MIN(255,(long)(255.0f * dist * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[1])));
+          long pb = MAX(0,MIN(255,(long)(255.0f * dist * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[2])));
           long pa = (long)(255.0f * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[3]);
           *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
         }
@@ -258,10 +236,10 @@ public:
       bitm.valid = false;
 
       work_alpha = alpha->get();
-      work_color[0] = min(1.0f,color->get(0));
-      work_color[1] = min(1.0f,color->get(1));
-      work_color[2] = min(1.0f,color->get(2));
-      work_color[3] = min(1.0f,color->get(3));
+      work_color[0] = MIN(1.0f,color->get(0));
+      work_color[1] = MIN(1.0f,color->get(1));
+      work_color[2] = MIN(1.0f,color->get(2));
+      work_color[3] = MIN(1.0f,color->get(3));
       thread_state = 1;
 
       pthread_attr_init(&attr);

@@ -103,7 +103,7 @@ typedef float    FTGL_FLOAT;
     //#define FTGL_EXPORT
 
     #ifdef _WIN32
-    #if VSX_ENG_DLL
+    #if BUILDING_DLL
     # define FTGL_EXPORT __declspec (dllexport)
     #else /* Not BUILDING_DLL */
     # define FTGL_EXPORT __declspec (dllimport)

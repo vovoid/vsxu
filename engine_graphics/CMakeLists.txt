@@ -43,16 +43,17 @@ endif(WIN32)
 # DEFINITIONS ##################################################################
 ################################################################################
 
-if(WIN32)
-  add_definitions(-DVSX_GLPNG_DLL -DVSX_ENG_DLL=1)
-endif(WIN32)
-
 add_definitions(
- -DVSX_ENG_DLL
+ -DBUILDING_DLL
  -DVSX_FONT_NO_FT
  -DVSXU_DEVELOPER
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )
+
+if (VSXU_STATIC EQUAL 1)
+  add_definitions(-DVSXU_STATIC)
+endif()
+
 
 if (VSXU_DEBUG EQUAL 1)
   add_definitions( -DVSXU_DEBUG -DDEBUG )
@@ -69,6 +70,7 @@ set(SOURCES
   src/vsx_font.cpp
   src/vsx_font_outline.cpp
   src/vsx_texture.cpp
+  src/vsx_gl_state.cpp
   src/gl_helper.cpp
   src/ftgl/FTBitmapGlyph.cpp
   src/ftgl/FTBufferGlyph.cpp

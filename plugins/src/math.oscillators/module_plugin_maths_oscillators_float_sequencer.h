@@ -258,10 +258,6 @@ public:
           time = i_time = 0.0f;
         }
 
-
-        vsx_printf("i_time: %f\n", i_time);
-
-
       break;
 
     }

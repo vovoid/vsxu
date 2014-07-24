@@ -72,7 +72,7 @@ protected:
   std::map<vsx_string,vsx_note>::iterator note_iter;
 
 //-- scripting interface
-  #ifdef VSX_ENG_DLL
+  #ifdef BUILDING_DLL
     vsxl_engine* vsxl;
   #else
     void* vsxl;

@@ -120,16 +120,16 @@ public:
           float pf = pow( (perlin->Get(xp,yp)+1.0f) * 0.5f, mod->perlin_strength->get()) * 255.0f * dist;
           if (mod->alpha->get())
           {
-            long pr = max(0,min(255,(long)(255.0f * mod->color->get(0))));
-            long pg = max(0,min(255,(long)(255.0f * mod->color->get(1))));
-            long pb = max(0,min(255,(long)(255.0f * mod->color->get(2))));
-            long pa = max(0,min(255,(long)(pf * mod->color->get(3))));
+            long pr = MAX(0,MIN(255,(long)(255.0f * mod->color->get(0))));
+            long pg = MAX(0,MIN(255,(long)(255.0f * mod->color->get(1))));
+            long pb = MAX(0,MIN(255,(long)(255.0f * mod->color->get(2))));
+            long pa = MAX(0,MIN(255,(long)(pf * mod->color->get(3))));
             *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
           } else
           {
-            long pr = max(0,min(255,(long)(pf * mod->color->get(0))));
-            long pg = max(0,min(255,(long)(pf * mod->color->get(1))));
-            long pb = max(0,min(255,(long)(pf * mod->color->get(2))));
+            long pr = MAX(0,MIN(255,(long)(pf * mod->color->get(0))));
+            long pg = MAX(0,MIN(255,(long)(pf * mod->color->get(1))));
+            long pb = MAX(0,MIN(255,(long)(pf * mod->color->get(2))));
             long pa = (long)(255.0f * mod->color->get(3));
             *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
           }
@@ -184,7 +184,7 @@ public:
             p[0] = mod->color->get(0);
             p[1] = mod->color->get(1);
             p[2] = mod->color->get(2);
-            p[3] = max(0.0f,min(1.0f,pf * mod->color->get(3)));
+            p[3] = MAX(0.0f,MIN(1.0f,pf * mod->color->get(3)));
           } else {
             p[0] = pf*mod->color->get(0);
             p[1] = pf*mod->color->get(1);

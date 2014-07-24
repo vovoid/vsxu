@@ -49,10 +49,14 @@ endif(VSXU_DEBUG)
 
 
 add_definitions(
-# -DVSX_FONT_NO_FT
  -DVSXU_ARTISTE
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )
+
+if (VSXU_STATIC EQUAL 1)
+  add_definitions(-DVSXU_STATIC)
+endif()
+
 
 
 ################################################################################
@@ -130,11 +134,11 @@ if(WIN32)
   target_link_libraries(
     ${module_id}
     ${GLFW_LIBRARY}
+    ${GLEW_LIBRARY}
     wsock32
     ws2_32
     vsxu_engine
     vsx_widget
-    ${GLEW_LIBRARY}
     vsxu_engine_graphics
     ${CMAKE_THREAD_LIBS_INIT}
     gdi32

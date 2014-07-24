@@ -23,8 +23,6 @@
 #ifndef VSX_AVECTOR_H
 #define VSX_AVECTOR_H
 
-
-
 #include <vsx_platform.h>
 #include <stdio.h>
 

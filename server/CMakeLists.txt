@@ -43,6 +43,10 @@ add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )
 
+if (VSXU_STATIC EQUAL 1)
+  add_definitions(-DVSXU_STATIC)
+endif()
+
 
 ################################################################################
 # SOURCES ######################################################################

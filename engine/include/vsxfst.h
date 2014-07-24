@@ -29,6 +29,7 @@
 
 #include <stdlib.h>
 #include <inttypes.h>
+#include "vsx_engine_dllimport.h"
 
 
 // Directory Separators
@@ -40,18 +41,6 @@
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   #define DIRECTORY_SEPARATOR                             "/"
   #define DIRECTORY_SEPARATOR_CHAR                        '/'
-#endif
-
-
-
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-#define VSXFSTDLLIMPORT
-#else
-  #if defined(VSX_ENG_DLL)
-    #define VSXFSTDLLIMPORT __declspec (dllexport)
-  #else 
-    #define VSXFSTDLLIMPORT __declspec (dllimport)
-  #endif
 #endif
 
 #define VSXF_TYPE_FILESYSTEM 0
@@ -164,7 +153,7 @@ public:
 };
 
 
-class VSXFSTDLLIMPORT vsxf {
+class ENGINE_DLLIMPORT vsxf {
   // filesystem functions
   vsx_avector<vsxf_archive_info> archive_files;
   int type; // 0 = regular filesystem, 1 = archive
@@ -209,47 +198,47 @@ public:
   unsigned long f_get_size(vsxf_handle* handle);
 };
 
-VSXFSTDLLIMPORT bool verify_filesuffix(vsx_string& input, const char* type);
-VSXFSTDLLIMPORT void create_directory(const char* path);
-VSXFSTDLLIMPORT void get_files_recursive(
+ENGINE_DLLIMPORT bool verify_filesuffix(vsx_string& input, const char* type);
+ENGINE_DLLIMPORT void create_directory(const char* path);
+ENGINE_DLLIMPORT void get_files_recursive(
     vsx_string startpos,
     std::list<vsx_string>* filenames,
     vsx_string include_filter = "",
     vsx_string exclude_filter = "",
     vsx_string dir_ignore_token = ".vsx_hidden"
     );
-VSXFSTDLLIMPORT vsx_string get_path_from_filename(vsx_string filename);
+ENGINE_DLLIMPORT vsx_string get_path_from_filename(vsx_string filename);
 
 
 // STRING OPERATIONS
 
-VSXFSTDLLIMPORT bool crlf(char *buffer,int len);
+ENGINE_DLLIMPORT bool crlf(char *buffer,int len);
 
 #define STR_PAD_LEFT 0
 #define STR_PAD_RIGHT 1
 #define STR_PAD_OVERFLOW_LEFT 0
 #define STR_PAD_OVERFLOW_RIGHT 1
-VSXFSTDLLIMPORT vsx_string str_pad(const vsx_string& str, const vsx_string& chr, size_t t_len, int pad_type = STR_PAD_LEFT,int overflow_adjust = STR_PAD_OVERFLOW_RIGHT);
+ENGINE_DLLIMPORT vsx_string str_pad(const vsx_string& str, const vsx_string& chr, size_t t_len, int pad_type = STR_PAD_LEFT,int overflow_adjust = STR_PAD_OVERFLOW_RIGHT);
 
 // this function replaces only one item per token. 
-VSXFSTDLLIMPORT vsx_string str_replace(vsx_string search, vsx_string replace, vsx_string subject, int max_replacements = 0, int required_pos = -1);
-VSXFSTDLLIMPORT const vsx_string str_replace_char_pad(vsx_string search, vsx_string replace, vsx_string subject, vsx_string subject_r, int max_replacements = 0, int required_pos = -1);
+ENGINE_DLLIMPORT vsx_string str_replace(vsx_string search, vsx_string replace, vsx_string subject, int max_replacements = 0, int required_pos = -1);
+ENGINE_DLLIMPORT const vsx_string str_replace_char_pad(vsx_string search, vsx_string replace, vsx_string subject, vsx_string subject_r, int max_replacements = 0, int required_pos = -1);
 
-VSXFSTDLLIMPORT int explode(vsx_string& input, vsx_string& delimiter, vsx_avector<vsx_string>& results, int max_parts = 0);
-VSXFSTDLLIMPORT vsx_string implode(vsx_avector<vsx_string>& in, vsx_string& delimiter);
+ENGINE_DLLIMPORT int explode(vsx_string& input, vsx_string& delimiter, vsx_avector<vsx_string>& results, int max_parts = 0);
+ENGINE_DLLIMPORT vsx_string implode(vsx_avector<vsx_string>& in, vsx_string& delimiter);
 
-VSXFSTDLLIMPORT void str_remove_equal_prefix(vsx_string* str1, vsx_string* str2, vsx_string delimiter);
-VSXFSTDLLIMPORT int split_string(vsx_string& input, vsx_string& delimiter, std::vector<vsx_string>& results, int max_parts = 0);
-VSXFSTDLLIMPORT int explode(vsx_string& input, vsx_string& delimiter, std::vector<vsx_string>& results, int max_parts = 0);
-VSXFSTDLLIMPORT int split_string(vsx_string& input, vsx_string& delimiter, std::list<vsx_string>& results, int max_parts = 0);
-VSXFSTDLLIMPORT int explode(vsx_string& input, vsx_string& delimiter, std::list<vsx_string>& results, int max_parts = 0);
+ENGINE_DLLIMPORT void str_remove_equal_prefix(vsx_string* str1, vsx_string* str2, vsx_string delimiter);
+ENGINE_DLLIMPORT int split_string(vsx_string& input, vsx_string& delimiter, std::vector<vsx_string>& results, int max_parts = 0);
+ENGINE_DLLIMPORT int explode(vsx_string& input, vsx_string& delimiter, std::vector<vsx_string>& results, int max_parts = 0);
+ENGINE_DLLIMPORT int split_string(vsx_string& input, vsx_string& delimiter, std::list<vsx_string>& results, int max_parts = 0);
+ENGINE_DLLIMPORT int explode(vsx_string& input, vsx_string& delimiter, std::list<vsx_string>& results, int max_parts = 0);
 
-VSXFSTDLLIMPORT vsx_string implode(std::vector<vsx_string> in,vsx_string delimiter);
-VSXFSTDLLIMPORT vsx_string implode(std::list<vsx_string> in,vsx_string delimiter);
+ENGINE_DLLIMPORT vsx_string implode(std::vector<vsx_string> in,vsx_string delimiter);
+ENGINE_DLLIMPORT vsx_string implode(std::list<vsx_string> in,vsx_string delimiter);
 
-VSXFSTDLLIMPORT vsx_string base64_encode(vsx_string data);
-VSXFSTDLLIMPORT vsx_string base64_decode(vsx_string data);
+ENGINE_DLLIMPORT vsx_string base64_encode(vsx_string data);
+ENGINE_DLLIMPORT vsx_string base64_decode(vsx_string data);
 
-VSXFSTDLLIMPORT vsx_string vsx_get_directory_separator();
+ENGINE_DLLIMPORT vsx_string vsx_get_directory_separator();
 
 #endif

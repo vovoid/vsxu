@@ -39,11 +39,15 @@ include_directories(${FREETYPE_INCLUDE_DIRS})
 add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
  -DBUILDING_DLL=1
-) 
+)
 
 if (VSXU_DEBUG EQUAL 1)
   add_definitions( -DVSXU_DEBUG )
 endif (VSXU_DEBUG EQUAL 1)
+
+if (VSXU_STATIC EQUAL 1)
+  add_definitions(-DVSXU_STATIC)
+endif()
 
 
 ################################################################################
@@ -73,12 +77,12 @@ set(SOURCES
 if (VSXU_STATIC EQUAL 1)
 
   #static build
-  add_library(${module_id} STATIC ${SOURCES} ${GAME_MONKEY})
+  add_library(${module_id} STATIC ${SOURCES})
 
 else ()
 
   #dynamic build
-  add_library(${module_id} SHARED ${SOURCES} ${GAME_MONKEY})
+  add_library(${module_id} SHARED ${SOURCES})
 
 endif ()
 

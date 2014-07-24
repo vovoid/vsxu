@@ -29,16 +29,7 @@
 #include <vsx_platform.h>
 #include <vsx_string_helper.h>
 #include <vector/vsx_vector3.h>
-
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-#define VSX_SEQUENCE_DLLIMPORT
-#else
-  #ifdef VSX_ENG_DLL
-    #define VSX_SEQUENCE_DLLIMPORT __declspec (dllexport) 
-  #else
-    #define VSX_SEQUENCE_DLLIMPORT __declspec (dllimport)
-  #endif
-#endif
+#include "vsx_engine_dllimport.h"
 
 class vsx_sequence_item
 {
@@ -76,14 +67,14 @@ public:
   int i_cur;
 
   long timestamp;
-  VSX_SEQUENCE_DLLIMPORT vsx_sequence();
-  VSX_SEQUENCE_DLLIMPORT vsx_sequence(const vsx_sequence& seq);
-  VSX_SEQUENCE_DLLIMPORT vsx_sequence(vsx_sequence& seq);
-  VSX_SEQUENCE_DLLIMPORT virtual ~vsx_sequence();
+  ENGINE_DLLIMPORT vsx_sequence();
+  ENGINE_DLLIMPORT vsx_sequence(const vsx_sequence& seq);
+  ENGINE_DLLIMPORT vsx_sequence(vsx_sequence& seq);
+  ENGINE_DLLIMPORT virtual ~vsx_sequence();
 
-  VSX_SEQUENCE_DLLIMPORT vsx_sequence& operator=(vsx_sequence& ss);
+  ENGINE_DLLIMPORT vsx_sequence& operator=(vsx_sequence& ss);
 
-  VSX_SEQUENCE_DLLIMPORT void reset();
+  ENGINE_DLLIMPORT void reset();
 
   void set_time(float time) {
     execute(time-i_time);
@@ -93,10 +84,10 @@ public:
   	return execute(time-i_time);
   }
 
-  VSX_SEQUENCE_DLLIMPORT float execute(float t_incr);
+  ENGINE_DLLIMPORT float execute(float t_incr);
   #ifndef VSX_NO_SEQUENCE
-  VSX_SEQUENCE_DLLIMPORT vsx_string get_string();
-  VSX_SEQUENCE_DLLIMPORT void set_string(vsx_string str);
+  ENGINE_DLLIMPORT vsx_string get_string();
+  ENGINE_DLLIMPORT void set_string(vsx_string str);
   #else
   virtual vsx_string get_string() = 0;
   virtual void set_string(vsx_string str) = 0;
