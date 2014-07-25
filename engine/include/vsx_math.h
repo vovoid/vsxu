@@ -48,6 +48,17 @@
 
 #define clamp(N, L, U) (MAX(MIN((N), (U)), (L)))
 
+#define FLOAT_INTERPOLATE(Y0, Y1, X, X0, X1) \
+        ((X0==X1) ? Y0 : (((Y1 * (X - X0)) + (Y0 * (X1 - X))) / (X1 - X0)))
+
+#define FLOAT_EQUALS(A, B) \
+        (fabs(b - a) < 0.00001) ? true : false)
+
+#define FLOAT_EXACT(A, B) \
+	(((A > B) || (A < B)) ? false : true)
+
+#define FLOAT_MOD(V, M) \
+        ((V < 0) ? fmod(V, M) + M : fmod(V, M))
 
 #ifndef __gl_h_
 typedef float GLfloat;
