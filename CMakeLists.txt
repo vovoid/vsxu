@@ -21,7 +21,7 @@ set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 ################################################################################
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    set(VSXU_INSTALL_INCLUDE_DIR "include")
+    set(VSXU_INSTALL_INCLUDE_DIR "include/vsxu")
     set(VSXU_INSTALL_LIB_DIR ".")
     set(VSXU_INSTALL_BIN_DIR ".")
     set(VSXU_INSTALL_SHARE_DIR ".")
@@ -35,14 +35,22 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    set(VSXU_INSTALL_INCLUDE_DIR "include")
-    set(VSXU_INSTALL_LIB_DIR ".")
-    set(VSXU_INSTALL_BIN_DIR ".")
-    set(VSXU_INSTALL_SHARE_DIR "share")
+    if (VSXU_WINDOWS_LIB_BUILD)
+      set(VSXU_INSTALL_INCLUDE_DIR "include/vsxu")
+      set(VSXU_INSTALL_LIB_DIR "lib${LIB_SUFFIX}")
+      set(VSXU_INSTALL_BIN_DIR "bin")
+      set(VSXU_INSTALL_SHARE_DIR "share/vsxu")
+    else()
+      set(VSXU_INSTALL_INCLUDE_DIR "include")
+      set(VSXU_INSTALL_LIB_DIR ".")
+      set(VSXU_INSTALL_BIN_DIR ".")
+      set(VSXU_INSTALL_SHARE_DIR "share")
+    endif()
 endif()
+
 ######################################################################################
 # Install the Global Headers so as to install VSXu as a library
-if (UNIX)
+if (UNIX OR VSXU_WINDOWS_LIB_BUILD)
   file(GLOB HEADERS "*.h")
   install (FILES ${HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR} COMPONENT Devel)
 endif()
@@ -50,7 +58,7 @@ endif()
 ################################################################################
 # The pkg-config file
 ################################################################################
-IF (UNIX)
+IF (UNIX OR VSXU_WINDOWS_LIB_BUILD)
   if (VSXU_STATIC EQUAL 1 AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/plugins/static_factory_pkgconfig_libs")
     file (STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/plugins/static_factory_pkgconfig_libs" VSXU_PLUGIN_PKGCONFIG_LIBS)
     CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/libvsxu.pc.in.static
@@ -65,7 +73,7 @@ IF (UNIX)
 
   INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/libvsxu.pc
            DESTINATION ${VSXU_INSTALL_LIB_DIR}/pkgconfig)
-ENDIF (UNIX)
+ENDIF()
 
 
 ################################################################################
