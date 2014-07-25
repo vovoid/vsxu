@@ -118,7 +118,7 @@ install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engin
 
 ######################################################################################
 # Install the Headers so as to install VSXu as a library
-if (UNIX)
+if (UNIX OR VSXU_WINDOWS_LIB_BUILD)
   file(GLOB HEADERS "include/*.h")
   install (FILES ${HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/engine_graphics COMPONENT Devel)
   install(FILES ${CMAKE_SOURCE_DIR}/share/icons/vsxu.xpm DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pixmaps/)
@@ -152,10 +152,6 @@ else(WIN32)
 endif(WIN32)
 
 target_link_libraries(${module_id} ${FREETYPE_LIBRARIES})
-
-#if (NOT ${CMAKE_THREAD_LIBS_INIT}) # and crosscompile
-#  set(CMAKE_THREAD_LIBS_INIT pthread)
-#endif (NOT ${CMAKE_THREAD_LIBS_INIT})
 
 target_link_libraries(${module_id}
   ${PNG_LIBRARIES}

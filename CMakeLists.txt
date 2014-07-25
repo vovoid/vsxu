@@ -228,6 +228,7 @@ else(VSXU_DEBUG)
       -fmessage-length=0
       -fpermissive
       -finline-functions
+      -ffast-math
     )
   endif (OPTIMIZATION_FLAGS EQUAL 1)
 endif(VSXU_DEBUG)
