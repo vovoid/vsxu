@@ -199,7 +199,7 @@ public:
     if(i_prev_inputs != i_curr_inputs) //Update Number Of Inputs
     {
       i_am_ready = false;
-      i_curr_inputs = CLAMP(i_curr_inputs, 0, 15);
+      i_curr_inputs = FLOAT_CLAMP(i_curr_inputs, 0, 15);
       i_prev_inputs = i_curr_inputs;
       redeclare_in = true;
     }
@@ -231,25 +231,25 @@ public:
         }
         else if(i_wrap == 1) //No Wrap - Freeze Ends
         {
-          i_index = CLAMP(index->get(), 0.0, (float)i_prev_inputs);
+          i_index = FLOAT_CLAMP(index->get(), 0.0, (float)i_prev_inputs);
           i_index_x = (int)i_index;
-          i_index_x0 = CLAMP(i_index_x, 0, i_prev_inputs);
-          i_index_x1 = CLAMP(i_index_x + 1, 0, i_prev_inputs);
+          i_index_x0 = FLOAT_CLAMP(i_index_x, 0, i_prev_inputs);
+          i_index_x1 = FLOAT_CLAMP(i_index_x + 1, 0, i_prev_inputs);
           i_value_y0 = float_x[i_index_x0]->get();
           i_value_y1 = float_x[i_index_x1]->get();
         }
         else //No Wrap - Zero Ends
         {
-          i_index = CLAMP(index->get(), -1.0, (float)(i_prev_inputs + 1));
+          i_index = FLOAT_CLAMP(index->get(), -1.0, (float)(i_prev_inputs + 1));
           i_index_x = (int)i_index;
           i_underRange = i_index < 0.0;
           i_overRange = i_index > (float)i_prev_inputs;
           i_index_x0 = (i_underRange) ? -1
                      :((i_overRange) ? i_prev_inputs
-                     :  CLAMP(i_index_x, -1, i_prev_inputs + 1));
+                     :  FLOAT_CLAMP(i_index_x, -1, i_prev_inputs + 1));
           i_index_x1 = (i_underRange) ? 0
                      :((i_overRange) ? i_prev_inputs + 1
-                     :  CLAMP(i_index_x + 1, 0, i_prev_inputs + 2));
+                     :  FLOAT_CLAMP(i_index_x + 1, 0, i_prev_inputs + 2));
           i_value_y0 = (i_underRange) ? 0.0
                      :((i_overRange) ? float_x[i_prev_inputs]->get()
                      :  float_x[i_index_x0]->get());
@@ -332,21 +332,21 @@ public:
         if(i_wrap == 2) //Wrap
         {
           i_index = FLOAT_MOD(index->get(), (float)(i_prev_inputs + 1));
-          i_index_x0 = (i_index > (float)i_prev_inputs) 
+          i_index_x0 = (i_index > (float)i_prev_inputs)
                      ? ((i_index > ((float)i_prev_inputs + 0.5)) ? 0 : i_prev_inputs)
                      : (int)(i_index + 0.5);
           i_value_y0 = float_x[i_index_x0]->get();
         }
         else if(i_wrap == 1) //No Wrap - Freeze Ends
         {
-          i_index = CLAMP(index->get() + 0.5, 0.5, (float)(i_prev_inputs) + 0.5);
-          i_index_x0 = CLAMP((int)i_index, 0, i_prev_inputs);
+          i_index = FLOAT_CLAMP(index->get() + 0.5, 0.5, (float)(i_prev_inputs) + 0.5);
+          i_index_x0 = FLOAT_CLAMP((int)i_index, 0, i_prev_inputs);
           i_value_y0 = float_x[i_index_x0]->get();
         }
         else //No Wrap - Zero Ends
         {
-          i_index = CLAMP(index->get() + 0.5, -0.5, (float)(i_prev_inputs) + 1.5);
-          i_index_x0 = CLAMP((int)i_index, 0, i_prev_inputs);
+          i_index = FLOAT_CLAMP(index->get() + 0.5, -0.5, (float)(i_prev_inputs) + 1.5);
+          i_index_x0 = FLOAT_CLAMP((int)i_index, 0, i_prev_inputs);
           i_value_y0 = ((i_index < -0.0) || (i_index > (float)(i_prev_inputs + 1)) ? 0.0
                      : float_x[i_index_x0]->get());
         }
