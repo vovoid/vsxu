@@ -30,6 +30,8 @@
 
 class module_float_selector : public vsx_module
 {
+//---DATA-STORAGE---------------------------------------------------------------
+
   // in
   vsx_module_param_float* index;
   vsx_module_param_int* inputs;
@@ -72,13 +74,16 @@ class module_float_selector : public vsx_module
   vsx_string i_out_param_string;
   bool i_am_ready;
 
+//---INITIALISATION-------------------------------------------------------------
+
 public:
-  
-  bool init()
+
+  //Initialise Data
+  bool init() 
   {
     i_am_ready = false;
 
-    i_prev_inputs = 2; // "3"
+    i_prev_inputs = 2;   //"3"
     i_curr_inputs = 2;
     
     i_index = 0.0;
@@ -91,9 +96,9 @@ public:
     i_value_y0 = 0.0;
     i_value_y1 = 0.0;
     
-    i_wrap = 2; // Wrap
+    i_wrap = 2;          //Wrap
     i_interpolation = 0; //No Interpolation
-    i_reverse = 2; //Autoreverse Normal
+    i_reverse = 2;       //Autoreverse Normal
     i_reset_seq_to_default = -1;
 
     i_in_param_string = "";
@@ -102,6 +107,7 @@ public:
     return true;
   }
   
+  //Initialise Module & GUI
   void module_info(vsx_module_info* info)
   {
     info->identifier =
@@ -135,15 +141,17 @@ public:
 
     info->component_class = "parameters";
 
-    info->output = 1;
+    info->output = 1; // Always Running
   }
 
+  //Build Interface
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
     loading_done = true;
     redeclare_in=true;
   }
 
+  //Rebuild Inputs
   void redeclare_in_params(vsx_module_param_list& in_parameters)
   {
     loading_done = true;
@@ -185,6 +193,7 @@ public:
     redeclare_out=true;
   }
 
+  //Rebuild Outputs
   void redeclare_out_params(vsx_module_param_list& out_parameters)
   {
     result = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"result");
@@ -193,164 +202,206 @@ public:
     i_am_ready = true;
   }
 
-  void run()
+//---CORE-FUNCTIONS-------------------------------------------------------------
+
+  //See /vsxu/engine/include/vsx_math.h for definitions of:
+    //FLOAT_EQUALS(A, B)
+    //FLOAT_EXACT(A, B)
+    //FLOAT_MOD(V, M)
+    //FLOAT_CLAMP(V, MN, MX)
+    //FLOAT_INTERPOLATE(float Y0, float Y1, float X, float X0, float X1)
+
+  //Update Number of Inputs
+  void UpdateInputs()
   {
     i_curr_inputs = inputs->get();
-    if(i_prev_inputs != i_curr_inputs) //Update Number Of Inputs
+    if(i_prev_inputs != i_curr_inputs)
     {
       i_am_ready = false;
       i_curr_inputs = FLOAT_CLAMP(i_curr_inputs, 0, 15);
       i_prev_inputs = i_curr_inputs;
       redeclare_in = true;
     }
-    
+  }
+
+  //Check for Reset Sequence to Default
+  void ResetSequence()
+  {
     i_reset_seq_to_default = reset_seq_to_default->get();
-    if(i_reset_seq_to_default == 0) //Reset Sequence To Default
+    if(i_reset_seq_to_default == 0)
     {
       i_sequence = i_seq_default;
       sequence->set(i_sequence);
       reset_seq_to_default->set(-1);
       i_reset_seq_to_default = -1;
     }
+  }
+
+  //Set-Up Data for Interpolation
+  void SetupInterpolation()
+  {
+    switch(i_wrap)
+    {
+      case 0: //Don't Wrap Input- Zero Ends
+        i_index = FLOAT_CLAMP(index->get(), -1.0, (float)(i_prev_inputs + 1));
+        i_index_x = (int)i_index;
+        i_underRange = i_index < 0.0;
+        i_overRange = i_index > (float)i_prev_inputs;
+        i_index_x0 = (i_underRange) ? -1
+                   :((i_overRange) ? i_prev_inputs
+                   :  FLOAT_CLAMP(i_index_x, -1, i_prev_inputs + 1));
+        i_index_x1 = (i_underRange) ? 0
+                   :((i_overRange) ? i_prev_inputs + 1
+                   :  FLOAT_CLAMP(i_index_x + 1, 0, i_prev_inputs + 2));
+        i_value_y0 = (i_underRange) ? 0.0
+                   :((i_overRange) ? float_x[i_prev_inputs]->get()
+                   :  float_x[i_index_x0]->get());
+        i_value_y1 = (i_underRange) ? float_x[0]->get()
+                   :((i_overRange) ? 0.0
+                   :  float_x[i_index_x1]->get());
+      break;
+      case 1: //Don't Wrap Input- Freeze Ends
+        i_index = FLOAT_CLAMP(index->get(), 0.0, (float)i_prev_inputs);
+        i_index_x = (int)i_index;
+        i_index_x0 = FLOAT_CLAMP(i_index_x, 0, i_prev_inputs);
+        i_index_x1 = FLOAT_CLAMP(i_index_x + 1, 0, i_prev_inputs);
+        i_value_y0 = float_x[i_index_x0]->get();
+        i_value_y1 = float_x[i_index_x1]->get();
+      break;
+      case 2: //Wrap Input
+        i_index = FLOAT_MOD(index->get(), (float)(i_prev_inputs + 1));
+        i_index_x = (int)i_index;
+        i_index_x0 = i_index_x % (i_prev_inputs + 1);
+        i_index_x1 = i_index_x0 + 1;
+        i_value_y0 = float_x[i_index_x0]->get();
+        i_value_y1 = (i_index_x1 > i_prev_inputs) ? float_x[0]->get()
+                   : float_x[i_index_x1]->get();
+      break;
+    }
+  }
+
+  //Perform Linear Interpolation
+  void LinearInterpolation()
+  {
+    result->set(FLOAT_INTERPOLATE(i_value_y0,
+                                  i_value_y1,
+                                  i_index,
+                                  (float)i_index_x0,
+                                  (float)i_index_x1));
+  }
+
+  //Perform Interpolation Using the Sequence Graph
+  void SequenceInterpolation()
+  {
+    i_sequence = sequence->get();
+    sequence->updates = 0;
+    i_sequence.reset();
+
+    //Cache Sequence Data
+    for(int i = 0; i < SEQ_RESOLUTION; ++i)
+    {
+      i_sequence_data[i] = i_sequence.execute(1.0f / (float)(SEQ_RESOLUTION - 1));
+    }
+          
+    i_seq_index = ((i_index - (float)i_index_x0) 
+                / (float)(i_index_x1 - i_index_x0))
+                * (float)SEQ_RESOLUTION;
+    
+    //Bugfix for No Wrap - Zero Ends on Sequence Interpolation
+    if(i_wrap == 0)
+    {
+      i_value_y0 = (i_index_x == i_prev_inputs + 1) ? 0.0 : i_value_y0;
+      i_value_y1 = (i_index_x == -1) ? 0.0 : i_value_y1;
+    }
+    
+    //Determine Which Graph Reversal Method to Use      
+    i_reverse = reverse->get();
+    switch(i_reverse)
+    {
+      case 0: //Reverse Off
+        result->set(FLOAT_INTERPOLATE(i_value_y0,
+                                      i_value_y1,
+                               (float)i_index_x0 + i_sequence_data[i_seq_index],
+                               (float)i_index_x0,
+                               (float)i_index_x1));
+      break;
+      case 1: //Reverse On
+        result->set(FLOAT_INTERPOLATE(i_value_y1,
+                                      i_value_y0,
+                               (float)i_index_x1 - i_sequence_data[i_seq_index],
+                               (float)i_index_x0,
+                               (float)i_index_x1));
+      break;
+      case 2: //Autoreverse - Normal
+        result->set(FLOAT_INTERPOLATE((i_value_y0 < i_value_y1) ? i_value_y0 : i_value_y1,
+                                      (i_value_y0 < i_value_y1) ? i_value_y1 : i_value_y0,
+                                      (i_value_y0 < i_value_y1) 
+                              ? (float)i_index_x0 + i_sequence_data[i_seq_index]
+                              : (float)i_index_x1 - i_sequence_data[i_seq_index],
+                                (float)i_index_x0,
+                                (float)i_index_x1));
+      break;
+      case 3: //Autoreverse - Inverted
+        result->set(FLOAT_INTERPOLATE((i_value_y0 < i_value_y1) ? i_value_y1 : i_value_y0,
+                                      (i_value_y0 < i_value_y1) ? i_value_y0 : i_value_y1,
+                                      (i_value_y0 < i_value_y1)
+                              ? (float)i_index_x1 - i_sequence_data[i_seq_index]
+                              : (float)i_index_x0 + i_sequence_data[i_seq_index],
+                                (float)i_index_x0,
+                                (float)i_index_x1));
+      break;
+    }
+  }
+
+  //Don't Interpolate
+  void NoInterpolation()
+  {
+    switch(i_wrap)
+    {
+      case 0: //Don't Wrap Index - Zero Ends
+        i_index = FLOAT_CLAMP(index->get() + 0.5, -0.5, (float)(i_prev_inputs) + 1.5);
+        i_index_x0 = FLOAT_CLAMP((int)i_index, 0, i_prev_inputs);
+        i_value_y0 = ((i_index < -0.0) || (i_index > (float)(i_prev_inputs + 1)) ? 0.0
+                   : float_x[i_index_x0]->get());
+      break;
+      case 1: //Don't Wrap Index - Freeze Ends
+        i_index = FLOAT_CLAMP(index->get() + 0.5, 0.5, (float)(i_prev_inputs) + 0.5);
+        i_index_x0 = FLOAT_CLAMP((int)i_index, 0, i_prev_inputs);
+        i_value_y0 = float_x[i_index_x0]->get();
+      break;
+      case 2: //Wrap Index
+        i_index = FLOAT_MOD(index->get(), (float)(i_prev_inputs + 1));
+        i_index_x0 = (i_index > (float)i_prev_inputs)
+                   ? ((i_index > ((float)i_prev_inputs + 0.5)) ? 0 : i_prev_inputs)
+                   : (int)(i_index + 0.5);
+        i_value_y0 = float_x[i_index_x0]->get();
+      break;
+    }
+    result->set(i_value_y0);
+  }
+
+//---MAIN-PROGRAM-LOOP---------------------------------------------------------
+
+  void run()
+  {
+    UpdateInputs();
+    ResetSequence();
 
     if(i_am_ready)
     {
       i_wrap = wrap->get();
       i_interpolation = interpolation->get();
-      if(i_interpolation > 0) //Interpolation
+      switch(i_interpolation)
       {
-        if(i_wrap == 2) //Wrap
-        {
-          i_index = FLOAT_MOD(index->get(), (float)(i_prev_inputs + 1));
-          i_index_x = (int)i_index;
-          i_index_x0 = i_index_x % (i_prev_inputs + 1);
-          i_index_x1 = i_index_x0 + 1;
-          i_value_y0 = float_x[i_index_x0]->get();
-          i_value_y1 = (i_index_x1 > i_prev_inputs) ? float_x[0]->get()
-                     : float_x[i_index_x1]->get();
-        }
-        else if(i_wrap == 1) //No Wrap - Freeze Ends
-        {
-          i_index = FLOAT_CLAMP(index->get(), 0.0, (float)i_prev_inputs);
-          i_index_x = (int)i_index;
-          i_index_x0 = FLOAT_CLAMP(i_index_x, 0, i_prev_inputs);
-          i_index_x1 = FLOAT_CLAMP(i_index_x + 1, 0, i_prev_inputs);
-          i_value_y0 = float_x[i_index_x0]->get();
-          i_value_y1 = float_x[i_index_x1]->get();
-        }
-        else //No Wrap - Zero Ends
-        {
-          i_index = FLOAT_CLAMP(index->get(), -1.0, (float)(i_prev_inputs + 1));
-          i_index_x = (int)i_index;
-          i_underRange = i_index < 0.0;
-          i_overRange = i_index > (float)i_prev_inputs;
-          i_index_x0 = (i_underRange) ? -1
-                     :((i_overRange) ? i_prev_inputs
-                     :  FLOAT_CLAMP(i_index_x, -1, i_prev_inputs + 1));
-          i_index_x1 = (i_underRange) ? 0
-                     :((i_overRange) ? i_prev_inputs + 1
-                     :  FLOAT_CLAMP(i_index_x + 1, 0, i_prev_inputs + 2));
-          i_value_y0 = (i_underRange) ? 0.0
-                     :((i_overRange) ? float_x[i_prev_inputs]->get()
-                     :  float_x[i_index_x0]->get());
-          i_value_y1 = (i_underRange) ? float_x[0]->get()
-                     :((i_overRange) ? 0.0
-                     :  float_x[i_index_x1]->get());
-        }
-        
-        //Linear Interpolation
-        if(i_interpolation == 1)
-        {
-          result->set(FLOAT_INTERPOLATE(i_value_y0,
-                                        i_value_y1,
-                                        i_index,
-                                        (float)i_index_x0,
-                                        (float)i_index_x1));
-        }
-        //Sequence Interpolation
-        else if(i_interpolation == 2)
-        {
-          i_sequence = sequence->get();
-          sequence->updates = 0;
-          i_sequence.reset();
-
-          for(int i = 0; i < SEQ_RESOLUTION; ++i) //Cache Sequence Data
-          {
-            i_sequence_data[i] = i_sequence.execute(1.0f / (float)(SEQ_RESOLUTION - 1));
-          }
-          
-          i_seq_index = ((i_index - (float)i_index_x0) 
-                      / (float)(i_index_x1 - i_index_x0))
-                      * (float)SEQ_RESOLUTION;
-          
-          if(i_wrap == 0) //Bugfix for No Wrap - Zero Ends
-          {
-            i_value_y0 = (i_index_x == i_prev_inputs + 1) ? 0.0 : i_value_y0;
-            i_value_y1 = (i_index_x == -1) ? 0.0 : i_value_y1;
-          }
-          
-          i_reverse = reverse->get();
-          switch(i_reverse)
-          {
-            case(0): //Reverse Off
-              result->set(FLOAT_INTERPOLATE(i_value_y0,
-                                            i_value_y1,
-                                     (float)i_index_x0 + i_sequence_data[i_seq_index],
-                                     (float)i_index_x0,
-                                     (float)i_index_x1));
-            break;
-            case(1): //Reverse On
-              result->set(FLOAT_INTERPOLATE(i_value_y1,
-                                            i_value_y0,
-                                     (float)i_index_x1 - i_sequence_data[i_seq_index],
-                                     (float)i_index_x0,
-                                     (float)i_index_x1));
-            break;
-            case(2): //Autoreverse - Normal
-              result->set(FLOAT_INTERPOLATE((i_value_y0 < i_value_y1) ? i_value_y0 : i_value_y1,
-                                            (i_value_y0 < i_value_y1) ? i_value_y1 : i_value_y0,
-                                            (i_value_y0 < i_value_y1) 
-                                    ? (float)i_index_x0 + i_sequence_data[i_seq_index]
-                                    : (float)i_index_x1 - i_sequence_data[i_seq_index],
-                                      (float)i_index_x0,
-                                      (float)i_index_x1));
-            break;
-            case(3): //Autoreverse - Inverted
-              result->set(FLOAT_INTERPOLATE((i_value_y0 < i_value_y1) ? i_value_y1 : i_value_y0,
-                                            (i_value_y0 < i_value_y1) ? i_value_y0 : i_value_y1,
-                                            (i_value_y0 < i_value_y1)
-                                    ? (float)i_index_x1 - i_sequence_data[i_seq_index]
-                                    : (float)i_index_x0 + i_sequence_data[i_seq_index],
-                                      (float)i_index_x0,
-                                      (float)i_index_x1));
-            break;
-          }
-        }
-      }
-      else //No Interpolation
-      {
-        if(i_wrap == 2) //Wrap
-        {
-          i_index = FLOAT_MOD(index->get(), (float)(i_prev_inputs + 1));
-          i_index_x0 = (i_index > (float)i_prev_inputs)
-                     ? ((i_index > ((float)i_prev_inputs + 0.5)) ? 0 : i_prev_inputs)
-                     : (int)(i_index + 0.5);
-          i_value_y0 = float_x[i_index_x0]->get();
-        }
-        else if(i_wrap == 1) //No Wrap - Freeze Ends
-        {
-          i_index = FLOAT_CLAMP(index->get() + 0.5, 0.5, (float)(i_prev_inputs) + 0.5);
-          i_index_x0 = FLOAT_CLAMP((int)i_index, 0, i_prev_inputs);
-          i_value_y0 = float_x[i_index_x0]->get();
-        }
-        else //No Wrap - Zero Ends
-        {
-          i_index = FLOAT_CLAMP(index->get() + 0.5, -0.5, (float)(i_prev_inputs) + 1.5);
-          i_index_x0 = FLOAT_CLAMP((int)i_index, 0, i_prev_inputs);
-          i_value_y0 = ((i_index < -0.0) || (i_index > (float)(i_prev_inputs + 1)) ? 0.0
-                     : float_x[i_index_x0]->get());
-        }
-        result->set(i_value_y0);
+        case 0: NoInterpolation(); break;
+        case 1:
+          SetupInterpolation();
+          LinearInterpolation();
+        break;
+        case 2:
+          SetupInterpolation();
+          SequenceInterpolation();
+        break;
       }
     }
   }
