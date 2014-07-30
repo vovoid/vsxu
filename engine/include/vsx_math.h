@@ -49,6 +49,23 @@
 #define clamp(N, L, U) (MAX(MIN((N), (U)), (L)))
 
 
+#define FLOAT_EQUALS(A, B) \
+        ((fabs(B - A) < 0.00001) ? true : false)
+
+#define FLOAT_EXACT(A, B) \
+	(((A > B) || (A < B)) ? false : true)
+
+#define FLOAT_MOD(V, M) \
+        ((V < 0) ? fmod(V, M) + M : fmod(V, M))
+
+#define FLOAT_CLAMP(V, MN, MX) \
+        ((V < MN) ? MN : ((V > MX) ? MX : V))
+
+inline float FLOAT_INTERPOLATE(float Y0, float Y1, float X, float X0, float X1)
+{
+  return (FLOAT_EQUALS(X0, X1)) ? Y0 : (((Y1 * (X - X0)) + (Y0 * (X1 - X))) / (X1 - X0));
+}
+
 #ifndef __gl_h_
 typedef float GLfloat;
 #endif
