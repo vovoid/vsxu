@@ -30,6 +30,8 @@
 
 
 #include "module_float_selector.h"
+#include "module_float3_selector.h"
+#include "module_float4_selector.h"
 
 
 //******************************************************************************
@@ -52,7 +54,9 @@ vsx_module* MOD_CM(unsigned long module, void* args)
   VSX_UNUSED(args);
   switch (module)
   {
-    case 0:  return (vsx_module*)(new module_float_selector);
+    case 0: return (vsx_module*)(new module_float_selector);
+    case 1: return (vsx_module*)(new module_float3_selector);
+    case 2: return (vsx_module*)(new module_float4_selector);
   }
   return 0;
 }
@@ -62,11 +66,13 @@ void MOD_DM(vsx_module* m,unsigned long module)
   switch(module)
   {
     case 0: delete (module_float_selector*)m; break;
+    case 1: delete (module_float3_selector*)m; break;
+    case 2: delete (module_float4_selector*)m; break;
   }
 }
 
 unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   VSX_UNUSED(environment);
-  return 1;
+  return 3;
 }
