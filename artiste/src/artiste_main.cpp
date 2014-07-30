@@ -275,6 +275,9 @@ int main(int argc, char* argv[])
     return 0;
   }
 
+  glewInit();
+
+
   if (start_fullscreen) glfwEnable( GLFW_MOUSE_CURSOR );
   app_init(0);
 
@@ -449,19 +452,18 @@ int main(int argc, char* argv[])
 
     glfwSwapBuffers();
 
-#if (PLATFORM != PLATFORM_WINDOWS)
-    if (!vsync)
-    {
+//#if (PLATFORM != PLATFORM_WINDOWS)
+//    if (!vsync)
+//    {
+//      float dtime = frame_delay.dtime();
 
-      float dtime = frame_delay.dtime();
-
-      if (dtime < 1.0f/60.0f)
-      {
-        float sleeptime = (1.0f / 60.0f - dtime)*1000000.0f;
-        usleep( (useconds_t) sleeptime );
-      }
-    }
-#endif
+//      if (dtime < 1.0f/60.0f)
+//      {
+//        float sleeptime = (1.0f / 60.0f - dtime)*1000000.0f;
+//        usleep( (useconds_t) sleeptime );
+//      }
+//    }
+//#endif
 
 
     // Check if the ESC key was pressed or the window was closed

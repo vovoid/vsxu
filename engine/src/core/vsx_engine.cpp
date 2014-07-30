@@ -259,6 +259,19 @@ vsx_module* vsx_engine::get_module_by_name(vsx_string module_name)
   return 0x0;
 }
 
+vsx_string vsx_engine::get_modules_not_loaded()
+{
+  vsx_string res;
+  for (vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
+    if ((*it)->module) {
+      if (!(*it)->module->loading_done) {
+        res += " " + (*it)->name + " ";
+      }
+    }
+  }
+  return res;
+}
+
 
 void vsx_engine::input_event(vsx_engine_input_event &new_input_event)
 {

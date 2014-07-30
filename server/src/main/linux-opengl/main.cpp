@@ -276,6 +276,8 @@ int main(int argc, char* argv[])
     return 0;
   }
 
+  glewInit();
+
   if (start_fullscreen) glfwEnable( GLFW_MOUSE_CURSOR );
   app_init(0);
 

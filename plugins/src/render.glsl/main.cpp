@@ -256,10 +256,6 @@ void MOD_DM(vsx_module* m, unsigned long module)
 
 unsigned long MOD_NM(vsx_engine_environment* environment)
 {
-  #ifndef VSXU_OPENGL_ES
-  glewInit();
-  #endif
-
   // run once when vsxu starts
   init_run.push_back(0);
   std::list<vsx_string> i_shaders;

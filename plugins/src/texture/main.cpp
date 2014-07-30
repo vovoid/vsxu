@@ -75,7 +75,6 @@ __declspec(dllexport) unsigned long get_num_modules(vsx_engine_environment* envi
 vsx_module* MOD_CM(unsigned long module, void* args)
 {
   VSX_UNUSED(args);
-  glewInit();
   switch(module) {
     case 0:
     case 1:

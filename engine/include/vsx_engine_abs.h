@@ -182,6 +182,7 @@ public:
   virtual vsx_comp* get_by_id(unsigned long id) = 0;
   virtual vsx_module_param_abs* get_in_param_by_name(vsx_string module_name, vsx_string param_name) = 0;
   virtual vsx_module* get_module_by_name(vsx_string module_name) = 0;
+  virtual vsx_string get_modules_not_loaded() = 0;
 
   // get a list of all external-exposed parameters (parameters that we want to export from a sub-engine)
   virtual void get_external_exposed_parameters( vsx_avector< vsx_module_param_abs* >* result ) = 0;

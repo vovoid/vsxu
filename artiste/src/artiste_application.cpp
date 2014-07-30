@@ -435,7 +435,7 @@ void app_init(int id)
   gui_prod_fullwindow = &prod_fullwindow;
   //---------------------------------------------------------------------------
   vsxf filesystem;
-  myf.init( vsx_string(PLATFORM_SHARED_FILES) + "font/font-ascii_output.png", &filesystem);
+  myf.init( PLATFORM_SHARED_FILES + vsx_string("font/font-ascii_output.png"), &filesystem);
 
   if (dual_monitor) {
     vxe->start();
@@ -450,8 +450,11 @@ void app_print_cli_help()
   printf(
          "VSXu Artiste command syntax:\n"
          "  -f             fullscreen mode\n"
+         "  -ff            start preview in fullwindow mode (same as Ctrl+F)"
          "  -s 1920,1080   screen/window size\n"
          "  -p 100,100     window posision\n"
+         "  -novsync       disable vsync\n"
+         "  -gl_debug      enable nvidia's gl debug callback\n"
          "\n"
         );
 

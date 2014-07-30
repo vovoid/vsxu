@@ -315,7 +315,6 @@ void vsx_statelist::render()
 {
   if (render_first)
   {
-    glewInit();
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     if (tex1.has_buffer_support())

@@ -271,7 +271,7 @@ int vsxf::archive_load(const char* filename, bool preload_compressed_data)
 
 bool vsxf::is_archive()
 {
-  return (type == VSXF_TYPE_ARCHIVE);
+  return (type == VSXF_TYPE_ARCHIVE && archive_handle);
 }
 
 bool vsxf::is_archive_populated()
