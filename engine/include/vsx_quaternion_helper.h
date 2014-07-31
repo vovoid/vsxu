@@ -7,7 +7,6 @@
 
 namespace vsx_quaternion_helper
 {
-
   template<typename T>
   inline vsx_quaternion<T> from_string(vsx_string &str) VSX_ALWAYS_INLINE
   {
@@ -24,6 +23,22 @@ namespace vsx_quaternion_helper
     return q;
   }
 
+  template<typename T>
+  inline vsx_string to_string(const vsx_quaternion<T> &q) VSX_ALWAYS_INLINE
+  {
+    vsx_string local;
+    local += vsx_string_helper::f2s(q.x);
+    local += vsx_string(",")+vsx_string_helper::f2s(q.y);
+    local += vsx_string(",")+vsx_string_helper::f2s(q.z);
+    local += vsx_string(",")+vsx_string_helper::f2s(q.w);
+    return local;
+  }
+
+  template<typename T>
+  inline void dump(const vsx_quaternion<T> &q, char* label="n/a")
+  {
+    vsx_printf( "Name: %s. x: %f y: %f z: %f w: %f\n",label, q.x, q.y, q.z, q.w );
+  }
 }
 
 #endif
