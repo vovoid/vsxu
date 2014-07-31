@@ -278,7 +278,9 @@ int main(int argc, char* argv[])
   glewInit();
 
 
-  if (start_fullscreen) glfwEnable( GLFW_MOUSE_CURSOR );
+  if (start_fullscreen)
+    glfwEnable( GLFW_MOUSE_CURSOR );
+
   app_init(0);
 
   glfwEnable(GLFW_AUTO_POLL_EVENTS);
@@ -423,7 +425,8 @@ int main(int argc, char* argv[])
         {
           key_repeat_time = 0.0f;
           if (key_character != -1)
-          app_char(key_character);
+            app_char(key_character);
+
           app_key_down((long)key_pressed);
           initial_key_delay *= 0.99f;
           //printf("repeating key: %d\n", key_character);

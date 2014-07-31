@@ -4,6 +4,7 @@
 // shadow state of OpenGL to avoid glGet* calls
 
 #include <vsx_platform.h>
+#include <engine_graphics_dllimport.h>
 #include <vsx_matrix.h>
 
 
@@ -151,7 +152,7 @@ const int gl_polygon_fill[] =
   #endif
 };
 
-class vsx_gl_state
+VSX_ENGINE_GRAPHICS_DLLIMPORT class vsx_gl_state
 {
 public:
 
@@ -1157,7 +1158,7 @@ public:
   }
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-  static vsx_gl_state* get_instance();
+  static VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_gl_state* get_instance();
 #else
   static vsx_gl_state* get_instance() __attribute__((always_inline))
   {

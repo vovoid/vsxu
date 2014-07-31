@@ -29,7 +29,7 @@
 #include <vsx_platform.h>
 #include <vector/vsx_vector3.h>
 #include <vsx_color.h>
-#include <_engine_graphics_dllimport.h>
+#include <engine_graphics_dllimport.h>
 
 
 

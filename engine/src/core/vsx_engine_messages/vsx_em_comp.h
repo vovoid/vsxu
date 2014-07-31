@@ -31,7 +31,11 @@ if (cmd == "component_create")
       if (module_list->find(c->parts[1])) {
         vsx_comp* comp = add(c->parts[2]);
         comp->load_module(c->parts[1],&engine_info);
-        comp->identifier = c->parts[1];
+
+        comp->identifier = comp->module_info->identifier;
+        if ( comp->module_info->identifier_save != "")
+          comp->identifier = comp->module_info->identifier_save;
+
         if (comp->module_info->output) {
           outputs.push_back(comp);
         }

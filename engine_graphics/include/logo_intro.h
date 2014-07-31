@@ -25,7 +25,7 @@
 #ifndef VSX_LOGO_INTRO_H
 #define VSX_LOGO_INTRO_H
 #include <vsx_platform.h>
-#include <_engine_graphics_dllimport.h>
+#include <engine_graphics_dllimport.h>
 #include "vsx_timer.h"
 #include "vsx_texture.h"
 

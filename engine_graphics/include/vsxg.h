@@ -51,7 +51,7 @@
 #include <container/vsx_avector.h>
 #include "vsxfst.h"
 
-#include "_engine_graphics_dllimport.h"
+#include "engine_graphics_dllimport.h"
 
 /* Mipmapping parameters */
 #define PNG_NOMIPMAPS      0 /* No mipmapping                        */

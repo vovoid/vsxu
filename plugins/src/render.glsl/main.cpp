@@ -108,6 +108,7 @@ public:
 
   void module_info(vsx_module_info* info)
   {
+    info->identifier_save = "renderers;shaders;glsl_loader";
     if (shader_source == 0)
     {
       info->identifier = "renderers;shaders;glsl_loader";

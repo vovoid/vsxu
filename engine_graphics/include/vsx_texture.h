@@ -25,7 +25,7 @@
 #ifndef VSX_TEXTURE_LIB_H
 #define VSX_TEXTURE_LIB_H
 #include <vsx_platform.h>
-#include <_engine_graphics_dllimport.h>
+#include <engine_graphics_dllimport.h>
 #include <map>
 #include <vsx_texture_info.h>
 #include <vsx_string.h>

@@ -26,7 +26,7 @@
 #define VSX_FONT_H
 
 #include <vsx_platform.h>
-#include <_engine_graphics_dllimport.h>
+#include <engine_graphics_dllimport.h>
 
 #include <vsx_texture.h>
 #include <vsx_color.h>

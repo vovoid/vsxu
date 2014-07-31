@@ -204,6 +204,7 @@ public:
 //-
   vsx_string identifier; // the name of the module be it internal or a file i.e. "math;oscillator" etc, with a module
                           // found on disk as a DLL/SO this will be the filename of the module.
+  vsx_string identifier_save; // If not empty, use this name when saving the state rather than identifier.
 //----------------------------------------------------------------------------------------------------------------------
   // [description]
   //   The purpouse of this is to tell the end user what a component loaded with this module does.
