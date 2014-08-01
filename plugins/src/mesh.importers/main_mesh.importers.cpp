@@ -31,6 +31,7 @@
 
 #include "module_mesh_cal3d_loader_threaded.h"
 #include "module_mesh_import_obj.h"
+#include "module_mesh_import_robj.h"
 #include "module_mesh_import_vxm.h"
 
 
@@ -58,6 +59,7 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 0: return (vsx_module*)(new module_mesh_cal3d_import);
     case 1: return (vsx_module*)(new module_mesh_import_obj);
     case 2: return (vsx_module*)(new module_mesh_import_vxm);
+    case 3: return (vsx_module*)(new module_mesh_import_robj);
   }
   return 0;
 }
@@ -67,6 +69,7 @@ void MOD_DM(vsx_module* m,unsigned long module) {
     case 0: delete (module_mesh_cal3d_import*)m; break;
     case 1: delete (module_mesh_import_obj*)m; break;
     case 2: delete (module_mesh_import_vxm*)m; break;
+    case 3: delete (module_mesh_import_robj*)m; break;
   }
 }
 
@@ -74,7 +77,7 @@ void MOD_DM(vsx_module* m,unsigned long module) {
 unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   VSX_UNUSED(environment);
-  return 3;
+  return 4;
 }
 
 

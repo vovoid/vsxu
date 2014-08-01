@@ -430,7 +430,13 @@ public:
     }
     // enable tex coords
     if ((*mesh)->data->vertex_tex_coords.get_used()) {
-      glTexCoordPointer(2,GL_FLOAT,0,(*mesh)->data->vertex_tex_coords.get_pointer());
+      if ( (*mesh)->data->vertex_tex_coords.size() == (*mesh)->data->vertices.size() * 2 )
+      {
+
+        glTexCoordPointer(4,GL_FLOAT,0,(*mesh)->data->vertex_tex_coords.get_pointer());
+      }
+      else
+        glTexCoordPointer(2,GL_FLOAT,0,(*mesh)->data->vertex_tex_coords.get_pointer());
       m_tex_coords = true;
     }
     // enable vertices
@@ -483,7 +489,13 @@ public:
       (*mesh)->data->vertex_tex_coords.get_used()
     )
     {
-      glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)offset_texcoords);
+      if ( (*mesh)->data->vertex_tex_coords.size() == (*mesh)->data->vertices.size() * 2 )
+      {
+        glTexCoordPointer(4,GL_FLOAT,0,(GLvoid*)offset_texcoords);
+      }
+      else
+        glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)offset_texcoords);
+
       m_tex_coords = true;
     }
 

@@ -32,7 +32,7 @@ if (cmd == "component_create")
         vsx_comp* comp = add(c->parts[2]);
         comp->load_module(c->parts[1],&engine_info);
 
-        comp->identifier = comp->module_info->identifier;
+        comp->identifier = c->parts[1];
         if ( comp->module_info->identifier_save != "")
           comp->identifier = comp->module_info->identifier_save;
 
