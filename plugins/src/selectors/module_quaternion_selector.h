@@ -28,14 +28,14 @@
 
 #define SEQ_RESOLUTION 8192
 
-class module_float4_selector : public vsx_module
+class module_quaternion_selector : public vsx_module
 {
 //---DATA-STORAGE---------------------------------------------------------------
 
   // in
   vsx_module_param_float* index;
   vsx_module_param_int* inputs;
-  std::vector<vsx_module_param_float4*> float4_x;
+  std::vector<vsx_module_param_quaternion*> quaternion_x;
 
   vsx_module_param_int* wrap;
   vsx_module_param_int* interpolation;
@@ -44,7 +44,7 @@ class module_float4_selector : public vsx_module
   vsx_module_param_int* reset_seq_to_default;
 
   // out
-  vsx_module_param_float4* result;
+  vsx_module_param_quaternion* result;
 
   // internal
   int i_prev_inputs;
@@ -56,7 +56,7 @@ class module_float4_selector : public vsx_module
   int i_index_x1;
   bool i_underRange;
   bool i_overRange;
-
+ 
   float i_value_y0[4];
   float i_value_y1[4];
   
@@ -80,7 +80,7 @@ class module_float4_selector : public vsx_module
 public:
 
   //Initialise Data
-  module_float4_selector()
+  module_quaternion_selector()
   {
     i_am_ready = false; //Don't do operations if the data isn't ready
 
@@ -88,12 +88,12 @@ public:
     i_curr_inputs = 2;  //"3" for default
     
     i_index = 0.0;      //Storage for calculating indexes
-    i_index_x = 0; 
+    i_index_x = 0;
     i_index_x0 = 0;
     i_index_x1 = 1;
     i_underRange = false;
     i_overRange = false;
-
+   
     for(int i = 0; i < 4; i++)
     {  
       i_value_y0[i] = 0.0;   //Float values for index calculation
@@ -116,11 +116,11 @@ public:
   void module_info(vsx_module_info* info)
   {
     info->identifier =
-      "selectors;float4_selector";
+      "selectors;quaternion_selector";
 
     info->description =
       "[result] is equal to the\n"
-      "[float4_x] chosen by [index]\n"
+      "[quaternion_x] chosen by [index]\n"
       "\n"
       "The number of inputs is\n"
       "controlled by [inputs]\n"
@@ -131,7 +131,7 @@ public:
       "\n";
 
     info->out_param_spec =
-      "result:float4";
+      "result:quaternion";
 
     info->in_param_spec =
       "index:float,"
@@ -154,51 +154,50 @@ public:
   {
     loading_done = true; //Allows main sequencer to start playing
 
-    //Priority parameters - inputs must get loaded before float4_x in the state file
+    //Priority parameters - inputs must get loaded before quaternion_x in the state file
     index = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "index");
     index->set(i_index);
     inputs = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "inputs");
     inputs->set((float)(i_curr_inputs + 1)); //converts 0-based index to 1-based index!
-
-    float4_x.clear();       //Create the array and the param_string for float4_x
+    
+    quaternion_x.clear();  //Create the array and the param_string for quaternion_x
     i_paramString.str("");
-    i_paramString << "float4_x:complex{";
+    i_paramString << "quaternion_x:complex{";
 
     for(int i = 0; i < 16; ++i)
     {
       if(i > 0) i_paramString << ",";
       i_paramName.str("");
-      i_paramName << "float4_" << i;
-      i_paramString << i_paramName.str().c_str() << ":float4";
+      i_paramName << "quaternion_" << i;
+      i_paramString << i_paramName.str().c_str() << ":quaternion";
 
-      float4_x.push_back((vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4, i_paramName.str().c_str()));
-      float4_x[i]->set(0.0, 0);
-      float4_x[i]->set(0.0, 1);
-      float4_x[i]->set(0.0, 2);
-      float4_x[i]->set(0.0, 3);
+      quaternion_x.push_back((vsx_module_param_quaternion*)in_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION, i_paramName.str().c_str()));
+      quaternion_x[i]->set(0.0, 0);
+      quaternion_x[i]->set(0.0, 1);
+      quaternion_x[i]->set(0.0, 2);
+      quaternion_x[i]->set(1.0, 3); //Quaternion differs from float4
     }
-    
+
     i_paramString << "},";
     i_in_param_string = i_paramString.str().c_str();
-
+    
     wrap = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "wrap");
     wrap->set(i_wrap);
-    interpolation = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,
-"interpolation");
+    interpolation = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "interpolation");
     interpolation->set(i_interpolation);
     sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "sequence");
-    sequence->set(i_seq_default);
+    sequence->set(i_sequence);
     reverse = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reverse");
     reverse->set(i_reverse);
     reset_seq_to_default = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reset_seq_to_default");
     reset_seq_to_default->set(i_reset_seq_to_default);
-
+    
     //Outputs
-    result = (vsx_module_param_float4*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4, "result");
+    result = (vsx_module_param_quaternion*)out_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION,"result");
     result->set(0.0, 0);
     result->set(0.0, 1);
     result->set(0.0, 2);
-    result->set(0.0, 3);
+    result->set(1.0, 3);
   }
 
   //Rebuild Inputs
@@ -209,22 +208,22 @@ public:
     index = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "index");
     inputs = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "inputs");
     
-    float4_x.clear();
+    quaternion_x.clear();
     i_paramString.str("");
-    i_paramString << "float4_x:complex{";
+    i_paramString << "quaternion_x:complex{";
 
     for(int i = 0; i <= i_prev_inputs; ++i)
     {
       if(i > 0) i_paramString << ",";
       i_paramName.str("");
-      i_paramName << "float4_" << i;
-      i_paramString << i_paramName.str().c_str() << ":float4";
+      i_paramName << "quaternion_" << i;
+      i_paramString << i_paramName.str().c_str() << ":quaternion";
 
-      float4_x.push_back((vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4, i_paramName.str().c_str()));
-      float4_x[i]->set(0.0, 0);
-      float4_x[i]->set(0.0, 1);
-      float4_x[i]->set(0.0, 2);
-      float4_x[i]->set(0.0, 3);
+      quaternion_x.push_back((vsx_module_param_quaternion*)in_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION, i_paramName.str().c_str()));
+      quaternion_x[i]->set(0.0, 0);
+      quaternion_x[i]->set(0.0, 1);
+      quaternion_x[i]->set(0.0, 2);
+      quaternion_x[i]->set(1.0, 3);
     }
 
     i_paramString << "},";
@@ -263,28 +262,28 @@ public:
                       :((i_overRange) ? i_prev_inputs + 1
                       :  FLOAT_CLAMP(i_index_x + 1, 0, i_prev_inputs + 2));
         i_value_y0[i] = (i_underRange) ? 0.0
-                      :((i_overRange) ? float4_x[i_prev_inputs]->get(i)
-                      :  float4_x[i_index_x0]->get(i));
-        i_value_y1[i] = (i_underRange) ? float4_x[0]->get(i)
+                      :((i_overRange) ? quaternion_x[i_prev_inputs]->get(i)
+                      :  quaternion_x[i_index_x0]->get(i));
+        i_value_y1[i] = (i_underRange) ? quaternion_x[0]->get(i)
                       :((i_overRange) ? 0.0
-                      :  float4_x[i_index_x1]->get(i));
+                      :  quaternion_x[i_index_x1]->get(i));
       break;
       case 1: //Don't Wrap Index - Freeze Ends
         i_index = FLOAT_CLAMP(index->get(), 0.0, (float)i_prev_inputs);
         i_index_x = (int)i_index;
         i_index_x0 = FLOAT_CLAMP(i_index_x, 0, i_prev_inputs);
         i_index_x1 = FLOAT_CLAMP(i_index_x + 1, 0, i_prev_inputs);
-        i_value_y0[i] = float4_x[i_index_x0]->get(i);
-        i_value_y1[i] = float4_x[i_index_x1]->get(i);
+        i_value_y0[i] = quaternion_x[i_index_x0]->get(i);
+        i_value_y1[i] = quaternion_x[i_index_x1]->get(i);
       break;
       case 2: //Wrap Index
         i_index = FLOAT_MOD(index->get(), (float)(i_prev_inputs + 1));
         i_index_x = (int)i_index;
         i_index_x0 = i_index_x % (i_prev_inputs + 1);
         i_index_x1 = i_index_x0 + 1;
-        i_value_y0[i] = float4_x[i_index_x0]->get(i);
-        i_value_y1[i] = (i_index_x1 > i_prev_inputs) ? float4_x[0]->get(i)
-                      : float4_x[i_index_x1]->get(i);
+        i_value_y0[i] = quaternion_x[i_index_x0]->get(i);
+        i_value_y1[i] = (i_index_x1 > i_prev_inputs) ? quaternion_x[0]->get(i)
+                      : quaternion_x[i_index_x1]->get(i);
       break;
     }
   }
@@ -376,24 +375,23 @@ public:
         i_index = FLOAT_CLAMP(index->get() + 0.5, -0.5, (float)(i_prev_inputs) + 1.5);
         i_index_x0 = FLOAT_CLAMP((int)i_index, 0, i_prev_inputs);
         i_value_y0[i] = ((i_index < -0.0) || (i_index > (float)(i_prev_inputs + 1)) ? 0.0
-                      : float4_x[i_index_x0]->get(i));
+                      : quaternion_x[i_index_x0]->get(i));
       break;
       case 1: //Don't Wrap Index - Freeze Ends
         i_index = FLOAT_CLAMP(index->get() + 0.5, 0.5, (float)(i_prev_inputs) + 0.5);
         i_index_x0 = FLOAT_CLAMP((int)i_index, 0, i_prev_inputs);
-        i_value_y0[i] = float4_x[i_index_x0]->get(i);
+        i_value_y0[i] = quaternion_x[i_index_x0]->get(i);
       break;
       case 2: //Wrap Index
         i_index = FLOAT_MOD(index->get(), (float)(i_prev_inputs + 1));
         i_index_x0 = (i_index > (float)i_prev_inputs)
                       ? ((i_index > ((float)i_prev_inputs + 0.5)) ? 0 : i_prev_inputs)
                       : (int)(i_index + 0.5);
-        i_value_y0[i] = float4_x[i_index_x0]->get(i);
+        i_value_y0[i] = quaternion_x[i_index_x0]->get(i);
       break;
     }
     result->set(i_value_y0[i], i);
   }
-
 
 //---CORE-FUNCTIONS-------------------------------------------------------------
 

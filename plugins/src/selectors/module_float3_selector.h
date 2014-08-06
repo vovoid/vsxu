@@ -35,7 +35,8 @@ class module_float3_selector : public vsx_module
   // in
   vsx_module_param_float* index;
   vsx_module_param_int* inputs;
-  std::vector<vsx_module_param_float3*> float_x;
+  std::vector<vsx_module_param_float3*> float3_x;
+
   vsx_module_param_int* wrap;
   vsx_module_param_int* interpolation;
   vsx_module_param_sequence* sequence;
@@ -51,11 +52,11 @@ class module_float3_selector : public vsx_module
 
   float i_index;
   int i_index_x;
-  bool i_underRange;
-  bool i_overRange;
-
   int i_index_x0;
   int i_index_x1;
+  bool i_underRange;
+  bool i_overRange;
+ 
   float i_value_y0[3];
   float i_value_y1[3];
   
@@ -71,7 +72,7 @@ class module_float3_selector : public vsx_module
   std::stringstream i_paramString;
   std::stringstream i_paramName;
   vsx_string i_in_param_string;
-  vsx_string i_out_param_string;
+
   bool i_am_ready;
 
 //---INITIALISATION-------------------------------------------------------------
@@ -79,23 +80,23 @@ class module_float3_selector : public vsx_module
 public:
 
   //Initialise Data
-  bool init() 
+  module_float3_selector() 
   {
-    i_am_ready = false;
+    i_am_ready = false; //Don't do operations if the data isn't ready
 
-    i_prev_inputs = 2;   //"3"
-    i_curr_inputs = 2;
+    i_prev_inputs = 15; //"16" for loading
+    i_curr_inputs = 2;  //"3" for default
     
-    i_index = 0.0;
+    i_index = 0.0;      //Storage for calculating indexes
     i_index_x = 0;
-    i_underRange = false;
-    i_overRange = false;
-
     i_index_x0 = 0;
     i_index_x1 = 1;
+    i_underRange = false;
+    i_overRange = false;
+   
     for(int i = 0; i < 3; i++)
     {  
-      i_value_y0[i] = 0.0;
+      i_value_y0[i] = 0.0;  //Float values for index calculation
       i_value_y1[i] = 0.0;
     }
     
@@ -104,10 +105,11 @@ public:
     i_reverse = 2;       //Autoreverse Normal
     i_reset_seq_to_default = -1;
 
+    i_seq_default.items[0].value = 0.0; //Sets default values for sequence
+    i_seq_default.items[0].delay = 1.0;
+    i_seq_default.items[0].interpolation = 2; //Cosine
+
     i_in_param_string = "";
-    i_out_param_string = "";
-    
-    return true;
   }
   
   //Initialise Module & GUI
@@ -133,7 +135,7 @@ public:
 
     info->in_param_spec =
       "index:float,"
-      "inputs:enum?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16,"
+      "inputs:enum?0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16&nc=1,"
       + i_in_param_string +
       "options:complex{"
         "wrap:enum?None_Zero|None_Freeze|Wrap,"
@@ -150,8 +152,51 @@ public:
   //Build Interface
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-    loading_done = true;
-    redeclare_in=true;
+    loading_done = true; //Allows main sequencer to start playing
+    
+    //Priority parameters - inputs must get loaded before float3_x in the state file
+    index = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "index");
+    index->set(i_index);
+    inputs = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "inputs");
+    inputs->set((float)(i_curr_inputs + 1)); //converts 0-based index to 1-based index!
+
+    float3_x.clear();       //Create the array and the param_string for float3_x
+    i_paramString.str("");
+    i_paramString << "float3_x:complex{";
+
+    for(int i = 0; i < 16; ++i)
+    {
+      if(i > 0) i_paramString << ",";
+      i_paramName.str("");
+      i_paramName << "float3_" << i;
+      i_paramString << i_paramName.str().c_str() << ":float3";
+
+      float3_x.push_back((vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, i_paramName.str().c_str()));
+      float3_x[i]->set(0.0, 0);
+      float3_x[i]->set(0.0, 1);
+      float3_x[i]->set(0.0, 2);
+    }
+    
+    i_paramString << "},";
+    i_in_param_string = i_paramString.str().c_str();
+
+    wrap = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "wrap");
+    wrap->set(i_wrap);
+    interpolation = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,
+"interpolation");
+    interpolation->set(i_interpolation);
+    sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "sequence");
+    sequence->set(i_seq_default);
+    reverse = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reverse");
+    reverse->set(i_reverse);
+    reset_seq_to_default = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reset_seq_to_default");
+    reset_seq_to_default->set(i_reset_seq_to_default);
+
+    //Outputs
+    result = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "result");
+    result->set(0.0, 0);
+    result->set(0.0, 1);
+    result->set(0.0, 2);
   }
 
   //Rebuild Inputs
@@ -160,96 +205,50 @@ public:
     loading_done = true;
 
     index = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "index");
-    index->set(i_index);
     inputs = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "inputs");
-    inputs->set(i_prev_inputs);
     
-    float_x.clear();
+    float3_x.clear();
     i_paramString.str("");
-    i_paramString << "float_x:complex{";
+    i_paramString << "float3_x:complex{";
 
     for(int i = 0; i <= i_prev_inputs; ++i)
     {
-        if(i > 0) i_paramString << ",";
-        i_paramName.str("");
-        i_paramName << "float3_" << i;
-        i_paramString << i_paramName.str().c_str() << ":float3";
+      if(i > 0) i_paramString << ",";
+      i_paramName.str("");
+      i_paramName << "float3_" << i;
+      i_paramString << i_paramName.str().c_str() << ":float3";
 
-        float_x.push_back((vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, i_paramName.str().c_str()));
-        float_x[i]->set(0.0, 0);
-        float_x[i]->set(0.0, 1);
-        float_x[i]->set(0.0, 2);
+      float3_x.push_back((vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, i_paramName.str().c_str()));
+      float3_x[i]->set(0.0, 0);
+      float3_x[i]->set(0.0, 1);
+      float3_x[i]->set(0.0, 2);
     }
 
     i_paramString << "},";
     i_in_param_string = i_paramString.str().c_str();
     
     wrap = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "wrap");
-    wrap->set(i_wrap);
     interpolation = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "interpolation");
-    interpolation->set(i_interpolation);
     sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "sequence");
-    sequence->set(i_sequence);
     reverse = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reverse");
-    reverse->set(i_reverse);
     reset_seq_to_default = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reset_seq_to_default");
-    reset_seq_to_default->set(i_reset_seq_to_default);
     
-    redeclare_out=true;
+    i_am_ready = true; //Data is ready, we can start running properly!
   }
 
-  //Rebuild Outputs
-  void redeclare_out_params(vsx_module_param_list& out_parameters)
-  {
-    result = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"result");
-    result->set(0.0, 0);
-    result->set(0.0, 1);
-    result->set(0.0, 2);    
-
-    i_am_ready = true;
-  }
-
-//---CORE-FUNCTIONS-------------------------------------------------------------
+//---DATA-SETUP-FUNCTIONS-------------------------------------------------------
 
   //See /vsxu/engine/include/vsx_math.h for definitions of:
-    //FLOAT_EQUALS(A, B)
-    //FLOAT_EXACT(A, B)
     //FLOAT_MOD(V, M)
     //FLOAT_CLAMP(V, MN, MX)
-    //FLOAT_INTERPOLATE(float Y0, float Y1, float X, float X0, float X1)
-
-  //Update Number of Inputs
-  void UpdateInputs()
-  {
-    i_curr_inputs = inputs->get();
-    if(i_prev_inputs != i_curr_inputs)
-    {
-      i_am_ready = false;
-      i_curr_inputs = FLOAT_CLAMP(i_curr_inputs, 0, 15);
-      i_prev_inputs = i_curr_inputs;
-      redeclare_in = true;
-    }
-  }
-
-  //Check for Reset Sequence to Default
-  void ResetSequence()
-  {
-    i_reset_seq_to_default = reset_seq_to_default->get();
-    if(i_reset_seq_to_default == 0)
-    {
-      i_sequence = i_seq_default;
-      sequence->set(i_sequence);
-      reset_seq_to_default->set(-1);
-      i_reset_seq_to_default = -1;
-    }
-  }
+    //inline float FLOAT_INTERPOLATE(float Y0, float Y1, float X, float X0, float X1)
 
   //Set-Up Data for Interpolation
   void SetupInterpolation(int i)
   {
     switch(i_wrap)
     {
-      case 0: //Don't Wrap Input- Zero Ends
+      case 0: //Don't Wrap Index - Zero Ends
         i_index = FLOAT_CLAMP(index->get(), -1.0, (float)(i_prev_inputs + 1));
         i_index_x = (int)i_index;
         i_underRange = i_index < 0.0;
@@ -261,28 +260,28 @@ public:
                       :((i_overRange) ? i_prev_inputs + 1
                       :  FLOAT_CLAMP(i_index_x + 1, 0, i_prev_inputs + 2));
         i_value_y0[i] = (i_underRange) ? 0.0
-                      :((i_overRange) ? float_x[i_prev_inputs]->get(i)
-                      :  float_x[i_index_x0]->get(i));
-        i_value_y1[i] = (i_underRange) ? float_x[0]->get(i)
+                      :((i_overRange) ? float3_x[i_prev_inputs]->get(i)
+                      :  float3_x[i_index_x0]->get(i));
+        i_value_y1[i] = (i_underRange) ? float3_x[0]->get(i)
                       :((i_overRange) ? 0.0
-                      :  float_x[i_index_x1]->get(i));
+                      :  float3_x[i_index_x1]->get(i));
       break;
-      case 1: //Don't Wrap Input- Freeze Ends
+      case 1: //Don't Wrap Index - Freeze Ends
         i_index = FLOAT_CLAMP(index->get(), 0.0, (float)i_prev_inputs);
         i_index_x = (int)i_index;
         i_index_x0 = FLOAT_CLAMP(i_index_x, 0, i_prev_inputs);
         i_index_x1 = FLOAT_CLAMP(i_index_x + 1, 0, i_prev_inputs);
-        i_value_y0[i] = float_x[i_index_x0]->get(i);
-        i_value_y1[i] = float_x[i_index_x1]->get(i);
+        i_value_y0[i] = float3_x[i_index_x0]->get(i);
+        i_value_y1[i] = float3_x[i_index_x1]->get(i);
       break;
-      case 2: //Wrap Input
+      case 2: //Wrap Index
         i_index = FLOAT_MOD(index->get(), (float)(i_prev_inputs + 1));
         i_index_x = (int)i_index;
         i_index_x0 = i_index_x % (i_prev_inputs + 1);
         i_index_x1 = i_index_x0 + 1;
-        i_value_y0[i] = float_x[i_index_x0]->get(i);
-        i_value_y1[i] = (i_index_x1 > i_prev_inputs) ? float_x[0]->get(i)
-                      : float_x[i_index_x1]->get(i);
+        i_value_y0[i] = float3_x[i_index_x0]->get(i);
+        i_value_y1[i] = (i_index_x1 > i_prev_inputs) ? float3_x[0]->get(i)
+                      : float3_x[i_index_x1]->get(i);
       break;
     }
   }
@@ -374,22 +373,49 @@ public:
         i_index = FLOAT_CLAMP(index->get() + 0.5, -0.5, (float)(i_prev_inputs) + 1.5);
         i_index_x0 = FLOAT_CLAMP((int)i_index, 0, i_prev_inputs);
         i_value_y0[i] = ((i_index < -0.0) || (i_index > (float)(i_prev_inputs + 1)) ? 0.0
-                      : float_x[i_index_x0]->get(i));
+                      : float3_x[i_index_x0]->get(i));
       break;
       case 1: //Don't Wrap Index - Freeze Ends
         i_index = FLOAT_CLAMP(index->get() + 0.5, 0.5, (float)(i_prev_inputs) + 0.5);
         i_index_x0 = FLOAT_CLAMP((int)i_index, 0, i_prev_inputs);
-        i_value_y0[i] = float_x[i_index_x0]->get(i);
+        i_value_y0[i] = float3_x[i_index_x0]->get(i);
       break;
       case 2: //Wrap Index
         i_index = FLOAT_MOD(index->get(), (float)(i_prev_inputs + 1));
         i_index_x0 = (i_index > (float)i_prev_inputs)
                       ? ((i_index > ((float)i_prev_inputs + 0.5)) ? 0 : i_prev_inputs)
                       : (int)(i_index + 0.5);
-        i_value_y0[i] = float_x[i_index_x0]->get(i);
+        i_value_y0[i] = float3_x[i_index_x0]->get(i);
       break;
     }
     result->set(i_value_y0[i], i);
+  }
+
+//---CORE-FUNCTIONS-------------------------------------------------------------
+
+  //Update Number of Inputs
+  void UpdateInputs()
+  {
+    i_curr_inputs = inputs->get() - 1;
+    if(i_prev_inputs != i_curr_inputs)
+    {
+      i_am_ready = false;
+      i_prev_inputs = i_curr_inputs;
+      redeclare_in = true;
+    }
+  }
+
+  //Check for Reset Sequence to Default
+  void ResetSequence()
+  {
+    i_reset_seq_to_default = reset_seq_to_default->get();
+    if(i_reset_seq_to_default == 0)
+    {
+      i_sequence = i_seq_default;
+      sequence->set(i_sequence);
+      reset_seq_to_default->set(-1);
+      i_reset_seq_to_default = -1;
+    }
   }
 
 //---MAIN-PROGRAM-LOOP---------------------------------------------------------
