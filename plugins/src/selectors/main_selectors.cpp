@@ -27,11 +27,15 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_quaternion.h"
+#include "vsx_glsl.h"
 
 
 #include "module_float_selector.h"
 #include "module_float3_selector.h"
 #include "module_float4_selector.h"
+#include "module_quaternion_selector.h"
+#include "module_texture_selector.h"
+#include "module_string_selector.h"
 
 
 //******************************************************************************
@@ -57,6 +61,9 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 0: return (vsx_module*)(new module_float_selector);
     case 1: return (vsx_module*)(new module_float3_selector);
     case 2: return (vsx_module*)(new module_float4_selector);
+    case 3: return (vsx_module*)(new module_quaternion_selector);
+    case 4: return (vsx_module*)(new module_texture_selector);
+    case 5: return (vsx_module*)(new module_string_selector);
   }
   return 0;
 }
@@ -68,11 +75,14 @@ void MOD_DM(vsx_module* m,unsigned long module)
     case 0: delete (module_float_selector*)m; break;
     case 1: delete (module_float3_selector*)m; break;
     case 2: delete (module_float4_selector*)m; break;
+    case 3: delete (module_quaternion_selector*)m; break;
+    case 4: delete (module_texture_selector*)m; break;
+    case 5: delete (module_string_selector*)m; break;
   }
 }
 
 unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   VSX_UNUSED(environment);
-  return 3;
+  return 6;
 }
