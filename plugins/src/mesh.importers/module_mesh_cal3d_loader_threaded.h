@@ -284,6 +284,7 @@ public:
         vsxf_handle *fp;
         fp = engine->filesystem->f_open(current_filename.c_str(), "r");
         if (!fp) {
+          pthread_mutex_unlock(&mesh_mutex);
           return;
         }
 
