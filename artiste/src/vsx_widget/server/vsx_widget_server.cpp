@@ -133,6 +133,10 @@ void vsx_widget_server::init()
   menu->commands.adds(VSX_COMMAND_MENU,"tools >;undo >;automatic","conf","automatic_undo 1");
   menu->commands.adds(VSX_COMMAND_MENU,"tools >;undo >;create rollback point","undo_s","");
   menu->commands.adds(VSX_COMMAND_MENU,"tools >;show modules that haven't loaded","get_module_status","");
+
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;autoload last saved state >;no","conf","autoload_last_saved_state 0");
+  menu->commands.adds(VSX_COMMAND_MENU,"configuration >;autoload last saved state >;yes","conf","autoload_last_saved_state 1");
+
   menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui smoothness >;none","conf","global_interpolation_speed 1000.0");
   menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui smoothness >;slow","conf","global_interpolation_speed 0.5");
   menu->commands.adds(VSX_COMMAND_MENU,"configuration >;gui smoothness >;normal","conf","global_interpolation_speed 1.0");
@@ -242,7 +246,19 @@ void vsx_widget_server::init()
     {
       cmd_out->add_raw("state_load "+base64_encode("states;"+vsx_argvector::get_instance()->get_param_value("state")));
     } else
-    cmd_out->add_raw("state_load "+base64_encode("states;_default"));
+    {
+      if (
+          configuration.find("last_saved_state") != configuration.end()
+          &&
+          configuration.find("autoload_last_saved_state") != configuration.end()
+          &&
+          configuration["autoload_last_saved_state"] == "1"
+          )
+      {
+        cmd_out->add_raw("state_load "+base64_encode("states;"+base64_decode(configuration["last_saved_state"])));
+      } else
+      cmd_out->add_raw("state_load "+base64_encode("states;_default"));
+    }
   }
   cmd_out->add_raw("get_state");
 
@@ -999,6 +1015,8 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
       state_name = t->parts[1];
       cmd_out->add_raw("meta_set "+t->parts[2]);
       cmd_out->add_raw("state_save "+t->parts[1]);
+      command_q_b.add_raw("conf last_saved_state "+base64_encode(t->parts[1]) );
+
       return;
     }
     else
