@@ -600,21 +600,30 @@ int vsx_engine_abs::rename_component(vsx_string old_identifier, vsx_string new_b
 
   // we have the basic names set up now find the component
   vsx_comp* old_identifier_component = get_component_by_name(old_identifier);
-
   if (!old_identifier_component)
     return 0;
 
+  vsx_comp* new_possibly_colliding_name = get_component_by_name(new_name);
+  if (new_possibly_colliding_name)
+    return 0;
+
+
   // if we don't want to either move or rename
-  if (new_base == "$") new_base = old_base;
-  if (new_name == "$") new_name = old_name;
+  if (new_base == "$")
+    new_base = old_base;
+
+  if (new_name == "$")
+    new_name = old_name;
 
   // if we don't move anything, no reason to change parent
   bool assign_first = (new_base != old_base);
   vsx_comp* dest = 0;
-  if (assign_first) dest = get_component_by_name(new_base);
+  if (assign_first)
+    dest = get_component_by_name(new_base);
 
-  int max_loop = 0;
-  if (old_identifier_component->component_class == "macro") max_loop = 0; else max_loop = 1;
+  int max_loop = 1;
+  if (old_identifier_component->component_class == "macro")
+    max_loop = 0;
 
   std::list<vsx_string> macro_comps;
   std::list<vsx_comp*> macro_comp_p;
@@ -636,8 +645,10 @@ int vsx_engine_abs::rename_component(vsx_string old_identifier, vsx_string new_b
       ++m_i;
     } else drun = false;
     ++runs;
+
     if (max_loop != 0)
-    if (runs >= max_loop) drun = false;
+      if (runs >= max_loop)
+        drun = false;
   }
 
   vsx_string new_name_ = "";
