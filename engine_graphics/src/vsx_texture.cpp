@@ -120,8 +120,8 @@ bool vsx_texture::has_buffer_support()
 {
   bool fbo = GLEW_EXT_framebuffer_object;
   bool blit = GLEW_EXT_framebuffer_blit;
-  if (!fbo) printf("vsx_texture Notice: EXT_framebuffer_object support is MISSING! This will mean limited functionality.\n\n");
-  if (!blit) printf("vsx_texture Notice: EXT_framebuffer_blit support is MISSING! This will mean limited functionality.\n\n");
+  //if (!fbo) printf("vsx_texture Notice: EXT_framebuffer_object support is MISSING! This will mean limited functionality.\n\n");
+  //if (!blit) printf("vsx_texture Notice: EXT_framebuffer_blit support is MISSING! This will mean limited functionality.\n\n");
   return fbo && blit;
 }
 
@@ -149,7 +149,7 @@ void vsx_texture::init_render_buffer(
 
   if ( !has_buffer_support() )
   {
-    printf("vsx_texture error: No FBO available!\n");
+    //printf("vsx_texture error: No FBO available!\n");
     return;
   }
 
@@ -348,7 +348,7 @@ void vsx_texture::init_color_buffer
 
   if ( !has_buffer_support() )
   {
-    printf("vsx_texture error: No FBO available!\n");
+    //printf("vsx_texture error: No FBO available!\n");
     return;
   }
 
@@ -466,7 +466,7 @@ void vsx_texture::init_color_depth_buffer
 
   if ( !has_buffer_support() )
   {
-    printf("vsx_texture error: No FBO available!\n");
+    //printf("vsx_texture error: No FBO available!\n");
     return;
   }
 
@@ -1490,7 +1490,7 @@ void vsx_texture::_bind()
 void vsx_texture::texcoord2f(float x, float y)
 {
   #ifdef VSXU_OPENGL_ES
-    printf("NO vsx_texture::texcoord2f support on OpenGL ES!\n");
+    //printf("NO vsx_texture::texcoord2f support on OpenGL ES!\n");
   #else
     if (texture_info->ogl_type == GL_TEXTURE_RECTANGLE_EXT)
     {
