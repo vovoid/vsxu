@@ -21,6 +21,8 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <vsx_widget_dllimport.h>
+
 class vsx_widget_global_interpolation
 {
   float interpolation_speed;
@@ -42,9 +44,12 @@ public:
     interpolation_speed = f;
   }
 
+private:
+  WIDGET_DLLIMPORT static vsx_widget_global_interpolation instance;
+public:
+
   static vsx_widget_global_interpolation* get_instance() __attribute__((always_inline))
   {
-    static vsx_widget_global_interpolation gi;
-    return &gi;
+    return &instance;
   }
 };

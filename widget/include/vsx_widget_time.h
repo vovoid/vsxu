@@ -57,5 +57,11 @@ public:
     return delta_time;
   }
 
-  WIDGET_DLLIMPORT static vsx_widget_time* get_instance();
+private:
+  WIDGET_DLLIMPORT static vsx_widget_time instance;
+public:
+  static vsx_widget_time* get_instance()
+  {
+    return &instance;
+  }
 };

@@ -59,8 +59,10 @@ set(SOURCES
   src/vsx_mouse.cpp
   src/vsx_widget_camera.cpp
   src/vsx_widget_coords.cpp
+  src/vsx_widget_skin.cpp
   src/vsx_widget_time.cpp
   src/vsx_widget_window.cpp
+  src/vsx_widget_global_interpolation.cpp
   src/widgets/vsx_widget_2d_label.cpp
   src/widgets/vsx_widget_2d_pager.cpp
   src/widgets/vsx_widget_base_edit.cpp

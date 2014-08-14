@@ -349,6 +349,7 @@ void vsx_widget_desktop::load_configuration()
   {
     main_conf.load_from_file(PLATFORM_SHARED_FILES+"vsxu.conf",true,0);
   }
+
   main_conf.reset();
   vsx_command_s* mc = 0;
   auto_undo = 1;

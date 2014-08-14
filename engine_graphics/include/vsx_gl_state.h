@@ -1157,16 +1157,13 @@ public:
     #endif
   }
 
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-  static VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_gl_state* get_instance();
-#else
+private:
+  VSX_ENGINE_GRAPHICS_DLLIMPORT static vsx_gl_state instance;
+public:
   static vsx_gl_state* get_instance() __attribute__((always_inline))
   {
-    static vsx_gl_state state;
-    return &state;
+    return &instance;
   }
-#endif
-
 
 };
 

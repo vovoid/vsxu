@@ -27,10 +27,7 @@
 
 #include <vsx_platform.h>
 #include <vsxfst.h>
-
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-#include <windows.h>
-#endif
+#include <vsx_engine_dllimport.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   #include "vsx_math.h"
@@ -190,10 +187,12 @@ public:
     return get_path_from_filename(vsx_string(pBuf));
   }
 
+private:
+  ENGINE_DLLIMPORT static vsx_argvector instance;
+public:
   static vsx_argvector* get_instance()
   {
-    static vsx_argvector argvector;
-    return &argvector;
+    return &instance;
   }
 
   vsx_argvector() {}

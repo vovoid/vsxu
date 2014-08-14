@@ -2,6 +2,9 @@
 #define VSX_WIDGET_SKIN_H
 
 #include <GL/gl.h>
+#include <vsx_widget_dllimport.h>
+#include <vsx_command_list.h>
+#include <vsx_string.h>
 #include <vsx_color.h>
 
 class vsx_widget_skin
@@ -74,11 +77,14 @@ public:
     }
   }
 
+private:
+  WIDGET_DLLIMPORT static vsx_widget_skin instance;
+public:
   static vsx_widget_skin* get_instance() __attribute__((always_inline))
   {
-    static vsx_widget_skin s;
-    return &s;
+    return &instance;
   }
+
 };
 
 

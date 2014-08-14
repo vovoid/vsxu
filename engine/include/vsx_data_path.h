@@ -2,6 +2,7 @@
 #define VSX_DATA_PATH_H
 
 #include <vsx_string.h>
+#include <vsx_engine_dllimport.h>
 #include "vsx_engine.h"
 
 
@@ -19,10 +20,12 @@ public:
     return data_path;
   }
 
+private:
+  ENGINE_DLLIMPORT static vsx_data_path instance;
+public:
   static vsx_data_path* get_instance() __attribute__((always_inline))
   {
-    static vsx_data_path vdp;
-    return &vdp;
+    return &instance;
   }
 
 };

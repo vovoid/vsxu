@@ -170,6 +170,7 @@ set(SOURCES
   src/core/vsx_module_list/vsx_dlopen.cpp
   src/mtwist.c
   src/vsx_data_path.cpp
+  src/vsx_argvector.cpp
   src/vsx_param.cpp
   src/vsx_sequence.cpp
   src/log/vsx_log.cpp

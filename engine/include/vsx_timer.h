@@ -69,7 +69,7 @@ double atime() {
   LARGE_INTEGER freq, time;
   QueryPerformanceFrequency(&freq);
   QueryPerformanceCounter(&time);
-  return (double)((double)(time.QuadPart-init_time) / (double)freq.QuadPart);;
+  return (double)((double)(time.QuadPart-init_time) / (double)freq.QuadPart);
 #else
   struct timespec now;
   clock_gettime(CLOCK_MONOTONIC, &now);
@@ -79,12 +79,12 @@ double atime() {
 }
 
 vsx_timer() {
-  start();
 #ifdef _WIN32
  	LARGE_INTEGER time;
  	QueryPerformanceCounter(&time);
   init_time = time.QuadPart;
 #endif
+  start();
 }
 
 };
