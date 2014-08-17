@@ -109,8 +109,8 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
         ((vsx_window_texture_viewer*)tv)->toggle_run();
         break;
       // fullwindow
-      case 'F':
-      case 'f': // F
+      case -'F':
+      case -'f': // F
         ((vsx_window_texture_viewer*)tv)->toggle_fullwindow();
 
         if (((vsx_window_texture_viewer*)tv)->get_fullwindow())

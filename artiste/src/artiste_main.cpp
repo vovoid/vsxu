@@ -189,13 +189,7 @@ void myErrorCallback
 
 int main(int argc, char* argv[])
 {
-  for (size_t i = 0; i < (size_t)argc; i++)
-  {
-    vsx_string arg = vsx_string(argv[i]);
-    vsx_argvector::get_instance()->push_back( arg );
-  }
-
-  vsx_printf("args: %s\n", vsx_argvector::get_instance()->serialize().c_str() );
+  vsx_argvector::get_instance()->init_from_argc_argv(argc, argv);
 
   if (vsx_argvector::get_instance()->has_param("help"))
   {
@@ -469,9 +463,7 @@ int main(int argc, char* argv[])
 //#endif
 
 
-    // Check if the ESC key was pressed or the window was closed
-    running = /*!glfwGetKey( GLFW_KEY_ESC ) &&*/
-    glfwGetWindowParam( GLFW_OPENED );
+    running = glfwGetWindowParam( GLFW_OPENED );
   }
 
   // Close OpenGL window and terminate GLFW

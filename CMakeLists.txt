@@ -264,7 +264,9 @@ endif(UNIX)
 
 add_subdirectory(tools/vsxz)
 add_subdirectory(tools/obj2vxm)
-add_subdirectory(tools/vsxl)
+if(UNIX)
+    add_subdirectory(tools/vsxl)
+endif(UNIX)
 
 
 
