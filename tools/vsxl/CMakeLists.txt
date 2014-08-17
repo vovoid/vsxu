@@ -17,6 +17,7 @@ endif(VSXU_DEBUG)
 #definitions
 add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
+ -lrt
 )
 
 if (VSXU_STATIC EQUAL 1)
@@ -55,13 +56,11 @@ set_target_properties(
 target_link_libraries(${module_id}
   vsxu_engine
   vsxu_engine_graphics
-
   ${CMAKE_THREAD_LIBS_INIT}
+  -lrt
 )
 
-if(UNIX)
-  target_link_libraries(${module_id}
-    rt
-  )
-  install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-endif(UNIX)
+set(CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -lrt")
+
+
+install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
