@@ -1,0 +1,3 @@
+#include <vsx_widget_global_interpolation.h>
+
+vsx_widget_global_interpolation vsx_widget_global_interpolation::instance;
