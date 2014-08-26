@@ -41,7 +41,7 @@ std::map<vsx_string, vsx_texture_glist_holder> vsx_texture::t_glist;
 
 vsx_texture::vsx_texture()
 {
-  pti_l = 0;
+  pti_l = 0x0;
   valid = false;
 
   valid_fbo = false;
@@ -76,10 +76,22 @@ vsx_texture::~vsx_texture()
   unload();
 
   if (!is_glist_alias)
-  delete texture_info;
+  {
+    vsx_printf("deleting texture_info\n");
+    delete texture_info;
+  }
 
   if (original_transform_obj)
+  {
+    vsx_printf("deleting transform obj\n");
     delete transform_obj;
+  }
+
+  if (pti_l)
+  {
+    vsx_printf("deleting pti_l\n");
+    delete pti_l;
+  }
 }
 
 
@@ -1185,27 +1197,6 @@ void vsx_texture::upload_ram_bitmap_cube(void* data, unsigned long size_x, unsig
 
 
 
-
-//bool vsx_texture::load_from_glist(vsx_string fname)
-//{
-//  if (t_glist.find(fname) == t_glist.end())
-//    return false;
-
-//  if (!is_glist_alias)
-//    delete texture_info;
-
-//  texture_info = &t_glist[fname].texture_info;
-
-//  t_glist[fname].references++;
-
-//  this->name = fname;
-
-//  is_glist_alias = true;
-//  valid = true;
-//  return true;
-//}
-
-
 bool vsx_texture::load_from_glist_deferred(vsx_string fname)
 {
   if (t_glist.find(fname) == t_glist.end())
@@ -1250,12 +1241,11 @@ void vsx_texture::add_to_glist_deferred(vsx_string fname)
 // thread run by the load_png_thread
 void* png_worker(void *ptr)
 {
-  ((vsx_texture*)ptr)->pti_l->pp = new pngRawInfo;
-
   if (!pngLoadRaw(
-        ((vsx_texture*)ptr)->pti_l->filename.c_str(), ((vsx_texture*)ptr)->pti_l->pp, ((vsx_texture*)ptr)->pti_l->filesystem))
+        ((vsx_texture*)ptr)->pti_l->filename.c_str(), &((vsx_texture*)ptr)->pti_l->pp, ((vsx_texture*)ptr)->pti_l->filesystem))
   {
-    delete ((vsx_texture*)ptr)->pti_l->pp;
+    delete ((vsx_texture*)ptr)->pti_l;
+    ((vsx_texture*)ptr)->pti_l = 0x0;
     return 0;
   }
 
@@ -1286,18 +1276,18 @@ void vsx_texture::load_png(vsx_string fname, bool mipmaps, vsxf* filesystem)
   is_glist_alias = false;
   deferred_loading_type = 0;
 
-  pngRawInfo* pp = new pngRawInfo;
-  if (!pngLoadRaw(fname.c_str(), pp, filesystem))
+  pti_l = new vsx_texture_load_thread_info();
+
+  if (!pngLoadRaw(fname.c_str(), &pti_l->pp, filesystem))
   {
-    delete pp;
+    delete pti_l;
+    pti_l = 0x0;
     return;
   }
 
-  pti_l = new vsx_texture_load_thread_info();
   pti_l->filename = fname;
   pti_l->mipmaps = mipmaps;
   pti_l->filesystem = filesystem;
-  pti_l->pp = pp;
 
   deferred_loading_type = VSX_TEXTURE_LOADING_TYPE_2D;
 
@@ -1320,8 +1310,7 @@ void vsx_texture::load_png_thread(vsx_string fname, bool mipmaps, vsxf* filesyst
   if ( pti_l && pti_l->thread_created && __sync_fetch_and_add(&deferred_loading_type, 0) )
   {
     png_worker_cleanup(pti_l);
-    free(((vsx_texture_load_thread_info*)pti_l)->pp->Data);
-    free(pti_l);
+    delete pti_l;
   }
 
   pti_l = new vsx_texture_load_thread_info();
@@ -1348,19 +1337,18 @@ void vsx_texture::load_png_cubemap(vsx_string fname, bool mipmaps, vsxf* filesys
   valid = false;
   is_glist_alias = false;
   deferred_loading_type = 0;
+  pti_l = new vsx_texture_load_thread_info();
 
-  pngRawInfo* pp = new pngRawInfo;
-  if (!pngLoadRaw(fname.c_str(), pp, filesystem))
+  if (!pngLoadRaw(fname.c_str(), &pti_l->pp, filesystem))
   {
-    delete pp;
+    delete pti_l;
+    pti_l = 0x0;
     return;
   }
 
-  pti_l = new vsx_texture_load_thread_info();
   pti_l->filename = fname;
   pti_l->mipmaps = mipmaps;
   pti_l->filesystem = filesystem;
-  pti_l->pp = pp;
 
   deferred_loading_type = VSX_TEXTURE_LOADING_TYPE_CUBE;
   add_to_glist_deferred(fname);
@@ -1408,41 +1396,31 @@ void vsx_texture::bind_load_gl()
     {
       case VSX_TEXTURE_LOADING_TYPE_2D:
         init_opengl_texture_2d();
-        if (pti_l->pp->Components == 1)
-        upload_ram_bitmap_2d((unsigned long*)(pti_l->pp->Data),pti_l->pp->Width,pti_l->pp->Height,pti_l->mipmaps,3,GL_RGB); else
-        if (pti_l->pp->Components == 2)
-        upload_ram_bitmap_2d((unsigned long*)(pti_l->pp->Data),pti_l->pp->Width,pti_l->pp->Height,pti_l->mipmaps,4,GL_RGBA); else
-        if (pti_l->pp->Components == 3)
-        upload_ram_bitmap_2d((unsigned long*)(pti_l->pp->Data),pti_l->pp->Width,pti_l->pp->Height,pti_l->mipmaps,pti_l->pp->Components,GL_RGB); else
-        if (pti_l->pp->Components == 4)
-        upload_ram_bitmap_2d((unsigned long*)(pti_l->pp->Data),pti_l->pp->Width,pti_l->pp->Height,pti_l->mipmaps,pti_l->pp->Components,GL_RGBA);
+        if (pti_l->pp.Components == 1)
+        upload_ram_bitmap_2d((unsigned long*)(pti_l->pp.Data),pti_l->pp.Width,pti_l->pp.Height,pti_l->mipmaps,3,GL_RGB); else
+        if (pti_l->pp.Components == 2)
+        upload_ram_bitmap_2d((unsigned long*)(pti_l->pp.Data),pti_l->pp.Width,pti_l->pp.Height,pti_l->mipmaps,4,GL_RGBA); else
+        if (pti_l->pp.Components == 3)
+        upload_ram_bitmap_2d((unsigned long*)(pti_l->pp.Data),pti_l->pp.Width,pti_l->pp.Height,pti_l->mipmaps,pti_l->pp.Components,GL_RGB); else
+        if (pti_l->pp.Components == 4)
+        upload_ram_bitmap_2d((unsigned long*)(pti_l->pp.Data),pti_l->pp.Width,pti_l->pp.Height,pti_l->mipmaps,pti_l->pp.Components,GL_RGBA);
       break;
 
       case VSX_TEXTURE_LOADING_TYPE_CUBE:
         init_opengl_texture_cubemap();
-        if (pti_l->pp->Components == 1)
-        upload_ram_bitmap_cube((unsigned long*)(pti_l->pp->Data),pti_l->pp->Width,pti_l->pp->Height,pti_l->mipmaps,3,GL_RGB);
-        if (pti_l->pp->Components == 2)
-        upload_ram_bitmap_cube((unsigned long*)(pti_l->pp->Data),pti_l->pp->Width,pti_l->pp->Height,pti_l->mipmaps,4,GL_RGBA);
-        if (pti_l->pp->Components == 3)
-        upload_ram_bitmap_cube((unsigned long*)(pti_l->pp->Data),pti_l->pp->Width,pti_l->pp->Height,pti_l->mipmaps,pti_l->pp->Components,GL_RGB);
-        if (pti_l->pp->Components == 4)
-        upload_ram_bitmap_cube((unsigned long*)(pti_l->pp->Data),pti_l->pp->Width,pti_l->pp->Height,pti_l->mipmaps,pti_l->pp->Components,GL_RGBA);
+        if (pti_l->pp.Components == 1)
+        upload_ram_bitmap_cube((unsigned long*)(pti_l->pp.Data),pti_l->pp.Width,pti_l->pp.Height,pti_l->mipmaps,3,GL_RGB);
+        if (pti_l->pp.Components == 2)
+        upload_ram_bitmap_cube((unsigned long*)(pti_l->pp.Data),pti_l->pp.Width,pti_l->pp.Height,pti_l->mipmaps,4,GL_RGBA);
+        if (pti_l->pp.Components == 3)
+        upload_ram_bitmap_cube((unsigned long*)(pti_l->pp.Data),pti_l->pp.Width,pti_l->pp.Height,pti_l->mipmaps,pti_l->pp.Components,GL_RGB);
+        if (pti_l->pp.Components == 4)
+        upload_ram_bitmap_cube((unsigned long*)(pti_l->pp.Data),pti_l->pp.Width,pti_l->pp.Height,pti_l->mipmaps,pti_l->pp.Components,GL_RGBA);
       break;
     }
 
     this->name = pti_l->filename;
 
-    // Cleanup memory
-    free( pti_l->pp->Data );
-
-    if ( pti_l->pp->Palette )
-    {
-      free( pti_l->pp->Palette );
-    }
-
-    // Cleanup pti
-    delete pti_l->pp;
     delete pti_l;
     pti_l = 0;
 
@@ -1503,14 +1481,6 @@ void vsx_texture::texcoord2f(float x, float y)
 
 void vsx_texture::unload()
 {
-  if (texture_info->ogl_id == 0)
-  {
-    return;
-  }
-
-  if (!valid)
-    return;
-
   if ( valid_fbo )
   {
     deinit_buffer();
@@ -1533,7 +1503,11 @@ void vsx_texture::unload()
     if (0 == t_glist[name].references)
     {
       // safe to delete this texture
-      glDeleteTextures( 1, &(texture_info->ogl_id) );
+      if (texture_info->ogl_id != 0)
+      {
+        vsx_printf("deleting gl texture: %s\n", name.c_str() );
+        glDeleteTextures( 1, &(texture_info->ogl_id) );
+      }
       t_glist.erase( name );
     }
     texture_info = new vsx_texture_info;
@@ -1541,7 +1515,9 @@ void vsx_texture::unload()
     return;
   }
 
-  glDeleteTextures(1,&(texture_info->ogl_id));
+  if (texture_info->ogl_id != 0)
+    glDeleteTextures(1,&(texture_info->ogl_id));
+
   texture_info->ogl_id = 0;
   texture_info->ogl_type = 0;
 }

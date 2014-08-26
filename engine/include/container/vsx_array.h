@@ -172,6 +172,10 @@ public:
         allocated = index+allocation_increment;
       }
       allocation_increment = allocation_increment << 1;
+      #ifdef VSX_ARRAY_ALLOCATE_CONSERVATIVE
+        if (allocation_increment > 2)
+          allocation_increment = 2;
+      #endif
     }
     if (index >= used) {
       used = index+1;

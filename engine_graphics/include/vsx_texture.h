@@ -50,20 +50,33 @@ class vsx_texture_load_thread_info
 {
 public:
   vsxf*             filesystem;
-  pngRawInfo*       pp;
+  pngRawInfo        pp;
   int               thread_created;
   pthread_t					worker_t;
   pthread_attr_t		worker_t_attr;
-  vsx_bitmap        bitmap;
+  //vsx_bitmap        bitmap;
   vsx_string        filename;
   bool              mipmaps;
 
   vsx_texture_load_thread_info()
     :
       filesystem(0x0),
-      pp(0x0),
       thread_created(0)
-  {}
+  {
+    pp.Width = 0;
+    pp.Height = 0;
+    pp.Data = 0x0;
+    pp.Palette = 0x0;
+  }
+
+  ~vsx_texture_load_thread_info()
+  {
+    if (pp.Data)
+      free( pp.Data );
+
+    if (pp.Palette)
+      free( pp.Palette );
+  }
 
 }; // png thread info
 

@@ -111,12 +111,17 @@ public:
   void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_wheel(float y);
   void draw();
-  void undo_s() {cmd_out->add_raw("undo_s");};
+  void undo_s()
+  {
+    cmd_out->add_raw("undo_s");
+  }
+
 
   // utility functions
   vsx_string get_unique_name(vsx_string name);
   vsx_string build_comp_helptext(vsx_string path);
   vsx_widget* find_component(vsx_string name);
+
 };
 
 #endif

@@ -2,6 +2,7 @@
 #define VSX_ERROR_H
 
 #include "vsx_backtrace.h"
+#include "vsx_memory.h"
 
 // Error macro
 #define VSX_ERROR_RETURN(s) \
@@ -51,6 +52,13 @@
   vsx_printf("**********************************************************************************\n");\
   vsx_printf("INFO in %s#%d, %s:    %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, s); \
   vsx_backtrace::print_backtrace();\
+}
+
+#define VSX_MEMORY_INFO(s) \
+{ \
+  vsx_printf("**********************************************************************************\n");\
+  vsx_printf("INFO in %s#%d, %s:    %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, s); \
+  vsx_memory::print_memory_info(); \
 }
 
 #endif

@@ -743,12 +743,10 @@ void vsx_widget_server::vsx_command_process_f() {
 
           // add to module list and choosers
           module_list[c->parts[2]] = a;
+
           ((vsx_widget_ultra_chooser*)module_chooser)->module_tree->module_info = 0;
           ((vsx_widget_ultra_chooser*)module_chooser)->module_tree->add(c->parts[2], a);
           ((vsx_module_chooser_list*)module_chooser_list)->add_item(c->parts[2], a);
-        //}
-
-          // är det inte lunch snart?
         }
       } else
       if (c->cmd == "module_list_end") {

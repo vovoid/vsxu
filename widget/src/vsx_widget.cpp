@@ -134,7 +134,6 @@ vsx_widget::~vsx_widget()
   }
   if (global_delete)
   {
-
     for (std::list <vsx_widget*>::iterator it = children.begin(); it != children.end(); ++it) {
       (*it)->on_delete();
       delete *it;

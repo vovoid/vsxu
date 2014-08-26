@@ -229,11 +229,11 @@ int  pngLoadRaw(const char* filename, pngRawInfo *pinfo, vsxf* filesystem) {
 		pinfo->Alpha = 0;
 	}
 
-	pinfo->Data = data;
+  pinfo->Data = data;
 
-   png_read_end(png, endinfo);
-	png_destroy_read_struct(&png, &info, &endinfo);
+  png_read_end(png, endinfo);
+  png_destroy_read_struct(&png, &info, &endinfo);
   filesystem->f_close(i_filesystem.fp);
-	return 1;
+  return 1;
 }
 

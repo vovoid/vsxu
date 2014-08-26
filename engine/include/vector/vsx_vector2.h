@@ -28,7 +28,7 @@
 #include <vsx_math.h>
 #include <vector/vsx_vector3.h>
 
-template<typename T>
+template<typename T = float>
 class vsx_vector2
 {
 public:
