@@ -14,7 +14,6 @@
 //  combined with provider/consumer FIFO or LIFO buffer (pop/push, pop_front/push_front)
 
 
-
 template<class T>
 class vsx_command_buffer_broker
 {
@@ -57,11 +56,6 @@ public:
     if (!accept_commands)
       return 0;
 
-    if (cmd->iterations >= VSX_COMMAND_MAX_ITERATIONS)
-      return 0;
-
-    ++cmd->iterations;
-
     // make a copy of the command
     T *t = new T;
     t->copy(cmd);
@@ -79,11 +73,6 @@ public:
     if (!accept_commands)
       return 0;
 
-    if (cmd->iterations >= VSX_COMMAND_MAX_ITERATIONS)
-      return 0;
-
-    // make a copy of the command
-    ++cmd->iterations;
     T *t = new T;
     t->copy(cmd);
 
@@ -103,7 +92,7 @@ public:
     return
       add
       (
-        vsx_command_parse
+        vsx_command_parse<T>
         (
           r
         )
@@ -122,7 +111,7 @@ public:
     return
       add_front
       (
-        vsx_command_parse
+        vsx_command_parse<T>
         (
           r
         )
@@ -141,11 +130,6 @@ public:
     if (!cmd)
       return 0;
 
-    if (cmd->iterations >= VSX_COMMAND_MAX_ITERATIONS)
-      return 0;
-
-    ++cmd->iterations;
-
     get_lock();
       commands.push_back(cmd);
     release_lock();
@@ -163,11 +147,6 @@ public:
 
     if (!cmd)
       return 0;
-
-    if (cmd->iterations >= VSX_COMMAND_MAX_ITERATIONS)
-      return 0;
-
-    ++cmd->iterations;
 
     get_lock();
       commands.push_front(cmd);
@@ -242,12 +221,6 @@ public:
 
     if (!del)
       return;
-
-    for (typename std::list <T*>::iterator it = commands.begin(); it != commands.end(); ++it)
-    {
-      (*it)->garbage_pointer->remove(*it);
-      delete *it;
-    }
   }
 
 
@@ -465,6 +438,7 @@ public:
 
 
 typedef vsx_command_buffer_broker<vsx_command_s> vsx_command_list;
+typedef vsx_command_buffer_broker<vsx_command_s_gc> vsx_command_list_gc;
 
 
 

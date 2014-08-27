@@ -23,6 +23,7 @@ public:
   std::vector<HTNode*> children;
 
   HTNode() {
+    module_info = 0x0;
     value = 0;
     color.r = 0.8;
     color.g = 0.8 ;
@@ -42,7 +43,7 @@ public:
   // this function will build a tree structure out of a string
   // string syntax: texture;generators;simple;jaw's_own_texgen
   //
-  HTNode* add(vsx_string add_name,vsx_module_info* m_info) {
+  HTNode* add(vsx_string add_name, vsx_module_info* m_info) {
     std::vector<vsx_string> add_c;
     vsx_string deli = ";";
     split_string(add_name,deli,add_c,-1);

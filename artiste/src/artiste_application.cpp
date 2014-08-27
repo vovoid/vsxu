@@ -73,8 +73,8 @@ vsx_engine* vxe = 0x0;
 
 // from the perspective (both for gui/server) from here towards the tcp thread
 vsx_command_list system_command_queue;
-vsx_command_list internal_cmd_in;
-vsx_command_list internal_cmd_out;
+vsx_command_list_gc internal_cmd_in;
+vsx_command_list_gc internal_cmd_out;
 vsx_widget_desktop *desktop = 0;
 bool prod_fullwindow = false;
 bool take_screenshot = false;
@@ -115,7 +115,6 @@ public:
   double min_fps;
   double max_render_time;
   double min_render_time;
-  vsx_command_s pgv;
   vsx_logo_intro *intro;
   vsxu_draw() :
     first(true),
@@ -286,11 +285,7 @@ public:
       #ifndef NO_INTRO
         intro->draw();
       #endif
-      if (!first && !desktop)
-      {
-        pgv.iterations = -1;
-      }
-      pgv.process_garbage();
+      vsx_command_process_garbage();
       if (first)
       {
         if (!dual_monitor) {
@@ -476,6 +471,7 @@ void app_pre_draw() {
       delete vxe;
       desktop->stop();
       delete desktop;
+      vsx_command_process_garbage_exit();
       exit(0);
     } else
     if (cmd == "fullscreen_toggle") {
@@ -483,7 +479,7 @@ void app_pre_draw() {
     if (cmd == "fullscreen") {
       if (desktop)
       desktop->stop();
-      internal_cmd_in.addc(c);
+      internal_cmd_in.add(vsx_command_s_gc_from_s(c));
     }
     c = 0;
   }

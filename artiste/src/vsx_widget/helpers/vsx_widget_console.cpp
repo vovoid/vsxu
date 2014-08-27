@@ -110,7 +110,7 @@
     cmd_parent = destination;
     ((vsx_widget_base_edit*)editor)->set_string("");
     ((vsx_widget_base_edit*)editor)->caret_goto_end();
-    command_q_b.add(vsx_command_parse(t->raw));
+    command_q_b.add(vsx_command_parse<vsx_command_s>(t->raw));
   }
 
   void vsx_widget_2d_console::event_mouse_down(vsx_widget_distance distance, vsx_widget_coords coords, int button)

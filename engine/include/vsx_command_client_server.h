@@ -46,8 +46,8 @@ class vsx_command_list_server
 {
   pthread_t         worker_t;
   pthread_attr_t    worker_t_attr;
-  vsx_command_list* cmd_in;
-  vsx_command_list* cmd_out;
+  vsx_command_list_gc* cmd_in;
+  vsx_command_list_gc* cmd_out;
 
   // internal worker method
   static void* server_worker(void *ptr);
@@ -55,7 +55,7 @@ class vsx_command_list_server
 public:
   vsx_command_list_server();
   // set the command lists on which the server class operates
-  void set_command_lists(vsx_command_list* new_in, vsx_command_list* new_out);
+  void set_command_lists(vsx_command_list_gc* new_in, vsx_command_list_gc* new_out);
   // start the server (after setting command_lists)
   bool start();
 };
@@ -65,8 +65,8 @@ class vsx_command_list_client
 {
   pthread_t         worker_t;
   pthread_attr_t    worker_t_attr;
-  vsx_command_list cmd_in;
-  vsx_command_list cmd_out;
+  vsx_command_list_gc cmd_in;
+  vsx_command_list_gc cmd_out;
 
   // internal server address
   vsx_string server_address;
@@ -77,8 +77,8 @@ class vsx_command_list_client
 public:
   vsx_command_list_client();
   // set the command lists on which the server class operates
-  vsx_command_list* get_command_list_in();
-  vsx_command_list* get_command_list_out();
+  vsx_command_list_gc* get_command_list_in();
+  vsx_command_list_gc* get_command_list_out();
 
   // start the server (after setting command_lists)
   bool client_connect(vsx_string &server_a);

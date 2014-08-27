@@ -68,8 +68,8 @@ vsx_command_list_server::vsx_command_list_server()
 // ****************************************************************************
 // ****************************************************************************
 
-void vsx_command_list_server::set_command_lists(vsx_command_list* new_in,
-                                                vsx_command_list* new_out)
+void vsx_command_list_server::set_command_lists(vsx_command_list_gc* new_in,
+                                                vsx_command_list_gc* new_out)
 {
   cmd_in = new_in;
   cmd_out = new_out;
@@ -194,7 +194,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
       }
       //printf("status: %d\n",status);
 
-      vsx_command_s *out_command;
+      vsx_command_s_gc *out_command;
       int count_sent = 0;
       while (this_->cmd_out->pop(&out_command))
       {
@@ -373,7 +373,7 @@ void* vsx_command_list_client::client_worker(void *ptr)
       }
     }
     int count_sent = 0;
-    vsx_command_s *out_command;
+    vsx_command_s_gc *out_command;
     while (this_->cmd_out.pop(&out_command))
     {
       vsx_string res = out_command->str()+"\n";
@@ -446,12 +446,12 @@ void* vsx_command_list_client::client_worker(void *ptr)
   return 0;
 }
 
-vsx_command_list* vsx_command_list_client::get_command_list_in()
+vsx_command_list_gc* vsx_command_list_client::get_command_list_in()
 {
   return &cmd_in;
 }
 
-vsx_command_list* vsx_command_list_client::get_command_list_out()
+vsx_command_list_gc* vsx_command_list_client::get_command_list_out()
 {
   return &cmd_out;  
 }

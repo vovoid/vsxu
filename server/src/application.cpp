@@ -59,8 +59,8 @@ vsx_module_list_abs* vxe_module_list;
 
 
 // from the perspective (both for gui/server) from here towards the tcp thread
-vsx_command_list internal_cmd_in;
-vsx_command_list internal_cmd_out;
+vsx_command_list_gc internal_cmd_in;
+vsx_command_list_gc internal_cmd_out;
 bool prod_fullwindow = false;
 bool take_screenshot = false;
 bool record_movie = false;
@@ -134,7 +134,6 @@ public:
 	double dt;
 	double gui_f_time;
 	double gui_fullscreen_fpstimer;
-	vsx_command_s pgv;
 	vsxu_draw() : first(true),frame_count(0), gui_g_time(0), gui_f_time(0), gui_fullscreen_fpstimer(0)
   {}
 
@@ -185,8 +184,6 @@ public:
         ++delta_frame_counter;
       }
     }
-    pgv.iterations = -1;
-    pgv.process_garbage();
 	}
 };
 

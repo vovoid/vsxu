@@ -37,6 +37,7 @@ class vsx_widget_server : public vsx_widget {
   //module selection stuff
   std::map<vsx_string,vsx_module_info*> module_list;
   std::map<vsx_string,vsx_module_info*>::const_iterator module_iter;
+  vsx_avector<vsx_module_info*> module_infos_created_for_choosers;
 
   bool selection;
   float delta_move,delta_zoom;
@@ -81,8 +82,8 @@ public:
   std::map<vsx_string, vsx_widget*> note_list;
   std::map<vsx_string, vsx_widget*>::const_iterator note_iter;
 
-  vsx_command_list *cmd_in;
-  vsx_command_list *cmd_out;
+  vsx_command_list_gc *cmd_in;
+  vsx_command_list_gc *cmd_out;
 
   // constructor
   vsx_widget_server();

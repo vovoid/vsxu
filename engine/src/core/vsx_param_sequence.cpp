@@ -391,7 +391,7 @@ vsx_param_sequence::vsx_param_sequence()
   cur_delay = 0.0f;
 }
 
-void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_param_sequence::update_line(vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix)
 {
   VSX_UNUSED(dest);
   VSX_UNUSED(cmd_prefix);
@@ -429,7 +429,7 @@ void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_
   //printf("pseql_r a %s\n",cmd_in->parts[4].c_str());
 }
 
-void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_param_sequence::insert_line(vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix)
 {
 	total_time = 0.0f; // reset total time for re-calculation
   //printf("INSERT_LINE in engine %s\n",cmd_in->raw.c_str());
@@ -483,7 +483,7 @@ void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_
   //printf("pseql_r insert %s\n",base64_decode(cmd_in->parts[4]).c_str());
 }
 
-void vsx_param_sequence::remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_param_sequence::remove_line(vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix)
 {
   /*
   float last_time; // last time we were called, to see if we should trace back

@@ -119,8 +119,11 @@ if (cmd == "undo")
   vsx_string error_string;
   if (undo_buffer.size())
   {
-    i_load_state(undo_buffer[undo_buffer.size()-1],&error_string);
-    undo_buffer.reset_used(undo_buffer.size()-1);
+    // TODO
+    //vsx_command_list_gc dest;
+    //vsx_command_list& source = undo_buffer[undo_buffer.size()-1];
+    //i_load_state(undo_buffer[undo_buffer.size()-1], &error_string);
+    //undo_buffer.reset_used(undo_buffer.size()-1);
   }
   goto process_message_queue_end;
 }

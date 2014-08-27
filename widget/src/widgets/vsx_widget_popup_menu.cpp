@@ -125,7 +125,6 @@ void vsx_widget_popup_menu::add_commands(vsx_command_s *command) {
   std::vector<vsx_string> add_c;
   explode(title,deli,add_c);
   if (add_c.size() > 1) {
-    // ok, we're not topmost
     vsx_widget* t = 0;
     if (l_list.find(add_c[0]) == l_list.end()) {
       t = add(new vsx_widget_popup_menu, add_c[0]);
@@ -135,11 +134,8 @@ void vsx_widget_popup_menu::add_commands(vsx_command_s *command) {
       menu_items.adds(VSX_COMMAND_MENU, add_c[0],"","");
     } else t = l_list[add_c[0]];
     add_c.erase(add_c.begin());
-    // mod the command, yeah!
     command->title = implode(add_c,deli);
     ((vsx_widget_popup_menu*)t)->add_commands(command);
-    // GAH I'M TIRED OF THIS, THIS IS LIKE THE 5TH similar thing i write ARGHH
-    // AND it's not WORKING :(
   } else {
     menu_items.add(command);
   }

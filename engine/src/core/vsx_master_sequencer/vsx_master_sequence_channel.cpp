@@ -105,7 +105,7 @@ void vsx_master_sequence_channel::run(float dtime)
 
 
 
-void vsx_master_sequence_channel::update_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_master_sequence_channel::update_line(vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix)
 {
   VSX_UNUSED(dest);
   VSX_UNUSED(cmd_prefix);
@@ -145,7 +145,7 @@ void vsx_master_sequence_channel::update_line(vsx_command_list* dest, vsx_comman
 }
 
 // 0=mseq_channel 1=row 2=insert 3=[channel_name] 4=[item_action_id] 5=[local_time_distance] 6=[length] 7=[seq_pool_name]
-void vsx_master_sequence_channel::insert_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_master_sequence_channel::insert_line(vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix)
 {
   float p_vtime = i_vtime;
   long after_this_id = vsx_string_helper::s2i(cmd_in->parts[4]); // item_action_id
@@ -237,7 +237,7 @@ void vsx_master_sequence_channel::i_remove_line(int pos)
 }
 
 // 0=mseq_channel 1=row 2=remove 3=[channel_name] 4=[item_action_id]
-void vsx_master_sequence_channel::remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_master_sequence_channel::remove_line(vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix)
 {
   long pos = vsx_string_helper::s2i(cmd_in->parts[4]);
 
@@ -266,7 +266,7 @@ void vsx_master_sequence_channel::remove_all_lines_referring_to_sequence_list(vs
 }
 
 // 0=mseq_channel 1=row 2=time_sequence 3=[name] 4=[item_id] 5=[get]/[set] 6(optional)=[sequence_dump]
-void vsx_master_sequence_channel::time_sequence(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_master_sequence_channel::time_sequence(vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix)
 {
   vsx_sequence_master_channel_item* pa = (items[ vsx_string_helper::s2i(cmd_in->parts[4]) ]);
 

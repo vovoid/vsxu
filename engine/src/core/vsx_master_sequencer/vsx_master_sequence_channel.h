@@ -54,10 +54,10 @@ class vsx_master_sequence_channel {
 public:
 
 	//void add_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
-  void update_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
-  void insert_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
-  void remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
-  void time_sequence(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
+  void update_line(vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix = "");
+  void insert_line(vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix = "");
+  void remove_line(vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix = "");
+  void time_sequence(vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix = "");
   void remove_all_lines_referring_to_sequence_list(vsx_param_sequence_list* list);
 
   vsx_string dump();

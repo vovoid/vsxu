@@ -42,7 +42,7 @@
 
 using namespace std;
 
-void vsx_param_sequence_list::get_init(vsx_engine_param* param, vsx_command_list* dest,vsx_string comp_name, vsx_string prefix)
+void vsx_param_sequence_list::get_init(vsx_engine_param* param, vsx_command_list_gc* dest,vsx_string comp_name, vsx_string prefix)
 {
   if (parameter_channel_map.find(param) != parameter_channel_map.end())
   {
@@ -51,7 +51,7 @@ void vsx_param_sequence_list::get_init(vsx_engine_param* param, vsx_command_list
   }
 }
 
-void vsx_param_sequence_list::get_contents(vsx_engine_param* param, vsx_command_list* dest,vsx_string controller_id) {
+void vsx_param_sequence_list::get_contents(vsx_engine_param* param, vsx_command_list_gc* dest,vsx_string controller_id) {
   VSX_UNUSED(param);
   VSX_UNUSED(dest);
   VSX_UNUSED(controller_id);
@@ -190,7 +190,7 @@ float vsx_param_sequence_list::calculate_total_time(bool no_cache)
   return total_time;
 }
 
-void vsx_param_sequence_list::get_sequences(vsx_command_list* dest) {
+void vsx_param_sequence_list::get_sequences(vsx_command_list_gc* dest) {
   for (std::list<vsx_param_sequence*>::iterator it = parameter_channel_list.begin(); it != parameter_channel_list.end(); ++it) {
     dest->add_raw("pseq_p_ok init "+(*it)->comp->name+" "+(*it)->param->name);
   }
@@ -199,7 +199,7 @@ void vsx_param_sequence_list::get_sequences(vsx_command_list* dest) {
   }
 }
 
-void vsx_param_sequence_list::update_line(vsx_engine_param* param, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix) {
+void vsx_param_sequence_list::update_line(vsx_engine_param* param, vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix) {
   if (parameter_channel_map.find(param) != parameter_channel_map.end()) {
 
     vsx_param_sequence* p = parameter_channel_map[param];
@@ -210,7 +210,7 @@ void vsx_param_sequence_list::update_line(vsx_engine_param* param, vsx_command_l
   }
 }
 
-void vsx_param_sequence_list::insert_line(vsx_engine_param* param, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_param_sequence_list::insert_line(vsx_engine_param* param, vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix)
 {
   if (parameter_channel_map.find(param) != parameter_channel_map.end())
   {
@@ -223,7 +223,7 @@ void vsx_param_sequence_list::insert_line(vsx_engine_param* param, vsx_command_l
   }
 }
 
-void vsx_param_sequence_list::remove_line(vsx_engine_param* param, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_param_sequence_list::remove_line(vsx_engine_param* param, vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix)
 {
   if (parameter_channel_map.find(param) != parameter_channel_map.end())
   {
@@ -365,7 +365,7 @@ void vsx_param_sequence_list::dump_master_channels_to_command_list(vsx_command_l
   }
 }
 
-void vsx_param_sequence_list::update_master_channel_line(vsx_string channel_name, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_param_sequence_list::update_master_channel_line(vsx_string channel_name, vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix)
 {
   if (master_channel_map.find(channel_name) != master_channel_map.end())
   {
@@ -373,7 +373,7 @@ void vsx_param_sequence_list::update_master_channel_line(vsx_string channel_name
   }
 }
 
-void vsx_param_sequence_list::insert_master_channel_line(vsx_string channel_name, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_param_sequence_list::insert_master_channel_line(vsx_string channel_name, vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix)
 {
   if (master_channel_map.find(channel_name) != master_channel_map.end())
   {
@@ -381,7 +381,7 @@ void vsx_param_sequence_list::insert_master_channel_line(vsx_string channel_name
   }
 }
 
-void vsx_param_sequence_list::remove_master_channel_line(vsx_string channel_name, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_param_sequence_list::remove_master_channel_line(vsx_string channel_name, vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix)
 {
   if (master_channel_map.find(channel_name) != master_channel_map.end())
   {
@@ -398,7 +398,7 @@ void vsx_param_sequence_list::remove_master_channel_lines_referring_to_sequence_
 }
 
 
-void vsx_param_sequence_list::time_sequence_master_channel_line(vsx_string channel_name, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_param_sequence_list::time_sequence_master_channel_line(vsx_string channel_name, vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix)
 {
   if (master_channel_map.find(channel_name) != master_channel_map.end())
   {

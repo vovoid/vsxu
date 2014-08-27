@@ -145,9 +145,9 @@ protected:
   // due to handling heavy commands.
   vsx_timer vsx_command_timer;
   // internal commands, to perform timing operations on commands to not lock up the system
-  vsx_command_list commands_res_internal;
-  vsx_command_list commands_out_cache;
-  vsx_command_list commands_internal;
+  vsx_command_list_gc commands_res_internal;
+  vsx_command_list_gc commands_out_cache;
+  vsx_command_list_gc commands_internal;
 
 //-- undo buffer
   vsx_avector<vsx_command_list> undo_buffer;
@@ -156,15 +156,16 @@ protected:
 
 
 //-- internal methods
-  void tell_client_time(vsx_command_list *cmd_out);
-  int i_load_state(vsx_command_list& load1, vsx_string *error_string, vsx_string info_filename = "[undefined]");
-  void i_clear(vsx_command_list *cmd_out = 0, bool clear_critical = false);
+  void tell_client_time(vsx_command_list_gc *cmd_out);
+
+  int i_load_state(vsx_command_list_gc& load1, vsx_string *error_string, vsx_string info_filename = "[undefined]");
+  void i_clear(vsx_command_list_gc *cmd_out = 0, bool clear_critical = false);
   void rename_component();
   int rename_component(vsx_string old_identifier, vsx_string new_base = "$", vsx_string new_name = "$");
-  void process_message_queue_redeclare(vsx_command_list *cmd_out_res);
-  void redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_out);
-  void redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_out);
-  void send_state_to_client(vsx_command_list *cmd_out);
+  void process_message_queue_redeclare(vsx_command_list_gc *cmd_out_res);
+  void redeclare_in_params(vsx_comp* comp, vsx_command_list_gc *cmd_out);
+  void redeclare_out_params(vsx_comp* comp, vsx_command_list_gc *cmd_out);
+  void send_state_to_client(vsx_command_list_gc *cmd_out);
   int get_state_as_commandlist(vsx_command_list &savelist);
   void message_fail(vsx_string header, vsx_string message);
   // called each frame after engine has rendered
@@ -194,7 +195,7 @@ public:
   virtual bool stop() = 0;
 
   // process messages - this should be run once per physical frame
-  virtual void process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive = false, bool ignore_timing = false, float max_time = 0.01f) = 0;
+  virtual void process_message_queue(vsx_command_list_gc *cmd_in, vsx_command_list_gc *cmd_out_res, bool exclusive = false, bool ignore_timing = false, float max_time = 0.01f) = 0;
 
 };
 

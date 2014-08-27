@@ -30,8 +30,8 @@
 
 class vsx_engine_helper
 {
-  vsx_command_list cmd_in;
-  vsx_command_list cmd_out;
+  vsx_command_list_gc cmd_in;
+  vsx_command_list_gc cmd_out;
 public:
 
   vsx_engine* engine;

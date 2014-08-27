@@ -289,6 +289,10 @@ void vsx_widget_server::on_delete() {
   for (std::map<vsx_string,vsx_module_info*>::iterator it = module_list.begin(); it != module_list.end(); ++it) {
     delete (*it).second;
   }
+  for (size_t i = 0; i < module_infos_created_for_choosers.size(); i++)
+  {
+    delete module_infos_created_for_choosers[i];
+  }
 }
 
 void vsx_widget_server::server_connect(vsx_string host, vsx_string port)
@@ -770,6 +774,7 @@ void vsx_widget_server::vsx_command_process_f() {
             )
           );
           a = new vsx_module_info;
+          module_infos_created_for_choosers.push_back(a);
           a->identifier = "macros;"+ss;
           //printf("a->ident: %s\n",a->identifier.c_str());
           a->component_class = "macro";
@@ -792,6 +797,7 @@ void vsx_widget_server::vsx_command_process_f() {
       } else
       if (c->cmd == "states_list") {
         vsx_module_info* a = new vsx_module_info;
+        module_infos_created_for_choosers.push_back(a);
         a->identifier = "states;"+str_replace(":20:"," ",c->parts[1]);
         a->component_class = "state";
         ((vsx_widget_ultra_chooser*)state_chooser)->module_tree->module_info = 0;
@@ -802,6 +808,7 @@ void vsx_widget_server::vsx_command_process_f() {
       } else
       if (c->cmd == "prods_list") {
         vsx_module_info* a = new vsx_module_info;
+        module_infos_created_for_choosers.push_back(a);
         a->identifier = "prods;"+str_replace(":20:"," ",c->parts[1]);
         a->component_class = "prod";
         ((vsx_widget_ultra_chooser*)state_chooser)->module_tree->module_info = 0;
@@ -813,6 +820,7 @@ void vsx_widget_server::vsx_command_process_f() {
       } else
       if (c->cmd == "visuals_list") {
         vsx_module_info* a = new vsx_module_info;
+        module_infos_created_for_choosers.push_back(a);
         a->identifier = "visuals;"+str_replace(":20:"," ",c->parts[1]);
         a->component_class = "visuals";
         ((vsx_widget_ultra_chooser*)state_chooser)->module_tree->module_info = 0;
@@ -825,6 +833,7 @@ void vsx_widget_server::vsx_command_process_f() {
       if (c->cmd == "resources_list" && c->parts.size() == 2) {
         vsx_module_info* a;
         a = new vsx_module_info;
+        module_infos_created_for_choosers.push_back(a);
         a->identifier = str_replace(":20:"," ",c->parts[1]);
         a->component_class = "resource";
         ((vsx_widget_ultra_chooser*)resource_chooser)->module_tree->module_info = 0;
@@ -870,7 +879,9 @@ void vsx_widget_server::vsx_command_process_f() {
                 cmd_out->add_raw("macro_create "+mc->parts[1]+" "+c->parts[4]+" "+c->parts[5]+" "+mc->parts[2]);
               } else {
                 if (mc->cmd != "")
-                cmd_out->addc(mc);
+                {
+                  cmd_out->add( vsx_command_s_gc_from_s(mc) );
+                }
               }
             }
           } else {
@@ -1117,7 +1128,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
       t->cmd = "macro_create";
       t->parts[0] = "macro_create";
       t->raw = str_replace("macro_create_real", "macro_create",t->raw);
-      cmd_out->addc(t);
+      cmd_out->add( vsx_command_s_gc_from_s(t) );
       //cmd_out->add_raw("macro_create "+t->parts[2]+" "+t->parts[3]+" "+t->parts[4]+" 0.1");
     } else
     if (t->cmd == "macro_create") {
@@ -1132,10 +1143,10 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
       // syntax:
       //         module_info_add [identifier] {information} {in_param_spec} {out_param_spec}
       if (t->parts.size() > 1) {
-//            log_cmd.push_back("srv> "+c->raw);
         bool duplicate = false;
         vsx_module_info* a;
         a = new vsx_module_info;
+        module_infos_created_for_choosers.push_back(a);
         if (module_list.find(t->parts[1]) != module_list.end()) duplicate = true;
         module_list[t->parts[1]] = a;
         a->identifier = t->parts[1];
@@ -1145,7 +1156,6 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
           ((vsx_widget_ultra_chooser*)module_chooser)->module_tree->add(t->parts[1],a);
           ((vsx_widget_ultra_chooser*)module_chooser)->build_tree();
         }
-        // PORRRRRRRRRRN
       }
     } else
     if (t->cmd == "alert_dialog") {
@@ -1153,7 +1163,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
     } else
     {
       LOG_A("adding copy:"+t->cmd)
-      cmd_out->addc(t);
+      cmd_out->addc( vsx_command_s_gc_from_s(t) );
     }
   }
 }

@@ -164,7 +164,7 @@ public:
   int load_state_filesystem(vsx_string filename, vsx_string *error_string, vsxf* filesystem);
 
   // process messages - this should be run once per physical frame
-  void process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive = false, bool ignore_timing = false, float max_time = 0.01f);
+  void process_message_queue(vsx_command_list_gc *cmd_in, vsx_command_list_gc *cmd_out_res, bool exclusive = false, bool ignore_timing = false, float max_time = 0.01f);
 
   // sequencer time control
   void time_play();

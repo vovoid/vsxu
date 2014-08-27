@@ -79,7 +79,6 @@ public:
   double min_fps;
   double max_render_time;
   double min_render_time;
-  vsx_command_s pgv;
 
   vsx_profiler* profiler;
 
@@ -131,11 +130,7 @@ public:
           desktop->draw_2d();
       profiler->sub_end();
 
-    if (!first && !desktop)
-    {
-      pgv.iterations = -1;
-    }
-    pgv.process_garbage();
+      vsx_command_process_garbage();
   }
 };
 

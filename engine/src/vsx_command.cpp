@@ -26,45 +26,46 @@
 
 int vsx_command_s::id = 0;
 
-std::list<vsx_command_s*> vsx_command_s::garbage_list;
-std::list<vsx_command_s*>::iterator vsx_command_s::it;
-std::list<vsx_command_s*>::iterator vsx_command_s::it_2;
+std::vector<vsx_command_s_gc*> vsx_command_garbage_list;
 
-void vsx_command_s::process_garbage() {
-  it = garbage_list.begin();
-  if (garbage_list.size())
-  while (it != garbage_list.end()) {
-    if ((*it)->type == 0) {
-      if ((*it)->iterations != -1)
-      ++(*it)->iterations;
-      if ((*it)->iterations > VSX_COMMAND_DELETE_ITERATIONS) {
-      	//printf("d %d %d %s\n",(*it)->id,(*it)->iterations,(*it)->cmd.c_str());
-      	//vsx_command_s* a = (*it);
-        it_2 = it;
-        ++it;
-        garbage_list.erase(it_2);
-//        delete (vsx_command_s*)a;
-      } else
-      ++it;
-    } else {
-      it_2 = it;
-      ++it;
-      garbage_list.erase(it_2);
+void vsx_command_process_garbage()
+{
+  if (!vsx_command_garbage_list.size())
+    return;
+
+  std::vector<vsx_command_s_gc*>::iterator it;
+  std::vector<vsx_command_s_gc*> save;
+
+  it = vsx_command_garbage_list.begin();
+  while (it != vsx_command_garbage_list.end())
+  {
+    vsx_command_s_gc* a = (*it);
+
+    (*it)->iterations++;
+
+    if ((*it)->iterations > VSX_COMMAND_DELETE_ITERATIONS)
+    {
+      delete a;
+    } else
+    {
+      save.push_back(*it);
     }
+    it++;
   }
-
-//  for ( it != garbage_list.end(); ++it) {
-//    ++(*it)->iterations;
-//  }
-//  for (std::list<vsx_command*>::iterator it = garbage_list.begin(); it != garbage_list.end(); ++it) {
-//    ++(*it)->iterations;
-//  }
-//  if ((*it)->iterations > VSX_COMMAND_DELETE_ITERATIONS) {
-
-//m  }
-
+  vsx_command_garbage_list = save;
 }
 
+void vsx_command_process_garbage_exit()
+{
+  std::vector<vsx_command_s_gc*>::iterator it;
+  it = vsx_command_garbage_list.begin();
+  while (it != vsx_command_garbage_list.end())
+  {
+    vsx_command_s_gc* a = (*it);
+    delete a;
+    it++;
+  }
+}
 
 vsx_string vsx_command_s::get_parts(int start, int end) {
   vsx_string res = "";
@@ -91,8 +92,6 @@ vsx_string vsx_command_s::get_parts(int start, int end) {
 
 vsx_command_s::~vsx_command_s()
 {
-  if (iterations == -1)
-  garbage_list.remove(this);
   #ifdef VSXU_DEBUG
     printf("vsx_command_s::destructor %s :::::::: %s\n",cmd.c_str(),raw.c_str());
   #endif
@@ -114,23 +113,5 @@ void vsx_command_s::parse() {
   parsed = true;
 }
 
-
-vsx_command_s* vsx_command_parse(vsx_string& cmd_raw) {
-  std::vector <vsx_string> cmdps;
-  vsx_command_s *t = new vsx_command_s;
-  t->raw = cmd_raw;
-  //printf("parsing raw: %s\n",cmd_raw.c_str());
-  vsx_string deli = " ";
-  split_string(cmd_raw, deli, cmdps);
-  //printf("parsing2: %s\n",cmd_raw.c_str());
-  t->cmd = cmdps[0];
-  if (cmdps.size() > 1)
-  {
-    t->cmd_data = cmdps[1];
-  }
-  t->parts = cmdps;
-  t->parsed = true;
-  return t;
-}
 
 
