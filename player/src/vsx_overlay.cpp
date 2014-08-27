@@ -32,7 +32,7 @@ vsx_overlay::vsx_overlay() {
   manager = 0;
   myf = new vsx_font(PLATFORM_SHARED_FILES);
   vsxf filesystem;
-  myf->init(vsx_string("font/font-ascii.png"), &filesystem);
+  myf->load(vsx_string("font/font-ascii.png"), &filesystem);
   myf->mode_2d = false;
   frame_counter = 0;
   delta_frame_counter = 0;

@@ -28,8 +28,7 @@ int vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info)
 {
   if (vxe_local == 0)
   {
-    vxe_local = new vsx_engine();
-    vxe_local->set_module_list( module_list );
+    vxe_local = new vsx_engine( module_list );
     vxe_local->set_no_send_client_time(true);
     vxe_local->start();
     (*state_iter).engine = vxe_local;
@@ -328,8 +327,7 @@ void vsx_statelist::render()
         #ifdef VSXU_DEBUG
           printf("initializing fader %s\n", (*it).c_str());
         #endif
-        vsx_engine* lvxe = new vsx_engine();
-        lvxe->set_module_list( module_list );
+        vsx_engine* lvxe = new vsx_engine( module_list );
         lvxe->start();
         lvxe->load_state(*it);
         faders.push_back(lvxe);

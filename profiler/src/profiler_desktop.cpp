@@ -52,7 +52,7 @@ void vsx_widget_desktop::init()
   camera.set_key_speed( 3.0 );
 
   vsxf filesystem;
-  font.init(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png", &filesystem);
+  font.load(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png", &filesystem);
 
   mtex.init_opengl_texture_2d();
   mtex.load_jpeg(vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg");

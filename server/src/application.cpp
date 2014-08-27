@@ -55,7 +55,7 @@ vsx_command_list_server cl_server;
 // global vars
 vsx_string fpsstring = "VSX Ultra "+vsx_string(vsxu_version)+" - 2010 Vovoid";
 vsx_engine* vxe = 0;
-vsx_module_list_abs* vxe_module_list;
+vsx_module_list_abs* module_list;
 
 
 // from the perspective (both for gui/server) from here towards the tcp thread
@@ -96,7 +96,8 @@ void load_desktop_a()
 void app_init(int id)
 {
   VSX_UNUSED(id);
-  vxe = new vsx_engine();
+  module_list = vsx_module_list_factory_create();
+  vxe = new vsx_engine(module_list);
 }
 
 

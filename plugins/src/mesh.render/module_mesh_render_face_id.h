@@ -98,7 +98,7 @@ public:
     loading_done = true;
     myf = new vsx_font();
     vsxf filesystem;
-    myf->init("/home/jaw/vsxu-dev/vsxu/share/font/font-ascii.png", &filesystem);
+    myf->load("/home/jaw/vsxu-dev/vsxu/share/font/font-ascii.png", &filesystem);
   }
 
   void output(vsx_module_param_abs* param)

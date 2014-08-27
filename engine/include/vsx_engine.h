@@ -150,7 +150,7 @@ public:
 
 //-- engine function / lifecycle presented in the order they should happen
   // constructors
-  vsx_engine(vsx_module_list_abs* initial_module_list = vsx_module_list_factory_create() );
+  vsx_engine(vsx_module_list_abs* initial_module_list );
 
   // should be run soon after the GL surface is initialized
   bool start();

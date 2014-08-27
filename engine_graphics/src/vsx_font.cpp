@@ -39,10 +39,10 @@
 
 std::map<vsx_string, vsx_font_info*> vsx_font::glist;
 
-vsx_font_info* vsx_font::init(vsx_string font, vsxf* filesystem)
+vsx_font_info* vsx_font::load(vsx_string font, vsxf* filesystem)
 {
   my_font_info = glist[font] = new vsx_font_info;
-
+  my_font_info->name = font;
 
   if (font[0] != '-')
   {
@@ -68,6 +68,19 @@ vsx_font_info* vsx_font::init(vsx_string font, vsxf* filesystem)
 
   return my_font_info;
 }  
+
+void vsx_font::unload()
+{
+  if (!my_font_info)
+    return;
+
+  if (my_font_info->texture)
+    delete my_font_info->texture;
+
+  glist.erase( my_font_info->name );
+  delete my_font_info;
+  my_font_info = 0x0;
+}
 
 void vsx_font::reinit(vsx_font_info* f_info,vsx_string font)
 {
@@ -107,7 +120,7 @@ void vsx_font::reinit_all_active()
         my_font_info = glist[font];
       } else {
         vsxf filesystem;
-        my_font_info = init(font, &filesystem);
+        my_font_info = load(font, &filesystem);
       }
     }
     return print(p,str,size,colors);

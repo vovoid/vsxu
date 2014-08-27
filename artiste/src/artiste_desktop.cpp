@@ -71,7 +71,7 @@ void vsx_widget_desktop::init()
   init_children();
 
   vsxf filesystem;
-  font.init(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png", &filesystem);
+  font.load(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png", &filesystem);
 
   log("welcome to vsxu");
 

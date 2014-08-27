@@ -150,7 +150,7 @@ void app_init()
 
   //---------------------------------------------------------------------------
   vsxf filesystem;
-  myf.init( vsx_string(PLATFORM_SHARED_FILES) + "font/font-ascii_output.png", &filesystem );
+  myf.load( vsx_string(PLATFORM_SHARED_FILES) + "font/font-ascii_output.png", &filesystem );
 }
 
 /*

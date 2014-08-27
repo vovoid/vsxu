@@ -826,9 +826,5 @@ void vsx_engine::unload_state()
 }
 
 
-extern "C" vsx_engine* create_engine()
-{
-  return new vsx_engine;
-}
 
 // VSX_ENGINE

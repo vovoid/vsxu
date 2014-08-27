@@ -69,6 +69,8 @@
 
 // global vars
 vsx_string fpsstring = "VSX Ultra "+vsx_string(vsxu_version)+" - 2012 Vovoid";
+
+vsx_module_list_abs* module_list;
 vsx_engine* vxe = 0x0;
 
 // from the perspective (both for gui/server) from here towards the tcp thread
@@ -411,9 +413,7 @@ void load_desktop_a(vsx_string state_name)
   ((vsx_widget_server*)desktop->find("desktop_local"))->engine = (void*)vxe;
   desktop->front(desktop->find("vsxu_preview"));
 
-  //printf("{CLIENT} starting desktop:");
   desktop->init();
-  //printf(" [DONE]\n");
 }
 
 
@@ -423,14 +423,15 @@ void app_init(int id)
     return;
 
 
-  vxe = new vsx_engine();
+  module_list = vsx_module_list_factory_create();
+  vxe = new vsx_engine(module_list);
 
   my_draw = new vsxu_draw();
 
   gui_prod_fullwindow = &prod_fullwindow;
   //---------------------------------------------------------------------------
   vsxf filesystem;
-  myf.init( PLATFORM_SHARED_FILES + vsx_string("font/font-ascii_output.png"), &filesystem);
+  myf.load( PLATFORM_SHARED_FILES + vsx_string("font/font-ascii_output.png"), &filesystem);
 
   if (dual_monitor) {
     vxe->start();
@@ -467,8 +468,10 @@ void app_pre_draw() {
     vsx_string cmd = c->cmd;
     vsx_string cmd_data = c->cmd_data;
     if (cmd == "system.shutdown") {
+      myf.unload();
       vxe->stop();
       delete vxe;
+      vsx_module_list_factory_destroy( module_list );
       desktop->stop();
       delete desktop;
       vsx_command_process_garbage_exit();
