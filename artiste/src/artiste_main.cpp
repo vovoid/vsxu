@@ -275,7 +275,8 @@ int main(int argc, char* argv[])
   if (start_fullscreen)
     glfwEnable( GLFW_MOUSE_CURSOR );
 
-  app_init(0);
+  app_load(0);
+  atexit(app_unload);
 
   glfwEnable(GLFW_AUTO_POLL_EVENTS);
 

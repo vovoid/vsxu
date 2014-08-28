@@ -203,7 +203,7 @@ void vsx_widget_popup_menu::event_mouse_down(vsx_widget_distance distance,vsx_wi
   }
 }
 
-void vsx_widget_popup_menu::on_delete() {
-  menu_items.clear(true); // really delete the items.
+void vsx_widget_popup_menu::on_delete()
+{
+  menu_items.clear_delete();
 }
-

@@ -86,9 +86,9 @@ vsx_engine::vsx_engine(vsx_module_list_abs* initial_module_list)
 vsx_engine::~vsx_engine()
 {
   stop();
-  commands_internal.clear(true);
-  commands_res_internal.clear(true);
-  commands_out_cache.clear(true);
+  commands_internal.clear_normal();
+  commands_res_internal.clear_normal();
+  commands_out_cache.clear_normal();
   i_clear(0,true);
 }
 
@@ -316,7 +316,7 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string)
     filesystem.set_base_path( vsx_data_path::get_instance()->data_path_get() );
 
   int res = i_load_state(load1,error_string,filename);
-  load1.clear(true);
+  load1.clear_normal();
 
   return res;
 }
@@ -335,7 +335,7 @@ int vsx_engine::load_state_filesystem(vsx_string filename, vsx_string *error_str
   load1.load_from_file(filename, true);
 
   int res = i_load_state(load1, error_string, filename);
-  load1.clear(true);
+  load1.clear_normal();
 
   return res;
 }
@@ -713,7 +713,7 @@ void vsx_engine::process_message_queue(vsx_command_list_gc *cmd_in, vsx_command_
   // service commands
   LOG("process_message_queue 1")
 
-  commands_res_internal.clear(true);
+  commands_res_internal.clear_normal();
   tell_client_time(cmd_out_res);
   vsx_command_s_gc *c = 0;
   if (!exclusive) {

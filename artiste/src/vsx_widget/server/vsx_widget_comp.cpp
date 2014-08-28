@@ -163,7 +163,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
   {
     printf("macro dump complete\n");
     macro_commands.save_to_file( vsx_data_path::get_instance()->data_path_get() + "macros/"+t->parts[2]);
-    macro_commands.clear();
+    macro_commands.clear_delete();
     command_q_b.add_raw("module_info_add macros;"+t->parts[2]);
     server->vsx_command_queue_b(this);
     return;
@@ -213,7 +213,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
       //if
     }
     server->vsx_command_queue_b(this);
-    macro_commands.clear();
+    macro_commands.clear_delete();
     return;
   } else
   if (t->cmd == "macro_saveas")

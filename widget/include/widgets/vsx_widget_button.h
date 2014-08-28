@@ -37,6 +37,10 @@ public:
   void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void i_draw();
   vsx_widget_button() {render_type=render_2d;}
+  void on_delete()
+  {
+    commands.clear_delete();
+  }
 };
 
 

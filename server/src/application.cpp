@@ -87,8 +87,8 @@ void start_engine() {
 void load_desktop_a()
 {
 
-  internal_cmd_in.clear();
-  internal_cmd_out.clear();
+  internal_cmd_in.clear_normal();
+  internal_cmd_out.clear_normal();
 
 }
 

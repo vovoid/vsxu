@@ -35,6 +35,7 @@ class vsx_command_buffer_broker
   typename std::list <T*> commands; // results of commands
   typename std::list <T*>::const_iterator iter;
 
+  bool delete_commands_on_delete;
 
 public:
 
@@ -46,9 +47,7 @@ public:
   void set_accept_commands(int new_value)
   {
     accept_commands = new_value;
-  }
-
-
+  } 
 
   // add copy of command at the end of the list
   T* addc(T* cmd)
@@ -215,15 +214,19 @@ public:
   }
 
 
-  void clear(bool del = false)
+  void clear_normal()
   {
     commands.clear();
-
-    if (!del)
-      return;
   }
 
-
+  void clear_delete()
+  {
+    for (typename std::list <T*>::iterator it = commands.begin(); it != commands.end(); it++)
+    {
+      delete (T*) (*it);
+    }
+    commands.clear();
+  }
 
   void reset()
   {
@@ -428,9 +431,28 @@ public:
   vsx_command_buffer_broker()
     :
     filesystem(0),
-    accept_commands(1)
+    accept_commands(1),
+    delete_commands_on_delete(false)
   {
     pthread_mutex_init(&mutex1, NULL);
+  }
+
+  vsx_command_buffer_broker(bool delete_commands)
+  :
+  filesystem(0),
+  accept_commands(1),
+  delete_commands_on_delete(delete_commands)
+  {
+    pthread_mutex_init(&mutex1, NULL);
+  }
+
+
+  ~vsx_command_buffer_broker()
+  {
+    if (delete_commands_on_delete)
+      clear_delete();
+
+    pthread_mutex_destroy(&mutex1);
   }
 
 };

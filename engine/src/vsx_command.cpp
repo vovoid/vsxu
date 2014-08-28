@@ -92,9 +92,6 @@ vsx_string vsx_command_s::get_parts(int start, int end) {
 
 vsx_command_s::~vsx_command_s()
 {
-  #ifdef VSXU_DEBUG
-    printf("vsx_command_s::destructor %s :::::::: %s\n",cmd.c_str(),raw.c_str());
-  #endif
 }
 
 

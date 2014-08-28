@@ -36,7 +36,8 @@ extern bool app_alt;
 extern bool app_shift;
 extern bool dual_monitor;
 
-void app_init(int id);
+void app_load(int id);
+void app_unload();
 
 void app_print_cli_help();
 

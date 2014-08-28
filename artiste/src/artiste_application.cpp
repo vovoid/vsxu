@@ -395,8 +395,8 @@ void load_desktop_a(vsx_string state_name)
   //printf("{CLIENT} creating desktop:");
   desktop = new vsx_widget_desktop;
   //printf(" [DONE]\n");
-  internal_cmd_in.clear();
-  internal_cmd_out.clear();
+  internal_cmd_in.clear_normal();
+  internal_cmd_out.clear_normal();
   // connect server widget to command lists
   ((vsx_widget_server*)desktop->find("desktop_local"))->cmd_in = &internal_cmd_out;
   ((vsx_widget_server*)desktop->find("desktop_local"))->cmd_out = &internal_cmd_in;
@@ -414,28 +414,6 @@ void load_desktop_a(vsx_string state_name)
   desktop->front(desktop->find("vsxu_preview"));
 
   desktop->init();
-}
-
-
-void app_init(int id)
-{
-  if (dual_monitor && id == 0)
-    return;
-
-
-  module_list = vsx_module_list_factory_create();
-  vxe = new vsx_engine(module_list);
-
-  my_draw = new vsxu_draw();
-
-  gui_prod_fullwindow = &prod_fullwindow;
-  //---------------------------------------------------------------------------
-  vsxf filesystem;
-  myf.load( PLATFORM_SHARED_FILES + vsx_string("font/font-ascii_output.png"), &filesystem);
-
-  if (dual_monitor) {
-    vxe->start();
-  }
 }
 
 /*
@@ -457,31 +435,53 @@ void app_print_cli_help()
   vsx_module_list_factory_create()->print_help();
 }
 
+void app_load(int id)
+{
+  if (dual_monitor && id == 0)
+    return;
+
+
+  module_list = vsx_module_list_factory_create();
+  vxe = new vsx_engine(module_list);
+
+  my_draw = new vsxu_draw();
+
+  gui_prod_fullwindow = &prod_fullwindow;
+  //---------------------------------------------------------------------------
+  vsxf filesystem;
+  myf.load( PLATFORM_SHARED_FILES + vsx_string("font/font-ascii_output.png"), &filesystem);
+
+  if (dual_monitor) {
+    vxe->start();
+  }
+}
+
+void app_unload()
+{
+  myf.unload();
+  vxe->stop();
+  delete vxe;
+  vsx_module_list_factory_destroy( module_list );
+  desktop->stop();
+  delete desktop;
+  vsx_command_process_garbage_exit();
+}
+
+
+
 
 void app_pre_draw() {
-  //printf("app_pre_draw\n");
-
   vsx_command_s *c = 0;
   while ( (c = system_command_queue.pop()) )
   {
-    //printf("c->cmd: %s\n",c->cmd.c_str());
     vsx_string cmd = c->cmd;
-    vsx_string cmd_data = c->cmd_data;
-    if (cmd == "system.shutdown") {
-      myf.unload();
-      vxe->stop();
-      delete vxe;
-      vsx_module_list_factory_destroy( module_list );
-      desktop->stop();
-      delete desktop;
-      vsx_command_process_garbage_exit();
+    if (cmd == "system.shutdown")
+    {
       exit(0);
-    } else
-    if (cmd == "fullscreen_toggle") {
-    } else
+    }
     if (cmd == "fullscreen") {
       if (desktop)
-      desktop->stop();
+        desktop->stop();
       internal_cmd_in.add(vsx_command_s_gc_from_s(c));
     }
     c = 0;
@@ -563,8 +563,6 @@ void app_char(long key)
       {
         vxe->input_event(eie);
       }
-
-      //printf("would send char to engine %d\n", key);
       return;
     }
     desktop->key_down(key,app_alt, app_ctrl, app_shift);
@@ -612,7 +610,6 @@ void app_key_down(long key)
       {
         vxe->input_event(eie);
       }
-      //printf("would send key to engine %d\n", key);
       return;
     }
 
@@ -643,15 +640,11 @@ void app_key_up(long key)
       {
         vxe->input_event(eie);
       }
-
-      //printf("would send key up to engine %d\n", key);
       return;
     }
-    //printf("key up %d\n",key);
     desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
     desktop->key_up(key,app_alt, app_ctrl, app_shift);
   }
-  //printf("key up: %d\n",key);
 }
 
 void app_mouse_move_passive(int x, int y) {
@@ -662,8 +655,6 @@ void app_mouse_move_passive(int x, int y) {
       *gui_prod_fullwindow
     )
     {
-      //glfwDisable(GLFW_MOUSE_CURSOR);
-
       vsx_engine_input_event eie;
       eie.type = VSX_ENGINE_INPUT_EVENT_MOUSE_HOVER;
       eie.x = (float)x;
@@ -675,18 +666,11 @@ void app_mouse_move_passive(int x, int y) {
       {
         vxe->input_event(eie);
       }
-
-      //printf("would send mouse passive move to engine\n");
       return;
-    } else
-    {
-      //glfwEnable(GLFW_MOUSE_CURSOR);
     }
-
     desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
     desktop->mouse_move_passive((float)x,(float)y);
   }
-  //printf("mouse passive pos: %d :: %d\n",x,y);
 }
 
 void app_mouse_move(int x, int y)
@@ -748,8 +732,6 @@ void app_mouse_down(unsigned long button,int x,int y)
       {
         vxe->input_event(eie);
       }
-
-      //printf("would send mouse button down to engine \n");
       return;
     }
 
@@ -779,8 +761,6 @@ void app_mouse_up(unsigned long button,int x,int y)
       {
         vxe->input_event(eie);
       }
-
-      //printf("would send mouse button up to engine \n");
       return;
     }
     desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
@@ -810,8 +790,6 @@ void app_mousewheel(float diff,int x,int y)
       {
         vxe->input_event(eie);
       }
-
-      //printf("would send mouse wheel to engine \n");
       return;
     }
 

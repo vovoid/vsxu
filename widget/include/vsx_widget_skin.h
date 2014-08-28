@@ -58,7 +58,7 @@ public:
   {
     vsx_command_list modelist;
     vsx_command_s* mc = 0;
-    vsx_command_list skin_conf;
+    vsx_command_list skin_conf(true);
     skin_conf.load_from_file(skin_path+"skin.conf",true,4);
 
     skin_conf.reset();

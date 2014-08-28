@@ -1346,7 +1346,8 @@ map<vsx_string,vsx_string> parse_url_params(vsx_string input, char major, char m
 
 void vsx_widget_anchor::init_menu(bool include_controllers) 
 {
-  if (menu) menu->_delete();
+  if (menu)
+    menu->_delete();
   vsx_widget_popup_menu* menu_ = new vsx_widget_popup_menu;
   menu_->size.x = 0.2;
   menu_->size.y = 0.5;

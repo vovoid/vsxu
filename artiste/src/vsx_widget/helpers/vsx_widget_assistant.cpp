@@ -172,6 +172,7 @@ void vsxu_assistant::init()
       auto_ = true;
     }
   }
+  cla.clear_delete();
   if (!auto_) {
     command_q_b.add_raw("load course_intro");
     vsx_command_queue_b(this);

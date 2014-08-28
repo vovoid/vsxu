@@ -151,10 +151,10 @@ int vsx_engine_abs::i_load_state(vsx_command_list_gc& load1,vsx_string *error_st
 
   process_message_queue(&load1,&loadr2,true);
   LOG("i_load_state post processing_message_queue")
-  load2.clear(true);
-  loadr2.clear(true);
+  load2.clear_normal();
+  loadr2.clear_normal();
 
-  load1.clear(true);
+  load1.clear_normal();
   current_state = VSX_ENGINE_LOADING;
   g_timer.start();
   modules_loaded = 0;

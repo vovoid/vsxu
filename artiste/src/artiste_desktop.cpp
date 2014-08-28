@@ -339,7 +339,7 @@ void vsx_widget_desktop::draw_2d()
 
 void vsx_widget_desktop::load_configuration()
 {
-  vsx_command_list main_conf;
+  vsx_command_list main_conf(true);
   vsx_string config_file = vsx_data_path::get_instance()->data_path_get() + "vsxu.conf";
 
   if (access(config_file.c_str(),0) == 0)

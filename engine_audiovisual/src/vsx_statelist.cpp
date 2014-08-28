@@ -412,7 +412,7 @@ void vsx_statelist::render()
         {
           vxe->process_message_queue(cmd_in,cmd_out);
         }
-        cmd_out->clear(true);
+        cmd_out->clear_normal();
       }
       if (vxe)
       {
@@ -426,7 +426,7 @@ void vsx_statelist::render()
         {
           vxe->process_message_queue(cmd_in,cmd_out);
         }
-        cmd_out->clear(true);
+        cmd_out->clear_normal();
       }
 
       // begin capture
@@ -454,7 +454,7 @@ void vsx_statelist::render()
         vsx_module_param_float* param_pos = (vsx_module_param_float*)faders[fade_id]->get_in_param_by_name("visual_fader", "fade_pos_in");
         vsx_module_param_float* fade_pos_from_engine = (vsx_module_param_float*)faders[fade_id]->get_in_param_by_name("visual_fader", "fade_pos_from_engine");
         faders[fade_id]->process_message_queue(&l_cmd_in, &l_cmd_out);
-        l_cmd_out.clear();
+        l_cmd_out.clear_normal();
         if (param_t_a && param_t_b && param_pos && fade_pos_from_engine)
         {
           param_t_a->set(&tex1);
@@ -479,7 +479,7 @@ void vsx_statelist::render()
     if (cmd_out && cmd_in)
     {
       vxe->process_message_queue(cmd_in, cmd_out);
-      cmd_out->clear();
+      cmd_out->clear_normal();
     }
     vxe->render();
     if (randomizer)

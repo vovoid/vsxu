@@ -275,6 +275,15 @@ public:
     {
       vsx_dlopen::close( plugin_handles[i] );
     }
+    for (std::vector< vsx_module_info* >::iterator it = module_infos.begin(); it != module_infos.end(); it++)
+    {
+      delete *it;
+    }
+    for (std::map< vsx_string, void* >::iterator it = module_plugin_list.begin(); it != module_plugin_list.end(); it++)
+    {
+      delete (vsx_module_plugin_info*) ( (*it).second );
+    }
+
   }
 
 

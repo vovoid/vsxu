@@ -27,7 +27,23 @@
 
 #include <vsx_platform.h>
 
-typedef struct {
+class vsx_module_plugin_info
+{
+public:
+
+  vsx_module_plugin_info()
+  :
+    module_id(0),
+    hidden_from_gui(false),
+    module_info(0x0)
+  {}
+
+  ~vsx_module_plugin_info()
+  {
+    if (module_info)
+      delete module_info;
+  }
+
   vsx_dynamic_object_handle plugin_handle;
   int module_id;
   bool hidden_from_gui;
@@ -36,6 +52,6 @@ typedef struct {
   // cached function to module's constructor/destructor
   vsx_module*(*create_new_module)( unsigned long, void* );
   void(*destroy_module)( vsx_module*, unsigned long );
-} vsx_module_plugin_info;
+};
 
 #endif /*VSX_MODULE_PLUGIN_INFO_H_*/

@@ -400,7 +400,8 @@ void vsx_widget_server::vsx_command_process_f() {
         // send in the component_info
         command_q_b.add_raw("component_info "+component->name+" "+c->parts[2]);
         component->vsx_command_queue_b(this);
-        if (module_chooser->visible != 0) front(module_chooser);
+        if (module_chooser->visible != 0)
+          front(module_chooser);
       }
       else
       if (c->cmd == "component_rename_ok") {
@@ -1171,7 +1172,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
 void vsx_widget_server::param_alias_ok(vsx_string p_def, vsx_string io, vsx_string comp, vsx_string param, vsx_string source_comp, vsx_string source_param, vsx_string seven) {
   // 1. create new anchor
   // 2. copy info to it
-  command_q_b.clear();
+  command_q_b.clear_delete();
   vsx_widget* dest = find_component(comp);
   if (io == "-1") {
     command_q_b.add_raw("ipsa "+comp+" "+p_def+" 1");

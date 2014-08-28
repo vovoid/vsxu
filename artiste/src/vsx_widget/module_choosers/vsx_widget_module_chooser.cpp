@@ -52,7 +52,7 @@
 using namespace std;
 
 
-vsx_command_list module_chooser_colors;
+vsx_command_list module_chooser_colors(true);
 std::map<vsx_string,vsx_color<> > mc_colors;
 std::map<vsx_string,vsx_color<> > mc_r_colors;
 
@@ -569,7 +569,8 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
   init_children();
   set_render_type(render_2d);
 
-  module_chooser_colors.load_from_file( vsx_widget_skin::get_instance()->skin_path_get() +"module_chooser.conf",true,4);
+  if (!module_chooser_colors.count())
+    module_chooser_colors.load_from_file( vsx_widget_skin::get_instance()->skin_path_get() +"module_chooser.conf",true,4);
 
   if (!module_chooser_colors.count()) {
     module_chooser_colors.add_raw("ccolor default 0.2,0.2,0.6,1");
@@ -620,7 +621,6 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
       mc_r_colors[mc->parts[1]] = p;
     }
   }
-  module_chooser_colors.clear();
   help_text = "This is the browser:\n\
 - right-click to close\n\
 - click+drag or double-click to create\n\

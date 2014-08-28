@@ -54,7 +54,6 @@ public:
 
     for (std::map<vsx_widget_hyperbolic_tree*,HTGeodesic*>::iterator it = geodesics.begin(); it != geodesics.end(); it++ )
     {
-      vsx_printf("deleting geodesic\n");
       delete (*it).second;
     }
   }
@@ -260,16 +259,17 @@ public:
 
         if (t->isValid()) {
 
-            HTCoord* alpha = new HTCoord();
-            alpha->x = 1 + (zo->x * t->x) + (zo->y * t->y);
-            alpha->y = (zo->x * t->y) - (zo->y * t->x);
+            HTCoord alpha;
+            alpha.x = 1 + (zo->x * t->x) + (zo->y * t->y);
+            alpha.y = (zo->x * t->y) - (zo->y * t->x);
 
-            HTCoord* beta = new HTCoord();
-            beta->x = zo->x + t->x;
-            beta->y = zo->y + t->y;
+            HTCoord beta;
+            beta.x = zo->x + t->x;
+            beta.y = zo->y + t->y;
 
             draw_root->specialTrans(alpha, beta);
         }
+        delete zo;
     }
 
     /**
@@ -371,8 +371,10 @@ public:
             restore();
             HTCoord* zz = new HTCoord();
             zo->pToZ(zz,oldProjType);
+            delete zo;
 
-            translateCorrected(new HTCoord(), zz->zToP(z));
+            HTCoord* ze = zz->zToP(z);
+            translateCorrected(new HTCoord(), ze);
             endTranslation();
             delete zz;
         }
