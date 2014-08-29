@@ -83,7 +83,7 @@ public:
 
 
   // add & parse a command to the end of the list
-  T* add_raw(vsx_string r)
+  T* add_raw(vsx_string r, bool garbage_collect = false)
   {
     if (!accept_commands)
       return 0;
@@ -93,7 +93,7 @@ public:
       (
         vsx_command_parse<T>
         (
-          r
+          r, garbage_collect
         )
       )
     ;
@@ -226,6 +226,12 @@ public:
       delete (T*) (*it);
     }
     commands.clear();
+  }
+
+  void garbage_collect()
+  {
+    for (typename std::list <T*>::iterator it = commands.begin(); it != commands.end(); it++)
+      (*it)->gc();
   }
 
   void reset()
@@ -460,7 +466,6 @@ public:
 
 
 typedef vsx_command_buffer_broker<vsx_command_s> vsx_command_list;
-typedef vsx_command_buffer_broker<vsx_command_s_gc> vsx_command_list_gc;
 
 
 

@@ -294,7 +294,7 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string)
   }
 
 
-  vsx_command_list_gc load1;
+  vsx_command_list load1;
   load1.set_filesystem(&filesystem);
   vsx_string i_filename = filename;
 
@@ -311,6 +311,7 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string)
     }
   }
   load1.load_from_file(i_filename,true);
+  load1.garbage_collect();
 
   if (!is_archive)
     filesystem.set_base_path( vsx_data_path::get_instance()->data_path_get() );
@@ -329,7 +330,7 @@ int vsx_engine::load_state_filesystem(vsx_string filename, vsx_string *error_str
 
   engine_info.filesystem = fs;
 
-  vsx_command_list_gc load1;
+  vsx_command_list load1;
   load1.set_filesystem( fs );
 
   load1.load_from_file(filename, true);
@@ -707,7 +708,7 @@ void vsx_engine::set_ignore_per_frame_time_limit(bool new_value)
   VSX_UNUSED(new_value);
 }
 
-void vsx_engine::process_message_queue(vsx_command_list_gc *cmd_in, vsx_command_list_gc *cmd_out_res, bool exclusive, bool ignore_timing, float max_time)
+void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive, bool ignore_timing, float max_time)
 {
   if (!valid) return;
   // service commands
@@ -715,7 +716,7 @@ void vsx_engine::process_message_queue(vsx_command_list_gc *cmd_in, vsx_command_
 
   commands_res_internal.clear_normal();
   tell_client_time(cmd_out_res);
-  vsx_command_s_gc *c = 0;
+  vsx_command_s *c = 0;
   if (!exclusive) {
     while ( (c = commands_out_cache.pop()) )
       cmd_out_res->add(c);
@@ -742,7 +743,7 @@ void vsx_engine::process_message_queue(vsx_command_list_gc *cmd_in, vsx_command_
 
   vsx_command_timer.start();
 
-  vsx_command_list_gc* cmd_out = cmd_out_res;
+  vsx_command_list* cmd_out = cmd_out_res;
 
   max_time = 120.0f;
 

@@ -51,7 +51,7 @@ if (cmd == "macro_dump" || cmd == "component_clone")
   bool macro = ((*forge_map_iter).second->component_class == "macro");
   if (macro)
   {
-    tmp_comp.add_raw(vsx_string("macro_create $$name ")+vsx_string_helper::f2s((*forge_map_iter).second->size));
+    tmp_comp.add_raw(vsx_string("macro_create $$name ")+vsx_string_helper::f2s((*forge_map_iter).second->size), VSX_COMMAND_GARBAGE_COLLECT);
     ++forge_map_iter;
     while (drun)
     {
@@ -62,9 +62,9 @@ if (cmd == "macro_dump" || cmd == "component_clone")
         if (t.find(c->parts[1]+".") == 0)
         {
           if (comp->component_class == "macro") {
-            tmp_comp.add_raw(vsx_string("macro_create ")+str_replace(my_name+".","$$name.",t,1)+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y)+" "+vsx_string_helper::f2s(comp->size));
+            tmp_comp.add_raw(vsx_string("macro_create ")+str_replace(my_name+".","$$name.",t,1)+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y)+" "+vsx_string_helper::f2s(comp->size), VSX_COMMAND_GARBAGE_COLLECT);
           } else {
-            tmp_comp.add_raw(vsx_string("component_create ")+comp->identifier+" "+str_replace(my_name+".","$$name.",t,1)+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y));
+            tmp_comp.add_raw(vsx_string("component_create ")+comp->identifier+" "+str_replace(my_name+".","$$name.",t,1)+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y), VSX_COMMAND_GARBAGE_COLLECT);
             comp->get_params_in()->dump_aliases_and_connections(c->parts[1], &tmp_connections);
             comp->get_params_out()->dump_aliases(c->parts[1], &tmp_aliases);
             comp->get_params_in()->dump_param_values(str_replace(my_name+".","$$name.",t,1),&tmp_comp);

@@ -39,7 +39,7 @@
 #define VSX_COMMAND 3
 
 #define VSX_COMMAND_DELETE_ITERATIONS 50
-
+#define VSX_COMMAND_GARBAGE_COLLECT true
 // command specification (container class)
 // this is used within the whole system. that is both the client, who has both a vsx_engine and an instance of the gui
 // widget system, and in the server.
@@ -54,11 +54,17 @@
 //            ^-- adds sys item ^-- type menu
 
 //**********************************************************************************************************************
+class vsx_command_s;
+ENGINE_DLLIMPORT extern std::vector<vsx_command_s*> vsx_command_garbage_list; // the parts of the command
+ENGINE_DLLIMPORT void vsx_command_process_garbage();
+ENGINE_DLLIMPORT void vsx_command_process_garbage_exit();
+
 
 ENGINE_DLLIMPORT class vsx_command_s
 {
 public:
   ENGINE_DLLIMPORT static int id;
+  int iterations;
   bool parsed;
   int owner; // for color-coding this command
   int type; // type of command
@@ -70,11 +76,12 @@ public:
   std::vector <vsx_string> parts; // the parts of the command
 
   vsx_command_s() {
+    iterations = 0;
     parsed = false;
     type = 0;
     ++id;
   }
-  ENGINE_DLLIMPORT ~vsx_command_s();
+  ENGINE_DLLIMPORT virtual ~vsx_command_s();
 
   void copy (vsx_command_s *t) {
     owner = t->owner;
@@ -93,6 +100,11 @@ public:
   }
   ENGINE_DLLIMPORT void parse();
 
+  ENGINE_DLLIMPORT void gc()
+  {
+    vsx_command_garbage_list.push_back(this);
+  }
+
   // returns a string like "part1 part2 part3" if start was 1 and end was 3
   ENGINE_DLLIMPORT vsx_string get_parts(int start = 0, int end = -1);
 
@@ -104,42 +116,15 @@ public:
   }
 };
 
-class vsx_command_s_gc;
-ENGINE_DLLIMPORT extern std::vector<vsx_command_s_gc*> vsx_command_garbage_list; // the parts of the command
-ENGINE_DLLIMPORT void vsx_command_process_garbage();
-ENGINE_DLLIMPORT void vsx_command_process_garbage_exit();
-
-ENGINE_DLLIMPORT class vsx_command_s_gc : public vsx_command_s
-{
-
-public:
-  int iterations;
-
-  vsx_command_s_gc()
-  {
-    iterations = 0;
-    vsx_command_garbage_list.push_back(this);
-  }
-
-  void copy(vsx_command_s* source)
-  {
-    // move over the pointers
-    owner = source->owner;
-    type = source->type;
-    title = source->title;
-    cmd = source->cmd;
-    cmd_data = source->cmd_data;
-    raw = source->raw;
-    parts = source->parts;
-  }
-};
-
 
 template<class T>
-ENGINE_DLLIMPORT T* vsx_command_parse(vsx_string& cmd_raw)
+ENGINE_DLLIMPORT T* vsx_command_parse(vsx_string& cmd_raw, bool garbage_collect = false)
 {
   std::vector <vsx_string> cmdps;
   T *t = new T;
+  if (garbage_collect)
+    t->gc();
+
   t->raw = cmd_raw;
   //printf("parsing raw: %s\n",cmd_raw.c_str());
   vsx_string deli = " ";
@@ -153,13 +138,6 @@ ENGINE_DLLIMPORT T* vsx_command_parse(vsx_string& cmd_raw)
   t->parts = cmdps;
   t->parsed = true;
   return t;
-}
-
-inline vsx_command_s_gc* vsx_command_s_gc_from_s(vsx_command_s* source)
-{
-  vsx_command_s_gc* o = new vsx_command_s_gc();
-  o->copy( source );
-  return o;
 }
 
 

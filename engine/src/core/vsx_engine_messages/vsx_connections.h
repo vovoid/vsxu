@@ -45,7 +45,7 @@ if (cmd == "param_connect")
           {
             if (c->parts.size() != 6)
             {
-              cmd_out->add_raw("param_connect_volatile "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4]+" "+vsx_string_helper::i2s(order));
+              cmd_out->add_raw("param_connect_volatile "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4]+" "+vsx_string_helper::i2s(order), VSX_COMMAND_GARBAGE_COLLECT);
             }
           }
         }

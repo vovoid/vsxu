@@ -43,13 +43,13 @@ public:
 
   void set_run_on_edit(bool new_value) { run_on_edit_enabled = new_value; }
 
-  void get_init(vsx_engine_param* param, vsx_command_list_gc* dest, vsx_string comp_name, vsx_string prefix = "");
-  void get_contents(vsx_engine_param* param, vsx_command_list_gc* dest, vsx_string controller_id);
+  void get_init(vsx_engine_param* param, vsx_command_list* dest, vsx_string comp_name, vsx_string prefix = "");
+  void get_contents(vsx_engine_param* param, vsx_command_list* dest, vsx_string controller_id);
 
   //void add_line(vsx_engine_param* param, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
-  void update_line(vsx_engine_param* param, vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix = "");
-  void insert_line(vsx_engine_param* param, vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix = "");
-  void remove_line(vsx_engine_param* param, vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix = "");
+  void update_line(vsx_engine_param* param, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
+  void insert_line(vsx_engine_param* param, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
+  void remove_line(vsx_engine_param* param, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
 
   vsx_string dump_param(vsx_engine_param* param);
   void inject_param(vsx_engine_param* param, vsx_comp_abs* comp, vsx_string data);
@@ -58,17 +58,17 @@ public:
   int add_master_channel(vsx_string name);
   int remove_master_channel(vsx_string name);
   vsx_string dump_master_channel(vsx_string channel_name);
-  void update_master_channel_line(vsx_string channel_name, vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix = "");
-  void insert_master_channel_line(vsx_string channel_name, vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix = "");
-  void remove_master_channel_line(vsx_string channel_name, vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix = "");
-  void time_sequence_master_channel_line(vsx_string channel_name, vsx_command_list_gc* dest, vsx_command_s_gc* cmd_in, vsx_string cmd_prefix = "");
+  void update_master_channel_line(vsx_string channel_name, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
+  void insert_master_channel_line(vsx_string channel_name, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
+  void remove_master_channel_line(vsx_string channel_name, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
+  void time_sequence_master_channel_line(vsx_string channel_name, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
   void remove_master_channel_lines_referring_to_sequence_list(vsx_param_sequence_list* list);
 
   void dump_master_channels_to_command_list(vsx_command_list &savelist);
   void inject_master_channel(vsx_string name, vsx_string data);
 
   // load / save operations
-  void get_sequences(vsx_command_list_gc* dest);
+  void get_sequences(vsx_command_list* dest);
   vsx_string get_sequence_list_dump();
   vsx_string get_channel_names();
 

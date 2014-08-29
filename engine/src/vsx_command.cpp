@@ -26,20 +26,20 @@
 
 int vsx_command_s::id = 0;
 
-std::vector<vsx_command_s_gc*> vsx_command_garbage_list;
+std::vector<vsx_command_s*> vsx_command_garbage_list;
 
 void vsx_command_process_garbage()
 {
   if (!vsx_command_garbage_list.size())
     return;
 
-  std::vector<vsx_command_s_gc*>::iterator it;
-  std::vector<vsx_command_s_gc*> save;
+  std::vector<vsx_command_s*>::iterator it;
+  std::vector<vsx_command_s*> save;
 
   it = vsx_command_garbage_list.begin();
   while (it != vsx_command_garbage_list.end())
   {
-    vsx_command_s_gc* a = (*it);
+    vsx_command_s* a = (*it);
 
     (*it)->iterations++;
 
@@ -57,11 +57,11 @@ void vsx_command_process_garbage()
 
 void vsx_command_process_garbage_exit()
 {
-  std::vector<vsx_command_s_gc*>::iterator it;
+  std::vector<vsx_command_s*>::iterator it;
   it = vsx_command_garbage_list.begin();
   while (it != vsx_command_garbage_list.end())
   {
-    vsx_command_s_gc* a = (*it);
+    vsx_command_s* a = (*it);
     delete a;
     it++;
   }

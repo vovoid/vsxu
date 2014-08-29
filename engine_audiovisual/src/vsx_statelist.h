@@ -42,8 +42,8 @@ public:
   vsx_engine* engine;
   vsx_string state_name;
   vsx_string state_name_suffix;
-  vsx_command_list_gc cmd_in;
-  vsx_command_list_gc cmd_out;
+  vsx_command_list cmd_in;
+  vsx_command_list cmd_out;
   bool need_stop;
   bool need_reload;
   bool is_volatile;
@@ -85,8 +85,8 @@ private:
   // module list shared among all engine instances
   vsx_module_list_abs* module_list;
 
-  vsx_command_list_gc *cmd_in;
-  vsx_command_list_gc *cmd_out;
+  vsx_command_list *cmd_in;
+  vsx_command_list *cmd_out;
   vsx_texture tex1;
   vsx_texture tex_to;
 
@@ -102,8 +102,8 @@ private:
   vsx_string message;
   bool render_first;
 
-  vsx_command_list_gc l_cmd_in;
-  vsx_command_list_gc l_cmd_out;
+  vsx_command_list l_cmd_in;
+  vsx_command_list l_cmd_out;
   unsigned long fade_id;
   bool randomizer;
   float randomizer_time;

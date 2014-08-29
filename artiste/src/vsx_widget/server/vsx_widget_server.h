@@ -82,8 +82,8 @@ public:
   std::map<vsx_string, vsx_widget*> note_list;
   std::map<vsx_string, vsx_widget*>::const_iterator note_iter;
 
-  vsx_command_list_gc *cmd_in;
-  vsx_command_list_gc *cmd_out;
+  vsx_command_list *cmd_in;
+  vsx_command_list *cmd_out;
 
   // constructor
   vsx_widget_server();

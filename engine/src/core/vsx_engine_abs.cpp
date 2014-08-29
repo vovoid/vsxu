@@ -96,10 +96,10 @@ void vsx_engine_abs::reset_input_events()
   engine_info.num_input_events = 0;
 }
 
-int vsx_engine_abs::i_load_state(vsx_command_list_gc& load1,vsx_string *error_string, vsx_string info_filename)
+int vsx_engine_abs::i_load_state(vsx_command_list& load1,vsx_string *error_string, vsx_string info_filename)
 {
   if (!valid) return 2;
-  vsx_command_list_gc load2,loadr2;
+  vsx_command_list load2,loadr2;
   load1.reset();
   vsx_command_s* mc = 0;
   // check the macro list to verify the existence of the componente we need for this macro
@@ -192,7 +192,7 @@ vsx_comp* vsx_engine_abs::add(vsx_string label)
 }
 
 // send our current time to the client
-void vsx_engine_abs::tell_client_time(vsx_command_list_gc *cmd_out)
+void vsx_engine_abs::tell_client_time(vsx_command_list *cmd_out)
 {
   if (!valid)
     return;
@@ -212,15 +212,15 @@ void vsx_engine_abs::tell_client_time(vsx_command_list_gc *cmd_out)
 
   if (send)
   {
-    cmd_out->add_raw("time_upd " + vsx_string_helper::f2s(engine_info.vtime)+" "+vsx_string_helper::i2s(current_state));
+    cmd_out->add_raw("time_upd " + vsx_string_helper::f2s(engine_info.vtime)+" "+vsx_string_helper::i2s(current_state), VSX_COMMAND_GARBAGE_COLLECT);
     // check to see if we should send our sequence pool too
-    cmd_out->add_raw("seq_pool time_upd " + vsx_string_helper::f2s(sequence_pool.get_time())+" "+vsx_string_helper::i2s(sequence_pool.get_state()));
+    cmd_out->add_raw("seq_pool time_upd " + vsx_string_helper::f2s(sequence_pool.get_time())+" "+vsx_string_helper::i2s(sequence_pool.get_state()), VSX_COMMAND_GARBAGE_COLLECT);
   }
 
   last_e_state = current_state;
 }
 
-void vsx_engine_abs::redeclare_in_params(vsx_comp* comp, vsx_command_list_gc *cmd_out) {
+void vsx_engine_abs::redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_out) {
   // 1. get all connections in a list
   //printf("+++redeclaring\n");
   list<vsx_engine_param_connection_info*> abs_connections_in;
@@ -269,7 +269,7 @@ void vsx_engine_abs::redeclare_in_params(vsx_comp* comp, vsx_command_list_gc *cm
   }
 }
 
-void vsx_engine_abs::redeclare_out_params(vsx_comp* comp, vsx_command_list_gc *cmd_out)
+void vsx_engine_abs::redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_out)
 {
   // 1. get all connections in a list
   list<vsx_engine_param_connection_info*> abs_connections_out;
@@ -299,7 +299,7 @@ void vsx_engine_abs::redeclare_out_params(vsx_comp* comp, vsx_command_list_gc *c
   }
 }
 
-void vsx_engine_abs::process_message_queue_redeclare(vsx_command_list_gc *cmd_out_res)
+void vsx_engine_abs::process_message_queue_redeclare(vsx_command_list *cmd_out_res)
 {
   for (vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it)
   {
@@ -318,7 +318,7 @@ void vsx_engine_abs::process_message_queue_redeclare(vsx_command_list_gc *cmd_ou
   }
 }
 
-void vsx_engine_abs::send_state_to_client(vsx_command_list_gc *cmd_out)
+void vsx_engine_abs::send_state_to_client(vsx_command_list *cmd_out)
 {
 //  if (filesystem.is_archive())
 //  {
@@ -344,18 +344,18 @@ void vsx_engine_abs::send_state_to_client(vsx_command_list_gc *cmd_out)
       forge[i]->get_params_in()->dump_aliases_and_connections_rc(&temp_conn);
       forge[i]->get_params_out()->dump_aliases_rc(&temp_conn_alias);
     }
-    cmd_out->add_raw(command);
-    cmd_out->add_raw("in_param_spec "+forge[i]->name+" "+forge[i]->in_param_spec);
-    cmd_out->add_raw("out_param_spec "+forge[i]->name+" "+forge[i]->out_param_spec);
+    cmd_out->add_raw(command, VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw("in_param_spec "+forge[i]->name+" "+forge[i]->in_param_spec, VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw("out_param_spec "+forge[i]->name+" "+forge[i]->out_param_spec, VSX_COMMAND_GARBAGE_COLLECT);
     //send vsxl presence
     for (unsigned long ii = 0; ii < forge[i]->in_parameters->count(); ++ii) {
       vsx_engine_param* param = forge[i]->get_params_in()->get_by_id(ii);
       if (param->module_param->vsxl_modifier) {
-        cmd_out->add_raw("vsxl_pfi_ok "+forge[i]->name+" "+param->name);
+        cmd_out->add_raw("vsxl_pfi_ok "+forge[i]->name+" "+param->name, VSX_COMMAND_GARBAGE_COLLECT);
       }
     }
     if (forge[i]->vsxl_modifier) {
-      cmd_out->add_raw("vsxl_cfi_ok "+forge[i]->name);
+      cmd_out->add_raw("vsxl_cfi_ok "+forge[i]->name, VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
 
@@ -363,14 +363,14 @@ void vsx_engine_abs::send_state_to_client(vsx_command_list_gc *cmd_out)
   vsx_command_s* outc;
   temp_conn_alias.reset();
   while ( (outc = temp_conn_alias.get()) ) {
-    vsx_command_s_gc* o = new vsx_command_s_gc();
+    vsx_command_s* o = new vsx_command_s();
     o->copy( outc );
     cmd_out->addc(o);
   }
 
   temp_conn.reset();
   while ( (outc = temp_conn.get()) ) {
-    vsx_command_s_gc* o = new vsx_command_s_gc();
+    vsx_command_s* o = new vsx_command_s();
     o->copy( outc );
     cmd_out->addc( o );
   }
@@ -382,7 +382,7 @@ void vsx_engine_abs::send_state_to_client(vsx_command_list_gc *cmd_out)
   cmd_out->add_raw(vsx_string((*note_iter).second.serialize()));
 }
 
-void vsx_engine_abs::i_clear(vsx_command_list_gc *cmd_out,bool clear_critical)
+void vsx_engine_abs::i_clear(vsx_command_list *cmd_out,bool clear_critical)
 {
   std::map<vsx_string,vsx_comp*> forge_map_save;
   std::vector<vsx_comp*> forge_save;

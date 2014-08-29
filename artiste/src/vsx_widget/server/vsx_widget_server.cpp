@@ -881,7 +881,7 @@ void vsx_widget_server::vsx_command_process_f() {
               } else {
                 if (mc->cmd != "")
                 {
-                  cmd_out->add( vsx_command_s_gc_from_s(mc) );
+                  cmd_out->add( mc );
                 }
               }
             }
@@ -1129,7 +1129,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
       t->cmd = "macro_create";
       t->parts[0] = "macro_create";
       t->raw = str_replace("macro_create_real", "macro_create",t->raw);
-      cmd_out->add( vsx_command_s_gc_from_s(t) );
+      cmd_out->add( t );
       //cmd_out->add_raw("macro_create "+t->parts[2]+" "+t->parts[3]+" "+t->parts[4]+" 0.1");
     } else
     if (t->cmd == "macro_create") {
@@ -1164,7 +1164,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
     } else
     {
       LOG_A("adding copy:"+t->cmd)
-      cmd_out->addc( vsx_command_s_gc_from_s(t) );
+      cmd_out->addc( t );
     }
   }
 }

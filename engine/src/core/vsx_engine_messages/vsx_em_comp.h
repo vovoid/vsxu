@@ -47,11 +47,11 @@ if (cmd == "component_create")
         cmd_out->add_raw("out_param_spec "+comp->name+" "+comp->out_param_spec);
       } else
       {
-        cmd_out->add_raw("alert_fail [component_create] Error "+base64_encode("Engine does not know the module '"+c->parts[1]+"'"));
+        cmd_out->add_raw("alert_fail [component_create] Error "+base64_encode("Engine does not know the module '"+c->parts[1]+"'"), VSX_COMMAND_GARBAGE_COLLECT);
       }
     } else
     {
-      cmd_out->add_raw("alert_fail [component_create] Error "+base64_encode("There is already a component '"+c->parts[2]+"'"));
+      cmd_out->add_raw("alert_fail [component_create] Error "+base64_encode("There is already a component '"+c->parts[2]+"'"), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
   goto process_message_queue_end;

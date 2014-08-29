@@ -59,8 +59,8 @@ vsx_module_list_abs* module_list;
 
 
 // from the perspective (both for gui/server) from here towards the tcp thread
-vsx_command_list_gc internal_cmd_in;
-vsx_command_list_gc internal_cmd_out;
+vsx_command_list internal_cmd_in;
+vsx_command_list internal_cmd_out;
 bool prod_fullwindow = false;
 bool take_screenshot = false;
 bool record_movie = false;

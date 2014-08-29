@@ -39,25 +39,26 @@ if (cmd == "get_module_list")
     )
     {
       cmd_out->add_raw(
-            vsx_string("module_list ")
-            +
-            (*my_module_list)[i]->component_class
-            +
-            " "
-            +
-            (*my_module_list)[i]->identifier
-            +
-            " "
-            +
-            base64_encode(
-              (*my_module_list)[i]->description
-              +
-              " "
-            )
+        vsx_string("module_list ")
+        +
+        (*my_module_list)[i]->component_class
+        +
+        " "
+        +
+        (*my_module_list)[i]->identifier
+        +
+        " "
+        +
+        base64_encode(
+          (*my_module_list)[i]->description
+          +
+          " "
+        ),
+        VSX_COMMAND_GARBAGE_COLLECT
       );
     }
   }
-  cmd_out->add_raw("module_list_end");
+  cmd_out->add_raw("module_list_end", VSX_COMMAND_GARBAGE_COLLECT);
   delete my_module_list;
   goto process_message_queue_end;
 }
@@ -83,10 +84,10 @@ if (cmd == "get_list")
   for (std::list<vsx_string>::iterator it = file_list.begin(); it != file_list.end(); ++it)
   {
     vsx_string s2 = str_replace(str_replace("/",";",path)+";","",str_replace(" ",":20:",str_replace("/",";",str_replace(path,"",*it))));
-    cmd_out->add_raw(c->parts[1]+"_list "+s2);
+    cmd_out->add_raw(c->parts[1]+"_list "+s2, VSX_COMMAND_GARBAGE_COLLECT);
   }
 
-  cmd_out->add_raw(c->parts[1]+"_list_end");
+  cmd_out->add_raw(c->parts[1]+"_list_end", VSX_COMMAND_GARBAGE_COLLECT);
   goto process_message_queue_end;
 }
 
@@ -120,7 +121,7 @@ if (cmd == "undo")
   if (undo_buffer.size())
   {
     // TODO
-    //vsx_command_list_gc dest;
+    //vsx_command_list dest;
     //vsx_command_list& source = undo_buffer[undo_buffer.size()-1];
     //i_load_state(undo_buffer[undo_buffer.size()-1], &error_string);
     //undo_buffer.reset_used(undo_buffer.size()-1);

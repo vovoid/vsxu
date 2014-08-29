@@ -75,8 +75,8 @@ vsx_engine* vxe = 0x0;
 
 // from the perspective (both for gui/server) from here towards the tcp thread
 vsx_command_list system_command_queue;
-vsx_command_list_gc internal_cmd_in;
-vsx_command_list_gc internal_cmd_out;
+vsx_command_list internal_cmd_in;
+vsx_command_list internal_cmd_out;
 vsx_widget_desktop *desktop = 0;
 bool prod_fullwindow = false;
 bool take_screenshot = false;
@@ -482,7 +482,7 @@ void app_pre_draw() {
     if (cmd == "fullscreen") {
       if (desktop)
         desktop->stop();
-      internal_cmd_in.add(vsx_command_s_gc_from_s(c));
+      internal_cmd_in.add(c);
     }
     c = 0;
   }
