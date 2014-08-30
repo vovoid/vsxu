@@ -234,11 +234,11 @@ void vsx_widget_server::init()
   init_children();
 
   init_run = true;
-  cmd_out->add_raw("get_module_list");
-  cmd_out->add_raw("get_list resources");
-  cmd_out->add_raw("get_list states");
-  cmd_out->add_raw("get_list prods");
-  cmd_out->add_raw("get_list visuals");
+  cmd_out->add_raw("get_module_list", true);
+  cmd_out->add_raw("get_list resources", true);
+  cmd_out->add_raw("get_list states", true);
+  cmd_out->add_raw("get_list prods", true);
+  cmd_out->add_raw("get_list visuals", true);
 
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_INTERNAL)
   {
@@ -255,12 +255,12 @@ void vsx_widget_server::init()
           configuration["autoload_last_saved_state"] == "1"
           )
       {
-        cmd_out->add_raw("state_load "+base64_encode("states;"+base64_decode(configuration["last_saved_state"])));
+        cmd_out->add_raw("state_load "+base64_encode("states;"+base64_decode(configuration["last_saved_state"])), true);
       } else
-      cmd_out->add_raw("state_load "+base64_encode("states;_default"));
+      cmd_out->add_raw("state_load "+base64_encode("states;_default"), true);
     }
   }
-  cmd_out->add_raw("get_state");
+  cmd_out->add_raw("get_state", true);
 
   // set sequencer to 0, we gonna fill it later
   sequencer = 0;
@@ -398,7 +398,7 @@ void vsx_widget_server::vsx_command_process_f() {
         component->set_pos(vsx_vector3<>(vsx_string_helper::s2f(c->parts[3]),vsx_string_helper::s2f(c->parts[4])));
 
         // send in the component_info
-        command_q_b.add_raw("component_info "+component->name+" "+c->parts[2]);
+        command_q_b.add_raw("component_info "+component->name+" "+c->parts[2], true);
         component->vsx_command_queue_b(this);
         if (module_chooser->visible != 0)
           front(module_chooser);

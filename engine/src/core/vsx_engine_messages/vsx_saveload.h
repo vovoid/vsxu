@@ -34,7 +34,7 @@ if (cmd == "state_load")
     cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Could not load state. Error message was:|"+errmsg));
   } //else
   {
-    cmd_out->add_raw("clear_ok");
+    cmd_out->add_raw("clear_ok", true);
   }
   goto process_message_queue_end;
 }
@@ -43,7 +43,7 @@ if (cmd == "state_load")
 
 if (cmd == "state_load_done")
 {
-  commands_out_cache.add_raw("state_load_ok "+state_name);
+  commands_out_cache.add_raw("state_load_ok "+state_name, true);
   send_state_to_client(&commands_out_cache);
   goto process_message_queue_end;
 }

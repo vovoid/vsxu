@@ -186,7 +186,7 @@ void vsx_widget_popup_menu::event_mouse_down(vsx_widget_distance distance,vsx_wi
   if (over) {
     if (!oversub) {
       // add a number of commands
-      vsx_command_s* t = command_q_b.addc(current_command_over);
+      vsx_command_s* t = command_q_b.addc(current_command_over, true);
       if (t-> cmd_data == "$mpos")
       {
         t->cmd_data = vsx_vector3_helper::to_string

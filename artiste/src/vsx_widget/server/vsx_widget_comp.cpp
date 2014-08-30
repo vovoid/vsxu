@@ -687,7 +687,7 @@ void vsx_widget_component::init()
 
   init_children();
   //printf("vsx_widget_component::init()\n");
-  command_q_f.add("init","");
+  command_q_f.add_raw("init", true);
   support_scaling = false;
   anchor_order[0] = 0;
   anchor_order[1] = 0;

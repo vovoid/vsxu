@@ -135,7 +135,7 @@ int vsx_engine_abs::i_load_state(vsx_command_list& load1,vsx_string *error_strin
     }
   }
   static vsx_string sld("state_load_done");
-  load1.add_raw(sld);
+  load1.add_raw(sld, true);
   load1.reset();
 
   LOG("i_load_state: all modules are available, proceeding with load")
@@ -154,7 +154,6 @@ int vsx_engine_abs::i_load_state(vsx_command_list& load1,vsx_string *error_strin
   load2.clear_normal();
   loadr2.clear_normal();
 
-  load1.clear_normal();
   current_state = VSX_ENGINE_LOADING;
   g_timer.start();
   modules_loaded = 0;

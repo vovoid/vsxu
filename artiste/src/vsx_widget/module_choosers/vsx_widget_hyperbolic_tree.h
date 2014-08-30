@@ -43,6 +43,11 @@ public:
 
   int NBR_FRAMES; // number of intermediates
 
+  vsx_widget_hyperbolic_tree()
+  :
+  mtex(0x0)
+  {}
+
   void on_delete()
   {
     if (ze)
@@ -56,6 +61,9 @@ public:
     {
       delete (*it).second;
     }
+
+    if (mtex)
+      delete mtex;
   }
 
   // create the base maintainer class
@@ -64,6 +72,8 @@ public:
       vsx_widget_hyperbolic_tree* s_drawroot,
       HTModel* model
   )
+  :
+  mtex(0x0)
   {
     VSX_UNUSED(s_drawroot);
     if (s_root == 0)
@@ -96,7 +106,10 @@ public:
   }
 
   // constructor for child elements
-  vsx_widget_hyperbolic_tree(vsx_widget_hyperbolic_tree* s_root, vsx_widget_hyperbolic_tree* s_drawroot, vsx_widget_hyperbolic_tree* father, HTModel* node, int type) {
+  vsx_widget_hyperbolic_tree(vsx_widget_hyperbolic_tree* s_root, vsx_widget_hyperbolic_tree* s_drawroot, vsx_widget_hyperbolic_tree* father, HTModel* node, int type)
+  :
+  mtex(0x0)
+  {
     selected = 0;
     mygeodesic = 0;
     root = s_root;
@@ -269,6 +282,8 @@ public:
 
             draw_root->specialTrans(alpha, beta);
         }
+        delete zs2;
+        delete t;
         delete zo;
     }
 
@@ -374,8 +389,11 @@ public:
             delete zo;
 
             HTCoord* ze = zz->zToP(z);
-            translateCorrected(new HTCoord(), ze);
+            HTCoord* tcz = new HTCoord();
+            translateCorrected(tcz, ze);
+            delete tcz;
             endTranslation();
+            delete ze;
             delete zz;
         }
     }

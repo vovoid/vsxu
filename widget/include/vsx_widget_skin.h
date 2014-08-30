@@ -75,6 +75,7 @@ public:
         skin_colors[ vsx_string_helper::s2i(mc->parts[1]) ] = p;
       }
     }
+    skin_conf.clear_delete();
   }
 
 private:

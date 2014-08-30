@@ -34,7 +34,8 @@ include_directories(
 ################################################################################
 
 if(VSXU_DEBUG)
-add_definitions(-DDEBUG)
+  add_definitions( -DDEBUG )
+  add_definitions( -DVSXU_DEBUG )
 endif(VSXU_DEBUG)
 
 add_definitions(

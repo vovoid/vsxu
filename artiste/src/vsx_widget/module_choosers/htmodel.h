@@ -90,6 +90,9 @@ public:
         sector->A = new HTCoord(d, eps);
         sector->B = new HTCoord(d, -eps);
         layout(sector, root->getLength());
+        delete sector->A;
+        delete sector->B;
+        delete sector;
     }
 
 

@@ -50,7 +50,7 @@ public:
   } 
 
   // add copy of command at the end of the list
-  T* addc(T* cmd)
+  T* addc(T* cmd, bool garbage_collect = false)
   {
     if (!accept_commands)
       return 0;
@@ -58,6 +58,9 @@ public:
     // make a copy of the command
     T *t = new T;
     t->copy(cmd);
+
+    if (garbage_collect)
+      t->gc();
 
     get_lock();
       commands.push_back(t);
@@ -174,7 +177,7 @@ public:
 
   // adds a command
   // Thread safety: YES
-  void add(vsx_string cmd, int cmd_data)
+  void add(vsx_string cmd, int cmd_data, bool garbage_collect = false)
   {
     if (!accept_commands)
       return;
@@ -182,6 +185,10 @@ public:
     T* t = new T;
     t->cmd = cmd;
     t->cmd_data = vsx_string_helper::i2s(cmd_data);
+
+    if (garbage_collect)
+      t->gc();
+
     get_lock();
       commands.push_back(t);
     release_lock();
@@ -326,9 +333,14 @@ public:
   // Thread safety: NO
   void load_from_file(vsx_string filename, bool parse = false, int type = 0 )
   {
+    bool filesystem_local = false;
     if (!filesystem)
     {
+      #ifdef VSXU_DEBUG
+        vsx_printf("*** PERFORMANCE: command list load_from_file creating temporary vsxf\n");
+      #endif
       filesystem = new vsxf;
+      filesystem_local = true;
     }
 
     vsxf_handle* fp;
@@ -358,6 +370,11 @@ public:
       commands.push_back(t);
     }
     filesystem->f_close(fp);
+    if (filesystem_local)
+    {
+      delete filesystem;
+      filesystem = 0x0;
+    }
   }
 
 

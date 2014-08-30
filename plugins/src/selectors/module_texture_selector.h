@@ -157,88 +157,7 @@ public:
   //Initialise Data
 
   vsx_glsl shader;
-  
-  module_texture_selector()
-  {
-    i_am_ready = false; //Don't do operations if the data isn't ready
-
-    glewInit();         //Initialise OpenGL instance
-    gl_state = vsx_gl_state::get_instance();
-
-    i_prev_inputs = 15; //"16" for loading
-    i_curr_inputs = 2;  //"3" for default
     
-    i_index = 0.0;
-    i_index_x = 0;
-    i_index_x0 = 0;
-    i_index_x1 = 1;
-    i_underRange = false;
-    i_overRange = false;
-    
-    i_wrap = 2;          //Wrap
-    i_blend_type = 1;    //Linear Blend
-    i_reverse = 0;       //Off
-    i_seq_index = 0;
-
-    i_seq_default.items[0].value = 0.0;       //Default Items for Sequences
-    i_seq_default.items[0].delay = 1.0;
-    i_seq_default.items[0].interpolation = 1; //Linear
-
-    i_A_seq_default.items[0].value = 1.0;
-    i_A_seq_default.items[0].delay = 1.0;
-    i_A_seq_default.items[1].value = 0.0;
-    i_A_seq_default.items[0].interpolation = 1;
-    
-    i_B_seq_default.items[0].value = 0.0;
-    i_B_seq_default.items[0].delay = 1.0;
-    i_B_seq_default.items[0].interpolation = 1;
-    
-    i_A_mixLevel = 1.0;  //Default values to be sent to the shader
-    i_A_reverse = 0;
-    i_A_seq_index = 0;
-    
-    i_B_mixLevel = 0.0;
-    i_B_reverse = 0;
-    i_B_seq_index = 0;
-    
-    i_tex_size = 5;      //256x256
-    i_new_size = 5;
-
-    i_clear_color[0] =  0;   //R
-    i_clear_color[1] =  0;   //G
-    i_clear_color[2] =  0;   //B
-    i_clear_color[3] =  255; //A
-
-    i_prev_clear_color[0] = 0.0;
-    i_prev_clear_color[1] = 0.0;
-    i_prev_clear_color[2] = 0.0;
-    i_prev_clear_color[3] = 1.0;
-
-    i_clear_bmp.bpp = 4;           //1x1 Bitmap to generate clear_color and blank texture
-    i_clear_bmp.bformat = GL_RGBA;
-    i_clear_bmp.size_x = 1;
-    i_clear_bmp.size_y = 1;
-
-    i_clear_bmp.data = new vsx_bitmap_32bt[1];
-    i_clear_bmp_data = (vsx_bitmap_32bt*)i_clear_bmp.data;
-    *i_clear_bmp_data = 0xff000000;
-    i_clear_bmp.valid = true;
-
-    i_tex_output = new vsx_texture; //Output Texture from the shader
-    i_tex_output->reinit_color_buffer(8 << i_tex_size, 8 << i_tex_size, true);
-    i_tex_output->valid = true;
-
-    i_tex_blank = new vsx_texture; //Blank Texture for default and clear_color
-    i_tex_blank->reinit_color_buffer(8 << i_tex_size, 8 << i_tex_size, true);
-    i_tex_blank->upload_ram_bitmap_2d(&i_clear_bmp,true);
-    i_tex_blank->valid = true;
-
-    i_tex_A = &i_tex_blank;
-    i_tex_B = &i_tex_blank;
-
-    i_in_param_string = "";
-  }
-  
   //Initialise Module & GUI
   void module_info(vsx_module_info* info)
   {
@@ -298,6 +217,83 @@ public:
   //Build Interface
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
+    i_am_ready = false; //Don't do operations if the data isn't ready
+
+    gl_state = vsx_gl_state::get_instance();
+
+    i_prev_inputs = 15; //"16" for loading
+    i_curr_inputs = 2;  //"3" for default
+
+    i_index = 0.0;
+    i_index_x = 0;
+    i_index_x0 = 0;
+    i_index_x1 = 1;
+    i_underRange = false;
+    i_overRange = false;
+
+    i_wrap = 2;          //Wrap
+    i_blend_type = 1;    //Linear Blend
+    i_reverse = 0;       //Off
+    i_seq_index = 0;
+
+    i_seq_default.items[0].value = 0.0;       //Default Items for Sequences
+    i_seq_default.items[0].delay = 1.0;
+    i_seq_default.items[0].interpolation = 1; //Linear
+
+    i_A_seq_default.items[0].value = 1.0;
+    i_A_seq_default.items[0].delay = 1.0;
+    i_A_seq_default.items[1].value = 0.0;
+    i_A_seq_default.items[0].interpolation = 1;
+
+    i_B_seq_default.items[0].value = 0.0;
+    i_B_seq_default.items[0].delay = 1.0;
+    i_B_seq_default.items[0].interpolation = 1;
+
+    i_A_mixLevel = 1.0;  //Default values to be sent to the shader
+    i_A_reverse = 0;
+    i_A_seq_index = 0;
+
+    i_B_mixLevel = 0.0;
+    i_B_reverse = 0;
+    i_B_seq_index = 0;
+
+    i_tex_size = 5;      //256x256
+    i_new_size = 5;
+
+    i_clear_color[0] =  0;   //R
+    i_clear_color[1] =  0;   //G
+    i_clear_color[2] =  0;   //B
+    i_clear_color[3] =  255; //A
+
+    i_prev_clear_color[0] = 0.0;
+    i_prev_clear_color[1] = 0.0;
+    i_prev_clear_color[2] = 0.0;
+    i_prev_clear_color[3] = 1.0;
+
+    i_clear_bmp.bpp = 4;           //1x1 Bitmap to generate clear_color and blank texture
+    i_clear_bmp.bformat = GL_RGBA;
+    i_clear_bmp.size_x = 1;
+    i_clear_bmp.size_y = 1;
+
+    i_clear_bmp.data = new vsx_bitmap_32bt[1];
+    i_clear_bmp_data = (vsx_bitmap_32bt*)i_clear_bmp.data;
+    *i_clear_bmp_data = 0xff000000;
+    i_clear_bmp.valid = true;
+
+    i_tex_output = new vsx_texture; //Output Texture from the shader
+    i_tex_output->reinit_color_buffer(8 << i_tex_size, 8 << i_tex_size, true);
+    i_tex_output->valid = true;
+
+    i_tex_blank = new vsx_texture; //Blank Texture for default and clear_color
+    i_tex_blank->reinit_color_buffer(8 << i_tex_size, 8 << i_tex_size, true);
+    i_tex_blank->upload_ram_bitmap_2d(&i_clear_bmp,true);
+    i_tex_blank->valid = true;
+
+    i_tex_A = &i_tex_blank;
+    i_tex_B = &i_tex_blank;
+
+    i_in_param_string = "";
+
     loading_done = true; //Allows main sequencer to start playing
     
     //Give the programs to the shader and retrieve id's for its uniform variables

@@ -32,6 +32,10 @@
 #include <vsx_string_helper.h>
 #include "vsx_engine_dllimport.h"
 
+#ifdef VSXU_DEBUG
+  #include "debug/vsx_error.h"
+#endif
+
 
 // different types of commands
 #define VSX_COMMAND_PARAM_SET 1
@@ -65,6 +69,9 @@ ENGINE_DLLIMPORT class vsx_command_s
 public:
   ENGINE_DLLIMPORT static int id;
   int iterations;
+  #ifdef VSXU_DEBUG
+    bool garbage_collected;
+  #endif
   bool parsed;
   int owner; // for color-coding this command
   int type; // type of command
@@ -77,6 +84,9 @@ public:
 
   vsx_command_s() {
     iterations = 0;
+    #ifdef VSXU_DEBUG
+      garbage_collected = false;
+    #endif
     parsed = false;
     type = 0;
     ++id;
@@ -102,7 +112,14 @@ public:
 
   ENGINE_DLLIMPORT void gc()
   {
+    #ifdef VSXU_DEBUG
+      if (garbage_collected)
+        VSX_ERROR_RETURN("double garbage collection");
+    #endif
     vsx_command_garbage_list.push_back(this);
+    #ifdef VSXU_DEBUG
+      garbage_collected = true;
+    #endif
   }
 
   // returns a string like "part1 part2 part3" if start was 1 and end was 3

@@ -77,6 +77,7 @@ CMetaballs::~CMetaballs() {
 	delete[] m_pfGridEnergy;
 	delete[] m_pnGridPointStatus;
 	delete[] m_pnGridVoxelStatus;
+  delete[] m_pOpenVoxels;
 }
 //=============================================================================
 void CMetaballs::Update(float dt)

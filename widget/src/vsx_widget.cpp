@@ -251,8 +251,8 @@ bool vsx_widget::inside_xy(vsx_widget_coords &coords, vsx_widget_distance &resul
       result.center.y = (*test).y-(*global).y;
       result.corner.x = result.center.x + target_size.x*0.5f;
       result.corner.y = result.center.y + target_size.y*0.5f;
-      if (result.corner.x > 0.0f &&
-      result.corner.y > 0.0f &&
+      if (result.corner.y > 0.0f &&
+      result.corner.x > 0.0f &&
       result.corner.x < target_size.x && result.corner.y < target_size.y)
       return true;
       else
@@ -993,7 +993,7 @@ void vsx_widget::_delete()
   before_delete();
 
   // request our deletion
-  root->command_q_f.add("delete",id);
+  root->command_q_f.add("delete",id, true);
 }
 
 void vsx_widget::mark_for_deletion()

@@ -166,13 +166,13 @@ void vsxu_assistant::init()
   vsx_command_s* c;
   vsx_command_list cla;
   cla.load_from_file( vsx_data_path::get_instance()->data_path_get() + "help_settings.conf",true,4);
+  cla.garbage_collect();
   auto_ = false;
   while ( (c = cla.pop()) ) {
     if (c->cmd == "auto") {
       auto_ = true;
     }
   }
-  cla.clear_delete();
   if (!auto_) {
     command_q_b.add_raw("load course_intro");
     vsx_command_queue_b(this);
