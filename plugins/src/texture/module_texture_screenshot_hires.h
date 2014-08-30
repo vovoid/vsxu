@@ -99,6 +99,7 @@ public:
   {
     delete texture;
     free(pixeldata);
+    free(pixeldata_target);
   }
 
   bool activate_offscreen()

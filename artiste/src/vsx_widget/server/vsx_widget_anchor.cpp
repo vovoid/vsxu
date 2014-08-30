@@ -394,7 +394,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
           ((vsx_widget_anchor*)tt)->p_def += add_c[1];
           ((vsx_widget_anchor*)tt)->p_def += "[";
 
-          command_q_b.add_raw(t->cmd+" "+add_c[0]+" "+cms);
+          command_q_b.add_raw(t->cmd+" "+add_c[0]+" "+cms, true);
           tt->vsx_command_queue_b(this);
           ((vsx_widget_anchor*)tt)->p_def += "]";
         } 

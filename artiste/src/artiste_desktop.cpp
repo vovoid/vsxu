@@ -87,6 +87,11 @@ void vsx_widget_desktop::reinit()
   mtex.load_jpeg(vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg");
 }
 
+void vsx_widget_desktop::unload()
+{
+  font.unload();
+}
+
 bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool n_shift)
 {
   this->alt = n_alt;

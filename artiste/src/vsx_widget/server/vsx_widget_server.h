@@ -114,7 +114,7 @@ public:
   void draw();
   void undo_s()
   {
-    cmd_out->add_raw("undo_s");
+    cmd_out->add_raw("undo_s", VSX_COMMAND_GARBAGE_COLLECT);
   }
 
 

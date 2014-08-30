@@ -420,7 +420,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
           if (t->parts.size() == 4) {
             if (t->parts[3] == "c") cms += " c";
           }
-          command_q_b.add_raw(t->cmd+" "+add_c[0]+" "+cms);
+          command_q_b.add_raw(t->cmd+" "+add_c[0]+" "+cms, VSX_COMMAND_GARBAGE_COLLECT);
           anchor->vsx_command_queue_b(this);
           ((vsx_widget_anchor*)anchor)->p_def += "]";
           //((vsx_widget_anchor*)tt)->fix_anchors();

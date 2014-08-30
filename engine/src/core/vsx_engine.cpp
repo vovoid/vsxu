@@ -90,6 +90,12 @@ vsx_engine::~vsx_engine()
   commands_res_internal.clear_normal();
   commands_out_cache.clear_normal();
   i_clear(0,true);
+
+  for (size_t i = 0; i < undo_buffer.size(); i++)
+  {
+    undo_buffer[i]->clear_delete();
+    delete undo_buffer[i];
+  }
 }
 
 

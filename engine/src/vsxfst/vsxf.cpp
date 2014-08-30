@@ -466,7 +466,6 @@ vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
       if (archive_files[i].filename == fname)
       {
         found = true;
-        handle = new vsxf_handle;
         handle->filename = fname;
         handle->position = 0;
         handle->size = archive_files[i].compressed_size;

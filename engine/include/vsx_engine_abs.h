@@ -150,7 +150,7 @@ protected:
   vsx_command_list commands_internal;
 
 //-- undo buffer
-  vsx_avector<vsx_command_list> undo_buffer;
+  vsx_avector<vsx_command_list*> undo_buffer;
 
 
 

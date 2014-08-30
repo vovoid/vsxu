@@ -44,6 +44,7 @@ public:
   void save_configuration();
   void init();
   void reinit();
+  void unload();
   bool key_down(signed long key, bool n_alt, bool n_ctrl, bool n_shift);
   bool key_up(signed long key, bool alt, bool ctrl, bool shift);
   void event_mouse_wheel(float y);

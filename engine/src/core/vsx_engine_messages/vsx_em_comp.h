@@ -42,9 +42,9 @@ if (cmd == "component_create")
 
         comp->position.x = vsx_string_helper::s2f(c->parts[3]);
         comp->position.y = vsx_string_helper::s2f(c->parts[4]);
-        cmd_out->add_raw("component_create_ok "+c->parts[2]+" "+get_component_by_name(c->parts[2])->component_class+" "+c->parts[3]+" "+c->parts[4]+" "+c->parts[1]);
-        cmd_out->add_raw("in_param_spec "+comp->name+" "+comp->in_param_spec);
-        cmd_out->add_raw("out_param_spec "+comp->name+" "+comp->out_param_spec);
+        cmd_out->add_raw("component_create_ok "+c->parts[2]+" "+get_component_by_name(c->parts[2])->component_class+" "+c->parts[3]+" "+c->parts[4]+" "+c->parts[1], VSX_COMMAND_GARBAGE_COLLECT);
+        cmd_out->add_raw("in_param_spec "+comp->name+" "+comp->in_param_spec, VSX_COMMAND_GARBAGE_COLLECT);
+        cmd_out->add_raw("out_param_spec "+comp->name+" "+comp->out_param_spec, VSX_COMMAND_GARBAGE_COLLECT);
       } else
       {
         cmd_out->add_raw("alert_fail [component_create] Error "+base64_encode("Engine does not know the module '"+c->parts[1]+"'"), VSX_COMMAND_GARBAGE_COLLECT);

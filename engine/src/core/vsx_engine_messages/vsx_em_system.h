@@ -106,8 +106,8 @@ if (cmd == "get_state")
 
 if (cmd == "undo_s")
 {
-  vsx_command_list savelist;
-  get_state_as_commandlist(savelist);
+  vsx_command_list* savelist = new vsx_command_list;
+  get_state_as_commandlist(*savelist);
   undo_buffer.push_back(savelist);
   goto process_message_queue_end;
 }
@@ -120,11 +120,11 @@ if (cmd == "undo")
   vsx_string error_string;
   if (undo_buffer.size())
   {
-    // TODO
-    //vsx_command_list dest;
-    //vsx_command_list& source = undo_buffer[undo_buffer.size()-1];
-    //i_load_state(undo_buffer[undo_buffer.size()-1], &error_string);
-    //undo_buffer.reset_used(undo_buffer.size()-1);
+    vsx_command_list dest;
+    vsx_command_list* source = undo_buffer[undo_buffer.size()-1];
+    i_load_state(*source, &error_string);
+    source->clear_delete();
+    undo_buffer.reset_used(undo_buffer.size()-1);
   }
   goto process_message_queue_end;
 }

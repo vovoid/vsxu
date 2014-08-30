@@ -123,8 +123,13 @@ public:
     if (c_model) {
       delete (CalCoreModel*)c_model;
     }
+
+    if (m_model)
+      delete m_model;
+
     delete mesh_a;
     delete mesh_b;
+    delete mesh_bbox;
     pthread_mutex_unlock(&mesh_mutex);
     pthread_mutex_destroy(&thread_exit_mutex);
     pthread_mutex_destroy(&mesh_mutex);
@@ -292,7 +297,8 @@ public:
         char buf[1024];
         vsx_string line;
         int mesh_id = 0;
-        while (engine->filesystem->f_gets(buf,1024,fp)) {
+        while (engine->filesystem->f_gets(buf,1024,fp))
+        {
           line = buf;
           if (line[line.size()-1] == 0x0A) line.pop_back();
           if (line[line.size()-1] == 0x0D) line.pop_back();

@@ -1164,7 +1164,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
     } else
     {
       LOG_A("adding copy:"+t->cmd)
-      cmd_out->addc( t );
+      cmd_out->addc( t, VSX_COMMAND_GARBAGE_COLLECT );
     }
   }
 }

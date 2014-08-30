@@ -55,7 +55,9 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
         if (destroy_textures)
         {
           luna->unload();
+          delete luna;
           luna_bkg->unload();
+          delete luna_bkg;
           finished = true;
         }
       }
@@ -73,16 +75,11 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
     logo_time += dtime*2;
 
     if (inalpha > 1) inalpha = 1;
-//    if (logo_time-startanim < 1) {
-//      alpha = inalpha;
-//    } else
     alpha = 1-(logo_time-((animlen-fade)/(fade<1?1:fade)));
 
     float b_alpha = 1-(logo_time-((animlen-fade)/(fade<1?1:fade)));
-//    float c_alpha = 1-(logo_time-((animlen-fade*0.7)/(fade*0.7<1?1:fade*0.7)));
     if (alpha > 1) alpha = 1;
     if (alpha < 0) alpha = 0;
-//    if (c_alpha < 0) c_alpha = 0;
 
       glEnable(GL_BLEND);
 

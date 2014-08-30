@@ -135,7 +135,7 @@ int vsx_engine_abs::i_load_state(vsx_command_list& load1,vsx_string *error_strin
     }
   }
   static vsx_string sld("state_load_done");
-  load1.add_raw(sld, true);
+  load1.add_raw(sld, VSX_COMMAND_GARBAGE_COLLECT);
   load1.reset();
 
   LOG("i_load_state: all modules are available, proceeding with load")
@@ -240,7 +240,7 @@ void vsx_engine_abs::redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_o
   }
 
   comp->re_init_in_params();
-  cmd_out->add_raw("in_param_spec "+comp->name+" "+comp->in_param_spec+" c");
+  cmd_out->add_raw("in_param_spec "+comp->name+" "+comp->in_param_spec+" c", VSX_COMMAND_GARBAGE_COLLECT);
   comp->module->redeclare_in = false;
   in = comp->get_params_in();
 
@@ -263,7 +263,7 @@ void vsx_engine_abs::redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_o
     if (dparam)
     {
       int order = dparam->connect((*it2)->src);
-      cmd_out->add_raw("param_connect_volatile "+comp->name+" "+dparam->name+" "+(*it2)->src->owner->component->name+" "+(*it2)->src->name+" "+vsx_string_helper::i2s(order));
+      cmd_out->add_raw("param_connect_volatile "+comp->name+" "+dparam->name+" "+(*it2)->src->owner->component->name+" "+(*it2)->src->name+" "+vsx_string_helper::i2s(order), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
 }
@@ -277,7 +277,7 @@ void vsx_engine_abs::redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_
 
   // will nuke all the internal params.
   comp->re_init_out_params();
-  cmd_out->add_raw("out_param_spec "+comp->name+" "+comp->out_param_spec+" c");
+  cmd_out->add_raw("out_param_spec "+comp->name+" "+comp->out_param_spec+" c", VSX_COMMAND_GARBAGE_COLLECT);
   comp->module->redeclare_out = false;
   out = comp->get_params_out();
 
@@ -294,7 +294,7 @@ void vsx_engine_abs::redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_
     vsx_string cn = comp->name;
     vsx_string dpn = dparam->name;
     vsx_string os = vsx_string_helper::i2s(order);
-    cmd_out->add_raw("param_connect_volatile "+dest_comp_name+" "+srcn+" "+cn+" "+dpn+" "+os);
+    cmd_out->add_raw("param_connect_volatile "+dest_comp_name+" "+srcn+" "+cn+" "+dpn+" "+os, VSX_COMMAND_GARBAGE_COLLECT);
   }
 }
 
@@ -310,7 +310,7 @@ void vsx_engine_abs::process_message_queue_redeclare(vsx_command_list *cmd_out_r
         redeclare_out_params(*it,cmd_out_res);
       }
       if ((*it)->module->message.size()) {
-        cmd_out_res->add_raw("c_msg "+(*it)->name+" "+base64_encode((*it)->module->message));
+        cmd_out_res->add_raw("c_msg "+(*it)->name+" "+base64_encode((*it)->module->message), VSX_COMMAND_GARBAGE_COLLECT);
         (*it)->module->message = "";
       }
     }
@@ -362,23 +362,21 @@ void vsx_engine_abs::send_state_to_client(vsx_command_list *cmd_out)
   vsx_command_s* outc;
   temp_conn_alias.reset();
   while ( (outc = temp_conn_alias.get()) ) {
-    vsx_command_s* o = new vsx_command_s();
-    o->copy( outc );
-    cmd_out->addc(o);
+    cmd_out->addc(outc, VSX_COMMAND_GARBAGE_COLLECT);
+    delete outc;
   }
+
+  sequence_list.get_sequences(&temp_conn);
 
   temp_conn.reset();
   while ( (outc = temp_conn.get()) ) {
-    vsx_command_s* o = new vsx_command_s();
-    o->copy( outc );
-    cmd_out->addc( o );
+    cmd_out->addc( outc, VSX_COMMAND_GARBAGE_COLLECT);
+    delete outc;
   }
-
-  sequence_list.get_sequences(cmd_out);
 
   // notes
   for (note_iter = note_map.begin(); note_iter != note_map.end(); note_iter++)
-  cmd_out->add_raw(vsx_string((*note_iter).second.serialize()));
+    cmd_out->add_raw(vsx_string((*note_iter).second.serialize()), VSX_COMMAND_GARBAGE_COLLECT);
 }
 
 void vsx_engine_abs::i_clear(vsx_command_list *cmd_out,bool clear_critical)
@@ -470,7 +468,10 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
   vsx_command_list tmp_connections;
   vsx_command_list tmp_aliases;
   tmp_aliases.add_raw("break");
-  if (meta_information.size()) tmp_comp.add_raw("meta_set "+base64_encode(meta_information));
+
+  if (meta_information.size())
+    tmp_comp.add_raw("meta_set "+base64_encode(meta_information));
+
   for (forge_map_iter = forge_map.begin(); forge_map_iter != forge_map.end(); ++forge_map_iter)
   {
     vsx_comp* comp = (*forge_map_iter).second;
@@ -554,15 +555,18 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
   tmp_comp.reset();
   while ( (outc = tmp_comp.get()) ) {
     savelist.addc(outc);
+    delete outc;
   }
   tmp_aliases.add_raw("break");
   tmp_aliases.reset();
   while ( (outc = tmp_aliases.pop_back()) ) {
     savelist.addc(outc);
+    delete outc;
   }
   tmp_connections.reset();
   while ( (outc = tmp_connections.pop_back()) ) {
     savelist.addc(outc);
+    delete outc;
   }
 
   // dump the sequence pool

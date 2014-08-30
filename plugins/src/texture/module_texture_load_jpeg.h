@@ -159,6 +159,7 @@ public:
     }
     if (thread_state == 2)
     {
+      pthread_join(worker_t, NULL);
       bitm.bpp = 4;
       bitm.bformat = GL_RGBA;
       bitm.valid = true;
@@ -186,11 +187,11 @@ public:
   void on_delete()
   {
     if (thread_state == 1) 
-    pthread_join(worker_t, 0);
+      pthread_join(worker_t, 0);
     if (bitm.valid)
-    {
       delete[] (vsx_bitmap_32bt*)bitm.data;
-    }
+    if (texture)
+      delete texture;
   }  
 };
 
