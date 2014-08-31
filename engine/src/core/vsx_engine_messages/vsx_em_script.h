@@ -40,14 +40,14 @@ if (cmd == "vsxl_cfl")
       driver->comp = (void*)dest;
       driver->run();
       // notify the client!
-      cmd_out->add_raw("vsxl_cfi_ok "+c->parts[1]);
+      cmd_out->add_raw("vsxl_cfi_ok "+c->parts[1], VSX_COMMAND_GARBAGE_COLLECT);
     }
     else
     {
       driver = (vsx_comp_vsxl_driver_abs*)((vsx_comp_vsxl*)dest->vsxl_modifier)->get_driver();
     }
     if (driver)
-    cmd_out->add_raw("vsxl_cfl_s "+c->parts[1]+" "+base64_encode(driver->script));
+    cmd_out->add_raw("vsxl_cfl_s "+c->parts[1]+" "+base64_encode(driver->script), VSX_COMMAND_GARBAGE_COLLECT);
 
   }
   goto process_message_queue_end;
@@ -75,7 +75,7 @@ if (cmd == "vsxl_cfi")
     driver->comp = (void*)dest;
     driver->run();
     // notify the client!
-    cmd_out->add_raw("vsxl_cfi_ok "+c->parts[1]);
+    cmd_out->add_raw("vsxl_cfi_ok "+c->parts[1], VSX_COMMAND_GARBAGE_COLLECT);
   }
   else
     driver = (vsx_comp_vsxl_driver_abs*)((vsx_comp_vsxl*)dest->vsxl_modifier)->load((dest->in_module_parameters),base64_decode(c->parts[2]));
@@ -97,7 +97,7 @@ if (cmd == "vsxl_cfr")
       delete (vsx_comp_vsxl*)(dest->vsxl_modifier);
       dest->vsxl_modifier = 0;
       // send status to client
-      cmd_out->add_raw("vsxl_cfr_ok "+c->parts[1]);
+      cmd_out->add_raw("vsxl_cfr_ok "+c->parts[1], VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
   goto process_message_queue_end;
@@ -129,7 +129,7 @@ if (cmd == "vsxl_pfl")
       driver->comp = (void*)dest;
       driver->run();
       // notify the client!
-      cmd_out->add_raw("vsxl_pfi_ok "+c->parts[1]+" "+c->parts[2]);
+      cmd_out->add_raw("vsxl_pfi_ok "+c->parts[1]+" "+c->parts[2], VSX_COMMAND_GARBAGE_COLLECT);
     }
     else
     {
@@ -137,7 +137,7 @@ if (cmd == "vsxl_pfl")
     }
 
     if (driver)
-    cmd_out->add_raw("vsxl_pfl_s "+c->parts[1]+" "+c->parts[2]+" "+base64_encode(driver->script));
+    cmd_out->add_raw("vsxl_pfl_s "+c->parts[1]+" "+c->parts[2]+" "+base64_encode(driver->script), VSX_COMMAND_GARBAGE_COLLECT);
   }
   goto process_message_queue_end;
 }
@@ -165,7 +165,7 @@ if (cmd == "vsxl_pfi")
       driver->run();
 
       // send status to client
-      cmd_out->add_raw("vsxl_pfi_ok "+c->parts[1]+" "+c->parts[2]);
+      cmd_out->add_raw("vsxl_pfi_ok "+c->parts[1]+" "+c->parts[2], VSX_COMMAND_GARBAGE_COLLECT);
     } else
       driver = (vsx_param_vsxl_driver_abs*)((vsx_param_vsxl*)param->module_param->vsxl_modifier)->load(param->module_param,base64_decode(c->parts[4]));
     driver->run();
@@ -198,7 +198,7 @@ if (cmd == "vsxl_pfr")
   param->module_param->vsxl_modifier = 0;
 
   // send status to client
-  cmd_out->add_raw("vsxl_pfr_ok "+c->parts[1]+" "+c->parts[2]);
+  cmd_out->add_raw("vsxl_pfr_ok "+c->parts[1]+" "+c->parts[2], VSX_COMMAND_GARBAGE_COLLECT);
 
   goto process_message_queue_end;
 }

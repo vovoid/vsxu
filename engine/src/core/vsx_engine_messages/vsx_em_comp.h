@@ -96,7 +96,7 @@ if (cmd == "component_delete")
               if ((*it)->sequence)
               {
                 sequence_list.remove_param_sequence((*it));
-                cmd_out->add_raw("pseq_p_ok remove "+comp->name+" "+(*it)->name);
+                cmd_out->add_raw("pseq_p_ok remove "+comp->name+" "+(*it)->name, VSX_COMMAND_GARBAGE_COLLECT);
               }
               sequence_pool.remove_param_sequence((*it));
               interpolation_list.remove(*it);
@@ -141,8 +141,8 @@ if (cmd == "component_delete")
       for (std::list<vsx_comp*>::iterator it_td = to_delete.begin(); it_td != to_delete.end(); ++it_td) {
         delete (*it_td);
       }
-      cmd_out->add_raw("component_delete_ok "+c->parts[1]);
-    } else cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Error, component '"+c->parts[1]+"' does not exist!"));
+      cmd_out->add_raw("component_delete_ok "+c->parts[1], VSX_COMMAND_GARBAGE_COLLECT);
+    } else cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Error, component '"+c->parts[1]+"' does not exist!"), VSX_COMMAND_GARBAGE_COLLECT);
   }
   goto process_message_queue_end;
 }
@@ -167,7 +167,7 @@ if (cmd == "component_assign")
 
   if (c->parts.size() != 5)
   {
-    cmd_out->add_raw("invalid_command wrong_number_of_arguments "+base64_encode(c->raw));
+    cmd_out->add_raw("invalid_command wrong_number_of_arguments "+base64_encode(c->raw), VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
 
@@ -212,7 +212,7 @@ if (cmd == "component_assign")
   }
   if (!namecheck)
   {
-    cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Error, there is already a component named "+first_part+comp_name));
+    cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Error, there is already a component named "+first_part+comp_name), VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
 
@@ -265,7 +265,7 @@ if (cmd == "component_assign")
     delete *it;
   }
 
-  cmd_out->add_raw(c->parts[0]+"_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4]);
+  cmd_out->add_raw(c->parts[0]+"_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4], VSX_COMMAND_GARBAGE_COLLECT);
   goto process_message_queue_end;
 }
 
@@ -281,9 +281,9 @@ if (cmd == "component_rename")
     // will be:
     // macro1.macro2.new_name
     if (rename_component(c->parts[1],"$",c->parts[2]) == 1)
-    cmd_out->add_raw("component_rename_ok "+c->parts[1]+" "+c->parts[2]);
+    cmd_out->add_raw("component_rename_ok "+c->parts[1]+" "+c->parts[2], VSX_COMMAND_GARBAGE_COLLECT);
     else
-    cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Rename failed."));
+    cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Rename failed."), VSX_COMMAND_GARBAGE_COLLECT);
   }
   goto process_message_queue_end;
 }
@@ -333,9 +333,9 @@ if (cmd == "get_module_status")
     if ((*it)->module) {
       if (!(*it)->module->loading_done) {
         printf("not loaded: %s\n",(*it)->name.c_str());
-        cmd_out->add_raw("c_msg "+(*it)->name+" "+base64_encode("module||NOT LOADED"));
+        cmd_out->add_raw("c_msg "+(*it)->name+" "+base64_encode("module||NOT LOADED"), VSX_COMMAND_GARBAGE_COLLECT);
       } else
-      cmd_out->add_raw("c_msg "+(*it)->name+" "+base64_encode("module||ok"));
+      cmd_out->add_raw("c_msg "+(*it)->name+" "+base64_encode("module||ok"), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
   goto process_message_queue_end;
@@ -352,7 +352,7 @@ if (cmd == "component_timing")
   if (c->parts.size() == 3) {
     vsx_comp* src = get_component_by_name(c->parts[1]);
     if (src) {
-      cmd_out->add_raw(vsx_string("component_timing_ok ")+c->parts[2]+" "+vsx_string_helper::f2s(src->time_run,12)+" "+vsx_string_helper::f2s(src->time_output,12)+" "+vsx_string_helper::f2s(last_frame_time,12));
+      cmd_out->add_raw(vsx_string("component_timing_ok ")+c->parts[2]+" "+vsx_string_helper::f2s(src->time_run,12)+" "+vsx_string_helper::f2s(src->time_output,12)+" "+vsx_string_helper::f2s(last_frame_time,12), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
   goto process_message_queue_end;

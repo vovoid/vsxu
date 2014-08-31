@@ -29,7 +29,7 @@
 // PATTERN/SEQUENCE MANAGEMENT
 if (cmd == "seq_list")
 {
-  cmd_out->add_raw(c->parts[0]+"_ok "+sequence_list.get_channel_names());
+  cmd_out->add_raw(c->parts[0]+"_ok "+sequence_list.get_channel_names(), VSX_COMMAND_GARBAGE_COLLECT);
   goto process_message_queue_end;
 } else
 
@@ -40,7 +40,7 @@ if (cmd == "seq_list")
 if (cmd == "pseq_l_dump")
 {
   // dump all the sequences present in the engine
-  cmd_out->add_raw(c->parts[0]+"_ok "+sequence_list.get_sequence_list_dump());
+  cmd_out->add_raw(c->parts[0]+"_ok "+sequence_list.get_sequence_list_dump(), VSX_COMMAND_GARBAGE_COLLECT);
   goto process_message_queue_end;
 }
 
@@ -79,7 +79,7 @@ if (cmd == "pseq_p")
         if (c->parts[1] == "inject_get") {
           vsx_string a = sequence_list.dump_param(param);
           if (a != "") {
-            cmd_out->add_raw("pseq_p_ok inject_get "+c->parts[2]+" "+c->parts[3]+" "+a+" "+vsx_string_helper::i2s(param->module_param->type));
+            cmd_out->add_raw("pseq_p_ok inject_get "+c->parts[2]+" "+c->parts[3]+" "+a+" "+vsx_string_helper::i2s(param->module_param->type), VSX_COMMAND_GARBAGE_COLLECT);
           }
         } else
         if (c->parts[1] == "add") {
@@ -90,7 +90,7 @@ if (cmd == "pseq_p")
         } else
         if (c->parts[1] == "remove") {
           sequence_list.remove_param_sequence(param);
-          cmd_out->add_raw("pseq_p_ok remove "+c->parts[2]+" "+c->parts[3]);
+          cmd_out->add_raw("pseq_p_ok remove "+c->parts[2]+" "+c->parts[3], VSX_COMMAND_GARBAGE_COLLECT);
         }
       }
     }
@@ -138,7 +138,7 @@ if (cmd == "mseq_channel")
   {
     if (sequence_list.add_master_channel(c->parts[2]))
     {
-      cmd_out->add_raw("mseq_channel_ok add "+c->parts[2]);
+      cmd_out->add_raw("mseq_channel_ok add "+c->parts[2], VSX_COMMAND_GARBAGE_COLLECT);
     } else
     {
       FAIL("Master Sequence Channel", "There seems to already be a channel with this name!");
@@ -155,7 +155,7 @@ if (cmd == "mseq_channel")
   {
     if (sequence_list.remove_master_channel(c->parts[2]))
     {
-      cmd_out->add_raw("mseq_channel_ok remove "+c->parts[2]);
+      cmd_out->add_raw("mseq_channel_ok remove "+c->parts[2], VSX_COMMAND_GARBAGE_COLLECT);
     } else
     {
       FAIL("Master Sequence Channel", "There is no channel by that name!");
@@ -208,7 +208,7 @@ if (cmd == "mseq_channel")
     vsx_string a = sequence_list.dump_master_channel(c->parts[2]);
     if (a != "")
     {
-      cmd_out->add_raw("mseq_channel_ok inject_get "+c->parts[2]+" "+a);
+      cmd_out->add_raw("mseq_channel_ok inject_get "+c->parts[2]+" "+a, VSX_COMMAND_GARBAGE_COLLECT);
     }
     goto process_message_queue_end;
   }

@@ -29,7 +29,7 @@ if (cmd == "seq_pool")
 {
   if (c->parts[1] == "seq_list")
   {
-    cmd_out->add_raw(c->parts[0]+" "+c->parts[1]+"_ok "+sequence_pool.get_selected()->get_channel_names());
+    cmd_out->add_raw(c->parts[0]+" "+c->parts[1]+"_ok "+sequence_pool.get_selected()->get_channel_names(), VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
 
@@ -41,7 +41,7 @@ if (cmd == "seq_pool")
   // 0=seq_pool 1=dump_names
   if (c->parts[1] == "dump_names")
   {
-    cmd_out->add_raw("seq_pool dump_names "+sequence_pool.dump_names());
+    cmd_out->add_raw("seq_pool dump_names "+sequence_pool.dump_names(), VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
 
@@ -111,7 +111,7 @@ if (cmd == "seq_pool")
     // 1. add
     if (sequence_pool.add(c->parts[2]))
     {
-      cmd_out->add_raw("seq_pool dump_names "+sequence_pool.dump_names());
+      cmd_out->add_raw("seq_pool dump_names "+sequence_pool.dump_names(), VSX_COMMAND_GARBAGE_COLLECT);
     }
     goto process_message_queue_end;
   }
@@ -129,8 +129,8 @@ if (cmd == "seq_pool")
     if (list) sequence_list.remove_master_channel_lines_referring_to_sequence_list(list);
     if (sequence_pool.del(c->parts[2]))
     {
-      cmd_out->add_raw("seq_pool del "+c->parts[2]);
-      cmd_out->add_raw("seq_pool dump_names "+sequence_pool.dump_names());
+      cmd_out->add_raw("seq_pool del "+c->parts[2], VSX_COMMAND_GARBAGE_COLLECT);
+      cmd_out->add_raw("seq_pool dump_names "+sequence_pool.dump_names(), VSX_COMMAND_GARBAGE_COLLECT);
     }
     goto process_message_queue_end;
   }
@@ -146,7 +146,7 @@ if (cmd == "seq_pool")
     // 1. clone
     if (sequence_pool.clone(c->parts[2], c->parts[3]))
     {
-      cmd_out->add_raw("seq_pool dump_names "+sequence_pool.dump_names());
+      cmd_out->add_raw("seq_pool dump_names "+sequence_pool.dump_names(), VSX_COMMAND_GARBAGE_COLLECT);
     }
     else
       FAIL("Sequence Pool", "No sequence found or duplicate name!");
@@ -212,7 +212,7 @@ if (cmd == "seq_pool")
   if (c->parts[1] == "toggle_edit")
   {
     bool value = sequence_pool.toggle_edit();
-    cmd_out->add_raw("seq_pool toggle_edit "+vsx_string_helper::i2s((int)value));
+    cmd_out->add_raw("seq_pool toggle_edit "+vsx_string_helper::i2s((int)value), VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
 
@@ -228,8 +228,8 @@ if (cmd == "seq_pool")
     //printf("select seq_pool\n");
     if (sequence_pool.select(c->parts[2])) {
       // dump all the sequences up to the sequencer
-      cmd_out->add_raw("seq_pool clear_sequencer ");
-      cmd_out->add_raw("seq_pool dump_names "+sequence_pool.dump_names());
+      cmd_out->add_raw("seq_pool clear_sequencer ", VSX_COMMAND_GARBAGE_COLLECT);
+      cmd_out->add_raw("seq_pool dump_names "+sequence_pool.dump_names(), VSX_COMMAND_GARBAGE_COLLECT);
     }
     goto process_message_queue_end;
   }
@@ -243,7 +243,7 @@ if (cmd == "seq_pool")
     if (sequence_pool.get_selected())
     {
       vsx_string a = sequence_pool.get_selected()->get_sequence_list_dump();
-      cmd_out->add_raw("seq_pool "+c->parts[1]+"_ok "+a);
+      cmd_out->add_raw("seq_pool "+c->parts[1]+"_ok "+a, VSX_COMMAND_GARBAGE_COLLECT);
     }
     goto process_message_queue_end;
   }
@@ -297,7 +297,7 @@ if (cmd == "seq_pool")
               vsx_string sequence_specification = sequence_pool.get_selected()->dump_param(param);
               if (sequence_specification != "")
               {
-                cmd_out->add_raw("seq_pool pseq_p_ok inject_get "+c->parts[3]+" "+c->parts[4]+" "+sequence_specification+" "+vsx_string_helper::i2s(param->module_param->type));
+                cmd_out->add_raw("seq_pool pseq_p_ok inject_get "+c->parts[3]+" "+c->parts[4]+" "+sequence_specification+" "+vsx_string_helper::i2s(param->module_param->type), VSX_COMMAND_GARBAGE_COLLECT);
               }
             }
           } else
@@ -308,7 +308,7 @@ if (cmd == "seq_pool")
             {
               sequence_pool.get_selected()->remove_param_sequence(param);
             }
-            cmd_out->add_raw("seq_pool pseq_p_ok remove "+c->parts[3]+" "+c->parts[4]);
+            cmd_out->add_raw("seq_pool pseq_p_ok remove "+c->parts[3]+" "+c->parts[4], VSX_COMMAND_GARBAGE_COLLECT);
           }
         }
       }

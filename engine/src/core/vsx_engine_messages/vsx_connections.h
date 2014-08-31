@@ -50,21 +50,23 @@ if (cmd == "param_connect")
           }
         }
         else
-          cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("- Can not connect -| This parameter is sequenced!"));
+          cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("- Can not connect -| This parameter is sequenced!"), VSX_COMMAND_GARBAGE_COLLECT);
       }
       else
       {
-        if (!src_param) cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("- Can not connect -| Source parameter declared in parameter specification but not bound in module!|Contact module author of|"+c->parts[3]+"::"+c->parts[4])+"!");
-        if (!dest_param) cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("- Can not connect -| Destination parameter declared in parameter specification but not bound in module!|Contact module author of |"+c->parts[1]+"::"+c->parts[2])+"!");
+        if (!src_param)
+          cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("- Can not connect -| Source parameter declared in parameter specification but not bound in module!|Contact module author of|"+c->parts[3]+"::"+c->parts[4])+"!", VSX_COMMAND_GARBAGE_COLLECT);
+        if (!dest_param)
+          cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("- Can not connect -| Destination parameter declared in parameter specification but not bound in module!|Contact module author of |"+c->parts[1]+"::"+c->parts[2])+"!", VSX_COMMAND_GARBAGE_COLLECT);
       }
     }
     else
     {
       if (!dest)
-      cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Contact module author:|destination module param \""+c->parts[2]+" lacks implementation!"));
+      cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Contact module author:|destination module param \""+c->parts[2]+" lacks implementation!"), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
-  else cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Can not connect:| Neither source or dest component exists."));
+  else cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Can not connect:| Neither source or dest component exists."), VSX_COMMAND_GARBAGE_COLLECT);
   goto process_message_queue_end;
 }
 
@@ -83,10 +85,10 @@ if (cmd == "param_disconnect")
       vsx_engine_param* dest_param = dest->get_params_in()->get_by_name(c->parts[2]);
       vsx_engine_param* src_param = src->get_params_out()->get_by_name(c->parts[4]);
       if (dest_param->disconnect(src_param) != -1) {
-        cmd_out->add_raw("param_disconnect_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4]);
+        cmd_out->add_raw("param_disconnect_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4], VSX_COMMAND_GARBAGE_COLLECT);
       }
       else
-      cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Can not disconnect, failed. You shouldn't see this, did you type the command manually?"));
+      cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Can not disconnect, failed. You shouldn't see this, did you type the command manually?"), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
   goto process_message_queue_end;
@@ -133,7 +135,7 @@ if (cmd == "param_alias")
         parts[0] = new_name;
         c->parts[1] = implode(parts, deli);
 
-        cmd_out->add_raw("param_alias_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+new_name+" "+c->parts[5]+" "+c->parts[6]+" "+vsx_string_helper::i2s(order));
+        cmd_out->add_raw("param_alias_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+new_name+" "+c->parts[5]+" "+c->parts[6]+" "+vsx_string_helper::i2s(order), VSX_COMMAND_GARBAGE_COLLECT);
 
       }
     }
@@ -160,9 +162,9 @@ if (cmd == "param_unalias")
       result = dest->get_params_out()->unalias(c->parts[3]);
     }
     if (result)
-    cmd_out->add_raw("param_unalias_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]);
+    cmd_out->add_raw("param_unalias_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3], VSX_COMMAND_GARBAGE_COLLECT);
     else
-    cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Could not unalias, this is a possible bug."));
+    cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Could not unalias, this is a possible bug."), VSX_COMMAND_GARBAGE_COLLECT);
   }
   goto process_message_queue_end;
 }
@@ -178,9 +180,9 @@ if (cmd == "connections_order")
   vsx_comp* dest = get_component_by_name(c->parts[1]);
   if (dest) {
     if (dest->get_params_in()->order(c->parts[2],c->parts[3]) > 0)
-    cmd_out->add_raw("connections_order_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]);
+    cmd_out->add_raw("connections_order_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3], VSX_COMMAND_GARBAGE_COLLECT);
     else
-    cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Could not order connections."));
+    cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Could not order connections."), VSX_COMMAND_GARBAGE_COLLECT);
   }
   goto process_message_queue_end;
 }

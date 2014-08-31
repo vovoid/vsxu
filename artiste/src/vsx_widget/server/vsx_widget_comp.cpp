@@ -466,7 +466,8 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
             p_l_list_in[t->parts[2]]->name+" "+
             a->name+" "+
             a->p_l_list_out[t->parts[4]]->name+" "+
-            t->parts[5]
+            t->parts[5],
+            VSX_COMMAND_GARBAGE_COLLECT
           );
           //
           p_l_list_in[t->parts[2]]->vsx_command_queue_b(this);
@@ -499,7 +500,8 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
               a->name+" "+
               a->p_l_list_in[t->parts[4]]->name+" "+
               t->parts[5]+" "+
-              t->parts[6]
+              t->parts[6],
+              VSX_COMMAND_GARBAGE_COLLECT
             );
             p_l_list_in[t->parts[2]]->vsx_command_queue_b(this);
           } else failed = true;
@@ -519,7 +521,8 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
               a->name+" "+
               a->p_l_list_out[t->parts[4]]->name+" "+
               t->parts[5]+" "+
-              t->parts[6]
+              t->parts[6],
+              VSX_COMMAND_GARBAGE_COLLECT
             );
             p_l_list_out[t->parts[2]]->vsx_command_queue_b(this);
           } else failed = true;

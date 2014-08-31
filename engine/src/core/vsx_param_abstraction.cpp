@@ -393,13 +393,19 @@ int vsx_engine_param::disconnect(vsx_engine_param* src, bool lowlevel) {
     vsx_engine_param* real_dest_param;
     vsx_engine_param* real_src_param;
 
-    if (alias) real_dest_param = alias_owner; else {
+    if (alias)
+      real_dest_param = alias_owner;
+    else
       real_dest_param = this;
-    }
-    if (src->alias) real_src_param = src->alias_owner; else real_src_param = src;
+
+
+    if (src->alias)
+      real_src_param = src->alias_owner;
+    else
+      real_src_param = src;
+
     if (real_dest_param->channel->disconnect(real_src_param)) {
     // 2. that went well, so disconnect our connection as well
-      //printf("disconn OK\n");
       vsx_engine_param_connection* engine_conn = get_conn_by_src(src);
       src->delete_conn(engine_conn);
       delete_conn(engine_conn);
@@ -703,7 +709,8 @@ vsx_engine_param_connection* vsx_engine_param::get_conn_by_dest(vsx_engine_param
 
 vsx_engine_param::~vsx_engine_param() {
   for (std::vector<vsx_engine_param_connection*>::iterator it = connections.begin(); it != connections.end(); ++it) {
-    if ((*it)->dest == this) {
+    if ((*it)->dest == this)
+    {
       disconnect();
       (*it)->src->delete_conn(*it);
     }
@@ -1148,22 +1155,29 @@ int vsx_engine_param_list::alias(vsx_engine_param* src, vsx_string name, int ord
   // 3. create a connection in the source to us for traversal purpouses
   vsx_engine_param_connection* new_conn = new vsx_engine_param_connection;
   if (order == -1)
-  src->connections.push_back(new_conn);
-  else {
+    src->connections.push_back(new_conn);
+  else
+  {
     c = 0;
     std::vector<vsx_engine_param_connection*>::iterator it = src->connections.begin();
     bool run = true;
-    if (order == 0) {
+    if (order == 0)
+    {
       src->connections.insert(src->connections.begin(), new_conn);
-    } else
-    while (run) {
-      if (c == order) {
+    }
+    else
+    while (run)
+    {
+      if (c == order)
+      {
         src->connections.insert(it, new_conn);
         run = false;
       }
-      if (it == src->connections.end()) {
-        run = false;
+
+      if (it == src->connections.end())
+      {
         src->connections.insert(it, new_conn);
+        run = false;
       }
       ++it;
       ++c;
@@ -1176,8 +1190,8 @@ int vsx_engine_param_list::alias(vsx_engine_param* src, vsx_string name, int ord
   new_conn->alias_connection = true;
 
   if (order == -1)
-  return src->connections.size()-1;
-  else
+    return src->connections.size()-1;
+
   return c;
 }
 

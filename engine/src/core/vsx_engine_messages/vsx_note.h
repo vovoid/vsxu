@@ -31,7 +31,7 @@ if (cmd == "note_create")
   if (new_note.set(c))
   {
     note_map[c->parts[1]] = new_note;
-    cmd_out->add_raw(new_note.serialize());
+    cmd_out->add_raw(new_note.serialize(), VSX_COMMAND_GARBAGE_COLLECT);
   }
   goto process_message_queue_end;
 }
@@ -57,7 +57,7 @@ if (cmd == "note_delete")
   note_iter = note_map.find(c->parts[1]);
   if (note_iter != note_map.end()) {
     note_map.erase(c->parts[1]);
-    cmd_out->add_raw("note_delete_ok "+c->parts[1]);
+    cmd_out->add_raw("note_delete_ok "+c->parts[1], VSX_COMMAND_GARBAGE_COLLECT);
   }
   goto process_message_queue_end;
 }

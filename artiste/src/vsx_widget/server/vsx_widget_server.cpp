@@ -924,7 +924,7 @@ void vsx_widget_server::vsx_command_process_f() {
       ) {
         //find in children
         if ( (comp = (vsx_widget_component*)find_component(c->parts[1])) ) {
-          command_q_b.addc(c);
+          command_q_b.addc(c, VSX_COMMAND_GARBAGE_COLLECT);
           comp->vsx_command_queue_b(this,true);
           run_volatile = false;
         } else {
@@ -1175,11 +1175,11 @@ void vsx_widget_server::param_alias_ok(vsx_string p_def, vsx_string io, vsx_stri
   command_q_b.clear_delete();
   vsx_widget* dest = find_component(comp);
   if (io == "-1") {
-    command_q_b.add_raw("ipsa "+comp+" "+p_def+" 1");
+    command_q_b.add_raw("ipsa "+comp+" "+p_def+" 1", VSX_COMMAND_GARBAGE_COLLECT);
     dest->vsx_command_queue_b(this);
   } else
   if (io == "1") {
-    command_q_b.add_raw("opsa "+comp+" "+p_def+" 1");
+    command_q_b.add_raw("opsa "+comp+" "+p_def+" 1", VSX_COMMAND_GARBAGE_COLLECT);
     dest->vsx_command_queue_b(this);
   }
 
@@ -1191,11 +1191,11 @@ void vsx_widget_server::param_alias_ok(vsx_string p_def, vsx_string io, vsx_stri
   }
   if (io == "-1") {
     vsx_widget_component* conn_dest = (vsx_widget_component*)find_component(source_comp);
-    command_q_b.add_raw("pcva "+source_comp+" "+source_param+" "+comp+" "+param+" "+seven+" "+io);
+    command_q_b.add_raw("pcva "+source_comp+" "+source_param+" "+comp+" "+param+" "+seven+" "+io, VSX_COMMAND_GARBAGE_COLLECT);
     conn_dest->vsx_command_queue_b(this);
   } else {
     vsx_widget_component* conn_dest = (vsx_widget_component*)find_component(comp);
-    command_q_b.add_raw("pcva "+comp+" "+param+" "+source_comp+" "+source_param+" "+seven+" "+io);
+    command_q_b.add_raw("pcva "+comp+" "+param+" "+source_comp+" "+source_param+" "+seven+" "+io, VSX_COMMAND_GARBAGE_COLLECT);
     conn_dest->vsx_command_queue_b(this);
     ((vsx_widget_component*)dest)->macro_fix_anchors();
   }

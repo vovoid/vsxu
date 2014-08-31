@@ -77,19 +77,16 @@ vsx_texture::~vsx_texture()
 
   if (!is_glist_alias)
   {
-    vsx_printf("deleting texture_info\n");
     delete texture_info;
   }
 
   if (original_transform_obj)
   {
-    vsx_printf("deleting transform obj\n");
     delete transform_obj;
   }
 
   if (pti_l)
   {
-    vsx_printf("deleting pti_l\n");
     delete pti_l;
   }
 }
@@ -1505,7 +1502,7 @@ void vsx_texture::unload()
       // safe to delete this texture
       if (texture_info->ogl_id != 0)
       {
-        vsx_printf("deleting gl texture: %s\n", name.c_str() );
+        //vsx_printf("deleting gl texture: %s\n", name.c_str() );
         glDeleteTextures( 1, &(texture_info->ogl_id) );
       }
       t_glist.erase( name );

@@ -141,19 +141,3 @@ if (cmd == "system.shutdown")
 
 
 
-
-if (cmd == "kwok")
-{
-  cmd_out->add_raw("o< KWAK");
-  goto process_message_queue_end;
-}
-
-if (cmd == "hallo")
-{
-  cmd_out->add_raw("WAS?");
-  goto process_message_queue_end;
-}
-
-
-
-

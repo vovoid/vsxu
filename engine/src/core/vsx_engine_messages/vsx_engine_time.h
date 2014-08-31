@@ -77,7 +77,7 @@ if (cmd == "rewind")
 
 if (cmd == "fps_d" || cmd == "fps")
 {
-  cmd_out->add("fps_d",vsx_string_helper::f2s(frame_delta_fps));
+  cmd_out->add_raw("fps_d " + vsx_string_helper::f2s(frame_delta_fps), VSX_COMMAND_GARBAGE_COLLECT);
   goto process_message_queue_end;
 }
 

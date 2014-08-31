@@ -353,7 +353,10 @@ public:
     }
 
     if (maxlevel > 1)
-    free(old);
+    {
+      free(old->poly);
+      free(old);
+    }
 
     mesh->timestamp++;
     result->set_p(mesh);
