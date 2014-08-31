@@ -91,6 +91,10 @@ void GLFWCALL key_char_event( int character, int action )
   }
 }
 
+void app_close_window()
+{
+  glfwCloseWindow();
+}
 
 void GLFWCALL key_event(int key, int action)
 {
@@ -276,7 +280,6 @@ int main(int argc, char* argv[])
     glfwEnable( GLFW_MOUSE_CURSOR );
 
   app_load(0);
-  atexit(app_unload);
 
   glfwEnable(GLFW_AUTO_POLL_EVENTS);
 
@@ -466,6 +469,8 @@ int main(int argc, char* argv[])
 
     running = glfwGetWindowParam( GLFW_OPENED );
   }
+
+  app_unload();
 
   // Close OpenGL window and terminate GLFW
   glfwTerminate();

@@ -37,6 +37,7 @@ extern bool app_shift;
 extern bool dual_monitor;
 
 void app_load(int id);
+void app_close_window();
 void app_unload();
 
 void app_print_cli_help();

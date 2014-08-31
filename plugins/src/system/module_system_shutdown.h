@@ -29,7 +29,8 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 }
 
 void run() {
-  if (float_in->get() > 1.0) exit(0);
+  if (float_in->get() > 1.0)
+    exit(0);
   render_out->set(1);
 }
 

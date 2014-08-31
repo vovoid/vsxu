@@ -477,7 +477,7 @@ void app_pre_draw() {
     vsx_string cmd = c->cmd;
     if (cmd == "system.shutdown")
     {
-      exit(0);
+      app_close_window();
     }
     if (cmd == "fullscreen") {
       if (desktop)

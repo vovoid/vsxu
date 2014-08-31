@@ -21,6 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <vsx_mesh_helper.h>
 
 // Phi - the square root of 5 plus 1 divided by 2
 #define sqr5 2.2361
@@ -359,6 +360,10 @@ public:
     }
 
     mesh->timestamp++;
+
+//    vsx_string* r = vsx_mesh_helper::mesh_to_obj(mesh);
+//    vsx_printf("%s\n", r->c_str());
+
     result->set_p(mesh);
   }
 };

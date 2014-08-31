@@ -132,7 +132,9 @@ if (cmd == "undo")
 
 
 
-
+// This command is primarily used by server.
+// All other implementations should catch this command before it reaches the server
+// and do proper cleanup.
 if (cmd == "system.shutdown")
 {
   stop();

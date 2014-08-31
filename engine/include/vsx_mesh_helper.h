@@ -1,6 +1,7 @@
 #ifndef VSX_MESH_HELPER_H
 #define VSX_MESH_HELPER_H
-
+#include <vsx_string_helper.h>
+#include <vsx_mesh.h>
 
 namespace vsx_mesh_helper
 {
@@ -65,6 +66,63 @@ namespace vsx_mesh_helper
         //tangent[a].w = (Dot(Cross(n, t), tan2[a]) < 0.0F) ? -1.0F : 1.0F;
     }
   }
+
+  template<typename T>
+  vsx_string* mesh_to_obj(vsx_mesh<T>* mesh)
+  {
+    vsx_string* result_p = new vsx_string;
+    vsx_string& result = *result_p;
+
+    result += "# VSXu OBJ Generator\n";
+    result += "# www.vsxu.com\n";
+    result += "o mesh\n";
+
+    for (size_t i = 0; i < mesh->data->vertices.size(); i++)
+    {
+      vsx_vector3<T>& v = mesh->data->vertices[i];
+      result +=
+        "v "+
+        vsx_string_helper::f2s( v.x ) +" "+
+        vsx_string_helper::f2s( v.y ) +" "+
+        vsx_string_helper::f2s( v.z ) +"\n"
+      ;
+    }
+
+    for (size_t i = 0; i < mesh->data->vertex_tex_coords.size(); i++)
+    {
+      vsx_tex_coord2f& vt = mesh->data->vertex_tex_coords[i];
+      result +=
+        "vt "+
+        vsx_string_helper::f2s( vt.s ) +" "+
+        vsx_string_helper::f2s( vt.t ) +"\n"
+      ;
+    }
+
+    for (size_t i = 0; i < mesh->data->vertex_normals.size(); i++)
+    {
+      vsx_vector3<T>& vn = mesh->data->vertex_normals[i];
+      result +=
+        "vn "+
+        vsx_string_helper::f2s( vn.x ) +" "+
+        vsx_string_helper::f2s( vn.y ) +" "+
+        vsx_string_helper::f2s( vn.z ) +"\n"
+      ;
+    }
+
+    for (size_t i = 0; i < mesh->data->faces.size(); i++)
+    {
+      vsx_face3& f = mesh->data->faces[i];
+
+      result +=
+        "f "+
+        vsx_string_helper::i2s( f.a ) +"/"+vsx_string_helper::i2s( f.a )+"/"+vsx_string_helper::i2s( f.a )+" "+
+        vsx_string_helper::i2s( f.b ) +"/"+vsx_string_helper::i2s( f.b )+"/"+vsx_string_helper::i2s( f.b )+" "+
+        vsx_string_helper::i2s( f.c ) +"/"+vsx_string_helper::i2s( f.c )+"/"+vsx_string_helper::i2s( f.c )+"\n"
+      ;
+    }
+    return result_p;
+  }
+
 }
 
 #endif
