@@ -115,9 +115,9 @@ namespace vsx_mesh_helper
 
       result +=
         "f "+
-        vsx_string_helper::i2s( f.a ) +"/"+vsx_string_helper::i2s( f.a )+"/"+vsx_string_helper::i2s( f.a )+" "+
-        vsx_string_helper::i2s( f.b ) +"/"+vsx_string_helper::i2s( f.b )+"/"+vsx_string_helper::i2s( f.b )+" "+
-        vsx_string_helper::i2s( f.c ) +"/"+vsx_string_helper::i2s( f.c )+"/"+vsx_string_helper::i2s( f.c )+"\n"
+        vsx_string_helper::i2s( f.a+1 ) +"/"+vsx_string_helper::i2s( f.a+1 )+"/"+vsx_string_helper::i2s( f.a+1 )+" "+
+        vsx_string_helper::i2s( f.b+1 ) +"/"+vsx_string_helper::i2s( f.b+1 )+"/"+vsx_string_helper::i2s( f.b+1 )+" "+
+        vsx_string_helper::i2s( f.c+1 ) +"/"+vsx_string_helper::i2s( f.c+1 )+"/"+vsx_string_helper::i2s( f.c+1 )+"\n"
       ;
     }
     return result_p;

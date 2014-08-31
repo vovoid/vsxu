@@ -39,6 +39,15 @@ namespace vsx_string_helper
     return vsx_string(string_res);
   }
 
+  inline void write_to_file(vsx_string filename, vsx_string* payload)
+  {
+    FILE* fp = fopen(filename.c_str(), "w");
+    if (!fp)
+      return;
+    fputs(payload->c_str(), fp);
+    fclose(fp);
+  }
+
 }
 
 
