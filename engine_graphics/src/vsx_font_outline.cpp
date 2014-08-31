@@ -53,7 +53,7 @@ void vsx_font_outline::load_font(vsx_string font_path)
   }
   unsigned long size = filesystem->f_get_size(fp);
 
-  char* fdata = (char*)malloc(size);
+  fdata = (char*)malloc(size);
   unsigned long bread = filesystem->f_read((void*)fdata, size, fp);
   if (bread == size)
   {
@@ -78,6 +78,20 @@ void vsx_font_outline::load_font(vsx_string font_path)
 
   }
   filesystem->f_close(fp);
+}
+
+void vsx_font_outline::unload()
+{
+  if (ftfont) {
+    delete (FTFont*)ftfont;
+    ftfont = 0;
+  }
+  if (ftfont2) {
+    delete (FTFont*)ftfont2;
+    ftfont2 = 0;
+  }
+  if (fdata)
+    free(fdata);
 }
 
 void vsx_font_outline::render()

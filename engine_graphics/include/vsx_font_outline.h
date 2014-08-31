@@ -42,6 +42,9 @@ class vsx_font_outline {
   void* ftfont;
   void* ftfont2;
 
+  // binary data
+  char* fdata;
+
   // text
   vsx_string text;
   vsx_avector<text_info> lines;
@@ -66,6 +69,7 @@ public:
     :
       ftfont(0x0),
       ftfont2(0x0),
+      fdata(0x0),
       filesystem(0x0),
       gl_state(0x0),
       render_type(1), // poly + outline
@@ -112,6 +116,7 @@ public:
 
   int process_lines();
   void load_font(vsx_string font_path);
+  void unload();
   void render();
 };
 

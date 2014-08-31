@@ -400,7 +400,7 @@ void vsx_widget_desktop::save_configuration() {
       t->cmd == "fullscreen_toggle"
     )
     {
-      system_command_queue->addc(t);
+      system_command_queue->addc(t, VSX_COMMAND_GARBAGE_COLLECT);
     }
     else
     if (t->cmd == "conf") {

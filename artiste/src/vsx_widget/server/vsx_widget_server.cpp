@@ -244,7 +244,7 @@ void vsx_widget_server::init()
   {
     if ( vsx_argvector::get_instance()->has_param_with_value("state") )
     {
-      cmd_out->add_raw("state_load "+base64_encode("states;"+vsx_argvector::get_instance()->get_param_value("state")));
+      cmd_out->add_raw("state_load "+base64_encode("states;"+vsx_argvector::get_instance()->get_param_value("state")), VSX_COMMAND_GARBAGE_COLLECT);
     } else
     {
       if (
@@ -255,9 +255,9 @@ void vsx_widget_server::init()
           configuration["autoload_last_saved_state"] == "1"
           )
       {
-        cmd_out->add_raw("state_load "+base64_encode("states;"+base64_decode(configuration["last_saved_state"])), true);
+        cmd_out->add_raw("state_load "+base64_encode("states;"+base64_decode(configuration["last_saved_state"])), VSX_COMMAND_GARBAGE_COLLECT);
       } else
-      cmd_out->add_raw("state_load "+base64_encode("states;_default"), true);
+      cmd_out->add_raw("state_load "+base64_encode("states;_default"), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
   cmd_out->add_raw("get_state", true);

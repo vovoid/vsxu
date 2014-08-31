@@ -42,6 +42,15 @@ public:
   {
     joystick_count = 0;
   }
+
+  void on_delete()
+  {
+    for (size_t i = 0; i < joysticks.size(); i++)
+    {
+      free(joysticks[i].axis);
+      free(joysticks[i].button);
+    }
+  }
   
   bool init_joysticks()
   {

@@ -42,7 +42,7 @@ protected:
 
 public:
 
-  void init(vsx_string state_name, vsx_module_list_abs* module_list, vsxf* filesystem = 0x0)
+  void load(vsx_string state_name, vsx_module_list_abs* module_list, vsxf* filesystem = 0x0)
   {
     for (size_t i = 0; i < num_engines; i++)
     {
@@ -60,6 +60,15 @@ public:
 
       engines_idle[i] = 100;
     }
+  }
+
+  void unload()
+  {
+    for (size_t i = 0; i < num_engines; i++)
+    {
+      delete engines[i];
+    }
+
   }
 
   void init_render_engines_loaded()
@@ -126,6 +135,7 @@ public:
       engines_idle[i]++;
     }
   }
+
 };
 
 #endif
