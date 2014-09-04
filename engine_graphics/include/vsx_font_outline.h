@@ -34,16 +34,16 @@ typedef struct
   vsx_string string;
 } text_info;
 
+typedef enum vsx_font_outline_render_type_e
+{
+  inner = 1,
+  outline = 2,
+  inner_outline = 3
+} vsx_font_outline_render_type;
+
+
 class vsx_font_outline {
-
-  // font
-  vsx_string cur_font;
-
-  void* ftfont;
-  void* ftfont2;
-
-  // binary data
-  char* fdata;
+  void* font_holder;
 
   // text
   vsx_string text;
@@ -54,7 +54,8 @@ class vsx_font_outline {
   vsx_gl_state* gl_state;
 
   // settings
-  int render_type;
+  vsx_font_outline_render_type render_type;
+
   int align;
   float glyph_size;
   float size;
@@ -67,12 +68,10 @@ public:
 
   vsx_font_outline()
     :
-      ftfont(0x0),
-      ftfont2(0x0),
-      fdata(0x0),
+      font_holder(0x0),
       filesystem(0x0),
       gl_state(0x0),
-      render_type(1), // poly + outline
+      render_type(inner_outline),
       align(1),
       glyph_size(24.0),
       size(1.0f),
@@ -81,6 +80,11 @@ public:
       color(1.0, 1.0, 1.0, 0.0),
       color_outline(1.0, 1.0, 1.0, 0.0)
   {}
+
+  ~vsx_font_outline()
+  {
+    unload();
+  }
 
 
   void text_set(vsx_string& s)
@@ -117,6 +121,7 @@ public:
   int process_lines();
   void load_font(vsx_string font_path);
   void unload();
+  void render_lines(void* font_inner_p, void* font_outer_p);
   void render();
 };
 
