@@ -91,7 +91,6 @@ public:
     type = 0;
     ++id;
   }
-  ENGINE_DLLIMPORT virtual ~vsx_command_s();
 
   void copy (vsx_command_s *t) {
     owner = t->owner;
@@ -110,7 +109,7 @@ public:
   }
   ENGINE_DLLIMPORT void parse();
 
-  ENGINE_DLLIMPORT void gc()
+  void gc()
   {
     #ifdef VSXU_DEBUG
       if (garbage_collected)
@@ -135,7 +134,7 @@ public:
 
 
 template<class T>
-ENGINE_DLLIMPORT T* vsx_command_parse(vsx_string& cmd_raw, bool garbage_collect = false)
+T* vsx_command_parse(vsx_string& cmd_raw, bool garbage_collect = false)
 {
   std::vector <vsx_string> cmdps;
   T *t = new T;

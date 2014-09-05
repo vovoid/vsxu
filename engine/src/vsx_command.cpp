@@ -90,9 +90,6 @@ vsx_string vsx_command_s::get_parts(int start, int end) {
   return res;
 }
 
-vsx_command_s::~vsx_command_s()
-{
-}
 
 
 void vsx_command_s::parse() {
