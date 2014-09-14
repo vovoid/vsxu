@@ -269,10 +269,19 @@ int split_string(vsx_string& input, vsx_string& delimiter, std::vector<vsx_strin
       res = "";
       ++count;
     }
-    if (count >= max_parts && max_parts > 0) return count;
+    if (count >= max_parts && max_parts > 0)
+    {
+      while (i < input.size())
+      {
+        results[results.size()-1].push_back( input[i] );
+        i++;
+      }
+      return count;
+    }
     lastchar = input[i];
   }
-  if (count == 0) results.push_back(input);
+  if (count == 0)
+    results.push_back(input);
   return count;
 }
 int explode(vsx_string& input, vsx_string& delimiter, std::vector<vsx_string>& results, int max_parts)

@@ -86,6 +86,25 @@ public:
     unload();
   }
 
+  void set_leading(float n)
+  {
+    leading = n;
+  }
+
+  void set_align_left()
+  {
+    align = 0;
+  }
+
+  void set_align_center()
+  {
+    align = 1;
+  }
+
+  void set_align_right()
+  {
+    align = 2;
+  }
 
   void text_set(vsx_string& s)
   {

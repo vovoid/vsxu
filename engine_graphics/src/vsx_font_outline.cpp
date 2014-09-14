@@ -9,8 +9,8 @@
 
 class font_outline_holder
 {
+  vsx_string file_name;
   size_t references;
-  vsx_font_outline_render_type render_type;
   FTFont* font_inner;
   FTFont* font_outline;
   // binary data
@@ -56,28 +56,35 @@ public:
     return font_outline;
   }
 
-  void load(vsxf* filesystem, vsx_string font_path, vsx_font_outline_render_type type)
+  vsx_string get_file_name()
+  {
+    return file_name;
+  }
+
+  void load(vsxf* filesystem, vsx_string font_file_name, vsx_font_outline_render_type type)
   {
     vsxf_handle *fp;
 
-    if ((fp = filesystem->f_open(font_path.c_str(), "rb")) == NULL)
-      VSX_ERROR_RETURN_S("font not found: ",font_path.c_str());
+    if ((fp = filesystem->f_open(font_file_name.c_str(), "rb")) == NULL)
+      VSX_ERROR_RETURN_S("font not found: ",font_file_name.c_str());
+
+    file_name = font_file_name;
 
     unsigned long size = filesystem->f_get_size(fp);
 
     fdata = (char*)malloc(size);
-    unsigned long bread = filesystem->f_read((void*)fdata, size, fp);
+    filesystem->f_read((void*)fdata, size, fp);
 
     if (type & inner)
     {
       font_inner = new FTGLTextureFont((unsigned char*)fdata, size);
-      font_inner->FaceSize(24);
+      font_inner->FaceSize(48);
       font_inner->CharMap(ft_encoding_unicode);
     }
     if (type & outline)
     {
       font_outline = new FTGLOutlineFont((unsigned char*)fdata, size);
-      font_outline->FaceSize(24);
+      font_outline->FaceSize(48);
       font_outline->CharMap(ft_encoding_unicode);
     }
     filesystem->f_close(fp);
@@ -96,19 +103,43 @@ public:
     if (fdata)
       free(fdata);
   }
-
 };
 
 class outline_font_cache
 {
-  std::map<vsx_string,font_outline_holder* > cache;
+  vsx_avector<vsx_string> names;
+  vsx_avector<font_outline_holder*> pointers;
 
-  font_outline_holder* find_and_bind(vsx_string path)
+  bool is_name_in_cache(vsx_string name)
   {
-    if (cache.find(path) == cache.end())
+    for (size_t i = 0; i < names.size(); i++)
+      if (names[i] == name)
+        return true;
+    return false;
+  }
+
+  bool is_pointer_in_cache(font_outline_holder* pointer)
+  {
+    for (size_t i = 0; i < pointers.size(); i++)
+      if (pointers[i] == pointer)
+        return true;
+    return false;
+  }
+
+  font_outline_holder* get_pointer_by_name(vsx_string name)
+  {
+    for (size_t i = 0; i < names.size(); i++)
+      if (names[i] == name)
+        return pointers[i];
+    return 0x0;
+  }
+
+  font_outline_holder* find_and_bind(vsx_string font_file_name)
+  {
+    if (!is_name_in_cache(font_file_name))
       return 0x0;
 
-    font_outline_holder* font_holder = cache[path];
+    font_outline_holder* font_holder = get_pointer_by_name(font_file_name);
     font_holder->bind();
     return font_holder;
   }
@@ -119,7 +150,9 @@ class outline_font_cache
 
     font_holder->load(filesystem, path, type);
     font_holder->bind();
-    cache[path] = font_holder;
+    names.push_back(path);
+    pointers.push_back(font_holder);
+    return font_holder;
   }
 
 
@@ -136,9 +169,16 @@ public:
 
   void recycle( font_outline_holder* holder )
   {
+    if (!is_pointer_in_cache(holder))
+      return;
+
     holder->unbind();
     if (holder->should_be_destroyed())
+    {
+      names.remove( holder->get_file_name() );
+      pointers.remove( holder );
       delete holder;
+    }
   }
 
   static outline_font_cache* get_instance()
@@ -227,7 +267,7 @@ void vsx_font_outline::render_lines(void* font_inner_p, void* font_outline_p)
 void vsx_font_outline::render()
 {
   if (!font_holder)
-    VSX_ERROR_RETURN("Font not initialized");
+    return;
 
   FTFont* font_inner = ((font_outline_holder*)font_holder)->get_inner();
   FTFont* font_outline = ((font_outline_holder*)font_holder)->get_outline();
