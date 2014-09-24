@@ -106,6 +106,11 @@ public:
     disable_client_arrays();
   }
 
+  void unload()
+  {
+    destroy_vbo();
+  }
+
   vsx_vbo_bucket()
   {
     m_flags = 0;

@@ -271,6 +271,7 @@ int split_string(vsx_string& input, vsx_string& delimiter, std::vector<vsx_strin
     }
     if (count >= max_parts && max_parts > 0)
     {
+      i++;
       while (i < input.size())
       {
         results[results.size()-1].push_back( input[i] );
