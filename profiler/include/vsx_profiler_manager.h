@@ -21,6 +21,27 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+/*
+ * VSX Profiler Manager
+ *
+ * This is the wrapper class which you can use to implement the profiler in your program.
+ *
+ * Defines:
+ *   VSX_PROFILER_MAX_THREADS
+ *     Default: undefined
+ *
+ *     With this you can increase or decrease the number of threads supported by the profiler.
+ *     Make sure this is more or equal to your peak thread count in the program in which you
+ *     make calls to the profiler.
+ *
+ *   VSX_PROFILER_BASE_PATH
+ *     Default: undefined
+ *
+ *     By default, profiler uses VSXu engine's directory structure to place profiler files in
+ *     the user's "vsxu/{version}/data/profiles/" directory. If you want this someplace else,
+ *     set this define to your directory of choice.
+ */
+
 #ifndef VSX_PROFILER_MANAGER_H
 #define VSX_PROFILER_MANAGER_H
 
@@ -38,14 +59,16 @@
   #define VSX_PROFILER_MAX_THREADS 8
 #endif
 
-#define RECIEVE_BUFFER_PAGES 32
-#define RECIEVE_BUFFER_ITEMS 32
+#define VSX_PROFILER_RECIEVE_BUFFER_PAGES 32
+#define VSX_PROFILER_RECIEVE_BUFFER_ITEMS 32
+#define VSX_PROFILER_STACK_DEPTH_WARNING 64
 
 class vsx_profiler_manager
 {
 public:
 
   volatile __attribute__((aligned(64))) int64_t run_threads;
+	volatile __attribute__((aligned(64))) int64_t enabled;
 
   pthread_mutex_t profiler_thread_lock;
   pthread_t consumer_pthread;
@@ -55,11 +78,13 @@ public:
 
   vsx_fifo<vsx_profile_chunk*,RECIEVE_BUFFER_PAGES> io_pool;
 
-  vsx_profiler_manager()
-  {
-    run_threads = 1;
 
-    vsx_printf("VSX PROFILER: constructor\n");
+  vsx_profiler_manager()
+		:
+			run_threads(1),
+			enabled(0)
+  {
+		vsx_printf("VSX PROFILER:  Initializing: ");
     pthread_mutex_init(&profiler_thread_lock, NULL);
 
     for (size_t i = 0; i < VSX_PROFILER_MAX_THREADS; i++)
@@ -67,7 +92,7 @@ public:
       thread_list[i] = 0;
     }
 
-    vsx_printf("VSX PROFILER: starting consumer thread\n");
+		vsx_printf("[consumer thread: ");
 
     pthread_create(
       &consumer_pthread,
@@ -76,7 +101,7 @@ public:
       NULL
     );
 
-    vsx_printf("VSX PROFILER: starting io thread\n");
+		vsx_printf("[io thread: ");
 
     pthread_create(
       &io_pthread,
@@ -84,25 +109,57 @@ public:
       vsx_profiler_manager::io_thread,
       NULL
     );
+
+		vsx_printf("[initialization completed]\n");
   }
 
   ~vsx_profiler_manager()
   {
-    vsx_printf("VSX PROFILER: shutting down nicely\n");
-    run_threads = false;
-    pthread_join(io_pthread, NULL);
-    pthread_join(consumer_pthread, NULL);
-  }
+		vsx_printf("VSX PROFILER:  Shutting down:");
+
+		if (run_threads)
+			__sync_fetch_and_sub(&run_threads, 1);
+
+		vsx_printf("[io thread] ");
+		pthread_join(io_pthread, NULL);
+
+		vsx_printf("[consumer thread] ");
+		pthread_join(consumer_pthread, NULL);
+
+		vsx_printf("[destruction complete]\n");
+	}
 
   static vsx_string profiler_directory_get()
   {
-    return vsx_data_path::get_instance()->data_path_get()+"profiler";
+		#ifdef VSX_PROFILER_BASE_PATH
+			return vsx_string( VSX_PROFILER_BASE_PATH );
+		#else
+			return vsx_data_path::get_instance()->data_path_get()+"profiler";
+		#endif
   }
 
+	void enable()
+	{
+		if ( __sync_fetch_and_add(&enabled, 0) )
+			return;
+
+		vsx_printf("VSX PROFILER:  request consumer to data collection...\n");
+		__sync_fetch_and_add(&enabled, 1);
+	}
+
+	void disable()
+	{
+		if ( !__sync_fetch_and_add(&enabled, 0) )
+			return;
+
+		vsx_printf("VSX PROFILER:  request consumer to disable data collection...\n");
+		__sync_fetch_and_sub(&enabled, 1);
+	}
 
   static void* io_thread(void* arg)
   {
     VSX_UNUSED(arg);
+		vsx_printf("done] ");
 
     vsx_profiler_manager* pm = vsx_profiler_manager::get_instance();
 
@@ -117,6 +174,9 @@ public:
     vsx_timer timer;
 
     FILE* fp = fopen( filename.c_str() , "wb");
+
+		if (!fp)
+			VSX_ERROR_EXIT("VSX PROFILER: ***ERROR*** I/O thread can not open file. Aborting...");
 
     timer.start();
     while ( __sync_fetch_and_add( &pm->run_threads, 0) )
@@ -144,7 +204,10 @@ public:
   static void* consumer_thread(void* profiler)
   {
     VSX_UNUSED(profiler);
-    vsx_profiler_manager* pm = vsx_profiler_manager::get_instance();
+
+		vsx_printf("done] ");
+
+		vsx_profiler_manager* pm = vsx_profiler_manager::get_instance();
 
     vsx_profiler* profilers = &pm->profiler_list[0];
     pid_t* producer_threads = &pm->thread_list[0];
@@ -157,6 +220,8 @@ public:
     int64_t current_depth = 0;
     int64_t max_depth = 0;
 
+		int64_t current_enabled = __sync_fetch_and_add(&pm->enabled, 0);
+
     while ( __sync_fetch_and_add( &pm->run_threads, 0) )
     {
       // collect from all threads
@@ -164,7 +229,6 @@ public:
       {
         if (producer_threads[i] == 0)
           break;
-
 
         vsx_profile_chunk recieve_chunk;
 
@@ -185,9 +249,11 @@ public:
             if (current_depth > max_depth)
             {
               max_depth = current_depth;
-              vsx_printf("VSX PROFILER: CONSUMER THREAD: max depth increased to: %ld\n", max_depth);
+							vsx_printf("VSX PROFILER:  Stack depth new maximum: %ld\n", max_depth);
             }
-          }
+						if (current_depth > VSX_PROFILER_STACK_DEPTH_WARNING)
+							vsx_printf("VSX PROFILER:  ***WARNING*** Stack depth: %ld\n", VSX_PROFILER_STACK_DEPTH_WARNING);
+					}
 
           if (
               recieve_chunk.flags == VSX_PROFILE_CHUNK_FLAG_SECTION_END
@@ -195,30 +261,48 @@ public:
               recieve_chunk.flags == VSX_PROFILE_CHUNK_FLAG_END
               )
           {
-            current_depth--;
-            if (current_depth < 0)
-              vsx_printf("VSX PROFILER: CONSUMER THREAD: warning: stack depth below zero\n");
+						if ( !current_depth )
+							vsx_printf("VSX PROFILER:  ***WARNING*** Got stack depth below zero. Fix your code!\n");
+						current_depth--;
           }
 
-          recieve_buffer[current_buffer_page][recieve_buffer_iterator] = recieve_chunk;
+					// handle enabling switch, only toggle when at zero depth
+					if (
+							current_enabled != __sync_fetch_and_add( &pm->enabled, 0)
+							&&
+							!current_depth
+							)
+					{
+						current_enabled = __sync_fetch_and_add( &pm->enabled, 0);
+						if (current_enabled)
+							vsx_printf("VSX PROFILER:  [enabled data collector]\n");
+						else
+							vsx_printf("VSX PROFILER:  [disabled data collector]\n");
+						continue;
+					}
 
-          recieve_buffer_iterator++;
+					if (current_enabled)
+					{
+						recieve_buffer[current_buffer_page][recieve_buffer_iterator] = recieve_chunk;
 
-          if (recieve_buffer_iterator == RECIEVE_BUFFER_ITEMS)
-          {
-            recieve_buffer_iterator = 0;
+						recieve_buffer_iterator++;
 
-            // send to io
-            while (!pm->io_pool.produce(&recieve_buffer[current_buffer_page][0]))
-            {
-              vsx_printf("spinning on i/o pool\n");
-            }
+						if (recieve_buffer_iterator == VSX_PROFILER_RECIEVE_BUFFER_ITEMS)
+						{
+							recieve_buffer_iterator = 0;
 
-            current_buffer_page++;
+							// send to io
+							while (!pm->io_pool.produce(&recieve_buffer[current_buffer_page][0]))
+							{
+								vsx_printf("VSX PROFILER:  ***PERFORMANCE WARNING*** spinning while i/o fifo is full...\n");
+							}
 
-            if (current_buffer_page == RECIEVE_BUFFER_PAGES)
-              current_buffer_page = 0;
-          }
+							current_buffer_page++;
+
+							if (current_buffer_page == VSX_PROFILER_RECIEVE_BUFFER_PAGES)
+								current_buffer_page = 0;
+						}
+					}
 
           // read max 4 packets per thread
           if ( max_iterations++ > 4)
@@ -255,7 +339,7 @@ public:
       if (thread_list[i] == local_thread_id)
       {
         pthread_mutex_unlock(&profiler_thread_lock);
-        vsx_printf("VSX PROFILER: WARNING *** Profiler already initialized for thread id %d.\n",local_thread_id);
+				vsx_printf("VSX PROFILER: ***WARNING*** Profiler already initialized for thread id %d. Did you call init() twice by mistake?\n",local_thread_id);
         return;
       }
 
@@ -313,5 +397,7 @@ public:
   }
 
 };
+
+#undef VSX_PROFILER_STACK_DEPTH_WARNING
 
 #endif
