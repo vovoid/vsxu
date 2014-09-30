@@ -76,7 +76,7 @@ public:
   vsx_profiler profiler_list[VSX_PROFILER_MAX_THREADS];
   pid_t thread_list [VSX_PROFILER_MAX_THREADS];
 
-  vsx_fifo<vsx_profile_chunk*,RECIEVE_BUFFER_PAGES> io_pool;
+  vsx_fifo<vsx_profile_chunk*,VSX_PROFILER_RECIEVE_BUFFER_PAGES> io_pool;
 
 
   vsx_profiler_manager()
@@ -176,24 +176,27 @@ public:
     FILE* fp = fopen( filename.c_str() , "wb");
 
 		if (!fp)
-			VSX_ERROR_EXIT("VSX PROFILER: ***ERROR*** I/O thread can not open file. Aborting...");
+      VSX_ERROR_EXIT("VSX PROFILER: ***ERROR*** I/O thread can not open file. Aborting...", 900);
 
     timer.start();
+    double accumulated_time = 0.0;
     while ( __sync_fetch_and_add( &pm->run_threads, 0) )
     {
       vsx_profile_chunk* r;
       while ( pm->io_pool.consume(r) )
       {
-        fwrite(r,sizeof(vsx_profile_chunk) * RECIEVE_BUFFER_ITEMS,1,fp);
+        fwrite(r,sizeof(vsx_profile_chunk) * VSX_PROFILER_RECIEVE_BUFFER_ITEMS,1,fp);
       }
+      double d1 = timer.dtime();
+      if (pm->enabled)
+        accumulated_time += d1;
     }
-    double d = timer.dtime();
 
     vsx_profile_chunk c;
     c.cycles = vsx_profiler_rdtsc();
     c.flags = VSX_PROFILE_CHUNK_FLAG_TIMESTAMP;
     memset(c.tag,0,32);
-    sprintf(c.tag,"%f", d );
+    sprintf(c.tag,"%f", accumulated_time );
     fwrite(&c,sizeof(vsx_profile_chunk),1,fp);
 
     fclose(fp);
@@ -212,7 +215,7 @@ public:
     vsx_profiler* profilers = &pm->profiler_list[0];
     pid_t* producer_threads = &pm->thread_list[0];
 
-    vsx_profile_chunk recieve_buffer[RECIEVE_BUFFER_PAGES][RECIEVE_BUFFER_ITEMS];
+    vsx_profile_chunk recieve_buffer[VSX_PROFILER_RECIEVE_BUFFER_PAGES][VSX_PROFILER_RECIEVE_BUFFER_ITEMS];
     size_t recieve_buffer_iterator = 0;
 
     size_t current_buffer_page = 0;
@@ -252,7 +255,7 @@ public:
 							vsx_printf("VSX PROFILER:  Stack depth new maximum: %ld\n", max_depth);
             }
 						if (current_depth > VSX_PROFILER_STACK_DEPTH_WARNING)
-							vsx_printf("VSX PROFILER:  ***WARNING*** Stack depth: %ld\n", VSX_PROFILER_STACK_DEPTH_WARNING);
+              vsx_printf("VSX PROFILER:  ***WARNING*** Stack depth: %d\n", VSX_PROFILER_STACK_DEPTH_WARNING);
 					}
 
           if (
@@ -275,9 +278,14 @@ public:
 					{
 						current_enabled = __sync_fetch_and_add( &pm->enabled, 0);
 						if (current_enabled)
-							vsx_printf("VSX PROFILER:  [enabled data collector]\n");
+            {
+              vsx_printf("VSX PROFILER:  [enabled data collector]\n");
+            }
 						else
+            {
 							vsx_printf("VSX PROFILER:  [disabled data collector]\n");
+            }
+
 						continue;
 					}
 

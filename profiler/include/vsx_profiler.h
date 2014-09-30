@@ -56,8 +56,21 @@
  *   profiler->sub_end();
  *   profiler->maj_end();
  * }
- * ---
  **/
+
+#ifndef VSX_NO_PROFILER
+  #define VSXP_CLASS_DECLARE vsx_profiler* profiler
+  #define VSXP_CLASS_CONSTRUCTOR profiler = 0x0
+  #define VSXP_CLASS_LOCAL_INIT if (!profiler) profiler = vsx_profiler_manager::get_instance()->get_profiler()
+  #define VSXP_S_BEGIN(s) profiler->sub_begin(s)
+  #define VSXP_S_END profiler->sub_end()
+#else
+  #define VSXP_CLASS_DECLARE
+  #define VSXP_CLASS_CONSTRUCTOR
+  #define VSXP_CLASS_LOCAL_INIT
+  #define VSXP_S_BEGIN(s)
+  #define VSXP_S_END
+#endif
 
 #ifdef __i386
 __inline__ uint64_t vsx_profiler_rdtsc()
