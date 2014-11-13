@@ -100,7 +100,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
   bool run = true;
   ssize_t size_recv;
   int keepalive_timer = 0;
-  vsx_string message_stack;
+  vsx_string<>message_stack;
   
   memset(&hints, 0, sizeof hints); // make sure the struct is empty
   hints.ai_family = AF_INET; //AF_INET6 or AF_UNSPEC
@@ -170,7 +170,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
     printf("server: got connection from %s\n", s);
     //
 
-    vsx_string welcome = ">>VSXu Server 0.3.0\n";
+    vsx_string<>welcome = ">>VSXu Server 0.3.0\n";
 
     send(
       recv_sock,
@@ -199,7 +199,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
       while (this_->cmd_out->pop(&out_command))
       {
         //printf("sending command: %s\n",out_command->str().c_str() );
-        vsx_string res = out_command->str()+"\n";
+        vsx_string<>res = out_command->str()+"\n";
         if (send(
           recv_sock,
           res.c_str(),
@@ -217,7 +217,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
       //printf("after cmd_out loop\n");
       if (!count_sent) {
         if (keepalive_timer++ == 150) {
-          vsx_string res = "_\n";
+          vsx_string<>res = "_\n";
           if (send(
             recv_sock,
             res.c_str(),
@@ -271,14 +271,14 @@ void* vsx_command_list_server::server_worker(void *ptr)
       usleep(10);
       /*if (recv_buf[0] != 0)
       {
-        vsx_string recv_data(recv_buf);
+        vsx_string<>recv_data(recv_buf);
 
-        vsx_avector<vsx_string> parts;
-        vsx_string deli = "\n";
+        vsx_avector< vsx_string<> > parts;
+        vsx_string<>deli = "\n";
         explode(recv_data, deli, parts);
         for (unsigned long i = 0; i < parts.size(); i++)
         {
-          vsx_string* msg = &parts[i];
+          vsx_string<>* msg = &parts[i];
           if ((*msg)[msg->size()-1] == '\r') msg->pop_back();
           if ((*msg)[msg->size()-1] == '\n') msg->pop_back();
           if ((*msg)[msg->size()-1] == '\r') msg->pop_back();
@@ -323,7 +323,7 @@ void* vsx_command_list_client::client_worker(void *ptr)
   int sock;
   ssize_t size_recv;
   int keepalive_timer = 0;
-  vsx_string message_stack;
+  vsx_string<>message_stack;
   
   memset(&hints, 0, sizeof hints); // make sure the struct is empty
   hints.ai_family = AF_UNSPEC;     // don't care IPv4 or IPv6
@@ -376,7 +376,7 @@ void* vsx_command_list_client::client_worker(void *ptr)
     vsx_command_s *out_command;
     while (this_->cmd_out.pop(&out_command))
     {
-      vsx_string res = out_command->str()+"\n";
+      vsx_string<>res = out_command->str()+"\n";
       //printf("sending to server: %s\n", res.c_str() );
       if (send(
         sock,
@@ -399,7 +399,7 @@ void* vsx_command_list_client::client_worker(void *ptr)
     
     if (!count_sent) {
       if (keepalive_timer++ == 150) {
-        vsx_string res = "_\n";
+        vsx_string<>res = "_\n";
         if (send(
           sock,
           res.c_str(),
@@ -456,7 +456,7 @@ vsx_command_list* vsx_command_list_client::get_command_list_out()
   return &cmd_out;  
 }
 
-bool vsx_command_list_client::client_connect(vsx_string &server_a)
+bool vsx_command_list_client::client_connect(vsx_string<>&server_a)
 {
   server_address = server_a;
   pthread_attr_init(&worker_t_attr);

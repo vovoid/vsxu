@@ -38,7 +38,7 @@ bool vsx_module_param_interpolation_float3::set(vsx_module_param_abs* value, int
   return true;
 }
 
-bool vsx_module_param_interpolation_float3::set(vsx_string value, int arity, float interpolation_time) {
+bool vsx_module_param_interpolation_float3::set(vsx_string<>value, int arity, float interpolation_time) {
   dest_interp = interpolation_time;
   destination_value[arity] = vsx_string_helper::s2f(value);
   return true;
@@ -68,7 +68,7 @@ bool vsx_module_param_interpolation_float4::set(vsx_module_param_abs* value, int
   return true;
 }
 
-bool vsx_module_param_interpolation_float4::set(vsx_string value, int arity, float interpolation_time) {
+bool vsx_module_param_interpolation_float4::set(vsx_string<>value, int arity, float interpolation_time) {
   dest_interp = interpolation_time;
   destination_value[arity] = vsx_string_helper::s2f(value);
   return true;
@@ -99,7 +99,7 @@ bool vsx_module_param_interpolation_quaternion::set(vsx_module_param_abs* value,
   return true;
 }
 
-bool vsx_module_param_interpolation_quaternion::set(vsx_string value, int arity, float interpolation_time) {
+bool vsx_module_param_interpolation_quaternion::set(vsx_string<>value, int arity, float interpolation_time) {
   VSX_UNUSED(arity);
   dest_interp = interpolation_time;
   destination_value[arity] = vsx_string_helper::s2f(value);
@@ -166,7 +166,7 @@ bool vsx_module_param_interpolation_float::set(vsx_module_param_abs* value, int 
   return true;
 }
 
-bool vsx_module_param_interpolation_float::set(vsx_string value, int arity, float interpolation_time) {
+bool vsx_module_param_interpolation_float::set(vsx_string<>value, int arity, float interpolation_time) {
   VSX_UNUSED(arity);
   iterations = 0;
   dest_interp = interpolation_time;
@@ -279,7 +279,7 @@ bool vsx_module_param_interpolation_list::schedule_remove(vsx_engine_param* para
   }
 }*/
 
-void vsx_module_param_interpolation_list::set_target_value(vsx_engine_param* target, vsx_string value, int arity,float interpolation_time) {
+void vsx_module_param_interpolation_list::set_target_value(vsx_engine_param* target, vsx_string<>value, int arity,float interpolation_time) {
   if (listeners_map.find(target) != listeners_map.end()) {
     listeners_map[target]->set(value,arity,interpolation_time);
   } else {

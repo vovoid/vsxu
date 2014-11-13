@@ -12,7 +12,7 @@ class module_render_state : vsx_module
   vsx_engine_helper* helper;
   vsx_module_param_render* render_result;
   vsx_module_param_resource* filename_in;
-  vsx_string current_filename;
+  vsx_string<>current_filename;
 
 public:
   void module_info(vsx_module_info* info)

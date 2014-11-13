@@ -168,7 +168,7 @@ public:
   }
 
 
-  void param_set_notify(const vsx_string& name) {
+  void param_set_notify(const vsx_string<>& name) {
     if ((name == "vertex_program" || name == "fragment_program")) {
       //printf("PARAM_SET_NOTIFY %s\n\n",name.c_str());
       shader.vertex_program = i_vertex_program->get();
@@ -266,7 +266,7 @@ public:
     {
       if ( !shader.get_linked() )
       {
-        vsx_string h = shader.link();
+        vsx_string<>h = shader.link();
         #ifdef VSXU_DEBUG
           printf("vert = %s\n\n\n\n",shader.vertex_program.c_str());
           printf("frag = %s\n",shader.fragment_program.c_str());

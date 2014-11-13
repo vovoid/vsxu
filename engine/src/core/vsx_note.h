@@ -27,10 +27,10 @@
 
 class vsx_note {
 public:
-	vsx_string text; // base64-encoded, we don't care to unpack it
+	vsx_string<>text; // base64-encoded, we don't care to unpack it
   vsx_vector3<float> pos;
   vsx_vector3<float> size;
-	vsx_string name;
+	vsx_string<>name;
 	float font_size;
 
 	bool set(vsx_command_s* c) {
@@ -47,12 +47,12 @@ public:
 		return false;
 	}
 
-	const vsx_string serialize() {
+	const vsx_string<>serialize() {
 		//        0       1    2  3     4 
 		//  note_create name pos size text
     return "note_create_ok "+name+" "+ vsx_vector3_helper::to_string(pos) +" "+vsx_vector3_helper::to_string(size) +" "+text+" "+vsx_string_helper::f2s(font_size);
 	}
-	vsx_string serialize_state() {
+	vsx_string<>serialize_state() {
 		//        0       1    2  3     4 
 		//  note_create name pos size text
     return "note_create "+name+" "+ vsx_vector3_helper::to_string(pos) +" "+vsx_vector3_helper::to_string(size) +" " + text + " " + vsx_string_helper::f2s(font_size);

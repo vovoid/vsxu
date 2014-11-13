@@ -63,7 +63,7 @@ if (cmd == "component_delete")
 {
   if (c->parts.size() == 2)
   {
-    std::map<vsx_string,vsx_comp*> temp_forge_map = forge_map;
+    std::map<vsx_string<>,vsx_comp*> temp_forge_map = forge_map;
     std::list<vsx_comp*> to_delete;
     forge_map_iter = temp_forge_map.find(c->parts[1]);
     if (forge_map_iter != temp_forge_map.end()) {
@@ -74,7 +74,7 @@ if (cmd == "component_delete")
         if (!macro) drun = false;
         if (forge_map_iter != temp_forge_map.end())
         {
-          vsx_string t = (*forge_map_iter).first;
+          vsx_string<>t = (*forge_map_iter).first;
           vsx_comp* comp = (*forge_map_iter).second;
           if ((t == c->parts[1]) || (macro && (t.find(c->parts[1]+".") == 0))) {
             std::map<vsx_module_param_abs*, std::list<vsx_channel*> >::iterator out_map_channels_iter;
@@ -178,20 +178,20 @@ if (cmd == "component_assign")
   if (!dest)
     c->parts[1] = "";
 
-  vsx_string deli = ",";
-  std::vector<vsx_string> comp_source;
+  vsx_string<>deli = ",";
+  std::vector <vsx_string<> > comp_source;
   explode(c->parts[2],deli,comp_source);
   std::vector<vsx_comp*> components;
   // 0. Go through the list of components, all here  needs to be done for each and one component exclusively
-  for (std::vector<vsx_string>::iterator it = comp_source.begin(); it != comp_source.end(); ++it) {
+  for (std::vector <vsx_string<> >::iterator it = comp_source.begin(); it != comp_source.end(); ++it) {
     vsx_comp* comp = get_component_by_name(*it);
     components.push_back(comp);
   }
 
   // check if we can do the operation
   bool namecheck = true;
-  vsx_string first_part;
-  vsx_string comp_name;
+  vsx_string<>first_part;
+  vsx_string<>comp_name;
   for (std::vector<vsx_comp*>::iterator it = components.begin(); it != components.end(); ++it) {
     first_part = c->parts[1]+".";
     comp_name = (*it)->name;
@@ -283,7 +283,7 @@ if (cmd == "component_rename")
     if (rename_component(c->parts[1],"$",c->parts[2]) == 1)
     cmd_out->add_raw("component_rename_ok "+c->parts[1]+" "+c->parts[2], VSX_COMMAND_GARBAGE_COLLECT);
     else
-    cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Rename failed."), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw(vsx_string<>("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Rename failed."), VSX_COMMAND_GARBAGE_COLLECT);
   }
   goto process_message_queue_end;
 }
@@ -352,7 +352,7 @@ if (cmd == "component_timing")
   if (c->parts.size() == 3) {
     vsx_comp* src = get_component_by_name(c->parts[1]);
     if (src) {
-      cmd_out->add_raw(vsx_string("component_timing_ok ")+c->parts[2]+" "+vsx_string_helper::f2s(src->time_run,12)+" "+vsx_string_helper::f2s(src->time_output,12)+" "+vsx_string_helper::f2s(last_frame_time,12), VSX_COMMAND_GARBAGE_COLLECT);
+      cmd_out->add_raw(vsx_string<>("component_timing_ok ")+c->parts[2]+" "+vsx_string_helper::f2s(src->time_run,12)+" "+vsx_string_helper::f2s(src->time_output,12)+" "+vsx_string_helper::f2s(last_frame_time,12), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
   goto process_message_queue_end;

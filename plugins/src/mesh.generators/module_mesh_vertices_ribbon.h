@@ -149,19 +149,12 @@ public:
       float ft = sin(it * 3.14159f + t) * sin(-it * 5.18674f - t);
       float thick = fabs(sin(it * 3.14159f + t * 0.5));
       vsx_vector3<> skew = up * ft * skew_amount * thick;
-
       mesh->data->vertices[i2    ] = pos + up * thick + skew;
-
       mesh->data->vertex_normals[i2    ] = normal;
-
       pos += diff;
-
       mesh->data->vertex_colors[i2] = vsx_color<>(thick * p_scale, thick * p_scale, thick * p_scale, 1.0);
-
       mesh->data->vertex_tex_coords[i2]   = vsx_tex_coord2f(it, 0);
-
     }
-    #undef COUNT
 
     mesh->timestamp++;
     result->set(mesh);

@@ -49,7 +49,7 @@ void vsx_widget_connector_bezier::command_process_back_queue(vsx_command_s *t) {
     //   param_unalias [-1/1] [component] [param_name]
     if (alias_conn) 
     {
-      vsx_string bb;
+      vsx_string<>bb;
       if (((vsx_widget_anchor*)parent)->io == -1) bb = "-1"; else bb = "1";
       if (((vsx_widget_anchor*)parent)->io == -1)
       command_q_b.add_raw("param_unalias "+bb+" "+((vsx_widget_component*)((vsx_widget_anchor*)destination)->component)->name+" "+destination->name);
@@ -277,7 +277,7 @@ void vsx_widget_connector_bezier::draw()
   // set color (if not already done)
   if (!color_initialized)
   {
-    vsx_string p_type = ((vsx_widget_anchor*)parent)->p_type;
+    vsx_string<>p_type = ((vsx_widget_anchor*)parent)->p_type;
     if (p_type == "complex")
     {
       color = vsx_color<>(216.0f/255.0f,76.0f/255.0f,202.0f/255.0f,1.0f);

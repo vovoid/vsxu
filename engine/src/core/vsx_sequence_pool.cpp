@@ -33,13 +33,13 @@ void vsx_sequence_pool::set_engine(void* new_engine)
 
 void vsx_sequence_pool::remove_param_sequence(vsx_engine_param* param)
 {
-  for (std::map<vsx_string, vsx_param_sequence_list*>::iterator it = sequence_lists.begin(); it != sequence_lists.end(); it++)
+  for (std::map<vsx_string<>, vsx_param_sequence_list*>::iterator it = sequence_lists.begin(); it != sequence_lists.end(); it++)
   {
     (*it).second->remove_param_sequence(param);
   }
 }
 
-int vsx_sequence_pool::add(vsx_string name) // 1 = success, 0 = fail
+int vsx_sequence_pool::add(vsx_string<>name) // 1 = success, 0 = fail
 {
   //printf("%d\n", __LINE__);
   if (sequence_lists.find(name) != sequence_lists.end()) return 0;
@@ -50,7 +50,7 @@ int vsx_sequence_pool::add(vsx_string name) // 1 = success, 0 = fail
   return 1;
 }
 
-int vsx_sequence_pool::del(vsx_string name)
+int vsx_sequence_pool::del(vsx_string<>name)
 {
   if (sequence_lists.find(name) != sequence_lists.end())
   {
@@ -63,7 +63,7 @@ int vsx_sequence_pool::del(vsx_string name)
   return 0;
 }
 
-int vsx_sequence_pool::clone(vsx_string name, vsx_string new_name)
+int vsx_sequence_pool::clone(vsx_string<>name, vsx_string<>new_name)
 {
   // insanity check
   if (sequence_lists.find(name) != sequence_lists.end() && sequence_lists.find(new_name) == sequence_lists.end())
@@ -75,7 +75,7 @@ int vsx_sequence_pool::clone(vsx_string name, vsx_string new_name)
   return 0; // BOO
 }
 
-int vsx_sequence_pool::select(vsx_string name)
+int vsx_sequence_pool::select(vsx_string<>name)
 {
   //printf("%d\n", __LINE__);
   if (sequence_lists.find(name) != sequence_lists.end()) {
@@ -96,7 +96,7 @@ bool vsx_sequence_pool::toggle_edit()
 {
   edit_enabled = !edit_enabled;
 
-  for (std::map<vsx_string, vsx_param_sequence_list*>::iterator it = sequence_lists.begin(); it != sequence_lists.end(); it++)
+  for (std::map<vsx_string<>, vsx_param_sequence_list*>::iterator it = sequence_lists.begin(); it != sequence_lists.end(); it++)
   {
     (*it).second->set_run_on_edit(edit_enabled);
   }
@@ -109,11 +109,11 @@ bool vsx_sequence_pool::get_edit_enabled()
   return edit_enabled;
 }
 
-vsx_string vsx_sequence_pool::dump_names()
+vsx_string<>vsx_sequence_pool::dump_names()
 {
-  vsx_string names;
+  vsx_string<>names;
   int i = 0;
-  for (std::map<vsx_string, vsx_param_sequence_list*>::iterator it = sequence_lists.begin(); it != sequence_lists.end(); it++)
+  for (std::map<vsx_string<>, vsx_param_sequence_list*>::iterator it = sequence_lists.begin(); it != sequence_lists.end(); it++)
   {
     if (i != 0) names += ";";
     names += (*it).first;
@@ -191,7 +191,7 @@ void vsx_sequence_pool::set_loop_point(float new_loop_point)
 }
 
 
-vsx_param_sequence_list* vsx_sequence_pool::get_sequence_list_by_name(vsx_string name)
+vsx_param_sequence_list* vsx_sequence_pool::get_sequence_list_by_name(vsx_string<>name)
 {
   if (sequence_lists.find(name) != sequence_lists.end())
   {
@@ -200,16 +200,16 @@ vsx_param_sequence_list* vsx_sequence_pool::get_sequence_list_by_name(vsx_string
   return 0;
 }
 
-bool vsx_sequence_pool::export_to_file(vsx_string filename)
+bool vsx_sequence_pool::export_to_file(vsx_string<>filename)
 {
   vsx_param_sequence_list* sequence_list = cur_sequence_list;
   if (!sequence_list) return false;
 
   vsx_command_list savelist;
 
-  vsx_string sequence_dump = sequence_list->get_sequence_list_dump();
-  vsx_string deli = "&";
-  std::vector<vsx_string> parts;
+  vsx_string<>sequence_dump = sequence_list->get_sequence_list_dump();
+  vsx_string<>deli = "&";
+  std::vector <vsx_string<> > parts;
   explode(sequence_dump, deli, parts);
 #if VSXU_DEBUG
   printf("sequence dump: %s\n", sequence_dump.c_str() );
@@ -218,8 +218,8 @@ bool vsx_sequence_pool::export_to_file(vsx_string filename)
   {
     for (size_t i = 0; i < parts.size(); i++)
     {
-      vsx_string i_deli = "#";
-      std::vector<vsx_string> i_parts;
+      vsx_string<>i_deli = "#";
+      std::vector <vsx_string<> > i_parts;
       explode(parts[i], i_deli, i_parts);
       // 0=pseq_inject 1=[component] 2=[param] 3=[data]
       savelist.add_raw("pseq_inject "+i_parts[0]+" "+i_parts[1]+" "+i_parts[2]);
@@ -229,7 +229,7 @@ bool vsx_sequence_pool::export_to_file(vsx_string filename)
   return true;
 }
 
-bool vsx_sequence_pool::import_from_file(vsx_string filename)
+bool vsx_sequence_pool::import_from_file(vsx_string<>filename)
 {
   vsx_command_list import_list;
   import_list.load_from_file( vsx_data_path::get_instance()->data_path_get() + "animations/"+filename);
@@ -261,12 +261,12 @@ void vsx_sequence_pool::dump_to_command_list(vsx_command_list &savelist)
     toggle_edit();
     reinit_edit = 1;
   }
-  for (std::map<vsx_string, vsx_param_sequence_list*>::iterator it = sequence_lists.begin(); it != sequence_lists.end(); it++)
+  for (std::map<vsx_string<>, vsx_param_sequence_list*>::iterator it = sequence_lists.begin(); it != sequence_lists.end(); it++)
   {
     savelist.add_raw("seq_pool add "+(*it).first);
-    vsx_string sequence_dump = (*it).second->get_sequence_list_dump();
-    vsx_string deli = "&";
-    std::vector<vsx_string> parts;
+    vsx_string<>sequence_dump = (*it).second->get_sequence_list_dump();
+    vsx_string<>deli = "&";
+    std::vector <vsx_string<> > parts;
     explode(sequence_dump, deli, parts);
 #if VSXU_DEBUG
     printf("sequence dump: %s\n", sequence_dump.c_str() );
@@ -275,8 +275,8 @@ void vsx_sequence_pool::dump_to_command_list(vsx_command_list &savelist)
     {
       for (size_t i = 0; i < parts.size(); i++)
       {
-        vsx_string i_deli = "#";
-        std::vector<vsx_string> i_parts;
+        vsx_string<>i_deli = "#";
+        std::vector <vsx_string<> > i_parts;
         explode(parts[i], i_deli, i_parts);
         // 0=seq_pool 1=pseq_inject 2=[seq_pool_name] 3=[component] 4=[param] 5=[data]
         savelist.add_raw("seq_pool pseq_inject "+(*it).first+" "+i_parts[0]+" "+i_parts[1]+" "+i_parts[2]);
@@ -294,7 +294,7 @@ void vsx_sequence_pool::dump_to_command_list(vsx_command_list &savelist)
 void vsx_sequence_pool::clear()
 {
   cur_sequence_list = 0x0;
-  for (std::map<vsx_string, vsx_param_sequence_list*>::iterator it = sequence_lists.begin(); it != sequence_lists.end(); it++)
+  for (std::map<vsx_string<>, vsx_param_sequence_list*>::iterator it = sequence_lists.begin(); it != sequence_lists.end(); it++)
   {
     delete (*it).second;
   }

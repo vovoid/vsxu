@@ -9,10 +9,10 @@
 #include "vsx_log.h"
 
 //int log_level = 1;
-//vsx_string log_dir;
+//vsx_string<>log_dir;
 //int first = 1;
 
-void log(vsx_string message, int level)
+void log(vsx_string<>message, int level)
 {
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
     openlog ("vsxu_engine", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);

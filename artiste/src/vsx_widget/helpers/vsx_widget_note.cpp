@@ -178,7 +178,7 @@ void vsx_widget_note::save() {
   parent->vsx_command_queue_b(this);
 }
 
-bool vsx_widget_note::load_text(vsx_string new_text) {
+bool vsx_widget_note::load_text(vsx_string<>new_text) {
   ((vsx_widget_base_edit*)editor)->set_string(new_text);
   return true;
 }

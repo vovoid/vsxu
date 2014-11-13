@@ -34,7 +34,7 @@ if (cmd == "macro_dump" || cmd == "component_clone")
   if (!(c->parts.size() >= 3))
     goto process_message_queue_end;
 
-  vsx_string my_name = c->parts[1];
+  vsx_string<>my_name = c->parts[1];
   forge_map_iter = forge_map.find(c->parts[1]);
 
   // sanity
@@ -51,20 +51,20 @@ if (cmd == "macro_dump" || cmd == "component_clone")
   bool macro = ((*forge_map_iter).second->component_class == "macro");
   if (macro)
   {
-    tmp_comp.add_raw(vsx_string("macro_create $$name ")+vsx_string_helper::f2s((*forge_map_iter).second->size), VSX_COMMAND_GARBAGE_COLLECT);
+    tmp_comp.add_raw(vsx_string<>("macro_create $$name ")+vsx_string_helper::f2s((*forge_map_iter).second->size), VSX_COMMAND_GARBAGE_COLLECT);
     ++forge_map_iter;
     while (drun)
     {
       if (forge_map_iter != forge_map.end())
       {
-        vsx_string t = (*forge_map_iter).first;
+        vsx_string<>t = (*forge_map_iter).first;
         vsx_comp* comp = (*forge_map_iter).second;
         if (t.find(c->parts[1]+".") == 0)
         {
           if (comp->component_class == "macro") {
-            tmp_comp.add_raw(vsx_string("macro_create ")+str_replace(my_name+".","$$name.",t,1)+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y)+" "+vsx_string_helper::f2s(comp->size), VSX_COMMAND_GARBAGE_COLLECT);
+            tmp_comp.add_raw(vsx_string<>("macro_create ")+str_replace(my_name+".","$$name.",t,1)+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y)+" "+vsx_string_helper::f2s(comp->size), VSX_COMMAND_GARBAGE_COLLECT);
           } else {
-            tmp_comp.add_raw(vsx_string("component_create ")+comp->identifier+" "+str_replace(my_name+".","$$name.",t,1)+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y), VSX_COMMAND_GARBAGE_COLLECT);
+            tmp_comp.add_raw(vsx_string<>("component_create ")+comp->identifier+" "+str_replace(my_name+".","$$name.",t,1)+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y), VSX_COMMAND_GARBAGE_COLLECT);
             comp->get_params_in()->dump_aliases_and_connections(c->parts[1], &tmp_connections);
             comp->get_params_out()->dump_aliases(c->parts[1], &tmp_aliases);
             comp->get_params_in()->dump_param_values(str_replace(my_name+".","$$name.",t,1),&tmp_comp);
@@ -77,21 +77,21 @@ if (cmd == "macro_dump" || cmd == "component_clone")
   else
   {
     vsx_comp* comp = (*forge_map_iter).second;
-    tmp_comp.add_raw(vsx_string("component_create ")+comp->identifier+" $$name "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y));
+    tmp_comp.add_raw(vsx_string<>("component_create ")+comp->identifier+" $$name "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y));
     comp->get_params_in()->dump_param_values("$$name",&tmp_comp);
   }
   vsx_command_s* outc;
   tmp_comp.reset();
   while ( (outc = tmp_comp.get()) )
   {
-    cmd_out->add_raw(vsx_string(c->parts[0]+"_add ")+c->get_parts(1,2)+" "+base64_encode(outc->raw), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw(vsx_string<>(c->parts[0]+"_add ")+c->get_parts(1,2)+" "+base64_encode(outc->raw), VSX_COMMAND_GARBAGE_COLLECT);
   }
 
   if (tmp_aliases.count())
   {
     tmp_aliases.reset();
     while ( (outc = tmp_aliases.pop_back()) ) {
-      cmd_out->add_raw(vsx_string(c->parts[0]+"_add ")+c->get_parts(1,2)+" "+base64_encode(outc->raw), VSX_COMMAND_GARBAGE_COLLECT);
+      cmd_out->add_raw(vsx_string<>(c->parts[0]+"_add ")+c->get_parts(1,2)+" "+base64_encode(outc->raw), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
 
@@ -99,11 +99,11 @@ if (cmd == "macro_dump" || cmd == "component_clone")
   {
     tmp_connections.reset();
     while ( (outc = tmp_connections.pop_back()) ) {
-      cmd_out->add_raw(vsx_string(c->parts[0]+"_add ")+c->get_parts(1,2)+" "+base64_encode(outc->raw), VSX_COMMAND_GARBAGE_COLLECT);
+      cmd_out->add_raw(vsx_string<>(c->parts[0]+"_add ")+c->get_parts(1,2)+" "+base64_encode(outc->raw), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
 
-  cmd_out->add_raw(vsx_string(c->parts[0]+"_complete ")+c->get_parts(1), VSX_COMMAND_GARBAGE_COLLECT);
+  cmd_out->add_raw(vsx_string<>(c->parts[0]+"_complete ")+c->get_parts(1), VSX_COMMAND_GARBAGE_COLLECT);
 
   goto process_message_queue_end;
 }
@@ -115,7 +115,7 @@ if (cmd == "macro_dump" || cmd == "component_clone")
 if (cmd == "macro_prerun")
 {
   if (get_component_by_name(c->parts[3])) {
-    cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("There is already a macro '"+c->parts[3]+"'"), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw(vsx_string<>("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("There is already a macro '"+c->parts[3]+"'"), VSX_COMMAND_GARBAGE_COLLECT);
   } else {
     cmd_out->addc(c, VSX_COMMAND_GARBAGE_COLLECT);
   }
@@ -143,7 +143,7 @@ if (cmd == "macro_create")
     comp->position.y = vsx_string_helper::s2f(c->parts[3]);
     comp->size = vsx_string_helper::s2f(c->parts[4]);
     // the code creating the macro seems pretty similar to that of the component eh?
-    cmd_out->add_raw(vsx_string("component_create_ok ")+c->parts[1]+" "+get_component_by_name(c->parts[1])->component_class+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4], VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw(vsx_string<>("component_create_ok ")+c->parts[1]+" "+get_component_by_name(c->parts[1])->component_class+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4], VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
   cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("There is already a macro '"+c->parts[1]), VSX_COMMAND_GARBAGE_COLLECT);

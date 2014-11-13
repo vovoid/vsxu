@@ -56,14 +56,14 @@ class Display
 {
 public:
     Display();
-    Display(int index, int x, int y, bool primary, vsx_string devName, vsx_string devString, const std::vector<DisplayMode>& displayModes);
+    Display(int index, int x, int y, bool primary, vsx_string<>devName, vsx_string<>devString, const std::vector<DisplayMode>& displayModes);
 
     //bool Defaulted() const { return m_Index == -1; }
 
     // Function: GetName
     //
     // Retrieves the name of the display.
-    vsx_string GetName() const;
+    vsx_string<>GetName() const;
 
     // Function: GetDisplayModes
     //
@@ -78,13 +78,13 @@ public:
     int m_Index;
     int m_XOffset, m_YOffset;
     bool m_PrimaryDisplay;
-    vsx_string m_DeviceName, m_DeviceString;
+    vsx_string<>m_DeviceName, m_DeviceString;
 
     std::vector<DisplayMode> m_DisplayModes;
     DisplayMode m_SelectedDisplayMode;
 };
 
-DisplayMode get_display_properties(vsx_string device_name);
+DisplayMode get_display_properties(vsx_string<>device_name);
 
 // Function: EnumerateDisplays
 //

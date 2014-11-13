@@ -139,7 +139,7 @@ void vsx_widget_base_edit::command_process_back_queue(vsx_command_s *t) {
 void vsx_widget_base_edit::process_line(int n_line) {
   if (!process_characters) return;
   int i = n_line;
-  vsx_string b;
+  vsx_string<>b;
 
   char fill = (char)0x01;
   if (lines[i].size() >= 2)
@@ -150,10 +150,10 @@ void vsx_widget_base_edit::process_line(int n_line) {
     b = b + fill;
   }
   if (fill == (char)0x01)
-  for (std::map<vsx_string,char>::iterator it = keywords.begin(); it != keywords.end(); ++it) {
+  for (std::map<vsx_string<>,char>::iterator it = keywords.begin(); it != keywords.end(); ++it) {
     char f = (char)(*it).second;
     if (enable_syntax_highlighting)
-    b = str_replace_char_pad((*it).first, vsx_string(f), lines[i], b);
+    b = str_replace_char_pad((*it).first, vsx_string<>(f), lines[i], b);
   }
   if (n_line > (int)lines_p.size()-1) {
 
@@ -166,7 +166,7 @@ void vsx_widget_base_edit::process_lines() {
   if (!process_characters) return;
   lines_p.clear();
   for (unsigned long i = 0; i < lines.size(); ++i) {
-    vsx_string b;
+    vsx_string<>b;
 
     char fill = (char)0x01;
     if (lines[i].size() >= 2)
@@ -177,9 +177,9 @@ void vsx_widget_base_edit::process_lines() {
       b = b + fill;
     }
     if (fill == (char)0x01)
-    for (std::map<vsx_string,char>::iterator it = keywords.begin(); it != keywords.end(); ++it) {
+    for (std::map<vsx_string<>,char>::iterator it = keywords.begin(); it != keywords.end(); ++it) {
       char f = (char)(*it).second;
-      b = str_replace_char_pad((*it).first, vsx_string(f), lines[i], b);
+      b = str_replace_char_pad((*it).first, vsx_string<>(f), lines[i], b);
     }
     lines_p.push_back(b);
     //lines_p[i] = b;
@@ -191,7 +191,7 @@ void vsx_widget_base_edit::process_lines() {
 
 void vsx_widget_base_edit::calculate_scroll_size() {
   size_t t_longest_line = 0;
-  for (std::vector<vsx_string>::iterator it = lines.begin(); it != lines.end(); ++it) {
+  for (std::vector <vsx_string<> >::iterator it = lines.begin(); it != lines.end(); ++it) {
     if ((*it).size() > t_longest_line) t_longest_line = (*it).size();
   }
   t_longest_line += 3;
@@ -230,17 +230,17 @@ void vsx_widget_base_edit::calculate_scroll_size() {
   //scroll_y_size = (float)characters_height/(float)lines.size();//+(float)characters_height);
 }
 
-void vsx_widget_base_edit::set_string(const vsx_string& str) {
+void vsx_widget_base_edit::set_string(const vsx_string<>& str) {
   lines.clear();
-  vsx_string deli = "\n";
-  vsx_string f = str_replace("\r","",str);
+  vsx_string<>deli = "\n";
+  vsx_string<>f = str_replace("\r","",str);
   explode(f, deli, lines);
   lines_visible.clear();
   for (unsigned long i = 0; i < lines.size(); i++) lines_visible.push_back(0);
   longest_line = 0;
   scrollbar_pos_x = 0;
   scrollbar_pos_y = 0;
-  for (std::vector<vsx_string>::iterator it = lines.begin(); it != lines.end(); ++it) {
+  for (std::vector <vsx_string<> >::iterator it = lines.begin(); it != lines.end(); ++it) {
     if ((*it).size() > longest_line) longest_line = (*it).size();
   }
   // hide eventual action buttons
@@ -252,7 +252,7 @@ void vsx_widget_base_edit::set_string(const vsx_string& str) {
   calculate_scroll_size();
 }
 
-void vsx_widget_base_edit::set_filter_string(vsx_string &filter_string)
+void vsx_widget_base_edit::set_filter_string(vsx_string<>&filter_string)
 {
   if (filter_string.size() == 0) {
     if (filter_string_enabled) lines_visible = lines_visible_stack;
@@ -343,7 +343,7 @@ void vsx_widget_base_edit::event_mouse_wheel(float y)
     scrollbar_pos_y = 1.0f;
 }
 
-int count_whitespaces(vsx_string& s)
+int count_whitespaces(vsx_string<>& s)
 {
   size_t i = 0;
   while (i < s.size() && s[i] == ' ')
@@ -498,7 +498,7 @@ void vsx_widget_base_edit::i_draw()
 
   int curline = real_line;
   vsx_vector3<> pp = p;
-  //std::vector<vsx_string>::iterator it = lines.begin();
+  //std::vector <vsx_string<> >::iterator it = lines.begin();
   font.syntax_colors[0] = vsx_widget_skin::get_instance()->get_color(14);
   int cur_render_line = 0;
   if (selected_line_highlight) font.color = vsx_widget_skin::get_instance()->get_color(14);
@@ -577,14 +577,14 @@ void vsx_widget_base_edit::i_draw()
 
 bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, bool shift) {
   if (!editing_enabled) return true;
-  std::vector<vsx_string>::iterator it = lines.begin();
+  std::vector <vsx_string<> >::iterator it = lines.begin();
   std::vector<int>::iterator itlv = lines_visible.begin();
 
-  std::vector<vsx_string>::iterator itp = lines_p.begin();
+  std::vector <vsx_string<> >::iterator itp = lines_p.begin();
   int c2 = 0;
   scroll_x = floor(scroll_x);
-  vsx_string tempstring;
-  vsx_string tempstring2;
+  vsx_string<>tempstring;
+  vsx_string<>tempstring2;
   //printf("key: %d\n",key);
   if (ctrl && !alt && !shift) {
     //printf("ctrl! %d\n",key);
@@ -607,7 +607,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
         if (pszData) free(pszData);
         pszData = (char*)malloc(strlen((char*)pData) + 1);
         strcpy(pszData, (LPSTR)pData);
-        vsx_string res = pszData;
+        vsx_string<>res = pszData;
         GlobalUnlock(hData);
         CloseClipboard();
         res = str_replace("\n","",res);
@@ -766,7 +766,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
     // enter
     case -GLFW_KEY_ENTER:
       if (single_row) {
-        vsx_string d;
+        vsx_string<>d;
         if (command_prefix.size()) d = command_prefix+" ";
         command_q_b.add_raw(d+lines[0]);
         parent->vsx_command_queue_b(this);
@@ -839,12 +839,12 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
   return false;
 }
 
-vsx_string vsx_widget_base_edit::get_string()
+vsx_string<>vsx_widget_base_edit::get_string()
 {
   return implode(lines,"\n");
 }
 
-vsx_string vsx_widget_base_edit::get_line(unsigned long line)
+vsx_string<>vsx_widget_base_edit::get_line(unsigned long line)
 {
   if (line < lines.size()) {
     return lines[line];
@@ -870,10 +870,10 @@ vsx_widget_editor::vsx_widget_editor() {
   allow_move_y = allow_move_x = false;
 }
 
-void vsx_widget_editor::set_string(const vsx_string& str) {
+void vsx_widget_editor::set_string(const vsx_string<>& str) {
   editor->set_string(str);
 }
-vsx_string vsx_widget_editor::get_string() {
+vsx_string<>vsx_widget_editor::get_string() {
   return editor->get_string();
 }
 

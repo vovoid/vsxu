@@ -86,7 +86,7 @@ public:
 
 
   // add & parse a command to the end of the list
-  T* add_raw(vsx_string r, bool garbage_collect = false)
+  T* add_raw(vsx_string<>r, bool garbage_collect = false)
   {
     if (!accept_commands)
       return 0;
@@ -105,7 +105,7 @@ public:
 
 
   // add & parse a command to the beginning of the list
-  T* add_raw_front(vsx_string r)
+  T* add_raw_front(vsx_string<>r)
   {
     if (!accept_commands)
       return 0;
@@ -160,7 +160,7 @@ public:
 
 
   // add a command by specifying command and command data
-  void add(vsx_string cmd, vsx_string cmd_data)
+  void add(vsx_string<>cmd, vsx_string<>cmd_data)
   {
     if (!accept_commands)
       return;
@@ -177,7 +177,7 @@ public:
 
   // adds a command
   // Thread safety: YES
-  void add(vsx_string cmd, int cmd_data, bool garbage_collect = false)
+  void add(vsx_string<>cmd, int cmd_data, bool garbage_collect = false)
   {
     if (!accept_commands)
       return;
@@ -195,7 +195,7 @@ public:
   }
 
 
-  void adds(int tp, vsx_string title, vsx_string cmd, vsx_string cmd_data)
+  void adds(int tp, vsx_string<>title, vsx_string<>cmd, vsx_string<>cmd_data)
   {
     if (!accept_commands)
       return;
@@ -206,8 +206,8 @@ public:
     t->cmd = cmd;
     t->cmd_data = cmd_data;
     t->parts.push_back(cmd);
-    vsx_string deli = " ";
-    vsx_avector<vsx_string> pp;
+    vsx_string<>deli = " ";
+    vsx_avector< vsx_string<> > pp;
     explode(cmd_data,deli,pp);
 
     for (size_t i = 0; i < pp.size(); ++i)
@@ -331,7 +331,7 @@ public:
   // loads from file and puts the lines in T::raw.
   // The default is not to parse.
   // Thread safety: NO
-  void load_from_file(vsx_string filename, bool parse = false, int type = 0 )
+  void load_from_file(vsx_string<>filename, bool parse = false, int type = 0 )
   {
     bool filesystem_local = false;
     if (!filesystem)
@@ -348,7 +348,7 @@ public:
       return;
 
     char buf[65535];
-    vsx_string line;
+    vsx_string<>line;
     while (filesystem->f_gets((char*)&buf,65535,fp))
     {
       line = buf;
@@ -380,7 +380,7 @@ public:
 
 
   // Thread safety: NO
-  void save_to_file(vsx_string filename)
+  void save_to_file(vsx_string<>filename)
   {
     if (!filesystem)
       filesystem = new vsxf;
@@ -393,7 +393,7 @@ public:
     {
       filesystem->f_puts(
         (
-          (*it)->raw + vsx_string("\n")
+          (*it)->raw + vsx_string<>("\n")
         ).c_str(),
         fp
       );
@@ -404,7 +404,7 @@ public:
 
 
   // Thread safety: NO
-  void token_replace(vsx_string search, vsx_string replace)
+  void token_replace(vsx_string<>search, vsx_string<>replace)
   {
     for (typename std::list <T*>::iterator it = commands.begin(); it != commands.end(); ++it)
     {

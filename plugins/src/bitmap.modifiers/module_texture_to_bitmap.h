@@ -49,7 +49,7 @@ public:
     info->description = "transforms a texture into a bitmap (slow!)";
   }
 
-  void param_set_notify(const vsx_string& name)
+  void param_set_notify(const vsx_string<>& name)
   {
     VSX_UNUSED(name);
   }

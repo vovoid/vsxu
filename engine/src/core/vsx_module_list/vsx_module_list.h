@@ -60,7 +60,7 @@ public:
 
     // recursively find the plugin so's from the plugins directory
     // store it in: mfiles
-    std::list<vsx_string> mfiles;
+    std::list< vsx_string<> > mfiles;
     get_files_recursive
     (
       VSXU_PLUGIN_LOCATION  // from CmakeLists.txt
@@ -76,12 +76,12 @@ public:
     //-------------------------------------------------------------------------
     // Iterate through all the filenames, treat them as plugins with dlopen
     // and probe them to see if they are vsxu modules.
-    for (std::list<vsx_string>::iterator it = mfiles.begin(); it != mfiles.end(); ++it)
+    for (std::list< vsx_string<> >::iterator it = mfiles.begin(); it != mfiles.end(); ++it)
     {
-      vsx_string dynamic_object_file_name = (*it);
-      //vsx_avector<vsx_string> parts;
+      vsx_string<>dynamic_object_file_name = (*it);
+      //vsx_avector< vsx_string<> > parts;
       vsx_dynamic_object_handle plugin_handle;
-      //vsx_string deli = vsx_get_directory_separator();
+      //vsx_string<>deli = vsx_get_directory_separator();
       //explode((*it),deli,parts);
 
       // load the plugin
@@ -228,8 +228,8 @@ public:
         //   examples;my_modules;my_module||!old_path;old_category;old_name
         // Only the first will show up in the gui. The second identifier is still usable in
         // old state files.
-        vsx_string deli = "||";
-        vsx_avector<vsx_string> parts;
+        vsx_string<>deli = "||";
+        vsx_avector< vsx_string<> > parts;
         explode(module_info->identifier, deli, parts);
         vsx_module_plugin_info* applied_plugin_info = 0;
 
@@ -244,7 +244,7 @@ public:
           applied_plugin_info->module_info = applied_module_info;
 
 
-          vsx_string module_identifier;
+          vsx_string<>module_identifier;
           if (parts[i][0] == '!')
           {
             // hidden from gui
@@ -279,7 +279,7 @@ public:
     {
       delete *it;
     }
-    for (std::map< vsx_string, void* >::iterator it = module_plugin_list.begin(); it != module_plugin_list.end(); it++)
+    for (std::map< vsx_string<>, void* >::iterator it = module_plugin_list.begin(); it != module_plugin_list.end(); it++)
     {
       delete (vsx_module_plugin_info*) ( (*it).second );
     }
@@ -291,7 +291,7 @@ public:
   std::vector< vsx_module_info* >* get_module_list( bool include_hidden = false)
   {
     std::vector< vsx_module_info* >* result = new std::vector< vsx_module_info* >;
-    for (std::map< vsx_string, void* >::const_iterator it = module_plugin_list.begin(); it != module_plugin_list.end(); it++)
+    for (std::map< vsx_string<>, void* >::const_iterator it = module_plugin_list.begin(); it != module_plugin_list.end(); it++)
     {
       vsx_module_plugin_info* plugin_info = (vsx_module_plugin_info*)((*it).second);
       if
@@ -309,7 +309,7 @@ public:
   }
 
 
-  vsx_module* load_module_by_name(vsx_string name)
+  vsx_module* load_module_by_name(vsx_string<>name)
   {
     if ( module_plugin_list.find(name) == module_plugin_list.end() )
     {
@@ -343,7 +343,7 @@ public:
     );
   }
 
-  bool find( const vsx_string &module_name_to_look_for)
+  bool find( const vsx_string<>&module_name_to_look_for)
   {
     if (!(module_list.find(module_name_to_look_for) != module_list.end()))
     {

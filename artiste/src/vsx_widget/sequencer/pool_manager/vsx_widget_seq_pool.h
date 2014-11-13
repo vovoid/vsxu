@@ -27,7 +27,7 @@
 
 
 class vsx_widget_seq_pool_manager : public vsx_widget_window {
-  vsx_string i_hint;
+  vsx_string<>i_hint;
 
   // widgets
   vsx_widget *edit;
@@ -49,7 +49,7 @@ class vsx_widget_seq_pool_manager : public vsx_widget_window {
 public:
   void command_process_back_queue(vsx_command_s *t);
 
-  void show(vsx_string value);
+  void show(vsx_string<>value);
   void show();
   void init();
   void i_draw();

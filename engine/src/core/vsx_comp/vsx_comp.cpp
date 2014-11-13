@@ -79,7 +79,7 @@ vsx_comp::~vsx_comp()
   #endif
 }
 
-void vsx_comp::load_module(const vsx_string& module_name, vsx_module_engine_info* engine_info)
+void vsx_comp::load_module(const vsx_string<>& module_name, vsx_module_engine_info* engine_info)
 {
   vsx_module_list_abs* module_list = ((vsx_engine*)engine_owner)->get_module_list();
   module = module_list->load_module_by_name( module_name );
@@ -110,11 +110,11 @@ void vsx_comp::re_init_in_params() {
   // this doesn't EVER happen on its own (or shouldn't)
   // so we can be a bit sloppy with optimizations here...
   // It's initiated by the user changing stuff in the GUI most likely
-  std::map<vsx_string, float> float_values_saved;
-  std::map<vsx_string, int> int_values_saved;
+  std::map<vsx_string<>, float> float_values_saved;
+  std::map<vsx_string<>, int> int_values_saved;
 
   typedef vsx_sequence sequence;
-  std::map<vsx_string, vsx_sequence> sequence_values_saved;	// technical assumption:
+  std::map<vsx_string<>, vsx_sequence> sequence_values_saved;	// technical assumption:
   // most parameters are usually declared with the same name and type.
   // so: save the easy ones (float, int, string, float3 etc).
   for (unsigned long i = 0; i < in_module_parameters->id_vec.size(); i++)
@@ -163,7 +163,7 @@ void vsx_comp::re_init_in_params() {
 
   // restore the values kthx;; this code will prolly compress well
 #define RESTORE_FUNC(i_type) \
-  for (std::map<vsx_string, i_type>::iterator it = i_type##_values_saved.begin(); it != i_type##_values_saved.end();\
+  for (std::map<vsx_string<>, i_type>::iterator it = i_type##_values_saved.begin(); it != i_type##_values_saved.end();\
       it++)\
   {\
     for (unsigned long i = 0; i < in_module_parameters->id_vec.size(); i++)\
@@ -296,7 +296,7 @@ void vsx_comp::init_module()
   //if (module_info->output) {
 //  }
 
-  LOG(vsx_string("module param spec: ")+in_param_spec.c_str());
+  LOG(vsx_string<>("module param spec: ")+in_param_spec.c_str());
 
   // build up the internal engine_param_list
   //printf("init in params\n");
@@ -428,7 +428,7 @@ bool vsx_comp::prepare()
 
 bool vsx_comp::run(vsx_module_param_abs* param)
 {
-  LOG(vsx_string("run:name=")+name.c_str());
+  LOG(vsx_string<>("run:name=")+name.c_str());
 
   if (module_info->output) {
     return true;
@@ -495,7 +495,7 @@ bool vsx_comp::start()
   return true;
 }
 
-bool vsx_comp::disconnect(vsx_string param_name, vsx_comp_abs* other_component, vsx_string other_param_name) {
+bool vsx_comp::disconnect(vsx_string<>param_name, vsx_comp_abs* other_component, vsx_string<>other_param_name) {
   for (unsigned long i = 0; i < channels.size(); ++i) {
     if (param_name == channels[i]->get_param_name()) {
       return channels[i]->disconnect((vsx_comp*)other_component,other_param_name);
@@ -504,7 +504,7 @@ bool vsx_comp::disconnect(vsx_string param_name, vsx_comp_abs* other_component, 
   return false;
 }
 
-void vsx_comp::disconnect(vsx_string param_name) {
+void vsx_comp::disconnect(vsx_string<>param_name) {
   for (unsigned long i = 0; i < channels.size(); ++i) {
     if (param_name == channels[i]->get_param_name()) {
         channels[i]->disconnect();
@@ -512,11 +512,11 @@ void vsx_comp::disconnect(vsx_string param_name) {
   }
 }
 
-vsx_string process_module_param_spec(vsx_string& input) {
-  vsx_string ret_val;
+vsx_string<>process_module_param_spec(vsx_string<>& input) {
+  vsx_string<>ret_val;
   size_t i = 0;
   bool block = false;
-  vsx_string s_block;
+  vsx_string<>s_block;
   while (i < input.size()) {
     if (!block) {
       if (input[i] == '`') {

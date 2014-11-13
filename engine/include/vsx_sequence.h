@@ -40,7 +40,7 @@ public:
   vsx_vector3<> handle1;
   vsx_vector3<> handle2;
 
-  vsx_string get_value() {
+  vsx_string<>get_value() {
     if (interpolation == 4) {
       return vsx_string_helper::f2s(value)+":"+vsx_string_helper::f2s(handle1.x)+","+vsx_string_helper::f2s(handle1.y)+":"+vsx_string_helper::f2s(handle2.x)+","+vsx_string_helper::f2s(handle2.y);
     } else {
@@ -86,11 +86,11 @@ public:
 
   ENGINE_DLLIMPORT float execute(float t_incr);
   #ifndef VSX_NO_SEQUENCE
-  ENGINE_DLLIMPORT vsx_string get_string();
-  ENGINE_DLLIMPORT void set_string(vsx_string str);
+  ENGINE_DLLIMPORT vsx_string<>get_string();
+  ENGINE_DLLIMPORT void set_string(vsx_string<>str);
   #else
-  virtual vsx_string get_string() = 0;
-  virtual void set_string(vsx_string str) = 0;
+  virtual vsx_string<>get_string() = 0;
+  virtual void set_string(vsx_string<>str) = 0;
   #endif
 };
 

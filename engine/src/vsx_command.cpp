@@ -67,8 +67,8 @@ void vsx_command_process_garbage_exit()
   }
 }
 
-vsx_string vsx_command_s::get_parts(int start, int end) {
-  vsx_string res = "";
+vsx_string<>vsx_command_s::get_parts(int start, int end) {
+  vsx_string<>res = "";
   if ((unsigned long)start < parts.size()) {
     int end_;
     if (end == -1) {
@@ -95,8 +95,8 @@ vsx_string vsx_command_s::get_parts(int start, int end) {
 void vsx_command_s::parse() {
   if (parsed) return;
   if (raw == "") raw = cmd+" "+cmd_data;
-  std::vector <vsx_string> cmdps;
-  vsx_string deli = " ";
+  std::vector< vsx_string<> > cmdps;
+  vsx_string<>deli = " ";
   split_string(raw, deli, cmdps);
   cmd = cmdps[0];
   if (cmdps.size() > 1)

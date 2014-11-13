@@ -37,7 +37,7 @@ class vsx_font_info {
 public:
   int type; // 0 = texture (old) 1 = new (FtGL)
   vsx_texture* texture;  // pointer to either vsx_texture or ftgl font
-  vsx_string name;
+  vsx_string<>name;
   void* ftfont;
   void* ftfont_outline;
   vsx_font_info()
@@ -54,15 +54,15 @@ public:
 };  
 
 class vsx_font {
-  static std::map<vsx_string, vsx_font_info*> glist;
+  static std::map<vsx_string<>, vsx_font_info*> glist;
   vsx_vector3<> ep;
-  void reinit(vsx_font_info* f_info,vsx_string font);
+  void reinit(vsx_font_info* f_info,vsx_string<>font);
   bool list_built;
   GLuint dlist;
 
 
   float dx, dy, dz;
-  vsx_string base_path;
+  vsx_string<>base_path;
   float ch, cw, size_s;
   float ddx,ddy;
   char* stc;
@@ -81,7 +81,7 @@ class vsx_font {
     align = 1.0f;
   }
 public:
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_font_info* load(vsx_string font, vsxf* filesystem);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_font_info* load(vsx_string<>font, vsxf* filesystem);
   VSX_ENGINE_GRAPHICS_DLLIMPORT void unload();
 
   vsx_avector< vsx_color<> > syntax_colors;
@@ -95,14 +95,14 @@ public:
   float align;
   
   
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print(vsx_vector3<> p, const vsx_string& str, const float size, const vsx_string colors = "");
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print(vsx_vector3<> p, const vsx_string& str, const vsx_string& font, float size, const vsx_string colors = "");
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print_center(vsx_vector3<> p, const vsx_string& str, float size);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print_right(vsx_vector3<> p, const vsx_string& str, float size);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> get_size(const vsx_string& str, float size);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print(vsx_vector3<> p, const vsx_string<>& str, const float size, const vsx_string<>colors = "");
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print(vsx_vector3<> p, const vsx_string<>& str, const vsx_string<>& font, float size, const vsx_string<>colors = "");
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print_center(vsx_vector3<> p, const vsx_string<>& str, float size);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print_right(vsx_vector3<> p, const vsx_string<>& str, float size);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> get_size(const vsx_string<>& str, float size);
   VSX_ENGINE_GRAPHICS_DLLIMPORT void reinit_all_active();
   
-  vsx_font(vsx_string path)
+  vsx_font(vsx_string<>path)
   {
     base_path = path;
     init_vars();

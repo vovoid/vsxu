@@ -41,9 +41,9 @@
 
 class vsx_argvector
 {
-  vsx_avector<vsx_string> data;
+  vsx_avector< vsx_string<> > data;
 public:
-  vsx_string& operator[](size_t index)
+  vsx_string<>& operator[](size_t index)
   {
     return data[index];
   }
@@ -53,12 +53,12 @@ public:
     return data.size();
   }
 
-  void push_back(const vsx_string& val)
+  void push_back(const vsx_string<>& val)
   {
     data.push_back(val);
   }
 
-  bool has_param(const vsx_string& param)
+  bool has_param(const vsx_string<>& param)
   {
     size_t data_num_elements = size();
 
@@ -75,7 +75,7 @@ public:
     return false;
   }
 
-  bool has_param_with_value(const vsx_string& param)
+  bool has_param_with_value(const vsx_string<>& param)
   {
     size_t data_num_elements = size();
 
@@ -98,7 +98,7 @@ public:
     return false;
   }
 
-  vsx_string get_param_value(const vsx_string& param)
+  vsx_string<>get_param_value(const vsx_string<>& param)
   {
     size_t data_num_elements = size();
     if (data_num_elements == 0) return "";
@@ -126,9 +126,9 @@ public:
     }
   }
 
-  void init_from_string(vsx_string new_string)
+  void init_from_string(vsx_string<>new_string)
   {
-    vsx_string res;
+    vsx_string<>res;
     new_string.trim_lf();
 
     for (size_t i = 0; i < new_string.size(); i++)
@@ -148,9 +148,9 @@ public:
     }
   }
 
-  vsx_string serialize()
+  vsx_string<>serialize()
   {
-    vsx_string res;
+    vsx_string<>res;
     for (size_t i = 0; i < data.size(); i++)
     {
       if (i) res.push_back(' ');
@@ -159,7 +159,7 @@ public:
     return res;
   }
 
-  static vsx_string get_executable_directory()
+  static vsx_string<>get_executable_directory()
   {
     char pBuf[512];
     const size_t len = 512;
@@ -174,7 +174,7 @@ public:
 
       // if packed with UPX
       if (getenv("   "))
-        return get_path_from_filename(vsx_string(getenv("   ")));
+        return get_path_from_filename(vsx_string<>(getenv("   ")));
 
       char szTmp[32];
       sprintf(szTmp, "/proc/self/exe");
@@ -184,7 +184,7 @@ public:
         pBuf[bytes] = '\0';
 
     #endif
-    return get_path_from_filename(vsx_string(pBuf));
+    return get_path_from_filename(vsx_string<>(pBuf));
   }
 
 private:

@@ -18,7 +18,7 @@ class module_texture_load_jpeg : public vsx_module
     module_texture_load_jpeg* mod = (module_texture_load_jpeg*)ptr;
 
     CJPEGTest* cj = new CJPEGTest;
-    vsx_string ret;
+    vsx_string<>ret;
     if
     (
      !(cj
@@ -64,7 +64,7 @@ class module_texture_load_jpeg : public vsx_module
 public:
   int m_type;
 
-  vsx_string current_filename;
+  vsx_string<>current_filename;
   vsx_bitmap bitm;
   int bitm_timestamp; // keep track of the timestamp for the bitmap internally 
   volatile int               thread_state;

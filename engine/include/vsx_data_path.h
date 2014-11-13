@@ -9,13 +9,13 @@
 
 ENGINE_DLLIMPORT class vsx_data_path
 {
-  vsx_string data_path;
+  vsx_string<>data_path;
 
 public:
 
   ENGINE_DLLIMPORT vsx_data_path();
 
-  vsx_string& data_path_get() __attribute__((always_inline))
+  vsx_string<>& data_path_get() __attribute__((always_inline))
   {
     return data_path;
   }

@@ -45,7 +45,7 @@ void input_video_file::declare_params(vsx_module_param_list& in_parameters, vsx_
   m_result->set_p(m_bitm);
 }
 
-void input_video_file::param_set_notify(const vsx_string& name)
+void input_video_file::param_set_notify(const vsx_string<>& name)
 {
   if(name == "filename" && isValid()){
     release_capture();

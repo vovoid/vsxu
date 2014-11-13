@@ -125,7 +125,7 @@ void vsx_widget_seq_channel::init()
 // sends a full inject dump to the parent in the widget chain
 void vsx_widget_seq_channel::send_parent_dump()
 {
-  std::vector<vsx_string> parts;
+  std::vector <vsx_string<> > parts;
 
   for (std::vector<vsx_widget_param_sequence_item>::iterator it = items.begin(); it
       != items.end(); ++it)
@@ -140,7 +140,7 @@ void vsx_widget_seq_channel::send_parent_dump()
 
   if (parts.size())
   {
-    vsx_string deli = "|";
+    vsx_string<>deli = "|";
     command_q_b.add_raw("update " + name + " " + implode(parts, deli));
     parent->vsx_command_queue_b(this);
   }
@@ -218,9 +218,9 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
   {
     while (item_iterator < (int) items.size() && time_iterator <= view_time_end)
     {
-      vsx_avector<vsx_string> parts;
-      vsx_string deli = ",";
-      vsx_string value = items[item_iterator].get_value();
+      vsx_avector< vsx_string<> > parts;
+      vsx_string<>deli = ",";
+      vsx_string<>value = items[item_iterator].get_value();
       explode(value, deli, parts);
       // go through the parameter tuple to check if a value box has been hit
       for (int i = 0; i < index_count; ++i)
@@ -361,7 +361,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
 
       double_click_d[0] = 0.0f;
 
-      vsx_string val;
+      vsx_string<>val;
       switch (param_type)
       {
       case VSX_MODULE_PARAM_ID_FLOAT:
@@ -464,7 +464,7 @@ void vsx_widget_seq_channel::event_mouse_double_click(
           {
             *time_controller = add((vsx_widget*)new vsx_widget_controller_sequence,name+"seq_edit");
             ((vsx_widget_controller_sequence*)*time_controller)->set_size_controlled_from_outside(1);
-            ((vsx_widget_controller_sequence*)*time_controller)->set_command_suffix(vsx_string(" ")+vsx_string_helper::i2s(mouse_clicked_id));
+            ((vsx_widget_controller_sequence*)*time_controller)->set_command_suffix(vsx_string<>(" ")+vsx_string_helper::i2s(mouse_clicked_id));
             ((vsx_widget_controller_sequence*)*time_controller)->init();
             ((vsx_widget_controller_sequence*)*time_controller)->set_span(0.0f, 1.0f);
             ((vsx_widget_controller_sequence*)*time_controller)->set_view_time(-0.000000001f, 1.0f);
@@ -863,13 +863,13 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
         // prepare existing value with updated value
         if (param_type == VSX_MODULE_PARAM_ID_QUATERNION)
         {
-          vsx_avector<vsx_string> parts;
-          vsx_string deli = ",";
-          vsx_string value = items[mouse_clicked_id].get_value();
+          vsx_avector< vsx_string<> > parts;
+          vsx_string<>deli = ",";
+          vsx_string<>value = items[mouse_clicked_id].get_value();
           explode(value, deli, parts);
           parts[index_hit] = vsx_string_helper::f2s(y);
 
-          vsx_string t = implode(parts, deli);
+          vsx_string<>t = implode(parts, deli);
           vsx_quaternion<> q;
           q = vsx_quaternion_helper::from_string<float>(t);
           q.normalize();
@@ -975,7 +975,7 @@ void vsx_widget_seq_channel::i_remove_line(long i_td)
   items.erase(it);
 }
 
-void vsx_widget_seq_channel::remove_master_channel_items_with_name(vsx_string name)
+void vsx_widget_seq_channel::remove_master_channel_items_with_name(vsx_string<>name)
 {
   int run = 1;
   size_t i = 0;
@@ -1002,7 +1002,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
     if (mouse_clicked_id == -1)
       return;
 
-    vsx_string val = items[mouse_clicked_id].get_value();
+    vsx_string<>val = items[mouse_clicked_id].get_value();
     ((dialog_query_string*)manual_value_input_dialog)->show(val);
     manual_value_input_dialog->set_render_type(render_2d);
     return;
@@ -1046,7 +1046,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
       accumulated_time += items[i].get_total_length();
     }
 
-    vsx_string val = vsx_string_helper::f2s(accumulated_time);
+    vsx_string<>val = vsx_string_helper::f2s(accumulated_time);
     ((dialog_query_string*)manual_time_input_dialog)->show(val);
     manual_time_input_dialog->set_render_type(render_2d);
 
@@ -1171,8 +1171,8 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
   {
     if (t->parts[1] == "inject_get")
     {
-      vsx_string deli = "|";
-      std::list<vsx_string> pl;
+      vsx_string<>deli = "|";
+      std::list< vsx_string<> > pl;
       explode(t->parts[4], deli, pl);
       if (t->parts.size() > 5)
       {
@@ -1190,10 +1190,10 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
         break;
       }
 
-      for (std::list<vsx_string>::iterator it = pl.begin(); it != pl.end(); ++it)
+      for (std::list< vsx_string<> >::iterator it = pl.begin(); it != pl.end(); ++it)
       {
-        std::vector<vsx_string> pld;
-        vsx_string pdeli = ";";
+        std::vector <vsx_string<> > pld;
+        vsx_string<>pdeli = ";";
         explode((*it), pdeli, pld);
         vsx_widget_param_sequence_item pa;
         if (pld.size() < 2)
@@ -1201,9 +1201,9 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
         pa.set_interpolation( vsx_string_helper::s2i(pld[1]) );
         if (pa.get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_BEZIER)
         {
-          std::vector<vsx_string> pld_l;
-          vsx_string pdeli_l = ":";
-          vsx_string vtemp = base64_decode(pld[2]);
+          std::vector <vsx_string<> > pld_l;
+          vsx_string<>pdeli_l = ":";
+          vsx_string<>vtemp = base64_decode(pld[2]);
           explode(vtemp, pdeli_l, pld_l);
           pa.set_value( pld_l[0] );
           pa.set_handle1( vsx_vector3_helper::from_string<float>( pld_l[1] ) );
@@ -1242,9 +1242,9 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
       pa.set_interpolation( vsx_string_helper::s2i( t->parts[6] ) );
       if (pa.get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_BEZIER)
       {
-        std::vector<vsx_string> pld_l;
-        vsx_string pdeli_l = ":";
-        vsx_string vtemp = base64_decode(t->parts[4]);
+        std::vector <vsx_string<> > pld_l;
+        vsx_string<>pdeli_l = ":";
+        vsx_string<>vtemp = base64_decode(t->parts[4]);
         explode(vtemp, pdeli_l, pld_l);
         pa.set_value( pld_l[0] );
         pa.set_handle1( vsx_vector3_helper::from_string<float>(pld_l[1]) );
@@ -1342,13 +1342,13 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
       //0=mseq_channel_ok 1=inject_get 2=[channel_name] 3=[dump_data]
       if (t->parts[1] == "inject_get")
       {
-        vsx_string deli = "|";
-        std::list<vsx_string> pl;
+        vsx_string<>deli = "|";
+        std::list< vsx_string<> > pl;
         explode(t->parts[3], deli, pl);
-        for (std::list<vsx_string>::iterator it = pl.begin(); it != pl.end(); ++it)
+        for (std::list< vsx_string<> >::iterator it = pl.begin(); it != pl.end(); ++it)
         {
-          std::vector<vsx_string> pld;
-          vsx_string pdeli = ";";
+          std::vector <vsx_string<> > pld;
+          vsx_string<>pdeli = ";";
           explode((*it), pdeli, pld);
           vsx_widget_param_sequence_item pa;
           pa.set_type( VSX_WIDGET_SEQ_CHANNEL_TYPE_MASTER );
@@ -2198,7 +2198,7 @@ bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
 }
 
 void vsx_widget_seq_channel::drop_master_channel(vsx_widget_distance distance,
-    vsx_widget_coords coords, vsx_string name)
+    vsx_widget_coords coords, vsx_string<>name)
 {
   VSX_UNUSED(distance);
   float time_iterator = 0;

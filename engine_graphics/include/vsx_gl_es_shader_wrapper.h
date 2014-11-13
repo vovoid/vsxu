@@ -33,7 +33,7 @@
 
 
 // TODO: remove this after all "hidden" shader ops are moved into the cpp file
-//void vsx_load_shader(GLuint *pShader, vsx_string shader_source, GLint iShaderType);
+//void vsx_load_shader(GLuint *pShader, vsx_string<>shader_source, GLint iShaderType);
 
 
 void vsx_es_set_default_arrays(GLvoid* vertices, GLvoid* colors);

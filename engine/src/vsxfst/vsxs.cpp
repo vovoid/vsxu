@@ -54,13 +54,13 @@ bool crlf(char *buffer,int len) {
 
 
 
-vsx_string str_pad(const vsx_string& str, const vsx_string& chr, size_t t_len, int pad_type, int overflow_adjust) {
-  vsx_string ps = "";
+vsx_string<>str_pad(const vsx_string<>& str, const vsx_string<>& chr, size_t t_len, int pad_type, int overflow_adjust) {
+  vsx_string<>ps = "";
   if (str.size() > t_len)
   {
     if (overflow_adjust == STR_PAD_OVERFLOW_LEFT) {
       for (size_t i = 0; i < t_len; ++i) {
-        ps = vsx_string(str[str.size()-i-1]) + ps;
+        ps = vsx_string<>(str[str.size()-i-1]) + ps;
       }
       return ps;
     } else
@@ -85,22 +85,22 @@ vsx_string str_pad(const vsx_string& str, const vsx_string& chr, size_t t_len, i
   }
 }
 
-/*const vsx_string str_replace_token_prefix(vsx_string& token, vsx_string& search, vsx_string& replace, vsx_string& subject) {
+/*const vsx_string<>str_replace_token_prefix(vsx_string<>& token, vsx_string<>& search, vsx_string<>& replace, vsx_string<>& subject) {
   //1 explode our vsx_string
-  vsx_string deli = token;
-  vsx_avector<vsx_string> tokens;
+  vsx_string<>deli = token;
+  vsx_avector< vsx_string<> > tokens;
   explode(subject,deli, tokens);
   for (unsigned long i = 0; i < tokens.size(); ++i) {
-  //for (std::vector<vsx_string>::iterator it = tokens.begin(); it != tokens.end(); ++it) {
+  //for (std::vector <vsx_string<> >::iterator it = tokens.begin(); it != tokens.end(); ++it) {
     tokens[i] = str_replace(search, replace, tokens[i],1);
   }
   return implode(tokens, token);
 } */
 
 
-vsx_string str_replace(vsx_string search, vsx_string replace, vsx_string subject, int max_replacements, int required_pos) {
+vsx_string<>str_replace(vsx_string<>search, vsx_string<>replace, vsx_string<>subject, int max_replacements, int required_pos) {
   //printf("------------\nsubject coming in: %s\n",subject.c_str());
-  vsx_string n = subject;
+  vsx_string<>n = subject;
   if (search == "") return n;
   int loc = 1;
   int replacements = 0;
@@ -131,13 +131,13 @@ vsx_string str_replace(vsx_string search, vsx_string replace, vsx_string subject
   return n;
 }
 
-const vsx_string str_replace_char_pad(vsx_string search, vsx_string replace, vsx_string subject, vsx_string subject_r, int max_replacements, int required_pos) {
+const vsx_string<>str_replace_char_pad(vsx_string<>search, vsx_string<>replace, vsx_string<>subject, vsx_string<>subject_r, int max_replacements, int required_pos) {
   //printf("------------\nsubject coming in: %s\n",subject.c_str());
-  //vsx_string hh = "";
+  //vsx_string<>hh = "";
   if (subject.size() != subject_r.size()) return subject_r;
-  vsx_string rep;
+  vsx_string<>rep;
   for (size_t i = 0; i < search.size(); ++i) rep.push_back(replace[0]);
-  vsx_string n;
+  vsx_string<>n;
   //printf("first\n");
   if (search == "") return subject_r;
   int loc = 1;
@@ -161,14 +161,14 @@ const vsx_string str_replace_char_pad(vsx_string search, vsx_string replace, vsx
   return subject_r;
 }
 
-int explode(vsx_string& input, vsx_string& delimiter, vsx_avector<vsx_string>& results, int max_parts) {
+int explode(vsx_string<>& input, vsx_string<>& delimiter, vsx_avector< vsx_string<> >& results, int max_parts) {
   results.clear();
   if (input == delimiter) {
     results.push_back(input);
     return 1;
   }
   //printf("splitting vsx_string: %s\n",input.c_str());
-  vsx_string res;
+  vsx_string<>res;
   size_t fpos = 0;
   int count = 0;
   char lastchar = 0;
@@ -195,10 +195,10 @@ int explode(vsx_string& input, vsx_string& delimiter, vsx_avector<vsx_string>& r
   return count;
 }
 
-vsx_string implode(vsx_avector<vsx_string>& in,vsx_string& delimiter) {
+vsx_string<>implode(vsx_avector< vsx_string<> >& in,vsx_string<>& delimiter) {
   if (in.size() == 0) return "";
   if (in.size() == 1) return in[0];
-  vsx_string h;
+  vsx_string<>h;
   for (unsigned long i = 0; i < in.size()-1; ++i) {
     h += in[i]+delimiter;
   }
@@ -226,11 +226,11 @@ vsx_string implode(vsx_avector<vsx_string>& in,vsx_string& delimiter) {
 
 
 
-void str_remove_equal_prefix(vsx_string* str1, vsx_string* str2, vsx_string delimiter) {
-  vsx_string to_remove = "";
-  vsx_string deli = delimiter;
-  std::list<vsx_string> str1_;
-  std::list<vsx_string> str2_;
+void str_remove_equal_prefix(vsx_string<>* str1, vsx_string<>* str2, vsx_string<>delimiter) {
+  vsx_string<>to_remove = "";
+  vsx_string<>deli = delimiter;
+  std::list< vsx_string<> > str1_;
+  std::list< vsx_string<> > str2_;
   explode(*str1, deli, str1_);
   explode(*str2, deli, str2_);
   while (str1_.size() && str2_.size() && str1_.front() == str2_.front()) {
@@ -243,13 +243,13 @@ void str_remove_equal_prefix(vsx_string* str1, vsx_string* str2, vsx_string deli
 
 
 
-int split_string(vsx_string& input, vsx_string& delimiter, std::vector<vsx_string>& results, int max_parts) {
+int split_string(vsx_string<>& input, vsx_string<>& delimiter, std::vector <vsx_string<> >& results, int max_parts) {
   results.clear();
   if (input == delimiter) {
     results.push_back(input);
     return 1;
   }
-  vsx_string res;
+  vsx_string<>res;
   size_t fpos = 0;
   int count = 0;
   char lastchar = 0;
@@ -285,17 +285,17 @@ int split_string(vsx_string& input, vsx_string& delimiter, std::vector<vsx_strin
     results.push_back(input);
   return count;
 }
-int explode(vsx_string& input, vsx_string& delimiter, std::vector<vsx_string>& results, int max_parts)
+int explode(vsx_string<>& input, vsx_string<>& delimiter, std::vector <vsx_string<> >& results, int max_parts)
 {
   return split_string(input, delimiter,results,max_parts);
 }
 
-int split_string(vsx_string& input, vsx_string& delimiter, std::list<vsx_string>& results, int max_parts) {
+int split_string(vsx_string<>& input, vsx_string<>& delimiter, std::list< vsx_string<> >& results, int max_parts) {
   if (input == delimiter) {
     results.push_back(input);
     return 1;
   }
-  vsx_string res;
+  vsx_string<>res;
   size_t fpos = 0;
   int count = 0;
   for (size_t i = 0; i < input.size(); ++i)
@@ -320,7 +320,7 @@ int split_string(vsx_string& input, vsx_string& delimiter, std::list<vsx_string>
 }
 
 
-int explode(vsx_string& input, vsx_string& delimiter, std::list<vsx_string>& results, int max_parts)
+int explode(vsx_string<>& input, vsx_string<>& delimiter, std::list< vsx_string<> >& results, int max_parts)
 {
   return split_string(input, delimiter,results,max_parts);
 }
@@ -328,22 +328,22 @@ int explode(vsx_string& input, vsx_string& delimiter, std::list<vsx_string>& res
 
 
 
-vsx_string implode(std::vector<vsx_string> in,vsx_string delimiter) {
+vsx_string<>implode(std::vector <vsx_string<> > in,vsx_string<>delimiter) {
   if (in.size() == 0) return "";
   if (in.size() == 1) return in[0];
-  vsx_string h;
-  for (std::vector<vsx_string>::iterator it = in.begin(); it != in.end()-1; ++it) {
+  vsx_string<>h;
+  for (std::vector <vsx_string<> >::iterator it = in.begin(); it != in.end()-1; ++it) {
     h += *it+delimiter;
   }
   h += in.back();
   return h;
 }
 
-vsx_string implode(std::list<vsx_string> in,vsx_string delimiter) {
+vsx_string<>implode(std::list< vsx_string<> > in,vsx_string<>delimiter) {
   if (in.size() == 0) return "";
   if (in.size() == 1) return in.front();
-  vsx_string h;
-  std::list<vsx_string>::iterator it = in.begin();
+  vsx_string<>h;
+  std::list< vsx_string<> >::iterator it = in.begin();
   h += *it;
   ++it;
 
@@ -354,15 +354,15 @@ vsx_string implode(std::list<vsx_string> in,vsx_string delimiter) {
   return h;
 }
 
-bool verify_filesuffix(vsx_string& input, const char* type)
+bool verify_filesuffix(vsx_string<>& input, const char* type)
 {
-  std::vector<vsx_string> parts;
-  vsx_string deli = ".";
+  std::vector <vsx_string<> > parts;
+  vsx_string<>deli = ".";
   explode(input,deli,parts);
   if (parts.size()) {
-    vsx_string a = parts[parts.size()-1];
+    vsx_string<>a = parts[parts.size()-1];
     a.make_lowercase();
-    vsx_string t = type;
+    vsx_string<>t = type;
     t.make_lowercase();
     if (t == a) return true;
   }
@@ -370,16 +370,16 @@ bool verify_filesuffix(vsx_string& input, const char* type)
 }
 
 #ifndef _WIN32
-void get_files_recursive_(vsx_string startpos, std::list<vsx_string>* filenames,vsx_string include_filter,vsx_string exclude_filter,vsx_string dir_ignore_token);
-void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,vsx_string include_filter,vsx_string exclude_filter,vsx_string dir_ignore_token)
+void get_files_recursive_(vsx_string<>startpos, std::list< vsx_string<> >* filenames,vsx_string<>include_filter,vsx_string<>exclude_filter,vsx_string<>dir_ignore_token);
+void get_files_recursive(vsx_string<>startpos, std::list< vsx_string<> >* filenames,vsx_string<>include_filter,vsx_string<>exclude_filter,vsx_string<>dir_ignore_token)
 {
   get_files_recursive_(startpos,filenames,include_filter,exclude_filter,dir_ignore_token);
   (*filenames).sort();
 }
-void get_files_recursive_(vsx_string startpos, std::list<vsx_string>* filenames,vsx_string include_filter,vsx_string exclude_filter,vsx_string dir_ignore_token)
+void get_files_recursive_(vsx_string<>startpos, std::list< vsx_string<> >* filenames,vsx_string<>include_filter,vsx_string<>exclude_filter,vsx_string<>dir_ignore_token)
 {
 #else
-void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,vsx_string include_filter,vsx_string exclude_filter,vsx_string dir_ignore_token) {
+void get_files_recursive(vsx_string<>startpos, std::list< vsx_string<> >* filenames,vsx_string<>include_filter,vsx_string<>exclude_filter,vsx_string<>dir_ignore_token) {
 #endif
 
 #ifdef _WIN32
@@ -394,10 +394,10 @@ void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,v
   long fhandle = 0;
   bool run = true;
 #ifdef _WIN32
-  vsx_string fstring = startpos+"/*";
+  vsx_string<>fstring = startpos+"/*";
   fhandle=_findfirst(fstring.c_str(),&fdp);
 #else
-  vsx_string fstring = startpos;
+  vsx_string<>fstring = startpos;
   dir = opendir(startpos.c_str());
   if (!dir) return;
   dp = readdir(dir);
@@ -411,14 +411,14 @@ void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,v
 #endif
   if (fhandle != -1)
   while (run) {
-  vsx_string cur_directory_item;
+  vsx_string<>cur_directory_item;
 #ifdef _WIN32
     cur_directory_item = fdp.name;
 #else
     cur_directory_item = dp->d_name;
     // stat the file to see if it's a dir or not
     struct stat stbuf;
-    vsx_string full_path = fstring + "/" + cur_directory_item;
+    vsx_string<>full_path = fstring + "/" + cur_directory_item;
     stat(full_path.c_str(), &stbuf);
 #endif
 #ifdef VSXS_DEBUG
@@ -449,8 +449,8 @@ void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,v
       exclude = false;
     }
     else {
-      vsx_avector<vsx_string> parts;
-      vsx_string deli = " ";
+      vsx_avector< vsx_string<> > parts;
+      vsx_string<>deli = " ";
       explode(exclude_filter,deli, parts);
       exclude = false;
       unsigned long i = 0;
@@ -484,7 +484,7 @@ void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,v
         if (include)
         {
           filenames->push_back(startpos+"/"+cur_directory_item);
-          //printf("adding %s\n", vsx_string(startpos+"/"+ss).c_str());
+          //printf("adding %s\n", vsx_string<>(startpos+"/"+ss).c_str());
         }
       }
     }
@@ -515,7 +515,7 @@ void get_files_recursive(vsx_string startpos, std::list<vsx_string>* filenames,v
 const char          fillchar = '=';
                         // 00000000001111111111222222
                         // 01234567890123456789012345
-const vsx_string       cvt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+const vsx_string<>      cvt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
                         // 22223333333333444444444455
                         // 67890123456789012345678901
@@ -525,12 +525,12 @@ const vsx_string       cvt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                         // 234567890123
                           "0123456789+/";
 
-vsx_string base64_encode(vsx_string data)
+vsx_string<>base64_encode(vsx_string<>data)
 {
   int i;
   char               c;
   int len = data.size();
-  vsx_string             ret;
+  vsx_string<>            ret;
 
   for (i = 0; i < len; ++i)
   {
@@ -569,13 +569,13 @@ vsx_string base64_encode(vsx_string data)
   return(ret);
 }
 
-vsx_string base64_decode(vsx_string data)
+vsx_string<>base64_decode(vsx_string<>data)
 {
   int i;
   char               c;
   char               c1;
   int len = data.size();
-  vsx_string             ret;
+  vsx_string<>            ret;
 
   for (i = 0; i < len; ++i)
   {

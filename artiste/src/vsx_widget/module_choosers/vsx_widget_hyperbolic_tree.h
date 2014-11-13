@@ -429,7 +429,7 @@ public:
     HTModel* getHTModelNode() {
         return node;
     }
-    vsx_string getName() {
+    vsx_string<>getName() {
         return node->getName();
     }
     HTCoord* getCoordinates() {
@@ -709,17 +709,17 @@ public:
         return 0;
       }
 
-      vsx_widget_hyperbolic_tree* findNode(vsx_string designator) {
+      vsx_widget_hyperbolic_tree* findNode(vsx_string<>designator) {
         if (this == root) return draw_root->findNode(designator);
-        std::vector<vsx_string> add_c;
-        vsx_string deli = ";";
+        std::vector <vsx_string<> > add_c;
+        vsx_string<>deli = ";";
         split_string(designator,deli,add_c,-1);
-        vsx_string search = add_c[0];
+        vsx_string<>search = add_c[0];
         for (std::vector<vsx_widget_hyperbolic_tree*>::iterator it = i_children.begin(); it != i_children.end(); ++it) {
           if ((*it)->node->node->getName() == search) {
             if (add_c.size() > 1) {
               add_c.erase(add_c.begin());
-              vsx_string new_add_name = implode(add_c,";");
+              vsx_string<>new_add_name = implode(add_c,";");
               return (*it)->findNode(new_add_name);
             } else {
               return *it;

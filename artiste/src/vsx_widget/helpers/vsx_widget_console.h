@@ -34,7 +34,7 @@ class vsx_widget_2d_console : public vsx_widget {
 public:
   double rows;
   //vsx_font myf;
-  vsx_string h;
+  vsx_string<>h;
   double texty;
   bool up;
   double fontsize;

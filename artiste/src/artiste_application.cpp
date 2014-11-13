@@ -68,7 +68,7 @@
 
 
 // global vars
-vsx_string fpsstring = "VSX Ultra "+vsx_string(vsxu_version)+" - 2012 Vovoid";
+vsx_string<>fpsstring = "VSX Ultra "+vsx_string<>(vsxu_version)+" - 2012 Vovoid";
 
 vsx_module_list_abs* module_list;
 vsx_engine* vxe = 0x0;
@@ -98,13 +98,13 @@ bool (*app_get_fullscreen)(int) = 0;
 float global_time;
 vsx_timer time2;
 
-void load_desktop_a(vsx_string state_name = "");
+void load_desktop_a(vsx_string<>state_name = "");
 
 // draw-related variables
 class vsxu_draw {
 public:
   bool first;
-  vsx_string current_fps;
+  vsx_string<>current_fps;
   vsx_timer gui_t;
   vsx_timer engine_render_time;
   int frame_count;
@@ -181,7 +181,7 @@ public:
       current_fps = vsx_string_helper::f2s(round(1.0f/gui_f_time),2);
       if (gui_fullscreen_fpstimer > 1)
       {
-        vsx_string h = fpsstring + " @ "+ current_fps+ "fps";
+        vsx_string<>h = fpsstring + " @ "+ current_fps+ "fps";
         gui_fullscreen_fpstimer = 0;
       }
 
@@ -334,11 +334,11 @@ public:
       if (access((vsx_data_path::get_instance()->data_path_get() + "videos").c_str(),0) != 0) mkdir((vsx_data_path::get_instance()->data_path_get()+"/videos").c_str(),0700);
         //sprintf(filename, "%sscreenshots/%d_%d_%d_rgb.jpg",vsx_get_data_path().c_str(),(int)time(0),viewport[2],viewport[3]);
       #endif
-      vsx_string err;
+      vsx_string<>err;
       char mfilename[32];
       sprintf(mfilename, "%05d", movie_frame_count);
 
-      jpeg.SaveJPEG( vsx_data_path::get_instance()->data_path_get() + "videos"+DIRECTORY_SEPARATOR+vsx_string(mfilename)+"_"+ vsx_string_helper::i2s(viewport[2]) + "_" + vsx_string_helper::i2s(viewport[3])+".jpg", err, 100 );
+      jpeg.SaveJPEG( vsx_data_path::get_instance()->data_path_get() + "videos"+DIRECTORY_SEPARATOR+vsx_string<>(mfilename)+"_"+ vsx_string_helper::i2s(viewport[2]) + "_" + vsx_string_helper::i2s(viewport[3])+".jpg", err, 100 );
       jpeg.m_pBuf = 0;
       free(pixeldata);
       free(pixeldata_flipped);
@@ -379,7 +379,7 @@ public:
       /*FILE* fp = fopen(filename,"wb");
       fwrite(pixeldata_flipped, 1, viewport[2] * viewport[3] * 3, fp);
       fclose(fp);*/
-      vsx_string err;
+      vsx_string<>err;
       jpeg.SaveJPEG( vsx_data_path::get_instance()->data_path_get()+"screenshots"+DIRECTORY_SEPARATOR+vsx_string_helper::i2s(time(0x0))+"_"+ vsx_string_helper::i2s(viewport[2]) + "_" + vsx_string_helper::i2s(viewport[3])+".jpg", err, 100 );
       jpeg.m_pBuf = 0;
       free(pixeldata);
@@ -390,7 +390,7 @@ public:
 
 vsxu_draw* my_draw = 0x0;
 
-void load_desktop_a(vsx_string state_name)
+void load_desktop_a(vsx_string<>state_name)
 {
   //printf("{CLIENT} creating desktop:");
   desktop = new vsx_widget_desktop;
@@ -401,7 +401,7 @@ void load_desktop_a(vsx_string state_name)
   ((vsx_widget_server*)desktop->find("desktop_local"))->cmd_in = &internal_cmd_out;
   ((vsx_widget_server*)desktop->find("desktop_local"))->cmd_out = &internal_cmd_in;
   if (state_name != "") ((vsx_widget_server*)desktop->find("desktop_local"))->state_name = str_replace("/",";",str_replace("//",";",str_replace("_states/","",state_name)));
-  internal_cmd_out.add_raw(vsx_string("vsxu_welcome ")+vsx_string(vsxu_ver)+" 0", true);
+  internal_cmd_out.add_raw(vsx_string<>("vsxu_welcome ")+vsx_string<>(vsxu_ver)+" 0", true);
   desktop->system_command_queue = &system_command_queue;
   vsx_widget* t_viewer = desktop->find("vsxu_preview");
   if (t_viewer)
@@ -449,7 +449,7 @@ void app_load(int id)
   gui_prod_fullwindow = &prod_fullwindow;
   //---------------------------------------------------------------------------
   vsxf filesystem;
-  myf.load( PLATFORM_SHARED_FILES + vsx_string("font/font-ascii_output.png"), &filesystem);
+  myf.load( PLATFORM_SHARED_FILES + vsx_string<>("font/font-ascii_output.png"), &filesystem);
 
   if (dual_monitor) {
     vxe->start();
@@ -474,7 +474,7 @@ void app_pre_draw() {
   vsx_command_s *c = 0;
   while ( (c = system_command_queue.pop()) )
   {
-    vsx_string cmd = c->cmd;
+    vsx_string<>cmd = c->cmd;
     if (cmd == "system.shutdown")
     {
       app_close_window();

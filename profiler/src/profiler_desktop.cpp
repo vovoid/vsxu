@@ -42,7 +42,7 @@ void vsx_widget_desktop::init()
   profiler = (vsx_widget_profiler*)this->add((vsx_widget*)(new vsx_widget_profiler), "profiler");
   profiler->init();
 
-  vsx_widget_skin::get_instance()->skin_path_set( PLATFORM_SHARED_FILES+vsx_string("gfx")+DIRECTORY_SEPARATOR+"vsxu_luna"+DIRECTORY_SEPARATOR );
+  vsx_widget_skin::get_instance()->skin_path_set( PLATFORM_SHARED_FILES+vsx_string<>("gfx")+DIRECTORY_SEPARATOR+"vsxu_luna"+DIRECTORY_SEPARATOR );
   vsx_widget_skin::get_instance()->init();
 
   mtex.init_opengl_texture_2d();

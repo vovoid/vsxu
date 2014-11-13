@@ -18,12 +18,12 @@ vsx_data_path::vsx_data_path()
 {
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
     char* home_dir = getenv ("HOME");
-    data_path = vsx_string(home_dir)+"/.local/share/vsxu/";
+    data_path = vsx_string<>(home_dir)+"/.local/share/vsxu/";
 
     if (access(data_path.c_str(),0) != 0)
     {
       mkdir( (data_path).c_str(), 0700 );
-      int r = symlink ( (data_path).c_str(), (vsx_string(home_dir)+"/vsxu").c_str() );
+      int r = symlink ( (data_path).c_str(), (vsx_string<>(home_dir)+"/vsxu").c_str() );
       (void)r;
     }
 
@@ -59,7 +59,7 @@ vsx_data_path::vsx_data_path()
     }
   #else // platform family = unix
     char* home_dir = getenv ("USERPROFILE");
-    data_path = vsx_string(home_dir)+"\\vsxu\\";
+    data_path = vsx_string<>(home_dir)+"\\vsxu\\";
 
     if (access(data_path.c_str(),0) != 0)
       mkdir((data_path).c_str());
@@ -84,18 +84,18 @@ vsx_data_path::vsx_data_path()
       mkdir( (data_path+"resources").c_str());
 
       #ifdef VSXU_DEBUG
-        printf("xcopy command: %s\n",vsx_string("xcopy /E data "+data_path).c_str());
-        printf("xcopy command: %s\n",vsx_string("xcopy /E \""+PLATFORM_SHARED_FILES+"\\example-macros\\\" "+data_path+"").c_str());
-        printf("%s",(vsx_string("xcopy /I /E \"")+PLATFORM_SHARED_FILES+"example-macros\" \""+data_path+"macros\\examples\"").c_str());
+        printf("xcopy command: %s\n",vsx_string<>("xcopy /E data "+data_path).c_str());
+        printf("xcopy command: %s\n",vsx_string<>("xcopy /E \""+PLATFORM_SHARED_FILES+"\\example-macros\\\" "+data_path+"").c_str());
+        printf("%s",(vsx_string<>("xcopy /I /E \"")+PLATFORM_SHARED_FILES+"example-macros\" \""+data_path+"macros\\examples\"").c_str());
       #endif
 
-      system((vsx_string("xcopy \"")+PLATFORM_SHARED_FILES+"vsxu.conf\" "+data_path).c_str());
-      system((vsx_string("xcopy /I /E \"")+PLATFORM_SHARED_FILES+"example-macros\" \""+data_path+"macros\\examples\"").c_str());
-      system((vsx_string("xcopy /I /E \"")+PLATFORM_SHARED_FILES+"example-states\" \""+data_path+"states\\examples\"").c_str());
-      system((vsx_string("xcopy /I /E \"")+PLATFORM_SHARED_FILES+"example-prods\" \""+data_path+"prods\\examples\"").c_str());
-      system((vsx_string("xcopy /I /E \"")+PLATFORM_SHARED_FILES+"example-visuals\" \""+data_path+"visuals\\examples\"").c_str());
-      system((vsx_string("xcopy /I /E \"")+PLATFORM_SHARED_FILES+"example-resources\" \""+data_path+"resources\\examples\"").c_str());
-      system((vsx_string("xcopy /I /E \"")+PLATFORM_SHARED_FILES+"example-faders\" \""+data_path+"visuals_faders\\examples\"").c_str());
+      system((vsx_string<>("xcopy \"")+PLATFORM_SHARED_FILES+"vsxu.conf\" "+data_path).c_str());
+      system((vsx_string<>("xcopy /I /E \"")+PLATFORM_SHARED_FILES+"example-macros\" \""+data_path+"macros\\examples\"").c_str());
+      system((vsx_string<>("xcopy /I /E \"")+PLATFORM_SHARED_FILES+"example-states\" \""+data_path+"states\\examples\"").c_str());
+      system((vsx_string<>("xcopy /I /E \"")+PLATFORM_SHARED_FILES+"example-prods\" \""+data_path+"prods\\examples\"").c_str());
+      system((vsx_string<>("xcopy /I /E \"")+PLATFORM_SHARED_FILES+"example-visuals\" \""+data_path+"visuals\\examples\"").c_str());
+      system((vsx_string<>("xcopy /I /E \"")+PLATFORM_SHARED_FILES+"example-resources\" \""+data_path+"resources\\examples\"").c_str());
+      system((vsx_string<>("xcopy /I /E \"")+PLATFORM_SHARED_FILES+"example-faders\" \""+data_path+"visuals_faders\\examples\"").c_str());
     }
   #endif
 }

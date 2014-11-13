@@ -46,7 +46,7 @@ class module_texture_load_png : public vsx_module
 public:
 
   int m_type;
-  vsx_string current_filename;
+  vsx_string<>current_filename;
   vsx_bitmap bitm;
   int bitm_timestamp; // keep track of the timestamp for the bitmap internally 
   volatile int               thread_state;

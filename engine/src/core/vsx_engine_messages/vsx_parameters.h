@@ -134,7 +134,7 @@ if (cmd == "param_get" || cmd == "pgo")
   if (!param)
     goto process_message_queue_end;
 
-  vsx_string _value = param->get_string();
+  vsx_string<>_value = param->get_string();
 
 
   if (!_value.size())
@@ -143,8 +143,8 @@ if (cmd == "param_get" || cmd == "pgo")
   if (_value.size() > 100)
     _value = _value.substr(0,100)+"...";
 
-  vsx_string value = base64_encode(_value);
-  vsx_string extra = "";
+  vsx_string<>value = base64_encode(_value);
+  vsx_string<>extra = "";
 
   if (c->parts.size() == 4)
     extra = " "+c->parts[3];
@@ -172,8 +172,8 @@ if (cmd == "pg64")
     if (dest) {
       vsx_engine_param* param = dest->get_params_in()->get_by_name(c->parts[2]);
       if (param) {
-        vsx_string value = base64_encode(param->get_string());
-        vsx_string extra = "";
+        vsx_string<>value = base64_encode(param->get_string());
+        vsx_string<>extra = "";
         if (c->parts.size() == 4) extra = " "+c->parts[3];
         // syntax:
         //  param_get_ok [component] [param] [value] [extra_info]
@@ -328,7 +328,7 @@ if ( cmd == "param_clone_value" )
 
   // 7. everything should be OK and ready for copying
   // go via string to avoid data sharing
-  vsx_string temp_value = source_parameter->get_string();
+  vsx_string<>temp_value = source_parameter->get_string();
   destination_parameter->set_string( temp_value );
 
   // 8. notify the module of a parameter update
@@ -368,9 +368,9 @@ if (cmd == "param_set_interpolate")
       vsx_engine_param* e_param = dest->get_params_in()->get_by_name(c->parts[2]);
       if (e_param) {
         if (!e_param->sequence) {
-          vsx_string a = c->parts[3];
-          vsx_string deli = ",";
-          std::vector<vsx_string> pp;
+          vsx_string<>a = c->parts[3];
+          vsx_string<>deli = ",";
+          std::vector <vsx_string<> > pp;
           split_string(a,deli,pp);
           int cc = 0;
           if (!pp.size()) pp.push_back(c->parts[3]);
@@ -379,7 +379,7 @@ if (cmd == "param_set_interpolate")
           if (c->parts.size() == 5)
           interp_time = vsx_string_helper::s2f(c->parts[4]);
 
-          for (std::vector<vsx_string>::iterator it = pp.begin(); it != pp.end(); ++it) {
+          for (std::vector <vsx_string<> >::iterator it = pp.begin(); it != pp.end(); ++it) {
             interpolation_list.set_target_value(e_param, *it, cc, interp_time);
             ++cc;
           }

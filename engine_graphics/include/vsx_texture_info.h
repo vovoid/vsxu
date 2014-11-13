@@ -165,7 +165,7 @@ class vsx_texture_info
 {
 public:
 
-  vsx_string name;
+  vsx_string<>name;
   // size of the texture in pixels
   float size_x;
   float size_y;

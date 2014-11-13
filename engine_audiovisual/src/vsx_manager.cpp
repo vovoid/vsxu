@@ -135,13 +135,13 @@ vsx_manager::~vsx_manager()
 
 void vsx_manager::init(const char* base_path, const char* sound_type)
 {
-  vsx_string b_path;
+  vsx_string<>b_path;
   if(!base_path)
     b_path =  PLATFORM_SHARED_FILES;
   else
     b_path = base_path;
 
-  vsx_string s_type(sound_type);
+  vsx_string<>s_type(sound_type);
 
   if (s_type == "media_player")
   {
@@ -151,7 +151,7 @@ void vsx_manager::init(const char* base_path, const char* sound_type)
   module_list = vsx_module_list_factory_create();
   ((vsx_statelist*)int_state_manager)->set_module_list( module_list );
 
-  ((vsx_statelist*)int_state_manager)->init(b_path,vsx_string(sound_type));
+  ((vsx_statelist*)int_state_manager)->init(b_path,vsx_string<>(sound_type));
 }
 
 void vsx_manager::add_visual_path(const char* new_visual_path)
@@ -159,7 +159,7 @@ void vsx_manager::add_visual_path(const char* new_visual_path)
   if(!new_visual_path)
     return;
 
-  ((vsx_statelist*)int_state_manager)->add_visual_path(vsx_string(new_visual_path));
+  ((vsx_statelist*)int_state_manager)->add_visual_path(vsx_string<>(new_visual_path));
 }
 
 void vsx_manager::start()
@@ -227,9 +227,9 @@ V I S U A L   F I L E N A M E S   I N F O R M A T I O N
 *****************************************************************/
 std::vector<std::string> vsx_manager::get_visual_filenames()
 {
-  std::list<vsx_string>* items = ((vsx_statelist*)int_state_manager)->get_state_file_list();
+  std::list< vsx_string<> >* items = ((vsx_statelist*)int_state_manager)->get_state_file_list();
   std::vector<std::string> return_items;
-  for(std::list<vsx_string>::iterator it = (*items).begin(); it != (*items).end(); it++)
+  for(std::list< vsx_string<> >::iterator it = (*items).begin(); it != (*items).end(); it++)
   {
     return_items.push_back( std::string((*it).c_str()) );
   }

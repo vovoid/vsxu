@@ -27,7 +27,7 @@
 
 #include "vsx_comp_abs.h"
 
-vsx_string process_module_param_spec(vsx_string& input);
+vsx_string<>process_module_param_spec(vsx_string<>& input);
 
 
 class vsx_channel;
@@ -86,9 +86,9 @@ public:
 
   //------------------------------------------------------------------------------------------------
   
-	//void load_module(vsx_string module_class, vsx_string name);
+	//void load_module(vsx_string<>module_class, vsx_string<>name);
 
-  void load_module(const vsx_string& module_name, vsx_module_engine_info* engine_info);
+  void load_module(const vsx_string<>& module_name, vsx_module_engine_info* engine_info);
   void unload_module();
 	void init_module();
 	
@@ -98,11 +98,11 @@ public:
 	bool stop();
 	bool start();
 
-	//bool connect(vsx_string param_name, vsx_comp_abs* other_component, vsx_string other_param_name, int* ord = 0);
-//	bool connect_(vsx_comp_abs* other_component, vsx_string other_param_name, vsx_string param_name);
+	//bool connect(vsx_string<>param_name, vsx_comp_abs* other_component, vsx_string<>other_param_name, int* ord = 0);
+//	bool connect_(vsx_comp_abs* other_component, vsx_string<>other_param_name, vsx_string<>param_name);
 
-	bool disconnect(vsx_string param_name, vsx_comp_abs* other_component, vsx_string other_param_name);
-	void disconnect(vsx_string param_name);
+	bool disconnect(vsx_string<>param_name, vsx_comp_abs* other_component, vsx_string<>other_param_name);
+	void disconnect(vsx_string<>param_name);
 	  
   void re_init_in_params();
   void re_init_out_params();

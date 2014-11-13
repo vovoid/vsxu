@@ -100,7 +100,7 @@ public:
     tree->set_profiler( p );
   }
 
-  void set_string( vsx_string s )
+  void set_string( vsx_string<>s )
   {
     tree->set_string( s );
   }

@@ -221,7 +221,7 @@ public:
   }
 
 
-  virtual void load_filename(vsx_string filename) = 0;
+  virtual void load_filename(vsx_string<>filename) = 0;
 
 };
 

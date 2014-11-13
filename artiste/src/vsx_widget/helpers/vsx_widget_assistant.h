@@ -36,11 +36,11 @@ class vsxu_assistant : public vsx_widget {
   vsx_widget *pager;
   vsx_texture texture;
   vsx_vector3<> pos_, size_;
-  vsx_string text;
+  vsx_string<>text;
   vsx_widget* cur_focus;
   float size_multiplier;
   vsx_vector3<> clickpoint, endpoint, cursize, endsize;
-  std::vector<vsx_string> course;
+  std::vector <vsx_string<> > course;
   
   float temp_size;
   

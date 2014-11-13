@@ -40,8 +40,8 @@ public:
   float fx_level;
   float speed;
   vsx_engine* engine;
-  vsx_string state_name;
-  vsx_string state_name_suffix;
+  vsx_string<>state_name;
+  vsx_string<>state_name_suffix;
   vsx_command_list cmd_in;
   vsx_command_list cmd_out;
   bool need_stop;
@@ -71,9 +71,9 @@ public:
 class vsx_statelist
 {
 private:
-  vsx_string own_path;
-  std::list<vsx_string> state_file_list;
-  std::list<vsx_string> fader_file_list;
+  vsx_string<>own_path;
+  std::list< vsx_string<> > state_file_list;
+  std::list< vsx_string<> > fader_file_list;
   std::vector<state_info> statelist;
   std::vector<state_info>::iterator state_iter;
 
@@ -92,14 +92,14 @@ private:
 
   vsx_timer timer;
 
-  vsx_string config_dir;
-  vsx_string visual_path;
-  vsx_string sound_type;
+  vsx_string<>config_dir;
+  vsx_string<>visual_path;
+  vsx_string<>sound_type;
 
   int init_current(vsx_engine *vxe_local, state_info* info);
   float transition_time;
   float message_time;
-  vsx_string message;
+  vsx_string<>message;
   bool render_first;
 
   vsx_command_list l_cmd_in;
@@ -133,7 +133,7 @@ public:
     return vxe;
   }
   
-  void add_visual_path(vsx_string new_visual_path);
+  void add_visual_path(vsx_string<>new_visual_path);
 
   // **************************************************************************
   // OPTIONS
@@ -161,11 +161,11 @@ public:
   void next_state();
   void prev_state();
 
-  std::list<vsx_string>* get_state_file_list();
-  std::list<vsx_string>* get_fader_file_list();
+  std::list< vsx_string<> >* get_state_file_list();
+  std::list< vsx_string<> >* get_fader_file_list();
   
 
-  vsx_string state_loading();
+  vsx_string<>state_loading();
   
   void inc_speed();
   void dec_speed();
@@ -175,17 +175,17 @@ public:
   float get_fx_level();
   void toggle_fullscreen();
   void render();
-  void init(vsx_string base_path,vsx_string init_sound_type);
+  void init(vsx_string<>base_path,vsx_string<>init_sound_type);
   void load_fx_levels_from_user();
   void save_fx_levels_from_user();
 
   void set_sound_freq(float* data);
   void set_sound_wave(float* data);
   
-  vsx_string get_meta_visual_filename();
-  vsx_string get_meta_visual_name();
-  vsx_string get_meta_visual_creator();
-  vsx_string get_meta_visual_company();
+  vsx_string<>get_meta_visual_filename();
+  vsx_string<>get_meta_visual_name();
+  vsx_string<>get_meta_visual_creator();
+  vsx_string<>get_meta_visual_company();
   
   vsx_statelist();
   ~vsx_statelist();

@@ -40,8 +40,8 @@ class vsx_sequence_pool
 	void* engine;
 	bool edit_enabled;
 	vsx_param_sequence_list* cur_sequence_list;
-	vsx_string active;
-	std::map<vsx_string, vsx_param_sequence_list*> sequence_lists;
+	vsx_string<>active;
+	std::map<vsx_string<>, vsx_param_sequence_list*> sequence_lists;
 	float vtime;
   int current_state; // 0 = stopped, 1 = playing
   float loop_point; // vtime is a modulus of this
@@ -51,10 +51,10 @@ public:
   void remove_param_sequence(vsx_engine_param* param);
 
 	// sequence list operations
-	int add(vsx_string name); // 1 = success, 0 = fail
-	int del(vsx_string name);
-	int clone(vsx_string name, vsx_string new_name);
-	int select(vsx_string name);
+	int add(vsx_string<>name); // 1 = success, 0 = fail
+	int del(vsx_string<>name);
+	int clone(vsx_string<>name, vsx_string<>new_name);
+	int select(vsx_string<>name);
 	vsx_param_sequence_list* get_selected();
 
 	bool toggle_edit();
@@ -62,7 +62,7 @@ public:
 
 	// sequence operations on current active list
 	int add_sequence(vsx_engine_param* param, vsx_comp_abs* comp);
-  vsx_param_sequence_list* get_sequence_list_by_name(vsx_string name);
+  vsx_param_sequence_list* get_sequence_list_by_name(vsx_string<>name);
 
 	void set_engine(void* new_engine);
 
@@ -81,11 +81,11 @@ public:
   void set_loop_point(float new_loop_point);
 
   // serialize functions
-  vsx_string dump_names();
+  vsx_string<>dump_names();
   void dump_to_command_list(vsx_command_list &savelist);
   // save/load from file
-  bool export_to_file(vsx_string filename);
-  bool import_from_file(vsx_string filename);
+  bool export_to_file(vsx_string<>filename);
+  bool import_from_file(vsx_string<>filename);
 
 	// deinitialization
   void clear();

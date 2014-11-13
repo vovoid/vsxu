@@ -40,7 +40,7 @@ class vsx_window_object_inspector : public vsx_widget_window {
   std::vector<vsx_widget*> component_list;
   vsx_texture texture;
   bool texture_loaded;
-  vsx_string filename_loaded;
+  vsx_string<>filename_loaded;
   int view_type;
   vsx_vector3<> pos_, size_;
   float vsx_status_timer;
@@ -51,7 +51,7 @@ public:
   void init() {
     if (!init_run) vsx_widget_window::init();
   }
-  void load_file(vsx_string filename);
+  void load_file(vsx_string<>filename);
   void unload();
   
   virtual void init_children() {

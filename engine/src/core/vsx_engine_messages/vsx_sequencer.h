@@ -77,7 +77,7 @@ if (cmd == "pseq_p")
           sequence_list.inject_param(param, dest, c->parts[4]);
         } else
         if (c->parts[1] == "inject_get") {
-          vsx_string a = sequence_list.dump_param(param);
+          vsx_string<>a = sequence_list.dump_param(param);
           if (a != "") {
             cmd_out->add_raw("pseq_p_ok inject_get "+c->parts[2]+" "+c->parts[3]+" "+a+" "+vsx_string_helper::i2s(param->module_param->type), VSX_COMMAND_GARBAGE_COLLECT);
           }
@@ -205,7 +205,7 @@ if (cmd == "mseq_channel")
   // 0=mseq_channel 1=inject_get 2=[channel_name]
   if (c->parts[1] == "inject_get")
   {
-    vsx_string a = sequence_list.dump_master_channel(c->parts[2]);
+    vsx_string<>a = sequence_list.dump_master_channel(c->parts[2]);
     if (a != "")
     {
       cmd_out->add_raw("mseq_channel_ok inject_get "+c->parts[2]+" "+a, VSX_COMMAND_GARBAGE_COLLECT);

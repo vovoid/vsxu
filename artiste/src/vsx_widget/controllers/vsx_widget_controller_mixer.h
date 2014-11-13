@@ -28,12 +28,12 @@
 class vsx_widget_controller_mixer : public vsx_widget_controller_base
 {
 public:
-  vsx_string capmaxv_s, capminv_s;
+  vsx_string<>capmaxv_s, capminv_s;
   std::vector<vsx_widget*> mixers;
   int nummixers;
   vsx_widget_controller_mixer();
   void smooth(float newval);
-  virtual void get_in_param_spec(std::pair<vsx_string,vsx_string> parampair);
+  virtual void get_in_param_spec(std::pair<vsx_string<>,vsx_string<> > parampair);
   void init();
   void draw();
   void command_process_back_queue(vsx_command_s *t);

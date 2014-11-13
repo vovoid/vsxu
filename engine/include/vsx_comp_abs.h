@@ -30,7 +30,7 @@ class vsx_comp_abs
 {
 public:
   // the name of the component
-  vsx_string name;
+  vsx_string<>name;
   // our "real" parameter lists for internal use
 
   vsx_engine_param_list* in_parameters;
@@ -58,10 +58,10 @@ public:
 #endif  
  	vsx_module* module;
   vsx_module_info* module_info;
-  vsx_string identifier;
-  vsx_string component_class;
-  vsx_string in_param_spec;
-  vsx_string out_param_spec;
+  vsx_string<>identifier;
+  vsx_string<>component_class;
+  vsx_string<>in_param_spec;
+  vsx_string<>out_param_spec;
 
   virtual ~vsx_comp_abs() {}
 };

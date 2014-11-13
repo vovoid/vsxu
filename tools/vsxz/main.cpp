@@ -41,7 +41,7 @@
 #include <io.h>
 #endif
 
-vsx_string current_path = vsx_argvector::get_executable_directory();
+vsx_string<>current_path = vsx_argvector::get_executable_directory();
 vsxf filesystem;
 vsx_argvector* arg = vsx_argvector::get_instance();
 
@@ -58,11 +58,11 @@ void extract()
   if (access(current_path.c_str(),W_OK))
     VSX_ERROR_EXIT("current_path is not accessible for writing",1);
 
-  vsx_string filename = arg->get_param_value("x");
+  vsx_string<>filename = arg->get_param_value("x");
 
   // Sanitize file
   if (!filesystem.is_file(filename))
-    VSX_ERROR_EXIT( (vsx_string("Invalid archive supplied,")+filename).c_str(), 1);
+    VSX_ERROR_EXIT( (vsx_string<>("Invalid archive supplied,")+filename).c_str(), 1);
 
   if (arg->has_param("mt"))
     filesystem.archive_load_all_mt( filename.c_str() );
@@ -76,10 +76,10 @@ void extract()
   vsx_avector<vsxf_archive_info>* archive_files = filesystem.get_archive_files();
   for (unsigned long i = 0; i < (*archive_files).size(); ++i)
   {
-    vsx_string out_filename = (*archive_files)[i].filename;
-    vsx_string out_dir = get_path_from_filename(out_filename);
-    vsx_string full_out_path = current_path + "/" + out_filename;
-    vsx_string out_directory = current_path + "/" + out_dir;
+    vsx_string<>out_filename = (*archive_files)[i].filename;
+    vsx_string<>out_dir = get_path_from_filename(out_filename);
+    vsx_string<>full_out_path = current_path + "/" + out_filename;
+    vsx_string<>out_directory = current_path + "/" + out_dir;
 
     if (!dry_run)
     {
@@ -91,14 +91,14 @@ void extract()
 
     vsxf_handle* fpi = filesystem.f_open((*archive_files)[i].filename.c_str(), "r");
       if (!fpi)
-        VSX_ERROR_EXIT( (vsx_string("Internal Error: fpi invalid when reading ")+(*archive_files)[i].filename).c_str(), 3);
+        VSX_ERROR_EXIT( (vsx_string<>("Internal Error: fpi invalid when reading ")+(*archive_files)[i].filename).c_str(), 3);
 
       FILE* fpo = 0;
       if (!dry_run)
       {
         fpo = fopen(full_out_path.c_str(), "wb");
         if (!fpo)
-          VSX_ERROR_EXIT( (vsx_string("Internal Error: fpo invalid when opening file for writing: ")+full_out_path).c_str(), 3 );
+          VSX_ERROR_EXIT( (vsx_string<>("Internal Error: fpo invalid when opening file for writing: ")+full_out_path).c_str(), 3 );
       }
 
         char* buf = filesystem.f_gets_entire(fpi);
@@ -131,9 +131,9 @@ void create()
   if (!arg->has_param_with_value("f"))
     VSX_ERROR_EXIT("Error, you must supply files to be added to the archive", 100);
 
-  vsx_string filenames = arg->get_param_value("f");
-  vsx_string deli = ":";
-  vsx_avector<vsx_string> parts;
+  vsx_string<>filenames = arg->get_param_value("f");
+  vsx_string<>deli = ":";
+  vsx_avector< vsx_string<> > parts;
 
   explode(filenames, deli, parts);
 
@@ -144,10 +144,10 @@ void create()
   for (size_t i = 0; i < parts.size(); i++)
   {
     if (access(parts[i].c_str(),R_OK))
-      VSX_ERROR_EXIT( ( vsx_string("Pre-check failed, error accessing file: ") + parts[i]).c_str()  ,1);
+      VSX_ERROR_EXIT( ( vsx_string<>("Pre-check failed, error accessing file: ") + parts[i]).c_str()  ,1);
   }
 
-  vsx_string archive_filename = arg->get_param_value("c");
+  vsx_string<>archive_filename = arg->get_param_value("c");
 
   filesystem.archive_create(archive_filename.c_str());
 

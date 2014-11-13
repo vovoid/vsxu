@@ -195,9 +195,9 @@ void vsx_widget_sequence_editor::i_draw()
 
 void vsx_widget_sequence_editor::update_list()
 {
-  vsx_string result;
+  vsx_string<>result;
   int i = 0;
-  for (std::map<vsx_string,vsx_widget*>::iterator it = channels_map.begin(); it != channels_map.end(); it++)
+  for (std::map<vsx_string<>,vsx_widget*>::iterator it = channels_map.begin(); it != channels_map.end(); it++)
   {
     if (i++) result += "\n";
     result += (*it).first;
@@ -250,15 +250,15 @@ void vsx_widget_sequence_editor::interpolate_size()
   }
 }
 
-void vsx_widget_sequence_editor::toggle_channel_visible(vsx_string name) {
+void vsx_widget_sequence_editor::toggle_channel_visible(vsx_string<>name) {
   if (channels_map.find(name) != channels_map.end())
   {
     ((vsx_widget_seq_channel*)channels_map[name])->hidden_by_sequencer = !((vsx_widget_seq_channel*)channels_map[name])->hidden_by_sequencer;
   }
   else {
     // we need to get this from the engine again
-    vsx_string deli = ":";
-    vsx_avector<vsx_string> parts;
+    vsx_string<>deli = ":";
+    vsx_avector< vsx_string<> > parts;
     explode(name,deli,parts);
     if (parts.size())
     {
@@ -315,7 +315,7 @@ vsx_widget* vsx_widget_sequence_editor::get_server()
   return server;
 }
 
-void vsx_widget_sequence_editor::remove_master_channel_items_with_name(vsx_string name)
+void vsx_widget_sequence_editor::remove_master_channel_items_with_name(vsx_string<>name)
 {
   for (std::vector<vsx_widget*>::iterator it = channels.begin(); it != channels.end(); it++)
   {
@@ -365,8 +365,8 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
   {
     if (t->parts.size() == 3)
     {
-      vsx_string deli = ":";
-      std::vector<vsx_string> parts;
+      vsx_string<>deli = ":";
+      std::vector <vsx_string<> > parts;
       explode(t->parts[2],deli, parts);
       if (parts[1] == "[master]")
       {
@@ -405,16 +405,16 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
   if (t->cmd == "seq_list_ok") {
     if (t->parts.size() > 1)
     {
-      vsx_string deli = "&";
-      vsx_avector<vsx_string> parts;
+      vsx_string<>deli = "&";
+      vsx_avector< vsx_string<> > parts;
       explode(t->parts[1], deli, parts);
-      std::map<vsx_string,vsx_string> sort_map;
+      std::map<vsx_string<>,vsx_string<> > sort_map;
       for (size_t i = 0; i < parts.size(); i++)
       {
         sort_map[parts[i]] = parts[i];
       }
-      vsx_avector<vsx_string> sorted_names;
-      for (std::map<vsx_string,vsx_string>::iterator it = sort_map.begin(); it != sort_map.end(); it++)
+      vsx_avector< vsx_string<> > sorted_names;
+      for (std::map<vsx_string<>,vsx_string<> >::iterator it = sort_map.begin(); it != sort_map.end(); it++)
       {
         sorted_names.push_back((*it).second);
       }
@@ -426,14 +426,14 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
   if (t->cmd == "pseq_l_dump_ok") {
     if (t->parts.size() > 1)
     {
-      vsx_string deli = "&";
-      vsx_avector<vsx_string> parts;
+      vsx_string<>deli = "&";
+      vsx_avector< vsx_string<> > parts;
       explode(t->parts[1], deli, parts);
-      vsx_avector<vsx_string> names;
+      vsx_avector< vsx_string<> > names;
       for (size_t i = 0; i < parts.size(); i++)
       {
-        vsx_string ideli = "#";
-        vsx_avector<vsx_string> iparts;
+        vsx_string<>ideli = "#";
+        vsx_avector< vsx_string<> > iparts;
         explode(parts[i], ideli, iparts);
         // 0 = comp name
         // 1 = param name

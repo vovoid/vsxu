@@ -53,8 +53,8 @@ using namespace std;
 
 
 vsx_command_list module_chooser_colors(true);
-std::map<vsx_string,vsx_color<> > mc_colors;
-std::map<vsx_string,vsx_color<> > mc_r_colors;
+std::map<vsx_string<>,vsx_color<> > mc_colors;
+std::map<vsx_string<>,vsx_color<> > mc_r_colors;
 
 
 
@@ -84,7 +84,7 @@ void vsx_widget_ultra_chooser::init() {
 }
 
 
-void vsx_widget_ultra_chooser::center_on_item(vsx_string target) {
+void vsx_widget_ultra_chooser::center_on_item(vsx_string<>target) {
   vsx_widget_hyperbolic_tree* t = treedraw->findNode(target);
   if (t) {
     treedraw->translateToOrigin(t);
@@ -145,7 +145,7 @@ void vsx_widget_ultra_chooser::command_process_back_queue(vsx_command_s *t) {
     // check wich type it is
     if (treedraw->selected->node->node->module_info->component_class == "macro") {
       // everything else will be contained in this macro, so modify the macro_name var
-      vsx_string local_macro_name = t->cmd_data;
+      vsx_string<>local_macro_name = t->cmd_data;
       // first create the macro
       command_q_b.add_raw("macro_create "+treedraw->selected->node->node->module_info->identifier+" "+macro_name+local_macro_name+" "+vsx_string_helper::f2s(drop_pos.x)+" "+vsx_string_helper::f2s(drop_pos.y));
       // in here, send all the commands contained in the macro to the server..
@@ -293,8 +293,8 @@ void vsx_widget_ultra_chooser::event_mouse_down(vsx_widget_distance distance,vsx
         help_text = ((vsx_widget_server*)server)->build_comp_helptext(test->node->node->module_info->identifier);
         ++help_timestamp;
       }
-      std::vector<vsx_string> parts;
-      vsx_string deli = ";";
+      std::vector <vsx_string<> > parts;
+      vsx_string<>deli = ";";
       explode(test->node->node->module_info->identifier,deli, parts);
       if (test->node->node->module_info->component_class == "state") {
         drag_module = false;
@@ -599,8 +599,8 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
   vsx_command_s* mc = 0;
   while ( (mc = module_chooser_colors.get()) ) {
     if (mc->cmd == "ccolor") {
-      std::vector<vsx_string> parts;
-      vsx_string deli = ",";
+      std::vector <vsx_string<> > parts;
+      vsx_string<>deli = ",";
       explode(mc->parts[2],deli, parts);
       vsx_color<> p;
       p.r = vsx_string_helper::s2f(parts[0]);
@@ -610,8 +610,8 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
       mc_colors[mc->parts[1]] = p;
     } else
     if (mc->cmd == "rcolor") {
-      std::vector<vsx_string> parts;
-      vsx_string deli = ",";
+      std::vector <vsx_string<> > parts;
+      vsx_string<>deli = ",";
       explode(mc->parts[2],deli, parts);
       vsx_color<> p;
       p.r = vsx_string_helper::s2f(parts[0]);

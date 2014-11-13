@@ -39,7 +39,7 @@ if (cmd == "get_module_list")
     )
     {
       cmd_out->add_raw(
-        vsx_string("module_list ")
+        vsx_string<>("module_list ")
         +
         (*my_module_list)[i]->component_class
         +
@@ -69,9 +69,9 @@ if (cmd == "get_module_list")
 
 if (cmd == "get_list")
 {
-  std::list<vsx_string> file_list;
-  vsx_string path;
-  vsx_string base_path = vsx_data_path::get_instance()->data_path_get();
+  std::list< vsx_string<> > file_list;
+  vsx_string<>path;
+  vsx_string<>base_path = vsx_data_path::get_instance()->data_path_get();
 
   if (c->parts[1] == "resources")
     path = base_path+c->parts[1];
@@ -81,9 +81,9 @@ if (cmd == "get_list")
 
   get_files_recursive(path, &file_list, "", ".hidden");
 
-  for (std::list<vsx_string>::iterator it = file_list.begin(); it != file_list.end(); ++it)
+  for (std::list< vsx_string<> >::iterator it = file_list.begin(); it != file_list.end(); ++it)
   {
-    vsx_string s2 = str_replace(str_replace("/",";",path)+";","",str_replace(" ",":20:",str_replace("/",";",str_replace(path,"",*it))));
+    vsx_string<>s2 = str_replace(str_replace("/",";",path)+";","",str_replace(" ",":20:",str_replace("/",";",str_replace(path,"",*it))));
     cmd_out->add_raw(c->parts[1]+"_list "+s2, VSX_COMMAND_GARBAGE_COLLECT);
   }
 
@@ -117,7 +117,7 @@ if (cmd == "undo_s")
 
 if (cmd == "undo")
 {
-  vsx_string error_string;
+  vsx_string<>error_string;
   if (undo_buffer.size())
   {
     vsx_command_list dest;

@@ -8,11 +8,11 @@
 namespace vsx_quaternion_helper
 {
   template<typename T>
-  inline vsx_quaternion<T> from_string(vsx_string &str) VSX_ALWAYS_INLINE
+  inline vsx_quaternion<T> from_string(vsx_string<>&str) VSX_ALWAYS_INLINE
   {
     vsx_quaternion<T> q;
-    vsx_avector<vsx_string> parts;
-    vsx_string deli = ",";
+    vsx_avector< vsx_string<> > parts;
+    vsx_string<>deli = ",";
     explode(str, deli, parts);
     if (parts.size() == 4) {
       q.x = vsx_string_helper::s2f(parts[0]);
@@ -24,13 +24,13 @@ namespace vsx_quaternion_helper
   }
 
   template<typename T>
-  inline vsx_string to_string(const vsx_quaternion<T> &q) VSX_ALWAYS_INLINE
+  inline vsx_string<>to_string(const vsx_quaternion<T> &q) VSX_ALWAYS_INLINE
   {
-    vsx_string local;
+    vsx_string<>local;
     local += vsx_string_helper::f2s(q.x);
-    local += vsx_string(",")+vsx_string_helper::f2s(q.y);
-    local += vsx_string(",")+vsx_string_helper::f2s(q.z);
-    local += vsx_string(",")+vsx_string_helper::f2s(q.w);
+    local += vsx_string<>(",")+vsx_string_helper::f2s(q.y);
+    local += vsx_string<>(",")+vsx_string_helper::f2s(q.z);
+    local += vsx_string<>(",")+vsx_string_helper::f2s(q.w);
     return local;
   }
 

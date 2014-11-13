@@ -133,7 +133,7 @@ void vsx_widget_controller_editor::save()
   return_component->vsx_command_queue_b(this);
 }
 
-bool vsx_widget_controller_editor::load_text(vsx_string new_text)
+bool vsx_widget_controller_editor::load_text(vsx_string<>new_text)
 {
   ((vsx_widget_editor*)editor)->set_string(new_text);
   return true;

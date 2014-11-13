@@ -33,7 +33,7 @@ class vsx_widget_controller_base : public vsx_widget
 {
   float r_time;
 public:
-  vsx_string command_suffix;
+  vsx_string<>command_suffix;
   vsx_widget* hint;
 
   int mouse_moves;
@@ -44,7 +44,7 @@ public:
   vsx_vector3<> parentpos;
   vsx_vector3<> deltamove,remPointer,remWorld;
   float temp;
-  std::map<vsx_string,vsx_string>* param_spec;
+  std::map<vsx_string<>,vsx_string<> >* param_spec;
 //----
   float snap(float newval);
   void set_value(float val,bool cap=true);
@@ -52,7 +52,7 @@ public:
   // show the destination value visually?
   bool dest_value;
 
-  vsx_string in_param_spec,target_param /*used if sending data to complex anchor*/;
+  vsx_string<>in_param_spec,target_param /*used if sending data to complex anchor*/;
   vsx_color<> bgcolor;
   float value, target_value, presentation_value, send_value;
   float old_snap_value;
@@ -83,10 +83,10 @@ public:
   virtual void cap_value();
   virtual void get_value();
   virtual void smooth(float newval);
-  virtual void get_in_param_spec(std::pair<vsx_string,vsx_string> parampair); //used in param retrieval for letting child classes deal with unothodox params
+  virtual void get_in_param_spec(std::pair<vsx_string<>,vsx_string<> > parampair); //used in param retrieval for letting child classes deal with unothodox params
   virtual void send_to_server();
 
-  void set_command_suffix(vsx_string new_val)
+  void set_command_suffix(vsx_string<>new_val)
   {
   	command_suffix = new_val;
   }

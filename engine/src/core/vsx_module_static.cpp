@@ -52,7 +52,7 @@
 #include "../../plugin_base/render.opengl.advanced-lib/main.cpp"
 #include "../../plugin_base/render.gravity_lines/main.cpp"
 
-vsx_module* create_named_module(vsx_string name)
+vsx_module* create_named_module(vsx_string<>name)
 {
 	// 20 modules!
   #define ADD_MODULE(mn) if (name == #mn)	return (vsx_module*)new mn

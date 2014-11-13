@@ -242,7 +242,7 @@ public:
         "BLEND_PIN_LIGHT|BLEND_HARD_MIX|BLEND_REFLECT|BLEND_GLOW|BLEND_PHOENIX,"
       "bitmap_type:enum?integer|float"
     ;
-    vsx_string nn;
+    vsx_string<>nn;
     switch (blend_type)
     {
       case BLEND_NORMAL       :nn = "blend_normal"; break;

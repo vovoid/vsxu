@@ -17,14 +17,14 @@ class vsx_widget_param_sequence_item
   int type; // 0 = param, 1 = master
   float total_length; // in seconds (float)
   float length; // for master channel, this is the length of the block
-  vsx_string value; // if master, this is the name of the sequence_pool
+  vsx_string<>value; // if master, this is the name of the sequence_pool
   size_t interpolation;
   vsx_vector3<> handle1;
   vsx_vector3<> handle2;
 
   // child controller for setting the sequence for a master channel item
   vsx_widget* master_channel_time_sequence;
-  vsx_string pool_name;
+  vsx_string<>pool_name;
 
 public:
 
@@ -40,7 +40,7 @@ public:
   }
 
 
-  vsx_string get_value_interpolation()
+  vsx_string<>get_value_interpolation()
   {
     if (interpolation == 4)
     {
@@ -106,13 +106,13 @@ public:
 
 
 
-  vsx_string get_value()
+  vsx_string<>get_value()
   {
     return value;
   }
 
 
-  void set_value(vsx_string v)
+  void set_value(vsx_string<>v)
   {
     value = v;
   }
@@ -201,12 +201,12 @@ public:
   }
 
 
-  vsx_string get_pool_name()
+  vsx_string<>get_pool_name()
   {
     return pool_name;
   }
 
-  void set_pool_name(vsx_string v)
+  void set_pool_name(vsx_string<>v)
   {
     pool_name = v;
   }

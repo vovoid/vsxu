@@ -44,11 +44,11 @@
 class vsxm_sf_info
 {
 public:
-  vsx_string name;
+  vsx_string<>name;
   void* cm; //create module func
   void* dm; //delete module func
   void* nm; //number of modules
-  vsxm_sf_info(vsx_string n_name, void *n_cm, void* n_dm, void* n_nm)
+  vsxm_sf_info(vsx_string<>n_name, void *n_cm, void* n_dm, void* n_nm)
   {
     name = n_name;
     cm = n_cm;
@@ -176,8 +176,8 @@ public:
         //   examples;my_modules;my_module||!old_path;old_category;old_name
         // Only the first will show up in the gui. The second identifier is still usable in
         // old state files.
-        vsx_string deli = "||";
-        vsx_avector<vsx_string> parts;
+        vsx_string<>deli = "||";
+        vsx_avector< vsx_string<> > parts;
         explode(module_info->identifier, deli, parts);
         vsx_module_plugin_info* applied_plugin_info = 0;
 
@@ -192,7 +192,7 @@ public:
           applied_plugin_info->module_info = applied_module_info;
 
 
-          vsx_string module_identifier;
+          vsx_string<>module_identifier;
           if (parts[i][0] == '!')
           {
             // hidden from gui
@@ -229,7 +229,7 @@ public:
     {
       delete *it;
     }
-    for (std::map< vsx_string, void* >::iterator it = module_plugin_list.begin(); it != module_plugin_list.end(); it++)
+    for (std::map< vsx_string<>, void* >::iterator it = module_plugin_list.begin(); it != module_plugin_list.end(); it++)
     {
       delete (vsx_module_plugin_info*) ( (*it).second );
     }
@@ -240,7 +240,7 @@ public:
   std::vector< vsx_module_info* >* get_module_list( bool include_hidden = false)
   {
     std::vector< vsx_module_info* >* result = new std::vector< vsx_module_info* >;
-    for (std::map< vsx_string, void* >::const_iterator it = module_plugin_list.begin(); it != module_plugin_list.end(); it++)
+    for (std::map< vsx_string<>, void* >::const_iterator it = module_plugin_list.begin(); it != module_plugin_list.end(); it++)
     {
       vsx_module_plugin_info* plugin_info = (vsx_module_plugin_info*)((*it).second);
       if
@@ -257,7 +257,7 @@ public:
   }
 
 
-  vsx_module* load_module_by_name(vsx_string name)
+  vsx_module* load_module_by_name(vsx_string<>name)
   {
     if ( module_plugin_list.find(name) == module_plugin_list.end() )
     {
@@ -291,7 +291,7 @@ public:
     );
   }
 
-  bool find( const vsx_string &module_name_to_look_for)
+  bool find( const vsx_string<>&module_name_to_look_for)
   {
     if (!(module_list.find(module_name_to_look_for) != module_list.end()))
     {

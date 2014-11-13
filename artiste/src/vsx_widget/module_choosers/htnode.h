@@ -17,7 +17,7 @@ class HTNode {
 public:
   vsx_module_info* module_info;
   int value;
-  vsx_string name;
+  vsx_string<>name;
   vsx_color<> color;
   vsx_vector3<> size;
   std::vector<HTNode*> children;
@@ -43,21 +43,21 @@ public:
   // this function will build a tree structure out of a string
   // string syntax: texture;generators;simple;jaw's_own_texgen
   //
-  HTNode* add(vsx_string add_name, vsx_module_info* m_info) {
-    std::vector<vsx_string> add_c;
-    vsx_string deli = ";";
+  HTNode* add(vsx_string<>add_name, vsx_module_info* m_info) {
+    std::vector <vsx_string<> > add_c;
+    vsx_string<>deli = ";";
     split_string(add_name,deli,add_c,-1);
     if (!module_info) {
       module_info = m_info;
     }
 
-    vsx_string comp_class = module_info->component_class;
+    vsx_string<>comp_class = module_info->component_class;
 
     if (add_c.size() > 1) {
       // we're not the last part of the string
       // we start by looking in our children to see if the supernode already exists
       HTNode* search_result = 0;
-      vsx_string this_name = add_c[0];
+      vsx_string<>this_name = add_c[0];
       for (unsigned long i = 0; i < children.size(); i++) {
         if (children[i]->name == this_name) {
           search_result = children[i];
@@ -65,9 +65,9 @@ public:
         }
       }
       add_c.erase(add_c.begin());
-      vsx_string new_add_name;
+      vsx_string<>new_add_name;
       if (add_c.size())
-      new_add_name = implode(add_c,vsx_string(";"));
+      new_add_name = implode(add_c,vsx_string<>(";"));
       if (search_result) {
         // ask the child to do some creation
         search_result->module_info = module_info;
@@ -102,8 +102,8 @@ public:
       // we've only been told to create this, so do that and nothing more.
       HTNode* b = new HTNode();
       if (module_info->component_class == "resource") {
-        std::vector<vsx_string> parts;
-        vsx_string deli = ".";
+        std::vector <vsx_string<> > parts;
+        vsx_string<>deli = ".";
         explode(add_name,deli, parts);
         if (parts.size() > 1) {
           if (mc_r_colors.find(parts[parts.size()-1]) != mc_r_colors.end()) {
@@ -163,7 +163,7 @@ public:
    *
    * @return    the name of this node
    */
-  vsx_string getName() {
+  vsx_string<>getName() {
     return name;
   }
 };

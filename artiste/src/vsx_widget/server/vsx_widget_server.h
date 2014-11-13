@@ -35,8 +35,8 @@ class vsx_widget_server : public vsx_widget {
   vsx_texture mtex;
 
   //module selection stuff
-  std::map<vsx_string,vsx_module_info*> module_list;
-  std::map<vsx_string,vsx_module_info*>::const_iterator module_iter;
+  std::map<vsx_string<>,vsx_module_info*> module_list;
+  std::map<vsx_string<>,vsx_module_info*>::const_iterator module_iter;
   vsx_avector<vsx_module_info*> module_infos_created_for_choosers;
 
   bool selection;
@@ -53,7 +53,7 @@ class vsx_widget_server : public vsx_widget {
   vsx_widget* seq_pool;
 
   vsx_vector3<> alert_delta;
-  vsx_string server_message;
+  vsx_string<>server_message;
   unsigned int server_type; // 1 is internal, 2 is connected via socket
 
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
@@ -66,10 +66,10 @@ public:
   // vsx_engine holder
   void *engine;
 
-  vsx_string state_name;
+  vsx_string<>state_name;
 
-  vsx_string connection_id; // the unique id of this connection in the event that multiple clients are connected to one server
-  vsx_string server_version; // the server version of vsxu
+  vsx_string<>connection_id; // the unique id of this connection in the event that multiple clients are connected to one server
+  vsx_string<>server_version; // the server version of vsxu
   std::list<vsx_widget*> selected_list;
 
   vsx_widget* module_chooser;
@@ -77,10 +77,10 @@ public:
   vsx_widget* state_chooser;
   vsx_widget* resource_chooser;
 
-  std::map<vsx_string, vsx_widget*> comp_list;
-  std::map<vsx_string, vsx_widget*>::const_iterator comp_list_iter;
-  std::map<vsx_string, vsx_widget*> note_list;
-  std::map<vsx_string, vsx_widget*>::const_iterator note_iter;
+  std::map<vsx_string<>, vsx_widget*> comp_list;
+  std::map<vsx_string<>, vsx_widget*>::const_iterator comp_list_iter;
+  std::map<vsx_string<>, vsx_widget*> note_list;
+  std::map<vsx_string<>, vsx_widget*>::const_iterator note_iter;
 
   vsx_command_list *cmd_in;
   vsx_command_list *cmd_out;
@@ -92,7 +92,7 @@ public:
   void on_delete();
 
   // client server
-  void server_connect(vsx_string host, vsx_string port);
+  void server_connect(vsx_string<>host, vsx_string<>port);
 
   // command processor
   void vsx_command_process_f();
@@ -104,7 +104,7 @@ public:
   bool select_add(vsx_widget* comp);
   void select_add_gui(vsx_widget* comp);
 
-  void param_alias_ok(vsx_string p_def, vsx_string io, vsx_string comp, vsx_string param, vsx_string source_comp, vsx_string source_param, vsx_string seven);
+  void param_alias_ok(vsx_string<>p_def, vsx_string<>io, vsx_string<>comp, vsx_string<>param, vsx_string<>source_comp, vsx_string<>source_param, vsx_string<>seven);
   bool event_key_down(signed long key, bool alt = false, bool ctrl = false, bool shift = false);
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
@@ -119,9 +119,9 @@ public:
 
 
   // utility functions
-  vsx_string get_unique_name(vsx_string name);
-  vsx_string build_comp_helptext(vsx_string path);
-  vsx_widget* find_component(vsx_string name);
+  vsx_string<>get_unique_name(vsx_string<>name);
+  vsx_string<>build_comp_helptext(vsx_string<>path);
+  vsx_widget* find_component(vsx_string<>name);
 
 };
 

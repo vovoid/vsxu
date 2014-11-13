@@ -112,7 +112,7 @@ void vsx_window_object_inspector::draw() {
     if (inspected->widget_type == VSX_WIDGET_TYPE_ANCHOR)
     {
       //label1->title = +a_focus->type;
-      label2->title = vsx_string("Anchor data type:")+((vsx_widget_anchor*)inspected)->p_type;
+      label2->title = vsx_string<>("Anchor data type:")+((vsx_widget_anchor*)inspected)->p_type;
       label1->visible = label2->visible = 1;
       if (((vsx_widget_anchor*)inspected)->alias) {
       	label1->title = "Rename alias:";
@@ -188,8 +188,8 @@ void vsx_window_object_inspector::command_process_back_queue(vsx_command_s *t) {
   if (k_focus == component_rename_edit || t->cmd == "component_rename_button") {
     if (inspected->widget_type == VSX_WIDGET_TYPE_COMPONENT) {
       vsx_widget_component* cc = (vsx_widget_component*)inspected;
-      vsx_string curname = "";
-      vsx_string newname = "";
+      vsx_string<>curname = "";
+      vsx_string<>newname = "";
 //      if (cc->parent_name != "") {
 //        curname += cc->parent_name+".";
 //        newname += cc->parent_name+".";
@@ -212,7 +212,7 @@ void vsx_window_object_inspector::command_process_back_queue(vsx_command_s *t) {
   }
   if (t->cmd == "component_timing_ok")
   {
-  	label2->title = vsx_string("run time:   ")+t->parts[2] + " seconds\noutput time:" + t->parts[3] + " seconds\n";
+  	label2->title = vsx_string<>("run time:   ")+t->parts[2] + " seconds\noutput time:" + t->parts[3] + " seconds\n";
   	label2->title = label2->title + "% of total frame time: "+vsx_string_helper::f2s( (vsx_string_helper::s2f(t->parts[2])+vsx_string_helper::s2f(t->parts[3]))*100.0f / vsx_string_helper::s2f(t->parts[4]),3);
 
   }
@@ -304,12 +304,12 @@ void vsx_window_object_inspector::unload() {
   view_type = 0;
 }
 
-void vsx_window_object_inspector::load_file(vsx_string filename)
+void vsx_window_object_inspector::load_file(vsx_string<>filename)
 {
   filename = vsx_data_path::get_instance()->data_path_get() + filename;
 
-  std::vector<vsx_string> parts;
-  vsx_string deli = ".";
+  std::vector <vsx_string<> > parts;
+  vsx_string<>deli = ".";
   explode(filename, deli, parts);
   if (filename_loaded != filename)
   {

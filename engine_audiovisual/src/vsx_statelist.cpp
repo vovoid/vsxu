@@ -51,7 +51,7 @@ int vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info)
   return 0;
 }
 
-void vsx_statelist::add_visual_path(vsx_string new_visual_path)
+void vsx_statelist::add_visual_path(vsx_string<>new_visual_path)
 {
   get_files_recursive(new_visual_path, &state_file_list,"","");
 
@@ -59,7 +59,7 @@ void vsx_statelist::add_visual_path(vsx_string new_visual_path)
   printf("getting files recursive: %s\n", (new_visual_path).c_str() );
   #endif
 
-  for (std::list<vsx_string>::iterator it = state_file_list.begin(); it != state_file_list.end(); ++it) {
+  for (std::list< vsx_string<> >::iterator it = state_file_list.begin(); it != state_file_list.end(); ++it) {
       state_info state;
       state.state_name = *it;
       state.state_name_suffix = state.state_name.substr(new_visual_path.size(),state.state_name.size() - new_visual_path.size() );
@@ -123,18 +123,18 @@ void vsx_statelist::prev_state()
 }
 
 
-std::list<vsx_string>* vsx_statelist::get_state_file_list()
+std::list< vsx_string<> >* vsx_statelist::get_state_file_list()
 {
   return &state_file_list;
 }
 
-std::list<vsx_string>* vsx_statelist::get_fader_file_list()
+std::list< vsx_string<> >* vsx_statelist::get_fader_file_list()
 {
   return &fader_file_list;
 }
 
 
-vsx_string vsx_statelist::state_loading()
+vsx_string<>vsx_statelist::state_loading()
 {
   if (transition_time > 0.0f && transition_time < 2.0f) {
     return (*state_iter).state_name;
@@ -168,7 +168,7 @@ void vsx_statelist::inc_amp()
   (*state_iter).fx_level+=0.05f;
   if ((*state_iter).fx_level > 16.0f) (*state_iter).fx_level = 16.0f;
 #if defined(__linux__)
-  vsx_string fxlf = config_dir+"/"+(*state_iter).state_name_suffix.substr(visual_path.size()+1 , (*state_iter).state_name_suffix.size())+"_fx_level";
+  vsx_string<>fxlf = config_dir+"/"+(*state_iter).state_name_suffix.substr(visual_path.size()+1 , (*state_iter).state_name_suffix.size())+"_fx_level";
 #ifdef VSXU_DEBUG
   printf("fx level file: %s\n", fxlf.c_str() );
 #endif
@@ -189,7 +189,7 @@ void vsx_statelist::dec_amp()
   if ((*state_iter).fx_level < 0.1f) (*state_iter).fx_level = 0.1f;
   vxe->set_amp((*state_iter).fx_level);
 #if defined(__linux__)
-  vsx_string fxlf = config_dir+"/"+(*state_iter).state_name_suffix.substr(visual_path.size()+1 , (*state_iter).state_name_suffix.size())+"_fx_level";
+  vsx_string<>fxlf = config_dir+"/"+(*state_iter).state_name_suffix.substr(visual_path.size()+1 , (*state_iter).state_name_suffix.size())+"_fx_level";
   FILE* fxfp = fopen( fxlf.c_str(), "w");
   if (fxfp)
   {
@@ -226,27 +226,27 @@ void vsx_statelist::stop()
   }
 }
 
-vsx_string vsx_statelist::get_meta_visual_filename()
+vsx_string<>vsx_statelist::get_meta_visual_filename()
 {
     return (*state_iter).state_name;
 }
-vsx_string vsx_statelist::get_meta_visual_name()
+vsx_string<>vsx_statelist::get_meta_visual_name()
 {
     if((*state_iter).engine)
         return (*state_iter).engine->get_meta_information(0);
-    return vsx_string();
+    return vsx_string<>();
 }
-vsx_string vsx_statelist::get_meta_visual_creator()
+vsx_string<>vsx_statelist::get_meta_visual_creator()
 {
     if((*state_iter).engine)
         return (*state_iter).engine->get_meta_information(1);
-    return vsx_string();
+    return vsx_string<>();
 }
-vsx_string vsx_statelist::get_meta_visual_company()
+vsx_string<>vsx_statelist::get_meta_visual_company()
 {
     if((*state_iter).engine)
         return (*state_iter).engine->get_meta_information(2);
-    return vsx_string();
+    return vsx_string<>();
 }
 
 
@@ -322,7 +322,7 @@ void vsx_statelist::render()
       tex_to.init_render_buffer(viewport[2], viewport[3]);
 
       get_files_recursive(own_path+"visuals_faders", &fader_file_list,"",".svn CVS");
-      for (std::list<vsx_string>::iterator it = fader_file_list.begin(); it != fader_file_list.end(); ++it)
+      for (std::list< vsx_string<> >::iterator it = fader_file_list.begin(); it != fader_file_list.end(); ++it)
       {
         #ifdef VSXU_DEBUG
           printf("initializing fader %s\n", (*it).c_str());
@@ -510,7 +510,7 @@ void vsx_statelist::load_fx_levels_from_user()
   {
     state_info state = (*it);
     // read fx level files
-    vsx_string fxlf = config_dir+"/"+state.state_name_suffix.substr(visual_path.size()+1 , state.state_name_suffix.size())+"_fx_level";
+    vsx_string<>fxlf = config_dir+"/"+state.state_name_suffix.substr(visual_path.size()+1 , state.state_name_suffix.size())+"_fx_level";
     #ifdef VSXU_DEBUG
       printf("fx level file: %s\n", fxlf.c_str() );
     #endif
@@ -520,7 +520,7 @@ void vsx_statelist::load_fx_levels_from_user()
       FILE* fpfx = fopen(fxlf.c_str(), "w");
       if (fpfx)
       {
-        vsx_string ff = "1.0";
+        vsx_string<>ff = "1.0";
         fputs(ff.c_str(), fpfx);
         fclose(fpfx);
       }
@@ -533,7 +533,7 @@ void vsx_statelist::load_fx_levels_from_user()
       char* cc = fgets(dest, 256, fpfx);
       (void)cc;
       fclose(fpfx);
-      vsx_string ff = dest;
+      vsx_string<>ff = dest;
       state.fx_level = vsx_string_helper::s2f(ff);
     }
   }
@@ -581,7 +581,7 @@ void vsx_statelist::save_fx_levels_from_user()
   {
     state_info state = (*it);
     // read fx level files
-    vsx_string fxlf = config_dir+"/"+state.state_name_suffix.substr(visual_path.size()+1 , state.state_name_suffix.size())+"_fx_level";
+    vsx_string<>fxlf = config_dir+"/"+state.state_name_suffix.substr(visual_path.size()+1 , state.state_name_suffix.size())+"_fx_level";
 #ifdef VSXU_DEBUG
     printf("fx level file: %s\n", fxlf.c_str() );
 #endif
@@ -591,7 +591,7 @@ void vsx_statelist::save_fx_levels_from_user()
       FILE* fpfx = fopen(fxlf.c_str(), "w");
       if (fpfx)
       {
-        vsx_string ff = "1.0";
+        vsx_string<>ff = "1.0";
         fputs(ff.c_str(), fpfx);
         fclose(fpfx);
       }
@@ -604,7 +604,7 @@ void vsx_statelist::save_fx_levels_from_user()
       char* cc = fgets(dest, 256, fpfx);
       (void)cc;
       fclose(fpfx);
-      vsx_string ff = dest;
+      vsx_string<>ff = dest;
       state.fx_level = vsx_string_helper::s2f(ff);
     }
   }
@@ -612,7 +612,7 @@ void vsx_statelist::save_fx_levels_from_user()
 }
 
 
-void vsx_statelist::init(vsx_string base_path,vsx_string init_sound_type)
+void vsx_statelist::init(vsx_string<>base_path,vsx_string<>init_sound_type)
 {
   randomizer = true;
   srand ( time(NULL)+rand() );
@@ -647,7 +647,7 @@ void vsx_statelist::init(vsx_string base_path,vsx_string init_sound_type)
 #ifdef VSXU_DEBUG
   printf("getting files recursive: %s\n", (own_path+visual_path).c_str() );
 #endif
-  for (std::list<vsx_string>::iterator it = state_file_list.begin(); it != state_file_list.end(); ++it) {
+  for (std::list< vsx_string<> >::iterator it = state_file_list.begin(); it != state_file_list.end(); ++it) {
     state_info state;
     state.state_name = *it;
     state.state_name_suffix = state.state_name.substr(own_path.size(),state.state_name.size() - own_path.size() );

@@ -8,11 +8,11 @@
 
 namespace vsx_color_aux
 {
-  inline vsx_color<> from_string(vsx_string &val) VSX_ALWAYS_INLINE
+  inline vsx_color<> from_string(vsx_string<>&val) VSX_ALWAYS_INLINE
   {
     vsx_color<> res;
-    vsx_string deli = ",";
-    vsx_avector<vsx_string> pp;
+    vsx_string<>deli = ",";
+    vsx_avector< vsx_string<> > pp;
     explode(val,deli,pp);
 
     if (pp.size() >= 1)
@@ -30,18 +30,18 @@ namespace vsx_color_aux
     return res;
   }
 
-  inline vsx_string to_string(const vsx_color<> &v, const int num_values = 4) VSX_ALWAYS_INLINE
+  inline vsx_string<>to_string(const vsx_color<> &v, const int num_values = 4) VSX_ALWAYS_INLINE
   {
-    vsx_string local = vsx_string_helper::f2s(v.r);
+    vsx_string<>local = vsx_string_helper::f2s(v.r);
 
     if (num_values > 1)
-      local += vsx_string(",")+vsx_string_helper::f2s(v.g);
+      local += vsx_string<>(",")+vsx_string_helper::f2s(v.g);
 
     if (num_values > 2)
-      local += vsx_string(",")+vsx_string_helper::f2s(v.b);
+      local += vsx_string<>(",")+vsx_string_helper::f2s(v.b);
 
     if (num_values > 2)
-      local += vsx_string(",")+vsx_string_helper::f2s(v.a);
+      local += vsx_string<>(",")+vsx_string_helper::f2s(v.a);
 
     return local;
   }

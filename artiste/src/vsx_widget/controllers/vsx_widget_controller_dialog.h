@@ -31,7 +31,7 @@ class vsx_widget_controller_dialog : public vsx_widget_controller_base
 public:
   void init();
   void draw();
-  virtual void get_in_param_spec(std::pair<vsx_string,vsx_string> parampair); //used in param retrieval for letting child classes deal with unothodox params
+  virtual void get_in_param_spec(std::pair<vsx_string<>,vsx_string<> > parampair); //used in param retrieval for letting child classes deal with unothodox params
 };
 
 

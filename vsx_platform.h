@@ -34,7 +34,7 @@
         #define PLATFORM                                        PLATFORM_WINDOWS
         #define PLATFORM_NAME                                   "Windows"
         #define PLATFORM_FAMILY                                 PLATFORM_FAMILY_WINDOWS
-        #define PLATFORM_SHARED_FILES                           vsx_string("share\\")
+        #define PLATFORM_SHARED_FILES                           vsx_string<>("share\\")
         #define PLATFORM_DLL_SUFFIX                             ".dll"
         #ifdef PLATFORM_SHARED_FILES_STL
           #define PLATFORM_SHARED_FILES_STLSTRING               std::string("share\\")
@@ -43,7 +43,7 @@
         #define PLATFORM                                        PLATFORM_MACINTOSH
         #define PLATFORM_NAME                                   "Macintosh"
         #define PLATFORM_FAMILY                                 PLATFORM_FAMILY_UNIX
-        #define PLATFORM_SHARED_FILES                           vsx_string("")
+        #define PLATFORM_SHARED_FILES                           vsx_string<>("")
         #define PLATFORM_DLL_SUFFIX                             ".dylib"
         #ifdef PLATFORM_SHARED_FILES_STL
           #define PLATFORM_SHARED_FILES_STLSTRING                         std::string("")
@@ -52,7 +52,7 @@
         #define PLATFORM                                        PLATFORM_LINUX
         #define PLATFORM_NAME                                   "Linux"
         #define PLATFORM_FAMILY                                 PLATFORM_FAMILY_UNIX
-        #define PLATFORM_SHARED_FILES                           vsx_string(CMAKE_INSTALL_PREFIX)+vsx_string("/share/vsxu/")
+        #define PLATFORM_SHARED_FILES                           vsx_string<>(CMAKE_INSTALL_PREFIX)+vsx_string<>("/share/vsxu/")
         #define PLATFORM_DLL_SUFFIX                             ".so"
         #ifdef PLATFORM_SHARED_FILES_STL
           #define PLATFORM_SHARED_FILES_STLSTRING               std::string(CMAKE_INSTALL_PREFIX)+std::string("/share/vsxu/")

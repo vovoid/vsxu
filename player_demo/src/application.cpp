@@ -48,7 +48,7 @@ bool app_draw(int id)
     vxe_local = new vsx_engine("");
     vxe_local->set_no_send_client_time(true);
     vxe_local->start();
-    vsx_string path = PLATFORM_SHARED_FILES;
+    vsx_string<>path = PLATFORM_SHARED_FILES;
     vxe_local->load_state(path+"example-prods/vovoid-luna-reactivation.vsx");
   }
   

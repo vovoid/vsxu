@@ -34,13 +34,13 @@
 typedef struct
 {
   float size_x, size_y;
-  vsx_string string;
+  vsx_string<>string;
 } text_info;
 
 class vsx_module_text_s : public vsx_module {
   FTFont* ftfont;
   FTFont* ftfont2;
-  vsx_string cur_font;
+  vsx_string<>cur_font;
   int cur_render_type;
   float cur_glyph_size;
 
@@ -185,8 +185,8 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   int process_lines()
   {
     if (!ftfont) return 0;
-    vsx_string deli = "\n";
-    vsx_avector<vsx_string> t_lines;
+    vsx_string<>deli = "\n";
+    vsx_avector< vsx_string<> > t_lines;
     explode(text_in->get(), deli, t_lines);
     lines.clear();
     for (unsigned long i = 0; i < t_lines.size(); ++i)
@@ -200,7 +200,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
     return 1;
   }
 
-  void param_set_notify(const vsx_string& name)
+  void param_set_notify(const vsx_string<>& name)
   {
     if (!declare_run)
       return;

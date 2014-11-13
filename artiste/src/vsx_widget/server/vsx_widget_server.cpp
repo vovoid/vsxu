@@ -88,7 +88,7 @@ vsx_widget_server::vsx_widget_server() {
   log(" _   _  ___ _  __     _        ___  ___   ___");
   log(" \\\\  / //_   \\//      /  / /    /  /__/  /__/");
   log("  \\\\/  ___/ _/\\\\_    /__/ /__  /  /  \\  /  /");
-  log("   "+vsx_string(vsxu_version));
+  log("   "+vsx_string<>(vsxu_version));
   log("-----------------------------------------------------------------");
   log(" (c) 2003-2011 vovoid || http://vovoid.com || http://vsxu.com");
 }
@@ -286,7 +286,7 @@ void vsx_widget_server::reinit()
 }
 
 void vsx_widget_server::on_delete() {
-  for (std::map<vsx_string,vsx_module_info*>::iterator it = module_list.begin(); it != module_list.end(); ++it) {
+  for (std::map<vsx_string<>,vsx_module_info*>::iterator it = module_list.begin(); it != module_list.end(); ++it) {
     delete (*it).second;
   }
   for (size_t i = 0; i < module_infos_created_for_choosers.size(); i++)
@@ -295,7 +295,7 @@ void vsx_widget_server::on_delete() {
   }
 }
 
-void vsx_widget_server::server_connect(vsx_string host, vsx_string port)
+void vsx_widget_server::server_connect(vsx_string<>host, vsx_string<>port)
 {
   VSX_UNUSED(port);
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
@@ -339,11 +339,11 @@ void vsx_widget_server::vsx_command_process_f() {
         vsx_widget* component = 0;
         vsx_widget* macro_parent = this;
 
-        vsx_string real_name = c->cmd_data;
-        vsx_string parent_name = "";
+        vsx_string<>real_name = c->cmd_data;
+        vsx_string<>parent_name = "";
 
-        std::vector<vsx_string> add_c;
-        vsx_string deli = ".";
+        std::vector <vsx_string<> > add_c;
+        vsx_string<>deli = ".";
         split_string(c->cmd_data, deli, add_c);
         if (add_c.size() > 1)
         {
@@ -502,8 +502,8 @@ void vsx_widget_server::vsx_command_process_f() {
         }
         note_list.clear();
 
-        std::map<vsx_string, vsx_widget*>temp_ = comp_list;
-        for (std::map<vsx_string, vsx_widget*>::iterator it = temp_.begin(); it != temp_.end(); ++it) {
+        std::map<vsx_string<>, vsx_widget*>temp_ = comp_list;
+        for (std::map<vsx_string<>, vsx_widget*>::iterator it = temp_.begin(); it != temp_.end(); ++it) {
           if (!((vsx_widget_component*)(*it).second)->internal_critical) {
             (*it).second->_delete();
           } else {
@@ -521,11 +521,11 @@ void vsx_widget_server::vsx_command_process_f() {
       if (c->cmd == "state_load_ok") {
         // just clear the server, the rest will come automatically..
         server_message = "";
-        std::map<vsx_string, vsx_widget*>temp_ = comp_list;
-        for (std::map<vsx_string, vsx_widget*>::iterator it = temp_.begin(); it != temp_.end(); ++it) {
+        std::map<vsx_string<>, vsx_widget*>temp_ = comp_list;
+        for (std::map<vsx_string<>, vsx_widget*>::iterator it = temp_.begin(); it != temp_.end(); ++it) {
           (*it).second->_delete();
         }
-        vsx_string s_name = base64_decode(c->parts[1]);
+        vsx_string<>s_name = base64_decode(c->parts[1]);
 
         if (s_name.find("states;") == 0)
         state_name = str_replace("states;", "", s_name, 1, 0);
@@ -550,7 +550,7 @@ void vsx_widget_server::vsx_command_process_f() {
         // syntax:
         //  0=component_assign_ok [1=macro_name] [2=master_component],[component],[component],... [3=pos_x] [4=pos_y]
         vsx_widget* dest_macro_component = find_component(c->parts[1]);
-        vsx_string dest_name_prefix = "";
+        vsx_string<>dest_name_prefix = "";
         if (!dest_macro_component) {
           // server / desktop
           dest_macro_component = this;
@@ -558,8 +558,8 @@ void vsx_widget_server::vsx_command_process_f() {
         else
         dest_name_prefix = dest_macro_component->name;
 
-        vsx_string deli = ",";
-        std::vector<vsx_string> comp_source;
+        vsx_string<>deli = ",";
+        std::vector <vsx_string<> > comp_source;
         split_string(c->parts[2], deli, comp_source);
         //printf("dest pos: %f, %f\n",dst_pos.x, dst_pos.y);
         std::list<vsx_widget_component*> components_list;
@@ -582,7 +582,7 @@ void vsx_widget_server::vsx_command_process_f() {
           vsx_widget_component* component_moved = *it;
           //printf("assigning %s\n", t->name.c_str());
 
-          vsx_string parent_name_prefix;
+          vsx_string<>parent_name_prefix;
           if (component_moved->parent == this) parent_name_prefix = "";
           else parent_name_prefix = component_moved->parent->name;
 
@@ -757,11 +757,11 @@ void vsx_widget_server::vsx_command_process_f() {
       if (c->cmd == "module_list_end") {
         // add macros to the module list
         vsx_module_info* a;
-        std::list<vsx_string> mfiles;
-        vsx_string base = vsx_data_path::get_instance()->data_path_get() + "macros";
+        std::list< vsx_string<> > mfiles;
+        vsx_string<>base = vsx_data_path::get_instance()->data_path_get() + "macros";
         get_files_recursive(base, &mfiles, "", "");
-        for (std::list<vsx_string>::iterator it = mfiles.begin(); it != mfiles.end(); ++it) {
-          vsx_string ss = str_replace(
+        for (std::list< vsx_string<> >::iterator it = mfiles.begin(); it != mfiles.end(); ++it) {
+          vsx_string<>ss = str_replace(
             " ",
             "\\ ",
             str_replace(
@@ -864,7 +864,7 @@ void vsx_widget_server::vsx_command_process_f() {
           vsx_command_s* mc = 0;
           // check the macro list to verify the existence of the componente we need for this macro
           bool components_existing = true;
-          vsx_string failed_component = "";
+          vsx_string<>failed_component = "";
           while ( (mc = macro_commands.get()) ) {
             if (mc->cmd == "component_create") {
               if (!(module_list.find(mc->parts[1]) != module_list.end())) {
@@ -1033,9 +1033,9 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
     // 1: menu choice is done
     if (t->cmd.substr(0,14) == "package_export") {
       // do export
-      vsx_string end = t->cmd.substr(-7);
+      vsx_string<>end = t->cmd.substr(-7);
       if (end != "_cancel") {
-        vsx_string cc = t->cmd.substr(15); // visuals
+        vsx_string<>cc = t->cmd.substr(15); // visuals
         //::MessageBox(0, end.c_str(), cc.c_str(), MB_OK);
         cmd_out->add_raw("meta_set "+t->parts[2]);
         if (t->parts[1].substr(-4) != ".vsx") t->parts[1] += ".vsx";
@@ -1043,7 +1043,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
       }
     } else
     if (t->cmd.substr(0,16) == "m_package_export") {
-      vsx_string cc = t->cmd.substr(16);
+      vsx_string<>cc = t->cmd.substr(16);
       ((dialog_query_string*)export_dialog_ext)->name = "package_export"+cc; // package_export_visuals
       ((dialog_query_string*)export_dialog_ext)->show();
     }
@@ -1169,7 +1169,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
   }
 }
 
-void vsx_widget_server::param_alias_ok(vsx_string p_def, vsx_string io, vsx_string comp, vsx_string param, vsx_string source_comp, vsx_string source_param, vsx_string seven) {
+void vsx_widget_server::param_alias_ok(vsx_string<>p_def, vsx_string<>io, vsx_string<>comp, vsx_string<>param, vsx_string<>source_comp, vsx_string<>source_param, vsx_string<>seven) {
   // 1. create new anchor
   // 2. copy info to it
   command_q_b.clear_delete();
@@ -1435,7 +1435,7 @@ void vsx_widget_server::draw()
 
 
 
-vsx_widget* vsx_widget_server::find_component(vsx_string name)
+vsx_widget* vsx_widget_server::find_component(vsx_string<>name)
 {
   // support "containers" here in the future
   if (comp_list.find(name) != comp_list.end()) return comp_list[name]; else return 0;
@@ -1486,16 +1486,16 @@ void vsx_widget_server::select_add_gui(vsx_widget* comp) {
     selected_list.unique();
   }
 
-vsx_string vsx_widget_server::get_unique_name(vsx_string name) {
+vsx_string<>vsx_widget_server::get_unique_name(vsx_string<>name) {
   int i = 0;
   // say that name is like: empty_xyz_abc_12
   // we need to split it up in name
 
-  vsx_string i_name;
-  vsx_string i_val;
+  vsx_string<>i_name;
+  vsx_string<>i_val;
 
-  vsx_string deli = "_";
-  vsx_avector<vsx_string> parts;
+  vsx_string<>deli = "_";
+  vsx_avector< vsx_string<> > parts;
   explode(name, deli, parts);
 
   // now operate on the last bit, see if it's a valid number
@@ -1522,21 +1522,21 @@ vsx_string vsx_widget_server::get_unique_name(vsx_string name) {
     if (i < parts.size()-1)
     i_name += "_";
   }
-  vsx_string a;
+  vsx_string<>a;
   while (comp_list.find(i_name+a) != comp_list.end())
   {
     ++i;
     a = "_"+vsx_string_helper::i2s(i);
   }
-  return vsx_string(i_name+a);
+  return vsx_string<>(i_name+a);
 }
 
-vsx_string vsx_widget_server::build_comp_helptext(vsx_string path) {
+vsx_string<>vsx_widget_server::build_comp_helptext(vsx_string<>path) {
   if (module_list.find(path) != module_list.end()) {
-  return vsx_string("Module description:\n\n"+module_list[path]->description+"|||\n\
+  return vsx_string<>("Module description:\n\n"+module_list[path]->description+"|||\n\
 Module path:\n\
   "+path);
   }
-  return vsx_string("");
+  return vsx_string<>("");
 }
 

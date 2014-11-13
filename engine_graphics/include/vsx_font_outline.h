@@ -27,11 +27,16 @@
 #include "vsx_color.h"
 #include "vsxfst.h"
 #include "debug/vsx_error.h"
+#include "ftgl/FTGLPolygonFont.h"
+#include "ftgl/FTGLBitmapFont.h"
+#include "ftgl/FTGLOutlineFont.h"
+#include "ftgl/FTGLTextureFont.h"
+#include "ftgl/FTFont.h"
 
 typedef struct
 {
   float size_x, size_y;
-  vsx_string string;
+  vsx_string<>string;
 } text_info;
 
 typedef enum vsx_font_outline_render_type_e
@@ -41,12 +46,16 @@ typedef enum vsx_font_outline_render_type_e
   inner_outline = 3
 } vsx_font_outline_render_type;
 
+#include "vsx_font_outline_holder.h"
+#include "vsx_outline_font_cache.h"
 
-class vsx_font_outline {
+template< typename W = char >
+class vsx_font_outline
+{
   void* font_holder;
 
   // text
-  vsx_string text;
+  vsx_string<W>text;
   vsx_avector<text_info> lines;
 
   // meta
@@ -106,7 +115,7 @@ public:
     align = 2;
   }
 
-  void text_set(vsx_string& s)
+  void text_set(vsx_string<W>& s)
   {
     text = s;
     process_lines();
@@ -127,7 +136,7 @@ public:
     outline_thickness = n;
   }
 
-  vsx_string text_get()
+  vsx_string<>text_get()
   {
     return text;
   }
@@ -137,11 +146,108 @@ public:
     filesystem = fs;
   }
 
-  int process_lines();
-  void load_font(vsx_string font_path);
-  void unload();
-  void render_lines(void* font_inner_p, void* font_outer_p);
-  void render();
+  int process_lines()
+  {
+    if (!font_holder)
+      return 0;
+
+    vsx_string<W> deli = "\n";
+    vsx_avector< vsx_string<> > t_lines;
+    explode(text, deli, t_lines);
+    lines.clear();
+    for (unsigned long i = 0; i < t_lines.size(); ++i)
+    {
+      float x1, y1, z1, x2, y2, z2;
+      lines[i].string = t_lines[i];
+      FTFont* font = ((font_outline_holder*)font_holder)->get_inner();
+      font->BBox(t_lines[i].c_str(), x1, y1, z1, x2, y2, z2);
+      lines[i].size_x = x2 - x1;
+      lines[i].size_y = y2 - y1;
+    }
+    return 1;
+  }
+
+  void load_font(vsx_string<>font_path)
+  {
+    if (!filesystem)
+      VSX_ERROR_RETURN("filesystem not set");
+
+    if (font_holder)
+      unload();
+
+    font_holder = outline_font_cache::get_instance()->get( filesystem, font_path, render_type );
+  }
+
+  void unload()
+  {
+    if (0x0 == font_holder)
+      return;
+
+    outline_font_cache::get_instance()->recycle( (font_outline_holder*)font_holder);
+    font_holder = 0x0;
+  }
+
+  void render_lines(void* font_inner_p, void* font_outline_p)
+  {
+    FTFont* font_inner = (FTFont*) font_inner_p;
+    FTFont* font_outline = (FTFont*) font_outline_p;
+
+    float ypos = 0;
+    for (unsigned long i = 0; i < lines.size(); ++i)
+    {
+      gl_state->matrix_push();
+        if (align == 0)
+          gl_state->matrix_translate_f( 0, ypos, 0 );
+
+        if (align == 1)
+          gl_state->matrix_translate_f( -lines[i].size_x*0.5f,ypos, 0 );
+
+        if (align == 2)
+          gl_state->matrix_translate_f( -lines[i].size_x,ypos,0 );
+
+        glColor4f(color.r, color.g, color.b, color.a);
+        font_inner->Render(lines[i].string.c_str());
+
+        if (render_type & outline)
+        {
+          glColor4f(color_outline.r, color_outline.g, color_outline.b, color_outline.a);
+          font_outline->Render(lines[i].string.c_str());
+        }
+      gl_state->matrix_pop();
+      ypos += leading;
+    }
+  }
+
+  void render()
+  {
+    if (!font_holder)
+      return;
+
+    FTFont* font_inner = ((font_outline_holder*)font_holder)->get_inner();
+    FTFont* font_outline = ((font_outline_holder*)font_holder)->get_outline();
+
+    if (render_type & outline && !font_outline)
+      VSX_ERROR_RETURN("Font Outline not initialized");
+
+    if (gl_state == 0x0)
+      gl_state = vsx_gl_state::get_instance();
+
+    gl_state->matrix_mode (VSX_GL_MODELVIEW_MATRIX );
+    gl_state->matrix_push();
+    float pre_linew = gl_state->line_width_get();
+
+      if (render_type & inner)
+        glEnable(GL_TEXTURE_2D);
+
+      gl_state->line_width_set( outline_thickness );
+      render_lines(font_inner, font_outline);
+
+      if (render_type & inner)
+        glDisable(GL_TEXTURE_2D);
+
+    gl_state->line_width_set( pre_linew );
+    gl_state->matrix_pop();
+  }
 };
 
 

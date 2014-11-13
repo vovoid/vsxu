@@ -120,9 +120,9 @@ void vsx_widget_popup_menu::i_draw()
 
 void vsx_widget_popup_menu::add_commands(vsx_command_s *command) {
   // split the title
-  vsx_string title = command->title;
-  vsx_string deli = ";";
-  std::vector<vsx_string> add_c;
+  vsx_string<>title = command->title;
+  vsx_string<>deli = ";";
+  std::vector <vsx_string<> > add_c;
   explode(title,deli,add_c);
   if (add_c.size() > 1) {
     vsx_widget* t = 0;

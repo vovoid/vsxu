@@ -345,7 +345,7 @@ void vsx_widget_desktop::draw_2d()
 void vsx_widget_desktop::load_configuration()
 {
   vsx_command_list main_conf(true);
-  vsx_string config_file = vsx_data_path::get_instance()->data_path_get() + "vsxu.conf";
+  vsx_string<>config_file = vsx_data_path::get_instance()->data_path_get() + "vsxu.conf";
 
   if (access(config_file.c_str(),0) == 0)
   {
@@ -362,7 +362,7 @@ void vsx_widget_desktop::load_configuration()
   {
     if (mc->cmd == "skin")
     {
-      vsx_widget_skin::get_instance()->skin_path_set( PLATFORM_SHARED_FILES+vsx_string("gfx")+DIRECTORY_SEPARATOR + mc->cmd_data+DIRECTORY_SEPARATOR );
+      vsx_widget_skin::get_instance()->skin_path_set( PLATFORM_SHARED_FILES+vsx_string<>("gfx")+DIRECTORY_SEPARATOR + mc->cmd_data+DIRECTORY_SEPARATOR );
       vsx_widget_skin::get_instance()->init();
     } else
     if (mc->cmd == "global_interpolation_speed") {
@@ -384,10 +384,10 @@ void vsx_widget_desktop::load_configuration()
 
 void vsx_widget_desktop::save_configuration() {
   // final destination for the configuration data
-  vsx_string save_filename = vsx_data_path::get_instance()->data_path_get() + "vsxu.conf";
+  vsx_string<>save_filename = vsx_data_path::get_instance()->data_path_get() + "vsxu.conf";
 
   vsx_command_list s_conf;
-  for (std::map<vsx_string, vsx_string>::iterator it = configuration.begin(); it != configuration.end(); ++it) {
+  for (std::map<vsx_string<>, vsx_string<> >::iterator it = configuration.begin(); it != configuration.end(); ++it) {
     s_conf.add_raw((*it).first+" "+(*it).second);
   }
   s_conf.save_to_file(save_filename);

@@ -129,10 +129,10 @@ public:
 		vsx_printf("[destruction complete]\n");
 	}
 
-  static vsx_string profiler_directory_get()
+  static vsx_string<>profiler_directory_get()
   {
 		#ifdef VSX_PROFILER_BASE_PATH
-			return vsx_string( VSX_PROFILER_BASE_PATH );
+			return vsx_string<>( VSX_PROFILER_BASE_PATH );
 		#else
 			return vsx_data_path::get_instance()->data_path_get()+"profiler";
 		#endif
@@ -163,12 +163,12 @@ public:
 
     vsx_profiler_manager* pm = vsx_profiler_manager::get_instance();
 
-    vsx_string profiler_directory = profiler_directory_get();
+    vsx_string<>profiler_directory = profiler_directory_get();
 
     if (access(profiler_directory.c_str(),0) != 0)
       mkdir( (profiler_directory).c_str(), 0700);
 
-    vsx_string filename = profiler_directory + "/" + vsx_string(program_invocation_short_name) +
+    vsx_string<>filename = profiler_directory + "/" + vsx_string<>(program_invocation_short_name) +
         "_" +vsx_string_helper::i2s(time(0x0)) + ".dat";
 
     vsx_timer timer;

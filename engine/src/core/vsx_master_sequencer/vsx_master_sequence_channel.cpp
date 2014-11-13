@@ -105,7 +105,7 @@ void vsx_master_sequence_channel::run(float dtime)
 
 
 
-void vsx_master_sequence_channel::update_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_master_sequence_channel::update_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix)
 {
   VSX_UNUSED(dest);
   VSX_UNUSED(cmd_prefix);
@@ -145,7 +145,7 @@ void vsx_master_sequence_channel::update_line(vsx_command_list* dest, vsx_comman
 }
 
 // 0=mseq_channel 1=row 2=insert 3=[channel_name] 4=[item_action_id] 5=[local_time_distance] 6=[length] 7=[seq_pool_name]
-void vsx_master_sequence_channel::insert_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_master_sequence_channel::insert_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix)
 {
   float p_vtime = i_vtime;
   long after_this_id = vsx_string_helper::s2i(cmd_in->parts[4]); // item_action_id
@@ -237,7 +237,7 @@ void vsx_master_sequence_channel::i_remove_line(int pos)
 }
 
 // 0=mseq_channel 1=row 2=remove 3=[channel_name] 4=[item_action_id]
-void vsx_master_sequence_channel::remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_master_sequence_channel::remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix)
 {
   long pos = vsx_string_helper::s2i(cmd_in->parts[4]);
 
@@ -266,7 +266,7 @@ void vsx_master_sequence_channel::remove_all_lines_referring_to_sequence_list(vs
 }
 
 // 0=mseq_channel 1=row 2=time_sequence 3=[name] 4=[item_id] 5=[get]/[set] 6(optional)=[sequence_dump]
-void vsx_master_sequence_channel::time_sequence(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_master_sequence_channel::time_sequence(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix)
 {
   vsx_sequence_master_channel_item* pa = (items[ vsx_string_helper::s2i(cmd_in->parts[4]) ]);
 
@@ -297,10 +297,10 @@ void vsx_master_sequence_channel::set_time(float new_time)
   VSX_UNUSED(new_time);
 }
 
-vsx_string vsx_master_sequence_channel::dump()
+vsx_string<>vsx_master_sequence_channel::dump()
 {
-  vsx_string res = "";
-  std::list<vsx_string> ml;
+  vsx_string<>res = "";
+  std::list< vsx_string<> > ml;
   size_t i = 0;
   for (std::vector<vsx_sequence_master_channel_item*>::iterator it = items.begin(); it != items.end(); ++it)
   {
@@ -312,24 +312,24 @@ vsx_string vsx_master_sequence_channel::dump()
     );
     i++;
   }
-  vsx_string deli = "|";
+  vsx_string<>deli = "|";
   res = implode(ml, deli);
   return res;
 }
 
 
-void vsx_master_sequence_channel::inject(vsx_string inject_string)
+void vsx_master_sequence_channel::inject(vsx_string<>inject_string)
 {
   // the reverse of the dump method above
   delete (vsx_sequence_master_channel_item*)(items[0]);
   items.clear();
-  vsx_string deli = "|";
-  vsx_avector<vsx_string> parts;
+  vsx_string<>deli = "|";
+  vsx_avector< vsx_string<> > parts;
   explode(inject_string, deli, parts);
   for (size_t i = 0; i < parts.size(); i++)
   {
-    vsx_string ideli = ";";
-    vsx_avector<vsx_string> iparts;
+    vsx_string<>ideli = ";";
+    vsx_avector< vsx_string<> > iparts;
     explode(parts[i], ideli, iparts);
     // 0 = total_length, 1 = internal_length, 2 = pool_name, 3 = time_sequence_data
     vsx_sequence_master_channel_item* pa = new vsx_sequence_master_channel_item;

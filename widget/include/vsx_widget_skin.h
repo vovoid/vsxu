@@ -9,7 +9,7 @@
 
 class vsx_widget_skin
 {
-  vsx_string skin_path;
+  vsx_string<>skin_path;
   vsx_color<> skin_colors[20];
 
 public:
@@ -44,12 +44,12 @@ public:
     );
   }
 
-  void skin_path_set(vsx_string n)
+  void skin_path_set(vsx_string<>n)
   {
     skin_path = n;
   }
 
-  vsx_string& skin_path_get() __attribute__((always_inline))
+  vsx_string<>& skin_path_get() __attribute__((always_inline))
   {
     return skin_path;
   }
@@ -64,8 +64,8 @@ public:
     skin_conf.reset();
     while ( (mc = skin_conf.get()) ) {
       if (mc->cmd == "color") {
-        vsx_avector<vsx_string> parts;
-        vsx_string deli = ",";
+        vsx_avector< vsx_string<> > parts;
+        vsx_string<>deli = ",";
         explode(mc->parts[2],deli, parts);
         vsx_color<> p;
         p.r = vsx_string_helper::s2f(parts[0]);

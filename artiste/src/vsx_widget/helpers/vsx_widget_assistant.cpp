@@ -71,8 +71,8 @@ void vsxu_assistant::i_draw()
       inspected = a_focus;
       if (course.size())
       course.clear();
-      std::vector<vsx_string> parts;
-      vsx_string deli = "|||";
+      std::vector <vsx_string<> > parts;
+      vsx_string<>deli = "|||";
       if (inspected->help_text != "") {
         explode(inspected->help_text,deli,parts);
         for (unsigned int i = 0; i < parts.size(); ++i) {
@@ -249,7 +249,7 @@ void vsxu_assistant::command_process_back_queue(vsx_command_s *t) {
     vsx_command_s* c;
     vsx_command_list cl;
     cl.load_from_file(PLATFORM_SHARED_FILES+"doc/"+t->cmd_data+".txt",false,4);
-    vsx_string newstr;
+    vsx_string<>newstr;
     course.clear();
     while ((c = cl.pop())) {
       if (c->raw == "|||") {

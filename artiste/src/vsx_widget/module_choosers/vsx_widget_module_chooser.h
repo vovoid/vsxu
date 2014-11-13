@@ -25,8 +25,8 @@
 #define VSX_WIDGET_MODULE_CHOOSER_H
 
 extern vsx_command_list module_chooser_colors;
-extern std::map<vsx_string,vsx_color<> > mc_colors;
-extern std::map<vsx_string,vsx_color<> > mc_r_colors;
+extern std::map<vsx_string<>,vsx_color<> > mc_colors;
+extern std::map<vsx_string<>,vsx_color<> > mc_r_colors;
 
 const static double EPSILON = 1.0E-10; // epsilon
 const static int ZONE_LENGTH = 4; // size of the zone
@@ -62,10 +62,10 @@ class vsx_widget_ultra_chooser : public vsx_widget {
  bool allow_move;
  vsx_vector3<> drag_pos;
  vsx_vector3<> drop_pos;
- vsx_string macro_name;
+ vsx_string<>macro_name;
  vsx_vector3<> tooltip_pos;
  int draw_tooltip;
- vsx_string tooltip_text;
+ vsx_string<>tooltip_text;
  
  vsx_widget* name_dialog;
  float interpolation_speed;
@@ -78,8 +78,8 @@ public:
   
   int mode; // 0 = ordinary, 1 = double-click-returns-string
   vsx_widget* command_receiver;
-  vsx_string command;
-  vsx_string message; // friendly message showing the user what to do
+  vsx_string<>command;
+  vsx_string<>message; // friendly message showing the user what to do
   
   vsx_widget* server;
   
@@ -92,7 +92,7 @@ public:
   void show();
   void hide();
   void build_tree();
-  void center_on_item(vsx_string target);
+  void center_on_item(vsx_string<>target);
   
   void init();
   void reinit();

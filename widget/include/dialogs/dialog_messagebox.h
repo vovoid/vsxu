@@ -49,7 +49,7 @@ public:
   virtual void init_children() {
   }
 
-  void show(vsx_string value)
+  void show(vsx_string<>value)
   {
     VSX_UNUSED(value);
 
@@ -76,7 +76,7 @@ public:
     pos.y = 0.5-size.y/2;
   }
 
-  dialog_messagebox(vsx_string title_,vsx_string hint)
+  dialog_messagebox(vsx_string<>title_,vsx_string<>hint)
   {
     init_run = false;
     init();
@@ -84,8 +84,8 @@ public:
     init_run = true;
     vsx_widget *button1 = add(new vsx_widget_button,"");
     std::vector<vsx_widget*> labels;
-    std::vector <vsx_string> lines;
-    vsx_string deli = "|";
+    std::vector< vsx_string<> > lines;
+    vsx_string<>deli = "|";
     explode(hint,deli,lines);
     for (unsigned long i = 0; i < lines.size(); i++) {
       vsx_widget* b = add(new vsx_widget_2d_label,"");

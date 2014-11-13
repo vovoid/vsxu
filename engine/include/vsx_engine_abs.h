@@ -36,17 +36,17 @@ protected:
   vsx_engine_environment engine_environment;
 
 //-- current state name
-  vsx_string state_name;
+  vsx_string<>state_name;
 
 //-- state meta information
-  vsx_string meta_information;
-  vsx_avector<vsx_string> meta_fields; // split meta information
+  vsx_string<>meta_information;
+  vsx_avector< vsx_string<> > meta_fields; // split meta information
 
 //-- component forge
   std::vector<vsx_comp*> forge;
-  std::map<vsx_string,vsx_comp*> forge_map;
-  std::map<vsx_string,vsx_comp*>::const_iterator forge_map_iter;
-  std::map<vsx_string,vsx_comp*>::reverse_iterator forge_map_riter;
+  std::map<vsx_string<>,vsx_comp*> forge_map;
+  std::map<vsx_string<>,vsx_comp*>::const_iterator forge_map_iter;
+  std::map<vsx_string<>,vsx_comp*>::reverse_iterator forge_map_riter;
   // auto-increment variable to give components unique names in the event that the user doesn't care
   int component_name_autoinc;
 
@@ -68,8 +68,8 @@ protected:
   vsx_sequence_pool sequence_pool;
 
 //-- notes
-  std::map<vsx_string,vsx_note> note_map;
-  std::map<vsx_string,vsx_note>::iterator note_iter;
+  std::map<vsx_string<>,vsx_note> note_map;
+  std::map<vsx_string<>,vsx_note>::iterator note_iter;
 
 //-- scripting interface
   #ifdef BUILDING_DLL
@@ -158,32 +158,32 @@ protected:
 //-- internal methods
   void tell_client_time(vsx_command_list *cmd_out);
 
-  int i_load_state(vsx_command_list& load1, vsx_string *error_string, vsx_string info_filename = "[undefined]");
+  int i_load_state(vsx_command_list& load1, vsx_string<>*error_string, vsx_string<>info_filename = "[undefined]");
   void i_clear(vsx_command_list *cmd_out = 0, bool clear_critical = false);
   void rename_component();
-  int rename_component(vsx_string old_identifier, vsx_string new_base = "$", vsx_string new_name = "$");
+  int rename_component(vsx_string<>old_identifier, vsx_string<>new_base = "$", vsx_string<>new_name = "$");
   void process_message_queue_redeclare(vsx_command_list *cmd_out_res);
   void redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_out);
   void redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_out);
   void send_state_to_client(vsx_command_list *cmd_out);
   int get_state_as_commandlist(vsx_command_list &savelist);
-  void message_fail(vsx_string header, vsx_string message);
+  void message_fail(vsx_string<>header, vsx_string<>message);
   // called each frame after engine has rendered
   void reset_input_events();
   #ifdef VSXU_MODULES_STATIC
-    void register_static_module(vsx_string name);
+    void register_static_module(vsx_string<>name);
   #endif
   // add component to the forge
-  vsx_comp* add(vsx_string label);
+  vsx_comp* add(vsx_string<>label);
 public:
 
   // module and parameter interface
   virtual unsigned long get_num_modules() = 0;
-  virtual vsx_comp* get_component_by_name(vsx_string label) = 0;
+  virtual vsx_comp* get_component_by_name(vsx_string<>label) = 0;
   virtual vsx_comp* get_by_id(unsigned long id) = 0;
-  virtual vsx_module_param_abs* get_in_param_by_name(vsx_string module_name, vsx_string param_name) = 0;
-  virtual vsx_module* get_module_by_name(vsx_string module_name) = 0;
-  virtual vsx_string get_modules_not_loaded() = 0;
+  virtual vsx_module_param_abs* get_in_param_by_name(vsx_string<>module_name, vsx_string<>param_name) = 0;
+  virtual vsx_module* get_module_by_name(vsx_string<>module_name) = 0;
+  virtual vsx_string<>get_modules_not_loaded() = 0;
 
   // get a list of all external-exposed parameters (parameters that we want to export from a sub-engine)
   virtual void get_external_exposed_parameters( vsx_avector< vsx_module_param_abs* >* result ) = 0;

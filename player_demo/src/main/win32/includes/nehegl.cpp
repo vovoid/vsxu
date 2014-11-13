@@ -35,12 +35,12 @@ Display::Display()
   m_XOffset(-1),
   m_YOffset(-1),
   m_PrimaryDisplay(false),
-  m_DeviceName(vsx_string("UNKNOWN")),
-  m_DeviceString(vsx_string("UNKNOWN"))
+  m_DeviceName(vsx_string<>("UNKNOWN")),
+  m_DeviceString(vsx_string<>("UNKNOWN"))
 {
 }
 
-Display::Display(int index, int x, int y, bool primary, vsx_string devName, vsx_string devString,
+Display::Display(int index, int x, int y, bool primary, vsx_string<>devName, vsx_string<>devString,
                  const vector<DisplayMode>& displayModes)
 : m_Index(index),
   m_XOffset(x),
@@ -52,7 +52,7 @@ Display::Display(int index, int x, int y, bool primary, vsx_string devName, vsx_
 {
 }
 
-vsx_string Display::GetName() const
+vsx_string<>Display::GetName() const
 {
     return m_DeviceString;
 }
@@ -77,7 +77,7 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
 
     int ddIndex = 0;
     bool primaryDisplay = false;
-    vsx_string deviceName = vsx_string(monInfo.szDevice), deviceString;
+    vsx_string<>deviceName = vsx_string<>(monInfo.szDevice), deviceString;
     vector<DisplayMode> displayModes;
 
     DISPLAY_DEVICE displayDevice;
@@ -85,11 +85,11 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
 
     for (ddIndex = 0; EnumDisplayDevices(0, ddIndex, &displayDevice, 0); ddIndex++)
     {
-        if ((vsx_string(displayDevice.DeviceName) == deviceName) &&
+        if ((vsx_string<>(displayDevice.DeviceName) == deviceName) &&
             !((bool)(DISPLAY_DEVICE_MIRRORING_DRIVER & displayDevice.StateFlags)) &&
             !((bool)(DISPLAY_DEVICE_REMOVABLE & displayDevice.StateFlags)))
         {
-            deviceString = vsx_string(displayDevice.DeviceString);
+            deviceString = vsx_string<>(displayDevice.DeviceString);
             primaryDisplay = (bool)(DISPLAY_DEVICE_PRIMARY_DEVICE & displayDevice.StateFlags);
 
             DEVMODE devMode;
@@ -141,7 +141,7 @@ vector<Display>& EnumerateDisplays()
     return s_Displays;
 }
 
-DisplayMode get_display_properties(vsx_string device_name) 
+DisplayMode get_display_properties(vsx_string<>device_name) 
 {
   DisplayMode ldisp;
 	DISPLAY_DEVICE dd;
@@ -156,7 +156,7 @@ DisplayMode get_display_properties(vsx_string device_name)
 			// ignore virtual mirror displays
 			  // get information about the monitor attached to this display adapter. dualhead cards
 			  // and laptop video cards can have multiple monitors attached
-    if (device_name == vsx_string(dd.DeviceName)) {
+    if (device_name == vsx_string<>(dd.DeviceName)) {
 
 			  DISPLAY_DEVICE ddMon;
 			  ZeroMemory(&ddMon, sizeof(ddMon));

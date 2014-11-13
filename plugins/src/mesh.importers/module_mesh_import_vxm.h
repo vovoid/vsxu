@@ -10,7 +10,7 @@ public:
   // internal
   vsx_mesh<>* mesh;
 
-  vsx_string current_filename;
+  vsx_string<>current_filename;
 
   bool init()
   {
@@ -71,7 +71,7 @@ public:
       return;
     char tag[4] = {0,0,0,0};
     engine->filesystem->f_read((void*)&tag,sizeof(char) * 4,fp);
-    vsx_string line;
+    vsx_string<>line;
     line = tag;
     //printf("vxm line read: %s\n",line.c_str());
     if (line != "vxm")

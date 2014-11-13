@@ -34,8 +34,8 @@
 class vsx_widget_anchor : public vsx_widget
 {
   vsx_widget *temp_drag_connector;
-  vsx_string display_value;
-  vsx_avector<vsx_string> enum_items;
+  vsx_string<>display_value;
+  vsx_avector< vsx_string<> > enum_items;
   bool draw_glow;
   void set_glow(bool glow_status);
   //
@@ -66,8 +66,8 @@ public:
   float display_value_t;
   // aliasing stuff
   bool alias;
-  vsx_string alias_for_component;
-  vsx_string alias_for_anchor;
+  vsx_string<>alias_for_component;
+  vsx_string<>alias_for_anchor;
   vsx_widget_anchor* alias_parent;
   vsx_widget_anchor* alias_owner;
   //
@@ -82,18 +82,18 @@ public:
   int io; // -1 = in, 1 = out  - the type (and position) of the anchor
   bool tree_open; // true = open, false = closed
   bool conn_open; // is the connections showing?
-  vsx_string p_spec; // original specification (for future use)
-  vsx_string p_type;
-  vsx_string p_type_suffix; // type=[suffix] - extra information for the type, used for enumerations etc.
-  vsx_string p_desc; // a nice description
-  vsx_string p_def; // the whole string that identifies this and its children
-  vsx_string default_controller;
+  vsx_string<>p_spec; // original specification (for future use)
+  vsx_string<>p_type;
+  vsx_string<>p_type_suffix; // type=[suffix] - extra information for the type, used for enumerations etc.
+  vsx_string<>p_desc; // a nice description
+  vsx_string<>p_def; // the whole string that identifies this and its children
+  vsx_string<>default_controller;
   // anchors connected to us
   std::list <vsx_widget*> connectors;
   std::list <vsx_widget*> connections;
 
-  std::map<vsx_string,vsx_string> dialogs;
-  std::map<vsx_string,vsx_string> options;
+  std::map<vsx_string<>,vsx_string<> > dialogs;
+  std::map<vsx_string<>,vsx_string<> > options;
 
   virtual void init();
   void reinit();
@@ -106,7 +106,7 @@ public:
 
   void get_connections_abs(vsx_widget* base, std::list<vsx_widget_connector_info*>* mlist);
   void disconnect_abs();
-  void param_connect_abs(vsx_string c_component, vsx_string c_param, int c_order);
+  void param_connect_abs(vsx_string<>c_component, vsx_string<>c_param, int c_order);
   void connect_far(vsx_widget_anchor* src, int corder, vsx_widget_anchor* referrer = 0);
   vsx_widget_anchor* alias_to_level(vsx_widget_anchor* dest);
 

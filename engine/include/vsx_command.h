@@ -75,12 +75,12 @@ public:
   bool parsed;
   int owner; // for color-coding this command
   int type; // type of command
-  vsx_string title; // Title - for internal GUI stuff like menus and stuff
-  vsx_string cmd; // the first part of the command, the actual command
-  vsx_string cmd_data; // the second parameter (for simple commands)
+  vsx_string<>title; // Title - for internal GUI stuff like menus and stuff
+  vsx_string<>cmd; // the first part of the command, the actual command
+  vsx_string<>cmd_data; // the second parameter (for simple commands)
   vsx_avector<char> cmd_data_bin; // the binary part of the command
-  vsx_string raw; // the unparsed command, empty when binary command
-  std::vector <vsx_string> parts; // the parts of the command
+  vsx_string<>raw; // the unparsed command, empty when binary command
+  std::vector< vsx_string<> > parts; // the parts of the command
 
   vsx_command_s() {
     iterations = 0;
@@ -102,7 +102,7 @@ public:
     parts = t->parts;
   }
 
-  vsx_string str() {
+  vsx_string<>str() {
     if (raw.size())
     return raw; else
     return cmd + " " + cmd_data;
@@ -122,7 +122,7 @@ public:
   }
 
   // returns a string like "part1 part2 part3" if start was 1 and end was 3
-  ENGINE_DLLIMPORT vsx_string get_parts(int start = 0, int end = -1);
+  ENGINE_DLLIMPORT vsx_string<>get_parts(int start = 0, int end = -1);
 
   void dump_to_stdout()
   {
@@ -134,16 +134,16 @@ public:
 
 
 template<class T>
-T* vsx_command_parse(vsx_string& cmd_raw, bool garbage_collect = false)
+T* vsx_command_parse(vsx_string<>& cmd_raw, bool garbage_collect = false)
 {
-  std::vector <vsx_string> cmdps;
+  std::vector< vsx_string<> > cmdps;
   T *t = new T;
   if (garbage_collect)
     t->gc();
 
   t->raw = cmd_raw;
   //printf("parsing raw: %s\n",cmd_raw.c_str());
-  vsx_string deli = " ";
+  vsx_string<>deli = " ";
   split_string(cmd_raw, deli, cmdps);
   //printf("parsing2: %s\n",cmd_raw.c_str());
   t->cmd = cmdps[0];

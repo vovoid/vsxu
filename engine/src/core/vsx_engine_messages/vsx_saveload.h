@@ -25,13 +25,13 @@
 
 if (cmd == "state_load")
 {
-  vsx_string base_path = vsx_data_path::get_instance()->data_path_get();
+  vsx_string<>base_path = vsx_data_path::get_instance()->data_path_get();
 
-  vsx_string errmsg;
+  vsx_string<>errmsg;
   state_name = c->parts[1];
   if (load_state(base_path+str_replace(";","/",base64_decode(c->parts[1])),&errmsg))
   {
-    cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Could not load state. Error message was:|"+errmsg), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw(vsx_string<>("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Could not load state. Error message was:|"+errmsg), VSX_COMMAND_GARBAGE_COLLECT);
   } //else
   {
     cmd_out->add_raw("clear_ok", VSX_COMMAND_GARBAGE_COLLECT);
@@ -61,7 +61,7 @@ if (cmd == "clear")
 
 if (cmd == "meta_set") {
   meta_information = base64_decode(c->parts[1]);
-  vsx_string deli("|");
+  vsx_string<>deli("|");
   explode(meta_information, deli, meta_fields);
   goto process_message_queue_end;
 }
@@ -90,15 +90,15 @@ if (cmd == "package_export")
 {
   if (filesystem.is_archive())
   {
-    cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Can not save a production!"), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw(vsx_string<>("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Can not save a production!"), VSX_COMMAND_GARBAGE_COLLECT);
   }
   else
 
   if (c->parts.size() == 3) {
-    vsx_string base_path = vsx_data_path::get_instance()->data_path_get();
+    vsx_string<>base_path = vsx_data_path::get_instance()->data_path_get();
 
     vsxf tfs;
-    vsx_string filename = (c->parts[2]+str_replace(";","",c->parts[1]));
+    vsx_string<>filename = (c->parts[2]+str_replace(";","",c->parts[1]));
     tfs.archive_create((base_path+filename).c_str());
     vsx_command_list savelist;
     get_state_as_commandlist(savelist);
@@ -125,7 +125,7 @@ if (cmd == "package_export")
         }
       }
     }
-    cmd_out->add_raw(vsx_string(cmd+"_ok ")+c->parts[1], VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw(vsx_string<>(cmd+"_ok ")+c->parts[1], VSX_COMMAND_GARBAGE_COLLECT);
     tfs.archive_close();
   }
   goto process_message_queue_end;
@@ -137,21 +137,21 @@ if (cmd == "state_save")
 {
   if (filesystem.is_archive())
   {
-    cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Can not save a production!"), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw(vsx_string<>("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Can not save a production!"), VSX_COMMAND_GARBAGE_COLLECT);
   }
   else
   if (c->parts.size() == 2)
   {
-    vsx_string base_path = vsx_data_path::get_instance()->data_path_get();
+    vsx_string<>base_path = vsx_data_path::get_instance()->data_path_get();
     vsxf tfs;
     vsx_command_list savelist;
     get_state_as_commandlist(savelist);
     savelist.set_filesystem(&tfs);
-    vsx_string filename = base_path+"states/"+str_replace(";","/",c->parts[1]);
+    vsx_string<>filename = base_path+"states/"+str_replace(";","/",c->parts[1]);
     savelist.save_to_file(filename);
-    cmd_out->add_raw(vsx_string(cmd+"_ok ")+c->parts[1], VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw(vsx_string<>(cmd+"_ok ")+c->parts[1], VSX_COMMAND_GARBAGE_COLLECT);
 
-    vsx_string s2 = str_replace(" ","\\ ",c->parts[1]);
+    vsx_string<>s2 = str_replace(" ","\\ ",c->parts[1]);
     cmd_out->add_raw("states_list "+s2, VSX_COMMAND_GARBAGE_COLLECT);
     cmd_out->add_raw("states_list_end", VSX_COMMAND_GARBAGE_COLLECT);
   }

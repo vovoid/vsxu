@@ -42,7 +42,7 @@
 
 
 // global vars
-vsx_string fpsstring = "VSX Ultra "+vsx_string(vsxu_version)+" - 2012 Vovoid";
+vsx_string<>fpsstring = "VSX Ultra "+vsx_string<>(vsxu_version)+" - 2012 Vovoid";
 
 // from the perspective (both for gui/server) from here towards the tcp thread
 vsx_widget_desktop *desktop = 0;
@@ -66,7 +66,7 @@ void load_desktop_a();
 class vsxu_draw {
 public:
   bool first;
-  vsx_string current_fps;
+  vsx_string<>current_fps;
   vsx_timer gui_t;
   vsx_timer engine_render_time;
   int frame_count;
@@ -150,7 +150,7 @@ void app_init()
 
   //---------------------------------------------------------------------------
   vsxf filesystem;
-  myf.load( vsx_string(PLATFORM_SHARED_FILES) + "font/font-ascii_output.png", &filesystem );
+  myf.load( vsx_string<>(PLATFORM_SHARED_FILES) + "font/font-ascii_output.png", &filesystem );
 }
 
 /*
@@ -173,7 +173,7 @@ void app_pre_draw()
   vsx_command_s *c = 0;
   while ( (c = system_command_queue.pop()) )
   {
-    vsx_string cmd = c->cmd;
+    vsx_string<>cmd = c->cmd;
     if (cmd == "system.shutdown")
     {
       exit(0);

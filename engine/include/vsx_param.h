@@ -84,7 +84,7 @@ public:
   void* vsxl_modifier;
 
   int type; // parameter type: VSX_MODULE_PARAM_ID_INT, VSX_MODULE_PARAM_ID_RENDER etc.
-  vsx_string name;
+  vsx_string<>name;
   unsigned long updates; // number of writes, incremented each time the parameter is written to
   bool connected;
   bool valid;
@@ -93,7 +93,7 @@ public:
   bool all_required; // when multiple stuff connected to this, do all have to return true in order to run the module?
   bool run_activate_offscreen; // wether to run activate/deactivate offscreen methods for this parameter (default is true)
 
-  const vsx_string& get_name() const {return name;}
+  const vsx_string<>& get_name() const {return name;}
 
   virtual void set_current_as_default() = 0;
   virtual void set_default() = 0;
@@ -287,7 +287,7 @@ typedef vsx_module_param<1, int,                 1,1 > vsx_module_param_render; 
 typedef vsx_module_param<0, float,               1,1 > vsx_module_param_float; // use get() set()
 typedef vsx_module_param<0, float,               3,1> vsx_module_param_float3; // use get() set()
 typedef vsx_module_param<0, double,              1,1 > vsx_module_param_double; // use get() set()
-typedef vsx_module_param<0, vsx_string,          1,0 > vsx_module_param_string; // use get() set()
+typedef vsx_module_param<0, vsx_string<>,          1,0 > vsx_module_param_string; // use get() set()
 #ifdef VSX_NO_GL
   typedef vsx_module_param<0, void*,             1,1 > vsx_module_param_texture; 
 #else
@@ -307,7 +307,7 @@ typedef vsx_module_param<0, vsx_sequence,          1,0 > vsx_module_param_sequen
 typedef vsx_module_param<0, vsx_2dgrid_mesh,       1,0 > vsx_module_param_segment_mesh; // use get_addr() / set_p()
 typedef vsx_module_param<0, vsx_abstract,          1,0 > vsx_module_param_abstract; // use get_addr() / set_p()
 typedef vsx_module_param<1, float,                 4,1 > vsx_module_param_quaternion; // use get_addr() / set_p()
-typedef vsx_module_param<1, vsx_string,            1,0 > vsx_module_param_resource; // use get() / set()
+typedef vsx_module_param<1, vsx_string<>,            1,0 > vsx_module_param_resource; // use get() / set()
 typedef vsx_module_param<0, vsx_vector_array<>,    1,0 > vsx_module_param_float3_array; // use get_addr() set_p()
 typedef vsx_module_param<0, vsx_quaternion_array<>,1,0 > vsx_module_param_quaternion_array; // use get_addr() set_p()
 

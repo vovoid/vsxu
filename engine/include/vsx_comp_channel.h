@@ -78,13 +78,13 @@ public:
 	void update_connections_order();
 
   // deprecated connection functions
-	//bool connect(vsx_comp* comp, vsx_string name);
-	bool disconnect(vsx_comp* comp, vsx_string name);
+	//bool connect(vsx_comp* comp, vsx_string<>name);
+	bool disconnect(vsx_comp* comp, vsx_string<>name);
 	void disconnect();
 	bool connections_order(std::vector<int> *order_list);
 	
 	
-	vsx_string get_param_name();
+	vsx_string<>get_param_name();
 	virtual bool execute() = 0;
 	virtual ~vsx_channel();
 };

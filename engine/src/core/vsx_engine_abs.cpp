@@ -96,14 +96,14 @@ void vsx_engine_abs::reset_input_events()
   engine_info.num_input_events = 0;
 }
 
-int vsx_engine_abs::i_load_state(vsx_command_list& load1,vsx_string *error_string, vsx_string info_filename)
+int vsx_engine_abs::i_load_state(vsx_command_list& load1,vsx_string<>*error_string, vsx_string<>info_filename)
 {
   if (!valid) return 2;
   vsx_command_list load2,loadr2;
   load1.reset();
   vsx_command_s* mc = 0;
   // check the macro list to verify the existence of the componente we need for this macro
-  vsx_string failed_component = "";
+  vsx_string<>failed_component = "";
   while ( (mc = load1.get()) )
   {
     if (mc->cmd == "component_create")
@@ -117,7 +117,7 @@ int vsx_engine_abs::i_load_state(vsx_command_list& load1,vsx_string *error_strin
         failed_component = mc->parts[2];
         //components_existing = false;
         if (error_string) *error_string = "VSX Engine could not find or load module: "+mc->parts[1];
-        printf( "%s\n",vsx_string(
+        printf( "%s\n",vsx_string<>(
                   "**************************************************\n"
                   "Notice: \n\tVSX Engine could not load module: "
                   "'"+mc->parts[1]+"'"
@@ -134,7 +134,7 @@ int vsx_engine_abs::i_load_state(vsx_command_list& load1,vsx_string *error_strin
       }
     }
   }
-  static vsx_string sld("state_load_done");
+  static vsx_string<>sld("state_load_done");
   load1.add_raw(sld, VSX_COMMAND_GARBAGE_COLLECT);
   load1.reset();
 
@@ -161,7 +161,7 @@ int vsx_engine_abs::i_load_state(vsx_command_list& load1,vsx_string *error_strin
   return 0;
 }
 
-vsx_comp* vsx_engine_abs::add(vsx_string label)
+vsx_comp* vsx_engine_abs::add(vsx_string<>label)
 {
   if (!valid) return 0x0;
   if (!forge_map[label])
@@ -172,13 +172,13 @@ vsx_comp* vsx_engine_abs::add(vsx_string label)
     forge.push_back(comp);
 
     // is this a child of a macro?
-    vector<vsx_string> c_parts;
-    vsx_string deli = ".";
+    vector< vsx_string<> > c_parts;
+    vsx_string<>deli = ".";
     explode(label, deli, c_parts);
     if (c_parts.size() > 1) {
       // ok, we have a macro
       c_parts.pop_back();
-      vsx_string macro_name = implode(c_parts,deli);
+      vsx_string<>macro_name = implode(c_parts,deli);
       if (vsx_comp* macro_comp = get_component_by_name(macro_name)) {
         comp->parent = macro_comp;
         macro_comp->children.push_back(comp);
@@ -227,8 +227,8 @@ void vsx_engine_abs::redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_o
   in->get_abs_connections(&abs_connections_in);
 
   // dump out the sequences for those params that have such
-  std::map<vsx_string, vsx_string> sequences;
-  std::map<vsx_string, vsx_string> values;
+  std::map<vsx_string<>, vsx_string<> > sequences;
+  std::map<vsx_string<>, vsx_string<> > values;
   for (unsigned long i = 0; i < in->param_id_list.size(); ++i) {
     if (in->param_id_list[i]->sequence) {
       sequences[in->param_id_list[i]->name] = sequence_list.dump_param(in->param_id_list[i]);
@@ -289,11 +289,11 @@ void vsx_engine_abs::redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_
       continue;
 
     int order = (*it2)->dest->connect(dparam);
-    vsx_string dest_comp_name = (*it2)->dest->owner->component->name;
-    vsx_string srcn = (*it2)->src_name;
-    vsx_string cn = comp->name;
-    vsx_string dpn = dparam->name;
-    vsx_string os = vsx_string_helper::i2s(order);
+    vsx_string<>dest_comp_name = (*it2)->dest->owner->component->name;
+    vsx_string<>srcn = (*it2)->src_name;
+    vsx_string<>cn = comp->name;
+    vsx_string<>dpn = dparam->name;
+    vsx_string<>os = vsx_string_helper::i2s(order);
     cmd_out->add_raw("param_connect_volatile "+dest_comp_name+" "+srcn+" "+cn+" "+dpn+" "+os, VSX_COMMAND_GARBAGE_COLLECT);
   }
 }
@@ -329,10 +329,10 @@ void vsx_engine_abs::send_state_to_client(vsx_command_list *cmd_out)
   vsx_command_list temp_conn_alias;
   for (unsigned long i = 0; i < forge.size(); ++i)
   {
-    vsx_string xs,ys;
+    vsx_string<>xs,ys;
     xs = vsx_string_helper::f2s(forge[i]->position.x);
     ys = vsx_string_helper::f2s(forge[i]->position.y);
-    vsx_string command = "component_create_ok "+forge[i]->name+" "+forge[i]->component_class+" "+xs+" "+ys+" ";
+    vsx_string<>command = "component_create_ok "+forge[i]->name+" "+forge[i]->component_class+" "+xs+" "+ys+" ";
 
     if (forge[i]->component_class == "macro")
       command += vsx_string_helper::f2s(forge[i]->size);
@@ -376,14 +376,14 @@ void vsx_engine_abs::send_state_to_client(vsx_command_list *cmd_out)
 
   // notes
   for (note_iter = note_map.begin(); note_iter != note_map.end(); note_iter++)
-    cmd_out->add_raw(vsx_string((*note_iter).second.serialize()), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw(vsx_string<>((*note_iter).second.serialize()), VSX_COMMAND_GARBAGE_COLLECT);
 }
 
 void vsx_engine_abs::i_clear(vsx_command_list *cmd_out,bool clear_critical)
 {
-  std::map<vsx_string,vsx_comp*> forge_map_save;
+  std::map<vsx_string<>,vsx_comp*> forge_map_save;
   std::vector<vsx_comp*> forge_save;
-  for (std::map<vsx_string,vsx_comp*>::iterator fit = forge_map.begin(); fit != forge_map.end(); ++fit) {
+  for (std::map<vsx_string<>,vsx_comp*>::iterator fit = forge_map.begin(); fit != forge_map.end(); ++fit) {
     if (!(*fit).second->internal_critical || clear_critical)
     {
       LOG("component deleting: "+(*fit).second->name);
@@ -476,7 +476,7 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
   {
     vsx_comp* comp = (*forge_map_iter).second;
     if (((*forge_map_iter).second->component_class == "macro"))
-    tmp_comp.add_raw(vsx_string("macro_create ")+(*forge_map_iter).first+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y)+" "+vsx_string_helper::f2s((*forge_map_iter).second->size));
+    tmp_comp.add_raw(vsx_string<>("macro_create ")+(*forge_map_iter).first+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y)+" "+vsx_string_helper::f2s((*forge_map_iter).second->size));
     else
     {
       if ((*forge_map_iter).first != "screen0")
@@ -496,15 +496,15 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
       if (run)
       {
         // check for sequence
-        vsx_string ss = sequence_list.dump_param(param);
+        vsx_string<>ss = sequence_list.dump_param(param);
         if (ss != "")
         {
           // sequence is controlling, we need no init value.
-          tmp_comp.add_raw(vsx_string("pseq_p inject ")+comp->name+" "+param->name+" "+ss);
+          tmp_comp.add_raw(vsx_string<>("pseq_p inject ")+comp->name+" "+param->name+" "+ss);
         } else
         {
           // or dump the value
-          vsx_string pval = param->get_string();
+          vsx_string<>pval = param->get_string();
           if (!param->alias) {
             if (
               pval !=
@@ -517,11 +517,11 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
                   param->module_param->type == VSX_MODULE_PARAM_ID_RESOURCE
                 )
               {
-                tmp_comp.add_raw(vsx_string("ps64 ")+comp->name+" "+param->name+" "+base64_encode(pval));
+                tmp_comp.add_raw(vsx_string<>("ps64 ")+comp->name+" "+param->name+" "+base64_encode(pval));
               }
               else
               {
-                tmp_comp.add_raw(vsx_string("param_set ")+comp->name+" "+param->name+" "+pval);
+                tmp_comp.add_raw(vsx_string<>("param_set ")+comp->name+" "+param->name+" "+pval);
               }
             }
           }
@@ -534,7 +534,7 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
         //printf("vsxl modifier present\n");
         vsx_param_vsxl_driver_abs* driver;
         driver = (vsx_param_vsxl_driver_abs*)((vsx_param_vsxl*)param->module_param->vsxl_modifier)->get_driver();
-        tmp_comp.add_raw(vsx_string("vsxl_pfi ")+comp->name+" "+param->name+" "+vsx_string_helper::i2s(driver->id)+" "+base64_encode(driver->script));
+        tmp_comp.add_raw(vsx_string<>("vsxl_pfi ")+comp->name+" "+param->name+" "+vsx_string_helper::i2s(driver->id)+" "+base64_encode(driver->script));
       }
       #endif
     }
@@ -542,7 +542,7 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
     if (comp->vsxl_modifier) {
       vsx_comp_vsxl_driver_abs* driver;
       driver = (vsx_comp_vsxl_driver_abs*)((vsx_comp_vsxl*)comp->vsxl_modifier)->get_driver();
-      tmp_comp.add_raw(vsx_string("vsxl_cfi ")+comp->name+" "+base64_encode(driver->script));
+      tmp_comp.add_raw(vsx_string<>("vsxl_cfi ")+comp->name+" "+base64_encode(driver->script));
     }
     #endif
   }
@@ -587,13 +587,13 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
 // empty.comp1
 // comp1
 
-int vsx_engine_abs::rename_component(vsx_string old_identifier, vsx_string new_base, vsx_string new_name)
+int vsx_engine_abs::rename_component(vsx_string<>old_identifier, vsx_string<>new_base, vsx_string<>new_name)
 {
   // first we need to split up the name so we have the old base and the old name
-  vsx_string old_base;
-  vsx_string old_name;
-  std::vector<vsx_string> parts;
-  vsx_string deli = ".";
+  vsx_string<>old_base;
+  vsx_string<>old_name;
+  std::vector <vsx_string<> > parts;
+  vsx_string<>deli = ".";
   explode(old_identifier,deli,parts);
   old_name = parts[parts.size()-1];
   parts.pop_back();
@@ -628,18 +628,18 @@ int vsx_engine_abs::rename_component(vsx_string old_identifier, vsx_string new_b
   if (old_identifier_component->component_class == "macro")
     max_loop = 0;
 
-  std::list<vsx_string> macro_comps;
+  std::list< vsx_string<> > macro_comps;
   std::list<vsx_comp*> macro_comp_p;
-  std::map<vsx_string,vsx_comp*>::iterator m_i = forge_map.find(old_identifier);
+  std::map<vsx_string<>,vsx_comp*>::iterator m_i = forge_map.find(old_identifier);
   bool first = true;
   bool drun = true;
   // loop and find all components we need to rename
   int runs = 0;
   while (drun) {
     if (m_i != forge_map.end()) {
-      vsx_string tt = (*m_i).first;
+      vsx_string<>tt = (*m_i).first;
       if (tt.find(old_identifier) == 0 || first) {
-        if (first || tt[old_identifier.size()] == vsx_string(".")) {
+        if (first || tt[old_identifier.size()] == vsx_string<>(".")) {
           first = false;
           macro_comps.push_back(tt);
           macro_comp_p.push_back((*m_i).second);
@@ -654,11 +654,11 @@ int vsx_engine_abs::rename_component(vsx_string old_identifier, vsx_string new_b
         drun = false;
   }
 
-  vsx_string new_name_ = "";
+  vsx_string<>new_name_ = "";
   // do the actual renaming
   std::list<vsx_comp*>::iterator it_c = macro_comp_p.begin();
 
-  for (std::list<vsx_string>::iterator it2 = macro_comps.begin(); it2 != macro_comps.end(); ++it2)
+  for (std::list< vsx_string<> >::iterator it2 = macro_comps.begin(); it2 != macro_comps.end(); ++it2)
   {
     forge_map.erase(*it2);
     if (new_base.size()) {

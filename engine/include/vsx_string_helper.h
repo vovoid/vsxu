@@ -8,38 +8,38 @@
 
 namespace vsx_string_helper
 {
-  inline int s2i(const vsx_string& in) VSX_ALWAYS_INLINE
+  inline int s2i(const vsx_string<>& in) VSX_ALWAYS_INLINE
   {
     return atoi( in.c_str() );
   }
 
-  inline vsx_string i2s(int in)
+  inline vsx_string<>i2s(int in)
   {
     char string_res[256] = "";
     sprintf(string_res,"%d",in);
-    return vsx_string(string_res);
+    return vsx_string<>(string_res);
   }
 
-  inline float s2f(const vsx_string& in)
+  inline float s2f(const vsx_string<>& in)
   {
     return atof(in.c_str());
   }
 
-  inline vsx_string f2s(float in)
+  inline vsx_string<>f2s(float in)
   {
     char string_res[256] = "";
     sprintf(string_res,"%f",in);
-    return vsx_string(string_res);
+    return vsx_string<>(string_res);
   }
 
-  inline vsx_string f2s(float in, int decimals)
+  inline vsx_string<>f2s(float in, int decimals)
   {
     char string_res[256] = "";
-    sprintf(string_res,vsx_string("%."+vsx_string_helper::i2s(decimals)+"f").c_str(),in);
-    return vsx_string(string_res);
+    sprintf(string_res,vsx_string<>("%."+vsx_string_helper::i2s(decimals)+"f").c_str(),in);
+    return vsx_string<>(string_res);
   }
 
-  inline void write_to_file(vsx_string filename, vsx_string* payload)
+  inline void write_to_file(vsx_string<>filename, vsx_string<>* payload)
   {
     FILE* fp = fopen(filename.c_str(), "w");
     if (!fp)
@@ -47,7 +47,6 @@ namespace vsx_string_helper
     fputs(payload->c_str(), fp);
     fclose(fp);
   }
-
 }
 
 

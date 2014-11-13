@@ -50,8 +50,8 @@ public:
   vsx_widget_controller_editor();
   void i_draw();
 
-  vsx_string return_command; // will return a command like [return_command] [base64-encoded-text]
-  vsx_string target_param;
+  vsx_string<>return_command; // will return a command like [return_command] [base64-encoded-text]
+  vsx_string<>target_param;
   vsx_widget* return_component;
   int scroll_x, scroll_y;
   // vsx widget methods
@@ -60,7 +60,7 @@ public:
   virtual void command_process_back_queue(vsx_command_s *t);
   
   // custom methods
-  bool load_text(vsx_string new_text);
+  bool load_text(vsx_string<>new_text);
 };  
 
 

@@ -1329,9 +1329,9 @@ public:
     }
   }
 private:
-  vsx_string remove_spaces(std::string st)
+  vsx_string<>remove_spaces(std::string st)
   {
-    vsx_string str = st.c_str();
+    vsx_string<>str = st.c_str();
     for(size_t i=0;i<st.length();i++)
     {
       if(str[i]==' '||str[i]==':')

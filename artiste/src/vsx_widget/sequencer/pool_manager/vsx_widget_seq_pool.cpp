@@ -56,11 +56,11 @@ class vsx_widget_pool_tree : public vsx_widget_editor {
   bool dragging;
   vsx_widget_coords drag_coords;
   int mod_i;
-  vsx_string macro_name;
+  vsx_string<>macro_name;
   vsx_vector3<> drop_pos;
   vsx_widget* server;
   int draw_tooltip;
-  vsx_string tooltip_text;
+  vsx_string<>tooltip_text;
   vsx_vector3<> tooltip_pos;
 
 public:
@@ -112,7 +112,7 @@ public:
     }
   }
 
-  vsx_string get_selected_item()
+  vsx_string<>get_selected_item()
   {
     if (editor->get_line(editor->selected_line) != "[none defined]")
       return editor->get_line(editor->selected_line);
@@ -178,10 +178,10 @@ public:
             ((vsx_widget_seq_channel*)search_widget)->drop_master_channel(distance,coords,editor->get_line(editor->selected_line));
           }
           // split the identifier into the name
-          //vsx_avector<vsx_string> parts;
-          //vsx_string deli = ";";
+          //vsx_avector< vsx_string<> > parts;
+          //vsx_string<>deli = ";";
           //explode(i_mod_info[mod_i]->identifier, deli, parts);
-          //vsx_string module_name = parts[parts.size()-1];
+          //vsx_string<>module_name = parts[parts.size()-1];
           //if (ctrl)
           //((dialog_query_string*)name_dialog)->show(((vsx_widget_server*)server)->get_unique_name(module_name));
           //else
@@ -304,7 +304,7 @@ bool vsx_widget_seq_pool_manager::event_key_down(signed long key, bool alt, bool
   VSX_UNUSED(ctrl);
   VSX_UNUSED(shift);
 
-  vsx_string filter = ((vsx_widget_base_edit*)search)->get_string();
+  vsx_string<>filter = ((vsx_widget_base_edit*)search)->get_string();
   ((vsx_widget_editor*)edit)->editor->set_filter_string( filter );
   return true;
 }
@@ -316,7 +316,7 @@ void vsx_widget_seq_pool_manager::show() {
   init();
 }
 
-void vsx_widget_seq_pool_manager::show(vsx_string value) {
+void vsx_widget_seq_pool_manager::show(vsx_string<>value) {
   ((vsx_widget_editor*)edit)->set_string(value);
   ((vsx_widget_editor*)edit)->editor->caret_goto_end();
   show();
@@ -387,7 +387,7 @@ void vsx_widget_seq_pool_manager::command_process_back_queue(vsx_command_s *t)
     {
       if (sequencer)
       {
-        vsx_string command;
+        vsx_string<>command;
         for (unsigned long i = 1; i < t->parts.size(); i++)
         {
           if (i != 1) command += " ";
@@ -446,7 +446,7 @@ void vsx_widget_seq_pool_manager::command_process_back_queue(vsx_command_s *t)
     t->cmd == "seq_list"
   )
   {
-    vsx_string command = "seq_pool";
+    vsx_string<>command = "seq_pool";
     for (unsigned long i = 0; i < t->parts.size(); i++)
     {
       command += " ";
@@ -518,7 +518,7 @@ void vsx_widget_seq_pool_manager::command_process_back_queue(vsx_command_s *t)
   } else
   if (t->cmd == "del")
   {
-    vsx_string del_name = ((vsx_widget_pool_tree*)edit)->get_selected_item();
+    vsx_string<>del_name = ((vsx_widget_pool_tree*)edit)->get_selected_item();
     if (del_name != "")
     {
       backwards_message("seq_pool del "+del_name);

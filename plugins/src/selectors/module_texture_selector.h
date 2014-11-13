@@ -146,7 +146,7 @@ class module_texture_selector : public vsx_module
  
   std::stringstream i_paramString;
   std::stringstream i_paramName;
-  vsx_string i_in_param_string;
+  vsx_string<>i_in_param_string;
 
   bool i_am_ready;
 

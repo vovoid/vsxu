@@ -87,7 +87,7 @@ public:
     particlesystem_out->set_p(particles);
   }
 
-  void param_set_notify(const vsx_string& name)
+  void param_set_notify(const vsx_string<>& name)
   {
     VSX_UNUSED(name);
     first = true;

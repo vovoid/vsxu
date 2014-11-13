@@ -29,8 +29,8 @@ class vsx_comp_vsxl_driver_abs {
 public:
   vsx_module_param_list* my_param_list;
   void* comp;
-  vsx_string script;
-  virtual void* load(vsx_module_param_list* module_list,vsx_string program) = 0;
+  vsx_string<>script;
+  virtual void* load(vsx_module_param_list* module_list,vsx_string<>program) = 0;
   virtual void run() = 0;
   virtual void unload() = 0;
   virtual ~vsx_comp_vsxl_driver_abs() {};
@@ -39,7 +39,7 @@ public:
 class vsx_comp_vsxl {
   vsx_comp_vsxl_driver_abs* my_driver;
 public:
-  void* load(vsx_module_param_list* module_list, vsx_string program);
+  void* load(vsx_module_param_list* module_list, vsx_string<>program);
   vsx_comp_vsxl_driver_abs* get_driver();
   void execute();
   vsx_comp_vsxl();

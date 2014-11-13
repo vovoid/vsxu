@@ -3,8 +3,8 @@
 
 // logging
 //extern int engine_log_level;
-//extern vsx_string engine_log_dir;
-void log(vsx_string message, int level = 1);
+//extern vsx_string<>engine_log_dir;
+void log(vsx_string<> message, int level = 1);
 
 
 #define LOG(mess)

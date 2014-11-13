@@ -51,11 +51,11 @@ class vsx_widget_chooser_editor : public vsx_widget_editor {
   bool dragging;
   vsx_widget_coords drag_coords;
   int mod_i;
-  vsx_string macro_name;
+  vsx_string<>macro_name;
   vsx_vector3<> drop_pos;
   vsx_widget* server;
   int draw_tooltip;
-  vsx_string tooltip_text;
+  vsx_string<>tooltip_text;
   vsx_vector3<> tooltip_pos;
 
 public:
@@ -192,10 +192,10 @@ public:
         if (tt->widget_type == VSX_WIDGET_TYPE_SERVER || macro) {
           drop_pos = l_distance.center;
           // split the identifier into the name
-          vsx_avector<vsx_string> parts;
-          vsx_string deli = ";";
+          vsx_avector< vsx_string<> > parts;
+          vsx_string<>deli = ";";
           explode(i_mod_info[mod_i]->identifier, deli, parts);
-          vsx_string module_name = parts[parts.size()-1];
+          vsx_string<>module_name = parts[parts.size()-1];
           if (ctrl)
           ((dialog_query_string*)name_dialog)->show(((vsx_widget_server*)server)->get_unique_name(module_name));
           else
@@ -227,7 +227,7 @@ void command_process_back_queue(vsx_command_s *t) {
     if (i_mod_info[mod_i]->component_class == "macro") {
       //printf("macro in browser\n");
       // everything else will be contained in this macro, so modify the macro_name var
-      vsx_string local_macro_name = t->cmd_data;
+      vsx_string<>local_macro_name = t->cmd_data;
       // first create the macro
       command_q_b.add_raw("macro_create "+i_mod_info[mod_i]->identifier+" "+macro_name+local_macro_name+" "+vsx_string_helper::f2s(drop_pos.x)+" "+vsx_string_helper::f2s(drop_pos.y));
       // in here, send all the commands contained in the macro to the server..
@@ -302,7 +302,7 @@ bool vsx_module_chooser_list::event_key_down(signed long key, bool alt, bool ctr
   VSX_UNUSED(alt);
   VSX_UNUSED(ctrl);
   VSX_UNUSED(shift);
-  vsx_string filter = ((vsx_widget_base_edit*)widget_search)->get_string();
+  vsx_string<>filter = ((vsx_widget_base_edit*)widget_search)->get_string();
   ((vsx_widget_editor*)widget_list)->editor->set_filter_string( filter );
   return true;
 }
@@ -313,7 +313,7 @@ void vsx_module_chooser_list::show() {
   set_pos(vsx_vector3<>(0.0f, 0.0f/*0.5-size.y*0.75f*/,0));
 }
 
-void vsx_module_chooser_list::show(vsx_string value) {
+void vsx_module_chooser_list::show(vsx_string<>value) {
   ((vsx_widget_editor*)widget_list)->set_string(value);
   ((vsx_widget_editor*)widget_list)->editor->caret_goto_end();
   show();
@@ -337,7 +337,7 @@ void vsx_module_chooser_list::command_process_back_queue(vsx_command_s *t) {
   visible = 0;
 }
 
-void vsx_module_chooser_list::add_item(vsx_string name,vsx_module_info* m_info)
+void vsx_module_chooser_list::add_item(vsx_string<>name,vsx_module_info* m_info)
 {
   i_rows.push_back(name);
   ((vsx_widget_chooser_editor*)widget_list)->i_mod_info.push_back(m_info);
@@ -345,14 +345,14 @@ void vsx_module_chooser_list::add_item(vsx_string name,vsx_module_info* m_info)
 
 void vsx_module_chooser_list::build_tree()
 {
-  std::vector<vsx_string> p_stack;
-  vsx_string result;
+  std::vector <vsx_string<> > p_stack;
+  vsx_string<>result;
   int module_id = 0;
   unsigned long i;
   unsigned long j;
   for (i = 0; i < i_rows.size(); i++) {
-    std::vector<vsx_string> parts;
-    vsx_string deli = ";";
+    std::vector <vsx_string<> > parts;
+    vsx_string<>deli = ";";
     explode(i_rows[i], deli, parts);
     for (j = 0; j < parts.size()-1; j++)
     {

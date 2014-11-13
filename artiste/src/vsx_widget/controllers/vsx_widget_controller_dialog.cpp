@@ -38,13 +38,13 @@ void vsx_widget_controller_dialog::init()
   init_children();
 }
 
-void vsx_widget_controller_dialog::get_in_param_spec(std::pair<vsx_string,vsx_string> parampair)
+void vsx_widget_controller_dialog::get_in_param_spec(std::pair<vsx_string<>,vsx_string<> > parampair)
 {
     vsx_widget_controller_base::get_in_param_spec(parampair);
     if (parampair.first.substr(0,8)=="control_")
     {
       vsx_widget* newwidget;
-      vsx_string type=parampair.first.substr(8);
+      vsx_string<>type=parampair.first.substr(8);
       if (type=="knob")
       newwidget=add(new vsx_widget_controller_knob,name+".knob");
       else if (type=="slider")

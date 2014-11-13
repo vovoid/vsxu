@@ -7,7 +7,7 @@
 
 typedef struct {
   CalBone* bone;
-  vsx_string name;
+  vsx_string<>name;
   vsx_module_param_quaternion* param;
   vsx_module_param_float3* translation;
   vsx_module_param_quaternion* result_rotation;
@@ -43,7 +43,7 @@ public:
     vsx_mesh<>* mesh_bbox;
     bool first_run;
     int n_rays;
-    vsx_string current_filename;
+    vsx_string<>current_filename;
     CalCoreModel* c_model;
     CalModel* m_model;
     vsx_avector<bone_info> bones;
@@ -267,7 +267,7 @@ public:
     thread_info.class_pointer = (void*)this;
   }
 
-  void param_set_notify(const vsx_string& name)
+  void param_set_notify(const vsx_string<>& name)
   {
     pthread_mutex_lock(&mesh_mutex);
 
@@ -275,9 +275,9 @@ public:
       if (filename->get() != current_filename) {
         current_filename = filename->get();
         // first find the path of the file
-        vsx_avector<vsx_string> fparts;
-        vsx_string fdeli = "/";
-        vsx_string file_path = "";
+        vsx_avector< vsx_string<> > fparts;
+        vsx_string<>fdeli = "/";
+        vsx_string<>file_path = "";
         explode(filename->get(), fdeli, fparts);
         if (fparts.size() > 1) {
           fparts.reset_used(fparts.get_used()-1);
@@ -295,7 +295,7 @@ public:
 
         c_model = new CalCoreModel("core");
         char buf[1024];
-        vsx_string line;
+        vsx_string<>line;
         int mesh_id = 0;
         while (engine->filesystem->f_gets(buf,1024,fp))
         {
@@ -303,8 +303,8 @@ public:
           if (line[line.size()-1] == 0x0A) line.pop_back();
           if (line[line.size()-1] == 0x0D) line.pop_back();
           if (line.size()) {
-            vsx_avector<vsx_string> parts;
-            vsx_string deli = "=";
+            vsx_avector< vsx_string<> > parts;
+            vsx_string<>deli = "=";
             explode(line, deli, parts);
             if (parts[0] == "skeleton") {
               vsxf_handle* h = engine->filesystem->f_open((file_path+parts[1]).c_str(),"r");

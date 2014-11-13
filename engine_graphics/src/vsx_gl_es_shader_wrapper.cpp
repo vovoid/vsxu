@@ -58,7 +58,7 @@ GLuint mm_uniform_handle;
           } \
         }
 
-void vsx_es_load_shader(GLuint *pShader, vsx_string shader_source, GLint iShaderType)
+void vsx_es_load_shader(GLuint *pShader, vsx_string<>shader_source, GLint iShaderType)
 {
   GLint iStatus;
   const char *aStrings[1] = { NULL };
@@ -112,7 +112,7 @@ void vsx_es_shader_wrapper_init_shaders()
 {
 
   /* Shader Initialisation */
-  vsx_es_load_shader(&vertex_shader_handle, vsx_string("\
+  vsx_es_load_shader(&vertex_shader_handle, vsx_string<>("\
 attribute vec4 vertices;\
 attribute vec4 colors;\
 \
@@ -125,7 +125,7 @@ void main() {\
   gl_Position = mm * vertices;\
 }\
 "), GL_VERTEX_SHADER);
-  vsx_es_load_shader(&fragmeent_shader_handle, vsx_string("\
+  vsx_es_load_shader(&fragmeent_shader_handle, vsx_string<>("\
 precision lowp float;\
 varying vec4 col;\
 void main() {\

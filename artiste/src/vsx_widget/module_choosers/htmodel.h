@@ -199,7 +199,7 @@ public:
         length = mroot->lk;
     }
 
-    vsx_string getName() {
+    vsx_string<>getName() {
         return node->getName();
     }
 

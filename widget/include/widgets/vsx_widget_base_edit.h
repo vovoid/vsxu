@@ -39,8 +39,8 @@
  */
 
 class WIDGET_DLLIMPORT vsx_widget_base_edit : public vsx_widget_panel {
-  std::vector<vsx_string> lines;
-  std::vector<vsx_string> lines_p;
+  std::vector <vsx_string<> > lines;
+  std::vector <vsx_string<> > lines_p;
   std::vector<int> lines_visible;
   std::vector<int> lines_visible_stack;
   std::vector<vsx_widget*> action_buttons;
@@ -49,7 +49,7 @@ class WIDGET_DLLIMPORT vsx_widget_base_edit : public vsx_widget_panel {
   float longest_y;
   int num_hidden_lines;
 //  vsx_font myf;
-  vsx_string syntax_col[5];
+  vsx_string<>syntax_col[5];
   bool process_characters;
   void process_line(int n_line);
   void process_lines();
@@ -62,11 +62,11 @@ public:
 	bool selected_line_highlight;
 	bool enable_line_action_buttons;
 	int selected_line;
-  vsx_string command_prefix; // sent to parent in command when single row (command hog)
-  vsx_string allowed_chars; // if empty all are allowed
+  vsx_string<>command_prefix; // sent to parent in command when single row (command hog)
+  vsx_string<>allowed_chars; // if empty all are allowed
   bool editing_enabled; // can the text be edited?
   bool single_row; // is single row editor only?
-  std::map<vsx_string,char> keywords;
+  std::map<vsx_string<>,char> keywords;
 
 
   int inside_xy_l(vsx_vector3<> &test, vsx_vector3<> &global) { return vsx_widget::inside_xy_l(test,global); }
@@ -82,10 +82,10 @@ public:
   float scroll_x_size, scroll_y_size;
   float scroll_x_max, scroll_y_max;
   float characters_width, characters_height;
-  void set_string(const vsx_string& str);
+  void set_string(const vsx_string<>& str);
   void caret_goto_end();
-  vsx_string get_string();
-  vsx_string get_line(unsigned long line);
+  vsx_string<>get_string();
+  vsx_string<>get_line(unsigned long line);
 
   void i_draw();
   virtual void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
@@ -95,7 +95,7 @@ public:
   bool event_key_down(signed long key, bool alt = false, bool ctrl = false, bool shift = false);
   virtual void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_wheel(float y);
-  void set_filter_string(vsx_string &filter_string);
+  void set_filter_string(vsx_string<>&filter_string);
   void fold_all();
   vsx_widget_base_edit();
 
@@ -108,8 +108,8 @@ public:
   vsx_widget_base_edit* editor;
 
   vsx_widget_editor();
-  void set_string(const vsx_string& str);
-  vsx_string get_string();
+  void set_string(const vsx_string<>& str);
+  vsx_string<>get_string();
 
   virtual void i_draw();
 };

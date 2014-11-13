@@ -94,7 +94,7 @@ public:
 
 
   // global list of widgets, by name
-  WIDGET_DLLIMPORT static std::map<vsx_string, vsx_widget*> global_widget_list;
+  WIDGET_DLLIMPORT static std::map<vsx_string<>, vsx_widget*> global_widget_list;
   WIDGET_DLLIMPORT static int static_widget_id_accumulator; // each widget object must have a unique id
 
   // global list of widgets, by id
@@ -104,7 +104,7 @@ public:
 
   WIDGET_DLLIMPORT static vsx_widget* last_clicked;
   WIDGET_DLLIMPORT static float global_framerate_limit;
-  WIDGET_DLLIMPORT static std::map<vsx_string, vsx_string> configuration;
+  WIDGET_DLLIMPORT static std::map<vsx_string<>, vsx_string<> > configuration;
   WIDGET_DLLIMPORT static unsigned long help_timestamp;
   WIDGET_DLLIMPORT static bool mouse_down_l;
   WIDGET_DLLIMPORT static bool mouse_down_r;
@@ -129,9 +129,9 @@ public:
 // LOCALS
   // information
   int id; // widget id (unique)
-  vsx_string name; // internal name
-  vsx_string title; // title, for public display
-  vsx_string help_text; // help text for this widget
+  vsx_string<>name; // internal name
+  vsx_string<>title; // title, for public display
+  vsx_string<>help_text; // help text for this widget
   unsigned int widget_type; // for finding out what type arbitrary widgets have so one can typecast correctly
   vsx_widget_render_type render_type; // 2d or 3d drawing mode
   unsigned int coord_type; // centralized or corner-based coordinates?
@@ -142,7 +142,7 @@ public:
   // widget relations to other widgets
 
   // local by-name lookup list
-  std::map<vsx_string, vsx_widget*> l_list;
+  std::map<vsx_string<>, vsx_widget*> l_list;
 
   std::list <vsx_widget*> children;
   std::list <vsx_widget*>::iterator children_iter;
@@ -203,8 +203,8 @@ public:
   bool region_exclusive;
 
   // logging
-  vsx_avector<vsx_string> log_cmd;
-  virtual void log(const vsx_string& t)
+  vsx_avector< vsx_string<> > log_cmd;
+  virtual void log(const vsx_string<>& t)
   {
     if (widget_type >= 100)
     log_cmd.push_back(t);
@@ -252,7 +252,7 @@ public:
     }
   }
 
-  inline void backwards_message(const vsx_string &message)
+  inline void backwards_message(const vsx_string<>&message)
   {
 		command_q_b.add_raw(message);
     if (cmd_parent)
@@ -261,7 +261,7 @@ public:
     }
   }
 
-  inline void message(const vsx_string &message)
+  inline void message(const vsx_string<>&message)
   {
 		command_q_b.add_raw(message);
   	this->vsx_command_queue_b(this);
@@ -287,10 +287,10 @@ public:
 
   // find operations
   bool find_child_by_type(unsigned long t);
-  bool find_child_by_name(vsx_string n);
+  bool find_child_by_name(vsx_string<>n);
 
   // this is used to get a pointer by knowing the name of the widget - searches the global list
-  vsx_widget *find(vsx_string t)
+  vsx_widget *find(vsx_string<>t)
   {
     if (global_widget_list.find(t) != global_widget_list.end())
     return global_widget_list[t];
@@ -533,7 +533,7 @@ public:
   // CONSTRUCTION/DESTRUCTION
   bool marked_for_deletion;
   //
-  vsx_widget *add(vsx_widget *t,vsx_string name);
+  vsx_widget *add(vsx_widget *t,vsx_string<>name);
 
 protected:
   // actual deletion event, don't use this unless you know what you are doing!

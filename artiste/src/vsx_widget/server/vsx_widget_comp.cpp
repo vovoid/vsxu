@@ -121,11 +121,11 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
   } else
   if (t->cmd == "c_msg")
   {
-    vsx_string s = base64_decode(t->parts[2]);
-    vsx_string deli = "&&";
+    vsx_string<>s = base64_decode(t->parts[2]);
+    vsx_string<>deli = "&&";
 
     deli = "||";
-    std::vector<vsx_string> parts;
+    std::vector <vsx_string<> > parts;
     explode(s,deli,parts);
     if (parts[0] == "module")
     {
@@ -188,12 +188,12 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
       {
         is_part_of_macro = true; // the following components are part of a macro
         command_q_b.add_raw("macro_create_real "+mc->parts[1]+" "+t->parts[3]+" "+t->parts[4]+" "+mc->parts[2]);
-        //printf("component_clone_internal: %s\n", vsx_string("macro_create_real "+mc->parts[1]+" "+t->parts[3]+" "+t->parts[4]+" "+mc->parts[2]).c_str());
+        //printf("component_clone_internal: %s\n", vsx_string<>("macro_create_real "+mc->parts[1]+" "+t->parts[3]+" "+t->parts[4]+" "+mc->parts[2]).c_str());
       } else
       if (mc->cmd == "macro_create" && mc->parts.size() < 6)
       {
         command_q_b.add_raw("macro_create_real "+mc->parts[1]+" "+mc->parts[2]+" "+mc->parts[3]+" "+mc->parts[4]);
-        //printf("component_clone_internal: %s\n", vsx_string("macro_create_real "+mc->parts[1]+" "+t->parts[3]+" "+t->parts[4]+" "+mc->parts[2]).c_str());
+        //printf("component_clone_internal: %s\n", vsx_string<>("macro_create_real "+mc->parts[1]+" "+t->parts[3]+" "+t->parts[4]+" "+mc->parts[2]).c_str());
       }
       else if (mc->cmd == "component_create")
         {
@@ -281,7 +281,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
     }
     if (fix_anchors)
     {
-      for (std::map<vsx_string, vsx_widget*>::iterator it = t_list.begin(); it != t_list.end(); it++)
+      for (std::map<vsx_string<>, vsx_widget*>::iterator it = t_list.begin(); it != t_list.end(); it++)
       {
         if ( ((*it).second)->widget_type == VSX_WIDGET_TYPE_ANCHOR)
         {
@@ -294,7 +294,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
     // p[0]: in_param_spec
     // p[1]: osc2
     // p[2]: actual command
-    std::vector<vsx_string> add_c;
+    std::vector <vsx_string<> > add_c;
     /*
     complex:surround_sound_data[blob:center
     ,
@@ -311,10 +311,10 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
     //printf("param_spec_parsing %d\n",l_io);
 
     // THIS CODE IS A MESS! :(
-    vsx_string cd = t->parts[2];
+    vsx_string<>cd = t->parts[2];
     //printf("comp_param_spec_parsing %s----:::\n",cd.c_str());
-    vsx_string cm = "";
-    vsx_string cms = "";
+    vsx_string<>cm = "";
+    vsx_string<>cms = "";
     int state = 0;
     //float ypos = size.y/2;
     for (size_t i = 0; i < cd.size(); ++i)
@@ -336,7 +336,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
         // we have our first part covered, and the command-sub
         // 1. find the name of this anchor
         add_c.clear();
-        vsx_string deli = ":";
+        vsx_string<>deli = ":";
         split_string(cm,deli,add_c,-1);
         vsx_widget_anchor *anchor = 0;
         //printf("comp_p1\n");
@@ -360,8 +360,8 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
           anchor = (vsx_widget_anchor*)add(new vsx_widget_anchor,add_c[0]);
           // extra type info split
           //printf("addc0 %s\n\n\n",cm.c_str());
-          std::vector<vsx_string> type_info;
-          vsx_string type_deli = "?";
+          std::vector <vsx_string<> > type_info;
+          vsx_string<>type_deli = "?";
           split_string(add_c[1],type_deli,type_info);
           if (type_info.size() == 2)
           {
@@ -430,7 +430,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
         cm = "";
       }
     }
-    for (std::map<vsx_string, vsx_widget*>::iterator it = t_list.begin(); it != t_list.end(); ++it)
+    for (std::map<vsx_string<>, vsx_widget*>::iterator it = t_list.begin(); it != t_list.end(); ++it)
     {
       (*it).second->_delete();
     }
@@ -579,9 +579,9 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
   if (t->cmd == "component_info")
   {
     if (t->parts.size() >= 3) {
-      std::vector<vsx_string> parts;
+      std::vector <vsx_string<> > parts;
       // critical:screen:small
-      vsx_string deli = ":";
+      vsx_string<>deli = ":";
       explode(t->parts[2],deli,parts);
 
       if (parts.size() > 1)
@@ -1306,7 +1306,7 @@ void vsx_widget_component::event_mouse_up(vsx_widget_distance distance,vsx_widge
           //vsx_vector ttpos = world-tt->get_pos_p();//-(get_pos_p());
           //printf("local pos %f %f\n",ttpos.x,ttpos.y);
       //    printf("eth3\n");
-          std::vector<vsx_string> comps;
+          std::vector <vsx_string<> > comps;
           bool run = true;
           // move ourselves to the beginning
           ((vsx_widget_server*)server)->selected_list.remove((vsx_widget*)this);
@@ -1346,7 +1346,7 @@ void vsx_widget_component::event_mouse_up(vsx_widget_distance distance,vsx_widge
     //        printf("eth6\n");
             ((vsx_widget_server*)server)->selected_list.remove(this);
             ((vsx_widget_server*)server)->selected_list.push_front(this);
-            vsx_string comps_s = implode(comps,",");
+            vsx_string<>comps_s = implode(comps,",");
 
             command_q_b.add_raw("component_assign "+dest_macro_component->name+" "+comps_s+" "+vsx_string_helper::f2s(l_distance.center.x)+" "+vsx_string_helper::f2s(l_distance.center.y));
             server->vsx_command_queue_b(this);
@@ -1472,7 +1472,7 @@ void vsx_widget_component::macro_fix_anchors(bool override) {
   anchor_order[0] = anchor_orders;
 }
 
-vsx_string vsx_widget_component::alias_get_unique_name_in(vsx_string base_name, int tried) {
+vsx_string<>vsx_widget_component::alias_get_unique_name_in(vsx_string<>base_name, int tried) {
   if (tried == 0) {
     // first run!
     if (p_l_list_in.find(base_name) ==  p_l_list_in.end()) {
@@ -1492,7 +1492,7 @@ vsx_string vsx_widget_component::alias_get_unique_name_in(vsx_string base_name, 
   }
 }
 
-vsx_string vsx_widget_component::alias_get_unique_name_out(vsx_string base_name, int tried) {
+vsx_string<>vsx_widget_component::alias_get_unique_name_out(vsx_string<>base_name, int tried) {
   if (tried == 0) {
     // first run!
     if (p_l_list_out.find(base_name) ==  p_l_list_out.end()) {
@@ -1564,7 +1564,7 @@ void vsx_widget_component::hide_all_complex_anchors_but_me(vsx_widget* open_anch
 }
 
 
-void vsx_widget_component::rename(vsx_string new_name, bool partial_name) {
+void vsx_widget_component::rename(vsx_string<>new_name, bool partial_name) {
   ((vsx_widget_server*)server)->comp_list.erase(name);
   if (partial_name) {
     if (parent->widget_type == VSX_WIDGET_TYPE_COMPONENT) {
@@ -1577,18 +1577,18 @@ void vsx_widget_component::rename(vsx_string new_name, bool partial_name) {
   }
   ((vsx_widget_server*)server)->comp_list[new_name] = this;
   name = new_name;
-  std::vector<vsx_string> add_c;
-  vsx_string deli = ".";
+  std::vector <vsx_string<> > add_c;
+  vsx_string<>deli = ".";
   split_string(new_name,deli,add_c,2);
 
-  std::vector<vsx_string> comp_realname;
+  std::vector <vsx_string<> > comp_realname;
   deli = ";";
   split_string(add_c[add_c.size()-1],deli,comp_realname);
 
   real_name = comp_realname[comp_realname.size()-1];
 }
 
-void vsx_widget_component::rename_add_prefix(vsx_string prefix, vsx_string old_name_remove)
+void vsx_widget_component::rename_add_prefix(vsx_string<>prefix, vsx_string<>old_name_remove)
 {
   for (std::list<vsx_widget*>::iterator it = children.begin(); it != children.end(); ++it)
   {
@@ -1596,21 +1596,21 @@ void vsx_widget_component::rename_add_prefix(vsx_string prefix, vsx_string old_n
       ((vsx_widget_component*)(*it))->rename_add_prefix(prefix,old_name_remove);
     }
   }
-  vsx_string new_name = name;
+  vsx_string<>new_name = name;
 //  printf("name = %s\n",name.c_str());
 //  printf("old_name_remove = %s\n",old_name_remove.c_str());
-  vsx_string old_name = old_name_remove;
+  vsx_string<>old_name = old_name_remove;
   if (old_name_remove != "") {
     str_remove_equal_prefix(&new_name,&old_name, ".");
     //new_name = prefix+str_replace(old_name_remove,"",name);
   }
 //  printf("prefix = %s new_name = %s\n",prefix.c_str(), new_name.c_str());
-  std::list<vsx_string> prefix_list;
-  std::list<vsx_string> name_list;
-  vsx_string deli = ".";
+  std::list< vsx_string<> > prefix_list;
+  std::list< vsx_string<> > name_list;
+  vsx_string<>deli = ".";
   explode(prefix, deli, prefix_list);
   explode(new_name, deli, name_list);
-  for (std::list<vsx_string>::iterator it = name_list.begin(); it != name_list.end(); ++it)
+  for (std::list< vsx_string<> >::iterator it = name_list.begin(); it != name_list.end(); ++it)
   {
     prefix_list.push_back(*it);
   }
@@ -1626,7 +1626,7 @@ void vsx_widget_component::rename_add_prefix(vsx_string prefix, vsx_string old_n
 // separate this in 2 methods!
 void vsx_widget_component::get_connections_in_abs(std::list<vsx_widget_connector_info*>* mlist) {
 //  printf("comp, get_connections_abs %s\n",name.c_str());
-  for (std::map<vsx_string, vsx_widget*>::iterator it = p_l_list_in.begin(); it != p_l_list_in.end(); ++it) {
+  for (std::map<vsx_string<>, vsx_widget*>::iterator it = p_l_list_in.begin(); it != p_l_list_in.end(); ++it) {
     if (((*it).second)->widget_type == VSX_WIDGET_TYPE_ANCHOR) {
       ((vsx_widget_anchor*)((*it).second))->get_connections_abs((*it).second, mlist);
     }
@@ -1635,7 +1635,7 @@ void vsx_widget_component::get_connections_in_abs(std::list<vsx_widget_connector
 
 void vsx_widget_component::get_connections_out_abs(std::list<vsx_widget_connector_info*>* mlist) {
 //  printf("comp, get_connections_abs %s\n",name.c_str());
-  for (std::map<vsx_string, vsx_widget*>::iterator it = p_l_list_out.begin(); it != p_l_list_out.end(); ++it) {
+  for (std::map<vsx_string<>, vsx_widget*>::iterator it = p_l_list_out.begin(); it != p_l_list_out.end(); ++it) {
     if (((*it).second)->widget_type == VSX_WIDGET_TYPE_ANCHOR) {
       ((vsx_widget_anchor*)((*it).second))->get_connections_abs((*it).second, mlist);
     }
@@ -1643,12 +1643,12 @@ void vsx_widget_component::get_connections_out_abs(std::list<vsx_widget_connecto
 }
 
 void vsx_widget_component::disconnect_abs() {
-  for (std::map<vsx_string, vsx_widget*>::iterator it = p_l_list_in.begin(); it != p_l_list_in.end(); ++it) {
+  for (std::map<vsx_string<>, vsx_widget*>::iterator it = p_l_list_in.begin(); it != p_l_list_in.end(); ++it) {
     if (((*it).second)->widget_type == VSX_WIDGET_TYPE_ANCHOR) {
       ((vsx_widget_anchor*)((*it).second))->disconnect_abs();
     }
   }
-  for (std::map<vsx_string, vsx_widget*>::iterator it = p_l_list_out.begin(); it != p_l_list_out.end(); ++it) {
+  for (std::map<vsx_string<>, vsx_widget*>::iterator it = p_l_list_out.begin(); it != p_l_list_out.end(); ++it) {
     if (((*it).second)->widget_type == VSX_WIDGET_TYPE_ANCHOR) {
       ((vsx_widget_anchor*)((*it).second))->disconnect_abs();
     }

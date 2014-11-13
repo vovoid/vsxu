@@ -27,7 +27,7 @@ bool vsx_widget::global_delete = false;
 
 
 int vsx_widget::static_widget_id_accumulator = 0;
-std::map<vsx_string, vsx_widget*> vsx_widget::global_widget_list;
+std::map<vsx_string<>, vsx_widget*> vsx_widget::global_widget_list;
 std::map<int, vsx_widget*> vsx_widget::global_index_list;
 
 
@@ -63,7 +63,7 @@ int vsx_widget::viewport[4];
 double vsx_widget::modelMatrix[16];
 double vsx_widget::projMatrix[16];
 
-std::map<vsx_string, vsx_string> vsx_widget::configuration;
+std::map<vsx_string<>, vsx_string<> > vsx_widget::configuration;
 
 float vsx_widget::global_framerate_limit = -1;
 vsx_widget* vsx_widget::last_clicked;
@@ -182,7 +182,7 @@ bool vsx_widget::find_child_by_type(unsigned long t)
   return false;
 }
 
-bool vsx_widget::find_child_by_name(vsx_string n)
+bool vsx_widget::find_child_by_name(vsx_string<>n)
 {
   for (children_iter=children.begin(); children_iter != children.end(); ++children_iter)
     if ((*children_iter)->name==n) return true;
@@ -855,7 +855,7 @@ void vsx_widget::hide_children()
 }
 
 
-vsx_widget *vsx_widget::add(vsx_widget *widget_pointer, vsx_string name)
+vsx_widget *vsx_widget::add(vsx_widget *widget_pointer, vsx_string<>name)
 {
   // set the name of the widget internally
   widget_pointer->name = name;

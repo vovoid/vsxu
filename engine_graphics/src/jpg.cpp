@@ -274,7 +274,7 @@ CJPEGTest::~CJPEGTest()
   }
 }
 
-bool CJPEGTest::LoadJPEG( const vsx_string & strFile, vsx_string & strErr,vsxf* filesystem)
+bool CJPEGTest::LoadJPEG( const vsx_string<>& strFile, vsx_string<>& strErr,vsxf* filesystem)
 {
     // If there's already an image in this object, ditch it
     
@@ -363,7 +363,7 @@ bool CJPEGTest::LoadJPEG( const vsx_string & strFile, vsx_string & strErr,vsxf* 
     return true;
 }
     
-bool CJPEGTest::SaveJPEG( const vsx_string & strFile, vsx_string & strErr, const int nQFactor )
+bool CJPEGTest::SaveJPEG( const vsx_string<>& strFile, vsx_string<>& strErr, const int nQFactor )
 {
 	if( ! m_pBuf )
 	{
@@ -420,7 +420,7 @@ bool CJPEGTest::SaveJPEG( const vsx_string & strFile, vsx_string & strErr, const
     return true;
 }    
 
-/*bool CJPEGTest::LoadTGA( const vsx_string & strFile, vsx_string & strErr )
+/*bool CJPEGTest::LoadTGA( const vsx_string<>& strFile, vsx_string<>& strErr )
 {
     // If there's already an image in object, ditch it
     
@@ -486,7 +486,7 @@ bool CJPEGTest::SaveJPEG( const vsx_string & strFile, vsx_string & strErr, const
     return true;
 }*/
 
-/*bool CJPEGTest::SaveTGA( const vsx_string & strFile, vsx_string & strErr ) const
+/*bool CJPEGTest::SaveTGA( const vsx_string<>& strFile, vsx_string<>& strErr ) const
 {
 	if( ! m_pBuf )
 	{

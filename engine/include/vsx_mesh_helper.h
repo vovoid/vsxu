@@ -68,10 +68,10 @@ namespace vsx_mesh_helper
   }
 
   template<typename T>
-  vsx_string* mesh_to_obj(vsx_mesh<T>* mesh)
+  vsx_string<>* mesh_to_obj(vsx_mesh<T>* mesh)
   {
-    vsx_string* result_p = new vsx_string;
-    vsx_string& result = *result_p;
+    vsx_string<>* result_p = new vsx_string<>;
+    vsx_string<>& result = *result_p;
 
     result += "# VSXu OBJ Generator\n";
     result += "# www.vsxu.com\n";

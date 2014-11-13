@@ -16,7 +16,7 @@ public:
   vsx_mesh<>* mesh;
   bool first_run;
   int n_rays;
-  vsx_string current_filename;
+  vsx_string<>current_filename;
 
 
   bool init()
@@ -95,7 +95,7 @@ public:
     }
 
     char buf[65535];
-    vsx_string line;
+    vsx_string<>line;
     vsx_array<vsx_vector3<> > vertices;
     vsx_array<vsx_vector3<> > normals;
     vsx_array<vsx_tex_coord2f> texcoords;
@@ -121,8 +121,8 @@ public:
         if (!line.size())
           continue;
 
-        vsx_avector<vsx_string> parts;
-        vsx_string deli = " ";
+        vsx_avector< vsx_string<> > parts;
+        vsx_string<>deli = " ";
         explode(line, deli, parts);
         if (parts[0] == "v") {
           vertices.push_back(vsx_vector3<>(vsx_string_helper::s2f(parts[1]),vsx_string_helper::s2f(parts[2]),vsx_string_helper::s2f(parts[3])));
@@ -153,14 +153,14 @@ public:
         } else
         if (parts[0] == "f") {
             vsx_face3 ff;
-            vsx_string deli2 = "/";
+            vsx_string<>deli2 = "/";
 
 
-            vsx_avector<vsx_string> parts2;
+            vsx_avector< vsx_string<> > parts2;
             explode(parts[1], deli2, parts2);
-            vsx_avector<vsx_string> parts3;
+            vsx_avector< vsx_string<> > parts3;
             explode(parts[2], deli2, parts3);
-            vsx_avector<vsx_string> parts4;
+            vsx_avector< vsx_string<> > parts4;
             explode(parts[3], deli2, parts4);
 
             ff.c = face_cur;
@@ -251,8 +251,8 @@ public:
         if (line[line.size()-1] == 0x0D) line.pop_back();
         if (line.size())
         {
-          vsx_avector<vsx_string> parts;
-          vsx_string deli = " ";
+          vsx_avector< vsx_string<> > parts;
+          vsx_string<>deli = " ";
           explode(line, deli, parts);
           if (parts[0] == "v")
           {
@@ -261,13 +261,13 @@ public:
           if (parts[0] == "f")
           {
               vsx_face3 ff;
-              vsx_string deli2 = "/";
+              vsx_string<>deli2 = "/";
 
-              vsx_avector<vsx_string> parts2;
+              vsx_avector< vsx_string<> > parts2;
               explode(parts[1], deli2, parts2);
-              vsx_avector<vsx_string> parts3;
+              vsx_avector< vsx_string<> > parts3;
               explode(parts[2], deli2, parts3);
-              vsx_avector<vsx_string> parts4;
+              vsx_avector< vsx_string<> > parts4;
               explode(parts[3], deli2, parts4);
 
               ff.c = vsx_string_helper::s2i(parts2[0])-1;

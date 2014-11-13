@@ -34,11 +34,11 @@
 
 
 class dialog_query_string : public vsx_widget_window {
-  vsx_string i_hint;
-  //std::map<vsx_string, vsx_widget*> fields;
+  vsx_string<>i_hint;
+  //std::map<vsx_string<>, vsx_widget*> fields;
   vsx_avector<vsx_widget*> edits;
 public:
-  vsx_string extra_value; // appended at the end of the command
+  vsx_string<>extra_value; // appended at the end of the command
   vsx_widget *edit1;
   void command_process_back_queue(vsx_command_s *t)
   {
@@ -49,8 +49,8 @@ public:
       visible = 0;
       return;
     }
-    vsx_string first_res;
-    vsx_avector<vsx_string> res;
+    vsx_string<>first_res;
+    vsx_avector< vsx_string<> > res;
     for (unsigned long i = 0; i < edits.size(); ++i) {
       if (!first_res.size()) first_res = ((vsx_widget_base_edit*)(edits[i]))->get_string();
       else
@@ -60,9 +60,9 @@ public:
         ((vsx_widget_base_edit*)(edits[i]))->set_string("");
       }
     }
-    vsx_string i("|");
-    vsx_string ress = implode(res, i);
-    vsx_string cmd = name+" "+first_res;
+    vsx_string<>i("|");
+    vsx_string<>ress = implode(res, i);
+    vsx_string<>cmd = name+" "+first_res;
     if (ress.size()) {
       cmd += " "+base64_encode(ress);
     }
@@ -71,13 +71,13 @@ public:
     visible = 0;
   }
 
-  void set_value(vsx_string value)
+  void set_value(vsx_string<>value)
   {
     ((vsx_widget_base_edit*)edit1)->set_string(value);
     ((vsx_widget_base_edit*)edit1)->caret_goto_end();
   }
 
-  void show(vsx_string value)
+  void show(vsx_string<>value)
   {
     ((vsx_widget_base_edit*)edit1)->set_string(value);
     ((vsx_widget_base_edit*)edit1)->caret_goto_end();
@@ -95,12 +95,12 @@ public:
   }
 
   void init() {}
-  void set_allowed_chars(vsx_string ch)
+  void set_allowed_chars(vsx_string<>ch)
   {
     ((vsx_widget_base_edit*)edit1)->allowed_chars = ch;
   }
 
-  dialog_query_string(vsx_string window_title, vsx_string in_fields = "")
+  dialog_query_string(vsx_string<>window_title, vsx_string<>in_fields = "")
   {
     // buttons, always needed
     vsx_widget *button1 = add(new vsx_widget_button,".b1");
@@ -110,8 +110,8 @@ public:
     // now for the edit fields
     if (in_fields != "")
     {
-      vsx_avector<vsx_string> f_parts;
-      vsx_string deli = "|";
+      vsx_avector< vsx_string<> > f_parts;
+      vsx_string<>deli = "|";
       explode(in_fields, deli, f_parts);
       if (f_parts.size() == 0) f_parts.push_back("");
       set_size(vsx_vector3<>(0.45f, 0.10f+(float)(f_parts.size())*0.04f));

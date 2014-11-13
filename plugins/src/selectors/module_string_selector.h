@@ -45,12 +45,12 @@ class module_string_selector : public vsx_module
 
   float i_index;
   int i_index_x0;
-  vsx_string i_value_y0;
+  vsx_string<>i_value_y0;
   int i_wrap;
  
   std::stringstream i_paramString;
   std::stringstream i_paramName;
-  vsx_string i_in_param_string;
+  vsx_string<>i_in_param_string;
 
   bool i_am_ready;
 

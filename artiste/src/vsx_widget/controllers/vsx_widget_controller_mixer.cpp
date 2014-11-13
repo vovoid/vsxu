@@ -54,8 +54,8 @@ void vsx_widget_controller_mixer::init()
     //((vsx_widget_3d_hint*)((vsx_widget_slider*)((vsx_widget_channel*)newmixer)->slider)->hint)->title=target_param+'['+vsx_string_helper::i2s(t)+']';
     mixers.push_back(newmixer);
   }
-  std::vector<vsx_string> parts;
-  vsx_string deli = ";";
+  std::vector <vsx_string<> > parts;
+  vsx_string<>deli = ";";
   explode(capmaxv_s,deli,parts);
   for (unsigned int i = 0; i < parts.size(); ++i) {
     if (parts[i] != "x" && parts[i] != "") {
@@ -81,7 +81,7 @@ void vsx_widget_controller_mixer::smooth(float newval)
     ((vsx_widget_controller_channel*)mixers[i])->smooth(newval);
 }
 
-void vsx_widget_controller_mixer::get_in_param_spec(std::pair<vsx_string,vsx_string> parampair)
+void vsx_widget_controller_mixer::get_in_param_spec(std::pair<vsx_string<>,vsx_string<> > parampair)
 {
   //printf("grombleton\n");
   if (parampair.first=="max") { capmaxv_s=parampair.second; capmax=true; } else
@@ -101,8 +101,8 @@ void vsx_widget_controller_mixer::command_process_back_queue(vsx_command_s *t)
 {
   if (t->cmd == "pg64_ok") {
     //printf("param_get_ok\n");
-    std::vector<vsx_string> parts;
-    vsx_string deli = ",";
+    std::vector <vsx_string<> > parts;
+    vsx_string<>deli = ",";
     t->parts[3] = base64_decode(t->parts[3]);
     explode(t->parts[3],deli, parts);
     for (unsigned long i = 0; i < parts.size(); ++i)
@@ -115,7 +115,7 @@ void vsx_widget_controller_mixer::command_process_back_queue(vsx_command_s *t)
   if (t->cmd == "param_set_interpolate" || t->cmd == "param_set")
   {
 
-    vsx_string cmd="";
+    vsx_string<>cmd="";
     for (unsigned long i=0;i<mixers.size();++i)
     {
       if (ctrl && shift)

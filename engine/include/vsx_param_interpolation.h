@@ -34,7 +34,7 @@ public:
   
   // set new destination value
   virtual bool set(vsx_module_param_abs* value,int arity, float interpolation_time) = 0;
-  virtual bool set(vsx_string value,int arity, float interpolation_time) = 0;
+  virtual bool set(vsx_string<>value,int arity, float interpolation_time) = 0;
   // to be run each frame
   virtual bool interpolate(float dtime) = 0;
 };  
@@ -47,7 +47,7 @@ class vsx_module_param_interpolation_float : public vsx_module_param_interpolati
   float dest_interp;
 public:
   bool set(vsx_module_param_abs* value,int arity, float interpolation_time);
-  bool set(vsx_string value,int arity, float interpolation_time);
+  bool set(vsx_string<>value,int arity, float interpolation_time);
   bool interpolate(float dtime);
   vsx_module_param_interpolation_float(vsx_module_param_abs* param) {
     target_param = param;
@@ -60,7 +60,7 @@ class vsx_module_param_interpolation_float3 : public vsx_module_param_interpolat
   float dest_interp;
 public:
   bool set(vsx_module_param_abs* value,int arity, float interpolation_time);
-  bool set(vsx_string value,int arity, float interpolation_time);
+  bool set(vsx_string<>value,int arity, float interpolation_time);
   bool interpolate(float dtime);
   vsx_module_param_interpolation_float3(vsx_module_param_abs* param) {
     target_param = param;
@@ -73,7 +73,7 @@ class vsx_module_param_interpolation_float4 : public vsx_module_param_interpolat
   float dest_interp;
 public:
   bool set(vsx_module_param_abs* value,int arity, float interpolation_time);
-  bool set(vsx_string value,int arity, float interpolation_time);
+  bool set(vsx_string<>value,int arity, float interpolation_time);
   bool interpolate(float dtime);
   vsx_module_param_interpolation_float4(vsx_module_param_abs* param) {
     target_param = param;
@@ -87,7 +87,7 @@ class vsx_module_param_interpolation_quaternion : public vsx_module_param_interp
   float dest_interp;
 public:
   bool set(vsx_module_param_abs* value,int arity, float interpolation_time);
-  bool set(vsx_string value,int arity, float interpolation_time);
+  bool set(vsx_string<>value,int arity, float interpolation_time);
   bool interpolate(float dtime);
   vsx_module_param_interpolation_quaternion(vsx_module_param_abs* param) {
     target_param = param;
@@ -108,7 +108,7 @@ public:
   bool schedule_remove(vsx_engine_param* parameter);
 
   //void set_target_value(vsx_engine_param* target, vsx_engine_param* value, int arity = 0,float interpolation_time = 16);
-  void set_target_value(vsx_engine_param* target, vsx_string value, int arity = 0,float interpolation_time = 16);
+  void set_target_value(vsx_engine_param* target, vsx_string<>value, int arity = 0,float interpolation_time = 16);
   
   void run(float d_time);
 }; 

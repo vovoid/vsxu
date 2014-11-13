@@ -32,7 +32,7 @@ vsx_overlay::vsx_overlay() {
   manager = 0;
   myf = new vsx_font(PLATFORM_SHARED_FILES);
   vsxf filesystem;
-  myf->load(vsx_string("font/font-ascii.png"), &filesystem);
+  myf->load(vsx_string<>("font/font-ascii.png"), &filesystem);
   myf->mode_2d = false;
   frame_counter = 0;
   delta_frame_counter = 0;
@@ -85,7 +85,7 @@ void vsx_overlay::render() {
   if (show_randomizer_timer > 0.0f)
   {
     myf->color.a = show_randomizer_timer;
-    vsx_string message;
+    vsx_string<>message;
     if (manager->get_randomizer_status())
     {
       message = "Enabling randomizer...";
@@ -101,19 +101,19 @@ void vsx_overlay::render() {
   if (manager) {
     if (manager->visual_loading() != "") title_timer = 2.0f;
     myf->color.a = title_timer;
-    vsx_string output;
-    if (manager->get_meta_visual_name() != "") output += vsx_string(manager->get_meta_visual_name().c_str());
-    if (manager->get_meta_visual_creator() != "") output += vsx_string(" by ")+manager->get_meta_visual_creator().c_str();
-    if (manager->get_meta_visual_company() != "") output += vsx_string(" of ")+manager->get_meta_visual_company().c_str();
+    vsx_string<>output;
+    if (manager->get_meta_visual_name() != "") output += vsx_string<>(manager->get_meta_visual_name().c_str());
+    if (manager->get_meta_visual_creator() != "") output += vsx_string<>(" by ")+manager->get_meta_visual_creator().c_str();
+    if (manager->get_meta_visual_company() != "") output += vsx_string<>(" of ")+manager->get_meta_visual_company().c_str();
     if (output == "") 
     {
-      output = vsx_string(manager->get_meta_visual_filename().c_str());
+      output = vsx_string<>(manager->get_meta_visual_filename().c_str());
       int i = output.size()-1;
       while (output[i] != '/' && output[i] != '\\') 
       {
         --i;
       }
-      output = vsx_string(manager->get_meta_visual_filename().substr(i+1, output.size()-i-5).c_str());
+      output = vsx_string<>(manager->get_meta_visual_filename().substr(i+1, output.size()-i-5).c_str());
     }
     myf->print(vsx_vector3<>(-1.0f,0.96f),output,0.04);
   }
@@ -276,7 +276,7 @@ Modules in state:","ascii",0.06);
         if (manager)
         myf->print(
           vsx_vector3<>(-0.1,0.4),
-          vsx_string(manager->get_meta_visual_filename().c_str())+"\n"+
+          vsx_string<>(manager->get_meta_visual_filename().c_str())+"\n"+
           vsx_string_helper::f2s(delta_fps)+"\n"+
           vsx_string_helper::f2s(manager->get_fx_level(),3)+"\n"+
           vsx_string_helper::f2s(manager->get_speed(),3)+"\n"+

@@ -50,10 +50,10 @@ public:
     VSX_UNUSED(coords);
     VSX_UNUSED(button);
 
-    vsx_string deli = " ";
-    vsx_string cur = editor->get_line(editor->selected_line);
+    vsx_string<>deli = " ";
+    vsx_string<>cur = editor->get_line(editor->selected_line);
     cur.trim_lf();
-    vsx_avector<vsx_string> parts;
+    vsx_avector< vsx_string<> > parts;
     explode(cur, deli, parts, 2);
 
     if (parts[0] == "thread")
@@ -110,7 +110,7 @@ public:
     items->set_profiler( p );
   }
 
-  void set_string( vsx_string s )
+  void set_string( vsx_string<>s )
   {
     items->set_string( s );
   }

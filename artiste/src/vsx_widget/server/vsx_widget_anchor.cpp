@@ -96,8 +96,8 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
   //   engine
   if (t->cmd == "connections_order_ok")
   {
-    std::vector<vsx_string> order_list;
-    vsx_string deli = ",";
+    std::vector <vsx_string<> > order_list;
+    vsx_string<>deli = ",";
     split_string(t->parts[3],deli,order_list);
     // set up a mapping list with the connections
     std::map<int,vsx_widget*> connection_map;
@@ -111,7 +111,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
 
     int c = 0;
 
-    for (std::vector<vsx_string>::iterator it = order_list.begin(); it != order_list.end(); ++it) 
+    for (std::vector <vsx_string<> >::iterator it = order_list.begin(); it != order_list.end(); ++it) 
     {
       ((vsx_widget_connector_bezier*)connection_map[ vsx_string_helper::s2i(*it) ])->order = c;
       ((vsx_widget_connector_bezier*)connection_map[ vsx_string_helper::s2i(*it) ])->move(vsx_vector3<>(0));
@@ -141,12 +141,12 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
         position_map[((vsx_widget_connector_bezier*)*children_iter)->real_pos.y] = *children_iter;
       }
     }
-    std::vector<vsx_string> order_list;
+    std::vector <vsx_string<> > order_list;
     for (std::map<float,vsx_widget*>::reverse_iterator it = position_map.rbegin(); it != position_map.rend(); ++it) 
     {
       order_list.push_back(vsx_string_helper::i2s(((vsx_widget_connector_bezier*)((*it).second))->order));
     }
-    vsx_string order_list_finished = implode(order_list,",");
+    vsx_string<>order_list_finished = implode(order_list,",");
     command_q_b.add_raw("connections_order "+component->name+" "+name+" "+order_list_finished);
     ((vsx_widget_component*)component)->server->vsx_command_queue_b(this);
     return;
@@ -297,10 +297,10 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
         anchor_order[1] = 0;
       }
     }
-    std::vector<vsx_string> add_c;
-    vsx_string cd = t->parts[2];
-    vsx_string cm = "";
-    vsx_string cms = "";
+    std::vector <vsx_string<> > add_c;
+    vsx_string<>cd = t->parts[2];
+    vsx_string<>cm = "";
+    vsx_string<>cms = "";
     int state = 0;
 
     for (size_t i = 0; i < cd.size(); ++i) 
@@ -333,7 +333,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
         // we have our first part covered, and the command-sub
         // 1. find the name of this anchor
         add_c.clear();
-        vsx_string deli = ":";
+        vsx_string<>deli = ":";
         split_string(cm,deli,add_c,-1);
         vsx_widget *tt = 0;
         // look for old anchor
@@ -354,8 +354,8 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
         else 
         {
           // extra type info split
-          std::vector<vsx_string> type_info;
-          vsx_string type_deli = "?";
+          std::vector <vsx_string<> > type_info;
+          vsx_string<>type_deli = "?";
           split_string(add_c[1],type_deli,type_info,2);
           tt = add(new vsx_widget_anchor,add_c[0]);
           if (type_info.size() == 2)
@@ -716,7 +716,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
 
   if (t->cmd == "chooser_ok")
   {
-    vsx_string ns = base64_encode("resources/"+str_replace(";","/",base64_decode(t->parts[1])));
+    vsx_string<>ns = base64_encode("resources/"+str_replace(";","/",base64_decode(t->parts[1])));
     command_q_b.add_raw("ps64 "+component->name+" "+alias_owner->name+" "+ns);
     component->vsx_command_queue_b(this);
     return;
@@ -797,8 +797,8 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
   if (t->cmd == "param_get_ok")
   {
     display_value = base64_decode(t->parts[3]);
-    std::vector<vsx_string> parts;
-    vsx_string deli = ",";
+    std::vector <vsx_string<> > parts;
+    vsx_string<>deli = ",";
     if (p_type == "float")
     {
       display_value = vsx_string_helper::f2s(vsx_string_helper::s2f(display_value),5);
@@ -1048,7 +1048,7 @@ void vsx_widget_anchor::disconnect_abs()
 }
 
 
-void vsx_widget_anchor::param_connect_abs(vsx_string c_component, vsx_string c_param, int c_order) {
+void vsx_widget_anchor::param_connect_abs(vsx_string<>c_component, vsx_string<>c_param, int c_order) {
   // syntax:
   //   param_connect_ok [component] [param] [dest-comp] [dest-param] [order]
   // we're the first 2 parts of the command, so just find the other component and create the link
@@ -1106,8 +1106,8 @@ void vsx_widget_anchor::param_connect_abs(vsx_string c_component, vsx_string c_p
 void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widget_anchor* referrer) 
 {
   // 1. find out the common name for us, to see if we're at the end of the alias chain
-  vsx_string src_name = src->component->name;
-  vsx_string dest_name = component->name;
+  vsx_string<>src_name = src->component->name;
+  vsx_string<>dest_name = component->name;
   str_remove_equal_prefix(&src_name, &dest_name, ".");
 
   if (src_name == "" && src->alias) 
@@ -1156,13 +1156,13 @@ void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widg
       return alias_parent->connect_far(src, oo-1, this);
     }
   }
-  vsx_string deli = ".";
-  std::vector<vsx_string> dest_name_parts;
+  vsx_string<>deli = ".";
+  std::vector <vsx_string<> > dest_name_parts;
   explode(dest_name,deli,dest_name_parts);
   dest_name_parts.pop_back();
   dest_name = implode(dest_name_parts,deli);
 
-  std::vector<vsx_string> src_name_parts;
+  std::vector <vsx_string<> > src_name_parts;
   explode(src_name,deli,src_name_parts);
   src_name_parts.pop_back();
   src_name = implode(src_name_parts,deli);
@@ -1244,7 +1244,7 @@ void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widg
           ++num_connections;
         }
       }
-      vsx_string newname = ((vsx_widget_component*)component->parent)->alias_get_unique_name_out("alias_"+name);
+      vsx_string<>newname = ((vsx_widget_component*)component->parent)->alias_get_unique_name_out("alias_"+name);
       ((vsx_widget_server*)((vsx_widget_component*)component)->server)->param_alias_ok(
         newname+":"+p_def,
         vsx_string_helper::i2s(io),
@@ -1262,13 +1262,13 @@ void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widg
 
 vsx_widget_anchor* vsx_widget_anchor::alias_to_level(vsx_widget_anchor* dest) 
 {
-  vsx_string src_name = component->name;
-  vsx_string dest_name = dest->component->name;
+  vsx_string<>src_name = component->name;
+  vsx_string<>dest_name = dest->component->name;
   str_remove_equal_prefix(&src_name, &dest_name, ".");
 
-  vsx_string deli = ".";
+  vsx_string<>deli = ".";
 
-  std::vector<vsx_string> src_name_parts;
+  std::vector <vsx_string<> > src_name_parts;
   explode(src_name,deli,src_name_parts);
   src_name_parts.pop_back();
   src_name = implode(src_name_parts,deli);
@@ -1287,7 +1287,7 @@ vsx_widget_anchor* vsx_widget_anchor::alias_to_level(vsx_widget_anchor* dest)
   } else
   if (src_name_parts.size()) 
   {
-    vsx_string newname = ((vsx_widget_component*)component->parent)->alias_get_unique_name_out("alias_"+name);
+    vsx_string<>newname = ((vsx_widget_component*)component->parent)->alias_get_unique_name_out("alias_"+name);
     ((vsx_widget_server*)((vsx_widget_component*)component)->server)->param_alias_ok(
       newname+":"+p_def,
       vsx_string_helper::i2s(io),
@@ -1303,18 +1303,18 @@ vsx_widget_anchor* vsx_widget_anchor::alias_to_level(vsx_widget_anchor* dest)
 
 //-- p u r e   g u i   s t u f f ---------------------------------------------------------------------------------------
 
-map<vsx_string,vsx_string> parse_url_params(vsx_string input, char major='&', char minor='=', char sublevelbegin='(', char sublevelend=')');
+map<vsx_string<>,vsx_string<> > parse_url_params(vsx_string<>input, char major='&', char minor='=', char sublevelbegin='(', char sublevelend=')');
 
-map<vsx_string,vsx_string> parse_url_params(vsx_string input, char major, char minor, char sublevelbegin, char sublevelend)
+map<vsx_string<>,vsx_string<> > parse_url_params(vsx_string<>input, char major, char minor, char sublevelbegin, char sublevelend)
 {
   VSX_UNUSED(major);
   VSX_UNUSED(minor);
   VSX_UNUSED(sublevelbegin);
   VSX_UNUSED(sublevelend);
 
-  map<vsx_string,vsx_string> values;
+  map<vsx_string<>,vsx_string<> > values;
   int startpos=0, sublevel=0;
-  vsx_string key="",val="",strip="";
+  vsx_string<>key="",val="",strip="";
   int p=0;
 
   for (size_t i=0;i<input.size();++i)
@@ -1507,11 +1507,11 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
     {
       menu_->commands.adds(VSX_COMMAND_MENU, "open/close (left-double-click)", "tg","");
       dialogs=parse_url_params(p_type_suffix);
-      for (map<vsx_string,vsx_string>::iterator it = dialogs.begin(); it != dialogs.end(); ++it)
+      for (map<vsx_string<>,vsx_string<> >::iterator it = dialogs.begin(); it != dialogs.end(); ++it)
       {
-        if (((vsx_string)(*it).first).substr(0,7) == "dialog_")
+        if (((vsx_string<>)(*it).first).substr(0,7) == "dialog_")
         {
-          vsx_string name=((vsx_string)(*it).first).substr(7);
+          vsx_string<>name=((vsx_string<>)(*it).first).substr(7);
           menu_->commands.adds(VSX_COMMAND_MENU, "Dialogs;"+name, "settings_dialog",name+" "+(*it).second);
         }
       }
@@ -1519,12 +1519,12 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
     else if (p_type == "enum")
     {
       //menu = add(new vsx_widget_popup_menu,".anchor_menu");
-      vsx_string deli_p = "&";
-      vector<vsx_string> parts;
+      vsx_string<>deli_p = "&";
+      vector<vsx_string<> > parts;
       explode(p_type_suffix,deli_p,parts);
 
-      vsx_string deli = "|";
-      vector<vsx_string> enumerations;
+      vsx_string<>deli = "|";
+      vector<vsx_string<> > enumerations;
       explode(parts[0],deli,enumerations);
       for (unsigned long i = 0; i < enumerations.size(); ++i) 
       {
@@ -1572,7 +1572,7 @@ void vsx_widget_anchor::init()
   dialogs=parse_url_params(p_type_suffix);
   // default is to allow connections to this anchor
   forbid_connections = false;
-  for (map<vsx_string,vsx_string>::iterator it = dialogs.begin(); it != dialogs.end(); ++it)
+  for (map<vsx_string<>,vsx_string<> >::iterator it = dialogs.begin(); it != dialogs.end(); ++it)
   {
     if ((*it).first == "default_controller")
     {
@@ -1730,7 +1730,7 @@ void vsx_widget_anchor::clone_our_value_to_other_anchor_via_server( const vsx_wi
   // send clone message to server
   command_q_b.add_raw
   (
-    vsx_string("param_clone_value ") +
+    vsx_string<>("param_clone_value ") +
       component->name + " " +
       name + " " +
       other_anchor->component->name +" " +
@@ -2041,7 +2041,7 @@ void vsx_widget_anchor::event_mouse_up(vsx_widget_distance distance,vsx_widget_c
         {
           // syntax:
           //   param_alias [component] [parameter] [source_component] [source_parameter] [-1=in / 1=out]
-          vsx_string tp;
+          vsx_string<>tp;
           if (io > 0) tp = "1"; else tp = "-1";
           // TODO: support for complex parameters that should generate a lot more commands on this level.
           // in this case all aliasing has to be done at once so only one command..

@@ -60,7 +60,7 @@ typedef struct {
   // engine_parameter[0] is module shared data path, data/config files that are used to define behaviour and existence of modules.
   //                     Examples: The render.glsl module is a good example. It returns one available module per file it finds
   //                               in its data directory.
-  vsx_avector<vsx_string> engine_parameter;
+  vsx_avector< vsx_string<> > engine_parameter;
 } vsx_engine_environment;
 
 // engine float arrays, data flowing from the engine to a module
@@ -200,18 +200,18 @@ class vsx_module_info
 {
 public:
 //-----internal:
-  vsx_string location; // internal or external - for internal use only, don't care about this
+  vsx_string<>location; // internal or external - for internal use only, don't care about this
 //-
-  vsx_string identifier; // the name of the module be it internal or a file i.e. "math;oscillator" etc, with a module
+  vsx_string<>identifier; // the name of the module be it internal or a file i.e. "math;oscillator" etc, with a module
                           // found on disk as a DLL/SO this will be the filename of the module.
-  vsx_string identifier_save; // If not empty, use this name when saving the state rather than identifier.
+  vsx_string<>identifier_save; // If not empty, use this name when saving the state rather than identifier.
 //----------------------------------------------------------------------------------------------------------------------
   // [description]
   //   The purpouse of this is to tell the end user what a component loaded with this module does.
   //   If it cooks eggs - write something like this:
   //   "This component can cook your eggs using the heat of the external USB water boiler wich this component controls."
   //
-  vsx_string description;
+  vsx_string<>description;
 
   /*
    This is the tricky part. The param specifications. Here you define what parameters are going to be published in the
@@ -263,10 +263,10 @@ public:
       default_controller=knob    - what happens when double-clicking on the param
       help=`Helpful Text`        - help text
   */
-  vsx_string in_param_spec;
-  vsx_string out_param_spec;
+  vsx_string<>in_param_spec;
+  vsx_string<>out_param_spec;
 
-  vsx_string component_class; // the class of the component
+  vsx_string<>component_class; // the class of the component
 
   /* [output]
     Some modules deal with output. For instance, if you have a sattelite card or whatever in your computer and want to send
@@ -301,7 +301,7 @@ class vsx_module
 public:
   //-----internal:
     int module_id; // module id, used when destroying a module. Managed by engine. Should be treated as read-only!
-    vsx_string module_identifier; // when created, holds module identifier. Managed by engine. Should be treated as read-only!
+    vsx_string<>module_identifier; // when created, holds module identifier. Managed by engine. Should be treated as read-only!
   //-
 
 
@@ -310,7 +310,7 @@ public:
   vsx_module_engine_info* engine;
 
 
-  vsx_string message; // message from module to client regarding this parameter
+  vsx_string<>message; // message from module to client regarding this parameter
                       // will be emptied by the engine so just put something in it :)
 
   // format is as follows:
@@ -331,7 +331,7 @@ public:
   // param notify, run whenever the engine sets a param from a command
   // not with the interpolator! added because of the need of redeclaring in-params
   // during state load before trying to make connections.
-  virtual void param_set_notify(const vsx_string& name)
+  virtual void param_set_notify(const vsx_string<>& name)
   {
     VSX_UNUSED(name);
   }
@@ -384,7 +384,7 @@ public:
 
   // avector with all the filenames that this module needs
   // this is needed to build .vsx packages
-  vsx_avector<vsx_string> resources;
+  vsx_avector< vsx_string<> > resources;
   // the init method, in here you should do stuff that needs to be done only once -
   // - allocate + initialize memory
   // - read configuration files
@@ -411,7 +411,7 @@ public:
   unsigned long status_screen_id;
   // get the name of the different status screens, this being declared like this
   // gives you the opportunity to dynamically name your status screens
-  virtual vsx_string status_screen_get_name(unsigned long id)
+  virtual vsx_string<>status_screen_get_name(unsigned long id)
   {
     VSX_UNUSED(id);
     return "";

@@ -37,7 +37,7 @@ public:
 	float start_time;
 	float length; // real-time length of this chunk
 	float total_length; // actual length, to next item
-	vsx_string pool_name;
+	vsx_string<>pool_name;
 	void run(float abs_time);
 	vsx_sequence_master_channel_item();
 };
@@ -53,18 +53,18 @@ class vsx_master_sequence_channel {
 	void i_remove_line(int pos);
 public:
 
-	//void add_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
-  void update_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
-  void insert_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
-  void remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
-  void time_sequence(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
+	//void add_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix = "");
+  void update_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix = "");
+  void insert_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix = "");
+  void remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix = "");
+  void time_sequence(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix = "");
   void remove_all_lines_referring_to_sequence_list(vsx_param_sequence_list* list);
 
-  vsx_string dump();
+  vsx_string<>dump();
 	void set_time(float new_time);
 	void set_engine(void* new_engine) { engine = new_engine; };
 	void run(float dtime);
-	void inject(vsx_string inject_string);
+	void inject(vsx_string<>inject_string);
 	vsx_master_sequence_channel();
 };
 

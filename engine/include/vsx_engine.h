@@ -72,8 +72,8 @@ public:
 
   //---------------------------------------------------------------------------
   // get meta information (whole string, or by field)
-  vsx_string get_meta_information();
-  vsx_string get_meta_information(size_t index);
+  vsx_string<>get_meta_information();
+  vsx_string<>get_meta_information(size_t index);
 
 
   //---------------------------------------------------------------------------
@@ -138,11 +138,11 @@ public:
 
   // module and parameter interface
   unsigned long get_num_modules();
-  vsx_comp* get_component_by_name(vsx_string label);
+  vsx_comp* get_component_by_name(vsx_string<>label);
   vsx_comp* get_by_id(unsigned long id);
-  vsx_module_param_abs* get_in_param_by_name(vsx_string module_name, vsx_string param_name);
-  vsx_module* get_module_by_name(vsx_string module_name);
-  vsx_string get_modules_not_loaded();
+  vsx_module_param_abs* get_in_param_by_name(vsx_string<>module_name, vsx_string<>param_name);
+  vsx_module* get_module_by_name(vsx_string<>module_name);
+  vsx_string<>get_modules_not_loaded();
 
   // get a list of all external-exposed parameters (parameters that we want to export from a sub-engine)
   void get_external_exposed_parameters( vsx_avector< vsx_module_param_abs* >* result );
@@ -156,12 +156,12 @@ public:
   bool start();
 
   // load a new state (clearing out the previous one)
-  int load_state(vsx_string filename, vsx_string *error_string = 0);
+  int load_state(vsx_string<>filename, vsx_string<>*error_string = 0);
 
   // load a new state from external archive, via pre-existing filesystem pointer
   // This is if you don't want engine to maintain its own filesystem, and if you put
   // for instance 3 state files into one .vsx file with vsxz, and want to load them into 3 different engines
-  int load_state_filesystem(vsx_string filename, vsx_string *error_string, vsxf* filesystem);
+  int load_state_filesystem(vsx_string<>filename, vsx_string<>*error_string, vsxf* filesystem);
 
   // process messages - this should be run once per physical frame
   void process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive = false, bool ignore_timing = false, float max_time = 0.01f);

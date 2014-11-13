@@ -44,11 +44,11 @@ using namespace std;
 vsx_mesh<float> mesh;
 
 char cur_path[4096];
-vsx_string current_path = cur_path;
+vsx_string<>current_path = cur_path;
 
 int main(int argc, char* argv[])
 {
-  vsx_string base_path = get_path_from_filename(vsx_string(argv[0]));
+  vsx_string<>base_path = get_path_from_filename(vsx_string<>(argv[0]));
 
   printf("Vovoid VSX OBJ 2 VSXMESH\n");
 
@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
   (
     argc < 3
     ||
-    vsx_string(argv[1]) == "-help"
+    vsx_string<>(argv[1]) == "-help"
   )
   {
     printf("obj2vsxmesh command line syntax:\n"
@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
 
 
   char buf[65535];
-  vsx_string line;
+  vsx_string<>line;
   vsx_array< vsx_vector3<> > vertices;
   vsx_array< vsx_vector3<> > normals;
   vsx_array< vsx_tex_coord2f > texcoords;
@@ -98,8 +98,8 @@ int main(int argc, char* argv[])
 
     line.trim_lf();
 
-    vsx_avector<vsx_string> parts;
-    vsx_string deli = " ";
+    vsx_avector< vsx_string<> > parts;
+    vsx_string<>deli = " ";
     explode(line, deli, parts);
     if (parts[0] == "v")
     {
@@ -130,13 +130,13 @@ int main(int argc, char* argv[])
     if (parts[0] == "f")
     {
       vsx_face3 ff;
-      vsx_string deli2 = "/";
+      vsx_string<>deli2 = "/";
 
-      vsx_avector<vsx_string> parts2;
+      vsx_avector< vsx_string<> > parts2;
       explode(parts[1], deli2, parts2);
-      vsx_avector<vsx_string> parts3;
+      vsx_avector< vsx_string<> > parts3;
       explode(parts[2], deli2, parts3);
-      vsx_avector<vsx_string> parts4;
+      vsx_avector< vsx_string<> > parts4;
       explode(parts[3], deli2, parts4);
 
       ff.c = face_cur;

@@ -53,7 +53,7 @@ vsx_channel::~vsx_channel()
   }  
 }
   
-vsx_string vsx_channel::get_param_name()
+vsx_string<>vsx_channel::get_param_name()
 {
 	return my_param->name;
 }
@@ -115,7 +115,7 @@ void vsx_channel::update_connections_order()
 
 //---------------------------------------------------------
 
-bool vsx_channel::disconnect(vsx_comp* comp, vsx_string name)
+bool vsx_channel::disconnect(vsx_comp* comp, vsx_string<>name)
 {
 //  connections.clear();
 //  return true;

@@ -61,6 +61,11 @@ public:
     return used;
   }
 
+  inline size_t push_back_ref(T& val) VSX_ALWAYS_INLINE
+  {
+    (*this)[used] = val;
+    return used;
+  }
 
   inline size_t size() VSX_ALWAYS_INLINE
   {

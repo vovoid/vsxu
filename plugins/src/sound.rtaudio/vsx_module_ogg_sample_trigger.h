@@ -91,7 +91,7 @@ public:
     return true;
   }
 
-  void param_set_notify(const vsx_string& name)
+  void param_set_notify(const vsx_string<>& name)
   {
     if (name == "filename")
     {

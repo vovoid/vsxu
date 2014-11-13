@@ -33,14 +33,14 @@ private:
 protected:
   // holder of dynamically linked object info, by string
   // the pointer should be typecast to vsx_module_plugin_info*
-  std::map< vsx_string, void* > module_plugin_list;
+  std::map< vsx_string<>, void* > module_plugin_list;
 
   // module list (master)
   // holds module_infos harvested from the modules
   std::vector< vsx_module_info* > module_infos;
 
   // module list by string - holds all modules, including hidden modules
-  std::map< vsx_string, vsx_module_info* > module_list;
+  std::map< vsx_string<>, vsx_module_info* > module_list;
 
   // module list intended for GUI consumption, doesn't contain hidden modules
   std::vector< vsx_module_info* > module_list_public;
@@ -64,13 +64,13 @@ public:
   //       Module identifier (i.e. path;to;module)
   //   Example use:
   //     load_module_by_name("math;oscillators;oscillator");
-  virtual vsx_module* load_module_by_name(vsx_string name) = 0;
+  virtual vsx_module* load_module_by_name(vsx_string<>name) = 0;
 
   // Unload Module
   virtual void unload_module( vsx_module* module_pointer ) = 0;
 
   // Check presence of module
-  virtual bool find( const vsx_string &module_name_to_look_for) = 0;
+  virtual bool find( const vsx_string<>&module_name_to_look_for) = 0;
 
   // Print help text for all loaded modules
   virtual void print_help() = 0;

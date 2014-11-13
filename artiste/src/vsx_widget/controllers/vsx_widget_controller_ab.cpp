@@ -347,8 +347,8 @@ void vsx_widget_controller_ab::event_mouse_double_click(vsx_widget_distance dist
 void vsx_widget_controller_ab::command_process_back_queue(vsx_command_s *t) {
   if (t->cmd == "pg64_ok")
   {
-    std::vector<vsx_string> parts;
-    vsx_string deli = ",";
+    std::vector <vsx_string<> > parts;
+    vsx_string<>deli = ",";
     t->parts[3] = base64_decode(t->parts[3]);
     explode(t->parts[3],deli, parts);
     if (parts.size() == 4) {

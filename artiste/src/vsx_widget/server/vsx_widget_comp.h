@@ -57,13 +57,13 @@ public:
 
   int anchor_order[2]; // to keep track of how many anchors have been created as children
   vsx_widget* server;
-  vsx_string component_type;
-  vsx_string real_name; // the real name - that is, macro names omitted.
-  vsx_string parent_name; // in case part of a macro this will be set to "macroxyz."
-  vsx_string module_path;
+  vsx_string<>component_type;
+  vsx_string<>real_name; // the real name - that is, macro names omitted.
+  vsx_string<>parent_name; // in case part of a macro this will be set to "macroxyz."
+  vsx_string<>module_path;
 
   // message from server
-  vsx_string message;
+  vsx_string<>message;
   float message_time;
   vsx_texture mtex;
 
@@ -80,11 +80,11 @@ public:
 
   // to keep track of the anchors matched against the names in the vsxu server (not the gui component)
   // for easy access.
-  std::map<vsx_string, vsx_widget*> p_l_list_in;
-  std::map<vsx_string, vsx_widget*>::const_iterator p_l_list_in_iter;
-  std::map<vsx_string, vsx_widget*> p_l_list_out;
-  std::map<vsx_string, vsx_widget*>::const_iterator p_l_list_out_iter;
-  std::map<vsx_string, vsx_widget*> t_list; // temporary list for rescuing of re-inited anchors
+  std::map<vsx_string<>, vsx_widget*> p_l_list_in;
+  std::map<vsx_string<>, vsx_widget*>::const_iterator p_l_list_in_iter;
+  std::map<vsx_string<>, vsx_widget*> p_l_list_out;
+  std::map<vsx_string<>, vsx_widget*>::const_iterator p_l_list_out_iter;
+  std::map<vsx_string<>, vsx_widget*> t_list; // temporary list for rescuing of re-inited anchors
 
   void command_process_back_queue(vsx_command_s *t);
   void vsx_command_process_f();
@@ -98,14 +98,14 @@ public:
   void before_delete();
   void begin_delete();
   void perform_delete();
-  void rename(vsx_string new_name,bool partial_name = true);
-  void rename_add_prefix(vsx_string prefix, vsx_string old_name_remove = "");
+  void rename(vsx_string<>new_name,bool partial_name = true);
+  void rename_add_prefix(vsx_string<>prefix, vsx_string<>old_name_remove = "");
   void get_connections_in_abs(std::list<vsx_widget_connector_info*>* mlist);
   void get_connections_out_abs(std::list<vsx_widget_connector_info*>* mlist);
   void hide_all_complex_anchors_but_me(vsx_widget* open_anchor);
   void disconnect_abs();
-  vsx_string alias_get_unique_name_in(vsx_string base_name, int tried = 0); // find a free name for the alias
-  vsx_string alias_get_unique_name_out(vsx_string base_name, int tried = 0); // find a free name for the alias
+  vsx_string<>alias_get_unique_name_in(vsx_string<>base_name, int tried = 0); // find a free name for the alias
+  vsx_string<>alias_get_unique_name_out(vsx_string<>base_name, int tried = 0); // find a free name for the alias
 
 
   // to keep track of our position and send it to the server

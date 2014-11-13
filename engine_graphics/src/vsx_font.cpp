@@ -37,9 +37,9 @@
 #endif
 
 
-std::map<vsx_string, vsx_font_info*> vsx_font::glist;
+std::map<vsx_string<>, vsx_font_info*> vsx_font::glist;
 
-vsx_font_info* vsx_font::load(vsx_string font, vsxf* filesystem)
+vsx_font_info* vsx_font::load(vsx_string<>font, vsxf* filesystem)
 {
   my_font_info = glist[font] = new vsx_font_info;
   my_font_info->name = font;
@@ -48,7 +48,7 @@ vsx_font_info* vsx_font::load(vsx_string font, vsxf* filesystem)
   {
     my_font_info->type = 0;
     my_font_info->texture = new vsx_texture();
-    vsx_string ss = base_path+font;
+    vsx_string<>ss = base_path+font;
     my_font_info->texture->load_png( base_path+font, true, filesystem );
     ch = 16.0f/255.0f;
     cw = 10.0f/255.0f;
@@ -82,7 +82,7 @@ void vsx_font::unload()
   my_font_info = 0x0;
 }
 
-void vsx_font::reinit(vsx_font_info* f_info,vsx_string font)
+void vsx_font::reinit(vsx_font_info* f_info,vsx_string<>font)
 {
   if (f_info->type == 0)
   {
@@ -108,13 +108,13 @@ void vsx_font::reinit(vsx_font_info* f_info,vsx_string font)
 
 void vsx_font::reinit_all_active()
 {
-  for (std::map<vsx_string, vsx_font_info*>::iterator it = glist.begin(); it != glist.end(); ++it)
+  for (std::map<vsx_string<>, vsx_font_info*>::iterator it = glist.begin(); it != glist.end(); ++it)
   {
     reinit((*it).second,(*it).first);
   }
 }  
 
-  vsx_vector3<> vsx_font::print(vsx_vector3<> p, const vsx_string& str, const vsx_string& font, float size = 1, vsx_string colors) {
+  vsx_vector3<> vsx_font::print(vsx_vector3<> p, const vsx_string<>& str, const vsx_string<>& font, float size = 1, vsx_string<>colors) {
     if (!my_font_info) {
       if (glist.find(font) != glist.end()) {
         my_font_info = glist[font];
@@ -126,7 +126,7 @@ void vsx_font::reinit_all_active()
     return print(p,str,size,colors);
   }
 
-  vsx_vector3<> vsx_font::print(vsx_vector3<> p, const vsx_string& str, const float size = 1, vsx_string colors)
+  vsx_vector3<> vsx_font::print(vsx_vector3<> p, const vsx_string<>& str, const float size = 1, vsx_string<>colors)
   {
     #ifndef VSXU_OPENGL_ES
       if (!my_font_info)
@@ -264,7 +264,7 @@ void vsx_font::reinit_all_active()
     return vsx_vector3<>();
   }
 
-vsx_vector3<> vsx_font::get_size(const vsx_string& str, float size = 1)
+vsx_vector3<> vsx_font::get_size(const vsx_string<>& str, float size = 1)
 {
   #ifndef VSX_FONT_NO_FT
     if (!my_font_info) {
@@ -295,7 +295,7 @@ vsx_vector3<> vsx_font::get_size(const vsx_string& str, float size = 1)
   }  
 
 
-vsx_vector3<> vsx_font::print_center(vsx_vector3<> p, const vsx_string& str, float size = 1)
+vsx_vector3<> vsx_font::print_center(vsx_vector3<> p, const vsx_string<>& str, float size = 1)
 {
   p.x -= (align*0.37f*size*(float)str.size())*0.5f;
   #ifndef VSX_FONT_NO_FT
@@ -309,7 +309,7 @@ vsx_vector3<> vsx_font::print_center(vsx_vector3<> p, const vsx_string& str, flo
   return print(p,str,size);
 }
 
-vsx_vector3<> vsx_font::print_right(vsx_vector3<> p, const vsx_string& str, float size = 1)
+vsx_vector3<> vsx_font::print_right(vsx_vector3<> p, const vsx_string<>& str, float size = 1)
 {
   p.x -= (align*0.37f*size*(float)str.size());
   #ifndef VSX_FONT_NO_FT

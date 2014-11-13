@@ -242,7 +242,7 @@ if (cmd == "seq_pool")
     // dump all the sequences present in the current sequence pool
     if (sequence_pool.get_selected())
     {
-      vsx_string a = sequence_pool.get_selected()->get_sequence_list_dump();
+      vsx_string<>a = sequence_pool.get_selected()->get_sequence_list_dump();
       cmd_out->add_raw("seq_pool "+c->parts[1]+"_ok "+a, VSX_COMMAND_GARBAGE_COLLECT);
     }
     goto process_message_queue_end;
@@ -294,7 +294,7 @@ if (cmd == "seq_pool")
           {
             if (sequence_pool.get_selected())
             {
-              vsx_string sequence_specification = sequence_pool.get_selected()->dump_param(param);
+              vsx_string<>sequence_specification = sequence_pool.get_selected()->dump_param(param);
               if (sequence_specification != "")
               {
                 cmd_out->add_raw("seq_pool pseq_p_ok inject_get "+c->parts[3]+" "+c->parts[4]+" "+sequence_specification+" "+vsx_string_helper::i2s(param->module_param->type), VSX_COMMAND_GARBAGE_COLLECT);

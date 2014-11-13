@@ -17,7 +17,7 @@ class module_texture_load_jpeg_alpha : public vsx_module
   {
     module_texture_load_jpeg_alpha* mod = (module_texture_load_jpeg_alpha*)ptr;
 
-    vsx_string ret;
+    vsx_string<>ret;
 
     CJPEGTest* cj = new CJPEGTest;
     if
@@ -119,8 +119,8 @@ class module_texture_load_jpeg_alpha : public vsx_module
 public:
   int m_type;
 
-  vsx_string current_filename;
-  vsx_string current_alpha_filename;
+  vsx_string<>current_filename;
+  vsx_string<>current_alpha_filename;
 
   vsx_bitmap bitm;
   int bitm_timestamp; // keep track of the timestamp for the bitmap internally

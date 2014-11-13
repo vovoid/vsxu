@@ -37,7 +37,7 @@ class vsx_widget_sequence_editor : public vsx_widget
   vsx_widget* but_set_loop_point;
 
   std::vector<vsx_widget*> channels;
-  std::map<vsx_string,vsx_widget*> channels_map;
+  std::map<vsx_string<>,vsx_widget*> channels_map;
   float channels_visible;
   int channels_start;
   vsx_widget* sequence_list;
@@ -60,7 +60,7 @@ public:
 
   virtual void init();
   void i_draw();
-  void toggle_channel_visible(vsx_string name);
+  void toggle_channel_visible(vsx_string<>name);
 
   // removes all sequence channels, used when switching seqpool etc.
   void clear_sequencer();
@@ -69,7 +69,7 @@ public:
   virtual void interpolate_size();
   void set_server(vsx_widget* new_server);
   vsx_widget* get_server();
-  void remove_master_channel_items_with_name(vsx_string name);
+  void remove_master_channel_items_with_name(vsx_string<>name);
   vsx_widget_sequence_editor() {
     disable_master_channel = false;
     but_add_master_channel = 0;

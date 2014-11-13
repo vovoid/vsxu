@@ -44,7 +44,7 @@ public:
   uint64_t   flags;
   uint64_t   cycles_start;
   uint64_t   cycles_end;
-  vsx_string tag;
+  vsx_string<>tag;
 
   vsx_profiler_consumer_chunk()
     :
@@ -76,7 +76,7 @@ public:
 
 class vsx_profiler_consumer
 {
-  vsx_avector<vsx_string> filenames;
+  vsx_avector< vsx_string<> > filenames;
 
 
   vsx_avector<vsx_profile_chunk> current_profile;
@@ -103,7 +103,7 @@ public:
 
   vsx_profiler_consumer()
   {
-    std::list<vsx_string> local_filenames;
+    std::list< vsx_string<> > local_filenames;
 
     get_files_recursive(
       vsx_profiler_manager::profiler_directory_get(),
@@ -111,11 +111,11 @@ public:
     );
 
     size_t i = 0;
-    for (std::list<vsx_string>::iterator it = local_filenames.begin(); it != local_filenames.end(); it++)
+    for (std::list< vsx_string<> >::iterator it = local_filenames.begin(); it != local_filenames.end(); it++)
     {
-      vsx_string n = *it;
-      vsx_string deli = DIRECTORY_SEPARATOR;
-      vsx_avector<vsx_string> parts;
+      vsx_string<>n = *it;
+      vsx_string<>deli = DIRECTORY_SEPARATOR;
+      vsx_avector< vsx_string<> > parts;
       explode(n, deli, parts);
 
       if (parts.size() < 2)
@@ -126,15 +126,15 @@ public:
     }
   }
 
-  vsx_string get_filenames_list()
+  vsx_string<>get_filenames_list()
   {
-    vsx_string deli = "\n";
+    vsx_string<>deli = "\n";
     return implode(filenames, deli);
   }
 
-  vsx_string get_items_list()
+  vsx_string<>get_items_list()
   {
-    vsx_string res;
+    vsx_string<>res;
     for (size_t i = 0; i < current_threads.size(); i++)
     {
       res += "thread " + vsx_string_helper::i2s(current_threads[i]) + "\n";
@@ -161,7 +161,7 @@ public:
     current_threads.reset_used();
     current_plots.reset_used();
 
-    vsx_string filename = vsx_profiler_manager::profiler_directory_get() + DIRECTORY_SEPARATOR + filenames[index];
+    vsx_string<>filename = vsx_profiler_manager::profiler_directory_get() + DIRECTORY_SEPARATOR + filenames[index];
     vsxf_handle* fp = filesystem.f_open( filename.c_str() , "r" );
 
     unsigned long file_size = filesystem.f_get_size(fp);
@@ -188,7 +188,7 @@ public:
     if (last_profile.flags != VSX_PROFILE_CHUNK_FLAG_TIMESTAMP)
       VSX_ERROR_RETURN("No timestamp in data file, can't analyze it.");
 
-    current_max_time = vsx_string_helper::s2f( vsx_string( last_profile.tag, 32) );
+    current_max_time = vsx_string_helper::s2f( vsx_string<>( last_profile.tag, 32) );
     cpu_clock_end = last_profile.cycles;
 
     cycles_per_second = (cpu_clock_end-cpu_clock_start) / current_max_time;

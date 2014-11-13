@@ -32,8 +32,8 @@
 
 //extern vsx_engine* vme;
 //#define vsxu_version "VSXu 0.1.14 beta"
-//extern vsx_string vsxu_name;
-//extern vsx_string vsxu_version;
+//extern vsx_string<>vsxu_name;
+//extern vsx_string<>vsxu_version;
 //extern char* vsxu_ver;
 
 

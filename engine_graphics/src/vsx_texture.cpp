@@ -37,7 +37,7 @@
 #include <debug/vsx_error.h>
 #include <vsx_gl_state.h>
 
-std::map<vsx_string, vsx_texture_glist_holder> vsx_texture::t_glist;
+std::map<vsx_string<>, vsx_texture_glist_holder> vsx_texture::t_glist;
 
 vsx_texture::vsx_texture()
 {
@@ -753,7 +753,7 @@ void vsx_texture::end_capture_to_buffer()
 
 void vsx_texture::unload_all_active()
 {
-  for (std::map<vsx_string, vsx_texture_glist_holder>::iterator it = t_glist.begin(); it != t_glist.end(); ++it)
+  for (std::map<vsx_string<>, vsx_texture_glist_holder>::iterator it = t_glist.begin(); it != t_glist.end(); ++it)
   {
     glDeleteTextures(1,&((*it).second.texture_info.ogl_id));
   }
@@ -761,9 +761,9 @@ void vsx_texture::unload_all_active()
 
 void vsx_texture::reinit_all_active()
 {
-  std::map<vsx_string, vsx_texture_glist_holder> temp_glist = t_glist;
-  vsx_string tname;
-  for (std::map<vsx_string, vsx_texture_glist_holder>::iterator it = temp_glist.begin(); it != temp_glist.end(); ++it)
+  std::map<vsx_string<>, vsx_texture_glist_holder> temp_glist = t_glist;
+  vsx_string<>tname;
+  for (std::map<vsx_string<>, vsx_texture_glist_holder>::iterator it = temp_glist.begin(); it != temp_glist.end(); ++it)
   {
     if ((*it).second.texture_info.type == VSX_TEXTURE_INFO_TYPE_PNG)
     {
@@ -1194,7 +1194,7 @@ void vsx_texture::upload_ram_bitmap_cube(void* data, unsigned long size_x, unsig
 
 
 
-bool vsx_texture::load_from_glist_deferred(vsx_string fname)
+bool vsx_texture::load_from_glist_deferred(vsx_string<>fname)
 {
   if (t_glist.find(fname) == t_glist.end())
     return false;
@@ -1213,7 +1213,7 @@ bool vsx_texture::load_from_glist_deferred(vsx_string fname)
   return true;
 }
 
-void vsx_texture::add_to_glist_deferred(vsx_string fname)
+void vsx_texture::add_to_glist_deferred(vsx_string<>fname)
 {
   if (t_glist.find(fname) == t_glist.end())
   {
@@ -1263,7 +1263,7 @@ void png_worker_cleanup(vsx_texture_load_thread_info* pti_l)
 
 
 
-void vsx_texture::load_png(vsx_string fname, bool mipmaps, vsxf* filesystem)
+void vsx_texture::load_png(vsx_string<>fname, bool mipmaps, vsxf* filesystem)
 {
   if (load_from_glist_deferred(fname))
     return;
@@ -1292,7 +1292,7 @@ void vsx_texture::load_png(vsx_string fname, bool mipmaps, vsxf* filesystem)
 }
 
 // load a png but put the heavy processing in a thread
-void vsx_texture::load_png_thread(vsx_string fname, bool mipmaps, vsxf* filesystem)
+void vsx_texture::load_png_thread(vsx_string<>fname, bool mipmaps, vsxf* filesystem)
 {
   if (load_from_glist_deferred(fname))
     return;
@@ -1325,7 +1325,7 @@ void vsx_texture::load_png_thread(vsx_string fname, bool mipmaps, vsxf* filesyst
 }
 
 
-void vsx_texture::load_png_cubemap(vsx_string fname, bool mipmaps, vsxf* filesystem)
+void vsx_texture::load_png_cubemap(vsx_string<>fname, bool mipmaps, vsxf* filesystem)
 {
   if (load_from_glist_deferred(fname))
     return;
@@ -1362,12 +1362,12 @@ void vsx_texture::load_png_cubemap(vsx_string fname, bool mipmaps, vsxf* filesys
 
 
 
-void vsx_texture::load_jpeg(vsx_string fname, bool mipmaps)
+void vsx_texture::load_jpeg(vsx_string<>fname, bool mipmaps)
 {
   valid = false;
 
   CJPEGTest cj;
-  vsx_string ret;
+  vsx_string<>ret;
   vsxf filesystem;
   cj.LoadJPEG(fname,ret,&filesystem);
   upload_ram_bitmap_2d((unsigned long*)cj.m_pBuf, cj.GetResX(), cj.GetResY(), mipmaps, 3, GL_RGB);

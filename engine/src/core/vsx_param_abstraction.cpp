@@ -218,17 +218,17 @@ int vsx_engine_param::connect(vsx_engine_param* src) {
 vsx_engine_param* vsx_engine_param::alias_to_level(vsx_engine_param* dest) {
   // this will only work for params belonging to a io == 1 list
   if (owner->io == 1) {
-    vsx_string src_name = owner->component->name;
-    vsx_string dest_name = dest->owner->component->name;
+    vsx_string<>src_name = owner->component->name;
+    vsx_string<>dest_name = dest->owner->component->name;
     str_remove_equal_prefix(&src_name, &dest_name,".");
 
-    vsx_string deli = ".";
-    std::vector<vsx_string> dest_name_parts;
+    vsx_string<>deli = ".";
+    std::vector <vsx_string<> > dest_name_parts;
     explode(dest_name,deli,dest_name_parts);
     dest_name_parts.pop_back();
     dest_name = implode(dest_name_parts,deli);
 
-    std::vector<vsx_string> src_name_parts;
+    std::vector <vsx_string<> > src_name_parts;
     explode(src_name,deli,src_name_parts);
     src_name_parts.pop_back();
     dest_name = implode(src_name_parts,deli);
@@ -241,7 +241,7 @@ vsx_engine_param* vsx_engine_param::alias_to_level(vsx_engine_param* dest) {
           if ((*it)->alias_connection) return (*it)->dest->alias_to_level(dest);
         }
 
-        vsx_string new_name = owner->component->parent->get_params_out()->alias_get_unique_name("alias_"+name);
+        vsx_string<>new_name = owner->component->parent->get_params_out()->alias_get_unique_name("alias_"+name);
         owner->component->parent->get_params_out()->alias(this,new_name,-1);
         return owner->component->parent->get_params_out()->get_by_name(new_name)->alias_to_level(dest);
       }
@@ -255,8 +255,8 @@ int vsx_engine_param::connect_far_abs(vsx_engine_param_connection_info* info,int
   // low level link already exists or is not our concern.
   // 1. find out and remove the part of the name that is a common base
   if (owner->io == -1) {
-    vsx_string src_name = info->src->owner->component->name;
-    vsx_string dest_name = owner->component->name;
+    vsx_string<>src_name = info->src->owner->component->name;
+    vsx_string<>dest_name = owner->component->name;
     str_remove_equal_prefix(&src_name, &dest_name, ".");
     if (src_name == "" && info->src->alias) {
       info->src = info->src->alias_parent;
@@ -289,13 +289,13 @@ int vsx_engine_param::connect_far_abs(vsx_engine_param_connection_info* info,int
       }
     }
 
-    vsx_string deli = ".";
-    std::vector<vsx_string> dest_name_parts;
+    vsx_string<>deli = ".";
+    std::vector <vsx_string<> > dest_name_parts;
     explode(dest_name,deli,dest_name_parts);
     dest_name_parts.pop_back();
     dest_name = implode(dest_name_parts,deli);
 
-    std::vector<vsx_string> src_name_parts;
+    std::vector <vsx_string<> > src_name_parts;
     explode(src_name,deli,src_name_parts);
     src_name_parts.pop_back();
     src_name = implode(src_name_parts,deli);
@@ -363,7 +363,7 @@ int vsx_engine_param::connect_far_abs(vsx_engine_param_connection_info* info,int
         our_alias->dest->connect_far_abs(info,neworder,this);
       } else {
         // we need to create this alias
-        vsx_string new_name = owner->component->parent->get_params_in()->alias_get_unique_name("alias_"+name);
+        vsx_string<>new_name = owner->component->parent->get_params_in()->alias_get_unique_name("alias_"+name);
         // we're the first iteration here
         if (order == -1) {
           owner->component->parent->get_params_in()->alias(this,new_name,-1);
@@ -478,7 +478,7 @@ void vsx_engine_param::disconnect_abs_connections() {
 }
 
 
-void vsx_engine_param::dump_aliases(vsx_string base_macro, vsx_command_list* command_result) {
+void vsx_engine_param::dump_aliases(vsx_string<>base_macro, vsx_command_list* command_result) {
   for (std::vector<vsx_engine_param_connection*>::iterator it = connections.begin(); it != connections.end(); ++it) {
     if ((*it)->alias_connection && (*it)->dest->owner->component->name.find(base_macro) == 0)
     {
@@ -520,7 +520,7 @@ void vsx_engine_param::dump_aliases_rc(vsx_command_list* command_result) {
   }
 }
 
-void vsx_engine_param::dump_aliases_and_connections(vsx_string base_macro, vsx_command_list* command_result) {
+void vsx_engine_param::dump_aliases_and_connections(vsx_string<>base_macro, vsx_command_list* command_result) {
   for (std::vector<vsx_engine_param_connection*>::reverse_iterator it = connections.rbegin(); it != connections.rend(); ++it) {
     if ((*it)->alias_connection && (*it)->dest->owner->component->name.find(base_macro) == 0)
     {
@@ -588,7 +588,7 @@ void vsx_engine_param::dump_aliases_and_connections_rc(vsx_command_list* command
 }
 
 
-void vsx_engine_param::dump_connections(vsx_string base_macro, vsx_command_list* command_result)
+void vsx_engine_param::dump_connections(vsx_string<>base_macro, vsx_command_list* command_result)
 {
   for (std::vector<vsx_engine_param_connection*>::iterator it = connections.begin(); it != connections.end(); ++it) {
     if ((*it)->alias_connection && (*it)->dest->owner->component->name.find(base_macro) == 0) {
@@ -720,8 +720,8 @@ vsx_engine_param::~vsx_engine_param() {
 
 
 
-vsx_string vsx_engine_param::get_type_name() {
-  vsx_string a;
+vsx_string<>vsx_engine_param::get_type_name() {
+  vsx_string<>a;
   switch (module_param->type) {
     case VSX_MODULE_PARAM_ID_FLOAT: {
       a = "float";
@@ -738,10 +738,10 @@ vsx_string vsx_engine_param::get_type_name() {
 
 char res[256];
 
-vsx_string vsx_engine_param::get_string()
+vsx_string<>vsx_engine_param::get_string()
 {
   if (alias) return alias_owner->get_string();
-  vsx_string p;
+  vsx_string<>p;
   switch (module_param->type) {
     case VSX_MODULE_PARAM_ID_INT: {
       sprintf(res,"%d",((vsx_module_param_int*)module_param)->param_data_suggestion[0]);
@@ -805,16 +805,16 @@ vsx_string vsx_engine_param::get_string()
       vsx_mesh* m = ((vsx_module_param_mesh*)module_param)->param_data;
       if (m->data)
       sprintf(res,"%d vertices %d faces",(int)m->data->vertices.size(), (int)m->data->faces.size());
-      return vsx_string(res);*/
+      return vsx_string<>(res);*/
     }
   }
   return "";
 }
 
-vsx_string vsx_engine_param::get_default_string()
+vsx_string<>vsx_engine_param::get_default_string()
 {
   if (alias) return alias_owner->get_default_string();
-  vsx_string p;
+  vsx_string<>p;
   switch (module_param->type) {
     case VSX_MODULE_PARAM_ID_INT: {
       sprintf(res,"%d",((vsx_module_param_int*)module_param)->param_data_default[0]);
@@ -863,16 +863,16 @@ vsx_string vsx_engine_param::get_default_string()
       return p;
     }
     case VSX_MODULE_PARAM_ID_STRING: {
-      return vsx_string("");
+      return vsx_string<>("");
     }
     case VSX_MODULE_PARAM_ID_RESOURCE: {
-      return vsx_string("");
+      return vsx_string<>("");
     }
   }
   return "";
 }
 
-void vsx_engine_param::set_string(vsx_string data)
+void vsx_engine_param::set_string(vsx_string<>data)
 {
   if (!data.size()) return;
   switch (module_param->type) {
@@ -890,8 +890,8 @@ void vsx_engine_param::set_string(vsx_string data)
     case VSX_MODULE_PARAM_ID_QUATERNION:
     break;
   }
-  vsx_string deli = ",";
-  std::vector<vsx_string> data_parts;
+  vsx_string<>deli = ",";
+  std::vector <vsx_string<> > data_parts;
   explode(data,deli,data_parts);
   for (size_t i = 0; i < data_parts.size(); i++)
   {
@@ -900,7 +900,7 @@ void vsx_engine_param::set_string(vsx_string data)
 
 }
 
-void vsx_engine_param::set_string_index(vsx_string data, int index) {
+void vsx_engine_param::set_string_index(vsx_string<>data, int index) {
   if (alias) {
     alias_owner->set_string_index(data,index);
     return;
@@ -956,8 +956,8 @@ void vsx_engine_param::set_string_index(vsx_string data, int index) {
         ((vsx_module_param_float_array*)module_param)->param_data[0] = nn;
       }
 
-      vsx_string deli = ";";
-      vsx_avector<vsx_string> parts;
+      vsx_string<>deli = ";";
+      vsx_avector< vsx_string<> > parts;
       explode(data,deli,parts);
       ((vsx_module_param_float_array*)module_param)->param_data[0].data->clear();
       for (unsigned long i = 0; i < parts.size(); ++i) {
@@ -997,7 +997,7 @@ void vsx_engine_param_list::init(vsx_module_param_list* module_param_list) {
   this->module_param_list = module_param_list;
   for (unsigned long i = 0; i < module_param_list->id_vec.size(); ++i) {
     vsx_engine_param* new_param = new vsx_engine_param;
-    vsx_string name = module_param_list->id_vec[i]->name;
+    vsx_string<>name = module_param_list->id_vec[i]->name;
     LOG("initing vepl with "+name)
     param_name_list[name] = new_param;
     param_id_list.push_back(new_param);
@@ -1027,7 +1027,7 @@ void vsx_engine_param_list::delete_param(vsx_engine_param* param) {
   }
 }
 
-void vsx_engine_param_list::dump_aliases(vsx_string base_macro, vsx_command_list* command_result) {
+void vsx_engine_param_list::dump_aliases(vsx_string<>base_macro, vsx_command_list* command_result) {
   for (std::vector<vsx_engine_param*>::iterator it = param_id_list.begin(); it != param_id_list.end(); ++it) {
     (*it)->dump_aliases(base_macro, command_result);
   }
@@ -1041,7 +1041,7 @@ void vsx_engine_param_list::dump_aliases_rc(vsx_command_list* command_result) {
 
 
 
-void vsx_engine_param_list::dump_aliases_and_connections(vsx_string base_macro, vsx_command_list* command_result) {
+void vsx_engine_param_list::dump_aliases_and_connections(vsx_string<>base_macro, vsx_command_list* command_result) {
   for (std::vector<vsx_engine_param*>::iterator it = param_id_list.begin(); it != param_id_list.end(); ++it) {
     (*it)->dump_aliases_and_connections(base_macro, command_result);
   }
@@ -1054,13 +1054,13 @@ void vsx_engine_param_list::dump_aliases_and_connections_rc(vsx_command_list* co
 }
 
 
-void vsx_engine_param_list::dump_connections(vsx_string base_macro, vsx_command_list* command_result) {
+void vsx_engine_param_list::dump_connections(vsx_string<>base_macro, vsx_command_list* command_result) {
   for (std::vector<vsx_engine_param*>::iterator it = param_id_list.begin(); it != param_id_list.end(); ++it) {
     (*it)->dump_connections(base_macro, command_result);
   }
 }
 
-void vsx_engine_param_list::dump_param_values(vsx_string my_name, vsx_command_list* command_result)
+void vsx_engine_param_list::dump_param_values(vsx_string<>my_name, vsx_command_list* command_result)
 {
   for (unsigned long i = 0; i < param_id_list.size(); ++i)
   {
@@ -1070,7 +1070,7 @@ void vsx_engine_param_list::dump_param_values(vsx_string my_name, vsx_command_li
       run = false;
     if (run) {
       vsx_engine_param* param = param_id_list[i];
-      vsx_string pval = param->get_string();
+      vsx_string<>pval = param->get_string();
       if (!param->alias) {
         if (
           pval !=
@@ -1078,9 +1078,9 @@ void vsx_engine_param_list::dump_param_values(vsx_string my_name, vsx_command_li
         )
         {
           if (param->module_param->type == VSX_MODULE_PARAM_ID_STRING) {
-            command_result->add_raw(vsx_string("ps64 ")+my_name+" "+param->name+" "+base64_encode(pval));
+            command_result->add_raw(vsx_string<>("ps64 ")+my_name+" "+param->name+" "+base64_encode(pval));
           } else
-          command_result->add_raw(vsx_string("param_set ")+my_name+" "+param->name+" "+pval);
+          command_result->add_raw(vsx_string<>("param_set ")+my_name+" "+param->name+" "+pval);
         }
       }
       // dump the param vsxl filter as well
@@ -1089,7 +1089,7 @@ void vsx_engine_param_list::dump_param_values(vsx_string my_name, vsx_command_li
       {
         vsx_param_vsxl_driver_abs* driver;
         driver = (vsx_param_vsxl_driver_abs*)((vsx_param_vsxl*)param->module_param->vsxl_modifier)->get_driver();
-        command_result->add_raw(vsx_string("vsxl_pfi ")+my_name+" "+param->name+" "+base64_encode(driver->script));
+        command_result->add_raw(vsx_string<>("vsxl_pfi ")+my_name+" "+param->name+" "+base64_encode(driver->script));
       }
       #endif
     }
@@ -1103,7 +1103,7 @@ void vsx_engine_param_list::get_abs_connections(std::list<vsx_engine_param_conne
   }
 }
 
-int vsx_engine_param_list::alias(vsx_engine_param* src, vsx_string name, int order)
+int vsx_engine_param_list::alias(vsx_engine_param* src, vsx_string<>name, int order)
 {
   // 1. create our param here in our list
   vsx_engine_param* new_param = new vsx_engine_param;
@@ -1195,7 +1195,7 @@ int vsx_engine_param_list::alias(vsx_engine_param* src, vsx_string name, int ord
   return c;
 }
 
-bool vsx_engine_param_list::unalias(vsx_string name)
+bool vsx_engine_param_list::unalias(vsx_string<>name)
 {
   vsx_engine_param* param = get_by_name(name);
   if (param) {
@@ -1211,7 +1211,7 @@ bool vsx_engine_param_list::unalias(vsx_string name)
   return true;
 }
 
-vsx_string vsx_engine_param_list::alias_get_unique_name(vsx_string base_name, int tried) {
+vsx_string<>vsx_engine_param_list::alias_get_unique_name(vsx_string<>base_name, int tried) {
   if (tried == 0) {
     // first run!
     if (param_name_list.find(base_name) == param_name_list.end()) {
@@ -1231,7 +1231,7 @@ vsx_string vsx_engine_param_list::alias_get_unique_name(vsx_string base_name, in
   }
 }
 
-bool vsx_engine_param_list::alias_rename(vsx_string ren_name, vsx_string to_name)
+bool vsx_engine_param_list::alias_rename(vsx_string<>ren_name, vsx_string<>to_name)
 {
   if (!(param_name_list.find(ren_name) != param_name_list.end()))
     return false;
@@ -1252,8 +1252,8 @@ bool vsx_engine_param_list::alias_rename(vsx_string ren_name, vsx_string to_name
 
 void vsx_engine_param_list::disconnect_abs_connections()
 {
-  std::map<vsx_string, vsx_engine_param*> temp_list = param_name_list;
-  for (std::map<vsx_string, vsx_engine_param*>::iterator it = temp_list.begin(); it != temp_list.end(); it++) {
+  std::map<vsx_string<>, vsx_engine_param*> temp_list = param_name_list;
+  for (std::map<vsx_string<>, vsx_engine_param*>::iterator it = temp_list.begin(); it != temp_list.end(); it++) {
     ((*it).second)->disconnect_abs_connections();
   }
 }
@@ -1262,15 +1262,15 @@ void vsx_engine_param_list::disconnect_abs_connections()
 
 void vsx_engine_param_list::unalias_aliased()
 {
-  std::map<vsx_string, vsx_engine_param*> temp_list = param_name_list;
-  for (std::map<vsx_string, vsx_engine_param*>::iterator it = temp_list.begin(); it != temp_list.end(); ++it)
+  std::map<vsx_string<>, vsx_engine_param*> temp_list = param_name_list;
+  for (std::map<vsx_string<>, vsx_engine_param*>::iterator it = temp_list.begin(); it != temp_list.end(); ++it)
   {
     unalias((*it).first);
   }
 }
 
 
-int vsx_engine_param_list::order(vsx_string param, vsx_string new_order)
+int vsx_engine_param_list::order(vsx_string<>param, vsx_string<>new_order)
 {
   vsx_engine_param* my_param = get_by_name(param);
 
@@ -1278,14 +1278,14 @@ int vsx_engine_param_list::order(vsx_string param, vsx_string new_order)
     return -2;
 
   // 0. parse the new_order string that our nice client sent us
-  vsx_string deli = ",";
+  vsx_string<>deli = ",";
   std::vector<int> order_list;
-  std::vector<vsx_string> order_source;
+  std::vector <vsx_string<> > order_source;
   explode(new_order, deli, order_source);
 
   // 1. Re-order our own little connection list
   std::vector<vsx_engine_param_connection*> new_connection_list;
-  for (std::vector<vsx_string>::iterator it = order_source.begin(); it != order_source.end(); ++it)
+  for (std::vector <vsx_string<> >::iterator it = order_source.begin(); it != order_source.end(); ++it)
   {
     new_connection_list.push_back(my_param->connections[ vsx_string_helper::s2i(*it) ]);
   }
@@ -1302,7 +1302,7 @@ int vsx_engine_param_list::order(vsx_string param, vsx_string new_order)
 }
 
 
-vsx_engine_param* vsx_engine_param_list::get_by_name(vsx_string name)
+vsx_engine_param* vsx_engine_param_list::get_by_name(vsx_string<>name)
 {
   if (param_name_list.find(name) != param_name_list.end())
   {
@@ -1311,10 +1311,10 @@ vsx_engine_param* vsx_engine_param_list::get_by_name(vsx_string name)
   return 0;
 }
 
-vsx_string vsx_engine_param_list::get_name_by_param(vsx_engine_param* param)
+vsx_string<>vsx_engine_param_list::get_name_by_param(vsx_engine_param* param)
 {
-  vsx_string h = "";
-  for (std::map<vsx_string, vsx_engine_param*>::iterator it = param_name_list.begin(); it != param_name_list.end(); it++)
+  vsx_string<>h = "";
+  for (std::map<vsx_string<>, vsx_engine_param*>::iterator it = param_name_list.begin(); it != param_name_list.end(); it++)
   {
     if ((*it).second == param) return (*it).first;
   }
@@ -1323,9 +1323,9 @@ vsx_string vsx_engine_param_list::get_name_by_param(vsx_engine_param* param)
 
 
 
-vsx_string vsx_engine_param_list::single_param_spec(vsx_string param_name, int startpos)
+vsx_string<>vsx_engine_param_list::single_param_spec(vsx_string<>param_name, int startpos)
 {
-  vsx_string sin;
+  vsx_string<>sin;
   if (io == 1)
   sin = component->out_param_spec;
   else
@@ -1348,7 +1348,7 @@ vsx_string vsx_engine_param_list::single_param_spec(vsx_string param_name, int s
         sin[loc-1] == '{'
       )
       {
-        vsx_string res = "";
+        vsx_string<>res = "";
         int spos = loc;
         int size = sin.size();
         while (spos < size) {
@@ -1359,11 +1359,11 @@ vsx_string vsx_engine_param_list::single_param_spec(vsx_string param_name, int s
               sin[spos] == '}'
               )
           {
-            std::vector<vsx_string> plist;
-            vsx_string deli = ":";
+            std::vector <vsx_string<> > plist;
+            vsx_string<>deli = ":";
             explode(res, deli, plist,2);
             deli = "[";
-            std::vector<vsx_string> plist2;
+            std::vector <vsx_string<> > plist2;
 
             explode(plist[1], deli, plist2);
             if (plist2[0] == "complex")

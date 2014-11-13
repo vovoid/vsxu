@@ -74,16 +74,16 @@ class vsx_widget_seq_channel : public vsx_widget
   }
 
   vsx_vector3<> passive_mouse_pos;
-  vsx_string passive_time;
-  vsx_string passive_value;
+  vsx_string<>passive_time;
+  vsx_string<>passive_value;
   vsx_vector3<> parentpos;
   std::vector<vsx_widget_param_sequence_item> items; // the actual sequence
   int cur_x, cur_y;
   int scroll_y;
   int num_rows;
   bool edit_mode;
-  vsx_string edit_str;
-  void server_message(vsx_string msg,vsx_string data)
+  vsx_string<>edit_str;
+  void server_message(vsx_string<>msg,vsx_string<>data)
   {
     command_q_b.add_raw(msg+" "+channel_name+" "+param_name+" "+data);
     parent->vsx_command_queue_b(this);
@@ -107,8 +107,8 @@ public:
   bool is_controller; // true if to act as a controller
   vsx_widget_sequence_editor* owner;
   int channel_type; // 0 = parameter, 1 = master
-  vsx_string channel_name; // if master, this is the channel name, if parameter sequence it's the module name
-  vsx_string param_name;   // if master this is "[master]" otherwise the parameter name
+  vsx_string<>channel_name; // if master, this is the channel name, if parameter sequence it's the module name
+  vsx_string<>param_name;   // if master this is "[master]" otherwise the parameter name
   float totalsize;
   float ff;
   float levelstart;
@@ -146,10 +146,10 @@ public:
   void draw_selection_box(float t0, float y0);
 
 
-  void drop_master_channel(vsx_widget_distance distance, vsx_widget_coords coords, vsx_string name);
+  void drop_master_channel(vsx_widget_distance distance, vsx_widget_coords coords, vsx_string<>name);
 
   void set_view_time(float, float);
-  void remove_master_channel_items_with_name(vsx_string name);
+  void remove_master_channel_items_with_name(vsx_string<>name);
 
   vsx_widget_seq_channel()
     :

@@ -30,8 +30,8 @@
 
 typedef struct {
   vsx_module_param_abs* module_param;
-  vsx_string name;
-  vsx_string param_type;
+  vsx_string<>name;
+  vsx_string<>param_type;
   int param_type_id;
   int glsl_id;
   int glsl_type;
@@ -53,8 +53,8 @@ protected:
   vsx_avector<vsx_glsl_type_info> attribute_list;
   
   void process_vars() {
-    std::map<vsx_string,vsx_string> vars;
-    std::map<vsx_string,vsx_string> attributes;
+    std::map<vsx_string<>,vsx_string<> > vars;
+    std::map<vsx_string<>,vsx_string<> > attributes;
 
     int n;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &n);
@@ -63,9 +63,9 @@ protected:
 #endif
     // step 1, clean up multiple spaces etc, stop at '{' as that is
     // the beginning of the shader, no uniforms there
-    vsx_avector<vsx_string> parts;
+    vsx_avector< vsx_string<> > parts;
     bool run = true;
-    vsx_string ts;
+    vsx_string<>ts;
     long i = 0;
     int cs = 0; // comment status, 1 = / found, 2 = 
     while (run && i < (long)(fragment_program.size() - 1)) {
@@ -107,7 +107,7 @@ protected:
     //  printf("f_part: %s\n",parts[i].c_str());
     //}
 
-    //vsx_avector<vsx_string> parts;
+    //vsx_avector< vsx_string<> > parts;
     run = true;
     i = 0;
     cs = 0; // comment status, 1 = / found, 2 =
@@ -157,20 +157,20 @@ protected:
 
 
 
-    vsx_string vtype;
+    vsx_string<>vtype;
     while (i < (long)parts.size()) {
       if (parts[i] == "attribute"/* || parts[i] == "in"*/) {
         ++i;
         vtype = parts[i];
-        vsx_string vp;
+        vsx_string<>vp;
         ++i;
         while (parts[i].find(';') == -1) {
           vp = vp + parts[i];
           ++i;
         }
         vp = vp + parts[i];
-        vsx_avector<vsx_string> pp;
-        vsx_string deli = ',';
+        vsx_avector< vsx_string<> > pp;
+        vsx_string<>deli = ',';
         vp = str_replace(";","",vp);
         explode(vp,deli,pp);
         if (pp.size()) {
@@ -185,15 +185,15 @@ protected:
       if (parts[i] == "uniform") {
         ++i;
         vtype = parts[i];
-        vsx_string vp;
+        vsx_string<>vp;
         ++i;
         while (parts[i].find(';') == -1) {
           vp = vp + parts[i];
           ++i;
         }
         vp = vp + parts[i];
-        vsx_avector<vsx_string> pp;
-        vsx_string deli = ',';
+        vsx_avector< vsx_string<> > pp;
+        vsx_string<>deli = ',';
         vp = str_replace(";","",vp);
         explode(vp,deli,pp);
         if (pp.size()) {
@@ -220,7 +220,7 @@ protected:
 
     for (i = 0; i < num_uniforms; ++i) {
       glGetActiveUniformARB(prog,i,1000,&length,&size,&type,(GLcharARB*)&name);
-      vsx_string sn = name;
+      vsx_string<>sn = name;
       
       if (vars.find(sn) != vars.end()) {
         vsx_glsl_type_info n_info;
@@ -289,7 +289,7 @@ protected:
     #endif
     for (i = 0; i < num_attributes; ++i) {
       glGetActiveAttribARB(prog,i,1000,&length,&size,&type,(GLcharARB*)&name);
-      vsx_string sn = name;
+      vsx_string<>sn = name;
 
       #if (VSXU_DEBUG)
               printf("Trying to find GLSL attribute name in attributes: %s\n",sn.c_str());
@@ -336,11 +336,11 @@ public:
               fs,
               prog;
 
-  vsx_string vertex_program;
-  vsx_string fragment_program;
+  vsx_string<>vertex_program;
+  vsx_string<>fragment_program;
 
-  std::map<vsx_string,vsx_glsl_type_info*> uniform_map;
-  std::map<vsx_string,vsx_glsl_type_info*> attribute_map;
+  std::map<vsx_string<>,vsx_glsl_type_info*> uniform_map;
+  std::map<vsx_string<>,vsx_glsl_type_info*> attribute_map;
 
 
   void init() {
@@ -357,7 +357,7 @@ public:
 
   }
 
-  vsx_string link()
+  vsx_string<>link()
   {
     if (!(GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader)) return "module||Error! No GLSL hardware support!";
     if (linked) {
@@ -435,20 +435,20 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
   	//return "vertex_program||Compilation successful.&&fragment_program||Compilation successful.";
   }
 
-  vsx_string get_log(GLhandleARB handle = 0) {
+  vsx_string<>get_log(GLhandleARB handle = 0) {
     GLcharARB infolog[10000];
     int length;
     if (handle == 0) handle = prog;
     glGetInfoLogARB(handle,10000,&length,(GLcharARB*)(&infolog));
-    //vsx_string aa = infolog;
-    return vsx_string(infolog);
+    //vsx_string<>aa = infolog;
+    return vsx_string<>(infolog);
   }
 
 
-  vsx_string get_param_spec()
+  vsx_string<>get_param_spec()
   {
     if (!linked) return "";
-    vsx_string res = ",uniforms:complex{";
+    vsx_string<>res = ",uniforms:complex{";
     bool first = true;
     for (int i = uniform_list.size()-1; i >= 0; --i) {
 

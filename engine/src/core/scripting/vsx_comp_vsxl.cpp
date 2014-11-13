@@ -48,7 +48,7 @@ class p_info {
 public:
   vsx_module_param_abs* param;
   gmVariable variable;
-  vsx_string name;
+  vsx_string<>name;
   unsigned long id;
 };
 
@@ -58,7 +58,7 @@ class vsx_comp_vsxl_driver : public vsx_comp_vsxl_driver_abs {
 public:
   std::vector<p_info*> p_list;
   gmMachine* machine;
-  void *load(vsx_module_param_list* module_list,vsx_string program);
+  void *load(vsx_module_param_list* module_list,vsx_string<>program);
   void run();
   void unload();
   vsx_comp_vsxl_driver();
@@ -81,7 +81,7 @@ void vsx_comp_vsxl_driver::unload() {
 
 
 // load gaymonkay with new code
-void *vsx_comp_vsxl_driver::load(vsx_module_param_list* module_list,vsx_string program)
+void *vsx_comp_vsxl_driver::load(vsx_module_param_list* module_list,vsx_string<>program)
 {
 #ifndef VSXE_NO_GM
   my_param_list = module_list;
@@ -231,7 +231,7 @@ vsx_comp_vsxl::~vsx_comp_vsxl() {
   unload();
 }
 
-void* vsx_comp_vsxl::load(vsx_module_param_list* module_list, vsx_string program) {
+void* vsx_comp_vsxl::load(vsx_module_param_list* module_list, vsx_string<>program) {
 #ifndef VSXE_NO_GM
   if (!my_driver) {
     my_driver = new vsx_comp_vsxl_driver;

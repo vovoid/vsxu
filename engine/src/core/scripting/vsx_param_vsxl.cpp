@@ -59,7 +59,7 @@ class vsx_param_vsxl_driver_float : public vsx_param_vsxl_driver_abs {
 //	gmVariable vsx_vtime;
 //	gmVariable vsx_dtime;
 public:
-  void *load(vsx_module_param_abs* engine_param, vsx_string program);
+  void *load(vsx_module_param_abs* engine_param, vsx_string<>program);
   void run();
   void unload();
 	vsx_param_vsxl_driver_float() {
@@ -124,7 +124,7 @@ void vsx_param_vsxl_driver_float::unload() {
 }
 
 // load gaymonkay with new code
-void* vsx_param_vsxl_driver_float::load(vsx_module_param_abs* engine_param,vsx_string program) {
+void* vsx_param_vsxl_driver_float::load(vsx_module_param_abs* engine_param,vsx_string<>program) {
 #ifndef VSXE_NO_GM
   //printf("float::load1\n");
   my_param = engine_param;
@@ -258,7 +258,7 @@ void vsx_param_vsxl::unload() {
 }
 
 
-void* vsx_param_vsxl::load(vsx_module_param_abs* engine_param, vsx_string program, int id) {
+void* vsx_param_vsxl::load(vsx_module_param_abs* engine_param, vsx_string<>program, int id) {
 #ifndef VSXE_NO_GM
 //printf("load1\n");
   if (!my_driver) {

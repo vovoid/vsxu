@@ -91,12 +91,12 @@ public:
     // Load JPEG (colour or grayscale)
     bool LoadJPEG
     ( 
-        const vsx_string& strFile, // Load this file
-        vsx_string& strErr, // Returns error text on failure
+        const vsx_string<>& strFile, // Load this file
+        vsx_string<>& strErr, // Returns error text on failure
         vsxf* filesystem
     );
     
-    bool SaveJPEG( const vsx_string & strFile, vsx_string & strErr, const int nQFactor );
+    bool SaveJPEG( const vsx_string<>& strFile, vsx_string<>& strErr, const int nQFactor );
     
     // Get width
     int GetResX( void ) const;

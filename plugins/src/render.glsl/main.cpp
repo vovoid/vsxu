@@ -34,8 +34,8 @@
 
 // stuff for loading pre-defined shaders from the file system
 typedef struct {
-  vsx_string name;
-  vsx_string module_name;
+  vsx_string<>name;
+  vsx_string<>module_name;
 } shader_info;
 
 vsx_avector<shader_info> ext_shaders;
@@ -45,26 +45,26 @@ vsx_avector<unsigned long> init_run; // to keep track of the first time the modu
 
 
 
-void load_shader(vsx_glsl &shader, vsx_string filename)
+void load_shader(vsx_glsl &shader, vsx_string<>filename)
 {
   //printf("loading shader %s\n",filename.c_str());
   FILE* fp = fopen(filename.c_str(), "r");
   if (fp) {
-    vsx_string s;
-    vsx_string vert, frag;
+    vsx_string<>s;
+    vsx_string<>vert, frag;
     char line[4096];
     int state = 0;
     while (fgets(line,4096,fp))
     {
-      if (vsx_string(line).find("*****") != -1) {
+      if (vsx_string<>(line).find("*****") != -1) {
         ++state;
         //printf("*****INCREASING STATE\n");
       } else
       {
         if (!state) {
-          vert = vert + vsx_string(line);
+          vert = vert + vsx_string<>(line);
         } else {
-          frag = frag + vsx_string(line);
+          frag = frag + vsx_string<>(line);
         }
       }
     }
@@ -89,7 +89,7 @@ class vsx_module_glsl : public vsx_module
 
   // internal
   float tax, tay, tbx, tby;
-  std::map<vsx_string, vsx_module_param_abs*> shader_params;
+  std::map<vsx_string<>, vsx_module_param_abs*> shader_params;
   bool first;
   vsx_color<> cm;
   int cc;
@@ -146,7 +146,7 @@ public:
     shader.declare_params(in_parameters);
   }
 
-  void param_set_notify(const vsx_string& name)
+  void param_set_notify(const vsx_string<>& name)
   {
     if ((name == "vertex_program" || name == "fragment_program")) {
       shader.vertex_program = i_vertex_program->get();
@@ -170,7 +170,7 @@ public:
       load_shader(shader,ext_shaders[shader_source-1].name);
     }
 
-    vsx_string h = shader.link();
+    vsx_string<>h = shader.link();
 
     loading_done = true;
     redeclare_in_params(in_parameters);
@@ -259,8 +259,8 @@ unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   // run once when vsxu starts
   init_run.push_back(0);
-  std::list<vsx_string> i_shaders;
-  vsx_string base_path;
+  std::list< vsx_string<> > i_shaders;
+  vsx_string<>base_path;
   if (environment)
   {
     base_path = environment->engine_parameter[0];
@@ -272,23 +272,23 @@ unsigned long MOD_NM(vsx_engine_environment* environment)
   }
 
   unsigned long num_shaders = 0;
-  for (std::list<vsx_string>::iterator it = i_shaders.begin(); it != i_shaders.end(); ++it) {
-    vsx_string filename = *it;
+  for (std::list< vsx_string<> >::iterator it = i_shaders.begin(); it != i_shaders.end(); ++it) {
+    vsx_string<>filename = *it;
     filename = str_replace(base_path, "", filename);
 
     shader_info info;
     info.name = *it;
-    vsx_avector<vsx_string> parts;
+    vsx_avector< vsx_string<> > parts;
 
-    vsx_string deli = "/";
+    vsx_string<>deli = "/";
     explode(filename, deli, parts);
-    vsx_avector<vsx_string> name_result;
+    vsx_avector< vsx_string<> > name_result;
 
     if (parts.size() > 1) {
       for (unsigned long i = 1; i < parts.size(); ++i) {
         name_result.push_back(parts[i]);
       }
-      vsx_string deli_semi = ";";
+      vsx_string<>deli_semi = ";";
       info.module_name = str_replace(".glsl","",implode(name_result, deli_semi));
       ext_shaders.push_back(info);
       ++num_shaders;

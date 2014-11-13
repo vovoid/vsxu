@@ -30,11 +30,11 @@ class vsx_param_sequence_item
 public:
   float accum_time; // the time on wich this row starts
   float total_length; // in seconds (float)
-  vsx_string value;
+  vsx_string<>value;
   int interpolation;
   vsx_vector3<> handle1;
   vsx_vector3<> handle2;
-  vsx_string get_value()
+  vsx_string<>get_value()
   {
     if (interpolation == 4)
     {
@@ -51,7 +51,7 @@ class vsx_param_sequence
   float last_time; // last time we were called, to see if we should trace back
   float line_time; // current line time (accumulated)
   int line_cur; // current line
-  vsx_string cur_val, to_val;
+  vsx_string<>cur_val, to_val;
   float cur_delay;
   int cur_interpolation;
   float total_time;
@@ -71,13 +71,13 @@ public:
 
   void set_time(float stime);
   void execute(float ptime, float blend = 1.0f); // returns command if available
-  void update_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
-  void insert_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
-  void remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix = "");
+  void update_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix = "");
+  void insert_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix = "");
+  void remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix = "");
   void rescale_time(float start, float scale);
   float calculate_total_time(bool no_cache = false);
-  vsx_string dump();
-  void inject(vsx_string ij);
+  vsx_string<>dump();
+  void inject(vsx_string<>ij);
   vsx_param_sequence();
   vsx_param_sequence(int p_type,vsx_engine_param* param);
   // no copy constructor needed

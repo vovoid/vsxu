@@ -43,7 +43,7 @@ class OpenGLWindow
 
 public:
   long screen_id;
-  vsx_string classname;
+  vsx_string<>classname;
   bool active;
   bool fullscreen;
   bool receive_messages;
@@ -140,7 +140,7 @@ public:
     }
   }
 
-  BOOL Create(vsx_string className, char* title, int x, int y, int width, int height, int bits, int refreshrate, bool fullscreenflag, WNDPROC WndProc, Display my_display)
+  BOOL Create(vsx_string<>className, char* title, int x, int y, int width, int height, int bits, int refreshrate, bool fullscreenflag, WNDPROC WndProc, Display my_display)
   {
     classname = className;
     //printf("classname pointer: %d\n",classname);
@@ -427,7 +427,7 @@ vector<DisplayMode> pmd;
 int primary_display = -1;
 int num_displays = 0;
 
-void add_window(bool full, vsx_string name, int screen, int display = -1) {
+void add_window(bool full, vsx_string<>name, int screen, int display = -1) {
   OpenGLWindow* gl_ = new OpenGLWindow;
   //printf("gl_ pointer: %d\n",gl_);
   if (!full)
@@ -480,7 +480,7 @@ int main(int argc, char* argv[])
   printf("\n\n");
   bool enumd = false;
   if (argc > 1)
-  if (vsx_string(argv[1]) == "-help") {
+  if (vsx_string<>(argv[1]) == "-help") {
 printf("VSXu command line syntax:\n\
  -enum      shows available displays - id's from 0 and up\n\
  -main [id] main display (default: your primary display)\n\
@@ -490,17 +490,17 @@ printf("VSXu command line syntax:\n\
 ");
 
   } else
-    if (vsx_string(argv[1]) == "-dr")
+    if (vsx_string<>(argv[1]) == "-dr")
   {
     disable_randomizer = true;
   } else
-  if (vsx_string(argv[1]) == "-enum") {
+  if (vsx_string<>(argv[1]) == "-enum") {
     enumd = true;
   } else {
     for (int i = 1; i < argc; ++i) {
-      if (vsx_string(argv[i]) == "-main" && i+1 < argc) gui_monitor = atoi(argv[++i]);
+      if (vsx_string<>(argv[i]) == "-main" && i+1 < argc) gui_monitor = atoi(argv[++i]);
       else
-      if (vsx_string(argv[i]) == "-out" && i+1 < argc) out_monitor = atoi(argv[++i]);
+      if (vsx_string<>(argv[i]) == "-out" && i+1 < argc) out_monitor = atoi(argv[++i]);
     }
   }
 
@@ -512,7 +512,7 @@ printf("VSXu command line syntax:\n\
   myscreens = EnumerateDisplays();
   app_set_fullscreen = &set_fullscreen;
   app_get_fullscreen = &get_fullscreen;
-  vsx_string enumd_message;
+  vsx_string<>enumd_message;
 #ifdef VSXU_MULTIMONITOR
 
   if (enumd) enumd_message = "-----------------------------------------------------------------\n\

@@ -53,7 +53,7 @@
 
 vsx_command_list_server cl_server;
 // global vars
-vsx_string fpsstring = "VSX Ultra "+vsx_string(vsxu_version)+" - 2010 Vovoid";
+vsx_string<>fpsstring = "VSX Ultra "+vsx_string<>(vsxu_version)+" - 2010 Vovoid";
 vsx_engine* vxe = 0;
 vsx_module_list_abs* module_list;
 
@@ -127,7 +127,7 @@ void app_pre_draw() {
 class vsxu_draw {
 public:
 	bool first;
-	vsx_string current_fps;
+	vsx_string<>current_fps;
 	vsx_timer gui_t;
 	int frame_count;
   int movie_frame_count;
@@ -161,7 +161,7 @@ public:
 	    gui_fullscreen_fpstimer += gui_f_time;
 	      current_fps = vsx_string_helper::f2s(round(1.0f/gui_f_time),2);
 	    if (gui_fullscreen_fpstimer > 1) {
-	      vsx_string h = fpsstring + " @ "+ current_fps+ "fps";
+	      vsx_string<>h = fpsstring + " @ "+ current_fps+ "fps";
 	      gui_fullscreen_fpstimer = 0;
 	    }
 

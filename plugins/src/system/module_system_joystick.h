@@ -58,7 +58,7 @@ public:
     {
       joystick_info ji;
       if (joysticks[i].joy_fd == -2) // uninitialized!
-      if ( ( ji.joy_fd = open( (vsx_string(JOY_DEV)+vsx_string_helper::i2s(i)).c_str() , O_RDONLY)) != -1 )
+      if ( ( ji.joy_fd = open( (vsx_string<>(JOY_DEV)+vsx_string_helper::i2s(i)).c_str() , O_RDONLY)) != -1 )
       {
         // enumerate joystick
         fcntl( ji.joy_fd, F_SETFL, O_NONBLOCK );
@@ -127,14 +127,14 @@ public:
       joysticks[j].axis = (int *) calloc( joysticks[j].num_of_axis, sizeof( int ) );
       joysticks[j].button = (char *) calloc( joysticks[j].num_of_buttons, sizeof( char ) );
 
-      joysticks[j].name = (vsx_module_param_string*)out_parameters.create(VSX_MODULE_PARAM_ID_STRING, vsx_string("j_"+vsx_string_helper::i2s(j)+"_name").c_str());
-      joysticks[j].name->set(vsx_string(joysticks[j].name_of_joystick));
+      joysticks[j].name = (vsx_module_param_string*)out_parameters.create(VSX_MODULE_PARAM_ID_STRING, vsx_string<>("j_"+vsx_string_helper::i2s(j)+"_name").c_str());
+      joysticks[j].name->set(vsx_string<>(joysticks[j].name_of_joystick));
       for (int i = 0; i < joysticks[j].num_of_buttons; i++) {
-        joysticks[j].buttons[i] = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,(vsx_string("j_"+vsx_string_helper::i2s(j)+"_button")+vsx_string_helper::i2s(i)).c_str());
+        joysticks[j].buttons[i] = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,(vsx_string<>("j_"+vsx_string_helper::i2s(j)+"_button")+vsx_string_helper::i2s(i)).c_str());
         joysticks[j].buttons[i]->set(0.0f);
       }
       for (int i = 0; i < joysticks[j].num_of_axis; i++) {
-        joysticks[j].axes[i] = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,(vsx_string("j_"+vsx_string_helper::i2s(j)+"_axis")+vsx_string_helper::i2s(i)).c_str());
+        joysticks[j].axes[i] = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,(vsx_string<>("j_"+vsx_string_helper::i2s(j)+"_axis")+vsx_string_helper::i2s(i)).c_str());
         joysticks[j].axes[i]->set(0.0f);
       }
     }

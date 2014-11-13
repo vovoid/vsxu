@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
   bool manual_resolution_set = false;
   for (int i = 1; i < argc; i++)
   {
-    vsx_string arg1 = argv[i];
+    vsx_string<>arg1 = argv[i];
     if (arg1 == "--help" || arg1 == "/?" || arg1 == "-help" || arg1 == "-?")
     {
       printf(
@@ -194,9 +194,9 @@ int main(int argc, char* argv[])
       if (i+1 < argc)
       {
         i++;
-        vsx_string arg2 = argv[i];
-        vsx_avector<vsx_string> parts;
-        vsx_string deli = ",";
+        vsx_string<>arg2 = argv[i];
+        vsx_avector< vsx_string<> > parts;
+        vsx_string<>deli = ",";
         explode(arg2, deli, parts);
         if (parts.size() == 2)
         {
@@ -243,14 +243,14 @@ int main(int argc, char* argv[])
   glfwEnable(GLFW_AUTO_POLL_EVENTS);
 
   for (int i = 1; i < argc; i++) {
-    vsx_string arg1 = argv[i];
+    vsx_string<>arg1 = argv[i];
     if (arg1 == "-p") {
       if (i+1 < argc)
       {
         i++;
-        vsx_string arg2 = argv[i];
-        vsx_avector<vsx_string> parts;
-        vsx_string deli = ",";
+        vsx_string<>arg2 = argv[i];
+        vsx_avector< vsx_string<> > parts;
+        vsx_string<>deli = ",";
         explode(arg2, deli, parts);
         glfwSetWindowPos( vsx_string_helper::s2i(parts[0]), vsx_string_helper::s2i(parts[1]) );
       }

@@ -20,7 +20,7 @@ public:
     filesystem = n;
   }
 
-  void load_filename(vsx_string filename)
+  void load_filename(vsx_string<>filename)
   {
     if (!filesystem)
       return;

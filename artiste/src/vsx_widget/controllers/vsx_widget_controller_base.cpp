@@ -88,7 +88,7 @@ void vsx_widget_controller_base::init()
   //cout << "param spec: " << in_param_spec << endl;
   //printf("in param spec: %s\n",in_param_spec.c_str());
   if (param_spec)
-  for (map<vsx_string,vsx_string>::iterator it = param_spec->begin(); it != param_spec->end(); ++it)
+  for (map<vsx_string<>,vsx_string<> >::iterator it = param_spec->begin(); it != param_spec->end(); ++it)
   {
     get_in_param_spec((*it));
   }
@@ -136,7 +136,7 @@ void vsx_widget_controller_base::get_value()
   }
 }
 
-void vsx_widget_controller_base::get_in_param_spec(pair<vsx_string,vsx_string> parampair)
+void vsx_widget_controller_base::get_in_param_spec(pair<vsx_string<>,vsx_string<> > parampair)
 {
     if (parampair.first=="param") target_param=parampair.second;
     if (parampair.first=="pos_x") pos.x=vsx_string_helper::s2f(parampair.second)*sizeunit;

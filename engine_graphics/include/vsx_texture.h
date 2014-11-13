@@ -55,7 +55,7 @@ public:
   pthread_t					worker_t;
   pthread_attr_t		worker_t_attr;
   //vsx_bitmap        bitmap;
-  vsx_string        filename;
+  vsx_string<>       filename;
   bool              mipmaps;
 
   vsx_texture_load_thread_info()
@@ -84,7 +84,7 @@ public:
 
 class vsx_texture
 {
-  static std::map<vsx_string, vsx_texture_glist_holder> t_glist;
+  static std::map<vsx_string<>, vsx_texture_glist_holder> t_glist;
 
   GLint prev_buf;
 
@@ -119,8 +119,8 @@ class vsx_texture
 
 
   bool loaded_from_glist;
-  bool load_from_glist_deferred(vsx_string fname);
-  void add_to_glist_deferred(vsx_string fname);
+  bool load_from_glist_deferred(vsx_string<>fname);
+  void add_to_glist_deferred(vsx_string<>fname);
 
 public:
 
@@ -134,7 +134,7 @@ public:
   bool is_glist_alias;
 
   // name of the texture
-  vsx_string name;
+  vsx_string<>name;
 
   // is this valid for binding:
   bool valid;
@@ -245,10 +245,10 @@ public:
   VSX_ENGINE_GRAPHICS_DLLIMPORT GLuint get_depth_buffer_handle();
 
   // load a png in the same thread as ours. These can be called outside from a GL Context (deferred loading)
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png(vsx_string fname, bool mipmaps, vsxf* filesystem);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png_thread(vsx_string fname, bool mipmaps, vsxf* filesystem);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_jpeg(vsx_string fname, bool mipmaps = true);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png_cubemap(vsx_string fname, bool mipmaps = true, vsxf* filesystem = 0x0);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png(vsx_string<>fname, bool mipmaps, vsxf* filesystem);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png_thread(vsx_string<>fname, bool mipmaps, vsxf* filesystem);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_jpeg(vsx_string<>fname, bool mipmaps = true);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png_cubemap(vsx_string<>fname, bool mipmaps = true, vsxf* filesystem = 0x0);
 
   // General texture functions-------------------------------------------------
   // allocate an openGL texture ID

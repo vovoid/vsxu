@@ -79,13 +79,13 @@ vsxf::vsxf()
 }
 
 
-void vsxf::set_base_path(vsx_string new_base_path)
+void vsxf::set_base_path(vsx_string<>new_base_path)
 {
   base_path = new_base_path;
 }
 
 
-vsx_string vsxf::get_base_path()
+vsx_string<>vsxf::get_base_path()
 {
   return base_path;
 }
@@ -132,10 +132,10 @@ void vsxf::archive_close()
 
 int vsxf::archive_add_file
 (
-  vsx_string filename,
+  vsx_string<>filename,
   char* data,
   uint32_t data_size,
-  vsx_string disk_filename
+  vsx_string<>disk_filename
 )
 {
   if (!archive_handle)
@@ -149,7 +149,7 @@ int vsxf::archive_add_file
     ++i;
   }
 
-  vsx_string fopen_filename = filename;
+  vsx_string<>fopen_filename = filename;
   if (disk_filename != "")
     fopen_filename = disk_filename;
 
@@ -232,7 +232,7 @@ int vsxf::archive_load(const char* filename, bool preload_compressed_data)
   if (!fread(header,sizeof(char),4,archive_handle))
     VSX_ERROR_RETURN_V("VSXz Reading header size with fread failed!",2);
 
-  vsx_string hs(header);
+  vsx_string<>hs(header);
   if (hs != "VSXz")
     VSX_ERROR_RETURN_V("VSXz tag is wrong",2);
 
@@ -240,7 +240,7 @@ int vsxf::archive_load(const char* filename, bool preload_compressed_data)
   {
     char read_char;
 
-    vsx_string filebuf_name;
+    vsx_string<>filebuf_name;
     while ((read_char = fgetc(archive_handle)) != 0)
       filebuf_name.push_back(read_char);
 
@@ -283,7 +283,7 @@ bool vsxf::is_file(const char* filename)
 {
   if (is_archive())
   {
-    vsx_string s(filename);
+    vsx_string<>s(filename);
     for (size_t i = 0; i < archive_files.size(); i++)
     {
       if (archive_files[i].filename == s)
@@ -305,7 +305,7 @@ bool vsxf::is_file(const char* filename)
 }
 
 
-bool vsxf::is_file(const vsx_string filename)
+bool vsxf::is_file(const vsx_string<>filename)
 {
 
   if (is_archive())
@@ -416,7 +416,7 @@ void vsxf::archive_load_all_mt(const char* filename)
 
 vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
 {
-  vsx_string i_filename(filename);
+  vsx_string<>i_filename(filename);
 
   // sanity check
   if (!i_filename.size())
@@ -455,11 +455,11 @@ vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
   if (!archive_handle)
     VSX_ERROR_RETURN_V("archive handle not valid",0x0);
 
-  vsx_string mode_search(mode);
+  vsx_string<>mode_search(mode);
   if (mode_search.find("r") != -1)
   {
     bool found = false;
-    vsx_string fname(filename);
+    vsx_string<>fname(filename);
     unsigned long i = 0;
     while (!found && i < archive_files.size())
     {
@@ -713,17 +713,17 @@ void create_directory(const char* path)
 #endif
 }
 
-vsx_string get_path_from_filename(vsx_string filename)
+vsx_string<>get_path_from_filename(vsx_string<>filename)
 {
-	vsx_string deli = "/";
-	std::vector<vsx_string> results;
+	vsx_string<>deli = "/";
+	std::vector <vsx_string<> > results;
 	explode(filename, deli, results);
 	results.pop_back();
 	return implode(results, deli);
 }
 
 
-vsx_string vsx_get_directory_separator()
+vsx_string<>vsx_get_directory_separator()
 {
-  return vsx_string(DIRECTORY_SEPARATOR);
+  return vsx_string<>(DIRECTORY_SEPARATOR);
 }

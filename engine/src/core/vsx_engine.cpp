@@ -115,12 +115,12 @@ int vsx_engine::get_engine_state()
   return current_state;
 }
 
-vsx_string vsx_engine::get_meta_information()
+vsx_string<>vsx_engine::get_meta_information()
 {
   return meta_information;
 }
 
-vsx_string vsx_engine::get_meta_information(size_t index)
+vsx_string<>vsx_engine::get_meta_information(size_t index)
 {
   if (index >= meta_fields.size())
     return "";
@@ -204,7 +204,7 @@ void vsx_engine::reset_time()
   g_timer.start();
 }
 
-vsx_module_param_abs* vsx_engine::get_in_param_by_name(vsx_string module_name, vsx_string param_name)
+vsx_module_param_abs* vsx_engine::get_in_param_by_name(vsx_string<>module_name, vsx_string<>param_name)
 {
   if (!valid)
     return 0x0;
@@ -241,7 +241,7 @@ unsigned long vsx_engine::get_num_modules()
   return forge.size();
 }
 
-vsx_comp* vsx_engine::get_component_by_name(vsx_string label)
+vsx_comp* vsx_engine::get_component_by_name(vsx_string<>label)
 {
   if (forge_map.find(label) != forge_map.end())
   {
@@ -256,7 +256,7 @@ vsx_comp* vsx_engine::get_by_id(unsigned long id)
 }
 
 
-vsx_module* vsx_engine::get_module_by_name(vsx_string module_name)
+vsx_module* vsx_engine::get_module_by_name(vsx_string<>module_name)
 {
   if (forge_map.find(module_name) != forge_map.end())
   {
@@ -265,9 +265,9 @@ vsx_module* vsx_engine::get_module_by_name(vsx_string module_name)
   return 0x0;
 }
 
-vsx_string vsx_engine::get_modules_not_loaded()
+vsx_string<>vsx_engine::get_modules_not_loaded()
 {
-  vsx_string res;
+  vsx_string<>res;
   for (vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
     if ((*it)->module) {
       if (!(*it)->module->loading_done) {
@@ -290,7 +290,7 @@ void vsx_engine::input_event(vsx_engine_input_event &new_input_event)
 }
 
 
-int vsx_engine::load_state(vsx_string filename, vsx_string *error_string)
+int vsx_engine::load_state(vsx_string<>filename, vsx_string<>*error_string)
 {
   if (!valid) return 2;
   filesystem.set_base_path("");
@@ -302,7 +302,7 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string)
 
   vsx_command_list load1;
   load1.set_filesystem(&filesystem);
-  vsx_string i_filename = filename;
+  vsx_string<>i_filename = filename;
 
   bool is_archive = false;
   if (filename.size() >= 4) {
@@ -329,7 +329,7 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string)
 }
 
 
-int vsx_engine::load_state_filesystem(vsx_string filename, vsx_string *error_string, vsxf* fs)
+int vsx_engine::load_state_filesystem(vsx_string<>filename, vsx_string<>*error_string, vsxf* fs)
 {
   if (!valid)
     return 2;
@@ -672,7 +672,7 @@ bool vsx_engine::render()
             vsx_module_info foom;
             (*it)->module->module_info(&foom);
 
-            LOG3(vsx_string("waiting for module: ")+foom.identifier+" with name: "+(*it)->name);
+            LOG3(vsx_string<>("waiting for module: ")+foom.identifier+" with name: "+(*it)->name);
 
             ++modules_left_to_load;
           } else
@@ -745,7 +745,7 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
   //---------------------------------------
   double total_time = 0.0;
 
-  #define FAIL(header, message) 	cmd_out->add_raw(vsx_string("alert_fail ")+base64_encode(#header)+" Error "+base64_encode(#message))
+  #define FAIL(header, message) 	cmd_out->add_raw(vsx_string<>("alert_fail ")+base64_encode(#header)+" Error "+base64_encode(#message))
 
   vsx_command_timer.start();
 

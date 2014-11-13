@@ -37,7 +37,7 @@ public:
   input_video_file();
   void module_info(vsx_module_info* info);
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters);
-  void param_set_notify(const vsx_string& name);
+  void param_set_notify(const vsx_string<>& name);
 };
 
 #endif // INPUT_VIDEO_FILE_H

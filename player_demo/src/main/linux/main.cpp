@@ -136,7 +136,7 @@ int main(int argc, char* argv[])
   int x_res = 1280;
   int y_res = 720;
   for (int i = 1; i < argc; i++) {
-    vsx_string arg1 = argv[i];
+    vsx_string<>arg1 = argv[i];
     if (arg1 == "--help")
     {
       printf(
@@ -157,9 +157,9 @@ int main(int argc, char* argv[])
       if (i+1 < argc)
       {
         i++;
-        vsx_string arg2 = argv[i];
-        vsx_avector<vsx_string> parts;
-        vsx_string deli = ",";
+        vsx_string<>arg2 = argv[i];
+        vsx_avector< vsx_string<> > parts;
+        vsx_string<>deli = ",";
         explode(arg2, deli, parts);
         x_res = s2i(parts[0]);
         y_res = s2i(parts[1]);
@@ -179,14 +179,14 @@ int main(int argc, char* argv[])
   app_init(0);
   glfwEnable(GLFW_AUTO_POLL_EVENTS);
   for (int i = 1; i < argc; i++) {
-    vsx_string arg1 = argv[i];
+    vsx_string<>arg1 = argv[i];
     if (arg1 == "-p") {
       if (i+1 < argc)
       {
         i++;
-        vsx_string arg2 = argv[i];
-        vsx_avector<vsx_string> parts;
-        vsx_string deli = ",";
+        vsx_string<>arg2 = argv[i];
+        vsx_avector< vsx_string<> > parts;
+        vsx_string<>deli = ",";
         explode(arg2, deli, parts);
         glfwSetWindowPos(s2i(parts[0]), s2i(parts[1]));
       }

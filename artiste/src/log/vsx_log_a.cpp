@@ -28,10 +28,10 @@
 #include "vsx_log_a.h"
 
 int log_level = 1;
-vsx_string log_dir;
+vsx_string<>log_dir;
 int a_first = 1; 
 
-void log_a(vsx_string message, int level)
+void log_a(vsx_string<>message, int level)
 {
 	if (log_level < level) return;
 	FILE* fpo = 0;

@@ -28,21 +28,21 @@
 
 
 class vsx_module_chooser_list : public vsx_widget_window {
-  vsx_string i_hint;
+  vsx_string<>i_hint;
   vsx_widget *widget_list;
   vsx_widget *widget_search;
   
-  std::vector<vsx_string> i_rows;
+  std::vector <vsx_string<> > i_rows;
 
 public:
   void command_process_back_queue(vsx_command_s *t);
   
-  void show(vsx_string value);
+  void show(vsx_string<>value);
   void show();
   void init() {}
   void i_draw();
 	bool event_key_down(signed long key, bool alt = false, bool ctrl = false, bool shift = false);
-	void add_item(vsx_string name,vsx_module_info* m_info);
+	void add_item(vsx_string<>name,vsx_module_info* m_info);
 	void build_tree();
 	void set_server(vsx_widget* serv);
   vsx_module_chooser_list();

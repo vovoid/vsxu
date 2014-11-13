@@ -272,30 +272,30 @@ float vsx_param_sequence::calculate_total_time(bool no_cache)
   return total_time;
 }
 
-vsx_string vsx_param_sequence::dump()
+vsx_string<>vsx_param_sequence::dump()
 {
-  vsx_string res = "";
-  std::list<vsx_string> ml;
+  vsx_string<>res = "";
+  std::list< vsx_string<> > ml;
   for (std::vector<vsx_param_sequence_item>::iterator it = items.begin(); it != items.end(); ++it)
   {
     //printf("adding dumpstring: %s\n",(vsx_string_helper::f2s((*it).delay)+";"+vsx_string_helper::f2s((*it).interpolation)+";"+base64_encode((*it).value)).c_str());
     ml.push_back(vsx_string_helper::f2s((*it).total_length)+";"+vsx_string_helper::i2s((*it).interpolation)+";"+base64_encode((*it).get_value()));
   }
-  vsx_string deli = "|";
+  vsx_string<>deli = "|";
   res = implode(ml, deli);
   return res;
 }
 
-void vsx_param_sequence::inject(vsx_string ij)
+void vsx_param_sequence::inject(vsx_string<>ij)
 {
 	total_time = 0.0f; // reset total time for re-calculation
   items.clear();
-  vsx_string deli = "|";
-  std::list<vsx_string> pl;
+  vsx_string<>deli = "|";
+  std::list< vsx_string<> > pl;
   explode(ij, deli, pl);
-  for (std::list<vsx_string>::iterator it = pl.begin(); it != pl.end(); ++it) {
-    std::vector<vsx_string> pld;
-    vsx_string pdeli = ";";
+  for (std::list< vsx_string<> >::iterator it = pl.begin(); it != pl.end(); ++it) {
+    std::vector <vsx_string<> > pld;
+    vsx_string<>pdeli = ";";
     explode((*it),pdeli,pld);
     vsx_param_sequence_item pa;
     pa.total_length = vsx_string_helper::s2f(pld[0]);
@@ -304,9 +304,9 @@ void vsx_param_sequence::inject(vsx_string ij)
       pa.value = base64_decode(pld[2]);
     } else
     if (pa.interpolation == 4) {
-      std::vector<vsx_string> pld_l;
-      vsx_string pdeli_l = ":";
-      vsx_string vtemp = base64_decode(pld[2]);
+      std::vector <vsx_string<> > pld_l;
+      vsx_string<>pdeli_l = ":";
+      vsx_string<>vtemp = base64_decode(pld[2]);
       //printf("value: %s\n",vtemp.c_str());
       explode(vtemp,pdeli_l,pld_l);
       pa.value = pld_l[0];
@@ -391,7 +391,7 @@ vsx_param_sequence::vsx_param_sequence()
   cur_delay = 0.0f;
 }
 
-void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix)
 {
   VSX_UNUSED(dest);
   VSX_UNUSED(cmd_prefix);
@@ -409,9 +409,9 @@ void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_
   }
   else
   if (pa.interpolation == 4) {
-    std::vector<vsx_string> pld_l;
-    vsx_string pdeli_l = ":";
-    vsx_string vtemp = base64_decode(cmd_in->parts[4]);
+    std::vector <vsx_string<> > pld_l;
+    vsx_string<>pdeli_l = ":";
+    vsx_string<>vtemp = base64_decode(cmd_in->parts[4]);
     //printf("value: %s\n",vtemp.c_str());
     explode(vtemp,pdeli_l,pld_l);
     pa.value = pld_l[0];
@@ -429,7 +429,7 @@ void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_
   //printf("pseql_r a %s\n",cmd_in->parts[4].c_str());
 }
 
-void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix)
 {
 	total_time = 0.0f; // reset total time for re-calculation
   //printf("INSERT_LINE in engine %s\n",cmd_in->raw.c_str());
@@ -461,9 +461,9 @@ void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_
       pa.value = base64_decode(cmd_in->parts[4]);
     } else
     if (pa.interpolation == 4) {
-      std::vector<vsx_string> pld_l;
-      vsx_string pdeli_l = ":";
-      vsx_string vtemp = base64_decode(cmd_in->parts[4]);
+      std::vector <vsx_string<> > pld_l;
+      vsx_string<>pdeli_l = ":";
+      vsx_string<>vtemp = base64_decode(cmd_in->parts[4]);
       //printf("value: %s\n",vtemp.c_str());
       explode(vtemp,pdeli_l,pld_l);
       pa.value = pld_l[0];
@@ -483,13 +483,13 @@ void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_
   //printf("pseql_r insert %s\n",base64_decode(cmd_in->parts[4]).c_str());
 }
 
-void vsx_param_sequence::remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string cmd_prefix)
+void vsx_param_sequence::remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix)
 {
   /*
   float last_time; // last time we were called, to see if we should trace back
   float line_time; // current line time (accumulated)
   int line_cur; // current line
-  vsx_string cur_val, to_val;
+  vsx_string<>cur_val, to_val;
   float cur_delay;
   int cur_interpolation;
   float total_time;

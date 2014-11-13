@@ -10,8 +10,8 @@ class module_system_file_chooser : public vsx_module
 
   // internal
   int p_updates;
-  vsx_avector<vsx_string> files_list;
-  vsx_string old_path;
+  vsx_avector< vsx_string<> > files_list;
+  vsx_string<>old_path;
 
 public:
 
@@ -64,14 +64,14 @@ public:
         if (old_path != directory_path->get())
         {
           old_path = directory_path->get();
-          std::list<vsx_string> files;
+          std::list< vsx_string<> > files;
           //vsxfst tt;
-          vsx_string engine_resources_base_path = engine->filesystem->get_base_path();
+          vsx_string<>engine_resources_base_path = engine->filesystem->get_base_path();
 
           get_files_recursive(engine_resources_base_path + DIRECTORY_SEPARATOR + directory_path->get(), &files);
 
           files_list.reset_used(0);
-          for (std::list<vsx_string>::iterator it = files.begin(); it != files.end(); ++it)
+          for (std::list< vsx_string<> >::iterator it = files.begin(); it != files.end(); ++it)
           {
             if ((*it).find(".svn/") == -1)
             {

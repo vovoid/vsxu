@@ -60,7 +60,7 @@
 
 class vsxf_handle {
 public:
-  vsx_string filename;
+  vsx_string<> filename;
   size_t position;   // position in the data stream
   size_t size;       // size of the data stream in bytes
   int mode;        // 0 = undefined,  1 = read, 2 = write
@@ -107,7 +107,7 @@ class vsxf_archive_info {
 
 public:
 
-  vsx_string filename;
+  vsx_string<> filename;
   size_t archive_position;
   size_t compressed_size;
   void* uncompressed_data;
@@ -158,9 +158,9 @@ class ENGINE_DLLIMPORT vsxf {
   vsx_avector<vsxf_archive_info> archive_files;
   int type; // 0 = regular filesystem, 1 = archive
   FILE* archive_handle;
-  vsx_string archive_name;
+  vsx_string<> archive_name;
   // base path for opening file system files
-  vsx_string base_path;
+  vsx_string<> base_path;
 
   pthread_mutex_t mutex1;
 
@@ -174,21 +174,21 @@ class ENGINE_DLLIMPORT vsxf {
 public:
   vsxf();
   vsxf(const vsxf& f);
-  void set_base_path(vsx_string new_base_path);
-  vsx_string get_base_path();
+  void set_base_path(vsx_string<> new_base_path);
+  vsx_string<> get_base_path();
   vsx_avector<vsxf_archive_info>* get_archive_files();
   int archive_load(const char* filename, bool preload_compressed_data = true);
   void archive_load_all_mt(const char* filename);
   void archive_create(const char* filename);
   void archive_close();
-  int archive_add_file(vsx_string filename, char* data = 0, uint32_t data_size = 0, vsx_string disk_filename = "");
+  int archive_add_file(vsx_string<> filename, char* data = 0, uint32_t data_size = 0, vsx_string<> disk_filename = "");
   bool is_archive();
   bool is_archive_populated();
 
   static void* worker(void* p);
 
   bool          is_file(const char* filename);
-  bool          is_file(const vsx_string filename);
+  bool          is_file(const vsx_string<> filename);
   vsxf_handle*  f_open(const char* filename, const char* mode);
   void          f_close(vsxf_handle* handle);  
   int           f_puts(const char* buf, vsxf_handle* handle);
@@ -198,16 +198,16 @@ public:
   unsigned long f_get_size(vsxf_handle* handle);
 };
 
-ENGINE_DLLIMPORT bool verify_filesuffix(vsx_string& input, const char* type);
+ENGINE_DLLIMPORT bool verify_filesuffix(vsx_string<>& input, const char* type);
 ENGINE_DLLIMPORT void create_directory(const char* path);
 ENGINE_DLLIMPORT void get_files_recursive(
-    vsx_string startpos,
-    std::list<vsx_string>* filenames,
-    vsx_string include_filter = "",
-    vsx_string exclude_filter = "",
-    vsx_string dir_ignore_token = ".vsx_hidden"
+    vsx_string<> startpos,
+    std::list< vsx_string<> >* filenames,
+    vsx_string<> include_filter = "",
+    vsx_string<> exclude_filter = "",
+    vsx_string<> dir_ignore_token = ".vsx_hidden"
     );
-ENGINE_DLLIMPORT vsx_string get_path_from_filename(vsx_string filename);
+ENGINE_DLLIMPORT vsx_string<> get_path_from_filename(vsx_string<> filename);
 
 
 // STRING OPERATIONS
@@ -218,27 +218,27 @@ ENGINE_DLLIMPORT bool crlf(char *buffer,int len);
 #define STR_PAD_RIGHT 1
 #define STR_PAD_OVERFLOW_LEFT 0
 #define STR_PAD_OVERFLOW_RIGHT 1
-ENGINE_DLLIMPORT vsx_string str_pad(const vsx_string& str, const vsx_string& chr, size_t t_len, int pad_type = STR_PAD_LEFT,int overflow_adjust = STR_PAD_OVERFLOW_RIGHT);
+ENGINE_DLLIMPORT vsx_string<> str_pad(const vsx_string<>& str, const vsx_string<>& chr, size_t t_len, int pad_type = STR_PAD_LEFT,int overflow_adjust = STR_PAD_OVERFLOW_RIGHT);
 
 // this function replaces only one item per token. 
-ENGINE_DLLIMPORT vsx_string str_replace(vsx_string search, vsx_string replace, vsx_string subject, int max_replacements = 0, int required_pos = -1);
-ENGINE_DLLIMPORT const vsx_string str_replace_char_pad(vsx_string search, vsx_string replace, vsx_string subject, vsx_string subject_r, int max_replacements = 0, int required_pos = -1);
+ENGINE_DLLIMPORT vsx_string<> str_replace(vsx_string<> search, vsx_string<> replace, vsx_string<> subject, int max_replacements = 0, int required_pos = -1);
+ENGINE_DLLIMPORT const vsx_string<>str_replace_char_pad(vsx_string<>search, vsx_string<>replace, vsx_string<>subject, vsx_string<>subject_r, int max_replacements = 0, int required_pos = -1);
 
-ENGINE_DLLIMPORT int explode(vsx_string& input, vsx_string& delimiter, vsx_avector<vsx_string>& results, int max_parts = 0);
-ENGINE_DLLIMPORT vsx_string implode(vsx_avector<vsx_string>& in, vsx_string& delimiter);
+ENGINE_DLLIMPORT int explode(vsx_string<>& input, vsx_string<>& delimiter, vsx_avector< vsx_string<> >& results, int max_parts = 0);
+ENGINE_DLLIMPORT vsx_string<>implode(vsx_avector< vsx_string<> >& in, vsx_string<>& delimiter);
 
-ENGINE_DLLIMPORT void str_remove_equal_prefix(vsx_string* str1, vsx_string* str2, vsx_string delimiter);
-ENGINE_DLLIMPORT int split_string(vsx_string& input, vsx_string& delimiter, std::vector<vsx_string>& results, int max_parts = 0);
-ENGINE_DLLIMPORT int explode(vsx_string& input, vsx_string& delimiter, std::vector<vsx_string>& results, int max_parts = 0);
-ENGINE_DLLIMPORT int split_string(vsx_string& input, vsx_string& delimiter, std::list<vsx_string>& results, int max_parts = 0);
-ENGINE_DLLIMPORT int explode(vsx_string& input, vsx_string& delimiter, std::list<vsx_string>& results, int max_parts = 0);
+ENGINE_DLLIMPORT void str_remove_equal_prefix(vsx_string<>* str1, vsx_string<>* str2, vsx_string<>delimiter);
+ENGINE_DLLIMPORT int split_string(vsx_string<>& input, vsx_string<>& delimiter, std::vector <vsx_string<> >& results, int max_parts = 0);
+ENGINE_DLLIMPORT int explode(vsx_string<>& input, vsx_string<>& delimiter, std::vector <vsx_string<> >& results, int max_parts = 0);
+ENGINE_DLLIMPORT int split_string(vsx_string<>& input, vsx_string<>& delimiter, std::list< vsx_string<> >& results, int max_parts = 0);
+ENGINE_DLLIMPORT int explode(vsx_string<>& input, vsx_string<>& delimiter, std::list< vsx_string<> >& results, int max_parts = 0);
 
-ENGINE_DLLIMPORT vsx_string implode(std::vector<vsx_string> in,vsx_string delimiter);
-ENGINE_DLLIMPORT vsx_string implode(std::list<vsx_string> in,vsx_string delimiter);
+ENGINE_DLLIMPORT vsx_string<>implode(std::vector <vsx_string<> > in,vsx_string<>delimiter);
+ENGINE_DLLIMPORT vsx_string<>implode(std::list< vsx_string<> > in,vsx_string<>delimiter);
 
-ENGINE_DLLIMPORT vsx_string base64_encode(vsx_string data);
-ENGINE_DLLIMPORT vsx_string base64_decode(vsx_string data);
+ENGINE_DLLIMPORT vsx_string<>base64_encode(vsx_string<>data);
+ENGINE_DLLIMPORT vsx_string<>base64_decode(vsx_string<>data);
 
-ENGINE_DLLIMPORT vsx_string vsx_get_directory_separator();
+ENGINE_DLLIMPORT vsx_string<>vsx_get_directory_separator();
 
 #endif

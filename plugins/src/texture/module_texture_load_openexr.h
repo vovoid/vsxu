@@ -192,7 +192,7 @@ public:
   }
   */
 
-  void param_set_notify(const vsx_string& name)
+  void param_set_notify(const vsx_string<>& name)
   {
     VSX_UNUSED(name);
     Array2D<float> rPixels;
@@ -201,7 +201,7 @@ public:
     Array2D<float> aPixels;
     int width, height;
 
-    vsx_string nf = engine->filesystem->get_base_path() + filename->get();
+    vsx_string<>nf = engine->filesystem->get_base_path() + filename->get();
 
     readGZ1
     (

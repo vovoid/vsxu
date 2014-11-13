@@ -125,12 +125,12 @@ if (cmd == "param_alias")
       vsx_engine_param* src_param = src_l->get_by_name(c->parts[6]);
       if (src_param) {
         // alias the parameter into the paramlist of the destination component
-        vsx_string new_name = dest_l->alias_get_unique_name(c->parts[4]);
+        vsx_string<>new_name = dest_l->alias_get_unique_name(c->parts[4]);
         int order = dest_l->alias(src_param, new_name);
 
         // compute new name for c->parts[1]
-        std::vector<vsx_string> parts;
-        vsx_string deli = ":";
+        std::vector <vsx_string<> > parts;
+        vsx_string<>deli = ":";
         explode(c->parts[1], deli, parts, 2);
         parts[0] = new_name;
         c->parts[1] = implode(parts, deli);
