@@ -22,8 +22,9 @@
 */
 
 #include<stdio.h>
-#if !defined(__APPLE__) && !defined(linux)
-#include<conio.h>
+#include <vsx_platform.h>
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+  #include<conio.h>
 #endif
 #include<stdlib.h>
 #include "vsxfst.h"

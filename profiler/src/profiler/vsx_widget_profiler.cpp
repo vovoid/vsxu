@@ -190,7 +190,7 @@ void vsx_widget_profiler::command_process_back_queue(vsx_command_s *t)
     return;
   }
 
-  vsx_printf("t->cmd: %s\n", t->cmd_data.c_str());
+  vsx_printf(L"t->cmd: %s\n", t->cmd_data.c_str());
 }
 
 bool vsx_widget_profiler::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
@@ -224,7 +224,7 @@ void vsx_widget_profiler::event_mouse_wheel(float y)
 {
   if (ctrl)
   {
-    vsx_printf("camera z: %f\n", camera.get_pos_z());
+    vsx_printf(L"camera z: %f\n", camera.get_pos_z());
 
     time_scale::get_instance()->time_offset -= 0.025 * y * (camera.get_pos_z() - 1.1);
 

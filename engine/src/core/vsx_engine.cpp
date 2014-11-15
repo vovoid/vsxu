@@ -381,7 +381,7 @@ bool vsx_engine::start()
   // a few assertions
   if (0x0 == module_list)
   {
-    vsx_printf("vsx_engine::start() error: not starting; module_list is 0x0h\n");
+    vsx_printf(L"vsx_engine::start() error: not starting; module_list is 0x0h\n");
     return false;
   }
 

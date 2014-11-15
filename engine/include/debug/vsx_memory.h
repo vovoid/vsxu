@@ -22,13 +22,13 @@
 
 #elif defined(__linux__) || defined(__linux) || defined(linux) || defined(__gnu_linux__)
 #include <stdio.h>
-
 #endif
 
 #else
 #error "Cannot define getPeakRSS( ) or getCurrentRSS( ) for an unknown OS."
 #endif
 
+#include <vsx_string.h>
 
 
 namespace vsx_memory
@@ -125,7 +125,7 @@ inline size_t getCurrentRSS( )
 
 inline void print_memory_info()
 {
-  vsx_printf("Current memory used: %ld\n", getCurrentRSS()/(1024*1024) );
+  vsx_printf(L"Current memory used: %ld\n", getCurrentRSS()/(1024*1024) );
 }
 
 }

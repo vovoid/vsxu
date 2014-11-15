@@ -592,7 +592,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
           ba = ((vsx_module_param_texture*)uniform_list[i].module_param)->get_addr();
           if (ba)
           {
-//            vsx_printf("GLSL:binding texture %d\n", GL_TEXTURE0 + tex_i);
+//            vsx_printf(L"GLSL:binding texture %d\n", GL_TEXTURE0 + tex_i);
             glActiveTexture(GL_TEXTURE0 + tex_i);
             (*ba)->bind();
             vsx_transform_obj& texture_transform = *(*ba)->get_transform();

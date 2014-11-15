@@ -101,7 +101,8 @@ vsx_string<>str_pad(const vsx_string<>& str, const vsx_string<>& chr, size_t t_l
 vsx_string<>str_replace(vsx_string<>search, vsx_string<>replace, vsx_string<>subject, int max_replacements, int required_pos) {
   //printf("------------\nsubject coming in: %s\n",subject.c_str());
   vsx_string<>n = subject;
-  if (search == "") return n;
+  if (search == "")
+    return n;
   int loc = 1;
   int replacements = 0;
   while ((loc = n.find(search, loc-1)) != -1) {

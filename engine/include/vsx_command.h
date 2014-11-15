@@ -113,7 +113,7 @@ public:
   {
     #ifdef VSXU_DEBUG
       if (garbage_collected)
-        VSX_ERROR_RETURN("double garbage collection");
+        VSX_ERROR_RETURN(L"double garbage collection");
     #endif
     vsx_command_garbage_list.push_back(this);
     #ifdef VSXU_DEBUG

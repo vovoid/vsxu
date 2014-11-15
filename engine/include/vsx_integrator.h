@@ -25,7 +25,7 @@ public:
   {
     I tt = delta_time * speed;
 
-    vsx_printf("tt: %f\n", tt);
+    vsx_printf(L"tt: %f\n", tt);
 
     if (tt > 1.0)
       tt = 1.0;
@@ -50,7 +50,7 @@ public:
    */
   void set_target(T new_target)
   {
-    vsx_printf("setting target\n");
+    vsx_printf(L"setting target\n");
     target = new_target;
   }
 

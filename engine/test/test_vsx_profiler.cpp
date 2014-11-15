@@ -27,7 +27,7 @@ void *thread_producer( void *arg )
     p->sub_end();
     p->maj_end();
   }
-  vsx_printf("exiting p1\n");
+  vsx_printf(L"exiting p1\n");
   pthread_exit(0);
   return NULL;
 }
@@ -48,7 +48,7 @@ void *thread_producer2( void *arg )
     p->sub_end();
     p->maj_end();
   }
-  vsx_printf("exiting p2\n");
+  vsx_printf(L"exiting p2\n");
   pthread_exit(0);
   return NULL;
 }
@@ -71,7 +71,7 @@ int main()
 
   typedef char       tag[36];
 
-  vsx_printf("This system has %d cores available\n", procs);
+  vsx_printf(L"This system has %d cores available\n", procs);
 
   thrs = (pthread_t*)malloc( sizeof( pthread_t ) * procs );
   if (thrs == NULL)

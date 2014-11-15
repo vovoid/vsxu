@@ -362,7 +362,7 @@ public:
     mesh->timestamp++;
 
 //    vsx_string<>* r = vsx_mesh_helper::mesh_to_obj(mesh);
-//    vsx_printf("%s\n", r->c_str());
+//    vsx_printf(L"%s\n", r->c_str());
 
     result->set_p(mesh);
   }

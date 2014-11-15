@@ -134,7 +134,7 @@ public:
     }
     if (engine->state == VSX_ENGINE_STOPPED)
     {
-      //vsx_printf("engine is stopped at %f\n", engine->vtime );
+      //vsx_printf(L"engine is stopped at %f\n", engine->vtime );
       main_sample.stop();
       if (engine->dtime != 0.0f)
       {

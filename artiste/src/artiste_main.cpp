@@ -32,6 +32,7 @@
 #include "vsxfst.h"
 #include "vsx_version.h"
 #include "vsx_timer.h"
+#include <locale.h>
 #if PLATFORM == PLATFORM_LINUX
 #include <unistd.h>
 #endif
@@ -183,7 +184,7 @@ void myErrorCallback
   VSX_UNUSED(_length);
   VSX_UNUSED(_user_param);
   VSX_UNUSED(_id);
-  vsx_printf("GLDEBUG: %s\n", _message);
+  vsx_printf(L"GLDEBUG: %s\n", _message);
 }
 
 //========================================================================
@@ -202,6 +203,8 @@ int main(int argc, char* argv[])
     exit(0);
   }
 
+  vsx_printf(L"");
+
   // Initialise GLFW
   glfwInit();
   set_modifiers();
@@ -214,7 +217,6 @@ int main(int argc, char* argv[])
   bool manual_resolution_set = false;
   int x_res = 1280;
   int y_res = 720;
-
 
   if (vsx_argvector::get_instance()->has_param("f"))
   {
@@ -258,7 +260,7 @@ int main(int argc, char* argv[])
 
   if (vsx_argvector::get_instance()->has_param("gl_debug"))
   {
-    printf("enabling GL DEBUG\n");
+    vsx_printf(L"enabling GL DEBUG\n");
     glfwOpenWindowHint( GLFW_OPENGL_DEBUG_CONTEXT , GL_TRUE );
   }
 
@@ -268,7 +270,7 @@ int main(int argc, char* argv[])
 
   if( !glfwOpenWindow( x_res, y_res, 0,0,0,0,16,0, start_fullscreen?GLFW_FULLSCREEN:GLFW_WINDOW ) ) // GLFW_FULLSCREEN
   {
-    printf("Error! Could not create an OpenGL context. Please check your GPU drivers...\n");
+    vsx_printf(L"Error! Could not create an OpenGL context. Please check your GPU drivers...\n");
     glfwTerminate();
     return 0;
   }
@@ -298,6 +300,9 @@ int main(int argc, char* argv[])
       }
     }
   }
+
+  setlocale(LC_CTYPE, "en_US.UTF-8" );
+
 
   glfwSetKeyCallback(&key_event);
   glfwSetMouseButtonCallback(&mouse_button_event);
@@ -396,8 +401,8 @@ int main(int argc, char* argv[])
 
           if (initial_vram_free == 0) initial_vram_free = available_memory >> 10;
 
-          vsx_printf("GPU MEMORY INFO: Before frame: available vram: %d MB\n", available_memory >> 10);
-          vsx_printf("GPU MEMORY INFO: Probably used vram: %d MB\n", initial_vram_free - (available_memory >> 10));
+          vsx_printf(L"GPU MEMORY INFO: Before frame: available vram: %d MB\n", available_memory >> 10);
+          vsx_printf(L"GPU MEMORY INFO: Probably used vram: %d MB\n", initial_vram_free - (available_memory >> 10));
 
           //if (gtm)
           //((vsx_tm*)gtm)->plot( available_memory_f, "gpu memory free" );
@@ -414,7 +419,6 @@ int main(int argc, char* argv[])
     t1 = t;
     if (key_pressed != -1)
     {
-      //printf("%f\n", delta);
       key_time += delta;
       if (key_time > 0.3f)
       {
@@ -427,7 +431,6 @@ int main(int argc, char* argv[])
 
           app_key_down((long)key_pressed);
           initial_key_delay *= 0.99f;
-          //printf("repeating key: %d\n", key_character);
         }
       }
     }

@@ -30,7 +30,7 @@ void vsx_widget_profiler_thread::init()
 
 void vsx_widget_profiler_thread::load_thread(uint64_t id)
 {
-  vsx_printf("load profile thread %ld\n", id);
+  vsx_printf(L"load profile thread %ld\n", id);
   vsx_profiler_consumer::get_instance()->get_thread(0.0, 5.0, id, consumer_chunks);
   update();
 }
@@ -47,7 +47,7 @@ void vsx_widget_profiler_thread::update_vbo()
   draw_bucket.vertices.reset_used();
   draw_bucket.faces.reset_used();
 
-  vsx_printf("time scale: %f\n", time_scale::get_instance()->time_scale_x);
+  vsx_printf(L"time scale: %f\n", time_scale::get_instance()->time_scale_x);
 
   size_t max_depth = 1;
 
@@ -229,7 +229,7 @@ void vsx_widget_profiler_thread::event_mouse_down(vsx_widget_distance distance,v
 
   int mouse_depth = depth_from_mouse_position();
 
-  vsx_printf("mouse depth: %d\n", mouse_depth);
+  vsx_printf(L"mouse depth: %d\n", mouse_depth);
 
   if (mouse_depth < 0)
   {
@@ -322,7 +322,7 @@ void vsx_widget_profiler_thread::event_mouse_double_click(vsx_widget_distance di
     return;
 
   double tdiff = selected_chunk->time_end - selected_chunk->time_start;
-  vsx_printf("tdiff. %f\n", tdiff);
+  vsx_printf(L"tdiff. %f\n", tdiff);
   time_scale::get_instance()->time_scale_x = 0.5 / (tdiff) ;
   time_scale::get_instance()->time_offset = -time_scale::get_instance()->time_scale_x * (selected_chunk->time_start + 0.5 * tdiff);
 

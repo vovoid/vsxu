@@ -178,7 +178,7 @@ void myErrorCallback
   VSX_UNUSED(_length);
   VSX_UNUSED(_user_param);
   VSX_UNUSED(_id);
-  vsx_printf("GLDEBUG: %s\n", _message);
+  vsx_printf(L"GLDEBUG: %s\n", _message);
 }
 
 //========================================================================
@@ -198,7 +198,7 @@ int main(int argc, char* argv[])
     vsx_argvector::get_instance()->push_back( arg );
   }
 
-  vsx_printf("args: %s\n", vsx_argvector::get_instance()->serialize().c_str() );
+  vsx_printf(L"args: %s\n", vsx_argvector::get_instance()->serialize().c_str() );
 
   if (vsx_argvector::get_instance()->has_param("help"))
   {

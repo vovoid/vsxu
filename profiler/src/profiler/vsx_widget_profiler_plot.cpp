@@ -41,7 +41,7 @@ void vsx_widget_profiler_plot::init()
 
 void vsx_widget_profiler_plot::load_plot(uint64_t id)
 {
-  vsx_printf("load profile plot %ld\n", id);
+  vsx_printf(L"load profile plot %ld\n", id);
   vsx_profiler_consumer::get_instance()->get_plot( id, consumer_chunks);
   update();
 }
@@ -54,7 +54,7 @@ void vsx_widget_profiler_plot::update()
 void vsx_widget_profiler_plot::update_plot_v_t()
 {
 
-  vsx_printf("time scale: %f\n", time_scale::get_instance()->time_scale_x);
+  vsx_printf(L"time scale: %f\n", time_scale::get_instance()->time_scale_x);
 
   size_t max_depth = 1;
 
@@ -126,7 +126,7 @@ void vsx_widget_profiler_plot::update_vbo()
   draw_bucket_b.vertices.reset_used();
   draw_bucket_b.faces.reset_used();
 
-  vsx_printf("time scale: %f\n", time_scale::get_instance()->time_scale_x);
+  vsx_printf(L"time scale: %f\n", time_scale::get_instance()->time_scale_x);
 
   switch (plot_type)
   {
@@ -232,7 +232,7 @@ void vsx_widget_profiler_plot::event_mouse_double_click(vsx_widget_distance dist
     return;
 
   double tdiff = selected_chunk->time_end - selected_chunk->time_start;
-  vsx_printf("tdiff. %f\n", tdiff);
+  vsx_printf(L"tdiff. %f\n", tdiff);
   time_scale::get_instance()->time_scale_x = 0.5 / (tdiff) ;
   time_scale::get_instance()->time_offset = -time_scale::get_instance()->time_scale_x * (selected_chunk->time_start + 0.5 * tdiff);
 

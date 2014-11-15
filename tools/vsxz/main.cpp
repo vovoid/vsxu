@@ -83,7 +83,7 @@ void extract()
 
     if (!dry_run)
     {
-//      vsx_printf("Creating directory: %s\n", out_directory.c_str());
+//      vsx_printf(L"Creating directory: %s\n", out_directory.c_str());
       create_directory( out_directory.c_str() );
     }
 
@@ -153,7 +153,7 @@ void create()
 
   for (size_t i = 0; i < parts.size(); i++)
   {
-    vsx_printf("* adding: %s \n", parts[i].c_str() );
+    vsx_printf(L"* adding: %s \n", parts[i].c_str() );
     int ret = filesystem.archive_add_file( parts[i] );
     if ( ret )
       VSX_ERROR_EXIT( "archive_add_file failed", ret );
@@ -161,7 +161,7 @@ void create()
 
   filesystem.archive_close();
 
-  vsx_printf("-- successfully created the archive: %s\n", archive_filename.c_str());
+  vsx_printf(L"-- successfully created the archive: %s\n", archive_filename.c_str());
 
   // success
   exit(0);

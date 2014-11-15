@@ -175,7 +175,7 @@ public:
     current_profile.allocate( chunks_in_file );
 
     filesystem.f_read( current_profile.get_pointer(), file_size, fp );
-    vsx_printf("VSX PROFILER: loaded profile with %ld chunks\n", chunks_in_file);
+    vsx_printf(L"VSX PROFILER: loaded profile with %ld chunks\n", chunks_in_file);
 
     if (current_profile.size() < 3)
       VSX_ERROR_RETURN("not enough data in profile");
@@ -230,16 +230,16 @@ public:
 
     for (size_t i = 0; i < current_threads.size(); i++)
     {
-      vsx_printf("Current thread: %ld\n", current_threads[i]);
+      vsx_printf(L"Current thread: %ld\n", current_threads[i]);
     }
     for (size_t i = 0; i < current_plots.size(); i++)
     {
-      vsx_printf("Current plot: %ld\n", current_plots[i]);
+      vsx_printf(L"Current plot: %ld\n", current_plots[i]);
     }
 
 
-    vsx_printf("max time: %f\n", current_max_time);
-    vsx_printf("clock frequency: %f\n", (double)(cpu_clock_end-cpu_clock_start) / current_max_time );
+    vsx_printf(L"max time: %f\n", current_max_time);
+    vsx_printf(L"clock frequency: %f\n", (double)(cpu_clock_end-cpu_clock_start) / current_max_time );
   }
 
   double cycles_to_time(uint64_t cycles)
@@ -271,7 +271,7 @@ public:
 
       if (chunk.id != thread_id)
       {
-        vsx_printf("chunk id: %ld\n", chunk.id);
+        vsx_printf(L"chunk id: %ld\n", chunk.id);
         continue;
       }
 
@@ -279,7 +279,7 @@ public:
       {
         compute_stack[compute_stack_pointer].time_start = cycles_to_time( chunk.cycles );
         compute_stack[compute_stack_pointer].cycles_start = chunk.cycles;
-//        vsx_printf("starting time: %f\n", compute_stack[compute_stack_pointer].time_start);
+//        vsx_printf(L"starting time: %f\n", compute_stack[compute_stack_pointer].time_start);
         compute_stack_pointer++;
         if (compute_stack_pointer == compute_stack_depth)
           compute_stack_pointer--;
@@ -294,7 +294,7 @@ public:
         compute_stack[compute_stack_pointer].depth = compute_stack_pointer;
         compute_stack[compute_stack_pointer].cycles_end = chunk.cycles;
         chunks_result.push_back( compute_stack[compute_stack_pointer] );
-//        vsx_printf("ending time: %f\n", compute_stack[compute_stack_pointer].time_end);
+//        vsx_printf(L"ending time: %f\n", compute_stack[compute_stack_pointer].time_end);
       }
 
       if (chunk.flags == VSX_PROFILE_CHUNK_FLAG_START /*&& chunk.cycles > cycles_begin_time*/)
@@ -302,7 +302,7 @@ public:
         compute_stack[compute_stack_pointer].time_start = cycles_to_time( chunk.cycles );
         compute_stack[compute_stack_pointer].tag = chunk.tag;
         compute_stack[compute_stack_pointer].cycles_start = chunk.cycles;
-//        vsx_printf("starting time inner: %f\n", compute_stack[compute_stack_pointer].time_start);
+//        vsx_printf(L"starting time inner: %f\n", compute_stack[compute_stack_pointer].time_start);
         compute_stack_pointer++;
         if (compute_stack_pointer == compute_stack_depth)
           compute_stack_pointer--;
@@ -317,9 +317,9 @@ public:
         compute_stack[compute_stack_pointer].depth = compute_stack_pointer;
         compute_stack[compute_stack_pointer].cycles_end = chunk.cycles;
         chunks_result.push_back( compute_stack[compute_stack_pointer] );
-//        vsx_printf("ending time inner: %f\n", compute_stack[compute_stack_pointer].time_end);
+//        vsx_printf(L"ending time inner: %f\n", compute_stack[compute_stack_pointer].time_end);
       }
-//      vsx_printf("stack pointer: %d\n", compute_stack_pointer);
+//      vsx_printf(L"stack pointer: %d\n", compute_stack_pointer);
 
     }
 

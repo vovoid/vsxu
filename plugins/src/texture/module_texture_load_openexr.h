@@ -79,8 +79,8 @@ public:
     width = dw.max.x - dw.min.x + 1;
     height = dw.max.y - dw.min.y + 1;
 
-    vsx_printf("width %d\n", width);
-    vsx_printf("height %d\n", height);
+    vsx_printf(L"width %d\n", width);
+    vsx_printf(L"height %d\n", height);
 
     rPixels.resizeErase (height, width);
     gPixels.resizeErase (height, width);

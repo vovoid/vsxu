@@ -154,7 +154,7 @@ void vsx_font::reinit_all_active()
 
           if (!(*(my_font_info->texture)).bind())
           {
-            vsx_printf("font could not bind texture!\n");
+            vsx_printf(L"font could not bind texture!\n");
 
             return vsx_vector3<>();
           }

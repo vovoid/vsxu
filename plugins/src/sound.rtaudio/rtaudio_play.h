@@ -35,7 +35,7 @@ int play_callback
   if ( status )
     printf("Stream underflow detected!\n");
 
-  //vsx_printf("buffer frames: %d latency: %d\n", nBufferFrames, padc_play->getStreamLatency());
+  //vsx_printf(L"buffer frames: %d latency: %d\n", nBufferFrames, padc_play->getStreamLatency());
 
   // Write interleaved audio data.
   for ( unsigned int i=0; i < nBufferFrames; i++ )

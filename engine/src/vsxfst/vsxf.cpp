@@ -394,7 +394,7 @@ void vsxf::archive_load_all_mt(const char* filename)
     }
   }
 
-//  vsx_printf("Going to use %d threads\n",)
+//  vsx_printf(L"Going to use %d threads\n",)
 
   // 3. Fire off the threads
   pthread_t threads[num_threads];
@@ -646,6 +646,43 @@ char* vsxf::f_gets(char* buf, unsigned long max_buf_size, vsxf_handle* handle)
       run = false;
     }
     buf[i] = ((char*)handle->file_data)[handle->position];
+    ++i;
+    ++handle->position;
+  }
+
+  if (i < max_buf_size)
+  {
+    buf[i] = 0;
+  }
+
+  if (i != 0)
+  {
+    return buf;
+  }
+
+  return 0x0;
+}
+
+wchar_t* vsxf::f_getws(wchar_t* buf, unsigned long max_buf_size, vsxf_handle* handle)
+{
+  if (type == VSXF_TYPE_FILESYSTEM)
+  {
+    wchar_t* ret = fgetws(buf, max_buf_size, handle->file_handle);
+    if (!ret)
+      perror("Error reading file");
+    return ret;
+  }
+
+  unsigned long i = 0;
+  bool run = true;
+
+  while (handle->position < handle->size && i < max_buf_size && run)
+  {
+    if (((wchar_t*)handle->file_data)[handle->position] == 0x0A)
+    {
+      run = false;
+    }
+    buf[i] = ((wchar_t*)handle->file_data)[handle->position];
     ++i;
     ++handle->position;
   }

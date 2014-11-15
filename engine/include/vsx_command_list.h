@@ -337,7 +337,7 @@ public:
     if (!filesystem)
     {
       #ifdef VSXU_DEBUG
-        vsx_printf("*** PERFORMANCE: command list load_from_file creating temporary vsxf\n");
+        vsx_printf(L"*** PERFORMANCE: command list load_from_file creating temporary vsxf\n");
       #endif
       filesystem = new vsxf;
       filesystem_local = true;

@@ -85,10 +85,6 @@
       #undef vsx_string
     #endif
 
-    #define vsx_printf(...) \
-      printf(__VA_ARGS__); \
-      fflush(stdout)
-
 #endif
 
 #endif

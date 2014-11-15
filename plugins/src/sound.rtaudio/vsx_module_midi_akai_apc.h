@@ -989,7 +989,7 @@ public:
       byte2=mess.at(1);
       byte3=mess.at(2);
 
-      //vsx_printf("%X %X %X\n", byte1, byte2, byte3);
+      //vsx_printf(L"%X %X %X\n", byte1, byte2, byte3);
 
       if(byte1-0xB0>=0)
       {

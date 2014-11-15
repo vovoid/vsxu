@@ -1011,13 +1011,13 @@ void vsx_texture::upload_ram_bitmap_cube(void* data, unsigned long size_x, unsig
 
   if ( size_x / 6 != size_y )
   {
-    vsx_printf("vsx_texture::upload_ram_bitmap_cube Error: not cubemap, should be aspect 6:1");
+    vsx_printf(L"vsx_texture::upload_ram_bitmap_cube Error: not cubemap, should be aspect 6:1");
     return;
   }
 
   if (bpp == 3)
   {
-    vsx_printf("RGB cubemaps not implemented\n");
+    vsx_printf(L"RGB cubemaps not implemented\n");
     return;
   }
 
@@ -1502,7 +1502,7 @@ void vsx_texture::unload()
       // safe to delete this texture
       if (texture_info->ogl_id != 0)
       {
-        //vsx_printf("deleting gl texture: %s\n", name.c_str() );
+        //vsx_printf(L"deleting gl texture: %s\n", name.c_str() );
         glDeleteTextures( 1, &(texture_info->ogl_id) );
       }
       t_glist.erase( name );

@@ -50,16 +50,16 @@ int main(int argc, char* argv[])
 {
   vsx_string<>base_path = get_path_from_filename(vsx_string<>(argv[0]));
 
-  printf("Vovoid VSX OBJ 2 VSXMESH\n");
+  vsx_printf(L"Vovoid VSX OBJ 2 VSXMESH\n");
 
   char* c = getcwd(cur_path,4096);
   (void)c;
 
-  printf("current path is: %s\n", cur_path);
+  vsx_printf(L"current path is: %s\n", cur_path);
 
-  printf("sizeof vsx_vector: %ld\n",sizeof(vsx_vector3<float>));
-  printf("sizeof vsx_tex_coord: %ld\n",sizeof(vsx_tex_coord2f));
-  printf("sizeof vsx_face: %ld\n",sizeof(vsx_face3));
+  vsx_printf(L"sizeof vsx_vector: %ld\n",sizeof(vsx_vector3<float>));
+  vsx_printf(L"sizeof vsx_tex_coord: %ld\n",sizeof(vsx_tex_coord2f));
+  vsx_printf(L"sizeof vsx_face: %ld\n",sizeof(vsx_face3));
 
   if
   (
@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
     vsx_string<>(argv[1]) == "-help"
   )
   {
-    printf("obj2vsxmesh command line syntax:\n"
+    vsx_printf(L"obj2vsxmesh command line syntax:\n"
            "-tc compute tangents and store in color array\n");
     return 0;
   }
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
   FILE* fp = fopen(argv[1],"r");
   if (!fp)
   {
-    vsx_printf("error opening file!\n");
+    vsx_printf(L"error opening file!\n");
     return 1;
   }
 
@@ -211,12 +211,12 @@ int main(int argc, char* argv[])
 
   fclose(fp);
 
-  vsx_printf("Exported:\n");
-  vsx_printf("  %ld vertices\n", mesh.data->vertices.size());
-  vsx_printf("  %ld normals\n", mesh.data->vertex_normals.size());
-  vsx_printf("  %ld texture/uv coordinates\n", mesh.data->vertex_tex_coords.size());
-  vsx_printf("Making up a total of:\n");
-  vsx_printf("  %ld faces\n", mesh.data->faces.size());
+  vsx_printf(L"Exported:\n");
+  vsx_printf(L"  %ld vertices\n", mesh.data->vertices.size());
+  vsx_printf(L"  %ld normals\n", mesh.data->vertex_normals.size());
+  vsx_printf(L"  %ld texture/uv coordinates\n", mesh.data->vertex_tex_coords.size());
+  vsx_printf(L"Making up a total of:\n");
+  vsx_printf(L"  %ld faces\n", mesh.data->faces.size());
 
 
   return 0;

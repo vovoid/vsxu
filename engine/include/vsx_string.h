@@ -28,6 +28,7 @@
 #include <cstring>
 #include <ctype.h>
 #include <vsx_platform.h>
+#include <wchar.h>
  
 template<typename W = char> // wchar_t
 class vsx_string
@@ -302,11 +303,30 @@ public:
     return n;
   }
 
-
-  inline friend int operator==(const vsx_string<W>& left,const vsx_string<W>& right) VSX_ALWAYS_INLINE
+  inline static bool s_equals(const vsx_string<W>& left, const vsx_string<W>& right)
   {
-    if (left.size() != right.size()) return 0;
-    return !strcmp(left.c_str(), right.c_str());
+    if (right.size() != left.size())
+      return false;
+
+    W* op = right.get_pointer();
+    W* ip = left.get_pointer();
+
+    for (size_t i = 0; i < left.size(); i++)
+    {
+      if (*op != *ip)
+        return false;
+
+      op++;
+      ip++;
+    }
+
+    return true;
+  }
+
+
+  inline friend int operator==(const vsx_string<W>& left, const vsx_string<W>& right)
+  {
+    return vsx_string<W>::s_equals(left, right);
   }
 
   inline friend int operator<(const vsx_string<W>& left,const vsx_string<W>& right) VSX_ALWAYS_INLINE
@@ -398,6 +418,11 @@ public:
   }
 
 };
+
+#define vsx_printf(...) \
+  wprintf(__VA_ARGS__); \
+  fflush(stdout)
+
 
 
 #endif

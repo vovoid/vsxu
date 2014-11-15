@@ -152,6 +152,7 @@ INCLUDE(CPack)
 ################################################################################
 
 
+add_definitions( -std=c++0x )
 
 
 if(VSXU_DEBUG_SYMBOLS)

@@ -32,12 +32,14 @@
 #include "ftgl/FTGLOutlineFont.h"
 #include "ftgl/FTGLTextureFont.h"
 #include "ftgl/FTFont.h"
+#include "vsx_string_helper.h"
 
-typedef struct
-{
+template < typename W = char >
+class text_info {
+public:
   float size_x, size_y;
-  vsx_string<>string;
-} text_info;
+  vsx_string<W> string;
+};
 
 typedef enum vsx_font_outline_render_type_e
 {
@@ -56,7 +58,7 @@ class vsx_font_outline
 
   // text
   vsx_string<W>text;
-  vsx_avector<text_info> lines;
+  vsx_avector< text_info<W> > lines;
 
   // meta
   vsxf* filesystem;
@@ -151,9 +153,8 @@ public:
     if (!font_holder)
       return 0;
 
-    vsx_string<W> deli = "\n";
-    vsx_avector< vsx_string<> > t_lines;
-    explode(text, deli, t_lines);
+    vsx_avector< vsx_string<W> > t_lines;
+    vsx_string_helper::explode_single<W>( text, (W)0x0A, t_lines );
     lines.clear();
     for (unsigned long i = 0; i < t_lines.size(); ++i)
     {

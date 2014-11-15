@@ -193,6 +193,7 @@ public:
   void          f_close(vsxf_handle* handle);  
   int           f_puts(const char* buf, vsxf_handle* handle);
   char*         f_gets(char* buf, unsigned long max_buf_size, vsxf_handle* handle);
+  wchar_t*      f_getws(wchar_t* buf, unsigned long max_buf_size, vsxf_handle* handle);
   char*         f_gets_entire(vsxf_handle* handle);
   int           f_read(void* buf, unsigned long num_bytes, vsxf_handle* handle);
   unsigned long f_get_size(vsxf_handle* handle);

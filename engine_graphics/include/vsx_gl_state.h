@@ -176,14 +176,14 @@ public:
   {
     _framebuffer_binding = id;
     #ifndef VSX_NO_GL
-//    vsx_printf("binding buffer %d\n", id);
+//    vsx_printf(L"binding buffer %d\n", id);
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, id);
     #endif
   }
 
   unsigned int framebuffer_bind_get()
   {
-//    vsx_printf("getting buffer %d\n", _framebuffer_binding);
+//    vsx_printf(L"getting buffer %d\n", _framebuffer_binding);
     return _framebuffer_binding;
   }
 
@@ -262,7 +262,7 @@ public:
     (void)debug;
 //    if (n == _depth_mask_enabled)
 //    {
-//      vsx_printf("depth mask already this\n");
+//      vsx_printf(L"depth mask already this\n");
 //      return;
 //    }
     _depth_mask_enabled = n;
@@ -275,7 +275,7 @@ public:
       glDepthMask( GL_FALSE );
     }
     #else
-    vsx_printf("warning: using depth mask without GL\n");
+    vsx_printf(L"warning: using depth mask without GL\n");
     #endif
   }
 

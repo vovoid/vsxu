@@ -176,7 +176,7 @@ void myErrorCallback
   VSX_UNUSED(_severity);
   VSX_UNUSED(_length);
   VSX_UNUSED(_user_param);
-  vsx_printf("GLDEBUG: %s\n", _message);
+  vsx_printf(L"GLDEBUG: %s\n", _message);
 }
 
 //========================================================================
@@ -393,8 +393,8 @@ int main(int argc, char* argv[])
 
           if (initial_vram_free == 0) initial_vram_free = available_memory >> 10;
 
-          vsx_printf("GPU MEMORY INFO: Before frame: available vram: %d MB\n", available_memory >> 10);
-          vsx_printf("GPU MEMORY INFO: Probably used vram: %d MB\n", initial_vram_free - (available_memory >> 10));
+          vsx_printf(L"GPU MEMORY INFO: Before frame: available vram: %d MB\n", available_memory >> 10);
+          vsx_printf(L"GPU MEMORY INFO: Probably used vram: %d MB\n", initial_vram_free - (available_memory >> 10));
 
           //if (gtm)
           //((vsx_tm*)gtm)->plot( available_memory_f, "gpu memory free" );

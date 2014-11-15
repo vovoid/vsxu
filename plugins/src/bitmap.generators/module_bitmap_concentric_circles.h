@@ -155,7 +155,7 @@ public:
     int hsize = size >> 1;
     float one_div_hsize = 1.0f / ((float)hsize+1);
 
-    vsx_printf("%f        %f\n", attenuation, frequency);
+    vsx_printf(L"%f        %f\n", attenuation, frequency);
 
     for (y = -hsize; y < hsize; ++y)
       for (x = -hsize; x < hsize; ++x,p++)

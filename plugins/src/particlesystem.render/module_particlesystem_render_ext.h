@@ -393,7 +393,7 @@ public:
     (*tex)->begin_transform();
     if (!(*tex)->bind())
     {
-      vsx_printf("bind failed\n");
+      vsx_printf(L"bind failed\n");
     }
 
     if ( !shader.get_linked() )
