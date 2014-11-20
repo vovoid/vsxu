@@ -32,7 +32,6 @@
 #include "vsxfst.h"
 #include "vsx_version.h"
 #include "vsx_timer.h"
-#include <locale.h>
 #if PLATFORM == PLATFORM_LINUX
 #include <unistd.h>
 #endif
@@ -300,8 +299,6 @@ int main(int argc, char* argv[])
       }
     }
   }
-
-  setlocale(LC_CTYPE, "en_US.UTF-8" );
 
 
   glfwSetKeyCallback(&key_event);

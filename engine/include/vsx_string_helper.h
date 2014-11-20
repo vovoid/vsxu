@@ -130,6 +130,123 @@ namespace vsx_string_helper
     if (temp.size())
       parts.push_back(temp);
   }
+
+  /**
+   * @brief utf8_string_to_wchar_string
+   * @param src
+   * @return
+   */
+  inline vsx_string<wchar_t> utf8_string_to_wchar_string(const vsx_string<char>& src)
+  {
+    vsx_string<wchar_t> result;
+    wchar_t w = 0;
+    int bytes = 0;
+    wchar_t err = L'�';
+    for (size_t i = 0; i < src.size(); i++)
+    {
+      unsigned char c = (unsigned char)src[i];
+      if (c <= 0x7f)
+      {
+        if (bytes)
+        {
+          result.push_back(err);
+          bytes = 0;
+        }
+        result.push_back((wchar_t)c);
+        continue;
+      }
+
+      if (c <= 0xbf)
+      {
+        if (bytes)
+        {
+          w = ((w << 6)|(c & 0x3f));
+          bytes--;
+          if (bytes == 0)
+            result.push_back(w);
+          continue;
+        }
+        result.push_back(err);
+        continue;
+      }
+
+      if (c <= 0xdf)
+      {
+        bytes = 1;
+        w = c & 0x1f;
+        continue;
+      }
+
+      if (c <= 0xef)
+      {
+        bytes = 2;
+        w = c & 0x0f;
+        continue;
+      }
+
+      if (c <= 0xf7)
+      {
+        bytes = 3;
+        w = c & 0x07;
+        continue;
+      }
+
+      result.push_back(err);
+      bytes = 0;
+    }
+
+    if (bytes)
+      result.push_back(err);
+
+    return result;
+  }
+
+  /**
+   * @brief wchar_string_to_utf8_string
+   * @param src
+   * @return
+   */
+  inline vsx_string<char> wchar_string_to_utf8_string(const vsx_string<wchar_t>& src)
+  {
+    vsx_string<char> result;
+    for (size_t i = 0; i < src.size(); i++)
+    {
+      wchar_t w = src[i];
+      if (w <= 0x7f)
+      {
+        result.push_back((char)w);
+        continue;
+      }
+
+      if (w <= 0x7ff)
+      {
+        result.push_back(0xc0 | ((w >> 6)& 0x1f));
+        result.push_back(0x80| (w & 0x3f));
+        continue;
+      }
+
+      if (w <= 0xffff)
+      {
+        result.push_back(0xe0 | ((w >> 12)& 0x0f));
+        result.push_back(0x80| ((w >> 6) & 0x3f));
+        result.push_back(0x80| (w & 0x3f));
+        continue;
+      }
+
+      if (w <= 0x10ffff)
+      {
+        result.push_back(0xf0 | ((w >> 18)& 0x07));
+        result.push_back(0x80| ((w >> 12) & 0x3f));
+        result.push_back(0x80| ((w >> 6) & 0x3f));
+        result.push_back(0x80| (w & 0x3f));
+        continue;
+      }
+
+      result.push_back('?');
+    }
+    return result;
+  }
+
 }
 
 #endif
