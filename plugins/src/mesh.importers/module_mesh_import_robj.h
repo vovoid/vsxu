@@ -200,16 +200,16 @@ public:
                 {
                   mesh->data->vertex_tex_coords[ff.a * tex_coord_multiplier + 1 ] =
                       texcoords_2[
-                        vsx_string_helper::s2i( parts2[1] ) - 1
+                        vsx_string_helper::s2i( parts2[3] ) - 1
                       ];
 
                   mesh->data->vertex_tex_coords[ff.b * tex_coord_multiplier + 1 ] =
                       texcoords_2[
-                        vsx_string_helper::s2i( parts3[1] ) - 1
+                        vsx_string_helper::s2i( parts3[3] ) - 1
                       ];
                   mesh->data->vertex_tex_coords[ff.c * tex_coord_multiplier + 1 ] =
                       texcoords_2[
-                        vsx_string_helper::s2i( parts4[1] ) - 1
+                        vsx_string_helper::s2i( parts4[3] ) - 1
                       ];
                 }
               }
