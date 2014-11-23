@@ -71,6 +71,20 @@ namespace vsx_string_helper
    * @param filename
    * @param payload
    */
+  inline void write_to_file(vsx_string<>filename, vsx_string<> payload)
+  {
+    FILE* fp = fopen(filename.c_str(), "w");
+    if (!fp)
+      return;
+    fputs( payload.c_str(), fp );
+    fclose( fp );
+  }
+
+  /**
+   * @brief write_to_file_p
+   * @param filename
+   * @param payload
+   */
   inline void write_to_file(vsx_string<>filename, vsx_string<>* payload)
   {
     FILE* fp = fopen(filename.c_str(), "w");
@@ -85,7 +99,21 @@ namespace vsx_string_helper
    * @param filename
    * @param payload
    */
-  inline void write_to_file(vsx_string<>filename, vsx_string<wchar_t>* payload)
+  inline void write_to_file(vsx_string<>filename, vsx_string<wchar_t> payload)
+  {
+    FILE* fp = fopen(filename.c_str(), "w");
+    if (!fp)
+      return;
+    fputws( payload.c_str(), fp );
+    fclose( fp );
+  }
+
+  /**
+   * @brief write_to_file_p
+   * @param filename
+   * @param payload
+   */
+  inline void write_to_file_p(vsx_string<>filename, vsx_string<wchar_t>* payload)
   {
     FILE* fp = fopen(filename.c_str(), "w");
     if (!fp)
@@ -107,6 +135,7 @@ namespace vsx_string_helper
       result.push_back( (TO)s[i] );
     return result;
   }
+
 
   /**
    * @brief explode_single Splits a string by a single character useful for splitting on 0x0A (newline) or 0x22 (space)
