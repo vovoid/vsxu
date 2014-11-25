@@ -122,6 +122,25 @@ namespace vsx_string_helper
     fclose( fp );
   }
 
+  template < int buf_size = 1024 >
+  inline vsx_string<> read_from_file(vsx_string<> filename)
+  {
+    vsx_string<> result;
+    FILE* fp = fopen(filename.c_str(), "r");
+    if (!fp)
+      return "";
+
+    char buf[buf_size];
+
+    while ( fgets(buf,256,fp) )
+    {
+      vsx_string<> line(buf);
+      result += line;
+    }
+    fclose(fp);
+    return result;
+  }
+
   /**
    * @brief string_convert converts between char and wchar_t or any other character storage type you like (templates)
    * @param s
