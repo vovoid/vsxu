@@ -20,14 +20,14 @@
 * with this program; if not, write to the Free Software Foundation, Inc.,
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#ifndef VSX_AVECTOR_H
-#define VSX_AVECTOR_H
+#ifndef vsx_nw_vector_H
+#define vsx_nw_vector_H
 
 #include <vsx_platform.h>
 #include <stdio.h>
 
 template<class T>
-class vsx_avector
+class vsx_nw_vector
 {
   size_t allocated;
   size_t used;
@@ -148,7 +148,7 @@ public:
     return A[index];
   }
 
-  vsx_avector()
+  vsx_nw_vector()
     :
     allocated(0),
     used(0),
@@ -158,7 +158,7 @@ public:
   {
   }
 
-  ~vsx_avector()
+  ~vsx_nw_vector()
   {
     if (A)
     {

@@ -52,7 +52,7 @@ public:
 
   // out
   vsx_module_param_particlesystem* result_particlesystem;
-  vsx_array<float> f_randpool;
+  vsx_ma_vector<float> f_randpool;
   float* f_randpool_pointer;
 
 
@@ -186,7 +186,7 @@ public:
     // default is 100 particles, should be enough for most effects (tm)
     particles_count->set(100);
     //particles.num_particles = 100;
-    particles.particles = new vsx_array<vsx_particle<> >;
+    particles.particles = new vsx_ma_vector<vsx_particle<> >;
     //particles.particles->allocation_increment = 1000;
     particles.timestamp = 0;
 

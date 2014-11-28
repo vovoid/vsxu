@@ -67,7 +67,7 @@ class vsx_module_text_s : public vsx_module {
   vsx_module_param_render* render_result;
   // internal
 
-  vsx_avector<text_info> lines;
+  vsx_nw_vector<text_info> lines;
 
   vsx_gl_state* gl_state;
 
@@ -186,7 +186,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   {
     if (!ftfont) return 0;
     vsx_string<>deli = "\n";
-    vsx_avector< vsx_string<> > t_lines;
+    vsx_nw_vector< vsx_string<> > t_lines;
     explode(text_in->get(), deli, t_lines);
     lines.clear();
     for (unsigned long i = 0; i < t_lines.size(); ++i)

@@ -6,8 +6,8 @@
 #include <GL/glu.h>
 #include <vector>
 #include <map>
-#include <container/vsx_avector.h>
-#include "vsx_string.h"
+#include <container/vsx_nw_vector.h>
+#include <string/vsx_string.h>
 using namespace std;
 #include "includes/nehegl.h"
 #include "application.h"
@@ -421,7 +421,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
   return DefWindowProc(hWnd,uMsg,wParam,lParam);
 }*/
 
-vsx_avector <OpenGLWindow*> gl;
+vsx_nw_vector <OpenGLWindow*> gl;
 
 vector<DisplayMode> pmd;
 int primary_display = -1;

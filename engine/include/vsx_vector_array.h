@@ -30,7 +30,7 @@ template<typename T = float>
 class vsx_vector_array
 {
 public:
-  vsx_array< vsx_vector3<T> >* data;
+  vsx_ma_vector< vsx_vector3<T> >* data;
   unsigned long timestamp;
   vsx_vector_array()
   {

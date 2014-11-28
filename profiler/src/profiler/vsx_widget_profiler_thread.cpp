@@ -245,7 +245,7 @@ void vsx_widget_profiler_thread::event_mouse_down(vsx_widget_distance distance,v
       &&
       factor > consumer_chunks[i].time_start * time_scale::get_instance()->one_div_chunk_time_end
       &&
-      mouse_depth == consumer_chunks[i].depth
+      mouse_depth == (int)consumer_chunks[i].depth
     )
     {
       selected_chunk = &consumer_chunks[i];
@@ -253,56 +253,6 @@ void vsx_widget_profiler_thread::event_mouse_down(vsx_widget_distance distance,v
     }
   }
   vsx_widget::event_mouse_down(distance, coords, button);
-
-
-
-
-//  if
-//  (
-//    factor < consumer_chunks[index].time_end * one_div_chunk_time_end
-//    &&
-//    factor > consumer_chunks[index].time_start * one_div_chunk_time_end
-//    &&
-//    mouse_depth == consumer_chunks[index].depth
-//  )
-//  {
-//    selected_chunk = &consumer_chunks[index];
-//  }
-
-//  int traversion = -1;
-//  if
-//  (
-//    factor > consumer_chunks[index].time_end * one_div_chunk_time_end
-//    &&
-//    factor > consumer_chunks[index].time_start * one_div_chunk_time_end
-//  )
-//  {
-//    traversion = 1;
-//  }
-
-//  while (1)
-//  {
-//    index += traversion;
-
-//    if (index > consumer_chunks.size() -1)
-//      break;
-
-//    if (index == -1)
-//      break;
-
-//    if
-//    (
-//      factor < consumer_chunks[index].time_end * one_div_chunk_time_end
-//      &&
-//      factor > consumer_chunks[index].time_start * one_div_chunk_time_end
-//      &&
-//      mouse_depth == consumer_chunks[index].depth
-//    )
-//    {
-//      selected_chunk = &consumer_chunks[index];
-//      break;
-//    }
-//  }
 }
 
 void vsx_widget_profiler_thread::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)

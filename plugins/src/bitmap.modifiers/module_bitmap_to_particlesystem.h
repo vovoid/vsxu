@@ -63,7 +63,7 @@ public:
   {
 
     particles.timestamp = 0;
-    particles.particles = new vsx_array< vsx_particle<> >;
+    particles.particles = new vsx_ma_vector< vsx_particle<> >;
     loading_done = true;
     first = true;
     p_updates = param_updates;

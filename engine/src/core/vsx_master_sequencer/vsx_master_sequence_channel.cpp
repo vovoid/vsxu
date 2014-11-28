@@ -27,7 +27,7 @@
 #include "vsx_timer.h"
 #include <list>
 #include "vsx_command.h"
-#include <vsx_string_helper.h>
+#include <string/vsx_string_helper.h>
 #include "vsx_command_list.h"
 #include "vsx_comp_abs.h"
 #include "vsx_param_abstraction.h"
@@ -324,12 +324,12 @@ void vsx_master_sequence_channel::inject(vsx_string<>inject_string)
   delete (vsx_sequence_master_channel_item*)(items[0]);
   items.clear();
   vsx_string<>deli = "|";
-  vsx_avector< vsx_string<> > parts;
+  vsx_nw_vector< vsx_string<> > parts;
   explode(inject_string, deli, parts);
   for (size_t i = 0; i < parts.size(); i++)
   {
     vsx_string<>ideli = ";";
-    vsx_avector< vsx_string<> > iparts;
+    vsx_nw_vector< vsx_string<> > iparts;
     explode(parts[i], ideli, iparts);
     // 0 = total_length, 1 = internal_length, 2 = pool_name, 3 = time_sequence_data
     vsx_sequence_master_channel_item* pa = new vsx_sequence_master_channel_item;

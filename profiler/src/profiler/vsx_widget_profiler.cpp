@@ -195,6 +195,7 @@ void vsx_widget_profiler::command_process_back_queue(vsx_command_s *t)
 
 bool vsx_widget_profiler::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
 {
+  VSX_UNUSED(key);
   VSX_UNUSED(alt);
   VSX_UNUSED(ctrl);
   VSX_UNUSED(shift);

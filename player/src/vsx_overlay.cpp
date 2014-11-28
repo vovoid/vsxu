@@ -22,7 +22,7 @@
 */
 
 #include <vsx_platform.h>
-#include <vsx_string_helper.h>
+#include <string/vsx_string_helper.h>
 #include "vsx_overlay.h"
 
 vsx_overlay::vsx_overlay() {

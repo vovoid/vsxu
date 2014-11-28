@@ -40,7 +40,7 @@ class module_mesh_render : public vsx_module
   vsx_module_param_particlesystem* particles_in;
 
 
-  vsx_avector< vsx_string<> > gl_errors;
+  vsx_nw_vector< vsx_string<> > gl_errors;
 
   // out
   vsx_module_param_render* render_result;

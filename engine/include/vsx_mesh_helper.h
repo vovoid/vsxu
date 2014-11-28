@@ -1,6 +1,6 @@
 #ifndef VSX_MESH_HELPER_H
 #define VSX_MESH_HELPER_H
-#include <vsx_string_helper.h>
+#include <string/vsx_string_helper.h>
 #include <vsx_mesh.h>
 
 namespace vsx_mesh_helper

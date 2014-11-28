@@ -56,8 +56,6 @@ void vsx_widget_profiler_plot::update_plot_v_t()
 
   vsx_printf(L"time scale: %f\n", time_scale::get_instance()->time_scale_x);
 
-  size_t max_depth = 1;
-
   draw_bucket_a.vertices.reset_used();
   draw_bucket_a.faces.reset_used();
 

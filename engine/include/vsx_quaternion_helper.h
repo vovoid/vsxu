@@ -11,7 +11,7 @@ namespace vsx_quaternion_helper
   inline vsx_quaternion<T> from_string(vsx_string<>&str) VSX_ALWAYS_INLINE
   {
     vsx_quaternion<T> q;
-    vsx_avector< vsx_string<> > parts;
+    vsx_nw_vector< vsx_string<> > parts;
     vsx_string<>deli = ",";
     explode(str, deli, parts);
     if (parts.size() == 4) {

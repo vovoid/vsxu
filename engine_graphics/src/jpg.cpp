@@ -27,7 +27,7 @@
 // Need extern "C", or you'll get linker errors saying jpeg_* functions are undefined
 
 
-#include "vsx_string.h"
+#include <string/vsx_string.h>
 #include "vsxg.h"
 
 extern "C" {

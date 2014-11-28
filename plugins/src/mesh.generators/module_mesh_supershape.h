@@ -233,7 +233,7 @@ public:
 
     float phi = _y_start;
 
-    vsx_avector< vsx_vector3<> > prev_row_normals;
+    vsx_nw_vector< vsx_vector3<> > prev_row_normals;
     vsx_vector3<> prev_norm;
 
     for (int i = 0; i < _x_num_segments+1; i++)

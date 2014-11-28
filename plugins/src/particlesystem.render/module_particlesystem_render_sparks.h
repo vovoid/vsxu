@@ -22,9 +22,9 @@ public:
   vsx_particlesystem<>* particles;
   vsx_float_array* data;
 
-  vsx_avector<float> charges;
-  vsx_avector<float> delta_charges;
-  vsx_avector<int> discharged_particles;
+  vsx_nw_vector<float> charges;
+  vsx_nw_vector<float> delta_charges;
+  vsx_nw_vector<int> discharged_particles;
 
   void module_info(vsx_module_info* info)
   {

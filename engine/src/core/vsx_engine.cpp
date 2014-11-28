@@ -34,7 +34,7 @@
 
 #include <dirent.h>
 #include <sys/types.h>
-#include "vsx_string.h"
+#include <string/vsx_string.h>
 #include "vsx_log.h"
 #include "vsx_engine.h"
 #include "vsx_master_sequencer/vsx_master_sequence_channel.h"
@@ -42,7 +42,7 @@
 #include "vsx_module_list_factory.h"
 #include "vsx_note.h"
 #include "vsx_data_path.h"
-#include <vsx_string_helper.h>
+#include <string/vsx_string_helper.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include <stdio.h>
@@ -217,7 +217,7 @@ vsx_module_param_abs* vsx_engine::get_in_param_by_name(vsx_string<>module_name, 
   return 0x0;
 }
 
-void vsx_engine::get_external_exposed_parameters( vsx_avector< vsx_module_param_abs* >* result )
+void vsx_engine::get_external_exposed_parameters( vsx_nw_vector< vsx_module_param_abs* >* result )
 {
   // iterate through all modules
   for (forge_map_iter = forge_map.begin(); forge_map_iter != forge_map.end(); ++forge_map_iter)

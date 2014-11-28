@@ -207,7 +207,7 @@ public:
     t->cmd_data = cmd_data;
     t->parts.push_back(cmd);
     vsx_string<>deli = " ";
-    vsx_avector< vsx_string<> > pp;
+    vsx_nw_vector< vsx_string<> > pp;
     explode(cmd_data,deli,pp);
 
     for (size_t i = 0; i < pp.size(); ++i)

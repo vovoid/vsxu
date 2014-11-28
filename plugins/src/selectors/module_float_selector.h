@@ -64,7 +64,7 @@ class module_float_selector : public vsx_module
   int i_interpolation;
   vsx_sequence i_sequence;
   vsx_sequence i_seq_default;
-  vsx_array<float> i_sequence_data;
+  vsx_ma_vector<float> i_sequence_data;
   long i_seq_index;
   int i_reverse;
   int i_reset_seq_to_default;

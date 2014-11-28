@@ -192,15 +192,15 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   octaves_r_6_p->set(0);
   octaves_r_7_p->set(0);
   wave_p = (vsx_module_param_float_array*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"wave");
-  wave.data = new vsx_array<float>;
+  wave.data = new vsx_ma_vector<float>;
   for (int i = 0; i < 512; ++i) wave.data->push_back(0);
   wave_p->set_p(wave);
 
 
   spectrum_p = (vsx_module_param_float_array*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"spectrum");
   spectrum_p_hq = (vsx_module_param_float_array*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"spectrum_hq");
-  spectrum.data = new vsx_array<float>;
-  spectrum_hq.data = new vsx_array<float>;
+  spectrum.data = new vsx_ma_vector<float>;
+  spectrum_hq.data = new vsx_ma_vector<float>;
   for (int i = 0; i < 512; ++i) spectrum.data->push_back(0);
   for (int i = 0; i < 512; ++i) spectrum_hq.data->push_back(0);
   spectrum_p->set_p(spectrum);

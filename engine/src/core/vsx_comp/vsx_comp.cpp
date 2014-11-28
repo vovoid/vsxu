@@ -21,7 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "vsx_string.h"
+#include <string/vsx_string.h>
 #include "vsx_command.h"
 #include "vsx_timer.h"
 #include "vsx_engine.h"

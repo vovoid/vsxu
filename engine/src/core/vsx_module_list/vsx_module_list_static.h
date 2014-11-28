@@ -26,7 +26,7 @@
 
 #include <map>
 #include <vector>
-#include <vsx_string.h>
+#include <string/vsx_string.h>
 #include <vsx_param.h>
 #include <vsx_module.h>
 
@@ -60,7 +60,7 @@ public:
 class vsx_module_list : public vsx_module_list_abs
 {
 private:
-  vsx_avector<vsxm_sf_info*> modules;
+  vsx_nw_vector<vsxm_sf_info*> modules;
 public:
   void init()
   {
@@ -177,7 +177,7 @@ public:
         // Only the first will show up in the gui. The second identifier is still usable in
         // old state files.
         vsx_string<>deli = "||";
-        vsx_avector< vsx_string<> > parts;
+        vsx_nw_vector< vsx_string<> > parts;
         explode(module_info->identifier, deli, parts);
         vsx_module_plugin_info* applied_plugin_info = 0;
 

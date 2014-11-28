@@ -22,9 +22,9 @@
 */
 
 #include <stdio.h>
-#include <container/vsx_avector.h>
-#include "vsx_string.h"
-#include <vsx_string_helper.h>
+#include <container/vsx_nw_vector.h>
+#include <string/vsx_string.h>
+#include <string/vsx_string_helper.h>
 #include <vsx_argvector.h>
 #include <GL/glew.h>
 #include "GL/glfw.h"
@@ -173,8 +173,8 @@ void myErrorCallback
   GLuint _id,
   GLenum _severity,
   GLsizei _length,
-  const char* _message,
-  void* _user_param
+  const GLchar* _message,
+  GLvoid* _user_param
 )
 {
   VSX_UNUSED(_source);
@@ -225,7 +225,7 @@ int main(int argc, char* argv[])
   if (vsx_argvector::get_instance()->has_param_with_value("s"))
   {
     vsx_string<>arg2 = vsx_argvector::get_instance()->get_param_value("s");
-    vsx_avector< vsx_string<> > parts;
+    vsx_nw_vector< vsx_string<> > parts;
     vsx_string<>deli = ",";
     explode(arg2, deli, parts);
     if (parts.size() == 2)
@@ -292,7 +292,7 @@ int main(int argc, char* argv[])
       {
         i++;
         vsx_string<>arg2 = argv[i];
-        vsx_avector< vsx_string<> > parts;
+        vsx_nw_vector< vsx_string<> > parts;
         vsx_string<>deli = ",";
         explode(arg2, deli, parts);
         glfwSetWindowPos( vsx_string_helper::s2i(parts[0]), vsx_string_helper::s2i(parts[1]) );
@@ -313,16 +313,11 @@ int main(int argc, char* argv[])
 
 
   // vsync handling
-  bool vsync = true;
   if (vsx_argvector::get_instance()->has_param("novsync"))
-  {
-    vsync = false;
     glfwSwapInterval(0);
-  }
   else
-  {
     glfwSwapInterval(1);
-  }
+
   // Main loop
   running = GL_TRUE;
   frames = 0;
@@ -332,7 +327,7 @@ int main(int argc, char* argv[])
     // enable debug callback
     if (__GLEW_ARB_debug_output)
     {
-      glDebugMessageCallbackARB( myErrorCallback, NULL);
+      glDebugMessageCallbackARB( (GLDEBUGPROCARB)myErrorCallback, NULL);
       GLuint unusedIds = 0;
       glDebugMessageControlARB(
           GL_DONT_CARE,
@@ -347,9 +342,7 @@ int main(int argc, char* argv[])
 
   int display_gpu_vram_stats = 0;
   if (vsx_argvector::get_instance()->has_param("gl_vram"))
-  {
     display_gpu_vram_stats = 1;
-  }
 
 
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX

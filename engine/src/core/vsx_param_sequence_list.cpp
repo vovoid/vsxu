@@ -138,7 +138,7 @@ void vsx_param_sequence_list::remove_param_sequence(vsx_engine_param* param)
 vsx_string<>vsx_param_sequence_list::get_sequence_list_dump()
 {
   if (parameter_channel_list.size() == 0) return "";
-  vsx_avector< vsx_string<> > seq;
+  vsx_nw_vector< vsx_string<> > seq;
   for (std::list<vsx_param_sequence*>::iterator it = parameter_channel_list.begin(); it != parameter_channel_list.end(); ++it)
   {
     seq.push_back((*it)->comp->name+"#"+(*it)->param->name+"#"+(*it)->dump());
@@ -149,7 +149,7 @@ vsx_string<>vsx_param_sequence_list::get_sequence_list_dump()
 
 vsx_string<>vsx_param_sequence_list::get_channel_names()
 {
-  vsx_avector< vsx_string<> > seq;
+  vsx_nw_vector< vsx_string<> > seq;
   for (std::list<vsx_param_sequence*>::iterator it = parameter_channel_list.begin(); it != parameter_channel_list.end(); ++it)
   {
     seq.push_back((*it)->comp->name+":"+(*it)->param->name);

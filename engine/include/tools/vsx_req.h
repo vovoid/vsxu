@@ -17,5 +17,7 @@
   if ((t)) \
     return false
 
+#define req(t) VSX_REQ_TRUE(t)
+
 #endif
 

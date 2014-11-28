@@ -23,8 +23,8 @@
 
 #include <stdio.h>
 #include "GL/glfw.h"
-#include <container/vsx_avector.h>
-#include "vsx_string.h"
+#include <container/vsx_nw_vector.h>
+#include <string/vsx_string.h>
 #include "vsxfst.h"
 #include <stdlib.h>
 #include "vsx_gl_state.h"

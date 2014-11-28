@@ -60,7 +60,7 @@ class vsx_widget_profiler_plot : public vsx_widget
 
   vsx_profiler_consumer_chunk* selected_chunk;
 
-  vsx_avector<vsx_profiler_consumer_plot> consumer_chunks;
+  vsx_nw_vector<vsx_profiler_consumer_plot> consumer_chunks;
 
   vsx_vector3<> mouse_pos;
 

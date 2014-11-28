@@ -25,7 +25,7 @@
 #include "vsx_param_sequence.h"
 #include <vector/vsx_vector3_helper.h>
 #include <vsx_quaternion_helper.h>
-#include <vsx_string_helper.h>
+#include <string/vsx_string_helper.h>
 
 vsx_bezier_calc<float> bez_calc;
 

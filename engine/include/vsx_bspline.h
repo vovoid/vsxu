@@ -35,7 +35,7 @@ public:
   vsx_vector3<> center;
   float		radius;
   long old_pos;
-  vsx_array< vsx_vector3<> > points;
+  vsx_ma_vector< vsx_vector3<> > points;
   
   vsx_bspline() :
     real_pos(0.0f),

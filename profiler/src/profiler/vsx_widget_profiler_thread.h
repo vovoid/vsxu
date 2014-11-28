@@ -58,9 +58,9 @@ class vsx_widget_profiler_thread : public vsx_widget
   vsx_vbo_bucket<line_index, GL_LINES, GL_STREAM_DRAW> draw_bucket;
   vsx_profiler_consumer_chunk* selected_chunk;
 
-  vsx_avector<vsx_profiler_consumer_chunk> consumer_chunks;
+  vsx_nw_vector<vsx_profiler_consumer_chunk> consumer_chunks;
 
-  vsx_avector<vsx_profiler_consumer_chunk*> tag_draw_chunks;
+  vsx_nw_vector<vsx_profiler_consumer_chunk*> tag_draw_chunks;
 
   vsx_vector3<> mouse_pos;
 

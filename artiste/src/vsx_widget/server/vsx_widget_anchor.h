@@ -35,7 +35,7 @@ class vsx_widget_anchor : public vsx_widget
 {
   vsx_widget *temp_drag_connector;
   vsx_string<>display_value;
-  vsx_avector< vsx_string<> > enum_items;
+  vsx_nw_vector< vsx_string<> > enum_items;
   bool draw_glow;
   void set_glow(bool glow_status);
   //

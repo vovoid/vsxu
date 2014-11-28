@@ -35,7 +35,7 @@ public:
   // internal
   vsx_mesh<>* mesh;
 
-  vsx_avector< vsx_vector3<> > random_distort_points;
+  vsx_nw_vector< vsx_vector3<> > random_distort_points;
 
   bool init()
   {

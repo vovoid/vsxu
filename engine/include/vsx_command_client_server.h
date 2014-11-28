@@ -34,7 +34,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <vsx_string.h>
+#include <string/vsx_string.h>
 #include <vsx_command.h>
 #include "vsx_command_list.h"
 

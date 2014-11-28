@@ -53,7 +53,7 @@ public:
     vsx_string<>deli = " ";
     vsx_string<>cur = editor->get_line(editor->selected_line);
     cur.trim_lf();
-    vsx_avector< vsx_string<> > parts;
+    vsx_nw_vector< vsx_string<> > parts;
     explode(cur, deli, parts, 2);
 
     if (parts[0] == "thread")

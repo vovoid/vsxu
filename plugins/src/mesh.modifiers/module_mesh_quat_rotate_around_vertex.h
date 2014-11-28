@@ -146,11 +146,11 @@ public:
         vs_d[i].multiply_matrix_other_vec(&mat.m[0],vs_p[i]);// = mat.multiply_vector((*p)->data->vertex_normals[i]);
       }
 /*
-      vsx_array<vsx_vector> vertices;
-      vsx_array<vsx_vector> vertex_normals;
-      vsx_array<vsx_color> vertex_colors;
-      vsx_array<vsx_tex_coord> vertex_tex_coords;
-      vsx_array<vsx_face> faces;
+      vsx_ma_vector<vsx_vector> vertices;
+      vsx_ma_vector<vsx_vector> vertex_normals;
+      vsx_ma_vector<vsx_color> vertex_colors;
+      vsx_ma_vector<vsx_tex_coord> vertex_tex_coords;
+      vsx_ma_vector<vsx_face> faces;
 */
       if (prev_timestamp != (*p)->timestamp)
       {

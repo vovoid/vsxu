@@ -28,7 +28,7 @@
 #error "Cannot define getPeakRSS( ) or getCurrentRSS( ) for an unknown OS."
 #endif
 
-#include <vsx_string.h>
+#include <string/vsx_string.h>
 
 
 namespace vsx_memory

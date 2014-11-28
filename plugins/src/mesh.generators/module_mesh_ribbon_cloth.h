@@ -44,9 +44,9 @@ class module_mesh_ribbon_cloth : public vsx_module
   vsx_mesh<>* mesh;
   int l_param_updates;
   bool regen;
-  vsx_array< vsx_vector3<> > face_lengths;
-  vsx_array< vsx_vector3<> > vertices_speed;
-  vsx_array< vsx_vector3<> > vertices_orig;
+  vsx_ma_vector< vsx_vector3<> > face_lengths;
+  vsx_ma_vector< vsx_vector3<> > vertices_speed;
+  vsx_ma_vector< vsx_vector3<> > vertices_orig;
   int num_runs;
   vsx_vector3<> prev_pos;
 

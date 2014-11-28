@@ -4,7 +4,7 @@
 #include <GL/gl.h>
 #include <vsx_widget_dllimport.h>
 #include <vsx_command_list.h>
-#include <vsx_string.h>
+#include <string/vsx_string.h>
 #include <vsx_color.h>
 
 class vsx_widget_skin
@@ -64,7 +64,7 @@ public:
     skin_conf.reset();
     while ( (mc = skin_conf.get()) ) {
       if (mc->cmd == "color") {
-        vsx_avector< vsx_string<> > parts;
+        vsx_nw_vector< vsx_string<> > parts;
         vsx_string<>deli = ",";
         explode(mc->parts[2],deli, parts);
         vsx_color<> p;

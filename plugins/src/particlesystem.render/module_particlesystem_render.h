@@ -33,13 +33,13 @@ class module_particlesystem_render : public vsx_module
   float bs[8192];
 
   vsx_float_array shader_sizes;
-  vsx_array<float> shader_sizes_data;
+  vsx_ma_vector<float> shader_sizes_data;
 
   vsx_vector_array<> shader_colors;
-  vsx_array< vsx_vector3<> > shader_colors_data;
+  vsx_ma_vector< vsx_vector3<> > shader_colors_data;
 
   vsx_float_array shader_alphas;
-  vsx_array<float> shader_alphas_data;
+  vsx_ma_vector<float> shader_alphas_data;
 
   vsx_glsl shader;
 

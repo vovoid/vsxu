@@ -159,13 +159,13 @@ void setup_rtaudio_record()
 
   vsx_audio_record_buf* pa_d = &pa_audio_data;
 
-  pa_d->wave[0].data = new vsx_array<float>;
-  pa_d->wave[1].data = new vsx_array<float>;
+  pa_d->wave[0].data = new vsx_ma_vector<float>;
+  pa_d->wave[1].data = new vsx_ma_vector<float>;
   for (int i = 0; i < 512; ++i) pa_d->wave[0].data->push_back(0);
   for (int i = 0; i < 512; ++i) pa_d->wave[1].data->push_back(0);
 
-  pa_d->spectrum[0].data = new vsx_array<float>;
-  pa_d->spectrum[1].data = new vsx_array<float>;
+  pa_d->spectrum[0].data = new vsx_ma_vector<float>;
+  pa_d->spectrum[1].data = new vsx_ma_vector<float>;
   for (int i = 0; i < 512; ++i) pa_d->spectrum[0].data->push_back(0);
   for (int i = 0; i < 512; ++i) pa_d->spectrum[1].data->push_back(0);
 

@@ -48,7 +48,7 @@
 #define _GLPNG_H_
 
 #include <stdio.h>
-#include <container/vsx_avector.h>
+#include <container/vsx_nw_vector.h>
 #include "vsxfst.h"
 
 #include "engine_graphics_dllimport.h"

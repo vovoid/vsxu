@@ -27,9 +27,9 @@
 #include <vsx_platform.h>
 #include "vsx_engine_dllimport.h"
 
-#include <container/vsx_avector.h>
-#include <container/vsx_avector_nd.h>
-#include "vsx_string.h"
+#include <container/vsx_nw_vector.h>
+#include <container/vsx_nw_vector_nd.h>
+#include <string/vsx_string.h>
 
 #ifndef VSX_NO_GL
   #include "vsx_gl_global.h"
@@ -277,7 +277,7 @@ public:
 
 class vsx_module_param_list {
 public:
-  vsx_avector<vsx_module_param_abs*> id_vec;
+  vsx_nw_vector<vsx_module_param_abs*> id_vec;
   ENGINE_DLLIMPORT vsx_module_param_abs* create(int type, const char* name, bool crit = false, bool all_required = false);
   ~vsx_module_param_list();
 };

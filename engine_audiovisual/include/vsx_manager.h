@@ -24,7 +24,7 @@
 #ifndef VSX_MANAGER_H
 #define VSX_MANAGER_H
 
-#include <vsx_string.h>
+#include <string/vsx_string.h>
 #include <vsx_platform.h>
 #include <GL/glew.h>
 #include <string>

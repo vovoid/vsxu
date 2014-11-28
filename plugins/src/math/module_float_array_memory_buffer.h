@@ -36,7 +36,7 @@ class module_float_array_memory_buffer: public vsx_module
   // internal
   vsx_float_array my_array;
 
-  vsx_array<float> data;
+  vsx_ma_vector<float> data;
   int cur_size;
   size_t cur_size_elements;
   size_t index;

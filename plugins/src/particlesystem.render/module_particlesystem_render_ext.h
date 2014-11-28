@@ -191,7 +191,7 @@ public:
   }
 
 
-  vsx_array<float> texture_lookup_sizes_data;
+  vsx_ma_vector<float> texture_lookup_sizes_data;
 
 
   inline void calc_sizes()
@@ -224,7 +224,7 @@ public:
 
   }
 
-  vsx_array< vsx_color<> > texture_lookup_color_data;
+  vsx_ma_vector< vsx_color<> > texture_lookup_color_data;
 
   inline void calc_alphas()
   {

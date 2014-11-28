@@ -25,7 +25,7 @@
 #include "vsx_module.h"
 #include "vsx_command.h"
 #include "vsx_command_list.h"
-#include <vsx_string_helper.h>
+#include <string/vsx_string_helper.h>
 class vsx_engine_param_list;
 #include "vsx_comp_abs.h"
 #include "vsx_comp_channel.h"
@@ -952,12 +952,12 @@ void vsx_engine_param::set_string_index(vsx_string<>data, int index) {
       if (!((vsx_module_param_float_array*)module_param)->valid) {
         // data in our param is most likely pointing at invalid memory.
         vsx_float_array nn;
-        nn.data = new vsx_array<float>;
+        nn.data = new vsx_ma_vector<float>;
         ((vsx_module_param_float_array*)module_param)->param_data[0] = nn;
       }
 
       vsx_string<>deli = ";";
-      vsx_avector< vsx_string<> > parts;
+      vsx_nw_vector< vsx_string<> > parts;
       explode(data,deli,parts);
       ((vsx_module_param_float_array*)module_param)->param_data[0].data->clear();
       for (unsigned long i = 0; i < parts.size(); ++i) {

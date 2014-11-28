@@ -36,7 +36,7 @@
 class dialog_query_string : public vsx_widget_window {
   vsx_string<>i_hint;
   //std::map<vsx_string<>, vsx_widget*> fields;
-  vsx_avector<vsx_widget*> edits;
+  vsx_nw_vector<vsx_widget*> edits;
 public:
   vsx_string<>extra_value; // appended at the end of the command
   vsx_widget *edit1;
@@ -50,7 +50,7 @@ public:
       return;
     }
     vsx_string<>first_res;
-    vsx_avector< vsx_string<> > res;
+    vsx_nw_vector< vsx_string<> > res;
     for (unsigned long i = 0; i < edits.size(); ++i) {
       if (!first_res.size()) first_res = ((vsx_widget_base_edit*)(edits[i]))->get_string();
       else
@@ -110,7 +110,7 @@ public:
     // now for the edit fields
     if (in_fields != "")
     {
-      vsx_avector< vsx_string<> > f_parts;
+      vsx_nw_vector< vsx_string<> > f_parts;
       vsx_string<>deli = "|";
       explode(in_fields, deli, f_parts);
       if (f_parts.size() == 0) f_parts.push_back("");

@@ -1,5 +1,5 @@
-#include <container/vsx_avector.h>
-#include <container/vsx_array.h>
+#include <container/vsx_nw_vector.h>
+#include <container/vsx_ma_vector.h>
 #include "vsx_mesh.h"
 #include "gravity_strip.h"
 #include "vsx_timer.h"

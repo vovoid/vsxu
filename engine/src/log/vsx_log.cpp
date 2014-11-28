@@ -1,4 +1,4 @@
-#include "vsx_string.h"
+#include <string/vsx_string.h>
 #include <vsx_platform.h>
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
     #include <io.h>

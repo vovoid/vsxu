@@ -22,7 +22,7 @@
 */
 
 // engine
-#include <vsx_string.h>
+#include <string/vsx_string.h>
 #include <vsx_command_list.h>
 #include <vsx_timer.h>
 #include <debug/vsx_error.h>

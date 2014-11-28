@@ -29,7 +29,7 @@
 #include <windows.h>
 #endif
 #include "vsx_gl_global.h"
-#include <vsx_string.h>
+#include <string/vsx_string.h>
 
 //--------------------------------------------------
 

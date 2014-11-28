@@ -42,8 +42,8 @@
 #include "7zip/Compress/LZMA/LZMADecoder.h"
 #include "7zip/Compress/LZMA/LZMAEncoder.h"
 
-#include "vsx_string.h"
-#include <container/vsx_avector.h>
+#include <string/vsx_string.h>
+#include <container/vsx_nw_vector.h>
 
 #include "LzmaRam.h"
 
@@ -101,7 +101,7 @@ void vsxf::archive_create(const char* filename)
 }
 
 
-vsx_avector<vsxf_archive_info>* vsxf::get_archive_files()
+vsx_nw_vector<vsxf_archive_info>* vsxf::get_archive_files()
 {
   return &archive_files;
 }
@@ -332,7 +332,7 @@ bool vsxf::is_file(const vsx_string<>filename)
 
 void* vsxf::worker(void* p)
 {
-  vsx_avector<vsxf_archive_info*>* my_work_list = (vsx_avector<vsxf_archive_info*>*)p;
+  vsx_nw_vector<vsxf_archive_info*>* my_work_list = (vsx_nw_vector<vsxf_archive_info*>*)p;
 
   for (size_t i = 0; i < my_work_list->size(); i++)
   {
@@ -377,7 +377,7 @@ void vsxf::archive_load_all_mt(const char* filename)
   archive_load(filename, true);
 
   // 2. Construct lists to work on.
-  vsx_avector<vsxf_archive_info*> work_pool[num_threads];
+  vsx_nw_vector<vsxf_archive_info*> work_pool[num_threads];
 
 //  size_t max_threads_needed = 0;s
   size_t cur_pool_id = 0;
@@ -546,7 +546,7 @@ vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
   {
     handle->position = 0;
     handle->size = 0;
-    handle->file_data = (void*)(new vsx_avector<char>);
+    handle->file_data = (void*)(new vsx_nw_vector<char>);
     handle->filename = filename;
     handle->mode = VSXF_MODE_WRITE;
 
@@ -571,11 +571,11 @@ void vsxf::f_close(vsxf_handle* handle)
   {
     if (handle->mode == VSXF_MODE_WRITE)
     {
-      (*(vsx_avector<char>*)(handle->file_data)).push_back(0);
+      (*(vsx_nw_vector<char>*)(handle->file_data)).push_back(0);
       archive_add_file(
         handle->filename,
-        &((*((vsx_avector<char>*)(handle->file_data)))[0]),
-        ((vsx_avector<char>*)(handle->file_data))->size()
+        &((*((vsx_nw_vector<char>*)(handle->file_data)))[0]),
+        ((vsx_nw_vector<char>*)(handle->file_data))->size()
       );
     }
   }
@@ -599,7 +599,7 @@ int vsxf::f_puts(const char* buf, vsxf_handle* handle)
   int i = 0;
   while (buf[i])
   {
-    (*(vsx_avector<char>*)(handle->file_data))[handle->position = handle->size++] = buf[i++];
+    (*(vsx_nw_vector<char>*)(handle->file_data))[handle->position = handle->size++] = buf[i++];
   }
 
   return 0;

@@ -28,8 +28,8 @@
 #endif
 #include<stdlib.h>
 #include "vsxfst.h"
-#include <container/vsx_array.h>
-#include <container/vsx_avector.h>
+#include <container/vsx_ma_vector.h>
+#include <container/vsx_nw_vector.h>
 #include "vsx_bezier_calc.h"
 #include "vsx_sequence.h"
 #include <vector/vsx_vector3_helper.h>
@@ -233,7 +233,7 @@ float vsx_sequence::execute(float t_incr)
 
 vsx_string<>vsx_sequence::get_string()
 {
-  vsx_avector< vsx_string<> > parts;
+  vsx_nw_vector< vsx_string<> > parts;
   for (unsigned long i = 0; i < items.size(); ++i)
   {
     parts.push_back(vsx_string_helper::f2s(items[i].delay)+";"+vsx_string_helper::f2s(items[i].interpolation)+";"+base64_encode((items[i].get_value())));
@@ -246,14 +246,14 @@ vsx_string<>vsx_sequence::get_string()
 void vsx_sequence::set_string(vsx_string<>str)
 {
   items.clear();
-  vsx_avector< vsx_string<> > rows;
+  vsx_nw_vector< vsx_string<> > rows;
   vsx_string<>deli = "|";
   explode(str, deli, rows);
   vsx_string<>deli2 = ";";
   vsx_sequence_item n_i;
   for (unsigned long i = 0; i < rows.size(); ++i)
   {
-    vsx_avector< vsx_string<> > parts;
+    vsx_nw_vector< vsx_string<> > parts;
     explode(rows[i], deli2,  parts);
     n_i.delay = vsx_string_helper::s2f(parts[0]);
     n_i.interpolation = (int)vsx_string_helper::s2f(parts[1]);
@@ -262,7 +262,7 @@ void vsx_sequence::set_string(vsx_string<>str)
       n_i.value = vsx_string_helper::s2f(ff);
     } else
     if (n_i.interpolation == 4) {
-      vsx_avector< vsx_string<> > pld_l;
+      vsx_nw_vector< vsx_string<> > pld_l;
       vsx_string<>pdeli_l = ":";
       explode(ff, pdeli_l, pld_l);
       n_i.value = vsx_string_helper::s2f(pld_l[0]);

@@ -6,8 +6,8 @@
 
 class outline_font_cache
 {
-  vsx_avector< vsx_string<> > names;
-  vsx_avector<font_outline_holder*> pointers;
+  vsx_nw_vector< vsx_string<> > names;
+  vsx_nw_vector<font_outline_holder*> pointers;
 
   bool is_name_in_cache(vsx_string<>name)
   {

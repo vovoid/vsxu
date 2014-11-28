@@ -29,7 +29,7 @@
 #include <list>
 #include <vector>
 #include "vsxfst.h"
-#include <vsx_string_helper.h>
+#include <string/vsx_string_helper.h>
 #include "vsx_engine_dllimport.h"
 
 #ifdef VSXU_DEBUG
@@ -78,7 +78,7 @@ public:
   vsx_string<>title; // Title - for internal GUI stuff like menus and stuff
   vsx_string<>cmd; // the first part of the command, the actual command
   vsx_string<>cmd_data; // the second parameter (for simple commands)
-  vsx_avector<char> cmd_data_bin; // the binary part of the command
+  vsx_nw_vector<char> cmd_data_bin; // the binary part of the command
   vsx_string<>raw; // the unparsed command, empty when binary command
   std::vector< vsx_string<> > parts; // the parts of the command
 

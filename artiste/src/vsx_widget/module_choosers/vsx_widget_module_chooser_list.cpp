@@ -192,7 +192,7 @@ public:
         if (tt->widget_type == VSX_WIDGET_TYPE_SERVER || macro) {
           drop_pos = l_distance.center;
           // split the identifier into the name
-          vsx_avector< vsx_string<> > parts;
+          vsx_nw_vector< vsx_string<> > parts;
           vsx_string<>deli = ";";
           explode(i_mod_info[mod_i]->identifier, deli, parts);
           vsx_string<>module_name = parts[parts.size()-1];

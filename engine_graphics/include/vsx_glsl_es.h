@@ -58,9 +58,9 @@ GLint gl_get_program_val(GLuint object, GLenum pname) {
     return val;
   }
 
-  vsx_avector<vsx_glsl_type_info> v_list;
+  vsx_nw_vector<vsx_glsl_type_info> v_list;
 
-  vsx_avector<vsx_glsl_type_info> a_list;
+  vsx_nw_vector<vsx_glsl_type_info> a_list;
 
   void process_vars() {
     std::map<vsx_string<>,vsx_string<> > vars;
@@ -73,7 +73,7 @@ GLint gl_get_program_val(GLuint object, GLenum pname) {
 #endif
     // step 1, clean up multiple spaces etc, stop at '{' as that is
     // the beginning of the shader, no uniforms there
-    vsx_avector< vsx_string<> > parts;
+    vsx_nw_vector< vsx_string<> > parts;
     bool run = true;
     vsx_string<>ts;
     long i = 0;
@@ -117,7 +117,7 @@ GLint gl_get_program_val(GLuint object, GLenum pname) {
      // printf("f_part: %s\n",parts[i].c_str());
     //}
 
-    //vsx_avector< vsx_string<> > parts;
+    //vsx_nw_vector< vsx_string<> > parts;
     run = true;
     i = 0;
     cs = 0; // comment status, 1 = / found, 2 =
@@ -179,7 +179,7 @@ GLint gl_get_program_val(GLuint object, GLenum pname) {
           ++i;
         }
         vp = vp + parts[i];
-        vsx_avector< vsx_string<> > pp;
+        vsx_nw_vector< vsx_string<> > pp;
         vsx_string<>deli = ',';
         vp = str_replace(";","",vp);
         explode(vp,deli,pp);
@@ -202,7 +202,7 @@ GLint gl_get_program_val(GLuint object, GLenum pname) {
           ++i;
         }
         vp = vp + parts[i];
-        vsx_avector< vsx_string<> > pp;
+        vsx_nw_vector< vsx_string<> > pp;
         vsx_string<>deli = ',';
         vp = str_replace(";","",vp);
         explode(vp,deli,pp);

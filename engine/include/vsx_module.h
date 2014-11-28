@@ -60,14 +60,14 @@ typedef struct {
   // engine_parameter[0] is module shared data path, data/config files that are used to define behaviour and existence of modules.
   //                     Examples: The render.glsl module is a good example. It returns one available module per file it finds
   //                               in its data directory.
-  vsx_avector< vsx_string<> > engine_parameter;
+  vsx_nw_vector< vsx_string<> > engine_parameter;
 } vsx_engine_environment;
 
 // engine float arrays, data flowing from the engine to a module
 // 0 is reserved for sound data, wave (512 floats)
 // 1 is reserved for sound data, freq (512 floats)
 typedef struct {
-  vsx_avector<float> array;
+  vsx_nw_vector<float> array;
 } vsx_engine_float_array;
 
 
@@ -143,7 +143,7 @@ public:
   // item 2 is reserved for Full song PCM data for the sequencer, Left Channel (from module to host app)
   // item 3 is reserved for Full song PCM data for the sequencer, Right Channel (from module to host app)
   // item 4..999 are reserved for Vovoid use
-  vsx_avector<vsx_engine_float_array*> param_float_arrays;
+  vsx_nw_vector<vsx_engine_float_array*> param_float_arrays;
 
   // tm
   void* tm;
@@ -384,7 +384,7 @@ public:
 
   // avector with all the filenames that this module needs
   // this is needed to build .vsx packages
-  vsx_avector< vsx_string<> > resources;
+  vsx_nw_vector< vsx_string<> > resources;
   // the init method, in here you should do stuff that needs to be done only once -
   // - allocate + initialize memory
   // - read configuration files

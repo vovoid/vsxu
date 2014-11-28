@@ -29,7 +29,7 @@ template<typename T = float>
 class vsx_quaternion_array
 {
 public:
-  vsx_array< vsx_quaternion<T> >* data;
+  vsx_ma_vector< vsx_quaternion<T> >* data;
   unsigned long timestamp;
   vsx_quaternion_array()
   {

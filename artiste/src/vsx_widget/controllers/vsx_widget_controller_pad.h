@@ -39,7 +39,7 @@ class vsx_widget_controller_pad : public vsx_widget_controller_base
   vsx_widget* knob_x2;
   vsx_widget* knob_y2;
   float draw_area;
-  vsx_avector<vsx_vector3<> > prev_draw;
+  vsx_nw_vector<vsx_vector3<> > prev_draw;
   int prev_pos;
   void send_to_server();
 public:

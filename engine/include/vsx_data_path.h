@@ -1,7 +1,7 @@
 #ifndef VSX_DATA_PATH_H
 #define VSX_DATA_PATH_H
 
-#include <vsx_string.h>
+#include <string/vsx_string.h>
 #include <vsx_engine_dllimport.h>
 #include "vsx_engine.h"
 

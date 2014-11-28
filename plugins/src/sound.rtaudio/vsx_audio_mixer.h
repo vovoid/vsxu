@@ -3,7 +3,7 @@
 
 class vsx_audio_mixer
 {
-  vsx_array<vsx_audio_mixer_channel*> mixing_channels;
+  vsx_ma_vector<vsx_audio_mixer_channel*> mixing_channels;
 
 public:
 

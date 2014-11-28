@@ -27,7 +27,7 @@
 	//#include <windows.h>
 //#endif
 
-#include "vsx_string.h"
+#include <string/vsx_string.h>
 #include "vsxg.h"
 #include <stdio.h>
 #include <stdlib.h>

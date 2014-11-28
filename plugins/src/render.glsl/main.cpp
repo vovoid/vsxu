@@ -38,9 +38,9 @@ typedef struct {
   vsx_string<>module_name;
 } shader_info;
 
-vsx_avector<shader_info> ext_shaders;
+vsx_nw_vector<shader_info> ext_shaders;
 
-vsx_avector<unsigned long> init_run; // to keep track of the first time the module_info
+vsx_nw_vector<unsigned long> init_run; // to keep track of the first time the module_info
 // is queried, no need to link shaders in that step because the param_spec won't be read anyway.
 
 
@@ -278,11 +278,11 @@ unsigned long MOD_NM(vsx_engine_environment* environment)
 
     shader_info info;
     info.name = *it;
-    vsx_avector< vsx_string<> > parts;
+    vsx_nw_vector< vsx_string<> > parts;
 
     vsx_string<>deli = "/";
     explode(filename, deli, parts);
-    vsx_avector< vsx_string<> > name_result;
+    vsx_nw_vector< vsx_string<> > name_result;
 
     if (parts.size() > 1) {
       for (unsigned long i = 1; i < parts.size(); ++i) {

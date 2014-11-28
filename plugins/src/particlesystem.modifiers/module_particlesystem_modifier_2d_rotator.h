@@ -7,8 +7,8 @@ class module_particlesystem_modifier_2d_rotator : public vsx_module
   // out
   vsx_module_param_particlesystem* result_particlesystem;
 
-  vsx_array< vsx_quaternion<> > rotation;
-  vsx_array< vsx_quaternion<> > rotation_delta;
+  vsx_ma_vector< vsx_quaternion<> > rotation;
+  vsx_ma_vector< vsx_quaternion<> > rotation_delta;
   vsx_quaternion<> q1;
   vsx_quaternion<>* q_out;
 public:

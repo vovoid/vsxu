@@ -14,7 +14,7 @@ class vsx_module_render_gravity_ribbon_particles : public vsx_module
   vsx_module_param_render* render_result;
 
   // internal
-  vsx_avector<gravity_strip*> gr;
+  vsx_nw_vector<gravity_strip*> gr;
   gravity_strip* grp;
   float last_update;
   unsigned long prev_num_particles;

@@ -30,7 +30,7 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 
-#include <container/vsx_avector.h>
+#include <container/vsx_nw_vector.h>
 #include <vsxfst.h>
 //#define TCP_NODELAY 1
 
@@ -273,7 +273,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
       {
         vsx_string<>recv_data(recv_buf);
 
-        vsx_avector< vsx_string<> > parts;
+        vsx_nw_vector< vsx_string<> > parts;
         vsx_string<>deli = "\n";
         explode(recv_data, deli, parts);
         for (unsigned long i = 0; i < parts.size(); i++)

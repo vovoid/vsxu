@@ -40,7 +40,7 @@ protected:
 
 //-- state meta information
   vsx_string<>meta_information;
-  vsx_avector< vsx_string<> > meta_fields; // split meta information
+  vsx_nw_vector< vsx_string<> > meta_fields; // split meta information
 
 //-- component forge
   std::vector<vsx_comp*> forge;
@@ -58,7 +58,7 @@ protected:
   #endif
 
 //-- outputs
-  vsx_avector<vsx_comp*> outputs;
+  vsx_nw_vector<vsx_comp*> outputs;
 
 //-- interpolation list
   vsx_module_param_interpolation_list interpolation_list;
@@ -150,7 +150,7 @@ protected:
   vsx_command_list commands_internal;
 
 //-- undo buffer
-  vsx_avector<vsx_command_list*> undo_buffer;
+  vsx_nw_vector<vsx_command_list*> undo_buffer;
 
 
 
@@ -186,7 +186,7 @@ public:
   virtual vsx_string<>get_modules_not_loaded() = 0;
 
   // get a list of all external-exposed parameters (parameters that we want to export from a sub-engine)
-  virtual void get_external_exposed_parameters( vsx_avector< vsx_module_param_abs* >* result ) = 0;
+  virtual void get_external_exposed_parameters( vsx_nw_vector< vsx_module_param_abs* >* result ) = 0;
 
   // should be run soon after the GL surface is initialized
   virtual bool start() = 0;

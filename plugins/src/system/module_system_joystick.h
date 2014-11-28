@@ -13,8 +13,8 @@ struct js_event js;
 
 class joystick_info {
 public:
-  vsx_avector<vsx_module_param_float*> axes;
-  vsx_avector<vsx_module_param_float*> buttons;
+  vsx_nw_vector<vsx_module_param_float*> axes;
+  vsx_nw_vector<vsx_module_param_float*> buttons;
   vsx_module_param_string* name;
 
   int joy_fd;
@@ -33,7 +33,7 @@ public:
 
 class module_system_joystick : public vsx_module
 {
-  vsx_avector<joystick_info> joysticks;
+  vsx_nw_vector<joystick_info> joysticks;
   int joystick_count;
 
 public:

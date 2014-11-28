@@ -893,6 +893,7 @@ void vsx_texture::upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigne
     else
     {
       unsigned char* data2 = new unsigned char[(size_x) * (size_y) * (bpp)];
+      // (size_x) * (size_y) * (bpp) == 12 => problem
       int dy = 0;
       int sxbpp = size_x*bpp;
       for (int y = size_y-1; y >= 0; --y)

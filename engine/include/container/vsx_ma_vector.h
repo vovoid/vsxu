@@ -21,13 +21,13 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_ARRAY_H
-#define VSX_ARRAY_H
+#ifndef VSX_MA_VECTOR_H
+#define VSX_MA_VECTOR_H
 
 #include <stdlib.h>
 #include <string.h>
 #include <vsx_platform.h>
-// VSX Array class
+// VSX malloc vector class
 //
 // This is a special case array aimed at speed - for mesh data etc.
 // It uses a nasty trick - allocating class pointers with malloc.
@@ -38,7 +38,7 @@
 // Now you've been warned, use it for speed!
 
 template<class T>
-class vsx_array
+class vsx_ma_vector
 {
   size_t allocated;
   size_t used;
@@ -63,7 +63,7 @@ public:
   }
 
   // clones another array of same type into this one
-  void clone(vsx_array<T>* F) VSX_ALWAYS_INLINE
+  void clone(vsx_ma_vector<T>* F) VSX_ALWAYS_INLINE
   {
     allocate(F->size());
     memcpy((void*)A, (void*)(F->get_pointer()), sizeof(T) * used);
@@ -188,7 +188,7 @@ public:
     return A[index];
   }
 
-  vsx_array() :
+  vsx_ma_vector() :
     allocated(0),
     used(0),
     allocation_increment(1),
@@ -198,7 +198,7 @@ public:
   {
   }
 
-  ~vsx_array()
+  ~vsx_ma_vector()
   {
     if (data_volatile) return;
   	if (A) free(A);

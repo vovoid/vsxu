@@ -26,7 +26,7 @@
 
 #include <map>
 #include <vector>
-#include <vsx_string.h>
+#include <string/vsx_string.h>
 #include <vsx_param.h>
 #include <vsx_module.h>
 
@@ -79,7 +79,7 @@ public:
     for (std::list< vsx_string<> >::iterator it = mfiles.begin(); it != mfiles.end(); ++it)
     {
       vsx_string<>dynamic_object_file_name = (*it);
-      //vsx_avector< vsx_string<> > parts;
+      //vsx_nw_vector< vsx_string<> > parts;
       vsx_dynamic_object_handle plugin_handle;
       //vsx_string<>deli = vsx_get_directory_separator();
       //explode((*it),deli,parts);
@@ -229,7 +229,7 @@ public:
         // Only the first will show up in the gui. The second identifier is still usable in
         // old state files.
         vsx_string<>deli = "||";
-        vsx_avector< vsx_string<> > parts;
+        vsx_nw_vector< vsx_string<> > parts;
         explode(module_info->identifier, deli, parts);
         vsx_module_plugin_info* applied_plugin_info = 0;
 

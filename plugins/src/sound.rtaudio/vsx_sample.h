@@ -27,7 +27,7 @@ class vsx_sample : public vsx_audio_mixer_channel
 
 protected:
 
-  vsx_array<int16_t> data;
+  vsx_ma_vector<int16_t> data;
   double pitch_bend;
   double gain;
   int16_t prev_left_value;
@@ -51,7 +51,7 @@ public:
   {
   }
 
-  vsx_array<int16_t>* get_data()
+  vsx_ma_vector<int16_t>* get_data()
   {
     return &data;
   }

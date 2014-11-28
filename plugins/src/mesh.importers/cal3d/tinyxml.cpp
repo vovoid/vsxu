@@ -894,12 +894,12 @@ void vsxTiXmlAttribute::SetDoubleValue( double _value )
 	SetValue (buf);
 }
 
-const int vsxTiXmlAttribute::IntValue() const
+int vsxTiXmlAttribute::IntValue()
 {
 	return atoi (value.c_str ());
 }
 
-const double  vsxTiXmlAttribute::DoubleValue() const
+double  vsxTiXmlAttribute::DoubleValue()
 {
 	return atof (value.c_str ());
 }

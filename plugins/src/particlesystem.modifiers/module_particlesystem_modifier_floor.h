@@ -23,7 +23,7 @@ public:
   // internal
   int i;
   vsx_particlesystem<>* particles;
-  vsx_array<float> f_randpool;
+  vsx_ma_vector<float> f_randpool;
   float* f_randpool_pointer;
 
 

@@ -25,11 +25,11 @@
 #include <windows.h>
 #endif
 #include <vector>
-#include <container/vsx_array.h>
+#include <container/vsx_ma_vector.h>
 #include <vector/vsx_vector3.h>
-#include <container/vsx_avector.h>
-#include "vsx_string.h"
-#include <vsx_string_helper.h>
+#include <container/vsx_nw_vector.h>
+#include <string/vsx_string.h>
+#include <string/vsx_string_helper.h>
 using namespace std;
 #include <unistd.h>
 #include <sys/types.h>
@@ -83,10 +83,10 @@ int main(int argc, char* argv[])
 
   char buf[65535];
   vsx_string<>line;
-  vsx_array< vsx_vector3<> > vertices;
-  vsx_array< vsx_vector3<> > normals;
-  vsx_array< vsx_tex_coord2f > texcoords;
-  vsx_array< vsx_face3 > faces;
+  vsx_ma_vector< vsx_vector3<> > vertices;
+  vsx_ma_vector< vsx_vector3<> > normals;
+  vsx_ma_vector< vsx_tex_coord2f > texcoords;
+  vsx_ma_vector< vsx_face3 > faces;
   mesh.data->vertex_tex_coords.reset_used();
   int face_cur = 0;
   while (fgets(buf,65535,fp))
@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
 
     line.trim_lf();
 
-    vsx_avector< vsx_string<> > parts;
+    vsx_nw_vector< vsx_string<> > parts;
     vsx_string<>deli = " ";
     explode(line, deli, parts);
     if (parts[0] == "v")
@@ -132,11 +132,11 @@ int main(int argc, char* argv[])
       vsx_face3 ff;
       vsx_string<>deli2 = "/";
 
-      vsx_avector< vsx_string<> > parts2;
+      vsx_nw_vector< vsx_string<> > parts2;
       explode(parts[1], deli2, parts2);
-      vsx_avector< vsx_string<> > parts3;
+      vsx_nw_vector< vsx_string<> > parts3;
       explode(parts[2], deli2, parts3);
-      vsx_avector< vsx_string<> > parts4;
+      vsx_nw_vector< vsx_string<> > parts4;
       explode(parts[3], deli2, parts4);
 
       ff.c = face_cur;

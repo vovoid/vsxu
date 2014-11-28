@@ -42,8 +42,8 @@ class vsx_widget_profiler : public vsx_widget
 {
   vsx_widget_time_holder time;
 
-  vsx_avector<vsx_widget_profiler_thread*> threads;
-  vsx_avector<vsx_widget_profiler_plot*> plots;
+  vsx_nw_vector<vsx_widget_profiler_thread*> threads;
+  vsx_nw_vector<vsx_widget_profiler_plot*> plots;
 
   vsx_widget* file_list;
   vsx_widget* item_list;

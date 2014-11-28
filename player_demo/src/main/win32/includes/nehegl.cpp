@@ -21,8 +21,8 @@
 #include <GL/glu.h>
 #include <vector>
 #include <map>
-#include <container/vsx_avector.h>
-#include "vsx_string.h"
+#include <container/vsx_nw_vector.h>
+#include <string/vsx_string.h>
 using namespace std;
 #include "nehegl.h"
 //#define DM_POSITION             0x00000020L

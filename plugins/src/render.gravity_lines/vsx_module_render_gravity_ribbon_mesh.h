@@ -21,7 +21,7 @@ class vsx_module_render_gravity_ribbon_mesh : public vsx_module
   vsx_module_param_mesh* mesh_result;
 
   // internal
-  vsx_avector<gravity_strip*> gr;
+  vsx_nw_vector<gravity_strip*> gr;
   gravity_strip* grp;
   vsx_mesh<>** mesh;
   vsx_mesh<>* mesh_out;

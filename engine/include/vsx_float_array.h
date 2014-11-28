@@ -28,7 +28,7 @@
 class vsx_float_array
 {
 public:
-  vsx_array<float>* data;
+  vsx_ma_vector<float>* data;
   unsigned long timestamp;
   vsx_float_array()
   {

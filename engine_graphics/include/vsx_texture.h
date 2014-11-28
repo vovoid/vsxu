@@ -28,7 +28,7 @@
 #include <engine_graphics_dllimport.h>
 #include <map>
 #include <vsx_texture_info.h>
-#include <vsx_string.h>
+#include <string/vsx_string.h>
 #include <vsxg.h>
 #include <vsx_bitmap.h>
 #include <vsx_matrix.h>

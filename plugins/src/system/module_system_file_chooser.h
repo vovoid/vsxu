@@ -10,7 +10,7 @@ class module_system_file_chooser : public vsx_module
 
   // internal
   int p_updates;
-  vsx_avector< vsx_string<> > files_list;
+  vsx_nw_vector< vsx_string<> > files_list;
   vsx_string<>old_path;
 
 public:

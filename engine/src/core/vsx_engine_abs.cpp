@@ -34,7 +34,7 @@
 
 #include <dirent.h>
 #include <sys/types.h>
-#include "vsx_string.h"
+#include <string/vsx_string.h>
 #include "vsx_log.h"
 #include "vsx_engine.h"
 #include "vsx_master_sequencer/vsx_master_sequence_channel.h"

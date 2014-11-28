@@ -92,7 +92,7 @@ public:
       // store the sample data in float array
       //full_pcm_data_l.array[index]
       const float one_div_32767 = 1.0 / 32767.0;
-      vsx_array<int16_t>* data = main_sample.get_data();
+      vsx_ma_vector<int16_t>* data = main_sample.get_data();
       size_t index_data = 0;
       for (size_t i = 0; i < (data->size() >> 1); i++)
       {
@@ -122,6 +122,7 @@ public:
     {
       main_sample.goto_time(engine->vtime);
       float cur_sample_time = main_sample.get_time();
+      VSX_UNUSED(cur_sample_time);
     }
 
     if (engine->state == VSX_ENGINE_PLAYING)

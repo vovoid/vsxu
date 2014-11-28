@@ -41,7 +41,7 @@
 #include "vsx_module.h"
 #include "vsx_version.h"
 #include "vsx_platform.h"
-#include <vsx_string_helper.h>
+#include <string/vsx_string_helper.h>
 // local includes
 #include "log/vsx_log_a.h"
 #include "vsx_widget.h"
@@ -1495,7 +1495,7 @@ vsx_string<>vsx_widget_server::get_unique_name(vsx_string<>name) {
   vsx_string<>i_val;
 
   vsx_string<>deli = "_";
-  vsx_avector< vsx_string<> > parts;
+  vsx_nw_vector< vsx_string<> > parts;
   explode(name, deli, parts);
 
   // now operate on the last bit, see if it's a valid number

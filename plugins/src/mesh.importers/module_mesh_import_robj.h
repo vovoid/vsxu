@@ -1,4 +1,4 @@
-#include <vsx_string_helper.h>
+#include <string/vsx_string_helper.h>
 
 
 class module_mesh_import_robj : public vsx_module
@@ -96,10 +96,10 @@ public:
 
     char buf[65535];
     vsx_string<>line;
-    vsx_array<vsx_vector3<> > vertices;
-    vsx_array<vsx_vector3<> > normals;
-    vsx_array<vsx_tex_coord2f> texcoords;
-    vsx_array<vsx_tex_coord2f> texcoords_2;
+    vsx_ma_vector<vsx_vector3<> > vertices;
+    vsx_ma_vector<vsx_vector3<> > normals;
+    vsx_ma_vector<vsx_tex_coord2f> texcoords;
+    vsx_ma_vector<vsx_tex_coord2f> texcoords_2;
 
     int face_cur = 0;
     bool found_normals = false;
@@ -121,7 +121,7 @@ public:
         if (!line.size())
           continue;
 
-        vsx_avector< vsx_string<> > parts;
+        vsx_nw_vector< vsx_string<> > parts;
         vsx_string<>deli = " ";
         explode(line, deli, parts);
         if (parts[0] == "v") {
@@ -156,11 +156,11 @@ public:
             vsx_string<>deli2 = "/";
 
 
-            vsx_avector< vsx_string<> > parts2;
+            vsx_nw_vector< vsx_string<> > parts2;
             explode(parts[1], deli2, parts2);
-            vsx_avector< vsx_string<> > parts3;
+            vsx_nw_vector< vsx_string<> > parts3;
             explode(parts[2], deli2, parts3);
-            vsx_avector< vsx_string<> > parts4;
+            vsx_nw_vector< vsx_string<> > parts4;
             explode(parts[3], deli2, parts4);
 
             ff.c = face_cur;
@@ -251,7 +251,7 @@ public:
         if (line[line.size()-1] == 0x0D) line.pop_back();
         if (line.size())
         {
-          vsx_avector< vsx_string<> > parts;
+          vsx_nw_vector< vsx_string<> > parts;
           vsx_string<>deli = " ";
           explode(line, deli, parts);
           if (parts[0] == "v")
@@ -263,11 +263,11 @@ public:
               vsx_face3 ff;
               vsx_string<>deli2 = "/";
 
-              vsx_avector< vsx_string<> > parts2;
+              vsx_nw_vector< vsx_string<> > parts2;
               explode(parts[1], deli2, parts2);
-              vsx_avector< vsx_string<> > parts3;
+              vsx_nw_vector< vsx_string<> > parts3;
               explode(parts[2], deli2, parts3);
-              vsx_avector< vsx_string<> > parts4;
+              vsx_nw_vector< vsx_string<> > parts4;
               explode(parts[3], deli2, parts4);
 
               ff.c = vsx_string_helper::s2i(parts2[0])-1;

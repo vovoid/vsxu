@@ -26,7 +26,7 @@
 #ifndef VSX_GL_ES_SHADER_WRAPPER_H
 #define VSX_GL_ES_SHADER_WRAPPER_H
 
-#include "vsx_string.h"
+#include <string/vsx_string.h>
 #include "vsx_gl_global.h"
 
 #define VSX_GL_ES_MATRIX_STACK_DEPTH 10

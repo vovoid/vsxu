@@ -25,8 +25,8 @@
 #define VSX_WIDGET_BASE_H
 
 // engine
-#include <vsx_string.h>
-#include <vsx_string_helper.h>
+#include <string/vsx_string.h>
+#include <string/vsx_string_helper.h>
 #include <vsx_color.h>
 #include <vsx_command_list.h>
 
@@ -203,7 +203,7 @@ public:
   bool region_exclusive;
 
   // logging
-  vsx_avector< vsx_string<> > log_cmd;
+  vsx_nw_vector< vsx_string<> > log_cmd;
   virtual void log(const vsx_string<>& t)
   {
     if (widget_type >= 100)

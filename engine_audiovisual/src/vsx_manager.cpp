@@ -24,7 +24,7 @@
 #define PLATFORM_SHARED_FILES_STL
 #include <map>
 #include <vector>
-#include <vsx_string.h>
+#include <string/vsx_string.h>
 #include <vsx_param.h>
 #include <vsx_module.h>
 #include "vsx_module_list_abs.h"

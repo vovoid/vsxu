@@ -27,7 +27,7 @@
 
 
 #include <vsx_platform.h>
-#include <vsx_string_helper.h>
+#include <string/vsx_string_helper.h>
 #include <vector/vsx_vector3.h>
 #include "vsx_engine_dllimport.h"
 
@@ -55,7 +55,7 @@ class vsx_sequence
 {
   vsx_bezier_calc<float> bez_calc;
 public:
-  vsx_avector<vsx_sequence_item> items;
+  vsx_nw_vector<vsx_sequence_item> items;
   float i_time;
   float cur_val;
   float cur_delay;

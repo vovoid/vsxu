@@ -5,8 +5,8 @@
 // helper functions for vsx_vector
 
 #include <vector/vsx_vector3.h>
-#include <vsx_string.h>
-#include <vsx_string_helper.h>
+#include <string/vsx_string.h>
+#include <string/vsx_string_helper.h>
 #include <vsxfst.h>
 
 namespace vsx_vector3_helper
@@ -16,7 +16,7 @@ namespace vsx_vector3_helper
   {
     vsx_vector3<T> res;
     vsx_string<>deli = ",";
-    vsx_avector< vsx_string<> > pp;
+    vsx_nw_vector< vsx_string<> > pp;
     explode(val,deli,pp);
     if (pp.size() >= 1)
     res.x = vsx_string_helper::s2f(pp[0]);

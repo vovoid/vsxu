@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <wchar.h>
 
-#include <vsx_string.h>
-#include <vsx_req.h>
+#include <string/vsx_string.h>
+#include <tools/vsx_req.h>
 
 namespace vsx_string_helper
 {
@@ -163,7 +163,7 @@ namespace vsx_string_helper
    * @param parts
    */
   template < typename W = char >
-  inline void explode_single( vsx_string<W> input, W delimiter_char, vsx_avector< vsx_string<W> >& parts )
+  inline void explode_single( vsx_string<W> input, W delimiter_char, vsx_nw_vector< vsx_string<W> >& parts )
   {
     VSX_REQ_TRUE( input.size() );
     vsx_string<W> temp;

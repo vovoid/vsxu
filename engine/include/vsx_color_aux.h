@@ -2,7 +2,7 @@
 #define VSX_COLOR_AUX_H
 
 #include <vsx_color.h>
-#include <vsx_string.h>
+#include <string/vsx_string.h>
 #include <vsxfst.h>
 
 
@@ -12,7 +12,7 @@ namespace vsx_color_aux
   {
     vsx_color<> res;
     vsx_string<>deli = ",";
-    vsx_avector< vsx_string<> > pp;
+    vsx_nw_vector< vsx_string<> > pp;
     explode(val,deli,pp);
 
     if (pp.size() >= 1)

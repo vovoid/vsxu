@@ -536,7 +536,7 @@ bool app_draw(int id)
 void app_char(long key)
 {
   #ifdef VSXU_DEBUG
-  printf("char code: %d\n", key);
+  printf("char code: %ld\n", key);
   printf("alt: %d\n", (int)app_alt);
   printf("ctrl: %d\n", (int)app_ctrl);
   printf("shift: %d\n", (int)app_shift);
@@ -572,7 +572,7 @@ void app_char(long key)
 void app_key_down(long key)
 {
   #ifdef VSXU_DEBUG
-    printf("key code: %d\n", key);
+    printf("key code: %ld\n", key);
     printf("alt: %d\n", (int)app_alt);
     printf("ctrl: %d\n", (int)app_ctrl);
     printf("shift: %d\n", (int)app_shift);

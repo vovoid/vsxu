@@ -145,7 +145,7 @@ public:
   vsx_string<>get_modules_not_loaded();
 
   // get a list of all external-exposed parameters (parameters that we want to export from a sub-engine)
-  void get_external_exposed_parameters( vsx_avector< vsx_module_param_abs* >* result );
+  void get_external_exposed_parameters( vsx_nw_vector< vsx_module_param_abs* >* result );
 
 
 //-- engine function / lifecycle presented in the order they should happen

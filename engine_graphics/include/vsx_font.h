@@ -84,7 +84,7 @@ public:
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_font_info* load(vsx_string<>font, vsxf* filesystem);
   VSX_ENGINE_GRAPHICS_DLLIMPORT void unload();
 
-  vsx_avector< vsx_color<> > syntax_colors;
+  vsx_nw_vector< vsx_color<> > syntax_colors;
   // is in 2d mode?
   bool mode_2d;
   // keeping track of our font

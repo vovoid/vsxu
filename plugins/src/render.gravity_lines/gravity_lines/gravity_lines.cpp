@@ -1,5 +1,5 @@
-#include <container/vsx_avector.h>
-#include <container/vsx_array.h>
+#include <container/vsx_nw_vector.h>
+#include <container/vsx_ma_vector.h>
 #include "gravity_lines.h"
 
 void Mass::setCenter(const float &x, const float &y, const float &z) {

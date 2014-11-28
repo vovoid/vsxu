@@ -36,12 +36,12 @@
   #include <stdlib.h>
 #endif
 
-#include <container/vsx_avector.h>
-#include <vsx_string.h>
+#include <container/vsx_nw_vector.h>
+#include <string/vsx_string.h>
 
 class vsx_argvector
 {
-  vsx_avector< vsx_string<> > data;
+  vsx_nw_vector< vsx_string<> > data;
 public:
   vsx_string<>& operator[](size_t index)
   {

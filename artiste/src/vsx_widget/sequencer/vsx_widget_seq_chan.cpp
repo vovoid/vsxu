@@ -218,7 +218,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
   {
     while (item_iterator < (int) items.size() && time_iterator <= view_time_end)
     {
-      vsx_avector< vsx_string<> > parts;
+      vsx_nw_vector< vsx_string<> > parts;
       vsx_string<>deli = ",";
       vsx_string<>value = items[item_iterator].get_value();
       explode(value, deli, parts);
@@ -863,7 +863,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
         // prepare existing value with updated value
         if (param_type == VSX_MODULE_PARAM_ID_QUATERNION)
         {
-          vsx_avector< vsx_string<> > parts;
+          vsx_nw_vector< vsx_string<> > parts;
           vsx_string<>deli = ",";
           vsx_string<>value = items[mouse_clicked_id].get_value();
           explode(value, deli, parts);

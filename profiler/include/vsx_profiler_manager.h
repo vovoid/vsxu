@@ -50,7 +50,7 @@
 #include <vsx_data_path.h>
 #include <vsx_timer.h>
 #include <vsxfst.h>
-#include <vsx_string_helper.h>
+#include <string/vsx_string_helper.h>
 #include <debug/vsx_error.h>
 
 // You can set VSX_PROFILER_MAX_THREADS in your make script as well

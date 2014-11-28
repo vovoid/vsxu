@@ -27,7 +27,7 @@
 #include <list>
 
 #include <vsxfst.h>
-#include <container/vsx_avector.h>
+#include <container/vsx_nw_vector.h>
 #include <vector/vsx_vector4.h>
 #include <vsx_profiler_manager.h>
 #include <vsxfst.h>
@@ -40,7 +40,7 @@ class vsx_profiler_consumer_chunk
 public:
   double time_start;
   double time_end;
-  long depth;
+  size_t depth;
   uint64_t   flags;
   uint64_t   cycles_start;
   uint64_t   cycles_end;
@@ -76,13 +76,13 @@ public:
 
 class vsx_profiler_consumer
 {
-  vsx_avector< vsx_string<> > filenames;
+  vsx_nw_vector< vsx_string<> > filenames;
 
 
-  vsx_avector<vsx_profile_chunk> current_profile;
+  vsx_nw_vector<vsx_profile_chunk> current_profile;
 
-  vsx_avector<u_int64_t> current_threads;
-  vsx_avector<u_int64_t> current_plots;
+  vsx_nw_vector<u_int64_t> current_threads;
+  vsx_nw_vector<u_int64_t> current_plots;
 
   vsxf filesystem;
 
@@ -115,7 +115,7 @@ public:
     {
       vsx_string<>n = *it;
       vsx_string<>deli = DIRECTORY_SEPARATOR;
-      vsx_avector< vsx_string<> > parts;
+      vsx_nw_vector< vsx_string<> > parts;
       explode(n, deli, parts);
 
       if (parts.size() < 2)
@@ -253,7 +253,7 @@ public:
    * @param t_end
    * @param chunks_result
    */
-  void get_thread(double t_start, double t_end, uint64_t thread_id, vsx_avector<vsx_profiler_consumer_chunk> &chunks_result)
+  void get_thread(double t_start, double t_end, uint64_t thread_id, vsx_nw_vector<vsx_profiler_consumer_chunk> &chunks_result)
   {
     VSX_UNUSED(t_start);
     VSX_UNUSED(t_end);
@@ -325,7 +325,7 @@ public:
 
   }
 
-  void get_plot(u_int64_t index, vsx_avector<vsx_profiler_consumer_plot> &chunks_result)
+  void get_plot(u_int64_t index, vsx_nw_vector<vsx_profiler_consumer_plot> &chunks_result)
   {
     for (size_t i = 0; i < current_profile.size(); i++)
     {

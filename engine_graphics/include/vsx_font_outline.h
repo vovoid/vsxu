@@ -32,7 +32,7 @@
 #include "ftgl/FTGLOutlineFont.h"
 #include "ftgl/FTGLTextureFont.h"
 #include "ftgl/FTFont.h"
-#include "vsx_string_helper.h"
+#include <string/vsx_string_helper.h>
 
 template < typename W = char >
 class text_info {
@@ -58,7 +58,7 @@ class vsx_font_outline
 
   // text
   vsx_string<W>text;
-  vsx_avector< text_info<W> > lines;
+  vsx_nw_vector< text_info<W> > lines;
 
   // meta
   vsxf* filesystem;
@@ -153,7 +153,7 @@ public:
     if (!font_holder)
       return 0;
 
-    vsx_avector< vsx_string<W> > t_lines;
+    vsx_nw_vector< vsx_string<W> > t_lines;
     vsx_string_helper::explode_single<W>( text, (W)0x0A, t_lines );
     lines.clear();
     for (unsigned long i = 0; i < t_lines.size(); ++i)

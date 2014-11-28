@@ -23,7 +23,7 @@ using namespace std;
 #include  <EGL/egl.h>
 
 #include "application.h"
-#include "vsx_string.h"
+#include <string/vsx_string.h>
 #include "vsx_gl_global.h"
 
 int app_argc = 0;

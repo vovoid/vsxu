@@ -25,9 +25,9 @@
 #include <windows.h>
 #endif
 
-#include <container/vsx_avector.h>
+#include <container/vsx_nw_vector.h>
 #include <vsx_argvector.h>
-#include <vsx_string.h>
+#include <string/vsx_string.h>
 #include <vsxfst.h>
 #include <debug/vsx_error.h>
 
@@ -73,7 +73,7 @@ void extract()
   if (!filesystem.is_archive_populated())
     VSX_ERROR_EXIT("Archive contains no files or failed to load", 2);
 
-  vsx_avector<vsxf_archive_info>* archive_files = filesystem.get_archive_files();
+  vsx_nw_vector<vsxf_archive_info>* archive_files = filesystem.get_archive_files();
   for (unsigned long i = 0; i < (*archive_files).size(); ++i)
   {
     vsx_string<>out_filename = (*archive_files)[i].filename;
@@ -133,7 +133,7 @@ void create()
 
   vsx_string<>filenames = arg->get_param_value("f");
   vsx_string<>deli = ":";
-  vsx_avector< vsx_string<> > parts;
+  vsx_nw_vector< vsx_string<> > parts;
 
   explode(filenames, deli, parts);
 

@@ -11,7 +11,7 @@ public:
   vsx_color<> color;
   vsx_quaternion<> phs;
   vsx_quaternion<> freq;
-  vsx_avector_nd<star_line> lines;
+  vsx_nw_vector_nd<star_line> lines;
   star_worm() {
     for (int i = 0; i < 20; ++i) {
       star_line line;
@@ -40,7 +40,7 @@ class module_mesh_star : public vsx_module {
 
   float trail_length;
 
-  vsx_avector<star_worm*> worms;
+  vsx_nw_vector<star_worm*> worms;
   vsx_float_array* spectrum;
 
 public:

@@ -149,7 +149,7 @@ public:
     // default is 100 particles, should be enough for most effects (tm)
     particles_count->set(100);
     particles.timestamp = 0;
-    particles.particles = new vsx_array< vsx_particle<> >;
+    particles.particles = new vsx_ma_vector< vsx_particle<> >;
     //result_particlesystem->set_p(particles);
     first = true;
 

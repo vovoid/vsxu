@@ -25,9 +25,9 @@
 #include "application.h"
 #include <GL/glew.h>
 #include <GL/glfw.h>
-#include <container/vsx_avector.h>
-#include <vsx_string.h>
-#include <vsx_string_helper.h>
+#include <container/vsx_nw_vector.h>
+#include <string/vsx_string.h>
+#include <string/vsx_string_helper.h>
 #include <vsxfst.h>
 #include <vsx_version.h>
 #include <stdlib.h>
@@ -195,7 +195,7 @@ int main(int argc, char* argv[])
       {
         i++;
         vsx_string<>arg2 = argv[i];
-        vsx_avector< vsx_string<> > parts;
+        vsx_nw_vector< vsx_string<> > parts;
         vsx_string<>deli = ",";
         explode(arg2, deli, parts);
         if (parts.size() == 2)
@@ -249,7 +249,7 @@ int main(int argc, char* argv[])
       {
         i++;
         vsx_string<>arg2 = argv[i];
-        vsx_avector< vsx_string<> > parts;
+        vsx_nw_vector< vsx_string<> > parts;
         vsx_string<>deli = ",";
         explode(arg2, deli, parts);
         glfwSetWindowPos( vsx_string_helper::s2i(parts[0]), vsx_string_helper::s2i(parts[1]) );

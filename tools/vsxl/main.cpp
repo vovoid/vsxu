@@ -6,7 +6,7 @@
 #include <sstream>
 #include <map>
 
-#include "vsx_string.h"
+#include <string/vsx_string.h>
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_module_list_abs.h"
@@ -154,7 +154,7 @@ MAINDATA g;
 
 std::string xmlFormat(std::string str)
 {
-  for(int i=0;i<str.length();++i)
+  for(size_t i=0;i<str.length();++i)
   {
     if(str[i] == (char)34) // "
     {
@@ -190,6 +190,7 @@ std::string xmlFormat(std::string str)
 #if PLATFORM == PLATFORM_LINUX
   void exitHandler(int signal)
   {
+    VSX_UNUSED(signal);
     running=0;
   }
 #elif PLATFORM == PLATFORM_WINDOWS
@@ -223,6 +224,8 @@ void setExitHandler()
 
 void initialise(int argc,char* argv[])
 {
+  VSX_UNUSED(argc);
+  VSX_UNUSED(argv);
   std::cout<<"__Vovoid VSXu-Librarian "<< vsxu_ver;
 #if PLATFORM == PLATFORM_LINUX
   std::cout<<" [GNU/Linux "<<PLATFORM_BITS<<"-bit]__\n";

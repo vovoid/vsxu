@@ -39,8 +39,8 @@ public:
   vsx_color<> color;  // color
   vsx_vector3<> normal; // vertex normal
   vsx_vector3<> tex_coord;  // texture coordinate
-  vsx_avector<unsigned long> faces;
-  vsx_array<unsigned long> lines;
+  vsx_nw_vector<unsigned long> faces;
+  vsx_ma_vector<unsigned long> lines;
   vsx_grid_vertex()
   {
     valid = false;
@@ -55,7 +55,7 @@ public:
                 
   vsx_vector3<> normal;
   vsx_vector3<> center;
-  vsx_array<unsigned long> lines;
+  vsx_ma_vector<unsigned long> lines;
 };
 
 class vsx_grid_line {
@@ -85,12 +85,12 @@ class vsx_2dgrid_mesh {
 public:
   // vertices array, access it like this:
   // grid_mesh.vertices[segment_id][vertex_id].coord = vsx_vector__(0,0,0);
-  vsx_avector_nd< vsx_avector_nd<vsx_grid_vertex> > vertices;
+  vsx_nw_vector_nd< vsx_nw_vector_nd<vsx_grid_vertex> > vertices;
   // don't touch these arrays unless you really know what you're doing!
   // it has a direct relation to the [vertices] array above, if this is broken
   // you'll not get correct normals.
-  vsx_avector_nd< vsx_2dgrid_face > faces;
-  vsx_avector_nd< vsx_grid_line > lines;
+  vsx_nw_vector_nd< vsx_2dgrid_face > faces;
+  vsx_nw_vector_nd< vsx_grid_line > lines;
     
   // Defines a face from 3 points given as id-numbers in the 2dimensional array (x,y)
   // So that per point you need one x and y value.

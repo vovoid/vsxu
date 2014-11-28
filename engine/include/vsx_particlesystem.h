@@ -48,7 +48,7 @@ template<typename T = float>
 class vsx_particlesystem {
 public:
   int timestamp;
-  vsx_array< vsx_particle<T> >* particles;
+  vsx_ma_vector< vsx_particle<T> >* particles;
 
   vsx_particlesystem() {
     particles = 0;

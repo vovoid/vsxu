@@ -35,7 +35,7 @@
 #include "vsx_mouse.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
-#include <vsx_string_helper.h>
+#include <string/vsx_string_helper.h>
 
 // local includes
 #include "vsx_widget.h"
@@ -258,7 +258,7 @@ void vsx_widget_sequence_editor::toggle_channel_visible(vsx_string<>name) {
   else {
     // we need to get this from the engine again
     vsx_string<>deli = ":";
-    vsx_avector< vsx_string<> > parts;
+    vsx_nw_vector< vsx_string<> > parts;
     explode(name,deli,parts);
     if (parts.size())
     {
@@ -406,14 +406,14 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
     if (t->parts.size() > 1)
     {
       vsx_string<>deli = "&";
-      vsx_avector< vsx_string<> > parts;
+      vsx_nw_vector< vsx_string<> > parts;
       explode(t->parts[1], deli, parts);
       std::map<vsx_string<>,vsx_string<> > sort_map;
       for (size_t i = 0; i < parts.size(); i++)
       {
         sort_map[parts[i]] = parts[i];
       }
-      vsx_avector< vsx_string<> > sorted_names;
+      vsx_nw_vector< vsx_string<> > sorted_names;
       for (std::map<vsx_string<>,vsx_string<> >::iterator it = sort_map.begin(); it != sort_map.end(); it++)
       {
         sorted_names.push_back((*it).second);
@@ -427,13 +427,13 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
     if (t->parts.size() > 1)
     {
       vsx_string<>deli = "&";
-      vsx_avector< vsx_string<> > parts;
+      vsx_nw_vector< vsx_string<> > parts;
       explode(t->parts[1], deli, parts);
-      vsx_avector< vsx_string<> > names;
+      vsx_nw_vector< vsx_string<> > names;
       for (size_t i = 0; i < parts.size(); i++)
       {
         vsx_string<>ideli = "#";
-        vsx_avector< vsx_string<> > iparts;
+        vsx_nw_vector< vsx_string<> > iparts;
         explode(parts[i], ideli, iparts);
         // 0 = comp name
         // 1 = param name

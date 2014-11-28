@@ -22,9 +22,9 @@
 */
 
 #include <stdio.h>
-#include <container/vsx_avector.h>
-#include "vsx_string.h"
-#include <vsx_string_helper.h>
+#include <container/vsx_nw_vector.h>
+#include <string/vsx_string.h>
+#include <string/vsx_string_helper.h>
 #include <vsx_argvector.h>
 #include <GL/glew.h>
 #include "GL/glfw.h"
@@ -222,7 +222,7 @@ int main(int argc, char* argv[])
   if (vsx_argvector::get_instance()->has_param_with_value("s"))
   {
     vsx_string<>arg2 = vsx_argvector::get_instance()->get_param_value("s");
-    vsx_avector< vsx_string<> > parts;
+    vsx_nw_vector< vsx_string<> > parts;
     vsx_string<>deli = ",";
     explode(arg2, deli, parts);
     if (parts.size() == 2)
@@ -291,7 +291,7 @@ int main(int argc, char* argv[])
       {
         i++;
         vsx_string<>arg2 = argv[i];
-        vsx_avector< vsx_string<> > parts;
+        vsx_nw_vector< vsx_string<> > parts;
         vsx_string<>deli = ",";
         explode(arg2, deli, parts);
         glfwSetWindowPos( vsx_string_helper::s2i(parts[0]), vsx_string_helper::s2i(parts[1]) );
@@ -311,16 +311,11 @@ int main(int argc, char* argv[])
 
 
   // vsync handling
-  bool vsync = true;
   if (vsx_argvector::get_instance()->has_param("novsync"))
-  {
-    vsync = false;
     glfwSwapInterval(0);
-  }
   else
-  {
     glfwSwapInterval(1);
-  }
+
   // Main loop
   running = GL_TRUE;
   frames = 0;

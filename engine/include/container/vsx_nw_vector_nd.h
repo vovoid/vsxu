@@ -21,11 +21,11 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_AVECTOR_ND_H
-#define VSX_AVECTOR_ND_H
+#ifndef vsx_nw_vector_ND_H
+#define vsx_nw_vector_ND_H
 
 template<class T>
-class vsx_avector_nd
+class vsx_nw_vector_nd
 {
   size_t allocated;
   size_t used;
@@ -96,7 +96,7 @@ public:
     return A[index];
   }
 
-  vsx_avector_nd()
+  vsx_nw_vector_nd()
     :
       allocated(0),
       used(0),

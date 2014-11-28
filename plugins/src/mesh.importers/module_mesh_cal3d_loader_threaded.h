@@ -46,7 +46,7 @@ public:
     vsx_string<>current_filename;
     CalCoreModel* c_model;
     CalModel* m_model;
-    vsx_avector<bone_info> bones;
+    vsx_nw_vector<bone_info> bones;
 
     // threading stuff
     pthread_t         worker_t;
@@ -275,7 +275,7 @@ public:
       if (filename->get() != current_filename) {
         current_filename = filename->get();
         // first find the path of the file
-        vsx_avector< vsx_string<> > fparts;
+        vsx_nw_vector< vsx_string<> > fparts;
         vsx_string<>fdeli = "/";
         vsx_string<>file_path = "";
         explode(filename->get(), fdeli, fparts);
@@ -284,8 +284,8 @@ public:
           file_path = implode(fparts,fdeli)+"/";
         }
         //-------------------------------------------------
-        vsx_avector<int> mesh_parts;
-        vsx_avector<int> material_parts;
+        vsx_nw_vector<int> mesh_parts;
+        vsx_nw_vector<int> material_parts;
         vsxf_handle *fp;
         fp = engine->filesystem->f_open(current_filename.c_str(), "r");
         if (!fp) {
@@ -303,7 +303,7 @@ public:
           if (line[line.size()-1] == 0x0A) line.pop_back();
           if (line[line.size()-1] == 0x0D) line.pop_back();
           if (line.size()) {
-            vsx_avector< vsx_string<> > parts;
+            vsx_nw_vector< vsx_string<> > parts;
             vsx_string<>deli = "=";
             explode(line, deli, parts);
             if (parts[0] == "skeleton") {

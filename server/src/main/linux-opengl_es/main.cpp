@@ -34,7 +34,7 @@
 #include <X11/Xlib.h>
 
 #include "application.h"
-#include "vsx_string.h"
+#include <string/vsx_string.h>
 
 int app_argc = 0;
 char** app_argv;

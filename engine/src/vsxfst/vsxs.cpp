@@ -39,20 +39,6 @@
 #include "vsxfst.h"
 
 
-bool crlf(char *buffer,int len) {
-  bool cr = 0;
-  bool lf = 0;
-  int i = len-1;
-  while (i+1 && (!cr || !lf)) {
-    if (!cr) cr=(buffer[i] == 10)?1:0;
-    if (!lf) lf=(buffer[i] == 13)?1:0;
-    i--;
-  }
-  return (cr && lf);
-}
-
-
-
 
 vsx_string<>str_pad(const vsx_string<>& str, const vsx_string<>& chr, size_t t_len, int pad_type, int overflow_adjust) {
   vsx_string<>ps = "";
@@ -88,7 +74,7 @@ vsx_string<>str_pad(const vsx_string<>& str, const vsx_string<>& chr, size_t t_l
 /*const vsx_string<>str_replace_token_prefix(vsx_string<>& token, vsx_string<>& search, vsx_string<>& replace, vsx_string<>& subject) {
   //1 explode our vsx_string
   vsx_string<>deli = token;
-  vsx_avector< vsx_string<> > tokens;
+  vsx_nw_vector< vsx_string<> > tokens;
   explode(subject,deli, tokens);
   for (unsigned long i = 0; i < tokens.size(); ++i) {
   //for (std::vector <vsx_string<> >::iterator it = tokens.begin(); it != tokens.end(); ++it) {
@@ -162,7 +148,7 @@ const vsx_string<>str_replace_char_pad(vsx_string<>search, vsx_string<>replace, 
   return subject_r;
 }
 
-int explode(vsx_string<>& input, vsx_string<>& delimiter, vsx_avector< vsx_string<> >& results, int max_parts) {
+int explode(vsx_string<>& input, vsx_string<>& delimiter, vsx_nw_vector< vsx_string<> >& results, int max_parts) {
   results.clear();
   if (input == delimiter) {
     results.push_back(input);
@@ -196,7 +182,7 @@ int explode(vsx_string<>& input, vsx_string<>& delimiter, vsx_avector< vsx_strin
   return count;
 }
 
-vsx_string<>implode(vsx_avector< vsx_string<> >& in,vsx_string<>& delimiter) {
+vsx_string<>implode(vsx_nw_vector< vsx_string<> >& in,vsx_string<>& delimiter) {
   if (in.size() == 0) return "";
   if (in.size() == 1) return in[0];
   vsx_string<>h;
@@ -450,7 +436,7 @@ void get_files_recursive(vsx_string<>startpos, std::list< vsx_string<> >* filena
       exclude = false;
     }
     else {
-      vsx_avector< vsx_string<> > parts;
+      vsx_nw_vector< vsx_string<> > parts;
       vsx_string<>deli = " ";
       explode(exclude_filter,deli, parts);
       exclude = false;

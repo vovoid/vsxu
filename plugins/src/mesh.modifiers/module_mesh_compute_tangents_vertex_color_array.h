@@ -35,7 +35,7 @@ public:
   // internal
   vsx_mesh<>* mesh;
   vsx_quaternion_array<> i_tangents;
-  vsx_array< vsx_quaternion<> > data;
+  vsx_ma_vector< vsx_quaternion<> > data;
 
   bool init()
   {

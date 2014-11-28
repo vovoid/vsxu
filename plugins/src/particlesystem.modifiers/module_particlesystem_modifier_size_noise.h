@@ -10,7 +10,7 @@ class module_particlesystem_modifier_size_noise : public vsx_module
   // out
   vsx_module_param_particlesystem* result_particlesystem;
   vsx_rand rand;
-  vsx_array<float> f_randpool;
+  vsx_ma_vector<float> f_randpool;
   float* f_randpool_pointer;
 public:
 

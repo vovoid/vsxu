@@ -1,7 +1,7 @@
 #ifndef VSX_VBO_BUCKET_H
 #define VSX_VBO_BUCKET_H
 
-#include <container/vsx_array.h>
+#include <container/vsx_ma_vector.h>
 #include <vector/vsx_vector2.h>
 #include <vector/vsx_vector3.h>
 #include <vector/vsx_vector4.h>
@@ -53,11 +53,11 @@ class vsx_vbo_bucket
 {
 public:
   // 1. compute data into these buckets
-  vsx_array< Tv >     vertices;
-  vsx_array< vsx_vector3<> >     vertex_normals;
-  vsx_array< vsx_color<> >      vertex_colors;
-  vsx_array< Tuv >  vertex_tex_coords;
-  vsx_array< Tf >              faces;
+  vsx_ma_vector< Tv >     vertices;
+  vsx_ma_vector< vsx_vector3<> >     vertex_normals;
+  vsx_ma_vector< vsx_color<> >      vertex_colors;
+  vsx_ma_vector< Tuv >  vertex_tex_coords;
+  vsx_ma_vector< Tf >              faces;
 
   // 2. call any of the invalidation functions after changing the data
   inline void invalidate_vertices()

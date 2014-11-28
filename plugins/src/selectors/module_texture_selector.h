@@ -117,7 +117,7 @@ class module_texture_selector : public vsx_module
   int i_blend_type;
   vsx_sequence i_sequence;
   vsx_sequence i_seq_default;
-  vsx_array<float> i_sequence_data;
+  vsx_ma_vector<float> i_sequence_data;
   long i_seq_index;
   int i_reverse;
 
@@ -126,13 +126,13 @@ class module_texture_selector : public vsx_module
 
   vsx_sequence i_A_sequence;
   vsx_sequence i_A_seq_default;
-  vsx_array<float> i_A_sequence_data;
+  vsx_ma_vector<float> i_A_sequence_data;
   long i_A_seq_index;
   int i_A_reverse;
 
   vsx_sequence i_B_sequence;
   vsx_sequence i_B_seq_default;
-  vsx_array<float> i_B_sequence_data;
+  vsx_ma_vector<float> i_B_sequence_data;
   long i_B_seq_index;
   int i_B_reverse;
   
@@ -497,7 +497,7 @@ public:
     //FLOAT_CLAMP(V, MN, MX)
 
   //Cache the data of any sequence
-  void CacheSequenceData(vsx_sequence* seq, vsx_array<float>* seqdata,
+  void CacheSequenceData(vsx_sequence* seq, vsx_ma_vector<float>* seqdata,
                          vsx_module_param_sequence* mpseq)
   {
     *seq = mpseq->get();

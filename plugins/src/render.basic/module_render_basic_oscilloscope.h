@@ -74,7 +74,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 	render_result->set(0);
 }
 
-vsx_array<float> xposs;
+vsx_ma_vector<float> xposs;
 
 void output(vsx_module_param_abs* param)
 {

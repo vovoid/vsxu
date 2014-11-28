@@ -143,7 +143,7 @@ public:
     std::stringstream in_buff;
     in_buff << "midi_source:enum?";
     port_count = m_midi_in->getPortCount();
-    for(int i=0;i<port_count;i++)
+    for(unsigned int i=0; i < port_count; i++)
     {
       in_buff << i << "__" << remove_spaces(m_midi_in->getPortName(i)).c_str();
       if(i<port_count-1)
@@ -951,7 +951,7 @@ public:
 
     if ( current_port != get_port() )
     {
-      int new_src = midi_source->get();
+      unsigned int new_src = midi_source->get();
       if ( new_src > port_count-1 )
       {
         new_src = port_count-1;
@@ -1342,9 +1342,9 @@ private:
     return str;
   }
 
-  int get_port()
+  unsigned int get_port()
   {
-    int i = midi_source->get();
+    unsigned int i = midi_source->get();
     if(i > port_count)
     {
      return port_count;

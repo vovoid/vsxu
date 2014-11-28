@@ -24,7 +24,7 @@
 #ifndef VSX_STRING_H
 #define VSX_STRING_H
 
-#include <container/vsx_avector.h>
+#include <container/vsx_nw_vector.h>
 #include <cstring>
 #include <ctype.h>
 #include <vsx_platform.h>
@@ -33,7 +33,7 @@
 template<typename W = char> // wchar_t
 class vsx_string
 {
-  mutable vsx_avector<W> data;
+  mutable vsx_nw_vector<W> data;
 
   // deal with the terminating 0 character
   inline bool zero_test() const VSX_ALWAYS_INLINE

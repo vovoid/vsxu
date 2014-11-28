@@ -23,7 +23,7 @@
 
 #include <map>
 #include <vector>
-#include <vsx_string.h>
+#include <string/vsx_string.h>
 #include <vsx_param.h>
 #include <vsx_module.h>
 

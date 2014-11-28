@@ -178,7 +178,7 @@ public:
             ((vsx_widget_seq_channel*)search_widget)->drop_master_channel(distance,coords,editor->get_line(editor->selected_line));
           }
           // split the identifier into the name
-          //vsx_avector< vsx_string<> > parts;
+          //vsx_nw_vector< vsx_string<> > parts;
           //vsx_string<>deli = ";";
           //explode(i_mod_info[mod_i]->identifier, deli, parts);
           //vsx_string<>module_name = parts[parts.size()-1];
