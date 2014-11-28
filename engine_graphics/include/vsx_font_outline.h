@@ -94,7 +94,6 @@ public:
 
   ~vsx_font_outline()
   {
-    unload();
   }
 
   void set_leading(float n)
@@ -168,23 +167,23 @@ public:
     return 1;
   }
 
-  void load_font(vsx_string<>font_path)
+  void load_font(vsx_string<>font_path, outline_font_cache* cache)
   {
     if (!filesystem)
       VSX_ERROR_RETURN("filesystem not set");
 
     if (font_holder)
-      unload();
+      unload(cache);
 
-    font_holder = outline_font_cache::get_instance()->get( filesystem, font_path, render_type );
+    font_holder = cache->get( filesystem, font_path, render_type );
   }
 
-  void unload()
+  void unload(outline_font_cache* cache)
   {
     if (0x0 == font_holder)
       return;
 
-    outline_font_cache::get_instance()->recycle( (font_outline_holder*)font_holder);
+    cache->recycle( (font_outline_holder*)font_holder);
     font_holder = 0x0;
   }
 

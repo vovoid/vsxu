@@ -23,11 +23,24 @@ public:
   int num_of_buttons;
   int x;
   char *button, name_of_joystick[80];
-  joystick_info() {
-    joy_fd = -2;
-    num_of_buttons = 0;
-    num_of_axis = 0;
+  joystick_info()
+    : joy_fd(-2),
+      axis(0x0),
+      num_of_axis(0),
+      num_of_buttons(0),
+      x(0),
+      button(0)
+  {
     memset(&name_of_joystick,0,80);
+  }
+
+  ~joystick_info()
+  {
+    if (axis)
+      free(axis);
+
+    if (button)
+      free(button);
   }
 };
 
@@ -45,11 +58,6 @@ public:
 
   void on_delete()
   {
-    for (size_t i = 0; i < joysticks.size(); i++)
-    {
-      free(joysticks[i].axis);
-      free(joysticks[i].button);
-    }
   }
   
   bool init_joysticks()
@@ -123,7 +131,6 @@ public:
 
     for (int j = 0; j < joystick_count; j++)
     {
-      printf("FOO num of axes: %d\n", joysticks[j].num_of_axis);
       joysticks[j].axis = (int *) calloc( joysticks[j].num_of_axis, sizeof( int ) );
       joysticks[j].button = (char *) calloc( joysticks[j].num_of_buttons, sizeof( char ) );
 

@@ -888,12 +888,15 @@ void vsx_texture::upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigne
         }
         ++dy;
       }
-      data = (GLfloat*)data2;
+      data = (void*)data2;
     }
     else
     {
       unsigned char* data2 = new unsigned char[(size_x) * (size_y) * (bpp)];
+      //if ((size_x) * (size_y) * (bpp) == 12)
+      //  vsx_printf(L"texture with size 12\n");
       // (size_x) * (size_y) * (bpp) == 12 => problem
+      // 0x4f37e4cb
       int dy = 0;
       int sxbpp = size_x*bpp;
       for (int y = size_y-1; y >= 0; --y)
@@ -907,7 +910,7 @@ void vsx_texture::upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigne
         }
         ++dy;
       }
-      data = (unsigned long*)data2;
+      data = (void*)data2;
     }
   }
 
@@ -985,7 +988,7 @@ void vsx_texture::upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigne
       delete[] (GLfloat*)data;
     } else
     {
-      delete[] (unsigned long*)data;
+      delete[] (unsigned char*)data;
     }
   }
 

@@ -78,13 +78,6 @@ public:
       delete holder;
     }
   }
-
-  static outline_font_cache* get_instance()
-  {
-    static outline_font_cache ofc;
-    return &ofc;
-  }
-
 };
 
 #endif
