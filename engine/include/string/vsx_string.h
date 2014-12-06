@@ -29,6 +29,7 @@
 #include <ctype.h>
 #include <vsx_platform.h>
 #include <wchar.h>
+#include <tools/vsx_foreach.h>
  
 template<typename W = char> // wchar_t
 class vsx_string
@@ -43,11 +44,18 @@ class vsx_string
 
   inline void zero_add() const VSX_ALWAYS_INLINE
   {
-    if (!data.size()) {
+    if (!data.size())
       data.push_back((W)0);
-    } else
-    if (zero_test())
-    data.push_back((W)0);
+    else
+      if (zero_test())
+        data.push_back((W)0);
+  }
+
+  inline void zero_remove() const VSX_ALWAYS_INLINE
+  {
+    if (data.size())
+      if (!data[data.size()-1])
+        data.reset_used(data.size()-1);
   }
 
 public:
@@ -57,29 +65,12 @@ public:
   	return data.get_pointer();
   }
 
-  inline void zero_remove() const VSX_ALWAYS_INLINE
-  {
-    if (data.size())
-    if (!data[data.size()-1])
-    data.reset_used(data.size()-1);
-  }
-  // data manipulation
   inline const W* c_str() const VSX_ALWAYS_INLINE
   {
     zero_add();
     return data.get_pointer();
   }
   
-  inline W* c_copy() const VSX_ALWAYS_INLINE
-  {
-  	zero_add();
-    W* n = new W[this->size()+1];
-  	for (size_t i = 0; i <= this->size(); i++) {
-  		n[i] = data[i];
-  	}
-  	return n;
-  }
-
   inline void push_back(const W p) VSX_ALWAYS_INLINE
   {
     zero_remove();
@@ -94,21 +85,24 @@ public:
   inline W pop_back() const VSX_ALWAYS_INLINE
   {
     zero_remove();
-    if (data.size()) {
-      W f = data[data.size()-1];
-      data.reset_used(data.size()-1);
-      return f;
-    }
-    return 0;
+
+    if (!data.size())
+      return 0;
+
+    W f = data[data.size()-1];
+    data.reset_used(data.size()-1);
+    return f;
   }
 
   inline size_t size() const VSX_ALWAYS_INLINE
   {
-    if (!data.size()) return 0;
+    if (!data.size())
+      return 0;
 
     if (data[data.get_used()-1])
-    return data.get_used(); else
-      return data.get_used()-1;
+      return data.get_used();
+
+    return data.get_used()-1;
   }
 
   inline void clear() VSX_ALWAYS_INLINE
@@ -123,17 +117,16 @@ public:
 
   W& operator[](int index) const VSX_ALWAYS_INLINE
   {
-  	if (index < 0) index = 0;
+    if (index < 0)
+      index = 0;
 
     return data[index];
   }
 
   void make_lowercase() VSX_ALWAYS_INLINE
   {
-    for (unsigned long i = 0; i < data.size(); ++i)
-    {
+    foreach(data, i)
 			data[i] = tolower(data[i]);
-    }
 	}
   
   // constructors
@@ -145,50 +138,43 @@ public:
 // OTHER vsx_string<W>REFERENCE
 //----------------------------------------------------------------------------
  
-  vsx_string<W> (const vsx_string<W>& foo)
+  vsx_string<W> (const vsx_string<W>& other_string)
   {
-    *this = foo;
+    *this = other_string;
   }
 
 //----------------------------------------------------------------------------
 // NULLTERMINATED *
 //----------------------------------------------------------------------------
-  vsx_string<W>(const W* ss)
+  vsx_string<W>(const W* other_string)
   {
-    *this = ss;
+    *this = other_string;
   }
 
-  vsx_string<W>(const W* ss, size_t max_len)
+  vsx_string<W>(const W* other_string, size_t max_len)
   {
     for (size_t i = 0; i < max_len; i++)
     {
-      push_back( ss[i] );
+      push_back( other_string[i] );
     }
     zero_add();
   }
 
-  inline const vsx_string<W>& operator=(const vsx_string<W>& ss) VSX_ALWAYS_INLINE
+  inline const vsx_string<W>& operator=(const vsx_string<W>& other_string) VSX_ALWAYS_INLINE
   {
-    if (&ss != this) {
-      //printf("copying with =\n");
-      data.clear();
-      int sss = ss.size();
-      if (sss > 0)
-      data[sss-1] = 0;
-      W* dp = data.get_pointer();
-      W* sp = ss.get_pointer();
-      for (int i = 0; i < sss; ++i) {
-        //printf("%d+",ss[i]);
-        dp[i] = sp[i];
-      }
-      return *this;
-    }
+    data.clear();
+    int other_string_size = other_string.size();
+    if (other_string_size > 0)
+      data[other_string_size-1] = 0;
+    W* dp = data.get_pointer();
+    W* sp = other_string.get_pointer();
+    for (int i = 0; i < other_string_size; ++i)
+      dp[i] = sp[i];
     return *this;
-  };
+  }
 
   inline const vsx_string<W>operator+(const vsx_string<W>& right) const VSX_ALWAYS_INLINE
   {
-    //printf("a1\n");
     vsx_string<W>n;
     unsigned long i = 0;
     while (i < data.get_used()) {
@@ -200,7 +186,7 @@ public:
       n.push_back_(right[i]);
     }
     return n;
-  };
+  }
 
   inline const vsx_string<W>& operator+=(const vsx_string<W>& right) VSX_ALWAYS_INLINE
   {
@@ -351,16 +337,24 @@ public:
 
   inline friend int operator!=(const vsx_string<W>& left,const vsx_string<W>& right) VSX_ALWAYS_INLINE
   {
-    if (left.size() != right.size()) return 1;
+    if (left.size() != right.size())
+      return 1;
+
     return strcmp(left.c_str(), right.c_str());
   }
  
   inline int find(const vsx_string<W>& search, int start = 0) const VSX_ALWAYS_INLINE
   {
-    if (search.size() == 0) return 0;
+    if (search.size() == 0)
+      return 0;
+
     size_t found = 0; // if this is equal to search.size() we're done
-    if (start > (int)size()) return -1;
-		if (start < 0) return -1;
+    if (start > (int)size())
+      return -1;
+
+    if (start < 0)
+      return -1;
+
     for (; start < (int)size(); ++start)
     {
       if (data[start] == search[found])
@@ -375,6 +369,14 @@ public:
       } else found = 0;
     }
     return -1;
+  }
+
+  inline bool match_partial(const vsx_string<W>& search) const
+  {
+    foreach(data, i)
+      if (search[i] != data[i])
+        return false;
+    return true;
   }
 
   inline const vsx_string<W>substr(int start, int length = -1) VSX_ALWAYS_INLINE
@@ -412,9 +414,14 @@ public:
 
   inline void trim_lf() VSX_ALWAYS_INLINE
   {
-    if ( !this->size() ) return;
-    if ( (*this)[this->size()-1] == 0x0A ) this->pop_back();
-    if ( (*this)[this->size()-1] == 0x0D ) this->pop_back();
+    if ( !this->size() )
+      return;
+
+    if ( (*this)[this->size()-1] == 0x0A )
+      this->pop_back();
+
+    if ( (*this)[this->size()-1] == 0x0D )
+      this->pop_back();
   }
 
 };
