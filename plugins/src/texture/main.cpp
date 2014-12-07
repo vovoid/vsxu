@@ -142,7 +142,14 @@ void MOD_DM(vsx_module* m,unsigned long module) {
 
 unsigned long MOD_NM(vsx_engine_environment* environment) {
   VSX_UNUSED(environment);
-  return 20;
 
+  // on windows glewInit has to be run per DLL
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+    #ifndef VSXU_STATIC
+      glewInit();
+    #endif
+  #endif
+
+  return 20;
 }
 

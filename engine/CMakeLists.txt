@@ -51,10 +51,6 @@ add_definitions(
  -DMOD_GNM=get_num_modules
 ) 
 
-if (VSXU_STATIC EQUAL 1)
-  add_definitions(-DVSXU_STATIC)
-endif()
-
 if (VSXU_OPENGL_ES_2_0 EQUAL 1)
   add_definitions(-DVSXU_OPENGL_ES -DVSXU_OPENGL_ES_2_0)
 endif (VSXU_OPENGL_ES_2_0 EQUAL 1)

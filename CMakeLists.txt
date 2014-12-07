@@ -152,7 +152,9 @@ INCLUDE(CPack)
 ################################################################################
 
 
-
+if (VSXU_STATIC EQUAL 1)
+  add_definitions(-DVSXU_STATIC)
+endif()
 
 if(VSXU_DEBUG_SYMBOLS)
   add_definitions(-g)
@@ -221,15 +223,26 @@ else(VSXU_DEBUG)
       -fno-signaling-nans
     )
   else (OPTIMIZATION_FLAGS EQUAL 1)
-    add_definitions(
-      -O3
-      -c
-      -mtune=nocona
-      -fmessage-length=0
-      -fpermissive
-      -finline-functions
-      -ffast-math
-    )
+    if (VSXU_BUILD_WINDOWS_32)
+        add_definitions(
+          -c
+          -mtune=nocona
+          -fmessage-length=0
+          -fpermissive
+          -finline-functions
+          -ffast-math
+        )
+    else()
+        add_definitions(
+          -O3
+          -c
+          -mtune=nocona
+          -fmessage-length=0
+          -fpermissive
+          -finline-functions
+          -ffast-math
+        )
+    endif()
   endif (OPTIMIZATION_FLAGS EQUAL 1)
 endif(VSXU_DEBUG)
 
