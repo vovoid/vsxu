@@ -59,7 +59,8 @@ void vsx_statelist::add_visual_path(vsx_string<>new_visual_path)
   printf("getting files recursive: %s\n", (new_visual_path).c_str() );
   #endif
 
-  for (std::list< vsx_string<> >::iterator it = state_file_list.begin(); it != state_file_list.end(); ++it) {
+  statelist.clear();
+  for (std::list<vsx_string>::iterator it = state_file_list.begin(); it != state_file_list.end(); ++it) {
       state_info state;
       state.state_name = *it;
       state.state_name_suffix = state.state_name.substr(new_visual_path.size(),state.state_name.size() - new_visual_path.size() );

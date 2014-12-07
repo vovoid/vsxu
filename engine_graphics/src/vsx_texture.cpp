@@ -127,11 +127,11 @@ void vsx_texture::init_opengl_texture_cubemap()
 
 bool vsx_texture::has_buffer_support()
 {
-  bool fbo = GLEW_EXT_framebuffer_object;
-  bool blit = GLEW_EXT_framebuffer_blit;
-  //if (!fbo) printf("vsx_texture Notice: EXT_framebuffer_object support is MISSING! This will mean limited functionality.\n\n");
-  //if (!blit) printf("vsx_texture Notice: EXT_framebuffer_blit support is MISSING! This will mean limited functionality.\n\n");
-  return fbo && blit;
+  if (!GLEW_EXT_framebuffer_object)
+    VSX_ERROR_RETURN_V("GLEW_EXT_framebuffer_object missing", false);
+
+  if (!GLEW_EXT_framebuffer_blit)
+    VSX_ERROR_RETURN_V("GLEW_EXT_framebuffer_blit missing", false);
 }
 
 
