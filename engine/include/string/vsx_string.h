@@ -371,9 +371,17 @@ public:
     return -1;
   }
 
+  /**
+   * @brief match_partial Looks for search in the current string
+   * @param search
+   * @return
+   */
   inline bool match_partial(const vsx_string<W>& search) const
   {
-    foreach(data, i)
+    if (search.size() > size())
+      return false;
+
+    foreach(search, i)
       if (search[i] != data[i])
         return false;
     return true;
