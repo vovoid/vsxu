@@ -91,8 +91,8 @@ public:
 
       // if loading fails, print debug output
       if (!plugin_handle) {
-        printf(
-              "vsx_module_list init: Error: trying to load the plugin \"%s\"\n"
+        vsx_printf(
+              L"vsx_module_list init: Error: trying to load the plugin \"%s\"\n"
               "                      Cause: dlopen returned error: %s\n",
               dynamic_object_file_name.c_str(),
               vsx_dlopen::error()
@@ -108,8 +108,8 @@ public:
       // look for the REQUIRED constructor (factory) method
       if (vsx_dlopen::sym(plugin_handle, "create_new_module") == 0)
       {
-        printf(
-              "vsx_module_list init: Error: trying to load the plugin \"%s\"\n"
+        vsx_printf(
+              L"vsx_module_list init: Error: trying to load the plugin \"%s\"\n"
               "                      Cause: sym could not find \"create_module\"\n",
               dynamic_object_file_name.c_str()
               );
@@ -130,8 +130,8 @@ public:
       // look for the REQUIRED destructor method
       if (vsx_dlopen::sym(plugin_handle, "destroy_module") == 0)
       {
-        printf(
-              "vsx_module_list init: Error: trying to load the plugin \"%s\"\n"
+        vsx_printf(
+              L"vsx_module_list init: Error: trying to load the plugin \"%s\"\n"
               "                      Cause: sym could not find \"destroy_module\"\n",
               dynamic_object_file_name.c_str()
               );
@@ -152,8 +152,8 @@ public:
       // look for the REQUIRED get_num_modules method
       if (vsx_dlopen::sym(plugin_handle, "get_num_modules") == 0)
       {
-        printf(
-              "vsx_module_list init: Error: trying to load the plugin \"%s\"\n"
+        vsx_printf(
+              L"vsx_module_list init: Error: trying to load the plugin \"%s\"\n"
               "                      Cause: sym could not find \"get_num_modules\"\n",
               dynamic_object_file_name.c_str()
               );
@@ -188,8 +188,8 @@ public:
         // check for error
         if (0x0 == module_object)
         {
-          printf(
-                "vsx_module_list init: Error: trying to load the plugin \"%s\"\n"
+          vsx_printf(
+                L"vsx_module_list init: Error: trying to load the plugin \"%s\"\n"
                 "                      Cause: create_new_module returned 0x0 for module_index_iterator %lx\n"
                 "                      Hint: If you are developing, check to see that get_num_modules returns\n"
                 "                            the correct module count!\n"
@@ -369,7 +369,7 @@ public:
               "print_help"
             );
         print_help();
-        printf("\n-----------------------------------------\n\n");
+        vsx_printf(L"\n-----------------------------------------\n\n");
       }
     }
   }
