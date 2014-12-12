@@ -64,6 +64,7 @@ bool app_draw(int id)
   VSX_UNUSED(id);
   if (first)
   {
+    printf("INFO: app_draw first\n");
     first = false;
     // create a new manager
     manager = manager_factory();
@@ -78,6 +79,7 @@ bool app_draw(int id)
     overlay->set_manager(manager);
     // create a new intro (Luna logo) object
     if (disable_randomizer) manager->set_randomizer(false);
+    printf("INFO: app_draw first done\n");
   }
 
   /*

@@ -716,7 +716,8 @@ void vsx_engine::set_ignore_per_frame_time_limit(bool new_value)
 
 void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive, bool ignore_timing, float max_time)
 {
-  if (!valid) return;
+  if (!valid)
+    return;
   // service commands
   LOG("process_message_queue 1")
 
