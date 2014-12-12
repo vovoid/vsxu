@@ -238,7 +238,10 @@ int main(int argc, char* argv[])
   glewInit();
 
   if (start_fullscreen) glfwEnable( GLFW_MOUSE_CURSOR );
+
+  printf("INFO: app_init\n");
   app_init(0);
+  printf("INFO: app_init done\n");
 
   glfwEnable(GLFW_AUTO_POLL_EVENTS);
 
@@ -290,6 +293,7 @@ int main(int argc, char* argv[])
       else app_mouse_move_passive(last_x,last_y);
       mouse_pos_type = 0;
     }
+
 
     app_pre_draw();
 

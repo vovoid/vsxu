@@ -17,16 +17,22 @@
 template<class T>
 class vsx_command_buffer_broker
 {
-  pthread_mutex_t mutex1;
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+    pthread_mutex_t mutex1;
+  #endif
 
   void get_lock()
   {
-    pthread_mutex_lock( &mutex1 );
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      pthread_mutex_lock( &mutex1 );
+    #endif
   }
 
   void release_lock()
   {
-    pthread_mutex_unlock( &mutex1 );
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      pthread_mutex_unlock( &mutex1 );
+    #endif
   }
 
   vsxf* filesystem;
@@ -457,7 +463,9 @@ public:
     accept_commands(1),
     delete_commands_on_delete(false)
   {
-    pthread_mutex_init(&mutex1, NULL);
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      pthread_mutex_init(&mutex1, NULL);
+    #endif
   }
 
   vsx_command_buffer_broker(bool delete_commands)
@@ -466,7 +474,9 @@ public:
   accept_commands(1),
   delete_commands_on_delete(delete_commands)
   {
-    pthread_mutex_init(&mutex1, NULL);
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      pthread_mutex_init(&mutex1, NULL);
+    #endif
   }
 
 
@@ -475,7 +485,9 @@ public:
     if (delete_commands_on_delete)
       clear_delete();
 
-    pthread_mutex_destroy(&mutex1);
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      pthread_mutex_destroy(&mutex1);
+    #endif
   }
 
 };

@@ -313,6 +313,7 @@ void vsx_statelist::render()
 {
   if (render_first)
   {
+    printf("render first\n");
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     if (tex1.has_buffer_support())
@@ -323,9 +324,7 @@ void vsx_statelist::render()
       get_files_recursive(own_path+"visuals_faders", &fader_file_list,"",".svn CVS");
       for (std::list<vsx_string>::iterator it = fader_file_list.begin(); it != fader_file_list.end(); ++it)
       {
-        #ifdef VSXU_DEBUG
-          printf("initializing fader %s\n", (*it).c_str());
-        #endif
+        printf("initializing fader %s\n", (*it).c_str());
         vsx_engine* lvxe = new vsx_engine( module_list );
         lvxe->start();
         lvxe->load_state(*it);
@@ -366,7 +365,8 @@ void vsx_statelist::render()
   } // render first
 
   // prevent from rendering by mistake
-  if ( !statelist.size() ) return;
+  if ( !statelist.size() )
+    return;
 
   if ((*state_iter).engine != vxe) // change is on the way
   {
@@ -475,6 +475,7 @@ void vsx_statelist::render()
     }
   } else
   {
+
     if (cmd_out && cmd_in)
     {
       vxe->process_message_queue(cmd_in, cmd_out);
