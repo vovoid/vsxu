@@ -32,9 +32,7 @@ int vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info)
     vxe_local->set_no_send_client_time(true);
     vxe_local->start();
     (*state_iter).engine = vxe_local;
-#ifdef VSXU_DEBUG
     printf("loading state: %s\n", (*state_iter).state_name.c_str());
-#endif
     return vxe_local->load_state((*state_iter).state_name);
 
   } else
