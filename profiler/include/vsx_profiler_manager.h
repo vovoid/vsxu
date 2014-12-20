@@ -53,6 +53,10 @@
 #include <string/vsx_string_helper.h>
 #include <debug/vsx_error.h>
 
+#if (PLATFORM == PLATFORM_LINUX)
+  #include <sys/prctl.h>
+#endif
+
 // You can set VSX_PROFILER_MAX_THREADS in your make script as well
 
 #ifndef VSX_PROFILER_MAX_THREADS
@@ -82,7 +86,7 @@ public:
   vsx_profiler_manager()
 		:
 			run_threads(1),
-			enabled(0)
+      enabled(0)
   {
 		vsx_printf(L"VSX PROFILER:  Initializing: ");
     pthread_mutex_init(&profiler_thread_lock, NULL);
@@ -161,6 +165,11 @@ public:
     VSX_UNUSED(arg);
 		vsx_printf(L"done] ");
 
+    #if (PLATFORM == PLATFORM_LINUX)
+      const char* cal = "profiler::io_thread";
+      prctl(PR_SET_NAME,cal);
+    #endif
+
     vsx_profiler_manager* pm = vsx_profiler_manager::get_instance();
 
     vsx_string<>profiler_directory = profiler_directory_get();
@@ -209,6 +218,11 @@ public:
     VSX_UNUSED(profiler);
 
 		vsx_printf(L"done] ");
+
+    #if (PLATFORM == PLATFORM_LINUX)
+      const char* cal = "profiler::manager";
+      prctl(PR_SET_NAME,cal);
+    #endif
 
 		vsx_profiler_manager* pm = vsx_profiler_manager::get_instance();
 

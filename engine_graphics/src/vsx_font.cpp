@@ -28,6 +28,7 @@
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_font.h"
+#include "debug/vsx_error.h"
 
 #ifndef VSX_FONT_NO_FT
 #include "ftgl/FTGLPolygonFont.h"
@@ -130,7 +131,7 @@ void vsx_font::reinit_all_active()
   {
     #ifndef VSXU_OPENGL_ES
       if (!my_font_info)
-        return vsx_vector3<>();
+        VSX_ERROR_RETURN_V("no my_font_info", vsx_vector3<>());
 
       if (str == "")
         return p;

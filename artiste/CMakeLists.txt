@@ -31,6 +31,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/artiste/src
   ${CMAKE_SOURCE_DIR}/artiste/src/vsx_widget
   ${CMAKE_SOURCE_DIR}/artiste/include
+  ${CMAKE_SOURCE_DIR}/profiler/include
 )
 
 ################################################################################

@@ -37,7 +37,7 @@
 #endif
 #include <stdlib.h>
 #include "vsx_platform.h"
-
+#include "vsx_profiler_manager.h"
 
 
 
@@ -50,6 +50,7 @@ bool dual_monitor = false;
 
 
 
+VSXP_CLASS_DECLARE;
 
 
 /*
@@ -201,6 +202,9 @@ int main(int argc, char* argv[])
     app_print_cli_help();
     exit(0);
   }
+
+  VSXP_CLASS_CONSTRUCTOR;
+  VSXP_CLASS_LOCAL_INIT;
 
   vsx_printf(L"");
 
@@ -358,6 +362,8 @@ int main(int argc, char* argv[])
   int initial_vram_free = 0;
   while( running )
   {
+    VSXP_M_BEGIN;
+
     frame_delay.start();
 
     if (mouse_pos_type)
@@ -461,6 +467,7 @@ int main(int argc, char* argv[])
 
 
     running = glfwGetWindowParam( GLFW_OPENED );
+    VSXP_M_END;
   }
 
   app_unload();

@@ -134,7 +134,7 @@ public:
         A = new T[index+allocation_increment];
         allocated = index+allocation_increment;
       }
-      allocation_increment = allocation_increment << 1;
+      allocation_increment = (size_t)((float)allocation_increment * 1.3f);
     }
     if (index >= used)
     {

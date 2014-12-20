@@ -223,11 +223,11 @@ void vsx_widget_profiler::update_children()
 
 void vsx_widget_profiler::event_mouse_wheel(float y)
 {
-  if (ctrl)
+  if (shift)
   {
     vsx_printf(L"camera z: %f\n", camera.get_pos_z());
 
-    time_scale::get_instance()->time_offset -= 0.025 * y * (camera.get_pos_z() - 1.1);
+    time_scale::get_instance()->time_offset += 0.025 * y * (camera.get_pos_z() - 1.1);
 
     update_children();
 
