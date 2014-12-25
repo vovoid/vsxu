@@ -8,7 +8,6 @@
 
 #include "vsx_command.h"
 #include <pthread.h>
-#include <vsx_profiler_manager.h>
 
 // thread safety notice:
 //  an instance of this class shouldn't be shared among more than 2 threads hence it's a simple mutex
@@ -42,7 +41,6 @@ class vsx_command_buffer_broker
   typename std::list <T*>::const_iterator iter;
 
   bool delete_commands_on_delete;
-  VSXP_CLASS_DECLARE;
 
 public:
 
@@ -465,7 +463,6 @@ public:
     accept_commands(1),
     delete_commands_on_delete(false)
   {
-    VSXP_CLASS_CONSTRUCTOR;
 
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
       pthread_mutex_init(&mutex1, NULL);
@@ -478,7 +475,6 @@ public:
   accept_commands(1),
   delete_commands_on_delete(delete_commands)
   {
-    VSXP_CLASS_CONSTRUCTOR;
 
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
       pthread_mutex_init(&mutex1, NULL);

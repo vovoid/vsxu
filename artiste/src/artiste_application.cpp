@@ -149,9 +149,9 @@ public:
     if (desktop)
     {
       if (*gui_prod_fullwindow)
-        vxe->set_ignore_per_frame_time_limit(false);
+        vxe->set_no_send_client_time(true);
       else
-        vxe->set_ignore_per_frame_time_limit(true);
+        vxe->set_no_send_client_time(false);
 
       VSXP_S_BEGIN("desktop cmd_process_f");
         desktop->vsx_command_process_f();
