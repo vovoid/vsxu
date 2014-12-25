@@ -49,7 +49,6 @@
 #include <vsx_profiler.h>
 #include <vsx_data_path.h>
 #include <vsx_timer.h>
-#include <vsxfst.h>
 #include <string/vsx_string_helper.h>
 #include <debug/vsx_error.h>
 

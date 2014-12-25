@@ -190,6 +190,7 @@ vsx_comp* vsx_engine_abs::add(vsx_string<>label)
   return 0x0;
 }
 
+
 // send our current time to the client
 void vsx_engine_abs::tell_client_time(vsx_command_list *cmd_out)
 {
@@ -198,6 +199,7 @@ void vsx_engine_abs::tell_client_time(vsx_command_list *cmd_out)
 
   if (no_send_client_time)
     return;
+
 
   bool send = false;
 

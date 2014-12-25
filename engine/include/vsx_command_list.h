@@ -8,11 +8,11 @@
 
 #include "vsx_command.h"
 #include <pthread.h>
+#include <vsx_profiler_manager.h>
 
 // thread safety notice:
 //  an instance of this class shouldn't be shared among more than 2 threads hence it's a simple mutex
 //  combined with provider/consumer FIFO or LIFO buffer (pop/push, pop_front/push_front)
-
 
 template<class T>
 class vsx_command_buffer_broker
@@ -42,6 +42,7 @@ class vsx_command_buffer_broker
   typename std::list <T*>::const_iterator iter;
 
   bool delete_commands_on_delete;
+  VSXP_CLASS_DECLARE;
 
 public:
 
@@ -305,8 +306,9 @@ public:
     get_lock();
     if (commands.size())
     {
-      T *t = commands.front();
-      commands.pop_front();
+        T *t = commands.front();
+        commands.pop_front();
+
       release_lock();
       return t;
     }
@@ -463,6 +465,8 @@ public:
     accept_commands(1),
     delete_commands_on_delete(false)
   {
+    VSXP_CLASS_CONSTRUCTOR;
+
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
       pthread_mutex_init(&mutex1, NULL);
     #endif
@@ -474,11 +478,12 @@ public:
   accept_commands(1),
   delete_commands_on_delete(delete_commands)
   {
+    VSXP_CLASS_CONSTRUCTOR;
+
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
       pthread_mutex_init(&mutex1, NULL);
     #endif
   }
-
 
   ~vsx_command_buffer_broker()
   {

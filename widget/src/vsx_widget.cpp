@@ -117,6 +117,9 @@ vsx_widget::vsx_widget()
   support_scaling = false;
   font_size = 0.025;
   menu_temp_disable = false;
+
+  // init profiler
+  VSXP_CLASS_CONSTRUCTOR;
 }
 
 
@@ -916,8 +919,6 @@ void vsx_widget::vsx_command_process_f()
 
   while ( (c = command_q_f.pop()) )
   {
-    // roots' cleanup duties :3
-
     if (c->cmd == "delete")
     {
       vsx_widget *t = find( vsx_string_helper::s2i(c->cmd_data) );

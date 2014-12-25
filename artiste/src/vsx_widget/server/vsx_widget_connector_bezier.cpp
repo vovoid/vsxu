@@ -329,7 +329,7 @@ void vsx_widget_connector_bezier::draw()
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
   mtex_blob.bind();
     draw_box_texf(pv.x,pv.y,0,0.004f,0.004f);
-    draw_box_texf(ex,ey,0,0.004f,0.004f);
+    draw_box_texf((float)ex,(float)ey,0,0.004f,0.004f);
   mtex_blob._bind();
 
   sx = pv.x;

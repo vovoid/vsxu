@@ -24,6 +24,7 @@ include_directories(
   ${GLEW_INCLUDE_PATH}
   ../
   ../engine_graphics/include
+  ../profiler/include
   include
   src/log
   src/core/vsx_comp

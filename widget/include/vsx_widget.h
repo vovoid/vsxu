@@ -33,6 +33,9 @@
 // engine_graphics
 #include <vsx_font.h>
 
+// profiler
+#include <vsx_profiler_manager.h>
+
 // stl
 #include <map>
 #include <list>
@@ -125,6 +128,9 @@ public:
 
   //
   WIDGET_DLLIMPORT static bool performance_mode;
+
+  // profiler
+  VSXP_CLASS_DECLARE;
 
 // LOCALS
   // information
