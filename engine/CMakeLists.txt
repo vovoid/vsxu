@@ -31,6 +31,8 @@ include_directories(
   src/core
 )
 
+file(GLOB_RECURSE HEADER_FILES *.h)
+
 ################################################################################
 # DEFINES
 ################################################################################
@@ -185,13 +187,13 @@ set(SOURCES
 if (VSXU_STATIC EQUAL 1)
 
   #static build
-  add_library(${module_id} STATIC ${SOURCES} ${GAME_MONKEY})
+  add_library(${module_id} STATIC ${SOURCES} ${HEADER_FILES} ${GAME_MONKEY})
   include(../plugins/static_factory_cmake_target_link_libraries)
 
 else ()
 
   #dynamic build
-  add_library(${module_id} SHARED ${SOURCES} ${GAME_MONKEY})
+  add_library(${module_id} SHARED ${SOURCES} ${HEADER_FILES} ${GAME_MONKEY})
 endif ()
 
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)
