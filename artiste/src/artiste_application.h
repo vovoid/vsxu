@@ -26,10 +26,8 @@
 
 #include <sys/time.h>
 
-
 // GL state
 #include "vsx_gl_state.h"
-
 
 extern bool app_ctrl;
 extern bool app_alt;

@@ -75,6 +75,8 @@ public:
 
   inline void clear() VSX_ALWAYS_INLINE
   {
+    if (!A)
+      return;
     delete[] A;
     A = 0;
     allocated = used = 0;
@@ -134,7 +136,10 @@ public:
         A = new T[index+allocation_increment];
         allocated = index+allocation_increment;
       }
-      allocation_increment = (size_t)((float)allocation_increment * 1.3f);
+      if (allocation_increment < 64)
+        allocation_increment *= 2;
+      else
+        allocation_increment = (size_t)((float)allocation_increment * 1.3f);
     }
     if (index >= used)
     {

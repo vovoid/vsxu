@@ -171,7 +171,10 @@ public:
         A = (T*)malloc(sizeof(T)*(index+allocation_increment));
         allocated = index+allocation_increment;
       }
-      allocation_increment = (size_t)((float)allocation_increment * 1.3f);
+      if (allocation_increment < 64)
+        allocation_increment *= 2;
+      else
+        allocation_increment = (size_t)((float)allocation_increment * 1.3f);
       #ifdef VSX_ARRAY_ALLOCATE_CONSERVATIVE
         if (allocation_increment > 2)
           allocation_increment = 2;
