@@ -385,8 +385,8 @@ void vsx_texture::init_color_buffer
   glBindTexture(GL_TEXTURE_2D, color_buffer_handle);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   //NULL means reserve texture memory, but texels are undefined
   glTexImage2D(GL_TEXTURE_2D, 0, texture_storage_type, i_width, i_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
 
@@ -507,8 +507,8 @@ void vsx_texture::init_color_depth_buffer
   glBindTexture(GL_TEXTURE_2D, color_buffer_handle);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   //NULL means reserve texture memory, but texels are undefined
   glTexImage2D(GL_TEXTURE_2D, 0, texture_storage_type, i_width, i_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
 
@@ -530,8 +530,8 @@ void vsx_texture::init_color_depth_buffer
     glBindTexture(GL_TEXTURE_2D, depth_buffer_handle);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
@@ -952,8 +952,8 @@ void vsx_texture::upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigne
       glTexImage2D(
         texture_info->ogl_type,  // opengl type
         0,  // mipmap level
-        GL_RGB, // storage type
-        //GL_COMPRESSED_RGB_ARB, // storage type
+//        GL_RGB, // storage type
+        GL_COMPRESSED_RGB_ARB, // storage type
         size_x, // size x
         size_y, // size y
         0,      // border 0 or 1
@@ -967,8 +967,8 @@ void vsx_texture::upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigne
       glTexImage2D(
         texture_info->ogl_type,  // opengl type
         0,  // mipmap level
-        //GL_COMPRESSED_RGBA_ARB, // storage type
-        GL_RGBA, // storage type
+        GL_COMPRESSED_RGBA_ARB, // storage type
+//        GL_RGBA, // storage type
         size_x, // size x
         size_y, // size y
         0,      // border 0 or 1

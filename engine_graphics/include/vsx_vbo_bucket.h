@@ -126,6 +126,7 @@ public:
     // current - state - used to see if anything has changed
     current_vbo_draw_type = 0;
     current_num_vertices = 0;
+    current_num_colors = 0;
     current_num_faces = 0;
 
     // vbo handles
@@ -133,9 +134,6 @@ public:
     vbo_id_draw_indices = 0;
 
     current_vbo_draw_type = 0;
-
-    current_num_vertices = 0;
-    current_num_faces = 0;
 
     invalidation_flags = 0;
   }
@@ -179,6 +177,7 @@ private:
   // current - state - used to see if anything has changed
   GLuint current_vbo_draw_type;
   size_t current_num_vertices;
+  size_t current_num_colors;
   size_t current_num_faces;
 
   inline void i_invalidate_vertices()
@@ -240,7 +239,7 @@ private:
       +
       vertex_tex_coords.get_sizeof()
       +
-      vertex_colors.get_sizeof()+10
+      vertex_colors.get_sizeof()
       ,
       0,
       draw_type//GL_STATIC_DRAW_ARB // only static draw
@@ -289,6 +288,7 @@ private:
       );
       offset += vertex_colors.get_sizeof();
     }
+    current_num_colors = vertex_colors.size();
 
     // 4: vertices ----------------------------------------------------------
     offset_vertices = offset;
@@ -339,10 +339,21 @@ private:
 
   inline bool check_if_need_to_reinit_vbo(GLuint draw_type)
   {
-    if (!vbo_id_vertex_normals_texcoords) return true;
-    if (current_num_vertices != vertices.size() ) return true;
-    if (current_num_faces != faces.size() ) return true;
-    if (current_vbo_draw_type != draw_type) return true;
+    if (!vbo_id_vertex_normals_texcoords)
+      return true;
+
+    if (current_num_vertices != vertices.size() )
+      return true;
+
+    if (current_num_colors != vertex_colors.size() )
+      return true;
+
+    if (current_num_faces != faces.size() )
+      return true;
+
+    if (current_vbo_draw_type != draw_type)
+      return true;
+
     return false;
   }
 

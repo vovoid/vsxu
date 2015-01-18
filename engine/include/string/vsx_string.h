@@ -363,10 +363,13 @@ public:
         if (found == search.size()) 
         {
           int f = start-(found-1);
-          if (f < 0) return 0; else
-          return f;
+          if (f < 0)
+            return 0;
+          else
+            return f;
         }
-      } else found = 0;
+      }
+      else found = 0;
     }
     return -1;
   }
@@ -387,27 +390,56 @@ public:
     return true;
   }
 
-  inline const vsx_string<W>substr(int start, int length = -1) VSX_ALWAYS_INLINE
+  inline const vsx_string<W> substr(int start, int length = -1) VSX_ALWAYS_INLINE
   {
-    vsx_string<W>n;
+    vsx_string<W> result;
     zero_remove();
-    if (length == -1) length = size();
-    if (start < 0) {
+
+    if (length == -1)
+      length = size();
+
+    if (start < 0)
+    {
     	int s = -start;
     	start = size()-s;
+
     	if (length == -1)
-    	length = s;
+        length = s;
     	else
-    	if (length > s) length = s;
+        if (length > s) length = s;
     }
-    if (start < (int)size()) {
-      while (start < (int)size() && length) {
-        n.push_back(data[start]);
+    if (start < (int)size())
+    {
+      while (start < (int)size() && length)
+      {
+        result.push_back(data[start]);
         ++start;
         --length;
       }
     }
-    return n;
+    return result;
+  }
+
+  inline const vsx_string<W> replace(vsx_string<W> search_value, vsx_string<W> replace_value)
+  {
+    zero_remove();
+    int find_pos = find(search_value);
+    if (-1 == find_pos)
+      return *this;
+
+    vsx_string<W> result;
+    int i = 0;
+    for (; i < find_pos; i++)
+      result.push_back(data[i]);
+
+    result += replace_value;
+
+    i += search_value.size();
+
+    for (; i < (int)data.size(); i++)
+      result.push_back(data[i]);
+
+    return result;
   }
   
   inline void insert(int pos, W key) VSX_ALWAYS_INLINE

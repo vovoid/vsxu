@@ -47,9 +47,9 @@ endfunction(CREATE_STATIC_GLUE)
 
 function( CREATE_MODULE ${module_id} )
   if (VSXU_STATIC EQUAL 1)
-    add_library(${module_id} STATIC ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES})
+    add_library(${module_id} STATIC ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES} ${HEADER_FILES})
   else (VSXU_STATIC EQUAL 1)
-    add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES})
+    add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES} ${HEADER_FILES})
   endif (VSXU_STATIC EQUAL 1)
 endfunction(CREATE_MODULE)
 

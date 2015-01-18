@@ -291,8 +291,8 @@ public:
               "Ctrl+T to reset"
               ,0.025f
             );
-            VSXP_S_END;
           }
+          VSXP_S_END;
         }
         if (desktop && desktop->performance_mode)
         {
