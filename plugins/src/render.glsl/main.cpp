@@ -30,6 +30,7 @@
 #include <map>
 #include "vsx_glsl.h"
 #include <vsx_platform.h>
+#include <vsx_data_path.h>
 
 
 // stuff for loading pre-defined shaders from the file system
@@ -190,7 +191,21 @@ public:
 
   void run_operation(vsx_module_operation& operation)
   {
-    VSX_UNUSED(operation);
+    if (operation.handle == "save")
+    {
+      if (!operation.param_1.size())
+      {
+        message = "module||file name empty";
+        return;
+      }
+      vsx_string_helper::write_to_file(
+        vsx_data_path::get_instance()->data_path_get() +  "shaders" + DIRECTORY_SEPARATOR + operation.param_1,
+        shader.vertex_program +
+        "\n*****\n" +
+        shader.fragment_program
+      );
+    }
+    message = "module||shader saved successfully";
   }
 
   void destroy_operations(vsx_nw_vector<vsx_module_operation*>& operations)

@@ -31,18 +31,6 @@
 #include <inttypes.h>
 #include "vsx_engine_dllimport.h"
 
-
-// Directory Separators
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-  #define DIRECTORY_SEPARATOR                             "\\"
-  #define DIRECTORY_SEPARATOR_CHAR                             '\\'
-#endif
-
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-  #define DIRECTORY_SEPARATOR                             "/"
-  #define DIRECTORY_SEPARATOR_CHAR                        '/'
-#endif
-
 #define VSXF_TYPE_FILESYSTEM 0
 #define VSXF_TYPE_ARCHIVE 1
 

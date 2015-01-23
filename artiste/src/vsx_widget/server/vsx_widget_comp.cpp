@@ -512,7 +512,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
     dynamic_cast<dialog_query_string*>(module_operations_dialog)->show();
   }
 
-  if (t->cmd.substr(0, 25) == "module_operation_perform_")
+  if (t->cmd.substr(0, 25) == "module_operation_perform_" && t->parts.size() == 3)
   {
     size_t index = vsx_string_helper::s2i( t->cmd.substr(25 ,1) );
     vsx_string<> parameters = vsx_string_helper::base64_decode(t->parts[2]);
