@@ -746,7 +746,7 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
   //---------------------------------------
   double total_time = 0.0;
 
-  #define FAIL(header, message) 	cmd_out->add_raw(vsx_string<>("alert_fail ")+base64_encode(#header)+" Error "+base64_encode(#message))
+  #define FAIL(header, message) 	cmd_out->add_raw(vsx_string<>("alert_fail ") + vsx_string_helper::base64_encode(#header)+" Error " + vsx_string_helper::base64_encode(#message))
 
   vsx_command_timer.start();
 
@@ -787,6 +787,7 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
     #include "vsx_engine_messages/vsx_em_script.h"
     #include "vsx_engine_messages/vsx_note.h"
     #include "vsx_engine_messages/vsx_em_system.h"
+    #include "vsx_engine_messages/vsx_em_module_operation.h"
 
     if (cmd == "help")
     {

@@ -98,7 +98,7 @@ void vsx_widget_controller_channel::smooth(float newval)
 void vsx_widget_controller_channel::command_process_back_queue(vsx_command_s *t)
 {
   if (t->cmd=="pg64_ok" && !isolate) {
-    set_value(vsx_string_helper::s2f(base64_decode(t->parts[3])));
+    set_value(vsx_string_helper::s2f(vsx_string_helper::base64_decode(t->parts[3])));
     if (target_value > ((vsx_widget_controller_slider*)slider)->amp)
     {
       ((vsx_widget_controller_knob*)amp)->target_value = ((vsx_widget_controller_slider*)slider)->amp = target_value*2;

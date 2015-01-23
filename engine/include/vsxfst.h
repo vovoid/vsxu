@@ -237,10 +237,6 @@ ENGINE_DLLIMPORT int split_string(vsx_string<>& input, vsx_string<>& delimiter, 
 ENGINE_DLLIMPORT int explode(vsx_string<>& input, vsx_string<>& delimiter, std::list< vsx_string<> >& results, int max_parts = 0);
 
 ENGINE_DLLIMPORT vsx_string<>implode(std::list< vsx_string<> > in,vsx_string<>delimiter);
-
-ENGINE_DLLIMPORT vsx_string<>base64_encode(vsx_string<>data);
-ENGINE_DLLIMPORT vsx_string<>base64_decode(vsx_string<>data);
-
 ENGINE_DLLIMPORT vsx_string<>vsx_get_directory_separator();
 
 #endif

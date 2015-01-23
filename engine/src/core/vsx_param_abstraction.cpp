@@ -1078,7 +1078,7 @@ void vsx_engine_param_list::dump_param_values(vsx_string<>my_name, vsx_command_l
         )
         {
           if (param->module_param->type == VSX_MODULE_PARAM_ID_STRING) {
-            command_result->add_raw(vsx_string<>("ps64 ")+my_name+" "+param->name+" "+base64_encode(pval));
+            command_result->add_raw(vsx_string<>("ps64 ")+my_name+" "+param->name+" "+vsx_string_helper::base64_encode(pval));
           } else
           command_result->add_raw(vsx_string<>("param_set ")+my_name+" "+param->name+" "+pval);
         }

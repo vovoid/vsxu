@@ -279,7 +279,7 @@ vsx_string<>vsx_param_sequence::dump()
   for (std::vector<vsx_param_sequence_item>::iterator it = items.begin(); it != items.end(); ++it)
   {
     //printf("adding dumpstring: %s\n",(vsx_string_helper::f2s((*it).delay)+";"+vsx_string_helper::f2s((*it).interpolation)+";"+base64_encode((*it).value)).c_str());
-    ml.push_back(vsx_string_helper::f2s((*it).total_length)+";"+vsx_string_helper::i2s((*it).interpolation)+";"+base64_encode((*it).get_value()));
+    ml.push_back(vsx_string_helper::f2s((*it).total_length)+";"+vsx_string_helper::i2s((*it).interpolation)+";"+vsx_string_helper::base64_encode((*it).get_value()));
   }
   vsx_string<>deli = "|";
   res = implode(ml, deli);
@@ -301,12 +301,12 @@ void vsx_param_sequence::inject(vsx_string<>ij)
     pa.total_length = vsx_string_helper::s2f(pld[0]);
     pa.interpolation = vsx_string_helper::s2i(pld[1]);
     if (pa.interpolation < 4) {
-      pa.value = base64_decode(pld[2]);
+      pa.value = vsx_string_helper::base64_decode(pld[2]);
     } else
     if (pa.interpolation == 4) {
       std::vector <vsx_string<> > pld_l;
       vsx_string<>pdeli_l = ":";
-      vsx_string<>vtemp = base64_decode(pld[2]);
+      vsx_string<>vtemp = vsx_string_helper::base64_decode(pld[2]);
       //printf("value: %s\n",vtemp.c_str());
       explode(vtemp,pdeli_l,pld_l);
       pa.value = pld_l[0];
@@ -404,14 +404,14 @@ void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_
   pa.interpolation = vsx_string_helper::s2i(cmd_in->parts[6]);
   if (pa.interpolation < 4)
   {
-    pa.value = base64_decode(cmd_in->parts[4]);
+    pa.value = vsx_string_helper::base64_decode(cmd_in->parts[4]);
   	//printf("value in string format: %s\n", pa.value.c_str());
   }
   else
   if (pa.interpolation == 4) {
     std::vector <vsx_string<> > pld_l;
     vsx_string<>pdeli_l = ":";
-    vsx_string<>vtemp = base64_decode(cmd_in->parts[4]);
+    vsx_string<>vtemp = vsx_string_helper::base64_decode(cmd_in->parts[4]);
     //printf("value: %s\n",vtemp.c_str());
     explode(vtemp,pdeli_l,pld_l);
     pa.value = pld_l[0];
@@ -441,7 +441,7 @@ void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_
     printf("last position, interpolation type: %s\n",cmd_in->parts[6].c_str());
     items[items.size()-1].total_length = delay;
     vsx_param_sequence_item pa;
-    pa.value = base64_decode(cmd_in->parts[4]);
+    pa.value = vsx_string_helper::base64_decode(cmd_in->parts[4]);
     pa.total_length = 1;
     pa.interpolation = vsx_string_helper::s2i(cmd_in->parts[6]);
     items.push_back(pa);
@@ -458,12 +458,12 @@ void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_
     (*it).total_length = delay;
     pa.interpolation = vsx_string_helper::s2i(cmd_in->parts[6]);
     if (pa.interpolation < 4) {
-      pa.value = base64_decode(cmd_in->parts[4]);
+      pa.value = vsx_string_helper::base64_decode(cmd_in->parts[4]);
     } else
     if (pa.interpolation == 4) {
       std::vector <vsx_string<> > pld_l;
       vsx_string<>pdeli_l = ":";
-      vsx_string<>vtemp = base64_decode(cmd_in->parts[4]);
+      vsx_string<>vtemp = vsx_string_helper::base64_decode(cmd_in->parts[4]);
       //printf("value: %s\n",vtemp.c_str());
       explode(vtemp,pdeli_l,pld_l);
       pa.value = pld_l[0];

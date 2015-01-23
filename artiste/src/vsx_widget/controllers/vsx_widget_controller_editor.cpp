@@ -121,7 +121,7 @@ void vsx_widget_controller_editor::command_process_back_queue(vsx_command_s *t)
   } else
   if (t->cmd == "pg64_ok") {
     // pg64_ok [comp] [param] [val] [id]
-    load_text(base64_decode(t->parts[3]));
+    load_text( vsx_string_helper::base64_decode(t->parts[3]));
     a_focus = this;
     k_focus = this;
   }
@@ -129,7 +129,7 @@ void vsx_widget_controller_editor::command_process_back_queue(vsx_command_s *t)
 
 void vsx_widget_controller_editor::save()
 {
-  command_q_b.add_raw(return_command + " " + base64_encode(((vsx_widget_editor*)editor)->get_string()) + " foo "+ target_param);
+  command_q_b.add_raw(return_command + " " + vsx_string_helper::base64_encode(((vsx_widget_editor*)editor)->get_string()) + " foo "+ target_param);
   return_component->vsx_command_queue_b(this);
 }
 

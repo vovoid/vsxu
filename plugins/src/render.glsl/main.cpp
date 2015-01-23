@@ -178,6 +178,28 @@ public:
     render_result->set(0);
   }
 
+  void declare_operations(vsx_nw_vector<vsx_module_operation*>& operations )
+  {
+    vsx_module_operation* operation = new vsx_module_operation;
+    operation->handle = "save";
+    operation->name = "Save shader to disk...";
+    operation->param_1_required = true;
+    operation->param_1_name = "Filename";
+    operations.push_back( operation );
+  }
+
+  void run_operation(vsx_module_operation& operation)
+  {
+    VSX_UNUSED(operation);
+  }
+
+  void destroy_operations(vsx_nw_vector<vsx_module_operation*>& operations)
+  {
+    foreach (operations, i)
+      delete operations[i];
+  }
+
+
   bool activate_offscreen()
   {
     #if PLATFORM == PLATFORM_LINUX || PLATFORM == PLATFORM_WINDOWS

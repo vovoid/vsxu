@@ -29,9 +29,9 @@ if (cmd == "state_load")
 
   vsx_string<>errmsg;
   state_name = c->parts[1];
-  if (load_state(base_path+str_replace(";","/",base64_decode(c->parts[1])),&errmsg))
+  if (load_state(base_path+str_replace(";","/",vsx_string_helper::base64_decode(c->parts[1])),&errmsg))
   {
-    cmd_out->add_raw(vsx_string<>("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Could not load state. Error message was:|"+errmsg), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw(vsx_string<>("alert_fail ")+vsx_string_helper::base64_encode(c->raw)+" Error "+vsx_string_helper::base64_encode("Could not load state. Error message was:|"+errmsg), VSX_COMMAND_GARBAGE_COLLECT);
   } //else
   {
     cmd_out->add_raw("clear_ok", VSX_COMMAND_GARBAGE_COLLECT);
@@ -60,7 +60,7 @@ if (cmd == "clear")
 
 
 if (cmd == "meta_set") {
-  meta_information = base64_decode(c->parts[1]);
+  meta_information = vsx_string_helper::base64_decode(c->parts[1]);
   vsx_string<>deli("|");
   explode(meta_information, deli, meta_fields);
   goto process_message_queue_end;
@@ -69,7 +69,7 @@ if (cmd == "meta_set") {
 
 
 if (cmd == "meta_get") {
-  cmd_out->add_raw("meta_get_ok "+base64_encode(meta_information), VSX_COMMAND_GARBAGE_COLLECT);
+  cmd_out->add_raw("meta_get_ok "+vsx_string_helper::base64_encode(meta_information), VSX_COMMAND_GARBAGE_COLLECT);
   goto process_message_queue_end;
 }
 
@@ -90,7 +90,7 @@ if (cmd == "package_export")
 {
   if (filesystem.is_archive())
   {
-    cmd_out->add_raw(vsx_string<>("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Can not save a production!"), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw(vsx_string<>("alert_fail ")+vsx_string_helper::base64_encode(c->raw)+" Error "+vsx_string_helper::base64_encode("Can not save a production!"), VSX_COMMAND_GARBAGE_COLLECT);
   }
   else
 
@@ -137,7 +137,7 @@ if (cmd == "state_save")
 {
   if (filesystem.is_archive())
   {
-    cmd_out->add_raw(vsx_string<>("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Can not save a production!"), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw(vsx_string<>("alert_fail ")+vsx_string_helper::base64_encode(c->raw)+" Error "+vsx_string_helper::base64_encode("Can not save a production!"), VSX_COMMAND_GARBAGE_COLLECT);
   }
   else
   if (c->parts.size() == 2)

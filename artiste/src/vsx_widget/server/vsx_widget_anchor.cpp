@@ -477,7 +477,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     tt->title = "VSXL [param filter] : "+component->name+"->"+name;
     ((vsx_widget_controller_editor*)tt)->return_command = "vsxl_pfi";
     ((vsx_widget_controller_editor*)tt)->return_component = this;
-    ((vsx_widget_controller_editor*)tt)->load_text(base64_decode(t->parts[3]));
+    ((vsx_widget_controller_editor*)tt)->load_text( vsx_string_helper::base64_decode(t->parts[3]));
     return;
   } 
 
@@ -610,7 +610,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
   {
     if (sequenced || connections.size()) 
     {
-      command_q_b.add_raw("alert_dialog Information "+base64_encode("This is controlled by a sequence and thus can't be controlled this way."));
+      command_q_b.add_raw("alert_dialog Information " + vsx_string_helper::base64_encode("This is controlled by a sequence and thus can't be controlled this way."));
       parent->vsx_command_queue_b(this);
       return;
     }
@@ -716,7 +716,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
 
   if (t->cmd == "chooser_ok")
   {
-    vsx_string<>ns = base64_encode("resources/"+str_replace(";","/",base64_decode(t->parts[1])));
+    vsx_string<>ns = vsx_string_helper::base64_encode("resources/"+str_replace(";","/", vsx_string_helper::base64_decode(t->parts[1])));
     command_q_b.add_raw("ps64 "+component->name+" "+alias_owner->name+" "+ns);
     component->vsx_command_queue_b(this);
     return;
@@ -796,7 +796,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
 
   if (t->cmd == "param_get_ok")
   {
-    display_value = base64_decode(t->parts[3]);
+    display_value = vsx_string_helper::base64_decode(t->parts[3]);
     std::vector <vsx_string<> > parts;
     vsx_string<>deli = ",";
     if (p_type == "float")
@@ -1566,7 +1566,7 @@ void vsx_widget_anchor::init()
 
   if (options.find("help") != options.end()) 
   {
-    help_text += "\nParameter info (from the module):\n"+base64_decode(options["help"]);
+    help_text += "\nParameter info (from the module):\n"+vsx_string_helper::base64_decode(options["help"]);
   }
   
   dialogs=parse_url_params(p_type_suffix);

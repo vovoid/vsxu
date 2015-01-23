@@ -37,6 +37,7 @@ class dialog_query_string : public vsx_widget_window {
   vsx_string<>i_hint;
   //std::map<vsx_string<>, vsx_widget*> fields;
   vsx_nw_vector<vsx_widget*> edits;
+  vsx_nw_vector<vsx_widget*> labels;
 public:
   vsx_string<>extra_value; // appended at the end of the command
   vsx_widget *edit1;
@@ -49,26 +50,42 @@ public:
       visible = 0;
       return;
     }
+
     vsx_string<>first_res;
     vsx_nw_vector< vsx_string<> > res;
-    for (unsigned long i = 0; i < edits.size(); ++i) {
-      if (!first_res.size()) first_res = ((vsx_widget_base_edit*)(edits[i]))->get_string();
+    for (unsigned long i = 0; i < edits.size(); ++i)
+    {
+      if (!first_res.size())
+        first_res = ((vsx_widget_base_edit*)(edits[i]))->get_string();
       else
       {
-        //printf("res pushback\n");
         res.push_back( ((vsx_widget_base_edit*)(edits[i]))->get_string() );
         ((vsx_widget_base_edit*)(edits[i]))->set_string("");
       }
     }
-    vsx_string<>i("|");
-    vsx_string<>ress = implode(res, i);
-    vsx_string<>cmd = name+" "+first_res;
-    if (ress.size()) {
-      cmd += " "+base64_encode(ress);
-    }
-    if (extra_value != "") cmd += " "+extra_value;
+    vsx_string<> i("|");
+    vsx_string<> ress = implode(res, i);
+    vsx_string<> cmd = name+" "+first_res;
+
+    if (ress.size())
+      cmd += " "+vsx_string_helper::base64_encode(ress);
+
+    if (extra_value != "")
+      cmd += " " + extra_value;
     command_q_b.add_raw(cmd);
     visible = 0;
+  }
+
+  void set_title(vsx_string<> new_title)
+  {
+    title = new_title;
+  }
+
+  void set_label(size_t index, vsx_string<> title)
+  {
+    if (index >= labels.size())
+      return;
+    labels[index]->title = title;
   }
 
   void set_value(vsx_string<>value)
@@ -100,7 +117,7 @@ public:
     ((vsx_widget_base_edit*)edit1)->allowed_chars = ch;
   }
 
-  dialog_query_string(vsx_string<>window_title, vsx_string<>in_fields = "")
+  dialog_query_string(vsx_string<> window_title, vsx_string<>in_fields = "")
   {
     // buttons, always needed
     vsx_widget *button1 = add(new vsx_widget_button,".b1");
@@ -121,7 +138,9 @@ public:
       {
         // add an editor
         vsx_widget_base_edit *e = (vsx_widget_base_edit*)add(new vsx_widget_base_edit,"e");
-        if (!edit1) edit1 = (vsx_widget*)e;
+        if (!edit1)
+          edit1 = (vsx_widget*)e;
+
         edits.push_back((vsx_widget*)e);
         e->init();
         e->set_size(vsx_vector3<>(size.x-0.04f, 0.02f));
@@ -135,6 +154,7 @@ public:
 
         // add a label for this editor
         vsx_widget_2d_label *l = (vsx_widget_2d_label*)add(new vsx_widget_2d_label,"l");
+        labels.push_back(l);
         l->init();
         l->halign = a_left;
         l->set_pos(vsx_vector3<>(e->pos.x-e->size.x*0.5,yp+0.02f));

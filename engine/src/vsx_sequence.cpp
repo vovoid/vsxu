@@ -236,7 +236,7 @@ vsx_string<>vsx_sequence::get_string()
   vsx_nw_vector< vsx_string<> > parts;
   for (unsigned long i = 0; i < items.size(); ++i)
   {
-    parts.push_back(vsx_string_helper::f2s(items[i].delay)+";"+vsx_string_helper::f2s(items[i].interpolation)+";"+base64_encode((items[i].get_value())));
+    parts.push_back(vsx_string_helper::f2s(items[i].delay)+";"+vsx_string_helper::f2s(items[i].interpolation)+";"+vsx_string_helper::base64_encode((items[i].get_value())));
   }
   vsx_string<>deli = "|";
   return implode(parts,deli);
@@ -257,7 +257,7 @@ void vsx_sequence::set_string(vsx_string<>str)
     explode(rows[i], deli2,  parts);
     n_i.delay = vsx_string_helper::s2f(parts[0]);
     n_i.interpolation = (int)vsx_string_helper::s2f(parts[1]);
-    vsx_string<>ff(base64_decode(parts[2]));
+    vsx_string<>ff(vsx_string_helper::base64_decode(parts[2]));
     if (n_i.interpolation < 4) {
       n_i.value = vsx_string_helper::s2f(ff);
     } else

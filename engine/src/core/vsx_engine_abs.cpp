@@ -312,7 +312,7 @@ void vsx_engine_abs::process_message_queue_redeclare(vsx_command_list *cmd_out_r
         redeclare_out_params(*it,cmd_out_res);
       }
       if ((*it)->module->message.size()) {
-        cmd_out_res->add_raw("c_msg "+(*it)->name+" "+base64_encode((*it)->module->message), VSX_COMMAND_GARBAGE_COLLECT);
+        cmd_out_res->add_raw("c_msg "+(*it)->name+" "+vsx_string_helper::base64_encode((*it)->module->message), VSX_COMMAND_GARBAGE_COLLECT);
         (*it)->module->message = "";
       }
     }
@@ -348,6 +348,8 @@ void vsx_engine_abs::send_state_to_client(vsx_command_list *cmd_out)
     cmd_out->add_raw(command, VSX_COMMAND_GARBAGE_COLLECT);
     cmd_out->add_raw("in_param_spec "+forge[i]->name+" "+forge[i]->in_param_spec, VSX_COMMAND_GARBAGE_COLLECT);
     cmd_out->add_raw("out_param_spec "+forge[i]->name+" "+forge[i]->out_param_spec, VSX_COMMAND_GARBAGE_COLLECT);
+    if (forge[i]->has_module_operations())
+      cmd_out->add_raw("module_operation_spec " + forge[i]->name + " " + forge[i]->module_operations_as_string(), VSX_COMMAND_GARBAGE_COLLECT);
     //send vsxl presence
     for (unsigned long ii = 0; ii < forge[i]->in_parameters->count(); ++ii) {
       vsx_engine_param* param = forge[i]->get_params_in()->get_by_id(ii);
@@ -472,7 +474,7 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
   tmp_aliases.add_raw("break");
 
   if (meta_information.size())
-    tmp_comp.add_raw("meta_set "+base64_encode(meta_information));
+    tmp_comp.add_raw("meta_set "+vsx_string_helper::base64_encode(meta_information));
 
   for (forge_map_iter = forge_map.begin(); forge_map_iter != forge_map.end(); ++forge_map_iter)
   {
@@ -519,7 +521,7 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
                   param->module_param->type == VSX_MODULE_PARAM_ID_RESOURCE
                 )
               {
-                tmp_comp.add_raw(vsx_string<>("ps64 ")+comp->name+" "+param->name+" "+base64_encode(pval));
+                tmp_comp.add_raw(vsx_string<>("ps64 ")+comp->name+" "+param->name+" "+vsx_string_helper::base64_encode(pval));
               }
               else
               {

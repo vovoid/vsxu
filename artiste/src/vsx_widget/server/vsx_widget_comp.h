@@ -26,6 +26,7 @@
 
 #include "vsx_widget.h"
 #include "vsx_widget_connector_info.h"
+#include <vsx_module_operation.h>
 
 #define COMPONENT_MOVE 1
 #define COMPONENT_SCALE 2
@@ -35,6 +36,10 @@ class vsx_widget_component : public vsx_widget {
   //vsx_font myf;
   vsx_vector3<> message_pos;
   vsx_texture mtex_blob;
+
+  vsx_nw_vector<vsx_module_operation*> module_operations;
+  vsx_widget* module_operations_dialog;
+
 public:
   bool macro;
   bool scaled;

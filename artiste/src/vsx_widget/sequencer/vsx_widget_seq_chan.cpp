@@ -134,7 +134,7 @@ void vsx_widget_seq_channel::send_parent_dump()
     parts.push_back(
       vsx_string_helper::f2s((*it).get_total_length()) + ";" +
       vsx_string_helper::i2s((*it).get_interpolation()) + ";" +
-      base64_encode((*it).get_value_interpolation())
+      vsx_string_helper::base64_encode((*it).get_value_interpolation())
     );
   }
 
@@ -366,7 +366,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
       {
       case VSX_MODULE_PARAM_ID_FLOAT:
       {
-        val = base64_encode(vsx_string_helper::f2s((distance.center.y + size.y / 2) / size.y
+        val = vsx_string_helper::base64_encode(vsx_string_helper::f2s((distance.center.y + size.y / 2) / size.y
             * totalysize + y_start));
       }
         break;
@@ -727,14 +727,14 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
     {
       if (other_item_id_to_update != -1)
         server_message("pseq_r update",
-          base64_encode( items[other_item_id_to_update].get_value_interpolation() ) + " " +
+          vsx_string_helper::base64_encode( items[other_item_id_to_update].get_value_interpolation() ) + " " +
                        vsx_string_helper::f2s(items[other_item_id_to_update].get_total_length()) + " " +
                        vsx_string_helper::i2s(items[other_item_id_to_update].get_interpolation()) + " " +
           vsx_string_helper::i2s(other_item_id_to_update)
         );
 
       server_message("pseq_r update",
-        base64_encode( items[mouse_clicked_id].get_value_interpolation() ) + " " +
+        vsx_string_helper::base64_encode( items[mouse_clicked_id].get_value_interpolation() ) + " " +
                      vsx_string_helper::f2s(items[mouse_clicked_id].get_total_length()) + " " +
                      vsx_string_helper::i2s(items[mouse_clicked_id].get_interpolation()) + " " +
         vsx_string_helper::i2s(mouse_clicked_id)
@@ -832,7 +832,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
         if (!is_controller)
         {
           server_message("pseq_r update",
-            base64_encode( items[mouse_clicked_id - 1].get_value_interpolation() ) + " " +
+            vsx_string_helper::base64_encode( items[mouse_clicked_id - 1].get_value_interpolation() ) + " " +
               vsx_string_helper::f2s( items[mouse_clicked_id - 1].get_total_length()) + " " +
               vsx_string_helper::i2s( items[mouse_clicked_id - 1].get_interpolation()) + " " +
               vsx_string_helper::i2s( mouse_clicked_id - 1)
@@ -904,14 +904,14 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
       {
         if (other_item_id_to_update != -1)
           server_message("pseq_r update",
-            base64_encode( items[other_item_id_to_update].get_value_interpolation() ) + " " +
+            vsx_string_helper::base64_encode( items[other_item_id_to_update].get_value_interpolation() ) + " " +
                          vsx_string_helper::f2s(items[other_item_id_to_update].get_total_length()) + " " +
                          vsx_string_helper::i2s(items[other_item_id_to_update].get_interpolation()) + " " +
             vsx_string_helper::i2s(other_item_id_to_update)
           );
 
         server_message("pseq_r update",
-          base64_encode( items[mouse_clicked_id].get_value_interpolation()) + " " +
+          vsx_string_helper::base64_encode( items[mouse_clicked_id].get_value_interpolation()) + " " +
                        vsx_string_helper::f2s( items[mouse_clicked_id].get_total_length()) + " " +
                        vsx_string_helper::i2s( items[mouse_clicked_id].get_interpolation()) + " " +
           vsx_string_helper::i2s(mouse_clicked_id)
@@ -1024,7 +1024,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
     }
 
     server_message("pseq_r update",
-      base64_encode(items[mouse_clicked_id].get_value_interpolation()) + " " +
+      vsx_string_helper::base64_encode(items[mouse_clicked_id].get_value_interpolation()) + " " +
       vsx_string_helper::f2s( items[mouse_clicked_id].get_total_length()) + " " +
       vsx_string_helper::i2s( items[mouse_clicked_id].get_interpolation()) + " " +
       vsx_string_helper::i2s( mouse_clicked_id)
@@ -1088,13 +1088,13 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
     size_t updated_id = mouse_clicked_id -1;
 
     server_message("pseq_r update",
-      base64_encode(items[updated_id].get_value_interpolation()) + " " +
+      vsx_string_helper::base64_encode(items[updated_id].get_value_interpolation()) + " " +
       vsx_string_helper::f2s( items[updated_id].get_total_length()) + " " +
       vsx_string_helper::i2s( items[updated_id].get_interpolation()) + " " +
       vsx_string_helper::i2s( updated_id)
     );
     server_message("pseq_r update",
-      base64_encode(items[mouse_clicked_id].get_value_interpolation()) + " " +
+      vsx_string_helper::base64_encode(items[mouse_clicked_id].get_value_interpolation()) + " " +
       vsx_string_helper::f2s( items[mouse_clicked_id].get_total_length()) + " " +
       vsx_string_helper::i2s( items[mouse_clicked_id].get_interpolation()) + " " +
       vsx_string_helper::i2s( mouse_clicked_id)
@@ -1130,7 +1130,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
       }
 
       server_message("pseq_r update",
-        base64_encode( items[mouse_clicked_id].get_value_interpolation()) + " " +
+        vsx_string_helper::base64_encode( items[mouse_clicked_id].get_value_interpolation()) + " " +
                      vsx_string_helper::f2s( items[mouse_clicked_id].get_total_length()) + " " +
                      vsx_string_helper::i2s( items[mouse_clicked_id].get_interpolation()) + " " +
         vsx_string_helper::i2s(mouse_clicked_id)
@@ -1203,7 +1203,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
         {
           std::vector <vsx_string<> > pld_l;
           vsx_string<>pdeli_l = ":";
-          vsx_string<>vtemp = base64_decode(pld[2]);
+          vsx_string<>vtemp = vsx_string_helper::base64_decode(pld[2]);
           explode(vtemp, pdeli_l, pld_l);
           pa.set_value( pld_l[0] );
           pa.set_handle1( vsx_vector3_helper::from_string<float>( pld_l[1] ) );
@@ -1211,7 +1211,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
         }
         else
         {
-          pa.set_value( base64_decode(pld[2]) );
+          pa.set_value( vsx_string_helper::base64_decode(pld[2]) );
         }
         pa.set_total_length( vsx_string_helper::s2f(pld[0]) );
         items.push_back(pa);
@@ -1236,7 +1236,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
         }
       ++it;
       vsx_widget_param_sequence_item pa;
-      pa.set_value( base64_decode(t->parts[4]) ); //?
+      pa.set_value( vsx_string_helper::base64_decode(t->parts[4]) ); //?
       pa.set_total_length( items[action_item].get_total_length() - vsx_string_helper::s2f(t->parts[5]) );
       items[action_item].set_total_length( vsx_string_helper::s2f(t->parts[5]) );
       pa.set_interpolation( vsx_string_helper::s2i( t->parts[6] ) );
@@ -1244,7 +1244,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
       {
         std::vector <vsx_string<> > pld_l;
         vsx_string<>pdeli_l = ":";
-        vsx_string<>vtemp = base64_decode(t->parts[4]);
+        vsx_string<>vtemp = vsx_string_helper::base64_decode(t->parts[4]);
         explode(vtemp, pdeli_l, pld_l);
         pa.set_value( pld_l[0] );
         pa.set_handle1( vsx_vector3_helper::from_string<float>(pld_l[1]) );
@@ -1252,7 +1252,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
       }
       else
       {
-        pa.set_value( base64_decode(t->parts[4]) );
+        pa.set_value( vsx_string_helper::base64_decode(t->parts[4]) );
       }
 
       items.insert(it, pa);
@@ -1355,7 +1355,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
           pa.set_total_length( vsx_string_helper::s2f(pld[0]) );
           pa.set_length( vsx_string_helper::s2f(pld[1]) );
           if (pld.size() > 2)
-          pa.set_pool_name( base64_decode(pld[2]) );
+          pa.set_pool_name( vsx_string_helper::base64_decode(pld[2]) );
           items.push_back(pa);
         }
       }

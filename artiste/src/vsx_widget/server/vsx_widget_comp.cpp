@@ -121,7 +121,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
   } else
   if (t->cmd == "c_msg")
   {
-    vsx_string<>s = base64_decode(t->parts[2]);
+    vsx_string<>s = vsx_string_helper::base64_decode(t->parts[2]);
     vsx_string<>deli = "&&";
 
     deli = "||";
@@ -155,8 +155,8 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
   } else
   if (t->cmd == "macro_dump_add")
   {
-    printf("macro_dump_add %s\n",base64_decode(t->parts[2]).c_str());
-    macro_commands.add_raw(base64_decode(t->parts[2]));
+    printf("macro_dump_add %s\n", vsx_string_helper::base64_decode(t->parts[2]).c_str());
+    macro_commands.add_raw( vsx_string_helper::base64_decode(t->parts[2]));
     return;
   } else
   if (t->cmd == "macro_dump_complete")
@@ -169,8 +169,8 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
     return;
   } else
   if (t->cmd == "component_clone_add") {
-    printf("component_clone_add %s\n",base64_decode(t->parts[2]).c_str());
-    macro_commands.add_raw(base64_decode(t->parts[2]));
+    printf("component_clone_add %s\n", vsx_string_helper::base64_decode(t->parts[2]).c_str());
+    macro_commands.add_raw( vsx_string_helper::base64_decode(t->parts[2]));
     return;
   } else
   if (t->cmd == "component_clone_complete")
@@ -451,7 +451,83 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
     //printf("num anchors: %d\n", largest_num_anchors);
     init_children();
     return;
-  } else
+  }
+
+
+  if (t->cmd == "module_operation_spec")
+  {
+    vsx_nw_vector< vsx_string<> > parts;
+    vsx_string_helper::explode_single(t->parts[2], '#', parts);
+
+    foreach (parts, i)
+    {
+      vsx_module_operation* operation = new vsx_module_operation;
+      operation->unserialize( parts[i] );
+      module_operations.push_back(operation);
+    }
+
+    if (module_operations.size())
+      foreach (module_operations, i)
+        menu->commands.adds(VSX_COMMAND_MENU, module_operations[i]->name, "module_operation_show_" + vsx_string_helper::i2s(i), "");
+
+    if (module_operations.size())
+      module_operations_dialog =
+        add
+        (
+          new dialog_query_string(
+              "Perform Operation",
+              "Param 1|Param 2|Param 3|Param 4"
+          ),
+          "module_operation_perform_"
+        );
+
+    ((vsx_widget_popup_menu*)menu)->init_extra_commands();
+    return;
+  }
+
+  if (t->cmd.substr(0,17 + 5) == "module_operation_show_")
+  {
+    size_t index = vsx_string_helper::s2i( t->cmd.substr(17 + 5 ,1) );
+    vsx_module_operation* operation = module_operations[index];
+
+    dynamic_cast<dialog_query_string*>(module_operations_dialog)->set_label(0, "(unused)");
+    dynamic_cast<dialog_query_string*>(module_operations_dialog)->set_label(1, "(unused)");
+    dynamic_cast<dialog_query_string*>(module_operations_dialog)->set_label(2, "(unused)");
+    dynamic_cast<dialog_query_string*>(module_operations_dialog)->set_label(3, "(unused)");
+
+    operation->param_1 = "";
+    operation->param_2 = "";
+    operation->param_3 = "";
+    operation->param_4 = "";
+
+    if (operation->param_1_name.size())
+      dynamic_cast<dialog_query_string*>(module_operations_dialog)->set_label(0, operation->param_1_name);
+    if (operation->param_2_name.size())
+      dynamic_cast<dialog_query_string*>(module_operations_dialog)->set_label(1, operation->param_2_name);
+    if (operation->param_3_name.size())
+      dynamic_cast<dialog_query_string*>(module_operations_dialog)->set_label(2, operation->param_3_name);
+    if (operation->param_4_name.size())
+      dynamic_cast<dialog_query_string*>(module_operations_dialog)->set_label(3, operation->param_4_name);
+    dynamic_cast<dialog_query_string*>(module_operations_dialog)->name = "module_operation_perform_"+vsx_string_helper::i2s(index);
+    dynamic_cast<dialog_query_string*>(module_operations_dialog)->show();
+  }
+
+  if (t->cmd.substr(0, 25) == "module_operation_perform_")
+  {
+    size_t index = vsx_string_helper::s2i( t->cmd.substr(25 ,1) );
+    vsx_string<> parameters = vsx_string_helper::base64_decode(t->parts[2]);
+    vsx_nw_vector< vsx_string<> > parts;
+    vsx_string_helper::explode_single(parameters, '|', parts);
+    vsx_module_operation* operation = module_operations[index];
+    operation->param_1 = t->parts[1];
+    operation->param_2 = parts[0];
+    operation->param_3 = parts[1];
+    operation->param_4 = parts[2];
+
+    command_q_b.add_raw("module_operation_perform "+name+" "+operation->serialize());
+    server->vsx_command_queue_b(this);
+  }
+
   if (t->cmd == "param_connect_volatile") {
     bool failed = false;
     vsx_widget_component* a = (vsx_widget_component *)((vsx_widget_server*)server)->find_component(t->parts[3]);
@@ -565,7 +641,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
 
     ((vsx_widget_controller_editor*)tt)->return_command = "vsxl_cfi";
     ((vsx_widget_controller_editor*)tt)->return_component = this;
-    ((vsx_widget_controller_editor*)tt)->load_text(base64_decode(t->parts[2]));
+    ((vsx_widget_controller_editor*)tt)->load_text( vsx_string_helper::base64_decode(t->parts[2]));
 
     //tt->title = "VSXL [compfilter] : "+name;
     //((vsx_widget_2d_editor*)tt)->return_command = "vsxl_cfi";
@@ -639,9 +715,14 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
         menu->commands.adds(VSX_COMMAND_MENU, "delete [ del ]", "component_delete_menu","");
 
       }
+      if (module_operations.size())
+        foreach (module_operations, i)
+          menu->commands.adds(VSX_COMMAND_MENU, module_operations[i]->name, "module_operation_"+vsx_string_helper::i2s(i), "");
+
 
       if (menu)
-      menu->init();
+        menu->init();
+
       title = real_name;
     }
     return;
@@ -1661,11 +1742,6 @@ void vsx_widget_component::begin_delete()
   deleting = 1;
   target_size.x  = 0.0f;
   interpolating_size = true;
-  /*for (std::list<vsx_widget*>::iterator itx = children.begin(); itx != children.end(); itx++)
-  {
-    (*itx)->target_size.y = (*itx)->target_size.x = 0.0f;
-    (*itx)->interpolating_size = true;
-  }*/
 }
 
 

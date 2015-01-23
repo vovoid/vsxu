@@ -37,7 +37,8 @@ class vsx_channel;
 // join another component with the first
 // 
 
-class vsx_comp : public vsx_comp_abs
+class vsx_comp
+    : public vsx_comp_abs
 {
 protected:
   enum frame_status_enum
@@ -54,6 +55,8 @@ protected:
   
   bool all_valid;
 	vsx_timer run_timer;
+
+  vsx_nw_vector< vsx_module_operation* > module_operations;
 	
 public:
 
@@ -107,6 +110,11 @@ public:
   void re_init_in_params();
   void re_init_out_params();
   void init_channels();
+
+  vsx_string<> module_operations_as_string();
+
+  bool has_module_operations();
+  void module_operation_run(vsx_module_operation& operation);
 
   void reset_has_run_status()
   {

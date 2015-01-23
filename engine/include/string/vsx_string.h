@@ -406,7 +406,8 @@ public:
     	if (length == -1)
         length = s;
     	else
-        if (length > s) length = s;
+        if (length > s)
+          length = s;
     }
     if (start < (int)size())
     {

@@ -46,7 +46,7 @@ using namespace std;
 vsx_sequence_master_channel_item::vsx_sequence_master_channel_item()
 {
   pool_sequence_list = 0x0;
-  time_sequence.set_string("1.000000;1.000000;"+base64_encode("0.0")+"|0.000000;1.000000;"+base64_encode("1.0"));
+  time_sequence.set_string("1.000000;1.000000;"+vsx_string_helper::base64_encode("0.0")+"|0.000000;1.000000;"+vsx_string_helper::base64_encode("1.0"));
 }
 
 void vsx_sequence_master_channel_item::run(float abs_time)
@@ -162,7 +162,7 @@ void vsx_master_sequence_channel::insert_line(vsx_command_list* dest, vsx_comman
     if (item_length == 0.0f) item_length = 0.1f;
     pa->total_length = item_length;
     pa->length = item_length;
-    pa->time_sequence.set_string("1.000000;1.000000;"+base64_encode("0.0")+"|0.000000;1.000000;"+base64_encode("1.0"));
+    pa->time_sequence.set_string("1.000000;1.000000;"+vsx_string_helper::base64_encode("0.0")+"|0.000000;1.000000;"+vsx_string_helper::base64_encode("1.0"));
     items.push_back(pa);
   } else {
     int i;
@@ -307,8 +307,8 @@ vsx_string<>vsx_master_sequence_channel::dump()
     ml.push_back(
           vsx_string_helper::f2s((*it)->total_length)+";"+
           vsx_string_helper::f2s((*it)->length)+";"+
-          base64_encode((*it)->pool_name)+";"+
-              base64_encode((*it)->time_sequence.get_string())
+          vsx_string_helper::base64_encode((*it)->pool_name)+";"+
+              vsx_string_helper::base64_encode((*it)->time_sequence.get_string())
     );
     i++;
   }
@@ -335,12 +335,12 @@ void vsx_master_sequence_channel::inject(vsx_string<>inject_string)
     vsx_sequence_master_channel_item* pa = new vsx_sequence_master_channel_item;
     pa->total_length = vsx_string_helper::s2f(iparts[0]);
     pa->length = vsx_string_helper::s2f(iparts[1]);
-    pa->pool_sequence_list = ((vsx_engine*)engine)->get_sequence_pool()->get_sequence_list_by_name(base64_decode(iparts[2]));
-    pa->pool_name = base64_decode(iparts[2]);
+    pa->pool_sequence_list = ((vsx_engine*)engine)->get_sequence_pool()->get_sequence_list_by_name(vsx_string_helper::base64_decode(iparts[2]));
+    pa->pool_name = vsx_string_helper::base64_decode(iparts[2]);
 
     // TODO: remove the following line, it's obsolete
     if (iparts.size() > 3)
-      pa->time_sequence.set_string(base64_decode(iparts[3]));
+      pa->time_sequence.set_string(vsx_string_helper::base64_decode(iparts[3]));
 
     items.push_back(pa);
   }

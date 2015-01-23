@@ -38,6 +38,8 @@ public:
   vsx_command_s *current_command_over;
   double row_size;
   void init();
+  void init_extra_commands();
+
   void command_process_back_queue(vsx_command_s *t);
   void add_commands(vsx_command_s* command);
 

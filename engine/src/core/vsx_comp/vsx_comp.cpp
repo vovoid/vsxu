@@ -35,6 +35,7 @@
 #include "vsx_sequence_pool.h"
 #include "vsxfst.h"
 #include "vsx_param_abstraction.h"
+#include "tools/vsx_foreach.h"
 
 #ifndef VSXE_NO_GM
 #include "scripting/vsx_param_vsxl.h"
@@ -100,6 +101,7 @@ void vsx_comp::unload_module()
   if (module)
   {
     module->on_delete();
+    module->destroy_operations( module_operations );
   }
   vsx_module_list_abs* module_list = ((vsx_engine*)engine_owner)->get_module_list();
   module_list->unload_module( module );
@@ -292,6 +294,9 @@ void vsx_comp::init_module()
   in_param_spec = process_module_param_spec(module_info->in_param_spec);
   out_param_spec = process_module_param_spec(module_info->out_param_spec);
   component_class = module_info->component_class;
+
+  module->declare_operations( module_operations );
+
   LOG("init_module 2")
   //if (module_info->output) {
 //  }
@@ -537,7 +542,7 @@ vsx_string<>process_module_param_spec(vsx_string<>& input) {
       // inside a block
       if (input[i] == '`') {
         // end of block
-        ret_val += base64_encode(s_block);
+        ret_val += vsx_string_helper::base64_encode(s_block);
         s_block = "";
         block = false;
       } else
@@ -548,4 +553,26 @@ vsx_string<>process_module_param_spec(vsx_string<>& input) {
     ++i;
   }
   return ret_val;
+}
+
+vsx_string<> vsx_comp::module_operations_as_string()
+{
+  vsx_string<> ret;
+  foreach(module_operations, i)
+  {
+    if (i)
+      ret += '#';
+    ret += module_operations[i]->serialize();
+  }
+  return ret;
+}
+
+bool vsx_comp::has_module_operations()
+{
+  return module_operations.size() > 0;
+}
+
+void vsx_comp::module_operation_run(vsx_module_operation& operation)
+{
+  module->run_operation( operation );
 }

@@ -45,6 +45,7 @@
 #include "vsx_argvector.h"
 #include "vsxfst.h"
 #include "debug/vsx_error.h"
+#include <vsx_module_operation.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -380,6 +381,23 @@ public:
   {
     VSX_UNUSED(out_parameters);
   }
+
+
+  virtual void declare_operations(vsx_nw_vector<vsx_module_operation*>& operations )
+  {
+    VSX_UNUSED(operations);
+  }
+
+  virtual void destroy_operations(vsx_nw_vector<vsx_module_operation*>& operations)
+  {
+    VSX_UNUSED(operations);
+  }
+
+  virtual void run_operation(vsx_module_operation& operation)
+  {
+    VSX_UNUSED(operation);
+  }
+
 
 
   // avector with all the filenames that this module needs

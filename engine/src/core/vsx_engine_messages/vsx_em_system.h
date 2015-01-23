@@ -49,7 +49,7 @@ if (cmd == "get_module_list")
         +
         " "
         +
-        base64_encode(
+        vsx_string_helper::base64_encode(
           (*my_module_list)[i]->description
           +
           " "

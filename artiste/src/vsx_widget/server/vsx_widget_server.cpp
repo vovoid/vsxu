@@ -244,7 +244,7 @@ void vsx_widget_server::init()
   {
     if ( vsx_argvector::get_instance()->has_param_with_value("state") )
     {
-      cmd_out->add_raw("state_load "+base64_encode("states;"+vsx_argvector::get_instance()->get_param_value("state")), VSX_COMMAND_GARBAGE_COLLECT);
+      cmd_out->add_raw("state_load "+vsx_string_helper::base64_encode("states;"+vsx_argvector::get_instance()->get_param_value("state")), VSX_COMMAND_GARBAGE_COLLECT);
     } else
     {
       if (
@@ -255,9 +255,9 @@ void vsx_widget_server::init()
           configuration["autoload_last_saved_state"] == "1"
           )
       {
-        cmd_out->add_raw("state_load "+base64_encode("states;"+base64_decode(configuration["last_saved_state"])), VSX_COMMAND_GARBAGE_COLLECT);
+        cmd_out->add_raw("state_load "+vsx_string_helper::base64_encode("states;" + vsx_string_helper::base64_decode(configuration["last_saved_state"])), VSX_COMMAND_GARBAGE_COLLECT);
       } else
-      cmd_out->add_raw("state_load "+base64_encode("states;_default"), VSX_COMMAND_GARBAGE_COLLECT);
+      cmd_out->add_raw("state_load "+vsx_string_helper::base64_encode("states;_default"), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
   cmd_out->add_raw("get_state", true);
@@ -530,7 +530,7 @@ void vsx_widget_server::vsx_command_process_f() {
         for (std::map<vsx_string<>, vsx_widget*>::iterator it = temp_.begin(); it != temp_.end(); ++it) {
           (*it).second->_delete();
         }
-        vsx_string<>s_name = base64_decode(c->parts[1]);
+        vsx_string<>s_name = vsx_string_helper::base64_decode(c->parts[1]);
 
         if (s_name.find("states;") == 0)
         state_name = str_replace("states;", "", s_name, 1, 0);
@@ -661,7 +661,9 @@ void vsx_widget_server::vsx_command_process_f() {
         c->cmd == "out_param_spec" ||
         c->cmd == "param_connect_ok" ||
         c->cmd == "param_disconnect_ok" ||
-        c->cmd == "param_connect_volatile")
+        c->cmd == "param_connect_volatile" ||
+        c->cmd == "module_operation_spec"
+      )
       {
         //find in children
         vsx_widget* tc = find_component(c->parts[1]);
@@ -746,7 +748,7 @@ void vsx_widget_server::vsx_command_process_f() {
           vsx_module_info* a;
           a = new vsx_module_info;
           a->identifier = c->parts[2]; // xx;yy;zz
-          a->description = base64_decode(c->parts[3]); // long text
+          a->description = vsx_string_helper::base64_decode(c->parts[3]); // long text
           // set component class (render, mesh, texture etc)
           a->component_class = c->parts[1];
 
@@ -799,7 +801,7 @@ void vsx_widget_server::vsx_command_process_f() {
         // when a component is created.
       } else
       if (c->cmd == "server_message") {
-        server_message = base64_decode(c->parts[1]);
+        server_message = vsx_string_helper::base64_decode(c->parts[1]);
       } else
       if (c->cmd == "states_list") {
         vsx_module_info* a = new vsx_module_info;
@@ -853,7 +855,7 @@ void vsx_widget_server::vsx_command_process_f() {
         for (std::list <vsx_widget*>::iterator it = root->children.begin(); it != root->children.end(); ++it) {
           a = (*it)->pos;
         }
-        vsx_widget* msg = root->add(new dialog_messagebox(c->parts[2],base64_decode(c->parts[3])+"|"),"alert");
+        vsx_widget* msg = root->add(new dialog_messagebox(c->parts[2],vsx_string_helper::base64_decode(c->parts[3])+"|"),"alert");
         msg->target_pos = msg->pos+alert_delta;
         if (msg->target_pos.x > 0.8) msg->target_pos.x = 0.2;
         if (msg->target_pos.y > 0.8) msg->target_pos.y = 0.2;
@@ -973,7 +975,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
       cmd_out->add_raw("macro_create "+get_unique_name("empty")+" "+str_replace(","," ",t->cmd_data)+" 0.1");
     } else
     if (t->cmd == "add_note") {
-      cmd_out->add_raw("note_create "+get_unique_name("note")+" "+t->cmd_data+",0.0 0.05,0.05,0.0 "+base64_encode("text")+" 0.004");
+      cmd_out->add_raw("note_create "+get_unique_name("note")+" "+t->cmd_data+",0.0 0.05,0.05,0.0 " + vsx_string_helper::base64_encode("text")+" 0.004");
     } else
     if (t->cmd == "delete_sequencer") {
       sequencer->_delete();
@@ -1031,7 +1033,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
       state_name = t->parts[1];
       cmd_out->add_raw("meta_set "+t->parts[2]);
       cmd_out->add_raw("state_save "+t->parts[1]);
-      command_q_b.add_raw("conf last_saved_state "+base64_encode(t->parts[1]) );
+      command_q_b.add_raw("conf last_saved_state " + vsx_string_helper::base64_encode(t->parts[1]) );
 
       return;
     }
@@ -1166,7 +1168,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
       }
     } else
     if (t->cmd == "alert_dialog") {
-      root->add(new dialog_messagebox(t->parts[1],(base64_decode(t->parts[2])+"|")),"alert");
+      root->add(new dialog_messagebox(t->parts[1],(vsx_string_helper::base64_decode(t->parts[2])+"|")),"alert");
     } else
     {
       LOG_A("adding copy:"+t->cmd)

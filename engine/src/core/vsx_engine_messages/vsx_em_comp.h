@@ -45,13 +45,16 @@ if (cmd == "component_create")
         cmd_out->add_raw("component_create_ok "+c->parts[2]+" "+get_component_by_name(c->parts[2])->component_class+" "+c->parts[3]+" "+c->parts[4]+" "+c->parts[1], VSX_COMMAND_GARBAGE_COLLECT);
         cmd_out->add_raw("in_param_spec "+comp->name+" "+comp->in_param_spec, VSX_COMMAND_GARBAGE_COLLECT);
         cmd_out->add_raw("out_param_spec "+comp->name+" "+comp->out_param_spec, VSX_COMMAND_GARBAGE_COLLECT);
+
+        if (comp->has_module_operations())
+          cmd_out->add_raw("module_operation_spec " + comp->name + " " + comp->module_operations_as_string(), VSX_COMMAND_GARBAGE_COLLECT);
       } else
       {
-        cmd_out->add_raw("alert_fail [component_create] Error "+base64_encode("Engine does not know the module '"+c->parts[1]+"'"), VSX_COMMAND_GARBAGE_COLLECT);
+        cmd_out->add_raw("alert_fail [component_create] Error "+vsx_string_helper::base64_encode("Engine does not know the module '"+c->parts[1]+"'"), VSX_COMMAND_GARBAGE_COLLECT);
       }
     } else
     {
-      cmd_out->add_raw("alert_fail [component_create] Error "+base64_encode("There is already a component '"+c->parts[2]+"'"), VSX_COMMAND_GARBAGE_COLLECT);
+      cmd_out->add_raw("alert_fail [component_create] Error "+vsx_string_helper::base64_encode("There is already a component '"+c->parts[2]+"'"), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
   goto process_message_queue_end;
@@ -142,7 +145,7 @@ if (cmd == "component_delete")
         delete (*it_td);
       }
       cmd_out->add_raw("component_delete_ok "+c->parts[1], VSX_COMMAND_GARBAGE_COLLECT);
-    } else cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Error, component '"+c->parts[1]+"' does not exist!"), VSX_COMMAND_GARBAGE_COLLECT);
+    } else cmd_out->add_raw("alert_fail "+vsx_string_helper::base64_encode(c->raw)+" Error "+vsx_string_helper::base64_encode("Error, component '"+c->parts[1]+"' does not exist!"), VSX_COMMAND_GARBAGE_COLLECT);
   }
   goto process_message_queue_end;
 }
@@ -167,7 +170,7 @@ if (cmd == "component_assign")
 
   if (c->parts.size() != 5)
   {
-    cmd_out->add_raw("invalid_command wrong_number_of_arguments "+base64_encode(c->raw), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw("invalid_command wrong_number_of_arguments "+vsx_string_helper::base64_encode(c->raw), VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
 
@@ -212,7 +215,7 @@ if (cmd == "component_assign")
   }
   if (!namecheck)
   {
-    cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Error, there is already a component named "+first_part+comp_name), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw("alert_fail "+vsx_string_helper::base64_encode(c->raw)+" Error "+vsx_string_helper::base64_encode("Error, there is already a component named "+first_part+comp_name), VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
 
@@ -283,7 +286,7 @@ if (cmd == "component_rename")
     if (rename_component(c->parts[1],"$",c->parts[2]) == 1)
     cmd_out->add_raw("component_rename_ok "+c->parts[1]+" "+c->parts[2], VSX_COMMAND_GARBAGE_COLLECT);
     else
-    cmd_out->add_raw(vsx_string<>("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("Rename failed."), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw(vsx_string<>("alert_fail ")+vsx_string_helper::base64_encode(c->raw)+" Error "+vsx_string_helper::base64_encode("Rename failed."), VSX_COMMAND_GARBAGE_COLLECT);
   }
   goto process_message_queue_end;
 }
@@ -333,9 +336,9 @@ if (cmd == "get_module_status")
     if ((*it)->module) {
       if (!(*it)->module->loading_done) {
         printf("not loaded: %s\n",(*it)->name.c_str());
-        cmd_out->add_raw("c_msg "+(*it)->name+" "+base64_encode("module||NOT LOADED"), VSX_COMMAND_GARBAGE_COLLECT);
+        cmd_out->add_raw("c_msg "+(*it)->name+" "+vsx_string_helper::base64_encode("module||NOT LOADED"), VSX_COMMAND_GARBAGE_COLLECT);
       } else
-      cmd_out->add_raw("c_msg "+(*it)->name+" "+base64_encode("module||ok"), VSX_COMMAND_GARBAGE_COLLECT);
+      cmd_out->add_raw("c_msg "+(*it)->name+" "+vsx_string_helper::base64_encode("module||ok"), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
   goto process_message_queue_end;

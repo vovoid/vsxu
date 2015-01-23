@@ -62,7 +62,7 @@ if (cmd == "param_set")
   // 1. verify argument count
   if (c->parts.size() != 4)
   {
-    cmd_out->add_raw("alert_fail " + base64_encode(c->raw) + " Error "+base64_encode("Wrong number of arguments for param_set"), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw("alert_fail " + vsx_string_helper::base64_encode(c->raw) + " Error " + vsx_string_helper::base64_encode("Wrong number of arguments for param_set"), VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
 
@@ -104,7 +104,7 @@ if (cmd == "pa_ren")
   if (ok)
     cmd_out->add_raw("pa_ren_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4], VSX_COMMAND_GARBAGE_COLLECT);
   else
-    cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Either param is not alias, was changed by someone else on this server or other error."), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw("alert_fail "+vsx_string_helper::base64_encode(c->raw)+" Error "+vsx_string_helper::base64_encode("Either param is not alias, was changed by someone else on this server or other error."), VSX_COMMAND_GARBAGE_COLLECT);
   goto process_message_queue_end;
 }
 
@@ -143,7 +143,7 @@ if (cmd == "param_get" || cmd == "pgo")
   if (_value.size() > 100)
     _value = _value.substr(0,100)+"...";
 
-  vsx_string<>value = base64_encode(_value);
+  vsx_string<>value =vsx_string_helper:: base64_encode(_value);
   vsx_string<>extra = "";
 
   if (c->parts.size() == 4)
@@ -172,7 +172,7 @@ if (cmd == "pg64")
     if (dest) {
       vsx_engine_param* param = dest->get_params_in()->get_by_name(c->parts[2]);
       if (param) {
-        vsx_string<>value = base64_encode(param->get_string());
+        vsx_string<>value = vsx_string_helper::base64_encode(param->get_string());
         vsx_string<>extra = "";
         if (c->parts.size() == 4) extra = " "+c->parts[3];
         // syntax:
@@ -201,15 +201,15 @@ if (cmd == "ps64")
     if (dest) {
       vsx_engine_param* param = dest->get_params_in()->get_by_name(c->parts[2]);
       if (param) {
-        param->set_string(base64_decode(c->parts[3]));
+        param->set_string(vsx_string_helper::base64_decode(c->parts[3]));
         param->module->param_set_notify(c->parts[2]);
         if (param->module->redeclare_in) {
           redeclare_in_params(dest,cmd_out);
         }
       }
-      else cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Param does not exist!"), VSX_COMMAND_GARBAGE_COLLECT);
+      else cmd_out->add_raw("alert_fail " + vsx_string_helper::base64_encode(c->raw)+" Error " + vsx_string_helper::base64_encode("Param does not exist!"), VSX_COMMAND_GARBAGE_COLLECT);
     }
-    else cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Component "+c->parts[1]+" does not exist!"), VSX_COMMAND_GARBAGE_COLLECT);
+    else cmd_out->add_raw("alert_fail " + vsx_string_helper::base64_encode(c->raw)+" Error " + vsx_string_helper::base64_encode("Component "+c->parts[1]+" does not exist!"), VSX_COMMAND_GARBAGE_COLLECT);
   }
   goto process_message_queue_end;
 }
@@ -236,9 +236,9 @@ if (cmd == "ps")
           redeclare_in_params(dest,cmd_out);
         }
       }
-      else cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Param does not exist!"), VSX_COMMAND_GARBAGE_COLLECT);
+      else cmd_out->add_raw("alert_fail " + vsx_string_helper::base64_encode(c->raw)+" Error " + vsx_string_helper::base64_encode("Param does not exist!"), VSX_COMMAND_GARBAGE_COLLECT);
     }
-    else cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Component "+c->parts[1]+" does not exist!"), VSX_COMMAND_GARBAGE_COLLECT);
+    else cmd_out->add_raw("alert_fail " + vsx_string_helper::base64_encode(c->raw)+" Error " + vsx_string_helper::base64_encode("Component "+c->parts[1]+" does not exist!"), VSX_COMMAND_GARBAGE_COLLECT);
   }
   goto process_message_queue_end;
 }
@@ -279,7 +279,7 @@ if ( cmd == "param_clone_value" )
   // 1. verify argument count
   if (c->parts.size() != 5)
   {
-    cmd_out->add_raw("alert_fail " + base64_encode(c->raw) + " Error "+base64_encode("Wrong number of arguments for param_clone_value") , VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw("alert_fail " + vsx_string_helper::base64_encode(c->raw) + " Error " + vsx_string_helper::base64_encode("Wrong number of arguments for param_clone_value") , VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
 
@@ -288,7 +288,7 @@ if ( cmd == "param_clone_value" )
   vsx_comp* source_component = get_component_by_name( c->parts[1] );
   if (!source_component)
   {
-    cmd_out->add_raw("alert_fail " + base64_encode(c->raw) + " Error "+base64_encode("Source module does not exist") , VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw("alert_fail " + vsx_string_helper::base64_encode(c->raw) + " Error " + vsx_string_helper::base64_encode("Source module does not exist") , VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
 
@@ -297,7 +297,7 @@ if ( cmd == "param_clone_value" )
   vsx_engine_param* source_parameter = source_component->get_params_in()->get_by_name( c->parts[2] );
   if (!source_parameter)
   {
-    cmd_out->add_raw("alert_fail " + base64_encode(c->raw) + " Error "+base64_encode("Source parameter does not exist") , VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw("alert_fail " + vsx_string_helper::base64_encode(c->raw) + " Error " + vsx_string_helper::base64_encode("Source parameter does not exist") , VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
 
@@ -306,7 +306,7 @@ if ( cmd == "param_clone_value" )
   vsx_comp* destination_component = get_component_by_name( c->parts[3] );
   if (!destination_component)
   {
-    cmd_out->add_raw("alert_fail " + base64_encode(c->raw) + " Error "+base64_encode("Destination module does not exist") , VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw("alert_fail " + vsx_string_helper::base64_encode(c->raw) + " Error " + vsx_string_helper::base64_encode("Destination module does not exist") , VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
 
@@ -315,14 +315,14 @@ if ( cmd == "param_clone_value" )
   vsx_engine_param* destination_parameter = destination_component->get_params_in()->get_by_name( c->parts[4] );
   if (!destination_parameter)
   {
-    cmd_out->add_raw("alert_fail " + base64_encode(c->raw) + " Error "+base64_encode("Destination parameter does not exist") , VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw("alert_fail " + vsx_string_helper::base64_encode(c->raw) + " Error " + vsx_string_helper::base64_encode("Destination parameter does not exist") , VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
 
   // 6. make sure both are of same type
   if (source_parameter->module_param->type != destination_parameter->module_param->type)
   {
-    cmd_out->add_raw("alert_fail " + base64_encode(c->raw) + " Error "+base64_encode("Parameter type mismatch") , VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw("alert_fail " + vsx_string_helper::base64_encode(c->raw) + " Error " + vsx_string_helper::base64_encode("Parameter type mismatch") , VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
 
@@ -383,8 +383,8 @@ if (cmd == "param_set_interpolate")
             interpolation_list.set_target_value(e_param, *it, cc, interp_time);
             ++cc;
           }
-        } else cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Param is controlled by sequencer!"), VSX_COMMAND_GARBAGE_COLLECT);
-      } else cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("Param does not exist!"), VSX_COMMAND_GARBAGE_COLLECT);
+        } else cmd_out->add_raw("alert_fail " + vsx_string_helper::base64_encode(c->raw) + " Error " + vsx_string_helper::base64_encode("Param is controlled by sequencer!"), VSX_COMMAND_GARBAGE_COLLECT);
+      } else cmd_out->add_raw("alert_fail " + vsx_string_helper::base64_encode(c->raw) + " Error " + vsx_string_helper::base64_encode("Param does not exist!"), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
   goto process_message_queue_end;

@@ -73,21 +73,12 @@ void vsx_widget_controller_sequence::command_process_back_queue(vsx_command_s *t
 #ifdef VSXU_DEBUG
     printf("command gotten from server: %s\n",t->raw.c_str());
 #endif
-    command_q_b.add_raw("pseq_p_ok inject_get foo bar "+base64_decode(t->parts[3]));
+    command_q_b.add_raw("pseq_p_ok inject_get foo bar " + vsx_string_helper::base64_decode(t->parts[3]));
     seq_chan->vsx_command_queue_b(this);
   }
   else
   if (t->cmd == "menu_close" || t->cmd == "remove_chan")
-  {
-    //if (!parent_removal)
-    //{
 			_delete();
-//		} else
-//		{
-//			command_q_b.add_raw("controller_sequence_close "+vsx_string_helper::i2s(id)+command_suffix);
-//			parent->vsx_command_queue_b(this);
-//		}
-  }
 }
 
 void vsx_widget_controller_sequence::i_draw()
