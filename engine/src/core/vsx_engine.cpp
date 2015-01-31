@@ -780,7 +780,7 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
     #include "vsx_engine_messages/vsx_em_comp.h"
     #include "vsx_engine_messages/vsx_connections.h"
     #include "vsx_engine_messages/vsx_parameters.h"
-    #include "vsx_engine_messages/vsx_sequencer.h"
+    #include "vsx_engine_messages/vsx_em_sequencer.h"
     #include "vsx_engine_messages/vsx_em_macro.h"
     #include "vsx_engine_messages/vsx_seq_pool.h"
     #include "vsx_engine_messages/vsx_engine_time.h"

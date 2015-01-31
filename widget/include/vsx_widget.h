@@ -467,7 +467,7 @@ public:
   virtual void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);
   virtual void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords);
   virtual void event_mouse_wheel(float y);
-  virtual void event_move_scale() {};
+  virtual void event_move_scale() {}
 
   //-----------------------------------------
   bool init_run;
