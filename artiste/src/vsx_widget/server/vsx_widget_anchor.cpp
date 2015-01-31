@@ -1484,6 +1484,12 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
         {
           menu_->commands.adds(VSX_COMMAND_MENU, "resource library", "controller_resource","");
         }
+
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Animation Clip ------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "animation clip;add to current", "seq_pool_add","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Sequencer-----------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "sequencer;add/edit sequence", "pseq_a_m","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "sequencer;remove sequence", "pseq_p","remove");
       }
       if (!alias)
       {

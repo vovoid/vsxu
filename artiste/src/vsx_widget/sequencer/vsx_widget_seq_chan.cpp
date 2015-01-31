@@ -361,7 +361,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
         interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_LINEAR;
       if (!shift && ctrl && !alt)
         interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_NONE;
-      if (param_type == VSX_MODULE_PARAM_ID_STRING_SEQUENCE)
+      if (param_type == VSX_MODULE_PARAM_ID_STRING_SEQUENCE || param_type == VSX_MODULE_PARAM_ID_STRING)
         interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_NONE;
 
       double_click_d[0] = 0.0f;
@@ -374,6 +374,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
           val = vsx_string_helper::base64_encode(vsx_string_helper::f2s((distance.center.y + size.y / 2) / size.y
               * totalysize + y_start));
         break;
+        case VSX_MODULE_PARAM_ID_STRING:
         case VSX_MODULE_PARAM_ID_STRING_SEQUENCE:
           val = vsx_string_helper::base64_encode("");
           break;
@@ -1195,6 +1196,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
         case VSX_MODULE_PARAM_ID_FLOAT:
         case VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE:
         case VSX_MODULE_PARAM_ID_STRING_SEQUENCE:
+        case VSX_MODULE_PARAM_ID_STRING:
           index_count = 1;
           break;
         case VSX_MODULE_PARAM_ID_QUATERNION:
@@ -1668,6 +1670,7 @@ void vsx_widget_seq_channel::i_draw()
         case VSX_MODULE_PARAM_ID_FLOAT:
         case VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE:
         case VSX_MODULE_PARAM_ID_STRING_SEQUENCE:
+        case VSX_MODULE_PARAM_ID_STRING:
         {
           vsx_color<> l_color = vsx_color<>(1.0f, 1.0f, 1.0f, 1.0f);
           while (item_iterator < (int) items.size() && time_iterator
@@ -1823,7 +1826,7 @@ void vsx_widget_seq_channel::i_draw()
             if (param_type == VSX_MODULE_PARAM_ID_FLOAT || param_type == VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE)
               draw_chan_box(time_iterator, vsx_string_helper::s2f(items[item_iterator].get_value()), vsx_string_helper::s2f(items[item_iterator].get_value()) );
 
-            if (param_type == VSX_MODULE_PARAM_ID_STRING_SEQUENCE)
+            if (param_type == VSX_MODULE_PARAM_ID_STRING_SEQUENCE || param_type == VSX_MODULE_PARAM_ID_STRING)
               draw_chan_box(time_iterator, 0.0f, items[item_iterator].get_value() );
 
             time_iterator += items[item_iterator].get_total_length();

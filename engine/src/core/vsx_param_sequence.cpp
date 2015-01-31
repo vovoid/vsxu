@@ -132,6 +132,12 @@ void vsx_param_sequence::execute(float ptime, float blend)
   if (to_val.size() && cur_val.size())
   {
     float t = (line_time/cur_delay);
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_STRING)
+    {
+      ((vsx_module_param_string*)param->module_param)->set(cur_val);
+      ((vsx_module_param_string*)param->module_param)->updates++;
+      return;
+    }
     if (param->module_param->type == VSX_MODULE_PARAM_ID_FLOAT)
     {
       ++param->module->param_updates;
@@ -196,7 +202,7 @@ void vsx_param_sequence::execute(float ptime, float blend)
           float current_value = ((vsx_module_param_float*)param->module_param)->get_internal();
           result_value = (1.0f - blend) * current_value + blend * result_value;
         }
-        ((vsx_module_param_quaternion*)param->module_param)->set_internal(result_value);
+        ((vsx_module_param_float*)param->module_param)->set_internal(result_value);
       }
     } else
     if (param->module_param->type == VSX_MODULE_PARAM_ID_QUATERNION)
@@ -318,38 +324,7 @@ void vsx_param_sequence::inject(vsx_string<>ij)
   }
 }
 
-vsx_param_sequence::vsx_param_sequence(int p_type,vsx_engine_param* param)
-{
-  interp_time = 10;
-  cur_val = to_val = "";
-  last_time = 0.0f;
-  line_time = 0.0f;
-  line_cur = 0;
-  p_time = 0;
-  cur_delay = 0.0f;
-  vsx_param_sequence_item pa;
-  pa.total_length = 3;
 
-  switch (p_type)
-  {
-    case VSX_MODULE_PARAM_ID_FLOAT:
-    {
-      pa.interpolation = 1;
-      pa.value =  vsx_string_helper::f2s(((vsx_module_param_float*)param->module_param)->get());
-      items.push_back(pa);
-      items.push_back(pa);
-    }
-    break;
-    case VSX_MODULE_PARAM_ID_QUATERNION:
-    {
-      pa.interpolation = 0;
-      pa.value = param->get_string();
-      items.push_back(pa);
-      items.push_back(pa);
-    }
-    break;
-  }
-}
 
 void vsx_param_sequence::rescale_time(float start, float scale)
 {
@@ -391,6 +366,47 @@ vsx_param_sequence::vsx_param_sequence()
   cur_delay = 0.0f;
 }
 
+vsx_param_sequence::vsx_param_sequence(int p_type,vsx_engine_param* param)
+{
+  interp_time = 10;
+  cur_val = to_val = "";
+  last_time = 0.0f;
+  line_time = 0.0f;
+  line_cur = 0;
+  p_time = 0;
+  cur_delay = 0.0f;
+  vsx_param_sequence_item pa;
+  pa.total_length = 3;
+
+  switch (p_type)
+  {
+    case VSX_MODULE_PARAM_ID_FLOAT:
+    {
+      pa.interpolation = 1;
+      pa.value =  vsx_string_helper::f2s(((vsx_module_param_float*)param->module_param)->get());
+      items.push_back(pa);
+      items.push_back(pa);
+    }
+    break;
+    case VSX_MODULE_PARAM_ID_STRING:
+    {
+      pa.interpolation = 0;
+      pa.value = "vsx";
+      items.push_back(pa);
+      pa.value = "ultra";
+      items.push_back(pa);
+    }
+    break;
+    case VSX_MODULE_PARAM_ID_QUATERNION:
+    {
+      pa.interpolation = 0;
+      pa.value = param->get_string();
+      items.push_back(pa);
+      items.push_back(pa);
+    }
+    break;
+  }
+}
 void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix)
 {
   VSX_UNUSED(dest);

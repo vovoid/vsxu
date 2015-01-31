@@ -106,7 +106,7 @@ void vsx_param_sequence_list::add_param_sequence(vsx_engine_param* param, vsx_co
     return;
 
   // add sequence
-  vsx_param_sequence* p = new vsx_param_sequence(param->module_param->type,param);
+  vsx_param_sequence* p = new vsx_param_sequence(param->module_param->type, param);
   p->engine = engine;
   p->comp = comp;
   p->param = param;
@@ -132,7 +132,6 @@ void vsx_param_sequence_list::remove_param_sequence(vsx_engine_param* param)
   param->sequence = false;
   parameter_channel_list.remove(p);
   parameter_channel_map.erase(param);
-
 }
 
 vsx_string<>vsx_param_sequence_list::get_sequence_list_dump()
