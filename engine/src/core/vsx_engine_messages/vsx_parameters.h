@@ -174,7 +174,8 @@ if (cmd == "pg64")
       if (param) {
         vsx_string<>value = vsx_string_helper::base64_encode(param->get_string());
         vsx_string<>extra = "";
-        if (c->parts.size() == 4) extra = " "+c->parts[3];
+        if (c->parts.size() == 4)
+          extra = " "+c->parts[3];
         // syntax:
         //  param_get_ok [component] [param] [value] [extra_info]
         cmd_out->add_raw("pg64_ok "+c->parts[1]+" "+c->parts[2]+" "+value+extra, VSX_COMMAND_GARBAGE_COLLECT);

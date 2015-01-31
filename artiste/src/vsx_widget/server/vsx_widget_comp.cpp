@@ -1382,13 +1382,8 @@ void vsx_widget_component::event_mouse_up(vsx_widget_distance distance,vsx_widge
           }
         }
 
-//        vsx_vector my_pos = target_pos;
-    //    printf("eth2\n");
         if (!failed) {
           // build a move-to-macro command :3
-          //vsx_vector ttpos = world-tt->get_pos_p();//-(get_pos_p());
-          //printf("local pos %f %f\n",ttpos.x,ttpos.y);
-      //    printf("eth3\n");
           std::vector <vsx_string<> > comps;
           bool run = true;
           // move ourselves to the beginning
@@ -1397,13 +1392,11 @@ void vsx_widget_component::event_mouse_up(vsx_widget_distance distance,vsx_widge
           // iterate the selected list
           std::list<vsx_widget*>::iterator itx = ((vsx_widget_server*)server)->selected_list.begin();
           while (itx != ((vsx_widget_server*)server)->selected_list.end() && run) {
-            // check if the destination component (check name) exists
-        //    printf("eth4\n");
             bool name_ok = true;
             if (dest_macro_component->widget_type == VSX_WIDGET_TYPE_SERVER)
               if (((vsx_widget_server*)server)->find_component(((vsx_widget_component*)(*itx))->real_name))
                 name_ok = false;
-          //  printf("name move sequence: %s.%s ",tt->name.c_str(),((vsx_widget_component*)(*itx))->real_name.c_str());
+
             if (dest_macro_component->widget_type == VSX_WIDGET_TYPE_COMPONENT
                 && ((vsx_widget_server*)server)->find_component(dest_macro_component->name+"."+((vsx_widget_component*)(*itx))->real_name))
               name_ok = false;
@@ -1411,7 +1404,6 @@ void vsx_widget_component::event_mouse_up(vsx_widget_distance distance,vsx_widge
               a_focus->add(new dialog_messagebox("Error: Component wasn't moved","This component can not be moved: '"+((vsx_widget_component*)(*itx))->real_name+"'||This is due to the component either being locked or of a special type||such as out-bound components."),"foo");
 
             if (name_ok) {
-            //  printf("pushing back\n");
               comps.push_back((*itx)->name);
             }
             else
@@ -1420,13 +1412,10 @@ void vsx_widget_component::event_mouse_up(vsx_widget_distance distance,vsx_widge
               comps.empty();
               run = false;
               ((vsx_widget_component*)(*itx))->target_pos = ((vsx_widget_component*)(*itx))->real_pos;
-  //            itx = ((vsx_widget_server*)server)->selected_list.end();
             }
             ++itx;
           }
-  //        printf("eth5\n");
           if (comps.size()) {
-    //        printf("eth6\n");
             ((vsx_widget_server*)server)->selected_list.remove(this);
             ((vsx_widget_server*)server)->selected_list.push_front(this);
             vsx_string<>comps_s = implode(comps,",");

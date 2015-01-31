@@ -74,8 +74,8 @@ class vsx_widget_seq_channel : public vsx_widget
   }
 
   vsx_vector3<> passive_mouse_pos;
-  vsx_string<>passive_time;
-  vsx_string<>passive_value;
+  vsx_string<> passive_time;
+  vsx_string<> passive_value;
   vsx_vector3<> parentpos;
   std::vector<vsx_widget_param_sequence_item> items; // the actual sequence
   int cur_x, cur_y;
@@ -114,14 +114,22 @@ public:
   float levelstart;
   float y_start; // visual y range of the "functional view"
   float y_end;
+  float m_pos;
+  int mouse_clicked_id;
+  float totalysize;
+  float dlx,dly;
 
   vsx_color<> graph_color; // line graph color
   vsx_color<> graph_oob_color; // out of bounds
 
   void init();
 
-  float m_pos;
-  int mouse_clicked_id;
+  void set_param_type(int n)
+  {
+    param_type = n;
+  }
+
+
 
   bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
@@ -134,15 +142,12 @@ public:
 
   void i_draw();
 
-  float totalysize;
-  float dlx,dly;
-
   void draw_h_line(float y0,float r = 0.5, float g = 0.5, float b = 0.5, float a = 1);
   void draw_red_line(float t0, float t1, float y0);
 
   void draw_line(float t0, float y0, float t1, float y1, vsx_color<>& l_color);
 
-  void draw_chan_box(float t0, float y0, float c_size = SEQ_CHAN_BOX_SIZE);
+  void draw_chan_box(float t0, float y0, vsx_string<> display_value, float c_size = SEQ_CHAN_BOX_SIZE);
   void draw_selection_box(float t0, float y0);
 
 
@@ -153,10 +158,40 @@ public:
 
   vsx_widget_seq_channel()
     :
+      view_time_start(0.0f),
+      view_time_end(0.0f),
+      cur_time(0.0f),
+      clicked_time_pos(0.0f),
+      param_type(0),
+      index_hit(0),
+      extra_hit(0),
+      index_count(0),
+      display_exclusive(0),
+      hover_value_pos(0.0f),
+      hover_time_pos(0.0f),
+      clicked_item_x_diff(0.0f),
+      cur_x(0),
+      cur_y(0),
+      scroll_y(0),
+      num_rows(0),
+      edit_mode(false),
+      menu_interpolation(0x0),
+      manual_value_input_dialog(0x0),
+      manual_time_input_dialog(0x0),
+      hidden_by_sequencer(false),
+      is_controller(false),
       owner(0),
       channel_type(VSX_WIDGET_SEQ_CHANNEL_TYPE_PARAMETER),
-      mouse_clicked_id(0)
-
+      totalsize(0.0f),
+      ff(0.0f),
+      levelstart(0.0f),
+      y_start(0.0f),
+      y_end(0.0f),
+      m_pos(0.0f),
+      mouse_clicked_id(0),
+      totalysize(0.0f),
+      dlx(0.0f),
+      dly(0.0f)
   {
   }
 

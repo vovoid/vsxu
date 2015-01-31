@@ -799,6 +799,9 @@ vsx_string<>vsx_engine_param::get_string()
     case VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE: {
       return ((vsx_module_param_float_sequence*)module_param)->param_data[0].get_string();
     }
+    case VSX_MODULE_PARAM_ID_STRING_SEQUENCE: {
+      return ((vsx_module_param_string_sequence*)module_param)->param_data[0].get_string();
+    }
     case VSX_MODULE_PARAM_ID_MESH:
     {
       /*
@@ -882,6 +885,7 @@ void vsx_engine_param::set_string(vsx_string<>data)
     case VSX_MODULE_PARAM_ID_STRING:
     case VSX_MODULE_PARAM_ID_RESOURCE:
     case VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE:
+    case VSX_MODULE_PARAM_ID_STRING_SEQUENCE:
     case VSX_MODULE_PARAM_ID_FLOAT_ARRAY:
     set_string_index(data);
     return;
@@ -945,6 +949,10 @@ void vsx_engine_param::set_string_index(vsx_string<>data, int index) {
     }
     case VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE: {
       ((vsx_module_param_float_sequence*)module_param)->param_data[index].set_string(data);
+      return;
+    }
+    case VSX_MODULE_PARAM_ID_STRING_SEQUENCE: {
+      ((vsx_module_param_string_sequence*)module_param)->param_data[index].set_string(data);
       return;
     }
     case VSX_MODULE_PARAM_ID_FLOAT_ARRAY: {

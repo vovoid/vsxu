@@ -55,7 +55,7 @@ public:
     : value(t.value)
   {}
 
-  value_float& operator=(value_float& ss)
+  value_float& operator=(const value_float& ss)
   {
     value = ss.value;
     return *this;
@@ -123,6 +123,85 @@ public:
   }
 };
 
+class value_string
+{
+public:
+  vsx_string<> value;
+
+  value_string() {}
+
+  value_string(float t)
+  {
+    value = vsx_string_helper::f2s(t);
+  }
+
+  value_string(const value_string& t)
+    : value(t.value)
+  {}
+
+  value_string& operator=(const value_string& ss)
+  {
+    value = ss.value;
+    return *this;
+  }
+
+  value_string& operator=(vsx_string<> ss)
+  {
+    value = ss;
+    return *this;
+  }
+
+  inline value_string operator*(float ss)
+  {
+    VSX_UNUSED(ss);
+    return value_string();
+  }
+
+  inline value_string operator+(float ss)
+  {
+    VSX_UNUSED(ss);
+    return value_string();
+  }
+
+  inline value_string operator-(float ss)
+  {
+    VSX_UNUSED(ss);
+    return value_string();
+  }
+
+  inline value_string operator-(const value_string& ss)
+  {
+    VSX_UNUSED(ss);
+    return value_string();
+  }
+
+  inline value_string operator+(const value_string& ss)
+  {
+    VSX_UNUSED(ss);
+    return value_string();
+  }
+
+  inline float get_float()
+  {
+    return 0.0;
+  }
+
+  inline void set_float(float new_value)
+  {
+    VSX_UNUSED(new_value);
+  }
+
+  inline vsx_string<> get_string()
+  {
+    return value;
+  }
+
+  inline void set_string(vsx_string<> new_value)
+  {
+    value = new_value;
+  }
+};
+
 
 enum interpolation_t
 {
@@ -182,7 +261,6 @@ public:
     reset();
     item a;
     a.delay = 0.5f;
-    a.value = 1;
     items.push_back(a);
     items.push_back(a);
   }
@@ -190,24 +268,24 @@ public:
   channel(const channel& seq)
   {
     channel* sq = (channel*)&seq;
-
+    items.reset_used();
     for (unsigned long i = 0; i < (sq->items.size()); ++i)
-      items[i] = sq->items[i];
+      items.push_back(sq->items[i]);
   }
 
   channel(channel& seq)
   {
+    items.reset_used();
     for (unsigned long i = 0; i < seq.items.size(); ++i)
-      items[i] = seq.items[i];
+      items.push_back( seq.items[i] );
   }
 
 
   channel<T>& operator=(channel<T>& ss)
   {
+    items.reset_used();
     for (unsigned long i = 0; i < ss.items.size(); ++i)
-    {
-      items[i] = ss.items[i];
-    }
+      items.push_back( ss.items[i] );
     return *this;
   }
 
@@ -220,7 +298,7 @@ public:
   {
     i_time = 0;
     i_cur = 0;
-    to_val = 0;
+    to_val = T();
     line_cur = 0;
     line_time = 0;
   }
@@ -383,7 +461,7 @@ public:
 
   void set_string(vsx_string<>str)
   {
-    items.clear();
+    items.reset_used();
     vsx_nw_vector< vsx_string<> > rows;
     vsx_string<>deli = "|";
     explode(str, deli, rows);

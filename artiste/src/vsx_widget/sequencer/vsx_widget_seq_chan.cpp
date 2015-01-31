@@ -134,7 +134,7 @@ void vsx_widget_seq_channel::send_parent_dump()
     parts.push_back(
       vsx_string_helper::f2s((*it).get_total_length()) + ";" +
       vsx_string_helper::i2s((*it).get_interpolation()) + ";" +
-      vsx_string_helper::base64_encode((*it).get_value_interpolation())
+      vsx_string_helper::base64_encode((*it).get_value_by_interpolation())
     );
   }
 
@@ -225,7 +225,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
       // go through the parameter tuple to check if a value box has been hit
       for (int i = 0; i < index_count; ++i)
       {
-        float vv = vsx_string_helper::s2f(parts[i]);
+        float vv = items[item_iterator].convert_to_float(parts[i]);
         totalysize = y_end - y_start;
         dlx = (time_iterator - view_time_start) / totalsize * size.x - size.x
             * 0.5f;
@@ -355,25 +355,30 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
     {
       // code for adding a new keyframe/point, relies on above code
       size_t interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_LINEAR;
-      if (shift && ctrl && !alt)  interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_COSINE;
-      if (shift && !ctrl && !alt) interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_LINEAR;
-      if (!shift && ctrl && !alt) interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_NONE;
+      if (shift && ctrl && !alt)
+        interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_COSINE;
+      if (shift && !ctrl && !alt)
+        interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_LINEAR;
+      if (!shift && ctrl && !alt)
+        interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_NONE;
+      if (param_type == VSX_MODULE_PARAM_ID_STRING_SEQUENCE)
+        interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_NONE;
 
       double_click_d[0] = 0.0f;
 
       vsx_string<>val;
       switch (param_type)
       {
-      case VSX_MODULE_PARAM_ID_FLOAT:
-      {
-        val = vsx_string_helper::base64_encode(vsx_string_helper::f2s((distance.center.y + size.y / 2) / size.y
-            * totalysize + y_start));
-      }
+        case VSX_MODULE_PARAM_ID_FLOAT:
+        case VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE:
+          val = vsx_string_helper::base64_encode(vsx_string_helper::f2s((distance.center.y + size.y / 2) / size.y
+              * totalysize + y_start));
         break;
-      case VSX_MODULE_PARAM_ID_QUATERNION:
-      {
-        val = items[item_action_id].get_value();
-      }
+        case VSX_MODULE_PARAM_ID_STRING_SEQUENCE:
+          val = vsx_string_helper::base64_encode("");
+          break;
+        case VSX_MODULE_PARAM_ID_QUATERNION:
+          val = items[item_action_id].get_value();
         break;
       }
 
@@ -727,14 +732,14 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
     {
       if (other_item_id_to_update != -1)
         server_message("pseq_r update",
-          vsx_string_helper::base64_encode( items[other_item_id_to_update].get_value_interpolation() ) + " " +
+          vsx_string_helper::base64_encode( items[other_item_id_to_update].get_value_by_interpolation() ) + " " +
                        vsx_string_helper::f2s(items[other_item_id_to_update].get_total_length()) + " " +
                        vsx_string_helper::i2s(items[other_item_id_to_update].get_interpolation()) + " " +
           vsx_string_helper::i2s(other_item_id_to_update)
         );
 
       server_message("pseq_r update",
-        vsx_string_helper::base64_encode( items[mouse_clicked_id].get_value_interpolation() ) + " " +
+        vsx_string_helper::base64_encode( items[mouse_clicked_id].get_value_by_interpolation() ) + " " +
                      vsx_string_helper::f2s(items[mouse_clicked_id].get_total_length()) + " " +
                      vsx_string_helper::i2s(items[mouse_clicked_id].get_interpolation()) + " " +
         vsx_string_helper::i2s(mouse_clicked_id)
@@ -805,15 +810,14 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
         if (is_controller)
         {
           float accum_time = 0.0f;
+
           for (int ii = 0; ii < mouse_clicked_id-1; ii++)
-          {
             accum_time += items[ii].get_total_length();
-          }
+
           // make sure time doesn't extend beyond 1.0
           if (accum_time + items[mouse_clicked_id - 1].get_total_length() - delta_time_movement > 1.0f)
-          {
             delta_time_movement += accum_time + items[mouse_clicked_id - 1].get_total_length() - delta_time_movement -1.0f;
-          }
+
         }
 
         // regular sequencer
@@ -821,18 +825,23 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
 
         // special handling of last element
         if (mouse_clicked_id != (int) items.size() - 1)
-        {
           items[mouse_clicked_id].increase_total_length( delta_time_movement );
-        }
         else
-        {
           items[mouse_clicked_id].set_total_length( 1 );
+
+        if (is_controller)
+        {
+          float accum_time = items[0].get_total_length();
+          for (int ii = 1; ii < mouse_clicked_id-1; ii++)
+            accum_time += items[ii].get_total_length();
+          items[ items.size() -1 ].set_total_length( 1.0 - accum_time );
         }
+
 
         if (!is_controller)
         {
           server_message("pseq_r update",
-            vsx_string_helper::base64_encode( items[mouse_clicked_id - 1].get_value_interpolation() ) + " " +
+            vsx_string_helper::base64_encode( items[mouse_clicked_id - 1].get_value_by_interpolation() ) + " " +
               vsx_string_helper::f2s( items[mouse_clicked_id - 1].get_total_length()) + " " +
               vsx_string_helper::i2s( items[mouse_clicked_id - 1].get_interpolation()) + " " +
               vsx_string_helper::i2s( mouse_clicked_id - 1)
@@ -855,10 +864,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
             + y_start;
 
         if (is_controller)
-        {
-          if (y > 1.0f) y = 1.0f;
-          if (y < 0.0f) y = 0.0f;
-        }
+          y = CLAMP(y, 0.0, 1.0);
 
         // prepare existing value with updated value
         if (param_type == VSX_MODULE_PARAM_ID_QUATERNION)
@@ -881,7 +887,8 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
           items[mouse_clicked_id].set_value( implode(parts, deli) );
         }
 
-        items[mouse_clicked_id].set_value(vsx_string_helper::f2s(y));
+        if (param_type == VSX_MODULE_PARAM_ID_FLOAT || param_type == VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE)
+          items[mouse_clicked_id].set_value(vsx_string_helper::f2s(y));
 
         if (ctrl && alt && shift)
         {
@@ -904,20 +911,21 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
       {
         if (other_item_id_to_update != -1)
           server_message("pseq_r update",
-            vsx_string_helper::base64_encode( items[other_item_id_to_update].get_value_interpolation() ) + " " +
+            vsx_string_helper::base64_encode( items[other_item_id_to_update].get_value_by_interpolation() ) + " " +
                          vsx_string_helper::f2s(items[other_item_id_to_update].get_total_length()) + " " +
                          vsx_string_helper::i2s(items[other_item_id_to_update].get_interpolation()) + " " +
             vsx_string_helper::i2s(other_item_id_to_update)
           );
 
         server_message("pseq_r update",
-          vsx_string_helper::base64_encode( items[mouse_clicked_id].get_value_interpolation()) + " " +
+          vsx_string_helper::base64_encode( items[mouse_clicked_id].get_value_by_interpolation()) + " " +
                        vsx_string_helper::f2s( items[mouse_clicked_id].get_total_length()) + " " +
                        vsx_string_helper::i2s( items[mouse_clicked_id].get_interpolation()) + " " +
           vsx_string_helper::i2s(mouse_clicked_id)
         );
       }
-      else
+
+      if (is_controller)
         send_parent_dump();
     }
     return;
@@ -989,7 +997,8 @@ void vsx_widget_seq_channel::remove_master_channel_items_with_name(vsx_string<>n
     {
       i++;
     }
-    if (i == items.size()) run = 0;
+    if (i == items.size())
+      run = 0;
   }
 }
 
@@ -1024,7 +1033,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
     }
 
     server_message("pseq_r update",
-      vsx_string_helper::base64_encode(items[mouse_clicked_id].get_value_interpolation()) + " " +
+      vsx_string_helper::base64_encode(items[mouse_clicked_id].get_value_by_interpolation()) + " " +
       vsx_string_helper::f2s( items[mouse_clicked_id].get_total_length()) + " " +
       vsx_string_helper::i2s( items[mouse_clicked_id].get_interpolation()) + " " +
       vsx_string_helper::i2s( mouse_clicked_id)
@@ -1088,13 +1097,13 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
     size_t updated_id = mouse_clicked_id -1;
 
     server_message("pseq_r update",
-      vsx_string_helper::base64_encode(items[updated_id].get_value_interpolation()) + " " +
+      vsx_string_helper::base64_encode(items[updated_id].get_value_by_interpolation()) + " " +
       vsx_string_helper::f2s( items[updated_id].get_total_length()) + " " +
       vsx_string_helper::i2s( items[updated_id].get_interpolation()) + " " +
       vsx_string_helper::i2s( updated_id)
     );
     server_message("pseq_r update",
-      vsx_string_helper::base64_encode(items[mouse_clicked_id].get_value_interpolation()) + " " +
+      vsx_string_helper::base64_encode(items[mouse_clicked_id].get_value_by_interpolation()) + " " +
       vsx_string_helper::f2s( items[mouse_clicked_id].get_total_length()) + " " +
       vsx_string_helper::i2s( items[mouse_clicked_id].get_interpolation()) + " " +
       vsx_string_helper::i2s( mouse_clicked_id)
@@ -1130,7 +1139,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
       }
 
       server_message("pseq_r update",
-        vsx_string_helper::base64_encode( items[mouse_clicked_id].get_value_interpolation()) + " " +
+        vsx_string_helper::base64_encode( items[mouse_clicked_id].get_value_by_interpolation()) + " " +
                      vsx_string_helper::f2s( items[mouse_clicked_id].get_total_length()) + " " +
                      vsx_string_helper::i2s( items[mouse_clicked_id].get_interpolation()) + " " +
         vsx_string_helper::i2s(mouse_clicked_id)
@@ -1174,20 +1183,23 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
       vsx_string<>deli = "|";
       std::list< vsx_string<> > pl;
       explode(t->parts[4], deli, pl);
-      if (t->parts.size() > 5)
-      {
-        param_type = vsx_string_helper::s2i(t->parts[5]);
-      }
-      else
+
+      if (!param_type)
         param_type = VSX_MODULE_PARAM_ID_FLOAT;
+
+      if (t->parts.size() > 5)
+        param_type = vsx_string_helper::s2i(t->parts[5]);
+
       switch (param_type)
       {
-      case VSX_MODULE_PARAM_ID_FLOAT:
-        index_count = 1;
-        break;
-      case VSX_MODULE_PARAM_ID_QUATERNION:
-        index_count = 4;
-        break;
+        case VSX_MODULE_PARAM_ID_FLOAT:
+        case VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE:
+        case VSX_MODULE_PARAM_ID_STRING_SEQUENCE:
+          index_count = 1;
+          break;
+        case VSX_MODULE_PARAM_ID_QUATERNION:
+          index_count = 4;
+          break;
       }
 
       for (std::list< vsx_string<> >::iterator it = pl.begin(); it != pl.end(); ++it)
@@ -1211,7 +1223,8 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
         }
         else
         {
-          pa.set_value( vsx_string_helper::base64_decode(pld[2]) );
+          if (pld.size() > 2)
+            pa.set_value( vsx_string_helper::base64_decode(pld[2]) );
         }
         pa.set_total_length( vsx_string_helper::s2f(pld[0]) );
         items.push_back(pa);
@@ -1608,20 +1621,19 @@ void vsx_widget_seq_channel::i_draw()
     while (w < y_end)
     {
       if (w != 0)
-      {
         draw_h_line(w, 0.6, 0.6, 1, 0.7);
-      }
+
       if (inc == 1)
         if (w + 0.5 < y_end)
-        {
           draw_h_line(w + 0.5f, 1, 1, 1, 0.4);
-        }
+
       font.color.a = 0.1f;
       font.print_center(vsx_vector3<>(self_pos.x - size.x * 0.3,
           self_pos.y - size.y / 2 + (w - y_start) / (y_end - y_start)
               * size.y), vsx_string_helper::f2s(w), font_size * 0.2f);
       w += inc;
     } //while
+
     glColor3f(1, 1, 1);
     if (items.size() >= 2)
     {
@@ -1653,172 +1665,179 @@ void vsx_widget_seq_channel::i_draw()
       glLineWidth(3.0f);
       switch (param_type)
       {
-      case VSX_MODULE_PARAM_ID_FLOAT:
-      {
-        vsx_color<> l_color = vsx_color<>(1.0f, 1.0f, 1.0f, 1.0f);
-        while (item_iterator < (int) items.size() && time_iterator
-            <= view_time_end)
+        case VSX_MODULE_PARAM_ID_FLOAT:
+        case VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE:
+        case VSX_MODULE_PARAM_ID_STRING_SEQUENCE:
         {
-          sv = vsx_string_helper::s2f(items[item_iterator].get_value() );
-          if (item_iterator < (int) items.size() - 1)
+          vsx_color<> l_color = vsx_color<>(1.0f, 1.0f, 1.0f, 1.0f);
+          while (item_iterator < (int) items.size() && time_iterator
+              <= view_time_end)
           {
-            if (items[item_iterator].get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_BEZIER)
+            sv = vsx_string_helper::s2f(items[item_iterator].get_value() );
+            if (item_iterator < (int) items.size() - 1)
             {
-              // BEZIER (x⁴ INTERPOLATION)
-              vsx_bezier_calc<float> calc;
-              vsx_color<> lb_color = vsx_color<>(0.2f, 1.0f, 0.8f, 1.0f);
-              float ev = vsx_string_helper::s2f(items[item_iterator + 1].get_value() );
-              draw_line(
-                time_iterator,
-                sv,
-                time_iterator
-                +
-                items[item_iterator].get_handle1().x * items[item_iterator].get_total_length(),
-                sv + items[item_iterator].get_handle1().y,
-                lb_color
-              );
-
-
-              draw_line(
-                    time_iterator + items[item_iterator].get_total_length(),
-                ev,
-                time_iterator + items[item_iterator].get_handle2().x
-                    * items[item_iterator].get_total_length(),
-                    ev + items[item_iterator].get_handle2().y,
-                    lb_color
-              );
-              float delay = items[item_iterator].get_total_length();
-
-              draw_chan_box(time_iterator + items[item_iterator].get_handle1().x * delay,
-                  sv + items[item_iterator].get_handle1().y, 0.0007f);
-              draw_chan_box(time_iterator + items[item_iterator].get_handle2().x * delay,
-                  ev + items[item_iterator].get_handle2().y, 0.0007f);
-
-
-              calc.x0 = 0.0f;
-              calc.y0 = sv;
-              calc.x1 = items[item_iterator].get_handle1().x;
-
-              calc.y1 = sv + items[item_iterator].get_handle1().y;
-              calc.x2 = items[item_iterator].get_handle2().x;
-              calc.y2 = ev + items[item_iterator].get_handle2().y;
-              calc.x3 = 1.0f;
-              calc.y3 = ev;
-              calc.init();
-              for (float i = 0.0f; i < 1.0f; i += 0.05f)
+              if (items[item_iterator].get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_BEZIER)
               {
-                float yp = calc.y_from_t(i + 0.05f);
-                float xp = calc.x_from_t(i);
-                float xp1 = calc.x_from_t(i + 0.05f);
-                draw_line(time_iterator + xp * delay, sv, time_iterator + (xp1)
-                    * delay, yp, l_color);
-                sv = yp;
-              }
-            }
-            else if (items[item_iterator].get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_COSINE)
-            {
-              float ev = vsx_string_helper::s2f(items[item_iterator + 1].get_value());
-              if (time_iterator < view_time_start)
-              {
-                //float part = ((tstart-t_cur)/(lines[td].delay));
-                for (float i = 0; i < 10; ++i)
+                // BEZIER (x⁴ INTERPOLATION)
+                vsx_bezier_calc<float> calc;
+                vsx_color<> lb_color = vsx_color<>(0.2f, 1.0f, 0.8f, 1.0f);
+                float ev = vsx_string_helper::s2f(items[item_iterator + 1].get_value() );
+                draw_line(
+                  time_iterator,
+                  sv,
+                  time_iterator
+                  +
+                  items[item_iterator].get_handle1().x * items[item_iterator].get_total_length(),
+                  sv + items[item_iterator].get_handle1().y,
+                  lb_color
+                );
+
+
+                draw_line(
+                      time_iterator + items[item_iterator].get_total_length(),
+                  ev,
+                  time_iterator + items[item_iterator].get_handle2().x
+                      * items[item_iterator].get_total_length(),
+                      ev + items[item_iterator].get_handle2().y,
+                      lb_color
+                );
+                float delay = items[item_iterator].get_total_length();
+
+                draw_chan_box(time_iterator + items[item_iterator].get_handle1().x * delay,
+                    sv + items[item_iterator].get_handle1().y, 0.0007f);
+                draw_chan_box(time_iterator + items[item_iterator].get_handle2().x * delay,
+                    ev + items[item_iterator].get_handle2().y, 0.0007f);
+
+
+                calc.x0 = 0.0f;
+                calc.y0 = sv;
+                calc.x1 = items[item_iterator].get_handle1().x;
+
+                calc.y1 = sv + items[item_iterator].get_handle1().y;
+                calc.x2 = items[item_iterator].get_handle2().x;
+                calc.y2 = ev + items[item_iterator].get_handle2().y;
+                calc.x3 = 1.0f;
+                calc.y3 = ev;
+                calc.init();
+                for (float i = 0.0f; i < 1.0f; i += 0.05f)
                 {
-                  float ft = PI / 10 * i;
-                  float f = (1 - cos(ft)) * 0.5;
-                  float ee = sv * (1 - f) + ev * f;
-                  draw_line(time_iterator + items[item_iterator].get_total_length()
-                      / 10 * (i), sv, time_iterator
-                            + items[item_iterator].get_total_length() / 10 * (i + 1), ee,
-                      l_color);
-                  sv = ee;
+                  float yp = calc.y_from_t(i + 0.05f);
+                  float xp = calc.x_from_t(i);
+                  float xp1 = calc.x_from_t(i + 0.05f);
+                  draw_line(time_iterator + xp * delay, sv, time_iterator + (xp1)
+                      * delay, yp, l_color);
+                  sv = yp;
                 }
               }
-              else if (items[item_iterator].get_total_length() + time_iterator
-                  > view_time_end)
+              else if (items[item_iterator].get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_COSINE)
               {
-                for (float i = 0; i < 10; ++i)
+                float ev = vsx_string_helper::s2f(items[item_iterator + 1].get_value());
+                if (time_iterator < view_time_start)
                 {
-                  float ft = PI / 10 * i;
-                  float f = (1 - cos(ft)) * 0.5;
-                  float ee = sv * (1 - f) + ev * f;
-                  draw_line(time_iterator + items[item_iterator].get_total_length()
-                      / 10 * (i), sv, time_iterator
-                      + items[item_iterator].get_total_length() / 10 * (i + 1), ee,
-                      l_color);
-                  sv = ee;
-                }
-              }
-              else
-              {
-                for (float i = 0; i < 10; ++i)
-                {
-                  float ft = PI / 10 * i;
-                  float f = (1 - cos(ft)) * 0.5;
-                  float ee = sv * (1 - f) + ev * f;
-                  draw_line(time_iterator + items[item_iterator].get_total_length()
-                      / 10 * (i), sv, time_iterator
-                      + items[item_iterator].get_total_length() / 10 * (i + 1), ee,
-                      l_color);
-                  sv = ee;
-                }
-              }
-            }
-            else if (items[item_iterator].get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_LINEAR)
-            {
-              float ev = vsx_string_helper::s2f(items[item_iterator + 1].get_value());
-              if (time_iterator < view_time_start)
-              {
-                draw_line(time_iterator, sv, time_iterator
-                  + items[item_iterator].get_total_length(), ev, l_color);
-              }
-              else if (items[item_iterator].get_total_length() + time_iterator
-                  > view_time_end)
-              {
-                draw_line(time_iterator, sv, time_iterator
-                  + items[item_iterator].get_total_length(), ev, l_color);
-              }
-              else
-              {
-                draw_line(time_iterator, sv, time_iterator
-                  + items[item_iterator].get_total_length(), ev, l_color);
-              }
-            }
-            else
-            if
-            (
-              items[item_iterator].get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_NONE
-              ||
-              items[item_iterator].get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_RESERVED
-            )
-            {
-              float ev = vsx_string_helper::s2f(items[item_iterator + 1].get_value());
-
-              draw_line(time_iterator, sv, time_iterator
-                        + items[item_iterator].get_total_length(), sv, l_color);
-              draw_line(time_iterator + items[item_iterator].get_total_length(), sv,
-                        time_iterator + items[item_iterator].get_total_length(), ev,
+                  //float part = ((tstart-t_cur)/(lines[td].delay));
+                  for (float i = 0; i < 10; ++i)
+                  {
+                    float ft = PI / 10 * i;
+                    float f = (1 - cos(ft)) * 0.5;
+                    float ee = sv * (1 - f) + ev * f;
+                    draw_line(time_iterator + items[item_iterator].get_total_length()
+                        / 10 * (i), sv, time_iterator
+                              + items[item_iterator].get_total_length() / 10 * (i + 1), ee,
                         l_color);
+                    sv = ee;
+                  }
+                }
+                else if (items[item_iterator].get_total_length() + time_iterator
+                    > view_time_end)
+                {
+                  for (float i = 0; i < 10; ++i)
+                  {
+                    float ft = PI / 10 * i;
+                    float f = (1 - cos(ft)) * 0.5;
+                    float ee = sv * (1 - f) + ev * f;
+                    draw_line(time_iterator + items[item_iterator].get_total_length()
+                        / 10 * (i), sv, time_iterator
+                        + items[item_iterator].get_total_length() / 10 * (i + 1), ee,
+                        l_color);
+                    sv = ee;
+                  }
+                }
+                else
+                {
+                  for (float i = 0; i < 10; ++i)
+                  {
+                    float ft = PI / 10 * i;
+                    float f = (1 - cos(ft)) * 0.5;
+                    float ee = sv * (1 - f) + ev * f;
+                    draw_line(time_iterator + items[item_iterator].get_total_length()
+                        / 10 * (i), sv, time_iterator
+                        + items[item_iterator].get_total_length() / 10 * (i + 1), ee,
+                        l_color);
+                    sv = ee;
+                  }
+                }
+              }
+              else if (items[item_iterator].get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_LINEAR)
+              {
+                float ev = vsx_string_helper::s2f(items[item_iterator + 1].get_value());
+                if (time_iterator < view_time_start)
+                {
+                  draw_line(time_iterator, sv, time_iterator
+                    + items[item_iterator].get_total_length(), ev, l_color);
+                }
+                else if (items[item_iterator].get_total_length() + time_iterator
+                    > view_time_end)
+                {
+                  draw_line(time_iterator, sv, time_iterator
+                    + items[item_iterator].get_total_length(), ev, l_color);
+                }
+                else
+                {
+                  draw_line(time_iterator, sv, time_iterator
+                    + items[item_iterator].get_total_length(), ev, l_color);
+                }
+              }
+              else
+              if
+              (
+                items[item_iterator].get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_NONE
+                ||
+                items[item_iterator].get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_RESERVED
+              )
+              {
+                float ev = vsx_string_helper::s2f(items[item_iterator + 1].get_value());
+
+                draw_line(time_iterator, sv, time_iterator
+                          + items[item_iterator].get_total_length(), sv, l_color);
+                draw_line(time_iterator + items[item_iterator].get_total_length(), sv,
+                          time_iterator + items[item_iterator].get_total_length(), ev,
+                          l_color);
+              }
             }
-          }
-          if (mouse_clicked_id == item_iterator && k_focus == this)
-          {
-            draw_selection_box(time_iterator, vsx_string_helper::s2f(items[item_iterator].get_value() ) );
-            glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-          }
-          draw_chan_box(time_iterator, vsx_string_helper::s2f(items[item_iterator].get_value()));
-          time_iterator += items[item_iterator].get_total_length();
-          ++item_iterator;
-        } // while
-        draw_line(time_iterator - items[item_iterator - 1].get_total_length(), sv,
-            view_time_end, sv, l_color);
-      }
+            if (mouse_clicked_id == item_iterator && k_focus == this)
+            {
+              draw_selection_box(time_iterator, vsx_string_helper::s2f(items[item_iterator].get_value() ) );
+              glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+            }
+
+            if (param_type == VSX_MODULE_PARAM_ID_FLOAT || param_type == VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE)
+              draw_chan_box(time_iterator, vsx_string_helper::s2f(items[item_iterator].get_value()), vsx_string_helper::s2f(items[item_iterator].get_value()) );
+
+            if (param_type == VSX_MODULE_PARAM_ID_STRING_SEQUENCE)
+              draw_chan_box(time_iterator, 0.0f, items[item_iterator].get_value() );
+
+            time_iterator += items[item_iterator].get_total_length();
+            ++item_iterator;
+          } // while
+          draw_line(time_iterator - items[item_iterator - 1].get_total_length(), sv,
+              view_time_end, sv, l_color);
+        }
         break; // FLOAT
       } // switch
       glLineWidth(2);
     }
     if (m_o_focus == this)
     {
-      //TODO: work here
       font.print(passive_mouse_pos+vsx_vector3<>(0.001,0.002), passive_value, 0.003);
       font.print(passive_mouse_pos+vsx_vector3<>(-0.015,-0.002), passive_time, 0.003);
     }
@@ -2021,7 +2040,7 @@ void vsx_widget_seq_channel::draw_line(float t0, float y0, float t1, float y1,
   glEnd();
 }
 
-void vsx_widget_seq_channel::draw_chan_box(float t0, float y0, float c_size)
+void vsx_widget_seq_channel::draw_chan_box(float t0, float y0, vsx_string<> display_value, float c_size)
 {
   float cs05 = c_size*0.5f;
   if (t0+cs05 < view_time_start || t0-c_size > view_time_end)
@@ -2042,20 +2061,21 @@ void vsx_widget_seq_channel::draw_chan_box(float t0, float y0, float c_size)
   }
 
   glBegin(GL_TRIANGLE_FAN);
-  totalysize = y_end - y_start;
-  dlx = (t0 - view_time_start) / totalsize * size.x + parentpos.x + pos.x
-      - size.x / 2;
-  dly = (y0 - y_start) / totalysize * size.y + parentpos.y + pos.y - size.y / 2;
-  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-  glVertex2f(dlx, dly);
-  glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
-  glVertex2f(dlx - c_size, dly - c_size);
-  glVertex2f(dlx + c_size, dly - c_size);
-  glVertex2f(dlx + c_size, dly + c_size);
-  glVertex2f(dlx - c_size, dly + c_size);
-  glVertex2f(dlx - c_size, dly - c_size);
+    totalysize = y_end - y_start;
+    dlx = (t0 - view_time_start) / totalsize * size.x + parentpos.x + pos.x
+        - size.x / 2;
+    dly = (y0 - y_start) / totalysize * size.y + parentpos.y + pos.y - size.y / 2;
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glVertex2f(dlx, dly);
+    glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
+    glVertex2f(dlx - c_size, dly - c_size);
+    glVertex2f(dlx + c_size, dly - c_size);
+    glVertex2f(dlx + c_size, dly + c_size);
+    glVertex2f(dlx - c_size, dly + c_size);
+    glVertex2f(dlx - c_size, dly - c_size);
   glEnd();
-  font.print(vsx_vector3<>(dlx + 0.002, dly), vsx_string_helper::f2s(y0), c_size * 2.14f);
+
+  font.print(vsx_vector3<>(dlx + 0.002, dly), display_value, c_size * 2.14f);
 }
 
 void vsx_widget_seq_channel::draw_selection_box(float t0, float y0)

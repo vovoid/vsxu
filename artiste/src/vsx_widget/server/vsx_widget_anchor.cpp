@@ -33,6 +33,7 @@
 #include "vsxfst.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
+#include <vsx_param_helper.h>
 // local includes
 #include "vsx_widget.h"
 #include "widgets/vsx_widget_popup_menu.h"
@@ -562,12 +563,12 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
   if (t->cmd == "controller_seq_edit") 
   {
     for (children_iter = children.begin(); children_iter != children.end(); ++children_iter) 
-    {
-      if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_CONTROLLER) return;
-    }
+      if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_CONTROLLER)
+        return;
     vsx_widget* tt = add(new vsx_widget_controller_sequence,name+".seq_edit");
-    ((vsx_widget_controller_sequence*)tt)->target_param=name;
+    ((vsx_widget_controller_sequence*)tt)->target_param = name;
     ((vsx_widget_controller_sequence*)tt)->init();
+    ((vsx_widget_controller_sequence*)tt)->set_param_type( vsx_param_helper::param_id_from_string(p_type) );
     tt->pos.x = tt->target_pos.x -= tt->target_size.x * 0.6f;
     return;
   }
@@ -1492,7 +1493,7 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
       }
     }
     else
-    if (p_type == "sequence")
+    if (p_type == "float_sequence" || p_type == "string_sequence")
     {
       menu_->commands.adds(VSX_COMMAND_MENU, "editor", "controller_seq_edit","");
       if (!alias)
@@ -1885,7 +1886,7 @@ void vsx_widget_anchor::event_mouse_double_click(vsx_widget_distance distance, v
         return;
       }
 
-      if (p_type == "sequence")
+      if (p_type == "float_sequence" || p_type == "string_sequence")
       {
         command_q_b.add_raw("controller_seq_edit");
         this->vsx_command_queue_b(this);

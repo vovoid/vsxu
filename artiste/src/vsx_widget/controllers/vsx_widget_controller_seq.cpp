@@ -32,13 +32,12 @@ void vsx_widget_controller_sequence::init()
   init_run = true;
   set_size(vsx_vector3<>(0.12f,0.1f));
   seq_chan = add(new vsx_widget_seq_channel,"chan");
+
   if (size_controlled_from_outside)
-  {
   	seq_chan->size = size;
-  } else
-  {
+  else
   	seq_chan->size = size*0.95f;
-  }
+
   seq_chan->target_size = seq_chan->size;
   seq_chan->init();
   seq_chan->visible = 1;
@@ -53,14 +52,19 @@ void vsx_widget_controller_sequence::init()
 void vsx_widget_controller_sequence::set_size(vsx_vector3<> new_size)
 {
 	if (seq_chan)
-	seq_chan->set_size(new_size);
+    seq_chan->set_size(new_size);
   vsx_widget::set_size(new_size);
+}
+
+void vsx_widget_controller_sequence::set_param_type(int n)
+{
+  if (seq_chan)
+    ((vsx_widget_seq_channel*)seq_chan)->set_param_type(n);
 }
 
 void vsx_widget_controller_sequence::command_process_back_queue(vsx_command_s *t) {
   if (t->cmd == "update")
   {
-    //printf("command gotten from chan: %s\n",t->raw.c_str());
     command_q_b.add_raw("param_set "+(target_param!= ""?(target_param+" "):"")+t->parts[2]+command_suffix);
     parent->vsx_command_queue_b(this);
   } else
@@ -70,9 +74,6 @@ void vsx_widget_controller_sequence::command_process_back_queue(vsx_command_s *t
   }
   else
   if (t->cmd == "pg64_ok") {
-#ifdef VSXU_DEBUG
-    printf("command gotten from server: %s\n",t->raw.c_str());
-#endif
     command_q_b.add_raw("pseq_p_ok inject_get foo bar " + vsx_string_helper::base64_decode(t->parts[3]));
     seq_chan->vsx_command_queue_b(this);
   }

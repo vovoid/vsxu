@@ -1,6 +1,8 @@
 #ifndef VSX_WIDGET_PARAM_SEQUENCE_ITEM
 #define VSX_WIDGET_PARAM_SEQUENCE_ITEM
 
+#include <string/vsx_string_helper.h>
+
 #define VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_NONE 0
 #define VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_LINEAR 1
 #define VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_COSINE 2
@@ -12,9 +14,17 @@
 // 3 = reserved
 // 4 = bezier
 
+
+enum sequence_param_type_t
+{
+  pt_float,
+  pt_string
+};
+
 class vsx_widget_param_sequence_item
 {
   int type; // 0 = param, 1 = master
+  sequence_param_type_t sequence_param_type;
   float total_length; // in seconds (float)
   float length; // for master channel, this is the length of the block
   vsx_string<>value; // if master, this is the name of the sequence_pool
@@ -39,15 +49,25 @@ public:
     type = v;
   }
 
-
-  vsx_string<>get_value_interpolation()
+  sequence_param_type_t get_param_type()
   {
-    if (interpolation == 4)
-    {
-      return value+":"+vsx_string_helper::f2s(handle1.x)+","+vsx_string_helper::f2s(handle1.y)+":"+vsx_string_helper::f2s(handle2.x)+","+vsx_string_helper::f2s(handle2.y);
-    } else {
-      return value;
-    }
+    return sequence_param_type;
+  }
+
+  void set_param_type(sequence_param_type_t t)
+  {
+    sequence_param_type = t;
+  }
+
+  vsx_string<> get_value_by_interpolation()
+  {
+    if (interpolation == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_BEZIER)
+      return value+":"+
+          vsx_string_helper::f2s(handle1.x)+","+
+          vsx_string_helper::f2s(handle1.y)+":"+
+          vsx_string_helper::f2s(handle2.x)+","+
+          vsx_string_helper::f2s(handle2.y);
+    return value;
   }
 
 
@@ -117,6 +137,13 @@ public:
     value = v;
   }
 
+  inline float convert_to_float(vsx_string<> v)
+  {
+    if (sequence_param_type == pt_string)
+      return 0.0;
+    return vsx_string_helper::s2f(v);
+  }
+
 
 
 
@@ -127,6 +154,9 @@ public:
 
   void set_interpolation(const size_t v, vsx_widget_param_sequence_item* next_value = 0x0)
   {
+    if (sequence_param_type == pt_string)
+      interpolation = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_NONE;
+
     // if we change to bezier, we want special handling.
     if
     (
@@ -229,6 +259,7 @@ public:
   vsx_widget_param_sequence_item()
     :
     type(0),
+    sequence_param_type(pt_float),
     total_length(1.0),
     length(0.1),
     value("")
