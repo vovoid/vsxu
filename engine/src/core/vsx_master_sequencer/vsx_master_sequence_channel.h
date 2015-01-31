@@ -31,7 +31,7 @@ class vsx_param_sequence_list;
 // sequence channel entry is a block entry in the chain of blocks
 class vsx_sequence_master_channel_item {
 public:
-	vsx_sequence time_sequence; // how to translate real time into sequence_list-time, this one is a controller-like so runs from 0 to 1
+  vsx::sequence::channel<vsx::sequence::value_float> time_sequence; // how to translate real time into sequence_list-time, this one is a controller-like so runs from 0 to 1
 
 	vsx_param_sequence_list* pool_sequence_list;
 	float start_time;

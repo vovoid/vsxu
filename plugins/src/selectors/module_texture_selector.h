@@ -75,15 +75,15 @@ class module_texture_selector : public vsx_module
   
   vsx_module_param_int* wrap;
   vsx_module_param_int* blend_type;
-  vsx_module_param_sequence* sequence;
+  vsx_module_param_float_sequence* sequence;
   vsx_module_param_int* reverse;
   vsx_module_param_int* reset_seq_to_default;
   
   vsx_module_param_int* blend_size;
-  vsx_module_param_sequence* A_sequence;
+  vsx_module_param_float_sequence* A_sequence;
   vsx_module_param_int* A_reverse;
   vsx_module_param_int* A_reset_seq_to_default;
-  vsx_module_param_sequence* B_sequence;
+  vsx_module_param_float_sequence* B_sequence;
   vsx_module_param_int* B_reverse;
   vsx_module_param_int* B_reset_seq_to_default;
   vsx_module_param_float4* clear_color;
@@ -115,8 +115,8 @@ class module_texture_selector : public vsx_module
   
   int i_wrap;
   int i_blend_type;
-  vsx_sequence i_sequence;
-  vsx_sequence i_seq_default;
+  vsx::sequence::channel<vsx::sequence::value_float> i_sequence;
+  vsx::sequence::channel<vsx::sequence::value_float> i_seq_default;
   vsx_ma_vector<float> i_sequence_data;
   long i_seq_index;
   int i_reverse;
@@ -124,14 +124,14 @@ class module_texture_selector : public vsx_module
   int i_new_size;
   int i_tex_size;
 
-  vsx_sequence i_A_sequence;
-  vsx_sequence i_A_seq_default;
+  vsx::sequence::channel<vsx::sequence::value_float> i_A_sequence;
+  vsx::sequence::channel<vsx::sequence::value_float> i_A_seq_default;
   vsx_ma_vector<float> i_A_sequence_data;
   long i_A_seq_index;
   int i_A_reverse;
 
-  vsx_sequence i_B_sequence;
-  vsx_sequence i_B_seq_default;
+  vsx::sequence::channel<vsx::sequence::value_float> i_B_sequence;
+  vsx::sequence::channel<vsx::sequence::value_float> i_B_seq_default;
   vsx_ma_vector<float> i_B_sequence_data;
   long i_B_seq_index;
   int i_B_reverse;
@@ -236,18 +236,18 @@ public:
     i_reverse = 0;       //Off
     i_seq_index = 0;
 
-    i_seq_default.items[0].value = 0.0;       //Default Items for Sequences
-    i_seq_default.items[0].delay = 1.0;
-    i_seq_default.items[0].interpolation = 1; //Linear
+    i_seq_default.get_item_by_index(0).value = 0.0;       //Default Items for Sequences
+    i_seq_default.get_item_by_index(0).delay = 1.0;
+    i_seq_default.get_item_by_index(0).interpolation = vsx::sequence::linear;
 
-    i_A_seq_default.items[0].value = 1.0;
-    i_A_seq_default.items[0].delay = 1.0;
-    i_A_seq_default.items[1].value = 0.0;
-    i_A_seq_default.items[0].interpolation = 1;
+    i_A_seq_default.get_item_by_index(0).value = 1.0;
+    i_A_seq_default.get_item_by_index(0).delay = 1.0;
+    i_A_seq_default.get_item_by_index(1).value = 0.0;
+    i_A_seq_default.get_item_by_index(0).interpolation = vsx::sequence::linear;
 
-    i_B_seq_default.items[0].value = 0.0;
-    i_B_seq_default.items[0].delay = 1.0;
-    i_B_seq_default.items[0].interpolation = 1;
+    i_B_seq_default.get_item_by_index(0).value = 0.0;
+    i_B_seq_default.get_item_by_index(0).delay = 1.0;
+    i_B_seq_default.get_item_by_index(0).interpolation = vsx::sequence::linear;
 
     i_A_mixLevel = 1.0;  //Default values to be sent to the shader
     i_A_reverse = 0;
@@ -334,7 +334,7 @@ public:
     wrap->set(i_wrap);
     blend_type = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "blend_type");
     blend_type->set(i_blend_type);
-    sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "sequence");
+    sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "sequence");
     sequence->set(i_seq_default);
     reverse = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reverse");
     reverse->set(i_reverse);
@@ -351,14 +351,14 @@ public:
     clear_color->set(i_clear_color[3], 3);
 
     //Crossfade options
-    A_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "A_sequence");
+    A_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "A_sequence");
     A_sequence->set(i_A_seq_default);
     A_reverse = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "A_reverse");
     A_reverse->set(i_A_reverse);
     A_reset_seq_to_default = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "A_reset_seq_to_default");
     A_reset_seq_to_default->set(-1);
 
-    B_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "B_sequence");
+    B_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "B_sequence");
     B_sequence->set(i_B_seq_default);
     B_reverse = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "B_reverse");
     B_reverse->set(i_B_reverse);
@@ -406,18 +406,18 @@ public:
 
     wrap = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "wrap");
     blend_type = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "blend_type");
-    sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "sequence");
+    sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "sequence");
     reverse = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reverse");
     reset_seq_to_default = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reset_seq_to_default");
     
     blend_size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "blend_size");
     clear_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4, "clear_color");
 
-    A_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "A_sequence");
+    A_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "A_sequence");
     A_reverse = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "A_reverse");
     A_reset_seq_to_default = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "A_reset_seq_to_default");
 
-    B_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "B_sequence");
+    B_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "B_sequence");
     B_reverse = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "B_reverse");
     B_reset_seq_to_default = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "B_reset_seq_to_default");
     
@@ -497,17 +497,15 @@ public:
     //FLOAT_CLAMP(V, MN, MX)
 
   //Cache the data of any sequence
-  void CacheSequenceData(vsx_sequence* seq, vsx_ma_vector<float>* seqdata,
-                         vsx_module_param_sequence* mpseq)
+  void CacheSequenceData(vsx::sequence::channel<vsx::sequence::value_float>* seq, vsx_ma_vector<float>* seqdata,
+                         vsx_module_param_float_sequence* mpseq)
   {
     *seq = mpseq->get();
     mpseq->updates = 0;
     seq->reset();
 
     for(int i = 0; i < SEQ_RESOLUTION; ++i)
-    {
-      (*seqdata)[i] = seq->execute(1.0f / (float)(SEQ_RESOLUTION - 1));
-    }
+      (*seqdata)[i] = seq->execute(1.0f / (float)(SEQ_RESOLUTION - 1)).get_float();
   }
 
   //Calculate mix levels based on A/B Crossfade Curves
@@ -670,8 +668,8 @@ public:
   }
 
   //Check for Reset to Default flag on any sequence
-  void ResetSequence(vsx_sequence* seq, vsx_sequence* defseq,
-       vsx_module_param_sequence* mpseq, vsx_module_param_int* mpflag)
+  void ResetSequence(vsx::sequence::channel<vsx::sequence::value_float>* seq, vsx::sequence::channel<vsx::sequence::value_float>* defseq,
+       vsx_module_param_float_sequence* mpseq, vsx_module_param_int* mpflag)
   {
     if(mpflag->get() == 0) //ok
     {

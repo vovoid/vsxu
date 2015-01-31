@@ -26,7 +26,7 @@ class module_plugin_maths_oscillators_float_sequencer : public vsx_module
 {
 public:
   // in
-  vsx_module_param_sequence* float_sequence;
+  vsx_module_param_float_sequence* float_sequence;
   vsx_module_param_float* length;
   vsx_module_param_float* trigger;
   vsx_module_param_float* trigger_reverse;
@@ -44,7 +44,7 @@ public:
   float prev_trig_val;
   float prev_trig_val_reverse;
   int trigger_state;
-  vsx_sequence seq_int;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_int;
   float sequence_cache[8192];
   float delta_multiplier;
   float prev_time;
@@ -87,7 +87,7 @@ public:
     dtime = 0.0f;
     prev_time = 0.0f;
 
-    float_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"float_sequence");
+    float_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"float_sequence");
     float_sequence->set(seq_int);
 
     behaviour = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"behaviour");
@@ -118,7 +118,7 @@ public:
     float_sequence->updates = 0;
     seq_int.reset();
     for (int i = 0; i < 8192; ++i) {
-      sequence_cache[i] = seq_int.execute(1.0f/8192.0f);
+      sequence_cache[i] = seq_int.execute(1.0f/8192.0f).value;
     }
   }
 

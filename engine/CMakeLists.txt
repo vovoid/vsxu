@@ -171,7 +171,6 @@ set(SOURCES
   src/vsx_data_path.cpp
   src/vsx_argvector.cpp
   src/vsx_param.cpp
-  src/vsx_sequence.cpp
   src/log/vsx_log.cpp
   src/vsx_command.cpp
   src/vsx_command_client_server.cpp

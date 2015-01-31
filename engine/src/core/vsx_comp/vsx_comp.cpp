@@ -115,8 +115,8 @@ void vsx_comp::re_init_in_params() {
   std::map<vsx_string<>, float> float_values_saved;
   std::map<vsx_string<>, int> int_values_saved;
 
-  typedef vsx_sequence sequence;
-  std::map<vsx_string<>, vsx_sequence> sequence_values_saved;	// technical assumption:
+  typedef vsx::sequence::channel<vsx::sequence::value_float> float_sequence;
+  std::map<vsx_string<>, float_sequence > float_sequence_values_saved;	// technical assumption:
   // most parameters are usually declared with the same name and type.
   // so: save the easy ones (float, int, string, float3 etc).
   for (unsigned long i = 0; i < in_module_parameters->id_vec.size(); i++)
@@ -134,10 +134,10 @@ void vsx_comp::re_init_in_params() {
         float_values_saved[mparam->name] = ((vsx_module_param_float*)mparam)->get();
       }
       break;
-      case VSX_MODULE_PARAM_ID_SEQUENCE:
+      case VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE:
       {
-        vsx_sequence a = ((vsx_module_param_sequence*)mparam)->get();
-        sequence_values_saved[mparam->name] = a;
+        vsx::sequence::channel<vsx::sequence::value_float> a = ((vsx_module_param_float_sequence*)mparam)->get();
+        float_sequence_values_saved[mparam->name] = a;
       }
       break;
       default:
@@ -179,7 +179,7 @@ void vsx_comp::re_init_in_params() {
   }
   RESTORE_FUNC(float);
   RESTORE_FUNC(int);
-  RESTORE_FUNC(sequence);
+  RESTORE_FUNC(float_sequence);
 
 #undef RESTORE_FUNC
 
@@ -277,7 +277,7 @@ void vsx_comp::init_channels() {
     if (param->module_param->type == VSX_MODULE_PARAM_ID_RESOURCE) {
       channels.push_back(param->channel = new vsx_channel_resource(module,param,this));
     } else
-    if (param->module_param->type == VSX_MODULE_PARAM_ID_SEQUENCE) {
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE) {
       channels.push_back(param->channel = new vsx_channel_sequence(module,param,this));
     }
   }

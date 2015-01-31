@@ -1,3 +1,5 @@
+#include <vsx_sequence.h>
+
 class module_particlesystem_render : public vsx_module
 {
   // in
@@ -6,11 +8,11 @@ class module_particlesystem_render : public vsx_module
   vsx_module_param_int* render_type;
   vsx_module_param_int* size_lifespan_type;
   vsx_module_param_int* color_lifespan_type;
-  vsx_module_param_sequence* size_lifespan_sequence;
-  vsx_module_param_sequence* alpha_lifespan_sequence;
-  vsx_module_param_sequence* r_lifespan_sequence;
-  vsx_module_param_sequence* g_lifespan_sequence;
-  vsx_module_param_sequence* b_lifespan_sequence;
+  vsx_module_param_float_sequence* size_lifespan_sequence;
+  vsx_module_param_float_sequence* alpha_lifespan_sequence;
+  vsx_module_param_float_sequence* r_lifespan_sequence;
+  vsx_module_param_float_sequence* g_lifespan_sequence;
+  vsx_module_param_float_sequence* b_lifespan_sequence;
   vsx_module_param_string* i_vertex_program;
   vsx_module_param_string* i_fragment_program;
   vsx_module_param_int* ignore_particles_at_center;
@@ -21,11 +23,11 @@ class module_particlesystem_render : public vsx_module
   // internal
   vsx_particlesystem<>* particles;
   vsx_texture** tex;
-  vsx_sequence seq_size;
-  vsx_sequence seq_alpha;
-  vsx_sequence seq_r;
-  vsx_sequence seq_g;
-  vsx_sequence seq_b;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_size;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_alpha;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_r;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_g;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_b;
   float sizes[8192];
   float alphas[8192];
   float rs[8192];
@@ -94,19 +96,19 @@ public:
 
     ignore_particles_at_center = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "ignore_particles_at_center");
 
-    size_lifespan_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"size_lifespan_sequence");
+    size_lifespan_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"size_lifespan_sequence");
     size_lifespan_sequence->set(seq_size);
     calc_sizes();
 
-    alpha_lifespan_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"alpha_lifespan_sequence");
+    alpha_lifespan_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"alpha_lifespan_sequence");
     alpha_lifespan_sequence->set(seq_alpha);
     calc_alphas();
 
-    r_lifespan_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"r_lifespan_sequence");
+    r_lifespan_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"r_lifespan_sequence");
     r_lifespan_sequence->set(seq_r);
-    g_lifespan_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"g_lifespan_sequence");
+    g_lifespan_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"g_lifespan_sequence");
     g_lifespan_sequence->set(seq_g);
-    b_lifespan_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"b_lifespan_sequence");
+    b_lifespan_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"b_lifespan_sequence");
     b_lifespan_sequence->set(seq_b);
     r_lifespan_sequence->updates = 1;
     g_lifespan_sequence->updates = 1;
@@ -189,7 +191,7 @@ public:
       size_lifespan_sequence->updates = 0;
       seq_size.reset();
       for (int i = 0; i < 8192; ++i) {
-        sizes[i] = seq_size.execute(1.0f/8192.0f);
+        sizes[i] = seq_size.execute(1.0f/8192.0f).get_float();
       }
     }
   }
@@ -201,7 +203,7 @@ public:
       alpha_lifespan_sequence->updates = 0;
       seq_alpha.reset();
       for (int i = 0; i < 8192; ++i) {
-        alphas[i] = seq_alpha.execute(1.0f/8192.0f);
+        alphas[i] = seq_alpha.execute(1.0f/8192.0f).get_float();
       }
     }
   }
@@ -217,9 +219,9 @@ public:
       seq_g.reset();
       seq_b.reset();
       for (int i = 0; i < 8192; ++i) {
-        rs[i] = seq_r.execute(1.0f/8192.0f);
-        gs[i] = seq_g.execute(1.0f/8192.0f);
-        bs[i] = seq_b.execute(1.0f/8192.0f);
+        rs[i] = seq_r.execute(1.0f/8192.0f).get_float();
+        gs[i] = seq_g.execute(1.0f/8192.0f).get_float();
+        bs[i] = seq_b.execute(1.0f/8192.0f).get_float();
       }
     }
   }

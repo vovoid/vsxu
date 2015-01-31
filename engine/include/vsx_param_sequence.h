@@ -30,10 +30,11 @@ class vsx_param_sequence_item
 public:
   float accum_time; // the time on wich this row starts
   float total_length; // in seconds (float)
-  vsx_string<>value;
+  vsx_string<> value;
   int interpolation;
   vsx_vector3<> handle1;
   vsx_vector3<> handle2;
+
   vsx_string<>get_value()
   {
     if (interpolation == 4)

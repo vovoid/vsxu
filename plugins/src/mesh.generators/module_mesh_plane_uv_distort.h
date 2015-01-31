@@ -29,8 +29,8 @@ public:
   vsx_module_param_float* x_res;
   vsx_module_param_float* z_res;
 
-  vsx_module_param_sequence* p_x_shape;
-  vsx_module_param_sequence* p_z_shape;
+  vsx_module_param_float_sequence* p_x_shape;
+  vsx_module_param_float_sequence* p_z_shape;
 
   vsx_module_param_float* x_shape_multiplier;
   vsx_module_param_float* z_shape_multiplier;
@@ -45,10 +45,10 @@ public:
   int current_z_res;
 
   // x_shape
-  vsx_sequence seq_x_shape;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_x_shape;
   float x_shape[8192];
   // z_shape
-  vsx_sequence seq_z_shape;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_z_shape;
   float z_shape[8192];
 
 
@@ -60,7 +60,7 @@ public:
       p_##var_name->updates = 0;\
       seq_##var_name.reset();\
       for (int i = 0; i < 8192; ++i) {\
-        var_name[i] = seq_##var_name.execute(1.0f/8192.0f)-0.5f;\
+        var_name[i] = seq_##var_name.execute(1.0f/8192.0f).get_float() - 0.5f;\
       }\
     }
 
@@ -107,11 +107,11 @@ public:
     z_res = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"y_res");
     z_res->set(50.0f);
 
-    p_x_shape = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "x_shape");
+    p_x_shape = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "x_shape");
     seq_x_shape.set_string( "0.5;1.000000;MC41MDAwMDA=|0.5;1.000000;MC41MDI5ODA=");
     p_x_shape->set(seq_x_shape);
 
-    p_z_shape = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "z_shape");
+    p_z_shape = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "z_shape");
     seq_z_shape.set_string( "0.5;1.000000;MC41MDAwMDA=|0.5;1.000000;MC41MDI5ODA=");
     p_z_shape->set(seq_z_shape);
 

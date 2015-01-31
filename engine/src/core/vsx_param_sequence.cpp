@@ -432,13 +432,13 @@ void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_
 void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix)
 {
 	total_time = 0.0f; // reset total time for re-calculation
-  //printf("INSERT_LINE in engine %s\n",cmd_in->raw.c_str());
+
   long after_pos = vsx_string_helper::s2i(cmd_in->parts[7]);
   float delay = vsx_string_helper::s2f(cmd_in->parts[5]);
-  //printf("delay: %f\n",delay);
+
   std::vector<vsx_param_sequence_item>::iterator it = items.begin();
-  if (after_pos == (long)items.size()-1) {
-    printf("last position, interpolation type: %s\n",cmd_in->parts[6].c_str());
+  if (after_pos == (long)items.size()-1)
+  {
     items[items.size()-1].total_length = delay;
     vsx_param_sequence_item pa;
     pa.value = vsx_string_helper::base64_decode(cmd_in->parts[4]);
@@ -447,11 +447,8 @@ void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_
     items.push_back(pa);
   } else {
     int i;
-    for (i = 0; i < after_pos; ++i) {++it;
-    //  printf("incrementing it\n");
-    }
-
-    //printf("i : %d\n",i);
+    for (i = 0; i < after_pos; ++i)
+      ++it;
 
     vsx_param_sequence_item pa;
     pa.total_length = (*it).total_length-delay;

@@ -485,7 +485,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
     return;
   }
 
-  if (t->cmd.substr(0,17 + 5) == "module_operation_show_")
+  if (!macro && t->cmd.substr(0,17 + 5) == "module_operation_show_")
   {
     size_t index = vsx_string_helper::s2i( t->cmd.substr(17 + 5 ,1) );
     vsx_module_operation* operation = module_operations[index];
@@ -510,6 +510,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
       dynamic_cast<dialog_query_string*>(module_operations_dialog)->set_label(3, operation->param_4_name);
     dynamic_cast<dialog_query_string*>(module_operations_dialog)->name = "module_operation_perform_"+vsx_string_helper::i2s(index);
     dynamic_cast<dialog_query_string*>(module_operations_dialog)->show();
+    return;
   }
 
   if (t->cmd.substr(0, 25) == "module_operation_perform_" && t->parts.size() == 3)
@@ -526,6 +527,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
 
     command_q_b.add_raw("module_operation_perform "+name+" "+operation->serialize());
     server->vsx_command_queue_b(this);
+    return;
   }
 
   if (t->cmd == "param_connect_volatile") {
