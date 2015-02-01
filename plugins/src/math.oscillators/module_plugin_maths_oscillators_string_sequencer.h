@@ -263,6 +263,6 @@ public:
     calc_cache();
     float tt = fmod(i_time / length->get(), length->get());
 
-    result1->set( seq_int.execute_absolute(tt).value );
+    result1->set( seq_int.execute_absolute(tt).get_string() );
   }
 };

@@ -73,6 +73,75 @@ public:
 
     return -1;
   }
+
+  static vsx_string<> param_name_from_id(int param_id)
+  {
+    if (param_id == VSX_MODULE_PARAM_ID_INT)
+      return "int";
+
+    if (param_id == VSX_MODULE_PARAM_ID_RENDER)
+      return "render";
+
+    if (param_id == VSX_MODULE_PARAM_ID_FLOAT3)
+      return "float3";
+
+    if (param_id == VSX_MODULE_PARAM_ID_DOUBLE)
+      return "double";
+
+    if (param_id == VSX_MODULE_PARAM_ID_STRING)
+      return "string";
+
+    if (param_id == VSX_MODULE_PARAM_ID_TEXTURE)
+      return "texture";
+
+    if (param_id == VSX_MODULE_PARAM_ID_FLOAT)
+      return "float";
+
+    if (param_id == VSX_MODULE_PARAM_ID_FLOAT4)
+      return "float4";
+
+    if (param_id == VSX_MODULE_PARAM_ID_MATRIX)
+      return "matrix";
+
+    if (param_id == VSX_MODULE_PARAM_ID_MESH)
+      return "mesh";
+
+    if (param_id == VSX_MODULE_PARAM_ID_BITMAP)
+      return "bitmap";
+
+    if (param_id == VSX_MODULE_PARAM_ID_PARTICLESYSTEM)
+      return "particlesystem";
+
+    if (param_id == VSX_MODULE_PARAM_ID_FLOAT_ARRAY)
+      return "float_array";
+
+    if (param_id == VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE)
+      return "float_sequence";
+
+    if (param_id == VSX_MODULE_PARAM_ID_STRING_SEQUENCE)
+      return "string_sequence";
+
+    if (param_id == VSX_MODULE_PARAM_ID_SEGMENT_MESH)
+      return "segment_mesh";
+
+    if (param_id == VSX_MODULE_PARAM_ID_ABSTRACT)
+      return "abstraction";
+
+    if (param_id == VSX_MODULE_PARAM_ID_QUATERNION)
+      return "quaternion";
+
+    if (param_id == VSX_MODULE_PARAM_ID_RESOURCE)
+      return "resource";
+
+    if (param_id == VSX_MODULE_PARAM_ID_FLOAT3_ARRAY)
+      return "float3_array";
+
+    if (param_id == VSX_MODULE_PARAM_ID_QUATERNION_ARRAY)
+      return "quaternion_array";
+
+    return "unknown";
+  }
+
 };
 
 #endif

@@ -118,7 +118,7 @@ public:
     float_sequence->updates = 0;
     seq_int.reset();
     for (int i = 0; i < 8192; ++i) {
-      sequence_cache[i] = seq_int.execute(1.0f/8192.0f).value;
+      sequence_cache[i] = seq_int.execute(1.0f/8192.0f).get_float();
     }
   }
 

@@ -119,6 +119,7 @@ if (cmd == "pseq_p")
 
     vsx_string_helper::write_to_file(
       vsx_data_path::get_instance()->data_path_get() +  "sequences" + DIRECTORY_SEPARATOR + c->parts[4],
+      vsx_param_helper::param_name_from_id(param->module_param->type) + "\n" +
       sequence_list.dump_param(param)
     );
   }

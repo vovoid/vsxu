@@ -43,6 +43,7 @@
 #include "vsx_note.h"
 #include "vsx_data_path.h"
 #include <string/vsx_string_helper.h>
+#include <vsx_param_helper.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include <stdio.h>

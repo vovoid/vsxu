@@ -63,7 +63,7 @@ void vsx_sequence_master_channel_item::run(float abs_time)
   float time_sequence_pos = abs_time / length;
   float time_pos = 0.0f;
   if (time_sequence_pos < 1.0f)
-    time_pos = time_sequence.execute_absolute(time_sequence_pos).value;
+    time_pos = time_sequence.execute_absolute(time_sequence_pos).get_float();
 
   pool_sequence_list->run_absolute( pool_sequence_list->calculate_total_time() * time_pos);
 }

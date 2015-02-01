@@ -5,6 +5,7 @@
 #include <wchar.h>
 
 #include <string/vsx_string.h>
+#include <vsxfst.h>
 #include <tools/vsx_req.h>
 
 namespace vsx_string_helper
@@ -122,6 +123,11 @@ namespace vsx_string_helper
     fclose( fp );
   }
 
+  /**
+   * @brief read_from_file
+   * @param filename
+   * @return
+   */
   template < int buf_size = 1024 >
   inline vsx_string<> read_from_file(vsx_string<> filename)
   {
@@ -138,6 +144,31 @@ namespace vsx_string_helper
       result += line;
     }
     fclose(fp);
+    return result;
+  }
+
+  /**
+   * @brief read_from_file_filesystem
+   * @param filename
+   * @param filesystem
+   * @return
+   */
+  template < int buf_size = 1024 >
+  inline vsx_string<> read_from_file(vsx_string<> filename, vsxf* filesystem)
+  {
+    vsx_string<> result;
+    vsxf_handle* fp = filesystem->f_open(filename.c_str(), "r");
+    if (!fp)
+      return "";
+
+    char buf[buf_size];
+
+    while ( filesystem->f_gets(buf,256,fp) )
+    {
+      vsx_string<> line(buf);
+      result += line;
+    }
+    filesystem->f_close(fp);
     return result;
   }
 

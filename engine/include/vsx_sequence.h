@@ -26,6 +26,7 @@
 #define VSX_SEQUENCE_H
 
 
+#include <debug/vsx_error.h>
 #include <vsx_platform.h>
 #include <string/vsx_string_helper.h>
 #include <vector/vsx_vector2.h>
@@ -38,116 +39,157 @@ namespace vsx
 namespace sequence
 {
 
+class value_abs
+{
+protected:
+  float value_f;
+  vsx_string<> value_s;
+
+public:
+
+  value_abs()
+    : value_f(0.0)
+  {}
+
+  virtual float get_float()
+  {
+    return value_f;
+  }
+
+  virtual void set_float(float new_value)
+  {
+    value_f = new_value;
+  }
+
+  virtual vsx_string<> get_string()
+  {
+    return value_s;
+  }
+
+  virtual void set_string(vsx_string<> new_value)
+  {
+    value_s = new_value;
+  }
+
+  virtual value_abs& operator=(const value_abs& ss)
+  {
+    value_s = ss.value_s;
+    value_f = ss.value_f;
+    return *this;
+  }
+
+};
+
 class value_float
+    :
+    public value_abs
 {
 public:
-  float value;
 
   value_float()
-    : value(0.0)
   {}
 
   value_float(float t)
-    : value(t)
-  {}
+  {
+    value_f = t;
+  }
 
   value_float(const value_float& t)
-    : value(t.value)
-  {}
+  {
+    value_f = t.value_f;
+  }
 
   value_float& operator=(const value_float& ss)
   {
-    value = ss.value;
+    value_f = ss.value_f;
     return *this;
   }
 
   value_float& operator=(float ss)
   {
-    value = ss;
+    value_f = ss;
     return *this;
   }
 
   inline value_float operator*(float ss)
   {
     value_float f(*this);
-    f.value *= ss;
+    f.value_f *= ss;
     return f;
   }
 
   inline value_float operator+(float ss)
   {
     value_float f(*this);
-    f.value += ss;
+    f.value_f += ss;
     return f;
   }
 
   inline value_float operator-(float ss)
   {
     value_float f(*this);
-    f.value -= ss;
+    f.value_f -= ss;
     return f;
   }
 
   inline value_float operator-(const value_float& ss)
   {
     value_float f(*this);
-    f.value -= ss.value;
+    f.value_f -= ss.value_f;
     return f;
   }
 
   inline value_float operator+(const value_float& ss)
   {
     value_float f(*this);
-    f.value += ss.value;
+    f.value_f += ss.value_f;
     return f;
   }
 
-  inline float get_float()
+  void set_string(vsx_string<> new_value)
   {
-    return value;
+    value_f = vsx_string_helper::s2f(new_value);
   }
 
-  inline void set_float(float new_value)
+  virtual vsx_string<> get_string()
   {
-    value = new_value;
+    return vsx_string_helper::f2s(value_f);
   }
 
-  inline vsx_string<> get_string()
-  {
-    return vsx_string_helper::f2s(value);
-  }
 
-  inline void set_string(vsx_string<> new_value)
+  static vsx_string<> get_type_name()
   {
-    value = vsx_string_helper::s2f(new_value);
+    return "float";
   }
 };
 
 class value_string
+    :
+    public value_abs
 {
 public:
-  vsx_string<> value;
 
   value_string() {}
 
   value_string(float t)
   {
-    value = vsx_string_helper::f2s(t);
+    value_s = vsx_string_helper::f2s(t);
   }
 
   value_string(const value_string& t)
-    : value(t.value)
-  {}
+  {
+    value_s = t.value_s;
+  }
 
   value_string& operator=(const value_string& ss)
   {
-    value = ss.value;
+    value_s = ss.value_s;
     return *this;
   }
 
   value_string& operator=(vsx_string<> ss)
   {
-    value = ss;
+    value_s = ss;
     return *this;
   }
 
@@ -181,24 +223,9 @@ public:
     return value_string();
   }
 
-  inline float get_float()
+  static vsx_string<> get_type_name()
   {
-    return 0.0;
-  }
-
-  inline void set_float(float new_value)
-  {
-    VSX_UNUSED(new_value);
-  }
-
-  inline vsx_string<> get_string()
-  {
-    return value;
-  }
-
-  inline void set_string(vsx_string<> new_value)
-  {
-    value = new_value;
+    return "string";
   }
 };
 
@@ -219,7 +246,7 @@ class channel
   {
   public:
     T value;
-    float delay; // in seconds (float)
+    float delay; // seconds
     interpolation_t interpolation;
     vsx_vector2f handle1;
     vsx_vector2f handle2;
@@ -245,6 +272,7 @@ class channel
 
   vsx_bezier_calc<float> bez_calc;
   vsx_nw_vector< item > items;
+  vsx_string<> name;
   float i_time;
   T cur_val;
   T to_val;
@@ -307,11 +335,21 @@ public:
     execute(time-i_time);
   }
 
-  T execute_absolute(float time) {
+  void set_name(const vsx_string<> n)
+  {
+    name = n;
+  }
+
+  const vsx_string<>& get_name()
+  {
+    return name;
+  }
+
+  value_abs execute_absolute(float time) {
     return execute(time-i_time);
   }
 
-  T execute(float t_incr)
+  value_abs execute(float t_incr)
   {
     if (!items.size())
       return T();
@@ -441,7 +479,7 @@ public:
       return T( bez_calc.y_from_t(tt) );
     }
 
-    return 0.0f;
+    return T();
   }
 
   vsx_string<> get_string()
@@ -462,29 +500,28 @@ public:
   void set_string(vsx_string<>str)
   {
     items.reset_used();
-    vsx_nw_vector< vsx_string<> > rows;
-    vsx_string<>deli = "|";
-    explode(str, deli, rows);
-    vsx_string<>deli2 = ";";
-    item n_i;
-    for (unsigned long i = 0; i < rows.size(); ++i)
+    vsx_nw_vector< vsx_string<> > keyframes;
+    vsx_string_helper::explode_single(str, '|', keyframes);
+    foreach(keyframes, i)
     {
-      vsx_nw_vector< vsx_string<> > parts;
-      explode(rows[i], deli2,  parts);
-      n_i.delay = vsx_string_helper::s2f(parts[0]);
-      n_i.interpolation = (interpolation_t)(int)vsx_string_helper::s2f(parts[1]);
-      vsx_string<>ff(vsx_string_helper::base64_decode(parts[2]));
+      vsx_nw_vector< vsx_string<> > keyframe_parts;
+      vsx_string_helper::explode_single(keyframes[i], ';', keyframe_parts);
+
+      item n_i;
+      n_i.delay = vsx_string_helper::s2f(keyframe_parts[0]);
+      n_i.interpolation = (interpolation_t)(int)vsx_string_helper::s2f(keyframe_parts[1]);
+
+      vsx_string<> value_string(vsx_string_helper::base64_decode(keyframe_parts[2]));
 
       if (n_i.interpolation != bezier)
-        n_i.value.set_string(ff);
+        n_i.value.set_string(value_string);
 
       if (n_i.interpolation == 4) {
-        vsx_nw_vector< vsx_string<> > pld_l;
-        vsx_string<>pdeli_l = ":";
-        explode(ff, pdeli_l, pld_l);
-        n_i.value.set_string(pld_l[0]);
-        n_i.handle1 = vsx_vector2_helper::from_string<float>(pld_l[1]);
-        n_i.handle2 = vsx_vector2_helper::from_string<float>(pld_l[2]);
+        vsx_nw_vector< vsx_string<> > value_parts;
+        vsx_string_helper::explode_single(value_string, ':', value_parts);
+        n_i.value.set_string(value_parts[0]);
+        n_i.handle1 = vsx_vector2_helper::from_string<float>(value_parts[1]);
+        n_i.handle2 = vsx_vector2_helper::from_string<float>(value_parts[2]);
       }
       items.push_back(n_i);
     }
@@ -494,6 +531,21 @@ public:
     line_time = 0;
     line_cur = 0;
     execute(t);
+  }
+
+  void load_from_file(vsxf* filesystem, vsx_string<> filename)
+  {
+    if (!filesystem->is_file(filename))
+      return;
+
+    vsx_string<> all_data = vsx_string_helper::read_from_file( filename );
+    vsx_nw_vector< vsx_string<> > rows;
+    vsx_string_helper::explode_single(all_data, '\n', rows);
+
+    if (T::get_type_name() != rows[0])
+      VSX_ERROR_RETURN_S("mismatching type for sequence ", filename.c_str() );
+
+    set_string( rows[1] );
   }
 };
 
