@@ -8,17 +8,18 @@ typedef unsigned int GLuint;
 class vsx_face2
 {
 public:
+
+  GLuint a,b;
+
   vsx_face2()
   {
   }
 
   vsx_face2(GLuint ia, GLuint ib)
-    :    a(ia),    b(ib)
-  {
-
-  }
-
-  GLuint a,b;
+    :
+      a(ia),
+      b(ib)
+  {}
 
   static size_t arity()
   {

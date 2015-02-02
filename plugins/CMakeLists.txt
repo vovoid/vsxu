@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 function(CREATE_STATIC_GLUE module_id)
   if (VSXU_STATIC EQUAL 1)
     # create a link directory
-    file(APPEND ../../static_factory_cmake_link_directories "link_directories(" ${CMAKE_SOURCE_DIR}/plugins/src/${module_id}/")\n" )
+    file(APPEND ../../static_factory_cmake_link_directories "link_directories(" ${CMAKE_SOURCE_DIR}/plugins/src/${module_id}/ ")\n" )
 
     # link library
     file(APPEND ../../static_factory_cmake_target_link_libraries "target_link_libraries(\${module_id} " ${module_id} ")\n" )

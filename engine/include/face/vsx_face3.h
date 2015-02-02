@@ -16,9 +16,11 @@ public:
   }
 
   vsx_face3(GLuint ia, GLuint ib, GLuint ic)
-    :    a(ia),    b(ib),    c(ic)
-  {
-  }
+    :
+      a(ia),
+      b(ib),
+      c(ic)
+  {}
 
   static size_t arity()
   {
