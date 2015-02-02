@@ -310,6 +310,18 @@ if (cmd == "seq_pool")
             }
             cmd_out->add_raw("seq_pool pseq_p_ok remove "+c->parts[3]+" "+c->parts[4], VSX_COMMAND_GARBAGE_COLLECT);
           }
+
+          if (c->parts[2] == "save")
+          {
+            if (c->parts.size() != 6)
+              goto process_message_queue_end;
+
+            vsx_string_helper::write_to_file(
+              vsx_data_path::get_instance()->data_path_get() +  "sequences" + DIRECTORY_SEPARATOR + c->parts[5],
+              vsx_param_helper::param_name_from_id(param->module_param->type) + "\n" +
+              sequence_pool.get_selected()->dump_param(param)
+            );
+          }
         }
       }
     }

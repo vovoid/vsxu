@@ -60,6 +60,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
+#include <vsx_profiler_manager.h>
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include <time.h>
 #endif
@@ -118,6 +119,8 @@ public:
   double max_render_time;
   double min_render_time;
   vsx_logo_intro *intro;
+  VSXP_CLASS_DECLARE;
+
   vsxu_draw() :
     first(true),
     frame_count(0),
@@ -128,23 +131,35 @@ public:
     min_fps(1000000),
     max_render_time(-1),
     min_render_time(1000)
-  {}
+  {
+    VSXP_CLASS_CONSTRUCTOR;
+  }
   ~vsxu_draw() {}
 
   void draw() {
-    if (record_movie) {
+    VSXP_CLASS_LOCAL_INIT;
+
+    VSXP_S_BEGIN("artiste vsxu_draw");
+    if (record_movie)
+    {
       vxe->set_constant_frame_progression(1.0f / 60.0f);
       vxe->time_play();
     }
 
     if (desktop)
     {
-      desktop->vsx_command_process_f();
+      if (*gui_prod_fullwindow)
+        vxe->set_no_send_client_time(true);
+      else
+        vxe->set_no_send_client_time(false);
+
+      VSXP_S_BEGIN("desktop cmd_process_f");
+        desktop->vsx_command_process_f();
+      VSXP_S_END;
     }
 
-    if (first) {
+    if (first)
       intro = new vsx_logo_intro;
-    }
     dt = gui_t.dtime();
     gui_f_time += dt;
     gui_g_time += dt;
@@ -154,18 +169,12 @@ public:
     if (desktop)
     {
       if (desktop->global_framerate_limit == -1)
-      {
         run_always = true;
-      }
       else
-      {
         f_wait = 1.0f/desktop->global_framerate_limit;
-      }
     }
     else
-    {
       f_wait = 1.0f/100.0f;
-    }
 
     if (run_always || gui_f_time > f_wait)
     {
@@ -197,7 +206,9 @@ public:
       }
       if (!dual_monitor)
       {
-        vxe->process_message_queue(&internal_cmd_in,&internal_cmd_out,false,false,60.0f);
+        VSXP_S_BEGIN("vxe->process_msg");
+          vxe->process_message_queue(&internal_cmd_in,&internal_cmd_out,false,false,60.0f);
+        VSXP_S_END;
       }
 
       if (*gui_prod_fullwindow)
@@ -208,9 +219,15 @@ public:
 
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-        if (vxe && !dual_monitor) {
+        if (vxe && !dual_monitor)
+        {
           engine_render_time.start();
-          vxe->render();
+
+          VSXP_S_BEGIN("vxe->render");
+            vxe->render();
+          VSXP_S_END;
+
+          VSXP_S_BEGIN("draw overlay");
           float frame_time = engine_render_time.dtime();
           glDisable(GL_DEPTH_TEST);
 
@@ -275,6 +292,7 @@ public:
               ,0.025f
             );
           }
+          VSXP_S_END;
         }
         if (desktop && desktop->performance_mode)
         {
@@ -385,6 +403,7 @@ public:
       free(pixeldata);
       free(pixeldata_flipped);
     }
+    VSXP_S_END;
   } // ::draw()
 };
 
@@ -560,9 +579,7 @@ void app_char(long key)
       eie.alt = app_alt;
       eie.shift = app_shift;
       if (vxe)
-      {
         vxe->input_event(eie);
-      }
       return;
     }
     desktop->key_down(key,app_alt, app_ctrl, app_shift);
@@ -578,6 +595,13 @@ void app_key_down(long key)
     printf("shift: %d\n", (int)app_shift);
     printf("\n\n");
   #endif
+
+  if (app_ctrl && key == '5')
+    vsx_profiler_manager::get_instance()->enable();
+
+  if (app_ctrl && key == '4')
+    vsx_profiler_manager::get_instance()->disable();
+
   if (desktop) {
     if (app_alt && app_ctrl && app_shift && key == 80) {
       if (record_movie == false)
@@ -587,7 +611,8 @@ void app_key_down(long key)
       record_movie = !record_movie;
     }
     else
-    if (app_alt && app_ctrl && key == 80) take_screenshot = true;
+    if (app_alt && app_ctrl && key == 80)
+      take_screenshot = true;
 
     if
       (

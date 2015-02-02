@@ -796,8 +796,11 @@ vsx_string<>vsx_engine_param::get_string()
     case VSX_MODULE_PARAM_ID_RESOURCE: {
       return *((vsx_module_param_resource*)module_param)->param_data;
     }
-    case VSX_MODULE_PARAM_ID_SEQUENCE: {
-      return ((vsx_module_param_sequence*)module_param)->param_data[0].get_string();
+    case VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE: {
+      return ((vsx_module_param_float_sequence*)module_param)->param_data[0].get_string();
+    }
+    case VSX_MODULE_PARAM_ID_STRING_SEQUENCE: {
+      return ((vsx_module_param_string_sequence*)module_param)->param_data[0].get_string();
     }
     case VSX_MODULE_PARAM_ID_MESH:
     {
@@ -881,7 +884,8 @@ void vsx_engine_param::set_string(vsx_string<>data)
     case VSX_MODULE_PARAM_ID_DOUBLE:
     case VSX_MODULE_PARAM_ID_STRING:
     case VSX_MODULE_PARAM_ID_RESOURCE:
-    case VSX_MODULE_PARAM_ID_SEQUENCE:
+    case VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE:
+    case VSX_MODULE_PARAM_ID_STRING_SEQUENCE:
     case VSX_MODULE_PARAM_ID_FLOAT_ARRAY:
     set_string_index(data);
     return;
@@ -943,8 +947,12 @@ void vsx_engine_param::set_string_index(vsx_string<>data, int index) {
       ((vsx_module_param_resource*)module_param)->param_data[0] = data;
       return;
     }
-    case VSX_MODULE_PARAM_ID_SEQUENCE: {
-      ((vsx_module_param_sequence*)module_param)->param_data[index].set_string(data);
+    case VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE: {
+      ((vsx_module_param_float_sequence*)module_param)->param_data[index].set_string(data);
+      return;
+    }
+    case VSX_MODULE_PARAM_ID_STRING_SEQUENCE: {
+      ((vsx_module_param_string_sequence*)module_param)->param_data[index].set_string(data);
       return;
     }
     case VSX_MODULE_PARAM_ID_FLOAT_ARRAY: {
@@ -1078,7 +1086,7 @@ void vsx_engine_param_list::dump_param_values(vsx_string<>my_name, vsx_command_l
         )
         {
           if (param->module_param->type == VSX_MODULE_PARAM_ID_STRING) {
-            command_result->add_raw(vsx_string<>("ps64 ")+my_name+" "+param->name+" "+base64_encode(pval));
+            command_result->add_raw(vsx_string<>("ps64 ")+my_name+" "+param->name+" "+vsx_string_helper::base64_encode(pval));
           } else
           command_result->add_raw(vsx_string<>("param_set ")+my_name+" "+param->name+" "+pval);
         }

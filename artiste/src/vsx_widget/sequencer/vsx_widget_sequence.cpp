@@ -120,21 +120,14 @@ void vsx_widget_sequence_editor::init()
 
   vsx_widget_sequence_tree* sequence_tree = (vsx_widget_sequence_tree*)add(new vsx_widget_sequence_tree, "sequence_list");
   sequence_tree->init();
-  sequence_tree->coord_type = VSX_WIDGET_COORD_CORNER;
-  sequence_tree->set_pos(vsx_vector3<>(size.x/2,size.y/2)-dragborder*2);
-  sequence_tree->editor->set_font_size(0.008f);
-  sequence_tree->size_from_parent = true;
-  sequence_tree->editor->editing_enabled = false;
-  sequence_tree->editor->selected_line_highlight = true;
-  sequence_tree->editor->enable_syntax_highlighting = false;
-  sequence_tree->editor->enable_line_action_buttons = true;
-  sequence_tree->pos_from_parent = true;
   sequence_tree->extra_init();
   sequence_tree->set_sequence_editor( this );
   sequence_list = (vsx_widget*)sequence_tree;
   this->interpolate_size();
-
   set_render_type(render_type);
+  sequence_tree->init_2d();
+
+
 
   title = "sequencer";
 
@@ -446,7 +439,8 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
   } else
 
   // pattern operations
-  if (t->cmd == "pseq_p_ok") {
+  if (t->cmd == "pseq_p_ok")
+  {
     bool show_after_init = false;
     if (t->parts[1] == "inject_get") {
       if (channels_map.find(t->parts[2]+":"+t->parts[3]) != channels_map.end()) {
@@ -501,9 +495,11 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
     }
   } else
   // row operations
-  if (t->cmd == "pseq_r_ok") {
+  if (t->cmd == "pseq_r_ok")
+  {
     // for now, send it to the proper param/sequence, it's not ours to deal with
-    if (channels_map.find(t->parts[2]+":"+t->parts[3]) != channels_map.end()) {
+    if (channels_map.find(t->parts[2]+":"+t->parts[3]) != channels_map.end())
+    {
       command_q_b.add(t);
       channels_map[(t->parts[2]+":"+t->parts[3])]->vsx_command_queue_b((vsx_widget*)this);
     }
@@ -584,7 +580,21 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
       load_sequence_list();
       interpolate_size();
     }
-  } else
+    return;
+  }
+
+  if (t->cmd == "save")
+  {
+    command_q_b.add_raw(
+      "pseq_p "
+      "save " +
+      dynamic_cast<vsx_widget_sequence_tree*>(sequence_list)->get_selected_component() + " " +
+      dynamic_cast<vsx_widget_sequence_tree*>(sequence_list)->get_selected_parameter() + " " +
+      t->cmd_data
+    );
+    parent->vsx_command_queue_b(this);
+  }
+
 
   vsx_widget::command_process_back_queue(t);
 }

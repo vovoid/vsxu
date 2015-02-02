@@ -95,7 +95,7 @@ bool vsx_widget_note::init_from_command(vsx_command_s* c)
   size_min.y = font_size*4.0f;
 
   //new_note->target_size = new_note->size;
-  load_text(base64_decode(c->parts[4]));
+  load_text( vsx_string_helper::base64_decode(c->parts[4]));
   return true;
 }
 
@@ -167,14 +167,14 @@ void vsx_widget_note::command_process_back_queue(vsx_command_s *t) {
   } else
   if (t->cmd == "pg64_ok") {
     // pg64_ok [comp] [param] [val] [id]
-    load_text(base64_decode(t->parts[3]));
+    load_text( vsx_string_helper::base64_decode(t->parts[3]));
     a_focus = this;
     k_focus = this;
   }
 }
 
 void vsx_widget_note::save() {
-  command_q_b.add_raw("note_update "+name+" "+ vsx_vector3_helper::to_string(target_pos) +" " + vsx_vector3_helper::to_string(target_size) +" "+base64_encode(((vsx_widget_base_edit*)editor)->get_string())+" "+vsx_string_helper::f2s(font_size));
+  command_q_b.add_raw("note_update "+name+" "+ vsx_vector3_helper::to_string(target_pos) +" " + vsx_vector3_helper::to_string(target_size) +" "+vsx_string_helper::base64_encode(((vsx_widget_base_edit*)editor)->get_string())+" "+vsx_string_helper::f2s(font_size));
   parent->vsx_command_queue_b(this);
 }
 

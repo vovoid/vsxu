@@ -13,20 +13,25 @@
 //  an instance of this class shouldn't be shared among more than 2 threads hence it's a simple mutex
 //  combined with provider/consumer FIFO or LIFO buffer (pop/push, pop_front/push_front)
 
-
 template<class T>
 class vsx_command_buffer_broker
 {
-  pthread_mutex_t mutex1;
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+    pthread_mutex_t mutex1;
+  #endif
 
   void get_lock()
   {
-    pthread_mutex_lock( &mutex1 );
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      pthread_mutex_lock( &mutex1 );
+    #endif
   }
 
   void release_lock()
   {
-    pthread_mutex_unlock( &mutex1 );
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      pthread_mutex_unlock( &mutex1 );
+    #endif
   }
 
   vsxf* filesystem;
@@ -299,8 +304,9 @@ public:
     get_lock();
     if (commands.size())
     {
-      T *t = commands.front();
-      commands.pop_front();
+        T *t = commands.front();
+        commands.pop_front();
+
       release_lock();
       return t;
     }
@@ -457,7 +463,10 @@ public:
     accept_commands(1),
     delete_commands_on_delete(false)
   {
-    pthread_mutex_init(&mutex1, NULL);
+
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      pthread_mutex_init(&mutex1, NULL);
+    #endif
   }
 
   vsx_command_buffer_broker(bool delete_commands)
@@ -466,16 +475,20 @@ public:
   accept_commands(1),
   delete_commands_on_delete(delete_commands)
   {
-    pthread_mutex_init(&mutex1, NULL);
-  }
 
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      pthread_mutex_init(&mutex1, NULL);
+    #endif
+  }
 
   ~vsx_command_buffer_broker()
   {
     if (delete_commands_on_delete)
       clear_delete();
 
-    pthread_mutex_destroy(&mutex1);
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      pthread_mutex_destroy(&mutex1);
+    #endif
   }
 
 };

@@ -24,11 +24,14 @@ include_directories(
   ${GLEW_INCLUDE_PATH}
   ../
   ../engine_graphics/include
+  ../profiler/include
   include
   src/log
   src/core/vsx_comp
   src/core
 )
+
+file(GLOB_RECURSE HEADER_FILES *.h)
 
 ################################################################################
 # DEFINES
@@ -168,7 +171,6 @@ set(SOURCES
   src/vsx_data_path.cpp
   src/vsx_argvector.cpp
   src/vsx_param.cpp
-  src/vsx_sequence.cpp
   src/log/vsx_log.cpp
   src/vsx_command.cpp
   src/vsx_command_client_server.cpp
@@ -184,13 +186,13 @@ set(SOURCES
 if (VSXU_STATIC EQUAL 1)
 
   #static build
-  add_library(${module_id} STATIC ${SOURCES} ${GAME_MONKEY})
+  add_library(${module_id} STATIC ${SOURCES} ${HEADER_FILES} ${GAME_MONKEY})
   include(../plugins/static_factory_cmake_target_link_libraries)
 
 else ()
 
   #dynamic build
-  add_library(${module_id} SHARED ${SOURCES} ${GAME_MONKEY})
+  add_library(${module_id} SHARED ${SOURCES} ${HEADER_FILES} ${GAME_MONKEY})
 endif ()
 
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)

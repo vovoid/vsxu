@@ -183,7 +183,8 @@ void vsx_widget_controller_base::command_process_back_queue(vsx_command_s *t)
     //printf("setting interpolation\n");
     smooth(vsx_string_helper::s2f(t->cmd_data));
   } else
-  if (t->cmd == "pg64_ok" && !isolate) set_value(vsx_string_helper::s2f(base64_decode(t->parts[3])));
+  if (t->cmd == "pg64_ok" && !isolate)
+    set_value(vsx_string_helper::s2f(vsx_string_helper::base64_decode(t->parts[3])));
   else
   if (t->cmd == "delete" && !owned) {
     //printf("closing...\n");

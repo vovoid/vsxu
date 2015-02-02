@@ -28,11 +28,11 @@ class module_mesh_abstract_hand : public vsx_module
   vsx_module_param_float* num_sectors;
   vsx_module_param_float* num_stacks;
   vsx_module_param_float* z_length;
-  vsx_module_param_sequence* param_x_shape;
-  vsx_module_param_sequence* param_y_shape;
-  vsx_module_param_sequence* param_z_shape;
-  vsx_module_param_sequence* param_size_shape_x;
-  vsx_module_param_sequence* param_size_shape_y;
+  vsx_module_param_float_sequence* param_x_shape;
+  vsx_module_param_float_sequence* param_y_shape;
+  vsx_module_param_float_sequence* param_z_shape;
+  vsx_module_param_float_sequence* param_size_shape_x;
+  vsx_module_param_float_sequence* param_size_shape_y;
   vsx_module_param_float* x_shape_multiplier;
   vsx_module_param_float* y_shape_multiplier;
   vsx_module_param_float* z_shape_multiplier;
@@ -50,19 +50,19 @@ class module_mesh_abstract_hand : public vsx_module
   int current_num_sectors;
 
   // x_shape
-  vsx_sequence seq_x_shape;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_x_shape;
   float x_shape[8192];
   // y_shape
-  vsx_sequence seq_y_shape;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_y_shape;
   float y_shape[8192];
   // z_shape
-  vsx_sequence seq_z_shape;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_z_shape;
   float z_shape[8192];
   // size_shape_x
-  vsx_sequence seq_size_shape_x;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_size_shape_x;
   float size_shape_x[8192];
   // size_shape_y
-  vsx_sequence seq_size_shape_y;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_size_shape_y;
   float size_shape_y[8192];
 
 
@@ -75,7 +75,7 @@ class module_mesh_abstract_hand : public vsx_module
       param_##var_name->updates = 0;\
       seq_##var_name.reset();\
       for (int i = 0; i < 8192; ++i) {\
-        var_name[i] = seq_##var_name.execute(1.0f/8192.0f);\
+        var_name[i] = seq_##var_name.execute(1.0f/8192.0f).get_float();\
       }\
     }
 
@@ -133,13 +133,13 @@ public:
     l_param_updates = -1;
     loading_done = true;
 
-    param_x_shape = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "x_shape");
+    param_x_shape = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "x_shape");
     param_x_shape->set(seq_x_shape);
 
-    param_y_shape = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "y_shape");
+    param_y_shape = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "y_shape");
     param_y_shape->set(seq_y_shape);
 
-    param_z_shape = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "z_shape");
+    param_z_shape = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "z_shape");
     param_z_shape->set(seq_z_shape);
 
 
@@ -150,10 +150,10 @@ public:
     size_shape_x_multiplier = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "size_shape_x_multiplier"); size_shape_x_multiplier->set(1.0f);
     size_shape_y_multiplier = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "size_shape_y_multiplier"); size_shape_y_multiplier->set(1.0f);
 
-    param_size_shape_x = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "size_shape_x");
+    param_size_shape_x = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "size_shape_x");
     param_size_shape_x->set(seq_size_shape_x);
 
-    param_size_shape_y = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "size_shape_y");
+    param_size_shape_y = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "size_shape_y");
     param_size_shape_y->set(seq_size_shape_y);
 
     num_sectors = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"num_sectors");

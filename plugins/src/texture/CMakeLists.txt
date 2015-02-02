@@ -15,6 +15,7 @@ CREATE_STATIC_GLUE(${module_id})
 
 # find the local source files
 file(GLOB LOCAL_SOURCES "*.cpp")
+file(GLOB_RECURSE HEADER_FILES *.h)
 
 # include common
 include(../cmake_globals.txt)

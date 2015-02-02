@@ -13,6 +13,7 @@ CREATE_STATIC_GLUE(${module_id})
 
 # find the local source files
 file(GLOB SOURCES "*.cpp" "ftgl/*.cpp")
+file(GLOB_RECURSE HEADER_FILES *.h)
 
 if(WIN32)
   include_directories(lib/win32/include)

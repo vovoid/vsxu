@@ -49,6 +49,8 @@ public:
   }
   virtual void set_size(vsx_vector3<> new_size);
 
+  void set_param_type(int n);
+
   virtual void i_draw();
   vsx_widget_controller_sequence() :
   		seq_chan(0x0),

@@ -82,12 +82,12 @@ public:
   int io; // -1 = in, 1 = out  - the type (and position) of the anchor
   bool tree_open; // true = open, false = closed
   bool conn_open; // is the connections showing?
-  vsx_string<>p_spec; // original specification (for future use)
-  vsx_string<>p_type;
-  vsx_string<>p_type_suffix; // type=[suffix] - extra information for the type, used for enumerations etc.
-  vsx_string<>p_desc; // a nice description
-  vsx_string<>p_def; // the whole string that identifies this and its children
-  vsx_string<>default_controller;
+  vsx_string<> p_spec; // original specification (for future use)
+  vsx_string<> p_type;
+  vsx_string<> p_type_suffix; // type=[suffix] - extra information for the type, used for enumerations etc.
+  vsx_string<> p_desc; // a nice description
+  vsx_string<> p_def; // the whole string that identifies this and its children
+  vsx_string<> default_controller;
   // anchors connected to us
   std::list <vsx_widget*> connectors;
   std::list <vsx_widget*> connections;

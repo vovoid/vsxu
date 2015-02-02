@@ -21,12 +21,13 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <vsx_sequence.h>
 
-class module_plugin_maths_oscillators_float_sequencer : public vsx_module
+class module_plugin_maths_oscillators_string_sequencer : public vsx_module
 {
 public:
   // in
-  vsx_module_param_float_sequence* float_sequence;
+  vsx_module_param_string_sequence* string_sequence;
   vsx_module_param_float* length;
   vsx_module_param_float* trigger;
   vsx_module_param_float* trigger_reverse;
@@ -36,7 +37,7 @@ public:
   vsx_module_param_int* behaviour;
 
   // out
-  vsx_module_param_float* result1;
+  vsx_module_param_string* result1;
 
   // internal
   float time;
@@ -44,8 +45,7 @@ public:
   float prev_trig_val;
   float prev_trig_val_reverse;
   int trigger_state;
-  vsx::sequence::channel<vsx::sequence::value_float> seq_int;
-  float sequence_cache[8192];
+  vsx::sequence::channel< vsx::sequence::value_string > seq_int;
   float delta_multiplier;
   float prev_time;
 
@@ -53,12 +53,12 @@ public:
   void module_info(vsx_module_info* info)
   {
     info->identifier =
-      "maths;oscillators;float_sequencer";
+      "maths;oscillators;string_sequencer";
 
     info->description = "";
 
     info->in_param_spec =
-      "float_sequence:float_sequence,"
+      "string_sequence:string_sequence,"
       "length:float,"
       "options:complex"
       "{"
@@ -72,7 +72,7 @@ public:
     ;
 
     info->out_param_spec =
-      "float:float";
+      "result:string";
 
     info->component_class =
       "parameters";
@@ -87,8 +87,8 @@ public:
     dtime = 0.0f;
     prev_time = 0.0f;
 
-    float_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"float_sequence");
-    float_sequence->set(seq_int);
+    string_sequence = (vsx_module_param_string_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_STRING_SEQUENCE,"string_sequence");
+    string_sequence->set(seq_int);
 
     behaviour = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"behaviour");
 
@@ -105,21 +105,20 @@ public:
 
     drive_type = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"drive_type");
 
-    result1 = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"float");
-    result1->set(0);
+    result1 = (vsx_module_param_string*)out_parameters.create(VSX_MODULE_PARAM_ID_STRING,"result");
+    result1->set("");
   }
 
   inline void calc_cache()
   {
-    if (!float_sequence->updates)
+    if (!string_sequence->updates)
       return;
 
-    seq_int = float_sequence->get();
-    float_sequence->updates = 0;
+    seq_int = string_sequence->get();
     seq_int.reset();
-    for (int i = 0; i < 8192; ++i) {
-      sequence_cache[i] = seq_int.execute(1.0f/8192.0f).get_float();
-    }
+
+    string_sequence->updates = 0;
+
   }
 
 
@@ -259,13 +258,11 @@ public:
         }
 
       break;
-
     }
 
-
-    float tt = i_time / length->get();
-
     calc_cache();
-    result1->set(sequence_cache[(int)round(8191.0f*tt)]);
+    float tt = fmod(i_time / length->get(), length->get());
+
+    result1->set( seq_int.execute_absolute(tt).get_string() );
   }
 };

@@ -135,10 +135,19 @@ void vsx_widget_profiler_thread::update_tag_draw_chunks()
 
 void vsx_widget_profiler_thread::draw_tags()
 {
-  profiler->sub_begin("draw tags");
+  font.color.r = 1.0;
+  font.color.g = 1.0;
+  font.color.b = 1.0;
+  font.color.a = 1.0;
+
   for (size_t i = 0; i < tag_draw_chunks.size(); i++)
   {
-    vsx_vector3<> dpos( tag_draw_chunks[i]->time_start * time_scale::get_instance()->time_scale_x + time_scale::get_instance()->time_offset,  -(tag_draw_chunks[i]->depth + 1) * chunk_height - 0.005 );
+    float chunk_depth = (float)(tag_draw_chunks[i]->depth + 1);
+    vsx_vector3<> dpos(
+          tag_draw_chunks[i]->time_start * time_scale::get_instance()->time_scale_x + time_scale::get_instance()->time_offset,
+          -chunk_depth * chunk_height - 0.005
+    );
+    vsx_vector3_helper::dump<float>(dpos);
     font.print( dpos, tag_draw_chunks[i]->tag, 0.005 );
     dpos.y -= 0.005;
     font.print( dpos, vsx_string_helper::i2s(tag_draw_chunks[i]->cycles_end-tag_draw_chunks[i]->cycles_start) + " CPU cycles", 0.005 );

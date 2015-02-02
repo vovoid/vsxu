@@ -41,6 +41,8 @@ vsx_data_path::vsx_data_path()
       mkdir( (data_path+"macros").c_str(),0700);
       mkdir( (data_path+"prods").c_str(),0700);
       mkdir( (data_path+"screenshots").c_str(),0700);
+      mkdir( (data_path+"sequences").c_str(),0700);
+      mkdir( (data_path+"shaders").c_str(),0700);
       mkdir( (data_path+"states").c_str(),0700);
       mkdir( (data_path+"visuals").c_str(),0700);
       mkdir( (data_path+"visuals_faders").c_str(),0700);
@@ -78,6 +80,8 @@ vsx_data_path::vsx_data_path()
       mkdir( (data_path+"macros").c_str());
       mkdir( (data_path+"prods").c_str());
       mkdir( (data_path+"screenshots").c_str());
+      mkdir( (data_path+"sequences").c_str());
+      mkdir( (data_path+"shaders").c_str());
       mkdir( (data_path+"states").c_str());
       mkdir( (data_path+"visuals").c_str());
       mkdir( (data_path+"visuals_faders").c_str());

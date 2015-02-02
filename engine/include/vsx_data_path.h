@@ -3,8 +3,6 @@
 
 #include <string/vsx_string.h>
 #include <vsx_engine_dllimport.h>
-#include "vsx_engine.h"
-
 
 
 ENGINE_DLLIMPORT class vsx_data_path

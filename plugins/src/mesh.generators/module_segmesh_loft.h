@@ -5,13 +5,13 @@ class module_segmesh_loft : public vsx_module
   vsx_module_param_segment_mesh* seg_mesh_in;
   vsx_module_param_segment_mesh* seg_mesh_out;
 
-  vsx_module_param_sequence* param_x_shape;
-  vsx_module_param_sequence* param_y_shape;
-  vsx_module_param_sequence* param_z_shape;
-  vsx_module_param_sequence* param_size_shape;
+  vsx_module_param_float_sequence* param_x_shape;
+  vsx_module_param_float_sequence* param_y_shape;
+  vsx_module_param_float_sequence* param_z_shape;
+  vsx_module_param_float_sequence* param_size_shape;
 
   vsx_2dgrid_mesh base_mesh;
-  vsx_sequence seq;
+  vsx::sequence::channel<vsx::sequence::value_float> seq;
 
   long lx_t;
   long ly_t;
@@ -23,19 +23,19 @@ class module_segmesh_loft : public vsx_module
   bool first_run;
 
   // x_shape
-  vsx_sequence seq_x_shape;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_x_shape;
   float x_shape[8192];
 
   // y_shape
-  vsx_sequence seq_y_shape;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_y_shape;
   float y_shape[8192];
 
   // z_shape
-  vsx_sequence seq_z_shape;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_z_shape;
   float z_shape[8192];
 
   // size_shape
-  vsx_sequence seq_size_shape;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_size_shape;
   float sizes[8192];
 
 
@@ -48,7 +48,7 @@ class module_segmesh_loft : public vsx_module
       param_##var_name->updates = 0;\
       seq_##var_name.reset();\
       for (int i = 0; i < 8192; ++i) {\
-        var_name[i] = seq_##var_name.execute(1.0f/8192.0f);\
+        var_name[i] = seq_##var_name.execute(1.0f/8192.0f).get_float();\
       }\
     }
 
@@ -86,12 +86,12 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-    param_x_shape = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"loft_x");
+    param_x_shape = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"loft_x");
     param_x_shape->set(seq_x_shape);
-    param_y_shape = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"loft_y");
+    param_y_shape = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"loft_y");
     param_y_shape->set(seq_y_shape);
 
-    param_z_shape = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"loft_z");
+    param_z_shape = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"loft_z");
     param_z_shape->set(seq_z_shape);
 
     segments = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"segments");

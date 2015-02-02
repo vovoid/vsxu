@@ -1,5 +1,6 @@
 #include "vsx_particlesystem.h"
 #include "vsx_vbo_bucket.h"
+#include <vsx_sequence.h>
 
 class module_particlesystem_render_ext : public vsx_module
 {
@@ -8,11 +9,11 @@ public:
   // in
   vsx_module_param_particlesystem* particles_in;
   vsx_module_param_texture* tex_inf;
-  vsx_module_param_sequence* size_lifespan_sequence;
-  vsx_module_param_sequence* alpha_lifespan_sequence;
-  vsx_module_param_sequence* r_lifespan_sequence;
-  vsx_module_param_sequence* g_lifespan_sequence;
-  vsx_module_param_sequence* b_lifespan_sequence;
+  vsx_module_param_float_sequence* size_lifespan_sequence;
+  vsx_module_param_float_sequence* alpha_lifespan_sequence;
+  vsx_module_param_float_sequence* r_lifespan_sequence;
+  vsx_module_param_float_sequence* g_lifespan_sequence;
+  vsx_module_param_float_sequence* b_lifespan_sequence;
 
   vsx_module_param_string* i_vertex_program;
   vsx_module_param_string* i_fragment_program;
@@ -26,11 +27,11 @@ public:
   vsx_texture** tex;
 
   // sequences
-  vsx_sequence seq_size;
-  vsx_sequence seq_alpha;
-  vsx_sequence seq_r;
-  vsx_sequence seq_g;
-  vsx_sequence seq_b;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_size;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_alpha;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_r;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_g;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_b;
 
   vsx_texture *texture_lookup_sizes;
 
@@ -83,19 +84,19 @@ public:
 
     ignore_particles_at_center = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "ignore_particles_at_center");
 
-    size_lifespan_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"size_lifespan_sequence");
+    size_lifespan_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"size_lifespan_sequence");
     size_lifespan_sequence->set(seq_size);
     calc_sizes();
 
-    alpha_lifespan_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"alpha_lifespan_sequence");
+    alpha_lifespan_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"alpha_lifespan_sequence");
     alpha_lifespan_sequence->set(seq_alpha);
     calc_alphas();
 
-    r_lifespan_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"r_lifespan_sequence");
+    r_lifespan_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"r_lifespan_sequence");
     r_lifespan_sequence->set(seq_r);
-    g_lifespan_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"g_lifespan_sequence");
+    g_lifespan_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"g_lifespan_sequence");
     g_lifespan_sequence->set(seq_g);
-    b_lifespan_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"b_lifespan_sequence");
+    b_lifespan_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"b_lifespan_sequence");
     b_lifespan_sequence->set(seq_b);
     r_lifespan_sequence->updates = 1;
     g_lifespan_sequence->updates = 1;
@@ -202,7 +203,7 @@ public:
     seq_size.reset();
     for (int i = 0; i < 8192; ++i)
     {
-      texture_lookup_sizes_data[i] = seq_size.execute(1.0f/8191.0f);
+      texture_lookup_sizes_data[i] = seq_size.execute(1.0f/8191.0f).get_float();
     }
     texture_lookup_sizes->valid = true;
     texture_lookup_sizes->bind();
@@ -234,7 +235,7 @@ public:
     seq_alpha.reset();
     for (int i = 0; i < 8192; ++i)
     {
-      texture_lookup_color_data[i].a = seq_alpha.execute(1.0f/8191.0f);
+      texture_lookup_color_data[i].a = seq_alpha.execute(1.0f/8191.0f).get_float();
     }
     texture_lookup_color->valid = true;
     texture_lookup_color->bind();
@@ -273,9 +274,9 @@ public:
     seq_b.reset();
     for (int i = 0; i < 8192; ++i)
     {
-      texture_lookup_color_data[i].r = seq_r.execute(1.0f/8191.0f);
-      texture_lookup_color_data[i].g = seq_g.execute(1.0f/8191.0f);
-      texture_lookup_color_data[i].b = seq_b.execute(1.0f/8191.0f);
+      texture_lookup_color_data[i].r = seq_r.execute(1.0f/8191.0f).get_float();
+      texture_lookup_color_data[i].g = seq_g.execute(1.0f/8191.0f).get_float();
+      texture_lookup_color_data[i].b = seq_b.execute(1.0f/8191.0f).get_float();
     }
     texture_lookup_color->valid = true;
     texture_lookup_color->bind();

@@ -33,6 +33,7 @@
 #include "vsxfst.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
+#include <vsx_param_helper.h>
 // local includes
 #include "vsx_widget.h"
 #include "widgets/vsx_widget_popup_menu.h"
@@ -477,7 +478,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     tt->title = "VSXL [param filter] : "+component->name+"->"+name;
     ((vsx_widget_controller_editor*)tt)->return_command = "vsxl_pfi";
     ((vsx_widget_controller_editor*)tt)->return_component = this;
-    ((vsx_widget_controller_editor*)tt)->load_text(base64_decode(t->parts[3]));
+    ((vsx_widget_controller_editor*)tt)->load_text( vsx_string_helper::base64_decode(t->parts[3]));
     return;
   } 
 
@@ -562,12 +563,12 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
   if (t->cmd == "controller_seq_edit") 
   {
     for (children_iter = children.begin(); children_iter != children.end(); ++children_iter) 
-    {
-      if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_CONTROLLER) return;
-    }
+      if ((*children_iter)->widget_type == VSX_WIDGET_TYPE_CONTROLLER)
+        return;
     vsx_widget* tt = add(new vsx_widget_controller_sequence,name+".seq_edit");
-    ((vsx_widget_controller_sequence*)tt)->target_param=name;
+    ((vsx_widget_controller_sequence*)tt)->target_param = name;
     ((vsx_widget_controller_sequence*)tt)->init();
+    ((vsx_widget_controller_sequence*)tt)->set_param_type( vsx_param_helper::param_id_from_string(p_type) );
     tt->pos.x = tt->target_pos.x -= tt->target_size.x * 0.6f;
     return;
   }
@@ -610,7 +611,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
   {
     if (sequenced || connections.size()) 
     {
-      command_q_b.add_raw("alert_dialog Information "+base64_encode("This is controlled by a sequence and thus can't be controlled this way."));
+      command_q_b.add_raw("alert_dialog Information " + vsx_string_helper::base64_encode("This is controlled by a sequence and thus can't be controlled this way."));
       parent->vsx_command_queue_b(this);
       return;
     }
@@ -716,7 +717,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
 
   if (t->cmd == "chooser_ok")
   {
-    vsx_string<>ns = base64_encode("resources/"+str_replace(";","/",base64_decode(t->parts[1])));
+    vsx_string<>ns = vsx_string_helper::base64_encode("resources/"+str_replace(";","/", vsx_string_helper::base64_decode(t->parts[1])));
     command_q_b.add_raw("ps64 "+component->name+" "+alias_owner->name+" "+ns);
     component->vsx_command_queue_b(this);
     return;
@@ -796,7 +797,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
 
   if (t->cmd == "param_get_ok")
   {
-    display_value = base64_decode(t->parts[3]);
+    display_value = vsx_string_helper::base64_decode(t->parts[3]);
     std::vector <vsx_string<> > parts;
     vsx_string<>deli = ",";
     if (p_type == "float")
@@ -1483,6 +1484,12 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
         {
           menu_->commands.adds(VSX_COMMAND_MENU, "resource library", "controller_resource","");
         }
+
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Animation Clip ------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "animation clip;add to current", "seq_pool_add","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "--Sequencer-----------", "","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "sequencer;add/edit sequence", "pseq_a_m","");
+        menu_->commands.adds(VSX_COMMAND_MENU, "sequencer;remove sequence", "pseq_p","remove");
       }
       if (!alias)
       {
@@ -1492,7 +1499,7 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
       }
     }
     else
-    if (p_type == "sequence")
+    if (p_type == "float_sequence" || p_type == "string_sequence")
     {
       menu_->commands.adds(VSX_COMMAND_MENU, "editor", "controller_seq_edit","");
       if (!alias)
@@ -1566,7 +1573,7 @@ void vsx_widget_anchor::init()
 
   if (options.find("help") != options.end()) 
   {
-    help_text += "\nParameter info (from the module):\n"+base64_decode(options["help"]);
+    help_text += "\nParameter info (from the module):\n"+vsx_string_helper::base64_decode(options["help"]);
   }
   
   dialogs=parse_url_params(p_type_suffix);
@@ -1885,7 +1892,7 @@ void vsx_widget_anchor::event_mouse_double_click(vsx_widget_distance distance, v
         return;
       }
 
-      if (p_type == "sequence")
+      if (p_type == "float_sequence" || p_type == "string_sequence")
       {
         command_q_b.add_raw("controller_seq_edit");
         this->vsx_command_queue_b(this);

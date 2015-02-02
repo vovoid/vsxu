@@ -105,8 +105,13 @@ vsx_module_param_abs* vsx_module_param_list::create(int type, const char* name, 
       break;
 
 
-    case VSX_MODULE_PARAM_ID_SEQUENCE:
-      ptemp = new vsx_module_param_sequence(name);
+    case VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE:
+      ptemp = new vsx_module_param_float_sequence(name);
+      break;
+
+
+    case VSX_MODULE_PARAM_ID_STRING_SEQUENCE:
+      ptemp = new vsx_module_param_string_sequence(name);
       break;
 
 
@@ -219,8 +224,13 @@ vsx_module_param_list::~vsx_module_param_list()
         break;
 
 
-      case VSX_MODULE_PARAM_ID_SEQUENCE:
-        delete ((vsx_module_param_sequence*)id_vec[i]);
+      case VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE:
+        delete ((vsx_module_param_float_sequence*)id_vec[i]);
+        break;
+
+
+      case VSX_MODULE_PARAM_ID_STRING_SEQUENCE:
+        delete ((vsx_module_param_string_sequence*)id_vec[i]);
         break;
 
 

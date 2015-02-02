@@ -200,7 +200,7 @@ void vsx_widget_ultra_chooser::event_mouse_double_click(vsx_widget_distance dist
       if (mode == 1)
       if (test->node->node->isLeaf()) {
         LOG_A("command_q_b.add_raw("+command+" "+test->node->node->module_info->identifier+");");
-        command_q_b.add_raw(command+" "+base64_encode(test->node->node->module_info->identifier), VSX_COMMAND_GARBAGE_COLLECT);
+        command_q_b.add_raw(command+" " + vsx_string_helper::base64_encode(test->node->node->module_info->identifier), VSX_COMMAND_GARBAGE_COLLECT);
         LOG_A("command_receiver->vsx_command_queue_b(this);")
         command_receiver->vsx_command_queue_b(this);
         LOG_A("((vsx_window_object_inspector*)object_inspector)->unload();")

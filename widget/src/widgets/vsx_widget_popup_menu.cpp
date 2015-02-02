@@ -142,7 +142,9 @@ void vsx_widget_popup_menu::add_commands(vsx_command_s *command) {
 }
 
 void vsx_widget_popup_menu::init() {
-  if (init_run) return;
+  if (init_run)
+    return;
+
   widget_type = VSX_WIDGET_TYPE_2D_MENU_POPUP;
   coord_type = VSX_WIDGET_COORD_CORNER;
   coord_related_parent = false;
@@ -153,16 +155,21 @@ void vsx_widget_popup_menu::init() {
   over = 0;
   oversub = false;
 
-
   commands.reset();
   vsx_command_s* t;
-  while ( (t = commands.get()) ) {
+  while ( (t = commands.pop()) )
     add_commands(t);
-    //
-
-  }
   init_run = true;
 }
+
+void vsx_widget_popup_menu::init_extra_commands()
+{
+  commands.reset();
+  vsx_command_s* t;
+  while ( (t = commands.pop()) )
+    add_commands(t);
+}
+
 
 void vsx_widget_popup_menu::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
 {

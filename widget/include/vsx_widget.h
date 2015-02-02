@@ -33,6 +33,9 @@
 // engine_graphics
 #include <vsx_font.h>
 
+// profiler
+#include <vsx_profiler_manager.h>
+
 // stl
 #include <map>
 #include <list>
@@ -125,6 +128,9 @@ public:
 
   //
   WIDGET_DLLIMPORT static bool performance_mode;
+
+  // profiler
+  VSXP_CLASS_DECLARE;
 
 // LOCALS
   // information
@@ -461,7 +467,7 @@ public:
   virtual void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);
   virtual void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords);
   virtual void event_mouse_wheel(float y);
-  virtual void event_move_scale() {};
+  virtual void event_move_scale() {}
 
   //-----------------------------------------
   bool init_run;

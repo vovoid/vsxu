@@ -349,7 +349,7 @@ void vsx_widget_controller_ab::command_process_back_queue(vsx_command_s *t) {
   {
     std::vector <vsx_string<> > parts;
     vsx_string<>deli = ",";
-    t->parts[3] = base64_decode(t->parts[3]);
+    t->parts[3] = vsx_string_helper::base64_decode(t->parts[3]);
     explode(t->parts[3],deli, parts);
     if (parts.size() == 4) {
       dest_quat.s.X = inter_quat.s.X = vsx_string_helper::s2f(parts[0]);

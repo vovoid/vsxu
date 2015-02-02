@@ -69,13 +69,16 @@ class vsx_module_param_abs;
 #define VSX_MODULE_PARAM_ID_BITMAP            10
 #define VSX_MODULE_PARAM_ID_PARTICLESYSTEM    11
 #define VSX_MODULE_PARAM_ID_FLOAT_ARRAY       12
-#define VSX_MODULE_PARAM_ID_SEQUENCE          13
-#define VSX_MODULE_PARAM_ID_SEGMENT_MESH      14
-#define VSX_MODULE_PARAM_ID_ABSTRACT          15
-#define VSX_MODULE_PARAM_ID_QUATERNION        16
-#define VSX_MODULE_PARAM_ID_RESOURCE          17
-#define VSX_MODULE_PARAM_ID_FLOAT3_ARRAY      18
-#define VSX_MODULE_PARAM_ID_QUATERNION_ARRAY  19
+#define VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE    13
+#define VSX_MODULE_PARAM_ID_STRING_SEQUENCE   14
+#define VSX_MODULE_PARAM_ID_SEGMENT_MESH      15
+#define VSX_MODULE_PARAM_ID_ABSTRACT          16
+#define VSX_MODULE_PARAM_ID_QUATERNION        17
+#define VSX_MODULE_PARAM_ID_RESOURCE          18
+#define VSX_MODULE_PARAM_ID_FLOAT3_ARRAY      19
+#define VSX_MODULE_PARAM_ID_QUATERNION_ARRAY  20
+
+
 
 //////////////////////////////////////////////////////////////////////
 class vsx_param_vsxl_abs;
@@ -303,7 +306,8 @@ typedef vsx_module_param<0, vsx_mesh<>*,           1,0 > vsx_module_param_mesh; 
 typedef vsx_module_param<0, vsx_bitmap,            1,0 > vsx_module_param_bitmap; // use get_addr() / set_p()
 typedef vsx_module_param<0, vsx_particlesystem<>,  1,0 > vsx_module_param_particlesystem; // use get_addr() / set_p()
 typedef vsx_module_param<0, vsx_float_array,       1,0 > vsx_module_param_float_array; // use get_addr() set_p()
-typedef vsx_module_param<0, vsx_sequence,          1,0 > vsx_module_param_sequence; // use get() set()
+typedef vsx_module_param<0, vsx::sequence::channel<vsx::sequence::value_float>, 1,0 > vsx_module_param_float_sequence; // use get() set()
+typedef vsx_module_param<0, vsx::sequence::channel<vsx::sequence::value_string>, 1,0 > vsx_module_param_string_sequence; // use get() set()
 typedef vsx_module_param<0, vsx_2dgrid_mesh,       1,0 > vsx_module_param_segment_mesh; // use get_addr() / set_p()
 typedef vsx_module_param<0, vsx_abstract,          1,0 > vsx_module_param_abstract; // use get_addr() / set_p()
 typedef vsx_module_param<1, float,                 4,1 > vsx_module_param_quaternion; // use get_addr() / set_p()

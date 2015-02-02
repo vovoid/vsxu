@@ -143,7 +143,7 @@ public:
           my->param_updates = 0;
         }
 
-        my->ocean.dtime = my->engine->real_vtime*my->time_speed->get() * 0.1f;
+        my->ocean.dtime = my->engine->vtime * my->time_speed->get() * 0.1f;
         my->ocean.normals_only = my->normals_only->get();
 
         my->ocean.display();

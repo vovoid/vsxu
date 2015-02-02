@@ -39,6 +39,9 @@
         #ifdef PLATFORM_SHARED_FILES_STL
           #define PLATFORM_SHARED_FILES_STLSTRING               std::string("share\\")
         #endif
+        #define DIRECTORY_SEPARATOR                             "\\"
+        #define DIRECTORY_SEPARATOR_CHAR                             '\\'
+
     #elif defined(__APPLE__) || defined(__MACH__)
         #define PLATFORM                                        PLATFORM_MACINTOSH
         #define PLATFORM_NAME                                   "Macintosh"
@@ -48,6 +51,8 @@
         #ifdef PLATFORM_SHARED_FILES_STL
           #define PLATFORM_SHARED_FILES_STLSTRING                         std::string("")
         #endif
+        #define DIRECTORY_SEPARATOR                             "/"
+        #define DIRECTORY_SEPARATOR_CHAR                        '/'
     #elif defined(linux) || defined(__linux) || defined(__linux__) || defined(__CYGWIN__)
         #define PLATFORM                                        PLATFORM_LINUX
         #define PLATFORM_NAME                                   "Linux"
@@ -57,11 +62,15 @@
         #ifdef PLATFORM_SHARED_FILES_STL
           #define PLATFORM_SHARED_FILES_STLSTRING               std::string(CMAKE_INSTALL_PREFIX)+std::string("/share/vsxu/")
         #endif
+        #define DIRECTORY_SEPARATOR                             "/"
+        #define DIRECTORY_SEPARATOR_CHAR                        '/'
     #else
         #define PLATFORM                                        PLATFORM_SOMETHINGELSE
         #define PLATFORM_NAME                                   "Something Else"
         #define PLATFORM_FAMILY                                 PLATFORM_FAMILY_OTHER
         #define PLATFORM_SHARED_FILES                           ""
+        #define DIRECTORY_SEPARATOR                             "/"
+        #define DIRECTORY_SEPARATOR_CHAR                        '/'
     #endif
 
     /*

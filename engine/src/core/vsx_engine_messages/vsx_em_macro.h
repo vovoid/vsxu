@@ -84,14 +84,14 @@ if (cmd == "macro_dump" || cmd == "component_clone")
   tmp_comp.reset();
   while ( (outc = tmp_comp.get()) )
   {
-    cmd_out->add_raw(vsx_string<>(c->parts[0]+"_add ")+c->get_parts(1,2)+" "+base64_encode(outc->raw), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw(vsx_string<>(c->parts[0] + "_add ") + c->get_parts(1,2) + " " + vsx_string_helper::base64_encode(outc->raw), VSX_COMMAND_GARBAGE_COLLECT);
   }
 
   if (tmp_aliases.count())
   {
     tmp_aliases.reset();
     while ( (outc = tmp_aliases.pop_back()) ) {
-      cmd_out->add_raw(vsx_string<>(c->parts[0]+"_add ")+c->get_parts(1,2)+" "+base64_encode(outc->raw), VSX_COMMAND_GARBAGE_COLLECT);
+      cmd_out->add_raw(vsx_string<>(c->parts[0]+"_add ") + c->get_parts(1,2) + " " + vsx_string_helper::base64_encode(outc->raw), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
 
@@ -99,7 +99,7 @@ if (cmd == "macro_dump" || cmd == "component_clone")
   {
     tmp_connections.reset();
     while ( (outc = tmp_connections.pop_back()) ) {
-      cmd_out->add_raw(vsx_string<>(c->parts[0]+"_add ")+c->get_parts(1,2)+" "+base64_encode(outc->raw), VSX_COMMAND_GARBAGE_COLLECT);
+      cmd_out->add_raw(vsx_string<>(c->parts[0]+"_add ") + c->get_parts(1,2) + " " + vsx_string_helper::base64_encode(outc->raw), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
 
@@ -115,7 +115,7 @@ if (cmd == "macro_dump" || cmd == "component_clone")
 if (cmd == "macro_prerun")
 {
   if (get_component_by_name(c->parts[3])) {
-    cmd_out->add_raw(vsx_string<>("alert_fail ")+base64_encode(c->raw)+" Error "+base64_encode("There is already a macro '"+c->parts[3]+"'"), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw(vsx_string<>("alert_fail ") + vsx_string_helper::base64_encode(c->raw) + " Error " + vsx_string_helper::base64_encode("There is already a macro '"+c->parts[3]+"'"), VSX_COMMAND_GARBAGE_COLLECT);
   } else {
     cmd_out->addc(c, VSX_COMMAND_GARBAGE_COLLECT);
   }
@@ -130,7 +130,7 @@ if (cmd == "macro_create")
 
   if (c->parts.size() != 5)
   {
-    cmd_out->add_raw("invalid_command wrong_number_of_arguments "+base64_encode(c->raw), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw("invalid_command wrong_number_of_arguments " + vsx_string_helper::base64_encode(c->raw), VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
 
@@ -146,7 +146,7 @@ if (cmd == "macro_create")
     cmd_out->add_raw(vsx_string<>("component_create_ok ")+c->parts[1]+" "+get_component_by_name(c->parts[1])->component_class+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4], VSX_COMMAND_GARBAGE_COLLECT);
     goto process_message_queue_end;
   }
-  cmd_out->add_raw("alert_fail "+base64_encode(c->raw)+" Error "+base64_encode("There is already a macro '"+c->parts[1]), VSX_COMMAND_GARBAGE_COLLECT);
+  cmd_out->add_raw("alert_fail " + vsx_string_helper::base64_encode(c->raw)+" Error " + vsx_string_helper::base64_encode("There is already a macro '"+c->parts[1]), VSX_COMMAND_GARBAGE_COLLECT);
 
   goto process_message_queue_end;
 }

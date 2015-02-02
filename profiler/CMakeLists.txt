@@ -67,11 +67,14 @@ set(SOURCES
   src/profiler/vsx_widget_profiler_plot.cpp
 )
 
+file(GLOB_RECURSE HEADER_FILES *.h)
+
+
 ################################################################################
 # LINK #########################################################################
 ################################################################################
 
-add_executable(${module_id} ${SOURCES} )
+add_executable(${module_id} ${SOURCES} ${HEADER_FILES} )
 
 include(../cmake_suffix.txt)
 

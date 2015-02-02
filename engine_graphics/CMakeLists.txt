@@ -98,6 +98,8 @@ set(SOURCES
   src/ftgl/FTVectoriser.cpp
 )
 
+file(GLOB_RECURSE HEADER_FILES *.h)
+
 if (VSXU_OPENGL_ES_2_0 EQUAL 1)
   add_definitions(-DVSXU_OPENGL_ES -DVSXU_OPENGL_ES_2_0)
   set(SOURCES
@@ -109,9 +111,9 @@ endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 
 if (VSXU_STATIC EQUAL 1)  
   #static build  
-  add_library(${module_id} STATIC ${SOURCES} ${PNG_SOURCES} ${JPG_SOURCES} ${ZLIG_SOURCES})
+  add_library(${module_id} STATIC ${SOURCES} ${HEADER_FILES} ${PNG_SOURCES} ${JPG_SOURCES} ${ZLIG_SOURCES})
 else ()
-  add_library(${module_id} SHARED ${SOURCES} ${PNG_SOURCES} ${JPG_SOURCES} ${ZLIB_SOURCES})
+  add_library(${module_id} SHARED ${SOURCES} ${HEADER_FILES} ${PNG_SOURCES} ${JPG_SOURCES} ${ZLIB_SOURCES})
 endif()
 
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)

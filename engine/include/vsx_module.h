@@ -45,6 +45,7 @@
 #include "vsx_argvector.h"
 #include "vsxfst.h"
 #include "debug/vsx_error.h"
+#include <vsx_module_operation.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -145,9 +146,6 @@ public:
   // item 4..999 are reserved for Vovoid use
   vsx_nw_vector<vsx_engine_float_array*> param_float_arrays;
 
-  // tm
-  void* tm;
-
   vsx_module_engine_info()
   {
     state = 0;
@@ -161,7 +159,6 @@ public:
     request_rewind = 0;
     request_set_time = -0.01f;
     num_input_events = 0;
-    tm = 0x0;
   }
 };
 
@@ -380,6 +377,23 @@ public:
   {
     VSX_UNUSED(out_parameters);
   }
+
+
+  virtual void declare_operations(vsx_nw_vector<vsx_module_operation*>& operations )
+  {
+    VSX_UNUSED(operations);
+  }
+
+  virtual void destroy_operations(vsx_nw_vector<vsx_module_operation*>& operations)
+  {
+    VSX_UNUSED(operations);
+  }
+
+  virtual void run_operation(vsx_module_operation& operation)
+  {
+    VSX_UNUSED(operation);
+  }
+
 
 
   // avector with all the filenames that this module needs

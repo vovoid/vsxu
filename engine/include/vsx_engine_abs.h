@@ -98,6 +98,7 @@ protected:
   // Reset Component Status   -  default: true
   bool render_hint_post_render_reset_component_status;
 
+
 //-- module list
   vsx_module_list_abs* module_list;
 

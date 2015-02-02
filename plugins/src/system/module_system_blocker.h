@@ -6,6 +6,8 @@ class module_system_blocker : public vsx_module
 
   // out
   vsx_module_param_render* render_result;
+  vsx_module_param_float* passthru;
+
 
   // internal
 
@@ -27,7 +29,9 @@ public:
       "render_in:render,block:float";
 
     info->out_param_spec =
-      "render_out:render";
+      "render_out:render,"
+      "passthru:float"
+    ;
 
     info->component_class =
       "system";
@@ -46,10 +50,16 @@ public:
     render_in->run_activate_offscreen = true;
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     render_result->set(0);
+
+    passthru = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"passthru");
+    passthru->set(1.0f);
+
   }
 
   bool activate_offscreen()
   {
+    passthru->set( block->get() );
+
     if (engine->state == VSX_ENGINE_LOADING)
       return true;
 

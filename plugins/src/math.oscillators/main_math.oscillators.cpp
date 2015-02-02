@@ -33,6 +33,7 @@
 #include "module_plugin_maths_oscillators_float_sequencer.h"
 #include "module_plugin_maths_oscillators_inside_range.h"
 #include "module_plugin_maths_oscillators_pulse_oscillator.h"
+#include "module_plugin_maths_oscillators_string_sequencer.h"
 
 
 //******************************************************************************
@@ -58,6 +59,7 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 1: return (vsx_module*)new module_plugin_maths_oscillators_float_sequencer;
     case 2: return (vsx_module*)new module_plugin_maths_oscillators_inside_range;
     case 3: return (vsx_module*)new module_plugin_maths_oscillators_pulse_oscillator;
+    case 4: return (vsx_module*)new module_plugin_maths_oscillators_string_sequencer;
   }
   return 0;
 }
@@ -68,11 +70,12 @@ void MOD_DM(vsx_module* m,unsigned long module) {
     case 1: delete (module_plugin_maths_oscillators_float_sequencer*)m; break;
     case 2: delete (module_plugin_maths_oscillators_inside_range*)m; break;
     case 3: delete (module_plugin_maths_oscillators_pulse_oscillator*)m; break;
+    case 4: delete (module_plugin_maths_oscillators_string_sequencer*)m; break;
   }
 }
 
 unsigned long MOD_NM(vsx_engine_environment* environment) {
   VSX_UNUSED(environment);
-  return 4;
+  return 5;
 }  
 

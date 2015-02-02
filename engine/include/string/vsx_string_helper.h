@@ -5,6 +5,7 @@
 #include <wchar.h>
 
 #include <string/vsx_string.h>
+#include <vsxfst.h>
 #include <tools/vsx_req.h>
 
 namespace vsx_string_helper
@@ -122,6 +123,11 @@ namespace vsx_string_helper
     fclose( fp );
   }
 
+  /**
+   * @brief read_from_file
+   * @param filename
+   * @return
+   */
   template < int buf_size = 1024 >
   inline vsx_string<> read_from_file(vsx_string<> filename)
   {
@@ -138,6 +144,31 @@ namespace vsx_string_helper
       result += line;
     }
     fclose(fp);
+    return result;
+  }
+
+  /**
+   * @brief read_from_file_filesystem
+   * @param filename
+   * @param filesystem
+   * @return
+   */
+  template < int buf_size = 1024 >
+  inline vsx_string<> read_from_file(vsx_string<> filename, vsxf* filesystem)
+  {
+    vsx_string<> result;
+    vsxf_handle* fp = filesystem->f_open(filename.c_str(), "r");
+    if (!fp)
+      return "";
+
+    char buf[buf_size];
+
+    while ( filesystem->f_gets(buf,256,fp) )
+    {
+      vsx_string<> line(buf);
+      result += line;
+    }
+    filesystem->f_close(fp);
     return result;
   }
 
@@ -175,7 +206,7 @@ namespace vsx_string_helper
       } else
         temp.push_back( input[i] );
 
-    if (temp.size())
+    if (temp.size() || input[ input.size() - 1 ] == delimiter_char)
       parts.push_back(temp);
   }
 
@@ -294,6 +325,119 @@ namespace vsx_string_helper
     }
     return result;
   }
+
+
+  inline vsx_string<>base64_encode(vsx_string<>data)
+  {
+    int i;
+    char               c;
+    int len = data.size();
+    vsx_string<>            ret;
+    const char          fillchar = '=';
+    // 00000000001111111111222222
+    // 01234567890123456789012345
+    const vsx_string<>      cvt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+    // 22223333333333444444444455
+    // 67890123456789012345678901
+      "abcdefghijklmnopqrstuvwxyz"
+
+    // 555555556666
+    // 234567890123
+      "0123456789+/";
+
+
+    for (i = 0; i < len; ++i)
+    {
+      c = (data[i] >> 2) & 0x3f;
+      ret.push_back(cvt[c]);
+      c = (data[i] << 4) & 0x3f;
+      if (++i < len)
+        c |= (data[i] >> 4) & 0x0f;
+
+      ret.push_back(cvt[c]);
+      if (i < len)
+      {
+        c = (data[i] << 2) & 0x3f;
+        if (++i < len)
+          c |= (data[i] >> 6) & 0x03;
+
+        ret.push_back( cvt[c]);
+      }
+      else
+      {
+        ++i;
+        ret.push_back(fillchar);
+      }
+
+      if (i < len)
+      {
+        c = data[i] & 0x3f;
+        ret.push_back(cvt[c]);
+      }
+      else
+      {
+        ret.push_back(fillchar);
+      }
+    }
+
+    return(ret);
+  }
+
+  inline vsx_string<>base64_decode(vsx_string<>data)
+  {
+    int i;
+    char               c;
+    char               c1;
+    int len = data.size();
+    vsx_string<>            ret;
+    const char          fillchar = '=';
+    // 00000000001111111111222222
+    // 01234567890123456789012345
+    const vsx_string<>      cvt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+    // 22223333333333444444444455
+    // 67890123456789012345678901
+      "abcdefghijklmnopqrstuvwxyz"
+
+    // 555555556666
+    // 234567890123
+      "0123456789+/";
+
+
+    for (i = 0; i < len; ++i)
+    {
+      c = (char) cvt.find(data[i]);
+      ++i;
+      c1 = (char) cvt.find(data[i]);
+      c = (c << 2) | ((c1 >> 4) & 0x3);
+      ret.push_back(c);
+      if (++i < len)
+      {
+        c = data[i];
+        if (fillchar == c)
+          break;
+
+        c = (char) cvt.find(c);
+        c1 = ((c1 << 4) & 0xf0) | ((c >> 2) & 0xf);
+        ret.push_back(c1);
+      }
+
+      if (++i < len)
+      {
+        c1 = data[i];
+        if (fillchar == c1)
+          break;
+
+        c1 = (char) cvt.find(c1);
+        c = ((c << 6) & 0xc0) | c1;
+        ret.push_back(c);
+      }
+    }
+
+    return(ret);
+  }
+
 
 }
 

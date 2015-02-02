@@ -35,6 +35,7 @@
 #include "vsx_sequence_pool.h"
 #include "vsxfst.h"
 #include "vsx_param_abstraction.h"
+#include "tools/vsx_foreach.h"
 
 #ifndef VSXE_NO_GM
 #include "scripting/vsx_param_vsxl.h"
@@ -100,6 +101,7 @@ void vsx_comp::unload_module()
   if (module)
   {
     module->on_delete();
+    module->destroy_operations( module_operations );
   }
   vsx_module_list_abs* module_list = ((vsx_engine*)engine_owner)->get_module_list();
   module_list->unload_module( module );
@@ -113,8 +115,8 @@ void vsx_comp::re_init_in_params() {
   std::map<vsx_string<>, float> float_values_saved;
   std::map<vsx_string<>, int> int_values_saved;
 
-  typedef vsx_sequence sequence;
-  std::map<vsx_string<>, vsx_sequence> sequence_values_saved;	// technical assumption:
+  typedef vsx::sequence::channel<vsx::sequence::value_float> float_sequence;
+  std::map<vsx_string<>, float_sequence > float_sequence_values_saved;	// technical assumption:
   // most parameters are usually declared with the same name and type.
   // so: save the easy ones (float, int, string, float3 etc).
   for (unsigned long i = 0; i < in_module_parameters->id_vec.size(); i++)
@@ -132,10 +134,10 @@ void vsx_comp::re_init_in_params() {
         float_values_saved[mparam->name] = ((vsx_module_param_float*)mparam)->get();
       }
       break;
-      case VSX_MODULE_PARAM_ID_SEQUENCE:
+      case VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE:
       {
-        vsx_sequence a = ((vsx_module_param_sequence*)mparam)->get();
-        sequence_values_saved[mparam->name] = a;
+        vsx::sequence::channel<vsx::sequence::value_float> a = ((vsx_module_param_float_sequence*)mparam)->get();
+        float_sequence_values_saved[mparam->name] = a;
       }
       break;
       default:
@@ -177,7 +179,7 @@ void vsx_comp::re_init_in_params() {
   }
   RESTORE_FUNC(float);
   RESTORE_FUNC(int);
-  RESTORE_FUNC(sequence);
+  RESTORE_FUNC(float_sequence);
 
 #undef RESTORE_FUNC
 
@@ -275,7 +277,7 @@ void vsx_comp::init_channels() {
     if (param->module_param->type == VSX_MODULE_PARAM_ID_RESOURCE) {
       channels.push_back(param->channel = new vsx_channel_resource(module,param,this));
     } else
-    if (param->module_param->type == VSX_MODULE_PARAM_ID_SEQUENCE) {
+    if (param->module_param->type == VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE) {
       channels.push_back(param->channel = new vsx_channel_sequence(module,param,this));
     }
   }
@@ -292,6 +294,9 @@ void vsx_comp::init_module()
   in_param_spec = process_module_param_spec(module_info->in_param_spec);
   out_param_spec = process_module_param_spec(module_info->out_param_spec);
   component_class = module_info->component_class;
+
+  module->declare_operations( module_operations );
+
   LOG("init_module 2")
   //if (module_info->output) {
 //  }
@@ -537,7 +542,7 @@ vsx_string<>process_module_param_spec(vsx_string<>& input) {
       // inside a block
       if (input[i] == '`') {
         // end of block
-        ret_val += base64_encode(s_block);
+        ret_val += vsx_string_helper::base64_encode(s_block);
         s_block = "";
         block = false;
       } else
@@ -548,4 +553,26 @@ vsx_string<>process_module_param_spec(vsx_string<>& input) {
     ++i;
   }
   return ret_val;
+}
+
+vsx_string<> vsx_comp::module_operations_as_string()
+{
+  vsx_string<> ret;
+  foreach(module_operations, i)
+  {
+    if (i)
+      ret += '#';
+    ret += module_operations[i]->serialize();
+  }
+  return ret;
+}
+
+bool vsx_comp::has_module_operations()
+{
+  return module_operations.size() > 0;
+}
+
+void vsx_comp::module_operation_run(vsx_module_operation& operation)
+{
+  module->run_operation( operation );
 }

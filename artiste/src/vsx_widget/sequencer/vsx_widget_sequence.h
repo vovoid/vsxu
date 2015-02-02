@@ -24,6 +24,8 @@
 #ifndef VSX_WIDGET_SEQUENCE_H
 #define VSX_WIDGET_SEQUENCE_H
 
+#include <vsx_widget.h>
+
 class vsx_widget_sequence_editor : public vsx_widget
 {
   vsx_widget *server;

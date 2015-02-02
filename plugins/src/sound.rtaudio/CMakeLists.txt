@@ -73,6 +73,7 @@ if(AUDIO_LIBRARIES)
     lib/RtAudio/RtAudio.cpp
     lib/RtMidi/RtMidi.cpp
   )
+  file(GLOB_RECURSE HEADER_FILES *.h)
 
   #if(WITH_MIDI)
 #    list(APPEND SOURCES input/input_audio_midi.cpp)

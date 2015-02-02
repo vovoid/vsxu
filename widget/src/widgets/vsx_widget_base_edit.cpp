@@ -122,17 +122,22 @@ void vsx_widget_base_edit::command_process_back_queue(vsx_command_s *t) {
   {
     // TODO: take into account hidden lines
     backwards_message("editor_action "+vsx_string_helper::i2s(id)+" "+lines[scroll_y + vsx_string_helper::s2i(t->parts[1])]);
+    return;
   }
-  else
+
   if (t->cmd == "font_size")
   {
     font_size = vsx_string_helper::s2f(t->parts[1]);
+    return;
   }
-  else
+
   if (t->cmd == "clear") {
     k_focus = this;
     set_string("");
+    return;
   }
+
+  command_q_b.add(t);
 }
 
 // PRIVATE
@@ -278,14 +283,14 @@ void vsx_widget_base_edit::caret_goto_end()
 
 void vsx_widget_base_edit::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
   vsx_widget::event_mouse_down(distance,coords,button);
-  if (!lines.size()) return;
-  if (button == 0) {
+  if (!lines.size())
+    return;
+
+  if (button == 0)
+  {
     m_focus = this;
-//      caretx = floor(distance.corner.x/(font_size*0.37));
-//printf("distance.corner: %f\n",distance.corner.x);
     caretx = (int)floor(distance.corner.x/(font_size*0.37));
     carety = (int)floor(((target_size.y-distance.corner.y)/font_size));
-    //printf("cx: %d, cy: %d\n",caretx, carety);
     if (carety < 0) carety = 0;
     if (carety > lines.size()-num_hidden_lines-1-scroll_y) carety = (int)floor(lines.size()-num_hidden_lines-1-scroll_y);
 
@@ -305,28 +310,32 @@ void vsx_widget_base_edit::event_mouse_down(vsx_widget_distance distance,vsx_wid
         selected_line = real_line;
     }
     }
-    if (caretx > lines[(int)(carety+scroll_y)].size()-scroll_x) {
-    event_key_down(-GLFW_KEY_END,false,false,false);
-    }
-    //printf("carety: %d\n", carety);
+    if (caretx > lines[(int)(carety+scroll_y)].size()-scroll_x)
+      event_key_down(-GLFW_KEY_END,false,false,false);
   }
-  if (mirror_mouse_down_object != 0) mirror_mouse_down_object->event_mouse_down(distance, coords, button);
+  if (mirror_mouse_down_object != 0)
+    mirror_mouse_down_object->event_mouse_down(distance, coords, button);
 }
 
 void vsx_widget_base_edit::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
 {
-  if (mirror_mouse_up_object != 0) mirror_mouse_up_object->event_mouse_up(distance, coords,button);
+  if (mirror_mouse_up_object)
+    return (void)mirror_mouse_up_object->event_mouse_up(distance, coords,button);
+  vsx_widget::event_mouse_up(distance, coords, button);
 }
 
 void vsx_widget_base_edit::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
 {
-  if (mirror_mouse_move_object != 0) mirror_mouse_move_object->event_mouse_move(distance, coords);
+  if (mirror_mouse_move_object)
+    return (void)mirror_mouse_move_object->event_mouse_move(distance, coords);
+  vsx_widget::event_mouse_move(distance, coords);
 }
 
 void vsx_widget_base_edit::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
 {
-  if (mirror_mouse_move_passive_object != 0) mirror_mouse_move_passive_object->event_mouse_move_passive(distance, coords);
-
+  if (mirror_mouse_move_passive_object)
+    return (void)mirror_mouse_move_passive_object->event_mouse_move_passive(distance, coords);
+  vsx_widget::event_mouse_move_passive(distance, coords);
 }
 
 void vsx_widget_base_edit::event_mouse_wheel(float y)

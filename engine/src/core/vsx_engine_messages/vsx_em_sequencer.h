@@ -65,35 +65,63 @@ if (cmd == "pseq_p")
   if (c->parts[1] == "list")
   {
     sequence_list.get_sequences(cmd_out);
+    goto process_message_queue_end;
   }
-  else
+
+  vsx_comp* dest = get_component_by_name(c->parts[2]);
+  if (!dest)
+    goto process_message_queue_end;
+
+  vsx_engine_param* param = dest->get_params_in()->get_by_name(c->parts[3]);
+  if (!param)
+    goto process_message_queue_end;
+
+  if (c->parts[1] == "inject")
+    sequence_list.inject_param(param, dest, c->parts[4]);
+
+  if (c->parts[1] == "inject_get") {
+    vsx_string<>a = sequence_list.dump_param(param);
+    if (a != "")
+      cmd_out->add_raw(
+        "pseq_p_ok "
+        "inject_get " +
+        c->parts[2] + " " +
+        c->parts[3] + " " +
+        a + " " +
+        vsx_string_helper::i2s(param->module_param->type),
+        VSX_COMMAND_GARBAGE_COLLECT
+      );
+  }
+  if (c->parts[1] == "add") {
+    if (!param->sequence) {
+      sequence_list.add_param_sequence(param,(vsx_comp_abs*)dest);
+    }
+    sequence_list.get_init(param,cmd_out,((vsx_comp_abs*)dest)->name);
+  }
+
+  if (c->parts[1] == "remove") {
+    sequence_list.remove_param_sequence(param);
+    cmd_out->add_raw("pseq_p_ok remove "+c->parts[2]+" "+c->parts[3], VSX_COMMAND_GARBAGE_COLLECT);
+  }
+
+  if (c->parts[1] == "save")
   {
     vsx_comp* dest = get_component_by_name(c->parts[2]);
-    if (dest) {
-      vsx_engine_param* param = dest->get_params_in()->get_by_name(c->parts[3]);
-      //vsx_module_param_abs* param = p->module_param;
-      if (param) {
-        if (c->parts[1] == "inject") {
-          sequence_list.inject_param(param, dest, c->parts[4]);
-        } else
-        if (c->parts[1] == "inject_get") {
-          vsx_string<>a = sequence_list.dump_param(param);
-          if (a != "") {
-            cmd_out->add_raw("pseq_p_ok inject_get "+c->parts[2]+" "+c->parts[3]+" "+a+" "+vsx_string_helper::i2s(param->module_param->type), VSX_COMMAND_GARBAGE_COLLECT);
-          }
-        } else
-        if (c->parts[1] == "add") {
-          if (!param->sequence) {
-            sequence_list.add_param_sequence(param,(vsx_comp_abs*)dest);
-          }
-          sequence_list.get_init(param,cmd_out,((vsx_comp_abs*)dest)->name);
-        } else
-        if (c->parts[1] == "remove") {
-          sequence_list.remove_param_sequence(param);
-          cmd_out->add_raw("pseq_p_ok remove "+c->parts[2]+" "+c->parts[3], VSX_COMMAND_GARBAGE_COLLECT);
-        }
-      }
-    }
+    if (!dest)
+      goto process_message_queue_end;
+
+    vsx_engine_param* param = dest->get_params_in()->get_by_name(c->parts[3]);
+    if (!param)
+      goto process_message_queue_end;
+
+    if (c->parts.size() != 5)
+      goto process_message_queue_end;
+
+    vsx_string_helper::write_to_file(
+      vsx_data_path::get_instance()->data_path_get() +  "sequences" + DIRECTORY_SEPARATOR + c->parts[4],
+      vsx_param_helper::param_name_from_id(param->module_param->type) + "\n" +
+      sequence_list.dump_param(param)
+    );
   }
   goto process_message_queue_end;
 }

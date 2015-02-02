@@ -31,6 +31,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/artiste/src
   ${CMAKE_SOURCE_DIR}/artiste/src/vsx_widget
   ${CMAKE_SOURCE_DIR}/artiste/include
+  ${CMAKE_SOURCE_DIR}/profiler/include
 )
 
 ################################################################################
@@ -97,11 +98,14 @@ set(SOURCES
   src/artiste_main.cpp
 )
 
+file(GLOB_RECURSE HEADER_FILES *.h)
+
+
 ################################################################################
 # LINK #########################################################################
 ################################################################################
 
-add_executable(${module_id} ${SOURCES} )
+add_executable(${module_id} ${SOURCES} ${HEADER_FILES})
 
 include(../cmake_suffix.txt)
 

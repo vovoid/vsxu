@@ -20,6 +20,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/engine_audiovisual/include
   ${CMAKE_SOURCE_DIR}/engine_graphics/include
   ${CMAKE_SOURCE_DIR}/engine/include
+  ${CMAKE_SOURCE_DIR}/profiler/include
 )
 
 
