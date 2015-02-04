@@ -1,3 +1,5 @@
+#include <vsx_data_path.h>
+
 const unsigned int lights[] = {GL_LIGHT0,GL_LIGHT1,GL_LIGHT2,GL_LIGHT3,GL_LIGHT4,GL_LIGHT5,GL_LIGHT6,GL_LIGHT7};
 
 class module_render_gl_light_directional : public vsx_module
@@ -87,6 +89,58 @@ public:
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
   }
 
+
+
+  void declare_operations(vsx_nw_vector<vsx_module_operation*>& operations )
+  {
+    vsx_module_operation* operation = new vsx_module_operation;
+    operation->handle = "save";
+    operation->name = "Save light to disk...";
+    operation->param_1_required = true;
+    operation->param_1_name = "Filename";
+    operations.push_back( operation );
+  }
+
+  void run_operation(vsx_module_operation& operation)
+  {
+    if (operation.handle == "save")
+    {
+      if (!operation.param_1.size())
+      {
+        message = "module||file name empty";
+        return;
+      }
+
+      vsx_data_path::get_instance()->ensure_output_directory("lights");
+
+      // Serialization format: 0 0:0.836,-0.35,-0.467:0.45955,0.752,1.0,1.0:0.5,0.58,0.66,1.0:1.0,1.0,1.0,1.0
+      vsx_string_helper::write_to_file(
+        vsx_data_path::get_instance()->data_path_get() +  "lights" + DIRECTORY_SEPARATOR + operation.param_1,
+
+        vsx_string_helper::i2s( light_id->get() ) + ":" +
+
+        vsx_string_helper::f2s( position->get(0) ) + "," +
+        vsx_string_helper::f2s( position->get(1) ) + "," +
+        vsx_string_helper::f2s( position->get(2) ) + ":" +
+
+        vsx_string_helper::f2s( ambient_color->get(0) ) + "," +
+        vsx_string_helper::f2s( ambient_color->get(1) ) + "," +
+        vsx_string_helper::f2s( ambient_color->get(2) ) + "," +
+        vsx_string_helper::f2s( ambient_color->get(3) ) + ":" +
+
+        vsx_string_helper::f2s( diffuse_color->get(0) ) + "," +
+        vsx_string_helper::f2s( diffuse_color->get(1) ) + "," +
+        vsx_string_helper::f2s( diffuse_color->get(2) ) + "," +
+        vsx_string_helper::f2s( diffuse_color->get(3) ) + ":" +
+
+        vsx_string_helper::f2s( specular_color->get(0) ) + "," +
+        vsx_string_helper::f2s( specular_color->get(1) ) + "," +
+        vsx_string_helper::f2s( specular_color->get(2) ) + "," +
+        vsx_string_helper::f2s( specular_color->get(3) )
+      );
+    }
+    message = "module||shader saved successfully";
+  }
 
 
 bool activate_offscreen()

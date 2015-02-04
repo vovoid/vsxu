@@ -18,6 +18,8 @@ public:
     return data_path;
   }
 
+  void ensure_output_directory(vsx_string<> name);
+
 private:
   ENGINE_DLLIMPORT static vsx_data_path instance;
 public:
