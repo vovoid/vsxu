@@ -315,4 +315,17 @@ typedef vsx_module_param<1, vsx_string<>,            1,0 > vsx_module_param_reso
 typedef vsx_module_param<0, vsx_vector_array<>,    1,0 > vsx_module_param_float3_array; // use get_addr() set_p()
 typedef vsx_module_param<0, vsx_quaternion_array<>,1,0 > vsx_module_param_quaternion_array; // use get_addr() set_p()
 
+
+// Helper macros
+
+#define VSX_PARAM_SET_FLOAT3_VECTOR3F(p, v) \
+  p->set( v.x, 0); p->set( v.y, 1); p->set( v.z, 2);
+
+#define VSX_PARAM_SET_FLOAT4_COLOR(p, v) \
+  p->set( v.r, 0); p->set( v.g, 1); p->set( v.b, 2); p->set( v.a, 3);
+
+#define VSX_PARAM_SET_QUATERNION_QUATERNION(p, v) \
+  p->set( v.x, 0); p->set( v.y, 1); p->set( v.z, 2); p->set( v.w, 3);
+
+
 #endif
