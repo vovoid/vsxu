@@ -33,20 +33,8 @@
 #include <unistd.h>
 #include <vsx_platform.h>
 
-
-
-#include "module_system_blocker.h"
-#include "module_system_blocker_loading.h"
-#include "module_system_clock.h"
-#include "module_system_joystick.h"
-#include "module_system_shutdown.h"
-#include "module_system_time.h"
-#include "module_system_trig_sequencer.h"
-#include "module_system_file_chooser.h"
 #include "module_string_resource_to_string.h"
-#include "module_render_state.h"
-
-
+#include "module_string_dummy.h"
 
 //******************************************************************************
 //*** F A C T O R Y ************************************************************
@@ -65,45 +53,22 @@ __declspec(dllexport) unsigned long get_num_modules(vsx_engine_environment* envi
 vsx_module* MOD_CM(unsigned long module, void* args) {
   VSX_UNUSED(args);
   switch(module) {
-    case 0: return (vsx_module*)(new module_system_shutdown);
-    case 1: return (vsx_module*)(new module_system_time);
-    case 2: return (vsx_module*)(new module_system_blocker);
-    case 3: return (vsx_module*)(new module_system_clock);
-    case 4: return (vsx_module*)(new module_system_trig_sequencer);
-    case 5: return (vsx_module*)(new module_system_blocker_loading);
-    case 6: return (vsx_module*)(new module_system_file_chooser);
-    case 7: return (vsx_module*)(new module_render_state);
-#if PLATFORM == PLATFORM_LINUX
-    case 8: return (vsx_module*)(new module_system_joystick);
-#endif
+    case 0: return (vsx_module*)(new module_string_resource_to_string);
+    case 1: return (vsx_module*)(new module_string_dummy);
   }
   return 0;
 }
 
 void MOD_DM(vsx_module* m,unsigned long module) {
   switch(module) {
-    case 0: delete (module_system_shutdown*)m; break;
-    case 1: delete (module_system_time*)m; break;
-    case 2: delete (module_system_blocker*)m; break;
-    case 3: delete (module_system_clock*)m; break;
-    case 4: delete (module_system_trig_sequencer*)m; break;
-    case 5: delete (module_system_blocker_loading*)m; break;
-    case 6: delete (module_system_file_chooser*)m; break;
-    case 7: delete (module_render_state*)m; break;
-#if PLATFORM == PLATFORM_LINUX
-    case 8: delete (module_system_joystick*)m; break;
-#endif
+    case 0: delete (module_string_resource_to_string*)m; break;
+    case 1: delete (module_string_dummy*)m; break;
   }
 }
 
 unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   VSX_UNUSED(environment);
-
-  unsigned long n = 8;
-  #if PLATFORM == PLATFORM_LINUX
-    n++;
-  #endif
-  return n;
+  return 2;
 }  
 

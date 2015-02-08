@@ -486,6 +486,9 @@ public:
   // res must be a float[4]
   inline void material_set_fv(int face_direction, int type, float* res)
   {
+    if (!res)
+      return;
+
     material_colors[type][face_direction][0] = res[0];
     material_colors[type][face_direction][1] = res[1];
     material_colors[type][face_direction][2] = res[2];
@@ -499,9 +502,30 @@ public:
 #endif
   }
 
+  inline void material_set_fv_intensity_rgb(int face_direction, int type, float* res, float intensity_rgb)
+  {
+    if (!res)
+      return;
+
+    material_colors[type][face_direction][0] = res[0] * intensity_rgb;
+    material_colors[type][face_direction][1] = res[1] * intensity_rgb;
+    material_colors[type][face_direction][2] = res[2] * intensity_rgb;
+    material_colors[type][face_direction][3] = res[3];
+#ifndef VSX_NO_GL
+    glMaterialfv(
+          gl_face_direction[face_direction],
+          gl_material_types[type],
+      material_colors[type][face_direction]
+    );
+#endif
+  }
+
   // res must be a float[4]
   inline void material_get_fv(int face_direction, int type, float* res)
   {
+    if (!res)
+      return;
+
     res[0] = material_colors[type][face_direction][0];
     res[1] = material_colors[type][face_direction][1];
     res[2] = material_colors[type][face_direction][2];
@@ -510,11 +534,17 @@ public:
 
   inline void get_material_fv_all( float* res)
   {
+    if (!res)
+      return;
+
     memcpy(res, &material_colors[0][0][0], sizeof(material_colors));
   }
 
   inline void material_set_fv_all(float* res)
   {
+    if (!res)
+      return;
+
     memcpy(&material_colors[0][0][0], res, sizeof(material_colors));
     for (size_t mat = 0; mat < 5; mat++)
     {

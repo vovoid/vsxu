@@ -247,6 +247,7 @@ add_subdirectory(src/render.skybox)
 add_subdirectory(src/render.text)
 add_subdirectory(src/selectors)
 add_subdirectory(src/sound.rtaudio)
+add_subdirectory(src/string)
 add_subdirectory(src/system)
 add_subdirectory(src/texture)
 

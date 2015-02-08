@@ -283,10 +283,10 @@ if (cmd == "component_rename")
     // component_rename macro1.macro2.component new_name
     // will be:
     // macro1.macro2.new_name
-    if (rename_component(c->parts[1],"$",c->parts[2]) == 1)
-    cmd_out->add_raw("component_rename_ok "+c->parts[1]+" "+c->parts[2], VSX_COMMAND_GARBAGE_COLLECT);
+    if ( rename_component(c->parts[1],"$",c->parts[2]) )
+      cmd_out->add_raw("component_rename_ok "+c->parts[1]+" "+c->parts[2], VSX_COMMAND_GARBAGE_COLLECT);
     else
-    cmd_out->add_raw(vsx_string<>("alert_fail ")+vsx_string_helper::base64_encode(c->raw)+" Error "+vsx_string_helper::base64_encode("Rename failed."), VSX_COMMAND_GARBAGE_COLLECT);
+      cmd_out->add_raw(vsx_string<>("alert_fail ")+vsx_string_helper::base64_encode(c->raw)+" Error "+vsx_string_helper::base64_encode("Rename failed."), VSX_COMMAND_GARBAGE_COLLECT);
   }
   goto process_message_queue_end;
 }

@@ -601,19 +601,15 @@ int vsx_engine_abs::rename_component(vsx_string<>old_identifier, vsx_string<>new
   explode(old_identifier,deli,parts);
   old_name = parts[parts.size()-1];
   parts.pop_back();
+
   if (parts.size())
-  old_base = implode(parts,deli);
-  else old_base = "";
+    old_base = implode(parts,deli);
+
 
   // we have the basic names set up now find the component
   vsx_comp* old_identifier_component = get_component_by_name(old_identifier);
   if (!old_identifier_component)
     return 0;
-
-  vsx_comp* new_possibly_colliding_name = get_component_by_name(new_name);
-  if (new_possibly_colliding_name)
-    return 0;
-
 
   // if we don't want to either move or rename
   if (new_base == "$")
@@ -621,6 +617,16 @@ int vsx_engine_abs::rename_component(vsx_string<>old_identifier, vsx_string<>new
 
   if (new_name == "$")
     new_name = old_name;
+
+  vsx_string<> look_for_new_name;
+  if (new_base.size())
+    look_for_new_name = new_base + ".";
+  look_for_new_name +=  new_name;
+  vsx_comp* new_possibly_colliding_name = get_component_by_name(look_for_new_name);
+  if (new_possibly_colliding_name)
+    return 0;
+
+
 
   // if we don't move anything, no reason to change parent
   bool assign_first = (new_base != old_base);
