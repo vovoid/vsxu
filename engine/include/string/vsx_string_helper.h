@@ -10,7 +10,7 @@
 
 namespace vsx_string_helper
 {
-/**
+  /**
    * @brief s2i
    * @param in
    * @return
@@ -29,6 +29,34 @@ namespace vsx_string_helper
   {
     char string_res[256] = "";
     sprintf(string_res,"%d",in);
+    return vsx_string<>(string_res);
+  }
+
+
+  /**
+   * @brief s2b
+   * @param in
+   * @return
+   */
+  inline bool s2b(const vsx_string<>& in)
+  {
+    if (in == "true")
+      return true;
+    return false;
+  }
+
+  /**
+   * @brief b2s
+   * @param in
+   * @return
+   */
+  inline vsx_string<>b2s(bool in)
+  {
+    char string_res[8] = "";
+    if (in)
+      sprintf(string_res,"%s","true");
+    else
+      sprintf(string_res,"%s","false");
     return vsx_string<>(string_res);
   }
 
