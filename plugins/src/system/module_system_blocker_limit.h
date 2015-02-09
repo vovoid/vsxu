@@ -1,7 +1,8 @@
-class module_system_blocker : public vsx_module
+class module_system_blocker_limit : public vsx_module
 {
   // in
   vsx_module_param_float* block;
+  vsx_module_param_float* limit;
   vsx_module_param_render* render_in;
 
   // out
@@ -16,7 +17,7 @@ public:
   void module_info(vsx_module_info* info)
   {
     info->identifier =
-      "system;blocker";
+      "system;blocker_limit";
 
     info->description =
       "Blocks a rendering chain."
@@ -27,8 +28,9 @@ public:
 
     info->in_param_spec =
       "render_in:render,"
-        "block:float"
-    ;
+        "block:float,"
+        "limit:float"
+      ;
 
     info->out_param_spec =
       "render_out:render,"
@@ -46,6 +48,10 @@ public:
     loading_done = true;
     block = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"block");
     block->set(1.0f);
+
+    limit = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"limit");
+    limit->set(0.5f);
+
 
     render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
     render_in->set(0);
@@ -65,7 +71,7 @@ public:
     if (engine->state == VSX_ENGINE_LOADING)
       return true;
 
-    if (block->get() >= 0.5)
+    if (block->get() >= limit->get())
       return true;
 
     return false;

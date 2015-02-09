@@ -36,6 +36,7 @@
 
 
 #include "module_system_blocker.h"
+#include "module_system_blocker_limit.h"
 #include "module_system_blocker_loading.h"
 #include "module_system_clock.h"
 #include "module_system_joystick.h"
@@ -73,8 +74,9 @@ vsx_module* MOD_CM(unsigned long module, void* args) {
     case 5: return (vsx_module*)(new module_system_blocker_loading);
     case 6: return (vsx_module*)(new module_system_file_chooser);
     case 7: return (vsx_module*)(new module_render_state);
+    case 8: return (vsx_module*)(new module_system_blocker_limit);
 #if PLATFORM == PLATFORM_LINUX
-    case 8: return (vsx_module*)(new module_system_joystick);
+    case 9: return (vsx_module*)(new module_system_joystick);
 #endif
   }
   return 0;
@@ -90,8 +92,9 @@ void MOD_DM(vsx_module* m,unsigned long module) {
     case 5: delete (module_system_blocker_loading*)m; break;
     case 6: delete (module_system_file_chooser*)m; break;
     case 7: delete (module_render_state*)m; break;
+    case 8: delete (module_system_blocker_limit*)m; break;
 #if PLATFORM == PLATFORM_LINUX
-    case 8: delete (module_system_joystick*)m; break;
+    case 9: delete (module_system_joystick*)m; break;
 #endif
   }
 }
@@ -100,7 +103,7 @@ unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   VSX_UNUSED(environment);
 
-  unsigned long n = 8;
+  unsigned long n = 9;
   #if PLATFORM == PLATFORM_LINUX
     n++;
   #endif
