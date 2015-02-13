@@ -175,69 +175,70 @@ void vsx_widget_timeline::draw_waveform_data(float y_mid, float y_size_half)
   // ************************************************************
   // sound waveform display
   // ************************************************************
-  if (show_wave_data)
+  if (!show_wave_data)
+    return;
+
+  vsx_widget_server* server = (vsx_widget_server*)owner->get_server();
+  vsx_engine* engine = (vsx_engine*)(server->engine);
+  vsx_module_engine_info* engine_info = engine->get_engine_info();
+
+  if (engine_info->param_float_arrays.size() >= 4 && a_focus == this)
   {
-    vsx_widget_server* server = (vsx_widget_server*)owner->get_server();
-    vsx_engine* engine = (vsx_engine*)(server->engine);
-    vsx_module_engine_info* engine_info = engine->get_engine_info();
-
-    if (engine_info->param_float_arrays.size() >= 4 && a_focus == this)
+    vsx_engine_float_array *full_pcm_data_l;
+    vsx_engine_float_array *full_pcm_data_r;
+    full_pcm_data_l = engine_info->param_float_arrays[2];
+    full_pcm_data_r = engine_info->param_float_arrays[3];
+    if (full_pcm_data_l->array.size() > 0)
     {
-      vsx_engine_float_array *full_pcm_data_l;
-      vsx_engine_float_array *full_pcm_data_r;
-      full_pcm_data_l = engine_info->param_float_arrays[2];
-      full_pcm_data_r = engine_info->param_float_arrays[3];
-      if (full_pcm_data_l->array.size() > 0)
+      // assuming we have 44100 samples per second
+      float x_start = parentpos.x+pos.x-size.x*0.5f;
+      float x_end   = parentpos.x+pos.x+size.x*0.5f;
+      float t_start = owner->tstart;
+      float t_end = owner->tend;
+      size_t data_end = (size_t) (t_end * 44100.0f);
+      if (owner->tstart < 0)
       {
-        // assuming we have 44100 samples per second
-        float x_start = parentpos.x+pos.x-size.x*0.5f;
-        float x_end   = parentpos.x+pos.x+size.x*0.5f;
-        float t_start = owner->tstart;
-        float t_end = owner->tend;
-        size_t data_end = (size_t) (t_end * 44100.0f);
-        if (owner->tstart < 0)
+        x_start += fabs(t_start / (t_end - t_start)) * size.x;
+        //data_end -= fabs(t_start) * 44100.0f;
+        t_start = 0.0f;
+      }
+      size_t data_start = (size_t) (t_start * 44100.0f);
+
+      size_t data_count = data_end - data_start;
+      float x_dist = x_end - x_start;
+      double x_diff = (double)x_dist / (double)data_count;
+
+      glColor4f(1.0f,0.2f,0.2f,0.15f);
+      double x_pos = x_start;
+      glBegin(GL_LINE_STRIP);
+        for (
+              size_t i = data_start;
+              i < data_end;
+              i++
+            )
         {
-          x_start += fabs(t_start / (t_end - t_start)) * size.x;
-          //data_end -= fabs(t_start) * 44100.0f;
-          t_start = 0.0f;
+          glVertex2f(x_pos, y_mid + (*full_pcm_data_l).array[i] * y_size_half );
+          x_pos += x_diff;
         }
-        size_t data_start = (size_t) (t_start * 44100.0f);
-
-        size_t data_count = data_end - data_start;
-        float x_dist = x_end - x_start;
-        double x_diff = (double)x_dist / (double)data_count;
-
-        glColor4f(1.0f,0.2f,0.2f,0.15f);
-        double x_pos = x_start;
-        glBegin(GL_LINE_STRIP);
-          for (
-                size_t i = data_start;
-                i < data_end;
-                i++
-              )
-          {
-            glVertex2f(x_pos, y_mid + (*full_pcm_data_l).array[i] * y_size_half );
-            x_pos += x_diff;
-          }
-        glEnd();
+      glEnd();
 
 
-        glColor4f(0.2f,1.0f,0.2f,0.1f);
-        x_pos = x_start;
-        glBegin(GL_LINE_STRIP);
-          for (
-                size_t i = data_start;
-                i < data_end;
-                i++
-              )
-          {
-            glVertex2f(x_pos, y_mid + (*full_pcm_data_r).array[i] * y_size_half );
-            x_pos += x_diff;
-          }
-        glEnd();
-      } // pcm data pool size
+      glColor4f(0.2f,1.0f,0.2f,0.1f);
+      x_pos = x_start;
+      glBegin(GL_LINE_STRIP);
+        for (
+              size_t i = data_start;
+              i < data_end;
+              i++
+            )
+        {
+          glVertex2f(x_pos, y_mid + (*full_pcm_data_r).array[i] * y_size_half );
+          x_pos += x_diff;
+        }
+      glEnd();
     }
   }
+
 }
 
 bool vsx_widget_timeline::event_key_down(signed long key, bool alt, bool ctrl, bool shift)

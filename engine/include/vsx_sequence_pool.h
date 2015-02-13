@@ -73,7 +73,7 @@ public:
 
   // time manipulation
   int get_state();
-  float get_time();
+  float get_vtime();
 	void set_time(float time);
   void play();
   void stop();

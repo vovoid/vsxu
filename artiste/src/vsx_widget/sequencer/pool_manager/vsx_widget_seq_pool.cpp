@@ -259,6 +259,11 @@ vsx_widget_seq_pool_manager::vsx_widget_seq_pool_manager() {
     button_export->title = "EXP";
     button_export->commands.adds(4,"gui_export","gui_export","");
 
+    button_propagate = add(new vsx_widget_button,"propagate");
+    button_propagate->init();
+    button_propagate->title = "PRP";
+    button_propagate->commands.adds(4,"propagate_time","propagate_time","");
+
   // search field
     vsx_widget_base_edit *s = (vsx_widget_base_edit*)add(new vsx_widget_base_edit,"e");
     s->init();
@@ -294,6 +299,7 @@ void vsx_widget_seq_pool_manager::init()
 
 void vsx_widget_seq_pool_manager::set_server(vsx_widget* serv)
 {
+  server = serv;
   ((vsx_widget_pool_tree*)edit)->set_server(serv);
 }
 
@@ -331,6 +337,7 @@ void vsx_widget_seq_pool_manager::i_draw()
   button_toggle_edit->set_size(vsx_vector3<>(0.02f,font_size));
   button_import->set_size(vsx_vector3<>(0.02f,font_size));
   button_export->set_size(vsx_vector3<>(0.02f,font_size));
+  button_propagate->set_size(vsx_vector3<>(0.02f,font_size));
 
   button_add->set_pos(vsx_vector3<>(button_add->size.x*0.5+dragborder,size.y-font_size*2.5f));
   button_del->set_pos(vsx_vector3<>(button_add->size.x*1.5+dragborder,size.y-font_size*2.5f));
@@ -338,6 +345,7 @@ void vsx_widget_seq_pool_manager::i_draw()
   button_clone->set_pos(vsx_vector3<>(button_add->size.x*3.5+dragborder,size.y-font_size*2.5f));
   button_import->set_pos(vsx_vector3<>(button_add->size.x*4.5+dragborder,size.y-font_size*2.5f));
   button_export->set_pos(vsx_vector3<>(button_add->size.x*5.5+dragborder,size.y-font_size*2.5f));
+  button_propagate->set_pos(vsx_vector3<>(button_add->size.x*6.5+dragborder,size.y-font_size*2.5f));
 
   edit->set_pos(vsx_vector3<>(size.x/2,size.y/2-font_size*1.5f+dragborder*0.5f));//+dragborder*0.5f
   edit->set_size(vsx_vector3<>(size.x-dragborder*2,size.y-font_size*3-dragborder));
@@ -403,12 +411,16 @@ void vsx_widget_seq_pool_manager::command_process_back_queue(vsx_command_s *t)
       {
         //sequencer init
         sequencer = (vsx_widget*)add(new vsx_widget_sequence_editor,"Animation Sequencer");
+
+
         // don't display master channel button
         ((vsx_widget_sequence_editor*)sequencer)->disable_master_channel = true;
         sequencer->constrained_y = sequencer->constrained_x = false;
         sequencer->coord_related_parent = false;
         sequencer->set_pos(vsx_vector3<>(0.0f,-0.6f));
         sequencer->init();
+        ((vsx_widget_sequence_editor*)sequencer)->set_server( server );
+
       } else
       {
         if (sequencer)
@@ -444,6 +456,8 @@ void vsx_widget_seq_pool_manager::command_process_back_queue(vsx_command_s *t)
     t->cmd == "pseq_l_dump"
     ||
     t->cmd == "seq_list"
+    ||
+    t->cmd == "propagate_time"
   )
   {
     vsx_string<>command = "seq_pool";

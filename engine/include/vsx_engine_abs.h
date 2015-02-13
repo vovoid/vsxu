@@ -128,6 +128,9 @@ protected:
   // engine's attempts of keeping up outside framerate (for artiste etc) while loading a state
   bool ignore_per_frame_time_limit; // default: false
 
+  // when running a sequence pool, make engine run off of that time as well
+  bool engine_time_from_sequence_pool;
+
   // constant frame progression time
   float frame_cfp_time;
 

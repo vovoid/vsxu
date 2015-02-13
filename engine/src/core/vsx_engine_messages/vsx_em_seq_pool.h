@@ -77,6 +77,7 @@ if (cmd == "seq_pool")
   if (c->parts[1] == "play")
   {
     sequence_pool.play();
+    time_play();
     goto process_message_queue_end;
   }
 
@@ -87,6 +88,8 @@ if (cmd == "seq_pool")
   // 0=seq_pool 1=stop
   if (c->parts[1] == "stop") {
     sequence_pool.stop();
+    if (engine_time_from_sequence_pool)
+      current_state = VSX_ENGINE_STOPPED;
     goto process_message_queue_end;
   }
 
@@ -98,6 +101,19 @@ if (cmd == "seq_pool")
   if (c->parts[1] == "rewind")
   {
     sequence_pool.rewind();
+    if (engine_time_from_sequence_pool)
+      current_state = VSX_ENGINE_REWIND;
+    goto process_message_queue_end;
+  }
+
+
+  // ***************************************
+  // Propagate Time - let sequence pool's time control engine's time
+  // ***************************************
+  // 0=seq_pool 1=propagate_time
+  if (c->parts[1] == "propagate_time")
+  {
+    engine_time_from_sequence_pool = true;
     goto process_message_queue_end;
   }
 

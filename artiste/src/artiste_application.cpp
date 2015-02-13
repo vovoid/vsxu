@@ -148,7 +148,7 @@ public:
 
     if (desktop)
     {
-      if (*gui_prod_fullwindow)
+      if (*gui_prod_fullwindow && !desktop->performance_mode)
         vxe->set_no_send_client_time(true);
       else
         vxe->set_no_send_client_time(false);

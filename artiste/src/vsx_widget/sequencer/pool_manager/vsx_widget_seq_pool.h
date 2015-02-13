@@ -29,6 +29,9 @@
 class vsx_widget_seq_pool_manager : public vsx_widget_window {
   vsx_string<>i_hint;
 
+  vsx_widget* server;
+
+
   // widgets
   vsx_widget *edit;
   vsx_widget *search;
@@ -37,6 +40,7 @@ class vsx_widget_seq_pool_manager : public vsx_widget_window {
   vsx_widget *button_clone;
   vsx_widget *button_import;
   vsx_widget *button_export;
+  vsx_widget *button_propagate;
   vsx_widget *button_toggle_edit;
   // dialogs
   vsx_widget *name_dialog;

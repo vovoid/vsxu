@@ -74,6 +74,7 @@ void vsx_engine_abs::constructor_set_default_values()
   sequence_pool.set_engine((void*)this);
   last_e_state = current_state = VSX_ENGINE_STOPPED;
   filesystem.set_base_path( vsx_data_path::get_instance()->data_path_get() );
+  engine_time_from_sequence_pool = false;
   frame_cfp_time = 0.0f;
   last_m_time_synch = 0;
   first_start = true;
@@ -215,7 +216,7 @@ void vsx_engine_abs::tell_client_time(vsx_command_list *cmd_out)
   {
     cmd_out->add_raw("time_upd " + vsx_string_helper::f2s(engine_info.vtime)+" "+vsx_string_helper::i2s(current_state), VSX_COMMAND_GARBAGE_COLLECT);
     // check to see if we should send our sequence pool too
-    cmd_out->add_raw("seq_pool time_upd " + vsx_string_helper::f2s(sequence_pool.get_time())+" "+vsx_string_helper::i2s(sequence_pool.get_state()), VSX_COMMAND_GARBAGE_COLLECT);
+    cmd_out->add_raw("seq_pool time_upd " + vsx_string_helper::f2s(sequence_pool.get_vtime())+" "+vsx_string_helper::i2s(sequence_pool.get_state()), VSX_COMMAND_GARBAGE_COLLECT);
   }
 
   last_e_state = current_state;

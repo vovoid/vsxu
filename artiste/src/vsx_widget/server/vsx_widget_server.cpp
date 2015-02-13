@@ -1127,6 +1127,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
       if (!seq_pool) {
         seq_pool = (vsx_widget*)add(new vsx_widget_seq_pool_manager,name+"sequence_pool");
         seq_pool->init();
+        ((vsx_widget_seq_pool_manager*)seq_pool)->set_server(this);
       }
       seq_pool->show();
       //seq_pool->set_render_type(render_3d);

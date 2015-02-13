@@ -151,7 +151,7 @@ int vsx_sequence_pool::get_state()
   return current_state;
 }
 
-float vsx_sequence_pool::get_time()
+float vsx_sequence_pool::get_vtime()
 {
   return vtime;
 }

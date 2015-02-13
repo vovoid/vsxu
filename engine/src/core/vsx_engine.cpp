@@ -476,7 +476,8 @@ void vsx_engine::time_rewind()
 //############## R E N D E R #######################################################################
 bool vsx_engine::render()
 {
-  if (!valid) return false;
+  if (!valid)
+    return false;
 
   // check for time control requests from the modules
   if
@@ -605,7 +606,8 @@ bool vsx_engine::render()
     }
 
 
-    if (current_state == VSX_ENGINE_STOPPED) last_m_time_synch = 0;
+    if (current_state == VSX_ENGINE_STOPPED)
+      last_m_time_synch = 0;
 
     // propagate current state so modules can read it
     engine_info.state = current_state;
@@ -633,6 +635,9 @@ bool vsx_engine::render()
 
     // advance the sequence pool
     sequence_pool.run(engine_info.dtime);
+
+    if (engine_time_from_sequence_pool)
+      engine_info.vtime = sequence_pool.get_vtime();
 
     // run the parameter interpolators
     interpolation_list.run(m_timer.dtime());
@@ -783,7 +788,7 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
     #include "vsx_engine_messages/vsx_parameters.h"
     #include "vsx_engine_messages/vsx_em_sequencer.h"
     #include "vsx_engine_messages/vsx_em_macro.h"
-    #include "vsx_engine_messages/vsx_seq_pool.h"
+    #include "vsx_engine_messages/vsx_em_seq_pool.h"
     #include "vsx_engine_messages/vsx_engine_time.h"
     #include "vsx_engine_messages/vsx_em_script.h"
     #include "vsx_engine_messages/vsx_note.h"
