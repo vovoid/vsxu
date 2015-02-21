@@ -38,6 +38,14 @@ public:
   T z;
   T w;
 
+  vsx_vector4()
+    :
+      x(0.0),
+      y(0.0),
+      z(0.0),
+      w(0.0)
+  {}
+
   static size_t arity()
   {
     return 4;
