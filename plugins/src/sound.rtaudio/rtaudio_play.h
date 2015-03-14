@@ -77,7 +77,7 @@ void setup_rtaudio_play()
   parameters.nChannels = 2;
   parameters.firstChannel = 0;
   unsigned int sampleRate = 44100;
-  unsigned int bufferFrames = 64;
+  unsigned int bufferFrames = 256;
   double data[2];
 
   //
