@@ -1,0 +1,3 @@
+[submodule "plugins/src/mesh.importers/cal3d"]
+	path = plugins/src/mesh.importers/cal3d
+	url = git@github.com:vovoid/cal3d.git

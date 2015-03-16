@@ -4,6 +4,7 @@
   #include <sys/prctl.h>
 #endif
 
+using namespace cal3d;
 
 typedef struct {
   CalBone* bone;
@@ -311,12 +312,12 @@ public:
               if (h) {
                 resources.push_back(file_path+parts[1]);
                 char* a = engine->filesystem->f_gets_entire(h);
-                vsxTiXmlDocument doc;
+                TiXmlDocument doc;
                 doc.Parse(a);
                 free(a);
-                if (c_model->loadCoreSkeleton(doc)) {
-                } else {
-                }
+                CalCoreSkeletonPtr skeleton = CalLoader::loadXmlCoreSkeleton(doc);
+                if (skeleton)
+                  c_model->setCoreSkeleton( skeleton.get() );
                 engine->filesystem->f_close(h);
               }
             }
@@ -325,15 +326,13 @@ public:
               if (h) {
                 resources.push_back(file_path+parts[1]);
                 char* a = engine->filesystem->f_gets_entire(h);
-                vsxTiXmlDocument doc;
+                TiXmlDocument doc;
                 doc.Parse(a);
                 free(a);
-                mesh_id = c_model->loadCoreMesh(doc);
-                if (mesh_id == -1) {
-                } else
-                {
+                CalCoreMeshPtr mesh = CalLoader::loadXmlCoreMesh( doc );
+                c_model->addCoreMesh( mesh.get() );
+                if (mesh_id > -1)
                   mesh_parts.push_back(mesh_id);
-                }
                 engine->filesystem->f_close(h);
               }
             }
