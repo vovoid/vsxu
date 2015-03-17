@@ -17,6 +17,12 @@ typedef struct {
 } bone_info;
 
 typedef struct {
+  vsx_string<> name;
+  int id;
+  vsx_module_param_float* weight;
+} morph_info;
+
+typedef struct {
   bool is_thread;
   void* class_pointer;
 } cal3d_thread_info;
@@ -48,6 +54,7 @@ public:
     CalCoreModel* c_model;
     CalModel* m_model;
     vsx_nw_vector<bone_info> bones;
+    vsx_nw_vector<morph_info> morphs;
 
     // threading stuff
     pthread_t         worker_t;
@@ -168,7 +175,7 @@ public:
       info->out_param_spec += ",absolutes:complex{";
       for (unsigned long i = 0; i < bones.size(); ++i)
       {
-        if (i != 0) {
+        if (i) {
           info->in_param_spec += ",";
           info->out_param_spec += ",";
         }
@@ -177,6 +184,18 @@ public:
       }
       info->in_param_spec += "}";
       info->out_param_spec += "}";
+    }
+
+    if (morphs.size())
+    {
+      info->in_param_spec += ",morph_targets:complex{";
+      for ( size_t i = 0; i < morphs.size(); i++)
+      {
+        if (i)
+          info->in_param_spec += ",";
+        info->in_param_spec += morphs[i].name+"_weight:float";
+      }
+      info->in_param_spec += "}";
     }
 
   }
@@ -212,26 +231,29 @@ public:
     use_thread = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"use_thread");
     use_thread->set(0);
     prev_use_thread = 0;
-    if (bones.size())
+    for (unsigned long i = 0; i < bones.size(); ++i)
     {
-      for (unsigned long i = 0; i < bones.size(); ++i)
-      {
-        bones[i].param = (vsx_module_param_quaternion*)in_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION,(bones[i].name+"_rotation").c_str());
-        bones[i].translation = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,(bones[i].name+"_translation").c_str());
-        CalQuaternion q2;
-        if (bones[i].bone != 0) {
-          q2 = bones[i].bone->getRotation();
-          bones[i].param->set(q2.x,0);
-          bones[i].param->set(q2.y,1);
-          bones[i].param->set(q2.z,2);
-          bones[i].param->set(q2.w,3);
-        } else {
-          bones[i].param->set(0,0);
-          bones[i].param->set(0,1);
-          bones[i].param->set(0,2);
-          bones[i].param->set(1,3);
-        }
+      bones[i].param = (vsx_module_param_quaternion*)in_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION,(bones[i].name+"_rotation").c_str());
+      bones[i].translation = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,(bones[i].name+"_translation").c_str());
+      CalQuaternion q2;
+      if (bones[i].bone != 0) {
+        q2 = bones[i].bone->getRotation();
+        bones[i].param->set(q2.x,0);
+        bones[i].param->set(q2.y,1);
+        bones[i].param->set(q2.z,2);
+        bones[i].param->set(q2.w,3);
+      } else {
+        bones[i].param->set(0,0);
+        bones[i].param->set(0,1);
+        bones[i].param->set(0,2);
+        bones[i].param->set(1,3);
       }
+    }
+
+    for ( size_t i = 0; i < morphs.size(); i++)
+    {
+      morphs[i].weight = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,(morphs[i].name+"_weight").c_str());
+      morphs[i].weight->set(0.0f);
     }
   }
 
@@ -343,8 +365,9 @@ public:
         m_model->attachMesh(mesh_id);
 
         m_model->update(0.0f);
-        CalSkeleton* m_skeleton = m_model->getSkeleton();
 
+        // Iterate over Bones
+        CalSkeleton* m_skeleton = m_model->getSkeleton();
         int b_id = 0;
         std::vector<CalCoreBone*> blist = c_model->getCoreSkeleton()->getVectorCoreBone();
         for (std::vector<CalCoreBone*>::iterator it = blist.begin(); it != blist.end(); ++it) {
@@ -356,6 +379,29 @@ public:
           bones.push_back(b1);
           ++b_id;
         }
+
+        int morph_target_count = m_model->getMesh(0)->getSubmesh(0)->getMorphTargetWeightCount();
+        if (morph_target_count)
+        {
+          //CalMorphTargetMixer* m_morp_mixer = m_model->getMorphTargetMixer();
+          vsx_printf(L"number of morph targets: %d\n", morph_target_count );
+
+          std::vector<CalCoreSubMorphTarget *> morph_targets = m_model->getMesh(0)->getSubmesh(0)->getCoreSubmesh()->getVectorCoreSubMorphTarget();
+          for( size_t i = 0; i < morph_targets.size(); i++)
+          {
+            morph_info mi;
+            mi.id = i;
+            mi.name = morph_targets[i]->name().c_str();
+            vsx_printf(L"morph name: %s\n", mi.name.c_str());
+            morphs.push_back( mi );
+          }
+        }
+
+
+
+
+
+
         redeclare_in = true;
         redeclare_out = true;
         CalBone* m_bone_0 = m_skeleton->getBone(2);
@@ -571,29 +617,24 @@ public:
       }
 
       my->thread_has_something_to_deliver++;
+
       if (thread_info.is_thread)
-      {
         pthread_mutex_unlock(&my->mesh_mutex);
-      }
 
       // if we're not supposed to run in a thread
       if (false == thread_info.is_thread)
-      {
         return 0;
-      }
 
-      {
-        // see if the exit flag is set (user changed from threaded to non-threaded mode)
-        pthread_mutex_lock(&my->thread_exit_mutex);
-        int time_to_exit = my->thread_exit;
-        pthread_mutex_unlock(&my->thread_exit_mutex);
-        if (time_to_exit) {
-          int *retval = new int;
-          *retval = 0;
-          my->thread_exit = 0;
-          pthread_exit((void*)retval);
-          return 0;
-        }
+      // see if the exit flag is set (user changed from threaded to non-threaded mode)
+      pthread_mutex_lock(&my->thread_exit_mutex);
+      int time_to_exit = my->thread_exit;
+      pthread_mutex_unlock(&my->thread_exit_mutex);
+      if (time_to_exit) {
+        int *retval = new int;
+        *retval = 0;
+        my->thread_exit = 0;
+        pthread_exit((void*)retval);
+        return 0;
       }
     }
     return 0;
@@ -664,27 +705,8 @@ public:
           {
             if (my->bones[j].bone != 0)
             {
-
               CalVector t1 = my->bones[j].bone->getTranslationAbsolute();
-
               CalQuaternion q2 = my->bones[j].bone->getRotationAbsolute();
-
-              /*
-              // slow line!!!
-              my->bones[j].bone->getCoreBone()->calculateBoundingBox(m_model->getCoreModel());
-              my->bones[j].bone->calculateBoundingBox();
-
-              CalBoundingBox bbox = my->bones[j].bone->getBoundingBox();
-              CalVector bboxv[8];
-              bbox.computePoints((CalVector*)&bboxv);
-              for (unsigned long bbi = 0; bbi < 8; bbi++)
-              {
-                mesh_bbox->data->vertices[j*8+bbi].x = bboxv[bbi].x;
-                mesh_bbox->data->vertices[j*8+bbi].y = bboxv[bbi].y;
-                mesh_bbox->data->vertices[j*8+bbi].z = bboxv[bbi].z;
-              }
-            */
-
 
               my->bones[j].result_rotation   ->set( q2.x, 0 );
               my->bones[j].result_rotation   ->set( q2.y, 1 );
@@ -694,10 +716,17 @@ public:
               my->bones[j].result_translation->set( t1.x, 0 );
               my->bones[j].result_translation->set( t1.y, 1 );
               my->bones[j].result_translation->set( t1.z, 2 );
-
             }
           }
+          for (unsigned long j = 0; j < my->morphs.size(); ++j)
+          {
+            my->m_model->getMesh(0)->getSubmesh(0)->
+              setMorphTargetWeight(morphs[j].id, morphs[j].weight->get() );
+          }
         }
+
+//        my->m_model->update(engine->dtime);
+
 
         mesh->timestamp++;
         result->set(mesh);

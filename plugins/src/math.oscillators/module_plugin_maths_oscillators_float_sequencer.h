@@ -262,10 +262,14 @@ public:
 
     }
 
+    if (length->get() > 0.00001)
+    {
+      float tt = i_time / length->get();
+      if (tt != tt)
+        return;
 
-    float tt = i_time / length->get();
-
-    calc_cache();
-    result1->set(sequence_cache[(int)round(8191.0f*tt)]);
+      calc_cache();
+      result1->set(sequence_cache[(int)round(8191.0f*tt)]);
+    }
   }
 };
