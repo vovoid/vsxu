@@ -58,7 +58,7 @@
  * }
  **/
 
-#ifndef VSX_NO_PROFILER
+#ifdef VSX_PROFILER
   #define VSXP_CLASS_DECLARE vsx_profiler* profiler
   #define VSXP_CLASS_CONSTRUCTOR profiler = 0x0
   #define VSXP_CLASS_LOCAL_INIT if (!profiler) profiler = vsx_profiler_manager::get_instance()->get_profiler()

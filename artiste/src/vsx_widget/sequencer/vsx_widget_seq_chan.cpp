@@ -1182,8 +1182,6 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
     if (t->parts[1] == "inject_get")
     {
       vsx_string<>deli = "|";
-      std::list< vsx_string<> > pl;
-      explode(t->parts[4], deli, pl);
 
       if (!param_type)
         param_type = VSX_MODULE_PARAM_ID_FLOAT;
@@ -1204,11 +1202,13 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
           break;
       }
 
-      for (std::list< vsx_string<> >::iterator it = pl.begin(); it != pl.end(); ++it)
+      std::vector <vsx_string<> > pl;
+      explode(t->parts[4], deli, pl);
+      foreach (pl, i)
       {
         std::vector <vsx_string<> > pld;
         vsx_string<>pdeli = ";";
-        explode((*it), pdeli, pld);
+        explode(pl[i], pdeli, pld);
         vsx_widget_param_sequence_item pa;
         if (pld.size() < 2)
           continue;
@@ -1220,6 +1220,9 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
           vsx_string<>vtemp = vsx_string_helper::base64_decode(pld[2]);
           explode(vtemp, pdeli_l, pld_l);
           pa.set_value( pld_l[0] );
+          if (pld_l.size() == 1)
+            VSX_ERROR_CONTINUE("Error, no handle information for value of interpolation type bezier");
+
           pa.set_handle1( vsx_vector3_helper::from_string<float>( pld_l[1] ) );
           pa.set_handle2( vsx_vector3_helper::from_string<float>( pld_l[2] ) );
         }

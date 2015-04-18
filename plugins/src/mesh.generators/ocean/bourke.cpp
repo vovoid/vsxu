@@ -139,6 +139,118 @@ double *imagx = 0;
 double *realy = 0;
 double *imagy = 0;
 
+int FFT2D(COMPLEX c[][256],int nx,int ny,int dir)
+{
+   int i,j;
+   int m,twopm;
+
+   /* Transform the rows */
+   if (realx == 0) {
+    realx = (double *)malloc(nx * sizeof(double));
+    imagx = (double *)malloc(nx * sizeof(double));
+    realy = (double *)malloc(ny * sizeof(double));
+    imagy = (double *)malloc(ny * sizeof(double));
+   }
+   //if (real == NULL || imag == NULL)
+     // return(FALSE);
+   if (!Powerof2(nx,&m,&twopm) || twopm != nx)
+      return(FALSE);
+   for (j=0;j<ny;j++) {
+      for (i=0;i<nx;i++) {
+         realx[i] = c[i][j].real;
+         imagx[i] = c[i][j].imag;
+      }
+      FFT(dir,m,realx,imagx);
+      for (i=0;i<nx;i++) {
+         c[i][j].real = realx[i];
+         c[i][j].imag = imagx[i];
+      }
+   }
+   //free(real);
+   //free(imag);
+
+   /* Transform the columns */
+   //real = (double *)malloc(ny * sizeof(double));
+   //imag = (double *)malloc(ny * sizeof(double));
+   //if (real == NULL || imag == NULL)
+//      return(FALSE);
+   if (!Powerof2(ny,&m,&twopm) || twopm != ny)
+      return(FALSE);
+   for (i=0;i<nx;i++) {
+      for (j=0;j<ny;j++) {
+         realy[j] = c[i][j].real;
+         imagy[j] = c[i][j].imag;
+      }
+      FFT(dir,m,realy,imagy);
+      for (j=0;j<ny;j++) {
+         c[i][j].real = realy[j];
+         c[i][j].imag = imagy[j];
+      }
+   }
+   //free(real);
+   //free(imag);
+
+   return(TRUE);
+}
+
+
+
+
+int FFT2D(COMPLEX c[][128],int nx,int ny,int dir)
+{
+   int i,j;
+   int m,twopm;
+
+   /* Transform the rows */
+   if (realx == 0) {
+    realx = (double *)malloc(nx * sizeof(double));
+    imagx = (double *)malloc(nx * sizeof(double));
+    realy = (double *)malloc(ny * sizeof(double));
+    imagy = (double *)malloc(ny * sizeof(double));
+   }
+   //if (real == NULL || imag == NULL)
+     // return(FALSE);
+   if (!Powerof2(nx,&m,&twopm) || twopm != nx)
+      return(FALSE);
+   for (j=0;j<ny;j++) {
+      for (i=0;i<nx;i++) {
+         realx[i] = c[i][j].real;
+         imagx[i] = c[i][j].imag;
+      }
+      FFT(dir,m,realx,imagx);
+      for (i=0;i<nx;i++) {
+         c[i][j].real = realx[i];
+         c[i][j].imag = imagx[i];
+      }
+   }
+   //free(real);
+   //free(imag);
+
+   /* Transform the columns */
+   //real = (double *)malloc(ny * sizeof(double));
+   //imag = (double *)malloc(ny * sizeof(double));
+   //if (real == NULL || imag == NULL)
+//      return(FALSE);
+   if (!Powerof2(ny,&m,&twopm) || twopm != ny)
+      return(FALSE);
+   for (i=0;i<nx;i++) {
+      for (j=0;j<ny;j++) {
+         realy[j] = c[i][j].real;
+         imagy[j] = c[i][j].imag;
+      }
+      FFT(dir,m,realy,imagy);
+      for (j=0;j<ny;j++) {
+         c[i][j].real = realy[j];
+         c[i][j].imag = imagy[j];
+      }
+   }
+   //free(real);
+   //free(imag);
+
+   return(TRUE);
+}
+
+
 
 int FFT2D(COMPLEX c[][64],int nx,int ny,int dir)
 {

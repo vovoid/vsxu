@@ -490,7 +490,7 @@ public:
       parts.push_back(
         vsx_string_helper::f2s(items[i].delay)+";"+
         vsx_string_helper::f2s(items[i].interpolation)+";"+
-        vsx_string_helper::base64_encode((items[i].value.get_string()))
+        vsx_string_helper::base64_encode((items[i].get_value()))
       );
     }
     vsx_string<>deli = "|";
