@@ -28,6 +28,7 @@ class vsx_module_raw_sample_play : public vsx_module
   // in
   vsx_module_param_resource* filename;
   vsx_module_param_int* format;
+  vsx_module_param_float* gain;
 
   // out
 
@@ -51,7 +52,8 @@ public:
 
     info->in_param_spec =
       "filename:resource,"
-      "format:enum?mono|stereo"
+      "format:enum?mono|stereo,"
+      "gain:float"
     ;
 
     info->out_param_spec =
@@ -71,6 +73,9 @@ public:
     filename->set("");
 
     format = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"format");
+
+    gain = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"gain");
+    gain->set(1.0);
 
     loading_done = true;
   }
@@ -94,7 +99,7 @@ public:
       const float one_div_32767 = 1.0 / 32767.0;
       vsx_ma_vector<int16_t>* data = main_sample.get_data();
       size_t index_data = 0;
-      for (size_t i = 0; i < data->size() >> 1; i++)
+      for (size_t i = 0; i < (data->size() >> 1); i++)
       {
         full_pcm_data_l.array[i] = (float)(*data)[index_data] * one_div_32767;
         index_data++;
@@ -143,6 +148,7 @@ public:
       }
     }
     main_sample.set_stereo_type( format->get() + 1 );
+    main_sample.set_gain( gain->get() );
   }
 };
 
