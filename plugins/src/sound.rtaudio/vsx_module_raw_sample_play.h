@@ -29,6 +29,7 @@ class vsx_module_raw_sample_play : public vsx_module
   vsx_module_param_resource* filename;
   vsx_module_param_int* format;
   vsx_module_param_float* gain;
+  vsx_module_param_int* show_waveform_in_sequencer;
 
   // out
 
@@ -53,7 +54,8 @@ public:
     info->in_param_spec =
       "filename:resource,"
       "format:enum?mono|stereo,"
-      "gain:float"
+      "gain:float,"
+      "show_waveform_in_sequencer:enum?no|yes"
     ;
 
     info->out_param_spec =
@@ -76,6 +78,9 @@ public:
 
     gain = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"gain");
     gain->set(1.0);
+
+    show_waveform_in_sequencer = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"show_waveform_in_sequencer");
+    show_waveform_in_sequencer->set( 1 );
 
     loading_done = true;
   }
@@ -119,9 +124,11 @@ public:
 
   void run()
   {
-
-    engine->param_float_arrays[2] = &full_pcm_data_l;
-    engine->param_float_arrays[3] = &full_pcm_data_r;
+    if (show_waveform_in_sequencer->get())
+    {
+      engine->param_float_arrays[2] = &full_pcm_data_l;
+      engine->param_float_arrays[3] = &full_pcm_data_r;
+    }
 
 
     if (fabs(engine->vtime - main_sample.get_time()) > 0.08)

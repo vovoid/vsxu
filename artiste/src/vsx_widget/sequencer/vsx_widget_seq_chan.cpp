@@ -493,7 +493,9 @@ void vsx_widget_seq_channel::event_mouse_double_click(
       command_q_b.add_raw("remove_chan " + channel_name + " " + param_name);
       parent->vsx_command_queue_b(this);
     }
-  } else
+  }
+
+  if (ctrl)
   {
     command_q_b.add_raw("remove_chan " + channel_name + " " + param_name);
     parent->vsx_command_queue_b(this);

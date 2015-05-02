@@ -363,7 +363,8 @@ void vsx_engine::set_speed(float spd)
 // set internal float parameter
 void vsx_engine::set_float_array_param(int id, vsx_engine_float_array* float_array)
 {
-  if (!valid) return;
+  if (!valid)
+    return;
   engine_info.param_float_arrays[id] = float_array;
 }
 
