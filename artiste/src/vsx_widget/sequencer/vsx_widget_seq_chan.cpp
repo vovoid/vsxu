@@ -157,6 +157,12 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
   index_hit = -1; // we don't know which index has been hit
   extra_hit = -1;
 
+  if (button == 0)
+    mouse_down_l = true;
+
+  if (button == 2)
+    mouse_down_r = true;
+
   // first position the iterator and time just outside the viewing area so we don't
   // do unnecesarry heavy calculations
   if (view_time_start < 0 && view_time_end > 0)
@@ -447,6 +453,12 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
 void vsx_widget_seq_channel::event_mouse_up(vsx_widget_distance distance,
     vsx_widget_coords coords, int button)
 {
+  if (button == 0)
+    mouse_down_l = false;
+
+  if (button == 2)
+    mouse_down_r = false;
+
   if (!shift && !ctrl && !alt)
   vsx_widget::event_mouse_up(distance, coords, button);
 }
@@ -539,6 +551,9 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
     vsx_widget_coords coords)
 {
   event_mouse_move_passive(distance, coords);
+
+  if (mouse_down_r)
+    return;
 
   // handling of Master channels
   if (channel_type == VSX_WIDGET_SEQ_CHANNEL_TYPE_MASTER)
@@ -663,10 +678,18 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
     // first bezier handle
     if (extra_hit == 1)
     {
-      items[mouse_clicked_id].set_handle1( vsx_vector3<>(f / items[mouse_clicked_id].get_total_length(), y	- vsx_string_helper::s2f(items[mouse_clicked_id].get_value()) ) );
+      float y_val = y	- vsx_string_helper::s2f(items[mouse_clicked_id].get_value());
+      if (alt)
+        y_val = 0;
+      items[mouse_clicked_id].set_handle1(
+        vsx_vector3<>(
+          f / items[mouse_clicked_id].get_total_length(),
+          y_val
+        )
+      );
 
       // move the previous bezier handle
-      if ( ctrl && !shift && !alt)
+      if ( ctrl && !shift)
       {
         vsx_widget_param_sequence_item* other_item = 0x0;
         float cur_time_x = items[mouse_clicked_id].get_handle1().x * items[mouse_clicked_id].get_total_length();
@@ -698,10 +721,18 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
     // second bezier handle
     if (extra_hit == 2)
     {
-      items[mouse_clicked_id].set_handle2( vsx_vector3<>(f / items[mouse_clicked_id].get_total_length(), y - vsx_string_helper::s2f(items[mouse_clicked_id + 1].get_value()) ) );
+      float y_val = y	- vsx_string_helper::s2f(items[mouse_clicked_id + 1].get_value());
+      if (alt)
+        y_val = 0;
+      items[mouse_clicked_id].set_handle2(
+        vsx_vector3<>(
+          f / items[mouse_clicked_id].get_total_length(),
+          y_val
+        )
+      );
 
       // move the next bezier handle
-      if (ctrl && !shift && !alt)
+      if (ctrl && !shift)
       {
         vsx_widget_param_sequence_item* other_item = 0x0;
         float cur_time_x = (1.0 - items[mouse_clicked_id].get_handle2().x ) * items[mouse_clicked_id].get_total_length();

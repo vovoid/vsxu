@@ -71,6 +71,7 @@ set(SOURCES
   src/widgets/vsx_widget_popup_menu.cpp
   src/widgets/vsx_widget_scrollbar.cpp
 )
+file(GLOB_RECURSE HEADER_FILES *.h)
 
 ################################################################################
 # LINKAGE ######################################################################
@@ -79,12 +80,12 @@ set(SOURCES
 if (VSXU_STATIC EQUAL 1)
 
   #static build
-  add_library(${module_id} STATIC ${SOURCES})
+  add_library(${module_id} STATIC ${SOURCES} ${HEADER_FILES})
 
 else ()
 
   #dynamic build
-  add_library(${module_id} SHARED ${SOURCES})
+  add_library(${module_id} SHARED ${SOURCES} ${HEADER_FILES})
 
 endif ()
 
