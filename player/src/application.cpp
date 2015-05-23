@@ -36,7 +36,7 @@
 // you might want to remove this.
 #include "vsx_overlay.h"
 
-#include <GL/glfw.h>
+#include <GLFW/glfw3.h>
 
 vsx_manager_abs* manager;
 
@@ -106,13 +106,13 @@ void app_key_down(long key)
 {
   switch (key)
   {
-    case GLFW_KEY_ESC:
+    case GLFW_KEY_ESCAPE:
       if (manager) manager_destroy(manager);
       exit(0);
-    case GLFW_KEY_PAGEUP:
+    case GLFW_KEY_PAGE_UP:
       manager->inc_speed();
       break;
-    case GLFW_KEY_PAGEDOWN:
+    case GLFW_KEY_PAGE_DOWN:
       manager->dec_speed();
       break;
     case GLFW_KEY_UP:

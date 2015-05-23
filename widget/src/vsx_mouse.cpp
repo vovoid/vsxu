@@ -22,7 +22,7 @@
 */
 
 #include "vsx_mouse.h"
-#include "GL/glfw.h"
+#include "GLFW/glfw3.h"
 
 void vsx_mouse::set_cursor(int id)
 {
@@ -36,21 +36,22 @@ void vsx_mouse::set_cursor_implement()
 void vsx_mouse::show_cursor()
 {
   // This causes problems with knobs & arcballs, mouse visibility is disabled for now
-  //glfwEnable(GLFW_MOUSE_CURSOR);
+  //glfwEnable(GLFW_CURSOR);
   //glfwSetMousePos((int)(position.x), (int)(position.y));
 }
 
 void vsx_mouse::hide_cursor()
 {
   // This causes problems with knobs & arcballs, mouse visibility is disabled for now
-  //  glfwDisable(GLFW_MOUSE_CURSOR);
+  //  glfwDisable(GLFW_CURSOR);
 }
 
 
 void vsx_mouse::set_cursor_pos(float x, float y)
 {
   position.set(x,y);
-  glfwSetMousePos((int)(position.x), (int)(position.y));
+  //FIXME: commented out to make it compile with glfw3
+//  glfwSetCursorPos(window, (int)(position.x), (int)(position.y));
 }
 
 vsx_mouse::vsx_mouse()

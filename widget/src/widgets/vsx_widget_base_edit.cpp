@@ -36,7 +36,7 @@
 #include "vsx_widget_popup_menu.h"
 #include <stdlib.h>
 #include "vsx_widget_button.h"
-#include "GL/glfw.h"
+#include "GLFW/glfw3.h"
 #include <gl_helper.h>
 
 vsx_widget_base_edit::vsx_widget_base_edit() {
@@ -688,7 +688,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
         }
       break;
     // page up
-    case -GLFW_KEY_PAGEUP:
+    case -GLFW_KEY_PAGE_UP:
       if (!single_row) {
         for (int zz = 0; zz < characters_height*0.95; ++zz) {
         event_key_down(-GLFW_KEY_UP);
@@ -709,7 +709,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
       }
       break;
     // page down
-    case -GLFW_KEY_PAGEDOWN:
+    case -GLFW_KEY_PAGE_DOWN:
       if (!single_row) {
         for (int zz = 0; zz < characters_height*0.95; ++zz) {
         event_key_down(-GLFW_KEY_DOWN,false,false,false);
@@ -766,7 +766,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
       if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
     break;
     // delete
-    case -GLFW_KEY_DEL:
+    case -GLFW_KEY_DELETE:
       event_key_down(-GLFW_KEY_RIGHT,false,false,false);
       event_key_down(-GLFW_KEY_BACKSPACE,false,false,false);
       process_line(carety+(int)scroll_y);
@@ -804,7 +804,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
       if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
     break;
     // esc
-    case -GLFW_KEY_ESC:
+    case -GLFW_KEY_ESCAPE:
     // da rest:
       if (single_row) {
         command_q_b.add_raw("cancel");

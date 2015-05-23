@@ -27,7 +27,10 @@
 #include <string/vsx_string_helper.h>
 #include <vsx_argvector.h>
 #include <GL/glew.h>
-#include "GL/glfw.h"
+
+#define GLFW_INCLUDE_GLU
+#include "GLFW/glfw3.h"
+
 #include "application.h"
 #include "vsxfst.h"
 #include "vsx_version.h"
@@ -46,7 +49,7 @@ bool app_shift = false;
 bool dual_monitor = false;
 
 
-
+GLFWwindow* mainWindow = NULL;
 
 
 /*
@@ -67,9 +70,9 @@ void app_mousewheel(float diff,int x,int y);
 
 void set_modifiers()
 {
-  app_ctrl = (bool)glfwGetKey(GLFW_KEY_LCTRL);
-  app_shift = (bool)glfwGetKey(GLFW_KEY_LSHIFT);
-  app_alt = (bool)glfwGetKey(GLFW_KEY_LALT);
+  app_ctrl = (bool)glfwGetKey(mainWindow, GLFW_KEY_LEFT_CONTROL);
+  app_shift = (bool)glfwGetKey(mainWindow, GLFW_KEY_LEFT_SHIFT);
+  app_alt = (bool)glfwGetKey(mainWindow, GLFW_KEY_LEFT_ALT);
 }
 
 long key_pressed = -1;
@@ -78,19 +81,23 @@ float key_time;
 float key_repeat_time;
 float initial_key_delay = 0.04f;
 
-void GLFWCALL key_char_event( int character, int action )
+void key_char_event( GLFWwindow* window, unsigned int character )
 {
-  if (action == GLFW_PRESS)
-  {
+  VSX_UNUSED(window);
+//  if (action == GLFW_PRESS)
+//  {
     app_char(character);
     key_character = character;
-
-  }
+//  }
 }
 
 
-void GLFWCALL key_event(int key, int action)
+void key_event(GLFWwindow* window, int key, int scancode, int action, int modifier)
 {
+  VSX_UNUSED(window);
+  VSX_UNUSED(scancode);
+  VSX_UNUSED(modifier);
+
   set_modifiers();
   if (action == GLFW_PRESS)
   {
@@ -108,12 +115,15 @@ void GLFWCALL key_event(int key, int action)
   }
 }
 
-int last_x = 0, last_y = 0;
+double last_x = 0, last_y = 0;
 int mouse_state = 0;
 
-void GLFWCALL mouse_button_event(int button, int action)
+void mouse_button_event(GLFWwindow* window, int button, int action, int modifiers)
 {
-  glfwGetMousePos(&last_x, &last_y);
+  VSX_UNUSED(window);
+  VSX_UNUSED(modifiers);
+
+  glfwGetCursorPos(mainWindow, &last_x, &last_y);
   set_modifiers();
   unsigned long i_but = 0;
   switch (button)
@@ -135,27 +145,34 @@ void GLFWCALL mouse_button_event(int button, int action)
 
 int mouse_pos_type = 0;
 
-void GLFWCALL mouse_pos_event(int x, int y)
+void mouse_pos_event(GLFWwindow* window, double x, double y)
 {
+  VSX_UNUSED(window);
   VSX_UNUSED(x);
   VSX_UNUSED(y);
   set_modifiers();
-  glfwGetMousePos(&last_x, &last_y);
+  glfwGetCursorPos(mainWindow, &last_x, &last_y);
   if (mouse_state) mouse_pos_type = 1;
   else mouse_pos_type = 2;
 }
 
 int mousewheel_prev_pos = 0;
 
-void GLFWCALL mouse_wheel(int pos)
+void mouse_wheel(GLFWwindow* window, double xoffset, double yoffset)
 {
+  VSX_UNUSED(window);
+  VSX_UNUSED(xoffset);
   set_modifiers();
-  app_mousewheel((float)(pos-mousewheel_prev_pos),last_x,last_y);
-  mousewheel_prev_pos = pos;
+  //int pos = yoffset;
+  //app_mousewheel((float)(pos-mousewheel_prev_pos),last_x,last_y);
+  app_mousewheel(yoffset,last_x,last_y);
+  //mousewheel_prev_pos = pos;
 }
 
-void GLFWCALL window_size( int width, int height )
+
+void window_size(GLFWwindow* window, int width, int height )
 {
+  VSX_UNUSED(window);
   vsx_gl_state::get_instance()->viewport_change(0,0,width, height);
 }
 
@@ -200,10 +217,10 @@ int main(int argc, char* argv[])
 
   // Initialise GLFW
   glfwInit();
-  set_modifiers();
 
 
-  int     width, height, running, frames, x, y;
+  int     width, height, frames;
+  double  x, y;
   double  t, t1;
 //  unsigned long usleep_framelimit;
   char    titlestr[ 200 ];
@@ -251,37 +268,40 @@ int main(int argc, char* argv[])
 
   if (start_fullscreen && !manual_resolution_set)
   {
-    // try to get the resolution from the desktop for fullscreen
-    GLFWvidmode video_mode;
-    glfwGetDesktopMode(&video_mode);
-    x_res = video_mode.Height;
-    y_res = video_mode.Width;
+      // try to get the resolution from the desktop for fullscreen
+      const GLFWvidmode* video_mode = glfwGetVideoMode( glfwGetPrimaryMonitor() );
+      x_res = video_mode->height;
+      y_res = video_mode->width;
   }
 
 
   if (vsx_argvector::get_instance()->has_param("gl_debug"))
   {
     printf("enabling GL DEBUG\n");
-    glfwOpenWindowHint( GLFW_OPENGL_DEBUG_CONTEXT , GL_TRUE );
+    glfwWindowHint( GLFW_OPENGL_DEBUG_CONTEXT , GL_TRUE );
   }
 
   // OpenGL version
-  glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 2);
-  glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 1);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
-  if( !glfwOpenWindow( x_res, y_res, 0,0,0,0,16,0, start_fullscreen?GLFW_FULLSCREEN:GLFW_WINDOW ) ) // GLFW_FULLSCREEN
+  mainWindow = glfwCreateWindow( x_res, y_res, "VSXu Player", start_fullscreen? glfwGetPrimaryMonitor() : NULL, NULL );
+  if( !mainWindow ) // GLFW_FULLSCREEN
   {
-    printf("Error! Could not create an OpenGL context. Please check your GPU drivers...\n");
+    vsx_printf(L"Error! Could not create an OpenGL context. Please check your GPU drivers...\n");
     glfwTerminate();
     return 0;
   }
+  glfwMakeContextCurrent(mainWindow);
 
   glewInit();
 
-  if (start_fullscreen) glfwEnable( GLFW_MOUSE_CURSOR );
+  if (start_fullscreen)
+    glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL );
+
   app_init(0);
 
-  glfwEnable(GLFW_AUTO_POLL_EVENTS);
+//  glfwEnable(GLFW_AUTO_POLL_EVENTS);
 
   for (int i = 1; i < argc; i++)
   {
@@ -294,21 +314,23 @@ int main(int argc, char* argv[])
         vsx_nw_vector< vsx_string<> > parts;
         vsx_string<>deli = ",";
         explode(arg2, deli, parts);
-        glfwSetWindowPos( vsx_string_helper::s2i(parts[0]), vsx_string_helper::s2i(parts[1]) );
+        glfwSetWindowPos( mainWindow, vsx_string_helper::s2i(parts[0]), vsx_string_helper::s2i(parts[1]) );
       }
     }
   }
 
-  glfwSetKeyCallback(&key_event);
-  glfwSetMouseButtonCallback(&mouse_button_event);
-  glfwSetMousePosCallback(&mouse_pos_event);
-  glfwSetCharCallback(&key_char_event);
-  glfwSetMouseWheelCallback(&mouse_wheel);
+  set_modifiers();
+  set_modifiers();
+  glfwSetCharCallback(mainWindow, &key_char_event);
+  glfwSetKeyCallback(mainWindow, &key_event);
+  glfwSetMouseButtonCallback(mainWindow, &mouse_button_event);
+  glfwSetCursorPosCallback(mainWindow, &mouse_pos_event);
+  glfwSetScrollCallback(mainWindow, &mouse_wheel);
   // set window size callback function
-  glfwSetWindowSizeCallback(window_size);
-  // Enable sticky keys
-  glfwEnable( GLFW_STICKY_KEYS );
+  glfwSetWindowSizeCallback(mainWindow, window_size);
 
+  // Enable sticky keys
+  glfwSetInputMode(mainWindow, GLFW_STICKY_KEYS, GL_TRUE );
 
   // vsync handling
   if (vsx_argvector::get_instance()->has_param("novsync"))
@@ -316,8 +338,6 @@ int main(int argc, char* argv[])
   else
     glfwSwapInterval(1);
 
-  // Main loop
-  running = GL_TRUE;
   frames = 0;
 
   if (vsx_argvector::get_instance()->has_param("gl_debug"))
@@ -351,11 +371,11 @@ int main(int argc, char* argv[])
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
   sprintf( titlestr, "Vovoid VSXu Artiste %s [Windows %d-bit]", vsxu_ver, PLATFORM_BITS);
   #endif
-  glfwSetWindowTitle( titlestr );
+  glfwSetWindowTitle( mainWindow, titlestr );
 
 
   int initial_vram_free = 0;
-  while( running )
+  while( !glfwWindowShouldClose(mainWindow) )
   {
     if (mouse_pos_type)
     {
@@ -398,7 +418,7 @@ int main(int argc, char* argv[])
 
     // Get time and mouse position
     t = glfwGetTime();
-    glfwGetMousePos( &x, &y );
+    glfwGetCursorPos( mainWindow, &x, &y );
     float delta = t-t1;
     t1 = t;
     if (key_pressed != -1)
@@ -423,7 +443,7 @@ int main(int argc, char* argv[])
     frames ++;
 
       // Get window size (may be different than the requested size)
-      glfwGetWindowSize( &width, &height );
+      glfwGetWindowSize( mainWindow, &width, &height );
       height = height > 0 ? height : 1;
 
       // Set viewport
@@ -434,12 +454,8 @@ int main(int argc, char* argv[])
 
     app_draw(0);
 
-    glfwSwapBuffers();
-
-
-    // Check if the ESC key was pressed or the window was closed
-    running = /*!glfwGetKey( GLFW_KEY_ESC ) &&*/
-    glfwGetWindowParam( GLFW_OPENED );
+    glfwSwapBuffers(mainWindow);
+    glfwPollEvents();
   }
 
   // Close OpenGL window and terminate GLFW

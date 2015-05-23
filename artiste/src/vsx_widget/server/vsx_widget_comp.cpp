@@ -45,7 +45,7 @@
 #include "widgets/vsx_widget_popup_menu.h"
 #include "vsx_data_path.h"
 #include <gl_helper.h>
-#include <GL/glfw.h>
+#include <GLFW/glfw3.h>
 
 // widget
 #include <dialogs/dialog_query_string.h>
@@ -1747,7 +1747,7 @@ bool vsx_widget_component::event_key_down(signed long key, bool alt, bool ctrl, 
   VSX_UNUSED(alt);
   VSX_UNUSED(ctrl);
   VSX_UNUSED(shift);
-  if (abs(key) == GLFW_KEY_DEL)
+  if (abs(key) == GLFW_KEY_DELETE)
   {
     if (((vsx_widget_server*)(this->server))->selected_list.size())
     for (std::list<vsx_widget*>::iterator itx = ((vsx_widget_server*)server)->selected_list.begin(); itx != ((vsx_widget_server*)server)->selected_list.end(); ++itx) {

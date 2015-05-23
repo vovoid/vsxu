@@ -50,7 +50,7 @@
 #include "widgets/vsx_widget_base_edit.h"
 
 #include "artiste_desktop.h"
-#include "GL/glfw.h"
+#include "GLFW/glfw3.h"
 
 // VSX_WIDGET_DESKTOP **************************************************************************************************
 // VSX_WIDGET_DESKTOP **************************************************************************************************
@@ -202,10 +202,10 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
     case -GLFW_KEY_RIGHT: case -'F': case -'f':
       camera.set_movement_x( 1.0 );
     break;
-    case -GLFW_KEY_PAGEUP: case -'R': case -'r':
+    case -GLFW_KEY_PAGE_UP: case -'R': case -'r':
       camera.set_movement_z( -1.0 );
     break;
-    case -GLFW_KEY_PAGEDOWN: case -'W': case -'w':
+    case -GLFW_KEY_PAGE_DOWN: case -'W': case -'w':
       camera.set_movement_z( 1.0 );
     break;
   } // switch
@@ -235,8 +235,8 @@ bool vsx_widget_desktop::key_up(signed long key, bool alt, bool ctrl, bool shift
       camera.set_movement_x( 0.0 );
     break;
 
-    case GLFW_KEY_PAGEUP: case 'R': case 'r':
-    case GLFW_KEY_PAGEDOWN: case 'W': case 'w':
+    case GLFW_KEY_PAGE_UP: case 'R': case 'r':
+    case GLFW_KEY_PAGE_DOWN: case 'W': case 'w':
       camera.set_movement_z( 0.0 );
     break;
 
