@@ -48,12 +48,10 @@
 
 void vsx_widget_timeline::move_time(vsx_vector3<> world) {
   if (owner->engine_status == VSX_ENGINE_STOPPED) {
-    float f = (world.x+size.x/2)/(size.x);
-    if (f < 0) f = 0;
-    else
-    if (f > 1) f = 1;
+    float f =  CLAMP( (world.x + size.x/2) / (size.x), 0, 1);
     float c_time = owner->tstart+f*(owner->tend - owner->tstart);
-    if (c_time < 0) c_time = 0;
+    if (c_time < 0)
+      c_time = 0;
 
     float a = (c_time-owner->tstart)/(owner->tend-owner->tstart);
     if (a > 0.95) {

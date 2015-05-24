@@ -150,8 +150,10 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
     vsx_widget_coords coords, int button)
 {
   bool run_event_mouse_down = true;
+  can_move = true;
   mouse_clicked_id = -1;
   float time_iterator = 0;
+  float time_iterator_old = 0;
   int item_iterator = 0;
   int item_action_id = -1;
   index_hit = -1; // we don't know which index has been hit
@@ -233,32 +235,50 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
       {
         float vv = items[item_iterator].convert_to_float(parts[i]);
         totalysize = y_end - y_start;
-        dlx = (time_iterator - view_time_start) / totalsize * size.x - size.x
-            * 0.5f;
+
+        // compute the local time ending
+        dlx = (time_iterator - view_time_start) / totalsize * size.x - size.x * 0.5f;
         dly = (vv - y_start) / totalysize * size.y - size.y / 2;
 
         // check position of NEW point
-        if (shift || (shift && ctrl && !alt) || (shift && alt && !ctrl))
+        if (
+          button == 0
+          &&
+          shift
+        )
         {
-          if (button == 0)
+          // if cur_time is within the current
+          if (o_dlx == -1000)
           {
-            if (o_dlx == -1000)
+            // test the beginning first
+            if (distance.center.x > 0 && distance.center.x < dlx)
             {
-              // test the beginning first
-              if (distance.center.x > 0 && distance.center.x < dlx)
-              {
-                i_distance = (totalsize * ((distance.center.x - size.x * 0.5f)
-                    / (size.x)));
-                item_action_id = item_iterator - 1;
-              }
-            }
-            else if (distance.center.x > o_dlx && distance.center.x < dlx)
-            {
-              i_distance = (totalsize * ((distance.center.x - o_dlx) / (size.x)));
+              i_distance = (totalsize * ((distance.center.x - size.x * 0.5f)
+                  / (size.x)));
               item_action_id = item_iterator - 1;
             }
-            o_dlx = dlx;
+            if (alt)
+            {
+              if (time_iterator_old < cur_time && time_iterator > cur_time )
+              {
+                i_distance = cur_time - time_iterator_old;
+                can_move = false;
+              }
+            }
+
           }
+          else if (distance.center.x > o_dlx && distance.center.x < dlx)
+          {
+            i_distance = (totalsize * ((distance.center.x - o_dlx) / (size.x)));
+            item_action_id = item_iterator - 1;
+            if (alt)
+              if (time_iterator_old < cur_time && time_iterator > cur_time )
+              {
+                i_distance = cur_time - time_iterator_old;
+                can_move = false;
+              }
+          }
+          o_dlx = dlx;
         }
 
         // check if we've hit a point
@@ -329,11 +349,15 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
           }
         }
       }
+      time_iterator_old = time_iterator;
       time_iterator += items[item_iterator].get_total_length();
       ++item_iterator;
     }
+
+
+
     // add new point if nothing clicked up there
-    if ( item_action_id == -1 && (shift || ctrl) && button == 0)
+    if ( item_action_id == -1 && (shift) && button == 0)
     {
       // dlx has been increased up until the final point,
       // now check if the distance is further to the right - outside of the range of points
@@ -341,34 +365,26 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
       if (distance.center.x > dlx)
       {
         i_distance = (totalsize * ((distance.center.x - dlx) / (size.x)));
+        if (alt)
+        {
+          i_distance = cur_time - time_iterator_old;
+          can_move = false;
+        }
         item_action_id = item_iterator - 1;
       }
     }
+
     if
     (
       item_action_id != -1
       &&
       button == 0
       &&
-      (
-          (shift && ctrl && !alt)
-          ||
-          (shift && !ctrl && !alt)
-          ||
-          (ctrl && !shift && !alt)
-      )
+      shift
     )
     {
       // code for adding a new keyframe/point, relies on above code
       size_t interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_LINEAR;
-      if (shift && ctrl && !alt)
-        interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_COSINE;
-      if (shift && !ctrl && !alt)
-        interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_LINEAR;
-      if (!shift && ctrl && !alt)
-        interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_NONE;
-      if (param_type == VSX_MODULE_PARAM_ID_STRING_SEQUENCE || param_type == VSX_MODULE_PARAM_ID_STRING)
-        interpolation_type = VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_NONE;
 
       double_click_d[0] = 0.0f;
 
@@ -377,8 +393,12 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
       {
         case VSX_MODULE_PARAM_ID_FLOAT:
         case VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE:
-          val = vsx_string_helper::base64_encode(vsx_string_helper::f2s((distance.center.y + size.y / 2) / size.y
-              * totalysize + y_start));
+          val = vsx_string_helper::f2s(
+            (distance.center.y + size.y / 2) / size.y * totalysize + y_start
+          );
+          if (ctrl)
+            val = items[item_action_id].get_value();
+          val = vsx_string_helper::base64_encode( val );
         break;
         case VSX_MODULE_PARAM_ID_STRING:
         case VSX_MODULE_PARAM_ID_STRING_SEQUENCE:
@@ -971,10 +991,11 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
 
 
   // No point clicked, maybe move timeline
-  if (alt && owner)
+  if (alt && owner && can_move)
   {
-    // set time
     ((vsx_widget_timeline*)(owner->timeline))->move_time(distance.center);
+
+    // snap to point
     if (shift && !is_controller)
     {
       // look through all items

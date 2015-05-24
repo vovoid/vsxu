@@ -760,7 +760,7 @@ void app_mouse_down(unsigned long button,int x,int y)
       return;
     }
 
-    desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
+    vsx_widget::set_key_modifiers(app_alt, app_ctrl, app_shift);
     desktop->mouse_down(x,y,button);
   }
 }

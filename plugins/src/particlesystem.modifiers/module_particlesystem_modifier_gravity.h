@@ -49,15 +49,11 @@ public:
   {
     loading_done = true;
     in_particlesystem = (vsx_module_param_particlesystem*)in_parameters.create(VSX_MODULE_PARAM_ID_PARTICLESYSTEM,"in_particlesystem");
-  //  in_particlesystem->set(particles);
-
     result_particlesystem = (vsx_module_param_particlesystem*)out_parameters.create(VSX_MODULE_PARAM_ID_PARTICLESYSTEM,"particlesystem");
-  //  result_particlesystem->set(particles);
     mass_type = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"mass_type");
     time_source = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"time_source");
     uniform_mass = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"uniform_mass");
     uniform_mass->set(0.1f);
-    // oh, all these parameters.. ..
     center = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"center");
     center->set(0.0f,0);
     center->set(0.0f,1);
@@ -70,7 +66,6 @@ public:
     friction->set(1.5f,0);
     friction->set(1.5f,1);
     friction->set(1.5f,2);
-    // default is 100 particles, should be enough for most effects (tm)
   }
 
   void run()

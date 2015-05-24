@@ -46,6 +46,7 @@ class vsx_widget_seq_channel : public vsx_widget
   int extra_hit; // handles for bezier splines
   int index_count; // how many parts are this type made up of?
   int display_exclusive; // dim other than this
+  bool can_move;
 
   float hover_value_pos;
   float hover_time_pos;

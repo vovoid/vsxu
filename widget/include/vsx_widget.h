@@ -427,7 +427,7 @@ public:
       return k_focus->event_key_up(key,alt,ctrl,shift);
     } else return true;
   }
-  void set_key_modifiers(bool alt_, bool ctrl_, bool shift_);
+  static void set_key_modifiers(bool alt_, bool ctrl_, bool shift_);
 
   void mouse_down(float x, float y, int button);
   void mouse_up(float x, float y, int button);
