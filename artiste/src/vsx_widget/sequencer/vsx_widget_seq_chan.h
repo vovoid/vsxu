@@ -148,7 +148,7 @@ public:
 
   void draw_line(float t0, float y0, float t1, float y1, vsx_color<>& l_color);
 
-  void draw_chan_box(float t0, float y0, vsx_string<> display_value, float c_size = SEQ_CHAN_BOX_SIZE);
+  void draw_chan_box(float t0, float y0, vsx_string<> display_value, vsx_color<> box_color, float c_size = SEQ_CHAN_BOX_SIZE);
   void draw_selection_box(float t0, float y0);
 
 

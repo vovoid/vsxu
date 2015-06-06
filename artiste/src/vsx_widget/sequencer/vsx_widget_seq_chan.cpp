@@ -1729,7 +1729,7 @@ void vsx_widget_seq_channel::i_draw()
         case VSX_MODULE_PARAM_ID_STRING_SEQUENCE:
         case VSX_MODULE_PARAM_ID_STRING:
         {
-          vsx_color<> l_color = vsx_color<>(1.0f, 1.0f, 1.0f, 1.0f);
+          vsx_color<> line_color = vsx_color<>(1.0f, 1.0f, 1.0f, 1.0f);
           while (item_iterator < (int) items.size() && time_iterator
               <= view_time_end)
           {
@@ -1738,9 +1738,11 @@ void vsx_widget_seq_channel::i_draw()
             {
               if (items[item_iterator].get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_BEZIER)
               {
+                line_color = vsx_color<>(0.2f, 1.0f, 0.8f, 1.0f);
+
                 // BEZIER (x⁴ INTERPOLATION)
                 vsx_bezier_calc<float> calc;
-                vsx_color<> lb_color = vsx_color<>(0.2f, 1.0f, 0.8f, 1.0f);
+                vsx_color<> handle_color = vsx_color<>(0.2f, 1.0f, 0.8f, 1.0f);
                 float ev = vsx_string_helper::s2f(items[item_iterator + 1].get_value() );
                 draw_line(
                   time_iterator,
@@ -1749,7 +1751,7 @@ void vsx_widget_seq_channel::i_draw()
                   +
                   items[item_iterator].get_handle1().x * items[item_iterator].get_total_length(),
                   sv + items[item_iterator].get_handle1().y,
-                  lb_color
+                  handle_color
                 );
 
 
@@ -1759,14 +1761,24 @@ void vsx_widget_seq_channel::i_draw()
                   time_iterator + items[item_iterator].get_handle2().x
                       * items[item_iterator].get_total_length(),
                       ev + items[item_iterator].get_handle2().y,
-                      lb_color
+                      handle_color
                 );
                 float delay = items[item_iterator].get_total_length();
 
-                draw_chan_box(time_iterator + items[item_iterator].get_handle1().x * delay,
-                    sv + items[item_iterator].get_handle1().y, 0.0007f);
-                draw_chan_box(time_iterator + items[item_iterator].get_handle2().x * delay,
-                    ev + items[item_iterator].get_handle2().y, 0.0007f);
+                draw_chan_box(
+                  time_iterator + items[item_iterator].get_handle1().x * delay,
+                  sv + items[item_iterator].get_handle1().y,
+                  "",
+                  vsx_color<>(0.2f, 1.0f, 0.8f,1),
+                  SEQ_CHAN_BOX_SIZE05
+                );
+                draw_chan_box(
+                  time_iterator + items[item_iterator].get_handle2().x * delay,
+                  ev + items[item_iterator].get_handle2().y,
+                  "",
+                  vsx_color<>(0.2f, 1.0f, 0.8f,1),
+                  SEQ_CHAN_BOX_SIZE05
+                );
 
 
                 calc.x0 = 0.0f;
@@ -1785,12 +1797,14 @@ void vsx_widget_seq_channel::i_draw()
                   float xp = calc.x_from_t(i);
                   float xp1 = calc.x_from_t(i + 0.05f);
                   draw_line(time_iterator + xp * delay, sv, time_iterator + (xp1)
-                      * delay, yp, l_color);
+                      * delay, yp, line_color);
                   sv = yp;
                 }
               }
               else if (items[item_iterator].get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_COSINE)
               {
+                line_color = vsx_color<>(0.5f, 1.0f, 0.5f, 1.0f);
+
                 float ev = vsx_string_helper::s2f(items[item_iterator + 1].get_value());
                 if (time_iterator < view_time_start)
                 {
@@ -1803,7 +1817,7 @@ void vsx_widget_seq_channel::i_draw()
                     draw_line(time_iterator + items[item_iterator].get_total_length()
                         / 10 * (i), sv, time_iterator
                               + items[item_iterator].get_total_length() / 10 * (i + 1), ee,
-                        l_color);
+                        line_color);
                     sv = ee;
                   }
                 }
@@ -1818,7 +1832,7 @@ void vsx_widget_seq_channel::i_draw()
                     draw_line(time_iterator + items[item_iterator].get_total_length()
                         / 10 * (i), sv, time_iterator
                         + items[item_iterator].get_total_length() / 10 * (i + 1), ee,
-                        l_color);
+                        line_color);
                     sv = ee;
                   }
                 }
@@ -1832,29 +1846,31 @@ void vsx_widget_seq_channel::i_draw()
                     draw_line(time_iterator + items[item_iterator].get_total_length()
                         / 10 * (i), sv, time_iterator
                         + items[item_iterator].get_total_length() / 10 * (i + 1), ee,
-                        l_color);
+                        line_color);
                     sv = ee;
                   }
                 }
               }
               else if (items[item_iterator].get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_LINEAR)
               {
+                line_color = vsx_color<>(1.0f, 0.5f, 0.5f, 1.0f);
+
                 float ev = vsx_string_helper::s2f(items[item_iterator + 1].get_value());
                 if (time_iterator < view_time_start)
                 {
                   draw_line(time_iterator, sv, time_iterator
-                    + items[item_iterator].get_total_length(), ev, l_color);
+                    + items[item_iterator].get_total_length(), ev, line_color);
                 }
                 else if (items[item_iterator].get_total_length() + time_iterator
                     > view_time_end)
                 {
                   draw_line(time_iterator, sv, time_iterator
-                    + items[item_iterator].get_total_length(), ev, l_color);
+                    + items[item_iterator].get_total_length(), ev, line_color);
                 }
                 else
                 {
                   draw_line(time_iterator, sv, time_iterator
-                    + items[item_iterator].get_total_length(), ev, l_color);
+                    + items[item_iterator].get_total_length(), ev, line_color);
                 }
               }
               else
@@ -1865,6 +1881,8 @@ void vsx_widget_seq_channel::i_draw()
                 items[item_iterator].get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_RESERVED
               )
               {
+                vsx_color<> l_color = vsx_color<>(1.0f, 1.0f, 1.0f, 1.0f);
+
                 float ev = vsx_string_helper::s2f(items[item_iterator + 1].get_value());
 
                 draw_line(time_iterator, sv, time_iterator
@@ -1881,16 +1899,26 @@ void vsx_widget_seq_channel::i_draw()
             }
 
             if (param_type == VSX_MODULE_PARAM_ID_FLOAT || param_type == VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE)
-              draw_chan_box(time_iterator, vsx_string_helper::s2f(items[item_iterator].get_value()), vsx_string_helper::s2f(items[item_iterator].get_value()) );
+              draw_chan_box(
+                time_iterator,
+                vsx_string_helper::s2f(items[item_iterator].get_value()),
+                items[item_iterator].get_value(),
+                vsx_color<>(1,1,1,1)
+              );
 
             if (param_type == VSX_MODULE_PARAM_ID_STRING_SEQUENCE || param_type == VSX_MODULE_PARAM_ID_STRING)
-              draw_chan_box(time_iterator, 0.0f, items[item_iterator].get_value() );
+              draw_chan_box(
+                time_iterator,
+                0.0f,
+                items[item_iterator].get_value(),
+                vsx_color<>(1,1,1,1)
+              );
 
             time_iterator += items[item_iterator].get_total_length();
             ++item_iterator;
           } // while
           draw_line(time_iterator - items[item_iterator - 1].get_total_length(), sv,
-              view_time_end, sv, l_color);
+              view_time_end, sv, line_color);
         }
         break; // FLOAT
       } // switch
@@ -2087,20 +2115,20 @@ void vsx_widget_seq_channel::draw_line(float t0, float y0, float t1, float y1,
   );
 
   glBegin(GL_LINE_STRIP);
-  totalysize = y_end - y_start;
-  dlx = (t0 - view_time_start) / totalsize * size.x + parentpos.x + pos.x
-      - size.x / 2;
-  dly = (y0 - y_start) / totalysize * size.y + parentpos.y + pos.y - size.y / 2;
+    totalysize = y_end - y_start;
+    dlx = (t0 - view_time_start) / totalsize * size.x + parentpos.x + pos.x
+        - size.x / 2;
+    dly = (y0 - y_start) / totalysize * size.y + parentpos.y + pos.y - size.y / 2;
 
-  glVertex2f(dlx, dly);
-  dlx = (t1 - view_time_start) / totalsize * size.x + parentpos.x + pos.x
-      - size.x / 2;
-  dly = (y1 - y_start) / totalysize * size.y + parentpos.y + pos.y - size.y / 2;
-  glVertex2f(dlx, dly);
+    glVertex2f(dlx, dly);
+    dlx = (t1 - view_time_start) / totalsize * size.x + parentpos.x + pos.x
+        - size.x / 2;
+    dly = (y1 - y_start) / totalysize * size.y + parentpos.y + pos.y - size.y / 2;
+    glVertex2f(dlx, dly);
   glEnd();
 }
 
-void vsx_widget_seq_channel::draw_chan_box(float t0, float y0, vsx_string<> display_value, float c_size)
+void vsx_widget_seq_channel::draw_chan_box(float t0, float y0, vsx_string<> display_value, vsx_color<> box_color, float c_size)
 {
   float cs05 = c_size*0.5f;
   if (t0+cs05 < view_time_start || t0-c_size > view_time_end)
@@ -2125,9 +2153,9 @@ void vsx_widget_seq_channel::draw_chan_box(float t0, float y0, vsx_string<> disp
     dlx = (t0 - view_time_start) / totalsize * size.x + parentpos.x + pos.x
         - size.x / 2;
     dly = (y0 - y_start) / totalysize * size.y + parentpos.y + pos.y - size.y / 2;
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glColor4f(box_color.r, box_color.g, box_color.b, 1.0f);
     glVertex2f(dlx, dly);
-    glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
+    glColor4f(box_color.r, box_color.g, box_color.b, 0.0f);
     glVertex2f(dlx - c_size, dly - c_size);
     glVertex2f(dlx + c_size, dly - c_size);
     glVertex2f(dlx + c_size, dly + c_size);
@@ -2135,6 +2163,9 @@ void vsx_widget_seq_channel::draw_chan_box(float t0, float y0, vsx_string<> disp
     glVertex2f(dlx - c_size, dly - c_size);
   glEnd();
 
+  glColor4f(1,1,1,1);
+
+  font.color = vsx_color<>(1,1,1,0.5);
   font.print(vsx_vector3<>(dlx + 0.002, dly), display_value, c_size * 2.14f);
 }
 
