@@ -14,7 +14,7 @@ way to build your projects against a free-floating VSXu build.
 
 If you have already installed vsxu into /usr/* you can skip steps 2 and 3 of this document.
 
-1. Checking out VSXu sources
+## 1. Checking out VSXu sources
 We assume you have not created ~/vsxu-dev yet.
 
     $ mkdir ~/vsxu-dev
@@ -30,7 +30,7 @@ just excahge "0.6.0" with "master" in the git commands below.
     $ git fetch origin 0.6.0
     $ git checkout -b 0.6.0 FETCH_HEAD
 
-2. Using the helper build scripts
+## 2. Using the helper build scripts
 
 While you can build VSXu inside the source directory - the easiest method
 in the long run is to make use of a helper repository - vsxu-build.
@@ -73,7 +73,7 @@ and for the static version:
 This means you can have a dynamic build and a static build at the same time.
 However you can not have both with debug symbols and without at the same time.
 
-3. Understanding pkg-config
+## 3. Understanding pkg-config
 
 Now, if you look in
 
@@ -107,7 +107,7 @@ The result usually looks something like:
 
 Now we are ready to build our own project, but first we need a CMake script to help us find and include VSXu.
 
-4. CMake find script
+## 4. CMake find script
 
 For convenience, we just list the contents of the file here.
 
@@ -167,7 +167,7 @@ This file goes into your project directory, in a folder called "cmake/"
 So if your project folder is "~/my_project/", this goes into
 "~/my_project/cmake/FindVSXu.cmake"
 
-5. Your own cmake file
+## 5. Your own cmake file
 
 In your CMakeLists.txt (~/my_project/CMakeLists.txt), add the following:
 
@@ -210,7 +210,7 @@ The build your project in your own source folder like so:
     $ cmake ..
     $ make -j4
 
-6. Linking to VSXu statically
+## 6. Linking to VSXu statically
 
 You need to steer the PKG_CONFIG_PATH environment variable (see section 3 above) over to the static install
 directory of vsxu.
@@ -228,7 +228,7 @@ Here is an example:
       -DVSXU_STATIC
     )
 
-7. Calling/Embedding VSXu Engine from your own code
+## 7. Calling/Embedding VSXu Engine from your own code
 
 There is a helper class for this, vsx_engine_helper (~/vsxu-dev/vsxu/engine/include/vsx_engine_helper.h)
 If you need multiple instances of a state, use vsx_engine_helper_pool.
