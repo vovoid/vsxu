@@ -1,6 +1,6 @@
 Vovoid VSXu
 =================
-©2003-2013 Vovoid Media Technologies AB, Sweden
+©2003-2015 Vovoid Media Technologies AB, Sweden
 
 http://www.vsxu.com
 
