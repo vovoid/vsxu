@@ -434,6 +434,11 @@ void vsx_widget_seq_pool_manager::command_process_back_queue(vsx_command_s *t)
   } else
 
 
+  if (t->cmd == "time_set_speed")
+  {
+    command_q_b.add(t);
+    parent->vsx_command_queue_b(this);
+  }
 
 
   // MESSAGES FOR THE ENGINE

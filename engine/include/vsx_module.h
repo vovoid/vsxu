@@ -121,6 +121,8 @@ public:
   int state; // stopped or playing
   float amp; // engine effect amplification - can be used freely by the modules
              // but should primarily control
+  float speed; // speed - dt can be multiplied with this
+
   // sequenced values
   float dtime;  // delta time - since last frame in seconds and fractions of seconds
   float vtime;  // total time - since the engine started, seconds and fractions of seconds
@@ -150,6 +152,7 @@ public:
   {
     state = 0;
     amp = 1.0f;
+    speed = 1.0f;
     dtime = 0.0f;
     vtime = 0.0f;
     real_dtime = 0.0f;

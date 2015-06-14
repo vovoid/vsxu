@@ -145,6 +145,7 @@ public:
         main_sample.goto_time( engine->vtime );
       }
       main_sample.play();
+      main_sample.set_pitch_bend(engine->speed);
     }
     if (engine->state == VSX_ENGINE_STOPPED)
     {

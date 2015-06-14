@@ -357,6 +357,7 @@ void vsx_engine::set_speed(float spd)
   if (!valid)
     return;
 
+  engine_info.speed = spd;
   g_timer_amp = spd;
 }
 

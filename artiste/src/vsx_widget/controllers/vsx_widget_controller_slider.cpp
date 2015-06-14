@@ -30,8 +30,10 @@ vsx_widget_controller_slider::vsx_widget_controller_slider()
   menu->init();
   color.set(85.0f/255.0f,170.0f/255.0f,1,1);
   set_size(vsx_vector3<>(sizeunit, sizeunit* 4.0f));
-  handlesize=0.5*sizeunit;
-  value=0.0f;target_value=0.0f;
+  handle_size = 0.5 * sizeunit;
+  orientation = 0; // vertical
+  value=0.0f;
+  target_value=0.0f;
   capminv=0;
   capmaxv=1;
   capmin = false;
@@ -42,29 +44,60 @@ vsx_widget_controller_slider::vsx_widget_controller_slider()
 
 void vsx_widget_controller_slider::init()
 {
-  if (init_run) return;
+  if (init_run)
+    return;
+
   vsx_widget_controller_base::init();
+
   get_value();
 
   editor = add(new vsx_widget_base_edit,name+".edit");
   editor->init();
   editor->render_type = render_3d;
   editor->set_size(vsx_vector3<>(sizeunit,sizeunit*0.23f));
-  editor->set_pos(vsx_vector3<>(0,size.y*0.5f+sizeunit*0.125f));
+  editor->set_pos(vsx_vector3<>(0, size.y * 0.5f + sizeunit*0.125f));
   editor->set_font_size(0.003);
+}
+
+void vsx_widget_controller_slider::set_horizontal()
+{
+  orientation = 1;
+
+  set_size(vsx_vector3<>(sizeunit * 4.0f, sizeunit));
+
+  editor->set_size(vsx_vector3<>(sizeunit, sizeunit*0.23f));
+  editor->set_pos(vsx_vector3<>(size.x * 0.5 + sizeunit * 0.125, 0));
+}
+
+void vsx_widget_controller_slider::set_vertical()
+{
+  orientation = 0;
+
+  set_size(vsx_vector3<>(sizeunit, sizeunit* 4.0f));
+
+  editor->set_size(vsx_vector3<>(sizeunit,sizeunit*0.23f));
+  editor->set_pos(vsx_vector3<>(0, size.y * 0.5f + sizeunit*0.125f));
 }
 
 void vsx_widget_controller_slider::cap_value()
 {
   if (capmax)
-  if (ofs > capmaxv) {
-    ofs = capmaxv;
-  }
+    if (ofs > capmaxv)
+      ofs = capmaxv;
+
   if (capmin)
-  if (ofs < capminv) ofs = capminv;
-  if (amp<ALMOST_ZERO) amp=ALMOST_ZERO;
-  if (target_value > amp+ofs) target_value = amp+ofs;
-  if (target_value < ofs) target_value = ofs;
+    if (ofs < capminv)
+      ofs = capminv;
+
+  if (amp<ALMOST_ZERO)
+    amp=ALMOST_ZERO;
+
+  if (target_value > amp+ofs)
+    target_value = amp+ofs;
+
+  if (target_value < ofs)
+    target_value = ofs;
+
   vsx_widget_controller_base::cap_value();
 }
 
@@ -72,17 +105,13 @@ int vsx_widget_controller_slider::inside_xy_l(vsx_vector3<> &test, vsx_vector3<>
 {
   float ypos = get_y_pos();
   if (coord_type == VSX_WIDGET_COORD_CENTER)
-  {
     if (
-       (test.x > global.x-target_size.x*0.5f) &&
-       (test.x < global.x+target_size.x*0.5f) &&
-       (test.y > global.y+ypos-handlesize/2) &&
-       (test.y < global.y+ypos+handlesize/2)
+       (test.x > global.x - target_size.x*0.5f) &&
+       (test.x < global.x + target_size.x*0.5f) &&
+       (test.y > global.y + ypos-handle_size/2) &&
+       (test.y < global.y + ypos+handle_size/2)
     )
-    {
        return coord_type;
-    }
-  }
   return 0;
 }
 
@@ -110,7 +139,10 @@ void vsx_widget_controller_slider::event_mouse_move(vsx_widget_distance distance
 
   if (controlling)
   {
-    target_value = (-(((distance.corner.y-handlesize/2)/(size.y-handlesize))-1) * (amp))+ofs; //amp-ofs
+    if (orientation == 0)
+      target_value = (-(((distance.corner.y-handle_size/2)/(size.y-handle_size))-1) * (amp))+ofs;
+    if (orientation == 1)
+      target_value = (-(((distance.corner.x-handle_size/2)/(size.x-handle_size))-1) * (amp))+ofs;
     cap_value();
   }
   send_to_server();
@@ -119,28 +151,55 @@ void vsx_widget_controller_slider::event_mouse_move(vsx_widget_distance distance
 
 double vsx_widget_controller_slider::get_y_pos()
 {
-  return (((presentation_value-ofs)/(amp))*(size.y-handlesize))-size.y/2.0f+handlesize/2;//amp-ofs
+  if (orientation == 0)
+    return (((presentation_value-ofs)/(amp))*(size.y-handle_size))-size.y/2.0f + handle_size/2;
+
+  if (orientation == 1)
+    return (((presentation_value-ofs)/(amp))*(size.x-handle_size))-size.x/2.0f + handle_size/2;
 }
 
-void vsx_widget_controller_slider::draw()
+float vsx_widget_controller_slider::amp_get()
 {
-  if (!visible) return;
+  return amp;
+}
 
-  vsx_widget_controller_base::draw();
-  glLineWidth(1.0f);
-  float ypos=parentpos.y+pos.y+get_y_pos();
+void vsx_widget_controller_slider::amp_set(float n)
+{
+  amp = n;
+}
+
+
+float vsx_widget_controller_slider::ofs_get()
+{
+  return ofs;
+}
+
+
+void vsx_widget_controller_slider::ofs_set(float n)
+{
+  ofs = n;
+}
+
+
+void vsx_widget_controller_slider::draw_vertical()
+{
+  float ypos = parentpos.y + pos.y + get_y_pos();
   ((vsx_widget_base_edit*)editor)->set_string(vsx_string_helper::f2s(presentation_value,15));
   glBegin(GL_LINES);
     glColor4f(1,1,1,0.2);
-    float ymin=parentpos.y+pos.y-size.y/2+handlesize/2,
-          ymax=parentpos.y+pos.y+size.y/2-handlesize/2,
-          stepfactor=(ymax-ymin)/20;
+    float ymin = parentpos.y + pos.y - size.y/2 + handle_size/2,
+          ymax = parentpos.y + pos.y + size.y/2 - handle_size/2,
+          stepfactor = (ymax - ymin)/20;
     int c=0;
-    for (float yy=ymax;yy>=ymin-(stepfactor/2);yy-=stepfactor)
+    for (float yy=ymax; yy >= ymin - (stepfactor/2); yy -= stepfactor)
     {
-      float ww=size.x*0.25;
-      if (c%2==1) ww=size.x*0.4;
-      if (c%10==0) ww=size.x*0.1;
+      float ww = size.x*0.25;
+      if (c%2 == 1)
+        ww=size.x*0.4;
+
+      if (c%10 == 0)
+        ww=size.x*0.1;
+
       ++c;
       glVertex3f(parentpos.x+pos.x+size.x/2, yy,pos.z);
       glVertex3f(parentpos.x+pos.x+ww, yy,pos.z);
@@ -148,28 +207,102 @@ void vsx_widget_controller_slider::draw()
       glVertex3f(parentpos.x+pos.x-ww, yy,pos.z);
     }
     glColor4f(0,0,0,1);
-    glVertex3f(parentpos.x+pos.x, parentpos.y+pos.y+size.y/2-handlesize/2,pos.z);
-    glVertex3f(parentpos.x+pos.x, parentpos.y+pos.y-size.y/2+handlesize/2,pos.z);
+    glVertex3f(parentpos.x+pos.x, parentpos.y+pos.y+size.y/2-handle_size/2,pos.z);
+    glVertex3f(parentpos.x+pos.x, parentpos.y+pos.y-size.y/2+handle_size/2,pos.z);
   glEnd();
+
+
   glBegin(GL_TRIANGLE_FAN);
     glColor4f(lightshade*color.r,lightshade*color.g,lightshade*color.b,color.a);
-    glVertex3f(parentpos.x+pos.x+size.x/3, ypos+handlesize*0.5,pos.z);//top right
+    glVertex3f(parentpos.x+pos.x+size.x/3, ypos+handle_size*0.5,pos.z);//top right
     glColor4f(darkshade*color.r,darkshade*color.g,darkshade*color.b,color.a);
     glVertex3f(parentpos.x+pos.x+size.x/3, ypos,pos.z);//right center
     glColor4f(lightshade*color.r,lightshade*color.g,lightshade*color.b,color.a);
-    glVertex3f(parentpos.x+pos.x+size.x/3,ypos-handlesize*0.5,pos.z); //bottom right
-    glVertex3f(parentpos.x+pos.x-size.x/3,ypos-handlesize*0.5,pos.z); //bottom left
+    glVertex3f(parentpos.x+pos.x+size.x/3,ypos-handle_size*0.5,pos.z); //bottom right
+    glVertex3f(parentpos.x+pos.x-size.x/3,ypos-handle_size*0.5,pos.z); //bottom left
     glColor4f(darkshade*color.r,darkshade*color.g,darkshade*color.b,color.a);
     glVertex3f(parentpos.x+pos.x-size.x/3, ypos,pos.z); //left center
     glColor4f(lightshade*color.r,lightshade*color.g,lightshade*color.b,color.a);
-    glVertex3f(parentpos.x+pos.x-size.x/3,ypos+handlesize*0.5,pos.z); //top left
-    glVertex3f(parentpos.x+pos.x+size.x/3, ypos+handlesize*0.5,pos.z);//top right
+    glVertex3f(parentpos.x+pos.x-size.x/3,ypos+handle_size*0.5,pos.z); //top left
+    glVertex3f(parentpos.x+pos.x+size.x/3, ypos+handle_size*0.5,pos.z);//top right
   glEnd();
+
+
   glBegin(GL_LINES);
     glColor4f(0,0,0,1);
     glVertex3f(parentpos.x+pos.x+size.x/3, ypos,pos.z);
     glVertex3f(parentpos.x+pos.x-size.x/3, ypos,pos.z);
   glEnd();
+}
+
+void vsx_widget_controller_slider::draw_horizontal()
+{
+  float ypos = parentpos.y + pos.y + get_y_pos();
+  ((vsx_widget_base_edit*)editor)->set_string(vsx_string_helper::f2s(presentation_value,15));
+  glBegin(GL_LINES);
+    glColor4f(1,1,1,0.2);
+    float ymin = parentpos.y + pos.y - size.y/2 + handle_size/2,
+          ymax = parentpos.y + pos.y + size.y/2 - handle_size/2,
+          stepfactor = (ymax - ymin)/20;
+    int c=0;
+    for (float yy=ymax; yy >= ymin - (stepfactor/2); yy -= stepfactor)
+    {
+      float ww = size.x*0.25;
+      if (c%2 == 1)
+        ww=size.x*0.4;
+
+      if (c%10 == 0)
+        ww=size.x*0.1;
+
+      ++c;
+      glVertex3f(parentpos.x+pos.x+size.x/2, yy,pos.z);
+      glVertex3f(parentpos.x+pos.x+ww, yy,pos.z);
+      glVertex3f(parentpos.x+pos.x-size.x/2, yy,pos.z);
+      glVertex3f(parentpos.x+pos.x-ww, yy,pos.z);
+    }
+    glColor4f(0,0,0,1);
+    glVertex3f(parentpos.x+pos.x, parentpos.y+pos.y+size.y/2-handle_size/2,pos.z);
+    glVertex3f(parentpos.x+pos.x, parentpos.y+pos.y-size.y/2+handle_size/2,pos.z);
+  glEnd();
+
+
+  glBegin(GL_TRIANGLE_FAN);
+    glColor4f(lightshade*color.r,lightshade*color.g,lightshade*color.b,color.a);
+    glVertex3f(parentpos.x+pos.x+size.x/3, ypos+handle_size*0.5,pos.z);//top right
+    glColor4f(darkshade*color.r,darkshade*color.g,darkshade*color.b,color.a);
+    glVertex3f(parentpos.x+pos.x+size.x/3, ypos,pos.z);//right center
+    glColor4f(lightshade*color.r,lightshade*color.g,lightshade*color.b,color.a);
+    glVertex3f(parentpos.x+pos.x+size.x/3,ypos-handle_size*0.5,pos.z); //bottom right
+    glVertex3f(parentpos.x+pos.x-size.x/3,ypos-handle_size*0.5,pos.z); //bottom left
+    glColor4f(darkshade*color.r,darkshade*color.g,darkshade*color.b,color.a);
+    glVertex3f(parentpos.x+pos.x-size.x/3, ypos,pos.z); //left center
+    glColor4f(lightshade*color.r,lightshade*color.g,lightshade*color.b,color.a);
+    glVertex3f(parentpos.x+pos.x-size.x/3,ypos+handle_size*0.5,pos.z); //top left
+    glVertex3f(parentpos.x+pos.x+size.x/3, ypos+handle_size*0.5,pos.z);//top right
+  glEnd();
+
+
+  glBegin(GL_LINES);
+    glColor4f(0,0,0,1);
+    glVertex3f(parentpos.x+pos.x+size.x/3, ypos,pos.z);
+    glVertex3f(parentpos.x+pos.x-size.x/3, ypos,pos.z);
+  glEnd();
+}
+
+void vsx_widget_controller_slider::draw()
+{
+  if (!visible)
+    return;
+
+  vsx_widget_controller_base::draw();
+  glLineWidth(1.0f);
+
+  if (orientation == 0)
+    draw_vertical();
+
+  if (orientation == 1)
+    draw_horizontal();
+
   draw_children();
 }
 

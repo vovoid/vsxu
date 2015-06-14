@@ -118,6 +118,13 @@ void vsx_widget_sequence_editor::init()
   but_set_loop_point->target_size.x = but_set_loop_point->size.x = 0.040;
   but_set_loop_point->commands.adds(4,"but_set_loop_point","but_set_loop_point","");
 
+  but_set_speed= add(new vsx_widget_button,"but_set_speed");
+  but_set_speed->render_type = render_3d;
+  but_set_speed->init();
+  but_set_speed->title = "set speed";
+  but_set_speed->target_size.x = but_set_speed->size.x = 0.040;
+  but_set_speed->commands.adds(4,"but_set_speed","but_set_speed","");
+
   vsx_widget_sequence_tree* sequence_tree = (vsx_widget_sequence_tree*)add(new vsx_widget_sequence_tree, "sequence_list");
   sequence_tree->init();
   sequence_tree->extra_init();
@@ -145,6 +152,11 @@ void vsx_widget_sequence_editor::init()
   loop_point_dialog = add(new dialog_query_string("loop point in seconds","-1.0 to disable, 2.0 for 2 seconds etc"),"dialog_set_loop_point");
   ((dialog_query_string*)loop_point_dialog)->set_allowed_chars("0123456789-.");
   ((dialog_query_string*)loop_point_dialog)->set_value("1.0");
+
+  // Speed Dialog
+  speed_dialog = add(new dialog_query_string("Time progression speed factor","1.0 is normal, only positive values"),"dialog_set_speed");
+  ((dialog_query_string*)speed_dialog)->set_allowed_chars("0123456789.");
+  ((dialog_query_string*)speed_dialog)->set_value("1.0");
 
   load_sequence_list();
 }
@@ -180,7 +192,7 @@ void vsx_widget_sequence_editor::i_draw()
   draw_box_border(vsx_vector3<>(parentpos.x-size.x*0.5,parentpos.y-size.y*0.5f), vsx_vector3<>(size.x,size.y), dragborder);
 
   font.color = vsx_color<>(1.0f,1.0f,1.0f,0.7f);
-  font.print(vsx_vector3<>(parentpos.x-size.x*0.5+0.3f,parentpos.y+size.y*0.5f-0.015f), name,0.01);
+  font.print(vsx_vector3<>(parentpos.x-size.x*0.5+0.3f,parentpos.y+size.y*0.5f-0.018f), name,0.01);
   font.color = vsx_color<>(1.0f,1.0f,1.0f,1.0f);
 
   vsx_widget::i_draw();
@@ -207,7 +219,9 @@ void vsx_widget_sequence_editor::interpolate_size()
   but_play->set_pos(vsx_vector3<>(but_rew->pos.x+but_rew->size.x+dragborder, but_rew->pos.y));
   but_stop->set_pos(vsx_vector3<>(but_play->pos.x + but_play->size.x + dragborder, but_rew->pos.y));
   but_set_loop_point->set_pos(vsx_vector3<>(-size.x*0.5f +0.23f,but_rew->pos.y));
-  if (but_add_master_channel) but_add_master_channel->set_pos(vsx_vector3<>(but_stop->pos.x + but_stop->size.x  + but_add_master_channel->size.x / 2, but_rew->pos.y));
+  but_set_speed->set_pos(vsx_vector3<>(-size.x*0.5f +0.275f,but_rew->pos.y));
+  if (but_add_master_channel)
+    but_add_master_channel->set_pos(vsx_vector3<>(but_stop->pos.x + but_stop->size.x  + but_add_master_channel->size.x / 2, but_rew->pos.y));
   timeline->target_size.x = timeline->size.x = size.x-0.1f-dragborder*4;
   timeline->pos.x = timeline->target_pos.x = 0.05f;
   timeline->target_pos.y = timeline->pos.y = but_rew->pos.y-dragborder-but_rew->size.y*0.5-timeline->size.y*0.5f;
@@ -347,13 +361,24 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
     ((dialog_query_string*)loop_point_dialog)->show();
     return;
   }
-  else
+
   if (t->cmd == "dialog_set_loop_point")
   {
     command_q_b.add_raw("time_set_loop_point " + t->parts[1]);
     parent->vsx_command_queue_b(this);
   }
   else
+  if (t->cmd == "but_set_speed")
+  {
+    ((dialog_query_string*)speed_dialog)->show();
+    return;
+  }
+  if (t->cmd == "dialog_set_speed")
+  {
+    command_q_b.add_raw("time_set_speed " + t->parts[1]);
+    parent->vsx_command_queue_b(this);
+  }
+
   if (t->cmd == "editor_action")
   {
     if (t->parts.size() == 3)

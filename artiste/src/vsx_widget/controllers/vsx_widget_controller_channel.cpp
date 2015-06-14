@@ -39,8 +39,7 @@ void vsx_widget_controller_channel::init()
   get_value();
   amp = add(new vsx_widget_controller_knob,"amp");
   amp->set_pos(vsx_vector3<>(0,pos.y+size.y/2-amp->size.y*0.75));
-  //amp->pos.y=pos.y+size.y/2-amp->size.y*0.75;
-  //amp->pos.x=0;
+
   ((vsx_widget_controller_knob*)amp)->bgcolor.a=0;
   ((vsx_widget_controller_knob*)amp)->owned=true;
   ((vsx_widget_controller_knob*)amp)->drawconnection=false;
@@ -48,23 +47,17 @@ void vsx_widget_controller_channel::init()
   ((vsx_widget_controller_knob*)amp)->init();
   ((vsx_widget_controller_knob*)amp)->capmin = true;
   ((vsx_widget_controller_knob*)amp)->capminv = ALMOST_ZERO;
-  //((vsx_widget_3d_hint*)((vsx_widget_knob*)amp)->hint)->title="Amp";
 
   offset = add(new vsx_widget_controller_knob,"offset");
   offset->set_pos(vsx_vector3<>(0,amp->pos.y-offset->size.y-offset->size.y*0.25));
-  //offset->pos.y=amp->pos.y-offset->size.y-offset->size.y*0.25;
-  //offset->pos.x=0;
   ((vsx_widget_controller_knob*)offset)->bgcolor.a=0;
   ((vsx_widget_controller_knob*)offset)->owned=true;
   ((vsx_widget_controller_knob*)offset)->drawconnection=false;
   ((vsx_widget_controller_knob*)offset)->isolate=true;
   ((vsx_widget_controller_knob*)offset)->init();
-  //((vsx_widget_3d_hint*)((vsx_widget_knob*)offset)->hint)->title="Ofs";
 
   slider = add(new vsx_widget_controller_slider,"slider");
   slider->set_pos(vsx_vector3<>(0,offset->pos.y-(offset->size.y/2)-(slider->size.y/2)-(sizeunit/4)));
-  //slider->pos.y=offset->pos.y-(offset->size.y/2)-(slider->size.y/2)-(sizeunit/4);
-  //slider->pos.x=0;
   ((vsx_widget_controller_slider*)slider)->bgcolor.a=0;
   ((vsx_widget_controller_slider*)slider)->owned=true;
   ((vsx_widget_controller_slider*)slider)->drawconnection=false;
@@ -75,9 +68,10 @@ void vsx_widget_controller_channel::init()
   ((vsx_widget_controller_slider*)slider)->capmax = capmax;
   ((vsx_widget_controller_slider*)slider)->capminv = capminv;
   ((vsx_widget_controller_slider*)slider)->capmaxv = capmaxv;
-  //((vsx_widget_3d_hint*)((vsx_widget_slider*)slider)->hint)->title=target_param;
 
-  double x=((vsx_widget_controller_slider*)slider)->amp,i=((vsx_widget_controller_slider*)slider)->ofs;
+  double x = ((vsx_widget_controller_slider*)slider)->amp_get();
+  double i = ((vsx_widget_controller_slider*)slider)->ofs_get();
+
   ((vsx_widget_controller_knob*)offset)->set_value(i);
   ((vsx_widget_controller_knob*)amp)->set_value(x-i);
   smooth(smoothness);
@@ -99,32 +93,47 @@ void vsx_widget_controller_channel::command_process_back_queue(vsx_command_s *t)
 {
   if (t->cmd=="pg64_ok" && !isolate) {
     set_value(vsx_string_helper::s2f(vsx_string_helper::base64_decode(t->parts[3])));
-    if (target_value > ((vsx_widget_controller_slider*)slider)->amp)
+    if (target_value > ((vsx_widget_controller_slider*)slider)->amp_get())
     {
-      ((vsx_widget_controller_knob*)amp)->target_value = ((vsx_widget_controller_slider*)slider)->amp = target_value*2;
+      ((vsx_widget_controller_knob*)amp)->target_value = target_value*2;
+      ((vsx_widget_controller_slider*)slider)->amp_set( target_value*2 );
     }
-    if (target_value < ((vsx_widget_controller_slider*)slider)->ofs) {
-      ((vsx_widget_controller_knob*)offset)->value = ((vsx_widget_controller_knob*)offset)->target_value = ((vsx_widget_controller_slider*)slider)->ofs = target_value*2;
-      ((vsx_widget_controller_knob*)amp)->value = ((vsx_widget_controller_knob*)amp)->target_value = ((vsx_widget_controller_slider*)slider)->amp = ((vsx_widget_controller_knob*)amp)->target_value-target_value*2;
+    if (target_value < ((vsx_widget_controller_slider*)slider)->ofs_get())
+    {
+      ((vsx_widget_controller_knob*)offset)->value = target_value*2;
+      ((vsx_widget_controller_knob*)offset)->target_value = target_value*2;
+      ((vsx_widget_controller_slider*)slider)->ofs_set( target_value*2 );
+
+      ((vsx_widget_controller_knob*)amp)->value = ((vsx_widget_controller_knob*)amp)->target_value - target_value*2;
+      ((vsx_widget_controller_knob*)amp)->target_value = ((vsx_widget_controller_knob*)amp)->target_value - target_value*2;
+      ((vsx_widget_controller_slider*)slider)->amp_set( ((vsx_widget_controller_knob*)amp)->target_value - target_value*2 );
     }
     ((vsx_widget_controller_slider*)slider)->set_value(value);
   } else
   if (t->cmd == "set_value_i")
   {
-    if (value > ((vsx_widget_controller_slider*)slider)->amp)
+    if (value > ((vsx_widget_controller_slider*)slider)->amp_get())
     {
-      ((vsx_widget_controller_knob*)amp)->target_value = ((vsx_widget_controller_slider*)slider)->amp = target_value*2;
+      ((vsx_widget_controller_knob*)amp)->target_value = target_value*2;
+      ((vsx_widget_controller_slider*)slider)->amp_set( target_value*2 );
     }
-    if (value < ((vsx_widget_controller_slider*)slider)->ofs) {
-      ((vsx_widget_controller_knob*)offset)->value = ((vsx_widget_controller_knob*)offset)->target_value = ((vsx_widget_controller_slider*)slider)->ofs = target_value*2;
-      ((vsx_widget_controller_knob*)amp)->value = ((vsx_widget_controller_knob*)amp)->target_value = ((vsx_widget_controller_slider*)slider)->amp = ((vsx_widget_controller_knob*)amp)->target_value-target_value*2;
+
+    if (value < ((vsx_widget_controller_slider*)slider)->ofs_get())
+    {
+      ((vsx_widget_controller_knob*)offset)->value = target_value*2;
+      ((vsx_widget_controller_knob*)offset)->target_value =  target_value*2;
+      ((vsx_widget_controller_slider*)slider)->ofs_set( target_value*2 );
+
+      ((vsx_widget_controller_knob*)amp)->value = ((vsx_widget_controller_knob*)amp)->target_value-target_value*2;
+      ((vsx_widget_controller_knob*)amp)->target_value =  ((vsx_widget_controller_knob*)amp)->target_value-target_value*2;
+      ((vsx_widget_controller_slider*)slider)->amp_set( ((vsx_widget_controller_knob*)amp)->target_value-target_value*2 );
     }
     ((vsx_widget_controller_slider*)slider)->set_value(value);
   } else
   if (t->cmd == "update") {
     if (t->parts[1] == "amp") {
-      ((vsx_widget_controller_slider*)slider)->amp=((vsx_widget_controller_knob*)amp)->send_value;
-      ((vsx_widget_controller_slider*)slider)->ofs=((vsx_widget_controller_knob*)offset)->send_value;
+      ((vsx_widget_controller_slider*)slider)->amp_set( ((vsx_widget_controller_knob*)amp)->send_value );
+      ((vsx_widget_controller_slider*)slider)->ofs_set( ((vsx_widget_controller_knob*)offset)->send_value );
       ((vsx_widget_controller_slider*)slider)->cap_value();
       ((vsx_widget_controller_slider*)slider)->value = ((vsx_widget_controller_slider*)slider)->target_value;
       if (((vsx_widget_controller_slider*)slider)->value != ((vsx_widget_controller_slider*)slider)->target_value)
@@ -136,10 +145,10 @@ void vsx_widget_controller_channel::command_process_back_queue(vsx_command_s *t)
       }
     } else
     if (t->parts[1] == "offset") {
-      ((vsx_widget_controller_slider*)slider)->amp=((vsx_widget_controller_knob*)amp)->send_value;
-      ((vsx_widget_controller_slider*)slider)->ofs=((vsx_widget_controller_knob*)offset)->send_value;
+      ((vsx_widget_controller_slider*)slider)->amp_set( ((vsx_widget_controller_knob*)amp)->send_value );
+      ((vsx_widget_controller_slider*)slider)->ofs_set( ((vsx_widget_controller_knob*)offset)->send_value );
       ((vsx_widget_controller_slider*)slider)->cap_value();
-      ((vsx_widget_controller_knob*)offset)->target_value = ((vsx_widget_controller_slider*)slider)->ofs;
+      ((vsx_widget_controller_knob*)offset)->target_value = ((vsx_widget_controller_slider*)slider)->ofs_get();
       ((vsx_widget_controller_slider*)slider)->value = ((vsx_widget_controller_slider*)slider)->target_value;
       if (value != ((vsx_widget_controller_slider*)slider)->target_value)
       {

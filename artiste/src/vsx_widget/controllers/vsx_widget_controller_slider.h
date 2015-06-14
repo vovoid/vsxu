@@ -30,22 +30,41 @@
 
 class vsx_widget_controller_slider : public vsx_widget_controller_base
 {
-public:
+
+  void draw_vertical();
+  void draw_horizontal();
+
   float amp, ofs;
   vsx_vector3<> clickpos,deltamove,remPointer,remWorld;
   vsx_color<> marker_color;
-  float handlesize;
+  float handle_size;
+  size_t orientation; // 0 = vertical, 1 = horizontal
   vsx_widget* hint;
   vsx_widget* editor;
+
+public:
+
   void init();
+
+  void set_horizontal();
+  void set_vertical();
+
   void draw();
   void cap_value();
+
+
   int inside_xy_l(vsx_vector3<> &test, vsx_vector3<> &global);
   void command_process_back_queue(vsx_command_s *t);
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);
 
   double get_y_pos();
+  float amp_get();
+  void amp_set(float n);
+
+  float ofs_get();
+  void ofs_set(float n);
+
   vsx_widget_controller_slider();
 };
 
