@@ -411,8 +411,13 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
 
       if (is_controller)
       {
-        command_q_b.add_raw("pseq_r_ok insert z z " + val + " " + vsx_string_helper::f2s(i_distance)
-            + " " + vsx_string_helper::i2s(interpolation_type) + " " + vsx_string_helper::i2s(item_action_id));
+        command_q_b.add_raw(
+              "pseq_r_ok insert z z " +
+              val + " " +
+              vsx_string_helper::f2s(i_distance) + " " +
+              vsx_string_helper::i2s(interpolation_type) + " " +
+              vsx_string_helper::i2s(item_action_id)
+              );
         vsx_command_queue_b(this);
         // send a full inject dump to the parent in the widget chain
         send_parent_dump();
@@ -420,8 +425,13 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
       else
       {
         // 0=pseq_r 1=insert 2=[module] 3=[param] 4=[value] 5=[local_time_distance] 6=[interpolation_type] 7=[item_action_id]
-        server_message("pseq_r insert", val + " " + vsx_string_helper::f2s(i_distance) + " " +
-                       vsx_string_helper::i2s( interpolation_type) + " " + vsx_string_helper::i2s(item_action_id));
+        server_message(
+              "pseq_r insert",
+              val + " " +
+              vsx_string_helper::f2s(i_distance) + " " +
+              vsx_string_helper::i2s(interpolation_type) + " " +
+              vsx_string_helper::i2s(item_action_id)
+        );
       }
     }
 
@@ -481,6 +491,58 @@ void vsx_widget_seq_channel::event_mouse_up(vsx_widget_distance distance,
 
   if (!shift && !ctrl && !alt)
   vsx_widget::event_mouse_up(distance, coords, button);
+}
+
+void vsx_widget_seq_channel::create_keyframe(float time, float value)
+{
+  int item_action_id = -1;
+  float i_distance = 0.0f;
+  float accum_time = 0.0f;
+  for (size_t i = 0; i < items.size()-1; i++)
+  {
+    if (accum_time + items[i].get_total_length() > time)
+    {
+      i_distance = time - accum_time;
+      item_action_id = i;
+      break;
+    }
+
+    accum_time += items[i].get_total_length();
+  }
+  if (item_action_id == -1)
+  {
+    item_action_id = items.size()-1;
+    i_distance = time - accum_time;
+  }
+
+  server_message(
+        "pseq_r insert",
+        vsx_string_helper::base64_encode( vsx_string_helper::f2s(value) )  + " " +
+        vsx_string_helper::f2s(i_distance) + " " +
+        "1 " +
+        vsx_string_helper::i2s(item_action_id)
+  );
+}
+
+bool vsx_widget_seq_channel::get_keyframe_value(float time, float tolerance, float& result)
+{
+  float accum_time = 0.0f;
+  for (size_t i = 0; i < items.size(); i++)
+  {
+    if
+    (
+      time > accum_time - tolerance
+      &&
+      time < accum_time + tolerance
+    )
+    {
+      result = items[i].convert_to_float( items[i].get_value() );
+      return true;
+    }
+
+    accum_time += items[i].get_total_length();
+  }
+  return false;
 }
 
 void vsx_widget_seq_channel::event_mouse_double_click(
@@ -2309,6 +2371,22 @@ bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
       if (ctrl)
         // set bezier interpolation type
         set_bezier_time_aligned_handles();
+      break;
+
+    case 'c':
+      if (ctrl)
+      {
+        owner->action_copy();
+        return false;
+      }
+      break;
+
+    case 'v':
+      if (ctrl)
+      {
+        owner->action_paste();
+        return false;
+      }
       break;
 
   }

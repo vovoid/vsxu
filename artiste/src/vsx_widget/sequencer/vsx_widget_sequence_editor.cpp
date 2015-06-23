@@ -132,6 +132,21 @@ void vsx_widget_sequence_editor::init()
   but_open_at_time->target_size.x = but_open_at_time->size.x = 0.040;
   but_open_at_time->commands.adds(4,"but_open_at_time","but_open_at_time","");
 
+  but_copy = add(new vsx_widget_button,"but_copy");
+  but_copy->render_type = render_3d;
+  but_copy->init();
+  but_copy->title = "copy";
+  but_copy->target_size.x = but_copy->size.x = 0.040;
+  but_copy->commands.adds(4,"but_copy","but_copy","");
+
+  but_paste = add(new vsx_widget_button,"but_paste");
+  but_paste->render_type = render_3d;
+  but_paste->init();
+  but_paste->title = "paste";
+  but_paste->target_size.x = but_paste->size.x = 0.040;
+  but_paste->commands.adds(4,"but_paste","but_paste","");
+
+
   vsx_widget_sequence_tree* sequence_tree = (vsx_widget_sequence_tree*)add(new vsx_widget_sequence_tree, "sequence_list");
   sequence_tree->init();
   sequence_tree->extra_init();
@@ -199,7 +214,7 @@ void vsx_widget_sequence_editor::i_draw()
   draw_box_border(vsx_vector3<>(parentpos.x-size.x*0.5,parentpos.y-size.y*0.5f), vsx_vector3<>(size.x,size.y), dragborder);
 
   font.color = vsx_color<>(1.0f,1.0f,1.0f,0.7f);
-  font.print(vsx_vector3<>(parentpos.x-size.x*0.5+0.3f,parentpos.y+size.y*0.5f-0.018f), name,0.01);
+//  font.print(vsx_vector3<>(parentpos.x-size.x*0.5+0.3f,parentpos.y+size.y*0.5f-0.018f), name,0.01);
   font.color = vsx_color<>(1.0f,1.0f,1.0f,1.0f);
 
   vsx_widget::i_draw();
@@ -227,7 +242,9 @@ void vsx_widget_sequence_editor::interpolate_size()
   but_stop->set_pos(vsx_vector3<>(but_play->pos.x + but_play->size.x + dragborder, but_rew->pos.y));
   but_set_loop_point->set_pos(vsx_vector3<>(-size.x*0.5f +0.23f,but_rew->pos.y));
   but_set_speed->set_pos(vsx_vector3<>(-size.x*0.5f +0.275f,but_rew->pos.y));
-  but_open_at_time->set_pos(vsx_vector3<>(-size.x*0.5f +0.275f + 0.045,but_rew->pos.y));
+  but_open_at_time->set_pos(vsx_vector3<>(-size.x*0.5f +0.275f + 0.045, but_rew->pos.y));
+  but_copy->set_pos(vsx_vector3<>(-size.x*0.5f +0.275f + 0.045 * 2, but_rew->pos.y));
+  but_paste->set_pos(vsx_vector3<>(-size.x*0.5f +0.275f + 0.045 * 3, but_rew->pos.y));
 
   if (but_add_master_channel)
     but_add_master_channel->set_pos(vsx_vector3<>(but_stop->pos.x + but_stop->size.x  + but_add_master_channel->size.x / 2, but_rew->pos.y));
@@ -355,6 +372,30 @@ void vsx_widget_sequence_editor::remove_master_channel_items_with_name(vsx_strin
     ((vsx_widget_seq_channel*)(*it))->remove_master_channel_items_with_name(name);
 }
 
+void vsx_widget_sequence_editor::action_copy()
+{
+  clipboard.clear();
+  for (size_t i = 0; i < channels.size(); i++)
+  {
+    vsx_widget_seq_channel& channel = *((vsx_widget_seq_channel*)channels[i]);
+    float result;
+    if ( !channel.get_keyframe_value(curtime, 0.1, result) )
+      continue;
+    clipboard.add( channel.channel_name, channel.param_name, result );
+  }
+}
+
+void vsx_widget_sequence_editor::action_paste()
+{
+  vsx_nw_vector< vsx_widget_sequence_clipboard_item >& items = *clipboard.items_get_ptr();
+  for (size_t i = 0; i < items.size(); i++)
+  {
+    vsx_widget_seq_channel& channel = *((vsx_widget_seq_channel*)channels_map[items[i].component+":"+items[i].parameter]);
+    channel.create_keyframe( curtime, items[i].value );
+  }
+}
+
+
 void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
   // internal operations
   if (t->cmd == "seq_pool")
@@ -407,6 +448,18 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
   if (t->cmd == "but_open_at_time")
   {
     channels_open_at_time();
+    return;
+  }
+
+  if (t->cmd == "but_copy")
+  {
+    action_copy();
+    return;
+  }
+
+  if (t->cmd == "but_paste")
+  {
+    action_paste();
     return;
   }
 

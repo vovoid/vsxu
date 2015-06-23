@@ -25,6 +25,7 @@
 #define VSX_WIDGET_SEQUENCE_H
 
 #include <vsx_widget.h>
+#include "vsx_widget_sequence_clipboard.h"
 
 class vsx_widget_sequence_editor : public vsx_widget
 {
@@ -39,6 +40,8 @@ class vsx_widget_sequence_editor : public vsx_widget
   vsx_widget* but_set_loop_point;
   vsx_widget* but_set_speed;
   vsx_widget* but_open_at_time;
+  vsx_widget* but_copy;
+  vsx_widget* but_paste;
 
 
   std::vector<vsx_widget*> channels;
@@ -47,6 +50,8 @@ class vsx_widget_sequence_editor : public vsx_widget
   int channels_start;
   vsx_widget* sequence_list;
   void update_list();
+
+  vsx_widget_sequence_clipboard clipboard;
 
   // dialogs
   vsx_widget* name_dialog;
@@ -75,6 +80,11 @@ public:
   void toggle_channel_visible(vsx_string<>name);
   void close_open_channels();
   void channels_open_at_time();
+
+  void action_copy();
+  void action_paste();
+
+
 
   // removes all sequence channels, used when switching seqpool etc.
   void clear_sequencer();

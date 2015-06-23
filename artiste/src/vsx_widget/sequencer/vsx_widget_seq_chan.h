@@ -108,8 +108,8 @@ public:
   bool is_controller; // true if to act as a controller
   vsx_widget_sequence_editor* owner;
   int channel_type; // 0 = parameter, 1 = master
-  vsx_string<>channel_name; // if master, this is the channel name, if parameter sequence it's the module name
-  vsx_string<>param_name;   // if master this is "[master]" otherwise the parameter name
+  vsx_string<> channel_name; // if master, this is the channel name, if parameter sequence it's the module name
+  vsx_string<> param_name;   // if master this is "[master]" otherwise the parameter name
   float totalsize;
   float ff;
   float levelstart;
@@ -150,6 +150,8 @@ public:
 
   void draw_chan_box(float t0, float y0, vsx_string<> display_value, vsx_color<> box_color, float c_size = SEQ_CHAN_BOX_SIZE);
   void draw_selection_box(float t0, float y0);
+  void create_keyframe(float time, float value);
+  bool get_keyframe_value(float time, float tolerance, float& result);
 
 
   void drop_master_channel(vsx_widget_distance distance, vsx_widget_coords coords, vsx_string<>name);
