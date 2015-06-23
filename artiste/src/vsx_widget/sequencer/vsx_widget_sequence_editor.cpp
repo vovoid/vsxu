@@ -39,7 +39,7 @@
 
 // local includes
 #include "vsx_widget.h"
-#include "vsx_widget_sequence.h"
+#include "vsx_widget_sequence_editor.h"
 #include "vsx_widget_sequence_tree.h"
 #include "vsx_widget_seq_chan.h"
 #include "vsx_widget_timeline.h"
@@ -124,6 +124,13 @@ void vsx_widget_sequence_editor::init()
   but_set_speed->title = "set speed";
   but_set_speed->target_size.x = but_set_speed->size.x = 0.040;
   but_set_speed->commands.adds(4,"but_set_speed","but_set_speed","");
+
+  but_open_at_time= add(new vsx_widget_button,"but_open_at_time");
+  but_open_at_time->render_type = render_3d;
+  but_open_at_time->init();
+  but_open_at_time->title = "open at time";
+  but_open_at_time->target_size.x = but_open_at_time->size.x = 0.040;
+  but_open_at_time->commands.adds(4,"but_open_at_time","but_open_at_time","");
 
   vsx_widget_sequence_tree* sequence_tree = (vsx_widget_sequence_tree*)add(new vsx_widget_sequence_tree, "sequence_list");
   sequence_tree->init();
@@ -220,6 +227,8 @@ void vsx_widget_sequence_editor::interpolate_size()
   but_stop->set_pos(vsx_vector3<>(but_play->pos.x + but_play->size.x + dragborder, but_rew->pos.y));
   but_set_loop_point->set_pos(vsx_vector3<>(-size.x*0.5f +0.23f,but_rew->pos.y));
   but_set_speed->set_pos(vsx_vector3<>(-size.x*0.5f +0.275f,but_rew->pos.y));
+  but_open_at_time->set_pos(vsx_vector3<>(-size.x*0.5f +0.275f + 0.045,but_rew->pos.y));
+
   if (but_add_master_channel)
     but_add_master_channel->set_pos(vsx_vector3<>(but_stop->pos.x + but_stop->size.x  + but_add_master_channel->size.x / 2, but_rew->pos.y));
   timeline->target_size.x = timeline->size.x = size.x-0.1f-dragborder*4;
@@ -256,6 +265,24 @@ void vsx_widget_sequence_editor::interpolate_size()
     ++i;
   }
 }
+
+void vsx_widget_sequence_editor::close_open_channels()
+{
+  for (std::vector<vsx_widget*>::iterator it = channels.begin(); it != channels.end(); it++)
+    (*it)->_delete();
+
+  channels.clear();
+  channels_map.clear();
+}
+
+void vsx_widget_sequence_editor::channels_open_at_time()
+{
+  close_open_channels();
+  command_q_b.add_raw("pseq_inject_get_keyframe_at_time "+ vsx_string_helper::f2s(curtime) + " 0.1");
+  parent->vsx_command_queue_b(this);
+  interpolate_size();
+}
+
 
 void vsx_widget_sequence_editor::toggle_channel_visible(vsx_string<>name) {
   if (channels_map.find(name) != channels_map.end())
@@ -325,9 +352,7 @@ vsx_widget* vsx_widget_sequence_editor::get_server()
 void vsx_widget_sequence_editor::remove_master_channel_items_with_name(vsx_string<>name)
 {
   for (std::vector<vsx_widget*>::iterator it = channels.begin(); it != channels.end(); it++)
-  {
     ((vsx_widget_seq_channel*)(*it))->remove_master_channel_items_with_name(name);
-  }
 }
 
 void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
@@ -378,6 +403,13 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
     command_q_b.add_raw("time_set_speed " + t->parts[1]);
     parent->vsx_command_queue_b(this);
   }
+
+  if (t->cmd == "but_open_at_time")
+  {
+    channels_open_at_time();
+    return;
+  }
+
 
   if (t->cmd == "editor_action")
   {

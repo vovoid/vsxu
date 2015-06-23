@@ -54,6 +54,8 @@ public:
   vsx_string<>dump_param(vsx_engine_param* param);
   void inject_param(vsx_engine_param* param, vsx_comp_abs* comp, vsx_string<>data);
 
+  void get_params_with_keyframe_at_time(float time, float tolerance, vsx_nw_vector<vsx_engine_param* >& result);
+
   // master channel operations
   int add_master_channel(vsx_string<>name);
   int remove_master_channel(vsx_string<>name);

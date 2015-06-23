@@ -41,7 +41,7 @@
 #include "server/vsx_widget_server.h"
 #include "server/vsx_widget_comp.h"
 
-#include "sequencer/vsx_widget_sequence.h"
+#include "sequencer/vsx_widget_sequence_editor.h"
 #include "sequencer/vsx_widget_seq_chan.h"
 #include "vsx_widget_seq_pool.h"
 #include <gl_helper.h>
@@ -463,6 +463,8 @@ void vsx_widget_seq_pool_manager::command_process_back_queue(vsx_command_s *t)
     t->cmd == "seq_list"
     ||
     t->cmd == "propagate_time"
+    ||
+    t->cmd == "pseq_inject_get_keyframe_at_time"
   )
   {
     vsx_string<>command = "seq_pool";

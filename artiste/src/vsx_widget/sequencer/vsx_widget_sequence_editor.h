@@ -38,6 +38,8 @@ class vsx_widget_sequence_editor : public vsx_widget
   vsx_widget* but_remove_master_channel;
   vsx_widget* but_set_loop_point;
   vsx_widget* but_set_speed;
+  vsx_widget* but_open_at_time;
+
 
   std::vector<vsx_widget*> channels;
   std::map<vsx_string<>,vsx_widget*> channels_map;
@@ -51,10 +53,14 @@ class vsx_widget_sequence_editor : public vsx_widget
   vsx_widget* loop_point_dialog;
   vsx_widget* speed_dialog;
 
+
 public:
+
+  // timeline
+  vsx_widget* timeline;
+
   bool disable_master_channel;
 
-  vsx_widget* timeline;
   void check_timeline();
   void set_timeline_show_wave_data(bool value);
   virtual void load_sequence_list();
@@ -67,6 +73,8 @@ public:
   virtual void init();
   void i_draw();
   void toggle_channel_visible(vsx_string<>name);
+  void close_open_channels();
+  void channels_open_at_time();
 
   // removes all sequence channels, used when switching seqpool etc.
   void clear_sequencer();

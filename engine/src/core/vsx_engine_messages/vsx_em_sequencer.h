@@ -57,6 +57,27 @@ if (cmd == "pseq_l_rescale_time")
 
 
 
+if (cmd == "pseq_inject_get_keyframe_at_time") {
+  float time = vsx_string_helper::s2f( c->parts[1] );
+  float tolerance = vsx_string_helper::s2f( c->parts[2] );
+  vsx_nw_vector<vsx_engine_param* > result_params;
+
+  sequence_list.get_params_with_keyframe_at_time(time, tolerance, result_params);
+  for (size_t i = 0; i < result_params.size(); i++)
+  {
+    vsx_string<> seq_dump = sequence_list.dump_param( result_params[i] );
+    cmd_out->add_raw(
+      "pseq_p_ok "
+      "inject_get " +
+      result_params[i]->component->name + " " +
+      result_params[i]->name + " " +
+      seq_dump + " " +
+      vsx_string_helper::i2s(result_params[i]->module_param->type),
+      VSX_COMMAND_GARBAGE_COLLECT
+    );
+  }
+}
+
 
 
 if (cmd == "pseq_p")
@@ -85,13 +106,15 @@ if (cmd == "pseq_p")
       cmd_out->add_raw(
         "pseq_p_ok "
         "inject_get " +
-        c->parts[2] + " " +
-        c->parts[3] + " " +
+        param->component->name + " " +
+        param->name + " " +
         a + " " +
         vsx_string_helper::i2s(param->module_param->type),
         VSX_COMMAND_GARBAGE_COLLECT
       );
   }
+
+
   if (c->parts[1] == "add") {
     if (!param->sequence) {
       sequence_list.add_param_sequence(param,(vsx_comp_abs*)dest);

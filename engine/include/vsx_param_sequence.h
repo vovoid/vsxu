@@ -76,6 +76,8 @@ public:
   void insert_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix = "");
   void remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix = "");
   void rescale_time(float start, float scale);
+  bool has_keyframe_at_time(float time, float tolerance);
+
   float calculate_total_time(bool no_cache = false);
   vsx_string<>dump();
   void inject(vsx_string<>ij);

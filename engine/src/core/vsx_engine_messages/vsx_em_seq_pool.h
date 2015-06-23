@@ -287,6 +287,36 @@ if (cmd == "seq_pool")
     goto process_message_queue_end;
   }
 
+  if (c->parts[1] == "pseq_inject_get_keyframe_at_time")
+  {
+    float time = vsx_string_helper::s2f( c->parts[2] );
+    float tolerance = vsx_string_helper::s2f( c->parts[3] );
+    vsx_nw_vector<vsx_engine_param* > result_params;
+
+    vsx_param_sequence_list* seq_list = sequence_pool.get_selected();
+
+    seq_list->get_params_with_keyframe_at_time(time, tolerance, result_params);
+    for (size_t i = 0; i < result_params.size(); i++)
+    {
+      vsx_engine_param* param = result_params[i];
+      vsx_string<> seq_dump = seq_list->dump_param( param );
+      vsx_comp_abs* comp = result_params[i]->component;
+
+      if (seq_dump != "")
+        cmd_out->add_raw(
+          "seq_pool "
+          "pseq_p_ok "
+          "inject_get " +
+          comp->name + " " +
+          result_params[i]->name + " " +
+          seq_dump + " " +
+          vsx_string_helper::i2s(result_params[i]->module_param->type),
+          VSX_COMMAND_GARBAGE_COLLECT
+        );
+    }
+  }
+
+
 
   // ***************************************
   // Legacy sequence pattern modifier

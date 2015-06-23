@@ -40,7 +40,7 @@
 #include "vsx_module.h"
 // local includes
 #include "vsx_widget.h"
-#include "vsx_widget_sequence.h"
+#include "vsx_widget_sequence_editor.h"
 #include "vsx_widget_seq_chan.h"
 #include "vsx_widget_timeline.h"
 #include "widgets/vsx_widget_popup_menu.h"
@@ -2215,95 +2215,102 @@ bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
   if (is_controller) return true;
   switch (key)
   {
-  case '1':
-  case '2':
-  case '3':
-  case '4':
-  case '5':
-    toggle_exclusive(key - 48);
-    break;
-  case 'a':
-  {
-    if (ctrl)
-      backwards_message("play");
-    else
-      backwards_message("stop");
-  }
-    break;
-  case 'E':
-  case 'e':
-  {
-    float dt = (y_end - y_start) * 0.03;
-    y_start += dt;
-    y_end += dt;
-    return false;
-  }
-    break;
-  case 'd':
-  {
-    float dt = (y_end - y_start) * 0.03;
-    y_start -= dt;
-    y_end -= dt;
-    return false;
-  }
-    break;
-  case 's':
-  {
-    if (ctrl)
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+      toggle_exclusive(key - 48);
+      break;
+    case 'a':
     {
-      return ((vsx_widget_timeline*) owner->timeline)->event_key_down(key,
-          false, false, false);
+      if (ctrl)
+        backwards_message("play");
+      else
+        backwards_message("stop");
     }
-    else
-    {
+    break;
+    case 'E':
+    case 'e':
+      {
+        float dt = (y_end - y_start) * 0.03;
+        y_start += dt;
+        y_end += dt;
+        return false;
+      }
+    break;
+    case 'd':
+      {
+        float dt = (y_end - y_start) * 0.03;
+        y_start -= dt;
+        y_end -= dt;
+        return false;
+      }
+    break;
+    case 's':
+      {
+        if (ctrl)
+        {
+          return ((vsx_widget_timeline*) owner->timeline)->event_key_down(key,
+              false, false, false);
+        }
+        else
+        {
 
-    }
-  }
+        }
+      }
     break;
-  case 'f':
-  {
-    if (ctrl)
-    {
-      if (owner)
-        return ((vsx_widget_timeline*) owner->timeline)->event_key_down(key,
-            false, false, false);
-    }
-  }
+    case 'f':
+      {
+        if (ctrl)
+        {
+          if (owner)
+            return ((vsx_widget_timeline*) owner->timeline)->event_key_down(key,
+                false, false, false);
+        }
+      }
     break;
-  case 'r':
-  {
-    if (ctrl)
-    {
-      if (owner)
-        ((vsx_widget_timeline*) owner->timeline)->event_key_down(key, false,
-            false, false);
-    }
-    if (alt)
-    {
-      float dt = (y_end - y_start) * 0.5;
-      y_start = y_start + dt - dt * 0.97;
-      y_end = y_end - dt + dt * 0.97;
-    }
-    return false;
-  }
+    case 'r':
+      {
+        if (ctrl)
+        {
+          if (owner)
+            ((vsx_widget_timeline*) owner->timeline)->event_key_down(key, false,
+                false, false);
+        }
+        if (alt)
+        {
+          float dt = (y_end - y_start) * 0.5;
+          y_start = y_start + dt - dt * 0.97;
+          y_end = y_end - dt + dt * 0.97;
+        }
+        return false;
+      }
     break;
-  case 'w':
-  {
-    if (ctrl)
-    {
-      if (owner)
-        ((vsx_widget_timeline*) owner->timeline)->event_key_down(key, false,
-            false, false);
-    }
-    if (alt)
-    {
-      float dt = (y_end - y_start) * 0.5;
-      y_start = y_start + dt - dt * 1.03;
-      y_end = y_end - dt + dt * 1.03;
-    }
-    return false;
-  }
+    case 'w':
+      {
+        if (ctrl)
+        {
+          if (owner)
+            ((vsx_widget_timeline*) owner->timeline)->event_key_down(key, false,
+                false, false);
+        }
+        if (alt)
+        {
+          float dt = (y_end - y_start) * 0.5;
+          y_start = y_start + dt - dt * 1.03;
+          y_end = y_end - dt + dt * 1.03;
+        }
+        return false;
+      }
     break;
+
+    case 't':
+      if (ctrl)
+        // set bezier interpolation type
+        set_bezier_time_aligned_handles();
+      break;
+
   }
   return true;
 }
@@ -2344,4 +2351,53 @@ void vsx_widget_seq_channel::set_view_time(float start, float end)
 {
   view_time_start = start;
   view_time_end = end;
+}
+
+
+void vsx_widget_seq_channel::set_bezier_time_aligned_handles()
+{
+  float accum_time = 0.0f;
+  for (size_t i = 0; i < items.size()-1; i++)
+  {
+    if (cur_time > accum_time
+        &&
+        cur_time < accum_time + items[i].get_total_length()
+        )
+    {
+      items[i].set_interpolation( VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_BEZIER, &items[i+1] );
+      items[i].set_bezier_handles_factor( (cur_time - accum_time) / items[i].get_total_length() );
+      server_message("pseq_r update",
+        vsx_string_helper::base64_encode( items[i].get_value_by_interpolation()) + " " +
+                     vsx_string_helper::f2s( items[i].get_total_length()) + " " +
+                     vsx_string_helper::i2s( items[i].get_interpolation()) + " " +
+        vsx_string_helper::i2s(i)
+                     );
+    }
+    accum_time += items[i].get_total_length();
+  }
+}
+
+void vsx_widget_seq_channel::align_bezier_time_handles()
+{
+  float accum_time = 0.0f;
+  for (size_t i = 0; i < items.size()-1; i++)
+  {
+    if (cur_time > accum_time
+        &&
+        cur_time < accum_time + items[i].get_total_length()
+        )
+    {
+      if (items[i].get_interpolation() != VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_BEZIER)
+        return;
+
+      items[i].set_bezier_handles_factor( (cur_time - accum_time) / items[i].get_total_length() );
+      server_message("pseq_r update",
+        vsx_string_helper::base64_encode( items[i].get_value_by_interpolation()) + " " +
+                     vsx_string_helper::f2s( items[i].get_total_length()) + " " +
+                     vsx_string_helper::i2s( items[i].get_interpolation()) + " " +
+        vsx_string_helper::i2s(i)
+                     );
+    }
+    accum_time += items[i].get_total_length();
+  }
 }

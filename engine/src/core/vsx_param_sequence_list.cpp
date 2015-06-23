@@ -258,20 +258,18 @@ void vsx_param_sequence_list::run_absolute(float vtime, float blend)
   float dtime = vtime - int_vtime;
 
   int_vtime += dtime;
-  for (std::list<vsx_param_sequence*>::iterator it = parameter_channel_list.begin(); it != parameter_channel_list.end(); ++it) {
+  for (std::list<vsx_param_sequence*>::iterator it = parameter_channel_list.begin(); it != parameter_channel_list.end(); ++it)
     (*it)->execute(dtime, blend);
-  }
 
   for (std::list<void*>::iterator it = master_channel_list.begin(); it != master_channel_list.end(); it++)
-  {
     ((vsx_master_sequence_channel*)(*it))->run(dtime);
-  }
 }
 
 vsx_string<>vsx_param_sequence_list::dump_param(vsx_engine_param* param) {
   if (parameter_channel_map.find(param) != parameter_channel_map.end())
-  return parameter_channel_map[param]->dump();
-  else return "";
+    return parameter_channel_map[param]->dump();
+
+  return "";
 }
 
 void vsx_param_sequence_list::inject_param(vsx_engine_param* param, vsx_comp_abs* comp, vsx_string<>data) {
@@ -291,6 +289,13 @@ void vsx_param_sequence_list::inject_param(vsx_engine_param* param, vsx_comp_abs
     parameter_channel_list.push_back(p);
     parameter_channel_map[param] = p;
   }
+}
+
+void vsx_param_sequence_list::get_params_with_keyframe_at_time(float time, float tolerance, vsx_nw_vector<vsx_engine_param* >& result)
+{
+ for (std::list<vsx_param_sequence*>::iterator it = parameter_channel_list.begin(); it != parameter_channel_list.end(); it++)
+   if ((*it)->has_keyframe_at_time(time, tolerance))
+     result.push_back( (*it)->param );
 }
 
 

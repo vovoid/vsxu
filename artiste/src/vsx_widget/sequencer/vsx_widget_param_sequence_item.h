@@ -192,6 +192,14 @@ public:
     interpolation = v;
   }
 
+  void set_bezier_handles_factor(float factor)
+  {
+    handle1.y = 0;
+    handle2.y = 0;
+    handle1.x = factor;
+    handle2.x = factor;
+  }
+
 
 
 

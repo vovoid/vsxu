@@ -72,6 +72,8 @@ public:
 class vsx_engine_param {
 public:
   vsx_module* module;
+  vsx_comp_abs* component;
+
 // the core param, for both aliases and real access
   vsx_module_param_abs* module_param;
   vsx_channel* channel;

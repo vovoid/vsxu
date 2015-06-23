@@ -354,6 +354,28 @@ void vsx_param_sequence::rescale_time(float start, float scale)
   }
 }
 
+bool vsx_param_sequence::has_keyframe_at_time(float time, float tolerance)
+{
+  float accum_time = 0.0;
+  for (size_t i = 0; i < items.size(); ++i)
+  {
+    if (
+        time > accum_time - tolerance
+        &&
+        time < accum_time + tolerance
+        )
+      return true;
+
+    accum_time += items[i].total_length;
+
+    if (accum_time - tolerance * 2 > time)
+      return false;
+
+  }
+
+  return false;
+}
+
 vsx_param_sequence::vsx_param_sequence()
 {
   interp_time = 10;

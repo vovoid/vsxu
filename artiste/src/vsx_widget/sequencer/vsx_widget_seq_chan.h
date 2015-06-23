@@ -24,7 +24,7 @@
 #ifndef VSX_WIDGET_SEQ_CHAN_H
 #define VSX_WIDGET_SEQ_CHAN_H
 
-#include "sequencer/vsx_widget_sequence.h"
+#include "sequencer/vsx_widget_sequence_editor.h"
 #include "vsx_widget_param_sequence_item.h"
 
 #define VSX_WIDGET_SEQ_CHANNEL_TYPE_PARAMETER 0
@@ -156,6 +156,8 @@ public:
 
   void set_view_time(float, float);
   void remove_master_channel_items_with_name(vsx_string<>name);
+  void set_bezier_time_aligned_handles();
+  void align_bezier_time_handles();
 
   vsx_widget_seq_channel()
     :

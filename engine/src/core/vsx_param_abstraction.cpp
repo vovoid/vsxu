@@ -1001,10 +1001,13 @@ void vsx_engine_param::clean_up_module_param(vsx_module_param_abs* param) {
 
 //-------------------------------------------------------------------------------------------------------------------
 
-void vsx_engine_param_list::init(vsx_module_param_list* module_param_list) {
+void vsx_engine_param_list::init(vsx_module_param_list* module_param_list)
+{
   this->module_param_list = module_param_list;
   for (unsigned long i = 0; i < module_param_list->id_vec.size(); ++i) {
     vsx_engine_param* new_param = new vsx_engine_param;
+    new_param->component = component;
+
     vsx_string<>name = module_param_list->id_vec[i]->name;
     LOG("initing vepl with "+name)
     param_name_list[name] = new_param;
@@ -1153,6 +1156,7 @@ int vsx_engine_param_list::alias(vsx_engine_param* src, vsx_string<>name, int or
   new_param->module = new_param->alias_owner->module;
   new_param->name = name;
   new_param->owner = this;
+  new_param->component = component;
   new_param->spec = new_param->alias_owner->spec;
   new_param->critical = new_param->alias_owner->critical;
   new_param->all_required = new_param->alias_owner->all_required;
