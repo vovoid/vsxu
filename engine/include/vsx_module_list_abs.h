@@ -49,7 +49,7 @@ public:
   // Init / Build Module List
   //   This method looks on disk for plugins, enumerates them
   //   and stores the results.
-  virtual void init() = 0;
+  virtual void init(void* extra_modules = 0x0) = 0;
 
   virtual void destroy() = 0;
 

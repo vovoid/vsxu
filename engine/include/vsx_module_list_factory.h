@@ -25,10 +25,16 @@
 #define VSX_MODULE_LIST_FACTORY_H
 
 #include "vsx_engine_dllimport.h"
+#include "vsx_module_list_factory_module_info.h"
 
+#ifdef VSXU_STATIC
+  vsx_module_list_abs* vsx_module_list_factory_create(void* extra_modules = 0x0);
+  void vsx_module_list_factory_destroy( vsx_module_list_abs* object );
+#else
 extern "C" {
- ENGINE_DLLIMPORT vsx_module_list_abs* vsx_module_list_factory_create();
- ENGINE_DLLIMPORT void vsx_module_list_factory_destroy( vsx_module_list_abs* object );
+  ENGINE_DLLIMPORT vsx_module_list_abs* vsx_module_list_factory_create(void* extra_modules = 0x0);
+  ENGINE_DLLIMPORT void vsx_module_list_factory_destroy( vsx_module_list_abs* object );
 }
+#endif
 
 #endif

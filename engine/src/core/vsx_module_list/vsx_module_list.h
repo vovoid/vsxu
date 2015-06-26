@@ -45,14 +45,18 @@ class vsx_module_list : public vsx_module_list_abs
 private:
   std::vector< vsx_dynamic_object_handle > plugin_handles;
 public:
-  void init()
+  void init(void* extra_modules = 0x0)
   {
+    if (extra_modules)
+      VSX_ERROR_INFO("Extra modules is not supported for dynamic module_list");
+
     // woops, looks like we already built the list
     if (module_list.size())
       return;
 
     // statistics counter - how many modules are loaded in total?
     //unsigned long total_num_modules = 0;
+
 
     // set up engine environment for later use (directories in which modules can look for config)
     vsx_engine_environment engine_environment;

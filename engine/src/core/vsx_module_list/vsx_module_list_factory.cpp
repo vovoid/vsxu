@@ -36,10 +36,10 @@
   #include "vsx_module_list.h"
 #endif
 
-vsx_module_list_abs* vsx_module_list_factory_create()
+vsx_module_list_abs* vsx_module_list_factory_create(void* extra_modules)
 {
     vsx_module_list* module_list = new vsx_module_list();
-    module_list->init();
+    module_list->init(extra_modules);
     return (vsx_module_list_abs*)module_list;
 }
 

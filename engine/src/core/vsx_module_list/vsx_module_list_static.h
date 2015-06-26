@@ -29,10 +29,12 @@
 #include <string/vsx_string.h>
 #include <vsx_param.h>
 #include <vsx_module.h>
+#include <tools/vsx_foreach.h>
 
 #include "vsx_dlopen.h"
 #include "vsx_module_list_abs.h"
 #include "vsx_module_plugin_info.h"
+#include "vsx_module_list_factory_module_info.h"
 
 
 #include "vsx_dlopen.h"
@@ -41,28 +43,13 @@
 // See vsx_module_list_abs.h for reference documentation for this class
 
 
-class vsxm_sf_info
-{
-public:
-  vsx_string<>name;
-  void* cm; //create module func
-  void* dm; //delete module func
-  void* nm; //number of modules
-  vsxm_sf_info(vsx_string<>n_name, void *n_cm, void* n_dm, void* n_nm)
-  {
-    name = n_name;
-    cm = n_cm;
-    dm = n_dm;
-    nm = n_nm;
-  }
-};
 
 class vsx_module_list : public vsx_module_list_abs
 {
 private:
-  vsx_nw_vector<vsxm_sf_info*> modules;
+  vsx_nw_vector<vsx_module_list_factory_module_info*> modules;
 public:
-  void init()
+  void init(void* extra_modules = 0x0)
   {
     // woops, looks like we already built the list
     if (module_list.size())
@@ -73,7 +60,13 @@ public:
 
     // set up engine environment for later use (directories in which modules can look for config)
     vsx_engine_environment engine_environment;
-    engine_environment.engine_parameter[0] = PLATFORM_SHARED_FILES+"plugin-config/";
+    engine_environment.engine_parameter[0] = PLATFORM_SHARED_FILES + "plugin-config/";
+
+    vsx_nw_vector<vsx_module_list_factory_module_info*>* extra_modules_d = (vsx_nw_vector<vsx_module_list_factory_module_info*>*)extra_modules;
+
+    if (extra_modules_d)
+      foreach( extra_modules, i )
+        modules.push_back( extra_modules[i] )
 
     #include <plugins/static_factory_funcmapping.h>
     #define VSXM_SF_ADD_MODULE(name,m_cm,m_dm,m_nm) \
