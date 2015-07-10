@@ -21,20 +21,18 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <audio/vsx_sample_raw.h>
+#include "vsx_sample_ogg.h"
 
-class vsx_module_raw_sample_play : public vsx_module
+class vsx_module_ogg_sample_play : public vsx_module
 {
   // in
   vsx_module_param_resource* filename;
   vsx_module_param_int* format;
-  vsx_module_param_float* gain;
-  vsx_module_param_int* show_waveform_in_sequencer;
 
   // out
 
   // private
-  vsx_sample_raw main_sample;
+  vsx_sample_ogg main_sample;
 
   vsx_engine_float_array full_pcm_data_l;
   vsx_engine_float_array full_pcm_data_r;
@@ -44,18 +42,16 @@ public:
   void module_info(vsx_module_info* info)
   {
     info->identifier =
-      "sound;raw_sample_play";
+      "sound;ogg_sample_play";
 
     info->description =
       "Plays 16-bit signed int PCM\n"
-      "RAW files; mono or stereo."
+      "OGG vorbis files; mono or stereo."
     ;
 
     info->in_param_spec =
       "filename:resource,"
-      "format:enum?mono|stereo,"
-      "gain:float,"
-      "show_waveform_in_sequencer:enum?no|yes"
+      "format:enum?mono|stereo"
     ;
 
     info->out_param_spec =
@@ -76,18 +72,11 @@ public:
 
     format = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"format");
 
-    gain = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"gain");
-    gain->set(1.0);
-
-    show_waveform_in_sequencer = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"show_waveform_in_sequencer");
-    show_waveform_in_sequencer->set( 1 );
-
     loading_done = true;
   }
 
   bool init()
   {
-    setup_rtaudio_play();
     vsx_audio_mixer& main_mixer = *vsx_audio_mixer_manager::get_instance();
     main_mixer.register_channel( &main_sample );
     return true;
@@ -112,7 +101,6 @@ public:
         full_pcm_data_r.array[i] = (float)(*data)[index_data] * one_div_32767;
         index_data++;
       }
-
     }
   }
 
@@ -120,17 +108,14 @@ public:
   {
     vsx_audio_mixer& main_mixer = *vsx_audio_mixer_manager::get_instance();
     main_mixer.unregister_channel( &main_sample );
-    shutdown_rtaudio_play();
   }
 
 
   void run()
   {
-    if (show_waveform_in_sequencer->get())
-    {
-      engine->param_float_arrays[2] = &full_pcm_data_l;
-      engine->param_float_arrays[3] = &full_pcm_data_r;
-    }
+
+    engine->param_float_arrays[2] = &full_pcm_data_l;
+    engine->param_float_arrays[3] = &full_pcm_data_r;
 
 
     if (fabs(engine->vtime - main_sample.get_time()) > 0.08)
@@ -147,10 +132,10 @@ public:
         main_sample.goto_time( engine->vtime );
       }
       main_sample.play();
-      main_sample.set_pitch_bend(engine->speed);
     }
     if (engine->state == VSX_ENGINE_STOPPED)
     {
+      //vsx_printf(L"engine is stopped at %f\n", engine->vtime );
       main_sample.stop();
       if (engine->dtime != 0.0f)
       {
@@ -158,7 +143,6 @@ public:
       }
     }
     main_sample.set_stereo_type( format->get() + 1 );
-    main_sample.set_gain( gain->get() );
   }
 };
 

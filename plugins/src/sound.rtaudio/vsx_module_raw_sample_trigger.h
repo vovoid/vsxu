@@ -21,7 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "vsx_sample_raw.h"
+#include <audio/vsx_sample_raw.h>
 
 class vsx_module_raw_sample_trigger : public vsx_module
 {
@@ -86,6 +86,7 @@ public:
   bool init()
   {
     setup_rtaudio_play();
+    vsx_audio_mixer& main_mixer = *vsx_audio_mixer_manager::get_instance();
     main_mixer.register_channel( &main_sample );
     return true;
   }
@@ -101,6 +102,7 @@ public:
 
   void on_delete()
   {
+    vsx_audio_mixer& main_mixer = *vsx_audio_mixer_manager::get_instance();
     main_mixer.unregister_channel( &main_sample );
     shutdown_rtaudio_play();
   }

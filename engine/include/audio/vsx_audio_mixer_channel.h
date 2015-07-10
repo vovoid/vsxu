@@ -5,6 +5,8 @@
 // Register this in the mixer like so:
 // mixer->
 
+#include <inttypes.h>
+
 class vsx_audio_mixer_channel
 {
 protected:

@@ -1,5 +1,6 @@
-#include "vsx_audio_mixer_channel.h"
-#include "vsx_audio_constants.h"
+#include <audio/vsx_audio_mixer_channel.h>
+#include <audio/vsx_audio_constants.h>
+#include <math.h>
 
 class vsx_audio_mixer
 {

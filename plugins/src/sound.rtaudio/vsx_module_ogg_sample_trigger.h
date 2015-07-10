@@ -87,6 +87,7 @@ public:
   bool init()
   {
     setup_rtaudio_play();
+    vsx_audio_mixer& main_mixer = *vsx_audio_mixer_manager::get_instance();
     main_mixer.register_channel( &main_sample );
     return true;
   }
@@ -102,6 +103,7 @@ public:
 
   void on_delete()
   {
+    vsx_audio_mixer& main_mixer = *vsx_audio_mixer_manager::get_instance();
     main_mixer.unregister_channel( &main_sample );
     shutdown_rtaudio_play();
   }

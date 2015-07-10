@@ -167,6 +167,7 @@ set(SOURCES
   src/core/vsx_module_static.cpp
   src/core/vsx_module_list/vsx_module_list_factory.cpp
   src/core/vsx_module_list/vsx_dlopen.cpp
+  src/audio/vsx_audio_mixer_manager.cpp
   src/mtwist.c
   src/vsx_data_path.cpp
   src/vsx_argvector.cpp

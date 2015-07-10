@@ -1,7 +1,7 @@
 #ifndef RTAUDIO_PLAY_H
 #define RTAUDIO_PLAY_H
 
-#include "vsx_audio_mixer.h"
+#include <audio/vsx_audio_mixer_manager.h>
 
 
 // rt audio instance
@@ -9,12 +9,6 @@ RtAudio* padc_play = 0x0;
 
 // reference counter
 size_t rt_play_refcounter = 0;
-
-
-
-
-// singleton main mixer
-vsx_audio_mixer main_mixer;
 
 int play_callback
 (
@@ -29,6 +23,9 @@ int play_callback
   (void)inputBuffer;
   (void)streamTime;
   (void)userData;
+
+  vsx_audio_mixer& main_mixer = *vsx_audio_mixer_manager::get_instance();
+
 
   int16_t *buffer = (int16_t *) outputBuffer;
 

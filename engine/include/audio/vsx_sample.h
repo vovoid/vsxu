@@ -1,7 +1,7 @@
 #ifndef VSX_SAMPLE_H
 #define VSX_SAMPLE_H
 
-#include "vsx_audio_mixer_channel.h"
+#include <audio/vsx_audio_mixer_channel.h>
 
 #define VSX_SAMPLE_STATE_STOPPED 0
 #define VSX_SAMPLE_STATE_PLAYING 1
