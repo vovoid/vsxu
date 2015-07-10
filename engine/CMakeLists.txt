@@ -164,7 +164,6 @@ set(SOURCES
   src/core/vsx_param_sequence.cpp
   src/core/vsx_master_sequencer/vsx_master_sequence_channel.cpp
   src/core/vsx_param_sequence_list.cpp
-  src/core/vsx_module_static.cpp
   src/core/vsx_module_list/vsx_module_list_factory.cpp
   src/core/vsx_module_list/vsx_dlopen.cpp
   src/audio/vsx_audio_mixer_manager.cpp

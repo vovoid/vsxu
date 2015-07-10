@@ -174,9 +174,6 @@ protected:
   void message_fail(vsx_string<>header, vsx_string<>message);
   // called each frame after engine has rendered
   void reset_input_events();
-  #ifdef VSXU_MODULES_STATIC
-    void register_static_module(vsx_string<>name);
-  #endif
   // add component to the forge
   vsx_comp* add(vsx_string<>label);
 public:
