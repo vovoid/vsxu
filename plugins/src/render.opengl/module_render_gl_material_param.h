@@ -1,3 +1,5 @@
+#include <vsx_gl_state.h>
+
 class module_render_gl_material_param : public vsx_module
 {
   // in
