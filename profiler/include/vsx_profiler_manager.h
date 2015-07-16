@@ -174,11 +174,18 @@ public:
     vsx_string<>profiler_directory = profiler_directory_get();
 
     if (access(profiler_directory.c_str(),0) != 0)
+#if (PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX)
       mkdir( (profiler_directory).c_str(), 0700);
+#else
+      mkdir( (profiler_directory).c_str() );
+#endif
 
+#if (PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX)
     vsx_string<>filename = profiler_directory + "/" + vsx_string<>(program_invocation_short_name) +
         "_" +vsx_string_helper::i2s(time(0x0)) + ".dat";
-
+#else
+    vsx_string<>filename = profiler_directory + "/" + "_" +vsx_string_helper::i2s(time(0x0)) + ".dat";
+#endif
     vsx_timer timer;
 
     FILE* fp = fopen( filename.c_str() , "wb");
@@ -338,7 +345,11 @@ public:
 
   static pid_t gettid( void )
   {
+#if (PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS)
+    return GetCurrentThreadId();
+#else
     return syscall( __NR_gettid );
+#endif
   }
 
   // Call this once per thread

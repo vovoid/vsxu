@@ -104,13 +104,3 @@ vsx_data_path::vsx_data_path()
   #endif
 }
 
-
-void vsx_data_path::ensure_output_directory(vsx_string<> name)
-{
-  if (access(  (data_path_get() + name).c_str(),0) != 0)
-    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-      mkdir( (data_path_get() + name).c_str(), 0700 );
-    #else
-      mkdir( (data_path_get() + name).c_str() );
-    #endif
-}

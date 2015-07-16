@@ -28,7 +28,12 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include <sys/syscall.h>
+#endif
+
 #include <sys/stat.h>
 
 #include <inttypes.h>
@@ -92,6 +97,9 @@ inline uint64_t vsx_profiler_rdtsc()
 }
 #endif
 
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+typedef unsigned long long u_int64_t;
+#endif
 
 
 #define VSX_PROFILE_CHUNK_FLAG_START 0

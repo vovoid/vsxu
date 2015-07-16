@@ -922,7 +922,7 @@ public:
       c = cos(angle), s = sin(angle), and ||( x,y,z )|| = 1
     */
     float radians;
-    radians = (angle * M_PI) / 180.0;
+    radians = (angle * PI) / 180.0;
     float c = cos(radians);
     float s = sin(radians);
     float c1 = 1.0 - c;
