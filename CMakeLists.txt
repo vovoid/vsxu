@@ -408,8 +408,9 @@ if (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
   endif()
 endif (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
 
-if(UNIX)
   add_subdirectory(profiler)
+
+if(UNIX)
   add_subdirectory(server)
 endif(UNIX)
 

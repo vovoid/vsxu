@@ -3,14 +3,18 @@
 
 #include <vsx_platform.h>
 
-#if (PLATFORM_FAMILY != PLATFORM_FAMILY_WINDOWS)
 
-#include <stdio.h>
-#include <errno.h>
-#include <execinfo.h>
-#include <unistd.h>
-#include <string.h>
-#include <malloc.h>
+#if (PLATFORM_FAMILY != PLATFORM_FAMILY_WINDOWS)
+  #include <stdio.h>
+  #include <errno.h>
+  #include <execinfo.h>
+  #include <unistd.h>
+  #include <string.h>
+  #include <malloc.h>
+#endif
+
+#if (PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS)
+  #include <cstddef>
 #endif
 
 namespace vsx_backtrace
@@ -20,7 +24,7 @@ inline void full_write(int fd, const char *buf, size_t len)
 {
 #if !(PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS)
   while (len > 0) {
-  ssize_t ret = write(fd, buf, len);
+  size_t ret = write(fd, buf, len);
 
   if ((ret == -1) && (errno != EINTR))
   break;

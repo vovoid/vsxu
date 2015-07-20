@@ -92,8 +92,23 @@ if(UNIX)
     vsx_widget
     rt
   )
-
 endif(UNIX)
+
+if (WIN32)
+  target_link_libraries(
+    ${module_id}
+    ${GLFW_LIBRARY}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${GLEW_LIBRARY}
+    ${OPENGL_LIBRARIES}
+    ${PNG_LIBRARIES}
+    ${JPEG_LIBRARIES}
+    vsxu_engine
+    vsxu_engine_graphics
+    vsx_widget
+  )
+
+endif()
 
 ################################################################################
 ## INSTALL #####################################################################
