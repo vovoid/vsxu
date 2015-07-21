@@ -322,14 +322,14 @@ void vsx_widget_server::vsx_command_process_f() {
     }
   #endif
   }
-  VSXP_CLASS_LOCAL_INIT;
+  VSXP_CLASS_LOCAL_INIT
 
 
   if (init_run) {
     // messages from the engine
     while ( (c = cmd_in->pop()) )
     {
-      VSXP_S_BEGIN("w_server process_cmd_f");
+      VSXP_S_BEGIN("w_server process_cmd_f")
       if (c->cmd == "vsxu_welcome") {
         server_version = c->parts[1];
         connection_id = c->parts[2];
@@ -362,7 +362,7 @@ void vsx_widget_server::vsx_command_process_f() {
           else
           {
             command_q_f.addc(c);
-            VSXP_S_END;
+            VSXP_S_END
             continue;
           }
         }
@@ -371,7 +371,7 @@ void vsx_widget_server::vsx_command_process_f() {
         comp_list[c->cmd_data] = component;
         if (!component)
         {
-          VSXP_S_END;
+          VSXP_S_END
           return;
         }
         component->init();
@@ -898,7 +898,7 @@ void vsx_widget_server::vsx_command_process_f() {
         }
       }
       else log(">"+c->raw);
-      VSXP_S_END;
+      VSXP_S_END
     }
   }
 

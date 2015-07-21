@@ -64,13 +64,13 @@
  **/
 
 #ifdef VSX_PROFILER
-  #define VSXP_CLASS_DECLARE vsx_profiler* profiler
-  #define VSXP_CLASS_CONSTRUCTOR profiler = 0x0
-  #define VSXP_CLASS_LOCAL_INIT if (!profiler) profiler = vsx_profiler_manager::get_instance()->get_profiler()
-  #define VSXP_M_BEGIN profiler->maj_begin()
-  #define VSXP_M_END profiler->maj_end()
-  #define VSXP_S_BEGIN(s) profiler->sub_begin(s)
-  #define VSXP_S_END profiler->sub_end()
+  #define VSXP_CLASS_DECLARE vsx_profiler* profiler;
+  #define VSXP_CLASS_CONSTRUCTOR profiler = 0x0;
+  #define VSXP_CLASS_LOCAL_INIT  do{ if (!profiler) profiler = vsx_profiler_manager::get_instance()->get_profiler(); } while(0);
+  #define VSXP_M_BEGIN           profiler->maj_begin();
+  #define VSXP_M_END             profiler->maj_end();
+  #define VSXP_S_BEGIN(s)        profiler->sub_begin(s);
+  #define VSXP_S_END             profiler->sub_end();
 #else
   #define VSXP_CLASS_DECLARE
   #define VSXP_CLASS_CONSTRUCTOR

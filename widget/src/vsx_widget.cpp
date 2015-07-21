@@ -119,7 +119,7 @@ vsx_widget::vsx_widget()
   menu_temp_disable = false;
 
   // init profiler
-  VSXP_CLASS_CONSTRUCTOR;
+  VSXP_CLASS_CONSTRUCTOR
 }
 
 

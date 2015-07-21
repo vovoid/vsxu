@@ -130,7 +130,7 @@ public:
   WIDGET_DLLIMPORT static bool performance_mode;
 
   // profiler
-  VSXP_CLASS_DECLARE;
+  VSXP_CLASS_DECLARE
 
 // LOCALS
   // information
