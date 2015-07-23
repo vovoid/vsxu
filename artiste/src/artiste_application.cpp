@@ -119,7 +119,7 @@ public:
   double max_render_time;
   double min_render_time;
   vsx_logo_intro *intro;
-  VSXP_CLASS_DECLARE;
+  VSXP_CLASS_DECLARE
 
   vsxu_draw() :
     first(true),
@@ -132,14 +132,14 @@ public:
     max_render_time(-1),
     min_render_time(1000)
   {
-    VSXP_CLASS_CONSTRUCTOR;
+    VSXP_CLASS_CONSTRUCTOR
   }
   ~vsxu_draw() {}
 
   void draw() {
-    VSXP_CLASS_LOCAL_INIT;
+    VSXP_CLASS_LOCAL_INIT
 
-    VSXP_S_BEGIN("artiste vsxu_draw");
+    VSXP_S_BEGIN("artiste vsxu_draw")
     if (record_movie)
     {
       vxe->set_constant_frame_progression(1.0f / 60.0f);
@@ -153,9 +153,9 @@ public:
       else
         vxe->set_no_send_client_time(false);
 
-      VSXP_S_BEGIN("desktop cmd_process_f");
+      VSXP_S_BEGIN("desktop cmd_process_f")
         desktop->vsx_command_process_f();
-      VSXP_S_END;
+      VSXP_S_END
     }
 
     if (first)
@@ -206,9 +206,9 @@ public:
       }
       if (!dual_monitor)
       {
-        VSXP_S_BEGIN("vxe->process_msg");
+        VSXP_S_BEGIN("vxe->process_msg")
           vxe->process_message_queue(&internal_cmd_in,&internal_cmd_out,false,false,60.0f);
-        VSXP_S_END;
+        VSXP_S_END
       }
 
       if (*gui_prod_fullwindow)
@@ -223,11 +223,11 @@ public:
         {
           engine_render_time.start();
 
-          VSXP_S_BEGIN("vxe->render");
+          VSXP_S_BEGIN("vxe->render")
             vxe->render();
-          VSXP_S_END;
+          VSXP_S_END
 
-          VSXP_S_BEGIN("draw overlay");
+          VSXP_S_BEGIN("draw overlay")
           float frame_time = engine_render_time.dtime();
           glDisable(GL_DEPTH_TEST);
 
@@ -292,7 +292,7 @@ public:
               ,0.025f
             );
           }
-          VSXP_S_END;
+          VSXP_S_END
         }
         if (desktop && desktop->performance_mode)
         {
@@ -403,7 +403,7 @@ public:
       free(pixeldata);
       free(pixeldata_flipped);
     }
-    VSXP_S_END;
+    VSXP_S_END
   } // ::draw()
 };
 

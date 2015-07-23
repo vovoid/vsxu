@@ -50,7 +50,7 @@ bool dual_monitor = false;
 
 
 
-VSXP_CLASS_DECLARE;
+VSXP_CLASS_DECLARE
 
 
 /*
@@ -203,8 +203,8 @@ int main(int argc, char* argv[])
     exit(0);
   }
 
-  VSXP_CLASS_CONSTRUCTOR;
-  VSXP_CLASS_LOCAL_INIT;
+  VSXP_CLASS_CONSTRUCTOR
+  VSXP_CLASS_LOCAL_INIT
 
   vsx_printf(L"");
 
@@ -362,7 +362,7 @@ int main(int argc, char* argv[])
   int initial_vram_free = 0;
   while( running )
   {
-    VSXP_M_BEGIN;
+    VSXP_M_BEGIN
 
     frame_delay.start();
 
@@ -467,7 +467,7 @@ int main(int argc, char* argv[])
 
 
     running = glfwGetWindowParam( GLFW_OPENED );
-    VSXP_M_END;
+    VSXP_M_END
   }
 
   app_unload();
