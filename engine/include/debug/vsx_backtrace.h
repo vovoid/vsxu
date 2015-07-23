@@ -24,7 +24,7 @@ inline void full_write(int fd, const char *buf, size_t len)
 {
 #if !(PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS)
   while (len > 0) {
-  size_t ret = write(fd, buf, len);
+  ssize_t ret = write(fd, buf, len);
 
   if ((ret == -1) && (errno != EINTR))
   break;

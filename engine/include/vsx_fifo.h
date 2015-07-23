@@ -53,6 +53,11 @@ public:
   {
   }
 
+  int64_t live_count_get()
+  {
+    return live_count;
+  }
+
   // producer - if there is room in the queue, write to it
   // returns:
   //   true - value written successfully

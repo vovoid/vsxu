@@ -32,6 +32,18 @@ namespace vsx_string_helper
     return vsx_string<>(string_res);
   }
 
+  /**
+   * @brief i2s
+   * @param in
+   * @return
+   */
+  inline vsx_string<wchar_t>i2sw(int in)
+  {
+    wchar_t string_res[256] = L"";
+    swprintf(string_res, 255, L"%d", in);
+    return vsx_string<wchar_t>(string_res);
+  }
+
 
   /**
    * @brief s2b
