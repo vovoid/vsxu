@@ -1,3 +1,4 @@
+#include <time.h>
 #include <vsx_data_path.h>
 
 class module_texture_screenshot_hires : public vsx_module
