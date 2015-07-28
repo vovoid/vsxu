@@ -9,8 +9,30 @@ project (${module_id})
 ################################################################################
 # CMAKE PACKAGES ###############################################################
 ################################################################################
-find_package(Freetype REQUIRED)
 find_package(GLFW REQUIRED)
+find_package(Threads REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
+
+INCLUDE(FindPkgConfig)
+PKG_SEARCH_MODULE(FREETYPE REQUIRED freetype2)
+PKG_SEARCH_MODULE(PNG REQUIRED  libpng)
+PKG_SEARCH_MODULE(ZLIB REQUIRED zlib)
+PKG_SEARCH_MODULE(JPEG REQUIRED libjpeg)
+
+include_directories(
+  ${FREETYPE_INCLUDE_DIRS}
+  ${PNG_INCLUDE_DIRS}
+  ${ZLIB_INCLUDE_DIRS}
+  ${JPEG_INCLUDE_DIRS}
+)
+
+link_directories(
+  ${FREETYPE_LIBRARY_DIRS}
+  ${PNG_LIBRARY_DIRS}
+  ${ZLIB_LIBRARY_DIRS}
+  ${JPEG_LIBRARY_DIRS}
+)
 
 
 ################################################################################
@@ -27,7 +49,6 @@ include_directories(
   include/widgets
 )
 
-include_directories(${FREETYPE_INCLUDE_DIRS})
 
 
 ################################################################################
@@ -38,7 +59,7 @@ include_directories(${FREETYPE_INCLUDE_DIRS})
 
 add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
- -DBUILDING_DLL=1
+ # -DBUILDING_DLL=1
 )
 
 if (VSXU_DEBUG EQUAL 1)
@@ -47,6 +68,7 @@ endif (VSXU_DEBUG EQUAL 1)
 
 if (VSXU_STATIC EQUAL 1)
   add_definitions(-DVSXU_STATIC)
+  add_definitions(-DGLEW_STATIC)
 endif()
 
 
@@ -99,23 +121,30 @@ if (UNIX OR VSXU_WINDOWS_LIB_BUILD)
 endif()
 ################################################################################
 
-target_link_libraries(${module_id}
-  ${PNG_LIBRARIES}
-  ${JPEG_LIBRARIES}
-  ${OPENGL_LIBRARIES}
-  ${CMAKE_THREAD_LIBS_INIT}
+if(UNIX)
+target_link_libraries(
+  ${module_id}
+  ${JPEG_LIBRARY}
+  ${PNG_LIBRARY}
+  ${ZLIB_LIBRARY}
+  ${GLFW_LIBRARY}
   ${GLEW_LIBRARY}
   vsxu_engine
+  ${OPENGL_LIBRARIES}
+  ${CMAKE_THREAD_LIBS_INIT}
 )
+endif(UNIX)
 
 if(WIN32)
   target_link_libraries(
     ${module_id}
+    ${JPEG_LIBRARY}
+    ${PNG_LIBRARY}
+    ${ZLIB_LIBRARY}
     ${GLFW_LIBRARY}
     vsxu_engine
     vsxu_engine_graphics
     ${GLEW_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
     ${OPENGL_LIBRARIES}
     vsxu_engine_graphics
   )

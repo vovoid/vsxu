@@ -8,7 +8,8 @@ if (VSXU_DEBUG EQUAL 1)
 endif ()
 
 add_definitions(
-  -DBUILDING_DLL=1 
+   -DGLEW_STATIC=1
+#  -DBUILDING_DLL=1 
   -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
 )
 
@@ -22,18 +23,3 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/engine_graphics/include
   ../../../
 )
-
-
-if(WIN32)
-
-  cmake_policy(SET CMP0015 NEW)
-  cmake_policy(SET CMP0011 OLD)
-  #include_directories(../../../lib/win32)
-  add_definitions(-D_WIN32=1)
-  find_path(WINDOWS_LIB_PATH NAMES pthreadGCE.so
-    PATHS
-      ../../lib/win32
-  )
-
-endif(WIN32)
-

@@ -9,32 +9,32 @@
 
 
 IF (WIN32)
-	FIND_PATH( GLEW_INCLUDE_PATH 
-		GL/glew.h
-		"C:/Mingw/include"
+	FIND_PATH( GLEW_INCLUDE_PATH GL/glew.h
+                PATHS
+                $ENV{DEPINSTALL}/include
+                NO_DEFAULT_PATH
+                add_definitions(-DGLEW_STATIC=1)
 		DOC "The directory where GL/glew.h resides")
 	FIND_LIBRARY( GLEW_LIBRARY
-		NAMES glew GLEW glew32 glew32s
-		DOC "The GLEW library"
-		CMAKE_FIND_ROOT_PATH_BOTH 
-		)
-		add_definitions(-DGLEW_STATIC=1)
+		NAMES glew32
+	        PATHS
+                $ENV{DEPINSTALL}/lib
+                NO_DEFAULT_PATH
+                add_definitions(-DGLEW_STATIC=1)
+		DOC "The GLEW library")
 ELSE (WIN32)
 	FIND_PATH( GLEW_INCLUDE_PATH GL/glew.h
-		/usr/include
-		/usr/local/include
-		/sw/include
-		/opt/local/include
+                PATHS
+                $ENV{DEPINSTALL}/lib
+                NO_DEFAULT_PATH
+                add_definitions(-DGLEW_STATIC=1)
 		DOC "The directory where GL/glew.h resides")
 	FIND_LIBRARY( GLEW_LIBRARY
-		NAMES GLEW glew
+		NAMES glew32
 		PATHS
-		/usr/lib64
-		/usr/lib
-		/usr/local/lib64
-		/usr/local/lib
-		/sw/lib
-		/opt/local/lib
+                $ENV{DEPINSTALL}/lib
+                NO_DEFAULT_PATH
+                add_definitions(-DGLEW_STATIC=1)
 		DOC "The GLEW library")
 ENDIF (WIN32)
 

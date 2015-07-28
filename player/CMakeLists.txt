@@ -13,12 +13,32 @@ find_package(GLFW REQUIRED)
 find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
-find_package(PNG REQUIRED)
-find_package(JPEG REQUIRED)
+
+INCLUDE(FindPkgConfig)
+PKG_SEARCH_MODULE(FREETYPE REQUIRED freetype2)
+PKG_SEARCH_MODULE(PNG REQUIRED  libpng)
+PKG_SEARCH_MODULE(ZLIB REQUIRED zlib)
+PKG_SEARCH_MODULE(JPEG REQUIRED libjpeg)
+
+include_directories(
+  ${FREETYPE_INCLUDE_DIRS}
+  ${PNG_INCLUDE_DIRS}
+  ${ZLIB_INCLUDE_DIRS}
+  ${JPEG_INCLUDE_DIRS}
+)
+
+link_directories(
+  ${FREETYPE_LIBRARY_DIRS}
+  ${PNG_LIBRARY_DIRS}
+  ${ZLIB_LIBRARY_DIRS}
+  ${JPEG_LIBRARY_DIRS}
+)
+
 
 ################################################################################
 # INCLUDES #####################################################################
 ################################################################################
+
 include_directories(
   ${OPENGL_INCLUDE_DIR}
   ${GLEW_INCLUDE_PATH}
@@ -71,6 +91,7 @@ if(UNIX)
     ${GLEW_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
+    ${ZLIB_LIBRARIES}
     ${JPEG_LIBRARIES}
     vsxu_engine_audiovisual
     vsxu_engine_graphics
@@ -81,15 +102,19 @@ endif()
 
 if(WIN32)
   target_link_libraries(
-  ${module_id}
+   ${module_id}
+   -static
     ${GLFW_LIBRARY}
     wsock32
     ws2_32
-    ${CMAKE_THREAD_LIBS_INIT}
     vsxu_engine_audiovisual
     vsxu_engine_graphics
     vsxu_engine
+    ${PNG_LIBRARY}
+    ${ZLIB_LIBRARY}
+    ${JPEG_LIBRARY}
     gdi32
+    ${CMAKE_THREAD_LIBS_INIT}
     ${OPENGL_LIBRARIES}
 )
 endif()

@@ -10,23 +10,17 @@
 
 FIND_PATH(
 	PTHREAD_INCLUDE_PATH
-	pthread.h
-	/usr/include
-	/usr/local/include
-	/sw/include
-	/opt/local/include
+        pthread.h
+        PATHS
+        /usr/x86_64-w64-mingw32/include
+        NO_DEFAULT_PATH
 	DOC "The directory where pthread.h resides")
 FIND_LIBRARY(
 	PTHREAD_LIBRARY
 	NAMES pthread
 	PATHS
-	/usr/lib32
-	/usr/lib64
-	/usr/lib
-	/usr/local/lib64
-	/usr/local/lib
-	/sw/lib
-	/opt/local/lib
+	/usr/x86_64-w64-mingw32/lib
+        NO_DEFAULT_PATH
 	DOC "The Pthread library"
 )
 

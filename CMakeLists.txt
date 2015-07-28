@@ -155,7 +155,9 @@ INCLUDE(CPack)
 add_definitions( -std=c++0x )
 
 if (VSXU_STATIC EQUAL 1)
+  add_definitions(-g)
   add_definitions(-DVSXU_STATIC)
+  add_definitions(-DGLEW_STATIC)
 endif()
 
 if(VSXU_DEBUG_SYMBOLS)

@@ -6,6 +6,26 @@ include_directories(
   ../../engine_graphics/include
 )
 
+INCLUDE(FindPkgConfig)
+PKG_SEARCH_MODULE(FREETYPE REQUIRED freetype2)
+PKG_SEARCH_MODULE(PNG REQUIRED  libpng)
+PKG_SEARCH_MODULE(ZLIB REQUIRED zlib)
+PKG_SEARCH_MODULE(JPEG REQUIRED libjpeg)
+
+include_directories(
+  ${FREETYPE_INCLUDE_DIRS}
+  ${PNG_INCLUDE_DIRS}
+  ${ZLIB_INCLUDE_DIRS}
+  ${JPEG_INCLUDE_DIRS}
+)
+
+link_directories(
+  ${FREETYPE_LIBRARY_DIRS}
+  ${PNG_LIBRARY_DIRS}
+  ${ZLIB_LIBRARY_DIRS}
+  ${JPEG_LIBRARY_DIRS}
+)
+
 set(OS_SOURCES "")
 
 if(VSXU_DEBUG)

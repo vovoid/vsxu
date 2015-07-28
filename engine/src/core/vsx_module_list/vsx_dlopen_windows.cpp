@@ -28,6 +28,7 @@
 
 #include <libloaderapi.h> // GetProcAddress/GetModuleFileName
 
+
 HMODULE vsx_dlopen::open(const char *filename)
 {
   HMODULE winlibrary = LoadLibrary( filename );

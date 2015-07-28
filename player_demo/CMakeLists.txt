@@ -13,8 +13,27 @@ find_package(GLFW REQUIRED)
 find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
-find_package(PNG REQUIRED)
-find_package(JPEG REQUIRED)
+
+INCLUDE(FindPkgConfig)
+PKG_SEARCH_MODULE(FREETYPE REQUIRED freetype2)
+PKG_SEARCH_MODULE(PNG REQUIRED  libpng)
+PKG_SEARCH_MODULE(ZLIB REQUIRED zlib)
+PKG_SEARCH_MODULE(JPEG REQUIRED libjpeg)
+
+include_directories(
+  ${FREETYPE_INCLUDE_DIRS}
+  ${PNG_INCLUDE_DIRS}
+  ${ZLIB_INCLUDE_DIRS}
+  ${JPEG_INCLUDE_DIRS}
+)
+
+link_directories(
+  ${FREETYPE_LIBRARY_DIRS}
+  ${PNG_LIBRARY_DIRS}
+  ${ZLIB_LIBRARY_DIRS}
+  ${JPEG_LIBRARY_DIRS}
+)
+
 
 ################################################################################
 # INCLUDES #####################################################################
@@ -100,7 +119,6 @@ if(WIN32)
   vsxu_engine_graphics
   vsxu_engine
   gdi32
-  ${OPENGL_LIBRARIES}
 )
 endif()
 

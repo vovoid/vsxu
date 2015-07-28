@@ -13,9 +13,27 @@ find_package(GLFW REQUIRED)
 find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
-find_package(PNG REQUIRED)
-find_package(JPEG REQUIRED)
-find_package(Freetype REQUIRED)
+
+INCLUDE(FindPkgConfig)
+PKG_SEARCH_MODULE(FREETYPE REQUIRED freetype2)
+PKG_SEARCH_MODULE(PNG REQUIRED  libpng)
+PKG_SEARCH_MODULE(ZLIB REQUIRED zlib)
+PKG_SEARCH_MODULE(JPEG REQUIRED libjpeg)
+
+include_directories(
+  ${FREETYPE_INCLUDE_DIRS}
+  ${PNG_INCLUDE_DIRS}
+  ${ZLIB_INCLUDE_DIRS}
+  ${JPEG_INCLUDE_DIRS}
+)
+
+link_directories(
+  ${FREETYPE_LIBRARY_DIRS}
+  ${PNG_LIBRARY_DIRS}
+  ${ZLIB_LIBRARY_DIRS}
+  ${JPEG_LIBRARY_DIRS}
+)
+
 
 ################################################################################
 # INCLUDES #####################################################################
@@ -23,7 +41,6 @@ find_package(Freetype REQUIRED)
 
 include_directories(
   ${OPENGL_INCLUDE_DIR}
-  ${GLEW_INCLUDE_PATH}
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/engine/include
   ${CMAKE_SOURCE_DIR}/engine_graphics/include
@@ -55,6 +72,7 @@ add_definitions(
 
 if (VSXU_STATIC EQUAL 1)
   add_definitions(-DVSXU_STATIC)
+  add_definitions(-DGLEW_STATIC)
 endif()
 
 
@@ -119,7 +137,6 @@ if(UNIX)
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
     ${TM_LIBRARY}
-    ${FREETYPE_LIBRARY}
     vsxu_engine_graphics
     vsxu_engine
     vsx_widget
@@ -136,17 +153,24 @@ endif(UNIX)
 if(WIN32)
   target_link_libraries(
     ${module_id}
+    -static-libgcc
+    -static-libstdc++
+    -static
     ${GLFW_LIBRARY}
     ${GLEW_LIBRARY}
     wsock32
     ws2_32
     vsxu_engine
     vsx_widget
-    vsxu_engine_graphics
-    ${CMAKE_THREAD_LIBS_INIT}
     gdi32
     ${OPENGL_LIBRARIES}
     vsxu_engine_graphics
+    ${JPEG_LIBRARIES}
+    ${PNG_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+    -lstdc++
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${FREETYPE_LIBRARIES}
   )
 endif(WIN32)
 
