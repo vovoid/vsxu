@@ -56,6 +56,7 @@
 #include "module_mesh_vertex_distance_sort.h"
 #include "module_mesh_vortex.h"
 #include "module_segmesh_to_mesh.h"
+#include "module_mesh_interpolate_2p.h"
 
 //******************************************************************************
 //*** F A C T O R Y ************************************************************
@@ -98,6 +99,7 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 18: return (vsx_module*)(new module_mesh_segmesh_to_mesh);
     case 19: return (vsx_module*)(new module_mesh_compute_tangents_vertex_color_array);
     case 20: return (vsx_module*)(new module_mesh_mirror);
+    case 21: return (vsx_module*)(new module_mesh_interpolate_2p);
   }
   return 0;
 }
@@ -126,10 +128,11 @@ void MOD_DM(vsx_module* m,unsigned long module) {
     case 18: delete (module_mesh_segmesh_to_mesh*)m; break;
     case 19: delete (module_mesh_compute_tangents_vertex_color_array*)m; break;
     case 20: delete (module_mesh_mirror*)m; break;
+    case 21: delete (module_mesh_interpolate_2p*)m; break;
   }
 }
 
 unsigned long MOD_NM(vsx_engine_environment* environment) {
   VSX_UNUSED(environment);
-  return 21;
+  return 22;
 }
