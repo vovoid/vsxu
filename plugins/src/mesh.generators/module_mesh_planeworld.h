@@ -22,6 +22,7 @@
 */
 
 
+#include <time.h>
 
 
 class module_mesh_planeworld : public vsx_module
