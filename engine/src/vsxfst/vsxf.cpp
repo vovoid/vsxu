@@ -752,7 +752,7 @@ void create_directory(const char* path)
 
 vsx_string<>get_path_from_filename(vsx_string<>filename)
 {
-	vsx_string<>deli = "/";
+  vsx_string<>deli = DIRECTORY_SEPARATOR;
 	std::vector <vsx_string<> > results;
 	explode(filename, deli, results);
 	results.pop_back();
