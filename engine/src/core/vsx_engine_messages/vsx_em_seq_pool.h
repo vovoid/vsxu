@@ -233,6 +233,17 @@ if (cmd == "seq_pool")
   }
 
 
+  // ***************************************
+  // Toggle PLAY OVERRIDE on/off
+  // ***************************************
+  // 0=seq_pool 1=set_play_override 2=value
+  if (c->parts[1] == "set_play_override")
+  {
+    bool value = vsx_string_helper::s2i(c->parts[2]) != 0;
+    sequence_pool.set_play_override( value );
+    goto process_message_queue_end;
+  }
+
 
   // ***************************************
   // Select a pool

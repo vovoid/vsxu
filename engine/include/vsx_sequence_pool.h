@@ -39,6 +39,7 @@ class vsx_sequence_pool
 {
 	void* engine;
 	bool edit_enabled;
+  bool play_override_enabled; // for playing a pool without editing it
 	vsx_param_sequence_list* cur_sequence_list;
 	vsx_string<>active;
 	std::map<vsx_string<>, vsx_param_sequence_list*> sequence_lists;
@@ -58,6 +59,7 @@ public:
 	vsx_param_sequence_list* get_selected();
 
 	bool toggle_edit();
+  bool set_play_override(bool n);
 	bool get_edit_enabled();
 
 	// sequence operations on current active list

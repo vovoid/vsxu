@@ -104,6 +104,11 @@ bool vsx_sequence_pool::toggle_edit()
   return edit_enabled;
 }
 
+bool vsx_sequence_pool::set_play_override(bool n)
+{
+  play_override_enabled = n;
+}
+
 bool vsx_sequence_pool::get_edit_enabled()
 {
   return edit_enabled;
@@ -128,21 +133,20 @@ void vsx_sequence_pool::run(float dtime, bool run_from_channel)
   // 1. run all sequences if we're enabled
   // 2. compare all engine's hints and send the changed values up to the GUI which will then handle eventual movements
   //printf("edit enabled: %d\n",(int)edit_enabled);
-  if (edit_enabled)
+  if (!edit_enabled && !play_override_enabled)
+    return;
+
+  // if no pool selected
+  if (!cur_sequence_list)
+    return;
+
+  if (current_state == 1)
   {
-    if (cur_sequence_list)
-    {
-      if (current_state == 1)
-      {
-        vtime += dtime;
-        if (loop_point > 0.0f)
-        {
-          vtime = fmod(vtime, loop_point);
-        }
-      }
-      cur_sequence_list->run_absolute(vtime);
-    }
+    vtime += dtime;
+    if (loop_point > 0.0f)
+      vtime = fmod(vtime, loop_point);
   }
+  cur_sequence_list->run_absolute(vtime);
 }
 
 
