@@ -171,9 +171,9 @@ public:
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
       int bytes = GetModuleFileName(NULL, pBuf, len);
       if(bytes == 0)
-        return -1;
+        return "";
       else
-        return bytes;
+        return get_path_from_filename(vsx_string<>(pBuf));
     #else
 
       // if packed with UPX
