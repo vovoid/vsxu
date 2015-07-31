@@ -165,6 +165,6 @@ ENDIF (UNIX)
 
 
 if (WIN32)
-  install(FILES ${CMAKE__SOURCE_DIR}/../player_launcher/vsxu_player_launcher.exe DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT player)
+  install(FILES ${CMAKE__SOURCE_DIR}/../vsxu_player_launcher/vsxu_player_launcher.exe DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT player)
 endif()
 
