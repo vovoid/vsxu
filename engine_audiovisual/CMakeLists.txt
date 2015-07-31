@@ -10,6 +10,35 @@ project (${module_id})
 ################################################################################
 find_package(OpenGL REQUIRED)
 
+
+#GENERATED_DEP_START
+INCLUDE(FindPkgConfig)
+PKG_SEARCH_MODULE(FREETYPE REQUIRED freetype2)
+PKG_SEARCH_MODULE(PNG REQUIRED  libpng)
+PKG_SEARCH_MODULE(ZLIB REQUIRED zlib)
+PKG_SEARCH_MODULE(JPEG REQUIRED libjpeg)
+PKG_SEARCH_MODULE(GLEW REQUIRED glew)
+PKG_SEARCH_MODULE(GLFW REQUIRED libglfw)
+
+include_directories(
+  ${FREETYPE_INCLUDE_DIRS}
+  ${PNG_INCLUDE_DIRS}
+  ${ZLIB_INCLUDE_DIRS}
+  ${JPEG_INCLUDE_DIRS}
+  ${GLEW_INCLUDE_DIRS}
+  ${GLFW_INCLUDE_DIRS}
+)
+
+link_directories(
+  ${FREETYPE_LIBRARY_DIRS}
+  ${PNG_LIBRARY_DIRS}
+  ${ZLIB_LIBRARY_DIRS}
+  ${JPEG_LIBRARY_DIRS}
+  ${GLEW_LIBRARY_DIRS}
+  ${GLFW_LIBRARY_DIRS}
+)
+#GENERATED_DEP_STOP
+
 ################################################################################
 # INCLUDES #####################################################################
 ################################################################################
@@ -76,7 +105,5 @@ target_link_libraries(${module_id}
 )
 
 if (WIN32)
-  target_link_libraries(${module_id}
-    gdi32
-  )
+  target_link_libraries(${module_id} gdi32)
 endif()

@@ -10,18 +10,15 @@ project (${module_id})
 # CMAKE PACKAGES ###############################################################
 ################################################################################
 find_package(DL REQUIRED)
-#if (WIN32)
-#  find_package(PTHREAD REQUIRED)
-#else()
-  find_package(Threads REQUIRED)
-#endif()
+
+#VSXU_GENERATED_DEP_START
+#VSXU_GENERATED_DEP_END
 
 ################################################################################
 # INCLUDES #####################################################################
 ################################################################################
 
 include_directories(
-  ${GLEW_INCLUDE_PATH}
   ../
   ../engine_graphics/include
   ../profiler/include

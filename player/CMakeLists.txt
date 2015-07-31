@@ -9,22 +9,25 @@ project (${module_id})
 ################################################################################
 # CMAKE PACKAGES ###############################################################
 ################################################################################
-find_package(GLFW REQUIRED)
 find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
 
+#GENERATED_DEP_START
 INCLUDE(FindPkgConfig)
 PKG_SEARCH_MODULE(FREETYPE REQUIRED freetype2)
 PKG_SEARCH_MODULE(PNG REQUIRED  libpng)
 PKG_SEARCH_MODULE(ZLIB REQUIRED zlib)
 PKG_SEARCH_MODULE(JPEG REQUIRED libjpeg)
+PKG_SEARCH_MODULE(GLEW REQUIRED glew)
+PKG_SEARCH_MODULE(GLFW REQUIRED libglfw)
 
 include_directories(
   ${FREETYPE_INCLUDE_DIRS}
   ${PNG_INCLUDE_DIRS}
   ${ZLIB_INCLUDE_DIRS}
   ${JPEG_INCLUDE_DIRS}
+  ${GLEW_INCLUDE_DIRS}
+  ${GLFW_INCLUDE_DIRS}
 )
 
 link_directories(
@@ -32,8 +35,10 @@ link_directories(
   ${PNG_LIBRARY_DIRS}
   ${ZLIB_LIBRARY_DIRS}
   ${JPEG_LIBRARY_DIRS}
+  ${GLEW_LIBRARY_DIRS}
+  ${GLFW_LIBRARY_DIRS}
 )
-
+#GENERATED_DEP_STOP
 
 ################################################################################
 # INCLUDES #####################################################################
@@ -41,7 +46,6 @@ link_directories(
 
 include_directories(
   ${OPENGL_INCLUDE_DIR}
-  ${GLEW_INCLUDE_PATH}
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/engine/include
   ${CMAKE_SOURCE_DIR}/profiler/include
@@ -86,9 +90,9 @@ include(../cmake_suffix.txt)
 if(UNIX)
   target_link_libraries(
     ${module_id}
-    ${GLFW_LIBRARY}
+    ${GLFW_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
-    ${GLEW_LIBRARY}
+    ${GLEW_LIBRARIES}
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
     ${ZLIB_LIBRARIES}
@@ -104,15 +108,15 @@ if(WIN32)
   target_link_libraries(
    ${module_id}
    -static
-    ${GLFW_LIBRARY}
+    ${GLFW_LIBRARIES}
     wsock32
     ws2_32
     vsxu_engine_audiovisual
     vsxu_engine_graphics
     vsxu_engine
-    ${PNG_LIBRARY}
-    ${ZLIB_LIBRARY}
-    ${JPEG_LIBRARY}
+    ${PNG_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+    ${JPEG_LIBRARIES}
     gdi32
     ${CMAKE_THREAD_LIBS_INIT}
     ${OPENGL_LIBRARIES}

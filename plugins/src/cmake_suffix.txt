@@ -10,10 +10,6 @@ target_link_libraries(
   ${OPENGL_LIBRARIES}
 )
 
-if(WIN32)
-  target_link_libraries(${module_id} gdi32)
-endif()
-
 if (UNIX OR VSXU_WINDOWS_LIB_BUILD)
     install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR}/vsxu/plugins)
 else()

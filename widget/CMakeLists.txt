@@ -9,22 +9,25 @@ project (${module_id})
 ################################################################################
 # CMAKE PACKAGES ###############################################################
 ################################################################################
-find_package(GLFW REQUIRED)
 find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
 
+#GENERATED_DEP_START
 INCLUDE(FindPkgConfig)
 PKG_SEARCH_MODULE(FREETYPE REQUIRED freetype2)
 PKG_SEARCH_MODULE(PNG REQUIRED  libpng)
 PKG_SEARCH_MODULE(ZLIB REQUIRED zlib)
 PKG_SEARCH_MODULE(JPEG REQUIRED libjpeg)
+PKG_SEARCH_MODULE(GLEW REQUIRED glew)
+PKG_SEARCH_MODULE(GLFW REQUIRED libglfw)
 
 include_directories(
   ${FREETYPE_INCLUDE_DIRS}
   ${PNG_INCLUDE_DIRS}
   ${ZLIB_INCLUDE_DIRS}
   ${JPEG_INCLUDE_DIRS}
+  ${GLEW_INCLUDE_DIRS}
+  ${GLFW_INCLUDE_DIRS}
 )
 
 link_directories(
@@ -32,7 +35,10 @@ link_directories(
   ${PNG_LIBRARY_DIRS}
   ${ZLIB_LIBRARY_DIRS}
   ${JPEG_LIBRARY_DIRS}
+  ${GLEW_LIBRARY_DIRS}
+  ${GLFW_LIBRARY_DIRS}
 )
+#GENERATED_DEP_STOP
 
 
 ################################################################################
@@ -40,7 +46,6 @@ link_directories(
 ################################################################################
 
 include_directories(
-  ${GLEW_INCLUDE_PATH}
   ../
   ../engine/include
   ../engine_graphics/include
@@ -124,11 +129,11 @@ endif()
 if(UNIX)
 target_link_libraries(
   ${module_id}
-  ${JPEG_LIBRARY}
-  ${PNG_LIBRARY}
-  ${ZLIB_LIBRARY}
-  ${GLFW_LIBRARY}
-  ${GLEW_LIBRARY}
+  ${JPEG_LIBRARIES}
+  ${PNG_LIBRARIES}
+  ${ZLIB_LIBRARIES}
+  ${GLFW_LIBRARIES}
+  ${GLEW_LIBRARIES}
   vsxu_engine
   ${OPENGL_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
@@ -138,13 +143,13 @@ endif(UNIX)
 if(WIN32)
   target_link_libraries(
     ${module_id}
-    ${JPEG_LIBRARY}
-    ${PNG_LIBRARY}
-    ${ZLIB_LIBRARY}
-    ${GLFW_LIBRARY}
+    ${JPEG_LIBRARIES}
+    ${PNG_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+    ${GLFW_LIBRARIES}
     vsxu_engine
     vsxu_engine_graphics
-    ${GLEW_LIBRARY}
+    ${GLEW_LIBRARIES}
     ${OPENGL_LIBRARIES}
     vsxu_engine_graphics
   )

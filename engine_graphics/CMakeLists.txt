@@ -10,20 +10,23 @@ project (${module_id})
 ################################################################################
 find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
-find_package(GLEW REQUIRED)
 
+#GENERATED_DEP_START
 INCLUDE(FindPkgConfig)
 PKG_SEARCH_MODULE(FREETYPE REQUIRED freetype2)
 PKG_SEARCH_MODULE(PNG REQUIRED  libpng)
 PKG_SEARCH_MODULE(ZLIB REQUIRED zlib)
 PKG_SEARCH_MODULE(JPEG REQUIRED libjpeg)
+PKG_SEARCH_MODULE(GLEW REQUIRED glew)
+PKG_SEARCH_MODULE(GLFW REQUIRED libglfw)
 
 include_directories(
   ${FREETYPE_INCLUDE_DIRS}
   ${PNG_INCLUDE_DIRS}
   ${ZLIB_INCLUDE_DIRS}
   ${JPEG_INCLUDE_DIRS}
+  ${GLEW_INCLUDE_DIRS}
+  ${GLFW_INCLUDE_DIRS}
 )
 
 link_directories(
@@ -31,7 +34,10 @@ link_directories(
   ${PNG_LIBRARY_DIRS}
   ${ZLIB_LIBRARY_DIRS}
   ${JPEG_LIBRARY_DIRS}
+  ${GLEW_LIBRARY_DIRS}
+  ${GLFW_LIBRARY_DIRS}
 )
+#GENERATED_DEP_STOP
 
 
 ################################################################################
@@ -40,19 +46,12 @@ link_directories(
 
 include_directories(
   ${OPENGL_INCLUDE_DIR}
-  ${FREETYPE_INCLUDE_DIRS}
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/engine_graphics/include
   ${CMAKE_SOURCE_DIR}/engine_graphics/include/ftgl
   ${CMAKE_SOURCE_DIR}/engine/include
   ${CMAKE_SOURCE_DIR}/profiler/include
 )
-
-################################################################################
-# LIBRARIES ####################################################################
-################################################################################
-
-link_directories(${FREETYPE_LIBRARY_DIRS})
 
 ################################################################################
 # DEFINITIONS ##################################################################
@@ -163,6 +162,7 @@ endif()
 
 if(WIN32)
   target_link_libraries(${module_id} gdi32)
+  target_link_libraries(${module_id} -static)
 else(WIN32)
 
   if (VSXU_OPENGL_ES_2_0 EQUAL 1)
@@ -173,16 +173,14 @@ else(WIN32)
 #  target_link_libraries(${module_id} X11 GLEW.a GL GLU png.a jpeg.a z.a)
 endif(WIN32)
 
+
 target_link_libraries(
   ${module_id}
-  -static
   vsxu_engine
-  ${GLEW_LIBRARY}
+  ${GLEW_LIBRARIES}
   ${FREETYPE_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
   ${OPENGL_LIBRARIES}
-  gdi32
-
   ${PNG_LIBRARIES}
   ${ZLIB_LIBRARIES}
   ${JPEG_LIBRARIES}
