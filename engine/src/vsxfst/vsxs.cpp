@@ -38,11 +38,11 @@
 
 #include "vsxfst.h"
 
-#ifdef VSX_PRINTF_TO_FILE
+//#ifdef VSX_PRINTF_TO_FILE
 
 vsx_pf_file_holder vsx_pf_file_holder::instance;
 
-#endif
+//#endif
 
 vsx_string<>str_pad(const vsx_string<>& str, const vsx_string<>& chr, size_t t_len, int pad_type, int overflow_adjust) {
   vsx_string<>ps = "";
