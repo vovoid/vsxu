@@ -750,9 +750,11 @@ void create_directory(const char* path)
 #endif
 }
 
-vsx_string<>get_path_from_filename(vsx_string<>filename)
+vsx_string<>get_path_from_filename(vsx_string<>filename, char override_directory_separator)
 {
   vsx_string<>deli = DIRECTORY_SEPARATOR;
+  if (override_directory_separator)
+    deli = override_directory_separator;
 	std::vector <vsx_string<> > results;
 	explode(filename, deli, results);
 	results.pop_back();

@@ -197,7 +197,7 @@ ENGINE_DLLIMPORT void get_files_recursive(
     vsx_string<> dir_ignore_token = ".vsx_hidden"
     );
 
-ENGINE_DLLIMPORT vsx_string<> get_path_from_filename(vsx_string<> filename);
+ENGINE_DLLIMPORT vsx_string<> get_path_from_filename(vsx_string<> filename, char override_directory_separator = 0);
 
 
 // STRING OPERATIONS
