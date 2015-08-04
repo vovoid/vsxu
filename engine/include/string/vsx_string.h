@@ -479,7 +479,7 @@ public:
     :
       fp(0x0)
   {
-    fp = fopen("debug_log.txt", "w");
+    fp = fopen( (vsx_string<>("debug")+ DIRECTORY_SEPARATOR +vsx_string<>("debug_log.txt")).c_str(), "w");
   }
 
   ~vsx_pf_file_holder()
