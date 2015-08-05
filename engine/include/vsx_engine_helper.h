@@ -68,6 +68,11 @@ public:
     cmd_out.clear_normal();
     engine->render();
   }
+
+  void inject_command(vsx_string<> command)
+  {
+    cmd_in.add_raw( command );
+  }
 };
 
 #endif // VSX_ENGINE_HELPER_H
