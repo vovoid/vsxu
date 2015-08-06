@@ -4,6 +4,8 @@
   #include <sys/prctl.h>
 #endif
 
+#include <vsx_profiler_manager.h>
+
 using namespace cal3d;
 
 typedef struct {
@@ -23,12 +25,13 @@ typedef struct {
 } morph_info;
 
 typedef struct {
-  bool is_thread;
+  volatile __attribute__((aligned(64))) int64_t is_thread;
   void* class_pointer;
 } cal3d_thread_info;
 
 class module_mesh_cal3d_import : public vsx_module {
 public:
+	VSXP_CLASS_DECLARE
     // in
     vsx_module_param_resource* filename;
     vsx_module_param_quaternion* quat_p;
@@ -101,6 +104,7 @@ public:
     sem_init(&sem_worker_todo,0,0);
     thread_has_something_to_deliver = 0;
     have_sent_work_to_thread = 0;
+VSXP_CLASS_CONSTRUCTOR
   }
   bool init() {
 
@@ -445,9 +449,11 @@ public:
     {
       if (thread_info.is_thread)
       {
+//vsx_printf(L"cal3d THREAD attempting to lock mesh_mutex\n");
         // lock mutex
         pthread_mutex_lock(&my->mesh_mutex);
 
+//vsx_printf(L"cal3d THREAD waiting for work\n");
         // wait for more work
         pthread_cond_wait(&my->count_threshold_cv, &my->mesh_mutex);
       }
@@ -616,20 +622,26 @@ public:
           //tangent[a].w = (Dot(Cross(n, t), tan2[a]) < 0.0F) ? -1.0F : 1.0F;
       }
 
+//vsx_printf(L"cal3d THREAD, setting something to deliver\n");
       my->thread_has_something_to_deliver++;
 
       if (thread_info.is_thread)
         pthread_mutex_unlock(&my->mesh_mutex);
 
       // if we're not supposed to run in a thread
-      if (false == thread_info.is_thread)
+      if (0 == thread_info.is_thread)
+      {
+//        vsx_printf(L"cal3d THREAD thread_info.is_thread == false\n");
         return 0;
+      }
 
       // see if the exit flag is set (user changed from threaded to non-threaded mode)
+//      vsx_printf(L"cal3d THREAD, attempting to lock exit mutex\n");
       pthread_mutex_lock(&my->thread_exit_mutex);
       int time_to_exit = my->thread_exit;
       pthread_mutex_unlock(&my->thread_exit_mutex);
       if (time_to_exit) {
+//        vsx_printf(L"cal3d THREAD, time to exit...\n");
         int *retval = new int;
         *retval = 0;
         my->thread_exit = 0;
@@ -647,6 +659,10 @@ public:
     if (!bones.size())
       return;
 
+VSXP_CLASS_LOCAL_INIT
+
+VSXP_S_BEGIN("cal3d run");
+
     // deal with changes in threading use
 
     if (thread_created && use_thread->get() == 0)
@@ -658,19 +674,19 @@ public:
       void* ret;
       pthread_join(worker_t,&ret);
       thread_created = false;
-      thread_info.is_thread = false;
+      thread_info.is_thread = 0;
     }
 
     if (!thread_created && use_thread->get() == 1)
     {
+      __sync_fetch_and_add( &thread_info.is_thread, 1);
       pthread_create(&worker_t, NULL, &worker, (void*)&thread_info);
       thread_created = true;
-      thread_info.is_thread = true;
     }
 
     if (0 == use_thread->get())
     {
-      thread_info.is_thread = false;
+      thread_info.is_thread = 0;
       worker((void*)&thread_info);
     }
 
@@ -740,6 +756,7 @@ public:
 
       if (p_updates != param_updates)
       {
+//        vsx_printf(L"cal3d getting param updates, signalling thread\n");
         CalQuaternion q2;
         CalVector t1;
         for (unsigned long j = 0; j < bones.size(); ++j)
@@ -787,5 +804,6 @@ public:
       pthread_mutex_unlock(&mesh_mutex);
 
     }
+    VSXP_S_END
   }
 };
