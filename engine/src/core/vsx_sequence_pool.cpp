@@ -311,6 +311,7 @@ vsx_sequence_pool::vsx_sequence_pool()
 {
   cur_sequence_list = 0;
   edit_enabled = false;
+  play_override_enabled = false;
   loop_point = -1.0f;
   current_state = 0;
   vtime = 0.0f;
