@@ -164,7 +164,9 @@ IF (UNIX)
 ENDIF (UNIX)
 
 
-if (WIN32)
-  install(FILES ${CMAKE__SOURCE_DIR}/../vsxu_player_launcher/vsxu_player_launcher.exe DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT player)
-endif()
+# FIXME: should have a "if(INSTALL_EXE)" ...
+#if (WIN32)
+#  install(FILES ${CMAKE__SOURCE_DIR}/../vsxu_player_launcher/vsxu_player_launcher.exe DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT player)
+#endif()
+#
 
