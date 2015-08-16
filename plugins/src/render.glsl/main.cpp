@@ -99,8 +99,6 @@ public:
   vsx_glsl shader;
   long shader_source; // -1 for default, > 0 for filesystem loading of shaders
 
-
-
   vsx_module_glsl()
   {
     first = true;
@@ -157,7 +155,8 @@ public:
       {
         redeclare_in = true;
         message = "module||ok";
-      }
+      } else
+        vsx_printf(L"** SHADER COMPILATION ERROR:\n\n%s", message.c_str());
     }
   }
 
@@ -171,7 +170,10 @@ public:
       load_shader(shader,ext_shaders[shader_source-1].name);
     }
 
-    vsx_string<>h = shader.link();
+    vsx_string<> message = shader.link();
+
+    if (message.size())
+      vsx_printf(L"** SHADER COMPILATION ERROR:\n\n%s", message.c_str());
 
     loading_done = true;
     redeclare_in_params(in_parameters);
