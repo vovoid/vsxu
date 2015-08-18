@@ -475,7 +475,7 @@ void vsx_texture::init_color_depth_buffer
 
   if ( !has_buffer_support() )
   {
-    //printf("vsx_texture error: No FBO available!\n");
+    vsx_printf(L"vsx_texture error: No FBO available!\n");
     return;
   }
 
@@ -587,6 +587,7 @@ void vsx_texture::init_color_depth_buffer
       valid_fbo = true; // valid for capturing
       break;
     default:
+      vsx_printf(L"Error initializing FBO\n");
     break;
   }
   vsx_gl_state::get_instance()->framebuffer_bind(prev_buf_l);

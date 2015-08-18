@@ -34,9 +34,6 @@
  *     Make sure this is more or equal to your peak thread count in the program in which you
  *     make calls to the profiler.
  *
- *   VSX_PROFILER_BASE_PATH
- *     Default: undefined
- *
  *     By default, profiler uses VSXu engine's directory structure to place profiler files in
  *     the user's "vsxu/{version}/data/profiles/" directory. If you want this someplace else,
  *     set this define to your directory of choice.
@@ -70,8 +67,12 @@ class vsx_profiler_manager
 {
 public:
 
-  volatile __attribute__((aligned(64))) int64_t run_threads;
-	volatile __attribute__((aligned(64))) int64_t enabled;
+  volatile __attribute__((aligned(64))) int64_t thread_run_control;
+  volatile __attribute__((aligned(64))) int64_t enable_data_collection;
+
+  bool started;
+
+  vsx_string<> output_path;
 
   pthread_mutex_t profiler_thread_lock;
   pthread_t consumer_pthread;
@@ -84,19 +85,38 @@ public:
 
   vsx_profiler_manager()
 		:
-			run_threads(1),
-      enabled(0)
+      thread_run_control(1),
+      enable_data_collection(0),
+      started(false)
   {
-		vsx_printf(L"VSX PROFILER:  Initializing: ");
-    pthread_mutex_init(&profiler_thread_lock, NULL);
-
     for (size_t i = 0; i < VSX_PROFILER_MAX_THREADS; i++)
-    {
       thread_list[i] = 0;
+  }
+
+  ~vsx_profiler_manager()
+  {
+
+    if (thread_run_control)
+    {
+      vsx_printf(L"VSX PROFILER:  Shutting down:");
+      __sync_fetch_and_sub(&thread_run_control, 1);
+
+      vsx_printf(L"[io thread] ");
+      pthread_join(io_pthread, NULL);
+
+      vsx_printf(L"[consumer thread] ");
+      pthread_join(consumer_pthread, NULL);
+      vsx_printf(L"[destruction complete]\n");
     }
+	}
 
-		vsx_printf(L"[consumer thread: ");
+  void start()
+  {
+    vsx_printf(L"VSX PROFILER:\n  Creating: ");
 
+    vsx_printf(L"[consumer thread]\n");
+
+    pthread_mutex_init(&profiler_thread_lock, NULL);
     pthread_create(
       &consumer_pthread,
       NULL,
@@ -104,7 +124,7 @@ public:
       NULL
     );
 
-		vsx_printf(L"[io thread: ");
+    vsx_printf(L"[io thread]\n");
 
     pthread_create(
       &io_pthread,
@@ -113,56 +133,39 @@ public:
       NULL
     );
 
-		vsx_printf(L"[initialization completed]\n");
+    for (size_t i = 0; i < VSX_PROFILER_MAX_THREADS; i++)
+      profiler_list[i].enabled = true;
   }
 
-  ~vsx_profiler_manager()
+  static vsx_string<> profiler_directory_get()
   {
-		vsx_printf(L"VSX PROFILER:  Shutting down:");
-
-		if (run_threads)
-			__sync_fetch_and_sub(&run_threads, 1);
-
-		vsx_printf(L"[io thread] ");
-		pthread_join(io_pthread, NULL);
-
-		vsx_printf(L"[consumer thread] ");
-		pthread_join(consumer_pthread, NULL);
-
-		vsx_printf(L"[destruction complete]\n");
-	}
-
-  static vsx_string<>profiler_directory_get()
-  {
-		#ifdef VSX_PROFILER_BASE_PATH
-			return vsx_string<>( VSX_PROFILER_BASE_PATH );
-		#else
-			return vsx_data_path::get_instance()->data_path_get()+"profiler";
-		#endif
+    if (vsx_profiler_manager::get_instance()->output_path.size())
+      return vsx_profiler_manager::get_instance()->output_path;
+    return vsx_data_path::get_instance()->data_path_get()+"profiler";
   }
 
 	void enable()
 	{
-		if ( __sync_fetch_and_add(&enabled, 0) )
+    if ( __sync_fetch_and_add(&enable_data_collection, 0) )
 			return;
 
 		vsx_printf(L"VSX PROFILER:  request consumer to data collection...\n");
-		__sync_fetch_and_add(&enabled, 1);
+    __sync_fetch_and_add(&enable_data_collection, 1);
 	}
 
 	void disable()
 	{
-		if ( !__sync_fetch_and_add(&enabled, 0) )
+    if ( !__sync_fetch_and_add(&enable_data_collection, 0) )
 			return;
 
 		vsx_printf(L"VSX PROFILER:  request consumer to disable data collection...\n");
-		__sync_fetch_and_sub(&enabled, 1);
+    __sync_fetch_and_sub(&enable_data_collection, 1);
 	}
 
   static void* io_thread(void* arg)
   {
     VSX_UNUSED(arg);
-		vsx_printf(L"done] ");
+    vsx_printf(L"[Profiler IO running]\n");
 
     #if (PLATFORM == PLATFORM_LINUX)
       const char* cal = "profiler::io_thread";
@@ -195,7 +198,7 @@ public:
 
     timer.start();
     double accumulated_time = 0.0;
-    while ( __sync_fetch_and_add( &pm->run_threads, 0) )
+    while ( __sync_fetch_and_add( &pm->thread_run_control, 0) )
     {
       vsx_profile_chunk* r;
       while ( pm->io_pool.consume(r) )
@@ -203,7 +206,7 @@ public:
         fwrite(r,sizeof(vsx_profile_chunk) * VSX_PROFILER_RECIEVE_BUFFER_ITEMS,1,fp);
       }
       double d1 = timer.dtime();
-      if (pm->enabled)
+      if (pm->enable_data_collection)
         accumulated_time += d1;
     }
 
@@ -223,7 +226,7 @@ public:
   {
     VSX_UNUSED(profiler);
 
-		vsx_printf(L"done] ");
+    vsx_printf(L"[Profiler CONSUMER running]\n");
 
     #if (PLATFORM == PLATFORM_LINUX)
       const char* cal = "profiler::manager";
@@ -243,9 +246,9 @@ public:
     int64_t current_depth = 0;
     int64_t max_depth = 0;
 
-		int64_t current_enabled = __sync_fetch_and_add(&pm->enabled, 0);
+    int64_t current_enabled = __sync_fetch_and_add(&pm->enable_data_collection, 0);
 
-    while ( __sync_fetch_and_add( &pm->run_threads, 0) )
+    while ( __sync_fetch_and_add( &pm->thread_run_control, 0) )
     {
       // collect from all threads
       for ( size_t i = 0; i < VSX_PROFILER_MAX_THREADS; i++)
@@ -291,12 +294,12 @@ public:
 
 					// handle enabling switch, only toggle when at zero depth
 					if (
-							current_enabled != __sync_fetch_and_add( &pm->enabled, 0)
+              current_enabled != __sync_fetch_and_add( &pm->enable_data_collection, 0)
 							&&
 							!current_depth
 							)
 					{
-						current_enabled = __sync_fetch_and_add( &pm->enabled, 0);
+            current_enabled = __sync_fetch_and_add( &pm->enable_data_collection, 0);
 						if (current_enabled)
             {
               vsx_printf(L"VSX PROFILER:  [enabled data collector]\n");
