@@ -133,8 +133,13 @@ class vsx_profiler
 public:
   vsx_fifo<vsx_profile_chunk,4096> queue;
   pid_t thread_id;
+  bool enabled;
 
 
+  vsx_profiler()
+    :
+      enabled(false)
+  {}
 
   inline void set_thread_id(pid_t new_id)
   {
@@ -171,6 +176,9 @@ public:
    */
   inline void sub_begin( const char* tag ) __attribute__((always_inline))
   {
+    if (!enabled)
+      return;
+
     vsx_profile_chunk chunk;
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_START;
     chunk.spin_waste = 0;
@@ -195,6 +203,9 @@ public:
 
   inline void sub_end() __attribute__((always_inline))
   {
+    if (!enabled)
+      return;
+
     uint64_t t = vsx_profiler_rdtsc();
     asm volatile("": : :"memory");
     vsx_profile_chunk chunk;
@@ -215,6 +226,9 @@ public:
    */
   inline void maj_begin()
   {
+    if (!enabled)
+      return;
+
     vsx_profile_chunk chunk;
     chunk.spin_waste = 0;
     chunk.id = thread_id;
@@ -233,6 +247,9 @@ public:
    */
   inline void maj_end()
   {
+    if (!enabled)
+      return;
+
     uint64_t t = vsx_profiler_rdtsc();
     vsx_profile_chunk chunk;
     chunk.spin_waste = 0;
@@ -251,6 +268,9 @@ public:
    */
   inline void plot_name(uint64_t id, const char* tag ) __attribute__((always_inline))
   {
+    if (!enabled)
+      return;
+
     vsx_profile_chunk chunk;
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_THREAD_NAME;
     chunk.spin_waste = 0;
@@ -272,6 +292,9 @@ public:
 
   inline void plot_1(uint64_t id, double a)
   {
+    if (!enabled)
+      return;
+
     vsx_profile_chunk chunk;
     memcpy(&chunk.tag[0],&a, sizeof(double));
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_1_DOUBLE;
@@ -286,6 +309,9 @@ public:
 
   inline void plot_2(uint64_t id, double a, double b)
   {
+    if (!enabled)
+      return;
+
     vsx_profile_chunk chunk;
     memcpy(&chunk.tag[0],&a, sizeof(double));
     memcpy(&chunk.tag[8],&b, sizeof(double));
@@ -301,6 +327,9 @@ public:
 
   inline void plot_3(uint64_t id, double a, double b, double c)
   {
+    if (!enabled)
+      return;
+
     vsx_profile_chunk chunk;
     memcpy(&chunk.tag[0],&a, sizeof(double));
     memcpy(&chunk.tag[8],&b, sizeof(double));
@@ -317,6 +346,9 @@ public:
 
   inline void plot_4(uint64_t id, double a, double b, double c, double d)
   {
+    if (!enabled)
+      return;
+
     vsx_profile_chunk chunk;
 
     memcpy(&chunk.tag[0],&a, sizeof(double));
