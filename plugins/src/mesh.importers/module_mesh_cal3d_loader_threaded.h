@@ -622,7 +622,7 @@ VSXP_CLASS_CONSTRUCTOR
           //tangent[a].w = (Dot(Cross(n, t), tan2[a]) < 0.0F) ? -1.0F : 1.0F;
       }
 
-vsx_printf(L"cal3d THREAD, setting something to deliver\n");
+//vsx_printf(L"cal3d THREAD, setting something to deliver\n");
       my->thread_has_something_to_deliver++;
 
       if (thread_info.is_thread)
