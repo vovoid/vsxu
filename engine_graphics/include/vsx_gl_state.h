@@ -6,6 +6,7 @@
 #include <vsx_platform.h>
 #include <engine_graphics_dllimport.h>
 #include <vsx_matrix.h>
+#include <string/vsx_string.h>
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1185,6 +1186,34 @@ public:
       glLoadIdentity();
       glMultMatrixf(core_matrix[i_matrix_mode].m);
     #endif
+  }
+
+private:
+  vsx_string<> gl_errors;
+
+public:
+
+  inline void clear_errors()
+  {
+    gl_errors = "";
+  }
+
+  inline vsx_string<>& get_errors()
+  {
+    return gl_errors;
+  }
+
+  inline void accumulate_errors()
+  {
+#ifndef VSX_NO_GL
+    GLenum errCode;
+    const GLubyte *errString;
+
+    if ((errCode = glGetError()) != GL_NO_ERROR) {
+        errString = gluErrorString(errCode);
+        gl_errors += vsx_string<>((char*)errString) + "\n";
+    }
+#endif
   }
 
 private:
