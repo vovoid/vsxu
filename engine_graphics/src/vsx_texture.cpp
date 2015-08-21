@@ -128,10 +128,15 @@ void vsx_texture::init_opengl_texture_cubemap()
 bool vsx_texture::has_buffer_support()
 {
   if (!GLEW_EXT_framebuffer_object)
+    glewInit();
+
+  if (!GLEW_EXT_framebuffer_object)
     VSX_ERROR_RETURN_V("GLEW_EXT_framebuffer_object missing", false);
 
   if (!GLEW_EXT_framebuffer_blit)
     VSX_ERROR_RETURN_V("GLEW_EXT_framebuffer_blit missing", false);
+
+  return true;
 }
 
 
@@ -493,6 +498,8 @@ void vsx_texture::init_color_depth_buffer
   // set the buffer type (for deinit and capturing)
   frame_buffer_type = VSX_TEXTURE_BUFFER_TYPE_COLOR_DEPTH;
 
+  vsx_gl_state::get_instance()->clear_errors();
+
 
   // save the previous FBO (stack behaviour)
   int prev_buf_l;
@@ -515,13 +522,27 @@ void vsx_texture::init_color_depth_buffer
   // Generate Color Texture
   //RGBA8 2D texture, 24 bit depth texture, 256x256
   glGenTextures(1, &color_buffer_handle);
+  vsx_gl_state::get_instance()->accumulate_errors();
+
   glBindTexture(GL_TEXTURE_2D, color_buffer_handle);
+  vsx_gl_state::get_instance()->accumulate_errors();
+
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  vsx_gl_state::get_instance()->accumulate_errors();
+
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  vsx_gl_state::get_instance()->accumulate_errors();
+
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  vsx_gl_state::get_instance()->accumulate_errors();
+
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  vsx_gl_state::get_instance()->accumulate_errors();
+
   //NULL means reserve texture memory, but texels are undefined
   glTexImage2D(GL_TEXTURE_2D, 0, texture_storage_type, i_width, i_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
+  vsx_gl_state::get_instance()->accumulate_errors();
+
 
 
 
@@ -537,17 +558,39 @@ void vsx_texture::init_color_depth_buffer
   }
   else
   {
+    vsx_gl_state::get_instance()->accumulate_errors();
+
     glGenTextures(1, &depth_buffer_handle);
+    vsx_gl_state::get_instance()->accumulate_errors();
+
     glBindTexture(GL_TEXTURE_2D, depth_buffer_handle);
+    vsx_gl_state::get_instance()->accumulate_errors();
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    vsx_gl_state::get_instance()->accumulate_errors();
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    vsx_gl_state::get_instance()->accumulate_errors();
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    vsx_gl_state::get_instance()->accumulate_errors();
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    vsx_gl_state::get_instance()->accumulate_errors();
+
     glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY);
+    vsx_gl_state::get_instance()->accumulate_errors();
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+    vsx_gl_state::get_instance()->accumulate_errors();
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+    vsx_gl_state::get_instance()->accumulate_errors();
+
     //NULL means reserve texture memory, but texels are undefined
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, i_width, i_height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+    vsx_gl_state::get_instance()->accumulate_errors();
+
     depth_buffer_local = true;
   }
 
@@ -557,7 +600,11 @@ void vsx_texture::init_color_depth_buffer
   // GENERATE FBO
   //-------------------------
   glGenFramebuffersEXT(1, &frame_buffer_handle);
+  vsx_gl_state::get_instance()->accumulate_errors();
+
   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle);
+  vsx_gl_state::get_instance()->accumulate_errors();
+
 
 
   // Attach textures to the FBO
@@ -571,6 +618,7 @@ void vsx_texture::init_color_depth_buffer
     color_buffer_handle,
     0/*mipmap level*/
   );
+
   //-------------------------
   //Attach depth texture to FBO
   glFramebufferTexture2DEXT(
@@ -580,6 +628,7 @@ void vsx_texture::init_color_depth_buffer
     depth_buffer_handle,
     0/*mipmap level*/
   );
+
   //-------------------------
 
 
@@ -598,7 +647,7 @@ void vsx_texture::init_color_depth_buffer
       valid_fbo = true; // valid for capturing
       break;
     default:
-      vsx_printf(L"Error initializing FBO\n");
+      vsx_printf(L"Error initializing FBO, status = %d\n", status);
     break;
   }
   vsx_gl_state::get_instance()->framebuffer_bind(prev_buf_l);
@@ -677,7 +726,7 @@ void vsx_texture::deinit_buffer()
 
 }
 
-void vsx_texture::is_valid_capture_buffer()
+bool vsx_texture::is_valid_capture_buffer()
 {
   return valid_fbo;
 }
