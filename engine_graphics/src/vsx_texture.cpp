@@ -380,21 +380,33 @@ void vsx_texture::init_color_buffer
     texture_storage_type = alpha?GL_RGBA8:GL_RGB8;
   }
 
+  vsx_gl_state::get_instance()->clear_errors();
+
   //RGBA8 2D texture, 24 bit depth texture, 256x256
   glGenTextures(1, &color_buffer_handle);
+  vsx_gl_state::get_instance()->accumulate_errors();
   glBindTexture(GL_TEXTURE_2D, color_buffer_handle);
+  vsx_gl_state::get_instance()->accumulate_errors();
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  vsx_gl_state::get_instance()->accumulate_errors();
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  vsx_gl_state::get_instance()->accumulate_errors();
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  vsx_gl_state::get_instance()->accumulate_errors();
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  vsx_gl_state::get_instance()->accumulate_errors();
   //NULL means reserve texture memory, but texels are undefined
   glTexImage2D(GL_TEXTURE_2D, 0, texture_storage_type, i_width, i_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
+  vsx_gl_state::get_instance()->accumulate_errors();
 
   //-------------------------
   glGenFramebuffersEXT(1, &frame_buffer_handle);
+  vsx_gl_state::get_instance()->accumulate_errors();
   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle);
+  vsx_gl_state::get_instance()->accumulate_errors();
   //Attach 2D texture to this FBO
   glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, color_buffer_handle, 0/*mipmap level*/);
+  vsx_gl_state::get_instance()->accumulate_errors();
   //-------------------------
   //Does the GPU support current FBO configuration?
   GLenum status;
@@ -424,7 +436,6 @@ void vsx_texture::deinit_color_buffer()
   depth_buffer_local = 0;
   //Bind 0, which means render to back buffer, as a result, fb is unbound
   glDeleteFramebuffersEXT(1, &frame_buffer_handle);
-
   valid = false;
   valid_fbo = false;
   texture_info->ogl_id = 0;
@@ -666,6 +677,10 @@ void vsx_texture::deinit_buffer()
 
 }
 
+void vsx_texture::is_valid_capture_buffer()
+{
+  return valid_fbo;
+}
 
 
 

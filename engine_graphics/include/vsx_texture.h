@@ -241,6 +241,7 @@ public:
   // end the capturing render output into the frame buffer object
   VSX_ENGINE_GRAPHICS_DLLIMPORT void end_capture_to_buffer();
 
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void is_valid_capture_buffer();
 
   VSX_ENGINE_GRAPHICS_DLLIMPORT GLuint get_depth_buffer_handle();
 
