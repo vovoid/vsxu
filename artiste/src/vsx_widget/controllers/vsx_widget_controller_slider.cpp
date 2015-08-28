@@ -156,6 +156,8 @@ double vsx_widget_controller_slider::get_y_pos()
 
   if (orientation == 1)
     return (((presentation_value-ofs)/(amp))*(size.x-handle_size))-size.x/2.0f + handle_size/2;
+
+  return 0.0;
 }
 
 float vsx_widget_controller_slider::amp_get()

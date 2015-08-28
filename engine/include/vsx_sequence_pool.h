@@ -59,7 +59,7 @@ public:
 	vsx_param_sequence_list* get_selected();
 
 	bool toggle_edit();
-  bool set_play_override(bool n);
+  void set_play_override(bool n);
 	bool get_edit_enabled();
 
 	// sequence operations on current active list

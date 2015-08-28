@@ -749,7 +749,7 @@ vsx_string<>vsx_engine_param::get_string()
       return p;
     }
     case VSX_MODULE_PARAM_ID_FLOAT: {
-      sprintf(res,"%.20f",((vsx_module_param_float*)module_param)->param_data_suggestion[0]);
+      sprintf(res,"%.20f",(double)((vsx_module_param_float*)module_param)->param_data_suggestion[0]);
       p = res;
       return p;
     }
@@ -759,33 +759,33 @@ vsx_string<>vsx_engine_param::get_string()
       return p;
     }
     case VSX_MODULE_PARAM_ID_FLOAT3: {
-      sprintf(res,"%.20f",((vsx_module_param_float3*)module_param)->param_data_suggestion[0]);
+      sprintf(res,"%.20f",(double)((vsx_module_param_float3*)module_param)->param_data_suggestion[0]);
       p += res;
-      sprintf(res,",%.20f",((vsx_module_param_float3*)module_param)->param_data_suggestion[1]);
+      sprintf(res,",%.20f",(double)((vsx_module_param_float3*)module_param)->param_data_suggestion[1]);
       p += res;
-      sprintf(res,",%.20f",((vsx_module_param_float3*)module_param)->param_data_suggestion[2]);
+      sprintf(res,",%.20f",(double)((vsx_module_param_float3*)module_param)->param_data_suggestion[2]);
       p += res;
       return p;
     }
     case VSX_MODULE_PARAM_ID_FLOAT4: {
-      sprintf(res,"%.20f",((vsx_module_param_float4*)module_param)->param_data_suggestion[0]);
+      sprintf(res,"%.20f",(double)((vsx_module_param_float4*)module_param)->param_data_suggestion[0]);
       p += res;
-      sprintf(res,",%.20f",((vsx_module_param_float4*)module_param)->param_data_suggestion[1]);
+      sprintf(res,",%.20f",(double)((vsx_module_param_float4*)module_param)->param_data_suggestion[1]);
       p += res;
-      sprintf(res,",%.20f",((vsx_module_param_float4*)module_param)->param_data_suggestion[2]);
+      sprintf(res,",%.20f",(double)((vsx_module_param_float4*)module_param)->param_data_suggestion[2]);
       p += res;
-      sprintf(res,",%.20f",((vsx_module_param_float4*)module_param)->param_data_suggestion[3]);
+      sprintf(res,",%.20f",(double)((vsx_module_param_float4*)module_param)->param_data_suggestion[3]);
       p += res;
       return p;
     }
     case VSX_MODULE_PARAM_ID_QUATERNION: {
-      sprintf(res,"%.20f",((vsx_module_param_quaternion*)module_param)->param_data_suggestion[0]);
+      sprintf(res,"%.20f",(double)((vsx_module_param_quaternion*)module_param)->param_data_suggestion[0]);
       p += res;
-      sprintf(res,",%.20f",((vsx_module_param_quaternion*)module_param)->param_data_suggestion[1]);
+      sprintf(res,",%.20f",(double)((vsx_module_param_quaternion*)module_param)->param_data_suggestion[1]);
       p += res;
-      sprintf(res,",%.20f",((vsx_module_param_quaternion*)module_param)->param_data_suggestion[2]);
+      sprintf(res,",%.20f",(double)((vsx_module_param_quaternion*)module_param)->param_data_suggestion[2]);
       p += res;
-      sprintf(res,",%.20f",((vsx_module_param_quaternion*)module_param)->param_data_suggestion[3]);
+      sprintf(res,",%.20f",(double)((vsx_module_param_quaternion*)module_param)->param_data_suggestion[3]);
       p += res;
       return p;
     }
@@ -825,43 +825,43 @@ vsx_string<>vsx_engine_param::get_default_string()
       return p;
     }
     case VSX_MODULE_PARAM_ID_FLOAT: {
-      sprintf(res,"%.20f",((vsx_module_param_float*)module_param)->param_data_default[0]);
+      sprintf(res,"%.20f",(double)((vsx_module_param_float*)module_param)->param_data_default[0]);
       p = res;
       return p;
     }
     case VSX_MODULE_PARAM_ID_DOUBLE: {
-      sprintf(res,"%.20f",((vsx_module_param_double*)module_param)->param_data_default[0]);
+      sprintf(res,"%.20f",(double)((vsx_module_param_double*)module_param)->param_data_default[0]);
       p = res;
       return p;
     }
     case VSX_MODULE_PARAM_ID_FLOAT3: {
-      sprintf(res,"%.20f",((vsx_module_param_float3*)module_param)->param_data_default[0]);
+      sprintf(res,"%.20f",(double)((vsx_module_param_float3*)module_param)->param_data_default[0]);
       p += res;
-      sprintf(res,",%.20f",((vsx_module_param_float3*)module_param)->param_data_default[1]);
+      sprintf(res,",%.20f",(double)((vsx_module_param_float3*)module_param)->param_data_default[1]);
       p += res;
-      sprintf(res,",%.20f",((vsx_module_param_float3*)module_param)->param_data_default[2]);
+      sprintf(res,",%.20f",(double)((vsx_module_param_float3*)module_param)->param_data_default[2]);
       p += res;
       return p;
     }
     case VSX_MODULE_PARAM_ID_FLOAT4: {
-      sprintf(res,"%.20f",((vsx_module_param_float4*)module_param)->param_data_default[0]);
+      sprintf(res,"%.20f",(double)((vsx_module_param_float4*)module_param)->param_data_default[0]);
       p += res;
-      sprintf(res,",%.20f",((vsx_module_param_float4*)module_param)->param_data_default[1]);
+      sprintf(res,",%.20f",(double)((vsx_module_param_float4*)module_param)->param_data_default[1]);
       p += res;
-      sprintf(res,",%.20f",((vsx_module_param_float4*)module_param)->param_data_default[2]);
+      sprintf(res,",%.20f",(double)((vsx_module_param_float4*)module_param)->param_data_default[2]);
       p += res;
-      sprintf(res,",%.20f",((vsx_module_param_float4*)module_param)->param_data_default[3]);
+      sprintf(res,",%.20f",(double)((vsx_module_param_float4*)module_param)->param_data_default[3]);
       p += res;
       return p;
     }
     case VSX_MODULE_PARAM_ID_QUATERNION: {
-      sprintf(res,"%.20f",((vsx_module_param_quaternion*)module_param)->param_data_default[0]);
+      sprintf(res,"%.20f",(double)((vsx_module_param_quaternion*)module_param)->param_data_default[0]);
       p += res;
-      sprintf(res,",%.20f",((vsx_module_param_quaternion*)module_param)->param_data_default[1]);
+      sprintf(res,",%.20f",(double)((vsx_module_param_quaternion*)module_param)->param_data_default[1]);
       p += res;
-      sprintf(res,",%.20f",((vsx_module_param_quaternion*)module_param)->param_data_default[2]);
+      sprintf(res,",%.20f",(double)((vsx_module_param_quaternion*)module_param)->param_data_default[2]);
       p += res;
-      sprintf(res,",%.20f",((vsx_module_param_quaternion*)module_param)->param_data_default[3]);
+      sprintf(res,",%.20f",(double)((vsx_module_param_quaternion*)module_param)->param_data_default[3]);
       p += res;
       return p;
     }

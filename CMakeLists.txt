@@ -171,6 +171,9 @@ if(VSXU_DEBUG)
   add_definitions(
     -g
     -Wall
+	-Werror=return-type
+	-Werror=unused-parameter
+	#-Wdouble-promotion
     -mtune=nocona
     -Wtype-limits
     -fpermissive

@@ -1683,6 +1683,7 @@ static int codebook_decode_scalar(vorb *f, Codebook *c)
 
 static int codebook_decode_start(vorb *f, Codebook *c, int len)
 {
+  (void)len;
    int z = -1;
 
    // type 0 is only legal in a scalar context
@@ -2368,6 +2369,8 @@ void dct_iv_slow(float *buffer, int n)
 
 void inverse_mdct_slow(float *buffer, int n, vorb *f, int blocktype)
 {
+  (void)f;
+  (void)blocktype;
    int i, n4 = n >> 2, n2 = n >> 1, n3_4 = n - n4;
    float temp[4096];
 
@@ -3092,6 +3095,7 @@ typedef int YTYPE;
 #endif
 static int do_floor(vorb *f, Mapping *map, int i, int n, float *target, YTYPE *finalY, uint8 *step2_flag)
 {
+  (void)step2_flag;
    int n2 = n >> 1;
    int s = map->chan[i].mux, floor;
    floor = map->submap_floor[s];
@@ -3180,6 +3184,7 @@ static int vorbis_decode_initial(vorb *f, int *p_left_start, int *p_left_end, in
 
 static int vorbis_decode_packet_rest(vorb *f, int *len, Mode *m, int left_start, int left_end, int right_start, int right_end, int *p_left)
 {
+  (void)left_end;
    Mapping *map;
    int i,j,k,n,n2;
    int zero_channel[256];

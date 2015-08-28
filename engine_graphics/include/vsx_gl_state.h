@@ -923,10 +923,10 @@ public:
       c = cos(angle), s = sin(angle), and ||( x,y,z )|| = 1
     */
     float radians;
-    radians = (angle * PI) / 180.0;
+    radians = (angle * (float)PI) / 180.0f;
     float c = cos(radians);
     float s = sin(radians);
-    float c1 = 1.0 - c;
+    float c1 = 1.0f - c;
 
     float xx = x*x;
     float yy = y*y;
@@ -1098,7 +1098,7 @@ public:
 
     #define N0 (zFar + zNear) / (zNear - zFar)
     #define N1 (2.0 * zFar * zNear) / (zNear - zFar)
-    double f = tan( HALF_PI - (fovy * (PI / 180.0f)) * 0.5 );
+    double f = tan( HALF_PI - (fovy * (PI / 180.0)) * 0.5 );
     double fdiva = f / aspect;
     #define m m_temp.m
     m[0] = fdiva;         m[4] = 0.0;      m[8] = 0.0;     m[12] = 0.0;

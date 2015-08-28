@@ -626,7 +626,7 @@ bool vsx_engine::render()
     }
     else
     {
-      frame_dtime+=(engine_info.vtime-frame_dprev);
+      frame_dtime += (double)engine_info.vtime - frame_dprev;
       frame_delta_fps = 1/(frame_dtime/frame_dcount);
     }
     // save the vtime for next call to render()
@@ -762,7 +762,7 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
 
   max_time = 120.0f;
 
-  while (total_time < max_time || ignore_timing)
+  while (total_time < (double)max_time || ignore_timing)
   {
     c = commands_internal.pop();
 

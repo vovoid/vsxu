@@ -204,7 +204,7 @@ void vsx_engine_abs::tell_client_time(vsx_command_list *cmd_out)
 
   bool send = false;
 
-  if (lastsent < 0 || lastsent > 0.01 )
+  if (lastsent < 0.0f || lastsent > 0.01f )
   {
     send = true;
     lastsent = 0;
