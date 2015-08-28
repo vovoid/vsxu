@@ -68,16 +68,16 @@ void vsx_widget_camera::set_distance(double d)
 
 void vsx_widget_camera::run()
 {
-  float dtime = vsx_widget_time::get_instance()->get_dtime();
-  float global_interpolation_speed = vsx_widget_global_interpolation::get_instance()->get();
+  double dtime = vsx_widget_time::get_instance()->get_dtime();
+  double global_interpolation_speed = vsx_widget_global_interpolation::get_instance()->get();
 
   if (interpolating)
   {
-    float tt = dtime*10.0f*global_interpolation_speed;
+    double tt = dtime * 10.0 * global_interpolation_speed;
     if (tt > 1) { tt = 1; interpolating = false;}
-    xp = xp*(1-tt)+camera_target.x*tt;
-    yp = yp*(1-tt)+camera_target.y*tt;
-    zp = zp*(1-tt)+camera_target.z*tt;
+    xp = xp*(1.0-tt) + (double)camera_target.x * tt;
+    yp = yp*(1.0-tt) + (double)camera_target.y * tt;
+    zp = zp*(1.0-tt) + (double)camera_target.z * tt;
     if (
       (round(xp*2000) == round(camera_target.x*2000)) &&
       (round(yp*2000) == round(camera_target.y*2000)) &&
@@ -90,13 +90,13 @@ void vsx_widget_camera::run()
   double dec = 3.0;
 
   // interpolation falloff control
-  float tt = dtime * interpolation_speed * global_interpolation_speed;
+  double tt = dtime * (double)interpolation_speed * global_interpolation_speed;
   if (tt > 1) { tt = 1; }
 
   if(zpd != 0.0) {
     double sgn = SGN(zpd);
     zps += dtime * acc * sgn * global_interpolation_speed;
-    zps = CLAMP(zps, -1.2f, 1.2f);
+    zps = CLAMP(zps, -1.2, 1.2);
   }
   if(zpd == 0.0) {
     double sgn = SGN(zps);
@@ -104,7 +104,7 @@ void vsx_widget_camera::run()
     zps = MAX(zps * sgn, 0) * sgn;
   }
 
-  zp += zps * fabs(zp - 1.1)* key_speed * dtime + zpp*(zp - 1.0f);
+  zp += zps * fabs(zp - 1.1) * (double)key_speed * dtime + zpp*(zp - 1.0);
   zpp = zpp*(1-tt);
 
   zp = CLAMP(zp, 1.2, 100.0);
@@ -120,7 +120,7 @@ void vsx_widget_camera::run()
     xps -= dtime * dec * sgn * global_interpolation_speed;
     xps = MAX(xps * sgn, 0) * sgn;
   }
-  xp += xps * fabs(zp - 1.1)* key_speed * dtime*0.6 + xpp*(zp-1.0f);
+  xp += xps * fabs(zp - 1.1) * (double)key_speed * dtime*0.6 + xpp*(zp - 1.0);
   xpp = xpp*(1-tt);
   xp = CLAMP(xp, -10, 10);
 
@@ -135,7 +135,7 @@ void vsx_widget_camera::run()
     yps -= dtime * dec * sgn * global_interpolation_speed;
     yps = MAX(yps * sgn, 0) * sgn;
   }
-  yp += yps * fabs(zp - 1.1)* key_speed * dtime*0.6 + ypp*(zp-1.0f);
+  yp += yps * fabs(zp - 1.1) * (double)key_speed * dtime*0.6 + ypp*(zp - 1.0);
   ypp = ypp*(1-tt);
 
   yp = CLAMP(yp, -10, 10);

@@ -125,7 +125,7 @@ bool vsx_module_param_interpolation_quaternion::interpolate(float dtime) {
   vsx_quaternion<> result_quat;
   result_quat.slerp(from_quat,dest_quat,tt);
   
-  float len = 1.0 / (float)sqrt(
+  float len = 1.0f / (float)sqrt(
     result_quat.x*result_quat.x +
     result_quat.y*result_quat.y +
     result_quat.z*result_quat.z +
@@ -178,12 +178,13 @@ bool vsx_module_param_interpolation_float::interpolate(float dtime) {
   //float tt = dtime*16;
   double tt = dtime*dest_interp;
   if (tt > 1.0) tt = 1.0;
-  temp = ((vsx_module_param_float*)target_param)->get_internal()*(1.0-tt)+(double)destination_value*tt;
+  temp = (double)((vsx_module_param_float*)target_param)->get_internal() * (1.0-tt)+(double)destination_value*tt;
   //printf("temp: %f\n",temp);
   ((vsx_module_param_float*)target_param)->set_internal(temp);
   //printf("dv:   %f       t:   %f\n",destination_value,temp);
   if (++iterations > 5000) return false;
-  if (fabs(destination_value - temp) < 0.00001f) return false; 
+  if (fabs((double)destination_value - temp) < 0.00001)
+    return false;
   else
   return true;
 }

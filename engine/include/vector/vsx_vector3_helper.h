@@ -42,9 +42,9 @@ namespace vsx_vector3_helper
   }
 
   template<typename T>
-  inline void dump(const vsx_vector3<T> &v, char* label="n/a")
+  inline void dump(const vsx_vector3<T> &v, vsx_string<> label="n/a")
   {
-    vsx_printf( L"Name: %s. x: %f y: %f z: %f\n",label, v.x, v.y, v.z );
+    vsx_printf( L"Name: %s. x: %f y: %f z: %f\n",label.c_str(), v.x, v.y, v.z );
   }
 
 }

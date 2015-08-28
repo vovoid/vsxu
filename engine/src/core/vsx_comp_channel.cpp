@@ -182,7 +182,7 @@ bool vsx_channel_render::execute()
   // printf("channel:render:this-name: %s\n",component->name.c_str());
 	// call all components' prepare in our connections list
   #ifdef VSXU_MODULE_TIMING
-    channel_execution_time += int_timer.dtime();
+    channel_execution_time += (float)int_timer.dtime();
   #endif
 	for (it = connections.begin(); it < connections.end(); ++it) 
   {
@@ -210,7 +210,7 @@ bool vsx_channel_render::execute()
 	}
   if (my_param->module_param->run_activate_offscreen) my_module->deactivate_offscreen();
   #ifdef VSXU_MODULE_TIMING
-    channel_execution_time += int_timer.dtime();
+    channel_execution_time += (float)int_timer.dtime();
   #endif
 	return true;
 }

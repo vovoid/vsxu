@@ -104,7 +104,7 @@ bool vsx_sequence_pool::toggle_edit()
   return edit_enabled;
 }
 
-bool vsx_sequence_pool::set_play_override(bool n)
+void vsx_sequence_pool::set_play_override(bool n)
 {
   play_override_enabled = n;
 }

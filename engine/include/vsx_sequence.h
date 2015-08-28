@@ -443,7 +443,7 @@ public:
 
     if (cur_interpolation == none)
     {
-      if (line_time/cur_delay < 0.99)
+      if (line_time/cur_delay < 0.99f)
         return cv;
       return ev;
     }

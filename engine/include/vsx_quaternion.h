@@ -79,17 +79,17 @@ public:
 
   inline void cos_slerp(vsx_quaternion& from, vsx_quaternion& to, T t)
   {
-    slerp(from,to,(T)sin(t*HALF_PI));
+    slerp(from,to,(T)sin(t*(T)HALF_PI));
   }
 
   inline void slerp(vsx_quaternion& from, vsx_quaternion& to, T t)
   {
     T         to1[4];
-    double        omega, cosom, sinom, scale0, scale1;
+    T        omega, cosom, sinom, scale0, scale1;
     // calc cosine
     cosom = from.x * to.x + from.y * to.y + from.z * to.z + from.w * to.w;
     // adjust signs (if necessary)
-    if (cosom < 0.0)
+    if (cosom < (T)0.0)
     { 
       cosom = -cosom; to1[0] = - to.x;
   		to1[1] = - to.y;
@@ -102,19 +102,19 @@ public:
   		to1[3] = to.w;
     }
     // calculate coefficients
-    if ( (1.0 - cosom) > 0.00001f )
+    if ( ((T)1.0 - cosom) > (T)0.00001 )
     {
       // standard case (slerp)
       omega = acos(cosom);
       sinom = sin(omega);
-      scale0 = sin((1.0 - t) * omega) / sinom;
-      scale1 = sin(t * omega) / sinom;
+      scale0 = (T)sin(((T)1.0 - t) * omega) / sinom;
+      scale1 = (T)sin(t * omega) / sinom;
     }
     else
     {
       // "from" and "to" quaternions are very close 
       //  ... so we can do a linear interpolation
-      scale0 = 1.0 - t;
+      scale0 = (T)1.0 - t;
       scale1 = t;
     }
   	// calculate final values

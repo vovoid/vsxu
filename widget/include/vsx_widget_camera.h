@@ -75,11 +75,11 @@ public:
   {
     zps += d;
 
-    if (zps > 2.0f)
-      zps = 2.0f;
+    if (zps > 2.0)
+      zps = 2.0;
 
-    if (zps < -2.0f)
-      zps = -2.0f;
+    if (zps < -2.0)
+      zps = -2.0;
   }
 
   void set_movement_x(double d)
