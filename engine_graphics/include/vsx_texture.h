@@ -102,7 +102,10 @@ class vsx_texture
   // Render buffer variables
   GLuint render_buffer_color_handle;
   GLuint render_buffer_depth_handle;
+
   // temporary fbo handle to hold destination tex
+  GLuint frame_buffer_blit_color_texture;
+  GLuint frame_buffer_fbo_attachment_texture;
   GLuint frame_buffer_blit_handle;
 
   // save state for buffer capture
@@ -211,7 +214,8 @@ public:
     int height, // height in pixels
     bool float_texture = false, // use floating point channels (8-bit is default)
     bool alpha = true, // support alpha channel or not
-    GLuint existing_depth_texture_id = 0
+    GLuint existing_depth_texture_id = 0,
+    bool multisample = true
   );
 
   // run in stop/start or when changing resolution

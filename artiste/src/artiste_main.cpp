@@ -267,6 +267,8 @@ int main(int argc, char* argv[])
     glfwOpenWindowHint( GLFW_OPENGL_DEBUG_CONTEXT , GL_TRUE );
   }
 
+  glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
+
   // OpenGL version
   glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 2);
   glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 1);

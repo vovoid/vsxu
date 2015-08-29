@@ -256,8 +256,8 @@ void vsx_texture::init_render_buffer(
 
 
   // create texture for blitting into
-  glGenTextures(1, &color_buffer_handle);
-  glBindTexture(GL_TEXTURE_2D, color_buffer_handle);
+  glGenTextures(1, &frame_buffer_blit_color_texture);
+  glBindTexture(GL_TEXTURE_2D, frame_buffer_blit_color_texture);
   if (float_texture)
   {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, i_width, i_height, 0, GL_RGBA, GL_FLOAT, NULL);
@@ -284,14 +284,14 @@ void vsx_texture::init_render_buffer(
     GL_FRAMEBUFFER_EXT,
     GL_COLOR_ATTACHMENT0_EXT,
     GL_TEXTURE_2D,
-    color_buffer_handle,
+    frame_buffer_blit_color_texture,
     0
   );
 
   // TODO: create and attach depth buffer also
 
 
-  texture_info->ogl_id = color_buffer_handle;
+  texture_info->ogl_id = frame_buffer_blit_color_texture;
   texture_info->ogl_type = GL_TEXTURE_2D;
   texture_info->size_x = width;
   texture_info->size_y = height;
@@ -308,7 +308,7 @@ void vsx_texture::deinit_render_buffer()
 {
   glDeleteRenderbuffersEXT(1,&render_buffer_color_handle);
   glDeleteRenderbuffersEXT(1,&render_buffer_depth_handle);
-  glDeleteTextures(1,&color_buffer_handle);
+  glDeleteTextures(1,&frame_buffer_blit_color_texture);
   glDeleteFramebuffersEXT(1, &frame_buffer_handle);
   glDeleteFramebuffersEXT(1, &frame_buffer_blit_handle);
   valid = false;
@@ -388,9 +388,9 @@ void vsx_texture::init_color_buffer
   vsx_gl_state::get_instance()->clear_errors();
 
   //RGBA8 2D texture, 24 bit depth texture, 256x256
-  glGenTextures(1, &color_buffer_handle);
+  glGenTextures(1, &frame_buffer_fbo_attachment_texture);
   vsx_gl_state::get_instance()->accumulate_errors();
-  glBindTexture(GL_TEXTURE_2D, color_buffer_handle);
+  glBindTexture(GL_TEXTURE_2D, frame_buffer_fbo_attachment_texture);
   vsx_gl_state::get_instance()->accumulate_errors();
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   vsx_gl_state::get_instance()->accumulate_errors();
@@ -410,7 +410,7 @@ void vsx_texture::init_color_buffer
   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle);
   vsx_gl_state::get_instance()->accumulate_errors();
   //Attach 2D texture to this FBO
-  glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, color_buffer_handle, 0/*mipmap level*/);
+  glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, frame_buffer_fbo_attachment_texture, 0/*mipmap level*/);
   vsx_gl_state::get_instance()->accumulate_errors();
   //-------------------------
   //Does the GPU support current FBO configuration?
@@ -419,7 +419,7 @@ void vsx_texture::init_color_buffer
   switch(status)
   {
      case GL_FRAMEBUFFER_COMPLETE_EXT:
-      texture_info->ogl_id = color_buffer_handle;
+      texture_info->ogl_id = frame_buffer_fbo_attachment_texture;
       texture_info->ogl_type = GL_TEXTURE_2D;
       texture_info->size_x = width;
       texture_info->size_y = height;
@@ -436,11 +436,11 @@ void vsx_texture::init_color_buffer
 void vsx_texture::deinit_color_buffer()
 {
   //Delete resources
-  glDeleteTextures(1, &color_buffer_handle);
+  glDeleteTextures(1, &frame_buffer_fbo_attachment_texture);
   depth_buffer_handle = 0;
   depth_buffer_local = 0;
-  //Bind 0, which means render to back buffer, as a result, fb is unbound
   glDeleteFramebuffersEXT(1, &frame_buffer_handle);
+
   valid = false;
   valid_fbo = false;
   texture_info->ogl_id = 0;
@@ -482,12 +482,17 @@ void vsx_texture::init_color_depth_buffer
   int height, // height in pixels
   bool float_texture, // use floating point channels (8-bit is default)
   bool alpha, // support alpha channel or not
-  GLuint existing_depth_texture_id
+  GLuint existing_depth_texture_id,
+  bool multisample
 )
 {
   prev_buf = 0;
   int i_width = width;
   int i_height = height;
+
+  if (multisample)
+    glEnable(GL_MULTISAMPLE);
+
 
   if ( !has_buffer_support() )
   {
@@ -521,10 +526,14 @@ void vsx_texture::init_color_depth_buffer
 
   // Generate Color Texture
   //RGBA8 2D texture, 24 bit depth texture, 256x256
-  glGenTextures(1, &color_buffer_handle);
+  glGenTextures(1, &frame_buffer_fbo_attachment_texture);
   vsx_gl_state::get_instance()->accumulate_errors();
 
-  glBindTexture(GL_TEXTURE_2D, color_buffer_handle);
+  if (multisample)
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, frame_buffer_fbo_attachment_texture);
+  else
+    glBindTexture(GL_TEXTURE_2D, frame_buffer_fbo_attachment_texture);
+
   vsx_gl_state::get_instance()->accumulate_errors();
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -539,8 +548,14 @@ void vsx_texture::init_color_depth_buffer
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   vsx_gl_state::get_instance()->accumulate_errors();
 
-  //NULL means reserve texture memory, but texels are undefined
-  glTexImage2D(GL_TEXTURE_2D, 0, texture_storage_type, i_width, i_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
+  if (multisample)
+    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, texture_storage_type, i_width, i_height, GL_FALSE);
+  else
+    //NULL means reserve texture memory, but texels are undefined
+    glTexImage2D(GL_TEXTURE_2D, 0, texture_storage_type, i_width, i_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
+
+
+
   vsx_gl_state::get_instance()->accumulate_errors();
 
 
@@ -563,7 +578,11 @@ void vsx_texture::init_color_depth_buffer
     glGenTextures(1, &depth_buffer_handle);
     vsx_gl_state::get_instance()->accumulate_errors();
 
-    glBindTexture(GL_TEXTURE_2D, depth_buffer_handle);
+    if (multisample)
+      glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, depth_buffer_handle);
+    else
+      glBindTexture(GL_TEXTURE_2D, depth_buffer_handle);
+
     vsx_gl_state::get_instance()->accumulate_errors();
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -587,8 +606,12 @@ void vsx_texture::init_color_depth_buffer
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
     vsx_gl_state::get_instance()->accumulate_errors();
 
-    //NULL means reserve texture memory, but texels are undefined
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, i_width, i_height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+    if (multisample)
+      glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_DEPTH_COMPONENT24, i_width, i_height, GL_FALSE);
+    else
+      //NULL means reserve texture memory, but texels are undefined
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, i_width, i_height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+
     vsx_gl_state::get_instance()->accumulate_errors();
 
     depth_buffer_local = true;
@@ -611,25 +634,88 @@ void vsx_texture::init_color_depth_buffer
 
 
   //Attach 2D texture to this FBO
-  glFramebufferTexture2DEXT(
-    GL_FRAMEBUFFER_EXT,
-    GL_COLOR_ATTACHMENT0_EXT,
-    GL_TEXTURE_2D,
-    color_buffer_handle,
-    0/*mipmap level*/
-  );
+  if (multisample)
+    glFramebufferTexture2DEXT(
+      GL_FRAMEBUFFER_EXT,
+      GL_COLOR_ATTACHMENT0_EXT,
+      GL_TEXTURE_2D_MULTISAMPLE,
+      frame_buffer_fbo_attachment_texture,
+      0/*mipmap level*/
+    );
+  else
+    glFramebufferTexture2DEXT(
+      GL_FRAMEBUFFER_EXT,
+      GL_COLOR_ATTACHMENT0_EXT,
+      GL_TEXTURE_2D,
+      frame_buffer_fbo_attachment_texture,
+      0/*mipmap level*/
+    );
+
+  vsx_gl_state::get_instance()->accumulate_errors();
+
 
   //-------------------------
   //Attach depth texture to FBO
-  glFramebufferTexture2DEXT(
-    GL_FRAMEBUFFER_EXT,
-    GL_DEPTH_ATTACHMENT_EXT,
-    GL_TEXTURE_2D,
-    depth_buffer_handle,
-    0/*mipmap level*/
-  );
+  if (multisample)
+    glFramebufferTexture2DEXT(
+      GL_FRAMEBUFFER_EXT,
+      GL_DEPTH_ATTACHMENT_EXT,
+      GL_TEXTURE_2D_MULTISAMPLE,
+      depth_buffer_handle,
+      0
+    );
+  else
+    glFramebufferTexture2DEXT(
+      GL_FRAMEBUFFER_EXT,
+      GL_DEPTH_ATTACHMENT_EXT,
+      GL_TEXTURE_2D,
+      depth_buffer_handle,
+      0 //mipmap level
+    );
 
   //-------------------------
+
+  vsx_gl_state::get_instance()->accumulate_errors();
+
+
+  if (multisample)
+  {
+    glGenTextures(1, &frame_buffer_blit_color_texture);
+    glBindTexture(GL_TEXTURE_2D, frame_buffer_blit_color_texture);
+    if (float_texture)
+    {
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, i_width, i_height, 0, GL_RGBA, GL_FLOAT, NULL);
+    }
+    else
+    {
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, i_width, i_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    }
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set your texture parameters here if required ...
+
+
+
+    // create a normal fbo and attach texture to it
+    glGenFramebuffersEXT(1, &frame_buffer_blit_handle);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_blit_handle);
+
+    // attach the texture to the FBO
+    glFramebufferTexture2DEXT(
+      GL_FRAMEBUFFER_EXT,
+      GL_COLOR_ATTACHMENT0_EXT,
+      GL_TEXTURE_2D,
+      frame_buffer_blit_color_texture,
+      0
+    );
+
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle);
+    vsx_gl_state::get_instance()->accumulate_errors();
+
+  }
 
 
 
@@ -639,8 +725,20 @@ void vsx_texture::init_color_depth_buffer
   switch(status)
   {
      case GL_FRAMEBUFFER_COMPLETE_EXT:
-      texture_info->ogl_id = color_buffer_handle;
-      texture_info->ogl_type = GL_TEXTURE_2D;
+      if (multisample)
+        texture_info->ogl_id = frame_buffer_blit_color_texture;
+      else
+      {
+        color_buffer_handle = frame_buffer_fbo_attachment_texture;
+        texture_info->ogl_id = frame_buffer_fbo_attachment_texture;
+      }
+
+
+      if (multisample)
+        texture_info->ogl_type = GL_TEXTURE_2D_MULTISAMPLE;
+      else
+        texture_info->ogl_type = GL_TEXTURE_2D;
+
       texture_info->size_x = width;
       texture_info->size_y = height;
       valid = true; // valid for binding
@@ -669,6 +767,13 @@ void vsx_texture::deinit_color_depth_buffer()
   if ( vsx_gl_state::get_instance()->framebuffer_bind_get() == frame_buffer_handle )
     vsx_gl_state::get_instance()->framebuffer_bind(0);
   glDeleteFramebuffersEXT(1, &frame_buffer_handle);
+
+  if (texture_info->ogl_type == GL_TEXTURE_2D_MULTISAMPLE)
+  {
+    glDeleteTextures(1, &frame_buffer_blit_color_texture);
+    frame_buffer_blit_color_texture = 0;
+    glDeleteFramebuffersEXT(1, &frame_buffer_blit_handle);
+  }
 
   valid = false;
   valid_fbo = false;
@@ -778,7 +883,14 @@ void vsx_texture::end_capture_to_buffer()
   if (capturing_to_buffer)
   {
 
-    if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER)
+    if (
+      frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER
+      ||
+      (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_COLOR_DEPTH
+       &&
+       texture_info->ogl_type == GL_TEXTURE_2D_MULTISAMPLE
+      )
+    )
     {
       glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, frame_buffer_handle);
       glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, frame_buffer_blit_handle);
@@ -1516,8 +1628,17 @@ bool vsx_texture::bind()
     return false;
 
   // Enable the texture
-  glEnable(texture_info->ogl_type);
-  glBindTexture(texture_info->ogl_type,texture_info->ogl_id);
+  if (texture_info->ogl_type == GL_TEXTURE_2D_MULTISAMPLE)
+  {
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D,texture_info->ogl_id);
+  }
+  else
+    {
+      glEnable(texture_info->ogl_type);
+
+      glBindTexture(texture_info->ogl_type,texture_info->ogl_id);
+    }
   return true;
 }
 
@@ -1528,6 +1649,9 @@ void vsx_texture::_bind()
     return;
   if (texture_info->ogl_id == 0)
     return;
+  if (texture_info->ogl_type == GL_TEXTURE_2D_MULTISAMPLE)
+    glDisable(GL_TEXTURE_2D);
+  else
   glDisable(texture_info->ogl_type);
 }
 
