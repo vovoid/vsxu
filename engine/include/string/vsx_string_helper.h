@@ -178,7 +178,7 @@ namespace vsx_string_helper
 
     char buf[buf_size];
 
-    while ( fgets(buf,256,fp) )
+    while ( fgets(buf,buf_size,fp) )
     {
       vsx_string<> line(buf);
       result += line;
@@ -201,9 +201,9 @@ namespace vsx_string_helper
     if (!fp)
       return "";
 
-    char buf[buf_size];
+    char buf[buf_size] = "";
 
-    while ( filesystem->f_gets(buf,256,fp) )
+    while ( filesystem->f_gets(buf,buf_size,fp) )
     {
       vsx_string<> line(buf);
       result += line;
