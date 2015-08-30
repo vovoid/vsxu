@@ -170,6 +170,7 @@ if(VSXU_DEBUG)
     -Wall
 	-Werror=return-type
 	-Werror=unused-parameter
+	#-Weffc++
 	#-Wdouble-promotion
     -mtune=nocona
     -Wtype-limits

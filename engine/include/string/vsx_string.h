@@ -131,6 +131,8 @@ public:
   
   // constructors
   vsx_string()
+  :
+  data()
   {
   }
 
@@ -139,6 +141,8 @@ public:
 //----------------------------------------------------------------------------
  
   vsx_string<W> (const vsx_string<W>& other_string)
+  :
+  data()
   {
     *this = other_string;
   }
@@ -147,11 +151,15 @@ public:
 // NULLTERMINATED *
 //----------------------------------------------------------------------------
   vsx_string<W>(const W* other_string)
+  :
+  data()
   {
     *this = other_string;
   }
 
   vsx_string<W>(const W* other_string, size_t max_len)
+  :
+  data()
   {
     for (size_t i = 0; i < max_len; i++)
     {
@@ -247,6 +255,8 @@ public:
 //----------------------------------------------------------------------------
 
   inline vsx_string<W>(const W& ss) VSX_ALWAYS_INLINE
+  :
+  data()
   {
     *this = ss;
   }

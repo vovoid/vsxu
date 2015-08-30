@@ -59,6 +59,7 @@ public:
 
   vsxf_handle()
     :
+      filename(),
       position(0),
       size(0),
       mode(0),
@@ -129,6 +130,7 @@ public:
   vsxf_archive_info()
     :
       compressed_data(0x0),
+      filename(),
       archive_position(0),
       compressed_size(0),
       uncompressed_data(0x0),

@@ -147,11 +147,31 @@ public:
     }
   }
 
+/*  void copy(const vsx_nw_vector<T>& src)
+  {
+    allocate(src.get_allocated());
+    T* B = src.get_pointer();
+    for(size_t i = 0; i < src.size(); i++)
+      A[i] = B[i];
+  }
+*/
   inline T& operator[](size_t index) VSX_ALWAYS_INLINE
   {
     allocate( index );
     return A[index];
   }
+
+/*  inline const vsx_nw_vector<T>& operator=(const vsx_nw_vector<T>& src)
+  {
+    copy(src);
+    return *this;
+  }
+
+  vsx_nw_vector<T>(const vsx_nw_vector<T>& src)
+  {
+    copy(src);
+  }
+*/
 
   vsx_nw_vector()
     :

@@ -148,11 +148,12 @@ public:
   }
 
   vsx_color(const float &rr, const float &gg = 0.0f, const float &bb = 0.0f, const float &aa = 0.0f)
+    :
+      r(rr),
+      g(gg),
+      b(bb),
+      a(aa)
   {
-    r = rr;
-    g = gg;
-    b = bb;
-    a = aa;
   }
 
 };
