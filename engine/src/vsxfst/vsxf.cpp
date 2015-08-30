@@ -729,7 +729,7 @@ void create_directory(const char* path)
 	{
     if ( DIRECTORY_SEPARATOR_CHAR == *p )
 		{
-      if (':' != *( p-1 ) )
+      if (p != (char*)path && ':' != *( p-1 ) )
 			{
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
     	 mkdir(dir_name,0700);
