@@ -194,6 +194,13 @@ public:
     valid = true;
     value_from_module = true;
   }
+
+  void set_inc_updates(T val, int index = 0) __attribute__((always_inline))
+  {
+    set(val, index);
+    updates++;
+  }
+
   
   T* get_addr() __attribute__((always_inline))
   {

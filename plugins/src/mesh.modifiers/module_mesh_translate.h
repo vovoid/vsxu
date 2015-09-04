@@ -90,8 +90,9 @@ public:
       return;
     }
 
-    if (param_updates || prev_timestamp != (*p)->timestamp)
+    if (param_updates || prev_timestamp != (*p)->timestamp || translation->updates)
     {
+      translation->updates = 0;
       prev_timestamp = (*p)->timestamp;
       vsx_vector3<> v;
       v.x = translation->get(0);
