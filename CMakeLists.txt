@@ -172,7 +172,7 @@ if(VSXU_DEBUG)
     -g
     -Wall
 	-Werror=return-type
-	-Werror=unused-parameter
+	#-Werror=unused-parameter
 	#-Weffc++
 	#-Wdouble-promotion
     -mtune=nocona
