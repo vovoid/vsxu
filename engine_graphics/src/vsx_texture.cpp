@@ -979,7 +979,7 @@ void vsx_texture::upload_ram_bitmap_1d( void* data, unsigned long size, bool mip
   {
     glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
     glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   }
 
   // no compression
@@ -1275,7 +1275,7 @@ void vsx_texture::upload_ram_bitmap_cube(void* data, unsigned long size_x, unsig
 
   glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
   glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-  glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+  glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(texture_info->ogl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
   float rMaxAniso;
   glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &rMaxAniso);

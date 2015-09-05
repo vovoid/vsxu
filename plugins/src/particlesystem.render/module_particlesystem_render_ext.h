@@ -209,7 +209,7 @@ public:
     texture_lookup_sizes->bind();
     glTexParameteri(texture_lookup_sizes->texture_info->ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
     glTexParameteri(texture_lookup_sizes->texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_lookup_sizes->texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_sizes->texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexImage1D(
       texture_lookup_sizes->texture_info->ogl_type,  // opengl type
       0, // mipmap level
@@ -241,7 +241,7 @@ public:
     texture_lookup_color->bind();
     glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
     glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexImage1D(
       texture_lookup_color->texture_info->ogl_type,  // opengl type
       0, // mipmap level
@@ -282,7 +282,7 @@ public:
     texture_lookup_color->bind();
     glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
     glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glTexImage1D(
       texture_lookup_color->texture_info->ogl_type,  // opengl type
