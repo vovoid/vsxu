@@ -147,7 +147,7 @@ void vsx_widget_profiler_thread::draw_tags()
           tag_draw_chunks[i]->time_start * time_scale::get_instance()->time_scale_x + time_scale::get_instance()->time_offset,
           -chunk_depth * chunk_height - 0.005
     );
-    vsx_vector3_helper::dump<float>(dpos);
+    //vsx_vector3_helper::dump<float>(dpos);
     font.print( dpos, tag_draw_chunks[i]->tag, 0.005 );
     dpos.y -= 0.005;
     font.print( dpos, vsx_string_helper::i2s(tag_draw_chunks[i]->cycles_end-tag_draw_chunks[i]->cycles_start) + " CPU cycles", 0.005 );
