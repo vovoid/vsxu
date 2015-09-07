@@ -789,6 +789,10 @@ public:
       return;
     }
 
+    if (cur_vbo_index == 0)
+      cur_vbo_index = 1;
+      else
+      cur_vbo_index = 0;
 
     // bind the vertex, normals buffer for use
     glBindBufferARB
@@ -854,11 +858,6 @@ public:
       num_uploads++;
 
     }
-
-    if (cur_vbo_index == 0)
-      cur_vbo_index = 1;
-      else
-      cur_vbo_index = 0;
 
     // unbind the VBO buffers
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
