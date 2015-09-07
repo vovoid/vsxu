@@ -300,6 +300,7 @@ public:
       if (chunk.flags == VSX_PROFILE_CHUNK_FLAG_START /*&& chunk.cycles > cycles_begin_time*/)
       {
         compute_stack[compute_stack_pointer].time_start = cycles_to_time( chunk.cycles );
+        vsx_printf(L"tag: %s\n", chunk.tag);
         compute_stack[compute_stack_pointer].tag = chunk.tag;
         compute_stack[compute_stack_pointer].cycles_start = chunk.cycles;
 //        vsx_printf(L"starting time inner: %f\n", compute_stack[compute_stack_pointer].time_start);
