@@ -64,6 +64,7 @@ public:
     bool              worker_running;
     bool              thread_created;
     int               thread_state;
+    uint64_t               times_run;
     cal3d_thread_info thread_info;
 
     volatile __attribute__((aligned(64))) int64_t worker_produce;
@@ -95,6 +96,8 @@ public:
     worker_produce = 0;
     param_produce = 0;
     thread_exit = 0;
+
+    times_run = 0;
   }
   bool init() {
 
@@ -661,8 +664,10 @@ public:
       worker((void*)&thread_info);
     }
 
-    if (__sync_fetch_and_add( &worker_produce, 0) == 0)
-      vsx_printf(L"** cal3d: worker has not produced anything!\n");
+    if (times_run++ > 60)
+      while (__sync_fetch_and_add( &worker_produce, 0) == 0)
+        usleep(1);
+      //vsx_printf(L"** cal3d: worker has not produced anything!\n");
 
     if (__sync_fetch_and_add( &worker_produce, 0) == 1)
     {
