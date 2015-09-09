@@ -58,22 +58,19 @@ public:
 
     // threading stuff
     pthread_t         worker_t;
-    pthread_mutex_t   mesh_mutex;
-    pthread_cond_t count_threshold_cv;
-    int               thread_has_something_to_deliver; // locked by the mesh mutex
-    int               have_sent_work_to_thread;
-    vsx_mesh<>*         mesh; // locked by the mesh mutex
-
-    pthread_mutex_t   thread_exit_mutex;
-    sem_t sem_worker_todo; // indicates wether the worker should do anything.
+    vsx_mesh<>*         mesh; // locked by the mesh
 
     int p_updates;
     bool              worker_running;
     bool              thread_created;
     int               thread_state;
     int               thread_exit;
-    int               prev_use_thread;
     cal3d_thread_info thread_info;
+
+    volatile __attribute__((aligned(64))) int64_t worker_produce;
+    volatile __attribute__((aligned(64))) int64_t param_produce;
+    volatile __attribute__((aligned(64))) int64_t thread_exit;
+
 
     // transform
     vsx_quaternion<> pre_rotation_quaternion;
@@ -95,12 +92,13 @@ public:
     thread_created = false;
     p_updates = -1;
     prev_use_thread = 0;
-    pthread_mutex_init(&mesh_mutex,NULL);
-    pthread_mutex_init(&thread_exit_mutex,NULL);
-    pthread_cond_init (&count_threshold_cv, NULL);
     sem_init(&sem_worker_todo,0,0);
     thread_has_something_to_deliver = 0;
-    have_sent_work_to_thread = 0;
+
+    // signalling
+    worker_produce = 0;
+    param_produce = 0;
+    thread_exit = 0;
   }
   bool init() {
 
@@ -112,22 +110,19 @@ public:
   {
     if (thread_created)
     {
-      // thread is probably waiting for data now, so this mutex is free
-      pthread_mutex_lock(&thread_exit_mutex);
-        thread_exit = 1;
-      pthread_mutex_unlock(&thread_exit_mutex);
+      __sync_fetch_and_add( &thread_exit, 1;
 
-      // if thread is waiting for data, push it out of it
-      pthread_mutex_lock(&mesh_mutex);
-      pthread_cond_signal(&count_threshold_cv);
-      pthread_mutex_unlock(&mesh_mutex);
+      // make thread do a dry run if not already running
+      if (!__sync_fetch_and_add( &param_produce, 0))
+          __sync_fetch_and_add( &param_produce, 1);
 
-      // meanwhile, thread will find the thread_exit we set
+      if (__sync_fetch_and_add( &param_produce, 0)) // we have sent some work to the thread
+        while (__sync_fetch_and_add( &param_produce, 0) && !__sync_fetch_and_add(&worker_produce, 0)))
+        {}
 
       pthread_join(worker_t, NULL);
     }
 
-    pthread_mutex_lock(&mesh_mutex);
     if (c_model) {
       delete (CalCoreModel*)c_model;
     }
@@ -138,10 +133,6 @@ public:
     delete mesh_a;
     delete mesh_b;
     delete mesh_bbox;
-    pthread_mutex_unlock(&mesh_mutex);
-    pthread_mutex_destroy(&thread_exit_mutex);
-    pthread_mutex_destroy(&mesh_mutex);
-    sem_destroy(&sem_worker_todo);
   }
 
   void module_info(vsx_module_info* info)
@@ -292,7 +283,11 @@ public:
 
   void param_set_notify(const vsx_string<>& name)
   {
-    pthread_mutex_lock(&mesh_mutex);
+
+    if (__sync_fetch_and_add( &param_produce, 0))
+      while (__sync_fetch_and_add( &param_produce, 0))
+      {}
+
 
     if (name == "filename") {
       if (filename->get() != current_filename) {
@@ -312,7 +307,6 @@ public:
         vsxf_handle *fp;
         fp = engine->filesystem->f_open(current_filename.c_str(), "r");
         if (!fp) {
-          pthread_mutex_unlock(&mesh_mutex);
           return;
         }
 
@@ -424,7 +418,6 @@ public:
         loading_done = true;
       }
     }
-    pthread_mutex_unlock(&mesh_mutex);
   }
 
 
@@ -443,14 +436,8 @@ public:
     #endif
     while (1)
     {
-      if (thread_info.is_thread)
-      {
-        // lock mutex
-        pthread_mutex_lock(&my->mesh_mutex);
-
-        // wait for more work
-        pthread_cond_wait(&my->count_threshold_cv, &my->mesh_mutex);
-      }
+      while (!__sync_fetch_and_add(&my->param_produce, 0))
+      {}
 
       CalSkeleton* m_skeleton = my->m_model->getSkeleton();
       m_skeleton->calculateState();
@@ -616,20 +603,16 @@ public:
           //tangent[a].w = (Dot(Cross(n, t), tan2[a]) < 0.0F) ? -1.0F : 1.0F;
       }
 
-      my->thread_has_something_to_deliver++;
-
-      if (thread_info.is_thread)
-        pthread_mutex_unlock(&my->mesh_mutex);
+      __sync_fetch_and_add(&my->worker_produce, 1);
+      __sync_fetch_and_sub(&my->param_produce, 1);
 
       // if we're not supposed to run in a thread
       if (false == thread_info.is_thread)
         return 0;
 
       // see if the exit flag is set (user changed from threaded to non-threaded mode)
-      pthread_mutex_lock(&my->thread_exit_mutex);
-      int time_to_exit = my->thread_exit;
-      pthread_mutex_unlock(&my->thread_exit_mutex);
-      if (time_to_exit) {
+      if (__sync_fetch_and_add( &my->thread_exit, 0))
+      {
         int *retval = new int;
         *retval = 0;
         my->thread_exit = 0;
@@ -652,9 +635,16 @@ public:
     if (thread_created && use_thread->get() == 0)
     {
       // this means the thread is running. kill it off.
-      pthread_mutex_lock(&thread_exit_mutex);
-        thread_exit = 1;
-      pthread_mutex_unlock(&thread_exit_mutex);
+      __sync_fetch_and_add( &thread_exit, 1;
+
+      // make thread do a dry run if not already running
+      if (!__sync_fetch_and_add( &param_produce, 0))
+          __sync_fetch_and_add( &param_produce, 1);
+
+      if (__sync_fetch_and_add( &param_produce, 0)) // we have sent some work to the thread
+        while (__sync_fetch_and_add( &param_produce, 0) && !__sync_fetch_and_add(&worker_produce, 0)))
+        {}
+
       void* ret;
       pthread_join(worker_t,&ret);
       thread_created = false;
@@ -674,118 +664,102 @@ public:
       worker((void*)&thread_info);
     }
 
-
-    if (0 == pthread_mutex_lock(&mesh_mutex) )
+    if (__sync_fetch_and_add( &worker_produce, 0) == 1)
     {
+      __sync_fetch_and_sub( &worker_produce, 1);
       // lock ackquired. thread is waiting for us to set the semaphore before doing anything again.
-      /*bool wait = true;
-      if (!thread_has_something_to_deliver && have_sent_work_to_thread)
+      thread_has_something_to_deliver = false;
+      module_mesh_cal3d_import* my = this;
+
+      m_model->getSkeleton()->calculateBoundingBoxes();
+
+      if (!my->redeclare_out)
       {
-        while (wait)
+        mesh_bbox->data->vertices.allocate(my->bones.size() * 8);
+
+        for (unsigned long j = 0; j < my->bones.size(); ++j)
         {
-          pthread_mutex_unlock(&mesh_mutex);
-          pthread_mutex_lock(&mesh_mutex);
-          if (thread_has_something_to_deliver) wait = false;
-        }
-      }*/
-
-      if (thread_has_something_to_deliver)
-      {
-        thread_has_something_to_deliver = false;
-        module_mesh_cal3d_import* my = this;
-
-
-        m_model->getSkeleton()->calculateBoundingBoxes();
-
-        if (!my->redeclare_out)
-        {
-          mesh_bbox->data->vertices.allocate(my->bones.size() * 8);
-
-          for (unsigned long j = 0; j < my->bones.size(); ++j)
+          if (my->bones[j].bone != 0)
           {
-            if (my->bones[j].bone != 0)
-            {
-              CalVector t1 = my->bones[j].bone->getTranslationAbsolute();
-              CalQuaternion q2 = my->bones[j].bone->getRotationAbsolute();
+            CalVector t1 = my->bones[j].bone->getTranslationAbsolute();
+            CalQuaternion q2 = my->bones[j].bone->getRotationAbsolute();
 
-              my->bones[j].result_rotation   ->set( q2.x, 0 );
-              my->bones[j].result_rotation   ->set( q2.y, 1 );
-              my->bones[j].result_rotation   ->set( q2.z, 2 );
-              my->bones[j].result_rotation   ->set( q2.w, 3 );
+            my->bones[j].result_rotation   ->set( q2.x, 0 );
+            my->bones[j].result_rotation   ->set( q2.y, 1 );
+            my->bones[j].result_rotation   ->set( q2.z, 2 );
+            my->bones[j].result_rotation   ->set( q2.w, 3 );
 
-              my->bones[j].result_translation->set( t1.x, 0 );
-              my->bones[j].result_translation->set( t1.y, 1 );
-              my->bones[j].result_translation->set( t1.z, 2 );
-            }
-          }
-          for (unsigned long j = 0; j < my->morphs.size(); ++j)
-          {
-            my->m_model->getMesh(0)->getSubmesh(0)->
-              setMorphTargetWeight(morphs[j].id, morphs[j].weight->get() );
+            my->bones[j].result_translation->set( t1.x, 0 );
+            my->bones[j].result_translation->set( t1.y, 1 );
+            my->bones[j].result_translation->set( t1.z, 2 );
           }
         }
-
-//        my->m_model->update(engine->dtime);
-
-
-        mesh->timestamp++;
-        result->set(mesh);
-
-        // toggle to the other mesh
-        if (mesh == mesh_a)
-          mesh = mesh_b;
-        else mesh = mesh_a;
+        for (unsigned long j = 0; j < my->morphs.size(); ++j)
+        {
+          my->m_model->getMesh(0)->getSubmesh(0)->
+            setMorphTargetWeight(morphs[j].id, morphs[j].weight->get() );
+        }
       }
 
+      mesh->timestamp++;
+      result->set(mesh);
 
-      if (p_updates != param_updates)
+      // toggle to the other mesh
+      if (mesh == mesh_a)
+        mesh = mesh_b;
+      else mesh = mesh_a;
+    }
+
+    if
+    (
+        p_updates != param_updates
+        &&
+        __sync_fetch_and_add( &param_produce, 0) == 0
+        &&
+        __sync_fetch_and_add( &worker_produce, 0) == 0
+    )
+    {
+      CalQuaternion q2;
+      CalVector t1;
+      for (unsigned long j = 0; j < bones.size(); ++j)
       {
-        CalQuaternion q2;
-        CalVector t1;
-        for (unsigned long j = 0; j < bones.size(); ++j)
-        {
-          t1.x = bones[j].translation->get(0);
-          t1.y = bones[j].translation->get(1);
-          t1.z = bones[j].translation->get(2);
-          q2.x = bones[j].param->get(0);
-          q2.y = bones[j].param->get(1);
-          q2.z = bones[j].param->get(2);
-          q2.w = bones[j].param->get(3);
-          if (bones[j].bone != 0) {
-            bones[j].bone->setRotation(q2);
-            bones[j].bone->setTranslation(bones[j].o_t + t1);
-          }
+        t1.x = bones[j].translation->get(0);
+        t1.y = bones[j].translation->get(1);
+        t1.z = bones[j].translation->get(2);
+        q2.x = bones[j].param->get(0);
+        q2.y = bones[j].param->get(1);
+        q2.z = bones[j].param->get(2);
+        q2.w = bones[j].param->get(3);
+        if (bones[j].bone != 0) {
+          bones[j].bone->setRotation(q2);
+          bones[j].bone->setTranslation(bones[j].o_t + t1);
         }
-
-        pre_rotation_quaternion.x = pre_rotation->get(0);
-        pre_rotation_quaternion.y = pre_rotation->get(1);
-        pre_rotation_quaternion.z = pre_rotation->get(2);
-        pre_rotation_quaternion.w = pre_rotation->get(3);
-
-        pre_rot_center.x = pre_rotation_center->get(0);
-        pre_rot_center.y = pre_rotation_center->get(1);
-        pre_rot_center.z = pre_rotation_center->get(2);
-
-        rotation_quaternion.x = rotation->get(0);
-        rotation_quaternion.y = rotation->get(1);
-        rotation_quaternion.z = rotation->get(2);
-        rotation_quaternion.w = rotation->get(3);
-
-        rot_center.x = rotation_center->get(0);
-        rot_center.y = rotation_center->get(1);
-        rot_center.z = rotation_center->get(2);
-
-        post_rot_translate_vec.x = post_rot_translate->get(0);
-        post_rot_translate_vec.y = post_rot_translate->get(1);
-        post_rot_translate_vec.z = post_rot_translate->get(2);
-
-        p_updates = param_updates;
-        have_sent_work_to_thread = 1;
-        //sem_post(&sem_worker_todo);
-        pthread_cond_signal(&count_threshold_cv);
       }
-      pthread_mutex_unlock(&mesh_mutex);
 
+      pre_rotation_quaternion.x = pre_rotation->get(0);
+      pre_rotation_quaternion.y = pre_rotation->get(1);
+      pre_rotation_quaternion.z = pre_rotation->get(2);
+      pre_rotation_quaternion.w = pre_rotation->get(3);
+
+      pre_rot_center.x = pre_rotation_center->get(0);
+      pre_rot_center.y = pre_rotation_center->get(1);
+      pre_rot_center.z = pre_rotation_center->get(2);
+
+      rotation_quaternion.x = rotation->get(0);
+      rotation_quaternion.y = rotation->get(1);
+      rotation_quaternion.z = rotation->get(2);
+      rotation_quaternion.w = rotation->get(3);
+
+      rot_center.x = rotation_center->get(0);
+      rot_center.y = rotation_center->get(1);
+      rot_center.z = rotation_center->get(2);
+
+      post_rot_translate_vec.x = post_rot_translate->get(0);
+      post_rot_translate_vec.y = post_rot_translate->get(1);
+      post_rot_translate_vec.z = post_rot_translate->get(2);
+
+      p_updates = param_updates;
+      __sync_fetch_and_add( &param_produce, 1);
     }
   }
 };
