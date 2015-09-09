@@ -64,7 +64,6 @@ public:
     bool              worker_running;
     bool              thread_created;
     int               thread_state;
-    int               thread_exit;
     cal3d_thread_info thread_info;
 
     volatile __attribute__((aligned(64))) int64_t worker_produce;
@@ -91,9 +90,6 @@ public:
     worker_running = false;
     thread_created = false;
     p_updates = -1;
-    prev_use_thread = 0;
-    sem_init(&sem_worker_todo,0,0);
-    thread_has_something_to_deliver = 0;
 
     // signalling
     worker_produce = 0;
@@ -110,14 +106,14 @@ public:
   {
     if (thread_created)
     {
-      __sync_fetch_and_add( &thread_exit, 1;
+      __sync_fetch_and_add( &thread_exit, 1);
 
       // make thread do a dry run if not already running
       if (!__sync_fetch_and_add( &param_produce, 0))
           __sync_fetch_and_add( &param_produce, 1);
 
       if (__sync_fetch_and_add( &param_produce, 0)) // we have sent some work to the thread
-        while (__sync_fetch_and_add( &param_produce, 0) && !__sync_fetch_and_add(&worker_produce, 0)))
+        while (__sync_fetch_and_add( &param_produce, 0) && !__sync_fetch_and_add(&worker_produce, 0))
         {}
 
       pthread_join(worker_t, NULL);
@@ -221,7 +217,6 @@ public:
     quat_p->set(1.0f,3);
     use_thread = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"use_thread");
     use_thread->set(0);
-    prev_use_thread = 0;
     for (unsigned long i = 0; i < bones.size(); ++i)
     {
       bones[i].param = (vsx_module_param_quaternion*)in_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION,(bones[i].name+"_rotation").c_str());
@@ -436,8 +431,9 @@ public:
     #endif
     while (1)
     {
-      while (!__sync_fetch_and_add(&my->param_produce, 0))
-      {}
+      if (thread_info.is_thread)
+        while (!__sync_fetch_and_add(&my->param_produce, 0))
+          usleep(1);
 
       CalSkeleton* m_skeleton = my->m_model->getSkeleton();
       m_skeleton->calculateState();
@@ -604,7 +600,8 @@ public:
       }
 
       __sync_fetch_and_add(&my->worker_produce, 1);
-      __sync_fetch_and_sub(&my->param_produce, 1);
+      if (__sync_fetch_and_add(&my->param_produce, 0))
+        __sync_fetch_and_sub(&my->param_produce, 1);
 
       // if we're not supposed to run in a thread
       if (false == thread_info.is_thread)
@@ -635,14 +632,14 @@ public:
     if (thread_created && use_thread->get() == 0)
     {
       // this means the thread is running. kill it off.
-      __sync_fetch_and_add( &thread_exit, 1;
+      __sync_fetch_and_add( &thread_exit, 1);
 
       // make thread do a dry run if not already running
       if (!__sync_fetch_and_add( &param_produce, 0))
           __sync_fetch_and_add( &param_produce, 1);
 
       if (__sync_fetch_and_add( &param_produce, 0)) // we have sent some work to the thread
-        while (__sync_fetch_and_add( &param_produce, 0) && !__sync_fetch_and_add(&worker_produce, 0)))
+        while (__sync_fetch_and_add( &param_produce, 0) && !__sync_fetch_and_add(&worker_produce, 0))
         {}
 
       void* ret;
@@ -664,11 +661,13 @@ public:
       worker((void*)&thread_info);
     }
 
+    if (__sync_fetch_and_add( &worker_produce, 0) == 0)
+      vsx_printf(L"** cal3d: worker has not produced anything!\n");
+
     if (__sync_fetch_and_add( &worker_produce, 0) == 1)
     {
       __sync_fetch_and_sub( &worker_produce, 1);
       // lock ackquired. thread is waiting for us to set the semaphore before doing anything again.
-      thread_has_something_to_deliver = false;
       module_mesh_cal3d_import* my = this;
 
       m_model->getSkeleton()->calculateBoundingBoxes();
