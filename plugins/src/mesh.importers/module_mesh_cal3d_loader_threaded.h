@@ -439,7 +439,12 @@ public:
     {
       if (thread_info.is_thread)
         while (!__sync_fetch_and_add(&my->param_produce, 0))
-          usleep(1);
+          #if (PLATFORM == PLATFORM_LINUX)
+            sched_yield();
+          #else
+            Sleep(0);
+          #endif
+
 
       CalSkeleton* m_skeleton = my->m_model->getSkeleton();
       m_skeleton->calculateState();
@@ -676,7 +681,11 @@ VSXP_S_BEGIN("cal3d run");
 
     if (times_run++ > 60)
       while (__sync_fetch_and_add( &worker_produce, 0) == 0)
-        usleep(1);
+        #if (PLATFORM == PLATFORM_LINUX)
+          sched_yield();
+        #else
+          Sleep(0);
+        #endif
       //vsx_printf(L"** cal3d: worker has not produced anything!\n");
 
     if (__sync_fetch_and_add( &worker_produce, 0) == 1)
