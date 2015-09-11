@@ -3,6 +3,7 @@
 #if (PLATFORM == PLATFORM_LINUX)
   #include <sys/prctl.h>
 #endif
+#include <vsx_timer.h>
 
 using namespace cal3d;
 
@@ -71,6 +72,7 @@ public:
     volatile __attribute__((aligned(64))) int64_t param_produce;
     volatile __attribute__((aligned(64))) int64_t thread_exit;
 
+    volatile __attribute__((aligned(64))) float time_to_animate;
 
     // transform
     vsx_quaternion<> pre_rotation_quaternion;
@@ -98,6 +100,7 @@ public:
     thread_exit = 0;
 
     times_run = 0;
+    time_to_animate = 1.0f / 120.0f;
   }
   bool init() {
 
@@ -425,6 +428,7 @@ public:
     module_mesh_cal3d_import* my = ((module_mesh_cal3d_import*)  thread_info.class_pointer);
     int first_rendering = 0;
 
+    vsx_timer timer;
     #if (PLATFORM == PLATFORM_LINUX)
       if (thread_info.is_thread)
       {
@@ -442,6 +446,8 @@ public:
             Sleep(0);
           #endif
 
+
+      timer.start();
 
       CalSkeleton* m_skeleton = my->m_model->getSkeleton();
       m_skeleton->calculateState();
@@ -611,6 +617,8 @@ public:
       if (__sync_fetch_and_add(&my->param_produce, 0))
         __sync_fetch_and_sub(&my->param_produce, 1);
 
+      my->time_to_animate = timer.dtime();
+
       // if we're not supposed to run in a thread
       if (false == thread_info.is_thread)
         return 0;
@@ -669,14 +677,15 @@ public:
       worker((void*)&thread_info);
     }
 
-    if (times_run++ > 60)
+    vsx_printf(L"time to animate: %f\n", time_to_animate);
+
+    if (times_run++ > 60 && engine->dtime > 0.01)
       while (__sync_fetch_and_add( &worker_produce, 0) == 0)
         #if (PLATFORM == PLATFORM_LINUX)
           sched_yield();
         #else
           Sleep(0);
         #endif
-      //vsx_printf(L"** cal3d: worker has not produced anything!\n");
 
     if (__sync_fetch_and_add( &worker_produce, 0) == 1)
     {
