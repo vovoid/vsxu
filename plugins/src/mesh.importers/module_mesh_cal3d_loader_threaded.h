@@ -716,11 +716,11 @@ VSXP_S_BEGIN("cal3d run");
       if ( wait_for_thread->get() )
         if (times_run++ > 60 && engine->dtime > 0.01)
         {
-          if (my->thread_sync_strategy->get() == 0)
-            while (!__sync_fetch_and_add(&worker__produce, 0))
+          if (thread_sync_strategy->get() == 0)
+            while (!__sync_fetch_and_add(&worker_produce, 0))
               usleep(1);
 
-          if (my->thread_sync_strategy->get() == 1)
+          if (thread_sync_strategy->get() == 1)
             while (!__sync_fetch_and_add(&worker_produce, 0))
               #if (PLATFORM == PLATFORM_LINUX)
                 sched_yield();
@@ -728,7 +728,7 @@ VSXP_S_BEGIN("cal3d run");
                 Sleep(0);
               #endif
 
-          if (my->thread_sync_strategy->get() == 2)
+          if (thread_sync_strategy->get() == 2)
             while (!__sync_fetch_and_add( &worker_produce, 0))
             {}
         }
