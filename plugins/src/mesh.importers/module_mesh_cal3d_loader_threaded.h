@@ -42,6 +42,9 @@ public:
     vsx_module_param_quaternion* rotation;
     vsx_module_param_float3* post_rot_translate;
 
+    vsx_module_param_int* wait_for_thread;
+    vsx_module_param_int* thread_sync_strategy;
+
     // out
     vsx_module_param_mesh* result;
     vsx_module_param_mesh* bones_bounding_box;
@@ -65,6 +68,7 @@ public:
     bool              worker_running;
     bool              thread_created;
     int               thread_state;
+    uint64_t               times_run;
     cal3d_thread_info thread_info;
 
     volatile __attribute__((aligned(64))) int64_t worker_produce;
@@ -82,8 +86,6 @@ public:
     vsx_matrix<float> rotation_mat;
     vsx_vector3<> rot_center;
     vsx_vector3<> post_rot_translate_vec;
-
-    uint64_t times_run;
 
   module_mesh_cal3d_import() {
     m_model = 0;
@@ -145,7 +147,10 @@ public:
     info->description = "";
 
     info->in_param_spec =
-      "filename:resource,use_thread:enum?no|yes,"
+      "filename:resource,"
+      "use_thread:enum?no|yes,"
+      "wait_for_thread:enum?no|yes,"
+      "thread_sync_strategy:enum?sleep|yield|active"
       "transforms:complex{"
         "pre_rotation:quaternion,"
         "pre_rotation_center:float3,"
@@ -221,8 +226,18 @@ public:
     quat_p->set(0.0f,1);
     quat_p->set(0.0f,2);
     quat_p->set(1.0f,3);
+
+    wait_for_thread = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"wait_for_thread");
+    wait_for_thread->set(0);
+
+    thread_sync_strategy = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"thread_sync_strategy");
+    thread_sync_strategy->set(0);
+
+
     use_thread = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"use_thread");
     use_thread->set(0);
+
+
     for (unsigned long i = 0; i < bones.size(); ++i)
     {
       bones[i].param = (vsx_module_param_quaternion*)in_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION,(bones[i].name+"_rotation").c_str());
@@ -439,8 +454,23 @@ public:
     while (1)
     {
       if (thread_info.is_thread)
-        while (!__sync_fetch_and_add(&my->param_produce, 0))
-          usleep(1);
+      {
+        if (my->thread_sync_strategy->get() == 0)
+          while (!__sync_fetch_and_add(&my->param_produce, 0))
+            usleep(1);
+
+        if (my->thread_sync_strategy->get() == 1)
+          while (!__sync_fetch_and_add(&my->param_produce, 0))
+            #if (PLATFORM == PLATFORM_LINUX)
+              sched_yield();
+            #else
+              Sleep(0);
+            #endif
+
+        if (my->thread_sync_strategy->get() == 2)
+          while (!__sync_fetch_and_add(&my->param_produce, 0))
+          {}
+      }
 
       timer.start();
 
@@ -672,15 +702,26 @@ public:
       worker((void*)&thread_info);
     }
 
-    vsx_printf(L"time to animate: %f\n", time_to_animate);
+    if (thread_info.is_thread)
+      if ( wait_for_thread->get() )
+        if (times_run++ > 60 && engine->dtime > 0.01)
+        {
+          if (my->thread_sync_strategy->get() == 0)
+            while (!__sync_fetch_and_add(&worker__produce, 0))
+              usleep(1);
 
-    if (times_run++ > 60 && engine->dtime > 0.01)
-      while (__sync_fetch_and_add( &worker_produce, 0) == 0)
-        #if (PLATFORM == PLATFORM_LINUX)
-          sched_yield();
-        #else
-          Sleep(0);
-        #endif
+          if (my->thread_sync_strategy->get() == 1)
+            while (!__sync_fetch_and_add(&worker_produce, 0))
+              #if (PLATFORM == PLATFORM_LINUX)
+                sched_yield();
+              #else
+                Sleep(0);
+              #endif
+
+          if (my->thread_sync_strategy->get() == 2)
+            while (!__sync_fetch_and_add( &worker_produce, 0))
+            {}
+        }
 
     if (__sync_fetch_and_add( &worker_produce, 0) == 1)
     {
