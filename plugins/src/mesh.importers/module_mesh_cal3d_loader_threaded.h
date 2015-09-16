@@ -83,6 +83,7 @@ public:
     vsx_vector3<> rot_center;
     vsx_vector3<> post_rot_translate_vec;
 
+    uint64_t times_run;
 
   module_mesh_cal3d_import() {
     m_model = 0;
