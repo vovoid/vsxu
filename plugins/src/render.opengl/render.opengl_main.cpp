@@ -66,6 +66,7 @@ const unsigned int matrix_target_get_vsx[] =
 #include "module_render_gl_texture_coord_gen.h"
 #include "module_render_gl_normalize.h"
 #include "module_render_gl_get_camera_orientation.h"
+#include "module_render_gl_lighting_disable.h"
 
 
 
@@ -119,6 +120,7 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 26: return (vsx_module*)(new module_render_gl_texture_coord_gen);
     case 27: return (vsx_module*)(new module_render_gl_get_camera_orientation);
     case 28: return (vsx_module*)(new module_render_gl_frustum);
+    case 29: return (vsx_module*)(new module_render_gl_lighting_disable);
   }
   return 0;
 }
@@ -156,6 +158,7 @@ void MOD_DM(vsx_module* m,unsigned long module)
     case 26: delete (module_render_gl_texture_coord_gen*)m; break;
     case 27: delete (module_render_gl_get_camera_orientation*)m; break;
     case 28: delete (module_render_gl_frustum*)m; break;
+    case 29: delete (module_render_gl_lighting_disable*)m; break;
   }
 }
 
@@ -170,6 +173,6 @@ unsigned long MOD_NM(vsx_engine_environment* environment)
     #endif
   #endif
 
-  return 29;
+  return 30;
 }
 
