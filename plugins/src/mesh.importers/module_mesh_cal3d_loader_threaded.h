@@ -153,7 +153,7 @@ public:
       "filename:resource,"
       "use_thread:enum?no|yes,"
       "wait_for_thread:enum?no|yes,"
-      "thread_sync_strategy:enum?sleep|yield|active"
+      "thread_sync_strategy:enum?sleep|yield|active,"
       "transforms:complex{"
         "pre_rotation:quaternion,"
         "pre_rotation_center:float3,"
