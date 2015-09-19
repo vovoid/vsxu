@@ -63,6 +63,7 @@ vsx_comp::vsx_comp() {
   time_multiplier = 1.0f;
   in_module_parameters = new vsx_module_param_list;
   out_module_parameters = new vsx_module_param_list;
+  has_run = false;
 }
 
 vsx_comp::~vsx_comp()
