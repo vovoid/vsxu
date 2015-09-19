@@ -118,7 +118,7 @@ int vsx_engine_abs::i_load_state(vsx_command_list& load1,vsx_string<>*error_stri
         failed_component = mc->parts[2];
         //components_existing = false;
         if (error_string) *error_string = "VSX Engine could not find or load module: "+mc->parts[1];
-        printf( "%s\n",vsx_string<>(
+        vsx_printf( "%s\n",vsx_string<>(
                   "**************************************************\n"
                   "Notice: \n\tVSX Engine could not load module: "
                   "'"+mc->parts[1]+"'"
