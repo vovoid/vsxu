@@ -103,6 +103,9 @@ public:
 
     times_run = 0;
     time_to_animate = 1.0f / 120.0f;
+
+    thread_info.class_pointer = 0x0;
+    thread_info.is_thread = false;
   }
   bool init() {
 
@@ -150,7 +153,7 @@ public:
       "filename:resource,"
       "use_thread:enum?no|yes,"
       "wait_for_thread:enum?no|yes,"
-      "thread_sync_strategy:enum?sleep|yield|active"
+      "thread_sync_strategy:enum?sleep|yield|active,"
       "transforms:complex{"
         "pre_rotation:quaternion,"
         "pre_rotation_center:float3,"

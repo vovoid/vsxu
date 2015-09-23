@@ -28,6 +28,7 @@
 #include <container/vsx_nw_vector.h>
 #include <vsx_argvector.h>
 #include <string/vsx_string.h>
+#include <string/vsx_string_helper.h>
 #include <vsxfst.h>
 #include <debug/vsx_error.h>
 
@@ -127,14 +128,28 @@ void extract()
 
 void create()
 {
-  // Sanitize the presence of -f
-  if (!arg->has_param_with_value("f"))
+  // Sanitize the presence of -f / -fl
+  if (!arg->has_param_with_value("f") && !arg->has_param_with_value("fl"))
     VSX_ERROR_EXIT("Error, you must supply files to be added to the archive", 100);
 
-  vsx_string<>filenames = arg->get_param_value("f");
-  vsx_string<>deli = ":";
+  vsx_string<> filenames;
   vsx_nw_vector< vsx_string<> > parts;
+  vsxf fs;
 
+  if (arg->has_param_with_value("f"))
+    filenames = arg->get_param_value("f");
+
+  if (arg->has_param_with_value("fl"))
+  {
+    vsx_string<> file_list_file = arg->get_param_value("fl");
+    if (!fs.is_file(file_list_file))
+      VSX_ERROR_EXIT("Error, can not read file list file...", 101);
+    filenames = vsx_string_helper::read_from_file<1024*1024>( file_list_file );
+  }
+
+  vsx_printf(L"filenames: %s\n", filenames.c_str());
+
+  vsx_string<>deli = ":";
   explode(filenames, deli, parts);
 
   if (!parts.size())
@@ -178,12 +193,13 @@ int main(int argc, char* argv[])
 
   if ( arg->has_param_with_value("c") )
   {
+    vsx_printf(L"creating archive\n");
     create();
   }
 
-  printf
+  vsx_printf
   (
-    "VSXz packer (operates on .vsx files)\n"
+    L"VSXz packer (operates on .vsx files)\n"
     "\n"
     "\n"
     "Extract archive: \n"
@@ -194,7 +210,7 @@ int main(int argc, char* argv[])
     "        Reads all the compressed data into RAM upon loading the archive\n"
     "\n"
     "Create archive: \n"
-    "  vsxz -c [archive filename] -f file1:file2:file3 \n"
+    "  vsxz -c [archive filename] -f file1:file2:file3 -fl [file with file list like -f]\n"
   );
 
 
