@@ -360,13 +360,11 @@ int main(int argc, char* argv[])
   glfwSetWindowTitle( titlestr );
 
 
-  vsx_timer frame_delay;
+
   int initial_vram_free = 0;
   while( running )
   {
     VSXP_M_BEGIN
-
-    frame_delay.start();
 
     if (mouse_pos_type)
     {

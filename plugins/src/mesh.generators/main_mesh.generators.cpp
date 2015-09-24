@@ -34,6 +34,7 @@
 #include "module_mesh_bspline_vertices.h"
 #include "module_mesh_lightning_vertices.h"
 #include "module_mesh_rays.h"
+#include "module_mesh_rays_uniform.h"
 #include "module_mesh_disc.h"
 #include "module_mesh_supershape.h"
 #include "module_mesh_planes.h"
@@ -112,6 +113,7 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 27: return (vsx_module*)(new module_segmesh_map_bspline);
     case 28: return (vsx_module*)(new module_segmesh_shape_basic);
     case 29: return (vsx_module*)(new module_mesh_vertices_ribbon);
+    case 30: return (vsx_module*)(new module_mesh_rays_uniform);
   }
   return 0;
 }
@@ -149,11 +151,12 @@ void MOD_DM(vsx_module* m,unsigned long module)
     case 27: delete (module_segmesh_map_bspline*)m; break;
     case 28: delete (module_segmesh_shape_basic*)m; break;
     case 29: delete (module_mesh_vertices_ribbon*)m; break;
+    case 30: delete (module_mesh_rays_uniform*)m; break;
   }
 } 
 
 unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   VSX_UNUSED(environment);
-  return 30;
+  return 31;
 }
