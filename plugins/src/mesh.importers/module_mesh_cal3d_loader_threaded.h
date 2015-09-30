@@ -7,6 +7,8 @@
 
 #include <vsx_profiler_manager.h>
 
+#include <vsx_profiler_manager.h>
+
 using namespace cal3d;
 
 typedef struct {

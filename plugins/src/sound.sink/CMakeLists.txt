@@ -21,5 +21,10 @@ CREATE_MODULE(${module_id})
 
 include(../cmake_suffix.txt)
 
-
-
+add_definitions(
+        -Wno-parentheses
+        -Wno-unused-value
+        -Wno-unused-variable
+        -Wno-unused-function
+        -Wno-unused-but-set-variable
+        )

@@ -9,7 +9,11 @@ message("configuring vsxu module            " ${module_id})
 # set defines for MOD_CM, MOD_DM, MOD_NM
 CREATE_STATIC_GLUE(${module_id})
 
-add_definitions(-DCAL3D_EXPORTS -fPIC)
+if(UNIX)
+  add_definitions( -fPIC )
+endif(UNIX)
+add_definitions(-DCAL3D_EXPORTS)
+
 include_directories(cal3d/cal3d/src)
 
 # find the local source files
@@ -74,3 +78,10 @@ CREATE_MODULE(${module_id})
 
 # include common
 include(../cmake_suffix.txt)
+
+add_definitions(
+   -Wno-narrowing
+   -Wno-vla
+   -Wno-parentheses
+   -Wno-unused-but-set-variable
+   )

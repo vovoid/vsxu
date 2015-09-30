@@ -152,8 +152,14 @@ INCLUDE(CPack)
 # DEFINES ######################################################################
 ################################################################################
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
+# C++14: set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive" )
 
-add_definitions( -std=c++0x )
+add_definitions( -Wall -Wno-sign-compare)
+if (UNIX)
+#  add_definitions( -Werror ) # no reason for linux not to compile
+endif()
 
 if (VSXU_STATIC EQUAL 1)
   add_definitions(-g)
@@ -171,20 +177,17 @@ if(VSXU_DEBUG)
   add_definitions(
     -g
     -Wall
-	-Werror=return-type
-	#-Werror=unused-parameter
-	#-Weffc++
-	#-Wdouble-promotion
+    -Werror=return-type
+    #-Werror=unused-parameter
+    #-Weffc++
+    #-Wdouble-promotion
     -mtune=nocona
-    -Wtype-limits
-    -fpermissive
-    -Wuninitialized
-    -Wignored-qualifiers
-    -Wempty-body
-    -Wunused-parameter
   )
 else(VSXU_DEBUG)
   if (OPTIMIZATION_FLAGS EQUAL 1)
+     if(UNIX)
+       add_definitions( -fno-delayed-branch )
+     endif(UNIX)
     add_definitions(
       -DVSX_OPTIMIZATIONS=1
       -mtune=nocona
@@ -193,7 +196,6 @@ else(VSXU_DEBUG)
       -O3
       -fno-thread-jumps 
       -fno-if-conversion2 
-      -fno-delayed-branch 
       -fno-loop-optimize 
       -ftree-dce 
       -ftree-sra 
@@ -233,6 +235,9 @@ else(VSXU_DEBUG)
     )
   else (OPTIMIZATION_FLAGS EQUAL 1)
     if (VSXU_BUILD_WINDOWS_32)
+        if(UNIX)
+          add_definitions( -fno-delayed-branch )
+        endif(UNIX)
         add_definitions(
 #from O1
           -fauto-inc-dec
@@ -240,7 +245,6 @@ else(VSXU_DEBUG)
           -fcprop-registers
           -fdce
           -fdefer-pop
-          -fdelayed-branch
           -fdse
           -fguess-branch-probability
           -fif-conversion2
@@ -302,10 +306,13 @@ else(VSXU_DEBUG)
 #general
           -mtune=nocona
           -fmessage-length=0
-          -fpermissive
+          #-fpermissive
           -ffast-math
         )
     elseif(VSXU_BUILD_WINDOWS_64)
+        if(UNIX)
+          add_definitions( -fno-delayed-branch )
+        endif(UNIX)
         add_definitions(
 #from O1
           -fauto-inc-dec
@@ -313,7 +320,6 @@ else(VSXU_DEBUG)
           -fcprop-registers
           -fdce
           -fdefer-pop
-          -fdelayed-branch
           -fdse
           -fguess-branch-probability
           -fif-conversion2
@@ -375,7 +381,7 @@ else(VSXU_DEBUG)
 #general
           -mtune=nocona
           -fmessage-length=0
-          -fpermissive
+          #-fpermissive
           -ffast-math
         )
     else()
@@ -383,7 +389,7 @@ else(VSXU_DEBUG)
           -O3
           -mtune=nocona
           -fmessage-length=0
-          -fpermissive
+          #-fpermissive
           -finline-functions
           -ffast-math
         )
