@@ -56,27 +56,6 @@ if (UNIX OR VSXU_WINDOWS_LIB_BUILD)
 endif()
 
 ################################################################################
-# The pkg-config file
-################################################################################
-IF (UNIX OR VSXU_WINDOWS_LIB_BUILD)
-  if (VSXU_STATIC EQUAL 1 AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/plugins/static_factory_pkgconfig_libs")
-    file (STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/plugins/static_factory_pkgconfig_libs" VSXU_PLUGIN_PKGCONFIG_LIBS)
-    CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/libvsxu.pc.in.static
-                    ${CMAKE_CURRENT_BINARY_DIR}/libvsxu.pc
-                    @ONLY)
-
-  else()
-    CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/libvsxu.pc.in.dynamic
-                    ${CMAKE_CURRENT_BINARY_DIR}/libvsxu.pc
-                    @ONLY)
-  endif()
-
-  INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/libvsxu.pc
-           DESTINATION ${VSXU_INSTALL_LIB_DIR}/pkgconfig)
-ENDIF()
-
-
-################################################################################
 # CPACK OPTIONS ################################################################
 ################################################################################
 SET(CPACK_PACKAGE_NAME "vsxu")
@@ -404,10 +383,11 @@ add_definitions(-DVSXU_INSTALL_LIB_DIR="${VSXU_INSTALL_LIB_DIR}")
 ################################################################################
 # VSXU LIBRARIES ###############################################################
 ################################################################################
-add_subdirectory(engine)
 add_subdirectory(engine_audiovisual)
 add_subdirectory(engine_graphics)
+# order matters - need to add plugins before engine to create static glue
 add_subdirectory(plugins)
+add_subdirectory(engine)
 add_subdirectory(widget)
 
 ################################################################################
@@ -433,8 +413,25 @@ if(UNIX)
     add_subdirectory(tools/vsxl)
 endif(UNIX)
 
+################################################################################
+# The pkg-config file
+################################################################################
+IF (UNIX OR VSXU_WINDOWS_LIB_BUILD)
+  if (VSXU_STATIC EQUAL 1 AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/plugins/static_factory_pkgconfig_libs")
+    file (STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/plugins/static_factory_pkgconfig_libs" VSXU_PLUGIN_PKGCONFIG_LIBS)
+    CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/libvsxu.pc.in.static
+                    ${CMAKE_CURRENT_BINARY_DIR}/libvsxu.pc
+                    @ONLY)
 
+  else()
+    CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/libvsxu.pc.in.dynamic
+                    ${CMAKE_CURRENT_BINARY_DIR}/libvsxu.pc
+                    @ONLY)
+  endif()
 
+  INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/libvsxu.pc
+           DESTINATION ${VSXU_INSTALL_LIB_DIR}/pkgconfig)
+ENDIF()
 
 # uninstall target
 configure_file(
