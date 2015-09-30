@@ -5,16 +5,15 @@ message("configuring            " ${module_id})
 
 project (${module_id})
 
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
 
 ################################################################################
 # CMAKE PACKAGES ###############################################################
 ################################################################################
-find_package(GLFW REQUIRED)
 find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
-find_package(PNG REQUIRED)
-find_package(JPEG REQUIRED)
+
+
 
 ################################################################################
 # INCLUDES #####################################################################
@@ -104,10 +103,9 @@ if(UNIX)
     )
   else (VSXU_OPENGL_ES_2_0 EQUAL 1)
     target_link_libraries(${module_id}
-      ${GLFW_LIBRARY}
+      ${GLFW_LIBRARIES}
       ${CMAKE_THREAD_LIBS_INIT}
-      ${GLEW_LIBRARY}
-      ${OPENGL_LIBRARIES}
+      ${GLEW_LIBRARIES}
       ${PNG_LIBRARIES}
       ${JPEG_LIBRARIES}
       rt

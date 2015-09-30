@@ -5,6 +5,8 @@
 #endif
 #include <vsx_timer.h>
 
+#include <vsx_profiler_manager.h>
+
 using namespace cal3d;
 
 typedef struct {
@@ -24,12 +26,13 @@ typedef struct {
 } morph_info;
 
 typedef struct {
-  bool is_thread;
+  volatile __attribute__((aligned(64))) int64_t is_thread;
   void* class_pointer;
 } cal3d_thread_info;
 
 class module_mesh_cal3d_import : public vsx_module {
 public:
+	VSXP_CLASS_DECLARE
     // in
     vsx_module_param_resource* filename;
     vsx_module_param_quaternion* quat_p;
@@ -648,7 +651,7 @@ public:
       my->time_to_animate = timer.dtime();
 
       // if we're not supposed to run in a thread
-      if (false == thread_info.is_thread)
+      if (0 == thread_info.is_thread)
         return 0;
 
       // see if the exit flag is set (user changed from threaded to non-threaded mode)
@@ -671,6 +674,10 @@ public:
     if (!bones.size())
       return;
 
+VSXP_CLASS_LOCAL_INIT
+
+VSXP_S_BEGIN("cal3d run");
+
     // deal with changes in threading use
 
     if (thread_created && use_thread->get() == 0)
@@ -689,22 +696,21 @@ public:
       void* ret;
       pthread_join(worker_t,&ret);
       thread_created = false;
-      thread_info.is_thread = false;
+      thread_info.is_thread = 0;
     }
 
     if (!thread_created && use_thread->get() == 1)
     {
+      __sync_fetch_and_add( &thread_info.is_thread, 1);
       pthread_create(&worker_t, NULL, &worker, (void*)&thread_info);
       thread_created = true;
-      thread_info.is_thread = true;
     }
 
     if (0 == use_thread->get())
     {
-      thread_info.is_thread = false;
+      thread_info.is_thread = 0;
       worker((void*)&thread_info);
     }
-
 
     if (thread_info.is_thread)
       if ( wait_for_thread->get() )
@@ -823,5 +829,6 @@ public:
       p_updates = param_updates;
       __sync_fetch_and_add( &param_produce, 1);
     }
+    VSXP_S_END
   }
 };

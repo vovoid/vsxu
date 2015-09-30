@@ -2,6 +2,8 @@ set(module_id vsxu_artiste)
 
 message("configuring            " ${module_id})
 
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
+
 
 ################################################################################
 project (${module_id})
@@ -9,13 +11,9 @@ project (${module_id})
 ################################################################################
 # CMAKE PACKAGES ###############################################################
 ################################################################################
-find_package(GLFW REQUIRED)
 find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
-find_package(PNG REQUIRED)
-find_package(JPEG REQUIRED)
-find_package(Freetype REQUIRED)
+
 
 ################################################################################
 # INCLUDES #####################################################################
@@ -23,7 +21,6 @@ find_package(Freetype REQUIRED)
 
 include_directories(
   ${OPENGL_INCLUDE_DIR}
-  ${GLEW_INCLUDE_PATH}
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/engine/include
   ${CMAKE_SOURCE_DIR}/engine_graphics/include
@@ -55,6 +52,7 @@ add_definitions(
 
 if (VSXU_STATIC EQUAL 1)
   add_definitions(-DVSXU_STATIC)
+  add_definitions(-DGLEW_STATIC)
 endif()
 
 
@@ -112,14 +110,13 @@ include(../cmake_suffix.txt)
 if(UNIX)
   target_link_libraries(
     ${module_id}
-    ${GLFW_LIBRARY}
+    ${GLFW_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
-    ${GLEW_LIBRARY}
+    ${GLEW_LIBRARIES}
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
     ${TM_LIBRARY}
-    ${FREETYPE_LIBRARY}
     vsxu_engine_graphics
     vsxu_engine
     vsx_widget
@@ -136,17 +133,24 @@ endif(UNIX)
 if(WIN32)
   target_link_libraries(
     ${module_id}
-    ${GLFW_LIBRARY}
-    ${GLEW_LIBRARY}
+    -static-libgcc
+    -static-libstdc++
+    -static
+    ${GLFW_LIBRARIES}
+    ${GLEW_LIBRARIES}
     wsock32
     ws2_32
     vsxu_engine
     vsx_widget
-    vsxu_engine_graphics
-    ${CMAKE_THREAD_LIBS_INIT}
     gdi32
     ${OPENGL_LIBRARIES}
     vsxu_engine_graphics
+    ${JPEG_LIBRARIES}
+    ${PNG_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+    -lstdc++
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${FREETYPE_LIBRARIES}
   )
 endif(WIN32)
 

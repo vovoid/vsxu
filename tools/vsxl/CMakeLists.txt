@@ -6,6 +6,9 @@ include_directories(
   ../../engine_graphics/include
 )
 
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
+
+
 set(OS_SOURCES "")
 
 if(VSXU_DEBUG)

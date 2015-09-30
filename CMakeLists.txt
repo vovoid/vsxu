@@ -122,10 +122,11 @@ SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jonatan 'jaw' Wallmander / Vovoid Media Tec
 
 SET(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "VSXu ${CPACK_PACKAGE_VERSION}")
 ##set(CPACK_PACKAGE_EXECUTABLES "vsxu_player;VSXu Player Window" "vsxu_artiste;VSXu Artiste")
-set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
-    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_player_launcher.exe \\\"
-    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Artiste.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_artiste.exe \\\"
-")
+# FIXME: should have a "if(INSTALL_EXE)" ...
+#set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+#    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_player_launcher.exe \\\"
+#    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Artiste.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_artiste.exe \\\"
+#")
 set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
     Delete \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player.lnk\\\"
     Delete \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Artiste.lnk\\\"
@@ -155,7 +156,9 @@ INCLUDE(CPack)
 add_definitions( -std=c++0x )
 
 if (VSXU_STATIC EQUAL 1)
+  add_definitions(-g)
   add_definitions(-DVSXU_STATIC)
+  add_definitions(-DGLEW_STATIC)
 endif()
 
 if(VSXU_DEBUG_SYMBOLS)
@@ -169,7 +172,7 @@ if(VSXU_DEBUG)
     -g
     -Wall
 	-Werror=return-type
-	-Werror=unused-parameter
+	#-Werror=unused-parameter
 	#-Weffc++
 	#-Wdouble-promotion
     -mtune=nocona

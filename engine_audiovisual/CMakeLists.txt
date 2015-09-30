@@ -5,6 +5,8 @@ message("configuring            " ${module_id})
 
 project (${module_id})
 
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
+
 ################################################################################
 # CMAKE PACKAGES ###############################################################
 ################################################################################
@@ -29,7 +31,7 @@ include_directories(
 ################################################################################
 
 add_definitions(
- -DVSX_AUDOVISUAL_DLL
+   # -DVSX_AUDOVISUAL_DLL
  -DVSXU_DEVELOPER
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 )
@@ -70,13 +72,11 @@ endif()
 ################################################################################
 
 target_link_libraries(${module_id}
-  ${OPENGL_LIBRARIES}
   vsxu_engine
   vsxu_engine_graphics
+  ${OPENGL_LIBRARIES}
 )
 
 if (WIN32)
-  target_link_libraries(${module_id}
-    gdi32
-  )
+  target_link_libraries(${module_id} gdi32)
 endif()

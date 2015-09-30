@@ -6,22 +6,22 @@ message("configuring            " ${module_id})
 ################################################################################
 project (${module_id})
 
+
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
+
 ################################################################################
 # CMAKE PACKAGES ###############################################################
 ################################################################################
-find_package(GLFW REQUIRED)
 find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
-find_package(PNG REQUIRED)
-find_package(JPEG REQUIRED)
+
 
 ################################################################################
 # INCLUDES #####################################################################
 ################################################################################
+
 include_directories(
   ${OPENGL_INCLUDE_DIR}
-  ${GLEW_INCLUDE_PATH}
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/engine/include
   ${CMAKE_SOURCE_DIR}/profiler/include
@@ -66,11 +66,12 @@ include(../cmake_suffix.txt)
 if(UNIX)
   target_link_libraries(
     ${module_id}
-    ${GLFW_LIBRARY}
+    ${GLFW_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
-    ${GLEW_LIBRARY}
+    ${GLEW_LIBRARIES}
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
+    ${ZLIB_LIBRARIES}
     ${JPEG_LIBRARIES}
     vsxu_engine_audiovisual
     vsxu_engine_graphics
@@ -81,15 +82,19 @@ endif()
 
 if(WIN32)
   target_link_libraries(
-  ${module_id}
-    ${GLFW_LIBRARY}
+   ${module_id}
+   -static
+    ${GLFW_LIBRARIES}
     wsock32
     ws2_32
-    ${CMAKE_THREAD_LIBS_INIT}
     vsxu_engine_audiovisual
     vsxu_engine_graphics
     vsxu_engine
+    ${PNG_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+    ${JPEG_LIBRARIES}
     gdi32
+    ${CMAKE_THREAD_LIBS_INIT}
     ${OPENGL_LIBRARIES}
 )
 endif()
@@ -135,7 +140,9 @@ IF (UNIX)
 ENDIF (UNIX)
 
 
-if (WIN32)
-  install(FILES ~/vsxu-dev/player_launcher/vsxu_player_launcher.exe DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT player)
-endif()
+# FIXME: should have a "if(INSTALL_EXE)" ...
+#if (WIN32)
+#  install(FILES ${CMAKE__SOURCE_DIR}/../vsxu_player_launcher/vsxu_player_launcher.exe DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT player)
+#endif()
+#
 

@@ -1,0 +1,15 @@
+INCLUDE(FindPkgConfig)
+
+function (VSX_INCLUDE_LIB result_name   pkgconfig_lib_name  findpkg_lib_name  include_var_name   lib_var_name )
+  if (VSXU_STATIC EQUAL 1)
+    message("searching for lib: " ${result_name})
+    PKG_SEARCH_MODULE(${result_name} REQUIRED ${pkgconfig_lib_name})
+  else ()
+    find_package(${findpkg_lib_name} REQUIRED)
+    set(${result_name}_INCLUDE_DIRS ${${include_var_name}} PARENT_SCOPE)
+    set(${result_name}_LIBRARIES ${${lib_var_name}} PARENT_SCOPE)
+  endif ()
+
+endfunction(VSX_INCLUDE_LIB)
+
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeStandardIncludes.txt)

@@ -10,18 +10,12 @@ project (${module_id})
 # CMAKE PACKAGES ###############################################################
 ################################################################################
 find_package(DL REQUIRED)
-if (WIN32)
-  find_package(PTHREAD REQUIRED)
-else()
-  find_package(Threads REQUIRED)
-endif()
 
 ################################################################################
 # INCLUDES #####################################################################
 ################################################################################
 
 include_directories(
-  ${GLEW_INCLUDE_PATH}
   ../
   ../engine_graphics/include
   ../profiler/include
@@ -44,7 +38,6 @@ file(GLOB_RECURSE HEADER_FILES *.h)
 # )
 
 add_definitions(
- -DBUILDING_DLL
  -DVSXU_MODULE_TIMING
  -DVSXU_ARTISTE
  -DVSXU_DEVELOPER
@@ -213,20 +206,11 @@ endif()
 ################################################################################
 
 if (WIN32)
-  find_file(pthread_dll pthreadGC2.dll)
-  install(FILES ${pthread_dll} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT engine)
   if (VSXU_BUILD_WINDOWS_32)
-    install(FILES /usr/lib/gcc/i686-w64-mingw32/4.6/libstdc++-6.dll DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT engine)
-    install(FILES /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT engine)
-  endif()
-  if (VSXU_BUILD_WINDOWS_64)
-    install(FILES /usr/lib/gcc/x86_64-w64-mingw32/4.6/libstdc++-6.dll DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT engine)
-    install(FILES /usr/lib/gcc/x86_64-w64-mingw32/4.6/libgcc_s_sjlj-1.dll DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT engine)
+    install(FILES  DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT engine)
   endif()
 endif()
 
 target_link_libraries(${module_id}
   ${DL_LIBRARY}
-  ${CMAKE_THREAD_LIBS_INIT}
-  ${PTHREAD_LIBRARY}
 )

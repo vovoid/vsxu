@@ -2,20 +2,6 @@ cmake_policy(VERSION 2.6.0)
 cmake_policy(SET CMP0015 OLD)
 cmake_policy(SET CMP0011 OLD)
 
-
-if(WIN32)
-  include_directories(
-    ../lib/win32/
-  )
-  
-  find_path(WINDOWS_LIB_PATH NAMES pthreadGCE.so
-    PATHS
-      ../../lib/win32
-  )
-  
-  link_directories("../lib/win32")
-endif(WIN32)
-
 if(APPLE)
   add_definitions( -DVSXU_MAC_XCODE )
 endif(APPLE)

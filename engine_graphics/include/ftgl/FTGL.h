@@ -102,6 +102,9 @@ typedef float    FTGL_FLOAT;
     // Ensure that the export symbol is defined (and blank)
     //#define FTGL_EXPORT
 
+   #if VSXU_STATIC
+    #define FTGL_EXPORT
+   #else
     #ifdef _WIN32
     #if BUILDING_DLL
     # define FTGL_EXPORT __declspec (dllexport)
@@ -111,6 +114,7 @@ typedef float    FTGL_FLOAT;
     #else
     #define FTGL_EXPORT
     #endif
+   #endif
 
 
 #endif  

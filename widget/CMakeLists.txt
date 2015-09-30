@@ -6,19 +6,19 @@ message("configuring            " ${module_id})
 project (${module_id})
 
 
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
+
 ################################################################################
 # CMAKE PACKAGES ###############################################################
 ################################################################################
-find_package(Freetype REQUIRED)
-find_package(GLFW REQUIRED)
-
+find_package(Threads REQUIRED)
+find_package(OpenGL REQUIRED)
 
 ################################################################################
 # INCLUDES #####################################################################
 ################################################################################
 
 include_directories(
-  ${GLEW_INCLUDE_PATH}
   ../
   ../engine/include
   ../engine_graphics/include
@@ -27,7 +27,6 @@ include_directories(
   include/widgets
 )
 
-include_directories(${FREETYPE_INCLUDE_DIRS})
 
 
 ################################################################################
@@ -38,7 +37,7 @@ include_directories(${FREETYPE_INCLUDE_DIRS})
 
 add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
- -DBUILDING_DLL=1
+ # -DBUILDING_DLL=1
 )
 
 if (VSXU_DEBUG EQUAL 1)
@@ -47,6 +46,7 @@ endif (VSXU_DEBUG EQUAL 1)
 
 if (VSXU_STATIC EQUAL 1)
   add_definitions(-DVSXU_STATIC)
+  add_definitions(-DGLEW_STATIC)
 endif()
 
 
@@ -99,23 +99,30 @@ if (UNIX OR VSXU_WINDOWS_LIB_BUILD)
 endif()
 ################################################################################
 
-target_link_libraries(${module_id}
-  ${PNG_LIBRARIES}
+if(UNIX)
+target_link_libraries(
+  ${module_id}
   ${JPEG_LIBRARIES}
+  ${PNG_LIBRARIES}
+  ${ZLIB_LIBRARIES}
+  ${GLFW_LIBRARIES}
+  ${GLEW_LIBRARIES}
+  vsxu_engine
   ${OPENGL_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
-  ${GLEW_LIBRARY}
-  vsxu_engine
 )
+endif(UNIX)
 
 if(WIN32)
   target_link_libraries(
     ${module_id}
-    ${GLFW_LIBRARY}
+    ${JPEG_LIBRARIES}
+    ${PNG_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+    ${GLFW_LIBRARIES}
     vsxu_engine
     vsxu_engine_graphics
-    ${GLEW_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
+    ${GLEW_LIBRARIES}
     ${OPENGL_LIBRARIES}
     vsxu_engine_graphics
   )

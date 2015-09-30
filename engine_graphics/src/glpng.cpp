@@ -39,6 +39,8 @@
 //#define SUPPORTS_PALETTE_EXT
 //#endif
 
+#define png_check_sig(sig, n) !png_sig_cmp((sig), 0, (n))
+
 /*static unsigned char DefaultAlphaCallback(unsigned char red, unsigned char green, unsigned char blue) {
 	return 255;
 }*/
