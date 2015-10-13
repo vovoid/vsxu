@@ -40,7 +40,7 @@ public:
   float mass;
   vsx_vector3<> position, speed;
   vsx_vector3<> center;
-};
+  };
 
 #define BUFF_LEN 1024
 
@@ -73,7 +73,7 @@ public:
   std::vector<Mass> masses;
   std::vector<vsx_vector3<>*> oldPos;
 
-  ~gravity_lines();
+  virtual ~gravity_lines();
 };
 
 #endif

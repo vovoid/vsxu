@@ -46,7 +46,7 @@ namespace vsx_color_aux
     return local;
   }
 
-  inline void dump(const vsx_color<> &v, char* label="n/a")
+  inline void dump(const vsx_color<> &v, const char* label="n/a")
   {
     printf( "Name: %s. r: %f b: %f b: %f a: %f\n",label, v.r, v.g, v.b, v.a );
   }

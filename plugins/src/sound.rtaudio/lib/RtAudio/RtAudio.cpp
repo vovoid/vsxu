@@ -6570,8 +6570,8 @@ void RtApiPulse::stopStream( void )
   MUTEX_LOCK( &stream_.mutex );
 
   if ( pah && pah->s_play ) {
-    int pa_error;
-    /*if ( pa_simple_drain( pah->s_play, &pa_error ) < 0 ) {
+    /*int pa_error;
+    if ( pa_simple_drain( pah->s_play, &pa_error ) < 0 ) {
       errorStream_ << "RtApiPulse::stopStream: error draining output device, " <<
         pa_strerror( pa_error ) << ".";
       errorText_ = errorStream_.str();
@@ -6738,8 +6738,8 @@ bool RtApiPulse::probeDeviceOpen( unsigned int device, StreamMode mode,
       errorText_ = "RtApiPulse::probeDeviceOpen: error connecting output to PulseAudio server.";
       goto error;
     }
-    pa_usec_t latency;
-    latency = pa_simple_get_latency(pah->s_play, &error);
+    //pa_usec_t latency;
+    //latency = pa_simple_get_latency(pah->s_play, &error);
     break;
   default:
     goto error;

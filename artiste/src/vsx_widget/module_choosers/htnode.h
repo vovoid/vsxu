@@ -33,7 +33,7 @@ public:
     size.y = 0.025;
   }
 
-  ~HTNode() {
+  virtual ~HTNode() {
     for (std::vector<HTNode*>::iterator it = children.begin(); it != children.end(); ++it) {
       delete *it;
     }

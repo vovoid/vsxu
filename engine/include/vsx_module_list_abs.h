@@ -74,6 +74,9 @@ public:
 
   // Print help text for all loaded modules
   virtual void print_help() = 0;
+
+  virtual ~vsx_module_list_abs()
+  {}
 };
 
 #endif

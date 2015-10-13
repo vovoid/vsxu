@@ -227,8 +227,8 @@ int vsx_widget::inside_xy_l(vsx_vector3<> &test, vsx_vector3<> &global)
 
 bool vsx_widget::inside_xy(vsx_widget_coords &coords, vsx_widget_distance &result)
 {
-  vsx_vector3<>* test;
-  vsx_vector3<>* global;
+  vsx_vector3<>* test = 0x0;
+  vsx_vector3<>* global = 0x0;
 
   if (!coord_related_parent)
   {
@@ -246,6 +246,12 @@ bool vsx_widget::inside_xy(vsx_widget_coords &coords, vsx_widget_distance &resul
     test = &(coords.world_global);
     global = &(coords.world_local);
   }
+
+  if (!global)
+    return false;
+
+  if (!test)
+    return false;
 
   switch (inside_xy_l(*test,*global))
   {

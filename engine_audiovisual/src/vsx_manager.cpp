@@ -103,7 +103,7 @@ public:
   int get_engine_num_modules();
 
   vsx_manager();
-  ~vsx_manager();
+  virtual ~vsx_manager();
 };
 
 /****************************************************************

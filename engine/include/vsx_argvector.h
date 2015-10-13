@@ -166,7 +166,7 @@ public:
   static vsx_string<>get_executable_directory()
   {
     char pBuf[512];
-    const size_t len = 512;
+    const ssize_t len = 512;
 
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
       int bytes = GetModuleFileName(NULL, pBuf, len);
@@ -182,7 +182,7 @@ public:
 
       char szTmp[32];
       sprintf(szTmp, "/proc/self/exe");
-      int bytes = MIN(readlink(szTmp, pBuf, len), len - 1);
+      ssize_t bytes = MIN(readlink(szTmp, pBuf, len), len - 1);
 
       if(bytes >= 0)
         pBuf[bytes] = '\0';

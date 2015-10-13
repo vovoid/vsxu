@@ -394,15 +394,16 @@ void get_files_recursive(vsx_string<>startpos, std::list< vsx_string<> >* filena
   dp = readdir(dir);
   if (!dp) return;
 #endif
-  bool exclude;
-  bool include;
+  bool exclude = false;
+  bool include = true;
 #ifdef VSXS_DEBUG
   FILE* fp = fopen("get_files_recursive.log","a");
   fprintf(fp,"Starting traversion in : %s\n",fstring.c_str());
 #endif
   if (fhandle != -1)
-  while (run) {
-  vsx_string<>cur_directory_item;
+  while (run)
+  {
+    vsx_string<>cur_directory_item;
 #ifdef _WIN32
     cur_directory_item = fdp.name;
 #else
@@ -415,25 +416,19 @@ void get_files_recursive(vsx_string<>startpos, std::list< vsx_string<> >* filena
 #ifdef VSXS_DEBUG
     fprintf(fp,"File found: %s\n",full_path.c_str());
 #endif
-    if (include_filter == "") include = true;
-    else {
+    if (include_filter == "")
+      include = true;
+    else
+    {
 #ifdef _WIN32
       if (!(fdp.attrib & _A_SUBDIR))
 #else
       if (!S_ISDIR(stbuf.st_mode) && !S_ISLNK(stbuf.st_mode))
 #endif
-      {
+        include = false;
         if (cur_directory_item.find(include_filter) != -1)
-        {
           include = true;
-        }
-        else
-        {
-          include = false;
-        }
-      }
     }
-  //printf("get_files_recursive:%d\n",__LINE__);
 
     if (exclude_filter == "")
     {
@@ -449,7 +444,6 @@ void get_files_recursive(vsx_string<>startpos, std::list< vsx_string<> >* filena
       {
         if (cur_directory_item.find(parts[i]) != -1) exclude = true;
         ++i;
-        //printf("get_files_recursive:%d\n",__LINE__);
       }
     }
 

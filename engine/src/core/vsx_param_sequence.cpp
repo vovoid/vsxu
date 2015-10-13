@@ -268,7 +268,7 @@ float vsx_param_sequence::calculate_total_time(bool no_cache)
     }
   }
 
-  float last_length;
+  float last_length = 0.0f;
   for (std::vector<vsx_param_sequence_item>::iterator it = items.begin(); it != items.end(); ++it)
   {
     total_time += (*it).total_length;
