@@ -344,7 +344,7 @@ namespace vsx_string_helper
         continue;
       }
 
-      if (w <= 0xffff)
+      if ((uint64_t)w <= 0xffff)
       {
         result.push_back(0xe0 | ((w >> 12)& 0x0f));
         result.push_back(0x80| ((w >> 6) & 0x3f));
@@ -352,7 +352,7 @@ namespace vsx_string_helper
         continue;
       }
 
-      if (w <= 0x10ffff)
+      if ((uint64_t)w <= 0x10ffff)
       {
         result.push_back(0xf0 | ((w >> 18)& 0x07));
         result.push_back(0x80| ((w >> 12) & 0x3f));
