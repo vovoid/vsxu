@@ -52,6 +52,14 @@ public:
     return used;
   }
 
+  inline bool has(T o)
+  {
+    for (size_t i = 0; i < used; i++)
+      if (A[i] == o)
+        return true;
+    return false;
+  }
+
   void clear() {
     if (A)
     delete[] A;

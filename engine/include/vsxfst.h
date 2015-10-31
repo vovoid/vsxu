@@ -90,17 +90,16 @@ public:
 
 
 class vsxf_archive_info {
-
-  void* compressed_data;
-
-
 public:
 
   vsx_string<> filename;
   size_t archive_position;
+
   size_t compressed_size;
-  void* uncompressed_data;
+  void* compressed_data;
+
   size_t uncompressed_size;
+  void* uncompressed_data;
 
   void* get_compressed_data()
   {
@@ -129,12 +128,12 @@ public:
 
   vsxf_archive_info()
     :
-      compressed_data(0x0),
       filename(),
       archive_position(0),
       compressed_size(0),
-      uncompressed_data(0x0),
-      uncompressed_size(0)
+      compressed_data(0x0),
+      uncompressed_size(0),
+      uncompressed_data(0x0)
   {}
 
   ~vsxf_archive_info()
@@ -143,9 +142,13 @@ public:
 };
 
 
+#define VSXF_NUM_ADD_THREADS 8
+#define VSXF_WORK_CHUNK_MAX_SIZE 1024*1024*5
+
 class ENGINE_DLLIMPORT vsxf {
   // filesystem functions
   vsx_nw_vector<vsxf_archive_info> archive_files;
+  vsx_nw_vector<vsxf_archive_info*> archive_files_p;
   int type; // 0 = regular filesystem, 1 = archive
   FILE* archive_handle;
   vsx_string<> archive_name;
@@ -161,6 +164,12 @@ class ENGINE_DLLIMPORT vsxf {
     pthread_mutex_unlock( &mutex1 );
   }
 
+  vsx_nw_vector<vsxf_archive_info*> add_work_pool[VSXF_NUM_ADD_THREADS];
+  size_t add_work_pool_iterator;
+  size_t work_chunk_current_size;
+  void archive_close_handle_workers();
+
+
 public:
   vsxf();
   vsxf(const vsxf& f);
@@ -172,10 +181,13 @@ public:
   void archive_create(const char* filename);
   void archive_close();
   int archive_add_file(vsx_string<> filename, char* data = 0, uint32_t data_size = 0, vsx_string<> disk_filename = "");
+  int archive_add_file_mt(vsx_string<> filename);
   bool is_archive();
   bool is_archive_populated();
 
-  static void* worker(void* p);
+
+  static void* archive_add_file_worker(void* p);
+  static void* archive_load_worker(void* p);
 
   bool          is_file(const char* filename);
   bool          is_file(const vsx_string<> filename);
@@ -228,5 +240,7 @@ ENGINE_DLLIMPORT int explode(vsx_string<>& input, vsx_string<>& delimiter, std::
 
 ENGINE_DLLIMPORT vsx_string<>implode(std::list< vsx_string<> > in,vsx_string<>delimiter);
 ENGINE_DLLIMPORT vsx_string<>vsx_get_directory_separator();
+
+ENGINE_DLLIMPORT size_t file_get_size(vsx_string<> filename);
 
 #endif

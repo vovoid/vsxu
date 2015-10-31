@@ -211,7 +211,8 @@ int main(int argc, char* argv[])
   set_modifiers();
 
   int     width, height, running, frames, x, y;
-  double  t, t1;
+  double  t = 0.0;
+  double  t1 = 0.0;
   char    titlestr[ 200 ];
 
   bool start_fullscreen = false;

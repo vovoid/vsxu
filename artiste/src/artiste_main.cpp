@@ -206,6 +206,7 @@ int main(int argc, char* argv[])
   VSXP_CLASS_CONSTRUCTOR
   VSXP_CLASS_LOCAL_INIT
 
+  // switch terminal to wide character mode
   vsx_printf(L"");
 
   // Initialise GLFW
@@ -213,7 +214,8 @@ int main(int argc, char* argv[])
   set_modifiers();
 
   int     width, height, running, frames, x, y;
-  double  t, t1;
+  double  t = 0.0;
+  double  t1 = 0.0;
   char    titlestr[ 200 ];
 
   bool start_fullscreen = false;
@@ -222,9 +224,7 @@ int main(int argc, char* argv[])
   int y_res = 720;
 
   if (vsx_argvector::get_instance()->has_param("f"))
-  {
     start_fullscreen = true;
-  }
 
   if (vsx_argvector::get_instance()->has_param_with_value("s"))
   {
@@ -249,6 +249,11 @@ int main(int argc, char* argv[])
       }
     }
   }
+
+  // Start profiler
+  if (vsx_argvector::get_instance()->has_param("profiler"))
+    vsx_profiler_manager::get_instance()->start();
+
 
 
   if (start_fullscreen && !manual_resolution_set)
@@ -399,10 +404,6 @@ int main(int argc, char* argv[])
 
           vsx_printf(L"GPU MEMORY INFO: Before frame: available vram: %d MB\n", available_memory >> 10);
           vsx_printf(L"GPU MEMORY INFO: Probably used vram: %d MB\n", initial_vram_free - (available_memory >> 10));
-
-          //if (gtm)
-          //((vsx_tm*)gtm)->plot( available_memory_f, "gpu memory free" );
-
     }
 
 

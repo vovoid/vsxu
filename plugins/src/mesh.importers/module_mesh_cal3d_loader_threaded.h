@@ -7,8 +7,6 @@
 
 #include <vsx_profiler_manager.h>
 
-#include <vsx_profiler_manager.h>
-
 using namespace cal3d;
 
 typedef struct {
@@ -92,7 +90,10 @@ public:
     vsx_vector3<> rot_center;
     vsx_vector3<> post_rot_translate_vec;
 
-  module_mesh_cal3d_import() {
+  module_mesh_cal3d_import()
+  {
+    VSXP_CLASS_CONSTRUCTOR
+
     m_model = 0;
     c_model = 0;
     thread_state = 0;
@@ -112,9 +113,9 @@ public:
     thread_info.class_pointer = 0x0;
     thread_info.is_thread = false;
   }
-  bool init() {
 
-
+  bool init()
+  {
     return true;
   }
 

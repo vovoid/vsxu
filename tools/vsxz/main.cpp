@@ -42,7 +42,7 @@
 #include <io.h>
 #endif
 
-vsx_string<>current_path = vsx_argvector::get_executable_directory();
+vsx_string<>current_path = "./";
 vsxf filesystem;
 vsx_argvector* arg = vsx_argvector::get_instance();
 
@@ -169,7 +169,7 @@ void create()
   for (size_t i = 0; i < parts.size(); i++)
   {
     vsx_printf(L"* adding: %s \n", parts[i].c_str() );
-    int ret = filesystem.archive_add_file( parts[i] );
+    int ret = filesystem.archive_add_file_mt( parts[i] );
     if ( ret )
       VSX_ERROR_EXIT( "archive_add_file failed", ret );
   }
@@ -184,6 +184,7 @@ void create()
 
 int main(int argc, char* argv[])
 {
+  vsx_printf(L"vsxz\n");
   arg->init_from_argc_argv(argc, argv);
 
   if ( arg->has_param_with_value("x") )

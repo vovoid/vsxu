@@ -140,6 +140,10 @@ if (UNIX)
 #  add_definitions( -Werror ) # no reason for linux not to compile
 endif()
 
+if (VSX_PRINTF_TO_FILE EQUAL 1)
+  add_definitions(-DVSX_PRINTF_TO_FILE)
+endif()
+
 if (VSXU_STATIC EQUAL 1)
   add_definitions(-g)
   add_definitions(-DVSXU_STATIC)

@@ -72,6 +72,13 @@ public:
     return used;
   }
 
+  inline bool has(T o)
+  {
+    for (size_t i = 0; i < used; i++)
+      if (A[i] == o)
+        return true;
+    return false;
+  }
 
   inline void clear() VSX_ALWAYS_INLINE
   {

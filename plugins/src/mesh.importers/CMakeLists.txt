@@ -10,7 +10,7 @@ message("configuring vsxu module            " ${module_id})
 CREATE_STATIC_GLUE(${module_id})
 
 if(UNIX)
-  add_definitions( -fPIC )
+  add_definitions( -fPIC -fpermissive )
 endif(UNIX)
 add_definitions(-DCAL3D_EXPORTS)
 

@@ -73,8 +73,10 @@ bool g_IsNT = false;
 
 vsxf::vsxf()
 {
+  add_work_pool_iterator = 0;
   type = VSXF_TYPE_FILESYSTEM;
   archive_handle = 0;
+  work_chunk_current_size = 0;
   pthread_mutex_init(&mutex1, NULL);
 }
 
@@ -112,7 +114,10 @@ void vsxf::archive_close()
   if (type != VSXF_TYPE_ARCHIVE)
     return;
 
+  archive_close_handle_workers();
+
   archive_name = "";
+
 
   if (archive_handle)
   {
@@ -130,76 +135,7 @@ void vsxf::archive_close()
   archive_files.clear();
 }
 
-int vsxf::archive_add_file
-(
-  vsx_string<>filename,
-  char* data,
-  uint32_t data_size,
-  vsx_string<>disk_filename
-)
-{
-  if (!archive_handle)
-    return 1;
 
-  unsigned long i = 0;
-  while (i < archive_files.size())
-  {
-    if (archive_files[i].filename == filename)
-       return 1;
-    ++i;
-  }
-
-  vsx_string<>fopen_filename = filename;
-  if (disk_filename != "")
-    fopen_filename = disk_filename;
-
-  FILE* fp = 0;
-  if (data == 0)
-  {
-    fp = fopen(fopen_filename.c_str(),"rb");
-    if (!fp)
-      VSX_ERROR_RETURN_V("fp is not valid", 1);
-
-    fseek (fp, 0, SEEK_END);
-    data_size = ftell(fp);
-    fseek(fp,0,SEEK_SET);
-    data = new char[data_size];
-
-    if ( !fread(data, sizeof(char), data_size, fp) && data_size != 0 )
-      VSX_ERROR_RETURN_V("Error reading file!", 2);
-   }
-
-  fseek(archive_handle,0,SEEK_END);
-
-  // time to allocate ram for compression
-  UInt32 dictionary = 1 << 21;
-  size_t outSize = (size_t)data_size / 20 * 21 + (1 << 16);
-  size_t outSizeProcessed;
-  Byte *outBuffer = 0;
-
-  if (outSize != 0)
-    outBuffer = (Byte *)MyAlloc(outSize);
-
-  LzmaRamEncode((Byte*)data, data_size, outBuffer, outSize, &outSizeProcessed, dictionary, SZ_FILTER_AUTO);
-  data_size = outSizeProcessed+filename.size()+1;
-  fwrite(&data_size,sizeof(uint32_t),1,archive_handle);
-  fputs(filename.c_str(),archive_handle);
-  char nn = 0;
-  fwrite(&nn,sizeof(char),1,archive_handle);
-  fwrite(outBuffer,sizeof(Byte),outSizeProcessed,archive_handle);
-  delete outBuffer;
-
-  vsxf_archive_info finfo;
-  finfo.filename = filename;
-  archive_files.push_back(finfo);
-
-  if (fp)
-  {
-    delete data;
-    fclose(fp);
-  }
-  return 0;
-}
 
 int vsxf::archive_load(const char* filename, bool preload_compressed_data)
 {
@@ -330,7 +266,174 @@ bool vsxf::is_file(const vsx_string<>filename)
   return true;
 }
 
-void* vsxf::worker(void* p)
+void* vsxf::archive_add_file_worker(void* p)
+{
+  vsx_nw_vector<vsxf_archive_info*>* my_work_list = (vsx_nw_vector<vsxf_archive_info*>*)p;
+
+  for (size_t i = 0; i < my_work_list->size(); i++)
+  {
+    vsxf_archive_info* info = (*my_work_list)[i];
+    vsx_string<> filename = info->filename;
+    char* data = 0x0;
+    FILE* fp = 0;
+    fp = fopen(filename.c_str(),"rb");
+    if (!fp)
+      VSX_ERROR_CONTINUE( ("fp is not valid for file: "+filename).c_str() );
+
+    fseek (fp, 0, SEEK_END);
+    uint32_t data_size = ftell(fp);
+    fseek(fp,0,SEEK_SET);
+    data = new char[data_size];
+
+    if ( !fread(data, sizeof(char), data_size, fp) && data_size != 0 )
+      VSX_ERROR_CONTINUE("Error reading file!");
+
+    fclose(fp);
+    vsx_printf(L"** compressing %s\n", filename.c_str());
+
+    // time to allocate ram for compression
+    UInt32 dictionary = 1 << 21;
+    size_t outSize = (size_t)data_size / 20 * 21 + (1 << 16);
+    size_t outSizeProcessed;
+    Byte *outBuffer = 0;
+
+    if (outSize != 0)
+      outBuffer = (Byte *)MyAlloc(outSize);
+
+    LzmaRamEncode((Byte*)data, data_size, outBuffer, outSize, &outSizeProcessed, dictionary, SZ_FILTER_AUTO);
+    info->compressed_size = outSizeProcessed;
+    info->compressed_data = outBuffer;
+  }
+  return 0x0;
+}
+
+int vsxf::archive_add_file_mt
+(
+  vsx_string<>filename
+)
+{
+  if (!archive_handle)
+    return 1;
+
+  foreach(archive_files, i)
+    if (archive_files[i].filename == filename)
+      return 1;
+
+  vsxf_archive_info* finfo = new vsxf_archive_info;
+  finfo->filename = filename;
+  archive_files_p.push_back(finfo);
+  add_work_pool[add_work_pool_iterator].push_back(finfo);
+
+  work_chunk_current_size += file_get_size(filename);
+  if (work_chunk_current_size > VSXF_WORK_CHUNK_MAX_SIZE)
+  {
+    add_work_pool_iterator = (add_work_pool_iterator + 1) % VSXF_NUM_ADD_THREADS;
+    work_chunk_current_size = 0;
+  }
+  return 0;
+}
+
+void vsxf::archive_close_handle_workers()
+{
+  if (!add_work_pool[0].size())
+    return;
+
+  pthread_t threads[VSXF_NUM_ADD_THREADS];
+  pthread_attr_t attrs[VSXF_NUM_ADD_THREADS];
+  for (size_t i = 0; i < VSXF_NUM_ADD_THREADS; i++)
+  {
+    pthread_attr_init(&attrs[i]);
+    pthread_create(&threads[i], &attrs[i], &archive_add_file_worker, &add_work_pool[i]);
+  }
+
+  // Wait for the threads to finish
+  for (size_t i = 0; i < VSXF_NUM_ADD_THREADS; i++)
+  {
+    pthread_join(threads[i],NULL);
+    pthread_attr_destroy(&attrs[i]);
+  }
+
+  // Write all to disk
+  foreach (archive_files_p, i)
+  {
+    fseek(archive_handle,0,SEEK_END);
+    uint32_t data_size = archive_files_p[i]->compressed_size + archive_files_p[i]->filename.size() + 1;
+    fwrite(&data_size, sizeof(uint32_t),1,archive_handle);
+    fputs(archive_files_p[i]->filename.c_str(), archive_handle);
+    char nn = 0;
+    fwrite(&nn,sizeof(char),1,archive_handle);
+    fwrite(archive_files_p[i]->compressed_data, sizeof(Byte),archive_files_p[i]->compressed_size, archive_handle);
+  }
+}
+
+int vsxf::archive_add_file
+(
+  vsx_string<>filename,
+  char* data,
+  uint32_t data_size,
+  vsx_string<>disk_filename
+)
+{
+  if (!archive_handle)
+    return 1;
+
+  foreach(archive_files, i)
+    if (archive_files[i].filename == filename)
+      return 1;
+
+  vsx_string<>fopen_filename = filename;
+  if (disk_filename != "")
+    fopen_filename = disk_filename;
+
+  FILE* fp = 0;
+  if (data == 0)
+  {
+    fp = fopen(fopen_filename.c_str(),"rb");
+    if (!fp)
+      VSX_ERROR_RETURN_V("fp is not valid", 1);
+
+    fseek (fp, 0, SEEK_END);
+    data_size = ftell(fp);
+    fseek(fp,0,SEEK_SET);
+    data = new char[data_size];
+
+    if ( !fread(data, sizeof(char), data_size, fp) && data_size != 0 )
+      VSX_ERROR_RETURN_V("Error reading file!", 2);
+   }
+
+  fseek(archive_handle,0,SEEK_END);
+
+  // time to allocate ram for compression
+  UInt32 dictionary = 1 << 21;
+  size_t outSize = (size_t)data_size / 20 * 21 + (1 << 16);
+  size_t outSizeProcessed;
+  Byte *outBuffer = 0;
+
+  if (outSize != 0)
+    outBuffer = (Byte *)MyAlloc(outSize);
+
+  LzmaRamEncode((Byte*)data, data_size, outBuffer, outSize, &outSizeProcessed, dictionary, SZ_FILTER_AUTO);
+  data_size = outSizeProcessed+filename.size()+1;
+  fwrite(&data_size,sizeof(uint32_t),1,archive_handle);
+  fputs(filename.c_str(),archive_handle);
+  char nn = 0;
+  fwrite(&nn,sizeof(char),1,archive_handle);
+  fwrite(outBuffer,sizeof(Byte),outSizeProcessed,archive_handle);
+  delete outBuffer;
+
+  vsxf_archive_info finfo;
+  finfo.filename = filename;
+  archive_files.push_back(finfo);
+
+  if (fp)
+  {
+    delete data;
+    fclose(fp);
+  }
+  return 0;
+}
+
+void* vsxf::archive_load_worker(void* p)
 {
   vsx_nw_vector<vsxf_archive_info*>* my_work_list = (vsx_nw_vector<vsxf_archive_info*>*)p;
 
@@ -402,7 +505,7 @@ void vsxf::archive_load_all_mt(const char* filename)
   for (size_t i = 0; i < num_threads; i++)
   {
     pthread_attr_init(&attrs[i]);
-    pthread_create(&threads[i], &attrs[i], &worker, &work_pool[i]);
+    pthread_create(&threads[i], &attrs[i], &archive_load_worker, &work_pool[i]);
   }
 
   // 4. Wait for the threads to finish
@@ -765,4 +868,16 @@ vsx_string<>get_path_from_filename(vsx_string<>filename, char override_directory
 vsx_string<>vsx_get_directory_separator()
 {
   return vsx_string<>(DIRECTORY_SEPARATOR);
+}
+
+
+size_t file_get_size(vsx_string<> filename)
+{
+  FILE* fp = fopen(filename.c_str(), "rb");
+  if (!fp)
+    return 0;
+  fseek (fp, 0, SEEK_END);
+  int s = ftell(fp);
+  fclose(fp);
+  return (size_t)s;
 }
