@@ -215,7 +215,7 @@ public:
     bool float_texture = false, // use floating point channels (8-bit is default)
     bool alpha = true, // support alpha channel or not
     GLuint existing_depth_texture_id = 0,
-    bool multisample = true
+    bool multisample = false
   );
 
   // run in stop/start or when changing resolution
