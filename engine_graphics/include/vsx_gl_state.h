@@ -4,6 +4,7 @@
 // shadow state of OpenGL to avoid glGet* calls
 
 #include <vsx_platform.h>
+#include <debug/vsx_error.h>
 #include <engine_graphics_dllimport.h>
 #include <vsx_matrix.h>
 #include <string/vsx_string.h>
@@ -836,6 +837,9 @@ public:
   // push and pop
   inline void matrix_push()
   {
+    if (i_matrix_stack_pointer[i_matrix_mode] + 1 > VSX_GL_STATE_STACK_DEPTH)
+      VSX_ERROR_RETURN(L"Trying to push to a full matrix stack!\n");
+
     matrix_stack[i_matrix_mode][i_matrix_stack_pointer[i_matrix_mode]] = core_matrix[i_matrix_mode];
     i_matrix_stack_pointer[i_matrix_mode]++;
     #ifndef VSX_NO_GL
@@ -845,8 +849,9 @@ public:
 
   inline void matrix_pop()
   {
-    if (!i_matrix_stack_pointer)
-      return;
+    if (!i_matrix_stack_pointer[i_matrix_mode])
+      VSX_ERROR_RETURN(L"Error, popping off of an empty matrix stack\n");
+
     i_matrix_stack_pointer[i_matrix_mode]--;
     core_matrix[i_matrix_mode] = matrix_stack[i_matrix_mode][i_matrix_stack_pointer[i_matrix_mode]];
     #ifndef VSX_NO_GL
