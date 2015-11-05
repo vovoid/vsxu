@@ -46,6 +46,7 @@
 #include "module_system_file_chooser.h"
 #include "module_string_resource_to_string.h"
 #include "module_render_state.h"
+#include "module_system_gl_vendor.h"
 
 
 
@@ -75,8 +76,9 @@ vsx_module* MOD_CM(unsigned long module, void* args) {
     case 6: return (vsx_module*)(new module_system_file_chooser);
     case 7: return (vsx_module*)(new module_render_state);
     case 8: return (vsx_module*)(new module_system_blocker_limit);
+    case 9: return (vsx_module*)(new module_system_gl_vendor);
 #if PLATFORM == PLATFORM_LINUX
-    case 9: return (vsx_module*)(new module_system_joystick);
+    case 10: return (vsx_module*)(new module_system_joystick);
 #endif
   }
   return 0;
@@ -93,8 +95,9 @@ void MOD_DM(vsx_module* m,unsigned long module) {
     case 6: delete (module_system_file_chooser*)m; break;
     case 7: delete (module_render_state*)m; break;
     case 8: delete (module_system_blocker_limit*)m; break;
+    case 9: delete (module_system_gl_vendor*)m; break;
 #if PLATFORM == PLATFORM_LINUX
-    case 9: delete (module_system_joystick*)m; break;
+    case 10: delete (module_system_joystick*)m; break;
 #endif
   }
 }
@@ -103,7 +106,7 @@ unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   VSX_UNUSED(environment);
 
-  unsigned long n = 9;
+  unsigned long n = 10;
   #if PLATFORM == PLATFORM_LINUX
     n++;
   #endif
