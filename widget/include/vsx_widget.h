@@ -25,6 +25,7 @@
 #define VSX_WIDGET_BASE_H
 
 // engine
+#include <vsx_gl_global.h>
 #include <string/vsx_string.h>
 #include <string/vsx_string_helper.h>
 #include <vsx_color.h>

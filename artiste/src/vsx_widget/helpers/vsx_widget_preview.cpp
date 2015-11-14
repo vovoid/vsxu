@@ -22,6 +22,7 @@
 */
 
 #include <map>
+#include <vsx_gl_global.h>
 #include "vsx_font.h"
 // local includes
 #include "vsx_engine.h"

@@ -45,18 +45,13 @@ void vsx_widget_desktop::init()
   vsx_widget_skin::get_instance()->skin_path_set( PLATFORM_SHARED_FILES+vsx_string<>("gfx")+DIRECTORY_SEPARATOR+"vsxu_luna"+DIRECTORY_SEPARATOR );
   vsx_widget_skin::get_instance()->init();
 
-  mtex.init_opengl_texture_2d();
-  mtex.load_jpeg(vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg");
-
   vsx_widget_global_interpolation::get_instance()->set( 1.0);
   camera.set_key_speed( 3.0 );
 
   vsxf filesystem;
   font.load(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png", &filesystem);
 
-  mtex.init_opengl_texture_2d();
-  mtex.load_jpeg(vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg");
-
+  mtex = vsx_texture_data_loader_jpg::get_instance()->load(vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg", vsxf::get_instance());
 
   init_children();
 
@@ -66,8 +61,6 @@ void vsx_widget_desktop::init()
 void vsx_widget_desktop::reinit()
 {
   vsx_widget::reinit();
-  mtex.init_opengl_texture_2d();
-  mtex.load_jpeg(vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg");
 }
 
 bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool n_shift)
@@ -189,7 +182,7 @@ void vsx_widget_desktop::draw()
   glDepthMask(GL_FALSE);
   glColor4f(1,1,1,1);
 
-  if (!mtex.bind())
+  if (!mtex->bind())
     VSX_ERROR_RETURN("Could not bind texture");
 
     glBegin(GL_QUADS);
@@ -202,7 +195,7 @@ void vsx_widget_desktop::draw()
       glTexCoord2f(1, 0);
       glVertex3f(pos.x+size.x/2,pos.y-size.y/2,-10.0f);
     glEnd();
-  mtex._bind();
+  mtex->_bind();
 
   draw_children();
 }
@@ -280,4 +273,10 @@ vsx_widget_desktop::vsx_widget_desktop()
   a_focus = this;
   k_focus = this;
   m_focus = this;
+}
+
+
+vsx_widget_desktop::~vsx_widget_desktop()
+{
+  delete mtex;
 }

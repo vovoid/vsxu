@@ -282,12 +282,10 @@ public:
 
     i_tex_output = new vsx_texture; //Output Texture from the shader
     i_tex_output->reinit_color_buffer(8 << i_tex_size, 8 << i_tex_size, true);
-    i_tex_output->valid = true;
 
     i_tex_blank = new vsx_texture; //Blank Texture for default and clear_color
     i_tex_blank->reinit_color_buffer(8 << i_tex_size, 8 << i_tex_size, true);
     i_tex_blank->upload_ram_bitmap_2d(&i_clear_bmp,true);
-    i_tex_blank->valid = true;
 
     i_tex_A = &i_tex_blank;
     i_tex_B = &i_tex_blank;
@@ -476,7 +474,6 @@ public:
       texInA->_bind();
       texInB->_bind();
     texOut->end_capture_to_buffer();
-    texOut->valid = true;
   }
 
   //Sequence to delete any texture
@@ -718,12 +715,10 @@ public:
 
       i_tex_output = new vsx_texture;
       i_tex_output->reinit_color_buffer(8 << i_tex_size, 8 << i_tex_size, true);
-      i_tex_output->valid = true;
   
       i_tex_blank = new vsx_texture;
       i_tex_blank->reinit_color_buffer(8 << i_tex_size, 8 << i_tex_size, true);
       i_tex_blank->upload_ram_bitmap_2d(&i_clear_bmp, true);
-      i_tex_blank->valid = true;
     }
   }
 

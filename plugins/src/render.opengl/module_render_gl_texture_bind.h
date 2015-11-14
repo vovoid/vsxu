@@ -57,8 +57,8 @@ public:
     {
       glMatrixMode(GL_TEXTURE);
       glPushMatrix();
-      vsx_transform_obj& texture_transform = *(*t_tex)->get_transform();
-      texture_transform();
+      if ((*t_tex)->get_transform())
+        (*t_tex)->get_transform()->transform();
 
       glMatrixMode(GL_MODELVIEW);
 

@@ -595,12 +595,12 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
 //            vsx_printf(L"GLSL:binding texture %d\n", GL_TEXTURE0 + tex_i);
             glActiveTexture(GL_TEXTURE0 + tex_i);
             (*ba)->bind();
-            vsx_transform_obj& texture_transform = *(*ba)->get_transform();
+
             if ((*ba)->get_transform())
             {
               glMatrixMode(GL_TEXTURE);
               glLoadIdentity();
-              texture_transform();
+              (*ba)->get_transform()->transform();
             }
 
             glUniform1iARB(uniform_list[i].glsl_location,tex_i);

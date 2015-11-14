@@ -27,13 +27,14 @@
 #include <list>
 #include <vector>
 #include <math.h>
-#include "vsx_texture_info.h"
-#include "vsx_texture.h"
 #include "vsx_command.h"
 #include "vsx_font.h"
 #include "vsxfst.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
+#include <texture/vsx_texture.h>
+
+
 // local includes
 #include "log/vsx_log_a.h"
 #include "vsx_widget.h"
@@ -654,14 +655,10 @@ void vsx_widget_ultra_chooser::build_tree() {
   treedraw->size.y = size.y;
   treedraw->pos = vsx_vector3<>(0.5f*size.x, 0.5f*size.y);
   treedraw->changeProjType(0);
-  treedraw->mtex = new vsx_texture;
-
-  vsxf filesystem;
-  treedraw->mtex->load_png( vsx_widget_skin::get_instance()->skin_path_get() + "label.png", true, &filesystem);
-  treedraw->mtex->bind_load_gl();
+  treedraw->mtex = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "label.png", vsxf::get_instance(), true);
 }
-void vsx_widget_ultra_chooser::reinit() {
-  vsxf filesystem;
-  treedraw->mtex->load_png( vsx_widget_skin::get_instance()->skin_path_get() + "label.png", true, &filesystem);
+
+void vsx_widget_ultra_chooser::reinit()
+{
 }
 

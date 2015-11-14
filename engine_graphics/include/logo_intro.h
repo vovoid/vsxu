@@ -27,7 +27,7 @@
 #include <vsx_platform.h>
 #include <engine_graphics_dllimport.h>
 #include "vsx_timer.h"
-#include "vsx_texture.h"
+#include <texture/vsx_texture.h>
 
 
 class vsx_logo_intro {

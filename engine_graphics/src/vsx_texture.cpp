@@ -24,7 +24,7 @@
 
 #include <vsxfst.h>
 #include <vsx_gl_global.h>
-#include <vsx_texture.h>
+#include <texture/vsx_texture.h>
 #ifndef VSX_TEXTURE_NO_GLPNG
   #include <vsxg.h>
   #include <stdlib.h>
@@ -37,59 +37,6 @@
 #include <debug/vsx_error.h>
 #include <vsx_gl_state.h>
 
-std::map<vsx_string<>, vsx_texture_glist_holder> vsx_texture::t_glist;
-
-vsx_texture::vsx_texture()
-{
-  pti_l = 0x0;
-  valid = false;
-
-  valid_fbo = false;
-  frame_buffer_type = 0;
-  frame_buffer_handle = 0;
-  color_buffer_handle = 0;
-  depth_buffer_handle = 0;
-  depth_buffer_local = true;
-
-  render_buffer_color_handle = 0;
-  render_buffer_depth_handle = 0;
-  frame_buffer_blit_handle = 0;
-
-  capturing_to_buffer = false;
-
-  pti_l = 0x0;
-  deferred_loading_type = 0;
-
-  original_transform_obj = 1;
-
-  loaded_from_glist = false;
-
-  prev_buf = 0;
-
-  is_glist_alias = false;
-  texture_info = new vsx_texture_info;
-  transform_obj = new vsx_transform_neutral;
-}
-
-vsx_texture::~vsx_texture()
-{
-  unload();
-
-  if (!is_glist_alias)
-  {
-    delete texture_info;
-  }
-
-  if (original_transform_obj)
-  {
-    delete transform_obj;
-  }
-
-  if (pti_l)
-  {
-    delete pti_l;
-  }
-}
 
 
 
@@ -100,30 +47,6 @@ vsx_texture::~vsx_texture()
 
 
 
-void vsx_texture::init_opengl_texture_1d()
-{
-  GLuint tex_id;
-  glGenTextures(1, &tex_id);
-  texture_info->ogl_id = tex_id;
-  texture_info->ogl_type = GL_TEXTURE_1D;
-}
-
-
-void vsx_texture::init_opengl_texture_2d()
-{
-  GLuint tex_id;
-  glGenTextures(1, &tex_id);
-  texture_info->ogl_id = tex_id;
-  texture_info->ogl_type = GL_TEXTURE_2D;
-}
-
-void vsx_texture::init_opengl_texture_cubemap()
-{
-  GLuint tex_id;
-  glGenTextures(1, &tex_id);
-  texture_info->ogl_id = tex_id;
-  texture_info->ogl_type = GL_TEXTURE_CUBE_MAP;
-}
 
 bool vsx_texture::has_buffer_support()
 {
@@ -291,15 +214,14 @@ void vsx_texture::init_render_buffer(
   // TODO: create and attach depth buffer also
 
 
-  texture_info->ogl_id = frame_buffer_blit_color_texture;
-  texture_info->ogl_type = GL_TEXTURE_2D;
-  texture_info->size_x = width;
-  texture_info->size_y = height;
+  texture_gl->gl_id = frame_buffer_blit_color_texture;
+  texture_gl->gl_type = GL_TEXTURE_2D;
+  texture_data->width = width;
+  texture_data->height = height;
 
   // restore eventual previous buffer
   vsx_gl_state::get_instance()->framebuffer_bind(prev_buf_l);
 
-  valid = true; // texture valid for binding
   valid_fbo = true; // fbo valid for capturing
 }
 
@@ -311,10 +233,9 @@ void vsx_texture::deinit_render_buffer()
   glDeleteTextures(1,&frame_buffer_blit_color_texture);
   glDeleteFramebuffersEXT(1, &frame_buffer_handle);
   glDeleteFramebuffersEXT(1, &frame_buffer_blit_handle);
-  valid = false;
   valid_fbo = false;
-  texture_info->ogl_id = 0;
-  texture_info->ogl_type = 0;
+  texture_gl->gl_id = 0;
+  texture_gl->gl_type = 0;
 }
 
 
@@ -419,11 +340,10 @@ void vsx_texture::init_color_buffer
   switch(status)
   {
      case GL_FRAMEBUFFER_COMPLETE_EXT:
-      texture_info->ogl_id = frame_buffer_fbo_attachment_texture;
-      texture_info->ogl_type = GL_TEXTURE_2D;
-      texture_info->size_x = width;
-      texture_info->size_y = height;
-            valid = true; // valid for binding
+      texture_gl->gl_id = frame_buffer_fbo_attachment_texture;
+      texture_gl->gl_type = GL_TEXTURE_2D;
+      texture_data->width = width;
+      texture_data->height = height;
       valid_fbo = true; // valid for capturing
       break;
     default:
@@ -441,10 +361,9 @@ void vsx_texture::deinit_color_buffer()
   depth_buffer_local = 0;
   glDeleteFramebuffersEXT(1, &frame_buffer_handle);
 
-  valid = false;
   valid_fbo = false;
-  texture_info->ogl_id = 0;
-  texture_info->ogl_type = 0;
+  texture_gl->gl_id = 0;
+  texture_gl->gl_type = 0;
 }
 
 // run in stop/start or when changing resolution
@@ -726,22 +645,21 @@ void vsx_texture::init_color_depth_buffer
   {
      case GL_FRAMEBUFFER_COMPLETE_EXT:
       if (multisample)
-        texture_info->ogl_id = frame_buffer_blit_color_texture;
+        texture_gl->gl_id = frame_buffer_blit_color_texture;
       else
       {
         color_buffer_handle = frame_buffer_fbo_attachment_texture;
-        texture_info->ogl_id = frame_buffer_fbo_attachment_texture;
+        texture_gl->gl_id = frame_buffer_fbo_attachment_texture;
       }
 
 
       if (multisample)
-        texture_info->ogl_type = GL_TEXTURE_2D_MULTISAMPLE;
+        texture_gl->gl_type = GL_TEXTURE_2D_MULTISAMPLE;
       else
-        texture_info->ogl_type = GL_TEXTURE_2D;
+        texture_gl->gl_type = GL_TEXTURE_2D;
 
-      texture_info->size_x = width;
-      texture_info->size_y = height;
-      valid = true; // valid for binding
+      texture_data->width = width;
+      texture_data->height = height;
       valid_fbo = true; // valid for capturing
       break;
     default:
@@ -768,17 +686,16 @@ void vsx_texture::deinit_color_depth_buffer()
     vsx_gl_state::get_instance()->framebuffer_bind(0);
   glDeleteFramebuffersEXT(1, &frame_buffer_handle);
 
-  if (texture_info->ogl_type == GL_TEXTURE_2D_MULTISAMPLE)
+  if (texture_gl->gl_type == GL_TEXTURE_2D_MULTISAMPLE)
   {
     glDeleteTextures(1, &frame_buffer_blit_color_texture);
     frame_buffer_blit_color_texture = 0;
     glDeleteFramebuffersEXT(1, &frame_buffer_blit_handle);
   }
 
-  valid = false;
   valid_fbo = false;
-  texture_info->ogl_id = 0;
-  texture_info->ogl_type = 0;
+  texture_gl->gl_id = 0;
+  texture_gl->gl_type = 0;
 }
 
 
@@ -812,7 +729,8 @@ void vsx_texture::reinit_color_depth_buffer
 void vsx_texture::deinit_buffer()
 {
   // sanity checks
-  if (!valid_fbo) return;
+  if (!valid_fbo)
+    return;
 
   if (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER)
   {
@@ -869,7 +787,7 @@ void vsx_texture::begin_capture_to_buffer()
   vsx_gl_state::get_instance()->blend_set(1);
 
   vsx_gl_state::get_instance()->framebuffer_bind(frame_buffer_handle);
-  vsx_gl_state::get_instance()->viewport_set(0,0,(int)texture_info->size_x, (int)texture_info->size_y);
+  vsx_gl_state::get_instance()->viewport_set(0,0,(int)texture_data->width, (int)texture_data->height);
 
   capturing_to_buffer = true;
 }
@@ -888,7 +806,7 @@ void vsx_texture::end_capture_to_buffer()
       ||
       (frame_buffer_type == VSX_TEXTURE_BUFFER_TYPE_COLOR_DEPTH
        &&
-       texture_info->ogl_type == GL_TEXTURE_2D_MULTISAMPLE
+       texture_gl->gl_type == GL_TEXTURE_2D_MULTISAMPLE
       )
     )
     {
@@ -897,12 +815,12 @@ void vsx_texture::end_capture_to_buffer()
       glBlitFramebufferEXT(
         0,
         0,
-        (GLint)texture_info->size_x-1,
-        (GLint)texture_info->size_y-1,
+        (GLint)texture_data->width - 1,
+        (GLint)texture_data->height - 1,
         0,
         0,
-        (GLint)texture_info->size_x-1,
-        (GLint)texture_info->size_y-1,
+        (GLint)texture_data->width - 1,
+        (GLint)texture_data->height - 1,
         GL_COLOR_BUFFER_BIT,
         GL_NEAREST
       );
@@ -928,43 +846,12 @@ void vsx_texture::end_capture_to_buffer()
   }
 }
 
-void vsx_texture::unload_all_active()
-{
-  for (std::map<vsx_string<>, vsx_texture_glist_holder>::iterator it = t_glist.begin(); it != t_glist.end(); ++it)
-  {
-    glDeleteTextures(1,&((*it).second.texture_info.ogl_id));
-  }
-}
-
-void vsx_texture::reinit_all_active()
-{
-  std::map<vsx_string<>, vsx_texture_glist_holder> temp_glist = t_glist;
-  vsx_string<>tname;
-  for (std::map<vsx_string<>, vsx_texture_glist_holder>::iterator it = temp_glist.begin(); it != temp_glist.end(); ++it)
-  {
-    if ((*it).second.texture_info.type == VSX_TEXTURE_INFO_TYPE_PNG)
-    {
-      tname = (*it).first;
-      t_glist.erase(tname);
-      vsxf filesystem;
-      load_png(tname,true, &filesystem);
-    }
-    if ((*it).second.texture_info.type == VSX_TEXTURE_INFO_TYPE_JPG)
-    {
-      tname = (*it).first;
-      t_glist.erase(tname);
-      load_jpeg(tname);
-    }
-  }
-}
-
-
 void vsx_texture::upload_ram_bitmap_1d( void* data, unsigned long size, bool mipmaps, int bpp, int bpp2 )
 {
-  GLboolean oldStatus = glIsEnabled(texture_info->ogl_type);
+  GLboolean oldStatus = glIsEnabled(texture_gl->gl_type);
 
-  glEnable(texture_info->ogl_type);
-  glBindTexture(texture_info->ogl_type, texture_info->ogl_id);
+  glEnable(texture_gl->gl_type);
+  glBindTexture(texture_gl->gl_type, texture_gl->gl_id);
 
 
 
@@ -972,21 +859,21 @@ void vsx_texture::upload_ram_bitmap_1d( void* data, unsigned long size, bool mip
   if (mipmaps)
   {
     glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-    glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(texture_info->ogl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(texture_gl->gl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
   } else
   {
-    glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   }
 
   // no compression
   if (bpp == GL_RGBA32F_ARB)
   {
     glTexImage1D(
-      texture_info->ogl_type,  // opengl type
+      texture_gl->gl_type,  // opengl type
       0, // mipmap level
       GL_RGBA32F_ARB, // internal format
       size, // size
@@ -1000,7 +887,7 @@ void vsx_texture::upload_ram_bitmap_1d( void* data, unsigned long size, bool mip
     if (bpp == 3)
     {
       glTexImage1D(
-        texture_info->ogl_type,  // opengl type
+        texture_gl->gl_type,  // opengl type
         0,  // mipmap level
         GL_COMPRESSED_RGB_ARB, // storage type
         size, // size x
@@ -1013,7 +900,7 @@ void vsx_texture::upload_ram_bitmap_1d( void* data, unsigned long size, bool mip
     else
     {
       glTexImage1D(
-        texture_info->ogl_type,  // opengl type
+        texture_gl->gl_type,  // opengl type
         0,  // mipmap level
         GL_COMPRESSED_RGBA_ARB, // storage type
         size, // size x
@@ -1025,14 +912,10 @@ void vsx_texture::upload_ram_bitmap_1d( void* data, unsigned long size, bool mip
     }
   }
 
-
-
   if(!oldStatus)
   {
-    glDisable(texture_info->ogl_type);
+    glDisable(texture_gl->gl_type);
   }
-  valid = true;
-
 }
 
 void vsx_texture::upload_ram_bitmap_2d(vsx_bitmap* vbitmap,bool mipmaps, bool upside_down)
@@ -1096,38 +979,38 @@ void vsx_texture::upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigne
 
 
 
-  GLboolean oldStatus = glIsEnabled(texture_info->ogl_type);
+  GLboolean oldStatus = glIsEnabled(texture_gl->gl_type);
 
-  glEnable(texture_info->ogl_type);
-  glBindTexture(texture_info->ogl_type, texture_info->ogl_id);
+  glEnable(texture_gl->gl_type);
+  glBindTexture(texture_gl->gl_type, texture_gl->gl_id);
 
   if (mipmaps)
   {
     glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-    glTexParameteri(texture_info->ogl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-    glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(texture_gl->gl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     float rMaxAniso;
     glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &rMaxAniso);
-    glTexParameterf( texture_info->ogl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
+    glTexParameterf( texture_gl->gl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
 
   } else
   {
-    glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   }
 
   // no compression
   if (bpp == GL_RGBA32F_ARB)
   {
-    glTexImage2D(texture_info->ogl_type, 0, bpp , size_x, size_y, 0, bpp2, GL_FLOAT, data);
+    glTexImage2D(texture_gl->gl_type, 0, bpp , size_x, size_y, 0, bpp2, GL_FLOAT, data);
   } else
   {
     if (bpp == 3)
     {
       glTexImage2D(
-        texture_info->ogl_type,  // opengl type
+        texture_gl->gl_type,  // opengl type
         0,  // mipmap level
 //        GL_RGB, // storage type
         GL_COMPRESSED_RGB_ARB, // storage type
@@ -1142,7 +1025,7 @@ void vsx_texture::upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigne
     else
     {
       glTexImage2D(
-        texture_info->ogl_type,  // opengl type
+        texture_gl->gl_type,  // opengl type
         0,  // mipmap level
         GL_COMPRESSED_RGBA_ARB, // storage type
 //        GL_RGBA, // storage type
@@ -1169,14 +1052,15 @@ void vsx_texture::upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigne
     }
   }
 
-  this->texture_info->size_x = size_x;
-  this->texture_info->size_y = size_y;
+  this->texture_data->width = size_x;
+  this->texture_data->height = size_y;
 
   if(!oldStatus)
   {
-    glDisable(texture_info->ogl_type);
+    glDisable(texture_gl->gl_type);
   }
-  valid = true;
+
+  texture_gl->uploaded_to_gl = true;
 }
 
 
@@ -1266,20 +1150,19 @@ void vsx_texture::upload_ram_bitmap_cube(void* data, unsigned long size_x, unsig
         );
       }
     }
-
   }
 
 
-  glEnable(texture_info->ogl_type);
-  glBindTexture(texture_info->ogl_type,texture_info->ogl_id);
+  glEnable(texture_gl->gl_type);
+  glBindTexture(texture_gl->gl_type, texture_gl->gl_id);
 
   glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-  glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-  glTexParameteri(texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(texture_info->ogl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+  glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+  glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(texture_gl->gl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
   float rMaxAniso;
   glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &rMaxAniso);
-  glTexParameterf( texture_info->ogl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
+  glTexParameterf( texture_gl->gl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
 
 
   glTexImage2D(
@@ -1360,7 +1243,7 @@ void vsx_texture::upload_ram_bitmap_cube(void* data, unsigned long size_x, unsig
     sides[5] // pointer to data
   );
 
-  glDisable( texture_info->ogl_type );
+  glDisable( texture_gl->gl_type );
 
   // free our temporary local storage
   free(sides[0]);
@@ -1370,44 +1253,7 @@ void vsx_texture::upload_ram_bitmap_cube(void* data, unsigned long size_x, unsig
   free(sides[4]);
   free(sides[5]);
 
-  valid = true;
-}
-
-
-
-bool vsx_texture::load_from_glist_deferred(vsx_string<>fname)
-{
-  if (t_glist.find(fname) == t_glist.end())
-    return false;
-
-  if (!is_glist_alias)
-    delete texture_info;
-
-  texture_info = &t_glist[fname].texture_info;
-
-  t_glist[fname].references++;
-
-  name = fname;
-  loaded_from_glist = true;
-
-  is_glist_alias = true;
-  return true;
-}
-
-void vsx_texture::add_to_glist_deferred(vsx_string<>fname)
-{
-  if (t_glist.find(fname) == t_glist.end())
-  {
-    t_glist[fname].texture_info = *texture_info;
-    t_glist[fname].texture_info.name = fname;
-    delete texture_info;
-    texture_info = &t_glist[fname].texture_info;
-  }
-  // set glist alias
-  is_glist_alias = true; // we own the original texture_info
-
-  // increase refcount
-  t_glist[fname].references++;
+  texture_gl->uploaded_to_gl = true;
 }
 
 
@@ -1416,299 +1262,109 @@ void vsx_texture::add_to_glist_deferred(vsx_string<>fname)
 
 
 
-// thread run by the load_png_thread
-void* png_worker(void *ptr)
+
+void vsx_texture::upload_gl()
 {
-  if (!pngLoadRaw(
-        ((vsx_texture*)ptr)->pti_l->filename.c_str(), &((vsx_texture*)ptr)->pti_l->pp, ((vsx_texture*)ptr)->pti_l->filesystem))
-  {
-    delete ((vsx_texture*)ptr)->pti_l;
-    ((vsx_texture*)ptr)->pti_l = 0x0;
-    return 0;
-  }
-
-  __sync_fetch_and_add( &((vsx_texture*)ptr)->deferred_loading_type, VSX_TEXTURE_LOADING_TYPE_2D );
-
-  return 0;
-}
-
-void png_worker_cleanup(vsx_texture_load_thread_info* pti_l)
-{
-  pthread_join( pti_l->worker_t, 0 );
-  pthread_attr_destroy(&pti_l->worker_t_attr);
-}
-
-
-
-
-
-
-
-void vsx_texture::load_png(vsx_string<>fname, bool mipmaps, vsxf* filesystem)
-{
-  if (load_from_glist_deferred(fname))
+  if (!texture_gl)
     return;
 
-  // reset state
-  valid = false;
-  is_glist_alias = false;
-  deferred_loading_type = 0;
-
-  pti_l = new vsx_texture_load_thread_info();
-
-  if (!pngLoadRaw(fname.c_str(), &pti_l->pp, filesystem))
-  {
-    delete pti_l;
-    pti_l = 0x0;
-    return;
-  }
-
-  pti_l->filename = fname;
-  pti_l->mipmaps = mipmaps;
-  pti_l->filesystem = filesystem;
-
-  deferred_loading_type = VSX_TEXTURE_LOADING_TYPE_2D;
-
-  add_to_glist_deferred(fname);
-}
-
-// load a png but put the heavy processing in a thread
-void vsx_texture::load_png_thread(vsx_string<>fname, bool mipmaps, vsxf* filesystem)
-{
-  if (load_from_glist_deferred(fname))
+  // already uploaded
+  if (texture_gl->uploaded_to_gl)
     return;
 
-  // reset state
-  valid = false;
-  is_glist_alias = false;
-  deferred_loading_type = 0;
-
-
-  // If thread already running, wait for it to finish and clean up after it
-  if ( pti_l && pti_l->thread_created && __sync_fetch_and_add(&deferred_loading_type, 0) )
-  {
-    png_worker_cleanup(pti_l);
-    delete pti_l;
-  }
-
-  pti_l = new vsx_texture_load_thread_info();
-  pti_l->filename = fname;
-  pti_l->mipmaps = mipmaps;
-  pti_l->filesystem = filesystem;
-
-  pti_l->thread_created = 1;
-
-  add_to_glist_deferred(fname);
-
-  pthread_attr_init(&pti_l->worker_t_attr);
-
-  pthread_create(&(pti_l->worker_t), &(pti_l->worker_t_attr), &png_worker, (void*)this);
-}
-
-
-void vsx_texture::load_png_cubemap(vsx_string<>fname, bool mipmaps, vsxf* filesystem)
-{
-  if (load_from_glist_deferred(fname))
+  // Data uploaded elsewhere
+  if (!texture_data)
     return;
 
-  // reset state
-  valid = false;
-  is_glist_alias = false;
-  deferred_loading_type = 0;
-  pti_l = new vsx_texture_load_thread_info();
-
-  if (!pngLoadRaw(fname.c_str(), &pti_l->pp, filesystem))
-  {
-    delete pti_l;
-    pti_l = 0x0;
+  if (!texture_data->data_ready)
     return;
+
+  switch (texture_data->type)
+  {
+    case VSX_TEXTURE_DATA_TYPE_2D:
+      texture_gl->init_opengl_texture_2d();
+
+      if (texture_data->components == 1)
+        upload_ram_bitmap_2d(texture_data->data[0], texture_data->width, texture_data->height, texture_data->mipmaps, 3, GL_RGB);
+
+      if (texture_data->components == 2)
+        upload_ram_bitmap_2d(texture_data->data[0], texture_data->width, texture_data->height, texture_data->mipmaps, 4, GL_RGBA);
+
+      if (texture_data->components == 3)
+        upload_ram_bitmap_2d(texture_data->data[0], texture_data->width, texture_data->height, texture_data->mipmaps, 3, GL_RGB);
+
+      if (texture_data->components == 4)
+        upload_ram_bitmap_2d(texture_data->data[0], texture_data->width, texture_data->height, texture_data->mipmaps, 4, GL_RGBA);
+    break;
+
+    case VSX_TEXTURE_DATA_TYPE_CUBE:
+      texture_gl->init_opengl_texture_cubemap();
+
+      if (texture_data->components == 1)
+        upload_ram_bitmap_cube(texture_data->data[0], texture_data->width, texture_data->height, texture_data->mipmaps, 3, GL_RGB);
+
+      if (texture_data->components == 2)
+        upload_ram_bitmap_cube(texture_data->data[0], texture_data->width, texture_data->height, texture_data->mipmaps, 4, GL_RGBA);
+
+      if (texture_data->components == 3)
+        upload_ram_bitmap_cube(texture_data->data[0], texture_data->width, texture_data->height, texture_data->mipmaps, 3, GL_RGB);
+
+      if (texture_data->components == 4)
+        upload_ram_bitmap_cube(texture_data->data[0], texture_data->width, texture_data->height, texture_data->mipmaps, 4, GL_RGBA);
+    break;
   }
-
-  pti_l->filename = fname;
-  pti_l->mipmaps = mipmaps;
-  pti_l->filesystem = filesystem;
-
-  deferred_loading_type = VSX_TEXTURE_LOADING_TYPE_CUBE;
-  add_to_glist_deferred(fname);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-void vsx_texture::load_jpeg(vsx_string<>fname, bool mipmaps)
+void vsx_texture::unload_gl()
 {
-  valid = false;
+  if (!texture_gl)
+    VSX_ERROR_RETURN("texture_gl invalid");
 
-  CJPEGTest cj;
-  vsx_string<>ret;
-  vsxf filesystem;
-  cj.LoadJPEG(fname,ret,&filesystem);
-  upload_ram_bitmap_2d((unsigned long*)cj.m_pBuf, cj.GetResX(), cj.GetResY(), mipmaps, 3, GL_RGB);
-  texture_info->type = VSX_TEXTURE_INFO_TYPE_JPG;
+  if (!texture_gl->attached_to_cache)
+    VSX_ERROR_EXIT("Trying to unload a texture which is not local", 10);
 
-}
-
-
-
-
-
-void vsx_texture::bind_load_gl()
-{
-  if (!valid && deferred_loading_type)
-  {
-    if (!pti_l)
-      VSX_ERROR_EXIT("PTI is not valid!",1);
-
-    if (texture_info->ogl_id != 0)
-      unload();
-
-    switch(deferred_loading_type)
-    {
-      case VSX_TEXTURE_LOADING_TYPE_2D:
-        init_opengl_texture_2d();
-        if (pti_l->pp.Components == 1)
-        upload_ram_bitmap_2d((unsigned long*)(pti_l->pp.Data),pti_l->pp.Width,pti_l->pp.Height,pti_l->mipmaps,3,GL_RGB); else
-        if (pti_l->pp.Components == 2)
-        upload_ram_bitmap_2d((unsigned long*)(pti_l->pp.Data),pti_l->pp.Width,pti_l->pp.Height,pti_l->mipmaps,4,GL_RGBA); else
-        if (pti_l->pp.Components == 3)
-        upload_ram_bitmap_2d((unsigned long*)(pti_l->pp.Data),pti_l->pp.Width,pti_l->pp.Height,pti_l->mipmaps,pti_l->pp.Components,GL_RGB); else
-        if (pti_l->pp.Components == 4)
-        upload_ram_bitmap_2d((unsigned long*)(pti_l->pp.Data),pti_l->pp.Width,pti_l->pp.Height,pti_l->mipmaps,pti_l->pp.Components,GL_RGBA);
-      break;
-
-      case VSX_TEXTURE_LOADING_TYPE_CUBE:
-        init_opengl_texture_cubemap();
-        if (pti_l->pp.Components == 1)
-        upload_ram_bitmap_cube((unsigned long*)(pti_l->pp.Data),pti_l->pp.Width,pti_l->pp.Height,pti_l->mipmaps,3,GL_RGB);
-        if (pti_l->pp.Components == 2)
-        upload_ram_bitmap_cube((unsigned long*)(pti_l->pp.Data),pti_l->pp.Width,pti_l->pp.Height,pti_l->mipmaps,4,GL_RGBA);
-        if (pti_l->pp.Components == 3)
-        upload_ram_bitmap_cube((unsigned long*)(pti_l->pp.Data),pti_l->pp.Width,pti_l->pp.Height,pti_l->mipmaps,pti_l->pp.Components,GL_RGB);
-        if (pti_l->pp.Components == 4)
-        upload_ram_bitmap_cube((unsigned long*)(pti_l->pp.Data),pti_l->pp.Width,pti_l->pp.Height,pti_l->mipmaps,pti_l->pp.Components,GL_RGBA);
-      break;
-    }
-
-    this->name = pti_l->filename;
-
-    delete pti_l;
-    pti_l = 0;
-
-    texture_info->type = VSX_TEXTURE_INFO_TYPE_PNG; // png
-    texture_info->ogl_valid = true;
-
-    deferred_loading_type = 0;
-  }
-  if (!valid && is_glist_alias)
-  {
-    if ( !texture_info->ogl_valid )
-      return;
-    valid = texture_info->ogl_valid;
-  }
-
+  texture_gl->unload();
 }
 
 
 bool vsx_texture::bind()
 {
-  bind_load_gl();
-
-  if (!valid)
+  if (!texture_gl)
     return false;
 
-  if ( 0 == texture_info->ogl_id )
+  upload_gl();
+
+  if (!texture_gl->gl_id)
     return false;
 
-  // Enable the texture
-  if (texture_info->ogl_type == GL_TEXTURE_2D_MULTISAMPLE)
+  if (texture_gl->gl_type == GL_TEXTURE_2D_MULTISAMPLE)
   {
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D,texture_info->ogl_id);
+    glBindTexture(GL_TEXTURE_2D,texture_gl->gl_id);
+    return true;
   }
-  else
-    {
-      glEnable(texture_info->ogl_type);
 
-      glBindTexture(texture_info->ogl_type,texture_info->ogl_id);
-    }
+  glEnable(texture_gl->gl_type);
+  glBindTexture(texture_gl->gl_type, texture_gl->gl_id);
   return true;
 }
 
 
 void vsx_texture::_bind()
 {
-  if (!valid)
+  if (!texture_gl)
     return;
-  if (texture_info->ogl_id == 0)
+
+  if (!texture_gl->gl_id)
     return;
-  if (texture_info->ogl_type == GL_TEXTURE_2D_MULTISAMPLE)
+
+  if (texture_gl->gl_type == GL_TEXTURE_2D_MULTISAMPLE)
+  {
     glDisable(GL_TEXTURE_2D);
-  else
-  glDisable(texture_info->ogl_type);
-}
-
-void vsx_texture::texcoord2f(float x, float y)
-{
-  #ifdef VSXU_OPENGL_ES
-    //printf("NO vsx_texture::texcoord2f support on OpenGL ES!\n");
-  #else
-    if (texture_info->ogl_type == GL_TEXTURE_RECTANGLE_EXT)
-    {
-      glTexCoord2i((GLuint)(x*texture_info->size_x),(GLuint)(y*texture_info->size_y));
-      return;
-    }
-    glTexCoord2f(x,y);
-  #endif
-}
-
-void vsx_texture::unload()
-{
-  if ( valid_fbo )
-  {
-    deinit_buffer();
     return;
   }
 
-  valid = false;
-
-  // deal with reference counted textures
-  if
-  (
-    is_glist_alias
-    &&
-    name != ""
-    &&
-    t_glist.find(name) != t_glist.end()
-  )
-  {
-    t_glist[name].references--;
-    if (0 == t_glist[name].references)
-    {
-      // safe to delete this texture
-      if (texture_info->ogl_id != 0)
-      {
-        //vsx_printf(L"deleting gl texture: %s\n", name.c_str() );
-        glDeleteTextures( 1, &(texture_info->ogl_id) );
-      }
-      t_glist.erase( name );
-    }
-    texture_info = new vsx_texture_info;
-    is_glist_alias = false;
-    return;
-  }
-
-  if (texture_info->ogl_id != 0)
-    glDeleteTextures(1,&(texture_info->ogl_id));
-
-  texture_info->ogl_id = 0;
-  texture_info->ogl_type = 0;
+  glDisable(texture_gl->gl_type);
 }
+
 

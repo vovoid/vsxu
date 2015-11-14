@@ -26,8 +26,7 @@
 //#ifdef FOO
 #include <map>
 #include "vsx_gl_global.h"
-#include "vsx_texture_info.h"
-#include "vsx_texture.h"
+#include <texture/vsx_texture.h>
 #include "vsx_timer.h"
 #include "logo_intro.h"
 
@@ -54,10 +53,8 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
       {
         if (destroy_textures)
         {
-          luna->unload();
-          delete luna;
-          luna_bkg->unload();
-          delete luna_bkg;
+          vsx_texture_data_loader_jpg::get_instance()->destroy(luna);
+          vsx_texture_data_loader_jpg::get_instance()->destroy(luna_bkg);
           finished = true;
         }
       }
@@ -217,17 +214,9 @@ vsx_logo_intro::vsx_logo_intro() {
   logo_rot2 = 0.13;
   logo_rot3 = 0.3;
   destroy_textures = true;
-  // sweet sweet luuuuuu <3
-  luna = new vsx_texture;
-  luna->init_opengl_texture_2d();
-  #ifdef VSXU_DEBUG
-    printf("shared files: %s\n", (PLATFORM_SHARED_FILES).c_str() );
-  #endif
-  //printf("%s\n",(vsx_string<>(PLATFORM_SHARED_FILES)+vsx_string<>("gfx/vsxu_logo.jpg")).c_str());
-  luna->load_jpeg(PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo.jpg",false);
-  luna_bkg = new vsx_texture;
-  luna_bkg->init_opengl_texture_2d();
-  luna_bkg->load_jpeg(PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo_bkg.jpg",false);
+
+  luna = vsx_texture_data_loader_jpg::get_instance()->load( PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo.jpg", vsxf::get_instance(), false );
+  luna_bkg = vsx_texture_data_loader_jpg::get_instance()->load(PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo_bkg.jpg",vsxf::get_instance(), false);
   timer.start();
 }
 

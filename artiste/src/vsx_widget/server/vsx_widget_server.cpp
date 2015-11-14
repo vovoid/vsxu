@@ -33,8 +33,6 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include "vsxfst.h"
-#include "vsx_texture_info.h"
-#include "vsx_texture.h"
 #include "vsx_command.h"
 #include "vsx_font.h"
 #include "vsx_param.h"
@@ -59,6 +57,7 @@
 #include "controllers/vsx_widget_controller_editor.h"
 #include "helpers/vsx_widget_note.h"
 #include "artiste_desktop.h"
+#include <texture/vsx_texture.h>
 
 // engine
 #include <vsx_data_path.h>
@@ -266,22 +265,14 @@ void vsx_widget_server::init()
   sequencer = 0;
   seq_pool = 0; // TODO: remove the auto-init
 
-  vsxf filesystem;
+  mtex = vsx_texture_data_loader_helper::load( vsx_widget_skin::get_instance()->skin_path_get() +"server.png", vsxf::get_instance(), false );
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
-  {
-    mtex.load_png( vsx_widget_skin::get_instance()->skin_path_get() +"server.png",true, &filesystem);
-    color.a = 1.0; // a
-  } else
-  {
-    mtex.load_png( vsx_widget_skin::get_instance()->skin_path_get() +"server.png",true, &filesystem);
-  }
+    color.a = 1.0;
   init_run = true;
 }
 
 void vsx_widget_server::reinit()
 {
-  vsxf filesystem;
-  mtex.load_png(vsx_widget_skin::get_instance()->skin_path_get() + "server.png", true, &filesystem);
   vsx_widget::reinit();
 }
 
@@ -1391,7 +1382,7 @@ void vsx_widget_server::draw()
 
   if (!performance_mode || server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
   {
-    mtex.bind();
+    mtex->bind();
     glColor4f(color.r,color.g,color.b,color.a);
     if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
     {
@@ -1412,7 +1403,7 @@ void vsx_widget_server::draw()
       glTexCoord2f(1, 0);
       glVertex2f(x+size.x/1.6,y-size.y/1.6);
     glEnd();
-    mtex._bind();
+    mtex->_bind();
   }
 
   if (selection)

@@ -56,9 +56,8 @@ public:
     ((vsx_bitmap_32bt*)bb.data)[3] = 0xFF000000;
     bb.valid = true;
 
-    texture_a.init_opengl_texture_2d();
-
-    texture_b.init_opengl_texture_2d();
+    texture_a.texture_gl->init_opengl_texture_2d();
+    texture_b.texture_gl->init_opengl_texture_2d();
 
     texture_a.upload_ram_bitmap_2d(&ab,false);
     texture_b.upload_ram_bitmap_2d(&bb,false);

@@ -81,6 +81,7 @@ public:
 
   int cylSizeX, cylSizeY;
 
+
   vsx_bitmap_32bt getColor(float u, float v)
   {
 
@@ -296,7 +297,7 @@ public:
           pthread_create(&worker_t[i], &worker_t_attr[i], &worker, (void*)h);
           worker_ever_started = true;
 
-          result_tex[i].init_opengl_texture_2d();
+          result_tex[i].texture_gl->init_opengl_texture_2d();
         }
         bitm_timestamp = bitm->timestamp;
       }
@@ -413,7 +414,7 @@ public:
       }
     }
     for (int i = 0; i < 6; ++i) {
-      result_tex[i].unload();
+      result_tex[i].texture_gl->unload();
     }
   }
 
@@ -423,7 +424,7 @@ public:
       bitm_timestamp = -1;
     }
     for (int i = 0; i < 6; ++i) {
-      result_tex[i].init_opengl_texture_2d();
+      result_tex[i].texture_gl->init_opengl_texture_2d();
       result_tex[i].upload_ram_bitmap_2d(&result_bitm[i]);
     }
   }
@@ -431,8 +432,9 @@ public:
   void on_delete()
   {
     for (int i = 0; i < 6; ++i) {
-      result_tex[i].unload();
-      if (result_bitm[i].timestamp) delete[] (vsx_bitmap_32bt*)result_bitm[i].data;
+      result_tex[i].texture_gl->unload();
+      if (result_bitm[i].timestamp)
+        delete[] (vsx_bitmap_32bt*)result_bitm[i].data;
     }
   }
 };

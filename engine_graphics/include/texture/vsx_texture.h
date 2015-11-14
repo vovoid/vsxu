@@ -22,72 +22,35 @@
 */
 
 
-#ifndef VSX_TEXTURE_LIB_H
-#define VSX_TEXTURE_LIB_H
+#ifndef VSX_TEXTURE_H
+#define VSX_TEXTURE_H
 #include <vsx_platform.h>
 #include <engine_graphics_dllimport.h>
-#include <map>
-#include <vsx_texture_info.h>
 #include <string/vsx_string.h>
 #include <vsxg.h>
 #include <vsx_bitmap.h>
 #include <vsx_matrix.h>
-#include <vsxfst.h>
+
+#include "vsx_texture_data.h"
+#include "vsx_texture_gl.h"
+#include "vsx_texture_transform.h"
 
 // Frame Buffer Types (see frame_buffer_type)
 #define VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER 1
 #define VSX_TEXTURE_BUFFER_TYPE_COLOR 2
 #define VSX_TEXTURE_BUFFER_TYPE_COLOR_DEPTH 3
 
-#define VSX_TEXTURE_LOADING_TYPE_2D 1
-#define VSX_TEXTURE_LOADING_TYPE_CUBE 2
 
 
 
 
 
-class vsx_texture_load_thread_info
-{
-public:
-  vsxf*             filesystem;
-  pngRawInfo        pp;
-  int               thread_created;
-  pthread_t					worker_t;
-  pthread_attr_t		worker_t_attr;
-  //vsx_bitmap        bitmap;
-  vsx_string<>       filename;
-  bool              mipmaps;
-
-  vsx_texture_load_thread_info()
-    :
-      filesystem(0x0),
-      thread_created(0)
-  {
-    pp.Width = 0;
-    pp.Height = 0;
-    pp.Data = 0x0;
-    pp.Palette = 0x0;
-  }
-
-  ~vsx_texture_load_thread_info()
-  {
-    if (pp.Data)
-      free( pp.Data );
-
-    if (pp.Palette)
-      free( pp.Palette );
-  }
-
-}; // png thread info
 
 
 
 class vsx_texture
 {
-  static std::map<vsx_string<>, vsx_texture_glist_holder> t_glist;
-
   GLint prev_buf;
-
 
   // FBO
   bool valid_fbo;
@@ -116,37 +79,14 @@ class vsx_texture
   // to prevent double-begins, lock the buffer
   bool capturing_to_buffer;
 
-
-
-  int original_transform_obj;
-
-
-  bool loaded_from_glist;
-  bool load_from_glist_deferred(vsx_string<>fname);
-  void add_to_glist_deferred(vsx_string<>fname);
-
 public:
 
-  // needed by the communication between the png thread and the texture. internal stuff.
-  vsx_texture_load_thread_info* pti_l;
-  volatile size_t deferred_loading_type;
-
-
-  // This is a hint to tell the unload function this is an alias of another
-  // texture, found in the glist. Thus, we don't own the opengl texture id.
-  bool is_glist_alias;
-
-  // name of the texture
-  vsx_string<>name;
-
-  // is this valid for binding:
-  bool valid;
+  vsx_string<> filename;
 
   // transformation object
-  vsx_transform_obj* transform_obj;
-
-  // our texture info
-  vsx_texture_info* texture_info;
+  vsx_texture_transform_base* transform_obj;
+  vsx_texture_data* texture_data;
+  vsx_texture_gl* texture_gl;
 
   // FBO functions-------------------------------------------------------------
   // FBO is used to capture rendering output into a texture rather than to the
@@ -154,9 +94,6 @@ public:
 
   // query if the hardware has Frame Buffer Object support
   VSX_ENGINE_GRAPHICS_DLLIMPORT bool has_buffer_support();
-
-
-
 
   // init an offscreen feedback possible buffer
   VSX_ENGINE_GRAPHICS_DLLIMPORT void init_render_buffer
@@ -177,12 +114,10 @@ public:
     bool alpha = true, // support alpha channel or not
     bool multisample = false // enable anti-aliasing
   );
-private:
   VSX_ENGINE_GRAPHICS_DLLIMPORT void deinit_render_buffer();
 
 
 
-public:
   // init an offscreen feedback possible buffer
   VSX_ENGINE_GRAPHICS_DLLIMPORT void init_color_buffer
   (
@@ -201,12 +136,9 @@ public:
     bool alpha = true // support alpha channel or not
   );
 
-private:
   VSX_ENGINE_GRAPHICS_DLLIMPORT void deinit_color_buffer();
 
 
-
-public:
   // init an offscreen feedback possible buffer
   VSX_ENGINE_GRAPHICS_DLLIMPORT void init_color_depth_buffer
   (
@@ -228,12 +160,8 @@ public:
     GLuint existing_depth_texture_id = 0
   );
 
-private:
   VSX_ENGINE_GRAPHICS_DLLIMPORT void deinit_color_depth_buffer();
 
-
-
-public:
   // remove/delete the buffer
   VSX_ENGINE_GRAPHICS_DLLIMPORT void deinit_buffer();
 
@@ -249,24 +177,8 @@ public:
 
   VSX_ENGINE_GRAPHICS_DLLIMPORT GLuint get_depth_buffer_handle();
 
-  // load a png in the same thread as ours. These can be called outside from a GL Context (deferred loading)
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png(vsx_string<>fname, bool mipmaps, vsxf* filesystem);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png_thread(vsx_string<>fname, bool mipmaps, vsxf* filesystem);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_jpeg(vsx_string<>fname, bool mipmaps = true);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void load_png_cubemap(vsx_string<>fname, bool mipmaps = true, vsxf* filesystem = 0x0);
 
-  // General texture functions-------------------------------------------------
-  // allocate an openGL texture ID
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void init_opengl_texture_1d();
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void init_opengl_texture_2d();
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void init_opengl_texture_cubemap();
-
-  // reuploads all textures in the t_glist so you don't have to bother :)
-  // just use thie in the start function of the module and all should be ok unless you use
-  // the buffer. then see above.
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void reinit_all_active();
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void unload_all_active();
-
+  // TODO: put these in a class vsx_texture_gl_loader
   // upload a bitmap from RAM to the GPU
   // as an openGL texture. requires that init_opengl_texture
   // has been run.
@@ -277,54 +189,80 @@ public:
   // assumes width is 6x height (maps in order: -x, z, x, -z, -y, y
   VSX_ENGINE_GRAPHICS_DLLIMPORT void upload_ram_bitmap_cube(void* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true);
 
-  // update the transform object with a new transformation
-  void set_transform(vsx_transform_obj* new_transform_obj) {
-    if(transform_obj == new_transform_obj) return;
-    if(transform_obj) delete transform_obj;
+  void set_transform(vsx_texture_transform_base* new_transform_obj)
+  {
     transform_obj = new_transform_obj;
-    original_transform_obj = 0;
   }
-  // return the transformation
-  vsx_transform_obj* get_transform()
+
+  vsx_texture_transform_base* get_transform()
   {
     return transform_obj;
   }
 
-  inline void begin_transform()
+  inline bool is_valid()
   {
-    if ( !transform_obj->is_transform() ) return;
-    glMatrixMode(GL_TEXTURE);
-    glPushMatrix();
-    (*transform_obj)();
+    if (!texture_gl)
+      return false;
+
+    if (!texture_gl->gl_id)
+      return false;
+
+    return true;
   }
 
-  inline void end_transform()
-  {
-    if ( !transform_obj->is_transform() ) return;
-    glMatrixMode(GL_TEXTURE);
-    glPopMatrix();
-  }
+  // use this to load/unload the texture from vram
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void upload_gl();
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void unload_gl();
+
 
   // use this to bind the texture.
   VSX_ENGINE_GRAPHICS_DLLIMPORT bool bind();
 
-  // use this to load the texture when in OpenGL context
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void bind_load_gl();
-
-
   // use this when you're done with the texture
   VSX_ENGINE_GRAPHICS_DLLIMPORT void _bind();
 
-  // use this to always set texture coordinates properly.
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void texcoord2f(float x, float y);
 
   // constructors
 
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_texture();
-  VSX_ENGINE_GRAPHICS_DLLIMPORT ~vsx_texture();
+  vsx_texture(bool attached_to_cache = false)
+    :
+      prev_buf(0),
+      valid_fbo(false),
+      frame_buffer_type(0),
+      frame_buffer_handle(0),
+      color_buffer_handle(0),
+      depth_buffer_handle(0),
+      depth_buffer_local(true),
+      render_buffer_color_handle(0),
+      render_buffer_depth_handle(0),
+      frame_buffer_blit_color_texture(0),
+      frame_buffer_fbo_attachment_texture(0),
+      frame_buffer_blit_handle(0),
+      buffer_save_blend(0),
+      viewport_size({0,0,0,0}),
+      capturing_to_buffer(false),
+      transform_obj(0x0),
+      texture_data(0x0),
+      texture_gl(0x0)
+  {
+    if (!attached_to_cache)
+    {
+      texture_gl = new vsx_texture_gl(true);
+      texture_data = new vsx_texture_data(0, true);
+    }
+  }
 
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void unload();
+  ~vsx_texture()
+  {
+    if (texture_data && !texture_data->attached_to_cache)
+      delete texture_data;
+
+    if (texture_gl && !texture_gl->attached_to_cache)
+      delete texture_gl;
+  }
 };
 
+
+#include "vsx_texture_data_loader_helper.h"
 
 #endif

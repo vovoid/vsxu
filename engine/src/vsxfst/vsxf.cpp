@@ -289,7 +289,8 @@ void* vsxf::archive_add_file_worker(void* p)
       VSX_ERROR_CONTINUE("Error reading file!");
 
     fclose(fp);
-    vsx_printf(L"** compressing %s\n", filename.c_str());
+
+//    vsx_printf(L"** compressing %s...\n", filename.c_str());
 
     // time to allocate ram for compression
     UInt32 dictionary = 1 << 21;
@@ -303,6 +304,9 @@ void* vsxf::archive_add_file_worker(void* p)
     LzmaRamEncode((Byte*)data, data_size, outBuffer, outSize, &outSizeProcessed, dictionary, SZ_FILTER_AUTO);
     info->compressed_size = outSizeProcessed;
     info->compressed_data = outBuffer;
+
+    float compression_factor = ((float)outSizeProcessed / (float)data_size) * 100.0;
+    vsx_printf(L" ** compressed %f        %s from %d to %d \n", compression_factor, filename.c_str(), data_size, outSizeProcessed);
   }
   return 0x0;
 }

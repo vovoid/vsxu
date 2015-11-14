@@ -129,8 +129,8 @@ public:
     need_to_rebuild = true;
     my_ref = 0;
     if (c_type == 1) {
-      texture = new vsx_texture;
-      texture->init_opengl_texture_2d();
+      texture = new vsx_texture();
+      texture->texture_gl->init_opengl_texture_2d();
       result_texture = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
       result_texture->set(texture);
     }
@@ -262,7 +262,7 @@ public:
     {
       if (bitm.valid)
       {
-        texture->init_opengl_texture_2d();
+        texture->texture_gl->init_opengl_texture_2d();
         texture->upload_ram_bitmap_2d(&bitm,true);
       }
       result_texture->set(texture);
@@ -273,7 +273,7 @@ public:
   {
     if (c_type == 1)
     {
-      texture->unload();
+      texture->texture_gl->unload();
     }
   }
 
@@ -287,7 +287,7 @@ public:
 
     if (c_type == 1 && texture)
     {
-      texture->unload();
+      texture->texture_gl->unload();
       delete texture;
     }
     delete[] (vsx_bitmap_32bt*)bitm.data;

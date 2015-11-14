@@ -28,8 +28,6 @@
 #include "vsx_module.h"
 #include "vsx_gl_global.h"
 #include "vsx_command.h"
-#include "vsx_texture_info.h"
-#include "vsx_texture.h"
 #include "vsx_font.h"
 #include "vsx_command.h"
 #include "vsx_widget.h"
@@ -40,6 +38,7 @@
 #include <vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
 #include "server/vsx_widget_comp.h"
+#include <texture/vsx_texture.h>
 
 #include "sequencer/vsx_widget_sequence_editor.h"
 #include "sequencer/vsx_widget_seq_chan.h"
@@ -51,7 +50,7 @@
 
 
 class vsx_widget_pool_tree : public vsx_widget_editor {
-  vsx_texture mtex_blob;
+  vsx_texture* mtex_blob;
   //vsx_widget* name_dialog;
   bool dragging;
   vsx_widget_coords drag_coords;
@@ -80,10 +79,13 @@ public:
     editor->mirror_mouse_up_object = this;
     editor->enable_syntax_highlighting = false;
 
-    vsxf filesystem;
-    mtex_blob.load_png( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", true, &filesystem);
-    mtex_blob.bind_load_gl();
+    mtex_blob = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", vsxf::get_instance(), true);
     set_render_type(render_2d);
+  }
+
+  void before_delete()
+  {
+    vsx_texture_data_loader_helper::destroy(mtex_blob);
   }
 
   void event_mouse_move(vsx_widget_distance distance, vsx_widget_coords coords)
@@ -95,7 +97,7 @@ public:
       dragging = true;
       drag_coords = coords;
     }
-  };
+  }
 
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
   {
@@ -104,7 +106,6 @@ public:
     VSX_UNUSED(button);
 
     if (dragging) dragging = false;
-    //vsx_widget_base_edit::event_mouse_down(distance, coords, button);
     if (get_selected_item() != "")
     {
       command_q_b.add_raw("seq_pool select " + editor->get_line(editor->selected_line) );
@@ -134,13 +135,13 @@ public:
     if (dragging && m_focus != editor) dragging = false;
     if (dragging)
     {
-      mtex_blob.bind();
+      mtex_blob->bind();
       glBlendFunc(GL_SRC_ALPHA, GL_ONE);
       float l_asp = screen_x/screen_y;
       //printf("screen aspect: %f\n",screen_aspect);
       glColor4f(1,1,1,1);
       draw_box_tex_c(drag_coords.screen_global, 0.03/l_asp, 0.03);
-      mtex_blob._bind();
+      mtex_blob->_bind();
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
@@ -148,14 +149,12 @@ public:
       font.color.a = 0.0f;
       font.mode_2d = true;
       vsx_vector3<> sz = font.get_size(tooltip_text, 0.025f);
-      //sz = sz-tooltip_pos;
       glColor4f(0.0f,0.0f,0.0f,0.6f);
       draw_box(vsx_vector3<>(tooltip_pos.x,tooltip_pos.y+0.025*1.05), sz.x, -sz.y);
       glColor4f(1.0f,1.0f,1.0f,0.6f);
       font.color.r = 1.0f;
       font.color.a = 1.0f;
       tooltip_pos.z = 0;
-      //printf("z: %f ",tooltip_pos.z);
       font.print(tooltip_pos, tooltip_text, 0.022f);
 
     }
@@ -177,18 +176,6 @@ public:
           {
             ((vsx_widget_seq_channel*)search_widget)->drop_master_channel(distance,coords,editor->get_line(editor->selected_line));
           }
-          // split the identifier into the name
-          //vsx_nw_vector< vsx_string<> > parts;
-          //vsx_string<>deli = ";";
-          //explode(i_mod_info[mod_i]->identifier, deli, parts);
-          //vsx_string<>module_name = parts[parts.size()-1];
-          //if (ctrl)
-          //((dialog_query_string*)name_dialog)->show(((vsx_widget_server*)server)->get_unique_name(module_name));
-          //else
-          //{
-            //command_q_b.add_raw("component_create_name "+((vsx_widget_server*)server)->get_unique_name(module_name));
-            //vsx_command_queue_b(this);
-          //}
         }
       }
       dragging = false;

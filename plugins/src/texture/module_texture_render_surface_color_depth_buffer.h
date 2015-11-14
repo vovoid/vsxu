@@ -1,4 +1,4 @@
-#include <vsx_texture.h>
+#include <texture/vsx_texture.h>
 
 
 class module_texture_render_surface_color_depth_buffer : public vsx_module
@@ -134,7 +134,6 @@ public:
   {
     texture = new vsx_texture;
     texture->init_color_depth_buffer(res_x,res_x);
-    texture->valid = false;
     texture_result->set(texture);
   }
 
@@ -156,9 +155,9 @@ public:
     if (depth_buffer_in->connected && depth_buffer_in->valid)
     {
       vsx_texture* depth_in = depth_buffer_in->get();
-      if ( depth_buffer_in_int != depth_in->texture_info->ogl_id )
+      if ( depth_buffer_in_int != depth_in->texture_gl->gl_id )
       {
-        depth_buffer_in_int = depth_in->texture_info->ogl_id;
+        depth_buffer_in_int = depth_in->texture_gl->gl_id;
         rebuild = true;
       }
       // check if the sizes differ, if they do we can't proceed
@@ -260,12 +259,12 @@ public:
       {
         vsx_texture* depth_in = depth_buffer_in->get();
         if (
-            depth_in->texture_info->size_x != res_x ||
-            depth_in->texture_info->size_y != res_y
+            depth_in->texture_data->width != (unsigned int)res_x ||
+            depth_in->texture_data->height != (unsigned int)res_y
           )
         {
-          res_x = depth_in->texture_info->size_x;
-          res_y = depth_in->texture_info->size_y;
+          res_x = depth_in->texture_data->width;
+          res_y = depth_in->texture_data->height;
         }
       }
 
@@ -284,10 +283,13 @@ public:
 
     glUseProgram(0);
 
-    depth_buffer_texture.texture_info->ogl_id = texture->get_depth_buffer_handle();
-    depth_buffer_texture.texture_info->ogl_type = GL_TEXTURE_2D;
-    depth_buffer_texture.texture_info->size_x = res_x;
-    depth_buffer_texture.texture_info->size_y = res_y;
+    depth_buffer_texture.texture_gl->gl_id = texture->get_depth_buffer_handle();
+    depth_buffer_texture.texture_gl->gl_type = GL_TEXTURE_2D;
+
+    depth_buffer_texture.texture_data->type = VSX_TEXTURE_DATA_TYPE_2D;
+    depth_buffer_texture.texture_data->width = res_x;
+    depth_buffer_texture.texture_data->height = res_y;
+
     depth_buffer_out->set(&depth_buffer_texture);
 
 
@@ -300,7 +302,6 @@ public:
     if (texture)
     {
       texture->end_capture_to_buffer();
-      texture->valid = true;
     }
     ((vsx_module_param_texture*)texture_result)->set(texture);
   }

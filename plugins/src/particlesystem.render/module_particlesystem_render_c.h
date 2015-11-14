@@ -63,61 +63,60 @@ public:
   {
     VSX_UNUSED(param);
     particles = particles_in->get_addr();
-    if (particles)
+    tex = tex_inf->get_addr();
+
+    if (!particles || !tex)
     {
-      tex = tex_inf->get_addr();
-      float local_alpha = alpha->get();
-      if (tex)
+      render_result->set(0);
+      return;
+    }
+    float local_alpha = alpha->get();
+
+    if (!((*tex)->is_valid()))
+      return;
+
+    float cx = position->get(0);
+    float cy = position->get(1);
+    float cz = position->get(2);
+
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+
+    if ((*tex)->get_transform())
+      (*tex)->get_transform()->transform();
+
+    (*tex)->bind();
+    beginBlobs( gl_state );
+    glBegin(GL_QUADS);
+
+    float sz = size->get();
+    int count = 0;
+    for (i = 0; i < particles->particles->size(); ++i)
+    {
+      if ((*particles->particles)[i].size > 0.0f)
       {
-        if (!((*tex)->valid))
-        {
-          return;
-        }
-        float cx = position->get(0);
-        float cy = position->get(1);
-        float cz = position->get(2);
-        vsx_transform_obj texture_transform = (*tex)->get_transform();
-
-        glMatrixMode(GL_TEXTURE);
-        glPushMatrix();
-
-        if ((*tex)->get_transform()) texture_transform();
-
-        (*tex)->bind();
-        beginBlobs( gl_state );
-        glBegin(GL_QUADS);
-
-        float sz = size->get();
-        int count = 0;
-        for (i = 0; i < particles->particles->size(); ++i)
-        {
-          if ((*particles->particles)[i].size > 0.0f)
-          {
-            glColor4f(
-              (*particles->particles)[i].color.r*local_alpha,
-              (*particles->particles)[i].color.g*local_alpha,
-              (*particles->particles)[i].color.b*local_alpha,
-              (*particles->particles)[i].color.a
-            );
-            drawBlob_c(
-              (*particles->particles)[i].pos.x,
-              (*particles->particles)[i].pos.y,
-              (*particles->particles)[i].pos.z,
-              (*particles->particles)[i].size*sz,
-              cx,cy,cz
-            );
-            ++count;
-          }
-        }
-        glEnd();
-        (*tex)->_bind();
-        glMatrixMode(GL_TEXTURE);
-        glPopMatrix();
-        glMatrixMode(GL_MODELVIEW);
-        render_result->set(1);
+        glColor4f(
+          (*particles->particles)[i].color.r*local_alpha,
+          (*particles->particles)[i].color.g*local_alpha,
+          (*particles->particles)[i].color.b*local_alpha,
+          (*particles->particles)[i].color.a
+        );
+        drawBlob_c(
+          (*particles->particles)[i].pos.x,
+          (*particles->particles)[i].pos.y,
+          (*particles->particles)[i].pos.z,
+          (*particles->particles)[i].size*sz,
+          cx,cy,cz
+        );
+        ++count;
       }
     }
-    render_result->set(0);
+    glEnd();
+    (*tex)->_bind();
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    render_result->set(1);
   }
 };
 

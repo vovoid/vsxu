@@ -48,9 +48,9 @@ class vsx_widget_anchor : public vsx_widget
   float ax,ay,sx,sy;
   vsx_widget_coords drag_coords;
 
-  vsx_texture mtex_d;
-  vsx_texture mtex_blob;
-  vsx_texture mtex_blob_small;
+  vsx_texture* mtex_d;
+  vsx_texture* mtex_blob;
+  vsx_texture* mtex_blob_small;
 
   vsx_vector3<> pp;
   vsx_vector3<> myf_size, myf_pos;
@@ -119,6 +119,7 @@ public:
 
 
   void before_delete();
+  void on_delete();
   void toggle(int override = 0); // 1 = close, 2 = open
   void get_value();
   void fix_anchors();

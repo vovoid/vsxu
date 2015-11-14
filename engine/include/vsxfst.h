@@ -199,6 +199,12 @@ public:
   char*         f_gets_entire(vsxf_handle* handle);
   int           f_read(void* buf, unsigned long num_bytes, vsxf_handle* handle);
   unsigned long f_get_size(vsxf_handle* handle);
+
+  static vsxf* get_instance()
+  {
+    static vsxf f;
+    return &f;
+  }
 };
 
 ENGINE_DLLIMPORT bool verify_filesuffix(vsx_string<>& input, const char* type);

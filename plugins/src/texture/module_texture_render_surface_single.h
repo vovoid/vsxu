@@ -145,12 +145,10 @@ void start()
   which_buffer = false;
   texture = new vsx_texture;
   texture->init_color_depth_buffer(res_x,res_x);
-  texture->valid = false;
   texture_result->set(texture);
 
   texture2 = new vsx_texture;
   texture2->init_color_depth_buffer(res_x,res_x);
-  texture2->valid = false;
 }
 
 bool activate_offscreen() {
@@ -332,19 +330,13 @@ void deactivate_offscreen()
   if (!which_buffer || support_feedback_int == 0)
   {
     if (texture)
-    {
       texture->end_capture_to_buffer();
-      texture->valid = true;
-    }
     ((vsx_module_param_texture*)texture_result)->set(texture);
   }
   else
   {
     if (texture2)
-    {
       texture2->end_capture_to_buffer();
-      texture2->valid = true;
-    }
     ((vsx_module_param_texture*)texture_result)->set(texture2);
   }
 

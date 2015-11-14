@@ -1,3 +1,5 @@
+#include <texture/vsx_texture.h>
+
 class module_texture_scale : public vsx_module
 {
   // in
@@ -9,7 +11,7 @@ class module_texture_scale : public vsx_module
 
   // internal
   vsx_texture* texture_out;
-  vsx_transform_scale transform;
+  vsx_texture_transform_scale transform;
 
 public:
   module_texture_scale() : transform(1, 1, 1) {}
@@ -51,19 +53,18 @@ void module_texture_scale::declare_params(vsx_module_param_list& in_parameters, 
 
 void module_texture_scale::run()
 {
-  vsx_texture** texture_info_in = texture_info_param_in->get_addr();
-  if (!texture_info_in)
+  vsx_texture** texture_in = texture_info_param_in->get_addr();
+  if (!texture_in)
   {
     texture_result->valid = false;
     return;
   }
 
-  texture_out->valid = (*texture_info_in)->valid;
-  (*texture_out->texture_info) = (*(*texture_info_in)->texture_info);
+  (*texture_out->texture_data) = (*(*texture_in)->texture_data);
   float x = scale_vec->get(0);
   float y = scale_vec->get(1);
   float z = scale_vec->get(2);
-  vsx_transform_obj* prev_transform = (*texture_info_in)->get_transform();
+  vsx_texture_transform_base* prev_transform = (*texture_in)->get_transform();
   transform.set_previous_transform(prev_transform);
   transform.update(x, y, z);
   texture_out->set_transform(&transform);

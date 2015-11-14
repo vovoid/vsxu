@@ -31,12 +31,12 @@
 class vsx_widget_desktop : public vsx_widget
 {
   vsx_widget_profiler* profiler;
+  vsx_texture* mtex;
 
 public:
   vsx_command_list* system_command_queue;
 
   double xpp,ypp,zpp;
-  vsx_texture mtex;
   void init();
   void reinit();
   bool key_down(signed long key, bool n_alt, bool n_ctrl, bool n_shift);
@@ -46,6 +46,7 @@ public:
   void draw();
   void draw_2d();
   vsx_widget_desktop();
+  ~vsx_widget_desktop();
 };
 
 

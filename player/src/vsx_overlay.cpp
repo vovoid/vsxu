@@ -23,6 +23,7 @@
 
 #include <vsx_platform.h>
 #include <string/vsx_string_helper.h>
+#include <vsx_gl_global.h>
 #include "vsx_overlay.h"
 
 vsx_overlay::vsx_overlay() {
@@ -53,7 +54,7 @@ void vsx_overlay::set_manager(vsx_manager_abs* new_manager)
 }
 
 void vsx_overlay::reinit() {
-  myf->reinit_all_active();
+  myf->reinit_all_active(vsxf::get_instance());
 }
   
 void vsx_overlay::render() {

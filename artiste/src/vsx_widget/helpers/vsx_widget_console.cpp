@@ -26,8 +26,7 @@
 #include <vector>
 #include <math.h>
 #include "vsx_gl_global.h"
-#include "vsx_texture_info.h"
-#include "vsx_texture.h"
+#include <texture/vsx_texture.h>
 #include "vsx_command.h"
 #include "vsx_font.h"
 #include "vsx_param.h"

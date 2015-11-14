@@ -22,6 +22,7 @@
 */
 
 
+#include <vsx_gl_global.h>
 #include "widgets/vsx_widget_2d_label.h"
 
 void vsx_widget_2d_label::init()

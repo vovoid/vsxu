@@ -33,9 +33,8 @@
 
 #ifndef VSX_NO_GL
   #include "vsx_gl_global.h"
-  #include "vsx_texture_info.h"
   #ifndef VSX_NO_TEXTURE
-    #include "vsx_texture.h"
+    #include <texture/vsx_texture.h>
   #endif
 #endif
 #include "vsx_mesh.h"

@@ -27,8 +27,7 @@
 #include <vector>
 #include "vsx_command.h"
 #include <string/vsx_string_helper.h>
-#include "vsx_texture_info.h"
-#include "vsx_texture.h"
+#include <texture/vsx_texture.h>
 #include "vsx_font.h"
 #include "vsx_widget.h"
 #include "vsx_widget_panel.h"

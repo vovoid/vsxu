@@ -30,32 +30,34 @@
 class vsx_window_object_inspector : public vsx_widget_window {
   vsx_widget *inspected;
   vsx_widget *label1,*label2,*label3;
-//-- component inspection
+
+  //-- component inspection
   vsx_widget *component_rename_edit;
   vsx_widget *component_rename_button;
-//-- chooser inspection
-  //vsx_widget *chooser_
   
-//-----------------------------------------------
   std::vector<vsx_widget*> component_list;
-  vsx_texture texture;
+  vsx_texture* texture;
   bool texture_loaded;
   vsx_string<>filename_loaded;
   int view_type;
   vsx_vector3<> pos_, size_;
   float vsx_status_timer;
 public:
+
   void draw_2d();
   void draw();
   void command_process_back_queue(vsx_command_s *t);
-  void init() {
-    if (!init_run) vsx_widget_window::init();
+
+  void init()
+  {
+    if (!init_run)
+      vsx_widget_window::init();
   }
   void load_file(vsx_string<>filename);
-  void unload();
   
-  virtual void init_children() {
-  }
+  virtual void init_children() {}
+
+  void unload();
   
   void show();
 

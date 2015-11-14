@@ -32,7 +32,7 @@
 #define VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET 2
 
 class vsx_widget_server : public vsx_widget {
-  vsx_texture mtex;
+  vsx_texture* mtex;
 
   //module selection stuff
   std::map<vsx_string<>,vsx_module_info*> module_list;

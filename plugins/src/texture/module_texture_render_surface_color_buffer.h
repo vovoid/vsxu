@@ -118,7 +118,6 @@ public:
   {
     texture = new vsx_texture;
     texture->init_color_depth_buffer(res_x,res_x);
-    texture->valid = false;
     texture_result->set(texture);
   }
 

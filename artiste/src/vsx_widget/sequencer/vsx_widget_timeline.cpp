@@ -26,14 +26,14 @@
 #include <vector>
 #include <math.h>
 #include "vsx_gl_global.h"
-#include "vsx_texture_info.h"
-#include "vsx_texture.h"
+#include <texture/vsx_texture.h>
 #include "vsx_command.h"
 #include "vsx_font.h"
 #include "vsxfst.h"
 #include "vsx_mouse.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
+
 // local includes
 #include "vsx_widget.h"
 #include "vsx_widget_sequence_editor.h"
@@ -41,6 +41,7 @@
 #include "vsx_widget_timeline.h"
 #include <vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
+
 // engine includes
 #include "vsx_engine.h"
 #include <gl_helper.h>

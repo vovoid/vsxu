@@ -27,6 +27,7 @@
 #include <vsx_timer.h>
 #include <debug/vsx_error.h>
 #include <vsx_profiler.h>
+#include <vsx_gl_global.h>
 
 // engine_graphics
 #include <vsx_font.h>

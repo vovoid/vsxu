@@ -1,3 +1,5 @@
+#include <texture/vsx_texture.h>
+
 class module_texture_translate : public vsx_module
 {
   // in
@@ -9,7 +11,7 @@ class module_texture_translate : public vsx_module
 
   // internal
   vsx_texture* texture_out;
-  vsx_transform_translate transform;
+  vsx_texture_transform_translate transform;
 
 public:
 
@@ -42,22 +44,23 @@ void module_texture_translate::declare_params(vsx_module_param_list& in_paramete
 
 void module_texture_translate::run()
 {
-  vsx_texture** texture_info_in = texture_info_param_in->get_addr();
-  if (texture_info_in)
+  vsx_texture** texture_in = texture_info_param_in->get_addr();
+  if (!texture_in)
   {
-    texture_out->valid = (*texture_info_in)->valid;
-    // copy texture info
-    (*texture_out->texture_info) = (*(*texture_info_in)->texture_info);
-    float x = translation_vec->get(0);
-    float y = translation_vec->get(1);
-    float z = translation_vec->get(2);
-    vsx_transform_obj* prev_transform = (*texture_info_in)->get_transform();
-    transform.set_previous_transform(prev_transform);
-    transform.update(x, y, z);
-    texture_out->set_transform(&transform);
-    ((vsx_module_param_texture*)texture_result)->set(texture_out);
+    texture_result->valid = false;
+    return;
+  }
 
-  } else texture_result->valid = false;
+  // copy texture info
+  (*texture_out->texture_data) = (*(*texture_in)->texture_data);
+  float x = translation_vec->get(0);
+  float y = translation_vec->get(1);
+  float z = translation_vec->get(2);
+  vsx_texture_transform_base* prev_transform = (*texture_in)->get_transform();
+  transform.set_previous_transform(prev_transform);
+  transform.update(x, y, z);
+  texture_out->set_transform(&transform);
+  ((vsx_module_param_texture*)texture_result)->set(texture_out);
 }
 
 void module_texture_translate::on_delete()

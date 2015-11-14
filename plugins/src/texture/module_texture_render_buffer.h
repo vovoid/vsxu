@@ -136,7 +136,6 @@ void start()
 {
   texture = new vsx_texture;
   texture->init_render_buffer(res_x,res_x);
-  texture->valid = false;
   texture_result->set(texture);
 }
 

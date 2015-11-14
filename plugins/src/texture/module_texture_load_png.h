@@ -183,11 +183,9 @@ void output(vsx_module_param_abs* param)
       if (texture == 0x0)
       {
         texture = new vsx_texture;
-        texture->init_opengl_texture_2d();
-        texture->valid = false;
+        texture->texture_gl->init_opengl_texture_2d();
       }
       texture->upload_ram_bitmap_2d(&bitm,true);
-      texture->valid = true;
       texture_out->set(texture);
       texture_timestamp = bitm.timestamp;
     }
@@ -197,14 +195,13 @@ void output(vsx_module_param_abs* param)
 void stop() {
   if (texture)
   {
-    texture->unload();
+    texture->texture_gl->unload();
   }
 }
 
 void start() {
-  texture->init_opengl_texture_2d();
+  texture->texture_gl->init_opengl_texture_2d();
   texture->upload_ram_bitmap_2d(&bitm,true);
-  texture->valid = true;
   texture_out->set(texture);
 }
 
@@ -217,7 +214,7 @@ void on_delete() {
     delete pp;
   }
   if (texture) {
-    texture->unload();
+    texture->texture_gl->unload();
     delete texture;
   }
 }

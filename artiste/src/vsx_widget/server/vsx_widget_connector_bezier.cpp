@@ -26,8 +26,6 @@
 #include <list>
 #include <vector>
 #include <math.h>
-#include "vsx_texture_info.h"
-#include "vsx_texture.h"
 #include "vsx_command.h"
 #include "vsx_command_list.h"
 #include "vsx_font.h"
@@ -35,6 +33,7 @@
 #include "vsx_widget_anchor.h"
 #include "vsx_widget_comp.h"
 #include <vsx_bezier_calc.h>
+#include <texture/vsx_texture.h>
 
 #include "widgets/vsx_widget_popup_menu.h"
 #include "vsx_widget_connector_bezier.h"
@@ -327,10 +326,10 @@ void vsx_widget_connector_bezier::draw()
 
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-  mtex_blob.bind();
+  mtex_blob->bind();
     draw_box_texf(pv.x,pv.y,0,0.004f,0.004f);
     draw_box_texf((float)ex,(float)ey,0,0.004f,0.004f);
-  mtex_blob._bind();
+  mtex_blob->_bind();
 
   sx = pv.x;
   sy = pv.y;
@@ -480,9 +479,9 @@ void vsx_widget_connector_bezier::init()
   menu->size.y = 0.5;
   init_children();
 
-  vsxf filesystem;
-  mtex_blob.load_png( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", true, &filesystem);
-  mtex_blob.bind_load_gl();
+
+  mtex_blob = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", vsxf::get_instance() );
+  mtex_blob->upload_gl();
 
   constrained_x = false;
   constrained_y = false;
@@ -494,22 +493,7 @@ void vsx_widget_connector_bezier::init()
 }
 
 
-
-
-
-// constructor ----->
-vsx_widget_connector_bezier::vsx_widget_connector_bezier()
-{
-  alias_conn = false;
-  visible = 1;
-  destination = 0;
-  receiving_focus = true;
-  support_interpolation = true;
-  old_sx = old_sy = old_ex = old_ey = 0.0f;
-  color_initialized = false;
-}
-
-bool vsx_widget_connector_bezier::event_key_down(signed long key, bool alt, bool ctrl, bool shift) 
+bool vsx_widget_connector_bezier::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
 {
   VSX_UNUSED(alt);
   VSX_UNUSED(ctrl);
@@ -520,3 +504,24 @@ bool vsx_widget_connector_bezier::event_key_down(signed long key, bool alt, bool
   }
   return true;
 }
+
+
+
+vsx_widget_connector_bezier::vsx_widget_connector_bezier()
+{
+  mtex_blob = 0x0;
+  alias_conn = false;
+  visible = 1;
+  destination = 0;
+  receiving_focus = true;
+  support_interpolation = true;
+  old_sx = old_sy = old_ex = old_ey = 0.0f;
+  color_initialized = false;
+}
+
+vsx_widget_connector_bezier::~vsx_widget_connector_bezier()
+{
+  if (mtex_blob)
+  delete mtex_blob;
+}
+

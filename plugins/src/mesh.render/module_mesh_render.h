@@ -531,13 +531,12 @@ public:
     ta = tex_a->get_addr();
     if (ta)
     {
-      vsx_transform_obj& texture_transform = *(*ta)->get_transform();
-
       glMatrixMode(GL_TEXTURE);
       glPushMatrix();
 
       if ((*ta)->get_transform())
-      texture_transform();
+        (*ta)->get_transform()->transform();
+
       (*ta)->bind();
     }
   }

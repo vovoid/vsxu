@@ -28,7 +28,7 @@
 #include <vsx_platform.h>
 #include <engine_graphics_dllimport.h>
 
-#include <vsx_texture.h>
+#include <texture/vsx_texture.h>
 #include <vsx_color.h>
 
 #include <vsx_platform.h>
@@ -56,7 +56,7 @@ public:
 class vsx_font {
   static std::map<vsx_string<>, vsx_font_info*> glist;
   vsx_vector3<> ep;
-  void reinit(vsx_font_info* f_info,vsx_string<>font);
+  void reinit(vsx_font_info* f_info, vsx_string<>font, vsxf* filesystem);
   bool list_built;
   GLuint dlist;
 
@@ -100,7 +100,7 @@ public:
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print_center(vsx_vector3<> p, const vsx_string<>& str, float size);
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print_right(vsx_vector3<> p, const vsx_string<>& str, float size);
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> get_size(const vsx_string<>& str, float size);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void reinit_all_active();
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void reinit_all_active(vsxf* filesystem);
   
   vsx_font(vsx_string<>path)
   {

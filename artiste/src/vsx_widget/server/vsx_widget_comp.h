@@ -32,13 +32,14 @@
 #define COMPONENT_SCALE 2
 
 class vsx_widget_component : public vsx_widget {
-// for making it "ethereal" when putting it in a macro
-  //vsx_font myf;
   vsx_vector3<> message_pos;
-  vsx_texture mtex_blob;
 
   vsx_nw_vector<vsx_module_operation*> module_operations;
   vsx_widget* module_operations_dialog;
+
+  vsx_texture* mtex;
+  vsx_texture* mtex_blob;
+  vsx_texture* mtex_overlay;
 
 public:
   bool macro;
@@ -70,12 +71,10 @@ public:
   // message from server
   vsx_string<>message;
   float message_time;
-  vsx_texture mtex;
 
   // macro specific stuff
   bool open; // for containers - macros.
   vsx_vector3<> old_size; // the previous size to return to..
-  vsx_texture mtex_overlay;
   float macro_overlay_opacity;
 
   // info used when moving
@@ -101,6 +100,7 @@ public:
   void macro_toggle();
   void macro_close();
   void before_delete();
+  void on_delete();
   void begin_delete();
   void perform_delete();
   void rename(vsx_string<>new_name,bool partial_name = true);

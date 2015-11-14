@@ -27,11 +27,11 @@
 #include <list>
 #include <vector>
 #include <math.h>
-#include "vsx_texture_info.h"
-#include "vsx_texture.h"
 #include "vsx_command.h"
 #include "vsx_font.h"
 #include <vsx_data_path.h>
+#include <texture/vsx_texture.h>
+
 // local includes
 #include "vsx_widget.h"
 #include "vsx_widget_object_inspector.h"
@@ -57,46 +57,36 @@ void vsx_window_object_inspector::draw_2d() {
     size_.y = size.y-font_size-dragborder;
     pos_.x = pos.x+dragborder;
     size_.x = size.x-dragborder*2;
-    //printf("size: %f\n",size_.x);
-    title = filename_loaded+" "+vsx_string_helper::i2s((int)texture.texture_info->size_x)+"x"+vsx_string_helper::i2s((int)texture.texture_info->size_y);
-   	texture.bind();
+    title = filename_loaded+" "+vsx_string_helper::i2s((int)texture->texture_data->width)+"x"+vsx_string_helper::i2s((int)texture->texture_data->height);
     glColor4f(1,1,1,1);
-    if (texture.valid) {
-    	glBegin(GL_QUADS);
-      if (texture.texture_info->ogl_type == GL_TEXTURE_2D) {
-      	glTexCoord2i(0, 1);
-        glVertex3f(pos_.x,pos_.y,0);
-      	glTexCoord2i(1, 1);
-        glVertex3f(pos_.x+size_.x,pos_.y,0);
-      	glTexCoord2i(1, 0);
-        glVertex3f(pos_.x+size_.x,pos_.y-size_.y,0);
-      	glTexCoord2i(0, 0);
-        glVertex3f(pos_.x,pos_.y-size_.y,0);
-      } else {
-        glTexCoord2i(0, (int)texture.texture_info->size_y);
-        glVertex3f(pos_.x,pos_.y,0);
-        glTexCoord2i((int)texture.texture_info->size_x, (int)texture.texture_info->size_y);
-        glVertex3f(pos_.x+size_.x,pos_.y,0);
-        glTexCoord2i((int)texture.texture_info->size_x, 0);
-        glVertex3f(pos_.x+size_.x,pos_.y-size_.y,0);
-      	glTexCoord2i(0, 0);
-        glVertex3f(pos_.x,pos_.y-size_.y,0);
-      }
-      glEnd();
+    if (texture->is_valid())
+    {
+      texture->bind();
+        glBegin(GL_QUADS);
+          glTexCoord2i(0, 1);
+          glVertex3f(pos_.x,pos_.y,0);
+          glTexCoord2i(1, 1);
+          glVertex3f(pos_.x+size_.x,pos_.y,0);
+          glTexCoord2i(1, 0);
+          glVertex3f(pos_.x+size_.x,pos_.y-size_.y,0);
+          glTexCoord2i(0, 0);
+          glVertex3f(pos_.x,pos_.y-size_.y,0);
+        glEnd();
+      texture->_bind();
     }
-    texture._bind();
     float screenaspect = screen_x/screen_y;
+
     if (texture_loaded == false)
-    if (texture.texture_info->size_y != 0.0) {
-      texture_loaded = true;
-      vsx_vector3<> aa;
-      aa.x = 0.4/screenaspect*(texture.texture_info->size_x/texture.texture_info->size_y);
-      aa.y = 0.4;
-      aa.z = 0;
-      printf("resizing to tex\n");
-      resize_to(aa);
-      move(1*screen_aspect-0.4/screenaspect*(texture.texture_info->size_x/texture.texture_info->size_y),1.0f-aa.y,0);
-    }
+      if (texture->texture_data->width != 0.0) {
+        texture_loaded = true;
+        vsx_vector3<> aa;
+        aa.x = 0.4/screenaspect*(texture->texture_data->width/texture->texture_data->height);
+        aa.y = 0.4;
+        aa.z = 0;
+        printf("resizing to tex\n");
+        resize_to(aa);
+        move(1*screen_aspect-0.4/screenaspect*(texture->texture_data->width/texture->texture_data->height),1.0f-aa.y,0);
+      }
   }
 }
 
@@ -119,9 +109,7 @@ void vsx_window_object_inspector::draw() {
       	component_rename_button->visible = 1;
       	component_rename_edit->visible = 1;
       }
-      //for (int i = 0; i < component_list.size(); ++i) component_list[i]->visible = 1;
       ((vsx_widget_base_edit*)component_rename_edit)->set_string(((vsx_widget_anchor*)a_focus)->name);
-      //((vsx_widget_2d_edit*)component_rename_edit)->value.clear();
       title = "anchor "+((vsx_widget_anchor*)a_focus)->name;
       view_type = 0;
       set_size(vsx_vector3<>(0.2f, 0.175f, 0.0f));
@@ -133,7 +121,6 @@ void vsx_window_object_inspector::draw() {
       label1->title = ((vsx_widget_connector_bezier*)a_focus)->destination->name;
       view_type = 0;
       label1->visible = 1;
-      //label2->title = ((vsx_widget_anchor*)inspected)->p_type;
     }
     else
     if (inspected->widget_type == VSX_WIDGET_TYPE_COMPONENT)
@@ -143,16 +130,11 @@ void vsx_window_object_inspector::draw() {
     	component_rename_edit->visible = 1;
 
       for (unsigned long i = 0; i < component_list.size(); ++i) component_list[i]->visible = 1;
-      //component_rename_button->visible = 1;
-      //component_rename_edit->visible = 1;
-      //label1->title = a_focus->name;
 
       ((vsx_widget_base_edit*)component_rename_edit)->set_string(((vsx_widget_component*)a_focus)->real_name);
       ((vsx_widget_base_edit*)component_rename_edit)->caret_goto_end();
-//      ((vsx_widget_base_edit*)component_rename_edit)->value.clear();
       title = ((vsx_widget_component*)a_focus)->real_name;
       view_type = 0;
-      //printf("resize to\n");
       set_size(vsx_vector3<>(0.2f, 0.175f, 0.0f));
       move(1.0f - 0.2f , 1.0f - 0.175f, 0.0f);
       // request timing data
@@ -165,9 +147,6 @@ void vsx_window_object_inspector::draw() {
     if (inspected->widget_type == VSX_WIDGET_TYPE_ULTRA_CHOOSER)
     {
 
-      //((vsx_widget_2d_edit*)component_rename_edit)->value.str(((vsx_widget_component*)a_focus)->real_name);
-      //((vsx_widget_2d_edit*)component_rename_edit)->value.clear();
-      //title = ((vsx_widget_component*)inspected)->component_type;
     } else view_type = 0;
     // image viewer
   }
@@ -190,16 +169,11 @@ void vsx_window_object_inspector::command_process_back_queue(vsx_command_s *t) {
       vsx_widget_component* cc = (vsx_widget_component*)inspected;
       vsx_string<>curname = "";
       vsx_string<>newname = "";
-//      if (cc->parent_name != "") {
-//        curname += cc->parent_name+".";
-//        newname += cc->parent_name+".";
-//      }
       newname += ((vsx_widget_base_edit*)component_rename_edit)->get_string();
       command_q_b.add_raw("component_rename " +cc->name+" "+newname);
       cc->server->vsx_command_queue_b(this);
     } else
     if (inspected->widget_type == VSX_WIDGET_TYPE_ANCHOR) {
-      //printf("sending\n");
       command_q_b.add_raw(
         "pa_ren "+ // command
         ((vsx_widget_anchor*)inspected)->component->name+" "+ // component
@@ -216,15 +190,6 @@ void vsx_window_object_inspector::command_process_back_queue(vsx_command_s *t) {
   	label2->title = label2->title + "% of total frame time: "+vsx_string_helper::f2s( (vsx_string_helper::s2f(t->parts[2])+vsx_string_helper::s2f(t->parts[3]))*100.0f / vsx_string_helper::s2f(t->parts[4]),3);
 
   }
-  //if (t->cmd == "cancel") { visible = 0; return; }
-  //if (((vsx_widget_2d_edit*)edit1)->value.str().size())
-  //{
-    //command_q_b.add(name,((vsx_widget_2d_edit*)edit1)->value.str());
-    //parent->vsx_command_queue_b(this);
-    //((vsx_widget_2d_edit*)edit1)->value.str("");
-    //((vsx_widget_2d_edit*)edit1)->value.clear();
-  //}
-  //visible = 0;
 }
 
 
@@ -288,20 +253,16 @@ vsx_window_object_inspector::vsx_window_object_inspector()
 }
 
 void vsx_window_object_inspector::show() {
-//    ((vsx_widget_2d_edit*)edit1)->value.str("localhost");
-//    ((vsx_widget_2d_edit*)edit1)->value.clear();
-  //k_focus = edit_name;
   visible = 1;
   pos.x = 0.5-size.x/2;
   pos.y = 0.5-size.y/2;
 }
 
-void vsx_window_object_inspector::unload() {
-  resize_to(vsx_vector3<>(0.001,0.001));
-  move(1-0.001,1,0);
-  texture.unload();
-  filename_loaded = "";
-  view_type = 0;
+
+void vsx_window_object_inspector::unload()
+{
+  if (view_type == 1)
+    vsx_texture_data_loader_helper::destroy(texture);
 }
 
 void vsx_window_object_inspector::load_file(vsx_string<>filename)
@@ -311,28 +272,16 @@ void vsx_window_object_inspector::load_file(vsx_string<>filename)
   std::vector <vsx_string<> > parts;
   vsx_string<>deli = ".";
   explode(filename, deli, parts);
-  if (filename_loaded != filename)
-  {
-    if (parts[parts.size()-1] == "jpg") {
-      view_type = 1; // image viewer
-      texture_loaded = false;
-      texture.texture_info->size_y = 0;
-      texture.unload();
-      texture.init_opengl_texture_2d();
-      texture.load_jpeg(filename,false);
-      filename_loaded = filename;
-    } else
-    if (parts[parts.size()-1] == "png")
-    {
-      view_type = 1; // image viewer
-      texture_loaded = false;
-      texture.texture_info->size_y = 0;
-      texture.unload();
-      vsxf filesystem;
-      texture.load_png(filename,false,&filesystem);
+  if (filename_loaded == filename)
+    return;
 
-      filename_loaded = filename;
-    }
-  }
+  if (texture)
+    vsx_texture_data_loader_helper::destroy(texture);
+
+  texture = vsx_texture_data_loader_helper::load( filename, vsxf::get_instance(), false );
+
+  view_type = 1;
+  texture_loaded = false;
+  filename_loaded = filename;
 }
 

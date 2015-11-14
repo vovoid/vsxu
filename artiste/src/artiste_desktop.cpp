@@ -26,8 +26,7 @@
 #include <math.h>
 #include <unistd.h>
 #include "vsx_gl_global.h"
-#include "vsx_texture_info.h"
-#include "vsx_texture.h"
+#include <texture/vsx_texture.h>
 #include "vsx_command.h"
 #include "vsx_font.h"
 #include "vsx_param.h"
@@ -70,8 +69,7 @@ void vsx_widget_desktop::init()
 
   init_children();
 
-  vsxf filesystem;
-  font.load(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png", &filesystem);
+  font.load(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png", vsxf::get_instance());
 
   log("welcome to vsxu");
 
@@ -83,8 +81,6 @@ void vsx_widget_desktop::init()
 void vsx_widget_desktop::reinit()
 {
   vsx_widget::reinit();
-  mtex.init_opengl_texture_2d();
-  mtex.load_jpeg(vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg");
 }
 
 void vsx_widget_desktop::unload()
@@ -279,7 +275,7 @@ void vsx_widget_desktop::draw() {
     glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
     glColor4f(1,1,1,1);
-    if (!mtex.bind())
+    mtex->bind();
     vsx_widget_skin::get_instance()->set_color_gl(13);
       glBegin(GL_QUADS);
         glTexCoord2f(0, 0);
@@ -291,7 +287,7 @@ void vsx_widget_desktop::draw() {
         glTexCoord2f(1, 0);
         glVertex3f(pos.x+size.x/2,pos.y-size.y/2,-10.0f);
       glEnd();
-    mtex._bind();
+    mtex->_bind();
   }
   draw_children();
 }
@@ -442,8 +438,7 @@ vsx_widget_desktop::vsx_widget_desktop()
 
   ((vsx_widget_2d_console*)console)->set_destination(sv);
 
-  mtex.init_opengl_texture_2d();
-  mtex.load_jpeg(vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg");
+  mtex = vsx_texture_data_loader_jpg::get_instance()->load(vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg", vsxf::get_instance(), true);
 
   k_focus = this;
   m_focus = this;

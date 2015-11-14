@@ -42,7 +42,7 @@ public:
 
     bitm_timestamp = 0;
     texture = new vsx_texture;
-    texture->init_opengl_texture_2d();
+    texture->texture_gl->init_opengl_texture_2d();
 
     result_texture = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
     loading_done = true;
@@ -71,12 +71,12 @@ public:
 
   void stop()
   {
-    texture->unload();
+    texture->texture_gl->unload();
   }
 
   void start()
   {
-    texture->init_opengl_texture_2d();
+    texture->texture_gl->init_opengl_texture_2d();
     bitm = bitm_in->get_addr();
     if (bitm) {
       texture->upload_ram_bitmap_2d(bitm,mipmaps->get());
@@ -86,7 +86,7 @@ public:
 
   void on_delete()
   {
-    texture->unload();
+    texture->texture_gl->unload();
     delete texture;
   }
 

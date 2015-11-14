@@ -33,8 +33,8 @@ class vsxu_assistant : public vsx_widget {
   bool reload;
   bool auto_;
   float tt,alpha;
-  vsx_widget *pager;
-  vsx_texture texture;
+  vsx_widget* pager;
+  vsx_texture* texture;
   vsx_vector3<> pos_, size_;
   vsx_string<>text;
   vsx_widget* cur_focus;

@@ -28,8 +28,6 @@
 #include "vsx_module.h"
 #include "vsx_gl_global.h"
 #include "vsx_command.h"
-#include "vsx_texture_info.h"
-#include "vsx_texture.h"
 #include "vsx_font.h"
 #include "vsx_command.h"
 #include "vsx_widget.h"
@@ -41,12 +39,13 @@
 #include "server/vsx_widget_comp.h"
 #include "vsx_widget_module_chooser_list.h"
 #include <gl_helper.h>
+#include <texture/vsx_texture.h>
 
 // widget
 #include <dialogs/dialog_query_string.h>
 
 class vsx_widget_chooser_editor : public vsx_widget_editor {
-  vsx_texture mtex_blob;
+  vsx_texture* mtex_blob;
   vsx_widget* name_dialog;
   bool dragging;
   vsx_widget_coords drag_coords;
@@ -84,9 +83,7 @@ public:
     editor->font_size = 0.014;
     name_dialog = add(new dialog_query_string("name of component","Choose a unique name for your component"),"component_create_name");
 
-    vsxf filesystem;
-    mtex_blob.load_png( vsx_widget_skin::get_instance()->skin_path_get() +"interface_extras/connection_blob.png", true, &filesystem);
-    mtex_blob.bind_load_gl();
+    mtex_blob = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() +"interface_extras/connection_blob.png", vsxf::get_instance(), true);
     set_render_type(render_2d);
   }
 
@@ -149,13 +146,13 @@ public:
     if (dragging && m_focus != editor) dragging = false;
     if (dragging)
     {
-      mtex_blob.bind();
+      mtex_blob->bind();
       glBlendFunc(GL_SRC_ALPHA, GL_ONE);
       float l_asp = screen_x/screen_y;
       //printf("screen aspect: %f\n",screen_aspect);
       glColor4f(1,1,1,1);
       draw_box_tex_c(drag_coords.screen_global, 0.03/l_asp, 0.03);
-      mtex_blob._bind();
+      mtex_blob->_bind();
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 

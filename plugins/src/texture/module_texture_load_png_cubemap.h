@@ -179,7 +179,7 @@ void output(vsx_module_param_abs* param)
       if (texture == 0x0)
       {
         texture = new vsx_texture;
-        texture->init_opengl_texture_cubemap();
+        texture->texture_gl->init_opengl_texture_cubemap();
       }
       texture->upload_ram_bitmap_cube(
         bitm.data,
@@ -198,14 +198,13 @@ void output(vsx_module_param_abs* param)
 void stop() {
   if (texture)
   {
-    texture->unload();
+    texture->texture_gl->unload();
   }
 }
 
 void start() {
-  texture->init_opengl_texture_cubemap();
+  texture->texture_gl->init_opengl_texture_cubemap();
   texture->upload_ram_bitmap_cube(&bitm,bitm.size_x, bitm.size_y, false, bitm.bpp, bitm.bformat);
-  texture->valid = true;
   texture_out->set(texture);
 }
 
@@ -218,7 +217,7 @@ void on_delete() {
     delete pp;
   }
   if (texture) {
-    texture->unload();
+    texture->texture_gl->unload();
     delete texture;
   }
 }

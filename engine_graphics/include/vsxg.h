@@ -87,7 +87,7 @@ class VSX_ENGINE_GRAPHICS_DLLIMPORT CJPEGTest
 {
 public:
     CJPEGTest();
-    ~CJPEGTest();
+
     // Load JPEG (colour or grayscale)
     bool LoadJPEG
     ( 

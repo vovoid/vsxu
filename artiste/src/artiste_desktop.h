@@ -39,7 +39,7 @@ public:
   vsx_widget* assistant;
 	vsx_widget *console;
   vsx_command_list *system_command_queue;
-  vsx_texture mtex;
+  vsx_texture* mtex;
   void load_configuration();
   void save_configuration();
   void init();

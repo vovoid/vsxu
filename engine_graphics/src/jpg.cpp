@@ -242,37 +242,9 @@ jpeg_stdio2_src (j_decompress_ptr cinfo, vsxf_handle* infile, vsxf* filesystem)
 //*****************************************************************************
 //*****************************************************************************
 
-// Targa header structure
-/*
-#pragma pack(push,1)
-typedef struct tgahdr_s
-{
-   unsigned char idlen;
-   unsigned char paltype;
-   unsigned char imgtype;
-   unsigned short firstclr;
-   unsigned short palclrs;
-   unsigned char palentsize;
-   unsigned short left;
-   unsigned short top;
-   unsigned short width;
-   unsigned short height;
-   unsigned char bpp;
-   unsigned char descbits;
-} tgahdr_t;
-#pragma pack(pop)
-*/
 CJPEGTest::CJPEGTest()
 : m_pBuf(0), m_nResX(0), m_nResY(0) 
 {}
-
-CJPEGTest::~CJPEGTest()
-{
-  if (m_pBuf)
-  {
-    delete [] m_pBuf; 
-  }
-}
 
 bool CJPEGTest::LoadJPEG( const vsx_string<>& strFile, vsx_string<>& strErr,vsxf* filesystem)
 {
@@ -280,7 +252,7 @@ bool CJPEGTest::LoadJPEG( const vsx_string<>& strFile, vsx_string<>& strErr,vsxf
     
     if( m_pBuf )
     {
-        delete [] m_pBuf; 
+        free(m_pBuf);
         m_pBuf = 0; 
         m_nResX = 0; 
         m_nResY = 0;     
@@ -313,7 +285,7 @@ bool CJPEGTest::LoadJPEG( const vsx_string<>& strFile, vsx_string<>& strErr,vsxf
         return false;
     }
         
-    m_pBuf = new unsigned char[ cinfo.output_width * cinfo.output_height * 3 ];
+    m_pBuf = (unsigned char*)malloc( cinfo.output_width * cinfo.output_height * 3 );
     
     if( cinfo.out_color_components == 3 )
     {

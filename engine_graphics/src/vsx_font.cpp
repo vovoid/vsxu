@@ -25,8 +25,7 @@
 #include "vsx_gl_global.h"
 #include <map>
 #include <list>
-#include "vsx_texture_info.h"
-#include "vsx_texture.h"
+#include <vsxfst.h>
 #include "vsx_font.h"
 #include "debug/vsx_error.h"
 
@@ -48,9 +47,8 @@ vsx_font_info* vsx_font::load(vsx_string<>font, vsxf* filesystem)
   if (font[0] != '-')
   {
     my_font_info->type = 0;
-    my_font_info->texture = new vsx_texture();
-    vsx_string<>ss = base_path+font;
-    my_font_info->texture->load_png( base_path+font, true, filesystem );
+    vsx_string<> ss = base_path+font;
+    my_font_info->texture = vsx_texture_data_loader_png::get_instance()->load( base_path+font, filesystem, true );
     ch = 16.0f/255.0f;
     cw = 10.0f/255.0f;
   }
@@ -83,12 +81,11 @@ void vsx_font::unload()
   my_font_info = 0x0;
 }
 
-void vsx_font::reinit(vsx_font_info* f_info,vsx_string<>font)
+void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsxf* filesystem)
 {
   if (f_info->type == 0)
   {
-    vsxf filesystem;
-    f_info->texture->load_png(base_path+font,true, &filesystem);
+    f_info->texture = vsx_texture_data_loader_png::get_instance()->load(base_path+font, filesystem, true);
     return;
   }
 
@@ -107,11 +104,11 @@ void vsx_font::reinit(vsx_font_info* f_info,vsx_string<>font)
   }
 }  
 
-void vsx_font::reinit_all_active()
+void vsx_font::reinit_all_active(vsxf* filesystem)
 {
   for (std::map<vsx_string<>, vsx_font_info*>::iterator it = glist.begin(); it != glist.end(); ++it)
   {
-    reinit((*it).second,(*it).first);
+    reinit((*it).second,(*it).first, filesystem);
   }
 }  
 

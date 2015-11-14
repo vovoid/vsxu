@@ -27,10 +27,11 @@
 #include <list>
 #include <vector>
 #include <math.h>
-#include "vsx_texture_info.h"
-#include "vsx_texture.h"
+#include <texture/vsx_texture.h>
 #include "vsx_command.h"
 #include "vsx_font.h"
+#include <texture/vsx_texture.h>
+
 // local includes
 #include "vsx_widget.h"
 #include "widgets/vsx_widget_2d_pager.h"
@@ -98,10 +99,10 @@ void vsxu_assistant::i_draw()
   pager->set_pos(vsx_vector3<>(0.065f*clickpoint.x,clickpoint.x*0.14f));
   pager->set_size(vsx_vector3<>(0.1f*clickpoint.x,0.03f*clickpoint.x));
 
-  texture.bind();
+  texture->bind();
     glColor3f(1,1,1);
     draw_box_tex(pos, size.x, size.y);
-	texture._bind();
+  texture->_bind();
 
 
   if (alpha > 0.01)
@@ -128,8 +129,6 @@ void vsxu_assistant::i_draw()
 
 void vsxu_assistant::reinit()
 {
-  vsxf filesystem;
-  texture.load_png(PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"luna.png", false, &filesystem);
   vsx_widget::reinit();
 }
 
@@ -142,7 +141,7 @@ void vsxu_assistant::init()
   topmost = true;
 
   vsxf filesystem;
-  texture.load_png(PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"luna.png", false, &filesystem);
+  texture = vsx_texture_data_loader_helper::load( PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"luna.png", vsxf::get_instance(), false );
   if (configuration.find("assistant_size") != configuration.end())
   {
     size_multiplier = vsx_string_helper::s2f(configuration["assistant_size"]);

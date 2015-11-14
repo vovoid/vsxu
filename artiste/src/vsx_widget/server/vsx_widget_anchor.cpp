@@ -26,14 +26,14 @@
 #include <list>
 #include <vector>
 #include <math.h>
-#include "vsx_texture_info.h"
-#include "vsx_texture.h"
 #include "vsx_command.h"
 #include "vsx_font.h"
 #include "vsxfst.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include <vsx_param_helper.h>
+#include <texture/vsx_texture.h>
+
 // local includes
 #include "vsx_widget.h"
 #include "widgets/vsx_widget_popup_menu.h"
@@ -926,6 +926,15 @@ void vsx_widget_anchor::before_delete()
   }
 }
 
+
+void vsx_widget_anchor::on_delete()
+{
+  vsx_texture_data_loader_helper::destroy( mtex_d );
+  vsx_texture_data_loader_helper::destroy( mtex_blob );
+  vsx_texture_data_loader_helper::destroy( mtex_blob_small );
+}
+
+
 void vsx_widget_anchor::update_connection_order() 
 {
   if (marked_for_deletion) return;
@@ -1599,13 +1608,9 @@ void vsx_widget_anchor::init()
 
   title = name+":"+p_type;
 
-  vsxf filesystem;
-  mtex_d.load_png( vsx_widget_skin::get_instance()->skin_path_get() + "datatypes/"+p_type+".png",true, &filesystem);
-  mtex_d.bind_load_gl();
-  mtex_blob.load_png( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/highlight_blob.png",true, &filesystem);
-  mtex_blob.bind_load_gl();
-  mtex_blob_small.load_png( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",true, &filesystem);
-  mtex_blob_small.bind_load_gl();
+  mtex_d = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "datatypes/"+p_type+".png", vsxf::get_instance(), false );
+  mtex_blob = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/highlight_blob.png", vsxf::get_instance(), false );
+  mtex_blob_small = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", vsxf::get_instance(), false );
   color.r = 1.0f;
   color.g = 1.0f;
   color.b = 1.0f;
@@ -1622,7 +1627,6 @@ void vsx_widget_anchor::init()
 void vsx_widget_anchor::reinit() 
 {
   vsxf filesystem;
-  mtex_d.load_png( vsx_widget_skin::get_instance()->skin_path_get() + "datatypes/"+p_type+".png",true, &filesystem);
   vsx_widget::reinit();
 }
 
@@ -2189,9 +2193,9 @@ void vsx_widget_anchor::draw()
       color.a
     );
 
-    mtex_d.bind();
+    mtex_d->bind();
     draw_box_texf(ax,ay,pos.z,sx,sy);
-    mtex_d._bind();
+    mtex_d->_bind();
 
     if (vsxl_filter) 
     {
@@ -2313,13 +2317,11 @@ void vsx_widget_anchor::draw()
       if (io == -1)
       {
         myf_pos.x -= size.x;
-        //draw_box(myf_pos-vsx_vector(myf_size.x), myf_size.x, myf_size.y);
         font.print_right(myf_pos, display_value,size.x*(d_size));
       }
       else
       {
         myf_pos.x += size.x;
-        //draw_box(myf_pos, myf_size.x, myf_size.y);
         font.print(myf_pos, display_value,size.x*(d_size));
       }
     }
@@ -2331,9 +2333,9 @@ void vsx_widget_anchor::draw()
     glPushMatrix();
     glTranslatef(ax,ay,pos.z);
     glRotatef(vsx_widget_time::get_instance()->get_time() * 100,0,0,1);
-    mtex_blob.bind();
+    mtex_blob->bind();
       draw_box_texf(0,0,0,0.03f,0.03f);
-    mtex_blob._bind();
+    mtex_blob->_bind();
     glPopMatrix();
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   }
@@ -2341,14 +2343,14 @@ void vsx_widget_anchor::draw()
   draw_children();
   if (clone_value && drag_clone_anchor == this)
   {
-    mtex_blob_small.bind();
+    mtex_blob_small->bind();
       glBlendFunc(GL_SRC_ALPHA, GL_ONE);
       glColor4f(0.5f,1,1,1);
       draw_box_tex_c(drag_coords.world_global, 0.01f*(1.0f - fmod(vsx_widget_time::get_instance()->get_time()
                                                                   * 10.0f, 1.0f)),
                      0.01f*(1.0f - fmod(vsx_widget_time::get_instance()->get_time() * 10.0f, 1.0f)));
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    mtex_blob_small._bind();
+    mtex_blob_small->_bind();
   }
 }
 

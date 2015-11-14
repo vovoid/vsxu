@@ -24,6 +24,7 @@
 #include <vector/vsx_vector3.h>
 #include <math.h>
 #include <vsx_gl_global.h>
+#include <texture/vsx_texture.h>
 #include "vsx_widget_controller_ab.h"
 #include "vsx_widget_controller_knob.h"
 
@@ -115,9 +116,7 @@ void vsx_widget_controller_ab::init()
   int_rot.M[14] = 0.0f;
   int_rot.M[15] = 1.0f;
 
-
-  vsxf filesystem;
-  mtex.load_png( vsx_widget_skin::get_instance()->skin_path_get() + "controllers/sphere.png",true, &filesystem);
+  mtex = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "controllers/sphere.png", vsxf::get_instance(), true);
 
   generate_menu();
   menu->init();
@@ -147,11 +146,6 @@ void vsx_widget_controller_ab::draw()
 {
   if (!visible) return;
   parentpos = parent->get_pos_p();
-  //Matrix3fT   NewRot;
-
-
-
-  //Matrix4fSetRotationFromMatrix3f(&Transform, &ThisRot);
 
   if (smoothness>=0)
   {
@@ -230,9 +224,9 @@ void vsx_widget_controller_ab::draw()
       glColor4f(1.0f,1.0f,1.0f,0.7f);
       glCullFace(GL_FRONT);
       glEnable(GL_CULL_FACE);
-      mtex.bind();
+      mtex->bind();
         gluSphere(quadratic,size.x/2*0.8,10,10);
-      mtex._bind();
+      mtex->_bind();
       glDisable(GL_CULL_FACE);
     }
 
@@ -248,9 +242,9 @@ void vsx_widget_controller_ab::draw()
       glColor4f(1.0f,1.0f,1.0f,0.7f);
       glCullFace(GL_FRONT);
       glEnable(GL_CULL_FACE);
-      mtex.bind();
+      mtex->bind();
         gluSphere(quadratic,size.x/2*0.8,10,10);
-      mtex._bind();
+      mtex->_bind();
       glDisable(GL_CULL_FACE);
     }
   glPopMatrix();
@@ -266,7 +260,6 @@ void vsx_widget_controller_ab::event_mouse_up(vsx_widget_distance distance,vsx_w
     LastRot = ThisRot;
     controlling = false;
     vsx_widget::event_mouse_up(distance,coords,button);
-  //vsx_widget::event_mouse_up(distance,coords,button);
 }
 
 void vsx_widget_controller_ab::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) {

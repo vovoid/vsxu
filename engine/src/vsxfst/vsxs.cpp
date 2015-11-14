@@ -355,7 +355,8 @@ bool verify_filesuffix(vsx_string<>& input, const char* type)
     a.make_lowercase();
     vsx_string<>t = type;
     t.make_lowercase();
-    if (t == a) return true;
+    if (t == a)
+      return true;
   }
   return false;
 }

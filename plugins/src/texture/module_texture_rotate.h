@@ -1,3 +1,5 @@
+#include <texture/vsx_texture.h>
+
 class module_texture_rotate : public vsx_module
 {
   // in
@@ -10,7 +12,7 @@ class module_texture_rotate : public vsx_module
 
   // internal
   vsx_texture* texture_out;
-  vsx_transform_rotate transform;
+  vsx_texture_transform_rotate transform;
 
 public:
   module_texture_rotate() : transform(0, 0, 0, 1)
@@ -58,29 +60,25 @@ void module_texture_rotate::declare_params(vsx_module_param_list& in_parameters,
 
 void module_texture_rotate::run()
 {
-  vsx_texture** texture_info_in = texture_info_param_in->get_addr();
+  vsx_texture** texture_in = texture_info_param_in->get_addr();
 
-  if (texture_info_in)
-  {
-
-    texture_out->valid = (*texture_info_in)->valid;
-
-    (*texture_out->texture_info) = (*(*texture_info_in)->texture_info);
-
-    float x = rotation_axis->get(0);
-    float y = rotation_axis->get(1);
-    float z = rotation_axis->get(2);
-    float a = rotation_angle->get()*360;
-    vsx_transform_obj* prev_transform = (*texture_info_in)->get_transform();
-    transform.set_previous_transform(prev_transform);
-    transform.update(a, x, y, z);
-    texture_out->set_transform(&transform);
-    ((vsx_module_param_texture*)texture_result)->set(texture_out);
-  }
-  else
+  if (!texture_in)
   {
     texture_result->valid = false;
+    return;
   }
+
+  (*texture_out->texture_data) = (*(*texture_in)->texture_data);
+
+  float x = rotation_axis->get(0);
+  float y = rotation_axis->get(1);
+  float z = rotation_axis->get(2);
+  float a = rotation_angle->get()*360;
+  vsx_texture_transform_base* prev_transform = (*texture_in)->get_transform();
+  transform.set_previous_transform(prev_transform);
+  transform.update(a, x, y, z);
+  texture_out->set_transform(&transform);
+  ((vsx_module_param_texture*)texture_result)->set(texture_out);
 }
 
 void module_texture_rotate::on_delete()

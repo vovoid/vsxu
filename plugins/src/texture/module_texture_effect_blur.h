@@ -87,11 +87,9 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   texture = new vsx_texture;
   res_x = res_y = 256;
   texture->reinit_color_buffer(res_x,res_y,true,false);
-  texture->valid = true;
 
   texture2 = new vsx_texture;
   texture2->reinit_color_buffer(res_x,res_y,true,false);
-  texture2->valid = true;
 
 
   start_value = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"start_value");
@@ -304,7 +302,6 @@ void main(void)\n\
         shader.end();
       (*ti)->_bind();
     texture->end_capture_to_buffer();
-    texture->valid = true;
 
     //
     texture2->begin_capture_to_buffer();
@@ -334,7 +331,6 @@ void main(void)\n\
         shader.end();
       texture->_bind();
     texture2->end_capture_to_buffer();
-    texture2->valid = true;
 
     if (passes->get() == 0)
     {
@@ -377,7 +373,6 @@ void main(void)\n\
         shader.end();
       texture2->_bind();
     texture->end_capture_to_buffer();
-    texture->valid = true;
 
     texture2->begin_capture_to_buffer();
       loading_done = true;
@@ -406,7 +401,6 @@ void main(void)\n\
         shader.end();
       texture->_bind();
     texture2->end_capture_to_buffer();
-    texture2->valid = true;
 
 
 

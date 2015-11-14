@@ -37,7 +37,7 @@ class vsx_widget_connector_bezier : public vsx_widget {
   double sx,sy,ex,ey; // internal coordinates
   double old_sx, old_sy, old_ex, old_ey;
   vsx_vector3<> cached_spline[25];
-  vsx_texture mtex_blob;
+  vsx_texture* mtex_blob;
   bool color_initialized;
   vsx_color<> color;
   
@@ -51,8 +51,6 @@ public:
   bool open;
   int order;
   static bool receiving_focus;
-//  double smx, smy; // coordinate where mouse has been clicked
-//  double mdx, mdy; // delta mouse move
   vsx_widget *destination;
   
   void command_process_back_queue(vsx_command_s *t);
@@ -70,6 +68,7 @@ public:
   bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
   void draw();
   vsx_widget_connector_bezier();
+  ~vsx_widget_connector_bezier();
 };
 
 #endif

@@ -21,6 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <vsx_gl_global.h>
 #include "vsx_widget.h"
 
 bool vsx_widget::global_delete = false;
@@ -1057,26 +1058,22 @@ void vsx_widget::set_font_size(float fsize)
 void vsx_widget::stop()
 {
   if (this == root)
-  {
-    vsx_texture tex;
-    tex.unload_all_active();
-  }
+    vsx_texture_gl_cache::get_instance()->unload_all_active();
+
   for (children_iter=children.begin(); children_iter != children.end(); ++children_iter)
-  (*children_iter)->stop();
+    (*children_iter)->stop();
 }
 
 void vsx_widget::reinit()
 {
   if (this == root)
   {
-    vsx_texture tex;
-    tex.reinit_all_active();
-    font.reinit_all_active(); // reinit all active fonts plz
+    vsx_texture_gl_cache::get_instance()->reinit_all_active();
+    font.reinit_all_active(vsxf::get_instance());
   }
+
   for (children_iter=children.begin(); children_iter != children.end(); ++children_iter)
-  {
     (*children_iter)->reinit();
-  }
 }
 
 

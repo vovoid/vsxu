@@ -249,17 +249,20 @@ public:
     VSX_UNUSED(param);
     particles = particles_in->get_addr();
     tex = tex_inf->get_addr();
-    if (!particles) return;
-    if (!tex) return;
-    if (!((*tex)->valid)) return;
+    if (!particles)
+      return;
 
-    vsx_transform_obj texture_transform = (*tex)->get_transform();
+    if (!tex)
+      return;
+
+    if (!((*tex)->is_valid()))
+      return;
 
     glMatrixMode(GL_TEXTURE);
     glPushMatrix();
 
-    if ((*tex)->get_transform()) texture_transform();
-
+    if ((*tex)->get_transform())
+      (*tex)->get_transform()->transform();
 
     (*tex)->bind();
     glColor4f(1,1,1,1);

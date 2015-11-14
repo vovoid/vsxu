@@ -191,7 +191,7 @@ public:
     texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
 
     texture = new vsx_texture;
-    texture->init_opengl_texture_2d();
+    texture->texture_gl->init_opengl_texture_2d();
   }
 
   void run()
@@ -244,7 +244,6 @@ public:
       if (texture_timestamp != bitm.timestamp && bitm.valid)
       {
         texture->upload_ram_bitmap_2d(&bitm,true);
-        texture->valid = true;
         texture_out->set(texture);
         texture_timestamp = bitm.timestamp;
       }
