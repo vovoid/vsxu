@@ -3,11 +3,14 @@
 
 #include <vsx_gl_state.h>
 #include <texture/vsx_texture.h>
-#include <vsx_texture_transform.h>
+#include "vsx_texture_transform_base.h"
+#include "vsx_texture_transform_rotate.h"
+#include "vsx_texture_transform_translate.h"
+#include "vsx_texture_transform_scale.h"
 
 namespace vsx_texture_transform_helper
 {
-  void begin_transform(vsx_texture* texture)
+  inline void begin_transform(vsx_texture* texture)
   {
     if (!texture->get_transform())
       return;
@@ -18,7 +21,7 @@ namespace vsx_texture_transform_helper
     texture->get_transform()->transform();
   }
 
-  void end_transform(vsx_texture* texture)
+  inline void end_transform(vsx_texture* texture)
   {
     if (!texture->get_transform())
       return;

@@ -33,20 +33,12 @@
 
 #include "vsx_texture_data.h"
 #include "vsx_texture_gl.h"
-#include "vsx_texture_transform.h"
+#include "vsx_texture_transform_base.h"
 
 // Frame Buffer Types (see frame_buffer_type)
 #define VSX_TEXTURE_BUFFER_TYPE_RENDER_BUFFER 1
 #define VSX_TEXTURE_BUFFER_TYPE_COLOR 2
 #define VSX_TEXTURE_BUFFER_TYPE_COLOR_DEPTH 3
-
-
-
-
-
-
-
-
 
 class vsx_texture
 {
@@ -221,7 +213,6 @@ public:
   // use this when you're done with the texture
   VSX_ENGINE_GRAPHICS_DLLIMPORT void _bind();
 
-
   // constructors
 
   vsx_texture(bool attached_to_cache = false)
@@ -262,7 +253,7 @@ public:
   }
 };
 
-
+#include "vsx_texture_transform_helper.h"
 #include "vsx_texture_data_loader_helper.h"
 
 #endif
