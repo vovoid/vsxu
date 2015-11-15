@@ -181,7 +181,8 @@ void output(vsx_module_param_abs* param)
         texture = new vsx_texture;
         texture->texture_gl->init_opengl_texture_cubemap();
       }
-      texture->upload_ram_bitmap_cube(
+      vsx_texture_gl_loader::upload_cube(
+        texture->texture_gl,
         bitm.data,
         bitm.size_x,
         bitm.size_y,
@@ -204,7 +205,15 @@ void stop() {
 
 void start() {
   texture->texture_gl->init_opengl_texture_cubemap();
-  texture->upload_ram_bitmap_cube(&bitm,bitm.size_x, bitm.size_y, false, bitm.bpp, bitm.bformat);
+  vsx_texture_gl_loader::upload_cube(
+    texture->texture_gl,
+    bitm.data,
+    bitm.size_x,
+    bitm.size_y,
+    false,
+    bitm.bpp, // 3 or 4
+    bitm.bformat // GL_RGBA
+  );
   texture_out->set(texture);
 }
 

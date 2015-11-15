@@ -1,3 +1,4 @@
+#include <texture/vsx_texture_buffer_color.h>
 
 class module_texture_render_surface_color_buffer : public vsx_module {
   // in
@@ -14,6 +15,7 @@ class module_texture_render_surface_color_buffer : public vsx_module {
   int dbuff;
   int tex_size_internal;
   vsx_texture* texture;
+  vsx_texture_buffer_color buffer;
 
   int float_texture_int;
   int alpha_channel_int;
@@ -110,14 +112,13 @@ public:
 
   bool can_run()
   {
-    vsx_texture tex;
-    return tex.has_buffer_support();
+    return vsx_texture_buffer_base::has_buffer_support();
   }
 
   void start()
   {
     texture = new vsx_texture;
-    texture->init_color_depth_buffer(res_x,res_x);
+    buffer.init(texture, res_x, res_x);
     texture_result->set(texture);
   }
 
@@ -223,8 +224,9 @@ public:
         break;
       };
 
-      texture->reinit_color_depth_buffer
+      buffer.reinit
       (
+        texture,
         res_x,
         res_y,
         float_texture_int,
@@ -233,7 +235,7 @@ public:
     }
 
 
-    texture->begin_capture_to_buffer();
+    buffer.begin_capture_to_buffer();
 
     glUseProgram(0);
 
@@ -244,19 +246,15 @@ public:
   void deactivate_offscreen()
   {
     if (texture)
-    {
-      texture->end_capture_to_buffer();
-    }
-
+      buffer.end_capture_to_buffer();
     ((vsx_module_param_texture*)texture_result)->set(texture);
-
   }
 
   void stop()
   {
     if (texture)
     {
-      texture->deinit_buffer();
+      buffer.deinit(texture);
       delete texture;
       texture = 0;
     }

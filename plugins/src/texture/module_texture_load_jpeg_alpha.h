@@ -243,7 +243,7 @@ public:
     {
       if (texture_timestamp != bitm.timestamp && bitm.valid)
       {
-        texture->upload_ram_bitmap_2d(&bitm,true);
+        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm, true);
         texture_out->set(texture);
         texture_timestamp = bitm.timestamp;
       }
@@ -253,11 +253,11 @@ public:
   void on_delete()
   {
     if (thread_state == 1)
-    pthread_join(worker_t, 0);
+      pthread_join(worker_t, 0);
     if (bitm.valid)
-    {
       delete[] (vsx_bitmap_32bt*)bitm.data;
-    }
+    if (texture)
+      delete texture;
   }
 };
 

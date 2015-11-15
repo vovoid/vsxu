@@ -1,5 +1,6 @@
 #include <time.h>
 #include <vsx_data_path.h>
+#include <texture/vsx_texture_buffer_color_depth.h>
 
 class module_texture_screenshot_hires : public vsx_module
 {
@@ -22,6 +23,8 @@ class module_texture_screenshot_hires : public vsx_module
 
   // internal
   vsx_texture* texture;
+  vsx_texture_buffer_color_depth buffer;
+
   vsx_gl_state* gl_state;
   GLfloat tmpMat[16];
 
@@ -90,7 +93,7 @@ public:
     N = 32;
 
     texture = new vsx_texture;
-    texture->init_color_depth_buffer(512,512);
+    buffer.init(texture, 512,512);
 
     pixeldata = (char*)malloc( 512 * 512 * 4 );
     pixeldata_target = (char*)malloc( 512 * 512 * 4 * M * N );
@@ -126,7 +129,7 @@ public:
     }
 
     if (capture_in_progress)
-      texture->begin_capture_to_buffer();
+      buffer.begin_capture_to_buffer();
 
 
 
@@ -197,7 +200,7 @@ public:
       memcpy(&pixeldata_target[ target_pos ], &pixeldata[ source_pos ], subrow_size);
     }
 
-    texture->end_capture_to_buffer();
+    buffer.end_capture_to_buffer();
 
     m++;
 

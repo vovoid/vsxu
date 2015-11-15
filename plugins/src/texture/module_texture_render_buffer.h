@@ -1,3 +1,5 @@
+#include <texture/vsx_texture_buffer_render.h>
+
 class module_texture_render_buffer : public vsx_module {
   // in
   vsx_module_param_render* render_in;
@@ -17,6 +19,7 @@ class module_texture_render_buffer : public vsx_module {
   int dbuff;
   int tex_size_internal;
   vsx_texture* texture;
+  vsx_texture_buffer_render buffer;
   bool allocate_second_texture;
   int float_texture_int;
   int alpha_channel_int;
@@ -128,14 +131,13 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
 bool can_run()
 {
-  vsx_texture tex;
-  return tex.has_buffer_support();
+  return vsx_texture_buffer_base::has_buffer_support();
 }
 
 void start()
 {
   texture = new vsx_texture;
-  texture->init_render_buffer(res_x,res_x);
+  buffer.init(texture, res_x, res_x);
   texture_result->set(texture);
 }
 
@@ -246,8 +248,9 @@ bool activate_offscreen() {
       break;
     };
 
-    texture->reinit_render_buffer
+    buffer.reinit
     (
+      texture,
       res_x,
       res_y,
       float_texture_int,
@@ -264,7 +267,7 @@ bool activate_offscreen() {
     texture->_bind();
   }
 
-  texture->begin_capture_to_buffer();
+  buffer.begin_capture_to_buffer();
 
   glDepthMask(GL_TRUE);
   glEnable(GL_BLEND);
@@ -278,7 +281,7 @@ void deactivate_offscreen()
 {
   if (texture)
   {
-    texture->end_capture_to_buffer();
+    buffer.end_capture_to_buffer();
   }
 
   ((vsx_module_param_texture*)texture_result)->set(texture);
@@ -288,7 +291,7 @@ void stop()
 {
   if (texture)
   {
-    texture->deinit_buffer();
+    buffer.deinit(texture);
     #ifdef VSXU_DEBUG
       printf("deleting texture\n");
     #endif

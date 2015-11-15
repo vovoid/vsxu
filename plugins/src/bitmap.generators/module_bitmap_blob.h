@@ -204,7 +204,7 @@ public:
         bitm_timestamp = bitm.timestamp;
         if (c_type == 1)
         {
-          texture->upload_ram_bitmap_2d(&bitm,true);
+          vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl,&bitm,true);
           result_texture->set(texture);
         }
         result1->set_p(bitm);
@@ -258,7 +258,7 @@ public:
       if (bitm.valid)
       {
         texture->texture_gl->init_opengl_texture_2d();
-        texture->upload_ram_bitmap_2d(&bitm,true);
+        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm,true);
       }
       result_texture->set(texture);
     }

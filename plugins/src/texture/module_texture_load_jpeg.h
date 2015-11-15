@@ -176,7 +176,7 @@ public:
     {
       if (texture_timestamp != bitm.timestamp && bitm.valid)
       {
-        texture->upload_ram_bitmap_2d(&bitm,true);
+        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm, true);
         texture_out->set(texture);
         texture_timestamp = bitm.timestamp;
       }

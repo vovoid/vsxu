@@ -25,16 +25,20 @@
 #ifndef VSX_TEXTURE_GL_H
 #define VSX_TEXTURE_GL_H
 
+#include <debug/vsx_error.h>
+
 class vsx_texture_gl
 {
 public:
+  // handle and type
   unsigned int gl_id;
   unsigned int gl_type;
 
   bool uploaded_to_gl;
 
-  bool attached_to_cache; // not part of cache
-  int references; // references in cache
+  // cache markers
+  bool attached_to_cache;
+  int references;
 
   vsx_texture_gl(bool is_attached_to_cache)
     :
@@ -48,31 +52,43 @@ public:
 
   void init_opengl_texture_1d()
   {
+    if (gl_id)
+      VSX_ERROR_RETURN("Trying to initialize an already initialized gl_id");
+
     glGenTextures(1, &gl_id);
     gl_type = GL_TEXTURE_1D;
   }
 
   void init_opengl_texture_2d()
   {
+    if (gl_id)
+      VSX_ERROR_RETURN("Trying to initialize an already initialized gl_id");
+
     glGenTextures(1, &gl_id);
     gl_type = GL_TEXTURE_2D;
   }
 
   void init_opengl_texture_cubemap()
   {
+    if (gl_id)
+      VSX_ERROR_RETURN("Trying to initialize an already initialized gl_id");
+
     glGenTextures(1, &gl_id);
     gl_type = GL_TEXTURE_CUBE_MAP;
   }
 
   void unload()
   {
-    glDeleteTextures(1,&gl_id);
+    if (!gl_id)
+      VSX_ERROR_RETURN("Trying to unload an invalid handle");
 
+    glDeleteTextures(1,&gl_id);
     gl_id = 0;
     uploaded_to_gl = false;
   }
 
 };
 
+#include "texture/vsx_texture_gl_loader.h"
 
 #endif

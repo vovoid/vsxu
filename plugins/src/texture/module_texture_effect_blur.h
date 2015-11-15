@@ -21,6 +21,8 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <texture/vsx_texture_buffer_color.h>
+
 class module_texture_effect_blur : public vsx_module
 {
   // in
@@ -37,14 +39,17 @@ class module_texture_effect_blur : public vsx_module
 
   // internal
   vsx_texture* texture;
+  vsx_texture_buffer_color buffer;
+
   vsx_texture* texture2;
+  vsx_texture_buffer_color buffer2;
+
   vsx_glsl shader;
   GLuint tex_id;
   GLuint glsl_offset_id,glsl_tex_id,glsl_attenuation;
   vsx_gl_state* gl_state;
 
 public:
-
 
   ~module_texture_effect_blur()
   {
@@ -86,10 +91,10 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
   texture = new vsx_texture;
   res_x = res_y = 256;
-  texture->reinit_color_buffer(res_x,res_y,true,false);
+  buffer.init(texture, res_x, res_y, true, false);
 
   texture2 = new vsx_texture;
-  texture2->reinit_color_buffer(res_x,res_y,true,false);
+  buffer2.init(texture2, res_x, res_y, true, false);
 
 
   start_value = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"start_value");
@@ -178,10 +183,10 @@ void main(void)\n\
       texture = new vsx_texture;
 
       tex_size_internal = 3;
-      texture->reinit_color_buffer(res_x,res_y,true,false);
+      buffer.reinit(texture, res_x, res_y, true, false);
 
       texture2 = new vsx_texture;
-      texture2->reinit_color_buffer(res_x,res_y,true,false);
+      buffer2.reinit(texture2, res_x, res_y, true, false);
     }
     bool rebuild = false;
     if (texture_size->get() >= 10)
@@ -237,8 +242,8 @@ void main(void)\n\
           res_y = gl_state->viewport_get_height() * 2.0;
         break;
       };
-      texture->reinit_color_buffer(res_x,res_y,true,false);
-      texture2->reinit_color_buffer(res_x,res_y,true,false);
+      buffer.reinit(texture, res_x, res_y, true, false);
+      buffer2.reinit(texture2, res_x, res_y, true, false);
     }
 
     vsx_texture** ti = glow_source->get_addr();
@@ -275,7 +280,7 @@ void main(void)\n\
     float pixel_offset_size_x = start_value->get() * 0.1f / (float)res_x;
     float pixel_offset_size_y = start_value->get() * 0.1f / (float)res_y;
 
-    texture->begin_capture_to_buffer();
+    buffer.begin_capture_to_buffer();
       loading_done = true;
       glColor4f(1,1,1,1);
       glDisable(GL_BLEND);
@@ -301,10 +306,10 @@ void main(void)\n\
           glEnd();
         shader.end();
       (*ti)->_bind();
-    texture->end_capture_to_buffer();
+    buffer.end_capture_to_buffer();
 
     //
-    texture2->begin_capture_to_buffer();
+    buffer2.begin_capture_to_buffer();
       loading_done = true;
       glColor4f(1,1,1,1);
       glDisable(GL_BLEND);
@@ -330,7 +335,7 @@ void main(void)\n\
           glEnd();
         shader.end();
       texture->_bind();
-    texture2->end_capture_to_buffer();
+    buffer2.end_capture_to_buffer();
 
     if (passes->get() == 0)
     {
@@ -346,7 +351,7 @@ void main(void)\n\
     pixel_offset_size_y = start_value->get() * 0.4f / (float)res_y;
 
     // 2nd pass
-    texture->begin_capture_to_buffer();
+    buffer.begin_capture_to_buffer();
       loading_done = true;
       glColor4f(1,1,1,1);
       glDisable(GL_BLEND);
@@ -372,9 +377,9 @@ void main(void)\n\
           glEnd();
         shader.end();
       texture2->_bind();
-    texture->end_capture_to_buffer();
+    buffer.end_capture_to_buffer();
 
-    texture2->begin_capture_to_buffer();
+    buffer2.begin_capture_to_buffer();
       loading_done = true;
       glColor4f(1,1,1,1);
       glDisable(GL_BLEND);
@@ -400,7 +405,7 @@ void main(void)\n\
           glEnd();
         shader.end();
       texture->_bind();
-    texture2->end_capture_to_buffer();
+    buffer2.end_capture_to_buffer();
 
 
 
@@ -411,8 +416,8 @@ void main(void)\n\
   void stop() {
     shader.stop();
     if (texture) {
-      texture->deinit_buffer();
-      texture2->deinit_buffer();
+      buffer.deinit(texture);
+      buffer2.deinit(texture2);
       delete texture;
       delete texture2;
       texture = 0;
@@ -430,8 +435,8 @@ void main(void)\n\
   void on_delete()
   {
     if (texture) {
-      texture->deinit_buffer();
-      texture2->deinit_buffer();
+      buffer.deinit(texture);
+      buffer2.deinit(texture2);
       delete texture;
       delete texture2;
       texture = 0;

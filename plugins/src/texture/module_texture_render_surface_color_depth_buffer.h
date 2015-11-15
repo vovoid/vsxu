@@ -1,5 +1,5 @@
 #include <texture/vsx_texture.h>
-
+#include <texture/vsx_texture_buffer_color_depth.h>
 
 class module_texture_render_surface_color_depth_buffer : public vsx_module
 {
@@ -22,6 +22,7 @@ class module_texture_render_surface_color_depth_buffer : public vsx_module
   int tex_size_internal;
   vsx_texture* texture;
   vsx_texture depth_buffer_texture;
+  vsx_texture_buffer_color_depth buffer;
 
   int float_texture_int;
   int alpha_channel_int;
@@ -126,14 +127,13 @@ public:
 
   bool can_run()
   {
-    vsx_texture tex;
-    return tex.has_buffer_support();
+    return vsx_texture_buffer_base::has_buffer_support();
   }
 
   void start()
   {
     texture = new vsx_texture;
-    texture->init_color_depth_buffer(res_x,res_x);
+    buffer.init( texture, res_x, res_x );
     texture_result->set(texture);
   }
 
@@ -268,8 +268,9 @@ public:
         }
       }
 
-      texture->reinit_color_depth_buffer
+      buffer.reinit
       (
+        texture,
         res_x,
         res_y,
         float_texture_int,
@@ -278,20 +279,20 @@ public:
       );
     }
 
-    texture->begin_capture_to_buffer();
+    buffer.begin_capture_to_buffer();
 
 
     glUseProgram(0);
 
-    depth_buffer_texture.texture_gl->gl_id = texture->get_depth_buffer_handle();
+    depth_buffer_texture.texture_gl->gl_id = buffer.get_depth_buffer_handle();
     depth_buffer_texture.texture_gl->gl_type = GL_TEXTURE_2D;
+    depth_buffer_texture.texture_gl->uploaded_to_gl = true;
 
     depth_buffer_texture.texture_data->type = VSX_TEXTURE_DATA_TYPE_2D;
     depth_buffer_texture.texture_data->width = res_x;
     depth_buffer_texture.texture_data->height = res_y;
 
     depth_buffer_out->set(&depth_buffer_texture);
-
 
     loading_done = true;
     return true;
@@ -301,7 +302,7 @@ public:
   {
     if (texture)
     {
-      texture->end_capture_to_buffer();
+      buffer.end_capture_to_buffer();
     }
     ((vsx_module_param_texture*)texture_result)->set(texture);
   }
@@ -310,7 +311,7 @@ public:
   {
     if (texture)
     {
-      texture->deinit_buffer();
+      buffer.deinit( texture );
       #ifdef VSXU_DEBUG
         printf("deleting texture\n");
       #endif

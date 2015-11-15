@@ -1,3 +1,5 @@
+#include <texture/vsx_texture_buffer_color_depth.h>
+
 class vsx_module_rendered_texture_single : public vsx_module {
   // in
   vsx_module_param_render* render_in;
@@ -18,6 +20,9 @@ class vsx_module_rendered_texture_single : public vsx_module {
   int tex_size_internal;
   vsx_texture* texture;
   vsx_texture* texture2;
+  vsx_texture_buffer_color_depth buffer;
+  vsx_texture_buffer_color_depth buffer2;
+
   bool which_buffer;
   bool allocate_second_texture;
   int support_feedback_int;
@@ -135,20 +140,18 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
 bool can_run()
 {
-  vsx_texture tex;
-  return tex.has_buffer_support();
+  return vsx_texture_buffer_base::has_buffer_support();
 }
 
 void start()
 {
-
   which_buffer = false;
   texture = new vsx_texture;
-  texture->init_color_depth_buffer(res_x,res_x);
+  buffer.init(texture, res_x, res_x);
   texture_result->set(texture);
 
   texture2 = new vsx_texture;
-  texture2->init_color_depth_buffer(res_x,res_x);
+  buffer2.init(texture2, res_x, res_x);
 }
 
 bool activate_offscreen() {
@@ -259,8 +262,9 @@ bool activate_offscreen() {
 
     if (0 == support_feedback_int)
     {
-      texture->reinit_color_depth_buffer
+      buffer.reinit
       (
+        texture,
         res_x,
         res_y,
         float_texture_int,
@@ -278,8 +282,9 @@ bool activate_offscreen() {
     if (1 == support_feedback_int)
     {
       // feedback textures ignores foreign depth buffer...
-      texture->reinit_color_depth_buffer
+      buffer.reinit
       (
+        texture,
         res_x,
         res_y,
         float_texture_int,
@@ -292,8 +297,9 @@ bool activate_offscreen() {
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
       texture->_bind();
-      texture2->reinit_color_depth_buffer
+      buffer2.reinit
       (
+        texture2,
         res_x,
         res_y,
         float_texture_int,
@@ -310,9 +316,9 @@ bool activate_offscreen() {
   }
 
   if (!which_buffer || support_feedback->get() == 0)
-    texture->begin_capture_to_buffer();
+    buffer.begin_capture_to_buffer();
   else
-    texture2->begin_capture_to_buffer();
+    buffer2.begin_capture_to_buffer();
 
   //printf("changing viewport to %d\n",res_x);
   glDepthMask(GL_TRUE);
@@ -330,13 +336,13 @@ void deactivate_offscreen()
   if (!which_buffer || support_feedback_int == 0)
   {
     if (texture)
-      texture->end_capture_to_buffer();
+      buffer.end_capture_to_buffer();
     ((vsx_module_param_texture*)texture_result)->set(texture);
   }
   else
   {
     if (texture2)
-      texture2->end_capture_to_buffer();
+      buffer2.end_capture_to_buffer();
     ((vsx_module_param_texture*)texture_result)->set(texture2);
   }
 
@@ -347,7 +353,7 @@ void stop()
 {
   if (texture)
   {
-    texture->deinit_buffer();
+    buffer.deinit(texture);
     #ifdef VSXU_DEBUG
       printf("deleting texture\n");
     #endif
@@ -355,7 +361,7 @@ void stop()
     texture = 0;
 
     if (allocate_second_texture && texture2) {
-      texture2->deinit_buffer();
+      buffer2.deinit(texture2);
       delete texture2;
       texture2 = 0;
     }

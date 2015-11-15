@@ -61,10 +61,7 @@ public:
     {
       // ok, new version
       bitm_timestamp = bitm->timestamp;
-      if (mipmaps->get() == 0)
-      texture->upload_ram_bitmap_2d(bitm,true);
-      else
-      texture->upload_ram_bitmap_2d(bitm,false);
+      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, bitm, mipmaps->get() == 0);
       result_texture->set(texture);
     }
   }
@@ -79,7 +76,7 @@ public:
     texture->texture_gl->init_opengl_texture_2d();
     bitm = bitm_in->get_addr();
     if (bitm) {
-      texture->upload_ram_bitmap_2d(bitm,mipmaps->get());
+      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, bitm, mipmaps->get() == 0);
       result_texture->set(texture);
     }
   }

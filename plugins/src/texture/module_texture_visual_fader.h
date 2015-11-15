@@ -59,8 +59,9 @@ public:
     texture_a.texture_gl->init_opengl_texture_2d();
     texture_b.texture_gl->init_opengl_texture_2d();
 
-    texture_a.upload_ram_bitmap_2d(&ab,false);
-    texture_b.upload_ram_bitmap_2d(&bb,false);
+
+    vsx_texture_gl_loader::upload_bitmap_2d(texture_a.texture_gl, &ab);
+    vsx_texture_gl_loader::upload_bitmap_2d(texture_b.texture_gl, &bb);
 
     texture_a_out->set(&texture_a);
     texture_b_out->set(&texture_b);

@@ -185,7 +185,7 @@ void output(vsx_module_param_abs* param)
         texture = new vsx_texture;
         texture->texture_gl->init_opengl_texture_2d();
       }
-      texture->upload_ram_bitmap_2d(&bitm,true);
+      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm, true);
       texture_out->set(texture);
       texture_timestamp = bitm.timestamp;
     }
@@ -201,7 +201,7 @@ void stop() {
 
 void start() {
   texture->texture_gl->init_opengl_texture_2d();
-  texture->upload_ram_bitmap_2d(&bitm,true);
+  vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm, true);
   texture_out->set(texture);
 }
 
