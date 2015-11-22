@@ -203,10 +203,10 @@ public:
   
   T* get_addr() __attribute__((always_inline))
   {
-    if (valid)
+    if (!valid)
+      return 0;
+
     return param_data;
-    else
-    return 0;
   }
   
   T& get(int index = 0) __attribute__((always_inline))
@@ -309,7 +309,7 @@ typedef vsx_module_param<0, vsx_string<>,          1,0 > vsx_module_param_string
 typedef vsx_module_param<0, float,                 4,1 > vsx_module_param_float4; // use get() set()
 typedef vsx_module_param<0, vsx_matrix<float>,     1,0 > vsx_module_param_matrix; // use get() set()
 typedef vsx_module_param<0, vsx_mesh<>*,           1,0 > vsx_module_param_mesh; // use get() / set()
-typedef vsx_module_param<0, vsx_bitmap,            1,0 > vsx_module_param_bitmap; // use get_addr() / set_p()
+typedef vsx_module_param<0, vsx_bitmap*,            1,0 > vsx_module_param_bitmap; // use get_addr() / set_p()
 typedef vsx_module_param<0, vsx_particlesystem<>,  1,0 > vsx_module_param_particlesystem; // use get_addr() / set_p()
 typedef vsx_module_param<0, vsx_float_array,       1,0 > vsx_module_param_float_array; // use get_addr() set_p()
 typedef vsx_module_param<0, vsx::sequence::channel<vsx::sequence::value_float>, 1,0 > vsx_module_param_float_sequence; // use get() set()

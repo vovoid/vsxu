@@ -30,7 +30,7 @@ public:
   vsx_module_param_bitmap* bitmap_in;
 
   // out
-  vsx_module_param_bitmap* result1;
+  vsx_module_param_bitmap* bitmap_out;
 
   // internal
   float time;
@@ -41,7 +41,7 @@ public:
   vsx_bitmap_32bt *data_a;
   vsx_bitmap_32bt *data_b;
   int bitm_timestamp;
-  vsx_bitmap result_bitm;
+  vsx_bitmap bitmap;
   bool first, worker_running, t_done;
   pthread_t         worker_t;
   pthread_attr_t    worker_t_attr;
@@ -59,18 +59,19 @@ public:
         if (buf) p = ((module_bitmap_add_noise*)ptr)->data_a;
         else p = ((module_bitmap_add_noise*)ptr)->data_b;
 
-        unsigned long b_c = ((module_bitmap_add_noise*)ptr)->result_bitm.size_x * ((module_bitmap_add_noise*)ptr)->result_bitm.size_y;
+        unsigned long b_c = ((module_bitmap_add_noise*)ptr)->bitmap.width * ((module_bitmap_add_noise*)ptr)->bitmap.height;
 
-        if (((module_bitmap_add_noise*)ptr)->t_bitm.bformat == GL_RGBA)
+        vsx_bitmap& t_bitmap = ((module_bitmap_add_noise*)ptr)->t_bitm;
+        if (t_bitmap.storage_format == vsx_bitmap::byte_storage && t_bitmap.channels == 4)
         {
           for (size_t x = 0; x < b_c; ++x)
           {
               p[x] = ((vsx_bitmap_32bt*)((module_bitmap_add_noise*)ptr)->t_bitm.data)[x] | rand() << 8  | (unsigned char)rand(); //bitm->data[x + y*result_bitm.size_x]
           }
         }
-        ((module_bitmap_add_noise*)ptr)->result_bitm.valid = true;
-        ((module_bitmap_add_noise*)ptr)->result_bitm.data = p;
-        ++((module_bitmap_add_noise*)ptr)->result_bitm.timestamp;
+        ((module_bitmap_add_noise*)ptr)->bitmap.valid = true;
+        ((module_bitmap_add_noise*)ptr)->bitmap.data = p;
+        ++((module_bitmap_add_noise*)ptr)->bitmap.timestamp;
         buf = !buf;
         i_frame = ((module_bitmap_add_noise*)ptr)->frame;
       }
@@ -91,10 +92,10 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-    result_bitm.size_x = 0;
-    result_bitm.size_y = 0;
-    result_bitm.bpp = 4;
-    result_bitm.bformat = GL_RGBA;
+    bitmap.width = 0;
+    bitmap.height = 0;
+    bitmap.channels = 4;
+    bitmap.storage_format = vsx_bitmap::byte_storage;
     my_ref = 0;
     first = true;
     worker_running = false;
@@ -108,37 +109,41 @@ public:
 
     //--------------------------------------------------------------------------------------------------
 
-    result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-
+    bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
   }
 
   void run()
   {
-    bitm = bitmap_in->get_addr();
+    if (!bitmap_in->get_addr())
+      return;
+
+    bitm = *(bitmap_in->get_addr());
     if (!bitm)
     {
       worker_running = false;
       pthread_join(worker_t,0);
-      result1->valid = false;
+      bitmap_out->valid = false;
       return;
     }
 
     t_bitm = *bitm;
 
-    if (result_bitm.size_x != bitm->size_x && result_bitm.size_y != bitm->size_y)
+    if (bitmap.width != bitm->width && bitmap.height != bitm->height)
     {
       if (worker_running)
       pthread_join(worker_t,0);
       worker_running = false;
 
       // need to realloc
-      if (result_bitm.valid) delete[] (vsx_bitmap_32bt*)result_bitm.data;
-      data_a = new vsx_bitmap_32bt[bitm->size_x*bitm->size_y];
-      data_b = new vsx_bitmap_32bt[bitm->size_x*bitm->size_y];
-      result_bitm.data = data_a;
-      result_bitm.valid = true;
-      result_bitm.size_x = bitm->size_x;
-      result_bitm.size_y = bitm->size_y;
+      if (bitmap.valid)
+        delete[] (vsx_bitmap_32bt*)bitmap.data;
+
+      data_a = new vsx_bitmap_32bt[bitm->width*bitm->height];
+      data_b = new vsx_bitmap_32bt[bitm->width*bitm->height];
+      bitmap.data = data_a;
+      bitmap.valid = true;
+      bitmap.width = bitm->width;
+      bitmap.height = bitm->height;
 
       pthread_attr_init(&worker_t_attr);
       pthread_create(&worker_t, &worker_t_attr, &noise_worker, (void*)this);
@@ -150,7 +155,7 @@ public:
     }
     ++frame;
 
-    result1->set_p(result_bitm);
+    bitmap_out->set(&bitmap);
   }
 
   void on_delete()
@@ -158,15 +163,15 @@ public:
     if (worker_running)
     {
       worker_running = false;
-      result1->valid = false;
+      bitmap_out->valid = false;
       pthread_join(worker_t,0);
     }
     delete[] data_a;
     delete[] data_b;
 
-    if (result_bitm.valid)
+    if (bitmap.valid)
     {
-      delete[] (vsx_bitmap_32bt*)result_bitm.data;
+      delete[] (vsx_bitmap_32bt*)bitmap.data;
     }
   }
 

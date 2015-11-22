@@ -53,16 +53,16 @@ float v_rlen(float *v){
 class module_render_skybox : public vsx_module
 {
   // in
-  vsx_module_param_bitmap* bitm_in;
+  vsx_module_param_bitmap* bitmap_in;
 
   // out
-  vsx_module_param_render* render_result;
-  vsx_module_param_bitmap* positive_x;
-  vsx_module_param_bitmap* negative_x;
-  vsx_module_param_bitmap* positive_y;
-  vsx_module_param_bitmap* negative_y;
-  vsx_module_param_bitmap* positive_z;
-  vsx_module_param_bitmap* negative_z;
+  vsx_module_param_render* render_out;
+  vsx_module_param_bitmap* positive_x_out;
+  vsx_module_param_bitmap* negative_x_out;
+  vsx_module_param_bitmap* positive_y_out;
+  vsx_module_param_bitmap* negative_y_out;
+  vsx_module_param_bitmap* positive_z_out;
+  vsx_module_param_bitmap* negative_z_out;
 
   // internal
   bool              worker_running;
@@ -152,8 +152,8 @@ public:
     int texSize = 512;
     int texSize1 = texSize - 1;
 
-    cylSizeX = bitm->size_x;
-    cylSizeY = bitm->size_y;
+    cylSizeX = bitm->width;
+    cylSizeY = bitm->height;
 
     int u, v;
 
@@ -243,20 +243,20 @@ public:
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
     mapMode = MAP_SPHERE;
-    bitm_in = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
+    bitmap_in = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
     bitm_timestamp = 0;
 
-    positive_x = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"positive_x");
-    negative_x = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"negative_x");
+    positive_x_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"positive_x");
+    negative_x_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"negative_x");
 
-    positive_y = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"positive_y");
-    negative_y = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"negative_y");
+    positive_y_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"positive_y");
+    negative_y_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"negative_y");
 
-    positive_z = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"positive_z");
-    negative_z = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"negative_z");
+    positive_z_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"positive_z");
+    negative_z_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"negative_z");
 
-    render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
-    render_result->set(0);
+    render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+    render_out->set(0);
     worker_running = false;
     worker_ever_started = false;
   }
@@ -272,56 +272,56 @@ public:
 
   void run()
   {
-    bitm = bitm_in->get_addr();
-    if (bitm)
+    if (!bitmap_in->get_addr())
+      return;
+
+    bitm = *(bitmap_in->get_addr());
+    if (bitm->valid && bitm_timestamp != bitm->timestamp)
     {
-      if (bitm->valid && bitm_timestamp != bitm->timestamp)
+      if (bitm->channels == 4)
+        bitm_p.data = bitm->data;
+
+      // ok, new version
+      for (int i = 0; i < 6; ++i)
       {
-        if (bitm->bpp == 4) {
-          bitm_p.data = bitm->data;
-        }
+        result_bitm[i].timestamp = 0;
+        result_bitm[i].data = new vsx_bitmap_32bt[512*512];
+        result_bitm[i].width = 512;
+        result_bitm[i].height = 512;
+        result_bitm[i].channels = 4;
+        result_bitm[i].storage_format = vsx_bitmap::byte_storage;
 
-        // ok, new version
-        for (int i = 0; i < 6; ++i) {
-          result_bitm[i].timestamp = 0;
-          result_bitm[i].data = new vsx_bitmap_32bt[512*512];
-          result_bitm[i].size_x = 512;
-          result_bitm[i].size_y = 512;
-          result_bitm[i].bpp = 4;
-          result_bitm[i].bformat = GL_RGBA;
+        SB_THREAD_DATA* h = new SB_THREAD_DATA;
+        h->p_plane = i;
+        h->target = (void*)this;
+        pthread_attr_init(&worker_t_attr[i]);
+        pthread_create(&worker_t[i], &worker_t_attr[i], &worker, (void*)h);
+        worker_ever_started = true;
 
-          SB_THREAD_DATA* h = new SB_THREAD_DATA;
-          h->p_plane = i;
-          h->target = (void*)this;
-          pthread_attr_init(&worker_t_attr[i]);
-          pthread_create(&worker_t[i], &worker_t_attr[i], &worker, (void*)h);
-          worker_ever_started = true;
-
-          result_tex[i].texture_gl->init_opengl_texture_2d();
-        }
-        bitm_timestamp = bitm->timestamp;
+        result_tex[i].texture_gl->init_opengl_texture_2d();
       }
+      bitm_timestamp = bitm->timestamp;
+    }
 
-      if (!loading_done) {
-        int count_finished = 0;
-        for (int i = 0; i < 6; ++i)
-        if (result_bitm[i].timestamp) ++count_finished;
+    if (!loading_done) {
+      int count_finished = 0;
+      for (int i = 0; i < 6; ++i)
+      if (result_bitm[i].timestamp) ++count_finished;
 
-        if (count_finished == 6) {
-          for (int i = 0; i < 6; ++i) {
-            vsx_texture_gl_loader::upload_bitmap_2d(result_tex[i].texture_gl, &result_bitm[i]);
-            result_bitm[i].valid = true;
-          }
-
-          positive_x->set_p(result_bitm[0]);
-          negative_x->set_p(result_bitm[2]);
-          positive_y->set_p(result_bitm[4]);
-          negative_y->set_p(result_bitm[5]);
-          positive_z->set_p(result_bitm[3]);
-          negative_z->set_p(result_bitm[1]);
-
-          loading_done = true;
+      if (count_finished == 6) {
+        for (int i = 0; i < 6; ++i) {
+          vsx_texture_gl_loader::upload_bitmap_2d(result_tex[i].texture_gl, &result_bitm[i]);
+          result_bitm[i].valid = true;
         }
+
+        positive_x_out->set(&result_bitm[0]);
+        negative_x_out->set(&result_bitm[2]);
+        positive_y_out->set(&result_bitm[4]);
+        negative_y_out->set(&result_bitm[5]);
+        positive_z_out->set(&result_bitm[3]);
+        negative_z_out->set(&result_bitm[1]);
+
+        loading_done = true;
       }
     }
   }
@@ -330,7 +330,7 @@ public:
   {
     if (loading_done)
     {
-      if (param != render_result) return;
+      if (param != render_out) return;
       float a = 0.5f/512.0f;
       float b = 511.5f/512.0f;
 
@@ -397,10 +397,10 @@ public:
       glEnd();
       result_tex[5]._bind();
       glPopMatrix();
-      render_result->set(1);
+      render_out->set(1);
       return;
     }
-    render_result->set(0);
+    render_out->set(0);
   }
 
   void stop()

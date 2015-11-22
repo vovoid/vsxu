@@ -1,20 +1,33 @@
+#include <vsx_bitmap.h>
+#include <texture/vsx_texture.h>
+
 class module_texture_load_png : public vsx_module 
 {
   // in
   float time;
   vsx_module_param_resource* filename_in;
-  vsx_module_param_int* reload;
+  vsx_module_param_int* reload_in;
   
   // out
   vsx_module_param_bitmap* bitmap_out;
   vsx_module_param_texture* texture_out;
   
-  // internal
-  
-  // threading stuff
+  // internal 
   void* pti_l;
-  
+  vsx_string<>current_filename;
+
+  vsx_bitmap bitmap;
   vsx_texture* texture;
+
+  int bitm_timestamp; // keep track of the timestamp for the bitmap internally
+  volatile int               thread_state;
+  bool              thread_working;
+  pngRawInfo*       pp;
+  pthread_t         worker_t;
+  pthread_attr_t    worker_t_attr;
+
+  int texture_timestamp;
+
   
   static void* png_worker_v(void *ptr)
   {
@@ -22,7 +35,7 @@ class module_texture_load_png : public vsx_module
     
     ((module_texture_load_png*)ptr)->pp = new pngRawInfo;
     if (pngLoadRaw( module->current_filename.c_str(), ((module_texture_load_png*)ptr)->pp,((module_texture_load_png*)ptr)->engine->filesystem)) {
-      ((module_texture_load_png*)ptr)->bitm.valid = true;
+      ((module_texture_load_png*)ptr)->bitmap.valid = true;
 
       // memory barrier
       asm volatile("":::"memory");
@@ -31,7 +44,7 @@ class module_texture_load_png : public vsx_module
       return 0;
     }
 
-    ((module_texture_load_png*)ptr)->bitm.valid = false;
+    ((module_texture_load_png*)ptr)->bitmap.valid = false;
     ((module_texture_load_png*)ptr)->last_modify_time = 0;
 
     // memory barrier
@@ -46,16 +59,6 @@ class module_texture_load_png : public vsx_module
 public:
 
   int m_type;
-  vsx_string<>current_filename;
-  vsx_bitmap bitm;
-  int bitm_timestamp; // keep track of the timestamp for the bitmap internally 
-  volatile int               thread_state;
-  bool              thread_working;
-  pngRawInfo*       pp;
-  pthread_t         worker_t;
-  pthread_attr_t    worker_t_attr;
-
-  int texture_timestamp;
 
   void module_info(vsx_module_info* info)
   {
@@ -95,18 +98,13 @@ public:
     filename_in->set("");
     current_filename = "";
     
-    reload = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reload");
+    reload_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reload");
     
     // out
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
   
-    bitm.size_x = 0;
-    bitm.size_y = 0;
-    bitm.valid = false;
-    bitm.data = 0;
-    texture_timestamp = bitm_timestamp = bitm.timestamp;
+    texture_timestamp = bitm_timestamp = bitmap.timestamp;
   
-    bitmap_out->set_p(bitm);
     thread_state = 0;
     texture = 0x0;
     
@@ -118,8 +116,8 @@ public:
   t_stat st;
   void run()
   {
-    if (current_filename != filename_in->get() || reload->get() == 1) {
-      reload->set(0);
+    if (current_filename != filename_in->get() || reload_in->get() == 1) {
+      reload_in->set(0);
 
       // time to decode a new png
       if (thread_state > 0) {
@@ -146,29 +144,25 @@ public:
 
     if (thread_state == 2) {
       thread_state = 3;
-      if (bitm.valid) {
+      if (bitmap.valid) {
         if (pp->Components == 1) {
-          bitm.bpp = 3;
-          bitm.bformat = GL_RGB;
+          bitmap.channels = 3;
         } else 
         if (pp->Components == 2) {
-          bitm.bpp = 4;
-          bitm.bformat = GL_RGBA;
+          bitmap.channels = 4;
         } else
         if (pp->Components == 3) {
-          bitm.bpp = 3;
-          bitm.bformat = GL_RGB;
+          bitmap.channels = 3;
         } else
         if (pp->Components == 4) {
-          bitm.bpp = 4;
-          bitm.bformat = GL_RGBA;
+          bitmap.channels = 4;
         }
-        bitm.size_x = pp->Width;
-        bitm.size_y = pp->Height;
-        bitm.data = (vsx_bitmap_32bt*)(pp->Data);
+        bitmap.width = pp->Width;
+        bitmap.height = pp->Height;
+        bitmap.data = (vsx_bitmap_32bt*)(pp->Data);
 
-        bitm.timestamp++;
-        bitmap_out->set_p(bitm);
+        bitmap.timestamp++;
+        bitmap_out->set(&bitmap);
       }
       loading_done = true;
   }
@@ -178,16 +172,16 @@ void output(vsx_module_param_abs* param)
 {
   if (param == (vsx_module_param_abs*)texture_out)
   {
-    if (texture_timestamp != bitm.timestamp)
+    if (texture_timestamp != bitmap.timestamp)
     {
       if (texture == 0x0)
       {
         texture = new vsx_texture;
         texture->texture_gl->init_opengl_texture_2d();
       }
-      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm, true);
+      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitmap, true);
       texture_out->set(texture);
-      texture_timestamp = bitm.timestamp;
+      texture_timestamp = bitmap.timestamp;
     }
   }
 }
@@ -201,18 +195,22 @@ void stop() {
 
 void start() {
   texture->texture_gl->init_opengl_texture_2d();
-  vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm, true);
+  vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitmap, true);
   texture_out->set(texture);
 }
 
 
 void on_delete() {
   if (thread_state == 1)
-  pthread_join(worker_t,0);
+    pthread_join(worker_t,0);
+
   if (thread_state > 0) {
-    free(pp->Data);
+    if (bitmap.data)
+      delete[] (unsigned char*)(bitmap.data);
+
     delete pp;
   }
+
   if (texture) {
     texture->texture_gl->unload();
     delete texture;

@@ -5,15 +5,15 @@ class module_texture_visual_fader : public vsx_module
   vsx_module_param_texture* texture_b_in;
   vsx_module_param_float* fade_pos_in;
   vsx_module_param_float* fade_pos_from_engine;
+
   // out
   vsx_module_param_texture* texture_a_out;
   vsx_module_param_texture* texture_b_out;
   vsx_module_param_float* fade_pos_out;
+
   // internal
   vsx_texture texture_a;
   vsx_texture texture_b;
-  vsx_bitmap ab;
-  vsx_bitmap bb;
 
 public:
   void module_info(vsx_module_info* info) {
@@ -35,36 +35,6 @@ public:
 
     texture_a_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE, "texture_a_out");
     texture_b_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE, "texture_b_out");
-
-    ab.bpp = 4;
-    ab.bformat = GL_RGBA;
-    ab.size_x = ab.size_y = 2;
-    ab.data = new vsx_bitmap_32bt[4];
-    ((vsx_bitmap_32bt*)ab.data)[0] = 0xFFFF0000;
-    ((vsx_bitmap_32bt*)ab.data)[1] = 0xFF000000;
-    ((vsx_bitmap_32bt*)ab.data)[2] = 0xFF000000;
-    ((vsx_bitmap_32bt*)ab.data)[3] = 0xFFFF0000;
-    ab.valid = true;
-
-    bb.bpp = 4;
-    bb.bformat = GL_RGBA;
-    bb.size_x = bb.size_y = 2;
-    bb.data = new vsx_bitmap_32bt[4];
-    ((vsx_bitmap_32bt*)bb.data)[0] = 0xFF000000;
-    ((vsx_bitmap_32bt*)bb.data)[1] = 0xFF0000FF;
-    ((vsx_bitmap_32bt*)bb.data)[2] = 0xFF0000FF;
-    ((vsx_bitmap_32bt*)bb.data)[3] = 0xFF000000;
-    bb.valid = true;
-
-    texture_a.texture_gl->init_opengl_texture_2d();
-    texture_b.texture_gl->init_opengl_texture_2d();
-
-
-    vsx_texture_gl_loader::upload_bitmap_2d(texture_a.texture_gl, &ab);
-    vsx_texture_gl_loader::upload_bitmap_2d(texture_b.texture_gl, &bb);
-
-    texture_a_out->set(&texture_a);
-    texture_b_out->set(&texture_b);
   }
 
   void output(vsx_module_param_abs* param)

@@ -28,7 +28,7 @@ protected:
       return true;
     }
 
-    texture->texture_data = vsx_texture_data_cache::get_instance()->create( filename, VSX_TEXTURE_DATA_TYPE_2D );
+    texture->texture_data = vsx_texture_data_cache::get_instance()->create( filename, type );
     texture->texture_gl = vsx_texture_gl_cache::get_instance()->create(filename);
     return false;
   }

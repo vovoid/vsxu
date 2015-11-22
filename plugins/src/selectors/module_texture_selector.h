@@ -274,10 +274,8 @@ public:
     i_prev_clear_color[2] = 0.0;
     i_prev_clear_color[3] = 1.0;
 
-    i_clear_bmp.bpp = 4;           //1x1 Bitmap to generate clear_color and blank texture
-    i_clear_bmp.bformat = GL_RGBA;
-    i_clear_bmp.size_x = 1;
-    i_clear_bmp.size_y = 1;
+    i_clear_bmp.width = 1;
+    i_clear_bmp.height = 1;
 
     i_clear_bmp.data = new vsx_bitmap_32bt[1];
     i_clear_bmp_data = (vsx_bitmap_32bt*)i_clear_bmp.data;

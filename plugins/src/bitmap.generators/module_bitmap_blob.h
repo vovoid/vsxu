@@ -24,22 +24,22 @@
 class module_bitmap_generators_blob : public vsx_module
 {
   // in
-  vsx_module_param_float* arms;
-  vsx_module_param_float* attenuation;
-  vsx_module_param_float* star_flower;
-  vsx_module_param_float* angle;
-  vsx_module_param_float4* color;
-  vsx_module_param_int* alpha;
-  vsx_module_param_int* size;
+  vsx_module_param_float* arms_in;
+  vsx_module_param_float* attenuation_in;
+  vsx_module_param_float* star_flower_in;
+  vsx_module_param_float* angle_in;
+  vsx_module_param_float4* color_in;
+  vsx_module_param_int* alpha_in;
+  vsx_module_param_int* size_in;
 
 	// out
-	vsx_module_param_bitmap* result1;
-	vsx_module_param_texture* result_texture;
+  vsx_module_param_bitmap* bitmap_out;
+  vsx_module_param_texture* texture_out;
 
 	// internal
 	bool need_to_rebuild;
 
-	vsx_bitmap bitm;
+  vsx_bitmap bitmap;
 	int bitm_timestamp;
 
   vsx_texture* texture;
@@ -99,36 +99,35 @@ public:
     worker_running = false;
     thread_created = false;
     p_updates = -1;
-    arms = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"arms");
-    attenuation = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
-    attenuation->set(0.1f);
-    size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
-    size->set(4);
-    alpha = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"alpha");
-    alpha->set(0);
-    color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"color");
-    color->set(1.0f,0);
-    color->set(1.0f,1);
-    color->set(1.0f,2);
-    color->set(1.0f,3);
-    star_flower = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"star_flower");
-    angle = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"angle");
+    arms_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"arms");
+    attenuation_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
+    attenuation_in->set(0.1f);
+    size_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
+    size_in->set(4);
+    alpha_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"alpha");
+    alpha_in->set(0);
+    color_in = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"color");
+    color_in->set(1.0f,0);
+    color_in->set(1.0f,1);
+    color_in->set(1.0f,2);
+    color_in->set(1.0f,3);
+    star_flower_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"star_flower");
+    angle_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"angle");
     i_size = 0;
-  	result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-    result1->set_p(bitm);
-    work_bitmap = &bitm;
-    bitm.data = 0;
-    bitm.bpp = 4;
-    bitm.bformat = GL_RGBA;
-    bitm.valid = false;
-    bitm_timestamp = bitm.timestamp;
+    bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
+    work_bitmap = &bitmap;
+    bitmap.data = 0;
+    bitmap.channels = 4;
+    bitmap.storage_format = vsx_bitmap::byte_storage;
+    bitmap.valid = false;
+    bitm_timestamp = bitmap.timestamp;
     need_to_rebuild = true;
     my_ref = 0;
     if (c_type == 1) {
       texture = new vsx_texture();
       texture->texture_gl->init_opengl_texture_2d();
-      result_texture = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
-      result_texture->set(texture);
+      texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
+      texture_out->set(texture);
     }
     to_delete_data = 0;
   }
@@ -140,10 +139,10 @@ public:
   static void* worker(void *ptr)
   {
     int x,y;
-    float attenuation = ((module_bitmap_generators_blob*)ptr)->attenuation->get();
-    float arms = ((module_bitmap_generators_blob*)ptr)->arms->get()*0.5f;
-    float star_flower = ((module_bitmap_generators_blob*)ptr)->star_flower->get();
-    float angle = ((module_bitmap_generators_blob*)ptr)->angle->get();
+    float attenuation = ((module_bitmap_generators_blob*)ptr)->attenuation_in->get();
+    float arms = ((module_bitmap_generators_blob*)ptr)->arms_in->get()*0.5f;
+    float star_flower = ((module_bitmap_generators_blob*)ptr)->star_flower_in->get();
+    float angle = ((module_bitmap_generators_blob*)ptr)->angle_in->get();
     vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_generators_blob*)ptr)->work_bitmap->data;
     int size = ((module_bitmap_generators_blob*)ptr)->i_size;
     //float sp1 = (float)size + 1.0f;
@@ -195,19 +194,19 @@ public:
     // initialize our worker thread, we don't want to keep the renderloop waiting do we?
     if (thread_state == 2)
     {
-      if (bitm.valid && bitm_timestamp != bitm.timestamp)
+      if (bitmap.valid && bitm_timestamp != bitmap.timestamp)
       {
         worker_running = false;
         pthread_join(worker_t, NULL);
 
         // ok, new version
-        bitm_timestamp = bitm.timestamp;
+        bitm_timestamp = bitmap.timestamp;
         if (c_type == 1)
         {
-          vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl,&bitm,true);
-          result_texture->set(texture);
+          vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl,&bitmap,true);
+          texture_out->set(texture);
         }
-        result1->set_p(bitm);
+        bitmap_out->set(&bitmap);
       }
       thread_state = 3;
     }
@@ -216,25 +215,25 @@ public:
     if (p_updates != param_updates)
     {
       //need_to_rebuild = false;
-      if (i_size != 8 << size->get())
+      if (i_size != 8 << size_in->get())
       {
-        i_size = 8 << size->get();
-        if (bitm.data)
+        i_size = 8 << size_in->get();
+        if (bitmap.data)
         {
-          to_delete_data = bitm.data;
+          to_delete_data = bitmap.data;
         }
-        bitm.data = new vsx_bitmap_32bt[i_size*i_size];
-        bitm.size_y = bitm.size_x = i_size;
+        bitmap.data = new vsx_bitmap_32bt[i_size*i_size];
+        bitmap.height = bitmap.width = i_size;
       }
 
       p_updates = param_updates;
-      bitm.valid = false;
+      bitmap.valid = false;
 
-      work_alpha = alpha->get();
-      work_color[0] = MIN(1.0f, color->get(0));
-      work_color[1] = MIN(1.0f, color->get(1));
-      work_color[2] = MIN(1.0f, color->get(2));
-      work_color[3] = MIN(1.0f, color->get(3));
+      work_alpha = alpha_in->get();
+      work_color[0] = MIN(1.0f, color_in->get(0));
+      work_color[1] = MIN(1.0f, color_in->get(1));
+      work_color[2] = MIN(1.0f, color_in->get(2));
+      work_color[3] = MIN(1.0f, color_in->get(3));
       thread_state = 1;
 
       pthread_attr_init(&attr);
@@ -255,12 +254,12 @@ public:
   {
     if (c_type == 1)
     {
-      if (bitm.valid)
+      if (bitmap.valid)
       {
         texture->texture_gl->init_opengl_texture_2d();
-        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm,true);
+        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitmap,true);
       }
-      result_texture->set(texture);
+      texture_out->set(texture);
     }
   }
 
@@ -285,7 +284,7 @@ public:
       texture->texture_gl->unload();
       delete texture;
     }
-    delete[] (vsx_bitmap_32bt*)bitm.data;
+    delete[] (vsx_bitmap_32bt*)bitmap.data;
   }
 
 };

@@ -33,27 +33,27 @@ public:
   // in
 
   // blob settings
-  vsx_module_param_int* enable_blob;
-  vsx_module_param_float* arms;
-  vsx_module_param_float* attenuation;
-  vsx_module_param_float* star_flower;
-  vsx_module_param_float* angle;
+  vsx_module_param_int* enable_blob_in;
+  vsx_module_param_float* arms_in;
+  vsx_module_param_float* attenuation_in;
+  vsx_module_param_float* star_flower_in;
+  vsx_module_param_float* angle_in;
   // general settings
-  vsx_module_param_int* size;
-  vsx_module_param_int* octave;
-  vsx_module_param_int* frequency;
-  vsx_module_param_int* bitmap_type;
-  vsx_module_param_int* alpha;
-  vsx_module_param_float* perlin_strength;
-  vsx_module_param_float4* color;
+  vsx_module_param_int* size_in;
+  vsx_module_param_int* octave_in;
+  vsx_module_param_int* frequency_in;
+  vsx_module_param_int* bitmap_type_in;
+  vsx_module_param_int* alpha_in;
+  vsx_module_param_float* perlin_strength_in;
+  vsx_module_param_float4* color_in;
 
   // out
-  vsx_module_param_bitmap* result1;
+  vsx_module_param_bitmap* bitmap_out;
 
   // internal
   bool need_to_rebuild;
 
-  vsx_bitmap bitm;
+  vsx_bitmap bitmap;
   int bitm_timestamp;
 
   pthread_t         worker_t;
@@ -71,6 +71,10 @@ public:
   int               i_size;
   int               old_bitmap_type;
 
+  void *to_delete_data;
+  vsx_bitmap::channel_storage_type_t  to_delete_type;
+
+
   // our worker thread, to keep the tough generating work off the main loop
   // this is a fairly simple operation, but when you want to generate fractals
   // and decode film, you could run into several seconds of processing time.
@@ -79,21 +83,21 @@ public:
     module_bitmap_perlin_noise* mod = ((module_bitmap_perlin_noise*)ptr);
 
     Perlin* perlin = new Perlin(
-                           mod->octave->get()+1,
-                           mod->frequency->get()+1,
+                           mod->octave_in->get()+1,
+                           mod->frequency_in->get()+1,
                            1.0f,
                            (int)mod->rand_seed->get()
                          );
     float divisor = 1.0f / (float)mod->i_size;
 
-    float attenuation = mod->attenuation->get();
-    float arms = mod->arms->get()*0.5f;
-    float star_flower = mod->star_flower->get();
-    float angle = mod->angle->get();
+    float attenuation = mod->attenuation_in->get();
+    float arms = mod->arms_in->get()*0.5f;
+    float star_flower = mod->star_flower_in->get();
+    float angle = mod->angle_in->get();
     int size = mod->i_size;
     int hsize = size / 2;
     
-    if (mod->work_bitmap->bpp == 4)
+    if (mod->work_bitmap->channels == 4 && mod->work_bitmap->storage_format == vsx_bitmap::byte_storage)
     {
       // integer data type 
       vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)mod->work_bitmap->data;
@@ -105,7 +109,7 @@ public:
         for (int x = -hsize; x < hsize; ++x)
         {
           float dist = 1.0f;
-          if (mod->enable_blob->get())
+          if (mod->enable_blob_in->get())
           {
             float xx = (size/(size-2.0f))*((float)x)+0.5f;
             float yy = (size/(size-2.0f))*((float)y)+0.5f;
@@ -117,20 +121,20 @@ public:
             if (dist > 1.0f) dist = 1.0f;
             if (dist < 0.0f) dist = 0.0f;
           }
-          float pf = pow( (perlin->Get(xp,yp)+1.0f) * 0.5f, mod->perlin_strength->get()) * 255.0f * dist;
-          if (mod->alpha->get())
+          float pf = pow( (perlin->Get(xp,yp)+1.0f) * 0.5f, mod->perlin_strength_in->get()) * 255.0f * dist;
+          if (mod->alpha_in->get())
           {
-            long pr = MAX(0,MIN(255,(long)(255.0f * mod->color->get(0))));
-            long pg = MAX(0,MIN(255,(long)(255.0f * mod->color->get(1))));
-            long pb = MAX(0,MIN(255,(long)(255.0f * mod->color->get(2))));
-            long pa = MAX(0,MIN(255,(long)(pf * mod->color->get(3))));
+            long pr = MAX(0,MIN(255,(long)(255.0f * mod->color_in->get(0))));
+            long pg = MAX(0,MIN(255,(long)(255.0f * mod->color_in->get(1))));
+            long pb = MAX(0,MIN(255,(long)(255.0f * mod->color_in->get(2))));
+            long pa = MAX(0,MIN(255,(long)(pf * mod->color_in->get(3))));
             *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
           } else
           {
-            long pr = MAX(0,MIN(255,(long)(pf * mod->color->get(0))));
-            long pg = MAX(0,MIN(255,(long)(pf * mod->color->get(1))));
-            long pb = MAX(0,MIN(255,(long)(pf * mod->color->get(2))));
-            long pa = (long)(255.0f * mod->color->get(3));
+            long pr = MAX(0,MIN(255,(long)(pf * mod->color_in->get(0))));
+            long pg = MAX(0,MIN(255,(long)(pf * mod->color_in->get(1))));
+            long pb = MAX(0,MIN(255,(long)(pf * mod->color_in->get(2))));
+            long pa = (long)(255.0f * mod->color_in->get(3));
             *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
           }
           
@@ -141,7 +145,7 @@ public:
         yp += divisor;
       }
     } else
-    if (mod->work_bitmap->bpp == GL_RGBA32F_ARB)
+    if (mod->work_bitmap->channels == 4 && mod->work_bitmap->storage_format == vsx_bitmap::float_storage)
     {
       //printf("float format\n");
       // integer data type
@@ -155,7 +159,7 @@ public:
         for (int x = -hsize; x < hsize; ++x)
         {
           float dist = 1.0f;
-          if (mod->enable_blob->get())
+          if (mod->enable_blob_in->get())
           {
             float xx = (size/(size-2.0f))*((float)x)+0.5f;
             float yy = (size/(size-2.0f))*((float)y)+0.5f;
@@ -178,18 +182,18 @@ public:
             }
           }
           
-          GLfloat pf = (GLfloat)(pow( (perlin->Get(xp,yp)+1.0f) * 0.5f, mod->perlin_strength->get())* dist);
-          if (mod->alpha->get())
+          GLfloat pf = (GLfloat)(pow( (perlin->Get(xp,yp)+1.0f) * 0.5f, mod->perlin_strength_in->get())* dist);
+          if (mod->alpha_in->get())
           {
-            p[0] = mod->color->get(0);
-            p[1] = mod->color->get(1);
-            p[2] = mod->color->get(2);
-            p[3] = MAX(0.0f,MIN(1.0f,pf * mod->color->get(3)));
+            p[0] = mod->color_in->get(0);
+            p[1] = mod->color_in->get(1);
+            p[2] = mod->color_in->get(2);
+            p[3] = MAX(0.0f,MIN(1.0f,pf * mod->color_in->get(3)));
           } else {
-            p[0] = pf*mod->color->get(0);
-            p[1] = pf*mod->color->get(1);
-            p[2] = pf*mod->color->get(2);
-            p[3] = mod->color->get(3);
+            p[0] = pf*mod->color_in->get(0);
+            p[1] = pf*mod->color_in->get(1);
+            p[2] = pf*mod->color_in->get(2);
+            p[3] = mod->color_in->get(3);
           }
           ++p;
           ++p;
@@ -243,109 +247,108 @@ public:
     rand_seed = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"rand_seed");
     rand_seed->set(4.0f);
 
-    perlin_strength = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"perlin_strength");
-    perlin_strength->set(1.0f);
+    perlin_strength_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"perlin_strength");
+    perlin_strength_in->set(1.0f);
 
-    enable_blob = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"enable_blob");
+    enable_blob_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"enable_blob");
     
-    arms = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"arms");
-    attenuation = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
-    star_flower = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"star_flower");
-    angle = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"angle");
+    arms_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"arms");
+    attenuation_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
+    star_flower_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"star_flower");
+    angle_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"angle");
 
-    size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
-    size->set(4);
+    size_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
+    size_in->set(4);
 
-    frequency = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"frequency");
-    frequency->set(0);
+    frequency_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"frequency");
+    frequency_in->set(0);
 
-    octave = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"octave");
-    octave->set(0);
+    octave_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"octave");
+    octave_in->set(0);
 
     i_size = 0;
     
-    result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-    result1->set_p(bitm);
+    bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
 
-    bitmap_type = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"bitmap_type");
+    bitmap_type_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"bitmap_type");
     
-    alpha = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"alpha");
+    alpha_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"alpha");
 
-    color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"color");
-    color->set(1.0f, 0);
-    color->set(1.0f, 1);
-    color->set(1.0f, 2);
-    color->set(1.0f, 3);
-    
-    
-    work_bitmap = &bitm;
-    bitm.data = 0;
-    bitm.bpp = 4;
-    bitm.bformat = GL_RGBA;
-    bitm.valid = false;
+    color_in = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"color");
+    color_in->set(1.0f, 0);
+    color_in->set(1.0f, 1);
+    color_in->set(1.0f, 2);
+    color_in->set(1.0f, 3);
+        
+    work_bitmap = &bitmap;
     my_ref = 0;
-    bitm_timestamp = bitm.timestamp = rand();
+    bitm_timestamp = bitmap.timestamp = rand();
     need_to_rebuild = true;
-    //bitm.data = new vsx_bitmap_32bt[256*256];
-    //bitm.size_y = bitm.size_x = 256;
+
     to_delete_data = 0;
     old_bitmap_type = 0;
   }
-  void *to_delete_data;
-  int  to_delete_type;
   void run() {
     // initialize our worker thread, we don't want to keep the renderloop waiting do we?
     if (!worker_running)
     if (p_updates != param_updates)
     {
       //need_to_rebuild = false;
-      if (i_size != 8 << size->get() || old_bitmap_type != bitmap_type->get()) {
-        i_size = 8 << size->get();
-        if (bitm.data)
+      if (i_size != 8 << size_in->get() || old_bitmap_type != bitmap_type_in->get())
+      {
+        i_size = 8 << size_in->get();
+
+        if (bitmap.data)
         {
-          to_delete_type = bitm.bformat;
-          to_delete_data = (void*)bitm.data;
+          to_delete_type = bitmap.storage_format;
+          to_delete_data = bitmap.data;
         }
-        old_bitmap_type = bitmap_type->get();
-        switch (old_bitmap_type)
+
+        switch (bitmap_type_in->get())
         {
           case 0:
-            bitm.bpp = 4;
-            bitm.data = new vsx_bitmap_32bt[i_size*i_size];
+            bitmap.storage_format = vsx_bitmap::byte_storage;
+            bitmap.channels = 4;
+            bitmap.data = new vsx_bitmap_32bt[i_size*i_size];
             break;
           case 1:
-            bitm.bpp = GL_RGBA32F_ARB;
-            bitm.data = new GLfloat[i_size*i_size*4];
+            bitmap.storage_format = vsx_bitmap::float_storage;
+            bitmap.channels = 4;
+            bitmap.data = new GLfloat[i_size*i_size*4];
             break;
         }
-        bitm.size_y = bitm.size_x = i_size;
+        bitmap.width = i_size;
+        bitmap.height = i_size;
       }
 
       p_updates = param_updates;
-      bitm.valid = false;
-      //printf("creating thread\n");
+      bitmap.valid = false;
       thread_state = 1;
       worker_running = true;
       pthread_create(&worker_t, NULL, &worker, (void*)this);
       thread_created = true;
-
-      //printf("done creating thread\n");
     }
+
+
     if (thread_state == 2) {
-      if (bitm.valid && bitm_timestamp != bitm.timestamp) {
+      if (bitmap.valid && bitm_timestamp != bitmap.timestamp) {
         pthread_join(worker_t,0);
         worker_running = false;
         // ok, new version
-        //printf("uploading subplasma to param\n");
-        bitm_timestamp = bitm.timestamp;
-        result1->set_p(bitm);
+        bitm_timestamp = bitmap.timestamp;
+        bitmap_out->set(&bitmap);
         loading_done = true;
       }
       thread_state = 3;
     }
     if (to_delete_data && my_ref == 0)
     {
-      delete[] (vsx_bitmap_32bt*)to_delete_data;
+      if (to_delete_type == vsx_bitmap::byte_storage)
+        delete[] (vsx_bitmap_32bt*)to_delete_data;
+
+      if (to_delete_type == vsx_bitmap::float_storage)
+        delete[] (GLfloat*)to_delete_data;
+
       to_delete_data = 0;
     }
   }
@@ -357,9 +360,9 @@ public:
     {
       pthread_join(worker_t,&ret);
     }
-    if (bitm.data)
+    if (bitmap.data)
     {
-      delete[] (vsx_bitmap_32bt*)bitm.data;
+      delete[] (vsx_bitmap_32bt*)bitmap.data;
     }
   }
 };

@@ -1,11 +1,11 @@
 class module_texture_load_bitmap2texture : public vsx_module
 {
   // in
-  vsx_module_param_bitmap* bitm_in;
-  vsx_module_param_int* mipmaps;
+  vsx_module_param_bitmap* bitmap_in;
+  vsx_module_param_int* mipmaps_in;
 
   // out
-  vsx_module_param_texture* result_texture;
+  vsx_module_param_texture* texture_out;
 
   // internal
   float time;
@@ -35,34 +35,33 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-
-    bitm_in = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-    mipmaps = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"mipmaps");
-    mipmaps->set(0);
+    bitmap_in = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
+    mipmaps_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"mipmaps");
+    mipmaps_in->set(0);
 
     bitm_timestamp = 0;
     texture = new vsx_texture;
     texture->texture_gl->init_opengl_texture_2d();
 
-    result_texture = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
+    texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
     loading_done = true;
   }
 
   void run()
   {
-    bitm = bitm_in->get_addr();
-    if (!bitm)
+    if (!bitmap_in->get_addr())
     {
-      result_texture->valid = false;
+      texture_out->valid = false;
       return;
     }
 
+    bitm = *(bitmap_in->get_addr());
+
     if (bitm->valid && bitm_timestamp != bitm->timestamp)
     {
-      // ok, new version
       bitm_timestamp = bitm->timestamp;
-      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, bitm, mipmaps->get() == 0);
-      result_texture->set(texture);
+      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, bitm, mipmaps_in->get() == 0);
+      texture_out->set(texture);
     }
   }
 
@@ -74,10 +73,14 @@ public:
   void start()
   {
     texture->texture_gl->init_opengl_texture_2d();
-    bitm = bitm_in->get_addr();
+
+    if (!bitmap_in->get_addr())
+      return;
+
+    bitm = *(bitmap_in->get_addr());
     if (bitm) {
-      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, bitm, mipmaps->get() == 0);
-      result_texture->set(texture);
+      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, bitm, mipmaps_in->get() == 0);
+      texture_out->set(texture);
     }
   }
 

@@ -30,10 +30,10 @@ public:
   vsx_module_param_texture* texture_in;
 
   // out
-  vsx_module_param_bitmap* result1;
+  vsx_module_param_bitmap* bitmap_out;
 
   // internal
-  vsx_bitmap bitm;
+  vsx_bitmap bitmap;
   int bitm_timestamp;
 
   vsx_texture** texture;
@@ -56,12 +56,12 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-    bitm.bpp = 4;
-    bitm.bformat = GL_RGBA;
-    bitm.size_x = 0;
-    bitm.size_y = 0;
-    bitm.data = 0;
-    bitm.valid = false;
+    bitmap.channels = 4;
+    bitmap.storage_format = vsx_bitmap::byte_storage;
+    bitmap.width = 0;
+    bitmap.height = 0;
+    bitmap.data = 0;
+    bitmap.valid = false;
     loading_done = true;
 
     //--------------------------------------------------------------------------------------------------
@@ -70,8 +70,7 @@ public:
 
     //--------------------------------------------------------------------------------------------------
 
-    result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-    result1->set_p(bitm);
+    bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
   }
 
   void run()
@@ -92,32 +91,32 @@ public:
         GLint height;
         glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_WIDTH,&width);
         glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_HEIGHT,&height);
-        if (bitm.size_x != (unsigned int)width || bitm.size_y != (unsigned int)height)
+        if (bitmap.width != (unsigned int)width || bitmap.height != (unsigned int)height)
         {
 
-          if (bitm.data)
-            delete[] (vsx_bitmap_32bt*)bitm.data;
-          bitm.data = new vsx_bitmap_32bt[width*height];
-          bitm.size_x = width;
-          bitm.size_y = height;
+          if (bitmap.data)
+            delete[] (vsx_bitmap_32bt*)bitmap.data;
+          bitmap.data = new vsx_bitmap_32bt[width*height];
+          bitmap.width = width;
+          bitmap.height = height;
         }
         glGetTexImage(GL_TEXTURE_2D,
                    0,
                    GL_RGBA,
                    GL_UNSIGNED_BYTE,
-                   bitm.data);
-        bitm.valid = true;
-        ++bitm.timestamp;
-        result1->set_p(bitm);
+                   bitmap.data);
+        bitmap.valid = true;
+        ++bitmap.timestamp;
+        bitmap_out->set(&bitmap);
       }
     (*texture)->_bind();
   }
 
   void on_delete()
   {
-    if (bitm.valid)
+    if (bitmap.valid)
     {
-      delete[] (vsx_bitmap_32bt*)bitm.data;
+      delete[] (vsx_bitmap_32bt*)bitmap.data;
     }
   }
 

@@ -24,16 +24,16 @@
 class module_bitmap_generators_concentric_circles : public vsx_module
 {
   // in
-  vsx_module_param_float* frequency;
-  vsx_module_param_float* attenuation;
-  vsx_module_param_float* angle;
-  vsx_module_param_float4* color;
-  vsx_module_param_int* alpha;
-  vsx_module_param_int* size;
+  vsx_module_param_float* frequency_in;
+  vsx_module_param_float* attenuation_in;
+  vsx_module_param_float* angle_in;
+  vsx_module_param_float4* color_in;
+  vsx_module_param_int* alpha_in;
+  vsx_module_param_int* size_in;
 
 	// out
-	vsx_module_param_bitmap* result1;
-	vsx_module_param_texture* result_texture;
+  vsx_module_param_bitmap* bitmap_out;
+  vsx_module_param_texture* texture_out;
 
 	// internal
 	bool need_to_rebuild;
@@ -98,41 +98,36 @@ public:
     worker_running = false;
     thread_created = false;
     p_updates = -1;
-    frequency = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"frequency");
-    frequency->set(1.0f);
+    frequency_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"frequency");
+    frequency_in->set(1.0f);
 
-    attenuation = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
-    attenuation->set(2.0f);
+    attenuation_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
+    attenuation_in->set(2.0f);
 
-    size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
-    size->set(4);
+    size_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
+    size_in->set(4);
 
-    alpha = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"alpha");
-    alpha->set(0);
+    alpha_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"alpha");
+    alpha_in->set(0);
 
-    color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"color");
-    color->set(1.0f,0);
-    color->set(1.0f,1);
-    color->set(1.0f,2);
-    color->set(1.0f,3);
+    color_in = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"color");
+    color_in->set(1.0f,0);
+    color_in->set(1.0f,1);
+    color_in->set(1.0f,2);
+    color_in->set(1.0f,3);
 
-    angle = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"angle");
+    angle_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"angle");
     i_size = 0;
-  	result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-    result1->set_p(bitm);
+    bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
     work_bitmap = &bitm;
-    bitm.data = 0;
-    bitm.bpp = 4;
-    bitm.bformat = GL_RGBA;
-    bitm.valid = false;
     bitm_timestamp = bitm.timestamp;
     need_to_rebuild = true;
     my_ref = 0;
     if (c_type == 1) {
       texture = new vsx_texture();
       texture->texture_gl->init_opengl_texture_2d();
-      result_texture = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
-      result_texture->set(texture);
+      texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
+      texture_out->set(texture);
     }
     to_delete_data = 0;
   }
@@ -144,8 +139,8 @@ public:
   static void* worker(void *ptr)
   {
     int x,y;
-    float attenuation = ((module_bitmap_generators_concentric_circles*)ptr)->attenuation->get();
-    float frequency = ((module_bitmap_generators_concentric_circles*)ptr)->frequency->get() * 2.0f;
+    float attenuation = ((module_bitmap_generators_concentric_circles*)ptr)->attenuation_in->get();
+    float frequency = ((module_bitmap_generators_concentric_circles*)ptr)->frequency_in->get() * 2.0f;
 
     vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_generators_concentric_circles*)ptr)->work_bitmap->data;
 
@@ -211,9 +206,9 @@ public:
         {
           texture->texture_gl->init_opengl_texture_2d();
           vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm, true);
-          result_texture->set(texture);
+          texture_out->set(texture);
         }
-        result1->set_p(bitm);
+        bitmap_out->set(&bitm);
       }
       thread_state = 3;
     }
@@ -222,25 +217,27 @@ public:
     if (p_updates != param_updates)
     {
       //need_to_rebuild = false;
-      if (i_size != 8 << size->get())
+      if (i_size != 8 << size_in->get())
       {
-        i_size = 8 << size->get();
+        i_size = 8 << size_in->get();
         if (bitm.data)
         {
           to_delete_data = bitm.data;
         }
         bitm.data = new vsx_bitmap_32bt[i_size*i_size];
-        bitm.size_y = bitm.size_x = i_size;
+
+        bitm.width  = i_size;
+        bitm.height = i_size;
       }
 
       p_updates = param_updates;
       bitm.valid = false;
 
-      work_alpha = alpha->get();
-      work_color[0] = MIN(1.0f,color->get(0));
-      work_color[1] = MIN(1.0f,color->get(1));
-      work_color[2] = MIN(1.0f,color->get(2));
-      work_color[3] = MIN(1.0f,color->get(3));
+      work_alpha = alpha_in->get();
+      work_color[0] = MIN(1.0f,color_in->get(0));
+      work_color[1] = MIN(1.0f,color_in->get(1));
+      work_color[2] = MIN(1.0f,color_in->get(2));
+      work_color[3] = MIN(1.0f,color_in->get(3));
       thread_state = 1;
 
       pthread_attr_init(&attr);
@@ -266,7 +263,7 @@ public:
         texture->texture_gl->init_opengl_texture_2d();
         vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm,true);
       }
-      result_texture->set(texture);
+      texture_out->set(texture);
     }
   }
 

@@ -1,7 +1,11 @@
 #ifndef VSX_TEXTURE_GL_LOADER_H
 #define VSX_TEXTURE_GL_LOADER_H
 
+#include <vsx_bitmap.h>
 #include "vsx_texture_gl.h"
+#include "vsx_texture_data.h"
+#include "vsx_texture_data_transform.h"
+#include <vsx_gl_global.h>
 
 namespace vsx_texture_gl_loader
 {
@@ -78,53 +82,14 @@ inline void upload_1d(vsx_texture_gl* texture_gl, void* data, unsigned long size
 }
 
 
-inline void upload_2d(vsx_texture_gl* texture_gl, void* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true)
+inline void upload_2d( vsx_texture_gl* texture_gl, vsx_texture_data* texture_data )
 {
-  // prepare data
-  if (upside_down)
-  {
-    if (bpp == GL_RGBA32F_ARB)
-    {
-      GLfloat* data2 = new GLfloat[size_x * size_y * 4];
-      int dy = 0;
-      int sxbpp = size_x*4;
-      for (int y = size_y-1; y >= 0; --y) {
-        for (unsigned long x = 0; x < size_x*4; ++x) {
-          data2[dy*sxbpp + x] = ((GLfloat*)data)[y*sxbpp + x];
-        }
-        ++dy;
-      }
-      data = (void*)data2;
-    }
-    else
-    {
-      unsigned char* data2 = new unsigned char[(size_x) * (size_y) * (bpp)];
-      int dy = 0;
-      int sxbpp = size_x*bpp;
-      for (int y = size_y-1; y >= 0; --y)
-      {
-        //printf("y: %d\n",y);
-        int dysxbpp = dy*sxbpp;
-        int ysxbpp = y * sxbpp;
-        for (size_t x = 0; x < size_x*bpp; ++x)
-        {
-          data2[dysxbpp + x] = ((unsigned char*)data)[ysxbpp + x];
-        }
-        ++dy;
-      }
-      data = (void*)data2;
-    }
-  }
-
-
-
-
   GLboolean oldStatus = glIsEnabled(texture_gl->gl_type);
 
   glEnable(texture_gl->gl_type);
   glBindTexture(texture_gl->gl_type, texture_gl->gl_id);
 
-  if (mipmaps)
+  if (texture_data->mipmaps)
   {
     glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
     glTexParameteri(texture_gl->gl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
@@ -141,56 +106,42 @@ inline void upload_2d(vsx_texture_gl* texture_gl, void* data, unsigned long size
     glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   }
 
-  // no compression
-  if (bpp == GL_RGBA32F_ARB)
-  {
-    glTexImage2D(texture_gl->gl_type, 0, bpp , size_x, size_y, 0, bpp2, GL_FLOAT, data);
-  } else
-  {
-    if (bpp == 3)
-    {
-      glTexImage2D(
-        texture_gl->gl_type,  // opengl type
-        0,  // mipmap level
-//        GL_RGB, // storage type
-        GL_COMPRESSED_RGB_ARB, // storage type
-        size_x, // size x
-        size_y, // size y
-        0,      // border 0 or 1
-        bpp2,   // source data format
-        GL_UNSIGNED_BYTE, // source data type
-        data // pointer to data
-      );
-    }
-    else
-    {
-      glTexImage2D(
-        texture_gl->gl_type,  // opengl type
-        0,  // mipmap level
-        GL_COMPRESSED_RGBA_ARB, // storage type
-//        GL_RGBA, // storage type
-        size_x, // size x
-        size_y, // size y
-        0,      // border 0 or 1
-        bpp2,   // source data format
-        GL_UNSIGNED_BYTE, // source data type
-        data // pointer to data
-      );
-    }
-    // original:
-    //       glTexImage2D(texture_info->ogl_type, 0,bpp , size_x, size_y, 0, bpp2, GL_UNSIGNED_BYTE, data);
-  }
+  // source format
+  GLenum source_format = 0;
+  if (texture_data->channels == 3)
+    source_format = GL_RGB;
 
-  if (upside_down)
-  {
-    if (bpp == GL_RGBA32F_ARB)
-    {
-      delete[] (GLfloat*)data;
-    } else
-    {
-      delete[] (unsigned char*)data;
-    }
-  }
+  if (texture_data->channels == 4)
+    source_format = GL_RGBA;
+
+  // source type
+  GLenum source_type = 0;
+  if (texture_data->storage_format == vsx_texture_data::byte_storage)
+    source_type = GL_UNSIGNED_BYTE;
+
+  if (texture_data->storage_format == vsx_texture_data::float_storage)
+    source_type = GL_FLOAT;
+
+  // target format
+  GLint target_format = 0;
+  if (texture_data->channels == 3)
+    target_format = GL_RGB;
+
+  if (texture_data->channels == 4)
+    target_format = GL_RGBA; // GL_COMPRESSED_RGB_ARB
+
+  // look for GL_ARB_texture_view if dxt5 compression is available
+  glTexImage2D(
+    texture_gl->gl_type,  // opengl type
+    0,  // mipmap level
+    target_format, // storage type
+    texture_data->width,
+    texture_data->height,
+    0,      // border 0 or 1
+    source_format,   // source data format
+    source_type, // source data type
+    texture_data->data[0] // pointer to data
+  );
 
   if(!oldStatus)
     glDisable(texture_gl->gl_type);
@@ -198,209 +149,117 @@ inline void upload_2d(vsx_texture_gl* texture_gl, void* data, unsigned long size
   texture_gl->uploaded_to_gl = true;
 }
 
-
-inline void upload_bitmap_2d(vsx_texture_gl* texture_gl, vsx_bitmap* vbitmap, bool mipmaps = false, bool upside_down = true)
+inline void upload_cube(vsx_texture_gl* texture_gl, vsx_texture_data* texture_data )
 {
-  upload_2d(
-    texture_gl,
-    vbitmap->data,
-    vbitmap->size_x,
-    vbitmap->size_y,
-    mipmaps,
-    vbitmap->bpp,
-    vbitmap->bformat,
-    upside_down
-  );
-}
+  glEnable(texture_gl->gl_type);
+  glBindTexture(texture_gl->gl_type, texture_gl->gl_id);
 
-// assumes width is 6x height (maps in order: -x, z, x, -z, -y, y
-inline void upload_cube(vsx_texture_gl* texture_gl, void* data, unsigned long size_x, unsigned long size_y,bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT, bool upside_down = true)
-{
+  if (texture_data->mipmaps)
   {
-    VSX_UNUSED(mipmaps);
-    VSX_UNUSED(upside_down);
-
-    if ( size_x / 6 != size_y )
-    {
-      vsx_printf(L"vsx_texture::upload_ram_bitmap_cube Error: not cubemap, should be aspect 6:1");
-      return;
-    }
-
-    if (bpp == 3)
-    {
-      vsx_printf(L"RGB cubemaps not implemented\n");
-      return;
-    }
-
-    uint32_t* sides[6];
-
-    if (bpp2 == GL_RGBA32F_ARB)
-    {
-      // TODO: not correctly implemented
-      // split cubemap into 6 individual bitmaps
-
-      sides[0] = (uint32_t*)malloc( sizeof(GLfloat) * (size_y * size_y) );
-      sides[1] = (uint32_t*)malloc( sizeof(GLfloat) * (size_y * size_y) );
-      sides[2] = (uint32_t*)malloc( sizeof(GLfloat) * (size_y * size_y) );
-      sides[3] = (uint32_t*)malloc( sizeof(GLfloat) * (size_y * size_y) );
-      sides[4] = (uint32_t*)malloc( sizeof(GLfloat) * (size_y * size_y) );
-      sides[5] = (uint32_t*)malloc( sizeof(GLfloat) * (size_y * size_y) );
-
-      for (size_t side_offset = 0; side_offset < 6; side_offset++)
-      {
-        for (size_t y = 0; y < size_y; y++)
-        {
-          memcpy(
-            // destination
-            ((GLfloat*)sides[side_offset]) + y * size_y
-            ,
-
-            // souce
-            (GLfloat*)&((GLfloat*)data)[ size_x * y ] // row offset
-            +
-            size_y * side_offset,            // horiz offset
-
-            sizeof(GLfloat) * size_y // count
-          );
-        }
-      }
-
-    } else
-    {
-      // split cubemap into 6 individual bitmaps
-
-      sides[0] = (uint32_t*)malloc( sizeof(uint32_t) * (size_y * size_y) );
-      sides[1] = (uint32_t*)malloc( sizeof(uint32_t) * (size_y * size_y) );
-      sides[2] = (uint32_t*)malloc( sizeof(uint32_t) * (size_y * size_y) );
-      sides[3] = (uint32_t*)malloc( sizeof(uint32_t) * (size_y * size_y) );
-      sides[4] = (uint32_t*)malloc( sizeof(uint32_t) * (size_y * size_y) );
-      sides[5] = (uint32_t*)malloc( sizeof(uint32_t) * (size_y * size_y) );
-
-      uint32_t* source_begin = (uint32_t*)data;
-      for (size_t side_offset = 0; side_offset < 6; side_offset++)
-      {
-        for (size_t y = 0; y < size_y; y++)
-        {
-          memcpy(
-            // destination
-            sides[side_offset] + y * size_y
-            ,
-
-            // source
-            source_begin // row offset
-            + size_x * y
-            +
-            size_y * side_offset,            // horiz offset
-
-            sizeof(uint32_t) * size_y // count
-          );
-        }
-      }
-    }
-
-
-    glEnable(texture_gl->gl_type);
-    glBindTexture(texture_gl->gl_type, texture_gl->gl_id);
-
     glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    glTexParameteri(texture_gl->gl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
     glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(texture_gl->gl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
     float rMaxAniso;
     glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &rMaxAniso);
     glTexParameterf( texture_gl->gl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
 
-
-    glTexImage2D(
-      GL_TEXTURE_CUBE_MAP_NEGATIVE_X_ARB,  // opengl target
-      0,  // mipmap level
-      //GL_COMPRESSED_RGBA_ARB, // storage type
-      bpp2, // storage type
-      size_y, // size x
-      size_y, // size y
-      0,      // border 0 or 1
-      bpp2,   // source data format
-      GL_UNSIGNED_BYTE, // source data type
-      sides[0] // pointer to data
-    );
-
-    glTexImage2D(
-      GL_TEXTURE_CUBE_MAP_POSITIVE_Z_ARB,  // opengl target
-      0,  // mipmap level
-      //GL_COMPRESSED_RGBA_ARB, // storage type
-      bpp2, // storage type
-      size_y, // size x
-      size_y, // size y
-      0,      // border 0 or 1
-      bpp2,   // source data format
-      GL_UNSIGNED_BYTE, // source data type
-      sides[1] // pointer to data
-    );
-
-    glTexImage2D(
-      GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB,  // opengl target
-      0,  // mipmap level
-      //GL_COMPRESSED_RGBA_ARB, // storage type
-      bpp2, // storage type
-      size_y, // size x
-      size_y, // size y
-      0,      // border 0 or 1
-      bpp2,   // source data format
-      GL_UNSIGNED_BYTE, // source data type
-      sides[2] // pointer to data
-    );
-
-    glTexImage2D(
-      GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_ARB,  // opengl target
-      0,  // mipmap level
-      //GL_COMPRESSED_RGBA_ARB, // storage type
-      bpp2, // storage type
-      size_y, // size x
-      size_y, // size y
-      0,      // border 0 or 1
-      bpp2,   // source data format
-      GL_UNSIGNED_BYTE, // source data type
-      sides[3] // pointer to data
-    );
-
-    glTexImage2D(
-      GL_TEXTURE_CUBE_MAP_POSITIVE_Y_ARB,  // opengl target
-      0,  // mipmap level
-      //GL_COMPRESSED_RGBA_ARB, // storage type
-      bpp2, // storage type
-      size_y, // size x
-      size_y, // size y
-      0,      // border 0 or 1
-      bpp2,   // source data format
-      GL_UNSIGNED_BYTE, // source data type
-      sides[4] // pointer to data
-    );
-
-    glTexImage2D(
-      GL_TEXTURE_CUBE_MAP_NEGATIVE_Y_ARB,  // opengl target
-      0,  // mipmap level
-      //GL_COMPRESSED_RGBA_ARB, // storage type
-      bpp2, // storage type
-      size_y, // size x
-      size_y, // size y
-      0,      // border 0 or 1
-      bpp2,   // source data format
-      GL_UNSIGNED_BYTE, // source data type
-      sides[5] // pointer to data
-    );
-
-    glDisable( texture_gl->gl_type );
-
-    // free our temporary local storage
-    free(sides[0]);
-    free(sides[1]);
-    free(sides[2]);
-    free(sides[3]);
-    free(sides[4]);
-    free(sides[5]);
-
-    texture_gl->uploaded_to_gl = true;
+  } else
+  {
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   }
+
+  if (texture_data->storage_format == vsx_texture_data::byte_storage)
+    vsx_printf(L"byte storage\n");
+
+  vsx_printf(L"channels: %d \n", texture_data->channels);
+
+  vsx_printf(L"data block: %lx \n", texture_data->data[0]);
+  vsx_printf(L"data block: %lx \n", texture_data->data[1]);
+  vsx_printf(L"data block: %lx \n", texture_data->data[2]);
+  vsx_printf(L"data block: %lx \n", texture_data->data[3]);
+  vsx_printf(L"data block: %lx \n", texture_data->data[4]);
+  vsx_printf(L"data block: %lx \n", texture_data->data[5]);
+
+  // source format
+  GLenum source_format = 0;
+  if (texture_data->channels == 3)
+    source_format = GL_RGB;
+
+  if (texture_data->channels == 4)
+    source_format = GL_RGBA;
+
+  // source type
+  GLenum source_type = 0;
+  if (texture_data->storage_format == vsx_texture_data::byte_storage)
+    source_type = GL_UNSIGNED_BYTE;
+
+  if (texture_data->storage_format == vsx_texture_data::float_storage)
+    source_type = GL_FLOAT;
+
+  // target format
+  GLint target_format = 0;
+  if (texture_data->channels == 3)
+    target_format = GL_RGB;
+
+  if (texture_data->channels == 4)
+    target_format = GL_RGBA; // GL_COMPRESSED_RGB_ARB
+
+  GLenum sides[] = {
+    GL_TEXTURE_CUBE_MAP_NEGATIVE_X_ARB,
+    GL_TEXTURE_CUBE_MAP_POSITIVE_Z_ARB,
+    GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB,
+    GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_ARB,
+    GL_TEXTURE_CUBE_MAP_POSITIVE_Y_ARB,
+    GL_TEXTURE_CUBE_MAP_NEGATIVE_Y_ARB
+  };
+
+  for (size_t i = 0; i < 6; i++)
+    glTexImage2D(
+      sides[i],  // opengl target
+      0,  // mipmap level
+      target_format, // storage type
+      texture_data->height, // size x
+      texture_data->height, // size y
+      0,      // border 0 or 1
+      source_format,   // source data format
+      source_type, // source data type
+      texture_data->data[i] // pointer to data
+    );
+
+  glDisable( texture_gl->gl_type );
+  texture_gl->uploaded_to_gl = true;
+}
+
+inline void upload_bitmap_2d(vsx_texture_gl* texture_gl, vsx_bitmap* vbitmap, bool mipmaps = false, bool upside_down = true)
+{
+  vsx_texture_data temp_data(VSX_TEXTURE_DATA_TYPE_2D, false);
+  temp_data.data[0] = vbitmap->data;
+  temp_data.channels = vbitmap->channels;
+  temp_data.width = vbitmap->width;
+  temp_data.height = vbitmap->height;
+  temp_data.mipmaps = mipmaps;
+
+  if (vbitmap->storage_format == vsx_bitmap::byte_storage)
+    temp_data.storage_format = vsx_texture_data::byte_storage;
+
+  if (vbitmap->storage_format == vsx_bitmap::float_storage)
+    temp_data.storage_format = vsx_texture_data::float_storage;
+
+  if (upside_down)
+  {
+    vsx_texture_data_transform::get_instance()->flip_vertically(&temp_data);
+    vbitmap->data = temp_data.data[0];
+  }
+
+  upload_2d(
+    texture_gl,
+    &temp_data
+  );
+
+  temp_data.data[0] = 0;
 }
 
 

@@ -42,12 +42,12 @@ class module_bitmap_subplasma : public vsx_module
 {
 public:
   // in
-  vsx_module_param_float* rand_seed;
-  vsx_module_param_int* size;
-  vsx_module_param_int* amplitude;
+  vsx_module_param_float* rand_seed_in;
+  vsx_module_param_int* size_in;
+  vsx_module_param_int* amplitude_in;
 
   // out
-  vsx_module_param_bitmap* result1;
+  vsx_module_param_bitmap* bitmap_out;
 
   // internal
   bool need_to_rebuild;
@@ -66,6 +66,7 @@ public:
   bool              worker_running;
   int               thread_state;
   int               i_size;
+  void *to_delete_data;
 
   // our worker thread, to keep the tough generating work off the main loop
   // this is a fairly simple operation, but when you want to generate fractals
@@ -76,7 +77,7 @@ public:
     module_bitmap_subplasma* mod = ((module_bitmap_subplasma*)ptr);
     unsigned char* SubPlasma = new unsigned char[mod->i_size * mod->i_size];
     for (x = 0; x < mod->i_size*mod->i_size; ++x) { SubPlasma[x] = 0; }
-    int np=2 << mod->amplitude->get();
+    int np=2 << mod->amplitude_in->get();
 
     unsigned int musize = mod->i_size-1;
 
@@ -88,7 +89,7 @@ public:
 
     vsx_rand rand;
 
-    rand.srand((int)mod->rand_seed->get());
+    rand.srand((int)mod->rand_seed_in->get());
     for (y=0; y < np; y++)
       for (x=0; x < np; x++)
         SubPlasma[x*mmu+y*mmu*mod->i_size] = rand.rand();
@@ -106,7 +107,7 @@ public:
           (x&mm1)/mmf);
       }
 
-    int sl = mod->size->get()+3;
+    int sl = mod->size_in->get()+3;
     for (y=0; y<mod->i_size; y++)
       for (x=0; x<mod->i_size; x++) {
         int p=y&(~(mm1));
@@ -158,41 +159,35 @@ public:
     p_updates = -1;
 
 
-    rand_seed = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"rand_seed");
-    rand_seed->set(4.0f);
+    rand_seed_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"rand_seed");
+    rand_seed_in->set(4.0f);
 
-    size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
-    size->set(4);
+    size_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
+    size_in->set(4);
 
-    amplitude = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"amplitude");
+    amplitude_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"amplitude");
 
     i_size = 0;
-    result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-    result1->set_p(bitm);
+    bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
     work_bitmap = &bitm;
-    bitm.data = 0;
-    bitm.bpp = 4;
-    bitm.bformat = GL_RGBA;
-    bitm.valid = false;
     my_ref = 0;
     bitm_timestamp = bitm.timestamp = rand();
     need_to_rebuild = true;
-    //bitm.data = new vsx_bitmap_32bt[256*256];
-    //bitm.size_y = bitm.size_x = 256;
     to_delete_data = 0;
   }
-  void *to_delete_data;
   void run() {
     // initialize our worker thread, we don't want to keep the renderloop waiting do we?
     if (!worker_running)
     if (p_updates != param_updates) {
       //need_to_rebuild = false;
-      if (i_size != 8 << size->get()) {
-        i_size = 8 << size->get();
+      if (i_size != 8 << size_in->get()) {
+        i_size = 8 << size_in->get();
         if (bitm.data) to_delete_data = bitm.data;
           //delete[] bitm.data;
         bitm.data = new vsx_bitmap_32bt[i_size*i_size];
-        bitm.size_y = bitm.size_x = i_size;
+
+        bitm.width  = i_size;
+        bitm.height = i_size;
       }
 
       p_updates = param_updates;
@@ -214,7 +209,7 @@ public:
         // ok, new version
         //printf("uploading subplasma to param\n");
         bitm_timestamp = bitm.timestamp;
-        result1->set_p(bitm);
+        bitmap_out->set(&bitm);
         loading_done = true;
       }
       thread_state = 3;

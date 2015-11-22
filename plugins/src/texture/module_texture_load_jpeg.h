@@ -2,12 +2,14 @@
 class module_texture_load_jpeg : public vsx_module
 {
   // in
-  float time;
   vsx_module_param_resource* filename_in;
+
   // out
   vsx_module_param_bitmap* bitmap_out;
   vsx_module_param_texture* texture_out;
+
   // internal
+//  float time;
   vsx_texture* texture;
 
   // threading stuff
@@ -34,14 +36,14 @@ class module_texture_load_jpeg : public vsx_module
       delete cj;
       return 0;
     }
-    mod->bitm.size_x = cj->GetResX();
-    mod->bitm.size_y = cj->GetResY();
+    mod->bitm.width = cj->GetResX();
+    mod->bitm.height = cj->GetResY();
 
     // allocate data in the vsx_bitmap
-    vsx_bitmap_32bt b_c = (mod->bitm.size_x) * (mod->bitm.size_y);
+    vsx_bitmap_32bt b_c = (mod->bitm.width) * (mod->bitm.height);
 
     unsigned char* rb = (unsigned char*)cj->m_pBuf;
-    mod->bitm.data = new vsx_bitmap_32bt[b_c*2];
+    mod->bitm.data = new vsx_bitmap_32bt[b_c];
 
     for (unsigned long i = 0; i < b_c; ++i)
     {
@@ -114,18 +116,10 @@ public:
   	
   	// out
   	bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-  
-    bitm.size_x = 0;
-    bitm.size_y = 0;
-    bitm_timestamp = 0;
-    bitm.valid = false;
-  
-    bitmap_out->set_p(bitm);
+    
     thread_state = 0;
+    texture = 0x0;
     texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
-
-  	texture = new vsx_texture;
-    texture->texture_gl->init_opengl_texture_2d();
   }
   
   void run()
@@ -133,9 +127,7 @@ public:
     if (current_filename != filename_in->get())
     {
       if (thread_state == -1)
-      {
         message = "module||ok";
-      }
 
       // time to decode a new jpg
       if (thread_state == 1)
@@ -160,13 +152,11 @@ public:
     if (thread_state == 2)
     {
       pthread_join(worker_t, NULL);
-      bitm.bpp = 4;
-      bitm.bformat = GL_RGBA;
       bitm.valid = true;
       ++bitm.timestamp;
       thread_state = 3;
       loading_done = true;
-      bitmap_out->set_p(bitm);
+      bitmap_out->set(&bitm);
     }
   }
 
@@ -176,6 +166,11 @@ public:
     {
       if (texture_timestamp != bitm.timestamp && bitm.valid)
       {
+        if (!texture)
+        {
+          texture = new vsx_texture;
+          texture->texture_gl->init_opengl_texture_2d();
+        }
         vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm, true);
         texture_out->set(texture);
         texture_timestamp = bitm.timestamp;
@@ -187,8 +182,10 @@ public:
   {
     if (thread_state == 1) 
       pthread_join(worker_t, 0);
+
     if (bitm.valid)
-      delete[] (vsx_bitmap_32bt*)bitm.data;
+      delete[] (unsigned char*)(bitm.data);
+
     if (texture)
       delete texture;
   }  

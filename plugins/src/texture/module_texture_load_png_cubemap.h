@@ -1,62 +1,21 @@
+#include <texture/vsx_texture_data_loader_png.h>
+
 class module_texture_load_png_cubemap : public vsx_module
 {
   // in
   float time;
   vsx_module_param_resource* filename_in;
-  vsx_module_param_int* reload;
+  vsx_module_param_int* reload_in;
 
   // out
   vsx_module_param_bitmap* bitmap_out;
   vsx_module_param_texture* texture_out;
 
   // internal
-
-  // threading stuff
-  void* pti_l;
-
   vsx_texture* texture;
-
-  static void* png_worker_v(void *ptr)
-  {
-    module_texture_load_png_cubemap* module = ((module_texture_load_png_cubemap*)ptr);
-
-    module->pp = new pngRawInfo;
-
-    if (pngLoadRaw( module->current_filename.c_str(), module->pp,module->engine->filesystem))
-    {
-      module->bitm.valid = true;
-
-      // memory barrier
-      asm volatile("":::"memory");
-
-      module->thread_state = 2;
-    }
-    else
-    {
-      module->bitm.valid = false;
-      module->last_modify_time = 0;
-
-      // memory barrier
-      asm volatile("":::"memory");
-
-      module->thread_state = -1;
-    }
-
-    return 0;
-  }
-
+  vsx_string<>current_filename;
 
 public:
-  vsx_string<>current_filename;
-  vsx_bitmap bitm;
-  int bitm_timestamp; // keep track of the timestamp for the bitmap internally
-  volatile int               thread_state;
-  bool              thread_working;
-  pngRawInfo*       pp;
-  pthread_t         worker_t;
-  pthread_attr_t    worker_t_attr;
-
-  int texture_timestamp;
 
   void module_info(vsx_module_info* info)
   {
@@ -91,145 +50,62 @@ public:
     filename_in->set("");
     current_filename = "";
 
-    reload = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reload");
+    reload_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reload");
 
     // out
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
 
-    bitm.size_x = 0;
-    bitm.size_y = 0;
-    bitm.valid = false;
-    bitm.data = 0;
-    texture_timestamp = bitm_timestamp = bitm.timestamp;
-
-    bitmap_out->set_p(bitm);
-    thread_state = 0;
     texture = 0x0;
 
     texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
     texture_out->valid = false;
   }
 
-  time_t last_modify_time;
-  t_stat st;
+
   void run()
   {
-    if (current_filename != filename_in->get() || reload->get() == 1) {
-      reload->set(0);
+    if (!(current_filename != filename_in->get() || reload_in->get() == 1))
+      return;
 
-      // time to decode a new png
-      if (thread_state > 0) {
-        if (thread_state == 1) {
-          long* aa;
-          pthread_join(worker_t, (void **)&aa);
-        }
-        free(pp->Data);
-        delete pp;
-      }
-      if (!verify_filesuffix(filename_in->get(),"png")) {
-        filename_in->set(current_filename);
-        message = "module||ERROR! This is not a PNG image file!";
-        return;
-      } else message = "module||ok";
+    reload_in->set(0);
 
-      current_filename = filename_in->get();
-      stat(current_filename.c_str(), &st);
-      last_modify_time = st.st_mtime;
-      pthread_attr_init(&worker_t_attr);
-      thread_state = 1;
-      pthread_create(&(worker_t), &(worker_t_attr), &png_worker_v, (void*)this);
+    if (!verify_filesuffix(filename_in->get(),"png")) {
+      filename_in->set(current_filename);
+      message = "module||ERROR! This is not a PNG image file!";
+      return;
     }
-    //printf("foobar\n");
-    if (thread_state == 2) {
-      thread_state = 3;
-      if (bitm.valid) {
-        if (pp->Components == 1) {
-          bitm.bpp = 3;
-          bitm.bformat = GL_RGB;
-        } else
-        if (pp->Components == 2) {
-          bitm.bpp = 4;
-          bitm.bformat = GL_RGBA;
-        } else
-        if (pp->Components == 3) {
-          bitm.bpp = 3;
-          bitm.bformat = GL_RGB;
-        } else
-        if (pp->Components == 4) {
-          bitm.bpp = 4;
-          bitm.bformat = GL_RGBA;
-        }
-        bitm.size_x = pp->Width;
-        bitm.size_y = pp->Height;
-        bitm.data = (vsx_bitmap_32bt*)(pp->Data);
 
-        bitm.timestamp++;
-        bitmap_out->set_p(bitm);
-      }
-      loading_done = true;
-  }
-}
+    current_filename = filename_in->get();
 
-void output(vsx_module_param_abs* param)
-{
-  if (param == (vsx_module_param_abs*)texture_out)
-  {
-    if (texture_timestamp != bitm.timestamp)
+    if (texture)
     {
-      if (texture == 0x0)
-      {
-        texture = new vsx_texture;
-        texture->texture_gl->init_opengl_texture_cubemap();
-      }
-      vsx_texture_gl_loader::upload_cube(
-        texture->texture_gl,
-        bitm.data,
-        bitm.size_x,
-        bitm.size_y,
-        false,
-        bitm.bpp, // 3 or 4
-        bitm.bformat // GL_RGBA
-      );
-      texture_out->set(texture);
-      texture_timestamp = bitm.timestamp;
+      texture->texture_gl->unload();
+      delete texture;
+    }
+
+    texture = vsx_texture_data_loader_png::get_instance()->load_cube_thread(current_filename, engine->filesystem, false);
+    texture_out->set(texture);
+
+    message = "module||ok";
+    loading_done = true;
+  }
+
+  void output(vsx_module_param_abs* param)
+  {
+  }
+
+  void stop() {
+  }
+
+  void start() {
+  }
+
+  void on_delete() {
+    if (texture) {
+      texture->texture_gl->unload();
+      delete texture;
     }
   }
-}
-
-void stop() {
-  if (texture)
-  {
-    texture->texture_gl->unload();
-  }
-}
-
-void start() {
-  texture->texture_gl->init_opengl_texture_cubemap();
-  vsx_texture_gl_loader::upload_cube(
-    texture->texture_gl,
-    bitm.data,
-    bitm.size_x,
-    bitm.size_y,
-    false,
-    bitm.bpp, // 3 or 4
-    bitm.bformat // GL_RGBA
-  );
-  texture_out->set(texture);
-}
-
-
-void on_delete() {
-  if (thread_state == 1)
-  pthread_join(worker_t,0);
-  if (thread_state > 0) {
-    free(pp->Data);
-    delete pp;
-  }
-  if (texture) {
-    texture->texture_gl->unload();
-    delete texture;
-  }
-}
 
 };
 

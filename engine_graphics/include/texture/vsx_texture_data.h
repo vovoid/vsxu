@@ -26,22 +26,32 @@
 #define VSX_TEXTURE_DATA_H
 
 #include <stdlib.h>
-
 #define VSX_TEXTURE_DATA_TYPE_2D 1
 #define VSX_TEXTURE_DATA_TYPE_CUBE 2
 
 class vsx_texture_data
 {
 public:
-  unsigned int type;
+
+  size_t type;
 
   unsigned int width;
   unsigned int height;
   unsigned int depth;
-  unsigned int alpha;
-  unsigned int components;
-  unsigned int mipmaps;
-  unsigned char *data[6];
+  bool alpha;
+  unsigned int channels;
+  bool mipmaps;
+
+  enum channel_storage_type_t
+  {
+    byte_storage= 0,
+    float_storage = 1,
+  } storage_format;
+
+  bool compressed_data;
+
+
+  void *data[6];
   volatile size_t data_ready;
 
   bool attached_to_cache; // not part of cache
@@ -52,11 +62,13 @@ public:
     type(n_type),
     width(0),
     height(0),
-    depth(0),
-    alpha(0),
-    components(0),
+    depth(false),
+    alpha(false),
+    channels(0),
     mipmaps(0),
-    data({0,0,0,0,0,0}),
+    storage_format(byte_storage),
+    compressed_data(false),
+    data{0,0,0,0,0,0},
     data_ready(0),
     attached_to_cache(is_attached_to_cache),
     references(0)

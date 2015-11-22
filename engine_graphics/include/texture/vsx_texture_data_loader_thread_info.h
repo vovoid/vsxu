@@ -12,6 +12,8 @@ public:
   vsxf* filesystem;
   vsx_texture* texture;
   vsx_string<> filename;
+  bool perform_flip_vertical;
+  bool perform_split_into_cubemap;
   bool mipmaps;
 
   vsx_texture_loader_thread_info()
@@ -20,6 +22,8 @@ public:
       filesystem(0x0),
       texture(0x0),
       filename(),
+      perform_flip_vertical(false),
+      perform_split_into_cubemap(false),
       mipmaps(false)
   {
   }

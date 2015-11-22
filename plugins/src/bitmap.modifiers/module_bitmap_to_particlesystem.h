@@ -28,16 +28,15 @@ public:
 
   // in
   vsx_module_param_bitmap* bitmap_in;
-  vsx_module_param_float* size;
-  vsx_module_param_float* blobsize;
-  vsx_module_param_float* random_weight;
+  vsx_module_param_float* size_in;
+  vsx_module_param_float* blob_size_in;
+  vsx_module_param_float* random_weight_in;
 
   // out
   vsx_module_param_particlesystem* particlesystem_out;
 
   // internal
-  vsx_bitmap* bitm;
-  vsx_bitmap bitm2;
+  vsx_bitmap* bitmap;
   int bitm_timestamp;
 
   vsx_particlesystem<> particles;
@@ -72,14 +71,14 @@ public:
 
     bitmap_in = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap_in");
 
-    size = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"size");
-    size->set(5.0f);
+    size_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"size");
+    size_in->set(5.0f);
 
-    blobsize = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"blobsize");
-    blobsize->set(0.1f);
+    blob_size_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"blobsize");
+    blob_size_in->set(0.1f);
 
-    random_weight = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"random_weight");
-    random_weight->set(0.5f);
+    random_weight_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"random_weight");
+    random_weight_in->set(0.5f);
 
     //--------------------------------------------------------------------------------------------------
 
@@ -95,59 +94,62 @@ public:
 
   void run()
   {
-    bitm = bitmap_in->get_addr();
-    if (bitm) {
-      if (p_updates != param_updates)
-      {
-        first = true;
-        p_updates = param_updates;
-      }
-      int i = 0;
-      int width = bitm->size_x;
-      float space = size->get()/(float)width;
-      float dest = -size->get()*0.5f;
-      if (first) {
-        for (size_t y = 0; y < bitm->size_y; ++y)
-        {
-          for (int x = 0; x < width; ++x)
-          {
-            (*particles.particles)[i].pos.x = dest+(float)x*space+random_weight->get()*(-0.5+(float)(rand()%1000)/1000.0f);
-            (*particles.particles)[i].pos.y = 0;
-            (*particles.particles)[i].pos.z = dest+(float)y*space+random_weight->get()*(-0.5+(float)(rand()%1000)/1000.0f);
-            ++i;
-          }
-        }
-        first = false;
-      }
+    if (!bitmap_in->get_addr())
+      return;
 
-      i = 0;
-      for (size_t y = 0; y < bitm->size_y; ++y)
+    bitmap = *(bitmap_in->get_addr());
+
+    if (p_updates != param_updates)
+    {
+      first = true;
+      p_updates = param_updates;
+    }
+
+    int i = 0;
+    int width = bitmap->width;
+    float space = size_in->get()/(float)width;
+    float dest = -size_in->get()*0.5f;
+    if (first) {
+      for (size_t y = 0; y < bitmap->height; ++y)
+      {
+        for (int x = 0; x < width; ++x)
+        {
+          (*particles.particles)[i].pos.x = dest+(float)x*space+random_weight_in->get()*(-0.5+(float)(rand()%1000)/1000.0f);
+          (*particles.particles)[i].pos.y = 0;
+          (*particles.particles)[i].pos.z = dest+(float)y*space+random_weight_in->get()*(-0.5+(float)(rand()%1000)/1000.0f);
+          ++i;
+        }
+      }
+      first = false;
+    }
+
+    i = 0;
+    if (bitmap->storage_format == vsx_bitmap::byte_storage && bitmap->channels == 4)
+    {
+      for (size_t y = 0; y < bitmap->height; ++y)
       {
         int cc = y*width;
-        if (bitm->bformat == GL_RGBA)
+        for (int x = 0; x < width; ++x)
         {
-          for (int x = 0; x < width; ++x)
-          {
-            (*particles.particles)[i].color.b = ((float)(unsigned char)((((vsx_bitmap_32bt*)bitm->data)[cc+x]&0x00FF0000)>>16))/255.0f;
-            (*particles.particles)[i].color.g = ((float)(unsigned char)((((vsx_bitmap_32bt*)bitm->data)[cc+x]&0x0000FF00)>>8))/255.0f;
-            (*particles.particles)[i].color.r = ((float)(unsigned char)((((vsx_bitmap_32bt*)bitm->data)[cc+x]&0x000000FF)))/255.0f;
-            (*particles.particles)[i].color.a = 1.0f;
-            if ((*particles.particles)[i].color.b < 0.01f && (*particles.particles)[i].color.g < 0.01f && (*particles.particles)[i].color.r < 0.01f)
-            (*particles.particles)[i].size = 0.0f;
-            else
-            (*particles.particles)[i].size = (*particles.particles)[i].orig_size = blobsize->get();
+          (*particles.particles)[i].color.b = ((float)(unsigned char)((((vsx_bitmap_32bt*)bitmap->data)[cc+x]&0x00FF0000)>>16))/255.0f;
+          (*particles.particles)[i].color.g = ((float)(unsigned char)((((vsx_bitmap_32bt*)bitmap->data)[cc+x]&0x0000FF00)>>8))/255.0f;
+          (*particles.particles)[i].color.r = ((float)(unsigned char)((((vsx_bitmap_32bt*)bitmap->data)[cc+x]&0x000000FF)))/255.0f;
+          (*particles.particles)[i].color.a = 1.0f;
+          if ((*particles.particles)[i].color.b < 0.01f && (*particles.particles)[i].color.g < 0.01f && (*particles.particles)[i].color.r < 0.01f)
+          (*particles.particles)[i].size = 0.0f;
+          else
+          (*particles.particles)[i].size = (*particles.particles)[i].orig_size = blob_size_in->get();
 
-            (*particles.particles)[i].speed.x = 0;
-            (*particles.particles)[i].speed.y = 0;
-            (*particles.particles)[i].speed.z = 0;
-            (*particles.particles)[i].time = 0;
-            (*particles.particles)[i].lifetime = 1000000000;
-            ++i;
-          }
+          (*particles.particles)[i].speed.x = 0;
+          (*particles.particles)[i].speed.y = 0;
+          (*particles.particles)[i].speed.z = 0;
+          (*particles.particles)[i].time = 0;
+          (*particles.particles)[i].lifetime = 1000000000;
+          ++i;
         }
       }
-      particlesystem_out->set_p(particles);
     }
+    particlesystem_out->set_p(particles);
   }
 
   ~module_bitmap_to_particlesystem()

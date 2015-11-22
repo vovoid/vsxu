@@ -50,41 +50,20 @@ void vsx_texture::upload_gl()
   if (!texture_data)
     return;
 
-  if (!texture_data->data_ready)
+  if (! __sync_fetch_and_add(&(texture_data->data_ready), 0))
     return;
 
   switch (texture_data->type)
   {
     case VSX_TEXTURE_DATA_TYPE_2D:
       texture_gl->init_opengl_texture_2d();
-
-      if (texture_data->components == 1)
-        vsx_texture_gl_loader::upload_2d(texture_gl, texture_data->data[0], texture_data->width, texture_data->height, texture_data->mipmaps, 3, GL_RGB);
-
-      if (texture_data->components == 2)
-        vsx_texture_gl_loader::upload_2d(texture_gl, texture_data->data[0], texture_data->width, texture_data->height, texture_data->mipmaps, 4, GL_RGBA);
-
-      if (texture_data->components == 3)
-        vsx_texture_gl_loader::upload_2d(texture_gl, texture_data->data[0], texture_data->width, texture_data->height, texture_data->mipmaps, 3, GL_RGB);
-
-      if (texture_data->components == 4)
-        vsx_texture_gl_loader::upload_2d(texture_gl, texture_data->data[0], texture_data->width, texture_data->height, texture_data->mipmaps, 4, GL_RGBA);
+      vsx_texture_gl_loader::upload_2d(texture_gl, texture_data);
     break;
 
     case VSX_TEXTURE_DATA_TYPE_CUBE:
+      vsx_printf(L"uploading cube map: %s\n", filename.c_str());
       texture_gl->init_opengl_texture_cubemap();
-
-      if (texture_data->components == 1)
-        vsx_texture_gl_loader::upload_cube(texture_gl, texture_data->data[0], texture_data->width, texture_data->height, texture_data->mipmaps, 3, GL_RGB);
-
-      if (texture_data->components == 2)
-        vsx_texture_gl_loader::upload_cube(texture_gl, texture_data->data[0], texture_data->width, texture_data->height, texture_data->mipmaps, 4, GL_RGBA);
-
-      if (texture_data->components == 3)
-        vsx_texture_gl_loader::upload_cube(texture_gl, texture_data->data[0], texture_data->width, texture_data->height, texture_data->mipmaps, 3, GL_RGB);
-
-      if (texture_data->components == 4)
-        vsx_texture_gl_loader::upload_cube(texture_gl, texture_data->data[0], texture_data->width, texture_data->height, texture_data->mipmaps, 4, GL_RGBA);
+      vsx_texture_gl_loader::upload_cube(texture_gl, texture_data);
     break;
   }
 }

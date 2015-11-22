@@ -49,7 +49,7 @@ public:
   {
     vsx_texture_gl* texture_gl = t_glist[filename];
     texture_gl->references++;
-    vsx_printf(L"texture_gl_cache: aquiring %s, references: %d\n", filename.c_str(), texture_gl->references);
+//    vsx_printf(L"texture_gl_cache: aquiring %s, references: %d\n", filename.c_str(), texture_gl->references);
     return texture_gl;
   }
 
@@ -57,10 +57,10 @@ public:
   {
     vsx_texture_gl* texture_gl = t_glist[filename];
     texture_gl->references--;
-    vsx_printf(L"texture_gl_cache: destroying %s, references: %d\n", filename.c_str(), texture_gl->references);
+//    vsx_printf(L"texture_gl_cache: destroying %s, references: %d\n", filename.c_str(), texture_gl->references);
     if (!texture_gl->references)
     {
-      vsx_printf(L"texture_gl_cache: deleting %s\n", filename.c_str(), texture_gl->references);
+//      vsx_printf(L"texture_gl_cache: deleting %s\n", filename.c_str(), texture_gl->references);
       t_glist.erase(filename);
       delete texture_gl;
     }

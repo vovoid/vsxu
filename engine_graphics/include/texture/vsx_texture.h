@@ -87,8 +87,8 @@ public:
   {
     if (!attached_to_cache)
     {
-      texture_gl = new vsx_texture_gl(true);
-      texture_data = new vsx_texture_data(0, true);
+      texture_gl = new vsx_texture_gl(false);
+      texture_data = new vsx_texture_data(0, false);
     }
   }
 

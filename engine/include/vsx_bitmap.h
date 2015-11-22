@@ -35,18 +35,39 @@ typedef uint32_t vsx_bitmap_32bt;
 
 class vsx_bitmap {
 public:
-  int bpp; // bytes per pixel 3 or 4 usually
-  int bformat; // pixel format, usually GL_RGB or GL_RGBA
-  unsigned long size_x;
-  unsigned long size_y;
-  void *data;  //
-  bool valid; // while this is false, don't upload it as a texture or read it, use your old copy
-  int timestamp; // increased with 1 every time it's modified so others can now and react.
+  //int bpp; // bytes per pixel 3 or 4 usually
+  //int bformat; // pixel format, usually GL_RGB or GL_RGBA
+
+  int channels; // 3 for RGB, 4 for RGBA
+
+  enum channel_storage_type_t
+  {
+    byte_storage = 0,
+    float_storage = 1,
+  } storage_format;
+
+  unsigned long width;
+  unsigned long height;
+
+  // either vsx_bitmap_32bt* or float*
+  void *data;
+
+  // while this is false, don't upload it as a texture or read it, use your old copy
+  bool valid;
+
+  // increased with 1 every time it's modified so others can now and react.
+  int timestamp;
   
-  vsx_bitmap() {
-    timestamp = 0;
-    valid = false;
-    size_x = size_y = 0;
+  vsx_bitmap()
+    :
+      channels(4),
+      storage_format(byte_storage),
+      width(0),
+      height(0),
+      data(0x0),
+      valid(false),
+      timestamp(0)
+  {
   }
 };
 
