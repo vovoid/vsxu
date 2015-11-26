@@ -9,9 +9,16 @@
 
 namespace vsx_texture_gl_loader
 {
-// upload a bitmap from RAM to the GPU
-// as an openGL texture. requires that init_opengl_texture
-// has been run.
+
+/**
+ * @brief upload_1d
+ * @param texture_gl
+ * @param data
+ * @param size
+ * @param mipmaps
+ * @param bpp
+ * @param bpp2
+ */
 inline void upload_1d(vsx_texture_gl* texture_gl, void* data, unsigned long size, bool mipmaps = false, int bpp = 4, int bpp2 = GL_BGRA_EXT)
 {
   GLboolean oldStatus = glIsEnabled(texture_gl->gl_type);
@@ -81,7 +88,11 @@ inline void upload_1d(vsx_texture_gl* texture_gl, void* data, unsigned long size
   }
 }
 
-
+/**
+ * @brief upload_2d
+ * @param texture_gl
+ * @param texture_data
+ */
 inline void upload_2d( vsx_texture_gl* texture_gl, vsx_texture_data* texture_data )
 {
   GLboolean oldStatus = glIsEnabled(texture_gl->gl_type);
@@ -149,6 +160,12 @@ inline void upload_2d( vsx_texture_gl* texture_gl, vsx_texture_data* texture_dat
   texture_gl->uploaded_to_gl = true;
 }
 
+
+/**
+ * @brief upload_cube
+ * @param texture_gl
+ * @param texture_data
+ */
 inline void upload_cube(vsx_texture_gl* texture_gl, vsx_texture_data* texture_data )
 {
   glEnable(texture_gl->gl_type);
@@ -170,18 +187,6 @@ inline void upload_cube(vsx_texture_gl* texture_gl, vsx_texture_data* texture_da
     glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   }
-
-  if (texture_data->storage_format == vsx_texture_data::byte_storage)
-    vsx_printf(L"byte storage\n");
-
-  vsx_printf(L"channels: %d \n", texture_data->channels);
-
-  vsx_printf(L"data block: %lx \n", texture_data->data[0]);
-  vsx_printf(L"data block: %lx \n", texture_data->data[1]);
-  vsx_printf(L"data block: %lx \n", texture_data->data[2]);
-  vsx_printf(L"data block: %lx \n", texture_data->data[3]);
-  vsx_printf(L"data block: %lx \n", texture_data->data[4]);
-  vsx_printf(L"data block: %lx \n", texture_data->data[5]);
 
   // source format
   GLenum source_format = 0;
@@ -257,10 +262,11 @@ inline void upload_bitmap_2d(vsx_texture_gl* texture_gl, vsx_bitmap* bitmap, boo
   if (bitmap->storage_format == vsx_bitmap::float_storage)
     texture_data.storage_format = vsx_texture_data::float_storage;
 
-  if (upside_down)
+  if (upside_down && !bitmap->flipped_vertically)
   {
     vsx_texture_data_transform::get_instance()->flip_vertically(&texture_data);
     bitmap->data = texture_data.data[0];
+    bitmap->flipped_vertically = true;
   }
 
   upload_2d(

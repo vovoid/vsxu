@@ -55,6 +55,9 @@ public:
 
   // increased with 1 every time it's modified so others can now and react.
   int timestamp;
+
+  // data has been flipped vertically
+  bool flipped_vertically;
   
   vsx_bitmap()
     :
@@ -64,7 +67,8 @@ public:
       height(0),
       data(0x0),
       valid(false),
-      timestamp(0)
+      timestamp(0),
+      flipped_vertically(false)
   {
   }
 };
