@@ -15,25 +15,23 @@ public:
     vsx_texture* texture,
     int width, // width in pixels
     int height, // height in pixels
-    bool float_texture = false, // use floating point channels (8-bit is default)
-    bool alpha = true, // support alpha channel or not
-    bool multisample = false, // enable MSAA anti aliasing
-    GLuint existing_depth_texture_id = 0
+    bool float_texture, // use floating point channels (8-bit is default)
+    bool alpha, // support alpha channel or not
+    bool multisample, // enable MSAA anti aliasing
+    bool linear_filter, // linear min/mag texture filter
+    GLuint existing_depth_texture_id // depth buffer from other buffer, 0 to ignore
   )
   {
-    prev_buf = 0;
+    if ( !has_buffer_support() )
+      VSX_ERROR_RETURN(L"No FBO support");
+
     int i_width = width;
     int i_height = height;
     is_multisample = multisample;
 
+
     if (multisample)
       glEnable(GL_MULTISAMPLE);
-
-    if ( !has_buffer_support() )
-    {
-      vsx_printf(L"vsx_texture error: No FBO available!\n");
-      return;
-    }
 
     vsx_gl_state::get_instance()->clear_errors();
 
@@ -50,8 +48,11 @@ public:
       texture_storage_type = alpha?GL_RGBA8:GL_RGB8;
 
 
+    // MIN / MAG filter
+    GLint min_mag = linear_filter?GL_LINEAR:GL_NEAREST;
+
+
     // Generate Color Texture
-    //RGBA8 2D texture, 24 bit depth texture, 256x256
     glGenTextures(1, &frame_buffer_fbo_attachment_texture);
     vsx_gl_state::get_instance()->accumulate_errors();
 
@@ -59,7 +60,6 @@ public:
       glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, frame_buffer_fbo_attachment_texture);
     else
       glBindTexture(GL_TEXTURE_2D, frame_buffer_fbo_attachment_texture);
-
     vsx_gl_state::get_instance()->accumulate_errors();
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -68,10 +68,10 @@ public:
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     vsx_gl_state::get_instance()->accumulate_errors();
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_mag);
     vsx_gl_state::get_instance()->accumulate_errors();
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, min_mag);
     vsx_gl_state::get_instance()->accumulate_errors();
 
     if (multisample)
@@ -79,9 +79,6 @@ public:
     else
       //NULL means reserve texture memory, but texels are undefined
       glTexImage2D(GL_TEXTURE_2D, 0, texture_storage_type, i_width, i_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
-
-
-
     vsx_gl_state::get_instance()->accumulate_errors();
 
 
@@ -117,10 +114,10 @@ public:
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
       vsx_gl_state::get_instance()->accumulate_errors();
 
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_mag);
       vsx_gl_state::get_instance()->accumulate_errors();
 
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, min_mag);
       vsx_gl_state::get_instance()->accumulate_errors();
 
       glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY);
@@ -176,7 +173,6 @@ public:
         frame_buffer_fbo_attachment_texture,
         0/*mipmap level*/
       );
-
     vsx_gl_state::get_instance()->accumulate_errors();
 
 
@@ -204,26 +200,22 @@ public:
     vsx_gl_state::get_instance()->accumulate_errors();
 
 
+    // Create Render buffer for blitting back to texture
     if (multisample)
     {
       glGenTextures(1, &frame_buffer_blit_color_texture);
       glBindTexture(GL_TEXTURE_2D, frame_buffer_blit_color_texture);
+
       if (float_texture)
-      {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, i_width, i_height, 0, GL_RGBA, GL_FLOAT, NULL);
-      }
       else
-      {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, i_width, i_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-      }
+
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_mag);
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, min_mag);
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-      // set your texture parameters here if required ...
-
-
 
       // create a normal fbo and attach texture to it
       glGenFramebuffersEXT(1, &frame_buffer_blit_handle);
@@ -264,6 +256,7 @@ public:
           texture->texture_gl->gl_type = GL_TEXTURE_2D_MULTISAMPLE;
         else
           texture->texture_gl->gl_type = GL_TEXTURE_2D;
+
         texture->texture_gl->uploaded_to_gl = true;
         this->width = width;
         this->height = height;
@@ -281,10 +274,11 @@ public:
     vsx_texture* texture,
     int width, // width in pixels
     int height, // height in pixels
-    bool float_texture = false, // use floating point channels (8-bit is default)
-    bool alpha = true, // support alpha channel or not
-    bool multisample = false, // enable MSAA anti aliasing
-    GLuint existing_depth_texture_id = 0
+    bool float_texture, // use floating point channels (8-bit is default)
+    bool alpha, // support alpha channel or not
+    bool multisample, // enable MSAA anti aliasing
+    bool linear_filter, // linear min/mag texture filter
+    GLuint existing_depth_texture_id
   )
   {
     deinit(texture);
@@ -295,32 +289,39 @@ public:
       height,
       float_texture,
       alpha,
+      multisample,
+      linear_filter,
       existing_depth_texture_id
     );
-
   }
 
   void deinit(vsx_texture* texture)
   {
+    if (!frame_buffer_handle)
+      return;
+
     //Delete resources
     glDeleteTextures(1, &color_buffer_handle);
+
     if (depth_buffer_local)
-    {
       glDeleteTextures(1, &depth_buffer_handle);
-    }
+
     depth_buffer_handle = 0;
     depth_buffer_local = 0;
 
     //Bind 0, which means render to back buffer, as a result, fb is unbound
     if ( vsx_gl_state::get_instance()->framebuffer_bind_get() == frame_buffer_handle )
       vsx_gl_state::get_instance()->framebuffer_bind(0);
+
     glDeleteFramebuffersEXT(1, &frame_buffer_handle);
+    frame_buffer_handle = 0;
 
     if (texture->texture_gl->gl_type == GL_TEXTURE_2D_MULTISAMPLE)
     {
       glDeleteTextures(1, &frame_buffer_blit_color_texture);
       frame_buffer_blit_color_texture = 0;
       glDeleteFramebuffersEXT(1, &frame_buffer_blit_handle);
+      frame_buffer_blit_handle = 0;
     }
 
     valid_fbo = false;

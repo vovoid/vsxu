@@ -51,7 +51,10 @@ class module_texture_effect_blur : public vsx_module
 
 public:
 
-  ~module_texture_effect_blur()
+  module_texture_effect_blur()
+    :
+      texture(0x0),
+      texture2(0x0)
   {
   }
 
@@ -89,21 +92,12 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
   gl_state = vsx_gl_state::get_instance();
 
-  texture = new vsx_texture;
   res_x = res_y = 256;
-  buffer.init(texture, res_x, res_y, true, false);
-
-  texture2 = new vsx_texture;
-  buffer2.init(texture2, res_x, res_y, true, false);
-
 
   start_value = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"start_value");
   start_value->set(1.0f);
   attenuation = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
   attenuation->set(1.0f);
-
-  texture_result->set(texture);
-
 
 
 shader.vertex_program = "\
@@ -171,23 +165,9 @@ void main(void)\n\
 }
 
   void run() {
-    if
-    (
-      !glow_source->connected
-    )
-    {
+    if ( !glow_source->connected )
       return;
-    }
-    if (texture == 0)
-    {
-      texture = new vsx_texture;
 
-      tex_size_internal = 3;
-      buffer.reinit(texture, res_x, res_y, true, false);
-
-      texture2 = new vsx_texture;
-      buffer2.reinit(texture2, res_x, res_y, true, false);
-    }
     bool rebuild = false;
     if (texture_size->get() >= 10)
     {
@@ -242,8 +222,15 @@ void main(void)\n\
           res_y = gl_state->viewport_get_height() * 2.0;
         break;
       };
-      buffer.reinit(texture, res_x, res_y, true, false);
-      buffer2.reinit(texture2, res_x, res_y, true, false);
+
+      if (!texture)
+        texture = new vsx_texture();
+
+      buffer.reinit(texture, res_x, res_y, true, false, false, true, 0);
+
+      if (!texture2)
+        texture2 = new vsx_texture();
+      buffer2.reinit(texture2, res_x, res_y, true, false, false, true, 0);
     }
 
     vsx_texture** ti = glow_source->get_addr();
@@ -308,7 +295,8 @@ void main(void)\n\
       (*ti)->_bind();
     buffer.end_capture_to_buffer();
 
-    //
+    // -------------------------------
+
     buffer2.begin_capture_to_buffer();
       loading_done = true;
       glColor4f(1,1,1,1);
@@ -343,14 +331,12 @@ void main(void)\n\
       return;
     }
 
+    // 2nd pass ***************************************************************
 
 
-//    pixel_offset_size_x = 1.0f / (float)res_x;
-//    pixel_offset_size_y = 1.0f / (float)res_y;
     pixel_offset_size_x = start_value->get() * 0.4f / (float)res_x;
     pixel_offset_size_y = start_value->get() * 0.4f / (float)res_y;
 
-    // 2nd pass
     buffer.begin_capture_to_buffer();
       loading_done = true;
       glColor4f(1,1,1,1);

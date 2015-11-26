@@ -318,8 +318,8 @@ void vsx_statelist::render()
     glGetIntegerv(GL_VIEWPORT, viewport);
     if (buf1.has_buffer_support())
     {
-      buf1.init(&tex1,viewport[2], viewport[3]);
-      buf_to.init(&tex_to, viewport[2], viewport[3]);
+      buf1.init(&tex1,viewport[2], viewport[3], false, true, false, true, 0);
+      buf_to.init(&tex_to, viewport[2], viewport[3], false, true, false, true, 0);
 
       get_files_recursive(own_path+"visuals_faders", &fader_file_list,"",".svn CVS");
       for (std::list< vsx_string<> >::iterator it = fader_file_list.begin(); it != fader_file_list.end(); ++it)

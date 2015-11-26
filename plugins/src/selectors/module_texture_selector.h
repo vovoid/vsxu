@@ -158,6 +158,12 @@ class module_texture_selector : public vsx_module
 
 public:
 
+  module_texture_selector()
+    :
+      i_tex_output(0x0),
+      i_tex_blank(0x0)
+  {}
+
   //Initialise Data
 
   vsx_glsl shader;
@@ -282,15 +288,6 @@ public:
     *i_clear_bmp_data = 0xff000000;
     i_clear_bmp.valid = true;
 
-    i_tex_output = new vsx_texture; //Output Texture from the shader
-    buf_output.init(i_tex_output, 8 << i_tex_size, 8 << i_tex_size, true );
-
-    i_tex_blank = new vsx_texture; //Blank Texture for default and clear_color
-    buf_blank.init(i_tex_blank, 8 << i_tex_size, 8 << i_tex_size, true );
-    vsx_texture_gl_loader::upload_bitmap_2d(i_tex_blank->texture_gl, &i_clear_bmp, true);
-
-    i_tex_A = &i_tex_blank;
-    i_tex_B = &i_tex_blank;
 
     i_in_param_string = "";
 
@@ -713,14 +710,8 @@ public:
     if(i_tex_size != i_new_size)
     { 
       i_tex_size = i_new_size;
-
-      delete i_tex_output;
-      i_tex_output = new vsx_texture;
-      buf_output.reinit(i_tex_output, 8 << i_tex_size, 8 << i_tex_size, true);
-  
-      delete i_tex_blank;
-      i_tex_blank = new vsx_texture;
-      buf_blank.reinit(i_tex_blank, 8 << i_tex_size, 8 << i_tex_size, true);
+      buf_output.reinit(i_tex_output, 8 << i_tex_size, 8 << i_tex_size, true, true, false, true, 0);
+      buf_blank.reinit(i_tex_blank, 8 << i_tex_size, 8 << i_tex_size, true, true, false, true, 0);
       vsx_texture_gl_loader::upload_bitmap_2d(i_tex_blank->texture_gl, &i_clear_bmp, true);
     }
   }
@@ -755,6 +746,20 @@ public:
 
   void run()
   {
+    if (!i_tex_output)
+    {
+      i_tex_output = new vsx_texture; //Output Texture from the shader
+      i_tex_blank = new vsx_texture; //Blank Texture for default and clear_color
+
+      buf_output.reinit(i_tex_output, 8 << i_tex_size, 8 << i_tex_size, true, true, false, true, 0);
+      buf_blank.reinit(i_tex_blank, 8 << i_tex_size, 8 << i_tex_size, true, true, false, true, 0);
+
+      vsx_texture_gl_loader::upload_bitmap_2d(i_tex_blank->texture_gl, &i_clear_bmp, true);
+
+      i_tex_A = &i_tex_blank;
+      i_tex_B = &i_tex_blank;
+    }
+
     UpdateInputs();
     ResetSequence(&i_sequence, &i_seq_default,
                      sequence, reset_seq_to_default);

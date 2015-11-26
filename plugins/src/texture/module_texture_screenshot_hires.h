@@ -43,6 +43,12 @@ class module_texture_screenshot_hires : public vsx_module
 
 public:
 
+  module_texture_screenshot_hires()
+    :
+      texture(0x0)
+  {
+  }
+
   void module_info(vsx_module_info* info)
   {
     info->identifier =
@@ -92,8 +98,6 @@ public:
     M = 32;
     N = 32;
 
-    texture = new vsx_texture;
-    buffer.init(texture, 512,512);
 
     pixeldata = (char*)malloc( 512 * 512 * 4 );
     pixeldata_target = (char*)malloc( 512 * 512 * 4 * M * N );
@@ -101,6 +105,9 @@ public:
 
   void on_delete()
   {
+    if (!texture)
+      return;
+
     delete texture;
     free(pixeldata);
     free(pixeldata_target);
@@ -108,6 +115,14 @@ public:
 
   bool activate_offscreen()
   {
+
+    if (!texture)
+    {
+      texture = new vsx_texture;
+      buffer.init(texture, 512,512, false,true,true,false,0);
+    }
+
+
     double z_near = 0.01;
     double z_far = 2000.0;
     double aspect = 1.0 / gl_state->viewport_width_div_height_get();

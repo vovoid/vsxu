@@ -97,10 +97,11 @@ public:
     vsx_texture* texture,
     int width, // width in pixels
     int height, // height in pixels
-    bool float_texture = false, // use floating point channels (8-bit is default)
-    bool alpha = true, // support alpha channel or not
-    bool multisample = false, // enable MSAA anti aliasing
-    GLuint existing_depth_texture_id = 0
+    bool float_texture, // use floating point channels (8-bit is default)
+    bool alpha, // support alpha channel or not
+    bool multisample, // enable MSAA anti aliasing
+    bool linear_filter, // linear min/mag texture filter
+    GLuint existing_depth_texture_id // depth buffer from other buffer, 0 to ignore
   ) = 0;
 
   virtual void reinit
@@ -108,10 +109,11 @@ public:
     vsx_texture* texture,
     int width, // width in pixels
     int height, // height in pixels
-    bool float_texture = false, // use floating point channels (8-bit is default)
-    bool alpha = true, // support alpha channel or not
-    bool multisample = false, // enable MSAA anti aliasing
-    GLuint existing_depth_texture_id = 0
+    bool float_texture, // use floating point channels (8-bit is default)
+    bool alpha, // support alpha channel or not
+    bool multisample, // enable MSAA anti aliasing
+    bool linear_filter, // linear min/mag texture filter
+    GLuint existing_depth_texture_id // depth buffer from other buffer, 0 to ignore
   ) = 0;
 
   virtual void deinit(vsx_texture* texture) = 0;

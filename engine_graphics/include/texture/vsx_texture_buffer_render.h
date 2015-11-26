@@ -14,25 +14,24 @@ public:
     vsx_texture* texture,
     int width, // width in pixels
     int height, // height in pixels
-    bool float_texture = false, // use floating point channels (8-bit is default)
-    bool alpha = true, // support alpha channel or not
-    bool multisample = false, // enable anti-aliasing
-    GLuint existing_depth_texture_id = 0
+    bool float_texture, // use floating point channels (8-bit is default)
+    bool alpha, // support alpha channel or not
+    bool multisample, // enable anti-aliasing
+    bool linear_filter, // linear min/mag texture filter
+    GLuint existing_depth_texture_id // depth buffer from other buffer, 0 to ignore
   )
   {
-    prev_buf = 0;
     int i_width = width;
     int i_height = height;
 
     if ( !has_buffer_support() )
-    {
-      //printf("vsx_texture error: No FBO available!\n");
-      return;
-    }
+      VSX_ERROR_RETURN(L"No FBO support");
 
     int prev_buf_l;
     prev_buf_l = vsx_gl_state::get_instance()->framebuffer_bind_get();
 
+    // MIN / MAG filter
+    GLint min_mag = linear_filter?GL_LINEAR:GL_NEAREST;
 
 
     // create fbo for multi sampled content and attach depth and color buffers to it
@@ -127,8 +126,8 @@ public:
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, i_width, i_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     }
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_mag);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, min_mag);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // set your texture parameters here if required ...
@@ -147,9 +146,6 @@ public:
       frame_buffer_blit_color_texture,
       0
     );
-
-    // TODO: create and attach depth buffer also
-
 
     texture->texture_gl->gl_id = frame_buffer_blit_color_texture;
     texture->texture_gl->gl_type = GL_TEXTURE_2D;
@@ -172,10 +168,11 @@ public:
     vsx_texture* texture,
     int width, // width in pixels
     int height, // height in pixels
-    bool float_texture = false, // use floating point channels (8-bit is default)
-    bool alpha = true, // support alpha channel or not
-    bool multisample = false, // enable anti-aliasing
-    GLuint existing_depth_texture_id = 0
+    bool float_texture, // use floating point channels (8-bit is default)
+    bool alpha, // support alpha channel or not
+    bool multisample, // enable anti-aliasing
+    bool linear_filter, // linear min/mag texture filter
+    GLuint existing_depth_texture_id
   )
   {
     deinit(texture);
@@ -186,7 +183,9 @@ public:
       height,
       float_texture,
       alpha,
-      multisample
+      multisample,
+      linear_filter,
+          existing_depth_texture_id
     );
   }
 
@@ -194,6 +193,9 @@ public:
 
   void deinit(vsx_texture* texture)
   {
+    if (!render_buffer_color_handle)
+      return;
+
     glDeleteRenderbuffersEXT(1,&render_buffer_color_handle);
     glDeleteRenderbuffersEXT(1,&render_buffer_depth_handle);
     glDeleteTextures(1,&frame_buffer_blit_color_texture);
