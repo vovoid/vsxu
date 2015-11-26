@@ -35,15 +35,13 @@ typedef uint32_t vsx_bitmap_32bt;
 
 class vsx_bitmap {
 public:
-  //int bpp; // bytes per pixel 3 or 4 usually
-  //int bformat; // pixel format, usually GL_RGB or GL_RGBA
-
-  int channels; // 3 for RGB, 4 for RGBA
+  // channels - 3 for RGB, 4 for RGBA
+  int channels;
 
   enum channel_storage_type_t
   {
     byte_storage = 0,
-    float_storage = 1,
+    float_storage = 1
   } storage_format;
 
   unsigned long width;

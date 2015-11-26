@@ -403,15 +403,12 @@ public:
         if (morph_target_count)
         {
           //CalMorphTargetMixer* m_morp_mixer = m_model->getMorphTargetMixer();
-          vsx_printf(L"number of morph targets: %d\n", morph_target_count );
-
           std::vector<CalCoreSubMorphTarget *> morph_targets = m_model->getMesh(0)->getSubmesh(0)->getCoreSubmesh()->getVectorCoreSubMorphTarget();
           for( size_t i = 0; i < morph_targets.size(); i++)
           {
             morph_info mi;
             mi.id = i;
             mi.name = morph_targets[i]->name().c_str();
-            vsx_printf(L"morph name: %s\n", mi.name.c_str());
             morphs.push_back( mi );
           }
         }

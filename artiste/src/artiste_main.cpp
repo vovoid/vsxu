@@ -184,6 +184,7 @@ void myErrorCallback
   VSX_UNUSED(_length);
   VSX_UNUSED(_user_param);
   VSX_UNUSED(_id);
+
   vsx_printf(L"GLDEBUG: %s\n", _message);
 }
 

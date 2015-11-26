@@ -45,7 +45,7 @@ public:
   enum channel_storage_type_t
   {
     byte_storage= 0,
-    float_storage = 1,
+    float_storage = 1
   } storage_format;
 
   bool compressed_data;

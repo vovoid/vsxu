@@ -70,10 +70,9 @@ class module_mesh_render : public vsx_module
   #endif
 
   // vbo handles
-  GLuint vbo_id_vertex_normals_texcoords[2];
-  GLuint vbo_id_draw_indices[2];
+  GLuint vbo_id_vertex_normals_texcoords;
+  GLuint vbo_id_draw_indices;
 
-  size_t cur_vbo_index;
 
   // current - state - used to see if anything has changed
   GLuint current_vbo_draw_type;
@@ -115,8 +114,7 @@ class module_mesh_render : public vsx_module
 
   bool init_vbo(GLuint draw_type = GL_DYNAMIC_DRAW_ARB)
   {
-    if (vbo_id_vertex_normals_texcoords[0]) {
-      //printf("init vbo failed - vbo_id_vertex_normals_texcoords already has a value: %d\n", vbo_id_vertex_normals_texcoords[0]);
+    if (vbo_id_vertex_normals_texcoords) {
       return true;
     }
     current_vbo_draw_type = draw_type;
@@ -126,21 +124,14 @@ class module_mesh_render : public vsx_module
     offset_vertex_colors = 0;
     GLintptr offset = 0;
 
-    cur_vbo_index = 0;
-
     //-----------------------------------------------------------------------
     // generate the buffers
-    if (vbo_id_vertex_normals_texcoords[0] == 0)
+    if (vbo_id_vertex_normals_texcoords == 0)
     {
       glGenBuffersARB
       (
         1,
-        &vbo_id_vertex_normals_texcoords[0]
-      );
-      glGenBuffersARB
-      (
-        1,
-        &vbo_id_vertex_normals_texcoords[1]
+        &vbo_id_vertex_normals_texcoords
       );
     }
 
@@ -148,9 +139,9 @@ class module_mesh_render : public vsx_module
     glBindBufferARB
     (
       GL_ARRAY_BUFFER_ARB,
-      vbo_id_vertex_normals_texcoords[0]
+      vbo_id_vertex_normals_texcoords
     );
-    if (!glIsBufferARB(vbo_id_vertex_normals_texcoords[0]))
+    if (!glIsBufferARB(vbo_id_vertex_normals_texcoords))
     {
       return false;
     }
@@ -249,132 +240,7 @@ class module_mesh_render : public vsx_module
     }*/
     create_vbo
     (
-      vbo_id_draw_indices[0],
-      (*mesh)->data->faces.get_pointer(),
-      (*mesh)->data->faces.get_sizeof(),
-      GL_ELEMENT_ARRAY_BUFFER_ARB,
-      GL_STATIC_DRAW_ARB
-    );
-
-    glGetBufferParameterivARB(GL_ELEMENT_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize);
-    //printf("index array in vbo: %d bytes\n", bufferSize);
-    //used_memory += bufferSize;
-    //printf("total VBO memory used: %d bytes\n", used_memory);
-    current_num_faces = (*mesh)->data->faces.size();
-    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
-
-
-    offset_normals = 0;
-    offset_vertices = 0;
-    offset_texcoords = 0;
-    offset_vertex_colors = 0;
-    offset = 0;
-
-    // bind the vertex, normals buffer for use
-    glBindBufferARB
-    (
-      GL_ARRAY_BUFFER_ARB,
-      vbo_id_vertex_normals_texcoords[1]
-    );
-    if (!glIsBufferARB(vbo_id_vertex_normals_texcoords[1]))
-    {
-      return false;
-    }
-    //-----------------------------------------------------------------------
-    // allocate the buffer
-    glBufferDataARB(
-      GL_ARRAY_BUFFER_ARB,
-      (*mesh)->data->vertex_normals.get_sizeof()
-      +
-      (*mesh)->data->vertices.get_sizeof()
-      +
-      (*mesh)->data->vertex_tex_coords.get_sizeof()
-      +
-      (*mesh)->data->vertex_colors.get_sizeof()+10
-      ,
-      0,
-      draw_type//GL_STATIC_DRAW_ARB // only static draw
-    );
-
-    //-----------------------------------------------------------------------
-    // inject the different arrays
-    // 1: vertex normals ----------------------------------------------------
-    if ( (*mesh)->data->vertex_normals.size() )
-    {
-      offset_normals = offset;
-      glBufferSubDataARB
-      (
-        GL_ARRAY_BUFFER_ARB,
-        offset,
-        (*mesh)->data->vertex_normals.get_sizeof(),
-        (*mesh)->data->vertex_normals.get_pointer()
-      );
-      offset += (*mesh)->data->vertex_normals.get_sizeof();
-      //printf("offset after vertex normals: %d\n", offset);
-    }
-
-    // 2: texture coordinates -----------------------------------------------
-    if ( (*mesh)->data->vertex_tex_coords.size() )
-    {
-      offset_texcoords = offset;
-      glBufferSubDataARB
-      (
-        GL_ARRAY_BUFFER_ARB,
-        offset,
-        (*mesh)->data->vertex_tex_coords.get_sizeof(),
-        (*mesh)->data->vertex_tex_coords.get_pointer()
-      );
-      offset += (*mesh)->data->vertex_tex_coords.get_sizeof();
-      //printf("offset after texcoords: %d\n", offset);
-    }
-
-    // 3: optional: vertex color coordinates -----------------------------------------------
-    if ( (*mesh)->data->vertex_colors.size() )
-    {
-      offset_vertex_colors = offset;
-      glBufferSubDataARB
-      (
-        GL_ARRAY_BUFFER_ARB,
-        offset,
-        (*mesh)->data->vertex_colors.get_sizeof(),
-        (*mesh)->data->vertex_colors.get_pointer()
-      );
-      offset += (*mesh)->data->vertex_colors.get_sizeof();
-      //printf("offset after vertex colors: %d\n", offset);
-    }
-
-    // 4: vertices ----------------------------------------------------------
-    offset_vertices = offset;
-    glBufferSubDataARB
-    (
-      GL_ARRAY_BUFFER_ARB,
-      offset,
-      (*mesh)->data->vertices.get_sizeof(),
-      (*mesh)->data->vertices.get_pointer()
-    );
-    offset += (*mesh)->data->vertices.get_sizeof();
-    current_num_vertices = (*mesh)->data->vertices.size();
-    //printf("offset after vertices: %d\n", offset);
-
-    //-----------------------------------------------------------------------
-
-    glGetBufferParameterivARB(GL_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize);
-    //printf("vertex and normal array in vbo: %d bytes\n", bufferSize);
-
-    // unbind the array buffer
-    glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-
-    // create VBO for index array
-    // Target of this VBO is GL_ELEMENT_ARRAY_BUFFER_ARB and usage is GL_STATIC_DRAW_ARB
-    /*for (size_t fi = 0; fi < (*mesh)->data->faces.size(); fi++ )
-    {
-      (*mesh)->data->faces[fi].a = 0;
-      (*mesh)->data->faces[fi].b = 1;
-      (*mesh)->data->faces[fi].c = 2;
-    }*/
-    create_vbo
-    (
-      vbo_id_draw_indices[1],
+      vbo_id_draw_indices,
       (*mesh)->data->faces.get_pointer(),
       (*mesh)->data->faces.get_sizeof(),
       GL_ELEMENT_ARRAY_BUFFER_ARB,
@@ -394,25 +260,21 @@ class module_mesh_render : public vsx_module
 
   void destroy_vbo()
   {
-    if (!vbo_id_vertex_normals_texcoords[0])
+    if (!vbo_id_vertex_normals_texcoords)
       return;
 
-    glDeleteBuffersARB(1, &vbo_id_draw_indices[0]);
-    glDeleteBuffersARB(1, &vbo_id_vertex_normals_texcoords[0]);
+    glDeleteBuffersARB(1, &vbo_id_draw_indices);
+    glDeleteBuffersARB(1, &vbo_id_vertex_normals_texcoords);
 
-    glDeleteBuffersARB(1, &vbo_id_draw_indices[1]);
-    glDeleteBuffersARB(1, &vbo_id_vertex_normals_texcoords[1]);
 
-    vbo_id_vertex_normals_texcoords[0] = 0;
-    vbo_id_vertex_normals_texcoords[1] = 0;
-    vbo_id_draw_indices[0] = 0;
-    vbo_id_draw_indices[1] = 0;
+    vbo_id_vertex_normals_texcoords = 0;
+    vbo_id_draw_indices = 0;
   }
 
 
   bool check_if_need_to_reinit_vbo(GLuint draw_type)
   {
-    if (!vbo_id_vertex_normals_texcoords[0])
+    if (!vbo_id_vertex_normals_texcoords)
       return true;
 
     if (current_num_vertices != (*mesh)->data->vertices.size() ) return true;
@@ -509,10 +371,8 @@ public:
     offset_texcoords = 0;
     offset_vertex_colors = 0;
     // vbo handles
-    vbo_id_vertex_normals_texcoords[0] = 0;
-    vbo_id_vertex_normals_texcoords[1] = 0;
-    vbo_id_draw_indices[0] = 0;
-    vbo_id_draw_indices[1] = 0;
+    vbo_id_vertex_normals_texcoords = 0;
+    vbo_id_draw_indices = 0;
     // current - state - used to see if anything has changed
     current_vbo_draw_type = 0;
     current_num_vertices = 0;
@@ -604,7 +464,7 @@ public:
     glBindBufferARB
     (
       GL_ARRAY_BUFFER_ARB,
-      vbo_id_vertex_normals_texcoords[cur_vbo_index]
+      vbo_id_vertex_normals_texcoords
     );
 
     // enable vertex colors
@@ -649,7 +509,7 @@ public:
     glBindBufferARB
     (
       GL_ELEMENT_ARRAY_BUFFER_ARB,
-      vbo_id_draw_indices[cur_vbo_index]
+      vbo_id_draw_indices
     );
 
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -788,16 +648,12 @@ public:
       return;
     }
 
-    if (cur_vbo_index == 0)
-      cur_vbo_index = 1;
-      else
-      cur_vbo_index = 0;
 
     // bind the vertex, normals buffer for use
     glBindBufferARB
     (
       GL_ARRAY_BUFFER_ARB,
-      vbo_id_vertex_normals_texcoords[cur_vbo_index]
+      vbo_id_vertex_normals_texcoords
     );
 
     // if buffer type is "DYNAMIC_DRAW", upload new data
@@ -1006,22 +862,19 @@ public:
       return;
     }
 
-    if (!enable_client_arrays_vbo()) return;
+    if (!enable_client_arrays_vbo())
+      return;
 
     if (gl_errors.size() > 0)
-    {
       return;
-    }
 
-      perform_draw();
+    perform_draw();
 
     cleanup_successful_rendering();
   }
 
   void stop()
   {
-    #ifndef VSXU_OPENGL_ES
     destroy_vbo();
-    #endif
   }
 };

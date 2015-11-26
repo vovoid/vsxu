@@ -191,6 +191,9 @@ inline void upload_cube(vsx_texture_gl* texture_gl, vsx_texture_data* texture_da
   if (texture_data->channels == 4)
     source_format = GL_RGBA;
 
+  if (source_format == 0)
+    VSX_ERROR_RETURN("Source format not set");
+
   // source type
   GLenum source_type = 0;
   if (texture_data->storage_format == vsx_texture_data::byte_storage)
@@ -199,6 +202,9 @@ inline void upload_cube(vsx_texture_gl* texture_gl, vsx_texture_data* texture_da
   if (texture_data->storage_format == vsx_texture_data::float_storage)
     source_type = GL_FLOAT;
 
+  if (source_type == 0)
+    VSX_ERROR_RETURN("Source type not set");
+
   // target format
   GLint target_format = 0;
   if (texture_data->channels == 3)
@@ -206,6 +212,9 @@ inline void upload_cube(vsx_texture_gl* texture_gl, vsx_texture_data* texture_da
 
   if (texture_data->channels == 4)
     target_format = GL_RGBA; // GL_COMPRESSED_RGB_ARB
+
+  if (target_format == 0)
+    VSX_ERROR_RETURN("Target format not set");
 
   GLenum sides[] = {
     GL_TEXTURE_CUBE_MAP_NEGATIVE_X_ARB,
@@ -233,33 +242,35 @@ inline void upload_cube(vsx_texture_gl* texture_gl, vsx_texture_data* texture_da
   texture_gl->uploaded_to_gl = true;
 }
 
-inline void upload_bitmap_2d(vsx_texture_gl* texture_gl, vsx_bitmap* vbitmap, bool mipmaps = false, bool upside_down = true)
+inline void upload_bitmap_2d(vsx_texture_gl* texture_gl, vsx_bitmap* bitmap, bool mipmaps = false, bool upside_down = true)
 {
-  vsx_texture_data temp_data(VSX_TEXTURE_DATA_TYPE_2D, false);
-  temp_data.data[0] = vbitmap->data;
-  temp_data.channels = vbitmap->channels;
-  temp_data.width = vbitmap->width;
-  temp_data.height = vbitmap->height;
-  temp_data.mipmaps = mipmaps;
+  vsx_texture_data texture_data(VSX_TEXTURE_DATA_TYPE_2D, false);
+  texture_data.data[0] = bitmap->data;
+  texture_data.channels = bitmap->channels;
+  texture_data.width = bitmap->width;
+  texture_data.height = bitmap->height;
+  texture_data.mipmaps = mipmaps;
 
-  if (vbitmap->storage_format == vsx_bitmap::byte_storage)
-    temp_data.storage_format = vsx_texture_data::byte_storage;
+  if (bitmap->storage_format == vsx_bitmap::byte_storage)
+    texture_data.storage_format = vsx_texture_data::byte_storage;
 
-  if (vbitmap->storage_format == vsx_bitmap::float_storage)
-    temp_data.storage_format = vsx_texture_data::float_storage;
+  if (bitmap->storage_format == vsx_bitmap::float_storage)
+    texture_data.storage_format = vsx_texture_data::float_storage;
 
   if (upside_down)
   {
-    vsx_texture_data_transform::get_instance()->flip_vertically(&temp_data);
-    vbitmap->data = temp_data.data[0];
+    vsx_texture_data_transform::get_instance()->flip_vertically(&texture_data);
+    bitmap->data = texture_data.data[0];
   }
 
   upload_2d(
     texture_gl,
-    &temp_data
+    &texture_data
   );
 
-  temp_data.data[0] = 0;
+  // ensure that ~vsx_texture_data()
+  // does not free, memory is owned by bitmap
+  texture_data.data[0] = 0;
 }
 
 

@@ -9,6 +9,7 @@ class vsx_texture_data_transform
   template < typename T = char >
   inline void split_into_cubemap_by_type(vsx_texture_data* data)
   {
+    void* source_data = data->data[0];
     data->data[0] = malloc( sizeof(T) * (data->height * data->height) );
     data->data[1] = malloc( sizeof(T) * (data->height * data->height) );
     data->data[2] = malloc( sizeof(T) * (data->height * data->height) );
@@ -26,7 +27,7 @@ class vsx_texture_data_transform
           ,
 
           // source
-          (T*)&((T*)data->data[0])[ data->width * y ] // row offset
+          (T*)&((T*)source_data)[ data->width * y ] // row offset
           +
           data->height * side_offset,            // horiz offset
 
@@ -34,6 +35,7 @@ class vsx_texture_data_transform
         );
       }
     }
+    free(source_data);
   }
 
 public:
