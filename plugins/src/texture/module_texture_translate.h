@@ -34,7 +34,9 @@ void module_texture_translate::declare_params(vsx_module_param_list& in_paramete
 {
   loading_done = true;
   texture_info_param_in = (vsx_module_param_texture*)in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE, "texture_in");
-  texture_out = new vsx_texture;
+
+  texture_out = 0x0;
+
   translation_vec = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "translation_vector");
   translation_vec->set(0.0f, 0);
   translation_vec->set(0.0f, 1);
@@ -51,8 +53,12 @@ void module_texture_translate::run()
     return;
   }
 
+  if (!texture_out)
+    texture_out = new vsx_texture;
+
   // copy texture info
-  (*texture_out->texture_data) = (*(*texture_in)->texture_data);
+  (*texture_out->texture_gl) = (*(*texture_in)->texture_gl);
+
   float x = translation_vec->get(0);
   float y = translation_vec->get(1);
   float z = translation_vec->get(2);
@@ -65,7 +71,8 @@ void module_texture_translate::run()
 
 void module_texture_translate::on_delete()
 {
-  delete texture_out;
+  if (texture_out)
+    delete texture_out;
 }
 
 

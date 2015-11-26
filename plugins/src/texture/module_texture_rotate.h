@@ -47,7 +47,8 @@ void module_texture_rotate::declare_params(vsx_module_param_list& in_parameters,
 {
   texture_info_param_in = (vsx_module_param_texture*)in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE, "texture_in");
   loading_done = true;
-  texture_out = new vsx_texture;
+
+  texture_out = 0x0;
 
   rotation_axis = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "rotation_axis");
   rotation_axis->set(0, 0);
@@ -68,7 +69,11 @@ void module_texture_rotate::run()
     return;
   }
 
-  (*texture_out->texture_data) = (*(*texture_in)->texture_data);
+  if (!texture_out)
+    texture_out = new vsx_texture;
+
+  // copy texture info
+  (*texture_out->texture_gl) = (*(*texture_in)->texture_gl);
 
   float x = rotation_axis->get(0);
   float y = rotation_axis->get(1);
@@ -83,5 +88,6 @@ void module_texture_rotate::run()
 
 void module_texture_rotate::on_delete()
 {
-  delete texture_out;
+  if (texture_out)
+    delete texture_out;
 }
