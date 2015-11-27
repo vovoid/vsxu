@@ -116,7 +116,7 @@ void vsx_widget_controller_ab::init()
   int_rot.M[14] = 0.0f;
   int_rot.M[15] = 1.0f;
 
-  mtex = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "controllers/sphere.png", vsxf::get_instance(), true);
+  mtex = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "controllers/sphere.png", vsxf::get_instance(), true, true);
 
   generate_menu();
   menu->init();

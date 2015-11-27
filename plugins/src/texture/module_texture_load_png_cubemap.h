@@ -4,7 +4,6 @@
 class module_texture_load_png_cubemap : public vsx_module
 {
   // in
-  float time;
   vsx_module_param_resource* filename_in;
   vsx_module_param_int* reload_in;
 

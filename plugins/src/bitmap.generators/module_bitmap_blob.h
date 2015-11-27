@@ -203,7 +203,7 @@ public:
         bitm_timestamp = bitmap.timestamp;
         if (c_type == 1)
         {
-          vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl,&bitmap, true);
+          vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl,&bitmap, false, true);
           texture_out->set(texture);
         }
         bitmap_out->set(&bitmap);
@@ -257,7 +257,7 @@ public:
       if (bitmap.valid)
       {
         texture->texture_gl->init_opengl_texture_2d();
-        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitmap,true);
+        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitmap, false, true);
       }
       texture_out->set(texture);
     }

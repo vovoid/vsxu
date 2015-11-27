@@ -247,7 +247,7 @@ inline void upload_cube(vsx_texture_gl* texture_gl, vsx_texture_data* texture_da
   texture_gl->uploaded_to_gl = true;
 }
 
-inline void upload_bitmap_2d(vsx_texture_gl* texture_gl, vsx_bitmap* bitmap, bool mipmaps = false, bool upside_down = true)
+inline void upload_bitmap_2d(vsx_texture_gl* texture_gl, vsx_bitmap* bitmap, bool mipmaps, bool flip_vertical)
 {
   vsx_texture_data texture_data(VSX_TEXTURE_DATA_TYPE_2D, false);
   texture_data.data[0] = bitmap->data;
@@ -262,7 +262,7 @@ inline void upload_bitmap_2d(vsx_texture_gl* texture_gl, vsx_bitmap* bitmap, boo
   if (bitmap->storage_format == vsx_bitmap::float_storage)
     texture_data.storage_format = vsx_texture_data::float_storage;
 
-  if (upside_down && !bitmap->flipped_vertically)
+  if (flip_vertical && !bitmap->flipped_vertically)
   {
     vsx_texture_data_transform::get_instance()->flip_vertically(&texture_data);
     bitmap->data = texture_data.data[0];

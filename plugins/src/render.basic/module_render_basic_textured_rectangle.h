@@ -210,12 +210,6 @@ public:
       return;
     }
 
-    if (!((*t_inf)->is_valid()))
-    {
-      render_result->set(0);
-      return;
-    }
-
 
     float obj_size = size->get();
 

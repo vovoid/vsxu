@@ -72,9 +72,6 @@ public:
     }
     float local_alpha = alpha->get();
 
-    if (!((*tex)->is_valid()))
-      return;
-
     float cx = position->get(0);
     float cy = position->get(1);
     float cz = position->get(2);

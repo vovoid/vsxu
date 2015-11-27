@@ -205,7 +205,7 @@ public:
         if (c_type == 1)
         {
           texture->texture_gl->init_opengl_texture_2d();
-          vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm, true);
+          vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm, false, true);
           texture_out->set(texture);
         }
         bitmap_out->set(&bitm);
@@ -261,7 +261,7 @@ public:
       if (bitm.valid)
       {
         texture->texture_gl->init_opengl_texture_2d();
-        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm,true);
+        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm, false, true);
       }
       texture_out->set(texture);
     }

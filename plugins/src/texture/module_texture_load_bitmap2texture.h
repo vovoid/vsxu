@@ -60,7 +60,7 @@ public:
     if (bitm->valid && bitm_timestamp != bitm->timestamp)
     {
       bitm_timestamp = bitm->timestamp;
-      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, bitm, mipmaps_in->get() == 0);
+      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, bitm, mipmaps_in->get() == 0, true);
       texture_out->set(texture);
     }
   }
@@ -79,7 +79,7 @@ public:
 
     bitm = *(bitmap_in->get_addr());
     if (bitm) {
-      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, bitm, mipmaps_in->get() == 0);
+      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, bitm, mipmaps_in->get() == 0, true);
       texture_out->set(texture);
     }
   }

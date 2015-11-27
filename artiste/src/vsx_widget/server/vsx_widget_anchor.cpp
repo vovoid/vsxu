@@ -1608,9 +1608,9 @@ void vsx_widget_anchor::init()
 
   title = name+":"+p_type;
 
-  mtex_d = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "datatypes/"+p_type+".png", vsxf::get_instance(), false );
-  mtex_blob = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/highlight_blob.png", vsxf::get_instance(), false );
-  mtex_blob_small = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", vsxf::get_instance(), false );
+  mtex_d = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "datatypes/"+p_type+".png", vsxf::get_instance(), false, true );
+  mtex_blob = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/highlight_blob.png", vsxf::get_instance(), false, true );
+  mtex_blob_small = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", vsxf::get_instance(), false, true );
   color.r = 1.0f;
   color.g = 1.0f;
   color.b = 1.0f;

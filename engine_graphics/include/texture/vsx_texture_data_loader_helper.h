@@ -3,16 +3,20 @@
 
 #include "vsx_texture_data_loader_png.h"
 #include "vsx_texture_data_loader_jpg.h"
+#include "vsx_texture_data_loader_tga.h"
 
 namespace vsx_texture_data_loader_helper
 {
-  inline vsx_texture* load(vsx_string<> filename, vsxf* filesystem, bool mipmaps)
+  inline vsx_texture* load(vsx_string<> filename, vsxf* filesystem, bool mipmaps, bool flip_vertical)
   {
     if (verify_filesuffix(filename, "png"))
-      return vsx_texture_data_loader_png::get_instance()->load(filename, filesystem, mipmaps);
+      return vsx_texture_data_loader_png::get_instance()->load(filename, filesystem, mipmaps, flip_vertical);
 
     if (verify_filesuffix(filename, "jpg"))
-      return vsx_texture_data_loader_jpg::get_instance()->load(filename, filesystem, mipmaps);
+      return vsx_texture_data_loader_jpg::get_instance()->load(filename, filesystem, mipmaps, flip_vertical);
+
+    if (verify_filesuffix(filename, "tga"))
+      return vsx_texture_data_loader_tga::get_instance()->load(filename, filesystem, mipmaps, flip_vertical);
 
     VSX_ERROR_RETURN_V("Unknown filetype",0x0);
   }
@@ -43,6 +47,12 @@ namespace vsx_texture_data_loader_helper
     if (verify_filesuffix(texture->filename,"jpg"))
     {
       vsx_texture_data_loader_jpg::get_instance()->destroy(texture);
+      return;
+    }
+
+    if (verify_filesuffix(texture->filename,"tga"))
+    {
+      vsx_texture_data_loader_tga::get_instance()->destroy(texture);
       return;
     }
   }

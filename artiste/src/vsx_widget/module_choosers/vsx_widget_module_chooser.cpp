@@ -655,7 +655,7 @@ void vsx_widget_ultra_chooser::build_tree() {
   treedraw->size.y = size.y;
   treedraw->pos = vsx_vector3<>(0.5f*size.x, 0.5f*size.y);
   treedraw->changeProjType(0);
-  treedraw->mtex = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "label.png", vsxf::get_instance(), true);
+  treedraw->mtex = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "label.png", vsxf::get_instance(), false, true);
 }
 
 void vsx_widget_ultra_chooser::reinit()

@@ -141,7 +141,7 @@ class module_texture_selector : public vsx_module
   int i_B_reverse;
   
   float i_A_mixLevel;
-  float i_B_mixLevel; 
+  float i_B_mixLevel;
 
   vsx_bitmap i_clear_bmp;
   vsx_bitmap_32bt* i_clear_bmp_data;
@@ -160,8 +160,8 @@ public:
 
   module_texture_selector()
     :
-      i_tex_output(0x0),
-      i_tex_blank(0x0)
+      i_tex_blank(0x0),
+      i_tex_output(0x0)
   {}
 
   //Initialise Data
@@ -694,7 +694,7 @@ public:
                           0x00000100 * i_clear_color[1]
                                      |
                           0x00000001 * i_clear_color[0];
-      vsx_texture_gl_loader::upload_bitmap_2d(i_tex_blank->texture_gl, &i_clear_bmp, true);
+      vsx_texture_gl_loader::upload_bitmap_2d(i_tex_blank->texture_gl, &i_clear_bmp, true, true);
 
       i_prev_clear_color[0] = clear_color->get(0);
       i_prev_clear_color[1] = clear_color->get(1);
@@ -712,7 +712,7 @@ public:
       i_tex_size = i_new_size;
       buf_output.reinit(i_tex_output, 8 << i_tex_size, 8 << i_tex_size, true, true, false, true, 0);
       buf_blank.reinit(i_tex_blank, 8 << i_tex_size, 8 << i_tex_size, true, true, false, true, 0);
-      vsx_texture_gl_loader::upload_bitmap_2d(i_tex_blank->texture_gl, &i_clear_bmp, true);
+      vsx_texture_gl_loader::upload_bitmap_2d(i_tex_blank->texture_gl, &i_clear_bmp, true, true);
     }
   }
 
@@ -754,7 +754,7 @@ public:
       buf_output.reinit(i_tex_output, 8 << i_tex_size, 8 << i_tex_size, true, true, false, true, 0);
       buf_blank.reinit(i_tex_blank, 8 << i_tex_size, 8 << i_tex_size, true, true, false, true, 0);
 
-      vsx_texture_gl_loader::upload_bitmap_2d(i_tex_blank->texture_gl, &i_clear_bmp, true);
+      vsx_texture_gl_loader::upload_bitmap_2d(i_tex_blank->texture_gl, &i_clear_bmp, true, true);
 
       i_tex_A = &i_tex_blank;
       i_tex_B = &i_tex_blank;

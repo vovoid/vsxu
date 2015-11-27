@@ -171,7 +171,7 @@ public:
           texture = new vsx_texture;
           texture->texture_gl->init_opengl_texture_2d();
         }
-        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm, true);
+        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm, true, true);
         texture_out->set(texture);
         texture_timestamp = bitm.timestamp;
       }

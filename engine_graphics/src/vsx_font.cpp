@@ -48,7 +48,7 @@ vsx_font_info* vsx_font::load(vsx_string<>font, vsxf* filesystem)
   {
     my_font_info->type = 0;
     vsx_string<> ss = base_path+font;
-    my_font_info->texture = vsx_texture_data_loader_png::get_instance()->load( base_path+font, filesystem, true );
+    my_font_info->texture = vsx_texture_data_loader_png::get_instance()->load( base_path+font, filesystem, true, true );
     ch = 16.0f/255.0f;
     cw = 10.0f/255.0f;
   }
@@ -85,7 +85,7 @@ void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsxf* filesystem)
 {
   if (f_info->type == 0)
   {
-    f_info->texture = vsx_texture_data_loader_png::get_instance()->load(base_path+font, filesystem, true);
+    f_info->texture = vsx_texture_data_loader_png::get_instance()->load(base_path+font, filesystem, true, true);
     return;
   }
 

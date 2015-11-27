@@ -480,7 +480,7 @@ void vsx_widget_connector_bezier::init()
   init_children();
 
 
-  mtex_blob = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", vsxf::get_instance() );
+  mtex_blob = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", vsxf::get_instance(), true, false );
   mtex_blob->upload_gl();
 
   constrained_x = false;

@@ -215,8 +215,8 @@ vsx_logo_intro::vsx_logo_intro() {
   logo_rot3 = 0.3;
   destroy_textures = true;
 
-  luna = vsx_texture_data_loader_jpg::get_instance()->load( PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo.jpg", vsxf::get_instance(), false );
-  luna_bkg = vsx_texture_data_loader_jpg::get_instance()->load(PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo_bkg.jpg",vsxf::get_instance(), false);
+  luna = vsx_texture_data_loader_jpg::get_instance()->load( PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo.jpg", vsxf::get_instance(), false, true );
+  luna_bkg = vsx_texture_data_loader_jpg::get_instance()->load( PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo_bkg.jpg",vsxf::get_instance(), false, true);
   timer.start();
 }
 

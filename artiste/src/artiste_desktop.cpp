@@ -438,7 +438,7 @@ vsx_widget_desktop::vsx_widget_desktop()
 
   ((vsx_widget_2d_console*)console)->set_destination(sv);
 
-  mtex = vsx_texture_data_loader_jpg::get_instance()->load(vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg", vsxf::get_instance(), true);
+  mtex = vsx_texture_data_loader_jpg::get_instance()->load(vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg", vsxf::get_instance(), true, true);
 
   k_focus = this;
   m_focus = this;

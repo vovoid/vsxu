@@ -179,7 +179,8 @@ void output(vsx_module_param_abs* param)
         texture = new vsx_texture;
         texture->texture_gl->init_opengl_texture_2d();
       }
-      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitmap, true);
+      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitmap, true, true);
+      pp->Data = (unsigned char*)bitmap.data;
       texture_out->set(texture);
       texture_timestamp = bitmap.timestamp;
     }
@@ -195,7 +196,7 @@ void stop() {
 
 void start() {
   texture->texture_gl->init_opengl_texture_2d();
-  vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitmap, true);
+  vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitmap, true, true);
   texture_out->set(texture);
 }
 

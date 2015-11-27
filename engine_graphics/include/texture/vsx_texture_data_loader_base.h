@@ -35,10 +35,10 @@ protected:
 
 public:
 
-  virtual vsx_texture* load(vsx_string<> filename, vsxf* filesystem, bool mipmaps = true) = 0;
-  virtual vsx_texture* load_thread(vsx_string<> filename, vsxf* filesystem, bool mipmaps = true) = 0;
-  virtual vsx_texture* load_cube(vsx_string<> filename, vsxf* filesystem, bool mipmaps = true) = 0;
-  virtual vsx_texture* load_cube_thread(vsx_string<> filename, vsxf* filesystem, bool mipmaps = true) = 0;
+  virtual vsx_texture* load(vsx_string<> filename, vsxf* filesystem, bool mipmaps, bool flip_vertical) = 0;
+  virtual vsx_texture* load_thread(vsx_string<> filename, vsxf* filesystem, bool mipmaps, bool flip_vertical) = 0;
+  virtual vsx_texture* load_cube(vsx_string<> filename, vsxf* filesystem, bool mipmaps) = 0;
+  virtual vsx_texture* load_cube_thread(vsx_string<> filename, vsxf* filesystem, bool mipmaps) = 0;
 
   void destroy(vsx_texture* &texture)
   {

@@ -387,8 +387,6 @@ public:
       return;
     }
 
-    if ( !((*tex)->is_valid()))
-      return;
 
 
     if ( (*tex)->get_transform() )

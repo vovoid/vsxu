@@ -310,7 +310,7 @@ public:
 
       if (count_finished == 6) {
         for (int i = 0; i < 6; ++i) {
-          vsx_texture_gl_loader::upload_bitmap_2d(result_tex[i].texture_gl, &result_bitm[i]);
+          vsx_texture_gl_loader::upload_bitmap_2d(result_tex[i].texture_gl, &result_bitm[i], false, true);
           result_bitm[i].valid = true;
         }
 
@@ -425,7 +425,7 @@ public:
     }
     for (int i = 0; i < 6; ++i) {
       result_tex[i].texture_gl->init_opengl_texture_2d();
-      vsx_texture_gl_loader::upload_bitmap_2d(result_tex[i].texture_gl, &result_bitm[i]);
+      vsx_texture_gl_loader::upload_bitmap_2d(result_tex[i].texture_gl, &result_bitm[i], false, true);
     }
   }
 

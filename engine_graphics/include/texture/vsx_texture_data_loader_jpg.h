@@ -74,23 +74,23 @@ public:
 #define SPLIT_CUBEMAP_YES true
 #define SPLIT_CUBEMAP_NO false
 
-  vsx_texture* load(vsx_string<>filename, vsxf* filesystem, bool mipmaps = true)
+  vsx_texture* load(vsx_string<>filename, vsxf* filesystem, bool mipmaps, bool flip_vertical)
   {
     vsx_texture* texture = new vsx_texture(true);
     if (handle_cache(filename, texture, VSX_TEXTURE_DATA_TYPE_2D))
       return texture;
 
-    load_jpg(filename, filesystem, texture, mipmaps, THREAD_NO, FLIP_VERTICAL_YES, SPLIT_CUBEMAP_NO);
+    load_jpg(filename, filesystem, texture, mipmaps, THREAD_NO, flip_vertical, SPLIT_CUBEMAP_NO);
     return texture;
   }
 
-  vsx_texture* load_thread(vsx_string<> filename, vsxf* filesystem, bool mipmaps = true)
+  vsx_texture* load_thread(vsx_string<> filename, vsxf* filesystem, bool mipmaps, bool flip_vertical)
   {
     vsx_texture* texture = new vsx_texture(true);
     if (handle_cache(filename, texture, VSX_TEXTURE_DATA_TYPE_2D))
       return texture;
 
-    load_jpg(filename, filesystem, texture, mipmaps, THREAD_YES, FLIP_VERTICAL_YES, SPLIT_CUBEMAP_NO);
+    load_jpg(filename, filesystem, texture, mipmaps, THREAD_YES, flip_vertical, SPLIT_CUBEMAP_NO);
     return texture;
   }
 

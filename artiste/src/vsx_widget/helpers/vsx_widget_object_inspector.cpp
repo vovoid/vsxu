@@ -51,7 +51,7 @@
 void vsx_window_object_inspector::draw_2d() {
 	vsx_widget_window::draw_2d();
 
-  if (view_type == 1)
+  if (view_type == 1 && texture)
   {
     pos_.y = pos.y+size.y-font_size;
     size_.y = size.y-font_size-dragborder;
@@ -59,8 +59,6 @@ void vsx_window_object_inspector::draw_2d() {
     size_.x = size.x-dragborder*2;
     title = filename_loaded+" "+vsx_string_helper::i2s((int)texture->texture_data->width)+"x"+vsx_string_helper::i2s((int)texture->texture_data->height);
     glColor4f(1,1,1,1);
-    if (texture->is_valid())
-    {
       texture->bind();
         glBegin(GL_QUADS);
           glTexCoord2i(0, 1);
@@ -73,7 +71,6 @@ void vsx_window_object_inspector::draw_2d() {
           glVertex3f(pos_.x,pos_.y-size_.y,0);
         glEnd();
       texture->_bind();
-    }
     float screenaspect = screen_x/screen_y;
 
     if (texture_loaded == false)
@@ -196,6 +193,7 @@ void vsx_window_object_inspector::command_process_back_queue(vsx_command_s *t) {
 vsx_window_object_inspector::vsx_window_object_inspector()
 {
   vsx_widget_window::init();
+  texture = 0;
   inspected  = 0;
   init_run = false;
   init_run = true;
@@ -278,7 +276,7 @@ void vsx_window_object_inspector::load_file(vsx_string<>filename)
   if (texture)
     vsx_texture_data_loader_helper::destroy(texture);
 
-  texture = vsx_texture_data_loader_helper::load( filename, vsxf::get_instance(), false );
+  texture = vsx_texture_data_loader_helper::load( filename, vsxf::get_instance(), false, true );
 
   view_type = 1;
   texture_loaded = false;

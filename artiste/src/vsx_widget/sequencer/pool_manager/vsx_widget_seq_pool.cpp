@@ -79,7 +79,7 @@ public:
     editor->mirror_mouse_up_object = this;
     editor->enable_syntax_highlighting = false;
 
-    mtex_blob = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", vsxf::get_instance(), true);
+    mtex_blob = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", vsxf::get_instance(), true, false);
     set_render_type(render_2d);
   }
 

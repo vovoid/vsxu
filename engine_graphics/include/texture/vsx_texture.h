@@ -58,17 +58,6 @@ public:
     return transform_obj;
   }
 
-  inline bool is_valid()
-  {
-    if (!texture_gl)
-      return false;
-
-    if (!texture_gl->gl_id)
-      return false;
-
-    return true;
-  }
-
   // use this to load/unload the texture from vram
   VSX_ENGINE_GRAPHICS_DLLIMPORT void upload_gl();
   VSX_ENGINE_GRAPHICS_DLLIMPORT void unload_gl();

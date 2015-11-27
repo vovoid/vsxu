@@ -255,8 +255,6 @@ public:
     if (!tex)
       return;
 
-    if (!((*tex)->is_valid()))
-      return;
 
     glMatrixMode(GL_TEXTURE);
     glPushMatrix();
