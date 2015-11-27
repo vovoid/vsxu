@@ -1,3 +1,4 @@
+#include <texture/vsx_texture.h>
 #include <texture/vsx_texture_data_loader_png.h>
 
 class module_texture_load_png_cubemap : public vsx_module
@@ -64,6 +65,12 @@ public:
 
   void run()
   {
+    if (texture && texture->texture_data->data_ready)
+    {
+      loading_done = true;
+      message = "module||ok";
+    }
+
     if (!(current_filename != filename_in->get() || reload_in->get() == 1))
       return;
 
@@ -85,9 +92,6 @@ public:
 
     texture = vsx_texture_data_loader_png::get_instance()->load_cube_thread(current_filename, engine->filesystem, false);
     texture_out->set(texture);
-
-    message = "module||ok";
-    loading_done = true;
   }
 
   void output(vsx_module_param_abs* param)

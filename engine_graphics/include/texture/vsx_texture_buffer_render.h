@@ -185,7 +185,7 @@ public:
       alpha,
       multisample,
       linear_filter,
-          existing_depth_texture_id
+      existing_depth_texture_id
     );
   }
 

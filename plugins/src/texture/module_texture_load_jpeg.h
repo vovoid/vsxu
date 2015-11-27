@@ -9,7 +9,6 @@ class module_texture_load_jpeg : public vsx_module
   vsx_module_param_texture* texture_out;
 
   // internal
-//  float time;
   vsx_texture* texture;
 
   // threading stuff
@@ -64,6 +63,7 @@ class module_texture_load_jpeg : public vsx_module
   }
   
 public:
+
   int m_type;
 
   vsx_string<>current_filename;
