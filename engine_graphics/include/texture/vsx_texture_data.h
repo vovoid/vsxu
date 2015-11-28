@@ -26,52 +26,43 @@
 #define VSX_TEXTURE_DATA_H
 
 #include <stdlib.h>
-#define VSX_TEXTURE_DATA_TYPE_2D 1
-#define VSX_TEXTURE_DATA_TYPE_CUBE 2
+
+#include "vsx_texture_data_hint.h"
 
 class vsx_texture_data
 {
 public:
+  vsx_string<> filename;
 
-  size_t type;
+  // graphics layer hints -----------------------------------------------------
+  vsx_texture_data_hint hint;
 
-  unsigned int width;
-  unsigned int height;
-  unsigned int depth;
-  bool alpha;
-  unsigned int channels;
-  bool mipmaps;
+  // geometrical / color ------------------------------------------------------
+  unsigned int width = 0;
+  unsigned int height = 0;
+  unsigned int depth = false;
+  bool alpha = false;
+  unsigned int channels = 0;
 
+  // storage ------------------------------------------------------------------
   enum channel_storage_type_t
   {
     byte_storage= 0,
     float_storage = 1
-  } storage_format;
+  } storage_format = byte_storage;
 
-  bool compressed_data;
+  void *data[6] = {0,0,0,0,0,0};
+  volatile size_t data_ready = 0;
+  bool compressed_data = false;
 
 
-  void *data[6];
-  volatile size_t data_ready;
+  // cache information --------------------------------------------------------
+  bool attached_to_cache;
+  int references = 0;
 
-  bool attached_to_cache; // not part of cache
-  int references; // references in cache
-
-  vsx_texture_data(size_t n_type, bool is_attached_to_cache)
+  vsx_texture_data(bool is_attached_to_cache)
     :
-    type(n_type),
-    width(0),
-    height(0),
-    depth(false),
-    alpha(false),
-    channels(0),
-    mipmaps(0),
-    storage_format(byte_storage),
-    compressed_data(false),
-    data{0,0,0,0,0,0},
-    data_ready(0),
-    attached_to_cache(is_attached_to_cache),
-    references(0)
+    attached_to_cache(is_attached_to_cache)
   {
   }
 

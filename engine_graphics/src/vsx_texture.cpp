@@ -47,25 +47,21 @@ void vsx_texture::upload_gl()
     return;
 
   // Data uploaded elsewhere
-  if (!texture_data)
+  if (!texture_gl->texture_data)
     return;
 
-  if (! __sync_fetch_and_add(&(texture_data->data_ready), 0))
+  if (! __sync_fetch_and_add(&(texture_gl->texture_data->data_ready), 0))
     return;
 
-  switch (texture_data->type)
+  if (texture_gl->texture_data->hint.split_cubemap)
   {
-    case VSX_TEXTURE_DATA_TYPE_2D:
-      texture_gl->init_opengl_texture_2d();
-      vsx_texture_gl_loader::upload_2d(texture_gl, texture_data);
-    break;
-
-    case VSX_TEXTURE_DATA_TYPE_CUBE:
-      vsx_printf(L"uploading cube map: %s\n", filename.c_str());
-      texture_gl->init_opengl_texture_cubemap();
-      vsx_texture_gl_loader::upload_cube(texture_gl, texture_data);
-    break;
+    texture_gl->init_opengl_texture_cubemap();
+    vsx_texture_gl_loader::upload_cube(texture_gl);
+    return;
   }
+
+  texture_gl->init_opengl_texture_2d();
+  vsx_texture_gl_loader::upload_2d(texture_gl);
 }
 
 void vsx_texture::unload_gl()

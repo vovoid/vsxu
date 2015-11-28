@@ -47,7 +47,7 @@ public:
 
     if (data->storage_format == vsx_texture_data::float_storage)
     {
-      GLfloat* data2 = new GLfloat[width * height * channels];
+      GLfloat* data2 = (GLfloat*)malloc(sizeof(GLfloat) * width * height * channels);
       int dy = 0;
       int sxbpp = width * channels;
       for (int y = height-1; y >= 0; --y)
@@ -61,7 +61,7 @@ public:
       return;
     }
 
-    unsigned char* data2 = new unsigned char[width * height * channels];
+    unsigned char* data2 = (unsigned char*)malloc(width * height * channels);
     int dy = 0;
     int stride_x = width * channels;
     for (int y = height-1; y >= 0; --y)
@@ -69,9 +69,7 @@ public:
       int dysxbpp = dy * stride_x;
       int ysxbpp = y * stride_x;
       for (size_t x = 0; x < width*channels; ++x)
-      {
         data2[dysxbpp + x] = ((unsigned char*)data->data[0])[ysxbpp + x];
-      }
       ++dy;
     }
     free(data->data[0]);

@@ -633,10 +633,31 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
 
       component_type = parts[0];
 
-      mtex = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "component_types/"+component_type+".png", vsxf::get_instance(), true, true);
+      mtex = vsx_texture_loader::load(
+        vsx_widget_skin::get_instance()->skin_path_get() + "component_types/"+component_type+".png",
+        vsxf::get_instance(),
+        true, // threaded
+        vsx_texture_gl_hint(
+         true, // flip vertically
+         false, // data split cube map
+         true, // mipmaps
+         true // linear interpolate
+        )
+      );
+
       mtex_overlay = 0x0;
       if (component_type == "macro")
-        mtex_overlay = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() +"component_types/"+component_type+"_overlay.png", vsxf::get_instance(), true, true);
+        mtex_overlay = vsx_texture_loader::load(
+          vsx_widget_skin::get_instance()->skin_path_get() +"component_types/"+component_type+"_overlay.png",
+          vsxf::get_instance(),
+          true, // threaded
+          vsx_texture_gl_hint(
+           true, // flip vertically
+           false, // data split cube map
+           true, // mipmaps
+           true // linear interpolate
+          )
+        );
 
       if (!internal_critical)
       {
@@ -719,7 +740,17 @@ void vsx_widget_component::init()
   transform_state = 0;
   size_min.x = 0.1f;
 
-  mtex_blob = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", vsxf::get_instance(), true, false);
+  mtex_blob = vsx_texture_loader::load(
+    vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
+    vsxf::get_instance(),
+    true, // threaded
+    vsx_texture_gl_hint(
+     true, // flip vertically
+     false, // data split cube map
+     false, // mipmaps
+     true // linear interpolate
+    )
+  );
 }
 
 void vsx_widget_component::reinit()
@@ -1673,9 +1704,9 @@ void vsx_widget_component::before_delete() {
 
 void vsx_widget_component::on_delete()
 {
-  vsx_texture_data_loader_helper::destroy( mtex );
-  vsx_texture_data_loader_helper::destroy( mtex_blob );
+  vsx_texture_loader::destroy( mtex );
+  vsx_texture_loader::destroy( mtex_blob );
   if (mtex_overlay)
-    vsx_texture_data_loader_helper::destroy( mtex_overlay );
+    vsx_texture_loader::destroy( mtex_overlay );
 
 }

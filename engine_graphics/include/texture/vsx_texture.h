@@ -40,11 +40,8 @@ class vsx_texture
 
 public:
 
-  vsx_string<> filename;
-
   // transformation object
   vsx_texture_transform_base* transform_obj;
-  vsx_texture_data* texture_data;
   vsx_texture_gl* texture_gl;
 
 
@@ -71,27 +68,20 @@ public:
   vsx_texture(bool attached_to_cache = false)
     :
       transform_obj(0x0),
-      texture_data(0x0),
       texture_gl(0x0)
   {
     if (!attached_to_cache)
-    {
       texture_gl = new vsx_texture_gl(false);
-      texture_data = new vsx_texture_data(0, false);
-    }
   }
 
   ~vsx_texture()
   {
-    if (texture_data && !texture_data->attached_to_cache)
-      delete texture_data;
-
     if (texture_gl && !texture_gl->attached_to_cache)
       delete texture_gl;
   }
 };
 
 #include "vsx_texture_transform_helper.h"
-#include "vsx_texture_data_loader_helper.h"
+#include "vsx_texture_loader.h"
 
 #endif

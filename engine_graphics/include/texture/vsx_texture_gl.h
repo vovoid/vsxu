@@ -26,28 +26,30 @@
 #define VSX_TEXTURE_GL_H
 
 #include <debug/vsx_error.h>
+#include "vsx_texture_gl_hint.h"
 
 class vsx_texture_gl
 {
 public:
-  // handle and type
-  unsigned int gl_id;
-  unsigned int gl_type;
+  vsx_texture_gl_hint hint;
+  vsx_texture_data* texture_data;
 
-  bool uploaded_to_gl;
+  // handle and type
+  unsigned int gl_id = 0;
+  unsigned int gl_type = 0;
+
+  bool uploaded_to_gl = false;
 
   // cache markers
   bool attached_to_cache;
-  int references;
+  int references = 0;
 
   vsx_texture_gl(bool is_attached_to_cache)
     :
-    gl_id(0),
-    gl_type(0),
-    uploaded_to_gl(false),
-    attached_to_cache(is_attached_to_cache),
-    references(0)
+    attached_to_cache(is_attached_to_cache)
   {
+    if (!attached_to_cache)
+      texture_data = new vsx_texture_data(false);
   }
 
   void init_opengl_texture_1d()

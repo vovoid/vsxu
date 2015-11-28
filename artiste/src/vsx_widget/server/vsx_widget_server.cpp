@@ -265,7 +265,18 @@ void vsx_widget_server::init()
   sequencer = 0;
   seq_pool = 0; // TODO: remove the auto-init
 
-  mtex = vsx_texture_data_loader_helper::load( vsx_widget_skin::get_instance()->skin_path_get() +"server.png", vsxf::get_instance(), true, true );
+  mtex = vsx_texture_loader::load(
+    vsx_widget_skin::get_instance()->skin_path_get() + "server.png",
+    vsxf::get_instance(),
+    true, // threaded
+    vsx_texture_gl_hint(
+     true, // flip vertically
+     false, // data split cube map
+     true, // mipmaps
+     true // linear interpolate
+    )
+  );
+
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
     color.a = 1.0;
   init_run = true;

@@ -79,13 +79,23 @@ public:
     editor->mirror_mouse_up_object = this;
     editor->enable_syntax_highlighting = false;
 
-    mtex_blob = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", vsxf::get_instance(), true, false);
+    mtex_blob = vsx_texture_loader::load(
+      vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
+      vsxf::get_instance(),
+      false, // threaded
+      vsx_texture_gl_hint(
+       true, // flip vertically
+       false, // data split cube map
+       false, // mipmaps
+       true // linear interpolate
+      )
+    );
     set_render_type(render_2d);
   }
 
   void before_delete()
   {
-    vsx_texture_data_loader_helper::destroy(mtex_blob);
+    vsx_texture_loader::destroy(mtex_blob);
   }
 
   void event_mouse_move(vsx_widget_distance distance, vsx_widget_coords coords)

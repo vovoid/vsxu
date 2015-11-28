@@ -116,7 +116,17 @@ void vsx_widget_controller_ab::init()
   int_rot.M[14] = 0.0f;
   int_rot.M[15] = 1.0f;
 
-  mtex = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "controllers/sphere.png", vsxf::get_instance(), true, true);
+  mtex = vsx_texture_loader::load(
+    vsx_widget_skin::get_instance()->skin_path_get() + "controllers/sphere.png",
+    vsxf::get_instance(),
+    true, // threaded
+    vsx_texture_gl_hint(
+     true, // flip vertically
+     false, // data split cube map
+     false, // mipmaps
+     true // linear interpolate
+    )
+  );
 
   generate_menu();
   menu->init();

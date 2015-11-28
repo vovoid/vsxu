@@ -53,8 +53,8 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
       {
         if (destroy_textures)
         {
-          vsx_texture_data_loader_jpg::get_instance()->destroy(luna);
-          vsx_texture_data_loader_jpg::get_instance()->destroy(luna_bkg);
+          vsx_texture_loader::destroy(luna);
+          vsx_texture_loader::destroy(luna_bkg);
           finished = true;
         }
       }
@@ -215,8 +215,8 @@ vsx_logo_intro::vsx_logo_intro() {
   logo_rot3 = 0.3;
   destroy_textures = true;
 
-  luna = vsx_texture_data_loader_jpg::get_instance()->load( PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo.jpg", vsxf::get_instance(), false, true );
-  luna_bkg = vsx_texture_data_loader_jpg::get_instance()->load( PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo_bkg.jpg",vsxf::get_instance(), false, true);
+  luna = vsx_texture_loader::load( PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo.jpg", vsxf::get_instance(), false, vsx_texture_gl_hint(true, false, false, true) );
+  luna_bkg = vsx_texture_loader::load( PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo_bkg.jpg",vsxf::get_instance(), false, vsx_texture_gl_hint(true, false, false, true) );
   timer.start();
 }
 

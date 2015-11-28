@@ -438,7 +438,17 @@ vsx_widget_desktop::vsx_widget_desktop()
 
   ((vsx_widget_2d_console*)console)->set_destination(sv);
 
-  mtex = vsx_texture_data_loader_jpg::get_instance()->load(vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg", vsxf::get_instance(), true, true);
+  mtex = vsx_texture_loader::load(
+    vsx_widget_skin::get_instance()->skin_path_get() + "desktop.jpg",
+    vsxf::get_instance(),
+    false, // threaded
+    vsx_texture_gl_hint(
+     true, // flip vertically
+     false, // data split cube map
+     true, // mipmaps
+     true // linear interpolate
+    )
+  );
 
   k_focus = this;
   m_focus = this;

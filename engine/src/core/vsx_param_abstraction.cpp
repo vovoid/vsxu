@@ -740,7 +740,12 @@ char res[256];
 
 vsx_string<>vsx_engine_param::get_string()
 {
-  if (alias) return alias_owner->get_string();
+  if (alias)
+    return alias_owner->get_string();
+
+  if (!module_param->valid)
+    return "";
+
   vsx_string<>p;
   switch (module_param->type) {
     case VSX_MODULE_PARAM_ID_INT: {
@@ -801,6 +806,14 @@ vsx_string<>vsx_engine_param::get_string()
     }
     case VSX_MODULE_PARAM_ID_STRING_SEQUENCE: {
       return ((vsx_module_param_string_sequence*)module_param)->param_data[0].get_string();
+    }
+
+    case VSX_MODULE_PARAM_ID_TEXTURE:
+    {
+      vsx_texture* tex = ((vsx_module_param_texture*)module_param)->get();
+      if (!tex)
+        return "";
+      return vsx_string_helper::i2s((uint64_t)tex) + " width: " + vsx_string_helper::i2s(tex->texture_gl->texture_data->width);
     }
     case VSX_MODULE_PARAM_ID_MESH:
     {

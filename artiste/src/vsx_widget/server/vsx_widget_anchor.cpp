@@ -929,9 +929,9 @@ void vsx_widget_anchor::before_delete()
 
 void vsx_widget_anchor::on_delete()
 {
-  vsx_texture_data_loader_helper::destroy( mtex_d );
-  vsx_texture_data_loader_helper::destroy( mtex_blob );
-  vsx_texture_data_loader_helper::destroy( mtex_blob_small );
+  vsx_texture_loader::destroy( mtex_d );
+  vsx_texture_loader::destroy( mtex_blob );
+  vsx_texture_loader::destroy( mtex_blob_small );
 }
 
 
@@ -1608,9 +1608,43 @@ void vsx_widget_anchor::init()
 
   title = name+":"+p_type;
 
-  mtex_d = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "datatypes/"+p_type+".png", vsxf::get_instance(), false, true );
-  mtex_blob = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/highlight_blob.png", vsxf::get_instance(), false, true );
-  mtex_blob_small = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", vsxf::get_instance(), false, true );
+  mtex_d = vsx_texture_loader::load(
+    vsx_widget_skin::get_instance()->skin_path_get() + "datatypes/"+p_type+".png",
+    vsxf::get_instance(),
+    true, // threaded
+    vsx_texture_gl_hint(
+     true, // flip vertically
+     false, // data split cube map
+     true, // mipmaps
+     true // linear interpolate
+    )
+  );
+
+  mtex_blob = vsx_texture_loader::load(
+    vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/highlight_blob.png",
+    vsxf::get_instance(),
+    true, // threaded
+    vsx_texture_gl_hint(
+     true, // flip vertically
+     false, // data split cube map
+     false, // mipmaps
+     true // linear interpolate
+    )
+  );
+
+
+  mtex_blob_small = vsx_texture_loader::load(
+    vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
+    vsxf::get_instance(),
+    true, // threaded
+    vsx_texture_gl_hint(
+     true, // flip vertically
+     false, // data split cube map
+     false, // mipmaps
+     true // linear interpolate
+    )
+  );
+
   color.r = 1.0f;
   color.g = 1.0f;
   color.b = 1.0f;

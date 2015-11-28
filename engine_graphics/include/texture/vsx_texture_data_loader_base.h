@@ -18,36 +18,34 @@ protected:
 
   vsx_fifo<vsx_texture_data_loader_thread*, 64> thread_cleanup_queue;
 
-  bool handle_cache(vsx_string<>& filename, vsx_texture* texture, size_t type)
+  vsx_texture_data* handle_cache(vsx_string<>& filename, vsx_texture_data_hint hint)
   {
-    if (vsx_texture_gl_cache::get_instance()->has(filename))
-    {
-      texture->filename = filename;
-      texture->texture_gl = vsx_texture_gl_cache::get_instance()->aquire(filename);
-      texture->texture_data = vsx_texture_data_cache::get_instance()->aquire(filename);
-      return true;
-    }
-
-    texture->texture_data = vsx_texture_data_cache::get_instance()->create( filename, type );
-    texture->texture_gl = vsx_texture_gl_cache::get_instance()->create(filename);
-    return false;
+    if (vsx_texture_data_cache::get_instance()->has(filename, hint))
+      return vsx_texture_data_cache::get_instance()->aquire(filename, hint);
+    return 0x0;
   }
+
+
+  virtual void load_internal(vsx_string<> filename, vsxf* filesystem, vsx_texture_data* texture_data, bool thread, vsx_texture_data_hint hint) = 0;
 
 public:
 
-  virtual vsx_texture* load(vsx_string<> filename, vsxf* filesystem, bool mipmaps, bool flip_vertical) = 0;
-  virtual vsx_texture* load_thread(vsx_string<> filename, vsxf* filesystem, bool mipmaps, bool flip_vertical) = 0;
-  virtual vsx_texture* load_cube(vsx_string<> filename, vsxf* filesystem, bool mipmaps) = 0;
-  virtual vsx_texture* load_cube_thread(vsx_string<> filename, vsxf* filesystem, bool mipmaps) = 0;
-
-  void destroy(vsx_texture* &texture)
+  void cleanup()
   {
-    vsx_texture_gl_cache::get_instance()->destroy( texture->filename );
-    vsx_texture_data_cache::get_instance()->destroy( texture->filename );
-    texture->texture_data = 0x0;
-    texture->texture_gl = 0x0;
-    delete texture;
-    texture = 0;
+    // consume thread_cleanup_queue
+    //pthread_join( thread_info->thread->worker_t, 0 );
+    //pthread_attr_destroy(&thread_info->thread->worker_t_attr);
+  }
+
+  vsx_texture_data* load(vsx_string<>filename, vsxf* filesystem, bool thread, vsx_texture_data_hint hint)
+  {
+    vsx_texture_data* texture_data = handle_cache(filename, hint);
+    if (texture_data)
+      return texture_data;
+
+    texture_data = vsx_texture_data_cache::get_instance()->create( filename, hint );
+    load_internal(filename, filesystem, texture_data, thread, hint);
+    return texture_data;
   }
 };
 

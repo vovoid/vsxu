@@ -141,7 +141,18 @@ void vsxu_assistant::init()
   topmost = true;
 
   vsxf filesystem;
-  texture = vsx_texture_data_loader_helper::load( PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"luna.png", vsxf::get_instance(), false, true );
+  texture = vsx_texture_loader::load(
+    PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"luna.png",
+    vsxf::get_instance(),
+    true, // threaded
+    vsx_texture_gl_hint(
+     true, // flip vertically
+     false, // data split cube map
+     false, // mipmaps
+     true // linear interpolate
+    )
+  );
+
   if (configuration.find("assistant_size") != configuration.end())
   {
     size_multiplier = vsx_string_helper::s2f(configuration["assistant_size"]);

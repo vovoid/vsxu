@@ -83,7 +83,17 @@ public:
     editor->font_size = 0.014;
     name_dialog = add(new dialog_query_string("name of component","Choose a unique name for your component"),"component_create_name");
 
-    mtex_blob = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() +"interface_extras/connection_blob.png", vsxf::get_instance(), true, false);
+    mtex_blob = vsx_texture_loader::load(
+      vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
+      vsxf::get_instance(),
+      true, // threaded
+      vsx_texture_gl_hint(
+       true, // flip vertically
+       false, // data split cube map
+       false, // mipmaps
+       true // linear interpolate
+      )
+    );
     set_render_type(render_2d);
   }
 

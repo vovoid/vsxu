@@ -51,7 +51,17 @@ void vsx_widget_desktop::init()
   vsxf filesystem;
   font.load(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png", &filesystem);
 
-  mtex = vsx_texture_data_loader_jpg::get_instance()->load(vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg", vsxf::get_instance(), true, true);
+  mtex = vsx_texture_loader::load(
+    vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg",
+    vsxf::get_instance(),
+    false, // threaded
+    vsx_texture_gl_hint(
+     true, // flip vertically
+     false, // data split cube map
+     false, // mipmaps
+     true // linear interpolate
+    )
+  );
 
   init_children();
 

@@ -60,7 +60,7 @@ public:
       frame_buffer_fbo_attachment_texture(0),
       frame_buffer_blit_handle(0),
       buffer_save_blend(0),
-      viewport_size({0,0,0,0}),
+      viewport_size{0,0,0,0},
       capturing_to_buffer(false),
       is_multisample(false)
   {}

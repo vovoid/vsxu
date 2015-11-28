@@ -479,8 +479,18 @@ void vsx_widget_connector_bezier::init()
   menu->size.y = 0.5;
   init_children();
 
+  mtex_blob = vsx_texture_loader::load(
+    vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
+    vsxf::get_instance(),
+    true, // threaded
+    vsx_texture_gl_hint(
+     true, // flip vertically
+     false, // data split cube map
+     false, // mipmaps
+     true // linear interpolate
+    )
+  );
 
-  mtex_blob = vsx_texture_data_loader_png::get_instance()->load( vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png", vsxf::get_instance(), true, false );
   mtex_blob->upload_gl();
 
   constrained_x = false;
