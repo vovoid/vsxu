@@ -33,6 +33,18 @@ namespace vsx_string_helper
   }
 
   /**
+   * @brief i2x
+   * @param in
+   * @return
+   */
+  inline vsx_string<>i2x(uint64_t in)
+  {
+    char string_res[256] = "";
+    sprintf(string_res,"%lx",in);
+    return vsx_string<>(string_res);
+  }
+
+  /**
    * @brief i2s
    * @param in
    * @return

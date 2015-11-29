@@ -55,7 +55,7 @@ public:
   void init_opengl_texture_1d()
   {
     if (gl_id)
-      VSX_ERROR_RETURN("Trying to initialize an already initialized gl_id");
+      VSX_ERROR_RETURN("Trying to re-initialize gl texture");
 
     glGenTextures(1, &gl_id);
     gl_type = GL_TEXTURE_1D;
@@ -64,7 +64,7 @@ public:
   void init_opengl_texture_2d()
   {
     if (gl_id)
-      VSX_ERROR_RETURN("Trying to initialize an already initialized gl_id");
+      VSX_ERROR_RETURN("Trying to re-initialize gl texture");
 
     glGenTextures(1, &gl_id);
     gl_type = GL_TEXTURE_2D;
@@ -73,7 +73,7 @@ public:
   void init_opengl_texture_cubemap()
   {
     if (gl_id)
-      VSX_ERROR_RETURN("Trying to initialize an already initialized gl_id");
+      VSX_ERROR_RETURN("Trying to re-initialize gl texture");
 
     glGenTextures(1, &gl_id);
     gl_type = GL_TEXTURE_CUBE_MAP;
@@ -82,7 +82,7 @@ public:
   void unload()
   {
     if (!gl_id)
-      VSX_ERROR_RETURN("Trying to unload an invalid handle");
+      return;
 
     glDeleteTextures(1,&gl_id);
     gl_id = 0;

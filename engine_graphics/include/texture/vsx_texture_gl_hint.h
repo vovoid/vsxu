@@ -5,11 +5,15 @@
 class vsx_texture_gl_hint
 {
 public:
+  // data permutations
   bool data_flip_vertically = false;
   bool data_split_cubemap = false;
 
   bool mipmaps = false;
   bool linear_interpolate = true;
+
+  // meta hints
+  bool cache_data_reload = false;
 
   bool equals(vsx_texture_gl_hint& other)
   {
@@ -30,7 +34,12 @@ public:
   {
   }
 
-  vsx_texture_gl_hint(bool data_flip_vertically_n, bool data_split_cubemap_n, bool mipmaps_n, bool linear_interpolate_n )
+  vsx_texture_gl_hint(
+      bool data_flip_vertically_n,
+      bool data_split_cubemap_n,
+      bool mipmaps_n,
+      bool linear_interpolate_n
+  )
     :
       data_flip_vertically(data_flip_vertically_n),
       data_split_cubemap(data_split_cubemap_n),

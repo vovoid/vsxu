@@ -100,6 +100,9 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
   glEnable(texture_gl->gl_type);
   glBindTexture(texture_gl->gl_type, texture_gl->gl_id);
 
+  // MIN / MAG filter
+  GLint min_mag = texture_gl->hint.linear_interpolate?GL_LINEAR:GL_NEAREST;
+
   if (texture_gl->hint.mipmaps)
   {
     glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
@@ -109,12 +112,11 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
     float rMaxAniso;
     glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &rMaxAniso);
     glTexParameterf( texture_gl->gl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
-
   } else
   {
     glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, min_mag);
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, min_mag);
   }
 
   // source format

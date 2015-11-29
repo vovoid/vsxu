@@ -813,7 +813,12 @@ vsx_string<>vsx_engine_param::get_string()
       vsx_texture* tex = ((vsx_module_param_texture*)module_param)->get();
       if (!tex)
         return "";
-      return vsx_string_helper::i2s((uint64_t)tex) + " width: " + vsx_string_helper::i2s(tex->texture_gl->texture_data->width);
+      return
+        vsx_string_helper::i2x((uint64_t)tex) + " " +
+        vsx_string_helper::i2s(tex->texture_gl->texture_data->width) + "x" +
+        vsx_string_helper::i2s(tex->texture_gl->texture_data->height) + " " +
+        vsx_string_helper::i2s(tex->texture_gl->gl_id)
+      ;
     }
     case VSX_MODULE_PARAM_ID_MESH:
     {

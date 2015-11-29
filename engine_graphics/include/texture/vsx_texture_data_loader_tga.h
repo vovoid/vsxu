@@ -78,14 +78,8 @@ class vsx_texture_data_loader_tga
     return 0;
   }
 
-  void load_internal(vsx_string<> filename, vsxf* filesystem, vsx_texture_data* texture_data, bool thread, vsx_texture_data_hint hint)
+  void load_internal(vsx_string<> filename, vsxf* filesystem, vsx_texture_data* texture_data, bool thread, vsx_texture_loader_thread_info* thread_info)
   {
-    vsx_texture_loader_thread_info* thread_info = new vsx_texture_loader_thread_info();
-    thread_info->filename = filename;
-    thread_info->filesystem = filesystem;
-    thread_info->texture_data = texture_data;
-    thread_info->hint = hint;
-
     if (!thread)
       return (void)worker((void*)thread_info);
 

@@ -53,6 +53,8 @@ void vsx_texture::upload_gl()
   if (! __sync_fetch_and_add(&(texture_gl->texture_data->data_ready), 0))
     return;
 
+  texture_gl->unload();
+
   if (texture_gl->texture_data->hint.split_cubemap)
   {
     texture_gl->init_opengl_texture_cubemap();
@@ -69,8 +71,8 @@ void vsx_texture::unload_gl()
   if (!texture_gl)
     VSX_ERROR_RETURN("texture_gl invalid");
 
-  if (!texture_gl->attached_to_cache)
-    VSX_ERROR_EXIT("Trying to unload a texture which is not local", 10);
+  if (texture_gl->attached_to_cache)
+    VSX_ERROR_RETURN("Trying to unload a texture which is not local");
 
   texture_gl->unload();
 }
