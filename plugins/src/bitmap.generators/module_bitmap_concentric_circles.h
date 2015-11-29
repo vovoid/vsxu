@@ -41,7 +41,7 @@ class module_bitmap_generators_concentric_circles : public vsx_module
 	vsx_bitmap bitm;
 	int bitm_timestamp;
 
-  vsx_texture* texture;
+  vsx_texture<>* texture;
   pthread_t	worker_t;
   pthread_attr_t attr;
 
@@ -124,8 +124,8 @@ public:
     need_to_rebuild = true;
     my_ref = 0;
     if (c_type == 1) {
-      texture = new vsx_texture();
-      texture->texture_gl->init_opengl_texture_2d();
+      texture = new vsx_texture<>();
+      texture->texture->init_opengl_texture_2d();
       texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
       texture_out->set(texture);
     }

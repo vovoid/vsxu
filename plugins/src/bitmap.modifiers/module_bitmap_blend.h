@@ -21,7 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <vsx_bitmap.h>
+#include <bitmap/vsx_bitmap.h>
 
 typedef unsigned char uint8;
 
@@ -216,7 +216,6 @@ public:
     }
 
     bitm->timestamp++;
-    bitm->valid = true;
     mod->thread_state = 2;
 
     return 0;
@@ -294,10 +293,6 @@ public:
     worker_running = false;
     thread_created = false;
     p_updates = -1;
-    bitmap.data = 0;
-    bitmap.channels = 4;
-    bitmap.storage_format = vsx_bitmap::byte_storage;
-    bitmap.valid = false;
     my_ref = 0;
     bitm_timestamp = bitmap.timestamp = rand();
     need_to_rebuild = true;
@@ -350,7 +345,7 @@ public:
     if (!worker_running)
     if (bitmap_source_1 && bitmap_source_2 && !to_delete_data)
     {
-      if (bitmap_source_1->valid && bitmap_source_2->valid)
+      if (bitmap_source_1->data_ready && bitmap_source_2->data_ready)
       if (
           timestamp1 != bitmap_source_1->timestamp
           ||
@@ -359,7 +354,6 @@ public:
           p_updates != param_updates)
       {
         p_updates = param_updates;
-        bitmap.valid = false;
         timestamp1 = bitmap_source_1->timestamp;
         timestamp2 = bitmap_source_2->timestamp;
 
@@ -370,6 +364,7 @@ public:
           bitmap.data = new vsx_bitmap_32bt[(int)target_size_in->get(0)*(int)target_size_in->get(1)];
           bitmap.width = (int)target_size_in->get(0);
           bitmap.height = (int)target_size_in->get(1);
+          bitmap.data_ready = 0;
         }
 
         thread_state = 1;

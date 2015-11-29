@@ -269,7 +269,7 @@ void vsx_widget_server::init()
     vsx_widget_skin::get_instance()->skin_path_get() + "server.png",
     vsxf::get_instance(),
     true, // threaded
-    vsx_texture_gl_hint(
+    vsx_texture_gl_loader_hint(
      true, // flip vertically
      false, // data split cube map
      true, // mipmaps

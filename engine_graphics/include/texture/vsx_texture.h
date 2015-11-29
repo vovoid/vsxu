@@ -28,13 +28,13 @@
 #include <engine_graphics_dllimport.h>
 #include <string/vsx_string.h>
 #include <vsxg.h>
-#include <vsx_bitmap.h>
+#include <bitmap/vsx_bitmap.h>
 #include <vsx_matrix.h>
 
-#include "vsx_texture_data.h"
-#include "vsx_texture_gl.h"
-#include "vsx_texture_transform_base.h"
+#include "gl/vsx_texture_gl.h"
+#include "transform/vsx_texture_transform_base.h"
 
+template <class T = vsx_texture_gl>
 class vsx_texture
 {
 
@@ -42,7 +42,7 @@ public:
 
   // transformation object
   vsx_texture_transform_base* transform_obj;
-  vsx_texture_gl* texture_gl;
+  T* texture;
 
 
   void set_transform(vsx_texture_transform_base* new_transform_obj)
@@ -56,32 +56,104 @@ public:
   }
 
   // use this to load/unload the texture from vram
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void upload_gl();
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void unload_gl();
+  void upload_gl()
+  {
+    if (!texture)
+      return;
+
+    // already uploaded
+    if (texture->uploaded_to_gl)
+      return;
+
+    // Data uploaded elsewhere
+    if (!texture->bitmap)
+      return;
+
+    if (! __sync_fetch_and_add(&(texture->bitmap->data_ready), 0))
+      return;
+
+    texture->unload();
+
+    if (texture->bitmap->hint.split_cubemap)
+    {
+      texture->init_opengl_texture_cubemap();
+      vsx_texture_gl_loader::upload_cube(texture);
+      return;
+    }
+
+    texture->init_opengl_texture_2d();
+    vsx_texture_gl_loader::upload_2d(texture);
+  }
+
+  void unload_gl()
+  {
+    if (!texture)
+      VSX_ERROR_RETURN("texture_gl invalid");
+
+    if (texture->attached_to_cache)
+      VSX_ERROR_RETURN("Trying to unload a texture which is not local");
+
+    texture->unload();
+  }
 
   // use this to bind the texture.
-  VSX_ENGINE_GRAPHICS_DLLIMPORT bool bind();
+  bool bind()
+  {
+    if (!texture)
+      return false;
+
+    upload_gl();
+
+    if (!texture->gl_id)
+      return false;
+
+    if (texture->gl_type == GL_TEXTURE_2D_MULTISAMPLE)
+    {
+      glEnable(GL_TEXTURE_2D);
+      glBindTexture(GL_TEXTURE_2D,texture->gl_id);
+      return true;
+    }
+
+    glEnable(texture->gl_type);
+    glBindTexture(texture->gl_type, texture->gl_id);
+    return true;
+  }
 
   // use this when you're done with the texture
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void _bind();
+  void _bind()
+  {
+    if (!texture)
+      return;
+
+    if (!texture->gl_id)
+      return;
+
+    if (texture->gl_type == GL_TEXTURE_2D_MULTISAMPLE)
+    {
+      glDisable(GL_TEXTURE_2D);
+      return;
+    }
+
+    glDisable(texture->gl_type);
+  }
 
   vsx_texture(bool attached_to_cache = false)
     :
       transform_obj(0x0),
-      texture_gl(0x0)
+      texture(0x0)
   {
     if (!attached_to_cache)
-      texture_gl = new vsx_texture_gl(false);
+      texture = new T(false);
   }
 
   ~vsx_texture()
   {
-    if (texture_gl && !texture_gl->attached_to_cache)
-      delete texture_gl;
+    if (texture && !texture->attached_to_cache)
+      delete texture;
   }
 };
 
-#include "vsx_texture_transform_helper.h"
+#include "transform/vsx_texture_transform_helper.h"
 #include "vsx_texture_loader.h"
 
 #endif

@@ -33,13 +33,11 @@
 
 #ifndef VSX_NO_GL
   #include "vsx_gl_global.h"
-  #ifndef VSX_NO_TEXTURE
-    #include <texture/vsx_texture.h>
-  #endif
 #endif
 #include "vsx_mesh.h"
 #include "vsx_grid_mesh.h"
-#include "vsx_bitmap.h"
+#include <texture/vsx_texture.h>
+#include <bitmap/vsx_bitmap.h>
 #include "vsx_particlesystem.h"
 #include "vsx_quaternion.h"
 #include "vsx_float_array.h"
@@ -301,7 +299,7 @@ typedef vsx_module_param<0, vsx_string<>,          1,0 > vsx_module_param_string
   typedef vsx_module_param<0, void*,             1,1 > vsx_module_param_texture; 
 #else
   #ifndef VSX_NO_TEXTURE
-    typedef vsx_module_param<0, vsx_texture*,    1,0 > vsx_module_param_texture; // use get() set()
+    typedef vsx_module_param<0, vsx_texture<vsx_texture_gl>*,    1,0 > vsx_module_param_texture; // use get() set()
   #else
     typedef vsx_module_param<0, void*,           1,1 > vsx_module_param_texture;
   #endif

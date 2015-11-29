@@ -1,11 +1,11 @@
-#ifndef VSX_TEXTURE_DATA_LOADER_H
-#define VSX_TEXTURE_DATA_LOADER_H
+#ifndef VSX_BITMAP_LOADER_H
+#define VSX_BITMAP_LOADER_H
 
-#include "vsx_texture_data_loader_base.h"
-#include "vsx_texture_data_transform.h"
+#include "vsx_bitmap_loader_base.h"
+#include <bitmap/vsx_bitmap_transform.h>
 
-class vsx_texture_data_loader_tga
-    : public vsx_texture_data_loader_base
+class vsx_bitmap_loader_tga
+    : public vsx_bitmap_loader_base
 {
 
   struct tga_header {
@@ -52,44 +52,45 @@ class vsx_texture_data_loader_tga
     }
 
     channels = header.bits_per_pixel / 8;
-    thread_info->texture_data->channels = channels;
-    thread_info->texture_data->width = header.width;
-    thread_info->texture_data->height = header.height;
+    thread_info->bitmap->channels = channels;
+    thread_info->bitmap->width = header.width;
+    thread_info->bitmap->height = header.height;
+    thread_info->bitmap->channels_bgra = true;
 
     num_bytes = channels * header.width * header.height;
     data = malloc( num_bytes );
     filesystem->f_read( data, num_bytes, file_handle );
 
-    thread_info->texture_data->filename = thread_info->filename;
-    thread_info->texture_data->data[0] = data;
+    thread_info->bitmap->filename = thread_info->filename;
+    thread_info->bitmap->data[0] = data;
 
     if (thread_info->hint.flip_vertically)
-      vsx_texture_data_transform::get_instance()->flip_vertically(thread_info->texture_data);
+      vsx_bitmap_transform::get_instance()->flip_vertically(thread_info->bitmap);
 
     if (thread_info->hint.split_cubemap)
-      vsx_texture_data_transform::get_instance()->split_into_cubemap(thread_info->texture_data);
+      vsx_bitmap_transform::get_instance()->split_into_cubemap(thread_info->bitmap);
 
-    __sync_fetch_and_add( &(thread_info->texture_data->data_ready), 1 );
+    __sync_fetch_and_add( &(thread_info->bitmap->data_ready), 1 );
 
   end:
-//    vsx_texture_data_loader_png::get_instance()->thread_cleanup_queue.produce( (vsx_texture_data_loader_thread*)thread_info->thread );
+//    vsx_bitmap_loader_png::get_instance()->thread_cleanup_queue.produce( (vsx_bitmap_loader_thread*)thread_info->thread );
     delete thread_info;
 
     return 0;
   }
 
-  void load_internal(vsx_string<> filename, vsxf* filesystem, vsx_texture_data* texture_data, bool thread, vsx_texture_loader_thread_info* thread_info)
+  void load_internal(vsx_string<> filename, vsxf* filesystem, vsx_bitmap* bitmap, bool thread, vsx_texture_loader_thread_info* thread_info)
   {
     if (!thread)
       return (void)worker((void*)thread_info);
 
-    new vsx_texture_data_loader_thread(worker, thread_info);
+    new vsx_bitmap_loader_thread(worker, thread_info);
   }
 public:
 
-  static vsx_texture_data_loader_tga* get_instance()
+  static vsx_bitmap_loader_tga* get_instance()
   {
-    static vsx_texture_data_loader_tga vtlt;
+    static vsx_bitmap_loader_tga vtlt;
     return &vtlt;
   }
 };

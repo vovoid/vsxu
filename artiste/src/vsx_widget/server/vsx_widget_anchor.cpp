@@ -1612,7 +1612,7 @@ void vsx_widget_anchor::init()
     vsx_widget_skin::get_instance()->skin_path_get() + "datatypes/"+p_type+".png",
     vsxf::get_instance(),
     true, // threaded
-    vsx_texture_gl_hint(
+    vsx_texture_gl_loader_hint(
      true, // flip vertically
      false, // data split cube map
      true, // mipmaps
@@ -1624,7 +1624,7 @@ void vsx_widget_anchor::init()
     vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/highlight_blob.png",
     vsxf::get_instance(),
     true, // threaded
-    vsx_texture_gl_hint(
+    vsx_texture_gl_loader_hint(
      true, // flip vertically
      false, // data split cube map
      false, // mipmaps
@@ -1637,7 +1637,7 @@ void vsx_widget_anchor::init()
     vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
     vsxf::get_instance(),
     true, // threaded
-    vsx_texture_gl_hint(
+    vsx_texture_gl_loader_hint(
      true, // flip vertically
      false, // data split cube map
      false, // mipmaps

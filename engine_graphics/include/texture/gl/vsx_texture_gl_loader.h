@@ -1,10 +1,10 @@
 #ifndef VSX_TEXTURE_GL_LOADER_H
 #define VSX_TEXTURE_GL_LOADER_H
 
-#include <vsx_bitmap.h>
+#include <bitmap/vsx_bitmap.h>
 #include "vsx_texture_gl.h"
-#include "vsx_texture_data.h"
-#include "vsx_texture_data_transform.h"
+#include <bitmap/vsx_bitmap.h>
+#include <bitmap/vsx_bitmap_transform.h>
 #include <vsx_gl_global.h>
 
 namespace vsx_texture_gl_loader
@@ -91,7 +91,7 @@ inline void upload_1d(vsx_texture_gl* texture_gl, void* data, unsigned long size
 /**
  * @brief upload_2d
  * @param texture_gl
- * @param texture_data
+ * @param bitmap
  */
 inline void upload_2d( vsx_texture_gl* texture_gl )
 {
@@ -121,26 +121,36 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
 
   // source format
   GLenum source_format = 0;
-  if (texture_gl->texture_data->channels == 3)
-    source_format = GL_RGB;
+  if (texture_gl->bitmap->channels == 3)
+  {
+    if (texture_gl->bitmap->channels_bgra)
+      source_format = GL_BGR;
+    else
+      source_format = GL_RGB;
+  }
 
-  if (texture_gl->texture_data->channels == 4)
-    source_format = GL_RGBA;
+  if (texture_gl->bitmap->channels == 4)
+  {
+    if (texture_gl->bitmap->channels_bgra)
+      source_format = GL_BGRA;
+    else
+      source_format = GL_RGBA;
+  }
 
   // source type
   GLenum source_type = 0;
-  if (texture_gl->texture_data->storage_format == vsx_texture_data::byte_storage)
+  if (texture_gl->bitmap->storage_format == vsx_bitmap::byte_storage)
     source_type = GL_UNSIGNED_BYTE;
 
-  if (texture_gl->texture_data->storage_format == vsx_texture_data::float_storage)
+  if (texture_gl->bitmap->storage_format == vsx_bitmap::float_storage)
     source_type = GL_FLOAT;
 
   // target format
   GLint target_format = 0;
-  if (texture_gl->texture_data->channels == 3)
+  if (texture_gl->bitmap->channels == 3)
     target_format = GL_RGB;
 
-  if (texture_gl->texture_data->channels == 4)
+  if (texture_gl->bitmap->channels == 4)
     target_format = GL_RGBA; // GL_COMPRESSED_RGB_ARB
 
   // look for GL_ARB_texture_view if dxt5 compression is available
@@ -148,12 +158,12 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
     texture_gl->gl_type,  // opengl type
     0,  // mipmap level
     target_format, // storage type
-    texture_gl->texture_data->width,
-    texture_gl->texture_data->height,
+    texture_gl->bitmap->width,
+    texture_gl->bitmap->height,
     0,      // border 0 or 1
     source_format,   // source data format
     source_type, // source data type
-    texture_gl->texture_data->data[0] // pointer to data
+    texture_gl->bitmap->data[0] // pointer to data
   );
 
   if(!oldStatus)
@@ -166,7 +176,7 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
 /**
  * @brief upload_cube
  * @param texture_gl
- * @param texture_data
+ * @param bitmap
  */
 inline void upload_cube( vsx_texture_gl* texture_gl )
 {
@@ -192,10 +202,10 @@ inline void upload_cube( vsx_texture_gl* texture_gl )
 
   // source format
   GLenum source_format = 0;
-  if (texture_gl->texture_data->channels == 3)
+  if (texture_gl->bitmap->channels == 3)
     source_format = GL_RGB;
 
-  if (texture_gl->texture_data->channels == 4)
+  if (texture_gl->bitmap->channels == 4)
     source_format = GL_RGBA;
 
   if (source_format == 0)
@@ -203,10 +213,10 @@ inline void upload_cube( vsx_texture_gl* texture_gl )
 
   // source type
   GLenum source_type = 0;
-  if (texture_gl->texture_data->storage_format == vsx_texture_data::byte_storage)
+  if (texture_gl->bitmap->storage_format == vsx_bitmap::byte_storage)
     source_type = GL_UNSIGNED_BYTE;
 
-  if (texture_gl->texture_data->storage_format == vsx_texture_data::float_storage)
+  if (texture_gl->bitmap->storage_format == vsx_bitmap::float_storage)
     source_type = GL_FLOAT;
 
   if (source_type == 0)
@@ -214,10 +224,10 @@ inline void upload_cube( vsx_texture_gl* texture_gl )
 
   // target format
   GLint target_format = 0;
-  if (texture_gl->texture_data->channels == 3)
+  if (texture_gl->bitmap->channels == 3)
     target_format = GL_RGB;
 
-  if (texture_gl->texture_data->channels == 4)
+  if (texture_gl->bitmap->channels == 4)
     target_format = GL_RGBA; // GL_COMPRESSED_RGB_ARB
 
   if (target_format == 0)
@@ -237,12 +247,12 @@ inline void upload_cube( vsx_texture_gl* texture_gl )
       sides[i],  // opengl target
       0,  // mipmap level
       target_format, // storage type
-      texture_gl->texture_data->height, // size x
-      texture_gl->texture_data->height, // size y
+      texture_gl->bitmap->height, // size x
+      texture_gl->bitmap->height, // size y
       0,      // border 0 or 1
       source_format,   // source data format
       source_type, // source data type
-      texture_gl->texture_data->data[i] // pointer to data
+      texture_gl->bitmap->data[i] // pointer to data
     );
 
   glDisable( texture_gl->gl_type );
@@ -251,32 +261,17 @@ inline void upload_cube( vsx_texture_gl* texture_gl )
 
 inline void upload_bitmap_2d(vsx_texture_gl* texture_gl, vsx_bitmap* bitmap, bool mipmaps, bool flip_vertical)
 {
-  vsx_texture_data texture_data(false);
-  texture_data.data[0] = bitmap->data;
-  texture_data.channels = bitmap->channels;
-  texture_data.width = bitmap->width;
-  texture_data.height = bitmap->height;
+  texture_gl->bitmap = bitmap;
 
-  if (bitmap->storage_format == vsx_bitmap::byte_storage)
-    texture_data.storage_format = vsx_texture_data::byte_storage;
-
-  if (bitmap->storage_format == vsx_bitmap::float_storage)
-    texture_data.storage_format = vsx_texture_data::float_storage;
-
-  if (flip_vertical && !bitmap->flipped_vertically)
+  if (flip_vertical && !bitmap->hint.flip_vertically)
   {
-    vsx_texture_data_transform::get_instance()->flip_vertically(&texture_data);
-    bitmap->data = texture_data.data[0];
-    bitmap->flipped_vertically = true;
+    vsx_bitmap_transform::get_instance()->flip_vertically(bitmap);
+    bitmap->hint.flip_vertically = true;
   }
 
   upload_2d(
     texture_gl
   );
-
-  // ensure that ~vsx_texture_data()
-  // does not free, memory is owned by bitmap
-  texture_data.data[0] = 0;
 }
 
 

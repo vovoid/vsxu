@@ -10,7 +10,9 @@
 
 namespace vsx_texture_transform_helper
 {
-  inline void begin_transform(vsx_texture* texture)
+
+  template <class T = vsx_texture_gl>
+  inline void begin_transform(vsx_texture<T>* texture)
   {
     if (!texture->get_transform())
       return;
@@ -21,7 +23,8 @@ namespace vsx_texture_transform_helper
     texture->get_transform()->transform();
   }
 
-  inline void end_transform(vsx_texture* texture)
+  template <class T = vsx_texture_gl>
+  inline void end_transform(vsx_texture<T>* texture)
   {
     if (!texture->get_transform())
       return;

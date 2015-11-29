@@ -11,7 +11,7 @@ public:
   // init an offscreen feedback possible buffer
   void init
   (
-    vsx_texture* texture,
+    vsx_texture<>* texture,
     int width, // width in pixels
     int height, // height in pixels
     bool float_texture, // use floating point channels (8-bit is default)
@@ -21,6 +21,8 @@ public:
     GLuint existing_depth_texture_id // depth buffer from other buffer, 0 to ignore
   )
   {
+    VSX_UNUSED(existing_depth_texture_id);
+
     int i_width = width;
     int i_height = height;
 

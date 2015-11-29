@@ -1,7 +1,7 @@
 #ifndef VSX_TEXTURE_BUFFER_H
 #define VSX_TEXTURE_BUFFER_H
 
-#include "vsx_texture.h"
+#include <texture/vsx_texture.h>
 
 // FBO functions-------------------------------------------------------------
 // FBO is used to capture rendering output into a texture rather than to the
@@ -94,7 +94,7 @@ public:
 
   virtual void init
   (
-    vsx_texture* texture,
+    vsx_texture<>* texture,
     int width, // width in pixels
     int height, // height in pixels
     bool float_texture, // use floating point channels (8-bit is default)
@@ -106,7 +106,7 @@ public:
 
   virtual void reinit
   (
-    vsx_texture* texture,
+    vsx_texture<>* texture,
     int width, // width in pixels
     int height, // height in pixels
     bool float_texture, // use floating point channels (8-bit is default)
@@ -116,7 +116,7 @@ public:
     GLuint existing_depth_texture_id // depth buffer from other buffer, 0 to ignore
   ) = 0;
 
-  virtual void deinit(vsx_texture* texture) = 0;
+  virtual void deinit(vsx_texture<>* texture) = 0;
 
   // begin capturing render output into the frame buffer object
   virtual void begin_capture_to_buffer() = 0;

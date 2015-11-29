@@ -1,5 +1,5 @@
 #include <texture/vsx_texture.h>
-#include <texture/vsx_texture_data_loader_png.h>
+#include <texture/vsx_bitmap_loader_png.h>
 
 class module_texture_load_tga: public vsx_module
 {
@@ -39,12 +39,8 @@ public:
 
     info->description =
       "Loads a TGA image from\n"
-      "disk and outputs a \n"
-      " - VSXu bitmap \n "
-      "  and\n"
-      " - texture.\n"
-      "Texture is only loaded when used.\n"
-      "This is to preserve memory."
+      "disk and outputs a\n"
+      "texture.\n"
     ;
 
     info->in_param_spec =
@@ -84,7 +80,7 @@ public:
 
   void run()
   {
-    if (texture && texture->texture_gl->texture_data->data_ready)
+    if (texture && texture->texture_gl->bitmap->data_ready)
     {
       loading_done = true;
       message = "module||ok";
@@ -129,7 +125,7 @@ public:
     if (texture)
       vsx_texture_loader::destroy(texture);
 
-    vsx_texture_gl_hint hint(
+    vsx_texture_gl_loader_hint hint(
      flip_vertical_cache, // flip vertically
      false, // data split cube map
      mipmaps_cache, // mipmaps

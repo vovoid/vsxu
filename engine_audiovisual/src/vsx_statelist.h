@@ -34,7 +34,7 @@
 #include <GL/glew.h>
 
 #include "vsx_engine.h"
-#include <texture/vsx_texture_buffer_render.h>
+#include <texture/buffer/vsx_texture_buffer_render.h>
 
 class state_info {
 public:
@@ -88,9 +88,9 @@ private:
 
   vsx_command_list *cmd_in;
   vsx_command_list *cmd_out;
-  vsx_texture tex1;
+  vsx_texture<> tex1;
   vsx_texture_buffer_render buf1;
-  vsx_texture tex_to;
+  vsx_texture<> tex_to;
   vsx_texture_buffer_render buf_to;
 
   vsx_timer timer;

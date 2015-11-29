@@ -145,7 +145,7 @@ void vsxu_assistant::init()
     PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"luna.png",
     vsxf::get_instance(),
     true, // threaded
-    vsx_texture_gl_hint(
+    vsx_texture_gl_loader_hint(
      true, // flip vertically
      false, // data split cube map
      false, // mipmaps

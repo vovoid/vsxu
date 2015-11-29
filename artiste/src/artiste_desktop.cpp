@@ -442,7 +442,7 @@ vsx_widget_desktop::vsx_widget_desktop()
     vsx_widget_skin::get_instance()->skin_path_get() + "desktop.jpg",
     vsxf::get_instance(),
     false, // threaded
-    vsx_texture_gl_hint(
+    vsx_texture_gl_loader_hint(
      true, // flip vertically
      false, // data split cube map
      true, // mipmaps

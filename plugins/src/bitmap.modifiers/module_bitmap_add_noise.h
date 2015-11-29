@@ -24,8 +24,6 @@
 
 class module_bitmap_add_noise : public vsx_module
 {
-public:
-
   // in
   vsx_module_param_bitmap* bitmap_in;
 
@@ -46,6 +44,9 @@ public:
   pthread_t         worker_t;
   pthread_attr_t    worker_t_attr;
   int my_ref;
+
+public:
+
 
 
   static void* noise_worker(void *ptr)

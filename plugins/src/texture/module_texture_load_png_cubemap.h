@@ -1,5 +1,5 @@
 #include <texture/vsx_texture.h>
-#include <texture/vsx_texture_data_loader_png.h>
+#include <texture/vsx_bitmap_loader_png.h>
 
 class module_texture_load_png_cubemap : public vsx_module
 {
@@ -64,7 +64,7 @@ public:
 
   void run()
   {
-    if (texture && texture->texture_gl->texture_data->data_ready)
+    if (texture && texture->texture_gl->bitmap->data_ready)
     {
       loading_done = true;
       message = "module||ok";
@@ -89,10 +89,10 @@ public:
       delete texture;
     }
 
-    //   vsx_texture_gl_hint(bool data_flip_vertically_n, bool data_split_cubemap_n, bool mipmaps_n, bool linear_interpolate_n )
+    //   vsx_texture_gl_loader_hint(bool data_flip_vertically_n, bool data_split_cubemap_n, bool mipmaps_n, bool linear_interpolate_n )
     texture = vsx_texture_loader::load(
       current_filename, engine->filesystem, true,
-      vsx_texture_gl_hint(
+      vsx_texture_gl_loader_hint(
        false,
        true,
        false,

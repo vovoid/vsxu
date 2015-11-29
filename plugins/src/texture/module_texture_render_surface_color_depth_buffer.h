@@ -283,12 +283,12 @@ public:
       {
         vsx_texture* depth_in = depth_buffer_in->get();
         if (
-            depth_in->texture_gl->texture_data->width != (unsigned int)res_x ||
-            depth_in->texture_gl->texture_data->height != (unsigned int)res_y
+            depth_in->texture_gl->bitmap->width != (unsigned int)res_x ||
+            depth_in->texture_gl->bitmap->height != (unsigned int)res_y
           )
         {
-          res_x = depth_in->texture_gl->texture_data->width;
-          res_y = depth_in->texture_gl->texture_data->height;
+          res_x = depth_in->texture_gl->bitmap->width;
+          res_y = depth_in->texture_gl->bitmap->height;
         }
       }
 
@@ -312,8 +312,8 @@ public:
       depth_buffer_texture.texture_gl->gl_type = GL_TEXTURE_2D;
       depth_buffer_texture.texture_gl->uploaded_to_gl = true;
 
-      depth_buffer_texture.texture_gl->texture_data->width = res_x;
-      depth_buffer_texture.texture_gl->texture_data->height = res_y;
+      depth_buffer_texture.texture_gl->bitmap->width = res_x;
+      depth_buffer_texture.texture_gl->bitmap->height = res_y;
 
       depth_buffer_out->set(&depth_buffer_texture);
 

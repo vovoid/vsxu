@@ -102,7 +102,6 @@ public:
 
     info->out_param_spec =
       "texture:texture,bitmap:bitmap";
-
   }
   
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)

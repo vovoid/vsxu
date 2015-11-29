@@ -1,17 +1,23 @@
+#include <texture/vsx_texture.h>
+
 class module_texture_load_bitmap2texture : public vsx_module
 {
   // in
   vsx_module_param_bitmap* bitmap_in;
+
   vsx_module_param_int* mipmaps_in;
+  vsx_module_param_int* flip_vertical_in;
 
   // out
   vsx_module_param_texture* texture_out;
 
   // internal
-  float time;
-  vsx_bitmap* bitm;
-  int bitm_timestamp;
-  vsx_texture* texture;
+  int mipmaps_cache;
+  int flip_vertical_cache = 1;
+
+  int bitmap_timestamp = 0;
+  vsx_bitmap* bitmap;
+  vsx_texture* texture = 0x0;
 
 public:
 
@@ -24,7 +30,10 @@ public:
       "";
 
     info->in_param_spec =
-      "bitmap:bitmap,mipmaps:enum?yes|no";
+      "bitmap:bitmap,"
+      "mipmaps:enum?yes|no,"
+      "flip_vertical:enum?no|yes"
+    ;
 
     info->out_param_spec =
       "texture:texture";
@@ -39,12 +48,10 @@ public:
     mipmaps_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"mipmaps");
     mipmaps_in->set(0);
 
-    bitm_timestamp = 0;
-    texture = new vsx_texture;
-    texture->texture_gl->init_opengl_texture_2d();
+    flip_vertical_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "flip_vertical");
+    flip_vertical_in->set(flip_vertical_cache);
 
     texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
-    loading_done = true;
   }
 
   void run()
@@ -54,15 +61,36 @@ public:
       texture_out->valid = false;
       return;
     }
+    bitmap = bitmap_in->get();
 
-    bitm = *(bitmap_in->get_addr());
+    if (!bitmap->valid)
+      return;
 
-    if (bitm->valid && bitm_timestamp != bitm->timestamp)
+    bool reload = false;
+    if (bitmap_timestamp != bitmap->timestamp)
+      reload = true;
+    if (mipmaps_cache != mipmaps_in->get())
+      reload = true;
+    if (flip_vertical_cache != flip_vertical_in->get())
+      reload = true;
+    req(reload);
+
+    bitmap_timestamp = bitmap->timestamp;
+    mipmaps_cache = mipmaps_in->get();
+    flip_vertical_cache = flip_vertical_in->get();
+
+    if (!texture)
     {
-      bitm_timestamp = bitm->timestamp;
-      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, bitm, mipmaps_in->get() == 0, true);
-      texture_out->set(texture);
+      texture = new vsx_texture;
+      texture->texture_gl->init_opengl_texture_2d();
     }
+
+    texture->texture_gl->hint.mipmaps = mipmaps_cache;
+
+    // todo: convert bitmap to vsx_bitmap
+    vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, bitmap, mipmaps_cache, flip_vertical_cache);
+    texture_out->set(texture);
+    loading_done = true;
   }
 
   void stop()
@@ -77,9 +105,9 @@ public:
     if (!bitmap_in->get_addr())
       return;
 
-    bitm = *(bitmap_in->get_addr());
-    if (bitm) {
-      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, bitm, mipmaps_in->get() == 0, true);
+    bitmap = *(bitmap_in->get_addr());
+    if (bitmap) {
+      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, bitmap, mipmaps_cache, flip_vertical_cache);
       texture_out->set(texture);
     }
   }

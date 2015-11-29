@@ -1,13 +1,13 @@
-#ifndef VSX_TEXTURE_DATA_TRANSFORM_H
-#define VSX_TEXTURE_DATA_TRANSFORM_H
+#ifndef VSX_BITMAP_TRANSFORM_H
+#define VSX_BITMAP_TRANSFORM_H
 
-#include "vsx_texture_data.h"
+#include "vsx_bitmap.h"
 
-class vsx_texture_data_transform
+class vsx_bitmap_transform
 {
 
   template < typename T = char >
-  inline void split_into_cubemap_by_type(vsx_texture_data* data)
+  inline void split_into_cubemap_by_type(vsx_bitmap* data)
   {
     void* source_data = data->data[0];
     data->data[0] = malloc( sizeof(T) * (data->height * data->height) );
@@ -39,13 +39,13 @@ class vsx_texture_data_transform
   }
 
 public:
-  inline void flip_vertically(vsx_texture_data* data)
+  inline void flip_vertically(vsx_bitmap* data)
   {
     size_t width = data->width;
     size_t height = data->height;
     size_t channels = data->channels;
 
-    if (data->storage_format == vsx_texture_data::float_storage)
+    if (data->storage_format == vsx_bitmap::float_storage)
     {
       GLfloat* data2 = (GLfloat*)malloc(sizeof(GLfloat) * width * height * channels);
       int dy = 0;
@@ -77,7 +77,7 @@ public:
   }
 
 
-  inline void split_into_cubemap(vsx_texture_data* data)
+  inline void split_into_cubemap(vsx_bitmap* data)
   {
     if ( data->width / 6 != data->height )
       VSX_ERROR_RETURN("Error: not cubemap, should be aspect 6:1");
@@ -85,16 +85,16 @@ public:
     if (data->channels != 4)
       VSX_ERROR_RETURN("Error: RGB cubemaps not implemented");
 
-    if (data->storage_format == vsx_texture_data::float_storage)
+    if (data->storage_format == vsx_bitmap::float_storage)
       split_into_cubemap_by_type<float>(data);
 
-    if (data->storage_format == vsx_texture_data::byte_storage)
+    if (data->storage_format == vsx_bitmap::byte_storage)
       split_into_cubemap_by_type<uint32_t>(data);
   }
 
-  static vsx_texture_data_transform* get_instance()
+  static vsx_bitmap_transform* get_instance()
   {
-    static vsx_texture_data_transform vtdt;
+    static vsx_bitmap_transform vtdt;
     return &vtdt;
   }
 

@@ -134,7 +134,7 @@ void output(vsx_module_param_abs* param) {
   VSX_UNUSED(param);
   if (tex_a) {
 
-    vsx_texture** ta;
+    vsx_texture<>** ta;
     ta = tex_a->get_addr();
     if (!ta) {
       render_result->set(0);

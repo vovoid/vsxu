@@ -637,7 +637,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
         vsx_widget_skin::get_instance()->skin_path_get() + "component_types/"+component_type+".png",
         vsxf::get_instance(),
         true, // threaded
-        vsx_texture_gl_hint(
+        vsx_texture_gl_loader_hint(
          true, // flip vertically
          false, // data split cube map
          true, // mipmaps
@@ -651,7 +651,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
           vsx_widget_skin::get_instance()->skin_path_get() +"component_types/"+component_type+"_overlay.png",
           vsxf::get_instance(),
           true, // threaded
-          vsx_texture_gl_hint(
+          vsx_texture_gl_loader_hint(
            true, // flip vertically
            false, // data split cube map
            true, // mipmaps
@@ -744,7 +744,7 @@ void vsx_widget_component::init()
     vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
     vsxf::get_instance(),
     true, // threaded
-    vsx_texture_gl_hint(
+    vsx_texture_gl_loader_hint(
      true, // flip vertically
      false, // data split cube map
      false, // mipmaps

@@ -1,8 +1,8 @@
-#ifndef VSX_TEXTURE_GL_HINT_H
-#define VSX_TEXTURE_GL_HINT_H
+#ifndef VSX_TEXTURE_GL_LOADER_HINT_H
+#define VSX_TEXTURE_GL_LOADER_HINT_H
 
 
-class vsx_texture_gl_hint
+class vsx_texture_gl_loader_hint
 {
 public:
   // data permutations
@@ -15,7 +15,7 @@ public:
   // meta hints
   bool cache_data_reload = false;
 
-  bool equals(vsx_texture_gl_hint& other)
+  bool equals(vsx_texture_gl_loader_hint& other)
   {
     if (
         other.data_flip_vertically == data_flip_vertically
@@ -30,11 +30,11 @@ public:
     return false;
   }
 
-  vsx_texture_gl_hint()
+  vsx_texture_gl_loader_hint()
   {
   }
 
-  vsx_texture_gl_hint(
+  vsx_texture_gl_loader_hint(
       bool data_flip_vertically_n,
       bool data_split_cubemap_n,
       bool mipmaps_n,

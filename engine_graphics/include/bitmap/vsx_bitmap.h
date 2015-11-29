@@ -22,51 +22,72 @@
 */
 
 
-#ifndef VSX_TEXTURE_DATA_H
-#define VSX_TEXTURE_DATA_H
+#ifndef VSX_BITMAP_H
+#define VSX_BITMAP_H
 
 #include <stdlib.h>
 
-#include "vsx_texture_data_hint.h"
+#include "loader/vsx_bitmap_loader_hint.h"
 
-class vsx_texture_data
+typedef uint32_t vsx_bitmap_32bt;
+
+class vsx_bitmap
 {
 public:
   vsx_string<> filename;
 
-  // graphics layer hints -----------------------------------------------------
-  vsx_texture_data_hint hint;
+  // timestamp for different engine modules to keep track of when to invalidate themselves
+  int timestamp = 0;
 
-  // geometrical / color ------------------------------------------------------
+  // loader hints
+  vsx_bitmap_loader_hint hint;
+
+  // geometrical / color
   unsigned int width = 0;
   unsigned int height = 0;
   unsigned int depth = false;
   bool alpha = false;
-  unsigned int channels = 0;
+  unsigned int channels = 4;
+  bool channels_bgra = false;
 
-  // storage ------------------------------------------------------------------
+  // storage
   enum channel_storage_type_t
   {
     byte_storage= 0,
     float_storage = 1
   } storage_format = byte_storage;
 
+  // data holder
   void *data[6] = {0,0,0,0,0,0};
+
+  // has thread finished producing data when loading?
   volatile size_t data_ready = 0;
+
+  // is data DXT5 compressed?
   bool compressed_data = false;
 
-
-  // cache information --------------------------------------------------------
+  // cache information
   bool attached_to_cache;
   int references = 0;
 
-  vsx_texture_data(bool is_attached_to_cache)
+  bool is_valid()
+  {
+    if (!width)
+      return false;
+    if (!height)
+      return false;
+    if (!data[0])
+      return false;
+    return true;
+  }
+
+  vsx_bitmap(bool is_attached_to_cache = false)
     :
     attached_to_cache(is_attached_to_cache)
   {
   }
 
-  ~vsx_texture_data()
+  ~vsx_bitmap()
   {
     if (data[0])
       free(data[0]);

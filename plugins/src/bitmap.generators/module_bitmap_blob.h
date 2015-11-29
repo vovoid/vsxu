@@ -21,6 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <texture/vsx_texture.h>
 class module_bitmap_generators_blob : public vsx_module
 {
   // in
@@ -42,7 +43,7 @@ class module_bitmap_generators_blob : public vsx_module
   vsx_bitmap bitmap;
 	int bitm_timestamp;
 
-  vsx_texture* texture;
+  vsx_texture<>* texture;
   pthread_t	worker_t;
   pthread_attr_t attr;
 
@@ -116,16 +117,15 @@ public:
     i_size = 0;
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
     work_bitmap = &bitmap;
-    bitmap.data = 0;
+    bitmap.data[0] = 0;
     bitmap.channels = 4;
     bitmap.storage_format = vsx_bitmap::byte_storage;
-    bitmap.valid = false;
     bitm_timestamp = bitmap.timestamp;
     need_to_rebuild = true;
     my_ref = 0;
     if (c_type == 1) {
-      texture = new vsx_texture();
-      texture->texture_gl->init_opengl_texture_2d();
+      texture = new vsx_texture<>();
+      texture->texture->init_opengl_texture_2d();
       texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
       texture_out->set(texture);
     }
@@ -179,7 +179,6 @@ public:
         }
       }
     ((module_bitmap_generators_blob*)ptr)->work_bitmap->timestamp++;
-    ((module_bitmap_generators_blob*)ptr)->work_bitmap->valid = true;
     ((module_bitmap_generators_blob*)ptr)->loading_done = true;
     ((module_bitmap_generators_blob*)ptr)->thread_state = 2;
     int *retval = new int;
@@ -194,7 +193,7 @@ public:
     // initialize our worker thread, we don't want to keep the renderloop waiting do we?
     if (thread_state == 2)
     {
-      if (bitmap.valid && bitm_timestamp != bitmap.timestamp)
+      if (bitm_timestamp != bitmap.timestamp)
       {
         worker_running = false;
         pthread_join(worker_t, NULL);
@@ -203,7 +202,7 @@ public:
         bitm_timestamp = bitmap.timestamp;
         if (c_type == 1)
         {
-          vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl,&bitmap, false, true);
+          vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, &bitmap, false, true);
           texture_out->set(texture);
         }
         bitmap_out->set(&bitmap);
@@ -222,12 +221,11 @@ public:
         {
           to_delete_data = bitmap.data;
         }
-        bitmap.data = new vsx_bitmap_32bt[i_size*i_size];
+        bitmap.data[0] = malloc( sizeof(vsx_bitmap_32bt) * i_size * i_size );
         bitmap.height = bitmap.width = i_size;
       }
 
       p_updates = param_updates;
-      bitmap.valid = false;
 
       work_alpha = alpha_in->get();
       work_color[0] = MIN(1.0f, color_in->get(0));
@@ -254,11 +252,8 @@ public:
   {
     if (c_type == 1)
     {
-      if (bitmap.valid)
-      {
-        texture->texture_gl->init_opengl_texture_2d();
-        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitmap, false, true);
-      }
+      texture->texture->init_opengl_texture_2d();
+      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, &bitmap, false, true);
       texture_out->set(texture);
     }
   }
@@ -267,7 +262,7 @@ public:
   {
     if (c_type == 1)
     {
-      texture->texture_gl->unload();
+      texture->texture->unload();
     }
   }
 
@@ -281,7 +276,7 @@ public:
 
     if (c_type == 1 && texture)
     {
-      texture->texture_gl->unload();
+      texture->texture->unload();
       delete texture;
     }
     delete[] (vsx_bitmap_32bt*)bitmap.data;

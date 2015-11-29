@@ -57,7 +57,7 @@ void vsx_window_object_inspector::draw_2d() {
     size_.y = size.y-font_size-dragborder;
     pos_.x = pos.x+dragborder;
     size_.x = size.x-dragborder*2;
-    title = filename_loaded+" "+vsx_string_helper::i2s((int)texture->texture_gl->texture_data->width)+"x"+vsx_string_helper::i2s((int)texture->texture_gl->texture_data->height);
+    title = filename_loaded+" "+vsx_string_helper::i2s((int)texture->texture_gl->bitmap->width)+"x"+vsx_string_helper::i2s((int)texture->texture_gl->bitmap->height);
     glColor4f(1,1,1,1);
       texture->bind();
         glBegin(GL_QUADS);
@@ -74,15 +74,15 @@ void vsx_window_object_inspector::draw_2d() {
     float screenaspect = screen_x/screen_y;
 
     if (texture_loaded == false)
-      if (texture->texture_gl->texture_data->width != 0.0) {
+      if (texture->texture_gl->bitmap->width != 0.0) {
         texture_loaded = true;
         vsx_vector3<> aa;
-        aa.x = 0.4/screenaspect*(texture->texture_gl->texture_data->width/texture->texture_gl->texture_data->height);
+        aa.x = 0.4/screenaspect*(texture->texture_gl->bitmap->width/texture->texture_gl->bitmap->height);
         aa.y = 0.4;
         aa.z = 0;
         printf("resizing to tex\n");
         resize_to(aa);
-        move(1*screen_aspect-0.4/screenaspect*(texture->texture_gl->texture_data->width/texture->texture_gl->texture_data->height),1.0f-aa.y,0);
+        move(1*screen_aspect-0.4/screenaspect*(texture->texture_gl->bitmap->width/texture->texture_gl->bitmap->height),1.0f-aa.y,0);
       }
   }
 }
@@ -280,7 +280,7 @@ void vsx_window_object_inspector::load_file(vsx_string<>filename)
     filename,
     vsxf::get_instance(),
     true, // threaded
-    vsx_texture_gl_hint(
+    vsx_texture_gl_loader_hint(
      true, // flip vertically
      false, // data split cube map
      true, // mipmaps

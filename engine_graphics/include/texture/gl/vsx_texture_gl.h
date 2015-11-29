@@ -26,13 +26,13 @@
 #define VSX_TEXTURE_GL_H
 
 #include <debug/vsx_error.h>
-#include "vsx_texture_gl_hint.h"
+#include "vsx_texture_gl_loader_hint.h"
 
 class vsx_texture_gl
 {
 public:
-  vsx_texture_gl_hint hint;
-  vsx_texture_data* texture_data;
+  vsx_texture_gl_loader_hint hint;
+  vsx_bitmap* bitmap;
 
   // handle and type
   unsigned int gl_id = 0;
@@ -49,7 +49,7 @@ public:
     attached_to_cache(is_attached_to_cache)
   {
     if (!attached_to_cache)
-      texture_data = new vsx_texture_data(false);
+      bitmap = new vsx_bitmap(false);
   }
 
   void init_opengl_texture_1d()
@@ -91,6 +91,6 @@ public:
 
 };
 
-#include "texture/vsx_texture_gl_loader.h"
+#include "vsx_texture_gl_loader.h"
 
 #endif

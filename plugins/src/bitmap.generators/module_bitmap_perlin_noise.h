@@ -24,7 +24,7 @@
 
 
 #include "perlin/perlin.h"
-#include <vsx_bitmap.h>
+#include <bitmap/vsx_bitmap.h>
 
 
 class module_bitmap_perlin_noise : public vsx_module

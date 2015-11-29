@@ -659,7 +659,7 @@ void vsx_widget_ultra_chooser::build_tree() {
     vsx_widget_skin::get_instance()->skin_path_get() + "label.png",
     vsxf::get_instance(),
     true, // threaded
-    vsx_texture_gl_hint(
+    vsx_texture_gl_loader_hint(
      false, // flip vertically
      false, // data split cube map
      false, // mipmaps

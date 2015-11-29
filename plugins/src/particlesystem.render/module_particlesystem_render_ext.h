@@ -25,7 +25,7 @@ public:
 
   // internal
   vsx_particlesystem<>* particles;
-  vsx_texture** tex;
+  vsx_texture<>** tex;
 
   // sequences
   vsx::sequence::channel<vsx::sequence::value_float> seq_size;
@@ -34,9 +34,9 @@ public:
   vsx::sequence::channel<vsx::sequence::value_float> seq_g;
   vsx::sequence::channel<vsx::sequence::value_float> seq_b;
 
-  vsx_texture *texture_lookup_sizes;
+  vsx_texture<> *texture_lookup_sizes;
 
-  vsx_texture *texture_lookup_color;
+  vsx_texture<> *texture_lookup_color;
 
   vsx_glsl shader;
 
