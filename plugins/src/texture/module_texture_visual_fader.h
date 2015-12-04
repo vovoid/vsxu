@@ -12,10 +12,9 @@ class module_texture_visual_fader : public vsx_module
   vsx_module_param_float* fade_pos_out;
 
   // internal
-  vsx_texture texture_a;
-  vsx_texture texture_b;
 
 public:
+
   void module_info(vsx_module_info* info) {
     info->identifier = "system;visual_fader";
     info->in_param_spec = "texture_a_in:texture,texture_b_in:texture,fade_pos_in:float";
@@ -40,9 +39,9 @@ public:
   void output(vsx_module_param_abs* param)
   {
     VSX_UNUSED(param);
-    vsx_texture** t_a;
+    vsx_texture<>** t_a;
       t_a = texture_a_in->get_addr();
-    vsx_texture** t_b;
+    vsx_texture<>** t_b;
       t_b = texture_b_in->get_addr();
     if (t_a && t_b) {
       ((vsx_module_param_texture*)texture_a_out)->set(*t_a);

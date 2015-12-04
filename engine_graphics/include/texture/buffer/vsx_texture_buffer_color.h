@@ -9,7 +9,7 @@ class vsx_texture_buffer_color
 public:
   void init
   (
-    vsx_texture* texture,
+    vsx_texture<>* texture,
     int width, // width in pixels
     int height, // height in pixels
     bool float_texture, // use floating point channels (8-bit is default)
@@ -158,19 +158,19 @@ public:
        case GL_FRAMEBUFFER_COMPLETE_EXT:
 
         if (multisample)
-          texture->texture_gl->gl_id = frame_buffer_blit_color_texture;
+          texture->texture->gl_id = frame_buffer_blit_color_texture;
         else
         {
           color_buffer_handle = frame_buffer_fbo_attachment_texture;
-          texture->texture_gl->gl_id = frame_buffer_fbo_attachment_texture;
+          texture->texture->gl_id = frame_buffer_fbo_attachment_texture;
         }
 
         if (multisample)
-          texture->texture_gl->gl_type = GL_TEXTURE_2D_MULTISAMPLE;
+          texture->texture->gl_type = GL_TEXTURE_2D_MULTISAMPLE;
         else
-          texture->texture_gl->gl_type = GL_TEXTURE_2D;
+          texture->texture->gl_type = GL_TEXTURE_2D;
 
-        texture->texture_gl->uploaded_to_gl = true;
+        texture->texture->uploaded_to_gl = true;
         this->width = width;
         this->height = height;
         valid_fbo = true; // valid for capturing
@@ -184,7 +184,7 @@ public:
 
   void reinit
   (
-    vsx_texture* texture,
+    vsx_texture<>* texture,
     int width, // width in pixels
     int height, // height in pixels
     bool float_texture, // use floating point channels (8-bit is default)
@@ -208,7 +208,7 @@ public:
     );
   }
 
-  void deinit(vsx_texture* texture)
+  void deinit(vsx_texture<>* texture)
   {
     if (!frame_buffer_handle)
       return;
@@ -219,7 +219,7 @@ public:
     depth_buffer_local = 0;
     glDeleteFramebuffersEXT(1, &frame_buffer_handle);
 
-    if (texture->texture_gl->gl_type == GL_TEXTURE_2D_MULTISAMPLE)
+    if (texture->texture->gl_type == GL_TEXTURE_2D_MULTISAMPLE)
     {
       glDeleteTextures(1, &frame_buffer_blit_color_texture);
       frame_buffer_blit_color_texture = 0;
@@ -227,9 +227,9 @@ public:
     }
 
     valid_fbo = false;
-    texture->texture_gl->gl_id = 0;
-    texture->texture_gl->gl_type = 0;
-    texture->texture_gl->uploaded_to_gl = false;
+    texture->texture->gl_id = 0;
+    texture->texture->gl_type = 0;
+    texture->texture->uploaded_to_gl = false;
   }
 
   void begin_capture_to_buffer()

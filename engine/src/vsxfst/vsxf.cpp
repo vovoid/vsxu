@@ -518,7 +518,6 @@ void vsxf::archive_load_all_mt(const char* filename)
     pthread_join(threads[i],NULL);
     pthread_attr_destroy(&attrs[i]);
   }
-
 }
 
 vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
@@ -666,7 +665,7 @@ vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
   return 0;
 }
 
-void vsxf::f_close(vsxf_handle* handle)
+void vsxf::f_close(vsxf_handle* &handle)
 {
   if (!handle)
     return;
@@ -687,6 +686,7 @@ void vsxf::f_close(vsxf_handle* handle)
     }
   }
   delete handle;
+  handle = 0x0;
 }
 
 int vsxf::f_puts(const char* buf, vsxf_handle* handle)

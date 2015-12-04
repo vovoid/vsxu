@@ -21,6 +21,9 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <bitmap/vsx_bitmap.h>
+#include <texture/vsx_texture.h>
+
 class module_bitmap_generators_concentric_circles : public vsx_module
 {
   // in
@@ -36,33 +39,24 @@ class module_bitmap_generators_concentric_circles : public vsx_module
   vsx_module_param_texture* texture_out;
 
 	// internal
-	bool need_to_rebuild;
+  vsx_bitmap bitmap;
+  vsx_texture<>* texture = 0x0;
 
-	vsx_bitmap bitm;
-	int bitm_timestamp;
+  int p_updates = -1;
 
-  vsx_texture<>* texture;
   pthread_t	worker_t;
-  pthread_attr_t attr;
+  bool worker_running = false;
 
-  int p_updates;
-  int my_ref;
+  int thread_state = 0;
+  int i_size = 0;
+  float work_color[4];
+  int work_alpha;
 
-
-  vsx_bitmap*       work_bitmap;
-  bool              worker_running;
-  bool              thread_created;
-  int               thread_state;
-  int               i_size;
-  float             work_color[4];
-  int               work_alpha;
-
-  void *to_delete_data;
-
+  void *to_delete_data = 0x0;
 
 public:
 
-  int               c_type;
+  int c_type;
 
   void module_info(vsx_module_info* info)
   {
@@ -93,11 +87,6 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-    loading_done = true;
-    thread_state = 0;
-    worker_running = false;
-    thread_created = false;
-    p_updates = -1;
     frequency_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"frequency");
     frequency_in->set(1.0f);
 
@@ -117,34 +106,21 @@ public:
     color_in->set(1.0f,3);
 
     angle_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"angle");
-    i_size = 0;
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-    work_bitmap = &bitm;
-    bitm_timestamp = bitm.timestamp;
-    need_to_rebuild = true;
-    my_ref = 0;
-    if (c_type == 1) {
-      texture = new vsx_texture<>();
-      texture->texture->init_opengl_texture_2d();
-      texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
-      texture_out->set(texture);
-    }
-    to_delete_data = 0;
   }
 
 
-  // our worker thread, to keep the tough generating work off the main loop
-  // this is a fairly simple operation, but when you want to generate fractals
-  // and decode film, you could run into several seconds of processing time.
   static void* worker(void *ptr)
   {
+    module_bitmap_generators_concentric_circles& module = *(module_bitmap_generators_concentric_circles*)ptr;
+
     int x,y;
-    float attenuation = ((module_bitmap_generators_concentric_circles*)ptr)->attenuation_in->get();
-    float frequency = ((module_bitmap_generators_concentric_circles*)ptr)->frequency_in->get() * 2.0f;
+    float attenuation = module.attenuation_in->get();
+    float frequency = module.frequency_in->get() * 2.0f;
 
-    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_generators_concentric_circles*)ptr)->work_bitmap->data;
+    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)module.bitmap.data[0];
 
-    int size = ((module_bitmap_generators_concentric_circles*)ptr)->i_size;
+    int size = module.i_size;
 
     float dist;
     int hsize = size >> 1;
@@ -163,132 +139,108 @@ public:
 
         dist = pow(fabs(cos(dstf * PI * frequency)), attenuation) * cos(dstf * PI * 0.5);
 
-        if (((module_bitmap_generators_concentric_circles*)ptr)->work_alpha == 1)
+        if ( module.work_alpha == 1)
         {
-          long pr = MAX(0,MIN(255,(long)(255.0f *  ((module_bitmap_generators_concentric_circles*)ptr)->work_color[0])));
-          long pg = MAX(0,MIN(255,(long)(255.0f *  ((module_bitmap_generators_concentric_circles*)ptr)->work_color[1])));
-          long pb = MAX(0,MIN(255,(long)(255.0f *  ((module_bitmap_generators_concentric_circles*)ptr)->work_color[2])));
-          long pa = MAX(0,MIN(255,(long)(255.0f * dist * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[3])));
+          long pr = CLAMP( (long)(255.0f *  module.work_color[0]), 0, 255);
+          long pg = CLAMP( (long)(255.0f *  module.work_color[1]), 0, 255);
+          long pb = CLAMP( (long)(255.0f *  module.work_color[2]), 0, 255);
+          long pa = CLAMP( (long)(255.0f * dist * module.work_color[3]), 0, 255);
           *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
         } else
-        if (((module_bitmap_generators_concentric_circles*)ptr)->work_alpha == 0) {
-          long pr = MAX(0,MIN(255,(long)(255.0f * dist * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[0])));
-          long pg = MAX(0,MIN(255,(long)(255.0f * dist * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[1])));
-          long pb = MAX(0,MIN(255,(long)(255.0f * dist * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[2])));
-          long pa = (long)(255.0f * ((module_bitmap_generators_concentric_circles*)ptr)->work_color[3]);
+        if (module.work_alpha == 0) {
+          long pr = CLAMP( (long)(255.0f * dist * module.work_color[0]), 0, 255);
+          long pg = CLAMP( (long)(255.0f * dist * module.work_color[1]), 0, 255);
+          long pb = CLAMP( (long)(255.0f * dist * module.work_color[2]), 0, 255);
+          long pa = (long)(255.0f * module.work_color[3]);
           *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
         }
       }
-    ((module_bitmap_generators_concentric_circles*)ptr)->work_bitmap->timestamp++;
-    ((module_bitmap_generators_concentric_circles*)ptr)->work_bitmap->valid = true;
-    ((module_bitmap_generators_concentric_circles*)ptr)->loading_done = true;
-    ((module_bitmap_generators_concentric_circles*)ptr)->thread_state = 2;
-    int *retval = new int;
-    *retval = 0;
-    pthread_exit(NULL);
-    // the thread will die here.
+
+    module.bitmap.timestamp++;
+
+    __sync_fetch_and_add( &(module.bitmap.data_ready), 1 );
     return 0;
   }
 
   void run()
   {
-    // initialize our worker thread, we don't want to keep the renderloop waiting do we?
-    if (thread_state == 2)
-    {
-      if (bitm.valid && bitm_timestamp != bitm.timestamp)
-      {
-        worker_running = false;
-        pthread_join(worker_t, NULL);
-
-        // ok, new version
-        bitm_timestamp = bitm.timestamp;
-        if (c_type == 1)
-        {
-          texture->texture_gl->init_opengl_texture_2d();
-          vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm, false, true);
-          texture_out->set(texture);
-        }
-        bitmap_out->set(&bitm);
-      }
-      thread_state = 3;
-    }
-
-    if (!worker_running)
-    if (p_updates != param_updates)
-    {
-      //need_to_rebuild = false;
-      if (i_size != 8 << size_in->get())
-      {
-        i_size = 8 << size_in->get();
-        if (bitm.data)
-        {
-          to_delete_data = bitm.data;
-        }
-        bitm.data = new vsx_bitmap_32bt[i_size*i_size];
-
-        bitm.width  = i_size;
-        bitm.height = i_size;
-      }
-
-      p_updates = param_updates;
-      bitm.valid = false;
-
-      work_alpha = alpha_in->get();
-      work_color[0] = MIN(1.0f,color_in->get(0));
-      work_color[1] = MIN(1.0f,color_in->get(1));
-      work_color[2] = MIN(1.0f,color_in->get(2));
-      work_color[3] = MIN(1.0f,color_in->get(3));
-      thread_state = 1;
-
-      pthread_attr_init(&attr);
-
-      worker_running = true;
-      pthread_create(&worker_t, &attr, &worker, (void*)this);
-      thread_created = true;
-    }
-
     if (to_delete_data)
     {
-      delete[] (vsx_bitmap_32bt*)to_delete_data;
+      free(to_delete_data);
       to_delete_data = 0;
     }
-  }
 
-  void start()
-  {
-    if (c_type == 1)
+    if (bitmap.data_ready && worker_running)
     {
-      if (bitm.valid)
+      pthread_join(worker_t,0);
+      worker_running = false;
+
+      bitmap_out->set(&bitmap);
+      loading_done = true;
+
+      if (c_type == 1)
       {
-        texture->texture_gl->init_opengl_texture_2d();
-        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitm, false, true);
+        if (!texture)
+          texture = new vsx_texture<>();
+        texture->texture->init_opengl_texture_2d();
+        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, &bitmap, true);
+        texture_out->set(texture);
       }
-      texture_out->set(texture);
     }
+
+    req(p_updates != param_updates);
+    req(!worker_running);
+    p_updates = param_updates;
+
+    if (i_size != 8 << size_in->get())
+    {
+      i_size = 8 << size_in->get();
+      if (bitmap.data[0])
+        to_delete_data = bitmap.data[0];
+      bitmap.data[0] = malloc( sizeof(vsx_bitmap_32bt) * i_size * i_size);
+
+      bitmap.width  = i_size;
+      bitmap.height = i_size;
+    }
+
+
+    work_alpha = alpha_in->get();
+    work_color[0] = CLAMP(color_in->get(0), 0.0, 1.0);
+    work_color[1] = CLAMP(color_in->get(1), 0.0, 1.0);
+    work_color[2] = CLAMP(color_in->get(2), 0.0, 1.0);
+    work_color[3] = CLAMP(color_in->get(3), 0.0, 1.0);
+
+    worker_running = true;
+    pthread_create(&worker_t, NULL, &worker, (void*)this);
   }
 
-  void stop()
-  {
-    if (c_type == 1)
-    {
-      texture->texture_gl->unload();
-    }
+  void start() {
+    req(c_type);
+    req(bitmap.is_valid());
+    texture->texture->init_opengl_texture_2d();
+    vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, &bitmap, true);
+    texture_out->set(texture);
+  }
+
+  void stop() {
+    req(c_type);
+    texture->unload_gl();
   }
 
   void on_delete()
   {
     // wait for thread to finish
     if (worker_running)
-    {
       pthread_join(worker_t,NULL);
-    }
 
-    if (c_type == 1 && texture)
+    if (c_type && texture)
     {
-      texture->texture_gl->unload();
+      texture->unload_gl();
       delete texture;
     }
-    delete[] (vsx_bitmap_32bt*)bitm.data;
+
+    if (bitmap.data[0])
+      free(bitmap.data[0]);
   }
 
 };

@@ -772,12 +772,10 @@ void vsx_widget::front(vsx_widget* t)
 
 void vsx_widget::before_delete()
 {
-
 }
 
 void vsx_widget::on_delete()
 {
-
 }
 
 

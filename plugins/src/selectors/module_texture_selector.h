@@ -23,7 +23,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <texture/vsx_texture_buffer_color.h>
+#include <texture/buffer/vsx_texture_buffer_color.h>
 
 #define VERTEX_PROGRAM \
        "varying vec2 texcoord;\n" \
@@ -100,11 +100,11 @@ class module_texture_selector : public vsx_module
   GLuint glsl_A_mix;
   GLuint glsl_B_mix;
 
-  vsx_texture* i_tex_blank;
+  vsx_texture<>* i_tex_blank;
   vsx_texture_buffer_color buf_blank;
-  vsx_texture** i_tex_A;
-  vsx_texture** i_tex_B;
-  vsx_texture* i_tex_output;
+  vsx_texture<>** i_tex_A;
+  vsx_texture<>** i_tex_B;
+  vsx_texture<>* i_tex_output;
   vsx_texture_buffer_color buf_output;
 
   int i_prev_inputs;
@@ -283,10 +283,9 @@ public:
     i_clear_bmp.width = 1;
     i_clear_bmp.height = 1;
 
-    i_clear_bmp.data = new vsx_bitmap_32bt[1];
+    i_clear_bmp.data[0] = malloc( sizeof(vsx_bitmap_32bt) );
     i_clear_bmp_data = (vsx_bitmap_32bt*)i_clear_bmp.data;
     *i_clear_bmp_data = 0xff000000;
-    i_clear_bmp.valid = true;
 
 
     i_in_param_string = "";
@@ -424,7 +423,7 @@ public:
 //---SHADER-FUNCTIONS-----------------------------------------------------------
  
   //Set GL parameters for a texture
-  void BindTexture(vsx_texture* tex)
+  void BindTexture(vsx_texture<>* tex)
   {
     tex->bind();
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
@@ -436,7 +435,7 @@ public:
   }
 
   //Send the textures and parameters to the shader, returning a shaded texture
-  void BlendTexture(vsx_texture* texInA, vsx_texture* texInB,
+  void BlendTexture(vsx_texture<>* texInA, vsx_texture<>* texInB,
                     float Amix, float Bmix, vsx_texture_buffer_color* bufOut)
   {
     bufOut->begin_capture_to_buffer();
@@ -476,7 +475,7 @@ public:
   }
 
   //Sequence to delete any texture
-  void DeleteTexture(vsx_texture* tex)
+  void DeleteTexture(vsx_texture<>* tex)
   {
     if(tex)
     {
@@ -694,7 +693,7 @@ public:
                           0x00000100 * i_clear_color[1]
                                      |
                           0x00000001 * i_clear_color[0];
-      vsx_texture_gl_loader::upload_bitmap_2d(i_tex_blank->texture_gl, &i_clear_bmp, true, true);
+      vsx_texture_gl_loader::upload_bitmap_2d(i_tex_blank->texture, &i_clear_bmp, true);
 
       i_prev_clear_color[0] = clear_color->get(0);
       i_prev_clear_color[1] = clear_color->get(1);
@@ -712,7 +711,7 @@ public:
       i_tex_size = i_new_size;
       buf_output.reinit(i_tex_output, 8 << i_tex_size, 8 << i_tex_size, true, true, false, true, 0);
       buf_blank.reinit(i_tex_blank, 8 << i_tex_size, 8 << i_tex_size, true, true, false, true, 0);
-      vsx_texture_gl_loader::upload_bitmap_2d(i_tex_blank->texture_gl, &i_clear_bmp, true, true);
+      vsx_texture_gl_loader::upload_bitmap_2d(i_tex_blank->texture, &i_clear_bmp, true);
     }
   }
 
@@ -748,13 +747,13 @@ public:
   {
     if (!i_tex_output)
     {
-      i_tex_output = new vsx_texture; //Output Texture from the shader
-      i_tex_blank = new vsx_texture; //Blank Texture for default and clear_color
+      i_tex_output = new vsx_texture<>; //Output Texture from the shader
+      i_tex_blank = new vsx_texture<>; //Blank Texture for default and clear_color
 
       buf_output.reinit(i_tex_output, 8 << i_tex_size, 8 << i_tex_size, true, true, false, true, 0);
       buf_blank.reinit(i_tex_blank, 8 << i_tex_size, 8 << i_tex_size, true, true, false, true, 0);
 
-      vsx_texture_gl_loader::upload_bitmap_2d(i_tex_blank->texture_gl, &i_clear_bmp, true, true);
+      vsx_texture_gl_loader::upload_bitmap_2d(i_tex_blank->texture, &i_clear_bmp, true);
 
       i_tex_A = &i_tex_blank;
       i_tex_B = &i_tex_blank;

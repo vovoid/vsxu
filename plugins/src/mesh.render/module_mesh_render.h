@@ -48,7 +48,7 @@ class module_mesh_render : public vsx_module
   // internal
   vsx_mesh<>** particle_mesh;
   vsx_mesh<>** mesh;
-  vsx_texture** ta;
+  vsx_texture<>** ta;
   bool m_normals, m_tex_coords, m_colors;
   vsx_matrix<float> mod_mat, proj_mat;
   vsx_particlesystem<>* particles;

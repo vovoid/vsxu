@@ -50,7 +50,7 @@
 
 
 class vsx_widget_pool_tree : public vsx_widget_editor {
-  vsx_texture* mtex_blob;
+  vsx_texture<>* mtex_blob;
   //vsx_widget* name_dialog;
   bool dragging;
   vsx_widget_coords drag_coords;
@@ -83,12 +83,8 @@ public:
       vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
       vsxf::get_instance(),
       false, // threaded
-      vsx_texture_gl_loader_hint(
-       true, // flip vertically
-       false, // data split cube map
-       false, // mipmaps
-       true // linear interpolate
-      )
+      vsx_bitmap::flip_vertical_hint,
+      vsx_texture_gl::linear_interpolate_hint
     );
     set_render_type(render_2d);
   }
@@ -157,7 +153,6 @@ public:
 
     if (draw_tooltip && m_o_focus == editor && !dragging) {
       font.color.a = 0.0f;
-      font.mode_2d = true;
       vsx_vector3<> sz = font.get_size(tooltip_text, 0.025f);
       glColor4f(0.0f,0.0f,0.0f,0.6f);
       draw_box(vsx_vector3<>(tooltip_pos.x,tooltip_pos.y+0.025*1.05), sz.x, -sz.y);

@@ -12,12 +12,18 @@ class vsx_texture_gl_cache
   public:
     bool used = true;
     vsx_string<> filename;
-    vsx_texture_gl_loader_hint hint;
+    uint64_t bitmap_loader_hint;
+    uint64_t hint;
     vsx_texture_gl* texture_gl;
 
-    inline bool equals(const vsx_string<>& other_filename, vsx_texture_gl_loader_hint& other_hint)
+    inline bool equals(const vsx_string<>& other_filename, uint64_t other_bitmap_loader_hint, uint64_t& other_hint)
     {
-      if (vsx_string<>::s_equals(other_filename, filename) && hint.equals(other_hint))
+      if (vsx_string<>::s_equals(other_filename, filename)
+          &&
+          hint == other_hint
+          &&
+          bitmap_loader_hint == other_bitmap_loader_hint
+          )
         return true;
       return false;
     }
@@ -25,17 +31,27 @@ class vsx_texture_gl_cache
 
   vsx_nw_vector<vsx_texture_gl_cache_item*> items;
 
-  vsx_texture_gl_cache_item* create_item()
+  void create_item(vsx_string<>& filename, uint64_t bitmap_loader_hint, uint64_t hint, vsx_texture_gl* texture_gl)
   {
+    vsx_texture_gl_cache_item* item = 0x0;
     foreach (items, i)
       if (!items[i]->used)
       {
         items[i]->used = true;
-        return items[i];
+        item = items[i];
+        break;
       }
-    vsx_texture_gl_cache_item* item = new vsx_texture_gl_cache_item();
-    items.push_back(item);
-    return item;
+
+    if (!item)
+    {
+      item = new vsx_texture_gl_cache_item();
+      items.push_back(item);
+    }
+
+    item->filename = filename;
+    item->bitmap_loader_hint = bitmap_loader_hint;
+    item->hint = hint;
+    item->texture_gl = texture_gl;
   }
 
   void recycle_item(vsx_texture_gl_cache_item* item)
@@ -45,10 +61,10 @@ class vsx_texture_gl_cache
         item->used = false;
   }
 
-  vsx_texture_gl_cache_item* get_item(vsx_string<>& filename, vsx_texture_gl_loader_hint& hint)
+  vsx_texture_gl_cache_item* get_item(vsx_string<>& filename, uint64_t bitmap_loader_hint, uint64_t& hint)
   {
     foreach (items, i)
-      if (items[i]->equals(filename, hint))
+      if (items[i]->equals(filename, bitmap_loader_hint, hint))
         return items[i];
     return 0;
   }
@@ -63,59 +79,46 @@ class vsx_texture_gl_cache
 
 public:
 
-  vsx_texture_gl* create(vsx_string<>& filename,  vsx_texture_gl_loader_hint hint)
+  vsx_texture_gl* create(vsx_string<>& filename, uint64_t bitmap_loader_hint, uint64_t hint)
   {
     vsx_texture_gl* texture_gl = new vsx_texture_gl(true);
     texture_gl->references = 1;
+    texture_gl->bitmap_loader_hint = bitmap_loader_hint;
     texture_gl->hint = hint;
 
-    texture_gl->bitmap = vsx_bitmap_cache::get_instance()->aquire_create(
-      filename,
-      vsx_bitmap_loader_hint(
-        hint.data_flip_vertically,
-        hint.data_split_cubemap
-      )
-    );
+    texture_gl->bitmap = vsx_bitmap_cache::get_instance()->aquire_create( filename, bitmap_loader_hint );
 
-    vsx_texture_gl_cache_item* item = create_item();
-    item->hint = hint;
-    item->filename = filename;
-    item->texture_gl = texture_gl;
-
+    create_item(filename, bitmap_loader_hint, hint, texture_gl);
     return texture_gl;
   }
 
-  bool has(vsx_string<>& filename, vsx_texture_gl_loader_hint hint)
+  bool has(vsx_string<>& filename, uint64_t bitmap_loader_hint, uint64_t hint)
   {
     foreach (items, i)
-      if (items[i]->equals(filename, hint))
+      if (items[i]->equals(filename, bitmap_loader_hint, hint))
         if (items[i]->used)
           return true;
     return false;
   }
 
-  vsx_texture_gl* aquire(vsx_string<>& filename, vsxf* filesystem, bool reload_with_thread, vsx_texture_gl_loader_hint hint)
+  vsx_texture_gl* aquire(vsx_string<>& filename, vsxf* filesystem, bool reload_with_thread, uint64_t bitmap_loader_hint, uint64_t hint, bool reload = false)
   {
-    vsx_texture_gl_cache_item* item = get_item(filename, hint);
-    if (!item)
-      VSX_ERROR_RETURN_V("Invalid cache item", 0x0);
+    vsx_texture_gl_cache_item* item = get_item(filename, bitmap_loader_hint, hint);
+    req_error_v(item, "Invalid cache item", 0x0);
 
-    item->texture_gl->references++;
-
-    vsx_bitmap_loader_hint data_hint(
-      hint.data_flip_vertically,
-      hint.data_split_cubemap
-    );
+    if (!reload)
+      item->texture_gl->references++;
 
     // reload data
-    if (hint.cache_data_reload)
+    if (reload)
     {
+      vsx_printf(L"reloading %s\n", filename.c_str());
       item->texture_gl->uploaded_to_gl = false;
-      item->texture_gl->bitmap = vsx_bitmap_cache::get_instance()->aquire_reload( filename, filesystem, reload_with_thread, data_hint );
+      item->texture_gl->bitmap = vsx_bitmap_cache::get_instance()->aquire_reload( filename, filesystem, reload_with_thread, bitmap_loader_hint );
       return item->texture_gl;
     }
 
-    item->texture_gl->bitmap = vsx_bitmap_cache::get_instance()->aquire( filename, data_hint );
+    item->texture_gl->bitmap = vsx_bitmap_cache::get_instance()->aquire( filename, bitmap_loader_hint );
     return item->texture_gl;
   }
 
@@ -138,6 +141,12 @@ public:
     delete item->texture_gl;
     recycle_item(item);
     texture_gl = 0;
+  }
+
+  ~vsx_texture_gl_cache()
+  {
+    foreach (items, i)
+      delete items[i];
   }
 
   static vsx_texture_gl_cache* get_instance()

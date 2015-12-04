@@ -22,7 +22,7 @@ class module_texture_load_openexr : public vsx_module
   vsx_bitmap bitmap;
   int bitm_timestamp;
 
-  vsx_texture* texture;
+  vsx_texture<>* texture;
 
 public:
 

@@ -1,6 +1,6 @@
 #include <time.h>
 #include <vsx_data_path.h>
-#include <texture/vsx_texture_buffer_color_depth.h>
+#include <texture/buffer/vsx_texture_buffer_color_depth.h>
 
 class module_texture_screenshot_hires : public vsx_module
 {
@@ -22,7 +22,7 @@ class module_texture_screenshot_hires : public vsx_module
   vsx_module_param_render* render_out;
 
   // internal
-  vsx_texture* texture;
+  vsx_texture<>* texture = 0x0;
   vsx_texture_buffer_color_depth buffer;
 
   vsx_gl_state* gl_state;
@@ -42,12 +42,6 @@ class module_texture_screenshot_hires : public vsx_module
   char* pixeldata_target;
 
 public:
-
-  module_texture_screenshot_hires()
-    :
-      texture(0x0)
-  {
-  }
 
   void module_info(vsx_module_info* info)
   {
@@ -115,10 +109,9 @@ public:
 
   bool activate_offscreen()
   {
-
     if (!texture)
     {
-      texture = new vsx_texture;
+      texture = new vsx_texture<>;
       buffer.init(texture, 512,512, false,true,true,false,0);
     }
 

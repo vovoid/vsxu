@@ -140,8 +140,8 @@ if (cmd == "param_get" || cmd == "pgo")
   if (!_value.size())
     goto process_message_queue_end;
 
-  if (_value.size() > 100)
-    _value = _value.substr(0,100)+"...";
+  if (_value.size() > 1000)
+    _value = _value.substr(0,1000)+"...";
 
   vsx_string<>value =vsx_string_helper:: base64_encode(_value);
   vsx_string<>extra = "";

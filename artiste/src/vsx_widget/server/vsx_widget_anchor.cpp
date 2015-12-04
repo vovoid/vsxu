@@ -1612,37 +1612,24 @@ void vsx_widget_anchor::init()
     vsx_widget_skin::get_instance()->skin_path_get() + "datatypes/"+p_type+".png",
     vsxf::get_instance(),
     true, // threaded
-    vsx_texture_gl_loader_hint(
-     true, // flip vertically
-     false, // data split cube map
-     true, // mipmaps
-     true // linear interpolate
-    )
+    vsx_bitmap::flip_vertical_hint,
+    vsx_texture_gl::linear_interpolate_hint
   );
 
   mtex_blob = vsx_texture_loader::load(
     vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/highlight_blob.png",
     vsxf::get_instance(),
     true, // threaded
-    vsx_texture_gl_loader_hint(
-     true, // flip vertically
-     false, // data split cube map
-     false, // mipmaps
-     true // linear interpolate
-    )
+    vsx_bitmap::flip_vertical_hint,
+    vsx_texture_gl::linear_interpolate_hint
   );
-
 
   mtex_blob_small = vsx_texture_loader::load(
     vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
     vsxf::get_instance(),
     true, // threaded
-    vsx_texture_gl_loader_hint(
-     true, // flip vertically
-     false, // data split cube map
-     false, // mipmaps
-     true // linear interpolate
-    )
+    vsx_bitmap::flip_vertical_hint,
+    vsx_texture_gl::linear_interpolate_hint
   );
 
   color.r = 1.0f;
@@ -2345,18 +2332,18 @@ void vsx_widget_anchor::draw()
       }
     }
     font.color.a = color.a;
-    myf_size = font.get_size(display_value,size.x*(d_size));
+    myf_size = font.get_size(display_value,size.x*d_size*0.8);
     if (d_size > 0.1) 
     {
       if (io == -1)
       {
         myf_pos.x -= size.x;
-        font.print_right(myf_pos, display_value,size.x*(d_size));
+        font.print_right(myf_pos, display_value,size.x*(d_size)*0.8);
       }
       else
       {
         myf_pos.x += size.x;
-        font.print(myf_pos, display_value,size.x*(d_size));
+        font.print(myf_pos, display_value,size.x*(d_size)*0.8);
       }
     }
   }

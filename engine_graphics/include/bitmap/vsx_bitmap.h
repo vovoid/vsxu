@@ -27,8 +27,6 @@
 
 #include <stdlib.h>
 
-#include "loader/vsx_bitmap_loader_hint.h"
-
 typedef uint32_t vsx_bitmap_32bt;
 
 class vsx_bitmap
@@ -39,8 +37,17 @@ public:
   // timestamp for different engine modules to keep track of when to invalidate themselves
   int timestamp = 0;
 
-  // loader hints
-  vsx_bitmap_loader_hint hint;
+  // loader hint
+  enum loader_hint {
+      no_hint = 0,
+      flip_vertical_hint = 1,
+      split_into_cubemaps_hint = 2
+    };
+
+  uint64_t hint = 0;
+  bool reload_hint = false;
+
+  //vsx_bitmap_loader_hint hint;
 
   // geometrical / color
   unsigned int width = 0;
@@ -70,6 +77,27 @@ public:
   bool attached_to_cache;
   int references = 0;
 
+
+  vsx_bitmap(bool is_attached_to_cache = false)
+    :
+    attached_to_cache(is_attached_to_cache)
+  {
+  }
+
+  ~vsx_bitmap()
+  {
+    free_data();
+  }
+
+  void free_data() {
+    for (size_t i = 0; i < 6; i++) {
+      if (!data[i])
+        continue;
+      free(data[i]);
+      data[i] = 0;
+    }
+  }
+
   bool is_valid()
   {
     if (!width)
@@ -81,27 +109,13 @@ public:
     return true;
   }
 
-  vsx_bitmap(bool is_attached_to_cache = false)
-    :
-    attached_to_cache(is_attached_to_cache)
+  size_t get_channel_size()
   {
+    if (storage_format == byte_storage)
+      return channels;
+    return sizeof(float) * channels;
   }
 
-  ~vsx_bitmap()
-  {
-    if (data[0])
-      free(data[0]);
-    if (data[1])
-      free(data[1]);
-    if (data[2])
-      free(data[2]);
-    if (data[3])
-      free(data[3]);
-    if (data[4])
-      free(data[4]);
-    if (data[5])
-      free(data[5]);
-  }
 };
 
 

@@ -637,12 +637,8 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
         vsx_widget_skin::get_instance()->skin_path_get() + "component_types/"+component_type+".png",
         vsxf::get_instance(),
         true, // threaded
-        vsx_texture_gl_loader_hint(
-         true, // flip vertically
-         false, // data split cube map
-         true, // mipmaps
-         true // linear interpolate
-        )
+        vsx_bitmap::flip_vertical_hint,
+        vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::mipmaps_hint
       );
 
       mtex_overlay = 0x0;
@@ -651,12 +647,8 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
           vsx_widget_skin::get_instance()->skin_path_get() +"component_types/"+component_type+"_overlay.png",
           vsxf::get_instance(),
           true, // threaded
-          vsx_texture_gl_loader_hint(
-           true, // flip vertically
-           false, // data split cube map
-           true, // mipmaps
-           true // linear interpolate
-          )
+          vsx_bitmap::flip_vertical_hint,
+          vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::mipmaps_hint
         );
 
       if (!internal_critical)
@@ -733,7 +725,6 @@ void vsx_widget_component::init()
   anchor_order[1] = 0;
   widget_type = VSX_WIDGET_TYPE_COMPONENT;
   parent_name = "";
-  font.mode_2d = true;
   init_run = true;
   macro = false;
   scaled = false;
@@ -744,12 +735,8 @@ void vsx_widget_component::init()
     vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
     vsxf::get_instance(),
     true, // threaded
-    vsx_texture_gl_loader_hint(
-     true, // flip vertically
-     false, // data split cube map
-     false, // mipmaps
-     true // linear interpolate
-    )
+    vsx_bitmap::flip_vertical_hint,
+    vsx_texture_gl::linear_interpolate_hint
   );
 }
 

@@ -1,5 +1,5 @@
 #include <texture/vsx_texture.h>
-#include <texture/vsx_bitmap_loader_png.h>
+#include <bitmap/loader/vsx_bitmap_loader_tga.h>
 
 class module_texture_load_tga: public vsx_module
 {
@@ -14,23 +14,13 @@ class module_texture_load_tga: public vsx_module
   vsx_module_param_texture* texture_out;
 
   // internal
-  vsx_texture* texture;
-  vsx_string<>current_filename;
-
-  int flip_vertical_cache;
-  int mipmaps_cache;
-  int min_mag_filter_cache;
+  vsx_string<> current_filename;
+  vsx_texture<>* texture = 0x0;
+  int flip_vertical_cache = 0;
+  int mipmaps_cache = 0;
+  int min_mag_filter_cache = 1;
 
 public:
-
-  module_texture_load_tga()
-    :
-      texture(0x0),
-      flip_vertical_cache(0),
-      mipmaps_cache(0)
-  {
-    loading_done = false;
-  }
 
   void module_info(vsx_module_info* info)
   {
@@ -45,10 +35,10 @@ public:
 
     info->in_param_spec =
       "filename:resource,"
-      "reload:enum?no|yes,"
-      "mipmaps:enum?no|yes,"
-      "flip_vertical:enum?no|yes,"
-      "min_mag_filter:enum?nearest|linear&nc=1,"
+      "reload:enum?no|yes&nc=1,"
+      "mipmaps:enum?no|yes&nc=1,"
+      "flip_vertical:enum?no|yes&nc=1,"
+      "min_mag_filter:enum?nearest|linear&nc=1"
      ;
 
     info->out_param_spec =
@@ -70,9 +60,7 @@ public:
 
     min_mag_filter_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "min_mag_filter");
     min_mag_filter_in->set(1); // linear
-    min_mag_filter_cache = 1;
 
-    // out
     texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
     texture_out->valid = false;
   }
@@ -80,7 +68,7 @@ public:
 
   void run()
   {
-    if (texture && texture->texture_gl->bitmap->data_ready)
+    if (texture && texture->texture->bitmap->data_ready)
     {
       loading_done = true;
       message = "module||ok";
@@ -122,23 +110,23 @@ public:
 
     current_filename = filename_in->get();
 
-    if (texture)
+    if (texture && !do_reload)
       vsx_texture_loader::destroy(texture);
 
-    vsx_texture_gl_loader_hint hint(
-     flip_vertical_cache, // flip vertically
-     false, // data split cube map
-     mipmaps_cache, // mipmaps
-     min_mag_filter_cache // linear interpolate
-    );
+    uint64_t bitmap_loader_hint = 0;
+    bitmap_loader_hint |= vsx_bitmap::flip_vertical_hint * flip_vertical_cache;
 
-    hint.cache_data_reload = do_reload;
+    uint64_t hint = 0;
+    hint |= vsx_texture_gl::mipmaps_hint * mipmaps_cache;
+    hint |= vsx_texture_gl::linear_interpolate_hint * min_mag_filter_cache;
 
     texture = vsx_texture_loader::load(
       current_filename,
       engine->filesystem,
       true, // threaded
-      hint
+      bitmap_loader_hint,
+      hint,
+      do_reload
     );
     texture_out->set(texture);
   }

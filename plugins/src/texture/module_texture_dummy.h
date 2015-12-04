@@ -43,7 +43,7 @@ public:
 
   void run()
   {
-    vsx_texture** texture_info_in = texture_in->get_addr();
+    vsx_texture<>** texture_info_in = texture_in->get_addr();
 
     if (!texture_info_in)
       return;

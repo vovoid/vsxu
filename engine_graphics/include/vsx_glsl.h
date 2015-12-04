@@ -588,7 +588,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
           }
         break;
         case VSX_MODULE_PARAM_ID_TEXTURE:
-          vsx_texture** ba;
+          vsx_texture<>** ba;
           ba = ((vsx_module_param_texture*)uniform_list[i].module_param)->get_addr();
           if (ba)
           {
@@ -676,7 +676,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
       if (uniform_list[i].module_param) {
         switch(uniform_list[i].param_type_id) {
           case VSX_MODULE_PARAM_ID_TEXTURE:
-          vsx_texture** ba;
+          vsx_texture<>** ba;
           ba = ((vsx_module_param_texture*)uniform_list[i].module_param)->get_addr();
           if (ba) {
 #if defined(__linux__)

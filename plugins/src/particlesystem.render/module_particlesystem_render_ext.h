@@ -34,9 +34,9 @@ public:
   vsx::sequence::channel<vsx::sequence::value_float> seq_g;
   vsx::sequence::channel<vsx::sequence::value_float> seq_b;
 
-  vsx_texture<> *texture_lookup_sizes;
+  vsx_texture<>* texture_lookup_sizes;
 
-  vsx_texture<> *texture_lookup_color;
+  vsx_texture<>* texture_lookup_color;
 
   vsx_glsl shader;
 
@@ -153,11 +153,11 @@ public:
           ;
 
     // create and prepare the textures
-    texture_lookup_sizes = new vsx_texture();
-    texture_lookup_sizes->texture_gl->init_opengl_texture_1d();
+    texture_lookup_sizes = new vsx_texture<>();
+    texture_lookup_sizes->texture->init_opengl_texture_1d();
 
-    texture_lookup_color = new vsx_texture();
-    texture_lookup_color->texture_gl->init_opengl_texture_1d();
+    texture_lookup_color = new vsx_texture<>();
+    texture_lookup_color->texture->init_opengl_texture_1d();
 
     loading_done = true;
     redeclare_in_params(in_parameters);
@@ -208,11 +208,11 @@ public:
       texture_lookup_sizes_data[i] = seq_size.execute(1.0f/8191.0f).get_float();
     }
     texture_lookup_sizes->bind();
-    glTexParameteri(texture_lookup_sizes->texture_gl->gl_type, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexParameteri(texture_lookup_sizes->texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_lookup_sizes->texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(texture_lookup_sizes->texture->gl_type, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(texture_lookup_sizes->texture->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_sizes->texture->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexImage1D(
-      texture_lookup_sizes->texture_gl->gl_type,  // opengl type
+      texture_lookup_sizes->texture->gl_type,  // opengl type
       0, // mipmap level
       1, // internal format
       8191, // size
@@ -222,7 +222,7 @@ public:
       texture_lookup_sizes_data.get_pointer()
     );
 
-    texture_lookup_sizes->texture_gl->uploaded_to_gl = true;
+    texture_lookup_sizes->texture->uploaded_to_gl = true;
     texture_lookup_sizes->_bind();
 
   }
@@ -240,11 +240,11 @@ public:
       texture_lookup_color_data[i].a = seq_alpha.execute(1.0f/8191.0f).get_float();
     }
     texture_lookup_color->bind();
-    glTexParameteri(texture_lookup_color->texture_gl->gl_type, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexParameteri(texture_lookup_color->texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_lookup_color->texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(texture_lookup_color->texture->gl_type, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(texture_lookup_color->texture->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_color->texture->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexImage1D(
-      texture_lookup_color->texture_gl->gl_type,  // opengl type
+      texture_lookup_color->texture->gl_type,  // opengl type
       0, // mipmap level
       4, // internal format
       8191, // size
@@ -253,7 +253,7 @@ public:
       GL_FLOAT, // source data type
       texture_lookup_color_data.get_pointer()
     );
-    texture_lookup_sizes->texture_gl->uploaded_to_gl = true;
+    texture_lookup_sizes->texture->uploaded_to_gl = true;
     texture_lookup_color->_bind();
 
   }
@@ -281,12 +281,12 @@ public:
       texture_lookup_color_data[i].b = seq_b.execute(1.0f/8191.0f).get_float();
     }
     texture_lookup_color->bind();
-    glTexParameteri(texture_lookup_color->texture_gl->gl_type, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexParameteri(texture_lookup_color->texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_lookup_color->texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(texture_lookup_color->texture->gl_type, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(texture_lookup_color->texture->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_color->texture->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glTexImage1D(
-      texture_lookup_color->texture_gl->gl_type,  // opengl type
+      texture_lookup_color->texture->gl_type,  // opengl type
       0, // mipmap level
       4, // internal format
       8191, // size

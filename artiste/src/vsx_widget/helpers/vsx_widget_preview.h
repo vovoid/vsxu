@@ -34,7 +34,6 @@ class vsx_window_texture_viewer : public vsx_widget_window {
   float frame_count;
   float fps;
   void** engine;
-  vsx_texture texture;
 
   bool fullwindow;
   vsx_string<>modestring;

@@ -22,6 +22,9 @@
 */
 
 
+#include <bitmap/vsx_bitmap.h>
+#include <texture/vsx_texture.h>
+
 class module_bitmap_add_noise : public vsx_module
 {
   // in
@@ -32,53 +35,55 @@ class module_bitmap_add_noise : public vsx_module
 
   // internal
   float time;
-  vsx_bitmap* bitm;
-  vsx_bitmap t_bitm;
-
-  int buf, frame;
-  vsx_bitmap_32bt *data_a;
-  vsx_bitmap_32bt *data_b;
-  int bitm_timestamp;
+  vsx_bitmap* source_bitmap;
   vsx_bitmap bitmap;
-  bool first, worker_running, t_done;
+
+  int buf = 0;
+  int frame = 0;
+  void* data_a = 0x0;
+  void* data_b = 0x0;
+  int bitm_timestamp;
+  bool worker_run = false;
   pthread_t         worker_t;
   pthread_attr_t    worker_t_attr;
-  int my_ref;
 
 public:
 
-
-
   static void* noise_worker(void *ptr)
   {
+    module_bitmap_add_noise& module = *((module_bitmap_add_noise*)ptr);
+
     int i_frame = -1;
     bool buf = false;
     vsx_bitmap_32bt *p;
-    while (((module_bitmap_add_noise*)ptr)->worker_running) {
-      if (i_frame != ((module_bitmap_add_noise*)ptr)->frame) {
-        // time to run baby
-        if (buf) p = ((module_bitmap_add_noise*)ptr)->data_a;
-        else p = ((module_bitmap_add_noise*)ptr)->data_b;
-
-        unsigned long b_c = ((module_bitmap_add_noise*)ptr)->bitmap.width * ((module_bitmap_add_noise*)ptr)->bitmap.height;
-
-        vsx_bitmap& t_bitmap = ((module_bitmap_add_noise*)ptr)->t_bitm;
-        if (t_bitmap.storage_format == vsx_bitmap::byte_storage && t_bitmap.channels == 4)
-        {
-          for (size_t x = 0; x < b_c; ++x)
-          {
-              p[x] = ((vsx_bitmap_32bt*)((module_bitmap_add_noise*)ptr)->t_bitm.data)[x] | rand() << 8  | (unsigned char)rand(); //bitm->data[x + y*result_bitm.size_x]
-          }
-        }
-        ((module_bitmap_add_noise*)ptr)->bitmap.valid = true;
-        ((module_bitmap_add_noise*)ptr)->bitmap.data = p;
-        ++((module_bitmap_add_noise*)ptr)->bitmap.timestamp;
-        buf = !buf;
-        i_frame = ((module_bitmap_add_noise*)ptr)->frame;
+    while (module.worker_run)
+    {
+      if (i_frame == module.frame)
+      {
+        Sleep(100);
+        continue;
       }
-      Sleep(100);
+
+      if (buf)
+        p = (vsx_bitmap_32bt*)module.data_a;
+      else
+        p = (vsx_bitmap_32bt*)module.data_b;
+
+      unsigned long b_c = module.bitmap.width * module.bitmap.height;
+
+      vsx_bitmap& t_bitmap = module.bitmap;
+      if (t_bitmap.storage_format == vsx_bitmap::byte_storage && t_bitmap.channels == 4)
+      {
+        for (size_t x = 0; x < b_c; ++x)
+        {
+            p[x] = ((vsx_bitmap_32bt*)module.bitmap.data[0])[x] | rand() << 8  | (unsigned char)rand(); //bitm->data[x + y*result_bitm.size_x]
+        }
+      }
+      module.bitmap.data[0] = p;
+      module.bitmap.timestamp++;
+      buf = !buf;
+      i_frame = module.frame;
     }
-    ((module_bitmap_add_noise*)ptr)->t_done = true;
     return 0;
   }
 
@@ -93,87 +98,67 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-    bitmap.width = 0;
-    bitmap.height = 0;
-    bitmap.channels = 4;
-    bitmap.storage_format = vsx_bitmap::byte_storage;
-    my_ref = 0;
-    first = true;
-    worker_running = false;
-    buf = 0;
-    frame = 0;
-    t_done = false;
-
-    //--------------------------------------------------------------------------------------------------
-
     bitmap_in = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap_in");
-
-    //--------------------------------------------------------------------------------------------------
-
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
   }
 
   void run()
   {
-    if (!bitmap_in->get_addr())
-      return;
-
-    bitm = *(bitmap_in->get_addr());
-    if (!bitm)
+    source_bitmap = bitmap_in->get();
+    if (!source_bitmap)
     {
-      worker_running = false;
+      worker_run = false;
       pthread_join(worker_t,0);
       bitmap_out->valid = false;
       return;
     }
 
-    t_bitm = *bitm;
+    bitmap = *source_bitmap;
+    ++frame;
 
-    if (bitmap.width != bitm->width && bitmap.height != bitm->height)
+    if (bitmap.width != source_bitmap->width && bitmap.height != source_bitmap->height)
     {
-      if (worker_running)
-      pthread_join(worker_t,0);
-      worker_running = false;
+      if (worker_run)
+      {
+        worker_run = false;
+        pthread_join(worker_t,0);
+      }
 
-      // need to realloc
-      if (bitmap.valid)
-        delete[] (vsx_bitmap_32bt*)bitmap.data;
+      if (data_a)
+      {
+        free( data_a );
+        free( data_b );
+      }
 
-      data_a = new vsx_bitmap_32bt[bitm->width*bitm->height];
-      data_b = new vsx_bitmap_32bt[bitm->width*bitm->height];
-      bitmap.data = data_a;
-      bitmap.valid = true;
-      bitmap.width = bitm->width;
-      bitmap.height = bitm->height;
+      data_a = malloc( sizeof(vsx_bitmap_32bt) * source_bitmap->width * source_bitmap->height);
+      data_b = malloc( sizeof(vsx_bitmap_32bt) * source_bitmap->width * source_bitmap->height);
 
+      bitmap.data[0] = data_a;
+      bitmap.width = source_bitmap->width;
+      bitmap.height = source_bitmap->height;
+
+      worker_run = true;
       pthread_attr_init(&worker_t_attr);
       pthread_create(&worker_t, &worker_t_attr, &noise_worker, (void*)this);
       sched_param s_param;
       int policy = 0;
       s_param.sched_priority = 20;
       pthread_setschedparam (worker_t,policy,&s_param);
-      worker_running = true;
     }
-    ++frame;
 
     bitmap_out->set(&bitmap);
   }
 
   void on_delete()
   {
-    if (worker_running)
+    if (worker_run)
     {
-      worker_running = false;
+      worker_run = false;
       bitmap_out->valid = false;
       pthread_join(worker_t,0);
     }
-    delete[] data_a;
-    delete[] data_b;
-
-    if (bitmap.valid)
-    {
-      delete[] (vsx_bitmap_32bt*)bitmap.data;
-    }
+    free(data_a);
+    free(data_b);
   }
 
 };

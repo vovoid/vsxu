@@ -21,7 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <texture/vsx_texture_buffer_color.h>
+#include <texture/buffer/vsx_texture_buffer_color.h>
 
 class module_texture_effect_blur : public vsx_module
 {
@@ -38,10 +38,9 @@ class module_texture_effect_blur : public vsx_module
   vsx_module_param_texture* texture_result;
 
   // internal
-  vsx_texture* texture;
+  vsx_texture<>* texture = 0x0;
+  vsx_texture<>* texture2 = 0x0;
   vsx_texture_buffer_color buffer;
-
-  vsx_texture* texture2;
   vsx_texture_buffer_color buffer2;
 
   vsx_glsl shader;
@@ -50,13 +49,6 @@ class module_texture_effect_blur : public vsx_module
   vsx_gl_state* gl_state;
 
 public:
-
-  module_texture_effect_blur()
-    :
-      texture(0x0),
-      texture2(0x0)
-  {
-  }
 
 void module_info(vsx_module_info* info)
 {
@@ -224,20 +216,20 @@ void main(void)\n\
       };
 
       if (!texture)
-        texture = new vsx_texture();
+        texture = new vsx_texture<>();
 
       buffer.reinit(texture, res_x, res_y, true, false, false, true, 0);
 
       if (!texture2)
-        texture2 = new vsx_texture();
+        texture2 = new vsx_texture<>();
       buffer2.reinit(texture2, res_x, res_y, true, false, false, true, 0);
     }
 
-    vsx_texture** ti = glow_source->get_addr();
+    vsx_texture<>** ti = glow_source->get_addr();
 
-    if (!ti) return;
-    if (!texture) return;
-    if (!texture2) return;
+    req(ti);
+    req(texture);
+    req(texture2);
 
     //
     (*ti)->bind();

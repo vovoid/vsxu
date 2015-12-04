@@ -32,7 +32,7 @@ class module_texture_parameter : public vsx_module
   vsx_module_param_texture* texture_result;
 
   // internal
-  vsx_texture** texture_out;
+  vsx_texture<>** texture_out;
 
 public:
 
@@ -86,7 +86,7 @@ public:
       return;
     }
 
-    if (!(*texture_out)->texture_gl)
+    if (!(*texture_out)->texture)
     {
       return;
     }
@@ -100,9 +100,9 @@ public:
         float rMaxAniso;
         glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &rMaxAniso);
         if (anisotropic_filter->get())
-        glTexParameterf((*texture_out)->texture_gl->gl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
+        glTexParameterf((*texture_out)->texture->gl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
         else
-        glTexParameterf((*texture_out)->texture_gl->gl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f);
+        glTexParameterf((*texture_out)->texture->gl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f);
       }
 
       float vals[4];
@@ -111,11 +111,11 @@ public:
       vals[2] = border_color->get(2);
       vals[3] = border_color->get(3);
 
-      glTexParameteri((*texture_out)->texture_gl->gl_type,GL_TEXTURE_MIN_FILTER, tex_filter[min_filter->get()]);
-      glTexParameteri((*texture_out)->texture_gl->gl_type,GL_TEXTURE_MAG_FILTER, tex_filter[mag_filter->get()]);
-      glTexParameterfv((*texture_out)->texture_gl->gl_type, GL_TEXTURE_BORDER_COLOR, vals);
-      glTexParameteri((*texture_out)->texture_gl->gl_type, GL_TEXTURE_WRAP_T, tex_wrap[wrap_t->get()]);
-      glTexParameteri((*texture_out)->texture_gl->gl_type, GL_TEXTURE_WRAP_S, tex_wrap[wrap_s->get()]);
+      glTexParameteri((*texture_out)->texture->gl_type,GL_TEXTURE_MIN_FILTER, tex_filter[min_filter->get()]);
+      glTexParameteri((*texture_out)->texture->gl_type,GL_TEXTURE_MAG_FILTER, tex_filter[mag_filter->get()]);
+      glTexParameterfv((*texture_out)->texture->gl_type, GL_TEXTURE_BORDER_COLOR, vals);
+      glTexParameteri((*texture_out)->texture->gl_type, GL_TEXTURE_WRAP_T, tex_wrap[wrap_t->get()]);
+      glTexParameteri((*texture_out)->texture->gl_type, GL_TEXTURE_WRAP_S, tex_wrap[wrap_s->get()]);
       (*texture_out)->_bind();
 
       --param_updates;

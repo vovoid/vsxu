@@ -82,6 +82,7 @@ int vsx_widget_ultra_chooser::inside_xy_l(vsx_vector3<> &test, vsx_vector3<> &gl
 }
 
 void vsx_widget_ultra_chooser::init() {
+
 }
 
 
@@ -565,7 +566,6 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
   size.y = 1.0f;
   visible = 0;
   topmost = true;
-  font.mode_2d = true;
   name_dialog = add(new dialog_query_string("name of component","Choose a unique name for your component"),"component_create_name");
   init_children();
   set_render_type(render_2d);
@@ -655,17 +655,6 @@ void vsx_widget_ultra_chooser::build_tree() {
   treedraw->size.y = size.y;
   treedraw->pos = vsx_vector3<>(0.5f*size.x, 0.5f*size.y);
   treedraw->changeProjType(0);
-  treedraw->mtex = vsx_texture_loader::load(
-    vsx_widget_skin::get_instance()->skin_path_get() + "label.png",
-    vsxf::get_instance(),
-    true, // threaded
-    vsx_texture_gl_loader_hint(
-     false, // flip vertically
-     false, // data split cube map
-     false, // mipmaps
-     true // linear interpolate
-    )
-  );
 }
 
 void vsx_widget_ultra_chooser::reinit()

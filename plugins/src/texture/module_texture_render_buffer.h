@@ -1,4 +1,4 @@
-#include <texture/vsx_texture_buffer_render.h>
+#include <texture/buffer/vsx_texture_buffer_render.h>
 
 class module_texture_render_buffer : public vsx_module {
   // in
@@ -19,7 +19,7 @@ class module_texture_render_buffer : public vsx_module {
   int res_x, res_y;
   int dbuff;
   int tex_size_internal;
-  vsx_texture* texture;
+  vsx_texture<>* texture = 0x0;
   vsx_texture_buffer_render buffer;
   bool allocate_second_texture;
   int float_texture_cache;
@@ -32,11 +32,6 @@ class module_texture_render_buffer : public vsx_module {
   vsx_gl_state* gl_state;
 
 public:
-  module_texture_render_buffer()
-    :
-      texture(0)
-  {
-  }
 
 void module_info(vsx_module_info* info) {
   info->identifier =
@@ -262,7 +257,7 @@ bool activate_offscreen() {
     };
 
     if (!texture)
-      texture = new vsx_texture();
+      texture = new vsx_texture<>();
 
     buffer.reinit
     (

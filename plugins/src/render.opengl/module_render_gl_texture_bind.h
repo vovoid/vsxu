@@ -8,7 +8,7 @@ class module_render_gl_texture_bind : public vsx_module
   vsx_module_param_render* render_out;
 
   // internal
-  vsx_texture** t_tex;
+  vsx_texture<>** t_tex;
 
 public:
 

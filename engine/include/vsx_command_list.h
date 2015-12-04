@@ -34,13 +34,13 @@ class vsx_command_buffer_broker
     #endif
   }
 
-  vsxf* filesystem;
+  vsxf* filesystem = 0x0;
 
-  int accept_commands;  // 1 accepts, 0 won't accept
+  int accept_commands = 1;  // 1 accepts, 0 won't accept
   typename std::list <T*> commands; // results of commands
   typename std::list <T*>::const_iterator iter;
 
-  bool delete_commands_on_delete;
+  bool delete_commands_on_delete = false;
 
 public:
 
@@ -339,15 +339,8 @@ public:
   // Thread safety: NO
   void load_from_file(vsx_string<>filename, bool parse = false, int type = 0 )
   {
-    bool filesystem_local = false;
     if (!filesystem)
-    {
-      #ifdef VSXU_DEBUG
-        vsx_printf(L"*** PERFORMANCE: command list load_from_file creating temporary vsxf\n");
-      #endif
-      filesystem = new vsxf;
-      filesystem_local = true;
-    }
+      filesystem = vsxf::get_instance();
 
     vsxf_handle* fp;
     if ((fp = filesystem->f_open(filename.c_str(), "r")) == NULL)
@@ -376,11 +369,6 @@ public:
       commands.push_back(t);
     }
     filesystem->f_close(fp);
-    if (filesystem_local)
-    {
-      delete filesystem;
-      filesystem = 0x0;
-    }
   }
 
 
@@ -389,7 +377,7 @@ public:
   void save_to_file(vsx_string<>filename)
   {
     if (!filesystem)
-      filesystem = new vsxf;
+      filesystem = vsxf::get_instance();
 
     vsxf_handle* fp;
     if ((fp = filesystem->f_open(filename.c_str(), "w")) == NULL)
@@ -458,12 +446,7 @@ public:
   }
 
   vsx_command_buffer_broker()
-    :
-    filesystem(0),
-    accept_commands(1),
-    delete_commands_on_delete(false)
   {
-
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
       pthread_mutex_init(&mutex1, NULL);
     #endif
@@ -471,11 +454,8 @@ public:
 
   vsx_command_buffer_broker(bool delete_commands)
   :
-  filesystem(0),
-  accept_commands(1),
   delete_commands_on_delete(delete_commands)
   {
-
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
       pthread_mutex_init(&mutex1, NULL);
     #endif

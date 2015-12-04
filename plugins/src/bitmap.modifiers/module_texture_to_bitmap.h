@@ -21,6 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <bitmap/vsx_bitmap.h>
 
 class module_texture_to_bitmap : public vsx_module
 {
@@ -36,7 +37,7 @@ public:
   vsx_bitmap bitmap;
   int bitm_timestamp;
 
-  vsx_texture** texture;
+  vsx_texture<>* texture;
   int p_updates;
 
 
@@ -56,31 +57,19 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-    bitmap.channels = 4;
-    bitmap.storage_format = vsx_bitmap::byte_storage;
-    bitmap.width = 0;
-    bitmap.height = 0;
-    bitmap.data = 0;
-    bitmap.valid = false;
     loading_done = true;
-
-    //--------------------------------------------------------------------------------------------------
-
     texture_in = (vsx_module_param_texture*)in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture_in");
-
-    //--------------------------------------------------------------------------------------------------
-
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
   }
 
   void run()
   {
-    texture = texture_in->get_addr();
+    texture = texture_in->get();
 
     if (!texture)
       return;
 
-    (*texture)->bind();
+    texture->bind();
       GLint components;
       glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_COMPONENTS,&components);
       GLint pack;
@@ -94,9 +83,9 @@ public:
         if (bitmap.width != (unsigned int)width || bitmap.height != (unsigned int)height)
         {
 
-          if (bitmap.data)
-            delete[] (vsx_bitmap_32bt*)bitmap.data;
-          bitmap.data = new vsx_bitmap_32bt[width*height];
+          if (bitmap.data[0])
+            free(bitmap.data);
+          bitmap.data[0] = malloc( sizeof(vsx_bitmap_32bt) * width * height);
           bitmap.width = width;
           bitmap.height = height;
         }
@@ -104,20 +93,17 @@ public:
                    0,
                    GL_RGBA,
                    GL_UNSIGNED_BYTE,
-                   bitmap.data);
-        bitmap.valid = true;
+                   bitmap.data[0]);
         ++bitmap.timestamp;
         bitmap_out->set(&bitmap);
       }
-    (*texture)->_bind();
+    texture->_bind();
   }
 
   void on_delete()
   {
-    if (bitmap.valid)
-    {
-      delete[] (vsx_bitmap_32bt*)bitmap.data;
-    }
+    if (bitmap.data[0])
+      free(bitmap.data);
   }
 
 };

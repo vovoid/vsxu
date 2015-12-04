@@ -14,7 +14,7 @@ public:
 
   // internal
   vsx_particlesystem<>* particles;
-  vsx_texture** tex;
+  vsx_texture<>** tex;
   unsigned long i;
 
   vsx_gl_state* gl_state;

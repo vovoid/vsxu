@@ -22,7 +22,7 @@ class module_particlesystem_render : public vsx_module
 
   // internal
   vsx_particlesystem<>* particles;
-  vsx_texture** tex;
+  vsx_texture<>** tex;
   vsx::sequence::channel<vsx::sequence::value_float> seq_size;
   vsx::sequence::channel<vsx::sequence::value_float> seq_alpha;
   vsx::sequence::channel<vsx::sequence::value_float> seq_r;

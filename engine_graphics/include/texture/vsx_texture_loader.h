@@ -1,43 +1,38 @@
 #ifndef VSX_TEXTURE_LOADER_H
 #define VSX_TEXTURE_LOADER_H
 
-#include "gl/vsx_texture_gl_loader_hint.h"
 #include "gl/vsx_texture_gl_cache.h"
 
-#include <bitmap/loader/vsx_bitmap_loader_hint.h>
 #include <bitmap/loader/vsx_bitmap_loader_helper.h>
 
 class vsx_texture_loader
 {
 
-  static vsx_texture_gl* handle_cache(vsx_string<> filename, vsxf* filesystem, bool thread, vsx_texture_gl_loader_hint hint)
+  static vsx_texture_gl* handle_cache(vsx_string<> filename, vsxf* filesystem, bool thread, uint64_t bitmap_loader_hint, uint64_t hint, bool try_to_reload = false)
   {
-    if (vsx_texture_gl_cache::get_instance()->has(filename, hint))
-      return vsx_texture_gl_cache::get_instance()->aquire(filename, filesystem, thread, hint );
+    if (vsx_texture_gl_cache::get_instance()->has(filename, bitmap_loader_hint, hint))
+      return vsx_texture_gl_cache::get_instance()->aquire(filename, filesystem, thread, bitmap_loader_hint, hint, try_to_reload );
     return 0;
   }
 
 public:
 
   template <class T = vsx_texture_gl>
-  static inline vsx_texture<T>* load(vsx_string<> filename, vsxf* filesystem, bool thread, vsx_texture_gl_loader_hint hint)
+  static inline vsx_texture<T>* load(vsx_string<> filename, vsxf* filesystem, bool thread, uint64_t bitmap_loader_hint, uint64_t hint, bool try_to_reload = false)
   {
     vsx_texture<T>* texture = new vsx_texture<T>(true);
-    texture->texture = handle_cache(filename, filesystem, thread, hint );
+    texture->texture = handle_cache(filename, filesystem, thread, bitmap_loader_hint, hint, try_to_reload );
     if (texture->texture)
       return texture;
 
-    texture->texture = vsx_texture_gl_cache::get_instance()->create(filename, hint);
+    texture->texture = vsx_texture_gl_cache::get_instance()->create(filename, bitmap_loader_hint, hint);
 
     vsx_bitmap_loader_helper::load(
         texture->texture->bitmap,
         filename,
         filesystem,
         thread,
-        vsx_bitmap_loader_hint(
-          hint.data_flip_vertically,
-          hint.data_split_cubemap
-        )
+        bitmap_loader_hint
       )
     ;
 

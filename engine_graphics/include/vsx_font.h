@@ -54,7 +54,6 @@ public:
 };  
 
 class vsx_font {
-  static std::map<vsx_string<>, vsx_font_info*> glist;
   vsx_vector3<> ep;
   void reinit(vsx_font_info* f_info, vsx_string<>font, vsxf* filesystem);
   bool list_built;
@@ -64,16 +63,14 @@ class vsx_font {
   float dx, dy, dz;
   vsx_string<>base_path;
   float ch, cw, size_s;
-  float ddx,ddy;
+  float ddx;
   char* stc;
   char* colc;
   float sx,sy,ex,ey;
 
   void init_vars()
   {
-    mode_2d = false;
     list_built = false;
-    my_font_info = 0x0;
     color.r = 1;
     color.g = 1;
     color.b = 1;
@@ -81,14 +78,13 @@ class vsx_font {
     align = 1.0f;
   }
 public:
-  VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_font_info* load(vsx_string<>font, vsxf* filesystem);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void load(vsx_string<>font, vsxf* filesystem);
   VSX_ENGINE_GRAPHICS_DLLIMPORT void unload();
 
   vsx_nw_vector< vsx_color<> > syntax_colors;
   // is in 2d mode?
-  bool mode_2d;
   // keeping track of our font
-  vsx_font_info* my_font_info;
+  vsx_font_info my_font_info;
   float outline_transparency;
   // is it translucent or not?
   vsx_color<> color;
@@ -100,7 +96,6 @@ public:
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print_center(vsx_vector3<> p, const vsx_string<>& str, float size);
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print_right(vsx_vector3<> p, const vsx_string<>& str, float size);
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> get_size(const vsx_string<>& str, float size);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void reinit_all_active(vsxf* filesystem);
   
   vsx_font(vsx_string<>path)
   {

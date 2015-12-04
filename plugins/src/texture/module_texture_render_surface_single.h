@@ -1,4 +1,4 @@
-#include <texture/vsx_texture_buffer_color_depth.h>
+#include <texture/buffer/vsx_texture_buffer_color_depth.h>
 
 class vsx_module_rendered_texture_single : public vsx_module {
   // in
@@ -20,12 +20,12 @@ class vsx_module_rendered_texture_single : public vsx_module {
   int res_x, res_y;
   int dbuff;
   int tex_size_internal;
-  vsx_texture* texture;
-  vsx_texture* texture2;
+  vsx_texture<>* texture = 0x0;
+  vsx_texture<>* texture2 = 0x0;
   vsx_texture_buffer_color_depth buffer;
   vsx_texture_buffer_color_depth buffer2;
 
-  bool which_buffer;
+  bool which_buffer = false;
   bool allocate_second_texture;
   int support_feedback_cache;
   int float_texture_cache;
@@ -38,13 +38,6 @@ class vsx_module_rendered_texture_single : public vsx_module {
   vsx_gl_state* gl_state;
 
 public:
-
-  vsx_module_rendered_texture_single()
-    :
-      texture(0),
-      texture2(0),
-      which_buffer(false)
-  {}
 
   void module_info(vsx_module_info* info)
   {
@@ -283,7 +276,7 @@ public:
       if (0 == support_feedback_cache)
       {
         if (!texture)
-          texture = new vsx_texture;
+          texture = new vsx_texture<>;
 
         if (texture2)
           buffer2.deinit(texture2);
@@ -310,7 +303,7 @@ public:
       if (1 == support_feedback_cache)
       {
         if (!texture)
-          texture = new vsx_texture;
+          texture = new vsx_texture<>;
 
         buffer.reinit
         (
@@ -331,7 +324,7 @@ public:
 
 
         if (!texture2)
-          texture2 = new vsx_texture;
+          texture2 = new vsx_texture<>;
 
         buffer2.reinit
         (

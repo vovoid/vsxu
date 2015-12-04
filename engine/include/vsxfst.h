@@ -192,7 +192,7 @@ public:
   bool          is_file(const char* filename);
   bool          is_file(const vsx_string<> filename);
   vsxf_handle*  f_open(const char* filename, const char* mode);
-  void          f_close(vsxf_handle* handle);  
+  void          f_close(vsxf_handle* &handle);
   int           f_puts(const char* buf, vsxf_handle* handle);
   char*         f_gets(char* buf, unsigned long max_buf_size, vsxf_handle* handle);
   wchar_t*      f_getws(wchar_t* buf, unsigned long max_buf_size, vsxf_handle* handle);

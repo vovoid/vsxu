@@ -45,7 +45,7 @@
 #include <dialogs/dialog_query_string.h>
 
 class vsx_widget_chooser_editor : public vsx_widget_editor {
-  vsx_texture* mtex_blob;
+  vsx_texture<>* mtex_blob;
   vsx_widget* name_dialog;
   bool dragging;
   vsx_widget_coords drag_coords;
@@ -87,14 +87,16 @@ public:
       vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
       vsxf::get_instance(),
       true, // threaded
-      vsx_texture_gl_loader_hint(
-       true, // flip vertically
-       false, // data split cube map
-       false, // mipmaps
-       true // linear interpolate
-      )
+      vsx_bitmap::flip_vertical_hint,
+      vsx_texture_gl::linear_interpolate_hint
     );
     set_render_type(render_2d);
+  }
+
+  void on_delete()
+  {
+    req(mtex_blob);
+    vsx_texture_loader::destroy(mtex_blob);
   }
 
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
@@ -159,7 +161,6 @@ public:
       mtex_blob->bind();
       glBlendFunc(GL_SRC_ALPHA, GL_ONE);
       float l_asp = screen_x/screen_y;
-      //printf("screen aspect: %f\n",screen_aspect);
       glColor4f(1,1,1,1);
       draw_box_tex_c(drag_coords.screen_global, 0.03/l_asp, 0.03);
       mtex_blob->_bind();
@@ -168,16 +169,13 @@ public:
 
     if (draw_tooltip && m_o_focus == editor && !dragging) {
       font.color.a = 0.0f;
-      font.mode_2d = true;
       vsx_vector3<> sz = font.get_size(tooltip_text, 0.025f);
-      //sz = sz-tooltip_pos;
       glColor4f(0.0f,0.0f,0.0f,0.6f);
       draw_box(vsx_vector3<>(tooltip_pos.x,tooltip_pos.y+0.025*1.05), sz.x, -sz.y);
       glColor4f(1.0f,1.0f,1.0f,0.6f);
       font.color.r = 1.0f;
       font.color.a = 1.0f;
       tooltip_pos.z = 0;
-      //printf("z: %f ",tooltip_pos.z);
       font.print(tooltip_pos, tooltip_text, 0.022f);
 
     }
@@ -275,7 +273,6 @@ vsx_module_chooser_list::vsx_module_chooser_list() {
   e->editor->selected_line_highlight = true;
   e->set_pos(vsx_vector3<>(size.x/2,size.y/2));
   e->pos_from_parent = true;
-  e->extra_init();
   e->extra_init();
   widget_list = (vsx_widget*)e;
 

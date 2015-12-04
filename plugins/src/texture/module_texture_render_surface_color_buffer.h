@@ -1,4 +1,4 @@
-#include <texture/vsx_texture_buffer_color.h>
+#include <texture/buffer/vsx_texture_buffer_color.h>
 
 class module_texture_render_surface_color_buffer : public vsx_module {
   // in
@@ -18,7 +18,7 @@ class module_texture_render_surface_color_buffer : public vsx_module {
   int res_x, res_y;
   int dbuff;
   int tex_size_enum;
-  vsx_texture* texture;
+  vsx_texture<>* texture = 0x0;
   vsx_texture_buffer_color buffer;
 
   int float_texture_cache;
@@ -31,12 +31,6 @@ class module_texture_render_surface_color_buffer : public vsx_module {
   vsx_gl_state* gl_state;
 
 public:
-
-  module_texture_render_surface_color_buffer()
-    :
-      texture(0)
-  {
-  }
 
   void module_info(vsx_module_info* info)
   {
@@ -253,7 +247,7 @@ public:
       };
 
       if (!texture)
-        texture = new vsx_texture;
+        texture = new vsx_texture<>;
 
       buffer.reinit
       (

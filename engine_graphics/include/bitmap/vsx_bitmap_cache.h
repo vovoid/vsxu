@@ -13,12 +13,12 @@ class vsx_bitmap_cache
   public:
     bool used = true;
     vsx_string<> filename;
-    vsx_bitmap_loader_hint hint;
+    uint64_t hint;
     vsx_bitmap* bitmap;
 
-    inline bool equals(const vsx_string<>& other_filename, vsx_bitmap_loader_hint& other_hint)
+    inline bool equals(const vsx_string<>& other_filename, uint64_t& other_hint)
     {
-      if (vsx_string<>::s_equals(other_filename, filename) && hint.equals(other_hint))
+      if (vsx_string<>::s_equals(other_filename, filename) && hint == other_hint)
         return true;
       return false;
     }
@@ -46,7 +46,7 @@ class vsx_bitmap_cache
         item->used = false;
   }
 
-  vsx_bitmap_cache_item* get_item(vsx_string<>& filename, vsx_bitmap_loader_hint& hint)
+  vsx_bitmap_cache_item* get_item(vsx_string<>& filename, uint64_t& hint)
   {
     foreach (items, i)
       if (items[i]->equals(filename, hint))
@@ -65,7 +65,7 @@ class vsx_bitmap_cache
 
 public:
 
-  vsx_bitmap* create(vsx_string<>& filename,  vsx_bitmap_loader_hint hint)
+  vsx_bitmap* create(vsx_string<>& filename, uint64_t hint)
   {
     vsx_bitmap* bitmap = new vsx_bitmap(true);
     bitmap->references = 1;
@@ -79,7 +79,7 @@ public:
     return bitmap;
   }
 
-  bool has(vsx_string<>& filename, vsx_bitmap_loader_hint hint)
+  bool has(vsx_string<>& filename, uint64_t hint)
   {
     foreach (items, i)
       if (items[i]->equals(filename, hint))
@@ -88,7 +88,7 @@ public:
     return false;
   }
 
-  vsx_bitmap* aquire(vsx_string<>& filename, vsx_bitmap_loader_hint hint)
+  vsx_bitmap* aquire(vsx_string<>& filename, uint64_t hint)
   {
     vsx_bitmap_cache_item* item = get_item(filename, hint);
     if (!item)
@@ -98,14 +98,15 @@ public:
     return item->bitmap;
   }
 
-  vsx_bitmap* aquire_reload( vsx_string<>& filename, vsxf* filesystem, bool thread, vsx_bitmap_loader_hint hint)
+  vsx_bitmap* aquire_reload( vsx_string<>& filename, vsxf* filesystem, bool thread, uint64_t hint)
   {
-    vsx_bitmap* bitmap = aquire(filename, hint);
-    vsx_bitmap_loader_helper::load(bitmap, bitmap->filename, filesystem, thread, hint );
+    vsx_bitmap_cache_item* item = get_item(filename, hint);
+    vsx_bitmap* bitmap = item->bitmap;
+    vsx_bitmap_loader_helper::reload(bitmap, bitmap->filename, filesystem, thread, hint );
     return bitmap;
   }
 
-  vsx_bitmap* aquire_create(vsx_string<>& filename, vsx_bitmap_loader_hint hint)
+  vsx_bitmap* aquire_create(vsx_string<>& filename, uint64_t hint)
   {
     if (has(filename, hint))
       return aquire(filename, hint);
@@ -114,9 +115,13 @@ public:
 
   void destroy(vsx_bitmap*& bitmap)
   {
+    if (!bitmap->attached_to_cache)
+      VSX_ERROR_RETURN("Trying to destroy a non-cached bitmap...");
+
     vsx_bitmap_cache_item* item = get_item(bitmap);
+
     if (!item)
-      VSX_ERROR_RETURN("Invalid texture data item");
+      VSX_ERROR_RETURN("Bitmap not found in cache");
 
     // decrease references
     item->bitmap->references--;
@@ -128,6 +133,12 @@ public:
     delete item->bitmap;
     recycle_item(item);
     bitmap = 0;
+  }
+
+  ~vsx_bitmap_cache()
+  {
+    foreach (items, i)
+      delete items[i];
   }
 
   static vsx_bitmap_cache* get_instance()

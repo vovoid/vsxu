@@ -30,6 +30,7 @@
 #include <vsxg.h>
 #include <bitmap/vsx_bitmap.h>
 #include <vsx_matrix.h>
+#include <tools/vsx_req.h>
 
 #include "gl/vsx_texture_gl.h"
 #include "transform/vsx_texture_transform_base.h"
@@ -58,23 +59,14 @@ public:
   // use this to load/unload the texture from vram
   void upload_gl()
   {
-    if (!texture)
-      return;
-
-    // already uploaded
-    if (texture->uploaded_to_gl)
-      return;
-
-    // Data uploaded elsewhere
-    if (!texture->bitmap)
-      return;
-
-    if (! __sync_fetch_and_add(&(texture->bitmap->data_ready), 0))
-      return;
+    req(texture);
+    req(!texture->uploaded_to_gl);
+    req(texture->bitmap);
+    req(__sync_fetch_and_add(&(texture->bitmap->data_ready), 0));
 
     texture->unload();
 
-    if (texture->bitmap->hint.split_cubemap)
+    if (texture->bitmap->hint & vsx_bitmap::split_into_cubemaps_hint)
     {
       texture->init_opengl_texture_cubemap();
       vsx_texture_gl_loader::upload_cube(texture);

@@ -559,7 +559,7 @@ The message from OpenGL was:\n"+get_program_log(prog);
             }
           break;
           case VSX_MODULE_PARAM_ID_TEXTURE:
-            vsx_texture* ba;
+            vsx_texture<>* ba;
             //glBindTexture(GL_TEXTURE_2D, my_texture_object);
             ba = ((vsx_module_param_texture*)v_list[i].module_param)->get_addr();
             if (ba) {
@@ -623,7 +623,7 @@ The message from OpenGL was:\n"+get_program_log(prog);
       if (v_list[i].module_param) {
         switch(v_list[i].param_type_id) {
           case VSX_MODULE_PARAM_ID_TEXTURE:
-          vsx_texture* ba;
+          vsx_texture<>* ba;
           //glBindTexture(GL_TEXTURE_2D, my_texture_object);
           ba = ((vsx_module_param_texture*)v_list[i].module_param)->get_addr();
           if (ba) {

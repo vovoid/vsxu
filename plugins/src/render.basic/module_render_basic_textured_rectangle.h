@@ -201,7 +201,7 @@ public:
   {
     VSX_UNUSED(param);
 
-    vsx_texture** t_inf;
+    vsx_texture<>** t_inf;
     t_inf = tex_inf->get_addr();
 
     if (!t_inf)

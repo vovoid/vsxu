@@ -36,8 +36,6 @@ unsigned char catmullrom_interpolate(int v0, int v1, int v2, int v3, float xx)
   return (unsigned char)t;
 }
 
-
-
 class module_bitmap_subplasma : public vsx_module
 {
 public:
@@ -50,23 +48,12 @@ public:
   vsx_module_param_bitmap* bitmap_out;
 
   // internal
-  bool need_to_rebuild;
-
-  vsx_bitmap bitm;
-  int bitm_timestamp;
-
+  vsx_bitmap bitmap;
   pthread_t					worker_t;
-  pthread_attr_t		worker_t_attr;
-
-  int p_updates;
-  int my_ref;
-
-  vsx_bitmap*       work_bitmap;
-  bool              thread_created;
-  bool              worker_running;
-  int               thread_state;
-  int               i_size;
-  void *to_delete_data;
+  int p_updates = -1;
+  bool worker_running = false;
+  int i_size = 0;
+  void *to_delete_data = 0x0;
 
   // our worker thread, to keep the tough generating work off the main loop
   // this is a fairly simple operation, but when you want to generate fractals
@@ -119,8 +106,7 @@ public:
           (y&(mm1))/mmf);
       }
 
-    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_subplasma*)ptr)->work_bitmap->data;
-
+    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_subplasma*)ptr)->bitmap.data[0];
 
     for (x = 0; x < mod->i_size * (mod->i_size); ++x, p++)
     {
@@ -129,9 +115,7 @@ public:
     }
 
     delete[] SubPlasma;
-    ((module_bitmap_subplasma*)ptr)->work_bitmap->timestamp++;
-    ((module_bitmap_subplasma*)ptr)->work_bitmap->valid = true;
-    ((module_bitmap_subplasma*)ptr)->thread_state = 2;
+    ((module_bitmap_subplasma*)ptr)->bitmap.timestamp++;
     return 0;
   }
 
@@ -153,12 +137,6 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-    thread_state = 0;
-    worker_running = false;
-    thread_created = false;
-    p_updates = -1;
-
-
     rand_seed_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"rand_seed");
     rand_seed_in->set(4.0f);
 
@@ -167,69 +145,50 @@ public:
 
     amplitude_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"amplitude");
 
-    i_size = 0;
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-    work_bitmap = &bitm;
-    my_ref = 0;
-    bitm_timestamp = bitm.timestamp = rand();
-    need_to_rebuild = true;
-    to_delete_data = 0;
   }
-  void run() {
-    // initialize our worker thread, we don't want to keep the renderloop waiting do we?
-    if (!worker_running)
-    if (p_updates != param_updates) {
-      //need_to_rebuild = false;
-      if (i_size != 8 << size_in->get()) {
-        i_size = 8 << size_in->get();
-        if (bitm.data) to_delete_data = bitm.data;
-          //delete[] bitm.data;
-        bitm.data = new vsx_bitmap_32bt[i_size*i_size];
 
-        bitm.width  = i_size;
-        bitm.height = i_size;
-      }
-
-      p_updates = param_updates;
-      bitm.valid = false;
-      //printf("creating thread\n");
-      pthread_attr_init(&worker_t_attr);
-      thread_state = 1;
-      worker_running = true;
-      thread_created = true;
-      pthread_create(&worker_t, &worker_t_attr, &worker, (void*)this);
-
-      //printf("done creating thread\n");
-    }
-    if (thread_state == 2) {
-      if (bitm.valid && bitm_timestamp != bitm.timestamp)
-      {
-        pthread_join(worker_t,0);
-        worker_running = false;
-        // ok, new version
-        //printf("uploading subplasma to param\n");
-        bitm_timestamp = bitm.timestamp;
-        bitmap_out->set(&bitm);
-        loading_done = true;
-      }
-      thread_state = 3;
-    }
-    if (to_delete_data && my_ref == 0)
+  void run()
+  {
+    if (to_delete_data)
     {
-      delete[] (vsx_bitmap_32bt*)to_delete_data;
+      free(to_delete_data);
       to_delete_data = 0;
     }
+
+    if (bitmap.data_ready && worker_running)
+    {
+      pthread_join(worker_t,0);
+      worker_running = false;
+
+      bitmap_out->set(&bitmap);
+      loading_done = true;
+    }
+
+    req(p_updates != param_updates);
+    req(!worker_running);
+    p_updates = param_updates;
+
+    if (i_size != 8 << size_in->get())
+    {
+      i_size = 8 << size_in->get();
+      if (bitmap.data[0])
+        to_delete_data = bitmap.data[0];
+      bitmap.data[0] = malloc( sizeof(vsx_bitmap_32bt) * i_size * i_size);
+
+      bitmap.width  = i_size;
+      bitmap.height = i_size;
+    }
+
+    worker_running = true;
+    pthread_create(&worker_t, NULL, &worker, (void*)this);
   }
 
   void on_delete() {
     if (worker_running)
-    {
-      // wait for thread to finish
       pthread_join(worker_t,NULL);
-    }
-    if (bitm.data)
-    {
-      delete[] (vsx_bitmap_32bt*)bitm.data;
-    }
+
+    if (bitmap.data[0])
+      free(bitmap.data[0]);
   }
 };

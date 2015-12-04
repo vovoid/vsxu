@@ -31,7 +31,7 @@ public:
   HTCoord*            oldZe;  // old euclidian coords
   HTCoord*            zs;  // current screen coords
   HTGeodesic* mygeodesic;
-  vsx_texture* mtex;
+  vsx_texture<>* mtex = 0x0;
 
   vsx_widget_hyperbolic_tree* selected;  // selected node
   HTModel*         node;  // encapsulated HTModelNode
@@ -42,11 +42,6 @@ public:
   vsx_widget_hyperbolic_tree* draw_root;  // the root of the drawing tree
 
   int NBR_FRAMES; // number of intermediates
-
-  vsx_widget_hyperbolic_tree()
-  :
-  mtex(0x0)
-  {}
 
   void on_delete()
   {
@@ -63,7 +58,7 @@ public:
     }
 
     if (mtex)
-      delete mtex;
+      vsx_texture_loader::destroy(mtex);
   }
 
   // create the base maintainer class
@@ -72,8 +67,6 @@ public:
       vsx_widget_hyperbolic_tree* s_drawroot,
       HTModel* model
   )
-  :
-  mtex(0x0)
   {
     VSX_UNUSED(s_drawroot);
     if (s_root == 0)
@@ -103,6 +96,14 @@ public:
       // composite
       draw_root = (vsx_widget_hyperbolic_tree*)add(new vsx_widget_hyperbolic_tree(root, 0, 0, model_root, 1), "ht");
     }
+
+    mtex = vsx_texture_loader::load(
+        vsx_widget_skin::get_instance()->skin_path_get() + "label.png",
+        vsxf::get_instance(),
+        true, // threaded
+        vsx_bitmap::no_hint,
+        vsx_texture_gl::linear_interpolate_hint
+      );
   }
 
   // constructor for child elements

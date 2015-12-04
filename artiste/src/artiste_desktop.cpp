@@ -83,8 +83,9 @@ void vsx_widget_desktop::reinit()
   vsx_widget::reinit();
 }
 
-void vsx_widget_desktop::unload()
+void vsx_widget_desktop::on_delete()
 {
+  vsx_texture_loader::destroy(mtex);
   font.unload();
 }
 
@@ -442,12 +443,8 @@ vsx_widget_desktop::vsx_widget_desktop()
     vsx_widget_skin::get_instance()->skin_path_get() + "desktop.jpg",
     vsxf::get_instance(),
     false, // threaded
-    vsx_texture_gl_loader_hint(
-     true, // flip vertically
-     false, // data split cube map
-     true, // mipmaps
-     true // linear interpolate
-    )
+    vsx_bitmap::flip_vertical_hint,
+    vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::mipmaps_hint
   );
 
   k_focus = this;

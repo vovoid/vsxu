@@ -101,9 +101,9 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
   glBindTexture(texture_gl->gl_type, texture_gl->gl_id);
 
   // MIN / MAG filter
-  GLint min_mag = texture_gl->hint.linear_interpolate?GL_LINEAR:GL_NEAREST;
+  GLint min_mag = texture_gl->hint & vsx_texture_gl::linear_interpolate_hint?GL_LINEAR:GL_NEAREST;
 
-  if (texture_gl->hint.mipmaps)
+  if (texture_gl->hint & vsx_texture_gl::mipmaps_hint)
   {
     glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
     glTexParameteri(texture_gl->gl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
@@ -183,7 +183,7 @@ inline void upload_cube( vsx_texture_gl* texture_gl )
   glEnable(texture_gl->gl_type);
   glBindTexture(texture_gl->gl_type, texture_gl->gl_id);
 
-  if (texture_gl->hint.mipmaps)
+  if (texture_gl->hint & vsx_texture_gl::mipmaps_hint)
   {
     glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
     glTexParameteri(texture_gl->gl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
@@ -259,19 +259,14 @@ inline void upload_cube( vsx_texture_gl* texture_gl )
   texture_gl->uploaded_to_gl = true;
 }
 
-inline void upload_bitmap_2d(vsx_texture_gl* texture_gl, vsx_bitmap* bitmap, bool mipmaps, bool flip_vertical)
+inline void upload_bitmap_2d(vsx_texture_gl* texture_gl, vsx_bitmap* bitmap, bool flip_vertical)
 {
   texture_gl->bitmap = bitmap;
 
-  if (flip_vertical && !bitmap->hint.flip_vertically)
-  {
+  if (flip_vertical)
     vsx_bitmap_transform::get_instance()->flip_vertically(bitmap);
-    bitmap->hint.flip_vertically = true;
-  }
 
-  upload_2d(
-    texture_gl
-  );
+  upload_2d( texture_gl );
 }
 
 

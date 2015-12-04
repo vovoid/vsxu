@@ -1,5 +1,5 @@
 #include <texture/vsx_texture.h>
-#include <texture/vsx_texture_buffer_color_depth.h>
+#include <texture/buffer/vsx_texture_buffer_color_depth.h>
 
 class module_texture_render_surface_color_depth_buffer : public vsx_module
 {
@@ -22,8 +22,8 @@ class module_texture_render_surface_color_depth_buffer : public vsx_module
   int res_x, res_y;
   int dbuff;
   int tex_size_enum;
-  vsx_texture* texture;
-  vsx_texture depth_buffer_texture;
+  vsx_texture<>* texture = 0x0;
+  vsx_texture<> depth_buffer_texture;
   vsx_texture_buffer_color_depth buffer;
 
   int float_texture_cache;
@@ -37,11 +37,6 @@ class module_texture_render_surface_color_depth_buffer : public vsx_module
   vsx_gl_state* gl_state;
 
 public:
-
-  module_texture_render_surface_color_depth_buffer() :
-    texture(0)
-  {
-  }
 
   void module_info(vsx_module_info* info)
   {
@@ -180,10 +175,10 @@ public:
 
     if (depth_buffer_in->connected && depth_buffer_in->valid)
     {
-      vsx_texture* depth_in = depth_buffer_in->get();
-      if ( depth_buffer_in_int != depth_in->texture_gl->gl_id )
+      vsx_texture<>* depth_in = depth_buffer_in->get();
+      if ( depth_buffer_in_int != depth_in->texture->gl_id )
       {
-        depth_buffer_in_int = depth_in->texture_gl->gl_id;
+        depth_buffer_in_int = depth_in->texture->gl_id;
         rebuild = true;
       }
     } else
@@ -281,19 +276,19 @@ public:
 
       if ( depth_buffer_in_int != 0 )
       {
-        vsx_texture* depth_in = depth_buffer_in->get();
+        vsx_texture<>* depth_in = depth_buffer_in->get();
         if (
-            depth_in->texture_gl->bitmap->width != (unsigned int)res_x ||
-            depth_in->texture_gl->bitmap->height != (unsigned int)res_y
+            depth_in->texture->bitmap->width != (unsigned int)res_x ||
+            depth_in->texture->bitmap->height != (unsigned int)res_y
           )
         {
-          res_x = depth_in->texture_gl->bitmap->width;
-          res_y = depth_in->texture_gl->bitmap->height;
+          res_x = depth_in->texture->bitmap->width;
+          res_y = depth_in->texture->bitmap->height;
         }
       }
 
       if (!texture)
-        texture = new vsx_texture;
+        texture = new vsx_texture<>;
 
       buffer.reinit
       (
@@ -308,12 +303,12 @@ public:
         depth_buffer_in_int
       );
 
-      depth_buffer_texture.texture_gl->gl_id = buffer.get_depth_buffer_handle();
-      depth_buffer_texture.texture_gl->gl_type = GL_TEXTURE_2D;
-      depth_buffer_texture.texture_gl->uploaded_to_gl = true;
+      depth_buffer_texture.texture->gl_id = buffer.get_depth_buffer_handle();
+      depth_buffer_texture.texture->gl_type = GL_TEXTURE_2D;
+      depth_buffer_texture.texture->uploaded_to_gl = true;
 
-      depth_buffer_texture.texture_gl->bitmap->width = res_x;
-      depth_buffer_texture.texture_gl->bitmap->height = res_y;
+      depth_buffer_texture.texture->bitmap->width = res_x;
+      depth_buffer_texture.texture->bitmap->height = res_y;
 
       depth_buffer_out->set(&depth_buffer_texture);
 

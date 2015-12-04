@@ -37,18 +37,18 @@
 #endif
 
 
-std::map<vsx_string<>, vsx_font_info*> vsx_font::glist;
-
-vsx_font_info* vsx_font::load(vsx_string<>font, vsxf* filesystem)
+void vsx_font::load(vsx_string<>font, vsxf* filesystem)
 {
-  my_font_info = glist[font] = new vsx_font_info;
-  my_font_info->name = font;
+  if (my_font_info.name.size())
+    return;
+
+  my_font_info.name = font;
 
   if (font[0] != '-')
   {
-    my_font_info->type = 0;
+    my_font_info.type = 0;
     vsx_string<> ss = base_path+font;
-    my_font_info->texture = vsx_texture_loader::load( base_path+font, filesystem, true, vsx_texture_gl_loader_hint(true, false, true, true) );
+    my_font_info.texture = vsx_texture_loader::load( base_path+font, filesystem, true, vsx_bitmap::flip_vertical_hint, vsx_texture_gl::mipmaps_hint | vsx_texture_gl::linear_interpolate_hint );
     ch = 16.0f/255.0f;
     cw = 10.0f/255.0f;
   }
@@ -64,28 +64,19 @@ vsx_font_info* vsx_font::load(vsx_string<>font, vsxf* filesystem)
     font_info->ftfont_outline->CharMap(ft_encoding_unicode);
     #endif
   }
-
-  return my_font_info;
-}  
+}
 
 void vsx_font::unload()
 {
-  if (!my_font_info)
-    return;
-
-  if (my_font_info->texture)
-    delete my_font_info->texture;
-
-  glist.erase( my_font_info->name );
-  delete my_font_info;
-  my_font_info = 0x0;
+  if (my_font_info.texture)
+    vsx_texture_loader::destroy( my_font_info.texture );
 }
 
 void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsxf* filesystem)
 {
   if (f_info->type == 0)
   {
-    f_info->texture = vsx_texture_loader::load(base_path+font, filesystem, true, vsx_texture_gl_loader_hint(true, false, true, true));
+    f_info->texture = vsx_texture_loader::load(base_path+font, filesystem, true, vsx_bitmap::flip_vertical_hint, vsx_texture_gl::mipmaps_hint | vsx_texture_gl::linear_interpolate_hint );
     return;
   }
 
@@ -104,161 +95,131 @@ void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsxf* filesystem)
   }
 }  
 
-void vsx_font::reinit_all_active(vsxf* filesystem)
-{
-  for (std::map<vsx_string<>, vsx_font_info*>::iterator it = glist.begin(); it != glist.end(); ++it)
-  {
-    reinit((*it).second,(*it).first, filesystem);
-  }
-}  
 
   vsx_vector3<> vsx_font::print(vsx_vector3<> p, const vsx_string<>& str, const vsx_string<>& font, float size = 1, vsx_string<>colors) {
-    if (!my_font_info) {
-      if (glist.find(font) != glist.end()) {
-        my_font_info = glist[font];
-      } else {
-        vsxf filesystem;
-        my_font_info = load(font, &filesystem);
-      }
-    }
+    load(font, vsxf::get_instance());
     return print(p,str,size,colors);
   }
 
   vsx_vector3<> vsx_font::print(vsx_vector3<> p, const vsx_string<>& str, const float size = 1, vsx_string<>colors)
   {
-    #ifndef VSXU_OPENGL_ES
-      if (!my_font_info)
-        VSX_ERROR_RETURN_V("no my_font_info", vsx_vector3<>());
+    req_error_v(my_font_info.name.size(), "font not loaded", p)
+    req_v(str.size(), p);
 
-      if (str == "")
-        return p;
+    bool use_colors = false;
 
-      bool use_colors = false;
+    if (colors.size())
+      use_colors = true;
 
-      if (colors.size())
-        use_colors = true;
+    char current_color = 1;
 
-      char current_color = 1;
+    if (my_font_info.type == 0)
+    {
+      size_s = 0.37f*size;
 
-      if (my_font_info->type == 0)
-      {
-        size_s = 0.37f*size;
+      dx = 0;
+      dy = 0;
 
-        dx = 0;
-        dy = 0;
+      glPushMatrix();
+      glTranslatef(p.x,p.y,p.z);
 
-        glPushMatrix();
-        glTranslatef(p.x,p.y,p.z);
+        req_v(my_font_info.texture->bind(), vsx_vector3<>());
+        colc = (char*)colors.c_str();
 
-          if (!(*(my_font_info->texture)).bind())
-          {
-            vsx_printf(L"font could not bind texture!\n");
+        if (use_colors)
+        {
+          glColor4f(
+            syntax_colors[*colc-1].r,
+            syntax_colors[*colc-1].g,
+            syntax_colors[*colc-1].b,
+            syntax_colors[*colc-1].a
+          );
+        }
+        else
+        glColor4f(color.r,color.g,color.b,color.a);
 
-            return vsx_vector3<>();
-          }
+        glBegin(GL_QUADS);
 
-          colc = (char*)colors.c_str();
+        float ddy = -size*1.05f;
 
+        ddx = align*size_s;
+        for (stc = (char*)str.c_str(); *stc; ++stc)
+        {
           if (use_colors)
           {
-            glColor4f(
-              syntax_colors[*colc-1].r,
-              syntax_colors[*colc-1].g,
-              syntax_colors[*colc-1].b,
-              syntax_colors[*colc-1].a
-            );
+            if (*colc != current_color)
+            {
+              current_color = *colc;
+
+              glColor4f(
+                syntax_colors[*colc-1].r,
+                syntax_colors[*colc-1].g,
+                syntax_colors[*colc-1].b,
+                syntax_colors[*colc-1].a
+              );
+            }
+            ++colc;
+          }
+
+          if (*stc == 0x0A)
+          {
+            dy += ddy;
+            dx = 0;
           }
           else
-          glColor4f(color.r,color.g,color.b,color.a);
-
-          glBegin(GL_QUADS);
-
-          ddy = size*1.05f;
-          if (mode_2d)
           {
-            ddy = -size*1.05f;
+            sx = (float)(*stc % 16) * cw;
+            sy = (float)(*stc / 16) * ch;
+            ex = sx+cw;
+            ey = -(sy+ch)+1.0f;
+            sy = -sy+0.995f;
+
+              glTexCoord2f(sx, ey);  glVertex2f(dx       ,  dy);
+              glTexCoord2f(sx, sy);  glVertex2f(dx       ,  dy+size);
+              glTexCoord2f(ex, sy);  glVertex2f(dx+size_s,  dy+size);
+              glTexCoord2f(ex, ey);  glVertex2f(dx+size_s,  dy);
+            dx += ddx;
           }
-
-
-          ddx = align*size_s;
-          for (stc = (char*)str.c_str(); *stc; ++stc)
-          {
-            if (use_colors)
-            {
-              if (*colc != current_color)
-              {
-                current_color = *colc;
-
-                glColor4f(
-                  syntax_colors[*colc-1].r,
-                  syntax_colors[*colc-1].g,
-                  syntax_colors[*colc-1].b,
-                  syntax_colors[*colc-1].a
-                );
-              }
-              ++colc;
-            }
-
-            if (*stc == 0x0A)
-            {
-              dy -= ddy;
-              dx = 0;
-            }
-            else
-            {
-              sx = (float)(*stc % 16) * cw;
-              sy = (float)(*stc / 16) * ch;
-              ex = sx+cw;
-              ey = -(sy+ch)+1.0f;
-              sy = -sy+0.995f;
-
-                glTexCoord2f(sx, ey);  glVertex2f(dx       ,  dy);
-                glTexCoord2f(sx, sy);  glVertex2f(dx       ,  dy+size);
-                glTexCoord2f(ex, sy);  glVertex2f(dx+size_s,  dy+size);
-                glTexCoord2f(ex, ey);  glVertex2f(dx+size_s,  dy);
-              dx += ddx;
-            }
-          }
-          glEnd();
-          (*(my_font_info->texture))._bind();
-        glPopMatrix();
-        ep.x = dx+p.x;  // this might need to be fixed
-        ep.y = dy+p.y;
-        return ep;
-      }
-      else
-      {
-        #ifndef VSX_FONT_NO_FT
-        double size_s = 0.5*size*0.1;
-        glEnable(GL_BLEND);
-        glPushMatrix();
-          double dx = p.x;
-          double dy = p.y;
-        if (background) {
-          glColor4f(background_color.r,background_color.g,background_color.b,background_color.a);
-          vsx_vector ps = get_size(str,size);
-          ps.x *= 1.05;
-            glBegin(GL_QUADS);
-                glVertex3f(dx,dy,dz);
-                glVertex3f(dx,dy+size*1.05,dz);
-                glVertex3f(dx+ps.x,dy+size*1.05,dz);
-                glVertex3f(dx+ps.x,dy,dz);
-            glEnd();
         }
-        glColor4f(color.r,color.g,color.b,color.a);
-        glTranslatef(p.x,p.y+size*0.2,p.z);
-        if (outline_transparency > 0.3)
-        glColor4f(color.r,color.g,color.b,color.a);
-        else
-        glColor4f(color.r,color.g,color.b,(1-outline_transparency)*color.a);
-
-        glScalef(size*0.8*0.1,size*0.1,0.018);
-        my_font_info->ftfont->Render(str.c_str());
-        glColor4f(color.r,color.g,color.b,outline_transparency*color.a);
-        glPopMatrix();
-        #endif
+        glEnd();
+        my_font_info.texture->_bind();
+      glPopMatrix();
+      ep.x = dx+p.x;  // this might need to be fixed
+      ep.y = dy+p.y;
+      return ep;
+    }
+    else
+    {
+      #ifndef VSX_FONT_NO_FT
+      double size_s = 0.5*size*0.1;
+      glEnable(GL_BLEND);
+      glPushMatrix();
+        double dx = p.x;
+        double dy = p.y;
+      if (background) {
+        glColor4f(background_color.r,background_color.g,background_color.b,background_color.a);
+        vsx_vector ps = get_size(str,size);
+        ps.x *= 1.05;
+          glBegin(GL_QUADS);
+              glVertex3f(dx,dy,dz);
+              glVertex3f(dx,dy+size*1.05,dz);
+              glVertex3f(dx+ps.x,dy+size*1.05,dz);
+              glVertex3f(dx+ps.x,dy,dz);
+          glEnd();
       }
-    #endif // VSXU_OPENGL_ES
+      glColor4f(color.r,color.g,color.b,color.a);
+      glTranslatef(p.x,p.y+size*0.2,p.z);
+      if (outline_transparency > 0.3)
+      glColor4f(color.r,color.g,color.b,color.a);
+      else
+      glColor4f(color.r,color.g,color.b,(1-outline_transparency)*color.a);
+
+      glScalef(size*0.8*0.1,size*0.1,0.018);
+      my_font_info->ftfont->Render(str.c_str());
+      glColor4f(color.r,color.g,color.b,outline_transparency*color.a);
+      glPopMatrix();
+      #endif
+    }
     return vsx_vector3<>();
   }
 

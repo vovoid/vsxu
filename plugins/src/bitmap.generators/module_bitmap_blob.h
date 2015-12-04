@@ -53,13 +53,12 @@ class module_bitmap_generators_blob : public vsx_module
 
   vsx_bitmap*       work_bitmap;
   bool              worker_running;
-  bool              thread_created;
   int               thread_state;
   int               i_size;
   float             work_color[4];
   int               work_alpha;
 
-  void *to_delete_data;
+  void *to_delete_data = 0;
 
 
 public:
@@ -98,7 +97,6 @@ public:
     loading_done = true;
     thread_state = 0;
     worker_running = false;
-    thread_created = false;
     p_updates = -1;
     arms_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"arms");
     attenuation_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
@@ -133,9 +131,6 @@ public:
   }
 
 
-  // our worker thread, to keep the tough generating work off the main loop
-  // this is a fairly simple operation, but when you want to generate fractals
-  // and decode film, you could run into several seconds of processing time.
   static void* worker(void *ptr)
   {
     int x,y;
@@ -202,7 +197,7 @@ public:
         bitm_timestamp = bitmap.timestamp;
         if (c_type == 1)
         {
-          vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, &bitmap, false, true);
+          vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, &bitmap, true);
           texture_out->set(texture);
         }
         bitmap_out->set(&bitmap);
@@ -238,7 +233,6 @@ public:
 
       worker_running = true;
       pthread_create(&worker_t, &attr, &worker, (void*)this);
-      thread_created = true;
     }
 
     if (to_delete_data)
@@ -253,7 +247,7 @@ public:
     if (c_type == 1)
     {
       texture->texture->init_opengl_texture_2d();
-      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, &bitmap, false, true);
+      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, &bitmap, true);
       texture_out->set(texture);
     }
   }
@@ -270,9 +264,7 @@ public:
   {
     // wait for thread to finish
     if (worker_running)
-    {
       pthread_join(worker_t,NULL);
-    }
 
     if (c_type == 1 && texture)
     {

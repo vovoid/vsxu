@@ -11,7 +11,7 @@ class module_texture_rotate : public vsx_module
   vsx_module_param_texture* texture_result;
 
   // internal
-  vsx_texture* texture_out;
+  vsx_texture<>* texture_out = 0x0;
   vsx_texture_transform_rotate transform;
 
 public:
@@ -48,20 +48,20 @@ void module_texture_rotate::declare_params(vsx_module_param_list& in_parameters,
   texture_info_param_in = (vsx_module_param_texture*)in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE, "texture_in");
   loading_done = true;
 
-  texture_out = 0x0;
-
   rotation_axis = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "rotation_axis");
   rotation_axis->set(0, 0);
   rotation_axis->set(0, 1);
   rotation_axis->set(1, 2);
+
   rotation_angle = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "rotation_angle");
   rotation_angle->set(0.0f);
+
   texture_result = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture_rotate_out");
 }
 
 void module_texture_rotate::run()
 {
-  vsx_texture** texture_in = texture_info_param_in->get_addr();
+  vsx_texture<>** texture_in = texture_info_param_in->get_addr();
 
   if (!texture_in)
   {
@@ -70,10 +70,10 @@ void module_texture_rotate::run()
   }
 
   if (!texture_out)
-    texture_out = new vsx_texture;
+    texture_out = new vsx_texture<>;
 
   // copy texture info
-  (*texture_out->texture_gl) = (*(*texture_in)->texture_gl);
+  (*texture_out->texture) = (*(*texture_in)->texture);
 
   float x = rotation_axis->get(0);
   float y = rotation_axis->get(1);

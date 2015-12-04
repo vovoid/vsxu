@@ -101,7 +101,7 @@ class vsx_widget_seq_channel : public vsx_widget
   vsx_widget* manual_value_input_dialog;
   vsx_widget* manual_time_input_dialog;
 
-  static vsx_texture* mtex_blob;
+  static vsx_texture<>* mtex_blob;
 
 public:
   bool hidden_by_sequencer;

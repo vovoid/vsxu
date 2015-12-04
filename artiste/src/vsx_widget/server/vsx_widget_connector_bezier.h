@@ -37,7 +37,7 @@ class vsx_widget_connector_bezier : public vsx_widget {
   double sx,sy,ex,ey; // internal coordinates
   double old_sx, old_sy, old_ex, old_ey;
   vsx_vector3<> cached_spline[25];
-  vsx_texture* mtex_blob;
+  vsx_texture<>* mtex_blob = 0x0;
   bool color_initialized;
   vsx_color<> color;
   

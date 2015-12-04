@@ -31,7 +31,7 @@
 class vsx_widget_desktop : public vsx_widget
 {
   vsx_widget_profiler* profiler;
-  vsx_texture* mtex;
+  vsx_texture<>* mtex;
 
 public:
   vsx_command_list* system_command_queue;

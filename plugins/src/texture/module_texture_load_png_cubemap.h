@@ -1,5 +1,5 @@
 #include <texture/vsx_texture.h>
-#include <texture/vsx_bitmap_loader_png.h>
+#include <bitmap/loader/vsx_bitmap_loader_png.h>
 
 class module_texture_load_png_cubemap : public vsx_module
 {
@@ -12,7 +12,7 @@ class module_texture_load_png_cubemap : public vsx_module
   vsx_module_param_texture* texture_out;
 
   // internal
-  vsx_texture* texture;
+  vsx_texture<>* texture;
   vsx_string<>current_filename;
 
 public:
@@ -64,7 +64,7 @@ public:
 
   void run()
   {
-    if (texture && texture->texture_gl->bitmap->data_ready)
+    if (texture && texture->texture->bitmap->data_ready)
     {
       loading_done = true;
       message = "module||ok";
@@ -85,19 +85,15 @@ public:
 
     if (texture)
     {
-      texture->texture_gl->unload();
+      texture->texture->unload();
       delete texture;
     }
 
     //   vsx_texture_gl_loader_hint(bool data_flip_vertically_n, bool data_split_cubemap_n, bool mipmaps_n, bool linear_interpolate_n )
     texture = vsx_texture_loader::load(
       current_filename, engine->filesystem, true,
-      vsx_texture_gl_loader_hint(
-       false,
-       true,
-       false,
-       true
-      )
+      vsx_bitmap::split_into_cubemaps_hint,
+      vsx_texture_gl::linear_interpolate_hint
     );
 
     texture_out->set(texture);
@@ -114,10 +110,9 @@ public:
   }
 
   void on_delete() {
-    if (texture) {
-      texture->texture_gl->unload();
-      delete texture;
-    }
+    req(texture);
+    texture->unload_gl();
+    delete texture;
   }
 
 };

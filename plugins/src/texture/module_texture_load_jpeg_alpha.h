@@ -1,3 +1,5 @@
+#include <texture/vsx_texture.h>
+
 class module_texture_load_jpeg_alpha : public vsx_module
 {
   // in
@@ -8,7 +10,7 @@ class module_texture_load_jpeg_alpha : public vsx_module
   vsx_module_param_bitmap* bitmap_out;
   vsx_module_param_texture* texture_out;
   // internal
-  vsx_texture* texture;
+  vsx_texture<>* texture;
 
   // threading stuff
   void* pti_l;
@@ -79,7 +81,7 @@ class module_texture_load_jpeg_alpha : public vsx_module
 
       unsigned char* acp = (unsigned char*)cj_a->m_pBuf;
 
-      mod->bitmap.data = new vsx_bitmap_32bt[b_c*2];
+      mod->bitmap.data[0] = malloc( sizeof(vsx_bitmap_32bt) * b_c * 2 );
 
       for (unsigned long i = 0; i < b_c; ++i)
       {
@@ -107,7 +109,7 @@ class module_texture_load_jpeg_alpha : public vsx_module
 
     unsigned char* rgbcp = (unsigned char*)cj->m_pBuf;
 
-    mod->bitmap.data = new vsx_bitmap_32bt[b_c*2];
+    mod->bitmap.data[0] = malloc( sizeof(vsx_bitmap_32bt) * b_c * 2 );
 
     for (unsigned long i = 0; i < b_c; ++i)
     {
@@ -222,7 +224,6 @@ public:
     }
     if (thread_state == 2)
     {
-      bitmap.valid = true;
       ++bitmap.timestamp;
       thread_state = 3;
       loading_done = true;
@@ -234,14 +235,15 @@ public:
   {
     if (param == (vsx_module_param_abs*)texture_out)
     {
-      if (texture_timestamp != bitmap.timestamp && bitmap.valid)
+      if (texture_timestamp != bitmap.timestamp)
       {
         if (!texture)
         {
-          texture = new vsx_texture;
-          texture->texture_gl->init_opengl_texture_2d();
+          texture = new vsx_texture<>;
+          texture->texture->init_opengl_texture_2d();
         }
-        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitmap, true, true);
+        texture->texture->hint |= vsx_texture_gl::mipmaps_hint;
+        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, &bitmap, true);
         texture_out->set(texture);
         texture_timestamp = bitmap.timestamp;
       }
@@ -252,10 +254,15 @@ public:
   {
     if (thread_state == 1)
       pthread_join(worker_t, 0);
-    if (bitmap.valid)
-      delete[] (vsx_bitmap_32bt*)bitmap.data;
+
+    if (bitmap.data[0])
+      free(bitmap.data[0]);
+
     if (texture)
+    {
+      texture->unload_gl();
       delete texture;
+    }
   }
 };
 

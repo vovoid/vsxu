@@ -808,16 +808,82 @@ vsx_string<>vsx_engine_param::get_string()
       return ((vsx_module_param_string_sequence*)module_param)->param_data[0].get_string();
     }
 
+    case VSX_MODULE_PARAM_ID_BITMAP:
+    {
+      vsx_bitmap* bitmap = ((vsx_module_param_bitmap*)module_param)->get();
+      if (!bitmap)
+        return "";
+      return
+        "Pointer: 0x" + vsx_string_helper::i2x((uint64_t)bitmap) + "\n" +
+        "    filename: " + bitmap->filename + "\n"
+        "    timestamp: " + vsx_string_helper::i2s(bitmap->timestamp) + "\n"
+        "    hint:\n"
+        "      flip_vertically: " + vsx_string_helper::i2s((bitmap->hint & vsx_bitmap::flip_vertical_hint) > 0) + "\n"
+        "      split_cubemap: " + vsx_string_helper::i2s((bitmap->hint & vsx_bitmap::split_into_cubemaps_hint) > 0) + "\n"
+        "    width: " + vsx_string_helper::i2s(bitmap->width) + "\n"
+        "    height: " + vsx_string_helper::i2s(bitmap->height) + "\n"
+        "    depth: " + vsx_string_helper::i2s(bitmap->depth) + "\n"
+        "    alpha: " + vsx_string_helper::i2s(bitmap->alpha) + "\n"
+        "    channels: " + vsx_string_helper::i2s(bitmap->channels) + "\n"
+        "    channels_bgra: " + vsx_string_helper::i2s(bitmap->channels_bgra) + "\n"
+        "    storage_format: " + vsx_string_helper::i2s(bitmap->storage_format) + "\n"
+        "    data:\n" +
+        "      0: 0x" + vsx_string_helper::i2x((uint64_t)bitmap->data[0]) + "\n"
+        "      1: 0x" + vsx_string_helper::i2x((uint64_t)bitmap->data[1]) + "\n"
+        "      2: 0x" + vsx_string_helper::i2x((uint64_t)bitmap->data[2]) + "\n"
+        "      3: 0x" + vsx_string_helper::i2x((uint64_t)bitmap->data[3]) + "\n"
+        "      4: 0x" + vsx_string_helper::i2x((uint64_t)bitmap->data[4]) + "\n"
+        "      5: 0x" + vsx_string_helper::i2x((uint64_t)bitmap->data[5]) + "\n"
+        "    data_ready: " + vsx_string_helper::i2s(bitmap->data_ready) + "\n"
+        "    compressed_data: " + vsx_string_helper::i2s(bitmap->compressed_data) + "\n"
+        "    attached_to_cache: " + vsx_string_helper::i2s(bitmap->attached_to_cache) + "\n"
+        "    references: " + vsx_string_helper::i2s(bitmap->references) + "\n"
+      ;
+    }
+
     case VSX_MODULE_PARAM_ID_TEXTURE:
     {
       vsx_texture<vsx_texture_gl>* tex = ((vsx_module_param_texture*)module_param)->get();
       if (!tex)
         return "";
+
       return
-        vsx_string_helper::i2x((uint64_t)tex) + " " +
-        vsx_string_helper::i2s(tex->texture->bitmap->width) + "x" +
-        vsx_string_helper::i2s(tex->texture->bitmap->height) + " " +
-        vsx_string_helper::i2s(tex->texture->gl_id)
+        "Pointer: 0x" + vsx_string_helper::i2x((uint64_t)tex) + "\n" +
+        "GL:\n"
+        "  id: " + vsx_string_helper::i2s(tex->texture->gl_id) + "\n"
+        "  type: " + vsx_string_helper::i2s(tex->texture->gl_type) + "\n"
+        "  attached_to_cache: " + vsx_string_helper::i2s(tex->texture->attached_to_cache) + "\n"
+        "  references: " + vsx_string_helper::i2s(tex->texture->references) + "\n"
+        "  data_hint:\n"
+        "    data_flip_vertically: " + vsx_string_helper::i2s((tex->texture->bitmap_loader_hint & vsx_bitmap::flip_vertical_hint) > 0) + "\n"
+        "    data_split_cubemap: " + vsx_string_helper::i2s((tex->texture->bitmap_loader_hint & vsx_bitmap::split_into_cubemaps_hint) > 0) + "\n"
+        "  hint:\n"
+        "    mipmaps: " + vsx_string_helper::i2s((tex->texture->hint & vsx_texture_gl::mipmaps_hint) > 0) + "\n"
+        "    linear_interpolate: " + vsx_string_helper::i2s((tex->texture->hint & vsx_texture_gl::linear_interpolate_hint) > 0) + "\n"
+        "  bitmap:\n"
+        "    filename: " + tex->texture->bitmap->filename + "\n"
+        "    timestamp: " + vsx_string_helper::i2s(tex->texture->bitmap->timestamp) + "\n"
+        "    hint:\n"
+        "      flip_vertically: " + vsx_string_helper::i2s((tex->texture->bitmap->hint & vsx_bitmap::flip_vertical_hint) > 0) + "\n"
+        "      split_cubemap: " + vsx_string_helper::i2s((tex->texture->bitmap->hint & vsx_bitmap::split_into_cubemaps_hint) > 0) + "\n"
+        "    width: " + vsx_string_helper::i2s(tex->texture->bitmap->width) + "\n"
+        "    height: " + vsx_string_helper::i2s(tex->texture->bitmap->height) + "\n"
+        "    depth: " + vsx_string_helper::i2s(tex->texture->bitmap->depth) + "\n"
+        "    alpha: " + vsx_string_helper::i2s(tex->texture->bitmap->alpha) + "\n"
+        "    channels: " + vsx_string_helper::i2s(tex->texture->bitmap->channels) + "\n"
+        "    channels_bgra: " + vsx_string_helper::i2s(tex->texture->bitmap->channels_bgra) + "\n"
+        "    storage_format: " + vsx_string_helper::i2s(tex->texture->bitmap->storage_format) + "\n"
+        "    data:\n" +
+        "      0: 0x" + vsx_string_helper::i2x((uint64_t)tex->texture->bitmap->data[0]) + "\n"
+        "      1: 0x" + vsx_string_helper::i2x((uint64_t)tex->texture->bitmap->data[1]) + "\n"
+        "      2: 0x" + vsx_string_helper::i2x((uint64_t)tex->texture->bitmap->data[2]) + "\n"
+        "      3: 0x" + vsx_string_helper::i2x((uint64_t)tex->texture->bitmap->data[3]) + "\n"
+        "      4: 0x" + vsx_string_helper::i2x((uint64_t)tex->texture->bitmap->data[4]) + "\n"
+        "      5: 0x" + vsx_string_helper::i2x((uint64_t)tex->texture->bitmap->data[5]) + "\n"
+        "    data_ready: " + vsx_string_helper::i2s(tex->texture->bitmap->data_ready) + "\n"
+        "    compressed_data: " + vsx_string_helper::i2s(tex->texture->bitmap->compressed_data) + "\n"
+        "    attached_to_cache: " + vsx_string_helper::i2s(tex->texture->bitmap->attached_to_cache) + "\n"
+        "    references: " + vsx_string_helper::i2s(tex->texture->bitmap->references) + "\n"
       ;
     }
     case VSX_MODULE_PARAM_ID_MESH:

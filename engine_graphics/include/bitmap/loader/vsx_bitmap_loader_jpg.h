@@ -3,6 +3,7 @@
 
 #include "vsx_bitmap_loader_base.h"
 #include <bitmap/vsx_bitmap_transform.h>
+#include <vsx_singleton_counter.h>
 
 class vsx_bitmap_loader_jpg
     : public vsx_bitmap_loader_base
@@ -21,17 +22,16 @@ class vsx_bitmap_loader_jpg
     thread_info->bitmap->data[0] = cj.m_pBuf;
     thread_info->bitmap->channels = 3;
 
-    if (thread_info->hint.flip_vertically)
+    if (thread_info->hint & vsx_bitmap::flip_vertical_hint)
       vsx_bitmap_transform::get_instance()->flip_vertically(thread_info->bitmap);
 
-    if (thread_info->hint.split_cubemap)
+    if (thread_info->hint & vsx_bitmap::split_into_cubemaps_hint)
       vsx_bitmap_transform::get_instance()->split_into_cubemap(thread_info->bitmap);
 
+    thread_info->bitmap->timestamp = vsx_singleton_counter::get();
     __sync_fetch_and_add( &(thread_info->bitmap->data_ready), 1 );
 
-//    vsx_bitmap_loader_png::get_instance()->thread_cleanup_queue.produce( (vsx_bitmap_loader_thread*)thread_info->thread );
     delete thread_info;
-
     return 0;
   }
 

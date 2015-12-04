@@ -52,7 +52,7 @@ public:
     vec[0] = x;
     vec[1] = y;
     return perlin_noise_2D(vec);
-  };
+  }
 
 private:
   void init_perlin(int n,float p);

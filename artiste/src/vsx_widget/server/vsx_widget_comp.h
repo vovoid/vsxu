@@ -37,9 +37,9 @@ class vsx_widget_component : public vsx_widget {
   vsx_nw_vector<vsx_module_operation*> module_operations;
   vsx_widget* module_operations_dialog;
 
-  vsx_texture* mtex;
-  vsx_texture* mtex_blob;
-  vsx_texture* mtex_overlay;
+  vsx_texture<>* mtex;
+  vsx_texture<>* mtex_blob;
+  vsx_texture<>* mtex_overlay;
 
 public:
   bool macro;

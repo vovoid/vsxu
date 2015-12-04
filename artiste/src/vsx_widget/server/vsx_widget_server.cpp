@@ -269,12 +269,8 @@ void vsx_widget_server::init()
     vsx_widget_skin::get_instance()->skin_path_get() + "server.png",
     vsxf::get_instance(),
     true, // threaded
-    vsx_texture_gl_loader_hint(
-     true, // flip vertically
-     false, // data split cube map
-     true, // mipmaps
-     true // linear interpolate
-    )
+    vsx_bitmap::flip_vertical_hint,
+    vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::mipmaps_hint
   );
 
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
@@ -288,9 +284,12 @@ void vsx_widget_server::reinit()
 }
 
 void vsx_widget_server::on_delete() {
-  for (std::map<vsx_string<>,vsx_module_info*>::iterator it = module_list.begin(); it != module_list.end(); ++it) {
+  if (mtex)
+      vsx_texture_loader::destroy(mtex);
+
+  for (std::map<vsx_string<>,vsx_module_info*>::iterator it = module_list.begin(); it != module_list.end(); ++it)
     delete (*it).second;
-  }
+
   for (size_t i = 0; i < module_infos_created_for_choosers.size(); i++)
   {
     delete module_infos_created_for_choosers[i];
@@ -826,7 +825,6 @@ void vsx_widget_server::vsx_command_process_f() {
       } else
       if (c->cmd == "prods_list_end") {
         ((vsx_widget_ultra_chooser*)state_chooser)->build_tree();
-        ((vsx_widget_ultra_chooser*)state_chooser)->build_tree();
       } else
       if (c->cmd == "visuals_list") {
         vsx_module_info* a = new vsx_module_info;
@@ -837,7 +835,6 @@ void vsx_widget_server::vsx_command_process_f() {
         ((vsx_widget_ultra_chooser*)state_chooser)->module_tree->add("visuals;"+a->identifier,a);
       } else
       if (c->cmd == "visuals_list_end") {
-        ((vsx_widget_ultra_chooser*)state_chooser)->build_tree();
         ((vsx_widget_ultra_chooser*)state_chooser)->build_tree();
       }
       if (c->cmd == "resources_list" && c->parts.size() == 2) {

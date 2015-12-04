@@ -58,7 +58,6 @@ set(SOURCES
   src/logo_intro.cpp
   src/vsx_font.cpp
   src/vsx_font_outline.cpp
-  src/vsx_texture.cpp
   src/vsx_gl_state.cpp
   src/gl_helper.cpp
   src/ftgl/FTBitmapGlyph.cpp

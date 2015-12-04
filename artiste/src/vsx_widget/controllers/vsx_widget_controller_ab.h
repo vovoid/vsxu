@@ -49,7 +49,7 @@ private:
   vsx_vector3<>  ball_size;
   vsx_widget* label;
 
-  vsx_texture* mtex;
+  vsx_texture<>* mtex = 0x0;
   ArcBall_t*   ArcBall;
 
   int  tuple_type; // 3 = float3, 4 = float4
@@ -66,7 +66,6 @@ public:
   void command_process_back_queue(vsx_command_s *t);
   vsx_widget_controller_ab()
   {
-    mtex = 0x0;
   	v2[0] = v2[1] = v2[2] = 0.0f;
   }
 

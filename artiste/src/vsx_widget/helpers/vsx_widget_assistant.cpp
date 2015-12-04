@@ -111,7 +111,6 @@ void vsxu_assistant::i_draw()
     {
       text = course[ ((vsx_widget_2d_pager*)pager)->get_cur_page() ];
       font.color.a = alpha;
-      font.mode_2d = false;
       font.print
       (
         vsx_vector3<>(
@@ -140,17 +139,12 @@ void vsxu_assistant::init()
   coord_type = VSX_WIDGET_COORD_CORNER;
   topmost = true;
 
-  vsxf filesystem;
   texture = vsx_texture_loader::load(
     PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"luna.png",
     vsxf::get_instance(),
     true, // threaded
-    vsx_texture_gl_loader_hint(
-     true, // flip vertically
-     false, // data split cube map
-     false, // mipmaps
-     true // linear interpolate
-    )
+    vsx_bitmap::flip_vertical_hint,
+    vsx_texture_gl::linear_interpolate_hint
   );
 
   if (configuration.find("assistant_size") != configuration.end())
@@ -189,6 +183,12 @@ void vsxu_assistant::init()
   }
   target_pos = pos;
   target_size = size;
+}
+
+void vsxu_assistant::on_delete()
+{
+  req(texture);
+  vsx_texture_loader::destroy(texture);
 }
 
 void vsxu_assistant::toggle_size()

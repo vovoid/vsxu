@@ -65,21 +65,18 @@ class module_render_skybox : public vsx_module
   vsx_module_param_bitmap* negative_z_out;
 
   // internal
-  bool              worker_running;
-  bool              worker_ever_started;
+  bool              worker_running = false;
+  bool              worker_ever_started = false;
   pthread_t         worker_t[6];
-  pthread_attr_t    worker_t_attr[6];
-
-
-public:
-  vsx_bitmap* bitm;
+  vsx_bitmap* bitmap;
   vsx_bitmap bitm_p;
   vsx_bitmap result_bitm[6];
-  vsx_texture result_tex[6];
-  int bitm_timestamp;
-  int mapMode;
-
+  vsx_texture<> result_tex[6];
+  int bitmap_in_timestamp = 0;
+  int mapMode = MAP_SPHERE;
   int cylSizeX, cylSizeY;
+
+public:
 
 
   vsx_bitmap_32bt getColor(float u, float v)
@@ -152,8 +149,8 @@ public:
     int texSize = 512;
     int texSize1 = texSize - 1;
 
-    cylSizeX = bitm->width;
-    cylSizeY = bitm->height;
+    cylSizeX = bitmap->width;
+    cylSizeY = bitmap->height;
 
     int u, v;
 
@@ -209,8 +206,8 @@ public:
           }
         }
       }
-      ++result_bitm[plane].timestamp;
-
+      result_bitm[plane].timestamp++;
+      __sync_fetch_and_add( &result_bitm[plane].data_ready, 1);
   }
 
 
@@ -242,9 +239,7 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-    mapMode = MAP_SPHERE;
     bitmap_in = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-    bitm_timestamp = 0;
 
     positive_x_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"positive_x");
     negative_x_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"negative_x");
@@ -257,8 +252,6 @@ public:
 
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     render_out->set(0);
-    worker_running = false;
-    worker_ever_started = false;
   }
   
   static void* worker(void *data)
@@ -275,17 +268,17 @@ public:
     if (!bitmap_in->get_addr())
       return;
 
-    bitm = *(bitmap_in->get_addr());
-    if (bitm->valid && bitm_timestamp != bitm->timestamp)
+    bitmap = *(bitmap_in->get_addr());
+    if (bitmap_in_timestamp != bitmap->timestamp)
     {
-      if (bitm->channels == 4)
-        bitm_p.data = bitm->data;
+      if (bitmap->channels == 4)
+        bitm_p.data[0] = bitmap->data[0];
 
       // ok, new version
       for (int i = 0; i < 6; ++i)
       {
         result_bitm[i].timestamp = 0;
-        result_bitm[i].data = new vsx_bitmap_32bt[512*512];
+        result_bitm[i].data[0] = malloc( sizeof(vsx_bitmap_32bt) * 512 * 512);
         result_bitm[i].width = 512;
         result_bitm[i].height = 512;
         result_bitm[i].channels = 4;
@@ -294,13 +287,12 @@ public:
         SB_THREAD_DATA* h = new SB_THREAD_DATA;
         h->p_plane = i;
         h->target = (void*)this;
-        pthread_attr_init(&worker_t_attr[i]);
-        pthread_create(&worker_t[i], &worker_t_attr[i], &worker, (void*)h);
+        pthread_create(&worker_t[i], NULL, &worker, (void*)h);
         worker_ever_started = true;
 
-        result_tex[i].texture_gl->init_opengl_texture_2d();
+        result_tex[i].texture->init_opengl_texture_2d();
       }
-      bitm_timestamp = bitm->timestamp;
+      bitmap_in_timestamp = bitmap->timestamp;
     }
 
     if (!loading_done) {
@@ -309,10 +301,8 @@ public:
       if (result_bitm[i].timestamp) ++count_finished;
 
       if (count_finished == 6) {
-        for (int i = 0; i < 6; ++i) {
-          vsx_texture_gl_loader::upload_bitmap_2d(result_tex[i].texture_gl, &result_bitm[i], false, true);
-          result_bitm[i].valid = true;
-        }
+        for (int i = 0; i < 6; ++i)
+          vsx_texture_gl_loader::upload_bitmap_2d(result_tex[i].texture, &result_bitm[i], true);
 
         positive_x_out->set(&result_bitm[0]);
         negative_x_out->set(&result_bitm[2]);
@@ -414,27 +404,27 @@ public:
       }
     }
     for (int i = 0; i < 6; ++i) {
-      result_tex[i].texture_gl->unload();
+      result_tex[i].texture->unload();
     }
   }
 
   void start()
   {
     if (!loading_done) {
-      bitm_timestamp = -1;
+      bitmap_in_timestamp = -1;
     }
     for (int i = 0; i < 6; ++i) {
-      result_tex[i].texture_gl->init_opengl_texture_2d();
-      vsx_texture_gl_loader::upload_bitmap_2d(result_tex[i].texture_gl, &result_bitm[i], false, true);
+      result_tex[i].texture->init_opengl_texture_2d();
+      vsx_texture_gl_loader::upload_bitmap_2d(result_tex[i].texture, &result_bitm[i], true);
     }
   }
 
   void on_delete()
   {
     for (int i = 0; i < 6; ++i) {
-      result_tex[i].texture_gl->unload();
+      result_tex[i].texture->unload();
       if (result_bitm[i].timestamp)
-        delete[] (vsx_bitmap_32bt*)result_bitm[i].data;
+        free(result_bitm[i].data[0]);
     }
   }
 };

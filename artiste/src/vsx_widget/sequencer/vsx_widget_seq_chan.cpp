@@ -53,7 +53,7 @@
 
 vsx_color<> vsx_widget_seq_channel::col_temp_1;
 vsx_color<> vsx_widget_seq_channel::col_temp_2;
-vsx_texture* vsx_widget_seq_channel::mtex_blob = 0;
+vsx_texture<>* vsx_widget_seq_channel::mtex_blob = 0;
 
 // WARNING: OVER BOOLEAN ASPHYXIATION IN THIS FILE!!!
 // PROCEED WITH CAUTION!

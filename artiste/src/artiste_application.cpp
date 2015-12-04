@@ -480,6 +480,7 @@ void app_unload()
   delete vxe;
   vsx_module_list_factory_destroy( module_list );
   desktop->stop();
+  desktop->on_delete();
   delete desktop;
   vsx_command_process_garbage_exit();
 }

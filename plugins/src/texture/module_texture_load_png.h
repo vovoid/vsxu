@@ -1,4 +1,4 @@
-#include <vsx_bitmap.h>
+#include <bitmap/vsx_bitmap.h>
 #include <texture/vsx_texture.h>
 
 class module_texture_load_png : public vsx_module 
@@ -17,7 +17,7 @@ class module_texture_load_png : public vsx_module
   vsx_string<>current_filename;
 
   vsx_bitmap bitmap;
-  vsx_texture* texture;
+  vsx_texture<>* texture;
 
   int bitm_timestamp; // keep track of the timestamp for the bitmap internally
   volatile int               thread_state;
@@ -35,8 +35,6 @@ class module_texture_load_png : public vsx_module
     
     ((module_texture_load_png*)ptr)->pp = new pngRawInfo;
     if (pngLoadRaw( module->current_filename.c_str(), ((module_texture_load_png*)ptr)->pp,((module_texture_load_png*)ptr)->engine->filesystem)) {
-      ((module_texture_load_png*)ptr)->bitmap.valid = true;
-
       // memory barrier
       asm volatile("":::"memory");
 
@@ -44,7 +42,6 @@ class module_texture_load_png : public vsx_module
       return 0;
     }
 
-    ((module_texture_load_png*)ptr)->bitmap.valid = false;
     ((module_texture_load_png*)ptr)->last_modify_time = 0;
 
     // memory barrier
@@ -144,7 +141,6 @@ public:
 
     if (thread_state == 2) {
       thread_state = 3;
-      if (bitmap.valid) {
         if (pp->Components == 1) {
           bitmap.channels = 3;
         } else 
@@ -159,11 +155,11 @@ public:
         }
         bitmap.width = pp->Width;
         bitmap.height = pp->Height;
-        bitmap.data = (vsx_bitmap_32bt*)(pp->Data);
+        bitmap.data[0] = (pp->Data);
 
         bitmap.timestamp++;
         bitmap_out->set(&bitmap);
-      }
+
       loading_done = true;
   }
 }
@@ -176,10 +172,11 @@ void output(vsx_module_param_abs* param)
     {
       if (texture == 0x0)
       {
-        texture = new vsx_texture;
-        texture->texture_gl->init_opengl_texture_2d();
+        texture = new vsx_texture<>;
+        texture->texture->init_opengl_texture_2d();
       }
-      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitmap, true, true);
+      texture->texture->hint |= vsx_texture_gl::mipmaps_hint;
+      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, &bitmap, true);
       pp->Data = (unsigned char*)bitmap.data;
       texture_out->set(texture);
       texture_timestamp = bitmap.timestamp;
@@ -188,15 +185,15 @@ void output(vsx_module_param_abs* param)
 }
 
 void stop() {
-  if (texture)
-  {
-    texture->texture_gl->unload();
-  }
+  req(texture);
+  texture->texture->unload();
 }
 
 void start() {
-  texture->texture_gl->init_opengl_texture_2d();
-  vsx_texture_gl_loader::upload_bitmap_2d(texture->texture_gl, &bitmap, true, true);
+  req(texture);
+  texture->texture->init_opengl_texture_2d();
+  texture->texture->hint |= vsx_texture_gl::mipmaps_hint;
+  vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, &bitmap, true);
   texture_out->set(texture);
 }
 
@@ -206,14 +203,11 @@ void on_delete() {
     pthread_join(worker_t,0);
 
   if (thread_state > 0) {
-    if (bitmap.data)
-      delete[] (unsigned char*)(bitmap.data);
-
     delete pp;
   }
 
   if (texture) {
-    texture->texture_gl->unload();
+    texture->unload_gl();
     delete texture;
   }
 }

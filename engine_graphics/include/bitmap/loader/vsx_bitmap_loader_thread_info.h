@@ -11,7 +11,7 @@ public:
   vsxf* filesystem = 0x0;
   vsx_bitmap* bitmap = 0x0;
   vsx_string<> filename;
-  vsx_bitmap_loader_hint hint;
+  uint64_t hint;
 };
 
 #endif

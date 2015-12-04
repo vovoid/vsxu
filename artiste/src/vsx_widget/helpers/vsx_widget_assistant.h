@@ -34,7 +34,7 @@ class vsxu_assistant : public vsx_widget {
   bool auto_;
   float tt,alpha;
   vsx_widget* pager;
-  vsx_texture* texture;
+  vsx_texture<>* texture;
   vsx_vector3<> pos_, size_;
   vsx_string<>text;
   vsx_widget* cur_focus;
@@ -51,6 +51,7 @@ public:
   void command_process_back_queue(vsx_command_s *t);
   void init();
   void reinit();
+  void on_delete();
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void toggle_size();
   vsxu_assistant();
