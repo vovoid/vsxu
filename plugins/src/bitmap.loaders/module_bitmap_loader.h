@@ -1,6 +1,29 @@
+/**
+* Project: VSXu: Realtime modular visual programming engine.
+*
+* This file is part of Vovoid VSXu.
+*
+* @author Jonatan Wallmander, Vovoid Media Technologies AB Copyright (C) 2003-2015
+* @see The GNU Lesser General Public License (LGPL)
+*
+* VSXu Engine is free software; you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
 #include <texture/vsx_texture.h>
 
-class module_bitmap_load_tga: public vsx_module
+class module_bitmap_load: public vsx_module
 {
   // in
   vsx_module_param_resource* filename_in;
@@ -15,20 +38,34 @@ class module_bitmap_load_tga: public vsx_module
   vsx_bitmap* bitmap = 0x0;
   int flip_vertical_cache = 0;
 
+  const char* module_name;
+  const char* file_suffix;
+  const char* file_suffix_uppercase;
+  uint64_t bitmap_loader_extra_hint;
+
 public:
 
-  module_bitmap_load_tga()
+  module_bitmap_load(
+      const char* module_name_n,
+      const char* file_suffix_n,
+      const char* file_suffix_uppercase_n,
+      uint64_t bitmap_loader_extra_hint_n = 0
+  )
+    :
+      module_name(module_name_n),
+      file_suffix(file_suffix_n),
+      file_suffix_uppercase(file_suffix_uppercase_n),
+      bitmap_loader_extra_hint(bitmap_loader_extra_hint_n)
   {
-    loading_done = false;
   }
 
   void module_info(vsx_module_info* info)
   {
     info->identifier =
-      "bitmaps;loaders;tga_bitm_load";
+      vsx_string<>("bitmaps;loaders;") + module_name;
 
     info->description =
-      "Loads a TGA image from\n"
+      vsx_string<>("Loads a ") + file_suffix_uppercase + " image from\n"
       "disk and outputs a:\n"
       " - bitmap \n "
     ;
@@ -86,10 +123,10 @@ public:
     bool do_reload = reload_in->get();
     reload_in->set(0);
 
-    if (!verify_filesuffix(filename_in->get(),"tga"))
+    if (!verify_filesuffix(filename_in->get(),file_suffix))
     {
       filename_in->set(current_filename);
-      message = "module||ERROR! This is not a TGA image file!";
+      message = vsx_string<>("module||ERROR! This is not a ") + file_suffix_uppercase + " image file!";
       return;
     }
 
@@ -97,7 +134,7 @@ public:
 
     uint64_t bitmap_loader_hint = 0;
     bitmap_loader_hint |= vsx_bitmap::flip_vertical_hint * flip_vertical_cache;
-
+    bitmap_loader_hint |= bitmap_loader_extra_hint;
 
     if (bitmap && do_reload)
     {
@@ -116,16 +153,6 @@ public:
         aquire_create( current_filename, bitmap_loader_hint );
 
     vsx_bitmap_loader_helper::load(bitmap, current_filename, engine->filesystem, true, bitmap_loader_hint );
-  }
-
-  void output(vsx_module_param_abs* param)
-  {
-  }
-
-  void stop() {
-  }
-
-  void start() {
   }
 
   void on_delete()

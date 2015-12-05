@@ -3,7 +3,7 @@
 *
 * This file is part of Vovoid VSXu.
 *
-* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies AB Copyright (C) 2003-2013
+* @author Jonatan Wallmander, Vovoid Media Technologies AB Copyright (C) 2003-2015
 * @see The GNU Lesser General Public License (LGPL)
 *
 * VSXu Engine is free software; you can redistribute it and/or modify
@@ -33,22 +33,8 @@
 #endif
 #include <math.h>
 
+#include "module_bitmap_loader.h"
 
-// TODO: a module that uses 2 sequences to make a blob with different interpolators (not just sin)
-//       and also an intensity multiplier per degree
-
-// TODO: implement andrew mccanns RSA xor algorithm
-// for every y
-// for every x
-// temp = abs(x+y) xor abs(x-y)
-// pixel[x,y] = (temp^7) mod 257;
-
-#include "module_bitmap_loader_tga.h"
-
-
-//******************************************************************************
-//*** F A C T O R Y ************************************************************
-//******************************************************************************
 
 #ifndef _WIN32
 #define __declspec(a)
@@ -60,29 +46,32 @@ __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules(vsx_engine_environment* environment);
 }
 
-
-
 vsx_module* MOD_CM(unsigned long module, void* args)
 {
   VSX_UNUSED(args);
-
   switch(module)
   {
-    case 0: return (vsx_module*)(new module_bitmap_load_tga);
+    case 0: return (vsx_module*)(new module_bitmap_load("tga_bitm_load","tga","TGA"));
+    case 1: return (vsx_module*)(new module_bitmap_load("png_bitm_load","png","PNG"));
+    case 2: return (vsx_module*)(new module_bitmap_load("jpg_bitm_load","jpg","JPG"));
+    case 3: return (vsx_module*)(new module_bitmap_load("dds_bitm_load","dds","DDS"));
   }
   return 0;
 }
 
 void MOD_DM(vsx_module* m,unsigned long module)
 {
-
-  switch(module) {
-    case 0: delete (module_bitmap_load_tga*)m; break;
+  switch(module)
+  {
+    case 0: delete (module_bitmap_load*)m; break;
+    case 1: delete (module_bitmap_load*)m; break;
+    case 2: delete (module_bitmap_load*)m; break;
+    case 3: delete (module_bitmap_load*)m; break;
   }
 }
 
 unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   VSX_UNUSED(environment);
-  return 1;
+  return 4;
 }

@@ -52,11 +52,7 @@ typedef struct stat t_stat;
 #include "module_texture_translate.h"
 #include "module_texture_visual_fader.h"
 #include "module_texture_load_bitmap2texture.h"
-#include "module_texture_load_jpeg_alpha.h"
-#include "module_texture_load_jpeg.h"
-#include "module_texture_load_png_cubemap.h"
-#include "module_texture_load_png.h"
-#include "module_texture_load_tga.h"
+#include "module_texture_load.h"
 #include "module_texture_dummy.h"
 #include "module_texture_screenshot_hires.h"
 
@@ -80,44 +76,29 @@ vsx_module* MOD_CM(unsigned long module, void* args)
 {
   VSX_UNUSED(args);
   switch(module) {
-    case 0:
-    case 1:
-    {
-      module_texture_load_png* m = new module_texture_load_png;
-      m->m_type = module % 2;
-      return (vsx_module*)m;
-    }
-    case 2:
-    case 3:
-    {
-      module_texture_load_jpeg* m2 = new module_texture_load_jpeg;
-      m2->m_type = module % 2;
-      return (vsx_module*)m2;
-    }
-    case 4:
-    case 5:
-    {
-      module_texture_load_jpeg_alpha* m2 = new module_texture_load_jpeg_alpha;
-      m2->m_type = module % 2;
-      return (vsx_module*)m2;
-    }
-    case 6:
-    return (vsx_module*)(new module_texture_load_bitmap2texture);
-    case 7:
-    return (vsx_module*)(new module_texture_load_png_cubemap);
+    case 0: return (vsx_module*)(new module_texture_load("jpg_tex_load","jpg", "JPG"));
+    case 1: return (vsx_module*)(new module_texture_load("tga_tex_load","tga", "TGA"));
+    case 2: return (vsx_module*)(new module_texture_load("png_tex_load","png","PNG") );
+    case 3: return (vsx_module*)(new module_texture_load("png_tex_load_cubemap", "png", "PNG", vsx_bitmap::cubemap_split_6_1_hint) );
+    case 4: return (vsx_module*)(new module_texture_load("dds_tex_load", "dds", "DDS") );
+    case 5: return (vsx_module*)(new module_texture_load("dds_tex_load_cubemap", "dds", "DDS", vsx_bitmap::cubemap_load_files_hint) );
+
+    case 6: return (vsx_module*)(new module_texture_dummy);
+    case 7: return (vsx_module*)(new module_texture_load_bitmap2texture);
+
     case 8: return (vsx_module*)(new vsx_module_rendered_texture_single);
-    case 9: return (vsx_module*)(new module_texture_translate);
-    case 10: return (vsx_module*)(new module_texture_scale);
-    case 11: return (vsx_module*)(new module_texture_rotate);
-    case 12: return (vsx_module*)(new module_texture_parameter);
-    case 13: return (vsx_module*)(new module_texture_effect_blur);
-    case 14: return (vsx_module*)(new module_texture_visual_fader);
-    case 15: return (vsx_module*)(new module_texture_render_surface_color_depth_buffer);
-    case 16: return (vsx_module*)(new module_texture_render_surface_color_buffer);
-    case 17: return (vsx_module*)(new module_texture_render_buffer);
-    case 18: return (vsx_module*)(new module_texture_dummy);
-    case 19: return (vsx_module*)(new module_texture_screenshot_hires);
-    case 20: return (vsx_module*)(new module_texture_load_tga);
+    case 9: return (vsx_module*)(new module_texture_render_surface_color_depth_buffer);
+    case 10: return (vsx_module*)(new module_texture_render_surface_color_buffer);
+    case 11: return (vsx_module*)(new module_texture_render_buffer);
+    case 12: return (vsx_module*)(new module_texture_effect_blur);
+
+    case 13: return (vsx_module*)(new module_texture_translate);
+    case 14: return (vsx_module*)(new module_texture_scale);
+    case 15: return (vsx_module*)(new module_texture_rotate);
+
+    case 16: return (vsx_module*)(new module_texture_parameter);
+    case 17: return (vsx_module*)(new module_texture_visual_fader);
+    case 18: return (vsx_module*)(new module_texture_screenshot_hires);
   };
 
   return 0;
@@ -125,24 +106,31 @@ vsx_module* MOD_CM(unsigned long module, void* args)
 
 void MOD_DM(vsx_module* m,unsigned long module) {
   switch(module) {
-    case 0: case 1: delete (module_texture_load_png*)m; break;
-    case 2: case 3: delete (module_texture_load_jpeg*)m; break;
-    case 4: case 5: delete (module_texture_load_jpeg_alpha*)m; break;
-    case 6: delete (module_texture_load_bitmap2texture*)m; break;
-    case 7: delete (module_texture_load_png_cubemap*)m; break;
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+      delete (module_texture_load*)m; break;
+
+    case 6: delete (module_texture_dummy*)m; break;
+    case 7: delete (module_texture_load_bitmap2texture*)m; break;
+
+
     case 8: delete (vsx_module_rendered_texture_single*)m; break;
-    case 9: delete (module_texture_translate*)m; break;
-    case 10: delete (module_texture_scale*)m; break;
-    case 11: delete (module_texture_rotate*)m; break;
-    case 12: delete (module_texture_parameter*)m; break;
-    case 13: delete (module_texture_effect_blur*)m; break;
-    case 14: delete (module_texture_visual_fader*)m; break;
-    case 15: delete (module_texture_render_surface_color_depth_buffer*)m; break;
-    case 16: delete (module_texture_render_surface_color_buffer*)m; break;
-    case 17: delete (module_texture_render_buffer*)m; break;
-    case 18: delete (module_texture_dummy*)m; break;
-    case 19: delete (module_texture_screenshot_hires*)m; break;
-    case 20: delete (module_texture_load_tga*)m; break;
+    case 9: delete (module_texture_render_surface_color_depth_buffer*)m; break;
+    case 10: delete (module_texture_render_surface_color_buffer*)m; break;
+    case 11: delete (module_texture_render_buffer*)m; break;
+    case 12: delete (module_texture_effect_blur*)m; break;
+
+    case 13: delete (module_texture_translate*)m; break;
+    case 14: delete (module_texture_scale*)m; break;
+    case 15: delete (module_texture_rotate*)m; break;
+
+    case 16: delete (module_texture_parameter*)m; break;
+    case 17: delete (module_texture_visual_fader*)m; break;
+    case 18: delete (module_texture_screenshot_hires*)m; break;
   }
 }
 
@@ -156,6 +144,6 @@ unsigned long MOD_NM(vsx_engine_environment* environment) {
     #endif
   #endif
 
-  return 21;
+  return 19;
 }
 

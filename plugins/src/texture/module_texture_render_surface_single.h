@@ -33,8 +33,6 @@ class vsx_module_rendered_texture_single : public vsx_module {
   int multisample_cache;
   int min_mag_filter_cache;
 
-  GLuint glsl_prog;
-
   vsx_gl_state* gl_state;
 
 public:

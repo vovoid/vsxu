@@ -1,7 +1,8 @@
+#include <vsx_module.h>
+#include <vsx_param.h>
 #include <texture/vsx_texture.h>
-#include <bitmap/loader/vsx_bitmap_loader_tga.h>
 
-class module_texture_load_tga: public vsx_module
+class module_texture_load: public vsx_module
 {
   // in
   vsx_module_param_resource* filename_in;
@@ -20,15 +21,34 @@ class module_texture_load_tga: public vsx_module
   int mipmaps_cache = 0;
   int min_mag_filter_cache = 1;
 
+  const char* module_name;
+  const char* file_suffix;
+  const char* file_suffix_uppercase;
+  uint64_t bitmap_loader_extra_hint;
+
 public:
+
+  module_texture_load(
+      const char* module_name_n,
+      const char* file_suffix_n,
+      const char* file_suffix_uppercase_n,
+      uint64_t bitmap_loader_extra_hint_n = 0
+  )
+    :
+      module_name(module_name_n),
+      file_suffix(file_suffix_n),
+      file_suffix_uppercase(file_suffix_uppercase_n),
+      bitmap_loader_extra_hint(bitmap_loader_extra_hint_n)
+  {
+  }
 
   void module_info(vsx_module_info* info)
   {
     info->identifier =
-      "texture;loaders;tga_tex_load";
+      vsx_string<>("texture;loaders;")+ module_name;
 
     info->description =
-      "Loads a TGA image from\n"
+      vsx_string<>("Loads a ") + file_suffix_uppercase + " image from\n"
       "disk and outputs a\n"
       "texture.\n"
     ;
@@ -101,10 +121,10 @@ public:
     bool do_reload = reload_in->get();
     reload_in->set(0);
 
-    if (!verify_filesuffix(filename_in->get(),"tga"))
+    if (!verify_filesuffix(filename_in->get(), file_suffix))
     {
       filename_in->set(current_filename);
-      message = "module||ERROR! This is not a TGA image file!";
+      message = vsx_string<>("module||ERROR! This is not a ") + file_suffix_uppercase + " image file!";
       return;
     }
 
@@ -115,6 +135,7 @@ public:
 
     uint64_t bitmap_loader_hint = 0;
     bitmap_loader_hint |= vsx_bitmap::flip_vertical_hint * flip_vertical_cache;
+    bitmap_loader_hint |= bitmap_loader_extra_hint;
 
     uint64_t hint = 0;
     hint |= vsx_texture_gl::mipmaps_hint * mipmaps_cache;
@@ -129,16 +150,6 @@ public:
       do_reload
     );
     texture_out->set(texture);
-  }
-
-  void output(vsx_module_param_abs* param)
-  {
-  }
-
-  void stop() {
-  }
-
-  void start() {
   }
 
   void on_delete()

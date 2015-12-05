@@ -26,8 +26,6 @@ class module_texture_render_surface_color_buffer : public vsx_module {
   int multisample_cache;
   int min_mag_filter_cache;
 
-  GLuint glsl_prog;
-
   vsx_gl_state* gl_state;
 
 public:
@@ -165,25 +163,27 @@ public:
       int t_res_x = gl_state->viewport_get_width();
       int t_res_y = gl_state->viewport_get_height();
 
-      if (texture_size_in->get() == 10) {
-        if (t_res_x != res_x || t_res_y != res_y) rebuild = true;
-      }
+      if (texture_size_in->get() == 10)
+        if (t_res_x != res_x || t_res_y != res_y) 
+          rebuild = true;
 
-      if (texture_size_in->get() == 11) {
-        if (t_res_x / 2 != res_x || t_res_y / 2 != res_y) rebuild = true;
-      }
+      if (texture_size_in->get() == 11) 
+        if (t_res_x / 2 != res_x || t_res_y / 2 != res_y) 
+          rebuild = true;
 
-      if (texture_size_in->get() == 12) {
-        if (t_res_x / 4 != res_x || t_res_y / 4 != res_y) rebuild = true;
-      }
+      if (texture_size_in->get() == 12) 
+        if (t_res_x / 4 != res_x || t_res_y / 4 != res_y) 
+          rebuild = true;
 
-      if (texture_size_in->get() == 13) {
-        if (t_res_x * 2 != res_x || t_res_y * 2 != res_y) rebuild = true;
-      }
 
-      if (texture_size_in->get() == 14) {
-        if (t_res_x * 4 != res_x || t_res_y * 4 != res_y) rebuild = true;
-      }
+      if (texture_size_in->get() == 13) 
+        if (t_res_x * 2 != res_x || t_res_y * 2 != res_y) 
+          rebuild = true;
+
+      if (texture_size_in->get() == 14) 
+        if (t_res_x * 4 != res_x || t_res_y * 4 != res_y) 
+          rebuild = true;
+      
     }
 
     if (texture_size_in->get() == 15)
@@ -292,11 +292,13 @@ public:
     tex_size_enum = -1;
   }
 
-  void on_delete() {
+  void on_delete() 
+  {
     stop();
   }
 
-  ~module_texture_render_surface_color_buffer() {
+  ~module_texture_render_surface_color_buffer() 
+  {
     if (texture)
     delete texture;
   }

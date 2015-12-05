@@ -41,7 +41,8 @@ public:
   enum loader_hint {
       no_hint = 0,
       flip_vertical_hint = 1,
-      split_into_cubemaps_hint = 2
+      cubemap_split_6_1_hint = 2,
+      cubemap_load_files_hint = 4
     };
 
   uint64_t hint = 0;

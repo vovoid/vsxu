@@ -32,7 +32,6 @@ class module_texture_render_surface_color_depth_buffer : public vsx_module
   int min_mag_filter_cache;
 
   GLuint depth_buffer_in_int;
-  GLuint glsl_prog;
 
   vsx_gl_state* gl_state;
 
@@ -326,9 +325,7 @@ public:
   void deactivate_offscreen()
   {
     if (texture)
-    {
       buffer.end_capture_to_buffer();
-    }
     ((vsx_module_param_texture*)texture_out)->set(texture);
   }
 

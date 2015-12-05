@@ -70,7 +70,7 @@ class vsx_bitmap_loader_tga
     if (thread_info->hint & vsx_bitmap::flip_vertical_hint)
       vsx_bitmap_transform::get_instance()->flip_vertically(thread_info->bitmap);
 
-    if (thread_info->hint & vsx_bitmap::split_into_cubemaps_hint)
+    if (thread_info->hint & vsx_bitmap::cubemap_split_6_1_hint)
       vsx_bitmap_transform::get_instance()->split_into_cubemap(thread_info->bitmap);
 
     thread_info->bitmap->timestamp = vsx_singleton_counter::get();
