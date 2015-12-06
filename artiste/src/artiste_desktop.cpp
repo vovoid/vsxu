@@ -444,7 +444,7 @@ vsx_widget_desktop::vsx_widget_desktop()
     vsxf::get_instance(),
     false, // threaded
     vsx_bitmap::flip_vertical_hint,
-    vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::mipmaps_hint
+    vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::generate_mipmaps_hint
   );
 
   k_focus = this;

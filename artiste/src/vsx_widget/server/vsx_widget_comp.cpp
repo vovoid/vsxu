@@ -638,7 +638,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
         vsxf::get_instance(),
         true, // threaded
         vsx_bitmap::flip_vertical_hint,
-        vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::mipmaps_hint
+        vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::generate_mipmaps_hint
       );
 
       mtex_overlay = 0x0;
@@ -648,7 +648,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
           vsxf::get_instance(),
           true, // threaded
           vsx_bitmap::flip_vertical_hint,
-          vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::mipmaps_hint
+          vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::generate_mipmaps_hint
         );
 
       if (!internal_critical)

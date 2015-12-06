@@ -26,11 +26,49 @@
 #define VSX_BITMAP_H
 
 #include <stdlib.h>
+#include <tools/vsx_req.h>
 
 typedef uint32_t vsx_bitmap_32bt;
 
 class vsx_bitmap
 {
+
+  // data holder
+  // mip map level by cube map side
+  // if not a cube map, only the first is used.
+
+  // If all 15 levels used, original image is 8192x8192 which is the max
+  // size currently. If needed, more levels can be added.
+
+  // So for instance - a 2D non-mipmapped image will put data in
+  //    data[0][0]
+
+  // A mipmapped 2D image will upt data in
+  //    data[0][0]
+  //    data[1][0]
+  //    data[2][0]
+  //    etc...
+
+  void *data [15] [6] =
+    {
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0}
+    }
+  ;
+
 public:
   vsx_string<> filename;
 
@@ -48,8 +86,6 @@ public:
   uint64_t hint = 0;
   bool reload_hint = false;
 
-  //vsx_bitmap_loader_hint hint;
-
   // geometrical / color
   unsigned int width = 0;
   unsigned int height = 0;
@@ -59,25 +95,60 @@ public:
   bool channels_bgra = false;
 
   // storage
-  enum channel_storage_type_t
+  enum channel_storage_format
   {
     byte_storage= 0,
     float_storage = 1
-  } storage_format = byte_storage;
+  };
 
-  // data holder
-  void *data[6] = {0,0,0,0,0,0};
+  channel_storage_format storage_format = byte_storage;
+
+  static const size_t mip_map_level_max = 15;
+
 
   // has thread finished producing data when loading?
   volatile size_t data_ready = 0;
 
-  // is data DXT5 compressed?
-  bool compressed_data = false;
+  enum compression_type {
+    compression_none = 0,
+    compression_dxt1 = 1,
+    compression_dxt3 = 3,
+    compression_dxt5 = 5
+  };
+
+  compression_type compression = compression_none;
 
   // cache information
   bool attached_to_cache;
   int references = 0;
 
+  inline void* data_get(size_t mip_map_level = 0, size_t cube_map_side = 0)
+  {
+    return data[mip_map_level][cube_map_side];
+  }
+
+  inline void data_set(void* new_value, size_t mip_map_level = 0, size_t cube_map_side = 0)
+  {
+    data[mip_map_level][cube_map_side] = new_value;
+  }
+
+  inline void data_free(size_t mip_map_level = 0, size_t cube_map_side = 0)
+  {
+    req(data[mip_map_level][cube_map_side]);
+    free (data[mip_map_level][cube_map_side]);
+    data[mip_map_level][cube_map_side] = 0x0;
+  }
+
+  inline void data_free_all() {
+    for (size_t mipmap_level = 0; mipmap_level < 15; mipmap_level++)
+      for (size_t i = 0; i < 6; i++)
+      {
+        if (!data[mipmap_level][i])
+          continue;
+        free(data[mipmap_level][i]);
+        data[mipmap_level][i] = 0;
+      }
+  }
 
   vsx_bitmap(bool is_attached_to_cache = false)
     :
@@ -87,16 +158,17 @@ public:
 
   ~vsx_bitmap()
   {
-    free_data();
+    data_free_all();
   }
 
-  void free_data() {
-    for (size_t i = 0; i < 6; i++) {
-      if (!data[i])
-        continue;
-      free(data[i]);
-      data[i] = 0;
-    }
+
+  bool get_mipmap_level_count()
+  {
+    size_t mip_map_level_count = 0;
+    for (size_t mip_map_level = 0; mip_map_level < mip_map_level_max; mip_map_level++)
+      if (data[mip_map_level][0])
+        mip_map_level_count++;
+    return mip_map_level_count;
   }
 
   bool is_valid()
@@ -105,7 +177,7 @@ public:
       return false;
     if (!height)
       return false;
-    if (!data[0])
+    if (!data[0][0])
       return false;
     return true;
   }

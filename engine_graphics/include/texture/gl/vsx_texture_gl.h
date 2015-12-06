@@ -33,8 +33,10 @@ public:
   // loader hint
   enum loader_hint {
       no_hint = 0,
-      mipmaps_hint = 1,
+      generate_mipmaps_hint = 1,
       linear_interpolate_hint = 2,
+      mipmap_linear_interpolate_hint = 4,
+      anisotropic_filtering_hint = 8
     };
 
   uint64_t bitmap_loader_hint = 0;
@@ -47,6 +49,7 @@ public:
   unsigned int gl_type = 0;
 
   bool uploaded_to_gl = false;
+  size_t mip_map_levels_uploaded = 0;
 
   // cache markers
   bool attached_to_cache;

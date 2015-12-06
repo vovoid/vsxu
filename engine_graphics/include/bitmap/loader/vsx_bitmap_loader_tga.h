@@ -65,7 +65,7 @@ class vsx_bitmap_loader_tga
     filesystem->f_close(file_handle);
 
     thread_info->bitmap->filename = thread_info->filename;
-    thread_info->bitmap->data[0] = data;
+    thread_info->bitmap->data_set( data );
 
     if (thread_info->hint & vsx_bitmap::flip_vertical_hint)
       vsx_bitmap_transform::get_instance()->flip_vertically(thread_info->bitmap);

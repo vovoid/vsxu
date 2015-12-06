@@ -10,25 +10,36 @@ namespace vsx_bitmap_helper
   {
     req((source.width != destination.width) || (source.height != destination.height));
 
-    for (size_t i = 0; i < 6; i++)
+    for (size_t mip_map_level = 0; mip_map_level < vsx_bitmap::mip_map_level_max; mip_map_level++)
+    for (size_t cube_map_side = 0; cube_map_side < 6; cube_map_side++)
     {
-      if (destination.data[i] && !source.data[i])
+      if (destination.data_get(mip_map_level, cube_map_side) && !source.data_get(mip_map_level, cube_map_side))
       {
-        free(destination.data[i]);
-        destination.data[i] = 0x0;
+        destination.data_free(mip_map_level, cube_map_side);
         continue;
       }
 
-      if (!source.data[i])
+      if (!source.data_get(mip_map_level,cube_map_side))
         continue;
 
-      if (destination.data[i] && source.data[i])
+      if (destination.data_get(mip_map_level,cube_map_side) && source.data_get(mip_map_level, cube_map_side) )
       {
-        destination.data[i] = realloc(destination.data[i], source.get_channel_size() * source.width * source.height);
+        destination.data_set(
+          realloc(
+            destination.data_get(mip_map_level, cube_map_side),
+            source.get_channel_size() * source.width * source.height
+          ),
+          mip_map_level,
+          cube_map_side
+        );
         continue;
       }
 
-      destination.data[i] = malloc(source.get_channel_size() * source.width * source.height);
+      destination.data_set(
+          malloc(source.get_channel_size() * source.width * source.height),
+          mip_map_level,
+          cube_map_side
+      );
     }
   }
 
@@ -43,16 +54,21 @@ namespace vsx_bitmap_helper
     destination.channels = source.channels;
     destination.channels_bgra = source.channels_bgra;
     destination.storage_format = source.storage_format;
-    destination.compressed_data = source.compressed_data;
+    destination.compression = source.compression;
     destination.attached_to_cache = false;
     destination.references = 0;
-    for (size_t i = 0; i < 6; i++)
-    {
-      if (!source.data[i])
-        continue;
 
-      memcpy(destination.data[i], source.data[i], source.get_channel_size() * source.width * source.height);
-    }
+    for (size_t mip_map_level = 0; mip_map_level < vsx_bitmap::mip_map_level_max; mip_map_level++)
+      for (size_t cube_map_side = 0; cube_map_side < 6; cube_map_side++)
+      {
+        if (!source.data_get(mip_map_level, cube_map_side))
+          continue;
+
+        memcpy(
+              destination.data_get(mip_map_level, cube_map_side),
+              source.data_get(mip_map_level, cube_map_side),
+              source.get_channel_size() * source.width * source.height);
+      }
   }
 }
 

@@ -26,7 +26,7 @@
 #include <vsx_param.h>
 #include <vsx_module.h>
 #include <pthread.h>
-
+#include <bitmap/vsx_bitmap.h>
 
 #define MAP_CYLINDER 0
 #define MAP_SPHERE 1
@@ -84,10 +84,10 @@ public:
 
     vsx_bitmap_32bt vv = (vsx_bitmap_32bt)floor(v);
     vsx_bitmap_32bt uu = (vsx_bitmap_32bt)floor(u);
-    vsx_bitmap_32bt c00 = ((vsx_bitmap_32bt*)bitm_p.data)[(vv    ) % cylSizeY * cylSizeX + (uu    ) % cylSizeX];
-    vsx_bitmap_32bt c01 = ((vsx_bitmap_32bt*)bitm_p.data)[(vv    ) % cylSizeY * cylSizeX + (uu + 1) % cylSizeX];
-    vsx_bitmap_32bt c10 = ((vsx_bitmap_32bt*)bitm_p.data)[(vv + 1) % cylSizeY * cylSizeX + (uu    ) % cylSizeX];
-    vsx_bitmap_32bt c11 = ((vsx_bitmap_32bt*)bitm_p.data)[(vv + 1) % cylSizeY * cylSizeX + (uu + 1) % cylSizeX];
+    vsx_bitmap_32bt c00 = ((vsx_bitmap_32bt*)bitm_p.data_get())[(vv    ) % cylSizeY * cylSizeX + (uu    ) % cylSizeX];
+    vsx_bitmap_32bt c01 = ((vsx_bitmap_32bt*)bitm_p.data_get())[(vv    ) % cylSizeY * cylSizeX + (uu + 1) % cylSizeX];
+    vsx_bitmap_32bt c10 = ((vsx_bitmap_32bt*)bitm_p.data_get())[(vv + 1) % cylSizeY * cylSizeX + (uu    ) % cylSizeX];
+    vsx_bitmap_32bt c11 = ((vsx_bitmap_32bt*)bitm_p.data_get())[(vv + 1) % cylSizeY * cylSizeX + (uu + 1) % cylSizeX];
 
     float fracU = (u + 10000) - (int)(u + 10000);
     float fracV = (v + 10000) - (int)(v + 10000);
@@ -201,7 +201,7 @@ public:
             case MAP_CYLINDER:
             break;
             case MAP_SPHERE:
-              ((vsx_bitmap_32bt*)result_bitm[plane].data)[v * texSize + u] = getColorSph(vec);
+              ((vsx_bitmap_32bt*)result_bitm[plane].data_get())[v * texSize + u] = getColorSph(vec);
             break;
           }
         }
@@ -272,13 +272,13 @@ public:
     if (bitmap_in_timestamp != bitmap->timestamp)
     {
       if (bitmap->channels == 4)
-        bitm_p.data[0] = bitmap->data[0];
+        bitm_p.data_set( bitmap->data_get() ) ;
 
       // ok, new version
       for (int i = 0; i < 6; ++i)
       {
         result_bitm[i].timestamp = 0;
-        result_bitm[i].data[0] = malloc( sizeof(vsx_bitmap_32bt) * 512 * 512);
+        result_bitm[i].data_set( malloc( sizeof(vsx_bitmap_32bt) * 512 * 512) );
         result_bitm[i].width = 512;
         result_bitm[i].height = 512;
         result_bitm[i].channels = 4;
@@ -421,11 +421,8 @@ public:
 
   void on_delete()
   {
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < 6; ++i)
       result_tex[i].texture->unload();
-      if (result_bitm[i].timestamp)
-        free(result_bitm[i].data[0]);
-    }
   }
 };
 

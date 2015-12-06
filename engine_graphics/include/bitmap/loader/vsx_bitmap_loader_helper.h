@@ -6,6 +6,7 @@
 #include "vsx_bitmap_loader_png.h"
 #include "vsx_bitmap_loader_jpg.h"
 #include "vsx_bitmap_loader_tga.h"
+#include "vsx_bitmap_loader_dds.h"
 
 class vsx_bitmap_loader_helper
 {
@@ -20,6 +21,9 @@ class vsx_bitmap_loader_helper
 
     if (verify_filesuffix(filename, "tga"))
       return vsx_bitmap_loader_tga::get_instance();
+
+    if (verify_filesuffix(filename, "dds"))
+      return vsx_bitmap_loader_dds::get_instance();
 
     return 0x0;
   }

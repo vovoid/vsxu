@@ -24,6 +24,8 @@
 */
 
 #include <texture/buffer/vsx_texture_buffer_color.h>
+#include <bitmap/vsx_bitmap.h>
+#include <texture/vsx_texture.h>
 
 #define VERTEX_PROGRAM \
        "varying vec2 texcoord;\n" \
@@ -283,8 +285,8 @@ public:
     i_clear_bmp.width = 1;
     i_clear_bmp.height = 1;
 
-    i_clear_bmp.data[0] = malloc( sizeof(vsx_bitmap_32bt) );
-    i_clear_bmp_data = (vsx_bitmap_32bt*)i_clear_bmp.data;
+    i_clear_bmp.data_set( malloc( sizeof(vsx_bitmap_32bt) ) );
+    i_clear_bmp_data = (vsx_bitmap_32bt*)i_clear_bmp.data_get();
     *i_clear_bmp_data = 0xff000000;
 
 

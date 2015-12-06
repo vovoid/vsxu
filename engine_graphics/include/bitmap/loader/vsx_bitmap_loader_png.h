@@ -31,7 +31,7 @@ class vsx_bitmap_loader_png
     thread_info->bitmap->filename = thread_info->filename;
     thread_info->bitmap->width = pp.Width;
     thread_info->bitmap->height = pp.Height;
-    thread_info->bitmap->data[0] = pp.Data;
+    thread_info->bitmap->data_set( pp.Data );
     thread_info->bitmap->channels = pp.Components;
 
     if (thread_info->hint & vsx_bitmap::flip_vertical_hint)

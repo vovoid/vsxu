@@ -22,7 +22,7 @@
 */
 
 #include <vsx_rand.h>
-
+#include <bitmap/vsx_bitmap.h>
 
 unsigned char catmullrom_interpolate(int v0, int v1, int v2, int v3, float xx)
 {
@@ -106,7 +106,7 @@ public:
           (y&(mm1))/mmf);
       }
 
-    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_subplasma*)ptr)->bitmap.data[0];
+    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_subplasma*)ptr)->bitmap.data_get();
 
     for (x = 0; x < mod->i_size * (mod->i_size); ++x, p++)
     {
@@ -172,9 +172,9 @@ public:
     if (i_size != 8 << size_in->get())
     {
       i_size = 8 << size_in->get();
-      if (bitmap.data[0])
-        to_delete_data = bitmap.data[0];
-      bitmap.data[0] = malloc( sizeof(vsx_bitmap_32bt) * i_size * i_size);
+      if (bitmap.data_get())
+        to_delete_data = bitmap.data_get();
+      bitmap.data_set( malloc( sizeof(vsx_bitmap_32bt) * i_size * i_size) );
 
       bitmap.width  = i_size;
       bitmap.height = i_size;
@@ -187,8 +187,5 @@ public:
   void on_delete() {
     if (worker_running)
       pthread_join(worker_t,NULL);
-
-    if (bitmap.data[0])
-      free(bitmap.data[0]);
   }
 };

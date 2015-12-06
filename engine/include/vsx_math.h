@@ -61,6 +61,9 @@
 #define FLOAT_CLAMP(V, MN, MX) \
         ((V < MN) ? MN : ((V > MX) ? MX : V))
 
+#define IS_POWER_OF_TWO(v) \
+  ((v != 0) && !(v & (v - 1)))
+
 inline float FLOAT_INTERPOLATE(float Y0, float Y1, float X, float X0, float X1)
 {
   return (FLOAT_EQUALS(X0, X1)) ? Y0 : (((Y1 * (X - X0)) + (Y0 * (X1 - X))) / (X1 - X0));

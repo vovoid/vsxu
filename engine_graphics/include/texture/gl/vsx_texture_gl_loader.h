@@ -88,6 +88,58 @@ inline void upload_1d(vsx_texture_gl* texture_gl, void* data, unsigned long size
   }
 }
 
+inline void handle_anisotropic_mip_map_min_mag(vsx_texture_gl* texture_gl)
+{
+  if (texture_gl->hint & vsx_texture_gl::anisotropic_filtering_hint)
+  {
+    float rMaxAniso;
+    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &rMaxAniso);
+    glTexParameterf( texture_gl->gl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
+  }
+
+
+  // generated mipmaps - only if they do not already exist in the bitmap
+  if (
+     texture_gl->hint & vsx_texture_gl::generate_mipmaps_hint &&
+      1 == texture_gl->bitmap->get_mipmap_level_count()
+  )
+    glTexParameteri(texture_gl->gl_type, GL_GENERATE_MIPMAP, GL_TRUE);
+
+  // when bitmap has mip maps, set max level to that of the bitmaps'
+  if (
+    texture_gl->bitmap->get_mipmap_level_count() > 1
+    ||
+    !(texture_gl->hint & vsx_texture_gl::generate_mipmaps_hint)
+  )
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAX_LEVEL, texture_gl->bitmap->get_mipmap_level_count() - 1);
+
+
+  // magnification filter
+  glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, texture_gl->hint & vsx_texture_gl::linear_interpolate_hint?GL_LINEAR:GL_NEAREST);
+
+
+  // any kind of mip maps
+  if ( !(texture_gl->hint & vsx_texture_gl::generate_mipmaps_hint || texture_gl->bitmap->get_mipmap_level_count() > 1) )
+  {
+    if (texture_gl->hint & vsx_texture_gl::linear_interpolate_hint && texture_gl->hint & vsx_texture_gl::mipmap_linear_interpolate_hint)
+      glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+    if (!(texture_gl->hint & vsx_texture_gl::linear_interpolate_hint) && texture_gl->hint & vsx_texture_gl::mipmap_linear_interpolate_hint)
+      glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+
+    if ((texture_gl->hint & vsx_texture_gl::linear_interpolate_hint) && (!texture_gl->hint & vsx_texture_gl::mipmap_linear_interpolate_hint))
+      glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+
+    if (!(texture_gl->hint & vsx_texture_gl::linear_interpolate_hint) && !(texture_gl->hint & vsx_texture_gl::mipmap_linear_interpolate_hint))
+      glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+    return;
+  }
+
+  // no mip maps at all
+  glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, texture_gl->hint & vsx_texture_gl::linear_interpolate_hint?GL_LINEAR:GL_NEAREST);
+
+}
+
 /**
  * @brief upload_2d
  * @param texture_gl
@@ -100,24 +152,7 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
   glEnable(texture_gl->gl_type);
   glBindTexture(texture_gl->gl_type, texture_gl->gl_id);
 
-  // MIN / MAG filter
-  GLint min_mag = texture_gl->hint & vsx_texture_gl::linear_interpolate_hint?GL_LINEAR:GL_NEAREST;
-
-  if (texture_gl->hint & vsx_texture_gl::mipmaps_hint)
-  {
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-    glTexParameteri(texture_gl->gl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    float rMaxAniso;
-    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &rMaxAniso);
-    glTexParameterf( texture_gl->gl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
-  } else
-  {
-    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, min_mag);
-    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, min_mag);
-  }
+  handle_anisotropic_mip_map_min_mag(texture_gl);
 
   // source format
   GLenum source_format = 0;
@@ -153,18 +188,25 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
   if (texture_gl->bitmap->channels == 4)
     target_format = GL_RGBA; // GL_COMPRESSED_RGB_ARB
 
-  // look for GL_ARB_texture_view if dxt5 compression is available
-  glTexImage2D(
-    texture_gl->gl_type,  // opengl type
-    0,  // mipmap level
-    target_format, // storage type
-    texture_gl->bitmap->width,
-    texture_gl->bitmap->height,
-    0,      // border 0 or 1
-    source_format,   // source data format
-    source_type, // source data type
-    texture_gl->bitmap->data[0] // pointer to data
-  );
+  texture_gl->mip_map_levels_uploaded = 0;
+  for (size_t mip_map_level = 0; mip_map_level < vsx_bitmap::mip_map_level_max; mip_map_level++)
+  {
+    if (!texture_gl->bitmap->data_get(mip_map_level,0))
+      break;
+
+    glTexImage2D(
+      texture_gl->gl_type,  // opengl type
+      mip_map_level,  // mipmap level
+      target_format, // storage type
+      texture_gl->bitmap->width,
+      texture_gl->bitmap->height,
+      0,      // border 0 or 1
+      source_format,   // source data format
+      source_type, // source data type
+      texture_gl->bitmap->data_get(mip_map_level, 0) // pointer to data
+    );
+    texture_gl->mip_map_levels_uploaded++;
+  }
 
   if(!oldStatus)
     glDisable(texture_gl->gl_type);
@@ -183,22 +225,7 @@ inline void upload_cube( vsx_texture_gl* texture_gl )
   glEnable(texture_gl->gl_type);
   glBindTexture(texture_gl->gl_type, texture_gl->gl_id);
 
-  if (texture_gl->hint & vsx_texture_gl::mipmaps_hint)
-  {
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-    glTexParameteri(texture_gl->gl_type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    float rMaxAniso;
-    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &rMaxAniso);
-    glTexParameterf( texture_gl->gl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
-
-  } else
-  {
-    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  }
+  handle_anisotropic_mip_map_min_mag(texture_gl);
 
   // source format
   GLenum source_format = 0;
@@ -242,18 +269,26 @@ inline void upload_cube( vsx_texture_gl* texture_gl )
     GL_TEXTURE_CUBE_MAP_NEGATIVE_Y_ARB
   };
 
-  for (size_t i = 0; i < 6; i++)
-    glTexImage2D(
-      sides[i],  // opengl target
-      0,  // mipmap level
-      target_format, // storage type
-      texture_gl->bitmap->height, // size x
-      texture_gl->bitmap->height, // size y
-      0,      // border 0 or 1
-      source_format,   // source data format
-      source_type, // source data type
-      texture_gl->bitmap->data[i] // pointer to data
-    );
+  texture_gl->mip_map_levels_uploaded = 0;
+  for (size_t mip_map_level = 0; mip_map_level < vsx_bitmap::mip_map_level_max; mip_map_level++)
+  {
+    if (!texture_gl->bitmap->data_get(mip_map_level, 0 ) )
+      break;
+
+    for (size_t cube_map_side = 0; cube_map_side < 6; cube_map_side++)
+      glTexImage2D(
+        sides[cube_map_side],  // opengl target
+        mip_map_level,  // mipmap level
+        target_format, // storage type
+        texture_gl->bitmap->height, // size x
+        texture_gl->bitmap->height, // size y
+        0,      // border 0 or 1
+        source_format,   // source data format
+        source_type, // source data type
+        texture_gl->bitmap->data_get(mip_map_level, cube_map_side) // pointer to data
+      );
+    texture_gl->mip_map_levels_uploaded++;
+  }
 
   glDisable( texture_gl->gl_type );
   texture_gl->uploaded_to_gl = true;

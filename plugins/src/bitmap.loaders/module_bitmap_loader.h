@@ -22,6 +22,7 @@
 */
 
 #include <texture/vsx_texture.h>
+#include <bitmap/vsx_bitmap.h>
 
 class module_bitmap_load: public vsx_module
 {

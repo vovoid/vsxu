@@ -48,7 +48,7 @@ void vsx_font::load(vsx_string<>font, vsxf* filesystem)
   {
     my_font_info.type = 0;
     vsx_string<> ss = base_path+font;
-    my_font_info.texture = vsx_texture_loader::load( base_path+font, filesystem, true, vsx_bitmap::flip_vertical_hint, vsx_texture_gl::mipmaps_hint | vsx_texture_gl::linear_interpolate_hint );
+    my_font_info.texture = vsx_texture_loader::load( base_path+font, filesystem, true, vsx_bitmap::flip_vertical_hint, vsx_texture_gl::generate_mipmaps_hint | vsx_texture_gl::linear_interpolate_hint );
     ch = 16.0f/255.0f;
     cw = 10.0f/255.0f;
   }
@@ -76,7 +76,7 @@ void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsxf* filesystem)
 {
   if (f_info->type == 0)
   {
-    f_info->texture = vsx_texture_loader::load(base_path+font, filesystem, true, vsx_bitmap::flip_vertical_hint, vsx_texture_gl::mipmaps_hint | vsx_texture_gl::linear_interpolate_hint );
+    f_info->texture = vsx_texture_loader::load(base_path+font, filesystem, true, vsx_bitmap::flip_vertical_hint, vsx_texture_gl::generate_mipmaps_hint | vsx_texture_gl::linear_interpolate_hint );
     return;
   }
 

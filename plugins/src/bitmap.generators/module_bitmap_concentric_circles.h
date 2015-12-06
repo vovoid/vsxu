@@ -118,7 +118,7 @@ public:
     float attenuation = module.attenuation_in->get();
     float frequency = module.frequency_in->get() * 2.0f;
 
-    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)module.bitmap.data[0];
+    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)module.bitmap.data_get();
 
     int size = module.i_size;
 
@@ -195,9 +195,9 @@ public:
     if (i_size != 8 << size_in->get())
     {
       i_size = 8 << size_in->get();
-      if (bitmap.data[0])
-        to_delete_data = bitmap.data[0];
-      bitmap.data[0] = malloc( sizeof(vsx_bitmap_32bt) * i_size * i_size);
+      if (bitmap.data_get())
+        to_delete_data = bitmap.data_get();
+      bitmap.data_set( malloc( sizeof(vsx_bitmap_32bt) * i_size * i_size) );
 
       bitmap.width  = i_size;
       bitmap.height = i_size;
@@ -238,9 +238,6 @@ public:
       texture->unload_gl();
       delete texture;
     }
-
-    if (bitmap.data[0])
-      free(bitmap.data[0]);
   }
 
 };

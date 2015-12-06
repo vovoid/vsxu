@@ -85,11 +85,11 @@ public:
       texture->texture->init_opengl_texture_2d();
     }
 
-    texture->texture->hint |= vsx_texture_gl::mipmaps_hint * mipmaps_cache;
+    texture->texture->hint |= vsx_texture_gl::generate_mipmaps_hint * mipmaps_cache;
 
     if (!flip_vertical_cache)
     {
-      bitmap.free_data();
+      bitmap.data_free_all();
       vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, source_bitmap, flip_vertical_cache);
     }
 
@@ -119,7 +119,7 @@ public:
 
     source_bitmap = *(bitmap_in->get_addr());
     if (source_bitmap) {
-      texture->texture->hint |= vsx_texture_gl::mipmaps_hint * mipmaps_cache;
+      texture->texture->hint |= vsx_texture_gl::generate_mipmaps_hint * mipmaps_cache;
       vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, &bitmap, flip_vertical_cache);
       texture_out->set(texture);
     }

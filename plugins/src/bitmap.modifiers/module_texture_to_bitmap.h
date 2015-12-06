@@ -82,10 +82,8 @@ public:
         glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_HEIGHT,&height);
         if (bitmap.width != (unsigned int)width || bitmap.height != (unsigned int)height)
         {
-
-          if (bitmap.data[0])
-            free(bitmap.data);
-          bitmap.data[0] = malloc( sizeof(vsx_bitmap_32bt) * width * height);
+          bitmap.data_free();
+          bitmap.data_set( malloc( sizeof(vsx_bitmap_32bt) * width * height) );
           bitmap.width = width;
           bitmap.height = height;
         }
@@ -93,18 +91,12 @@ public:
                    0,
                    GL_RGBA,
                    GL_UNSIGNED_BYTE,
-                   bitmap.data[0]);
+                   bitmap.data_get()
+        );
         ++bitmap.timestamp;
         bitmap_out->set(&bitmap);
       }
     texture->_bind();
   }
-
-  void on_delete()
-  {
-    if (bitmap.data[0])
-      free(bitmap.data);
-  }
-
 };
 

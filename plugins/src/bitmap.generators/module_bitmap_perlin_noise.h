@@ -84,7 +84,7 @@ public:
     if (module->bitmap.storage_format == vsx_bitmap::byte_storage)
     {
       // integer data type 
-      vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)module->bitmap.data[0];
+      vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)module->bitmap.data_get();
       float yp = 0.0f;
       float xp;
       for (int y = -hsize; y < hsize; ++y)
@@ -130,7 +130,7 @@ public:
     if (module->bitmap.storage_format == vsx_bitmap::float_storage)
     {
       // integer data type
-      GLfloat *p = (GLfloat*)module->bitmap.data[0];
+      GLfloat *p = (GLfloat*)module->bitmap.data_get();
       float yp = 0.0f;
       float xp;
       float ddiv = 1.0f / (((float)hsize)+1.0f);
@@ -280,18 +280,18 @@ public:
     {
       i_size = 8 << size_in->get();
 
-      if (bitmap.data[0])
-        to_delete_data = bitmap.data;
+      if ( bitmap.data_get() )
+        to_delete_data = bitmap.data_get();
 
       switch (bitmap_type_in->get())
       {
         case 0:
           bitmap.storage_format = vsx_bitmap::byte_storage;
-          bitmap.data[0] = malloc( sizeof(vsx_bitmap_32bt) * i_size * i_size );
+          bitmap.data_set( malloc( sizeof(vsx_bitmap_32bt) * i_size * i_size ) );
           break;
         case 1:
           bitmap.storage_format = vsx_bitmap::float_storage;
-          bitmap.data[0] = malloc( sizeof(GLfloat) * i_size * i_size );
+          bitmap.data_set( malloc( sizeof(GLfloat) * i_size * i_size ) );
           break;
       }
       bitmap.width = i_size;
@@ -305,8 +305,5 @@ public:
   {
     if (worker_running)
       pthread_join(worker_t,NULL);
-
-    if (bitmap.data[0])
-      free(bitmap.data[0]);
   }
 };

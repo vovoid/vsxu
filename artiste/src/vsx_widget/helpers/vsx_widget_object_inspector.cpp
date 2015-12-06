@@ -281,7 +281,7 @@ void vsx_window_object_inspector::load_file(vsx_string<>filename)
     vsxf::get_instance(),
     true, // threaded
     vsx_bitmap::flip_vertical_hint,
-    vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::mipmaps_hint
+    vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::generate_mipmaps_hint
   );
 
   view_type = 1;

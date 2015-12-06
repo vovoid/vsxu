@@ -9,7 +9,9 @@ class module_texture_load: public vsx_module
   vsx_module_param_int* reload_in;
   vsx_module_param_int* mipmaps_in;
   vsx_module_param_int* flip_vertical_in;
+  vsx_module_param_int* anisotropic_filtering_in;
   vsx_module_param_int* min_mag_filter_in;
+  vsx_module_param_int* mipmap_min_filter_in;
 
   // out
   vsx_module_param_texture* texture_out;
@@ -18,8 +20,10 @@ class module_texture_load: public vsx_module
   vsx_string<> current_filename;
   vsx_texture<>* texture = 0x0;
   int flip_vertical_cache = 0;
+  int anisotropic_filtering_cache = 0;
   int mipmaps_cache = 0;
   int min_mag_filter_cache = 1;
+  int mipmap_min_filter_cache = 1;
 
   const char* module_name;
   const char* file_suffix;
@@ -56,9 +60,15 @@ public:
     info->in_param_spec =
       "filename:resource,"
       "reload:enum?no|yes&nc=1,"
-      "mipmaps:enum?no|yes&nc=1,"
-      "flip_vertical:enum?no|yes&nc=1,"
-      "min_mag_filter:enum?nearest|linear&nc=1"
+      "data_hints:complex{"
+        "flip_vertical:enum?no|yes&nc=1,"
+      "},"
+      "gl_hints:complex{"
+        "min_mag_filter:enum?nearest|linear&nc=1,"
+        "anisotropic_filter:enum?no|yes&nc=1,"
+        "mipmaps:enum?no|yes&nc=1,"
+        "mipmap_min_filter:enum?nearest|linear&nc=1"
+      "}"
      ;
 
     info->out_param_spec =
@@ -77,7 +87,9 @@ public:
     reload_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reload");
     mipmaps_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "mipmaps");
     flip_vertical_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "flip_vertical");
-
+    anisotropic_filtering_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "anisotropic_filter");
+    mipmap_min_filter_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "mipmap_min_filter");
+    mipmap_min_filter_in->set(1);
     min_mag_filter_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "min_mag_filter");
     min_mag_filter_in->set(1); // linear
 
@@ -105,17 +117,24 @@ public:
     if (flip_vertical_in->get() != flip_vertical_cache)
       reload = true;
 
+    if (anisotropic_filtering_in->get() != anisotropic_filtering_cache)
+      reload = true;
+
+    if (mipmap_min_filter_in->get() != mipmap_min_filter_cache)
+      reload = true;
+
     if (mipmaps_in->get() != mipmaps_cache)
       reload = true;
 
     if (min_mag_filter_in->get() != min_mag_filter_cache)
       reload = true;
 
-    if (!reload)
-      return;
+    req(reload);
 
     mipmaps_cache = mipmaps_in->get();
+    mipmap_min_filter_cache = mipmap_min_filter_in->get();
     flip_vertical_cache = flip_vertical_in->get();
+    anisotropic_filtering_cache = anisotropic_filtering_in->get();
     min_mag_filter_cache = min_mag_filter_in->get();
 
     bool do_reload = reload_in->get();
@@ -138,8 +157,10 @@ public:
     bitmap_loader_hint |= bitmap_loader_extra_hint;
 
     uint64_t hint = 0;
-    hint |= vsx_texture_gl::mipmaps_hint * mipmaps_cache;
+    hint |= vsx_texture_gl::anisotropic_filtering_hint * anisotropic_filtering_cache;
+    hint |= vsx_texture_gl::generate_mipmaps_hint * mipmaps_cache;
     hint |= vsx_texture_gl::linear_interpolate_hint * min_mag_filter_cache;
+    hint |= vsx_texture_gl::mipmap_linear_interpolate_hint * mipmap_min_filter_cache;
 
     texture = vsx_texture_loader::load(
       current_filename,

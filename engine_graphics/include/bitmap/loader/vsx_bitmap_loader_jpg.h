@@ -19,7 +19,7 @@ class vsx_bitmap_loader_jpg
     thread_info->bitmap->filename = thread_info->filename;
     thread_info->bitmap->width = cj.GetResX();
     thread_info->bitmap->height = cj.GetResY();
-    thread_info->bitmap->data[0] = cj.m_pBuf;
+    thread_info->bitmap->data_set( cj.m_pBuf );
     thread_info->bitmap->channels = 3;
 
     if (thread_info->hint & vsx_bitmap::flip_vertical_hint)

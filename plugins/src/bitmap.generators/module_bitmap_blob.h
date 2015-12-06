@@ -21,6 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <bitmap/vsx_bitmap.h>
 #include <texture/vsx_texture.h>
 class module_bitmap_generators_blob : public vsx_module
 {
@@ -115,9 +116,6 @@ public:
     i_size = 0;
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
     work_bitmap = &bitmap;
-    bitmap.data[0] = 0;
-    bitmap.channels = 4;
-    bitmap.storage_format = vsx_bitmap::byte_storage;
     bitm_timestamp = bitmap.timestamp;
     need_to_rebuild = true;
     my_ref = 0;
@@ -138,9 +136,9 @@ public:
     float arms = ((module_bitmap_generators_blob*)ptr)->arms_in->get()*0.5f;
     float star_flower = ((module_bitmap_generators_blob*)ptr)->star_flower_in->get();
     float angle = ((module_bitmap_generators_blob*)ptr)->angle_in->get();
-    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_generators_blob*)ptr)->work_bitmap->data;
+    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_generators_blob*)ptr)->work_bitmap->data_get();
     int size = ((module_bitmap_generators_blob*)ptr)->i_size;
-    //float sp1 = (float)size + 1.0f;
+
     float dist;
     int hsize = size >> 1;
     for(y = -hsize; y < hsize; ++y)
@@ -212,11 +210,10 @@ public:
       if (i_size != 8 << size_in->get())
       {
         i_size = 8 << size_in->get();
-        if (bitmap.data)
-        {
-          to_delete_data = bitmap.data;
-        }
-        bitmap.data[0] = malloc( sizeof(vsx_bitmap_32bt) * i_size * i_size );
+        if (bitmap.data_get())
+          to_delete_data = bitmap.data_get();
+
+        bitmap.data_set( malloc( sizeof(vsx_bitmap_32bt) * i_size * i_size ) );
         bitmap.height = bitmap.width = i_size;
       }
 
@@ -271,7 +268,6 @@ public:
       texture->texture->unload();
       delete texture;
     }
-    delete[] (vsx_bitmap_32bt*)bitmap.data;
   }
 
 };

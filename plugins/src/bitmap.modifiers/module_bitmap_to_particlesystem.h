@@ -20,7 +20,7 @@
 * with this program; if not, write to the Free Software Foundation, Inc.,
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-
+#include <bitmap/vsx_bitmap.h>
 
 class module_bitmap_to_particlesystem : public vsx_module
 {
@@ -131,9 +131,9 @@ public:
         int cc = y*width;
         for (int x = 0; x < width; ++x)
         {
-          (*particles.particles)[i].color.b = ((float)(unsigned char)((((vsx_bitmap_32bt*)bitmap->data)[cc+x]&0x00FF0000)>>16))/255.0f;
-          (*particles.particles)[i].color.g = ((float)(unsigned char)((((vsx_bitmap_32bt*)bitmap->data)[cc+x]&0x0000FF00)>>8))/255.0f;
-          (*particles.particles)[i].color.r = ((float)(unsigned char)((((vsx_bitmap_32bt*)bitmap->data)[cc+x]&0x000000FF)))/255.0f;
+          (*particles.particles)[i].color.b = ((float)(unsigned char)((((vsx_bitmap_32bt*)bitmap->data_get())[cc+x]&0x00FF0000)>>16))/255.0f;
+          (*particles.particles)[i].color.g = ((float)(unsigned char)((((vsx_bitmap_32bt*)bitmap->data_get())[cc+x]&0x0000FF00)>>8))/255.0f;
+          (*particles.particles)[i].color.r = ((float)(unsigned char)((((vsx_bitmap_32bt*)bitmap->data_get())[cc+x]&0x000000FF)))/255.0f;
           (*particles.particles)[i].color.a = 1.0f;
           if ((*particles.particles)[i].color.b < 0.01f && (*particles.particles)[i].color.g < 0.01f && (*particles.particles)[i].color.r < 0.01f)
           (*particles.particles)[i].size = 0.0f;

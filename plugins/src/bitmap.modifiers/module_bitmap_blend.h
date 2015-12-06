@@ -135,7 +135,7 @@ public:
     unsigned long x,y,ix,iy;
 
     for (x = 0; x < result_bitmap->width * result_bitmap->height; x++)
-      ((vsx_bitmap_32bt*)result_bitmap->data)[x] = 0;
+      ((vsx_bitmap_32bt*)result_bitmap->data_get())[x] = 0;
 
     bool ixbound = false, iybound = false;
     iy = 0;
@@ -145,7 +145,7 @@ public:
       ixbound = false;
       for (x = (unsigned long)module->bitm1_ofs_in->get(0); x < result_bitmap->width && !ixbound; x++)
       {
-        ((vsx_bitmap_32bt*)result_bitmap->data)[x + y * result_bitmap->width] = ((vsx_bitmap_32bt*)bitmap_source_1->data)[ix + iy * bitmap_source_1->width];
+        ((vsx_bitmap_32bt*)result_bitmap->data_get())[x + y * result_bitmap->width] = ((vsx_bitmap_32bt*)bitmap_source_1->data_get())[ix + iy * bitmap_source_1->width];
         ix++;
         if (ix >= bitmap_source_1->width)
           ixbound = true;
@@ -165,8 +165,8 @@ public:
 
       for (x = (unsigned long)module->bitm2_ofs_in->get(0); x < result_bitmap->width && !ixbound; x++)
       {
-        vsx_bitmap_32bt* data = (vsx_bitmap_32bt*)result_bitmap->data;
-        vsx_bitmap_32bt* data2 = (vsx_bitmap_32bt*)bitmap_source_2->data;
+        vsx_bitmap_32bt* data = (vsx_bitmap_32bt*)result_bitmap->data_get();
+        vsx_bitmap_32bt* data2 = (vsx_bitmap_32bt*)bitmap_source_2->data_get();
 
         #define BLEND_FUNC(BLT) \
         for (int a = 0; a < 4; a++)\
@@ -357,8 +357,8 @@ public:
       bitmap.height != (unsigned int)target_size_in->get(1)
     )
     {
-      to_delete_data = bitmap.data[0];
-      bitmap.data[0] = malloc( sizeof(vsx_bitmap_32bt) * (int)target_size_in->get(0) * (int)target_size_in->get(1) );
+      to_delete_data = bitmap.data_get();
+      bitmap.data_set( malloc( sizeof(vsx_bitmap_32bt) * (int)target_size_in->get(0) * (int)target_size_in->get(1) ) );
       bitmap.width = (unsigned int)target_size_in->get(0);
       bitmap.height = (unsigned int)target_size_in->get(1);
     }
@@ -371,9 +371,6 @@ public:
   {
     if (worker_running)
       pthread_join(worker_t,NULL);
-
-    if (bitmap.data)
-      free(bitmap.data);
   }
 
 };

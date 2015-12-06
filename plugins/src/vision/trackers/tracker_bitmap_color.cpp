@@ -22,7 +22,7 @@
 #define FILTER_HSV 1
 #define FILTER_HSV_THRESHOLD 2
 #define FILTER_HSV_THRESHOLD_RGB 3
-
+#include <bitmap/vsx_bitmap.h>
 
 tracker_bitmap_color::tracker_bitmap_color():
   m_previousTimestamp(0),

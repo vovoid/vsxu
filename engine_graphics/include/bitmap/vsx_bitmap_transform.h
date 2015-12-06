@@ -2,36 +2,38 @@
 #define VSX_BITMAP_TRANSFORM_H
 
 #include "vsx_bitmap.h"
+#include <vsx_math.h>
+#include <tools/vsx_req.h>
 
 class vsx_bitmap_transform
 {
 
   template < typename T = char >
-  inline void split_into_cubemap_by_type(vsx_bitmap* data)
+  inline void split_into_cubemap_by_type(vsx_bitmap* bitmap)
   {
-    void* source_data = data->data[0];
-    data->data[0] = malloc( sizeof(T) * (data->height * data->height) );
-    data->data[1] = malloc( sizeof(T) * (data->height * data->height) );
-    data->data[2] = malloc( sizeof(T) * (data->height * data->height) );
-    data->data[3] = malloc( sizeof(T) * (data->height * data->height) );
-    data->data[4] = malloc( sizeof(T) * (data->height * data->height) );
-    data->data[5] = malloc( sizeof(T) * (data->height * data->height) );
+    void* source_data = bitmap->data_get();
+    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 0);
+    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 1);
+    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 2);
+    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 3);
+    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 4);
+    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 5);
 
-    for (size_t side_offset = 0; side_offset < 6; side_offset++)
+    for (size_t cube_map_side = 0; cube_map_side < 6; cube_map_side++)
     {
-      for (size_t y = 0; y < data->height; y++)
+      for (size_t y = 0; y < bitmap->height; y++)
       {
         memcpy(
           // destination
-          ((T*)data->data[side_offset]) + y * data->height
+          ((T*)bitmap->data_get(0, cube_map_side) ) + y * bitmap->height
           ,
 
           // source
-          (T*)&((T*)source_data)[ data->width * y ] // row offset
+          (T*)&((T*)source_data)[ bitmap->width * y ] // row offset
           +
-          data->height * side_offset,            // horiz offset
+          bitmap->height * cube_map_side,            // horiz offset
 
-          sizeof(T) * data->height // count
+          sizeof(T) * bitmap->height // count
         );
       }
     }
@@ -39,13 +41,13 @@ class vsx_bitmap_transform
   }
 
 public:
-  inline void flip_vertically(vsx_bitmap* data)
+  inline void flip_vertically(vsx_bitmap* bitmap)
   {
-    size_t width = data->width;
-    size_t height = data->height;
-    size_t channels = data->channels;
+    size_t width = bitmap->width;
+    size_t height = bitmap->height;
+    size_t channels = bitmap->channels;
 
-    if (data->storage_format == vsx_bitmap::float_storage)
+    if (bitmap->storage_format == vsx_bitmap::float_storage)
     {
       GLfloat* data2 = (GLfloat*)malloc(sizeof(GLfloat) * width * height * channels);
       int dy = 0;
@@ -53,11 +55,11 @@ public:
       for (int y = height-1; y >= 0; --y)
       {
         for (unsigned long x = 0; x < width * channels; ++x)
-          data2[dy*sxbpp + x] = ((GLfloat*)data->data[0])[y*sxbpp + x];
+          data2[dy*sxbpp + x] = ((GLfloat*)bitmap->data_get())[y*sxbpp + x];
         ++dy;
       }
-      free(data->data[0]);
-      data->data[0] = (void*)data2;
+      bitmap->data_free();
+      bitmap->data_set( (void*)data2 );
       return;
     }
 
@@ -69,21 +71,19 @@ public:
       int dysxbpp = dy * stride_x;
       int ysxbpp = y * stride_x;
       for (size_t x = 0; x < width*channels; ++x)
-        data2[dysxbpp + x] = ((unsigned char*)data->data[0])[ysxbpp + x];
+        data2[dysxbpp + x] = ((unsigned char*)bitmap->data_get())[ysxbpp + x];
       ++dy;
     }
-    free(data->data[0]);
-    data->data[0] = (void*)data2;
+    bitmap->data_free();
+    bitmap->data_set( (void*)data2 );
   }
 
 
   inline void split_into_cubemap(vsx_bitmap* data)
   {
-    if ( data->width / 6 != data->height )
-      VSX_ERROR_RETURN("Error: not cubemap, should be aspect 6:1");
-
-    if (data->channels != 4)
-      VSX_ERROR_RETURN("Error: RGB cubemaps not implemented");
+    req_error(data->width / 6 == data->height, "Not cubemap, should be aspect 6:1");
+    req_error(data->channels == 4, "RGB cubemaps not implemented");
+    req_error(IS_POWER_OF_TWO(data->height), "Height must be power of two")
 
     if (data->storage_format == vsx_bitmap::float_storage)
       split_into_cubemap_by_type<float>(data);

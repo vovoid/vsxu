@@ -76,10 +76,10 @@ public:
       {
         for (size_t x = 0; x < b_c; ++x)
         {
-            p[x] = ((vsx_bitmap_32bt*)module.bitmap.data[0])[x] | rand() << 8  | (unsigned char)rand(); //bitm->data[x + y*result_bitm.size_x]
+            p[x] = ((vsx_bitmap_32bt*)module.bitmap.data_get() )[x] | rand() << 8  | (unsigned char)rand(); //bitm->data[x + y*result_bitm.size_x]
         }
       }
-      module.bitmap.data[0] = p;
+      module.bitmap.data_set( p );
       module.bitmap.timestamp++;
       buf = !buf;
       i_frame = module.frame;
@@ -133,7 +133,7 @@ public:
       data_a = malloc( sizeof(vsx_bitmap_32bt) * source_bitmap->width * source_bitmap->height);
       data_b = malloc( sizeof(vsx_bitmap_32bt) * source_bitmap->width * source_bitmap->height);
 
-      bitmap.data[0] = data_a;
+      bitmap.data_set( data_a );
       bitmap.width = source_bitmap->width;
       bitmap.height = source_bitmap->height;
 

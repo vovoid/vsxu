@@ -4,7 +4,7 @@
 #include <OpenEXR/ImfInputFile.h>
 #include <OpenEXR/ImfRgbaFile.h>
 #include <OpenEXR/ImathBox.h>
-
+#include <bitmap/vsx_bitmap.h>
 
 using namespace Imf;
 using namespace Imath;
@@ -219,7 +219,7 @@ public:
 
     size_t count_bytes = sizeof(float) * width * height * 4;
     float* data = (float*)malloc( count_bytes );
-    bitmap.data = (void*)data;
+    bitmap.data[0][0] = (void*)data;
 
     for (size_t y = 0; y < height; y++)
     {
