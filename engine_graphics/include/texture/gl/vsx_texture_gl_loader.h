@@ -194,6 +194,9 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
     if (!texture_gl->bitmap->data_get(mip_map_level,0))
       break;
 
+    // TODO:
+    //      glCompressedTexImage2D( GL_TEXTURE_2D, ix, li->internalFormat, x, y, 0, size, data );
+
     glTexImage2D(
       texture_gl->gl_type,  // opengl type
       mip_map_level,  // mipmap level

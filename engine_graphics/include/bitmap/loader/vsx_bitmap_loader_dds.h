@@ -64,42 +64,79 @@ class vsx_bitmap_loader_dds
 
   struct dds_header
   {
+    uint32_t    magic;
+    uint32_t    size;
+    uint32_t    flags;
+    uint32_t    height;
+    uint32_t    width;
+    uint32_t    pitch_or_linear_size;
+    uint32_t    depth;
+    uint32_t    mip_map_count;
+    uint32_t    reserved_1[ 11 ];
+
     struct
     {
-      uint32_t    magic;
       uint32_t    size;
       uint32_t    flags;
-      uint32_t    height;
-      uint32_t    width;
-      uint32_t    pitch_or_linear_size;
-      uint32_t    depth;
-      uint32_t    mip_map_count;
-      uint32_t    reserved_1[ 11 ];
+      uint32_t    four_cc;
+      uint32_t    rgb_bit_count;
+      uint32_t    r_bit_mask;
+      uint32_t    g_bit_mask;
+      uint32_t    b_bit_mask;
+      uint32_t    alpha_bit_mask;
+    } pixel_format;
 
-      struct
-      {
-        uint32_t    size;
-        uint32_t    flags;
-        uint32_t    four_cc;
-        uint32_t    rgb_bit_count;
-        uint32_t    r_bit_mask;
-        uint32_t    g_bit_mask;
-        uint32_t    b_bit_mask;
-        uint32_t    alpha_bit_mask;
-      } pixel_format;
+    struct
+    {
+      uint32_t    caps_1;
+      uint32_t    caps_2;
+      uint32_t    dds_x;
+      uint32_t    reserved;
+    } caps;
 
-      struct
-      {
-        uint32_t    caps_1;
-        uint32_t    caps_2;
-        uint32_t    dds_x;
-        uint32_t    reserved;
-      } caps;
-      uint32_t    reserved_2;
-    };
+    uint32_t    reserved_2;
     char data[ 128 ];
+
   } __attribute__((packed));
 
+  static void worker_load_file(vsx_bitmap* bitmap, vsxf_handle* file_handle, size_t cube_map_side)
+  {
+    dds_header header;
+    filesystem->f_read( &header, sizeof(dds_header), file_handle );
+
+    req_error(header.magic == DDS_MAGIC, "File does not start with \"DDS \"");
+    req_error(header.size == 124, "Wrong header size");
+
+    bitmap->compression = PF_IS_DXT1(header.pixel_format) ? vsx_bitmap::compression_dxt1 : vsx_bitmap::compression_none;
+    bitmap->compression = PF_IS_DXT3(header.pixel_format) ? vsx_bitmap::compression_dxt3 : vsx_bitmap::compression_none;
+    bitmap->compression = PF_IS_DXT5(header.pixel_format) ? vsx_bitmap::compression_dxt5 : vsx_bitmap::compression_none;
+
+    req_error( bitmap->compression != vsx_bitmap::compression_none, "DDS loader only supports DXT1 or DXT3 or DXT5 compressed formats.");
+
+    size_t bytes_per_block = 16;
+    if (bitmap->compression == vsx_bitmap::compression_dxt1)
+      bytes_per_block = 8;
+
+    bitmap->filename = thread_info->filename;
+    bitmap->width = header.width;
+    bitmap->height = header.height;
+    bitmap->channels = 4;
+
+    unsigned int x = header.width;
+    unsigned int y = header.height;
+
+    size_t size = MAX( 4, x ) / 4 * MAX( 4, y ) / 4 * bytes_per_block;
+    req_error( size == header.pitch_or_linear_size, "size differes from ");
+    req_error( header.flags & DDSD_LINEARSIZE, "linear size");
+
+    for( unsigned int mip_map_level = 0; mip_map_level < header.mip_map_count; ++mip_map_level ) {
+      bitmap->data_set( malloc( size ), mip_map_level, cube_map_side );
+      filesystem->f_read( bitmap->data_get(mip_map_level, cube_map_side), size, file_handle );
+      x = (x+1) >> 1;
+      y = (y+1) >> 1;
+      size = MAX( 4, x ) / 4 * MAX( 4, y ) / 4 * bytes_per_block;
+    }
+  }
 
   static void* worker(void *ptr)
   {
@@ -109,33 +146,15 @@ class vsx_bitmap_loader_dds
     vsx_bitmap* bitmap = thread_info->bitmap;
 
     vsxf_handle* file_handle = filesystem->f_open(thread_info->filename.c_str(), "rb");
-    dds_header header;
-    filesystem->f_read( &header, sizeof(dds_header), file_handle );
 
-    req_error_goto(header.magic == DDS_MAGIC, "File does not start with \"DDS \"", end);
-    req_error_goto(header.size == 124, "Wrong header size", end);
+    worker_load_file(bitmap, file_handle, 0);
 
-    bitmap->compression = PF_IS_DXT1(header.pixel_format) ? vsx_bitmap::compression_dxt1 : vsx_bitmap::compression_none;
-    bitmap->compression = PF_IS_DXT3(header.pixel_format) ? vsx_bitmap::compression_dxt3 : vsx_bitmap::compression_none;
-    bitmap->compression = PF_IS_DXT5(header.pixel_format) ? vsx_bitmap::compression_dxt5 : vsx_bitmap::compression_none;
 
-    req_error_goto( bitmap->compression != vsx_bitmap::compression_none, "DDS loader only supports DXT1 or DXT3 or DXT5 compressed formats.", end);
 
-    thread_info->bitmap->filename = thread_info->filename;
-    thread_info->bitmap->width = header.width;
-    thread_info->bitmap->height = header.height;
-    thread_info->bitmap->channels = 4;
-
-    if (thread_info->hint & vsx_bitmap::flip_vertical_hint)
-      vsx_bitmap_transform::get_instance()->flip_vertically(thread_info->bitmap);
-
-    if (thread_info->hint & vsx_bitmap::cubemap_split_6_1_hint)
-      vsx_bitmap_transform::get_instance()->split_into_cubemap(thread_info->bitmap);
 
     thread_info->bitmap->timestamp = vsx_singleton_counter::get();
     __sync_fetch_and_add( &(thread_info->bitmap->data_ready), 1 );
 
-  end:
     delete thread_info;
     return 0;
   }
