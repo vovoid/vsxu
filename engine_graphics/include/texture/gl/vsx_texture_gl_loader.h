@@ -10,6 +10,20 @@
 namespace vsx_texture_gl_loader
 {
 
+  inline GLenum get_compression_format(vsx_bitmap* bitmap)
+  {
+    if (bitmap->compression == vsx_bitmap::compression_dxt1)
+      return GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+
+    if (bitmap->compression == vsx_bitmap::compression_dxt3)
+      return GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+
+    if (bitmap->compression == vsx_bitmap::compression_dxt5)
+      return GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+
+    return 0;
+  }
+
 /**
  * @brief upload_1d
  * @param texture_gl
@@ -154,19 +168,21 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
 
   handle_anisotropic_mip_map_min_mag(texture_gl);
 
+  vsx_bitmap* bitmap = texture_gl->bitmap;
+
   // source format
   GLenum source_format = 0;
-  if (texture_gl->bitmap->channels == 3)
+  if (bitmap->channels == 3)
   {
-    if (texture_gl->bitmap->channels_bgra)
+    if (bitmap->channels_bgra)
       source_format = GL_BGR;
     else
       source_format = GL_RGB;
   }
 
-  if (texture_gl->bitmap->channels == 4)
+  if (bitmap->channels == 4)
   {
-    if (texture_gl->bitmap->channels_bgra)
+    if (bitmap->channels_bgra)
       source_format = GL_BGRA;
     else
       source_format = GL_RGBA;
@@ -174,41 +190,54 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
 
   // source type
   GLenum source_type = 0;
-  if (texture_gl->bitmap->storage_format == vsx_bitmap::byte_storage)
+  if (bitmap->storage_format == vsx_bitmap::byte_storage)
     source_type = GL_UNSIGNED_BYTE;
 
-  if (texture_gl->bitmap->storage_format == vsx_bitmap::float_storage)
+  if (bitmap->storage_format == vsx_bitmap::float_storage)
     source_type = GL_FLOAT;
 
   // target format
   GLint target_format = 0;
-  if (texture_gl->bitmap->channels == 3)
+  if (bitmap->channels == 3)
     target_format = GL_RGB;
 
-  if (texture_gl->bitmap->channels == 4)
+  if (bitmap->channels == 4)
     target_format = GL_RGBA; // GL_COMPRESSED_RGB_ARB
 
   texture_gl->mip_map_levels_uploaded = 0;
   for (size_t mip_map_level = 0; mip_map_level < vsx_bitmap::mip_map_level_max; mip_map_level++)
   {
-    if (!texture_gl->bitmap->data_get(mip_map_level,0))
+    if (!bitmap->data_get(mip_map_level,0))
       break;
 
-    // TODO:
-    //      glCompressedTexImage2D( GL_TEXTURE_2D, ix, li->internalFormat, x, y, 0, size, data );
+    texture_gl->mip_map_levels_uploaded++;
+
+    if (get_compression_format(bitmap))
+    {
+      glCompressedTexImage2D(
+        texture_gl->gl_type,  // opengl type
+        mip_map_level, // mipmap level
+        get_compression_format(bitmap),
+        bitmap->width,
+        bitmap->height,
+        0, // border 0 or 1
+        bitmap->data_size_get(mip_map_level, 0),
+        bitmap->data_get(mip_map_level, 0)
+      );
+      continue;
+    }
 
     glTexImage2D(
-      texture_gl->gl_type,  // opengl type
-      mip_map_level,  // mipmap level
+      texture_gl->gl_type, // opengl type
+      mip_map_level, // mipmap level
       target_format, // storage type
-      texture_gl->bitmap->width,
-      texture_gl->bitmap->height,
-      0,      // border 0 or 1
-      source_format,   // source data format
+      bitmap->width,
+      bitmap->height,
+      0, // border 0 or 1
+      source_format, // source data format
       source_type, // source data type
-      texture_gl->bitmap->data_get(mip_map_level, 0) // pointer to data
+      bitmap->data_get(mip_map_level, 0) // pointer to data
     );
-    texture_gl->mip_map_levels_uploaded++;
   }
 
   if(!oldStatus)
@@ -230,12 +259,14 @@ inline void upload_cube( vsx_texture_gl* texture_gl )
 
   handle_anisotropic_mip_map_min_mag(texture_gl);
 
+  vsx_bitmap* bitmap = texture_gl->bitmap;
+
   // source format
   GLenum source_format = 0;
-  if (texture_gl->bitmap->channels == 3)
+  if (bitmap->channels == 3)
     source_format = GL_RGB;
 
-  if (texture_gl->bitmap->channels == 4)
+  if (bitmap->channels == 4)
     source_format = GL_RGBA;
 
   if (source_format == 0)
@@ -243,10 +274,10 @@ inline void upload_cube( vsx_texture_gl* texture_gl )
 
   // source type
   GLenum source_type = 0;
-  if (texture_gl->bitmap->storage_format == vsx_bitmap::byte_storage)
+  if (bitmap->storage_format == vsx_bitmap::byte_storage)
     source_type = GL_UNSIGNED_BYTE;
 
-  if (texture_gl->bitmap->storage_format == vsx_bitmap::float_storage)
+  if (bitmap->storage_format == vsx_bitmap::float_storage)
     source_type = GL_FLOAT;
 
   if (source_type == 0)
@@ -254,10 +285,10 @@ inline void upload_cube( vsx_texture_gl* texture_gl )
 
   // target format
   GLint target_format = 0;
-  if (texture_gl->bitmap->channels == 3)
+  if (bitmap->channels == 3)
     target_format = GL_RGB;
 
-  if (texture_gl->bitmap->channels == 4)
+  if (bitmap->channels == 4)
     target_format = GL_RGBA; // GL_COMPRESSED_RGB_ARB
 
   if (target_format == 0)
@@ -275,22 +306,40 @@ inline void upload_cube( vsx_texture_gl* texture_gl )
   texture_gl->mip_map_levels_uploaded = 0;
   for (size_t mip_map_level = 0; mip_map_level < vsx_bitmap::mip_map_level_max; mip_map_level++)
   {
-    if (!texture_gl->bitmap->data_get(mip_map_level, 0 ) )
+    if (!bitmap->data_get(mip_map_level, 0 ) )
       break;
+
+    texture_gl->mip_map_levels_uploaded++;
+
+    if (get_compression_format(bitmap))
+    {
+      for (size_t cube_map_side = 0; cube_map_side < 6; cube_map_side++)
+        glCompressedTexImage2D(
+          sides[cube_map_side],  // opengl target
+          mip_map_level, // mipmap level
+          get_compression_format(bitmap),
+          bitmap->width,
+          bitmap->height,
+          0, // border 0 or 1
+          bitmap->data_size_get(mip_map_level, cube_map_side),
+          bitmap->data_get(mip_map_level, cube_map_side)
+        );
+      // next mip map level
+      continue;
+    }
 
     for (size_t cube_map_side = 0; cube_map_side < 6; cube_map_side++)
       glTexImage2D(
         sides[cube_map_side],  // opengl target
         mip_map_level,  // mipmap level
         target_format, // storage type
-        texture_gl->bitmap->height, // size x
-        texture_gl->bitmap->height, // size y
+        bitmap->height, // size x
+        bitmap->height, // size y
         0,      // border 0 or 1
         source_format,   // source data format
         source_type, // source data type
-        texture_gl->bitmap->data_get(mip_map_level, cube_map_side) // pointer to data
+        bitmap->data_get(mip_map_level, cube_map_side) // pointer to data
       );
-    texture_gl->mip_map_levels_uploaded++;
   }
 
   glDisable( texture_gl->gl_type );

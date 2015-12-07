@@ -69,6 +69,26 @@ class vsx_bitmap
     }
   ;
 
+  uint64_t data_size [15] [6] =
+  {
+    {0,0,0,0,0,0},
+    {0,0,0,0,0,0},
+    {0,0,0,0,0,0},
+    {0,0,0,0,0,0},
+    {0,0,0,0,0,0},
+    {0,0,0,0,0,0},
+    {0,0,0,0,0,0},
+    {0,0,0,0,0,0},
+    {0,0,0,0,0,0},
+    {0,0,0,0,0,0},
+    {0,0,0,0,0,0},
+    {0,0,0,0,0,0},
+    {0,0,0,0,0,0},
+    {0,0,0,0,0,0},
+    {0,0,0,0,0,0}
+  }
+;
+
 public:
   vsx_string<> filename;
 
@@ -107,7 +127,7 @@ public:
 
 
   // has thread finished producing data when loading?
-  volatile size_t data_ready = 0;
+  volatile __attribute__((aligned(64))) uint64_t data_ready = 0;
 
   enum compression_type {
     compression_none = 0,
@@ -127,27 +147,39 @@ public:
     return data[mip_map_level][cube_map_side];
   }
 
-  inline void data_set(void* new_value, size_t mip_map_level = 0, size_t cube_map_side = 0)
+  inline uint64_t data_size_get(size_t mip_map_level = 0, size_t cube_map_side = 0)
+  {
+    return data_size[mip_map_level][cube_map_side];
+  }
+
+  inline uint64_t data_size_get_all()
+  {
+    u_int64_t total_bytes;
+    for (size_t mipmap_level = 0; mipmap_level < 15; mipmap_level++)
+      for (size_t cubemap_side = 0; cubemap_side < 6; cubemap_side++)
+        total_bytes += data_size[mipmap_level][cubemap_side];
+    return total_bytes;
+  }
+
+  inline void data_set(void* new_value, size_t mip_map_level = 0, size_t cube_map_side = 0, uint64_t size = 0)
   {
     data[mip_map_level][cube_map_side] = new_value;
+    data_size[mip_map_level][cube_map_side] = size;
   }
 
   inline void data_free(size_t mip_map_level = 0, size_t cube_map_side = 0)
   {
     req(data[mip_map_level][cube_map_side]);
-    free (data[mip_map_level][cube_map_side]);
+    free(data[mip_map_level][cube_map_side]);
     data[mip_map_level][cube_map_side] = 0x0;
+    data_size[mip_map_level][cube_map_side] = 0;
   }
 
-  inline void data_free_all() {
+  inline void data_free_all()
+  {
     for (size_t mipmap_level = 0; mipmap_level < 15; mipmap_level++)
-      for (size_t i = 0; i < 6; i++)
-      {
-        if (!data[mipmap_level][i])
-          continue;
-        free(data[mipmap_level][i]);
-        data[mipmap_level][i] = 0;
-      }
+      for (size_t cubemap_side = 0; cubemap_side < 6; cubemap_side++)
+        data_free(mipmap_level, cubemap_side);
   }
 
   vsx_bitmap(bool is_attached_to_cache = false)

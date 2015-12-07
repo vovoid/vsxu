@@ -31,7 +31,7 @@ class vsx_bitmap_loader_tga
   static void* worker(void *ptr)
   {
     vsx_texture_loader_thread_info* thread_info = ((vsx_texture_loader_thread_info*)ptr);
-
+    vsx_bitmap* bitmap = thread_info->bitmap;
     vsxf* filesystem = thread_info->filesystem;
 
     vsxf_handle* file_handle = filesystem->f_open(thread_info->filename.c_str(), "rb");
@@ -53,10 +53,10 @@ class vsx_bitmap_loader_tga
     }
 
     channels = header.bits_per_pixel / 8;
-    thread_info->bitmap->channels = channels;
-    thread_info->bitmap->width = header.width;
-    thread_info->bitmap->height = header.height;
-    thread_info->bitmap->channels_bgra = true;
+    bitmap->channels = channels;
+    bitmap->width = header.width;
+    bitmap->height = header.height;
+    bitmap->channels_bgra = true;
 
     num_bytes = channels * header.width * header.height;
     data = malloc( num_bytes );
@@ -64,17 +64,17 @@ class vsx_bitmap_loader_tga
 
     filesystem->f_close(file_handle);
 
-    thread_info->bitmap->filename = thread_info->filename;
-    thread_info->bitmap->data_set( data );
+    bitmap->filename = thread_info->filename;
+    bitmap->data_set( data, 0, 0, num_bytes );
 
-    if (thread_info->hint & vsx_bitmap::flip_vertical_hint)
+    if (bitmap->hint & vsx_bitmap::flip_vertical_hint)
       vsx_bitmap_transform::get_instance()->flip_vertically(thread_info->bitmap);
 
-    if (thread_info->hint & vsx_bitmap::cubemap_split_6_1_hint)
+    if (bitmap->hint & vsx_bitmap::cubemap_split_6_1_hint)
       vsx_bitmap_transform::get_instance()->split_into_cubemap(thread_info->bitmap);
 
-    thread_info->bitmap->timestamp = vsx_singleton_counter::get();
-    __sync_fetch_and_add( &(thread_info->bitmap->data_ready), 1 );
+    bitmap->timestamp = vsx_singleton_counter::get();
+    __sync_fetch_and_add( &(bitmap->data_ready), 1 );
 
   end:
     delete thread_info;

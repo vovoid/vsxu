@@ -12,7 +12,7 @@ class vsx_bitmap_loader_png
   static void* worker(void *ptr)
   {
     vsx_texture_loader_thread_info* thread_info = ((vsx_texture_loader_thread_info*)ptr);
-
+    vsx_bitmap* bitmap = thread_info->bitmap;
 
     pngRawInfo pp;
     if (
@@ -21,29 +21,27 @@ class vsx_bitmap_loader_png
           &pp,
           thread_info->filesystem)
         )
-    {
       VSX_ERROR_RETURN_V("Could not load PNG",0)
-    }
 
     if (pp.Palette)
       free(pp.Palette);
 
-    thread_info->bitmap->filename = thread_info->filename;
-    thread_info->bitmap->width = pp.Width;
-    thread_info->bitmap->height = pp.Height;
-    thread_info->bitmap->data_set( pp.Data );
-    thread_info->bitmap->channels = pp.Components;
+    bitmap->filename = thread_info->filename;
+    bitmap->width = pp.Width;
+    bitmap->height = pp.Height;
+    bitmap->channels = pp.Components;
+    bitmap->data_set( pp.Data, 0, 0, bitmap->width * bitmap->height * bitmap->channels );
 
-    if (thread_info->hint & vsx_bitmap::flip_vertical_hint)
+    if (bitmap->hint & vsx_bitmap::flip_vertical_hint)
       vsx_bitmap_transform::get_instance()->flip_vertically(thread_info->bitmap);
 
-    if (thread_info->hint & vsx_bitmap::cubemap_split_6_1_hint)
+    if (bitmap->hint & vsx_bitmap::cubemap_split_6_1_hint)
       vsx_bitmap_transform::get_instance()->split_into_cubemap(thread_info->bitmap);
 
-    thread_info->bitmap->timestamp = vsx_singleton_counter::get();
-    __sync_fetch_and_add( &(thread_info->bitmap->data_ready), 1 );
-
     delete thread_info;
+
+    bitmap->timestamp = vsx_singleton_counter::get();
+    __sync_fetch_and_add( &(bitmap->data_ready), 1 );
 
     return 0;
   }

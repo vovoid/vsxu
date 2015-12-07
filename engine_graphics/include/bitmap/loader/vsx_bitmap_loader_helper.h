@@ -28,26 +28,28 @@ class vsx_bitmap_loader_helper
     return 0x0;
   }
 
-  inline static void do_load(vsx_bitmap* bitmap, vsx_string<>filename, vsxf* filesystem, bool thread, uint64_t hint)
+  inline static void do_load(vsx_bitmap* bitmap, vsx_string<>filename, vsxf* filesystem, bool thread)
   {
     vsx_bitmap_loader_base* data_loader = vsx_bitmap_loader_helper::get_data_loader_by_image_type( filename );
     req_error(data_loader, "unknown image format");
-    data_loader->load( bitmap, filename, filesystem, thread, hint );
+    data_loader->load( bitmap, filename, filesystem, thread );
   }
 
 public:
 
   inline static void reload(vsx_bitmap* bitmap, vsx_string<>filename, vsxf* filesystem, bool thread, uint64_t hint)
   {
-    do_load(bitmap, filename, filesystem, thread, hint);
+    bitmap->hint = hint;
+    do_load(bitmap, filename, filesystem, thread);
   }
 
   inline static void load(vsx_bitmap* bitmap, vsx_string<>filename, vsxf* filesystem, bool thread, uint64_t hint)
   {
     if (bitmap->references > 1)
       ret(bitmap->timestamp = vsx_singleton_counter::get());
+    bitmap->hint = hint;
 
-    do_load(bitmap, filename, filesystem, thread, hint);
+    do_load(bitmap, filename, filesystem, thread);
   }
 };
 

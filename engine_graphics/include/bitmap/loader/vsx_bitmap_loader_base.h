@@ -15,13 +15,12 @@ protected:
 
 public:
 
-  void load(vsx_bitmap* bitmap, vsx_string<>filename, vsxf* filesystem, bool thread, uint64_t hint)
+  void load(vsx_bitmap* bitmap, vsx_string<>filename, vsxf* filesystem, bool thread)
   {
     vsx_texture_loader_thread_info* thread_info = new vsx_texture_loader_thread_info();
     thread_info->filename = filename;
     thread_info->filesystem = filesystem;
     thread_info->bitmap = bitmap;
-    thread_info->hint = hint;
 
     bitmap->data_ready = 0;
     load_internal(filename, filesystem, bitmap, thread, thread_info);
