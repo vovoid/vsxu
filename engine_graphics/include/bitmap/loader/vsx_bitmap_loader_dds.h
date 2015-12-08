@@ -96,23 +96,28 @@ class vsx_bitmap_loader_dds
     } caps;
 
     uint32_t    reserved_2;
-    char data[ 128 ];
-
   } __attribute__((packed));
 
   static bool worker_load_file(vsx_bitmap* bitmap, vsxf* filesystem, vsxf_handle* file_handle, size_t cube_map_side)
   {
+    req_error_v(file_handle, "file handle is null", 0);
+
     dds_header header;
-    filesystem->f_read( &header, sizeof(dds_header), file_handle );
+    filesystem->f_read( &header, sizeof(header), file_handle );
 
     req_error_v(header.magic == DDS_MAGIC, "File does not start with \"DDS \"", false);
     req_error_v(header.size == 124, "Wrong header size", false);
 
     bitmap->compression = PF_IS_DXT1(header.pixel_format) ? vsx_bitmap::compression_dxt1 : vsx_bitmap::compression_none;
-    bitmap->compression = PF_IS_DXT3(header.pixel_format) ? vsx_bitmap::compression_dxt3 : vsx_bitmap::compression_none;
-    bitmap->compression = PF_IS_DXT5(header.pixel_format) ? vsx_bitmap::compression_dxt5 : vsx_bitmap::compression_none;
+
+    if (bitmap->compression == vsx_bitmap::compression_none)
+      bitmap->compression = PF_IS_DXT3(header.pixel_format) ? vsx_bitmap::compression_dxt3 : vsx_bitmap::compression_none;
+
+    if (bitmap->compression == vsx_bitmap::compression_none)
+      bitmap->compression = PF_IS_DXT5(header.pixel_format) ? vsx_bitmap::compression_dxt5 : vsx_bitmap::compression_none;
 
     req_error_v( bitmap->compression != vsx_bitmap::compression_none, "DDS loader only supports DXT1 or DXT3 or DXT5 compressed formats.", false);
+    req_error_v( header.flags & DDSD_LINEARSIZE, "linear size", false);
 
     size_t bytes_per_block = 16;
     if (bitmap->compression == vsx_bitmap::compression_dxt1)
@@ -122,19 +127,24 @@ class vsx_bitmap_loader_dds
     bitmap->height = header.height;
     bitmap->channels = 4;
 
+    size_t row_size = MAX( 1, (header.width + 3) / 4 ) * bytes_per_block;
+    req_error_v( row_size == header.pitch_or_linear_size, "size differes from pitch or linear size", false);
+
     unsigned int x = header.width;
     unsigned int y = header.height;
+    for( unsigned int mip_map_level = 0; mip_map_level < header.mip_map_count; ++mip_map_level )
+    {
+      size_t size = MAX( 1, (x + 3) / 4 ) *  (MAX( 1, (y + 3) / 4 )) * bytes_per_block;
 
-    size_t size = MAX( 4, x ) / 4 * MAX( 4, y ) / 4 * bytes_per_block;
-    req_error_v( size == header.pitch_or_linear_size, "size differes from ", false);
-    req_error_v( header.flags & DDSD_LINEARSIZE, "linear size", false);
-
-    for( unsigned int mip_map_level = 0; mip_map_level < header.mip_map_count; ++mip_map_level ) {
       bitmap->data_set( malloc( size ), mip_map_level, cube_map_side, size );
       filesystem->f_read( bitmap->data_get(mip_map_level, cube_map_side), size, file_handle );
-      x = (x+1) >> 1;
-      y = (y+1) >> 1;
-      size = MAX( 4, x ) / 4 * MAX( 4, y ) / 4 * bytes_per_block;
+
+      x /= 2;
+      y /= 2;
+      if (!x)
+        x = 1;
+      if (!y)
+        y = 1;
     }
     return true;
   }

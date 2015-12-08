@@ -104,19 +104,18 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
       logo_size.y = 20;
     	if (logo_time < animlen) {
         glDisable(GL_DEPTH_TEST);
-        //printf("drawing logo intro\n");
 
         if (draw_black_overlay)
         {
           glColor4f(0,0,0,b_alpha);
           glBegin(GL_QUADS);
-          	glTexCoord2f(0, 1);
+            glTexCoord2f(0, 0);
             glVertex3f(logo_pos.x-logo_size.x*1.5/2,logo_pos.y-logo_size.y/2,logo_pos.z);
-          	glTexCoord2f(0, 0);
+            glTexCoord2f(0, 1);
             glVertex3f(logo_pos.x-logo_size.x*1.5/2,logo_pos.y+logo_size.y/2,logo_pos.z);
-          	glTexCoord2f(1, 0);
+            glTexCoord2f(1, 1);
             glVertex3f(logo_pos.x+logo_size.x*1.5/2,logo_pos.y+logo_size.y/2,logo_pos.z);
-          	glTexCoord2f(1, 1);
+            glTexCoord2f(1, 0);
             glVertex3f(logo_pos.x+logo_size.x*1.5/2,logo_pos.y-logo_size.y/2,logo_pos.z);
           glEnd();
         }
@@ -129,26 +128,26 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
             glColor4f(0.298,0.368,0.41,alphab);
             glRotatef(logo_rot1*360,0,0,1);
             glBegin(GL_QUADS);
-              glTexCoord2f(0, 1);
-              glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
               glTexCoord2f(0, 0);
+              glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
+              glTexCoord2f(0, 1);
               glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
-              glTexCoord2f(1, 0);
-              glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
               glTexCoord2f(1, 1);
+              glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
+              glTexCoord2f(1, 0);
               glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
             glEnd();
             glPopMatrix();
             glPushMatrix();
             glRotatef(360*logo_rot2,0,0,alphab);
             glBegin(GL_QUADS);
-              glTexCoord2f(0, 1);
-              glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
               glTexCoord2f(0, 0);
+              glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
+              glTexCoord2f(0, 1);
               glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
-              glTexCoord2f(1, 0);
-              glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
               glTexCoord2f(1, 1);
+              glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
+              glTexCoord2f(1, 0);
               glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
             glEnd();
             glPopMatrix();
@@ -156,13 +155,13 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
             glColor4f(0.15,0.433,0.46,alphab);
             glRotatef(360*logo_rot3,0,0,1);
             glBegin(GL_QUADS);
-              glTexCoord2f(0, 1);
-              glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
               glTexCoord2f(0, 0);
+              glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
+              glTexCoord2f(0, 1);
               glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
-              glTexCoord2f(1, 0);
-              glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
               glTexCoord2f(1, 1);
+              glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
+              glTexCoord2f(1, 0);
               glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
             glEnd();
             glPopMatrix();
@@ -173,13 +172,13 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
             glColor4f(0.433,0.25,0.56,alphab);
             glRotatef(360*logo_rot3*0.5,0,0,1);
             glBegin(GL_QUADS);
-              glTexCoord2f(0, 1);
-              glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
               glTexCoord2f(0, 0);
+              glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
+              glTexCoord2f(0, 1);
               glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
-              glTexCoord2f(1, 0);
-              glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
               glTexCoord2f(1, 1);
+              glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y+logo_size.y/2,logo_pos.z);
+              glTexCoord2f(1, 0);
               glVertex3f(logo_pos.x+logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
             glEnd();
             glPopMatrix();
@@ -193,13 +192,13 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
 
         luna->bind();
           glBegin(GL_QUADS);
-          	glTexCoord2f(0, 0);
+            glTexCoord2f(0, 1);
             glVertex3f(logo_pos.x-luna_size.x/2,logo_pos.y-luna_size.y/2,logo_pos.z);
-          	glTexCoord2f(0, 1);
+            glTexCoord2f(0, 0);
             glVertex3f(logo_pos.x-luna_size.x/2,logo_pos.y+luna_size.y/2,logo_pos.z);
-          	glTexCoord2f(1, 1);
+            glTexCoord2f(1, 0);
             glVertex3f(logo_pos.x+luna_size.x/2,logo_pos.y+luna_size.y/2,logo_pos.z);
-          	glTexCoord2f(1, 0);
+            glTexCoord2f(1, 1);
             glVertex3f(logo_pos.x+luna_size.x/2,logo_pos.y-luna_size.y/2,logo_pos.z);
           glEnd();
         luna->_bind();
@@ -215,8 +214,8 @@ vsx_logo_intro::vsx_logo_intro() {
   logo_rot3 = 0.3;
   destroy_textures = true;
 
-  luna = vsx_texture_loader::load( PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo.jpg", vsxf::get_instance(), false, vsx_bitmap::flip_vertical_hint, vsx_texture_gl::linear_interpolate_hint );
-  luna_bkg = vsx_texture_loader::load( PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo_bkg.jpg",vsxf::get_instance(), false, vsx_bitmap::flip_vertical_hint, vsx_texture_gl::linear_interpolate_hint );
+  luna = vsx_texture_loader::load( PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo.dds", vsxf::get_instance(), false, vsx_bitmap::flip_vertical_hint, vsx_texture_gl::linear_interpolate_hint );
+  luna_bkg = vsx_texture_loader::load( PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo_bkg.dds",vsxf::get_instance(), false, vsx_bitmap::flip_vertical_hint, vsx_texture_gl::linear_interpolate_hint );
   timer.start();
 }
 

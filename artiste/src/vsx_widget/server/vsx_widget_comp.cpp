@@ -634,11 +634,11 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
       component_type = parts[0];
 
       mtex = vsx_texture_loader::load(
-        vsx_widget_skin::get_instance()->skin_path_get() + "component_types/"+component_type+".png",
+        vsx_widget_skin::get_instance()->skin_path_get() + "component_types/"+component_type+".dds",
         vsxf::get_instance(),
         true, // threaded
-        vsx_bitmap::flip_vertical_hint,
-        vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::generate_mipmaps_hint
+        0,
+        vsx_texture_gl::linear_interpolate_hint
       );
 
       mtex_overlay = 0x0;
@@ -764,10 +764,10 @@ void vsx_widget_component::draw()
 
 
     const GLshort squareTexcoords[] = {
-      0, 0,
-      1, 0,
       0, 1,
-      1, 1
+      1, 1,
+      0, 0,
+      1, 0
     };
 
     const GLfloat squareVertices[] = {

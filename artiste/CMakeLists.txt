@@ -190,8 +190,8 @@ install(
 
 install(
   FILES
-    ${CMAKE_SOURCE_DIR}/share/gfx/vsxu_logo.jpg
-    ${CMAKE_SOURCE_DIR}/share/gfx/vsxu_logo_bkg.jpg
+    ${CMAKE_SOURCE_DIR}/share/gfx/vsxu_logo.dds
+    ${CMAKE_SOURCE_DIR}/share/gfx/vsxu_logo_bkg.dds
     ${CMAKE_SOURCE_DIR}/share/gfx/luna.png
     ${CMAKE_SOURCE_DIR}/share/vsxu.conf
   DESTINATION

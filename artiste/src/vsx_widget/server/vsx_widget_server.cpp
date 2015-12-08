@@ -229,7 +229,7 @@ void vsx_widget_server::init()
   selection = false;
 
   set_size(vsx_vector3<>(10.0f,10.0f));
-  color.a = 0.6;
+  color.a = 1.0;
   init_children();
 
   init_run = true;
@@ -266,11 +266,11 @@ void vsx_widget_server::init()
   seq_pool = 0; // TODO: remove the auto-init
 
   mtex = vsx_texture_loader::load(
-    vsx_widget_skin::get_instance()->skin_path_get() + "server.png",
+    vsx_widget_skin::get_instance()->skin_path_get() + "server.dds",
     vsxf::get_instance(),
     true, // threaded
-    vsx_bitmap::flip_vertical_hint,
-    vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::generate_mipmaps_hint
+    0,
+    vsx_texture_gl::linear_interpolate_hint
   );
 
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET)
@@ -1402,13 +1402,13 @@ void vsx_widget_server::draw()
     }
 
     glBegin(GL_QUADS);
-      glTexCoord2f(0, 0);
-      glVertex2f(x-size.x/1.6,y-size.y/1.6);
       glTexCoord2f(0, 1);
+      glVertex2f(x-size.x/1.6,y-size.y/1.6);
+      glTexCoord2f(0, 0);
       glVertex2f(x-size.x/1.6,y+size.y/1.6);
-      glTexCoord2f(1, 1);
-      glVertex2f(x+size.x/1.6,y+size.y/1.6);
       glTexCoord2f(1, 0);
+      glVertex2f(x+size.x/1.6,y+size.y/1.6);
+      glTexCoord2f(1, 1);
       glVertex2f(x+size.x/1.6,y-size.y/1.6);
     glEnd();
     mtex->_bind();

@@ -218,8 +218,8 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
         texture_gl->gl_type,  // opengl type
         mip_map_level, // mipmap level
         get_compression_format(bitmap),
-        bitmap->width,
-        bitmap->height,
+        bitmap->width >> mip_map_level,
+        bitmap->height >> mip_map_level,
         0, // border 0 or 1
         bitmap->data_size_get(mip_map_level, 0),
         bitmap->data_get(mip_map_level, 0)
@@ -231,8 +231,8 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
       texture_gl->gl_type, // opengl type
       mip_map_level, // mipmap level
       target_format, // storage type
-      bitmap->width,
-      bitmap->height,
+      bitmap->width >> mip_map_level,
+      bitmap->height >> mip_map_level,
       0, // border 0 or 1
       source_format, // source data format
       source_type, // source data type

@@ -61,13 +61,13 @@ void vsx_window_object_inspector::draw_2d() {
     glColor4f(1,1,1,1);
       texture->bind();
         glBegin(GL_QUADS);
-          glTexCoord2i(0, 1);
-          glVertex3f(pos_.x,pos_.y,0);
-          glTexCoord2i(1, 1);
-          glVertex3f(pos_.x+size_.x,pos_.y,0);
-          glTexCoord2i(1, 0);
-          glVertex3f(pos_.x+size_.x,pos_.y-size_.y,0);
           glTexCoord2i(0, 0);
+          glVertex3f(pos_.x,pos_.y,0);
+          glTexCoord2i(1, 0);
+          glVertex3f(pos_.x+size_.x,pos_.y,0);
+          glTexCoord2i(1, 1);
+          glVertex3f(pos_.x+size_.x,pos_.y-size_.y,0);
+          glTexCoord2i(0, 1);
           glVertex3f(pos_.x,pos_.y-size_.y,0);
         glEnd();
       texture->_bind();
@@ -280,7 +280,7 @@ void vsx_window_object_inspector::load_file(vsx_string<>filename)
     filename,
     vsxf::get_instance(),
     true, // threaded
-    vsx_bitmap::flip_vertical_hint,
+    verify_filesuffix(filename, "tga") * vsx_bitmap::flip_vertical_hint, // only flip TGAs
     vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::generate_mipmaps_hint
   );
 

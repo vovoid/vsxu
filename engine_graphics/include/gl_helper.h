@@ -65,6 +65,33 @@ VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_tex_c(const vsx_vector3<> &pos, cons
   glDisableClientState(GL_TEXTURE_COORD_ARRAY);\
 }
 
+#define draw_box_texf_correct(pos_x, pos_y, pos_z, width, height) {\
+\
+  const GLshort squareTexcoords[] = {\
+    0, 1,\
+    1, 1,\
+    0, 0,\
+    1, 0\
+  };\
+\
+  const GLfloat squareVertices[] = {\
+    pos_x-width,   pos_y-width,\
+    pos_x+width,   pos_y-width,\
+    pos_x-width,   pos_y+height,\
+    pos_x+width,   pos_y+height,\
+  };\
+\
+  glVertexPointer(2, GL_FLOAT, 0, squareVertices);\
+  glTexCoordPointer(2, GL_SHORT, 0, squareTexcoords);\
+  glEnableClientState(GL_VERTEX_ARRAY);\
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);\
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);\
+  glDisableClientState(GL_VERTEX_ARRAY);\
+  glDisableClientState(GL_TEXTURE_COORD_ARRAY);\
+}
+
+
+
 
 VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_gradient(const vsx_vector3<> &pos, float width, float height, const vsx_color<> &a, const vsx_color<> &b, const vsx_color<> &c, const vsx_color<> &d);
 VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_border(const vsx_vector3<> &pos, const vsx_vector3<> &size, const float &dragborder);

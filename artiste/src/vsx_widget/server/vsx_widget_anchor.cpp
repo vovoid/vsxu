@@ -1609,10 +1609,10 @@ void vsx_widget_anchor::init()
   title = name+":"+p_type;
 
   mtex_d = vsx_texture_loader::load(
-    vsx_widget_skin::get_instance()->skin_path_get() + "datatypes/"+p_type+".png",
+    vsx_widget_skin::get_instance()->skin_path_get() + "datatypes/"+p_type+".dds",
     vsxf::get_instance(),
     true, // threaded
-    vsx_bitmap::flip_vertical_hint,
+    0,
     vsx_texture_gl::linear_interpolate_hint
   );
 
@@ -2215,7 +2215,7 @@ void vsx_widget_anchor::draw()
     );
 
     mtex_d->bind();
-    draw_box_texf(ax,ay,pos.z,sx,sy);
+    draw_box_texf_correct(ax,ay,pos.z,sx,sy);
     mtex_d->_bind();
 
     if (vsxl_filter) 
