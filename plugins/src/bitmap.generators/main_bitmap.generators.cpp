@@ -72,13 +72,11 @@ vsx_module* MOD_CM(unsigned long module, void* args)
 
   switch(module)
   {
-    case 0: { module_bitmap_generators_blob* b = new module_bitmap_generators_blob; b->c_type = 0; return (vsx_module*)b; }
-    case 1: { module_bitmap_generators_blob* b = new module_bitmap_generators_blob; b->c_type = 1; return (vsx_module*)b; }
-    case 2: { module_bitmap_generators_concentric_circles* b = new module_bitmap_generators_concentric_circles; b->c_type = 0; return (vsx_module*)b; }
-    case 3: { module_bitmap_generators_concentric_circles* b = new module_bitmap_generators_concentric_circles; b->c_type = 1; return (vsx_module*)b; }
-    case 4: return (vsx_module*)(new module_bitmap_plasma);
-    case 5: return (vsx_module*)(new module_bitmap_subplasma);
-    case 6: return (vsx_module*)(new module_bitmap_perlin_noise);
+    case 0: return (vsx_module*)(new module_bitmap_generators_blob);
+    case 1: return (vsx_module*)(new module_bitmap_generators_concentric_circles);
+    case 2: return (vsx_module*)(new module_bitmap_plasma);
+    case 3: return (vsx_module*)(new module_bitmap_subplasma);
+    case 4: return (vsx_module*)(new module_bitmap_perlin_noise);
   }
   return 0;
 }
@@ -87,19 +85,16 @@ void MOD_DM(vsx_module* m,unsigned long module)
 {
 
   switch(module) {
-    case 0:
-    case 1: delete (module_bitmap_generators_blob*)m; break;
-    case 2:
-    case 3: delete (module_bitmap_generators_concentric_circles*)m; break;
-
-    case 4: delete (module_bitmap_plasma*)m; break;
-    case 5: delete (module_bitmap_subplasma*)m; break;
-    case 6: delete (module_bitmap_perlin_noise*)m; break;
+    case 0: delete (module_bitmap_generators_blob*)m; break;
+    case 1: delete (module_bitmap_generators_concentric_circles*)m; break;
+    case 2: delete (module_bitmap_plasma*)m; break;
+    case 3: delete (module_bitmap_subplasma*)m; break;
+    case 4: delete (module_bitmap_perlin_noise*)m; break;
   }
 }
 
 unsigned long MOD_NM(vsx_engine_environment* environment)
 {
   VSX_UNUSED(environment);
-  return 7;
+  return 5;
 }

@@ -1,5 +1,4 @@
-#ifndef VSX_TEXTURE_LOADER_THREAD_H
-#define VSX_TEXTURE_LOADER_THREAD_H
+#pragma once
 
 #include <pthread.h>
 #include "vsx_bitmap_loader_thread_info.h"
@@ -17,5 +16,3 @@ public:
     pthread_create(&(worker_t), &(worker_t_attr), worker, (void*)thread_info);
   }
 };
-
-#endif

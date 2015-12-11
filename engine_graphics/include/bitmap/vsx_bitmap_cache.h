@@ -1,8 +1,7 @@
-#ifndef VSX_BITMAP_CACHE_H
-#define VSX_BITMAP_CACHE_H
+#pragma once
 
 #include <map>
-#include "loader/vsx_bitmap_loader_helper.h"
+#include "vsx_bitmap_loader.h"
 
 
 class vsx_bitmap_cache
@@ -102,7 +101,7 @@ public:
   {
     vsx_bitmap_cache_item* item = get_item(filename, hint);
     vsx_bitmap* bitmap = item->bitmap;
-    vsx_bitmap_loader_helper::reload(bitmap, bitmap->filename, filesystem, thread, hint );
+    vsx_bitmap_loader::reload(bitmap, bitmap->filename, filesystem, thread, hint );
     return bitmap;
   }
 
@@ -147,5 +146,3 @@ public:
     return &vtdc;
   }
 };
-
-#endif

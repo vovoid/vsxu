@@ -22,8 +22,7 @@
 */
 
 
-#ifndef VSX_TEXTURE_GL_H
-#define VSX_TEXTURE_GL_H
+#pragma once
 
 #include <debug/vsx_error.h>
 
@@ -117,5 +116,3 @@ public:
 };
 
 #include "vsx_texture_gl_loader.h"
-
-#endif

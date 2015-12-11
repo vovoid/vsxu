@@ -1,5 +1,4 @@
-#ifndef VSX_TEXTURE_BUFFER_H
-#define VSX_TEXTURE_BUFFER_H
+#pragma once
 
 #include <texture/vsx_texture.h>
 
@@ -125,5 +124,3 @@ public:
   virtual void end_capture_to_buffer() = 0;
 
 };
-
-#endif

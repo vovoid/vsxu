@@ -22,8 +22,8 @@
 */
 
 
-#ifndef VSX_TEXTURE_H
-#define VSX_TEXTURE_H
+#pragma once
+
 #include <vsx_platform.h>
 #include <engine_graphics_dllimport.h>
 #include <string/vsx_string.h>
@@ -147,5 +147,3 @@ public:
 
 #include "transform/vsx_texture_transform_helper.h"
 #include "vsx_texture_loader.h"
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef VSX_TEXTURE_GL_LOADER_H
-#define VSX_TEXTURE_GL_LOADER_H
+#pragma once
 
 #include <bitmap/vsx_bitmap.h>
 #include "vsx_texture_gl.h"
@@ -358,5 +357,3 @@ inline void upload_bitmap_2d(vsx_texture_gl* texture_gl, vsx_bitmap* bitmap, boo
 
 
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef VSX_BITMAP_TRANSFORM_H
-#define VSX_BITMAP_TRANSFORM_H
+#pragma once
 
 #include "vsx_bitmap.h"
 #include <vsx_math.h>
@@ -40,8 +39,82 @@ class vsx_bitmap_transform
     free(source_data);
   }
 
+  void inline v_smult(GLfloat *v, float s){
+    v[0] *= s;
+    v[1] *= s;
+    v[2] *= s;
+  }
+
+  float v_rlen(float *v){
+    return 1.0f / (GLfloat)sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+  }
+
+  vsx_bitmap_32bt sphere_map_get_color(vsx_bitmap_32bt* source_data, float u, float v, int width, int height)
+  {
+    vsx_bitmap_32bt vv = (vsx_bitmap_32bt)floor(v);
+    vsx_bitmap_32bt uu = (vsx_bitmap_32bt)floor(u);
+    vsx_bitmap_32bt c00 = source_data[ (vv    ) % height * width + (uu    ) % width];
+    vsx_bitmap_32bt c01 = source_data[ (vv    ) % height * width + (uu + 1) % width];
+    vsx_bitmap_32bt c10 = source_data[ (vv + 1) % height * width + (uu    ) % width];
+    vsx_bitmap_32bt c11 = source_data[ (vv + 1) % height * width + (uu + 1) % width];
+
+    float fracU = (u + 10000) - (int)(u + 10000);
+    float fracV = (v + 10000) - (int)(v + 10000);
+
+    vsx_bitmap_32bt a, r, g, b;
+    vsx_bitmap_32bt a00, a01, a10, a11;
+    vsx_bitmap_32bt r00, r01, r10, r11;
+    vsx_bitmap_32bt g00, g01, g10, g11;
+    vsx_bitmap_32bt b00, b01, b10, b11;
+
+    #define sep_col(col, a, r, g, b)\
+      a = (((col) >> 24) & 255);\
+      r = (((col) >> 16) & 255);\
+      g = (((col) >> 8) & 255);\
+      b = (((col) >> 0) & 255);
+
+    #define interpol(x, x00, x01, x10, x11, fracU, fracV)\
+      x = (vsx_bitmap_32bt)(x00 * (1.0f - fracU) * (1.0f - fracV) + \
+          x01 * (fracU) * (1.0f - fracV) + \
+          x10 * (1.0f - fracU) * (fracV) + \
+          x11 * (fracU) * (fracV));
+
+    sep_col(c00, a00, r00, g00, b00);
+    sep_col(c01, a01, r01, g01, b01);
+    sep_col(c10, a10, r10, g10, b10);
+    sep_col(c11, a11, r11, g11, b11);
+
+    interpol(a, a00, a01, a10, a11, fracU, fracV);
+    interpol(r, r00, r01, r10, r11, fracU, fracV);
+    interpol(g, g00, g01, g10, g11, fracU, fracV);
+    interpol(b, b00, b01, b10, b11, fracU, fracV);
+
+    return (a << 24) | (r << 16) | (g << 8) | b;
+  }
+
+  vsx_bitmap_32bt sphere_map_get_color_sphere(vsx_bitmap_32bt* source_data, float *vec, int width, int height)
+  {
+    v_norm(vec);
+
+    float sphV = (float)((acos(-vec[1]) / PI) ) * height;
+
+    float vec2[4] = {
+      vec[0],
+      0,
+      vec[2],
+      1
+    };
+    float scale = v_rlen(vec2);
+    v_smult(vec, scale);
+
+    float sphU = (float)(atan2(vec[0], vec[2]) / PI ) * 0.5f * width;
+
+    return sphere_map_get_color(source_data, sphU, sphV, width, height);
+  }
+
 public:
-  inline void flip_vertically(vsx_bitmap* bitmap)
+
+  void flip_vertically(vsx_bitmap* bitmap)
   {
     size_t width = bitmap->width;
     size_t height = bitmap->height;
@@ -79,17 +152,84 @@ public:
   }
 
 
-  inline void split_into_cubemap(vsx_bitmap* data)
+  void split_into_cubemap(vsx_bitmap* bitmap)
   {
-    req_error(data->width / 6 == data->height, "Not cubemap, should be aspect 6:1");
-    req_error(data->channels == 4, "RGB cubemaps not implemented");
-    req_error(IS_POWER_OF_TWO(data->height), "Height must be power of two")
+    req_error(bitmap->width / 6 == bitmap->height, "Not cubemap, should be aspect 6:1");
+    req_error(bitmap->channels == 4, "RGB cubemaps not implemented");
+    req_error(IS_POWER_OF_TWO(bitmap->height), "Height must be power of two")
 
-    if (data->storage_format == vsx_bitmap::float_storage)
-      split_into_cubemap_by_type<float>(data);
+    if (bitmap->storage_format == vsx_bitmap::float_storage)
+      split_into_cubemap_by_type<float>(bitmap);
 
-    if (data->storage_format == vsx_bitmap::byte_storage)
-      split_into_cubemap_by_type<uint32_t>(data);
+    if (bitmap->storage_format == vsx_bitmap::byte_storage)
+      split_into_cubemap_by_type<uint32_t>(bitmap);
+  }
+
+
+
+  void sphere_map_into_cubemap(vsx_bitmap* bitmap)
+  {
+    int texSize = bitmap->height;
+    int texSize1 = texSize - 1;
+    int u, v;
+    vsx_bitmap_32bt* source_data = (vsx_bitmap_32bt*)bitmap->data_get();
+
+    bitmap->data_set( malloc( sizeof(vsx_bitmap_32bt) * (bitmap->height * bitmap->height) ), 0, 0);
+    bitmap->data_set( malloc( sizeof(vsx_bitmap_32bt) * (bitmap->height * bitmap->height) ), 0, 1);
+    bitmap->data_set( malloc( sizeof(vsx_bitmap_32bt) * (bitmap->height * bitmap->height) ), 0, 2);
+    bitmap->data_set( malloc( sizeof(vsx_bitmap_32bt) * (bitmap->height * bitmap->height) ), 0, 3);
+    bitmap->data_set( malloc( sizeof(vsx_bitmap_32bt) * (bitmap->height * bitmap->height) ), 0, 4);
+    bitmap->data_set( malloc( sizeof(vsx_bitmap_32bt) * (bitmap->height * bitmap->height) ), 0, 5);
+
+    float vec[4];
+
+    for (size_t cube_map_side = 0; cube_map_side < 6; cube_map_side++)
+      for(v = 0; v < texSize; ++v)
+        for(u = 0; u < texSize; ++u)
+        {
+          switch(cube_map_side)
+          {
+            case 0:
+              vec[0] = ((float)u / texSize1 - 0.5f) * 2;
+              vec[1] = ((float)v / texSize1 - 0.5f) * 2;
+              vec[2] = 1;
+              vec[3] = 1;
+            break;
+            case 1:
+              vec[0] = 1;
+              vec[1] = ((float)v / texSize1 - 0.5f) * 2;
+              vec[2] = -((float)u / texSize1 - 0.5f) * 2;
+              vec[3] = 1;
+            break;
+            case 2:
+              vec[0] = -((float)u / texSize1 - 0.5f) * 2;
+              vec[1] = ((float)v / texSize1 - 0.5f) * 2;
+              vec[2] = -1;
+              vec[3] = 1;
+            break;
+            case 3:
+              vec[0] = -1;
+              vec[1] = ((float)v / texSize1 - 0.5f) * 2;
+              vec[2] = ((float)u / texSize1 - 0.5f) * 2;
+              vec[3] = 1;
+            break;
+            case 4:
+              vec[0] = -((float)v / texSize1 - 0.5f) * 2;
+              vec[1] = -1;
+              vec[2] = ((float)u / texSize1 - 0.5f) * 2;
+              vec[3] = 1;
+            break;
+            case 5:
+              vec[0] = ((float)v / texSize1 - 0.5f) * 2;
+              vec[1] = 1;
+              vec[2] = ((float)u / texSize1 - 0.5f) * 2;
+              vec[3] = 1;
+            break;
+          }
+          ((vsx_bitmap_32bt*)bitmap->data_get(0, cube_map_side))[v * texSize + u] = sphere_map_get_color_sphere(source_data, vec, bitmap->width, bitmap->height);
+        }
+    free(source_data);
+    bitmap->width = bitmap->height;
   }
 
   static vsx_bitmap_transform* get_instance()
@@ -99,5 +239,3 @@ public:
   }
 
 };
-
-#endif

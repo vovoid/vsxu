@@ -1,5 +1,4 @@
-#ifndef VSX_TEXTURE_TRANSFORM_ROTATE_H
-#define VSX_TEXTURE_TRANSFORM_ROTATE_H
+#pragma once
 
 class vsx_texture_transform_rotate : public vsx_texture_transform_base{
   float angle, x, y, z;
@@ -25,5 +24,3 @@ public:
     angle = nangle; x = nx; y = ny; z = nz;
   }
 };
-
-#endif

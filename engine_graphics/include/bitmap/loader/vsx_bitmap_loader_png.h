@@ -1,5 +1,4 @@
-#ifndef VSX_BITMAP_LOADER_PNG_H
-#define VSX_BITMAP_LOADER_PNG_H
+#pragma once
 
 #include "vsx_bitmap_loader_base.h"
 #include <bitmap/vsx_bitmap_transform.h>
@@ -32,11 +31,7 @@ class vsx_bitmap_loader_png
     bitmap->channels = pp.Components;
     bitmap->data_set( pp.Data, 0, 0, bitmap->width * bitmap->height * bitmap->channels );
 
-    if (bitmap->hint & vsx_bitmap::flip_vertical_hint)
-      vsx_bitmap_transform::get_instance()->flip_vertically(thread_info->bitmap);
-
-    if (bitmap->hint & vsx_bitmap::cubemap_split_6_1_hint)
-      vsx_bitmap_transform::get_instance()->split_into_cubemap(thread_info->bitmap);
+    handle_transformations(bitmap);
 
     delete thread_info;
 
@@ -63,4 +58,3 @@ public:
   }
 };
 
-#endif

@@ -40,7 +40,6 @@ class module_bitmap_generators_concentric_circles : public vsx_module
 
 	// internal
   vsx_bitmap bitmap;
-  vsx_texture<>* texture = 0x0;
 
   int p_updates = -1;
 
@@ -56,8 +55,6 @@ class module_bitmap_generators_concentric_circles : public vsx_module
 
 public:
 
-  int c_type;
-
   void module_info(vsx_module_info* info)
   {
     info->identifier = "bitmaps;generators;concentric_circles||bitmaps;generators;particles;concentric_circles";
@@ -71,16 +68,8 @@ public:
         "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024|2048x2048"
         ;
 
-    if (c_type == 0)
-    {
-      info->out_param_spec = "bitmap:bitmap";
-      info->component_class = "bitmap";
-    } else
-    {
-      info->identifier = "texture;particles;concentric_circles";
-      info->out_param_spec = "texture:texture";
-      info->component_class = "texture";
-    }
+    info->out_param_spec = "bitmap:bitmap";
+    info->component_class = "bitmap";
     info->description = "Generates a texture with concentric circles.";
   }
 
@@ -177,15 +166,6 @@ public:
 
       bitmap_out->set(&bitmap);
       loading_done = true;
-
-      if (c_type == 1)
-      {
-        if (!texture)
-          texture = new vsx_texture<>();
-        texture->texture->init_opengl_texture_2d();
-        vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, &bitmap, true);
-        texture_out->set(texture);
-      }
     }
 
     req(p_updates != param_updates);
@@ -214,30 +194,11 @@ public:
     pthread_create(&worker_t, NULL, &worker, (void*)this);
   }
 
-  void start() {
-    req(c_type);
-    req(bitmap.is_valid());
-    texture->texture->init_opengl_texture_2d();
-    vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, &bitmap, true);
-    texture_out->set(texture);
-  }
-
-  void stop() {
-    req(c_type);
-    texture->unload_gl();
-  }
 
   void on_delete()
   {
-    // wait for thread to finish
     if (worker_running)
       pthread_join(worker_t,NULL);
-
-    if (c_type && texture)
-    {
-      texture->unload_gl();
-      delete texture;
-    }
   }
 
 };

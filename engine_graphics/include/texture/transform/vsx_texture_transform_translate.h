@@ -1,3 +1,5 @@
+#pragma once
+
 class vsx_texture_transform_translate : public vsx_texture_transform_base
 {
   float x, y, z;

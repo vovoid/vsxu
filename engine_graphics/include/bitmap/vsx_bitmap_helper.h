@@ -1,5 +1,4 @@
-#ifndef VSX_BITMAP_HELPER_H
-#define VSX_BITMAP_HELPER_H
+#pragma once
 
 #include "vsx_bitmap.h"
 
@@ -71,5 +70,3 @@ namespace vsx_bitmap_helper
       }
   }
 }
-
-#endif

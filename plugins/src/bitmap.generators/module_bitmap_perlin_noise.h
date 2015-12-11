@@ -54,7 +54,6 @@ public:
   // internal
   vsx_bitmap bitmap;
 
-  int bitm_timestamp = -1;
   pthread_t worker_t;
   int p_updates = -1;
   bool worker_running = false;
@@ -266,8 +265,6 @@ public:
     {
       pthread_join(worker_t,0);
       worker_running = false;
-
-      bitm_timestamp = bitmap.timestamp;
       bitmap_out->set(&bitmap);
       loading_done = true;
     }
@@ -298,6 +295,7 @@ public:
       bitmap.height = i_size;
     }
     bitmap.data_ready = 0;
+    worker_running = true;
     pthread_create(&worker_t, NULL, &worker, (void*)this);
   }
 

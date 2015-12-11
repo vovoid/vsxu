@@ -22,8 +22,7 @@
 */
 
 
-#ifndef VSX_BITMAP_H
-#define VSX_BITMAP_H
+#pragma once
 
 #include <stdlib.h>
 #include <tools/vsx_req.h>
@@ -100,7 +99,8 @@ public:
       no_hint = 0,
       flip_vertical_hint = 1,
       cubemap_split_6_1_hint = 2,
-      cubemap_load_files_hint = 4
+      cubemap_load_files_hint = 4,
+      cubemap_sphere_map = 8
     };
 
   uint64_t hint = 0;
@@ -222,6 +222,3 @@ public:
   }
 
 };
-
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef VSX_TEXTURE_BUFFER_COLOR_DEPTH_H
-#define VSX_TEXTURE_BUFFER_COLOR_DEPTH_H
+#pragma once
 
 #include "vsx_texture_buffer_base.h"
 
@@ -410,5 +409,3 @@ public:
 
 
 };
-
-#endif

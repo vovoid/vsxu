@@ -1,5 +1,4 @@
-#ifndef VSX_TEXTURE_BUFFER_COLOR_H
-#define VSX_TEXTURE_BUFFER_COLOR_H
+#pragma once
 
 #include "vsx_texture_buffer_base.h"
 
@@ -310,8 +309,5 @@ public:
 
     capturing_to_buffer = false;
   }
-
-
 };
 
-#endif

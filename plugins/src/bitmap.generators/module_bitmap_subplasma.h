@@ -55,37 +55,32 @@ public:
   int i_size = 0;
   void *to_delete_data = 0x0;
 
-  // our worker thread, to keep the tough generating work off the main loop
-  // this is a fairly simple operation, but when you want to generate fractals
-  // and decode film, you could run into several seconds of processing time.
   static void* worker(void *ptr)
   {
     int x,y;
-    module_bitmap_subplasma* mod = ((module_bitmap_subplasma*)ptr);
-    unsigned char* SubPlasma = new unsigned char[mod->i_size * mod->i_size];
-    for (x = 0; x < mod->i_size*mod->i_size; ++x) { SubPlasma[x] = 0; }
-    int np=2 << mod->amplitude_in->get();
+    module_bitmap_subplasma* module = ((module_bitmap_subplasma*)ptr);
+    unsigned char* SubPlasma = new unsigned char[module->i_size * module->i_size];
+    for (x = 0; x < module->i_size*module->i_size; ++x) { SubPlasma[x] = 0; }
+    int np=2 << module->amplitude_in->get();
 
-    unsigned int musize = mod->i_size-1;
-
-
-    unsigned int mmu = (unsigned int)(((float)mod->i_size/(float)np));
+    unsigned int musize = module->i_size-1;
+    unsigned int mmu = (unsigned int)(((float)module->i_size/(float)np));
     unsigned int mm1 = mmu-1;
     unsigned int mm2 = mmu*2;
     float mmf = (float)mmu;
 
     vsx_rand rand;
 
-    rand.srand((int)mod->rand_seed_in->get());
+    rand.srand((int)module->rand_seed_in->get());
     for (y=0; y < np; y++)
       for (x=0; x < np; x++)
-        SubPlasma[x*mmu+y*mmu*mod->i_size] = rand.rand();
+        SubPlasma[x*mmu+y*mmu*module->i_size] = rand.rand();
 
     for (y=0; y<np; y++)
-      for (x=0; x<mod->i_size; x++)
+      for (x=0; x<module->i_size; x++)
       {
         int p=x&(~mm1);
-        int zy=y*mmu*mod->i_size;
+        int zy=y*mmu*module->i_size;
         SubPlasma[x+zy] = catmullrom_interpolate(
           SubPlasma[((p-mmu)&musize)+zy],
           SubPlasma[((p   )&musize)+zy],
@@ -94,11 +89,11 @@ public:
           (x&mm1)/mmf);
       }
 
-    int sl = mod->size_in->get()+3;
-    for (y=0; y<mod->i_size; y++)
-      for (x=0; x<mod->i_size; x++) {
+    int sl = module->size_in->get()+3;
+    for (y=0; y<module->i_size; y++)
+      for (x=0; x<module->i_size; x++) {
         int p=y&(~(mm1));
-        SubPlasma[x+y*mod->i_size] = catmullrom_interpolate(
+        SubPlasma[x+y*module->i_size] = catmullrom_interpolate(
           SubPlasma[x+(((p-mmu)&musize)<<sl)],
           SubPlasma[x+(((p   )&musize)<<sl)],
           SubPlasma[x+(((p+mmu)&musize)<<sl)],
@@ -108,14 +103,15 @@ public:
 
     vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_subplasma*)ptr)->bitmap.data_get();
 
-    for (x = 0; x < mod->i_size * (mod->i_size); ++x, p++)
+    for (x = 0; x < module->i_size * (module->i_size); ++x, p++)
     {
       *p = 0xFF000000 | ((vsx_bitmap_32bt)SubPlasma[x]) << 16 | (vsx_bitmap_32bt)SubPlasma[x] << 8 | (vsx_bitmap_32bt)SubPlasma[x];// | 0 * 0x00000100 | 0;
 
     }
 
     delete[] SubPlasma;
-    ((module_bitmap_subplasma*)ptr)->bitmap.timestamp++;
+    module->bitmap.timestamp++;
+    __sync_fetch_and_add( &(module->bitmap.data_ready), 1 );
     return 0;
   }
 
@@ -160,7 +156,6 @@ public:
     {
       pthread_join(worker_t,0);
       worker_running = false;
-
       bitmap_out->set(&bitmap);
       loading_done = true;
     }

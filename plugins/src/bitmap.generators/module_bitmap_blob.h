@@ -39,21 +39,16 @@ class module_bitmap_generators_blob : public vsx_module
   vsx_module_param_texture* texture_out;
 
 	// internal
-	bool need_to_rebuild;
-
   vsx_bitmap bitmap;
 	int bitm_timestamp;
 
-  vsx_texture<>* texture;
   pthread_t	worker_t;
   pthread_attr_t attr;
 
   int p_updates;
   int my_ref;
 
-
-  vsx_bitmap*       work_bitmap;
-  bool              worker_running;
+  bool              worker_running = false;
   int               thread_state;
   int               i_size;
   float             work_color[4];
@@ -61,10 +56,7 @@ class module_bitmap_generators_blob : public vsx_module
 
   void *to_delete_data = 0;
 
-
 public:
-
-  int               c_type;
 
   void module_info(vsx_module_info* info)
   {
@@ -80,15 +72,8 @@ public:
         "},"
         "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024|2048x2048"
         ;
-    if (c_type == 0) {
-      info->out_param_spec = "bitmap:bitmap";
-      info->component_class = "bitmap";
-    } else
-    {
-      info->identifier = "texture;particles;blob";
-      info->out_param_spec = "texture:texture";
-      info->component_class = "texture";
-    }
+    info->out_param_spec = "bitmap:bitmap";
+    info->component_class = "bitmap";
     info->description = "Generates blobs,stars or leaf\ndepending on parameters.\nPlay with the params :)";
   }
 
@@ -97,7 +82,6 @@ public:
   {
     loading_done = true;
     thread_state = 0;
-    worker_running = false;
     p_updates = -1;
     arms_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"arms");
     attenuation_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
@@ -115,16 +99,8 @@ public:
     angle_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"angle");
     i_size = 0;
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-    work_bitmap = &bitmap;
     bitm_timestamp = bitmap.timestamp;
-    need_to_rebuild = true;
     my_ref = 0;
-    if (c_type == 1) {
-      texture = new vsx_texture<>();
-      texture->texture->init_opengl_texture_2d();
-      texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
-      texture_out->set(texture);
-    }
     to_delete_data = 0;
   }
 
@@ -136,7 +112,7 @@ public:
     float arms = ((module_bitmap_generators_blob*)ptr)->arms_in->get()*0.5f;
     float star_flower = ((module_bitmap_generators_blob*)ptr)->star_flower_in->get();
     float angle = ((module_bitmap_generators_blob*)ptr)->angle_in->get();
-    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_generators_blob*)ptr)->work_bitmap->data_get();
+    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_generators_blob*)ptr)->bitmap.data_get();
     int size = ((module_bitmap_generators_blob*)ptr)->i_size;
 
     float dist;
@@ -171,19 +147,14 @@ public:
           *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
         }
       }
-    ((module_bitmap_generators_blob*)ptr)->work_bitmap->timestamp++;
+    ((module_bitmap_generators_blob*)ptr)->bitmap.timestamp++;
     ((module_bitmap_generators_blob*)ptr)->loading_done = true;
     ((module_bitmap_generators_blob*)ptr)->thread_state = 2;
-    int *retval = new int;
-    *retval = 0;
-    pthread_exit(NULL);
-    // the thread will die here.
     return 0;
   }
 
   void run()
   {
-    // initialize our worker thread, we don't want to keep the renderloop waiting do we?
     if (thread_state == 2)
     {
       if (bitm_timestamp != bitmap.timestamp)
@@ -191,13 +162,7 @@ public:
         worker_running = false;
         pthread_join(worker_t, NULL);
 
-        // ok, new version
         bitm_timestamp = bitmap.timestamp;
-        if (c_type == 1)
-        {
-          vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, &bitmap, true);
-          texture_out->set(texture);
-        }
         bitmap_out->set(&bitmap);
       }
       thread_state = 3;
@@ -206,7 +171,6 @@ public:
     if (!worker_running)
     if (p_updates != param_updates)
     {
-      //need_to_rebuild = false;
       if (i_size != 8 << size_in->get())
       {
         i_size = 8 << size_in->get();
@@ -239,35 +203,11 @@ public:
     }
   }
 
-  void start()
-  {
-    if (c_type == 1)
-    {
-      texture->texture->init_opengl_texture_2d();
-      vsx_texture_gl_loader::upload_bitmap_2d(texture->texture, &bitmap, true);
-      texture_out->set(texture);
-    }
-  }
-
-  void stop()
-  {
-    if (c_type == 1)
-    {
-      texture->texture->unload();
-    }
-  }
-
   void on_delete()
   {
     // wait for thread to finish
     if (worker_running)
       pthread_join(worker_t,NULL);
-
-    if (c_type == 1 && texture)
-    {
-      texture->texture->unload();
-      delete texture;
-    }
   }
 
 };

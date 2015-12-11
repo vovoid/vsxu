@@ -1,5 +1,4 @@
-#ifndef VSX_TEXTURE_TRANSFORM_SCALE_H
-#define VSX_TEXTURE_TRANSFORM_SCALE_H
+#pragma once
 
 class vsx_texture_transform_scale : public vsx_texture_transform_base
 {
@@ -26,5 +25,3 @@ public:
     x = nx; y = ny; z = nz;
   }
 };
-
-#endif

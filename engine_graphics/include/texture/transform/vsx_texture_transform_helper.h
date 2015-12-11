@@ -1,5 +1,4 @@
-#ifndef VSX_TEXTURE_TRANSFORM_HELPER_H
-#define VSX_TEXTURE_TRANSFORM_HELPER_H
+#pragma once
 
 #include <vsx_gl_state.h>
 #include <texture/vsx_texture.h>
@@ -33,5 +32,3 @@ namespace vsx_texture_transform_helper
     vsx_gl_state::get_instance()->matrix_pop();
   }
 }
-
-#endif

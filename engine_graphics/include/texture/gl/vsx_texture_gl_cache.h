@@ -1,5 +1,4 @@
-#ifndef VSX_TEXTURE_GL_CACHE_H
-#define VSX_TEXTURE_GL_CACHE_H
+#pragma once
 
 #include <texture/vsx_texture.h>
 #include <bitmap/vsx_bitmap_cache.h>
@@ -155,5 +154,3 @@ public:
     return &vtdc;
   }
 };
-
-#endif

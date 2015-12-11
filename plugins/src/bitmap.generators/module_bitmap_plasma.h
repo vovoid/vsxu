@@ -106,7 +106,7 @@ public:
         long a = (long)round(fmod(fabs((sin((x*size+aox)*apx)*sin((y*size+aoy)*apy)+1.0f)*aamp+aofs),255.0));
         *p = 0x01000000 * a | b * 0x00010000 | g * 0x00000100 | r;
       }
-
+    module->bitmap.timestamp++;
     __sync_fetch_and_add( &(module->bitmap.data_ready), 1 );
     return 0;
   }
@@ -194,7 +194,6 @@ public:
     {
       pthread_join(worker_t,0);
       worker_running = false;
-
       bitmap_out->set(&bitmap);
       loading_done = true;
     }
@@ -213,7 +212,7 @@ public:
       bitmap.width  = i_size;
       bitmap.height = i_size;
     }
-
+    bitmap.data_ready = 0;
     worker_running = true;
     pthread_create(&worker_t, NULL, &worker, (void*)this);
   }

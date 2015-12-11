@@ -1,9 +1,8 @@
-#ifndef VSX_TEXTURE_LOADER_H
-#define VSX_TEXTURE_LOADER_H
+#pragma once
 
 #include "gl/vsx_texture_gl_cache.h"
 
-#include <bitmap/loader/vsx_bitmap_loader_helper.h>
+#include <bitmap/vsx_bitmap_loader.h>
 
 class vsx_texture_loader
 {
@@ -18,16 +17,23 @@ class vsx_texture_loader
 public:
 
   template <class T = vsx_texture_gl>
-  static inline vsx_texture<T>* load(vsx_string<> filename, vsxf* filesystem, bool thread, uint64_t bitmap_loader_hint, uint64_t hint, bool try_to_reload = false)
+  static inline vsx_texture<T>* load(
+      vsx_string<> filename, // i.e. "my_image.png" or "my_image.jpg"
+      vsxf* filesystem,  // your filesystem or vsx_filesystem::get_instance()
+      bool thread,  // load in a thread or not, recommended when doing bitmap transforms
+      uint64_t bitmap_loader_hint, // bitmap transforms and other hints, see vsx_bitmap::loader_hint enum
+      uint64_t gl_loader_hint, // gl hint, see vsx_texture_gl::loader_hint
+      bool try_to_reload = false // notifies the cache that if the image is already loaded, just reload it
+  )
   {
     vsx_texture<T>* texture = new vsx_texture<T>(true);
-    texture->texture = handle_cache(filename, filesystem, thread, bitmap_loader_hint, hint, try_to_reload );
+    texture->texture = handle_cache(filename, filesystem, thread, bitmap_loader_hint, gl_loader_hint, try_to_reload );
     if (texture->texture)
       return texture;
 
-    texture->texture = vsx_texture_gl_cache::get_instance()->create(filename, bitmap_loader_hint, hint);
+    texture->texture = vsx_texture_gl_cache::get_instance()->create(filename, bitmap_loader_hint, gl_loader_hint);
 
-    vsx_bitmap_loader_helper::load(
+    vsx_bitmap_loader::load(
         texture->texture->bitmap,
         filename,
         filesystem,
@@ -63,5 +69,3 @@ public:
     texture = 0;
   }
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef VSX_TEXTURE_LOAD_THREAD_INFO_H
-#define VSX_TEXTURE_LOAD_THREAD_INFO_H
+#pragma once
 
 #include <vsxfst.h>
 #include "vsx_bitmap_loader_thread.h"
@@ -12,5 +11,3 @@ public:
   vsx_bitmap* bitmap = 0x0;
   vsx_string<> filename;
 };
-
-#endif

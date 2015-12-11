@@ -1,5 +1,4 @@
-#ifndef VSX_BITMAP_LOADER_H
-#define VSX_BITMAP_LOADER_H
+#pragma once
 
 #include "vsx_bitmap_loader_base.h"
 #include <bitmap/vsx_bitmap_transform.h>
@@ -67,11 +66,7 @@ class vsx_bitmap_loader_tga
     bitmap->filename = thread_info->filename;
     bitmap->data_set( data, 0, 0, num_bytes );
 
-    if (bitmap->hint & vsx_bitmap::flip_vertical_hint)
-      vsx_bitmap_transform::get_instance()->flip_vertically(thread_info->bitmap);
-
-    if (bitmap->hint & vsx_bitmap::cubemap_split_6_1_hint)
-      vsx_bitmap_transform::get_instance()->split_into_cubemap(thread_info->bitmap);
+    handle_transformations(bitmap);
 
     bitmap->timestamp = vsx_singleton_counter::get();
     __sync_fetch_and_add( &(bitmap->data_ready), 1 );
@@ -97,7 +92,3 @@ public:
     return &vtlt;
   }
 };
-
-
-
-#endif
