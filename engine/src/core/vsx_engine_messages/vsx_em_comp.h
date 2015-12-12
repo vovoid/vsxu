@@ -128,7 +128,7 @@ if (cmd == "component_delete")
 
             if (comp->module_info->output) {
               fdrun = true;
-              outputs.remove(comp);
+              outputs.remove_value(comp);
             }
             // unload the module
             if (!macro)
@@ -182,12 +182,13 @@ if (cmd == "component_assign")
     c->parts[1] = "";
 
   vsx_string<>deli = ",";
-  std::vector <vsx_string<> > comp_source;
+  vsx_nw_vector <vsx_string<> > comp_source;
   explode(c->parts[2],deli,comp_source);
   std::vector<vsx_comp*> components;
   // 0. Go through the list of components, all here  needs to be done for each and one component exclusively
-  for (std::vector <vsx_string<> >::iterator it = comp_source.begin(); it != comp_source.end(); ++it) {
-    vsx_comp* comp = get_component_by_name(*it);
+  foreach(comp_source, i)
+  {
+    vsx_comp* comp = get_component_by_name( comp_source[i] );
     components.push_back(comp);
   }
 

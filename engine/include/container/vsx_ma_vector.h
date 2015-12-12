@@ -27,6 +27,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <vsx_platform.h>
+#include <tools/vsx_req.h>
+
 // VSX malloc vector class
 //
 // This is a special case array aimed at speed - for mesh data etc.
@@ -40,12 +42,12 @@
 template<class T>
 class vsx_ma_vector
 {
-  size_t allocated;
-  size_t used;
-  size_t allocation_increment;
-  size_t data_volatile;
-  size_t timestamp;
-  __attribute__((aligned(64))) T* A;
+  size_t allocated = 0;
+  size_t used = 0;
+  size_t allocation_increment = 1;
+  size_t data_volatile = 0;
+  size_t timestamp = 0;
+  __attribute__((aligned(64))) T* A = 0x0;
 
 public:
 
@@ -157,9 +159,8 @@ public:
   inline void allocate_bytes(size_t b) VSX_ALWAYS_INLINE
   {
     if (A)
-    {
       free(A);
-    }
+
     A = (T*)malloc( b );
     used = b / sizeof(T);
     allocated = used;
@@ -169,7 +170,9 @@ public:
   {
     if (index >= allocated || allocated == 0)
     {
-    	if (allocation_increment == 0) allocation_increment = 1;
+      if (allocation_increment == 0)
+        allocation_increment = 1;
+
       if (A)
       {
         allocated = index + allocation_increment;
@@ -199,20 +202,11 @@ public:
     return A[index];
   }
 
-  vsx_ma_vector() :
-    allocated(0),
-    used(0),
-    allocation_increment(1),
-    data_volatile(0),
-    timestamp(0),
-    A(0)
-  {
-  }
-
   ~vsx_ma_vector()
   {
-    if (data_volatile) return;
-  	if (A) free(A);
+    req(data_volatile);
+    req(A);
+    free(A);
   }
 };
 

@@ -195,9 +195,10 @@ void vsx_widget_base_edit::process_lines() {
 
 void vsx_widget_base_edit::calculate_scroll_size() {
   size_t t_longest_line = 0;
-  for (std::vector <vsx_string<> >::iterator it = lines.begin(); it != lines.end(); ++it) {
-    if ((*it).size() > t_longest_line) t_longest_line = (*it).size();
-  }
+  foreach (lines, i)
+    if (lines[i].size() > t_longest_line)
+      t_longest_line = lines[i].size();
+
   t_longest_line += 3;
   if (t_longest_line > longest_line) longest_line = t_longest_line;
   characters_width = floor(target_size.x/(font_size*0.37));
@@ -244,14 +245,15 @@ void vsx_widget_base_edit::set_string(const vsx_string<>& str) {
   longest_line = 0;
   scrollbar_pos_x = 0;
   scrollbar_pos_y = 0;
-  for (std::vector <vsx_string<> >::iterator it = lines.begin(); it != lines.end(); ++it) {
-    if ((*it).size() > longest_line) longest_line = (*it).size();
-  }
+
+  foreach (lines, i)
+    if (lines[i].size() > longest_line)
+      longest_line = lines[i].size();
+
   // hide eventual action buttons
   for (size_t i = 0; i < action_buttons.size(); i++)
-  {
     action_buttons[i]->visible = 0.0f;
-  }
+
   process_lines();
   calculate_scroll_size();
 }
@@ -585,7 +587,7 @@ void vsx_widget_base_edit::i_draw()
 
 bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, bool shift) {
   if (!editing_enabled) return true;
-  std::vector <vsx_string<> >::iterator it = lines.begin();
+  size_t it = 0;
   std::vector<int>::iterator itlv = lines_visible.begin();
 
   std::vector <vsx_string<> >::iterator itp = lines_p.begin();
@@ -602,43 +604,6 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
       break;
       case 'v':
       case 'V':
-#ifdef _WIN32
-        HANDLE hData;
-
-        LPVOID pData;
-        char* pszData = 0;
-        HWND hwnd = GetForegroundWindow();
-        if (!IsClipboardFormatAvailable(CF_TEXT)) return false;
-        OpenClipboard(hwnd);
-        hData = GetClipboardData(CF_TEXT);
-        pData = GlobalLock(hData);
-        if (pszData) free(pszData);
-        pszData = (char*)malloc(strlen((char*)pData) + 1);
-        strcpy(pszData, (LPSTR)pData);
-        vsx_string<>res = pszData;
-        GlobalUnlock(hData);
-        CloseClipboard();
-        res = str_replace("\n","",res);
-        process_characters = false;
-        for (int i = 0; i < res.size(); ++i) {
-          event_key_down(res[i],false,false,false);
-        }
-        free(pszData);
-        process_characters = true;
-        process_lines();
-// copying
-/*HGLOBAL hData;
-    LPVOID pData;
-    OpenClipboard(hwnd);
-    EmptyClipboard();
-    hData = GlobalAlloc(GMEM_DDESHARE | GMEM_MOVEABLE,
-                        strlen(pszData) + 1);
-    pData = GlobalLock(hData);
-    strcpy((LPSTR)pData, pszData);
-    GlobalUnlock(hData);
-    SetClipboardData(CF_TEXT, hData);
-    CloseClipboard();*/
-#endif
       break;
     }
   } else
@@ -747,10 +712,15 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
         //fix_pos();
       } else {
         if (scroll_y+carety) {
-          while (c2 < carety+scroll_y) { ++c2; ++it; ++itp; ++itlv; }
-          //++it;
+          while (c2 < carety+scroll_y)
+          {
+            ++c2;
+            ++it;
+            ++itp;
+            ++itlv;
+          }
           tempstring = lines[carety+(int)scroll_y];
-          lines.erase(it);
+          lines.remove_index(it);
           lines_p.erase(itp);
           lines_visible.erase(itlv);
         event_key_down(-GLFW_KEY_UP,false,false,false);
@@ -759,7 +729,6 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
           lines_p[carety+(int)scroll_y] += tempstring;
           process_line(carety+(int)scroll_y);
           process_line(carety+(int)scroll_y+1);
-          //fix_pos();
         }
       }
       if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
@@ -847,9 +816,10 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
   return false;
 }
 
-vsx_string<>vsx_widget_base_edit::get_string()
+vsx_string<> vsx_widget_base_edit::get_string()
 {
-  return implode(lines,"\n");
+  vsx_string<> nl("\n");
+  return implode(lines,nl);
 }
 
 vsx_string<>vsx_widget_base_edit::get_line(unsigned long line)

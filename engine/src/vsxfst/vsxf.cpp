@@ -862,10 +862,9 @@ vsx_string<>get_path_from_filename(vsx_string<>filename, char override_directory
   vsx_string<>deli = DIRECTORY_SEPARATOR;
   if (override_directory_separator)
     deli = override_directory_separator;
-	std::vector <vsx_string<> > results;
+  vsx_nw_vector <vsx_string<> > results;
 	explode(filename, deli, results);
-	results.pop_back();
-	return implode(results, deli);
+  return implode(results, deli, 0, 1);
 }
 
 

@@ -73,8 +73,8 @@ public:
     holder->unbind();
     if (holder->should_be_destroyed())
     {
-      names.remove( holder->get_file_name() );
-      pointers.remove( holder );
+      names.remove_value( holder->get_file_name() );
+      pointers.remove_value( holder );
       delete holder;
     }
   }

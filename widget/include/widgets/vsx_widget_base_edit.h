@@ -39,7 +39,7 @@
  */
 
 class WIDGET_DLLIMPORT vsx_widget_base_edit : public vsx_widget_panel {
-  std::vector <vsx_string<> > lines;
+  vsx_nw_vector <vsx_string<> > lines;
   std::vector <vsx_string<> > lines_p;
   std::vector<int> lines_visible;
   std::vector<int> lines_visible_stack;

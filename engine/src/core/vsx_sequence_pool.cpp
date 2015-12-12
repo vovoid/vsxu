@@ -211,9 +211,9 @@ bool vsx_sequence_pool::export_to_file(vsx_string<>filename)
 
   vsx_command_list savelist;
 
-  vsx_string<>sequence_dump = sequence_list->get_sequence_list_dump();
-  vsx_string<>deli = "&";
-  std::vector <vsx_string<> > parts;
+  vsx_string<> sequence_dump = sequence_list->get_sequence_list_dump();
+  vsx_string<> deli = "&";
+  vsx_nw_vector <vsx_string<> > parts;
   explode(sequence_dump, deli, parts);
 #if VSXU_DEBUG
   printf("sequence dump: %s\n", sequence_dump.c_str() );
@@ -223,7 +223,7 @@ bool vsx_sequence_pool::export_to_file(vsx_string<>filename)
     for (size_t i = 0; i < parts.size(); i++)
     {
       vsx_string<>i_deli = "#";
-      std::vector <vsx_string<> > i_parts;
+      vsx_nw_vector <vsx_string<> > i_parts;
       explode(parts[i], i_deli, i_parts);
       // 0=pseq_inject 1=[component] 2=[param] 3=[data]
       savelist.add_raw("pseq_inject "+i_parts[0]+" "+i_parts[1]+" "+i_parts[2]);
@@ -270,17 +270,17 @@ void vsx_sequence_pool::dump_to_command_list(vsx_command_list &savelist)
     savelist.add_raw("seq_pool add "+(*it).first);
     vsx_string<>sequence_dump = (*it).second->get_sequence_list_dump();
     vsx_string<>deli = "&";
-    std::vector <vsx_string<> > parts;
+    vsx_nw_vector <vsx_string<> > parts;
     explode(sequence_dump, deli, parts);
 #if VSXU_DEBUG
     printf("sequence dump: %s\n", sequence_dump.c_str() );
 #endif
     if (sequence_dump != "")
     {
-      for (size_t i = 0; i < parts.size(); i++)
+      foreach(parts, i)
       {
         vsx_string<>i_deli = "#";
-        std::vector <vsx_string<> > i_parts;
+        vsx_nw_vector <vsx_string<> > i_parts;
         explode(parts[i], i_deli, i_parts);
         // 0=seq_pool 1=pseq_inject 2=[seq_pool_name] 3=[component] 4=[param] 5=[data]
         savelist.add_raw("seq_pool pseq_inject "+(*it).first+" "+i_parts[0]+" "+i_parts[1]+" "+i_parts[2]);

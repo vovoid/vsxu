@@ -35,7 +35,7 @@
 #include <dirent.h>
 #include <errno.h>
 #endif
-
+#include <debug/vsx_error.h>
 #include "vsxfst.h"
 
 #ifdef VSX_PRINTF_TO_FILE
@@ -74,18 +74,6 @@ vsx_string<>str_pad(const vsx_string<>& str, const vsx_string<>& chr, size_t t_l
     return ps;
   }
 }
-
-/*const vsx_string<>str_replace_token_prefix(vsx_string<>& token, vsx_string<>& search, vsx_string<>& replace, vsx_string<>& subject) {
-  //1 explode our vsx_string
-  vsx_string<>deli = token;
-  vsx_nw_vector< vsx_string<> > tokens;
-  explode(subject,deli, tokens);
-  for (unsigned long i = 0; i < tokens.size(); ++i) {
-  //for (std::vector <vsx_string<> >::iterator it = tokens.begin(); it != tokens.end(); ++it) {
-    tokens[i] = str_replace(search, replace, tokens[i],1);
-  }
-  return implode(tokens, token);
-} */
 
 
 vsx_string<>str_replace(vsx_string<>search, vsx_string<>replace, vsx_string<>subject, int max_replacements, int required_pos) {
@@ -186,11 +174,19 @@ int explode(vsx_string<>& input, vsx_string<>& delimiter, vsx_nw_vector< vsx_str
   return count;
 }
 
-vsx_string<>implode(vsx_nw_vector< vsx_string<> >& in,vsx_string<>& delimiter) {
-  if (in.size() == 0) return "";
-  if (in.size() == 1) return in[0];
+vsx_string<>implode(vsx_nw_vector< vsx_string<> >& in, vsx_string<>& delimiter, size_t start_index = 0, size_t shave_off_at_end = 0)
+{
+  if (in.size() == 0)
+    return "";
+
+  if (in.size() == 1)
+    return in[0];
+
+  if (start_index > in.size()-1)
+    VSX_ERROR_RETURN_V("start index too big", "");
+
   vsx_string<>h;
-  for (unsigned long i = 0; i < in.size()-1; ++i) {
+  for (size_t i = start_index; i < in.size()-(1 + shave_off_at_end); ++i) {
     h += in[i]+delimiter;
   }
   h += in[in.size()-1];
@@ -218,22 +214,18 @@ vsx_string<>implode(vsx_nw_vector< vsx_string<> >& in,vsx_string<>& delimiter) {
 
 
 void str_remove_equal_prefix(vsx_string<>* str1, vsx_string<>* str2, vsx_string<>delimiter) {
-  vsx_string<>to_remove = "";
-  vsx_string<>deli = delimiter;
-  std::list< vsx_string<> > str1_;
-  std::list< vsx_string<> > str2_;
+  vsx_string<> to_remove = "";
+  vsx_string<> deli = delimiter;
+  vsx_nw_vector< vsx_string<> > str1_;
+  vsx_nw_vector< vsx_string<> > str2_;
   explode(*str1, deli, str1_);
   explode(*str2, deli, str2_);
-  while (str1_.size() && str2_.size() && str1_.front() == str2_.front()) {
-    str1_.pop_front();
-    str2_.pop_front();
-  }
-  *str1 = implode(str1_,deli);
-  *str2 = implode(str2_,deli);
+  *str1 = implode(str1_, deli, 1);
+  *str2 = implode(str2_, deli, 1);
 }
 
 
-
+/*
 int split_string(vsx_string<>& input, vsx_string<>& delimiter, std::vector <vsx_string<> >& results, int max_parts) {
   results.clear();
   if (input == delimiter) {
@@ -281,41 +273,6 @@ int explode(vsx_string<>& input, vsx_string<>& delimiter, std::vector <vsx_strin
   return split_string(input, delimiter,results,max_parts);
 }
 
-int split_string(vsx_string<>& input, vsx_string<>& delimiter, std::list< vsx_string<> >& results, int max_parts) {
-  if (input == delimiter) {
-    results.push_back(input);
-    return 1;
-  }
-  vsx_string<>res;
-  size_t fpos = 0;
-  int count = 0;
-  for (size_t i = 0; i < input.size(); ++i)
-  {
-    if (input[i] == delimiter[fpos]) {
-      ++fpos;
-    } else {
-      res.push_back(input[i]);
-      fpos = 0;
-    }
-    if (fpos == delimiter.size() || i == input.size()-1)
-    {
-      fpos = 0;
-      results.push_back(res);
-      res = "";
-      ++count;
-    }
-    if (count >= max_parts && max_parts > 0) return count;
-  }
-  if (count == 0 && input != "") results.push_back(input);
-  return count;
-}
-
-
-int explode(vsx_string<>& input, vsx_string<>& delimiter, std::list< vsx_string<> >& results, int max_parts)
-{
-  return split_string(input, delimiter,results,max_parts);
-}
-
 
 
 
@@ -329,25 +286,10 @@ vsx_string<>implode(std::vector <vsx_string<> > in,vsx_string<>delimiter) {
   h += in.back();
   return h;
 }
-
-vsx_string<>implode(std::list< vsx_string<> > in,vsx_string<>delimiter) {
-  if (in.size() == 0) return "";
-  if (in.size() == 1) return in.front();
-  vsx_string<>h;
-  std::list< vsx_string<> >::iterator it = in.begin();
-  h += *it;
-  ++it;
-
-  for (; it != in.end(); ++it)
-  {
-    h += delimiter+*it;
-  }
-  return h;
-}
-
+*/
 bool verify_filesuffix(vsx_string<>& input, const char* type)
 {
-  std::vector <vsx_string<> > parts;
+  vsx_nw_vector <vsx_string<> > parts;
   vsx_string<>deli = ".";
   explode(input,deli,parts);
   if (parts.size()) {
@@ -491,12 +433,4 @@ void get_files_recursive(vsx_string<>startpos, std::list< vsx_string<> >* filena
   fclose(fp);
   #endif
 }
-
-
-
-//----------------------------------------------------------------
-
-
-
-
 

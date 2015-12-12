@@ -1597,22 +1597,16 @@ void vsx_widget_component::rename_add_prefix(vsx_string<>prefix, vsx_string<>old
     str_remove_equal_prefix(&new_name,&old_name, ".");
     //new_name = prefix+str_replace(old_name_remove,"",name);
   }
-//  printf("prefix = %s new_name = %s\n",prefix.c_str(), new_name.c_str());
-  std::list< vsx_string<> > prefix_list;
-  std::list< vsx_string<> > name_list;
+
+  vsx_nw_vector< vsx_string<> > prefix_list;
+  vsx_nw_vector< vsx_string<> > name_list;
   vsx_string<>deli = ".";
   explode(prefix, deli, prefix_list);
   explode(new_name, deli, name_list);
-  for (std::list< vsx_string<> >::iterator it = name_list.begin(); it != name_list.end(); ++it)
-  {
-    prefix_list.push_back(*it);
-  }
-  //prefix_list.merge(name_list);
+  foreach(name_list, i)
+    prefix_list.push_back(name_list[i]);
 
   new_name = implode(prefix_list, deli);
-
-//  printf("prefix = %s new_name = %s\n",prefix.c_str(), new_name.c_str());
-  //new_name = prefix+new_name;
   rename(new_name,false);
 }
 

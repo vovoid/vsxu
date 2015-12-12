@@ -371,8 +371,8 @@ if (cmd == "param_set_interpolate")
         if (!e_param->sequence) {
           vsx_string<>a = c->parts[3];
           vsx_string<>deli = ",";
-          std::vector <vsx_string<> > pp;
-          split_string(a,deli,pp);
+          vsx_nw_vector<vsx_string<> > pp;
+          explode(a,deli,pp);
           int cc = 0;
           if (!pp.size()) pp.push_back(c->parts[3]);
 
@@ -380,8 +380,9 @@ if (cmd == "param_set_interpolate")
           if (c->parts.size() == 5)
           interp_time = vsx_string_helper::s2f(c->parts[4]);
 
-          for (std::vector <vsx_string<> >::iterator it = pp.begin(); it != pp.end(); ++it) {
-            interpolation_list.set_target_value(e_param, *it, cc, interp_time);
+          foreach(pp, i)
+          {
+            interpolation_list.set_target_value(e_param, pp[i], cc, interp_time);
             ++cc;
           }
         } else cmd_out->add_raw("alert_fail " + vsx_string_helper::base64_encode(c->raw) + " Error " + vsx_string_helper::base64_encode("Param is controlled by sequencer!"), VSX_COMMAND_GARBAGE_COLLECT);

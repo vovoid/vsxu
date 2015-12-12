@@ -24,6 +24,7 @@
 #define vsx_nw_vector_H
 
 #include <vsx_platform.h>
+#include <tools/vsx_req.h>
 #include <stdio.h>
 
 template<class T>
@@ -103,7 +104,7 @@ public:
   	allocation_increment = new_increment;
   }
 
-  inline void remove(T val) VSX_ALWAYS_INLINE
+  inline void remove_value(T value) VSX_ALWAYS_INLINE
   {
     // allocate new
     T* n = new T[allocated];
@@ -111,7 +112,7 @@ public:
     T* p = n;
     for(unsigned long i = 0; i < used; i++)
     {
-      if (A[i] != val)
+      if (A[i] != value)
       {
         *p = A[i];
         p++;
@@ -120,6 +121,23 @@ public:
     used--;
     delete[] A;
     A = n;
+  }
+
+  inline void remove_index(size_t index)
+  {
+    req(index < used);
+    for (size_t i = index; i < used; i++)
+      A[i] = A[i+1];
+    used--;
+  }
+
+  inline void insert(size_t index, T value)
+  {
+    req(index < used);
+    allocate(used);
+    for (size_t i = used; i > index; i--)
+      A[i] = A[i-1];
+    A[index] = value;
   }
 
   inline void allocate( size_t index ) VSX_ALWAYS_INLINE
@@ -132,9 +150,9 @@ public:
         if (allocation_increment == 0) allocation_increment = 1;
         allocated = index+allocation_increment;
         T* B = new T[allocated];
-        for (size_t i = 0; i < used; ++i) {
+        for (size_t i = 0; i < used; ++i)
           B[i] = A[i];
-        }
+
         delete[] A;
         A = B;
       }

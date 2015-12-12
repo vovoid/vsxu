@@ -232,19 +232,14 @@ ENGINE_DLLIMPORT vsx_string<> str_replace(vsx_string<> search, vsx_string<> repl
 ENGINE_DLLIMPORT const vsx_string<>str_replace_char_pad(vsx_string<>search, vsx_string<>replace, vsx_string<>subject, vsx_string<>subject_r, int max_replacements = 0, int required_pos = -1);
 
 ENGINE_DLLIMPORT int explode(vsx_string<>& input, vsx_string<>& delimiter, vsx_nw_vector< vsx_string<> >& results, int max_parts = 0);
-ENGINE_DLLIMPORT vsx_string<>implode(vsx_nw_vector< vsx_string<> >& in, vsx_string<>& delimiter);
+ENGINE_DLLIMPORT vsx_string<> implode(vsx_nw_vector< vsx_string<> >& in, vsx_string<>& delimiter, size_t start_index = 0, size_t shave_off_at_end = 0);
 
-ENGINE_DLLIMPORT int explode(vsx_string<>& input, vsx_string<>& delimiter, std::vector <vsx_string<> >& results, int max_parts = 0);
-ENGINE_DLLIMPORT vsx_string<>implode(std::vector <vsx_string<> > in,vsx_string<>delimiter);
+//ENGINE_DLLIMPORT int explode(vsx_string<>& input, vsx_string<>& delimiter, std::vector <vsx_string<> >& results, int max_parts = 0);
+//ENGINE_DLLIMPORT vsx_string<>implode(std::vector <vsx_string<> > in,vsx_string<>delimiter);
+//ENGINE_DLLIMPORT int split_string(vsx_string<>& input, vsx_string<>& delimiter, std::vector <vsx_string<> >& results, int max_parts = 0);
 
 ENGINE_DLLIMPORT void str_remove_equal_prefix(vsx_string<>* str1, vsx_string<>* str2, vsx_string<>delimiter);
-ENGINE_DLLIMPORT int split_string(vsx_string<>& input, vsx_string<>& delimiter, std::vector <vsx_string<> >& results, int max_parts = 0);
 
-
-ENGINE_DLLIMPORT int split_string(vsx_string<>& input, vsx_string<>& delimiter, std::list< vsx_string<> >& results, int max_parts = 0);
-ENGINE_DLLIMPORT int explode(vsx_string<>& input, vsx_string<>& delimiter, std::list< vsx_string<> >& results, int max_parts = 0);
-
-ENGINE_DLLIMPORT vsx_string<>implode(std::list< vsx_string<> > in,vsx_string<>delimiter);
 ENGINE_DLLIMPORT vsx_string<>vsx_get_directory_separator();
 
 ENGINE_DLLIMPORT size_t file_get_size(vsx_string<> filename);

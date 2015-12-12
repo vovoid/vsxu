@@ -2,7 +2,7 @@
 
 #include "vsx_bitmap.h"
 #include <vsx_math.h>
-#include <tools/vsx_req.h>
+#include <tools/vsx_req_error.h>
 
 class vsx_bitmap_transform
 {

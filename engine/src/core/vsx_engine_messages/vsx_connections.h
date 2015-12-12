@@ -129,7 +129,7 @@ if (cmd == "param_alias")
         int order = dest_l->alias(src_param, new_name);
 
         // compute new name for c->parts[1]
-        std::vector <vsx_string<> > parts;
+        vsx_nw_vector<vsx_string<> > parts;
         vsx_string<>deli = ":";
         explode(c->parts[1], deli, parts, 2);
         parts[0] = new_name;

@@ -1476,13 +1476,13 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
       if (t->parts[1] == "inject_get")
       {
         vsx_string<>deli = "|";
-        std::list< vsx_string<> > pl;
+        vsx_nw_vector< vsx_string<> > pl;
         explode(t->parts[3], deli, pl);
-        for (std::list< vsx_string<> >::iterator it = pl.begin(); it != pl.end(); ++it)
+        foreach(pl, i)
         {
           std::vector <vsx_string<> > pld;
           vsx_string<>pdeli = ";";
-          explode((*it), pdeli, pld);
+          explode(pl[i], pdeli, pld);
           vsx_widget_param_sequence_item pa;
           pa.set_type( VSX_WIDGET_SEQ_CHANNEL_TYPE_MASTER );
           pa.set_total_length( vsx_string_helper::s2f(pld[0]) );

@@ -300,7 +300,7 @@ void vsx_master_sequence_channel::set_time(float new_time)
 vsx_string<>vsx_master_sequence_channel::dump()
 {
   vsx_string<>res = "";
-  std::list< vsx_string<> > ml;
+  vsx_nw_vector< vsx_string<> > ml;
   size_t i = 0;
   for (std::vector<vsx_sequence_master_channel_item*>::iterator it = items.begin(); it != items.end(); ++it)
   {

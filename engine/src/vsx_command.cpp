@@ -95,9 +95,9 @@ vsx_string<>vsx_command_s::get_parts(int start, int end) {
 void vsx_command_s::parse() {
   if (parsed) return;
   if (raw == "") raw = cmd+" "+cmd_data;
-  std::vector< vsx_string<> > cmdps;
+  vsx_nw_vector< vsx_string<> > cmdps;
   vsx_string<>deli = " ";
-  split_string(raw, deli, cmdps);
+  explode(raw, deli, cmdps);
   cmd = cmdps[0];
   if (cmdps.size() > 1)
   {

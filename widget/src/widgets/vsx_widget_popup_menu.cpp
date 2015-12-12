@@ -122,7 +122,7 @@ void vsx_widget_popup_menu::add_commands(vsx_command_s *command) {
   // split the title
   vsx_string<>title = command->title;
   vsx_string<>deli = ";";
-  std::vector <vsx_string<> > add_c;
+  vsx_nw_vector<vsx_string<> > add_c;
   explode(title,deli,add_c);
   if (add_c.size() > 1) {
     vsx_widget* t = 0;
@@ -133,8 +133,7 @@ void vsx_widget_popup_menu::add_commands(vsx_command_s *command) {
       t->init();
       menu_items.adds(VSX_COMMAND_MENU, add_c[0],"","");
     } else t = l_list[add_c[0]];
-    add_c.erase(add_c.begin());
-    command->title = implode(add_c,deli);
+    command->title = implode(add_c, deli, 1);
     ((vsx_widget_popup_menu*)t)->add_commands(command);
   } else {
     menu_items.add(command);

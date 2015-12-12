@@ -223,15 +223,13 @@ vsx_engine_param* vsx_engine_param::alias_to_level(vsx_engine_param* dest) {
     str_remove_equal_prefix(&src_name, &dest_name,".");
 
     vsx_string<>deli = ".";
-    std::vector <vsx_string<> > dest_name_parts;
-    explode(dest_name,deli,dest_name_parts);
-    dest_name_parts.pop_back();
-    dest_name = implode(dest_name_parts,deli);
+    vsx_nw_vector <vsx_string<> > dest_name_parts;
+    explode(dest_name, deli, dest_name_parts);
+    dest_name = implode(dest_name_parts, deli, 0, 1);
 
-    std::vector <vsx_string<> > src_name_parts;
+    vsx_nw_vector <vsx_string<> > src_name_parts;
     explode(src_name,deli,src_name_parts);
-    src_name_parts.pop_back();
-    dest_name = implode(src_name_parts,deli);
+    dest_name = implode(src_name_parts, deli, 0, 1);
 
     if (dest_name_parts.size() == 0) {
       if (src_name_parts.size() == 0) return this; else {
@@ -290,15 +288,13 @@ int vsx_engine_param::connect_far_abs(vsx_engine_param_connection_info* info,int
     }
 
     vsx_string<>deli = ".";
-    std::vector <vsx_string<> > dest_name_parts;
+    vsx_nw_vector <vsx_string<> > dest_name_parts;
     explode(dest_name,deli,dest_name_parts);
-    dest_name_parts.pop_back();
-    dest_name = implode(dest_name_parts,deli);
+    dest_name = implode(dest_name_parts,deli, 0, 1);
 
-    std::vector <vsx_string<> > src_name_parts;
+    vsx_nw_vector <vsx_string<> > src_name_parts;
     explode(src_name,deli,src_name_parts);
-    src_name_parts.pop_back();
-    src_name = implode(src_name_parts,deli);
+    src_name = implode(src_name_parts,deli, 0, 1);
 
 
     if (dest_name_parts.size() == 0) {
@@ -982,13 +978,10 @@ void vsx_engine_param::set_string(vsx_string<>data)
     break;
   }
   vsx_string<>deli = ",";
-  std::vector <vsx_string<> > data_parts;
+  vsx_nw_vector <vsx_string<> > data_parts;
   explode(data,deli,data_parts);
   for (size_t i = 0; i < data_parts.size(); i++)
-  {
     set_string_index(data_parts[i],i);
-  }
-
 }
 
 void vsx_engine_param::set_string_index(vsx_string<>data, int index) {
@@ -1379,15 +1372,14 @@ int vsx_engine_param_list::order(vsx_string<>param, vsx_string<>new_order)
   // 0. parse the new_order string that our nice client sent us
   vsx_string<>deli = ",";
   std::vector<int> order_list;
-  std::vector <vsx_string<> > order_source;
+  vsx_nw_vector <vsx_string<> > order_source;
   explode(new_order, deli, order_source);
 
   // 1. Re-order our own little connection list
   std::vector<vsx_engine_param_connection*> new_connection_list;
-  for (std::vector <vsx_string<> >::iterator it = order_source.begin(); it != order_source.end(); ++it)
-  {
-    new_connection_list.push_back(my_param->connections[ vsx_string_helper::s2i(*it) ]);
-  }
+  foreach(order_source, i)
+    new_connection_list.push_back(my_param->connections[ vsx_string_helper::s2i(order_source[i]) ]);
+
   my_param->connections = new_connection_list;
 
   // 2. recurse to find the new connection id order
@@ -1458,11 +1450,11 @@ vsx_string<>vsx_engine_param_list::single_param_spec(vsx_string<>param_name, int
               sin[spos] == '}'
               )
           {
-            std::vector <vsx_string<> > plist;
+            vsx_nw_vector <vsx_string<> > plist;
             vsx_string<>deli = ":";
             explode(res, deli, plist,2);
             deli = "[";
-            std::vector <vsx_string<> > plist2;
+            vsx_nw_vector<vsx_string<> > plist2;
 
             explode(plist[1], deli, plist2);
             if (plist2[0] == "complex")

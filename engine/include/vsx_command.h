@@ -80,7 +80,7 @@ public:
   vsx_string<>cmd_data; // the second parameter (for simple commands)
   vsx_nw_vector<char> cmd_data_bin; // the binary part of the command
   vsx_string<>raw; // the unparsed command, empty when binary command
-  std::vector< vsx_string<> > parts; // the parts of the command
+  vsx_nw_vector< vsx_string<> > parts; // the parts of the command
 
   vsx_command_s() {
     iterations = 0;
@@ -136,21 +136,18 @@ public:
 template<class T>
 T* vsx_command_parse(vsx_string<>& cmd_raw, bool garbage_collect = false)
 {
-  std::vector< vsx_string<> > cmdps;
+  vsx_nw_vector< vsx_string<> > cmdps;
   T *t = new T;
   if (garbage_collect)
     t->gc();
 
   t->raw = cmd_raw;
-  //printf("parsing raw: %s\n",cmd_raw.c_str());
   vsx_string<>deli = " ";
-  split_string(cmd_raw, deli, cmdps);
-  //printf("parsing2: %s\n",cmd_raw.c_str());
+  explode(cmd_raw, deli, cmdps);
   t->cmd = cmdps[0];
   if (cmdps.size() > 1)
-  {
     t->cmd_data = cmdps[1];
-  }
+
   t->parts = cmdps;
   t->parsed = true;
   return t;

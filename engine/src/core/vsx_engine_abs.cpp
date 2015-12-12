@@ -173,13 +173,12 @@ vsx_comp* vsx_engine_abs::add(vsx_string<>label)
     forge.push_back(comp);
 
     // is this a child of a macro?
-    vector< vsx_string<> > c_parts;
+    vsx_nw_vector< vsx_string<> > c_parts;
     vsx_string<>deli = ".";
     explode(label, deli, c_parts);
     if (c_parts.size() > 1) {
       // ok, we have a macro
-      c_parts.pop_back();
-      vsx_string<>macro_name = implode(c_parts,deli);
+      vsx_string<>macro_name = implode(c_parts, deli, 0, 1);
       if (vsx_comp* macro_comp = get_component_by_name(macro_name)) {
         comp->parent = macro_comp;
         macro_comp->children.push_back(comp);
@@ -418,7 +417,7 @@ void vsx_engine_abs::i_clear(vsx_command_list *cmd_out,bool clear_critical)
       (*fit).second->get_params_out()->unalias_aliased();
     LOG("delete step 3");
       if ((*fit).second->module_info->output)
-      outputs.remove((*fit).second);
+      outputs.remove_value((*fit).second);
     LOG("delete step 4\n");
       LOG("del "+(*fit).second->name);
       if ((*fit).second->component_class != "macro")
@@ -597,14 +596,13 @@ int vsx_engine_abs::rename_component(vsx_string<>old_identifier, vsx_string<>new
   // first we need to split up the name so we have the old base and the old name
   vsx_string<>old_base;
   vsx_string<>old_name;
-  std::vector <vsx_string<> > parts;
+  vsx_nw_vector<vsx_string<> > parts;
   vsx_string<>deli = ".";
   explode(old_identifier,deli,parts);
   old_name = parts[parts.size()-1];
-  parts.pop_back();
 
   if (parts.size())
-    old_base = implode(parts,deli);
+    old_base = implode(parts,deli, 0, 1);
 
 
   // we have the basic names set up now find the component
