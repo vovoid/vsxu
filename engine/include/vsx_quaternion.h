@@ -44,17 +44,13 @@ template<typename T = float>
 class vsx_quaternion
 {
 public:
-  T x;
-  T y;
-  T z;
-  T w;
+  T x = 0.0;
+  T y = 0.0;
+  T z = 0.0;
+  T w = 1.0;
   
   vsx_quaternion()
   {
-    x = 0.0f;
-    y = 0.0f;
-    z = 0.0f;
-    w = 1.0f;
   }
 
   vsx_quaternion(T xx, T yy, T zz)

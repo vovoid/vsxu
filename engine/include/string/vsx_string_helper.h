@@ -15,7 +15,7 @@ namespace vsx_string_helper
    * @param in
    * @return
    */
-  inline int s2i(const vsx_string<>& in)
+  inline int s2i(const vsx_string<> &in)
   {
     return atoi( in.c_str() );
   }
@@ -25,7 +25,7 @@ namespace vsx_string_helper
    * @param in
    * @return
    */
-  inline vsx_string<>i2s(int in)
+  inline vsx_string<>i2s(const int &in)
   {
     char string_res[256] = "";
     sprintf(string_res,"%d",in);
@@ -37,7 +37,7 @@ namespace vsx_string_helper
    * @param in
    * @return
    */
-  inline vsx_string<>i2x(uint64_t in)
+  inline vsx_string<>i2x(const uint64_t &in)
   {
     char string_res[256] = "";
     sprintf(string_res,"%lx",in);
@@ -49,7 +49,7 @@ namespace vsx_string_helper
    * @param in
    * @return
    */
-  inline vsx_string<wchar_t>i2sw(int in)
+  inline vsx_string<wchar_t>i2sw(const int &in)
   {
     wchar_t string_res[256] = L"";
     swprintf(string_res, 255, L"%d", in);
@@ -62,7 +62,7 @@ namespace vsx_string_helper
    * @param in
    * @return
    */
-  inline bool s2b(const vsx_string<>& in)
+  inline bool s2b(const vsx_string<> &in)
   {
     if (in == "true")
       return true;
@@ -74,7 +74,7 @@ namespace vsx_string_helper
    * @param in
    * @return
    */
-  inline vsx_string<>b2s(bool in)
+  inline vsx_string<>b2s(const bool &in)
   {
     char string_res[8] = "";
     if (in)
@@ -89,7 +89,7 @@ namespace vsx_string_helper
    * @param in
    * @return
    */
-  inline float s2f(const vsx_string<>& in)
+  inline float s2f(const vsx_string<> &in)
   {
     return atof(in.c_str());
   }
@@ -99,7 +99,7 @@ namespace vsx_string_helper
    * @param in
    * @return
    */
-  inline vsx_string<>f2s(float in)
+  inline vsx_string<>f2s(const float &in)
   {
     char string_res[256] = "";
     sprintf(string_res,"%f",(double)in);
@@ -112,7 +112,7 @@ namespace vsx_string_helper
    * @param decimals
    * @return
    */
-  inline vsx_string<>f2s(float in, int decimals)
+  inline vsx_string<>f2s(const float &in, const int &decimals)
   {
     char string_res[256] = "";
     sprintf(string_res,vsx_string<>("%."+vsx_string_helper::i2s(decimals)+"f").c_str(),(double)in);
@@ -124,7 +124,7 @@ namespace vsx_string_helper
    * @param filename
    * @param payload
    */
-  inline void write_to_file(vsx_string<>filename, vsx_string<> payload)
+  inline void write_to_file(vsx_string<> filename, const vsx_string<> &payload)
   {
     FILE* fp = fopen(filename.c_str(), "w");
     if (!fp)
@@ -138,7 +138,7 @@ namespace vsx_string_helper
    * @param filename
    * @param payload
    */
-  inline void write_to_file(vsx_string<>filename, vsx_string<>* payload)
+  inline void write_to_file(vsx_string<> filename, vsx_string<>* payload)
   {
     FILE* fp = fopen(filename.c_str(), "w");
     if (!fp)
@@ -166,7 +166,7 @@ namespace vsx_string_helper
    * @param filename
    * @param payload
    */
-  inline void write_to_file_p(vsx_string<>filename, vsx_string<wchar_t>* payload)
+  inline void write_to_file_p(vsx_string<> filename, vsx_string<wchar_t>* payload)
   {
     FILE* fp = fopen(filename.c_str(), "w");
     if (!fp)
@@ -379,7 +379,7 @@ namespace vsx_string_helper
   }
 
 
-  inline vsx_string<>base64_encode(vsx_string<>data)
+  inline vsx_string<> base64_encode(vsx_string<>data)
   {
     int i;
     char               c;
@@ -433,7 +433,7 @@ namespace vsx_string_helper
       }
     }
 
-    return(ret);
+    return ret;
   }
 
   inline vsx_string<>base64_decode(vsx_string<>data)
@@ -487,7 +487,7 @@ namespace vsx_string_helper
       }
     }
 
-    return(ret);
+    return ret;
   }
 
 

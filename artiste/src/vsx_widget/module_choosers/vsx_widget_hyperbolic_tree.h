@@ -712,15 +712,16 @@ public:
 
       vsx_widget_hyperbolic_tree* findNode(vsx_string<>designator) {
         if (this == root) return draw_root->findNode(designator);
-        std::vector <vsx_string<> > add_c;
+        vsx_nw_vector <vsx_string<> > add_c;
         vsx_string<>deli = ";";
-        split_string(designator,deli,add_c,-1);
+        explode(designator,deli,add_c,-1);
         vsx_string<>search = add_c[0];
         for (std::vector<vsx_widget_hyperbolic_tree*>::iterator it = i_children.begin(); it != i_children.end(); ++it) {
           if ((*it)->node->node->getName() == search) {
             if (add_c.size() > 1) {
-              add_c.erase(add_c.begin());
-              vsx_string<>new_add_name = implode(add_c,";");
+              add_c.remove_index(0);
+              vsx_string<> semicolon(";");
+              vsx_string<>new_add_name = implode(add_c, semicolon);
               return (*it)->findNode(new_add_name);
             } else {
               return *it;

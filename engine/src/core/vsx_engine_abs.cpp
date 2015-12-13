@@ -61,8 +61,6 @@
 
 #include <vector>
 
-using namespace std;
-
 void vsx_engine_abs::constructor_set_default_values()
 {
   valid = false;
@@ -224,7 +222,7 @@ void vsx_engine_abs::tell_client_time(vsx_command_list *cmd_out)
 void vsx_engine_abs::redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_out) {
   // 1. get all connections in a list
   //printf("+++redeclaring\n");
-  list<vsx_engine_param_connection_info*> abs_connections_in;
+  std::list<vsx_engine_param_connection_info*> abs_connections_in;
   vsx_engine_param_list* in = comp->get_params_in();
   in->get_abs_connections(&abs_connections_in);
 
@@ -258,7 +256,7 @@ void vsx_engine_abs::redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_o
     }
   }
 
-  for (list<vsx_engine_param_connection_info*>::iterator it2 = abs_connections_in.begin(); it2 != abs_connections_in.end(); ++it2)
+  for (std::list<vsx_engine_param_connection_info*>::iterator it2 = abs_connections_in.begin(); it2 != abs_connections_in.end(); ++it2)
   {
     vsx_engine_param* dparam = in->get_by_name((*it2)->dest_name);
 
@@ -273,7 +271,7 @@ void vsx_engine_abs::redeclare_in_params(vsx_comp* comp, vsx_command_list *cmd_o
 void vsx_engine_abs::redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_out)
 {
   // 1. get all connections in a list
-  list<vsx_engine_param_connection_info*> abs_connections_out;
+  std::list<vsx_engine_param_connection_info*> abs_connections_out;
   vsx_engine_param_list* out = comp->get_params_out();
   out->get_abs_connections(&abs_connections_out);
 
@@ -283,7 +281,7 @@ void vsx_engine_abs::redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_
   comp->module->redeclare_out = false;
   out = comp->get_params_out();
 
-  for (list<vsx_engine_param_connection_info*>::iterator it2 = abs_connections_out.begin(); it2 != abs_connections_out.end(); ++it2)
+  for (std::list<vsx_engine_param_connection_info*>::iterator it2 = abs_connections_out.begin(); it2 != abs_connections_out.end(); ++it2)
   {
     vsx_engine_param* dparam = out->get_by_name((*it2)->src_name);
 
@@ -302,7 +300,7 @@ void vsx_engine_abs::redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_
 
 void vsx_engine_abs::process_message_queue_redeclare(vsx_command_list *cmd_out_res)
 {
-  for (vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it)
+  for (std::vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it)
   {
     if ((*it)->module) {
       if ((*it)->module->redeclare_in) {

@@ -30,7 +30,6 @@
 #include <container/vsx_nw_vector.h>
 #include <string/vsx_string.h>
 #include <string/vsx_string_helper.h>
-using namespace std;
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>

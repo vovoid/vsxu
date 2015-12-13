@@ -8,7 +8,6 @@
 #include <map>
 #include <container/vsx_nw_vector.h>
 #include <string/vsx_string.h>
-using namespace std;
 #include "includes/nehegl.h"
 #include "application.h"
 #include "vsxfst.h"

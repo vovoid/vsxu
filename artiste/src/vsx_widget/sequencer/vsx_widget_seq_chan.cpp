@@ -124,7 +124,7 @@ void vsx_widget_seq_channel::init()
 // sends a full inject dump to the parent in the widget chain
 void vsx_widget_seq_channel::send_parent_dump()
 {
-  std::vector <vsx_string<> > parts;
+  vsx_nw_vector <vsx_string<> > parts;
 
   for (std::vector<vsx_widget_param_sequence_item>::iterator it = items.begin(); it
       != items.end(); ++it)
@@ -1317,11 +1317,11 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
           break;
       }
 
-      std::vector <vsx_string<> > pl;
+      vsx_nw_vector<vsx_string<> > pl;
       explode(t->parts[4], deli, pl);
       foreach (pl, i)
       {
-        std::vector <vsx_string<> > pld;
+        vsx_nw_vector<vsx_string<> > pld;
         vsx_string<>pdeli = ";";
         explode(pl[i], pdeli, pld);
         vsx_widget_param_sequence_item pa;
@@ -1330,7 +1330,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
         pa.set_interpolation( vsx_string_helper::s2i(pld[1]) );
         if (pa.get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_BEZIER)
         {
-          std::vector <vsx_string<> > pld_l;
+          vsx_nw_vector<vsx_string<> > pld_l;
           vsx_string<>pdeli_l = ":";
           vsx_string<>vtemp = vsx_string_helper::base64_decode(pld[2]);
           explode(vtemp, pdeli_l, pld_l);
@@ -1375,7 +1375,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
       pa.set_interpolation( vsx_string_helper::s2i( t->parts[6] ) );
       if (pa.get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_BEZIER)
       {
-        std::vector <vsx_string<> > pld_l;
+        vsx_nw_vector<vsx_string<> > pld_l;
         vsx_string<>pdeli_l = ":";
         vsx_string<>vtemp = vsx_string_helper::base64_decode(t->parts[4]);
         explode(vtemp, pdeli_l, pld_l);
@@ -1480,7 +1480,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
         explode(t->parts[3], deli, pl);
         foreach(pl, i)
         {
-          std::vector <vsx_string<> > pld;
+          vsx_nw_vector<vsx_string<> > pld;
           vsx_string<>pdeli = ";";
           explode(pl[i], pdeli, pld);
           vsx_widget_param_sequence_item pa;

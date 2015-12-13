@@ -62,7 +62,6 @@
 // widget
 #include <dialogs/dialog_messagebox.h>
 
-using namespace std;
 
 bool vsx_widget_anchor::drag_status = false;
 bool vsx_widget_anchor::clone_value = false;
@@ -97,9 +96,9 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
   //   engine
   if (t->cmd == "connections_order_ok")
   {
-    std::vector <vsx_string<> > order_list;
+    vsx_nw_vector<vsx_string<> > order_list;
     vsx_string<>deli = ",";
-    split_string(t->parts[3],deli,order_list);
+    explode(t->parts[3], deli, order_list);
     // set up a mapping list with the connections
     std::map<int,vsx_widget*> connection_map;
     for (children_iter = children.begin(); children_iter != children.end(); ++children_iter) 
@@ -111,14 +110,12 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     }
 
     int c = 0;
-
-    for (std::vector <vsx_string<> >::iterator it = order_list.begin(); it != order_list.end(); ++it) 
+    foreach(order_list, i)
     {
-      ((vsx_widget_connector_bezier*)connection_map[ vsx_string_helper::s2i(*it) ])->order = c;
-      ((vsx_widget_connector_bezier*)connection_map[ vsx_string_helper::s2i(*it) ])->move(vsx_vector3<>(0));
+      ((vsx_widget_connector_bezier*)connection_map[ vsx_string_helper::s2i( order_list[i] ) ])->order = c;
+      ((vsx_widget_connector_bezier*)connection_map[ vsx_string_helper::s2i( order_list[i] ) ])->move(vsx_vector3<>(0));
       ++c;
     }
-
     return;
   }
 
@@ -142,12 +139,13 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
         position_map[((vsx_widget_connector_bezier*)*children_iter)->real_pos.y] = *children_iter;
       }
     }
-    std::vector <vsx_string<> > order_list;
+    vsx_nw_vector<vsx_string<> > order_list;
     for (std::map<float,vsx_widget*>::reverse_iterator it = position_map.rbegin(); it != position_map.rend(); ++it) 
     {
       order_list.push_back(vsx_string_helper::i2s(((vsx_widget_connector_bezier*)((*it).second))->order));
     }
-    vsx_string<>order_list_finished = implode(order_list,",");
+    vsx_string<> deli(",");
+    vsx_string<>order_list_finished = implode(order_list, deli);
     command_q_b.add_raw("connections_order "+component->name+" "+name+" "+order_list_finished);
     ((vsx_widget_component*)component)->server->vsx_command_queue_b(this);
     return;
@@ -298,7 +296,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
         anchor_order[1] = 0;
       }
     }
-    std::vector <vsx_string<> > add_c;
+    vsx_nw_vector<vsx_string<> > add_c;
     vsx_string<>cd = t->parts[2];
     vsx_string<>cm = "";
     vsx_string<>cms = "";
@@ -335,7 +333,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
         // 1. find the name of this anchor
         add_c.clear();
         vsx_string<>deli = ":";
-        split_string(cm,deli,add_c,-1);
+        explode(cm, deli, add_c, -1);
         vsx_widget *tt = 0;
         // look for old anchor
         if ( ((vsx_widget_component*)component)->t_list.find(add_c[0]) != ((vsx_widget_component*)component)->t_list.end()) 
@@ -355,9 +353,9 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
         else 
         {
           // extra type info split
-          std::vector <vsx_string<> > type_info;
+          vsx_nw_vector<vsx_string<> > type_info;
           vsx_string<>type_deli = "?";
-          split_string(add_c[1],type_deli,type_info,2);
+          explode(add_c[1],type_deli,type_info,2);
           tt = add(new vsx_widget_anchor,add_c[0]);
           if (type_info.size() == 2)
           ((vsx_widget_anchor*)tt)->p_type_suffix = type_info[1];
@@ -692,9 +690,9 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
 
   if (t->cmd == "settings_dialog" && !find_child_by_type(VSX_WIDGET_TYPE_CONTROLLER))
   {
-    vsx_widget* tt = add(new vsx_widget_controller_dialog,name+"."+t->parts.at(1));
+    vsx_widget* tt = add(new vsx_widget_controller_dialog,name+"."+t->parts[1]);
     ((vsx_widget_controller_dialog*)tt)->target_param=name;
-    ((vsx_widget_controller_dialog*)tt)->in_param_spec=t->parts.at(2);
+    ((vsx_widget_controller_dialog*)tt)->in_param_spec=t->parts[2];
     tt->pos.x = -size.x*4;
     ((vsx_widget_controller_dialog*)tt)->init();
     return;
@@ -798,7 +796,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
   if (t->cmd == "param_get_ok")
   {
     display_value = vsx_string_helper::base64_decode(t->parts[3]);
-    std::vector <vsx_string<> > parts;
+    vsx_nw_vector<vsx_string<> > parts;
     vsx_string<>deli = ",";
     if (p_type == "float")
     {
@@ -806,7 +804,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     }
     if (p_type == "float3")
     {
-      explode(display_value,deli, parts);
+      explode(display_value, deli, parts);
       if (parts.size() == 3)
       {
         display_value = vsx_string_helper::f2s(vsx_string_helper::s2f(parts[0]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[1]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[2]),5);
@@ -1167,12 +1165,12 @@ void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widg
     }
   }
   vsx_string<>deli = ".";
-  std::vector <vsx_string<> > dest_name_parts;
+  vsx_nw_vector<vsx_string<> > dest_name_parts;
   explode(dest_name,deli,dest_name_parts);
   dest_name_parts.pop_back();
   dest_name = implode(dest_name_parts,deli);
 
-  std::vector <vsx_string<> > src_name_parts;
+  vsx_nw_vector<vsx_string<> > src_name_parts;
   explode(src_name,deli,src_name_parts);
   src_name_parts.pop_back();
   src_name = implode(src_name_parts,deli);
@@ -1278,7 +1276,7 @@ vsx_widget_anchor* vsx_widget_anchor::alias_to_level(vsx_widget_anchor* dest)
 
   vsx_string<>deli = ".";
 
-  std::vector <vsx_string<> > src_name_parts;
+  vsx_nw_vector<vsx_string<> > src_name_parts;
   explode(src_name,deli,src_name_parts);
   src_name_parts.pop_back();
   src_name = implode(src_name_parts,deli);
@@ -1313,16 +1311,16 @@ vsx_widget_anchor* vsx_widget_anchor::alias_to_level(vsx_widget_anchor* dest)
 
 //-- p u r e   g u i   s t u f f ---------------------------------------------------------------------------------------
 
-map<vsx_string<>,vsx_string<> > parse_url_params(vsx_string<>input, char major='&', char minor='=', char sublevelbegin='(', char sublevelend=')');
+std::map<vsx_string<>,vsx_string<> > parse_url_params(vsx_string<>input, char major='&', char minor='=', char sublevelbegin='(', char sublevelend=')');
 
-map<vsx_string<>,vsx_string<> > parse_url_params(vsx_string<>input, char major, char minor, char sublevelbegin, char sublevelend)
+std::map<vsx_string<>,vsx_string<> > parse_url_params(vsx_string<>input, char major, char minor, char sublevelbegin, char sublevelend)
 {
   VSX_UNUSED(major);
   VSX_UNUSED(minor);
   VSX_UNUSED(sublevelbegin);
   VSX_UNUSED(sublevelend);
 
-  map<vsx_string<>,vsx_string<> > values;
+  std::map<vsx_string<>,vsx_string<> > values;
   int startpos=0, sublevel=0;
   vsx_string<>key="",val="",strip="";
   int p=0;
@@ -1523,7 +1521,7 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
     {
       menu_->commands.adds(VSX_COMMAND_MENU, "open/close (left-double-click)", "tg","");
       dialogs=parse_url_params(p_type_suffix);
-      for (map<vsx_string<>,vsx_string<> >::iterator it = dialogs.begin(); it != dialogs.end(); ++it)
+      for (std::map<vsx_string<>,vsx_string<> >::iterator it = dialogs.begin(); it != dialogs.end(); ++it)
       {
         if (((vsx_string<>)(*it).first).substr(0,7) == "dialog_")
         {
@@ -1536,11 +1534,11 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
     {
       //menu = add(new vsx_widget_popup_menu,".anchor_menu");
       vsx_string<>deli_p = "&";
-      vector<vsx_string<> > parts;
+      vsx_nw_vector<vsx_string<> > parts;
       explode(p_type_suffix,deli_p,parts);
 
       vsx_string<>deli = "|";
-      vector<vsx_string<> > enumerations;
+      vsx_nw_vector<vsx_string<> > enumerations;
       explode(parts[0],deli,enumerations);
       for (unsigned long i = 0; i < enumerations.size(); ++i) 
       {
@@ -1588,7 +1586,7 @@ void vsx_widget_anchor::init()
   dialogs=parse_url_params(p_type_suffix);
   // default is to allow connections to this anchor
   forbid_connections = false;
-  for (map<vsx_string<>,vsx_string<> >::iterator it = dialogs.begin(); it != dialogs.end(); ++it)
+  for (std::map<vsx_string<>,vsx_string<> >::iterator it = dialogs.begin(); it != dialogs.end(); ++it)
   {
     if ((*it).first == "default_controller")
     {

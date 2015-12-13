@@ -468,7 +468,7 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
     if (t->parts.size() == 3)
     {
       vsx_string<>deli = ":";
-      std::vector <vsx_string<> > parts;
+      vsx_nw_vector<vsx_string<> > parts;
       explode(t->parts[2],deli, parts);
       if (parts[1] == "[master]")
       {

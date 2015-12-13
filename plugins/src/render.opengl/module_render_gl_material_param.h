@@ -200,7 +200,7 @@ public:
   {
     unsigned int ff = faces_affected->get();
 
-    float specular[4];
+    float specular[4] = {0.0f, 0.0f, 0.0f, 0.0f};
     specular[0] = specular_exponent->get();
     if (specular[0] > 120.0f)
       specular[0] = 120.0f;

@@ -174,7 +174,7 @@ int explode(vsx_string<>& input, vsx_string<>& delimiter, vsx_nw_vector< vsx_str
   return count;
 }
 
-vsx_string<>implode(vsx_nw_vector< vsx_string<> >& in, vsx_string<>& delimiter, size_t start_index = 0, size_t shave_off_at_end = 0)
+vsx_string<>implode(vsx_nw_vector< vsx_string<> >& in, vsx_string<>& delimiter, size_t start_index, size_t shave_off_at_end)
 {
   if (in.size() == 0)
     return "";

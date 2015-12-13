@@ -355,8 +355,8 @@ void vsx_module_chooser_list::build_tree()
   unsigned long i;
   unsigned long j;
   for (i = 0; i < i_rows.size(); i++) {
-    std::vector <vsx_string<> > parts;
-    vsx_string<>deli = ";";
+    vsx_nw_vector<vsx_string<> > parts;
+    vsx_string<> deli = ";";
     explode(i_rows[i], deli, parts);
     for (j = 0; j < parts.size()-1; j++)
     {

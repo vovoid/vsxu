@@ -111,7 +111,7 @@ if (cmd == "component_delete")
             ++forge_map_iter;
             forge_map.erase(t);
             bool fdrun = true;
-            vector<vsx_comp*>::iterator fit = forge.begin();
+            std::vector<vsx_comp*>::iterator fit = forge.begin();
 
             while (fdrun) {
               if (fit != forge.end()) {
@@ -220,8 +220,8 @@ if (cmd == "component_assign")
     goto process_message_queue_end;
   }
 
-  list<vsx_engine_param_connection_info*> abs_connections_in;
-  list<vsx_engine_param_connection_info*> abs_connections_out;
+  std::list<vsx_engine_param_connection_info*> abs_connections_in;
+  std::list<vsx_engine_param_connection_info*> abs_connections_out;
   for (std::vector<vsx_comp*>::iterator it = components.begin(); it != components.end(); ++it) {
     // 0. Check that we actually CAN move it - that there isn't already a component on the same level sharing the same name
     //bool already_there = false;
@@ -259,12 +259,12 @@ if (cmd == "component_assign")
 
   }
 
-  for (list<vsx_engine_param_connection_info*>::iterator it = abs_connections_in.begin(); it != abs_connections_in.end(); ++it) {
+  for (std::list<vsx_engine_param_connection_info*>::iterator it = abs_connections_in.begin(); it != abs_connections_in.end(); ++it) {
     (*it)->dest->connect_far_abs(*it,(*it)->localorder);
     delete *it;
   }
 
-  for (list<vsx_engine_param_connection_info*>::iterator it = abs_connections_out.begin(); it != abs_connections_out.end(); ++it) {
+  for (std::list<vsx_engine_param_connection_info*>::iterator it = abs_connections_out.begin(); it != abs_connections_out.end(); ++it) {
     (*it)->dest->connect_far_abs(*it,(*it)->localorder);
     delete *it;
   }
@@ -333,7 +333,7 @@ if (cmd == "component_size")
 
 if (cmd == "get_module_status")
 {
-  for (vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
+  for (std::vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
     if ((*it)->module) {
       if (!(*it)->module->loading_done) {
         printf("not loaded: %s\n",(*it)->name.c_str());

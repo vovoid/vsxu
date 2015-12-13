@@ -40,8 +40,6 @@
 #include "vsx_quaternion.h"
 #include "vsx_bezier_calc.h"
 
-using namespace std;
-
 void vsx_param_sequence_list::get_init(vsx_engine_param* param, vsx_command_list* dest,vsx_string<>comp_name, vsx_string<>prefix)
 {
   if (parameter_channel_map.find(param) != parameter_channel_map.end())

@@ -68,6 +68,12 @@ public:
     return used;
   }
 
+  inline void pop_back()
+  {
+    req(used);
+    used--;
+  }
+
   inline size_t size() VSX_ALWAYS_INLINE
   {
     return used;

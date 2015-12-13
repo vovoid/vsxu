@@ -1,4 +1,5 @@
 
+#include <container/vsx_nw_vector.h>
 
 
 /**
@@ -44,9 +45,9 @@ public:
   // string syntax: texture;generators;simple;jaw's_own_texgen
   //
   HTNode* add(vsx_string<>add_name, vsx_module_info* m_info) {
-    std::vector <vsx_string<> > add_c;
-    vsx_string<>deli = ";";
-    split_string(add_name,deli,add_c,-1);
+    vsx_nw_vector<vsx_string<> > add_c;
+    vsx_string<> deli = ";";
+    explode(add_name,deli,add_c,-1);
     if (!module_info) {
       module_info = m_info;
     }
@@ -64,10 +65,12 @@ public:
           i = children.size()+1;
         }
       }
-      add_c.erase(add_c.begin());
-      vsx_string<>new_add_name;
+      add_c.remove_index(0);
+      vsx_string<> new_add_name;
+      vsx_string<> semicolon(";");
       if (add_c.size())
-      new_add_name = implode(add_c,vsx_string<>(";"));
+        new_add_name = implode(add_c, semicolon);
+
       if (search_result) {
         // ask the child to do some creation
         search_result->module_info = module_info;
@@ -102,7 +105,7 @@ public:
       // we've only been told to create this, so do that and nothing more.
       HTNode* b = new HTNode();
       if (module_info->component_class == "resource") {
-        std::vector <vsx_string<> > parts;
+        vsx_nw_vector <vsx_string<> > parts;
         vsx_string<>deli = ".";
         explode(add_name,deli, parts);
         if (parts.size() > 1) {

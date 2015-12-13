@@ -67,8 +67,6 @@
 #include <dialogs/dialog_messagebox.h>
 #include <widgets/vsx_widget_popup_menu.h>
 
-using namespace std;
-
 // VSX_WIDGET_SERVER ***************************************************************************************************
 
 vsx_widget_server::vsx_widget_server() {
@@ -346,14 +344,15 @@ void vsx_widget_server::vsx_command_process_f() {
         vsx_string<>real_name = c->cmd_data;
         vsx_string<>parent_name = "";
 
-        std::vector <vsx_string<> > add_c;
+        vsx_nw_vector<vsx_string<> > add_c;
         vsx_string<>deli = ".";
-        split_string(c->cmd_data, deli, add_c);
+        explode(c->cmd_data, deli, add_c);
         if (add_c.size() > 1)
         {
           real_name = add_c[add_c.size()-1];
-          add_c.resize(add_c.size()-1);
-          parent_name = implode(add_c,".");
+          add_c.reset_used(add_c.size()-1);
+          vsx_string<> deli(".");
+          parent_name = implode(add_c, deli);
 
           vsx_widget* f = find_component(parent_name);
           if (f)
@@ -565,9 +564,8 @@ void vsx_widget_server::vsx_command_process_f() {
         dest_name_prefix = dest_macro_component->name;
 
         vsx_string<>deli = ",";
-        std::vector <vsx_string<> > comp_source;
-        split_string(c->parts[2], deli, comp_source);
-        //printf("dest pos: %f, %f\n",dst_pos.x, dst_pos.y);
+        vsx_nw_vector<vsx_string<> > comp_source;
+        explode(c->parts[2], deli, comp_source);
         std::list<vsx_widget_component*> components_list;
 
         for (unsigned long i = 0; i < comp_source.size(); ++i) {

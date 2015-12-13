@@ -52,7 +52,6 @@
 #include <dialogs/dialog_messagebox.h>
 
 
-using namespace std;
 bool vsx_widget_component::show_titles = true;
 bool vsx_widget_component::ethereal_all = false;
 
@@ -119,7 +118,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
     vsx_string<>deli = "&&";
 
     deli = "||";
-    std::vector <vsx_string<> > parts;
+    vsx_nw_vector <vsx_string<> > parts;
     explode(s,deli,parts);
     if (parts[0] == "module")
     {
@@ -275,7 +274,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
     // p[0]: in_param_spec
     // p[1]: osc2
     // p[2]: actual command
-    std::vector <vsx_string<> > add_c;
+    vsx_nw_vector <vsx_string<> > add_c;
     /*
     complex:surround_sound_data[blob:center
     ,
@@ -317,7 +316,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
         // 1. find the name of this anchor
         add_c.clear();
         vsx_string<>deli = ":";
-        split_string(cm,deli,add_c,-1);
+        explode(cm, deli, add_c, -1);
         vsx_widget_anchor *anchor = 0;
         // see if there's an anchor we can use
         if (t_list.find(add_c[0]) != t_list.end()) {
@@ -337,9 +336,9 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
           // no previous anchor found, create a new one
           anchor = (vsx_widget_anchor*)add(new vsx_widget_anchor,add_c[0]);
           // extra type info split
-          std::vector <vsx_string<> > type_info;
+          vsx_nw_vector<vsx_string<> > type_info;
           vsx_string<>type_deli = "?";
-          split_string(add_c[1],type_deli,type_info);
+          explode(add_c[1],type_deli,type_info);
           if (type_info.size() == 2)
           {
             ((vsx_widget_anchor*)anchor)->p_type_suffix = type_info[1];
@@ -608,10 +607,10 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
   if (t->cmd == "component_info")
   {
     if (t->parts.size() >= 3) {
-      std::vector <vsx_string<> > parts;
+      vsx_nw_vector<vsx_string<> > parts;
       // critical:screen:small
       vsx_string<>deli = ":";
-      explode(t->parts[2],deli,parts);
+      explode(t->parts[2], deli, parts);
 
       if (parts.size() > 1)
       for (unsigned long i = 1; i < parts.size(); ++i) {
@@ -1313,7 +1312,7 @@ void vsx_widget_component::event_mouse_up(vsx_widget_distance distance,vsx_widge
 
         if (!failed) {
           // build a move-to-macro command :3
-          std::vector <vsx_string<> > comps;
+          vsx_nw_vector <vsx_string<> > comps;
           bool run = true;
           // move ourselves to the beginning
           ((vsx_widget_server*)server)->selected_list.remove((vsx_widget*)this);
@@ -1338,7 +1337,7 @@ void vsx_widget_component::event_mouse_up(vsx_widget_distance distance,vsx_widge
             else
             {
               a_focus->add(new dialog_messagebox("Error: Could not move component","There is already a component with this name.||Was trying to move '"+((vsx_widget_component*)(*itx))->real_name+"' into '"+dest_macro_component->name+"'||Rename one of the components and try again!"),"foo");
-              comps.empty();
+              comps.reset_used();
               run = false;
               ((vsx_widget_component*)(*itx))->target_pos = ((vsx_widget_component*)(*itx))->real_pos;
             }
@@ -1347,7 +1346,8 @@ void vsx_widget_component::event_mouse_up(vsx_widget_distance distance,vsx_widge
           if (comps.size()) {
             ((vsx_widget_server*)server)->selected_list.remove(this);
             ((vsx_widget_server*)server)->selected_list.push_front(this);
-            vsx_string<>comps_s = implode(comps,",");
+            vsx_string<> deli(",");
+            vsx_string<>comps_s = implode(comps, deli);
 
             command_q_b.add_raw("component_assign "+dest_macro_component->name+" "+comps_s+" "+vsx_string_helper::f2s(l_distance.center.x)+" "+vsx_string_helper::f2s(l_distance.center.y));
             server->vsx_command_queue_b(this);
@@ -1570,13 +1570,13 @@ void vsx_widget_component::rename(vsx_string<>new_name, bool partial_name) {
   }
   ((vsx_widget_server*)server)->comp_list[new_name] = this;
   name = new_name;
-  std::vector <vsx_string<> > add_c;
+  vsx_nw_vector<vsx_string<> > add_c;
   vsx_string<>deli = ".";
-  split_string(new_name,deli,add_c,2);
+  explode(new_name,deli,add_c,2);
 
-  std::vector <vsx_string<> > comp_realname;
+  vsx_nw_vector<vsx_string<> > comp_realname;
   deli = ";";
-  split_string(add_c[add_c.size()-1],deli,comp_realname);
+  explode(add_c[add_c.size()-1],deli,comp_realname);
 
   real_name = comp_realname[comp_realname.size()-1];
 }

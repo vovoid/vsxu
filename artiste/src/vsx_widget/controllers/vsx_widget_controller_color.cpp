@@ -73,7 +73,7 @@ void vsx_widget_controller_color::command_process_back_queue(vsx_command_s *t) {
   // 0=pg64_ok [1=module_name] [2=param] MC4yMTI4OTE5OTU5MDY4Mjk4MzM5OCwwLjAwMDAwMDAwMDAwMDAwOTI5NjU3LDAuOTk5OTk5ODgwNzkwNzEwNDQ5MjIsMS4wMDAwMDAwMDAwMDAwMDAwMDAwMA== 2054
   if (t->cmd == "pg64_ok")
   {
-    std::vector <vsx_string<> > parts;
+    vsx_nw_vector <vsx_string<> > parts;
     vsx_string<>deli = ",";
     t->parts[3] = vsx_string_helper::base64_decode(t->parts[3]);
     explode(t->parts[3],deli, parts);

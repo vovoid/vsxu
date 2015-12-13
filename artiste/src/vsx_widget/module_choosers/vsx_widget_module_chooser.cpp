@@ -50,8 +50,6 @@
 // widget
 #include <dialogs/dialog_query_string.h>
 
-using namespace std;
-
 
 vsx_command_list module_chooser_colors(true);
 std::map<vsx_string<>,vsx_color<> > mc_colors;
@@ -295,7 +293,7 @@ void vsx_widget_ultra_chooser::event_mouse_down(vsx_widget_distance distance,vsx
         help_text = ((vsx_widget_server*)server)->build_comp_helptext(test->node->node->module_info->identifier);
         ++help_timestamp;
       }
-      std::vector <vsx_string<> > parts;
+      vsx_nw_vector<vsx_string<> > parts;
       vsx_string<>deli = ";";
       explode(test->node->node->module_info->identifier,deli, parts);
       if (test->node->node->module_info->component_class == "state") {
@@ -304,8 +302,6 @@ void vsx_widget_ultra_chooser::event_mouse_down(vsx_widget_distance distance,vsx
       if (test->node->node->module_info->component_class == "resource") {
         drag_module = false;
         ((vsx_window_object_inspector*)object_inspector)->load_file("resources/"+str_replace("\\ "," ",str_replace(";","/",test->node->node->module_info->identifier)));
-      } else {
-        //((vsx_window_object_inspector*)object_inspector)->unload();
       }
     }
     // create a component here
@@ -600,7 +596,7 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
   vsx_command_s* mc = 0;
   while ( (mc = module_chooser_colors.get()) ) {
     if (mc->cmd == "ccolor") {
-      std::vector <vsx_string<> > parts;
+      vsx_nw_vector<vsx_string<> > parts;
       vsx_string<>deli = ",";
       explode(mc->parts[2],deli, parts);
       vsx_color<> p;
@@ -611,7 +607,7 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
       mc_colors[mc->parts[1]] = p;
     } else
     if (mc->cmd == "rcolor") {
-      std::vector <vsx_string<> > parts;
+      vsx_nw_vector<vsx_string<> > parts;
       vsx_string<>deli = ",";
       explode(mc->parts[2],deli, parts);
       vsx_color<> p;

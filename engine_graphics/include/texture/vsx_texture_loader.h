@@ -45,7 +45,6 @@ public:
     return texture;
   }
 
-
   template <class T = vsx_texture_gl>
   static inline void destroy(vsx_texture<T>* &texture)
   {
@@ -66,6 +65,6 @@ public:
 
     vsx_texture_gl_cache::get_instance()->destroy( texture->texture );
     delete texture;
-    texture = 0;
+    texture = 0x0;
   }
 };

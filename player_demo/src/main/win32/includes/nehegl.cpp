@@ -23,7 +23,6 @@
 #include <map>
 #include <container/vsx_nw_vector.h>
 #include <string/vsx_string.h>
-using namespace std;
 #include "nehegl.h"
 //#define DM_POSITION             0x00000020L
 #define DISPLAY_DEVICE_ACTIVE              0x00000001

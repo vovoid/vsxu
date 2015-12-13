@@ -267,7 +267,7 @@ void vsx_window_object_inspector::load_file(vsx_string<>filename)
 {
   filename = vsx_data_path::get_instance()->data_path_get() + filename;
 
-  std::vector <vsx_string<> > parts;
+  vsx_nw_vector <vsx_string<> > parts;
   vsx_string<>deli = ".";
   explode(filename, deli, parts);
   if (filename_loaded == filename)

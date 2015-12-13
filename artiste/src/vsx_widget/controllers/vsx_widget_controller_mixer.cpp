@@ -54,7 +54,7 @@ void vsx_widget_controller_mixer::init()
     //((vsx_widget_3d_hint*)((vsx_widget_slider*)((vsx_widget_channel*)newmixer)->slider)->hint)->title=target_param+'['+vsx_string_helper::i2s(t)+']';
     mixers.push_back(newmixer);
   }
-  std::vector <vsx_string<> > parts;
+  vsx_nw_vector <vsx_string<> > parts;
   vsx_string<>deli = ";";
   explode(capmaxv_s,deli,parts);
   for (unsigned int i = 0; i < parts.size(); ++i) {
@@ -101,7 +101,7 @@ void vsx_widget_controller_mixer::command_process_back_queue(vsx_command_s *t)
 {
   if (t->cmd == "pg64_ok") {
     //printf("param_get_ok\n");
-    std::vector <vsx_string<> > parts;
+    vsx_nw_vector <vsx_string<> > parts;
     vsx_string<>deli = ",";
     t->parts[3] = vsx_string_helper::base64_decode(t->parts[3]);
     explode(t->parts[3],deli, parts);

@@ -84,8 +84,8 @@ public:
     init_run = true;
     vsx_widget *button1 = add(new vsx_widget_button,"");
     std::vector<vsx_widget*> labels;
-    std::vector< vsx_string<> > lines;
-    vsx_string<>deli = "|";
+    vsx_nw_vector< vsx_string<> > lines;
+    vsx_string<> deli = "|";
     explode(hint,deli,lines);
     for (unsigned long i = 0; i < lines.size(); i++) {
       vsx_widget* b = add(new vsx_widget_2d_label,"");
@@ -94,12 +94,11 @@ public:
     vsx_widget::init_children();
 
     size_t max_len = 0;
-    for (unsigned long i = 0; i < lines.size(); ++i) {
-      if (lines[i].size() > max_len) max_len = lines[i].size();
-    }
+    for (unsigned long i = 0; i < lines.size(); ++i)
+      if (lines[i].size() > max_len)
+        max_len = lines[i].size();
 
     set_size(vsx_vector3<>((float)max_len * 0.0094 , 0.10+(float)lines.size() * 0.017));
-  //  size.x = (float)max_len * 0.0094;
 
     float y = size.y*0.5+0.02;
     unsigned long i;

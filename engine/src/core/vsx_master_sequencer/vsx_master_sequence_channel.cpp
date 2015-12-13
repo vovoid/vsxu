@@ -41,8 +41,6 @@
 #include "vsx_quaternion.h"
 #include "vsx_bezier_calc.h"
 
-using namespace std;
-
 vsx_sequence_master_channel_item::vsx_sequence_master_channel_item()
 {
   pool_sequence_list = 0x0;

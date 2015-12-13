@@ -72,8 +72,6 @@
 vsx_module_engine_info vsx_engine::engine_info;
 #endif
 
-using namespace std;
-
 
 vsx_engine::vsx_engine(vsx_module_list_abs* initial_module_list)
 {
@@ -269,7 +267,7 @@ vsx_module* vsx_engine::get_module_by_name(vsx_string<>module_name)
 vsx_string<>vsx_engine::get_modules_not_loaded()
 {
   vsx_string<>res;
-  for (vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
+  for (std::vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it) {
     if ((*it)->module) {
       if (!(*it)->module->loading_done) {
         res += " " + (*it)->name + " ";
@@ -670,7 +668,7 @@ bool vsx_engine::render()
     {
       modules_left_to_load = 0;
       modules_loaded = 0;
-      for(vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it)
+      for(std::vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it)
       {
         if ((*it)->component_class != "macro")
         if ((*it)->module)

@@ -72,10 +72,10 @@ void vsxu_assistant::i_draw()
       inspected = a_focus;
       if (course.size())
       course.clear();
-      std::vector <vsx_string<> > parts;
+      vsx_nw_vector<vsx_string<> > parts;
       vsx_string<>deli = "|||";
       if (inspected->help_text != "") {
-        explode(inspected->help_text,deli,parts);
+        explode(inspected->help_text, deli, parts);
         for (unsigned int i = 0; i < parts.size(); ++i) {
           course.push_back(parts[i]);
         }
