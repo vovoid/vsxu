@@ -31,6 +31,7 @@
 #include <wchar.h>
 #include <tools/vsx_foreach.h>
 #include <vsx_engine_dllimport.h>
+#include <iomanip>
 
  
 template<typename W = char> // wchar_t
@@ -269,6 +270,13 @@ public:
     data.push_back(ss);
     return *this;
   }
+
+  inline vsx_string<W>& operator=(vsx_string<W>&& other) VSX_ALWAYS_INLINE
+  {
+    data = std::move(other.data);
+    return *this;
+  }
+
 
   inline const vsx_string<W>operator+(const W& right) const VSX_ALWAYS_INLINE
   {

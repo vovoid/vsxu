@@ -15,7 +15,7 @@ namespace vsx_vector3_helper
   inline vsx_vector3<T> from_string(vsx_string<>&val) VSX_ALWAYS_INLINE
   {
     vsx_vector3<T> res;
-    vsx_string<>deli = ",";
+    vsx_string<> deli = ",";
     vsx_nw_vector< vsx_string<> > pp;
     explode(val,deli,pp);
     if (pp.size() >= 1)

@@ -26,6 +26,7 @@
 
 #include <vsx_platform.h>
 #include <map>
+#include <iomanip>
 #include <list>
 #include <vector>
 #include "vsxfst.h"
@@ -75,9 +76,9 @@ public:
   bool parsed;
   int owner; // for color-coding this command
   int type; // type of command
-  vsx_string<>title; // Title - for internal GUI stuff like menus and stuff
-  vsx_string<>cmd; // the first part of the command, the actual command
-  vsx_string<>cmd_data; // the second parameter (for simple commands)
+  vsx_string<> title; // Title - for internal GUI stuff like menus and stuff
+  vsx_string<> cmd; // the first part of the command, the actual command
+  vsx_string<> cmd_data; // the second parameter (for simple commands)
   vsx_nw_vector<char> cmd_data_bin; // the binary part of the command
   vsx_string<>raw; // the unparsed command, empty when binary command
   vsx_nw_vector< vsx_string<> > parts; // the parts of the command
@@ -136,19 +137,19 @@ public:
 template<class T>
 T* vsx_command_parse(vsx_string<>& cmd_raw, bool garbage_collect = false)
 {
-  vsx_nw_vector< vsx_string<> > cmdps;
-  T *t = new T;
+  vsx_nw_vector< vsx_string<> > command_parts;
+  T* t = new T;
   if (garbage_collect)
     t->gc();
 
   t->raw = cmd_raw;
-  vsx_string<>deli = " ";
-  explode(cmd_raw, deli, cmdps);
-  t->cmd = cmdps[0];
-  if (cmdps.size() > 1)
-    t->cmd_data = cmdps[1];
+  vsx_string<> deli = " ";
+  explode(cmd_raw, deli, command_parts);
+  t->cmd = command_parts[0];
+  if (command_parts.size() > 1)
+    t->cmd_data = command_parts[1];
 
-  t->parts = cmdps;
+  t->parts = std::move(command_parts);
   t->parsed = true;
   return t;
 }

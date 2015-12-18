@@ -511,15 +511,13 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
       vsx_nw_vector< vsx_string<> > parts;
       explode(t->parts[1], deli, parts);
       std::map<vsx_string<>,vsx_string<> > sort_map;
-      for (size_t i = 0; i < parts.size(); i++)
-      {
+      foreach(parts, i)
         sort_map[parts[i]] = parts[i];
-      }
+
       vsx_nw_vector< vsx_string<> > sorted_names;
       for (std::map<vsx_string<>,vsx_string<> >::iterator it = sort_map.begin(); it != sort_map.end(); it++)
-      {
         sorted_names.push_back((*it).second);
-      }
+
       deli = "\n";
       ((vsx_widget_sequence_tree*)sequence_list)->set_string(implode(sorted_names,deli));
     } else ((vsx_widget_sequence_tree*)sequence_list)->set_string("[none defined]");
@@ -532,7 +530,7 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
       vsx_nw_vector< vsx_string<> > parts;
       explode(t->parts[1], deli, parts);
       vsx_nw_vector< vsx_string<> > names;
-      for (size_t i = 0; i < parts.size(); i++)
+      foreach(parts, i)
       {
         vsx_string<>ideli = "#";
         vsx_nw_vector< vsx_string<> > iparts;

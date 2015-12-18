@@ -108,9 +108,6 @@ void vsx_widget_controller_color::command_process_back_queue(vsx_command_s *t) {
 
     set_value(vsx_string_helper::s2f(t->parts[3]));
 
-  //cout <<"got value: "<<t->parts[3]<<endl;}
-  //else if (t->cmd=="delete" && !owned) _delete();
-
   } else vsx_widget_controller_base::command_process_back_queue(t);
 }
 

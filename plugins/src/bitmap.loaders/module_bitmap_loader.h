@@ -103,6 +103,9 @@ public:
 
     reload_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reload");
     flip_vertical_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "flip_vertical");
+    cubemap_split_6_1_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "cubemap_split_6_1");
+    cubemap_sphere_map_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "cubemap_sphere_map");
+    cubemap_load_files_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "cubemap_load_files");
 
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP, "bitmap");
   }

@@ -189,30 +189,6 @@ int vsx_engine_param::connect(vsx_engine_param* src) {
   cinfo.dest = this;
   cinfo.channel_connection = channel_connection;
   return connect_far_abs(&cinfo,-2);
-/*  // 2. create a connection and add it to our list
-    vsx_engine_param_connection* engine_conn = new vsx_engine_param_connection;
-    // push the connection on both source and dest for traversing later
-    src->connections.push_back(engine_conn);
-    connections.push_back(engine_conn);
-    // set the channel's connection to our connection for cross reference
-    channel_connection->engine_connection = engine_conn;
-
-    // MEKKARA BEEEEAMU!!!
-    engine_conn->src = src;
-    engine_conn->dest = this;
-    engine_conn->connection_order = real_dest_param->channel->connections.size()-1; // as new connections are always added in the end we can do this :>
-    engine_conn->owner = this;
-    engine_conn->alias_connection = false;
-    engine_conn->channel_connection = channel_connection;
-
-    std::vector<int> new_channel_order;
-    alias_owner->rebuild_orders(&new_channel_order);
-    // 3. tell channel to rebuild with new list
-    alias_owner->channel->connections_order(&new_channel_order);
-
-
-  return connections.size()-1;//engine_conn->connection_order;
-  */
 }
 
 vsx_engine_param* vsx_engine_param::alias_to_level(vsx_engine_param* dest) {
@@ -297,7 +273,7 @@ int vsx_engine_param::connect_far_abs(vsx_engine_param_connection_info* info,int
     src_name = implode(src_name_parts,deli, 0, 1);
 
 
-    if (dest_name_parts.size() == 0) {
+    if (dest_name_parts.size() == 1) {
       // check if we can make a clean connection to the src
       // if not, ask src to build to this level.
       vsx_engine_param* new_source = info->src;
@@ -341,6 +317,7 @@ int vsx_engine_param::connect_far_abs(vsx_engine_param_connection_info* info,int
           if (it == connections.end()) drun = false;
         }
       }
+
       if (our_alias) {
         // alias already exists, send our request further down the chain
         int neworder;
@@ -359,7 +336,7 @@ int vsx_engine_param::connect_far_abs(vsx_engine_param_connection_info* info,int
         our_alias->dest->connect_far_abs(info,neworder,this);
       } else {
         // we need to create this alias
-        vsx_string<>new_name = owner->component->parent->get_params_in()->alias_get_unique_name("alias_"+name);
+        vsx_string<> new_name = owner->component->parent->get_params_in()->alias_get_unique_name("alias_"+name);
         // we're the first iteration here
         if (order == -1) {
           owner->component->parent->get_params_in()->alias(this,new_name,-1);
@@ -844,7 +821,7 @@ vsx_string<>vsx_engine_param::get_string()
       if (!tex)
         return "";
 
-      return
+      vsx_string<> ret =
         "Pointer: 0x" + vsx_string_helper::i2x((uint64_t)tex) + "\n" +
         "GL:\n"
         "  id: " + vsx_string_helper::i2s(tex->texture->gl_id) + "\n"
@@ -858,6 +835,9 @@ vsx_string<>vsx_engine_param::get_string()
         "  hint:\n"
         "    mipmaps: " + vsx_string_helper::i2s((tex->texture->hint & vsx_texture_gl::generate_mipmaps_hint) > 0) + "\n"
         "    linear_interpolate: " + vsx_string_helper::i2s((tex->texture->hint & vsx_texture_gl::linear_interpolate_hint) > 0) + "\n"
+      ;
+      if (tex->texture->bitmap)
+        ret +=
         "  bitmap:\n"
         "    filename: " + tex->texture->bitmap->filename + "\n"
         "    timestamp: " + vsx_string_helper::i2s(tex->texture->bitmap->timestamp) + "\n"
@@ -884,6 +864,7 @@ vsx_string<>vsx_engine_param::get_string()
         "    attached_to_cache: " + vsx_string_helper::i2s(tex->texture->bitmap->attached_to_cache) + "\n"
         "    references: " + vsx_string_helper::i2s(tex->texture->bitmap->references) + "\n"
       ;
+      return ret;
     }
     case VSX_MODULE_PARAM_ID_MESH:
     {

@@ -5,6 +5,7 @@
 #include <map>
 #include <list>
 #include <vector>
+#include <container/vsx_ma_vector.h>
 
 #include "vsx_command.h"
 #include <pthread.h>
@@ -37,9 +38,8 @@ class vsx_command_buffer_broker
   vsxf* filesystem = 0x0;
 
   int accept_commands = 1;  // 1 accepts, 0 won't accept
-  typename std::list <T*> commands; // results of commands
-  typename std::list <T*>::const_iterator iter;
-
+  vsx_nw_vector <T*> commands; // results of commands
+  size_t commands_iterator = 0;
   bool delete_commands_on_delete = false;
 
 public:
@@ -207,20 +207,19 @@ public:
 
     T* t = new T;
     t->type = tp;
-    t->title = title;
+    t->title = std::move(title);
     t->cmd = cmd;
-    t->cmd_data = cmd_data;
-    t->parts.push_back(cmd);
-    vsx_string<>deli = " ";
+    t->cmd_data = std::move(cmd_data);
+
+    t->parts.push_back_move(cmd);
+    vsx_string<> deli = " ";
     vsx_nw_vector< vsx_string<> > pp;
-    explode(cmd_data,deli,pp);
+    explode(t->cmd_data, deli, pp);
 
     for (size_t i = 0; i < pp.size(); ++i)
-    {
-      t->parts.push_back(pp[i]);
-    }
+      t->parts.push_back_move(pp[i]);
 
-    t->raw = cmd+" "+cmd_data;
+    t->raw = t->cmd+" "+t->cmd_data;
 
     commands.push_back(t);
   }
@@ -233,23 +232,21 @@ public:
 
   void clear_delete()
   {
-    for (typename std::list <T*>::iterator it = commands.begin(); it != commands.end(); it++)
-    {
-      delete (T*) (*it);
-    }
+    foreach(commands, i)
+      delete (T*) (commands[i]);
     commands.clear();
   }
 
   void garbage_collect()
   {
-    for (typename std::list <T*>::iterator it = commands.begin(); it != commands.end(); it++)
-      (*it)->gc();
+    foreach(commands, i)
+      commands[i]->gc();
   }
 
   void reset()
   {
     get_lock();
-      iter = commands.begin();
+      commands_iterator = 0;
     release_lock();
   }
 
@@ -258,23 +255,21 @@ public:
   // Thread safety: NO
   T* get_cur()
   {
-    if (iter != commands.end())
-      return *iter;
-
-    return 0;
+    req_v(commands.size(), 0x0);
+    req_v(commands_iterator != commands.size(), 0x0);
+    return commands[commands_iterator];
   }
 
   // gets the current command from internal iterator and advancing iterator
   // Thread safety: NO
   T* get()
   {
-    if (iter != commands.end())
-    {
-      T* h = *iter;
-      ++iter;
-      return h;
-    }
-    return 0;
+    req_v(commands.size(), 0x0);
+    req_v(commands_iterator != commands.size(), 0x0);
+
+    T* h = commands[commands_iterator];
+    ++commands_iterator;
+    return h;
   }
 
 
@@ -304,7 +299,7 @@ public:
     get_lock();
     if (commands.size())
     {
-        T *t = commands.front();
+        T* t = commands.front();
         commands.pop_front();
 
       release_lock();
@@ -383,15 +378,14 @@ public:
     if ((fp = filesystem->f_open(filename.c_str(), "w")) == NULL)
       return;
 
-    for (typename std::list <T*>::iterator it = commands.begin(); it != commands.end(); ++it)
-    {
+    foreach(commands, i)
       filesystem->f_puts(
         (
-          (*it)->raw + vsx_string<>("\n")
+          commands[i]->raw + vsx_string<>("\n")
         ).c_str(),
         fp
       );
-    }
+
     filesystem->f_close(fp);
   }
 
@@ -400,18 +394,18 @@ public:
   // Thread safety: NO
   void token_replace(vsx_string<>search, vsx_string<>replace)
   {
-    for (typename std::list <T*>::iterator it = commands.begin(); it != commands.end(); ++it)
+    foreach (commands, i)
     {
-      if ((*it)->parsed)
+      T& command = *commands[i];
+      if (command.parsed)
       {
-        for (size_t i = 0; i < (*it)->parts.size(); ++i)
-        {
-          (*it)->parts[i] = str_replace(search, replace, (*it)->parts[i]);
-        }
-        (*it)->raw = str_replace(search, replace, (*it)->raw);
+        foreach(command.parts, i)
+          command.parts[i].replace(search, replace);
+
+        command.raw.replace(search, replace);
         continue;
       }
-      (*it)->raw = str_replace(search, replace, (*it)->raw);
+      command.raw.replace(search, replace);
     }
   }
 
@@ -420,18 +414,14 @@ public:
   // Thread safety: NO
   void parse()
   {
-    for (typename std::list <T*>::iterator it = commands.begin(); it != commands.end(); ++it)
-    {
-      (*it)->parse();
-    }
+    foreach(commands, i)
+      commands[i]->parse();
   }
 
   void set_type(int new_type)
   {
-    for (typename std::list <T*>::iterator it = commands.begin(); it != commands.end(); ++it)
-    {
-      (*it)->type = new_type;
-    }
+    foreach(commands, i)
+      commands[i]->type = new_type;
   }
 
 

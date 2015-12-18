@@ -23,18 +23,24 @@
 #ifndef vsx_nw_vector_H
 #define vsx_nw_vector_H
 
+#include <stdlib.h>
+#include <string.h>
 #include <vsx_platform.h>
 #include <tools/vsx_req.h>
 #include <stdio.h>
+#include <iomanip>
+
+
+#include <wchar.h>
 
 template<class T>
 class vsx_nw_vector
 {
-  size_t allocated;
-  size_t used;
-  size_t allocation_increment;
-  size_t timestamp;
-  __attribute__((aligned(64))) T* A;
+  size_t allocated = 0;
+  size_t used = 0;
+  size_t allocation_increment = 1;
+  size_t timestamp = 0;
+  __attribute__((aligned(64))) T* A = 0;
 
 public:
 
@@ -68,18 +74,54 @@ public:
     return used;
   }
 
+  inline size_t push_back_move(T& val) VSX_ALWAYS_INLINE
+  {
+    (*this)[used] = std::move(val);
+    return used;
+  }
+
+  inline void push_front(T& val)
+  {
+    insert(0, val);
+  }
+
   inline void pop_back()
   {
     req(used);
     used--;
   }
 
-  inline size_t size() VSX_ALWAYS_INLINE
+  inline T pop_front()
+  {
+    if (!used)
+      return std::move(T());
+    T v = std::move(A[0]);
+    remove_index(0);
+    return v;
+  }
+
+  inline const T& front()
+  {
+    if (!used)
+      return std::move(T());
+
+    return A[0];
+  }
+
+  inline const T& back()
+  {
+    if (!used)
+      return std::move(T());
+
+    return A[used-1];
+  }
+
+  inline const size_t size() VSX_ALWAYS_INLINE
   {
     return used;
   }
 
-  inline bool has(T o)
+  inline const bool has(T o)
   {
     for (size_t i = 0; i < used; i++)
       if (A[i] == o)
@@ -132,8 +174,8 @@ public:
   inline void remove_index(size_t index)
   {
     req(index < used);
-    for (size_t i = index; i < used; i++)
-      A[i] = A[i+1];
+    for (size_t i = index; i < used-1; i++)
+      A[i] = std::move(A[i+1]);
     used--;
   }
 
@@ -142,9 +184,11 @@ public:
     req(index < used);
     allocate(used);
     for (size_t i = used; i > index; i--)
-      A[i] = A[i-1];
+      A[i] = std::move(A[i-1]);
     A[index] = value;
   }
+
+
 
   inline void allocate( size_t index ) VSX_ALWAYS_INLINE
   {
@@ -153,9 +197,12 @@ public:
       // need to allocate memory
       if (A)
       {
-        if (allocation_increment == 0) allocation_increment = 1;
+        if (allocation_increment == 0)
+          allocation_increment = 1;
+
         allocated = index+allocation_increment;
         T* B = new T[allocated];
+
         for (size_t i = 0; i < used; ++i)
           B[i] = A[i];
 
@@ -192,35 +239,70 @@ public:
     return A[index];
   }
 
-/*  inline const vsx_nw_vector<T>& operator=(const vsx_nw_vector<T>& src)
+  inline vsx_nw_vector<T>& operator=(vsx_nw_vector<T>&& other) VSX_ALWAYS_INLINE
   {
-    copy(src);
+    allocated = other.allocated;
+    used = other.used;
+    allocation_increment = other.allocation_increment;
+    timestamp = other.timestamp;
+    A = std::move(other.A);
+
+    other.allocated = 0;
+    other.used = 0;
+    other.allocation_increment = 1;
+    other.timestamp = 0;
+    other.A = 0x0;
     return *this;
   }
 
-  vsx_nw_vector<T>(const vsx_nw_vector<T>& src)
+  inline const vsx_nw_vector<T>& operator=(const vsx_nw_vector<T>& other) VSX_ALWAYS_INLINE
   {
-    copy(src);
+    allocate(other.allocated);
+    used = other.used;
+    timestamp = other.timestamp;
+    allocation_increment = other.allocation_increment;
+    for (size_t i = 0; i < used; i++)
+      A[i] = other.A[i];
+    return *this;
   }
-*/
+
+  vsx_nw_vector(const vsx_nw_vector<T>& other)
+  {
+    allocate(other.allocated);
+    allocated = other.allocated;
+    used = other.used;
+    allocation_increment = other.allocation_increment;
+    timestamp = other.timestamp;
+    for (size_t i = 0; i < used; i++)
+      A[i] = other.A[i];
+  }
+
+  vsx_nw_vector(const vsx_nw_vector<T>&& other)
+  {
+    allocate(other.allocated);
+    allocated = other.allocated;
+    used = other.used;
+    allocation_increment = other.allocation_increment;
+    timestamp = other.timestamp;
+    for (size_t i = 0; i < used; i++)
+      A[i] = std::move(other.A[i]);
+
+    other.allocated = 0;
+    other.used = 0;
+    other.allocation_increment = 1;
+    other.timestamp = 0;
+    other.A = 0x0;
+  }
 
   vsx_nw_vector()
-    :
-    allocated(0),
-    used(0),
-    allocation_increment(1),
-    timestamp(0),
-    A(0)
   {
   }
 
   ~vsx_nw_vector()
   {
-    if (A)
-    {
-      delete[] A;
-      A = 0x0; // valgrind
-    }
+    req(A);
+    delete[] A;
+    A = 0x0; // valgrind
   }
 };
 

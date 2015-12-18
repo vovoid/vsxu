@@ -293,9 +293,6 @@ void vsx_widget_ultra_chooser::event_mouse_down(vsx_widget_distance distance,vsx
         help_text = ((vsx_widget_server*)server)->build_comp_helptext(test->node->node->module_info->identifier);
         ++help_timestamp;
       }
-      vsx_nw_vector<vsx_string<> > parts;
-      vsx_string<>deli = ";";
-      explode(test->node->node->module_info->identifier,deli, parts);
       if (test->node->node->module_info->component_class == "state") {
         drag_module = false;
       } else

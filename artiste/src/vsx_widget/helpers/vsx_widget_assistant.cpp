@@ -76,9 +76,9 @@ void vsxu_assistant::i_draw()
       vsx_string<>deli = "|||";
       if (inspected->help_text != "") {
         explode(inspected->help_text, deli, parts);
-        for (unsigned int i = 0; i < parts.size(); ++i) {
+        foreach(parts, i)
           course.push_back(parts[i]);
-        }
+
       }
       ((vsx_widget_2d_pager*)pager)->set_max_page( course.size() );
       ((vsx_widget_2d_pager*)pager)->set_cur_page( 0 );

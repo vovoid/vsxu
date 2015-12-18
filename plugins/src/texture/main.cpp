@@ -140,6 +140,6 @@ unsigned long MOD_NM(vsx_engine_environment* environment) {
     #endif
   #endif
 
-  return 19;
+  return 17;
 }
 

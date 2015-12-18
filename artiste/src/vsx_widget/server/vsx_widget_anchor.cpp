@@ -358,12 +358,13 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
           explode(add_c[1],type_deli,type_info,2);
           tt = add(new vsx_widget_anchor,add_c[0]);
           if (type_info.size() == 2)
-          ((vsx_widget_anchor*)tt)->p_type_suffix = type_info[1];
+            ((vsx_widget_anchor*)tt)->p_type_suffix = type_info[1];
+
           ((vsx_widget_anchor*)tt)->p_type = type_info[0];
           if (!l_io)
-          tt->pos.x = -size.x*1.5*0.8;
+            tt->pos.x = -size.x*1.5*0.8;
           else
-          tt->pos.x = size.x*1.5*0.8;
+            tt->pos.x = size.x*1.5*0.8;
 
           //tt->pos.y = ypos;
           tt->size.x = size.x*0.5;
@@ -806,15 +807,13 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     {
       explode(display_value, deli, parts);
       if (parts.size() == 3)
-      {
         display_value = vsx_string_helper::f2s(vsx_string_helper::s2f(parts[0]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[1]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[2]),5);
-      }
     }
     if (p_type == "float4")
     {
       explode(display_value,deli, parts);
       if (parts.size() == 4)
-      display_value = vsx_string_helper::f2s(vsx_string_helper::s2f(parts[0]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[1]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[2]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[3]),5);
+        display_value = vsx_string_helper::f2s(vsx_string_helper::s2f(parts[0]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[1]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[2]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[3]),5);
     }
     if (p_type == "enum")
     {
@@ -1175,7 +1174,7 @@ void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widg
   src_name_parts.pop_back();
   src_name = implode(src_name_parts,deli);
 
-  if (dest_name_parts.size() == 0) 
+  if (dest_name_parts.size() == 0)
   {
     // check if we can make a clean connection to the src
     // if not, ask src to build to this level.
@@ -1540,7 +1539,7 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
       vsx_string<>deli = "|";
       vsx_nw_vector<vsx_string<> > enumerations;
       explode(parts[0],deli,enumerations);
-      for (unsigned long i = 0; i < enumerations.size(); ++i) 
+      foreach(enumerations, i)
       {
         menu_->commands.adds(VSX_COMMAND_MENU, enumerations[i],"enum",vsx_string_helper::i2s(i));
         enum_items.push_back(enumerations[i]);

@@ -196,13 +196,14 @@ public:
         if (macro) macro_name = tt->name+"."; else macro_name = "";
         if (tt->widget_type == VSX_WIDGET_TYPE_SERVER || macro) {
           drop_pos = l_distance.center;
+
           // split the identifier into the name
           vsx_nw_vector< vsx_string<> > parts;
-          vsx_string<>deli = ";";
+          vsx_string<> deli = ";";
           explode(i_mod_info[mod_i]->identifier, deli, parts);
-          vsx_string<>module_name = parts[parts.size()-1];
+          vsx_string<> module_name = parts[parts.size()-1];
           if (ctrl)
-          ((dialog_query_string*)name_dialog)->show(((vsx_widget_server*)server)->get_unique_name(module_name));
+            ((dialog_query_string*)name_dialog)->show(((vsx_widget_server*)server)->get_unique_name(module_name));
           else
           {
             command_q_b.add_raw("component_create_name "+((vsx_widget_server*)server)->get_unique_name(module_name));
