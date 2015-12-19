@@ -8,6 +8,8 @@ project (${module_id})
 
 message("configuring vsxu module            " ${module_id})
 
+find_package(Freetype REQUIRED)
+
 # set defines for MOD_CM, MOD_DM, MOD_NM
 CREATE_STATIC_GLUE(${module_id})
 
@@ -21,7 +23,7 @@ if(WIN32)
 endif(WIN32)
 
 if(UNIX)
-  include_directories(/usr/include/freetype2)
+  include_directories(${FREETYPE_INCLUDE_DIRS})
 endif(UNIX)
 
 # include common
