@@ -196,16 +196,16 @@ vsx_engine_param* vsx_engine_param::alias_to_level(vsx_engine_param* dest) {
   if (owner->io == 1) {
     vsx_string<>src_name = owner->component->name;
     vsx_string<>dest_name = dest->owner->component->name;
-    str_remove_equal_prefix(&src_name, &dest_name,".");
+    vsx_string_helper::str_remove_equal_prefix(src_name, dest_name,".");
 
     vsx_string<>deli = ".";
     vsx_nw_vector <vsx_string<> > dest_name_parts;
-    explode(dest_name, deli, dest_name_parts);
-    dest_name = implode(dest_name_parts, deli, 0, 1);
+    vsx_string_helper::explode(dest_name, deli, dest_name_parts);
+    dest_name = vsx_string_helper::implode(dest_name_parts, deli, 0, 1);
 
     vsx_nw_vector <vsx_string<> > src_name_parts;
-    explode(src_name,deli,src_name_parts);
-    dest_name = implode(src_name_parts, deli, 0, 1);
+    vsx_string_helper::explode(src_name,deli,src_name_parts);
+    dest_name = vsx_string_helper::implode(src_name_parts, deli, 0, 1);
 
     if (dest_name_parts.size() == 0) {
       if (src_name_parts.size() == 0) return this; else {
@@ -231,7 +231,7 @@ int vsx_engine_param::connect_far_abs(vsx_engine_param_connection_info* info,int
   if (owner->io == -1) {
     vsx_string<>src_name = info->src->owner->component->name;
     vsx_string<>dest_name = owner->component->name;
-    str_remove_equal_prefix(&src_name, &dest_name, ".");
+    vsx_string_helper::str_remove_equal_prefix(src_name, dest_name, ".");
     if (src_name == "" && info->src->alias) {
       info->src = info->src->alias_parent;
       return connect_far_abs(info,order);
@@ -265,12 +265,12 @@ int vsx_engine_param::connect_far_abs(vsx_engine_param_connection_info* info,int
 
     vsx_string<>deli = ".";
     vsx_nw_vector <vsx_string<> > dest_name_parts;
-    explode(dest_name,deli,dest_name_parts);
-    dest_name = implode(dest_name_parts,deli, 0, 1);
+    vsx_string_helper::explode(dest_name,deli,dest_name_parts);
+    dest_name = vsx_string_helper::implode(dest_name_parts,deli, 0, 1);
 
     vsx_nw_vector <vsx_string<> > src_name_parts;
-    explode(src_name,deli,src_name_parts);
-    src_name = implode(src_name_parts,deli, 0, 1);
+    vsx_string_helper::explode(src_name,deli,src_name_parts);
+    src_name = vsx_string_helper::implode(src_name_parts,deli, 0, 1);
 
 
     if (dest_name_parts.size() == 1) {
@@ -460,13 +460,14 @@ void vsx_engine_param::dump_aliases(vsx_string<>base_macro, vsx_command_list* co
       //   param_alias [p_def] [-1=in / 1=out] [component] [parameter] [source_component] [source_parameter]
 
       (*it)->dest->dump_aliases(base_macro, command_result);
-      command_result->add_raw("param_alias "+
-      (*it)->dest->name+":"+(*it)->dest->spec+" "+
-      vsx_string_helper::i2s(owner->io)+" "+
-      str_replace(base_macro,"$$name",str_replace(base_macro+".","$$name.",(*it)->dest->owner->component->name,1,0),1,0)+" "+
-      (*it)->dest->name+" "+
-      str_replace(base_macro,"$$name",str_replace(base_macro+".","$$name.",(*it)->src->owner->component->name,1,0),1,0)+" "+
-      (*it)->src->name
+      command_result->add_raw(
+        "param_alias "+
+        (*it)->dest->name+":"+(*it)->dest->spec+" "+
+        vsx_string_helper::i2s(owner->io)+" "+
+        vsx_string_helper::str_replace<char>(base_macro,"$$name",vsx_string_helper::str_replace<char>(base_macro+".","$$name.",(*it)->dest->owner->component->name,1,0),1,0)+" "+
+        (*it)->dest->name+" "+
+        vsx_string_helper::str_replace<char>(base_macro,"$$name",vsx_string_helper::str_replace<char>(base_macro+".","$$name.",(*it)->src->owner->component->name,1,0),1,0)+" "+
+        (*it)->src->name
       );
     }
   }
@@ -503,9 +504,9 @@ void vsx_engine_param::dump_aliases_and_connections(vsx_string<>base_macro, vsx_
       command_result->add_raw("param_alias "+
       (*it)->dest->name+":"+(*it)->dest->spec+" "+
       vsx_string_helper::i2s(owner->io)+" "+
-      str_replace(base_macro,"$$name",str_replace(base_macro+".","$$name.",(*it)->dest->owner->component->name,1,0),1,0)+" "+
+      vsx_string_helper::str_replace<char>(base_macro,"$$name",vsx_string_helper::str_replace<char>(base_macro+".","$$name.",(*it)->dest->owner->component->name,1,0),1,0)+" "+
       (*it)->dest->name+" "+
-      str_replace(base_macro,"$$name",str_replace(base_macro+".","$$name.",(*it)->src->owner->component->name,1,0),1,0)+" "+
+      vsx_string_helper::str_replace<char>(base_macro,"$$name",vsx_string_helper::str_replace<char>(base_macro+".","$$name.",(*it)->src->owner->component->name,1,0),1,0)+" "+
       (*it)->src->name
       );
     } else
@@ -517,9 +518,9 @@ void vsx_engine_param::dump_aliases_and_connections(vsx_string<>base_macro, vsx_
       //       0            1          2          3          4
       //  param_connect [in-comp] [in-param] [out-comp] [out-param]
       command_result->add_raw("param_connect "+
-      str_replace(base_macro,"$$name",str_replace(base_macro+".","$$name.",(*it)->dest->owner->component->name,1,0),1,0)+" "+
+      vsx_string_helper::str_replace<char>(base_macro,"$$name",vsx_string_helper::str_replace<char>(base_macro+".","$$name.",(*it)->dest->owner->component->name,1,0),1,0)+" "+
       (*it)->dest->name+" "+
-      str_replace(base_macro,"$$name",str_replace(base_macro+".","$$name.",(*it)->src->owner->component->name,1,0),1,0)+" "+
+      vsx_string_helper::str_replace<char>(base_macro,"$$name",vsx_string_helper::str_replace<char>(base_macro+".","$$name.",(*it)->src->owner->component->name,1,0),1,0)+" "+
       (*it)->src->name
       );
     }
@@ -572,9 +573,9 @@ void vsx_engine_param::dump_connections(vsx_string<>base_macro, vsx_command_list
       //       0            1          2          3          4
       //  param_connect [in-comp] [in-param] [out-comp] [out-param]
       command_result->add_raw("param_connect "+
-      str_replace(base_macro,"$$name",str_replace(base_macro+".","$$name.",(*it)->dest->owner->component->name,1,0),1,0)+" "+
+      vsx_string_helper::str_replace<char>(base_macro,"$$name",vsx_string_helper::str_replace<char>(base_macro+".","$$name.",(*it)->dest->owner->component->name,1,0),1,0)+" "+
       (*it)->dest->name+" "+
-      str_replace(base_macro,"$$name",str_replace(base_macro+".","$$name.",(*it)->src->owner->component->name,1,0),1,0)+" "+
+      vsx_string_helper::str_replace<char>(base_macro,"$$name",vsx_string_helper::str_replace<char>(base_macro+".","$$name.",(*it)->src->owner->component->name,1,0),1,0)+" "+
       (*it)->src->name
       );
     }
@@ -960,7 +961,7 @@ void vsx_engine_param::set_string(vsx_string<>data)
   }
   vsx_string<>deli = ",";
   vsx_nw_vector <vsx_string<> > data_parts;
-  explode(data,deli,data_parts);
+  vsx_string_helper::explode(data,deli,data_parts);
   for (size_t i = 0; i < data_parts.size(); i++)
     set_string_index(data_parts[i],i);
 }
@@ -1004,7 +1005,7 @@ void vsx_engine_param::set_string_index(vsx_string<>data, int index) {
     }
     case VSX_MODULE_PARAM_ID_RESOURCE: {
       ((vsx_module_param_resource*)module_param)->check_free();
-      data = str_replace("//", "/", data);
+      data = vsx_string_helper::str_replace<char>("//", "/", data);
       ((vsx_module_param_resource*)module_param)->param_data[0] = data;
       return;
     }
@@ -1027,7 +1028,7 @@ void vsx_engine_param::set_string_index(vsx_string<>data, int index) {
 
       vsx_string<>deli = ";";
       vsx_nw_vector< vsx_string<> > parts;
-      explode(data,deli,parts);
+      vsx_string_helper::explode(data,deli,parts);
       ((vsx_module_param_float_array*)module_param)->param_data[0].data->clear();
       for (unsigned long i = 0; i < parts.size(); ++i) {
         (*((vsx_module_param_float_array*)module_param)->param_data[0].data).push_back(vsx_string_helper::s2f(parts[i]));
@@ -1354,7 +1355,7 @@ int vsx_engine_param_list::order(vsx_string<>param, vsx_string<>new_order)
   vsx_string<>deli = ",";
   std::vector<int> order_list;
   vsx_nw_vector <vsx_string<> > order_source;
-  explode(new_order, deli, order_source);
+  vsx_string_helper::explode(new_order, deli, order_source);
 
   // 1. Re-order our own little connection list
   std::vector<vsx_engine_param_connection*> new_connection_list;
@@ -1433,11 +1434,11 @@ vsx_string<>vsx_engine_param_list::single_param_spec(vsx_string<>param_name, int
           {
             vsx_nw_vector <vsx_string<> > plist;
             vsx_string<>deli = ":";
-            explode(res, deli, plist,2);
+            vsx_string_helper::explode(res, deli, plist,2);
             deli = "[";
             vsx_nw_vector<vsx_string<> > plist2;
 
-            explode(plist[1], deli, plist2);
+            vsx_string_helper::explode(plist[1], deli, plist2);
             if (plist2[0] == "complex")
             return single_param_spec(param_name, spos);
             else

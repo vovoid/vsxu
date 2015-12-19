@@ -83,7 +83,27 @@ if (cmd == "get_list")
 
   for (std::list< vsx_string<> >::iterator it = file_list.begin(); it != file_list.end(); ++it)
   {
-    vsx_string<>s2 = str_replace(str_replace("/",";",path)+";","",str_replace(" ",":20:",str_replace("/",";",str_replace(path,"",*it))));
+    vsx_string<>s2 = vsx_string_helper::str_replace<char>(
+      vsx_string_helper::str_replace<char>(
+        "/",
+        ";",
+        path
+      )+";",
+      "",
+      vsx_string_helper::str_replace<char>(
+        " ",
+        ":20:",
+        vsx_string_helper::str_replace<char>(
+          "/",
+          ";",
+          vsx_string_helper::str_replace<char>(
+            path,
+            "",
+            *it
+            )
+          )
+        )
+      );
     cmd_out->add_raw(c->parts[1]+"_list "+s2, VSX_COMMAND_GARBAGE_COLLECT);
   }
 

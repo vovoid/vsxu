@@ -286,7 +286,7 @@ vsx_string<>vsx_param_sequence::dump()
     ml.push_back(vsx_string_helper::f2s((*it).total_length)+";"+vsx_string_helper::i2s((*it).interpolation)+";"+vsx_string_helper::base64_encode((*it).get_value()));
 
   vsx_string<>deli = "|";
-  res = implode(ml, deli);
+  res = vsx_string_helper::implode(ml, deli);
   return res;
 }
 
@@ -296,12 +296,12 @@ void vsx_param_sequence::inject(vsx_string<>ij)
   items.clear();
   vsx_string<>deli = "|";
   vsx_nw_vector< vsx_string<> > pl;
-  explode(ij, deli, pl);
+  vsx_string_helper::explode(ij, deli, pl);
   foreach(pl, i)
   {
     vsx_nw_vector <vsx_string<> > pld;
     vsx_string<>pdeli = ";";
-    explode(pl[i], pdeli, pld);
+    vsx_string_helper::explode(pl[i], pdeli, pld);
     vsx_param_sequence_item pa;
     pa.total_length = vsx_string_helper::s2f(pld[0]);
     pa.interpolation = vsx_string_helper::s2i(pld[1]);
@@ -312,7 +312,7 @@ void vsx_param_sequence::inject(vsx_string<>ij)
       vsx_nw_vector <vsx_string<> > pld_l;
       vsx_string<>pdeli_l = ":";
       vsx_string<>vtemp = vsx_string_helper::base64_decode(pld[2]);
-      explode(vtemp,pdeli_l,pld_l);
+      vsx_string_helper::explode(vtemp,pdeli_l,pld_l);
       pa.value = pld_l[0];
       pa.handle1 = vsx_vector3_helper::from_string<float>(pld_l[1]);
       pa.handle2 = vsx_vector3_helper::from_string<float>(pld_l[2]);
@@ -447,7 +447,7 @@ void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_
     vsx_nw_vector <vsx_string<> > pld_l;
     vsx_string<> pdeli_l = ":";
     vsx_string<> vtemp = vsx_string_helper::base64_decode(cmd_in->parts[4]);
-    explode(vtemp,pdeli_l,pld_l);
+    vsx_string_helper::explode(vtemp,pdeli_l,pld_l);
     pa.value = pld_l[0];
     pa.handle1 = vsx_vector3_helper::from_string<float>(pld_l[1]);
     pa.handle2 = vsx_vector3_helper::from_string<float>(pld_l[2]);
@@ -493,7 +493,7 @@ void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_
       vsx_nw_vector<vsx_string<> > pld_l;
       vsx_string<>pdeli_l = ":";
       vsx_string<>vtemp = vsx_string_helper::base64_decode(cmd_in->parts[4]);
-      explode(vtemp,pdeli_l,pld_l);
+      vsx_string_helper::explode(vtemp,pdeli_l,pld_l);
       pa.value = pld_l[0];
       pa.handle1 = vsx_vector3_helper::from_string<float>(pld_l[1]);
       pa.handle2 = vsx_vector3_helper::from_string<float>(pld_l[2]);

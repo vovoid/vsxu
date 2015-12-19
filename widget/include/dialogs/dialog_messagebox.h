@@ -86,7 +86,7 @@ public:
     std::vector<vsx_widget*> labels;
     vsx_nw_vector< vsx_string<> > lines;
     vsx_string<> deli = "|";
-    explode(hint,deli,lines);
+    vsx_string_helper::explode(hint,deli,lines);
     for (unsigned long i = 0; i < lines.size(); i++) {
       vsx_widget* b = add(new vsx_widget_2d_label,"");
       labels.push_back(b);

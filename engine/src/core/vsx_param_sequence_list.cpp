@@ -141,7 +141,7 @@ vsx_string<>vsx_param_sequence_list::get_sequence_list_dump()
     seq.push_back((*it)->comp->name+"#"+(*it)->param->name+"#"+(*it)->dump());
   }
   vsx_string<>deli = "&";
-  return implode(seq,deli);
+  return vsx_string_helper::implode(seq,deli);
 }
 
 vsx_string<>vsx_param_sequence_list::get_channel_names()
@@ -156,7 +156,7 @@ vsx_string<>vsx_param_sequence_list::get_channel_names()
     seq.push_back( (*it).first+":[master]");
   }
   vsx_string<>deli = "&";
-  return implode(seq,deli);
+  return vsx_string_helper::implode(seq,deli);
 }
 
 

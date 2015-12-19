@@ -311,7 +311,7 @@ vsx_string<>vsx_master_sequence_channel::dump()
     i++;
   }
   vsx_string<>deli = "|";
-  res = implode(ml, deli);
+  res = vsx_string_helper::implode(ml, deli);
   return res;
 }
 
@@ -323,12 +323,12 @@ void vsx_master_sequence_channel::inject(vsx_string<>inject_string)
   items.clear();
   vsx_string<>deli = "|";
   vsx_nw_vector< vsx_string<> > parts;
-  explode(inject_string, deli, parts);
+  vsx_string_helper::explode(inject_string, deli, parts);
   for (size_t i = 0; i < parts.size(); i++)
   {
     vsx_string<>ideli = ";";
     vsx_nw_vector< vsx_string<> > iparts;
-    explode(parts[i], ideli, iparts);
+    vsx_string_helper::explode(parts[i], ideli, iparts);
     // 0 = total_length, 1 = internal_length, 2 = pool_name, 3 = time_sequence_data
     vsx_sequence_master_channel_item* pa = new vsx_sequence_master_channel_item;
     pa->total_length = vsx_string_helper::s2f(iparts[0]);

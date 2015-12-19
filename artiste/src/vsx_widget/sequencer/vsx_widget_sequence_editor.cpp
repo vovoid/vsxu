@@ -309,7 +309,7 @@ void vsx_widget_sequence_editor::toggle_channel_visible(vsx_string<>name) {
     // we need to get this from the engine again
     vsx_string<>deli = ":";
     vsx_nw_vector< vsx_string<> > parts;
-    explode(name,deli,parts);
+    vsx_string_helper::explode(name,deli,parts);
     if (parts.size())
     {
       if (parts[1] == "[master]")
@@ -469,7 +469,7 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
     {
       vsx_string<>deli = ":";
       vsx_nw_vector<vsx_string<> > parts;
-      explode(t->parts[2],deli, parts);
+      vsx_string_helper::explode(t->parts[2],deli, parts);
       if (parts[1] == "[master]")
       {
         backwards_message("mseq_channel remove " + parts[0] );
@@ -509,7 +509,7 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
     {
       vsx_string<>deli = "&";
       vsx_nw_vector< vsx_string<> > parts;
-      explode(t->parts[1], deli, parts);
+      vsx_string_helper::explode(t->parts[1], deli, parts);
       std::map<vsx_string<>,vsx_string<> > sort_map;
       foreach(parts, i)
         sort_map[parts[i]] = parts[i];
@@ -519,7 +519,7 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
         sorted_names.push_back((*it).second);
 
       deli = "\n";
-      ((vsx_widget_sequence_tree*)sequence_list)->set_string(implode(sorted_names,deli));
+      ((vsx_widget_sequence_tree*)sequence_list)->set_string(vsx_string_helper::implode(sorted_names,deli));
     } else ((vsx_widget_sequence_tree*)sequence_list)->set_string("[none defined]");
   } else
   // sequence list operations
@@ -528,20 +528,20 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
     {
       vsx_string<>deli = "&";
       vsx_nw_vector< vsx_string<> > parts;
-      explode(t->parts[1], deli, parts);
+      vsx_string_helper::explode(t->parts[1], deli, parts);
       vsx_nw_vector< vsx_string<> > names;
       foreach(parts, i)
       {
         vsx_string<>ideli = "#";
         vsx_nw_vector< vsx_string<> > iparts;
-        explode(parts[i], ideli, iparts);
+        vsx_string_helper::explode(parts[i], ideli, iparts);
         // 0 = comp name
         // 1 = param name
         // 2 = sequence
         names.push_back(iparts[0]+":"+iparts[1]);
       }
       deli = "\n";
-      ((vsx_widget_sequence_tree*)sequence_list)->set_string(implode(names,deli));
+      ((vsx_widget_sequence_tree*)sequence_list)->set_string(vsx_string_helper::implode(names,deli));
     }
   } else
 

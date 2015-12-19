@@ -97,7 +97,7 @@ void vsx_command_s::parse() {
   if (raw == "") raw = cmd+" "+cmd_data;
   vsx_nw_vector< vsx_string<> > cmdps;
   vsx_string<>deli = " ";
-  explode(raw, deli, cmdps);
+  vsx_string_helper::explode(raw, deli, cmdps);
   cmd = cmdps[0];
   if (cmdps.size() > 1)
   {

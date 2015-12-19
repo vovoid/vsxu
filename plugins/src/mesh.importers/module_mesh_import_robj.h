@@ -78,7 +78,7 @@ public:
 
     param_updates = 0;
 
-    if (!verify_filesuffix(filename->get(),"robj"))
+    if (!vsx_string_helper::verify_filesuffix(filename->get(),"robj"))
     {
       filename->set(current_filename);
       message = "module||ERROR! This is not a ROBJ mesh file!";
@@ -123,7 +123,7 @@ public:
 
         vsx_nw_vector< vsx_string<> > parts;
         vsx_string<>deli = " ";
-        explode(line, deli, parts);
+        vsx_string_helper::explode(line, deli, parts);
         if (parts[0] == "v") {
           vertices.push_back(vsx_vector3<>(vsx_string_helper::s2f(parts[1]),vsx_string_helper::s2f(parts[2]),vsx_string_helper::s2f(parts[3])));
         } else
@@ -157,11 +157,11 @@ public:
 
 
             vsx_nw_vector< vsx_string<> > parts2;
-            explode(parts[1], deli2, parts2);
+            vsx_string_helper::explode(parts[1], deli2, parts2);
             vsx_nw_vector< vsx_string<> > parts3;
-            explode(parts[2], deli2, parts3);
+            vsx_string_helper::explode(parts[2], deli2, parts3);
             vsx_nw_vector< vsx_string<> > parts4;
-            explode(parts[3], deli2, parts4);
+            vsx_string_helper::explode(parts[3], deli2, parts4);
 
             ff.c = face_cur;
             ff.b = face_cur+1;
@@ -253,7 +253,7 @@ public:
         {
           vsx_nw_vector< vsx_string<> > parts;
           vsx_string<>deli = " ";
-          explode(line, deli, parts);
+          vsx_string_helper::explode(line, deli, parts);
           if (parts[0] == "v")
           {
             mesh->data->vertices.push_back(vsx_vector3<>(vsx_string_helper::s2f(parts[1]),vsx_string_helper::s2f(parts[2]),vsx_string_helper::s2f(parts[3])));
@@ -264,11 +264,11 @@ public:
               vsx_string<>deli2 = "/";
 
               vsx_nw_vector< vsx_string<> > parts2;
-              explode(parts[1], deli2, parts2);
+              vsx_string_helper::explode(parts[1], deli2, parts2);
               vsx_nw_vector< vsx_string<> > parts3;
-              explode(parts[2], deli2, parts3);
+              vsx_string_helper::explode(parts[2], deli2, parts3);
               vsx_nw_vector< vsx_string<> > parts4;
-              explode(parts[3], deli2, parts4);
+              vsx_string_helper::explode(parts[3], deli2, parts4);
 
               ff.c = vsx_string_helper::s2i(parts2[0])-1;
               ff.b = vsx_string_helper::s2i(parts3[0])-1;

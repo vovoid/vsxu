@@ -64,7 +64,7 @@ public:
       }
     }
     vsx_string<> i("|");
-    vsx_string<> ress = implode(res, i);
+    vsx_string<> ress = vsx_string_helper::implode(res, i);
     vsx_string<> cmd = name+" "+first_res;
 
     if (ress.size())
@@ -129,7 +129,7 @@ public:
     {
       vsx_nw_vector< vsx_string<> > f_parts;
       vsx_string<>deli = "|";
-      explode(in_fields, deli, f_parts);
+      vsx_string_helper::explode(in_fields, deli, f_parts);
       if (f_parts.size() == 0) f_parts.push_back("");
       set_size(vsx_vector3<>(0.45f, 0.10f+(float)(f_parts.size())*0.04f));
       float yp = target_size.y - 0.04f-0.02f;

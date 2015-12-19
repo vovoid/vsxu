@@ -181,8 +181,8 @@ GLint gl_get_program_val(GLuint object, GLenum pname) {
         vp = vp + parts[i];
         vsx_nw_vector< vsx_string<> > pp;
         vsx_string<>deli = ',';
-        vp = str_replace(";","",vp);
-        explode(vp,deli,pp);
+        vp = vsx_string_helper::str_replace(";","",vp);
+        vsx_string_helper::explode(vp,deli,pp);
         if (pp.size()) {
           for (unsigned long j = 0; j < pp.size(); ++j) {
             attributes[pp[j]] = vtype;
@@ -204,8 +204,8 @@ GLint gl_get_program_val(GLuint object, GLenum pname) {
         vp = vp + parts[i];
         vsx_nw_vector< vsx_string<> > pp;
         vsx_string<>deli = ',';
-        vp = str_replace(";","",vp);
-        explode(vp,deli,pp);
+        vp = vsx_string_helper::str_replace(";","",vp);
+        vsx_string_helper::explode(vp,deli,pp);
         if (pp.size()) {
           for (unsigned long j = 0; j < pp.size(); ++j) {
             vars[pp[j]] = vtype;

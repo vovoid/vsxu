@@ -418,7 +418,22 @@ void load_desktop_a(vsx_string<>state_name)
   // connect server widget to command lists
   ((vsx_widget_server*)desktop->find("desktop_local"))->cmd_in = &internal_cmd_out;
   ((vsx_widget_server*)desktop->find("desktop_local"))->cmd_out = &internal_cmd_in;
-  if (state_name != "") ((vsx_widget_server*)desktop->find("desktop_local"))->state_name = str_replace("/",";",str_replace("//",";",str_replace("_states/","",state_name)));
+  if (state_name != "")
+    ((vsx_widget_server*)desktop->find("desktop_local"))->state_name =
+      vsx_string_helper::str_replace<char>
+      (
+        "/",
+        ";",
+        vsx_string_helper::str_replace<char>(
+          "//",
+          ";",
+          vsx_string_helper::str_replace<char>(
+            "_states/",
+            "",
+            state_name
+          )
+        )
+      );
   internal_cmd_out.add_raw(vsx_string<>("vsxu_welcome ")+vsx_string<>(vsxu_ver)+" 0", true);
   desktop->system_command_queue = &system_command_queue;
   vsx_widget* t_viewer = desktop->find("vsxu_preview");

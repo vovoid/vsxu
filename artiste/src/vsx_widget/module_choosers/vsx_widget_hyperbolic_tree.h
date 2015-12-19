@@ -714,14 +714,14 @@ public:
         if (this == root) return draw_root->findNode(designator);
         vsx_nw_vector <vsx_string<> > add_c;
         vsx_string<>deli = ";";
-        explode(designator,deli,add_c,-1);
+        vsx_string_helper::explode(designator,deli,add_c,-1);
         vsx_string<>search = add_c[0];
         for (std::vector<vsx_widget_hyperbolic_tree*>::iterator it = i_children.begin(); it != i_children.end(); ++it) {
           if ((*it)->node->node->getName() == search) {
             if (add_c.size() > 1) {
               add_c.remove_index(0);
               vsx_string<> semicolon(";");
-              vsx_string<>new_add_name = implode(add_c, semicolon);
+              vsx_string<>new_add_name = vsx_string_helper::implode(add_c, semicolon);
               return (*it)->findNode(new_add_name);
             } else {
               return *it;

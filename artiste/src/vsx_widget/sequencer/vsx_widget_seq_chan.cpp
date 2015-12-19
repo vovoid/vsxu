@@ -140,7 +140,7 @@ void vsx_widget_seq_channel::send_parent_dump()
   if (parts.size())
   {
     vsx_string<>deli = "|";
-    command_q_b.add_raw("update " + name + " " + implode(parts, deli));
+    command_q_b.add_raw("update " + name + " " + vsx_string_helper::implode(parts, deli));
     parent->vsx_command_queue_b(this);
   }
 }
@@ -228,7 +228,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
       vsx_nw_vector< vsx_string<> > parts;
       vsx_string<>deli = ",";
       vsx_string<>value = items[item_iterator].get_value();
-      explode(value, deli, parts);
+      vsx_string_helper::explode(value, deli, parts);
       // go through the parameter tuple to check if a value box has been hit
       for (int i = 0; i < index_count; ++i)
       {
@@ -987,10 +987,10 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
           vsx_nw_vector< vsx_string<> > parts;
           vsx_string<>deli = ",";
           vsx_string<>value = items[mouse_clicked_id].get_value();
-          explode(value, deli, parts);
+          vsx_string_helper::explode(value, deli, parts);
           parts[index_hit] = vsx_string_helper::f2s(y);
 
-          vsx_string<>t = implode(parts, deli);
+          vsx_string<>t = vsx_string_helper::implode(parts, deli);
           vsx_quaternion<> q;
           q = vsx_quaternion_helper::from_string<float>(t);
           q.normalize();
@@ -999,7 +999,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
           parts[2] = vsx_string_helper::f2s(q.z);
           parts[3] = vsx_string_helper::f2s(q.w);
 
-          items[mouse_clicked_id].set_value( implode(parts, deli) );
+          items[mouse_clicked_id].set_value( vsx_string_helper::implode(parts, deli) );
         }
 
         if (param_type == VSX_MODULE_PARAM_ID_FLOAT || param_type == VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE)
@@ -1318,12 +1318,12 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
       }
 
       vsx_nw_vector<vsx_string<> > pl;
-      explode(t->parts[4], deli, pl);
+      vsx_string_helper::explode(t->parts[4], deli, pl);
       foreach (pl, i)
       {
         vsx_nw_vector<vsx_string<> > pld;
         vsx_string<>pdeli = ";";
-        explode(pl[i], pdeli, pld);
+        vsx_string_helper::explode(pl[i], pdeli, pld);
         vsx_widget_param_sequence_item pa;
         if (pld.size() < 2)
           continue;
@@ -1333,7 +1333,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
           vsx_nw_vector<vsx_string<> > pld_l;
           vsx_string<>pdeli_l = ":";
           vsx_string<>vtemp = vsx_string_helper::base64_decode(pld[2]);
-          explode(vtemp, pdeli_l, pld_l);
+          vsx_string_helper::explode(vtemp, pdeli_l, pld_l);
           pa.set_value( pld_l[0] );
           if (pld_l.size() == 1)
             VSX_ERROR_CONTINUE("Error, no handle information for value of interpolation type bezier");
@@ -1378,7 +1378,7 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
         vsx_nw_vector<vsx_string<> > pld_l;
         vsx_string<>pdeli_l = ":";
         vsx_string<>vtemp = vsx_string_helper::base64_decode(t->parts[4]);
-        explode(vtemp, pdeli_l, pld_l);
+        vsx_string_helper::explode(vtemp, pdeli_l, pld_l);
         pa.set_value( pld_l[0] );
         pa.set_handle1( vsx_vector3_helper::from_string<float>(pld_l[1]) );
         pa.set_handle2( vsx_vector3_helper::from_string<float>(pld_l[2]) );
@@ -1477,12 +1477,12 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
       {
         vsx_string<>deli = "|";
         vsx_nw_vector< vsx_string<> > pl;
-        explode(t->parts[3], deli, pl);
+        vsx_string_helper::explode(t->parts[3], deli, pl);
         foreach(pl, i)
         {
           vsx_nw_vector<vsx_string<> > pld;
           vsx_string<>pdeli = ";";
-          explode(pl[i], pdeli, pld);
+          vsx_string_helper::explode(pl[i], pdeli, pld);
           vsx_widget_param_sequence_item pa;
           pa.set_type( VSX_WIDGET_SEQ_CHANNEL_TYPE_MASTER );
           pa.set_total_length( vsx_string_helper::s2f(pld[0]) );

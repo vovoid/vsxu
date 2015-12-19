@@ -78,7 +78,7 @@ void extract()
   for (unsigned long i = 0; i < (*archive_files).size(); ++i)
   {
     vsx_string<>out_filename = (*archive_files)[i].filename;
-    vsx_string<>out_dir = get_path_from_filename(out_filename);
+    vsx_string<>out_dir = vsx_string_helper::path_from_filename(out_filename);
     vsx_string<>full_out_path = current_path + "/" + out_filename;
     vsx_string<>out_directory = current_path + "/" + out_dir;
 
@@ -150,7 +150,7 @@ void create()
   vsx_printf(L"filenames: %s\n", filenames.c_str());
 
   vsx_string<>deli = ":";
-  explode(filenames, deli, parts);
+  vsx_string_helper::explode(filenames, deli, parts);
 
   if (!parts.size())
     VSX_ERROR_EXIT("There seems to be no entries in the file list", 101);

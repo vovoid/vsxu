@@ -46,7 +46,7 @@ public:
   {
     if(filename_in->get() != current_filename)
     {
-      if (!verify_filesuffix(filename_in->get(),"vsx"))
+      if (!vsx_string_helper::verify_filesuffix(filename_in->get(),"vsx"))
       {
         message = "module||ERROR!! File not .vsx!";
         return;

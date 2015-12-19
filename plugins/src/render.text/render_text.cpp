@@ -187,7 +187,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
     if (!ftfont) return 0;
     vsx_string<>deli = "\n";
     vsx_nw_vector< vsx_string<> > t_lines;
-    explode(text_in->get(), deli, t_lines);
+    vsx_string_helper::explode(text_in->get(), deli, t_lines);
     lines.clear();
     for (unsigned long i = 0; i < t_lines.size(); ++i)
     {

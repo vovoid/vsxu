@@ -494,7 +494,7 @@ public:
       );
     }
     vsx_string<>deli = "|";
-    return implode(parts,deli);
+    return vsx_string_helper::implode(parts,deli);
   }
 
   void set_string(vsx_string<>str)

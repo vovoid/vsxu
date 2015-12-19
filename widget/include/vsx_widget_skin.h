@@ -66,7 +66,7 @@ public:
       if (mc->cmd == "color") {
         vsx_nw_vector< vsx_string<> > parts;
         vsx_string<>deli = ",";
-        explode(mc->parts[2],deli, parts);
+        vsx_string_helper::explode(mc->parts[2],deli, parts);
         vsx_color<> p;
         p.r = vsx_string_helper::s2f(parts[0]);
         p.g = vsx_string_helper::s2f(parts[1]);

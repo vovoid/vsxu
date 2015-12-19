@@ -288,8 +288,6 @@ void vsx_comp::init_module()
 {
   module->engine = r_engine_info;
   module->declare_params(*in_module_parameters, *out_module_parameters);
-//  str_replace("\n","",str_replace(" ","",str_replace("\t","",module_info->in_param_spec)));
-//str_replace("\n","",str_replace(" ","",str_replace("\t","",module_info->out_param_spec)));
   LOG("init_module 1")
   module->module_info(module_info);
   in_param_spec = process_module_param_spec(module_info->in_param_spec);
@@ -299,25 +297,17 @@ void vsx_comp::init_module()
   module->declare_operations( module_operations );
 
   LOG("init_module 2")
-  //if (module_info->output) {
-//  }
 
   LOG(vsx_string<>("module param spec: ")+in_param_spec.c_str());
 
   // build up the internal engine_param_list
-  //printf("init in params\n");
   in_parameters->init(in_module_parameters);
-  //printf("init out params\n");
   LOG("init_module 3")
   out_parameters->init(out_module_parameters);
-  //printf("init channels\n");
   init_channels();
   LOG("init_module 4")
-  //printf("module init\n");
   module->init();
   LOG("init_module finished")
-  //local_engine_info.dtime = 0;
-  //local_engine_info.vtime = 0;
 }
 
 

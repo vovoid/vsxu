@@ -146,7 +146,7 @@ public:
     bool reload = reload_in->get();
     reload_in->set(0);
 
-    if (!verify_filesuffix(filename_in->get(),file_suffix))
+    if (!vsx_string_helper::verify_filesuffix(filename_in->get(), file_suffix))
     {
       message = vsx_string<>("module||ERROR! This is not a ") + file_suffix_uppercase + " image file!";
       return;

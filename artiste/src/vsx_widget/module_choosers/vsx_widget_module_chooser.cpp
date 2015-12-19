@@ -298,7 +298,18 @@ void vsx_widget_ultra_chooser::event_mouse_down(vsx_widget_distance distance,vsx
       } else
       if (test->node->node->module_info->component_class == "resource") {
         drag_module = false;
-        ((vsx_window_object_inspector*)object_inspector)->load_file("resources/"+str_replace("\\ "," ",str_replace(";","/",test->node->node->module_info->identifier)));
+        ((vsx_window_object_inspector*)object_inspector)->load_file(
+          "resources/" +
+          vsx_string_helper::str_replace<char>(
+            "\\ ",
+            " ",
+            vsx_string_helper::str_replace<char>(
+              ";",
+              "/",
+              test->node->node->module_info->identifier
+            )
+          )
+        );
       }
     }
     // create a component here
@@ -595,7 +606,7 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
     if (mc->cmd == "ccolor") {
       vsx_nw_vector<vsx_string<> > parts;
       vsx_string<>deli = ",";
-      explode(mc->parts[2],deli, parts);
+      vsx_string_helper::explode(mc->parts[2],deli, parts);
       vsx_color<> p;
       p.r = vsx_string_helper::s2f(parts[0]);
       p.g = vsx_string_helper::s2f(parts[1]);
@@ -606,7 +617,7 @@ vsx_widget_ultra_chooser::vsx_widget_ultra_chooser()
     if (mc->cmd == "rcolor") {
       vsx_nw_vector<vsx_string<> > parts;
       vsx_string<>deli = ",";
-      explode(mc->parts[2],deli, parts);
+      vsx_string_helper::explode(mc->parts[2],deli, parts);
       vsx_color<> p;
       p.r = vsx_string_helper::s2f(parts[0]);
       p.g = vsx_string_helper::s2f(parts[1]);

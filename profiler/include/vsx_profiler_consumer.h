@@ -116,7 +116,7 @@ public:
       vsx_string<>n = *it;
       vsx_string<>deli = DIRECTORY_SEPARATOR;
       vsx_nw_vector< vsx_string<> > parts;
-      explode(n, deli, parts);
+      vsx_string_helper::explode(n, deli, parts);
 
       if (parts.size() < 2)
         continue;
@@ -129,7 +129,7 @@ public:
   vsx_string<>get_filenames_list()
   {
     vsx_string<>deli = "\n";
-    return implode(filenames, deli);
+    return vsx_string_helper::implode(filenames, deli);
   }
 
   vsx_string<>get_items_list()

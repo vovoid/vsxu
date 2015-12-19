@@ -207,7 +207,7 @@ public:
   }
 };
 
-ENGINE_DLLIMPORT bool verify_filesuffix(vsx_string<>& input, const char* type);
+ENGINE_DLLIMPORT size_t file_get_size(vsx_string<> filename);
 ENGINE_DLLIMPORT void create_directory(const char* path);
 ENGINE_DLLIMPORT void get_files_recursive(
     vsx_string<> startpos,
@@ -215,33 +215,20 @@ ENGINE_DLLIMPORT void get_files_recursive(
     vsx_string<> include_filter = "",
     vsx_string<> exclude_filter = "",
     vsx_string<> dir_ignore_token = ".vsx_hidden"
-    );
+  );
 
-ENGINE_DLLIMPORT vsx_string<> get_path_from_filename(vsx_string<> filename, char override_directory_separator = 0);
+
+//ENGINE_DLLIMPORT bool verify_filesuffix(vsx_string<>& input, const char* type);
+//ENGINE_DLLIMPORT vsx_string<> get_path_from_filename(vsx_string<> filename, char override_directory_separator = 0);
 
 
 // STRING OPERATIONS
-#define STR_PAD_LEFT 0
-#define STR_PAD_RIGHT 1
-#define STR_PAD_OVERFLOW_LEFT 0
-#define STR_PAD_OVERFLOW_RIGHT 1
-ENGINE_DLLIMPORT vsx_string<> str_pad(const vsx_string<>& str, const vsx_string<>& chr, size_t t_len, int pad_type = STR_PAD_LEFT,int overflow_adjust = STR_PAD_OVERFLOW_RIGHT);
 
-// this function replaces only one item per token. 
-ENGINE_DLLIMPORT vsx_string<> str_replace(vsx_string<> search, vsx_string<> replace, vsx_string<> subject, int max_replacements = 0, int required_pos = -1);
-ENGINE_DLLIMPORT const vsx_string<>str_replace_char_pad(vsx_string<>search, vsx_string<>replace, vsx_string<>subject, vsx_string<>subject_r, int max_replacements = 0, int required_pos = -1);
+//ENGINE_DLLIMPORT vsx_string<> vsx_string_helper::str_replace(vsx_string<> search, vsx_string<> replace, vsx_string<> subject, int max_replacements = 0, int required_pos = -1);
+//ENGINE_DLLIMPORT const vsx_string<> str_replace_char_pad(vsx_string<>search, vsx_string<>replace, vsx_string<>subject, vsx_string<>subject_r, int max_replacements = 0, int required_pos = -1);
+//ENGINE_DLLIMPORT int vsx_string_helper::explode(vsx_string<>& input, vsx_string<>& delimiter, vsx_nw_vector< vsx_string<> >& results, int max_parts = 0);
+//ENGINE_DLLIMPORT vsx_string<> vsx_string_helper::implode(vsx_nw_vector< vsx_string<> >& in, vsx_string<>& delimiter, size_t start_index = 0, size_t shave_off_at_end = 0);
+//ENGINE_DLLIMPORT void str_remove_equal_prefix(vsx_string<>* str1, vsx_string<>* str2, vsx_string<>delimiter);
 
-ENGINE_DLLIMPORT int explode(vsx_string<>& input, vsx_string<>& delimiter, vsx_nw_vector< vsx_string<> >& results, int max_parts = 0);
-ENGINE_DLLIMPORT vsx_string<> implode(vsx_nw_vector< vsx_string<> >& in, vsx_string<>& delimiter, size_t start_index = 0, size_t shave_off_at_end = 0);
-
-//ENGINE_DLLIMPORT int explode(vsx_string<>& input, vsx_string<>& delimiter, std::vector <vsx_string<> >& results, int max_parts = 0);
-//ENGINE_DLLIMPORT vsx_string<>implode(std::vector <vsx_string<> > in,vsx_string<>delimiter);
-//ENGINE_DLLIMPORT int split_string(vsx_string<>& input, vsx_string<>& delimiter, std::vector <vsx_string<> >& results, int max_parts = 0);
-
-ENGINE_DLLIMPORT void str_remove_equal_prefix(vsx_string<>* str1, vsx_string<>* str2, vsx_string<>delimiter);
-
-ENGINE_DLLIMPORT vsx_string<>vsx_get_directory_separator();
-
-ENGINE_DLLIMPORT size_t file_get_size(vsx_string<> filename);
 
 #endif

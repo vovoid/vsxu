@@ -372,7 +372,7 @@ if (cmd == "param_set_interpolate")
           vsx_string<>a = c->parts[3];
           vsx_string<>deli = ",";
           vsx_nw_vector<vsx_string<> > pp;
-          explode(a,deli,pp);
+          vsx_string_helper::explode(a,deli,pp);
           int cc = 0;
           if (!pp.size()) pp.push_back(c->parts[3]);
 

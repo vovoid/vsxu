@@ -1,5 +1,4 @@
-#ifndef VSX_STRING_HELPER_H
-#define VSX_STRING_HELPER_H
+#pragma once
 
 #include <stdlib.h>
 #include <wchar.h>
@@ -240,13 +239,17 @@ namespace vsx_string_helper
 
 
   /**
-   * @brief explode_single Splits a string by a single character useful for splitting on 0x0A (newline) or 0x22 (space)
+   * @brief vsx_string_helper::explode_single Splits a string by a single character useful for splitting on 0x0A (newline) or 0x22 (space)
    * @param input string to work on
    * @param delimiter_char
    * @param parts
    */
   template < typename W = char >
-  inline void explode_single( vsx_string<W> input, W delimiter_char, vsx_nw_vector< vsx_string<W> >& parts )
+  inline void explode_single(
+    vsx_string<W> input,
+    W delimiter_char,
+    vsx_nw_vector< vsx_string<W> >& parts
+  )
   {
     VSX_REQ_TRUE( input.size() );
     vsx_string<W> temp;
@@ -260,6 +263,277 @@ namespace vsx_string_helper
 
     if (temp.size() || input[ input.size() - 1 ] == delimiter_char)
       parts.push_back(temp);
+  }
+
+
+  /**
+   * @brief vsx_string_helper::explode
+   * @param input
+   * @param delimiter
+   * @param results
+   * @param max_parts
+   * @return
+   */
+  template < typename W = char >
+  inline int explode(
+    const vsx_string<W>& input,
+    const vsx_string<W>& delimiter,
+    vsx_nw_vector< vsx_string<W> >& results,
+    int max_parts = 0
+  )
+  {
+    results.clear();
+    if (input == delimiter)
+    {
+      results.push_back(input);
+      return 1;
+    }
+
+    vsx_string<>res;
+    size_t fpos = 0;
+    int count = 0;
+    char lastchar = 0;
+    for (size_t i = 0; i < input.size(); ++i)
+    {
+      if (input[i] == delimiter[fpos] && lastchar != '\\')
+        ++fpos;
+      else {
+        res.push_back(input[i]);
+        fpos = 0;
+      }
+
+      if (fpos == delimiter.size() || i == input.size()-1)
+      {
+        fpos = 0;
+        results.push_back(res);
+        res = "";
+        ++count;
+      }
+
+      if (count >= max_parts && max_parts > 0)
+        return count;
+
+      lastchar = input[i];
+    }
+
+    if (count == 0)
+      results.push_back(input);
+
+    return count;
+  }
+
+
+  /**
+   * @brief vsx_string_helper::implode
+   * @param in
+   * @param delimiter
+   * @param start_index
+   * @param shave_off_at_end
+   * @return
+   */
+  template < typename W = char >
+  inline vsx_string<W> implode(
+    vsx_nw_vector< vsx_string<W> >& in,
+    const vsx_string<W>& delimiter,
+    size_t start_index = 0,
+    size_t shave_off_at_end = 0
+  )
+  {
+    req_v(in.size(), "");
+
+    if (in.size() == 1)
+      return in[0];
+
+    req_v(start_index <= in.size()-1, "");
+
+    int calculated_end_index = in.size() - (shave_off_at_end + 1);
+    req_v(calculated_end_index >= 0, "");
+    size_t end_index = calculated_end_index;
+
+    vsx_string<> result;
+    for (size_t i = start_index; i < end_index; ++i)
+      result += in[i] + delimiter;
+
+    result += in[end_index];
+    return result;
+  }
+
+
+  /**
+   * @brief str_replace
+   * @param search
+   * @param replace
+   * @param subject
+   * @param max_replacements
+   * @param required_pos
+   * @return
+   */
+  template < typename W = char >
+  inline vsx_string<W> str_replace(
+    vsx_string<W> search,
+    vsx_string<W> replace,
+    vsx_string<W> subject,
+    int max_replacements = 0,
+    int required_pos = -1
+  )
+  {
+    req_v(search.size(), subject);
+
+    vsx_string<> n = subject;
+    int loc = 1;
+    int replacements = 0;
+    while ((loc = n.find(search, loc-1)) != -1)
+    {
+      if (loc <= required_pos || required_pos == -1)
+      {
+        if (replace.size())
+        {
+          n = n.substr(0,loc) + replace + n.substr(loc+search.size());
+          loc += replace.size();
+        }
+        else
+        {
+          n = n.substr(0,loc) + n.substr(loc+search.size());
+          ++loc;
+        }
+      }
+      else
+        return n;
+
+      if (max_replacements) {
+        replacements++;
+        if (replacements >= max_replacements)
+          return n;
+      }
+    }
+    return n;
+  }
+
+
+  /**
+   * @brief str_replace_char_pad
+   * @param search
+   * @param replace
+   * @param subject
+   * @param subject_r
+   * @param max_replacements
+   * @param required_pos
+   * @return
+   */
+  template < typename W = char >
+  inline const vsx_string<W> str_replace_char_pad(
+    vsx_string<W> search,
+    vsx_string<W> replace,
+    vsx_string<W> subject,
+    vsx_string<W> subject_r,
+    int max_replacements = 0,
+    int required_pos = -1
+  )
+  {
+    req_v(search.size(), subject_r);
+    req_v(subject.size() == subject_r.size(), subject_r);
+
+    vsx_string<> rep;
+    for (size_t i = 0; i < search.size(); ++i)
+      rep.push_back(replace[0]);
+
+    int loc = 1;
+    int replacements = 0;
+    while ((loc = subject.find(search, loc-1)) != -1)
+    {
+      if (loc <= required_pos || required_pos == -1)
+      {
+          subject = subject.substr(0,loc) + rep + subject.substr(loc+search.size());
+          subject_r = subject_r.substr(0,loc) + rep + subject_r.substr(loc+search.size());
+          loc += replace.size();
+      }
+      else
+        return subject_r;
+
+      if (max_replacements)
+      {
+        replacements++;
+        if (replacements >= max_replacements)
+          return subject_r;
+      }
+    }
+    return subject_r;
+  }
+
+
+  /**
+   * @brief str_remove_equal_prefix
+   * @param str1
+   * @param str2
+   * @param delimiter
+   */
+  inline void str_remove_equal_prefix(
+    vsx_string<>& str1,
+    vsx_string<>& str2,
+    const vsx_string<> delimiter
+  )
+  {
+//    vsx_string<> deli = delimiter;
+    vsx_nw_vector< vsx_string<> > str1_parts;
+    vsx_nw_vector< vsx_string<> > str2_parts;
+    vsx_string_helper::explode(str1, delimiter, str1_parts);
+    vsx_string_helper::explode(str2, delimiter, str2_parts);
+
+    while (
+      str1_parts.size() && str2_parts.size()
+      &&
+      str1_parts.front() == str2_parts.front()
+    )
+    {
+      str1_parts.pop_front();
+      str2_parts.pop_front();
+    }
+
+    str1 = vsx_string_helper::implode(str1_parts, delimiter);
+    str2 = vsx_string_helper::implode(str2_parts, delimiter);
+  }
+
+
+  /**
+   * @brief verify_filesuffix
+   * @param input
+   * @param type
+   * @return
+   */
+  inline bool verify_filesuffix(
+    vsx_string<char>& input,
+    const char* type
+  )
+  {
+    vsx_nw_vector <vsx_string<char> > parts;
+    vsx_string<char> deli = ".";
+    vsx_string_helper::explode(input,deli,parts);
+    req_v(parts.size(), false);
+
+    vsx_string<> a = parts[parts.size()-1];
+    a.make_lowercase();
+    vsx_string<> t = type;
+    t.make_lowercase();
+    if (t == a)
+      return true;
+
+    return false;
+  }
+
+  /**
+   * @brief get_path_from_filename
+   * @param filename
+   * @param override_directory_separator
+   * @return
+   */
+  inline vsx_string<> path_from_filename(vsx_string<> filename, char override_directory_separator = 0)
+  {
+    vsx_string<> deli = DIRECTORY_SEPARATOR;
+    if (override_directory_separator)
+      deli = override_directory_separator;
+    vsx_nw_vector <vsx_string<> > results;
+    vsx_string_helper::explode(filename, deli, results);
+    return vsx_string_helper::implode(results, deli, 0, 1);
   }
 
   /**
@@ -332,6 +606,7 @@ namespace vsx_string_helper
     return result;
   }
 
+
   /**
    * @brief wchar_string_to_utf8_string
    * @param src
@@ -379,6 +654,11 @@ namespace vsx_string_helper
   }
 
 
+  /**
+   * @brief base64_encode
+   * @param data
+   * @return
+   */
   inline vsx_string<> base64_encode(vsx_string<>data)
   {
     int i;
@@ -436,6 +716,11 @@ namespace vsx_string_helper
     return ret;
   }
 
+  /**
+   * @brief base64_decode
+   * @param data
+   * @return
+   */
   inline vsx_string<>base64_decode(vsx_string<>data)
   {
     int i;
@@ -489,8 +774,4 @@ namespace vsx_string_helper
 
     return ret;
   }
-
-
 }
-
-#endif

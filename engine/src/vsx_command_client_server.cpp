@@ -275,7 +275,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
 
         vsx_nw_vector< vsx_string<> > parts;
         vsx_string<>deli = "\n";
-        explode(recv_data, deli, parts);
+        vsx_string_helper::explode(recv_data, deli, parts);
         for (unsigned long i = 0; i < parts.size(); i++)
         {
           vsx_string<>* msg = &parts[i];

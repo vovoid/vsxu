@@ -98,7 +98,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
   {
     vsx_nw_vector<vsx_string<> > order_list;
     vsx_string<>deli = ",";
-    explode(t->parts[3], deli, order_list);
+    vsx_string_helper::explode(t->parts[3], deli, order_list);
     // set up a mapping list with the connections
     std::map<int,vsx_widget*> connection_map;
     for (children_iter = children.begin(); children_iter != children.end(); ++children_iter) 
@@ -145,7 +145,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
       order_list.push_back(vsx_string_helper::i2s(((vsx_widget_connector_bezier*)((*it).second))->order));
     }
     vsx_string<> deli(",");
-    vsx_string<>order_list_finished = implode(order_list, deli);
+    vsx_string<>order_list_finished = vsx_string_helper::implode(order_list, deli);
     command_q_b.add_raw("connections_order "+component->name+" "+name+" "+order_list_finished);
     ((vsx_widget_component*)component)->server->vsx_command_queue_b(this);
     return;
@@ -333,7 +333,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
         // 1. find the name of this anchor
         add_c.clear();
         vsx_string<>deli = ":";
-        explode(cm, deli, add_c, -1);
+        vsx_string_helper::explode(cm, deli, add_c, -1);
         vsx_widget *tt = 0;
         // look for old anchor
         if ( ((vsx_widget_component*)component)->t_list.find(add_c[0]) != ((vsx_widget_component*)component)->t_list.end()) 
@@ -355,7 +355,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
           // extra type info split
           vsx_nw_vector<vsx_string<> > type_info;
           vsx_string<>type_deli = "?";
-          explode(add_c[1],type_deli,type_info,2);
+          vsx_string_helper::explode(add_c[1],type_deli,type_info,2);
           tt = add(new vsx_widget_anchor,add_c[0]);
           if (type_info.size() == 2)
             ((vsx_widget_anchor*)tt)->p_type_suffix = type_info[1];
@@ -716,7 +716,14 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
 
   if (t->cmd == "chooser_ok")
   {
-    vsx_string<>ns = vsx_string_helper::base64_encode("resources/"+str_replace(";","/", vsx_string_helper::base64_decode(t->parts[1])));
+    vsx_string<> ns = vsx_string_helper::base64_encode(
+      "resources/" +
+      vsx_string_helper::str_replace<char>(
+        ";",
+        "/",
+        vsx_string_helper::base64_decode(t->parts[1])
+      )
+    );
     command_q_b.add_raw("ps64 "+component->name+" "+alias_owner->name+" "+ns);
     component->vsx_command_queue_b(this);
     return;
@@ -805,13 +812,13 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     }
     if (p_type == "float3")
     {
-      explode(display_value, deli, parts);
+      vsx_string_helper::explode(display_value, deli, parts);
       if (parts.size() == 3)
         display_value = vsx_string_helper::f2s(vsx_string_helper::s2f(parts[0]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[1]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[2]),5);
     }
     if (p_type == "float4")
     {
-      explode(display_value,deli, parts);
+      vsx_string_helper::explode(display_value,deli, parts);
       if (parts.size() == 4)
         display_value = vsx_string_helper::f2s(vsx_string_helper::s2f(parts[0]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[1]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[2]),5)+","+vsx_string_helper::f2s(vsx_string_helper::s2f(parts[3]),5);
     }
@@ -1113,16 +1120,14 @@ void vsx_widget_anchor::param_connect_abs(vsx_string<>c_component, vsx_string<>c
 void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widget_anchor* referrer) 
 {
   // 1. find out the common name for us, to see if we're at the end of the alias chain
-  vsx_string<>src_name = src->component->name;
-  vsx_string<>dest_name = component->name;
-  str_remove_equal_prefix(&src_name, &dest_name, ".");
+  vsx_string<> component_name_source = src->component->name;
+  vsx_string<> component_name_destination = component->name;
+  vsx_string_helper::str_remove_equal_prefix(component_name_source, component_name_destination, ".");
 
-  if (src_name == "" && src->alias) 
-  {
-    return connect_far(src->alias_parent,corder);
-  }
+  if (component_name_source == "" && src->alias)
+    return connect_far(src->alias_parent, corder);
 
-  if (dest_name == "" && alias) 
+  if (component_name_destination == "" && alias)
   {
     int num_conn = 0;
     for (std::list<vsx_widget*>::iterator cit = children.begin(); cit != children.end(); ++cit)
@@ -1165,21 +1170,21 @@ void vsx_widget_anchor::connect_far(vsx_widget_anchor* src, int corder, vsx_widg
   }
   vsx_string<>deli = ".";
   vsx_nw_vector<vsx_string<> > dest_name_parts;
-  explode(dest_name,deli,dest_name_parts);
+  vsx_string_helper::explode(component_name_destination,deli,dest_name_parts);
   dest_name_parts.pop_back();
-  dest_name = implode(dest_name_parts,deli);
+  component_name_destination = vsx_string_helper::implode(dest_name_parts,deli);
 
   vsx_nw_vector<vsx_string<> > src_name_parts;
-  explode(src_name,deli,src_name_parts);
+  vsx_string_helper::explode(component_name_source,deli,src_name_parts);
   src_name_parts.pop_back();
-  src_name = implode(src_name_parts,deli);
+  component_name_source = vsx_string_helper::implode(src_name_parts,deli);
 
   if (dest_name_parts.size() == 0)
   {
     // check if we can make a clean connection to the src
     // if not, ask src to build to this level.
     vsx_widget_anchor* new_src = src;
-    if (src_name != "") 
+    if (component_name_source != "")
     {
       new_src = src->alias_to_level(this);
     }
@@ -1271,14 +1276,14 @@ vsx_widget_anchor* vsx_widget_anchor::alias_to_level(vsx_widget_anchor* dest)
 {
   vsx_string<>src_name = component->name;
   vsx_string<>dest_name = dest->component->name;
-  str_remove_equal_prefix(&src_name, &dest_name, ".");
+  vsx_string_helper::str_remove_equal_prefix(src_name, dest_name, ".");
 
   vsx_string<>deli = ".";
 
   vsx_nw_vector<vsx_string<> > src_name_parts;
-  explode(src_name,deli,src_name_parts);
+  vsx_string_helper::explode(src_name,deli,src_name_parts);
   src_name_parts.pop_back();
-  src_name = implode(src_name_parts,deli);
+  src_name = vsx_string_helper::implode(src_name_parts,deli);
   vsx_widget_anchor* alias_found = 0;
   for (std::list <vsx_widget*>::iterator it = connectors.begin(); it != connectors.end(); ++it) 
   {
@@ -1534,11 +1539,11 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
       //menu = add(new vsx_widget_popup_menu,".anchor_menu");
       vsx_string<>deli_p = "&";
       vsx_nw_vector<vsx_string<> > parts;
-      explode(p_type_suffix,deli_p,parts);
+      vsx_string_helper::explode(p_type_suffix,deli_p,parts);
 
       vsx_string<>deli = "|";
       vsx_nw_vector<vsx_string<> > enumerations;
-      explode(parts[0],deli,enumerations);
+      vsx_string_helper::explode(parts[0],deli,enumerations);
       foreach(enumerations, i)
       {
         menu_->commands.adds(VSX_COMMAND_MENU, enumerations[i],"enum",vsx_string_helper::i2s(i));

@@ -29,7 +29,7 @@ if (cmd == "state_load")
 
   vsx_string<>errmsg;
   state_name = c->parts[1];
-  if (load_state(base_path+str_replace(";","/",vsx_string_helper::base64_decode(c->parts[1])),&errmsg))
+  if (load_state(base_path+vsx_string_helper::str_replace<char>(";","/",vsx_string_helper::base64_decode(c->parts[1])),&errmsg))
   {
     cmd_out->add_raw(vsx_string<>("alert_fail ")+vsx_string_helper::base64_encode(c->raw)+" Error "+vsx_string_helper::base64_encode("Could not load state. Error message was:|"+errmsg), VSX_COMMAND_GARBAGE_COLLECT);
   } //else
@@ -62,7 +62,7 @@ if (cmd == "clear")
 if (cmd == "meta_set") {
   meta_information = vsx_string_helper::base64_decode(c->parts[1]);
   vsx_string<>deli("|");
-  explode(meta_information, deli, meta_fields);
+  vsx_string_helper::explode(meta_information, deli, meta_fields);
   goto process_message_queue_end;
 }
 
@@ -98,7 +98,7 @@ if (cmd == "package_export")
     vsx_string<>base_path = vsx_data_path::get_instance()->data_path_get();
 
     vsxf tfs;
-    vsx_string<>filename = (c->parts[2]+str_replace(";","",c->parts[1]));
+    vsx_string<>filename = (c->parts[2]+vsx_string_helper::str_replace<char>(";","",c->parts[1]));
     tfs.archive_create((base_path+filename).c_str());
     vsx_command_list savelist;
     get_state_as_commandlist(savelist);
@@ -147,11 +147,11 @@ if (cmd == "state_save")
     vsx_command_list savelist;
     get_state_as_commandlist(savelist);
     savelist.set_filesystem(&tfs);
-    vsx_string<>filename = base_path+"states/"+str_replace(";","/",c->parts[1]);
+    vsx_string<>filename = base_path+"states/"+vsx_string_helper::str_replace<char>(";","/",c->parts[1]);
     savelist.save_to_file(filename);
     cmd_out->add_raw(vsx_string<>(cmd+"_ok ")+c->parts[1], VSX_COMMAND_GARBAGE_COLLECT);
 
-    vsx_string<>s2 = str_replace(" ","\\ ",c->parts[1]);
+    vsx_string<>s2 = vsx_string_helper::str_replace<char>(" ","\\ ",c->parts[1]);
     cmd_out->add_raw("states_list "+s2, VSX_COMMAND_GARBAGE_COLLECT);
     cmd_out->add_raw("states_list_end", VSX_COMMAND_GARBAGE_COLLECT);
   }

@@ -200,7 +200,7 @@ public:
           // split the identifier into the name
           vsx_nw_vector< vsx_string<> > parts;
           vsx_string<> deli = ";";
-          explode(i_mod_info[mod_i]->identifier, deli, parts);
+          vsx_string_helper::explode(i_mod_info[mod_i]->identifier, deli, parts);
           vsx_string<> module_name = parts[parts.size()-1];
           if (ctrl)
             ((dialog_query_string*)name_dialog)->show(((vsx_widget_server*)server)->get_unique_name(module_name));
@@ -358,7 +358,7 @@ void vsx_module_chooser_list::build_tree()
   for (i = 0; i < i_rows.size(); i++) {
     vsx_nw_vector<vsx_string<> > parts;
     vsx_string<> deli = ";";
-    explode(i_rows[i], deli, parts);
+    vsx_string_helper::explode(i_rows[i], deli, parts);
     for (j = 0; j < parts.size()-1; j++)
     {
       bool change = false;

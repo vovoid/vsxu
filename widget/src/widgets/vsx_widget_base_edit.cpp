@@ -157,7 +157,7 @@ void vsx_widget_base_edit::process_line(int n_line) {
   for (std::map<vsx_string<>,char>::iterator it = keywords.begin(); it != keywords.end(); ++it) {
     char f = (char)(*it).second;
     if (enable_syntax_highlighting)
-    b = str_replace_char_pad((*it).first, vsx_string<>(f), lines[i], b);
+    b = vsx_string_helper::str_replace_char_pad((*it).first, vsx_string<>(f), lines[i], b);
   }
   if (n_line > (int)lines_p.size()-1) {
 
@@ -183,13 +183,9 @@ void vsx_widget_base_edit::process_lines() {
     if (fill == (char)0x01)
     for (std::map<vsx_string<>,char>::iterator it = keywords.begin(); it != keywords.end(); ++it) {
       char f = (char)(*it).second;
-      b = str_replace_char_pad((*it).first, vsx_string<>(f), lines[i], b);
+      b = vsx_string_helper::str_replace_char_pad((*it).first, vsx_string<>(f), lines[i], b);
     }
     lines_p.push_back(b);
-    //lines_p[i] = b;
-
-    //printf(" line %d: %s\n",i,lines[i].c_str());
-    //printf("pline %d: %s\n",i,b.c_str());
   }
 }
 
@@ -204,22 +200,8 @@ void vsx_widget_base_edit::calculate_scroll_size() {
   characters_width = floor(target_size.x/(font_size*0.37));
   characters_height = floor(target_size.y/(font_size));
 
-  //if (scroll_x_max
-  //if (longest_line < scroll_x+characters_width) scroll_x_max = scroll_x+characters_width;
-  //longest_line;//+characters_width-1;
-  //scroll_x_max = longest_line;
-
-  //float s = longest_line;
-  //float s = scroll_x+characters_width;
-  //if (longest_line < scroll_x+characters_width) {
-//      scroll_x_max = scroll_x+3;
-//      scroll_x_size = 1-(float)(scroll_x+3)/(scroll_x+characters_width+3);
-//    }
-//    else {
     scroll_x_max = longest_line;
-//      scroll_x_size = 1-(float)(longest_line - characters_width)/characters_width;
     scroll_x_size = 1-(float)(longest_line - characters_width)/longest_line;
-//    }
 
   longest_y = 0;
   if (longest_y < (float)lines.size()+3)
@@ -232,14 +214,13 @@ void vsx_widget_base_edit::calculate_scroll_size() {
   if (ff < 0) ff = 0;
   scroll_y_size = 1-(float)(ff)/longest_y;
   if (scroll_y_size > 1) scroll_y_size = 1;
-  //scroll_y_size = (float)characters_height/(float)lines.size();//+(float)characters_height);
 }
 
 void vsx_widget_base_edit::set_string(const vsx_string<>& str) {
   lines.clear();
   vsx_string<>deli = "\n";
-  vsx_string<>f = str_replace("\r","",str);
-  explode(f, deli, lines);
+  vsx_string<>f = vsx_string_helper::str_replace<char>("\r","",str);
+  vsx_string_helper::explode(f, deli, lines);
   lines_visible.clear();
   for (unsigned long i = 0; i < lines.size(); i++) lines_visible.push_back(0);
   longest_line = 0;
@@ -819,7 +800,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
 vsx_string<> vsx_widget_base_edit::get_string()
 {
   vsx_string<> nl("\n");
-  return implode(lines,nl);
+  return vsx_string_helper::implode(lines,nl);
 }
 
 vsx_string<>vsx_widget_base_edit::get_line(unsigned long line)

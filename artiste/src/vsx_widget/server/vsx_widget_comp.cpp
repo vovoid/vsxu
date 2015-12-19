@@ -119,7 +119,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
 
     deli = "||";
     vsx_nw_vector <vsx_string<> > parts;
-    explode(s,deli,parts);
+    vsx_string_helper::explode(s,deli,parts);
     if (parts[0] == "module")
     {
       if (parts[1] == "ok")
@@ -136,7 +136,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
   } else
   if (t->cmd == "add_empty_macro")
   {
-    command_q_b.add_raw("macro_create macros;empty "+name+"."+"empty"+" "+str_replace(","," ",t->cmd_data)+" 0.1");
+    command_q_b.add_raw("macro_create macros;empty "+name+"."+"empty"+" "+vsx_string_helper::str_replace<char>(","," ",t->cmd_data)+" 0.1");
     server->vsx_command_queue_b(this);
     return;
   } else
@@ -316,7 +316,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
         // 1. find the name of this anchor
         add_c.clear();
         vsx_string<>deli = ":";
-        explode(cm, deli, add_c, -1);
+        vsx_string_helper::explode(cm, deli, add_c, -1);
         vsx_widget_anchor *anchor = 0;
         // see if there's an anchor we can use
         if (t_list.find(add_c[0]) != t_list.end()) {
@@ -338,7 +338,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
           // extra type info split
           vsx_nw_vector<vsx_string<> > type_info;
           vsx_string<>type_deli = "?";
-          explode(add_c[1],type_deli,type_info);
+          vsx_string_helper::explode(add_c[1],type_deli,type_info);
           if (type_info.size() == 2)
           {
             ((vsx_widget_anchor*)anchor)->p_type_suffix = type_info[1];
@@ -610,7 +610,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
       vsx_nw_vector<vsx_string<> > parts;
       // critical:screen:small
       vsx_string<>deli = ":";
-      explode(t->parts[2], deli, parts);
+      vsx_string_helper::explode(t->parts[2], deli, parts);
 
       if (parts.size() > 1)
       for (unsigned long i = 1; i < parts.size(); ++i) {
@@ -1347,7 +1347,7 @@ void vsx_widget_component::event_mouse_up(vsx_widget_distance distance,vsx_widge
             ((vsx_widget_server*)server)->selected_list.remove(this);
             ((vsx_widget_server*)server)->selected_list.push_front(this);
             vsx_string<> deli(",");
-            vsx_string<>comps_s = implode(comps, deli);
+            vsx_string<>comps_s = vsx_string_helper::implode(comps, deli);
 
             command_q_b.add_raw("component_assign "+dest_macro_component->name+" "+comps_s+" "+vsx_string_helper::f2s(l_distance.center.x)+" "+vsx_string_helper::f2s(l_distance.center.y));
             server->vsx_command_queue_b(this);
@@ -1572,11 +1572,11 @@ void vsx_widget_component::rename(vsx_string<>new_name, bool partial_name) {
   name = new_name;
   vsx_nw_vector<vsx_string<> > add_c;
   vsx_string<>deli = ".";
-  explode(new_name,deli,add_c,2);
+  vsx_string_helper::explode(new_name,deli,add_c,2);
 
   vsx_nw_vector<vsx_string<> > comp_realname;
   deli = ";";
-  explode(add_c[add_c.size()-1],deli,comp_realname);
+  vsx_string_helper::explode(add_c[add_c.size()-1],deli,comp_realname);
 
   real_name = comp_realname[comp_realname.size()-1];
 }
@@ -1590,23 +1590,20 @@ void vsx_widget_component::rename_add_prefix(vsx_string<>prefix, vsx_string<>old
     }
   }
   vsx_string<>new_name = name;
-//  printf("name = %s\n",name.c_str());
-//  printf("old_name_remove = %s\n",old_name_remove.c_str());
   vsx_string<>old_name = old_name_remove;
   if (old_name_remove != "") {
-    str_remove_equal_prefix(&new_name,&old_name, ".");
-    //new_name = prefix+str_replace(old_name_remove,"",name);
+    vsx_string_helper::str_remove_equal_prefix(new_name, old_name, ".");
   }
 
   vsx_nw_vector< vsx_string<> > prefix_list;
   vsx_nw_vector< vsx_string<> > name_list;
   vsx_string<>deli = ".";
-  explode(prefix, deli, prefix_list);
-  explode(new_name, deli, name_list);
+  vsx_string_helper::explode(prefix, deli, prefix_list);
+  vsx_string_helper::explode(new_name, deli, name_list);
   foreach(name_list, i)
     prefix_list.push_back(name_list[i]);
 
-  new_name = implode(prefix_list, deli);
+  new_name = vsx_string_helper::implode(prefix_list, deli);
   rename(new_name,false);
 }
 

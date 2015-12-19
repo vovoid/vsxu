@@ -183,7 +183,7 @@ if (cmd == "component_assign")
 
   vsx_string<>deli = ",";
   vsx_nw_vector <vsx_string<> > comp_source;
-  explode(c->parts[2],deli,comp_source);
+  vsx_string_helper::explode(c->parts[2],deli,comp_source);
   std::vector<vsx_comp*> components;
   // 0. Go through the list of components, all here  needs to be done for each and one component exclusively
   foreach(comp_source, i)
@@ -202,15 +202,14 @@ if (cmd == "component_assign")
     if (c->parts[1] == "") {
       // not moving it to a macro
       if ((*it)->parent) {
-        comp_name = str_replace((*it)->parent->name+".","",(*it)->name);
+        comp_name = vsx_string_helper::str_replace<char>((*it)->parent->name+".","",(*it)->name);
       }
     } else {
       if ((*it)->parent)
-      comp_name = str_replace((*it)->parent->name+".","",(*it)->name);
+      comp_name = vsx_string_helper::str_replace<char>((*it)->parent->name+".","",(*it)->name);
     }
 
     if (forge_map.find(first_part+comp_name) != forge_map.end()) {
-      namecheck = false;
       it = components.end();
     }
   }

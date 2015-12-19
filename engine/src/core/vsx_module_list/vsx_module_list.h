@@ -85,8 +85,6 @@ public:
       vsx_string<>dynamic_object_file_name = (*it);
       //vsx_nw_vector< vsx_string<> > parts;
       vsx_dynamic_object_handle plugin_handle;
-      //vsx_string<>deli = vsx_get_directory_separator();
-      //explode((*it),deli,parts);
 
       // load the plugin
       plugin_handle = vsx_dlopen::open(
@@ -234,7 +232,7 @@ public:
         // old state files.
         vsx_string<>deli = "||";
         vsx_nw_vector< vsx_string<> > parts;
-        explode(module_info->identifier, deli, parts);
+        vsx_string_helper::explode(module_info->identifier, deli, parts);
         vsx_module_plugin_info* applied_plugin_info = 0;
 
         // iterate through the individual names for this module

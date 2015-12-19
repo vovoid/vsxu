@@ -13,7 +13,7 @@ namespace vsx_quaternion_helper
     vsx_quaternion<T> q;
     vsx_nw_vector< vsx_string<> > parts;
     vsx_string<>deli = ",";
-    explode(str, deli, parts);
+    vsx_string_helper::explode(str, deli, parts);
     if (parts.size() == 4) {
       q.x = vsx_string_helper::s2f(parts[0]);
       q.y = vsx_string_helper::s2f(parts[1]);

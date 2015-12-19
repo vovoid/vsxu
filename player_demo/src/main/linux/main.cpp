@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
         vsx_string<>arg2 = argv[i];
         vsx_nw_vector< vsx_string<> > parts;
         vsx_string<>deli = ",";
-        explode(arg2, deli, parts);
+        vsx_string_helper::explode(arg2, deli, parts);
         x_res = s2i(parts[0]);
         y_res = s2i(parts[1]);
       }
@@ -187,7 +187,7 @@ int main(int argc, char* argv[])
         vsx_string<>arg2 = argv[i];
         vsx_nw_vector< vsx_string<> > parts;
         vsx_string<>deli = ",";
-        explode(arg2, deli, parts);
+        vsx_string_helper::explode(arg2, deli, parts);
         glfwSetWindowPos(s2i(parts[0]), s2i(parts[1]));
       }
     }

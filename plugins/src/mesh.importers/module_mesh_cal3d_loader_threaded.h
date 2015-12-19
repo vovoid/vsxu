@@ -321,10 +321,10 @@ public:
         vsx_nw_vector< vsx_string<> > fparts;
         vsx_string<>fdeli = "/";
         vsx_string<>file_path = "";
-        explode(filename->get(), fdeli, fparts);
+        vsx_string_helper::explode(filename->get(), fdeli, fparts);
         if (fparts.size() > 1) {
           fparts.reset_used(fparts.get_used()-1);
-          file_path = implode(fparts,fdeli)+"/";
+          file_path = vsx_string_helper::implode(fparts,fdeli)+"/";
         }
         //-------------------------------------------------
         vsx_nw_vector<int> mesh_parts;
@@ -347,7 +347,7 @@ public:
           if (line.size()) {
             vsx_nw_vector< vsx_string<> > parts;
             vsx_string<>deli = "=";
-            explode(line, deli, parts);
+            vsx_string_helper::explode(line, deli, parts);
             if (parts[0] == "skeleton") {
               vsxf_handle* h = engine->filesystem->f_open((file_path+parts[1]).c_str(),"r");
               if (h) {

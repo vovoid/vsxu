@@ -56,7 +56,7 @@ void vsx_widget_controller_mixer::init()
   }
   vsx_nw_vector <vsx_string<> > parts;
   vsx_string<>deli = ";";
-  explode(capmaxv_s,deli,parts);
+  vsx_string_helper::explode(capmaxv_s,deli,parts);
   for (unsigned int i = 0; i < parts.size(); ++i) {
     if (parts[i] != "x" && parts[i] != "") {
       ((vsx_widget_controller_slider*)((vsx_widget_controller_channel*)mixers[i])->slider)->capmax = true;
@@ -64,7 +64,7 @@ void vsx_widget_controller_mixer::init()
     }
   }
   parts.clear();
-  explode(capminv_s,deli,parts);
+  vsx_string_helper::explode(capminv_s,deli,parts);
   for (unsigned int i = 0; i < parts.size(); ++i) {
     if (parts[i] != "x" && parts[i] != "") {
       ((vsx_widget_controller_slider*)((vsx_widget_controller_channel*)mixers[i])->slider)->capmin = true;
@@ -104,7 +104,7 @@ void vsx_widget_controller_mixer::command_process_back_queue(vsx_command_s *t)
     vsx_nw_vector <vsx_string<> > parts;
     vsx_string<>deli = ",";
     t->parts[3] = vsx_string_helper::base64_decode(t->parts[3]);
-    explode(t->parts[3],deli, parts);
+    vsx_string_helper::explode(t->parts[3],deli, parts);
     for (unsigned long i = 0; i < parts.size(); ++i)
     {
       ((vsx_widget_controller_channel*)mixers[i])->set_value(vsx_string_helper::s2f(parts[i]));

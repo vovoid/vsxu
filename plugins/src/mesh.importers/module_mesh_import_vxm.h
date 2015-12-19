@@ -56,7 +56,7 @@ public:
     if (filename->get() == current_filename)
       return;
 
-    if (!verify_filesuffix(filename->get(),"vxm"))
+    if (!vsx_string_helper::verify_filesuffix(filename->get(),"vxm"))
     {
       message = "module||ERROR in file name suffix! This is not a VXM mesh file!";
       return;

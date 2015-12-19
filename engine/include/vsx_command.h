@@ -144,7 +144,7 @@ T* vsx_command_parse(vsx_string<>& cmd_raw, bool garbage_collect = false)
 
   t->raw = cmd_raw;
   vsx_string<> deli = " ";
-  explode(cmd_raw, deli, command_parts);
+  vsx_string_helper::explode(cmd_raw, deli, command_parts);
   t->cmd = command_parts[0];
   if (command_parts.size() > 1)
     t->cmd_data = command_parts[1];

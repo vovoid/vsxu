@@ -346,13 +346,13 @@ void vsx_widget_server::vsx_command_process_f() {
 
         vsx_nw_vector<vsx_string<> > add_c;
         vsx_string<>deli = ".";
-        explode(c->cmd_data, deli, add_c);
+        vsx_string_helper::explode(c->cmd_data, deli, add_c);
         if (add_c.size() > 1)
         {
           real_name = add_c[add_c.size()-1];
           add_c.reset_used(add_c.size()-1);
           vsx_string<> deli(".");
-          parent_name = implode(add_c, deli);
+          parent_name = vsx_string_helper::implode(add_c, deli);
 
           vsx_widget* f = find_component(parent_name);
           if (f)
@@ -533,7 +533,7 @@ void vsx_widget_server::vsx_command_process_f() {
         vsx_string<>s_name = vsx_string_helper::base64_decode(c->parts[1]);
 
         if (s_name.find("states;") == 0)
-        state_name = str_replace("states;", "", s_name, 1, 0);
+        state_name = vsx_string_helper::str_replace<char>("states;", "", s_name, 1, 0);
         #ifdef VSX_DEBUG
         printf("state load ok received: %s \n",c->parts[1].c_str());
         #endif
@@ -565,7 +565,7 @@ void vsx_widget_server::vsx_command_process_f() {
 
         vsx_string<>deli = ",";
         vsx_nw_vector<vsx_string<> > comp_source;
-        explode(c->parts[2], deli, comp_source);
+        vsx_string_helper::explode(c->parts[2], deli, comp_source);
         std::list<vsx_widget_component*> components_list;
 
         for (unsigned long i = 0; i < comp_source.size(); ++i) {
@@ -584,7 +584,6 @@ void vsx_widget_server::vsx_command_process_f() {
         {
           // add the component to the list
           vsx_widget_component* component_moved = *it;
-          //printf("assigning %s\n", t->name.c_str());
 
           vsx_string<>parent_name_prefix;
           if (component_moved->parent == this) parent_name_prefix = "";
@@ -595,15 +594,6 @@ void vsx_widget_server::vsx_command_process_f() {
           std::list<vsx_widget_connector_info*> out_connection_list;
           component_moved->get_connections_in_abs(&in_connection_list);
           component_moved->get_connections_out_abs(&out_connection_list);
-
-          //printf("in_list size: %d\n",in_connection_list.size());
-          //for(std::list<vsx_widget_connector_info*>::iterator it = in_connection_list.begin(); it != in_connection_list.end(); ++it) {
-          //printf("source: %s dest: %s\n",(*it)->source->name.c_str(), (*it)->dest->name.c_str());
-          //}
-          //printf("out_list size: %d\n",out_connection_list.size());
-          //for(std::list<vsx_widget_connector_info*>::iterator it = out_connection_list.begin(); it != out_connection_list.end(); ++it) {
-            //printf("source: %s dest: %s\n",(*it)->source->name.c_str(), (*it)->dest->name.c_str());
-          //}
 
           // disconnect
           component_moved->disconnect_abs();
@@ -767,13 +757,13 @@ void vsx_widget_server::vsx_command_process_f() {
         vsx_string<>base = vsx_data_path::get_instance()->data_path_get() + "macros";
         get_files_recursive(base, &mfiles, "", "");
         for (std::list< vsx_string<> >::iterator it = mfiles.begin(); it != mfiles.end(); ++it) {
-          vsx_string<>ss = str_replace(
+          vsx_string<>ss = vsx_string_helper::str_replace<char>(
             " ",
             "\\ ",
-            str_replace(
+            vsx_string_helper::str_replace<char>(
               "/",
               ";",
-              str_replace(
+              vsx_string_helper::str_replace<char>(
                 base,
                 "",
                 *it
@@ -805,7 +795,7 @@ void vsx_widget_server::vsx_command_process_f() {
       if (c->cmd == "states_list") {
         vsx_module_info* a = new vsx_module_info;
         module_infos_created_for_choosers.push_back(a);
-        a->identifier = "states;"+str_replace(":20:"," ",c->parts[1]);
+        a->identifier = "states;"+vsx_string_helper::str_replace<char>(":20:"," ",c->parts[1]);
         a->component_class = "state";
         ((vsx_widget_ultra_chooser*)state_chooser)->module_tree->module_info = 0;
         ((vsx_widget_ultra_chooser*)state_chooser)->module_tree->add(a->identifier,a);
@@ -816,7 +806,7 @@ void vsx_widget_server::vsx_command_process_f() {
       if (c->cmd == "prods_list") {
         vsx_module_info* a = new vsx_module_info;
         module_infos_created_for_choosers.push_back(a);
-        a->identifier = "prods;"+str_replace(":20:"," ",c->parts[1]);
+        a->identifier = "prods;"+vsx_string_helper::str_replace<char>(":20:"," ",c->parts[1]);
         a->component_class = "prod";
         ((vsx_widget_ultra_chooser*)state_chooser)->module_tree->module_info = 0;
         ((vsx_widget_ultra_chooser*)state_chooser)->module_tree->add("prods;"+a->identifier,a);
@@ -827,7 +817,7 @@ void vsx_widget_server::vsx_command_process_f() {
       if (c->cmd == "visuals_list") {
         vsx_module_info* a = new vsx_module_info;
         module_infos_created_for_choosers.push_back(a);
-        a->identifier = "visuals;"+str_replace(":20:"," ",c->parts[1]);
+        a->identifier = "visuals;"+vsx_string_helper::str_replace<char>(":20:"," ",c->parts[1]);
         a->component_class = "visuals";
         ((vsx_widget_ultra_chooser*)state_chooser)->module_tree->module_info = 0;
         ((vsx_widget_ultra_chooser*)state_chooser)->module_tree->add("visuals;"+a->identifier,a);
@@ -839,7 +829,7 @@ void vsx_widget_server::vsx_command_process_f() {
         vsx_module_info* a;
         a = new vsx_module_info;
         module_infos_created_for_choosers.push_back(a);
-        a->identifier = str_replace(":20:"," ",c->parts[1]);
+        a->identifier = vsx_string_helper::str_replace<char>(":20:"," ",c->parts[1]);
         a->component_class = "resource";
         ((vsx_widget_ultra_chooser*)resource_chooser)->module_tree->module_info = 0;
         ((vsx_widget_ultra_chooser*)resource_chooser)->module_tree->add(a->identifier,a);
@@ -861,7 +851,19 @@ void vsx_widget_server::vsx_command_process_f() {
         if (c->parts[1] == connection_id) {
           // woop
           vsx_command_list macro_commands;
-          macro_commands.load_from_file(str_replace(";","/", vsx_data_path::get_instance()->data_path_get() + str_replace("macros;","macros/",c->parts[2],1)));
+          macro_commands.load_from_file(
+            vsx_string_helper::str_replace<char>(
+              ";",
+              "/",
+              vsx_data_path::get_instance()->data_path_get() +
+              vsx_string_helper::str_replace<char>(
+                "macros;",
+                "macros/",
+                c->parts[2],
+                1
+              )
+            )
+          );
           macro_commands.token_replace("$$name",c->parts[3]);
           macro_commands.parse();
           macro_commands.reset();
@@ -969,7 +971,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
   if (cmd_out)
   {
     if (t->cmd == "add_empty_macro") {
-      cmd_out->add_raw("macro_create "+get_unique_name("empty")+" "+str_replace(","," ",t->cmd_data)+" 0.1");
+      cmd_out->add_raw("macro_create "+get_unique_name("empty")+" "+vsx_string_helper::str_replace<char>(","," ",t->cmd_data)+" 0.1");
     } else
     if (t->cmd == "add_note") {
       cmd_out->add_raw("note_create "+get_unique_name("note")+" "+t->cmd_data+",0.0 0.05,0.05,0.0 " + vsx_string_helper::base64_encode("text")+" 0.004");
@@ -1134,9 +1136,8 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
     if (t->cmd == "macro_create_real") {
       t->cmd = "macro_create";
       t->parts[0] = "macro_create";
-      t->raw = str_replace("macro_create_real", "macro_create",t->raw);
+      t->raw = vsx_string_helper::str_replace<char>("macro_create_real", "macro_create",t->raw);
       cmd_out->add( t );
-      //cmd_out->add_raw("macro_create "+t->parts[2]+" "+t->parts[3]+" "+t->parts[4]+" 0.1");
     } else
     if (t->cmd == "macro_create") {
       //printf("macro create %s\n",t->parts[1].c_str());
@@ -1502,7 +1503,7 @@ vsx_string<>vsx_widget_server::get_unique_name(vsx_string<>name) {
 
   vsx_string<>deli = "_";
   vsx_nw_vector< vsx_string<> > parts;
-  explode(name, deli, parts);
+  vsx_string_helper::explode(name, deli, parts);
 
   // now operate on the last bit, see if it's a valid number
   // if it contains characters it isn't. example: float3

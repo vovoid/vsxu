@@ -441,7 +441,11 @@ public:
     return result;
   }
 
-  inline const vsx_string<W> replace(vsx_string<W> search_value, vsx_string<W> replace_value)
+  inline const vsx_string<W> replace(
+      vsx_string<W> search_value,
+      vsx_string<W> replace_value,
+      int max_replacements = 0,
+      int required_pos = -1)
   {
     zero_remove();
     int find_pos = find(search_value);

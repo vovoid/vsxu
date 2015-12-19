@@ -172,11 +172,11 @@ vsx_comp* vsx_engine_abs::add(vsx_string<>label)
 
     // is this a child of a macro?
     vsx_nw_vector< vsx_string<> > c_parts;
-    vsx_string<>deli = ".";
-    explode(label, deli, c_parts);
+    vsx_string<> deli = ".";
+    vsx_string_helper::explode(label, deli, c_parts);
     if (c_parts.size() > 1) {
       // ok, we have a macro
-      vsx_string<>macro_name = implode(c_parts, deli, 0, 1);
+      vsx_string<>macro_name = vsx_string_helper::implode(c_parts, deli, 0, 1);
       if (vsx_comp* macro_comp = get_component_by_name(macro_name)) {
         comp->parent = macro_comp;
         macro_comp->children.push_back(comp);
@@ -596,11 +596,11 @@ int vsx_engine_abs::rename_component(vsx_string<>old_identifier, vsx_string<>new
   vsx_string<>old_name;
   vsx_nw_vector<vsx_string<> > parts;
   vsx_string<>deli = ".";
-  explode(old_identifier,deli,parts);
+  vsx_string_helper::explode(old_identifier,deli,parts);
   old_name = parts[parts.size()-1];
 
   if (parts.size())
-    old_base = implode(parts,deli, 0, 1);
+    old_base = vsx_string_helper::implode(parts,deli, 0, 1);
 
 
   // we have the basic names set up now find the component
@@ -671,11 +671,11 @@ int vsx_engine_abs::rename_component(vsx_string<>old_identifier, vsx_string<>new
     if (new_base.size()) {
       if (old_base.size()) {
         // moving from macro to macro
-        new_name_ = new_base+"."+str_replace(old_name,new_name,str_replace(old_base+".","",*it2,1,0),1,0);
+        new_name_ = new_base+"."+vsx_string_helper::str_replace<char>(old_name,new_name,vsx_string_helper::str_replace<char>(old_base+".","",*it2,1,0),1,0);
       }
       else {
         // moving from root to macro
-        new_name_ = new_base+"."+str_replace(old_name,new_name,*it2,1,0);
+        new_name_ = new_base+"."+vsx_string_helper::str_replace<char>(old_name,new_name,*it2,1,0);
       }
     }
     else {
@@ -683,11 +683,11 @@ int vsx_engine_abs::rename_component(vsx_string<>old_identifier, vsx_string<>new
       // from macro to root
       if (old_base.size()) {
         // "old_base.component_name" -> "new_component_name"
-        new_name_ = str_replace(old_name,new_name,str_replace(old_base+".","",*it2,1,0),1,0);
+        new_name_ = vsx_string_helper::str_replace<char>(old_name,new_name,vsx_string_helper::str_replace<char>(old_base+".","",*it2,1,0),1,0);
         new_name = new_name;
       } else {
         // plain renaming
-        new_name_ = str_replace(old_name,new_name,*it2,1,0);
+        new_name_ = vsx_string_helper::str_replace(old_name,new_name,*it2,1,0);
       }
     }
     forge_map[new_name_] = *it_c;

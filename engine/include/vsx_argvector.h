@@ -26,7 +26,6 @@
 
 
 #include <vsx_platform.h>
-#include <vsxfst.h>
 #include <vsx_engine_dllimport.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
@@ -42,6 +41,7 @@
 
 #include <container/vsx_nw_vector.h>
 #include <string/vsx_string.h>
+#include <string/vsx_string_helper.h>
 
 class vsx_argvector
 {
@@ -178,7 +178,7 @@ public:
 
       // if packed with UPX
       if (getenv("   "))
-        return get_path_from_filename(vsx_string<>(getenv("   ")));
+        return vsx_string_helper::path_from_filename(vsx_string<>(getenv("   ")));
 
       char szTmp[32];
       sprintf(szTmp, "/proc/self/exe");
@@ -188,7 +188,7 @@ public:
         pBuf[bytes] = '\0';
 
     #endif
-    return get_path_from_filename(vsx_string<>(pBuf));
+    return vsx_string_helper::path_from_filename(vsx_string<>(pBuf));
   }
 
 private:

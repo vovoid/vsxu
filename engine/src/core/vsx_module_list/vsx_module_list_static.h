@@ -173,7 +173,7 @@ public:
         // old state files.
         vsx_string<>deli = "||";
         vsx_nw_vector< vsx_string<> > parts;
-        explode(module_info->identifier, deli, parts);
+        vsx_string_helper::explode(module_info->identifier, deli, parts);
         vsx_module_plugin_info* applied_plugin_info = 0;
 
         // iterate through the individual names for this module

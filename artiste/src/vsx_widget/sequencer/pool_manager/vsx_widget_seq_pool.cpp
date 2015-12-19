@@ -358,7 +358,7 @@ void vsx_widget_seq_pool_manager::command_process_back_queue(vsx_command_s *t)
     {
       if (t->parts.size() > 2)
       {
-        ((vsx_widget_pool_tree*)edit)->set_string(str_replace(";", "\n", t->parts[2]));
+        ((vsx_widget_pool_tree*)edit)->set_string(vsx_string_helper::str_replace<char>(";", "\n", t->parts[2]));
       } else
       {
         ((vsx_widget_pool_tree*)edit)->set_string("[none defined]");

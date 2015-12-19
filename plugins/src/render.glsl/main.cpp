@@ -320,14 +320,14 @@ unsigned long MOD_NM(vsx_engine_environment* environment)
   unsigned long num_shaders = 0;
   for (std::list< vsx_string<> >::iterator it = i_shaders.begin(); it != i_shaders.end(); ++it) {
     vsx_string<>filename = *it;
-    filename = str_replace(base_path, "", filename);
+    filename = vsx_string_helper::str_replace<char>(base_path, "", filename);
 
     shader_info info;
     info.name = *it;
     vsx_nw_vector< vsx_string<> > parts;
 
     vsx_string<>deli = "/";
-    explode(filename, deli, parts);
+    vsx_string_helper::explode(filename, deli, parts);
     vsx_nw_vector< vsx_string<> > name_result;
 
     if (parts.size() > 1) {
@@ -335,7 +335,7 @@ unsigned long MOD_NM(vsx_engine_environment* environment)
         name_result.push_back(parts[i]);
       }
       vsx_string<>deli_semi = ";";
-      info.module_name = str_replace(".glsl","",implode(name_result, deli_semi));
+      info.module_name = vsx_string_helper::str_replace<char>(".glsl","",vsx_string_helper::implode(name_result, deli_semi));
       ext_shaders.push_back(info);
       ++num_shaders;
       init_run.push_back(0);

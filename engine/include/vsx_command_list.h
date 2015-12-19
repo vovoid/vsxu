@@ -214,7 +214,7 @@ public:
     t->parts.push_back_move(cmd);
     vsx_string<> deli = " ";
     vsx_nw_vector< vsx_string<> > pp;
-    explode(t->cmd_data, deli, pp);
+    vsx_string_helper::explode(t->cmd_data, deli, pp);
 
     for (size_t i = 0; i < pp.size(); ++i)
       t->parts.push_back_move(pp[i]);

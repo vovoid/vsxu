@@ -13,7 +13,7 @@ namespace vsx_color_aux
     vsx_color<> res;
     vsx_string<>deli = ",";
     vsx_nw_vector< vsx_string<> > pp;
-    explode(val,deli,pp);
+    vsx_string_helper::explode(val,deli,pp);
 
     if (pp.size() >= 1)
     res.r = vsx_string_helper::s2f(pp[0]);

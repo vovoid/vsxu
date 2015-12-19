@@ -224,7 +224,7 @@ int main(int argc, char* argv[])
     vsx_string<>arg2 = vsx_argvector::get_instance()->get_param_value("s");
     vsx_nw_vector< vsx_string<> > parts;
     vsx_string<>deli = ",";
-    explode(arg2, deli, parts);
+    vsx_string_helper::explode(arg2, deli, parts);
     if (parts.size() == 2)
     {
       x_res = vsx_string_helper::s2i(parts[0]);
@@ -233,7 +233,7 @@ int main(int argc, char* argv[])
     } else
     {
       deli = "x";
-      explode(arg2, deli, parts);
+      vsx_string_helper::explode(arg2, deli, parts);
       if ( parts.size() == 2 )
       {
         x_res = vsx_string_helper::s2i(parts[0]);
@@ -293,7 +293,7 @@ int main(int argc, char* argv[])
         vsx_string<>arg2 = argv[i];
         vsx_nw_vector< vsx_string<> > parts;
         vsx_string<>deli = ",";
-        explode(arg2, deli, parts);
+        vsx_string_helper::explode(arg2, deli, parts);
         glfwSetWindowPos( vsx_string_helper::s2i(parts[0]), vsx_string_helper::s2i(parts[1]) );
       }
     }

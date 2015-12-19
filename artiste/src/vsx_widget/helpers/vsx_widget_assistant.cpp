@@ -75,7 +75,7 @@ void vsxu_assistant::i_draw()
       vsx_nw_vector<vsx_string<> > parts;
       vsx_string<>deli = "|||";
       if (inspected->help_text != "") {
-        explode(inspected->help_text, deli, parts);
+        vsx_string_helper::explode(inspected->help_text, deli, parts);
         foreach(parts, i)
           course.push_back(parts[i]);
 

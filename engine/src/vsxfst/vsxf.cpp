@@ -43,6 +43,7 @@
 #include "7zip/Compress/LZMA/LZMAEncoder.h"
 
 #include <string/vsx_string.h>
+#include <string/vsx_string_helper.h>
 #include <container/vsx_nw_vector.h>
 
 #include "LzmaRam.h"
@@ -542,10 +543,10 @@ vsxf_handle* vsxf::f_open(const char* filename, const char* mode)
   if (type == VSXF_TYPE_FILESYSTEM)
   {
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-      i_filename = str_replace("\\","/",i_filename);
+      i_filename = vsx_string_helper::str_replace<char>("\\","/",i_filename);
     #endif
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-      i_filename = str_replace("/","\\",i_filename);
+      i_filename = vsx_string_helper::str_replace<char>("/","\\",i_filename);
     #endif
 
     handle->file_handle = fopen((base_path+i_filename).c_str(),mode);
@@ -857,21 +858,6 @@ void create_directory(const char* path)
 #endif
 }
 
-vsx_string<>get_path_from_filename(vsx_string<>filename, char override_directory_separator)
-{
-  vsx_string<>deli = DIRECTORY_SEPARATOR;
-  if (override_directory_separator)
-    deli = override_directory_separator;
-  vsx_nw_vector <vsx_string<> > results;
-	explode(filename, deli, results);
-  return implode(results, deli, 0, 1);
-}
-
-
-vsx_string<>vsx_get_directory_separator()
-{
-  return vsx_string<>(DIRECTORY_SEPARATOR);
-}
 
 
 size_t file_get_size(vsx_string<> filename)

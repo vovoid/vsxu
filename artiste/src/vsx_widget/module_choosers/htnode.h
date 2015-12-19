@@ -47,7 +47,7 @@ public:
   HTNode* add(vsx_string<>add_name, vsx_module_info* m_info) {
     vsx_nw_vector<vsx_string<> > add_c;
     vsx_string<> deli = ";";
-    explode(add_name,deli,add_c,-1);
+    vsx_string_helper::explode(add_name,deli,add_c,-1);
     if (!module_info) {
       module_info = m_info;
     }
@@ -69,7 +69,7 @@ public:
       vsx_string<> new_add_name;
       vsx_string<> semicolon(";");
       if (add_c.size())
-        new_add_name = implode(add_c, semicolon);
+        new_add_name = vsx_string_helper::implode(add_c, semicolon);
 
       if (search_result) {
         // ask the child to do some creation
@@ -107,7 +107,7 @@ public:
       if (module_info->component_class == "resource") {
         vsx_nw_vector <vsx_string<> > parts;
         vsx_string<>deli = ".";
-        explode(add_name,deli, parts);
+        vsx_string_helper::explode(add_name,deli, parts);
         if (parts.size() > 1) {
           if (mc_r_colors.find(parts[parts.size()-1]) != mc_r_colors.end()) {
             b->color = mc_r_colors[parts[parts.size()-1]];
@@ -137,7 +137,7 @@ public:
         b->color.g = 1;
         b->color.b = 1;
       }
-      b->name = str_replace("\\ "," ",add_name);
+      b->name = vsx_string_helper::str_replace<char>("\\ "," ",add_name);
       b->value = 1;
       b->module_info = module_info;
       children.push_back(b);

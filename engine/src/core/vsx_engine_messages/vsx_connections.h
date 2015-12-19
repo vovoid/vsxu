@@ -131,9 +131,9 @@ if (cmd == "param_alias")
         // compute new name for c->parts[1]
         vsx_nw_vector<vsx_string<> > parts;
         vsx_string<>deli = ":";
-        explode(c->parts[1], deli, parts, 2);
+        vsx_string_helper::explode(c->parts[1], deli, parts, 2);
         parts[0] = new_name;
-        c->parts[1] = implode(parts, deli);
+        c->parts[1] = vsx_string_helper::implode(parts, deli);
 
         cmd_out->add_raw("param_alias_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+new_name+" "+c->parts[5]+" "+c->parts[6]+" "+vsx_string_helper::i2s(order), VSX_COMMAND_GARBAGE_COLLECT);
 
