@@ -7,7 +7,9 @@
 
 #include <stdio.h>
 #include <errno.h>
+#ifdef HAVE_EXECINFO
 #include <execinfo.h>
+#endif
 #include <unistd.h>
 #include <string.h>
 #include <malloc.h>
@@ -18,7 +20,7 @@ namespace vsx_backtrace
 
 inline void full_write(int fd, const char *buf, size_t len)
 {
-#if !(PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS)
+#if !(PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS) && defined(HAVE_EXECINFO)
   while (len > 0) {
   ssize_t ret = write(fd, buf, len);
 
@@ -34,7 +36,7 @@ inline void full_write(int fd, const char *buf, size_t len)
 
 inline void print_backtrace(void)
 {
-#if !(PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS)
+#if !(PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS) && defined(HAVE_EXECINFO)
   static const char start[] = "BACKTRACE ------------\n";
   static const char end[] = "----------------------\n";
 
