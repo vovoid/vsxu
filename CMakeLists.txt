@@ -152,6 +152,10 @@ INCLUDE(CPack)
 ################################################################################
 
 
+include(CheckIncludeFiles)
+
+check_include_files(execinfo.h HAVE_EXECINFO)
+
 add_definitions( -std=c++0x )
 
 if (VSXU_STATIC EQUAL 1)

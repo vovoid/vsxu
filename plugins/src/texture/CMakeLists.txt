@@ -8,7 +8,11 @@ project (${module_id})
 
 message("configuring vsxu module            " ${module_id})
 
-include_directories(/usr/include/OpenEXR)
+find_package(OpenEXR)
+
+if(OpenEXR_FOUND)
+  include_directories(${OPENEXR_INCLUDE_DIRS})
+endif(OpenEXR_FOUND)
 
 # set defines for MOD_CM, MOD_DM, MOD_NM
 CREATE_STATIC_GLUE(${module_id})
