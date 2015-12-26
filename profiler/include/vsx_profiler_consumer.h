@@ -31,7 +31,7 @@
 #include <vector/vsx_vector4.h>
 #include <vsx_profiler_manager.h>
 #include <vsxfst.h>
-
+#include <filesystem/vsx_filesystem_helper.h>
 
 const size_t compute_stack_depth = 128;
 
@@ -105,7 +105,7 @@ public:
   {
     std::list< vsx_string<> > local_filenames;
 
-    get_files_recursive(
+    vsx_filesystem_helper::get_files_recursive(
       vsx_profiler_manager::profiler_directory_get(),
       &local_filenames
     );

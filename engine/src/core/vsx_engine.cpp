@@ -44,13 +44,14 @@
 #include "vsx_data_path.h"
 #include <string/vsx_string_helper.h>
 #include <vsx_param_helper.h>
+#include <filesystem/vsx_filesystem_helper.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-#include <stdio.h>
-#include <stdlib.h>
-#include <string>
-#include <sys/stat.h>
-#include <unistd.h>
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <string>
+  #include <sys/stat.h>
+  #include <unistd.h>
 #endif
 
 #ifndef VSXE_NO_GM

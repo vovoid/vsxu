@@ -44,7 +44,6 @@
 #include <vector>
 #include <pthread.h>
 
-// FILESYSTEM OPERATIONS
 
 class vsxf_handle {
 public:
@@ -89,7 +88,8 @@ public:
 
 
 
-class vsxf_archive_info {
+class vsxf_archive_info
+{
 public:
 
   vsx_string<> filename;
@@ -134,7 +134,8 @@ public:
       compressed_data(0x0),
       uncompressed_size(0),
       uncompressed_data(0x0)
-  {}
+  {
+  }
 
   ~vsxf_archive_info()
   {
@@ -145,22 +146,27 @@ public:
 #define VSXF_NUM_ADD_THREADS 8
 #define VSXF_WORK_CHUNK_MAX_SIZE 1024*1024*5
 
-class ENGINE_DLLIMPORT vsxf {
+class ENGINE_DLLIMPORT vsxf
+{
   // filesystem functions
   vsx_nw_vector<vsxf_archive_info> archive_files;
   vsx_nw_vector<vsxf_archive_info*> archive_files_p;
   int type; // 0 = regular filesystem, 1 = archive
   FILE* archive_handle;
   vsx_string<> archive_name;
+
   // base path for opening file system files
   vsx_string<> base_path;
 
   pthread_mutex_t mutex1;
 
-  void aquire_lock() {
+  void aquire_lock()
+  {
     pthread_mutex_lock( &mutex1 );
   }
-  void release_lock() {
+
+  void release_lock()
+  {
     pthread_mutex_unlock( &mutex1 );
   }
 
@@ -169,8 +175,8 @@ class ENGINE_DLLIMPORT vsxf {
   size_t work_chunk_current_size;
   void archive_close_handle_workers();
 
-
 public:
+
   vsxf();
   vsxf(const vsxf& f);
   void set_base_path(vsx_string<> new_base_path);
@@ -184,7 +190,6 @@ public:
   int archive_add_file_mt(vsx_string<> filename);
   bool is_archive();
   bool is_archive_populated();
-
 
   static void* archive_add_file_worker(void* p);
   static void* archive_load_worker(void* p);
@@ -206,29 +211,6 @@ public:
     return &f;
   }
 };
-
-ENGINE_DLLIMPORT size_t file_get_size(vsx_string<> filename);
-ENGINE_DLLIMPORT void create_directory(const char* path);
-ENGINE_DLLIMPORT void get_files_recursive(
-    vsx_string<> startpos,
-    std::list< vsx_string<> >* filenames,
-    vsx_string<> include_filter = "",
-    vsx_string<> exclude_filter = "",
-    vsx_string<> dir_ignore_token = ".vsx_hidden"
-  );
-
-
-//ENGINE_DLLIMPORT bool verify_filesuffix(vsx_string<>& input, const char* type);
-//ENGINE_DLLIMPORT vsx_string<> get_path_from_filename(vsx_string<> filename, char override_directory_separator = 0);
-
-
-// STRING OPERATIONS
-
-//ENGINE_DLLIMPORT vsx_string<> vsx_string_helper::str_replace(vsx_string<> search, vsx_string<> replace, vsx_string<> subject, int max_replacements = 0, int required_pos = -1);
-//ENGINE_DLLIMPORT const vsx_string<> str_replace_char_pad(vsx_string<>search, vsx_string<>replace, vsx_string<>subject, vsx_string<>subject_r, int max_replacements = 0, int required_pos = -1);
-//ENGINE_DLLIMPORT int vsx_string_helper::explode(vsx_string<>& input, vsx_string<>& delimiter, vsx_nw_vector< vsx_string<> >& results, int max_parts = 0);
-//ENGINE_DLLIMPORT vsx_string<> vsx_string_helper::implode(vsx_nw_vector< vsx_string<> >& in, vsx_string<>& delimiter, size_t start_index = 0, size_t shave_off_at_end = 0);
-//ENGINE_DLLIMPORT void str_remove_equal_prefix(vsx_string<>* str1, vsx_string<>* str2, vsx_string<>delimiter);
 
 
 #endif

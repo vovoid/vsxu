@@ -1,3 +1,5 @@
+#include <filesystem/vsx_filesystem_helper.h>
+
 class module_system_file_chooser : public vsx_module
 {
   // in
@@ -65,10 +67,10 @@ public:
         {
           old_path = directory_path->get();
           std::list< vsx_string<> > files;
-          //vsxfst tt;
-          vsx_string<>engine_resources_base_path = engine->filesystem->get_base_path();
 
-          get_files_recursive(engine_resources_base_path + DIRECTORY_SEPARATOR + directory_path->get(), &files);
+          vsx_string<> engine_resources_base_path = engine->filesystem->get_base_path();
+
+          vsx_filesystem_helper::get_files_recursive(engine_resources_base_path + DIRECTORY_SEPARATOR + directory_path->get(), &files);
 
           files_list.reset_used(0);
           for (std::list< vsx_string<> >::iterator it = files.begin(); it != files.end(); ++it)

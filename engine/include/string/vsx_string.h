@@ -21,8 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_STRING_H
-#define VSX_STRING_H
+#pragma once
 
 #include <container/vsx_nw_vector.h>
 #include <cstring>
@@ -488,59 +487,6 @@ public:
     if ( (*this)[this->size()-1] == 0x0D )
       this->pop_back();
   }
-
 };
 
-#ifdef VSX_PRINTF_TO_FILE
-
-class vsx_pf_file_holder
-{
-  FILE* fp;
-public:
-  vsx_pf_file_holder()
-    :
-      fp(0x0)
-  {
-    fp = fopen( (vsx_string<>("debug")+ DIRECTORY_SEPARATOR +vsx_string<>("debug_log.txt")).c_str(), "w");
-  }
-
-  ~vsx_pf_file_holder()
-  {
-    if (fp)
-      fclose(fp);
-  }
-
-  FILE* get_fp()
-  {
-    return fp;
-  }
-
-  void flush()
-  {
-    fflush(fp);
-  }
-
-private:
-  ENGINE_DLLIMPORT static vsx_pf_file_holder instance;
-public:
-  static vsx_pf_file_holder* get_instance()
-  {
-    return &instance;
-  }
-
-};
-
-
-#define vsx_printf(...) \
-  fwprintf(vsx_pf_file_holder::get_instance()->get_fp(), __VA_ARGS__); \
-  vsx_pf_file_holder::get_instance()->flush();
-
-#else
-
-#define vsx_printf(...) \
-  wprintf(__VA_ARGS__); \
-  fflush(stdout)
-
-#endif
-
-#endif
+#include "vsx_printf.h"

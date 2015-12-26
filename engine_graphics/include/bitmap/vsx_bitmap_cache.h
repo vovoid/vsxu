@@ -3,7 +3,6 @@
 #include <map>
 #include "vsx_bitmap_loader.h"
 
-
 class vsx_bitmap_cache
 {
 

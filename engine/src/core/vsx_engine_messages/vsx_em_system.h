@@ -79,7 +79,7 @@ if (cmd == "get_list")
   if (c->parts[1] == "states" || c->parts[1] == "prods" || c->parts[1] == "visuals")
     path = base_path+c->parts[1];
 
-  get_files_recursive(path, &file_list, "", ".hidden");
+  vsx_filesystem_helper::get_files_recursive(path, &file_list, "", ".hidden");
 
   for (std::list< vsx_string<> >::iterator it = file_list.begin(); it != file_list.end(); ++it)
   {

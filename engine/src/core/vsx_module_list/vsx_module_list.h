@@ -29,6 +29,7 @@
 #include <string/vsx_string.h>
 #include <vsx_param.h>
 #include <vsx_module.h>
+#include <filesystem/vsx_filesystem_helper.h>
 
 #include "vsx_dlopen.h"
 #include "vsx_module_list_abs.h"
@@ -65,7 +66,7 @@ public:
     // recursively find the plugin so's from the plugins directory
     // store it in: mfiles
     std::list< vsx_string<> > mfiles;
-    get_files_recursive
+    vsx_filesystem_helper::get_files_recursive
     (
       VSXU_PLUGIN_LOCATION  // from CmakeLists.txt
       ,

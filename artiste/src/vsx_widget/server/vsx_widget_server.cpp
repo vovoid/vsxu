@@ -58,6 +58,7 @@
 #include "helpers/vsx_widget_note.h"
 #include "artiste_desktop.h"
 #include <texture/vsx_texture.h>
+#include <filesystem/vsx_filesystem_helper.h>
 
 // engine
 #include <vsx_data_path.h>
@@ -755,7 +756,7 @@ void vsx_widget_server::vsx_command_process_f() {
         vsx_module_info* a;
         std::list< vsx_string<> > mfiles;
         vsx_string<>base = vsx_data_path::get_instance()->data_path_get() + "macros";
-        get_files_recursive(base, &mfiles, "", "");
+        vsx_filesystem_helper::get_files_recursive(base, &mfiles, "", "");
         for (std::list< vsx_string<> >::iterator it = mfiles.begin(); it != mfiles.end(); ++it) {
           vsx_string<>ss = vsx_string_helper::str_replace<char>(
             " ",

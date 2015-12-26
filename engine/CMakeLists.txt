@@ -175,6 +175,7 @@ set(SOURCES
   src/vsxfst/7zip/Compress/LZMA_C/LzmaDecode.c
   src/vsxfst/7zip/Compress/Branch/BranchX86.c
   src/vsxfst/LzmaRamDecode.c
+  src/filesystem/vsx_filesystem_helper.cpp
 )
 
 ################################################################################

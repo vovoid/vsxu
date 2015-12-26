@@ -29,6 +29,7 @@
 #include <vsx_argvector.h>
 #include <string/vsx_string.h>
 #include <string/vsx_string_helper.h>
+#include <filesystem/vsx_filesystem_helper.h>
 #include <vsxfst.h>
 #include <debug/vsx_error.h>
 
@@ -83,12 +84,7 @@ void extract()
     vsx_string<>out_directory = current_path + "/" + out_dir;
 
     if (!dry_run)
-    {
-//      vsx_printf(L"Creating directory: %s\n", out_directory.c_str());
-      create_directory( out_directory.c_str() );
-    }
-
-//    printf("Extracting:%s\n", (*archive_files)[i].filename.c_str() );
+      vsx_filesystem_helper::create_directory( out_directory.c_str() );
 
     vsxf_handle* fpi = filesystem.f_open((*archive_files)[i].filename.c_str(), "r");
       if (!fpi)

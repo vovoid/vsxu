@@ -22,7 +22,7 @@
 */
 
 #include "vsx_statelist.h"
-
+#include <filesystem/vsx_filesystem_helper.h>
 
 int vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info)
 {
@@ -51,7 +51,7 @@ int vsx_statelist::init_current(vsx_engine *vxe_local, state_info* info)
 
 void vsx_statelist::add_visual_path(vsx_string<>new_visual_path)
 {
-  get_files_recursive(new_visual_path, &state_file_list,"","");
+  vsx_filesystem_helper::get_files_recursive(new_visual_path, &state_file_list,"","");
 
   #ifdef VSXU_DEBUG
   printf("getting files recursive: %s\n", (new_visual_path).c_str() );
@@ -321,7 +321,7 @@ void vsx_statelist::render()
       buf1.init(&tex1,viewport[2], viewport[3], false, true, false, true, 0);
       buf_to.init(&tex_to, viewport[2], viewport[3], false, true, false, true, 0);
 
-      get_files_recursive(own_path+"visuals_faders", &fader_file_list,"",".svn CVS");
+      vsx_filesystem_helper::get_files_recursive(own_path+"visuals_faders", &fader_file_list,"",".svn CVS");
       for (std::list< vsx_string<> >::iterator it = fader_file_list.begin(); it != fader_file_list.end(); ++it)
       {
         printf("initializing fader %s\n", (*it).c_str());
@@ -475,7 +475,6 @@ void vsx_statelist::render()
     }
   } else
   {
-
     if (cmd_out && cmd_in)
     {
       vxe->process_message_queue(cmd_in, cmd_out);
@@ -643,7 +642,7 @@ void vsx_statelist::init(vsx_string<>base_path,vsx_string<>init_sound_type)
 #endif
   visual_path = "visuals_player";
 
-  get_files_recursive(own_path+visual_path, &state_file_list,"","");
+  vsx_filesystem_helper::get_files_recursive(own_path+visual_path, &state_file_list,"","");
 #ifdef VSXU_DEBUG
   printf("getting files recursive: %s\n", (own_path+visual_path).c_str() );
 #endif

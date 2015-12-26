@@ -31,7 +31,7 @@
 #include "vsx_glsl.h"
 #include <vsx_platform.h>
 #include <vsx_data_path.h>
-
+#include <filesystem/vsx_filesystem_helper.h>
 
 // stuff for loading pre-defined shaders from the file system
 typedef struct {
@@ -310,7 +310,7 @@ unsigned long MOD_NM(vsx_engine_environment* environment)
   if (environment)
   {
     base_path = environment->engine_parameter[0];
-    get_files_recursive(base_path+"render.glsl",&i_shaders,".glsl",".svn");
+    vsx_filesystem_helper::get_files_recursive(base_path+"render.glsl",&i_shaders,".glsl",".svn");
   }
   else
   {

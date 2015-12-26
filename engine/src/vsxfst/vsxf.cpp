@@ -29,11 +29,11 @@
 #include "Common/MyInitGuid.h"
 
 #if defined(_WIN32)
-#include <io.h>
-#include <fcntl.h>
-#define MY_SET_BINARY_MODE(file) setmode(fileno(file),O_BINARY)
+  #include <io.h>
+  #include <fcntl.h>
+  #define MY_SET_BINARY_MODE(file) setmode(fileno(file),O_BINARY)
 #else
-#define MY_SET_BINARY_MODE(file)
+  #define MY_SET_BINARY_MODE(file)
 #endif
 
 #include <sys/types.h>
@@ -65,11 +65,8 @@ extern "C"
   #include "LzmaRamDecode.h"
 }
 
+#include "filesystem/vsx_filesystem_helper.h"
 #include "vsxfst.h"
-
-#ifdef _WIN32
-bool g_IsNT = false;
-#endif
 
 
 vsxf::vsxf()
@@ -329,7 +326,7 @@ int vsxf::archive_add_file_mt
   archive_files_p.push_back(finfo);
   add_work_pool[add_work_pool_iterator].push_back(finfo);
 
-  work_chunk_current_size += file_get_size(filename);
+  work_chunk_current_size += vsx_filesystem_helper::file_get_size(filename);
   if (work_chunk_current_size > VSXF_WORK_CHUNK_MAX_SIZE)
   {
     add_work_pool_iterator = (add_work_pool_iterator + 1) % VSXF_NUM_ADD_THREADS;
@@ -828,45 +825,6 @@ int vsxf::f_read(void* buf, unsigned long num_bytes, vsxf_handle* handle)
   return num_bytes;
 }
 
-void create_directory(const char* path)
-{
-	char dir_name[4096];
-  char* p = (char*)path;
-	char* q = dir_name;
-  while( *p )
-	{
-    if ( DIRECTORY_SEPARATOR_CHAR == *p )
-		{
-      if (p != (char*)path && ':' != *( p-1 ) )
-			{
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-    	 mkdir(dir_name,0700);
-#endif
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-    	 CreateDirectory(dir_name, NULL);
-#endif
-			}
-		}
-		*q++ = *p++;
-		*q = '\0';
-	}
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-	mkdir(dir_name,0700);
-#endif
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-	CreateDirectory(dir_name, NULL);
-#endif
-}
 
 
 
-size_t file_get_size(vsx_string<> filename)
-{
-  FILE* fp = fopen(filename.c_str(), "rb");
-  if (!fp)
-    return 0;
-  fseek (fp, 0, SEEK_END);
-  int s = ftell(fp);
-  fclose(fp);
-  return (size_t)s;
-}
