@@ -9,9 +9,7 @@ namespace vsx_filesystem
     size_t position = 0;   // position in the data stream
     size_t size = 0;       // size of the data stream in bytes
 
-    //#define VSXF_MODE_READ 1
-    //#define VSXF_MODE_WRITE 2
-
+    // TODO
     enum mode
     {
       mode_none = 0,

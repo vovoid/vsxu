@@ -67,15 +67,15 @@ void extract()
     VSX_ERROR_EXIT( (vsx_string<>("Invalid archive supplied,")+filename).c_str(), 1);
 
   if (arg->has_param("mt"))
-    filesystem.archive_load_all_mt( filename.c_str() );
+    filesystem.get_archive().load_all_mt( filename.c_str() );
   else
-    filesystem.archive_load( filename.c_str(), preload_compressed_data );
+    filesystem.get_archive().load( filename.c_str(), preload_compressed_data );
 
   // Sanitize archive
-  if (!filesystem.is_archive_populated())
+  if (!filesystem.get_archive().is_archive_populated())
     VSX_ERROR_EXIT("Archive contains no files or failed to load", 2);
 
-  vsx_nw_vector<vsx_filesystem::archive_info>* archive_files = filesystem.get_archive_files();
+  vsx_nw_vector<vsx_filesystem::archive_info>* archive_files = filesystem.get_archive().get_files();
   for (unsigned long i = 0; i < (*archive_files).size(); ++i)
   {
     vsx_string<> out_filename = (*archive_files)[i].filename;
@@ -116,7 +116,7 @@ void extract()
     filesystem.f_close(fpi);
   }
 
-  filesystem.archive_close();
+  filesystem.get_archive().close();
 
   // success
   exit(0);
@@ -153,24 +153,22 @@ void create()
 
   // Make sure we can read all the files
   for (size_t i = 0; i < parts.size(); i++)
-  {
     if (access(parts[i].c_str(),R_OK))
       VSX_ERROR_EXIT( ( vsx_string<>("Pre-check failed, error accessing file: ") + parts[i]).c_str()  ,1);
-  }
 
   vsx_string<>archive_filename = arg->get_param_value("c");
 
-  filesystem.archive_create(archive_filename.c_str());
+  filesystem.get_archive().create(archive_filename.c_str());
 
   for (size_t i = 0; i < parts.size(); i++)
   {
     vsx_printf(L"* adding: %s \n", parts[i].c_str() );
-    int ret = filesystem.archive_add_file_mt( parts[i] );
+    int ret = filesystem.get_archive().add_file_mt( parts[i] );
     if ( ret )
       VSX_ERROR_EXIT( "archive_add_file failed", ret );
   }
 
-  filesystem.archive_close();
+  filesystem.get_archive().close();
 
   vsx_printf(L"-- successfully created the archive: %s\n", archive_filename.c_str());
 

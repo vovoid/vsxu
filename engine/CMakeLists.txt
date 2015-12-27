@@ -175,6 +175,7 @@ set(SOURCES
   src/vsxfst/LzmaRamDecode.c
   src/filesystem/vsx_filesystem_helper.cpp
   src/filesystem/vsx_filesystem.cpp
+  src/filesystem/vsx_filesystem_archive.cpp
 )
 
 ################################################################################

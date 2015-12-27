@@ -294,10 +294,9 @@ int vsx_engine::load_state(vsx_string<>filename, vsx_string<>*error_string)
 {
   if (!valid) return 2;
   filesystem.set_base_path("");
-  if (filesystem.is_archive())
-  {
-    filesystem.archive_close();
-  }
+
+  if (filesystem.get_archive().is_archive())
+    filesystem.get_archive().close();
 
 
   vsx_command_list load1;
@@ -305,15 +304,20 @@ int vsx_engine::load_state(vsx_string<>filename, vsx_string<>*error_string)
   vsx_string<>i_filename = filename;
 
   bool is_archive = false;
-  if (filename.size() >= 4) {
-    if (filename.substr(filename.size()-4,4) == ".vsx") {
-      filesystem.archive_load(filename.c_str());
-      if (filesystem.is_archive_populated()) {
+  if (filename.size() >= 4)
+  {
+    if (filename.substr(filename.size()-4,4) == ".vsx")
+    {
+      filesystem.get_archive().load(filename.c_str());
+      if (filesystem.get_archive().is_archive_populated())
+      {
         is_archive = true;
-        // state has to lie first in the archive!!!
-        i_filename = "_states/_default";//filesystem.archive_files[0].filename;
+        i_filename = "_states/_default";
       } else
-      { filesystem.archive_close(); return 0; }
+      {
+        filesystem.get_archive().close();
+        return 0;
+      }
     }
   }
   load1.load_from_file(i_filename,true);
@@ -693,8 +697,8 @@ bool vsx_engine::render()
       {
         current_state = VSX_ENGINE_PLAYING;
 
-        if (filesystem.is_archive())
-        filesystem.archive_close();
+        if (filesystem.get_archive().is_archive())
+          filesystem.get_archive().close();
       }
     }
 

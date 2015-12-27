@@ -32,26 +32,18 @@ class vsx_fifo
 {
 private:
   // this is the only variable shared between the threads
-  volatile __attribute__((aligned(64))) int64_t live_count;
+  volatile __attribute__((aligned(64))) int64_t live_count = 0;
 
   // this variable is owned by the producer thread; keep it on its own cache page
-  int64_t __attribute__((aligned(64))) write_pointer;
+  int64_t __attribute__((aligned(64))) write_pointer = 0;
 
   // this variable is owned by consumer thread; keep it on its own cache page
-  int64_t __attribute__((aligned(64))) read_pointer;
+  int64_t __attribute__((aligned(64))) read_pointer = 0;
 
   // actual data storage
   T __attribute__((aligned(64))) buffer[buffer_size];
 
 public:
-
-  vsx_fifo()
-    :
-    live_count(0),
-    write_pointer(0),
-    read_pointer(0)
-  {
-  }
 
   int64_t live_count_get()
   {

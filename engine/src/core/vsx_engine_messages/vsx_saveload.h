@@ -88,7 +88,7 @@ if (cmd == "set_silent") {
 
 if (cmd == "package_export")
 {
-  if (filesystem.is_archive())
+  if (filesystem.get_archive().is_archive())
   {
     cmd_out->add_raw(vsx_string<>("alert_fail ")+vsx_string_helper::base64_encode(c->raw)+" Error "+vsx_string_helper::base64_encode("Can not save a production!"), VSX_COMMAND_GARBAGE_COLLECT);
   }
@@ -99,7 +99,7 @@ if (cmd == "package_export")
 
     vsx_filesystem::filesystem tfs;
     vsx_string<>filename = (c->parts[2]+vsx_string_helper::str_replace<char>(";","",c->parts[1]));
-    tfs.archive_create((base_path+filename).c_str());
+    tfs.get_archive().create((base_path+filename).c_str());
     vsx_command_list savelist;
     get_state_as_commandlist(savelist);
     savelist.set_filesystem(&tfs);
@@ -115,18 +115,18 @@ if (cmd == "package_export")
           {
             if (comp->get_params_in()->param_id_list[i]->get_string() != comp->get_params_in()->param_id_list[i]->get_default_string())
             {
-              tfs.archive_add_file(comp->get_params_in()->param_id_list[i]->get_string(),0,0, vsx_data_path::get_instance()->data_path_get() +comp->get_params_in()->param_id_list[i]->get_string());
+              tfs.get_archive().add_file(comp->get_params_in()->param_id_list[i]->get_string(),0,0, vsx_data_path::get_instance()->data_path_get() +comp->get_params_in()->param_id_list[i]->get_string());
             }
           }
         }
         for (unsigned long i = 0; i < comp->module->resources.size(); ++i) {
           printf("engine resource add: %s\n", comp->module->resources[i].c_str() );
-          tfs.archive_add_file(comp->module->resources[i],0,0,vsx_data_path::get_instance()->data_path_get()+comp->module->resources[i]);
+          tfs.get_archive().add_file(comp->module->resources[i],0,0,vsx_data_path::get_instance()->data_path_get()+comp->module->resources[i]);
         }
       }
     }
     cmd_out->add_raw(vsx_string<>(cmd+"_ok ")+c->parts[1], VSX_COMMAND_GARBAGE_COLLECT);
-    tfs.archive_close();
+    tfs.get_archive().close();
   }
   goto process_message_queue_end;
 }
@@ -135,7 +135,7 @@ if (cmd == "package_export")
 
 if (cmd == "state_save")
 {
-  if (filesystem.is_archive())
+  if (filesystem.get_archive().is_archive())
   {
     cmd_out->add_raw(vsx_string<>("alert_fail ")+vsx_string_helper::base64_encode(c->raw)+" Error "+vsx_string_helper::base64_encode("Can not save a production!"), VSX_COMMAND_GARBAGE_COLLECT);
   }
