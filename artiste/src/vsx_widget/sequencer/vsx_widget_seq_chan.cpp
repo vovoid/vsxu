@@ -21,7 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include "vsx_gl_global.h"
 #include <vector/vsx_vector3_helper.h>
 #include <gl_helper.h>

@@ -329,7 +329,7 @@ int vsx_engine::load_state(vsx_string<>filename, vsx_string<>*error_string)
 }
 
 
-int vsx_engine::load_state_filesystem(vsx_string<>filename, vsx_string<>*error_string, vsxf* fs)
+int vsx_engine::load_state_filesystem(vsx_string<>filename, vsx_string<>*error_string, vsx_filesystem::filesystem* fs)
 {
   if (!valid)
     return 2;

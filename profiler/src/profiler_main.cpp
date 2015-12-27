@@ -29,7 +29,7 @@
 #include <GL/glew.h>
 #include "GL/glfw.h"
 #include "profiler_application.h"
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include "vsx_version.h"
 #include "vsx_timer.h"
 #include <unistd.h>

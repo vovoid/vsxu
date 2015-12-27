@@ -224,7 +224,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
       (cur_glyph_size != glyph_size->get())
     )
     {
-      vsxf_handle *fp;
+      vsx_filesystem::file_handle *fp;
       if ((fp = engine->filesystem->f_open(font_in->get().c_str(), "rb")) == NULL)
       {
         printf("font not found: %s\n",cur_font.c_str());

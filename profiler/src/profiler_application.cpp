@@ -150,7 +150,7 @@ void app_init()
   my_draw = new vsxu_draw();
 
   //---------------------------------------------------------------------------
-  vsxf filesystem;
+  vsx_filesystem::filesystem filesystem;
   myf.load( vsx_string<>(PLATFORM_SHARED_FILES) + "font/font-ascii_output.png", &filesystem );
 }
 

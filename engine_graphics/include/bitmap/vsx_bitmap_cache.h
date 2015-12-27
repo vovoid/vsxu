@@ -96,7 +96,7 @@ public:
     return item->bitmap;
   }
 
-  vsx_bitmap* aquire_reload( vsx_string<>& filename, vsxf* filesystem, bool thread, uint64_t hint)
+  vsx_bitmap* aquire_reload( vsx_string<>& filename, vsx_filesystem::filesystem* filesystem, bool thread, uint64_t hint)
   {
     vsx_bitmap_cache_item* item = get_item(filename, hint);
     vsx_bitmap* bitmap = item->bitmap;

@@ -22,7 +22,7 @@
 */
 
 //#ifndef VSXE_NO_GM
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include "gm/gmMachine.h"
 #include "binds/gmCall.h"
 #include "binds/gmMathLib.h"

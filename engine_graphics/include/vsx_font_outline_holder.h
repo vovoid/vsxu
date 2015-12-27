@@ -56,9 +56,9 @@ public:
     return file_name;
   }
 
-  void load(vsxf* filesystem, vsx_string<>font_file_name, vsx_font_outline_render_type type)
+  void load(vsx_filesystem::filesystem* filesystem, vsx_string<>font_file_name, vsx_font_outline_render_type type)
   {
-    vsxf_handle *fp;
+    vsx_filesystem::file_handle *fp;
 
     if ((fp = filesystem->f_open(font_file_name.c_str(), "rb")) == NULL)
       VSX_ERROR_RETURN_S("font not found: ",font_file_name.c_str());

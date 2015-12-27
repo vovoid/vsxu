@@ -26,11 +26,11 @@
 
 #include <list>
 
-#include <vsxfst.h>
+#include <filesystem/vsx_filesystem.h>
 #include <container/vsx_nw_vector.h>
 #include <vector/vsx_vector4.h>
 #include <vsx_profiler_manager.h>
-#include <vsxfst.h>
+#include <filesystem/vsx_filesystem.h>
 #include <filesystem/vsx_filesystem_helper.h>
 
 const size_t compute_stack_depth = 128;
@@ -84,7 +84,7 @@ class vsx_profiler_consumer
   vsx_nw_vector<u_int64_t> current_threads;
   vsx_nw_vector<u_int64_t> current_plots;
 
-  vsxf filesystem;
+  vsx_filesystem::filesystem filesystem;
 
   double current_max_time;
   double cycles_per_second;
@@ -162,7 +162,7 @@ public:
     current_plots.reset_used();
 
     vsx_string<>filename = vsx_profiler_manager::profiler_directory_get() + DIRECTORY_SEPARATOR + filenames[index];
-    vsxf_handle* fp = filesystem.f_open( filename.c_str() , "r" );
+    vsx_filesystem::file_handle* fp = filesystem.f_open( filename.c_str() , "r" );
 
     unsigned long file_size = filesystem.f_get_size(fp);
 

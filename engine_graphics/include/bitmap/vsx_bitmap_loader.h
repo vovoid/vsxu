@@ -27,7 +27,7 @@ class vsx_bitmap_loader
     return 0x0;
   }
 
-  inline static void do_load(vsx_bitmap* bitmap, vsx_string<>filename, vsxf* filesystem, bool thread)
+  inline static void do_load(vsx_bitmap* bitmap, vsx_string<>filename, vsx_filesystem::filesystem* filesystem, bool thread)
   {
     vsx_bitmap_loader_base* data_loader = vsx_bitmap_loader::get_data_loader_by_image_type( filename );
     req_error(data_loader, "unknown image format");
@@ -39,7 +39,7 @@ public:
   inline static void reload(
       vsx_bitmap* bitmap, // target bitmap
       vsx_string<>filename, // filename, i.e. "my_path/my_image.png" or "other_path/other_image.jpg"
-      vsxf* filesystem, // filesystem pointer or vsx_filesystem::get_instance()
+      vsx_filesystem::filesystem* filesystem, // filesystem pointer or vsx_filesystem::get_instance()
       bool thread, // load in a thread or not, recommended when doing bitmap transforms
       uint64_t hint // bitmap transforms and other hints, see vsx_bitmap::loader_hint enum
   )
@@ -51,7 +51,7 @@ public:
   inline static void load(
       vsx_bitmap* bitmap, // target bitmap
       vsx_string<> filename, // filename, i.e. "my_path/my_image.png" or "other_path/other_image.jpg"
-      vsxf* filesystem, // filesystem pointer or vsx_filesystem::get_instance()
+      vsx_filesystem::filesystem* filesystem, // filesystem pointer or vsx_filesystem::get_instance()
       bool thread, // load in a thread or not, recommended when doing bitmap transforms
       uint64_t hint // bitmap transforms and other hints, see vsx_bitmap::loader_hint enum
   )

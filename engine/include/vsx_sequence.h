@@ -533,7 +533,7 @@ public:
     execute(t);
   }
 
-  void load_from_file(vsxf* filesystem, vsx_string<> filename)
+  void load_from_file(vsx_filesystem::filesystem* filesystem, vsx_string<> filename)
   {
     if (!filesystem->is_file(filename))
       return;

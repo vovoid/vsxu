@@ -65,7 +65,7 @@ public:
     message = "module||ok";
 
     current_filename = filename->get();
-    vsxf_handle *fp;
+    vsx_filesystem::file_handle *fp;
     //printf("a\n");
     if ((fp = engine->filesystem->f_open(current_filename.c_str(), "r")) == NULL)
       return;

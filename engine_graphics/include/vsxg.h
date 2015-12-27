@@ -49,7 +49,7 @@
 
 #include <stdio.h>
 #include <container/vsx_nw_vector.h>
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 
 #include "engine_graphics_dllimport.h"
 
@@ -81,7 +81,7 @@ typedef struct {
   unsigned char *Palette;
 } pngRawInfo;
 
-extern int VSX_ENGINE_GRAPHICS_DLLIMPORT pngLoadRaw(const char* filename, pngRawInfo *rawinfo, vsxf* filesystem);
+extern int VSX_ENGINE_GRAPHICS_DLLIMPORT pngLoadRaw(const char* filename, pngRawInfo *rawinfo, vsx_filesystem::filesystem* filesystem);
 
 class VSX_ENGINE_GRAPHICS_DLLIMPORT CJPEGTest
 {
@@ -93,7 +93,7 @@ public:
     ( 
         const vsx_string<>& strFile, // Load this file
         vsx_string<>& strErr, // Returns error text on failure
-        vsxf* filesystem
+        vsx_filesystem::filesystem* filesystem
     );
     
     bool SaveJPEG( const vsx_string<>& strFile, vsx_string<>& strErr, const int nQFactor );

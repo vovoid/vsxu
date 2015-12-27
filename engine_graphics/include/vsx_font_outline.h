@@ -25,7 +25,7 @@
 #define VSX_FONT_OUTLINE_H
 
 #include "vsx_color.h"
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include "debug/vsx_error.h"
 #include "ftgl/FTGLPolygonFont.h"
 #include "ftgl/FTGLBitmapFont.h"
@@ -61,7 +61,7 @@ class vsx_font_outline
   vsx_nw_vector< text_info<W> > lines;
 
   // meta
-  vsxf* filesystem;
+  vsx_filesystem::filesystem* filesystem;
   vsx_gl_state* gl_state;
 
   // settings
@@ -142,7 +142,7 @@ public:
     return text;
   }
 
-  void filesystem_set(vsxf* fs)
+  void filesystem_set(vsx_filesystem::filesystem* fs)
   {
     filesystem = fs;
   }

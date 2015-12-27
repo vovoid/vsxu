@@ -36,7 +36,7 @@ public:
 
   vsx_engine* engine;
 
-  vsx_engine_helper(vsx_string<>state_name, vsx_module_list_abs* module_list, vsxf* filesystem = 0x0)
+  vsx_engine_helper(vsx_string<>state_name, vsx_module_list_abs* module_list, vsx_filesystem::filesystem* filesystem = 0x0)
   {
     // create the new engine
     engine = new vsx_engine(module_list);

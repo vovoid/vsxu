@@ -25,6 +25,7 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
 
 #define SEQ_RESOLUTION 8192
 

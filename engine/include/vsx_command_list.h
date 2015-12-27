@@ -35,7 +35,7 @@ class vsx_command_buffer_broker
     #endif
   }
 
-  vsxf* filesystem = 0x0;
+  vsx_filesystem::filesystem* filesystem = 0x0;
 
   int accept_commands = 1;  // 1 accepts, 0 won't accept
   vsx_nw_vector <T*> commands; // results of commands
@@ -44,7 +44,7 @@ class vsx_command_buffer_broker
 
 public:
 
-  void set_filesystem(vsxf* new_filesystem)
+  void set_filesystem(vsx_filesystem::filesystem* new_filesystem)
   {
     filesystem = new_filesystem;
   }
@@ -335,9 +335,9 @@ public:
   void load_from_file(vsx_string<>filename, bool parse = false, int type = 0 )
   {
     if (!filesystem)
-      filesystem = vsxf::get_instance();
+      filesystem = vsx_filesystem::filesystem::get_instance();
 
-    vsxf_handle* fp;
+    vsx_filesystem::file_handle* fp;
     if ((fp = filesystem->f_open(filename.c_str(), "r")) == NULL)
       return;
 
@@ -372,9 +372,9 @@ public:
   void save_to_file(vsx_string<>filename)
   {
     if (!filesystem)
-      filesystem = vsxf::get_instance();
+      filesystem = vsx_filesystem::filesystem::get_instance();
 
-    vsxf_handle* fp;
+    vsx_filesystem::file_handle* fp;
     if ((fp = filesystem->f_open(filename.c_str(), "w")) == NULL)
       return;
 

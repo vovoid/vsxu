@@ -28,7 +28,7 @@
 #endif
 #include "vsx_param.h"
 #include "vsx_module.h"
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include <RtMidi/RtMidi.h>
 #include <sstream>
 

@@ -38,7 +38,7 @@
 #include "server/vsx_widget_anchor.h"
 #include "server/vsx_widget_connector_bezier.h"
 #include "server/vsx_widget_comp.h"
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_timer.h"
@@ -275,7 +275,7 @@ void vsx_window_object_inspector::load_file(vsx_string<>filename)
 
   texture = vsx_texture_loader::load(
     filename,
-    vsxf::get_instance(),
+    vsx_filesystem::filesystem::get_instance(),
     true, // threaded
     (int)vsx_string_helper::verify_filesuffix(filename, "tga") * vsx_bitmap::flip_vertical_hint, // only flip TGAs
     vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::generate_mipmaps_hint

@@ -1,4 +1,4 @@
-#include <vsxfst.h> // file system and string functions
+#include <filesystem/vsx_filesystem.h> // file system and string functions
 #include <vsx_param.h> // parameter definitions
 #include <vsx_module.h> // module base class + definition
 #include <vsx_math_3d.h> // vsx_vector and matrix maths

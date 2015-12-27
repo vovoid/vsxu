@@ -10,7 +10,7 @@
 #include <string/vsx_string.h>
 #include "includes/nehegl.h"
 #include "application.h"
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 
 bool app_ctrl;
 bool app_alt;

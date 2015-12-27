@@ -42,8 +42,8 @@ extern "C" {
 typedef struct {
   struct jpeg_source_mgr pub;	/* public fields */
 
-  vsxf_handle* infile;		/* source stream */
-  vsxf* filesystem;
+  vsx_filesystem::file_handle* infile;		/* source stream */
+  vsx_filesystem::filesystem* filesystem;
   JOCTET * buffer;		/* start of buffer */
   boolean start_of_file;	/* have we gotten any data yet? */
 } my_source_mgr2;
@@ -200,7 +200,7 @@ term_source (j_decompress_ptr cinfo)
  */
 
 GLOBAL(void)
-jpeg_stdio2_src (j_decompress_ptr cinfo, vsxf_handle* infile, vsxf* filesystem)
+jpeg_stdio2_src (j_decompress_ptr cinfo, vsx_filesystem::file_handle* infile, vsx_filesystem::filesystem* filesystem)
 {
   my_src_ptr src;
 
@@ -246,7 +246,7 @@ CJPEGTest::CJPEGTest()
 : m_pBuf(0), m_nResX(0), m_nResY(0) 
 {}
 
-bool CJPEGTest::LoadJPEG( const vsx_string<>& strFile, vsx_string<>& strErr,vsxf* filesystem)
+bool CJPEGTest::LoadJPEG( const vsx_string<>& strFile, vsx_string<>& strErr,vsx_filesystem::filesystem* filesystem)
 {
     // If there's already an image in this object, ditch it
     
@@ -264,7 +264,7 @@ bool CJPEGTest::LoadJPEG( const vsx_string<>& strFile, vsx_string<>& strErr,vsxf
     cinfo.err = jpeg_std_error( &jerr );
     jpeg_create_decompress( &cinfo );
     //printf("opening jpeg: %s\n",strFile.c_str());
-    vsxf_handle* fp = filesystem->f_open( strFile.c_str(), "rb" );
+    vsx_filesystem::file_handle* fp = filesystem->f_open( strFile.c_str(), "rb" );
     if( ! fp )
     {
         strErr = "Failed to open file for reading.";

@@ -55,7 +55,7 @@ public:
 
 class vsx_font {
   vsx_vector3<> ep;
-  void reinit(vsx_font_info* f_info, vsx_string<>font, vsxf* filesystem);
+  void reinit(vsx_font_info* f_info, vsx_string<>font, vsx_filesystem::filesystem* filesystem);
   bool list_built;
   GLuint dlist;
 
@@ -78,7 +78,7 @@ class vsx_font {
     align = 1.0f;
   }
 public:
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void load(vsx_string<>font, vsxf* filesystem);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void load(vsx_string<>font, vsx_filesystem::filesystem* filesystem);
   VSX_ENGINE_GRAPHICS_DLLIMPORT void unload();
 
   vsx_nw_vector< vsx_color<> > syntax_colors;

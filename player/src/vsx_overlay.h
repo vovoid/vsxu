@@ -27,7 +27,7 @@
 #include "vsx_font.h"
 #include "vsx_manager.h"
 #include "vsx_timer.h"
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include <logo_intro.h>
 
 

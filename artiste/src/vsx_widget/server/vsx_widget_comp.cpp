@@ -30,7 +30,7 @@
 #include "vsx_command.h"
 #include "vsx_command_list.h"
 #include "vsx_font.h"
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include <texture/vsx_texture.h>
@@ -634,7 +634,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
 
       mtex = vsx_texture_loader::load(
         vsx_widget_skin::get_instance()->skin_path_get() + "component_types/"+component_type+".dds",
-        vsxf::get_instance(),
+        vsx_filesystem::filesystem::get_instance(),
         true, // threaded
         0,
         vsx_texture_gl::linear_interpolate_hint
@@ -644,7 +644,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
       if (component_type == "macro")
         mtex_overlay = vsx_texture_loader::load(
           vsx_widget_skin::get_instance()->skin_path_get() +"component_types/"+component_type+"_overlay.png",
-          vsxf::get_instance(),
+          vsx_filesystem::filesystem::get_instance(),
           true, // threaded
           vsx_bitmap::flip_vertical_hint,
           vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::generate_mipmaps_hint
@@ -732,7 +732,7 @@ void vsx_widget_component::init()
 
   mtex_blob = vsx_texture_loader::load(
     vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
-    vsxf::get_instance(),
+    vsx_filesystem::filesystem::get_instance(),
     true, // threaded
     vsx_bitmap::flip_vertical_hint,
     vsx_texture_gl::linear_interpolate_hint

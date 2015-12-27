@@ -32,7 +32,7 @@ protected:
   void constructor_set_default_values();
 
 // filesystem handler
-  vsxf filesystem;
+  vsx_filesystem::filesystem filesystem;
   vsx_engine_environment engine_environment;
 
 //-- current state name

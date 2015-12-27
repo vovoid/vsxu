@@ -48,12 +48,12 @@ void vsx_widget_desktop::init()
   vsx_widget_global_interpolation::get_instance()->set( 1.0);
   camera.set_key_speed( 3.0 );
 
-  vsxf filesystem;
+  vsx_filesystem::filesystem filesystem;
   font.load(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png", &filesystem);
 
   mtex = vsx_texture_loader::load(
     vsx_widget_skin::get_instance()->skin_path_get()+"desktop.jpg",
-    vsxf::get_instance(),
+    vsx_filesystem::filesystem::get_instance(),
     false, // threaded
     vsx_bitmap::flip_vertical_hint,
     vsx_texture_gl::linear_interpolate_hint

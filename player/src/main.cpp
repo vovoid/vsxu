@@ -28,7 +28,7 @@
 #include <container/vsx_nw_vector.h>
 #include <string/vsx_string.h>
 #include <string/vsx_string_helper.h>
-#include <vsxfst.h>
+#include <filesystem/vsx_filesystem.h>
 #include <vsx_version.h>
 #include <stdlib.h>
 #include "vsx_platform.h"

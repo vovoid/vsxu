@@ -118,7 +118,7 @@ void vsx_widget_controller_ab::init()
 
   mtex = vsx_texture_loader::load(
     vsx_widget_skin::get_instance()->skin_path_get() + "controllers/sphere.png",
-    vsxf::get_instance(),
+    vsx_filesystem::filesystem::get_instance(),
     true, // threaded
     vsx_bitmap::flip_vertical_hint,
     vsx_texture_gl::linear_interpolate_hint

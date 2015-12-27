@@ -7,7 +7,7 @@
 #include <vector/vsx_vector3.h>
 #include <string/vsx_string.h>
 #include <string/vsx_string_helper.h>
-#include <vsxfst.h>
+#include <filesystem/vsx_filesystem.h>
 
 namespace vsx_vector2_helper
 {

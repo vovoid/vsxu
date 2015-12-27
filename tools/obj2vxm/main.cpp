@@ -34,7 +34,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include "vsx_mesh.h"
 #ifdef _WIN32
 #include <io.h>

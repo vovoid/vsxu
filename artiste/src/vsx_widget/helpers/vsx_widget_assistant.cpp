@@ -37,7 +37,7 @@
 #include "widgets/vsx_widget_2d_pager.h"
 #include "widgets/vsx_widget_popup_menu.h"
 #include "vsx_widget_object_inspector.h"
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_timer.h"
@@ -141,7 +141,7 @@ void vsxu_assistant::init()
 
   texture = vsx_texture_loader::load(
     PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"luna.png",
-    vsxf::get_instance(),
+    vsx_filesystem::filesystem::get_instance(),
     true, // threaded
     vsx_bitmap::flip_vertical_hint,
     vsx_texture_gl::linear_interpolate_hint

@@ -30,7 +30,7 @@
 #include <string/vsx_string.h>
 #include <string/vsx_string_helper.h>
 #include <filesystem/vsx_filesystem_helper.h>
-#include <vsxfst.h>
+#include <filesystem/vsx_filesystem.h>
 #include <debug/vsx_error.h>
 
 #include <stdio.h>
@@ -44,7 +44,7 @@
 #endif
 
 vsx_string<>current_path = "./";
-vsxf filesystem;
+vsx_filesystem::filesystem filesystem;
 vsx_argvector* arg = vsx_argvector::get_instance();
 
 void extract()
@@ -60,7 +60,7 @@ void extract()
   if (access(current_path.c_str(),W_OK))
     VSX_ERROR_EXIT("current_path is not accessible for writing",1);
 
-  vsx_string<>filename = arg->get_param_value("x");
+  vsx_string<> filename = arg->get_param_value("x");
 
   // Sanitize file
   if (!filesystem.is_file(filename))
@@ -75,18 +75,18 @@ void extract()
   if (!filesystem.is_archive_populated())
     VSX_ERROR_EXIT("Archive contains no files or failed to load", 2);
 
-  vsx_nw_vector<vsxf_archive_info>* archive_files = filesystem.get_archive_files();
+  vsx_nw_vector<vsx_filesystem::archive_info>* archive_files = filesystem.get_archive_files();
   for (unsigned long i = 0; i < (*archive_files).size(); ++i)
   {
-    vsx_string<>out_filename = (*archive_files)[i].filename;
-    vsx_string<>out_dir = vsx_string_helper::path_from_filename(out_filename);
-    vsx_string<>full_out_path = current_path + "/" + out_filename;
-    vsx_string<>out_directory = current_path + "/" + out_dir;
+    vsx_string<> out_filename = (*archive_files)[i].filename;
+    vsx_string<> out_dir = vsx_string_helper::path_from_filename(out_filename);
+    vsx_string<> full_out_path = current_path + "/" + out_filename;
+    vsx_string<> out_directory = current_path + "/" + out_dir;
 
     if (!dry_run)
       vsx_filesystem_helper::create_directory( out_directory.c_str() );
 
-    vsxf_handle* fpi = filesystem.f_open((*archive_files)[i].filename.c_str(), "r");
+    vsx_filesystem::file_handle* fpi = filesystem.f_open((*archive_files)[i].filename.c_str(), "r");
       if (!fpi)
         VSX_ERROR_EXIT( (vsx_string<>("Internal Error: fpi invalid when reading ")+(*archive_files)[i].filename).c_str(), 3);
 
@@ -130,7 +130,7 @@ void create()
 
   vsx_string<> filenames;
   vsx_nw_vector< vsx_string<> > parts;
-  vsxf fs;
+  vsx_filesystem::filesystem fs;
 
   if (arg->has_param_with_value("f"))
     filenames = arg->get_param_value("f");

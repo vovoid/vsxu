@@ -43,7 +43,7 @@
 #include <vsx_gl_state.h>
 
 #include "vsx_argvector.h"
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include "debug/vsx_error.h"
 #include <vsx_module_operation.h>
 
@@ -113,7 +113,7 @@ class vsx_module_engine_info
 public:
 
   // filesystem handle to use in every module's file operations
-  vsxf* filesystem;
+  vsx_filesystem::filesystem* filesystem;
 
   // module list - so that modules can construct their own vsx_engine's
   void* module_list;

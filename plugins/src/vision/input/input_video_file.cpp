@@ -17,7 +17,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <vsxfst.h>
+#include <filesystem/vsx_filesystem.h>
 #include <highgui.h>
 #include "input_video_file.h"
 #include "vsx_data_path.h"

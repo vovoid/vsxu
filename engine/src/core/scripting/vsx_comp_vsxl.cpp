@@ -21,7 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include "binds/gmCall.h"
 #include "gm/gmThread.h"    // Game monkey script machine and thread
 //#include "gm/gmCallScript.h" // Call script from C helper

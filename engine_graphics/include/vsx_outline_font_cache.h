@@ -43,7 +43,7 @@ class outline_font_cache
     return font_holder;
   }
 
-  font_outline_holder* create_and_bind(vsxf* filesystem, vsx_string<>path, vsx_font_outline_render_type type)
+  font_outline_holder* create_and_bind(vsx_filesystem::filesystem* filesystem, vsx_string<>path, vsx_font_outline_render_type type)
   {
     font_outline_holder* font_holder = new font_outline_holder;
 
@@ -56,7 +56,7 @@ class outline_font_cache
 
 public:
 
-  font_outline_holder* get( vsxf* filesystem, vsx_string<>path, vsx_font_outline_render_type type)
+  font_outline_holder* get( vsx_filesystem::filesystem* filesystem, vsx_string<>path, vsx_font_outline_render_type type)
   {
     font_outline_holder* font_holder = find_and_bind( path );
     if (font_holder)

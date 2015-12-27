@@ -69,7 +69,7 @@ void vsx_widget_desktop::init()
 
   init_children();
 
-  font.load(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png", vsxf::get_instance());
+  font.load(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png", vsx_filesystem::filesystem::get_instance());
 
   log("welcome to vsxu");
 
@@ -441,7 +441,7 @@ vsx_widget_desktop::vsx_widget_desktop()
 
   mtex = vsx_texture_loader::load(
     vsx_widget_skin::get_instance()->skin_path_get() + "desktop.jpg",
-    vsxf::get_instance(),
+    vsx_filesystem::filesystem::get_instance(),
     false, // threaded
     vsx_bitmap::flip_vertical_hint,
     vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::generate_mipmaps_hint

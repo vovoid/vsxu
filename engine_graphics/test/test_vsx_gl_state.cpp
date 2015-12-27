@@ -25,7 +25,7 @@
 #include "GL/glfw.h"
 #include <container/vsx_nw_vector.h>
 #include <string/vsx_string.h>
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include <stdlib.h>
 #include "vsx_gl_state.h"
 

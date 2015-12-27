@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 2.8)
     -Wunused-parameter
   )
 if(WIN32)
-  add_definitions( -Wno-error ) # vsxfst WIN32
+  add_definitions( -Wno-error ) # vsx_filesystem::filesystemst WIN32
 endif(WIN32)
 
 include_directories(

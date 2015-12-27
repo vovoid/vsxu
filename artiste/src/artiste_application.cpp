@@ -32,7 +32,7 @@
 #include "vsx_module.h"
 #include <texture/vsx_texture.h>
 #include "vsx_timer.h"
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include "vsx_font.h"
 #include <vsx_version.h>
 #include <vsx_engine.h>
@@ -481,7 +481,7 @@ void app_load(int id)
 
   gui_prod_fullwindow = &prod_fullwindow;
   //---------------------------------------------------------------------------
-  myf.load( PLATFORM_SHARED_FILES + vsx_string<>("font/font-ascii_output.png"), vsxf::get_instance());
+  myf.load( PLATFORM_SHARED_FILES + vsx_string<>("font/font-ascii_output.png"), vsx_filesystem::filesystem::get_instance());
 
   if (dual_monitor) {
     vxe->start();

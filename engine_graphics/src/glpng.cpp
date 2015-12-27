@@ -87,15 +87,15 @@ static void checkForGammaEnv()
 }
 
 typedef struct {
-  vsxf* filesystem;
-  vsxf_handle* fp;
-} vsxf_info;
+  vsx_filesystem::filesystem* filesystem;
+  vsx_filesystem::file_handle* fp;
+} filesystem_info;
 
 
-static void png_vsxf_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
+static void png_vsx_filesystem_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
 {
   png_size_t check;
-  vsxf_info* a = (vsxf_info*)(png_get_io_ptr(png_ptr));
+  filesystem_info* a = (filesystem_info*)(png_get_io_ptr(png_ptr));
    /* fread() returns 0 on error, so it is OK to store this in a png_size_t
     * instead of an int, which is what fread() actually returns.
     */
@@ -111,7 +111,7 @@ static void png_vsxf_read_data(png_structp png_ptr, png_bytep data, png_size_t l
 
 
 //int APIENTRY pngLoadRawF(FILE *fp, pngRawInfo *pinfo) {
-int  pngLoadRaw(const char* filename, pngRawInfo *pinfo, vsxf* filesystem) {
+int  pngLoadRaw(const char* filename, pngRawInfo *pinfo, vsx_filesystem::filesystem* filesystem) {
 	unsigned char header[8];
 	png_structp png;
 	png_infop   info;
@@ -119,7 +119,7 @@ int  pngLoadRaw(const char* filename, pngRawInfo *pinfo, vsxf* filesystem) {
 	png_bytep   data;
   png_bytep  *row_p;
   double fileGamma;
-  vsxf_info i_filesystem;
+  filesystem_info i_filesystem;
 
 	png_uint_32 width, height;
 	int depth, color;
@@ -171,7 +171,7 @@ int  pngLoadRaw(const char* filename, pngRawInfo *pinfo, vsxf* filesystem) {
     return 0;
   }
 
-	png_set_read_fn(png, (png_bytep)(&i_filesystem), png_vsxf_read_data);
+  png_set_read_fn(png, (png_bytep)(&i_filesystem), png_vsx_filesystem_read_data);
   png_set_sig_bytes(png, 8);
 	png_read_info(png, info);
 	png_get_IHDR(png, info, &width, &height, &depth, &color, NULL, NULL, NULL);

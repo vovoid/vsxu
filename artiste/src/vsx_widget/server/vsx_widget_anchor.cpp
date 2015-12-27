@@ -28,7 +28,7 @@
 #include <math.h>
 #include "vsx_command.h"
 #include "vsx_font.h"
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include <vsx_param_helper.h>
@@ -1612,7 +1612,7 @@ void vsx_widget_anchor::init()
 
   mtex_d = vsx_texture_loader::load(
     vsx_widget_skin::get_instance()->skin_path_get() + "datatypes/"+p_type+".dds",
-    vsxf::get_instance(),
+    vsx_filesystem::filesystem::get_instance(),
     true, // threaded
     0,
     vsx_texture_gl::linear_interpolate_hint
@@ -1620,7 +1620,7 @@ void vsx_widget_anchor::init()
 
   mtex_blob = vsx_texture_loader::load(
     vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/highlight_blob.png",
-    vsxf::get_instance(),
+    vsx_filesystem::filesystem::get_instance(),
     true, // threaded
     vsx_bitmap::flip_vertical_hint,
     vsx_texture_gl::linear_interpolate_hint
@@ -1628,7 +1628,7 @@ void vsx_widget_anchor::init()
 
   mtex_blob_small = vsx_texture_loader::load(
     vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
-    vsxf::get_instance(),
+    vsx_filesystem::filesystem::get_instance(),
     true, // threaded
     vsx_bitmap::flip_vertical_hint,
     vsx_texture_gl::linear_interpolate_hint
@@ -1649,7 +1649,7 @@ void vsx_widget_anchor::init()
 
 void vsx_widget_anchor::reinit() 
 {
-  vsxf filesystem;
+  vsx_filesystem::filesystem filesystem;
   vsx_widget::reinit();
 }
 

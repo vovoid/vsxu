@@ -4,7 +4,7 @@
 #include <wchar.h>
 
 #include <string/vsx_string.h>
-#include <vsxfst.h>
+#include <filesystem/vsx_filesystem.h>
 #include <tools/vsx_req.h>
 
 namespace vsx_string_helper
@@ -205,10 +205,10 @@ namespace vsx_string_helper
    * @return
    */
   template < int buf_size = 1024 >
-  inline vsx_string<> read_from_file(vsx_string<> filename, vsxf* filesystem)
+  inline vsx_string<> read_from_file(vsx_string<> filename, vsx_filesystem::filesystem* filesystem)
   {
     vsx_string<> result;
-    vsxf_handle* fp = filesystem->f_open(filename.c_str(), "r");
+    vsx_filesystem::file_handle* fp = filesystem->f_open(filename.c_str(), "r");
     if (!fp)
       return "";
 

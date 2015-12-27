@@ -29,7 +29,7 @@
 #include <iomanip>
 #include <list>
 #include <vector>
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include <string/vsx_string_helper.h>
 #include "vsx_engine_dllimport.h"
 

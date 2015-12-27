@@ -29,7 +29,7 @@
 #include "vsx_command.h"
 #include "vsx_command_list.h"
 #include "vsx_font.h"
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include "vsx_widget_anchor.h"
 #include "vsx_widget_comp.h"
 #include <vsx_bezier_calc.h>
@@ -484,7 +484,7 @@ void vsx_widget_connector_bezier::init()
 
   mtex_blob = vsx_texture_loader::load(
     vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
-    vsxf::get_instance(),
+    vsx_filesystem::filesystem::get_instance(),
     true, // threaded
     vsx_bitmap::flip_vertical_hint,
     vsx_texture_gl::linear_interpolate_hint

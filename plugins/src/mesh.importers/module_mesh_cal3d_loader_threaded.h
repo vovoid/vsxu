@@ -329,7 +329,7 @@ public:
         //-------------------------------------------------
         vsx_nw_vector<int> mesh_parts;
         vsx_nw_vector<int> material_parts;
-        vsxf_handle *fp;
+        vsx_filesystem::file_handle *fp;
         fp = engine->filesystem->f_open(current_filename.c_str(), "r");
         if (!fp) {
           return;
@@ -349,7 +349,7 @@ public:
             vsx_string<>deli = "=";
             vsx_string_helper::explode(line, deli, parts);
             if (parts[0] == "skeleton") {
-              vsxf_handle* h = engine->filesystem->f_open((file_path+parts[1]).c_str(),"r");
+              vsx_filesystem::file_handle* h = engine->filesystem->f_open((file_path+parts[1]).c_str(),"r");
               if (h) {
                 resources.push_back(file_path+parts[1]);
                 char* a = engine->filesystem->f_gets_entire(h);
@@ -363,7 +363,7 @@ public:
               }
             }
             if (parts[0] == "mesh") {
-              vsxf_handle* h = engine->filesystem->f_open((file_path+parts[1]).c_str(),"r");
+              vsx_filesystem::file_handle* h = engine->filesystem->f_open((file_path+parts[1]).c_str(),"r");
               if (h) {
                 resources.push_back(file_path+parts[1]);
                 char* a = engine->filesystem->f_gets_entire(h);

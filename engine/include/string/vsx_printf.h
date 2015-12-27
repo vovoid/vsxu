@@ -30,11 +30,10 @@ public:
     fflush(fp);
   }
 
-private:
-  ENGINE_DLLIMPORT static vsx_pf_file_holder instance;
 public:
   static vsx_pf_file_holder* get_instance()
   {
+    static vsx_pf_file_holder instance;
     return &instance;
   }
 };

@@ -25,7 +25,7 @@
 #include "vsx_gl_global.h"
 #include <map>
 #include <list>
-#include <vsxfst.h>
+#include <filesystem/vsx_filesystem.h>
 #include "vsx_font.h"
 #include "debug/vsx_error.h"
 
@@ -37,7 +37,7 @@
 #endif
 
 
-void vsx_font::load(vsx_string<>font, vsxf* filesystem)
+void vsx_font::load(vsx_string<>font, vsx_filesystem::filesystem* filesystem)
 {
   if (my_font_info.name.size())
     return;
@@ -72,7 +72,7 @@ void vsx_font::unload()
     vsx_texture_loader::destroy( my_font_info.texture );
 }
 
-void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsxf* filesystem)
+void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsx_filesystem::filesystem* filesystem)
 {
   if (f_info->type == 0)
   {
@@ -97,7 +97,7 @@ void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsxf* filesystem)
 
 
   vsx_vector3<> vsx_font::print(vsx_vector3<> p, const vsx_string<>& str, const vsx_string<>& font, float size = 1, vsx_string<>colors) {
-    load(font, vsxf::get_instance());
+    load(font, vsx_filesystem::filesystem::get_instance());
     return print(p,str,size,colors);
   }
 

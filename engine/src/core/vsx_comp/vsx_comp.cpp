@@ -33,7 +33,7 @@
 #include "vsx_master_sequencer/vsx_master_sequence_channel.h"
 #include "vsx_param_sequence_list.h"
 #include "vsx_sequence_pool.h"
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include "vsx_param_abstraction.h"
 #include "tools/vsx_foreach.h"
 

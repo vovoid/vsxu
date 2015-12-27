@@ -32,7 +32,7 @@
 #endif
 #include <sys/types.h>
 #include <dirent.h>
-#include "vsxfst.h"
+#include <filesystem/vsx_filesystem.h>
 #include "vsx_command.h"
 #include "vsx_font.h"
 #include "vsx_param.h"
@@ -266,7 +266,7 @@ void vsx_widget_server::init()
 
   mtex = vsx_texture_loader::load(
     vsx_widget_skin::get_instance()->skin_path_get() + "server.dds",
-    vsxf::get_instance(),
+    vsx_filesystem::filesystem::get_instance(),
     true, // threaded
     0,
     vsx_texture_gl::linear_interpolate_hint

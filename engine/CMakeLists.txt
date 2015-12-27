@@ -38,8 +38,8 @@ file(GLOB_RECURSE HEADER_FILES *.h)
 # )
 
 add_definitions( -Wno-parentheses ) # LZMA
-#add_definitions( -Wno-int-to-pointer-cast ) # vsxfst WIN64
-add_definitions( -Wno-error -fpermissive ) # vsxfst WIN64
+#add_definitions( -Wno-int-to-pointer-cast ) # vsx_filesystem::filesystemst WIN64
+add_definitions( -Wno-error -fpermissive ) # vsx_filesystem::filesystemst WIN64
 
 add_definitions(
   # -DBUILDING_DLL
@@ -150,8 +150,6 @@ set(SOURCES
   src/vsxfst/7zip/Compress/LZ/LZInWindow.cpp
   src/vsxfst/7zip/Compress/RangeCoder/RangeCoderBit.cpp
   src/vsxfst/LzmaRam.cpp
-  src/vsxfst/vsxf.cpp
-  src/vsxfst/vsxs.cpp
   src/core/vsx_engine.cpp
   src/core/vsx_engine_abs.cpp
   src/core/vsx_sequence_pool.cpp
@@ -176,6 +174,7 @@ set(SOURCES
   src/vsxfst/7zip/Compress/Branch/BranchX86.c
   src/vsxfst/LzmaRamDecode.c
   src/filesystem/vsx_filesystem_helper.cpp
+  src/filesystem/vsx_filesystem.cpp
 )
 
 ################################################################################

@@ -3,7 +3,7 @@
 
 #include <vsx_color.h>
 #include <string/vsx_string.h>
-#include <vsxfst.h>
+#include <filesystem/vsx_filesystem.h>
 
 
 namespace vsx_color_aux
