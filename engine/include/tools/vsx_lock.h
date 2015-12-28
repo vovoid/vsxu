@@ -7,14 +7,14 @@ class vsx_lock
 
 public:
 
-  void aquire()
+  inline void aquire()
   {
     int64_t my_turn = __sync_fetch_and_add( &ticket_number, 1);
     while (turn != my_turn)
       continue;
   }
 
-  void release()
+  inline void release()
   {
     __sync_fetch_and_add( &turn, 1);
   }

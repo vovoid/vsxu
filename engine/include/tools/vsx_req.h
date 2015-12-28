@@ -29,5 +29,7 @@
 #define req_v(t, v) \
   VSX_REQ_TRUE_V(t, v)
 
-
+#define req_continue(t) \
+  if (!(t)) \
+    continue
 

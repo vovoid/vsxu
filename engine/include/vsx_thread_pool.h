@@ -11,15 +11,15 @@
 #include <functional>
 #include <stdexcept>
 
-class thread_pool {
+class vsx_thread_pool {
 public:
   //TODO: add a sleep timer, after which threads will be killed if inactive
-  explicit thread_pool(size_t = std::thread::hardware_concurrency());
-  ~thread_pool();
+  explicit vsx_thread_pool(size_t = std::thread::hardware_concurrency());
+  ~vsx_thread_pool();
   
   // Add tasks to the task queue
   template<class F, class... Args>
-  auto enqueue(F&& f, Args&&... args) 
+  auto add(F&& f, Args&&... args)
     -> std::future<typename std::result_of<F(Args...)>::type>;
 
   // Are there no more tasks to process?
@@ -29,14 +29,14 @@ public:
   void wait_all();
 
   //global thread pool instance
-  static thread_pool* instance()
+  static vsx_thread_pool* instance()
   {
-    static thread_pool p;
+    static vsx_thread_pool p;
     return &p;
   }
 
-
 private:
+
   // need to keep track of threads so we can join them
   std::vector< std::thread > workers;
   // the task queue
@@ -53,7 +53,7 @@ private:
 };
  
 // the constructor just launches some amount of workers
-inline thread_pool::thread_pool(size_t threads)
+inline vsx_thread_pool::vsx_thread_pool(size_t threads)
   :   stop(false)
 {
   for(size_t i = 0;i<threads;++i)
@@ -84,7 +84,7 @@ inline thread_pool::thread_pool(size_t threads)
 }
 
 // the destructor joins all threads
-inline thread_pool::~thread_pool()
+inline vsx_thread_pool::~vsx_thread_pool()
 {
   {
     std::unique_lock<std::mutex> lock(queue_mutex);
@@ -98,7 +98,7 @@ inline thread_pool::~thread_pool()
 
 // add new work item to the pool
 template<class F, class... Args>
-auto thread_pool::enqueue(F&& f, Args&&... args) 
+auto vsx_thread_pool::add(F&& f, Args&&... args)
   -> std::future<typename std::result_of<F(Args...)>::type>
 {
   using return_type = typename std::result_of<F(Args...)>::type;
@@ -122,13 +122,13 @@ auto thread_pool::enqueue(F&& f, Args&&... args)
 }
 
 
-inline bool thread_pool::is_jobless()
+inline bool vsx_thread_pool::is_jobless()
 {
   return tasks.empty();
 }
 
 
-inline void thread_pool::wait_all()
+inline void vsx_thread_pool::wait_all()
 {
   if (tasks.empty())
     return;

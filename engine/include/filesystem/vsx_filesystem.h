@@ -5,7 +5,7 @@
 #include <string/vsx_string.h>
 
 #include "vsx_filesystem_archive_info.h"
-#include "vsx_filesystem_handle.h"
+#include "vsx_filesystem_file_handle.h"
 #include "vsx_filesystem_archive.h"
 
 
@@ -51,6 +51,5 @@ namespace vsx_filesystem
       return &f;
     }
   };
-
 }
 

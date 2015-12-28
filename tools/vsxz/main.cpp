@@ -49,9 +49,7 @@ vsx_argvector* arg = vsx_argvector::get_instance();
 
 void extract()
 {
-  bool preload_compressed_data = arg->has_param("preload");
   bool dry_run = arg->has_param("dry");
-
 
   // Sanitize current_path
   if (!current_path.size())
@@ -66,16 +64,13 @@ void extract()
   if (!filesystem.is_file(filename))
     VSX_ERROR_EXIT( (vsx_string<>("Invalid archive supplied,")+filename).c_str(), 1);
 
-  if (arg->has_param("mt"))
-    filesystem.get_archive().load_all_mt( filename.c_str() );
-  else
-    filesystem.get_archive().load( filename.c_str(), preload_compressed_data );
+  filesystem.get_archive().load( filename.c_str(), arg->has_param("mt") );
 
   // Sanitize archive
   if (!filesystem.get_archive().is_archive_populated())
     VSX_ERROR_EXIT("Archive contains no files or failed to load", 2);
 
-  vsx_nw_vector<vsx_filesystem::archive_info>* archive_files = filesystem.get_archive().get_files();
+  vsx_nw_vector<vsx_filesystem::archive_info>* archive_files = filesystem.get_archive().files_get();
   for (unsigned long i = 0; i < (*archive_files).size(); ++i)
   {
     vsx_string<> out_filename = (*archive_files)[i].filename;
@@ -160,10 +155,9 @@ void create()
 
   filesystem.get_archive().create(archive_filename.c_str());
 
-  for (size_t i = 0; i < parts.size(); i++)
-  {
+  for (size_t i = 0; i < parts.size(); i++) {
     vsx_printf(L"* adding: %s \n", parts[i].c_str() );
-    int ret = filesystem.get_archive().add_file_mt( parts[i] );
+    int ret = filesystem.get_archive().file_add( parts[i], 0x0, 0, "", true);
     if ( ret )
       VSX_ERROR_EXIT( "archive_add_file failed", ret );
   }

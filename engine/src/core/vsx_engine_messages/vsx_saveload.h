@@ -115,13 +115,13 @@ if (cmd == "package_export")
           {
             if (comp->get_params_in()->param_id_list[i]->get_string() != comp->get_params_in()->param_id_list[i]->get_default_string())
             {
-              tfs.get_archive().add_file(comp->get_params_in()->param_id_list[i]->get_string(),0,0, vsx_data_path::get_instance()->data_path_get() +comp->get_params_in()->param_id_list[i]->get_string());
+              tfs.get_archive().file_add(comp->get_params_in()->param_id_list[i]->get_string(),0,0, vsx_data_path::get_instance()->data_path_get() +comp->get_params_in()->param_id_list[i]->get_string(), true);
             }
           }
         }
         for (unsigned long i = 0; i < comp->module->resources.size(); ++i) {
           printf("engine resource add: %s\n", comp->module->resources[i].c_str() );
-          tfs.get_archive().add_file(comp->module->resources[i],0,0,vsx_data_path::get_instance()->data_path_get()+comp->module->resources[i]);
+          tfs.get_archive().file_add(comp->module->resources[i],0,0,vsx_data_path::get_instance()->data_path_get()+comp->module->resources[i], true);
         }
       }
     }

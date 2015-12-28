@@ -5,9 +5,10 @@
 #include <string/vsx_string.h>
 #include <tools/vsx_lock.h>
 
-#include <filesystem/vsx_filesystem_handle.h>
+#include <filesystem/vsx_filesystem_file_handle.h>
 #include <filesystem/vsx_filesystem_archive.h>
 #include <filesystem/vsx_filesystem_archive_info.h>
+#include <filesystem/vsx_filesystem_archive_base.h>
 
 #define VSXF_NUM_ADD_THREADS 8
 #define VSXF_WORK_CHUNK_MAX_SIZE 1024*1024*5
@@ -15,44 +16,40 @@
 namespace vsx_filesystem
 {
   class ENGINE_DLLIMPORT filesystem_archive
+      : public filesystem_archive_base
   {
-    vsx_nw_vector<archive_info> archive_files;
-    vsx_nw_vector<archive_info*> archive_files_p;
+    const size_t work_chunk_size = 1024*1024 * 5;
+
     FILE* archive_handle = 0x0;
     vsx_string<> archive_name;
-
-    vsx_nw_vector<archive_info*> add_work_pool[VSXF_NUM_ADD_THREADS];
-    size_t add_work_pool_iterator = 0;
-    size_t work_chunk_current_size = 0;
-
-    void archive_close_handle_workers();
-
+    vsx_nw_vector<archive_info> archive_files;
     vsx_lock lock;
 
     void file_open_read(const char* filename, file_handle* &handle);
     void file_open_write(const char* filename, file_handle* &handle);
 
-    static void* add_file_worker(void* p);
-    static void* load_worker(void* p);
+    void file_add_all_worker(vsx_nw_vector<archive_info*>* work_list);
+    void file_add_all();
+
+    void load_all_worker(vsx_nw_vector<archive_info*>* work_list);
+    void load_all();
 
   public:
 
     void create(const char* filename);
+    int load(const char* archive_filename, bool load_data_multithreaded);
     void close();
+
+    int file_add(vsx_string<> filename, char* data, uint32_t data_size, vsx_string<> disk_filename, bool deferred_multithreaded);
 
     bool is_archive();
     bool is_archive_populated();
+    bool is_file(vsx_string<> filename);
 
-    int load(const char* filename, bool preload_compressed_data = true);
-    void load_all_mt(const char* filename);
+    vsx_nw_vector<archive_info>* files_get();
 
-    int add_file(vsx_string<> filename, char* data = 0, uint32_t data_size = 0, vsx_string<> disk_filename = "");
-    int add_file_mt(vsx_string<> filename);
-
-    vsx_nw_vector<archive_info>* get_files();
-
-    bool file_exists(vsx_string<> filename);
     void file_open(const char* filename, const char* mode, file_handle* &handle);
     void file_close(file_handle* handle);
+
   };
 }

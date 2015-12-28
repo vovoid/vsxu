@@ -292,23 +292,24 @@ void vsx_engine::input_event(vsx_engine_input_event &new_input_event)
 
 int vsx_engine::load_state(vsx_string<>filename, vsx_string<>*error_string)
 {
-  if (!valid) return 2;
+  if (!valid)
+    return 2;
+
   filesystem.set_base_path("");
 
   if (filesystem.get_archive().is_archive())
     filesystem.get_archive().close();
 
-
   vsx_command_list load1;
   load1.set_filesystem(&filesystem);
-  vsx_string<>i_filename = filename;
+  vsx_string<> i_filename = filename;
 
   bool is_archive = false;
   if (filename.size() >= 4)
   {
     if (filename.substr(filename.size()-4,4) == ".vsx")
     {
-      filesystem.get_archive().load(filename.c_str());
+      filesystem.get_archive().load(filename.c_str(), false);
       if (filesystem.get_archive().is_archive_populated())
       {
         is_archive = true;
