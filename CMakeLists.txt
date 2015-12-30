@@ -49,6 +49,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 endif()
 
 ######################################################################################
+enable_testing()
+
+######################################################################################
 # Install the Global Headers so as to install VSXu as a library
 if (UNIX OR VSXU_WINDOWS_LIB_BUILD)
   file(GLOB HEADERS "*.h")

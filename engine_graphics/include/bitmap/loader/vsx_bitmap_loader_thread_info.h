@@ -7,7 +7,7 @@ class vsx_texture_loader_thread_info
 {
 public:
   void* thread = 0x0;
-  vsx_filesystem::filesystem* filesystem = 0x0;
+  vsx::filesystem* filesystem = 0x0;
   vsx_bitmap* bitmap = 0x0;
   vsx_string<> filename;
 };

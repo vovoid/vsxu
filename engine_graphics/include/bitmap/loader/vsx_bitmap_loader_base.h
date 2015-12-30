@@ -12,7 +12,7 @@ class vsx_bitmap_loader_base
 {
 protected:
 
-  virtual void load_internal(vsx_string<> filename, vsx_filesystem::filesystem* filesystem, vsx_bitmap* bitmap, bool thread, vsx_texture_loader_thread_info* thread_info) = 0;
+  virtual void load_internal(vsx_string<> filename, vsx::filesystem* filesystem, vsx_bitmap* bitmap, bool thread, vsx_texture_loader_thread_info* thread_info) = 0;
 
   static void handle_transformations(vsx_bitmap* bitmap)
   {
@@ -28,7 +28,7 @@ protected:
 
 public:
 
-  void load(vsx_bitmap* bitmap, vsx_string<>filename, vsx_filesystem::filesystem* filesystem, bool thread)
+  void load(vsx_bitmap* bitmap, vsx_string<>filename, vsx::filesystem* filesystem, bool thread)
   {
     vsx_texture_loader_thread_info* thread_info = new vsx_texture_loader_thread_info();
     thread_info->filename = filename;

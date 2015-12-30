@@ -65,15 +65,15 @@ public:
     message = "module||ok";
 
     current_filename = filename->get();
-    vsx_filesystem::file_handle *fp;
-    //printf("a\n");
+    vsx::file *fp;
+
     if ((fp = engine->filesystem->f_open(current_filename.c_str(), "r")) == NULL)
       return;
     char tag[4] = {0,0,0,0};
     engine->filesystem->f_read((void*)&tag,sizeof(char) * 4,fp);
     vsx_string<>line;
     line = tag;
-    //printf("vxm line read: %s\n",line.c_str());
+
     if (line != "vxm")
     {
       message = "module||ERROR reading start tag! This is not a VXM mesh file!";

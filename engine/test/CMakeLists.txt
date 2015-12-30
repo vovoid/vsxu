@@ -18,9 +18,11 @@ ${CMAKE_SOURCE_DIR}/../include
 ${CMAKE_SOURCE_DIR}/../../
  )
 
-add_executable(test_vsx_profiler test_vsx_profiler.cpp )
-
 add_executable(test_cpu_info test_cpu_info.cpp )
 
-target_link_libraries( test_vsx_profiler  pthread )
+add_executable(test_mmap test_mmap.cpp )
+target_link_libraries(test_mmap rt vsxu_engine)
+
+add_executable(test_fread test_fread.cpp )
+target_link_libraries(test_fread rt vsxu_engine)
 

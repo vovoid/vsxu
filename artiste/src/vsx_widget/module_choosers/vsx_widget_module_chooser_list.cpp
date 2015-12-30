@@ -85,7 +85,7 @@ public:
 
     mtex_blob = vsx_texture_loader::load(
       vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
-      vsx_filesystem::filesystem::get_instance(),
+      vsx::filesystem::get_instance(),
       true, // threaded
       vsx_bitmap::flip_vertical_hint,
       vsx_texture_gl::linear_interpolate_hint

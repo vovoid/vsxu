@@ -70,7 +70,7 @@ public:
 
           vsx_string<> engine_resources_base_path = engine->filesystem->get_base_path();
 
-          vsx_filesystem_helper::get_files_recursive(engine_resources_base_path + DIRECTORY_SEPARATOR + directory_path->get(), &files);
+          vsx::filesystem_helper::get_files_recursive(engine_resources_base_path + DIRECTORY_SEPARATOR + directory_path->get(), &files);
 
           files_list.reset_used(0);
           for (std::list< vsx_string<> >::iterator it = files.begin(); it != files.end(); ++it)

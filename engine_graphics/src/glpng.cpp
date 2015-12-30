@@ -87,8 +87,8 @@ static void checkForGammaEnv()
 }
 
 typedef struct {
-  vsx_filesystem::filesystem* filesystem;
-  vsx_filesystem::file_handle* fp;
+  vsx::filesystem* filesystem;
+  vsx::file* fp;
 } filesystem_info;
 
 
@@ -111,7 +111,7 @@ static void png_vsx_filesystem_read_data(png_structp png_ptr, png_bytep data, pn
 
 
 //int APIENTRY pngLoadRawF(FILE *fp, pngRawInfo *pinfo) {
-int  pngLoadRaw(const char* filename, pngRawInfo *pinfo, vsx_filesystem::filesystem* filesystem) {
+int  pngLoadRaw(const char* filename, pngRawInfo *pinfo, vsx::filesystem* filesystem) {
 	unsigned char header[8];
 	png_structp png;
 	png_infop   info;

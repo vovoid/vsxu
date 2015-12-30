@@ -87,7 +87,7 @@ public:
     else message = "module||ok";
 
     current_filename = filename->get();
-    vsx_filesystem::file_handle *fp;
+    vsx::file *fp;
 
     if ((fp = engine->filesystem->f_open(current_filename.c_str(), "r")) == NULL)
     {

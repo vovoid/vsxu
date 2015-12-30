@@ -275,7 +275,7 @@ void vsx_window_object_inspector::load_file(vsx_string<>filename)
 
   texture = vsx_texture_loader::load(
     filename,
-    vsx_filesystem::filesystem::get_instance(),
+    vsx::filesystem::get_instance(),
     true, // threaded
     (int)vsx_string_helper::verify_filesuffix(filename, "tga") * vsx_bitmap::flip_vertical_hint, // only flip TGAs
     vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::generate_mipmaps_hint

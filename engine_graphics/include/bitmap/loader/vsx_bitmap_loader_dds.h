@@ -97,7 +97,7 @@ class vsx_bitmap_loader_dds
     uint32_t    reserved_2;
   } __attribute__((packed));
 
-  static bool worker_load_file(vsx_bitmap* bitmap, vsx_filesystem::filesystem* filesystem, vsx_filesystem::file_handle* file_handle, size_t cube_map_side)
+  static bool worker_load_file(vsx_bitmap* bitmap, vsx::filesystem* filesystem, vsx::file* file_handle, size_t cube_map_side)
   {
     req_error_v(file_handle, "file handle is null", 0);
 
@@ -152,10 +152,10 @@ class vsx_bitmap_loader_dds
   {
     vsx_texture_loader_thread_info* thread_info = ((vsx_texture_loader_thread_info*)ptr);
 
-    vsx_filesystem::filesystem* filesystem = thread_info->filesystem;
+    vsx::filesystem* filesystem = thread_info->filesystem;
     vsx_bitmap* bitmap = thread_info->bitmap;
 
-    vsx_filesystem::file_handle* file_handle = filesystem->f_open(thread_info->filename.c_str(), "rb");
+    vsx::file* file_handle = filesystem->f_open(thread_info->filename.c_str(), "rb");
     worker_load_file(bitmap, filesystem, file_handle, 0);
     filesystem->f_close(file_handle);
 
@@ -165,7 +165,7 @@ class vsx_bitmap_loader_dds
       for (size_t i = 1; i < 6; i++)
       {
         vsx_string<> new_filename = thread_info->filename.replace("_0", "_"+vsx_string_helper::i2s(i));
-        vsx_filesystem::file_handle* file_handle = filesystem->f_open(new_filename.c_str(), "rb");
+        vsx::file* file_handle = filesystem->f_open(new_filename.c_str(), "rb");
         worker_load_file(bitmap, filesystem, file_handle, i);
         filesystem->f_close(file_handle);
       }
@@ -177,7 +177,7 @@ class vsx_bitmap_loader_dds
     return 0;
   }
 
-  void load_internal(vsx_string<> filename, vsx_filesystem::filesystem* filesystem, vsx_bitmap* bitmap, bool thread, vsx_texture_loader_thread_info* thread_info)
+  void load_internal(vsx_string<> filename, vsx::filesystem* filesystem, vsx_bitmap* bitmap, bool thread, vsx_texture_loader_thread_info* thread_info)
   {
     if (!thread)
       return (void)worker((void*)thread_info);

@@ -481,7 +481,7 @@ void app_load(int id)
 
   gui_prod_fullwindow = &prod_fullwindow;
   //---------------------------------------------------------------------------
-  myf.load( PLATFORM_SHARED_FILES + vsx_string<>("font/font-ascii_output.png"), vsx_filesystem::filesystem::get_instance());
+  myf.load( PLATFORM_SHARED_FILES + vsx_string<>("font/font-ascii_output.png"), vsx::filesystem::get_instance());
 
   if (dual_monitor) {
     vxe->start();

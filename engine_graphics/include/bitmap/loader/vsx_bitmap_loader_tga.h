@@ -31,9 +31,9 @@ class vsx_bitmap_loader_tga
   {
     vsx_texture_loader_thread_info* thread_info = ((vsx_texture_loader_thread_info*)ptr);
     vsx_bitmap* bitmap = thread_info->bitmap;
-    vsx_filesystem::filesystem* filesystem = thread_info->filesystem;
+    vsx::filesystem* filesystem = thread_info->filesystem;
 
-    vsx_filesystem::file_handle* file_handle = filesystem->f_open(thread_info->filename.c_str(), "rb");
+    vsx::file* file_handle = filesystem->f_open(thread_info->filename.c_str(), "rb");
     tga_header header;
     filesystem->f_read( &header, sizeof(header), file_handle );
 
@@ -77,7 +77,7 @@ class vsx_bitmap_loader_tga
     return 0;
   }
 
-  void load_internal(vsx_string<> filename, vsx_filesystem::filesystem* filesystem, vsx_bitmap* bitmap, bool thread, vsx_texture_loader_thread_info* thread_info)
+  void load_internal(vsx_string<> filename, vsx::filesystem* filesystem, vsx_bitmap* bitmap, bool thread, vsx_texture_loader_thread_info* thread_info)
   {
     if (!thread)
       return (void)worker((void*)thread_info);

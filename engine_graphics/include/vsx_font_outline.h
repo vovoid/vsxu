@@ -61,7 +61,7 @@ class vsx_font_outline
   vsx_nw_vector< text_info<W> > lines;
 
   // meta
-  vsx_filesystem::filesystem* filesystem;
+  vsx::filesystem* filesystem;
   vsx_gl_state* gl_state;
 
   // settings
@@ -142,7 +142,7 @@ public:
     return text;
   }
 
-  void filesystem_set(vsx_filesystem::filesystem* fs)
+  void filesystem_set(vsx::filesystem* fs)
   {
     filesystem = fs;
   }

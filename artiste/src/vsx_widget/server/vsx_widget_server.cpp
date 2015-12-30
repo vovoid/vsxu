@@ -266,7 +266,7 @@ void vsx_widget_server::init()
 
   mtex = vsx_texture_loader::load(
     vsx_widget_skin::get_instance()->skin_path_get() + "server.dds",
-    vsx_filesystem::filesystem::get_instance(),
+    vsx::filesystem::get_instance(),
     true, // threaded
     0,
     vsx_texture_gl::linear_interpolate_hint
@@ -756,7 +756,7 @@ void vsx_widget_server::vsx_command_process_f() {
         vsx_module_info* a;
         std::list< vsx_string<> > mfiles;
         vsx_string<>base = vsx_data_path::get_instance()->data_path_get() + "macros";
-        vsx_filesystem_helper::get_files_recursive(base, &mfiles, "", "");
+        vsx::filesystem_helper::get_files_recursive(base, &mfiles, "", "");
         for (std::list< vsx_string<> >::iterator it = mfiles.begin(); it != mfiles.end(); ++it) {
           vsx_string<>ss = vsx_string_helper::str_replace<char>(
             " ",

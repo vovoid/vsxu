@@ -120,3 +120,5 @@ if (UNIX OR VSXU_WINDOWS_LIB_BUILD)
   install (FILES ${HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/profiler COMPONENT Devel)
 endif()
 ################################################################################
+
+add_subdirectory(test)

@@ -99,7 +99,7 @@ public:
 
     mtex = vsx_texture_loader::load(
         vsx_widget_skin::get_instance()->skin_path_get() + "label.png",
-        vsx_filesystem::filesystem::get_instance(),
+        vsx::filesystem::filesystem::get_instance(),
         true, // threaded
         vsx_bitmap::no_hint,
         vsx_texture_gl::linear_interpolate_hint

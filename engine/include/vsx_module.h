@@ -113,7 +113,7 @@ class vsx_module_engine_info
 public:
 
   // filesystem handle to use in every module's file operations
-  vsx_filesystem::filesystem* filesystem;
+  vsx::filesystem* filesystem;
 
   // module list - so that modules can construct their own vsx_engine's
   void* module_list;

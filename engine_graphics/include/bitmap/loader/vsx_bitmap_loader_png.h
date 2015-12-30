@@ -41,7 +41,7 @@ class vsx_bitmap_loader_png
     return 0;
   }
 
-  void load_internal(vsx_string<> filename, vsx_filesystem::filesystem* filesystem, vsx_bitmap* bitmap, bool thread, vsx_texture_loader_thread_info* thread_info)
+  void load_internal(vsx_string<> filename, vsx::filesystem* filesystem, vsx_bitmap* bitmap, bool thread, vsx_texture_loader_thread_info* thread_info)
   {
     if (!thread)
       return (void)worker((void*)thread_info);

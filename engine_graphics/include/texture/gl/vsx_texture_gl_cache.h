@@ -100,7 +100,7 @@ public:
     return false;
   }
 
-  vsx_texture_gl* aquire(vsx_string<>& filename, vsx_filesystem::filesystem* filesystem, bool reload_with_thread, uint64_t bitmap_loader_hint, uint64_t hint, bool reload = false)
+  vsx_texture_gl* aquire(vsx_string<>& filename, vsx::filesystem* filesystem, bool reload_with_thread, uint64_t bitmap_loader_hint, uint64_t hint, bool reload = false)
   {
     vsx_texture_gl_cache_item* item = get_item(filename, bitmap_loader_hint, hint);
     req_error_v(item, "Invalid cache item", 0x0);

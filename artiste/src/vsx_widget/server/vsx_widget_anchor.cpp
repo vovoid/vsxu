@@ -1612,7 +1612,7 @@ void vsx_widget_anchor::init()
 
   mtex_d = vsx_texture_loader::load(
     vsx_widget_skin::get_instance()->skin_path_get() + "datatypes/"+p_type+".dds",
-    vsx_filesystem::filesystem::get_instance(),
+    vsx::filesystem::get_instance(),
     true, // threaded
     0,
     vsx_texture_gl::linear_interpolate_hint
@@ -1620,7 +1620,7 @@ void vsx_widget_anchor::init()
 
   mtex_blob = vsx_texture_loader::load(
     vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/highlight_blob.png",
-    vsx_filesystem::filesystem::get_instance(),
+    vsx::filesystem::get_instance(),
     true, // threaded
     vsx_bitmap::flip_vertical_hint,
     vsx_texture_gl::linear_interpolate_hint
@@ -1628,7 +1628,7 @@ void vsx_widget_anchor::init()
 
   mtex_blob_small = vsx_texture_loader::load(
     vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
-    vsx_filesystem::filesystem::get_instance(),
+    vsx::filesystem::get_instance(),
     true, // threaded
     vsx_bitmap::flip_vertical_hint,
     vsx_texture_gl::linear_interpolate_hint
@@ -1649,7 +1649,7 @@ void vsx_widget_anchor::init()
 
 void vsx_widget_anchor::reinit() 
 {
-  vsx_filesystem::filesystem filesystem;
+  vsx::filesystem filesystem;
   vsx_widget::reinit();
 }
 

@@ -176,6 +176,8 @@ set(SOURCES
   src/filesystem/vsx_filesystem_helper.cpp
   src/filesystem/vsx_filesystem.cpp
   src/filesystem/vsx_filesystem_archive.cpp
+  src/filesystem/vsx_filesystem_archive_vsx.cpp
+  src/filesystem/vsx_filesystem_archive_vsxz.cpp
 )
 
 ################################################################################
@@ -220,3 +222,5 @@ endif()
 target_link_libraries(${module_id}
   ${DL_LIBRARY}
 )
+
+add_subdirectory(test)

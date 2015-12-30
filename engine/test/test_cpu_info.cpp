@@ -4,6 +4,7 @@
 /* snatched from here:
  * http://stackoverflow.com/questions/2901694/programatically-detect-number-of-physical-processors-cores-or-if-hyper-threading */
 
+using namespace std;
 
 void cpuID(unsigned i, unsigned regs[4]) {
 #ifdef _WIN32

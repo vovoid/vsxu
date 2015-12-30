@@ -5,7 +5,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-namespace vsx_filesystem_helper
+namespace vsx
+{
+namespace filesystem_helper
 {
   inline size_t file_get_size(vsx_string<> filename)
   {
@@ -59,4 +61,5 @@ namespace vsx_filesystem_helper
       vsx_string<> exclude_filter = "",
       vsx_string<> dir_ignore_token = ".vsx_hidden"
     );
+}
 }

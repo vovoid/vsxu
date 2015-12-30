@@ -310,7 +310,7 @@ unsigned long MOD_NM(vsx_engine_environment* environment)
   if (environment)
   {
     base_path = environment->engine_parameter[0];
-    vsx_filesystem_helper::get_files_recursive(base_path+"render.glsl",&i_shaders,".glsl",".svn");
+    vsx::filesystem_helper::get_files_recursive(base_path+"render.glsl",&i_shaders,".glsl",".svn");
   }
   else
   {

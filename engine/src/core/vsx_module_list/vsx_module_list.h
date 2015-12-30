@@ -66,7 +66,7 @@ public:
     // recursively find the plugin so's from the plugins directory
     // store it in: mfiles
     std::list< vsx_string<> > mfiles;
-    vsx_filesystem_helper::get_files_recursive
+    vsx::filesystem_helper::get_files_recursive
     (
       VSXU_PLUGIN_LOCATION  // from CmakeLists.txt
       ,

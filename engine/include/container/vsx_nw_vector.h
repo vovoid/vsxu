@@ -116,12 +116,12 @@ public:
     return A[used-1];
   }
 
-  inline const size_t size() VSX_ALWAYS_INLINE
+  inline size_t size() VSX_ALWAYS_INLINE
   {
     return used;
   }
 
-  inline const bool has(T o)
+  inline bool has(T o)
   {
     for (size_t i = 0; i < used; i++)
       if (A[i] == o)

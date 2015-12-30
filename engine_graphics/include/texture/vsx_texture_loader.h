@@ -7,7 +7,7 @@
 class vsx_texture_loader
 {
 
-  static vsx_texture_gl* handle_cache(vsx_string<> filename, vsx_filesystem::filesystem* filesystem, bool thread, uint64_t bitmap_loader_hint, uint64_t hint, bool try_to_reload = false)
+  static vsx_texture_gl* handle_cache(vsx_string<> filename, vsx::filesystem* filesystem, bool thread, uint64_t bitmap_loader_hint, uint64_t hint, bool try_to_reload = false)
   {
     if (vsx_texture_gl_cache::get_instance()->has(filename, bitmap_loader_hint, hint))
       return vsx_texture_gl_cache::get_instance()->aquire(filename, filesystem, thread, bitmap_loader_hint, hint, try_to_reload );
@@ -19,7 +19,7 @@ public:
   template <class T = vsx_texture_gl>
   static inline vsx_texture<T>* load(
       vsx_string<> filename, // i.e. "my_image.png" or "my_image.jpg"
-      vsx_filesystem::filesystem* filesystem,  // your filesystem or vsx_filesystem::get_instance()
+      vsx::filesystem* filesystem,  // your filesystem or vsx::filesystem::get_instance()
       bool thread,  // load in a thread or not, recommended when doing bitmap transforms
       uint64_t bitmap_loader_hint, // bitmap transforms and other hints, see vsx_bitmap::loader_hint enum
       uint64_t gl_loader_hint, // gl hint, see vsx_texture_gl::loader_hint

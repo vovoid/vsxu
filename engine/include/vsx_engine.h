@@ -161,7 +161,7 @@ public:
   // load a new state from external archive, via pre-existing filesystem pointer
   // This is if you don't want engine to maintain its own filesystem, and if you put
   // for instance 3 state files into one .vsx file with vsxz, and want to load them into 3 different engines
-  int load_state_filesystem(vsx_string<>filename, vsx_string<>*error_string, vsx_filesystem::filesystem* filesystem);
+  int load_state_filesystem(vsx_string<>filename, vsx_string<>*error_string, vsx::filesystem* filesystem);
 
   // process messages - this should be run once per physical frame
   void process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive = false, bool ignore_timing = false, float max_time = 0.01f);

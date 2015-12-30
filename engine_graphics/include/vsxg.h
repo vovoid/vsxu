@@ -81,7 +81,7 @@ typedef struct {
   unsigned char *Palette;
 } pngRawInfo;
 
-extern int VSX_ENGINE_GRAPHICS_DLLIMPORT pngLoadRaw(const char* filename, pngRawInfo *rawinfo, vsx_filesystem::filesystem* filesystem);
+extern int VSX_ENGINE_GRAPHICS_DLLIMPORT pngLoadRaw(const char* filename, pngRawInfo *rawinfo, vsx::filesystem* filesystem);
 
 class VSX_ENGINE_GRAPHICS_DLLIMPORT CJPEGTest
 {
@@ -93,7 +93,7 @@ public:
     ( 
         const vsx_string<>& strFile, // Load this file
         vsx_string<>& strErr, // Returns error text on failure
-        vsx_filesystem::filesystem* filesystem
+        vsx::filesystem* filesystem
     );
     
     bool SaveJPEG( const vsx_string<>& strFile, vsx_string<>& strErr, const int nQFactor );

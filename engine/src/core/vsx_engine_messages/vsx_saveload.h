@@ -97,9 +97,9 @@ if (cmd == "package_export")
   if (c->parts.size() == 3) {
     vsx_string<>base_path = vsx_data_path::get_instance()->data_path_get();
 
-    vsx_filesystem::filesystem tfs;
+    vsx::filesystem tfs;
     vsx_string<>filename = (c->parts[2]+vsx_string_helper::str_replace<char>(";","",c->parts[1]));
-    tfs.get_archive().create((base_path+filename).c_str());
+    tfs.get_archive().create((base_path+filename).c_str(), vsx::filesystem_archive::archive_vsx);
     vsx_command_list savelist;
     get_state_as_commandlist(savelist);
     savelist.set_filesystem(&tfs);
@@ -143,7 +143,7 @@ if (cmd == "state_save")
   if (c->parts.size() == 2)
   {
     vsx_string<>base_path = vsx_data_path::get_instance()->data_path_get();
-    vsx_filesystem::filesystem tfs;
+    vsx::filesystem tfs;
     vsx_command_list savelist;
     get_state_as_commandlist(savelist);
     savelist.set_filesystem(&tfs);

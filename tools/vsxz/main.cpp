@@ -44,7 +44,7 @@
 #endif
 
 vsx_string<>current_path = "./";
-vsx_filesystem::filesystem filesystem;
+vsx::filesystem filesystem;
 vsx_argvector* arg = vsx_argvector::get_instance();
 
 void extract()
@@ -70,7 +70,7 @@ void extract()
   if (!filesystem.get_archive().is_archive_populated())
     VSX_ERROR_EXIT("Archive contains no files or failed to load", 2);
 
-  vsx_nw_vector<vsx_filesystem::archive_info>* archive_files = filesystem.get_archive().files_get();
+  vsx_nw_vector<vsx::filesystem_archive_info>* archive_files = filesystem.get_archive().files_get();
   for (unsigned long i = 0; i < (*archive_files).size(); ++i)
   {
     vsx_string<> out_filename = (*archive_files)[i].filename;
@@ -79,9 +79,9 @@ void extract()
     vsx_string<> out_directory = current_path + "/" + out_dir;
 
     if (!dry_run)
-      vsx_filesystem_helper::create_directory( out_directory.c_str() );
+      vsx::filesystem_helper::create_directory( out_directory.c_str() );
 
-    vsx_filesystem::file_handle* fpi = filesystem.f_open((*archive_files)[i].filename.c_str(), "r");
+    vsx::file* fpi = filesystem.f_open((*archive_files)[i].filename.c_str(), "r");
       if (!fpi)
         VSX_ERROR_EXIT( (vsx_string<>("Internal Error: fpi invalid when reading ")+(*archive_files)[i].filename).c_str(), 3);
 
@@ -125,7 +125,7 @@ void create()
 
   vsx_string<> filenames;
   vsx_nw_vector< vsx_string<> > parts;
-  vsx_filesystem::filesystem fs;
+  vsx::filesystem fs;
 
   if (arg->has_param_with_value("f"))
     filenames = arg->get_param_value("f");
@@ -153,7 +153,7 @@ void create()
 
   vsx_string<>archive_filename = arg->get_param_value("c");
 
-  filesystem.get_archive().create(archive_filename.c_str());
+  filesystem.get_archive().create(archive_filename.c_str(), vsx::filesystem_archive::archive_vsx);
 
   for (size_t i = 0; i < parts.size(); i++) {
     vsx_printf(L"* adding: %s \n", parts[i].c_str() );

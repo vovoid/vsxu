@@ -6,7 +6,7 @@
 
 class vsx_sample_ogg : public vsx_sample
 {
-  vsx_filesystem::filesystem* filesystem;
+  vsx::filesystem* filesystem;
 
 public:
 
@@ -16,7 +16,7 @@ public:
   {
   }
 
-  void set_filesystem(vsx_filesystem::filesystem* n)
+  void set_filesystem(vsx::filesystem* n)
   {
     filesystem = n;
   }
@@ -26,7 +26,7 @@ public:
     if (!filesystem)
       return;
 
-    vsx_filesystem::file_handle *fp;
+    vsx::file *fp;
     if
     (
       (fp = filesystem->f_open(filename.c_str(), "r"))

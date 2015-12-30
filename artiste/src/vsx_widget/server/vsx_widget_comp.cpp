@@ -634,7 +634,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
 
       mtex = vsx_texture_loader::load(
         vsx_widget_skin::get_instance()->skin_path_get() + "component_types/"+component_type+".dds",
-        vsx_filesystem::filesystem::get_instance(),
+        vsx::filesystem::get_instance(),
         true, // threaded
         0,
         vsx_texture_gl::linear_interpolate_hint
@@ -644,7 +644,7 @@ void vsx_widget_component::command_process_back_queue(vsx_command_s *t)
       if (component_type == "macro")
         mtex_overlay = vsx_texture_loader::load(
           vsx_widget_skin::get_instance()->skin_path_get() +"component_types/"+component_type+"_overlay.png",
-          vsx_filesystem::filesystem::get_instance(),
+          vsx::filesystem::get_instance(),
           true, // threaded
           vsx_bitmap::flip_vertical_hint,
           vsx_texture_gl::linear_interpolate_hint | vsx_texture_gl::generate_mipmaps_hint
@@ -732,7 +732,7 @@ void vsx_widget_component::init()
 
   mtex_blob = vsx_texture_loader::load(
     vsx_widget_skin::get_instance()->skin_path_get() + "interface_extras/connection_blob.png",
-    vsx_filesystem::filesystem::get_instance(),
+    vsx::filesystem::get_instance(),
     true, // threaded
     vsx_bitmap::flip_vertical_hint,
     vsx_texture_gl::linear_interpolate_hint

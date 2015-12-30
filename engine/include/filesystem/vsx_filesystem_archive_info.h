@@ -1,8 +1,8 @@
 #pragma once
 
-namespace vsx_filesystem
+namespace vsx
 {
-  class archive_info
+  class filesystem_archive_info
   {
   public:
 
@@ -10,17 +10,17 @@ namespace vsx_filesystem
     size_t archive_position = 0;
 
     size_t compressed_size = 0;
-    void* compressed_data = 0x0;
+    unsigned char* compressed_data = 0x0;
 
     size_t uncompressed_size = 0;
-    void* uncompressed_data = 0x0;
+    unsigned char* uncompressed_data = 0x0;
 
-    void* get_compressed_data()
+    unsigned char* get_compressed_data()
     {
       return compressed_data;
     }
 
-    void set_compressed_data(void* n)
+    void set_compressed_data(unsigned char* n)
     {
       compressed_data = n;
     }

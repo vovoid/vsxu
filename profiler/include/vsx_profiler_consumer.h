@@ -84,7 +84,7 @@ class vsx_profiler_consumer
   vsx_nw_vector<u_int64_t> current_threads;
   vsx_nw_vector<u_int64_t> current_plots;
 
-  vsx_filesystem::filesystem filesystem;
+  vsx::filesystem filesystem;
 
   double current_max_time;
   double cycles_per_second;
@@ -105,7 +105,7 @@ public:
   {
     std::list< vsx_string<> > local_filenames;
 
-    vsx_filesystem_helper::get_files_recursive(
+    vsx::filesystem_helper::get_files_recursive(
       vsx_profiler_manager::profiler_directory_get(),
       &local_filenames
     );
@@ -162,7 +162,7 @@ public:
     current_plots.reset_used();
 
     vsx_string<>filename = vsx_profiler_manager::profiler_directory_get() + DIRECTORY_SEPARATOR + filenames[index];
-    vsx_filesystem::file_handle* fp = filesystem.f_open( filename.c_str() , "r" );
+    vsx::file* fp = filesystem.f_open( filename.c_str() , "r" );
 
     unsigned long file_size = filesystem.f_get_size(fp);
 

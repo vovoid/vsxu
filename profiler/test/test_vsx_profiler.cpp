@@ -5,8 +5,10 @@
 #include <sched.h>
 #include <linux/unistd.h>
 #include <sys/syscall.h>
+#include <vsx_platform.h>
 
-#include "../include/vsx_profiler.h"
+#include <vsx_profiler_manager.h>
+
 
 volatile __attribute__((aligned(64))) int64_t run_threads = 1;
 

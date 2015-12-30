@@ -141,7 +141,7 @@ void vsxu_assistant::init()
 
   texture = vsx_texture_loader::load(
     PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"luna.png",
-    vsx_filesystem::filesystem::get_instance(),
+    vsx::filesystem::get_instance(),
     true, // threaded
     vsx_bitmap::flip_vertical_hint,
     vsx_texture_gl::linear_interpolate_hint

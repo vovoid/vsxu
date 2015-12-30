@@ -2,10 +2,10 @@
 
 #include <string/vsx_string.h>
 #include <filesystem/vsx_filesystem_archive_info.h>
-#include <filesystem/vsx_filesystem_file_handle.h>
+#include <filesystem/vsx_file.h>
 #include <container/vsx_nw_vector.h>
 
-namespace vsx_filesystem
+namespace vsx
 {
 
   class filesystem_archive_base
@@ -19,10 +19,10 @@ namespace vsx_filesystem
     virtual bool is_archive_populated() = 0;
     virtual bool is_file(vsx_string<> filename) = 0;
 
-    virtual vsx_nw_vector<archive_info>* files_get() = 0;
+    virtual vsx_nw_vector<filesystem_archive_info>* files_get() = 0;
 
-    virtual void file_open(const char* filename, const char* mode, file_handle* &handle) = 0;
-    virtual void file_close(file_handle* handle) = 0;
+    virtual void file_open(const char* filename, const char* mode, file* &handle) = 0;
+    virtual void file_close(file* handle) = 0;
 
     virtual int file_add(vsx_string<> filename, char* data, uint32_t data_size, vsx_string<> disk_filename, bool deferred_multithreaded) = 0;
   };
