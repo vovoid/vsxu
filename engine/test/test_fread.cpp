@@ -16,7 +16,7 @@ void reset_linux_cache(vsx_string<> name, int value)
 
 vsx_string<> create_random_data_file()
 {
-  vsx_string<> filename = "/tmp/test_fread_" + vsx_string_helper::i2s(rand());
+  vsx_string<> filename = "test_fread_" + vsx_string_helper::i2s(rand());
   FILE* fp = fopen(filename.c_str(), "wb");
   for (uint64_t i = 0; i < times; i++)
   {

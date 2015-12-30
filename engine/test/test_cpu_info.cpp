@@ -1,5 +1,10 @@
 #include <iostream>
 #include <string>
+#include <vsx_platform.h>
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+  #include <windows.h>
+#endif
 
 /* snatched from here:
  * http://stackoverflow.com/questions/2901694/programatically-detect-number-of-physical-processors-cores-or-if-hyper-threading */

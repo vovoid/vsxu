@@ -1,5 +1,4 @@
-#ifndef THREAD_POOL_H
-#define THREAD_POOL_H
+#pragma once
 
 #include <vector>
 #include <queue>
@@ -11,24 +10,97 @@
 #include <functional>
 #include <stdexcept>
 
-class vsx_thread_pool {
+#include <vsx_platform.h>
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+  #include <platform/win64/mingw-std-threads/mingw.thread.h>
+  #include <platform/win64/mingw-std-threads/mingw.mutex.h>
+  #include <platform/win64/mingw-std-threads/mingw.condition_variable.h>
+#endif
+
+class vsx_thread_pool
+{
 public:
-  //TODO: add a sleep timer, after which threads will be killed if inactive
-  explicit vsx_thread_pool(size_t = std::thread::hardware_concurrency());
-  ~vsx_thread_pool();
+
+  explicit vsx_thread_pool(size_t threads = std::thread::hardware_concurrency())
+  {
+    for(size_t i = 0;i<threads;++i)
+      workers.emplace_back(
+        [this]
+        {
+          for(;;)
+          {
+            std::function<void()> task;
+
+            {
+              std::unique_lock<std::mutex> lock(this->queue_mutex);
+              this->condition.wait(lock,
+                [this]{ return this->stop || !this->tasks.empty(); });
+              if(this->stop && this->tasks.empty())
+                return;
+              task = std::move(this->tasks.front());
+              this->tasks.pop();
+            }
+
+            task();
+
+            if (this->tasks.empty())
+              this->queue_empty_condition.notify_all();
+          }
+        }
+      );
+  }
+
+  ~vsx_thread_pool()
+  {
+    {
+      std::unique_lock<std::mutex> lock(queue_mutex);
+      stop = true;
+    }
+    condition.notify_all();
+    for(std::thread &worker: workers)
+      worker.join();
+  }
   
   // Add tasks to the task queue
   template<class F, class... Args>
-  auto add(F&& f, Args&&... args)
-    -> std::future<typename std::result_of<F(Args...)>::type>;
+  inline auto add(F&& f, Args&&... args)
+    -> std::future<typename std::result_of<F(Args...)>::type>
+  {
+    using return_type = typename std::result_of<F(Args...)>::type;
 
-  // Are there no more tasks to process?
-  bool is_jobless();
+    auto task = std::make_shared< std::packaged_task<return_type()> >(
+        std::bind(std::forward<F>(f), std::forward<Args>(args)...)
+      );
 
-  // Wait till the tasks are processed
-  void wait_all();
+    std::future<return_type> res = task->get_future();
+    {
+      std::unique_lock<std::mutex> lock(queue_mutex);
 
-  //global thread pool instance
+      // don't allow enqueueing after stopping the pool
+      if(stop)
+        throw std::runtime_error("enqueue on stopped thread_pool");
+
+      tasks.emplace([task](){ (*task)(); });
+    }
+    condition.notify_one();
+    return res;
+  }
+
+  inline bool is_jobless()
+  {
+    return tasks.empty();
+  }
+
+  inline void wait_all()
+  {
+    if (tasks.empty())
+      return;
+
+    std::unique_lock<std::mutex> queue_empty_lock(this->queue_empty_mutex);
+    queue_empty_condition.wait(queue_empty_lock);
+  }
+
   static vsx_thread_pool* instance()
   {
     static vsx_thread_pool p;
@@ -45,95 +117,13 @@ private:
   // synchronization
   std::mutex queue_mutex;
   std::condition_variable condition;
-  bool stop;
+  bool stop = false;
 
   // More synchronization for wait_all()
   std::mutex queue_empty_mutex;
   std::condition_variable queue_empty_condition;
 };
  
-// the constructor just launches some amount of workers
-inline vsx_thread_pool::vsx_thread_pool(size_t threads)
-  :   stop(false)
-{
-  for(size_t i = 0;i<threads;++i)
-    workers.emplace_back(
-      [this]
-      {
-        for(;;)
-        {
-          std::function<void()> task;
-
-          {
-            std::unique_lock<std::mutex> lock(this->queue_mutex);
-            this->condition.wait(lock,
-              [this]{ return this->stop || !this->tasks.empty(); });
-            if(this->stop && this->tasks.empty())
-              return;
-            task = std::move(this->tasks.front());
-            this->tasks.pop();
-          }
-
-          task();
-
-          if (this->tasks.empty())
-            this->queue_empty_condition.notify_all();
-        }
-      }
-    );
-}
-
-// the destructor joins all threads
-inline vsx_thread_pool::~vsx_thread_pool()
-{
-  {
-    std::unique_lock<std::mutex> lock(queue_mutex);
-    stop = true;
-  }
-  condition.notify_all();
-  for(std::thread &worker: workers)
-    worker.join();
-}
 
 
-// add new work item to the pool
-template<class F, class... Args>
-auto vsx_thread_pool::add(F&& f, Args&&... args)
-  -> std::future<typename std::result_of<F(Args...)>::type>
-{
-  using return_type = typename std::result_of<F(Args...)>::type;
 
-  auto task = std::make_shared< std::packaged_task<return_type()> >(
-      std::bind(std::forward<F>(f), std::forward<Args>(args)...)
-    );
-    
-  std::future<return_type> res = task->get_future();
-  {
-    std::unique_lock<std::mutex> lock(queue_mutex);
-
-    // don't allow enqueueing after stopping the pool
-    if(stop)
-      throw std::runtime_error("enqueue on stopped thread_pool");
-
-    tasks.emplace([task](){ (*task)(); });
-  }
-  condition.notify_one();
-  return res;
-}
-
-
-inline bool vsx_thread_pool::is_jobless()
-{
-  return tasks.empty();
-}
-
-
-inline void vsx_thread_pool::wait_all()
-{
-  if (tasks.empty())
-    return;
-
-  std::unique_lock<std::mutex> queue_empty_lock(this->queue_empty_mutex);
-  queue_empty_condition.wait(queue_empty_lock);
-}
-#endif

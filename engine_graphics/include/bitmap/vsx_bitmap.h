@@ -154,7 +154,7 @@ public:
 
   inline uint64_t data_size_get_all()
   {
-    u_int64_t total_bytes;
+    uint64_t total_bytes;
     for (size_t mipmap_level = 0; mipmap_level < 15; mipmap_level++)
       for (size_t cubemap_side = 0; cubemap_side < 6; cubemap_side++)
         total_bytes += data_size[mipmap_level][cubemap_side];

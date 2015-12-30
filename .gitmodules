@@ -1,3 +1,6 @@
 [submodule "plugins/src/mesh.importers/cal3d"]
 	path = plugins/src/mesh.importers/cal3d
 	url = https://github.com/vovoid/cal3d.git
+[submodule "platform/win64/mingw-std-threads"]
+	path = platform/win64/mingw-std-threads
+	url = https://github.com/vovoid/mingw-std-threads.git

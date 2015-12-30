@@ -4,6 +4,12 @@
 #include <string/vsx_string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <vsx_platform.h>
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+#include <windows.h>
+#endif
+
 
 namespace vsx
 {

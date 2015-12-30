@@ -521,7 +521,7 @@ namespace vsx_string_helper
   }
 
   /**
-   * @brief get_path_from_filename
+   * @brief path_from_filename
    * @param filename
    * @param override_directory_separator
    * @return
