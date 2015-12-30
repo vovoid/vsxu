@@ -16,9 +16,11 @@ find_package(DL REQUIRED)
 ################################################################################
 
 include_directories(
-  ../
-  ../engine_graphics/include
-  ../profiler/include
+  ${CMAKE_SOURCE_DIR}/
+  ${CMAKE_SOURCE_DIR}/common/include
+  ${CMAKE_SOURCE_DIR}/engine/include
+  ${CMAKE_SOURCE_DIR}/engine_graphics/include
+  ${CMAKE_SOURCE_DIR}/profiler/include
   include
   src/log
   src/core/vsx_comp

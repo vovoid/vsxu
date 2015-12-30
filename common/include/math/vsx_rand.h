@@ -24,42 +24,20 @@
 #ifndef VSX_RAND_H
 #define VSX_RAND_H
 
-#include <mtwist.h>
-
 class vsx_rand
 {
 private:
 
-  mt_state* state;
+  void* state = 0x0;
 
 public:
 
-  vsx_rand()
-  {
-    state = new mt_state;
-    srand(1);
-  }
+  vsx_rand();
+  ~vsx_rand();
 
-  ~vsx_rand()
-  {
-    delete state;
-  }
-
-  inline void srand(uint32_t seed)
-  {
-    mts_seed32( state, seed );
-  }
-
-  inline uint32_t rand()
-  {
-    return mts_lrand( state );
-  }
-
-  inline float frand()
-  {
-    return (float)mts_drand( state );
-  }
-
+  inline void srand(uint32_t seed);
+  inline uint32_t rand();
+  inline float frand();
 };
 
 

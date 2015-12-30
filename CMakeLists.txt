@@ -394,6 +394,7 @@ add_subdirectory(engine_audiovisual)
 add_subdirectory(engine_graphics)
 # order matters - need to add plugins before engine to create static glue
 add_subdirectory(plugins)
+add_subdirectory(common)
 add_subdirectory(engine)
 add_subdirectory(widget)
 
