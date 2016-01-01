@@ -1494,49 +1494,32 @@ void vsx_widget_server::select_add_gui(vsx_widget* comp) {
     selected_list.unique();
   }
 
-vsx_string<>vsx_widget_server::get_unique_name(vsx_string<>name) {
-  int i = 0;
-  // say that name is like: empty_xyz_abc_12
-  // we need to split it up in name
+vsx_string<>vsx_widget_server::get_unique_name(vsx_string<>name)
+{
 
-  vsx_string<>i_name;
-  vsx_string<>i_val;
-
-  vsx_string<>deli = "_";
+  vsx_string<> i_val;
+  vsx_string<> delimiter = "_";
   vsx_nw_vector< vsx_string<> > parts;
-  vsx_string_helper::explode(name, deli, parts);
+  vsx_string_helper::explode(name, delimiter, parts);
 
-  // now operate on the last bit, see if it's a valid number
-  // if it contains characters it isn't. example: float3
+  if (parts.size() == 1)
+    return name + "_1";
 
-  bool final_is_valid_number = true;
-  for (unsigned long i = 0; i < parts[parts.size()-1].size(); i++) {
-    if (name[i] >= '0' && name[i] <= '9') {
-      i_val.push_back(name[i]);
-    } else
-    {
-      final_is_valid_number = false;
-    }
-  }
-  if (final_is_valid_number && i_val.size())
-  {
-    i = vsx_string_helper::s2i(i_val);
-  }
+  vsx_string<> &final_part = parts[parts.size()-1];
+  foreach(final_part, i)
+    if (final_part[i] >= '0' && final_part[i] <= '9')
+      i_val.push_back(final_part[i]);
 
-  // put together the string again
-  for (size_t i = 0; i < parts.size()-((int)final_is_valid_number); i++)
-  {
-    i_name += parts[i];
-    if (i < parts.size()-1)
-    i_name += "_";
-  }
-  vsx_string<>a;
-  while (comp_list.find(i_name+a) != comp_list.end())
-  {
-    ++i;
-    a = "_"+vsx_string_helper::i2s(i);
-  }
-  return vsx_string<>(i_name+a);
+  int new_value = -1;
+  if (i_val.size() == final_part.size())
+    new_value = vsx_string_helper::s2i(i_val) + 1;
+
+  if (new_value != -1)
+    final_part = vsx_string_helper::i2s(new_value);
+  else
+    parts.push_back("1");
+
+  return vsx_string_helper::implode(parts, delimiter);
 }
 
 vsx_string<>vsx_widget_server::build_comp_helptext(vsx_string<>path) {

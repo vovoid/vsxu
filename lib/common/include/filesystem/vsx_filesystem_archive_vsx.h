@@ -47,5 +47,8 @@ namespace vsx
 
     void file_open(const char* filename, const char* mode, file* &handle);
     void file_close(file* handle);
+
+    ~filesystem_archive_vsx()
+    {}
   };
 }

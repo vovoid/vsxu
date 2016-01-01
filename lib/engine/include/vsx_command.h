@@ -69,31 +69,28 @@ ENGINE_DLLIMPORT class vsx_command_s
 {
 public:
   ENGINE_DLLIMPORT static int id;
-  int iterations;
+
+  int iterations = 0;
   #ifdef VSXU_DEBUG
-    bool garbage_collected;
+    bool garbage_collected = false;
   #endif
-  bool parsed;
-  int owner; // for color-coding this command
-  int type; // type of command
+  bool parsed = false;
+  int owner = 0; // for color-coding this command
+  int type = 0; // type of command
   vsx_string<> title; // Title - for internal GUI stuff like menus and stuff
   vsx_string<> cmd; // the first part of the command, the actual command
   vsx_string<> cmd_data; // the second parameter (for simple commands)
   vsx_nw_vector<char> cmd_data_bin; // the binary part of the command
-  vsx_string<>raw; // the unparsed command, empty when binary command
+  vsx_string<> raw; // the unparsed command, empty when binary command
   vsx_nw_vector< vsx_string<> > parts; // the parts of the command
 
-  vsx_command_s() {
-    iterations = 0;
-    #ifdef VSXU_DEBUG
-      garbage_collected = false;
-    #endif
-    parsed = false;
-    type = 0;
+  vsx_command_s()
+  {
     ++id;
   }
 
-  void copy (vsx_command_s *t) {
+  void copy (vsx_command_s *t)
+  {
     owner = t->owner;
     type = t->type;
     title = t->title;
@@ -103,11 +100,14 @@ public:
     parts = t->parts;
   }
 
-  vsx_string<>str() {
+  vsx_string<>str()
+  {
     if (raw.size())
-    return raw; else
+      return raw;
+
     return cmd + " " + cmd_data;
   }
+
   ENGINE_DLLIMPORT void parse();
 
   void gc()

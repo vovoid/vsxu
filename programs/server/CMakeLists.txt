@@ -105,8 +105,8 @@ if(UNIX)
 
   target_link_libraries(${module_id} vsx_common)
   target_link_libraries(${module_id} vsx_compression)
-  target_link_libraries(${module_id} vsxu_engine)
-  target_link_libraries(${module_id} vsxu_engine_graphics)
+  target_link_libraries(${module_id} vsx_engine)
+  target_link_libraries(${module_id} vsx_engine_graphics)
 
   if (VSXU_STATIC EQUAL 1)
     include(../plugins/static_factory_cmake_target_link_libraries)

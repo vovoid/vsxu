@@ -2,7 +2,7 @@
 #include <string/vsx_string_helper.h>
 #include <time/vsx_timer.h>
 #include <vsx_argvector.h>
-
+#include <test/vsx_test.h>
 
 int main(int argc, char *argv[])
 {
@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
     }
   );
 
+  test_complete
   return 0;
 }
 

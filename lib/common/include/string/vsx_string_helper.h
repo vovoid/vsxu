@@ -377,36 +377,8 @@ namespace vsx_string_helper
     int required_pos = -1
   )
   {
-    req_v(search.size(), subject);
-
-    vsx_string<> n = subject;
-    int loc = 1;
-    int replacements = 0;
-    while ((loc = n.find(search, loc-1)) != -1)
-    {
-      if (loc <= required_pos || required_pos == -1)
-      {
-        if (replace.size())
-        {
-          n = n.substr(0,loc) + replace + n.substr(loc+search.size());
-          loc += replace.size();
-        }
-        else
-        {
-          n = n.substr(0,loc) + n.substr(loc+search.size());
-          ++loc;
-        }
-      }
-      else
-        return n;
-
-      if (max_replacements) {
-        replacements++;
-        if (replacements >= max_replacements)
-          return n;
-      }
-    }
-    return n;
+    subject.replace(search, replace, max_replacements, required_pos);
+    return subject;
   }
 
 

@@ -439,30 +439,50 @@ public:
     return result;
   }
 
-  inline const vsx_string<W> replace(
-      vsx_string<W> search_value,
-      vsx_string<W> replace_value,
+  inline void replace(
+      vsx_string<W> search,
+      vsx_string<W> replace,
       int max_replacements = 0,
       int required_pos = -1)
   {
     zero_remove();
-    int find_pos = find(search_value);
-    if (-1 == find_pos)
-      return *this;
 
-    vsx_string<W> result;
-    int i = 0;
-    for (; i < find_pos; i++)
-      result.push_back(data[i]);
+    req(search.size());
 
-    result += replace_value;
+    vsx_string<> n = *this;
+    int loc = 1;
+    int replacements = 0;
+    while ((loc = n.find(search, loc-1)) != -1)
+    {
+      if (loc <= required_pos || required_pos == -1)
+      {
+        if (replace.size())
+        {
+          n = n.substr(0,loc) + replace + n.substr(loc+search.size());
+          loc += replace.size();
+        }
+        else
+        {
+          n = n.substr(0,loc) + n.substr(loc+search.size());
+          ++loc;
+        }
+      }
+      else
+      {
+        *this = n;
+        return;
+      }
 
-    i += search_value.size();
-
-    for (; i < (int)data.size(); i++)
-      result.push_back(data[i]);
-
-    return result;
+      if (max_replacements) {
+        replacements++;
+        if (replacements >= max_replacements)
+        {
+          *this = n;
+          return;
+        }
+      }
+    }
+    *this = n;
   }
   
   inline void insert(int pos, W key) VSX_ALWAYS_INLINE

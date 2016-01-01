@@ -58,8 +58,8 @@ set_target_properties(
 
 target_link_libraries(
   ${module_id}
-  vsxu_engine
-  vsxu_engine_graphics
+  vsx_engine
+  vsx_engine_graphics
   vsx_common
   vsx_compression
   ${CMAKE_THREAD_LIBS_INIT}

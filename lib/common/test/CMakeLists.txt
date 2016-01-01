@@ -18,8 +18,8 @@ if(WIN32)
 endif(WIN32)
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}/../include
-  ${CMAKE_SOURCE_DIR}/../../
+  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}/lib/common/include
 )
 
 add_executable(test_cpu_info test_cpu_info.cpp )
@@ -32,6 +32,9 @@ target_link_libraries(test_fread rt vsx_common vsx_compression )
 
 add_executable(test_filesystem_archive_vsx test_filesystem_archive_vsx.cpp )
 target_link_libraries(test_filesystem_archive_vsx rt vsx_common vsx_compression ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(test_string test_string.cpp )
+target_link_libraries(test_string rt vsx_common ${CMAKE_THREAD_LIBS_INIT})
 
 add_executable(test_thread_pool test_thread_pool.cpp )
 target_link_libraries(test_thread_pool rt vsx_common ${CMAKE_THREAD_LIBS_INIT})

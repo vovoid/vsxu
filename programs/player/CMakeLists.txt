@@ -73,9 +73,9 @@ if(UNIX)
     ${PNG_LIBRARIES}
     ${ZLIB_LIBRARIES}
     ${JPEG_LIBRARIES}
-    vsxu_engine_audiovisual
-    vsxu_engine_graphics
-    vsxu_engine
+    vsx_engine_audiovisual
+    vsx_engine_graphics
+    vsx_engine
     vsx_common
     vsx_compression
     rt
@@ -89,9 +89,9 @@ if(WIN32)
     ${GLFW_LIBRARIES}
     wsock32
     ws2_32
-    vsxu_engine_audiovisual
-    vsxu_engine_graphics
-    vsxu_engine
+    vsx_engine_audiovisual
+    vsx_engine_graphics
+    vsx_engine
     vsx_common
     vsx_compression
     ${PNG_LIBRARIES}

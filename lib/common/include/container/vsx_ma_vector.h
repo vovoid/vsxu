@@ -117,6 +117,12 @@ public:
     return used;
   }
 
+  inline size_t move_back(T val) VSX_ALWAYS_INLINE
+  {
+    (*this)[used] = std::move(val);
+    return used;
+  }
+
   inline size_t size() VSX_ALWAYS_INLINE
   {
     return used;
@@ -215,17 +221,21 @@ public:
 
   inline vsx_ma_vector<T>& operator=(vsx_ma_vector<T>& other) VSX_ALWAYS_INLINE
   {
-    allocated = other.allocated;
+    allocate(other.allocated);
     used = other.used;
-    allocation_increment = other.allocation_increment;
     timestamp = other.timestamp;
-    A = other.A;
+    allocation_increment = other.allocation_increment;
+    for (size_t i = 0; i < used; i++)
+      A[i] = other.A[i];
     return *this;
   }
 
 
   inline vsx_ma_vector<T>& operator=(vsx_ma_vector<T>&& other) VSX_ALWAYS_INLINE
   {
+    if (A)
+      free(A);
+
     allocated = other.allocated;
     used = other.used;
     allocation_increment = other.allocation_increment;
@@ -271,7 +281,7 @@ public:
 
   ~vsx_ma_vector()
   {
-    req(data_volatile);
+    req(!data_volatile);
     req(A);
     free(A);
   }

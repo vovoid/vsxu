@@ -1,4 +1,4 @@
-set(module_id vsxu_engine_audiovisual)
+set(module_id vsx_engine_audiovisual)
 
 message("configuring            " ${module_id})
 
@@ -72,8 +72,8 @@ endif()
 ################################################################################
 
 target_link_libraries(${module_id}
-  vsxu_engine
-  vsxu_engine_graphics
+  vsx_engine
+  vsx_engine_graphics
   ${OPENGL_LIBRARIES}
 )
 

@@ -452,11 +452,11 @@ void vsx_engine_abs::i_clear(vsx_command_list *cmd_out,bool clear_critical)
   engine_info.dtime = 0;
   engine_info.real_vtime = 0;
   current_state = VSX_ENGINE_STOPPED;
-  if (filesystem.get_archive().is_archive())
+  if (filesystem.get_archive()->is_archive())
   {
     if (cmd_out)
     {
-      filesystem.get_archive().close();
+      filesystem.get_archive()->close();
       send_state_to_client(cmd_out);
     }
   }

@@ -53,7 +53,7 @@ vsx_module* MOD_CM(unsigned long module, void* args)
   {
     case 0: return (vsx_module*)(new module_bitmap_load("tga_bitm_load","tga","TGA"));
     case 1: return (vsx_module*)(new module_bitmap_load("png_bitm_load","png","PNG"));
-    case 2: return (vsx_module*)(new module_bitmap_load("jpg_bitm_load","jpg","JPG"));
+    case 2: return (vsx_module*)(new module_bitmap_load("jpg_bitm_load||!bitmaps;loaders;jpeg_bitm_load","jpg","JPG"));
     case 3: return (vsx_module*)(new module_bitmap_load("dds_bitm_load","dds","DDS"));
   }
   return 0;

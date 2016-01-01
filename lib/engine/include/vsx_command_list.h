@@ -211,13 +211,13 @@ public:
     t->cmd = cmd;
     t->cmd_data = std::move(cmd_data);
 
-    t->parts.push_back_move(cmd);
+    t->parts.move_back(std::move(cmd));
     vsx_string<> deli = " ";
     vsx_nw_vector< vsx_string<> > pp;
     vsx_string_helper::explode(t->cmd_data, deli, pp);
 
     for (size_t i = 0; i < pp.size(); ++i)
-      t->parts.push_back_move(pp[i]);
+      t->parts.move_back(std::move(pp[i]));
 
     t->raw = t->cmd+" "+t->cmd_data;
 
@@ -402,7 +402,7 @@ public:
         foreach(command.parts, i)
           command.parts[i].replace(search, replace);
 
-        command.raw.replace(search, replace);
+          command.raw.replace(search, replace);
         continue;
       }
       command.raw.replace(search, replace);

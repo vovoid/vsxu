@@ -107,7 +107,7 @@ target_link_libraries(
   ${ZLIB_LIBRARIES}
   ${GLFW_LIBRARIES}
   ${GLEW_LIBRARIES}
-  vsxu_engine
+  vsx_engine
   ${OPENGL_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
 )
@@ -120,11 +120,11 @@ if(WIN32)
     ${PNG_LIBRARIES}
     ${ZLIB_LIBRARIES}
     ${GLFW_LIBRARIES}
-    vsxu_engine
-    vsxu_engine_graphics
+    vsx_engine
+    vsx_engine_graphics
     ${GLEW_LIBRARIES}
     ${OPENGL_LIBRARIES}
-    vsxu_engine_graphics
+    vsx_engine_graphics
   )
 endif(WIN32)
 

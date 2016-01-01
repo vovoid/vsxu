@@ -33,9 +33,14 @@ int filesystem_archive::load(const char* archive_filename, bool load_data_multit
 
   vsx_string<> filename(archive_filename);
   if (vsx_string_helper::verify_filesuffix(filename, "vsx"))
+    archive_type =  archive_vsx;
+  if (vsx_string_helper::verify_filesuffix(filename, "vsxz"))
+    archive_type = archive_vsxz;
+
+  if (archive_type == archive_vsx)
     archive = new filesystem_archive_vsx();
 
-  if (vsx_string_helper::verify_filesuffix(filename, "vsxz"))
+  if (archive_type == archive_vsxz)
     archive = new filesystem_archive_vsxz();
 
   req_error_v(archive, "unsupported file format", 1);
@@ -47,6 +52,15 @@ void filesystem_archive::close()
 {
   req(archive);
   archive->close();
+
+  if (archive_type == archive_vsx)
+    delete ((filesystem_archive_vsx*)archive);
+
+  if (archive_type == archive_vsxz)
+    delete (filesystem_archive_vsxz*)archive;
+
+  archive_type = archive_none;
+  archive = 0x0;
 }
 
 bool filesystem_archive::is_archive()

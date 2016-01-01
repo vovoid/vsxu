@@ -25,5 +25,8 @@ namespace vsx
     virtual void file_close(file* handle) = 0;
 
     virtual int file_add(vsx_string<> filename, vsx_string<> disk_filename, bool deferred_multithreaded) = 0;
+
+    virtual ~filesystem_archive_base()
+    {}
   };
 }

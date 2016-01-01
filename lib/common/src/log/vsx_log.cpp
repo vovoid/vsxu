@@ -15,7 +15,7 @@
 void log(vsx_string<>message, int level)
 {
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-    openlog ("vsxu_engine", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
+    openlog ("vsx_engine", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
     syslog(LOG_ERR,"%d: %s", level, message.c_str());
   #else
     printf("LOG: %s\n", message.c_str() );
@@ -24,10 +24,10 @@ void log(vsx_string<>message, int level)
     printf("%s\n",message.c_str());
     FILE* fpo = 0;
     if (first) {
-      fpo = fopen((log_dir+"vsxu_engine.debug.log").c_str(),"w");
+      fpo = fopen((log_dir+"vsx_engine.debug.log").c_str(),"w");
       first = 0;
     } else
-      fpo = fopen((log_dir+"vsxu_engine.debug.log").c_str(),"a");
+      fpo = fopen((log_dir+"vsx_engine.debug.log").c_str(),"a");
     if (!fpo) return;
     fprintf(fpo, "%s\n", message.c_str() );
     fclose(fpo);*/

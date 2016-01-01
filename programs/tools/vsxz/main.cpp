@@ -64,13 +64,13 @@ void extract()
   if (!filesystem.is_file(filename))
     VSX_ERROR_EXIT( (vsx_string<>("Invalid archive supplied,")+filename).c_str(), 1);
 
-  filesystem.get_archive().load( filename.c_str(), arg->has_param("mt") );
+  filesystem.get_archive()->load( filename.c_str(), arg->has_param("mt") );
 
   // Sanitize archive
-  if (!filesystem.get_archive().is_archive_populated())
+  if (!filesystem.get_archive()->is_archive_populated())
     VSX_ERROR_EXIT("Archive contains no files or failed to load", 2);
 
-  vsx_nw_vector<vsx::filesystem_archive_info>* archive_files = filesystem.get_archive().files_get();
+  vsx_nw_vector<vsx::filesystem_archive_info>* archive_files = filesystem.get_archive()->files_get();
   for (unsigned long i = 0; i < (*archive_files).size(); ++i)
   {
     vsx_string<> out_filename = (*archive_files)[i].filename;
@@ -111,7 +111,7 @@ void extract()
     filesystem.f_close(fpi);
   }
 
-  filesystem.get_archive().close();
+  filesystem.get_archive()->close();
 
   // success
   exit(0);
@@ -153,16 +153,16 @@ void create()
 
   vsx_string<>archive_filename = arg->get_param_value("c");
 
-  filesystem.get_archive().create(archive_filename.c_str(), vsx::filesystem_archive::archive_vsx);
+  filesystem.get_archive()->create(archive_filename.c_str(), vsx::filesystem_archive::archive_vsx);
 
   for (size_t i = 0; i < parts.size(); i++) {
     vsx_printf(L"* adding: %s \n", parts[i].c_str() );
-    int ret = filesystem.get_archive(). file_add( parts[i], "", true);
+    int ret = filesystem.get_archive()-> file_add( parts[i], "", true);
     if ( ret )
       VSX_ERROR_EXIT( "archive_add_file failed", ret );
   }
 
-  filesystem.get_archive().close();
+  filesystem.get_archive()->close();
 
   vsx_printf(L"-- successfully created the archive: %s\n", archive_filename.c_str());
 

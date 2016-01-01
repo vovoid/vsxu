@@ -83,8 +83,8 @@ if(UNIX)
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
     Xrandr
-    vsxu_engine_graphics
-    vsxu_engine
+    vsx_engine_graphics
+    vsx_engine
   )
   install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
   install(DIRECTORY ../share/visuals_faders ../share/visuals_player ../share/font DESTINATION ${CMAKE_INSTALL_PREFIX}/share/vsxu)
@@ -95,8 +95,8 @@ if(WIN32)
   wsock32
   ws2_32
   ${CMAKE_THREAD_LIBS_INIT}
-  vsxu_engine_graphics
-  vsxu_engine
+  vsx_engine_graphics
+  vsx_engine
   gdi32
 )
 endif()

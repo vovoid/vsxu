@@ -164,7 +164,8 @@ class vsx_bitmap_loader_dds
     if (bitmap->hint & vsx_bitmap::cubemap_load_files_hint)
       for (size_t i = 1; i < 6; i++)
       {
-        vsx_string<> new_filename = thread_info->filename.replace("_0", "_"+vsx_string_helper::i2s(i));
+        vsx_string<> new_filename = thread_info->filename;
+        new_filename.replace("_0", "_"+vsx_string_helper::i2s(i));
         vsx::file* file_handle = filesystem->f_open(new_filename.c_str(), "rb");
         worker_load_file(bitmap, filesystem, file_handle, i);
         filesystem->f_close(file_handle);

@@ -2,10 +2,10 @@
 link_directories(${OpenGL_LIB_DIR})
 target_link_libraries(
   ${module_id}
-  vsxu_engine_graphics
+  vsx_engine_graphics
   ${GLEW_LIBRARY}
 #  ${FREETYPE_LIBRARY}
-  vsxu_engine
+  vsx_engine
   ${CMAKE_THREAD_LIBS_INIT}
   ${OPENGL_LIBRARIES}
 )

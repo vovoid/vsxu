@@ -87,8 +87,8 @@ if(UNIX)
     ${JPEG_LIBRARIES}
     vsx_common
     vsx_compression
-    vsxu_engine
-    vsxu_engine_graphics
+    vsx_engine
+    vsx_engine_graphics
     vsx_widget
     rt
   )
@@ -104,8 +104,8 @@ if (WIN32)
     ${JPEG_LIBRARIES}
     vsx_common
     vsx_compression
-    vsxu_engine
-    vsxu_engine_graphics
+    vsx_engine
+    vsx_engine_graphics
     vsx_widget
   )
 

@@ -105,17 +105,17 @@ int filesystem_archive_vsx::load(const char* archive_filename, bool load_data_mu
     filesystem_archive_info file_info;
     file_info.filename = filebuf_name;
     file_info.archive_position = ftell(archive_handle)+1;
+    file_info.compressed_data.allocate( size );
 
     if (load_data_multithreaded)
     {
-      file_info.compressed_data.allocate( size );
       size_t rb = fread(file_info.compressed_data.get_pointer(), 1, size, archive_handle);
       if (!rb)
         VSX_ERROR_EXIT("Could not read compressed data",100)
-      archive_files.push_back(file_info);
+      archive_files.move_back(std::move(file_info));
       continue;
     }
-    archive_files.push_back(file_info);
+    archive_files.move_back(std::move(file_info));
 
     // Default behaviour
     fseek(archive_handle, size, SEEK_CUR);
@@ -180,7 +180,8 @@ void filesystem_archive_vsx::file_open_read(const char* filename, file* &handle)
   unsigned long i = 0;
   while (!found && i < archive_files.size())
   {
-    if (!vsx_string<>::s_equals(archive_files[i].filename, fname))
+    filesystem_archive_info& archive_file = archive_files[i];
+    if (!vsx_string<>::s_equals(archive_file.filename, fname))
     {
       i++;
       continue;
@@ -188,28 +189,23 @@ void filesystem_archive_vsx::file_open_read(const char* filename, file* &handle)
 
     found = true;
     handle->filename = fname;
+    handle->size = 0;
     handle->position = 0;
-    handle->size = archive_files[i].compressed_data.size();
     handle->mode = file::mode_read;
 
-
     // already uncompressed in RAM?
-    if (archive_files[i].uncompressed_data.size())
+    if (archive_file.uncompressed_data.size())
     {
-      handle->size = archive_files[i].uncompressed_data.size();
-      handle->data = archive_files[i].uncompressed_data;
+      handle->size = archive_file.uncompressed_data.size();
       handle->data.set_volatile();
+      handle->data.set_data(archive_file.uncompressed_data.get_pointer(), archive_file.uncompressed_data.size() );
       return;
     }
 
     // saturate compressed data
-    if ( !archive_files[i].compressed_data.size() )
-    {
-      archive_files[i].compressed_data.allocate( archive_files[i].uncompressed_data.size() );
-      lock.aquire();
-
-      fseek(archive_handle, archive_files[i].archive_position-1,SEEK_SET);
-      if (!fread(archive_files[i].compressed_data.get_pointer(), 1, handle->size, archive_handle))
+    lock.aquire();
+      fseek(archive_handle, archive_file.archive_position - 1, SEEK_SET);
+      if (!fread(archive_file.compressed_data.get_pointer(), 1, archive_file.compressed_data.get_sizeof(), archive_handle))
       {
         delete handle;
 
@@ -218,14 +214,13 @@ void filesystem_archive_vsx::file_open_read(const char* filename, file* &handle)
         handle = 0x0;
         return;
       }
-
-      lock.release();
-    }
+    lock.release();
 
     // decompress data
-    archive_files[i].uncompressed_data = compression_lzma_old::uncompress( archive_files[i].compressed_data );
-    handle->data = archive_files[i].uncompressed_data;
+    archive_file.uncompressed_data = compression_lzma_old::uncompress( archive_file.compressed_data );
     handle->data.set_volatile();
+    handle->data = archive_file.uncompressed_data;
+    handle->size = archive_file.uncompressed_data.size();
 
     return;
   }
@@ -396,11 +391,12 @@ int filesystem_archive_vsx::file_add
   fseek(archive_handle,0,SEEK_END);
 
   vsx_ma_vector<unsigned char> compressed_data = compression_lzma_old::compress( uncompressed_data );
+  vsx_printf(L"compressed data sizeof: %lx\n", compressed_data.get_sizeof());
 
-  uint32_t data_size = compressed_data.get_sizeof();
+  uint32_t data_size = compressed_data.get_sizeof() + filename.size() + 1;
   fwrite(&data_size,sizeof(uint32_t),1,archive_handle);
 
-  fputs(filename.c_str(),archive_handle);
+  fputs(filename.c_str(), archive_handle);
 
   char nn = 0;
   fwrite(&nn,sizeof(char),1,archive_handle);

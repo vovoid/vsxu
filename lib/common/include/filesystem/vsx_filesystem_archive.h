@@ -17,15 +17,19 @@ namespace vsx
 {
   class COMMON_DLLIMPORT filesystem_archive
   {
-    filesystem_archive_base* archive = 0x0;
-
   public:
-
     enum archive_type_t
     {
+      archive_none,
       archive_vsx,
       archive_vsxz
     };
+  private:
+
+    filesystem_archive_base* archive = 0x0;
+    archive_type_t archive_type = archive_none;
+
+  public:
 
     void create(const char* filename, archive_type_t type);
     int load(const char* archive_filename, bool load_data_multithreaded);

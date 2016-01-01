@@ -116,9 +116,8 @@ if(UNIX)
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
-    ${TM_LIBRARY}
-    vsxu_engine_graphics
-    vsxu_engine
+    vsx_engine_graphics
+    vsx_engine
     vsx_common
     vsx_compression
     vsx_widget
@@ -142,13 +141,13 @@ if(WIN32)
     ${GLEW_LIBRARIES}
     wsock32
     ws2_32
-    vsxu_engine
+    vsx_engine
     vsx_common
     vsx_compression
     vsx_widget
     gdi32
     ${OPENGL_LIBRARIES}
-    vsxu_engine_graphics
+    vsx_engine_graphics
     ${JPEG_LIBRARIES}
     ${PNG_LIBRARIES}
     ${ZLIB_LIBRARIES}

@@ -33,3 +33,7 @@
   if (!(t)) \
     continue
 
+#define req_break(t) \
+  if (!(t)) \
+    break
+

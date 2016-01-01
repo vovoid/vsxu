@@ -19,14 +19,19 @@ namespace vsx
     filesystem_archive archive;
     vsx_string<> base_path;
 
+    bool archive_prohibited = false;
+
   public:
 
     void set_base_path(vsx_string<> new_base_path);
     vsx_string<> get_base_path();
 
-    filesystem_archive& get_archive()
+    filesystem_archive* get_archive()
     {
-      return archive;
+      if (archive_prohibited)
+        return 0x0;
+
+      return &archive;
     }
 
     bool is_file(const char* filename);
@@ -47,6 +52,7 @@ namespace vsx
     static filesystem* get_instance()
     {
       static filesystem f;
+      f.archive_prohibited = true;
       return &f;
     }
   };

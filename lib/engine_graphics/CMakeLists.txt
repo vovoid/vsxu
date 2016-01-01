@@ -1,4 +1,4 @@
-set(module_id vsxu_engine_graphics)
+set(module_id vsx_engine_graphics)
 
 message("configuring            " ${module_id})
 
@@ -146,7 +146,7 @@ endif(WIN32)
 
 target_link_libraries(
   ${module_id}
-  vsxu_engine
+  vsx_engine
   ${GLEW_LIBRARIES}
   ${FREETYPE_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}

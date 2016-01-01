@@ -194,14 +194,17 @@ char* filesystem::f_gets(char* buf, unsigned long max_buf_size, file* handle)
   unsigned long i = 0;
   bool run = true;
 
-  while (handle->position < handle->size && i < max_buf_size && run)
+  while (i < max_buf_size && run)
   {
+    if (handle->position == handle->data.size())
+      break;
+
     if (handle->data[handle->position] == 0x0A)
       run = false;
 
     buf[i] = handle->data[handle->position];
-    ++i;
-    ++handle->position;
+    i++;
+    handle->position++;
   }
 
   if (i < max_buf_size)

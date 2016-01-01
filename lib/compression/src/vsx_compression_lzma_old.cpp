@@ -20,6 +20,7 @@ extern "C"
 #include <stdio.h>
 #include <stdint.h>
 #include <vsx_compression_lzma_old.h>
+#include <string/vsx_string.h>
 
 namespace vsx
 {
@@ -28,7 +29,7 @@ vsx_ma_vector<unsigned char> compression_lzma_old::compress(vsx_ma_vector<unsign
 {
   vsx_ma_vector<unsigned char> compressed_data;
 
-  UInt32 dictionary = 1 << 21;
+  UInt32 dictionary = uncompressed_data.size() << 1;
   size_t outSize = (size_t)uncompressed_data.get_sizeof() / 20 * 21 + (1 << 16);
   size_t outSizeProcessed;
 
@@ -44,6 +45,7 @@ vsx_ma_vector<unsigned char> compression_lzma_old::compress(vsx_ma_vector<unsign
     SZ_FILTER_AUTO
   );
 
+  vsx_printf(L"%lx bytes processed\n", outSizeProcessed);
   compressed_data.reset_used(outSizeProcessed);
   compressed_data.trim();
   return compressed_data;

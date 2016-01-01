@@ -1,4 +1,4 @@
-set(module_id vsxu_engine)
+set(module_id vsx_engine)
 
 message("configuring            " ${module_id})
 
@@ -188,4 +188,4 @@ target_link_libraries(${module_id}
   ${DL_LIBRARY}
 )
 
-#add_subdirectory(test)
+add_subdirectory(test)

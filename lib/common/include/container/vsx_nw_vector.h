@@ -74,7 +74,7 @@ public:
     return used;
   }
 
-  inline size_t push_back_move(T& val) VSX_ALWAYS_INLINE
+  inline size_t move_back(T&& val) VSX_ALWAYS_INLINE
   {
     (*this)[used] = std::move(val);
     return used;
