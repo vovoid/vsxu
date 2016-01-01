@@ -1,4 +1,4 @@
-#include <lib/compression/third-party/lzma-old/Common/MyInitGuid.h>
+#include <lib/compression/thirdparty/lzma-old/Common/MyInitGuid.h>
 
 #if defined(_WIN32)
 #include <io.h>
@@ -8,12 +8,12 @@
 #define MY_SET_BINARY_MODE(file)
 #endif
 
-#include <lib/compression/third-party/lzma-old/7zip/Compress/LZMA/LZMADecoder.h>
-#include <lib/compression/third-party/lzma-old/7zip/Compress/LZMA/LZMAEncoder.h>
-#include <lib/compression/third-party/lzma-old/LzmaRam.h>
+#include <lib/compression/thirdparty/lzma-old/7zip/Compress/LZMA/LZMADecoder.h>
+#include <lib/compression/thirdparty/lzma-old/7zip/Compress/LZMA/LZMAEncoder.h>
+#include <lib/compression/thirdparty/lzma-old/LzmaRam.h>
 extern "C"
 {
-  #include <lib/compression/third-party/lzma-old/LzmaRamDecode.h>
+  #include <lib/compression/thirdparty/lzma-old/LzmaRamDecode.h>
 }
 
 

@@ -59,6 +59,9 @@ set(SOURCES
   src/vsx_font_outline.cpp
   src/vsx_gl_state.cpp
   src/gl_helper.cpp
+)
+
+set(FTGL_SOURCES
   src/ftgl/FTBitmapGlyph.cpp
   src/ftgl/FTBufferGlyph.cpp
   src/ftgl/FTCharmap.cpp

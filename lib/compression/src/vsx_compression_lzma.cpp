@@ -1,4 +1,4 @@
-#include <lib/compression/third-party/lzma-sdk/C/LzmaLib.h>
+#include <lib/compression/thirdparty/lzma-sdk/C/LzmaLib.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <vsx_compression_lzma.h>
