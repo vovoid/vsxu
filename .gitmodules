@@ -4,9 +4,6 @@
 [submodule "platform/win64/mingw-std-threads"]
 	path = platform/win64/mingw-std-threads
 	url = https://github.com/vovoid/mingw-std-threads.git
-[submodule "lib/engine_graphics/thirdparty/ftgl"]
-	path = lib/engine_graphics/thirdparty/ftgl
-	url = https://github.com/vovoid/ftgl.git
 [submodule "lib/compression/thirdparty/lzma-sdk"]
 	path = lib/compression/thirdparty/lzma-sdk
 	url = https://github.com/vovoid/LZMA-SDK.git

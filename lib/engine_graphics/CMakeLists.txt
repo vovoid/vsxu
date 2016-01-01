@@ -62,38 +62,44 @@ set(SOURCES
 )
 
 set(FTGL_SOURCES
-  src/ftgl/FTBitmapGlyph.cpp
-  src/ftgl/FTBufferGlyph.cpp
-  src/ftgl/FTCharmap.cpp
-  src/ftgl/FTContour.cpp
-  src/ftgl/FTExtrdGlyph.cpp
-  src/ftgl/FTFace.cpp
-  src/ftgl/FTFont.cpp
-  src/ftgl/FTGLBitmapFont.cpp
-  src/ftgl/FTGLBufferFont.cpp
-  src/ftgl/FTGLExtrdFont.cpp
-  src/ftgl/FTGLGlyph.cpp
-  src/ftgl/FTGLOutlineFont.cpp
-  src/ftgl/FTGLPixmapFont.cpp
-  src/ftgl/FTGLPolygonFont.cpp
-  src/ftgl/FTGLTextureFont.cpp
-  src/ftgl/FTGlyphContainer.cpp
-  src/ftgl/FTLibrary.cpp
-  src/ftgl/FTOutlineGlyph.cpp
-  src/ftgl/FTPixmapGlyph.cpp
-  src/ftgl/FTPoint.cpp
-  src/ftgl/FTPolyGlyph.cpp
-  src/ftgl/FTSize.cpp
-  src/ftgl/FTTextureGlyph.cpp
-  src/ftgl/FTVectoriser.cpp
+  thirdparty/ftgl/src/FTGlyph/FTBitmapGlyph.cpp
+  thirdparty/ftgl/src/FTGlyph/FTBufferGlyph.cpp
+  thirdparty/ftgl/src/FTGlyph/FTExtrudeGlyph.cpp
+  thirdparty/ftgl/src/FTGlyph/FTOutlineGlyph.cpp
+  thirdparty/ftgl/src/FTGlyph/FTPixmapGlyph.cpp
+  thirdparty/ftgl/src/FTGlyph/FTGlyph.cpp
+  thirdparty/ftgl/src/FTGlyph/FTTextureGlyph.cpp
+  thirdparty/ftgl/src/FTGlyph/FTPolygonGlyph.cpp
+
+  thirdparty/ftgl/src/FTFont/FTFont.cpp
+  thirdparty/ftgl/src/FTFont/FTBitmapFont.cpp
+  thirdparty/ftgl/src/FTFont/FTBufferFont.cpp
+  thirdparty/ftgl/src/FTFont/FTExtrudeFont.cpp
+  thirdparty/ftgl/src/FTFont/FTOutlineFont.cpp
+  thirdparty/ftgl/src/FTFont/FTPixmapFont.cpp
+  thirdparty/ftgl/src/FTFont/FTPolygonFont.cpp
+  thirdparty/ftgl/src/FTFont/FTTextureFont.cpp
+
+  thirdparty/ftgl/src/FTPoint.cpp
+  thirdparty/ftgl/src/FTSize.cpp
+  thirdparty/ftgl/src/FTVectoriser.cpp
+  thirdparty/ftgl/src/FTCharmap.cpp
+  thirdparty/ftgl/src/FTContour.cpp
+  thirdparty/ftgl/src/FTFace.cpp
+  thirdparty/ftgl/src/FTGlyphContainer.cpp
+  thirdparty/ftgl/src/FTLibrary.cpp
+)
+set(SOURCES
+  ${SOURCES} ${FTGL_SOURCES}
 )
 
 file(GLOB_RECURSE HEADER_FILES *.h)
 
+
 if (VSXU_OPENGL_ES_2_0 EQUAL 1)
   add_definitions(-DVSXU_OPENGL_ES -DVSXU_OPENGL_ES_2_0)
   set(SOURCES
-    ${SOURCES}
+    ${SOURCES} ${FTGL_SOURCES}
     src/vsx_gl_es_shader_wrapper.cpp
   )
 endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
