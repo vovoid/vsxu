@@ -15,11 +15,9 @@ add_definitions(
 
 include_directories(
   ${GLEW_INCLUDE_DIRS}
-  ./
-  ../include
-  ../../include
-  ${CMAKE_SOURCE_DIR}/engine/include
-  ${CMAKE_SOURCE_DIR}/profiler/include
-  ${CMAKE_SOURCE_DIR}/engine_graphics/include
-  ../../../
+  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}/plugins
+  ${CMAKE_SOURCE_DIR}/lib/common/include
+  ${CMAKE_SOURCE_DIR}/lib/engine/include
+  ${CMAKE_SOURCE_DIR}/lib/engine_graphics/include
 )

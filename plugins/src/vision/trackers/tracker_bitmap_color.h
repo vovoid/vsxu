@@ -22,7 +22,7 @@
 #define TRACKER_BITMAP_COLOR_H
 
 #include <cv.h>
-#include <vector/vsx_vector3.h>
+#include <math/vector/vsx_vector3.h>
 #include "vsx_param.h"
 #include "vsx_module.h"
 

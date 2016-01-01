@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <vector>
-#include <vector/vsx_vector3.h>
+#include <math/vector/vsx_vector3.h>
 
 class Mass
 {

@@ -25,8 +25,8 @@
 #include "_configuration.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
-#include "vsx_sequence.h"
-#include "vsx_bspline.h"
+#include <math/vsx_sequence.h>
+#include <math/vsx_bspline.h>
 #include <pthread.h>
 #include <semaphore.h>
 

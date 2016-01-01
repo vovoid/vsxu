@@ -22,7 +22,7 @@
 */
 
 
-#include <vsx_rand.h>
+#include <math/vsx_rand.h>
 
 class module_mesh_lightning_vertices : public vsx_module
 {

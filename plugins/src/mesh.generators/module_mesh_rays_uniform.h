@@ -22,10 +22,10 @@
 */
 
 
-#include <vsx_mesh.h>
-#include <vsx_math.h>
-#include <vsx_quaternion.h>
-#include <vsx_rand.h>
+#include <graphics/vsx_mesh.h>
+#include <math/vsx_math.h>
+#include <math/quaternion/vsx_quaternion.h>
+#include <math/vsx_rand.h>
 
 class module_mesh_rays_uniform : public vsx_module
 {

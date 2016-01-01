@@ -21,7 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <vsx_sequence.h>
+#include <math/vsx_sequence.h>
 
 class module_plugin_maths_oscillators_string_sequencer : public vsx_module
 {

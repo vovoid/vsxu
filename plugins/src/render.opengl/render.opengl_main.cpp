@@ -25,7 +25,7 @@
 #include "_configuration.h"
 #include <vsx_param.h>
 #include <vsx_module.h>
-#include <vsx_quaternion.h>
+#include <math/quaternion/vsx_quaternion.h>
 
 
 const unsigned int matrix_target_get_vsx[] =

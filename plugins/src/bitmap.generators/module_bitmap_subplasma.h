@@ -21,7 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <vsx_rand.h>
+#include <math/vsx_rand.h>
 #include <bitmap/vsx_bitmap.h>
 
 unsigned char catmullrom_interpolate(int v0, int v1, int v2, int v3, float xx)

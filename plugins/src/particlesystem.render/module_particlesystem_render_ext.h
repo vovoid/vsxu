@@ -1,6 +1,6 @@
-#include "vsx_particlesystem.h"
+#include <particlesystem/vsx_particlesystem.h>
 #include "vsx_vbo_bucket.h"
-#include <vsx_sequence.h>
+#include <math/vsx_sequence.h>
 #include <texture/vsx_texture.h>
 
 class module_particlesystem_render_ext : public vsx_module

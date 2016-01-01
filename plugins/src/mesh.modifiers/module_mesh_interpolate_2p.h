@@ -21,7 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <vsx_mesh.h>
+#include <graphics/vsx_mesh.h>
 
 
 // TODO: add options for interpolating between normals, vertices, texcoords

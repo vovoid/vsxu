@@ -31,7 +31,7 @@
 #endif
 #include "vsx_param.h"
 #include "vsx_module.h"
-#include "vsx_float_array.h"
+#include <math/vsx_float_array.h>
 
 #include <pthread.h>
 #include "fftreal/fftreal.h"

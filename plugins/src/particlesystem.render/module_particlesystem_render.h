@@ -1,4 +1,4 @@
-#include <vsx_sequence.h>
+#include <math/vsx_sequence.h>
 
 class module_particlesystem_render : public vsx_module
 {

@@ -1,4 +1,4 @@
-#include <vsx_bspline.h>
+#include <math/vsx_bspline.h>
 // this should deliver a rotation matrix that is the rotation in a specific point
 // on a spline defined by the vertices in bspline_mesh_in.
 class module_bspline_matrix : public vsx_module

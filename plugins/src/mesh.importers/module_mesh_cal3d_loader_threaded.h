@@ -3,9 +3,9 @@
 #if (PLATFORM == PLATFORM_LINUX)
   #include <sys/prctl.h>
 #endif
-#include <vsx_timer.h>
+#include <time/vsx_timer.h>
 
-#include <vsx_profiler_manager.h>
+#include <profiler/vsx_profiler_manager.h>
 
 using namespace cal3d;
 

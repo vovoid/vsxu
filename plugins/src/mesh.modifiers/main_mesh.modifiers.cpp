@@ -25,8 +25,8 @@
 #include "_configuration.h"
 #include <vsx_param.h>
 #include <vsx_module.h>
-#include <vsx_float_array.h>
-#include <vsx_quaternion.h>
+#include <math/vsx_float_array.h>
+#include <math/quaternion/vsx_quaternion.h>
 #include <pthread.h>
 
 // TODO: optimize the mesh_quat_rotate to also use volatile arrays for speed

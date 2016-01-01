@@ -1,4 +1,4 @@
-#include <vsx_rand.h>
+#include <math/vsx_rand.h>
 
 class module_particlesystem_generate_simple : public vsx_module
 {

@@ -26,7 +26,7 @@
 #include "vsx_gl_global.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
-#include "vsx_quaternion.h"
+#include <math/quaternion/vsx_quaternion.h>
 
 
 

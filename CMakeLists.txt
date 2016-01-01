@@ -134,7 +134,7 @@ INCLUDE(CPack)
 # DEFINES ######################################################################
 ################################################################################
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
 # C++14: set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive" )
 
@@ -390,35 +390,37 @@ add_definitions(-DVSXU_INSTALL_LIB_DIR="${VSXU_INSTALL_LIB_DIR}")
 ################################################################################
 # VSXU LIBRARIES ###############################################################
 ################################################################################
-add_subdirectory(engine_audiovisual)
-add_subdirectory(engine_graphics)
-# order matters - need to add plugins before engine to create static glue
+add_subdirectory(lib/engine_audiovisual)
+add_subdirectory(lib/engine_graphics)
+
+# order matters - need to add plugins before engine to create static glue ######
 add_subdirectory(plugins)
-add_subdirectory(common)
-add_subdirectory(engine)
-add_subdirectory(widget)
+################################################################################
+
+add_subdirectory(lib/common)
+add_subdirectory(lib/compression)
+add_subdirectory(lib/engine)
+add_subdirectory(lib/widget)
 
 ################################################################################
 # VSXU IMPLEMENTATIONS/BINARIES ################################################
 ################################################################################
-if (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
-  add_subdirectory(artiste)
-  add_subdirectory(player)
-  if (VSXU_DEMO_PLAYER)
-    add_subdirectory(player_demo)
-  endif()
-endif (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
+add_subdirectory(programs/artiste)
+add_subdirectory(programs/player)
+if (VSXU_DEMO_PLAYER)
+  add_subdirectory(programs/player_demo)
+endif()
 
-  add_subdirectory(profiler)
+add_subdirectory(programs/profiler)
 
 if(UNIX)
-  add_subdirectory(server)
+  add_subdirectory(programs/server)
 endif(UNIX)
 
-add_subdirectory(tools/vsxz)
-add_subdirectory(tools/obj2vxm)
+add_subdirectory(programs/tools/vsxz)
+add_subdirectory(programs/tools/obj2vxm)
 if(UNIX)
-    add_subdirectory(tools/vsxl)
+    add_subdirectory(programs/tools/vsxl)
 endif(UNIX)
 
 ################################################################################
