@@ -49,34 +49,33 @@ set(SOURCES
 
 add_definitions(-D_7ZIP_ST)
 set(SOURCES_LZMA
-  third-party/lzma-sdk/C/Alloc.c
-  third-party/lzma-sdk/C/LzmaLib.c
-  third-party/lzma-sdk/C/LzmaEnc.c
-  third-party/lzma-sdk/C/LzmaDec.c
-  third-party/lzma-sdk/C/LzFind.c
+  thirdparty/lzma-sdk/C/Alloc.c
+  thirdparty/lzma-sdk/C/LzmaLib.c
+  thirdparty/lzma-sdk/C/LzmaEnc.c
+  thirdparty/lzma-sdk/C/LzmaDec.c
+  thirdparty/lzma-sdk/C/LzFind.c
 )
 
 set(SOURCES_LZMA_OLD
-#  third-party/lzma-old/Common/StringConvert.cpp
-  third-party/lzma-old/Common/StringConvert.cpp
-  third-party/lzma-old/Common/Alloc.cpp
-  third-party/lzma-old/Common/StringToInt.cpp
-  third-party/lzma-old/Common/CRC.cpp
-  third-party/lzma-old/Common/String.cpp
-  third-party/lzma-old/Common/Vector.cpp
-  third-party/lzma-old/Common/C_FileIO.cpp
-  third-party/lzma-old/7zip/Common/OutBuffer.cpp
-  third-party/lzma-old/7zip/Common/StreamUtils.cpp
-  third-party/lzma-old/7zip/Common/InBuffer.cpp
-  third-party/lzma-old/7zip/Compress/LZMA/LZMADecoder.cpp
-  third-party/lzma-old/7zip/Compress/LZMA/LZMAEncoder.cpp
-  third-party/lzma-old/7zip/Compress/LZ/LZOutWindow.cpp
-  third-party/lzma-old/7zip/Compress/LZ/LZInWindow.cpp
-  third-party/lzma-old/7zip/Compress/RangeCoder/RangeCoderBit.cpp
-  third-party/lzma-old/LzmaRam.cpp
-  third-party/lzma-old/7zip/Compress/LZMA_C/LzmaDecode.c
-  third-party/lzma-old/7zip/Compress/Branch/BranchX86.c
-  third-party/lzma-old/LzmaRamDecode.c
+  thirdparty/lzma-old/Common/StringConvert.cpp
+  thirdparty/lzma-old/Common/Alloc.cpp
+  thirdparty/lzma-old/Common/StringToInt.cpp
+  thirdparty/lzma-old/Common/CRC.cpp
+  thirdparty/lzma-old/Common/String.cpp
+  thirdparty/lzma-old/Common/Vector.cpp
+  thirdparty/lzma-old/Common/C_FileIO.cpp
+  thirdparty/lzma-old/7zip/Common/OutBuffer.cpp
+  thirdparty/lzma-old/7zip/Common/StreamUtils.cpp
+  thirdparty/lzma-old/7zip/Common/InBuffer.cpp
+  thirdparty/lzma-old/7zip/Compress/LZMA/LZMADecoder.cpp
+  thirdparty/lzma-old/7zip/Compress/LZMA/LZMAEncoder.cpp
+  thirdparty/lzma-old/7zip/Compress/LZ/LZOutWindow.cpp
+  thirdparty/lzma-old/7zip/Compress/LZ/LZInWindow.cpp
+  thirdparty/lzma-old/7zip/Compress/RangeCoder/RangeCoderBit.cpp
+  thirdparty/lzma-old/LzmaRam.cpp
+  thirdparty/lzma-old/7zip/Compress/LZMA_C/LzmaDecode.c
+  thirdparty/lzma-old/7zip/Compress/Branch/BranchX86.c
+  thirdparty/lzma-old/LzmaRamDecode.c
 )
 
 
