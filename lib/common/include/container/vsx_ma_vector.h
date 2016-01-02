@@ -57,19 +57,20 @@ public:
   	allocation_increment = new_increment;
   }
 
-  void set_data(T* nA, int nsize) VSX_ALWAYS_INLINE
-  {
-    if (A && !data_volatile)
-      free(A);
-  	A = nA;
-  	used = allocated = nsize;
-  }
 
   // clones another array of same type into this one
   void clone(vsx_ma_vector<T>* F) VSX_ALWAYS_INLINE
   {
     allocate(F->size());
     memcpy((void*)A, (void*)(F->get_pointer()), sizeof(T) * used);
+  }
+
+  void set_data(T* nA, int nsize) VSX_ALWAYS_INLINE
+  {
+    if (A && !data_volatile)
+      free(A);
+    A = nA;
+    used = allocated = nsize;
   }
 
   void set_volatile() VSX_ALWAYS_INLINE
@@ -219,18 +220,28 @@ public:
     return A[index];
   }
 
+  // assignment and construction
   inline vsx_ma_vector<T>& operator=(vsx_ma_vector<T>& other) VSX_ALWAYS_INLINE
   {
-    allocate(other.allocated);
+    data_volatile = 1;
     used = other.used;
     timestamp = other.timestamp;
     allocation_increment = other.allocation_increment;
-    for (size_t i = 0; i < used; i++)
-      A[i] = other.A[i];
+    A = other.A;
     return *this;
   }
 
+  vsx_ma_vector(vsx_ma_vector<T>& other)
+  {
+    data_volatile = 1;
+    allocated = other.allocated;
+    used = other.used;
+    allocation_increment = other.allocation_increment;
+    timestamp = other.timestamp;
+    A = other.A;
+  }
 
+  // move operation
   inline vsx_ma_vector<T>& operator=(vsx_ma_vector<T>&& other) VSX_ALWAYS_INLINE
   {
     if (A)
@@ -250,22 +261,13 @@ public:
     return *this;
   }
 
-  vsx_ma_vector(vsx_ma_vector<T>& other)
-  {
-    allocated = other.allocated;
-    used = other.used;
-    allocation_increment = other.allocation_increment;
-    timestamp = other.timestamp;
-    A = other.A;
-  }
-
   vsx_ma_vector(vsx_ma_vector<T>&& other)
   {
     allocated = other.allocated;
     used = other.used;
     allocation_increment = other.allocation_increment;
     timestamp = other.timestamp;
-    A = std::move(other.A);
+    A = other.A;
 
     other.allocated = 0;
     other.used = 0;

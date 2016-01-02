@@ -31,6 +31,10 @@
 #include <string/vsx_string_helper.h>
 #include <filesystem/vsx_filesystem_helper.h>
 #include <filesystem/vsx_filesystem.h>
+#include <filesystem/archive/vsx_filesystem_archive_vsx_reader.h>
+#include <filesystem/archive/vsx_filesystem_archive_vsx_writer.h>
+#include <filesystem/archive/vsx_filesystem_archive_vsxz_reader.h>
+#include <filesystem/archive/vsx_filesystem_archive_vsxz_writer.h>
 #include <debug/vsx_error.h>
 
 #include <stdio.h>
@@ -70,7 +74,7 @@ void extract()
   if (!filesystem.get_archive()->is_archive_populated())
     VSX_ERROR_EXIT("Archive contains no files or failed to load", 2);
 
-  vsx_nw_vector<vsx::filesystem_archive_info>* archive_files = filesystem.get_archive()->files_get();
+  vsx_nw_vector<vsx::filesystem_archive_file_read>* archive_files = filesystem.get_archive()->files_get();
   for (unsigned long i = 0; i < (*archive_files).size(); ++i)
   {
     vsx_string<> out_filename = (*archive_files)[i].filename;
@@ -125,7 +129,7 @@ void create()
 
   vsx_string<> filenames;
   vsx_nw_vector< vsx_string<> > parts;
-  vsx::filesystem fs;
+  vsx::filesystem_archive_vsx_writer archive;
 
   if (arg->has_param_with_value("f"))
     filenames = arg->get_param_value("f");
@@ -133,7 +137,7 @@ void create()
   if (arg->has_param_with_value("fl"))
   {
     vsx_string<> file_list_file = arg->get_param_value("fl");
-    if (!fs.is_file(file_list_file))
+    if (!vsx::filesystem::get_instance()->is_file(file_list_file))
       VSX_ERROR_EXIT("Error, can not read file list file...", 101);
     filenames = vsx_string_helper::read_from_file<1024*1024>( file_list_file );
   }
@@ -153,11 +157,11 @@ void create()
 
   vsx_string<>archive_filename = arg->get_param_value("c");
 
-  filesystem.get_archive()->create(archive_filename.c_str(), vsx::filesystem_archive::archive_vsx);
+  archive.create(archive_filename.c_str());
 
   for (size_t i = 0; i < parts.size(); i++) {
     vsx_printf(L"* adding: %s \n", parts[i].c_str() );
-    int ret = filesystem.get_archive()-> file_add( parts[i], "", true);
+    int ret = archive.add_file( parts[i], "", true);
     if ( ret )
       VSX_ERROR_EXIT( "archive_add_file failed", ret );
   }

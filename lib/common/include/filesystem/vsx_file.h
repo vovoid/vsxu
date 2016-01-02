@@ -14,13 +14,6 @@ namespace vsx
     size_t position = 0;  // position in the data stream
     size_t size = 0;  // size of the data stream in bytes
 
-    enum mode_t {
-      mode_none = 0,
-      mode_read = 1,
-      mode_write = 2
-    };
-
-    mode_t mode = mode_none;
 
     vsx_ma_vector<unsigned char> data;
   };

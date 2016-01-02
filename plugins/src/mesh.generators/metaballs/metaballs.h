@@ -81,9 +81,6 @@ int    m_nNumBalls;
 	int             m_nNumIndices;
 	int             m_nFacePart;
   vsx_nw_vector_nd< vsx_vector3<> > m_pVertices;
-
-//	vsx_vector     *m_pVertices;
-//	unsigned short *m_pIndices;
 };
 
 #endif

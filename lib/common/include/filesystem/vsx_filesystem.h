@@ -4,10 +4,8 @@
 #include <stdio.h>
 #include <string/vsx_string.h>
 
-#include "vsx_filesystem_archive_info.h"
 #include "vsx_file.h"
-#include "vsx_filesystem_archive.h"
-
+#include "vsx_filesystem_archive_reader.h"
 
 #define VSXF_TYPE_FILESYSTEM 0
 #define VSXF_TYPE_ARCHIVE 1
@@ -16,7 +14,7 @@ namespace vsx
 {
   class COMMON_DLLIMPORT filesystem
   {
-    filesystem_archive archive;
+    filesystem_archive_reader archive;
     vsx_string<> base_path;
 
     bool archive_prohibited = false;
@@ -26,7 +24,7 @@ namespace vsx
     void set_base_path(vsx_string<> new_base_path);
     vsx_string<> get_base_path();
 
-    filesystem_archive* get_archive()
+    filesystem_archive_reader* get_archive()
     {
       if (archive_prohibited)
         return 0x0;
@@ -41,11 +39,8 @@ namespace vsx
     void f_close(file* &handle);
 
     char* f_gets(char* buf, unsigned long max_buf_size, file* handle);
-    wchar_t* f_getws(wchar_t* buf, unsigned long max_buf_size, file* handle);
     char* f_gets_entire(file* handle);
     int f_read(void* buf, unsigned long num_bytes, file* handle);
-
-    int f_puts(const char* buf, file* handle);
 
     unsigned long f_get_size(file* handle);
 

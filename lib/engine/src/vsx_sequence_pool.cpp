@@ -229,7 +229,11 @@ bool vsx_sequence_pool::export_to_file(vsx_string<>filename)
       savelist.add_raw("pseq_inject "+i_parts[0]+" "+i_parts[1]+" "+i_parts[2]);
     }
   }
-  savelist.save_to_file(vsx_data_path::get_instance()->data_path_get()+"animations/"+filename);
+  vsx_string<> list = savelist.get_as_string();
+  vsx_string_helper::write_to_file(
+      vsx_data_path::get_instance()->data_path_get()+"animations/"+filename,
+      list
+    );
   return true;
 }
 

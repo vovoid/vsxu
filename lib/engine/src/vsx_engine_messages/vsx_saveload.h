@@ -97,13 +97,15 @@ if (cmd == "package_export")
   if (c->parts.size() == 3) {
     vsx_string<>base_path = vsx_data_path::get_instance()->data_path_get();
 
-    vsx::filesystem tfs;
+    vsx::filesystem_archive_vsx_writer archive;
     vsx_string<>filename = (c->parts[2]+vsx_string_helper::str_replace<char>(";","",c->parts[1]));
-    tfs.get_archive()->create((base_path+filename).c_str(), vsx::filesystem_archive::archive_vsx);
+    archive.create((base_path+filename).c_str());
     vsx_command_list savelist;
     get_state_as_commandlist(savelist);
-    savelist.set_filesystem(&tfs);
-    savelist.save_to_file("_states/_default");
+
+    vsx_string<> state_as_string = savelist.get_as_string();
+    archive.add_string("_states/_default", state_as_string, true);
+
     for (forge_map_iter = forge_map.begin(); forge_map_iter != forge_map.end(); ++forge_map_iter)
     {
       vsx_comp* comp = (*forge_map_iter).second;
@@ -115,18 +117,18 @@ if (cmd == "package_export")
           {
             if (comp->get_params_in()->param_id_list[i]->get_string() != comp->get_params_in()->param_id_list[i]->get_default_string())
             {
-              tfs.get_archive()->file_add(comp->get_params_in()->param_id_list[i]->get_string(), vsx_data_path::get_instance()->data_path_get() +comp->get_params_in()->param_id_list[i]->get_string(), true);
+              archive.add_file(comp->get_params_in()->param_id_list[i]->get_string(), vsx_data_path::get_instance()->data_path_get() +comp->get_params_in()->param_id_list[i]->get_string(), true);
             }
           }
         }
         for (unsigned long i = 0; i < comp->module->resources.size(); ++i) {
           printf("engine resource add: %s\n", comp->module->resources[i].c_str() );
-          tfs.get_archive()->file_add(comp->module->resources[i], vsx_data_path::get_instance()->data_path_get()+comp->module->resources[i], true);
+          archive.add_file(comp->module->resources[i], vsx_data_path::get_instance()->data_path_get()+comp->module->resources[i], true);
         }
       }
     }
     cmd_out->add_raw(vsx_string<>(cmd+"_ok ")+c->parts[1], VSX_COMMAND_GARBAGE_COLLECT);
-    tfs.get_archive()->close();
+    archive.close();
   }
   goto process_message_queue_end;
 }
@@ -148,7 +150,9 @@ if (cmd == "state_save")
     get_state_as_commandlist(savelist);
     savelist.set_filesystem(&tfs);
     vsx_string<>filename = base_path+"states/"+vsx_string_helper::str_replace<char>(";","/",c->parts[1]);
-    savelist.save_to_file(filename);
+    vsx_string<> state_string = savelist.get_as_string();
+    vsx_string_helper::write_to_file(filename, state_string);
+
     cmd_out->add_raw(vsx_string<>(cmd+"_ok ")+c->parts[1], VSX_COMMAND_GARBAGE_COLLECT);
 
     vsx_string<>s2 = vsx_string_helper::str_replace<char>(" ","\\ ",c->parts[1]);

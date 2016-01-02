@@ -39,6 +39,7 @@ class vsx_nw_vector
   size_t allocated = 0;
   size_t used = 0;
   size_t allocation_increment = 1;
+  size_t data_volatile = 0;
   size_t timestamp = 0;
   __attribute__((aligned(64))) T* A = 0;
 
@@ -54,12 +55,10 @@ public:
     return allocated;
   }
 
-
   inline size_t get_used() VSX_ALWAYS_INLINE
   {
     return used;
   }
-
 
   // std::vector compatibility
   inline size_t push_back(T val) VSX_ALWAYS_INLINE
@@ -121,6 +120,11 @@ public:
     return used;
   }
 
+  inline size_t get_sizeof() VSX_ALWAYS_INLINE
+  {
+    return used * sizeof(T);
+  }
+
   inline bool has(T o)
   {
     for (size_t i = 0; i < used; i++)
@@ -131,6 +135,8 @@ public:
 
   inline void clear() VSX_ALWAYS_INLINE
   {
+    req(!data_volatile);
+
     if (!A)
       return;
     delete[] A;
@@ -150,6 +156,32 @@ public:
   inline void set_allocation_increment(unsigned long new_increment)  VSX_ALWAYS_INLINE
   {
   	allocation_increment = new_increment;
+  }
+
+  void set_data(T* nA, int nsize) VSX_ALWAYS_INLINE
+  {
+    if (A && !data_volatile)
+      free(A);
+    A = nA;
+    used = allocated = nsize;
+  }
+
+  void set_volatile() VSX_ALWAYS_INLINE
+  {
+    if (0 == data_volatile && A && allocated)
+    {
+      clear();
+    }
+    data_volatile = 1;
+  }
+
+  void unset_volatile() VSX_ALWAYS_INLINE
+  {
+    if (!data_volatile)
+      return;
+    A = 0;
+    allocated = 0;
+    data_volatile = 0;
   }
 
   inline void remove_value(T value) VSX_ALWAYS_INLINE
@@ -220,9 +252,7 @@ public:
         allocation_increment = (size_t)((float)allocation_increment * 1.3f);
     }
     if (index >= used)
-    {
       used = index+1;
-    }
   }
 
 /*  void copy(const vsx_nw_vector<T>& src)

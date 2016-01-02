@@ -27,23 +27,28 @@
 template<class T>
 class vsx_nw_vector_nd
 {
-  size_t allocated;
-  size_t used;
-  __attribute__((aligned(64))) T* A;
-  size_t allocation_increment;
+  size_t allocated = 0;
+  size_t used = 0;
+  size_t allocation_increment = 1;
+  size_t timestamp = 0;
+  __attribute__((aligned(64))) T* A = 0;
 public:
-  size_t timestamp;
-  T* get_pointer() {
+  inline T* get_pointer() VSX_ALWAYS_INLINE
+  {
     return A;
   }
-  size_t get_allocated() {
+  inline size_t get_allocated() VSX_ALWAYS_INLINE
+  {
     return allocated;
   }
-  size_t get_used() {
+
+  inline size_t get_used() VSX_ALWAYS_INLINE
+  {
     return used;
   }
   // std::vector compatibility
-  size_t push_back(T val) {
+  inline size_t push_back(T val) VSX_ALWAYS_INLINE
+  {
     (*this)[used] = val;
     return used;
   }
@@ -76,43 +81,60 @@ public:
     allocation_increment = new_increment;
   }
 
-  T& operator[](unsigned long index) {
+  inline void remove_value(T value) VSX_ALWAYS_INLINE
+  {
+    // allocate new
+    T* n = new T[allocated];
+    // iteration pointer
+    T* p = n;
+    for(unsigned long i = 0; i < used; i++)
+    {
+      if (A[i] != value)
+      {
+        *p = A[i];
+        p++;
+      }
+    }
+    used--;
+    delete[] A;
+    A = n;
+  }
+
+  inline void allocate( size_t index ) VSX_ALWAYS_INLINE
+  {
     if (index >= allocated || allocated == 0)
     {
       // need to allocate stuff here
-      if (A) {
+      if (A) 
+      {
+        if (allocation_increment == 0) 
+          allocation_increment = 1;
 
-        //if (allocated == 0)
-        if (allocation_increment == 0) allocation_increment = 1;
         allocated = index+allocation_increment;
         T* B = new T[allocated];
-        for (unsigned long i = 0; i < used; ++i) {
+        for (size_t i = 0; i < used; ++i) {
           B[i] = A[i];
         }
         delete[] A;
         A = B;
       } else {
-        A = new T[index+allocation_increment];//(T*)malloc(sizeof(T)*(index+allocation_increment));
+        A = new T[index+allocation_increment];
         allocated = index+allocation_increment;
       }
-      allocation_increment = allocation_increment << 1;
+      if (allocation_increment < 64)
+        allocation_increment *= 2;
+      else
+        allocation_increment = (size_t)((float)allocation_increment * 1.3f);
     }
-    if (index >= used) {
+    if (index >= used)
       used = index+1;
-      //printf("used: %d\n",used);
-    }
+  }
+
+  T& operator[](unsigned long index) {
+    allocate(index);
     return A[index];
   }
 
-  vsx_nw_vector_nd()
-    :
-      allocated(0),
-      used(0),
-      A(0),
-      allocation_increment(1),
-      timestamp(0)
-  {
-  }
 };
 
 #endif

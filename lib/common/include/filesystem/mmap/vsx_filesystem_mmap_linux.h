@@ -8,7 +8,7 @@
 
 #include <vsx_platform.h>
 #include <tools/vsx_req_error.h>
-#include <filesystem/vsx_file_mmap.h>
+#include <filesystem/mmap/vsx_file_mmap.h>
 #include <filesystem/vsx_filesystem_helper.h>
 
 namespace vsx

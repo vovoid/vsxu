@@ -111,7 +111,7 @@ file* filesystem::f_open(const char* filename, const char* mode)
 
   if (archive.is_archive())
   {
-    archive.file_open(filename, mode, handle);
+    archive.file_open(filename, handle);
     return handle;
   }
 
@@ -136,30 +136,13 @@ void filesystem::f_close(file* &handle)
   if (!handle)
     return;
 
-  if (archive.is_archive())
-    archive.file_close(handle);
-  else
+  if (!archive.is_archive())
     fclose(handle->handle);
 
   delete handle;
   handle = 0x0;
 }
 
-int filesystem::f_puts(const char* buf, file* handle)
-{
-  req_v(handle, 0);
-
-  if (!archive.is_archive())
-    return fputs(buf,handle->handle);
-
-  req_v(handle->mode == file::mode_write, 0);
-
-  size_t i = 0;
-  while (buf[i])
-    handle->data[handle->position = handle->size++] = buf[i++];
-
-  return 0;
-}
 
 unsigned long filesystem::f_get_size(file* handle)
 {
@@ -216,39 +199,6 @@ char* filesystem::f_gets(char* buf, unsigned long max_buf_size, file* handle)
   return 0x0;
 }
 
-wchar_t* filesystem::f_getws(wchar_t* buf, unsigned long max_buf_size, file* handle)
-{
-  if (!archive.is_archive())
-  {
-    wchar_t* ret = fgetws(buf, max_buf_size, handle->handle);
-    if (!ret)
-      perror("Error reading file");
-    return ret;
-  }
-
-  unsigned long i = 0;
-  bool run = true;
-
-  while (handle->position < handle->size && i < max_buf_size && run)
-  {
-    // TODO: this is wrong
-    if (handle->data[handle->position] == 0x0A)
-    {
-      run = false;
-    }
-    buf[i] = handle->data[handle->position];
-    ++i;
-    ++handle->position;
-  }
-
-  if (i < max_buf_size)
-    buf[i] = 0;
-
-  if (i != 0)
-    return buf;
-
-  return 0x0;
-}
 
 int filesystem::f_read(void* buf, unsigned long num_bytes, file* handle)
 {

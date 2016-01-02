@@ -384,10 +384,14 @@ void vsx_widget_desktop::save_configuration() {
   vsx_string<>save_filename = vsx_data_path::get_instance()->data_path_get() + "vsxu.conf";
 
   vsx_command_list s_conf;
-  for (std::map<vsx_string<>, vsx_string<> >::iterator it = configuration.begin(); it != configuration.end(); ++it) {
+  for (std::map<vsx_string<>, vsx_string<> >::iterator it = configuration.begin(); it != configuration.end(); ++it)
     s_conf.add_raw((*it).first+" "+(*it).second);
-  }
-  s_conf.save_to_file(save_filename);
+
+  vsx_string<> s_conf_string = s_conf.get_as_string();
+  vsx_string_helper::write_to_file(
+      save_filename,
+      s_conf_string
+    );
 }
 
   void vsx_widget_desktop::command_process_back_queue(vsx_command_s *t) {

@@ -369,24 +369,14 @@ public:
 
 
   // Thread safety: NO
-  void save_to_file(vsx_string<>filename)
+  vsx_string<> get_as_string()
   {
-    if (!filesystem)
-      filesystem = vsx::filesystem::get_instance();
-
-    vsx::file* fp;
-    if ((fp = filesystem->f_open(filename.c_str(), "w")) == NULL)
-      return;
+    vsx_string<> result;
 
     foreach(commands, i)
-      filesystem->f_puts(
-        (
-          commands[i]->raw + vsx_string<>("\n")
-        ).c_str(),
-        fp
-      );
+      result += commands[i]->raw + "\n";
 
-    filesystem->f_close(fp);
+    return result;
   }
 
 

@@ -246,7 +246,13 @@ void vsxu_assistant::command_process_back_queue(vsx_command_s *t) {
       inspected = 0;
       vsx_command_list cla;
       cla.add_raw("auto");
-      cla.save_to_file( vsx_data_path::get_instance()->data_path_get() + "help_settings.conf");
+
+      vsx_string<> cla_string = cla.get_as_string();
+      vsx_string_helper::write_to_file(
+          vsx_data_path::get_instance()->data_path_get() + "help_settings.conf",
+          cla_string
+        );
+
       auto_ = true;
       course.clear();
       ((vsx_widget_2d_pager*)pager)->set_max_page( 0 );//course.size();
