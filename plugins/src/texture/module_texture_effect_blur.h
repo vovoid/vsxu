@@ -31,9 +31,10 @@ class module_texture_effect_blur : public vsx_module
   vsx_module_param_float* attenuation;
   vsx_module_param_int* texture_size;
   vsx_module_param_int* passes;
-  int tex_size_internal;
+  int tex_size_internal = -1;
 
-  int res_x, res_y;
+  int res_x = 256;
+  int res_y = 256;
   // out
   vsx_module_param_texture* texture_result;
 
@@ -77,20 +78,16 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
   texture_size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"texture_size");
   texture_size->set(3);
-  tex_size_internal = 3;
 
   passes = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"passes");
   passes->set(0);
 
   gl_state = vsx_gl_state::get_instance();
 
-  res_x = res_y = 256;
-
   start_value = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"start_value");
   start_value->set(1.0f);
   attenuation = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
   attenuation->set(1.0f);
-
 
 shader.vertex_program = "\
 varying vec2 texcoord;\n\

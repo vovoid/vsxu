@@ -305,6 +305,7 @@ void filesystem_archive_vsx::file_add_all()
   {
     filesystem_archive_info &archive_file = archive_files[i];
     req_continue(archive_file.uncompressed_data.size());
+    req_continue(archive_file.operation == filesystem_archive_info::operation_add);
 
     files_to_process++;
     bool is_last = i == (archive_files.size() - 1);
@@ -406,6 +407,7 @@ int filesystem_archive_vsx::file_add
 
   filesystem_archive_info finfo;
   finfo.filename = filename;
+  finfo.operation = filesystem_archive_info::operation_add;
   archive_files.push_back(finfo);
 
   return 0;

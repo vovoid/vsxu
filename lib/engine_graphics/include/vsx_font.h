@@ -36,7 +36,7 @@
 class vsx_font_info {
 public:
   int type; // 0 = texture (old) 1 = new (FtGL)
-  vsx_texture<>* texture;  // pointer to either vsx_texture or ftgl font
+  vsx_texture<>* texture;
   vsx_string<>name;
   void* ftfont;
   void* ftfont_outline;

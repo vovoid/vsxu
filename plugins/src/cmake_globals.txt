@@ -1,3 +1,6 @@
+
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
+
 if (VSXU_DEBUG_NOPRINTFS EQUAL 1)
   add_definitions(-g -Wall)
 endif(VSXU_DEBUG_NOPRINTFS EQUAL 1)
@@ -8,8 +11,7 @@ if (VSXU_DEBUG EQUAL 1)
 endif ()
 
 add_definitions(
-   -DGLEW_STATIC=1
-#  -DBUILDING_DLL=1 
+  -DGLEW_STATIC=1
   -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
 )
 

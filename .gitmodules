@@ -10,3 +10,6 @@
 [submodule "lib/compression/thirdparty/lzham-sdk"]
 	path = lib/compression/thirdparty/lzham-sdk
 	url = https://github.com/vovoid/lzham_codec.git
+[submodule "lib/engine_graphics/thirdparty/ftgl"]
+	path = lib/engine_graphics/thirdparty/ftgl
+	url = https://github.com/vovoid/ftgl.git

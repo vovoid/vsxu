@@ -27,11 +27,7 @@
 #include <color/vsx_color.h>
 #include <filesystem/vsx_filesystem.h>
 #include "debug/vsx_error.h"
-#include "ftgl/FTGLPolygonFont.h"
-#include "ftgl/FTGLBitmapFont.h"
-#include "ftgl/FTGLOutlineFont.h"
-#include "ftgl/FTGLTextureFont.h"
-#include "ftgl/FTFont.h"
+#include <FTGL/ftgl.h>
 #include <string/vsx_string_helper.h>
 
 template < typename W = char >

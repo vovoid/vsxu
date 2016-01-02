@@ -4,7 +4,8 @@ target_link_libraries(
   ${module_id}
   vsx_engine_graphics
   ${GLEW_LIBRARY}
-#  ${FREETYPE_LIBRARY}
+  ${FTGL_LIBRARY}
+  ${FREETYPE_LIBRARIES}
   vsx_engine
   ${CMAKE_THREAD_LIBS_INIT}
   ${OPENGL_LIBRARIES}

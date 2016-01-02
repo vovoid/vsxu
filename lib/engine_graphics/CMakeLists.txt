@@ -61,36 +61,45 @@ set(SOURCES
   src/gl_helper.cpp
 )
 
-set(FTGL_SOURCES
-  thirdparty/ftgl/src/FTGlyph/FTBitmapGlyph.cpp
-  thirdparty/ftgl/src/FTGlyph/FTBufferGlyph.cpp
-  thirdparty/ftgl/src/FTGlyph/FTExtrudeGlyph.cpp
-  thirdparty/ftgl/src/FTGlyph/FTOutlineGlyph.cpp
-  thirdparty/ftgl/src/FTGlyph/FTPixmapGlyph.cpp
-  thirdparty/ftgl/src/FTGlyph/FTGlyph.cpp
-  thirdparty/ftgl/src/FTGlyph/FTTextureGlyph.cpp
-  thirdparty/ftgl/src/FTGlyph/FTPolygonGlyph.cpp
-
-  thirdparty/ftgl/src/FTFont/FTFont.cpp
-  thirdparty/ftgl/src/FTFont/FTBitmapFont.cpp
-  thirdparty/ftgl/src/FTFont/FTBufferFont.cpp
-  thirdparty/ftgl/src/FTFont/FTExtrudeFont.cpp
-  thirdparty/ftgl/src/FTFont/FTOutlineFont.cpp
-  thirdparty/ftgl/src/FTFont/FTPixmapFont.cpp
-  thirdparty/ftgl/src/FTFont/FTPolygonFont.cpp
-  thirdparty/ftgl/src/FTFont/FTTextureFont.cpp
-
-  thirdparty/ftgl/src/FTPoint.cpp
-  thirdparty/ftgl/src/FTSize.cpp
-  thirdparty/ftgl/src/FTVectoriser.cpp
-  thirdparty/ftgl/src/FTCharmap.cpp
-  thirdparty/ftgl/src/FTContour.cpp
-  thirdparty/ftgl/src/FTFace.cpp
-  thirdparty/ftgl/src/FTGlyphContainer.cpp
-  thirdparty/ftgl/src/FTLibrary.cpp
+include_directories(
+thirdparty/ftgl
+thirdparty/ftgl/src
 )
-set(SOURCES
-  ${SOURCES} ${FTGL_SOURCES}
+set(SOURCES_FTGL
+thirdparty/ftgl/src/FTBuffer.cpp
+thirdparty/ftgl/src/FTCharmap.cpp
+thirdparty/ftgl/src/FTCleanup.cpp
+thirdparty/ftgl/src/FTContour.cpp
+thirdparty/ftgl/src/FTFace.cpp
+thirdparty/ftgl/src/FTFont/FTBitmapFont.cpp
+thirdparty/ftgl/src/FTFont/FTBufferFont.cpp
+thirdparty/ftgl/src/FTFont/FTExtrudeFont.cpp
+thirdparty/ftgl/src/FTFont/FTFont.cpp
+thirdparty/ftgl/src/FTFont/FTFontGlue.cpp
+thirdparty/ftgl/src/FTFont/FTOutlineFont.cpp
+thirdparty/ftgl/src/FTFont/FTPixmapFont.cpp
+thirdparty/ftgl/src/FTFont/FTPolygonFont.cpp
+thirdparty/ftgl/src/FTFont/FTTextureFont.cpp
+thirdparty/ftgl/src/FTFont/FTTriangleExtractorFont.cpp
+thirdparty/ftgl/src/FTGL.cpp
+thirdparty/ftgl/src/FTGlyph/FTBitmapGlyph.cpp
+thirdparty/ftgl/src/FTGlyph/FTBufferGlyph.cpp
+thirdparty/ftgl/src/FTGlyph/FTExtrudeGlyph.cpp
+thirdparty/ftgl/src/FTGlyph/FTGlyph.cpp
+thirdparty/ftgl/src/FTGlyph/FTGlyphGlue.cpp
+thirdparty/ftgl/src/FTGlyph/FTOutlineGlyph.cpp
+thirdparty/ftgl/src/FTGlyph/FTPixmapGlyph.cpp
+thirdparty/ftgl/src/FTGlyph/FTPolygonGlyph.cpp
+thirdparty/ftgl/src/FTGlyph/FTTextureGlyph.cpp
+thirdparty/ftgl/src/FTGlyph/FTTriangleExtractorGlyph.cpp
+thirdparty/ftgl/src/FTGlyphContainer.cpp
+thirdparty/ftgl/src/FTLayout/FTLayout.cpp
+thirdparty/ftgl/src/FTLayout/FTLayoutGlue.cpp
+thirdparty/ftgl/src/FTLayout/FTSimpleLayout.cpp
+thirdparty/ftgl/src/FTLibrary.cpp
+thirdparty/ftgl/src/FTPoint.cpp
+thirdparty/ftgl/src/FTSize.cpp
+thirdparty/ftgl/src/FTVectoriser.cpp
 )
 
 file(GLOB_RECURSE HEADER_FILES *.h)
@@ -107,9 +116,9 @@ endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
 
 if (VSXU_STATIC EQUAL 1)  
   #static build  
-  add_library(${module_id} STATIC ${SOURCES} ${HEADER_FILES})
+  add_library(${module_id} STATIC ${SOURCES} ${SOURCES_FTGL} ${HEADER_FILES})
 else ()
-  add_library(${module_id} SHARED ${SOURCES} ${HEADER_FILES})
+  add_library(${module_id} SHARED ${SOURCES} ${SOURCES_FTGL} ${HEADER_FILES})
 endif()
 
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)
@@ -157,6 +166,7 @@ target_link_libraries(
   ${module_id}
   vsx_engine
   ${GLEW_LIBRARIES}
+  ${FTGL_LIBRARY}
   ${FREETYPE_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
   ${OPENGL_LIBRARIES}
