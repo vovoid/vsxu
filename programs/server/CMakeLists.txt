@@ -55,26 +55,9 @@ endif()
 set(OS_SOURCES "")
 
 if(UNIX)
-  if (VSXU_OPENGL_ES_2_0 EQUAL 1)
-    if (MEEGO EQUAL 1)
-      include_directories(src/main/linux-opengl/)
-      add_definitions(-DVSXU_OPENGL_ES)
-      set(OS_SOURCES
-        src/main/linux-opengl_es/main.cpp
-      )
-    else (VSXU_MEEGO EQUAL 1)
-      include_directories(src/main/linux-opengl/)
-      add_definitions(-DVSXU_OPENGL_ES)
-      set(OS_SOURCES
-        src/main/linux-meego_opengl_es/main.cpp
-      )
-    endif (MEEGO EQUAL 1)
-  else (VSXU_OPENGL_ES_2_0 EQUAL 1)
     set(OS_SOURCES
       src/main/linux-opengl/main.cpp
     )
-  endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
-
 endif(UNIX)
 
 

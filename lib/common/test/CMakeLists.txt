@@ -33,6 +33,9 @@ target_link_libraries(test_fread rt vsx_common vsx_compression )
 add_executable(test_filesystem_archive_vsx test_filesystem_archive_vsx.cpp )
 target_link_libraries(test_filesystem_archive_vsx rt vsx_common vsx_compression ${CMAKE_THREAD_LIBS_INIT})
 
+add_executable(test_filesystem_archive_vsxz test_filesystem_archive_vsxz.cpp )
+target_link_libraries(test_filesystem_archive_vsxz rt vsx_common vsx_compression ${CMAKE_THREAD_LIBS_INIT})
+
 add_executable(test_string test_string.cpp )
 target_link_libraries(test_string rt vsx_common ${CMAKE_THREAD_LIBS_INIT})
 

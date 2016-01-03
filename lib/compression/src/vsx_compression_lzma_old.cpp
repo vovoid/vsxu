@@ -46,7 +46,6 @@ vsx_ma_vector<unsigned char> compression_lzma_old::compress(vsx_ma_vector<unsign
     SZ_FILTER_AUTO
   );
 
-  vsx_printf(L"%lx bytes processed\n", outSizeProcessed);
   compressed_data.reset_used(outSizeProcessed);
   return compressed_data;
 }

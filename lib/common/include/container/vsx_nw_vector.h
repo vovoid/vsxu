@@ -30,7 +30,6 @@
 #include <stdio.h>
 #include <iomanip>
 
-
 #include <wchar.h>
 
 template<class T>
@@ -161,7 +160,8 @@ public:
   void set_data(T* nA, int nsize) VSX_ALWAYS_INLINE
   {
     if (A && !data_volatile)
-      free(A);
+      delete[] A;
+
     A = nA;
     used = allocated = nsize;
   }
@@ -169,9 +169,7 @@ public:
   void set_volatile() VSX_ALWAYS_INLINE
   {
     if (0 == data_volatile && A && allocated)
-    {
       clear();
-    }
     data_volatile = 1;
   }
 
@@ -186,6 +184,7 @@ public:
 
   inline void remove_value(T value) VSX_ALWAYS_INLINE
   {
+    req(!data_volatile);
     // allocate new
     T* n = new T[allocated];
     // iteration pointer
@@ -205,6 +204,7 @@ public:
 
   inline void remove_index(size_t index)
   {
+    req(!data_volatile);
     req(index < used);
     for (size_t i = index; i < used-1; i++)
       A[i] = std::move(A[i+1]);
@@ -213,6 +213,7 @@ public:
 
   inline void insert(size_t index, T value)
   {
+    req(!data_volatile);
     req(index < used);
     allocate(used);
     for (size_t i = used; i > index; i--)
@@ -224,9 +225,9 @@ public:
 
   inline void allocate( size_t index ) VSX_ALWAYS_INLINE
   {
+    req(!data_volatile);
     if (index >= allocated || allocated == 0)
     {
-      // need to allocate memory
       if (A)
       {
         if (allocation_increment == 0)
@@ -236,7 +237,7 @@ public:
         T* B = new T[allocated];
 
         for (size_t i = 0; i < used; ++i)
-          B[i] = A[i];
+          B[i] = std::move(A[i]);
 
         delete[] A;
         A = B;
@@ -251,26 +252,28 @@ public:
       else
         allocation_increment = (size_t)((float)allocation_increment * 1.3f);
     }
+
     if (index >= used)
       used = index+1;
   }
 
-/*  void copy(const vsx_nw_vector<T>& src)
-  {
-    allocate(src.get_allocated());
-    T* B = src.get_pointer();
-    for(size_t i = 0; i < src.size(); i++)
-      A[i] = B[i];
-  }
-*/
   inline T& operator[](size_t index) VSX_ALWAYS_INLINE
   {
+    #if VSXU_DEBUG
+    if (data_volatile && index > (used - 1))
+      exit(500);
+    #endif
     allocate( index );
     return A[index];
   }
 
   inline vsx_nw_vector<T>& operator=(vsx_nw_vector<T>&& other) VSX_ALWAYS_INLINE
   {
+    req_v(!data_volatile, *this);
+
+    if (A)
+      clear();
+
     allocated = other.allocated;
     used = other.used;
     allocation_increment = other.allocation_increment;
@@ -287,6 +290,8 @@ public:
 
   inline const vsx_nw_vector<T>& operator=(const vsx_nw_vector<T>& other) VSX_ALWAYS_INLINE
   {
+    req_v(!data_volatile, *this);
+
     allocate(other.allocated);
     used = other.used;
     timestamp = other.timestamp;
@@ -298,6 +303,7 @@ public:
 
   vsx_nw_vector(vsx_nw_vector<T>& other)
   {
+    req(!other.data_volatile);
     allocate(other.allocated);
     allocated = other.allocated;
     used = other.used;
@@ -309,6 +315,7 @@ public:
 
   vsx_nw_vector(vsx_nw_vector<T>&& other)
   {
+    req(!other.data_volatile);
     allocate(other.allocated);
     allocated = other.allocated;
     used = other.used;
@@ -330,6 +337,7 @@ public:
 
   ~vsx_nw_vector()
   {
+    req(!data_volatile);
     req(A);
     delete[] A;
     A = 0x0; // valgrind

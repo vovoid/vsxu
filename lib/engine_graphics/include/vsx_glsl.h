@@ -21,12 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_GLSL_H
-#define VSX_GLSL_H
-
-#ifdef VSXU_OPENGL_ES_2_0
-#include "vsx_glsl_es.h"
-#else
+#pragma once
 
 typedef struct {
   vsx_module_param_abs* module_param;
@@ -748,6 +743,3 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
     }
   }
 };
-
-#endif // ifdef OPENGL_ES_2_0
-#endif // ifndef VSX_GLSL_H

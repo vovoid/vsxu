@@ -1,5 +1,5 @@
-#include <filesystem/archive/vsx_filesystem_archive_vsx_reader.h>
-#include <filesystem/archive/vsx_filesystem_archive_vsx_writer.h>
+#include <filesystem/archive/vsx_filesystem_archive_vsxz_reader.h>
+#include <filesystem/archive/vsx_filesystem_archive_vsxz_writer.h>
 #include <string/vsx_string_helper.h>
 #include <time/vsx_timer.h>
 #include <vsx_argvector.h>
@@ -27,14 +27,14 @@ void teardown()
 
 void test_plain_files()
 {
-  filesystem_archive_vsx_writer archive;
+  filesystem_archive_vsxz_writer archive;
   archive.create("test_filesystem_archive.vsx");
   archive.add_file("test_filesystem_archive_file_1", "", false);
   archive.add_file("test_filesystem_archive_file_2", "", false);
 
   archive.close();
 
-  filesystem_archive_vsx_reader archive_load;
+  filesystem_archive_vsxz_reader archive_load;
 
   archive_load.load("test_filesystem_archive.vsx", false);
 
@@ -44,14 +44,14 @@ void test_plain_files()
 
 void test_text_files()
 {
-  filesystem_archive_vsx_writer archive;
+  filesystem_archive_vsxz_writer archive;
   archive.create("test_filesystem_archive.vsx");
   archive.add_file("test_filesystem_archive_file_1", "", false);
   archive.add_file("test_filesystem_archive_file_2", "", false);
   archive.add_string("test_string", "hello", false);
   archive.close();
 
-  filesystem_archive_vsx_reader archive_load;
+  filesystem_archive_vsxz_reader archive_load;
 
   archive_load.load("test_filesystem_archive.vsx", false);
 

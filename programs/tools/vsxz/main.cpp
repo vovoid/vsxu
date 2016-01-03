@@ -161,9 +161,7 @@ void create()
 
   for (size_t i = 0; i < parts.size(); i++) {
     vsx_printf(L"* adding: %s \n", parts[i].c_str() );
-    int ret = archive.add_file( parts[i], "", true);
-    if ( ret )
-      VSX_ERROR_EXIT( "archive_add_file failed", ret );
+    archive.add_file( parts[i], "", true);
   }
 
   filesystem.get_archive()->close();

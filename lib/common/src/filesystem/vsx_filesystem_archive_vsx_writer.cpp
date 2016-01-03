@@ -10,7 +10,7 @@ namespace vsx
 
 void filesystem_archive_vsx_writer::create(const char* filename)
 {
-  archive_name = filename;
+  archive_filename = filename;
   archive_handle = fopen(filename,"wb");
   const char header[5] = "VSXz";
   fwrite(header, sizeof(char), 4, archive_handle);
@@ -24,31 +24,9 @@ void filesystem_archive_vsx_writer::file_add_all_worker(vsx_nw_vector<filesystem
     vsx_string<> filename = info->filename;
 
     if (!info->uncompressed_data.size())
-    {
-      FILE* fp = 0;
-      fp = fopen(filename.c_str(),"rb");
-      if (!fp)
-        VSX_ERROR_CONTINUE( ("fp is not valid for file: "+filename).c_str() );
-
-      fseek (fp, 0, SEEK_END);
-      info->uncompressed_data.allocate(ftell(fp));
-      fseek(fp,0,SEEK_SET);
-
-      req(info->uncompressed_data.size());
-
-      if ( !fread(info->uncompressed_data.get_pointer(), sizeof(char), info->uncompressed_data.get_sizeof(), fp) )
-      {
-        fclose(fp);
-        VSX_ERROR_CONTINUE("Error reading file!");
-      }
-
-      fclose(fp);
-    }
+      info->uncompressed_data = filesystem_helper::file_read(filename);
 
     info->compressed_data = compression_lzma_old::compress( info->uncompressed_data );
-
-    float compression_factor = ((float)info->compressed_data.size() / (float)info->uncompressed_data.size()) * 100.0;
-    vsx_printf(L" ** compressed %f        %s from %d to %d \n", compression_factor, filename.c_str(), info->uncompressed_data.size(), info->compressed_data.size());
   }
 }
 
@@ -116,18 +94,18 @@ void filesystem_archive_vsx_writer::file_add_all()
 
 
 
-int filesystem_archive_vsx_writer::add_file
+void filesystem_archive_vsx_writer::add_file
 (
   vsx_string<> filename,
   vsx_string<> disk_filename,
   bool deferred_multithreaded
 )
 {
-  req_v(archive_handle, 1);
+  req(archive_handle);
 
   foreach(archive_files, i)
     if (archive_files[i].filename == filename)
-      return 1;
+      return;
 
   if (deferred_multithreaded)
   {
@@ -135,7 +113,7 @@ int filesystem_archive_vsx_writer::add_file
     file_info.filename = filename;
     file_info.operation = filesystem_archive_file_write::operation_add;
     archive_files.push_back(file_info);
-    return 0;
+    return;
   }
 
   vsx_string<> fopen_filename = filename;
@@ -149,8 +127,6 @@ int filesystem_archive_vsx_writer::add_file
   filesystem_archive_file_write file_info;
   file_info.filename = filename;
   archive_files.move_back(std::move(file_info));
-
-  return 0;
 }
 
 void filesystem_archive_vsx_writer::file_compress_and_add_to_archive(vsx_string<> filename, vsx_ma_vector<unsigned char>& uncompressed_data)
@@ -168,7 +144,7 @@ void filesystem_archive_vsx_writer::file_compress_and_add_to_archive(vsx_string<
   fwrite(compressed_data.get_pointer(), sizeof(unsigned char), compressed_data.get_sizeof(), archive_handle);
 }
 
-int filesystem_archive_vsx_writer::add_string(vsx_string<> filename, vsx_string<> payload, bool deferred_multithreaded)
+void filesystem_archive_vsx_writer::add_string(vsx_string<> filename, vsx_string<> payload, bool deferred_multithreaded)
 {
   filesystem_archive_file_write file_info;
   file_info.filename = filename;
@@ -178,13 +154,11 @@ int filesystem_archive_vsx_writer::add_string(vsx_string<> filename, vsx_string<
   if (deferred_multithreaded)
   {
     archive_files.move_back(std::move(file_info));
-    return 0;
+    return;
   }
 
   file_compress_and_add_to_archive(filename, file_info.uncompressed_data);
   archive_files.move_back(std::move(file_info));
-
-  return 0;
 }
 
 void filesystem_archive_vsx_writer::close()
@@ -192,7 +166,7 @@ void filesystem_archive_vsx_writer::close()
   req(archive_handle);
 
   file_add_all();
-  archive_name = "";
+  archive_filename = "";
   fclose(archive_handle);
   archive_handle = 0;
 

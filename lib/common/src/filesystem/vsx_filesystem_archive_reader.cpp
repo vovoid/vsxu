@@ -11,7 +11,7 @@
 namespace vsx
 {
 
-int filesystem_archive_reader::load(const char* archive_filename, bool load_data_multithreaded)
+bool filesystem_archive_reader::load(const char* archive_filename, bool load_data_multithreaded)
 {
   if (archive)
     close();

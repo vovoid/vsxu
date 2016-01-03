@@ -53,7 +53,7 @@ void filesystem_archive_vsx_reader::load_all()
 }
 
 
-int filesystem_archive_vsx_reader::load(const char* archive_filename, bool load_data_multithreaded)
+bool filesystem_archive_vsx_reader::load(const char* archive_filename, bool load_data_multithreaded)
 {
   if (is_archive())
     close();
@@ -61,15 +61,14 @@ int filesystem_archive_vsx_reader::load(const char* archive_filename, bool load_
   archive_name = archive_filename;
   archive_handle = fopen(archive_filename,"rb");
 
-  req_error_v(archive_handle, (vsx_string<>("could not open archive: ") + archive_name).c_str(), 0)
+  req_error_v(archive_handle, (vsx_string<>("could not open archive: ") + archive_name).c_str(), false);
 
   // Find out total size
   fseek (archive_handle, 0, SEEK_END);
   unsigned long size = ftell(archive_handle);
 
   // Sanitize size
-  if (size < 4)
-    return 1;
+  req_v(size > 4, false);
 
   fseek(archive_handle,0,SEEK_SET);
 
@@ -77,11 +76,11 @@ int filesystem_archive_vsx_reader::load(const char* archive_filename, bool load_
   char header[5];
   header[4] = 0;
   if (!fread(header,sizeof(char),4,archive_handle))
-    VSX_ERROR_RETURN_V("VSXz Reading header size with fread failed!",2);
+    VSX_ERROR_RETURN_V("VSXz Reading header size with fread failed!",0);
 
   vsx_string<> hs(header);
   if (hs != "VSXz")
-    VSX_ERROR_RETURN_V("VSXz tag is wrong",2);
+    VSX_ERROR_RETURN_V("VSXz tag is wrong",0);
 
   while (fread(&size,sizeof(uint32_t), 1, archive_handle) != 0)
   {
@@ -97,7 +96,7 @@ int filesystem_archive_vsx_reader::load(const char* archive_filename, bool load_
     filesystem_archive_file_read file_info;
     file_info.filename = filebuf_name;
     file_info.archive_position = ftell(archive_handle)+1;
-    file_info.compressed_data.allocate( size );
+    file_info.compressed_data.allocate( size - 1 );
 
     if (load_data_multithreaded)
     {
@@ -116,7 +115,7 @@ int filesystem_archive_vsx_reader::load(const char* archive_filename, bool load_
   if (load_data_multithreaded)
     load_all();
 
-  return 1;
+  return true;
 }
 
 

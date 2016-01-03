@@ -117,7 +117,11 @@ if (cmd == "package_export")
           {
             if (comp->get_params_in()->param_id_list[i]->get_string() != comp->get_params_in()->param_id_list[i]->get_default_string())
             {
-              archive.add_file(comp->get_params_in()->param_id_list[i]->get_string(), vsx_data_path::get_instance()->data_path_get() +comp->get_params_in()->param_id_list[i]->get_string(), true);
+              archive.add_file(
+                comp->get_params_in()->param_id_list[i]->get_string(),
+                vsx_data_path::get_instance()->data_path_get() + comp->get_params_in()->param_id_list[i]->get_string(),
+                true
+              );
             }
           }
         }

@@ -66,6 +66,7 @@ public:
   	return data.get_pointer();
   }
 
+
   inline const W* c_str() const VSX_ALWAYS_INLINE
   {
     zero_add();
@@ -114,6 +115,12 @@ public:
   inline void empty() VSX_ALWAYS_INLINE
   {
     data.reset_used();
+  }
+
+  void set_volatile_data(W* data_pointer, size_t length)
+  {
+    data.set_volatile();
+    data.set_data(data_pointer, length);
   }
 
   W& operator[](int index) const VSX_ALWAYS_INLINE
@@ -167,6 +174,11 @@ public:
       push_back( other_string[i] );
     }
     zero_add();
+  }
+
+  ~vsx_string<W>()
+  {
+
   }
 
   inline const vsx_string<W>& operator=(const vsx_string<W>& other_string) VSX_ALWAYS_INLINE

@@ -105,15 +105,6 @@ thirdparty/ftgl/src/FTVectoriser.cpp
 file(GLOB_RECURSE HEADER_FILES *.h)
 
 
-if (VSXU_OPENGL_ES_2_0 EQUAL 1)
-  add_definitions(-DVSXU_OPENGL_ES -DVSXU_OPENGL_ES_2_0)
-  set(SOURCES
-    ${SOURCES} ${FTGL_SOURCES}
-    src/vsx_gl_es_shader_wrapper.cpp
-  )
-endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
-
-
 if (VSXU_STATIC EQUAL 1)  
   #static build  
   add_library(${module_id} STATIC ${SOURCES} ${SOURCES_FTGL} ${HEADER_FILES})

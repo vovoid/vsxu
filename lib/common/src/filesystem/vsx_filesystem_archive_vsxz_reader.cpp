@@ -4,16 +4,20 @@
 namespace vsx
 {
 
-int filesystem_archive_vsxz_reader::load(const char* archive_filename, bool load_data_multithreaded)
+bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool load_data_multithreaded)
 {
   mmap = filesystem_mmap::create(archive_filename);
-  req_v(mmap, 1);
-  req_v(mmap->size > sizeof(vsxz_header) + sizeof(vsxz_header_file), 1);
+  req_v(mmap, false);
+  req_v(mmap->size > sizeof(vsxz_header) + sizeof(vsxz_header_file), false);
   header = (vsxz_header*)mmap->data;
 
+  req_v(header->identifier[0] == 'V', false);
+  req_v(header->identifier[1] == 'S', false);
+  req_v(header->identifier[2] == 'X', false);
+  req_v(header->identifier[3] == 'Z', false);
 
 
-  return 0;
+  return 1;
 }
 
 void filesystem_archive_vsxz_reader::file_open(const char* filename, file* &handle)

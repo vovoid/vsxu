@@ -25,22 +25,11 @@
 #ifndef VSX_GL_GLOBAL_H
 #define VSX_GL_GLOBAL_H
   #ifndef VSXU_NO_GL_GLOBAL
-    #if defined(VSXU_OPENGL_ES)
-      #if (PLATFORM == PLATFORM_LINUX)
-        #include "GLES2/gl2.h"
-        #include "EGL/egl.h"
-        #include "vsx_gl_es_shader_wrapper.h"
-      #else
-        #include <OpenGLES/ES1/gl.h>
-        #include <OpenGLES/ES1/glext.h>
-      #endif
-    #else // VSXU_OPENGL_ES
       #include <GL/glew.h>
       #ifdef _WIN32
         #include <GL/wglew.h>
       #elif __linux__
         #include <GL/glxew.h>
       #endif
-    #endif
   #endif
 #endif

@@ -21,7 +21,7 @@ class filesystem_archive_vsxz_reader
 
 public:
 
-  int load(const char* archive_filename, bool load_data_multithreaded);
+  bool load(const char* archive_filename, bool load_data_multithreaded);
 
   vsx_nw_vector<filesystem_archive_file_read>* files_get();
   void file_open(const char* filename, file* &handle);

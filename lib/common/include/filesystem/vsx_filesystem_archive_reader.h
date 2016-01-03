@@ -29,7 +29,7 @@ namespace vsx
 
   public:
 
-    int load(const char* archive_filename, bool load_data_multithreaded);
+    bool load(const char* archive_filename, bool load_data_multithreaded);
     void file_open(const char* filename, file* &handle);
     void close();
 
