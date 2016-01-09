@@ -8,7 +8,7 @@ bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool loa
 {
   mmap = filesystem_mmap::create(archive_filename);
   req_v(mmap, false);
-  req_v(mmap->size > sizeof(vsxz_header) + sizeof(vsxz_header_file), false);
+  req_v(mmap->size > sizeof(vsxz_header) + sizeof(vsxz_header_file_info), false);
   header = (vsxz_header*)mmap->data;
 
   req_v(header->identifier[0] == 'V', false);

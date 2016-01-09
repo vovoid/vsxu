@@ -14,7 +14,7 @@ class filesystem_archive_vsxz_reader
     : public filesystem_archive_reader_base
 {
   vsxz_header* header = 0x0;
-  vsx_ma_vector<vsxz_header_file*> directory;
+  vsx_ma_vector<vsxz_header_file_info*> directory;
   vsx_ma_vector<char*> directory_file_names;
   file_mmap* mmap = 0x0;
   vsx_nw_vector<filesystem_archive_file_read> archive_files;

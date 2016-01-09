@@ -116,8 +116,8 @@ void filesystem_archive_vsxz_writer::close()
   header.file_count = archive_files.size();
 
   foreach (archive_files, i)
-    header.file_table_size +=
-        sizeof(vsxz_header_file) +
+    header.file_info_table_size +=
+        sizeof(vsxz_header_file_info) +
         archive_files[i].filename.size()
       ;
 
@@ -128,12 +128,11 @@ void filesystem_archive_vsxz_writer::close()
 
   foreach (archive_files, i)
   {
-    vsxz_header_file file_header;
+    vsxz_header_file_info file_header;
     file_header.compression_type = (uint8_t)archive_files[i].compression_type;
     file_header.compressed_size = archive_files[i].compressed_data.get_sizeof();
-    file_header.file_name_size = archive_files[i].filename.size();
     file_header.uncompressed_size = archive_files[i].uncompressed_data.get_sizeof();
-    fwrite(&file_header, sizeof(vsxz_header_file), 1, file);
+    fwrite(&file_header, sizeof(vsxz_header_file_info), 1, file);
   }
 
   foreach (archive_files, i)
