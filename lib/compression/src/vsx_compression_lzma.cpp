@@ -28,14 +28,15 @@ vsx_ma_vector<unsigned char> compression_lzma::compress(vsx_ma_vector<unsigned c
     32,        /* 5 <= fb <= 273, default = 32 */
     1 /* 1 or 2, default = 2 */
   );
-  compressed_data.reset_used(destLen);
+  compressed_data.reset_used(destLen + LZMA_PROPS_SIZE);
   return compressed_data;
 }
 
-vsx_ma_vector<unsigned char> compression_lzma::uncompress(vsx_ma_vector<unsigned char> &compressed_data, size_t original_size)
+void compression_lzma::uncompress(
+    vsx_ma_vector<unsigned char> &uncompressed_data,
+    vsx_ma_vector<unsigned char> &compressed_data
+)
 {
-  vsx_ma_vector<unsigned char> uncompressed_data;
-  uncompressed_data.allocate(original_size);
   size_t dest_len = uncompressed_data.size();
   size_t compressed_size = compressed_data.get_sizeof();
   LzmaUncompress(
@@ -46,6 +47,13 @@ vsx_ma_vector<unsigned char> compression_lzma::uncompress(vsx_ma_vector<unsigned
     &compressed_data[0],
     LZMA_PROPS_SIZE
   );
+}
+
+vsx_ma_vector<unsigned char> compression_lzma::uncompress(vsx_ma_vector<unsigned char> &compressed_data, size_t original_size)
+{
+  vsx_ma_vector<unsigned char> uncompressed_data;
+  uncompressed_data.allocate(original_size);
+  uncompress(uncompressed_data, compressed_data);
   return uncompressed_data;
 }
 

@@ -59,25 +59,26 @@ void filesystem_archive_vsx_writer::file_add_all()
       },
       pool
     );
-
+    pool = 0x0;
     if (!is_last)
       pool = new vsx_nw_vector<filesystem_archive_file_write*>();
 
     pooled_size = 0;
   }
 
-  vsx_thread_pool::instance()->add(
-    [=](vsx_nw_vector<filesystem_archive_file_write*>* work_pool)
-    {
-      file_add_all_worker(work_pool);
-      delete work_pool;
-    },
-    pool
-  );
-
-  req(files_to_process);
+  if (pool)
+    vsx_thread_pool::instance()->add(
+      [=](vsx_nw_vector<filesystem_archive_file_write*>* work_pool)
+      {
+        file_add_all_worker(work_pool);
+        delete work_pool;
+      },
+      pool
+    );
 
   vsx_thread_pool::instance()->wait_all();
+
+  req(files_to_process);
 
   // Write all to disk
   foreach (archive_files, i)
