@@ -6,13 +6,8 @@
 
 // 1. header
 // 2. file name table
-//    - null-terminated names of all files in the archive in order
-//    - all characters are encoded in 4 bits
-//    - padded up to the
-// 3. file info table
-//    - array of vsxz_header_file_info
-// 4. data stream
-//
+//    [ vsxz_header_file_info ][ filename ][ vsxz_header_file_info ][ filename ]...
+// 3. compressed data
 
 namespace vsx
 {
