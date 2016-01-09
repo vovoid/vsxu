@@ -2,16 +2,16 @@
 
 #include <inttypes.h>
 
-// 3 parts:
+// 4 parts:
 
 // 1. header
 // 2. file name table
 //    - null-terminated names of all files in the archive in order
 //    - all characters are encoded in 4 bits
 //    - padded up to the
-// 2. file info table
+// 3. file info table
 //    - array of vsxz_header_file_info
-// 3. data stream
+// 4. data stream
 //
 
 namespace vsx
