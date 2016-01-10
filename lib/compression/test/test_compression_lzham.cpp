@@ -1,7 +1,7 @@
 #include <filesystem/mmap/vsx_filesystem_mmap.h>
 #include <string/vsx_string_helper.h>
 #include <tools/vsx_foreach.h>
-#include <vsx_compression_lzham.h>
+#include <vsx_compression_lzma.h>
 
 
 #define LZMA_PROPS_SIZE 14
@@ -30,9 +30,9 @@ int main(int argc, char *argv[])
   data[11] = ' ';
   data[12] = '1';
 
-  vsx_ma_vector<unsigned char> compressed = vsx::compression_lzham::compress(data);
+  vsx_ma_vector<unsigned char> compressed = vsx::compression_lzma::compress(data);
 
-  vsx_ma_vector<unsigned char> uncompressed = vsx::compression_lzham::uncompress(compressed, 13);
+  vsx_ma_vector<unsigned char> uncompressed = vsx::compression_lzma::uncompress(compressed, 13);
 
   foreach(data, i)
     if (data[i] != uncompressed[i])

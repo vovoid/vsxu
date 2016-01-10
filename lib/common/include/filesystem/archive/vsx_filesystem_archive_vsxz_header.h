@@ -19,7 +19,7 @@ struct vsxz_header
    uint32_t file_count = 0; // number of files stored in this archive
    uint32_t file_count_compressed = 0; // number of compressed files stored in this archive
    uint32_t compressed_uncompressed_data_size = 0; // of the data which is compressed, how large is it when uncompressed
-   uint32_t reserved[4] = {0, 0};
+   uint32_t reserved[4] = {0xEFBEADDE, 0xEFBEADDE, 0xEFBEADDE, 0xEFBEADDE};
 } __attribute__((packed));
 
 struct vsxz_header_file_info

@@ -56,6 +56,33 @@ set(SOURCES_LZMA
   thirdparty/lzma-sdk/C/LzFind.c
 )
 
+
+add_definitions(-DLZHAM_NO_THREADING=1)
+include_directories(
+  ${CMAKE_SOURCE_DIR}/lib/compression/thirdparty/lzham-sdk/include
+  ${CMAKE_SOURCE_DIR}/lib/compression/thirdparty/lzham-sdk/lzhamcomp
+  ${CMAKE_SOURCE_DIR}/lib/compression/thirdparty/lzham-sdk/lzhamdecomp
+)
+set(SOURCES_LZHAM
+  thirdparty/lzham-sdk/lzhamlib/lzham_lib.cpp
+  thirdparty/lzham-sdk/lzhamdecomp/lzham_assert.cpp
+  thirdparty/lzham-sdk/lzhamdecomp/lzham_checksum.cpp
+  thirdparty/lzham-sdk/lzhamdecomp/lzham_huffman_codes.cpp
+  thirdparty/lzham-sdk/lzhamdecomp/lzham_lzdecompbase.cpp
+  thirdparty/lzham-sdk/lzhamdecomp/lzham_lzdecomp.cpp
+  thirdparty/lzham-sdk/lzhamdecomp/lzham_mem.cpp
+  thirdparty/lzham-sdk/lzhamdecomp/lzham_platform.cpp
+  thirdparty/lzham-sdk/lzhamdecomp/lzham_prefix_coding.cpp
+  thirdparty/lzham-sdk/lzhamdecomp/lzham_symbol_codec.cpp
+  thirdparty/lzham-sdk/lzhamdecomp/lzham_timer.cpp
+  thirdparty/lzham-sdk/lzhamdecomp/lzham_vector.cpp
+  thirdparty/lzham-sdk/lzhamcomp/lzham_lzbase.cpp
+  thirdparty/lzham-sdk/lzhamcomp/lzham_lzcomp.cpp
+  thirdparty/lzham-sdk/lzhamcomp/lzham_lzcomp_internal.cpp
+  thirdparty/lzham-sdk/lzhamcomp/lzham_lzcomp_state.cpp
+  thirdparty/lzham-sdk/lzhamcomp/lzham_match_accel.cpp
+)
+
 set(SOURCES_LZMA_OLD
   thirdparty/lzma-old/Common/StringConvert.cpp
   thirdparty/lzma-old/Common/Alloc.cpp
@@ -84,9 +111,9 @@ set(SOURCES_LZMA_OLD
 ################################################################################
 
 if (VSXU_STATIC EQUAL 1)
-  add_library(${module_id} STATIC ${SOURCES} ${SOURCES_LZMA} ${SOURCES_LZMA_OLD} ${HEADER_FILES})
+  add_library(${module_id} STATIC ${SOURCES} ${SOURCES_LZMA} ${SOURCES_LZHAM} ${SOURCES_LZMA_OLD} ${HEADER_FILES})
 else ()
-  add_library(${module_id} SHARED ${SOURCES} ${SOURCES_LZMA} ${SOURCES_LZMA_OLD} ${HEADER_FILES})
+  add_library(${module_id} SHARED ${SOURCES} ${SOURCES_LZMA} ${SOURCES_LZHAM} ${SOURCES_LZMA_OLD} ${HEADER_FILES})
 endif ()
 
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT common)
