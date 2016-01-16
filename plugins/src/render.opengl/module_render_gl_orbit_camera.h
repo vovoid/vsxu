@@ -135,9 +135,6 @@ public:
     gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
     gl_state->matrix_load_identity();
 
-  #ifdef VSXU_OPENGL_ES
-    glRotatef(-90,0,0,1);
-  #endif
     gl_state->matrix_glu_lookat(
       rotation_.x*dist+destination->get(0),
       rotation_.y*dist+destination->get(1),

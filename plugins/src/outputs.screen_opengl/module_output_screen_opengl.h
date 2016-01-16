@@ -141,9 +141,7 @@ public:
   void deactivate_offscreen()
   {
     if (opengl_silent->get() == 1) return;
-    #ifndef VSXU_OPENGL_ES_2_0
-      gl_state->material_set_fv_all(&pre_material_colors[0][0][0]);
-    #endif
+    gl_state->material_set_fv_all(&pre_material_colors[0][0][0]);
   }
 
   void stop()

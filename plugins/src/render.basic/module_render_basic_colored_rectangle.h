@@ -109,63 +109,33 @@ public:
     gl_state->matrix_rotate_f( (float)angle->get()*360, rotation_axis->get(0), rotation_axis->get(1), rotation_axis->get(2) );
     gl_state->matrix_scale_f( size->get(0), size->get(1), size->get(2) );
 
-    #ifndef VSXU_OPENGL_ES_2_0
-      glColor4f(color_rgb->get(0),color_rgb->get(1),color_rgb->get(2),color_rgb->get(3));
-    #endif
-    #ifdef VSXU_OPENGL_ES
-      const GLfloat square_vertices[] = {
-        -1.0f, -1.0f, 0.0f,
-        1.0f,  -1.0f, 0.0f,
-        -1.0f,  1.0f, 0.0f,
-        1.0f,   1.0f, 0.0f
-      };
-      const GLfloat square_colors[] = {
-        color_rgb->get(0), color_rgb->get(1),color_rgb->get(2),color_rgb->get(3),
-        color_rgb->get(0), color_rgb->get(1),color_rgb->get(2),color_rgb->get(3),
-        color_rgb->get(0), color_rgb->get(1),color_rgb->get(2),color_rgb->get(3),
-        color_rgb->get(0), color_rgb->get(1),color_rgb->get(2),color_rgb->get(3),
-      };
-      #ifdef VSXU_OPENGL_ES_1_0
-        glDisableClientState(GL_COLOR_ARRAY);
-        glVertexPointer(2, GL_FLOAT, 0, square_vertices);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-      #endif
-      #ifdef VSXU_OPENGL_ES_2_0
-        vsx_es_begin();
-        glEnableVertexAttribArray(0);
-        vsx_es_set_default_arrays((GLvoid*)&square_vertices, (GLvoid*)&square_colors);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        vsx_es_end();
-      #endif
-    #endif
+    glColor4f(color_rgb->get(0),color_rgb->get(1),color_rgb->get(2),color_rgb->get(3));
 
-    #ifndef VSXU_OPENGL_ES
-      glBegin(GL_QUADS);
-        glTexCoord2f(0.0f,0.0f);
-        glVertex3f(-1.0f, -1.0f, 0.0f);
-        glTexCoord2f(0.0f,1.0f);
-        glVertex3f(-1.0f,  1.0f, 0.0f);
-        glTexCoord2f(1.0f,1.0f);
-        glVertex3f( 1.0f,  1.0f, 0.0f);
-        glTexCoord2f(1.0f,0.0f);
-        glVertex3f( 1.0f, -1.0f, 0.0f);
+    glBegin(GL_QUADS);
+      glTexCoord2f(0.0f,0.0f);
+      glVertex3f(-1.0f, -1.0f, 0.0f);
+      glTexCoord2f(0.0f,1.0f);
+      glVertex3f(-1.0f,  1.0f, 0.0f);
+      glTexCoord2f(1.0f,1.0f);
+      glVertex3f( 1.0f,  1.0f, 0.0f);
+      glTexCoord2f(1.0f,0.0f);
+      glVertex3f( 1.0f, -1.0f, 0.0f);
+    glEnd();
+
+    if (border->get())
+    {
+      glEnable(GL_LINE_SMOOTH);
+      glLineWidth(border_width->get());
+      glBegin(GL_LINE_STRIP);
+        glColor4f(border_color->get(0),border_color->get(1),border_color->get(2),border_color->get(3));
+        glVertex3f(-1, -1.0f, 0);
+        glVertex3f(-1, 1.0f, 0);
+        glVertex3f( 1, 1.0f, 0);
+        glVertex3f( 1, -1.0f, 0);
+        glVertex3f(-1, -1.0f, 0);
       glEnd();
+    }
 
-      if (border->get())
-      {
-        glEnable(GL_LINE_SMOOTH);
-        glLineWidth(border_width->get());
-        glBegin(GL_LINE_STRIP);
-          glColor4f(border_color->get(0),border_color->get(1),border_color->get(2),border_color->get(3));
-          glVertex3f(-1, -1.0f, 0);
-          glVertex3f(-1, 1.0f, 0);
-          glVertex3f( 1, 1.0f, 0);
-          glVertex3f( 1, -1.0f, 0);
-          glVertex3f(-1, -1.0f, 0);
-        glEnd();
-      }
-    #endif
     gl_state->matrix_load_identity();
     gl_state->matrix_mult_f( saved_modelview.m );
     render_result->set(1);

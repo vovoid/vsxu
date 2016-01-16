@@ -208,11 +208,6 @@ function( CREATE_TARGET_LINK_LIBRARIES la)
 endfunction()
 
 
-if (VSXU_OPENGL_ES_2_0 EQUAL 1)
-  add_definitions(-DVSXU_OPENGL_ES)
-  add_definitions(-DVSXU_OPENGL_ES_2_0)
-endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
-
 if (VSXU_STATIC EQUAL 1)
   # 1. create the files for static factory
   file(WRITE static_factory_funcmapping.cpp "")

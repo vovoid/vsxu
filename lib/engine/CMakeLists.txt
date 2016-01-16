@@ -53,10 +53,6 @@ add_definitions(
  -DMOD_GNM=get_num_modules
 ) 
 
-if (VSXU_OPENGL_ES_2_0 EQUAL 1)
-  add_definitions(-DVSXU_OPENGL_ES -DVSXU_OPENGL_ES_2_0)
-endif (VSXU_OPENGL_ES_2_0 EQUAL 1)
-
 
 if (VSXU_DEBUG EQUAL 1)
   add_definitions( -DVSXU_DEBUG )

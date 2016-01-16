@@ -55,9 +55,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 }
 bool activate_offscreen() {
   GLfloat fogColor[] = {fog_color->get(0), fog_color->get(1), fog_color->get(2), fog_color->get(3)};
-	#ifndef VSXU_OPENGL_ES
   glFogi (GL_FOG_MODE, GL_LINEAR);   // Fog fade using exponential function
-	#endif
   glFogfv (GL_FOG_COLOR, fogColor);   // Set the fog color
   glFogf (GL_FOG_DENSITY, 0.35f);   // Set the density, don't make it too high.
   //glHint (GL_FOG_HINT, GL_NICEST);

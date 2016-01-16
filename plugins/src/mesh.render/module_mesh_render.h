@@ -582,34 +582,6 @@ public:
     render_result->set(1);
   }
 
-  void output_opengl_es(vsx_module_param_abs* param)
-  {
-    VSX_UNUSED(param);
-    mesh = mesh_in->get_addr();
-    // sanity checks
-    if (!mesh) { render_result->set(0); return; }
-    if (!(*mesh)->data) { render_result->set(0); return; }
-    if (!(*mesh)->data->faces.get_used()) { render_result->set(0); return; }
-
-    enable_texture();
-
-    if (vertex_colors->get()) glEnable(GL_COLOR_MATERIAL);
-
-    if (vertex_colors->get()) glEnable(GL_COLOR_MATERIAL);
-
-    prev_mesh_timestamp = (*mesh)->timestamp;
-
-    enable_client_arrays_no_vbo();
-    glDrawElements(GL_TRIANGLES,(*mesh)->data->faces.get_used()*3,GL_UNSIGNED_SHORT,(*mesh)->data->faces.get_pointer());
-    disable_client_arrays_no_vbo();
-
-    disable_texture();
-
-    if (vertex_colors->get()) glDisable(GL_COLOR_MATERIAL);
-
-    render_result->set(1);
-  }
-
   void run()
   {
     mesh = mesh_in->get_addr();
@@ -727,9 +699,6 @@ public:
   void output(vsx_module_param_abs* param)
   {
     VSX_UNUSED(param);
-    #ifdef VSXU_OPENGL_ES
-    output_opengl_es(param); return;
-    #endif
     mesh = mesh_in->get_addr();
     // sanity checks
     if (!mesh)

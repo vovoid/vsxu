@@ -241,11 +241,7 @@ public:
 
   bool init()
   {
-    #ifdef VSXU_OPENGL_ES_2_0
-    if (!(GL_VERTEX_SHADER)) {
-    #else
     if (!(GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader)) {
-    #endif
       return false;
     }
     return true;
