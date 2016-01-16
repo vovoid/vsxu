@@ -159,7 +159,7 @@ endif()
 
 
 if(VSXU_DEBUG)
-  message("All warnings are enabled")
+  message("Compiling with debug flags")
   add_definitions(
     -g
     -Wall
@@ -178,7 +178,7 @@ else(VSXU_DEBUG)
       -DVSX_OPTIMIZATIONS=1
       -mtune=nocona
       -lrt 
-      -lm 
+      -lm
       -O3
       -fno-thread-jumps 
       -fno-if-conversion2 
@@ -278,7 +278,7 @@ else(VSXU_DEBUG)
           -frerun-cse-after-loop
           -fsched-interblock  -fsched-spec
           -fschedule-insns  -fschedule-insns2
-          -fstrict-aliasing -fstrict-overflow
+          -fnostrict-aliasing -fstrict-overflow
           -ftree-switch-conversion
           -ftree-pre
           -ftree-vrp
@@ -353,7 +353,7 @@ else(VSXU_DEBUG)
           -frerun-cse-after-loop
           -fsched-interblock  -fsched-spec
           -fschedule-insns  -fschedule-insns2
-          -fstrict-aliasing -fstrict-overflow
+          -fnostrict-aliasing -fstrict-overflow
           -ftree-switch-conversion
           -ftree-pre
           -ftree-vrp
@@ -373,6 +373,8 @@ else(VSXU_DEBUG)
     else()
         add_definitions(
           -O3
+          -flto
+
           -mtune=nocona
           -fmessage-length=0
           #-fpermissive

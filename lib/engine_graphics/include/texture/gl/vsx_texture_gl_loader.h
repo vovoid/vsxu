@@ -168,6 +168,7 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
   handle_anisotropic_mip_map_min_mag(texture_gl);
 
   vsx_bitmap* bitmap = texture_gl->bitmap;
+  bitmap->lock.aquire();
 
   // source format
   GLenum source_format = 0;
@@ -238,6 +239,8 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
       bitmap->data_get(mip_map_level, 0) // pointer to data
     );
   }
+
+  bitmap->lock.release();
 
   if(!oldStatus)
     glDisable(texture_gl->gl_type);

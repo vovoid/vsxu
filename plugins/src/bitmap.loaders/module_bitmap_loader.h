@@ -21,6 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <vsx_module_cache_helper.h>
 #include <texture/vsx_texture.h>
 #include <bitmap/vsx_bitmap.h>
 
@@ -114,12 +115,6 @@ public:
   {
     if (reload_in->get())
       return true;
-
-    #define cache_check(n) \
-      if ( n##_in->get() != n##_cache) { \
-        n##_cache = n##_in->get(); \
-        return true; \
-      }
 
     cache_check(filename)
 

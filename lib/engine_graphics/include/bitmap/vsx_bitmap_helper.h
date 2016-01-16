@@ -45,6 +45,7 @@ namespace vsx_bitmap_helper
 
   void copy(vsx_bitmap& source, vsx_bitmap& destination)
   {
+    source.lock.aquire();
     maintain_same_size(source, destination);
     destination.width = source.width;
     destination.height = source.height;
@@ -68,5 +69,6 @@ namespace vsx_bitmap_helper
               source.data_get(mip_map_level, cube_map_side),
               source.get_channel_size() * source.width * source.height);
       }
+    source.lock.release();
   }
 }

@@ -66,6 +66,11 @@ public:
   	return data.get_pointer();
   }
 
+  inline void allocate(size_t size)
+  {
+    req(size);
+    data.allocate(size - 1);
+  }
 
   inline const W* c_str() const VSX_ALWAYS_INLINE
   {

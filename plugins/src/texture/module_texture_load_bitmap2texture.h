@@ -84,6 +84,7 @@ public:
       return;
     }
     source_bitmap = bitmap_in->get();
+    req(source_bitmap);
     req(source_bitmap->is_valid());
 
     bool reload = false;

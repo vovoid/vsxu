@@ -100,7 +100,7 @@ namespace vsx_string_helper
    */
   inline vsx_string<>f2s(const float &in)
   {
-    char string_res[256] = "";
+    char string_res[64] = "";
     sprintf(string_res,"%f",(double)in);
     return vsx_string<>(string_res);
   }
@@ -113,7 +113,7 @@ namespace vsx_string_helper
    */
   inline vsx_string<>f2s(const float &in, const int &decimals)
   {
-    char string_res[256] = "";
+    char string_res[64] = "";
     sprintf(string_res,vsx_string<>("%."+vsx_string_helper::i2s(decimals)+"f").c_str(),(double)in);
     return vsx_string<>(string_res);
   }

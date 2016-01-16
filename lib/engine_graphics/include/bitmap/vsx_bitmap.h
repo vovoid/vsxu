@@ -26,6 +26,7 @@
 
 #include <stdlib.h>
 #include <tools/vsx_req.h>
+#include <tools/vsx_lock.h>
 
 typedef uint32_t vsx_bitmap_32bt;
 
@@ -93,6 +94,9 @@ public:
 
   // timestamp for different engine modules to keep track of when to invalidate themselves
   int timestamp = 0;
+
+  // make sure this is not destroyed while a thread is working on it
+  vsx_lock lock;
 
   // loader hint
   enum loader_hint {
@@ -170,9 +174,11 @@ public:
   inline void data_free(size_t mip_map_level = 0, size_t cube_map_side = 0)
   {
     req(data[mip_map_level][cube_map_side]);
+    lock.aquire();
     free(data[mip_map_level][cube_map_side]);
     data[mip_map_level][cube_map_side] = 0x0;
     data_size[mip_map_level][cube_map_side] = 0;
+    lock.release();
   }
 
   inline void data_free_all()

@@ -57,7 +57,10 @@ set(SOURCES_LZMA
 )
 
 
-add_definitions(-DLZHAM_NO_THREADING=1)
+add_definitions(
+  -DLZHAM_NO_THREADING=1
+  -fno-strict-aliasing
+)
 include_directories(
   ${CMAKE_SOURCE_DIR}/lib/compression/thirdparty/lzham-sdk/include
   ${CMAKE_SOURCE_DIR}/lib/compression/thirdparty/lzham-sdk/lzhamcomp
