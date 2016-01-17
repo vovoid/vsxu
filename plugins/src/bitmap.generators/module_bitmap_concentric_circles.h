@@ -21,15 +21,21 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+
+#include <vsx_module.h>
+#include <vsx_param.h>
+
+#include <vsx_module_cache_helper.h>
+
 #include <bitmap/vsx_bitmap.h>
 #include <texture/vsx_texture.h>
+#include <bitmap/generators/vsx_bitmap_generator_concentric_circles.h>
 
 class module_bitmap_generators_concentric_circles : public vsx_module
 {
   // in
   vsx_module_param_float* frequency_in;
   vsx_module_param_float* attenuation_in;
-  vsx_module_param_float* angle_in;
   vsx_module_param_float4* color_in;
   vsx_module_param_int* alpha_in;
   vsx_module_param_int* size_in;
@@ -39,26 +45,28 @@ class module_bitmap_generators_concentric_circles : public vsx_module
   vsx_module_param_texture* texture_out;
 
 	// internal
-  vsx_bitmap bitmap;
-
-  int p_updates = -1;
-
-  pthread_t	worker_t;
   bool worker_running = false;
-
-  int thread_state = 0;
-  int i_size = 0;
-  float work_color[4];
-  int work_alpha;
-
-  void *to_delete_data = 0x0;
+  vsx_bitmap* bitmap = 0x0;
+  vsx_bitmap* old_bitmap = 0x0;
+  float frequency_cache = 0.0f;
+  float attenuation_cache = 0.1f;
+  float color_r_cache = 1.0f;
+  float color_g_cache = 1.0f;
+  float color_b_cache = 1.0f;
+  float color_a_cache = 1.0f;
+  int size_cache = 4;
+  int alpha_cache = 0;
 
 public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "bitmaps;generators;concentric_circles||bitmaps;generators;particles;concentric_circles";
-    info->in_param_spec = ""
+    info->identifier =
+        "bitmaps;generators;concentric_circles"
+        "||!bitmaps;generators;particles;concentric_circles"
+      ;
+
+    info->in_param_spec =
         "settings:complex{"
           "frequency:float?min=0.0,"
           "attenuation:float?default_controller=controller_slider&min=0.0,"
@@ -66,7 +74,7 @@ public:
           "alpha:enum?no|yes"
         "},"
         "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024|2048x2048"
-        ;
+      ;
 
     info->out_param_spec = "bitmap:bitmap";
     info->component_class = "bitmap";
@@ -94,111 +102,92 @@ public:
     color_in->set(1.0f,2);
     color_in->set(1.0f,3);
 
-    angle_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"angle");
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
   }
 
 
-  static void* worker(void *ptr)
+
+  bool has_state_changed()
   {
-    module_bitmap_generators_concentric_circles& module = *(module_bitmap_generators_concentric_circles*)ptr;
+    cache_check_f(frequency, 0.01f)
+    cache_check_f(attenuation, 0.01f)
+    cache_check(size)
+    cache_check(alpha)
 
-    int x,y;
-    float attenuation = module.attenuation_in->get();
-    float frequency = module.frequency_in->get() * 2.0f;
+    if (
+      (fabs(color_in->get(0) - color_r_cache) > 0.001f)
+      ||
+      (fabs(color_in->get(1) - color_g_cache) > 0.001f)
+      ||
+      (fabs(color_in->get(2) - color_b_cache) > 0.001f)
+      ||
+      (fabs(color_in->get(3) - color_a_cache) > 0.001f)
+    )
+    {
+      color_r_cache = color_in->get(0);
+      color_g_cache = color_in->get(1);
+      color_b_cache = color_in->get(2);
+      color_a_cache = color_in->get(3);
+      return true;
+    }
 
-    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)module.bitmap.data_get();
-
-    int size = module.i_size;
-
-    float dist;
-    int hsize = size >> 1;
-    float one_div_hsize = 1.0f / ((float)hsize+1);
-
-    vsx_printf(L"%f        %f\n", attenuation, frequency);
-
-    for (y = -hsize; y < hsize; ++y)
-      for (x = -hsize; x < hsize; ++x,p++)
-      {
-        float xx = (size/(size-2.0f))*((float)x)+0.5f;
-        float yy = (size/(size-2.0f))*((float)y)+0.5f;
-        float dd = sqrt(xx*xx + yy*yy);
-
-        float dstf = dd * one_div_hsize;
-
-        dist = pow(fabs(cos(dstf * PI * frequency)), attenuation) * cos(dstf * PI * 0.5);
-
-        if ( module.work_alpha == 1)
-        {
-          long pr = CLAMP( (long)(255.0f *  module.work_color[0]), 0, 255);
-          long pg = CLAMP( (long)(255.0f *  module.work_color[1]), 0, 255);
-          long pb = CLAMP( (long)(255.0f *  module.work_color[2]), 0, 255);
-          long pa = CLAMP( (long)(255.0f * dist * module.work_color[3]), 0, 255);
-          *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
-        } else
-        if (module.work_alpha == 0) {
-          long pr = CLAMP( (long)(255.0f * dist * module.work_color[0]), 0, 255);
-          long pg = CLAMP( (long)(255.0f * dist * module.work_color[1]), 0, 255);
-          long pb = CLAMP( (long)(255.0f * dist * module.work_color[2]), 0, 255);
-          long pa = (long)(255.0f * module.work_color[3]);
-          *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
-        }
-      }
-
-    module.bitmap.timestamp++;
-
-    __sync_fetch_and_add( &(module.bitmap.data_ready), 1 );
-    return 0;
+    return false;
   }
 
   void run()
   {
-    if (to_delete_data)
+    if (bitmap && bitmap->data_ready)
     {
-      free(to_delete_data);
-      to_delete_data = 0;
-    }
-
-    if (bitmap.data_ready && worker_running)
-    {
-      pthread_join(worker_t,0);
-      worker_running = false;
-
-      bitmap_out->set(&bitmap);
+      bitmap_out->set(bitmap);
       loading_done = true;
+
+      if (old_bitmap)
+      {
+        vsx_bitmap_cache::get_instance()->destroy(old_bitmap);
+        old_bitmap = 0;
+      }
+      worker_running = false;
     }
 
-    req(p_updates != param_updates);
     req(!worker_running);
-    p_updates = param_updates;
 
-    if (i_size != 8 << size_in->get())
+    req( has_state_changed() );
+
+    if (bitmap)
     {
-      i_size = 8 << size_in->get();
-      if (bitmap.data_get())
-        to_delete_data = bitmap.data_get();
-      bitmap.data_set( malloc( sizeof(vsx_bitmap_32bt) * i_size * i_size) );
-
-      bitmap.width  = i_size;
-      bitmap.height = i_size;
+      old_bitmap = bitmap;
+      bitmap = 0x0;
     }
 
+    vsx_string<> cache_handle = vsx_bitmap_generator_concentric_circles::generate_cache_handle(
+          frequency_in->get(),
+          attenuation_in->get(),
+          vsx_color<>(color_in->get(0), color_in->get(1), color_in->get(2), color_in->get(3)),
+          (bool)alpha_in->get(),
+          size_in->get()
+        );
 
-    work_alpha = alpha_in->get();
-    work_color[0] = CLAMP(color_in->get(0), 0.0, 1.0);
-    work_color[1] = CLAMP(color_in->get(1), 0.0, 1.0);
-    work_color[2] = CLAMP(color_in->get(2), 0.0, 1.0);
-    work_color[3] = CLAMP(color_in->get(3), 0.0, 1.0);
+    if (!bitmap)
+      bitmap = vsx_bitmap_cache::get_instance()->
+        aquire_create(cache_handle, 0);
 
+    bitmap->filename = cache_handle;
+    vsx_bitmap_generator_concentric_circles::load(
+          bitmap,
+          frequency_in->get(),
+          attenuation_in->get(),
+          vsx_color<>(color_in->get(0), color_in->get(1), color_in->get(2), color_in->get(3)),
+          (bool)alpha_in->get(),
+          size_in->get()
+    );
     worker_running = true;
-    pthread_create(&worker_t, NULL, &worker, (void*)this);
   }
-
 
   void on_delete()
   {
-    if (worker_running)
-      pthread_join(worker_t,NULL);
+    if (bitmap)
+      vsx_bitmap_cache::get_instance()->destroy(bitmap);
   }
+
 
 };

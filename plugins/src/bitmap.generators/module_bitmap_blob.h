@@ -51,11 +51,11 @@ class module_bitmap_generators_blob : public vsx_module
   float attenuation_cache = 0.1f;
   float star_flower_cache = 0.0f;
   float angle_cache = 0.0f;
-  int size_cache = 4;
   float color_r_cache = 1.0f;
   float color_g_cache = 1.0f;
   float color_b_cache = 1.0f;
   float color_a_cache = 1.0f;
+  int size_cache = 4;
   int alpha_cache = 0;
 
 public:
@@ -118,14 +118,15 @@ public:
 
   bool has_state_changed()
   {
-    cache_check_f(arms)
-    cache_check_f(attenuation)
+    cache_check_f(arms, 0.01f)
+    cache_check_f(attenuation, 0.01f)
     cache_check(size)
     cache_check(alpha)
-    cache_check_f(star_flower)
-    cache_check_f(angle)
+    cache_check_f(star_flower, 0.01f)
+    cache_check_f(angle, 0.01f)
 
-    if (
+    if
+    (
       (fabs(color_in->get(0) - color_r_cache) > 0.001f)
       ||
       (fabs(color_in->get(1) - color_g_cache) > 0.001f)
@@ -139,6 +140,7 @@ public:
       color_g_cache = color_in->get(1);
       color_b_cache = color_in->get(2);
       color_a_cache = color_in->get(3);
+      return true;
     }
 
     return false;

@@ -128,12 +128,12 @@ public:
       first = false;
       return true;
     }
-    cache_check_f(arms)
-    cache_check_f(attenuation)
+    cache_check_f(arms, 0.01f)
+    cache_check_f(attenuation, 0.01f)
     cache_check(size)
     cache_check(alpha)
-    cache_check_f(star_flower)
-    cache_check_f(angle)
+    cache_check_f(star_flower, 0.01f)
+    cache_check_f(angle, 0.01f)
     cache_check(mipmaps)
     cache_check(anisotropic_filtering)
     cache_check(min_mag_filter)
@@ -153,6 +153,7 @@ public:
       color_g_cache = color_in->get(1);
       color_b_cache = color_in->get(2);
       color_a_cache = color_in->get(3);
+      return true;
     }
 
     return false;

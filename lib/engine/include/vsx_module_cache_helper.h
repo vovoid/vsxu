@@ -5,8 +5,8 @@
     return true; \
   }
 
-#define cache_check_f(n) \
-  if ( fabs(n##_in->get() - n##_cache) > 0.001f) { \
+#define cache_check_f(n, precision) \
+  if ( fabs(n##_in->get() - n##_cache) > precision) { \
     n##_cache = n##_in->get(); \
     return true; \
   }
