@@ -21,6 +21,9 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <vsx_module.h>
+#include <vsx_param.h>
+
 #include <vsx_module_cache_helper.h>
 #include <bitmap/vsx_bitmap.h>
 #include <texture/vsx_texture.h>
@@ -59,21 +62,29 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "bitmaps;generators;blob||bitmaps;generators;particles;blob";
+    info->identifier =
+      "bitmaps;generators;blob||bitmaps;generators;particles;blob";
+
+    info->description =
+      "Generates blobs,stars or leaf\ndepending on parameters.\nPlay with the params :)";
+
     info->in_param_spec = ""
-        "settings:complex{"
-          "arms:float,"
-          "attenuation:float,"
-          "star_flower:float,"
-          "angle:float,"
-          "color:float4?default_controller=controller_col,"
-          "alpha:enum?no|yes"
-        "},"
-        "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024|2048x2048"
-        ;
-    info->out_param_spec = "bitmap:bitmap";
-    info->component_class = "bitmap";
-    info->description = "Generates blobs,stars or leaf\ndepending on parameters.\nPlay with the params :)";
+      "settings:complex{"
+        "arms:float,"
+        "attenuation:float,"
+        "star_flower:float,"
+        "angle:float,"
+        "color:float4?default_controller=controller_col,"
+        "alpha:enum?no|yes"
+      "},"
+      "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024|2048x2048"
+      ;
+
+    info->out_param_spec =
+      "bitmap:bitmap";
+
+    info->component_class =
+      "bitmap";
   }
 
 
@@ -81,6 +92,7 @@ public:
   {
     loading_done = true;
     arms_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"arms");
+    arms_in->set(0.0f);
 
     attenuation_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
     attenuation_in->set(attenuation_cache);
@@ -111,7 +123,7 @@ public:
     cache_check(size)
     cache_check(alpha)
     cache_check_f(star_flower)
-    cache_check(angle)
+    cache_check_f(angle)
 
     if (
       (fabs(color_in->get(0) - color_r_cache) > 0.001f)
@@ -158,13 +170,13 @@ public:
     }
 
     vsx_string<> cache_handle = vsx_bitmap_generator_blob::generate_cache_handle(
-          arms_cache,
-          attenuation_cache,
-          star_flower_cache,
-          angle_cache,
-          vsx_color<>(color_r_cache, color_g_cache, color_b_cache, color_a_cache),
-          alpha_cache,
-          size_cache
+          arms_in->get(),
+          attenuation_in->get(),
+          star_flower_in->get(),
+          angle_in->get(),
+          vsx_color<>(color_in->get(0), color_in->get(1), color_in->get(2), color_in->get(3)),
+          (bool)alpha_in->get(),
+          size_in->get()
         );
 
     if (!bitmap)

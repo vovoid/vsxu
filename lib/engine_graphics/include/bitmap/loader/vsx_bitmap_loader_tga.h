@@ -27,13 +27,9 @@ class vsx_bitmap_loader_tga
   } __attribute__((packed));
 
 
-  static void* worker(void *ptr)
+  static void* worker(vsx_bitmap* bitmap, vsx::filesystem* filesystem, vsx_string<> filename)
   {
-    vsx_texture_loader_thread_info* thread_info = ((vsx_texture_loader_thread_info*)ptr);
-    vsx_bitmap* bitmap = thread_info->bitmap;
-    vsx::filesystem* filesystem = thread_info->filesystem;
-
-    vsx::file* file_handle = filesystem->f_open(thread_info->filename.c_str(), "rb");
+    vsx::file* file_handle = filesystem->f_open(filename.c_str(), "rb");
     tga_header header;
     filesystem->f_read( &header, sizeof(header), file_handle );
 
@@ -63,7 +59,7 @@ class vsx_bitmap_loader_tga
 
     filesystem->f_close(file_handle);
 
-    bitmap->filename = thread_info->filename;
+    bitmap->filename = filename;
     bitmap->data_set( data, 0, 0, num_bytes );
 
     handle_transformations(bitmap);
@@ -72,17 +68,24 @@ class vsx_bitmap_loader_tga
     __sync_fetch_and_add( &(bitmap->data_ready), 1 );
 
   end:
-    delete thread_info;
-
     return 0;
   }
 
-  void load_internal(vsx_string<> filename, vsx::filesystem* filesystem, vsx_bitmap* bitmap, bool thread, vsx_texture_loader_thread_info* thread_info)
+  void load_internal(vsx_string<> filename, vsx::filesystem* filesystem, vsx_bitmap* bitmap, bool thread)
   {
     if (!thread)
-      return (void)worker((void*)thread_info);
+      return (void)worker(bitmap, filesystem, filename);
 
-    new vsx_bitmap_loader_thread(worker, thread_info);
+    vsx_thread_pool::instance()->add(
+      [=]
+      (vsx_bitmap* bitmap, vsx::filesystem* filesystem, vsx_string<> filename)
+      {
+        worker(bitmap, filesystem, filename);
+      },
+      bitmap,
+      filesystem,
+      filename
+    );
   }
 public:
 

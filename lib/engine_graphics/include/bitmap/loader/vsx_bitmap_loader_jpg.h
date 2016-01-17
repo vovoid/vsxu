@@ -7,17 +7,13 @@
 class vsx_bitmap_loader_jpg
     : public vsx_bitmap_loader_base
 {
-  static void* worker(void *ptr)
+  static void* worker(vsx_bitmap* bitmap, vsx::filesystem* filesystem, vsx_string<> filename)
   {
-    vsx_texture_loader_thread_info* thread_info = ((vsx_texture_loader_thread_info*)ptr);
-
     CJPEGTest cj;
     vsx_string<> ret;
-    cj.LoadJPEG( thread_info->filename, ret, thread_info->filesystem);
+    cj.LoadJPEG( filename, ret, filesystem);
 
-    vsx_bitmap* bitmap = thread_info->bitmap;
-
-    bitmap->filename = thread_info->filename;
+    bitmap->filename = filename;
     bitmap->width = cj.GetResX();
     bitmap->height = cj.GetResY();
     bitmap->data_set( cj.m_pBuf );
@@ -25,20 +21,27 @@ class vsx_bitmap_loader_jpg
 
     handle_transformations(bitmap);
 
-    delete thread_info;
-
     bitmap->timestamp = vsx_singleton_counter::get();
     __sync_fetch_and_add( &(bitmap->data_ready), 1 );
 
     return 0;
   }
 
-  void load_internal(vsx_string<> filename, vsx::filesystem* filesystem, vsx_bitmap* bitmap, bool thread, vsx_texture_loader_thread_info* thread_info)
+  void load_internal(vsx_string<> filename, vsx::filesystem* filesystem, vsx_bitmap* bitmap, bool thread)
   {
     if (!thread)
-      return (void)worker((void*)thread_info);
+      return (void)worker(bitmap, filesystem, filename);
 
-    new vsx_bitmap_loader_thread(worker, thread_info);
+    vsx_thread_pool::instance()->add(
+      [=]
+      (vsx_bitmap* bitmap, vsx::filesystem* filesystem, vsx_string<> filename)
+      {
+        worker(bitmap, filesystem, filename);
+      },
+      bitmap,
+      filesystem,
+      filename
+    );
   }
 
 public:

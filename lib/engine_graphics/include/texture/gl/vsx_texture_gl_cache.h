@@ -2,6 +2,7 @@
 
 #include <texture/vsx_texture.h>
 #include <bitmap/vsx_bitmap_cache.h>
+#include <tools/vsx_thread_pool.h>
 
 class vsx_texture_gl_cache
 {
@@ -91,6 +92,12 @@ public:
     return texture_gl;
   }
 
+  void dump_to_stdout()
+  {
+    foreach (items, i)
+      vsx_printf(L"item filename: %s %d\n", items[i]->filename.c_str(), items[i]->used);
+  }
+
   bool has(vsx_string<>& filename, uint64_t bitmap_loader_hint, uint64_t hint)
   {
     foreach (items, i)
@@ -119,6 +126,12 @@ public:
 
     item->texture_gl->bitmap = vsx_bitmap_cache::get_instance()->aquire( filename, bitmap_loader_hint );
     return item->texture_gl;
+  }
+
+  vsx_texture_gl* aquire_create(vsx_string<>& filename, vsx::filesystem* filesystem, uint64_t bitmap_loader_hint, uint64_t hint)
+  {
+    if (has(filename, bitmap_loader_hint, hint))
+      return aquire(filename, filesystem, false, bitmap_loader_hint, hint);
   }
 
   void destroy(vsx_texture_gl*& texture_gl)

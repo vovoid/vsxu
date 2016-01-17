@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <tools/vsx_thread_pool.h>
 #include "vsx_bitmap_loader.h"
 
 class vsx_bitmap_cache

@@ -192,6 +192,8 @@ public:
 
   void on_delete()
   {
+    vsx_thread_pool::instance()->wait_all();
+
     if (texture)
       vsx_texture_loader::destroy(texture);
   }

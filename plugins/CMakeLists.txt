@@ -239,7 +239,6 @@ add_subdirectory(src/render.basic)
 add_subdirectory(src/render.glsl)
 add_subdirectory(src/render.gravity_lines)
 add_subdirectory(src/render.opengl)
-add_subdirectory(src/render.skybox)
 add_subdirectory(src/render.text)
 add_subdirectory(src/selectors)
 

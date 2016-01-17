@@ -41,6 +41,7 @@
 typedef struct stat t_stat;
 
 
+#include "module_texture_texgen_blob.h"
 #include "module_texture_effect_blur.h"
 #include "module_texture_parameter.h"
 #include "module_texture_render_buffer.h"
@@ -97,6 +98,8 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 14: return (vsx_module*)(new module_texture_parameter);
     case 15: return (vsx_module*)(new module_texture_visual_fader);
     case 16: return (vsx_module*)(new module_texture_screenshot_hires);
+
+    case 17: return (vsx_module*)(new module_texture_texgen_blob);
   };
 
   return 0;
@@ -127,6 +130,8 @@ void MOD_DM(vsx_module* m,unsigned long module) {
     case 14: delete (module_texture_parameter*)m; break;
     case 15: delete (module_texture_visual_fader*)m; break;
     case 16: delete (module_texture_screenshot_hires*)m; break;
+
+    case 17: delete (module_texture_texgen_blob*)m; break;
   }
 }
 
@@ -140,6 +145,6 @@ unsigned long MOD_NM(vsx_engine_environment* environment) {
     #endif
   #endif
 
-  return 17;
+  return 18;
 }
 

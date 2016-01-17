@@ -2,8 +2,6 @@
 
 #include <bitmap/vsx_bitmap.h>
 #include <bitmap/vsx_bitmap_transform.h>
-#include "vsx_bitmap_loader_thread.h"
-#include "vsx_bitmap_loader_thread_info.h"
 
 #include <filesystem/vsx_filesystem.h>
 #include <tools/vsx_req.h>
@@ -12,7 +10,7 @@ class vsx_bitmap_loader_base
 {
 protected:
 
-  virtual void load_internal(vsx_string<> filename, vsx::filesystem* filesystem, vsx_bitmap* bitmap, bool thread, vsx_texture_loader_thread_info* thread_info) = 0;
+  virtual void load_internal(vsx_string<> filename, vsx::filesystem* filesystem, vsx_bitmap* bitmap, bool thread) = 0;
 
   static void handle_transformations(vsx_bitmap* bitmap)
   {
@@ -30,12 +28,7 @@ public:
 
   void load(vsx_bitmap* bitmap, vsx_string<>filename, vsx::filesystem* filesystem, bool thread)
   {
-    vsx_texture_loader_thread_info* thread_info = new vsx_texture_loader_thread_info();
-    thread_info->filename = filename;
-    thread_info->filesystem = filesystem;
-    thread_info->bitmap = bitmap;
-
     bitmap->data_ready = 0;
-    load_internal(filename, filesystem, bitmap, thread, thread_info);
+    load_internal(filename, filesystem, bitmap, thread);
   }
 };

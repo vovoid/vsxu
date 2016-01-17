@@ -1,3 +1,6 @@
+#include <vsx_module.h>
+#include <vsx_param.h>
+
 class module_render_basic_textured_rectangle : public vsx_module
 {
   // in
@@ -5,7 +8,7 @@ class module_render_basic_textured_rectangle : public vsx_module
   vsx_module_param_float* opacity;
   vsx_module_param_float* size;
   vsx_module_param_float* x_aspect;
-  vsx_module_param_texture* tex_inf;
+  vsx_module_param_texture* texture_in;
   vsx_module_param_float* angle;
   vsx_module_param_float4* color_multiplier;
   vsx_module_param_float4* color_center;
@@ -142,7 +145,7 @@ public:
     size = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "size");
     size->set(1.0f);
     // critical parameter, without this it won't run
-    tex_inf = (vsx_module_param_texture*)in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE, "texture_in",true,true);
+    texture_in = (vsx_module_param_texture*)in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE, "texture_in",true,true);
 
     angle = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "angle");
 
@@ -201,10 +204,12 @@ public:
   {
     VSX_UNUSED(param);
 
-    vsx_texture<>** t_inf;
-    t_inf = tex_inf->get_addr();
+    req(texture_in->valid);
 
-    if (!t_inf)
+    vsx_texture<>* texture;
+    texture = texture_in->get();
+
+    if (!texture)
     {
       render_result->set(0);
       return;
@@ -217,8 +222,8 @@ public:
     glMatrixMode(GL_TEXTURE);
     glPushMatrix();
 
-    if ((*t_inf)->get_transform())
-      (*t_inf)->get_transform()->transform();
+    if (texture->get_transform())
+      texture->get_transform()->transform();
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
@@ -229,7 +234,7 @@ public:
 
     glScalef(obj_size*x_aspect->get(), obj_size, obj_size);
 
-    (*t_inf)->bind();
+    texture->bind();
     float alpha = opacity->get();
     if (alpha < 0) alpha = 0;
 
@@ -298,7 +303,7 @@ public:
       glEnd();
     }
 
-    (*t_inf)->_bind();
+    texture->_bind();
 
     glPopMatrix();
     glMatrixMode(GL_TEXTURE);

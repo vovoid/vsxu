@@ -21,9 +21,8 @@ public:
     uint16_t size
   )
   {
-    vsx_string<> result;
-    result.allocate(96);
-    sprintf(result.get_pointer(), ":blob:%.4f %.4f %.4f %.4f %.4f,%.4f,%.4f,%.4f %d %d",
+    char result_char[96];
+    sprintf(result_char, ":blob:%.4f %.4f %.4f %.4f %.4f,%.4f,%.4f,%.4f %d %d",
       arms,
       attenuation,
       star_flower,
@@ -35,7 +34,7 @@ public:
       alpha,
       8 << size
     );
-    return result;
+    return vsx_string<>(result_char);
   }
 
   inline static void load(
@@ -58,6 +57,19 @@ public:
       [=]
       (vsx_bitmap* bitmap, float arms, float attenuation, float star_flower, float angle, vsx_color<> color, bool alpha, uint16_t size)
       {
+
+        bitmap->filename =
+          vsx_bitmap_generator_blob::generate_cache_handle(
+            arms,
+            attenuation,
+            star_flower,
+            angle,
+            color,
+            alpha,
+            size
+          );
+
+
         int i_size = 8 << size;
         arms *= 0.5f;
         bitmap->data_set( malloc( sizeof(uint32_t) * i_size * i_size ) );
@@ -65,7 +77,7 @@ public:
         float size_f = (float)i_size;
         float size_div_size_minus_two = (size_f/(size_f-2.0f));
         int hsize = i_size >> 1;
-        for(int y = -hsize; y < hsize; ++y)
+        for(int y = hsize; y > -hsize; --y)
         {
           for(int x = -hsize; x < hsize; ++x, p++)
           {

@@ -174,6 +174,8 @@ public:
 
   void on_delete()
   {
+    vsx_thread_pool::instance()->wait_all();
+
     if (bitmap)
       vsx_bitmap_cache::get_instance()->destroy(bitmap);
   }
