@@ -147,6 +147,15 @@ public:
   {
   }
 
+  vsx_color(const T n[4])
+  {
+    r = n[0];
+    g = n[1];
+    b = n[2];
+    a = n[3];
+  }
+
+
   vsx_color(const float &rr, const float &gg = 0.0f, const float &bb = 0.0f, const float &aa = 0.0f)
     :
       r(rr),
@@ -157,6 +166,9 @@ public:
   }
 
 };
+
+typedef vsx_color<float> vsx_colorf;
+typedef vsx_color<double> vsx_colord;
 
 
 #endif

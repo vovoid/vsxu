@@ -165,6 +165,15 @@ public:
 
     req( has_state_changed() );
 
+    arms_cache = arms_in->get();
+    attenuation_cache = attenuation_in->get();
+    star_flower_cache = star_flower_in->get();
+    angle_cache = angle_in->get();
+    color_r_cache = color_in->get(0);
+    color_g_cache = color_in->get(1);
+    color_b_cache = color_in->get(2);
+    color_a_cache = color_in->get(3);
+
     if (bitmap)
     {
       old_bitmap = bitmap;
@@ -172,14 +181,14 @@ public:
     }
 
     vsx_string<> cache_handle = vsx_bitmap_generator_blob::generate_cache_handle(
-          arms_in->get(),
-          attenuation_in->get(),
-          star_flower_in->get(),
-          angle_in->get(),
-          vsx_color<>(color_in->get(0), color_in->get(1), color_in->get(2), color_in->get(3)),
-          (bool)alpha_in->get(),
-          size_in->get()
-        );
+        arms_cache,
+        attenuation_cache,
+        star_flower_cache,
+        angle_cache,
+        vsx_color<>(color_r_cache, color_g_cache, color_b_cache, color_a_cache),
+        (bool)alpha_in->get(),
+        size_in->get()
+      );
 
     if (!bitmap)
       bitmap = vsx_bitmap_cache::get_instance()->
@@ -187,14 +196,14 @@ public:
 
     bitmap->filename = cache_handle;
     vsx_bitmap_generator_blob::load(
-          bitmap,
-          arms_in->get(),
-          attenuation_in->get(),
-          star_flower_in->get(),
-          angle_in->get(),
-          vsx_color<>(color_in->get(0), color_in->get(1), color_in->get(2), color_in->get(3)),
-          (bool)alpha_in->get(),
-          size_in->get()
+      bitmap,
+      arms_cache,
+      attenuation_cache,
+      star_flower_cache,
+      angle_cache,
+      vsx_color<>(color_r_cache, color_g_cache, color_b_cache, color_a_cache),
+      (bool)alpha_in->get(),
+      size_in->get()
     );
     worker_running = true;
   }

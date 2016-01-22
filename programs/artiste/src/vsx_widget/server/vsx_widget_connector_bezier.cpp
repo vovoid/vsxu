@@ -214,7 +214,7 @@ void vsx_widget_connector_bezier::event_mouse_up(vsx_widget_distance distance,vs
   {
     command_q_b.add_raw("connections_order_int 1");
     parent->vsx_command_queue_b(this);
-    set_pos(vsx_vector3<>(0));
+    set_pos(vsx_vector3<>(0.0f));
   }
   vsx_widget::event_mouse_up(distance,coords,button);
 }

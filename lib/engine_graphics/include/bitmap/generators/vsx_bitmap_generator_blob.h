@@ -38,14 +38,14 @@ public:
   }
 
   inline static void load(
-      vsx_bitmap* bitmap,
-      float arms,
-      float attenuation,
-      float star_flower,
-      float angle,
-      vsx_color<> color,
-      bool alpha,
-      uint16_t size
+    vsx_bitmap* bitmap,
+    float arms,
+    float attenuation,
+    float star_flower,
+    float angle,
+    vsx_color<> color,
+    bool alpha,
+    uint16_t size
   )
   {
     if (bitmap->references > 1)

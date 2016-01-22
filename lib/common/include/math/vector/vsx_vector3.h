@@ -33,9 +33,9 @@ template<typename T = float>
 class vsx_vector3
 {
 public:
-  T x;
-  T y;
-  T z;
+  T x = (T)0.0;
+  T y = (T)0.0;
+  T z = (T)0.0;
 
   static size_t arity()
   {
@@ -239,10 +239,28 @@ public:
       z(0.0f)
   {}
 
-  vsx_vector3(T a, T bb = 0.0f, T c = 0.0f)
+  vsx_vector3(const T n[3])
+  {
+    x = n[0];
+    y = n[1];
+    z = n[2];
+  }
+
+  vsx_vector3(T a)
   {
     x = a;
-    y = bb;
+  }
+
+  vsx_vector3(T a, T b)
+  {
+    x = a;
+    y = b;
+  }
+
+  vsx_vector3(T a, T b, T c)
+  {
+    x = a;
+    y = b;
     z = c;
   }
 };

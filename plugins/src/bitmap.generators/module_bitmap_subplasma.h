@@ -26,7 +26,6 @@
 
 #include <vsx_module_cache_helper.h>
 
-#include <math/vsx_rand.h>
 #include <bitmap/vsx_bitmap.h>
 #include <bitmap/generators/vsx_bitmap_generator_subplasma.h>
 

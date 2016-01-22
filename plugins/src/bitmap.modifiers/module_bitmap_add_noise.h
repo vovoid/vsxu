@@ -55,7 +55,7 @@ public:
 
     int i_frame = -1;
     bool buf = false;
-    vsx_bitmap_32bt *p;
+    uint32_t *p;
     while (module.worker_run)
     {
       if (i_frame == module.frame)
@@ -65,9 +65,9 @@ public:
       }
 
       if (buf)
-        p = (vsx_bitmap_32bt*)module.data_a;
+        p = (uint32_t*)module.data_a;
       else
-        p = (vsx_bitmap_32bt*)module.data_b;
+        p = (uint32_t*)module.data_b;
 
       unsigned long b_c = module.bitmap.width * module.bitmap.height;
 
@@ -76,7 +76,7 @@ public:
       {
         for (size_t x = 0; x < b_c; ++x)
         {
-            p[x] = ((vsx_bitmap_32bt*)module.bitmap.data_get() )[x] | rand() << 8  | (unsigned char)rand(); //bitm->data[x + y*result_bitm.size_x]
+            p[x] = ((uint32_t*)module.bitmap.data_get() )[x] | rand() << 8  | (unsigned char)rand(); //bitm->data[x + y*result_bitm.size_x]
         }
       }
       module.bitmap.data_set( p );
@@ -130,8 +130,8 @@ public:
         free( data_b );
       }
 
-      data_a = malloc( sizeof(vsx_bitmap_32bt) * source_bitmap->width * source_bitmap->height);
-      data_b = malloc( sizeof(vsx_bitmap_32bt) * source_bitmap->width * source_bitmap->height);
+      data_a = malloc( sizeof(uint32_t) * source_bitmap->width * source_bitmap->height);
+      data_b = malloc( sizeof(uint32_t) * source_bitmap->width * source_bitmap->height);
 
       bitmap.data_set( data_a );
       bitmap.width = source_bitmap->width;

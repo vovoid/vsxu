@@ -189,5 +189,4 @@ public:
       vsx_bitmap_cache::get_instance()->destroy(bitmap);
   }
 
-
 };

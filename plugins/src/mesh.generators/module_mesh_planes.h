@@ -99,7 +99,7 @@ public:
   {
     if (l_param_updates != param_updates)
       first_run = true;
-    mesh->data->vertices[0] = vsx_vector3<>(0);
+    mesh->data->vertices[0] = vsx_vector3<>(0.0f);
 
     if (first_run || n_segs != num_planes->get())
     {

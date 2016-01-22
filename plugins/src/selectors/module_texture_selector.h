@@ -146,7 +146,7 @@ class module_texture_selector : public vsx_module
   float i_B_mixLevel;
 
   vsx_bitmap i_clear_bmp;
-  vsx_bitmap_32bt* i_clear_bmp_data;
+  uint32_t* i_clear_bmp_data;
   long i_clear_color[4];
   float i_prev_clear_color[4];
  
@@ -285,8 +285,8 @@ public:
     i_clear_bmp.width = 1;
     i_clear_bmp.height = 1;
 
-    i_clear_bmp.data_set( malloc( sizeof(vsx_bitmap_32bt) ) );
-    i_clear_bmp_data = (vsx_bitmap_32bt*)i_clear_bmp.data_get();
+    i_clear_bmp.data_set( malloc( sizeof(uint32_t) ) );
+    i_clear_bmp_data = (uint32_t*)i_clear_bmp.data_get();
     *i_clear_bmp_data = 0xff000000;
 
 

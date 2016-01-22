@@ -102,14 +102,21 @@ thirdparty/ftgl/src/FTSize.cpp
 thirdparty/ftgl/src/FTVectoriser.cpp
 )
 
+include_directories(
+thirdparty/perlin
+)
+set(SOURCES_PERLIN
+thirdparty/perlin/perlin.cpp
+)
+
 file(GLOB_RECURSE HEADER_FILES *.h)
 
 
 if (VSXU_STATIC EQUAL 1)  
   #static build  
-  add_library(${module_id} STATIC ${SOURCES} ${SOURCES_FTGL} ${HEADER_FILES})
+  add_library(${module_id} STATIC ${SOURCES} ${SOURCES_FTGL} ${SOURCES_PERLIN} ${HEADER_FILES})
 else ()
-  add_library(${module_id} SHARED ${SOURCES} ${SOURCES_FTGL} ${HEADER_FILES})
+  add_library(${module_id} SHARED ${SOURCES} ${SOURCES_FTGL} ${SOURCES_PERLIN} ${HEADER_FILES})
 endif()
 
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)

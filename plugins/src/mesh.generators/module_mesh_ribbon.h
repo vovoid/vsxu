@@ -92,7 +92,7 @@ public:
 
   void run()
   {
-    mesh->data->vertices[0] = vsx_vector3<>(0);
+    mesh->data->vertices[0] = vsx_vector3<>(0.0f);
 
     vsx_vector3<> a(start_point->get(0), start_point->get(1), start_point->get(2));
     vsx_vector3<> b(end_point->get(0), end_point->get(1), end_point->get(2));

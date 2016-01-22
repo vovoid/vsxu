@@ -113,7 +113,7 @@ void vsx_widget_anchor::command_process_back_queue(vsx_command_s *t)
     foreach(order_list, i)
     {
       ((vsx_widget_connector_bezier*)connection_map[ vsx_string_helper::s2i( order_list[i] ) ])->order = c;
-      ((vsx_widget_connector_bezier*)connection_map[ vsx_string_helper::s2i( order_list[i] ) ])->move(vsx_vector3<>(0));
+      ((vsx_widget_connector_bezier*)connection_map[ vsx_string_helper::s2i( order_list[i] ) ])->move(vsx_vector3<>(0.0f));
       ++c;
     }
     return;

@@ -136,7 +136,7 @@ public:
     glGetFloatv(GL_PROJECTION_MATRIX, mod_mat.m);
     glPopMatrix();
 
-    vsx_vector3<> center(0);
+    vsx_vector3<> center(0.0f);
     vsx_vector3<> deep(0,0,1);
     vsx_vector3<> istart = mod_mat.multiply_vector(center);
     vsx_vector3<> end = mod_mat.multiply_vector(deep);

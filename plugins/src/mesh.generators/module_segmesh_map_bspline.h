@@ -84,8 +84,8 @@ public:
     mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_result");
     mesh_result->set_p(result_mesh);
 
-    spline0.init(vsx_vector3<>(0), 0.7f, 0.3f, 0.6f);
-    spline0.points[0] = vsx_vector3<>(0);
+    spline0.init(vsx_vector3<>(0.0f), 0.7f, 0.3f, 0.6f);
+    spline0.points[0] = vsx_vector3<>(0.0f);
 
     upv = vsx_vector3<>(0,1);
   }

@@ -32,8 +32,8 @@ template<typename T = float>
 class vsx_vector2
 {
 public:
-    T x;
-    T y;
+    T x = (T)0.0;
+    T y = (T)0.0;
 
   static size_t arity()
   {
@@ -187,13 +187,24 @@ public:
       y(0.0f)
   {}
 
+  vsx_vector2(const T n[2])
+  {
+    x = n[0];
+    y = n[1];
+  }
+
   vsx_vector2(const vsx_vector3<T> &n)
   {
     x = n.x;
     y = n.y;
   }
 
-  vsx_vector2(const T nx, const T ny = 0.0f)
+  vsx_vector2(const T nx)
+  {
+    x = nx;
+  }
+
+  vsx_vector2(const T nx, const T ny)
   {
     x = nx;
     y = ny;

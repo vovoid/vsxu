@@ -28,8 +28,6 @@
 #include <tools/vsx_req.h>
 #include <tools/vsx_lock.h>
 
-typedef uint32_t vsx_bitmap_32bt;
-
 class vsx_bitmap
 {
 

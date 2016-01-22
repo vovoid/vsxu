@@ -21,19 +21,19 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <bitmap/vsx_bitmap.h>
+#include <vsx_module.h>
+#include <vsx_param.h>
+#include <vsx_module_cache_helper.h>
 
+#include <bitmap/vsx_bitmap.h>
+#include <math/vector/vsx_vector2.h>
+#include <color/vsx_color.h>
+#include <bitmap/generators/vsx_bitmap_generator_plasma.h>
 
 class module_bitmap_plasma : public vsx_module
 {
 public:
   // in
-  vsx_module_param_float* arms_in;
-  vsx_module_param_float* attenuation_in;
-  vsx_module_param_float* star_flower_in;
-  vsx_module_param_float* angle_in;
-
-
   vsx_module_param_float4* col_amp_in;
   vsx_module_param_float4* col_ofs_in;
 
@@ -52,65 +52,22 @@ public:
   vsx_module_param_bitmap* bitmap_out;
 
   // internal
-  vsx_bitmap bitmap;
-  void *to_delete_data = 0x0;
-  pthread_t	worker_t;
-  int p_updates = -1;
   bool worker_running = false;
-  int i_size = 0;
+  vsx_bitmap* bitmap = 0x0;
+  vsx_bitmap* old_bitmap = 0x0;
 
+  float col_amp_cache[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+  float col_ofs_cache[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+  float r_period_cache[2] = {1.0f, 1.0f};
+  float g_period_cache[2] = {1.0f, 16.0f};
+  float b_period_cache[2] = {0.0f, 0.0f};
+  float a_period_cache[2] = {0.0f, 0.0f};
+  float r_ofs_cache[2] = {0.0f, 0.0f};
+  float g_ofs_cache[2] = {0.0f, 0.0f};
+  float b_ofs_cache[2] = {0.0f, 0.0f};
+  float a_ofs_cache[2] = {0.0f, 0.0f};
+  int size_cache = 4;
 
-  static void* worker(void *ptr)
-  {
-    int x,y;
-    module_bitmap_plasma* module = ((module_bitmap_plasma*)ptr);
-    float rpx = module->r_period_in->get(0);
-    float rpy = module->r_period_in->get(1);
-    float gpx = module->g_period_in->get(0);
-    float gpy = module->g_period_in->get(1);
-    float bpx = module->b_period_in->get(0);
-    float bpy = module->b_period_in->get(1);
-    float apx = module->a_period_in->get(0);
-    float apy = module->a_period_in->get(1);
-
-    float rox = module->r_ofs_in->get(0);
-    float roy = module->r_ofs_in->get(1);
-    float gox = module->g_ofs_in->get(0);
-    float goy = module->g_ofs_in->get(1);
-    float box = module->b_ofs_in->get(0);
-    float boy = module->b_ofs_in->get(1);
-    float aox = module->a_ofs_in->get(0);
-    float aoy = module->a_ofs_in->get(1);
-    
-    float ramp = module->col_amp_in->get(0)*127.0f;
-    float gamp = module->col_amp_in->get(1)*127.0f;
-    float bamp = module->col_amp_in->get(2)*127.0f;
-    float aamp = module->col_amp_in->get(3)*127.0f;
-
-    float rofs = module->col_ofs_in->get(0)*127.0f;
-    float gofs = module->col_ofs_in->get(1)*127.0f;
-    float bofs = module->col_ofs_in->get(2)*127.0f;
-    float aofs = module->col_ofs_in->get(3)*127.0f;
-
-    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)module->bitmap.data_get();
-    int ssize = ((module_bitmap_plasma*)ptr)->i_size;
-    int hsize = ssize >> 1;
-    float size = (float)(2.0f*PI)/(float)ssize;
-    
-    for(y = -hsize; y < hsize; ++y)
-      for(x = -hsize; x < hsize; ++x,p++)
-      {
-        long r = (long)round(fmod(fabs((sin((x*size+rox)*rpx)*sin((y*size+roy)*rpy)+1.0f)*ramp+rofs),255.0));
-        long g = (long)round(fmod(fabs((sin((x*size+gox)*gpx)*sin((y*size+goy)*gpy)+1.0f)*gamp+gofs),255.0));
-        long b = (long)round(fmod(fabs((sin((x*size+box)*bpx)*sin((y*size+boy)*bpy)+1.0f)*bamp+bofs),255.0));
-        long a = (long)round(fmod(fabs((sin((x*size+aox)*apx)*sin((y*size+aoy)*apy)+1.0f)*aamp+aofs),255.0));
-        *p = 0x01000000 * a | b * 0x00010000 | g * 0x00000100 | r;
-      }
-    module->bitmap.timestamp++;
-    __sync_fetch_and_add( &(module->bitmap.data_ready), 1 );
-    return 0;
-  }
-  
   void module_info(vsx_module_info* info)
   {
     info->in_param_spec =
@@ -143,19 +100,19 @@ public:
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
     col_amp_in = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"col_amp");
-    col_amp_in->set(1.0f,0);
-    col_amp_in->set(1.0f,1);
-    col_amp_in->set(1.0f,2);
-    col_amp_in->set(1.0f,3);
+    col_amp_in->set(col_amp_cache[0], 0);
+    col_amp_in->set(col_amp_cache[1], 1);
+    col_amp_in->set(col_amp_cache[2], 2);
+    col_amp_in->set(col_amp_cache[3], 3);
     col_ofs_in = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"col_ofs");
 
     r_period_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"r_period");
-    r_period_in->set(1.0f,0);
-    r_period_in->set(1.0f,1);
+    r_period_in->set(r_period_cache[0], 0);
+    r_period_in->set(r_period_cache[1], 1);
 
     g_period_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"g_period");
-    g_period_in->set(1.0f,0);
-    g_period_in->set(16.0f,1);
+    g_period_in->set(g_period_cache[0], 0);
+    g_period_in->set(g_period_cache[1], 1);
 
     b_period_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"b_period");
     a_period_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"a_period");
@@ -165,65 +122,106 @@ public:
     b_ofs_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"b_ofs");
     a_ofs_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"a_ofs");
 
-    arms_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"arms");
-
-    attenuation_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
-    attenuation_in->set(0.1f);
-
     size_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
-    size_in->set(4);
+    size_in->set(size_cache);
     
-    star_flower_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"star_flower");
-
-    angle_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"angle");
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
   }
 
 
-
+  bool has_state_changed()
+  {
+    cache_check(size);
+    cache_check_float4(col_amp, 0.001f);
+    cache_check_float4(col_ofs, 0.001f);
+    cache_check_float2(r_period, 0.001f);
+    cache_check_float2(g_period, 0.001f);
+    cache_check_float2(b_period, 0.001f);
+    cache_check_float2(a_period, 0.001f);
+    cache_check_float2(r_ofs, 0.001f);
+    cache_check_float2(g_ofs, 0.001f);
+    cache_check_float2(b_ofs, 0.001f);
+    cache_check_float2(a_ofs, 0.001f);
+    return false;
+  }
 
   void run()
   {
-    if (to_delete_data)
+    if (bitmap && bitmap->data_ready)
     {
-      free(to_delete_data);
-      to_delete_data = 0;
-    }
-
-    if (bitmap.data_ready && worker_running)
-    {
-      pthread_join(worker_t,0);
-      worker_running = false;
-      bitmap_out->set(&bitmap);
+      bitmap_out->set(bitmap);
       loading_done = true;
+
+      if (old_bitmap)
+      {
+        vsx_bitmap_cache::get_instance()->destroy(old_bitmap);
+        old_bitmap = 0;
+      }
+      worker_running = false;
     }
 
-    req(p_updates != param_updates);
     req(!worker_running);
-    p_updates = param_updates;
+    req( has_state_changed() );
 
-    if (i_size != 8 << size_in->get())
+    cache_set(size);
+    cache_set_float4(col_amp);
+    cache_set_float4(col_ofs);
+    cache_set_float2(r_period);
+    cache_set_float2(g_period);
+    cache_set_float2(b_period);
+    cache_set_float2(a_period);
+    cache_set_float2(r_ofs);
+    cache_set_float2(g_ofs);
+    cache_set_float2(b_ofs);
+    cache_set_float2(a_ofs);
+
+    if (bitmap)
     {
-      i_size = 8 << size_in->get();
-      if (bitmap.data_get())
-        to_delete_data = bitmap.data_get();
-
-      bitmap.data_set( malloc( sizeof(vsx_bitmap_32bt) * i_size * i_size) );
-      bitmap.width  = i_size;
-      bitmap.height = i_size;
+      old_bitmap = bitmap;
+      bitmap = 0x0;
     }
-    bitmap.data_ready = 0;
+
+    vsx_string<> cache_handle = vsx_bitmap_generator_plasma::generate_cache_handle(
+        vsx_vector2f(r_period_cache),
+        vsx_vector2f(g_period_cache),
+        vsx_vector2f(b_period_cache),
+        vsx_vector2f(a_period_cache),
+        vsx_vector2f(r_ofs_cache),
+        vsx_vector2f(g_ofs_cache),
+        vsx_vector2f(b_ofs_cache),
+        vsx_vector2f(a_ofs_cache),
+        vsx_colorf(col_amp_cache),
+        vsx_colorf(col_ofs_cache),
+        size_cache
+      );
+
+    if (!bitmap)
+      bitmap = vsx_bitmap_cache::get_instance()->
+        aquire_create(cache_handle, 0);
+
+    bitmap->filename = cache_handle;
+    vsx_bitmap_generator_plasma::load(
+          bitmap,
+          vsx_vector2f(r_period_cache),
+          vsx_vector2f(g_period_cache),
+          vsx_vector2f(b_period_cache),
+          vsx_vector2f(a_period_cache),
+          vsx_vector2f(r_ofs_cache),
+          vsx_vector2f(g_ofs_cache),
+          vsx_vector2f(b_ofs_cache),
+          vsx_vector2f(a_ofs_cache),
+          vsx_colorf(col_amp_cache),
+          vsx_colorf(col_ofs_cache),
+          size_cache
+    );
     worker_running = true;
-    pthread_create(&worker_t, NULL, &worker, (void*)this);
   }
 
-  void start() {
-  }  
-  
-  void stop() {}
-  
-  void on_delete() {
-    if (worker_running)
-      pthread_join(worker_t,NULL);
+  void on_delete()
+  {
+    if (bitmap)
+      vsx_bitmap_cache::get_instance()->destroy(bitmap);
   }
+
+
 };

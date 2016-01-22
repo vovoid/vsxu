@@ -6,6 +6,7 @@
 #include <color/vsx_color.h>
 #include <bitmap/vsx_bitmap.h>
 #include <tools/vsx_thread_pool.h>
+#include <math/vsx_rand.h>
 
 class vsx_bitmap_generator_subplasma
 {

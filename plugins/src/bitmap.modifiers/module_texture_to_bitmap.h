@@ -83,7 +83,7 @@ public:
         if (bitmap.width != (unsigned int)width || bitmap.height != (unsigned int)height)
         {
           bitmap.data_free();
-          bitmap.data_set( malloc( sizeof(vsx_bitmap_32bt) * width * height) );
+          bitmap.data_set( malloc( sizeof(uint32_t) * width * height) );
           bitmap.width = width;
           bitmap.height = height;
         }

@@ -109,7 +109,7 @@ public:
       quat.z = sin(worms[i]->freq.z*engine->vtime+worms[i]->phs.z);
       quat.w = sin(worms[i]->freq.w*engine->vtime+worms[i]->phs.w);
       quat.normalize();
-      mesh->data->vertices[jj] = vsx_vector3<>(0);
+      mesh->data->vertices[jj] = vsx_vector3<>(0.0f);
       mesh->data->vertex_colors[jj] = vsx_color<>();
       ++jj;
       for (unsigned long k = 0; k < worms[i]->lines.size(); ++k) {

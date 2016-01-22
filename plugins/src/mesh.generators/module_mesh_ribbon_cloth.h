@@ -132,7 +132,7 @@ public:
 
   void run()
   {
-    mesh->data->vertices[0] = vsx_vector3<>(0);
+    mesh->data->vertices[0] = vsx_vector3<>(0.0f);
 
     if (reinit->get())
     {

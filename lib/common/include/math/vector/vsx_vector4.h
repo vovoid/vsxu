@@ -51,6 +51,14 @@ public:
     return 4;
   }
 
+  vsx_vector4(const T n[4])
+  {
+    x = n[0];
+    y = n[1];
+    z = n[2];
+    w = n[4];
+  }
+
 };
 
 typedef vsx_vector4<float> vsx_vector4f;

@@ -49,23 +49,23 @@ class vsx_bitmap_transform
     return 1.0f / (GLfloat)sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
   }
 
-  vsx_bitmap_32bt sphere_map_get_color(vsx_bitmap_32bt* source_data, float u, float v, int width, int height)
+  uint32_t sphere_map_get_color(uint32_t* source_data, float u, float v, int width, int height)
   {
-    vsx_bitmap_32bt vv = (vsx_bitmap_32bt)floor(v);
-    vsx_bitmap_32bt uu = (vsx_bitmap_32bt)floor(u);
-    vsx_bitmap_32bt c00 = source_data[ (vv    ) % height * width + (uu    ) % width];
-    vsx_bitmap_32bt c01 = source_data[ (vv    ) % height * width + (uu + 1) % width];
-    vsx_bitmap_32bt c10 = source_data[ (vv + 1) % height * width + (uu    ) % width];
-    vsx_bitmap_32bt c11 = source_data[ (vv + 1) % height * width + (uu + 1) % width];
+    uint32_t vv = (uint32_t)floor(v);
+    uint32_t uu = (uint32_t)floor(u);
+    uint32_t c00 = source_data[ (vv    ) % height * width + (uu    ) % width];
+    uint32_t c01 = source_data[ (vv    ) % height * width + (uu + 1) % width];
+    uint32_t c10 = source_data[ (vv + 1) % height * width + (uu    ) % width];
+    uint32_t c11 = source_data[ (vv + 1) % height * width + (uu + 1) % width];
 
     float fracU = (u + 10000) - (int)(u + 10000);
     float fracV = (v + 10000) - (int)(v + 10000);
 
-    vsx_bitmap_32bt a, r, g, b;
-    vsx_bitmap_32bt a00, a01, a10, a11;
-    vsx_bitmap_32bt r00, r01, r10, r11;
-    vsx_bitmap_32bt g00, g01, g10, g11;
-    vsx_bitmap_32bt b00, b01, b10, b11;
+    uint32_t a, r, g, b;
+    uint32_t a00, a01, a10, a11;
+    uint32_t r00, r01, r10, r11;
+    uint32_t g00, g01, g10, g11;
+    uint32_t b00, b01, b10, b11;
 
     #define sep_col(col, a, r, g, b)\
       a = (((col) >> 24) & 255);\
@@ -74,7 +74,7 @@ class vsx_bitmap_transform
       b = (((col) >> 0) & 255);
 
     #define interpol(x, x00, x01, x10, x11, fracU, fracV)\
-      x = (vsx_bitmap_32bt)(x00 * (1.0f - fracU) * (1.0f - fracV) + \
+      x = (uint32_t)(x00 * (1.0f - fracU) * (1.0f - fracV) + \
           x01 * (fracU) * (1.0f - fracV) + \
           x10 * (1.0f - fracU) * (fracV) + \
           x11 * (fracU) * (fracV));
@@ -92,7 +92,7 @@ class vsx_bitmap_transform
     return (a << 24) | (r << 16) | (g << 8) | b;
   }
 
-  vsx_bitmap_32bt sphere_map_get_color_sphere(vsx_bitmap_32bt* source_data, float *vec, int width, int height)
+  uint32_t sphere_map_get_color_sphere(uint32_t* source_data, float *vec, int width, int height)
   {
     v_norm(vec);
 
@@ -172,14 +172,14 @@ public:
     int texSize = bitmap->height;
     int texSize1 = texSize - 1;
     int u, v;
-    vsx_bitmap_32bt* source_data = (vsx_bitmap_32bt*)bitmap->data_get();
+    uint32_t* source_data = (uint32_t*)bitmap->data_get();
 
-    bitmap->data_set( malloc( sizeof(vsx_bitmap_32bt) * (bitmap->height * bitmap->height) ), 0, 0);
-    bitmap->data_set( malloc( sizeof(vsx_bitmap_32bt) * (bitmap->height * bitmap->height) ), 0, 1);
-    bitmap->data_set( malloc( sizeof(vsx_bitmap_32bt) * (bitmap->height * bitmap->height) ), 0, 2);
-    bitmap->data_set( malloc( sizeof(vsx_bitmap_32bt) * (bitmap->height * bitmap->height) ), 0, 3);
-    bitmap->data_set( malloc( sizeof(vsx_bitmap_32bt) * (bitmap->height * bitmap->height) ), 0, 4);
-    bitmap->data_set( malloc( sizeof(vsx_bitmap_32bt) * (bitmap->height * bitmap->height) ), 0, 5);
+    bitmap->data_set( malloc( sizeof(uint32_t) * (bitmap->height * bitmap->height) ), 0, 0);
+    bitmap->data_set( malloc( sizeof(uint32_t) * (bitmap->height * bitmap->height) ), 0, 1);
+    bitmap->data_set( malloc( sizeof(uint32_t) * (bitmap->height * bitmap->height) ), 0, 2);
+    bitmap->data_set( malloc( sizeof(uint32_t) * (bitmap->height * bitmap->height) ), 0, 3);
+    bitmap->data_set( malloc( sizeof(uint32_t) * (bitmap->height * bitmap->height) ), 0, 4);
+    bitmap->data_set( malloc( sizeof(uint32_t) * (bitmap->height * bitmap->height) ), 0, 5);
 
     float vec[4];
 
@@ -226,7 +226,7 @@ public:
               vec[3] = 1;
             break;
           }
-          ((vsx_bitmap_32bt*)bitmap->data_get(0, cube_map_side))[v * texSize + u] = sphere_map_get_color_sphere(source_data, vec, bitmap->width, bitmap->height);
+          ((uint32_t*)bitmap->data_get(0, cube_map_side))[v * texSize + u] = sphere_map_get_color_sphere(source_data, vec, bitmap->width, bitmap->height);
         }
     free(source_data);
     bitmap->width = bitmap->height;
