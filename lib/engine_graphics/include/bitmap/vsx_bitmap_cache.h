@@ -2,6 +2,7 @@
 
 #include <map>
 #include <tools/vsx_thread_pool.h>
+#include <tools/vsx_lock.h>
 #include "vsx_bitmap_loader.h"
 
 class vsx_bitmap_cache
@@ -24,43 +25,60 @@ class vsx_bitmap_cache
   };
 
   vsx_nw_vector<vsx_bitmap_cache_item*> items;
+  vsx_lock lock;
 
   vsx_bitmap_cache_item* create_item()
   {
+  lock.aquire();
     foreach (items, i)
       if (!items[i]->used)
       {
         items[i]->used = true;
+        lock.release();
         return items[i];
       }
     vsx_bitmap_cache_item* item = new vsx_bitmap_cache_item();
     items.push_back(item);
+    lock.release();
     return item;
   }
 
   void recycle_item(vsx_bitmap_cache_item* item)
   {
+    lock.aquire();
     foreach (items, i)
       if (items[i] == item)
         item->used = false;
+    lock.release();
   }
 
   vsx_bitmap_cache_item* get_item(vsx_string<>& filename, uint64_t& hint)
   {
+  lock.aquire();
     foreach (items, i)
       if (items[i]->equals(filename, hint))
-        return items[i];
+      {
+        vsx_bitmap_cache_item* item = items[i];
+        lock.release();
+        return item;
+      }
+    lock.release();
     return 0;
   }
 
   vsx_bitmap_cache_item* get_item(vsx_bitmap* bitmap)
   {
+    lock.aquire();
     foreach (items, i)
       if (items[i]->bitmap == bitmap)
-        return items[i];
+      {
+        vsx_bitmap_cache_item* item = items[i];
+        lock.release();
+        return item;
+      }
+    lock.release();
     return 0;
   }
-
 
 public:
 
@@ -80,10 +98,15 @@ public:
 
   bool has(vsx_string<>& filename, uint64_t hint)
   {
+    lock.aquire();
     foreach (items, i)
       if (items[i]->equals(filename, hint))
         if (items[i]->used)
+        {
+          lock.release();
           return true;
+        }
+    lock.release();
     return false;
   }
 
