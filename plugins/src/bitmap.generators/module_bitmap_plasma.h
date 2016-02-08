@@ -159,7 +159,7 @@ public:
         vsx_vector2f(r_ofs_in->get(0), r_ofs_in->get(1)),
         vsx_vector2f(g_ofs_in->get(0), g_ofs_in->get(1)),
         vsx_vector2f(b_ofs_in->get(0), b_ofs_in->get(1)),
-        vsx_vector2f(a_ofs_in->get(0), a_ofs_in->bet(1)),
+        vsx_vector2f(a_ofs_in->get(0), a_ofs_in->get(1)),
         vsx_colorf(col_amp_in->get(0), col_amp_in->get(1), col_amp_in->get(2), col_amp_in->get(3)),
         vsx_colorf(col_ofs_in->get(0), col_ofs_in->get(1), col_ofs_in->get(2), col_ofs_in->get(3)),
         size_in->get()
@@ -179,7 +179,7 @@ public:
           vsx_vector2f(r_ofs_in->get(0), r_ofs_in->get(1)),
           vsx_vector2f(g_ofs_in->get(0), g_ofs_in->get(1)),
           vsx_vector2f(b_ofs_in->get(0), b_ofs_in->get(1)),
-          vsx_vector2f(a_ofs_in->get(0), a_ofs_in->bet(1)),
+          vsx_vector2f(a_ofs_in->get(0), a_ofs_in->get(1)),
           vsx_colorf(col_amp_in->get(0), col_amp_in->get(1), col_amp_in->get(2), col_amp_in->get(3)),
           vsx_colorf(col_ofs_in->get(0), col_ofs_in->get(1), col_ofs_in->get(2), col_ofs_in->get(3)),
           size_in->get()

@@ -7,33 +7,18 @@ class module_texture_texgen_concentric_circles : public vsx_module
 {
   // in - function
   vsx_module_param_float* frequency_in;
-  float frequency_cache = 1.0f;
-
   vsx_module_param_float* attenuation_in;
-  float attenuation_cache = 2.0f;
 
   // in - options
   vsx_module_param_float4* color_in;
-  float color_cache[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-
   vsx_module_param_int* alpha_in;
-  int alpha_cache = 0;
-
   vsx_module_param_int* size_in;
-  int size_cache = 4;
 
   // in - rendering_hints
   vsx_module_param_int* min_mag_filter_in;
-  int min_mag_filter_cache = 1; // linear
-
   vsx_module_param_int* anisotropic_filtering_in;
-  int anisotropic_filtering_cache = 0;
-
   vsx_module_param_int* mipmaps_in;
-  int mipmaps_cache = 0;
-
   vsx_module_param_int* mipmap_min_filter_in;
-  int mipmap_min_filter_cache = 1;
 
   // out
   vsx_module_param_texture* texture_out;
@@ -90,58 +75,36 @@ public:
 
     // bitmap generation
     frequency_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"frequency");
-    frequency_in->set(frequency_cache);
+    frequency_in->set(1.0f);
 
     attenuation_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
-    attenuation_in->set(attenuation_cache);
-
-    alpha_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"alpha");
-    alpha_in->set(alpha_cache);
+    attenuation_in->set(2.0f);
 
     color_in = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"color");
-    color_in->set(color_cache[0], 0);
-    color_in->set(color_cache[1], 1);
-    color_in->set(color_cache[2], 2);
-    color_in->set(color_cache[3], 3);
+    color_in->set(1.0f, 0);
+    color_in->set(1.0f, 1);
+    color_in->set(1.0f, 2);
+    color_in->set(1.0f, 3);
+
+    alpha_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"alpha");
+    alpha_in->set(0);
+
+    size_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
+    size_in->set(4);
 
     // rendering_hints
     min_mag_filter_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "min_mag_filter");
-    min_mag_filter_in->set(min_mag_filter_cache); // linear
+    min_mag_filter_in->set(1); // linear
 
     anisotropic_filtering_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "anisotropic_filter");
 
     mipmaps_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "mipmaps");
 
     mipmap_min_filter_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "mipmap_min_filter");
-    mipmap_min_filter_in->set(mipmap_min_filter_cache);
-
-    // size
-    size_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
-    size_in->set(size_cache);
+    mipmap_min_filter_in->set(1);
 
     // out
     texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
-  }
-
-  bool has_parameters_changed()
-  {
-    if (first)
-    {
-      first = false;
-      return true;
-    }
-    cache_check_f(frequency, 0.01f);
-    cache_check_f(attenuation, 0.01f);
-
-    cache_check_float4(color, 0.01f);
-    cache_check(alpha);
-    cache_check(size);
-
-    cache_check(mipmaps);
-    cache_check(anisotropic_filtering);
-    cache_check(min_mag_filter);
-    cache_check(mipmap_min_filter);
-    return false;
   }
 
   void run()
@@ -162,32 +125,21 @@ public:
       return;
     }
 
-    req(has_parameters_changed());
-
-    cache_set(frequency);
-    cache_set(attenuation);
-
-    cache_set_float4(color);
-    cache_set(alpha);
-    cache_set(size);
-
-    cache_set(mipmaps);
-    cache_set(mipmap_min_filter);
-    cache_set(anisotropic_filtering);
-    cache_set(min_mag_filter);
+    req(param_updates);
+    param_updates = 0;
 
     uint64_t hint = 0;
-    hint |= vsx_texture_gl::anisotropic_filtering_hint * anisotropic_filtering_cache;
-    hint |= vsx_texture_gl::generate_mipmaps_hint * mipmaps_cache;
-    hint |= vsx_texture_gl::linear_interpolate_hint * min_mag_filter_cache;
-    hint |= vsx_texture_gl::mipmap_linear_interpolate_hint * mipmap_min_filter_cache;
+    hint |= vsx_texture_gl::anisotropic_filtering_hint * anisotropic_filtering_in->get();
+    hint |= vsx_texture_gl::generate_mipmaps_hint * mipmaps_in->get();
+    hint |= vsx_texture_gl::linear_interpolate_hint * min_mag_filter_in->get();
+    hint |= vsx_texture_gl::mipmap_linear_interpolate_hint * mipmap_min_filter_in->get();
 
     vsx_string<> cache_handle = vsx_bitmap_generator_concentric_circles::generate_cache_handle(
-          frequency_cache,
-          attenuation_cache,
-          vsx_color<>(color_cache),
-          (bool)alpha_cache,
-          size_cache
+          frequency_in->get(),
+          attenuation_in->get(),
+          vsx_color<>(color_in->get(0), color_in->get(1), color_in->get(2), color_in->get(3)),
+          (bool)alpha_in->get(),
+          size_in->get()
         );
 
     if (vsx_texture_gl_cache::get_instance()->has(cache_handle, 0, hint))
@@ -210,11 +162,11 @@ public:
 
     vsx_bitmap_generator_concentric_circles::generate_thread(
       texture->texture->bitmap,
-      frequency_cache,
-      attenuation_cache,
-      vsx_color<>(color_cache),
-      (bool)alpha_cache,
-      size_cache
+      frequency_in->get(),
+      attenuation_in->get(),
+      vsx_color<>(color_in->get(0), color_in->get(1), color_in->get(2), color_in->get(3)),
+      (bool)alpha_in->get(),
+      size_in->get()
     );
 
     worker_running = true;
