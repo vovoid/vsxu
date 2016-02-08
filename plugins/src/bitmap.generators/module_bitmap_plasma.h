@@ -33,44 +33,22 @@ class module_bitmap_plasma : public vsx_module
 public:
   // in - function
   vsx_module_param_float4* col_amp_in;
-  float col_amp_cache[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-
   vsx_module_param_float4* col_ofs_in;
-  float col_ofs_cache[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-
 
   // in - function - period
   vsx_module_param_float3* r_period_in;
-  float r_period_cache[2] = {1.0f, 1.0f};
-
   vsx_module_param_float3* g_period_in;
-  float g_period_cache[2] = {1.0f, 16.0f};
-
   vsx_module_param_float3* b_period_in;
-  float b_period_cache[2] = {0.0f, 0.0f};
-
   vsx_module_param_float3* a_period_in;
-  float a_period_cache[2] = {0.0f, 0.0f};
-
 
   // in - function - ofs
   vsx_module_param_float3* r_ofs_in;
-  float r_ofs_cache[2] = {0.0f, 0.0f};
-
   vsx_module_param_float3* g_ofs_in;
-  float g_ofs_cache[2] = {0.0f, 0.0f};
-
   vsx_module_param_float3* b_ofs_in;
-  float b_ofs_cache[2] = {0.0f, 0.0f};
-
   vsx_module_param_float3* a_ofs_in;
-  float a_ofs_cache[2] = {0.0f, 0.0f};
-
 
   // in - options
   vsx_module_param_int* size_in;
-  int size_cache = 4;
-
 
   // out
   vsx_module_param_bitmap* bitmap_out;
@@ -116,19 +94,19 @@ public:
   {
     // function
     col_amp_in = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"col_amp");
-    col_amp_in->set(col_amp_cache[0], 0);
-    col_amp_in->set(col_amp_cache[1], 1);
-    col_amp_in->set(col_amp_cache[2], 2);
-    col_amp_in->set(col_amp_cache[3], 3);
+    col_amp_in->set(1.0f, 0);
+    col_amp_in->set(1.0f, 1);
+    col_amp_in->set(1.0f, 2);
+    col_amp_in->set(1.0f, 3);
     col_ofs_in = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"col_ofs");
 
     r_period_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"r_period");
-    r_period_in->set(r_period_cache[0], 0);
-    r_period_in->set(r_period_cache[1], 1);
+    r_period_in->set(1.0f, 0);
+    r_period_in->set(1.0f, 1);
 
     g_period_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"g_period");
-    g_period_in->set(g_period_cache[0], 0);
-    g_period_in->set(g_period_cache[1], 1);
+    g_period_in->set(1.0f, 0);
+    g_period_in->set(1.0f, 1);
 
     b_period_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"b_period");
     a_period_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"a_period");
@@ -140,31 +118,12 @@ public:
 
     // options
     size_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
-    size_in->set(size_cache);
+    size_in->set(4);
     
     // out
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
   }
 
-
-  bool has_parameters_changed()
-  {
-    cache_check_float4(col_amp, 0.001f);
-    cache_check_float4(col_ofs, 0.001f);
-
-    cache_check_float2(r_period, 0.001f);
-    cache_check_float2(g_period, 0.001f);
-    cache_check_float2(b_period, 0.001f);
-    cache_check_float2(a_period, 0.001f);
-
-    cache_check_float2(r_ofs, 0.001f);
-    cache_check_float2(g_ofs, 0.001f);
-    cache_check_float2(b_ofs, 0.001f);
-    cache_check_float2(a_ofs, 0.001f);
-
-    cache_check(size);
-    return false;
-  }
 
   void run()
   {
@@ -182,22 +141,9 @@ public:
     }
 
     req(!worker_running);
-    req( has_parameters_changed() );
+    req( param_updates );
+    param_updates = 0;
 
-    cache_set_float4(col_amp);
-    cache_set_float4(col_ofs);
-
-    cache_set_float2(r_period);
-    cache_set_float2(g_period);
-    cache_set_float2(b_period);
-    cache_set_float2(a_period);
-
-    cache_set_float2(r_ofs);
-    cache_set_float2(g_ofs);
-    cache_set_float2(b_ofs);
-    cache_set_float2(a_ofs);
-
-    cache_set(size);
 
     if (bitmap)
     {
@@ -206,17 +152,17 @@ public:
     }
 
     vsx_string<> cache_handle = vsx_bitmap_generator_plasma::generate_cache_handle(
-        vsx_vector2f(r_period_cache),
-        vsx_vector2f(g_period_cache),
-        vsx_vector2f(b_period_cache),
-        vsx_vector2f(a_period_cache),
-        vsx_vector2f(r_ofs_cache),
-        vsx_vector2f(g_ofs_cache),
-        vsx_vector2f(b_ofs_cache),
-        vsx_vector2f(a_ofs_cache),
-        vsx_colorf(col_amp_cache),
-        vsx_colorf(col_ofs_cache),
-        size_cache
+        vsx_vector2f(r_period_in->get(0), r_period_in->get(1)),
+        vsx_vector2f(g_period_in->get(0), g_period_in->get(1)),
+        vsx_vector2f(b_period_in->get(0), b_period_in->get(1)),
+        vsx_vector2f(a_period_in->get(0), a_period_in->get(1)),
+        vsx_vector2f(r_ofs_in->get(0), r_ofs_in->get(1)),
+        vsx_vector2f(g_ofs_in->get(0), g_ofs_in->get(1)),
+        vsx_vector2f(b_ofs_in->get(0), b_ofs_in->get(1)),
+        vsx_vector2f(a_ofs_in->get(0), a_ofs_in->bet(1)),
+        vsx_colorf(col_amp_in->get(0), col_amp_in->get(1), col_amp_in->get(2), col_amp_in->get(3)),
+        vsx_colorf(col_ofs_in->get(0), col_ofs_in->get(1), col_ofs_in->get(2), col_ofs_in->get(3)),
+        size_in->get()
       );
 
     if (!bitmap)
@@ -226,17 +172,17 @@ public:
     bitmap->filename = cache_handle;
     vsx_bitmap_generator_plasma::generate_thread(
           bitmap,
-          vsx_vector2f(r_period_cache),
-          vsx_vector2f(g_period_cache),
-          vsx_vector2f(b_period_cache),
-          vsx_vector2f(a_period_cache),
-          vsx_vector2f(r_ofs_cache),
-          vsx_vector2f(g_ofs_cache),
-          vsx_vector2f(b_ofs_cache),
-          vsx_vector2f(a_ofs_cache),
-          vsx_colorf(col_amp_cache),
-          vsx_colorf(col_ofs_cache),
-          size_cache
+          vsx_vector2f(r_period_in->get(0), r_period_in->get(1)),
+          vsx_vector2f(g_period_in->get(0), g_period_in->get(1)),
+          vsx_vector2f(b_period_in->get(0), b_period_in->get(1)),
+          vsx_vector2f(a_period_in->get(0), a_period_in->get(1)),
+          vsx_vector2f(r_ofs_in->get(0), r_ofs_in->get(1)),
+          vsx_vector2f(g_ofs_in->get(0), g_ofs_in->get(1)),
+          vsx_vector2f(b_ofs_in->get(0), b_ofs_in->get(1)),
+          vsx_vector2f(a_ofs_in->get(0), a_ofs_in->bet(1)),
+          vsx_colorf(col_amp_in->get(0), col_amp_in->get(1), col_amp_in->get(2), col_amp_in->get(3)),
+          vsx_colorf(col_ofs_in->get(0), col_ofs_in->get(1), col_ofs_in->get(2), col_ofs_in->get(3)),
+          size_in->get()
     );
     worker_running = true;
   }

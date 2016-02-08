@@ -31,14 +31,10 @@ class module_bitmap_subplasma : public vsx_module
 public:
   // in - function
   vsx_module_param_float* rand_seed_in;
-  float rand_seed_cache = 0.0f;
-
   vsx_module_param_int* amplitude_in;
-  int amplitude_cache = 0.0f;
 
   // in - options
   vsx_module_param_int* size_in;
-  int size_cache = 0.1f;
 
   // out
   vsx_module_param_bitmap* bitmap_out;
@@ -85,14 +81,6 @@ public:
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
   }
 
-  bool has_parameters_changed()
-  {
-    cache_check_f(rand_seed, 1.0)
-    cache_check(amplitude)
-
-    cache_check(size)
-    return false;
-  }
 
   void run()
   {
@@ -111,11 +99,8 @@ public:
 
     req(!worker_running);
 
-    req( has_parameters_changed() );
-    cache_set(rand_seed);
-    cache_set(amplitude);
-
-    cache_set(size);
+    req( param_updates );
+    param_updates = 0;
 
     if (bitmap)
     {

@@ -34,45 +34,22 @@ class module_bitmap_perlin_noise : public vsx_module
 public:
   // in - function
   vsx_module_param_float* rand_seed_in;
-  float rand_seed_cache = 4.0f;
-
   vsx_module_param_float* perlin_strength_in;
-  float perlin_strength_cache = 1.0f;
-
   vsx_module_param_int* octave_in;
-  int octave_cache = 0;
-
   vsx_module_param_int* frequency_in;
-  int frequency_cache = 0;
 
   // in - function_blob
   vsx_module_param_int* blob_enable_in;
-  int blob_enable_cache = 0;
-
   vsx_module_param_float* blob_arms_in;
-  float blob_arms_cache = 0.0f;
-
   vsx_module_param_float* blob_attenuation_in;
-  float blob_attenuation_cache = 0.0f;
-
   vsx_module_param_float* blob_star_flower_in;
-  float blob_star_flower_cache = 0.0f;
-
   vsx_module_param_float* blob_angle_in;
-  float blob_angle_cache = 0.0f;
 
   // in - options
   vsx_module_param_float4* color_in;
-  float color_cache[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-
   vsx_module_param_int* alpha_in;
-  int alpha_cache = 0;
-
   vsx_module_param_int* bitmap_type_in;
-  int bitmap_type_cache = 0;
-
   vsx_module_param_int* size_in;
-  int size_cache = 4;
 
   // out
   vsx_module_param_bitmap* bitmap_out;
@@ -118,16 +95,16 @@ public:
   {
     // function
     rand_seed_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"rand_seed");
-    rand_seed_in->set(rand_seed_cache);
+    rand_seed_in->set(4.0f);
 
     perlin_strength_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"perlin_strength");
-    perlin_strength_in->set(perlin_strength_cache);
+    perlin_strength_in->set(1.0f);
 
     octave_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"octave");
-    octave_in->set(octave_cache);
+    octave_in->set(0);
 
     frequency_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"frequency");
-    frequency_in->set(frequency_cache);
+    frequency_in->set(0);
 
     // function blob
     blob_enable_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"enable_blob");
@@ -138,43 +115,21 @@ public:
 
     // options
     color_in = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"color");
-    color_in->set(color_cache[0], 0);
-    color_in->set(color_cache[1], 1);
-    color_in->set(color_cache[2], 2);
-    color_in->set(color_cache[3], 3);
+    color_in->set(1.0f, 0);
+    color_in->set(1.0f, 1);
+    color_in->set(1.0f, 2);
+    color_in->set(1.0f, 3);
 
     alpha_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"alpha");
 
     size_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
-    size_in->set(size_cache);
+    size_in->set(4);
 
     bitmap_type_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"bitmap_type");
 
     // out
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
   }
-
-  bool has_parameters_changed()
-  {
-    cache_check_f(rand_seed, 1.0f);
-    cache_check_f(perlin_strength, 0.01f);
-    cache_check(octave);
-    cache_check(frequency);
-
-    cache_check_f(blob_enable, 0.01f);
-    cache_check_f(blob_arms, 0.01f);
-    cache_check_f(blob_attenuation, 0.01f);
-    cache_check_f(blob_star_flower, 0.01f);
-    cache_check_f(blob_angle, 0.01f);
-
-    cache_check_float4(color, 0.001f);
-    cache_check(alpha);
-    cache_check(size);
-    cache_check(bitmap_type);
-    return false;
-  }
-
-
 
   void run()
   {
@@ -192,23 +147,8 @@ public:
     }
 
     req(!worker_running);
-    req( has_parameters_changed() );
-
-    cache_set(rand_seed);
-    cache_set(perlin_strength);
-    cache_set(octave);
-    cache_set(frequency);
-
-    cache_set(blob_enable);
-    cache_set(blob_arms);
-    cache_set(blob_attenuation);
-    cache_set(blob_star_flower);
-    cache_set(blob_angle);
-
-    cache_set_float4(color);
-    cache_set(alpha);
-    cache_set(size);
-    cache_set(bitmap_type);
+    req( param_updates );
+    param_updates = 0;
 
     if (bitmap)
     {
@@ -217,19 +157,19 @@ public:
     }
 
     vsx_string<> cache_handle = vsx_bitmap_generator_perlin_noise::generate_cache_handle(
-        blob_enable_cache,
-        blob_arms_cache,
-        blob_attenuation_cache,
-        blob_star_flower_cache,
-        blob_angle_cache,
-        rand_seed_cache,
-        octave_cache,
-        frequency_cache,
-        perlin_strength_cache,
-        alpha_cache,
-        vsx_color<>(color_cache),
-        bitmap_type_cache,
-        size_cache
+        blob_enable_in->get(),
+        blob_arms_in->get(),
+        blob_attenuation_in->get(),
+        blob_star_flower_in->get(),
+        blob_angle_in->get(),
+        rand_seed_in->get(),
+        octave_in->get(),
+        frequency_in->get(),
+        perlin_strength_in->get(),
+        alpha_in->get(),
+        vsx_color<>(color_in->get(0),color_in->get(1),color_in->get(2),color_in->get(3)),
+        bitmap_type_in->get(),
+        size_in->get()
       );
 
     if (!bitmap)
@@ -238,20 +178,20 @@ public:
 
     bitmap->filename = cache_handle;
     vsx_bitmap_generator_perlin_noise::generate_thread(
-          bitmap,
-          blob_enable_cache,
-          blob_arms_cache,
-          blob_attenuation_cache,
-          blob_star_flower_cache,
-          blob_angle_cache,
-          rand_seed_cache,
-          octave_cache,
-          frequency_cache,
-          perlin_strength_cache,
-          alpha_cache,
-          vsx_color<>(color_cache),
-          bitmap_type_cache,
-          size_cache
+        bitmap,
+        blob_enable_in->get(),
+        blob_arms_in->get(),
+        blob_attenuation_in->get(),
+        blob_star_flower_in->get(),
+        blob_angle_in->get(),
+        rand_seed_in->get(),
+        octave_in->get(),
+        frequency_in->get(),
+        perlin_strength_in->get(),
+        alpha_in->get(),
+        vsx_color<>(color_in->get(0),color_in->get(1),color_in->get(2),color_in->get(3)),
+        bitmap_type_in->get(),
+        size_in->get()
     );
     worker_running = true;
   }
