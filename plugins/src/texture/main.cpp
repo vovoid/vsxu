@@ -42,6 +42,7 @@ typedef struct stat t_stat;
 
 
 #include "module_texture_texgen_blob.h"
+#include "module_texture_texgen_concentric_circles.h"
 #include "module_texture_effect_blur.h"
 #include "module_texture_parameter.h"
 #include "module_texture_render_buffer.h"
@@ -100,6 +101,7 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 16: return (vsx_module*)(new module_texture_screenshot_hires);
 
     case 17: return (vsx_module*)(new module_texture_texgen_blob);
+    case 18: return (vsx_module*)(new module_texture_texgen_concentric_circles);
   };
 
   return 0;
@@ -132,6 +134,7 @@ void MOD_DM(vsx_module* m,unsigned long module) {
     case 16: delete (module_texture_screenshot_hires*)m; break;
 
     case 17: delete (module_texture_texgen_blob*)m; break;
+    case 18: delete (module_texture_texgen_concentric_circles*)m; break;
   }
 }
 
@@ -145,6 +148,6 @@ unsigned long MOD_NM(vsx_engine_environment* environment) {
     #endif
   #endif
 
-  return 18;
+  return 19;
 }
 

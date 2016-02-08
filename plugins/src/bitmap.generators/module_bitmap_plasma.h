@@ -22,8 +22,6 @@
 */
 
 #include <vsx_module.h>
-#include <vsx_param.h>
-#include <vsx_module_cache_helper.h>
 
 #include <bitmap/vsx_bitmap.h>
 #include <math/vector/vsx_vector2.h>
@@ -33,20 +31,46 @@
 class module_bitmap_plasma : public vsx_module
 {
 public:
-  // in
+  // in - function
   vsx_module_param_float4* col_amp_in;
+  float col_amp_cache[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+
   vsx_module_param_float4* col_ofs_in;
+  float col_ofs_cache[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 
+
+  // in - function - period
   vsx_module_param_float3* r_period_in;
-  vsx_module_param_float3* g_period_in;
-  vsx_module_param_float3* b_period_in;
-  vsx_module_param_float3* a_period_in;
+  float r_period_cache[2] = {1.0f, 1.0f};
 
+  vsx_module_param_float3* g_period_in;
+  float g_period_cache[2] = {1.0f, 16.0f};
+
+  vsx_module_param_float3* b_period_in;
+  float b_period_cache[2] = {0.0f, 0.0f};
+
+  vsx_module_param_float3* a_period_in;
+  float a_period_cache[2] = {0.0f, 0.0f};
+
+
+  // in - function - ofs
   vsx_module_param_float3* r_ofs_in;
+  float r_ofs_cache[2] = {0.0f, 0.0f};
+
   vsx_module_param_float3* g_ofs_in;
+  float g_ofs_cache[2] = {0.0f, 0.0f};
+
   vsx_module_param_float3* b_ofs_in;
+  float b_ofs_cache[2] = {0.0f, 0.0f};
+
   vsx_module_param_float3* a_ofs_in;
+  float a_ofs_cache[2] = {0.0f, 0.0f};
+
+
+  // in - options
   vsx_module_param_int* size_in;
+  int size_cache = 4;
+
 
   // out
   vsx_module_param_bitmap* bitmap_out;
@@ -56,24 +80,13 @@ public:
   vsx_bitmap* bitmap = 0x0;
   vsx_bitmap* old_bitmap = 0x0;
 
-  float col_amp_cache[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-  float col_ofs_cache[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-  float r_period_cache[2] = {1.0f, 1.0f};
-  float g_period_cache[2] = {1.0f, 16.0f};
-  float b_period_cache[2] = {0.0f, 0.0f};
-  float a_period_cache[2] = {0.0f, 0.0f};
-  float r_ofs_cache[2] = {0.0f, 0.0f};
-  float g_ofs_cache[2] = {0.0f, 0.0f};
-  float b_ofs_cache[2] = {0.0f, 0.0f};
-  float a_ofs_cache[2] = {0.0f, 0.0f};
-  int size_cache = 4;
 
   void module_info(vsx_module_info* info)
   {
     info->in_param_spec =
-      "settings:complex{"
-        "col_amp:float4?default_controller=controller_col,"
-        "col_ofs:float4?default_controller=controller_col,"
+      "function:complex{"
+        "col_amp:float4,"
+        "col_ofs:float4,"
         "period:complex{"
           "r_period:float3,"
           "g_period:float3,"
@@ -87,7 +100,9 @@ public:
           "a_ofs:float3"
         "}"
       "},"
-      "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024"
+      "options:complex{"
+        "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024&nc=1"
+      "}"
     ;
 
     info->identifier = "bitmaps;generators;plasma";
@@ -99,6 +114,7 @@ public:
   
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
+    // function
     col_amp_in = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"col_amp");
     col_amp_in->set(col_amp_cache[0], 0);
     col_amp_in->set(col_amp_cache[1], 1);
@@ -122,26 +138,31 @@ public:
     b_ofs_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"b_ofs");
     a_ofs_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"a_ofs");
 
+    // options
     size_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
     size_in->set(size_cache);
     
+    // out
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
   }
 
 
-  bool has_state_changed()
+  bool has_parameters_changed()
   {
-    cache_check(size);
     cache_check_float4(col_amp, 0.001f);
     cache_check_float4(col_ofs, 0.001f);
+
     cache_check_float2(r_period, 0.001f);
     cache_check_float2(g_period, 0.001f);
     cache_check_float2(b_period, 0.001f);
     cache_check_float2(a_period, 0.001f);
+
     cache_check_float2(r_ofs, 0.001f);
     cache_check_float2(g_ofs, 0.001f);
     cache_check_float2(b_ofs, 0.001f);
     cache_check_float2(a_ofs, 0.001f);
+
+    cache_check(size);
     return false;
   }
 
@@ -161,19 +182,22 @@ public:
     }
 
     req(!worker_running);
-    req( has_state_changed() );
+    req( has_parameters_changed() );
 
-    cache_set(size);
     cache_set_float4(col_amp);
     cache_set_float4(col_ofs);
+
     cache_set_float2(r_period);
     cache_set_float2(g_period);
     cache_set_float2(b_period);
     cache_set_float2(a_period);
+
     cache_set_float2(r_ofs);
     cache_set_float2(g_ofs);
     cache_set_float2(b_ofs);
     cache_set_float2(a_ofs);
+
+    cache_set(size);
 
     if (bitmap)
     {
@@ -200,7 +224,7 @@ public:
         aquire_create(cache_handle, 0);
 
     bitmap->filename = cache_handle;
-    vsx_bitmap_generator_plasma::load(
+    vsx_bitmap_generator_plasma::generate_thread(
           bitmap,
           vsx_vector2f(r_period_cache),
           vsx_vector2f(g_period_cache),

@@ -115,7 +115,7 @@ public:
     texture_out->valid = false;
   }
 
-  bool has_state_changed()
+  bool has_parameters_changed()
   {
     if (reload_in->get())
       return true;
@@ -151,7 +151,7 @@ public:
       message = "module||ok";
     }
 
-    req(has_state_changed());
+    req(has_parameters_changed());
 
     bool reload = reload_in->get();
     reload_in->set(0);

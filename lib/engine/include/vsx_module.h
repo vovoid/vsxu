@@ -42,10 +42,12 @@
 
 #include <vsx_gl_state.h>
 
-#include "vsx_argvector.h"
+#include <vsx_argvector.h>
 #include <filesystem/vsx_filesystem.h>
-#include "debug/vsx_error.h"
+#include <debug/vsx_error.h>
+#include <vsx_param.h>
 #include <vsx_module_operation.h>
+#include <vsx_module_cache_helper.h>
 
 #ifdef _WIN32
 #include <windows.h>

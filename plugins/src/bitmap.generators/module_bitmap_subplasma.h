@@ -22,9 +22,6 @@
 */
 
 #include <vsx_module.h>
-#include <vsx_param.h>
-
-#include <vsx_module_cache_helper.h>
 
 #include <bitmap/vsx_bitmap.h>
 #include <bitmap/generators/vsx_bitmap_generator_subplasma.h>
@@ -32,10 +29,16 @@
 class module_bitmap_subplasma : public vsx_module
 {
 public:
-  // in
+  // in - function
   vsx_module_param_float* rand_seed_in;
+  float rand_seed_cache = 0.0f;
+
   vsx_module_param_int* amplitude_in;
+  int amplitude_cache = 0.0f;
+
+  // in - options
   vsx_module_param_int* size_in;
+  int size_cache = 0.1f;
 
   // out
   vsx_module_param_bitmap* bitmap_out;
@@ -44,16 +47,18 @@ public:
   bool worker_running = false;
   vsx_bitmap* bitmap = 0x0;
   vsx_bitmap* old_bitmap = 0x0;
-  float rand_seed_cache = 0.0f;
-  int amplitude_cache = 0.0f;
-  int size_cache = 0.1f;
+
 
   void module_info(vsx_module_info* info)
   {
     info->in_param_spec =
-      "rand_seed:float,"
-      "amplitude:enum?2|4|8|16|32|64|128|256|512,"
-      "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024"
+      "function:complex{"
+        "rand_seed:float,"
+        "amplitude:enum?2|4|8|16|32|64|128|256|512&nc=1"
+      "},"
+      "options:complex{"
+        "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024&nc=1"
+      "}"
     ;
     info->identifier = "bitmaps;generators;subplasma";
     info->out_param_spec = "bitmap:bitmap";
@@ -66,21 +71,25 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
+    // function
     rand_seed_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"rand_seed");
     rand_seed_in->set(4.0f);
 
+    amplitude_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"amplitude");
+
+    // options
     size_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
     size_in->set(4);
 
-    amplitude_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"amplitude");
-
+    // out
     bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
   }
 
-  bool has_state_changed()
+  bool has_parameters_changed()
   {
     cache_check_f(rand_seed, 1.0)
     cache_check(amplitude)
+
     cache_check(size)
     return false;
   }
@@ -102,7 +111,11 @@ public:
 
     req(!worker_running);
 
-    req( has_state_changed() );
+    req( has_parameters_changed() );
+    cache_set(rand_seed);
+    cache_set(amplitude);
+
+    cache_set(size);
 
     if (bitmap)
     {
@@ -121,7 +134,7 @@ public:
         aquire_create(cache_handle, 0);
 
     bitmap->filename = cache_handle;
-    vsx_bitmap_generator_subplasma::load(
+    vsx_bitmap_generator_subplasma::generate_thread(
           bitmap,
           (int)rand_seed_in->get(),
           amplitude_in->get(),

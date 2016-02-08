@@ -57,7 +57,145 @@ public:
     return vsx_string<>(result_char);
   }
 
-  inline static void load(
+  inline static void generate(
+      vsx_bitmap* bitmap,
+      vsx_vector2f period_red,
+      vsx_vector2f period_green,
+      vsx_vector2f period_blue,
+      vsx_vector2f period_alpha,
+      vsx_vector2f offset_red,
+      vsx_vector2f offset_green,
+      vsx_vector2f offset_blue,
+      vsx_vector2f offset_alpha,
+      vsx_colorf amp,
+      vsx_colorf ofs,
+      uint16_t size
+  )
+  {
+    bitmap->filename =
+      vsx_bitmap_generator_plasma::generate_cache_handle(
+          period_red,
+          period_green,
+          period_blue,
+          period_alpha,
+          offset_red,
+          offset_green,
+          offset_blue,
+          offset_alpha,
+          amp,
+          ofs,
+          size
+      );
+
+    uint16_t i_size = 8 << size;
+
+    float amp_r = amp.r * 127.0f;
+    float amp_g = amp.g * 127.0f;
+    float amp_b = amp.b * 127.0f;
+    float amp_a = amp.a * 127.0f;
+
+    float ofs_r = ofs.r * 127.0f;
+    float ofs_g = ofs.g * 127.0f;
+    float ofs_b = ofs.b * 127.0f;
+    float ofs_a = ofs.a * 127.0f;
+
+    bitmap->data_set( malloc( sizeof(uint32_t) * i_size * i_size ) );
+
+    uint32_t* p = (uint32_t*)bitmap->data_get();
+    int hsize = i_size >> 1;
+    float size_f = (float)(2.0f*PI)/(float)i_size;
+
+    for(int y = -hsize; y < hsize; ++y)
+      for(int x = -hsize; x < hsize; ++x, p++)
+      {
+        long r =
+          (long)round(
+            fmod(
+              fabs(
+                (
+                  (
+                    sin( ( x * size_f + offset_red.x)   * period_red.x)
+                    *
+                    sin((y * size_f + offset_red.y)   * period_red.y)
+                  )
+                  + 1.0f
+                )
+                  * amp_r
+                + ofs_r
+              )
+              ,
+              255.0
+            )
+          );
+
+        long g =
+          (long)round(
+            fmod(
+              fabs(
+                (
+                  (
+                    sin( ( x * size_f + offset_green.x)   * period_green.x)
+                    *
+                    sin((y * size_f + offset_green.y)   * period_green.y)
+                  )
+                  + 1.0f
+                )
+                  * amp_g
+                + ofs_g
+              )
+              ,
+              255.0
+            )
+          );
+
+        long b =
+          (long)round(
+            fmod(
+              fabs(
+                (
+                  (
+                    sin( ( x * size_f + offset_blue.x)   * period_blue.x)
+                    *
+                    sin((y * size_f + offset_blue.y)   * period_blue.y)
+                  )
+                  + 1.0f
+                )
+                  * amp_b
+                + ofs_b
+              )
+              ,
+              255.0
+            )
+          );
+
+        long a =
+          (long)round(
+            fmod(
+              fabs(
+                (
+                  (
+                    sin( ( x * size_f + offset_alpha.x)   * period_alpha.x)
+                    *
+                    sin((y * size_f + offset_alpha.y)   * period_alpha.y)
+                  )
+                  + 1.0f
+                )
+                  * amp_a
+                + ofs_a
+              )
+              ,
+              255.0
+            )
+          );
+        *p = 0x01000000 * a | b * 0x00010000 | g * 0x00000100 | r;
+      }
+    bitmap->width = i_size;
+    bitmap->height = i_size;
+    bitmap->timestamp = vsx_singleton_counter::get();
+  }
+
+
+  inline static void generate_thread(
       vsx_bitmap* bitmap,
       vsx_vector2f period_red,
       vsx_vector2f period_green,
@@ -94,126 +232,7 @@ public:
         uint16_t size
       )
       {
-        bitmap->filename =
-          vsx_bitmap_generator_plasma::generate_cache_handle(
-              period_red,
-              period_green,
-              period_blue,
-              period_alpha,
-              offset_red,
-              offset_green,
-              offset_blue,
-              offset_alpha,
-              amp,
-              ofs,
-              size
-          );
-
-        uint16_t i_size = 8 << size;
-
-        float amp_r = amp.r * 127.0f;
-        float amp_g = amp.g * 127.0f;
-        float amp_b = amp.b * 127.0f;
-        float amp_a = amp.a * 127.0f;
-
-        float ofs_r = ofs.r * 127.0f;
-        float ofs_g = ofs.g * 127.0f;
-        float ofs_b = ofs.b * 127.0f;
-        float ofs_a = ofs.a * 127.0f;
-
-        bitmap->data_set( malloc( sizeof(uint32_t) * i_size * i_size ) );
-
-        uint32_t* p = (uint32_t*)bitmap->data_get();
-        int hsize = i_size >> 1;
-        float size_f = (float)(2.0f*PI)/(float)i_size;
-
-        for(int y = -hsize; y < hsize; ++y)
-          for(int x = -hsize; x < hsize; ++x, p++)
-          {
-            long r =
-              (long)round(
-                fmod(
-                  fabs(
-                    (
-                      (
-                        sin( ( x * size_f + offset_red.x)   * period_red.x)
-                        *
-                        sin((y * size_f + offset_red.y)   * period_red.y)
-                      )
-                      + 1.0f
-                    )
-                      * amp_r
-                    + ofs_r
-                  )
-                  ,
-                  255.0
-                )
-              );
-
-            long g =
-              (long)round(
-                fmod(
-                  fabs(
-                    (
-                      (
-                        sin( ( x * size_f + offset_green.x)   * period_green.x)
-                        *
-                        sin((y * size_f + offset_green.y)   * period_green.y)
-                      )
-                      + 1.0f
-                    )
-                      * amp_g
-                    + ofs_g
-                  )
-                  ,
-                  255.0
-                )
-              );
-
-            long b =
-              (long)round(
-                fmod(
-                  fabs(
-                    (
-                      (
-                        sin( ( x * size_f + offset_blue.x)   * period_blue.x)
-                        *
-                        sin((y * size_f + offset_blue.y)   * period_blue.y)
-                      )
-                      + 1.0f
-                    )
-                      * amp_b
-                    + ofs_b
-                  )
-                  ,
-                  255.0
-                )
-              );
-
-            long a =
-              (long)round(
-                fmod(
-                  fabs(
-                    (
-                      (
-                        sin( ( x * size_f + offset_alpha.x)   * period_alpha.x)
-                        *
-                        sin((y * size_f + offset_alpha.y)   * period_alpha.y)
-                      )
-                      + 1.0f
-                    )
-                      * amp_a
-                    + ofs_a
-                  )
-                  ,
-                  255.0
-                )
-              );
-            *p = 0x01000000 * a | b * 0x00010000 | g * 0x00000100 | r;
-          }
-        bitmap->width = i_size;
-        bitmap->height = i_size;
-        bitmap->timestamp = vsx_singleton_counter::get();
+        generate(bitmap, period_red, period_green, period_blue, period_alpha, offset_red, offset_green, offset_blue, offset_alpha, amp, ofs, size);
         __sync_fetch_and_add( &(bitmap->data_ready), 1 );
         bitmap->lock.release();
       },
