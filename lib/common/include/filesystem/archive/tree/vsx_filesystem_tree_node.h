@@ -3,13 +3,30 @@
 #include <container/vsx_nw_vector.h>
 #include <string/vsx_string.h>
 
+
+struct vsx_filesystem_tree_node_storage_header
+{
+  uint8_t filename_length_mask;
+  uint16_t child_node_offset;
+};
+
+struct vsx_filesystem_tree_node_storage_footer
+{
+  uint32_t payload;
+};
+
 class vsx_filesystem_tree_node
 {
   friend class vsx_filesystem_tree_serialize_string;
+  friend class vsx_filesystem_tree_writer;
 
   vsx_nw_vector< vsx_filesystem_tree_node* > children;
   vsx_string<> name;
-  uint64_t payload;
+  uint32_t payload = 0;
+
+  // for calculating offset
+  uint16_t total_block_size = 0;
+  uint16_t offset = 0;
 
   int quick_sort_partition(vsx_filesystem_tree_node** a, int first, int last)
   {
@@ -47,7 +64,15 @@ class vsx_filesystem_tree_node
 
 public:
 
-  vsx_filesystem_tree_node* get_create(vsx_string<> new_name, uint64_t payload)
+  void calculate_offsets(uint16_t& target_offset)
+  {
+    offset = target_offset;
+    target_offset += total_block_size;
+    foreach (children, i)
+      children[i]->calculate_offsets(target_offset);
+  }
+
+  vsx_filesystem_tree_node* get_create(vsx_string<> new_name, uint32_t payload)
   {
     // already existing
     foreach (children, i)
@@ -59,6 +84,7 @@ public:
     new_node->name = new_name;
     new_node->payload = payload;
     children.push_back(new_node);
+    total_block_size += new_name.size() + sizeof(vsx_filesystem_tree_node_storage_header) + sizeof(vsx_filesystem_tree_node_storage_footer);
     sort();
     return new_node;
   }

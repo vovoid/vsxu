@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
   writer.add_file("abc/xyz.txt", 4);
   writer.add_file("abc/def.txt", 3);
 
+  writer.calculate_offsets();
   vsx_string<> result = vsx_filesystem_tree_serialize_string::serialize(writer);
   vsx_printf(L"%s\n", result.c_str());
 

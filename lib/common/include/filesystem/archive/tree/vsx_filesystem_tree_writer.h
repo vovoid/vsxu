@@ -22,11 +22,18 @@ class vsx_filesystem_tree_writer
 
 public:
 
-  void add_file(vsx_string<> filename, uint64_t payload)
+  void add_file(vsx_string<> filename, uint32_t payload)
   {
     vsx_nw_vector< vsx_string<> > parts;
     vsx_string_helper::explode_single<char>(filename, '/', parts);
     add_file_internal(&root_node, parts, 0, payload);
   }
+
+  void calculate_offsets()
+  {
+    uint16_t offset = 0;
+    root_node.calculate_offsets(offset);
+  }
+
 
 };

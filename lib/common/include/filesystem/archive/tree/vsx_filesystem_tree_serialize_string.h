@@ -8,6 +8,9 @@ class vsx_filesystem_tree_serialize_string
   static vsx_string<> serialize_node(vsx_filesystem_tree_node* node)
   {
     vsx_string<> result;
+    if (node->children.size())
+      result += "offset: "+vsx_string_helper::i2s(node->offset)+"\n";
+
     foreach (node->children, i)
       result += node->children[i]->name+"\n";
 
