@@ -1,0 +1,3 @@
+// 1 bit = directory or file
+// 7 bits = filename length
+// ...filename...
