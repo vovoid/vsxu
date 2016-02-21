@@ -29,6 +29,12 @@ int main(int argc, char *argv[])
   uint32_t reader_result = reader.get_payload_by_filename( "abc/def.txt" );
   test_assert( reader_result == 2147483648 );
 
+  reader_result = reader.get_payload_by_filename( "abc/xyz.txt" );
+  test_assert( reader_result == 1073741824 );
+
+  reader_result = reader.get_payload_by_filename( "home/jaw/test1.txt" );
+  test_assert( reader_result == 1 );
+
   test_complete
   return 0;
 }

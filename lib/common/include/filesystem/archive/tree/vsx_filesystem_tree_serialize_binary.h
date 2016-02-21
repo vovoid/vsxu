@@ -31,8 +31,6 @@ class vsx_filesystem_tree_serialize_binary
       foreach (cur_node->name, si)
         result.push_back( (unsigned char) cur_node->name[si]);
 
-
-
       if (!cur_node->children.size())
       {
         result.push_back( (unsigned char)((0xff000000 & cur_node->payload) >> 24) );

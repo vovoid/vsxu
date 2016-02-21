@@ -74,7 +74,7 @@ public:
       if (children[i]->children.size())
         target_offset += children[i]->name.size() + sizeof(vsx_filesystem_tree_node_storage_header);
       else
-        target_offset += children[i]->name.size() + sizeof(vsx_filesystem_tree_node_storage_header) + sizeof(vsx_filesystem_tree_node_storage_footer);
+        target_offset += children[i]->name.size() + 1 + sizeof(vsx_filesystem_tree_node_storage_footer);
     }
 
     foreach (children, i)

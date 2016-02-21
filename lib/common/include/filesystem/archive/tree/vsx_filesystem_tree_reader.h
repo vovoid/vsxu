@@ -49,18 +49,21 @@ public:
         p++;
         cur_filename++;
         string_length--;
-        children_offset--;
       }
 
+      // jump to next
       if (string_length)
       {
-        p += string_length + sizeof(uint32_t);
+        p += string_length;
+        if (!is_dir)
+          p += sizeof(uint32_t);
         continue;
       }
 
+      // jump to next level
       if (is_dir)
       {
-        p += children_offset;
+        p = data_pointer + children_offset;
         filename_iterator++;
         continue;
       }
