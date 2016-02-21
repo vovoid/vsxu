@@ -8,16 +8,17 @@ struct vsx_filesystem_tree_node_storage_header
 {
   uint8_t filename_length_mask;
   uint16_t child_node_offset;
-};
+} __attribute__((packed));
 
 struct vsx_filesystem_tree_node_storage_footer
 {
   uint32_t payload;
-};
+} __attribute__((packed));
 
 class vsx_filesystem_tree_node
 {
   friend class vsx_filesystem_tree_serialize_string;
+  friend class vsx_filesystem_tree_serialize_binary;
   friend class vsx_filesystem_tree_writer;
 
   vsx_nw_vector< vsx_filesystem_tree_node* > children;
@@ -67,7 +68,15 @@ public:
   void calculate_offsets(uint16_t& target_offset)
   {
     offset = target_offset;
-    target_offset += total_block_size;
+
+    foreach (children, i)
+    {
+      if (children[i]->children.size())
+        target_offset += children[i]->name.size() + sizeof(vsx_filesystem_tree_node_storage_header);
+      else
+        target_offset += children[i]->name.size() + sizeof(vsx_filesystem_tree_node_storage_header) + sizeof(vsx_filesystem_tree_node_storage_footer);
+    }
+
     foreach (children, i)
       children[i]->calculate_offsets(target_offset);
   }
@@ -84,7 +93,6 @@ public:
     new_node->name = new_name;
     new_node->payload = payload;
     children.push_back(new_node);
-    total_block_size += new_name.size() + sizeof(vsx_filesystem_tree_node_storage_header) + sizeof(vsx_filesystem_tree_node_storage_footer);
     sort();
     return new_node;
   }

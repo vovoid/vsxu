@@ -8,6 +8,7 @@
 class vsx_filesystem_tree_writer
 {
   friend class vsx_filesystem_tree_serialize_string;
+  friend class vsx_filesystem_tree_serialize_binary;
 
   vsx_filesystem_tree_node root_node;
 

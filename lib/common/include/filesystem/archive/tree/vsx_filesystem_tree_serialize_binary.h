@@ -14,19 +14,36 @@ class vsx_filesystem_tree_serialize_binary
   {
     foreach (node->children, i)
     {
-      result.push_back(node->children[i]->name.size() | (node->children[i]->children.size()?1:0) << 8 );
-      result.push_back( 0xff00 & node->children[i]->offset >> 8 );
-      result.push_back( 0x00ff & node->children[i]->offset);
-      foreach (node->children[i]->name, si)
-        result.push_back( (unsigned char) node->children[i]->name[si]);
-      result.push_back( 0xff000000 & node->children[i]->payload >> 24);
-      result.push_back( 0x00ff0000 & node->children[i]->payload >> 16);
-      result.push_back( 0x0000ff00 & node->children[i]->payload >> 8);
-      result.push_back( 0x000000ff & node->children[i]->payload);
+      vsx_filesystem_tree_node* cur_node = node->children[i];
+
+      result.push_back(
+          cur_node->name.size()
+          |
+          (cur_node->children.size()?1:0) << 7
+        );
+
+      if (cur_node->children.size())
+      {
+        result.push_back( 0xff00 & cur_node->offset >> 8 );
+        result.push_back( 0x00ff & cur_node->offset);
+      }
+
+      foreach (cur_node->name, si)
+        result.push_back( (unsigned char) cur_node->name[si]);
+
+
+
+      if (!cur_node->children.size())
+      {
+        result.push_back( (unsigned char)((0xff000000 & cur_node->payload) >> 24) );
+        result.push_back( (unsigned char)((0x00ff0000 & cur_node->payload) >> 16) );
+        result.push_back( (unsigned char)((0x0000ff00 & cur_node->payload) >> 8) );
+        result.push_back( (unsigned char)(0x000000ff & cur_node->payload) );
+      }
     }
 
     foreach (node->children, i)
-      result += serialize_node(node->children[i], result);
+      serialize_node(node->children[i], result);
   }
 
 public:

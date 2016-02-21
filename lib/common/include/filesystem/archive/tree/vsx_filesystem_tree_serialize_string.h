@@ -12,7 +12,12 @@ class vsx_filesystem_tree_serialize_string
       result += "offset: "+vsx_string_helper::i2s(node->offset)+"\n";
 
     foreach (node->children, i)
-      result += node->children[i]->name+"\n";
+    {
+      result += node->children[i]->name + "    -     payload: " + vsx_string_helper::i2s(node->children[i]->payload);
+      if (node->children[i]->children.size())
+        result += "     offset:  " + vsx_string_helper::i2s( node->children[i]->offset );
+      result += "\n";
+    }
 
     foreach (node->children, i)
       result += serialize_node(node->children[i]);
