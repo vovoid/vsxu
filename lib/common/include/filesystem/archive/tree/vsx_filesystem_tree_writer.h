@@ -35,6 +35,4 @@ public:
     uint16_t offset = 0;
     root_node.calculate_offsets(offset);
   }
-
-
 };

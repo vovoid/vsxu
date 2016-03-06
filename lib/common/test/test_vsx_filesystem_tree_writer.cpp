@@ -1586,6 +1586,8 @@ void test_level()
 
   perf.cache_misses_stop();
   perf_cpu.cpu_instructions_stop();
+
+  vsx::filesystem_mmap::destroy(mm);
 }
 
 void basic_test()

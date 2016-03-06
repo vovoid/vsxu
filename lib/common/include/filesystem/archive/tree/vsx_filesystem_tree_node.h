@@ -96,4 +96,10 @@ public:
     sort();
     return new_node;
   }
+
+  ~vsx_filesystem_tree_node()
+  {
+    foreach (children, i)
+      delete children[i];
+  }
 };
