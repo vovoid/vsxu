@@ -23,10 +23,10 @@ void filesystem_archive_vsx_writer::file_add_all_worker(vsx_nw_vector<filesystem
     filesystem_archive_file_write* info = (*work_list)[i];
     vsx_string<> filename = info->filename;
 
-    if (!info->uncompressed_data.size())
-      info->uncompressed_data = filesystem_helper::file_read(filename);
+    if (!info->data.size())
+      info->data = filesystem_helper::file_read(filename);
 
-    info->compressed_data = compression_lzma_old::compress( info->uncompressed_data );
+    info->compressed_data = compression_lzma_old::compress( info->data );
   }
 }
 
@@ -39,14 +39,14 @@ void filesystem_archive_vsx_writer::file_add_all()
   foreach (archive_files, i)
   {
     filesystem_archive_file_write &archive_file = archive_files[i];
-    req_continue(archive_file.uncompressed_data.size());
+    req_continue(archive_file.data.size());
     req_continue(archive_file.operation == filesystem_archive_file_write::operation_add);
 
     files_to_process++;
     bool is_last = i == (archive_files.size() - 1);
 
     pool->push_back(&archive_file);
-    pooled_size += archive_file.uncompressed_data.size();
+    pooled_size += archive_file.data.size();
 
     if (pooled_size <= work_chunk_size && !is_last)
       continue;
@@ -150,7 +150,7 @@ void filesystem_archive_vsx_writer::add_string(vsx_string<> filename, vsx_string
   filesystem_archive_file_write file_info;
   file_info.filename = filename;
   foreach (payload, i)
-    file_info.uncompressed_data[i] = (unsigned char)payload[i];
+    file_info.data[i] = (unsigned char)payload[i];
 
   if (deferred_multithreaded)
   {
@@ -158,7 +158,7 @@ void filesystem_archive_vsx_writer::add_string(vsx_string<> filename, vsx_string
     return;
   }
 
-  file_compress_and_add_to_archive(filename, file_info.uncompressed_data);
+  file_compress_and_add_to_archive(filename, file_info.data);
   archive_files.move_back(std::move(file_info));
 }
 
@@ -174,7 +174,7 @@ void filesystem_archive_vsx_writer::close()
   for (size_t i = 0; i < archive_files.size(); i++)
   {
     archive_files[i].compressed_data.clear();
-    archive_files[i].uncompressed_data.clear();
+    archive_files[i].data.clear();
   }
 
   archive_files.clear();

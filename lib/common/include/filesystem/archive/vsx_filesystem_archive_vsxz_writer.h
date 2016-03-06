@@ -15,7 +15,7 @@ class filesystem_archive_vsxz_writer
   vsx_string<> archive_filename;
   vsx_nw_vector<filesystem_archive_file_write> archive_files;
 
-  void file_add_all();
+  void archive_files_saturate_all();
   void file_add_all_worker(vsx_nw_vector<filesystem_archive_file_write*>* work_list);
 public:
 

@@ -1588,6 +1588,8 @@ void test_level()
   perf_cpu.cpu_instructions_stop();
 
   vsx::filesystem_mmap::destroy(mm);
+
+  unlink("/tmp/test_file_tree.bin");
 }
 
 void basic_test()
