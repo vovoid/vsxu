@@ -41,14 +41,17 @@ public:
       }
 
       // compare string
-      char* cur_filename = filename_parts[filename_iterator].get_pointer();
-      while (string_length)
+      if (filename_parts[filename_iterator].size() == string_length)
       {
-        if ( ((char)*p) != *cur_filename )
-          break;
-        p++;
-        cur_filename++;
-        string_length--;
+        char* cur_filename = filename_parts[filename_iterator].get_pointer();
+        while (string_length)
+        {
+          if ( ((char)*p) != *cur_filename )
+            break;
+          p++;
+          cur_filename++;
+          string_length--;
+        }
       }
 
       // jump to next

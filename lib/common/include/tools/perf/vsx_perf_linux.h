@@ -25,7 +25,7 @@ class vsx_perf
 public:
 
   // cache misses
-  void cache_misses_start()
+  void cache_misses_start(bool include_kernel = false)
   {
     if (fd)
       return;
@@ -37,7 +37,7 @@ public:
     pe.size = sizeof(struct perf_event_attr);
     pe.config = PERF_COUNT_HW_CACHE_MISSES;
     pe.disabled = 1;
-    pe.exclude_kernel = 1;
+    pe.exclude_kernel = include_kernel?0:1;
     pe.exclude_hv = 1;
 
     fd = perf_event_open(&pe, 0, -1, -1, 0);

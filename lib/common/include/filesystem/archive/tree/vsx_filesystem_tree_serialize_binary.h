@@ -24,7 +24,7 @@ class vsx_filesystem_tree_serialize_binary
 
       if (cur_node->children.size())
       {
-        result.push_back( 0xff00 & cur_node->offset >> 8 );
+        result.push_back( (0xff00 & cur_node->offset) >> 8 );
         result.push_back( 0x00ff & cur_node->offset);
       }
 
