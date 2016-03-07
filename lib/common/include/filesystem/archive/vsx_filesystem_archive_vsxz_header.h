@@ -35,7 +35,7 @@ struct vsxz_header_compression_chunk
 
 struct vsxz_header_file_info
 {
-  uint16_t chunk = 0; // chunk index, starts with 0
+  uint8_t chunk = 0; // chunk index, starts with 0
   uint32_t offset = 0; // offset within the chunk
   uint32_t size = 0; // uncompressed size
 } __attribute__((packed));

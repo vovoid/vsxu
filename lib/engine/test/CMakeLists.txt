@@ -24,5 +24,5 @@ include_directories(
 )
 
 add_executable(test_command_list test_command_list.cpp )
-target_link_libraries(test_command_list vsx_common vsx_compression vsx_engine ${CMAKE_THREAD_LIBS_INIT} rt)
+target_link_libraries(test_command_list vsx_common vsx_compression vsx_engine vsx_engine_graphics ${CMAKE_THREAD_LIBS_INIT} rt)
 

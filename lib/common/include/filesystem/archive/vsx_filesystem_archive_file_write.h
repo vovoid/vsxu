@@ -6,6 +6,7 @@
 #include <vsx_compression_lzma.h>
 #include <vsx_compression_lzham.h>
 #include <tools/perf/vsx_perf.h>
+#include <filesystem/archive/tree/vsx_filesystem_tree_writer.h>
 
 namespace vsx
 {
@@ -44,6 +45,12 @@ namespace vsx
 
     compression_type_t compression_type = compression_none;
 
+    bool has_files()
+    {
+      return file_info_table.size() > 0;
+    }
+
+
     void add_file(filesystem_archive_file_write* file_info)
     {
       archive_file_write.push_back( file_info );
@@ -58,8 +65,37 @@ namespace vsx
       file_info_table.move_back( std::move(info));
     }
 
+    bool is_size_above_treshold()
+    {
+      return uncompressed_data.size() > 1024*1024;
+    }
+
+    void set_chunk_id(uint16_t index)
+    {
+      foreach (file_info_table, i)
+        file_info_table[i].chunk = index;
+    }
+
+    void add_to_tree(vsx_filesystem_tree_writer& tree, size_t &index)
+    {
+      foreach (archive_file_write, i) {
+        tree.add_file(archive_file_write[i]->filename, index);
+        index++;
+      }
+    }
+
+    uint32_t get_compressed_uncompressed_size()
+    {
+      if (compression_type == compression_none)
+        return 0;
+
+      return uncompressed_data.get_sizeof();
+    }
+
     void compress()
     {
+      req(uncompressed_data.size());
+
       vsx_ma_vector< unsigned char> uncompressed_data_readback;
       vsx_perf perf;
       perf.cpu_instructions_start();
@@ -82,6 +118,20 @@ namespace vsx
       perf.cpu_instructions_stop();
     }
 
+    void write_file_info_table(FILE* file)
+    {
+      foreach (file_info_table, i)
+        fwrite(&file_info_table[i], sizeof(vsxz_header_file_info), 1, file);
+    }
+
+    void write_data(FILE* file)
+    {
+      req(compressed_data.size() || uncompressed_data.size());
+      if (compressed_data.size())
+        fwrite(compressed_data.get_pointer(), 1, compressed_data.get_sizeof(), file);
+      else
+        fwrite(uncompressed_data.get_pointer(), 1, uncompressed_data.get_sizeof(), file);
+    }
   };
 }
 

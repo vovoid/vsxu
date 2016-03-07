@@ -5,6 +5,7 @@
 #include <tools/vsx_thread_pool.h>
 #include <filesystem/archive/vsx_filesystem_archive_vsxz_header.h>
 #include <filesystem/vsx_filesystem_identifier.h>
+#include <filesystem/archive/tree/vsx_filesystem_tree_serialize_binary.h>
 
 namespace vsx
 {
@@ -59,18 +60,15 @@ void filesystem_archive_vsxz_writer::close()
   // Read all files from disk
   archive_files_saturate_all();
 
-  // 1. add files to compression chunks
-  filesystem_archive_chunk_write chunk_uncompressed;
-  filesystem_archive_chunk_write chunk_text_files;
-  filesystem_archive_chunk_write chunk_others[6];
+  // add files to compression chunks
+  filesystem_archive_chunk_write chunks[8];
   size_t chunk_other_iterator = 0;
-
   foreach (archive_files, i)
   {
     // peek data, handle text files
     if (filesystem_identifier::is_text_file(archive_files[i].data))
     {
-      chunk_text_files.add_file( &archive_files[i] );
+      chunks[1].add_file( &archive_files[i] );
       continue;
     }
 
@@ -85,15 +83,15 @@ void filesystem_archive_vsxz_writer::close()
 
       if ( lzma_ratio > 0.8 && lzham_ratio > 0.8)
       {
-        chunk_uncompressed.add_file( &archive_files[i] );
+        chunks[0].add_file( &archive_files[i] );
         continue;
       }
     }
 
-    chunk_others[chunk_other_iterator].add_file( &archive_files[i] );
+    chunk_others[2 + chunk_other_iterator].add_file( &archive_files[i] );
 
     // when chunks reach 1 MB, start rotating
-    if (chunk_others[chunk_other_iterator].uncompressed_data.size() > 1024*1024)
+    if (chunk_others[chunk_other_iterator].is_size_above_treshold())
     {
       chunk_other_iterator++;
       if (chunk_other_iterator == 6)
@@ -101,51 +99,50 @@ void filesystem_archive_vsxz_writer::close()
     }
   }
 
+  // set chunk id in all file info structs
+  for (size_t i = 0; i < 8; i++)
+    chunks[i].set_chunk_id(i);
 
+  // add to file tree
+  vsx_filesystem_tree_writer tree;
+  size_t file_list_index = 0;
+  for (size_t i = 0; i < 8; i++)
+    chunks[i].add_to_tree( tree, file_list_index);
 
-  // 2. compress chunks
-  // 3. write archive to disk
+  // compress chunks
+  for (size_t i = 1; i < 8; i++)
+    chunks[i].compress();
 
+  // count valid chunks
+  size_t valid_chunk_index = 0;
+  for (valid_chunk_index; valid_chunk_index < 8; valid_chunk_index++)
+    if (!chunks[i].has_files())
+      break;
 
-  FILE* file = fopen(archive_filename.c_str(),"wb");
+  // serialize tree
+  vsx_ma_vector<unsigned char> tree_data = vsx_filesystem_tree_serialize_binary::serialize(tree);
 
+  // calculate & fill in header
   vsxz_header header;
   header.file_count = archive_files.size();
+  header.chunk_count = valid_chunk_index;
 
+  for (size_t i = 0; i < 8; i++)
+    header.compression_uncompressed_memory_size += chunks[i].get_compressed_uncompressed_size();
 
-  foreach (archive_files, i)
-    if (archive_files[i].compression_type != filesystem_archive_file_write::compression_none)
-    {
-      header.compressed_uncompressed_data_size += archive_files[i].data.size();
-      header.file_count_compressed++;
-    }
+  header.file_count = archive_files.size();
+  header.tree_size = tree_data.size();
 
-  foreach (archive_files, i)
-    header.file_info_table_size +=
-        sizeof(vsxz_header_file_info) +
-        archive_files[i].filename.size()
-      ;
-
+  // write archive to disk
+  FILE* file = fopen(archive_filename.c_str(),"wb");
   fwrite(&header, sizeof(vsxz_header), 1, file);
+  fwrite(tree_data.get_pointer(), 1, tree_data.get_sizeof(), file);
 
-  foreach (archive_files, i)
-  {
-    vsxz_header_file_info file_header;
-    file_header.compression_type = (uint8_t)archive_files[i].compression_type;
-    file_header.filename_size = archive_files[i].filename.size();
-    file_header.compressed_size = archive_files[i].compressed_data.get_sizeof();
-    file_header.uncompressed_size = archive_files[i].data.get_sizeof();
-    fwrite(&file_header, sizeof(vsxz_header_file_info), 1, file);
-    fwrite(archive_files[i].filename.get_pointer(), sizeof(char), archive_files[i].filename.size(), file);
-  }
+  for (size_t i = 0; i < 8; i++)
+    chunks[i].write_file_info_table(file);
 
-  foreach (archive_files, i)
-    fwrite(
-      archive_files[i].compressed_data.get_pointer(),
-      archive_files[i].compressed_data.get_sizeof(),
-      1,
-      file
-    );
+  for (size_t i = 0; i < 8; i++)
+    chunks[i].write_data(file);
 
   fclose(file);
 }
