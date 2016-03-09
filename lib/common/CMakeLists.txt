@@ -48,11 +48,11 @@ set(SOURCES
   src/audio/vsx_audio_mixer_manager.cpp
   src/vsx_data_path.cpp
   src/log/vsx_log.cpp
-  src/filesystem/vsx_filesystem_archive_reader.cpp
-  src/filesystem/vsx_filesystem_archive_vsx_reader.cpp
-  src/filesystem/vsx_filesystem_archive_vsx_writer.cpp
-  src/filesystem/vsx_filesystem_archive_vsxz_reader.cpp
-  src/filesystem/vsx_filesystem_archive_vsxz_writer.cpp
+  src/filesystem/archive/vsx_filesystem_archive_reader.cpp
+  src/filesystem/archive/vsx/vsx_filesystem_archive_vsx_reader.cpp
+  src/filesystem/archive/vsx/vsx_filesystem_archive_vsx_writer.cpp
+  src/filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_reader.cpp
+  src/filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_writer.cpp
   src/filesystem/vsx_filesystem_helper.cpp
   src/filesystem/vsx_filesystem.cpp
 )

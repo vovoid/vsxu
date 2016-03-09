@@ -1,5 +1,5 @@
-#include <filesystem/archive/vsx_filesystem_archive_vsxz_reader.h>
-#include <filesystem/archive/vsx_filesystem_archive_vsxz_writer.h>
+#include <filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_reader.h>
+#include <filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_writer.h>
 #include <string/vsx_string_helper.h>
 #include <time/vsx_timer.h>
 #include <vsx_argvector.h>
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
   build_up();
 
   test_plain_files();
-  //test_text_files();
+  test_text_files();
   test_filesystem_archive_reader();
 
   teardown();

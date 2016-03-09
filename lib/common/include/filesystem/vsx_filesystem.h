@@ -5,7 +5,7 @@
 #include <string/vsx_string.h>
 
 #include "vsx_file.h"
-#include "vsx_filesystem_archive_reader.h"
+#include "archive/vsx_filesystem_archive_reader.h"
 
 #define VSXF_TYPE_FILESYSTEM 0
 #define VSXF_TYPE_ARCHIVE 1

@@ -31,10 +31,10 @@
 #include <string/vsx_string_helper.h>
 #include <filesystem/vsx_filesystem_helper.h>
 #include <filesystem/vsx_filesystem.h>
-#include <filesystem/archive/vsx_filesystem_archive_vsx_reader.h>
-#include <filesystem/archive/vsx_filesystem_archive_vsx_writer.h>
-#include <filesystem/archive/vsx_filesystem_archive_vsxz_reader.h>
-#include <filesystem/archive/vsx_filesystem_archive_vsxz_writer.h>
+#include <filesystem/archive/vsx/vsx_filesystem_archive_vsx_reader.h>
+#include <filesystem/archive/vsx/vsx_filesystem_archive_vsx_writer.h>
+#include <filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_reader.h>
+#include <filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_writer.h>
 #include <debug/vsx_error.h>
 
 #include <stdio.h>

@@ -45,8 +45,8 @@
 #include <string/vsx_string_helper.h>
 #include <vsx_param_helper.h>
 #include <filesystem/vsx_filesystem_helper.h>
-#include <filesystem/archive/vsx_filesystem_archive_vsx_writer.h>
-#include <filesystem/archive/vsx_filesystem_archive_vsxz_writer.h>
+#include <filesystem/archive/vsx/vsx_filesystem_archive_vsx_writer.h>
+#include <filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_writer.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   #include <stdio.h>

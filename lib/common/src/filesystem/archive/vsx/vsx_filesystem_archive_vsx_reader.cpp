@@ -1,4 +1,4 @@
-#include <filesystem/archive/vsx_filesystem_archive_vsx_reader.h>
+#include <filesystem/archive/vsx/vsx_filesystem_archive_vsx_reader.h>
 #include <filesystem/vsx_filesystem_helper.h>
 #include <debug/vsx_error.h>
 #include <tools/vsx_req_error.h>

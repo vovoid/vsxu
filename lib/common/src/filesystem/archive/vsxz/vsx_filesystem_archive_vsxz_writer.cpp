@@ -1,11 +1,12 @@
-#include <filesystem/archive/vsx_filesystem_archive_vsxz_writer.h>
+#include <filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_writer.h>
 #include <filesystem/vsx_filesystem_helper.h>
 #include <vsx_compression_lzma.h>
 #include <vsx_compression_lzham.h>
 #include <tools/vsx_thread_pool.h>
-#include <filesystem/archive/vsx_filesystem_archive_vsxz_header.h>
+#include <filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_header.h>
+#include <filesystem/archive/vsxz/vsx_filesystem_archive_chunk_write.h>
 #include <filesystem/vsx_filesystem_identifier.h>
-#include <filesystem/archive/tree/vsx_filesystem_tree_serialize_binary.h>
+#include <filesystem/tree/vsx_filesystem_tree_serialize_binary.h>
 
 namespace vsx
 {
@@ -88,10 +89,10 @@ void filesystem_archive_vsxz_writer::close()
       }
     }
 
-    chunk_others[2 + chunk_other_iterator].add_file( &archive_files[i] );
+    chunks[2 + chunk_other_iterator].add_file( &archive_files[i] );
 
     // when chunks reach 1 MB, start rotating
-    if (chunk_others[chunk_other_iterator].is_size_above_treshold())
+    if (chunks[chunk_other_iterator].is_size_above_treshold())
     {
       chunk_other_iterator++;
       if (chunk_other_iterator == 6)
@@ -105,7 +106,7 @@ void filesystem_archive_vsxz_writer::close()
 
   // add to file tree
   vsx_filesystem_tree_writer tree;
-  size_t file_list_index = 0;
+  size_t file_list_index = 1;
   for (size_t i = 0; i < 8; i++)
     chunks[i].add_to_tree( tree, file_list_index);
 
@@ -115,8 +116,8 @@ void filesystem_archive_vsxz_writer::close()
 
   // count valid chunks
   size_t valid_chunk_index = 0;
-  for (valid_chunk_index; valid_chunk_index < 8; valid_chunk_index++)
-    if (!chunks[i].has_files())
+  for (; valid_chunk_index < 8; valid_chunk_index++)
+    if (!chunks[valid_chunk_index].has_files())
       break;
 
   // serialize tree
@@ -140,6 +141,9 @@ void filesystem_archive_vsxz_writer::close()
 
   for (size_t i = 0; i < 8; i++)
     chunks[i].write_file_info_table(file);
+
+  for (size_t i = 0; i < 8; i++)
+    chunks[i].write_chunk_info_table(file);
 
   for (size_t i = 0; i < 8; i++)
     chunks[i].write_data(file);

@@ -1,12 +1,12 @@
-#include <filesystem/vsx_filesystem_archive_reader.h>
+#include <filesystem/archive/vsx_filesystem_archive_reader.h>
 #include <filesystem/vsx_filesystem_helper.h>
 #include <debug/vsx_error.h>
 #include <tools/vsx_req_error.h>
 #include <tools/vsx_thread_pool.h>
 #include <string/vsx_string_helper.h>
 
-#include <filesystem/archive/vsx_filesystem_archive_vsx_reader.h>
-#include <filesystem/archive/vsx_filesystem_archive_vsxz_reader.h>
+#include <filesystem/archive/vsx/vsx_filesystem_archive_vsx_reader.h>
+#include <filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_reader.h>
 
 namespace vsx
 {

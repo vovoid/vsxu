@@ -1,5 +1,5 @@
-#include <filesystem/archive/vsx_filesystem_archive_vsx_reader.h>
-#include <filesystem/archive/vsx_filesystem_archive_vsx_writer.h>
+#include <filesystem/archive/vsx/vsx_filesystem_archive_vsx_reader.h>
+#include <filesystem/archive/vsx/vsx_filesystem_archive_vsx_writer.h>
 #include <string/vsx_string_helper.h>
 #include <time/vsx_timer.h>
 #include <vsx_argvector.h>

@@ -26,7 +26,7 @@ struct vsxz_header
    uint32_t reserved[4] = {0xEFBEADDE, 0xEFBEADDE, 0xEFBEADDE, 0xEFBEADDE};
 } __attribute__((packed));
 
-struct vsxz_header_compression_chunk
+struct vsxz_header_chunk_info
 {
   uint16_t compression_type = 0; // 0 for none, 1 for lzma, 2 for lzham
   uint32_t compressed_size = 0;
