@@ -39,7 +39,7 @@ public:
 
     vsxz_header_file_info info;
     info.offset = uncompressed_data.size();
-    info.size = uncompressed_data.size();
+    info.size = file_info->data.size();
 
     foreach(file_info->data, i)
       uncompressed_data.push_back(file_info->data[i]);
@@ -79,6 +79,7 @@ public:
     req(uncompressed_data.size());
 
     vsx_ma_vector< unsigned char> uncompressed_data_readback;
+
     vsx_perf perf;
     perf.cpu_instructions_start();
 
@@ -89,13 +90,17 @@ public:
     long long cpu_instructions_lzham = perf.cpu_instructions_end();
 
     // LZMA
+    compression_type = compression_lzma;
     compressed_data = vsx::compression_lzma::compress( uncompressed_data );
     perf.cpu_instructions_begin();
       uncompressed_data_readback = vsx::compression_lzma::uncompress(compressed_data, uncompressed_data.size() );
     long long cpu_instructions_lzma = perf.cpu_instructions_end();
 
     if (cpu_instructions_lzham < cpu_instructions_lzma)
+    {
       compressed_data = vsx::compression_lzham::compress( uncompressed_data );
+      compression_type = compression_lzham;
+    }
 
     perf.cpu_instructions_stop();
   }
@@ -106,9 +111,9 @@ public:
       fwrite(&file_info_table[i], sizeof(vsxz_header_file_info), 1, file);
   }
 
-  void write_chunk_info_table(FILE* file)
+  void write_chunk_info_table(FILE* file, bool force = false)
   {
-    if (!has_files())
+    if (!has_files() && !force)
       return;
 
     vsxz_header_chunk_info info;

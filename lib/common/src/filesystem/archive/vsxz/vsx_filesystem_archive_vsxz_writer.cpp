@@ -27,6 +27,9 @@ void filesystem_archive_vsxz_writer::add_file
   file_info.operation = filesystem_archive_file_write::operation_add;
   file_info.filename = filename;
   file_info.source_filename = disk_filename;
+  if (!disk_filename.size())
+    file_info.source_filename = filename;
+
   archive_files.move_back(std::move(file_info));
 }
 
@@ -51,6 +54,8 @@ void filesystem_archive_vsxz_writer::archive_files_saturate_all()
   foreach (archive_files, i)
   {
     filesystem_archive_file_write &archive_file = archive_files[i];
+    if (archive_file.data.size())
+      continue;
     req_continue(archive_file.operation == filesystem_archive_file_write::operation_add);
     archive_file.data = filesystem_helper::file_read(archive_file.source_filename);
   }
@@ -115,7 +120,7 @@ void filesystem_archive_vsxz_writer::close()
     chunks[i].compress();
 
   // count valid chunks
-  size_t valid_chunk_index = 0;
+  size_t valid_chunk_index = 2;
   for (; valid_chunk_index < 8; valid_chunk_index++)
     if (!chunks[valid_chunk_index].has_files())
       break;
@@ -142,7 +147,9 @@ void filesystem_archive_vsxz_writer::close()
   for (size_t i = 0; i < 8; i++)
     chunks[i].write_file_info_table(file);
 
-  for (size_t i = 0; i < 8; i++)
+  chunks[0].write_chunk_info_table(file, true);
+  chunks[1].write_chunk_info_table(file, true);
+  for (size_t i = 2; i < 8; i++)
     chunks[i].write_chunk_info_table(file);
 
   for (size_t i = 0; i < 8; i++)

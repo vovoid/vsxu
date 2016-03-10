@@ -13,7 +13,6 @@ void test_level()
 
   vsx_printf(L"**** TESTING LEVEL\n");
   vsx_filesystem_tree_writer writer;
-
   writer.add_file("checkpoint_textures", 1);
   writer.add_file("checkpoint_textures/blinken.png", 1);
   writer.add_file("checkpoint_textures/diff.png", 1);
@@ -1654,4 +1653,3 @@ int main(int argc, char *argv[])
   test_complete
   return 0;
 }
-
