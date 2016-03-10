@@ -55,9 +55,6 @@ void test_text_files()
 
   archive_load.load("test_filesystem_archive.vsxz", false);
 
-//  vsx_nw_vector<filesystem_archive_file_read>* files = archive_load.files_get();
-//  test_assert(files->size() == 3);
-
   file* handle = new file;
   archive_load.file_open("test_string", handle);
 
@@ -96,7 +93,7 @@ int main(int argc, char *argv[])
   test_text_files();
   test_filesystem_archive_reader();
 
-//  teardown();
+  teardown();
 
   test_complete
 
