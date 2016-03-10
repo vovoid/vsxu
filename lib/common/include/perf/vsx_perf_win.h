@@ -1,7 +1,11 @@
 #pragma once
+
+
+#include <tools/vsx_rdtsc.h>
+
 class vsx_perf
 {
-
+  uint64_t rdtsc_prev = 0;
 public:
 
   // cache misses
@@ -29,11 +33,12 @@ public:
 
   void cpu_instructions_begin()
   {
+    rdtsc_prev = vsx_rdtsc();
   }
 
   long long cpu_instructions_end()
   {
-    return 0;
+    return vsx_rdtsc() - rdtsc_prev;
   }
 
   void cpu_instructions_stop()

@@ -4,7 +4,7 @@
 #include "vsx_filesystem_archive_vsxz_header.h"
 #include <filesystem/archive/vsx_filesystem_archive_file_write.h>
 #include <filesystem/tree/vsx_filesystem_tree_writer.h>
-#include <tools/perf/vsx_perf.h>
+#include <perf/vsx_perf.h>
 
 namespace vsx
 {

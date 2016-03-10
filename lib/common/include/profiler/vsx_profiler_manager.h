@@ -211,7 +211,7 @@ public:
     }
 
     vsx_profile_chunk c;
-    c.cycles = vsx_profiler_rdtsc();
+    c.cycles = vsx_rdtsc();
     c.flags = VSX_PROFILE_CHUNK_FLAG_TIMESTAMP;
     memset(c.tag,0,32);
     sprintf(c.tag,"%f", accumulated_time );

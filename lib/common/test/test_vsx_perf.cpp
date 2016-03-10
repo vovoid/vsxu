@@ -1,6 +1,6 @@
 #include <test/vsx_test.h>
 
-#include <tools/perf/vsx_perf.h>
+#include <perf/vsx_perf.h>
 
 
 

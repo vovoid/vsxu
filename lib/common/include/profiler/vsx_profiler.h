@@ -25,6 +25,7 @@
 #define VSX_PROFILER_H
 
 #include <tools/vsx_fifo.h>
+#include <tools/vsx_rdtsc.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -71,21 +72,6 @@
 #define VSXP_S_BEGIN(s)        profiler->sub_begin(s);
 #define VSXP_S_END             profiler->sub_end();
 
-#ifdef __i386
-__inline__ uint64_t vsx_profiler_rdtsc()
-{
-  uint64_t x;
-  __asm__ volatile ("rdtsc" : "=A" (x));
-  return x;
-}
-#elif __amd64
-inline uint64_t vsx_profiler_rdtsc()
-{
-  uint64_t a, d;
-  __asm__ volatile ("rdtsc" : "=a" (a), "=d" (d));
-  return (d<<32) | a;
-}
-#endif
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
 typedef unsigned long long u_int64_t;
@@ -182,12 +168,12 @@ public:
     chunk.tag[i-1] = 0;
     chunk.id = thread_id;
     asm volatile("": : :"memory");
-    chunk.cycles = vsx_profiler_rdtsc();
+    chunk.cycles = vsx_rdtsc();
     while (!queue.produce(chunk))
     {
       chunk.spin_waste++;
       // try to get as close to our target code as possible
-      chunk.cycles = vsx_profiler_rdtsc();
+      chunk.cycles = vsx_rdtsc();
     }
   }
 
@@ -196,7 +182,7 @@ public:
     if (!enabled)
       return;
 
-    uint64_t t = vsx_profiler_rdtsc();
+    uint64_t t = vsx_rdtsc();
     asm volatile("": : :"memory");
     vsx_profile_chunk chunk;
     chunk.spin_waste = 0;
@@ -224,11 +210,11 @@ public:
     chunk.id = thread_id;
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_SECTION_START;
     asm volatile("": : :"memory");
-    chunk.cycles = vsx_profiler_rdtsc();
+    chunk.cycles = vsx_rdtsc();
     while (!queue.produce(chunk))
     {
       chunk.spin_waste++;
-      chunk.cycles = vsx_profiler_rdtsc();
+      chunk.cycles = vsx_rdtsc();
     }
   }
 
@@ -240,7 +226,7 @@ public:
     if (!enabled)
       return;
 
-    uint64_t t = vsx_profiler_rdtsc();
+    uint64_t t = vsx_rdtsc();
     vsx_profile_chunk chunk;
     chunk.spin_waste = 0;
     chunk.id = thread_id;
@@ -289,11 +275,11 @@ public:
     memcpy(&chunk.tag[0],&a, sizeof(double));
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_1_DOUBLE;
     chunk.id = id;
-    chunk.cycles = vsx_profiler_rdtsc();
+    chunk.cycles = vsx_rdtsc();
     while (!queue.produce(chunk))
     {
       chunk.spin_waste++;
-      chunk.cycles = vsx_profiler_rdtsc();
+      chunk.cycles = vsx_rdtsc();
     }
   }
 
@@ -307,11 +293,11 @@ public:
     memcpy(&chunk.tag[8],&b, sizeof(double));
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_2_DOUBLE;
     chunk.id = id;
-    chunk.cycles = vsx_profiler_rdtsc();
+    chunk.cycles = vsx_rdtsc();
     while (!queue.produce(chunk))
     {
       chunk.spin_waste++;
-      chunk.cycles = vsx_profiler_rdtsc();
+      chunk.cycles = vsx_rdtsc();
     }
   }
 
@@ -326,11 +312,11 @@ public:
     memcpy(&chunk.tag[16],&c, sizeof(double));
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_3_DOUBLE;
     chunk.id = id;
-    chunk.cycles = vsx_profiler_rdtsc();
+    chunk.cycles = vsx_rdtsc();
     while (!queue.produce(chunk))
     {
       chunk.spin_waste++;
-      chunk.cycles = vsx_profiler_rdtsc();
+      chunk.cycles = vsx_rdtsc();
     }
   }
 
@@ -347,11 +333,11 @@ public:
     memcpy(&chunk.tag[24],&d, sizeof(double));
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_PLOT_4_DOUBLE;
     chunk.id = id;
-    chunk.cycles = vsx_profiler_rdtsc();
+    chunk.cycles = vsx_rdtsc();
     while (!queue.produce(chunk))
     {
       chunk.spin_waste++;
-      chunk.cycles = vsx_profiler_rdtsc();
+      chunk.cycles = vsx_rdtsc();
     }
   }
 };
