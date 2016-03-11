@@ -24,13 +24,14 @@
 #ifndef VSX_WIDGET_CAMERA_H
 #define VSX_WIDGET_CAMERA_H
 
+#include <math/vector/vsx_vector3.h>
 #include "vsx_widget_dllimport.h"
 
 class WIDGET_DLLIMPORT vsx_widget_camera
 {
   double xps, yps, zps; //current speed
   double xpd, ypd, zpd; //current direction
-  double xpp, ypp, zpp;
+  double xpp, ypp, zpp; // additional movement
 
   vsx_vector3<> camera_target;
 
@@ -95,6 +96,13 @@ public:
   void set_movement_z(double d)
   {
     zpd = d;
+  }
+
+  void set_extra_movement( vsx_vector3f m)
+  {
+    xpp = m.x;
+    ypp = m.y;
+    zpp = m.z;
   }
 
   void set_key_speed(double d)

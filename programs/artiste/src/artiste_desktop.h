@@ -35,7 +35,6 @@ class vsx_widget_desktop : public vsx_widget
 
 public:
   int auto_undo;
-  double xpp,ypp,zpp;
   vsx_widget* assistant;
 	vsx_widget *console;
   vsx_command_list *system_command_queue;

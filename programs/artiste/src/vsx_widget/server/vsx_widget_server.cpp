@@ -1317,22 +1317,21 @@ void vsx_widget_server::event_mouse_move(vsx_widget_distance distance,vsx_widget
     if (mouse_down_r && !mouse_down_l) {
       if (mouse.get_cursor_pos() != remPointer) {
         float dz = (mouse.get_cursor_pos().y-remPointer.y);
-        ((vsx_widget_desktop*)root)->zpp += -dz*0.0005f;
-        delta_zoom += fabs(dz*0.005f);
-        if (delta_zoom > 0.09f) mouse.hide_cursor();
+        camera.set_extra_movement( vsx_vector3f(0, 0, -dz) * 0.0005f );
+        if (delta_zoom * 0.005f > 0.09f)
+          mouse.hide_cursor();
         mouse.set_cursor_pos(remPointer.x,remPointer.y);
       }
     }
     if (!mouse_down_r && mouse_down_l && server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_INTERNAL) {
       if (mouse.get_cursor_pos() != remPointer) {
-        float dx = (mouse.get_cursor_pos().x-remPointer.x);
-        float dy = (mouse.get_cursor_pos().y-remPointer.y);
-
-        ((vsx_widget_desktop*)root)->xpp += -dx*0.0003f;
-        ((vsx_widget_desktop*)root)->ypp += dy*0.0003f;
-        delta_move += fabs(dx*0.005f);
-        delta_move += fabs(dy*0.005f);
-        if (delta_move > 0.09f) mouse.hide_cursor();
+        vsx_vector3f delta(
+          mouse.get_cursor_pos().x-remPointer.x,
+          mouse.get_cursor_pos().y-remPointer.y
+        );
+        camera.set_extra_movement( delta * 0.0003f );
+        if ( (delta * 0.005f).length() > 0.09f)
+          mouse.hide_cursor();
         mouse.set_cursor_pos(remPointer.x,remPointer.y);
       }
     }
