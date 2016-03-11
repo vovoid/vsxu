@@ -334,6 +334,9 @@ public:
       loading_done = true;
     }
 
+    req(bitmap_in_1->has_value());
+    req(bitmap_in_2->has_value());
+
     bitmap_source_1 = bitmap_in_1->get();
     bitmap_source_2 = bitmap_in_2->get();
 

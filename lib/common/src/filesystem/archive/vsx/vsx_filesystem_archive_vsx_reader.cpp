@@ -171,7 +171,7 @@ void filesystem_archive_vsx_reader::file_open(const char* filename, file* &handl
     // decompress data
     archive_file.uncompressed_data = compression_lzma_old::uncompress( archive_file.compressed_data );
     handle->data.set_volatile();
-    handle->data = archive_file.uncompressed_data;
+    handle->data.set_data( archive_file.uncompressed_data.get_pointer(), archive_file.uncompressed_data.get_sizeof());
     handle->size = archive_file.uncompressed_data.size();
 
     return;

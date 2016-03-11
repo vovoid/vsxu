@@ -211,6 +211,11 @@ public:
   {
     return param_data[index];
   }
+
+  bool has_value()
+  {
+    return valid;
+  }
   
   // -------------------------------------------------------------------------------------------
   // ENGINE PARAMETER METHODS

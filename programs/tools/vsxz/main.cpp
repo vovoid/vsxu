@@ -108,8 +108,6 @@ void extract()
           if (!dry_run)
             fwrite(buf,sizeof(char),fpi->size,fpo);
 
-        free(buf);
-
       if (!dry_run)
         fclose(fpo);
     filesystem.f_close(fpi);
