@@ -119,8 +119,8 @@ public:
 
 
   // utility functions
-  vsx_string<>get_unique_name(vsx_string<>name);
-  vsx_string<>build_comp_helptext(vsx_string<>path);
+  vsx_string<> get_unique_name(vsx_string<>name);
+  vsx_string<> build_comp_helptext(vsx_string<>path);
   vsx_widget* find_component(vsx_string<>name);
 
 };

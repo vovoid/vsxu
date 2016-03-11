@@ -1445,7 +1445,9 @@ void vsx_widget_server::draw()
 vsx_widget* vsx_widget_server::find_component(vsx_string<>name)
 {
   // support "containers" here in the future
-  if (comp_list.find(name) != comp_list.end()) return comp_list[name]; else return 0;
+  if (comp_list.find(name) != comp_list.end())
+    return comp_list[name];
+  return 0;
 }
 
 void vsx_widget_server::select(vsx_widget* comp) {
@@ -1495,7 +1497,6 @@ void vsx_widget_server::select_add_gui(vsx_widget* comp) {
 
 vsx_string<>vsx_widget_server::get_unique_name(vsx_string<>name)
 {
-
   vsx_string<> i_val;
   vsx_string<> delimiter = "_";
   vsx_nw_vector< vsx_string<> > parts;
@@ -1509,16 +1510,22 @@ vsx_string<>vsx_widget_server::get_unique_name(vsx_string<>name)
     if (final_part[i] >= '0' && final_part[i] <= '9')
       i_val.push_back(final_part[i]);
 
-  int new_value = -1;
-  if (i_val.size() == final_part.size())
-    new_value = vsx_string_helper::s2i(i_val) + 1;
+  if (!i_val.size())
+      parts.push_back("0");
 
-  if (new_value != -1)
-    final_part = vsx_string_helper::i2s(new_value);
-  else
-    parts.push_back("1");
+  size_t component_suffix_value = 1;
+  if (i_val.size())
+    component_suffix_value = vsx_string_helper::s2i(i_val);
+  while (1)
+  {
+    parts[parts.size() - 1] = vsx_string_helper::i2s(component_suffix_value);
+    vsx_string<> proposed_new_name = vsx_string_helper::implode(parts, delimiter);
 
-  return vsx_string_helper::implode(parts, delimiter);
+    if (!find_component(proposed_new_name))
+      return proposed_new_name;
+
+    component_suffix_value++;
+  }
 }
 
 vsx_string<>vsx_widget_server::build_comp_helptext(vsx_string<>path) {
