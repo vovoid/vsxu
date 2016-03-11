@@ -44,9 +44,6 @@ extern bool disable_randomizer;
 extern bool option_preload_all;
 extern bool no_overlay;
 
-extern int app_argc;
-extern char** app_argv;
-
 extern vsx_gl_state gl_state;
 
 //extern int app_num_displays; // 0 means the primary one used, 1 the extra

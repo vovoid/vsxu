@@ -22,17 +22,26 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
+
 #include "application.h"
+
 #include <GL/glew.h>
-#include <GL/glfw.h>
+#include <vsx_gl_state.h>
+#include <vsx_argvector.h>
 #include <container/vsx_nw_vector.h>
 #include <string/vsx_string.h>
 #include <string/vsx_string_helper.h>
 #include <filesystem/vsx_filesystem.h>
+
 #include <vsx_version.h>
-#include <stdlib.h>
 #include "vsx_platform.h"
-#include <vsx_gl_state.h>
+
+
+// SDL implementation
+#include <SDL2/SDL.h>
+#include "sdl_tools.h"
+#include "sdl_event_handler.h"
 
 // implementation of app externals
 bool app_ctrl = false;
@@ -45,12 +54,14 @@ bool no_overlay = false;
 int app_argc = 0;
 char** app_argv;
 
+SDL_Window *window; /* Our window handle */
+
 
 void set_modifiers()
 {
-  app_ctrl = (bool)glfwGetKey(GLFW_KEY_LCTRL);
-  app_shift = (bool)glfwGetKey(GLFW_KEY_LSHIFT);
-  app_alt = (bool)glfwGetKey(GLFW_KEY_LALT);
+  app_ctrl = sdl_event_handler::get_instance()->get_key(VSX_SCANCODE_LCTRL);
+  app_shift = sdl_event_handler::get_instance()->get_key(VSX_SCANCODE_LSHIFT);
+  app_alt = sdl_event_handler::get_instance()->get_key(VSX_SCANCODE_LALT);
 }
 
 long key_pressed = -1;
@@ -59,7 +70,7 @@ float key_time;
 float key_repeat_time;
 float initial_key_delay = 0.04f;
 
-void GLFWCALL key_char_event( int character, int action )
+/*void GLFWCALL key_char_event( int character, int action )
 {
   if (action == GLFW_PRESS)
   {
@@ -67,10 +78,10 @@ void GLFWCALL key_char_event( int character, int action )
     app_char(character);
     key_character = character;
   }
-}
+}*/
 
 
-void GLFWCALL key_event(int key, int action)
+/*void GLFWCALL key_event(int key, int action)
 {
   set_modifiers();
   if (action == GLFW_PRESS)
@@ -89,12 +100,12 @@ void GLFWCALL key_event(int key, int action)
     app_key_up((long)key);
     key_pressed = -1;
   }
-}
+}*/
 
 int last_x = 0, last_y = 0;
 int mouse_state = 0;
 
-void GLFWCALL mouse_button_event(int button, int action)
+/*void GLFWCALL mouse_button_event(int button, int action)
 {
   glfwGetMousePos(&last_x, &last_y);
   set_modifiers();
@@ -114,11 +125,11 @@ void GLFWCALL mouse_button_event(int button, int action)
     mouse_state = 0; // depression
     app_mouse_up(i_but, last_x, last_y);
   }
-}
+}*/
 
 int mouse_pos_type = 0;
 
-void GLFWCALL mouse_pos_event(int x, int y)
+/*void GLFWCALL mouse_pos_event(int x, int y)
 {
   VSX_UNUSED(x);
   VSX_UNUSED(y);
@@ -126,19 +137,27 @@ void GLFWCALL mouse_pos_event(int x, int y)
   glfwGetMousePos(&last_x, &last_y);
   if (mouse_state) mouse_pos_type = 1;
   else mouse_pos_type = 2;
-}
+}*/
 
 int mousewheel_prev_pos = 0;
 
-void GLFWCALL mouse_wheel(int pos)
+/*void GLFWCALL mouse_wheel(int pos)
 {
   app_mousewheel((float)(pos-mousewheel_prev_pos),last_x,last_y);
   mousewheel_prev_pos = pos;
-}
+}*/
 
-void GLFWCALL window_size( int width, int height )
+
+void sdl_vsx_gl_update_viewport_size()
 {
-  vsx_gl_state::get_instance()->viewport_change(0,0,width, height);
+  int height = 0, width = 0;
+  SDL_GL_GetDrawableSize(window, &width, &height);
+
+  // Get window size (may be different than the requested size)
+  height = height > 0 ? height : 1;
+
+  // Set viewport
+  vsx_gl_state::get_instance()->viewport_set( 0, 0, width, height );
 }
 
 //========================================================================
@@ -147,14 +166,13 @@ void GLFWCALL window_size( int width, int height )
 
 int main(int argc, char* argv[])
 {
-  app_argc = argc;
-  app_argv = argv;
-  int     width, height, running, frames, x, y;
-  double  t, t1;
-  char    titlestr[ 200 ];
+  vsx_argvector::get_instance()->init_from_argc_argv(argc, argv);
 
-  // Initialise GLFW
-  glfwInit();
+  int     running, frames;
+
+  char    titlestr[ 200 ];
+  unsigned int is_borderless = 0;
+
 
   bool start_fullscreen = false;
   int x_res = 1280;
@@ -162,7 +180,7 @@ int main(int argc, char* argv[])
   bool manual_resolution_set = false;
   for (int i = 1; i < argc; i++)
   {
-    vsx_string<>arg1 = argv[i];
+    vsx_string<> arg1 = argv[i];
     if (arg1 == "--help" || arg1 == "/?" || arg1 == "-help" || arg1 == "-?")
     {
       printf(
@@ -176,74 +194,151 @@ int main(int argc, char* argv[])
           "  -s [x,y]   Set window size x,y \n\n\n"
             );
       exit(0);
-    } else
+    }
+
     if (arg1 == "-f") {
       start_fullscreen = true;
-    } else
+      continue;
+    }
+
     if (arg1 == "-pl") {
       option_preload_all = true;
-    } else
+      continue;
+    }
+
     if (arg1 == "-dr") {
       disable_randomizer = true;
-    } else
+      continue;
+    }
+
     if (arg1 == "-no") {
       no_overlay = true;
-    } else
+      continue;
+    }
+
     if (arg1 == "-s")
     {
-      if (i+1 < argc)
+      if (!(i+1 < argc))
+        continue;
+
+      i++;
+      vsx_string<>arg2 = argv[i];
+      vsx_nw_vector< vsx_string<> > parts;
+      vsx_string<>deli = ",";
+      vsx_string_helper::explode(arg2, deli, parts);
+      if (parts.size() == 2)
       {
-        i++;
-        vsx_string<>arg2 = argv[i];
-        vsx_nw_vector< vsx_string<> > parts;
-        vsx_string<>deli = ",";
+        x_res = vsx_string_helper::s2i(parts[0]);
+        y_res = vsx_string_helper::s2i(parts[1]);
+        manual_resolution_set = true;
+      } else
+      {
+        deli = "x";
         vsx_string_helper::explode(arg2, deli, parts);
-        if (parts.size() == 2)
+        if ( parts.size() == 2 )
         {
           x_res = vsx_string_helper::s2i(parts[0]);
           y_res = vsx_string_helper::s2i(parts[1]);
           manual_resolution_set = true;
-        } else
-        {
-          deli = "x";
-          vsx_string_helper::explode(arg2, deli, parts);
-          if ( parts.size() == 2 )
-          {
-            x_res = vsx_string_helper::s2i(parts[0]);
-            y_res = vsx_string_helper::s2i(parts[1]);
-            manual_resolution_set = true;
-          }
         }
       }
+      continue;
     }
+
+    if (arg1 == "-bl")
+      is_borderless = 1;
   }
+
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+    sprintf( titlestr, "Vovoid VSXu Player %s [GNU/Linux %d-bit]", vsxu_ver, PLATFORM_BITS);
+  #endif
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+    sprintf( titlestr, "Vovoid VSXu Player %s [Windows %d-bit]", vsxu_ver, PLATFORM_BITS);
+  #endif
+
+  // make sure we don't get spinning wheel
+  #if (PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS)
+  DisableProcessWindowsGhosting();
+  #endif
+
+  SDL_GLContext context; /* Our opengl context handle */
+
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0)
+      sdl_tools::sdldie("Unable to initialize SDL"); /* Or die on error */
+
+  SDL_DisableScreenSaver();
+
+  /* Turn on double buffering with a 24bit Z buffer.
+   * You may need to change this to 16 or 32 for your system */
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
   if (start_fullscreen && !manual_resolution_set)
-  {
-    // try to get the resolution from the desktop for fullscreen
-    GLFWvidmode video_mode;
-    glfwGetDesktopMode(&video_mode);
-    x_res = video_mode.Height;
-    y_res = video_mode.Width;
-  }
-  
-  // Open OpenGL window
-  glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
-  if( !glfwOpenWindow( x_res, y_res, 0,0,0,0,16,0, start_fullscreen?GLFW_FULLSCREEN:GLFW_WINDOW ) ) // GLFW_FULLSCREEN
-  {
-    printf("Error! Could not create an OpenGL context. Please check your GPU drivers...\n");
-    glfwTerminate();
-    return 0;
-  }
+    window = SDL_CreateWindow(
+      titlestr,
+      SDL_WINDOWPOS_CENTERED,
+      SDL_WINDOWPOS_CENTERED,
+      x_res,
+      y_res,
+      SDL_WINDOW_OPENGL
+      | SDL_WINDOW_ALLOW_HIGHDPI
+      | SDL_WINDOW_FULLSCREEN_DESKTOP
+      | SDL_WINDOW_SHOWN
+    );
+
+  if (start_fullscreen && manual_resolution_set)
+    window = SDL_CreateWindow(
+      titlestr,
+      SDL_WINDOWPOS_CENTERED,
+      SDL_WINDOWPOS_CENTERED,
+      x_res,
+      y_res,
+      SDL_WINDOW_OPENGL
+      | SDL_WINDOW_ALLOW_HIGHDPI
+      | SDL_WINDOW_FULLSCREEN
+      | SDL_WINDOW_SHOWN
+    );
+
+  if (!start_fullscreen)
+    window = SDL_CreateWindow(
+      titlestr,
+      SDL_WINDOWPOS_CENTERED,
+      SDL_WINDOWPOS_CENTERED,
+      x_res,
+      y_res,
+      SDL_WINDOW_OPENGL
+      | SDL_WINDOW_ALLOW_HIGHDPI
+      | SDL_WINDOW_SHOWN
+      | SDL_WINDOW_BORDERLESS * is_borderless
+    );
+
+
+  SDL_ShowCursor(0);
+
+  sdl_tools::checkSDLError(__LINE__);
+
+  if (vsx_argvector::get_instance()->has_param("gl_debug"))
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+
+  /* Create our opengl context and attach it to our window */
+  context = SDL_GL_CreateContext(window);
+  sdl_tools::checkSDLError(__LINE__);
+
+
+
+  SDL_GL_MakeCurrent( window,
+                      context);
+
+  /* This makes our buffer swap syncronized with the monitor's vertical refresh */
+  SDL_GL_SetSwapInterval(1);
 
   glewInit();
 
-  if (start_fullscreen) glfwEnable( GLFW_MOUSE_CURSOR );
 
   printf("INFO: app_init\n");
   app_init(0);
   printf("INFO: app_init done\n");
 
-  glfwEnable(GLFW_AUTO_POLL_EVENTS);
 
   for (int i = 1; i < argc; i++) {
     vsx_string<>arg1 = argv[i];
@@ -255,56 +350,97 @@ int main(int argc, char* argv[])
         vsx_nw_vector< vsx_string<> > parts;
         vsx_string<>deli = ",";
         vsx_string_helper::explode(arg2, deli, parts);
-        glfwSetWindowPos( vsx_string_helper::s2i(parts[0]), vsx_string_helper::s2i(parts[1]) );
+        SDL_SetWindowPosition( window, vsx_string_helper::s2i(parts[0]), vsx_string_helper::s2i(parts[1]) );
       }
     }
   }
 
-  glfwSetKeyCallback(&key_event);
-  glfwSetMouseButtonCallback(&mouse_button_event);
-  glfwSetMousePosCallback(&mouse_pos_event);
-  glfwSetCharCallback(&key_char_event);
-  glfwSetMouseWheelCallback(&mouse_wheel);
-  // set window size callback function
-  glfwSetWindowSizeCallback(window_size);
-
-  // Enable sticky keys
-  glfwEnable( GLFW_STICKY_KEYS );
-  glfwSwapInterval(1);
 
   // Main loop
   running = GL_TRUE;
   frames = 0;
 
-  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-    sprintf( titlestr, "Vovoid VSXu Player %s [GNU/Linux %d-bit]", vsxu_ver, PLATFORM_BITS);
-  #endif
-  #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-    sprintf( titlestr, "Vovoid VSXu Player %s [Windows %d-bit]", vsxu_ver, PLATFORM_BITS);
-  #endif
-  glfwSetWindowTitle( titlestr );
-
-
   while( running )
   {
+    sdl_vsx_gl_update_viewport_size();
+    set_modifiers();
+
     if (mouse_pos_type)
     {
-      if (mouse_pos_type == 1) app_mouse_move(last_x,last_y);
-      else app_mouse_move_passive(last_x,last_y);
+      if (mouse_pos_type == 1)
+        app_mouse_move(last_x,last_y);
+      else
+        app_mouse_move_passive(last_x,last_y);
       mouse_pos_type = 0;
+    }
+
+    SDL_Event event;
+    /* Check for events */
+    while (SDL_PollEvent(&event))
+    {
+      switch(event.type)
+      {
+        case SDL_JOYAXISMOTION:
+          if (event.caxis.value == -32768)
+            event.caxis.value = -32767;
+        break;
+
+        case SDL_WINDOWEVENT:
+          switch (event.window.event)
+          {
+            case SDL_WINDOWEVENT_CLOSE:
+              running = false;
+            break;
+            case SDL_WINDOWEVENT_MAXIMIZED:
+            case SDL_WINDOWEVENT_RESIZED:
+              sdl_vsx_gl_update_viewport_size();
+            break;
+
+            default:
+            break;
+
+          }
+        break;
+
+        case SDL_KEYUP:
+          switch (event.key.keysym.scancode)
+          {
+            case SDL_SCANCODE_F8:
+              break;
+            case SDL_SCANCODE_F9:
+              break;
+            default:
+              break;
+          }
+
+        case SDL_KEYDOWN:
+          switch (event.key.keysym.scancode)
+          {
+            case SDL_SCANCODE_5:
+              break;
+
+            case SDL_SCANCODE_4:
+              break;
+
+            default:
+            break;
+          }
+        break;
+      }
+      sdl_event_handler::get_instance()->consume( event );
     }
 
 
     app_pre_draw();
 
     // Get time and mouse position
-    t = glfwGetTime();
-    glfwGetMousePos( &x, &y );
-    float delta = t-t1;
+//    t = glfwGetTime();
+//    glfwGetMousePos( &x, &y );
+/*    float delta = t-t1;
     t1 = t;
     if (key_pressed != -1)
     {
-          //printf("%f\n", delta);
+      //printf("%f\n", delta);
       key_time += delta;
       if (key_time > 0.3f)
       {
@@ -319,15 +455,8 @@ int main(int argc, char* argv[])
               //printf("repeating key: %d\n", key_character);
         }
       }
-    }
+    }*/
     frames ++;
-
-    // Get window size (may be different than the requested size)
-    glfwGetWindowSize( &width, &height );
-    height = height > 0 ? height : 1;
-
-    // Set viewport
-    vsx_gl_state::get_instance()->viewport_set( 0, 0, width, height );
 
     // Clear color buffer
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -339,15 +468,13 @@ int main(int argc, char* argv[])
 
     app_draw(0);
 
-    glfwSwapBuffers();
-
-    // Check if the ESC key was pressed or the window was closed
-    running = /*!glfwGetKey( GLFW_KEY_ESC ) &&*/
-    glfwGetWindowParam( GLFW_OPENED );
+    SDL_GL_SwapWindow(window);
   }
 
-  // Close OpenGL window and terminate GLFW
-  glfwTerminate();
+  // Close OpenGL window and terminate
+  SDL_GL_DeleteContext(context);
+  SDL_DestroyWindow(window);
+  SDL_Quit();
 
   return 0;
 }

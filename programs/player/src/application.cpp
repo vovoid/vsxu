@@ -36,7 +36,7 @@
 // you might want to remove this.
 #include "vsx_overlay.h"
 
-#include <GL/glfw.h>
+#include "input_keys.h"
 
 vsx_manager_abs* manager;
 
@@ -106,42 +106,37 @@ void app_key_down(long key)
 {
   switch (key)
   {
-    case GLFW_KEY_ESC:
-      if (manager) manager_destroy(manager);
+    case VSX_SCANCODE_ESCAPE:
+      if (manager)
+        manager_destroy(manager);
       exit(0);
-    case GLFW_KEY_PAGEUP:
+    case VSX_SCANCODE_PAGEUP:
       manager->inc_speed();
       break;
-    case GLFW_KEY_PAGEDOWN:
+    case VSX_SCANCODE_PAGEDOWN:
       manager->dec_speed();
       break;
-    case GLFW_KEY_UP:
+    case VSX_SCANCODE_UP:
       manager->inc_fx_level(); overlay->show_fx_graph();
       break;
-    case GLFW_KEY_DOWN:
+    case VSX_SCANCODE_DOWN:
       manager->dec_fx_level(); overlay->show_fx_graph();
       break;
-    case GLFW_KEY_LEFT:
+    case VSX_SCANCODE_LEFT:
       manager->prev_visual();
       break;
-    case GLFW_KEY_RIGHT:
+    case VSX_SCANCODE_RIGHT:
       manager->next_visual();
       break;
-    case GLFW_KEY_F1:
+    case VSX_SCANCODE_F1:
       overlay->set_help(1);
       break;
-    // "F" key:
-    case 'f':
-    case 'F':
+    case VSX_SCANCODE_F:
       overlay->set_help(2);
       break;
-    // "R" key:
-    case 'r':
-    case 'R':
+    case VSX_SCANCODE_R:
       if (app_ctrl)
-      {
         manager->pick_random_visual();
-      }
       else
       {
         manager->toggle_randomizer();

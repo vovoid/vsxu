@@ -89,5 +89,8 @@ void module_texture_rotate::run()
 void module_texture_rotate::on_delete()
 {
   if (texture_out)
+  {
+    texture_out->texture = 0x0;
     delete texture_out;
+  }
 }

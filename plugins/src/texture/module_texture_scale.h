@@ -78,7 +78,10 @@ void module_texture_scale::run()
 void module_texture_scale::on_delete()
 {
   if (texture_out)
+  {
+    texture_out->texture = 0x0;
     delete texture_out;
+  }
 }
 
 
