@@ -122,6 +122,24 @@ public:
     return "";
   }
 
+  vsx_string<> get_param_subvalue(const vsx_string<>& param, size_t sub_value_index, vsx_string<> delimiters, vsx_string<> default_value)
+  {
+    if (!has_param_with_value(param))
+      return default_value;
+
+    vsx_string<> value_str = get_param_value(param);
+
+    for (size_t del_i = 0; del_i < delimiters.size(); del_i++)
+    {
+      vsx_nw_vector< vsx_string<> > parts;
+      vsx_string_helper::explode_single(value_str, delimiters[del_i], parts);
+      if (parts.size() <= 1)
+        continue;
+      return parts[sub_value_index];
+    }
+    return default_value;
+  }
+
   void init_from_argc_argv(int argc, char *argv[])
   {
     for (int i = 0; i < argc; i++)
@@ -152,7 +170,7 @@ public:
     }
   }
 
-  vsx_string<>serialize()
+  vsx_string<> serialize()
   {
     vsx_string<>res;
     for (size_t i = 0; i < data.size(); i++)
@@ -163,7 +181,7 @@ public:
     return res;
   }
 
-  static vsx_string<>get_executable_directory()
+  static vsx_string<> get_executable_directory()
   {
     char pBuf[512];
     const ssize_t len = 512;

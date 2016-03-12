@@ -508,14 +508,16 @@ namespace vsx_string_helper
     return vsx_string_helper::implode(results, deli, 0, 1);
   }
 
+
+
   /**
    * @brief utf8_string_to_wchar_string
    * @param src
    * @return
    */
-  inline vsx_string<wchar_t> utf8_string_to_wchar_string(const vsx_string<char>& src)
+  inline void utf8_string_to_wchar_string(vsx_string<wchar_t>& result, const vsx_string<char>& src)
   {
-    vsx_string<wchar_t> result;
+    result.reset_used();
     wchar_t w = 0;
     int bytes = 0;
     wchar_t err = L'�';
@@ -574,7 +576,17 @@ namespace vsx_string_helper
 
     if (bytes)
       result.push_back(err);
+  }
 
+  /**
+   * @brief utf8_string_to_wchar_string
+   * @param src
+   * @return
+   */
+  inline vsx_string<wchar_t> utf8_string_to_wchar_string(const vsx_string<char>& src)
+  {
+    vsx_string<wchar_t> result;
+    utf8_string_to_wchar_string(result, src);
     return result;
   }
 
@@ -584,9 +596,9 @@ namespace vsx_string_helper
    * @param src
    * @return
    */
-  inline vsx_string<char> wchar_string_to_utf8_string(const vsx_string<wchar_t>& src)
+  inline void wchar_string_to_utf8_string(vsx_string<char>& result, const vsx_string<wchar_t>& src)
   {
-    vsx_string<char> result;
+    result.reset_used();
     for (size_t i = 0; i < src.size(); i++)
     {
       wchar_t w = src[i];
@@ -622,6 +634,17 @@ namespace vsx_string_helper
 
       result.push_back('?');
     }
+  }
+
+  /**
+   * @brief wchar_string_to_utf8_string
+   * @param src
+   * @return
+   */
+  inline vsx_string<char> wchar_string_to_utf8_string(const vsx_string<wchar_t>& src)
+  {
+    vsx_string<char> result;
+    vsx_string_helper::wchar_string_to_utf8_string(result, src);
     return result;
   }
 

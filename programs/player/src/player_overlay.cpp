@@ -24,7 +24,7 @@
 #include <vsx_platform.h>
 #include <string/vsx_string_helper.h>
 #include <vsx_gl_global.h>
-#include "vsx_overlay.h"
+#include "player_overlay.h"
 
 vsx_overlay::vsx_overlay() {
   help_id = 0;

@@ -72,6 +72,11 @@ public:
     data.allocate(size - 1);
   }
 
+  void reset_used()
+  {
+    data.reset_used();
+  }
+
   inline const W* c_str() const VSX_ALWAYS_INLINE
   {
     zero_add();

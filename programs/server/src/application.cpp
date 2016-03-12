@@ -72,9 +72,6 @@ float delta_frame_time = 0.0f;
 float delta_fps;
 float total_time = 0.0f;
 
-void (*app_set_fullscreen)(int,bool) = 0;
-bool (*app_get_fullscreen)(int) = 0;
-
 float global_time;
 vsx_timer time2;
 

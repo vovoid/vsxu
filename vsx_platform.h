@@ -55,7 +55,7 @@
         #define DIRECTORY_SEPARATOR_CHAR                        '/'
     #elif defined(linux) || defined(__linux) || defined(__linux__) || defined(__CYGWIN__)
         #define PLATFORM                                        PLATFORM_LINUX
-        #define PLATFORM_NAME                                   "Linux"
+        #define PLATFORM_NAME                                   "GNU / Linux"
         #define PLATFORM_FAMILY                                 PLATFORM_FAMILY_UNIX
         #define PLATFORM_SHARED_FILES                           vsx_string<>(CMAKE_INSTALL_PREFIX)+vsx_string<>("/share/vsxu/")
         #define PLATFORM_DLL_SUFFIX                             ".so"

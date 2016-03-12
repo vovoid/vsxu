@@ -249,29 +249,6 @@ vsx_string<>vsx_statelist::get_meta_visual_company()
 }
 
 
-
-/*void vsx_statelist::toggle_fullscreen() 
-{
-  vsx_texture aa;
-  aa.unload_all_active();
-  bool a = app_get_fullscreen(0);
-  //vxe->stop();
-  for (std::vector<state_info>::iterator it = statelist.begin(); it != statelist.end(); ++it)
-  {
-    if ((*it).engine)
-    (*it).engine->stop();
-    (*it).need_reload = true;
-    //(*it).need_stop = true;
-  }
-  //(*state_iter).need_stop = false;
-  vxe->unload_state();
-  vxe->stop();
-  app_set_fullscreen(0,!a);
-  vxe->start();
-  vxe->load_state((*state_iter).state_name);
-  // todo, clear out the other engines as well
-}*/
-
 void vsx_statelist::random_state() {
   if (0 == statelist.size()) return;
   if ((*state_iter).engine != vxe) return;

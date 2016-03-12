@@ -40,6 +40,8 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/programs/player/src
 )
 
+file(GLOB_RECURSE HEADER_FILES *.h)
+
 ################################################################################
 # DEFINES ######################################################################
 ################################################################################
@@ -62,15 +64,15 @@ endif()
 
 set(SOURCES
   src/main.cpp
-  src/application.cpp
-  src/vsx_overlay.cpp
+  src/player_control.cpp
+  src/player_overlay.cpp
 )
 
 ################################################################################
 # LINK #########################################################################
 ################################################################################
 
-add_executable(${module_id} ${SOURCES})
+add_executable(${module_id} ${SOURCES} ${HEADER_FILES})
 include(${CMAKE_SOURCE_DIR}/cmake_suffix.txt)
 
 if(UNIX)
