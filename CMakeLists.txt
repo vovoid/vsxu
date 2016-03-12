@@ -399,6 +399,7 @@ add_subdirectory(lib/engine_graphics)
 add_subdirectory(plugins)
 ################################################################################
 
+add_subdirectory(lib/application)
 add_subdirectory(lib/common)
 add_subdirectory(lib/compression)
 add_subdirectory(lib/engine)

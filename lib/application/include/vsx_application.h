@@ -69,7 +69,6 @@ public:
     );
   }
 
-
   virtual void char_event(const wchar_t& character)
   {
     VSX_UNUSED(character);

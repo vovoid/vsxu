@@ -23,6 +23,7 @@ find_package(OpenGL REQUIRED)
 include_directories(
   ${OPENGL_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/
+  ${CMAKE_SOURCE_DIR}/lib/application/include
   ${CMAKE_SOURCE_DIR}/lib/common/include
   ${CMAKE_SOURCE_DIR}/lib/engine/include
   ${CMAKE_SOURCE_DIR}/lib/engine_graphics/include
@@ -90,6 +91,7 @@ if(UNIX)
     vsx_engine
     vsx_engine_graphics
     vsx_widget
+    vsx_application
     rt
   )
 endif(UNIX)
@@ -107,6 +109,7 @@ if (WIN32)
     vsx_engine
     vsx_engine_graphics
     vsx_widget
+    vsx_application
   )
 
 endif()

@@ -13,17 +13,6 @@ class vsx_application_input_manager
   vsx_string<> utf8_text;
   vsx_string<wchar_t> text;
 
-public:
-
-  vsx_application_input_manager()
-  {
-    for (size_t i = 0; i < 512; i++)
-    {
-      keys[i] = false;
-      keys_counter[i] = 0;
-    }
-  }
-
   void handle_key_down(SDL_Event& event)
   {
     keys[event.key.keysym.scancode] = true;
@@ -34,6 +23,17 @@ public:
   {
     keys[event.key.keysym.scancode] = false;
     vsx_application_manager::get_instance()->get()->key_up_event(event.key.keysym.scancode);
+  }
+
+public:
+
+  vsx_application_input_manager()
+  {
+    for (size_t i = 0; i < 512; i++)
+    {
+      keys[i] = false;
+      keys_counter[i] = 0;
+    }
   }
 
   bool get_key(int16_t key)

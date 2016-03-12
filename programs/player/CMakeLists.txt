@@ -33,6 +33,7 @@ link_directories(
 include_directories(
   ${OPENGL_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/
+  ${CMAKE_SOURCE_DIR}/lib/application/include
   ${CMAKE_SOURCE_DIR}/lib/common/include
   ${CMAKE_SOURCE_DIR}/lib/engine/include
   ${CMAKE_SOURCE_DIR}/lib/engine_graphics/include
@@ -64,7 +65,6 @@ endif()
 
 set(SOURCES
   src/main.cpp
-  src/player_control.cpp
   src/player_overlay.cpp
 )
 
