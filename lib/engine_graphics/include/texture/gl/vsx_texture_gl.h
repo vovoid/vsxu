@@ -59,7 +59,7 @@ public:
     attached_to_cache(is_attached_to_cache)
   {
     req(!is_attached_to_cache);
-    bitmap = new vsx_bitmap(false);
+    bitmap = new vsx_bitmap();
   }
 
   ~vsx_texture_gl()

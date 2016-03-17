@@ -141,7 +141,7 @@ public:
   compression_type compression = compression_none;
 
   // cache information
-  bool attached_to_cache;
+  bool attached_to_cache = false;
   int references = 0;
 
   inline void* data_get(size_t mip_map_level = 0, size_t cube_map_side = 0)
@@ -184,12 +184,6 @@ public:
     for (size_t mipmap_level = 0; mipmap_level < 15; mipmap_level++)
       for (size_t cubemap_side = 0; cubemap_side < 6; cubemap_side++)
         data_free(mipmap_level, cubemap_side);
-  }
-
-  vsx_bitmap(bool is_attached_to_cache = false)
-    :
-    attached_to_cache(is_attached_to_cache)
-  {
   }
 
   ~vsx_bitmap()
