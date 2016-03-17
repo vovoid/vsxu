@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-#include "vsx_application_input_keys.h"
+#include <input/vsx_input_scancode.h>
 #include <string/vsx_string_helper.h>
 #include "vsx_application_manager.h"
 

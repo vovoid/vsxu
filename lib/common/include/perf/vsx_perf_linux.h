@@ -56,7 +56,8 @@ public:
   {
     ioctl(fd, PERF_EVENT_IOC_DISABLE, 0);
     long long count;
-    read(fd, &count, sizeof(long long));
+    ssize_t r = read(fd, &count, sizeof(long long));
+    VSX_UNUSED(r);
     return count;
   }
 
@@ -99,7 +100,8 @@ public:
   {
     ioctl(fd, PERF_EVENT_IOC_DISABLE, 0);
     long long count;
-    read(fd, &count, sizeof(long long));
+    ssize_t r = read(fd, &count, sizeof(long long));
+    VSX_UNUSED(r);
     return count;
   }
 
