@@ -84,7 +84,8 @@ public:
 
   vsx_bitmap* create(vsx_string<>& filename, uint64_t hint)
   {
-    vsx_bitmap* bitmap = new vsx_bitmap(true);
+    vsx_bitmap* bitmap = new vsx_bitmap();
+    bitmap->attached_to_cache = true;
     bitmap->references = 1;
     bitmap->hint = hint;
 
