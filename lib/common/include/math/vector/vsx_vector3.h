@@ -263,7 +263,7 @@ public:
     y = b;
     z = c;
   }
-};
+} __attribute__((packed));
 
 typedef vsx_vector3<float> vsx_vector3f;
 typedef vsx_vector3<double> vsx_vector3d;

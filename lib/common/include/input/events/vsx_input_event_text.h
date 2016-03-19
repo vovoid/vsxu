@@ -1,10 +1,8 @@
 #pragma once
 
 #include <inttypes.h>
-#include "vsx_input_event.h"
 
-class vsx_input_event_keyboard
-    : public vsx_input_event
+class vsx_input_event_text
 {
 public:
   wchar_t character_wide = 0;

@@ -24,6 +24,7 @@
 #pragma once
 
 #include <vsx_argvector.h>
+#include <input/vsx_input_event.h>
 
 class vsx_application
 {
@@ -60,14 +61,17 @@ public:
   virtual void print_help()
   {
     vsx_printf(
-      L"Usage:\n"
-       "  vsxu_player [path_to_vsx_file]\n"
-       "\n"
-       "Flags: \n"
+      L"Flags: \n"
        "  -p [x,y]   Set window position x,y \n"
        "  -s [x,y]   Set window size x,y \n\n\n"
     );
   }
+
+  virtual void input_event(const vsx_input_event& event)
+  {
+    VSX_UNUSED(event);
+  }
+
 
   virtual void char_event(const wchar_t& character)
   {

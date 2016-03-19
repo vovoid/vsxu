@@ -209,7 +209,7 @@ public:
     x = nx;
     y = ny;
   }
-};
+} __attribute__((packed));
 
 typedef vsx_vector2<float> vsx_vector2f;
 typedef vsx_vector2<double> vsx_vector2d;

@@ -26,7 +26,7 @@
 #include "vsx_application.h"
 #include <vsx_manager.h>
 #include "player_overlay.h"
-#include "vsx_application_input_manager.h"
+#include <vsx_application_input_state_manager.h>
 
 class player_application
     : public vsx_application
@@ -123,7 +123,7 @@ public:
         overlay->set_help(2);
         break;
       case VSX_SCANCODE_R:
-        if (vsx_application_input_manager::get_instance()->pressed_ctrl())
+        if (vsx_application_input_state_manager::get()->keyboard.key_pressed_ctrl())
           manager->pick_random_visual();
         else
         {

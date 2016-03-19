@@ -59,7 +59,7 @@ public:
     w = n[4];
   }
 
-};
+} __attribute__((packed));
 
 typedef vsx_vector4<float> vsx_vector4f;
 typedef vsx_vector4<double> vsx_vector4d;

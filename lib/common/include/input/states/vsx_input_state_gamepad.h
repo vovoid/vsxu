@@ -2,20 +2,18 @@
 
 #include <inttypes.h>
 #include <math/vector/vsx_vector2.h>
-#include "vsx_input_event.h"
 
-class vsx_input_event_gamepad
-    : public vsx_input_event
+class vsx_input_state_gamepad
 {
 public:
 
   vsx_vector2f analog_left;
   vsx_vector2f analog_right;
 
-  bool left;
-  bool down;
-  bool right;
-  bool up;
+  bool button_left;
+  bool button_down;
+  bool button_right;
+  bool button_up;
 
   bool shoulder_right;
   bool shoulder_left;

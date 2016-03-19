@@ -26,20 +26,19 @@
 
 #include "player_application.h"
 
-#include "vsx_application_manager.h"
-#include "vsx_application_sdl.h"
+#include <vsx_application_manager.h>
+#include <sdl/vsx_application_sdl.h>
 
 int main(int argc, char* argv[])
 {
   vsx_argvector::get_instance()->init_from_argc_argv(argc, argv);
 
   player_application application;
-  vsx_application_manager::get_instance()->set(&application);
+  vsx_application_manager::get_instance()->application_set(&application);
 
   char titlestr[ 200 ];
   sprintf( titlestr, "Vovoid VSXu Player %s [%s %d-bit]", vsxu_ver, PLATFORM_NAME, PLATFORM_BITS);
   application.window_title_set(vsx_string<>(&titlestr[0]));
-
 
   vsx_application_sdl application_sdl;
   application_sdl.run();

@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include "vsx_application_sdl_tools.h"
+#include "vsx_application_sdl_input_event_handler.h"
 #include <vsx_gl_state.h>
 #include <string/vsx_string_helper.h>
 
@@ -9,6 +10,7 @@ class vsx_application_sdl
 {
   SDL_Window *window; /* Our window handle */
   SDL_GLContext context;
+  vsx_application_sdl_input_event_handler event_handler;
 
   void update_viewport_size()
   {
@@ -35,7 +37,7 @@ class vsx_application_sdl
     DisableProcessWindowsGhosting();
     #endif
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0)
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | SDL_INIT_EVENTS) < 0)
         sdl_tools::sdldie("Unable to initialize SDL"); /* Or die on error */
 
     SDL_DisableScreenSaver();
@@ -154,7 +156,7 @@ public:
             }
           break;
         }
-        vsx_application_input_manager::get_instance()->consume( event );
+        event_handler.consume( event );
       }
 
 

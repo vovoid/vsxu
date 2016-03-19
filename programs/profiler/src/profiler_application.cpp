@@ -64,7 +64,7 @@ vsx_timer time2;
 void load_desktop_a();
 
 // draw-related variables
-class vsxu_draw {
+class vsx_artiste_draw {
 public:
   bool first;
   vsx_string<>current_fps;
@@ -83,7 +83,7 @@ public:
 
   vsx_profiler* profiler;
 
-  vsxu_draw() :
+  vsx_artiste_draw() :
     first(true),
     frame_count(0),
     gui_g_time(0),
@@ -94,7 +94,7 @@ public:
     max_render_time(-1),
     min_render_time(1000)
   {}
-  ~vsxu_draw() {}
+  ~vsx_artiste_draw() {}
 
   void draw()
   {
@@ -135,7 +135,7 @@ public:
   }
 };
 
-vsxu_draw* my_draw = 0x0;
+vsx_artiste_draw* my_draw = 0x0;
 
 void load_desktop_a()
 {
@@ -147,7 +147,7 @@ void load_desktop_a()
 
 void app_init()
 {
-  my_draw = new vsxu_draw();
+  my_draw = new vsx_artiste_draw();
 
   //---------------------------------------------------------------------------
   vsx::filesystem filesystem;

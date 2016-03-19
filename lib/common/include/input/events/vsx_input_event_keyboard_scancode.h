@@ -1,5 +1,7 @@
 // This is blatantly copied from SDL, should SDL change, this needs to be overwritten.
-// What has been done is: s/SDL/LSK/g
+// What has been done is: s/SDL/VSX/g
+
+#pragma once
 
 typedef enum
 {

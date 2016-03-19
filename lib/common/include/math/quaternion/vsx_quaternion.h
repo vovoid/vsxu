@@ -301,7 +301,7 @@ public:
     p2.z = 2*x*z*p1.x + 2*y*z*p1.y + z*z*p1.z - 2*w*y*p1.x - y*y*p1.z + 2*w*x*p1.y - x*x*p1.z + w*w*p1.z;
     return p2;
   }
-};
+} __attribute__((packed));
 
 
 
