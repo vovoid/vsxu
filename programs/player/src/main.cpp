@@ -27,7 +27,7 @@
 #include "player_application.h"
 
 #include <vsx_application_manager.h>
-#include <sdl/vsx_application_sdl.h>
+#include <vsx_application_run.h>
 
 int main(int argc, char* argv[])
 {
@@ -40,8 +40,7 @@ int main(int argc, char* argv[])
   sprintf( titlestr, "Vovoid VSXu Player %s [%s %d-bit]", vsxu_ver, PLATFORM_NAME, PLATFORM_BITS);
   application.window_title_set(vsx_string<>(&titlestr[0]));
 
-  vsx_application_sdl application_sdl;
-  application_sdl.run();
+  vsx_application_run::run();
 
   return 0;
 }

@@ -51,8 +51,7 @@ class player_application
     manager->set_option_preload_all(vsx_argvector::get_instance()->has_param("pl"));
 
     // init manager with the shared path and sound input type.
-    std::string path = (PLATFORM_SHARED_FILES).c_str();
-    manager->init( path.c_str(), "");
+    manager->init( (PLATFORM_SHARED_FILES).c_str(), "");
 
     // create a new text overlay
     overlay = new vsx_overlay;

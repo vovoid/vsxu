@@ -21,46 +21,34 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __vsx_mouse__
-#define __vsx_mouse__
-#ifdef _WIN32
-#include <windows.h>
-#endif
+#include "vsx_mouse.h"
+#include "GL/glfw.h"
 
-#include <math/vector/vsx_vector3.h>
+void vsx_mouse::set_cursor(int id) {
+  cursor = id;
+}
 
-#include "vsx_application_dllimport.h"
-
-#define MOUSE_CURSOR_ARROW 0
-#define MOUSE_CURSOR_HAND 1
-#define MOUSE_CURSOR_IBEAM 2
-#define MOUSE_CURSOR_SIZE 3
-#define MOUSE_CURSOR_NS 4
-#define MOUSE_CURSOR_WE 5
-#define MOUSE_CURSOR_NESW 6
-#define MOUSE_CURSOR_NWSE 7
-
-class APPLICATION_DLLIMPORT vsx_mouse
+void vsx_mouse::show_cursor()
 {
-  int cursor;
-  bool visible;
-  vsx_vector3<> position;
+  // This causes problems with knobs & arcballs, mouse visibility is disabled for now
+  //glfwEnable(GLFW_MOUSE_CURSOR);
+  //glfwSetMousePos((int)(position.x), (int)(position.y));
+}
 
-public:
+void vsx_mouse::hide_cursor()
+{
+  // This causes problems with knobs & arcballs, mouse visibility is disabled for now
+  //  glfwDisable(GLFW_MOUSE_CURSOR);
+}
 
-  void set_cursor(int id);
 
-  vsx_vector3<> get_cursor_pos() __attribute__((always_inline))
-  {
-    return position;
-  }
+void vsx_mouse::set_cursor_pos(float x, float y)
+{
+  position.set(x,y);
+  glfwSetMousePos((int)(position.x), (int)(position.y));
+}
 
-  void set_cursor_pos(float x, float y);
-  void show_cursor();
-  void hide_cursor();
-
-  vsx_mouse();
-};
-
-#endif
-
+vsx_mouse::vsx_mouse()
+{
+  cursor = 0;
+}

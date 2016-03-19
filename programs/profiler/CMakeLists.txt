@@ -14,6 +14,15 @@ include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
 find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
 
+PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+
+include_directories(
+  ${SDL2_INCLUDE_DIRS}
+)
+
+link_directories(
+  ${SDL2_LIBRARY_DIRS}
+)
 
 
 ################################################################################
@@ -92,6 +101,7 @@ if(UNIX)
     vsx_engine_graphics
     vsx_widget
     vsx_application
+    ${SDL2_LIBRARIES}
     rt
   )
 endif(UNIX)
@@ -110,6 +120,7 @@ if (WIN32)
     vsx_engine_graphics
     vsx_widget
     vsx_application
+    ${SDL2_LIBRARIES}
   )
 
 endif()

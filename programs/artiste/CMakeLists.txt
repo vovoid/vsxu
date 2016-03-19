@@ -14,6 +14,15 @@ project (${module_id})
 find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
 
+PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+
+include_directories(
+  ${SDL2_INCLUDE_DIRS}
+)
+
+link_directories(
+  ${SDL2_LIBRARY_DIRS}
+)
 
 ################################################################################
 # INCLUDES #####################################################################
@@ -117,12 +126,13 @@ if(UNIX)
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
+    vsx_application
+    ${SDL2_LIBRARIES}
     vsx_engine_graphics
     vsx_engine
     vsx_common
     vsx_compression
     vsx_widget
-    vsx_application
     rt
   )
 
@@ -141,6 +151,8 @@ if(WIN32)
     -static
     ${GLFW_LIBRARIES}
     ${GLEW_LIBRARIES}
+    vsx_application
+    ${SDL2_LIBRARIES}
     wsock32
     ws2_32
     vsx_engine

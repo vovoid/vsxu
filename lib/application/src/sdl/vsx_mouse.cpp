@@ -28,10 +28,6 @@ void vsx_mouse::set_cursor(int id) {
   cursor = id;
 }
 
-void vsx_mouse::set_cursor_implement()
-{
-}
-
 void vsx_mouse::show_cursor()
 {
   // This causes problems with knobs & arcballs, mouse visibility is disabled for now
@@ -49,7 +45,7 @@ void vsx_mouse::hide_cursor()
 void vsx_mouse::set_cursor_pos(float x, float y)
 {
   position.set(x,y);
-  glfwSetMousePos((int)(position.x), (int)(position.y));
+  //glfwSetMousePos((int)(position.x), (int)(position.y));
 }
 
 vsx_mouse::vsx_mouse()

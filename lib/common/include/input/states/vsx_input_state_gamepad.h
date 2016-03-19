@@ -25,4 +25,10 @@ public:
   bool d_pad_down;
   bool d_pad_right;
   bool d_pad_up;
+
+  void consume(vsx_input_event& event)
+  {
+
+  }
+
 };

@@ -60,11 +60,6 @@ public:
 
   virtual void print_help()
   {
-    vsx_printf(
-      L"Flags: \n"
-       "  -p [x,y]   Set window position x,y \n"
-       "  -s [x,y]   Set window size x,y \n\n\n"
-    );
   }
 
   virtual void input_event(const vsx_input_event& event)
@@ -88,13 +83,15 @@ public:
     VSX_UNUSED(scancode);
   }
 
-  virtual void mouse_move_passive_event(int x, int y)
+  // movement with left mouse button pressed, i.e. dragging or moving after click
+  virtual void mouse_move_event(int x, int y)
   {
     VSX_UNUSED(x);
     VSX_UNUSED(y);
   }
 
-  virtual void mouse_move_event(int x, int y)
+  // movement without left button pressed - "hovering"
+  virtual void mouse_move_passive_event(int x, int y)
   {
     VSX_UNUSED(x);
     VSX_UNUSED(y);
@@ -117,7 +114,7 @@ public:
   }
 
   // -1 to -5 or whatever up to +1
-  virtual void mousewheel_event(float diff, int x, int y)
+  virtual void mouse_wheel_event(float diff, int x, int y)
   {
     VSX_UNUSED(diff);
     VSX_UNUSED(x);

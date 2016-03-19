@@ -5,6 +5,7 @@
 class vsx_application_manager
 {
   vsx_application* application_ptr;
+
 public:
 
   void application_set(vsx_application* application)

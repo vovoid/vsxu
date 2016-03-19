@@ -85,12 +85,13 @@ if(UNIX)
     ${PNG_LIBRARIES}
     ${ZLIB_LIBRARIES}
     ${JPEG_LIBRARIES}
-    ${SDL2_LIBRARIES}
     vsx_engine_audiovisual
     vsx_engine_graphics
     vsx_engine
     vsx_common
     vsx_compression
+    vsx_application
+    ${SDL2_LIBRARIES}
     rt
   )
 endif()

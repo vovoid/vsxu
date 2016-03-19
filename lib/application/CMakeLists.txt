@@ -8,6 +8,14 @@ project (${module_id})
 ################################################################################
 # CMAKE PACKAGES ###############################################################
 ################################################################################
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
+
+PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+
+include_directories(
+  ${SDL2_INCLUDE_DIRS}
+)
+
 
 ################################################################################
 # INCLUDES #####################################################################
@@ -16,6 +24,7 @@ project (${module_id})
 include_directories(
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/lib/common/include
+  ${CMAKE_SOURCE_DIR}/lib/engine_graphics/include
   ${CMAKE_SOURCE_DIR}/lib/application/include
 )
 
@@ -38,9 +47,16 @@ endif (VSXU_DEBUG EQUAL 1)
 # SOURCES ######################################################################
 ################################################################################
 
+if (VSXU_GLFW EQUAL 1)
 set(SOURCES
-  src/vsx_mouse.cpp
+  src/glfw/vsx_mouse.cpp
 )
+else()
+set(SOURCES
+  src/sdl/vsx_mouse.cpp
+  src/sdl/vsx_application_run.cpp
+)
+endif()
 
 ################################################################################
 # LINKAGE ######################################################################
@@ -67,3 +83,4 @@ if (WIN32)
   endif()
 endif()
 
+add_subdirectory(test)
