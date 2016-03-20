@@ -48,24 +48,28 @@ endif (VSXU_DEBUG EQUAL 1)
 ################################################################################
 
 if (VSXU_GLFW EQUAL 1)
-set(SOURCES
-  src/glfw/vsx_mouse.cpp
-)
+    set(GFX_LIB_SOURCES
+        src/glfw/vsx_mouse.cpp
+    )
 else()
-set(SOURCES
-  src/sdl/vsx_mouse.cpp
-  src/sdl/vsx_application_run.cpp
-)
+    set(GFX_LIB_SOURCES
+        src/sdl/vsx_mouse.cpp
+        src/sdl/vsx_application_run.cpp
+    )
 endif()
+
+set(SOURCES
+  src/vsx_application_control.cpp
+)
 
 ################################################################################
 # LINKAGE ######################################################################
 ################################################################################
 
 if (VSXU_STATIC EQUAL 1)
-  add_library(${module_id} STATIC ${SOURCES} ${HEADER_FILES})
+  add_library(${module_id} STATIC ${SOURCES} ${GFX_LIB_SOURCES} ${HEADER_FILES})
 else ()
-  add_library(${module_id} SHARED ${SOURCES} ${HEADER_FILES})
+  add_library(${module_id} SHARED ${SOURCES} ${GFX_LIB_SOURCES} ${HEADER_FILES})
 endif ()
 
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT common)

@@ -2,6 +2,8 @@
 
 #include <tools/vsx_req.h>
 #include <input/vsx_input_event.h>
+#include <vsx_gl_global.h>
+#include <vsx_gl_state.h>
 
 class vsx_input_state_mouse
 {

@@ -66,6 +66,7 @@ set(SOURCES
   src/widgets/vsx_widget_2d_label.cpp
   src/widgets/vsx_widget_2d_pager.cpp
   src/widgets/vsx_widget_base_edit.cpp
+  src/widgets/vsx_widget_editor.cpp
   src/widgets/vsx_widget_button.cpp
   src/widgets/vsx_widget_panel.cpp
   src/widgets/vsx_widget_popup_menu.cpp

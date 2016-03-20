@@ -102,7 +102,6 @@ set(SOURCES
   src/vsx_widget/module_choosers/vsx_widget_module_chooser.cpp
   src/vsx_widget/module_choosers/vsx_widget_module_chooser_list.cpp
   src/artiste_desktop.cpp
-  src/artiste_application.cpp
   src/artiste_main.cpp
 )
 

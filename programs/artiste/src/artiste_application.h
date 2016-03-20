@@ -21,41 +21,129 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_APPLICATION_H
-#define VSX_APPLICATION_H
+#pragma once
 
-#include <sys/time.h>
+#include <vsx_application.h>
+#include <vsx_application_input_state_manager.h>
+#include "vsx_artiste_draw.h"
+#include <vsx_module_list_factory.h>
 
-// GL state
-#include "vsx_gl_state.h"
+class vsx_application_artiste
+    : public vsx_application
+{
+  vsx_string<> window_title;
 
-extern bool app_ctrl;
-extern bool app_alt;
-extern bool app_shift;
-extern bool dual_monitor;
+  vsx_artiste_draw my_draw;
 
-void app_load(int id);
-void app_close_window();
-void app_unload();
+public:
 
-void app_print_cli_help();
+  void init()
+  {
+    my_draw.init();
+  }
 
-void app_pre_draw();
+  void uninit()
+  {
+    my_draw.uninit();
+  }
 
-bool app_draw(int id);
+  void window_title_set(vsx_string<> new_title)
+  {
+    window_title = new_title;
+  }
 
-void app_char(long key);
-void app_key_down(long key);
-void app_key_up(long key);
+  vsx_string<> window_title_get()
+  {
+    return window_title;
+  }
 
-void app_mouse_move_passive(int x, int y);
-void app_mouse_move(int x, int y);
+  void pre_draw()
+  {
+    my_draw.pre_draw();
+  }
 
-// buttons: 0 = left, 1 = middle, 2 = right
-void app_mouse_down(unsigned long button,int x,int y);
-void app_mouse_up(unsigned long button,int x,int y);
+  void draw()
+  {
+    my_draw.draw();
+  }
 
-// -1 to -5 or whatever up to +1
-void app_mousewheel(float diff,int x,int y);
+  void print_help()
+  {
+    vsx_printf(
+       L"VSXu Artiste command syntax:\n"
+       "  -f             fullscreen mode\n"
+       "  -ff            start preview in fullwindow mode (same as Ctrl+F)"
+       "  -s 1920,1080   screen/window size\n"
+       "  -p 100,100     window posision\n"
+       "  -novsync       disable vsync\n"
+       "  -gl_debug      enable nvidia's gl debug callback\n"
+       "\n"
+    );
+    vsx_module_list_factory_create()->print_help();
+  }
 
-#endif
+  void input_event(const vsx_input_event& event)
+  {
+    req(my_draw.is_engine_fullscreen());
+  }
+
+
+  void char_event(const wchar_t& character)
+  {
+    req(my_draw.desktop);
+    my_draw.desktop->key_down(character, vsx_keyboard.pressed_alt(), vsx_keyboard.pressed_ctrl(), vsx_keyboard.pressed_shift());
+  }
+
+  void key_down_event(long scancode)
+  {
+    if (vsx_keyboard.pressed_ctrl() && scancode == VSX_SCANCODE_5)
+      vsx_profiler_manager::get_instance()->enable();
+
+    if (vsx_keyboard.pressed_ctrl() && scancode == VSX_SCANCODE_4)
+      vsx_profiler_manager::get_instance()->disable();
+  }
+
+  void key_up_event(long scancode)
+  {
+    VSX_UNUSED(scancode);
+  }
+
+  // movement with left mouse button pressed, i.e. dragging or moving after click
+  void mouse_move_event(int x, int y)
+  {
+    VSX_UNUSED(x);
+    VSX_UNUSED(y);
+  }
+
+  // movement without left button pressed - "hovering"
+  void mouse_move_passive_event(int x, int y)
+  {
+    VSX_UNUSED(x);
+    VSX_UNUSED(y);
+  }
+
+  // buttons: 0 = left, 1 = middle, 2 = right
+  void mouse_down_event(unsigned long button, int x, int y)
+  {
+    VSX_UNUSED(button);
+    VSX_UNUSED(x);
+    VSX_UNUSED(y);
+  }
+
+  // buttons: 0 = left, 1 = middle, 2 = right
+  void mouse_up_event(unsigned long button, int x, int y)
+  {
+    VSX_UNUSED(button);
+    VSX_UNUSED(x);
+    VSX_UNUSED(y);
+  }
+
+  // -1 to -5 or whatever up to +1
+  void mouse_wheel_event(float diff, int x, int y)
+  {
+    VSX_UNUSED(diff);
+    VSX_UNUSED(x);
+    VSX_UNUSED(y);
+  }
+};
+

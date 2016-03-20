@@ -36,8 +36,8 @@
 #include <vsx_data_path.h>
 
 // local includes
-#include "vsx_widget.h"
-#include "vsx_widget_window.h"
+#include <vsx_widget.h>
+#include <vsx_widget_window.h>
 #include "helpers/vsx_widget_object_inspector.h"
 #include "helpers/vsx_widget_preview.h"
 #include "helpers/vsx_widget_assistant.h"
@@ -51,10 +51,6 @@
 #include "artiste_desktop.h"
 #include "GL/glfw.h"
 
-// VSX_WIDGET_DESKTOP **************************************************************************************************
-// VSX_WIDGET_DESKTOP **************************************************************************************************
-// VSX_WIDGET_DESKTOP **************************************************************************************************
-// VSX_WIDGET_DESKTOP **************************************************************************************************
 void vsx_widget_desktop::init()
 {
   // popup window
@@ -107,12 +103,11 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
   {
     switch (key)
     {
-      case -GLFW_KEY_SPACE:
+      case -VSX_SCANCODE_SPACE:
         ((vsx_window_texture_viewer*)tv)->toggle_run();
         break;
       // fullwindow
-      case -'F':
-      case -'f': // F
+      case -VSX_SCANCODE_F:
         ((vsx_window_texture_viewer*)tv)->toggle_fullwindow();
 
         if (((vsx_window_texture_viewer*)tv)->get_fullwindow())
@@ -186,25 +181,25 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
       }
     }
     break;
-    case -GLFW_KEY_UP: case -'E': case -'e':
+    case -VSX_SCANCODE_UP: case -VSX_SCANCODE_E:
       camera.set_movement_y( 1.0 );
     break;
 
-    case -GLFW_KEY_DOWN: case -'D': case -'d':
+    case -VSX_SCANCODE_DOWN: case -VSX_SCANCODE_D:
       camera.set_movement_y( -1.0 );
     break;
-    case -GLFW_KEY_LEFT: case -'s': case -'S':
-      camera.set_movement_x( -1.0 );
-    break;
-    case -GLFW_KEY_RIGHT: case -'F': case -'f':
-      camera.set_movement_x( 1.0 );
-    break;
-    case -GLFW_KEY_PAGEUP: case -'R': case -'r':
-      camera.set_movement_z( -1.0 );
-    break;
-    case -GLFW_KEY_PAGEDOWN: case -'W': case -'w':
-      camera.set_movement_z( 1.0 );
-    break;
+//    case -GLFW_KEY_LEFT: case -'s': :
+//      camera.set_movement_x( -1.0 );
+//    break;
+//    case -GLFW_KEY_RIGHT: case -'F': :
+//      camera.set_movement_x( 1.0 );
+//    break;
+//    case -GLFW_KEY_PAGEUP: case -'R': :
+//      camera.set_movement_z( -1.0 );
+//    break;
+//    case -GLFW_KEY_PAGEDOWN: case -'W': :
+//      camera.set_movement_z( 1.0 );
+//    break;
   } // switch
   return false;
 }
@@ -222,8 +217,8 @@ bool vsx_widget_desktop::key_up(signed long key, bool alt, bool ctrl, bool shift
 
   switch (key)
   {
-    case GLFW_KEY_UP: case 'E': case 'e':
-    case GLFW_KEY_DOWN: case 'D': case 'd':
+    case -VSX_SCANCODE_UP: case -VSX_SCANCODE_E:
+    case -VSX_SCANCODE_DOWN: case -VSX_SCANCODE_D:
       camera.set_movement_y( 0.0 );
     break;
 

@@ -21,11 +21,13 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_WIDGET_SCROLLBAR_H
-#define VSX_WIDGET_SCROLLBAR_H
+#pragma once
+
+#include <vsx_widget.h>
 
 #define VSX_WIDGET_SCROLLBAR_TYPE_HORIZONTAL 0
 #define VSX_WIDGET_SCROLLBAR_TYPE_VERTICAL 1
+
 
 class WIDGET_DLLIMPORT vsx_widget_scrollbar : public vsx_widget
 {
@@ -65,5 +67,3 @@ public:
   void i_draw();
 
 };
-
-#endif

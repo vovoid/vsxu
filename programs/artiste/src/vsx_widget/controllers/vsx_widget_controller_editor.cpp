@@ -25,7 +25,7 @@
 
 #include "vsx_widget_controller_editor.h"
 #include "widgets/vsx_widget_panel.h"
-#include "widgets/vsx_widget_base_edit.h"
+#include "widgets/vsx_widget_editor.h"
 #include "widgets/vsx_widget_button.h"
 #include <gl_helper.h>
 

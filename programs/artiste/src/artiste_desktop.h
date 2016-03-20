@@ -21,9 +21,8 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_WIDGET_DESKTOP_H
-#define VSX_WIDGET_DESKTOP_H
-
+#pragma once
+#include <vsx_widget.h>
 
 class vsx_widget_desktop : public vsx_widget
 {
@@ -53,11 +52,3 @@ public:
   vsx_widget_desktop();
 };
 
-
-
-
-
-
-
-
-#endif

@@ -28,7 +28,7 @@
 #include "vsx_manager.h"
 #include <time/vsx_timer.h>
 #include <filesystem/vsx_filesystem.h>
-#include <logo_intro.h>
+#include <vsx_logo_intro.h>
 
 
 class vsx_overlay {

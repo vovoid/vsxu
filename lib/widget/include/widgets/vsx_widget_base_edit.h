@@ -24,17 +24,13 @@
 #ifndef VSX_WIDGET_BASE_EDIT_H
 #define VSX_WIDGET_BASE_EDIT_H
 
-#include "vsx_widget_scrollbar.h"
-#include "vsx_widget_panel.h"
-
 #include "vsx_widget_dllimport.h"
+#include "vsx_widget_panel.h"
 
 /* Base Edit
  * ---------
  * This widget serves as a text editor and item picker. If you turn editing off
  * it can be used as a selection box.
- *
- *
  *
  */
 
@@ -99,19 +95,6 @@ public:
   void fold_all();
   vsx_widget_base_edit();
 
-};
-
-class WIDGET_DLLIMPORT vsx_widget_editor : public vsx_widget_panel {
-public:
-  vsx_widget_scrollbar* scrollbar_horiz;
-  vsx_widget_scrollbar* scrollbar_vert;
-  vsx_widget_base_edit* editor;
-
-  vsx_widget_editor();
-  void set_string(const vsx_string<>& str);
-  vsx_string<>get_string();
-
-  virtual void i_draw();
 };
 
 #endif

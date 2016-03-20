@@ -23,10 +23,8 @@
 
 #ifndef VSX_WIDGET_SERVER_H
 #define VSX_WIDGET_SERVER_H
-// VSX_WIDGET_SERVER ***************************************************************************************************
-// VSX_WIDGET_SERVER ***************************************************************************************************
-// VSX_WIDGET_SERVER ***************************************************************************************************
-// VSX_WIDGET_SERVER ***************************************************************************************************
+
+#include <vsx_command_client_server.h>
 
 #define VSX_WIDGET_SERVER_CONNECTION_TYPE_INTERNAL 1
 #define VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET 2

@@ -41,6 +41,10 @@
 #include <map>
 #include <list>
 
+// application
+#include <vsx_application_input_state_manager.h>
+#include <vsx_application_control.h>
+
 // widget
 #include "vsx_widget_dllimport.h"
 #include "vsx_mouse.h"

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <vsx_application_control.h>
 #include "vsx_application_sdl_tools.h"
 #include "vsx_application_sdl_input_event_handler.h"
 #include <vsx_gl_state.h>
@@ -105,7 +106,7 @@ class vsx_application_sdl
     glewInit();
 
     printf("INFO: app_init\n");
-    vsx_application_manager::get_instance()->get()->init(0);
+    vsx_application_manager::get_instance()->get()->init();
     printf("INFO: app_init done\n");
 
     if (vsx_argvector::get_instance()->has_param_with_value("p"))
@@ -122,9 +123,15 @@ public:
   {
     setup();
 
-    bool running = true;
     size_t frames = 0;
 
+    if (!vsx_application_manager::get())
+    {
+      vsx_printf(L"Application manager not initialized with application. Exiting...");
+      exit(1);
+    }
+
+    bool running = true;
     while( running )
     {
       update_viewport_size();
@@ -160,9 +167,9 @@ public:
       }
 
 
-      vsx_application_manager::get_instance()->get()->pre_draw();
+      vsx_application_manager::get()->pre_draw();
 
-      frames ++;
+      frames++;
 
       // Clear color buffer
       glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -172,10 +179,15 @@ public:
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
 
-      vsx_application_manager::get_instance()->get()->draw(0);
+      vsx_application_manager::get()->draw();
 
       SDL_GL_SwapWindow(window);
+
+      if (vsx_application_control::get_instance()->is_shutdown_requested())
+        break;
     }
+
+    vsx_application_manager::get()->uninit();
 
     // Close OpenGL window and terminate
     SDL_GL_DeleteContext(context);

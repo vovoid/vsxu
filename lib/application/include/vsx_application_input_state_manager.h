@@ -25,3 +25,6 @@ public:
     return &vaism;
   }
 };
+
+#define vsx_keyboard vsx_application_input_state_manager::get()->keyboard
+

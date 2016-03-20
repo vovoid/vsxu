@@ -1,7 +1,7 @@
 #ifndef VSX_WIDGET_SEQUENCE_TREE_H
 #define VSX_WIDGET_SEQUENCE_TREE_H
 
-#include <widgets/vsx_widget_base_edit.h>
+#include <widgets/vsx_widget_editor.h>
 #include <widgets/vsx_widget_popup_menu.h>
 #include <dialogs/dialog_query_string.h>
 

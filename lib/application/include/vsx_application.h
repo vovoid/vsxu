@@ -34,9 +34,12 @@ protected:
 
 public:
 
-  virtual void init(int id) // which context is used?
+  virtual void init()
   {
-    VSX_UNUSED(id);
+  }
+
+  virtual void uninit()
+  {
   }
 
   void window_title_set(vsx_string<> new_title)
@@ -53,9 +56,8 @@ public:
   {
   }
 
-  virtual void draw(int id)
+  virtual void draw()
   {
-    VSX_UNUSED(id);
   }
 
   virtual void print_help()

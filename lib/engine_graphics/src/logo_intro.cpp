@@ -28,7 +28,7 @@
 #include "vsx_gl_global.h"
 #include <texture/vsx_texture.h>
 #include <time/vsx_timer.h>
-#include "logo_intro.h"
+#include <vsx_logo_intro.h>
 
 // logo animation settings
 float startanim = 0;

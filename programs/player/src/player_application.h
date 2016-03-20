@@ -33,16 +33,23 @@ class player_application
 {
   vsx_manager_abs* manager = 0x0;
   vsx_overlay* overlay = 0x0;
-  bool first = true;
   bool no_overlay = false;
 
-  void handle_first()
-  {
-    if (!first)
-      return;
+public:
 
+  void print_help()
+  {
+    vsx_application::print_help();
+    vsx_printf(
+      L"  -pl        Preload all visuals on start \n"
+       "  -dr        Disable randomizer     \n"
+    );
+
+  }
+
+  void init()
+  {
     printf("INFO: app_draw first\n");
-    first = false;
 
     no_overlay = vsx_argvector::get_instance()->has_param("no");
 
@@ -63,23 +70,8 @@ class player_application
     printf("INFO: app_draw first done\n");
   }
 
-public:
-
-  void print_help()
+  void draw()
   {
-    vsx_application::print_help();
-    vsx_printf(
-      L"  -pl        Preload all visuals on start \n"
-       "  -dr        Disable randomizer     \n"
-    );
-
-  }
-
-  void draw(int id)
-  {
-    VSX_UNUSED(id);
-    handle_first();
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (manager)
@@ -122,7 +114,7 @@ public:
         overlay->set_help(2);
         break;
       case VSX_SCANCODE_R:
-        if (vsx_application_input_state_manager::get()->keyboard.key_pressed_ctrl())
+        if (vsx_keyboard.pressed_ctrl())
           manager->pick_random_visual();
         else
         {
