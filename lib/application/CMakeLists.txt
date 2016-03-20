@@ -60,6 +60,7 @@ endif()
 
 set(SOURCES
   src/vsx_application_control.cpp
+  src/vsx_application_manager.cpp
 )
 
 ################################################################################

@@ -23,9 +23,5 @@ public:
     return vsx_application_manager::get_instance()->application_get();
   }
 
-  static vsx_application_manager* get_instance()
-  {
-    static vsx_application_manager vam;
-    return &vam;
-  }
+  static vsx_application_manager* get_instance();
 };
