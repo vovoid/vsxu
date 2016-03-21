@@ -39,8 +39,8 @@ public:
   double xpp,ypp,zpp;
   void init();
   void reinit();
-  bool key_down(signed long key, bool n_alt, bool n_ctrl, bool n_shift);
-  bool key_up(signed long key, bool alt, bool ctrl, bool shift);
+  bool input_key_down(signed long key, bool n_alt, bool n_ctrl, bool n_shift);
+  bool input_key_up(signed long key, bool alt, bool ctrl, bool shift);
   void event_mouse_wheel(float y);
   void command_process_back_queue(vsx_command_s *t);
   void draw();

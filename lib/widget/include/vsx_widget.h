@@ -163,7 +163,7 @@ public:
   WIDGET_DLLIMPORT static vsx_font font;
   float font_size;
 
-// space
+  // space
   // in 3-dimensional space widgets' pos should be at the center and size should be the radius of the circle
   // of course there exists exceptions from this, such as the vsx_widget_connector but this is a general rule of
   // thumb.
@@ -411,36 +411,34 @@ public:
 
   void delete_all_by_type(unsigned long t);
 
-// EXTERNAL IN-DATA, MOUSE, KEYBOARD
+  // INPUT
   // this is bool so that external (super-global) processors can know wether or not to react on the keys..
   // this returning true means that they're allowed to process the keys, if not, it's exclusive to the widget
   // who has k_focus - like an edit box.
-  virtual bool key_down(signed long key, bool n_alt, bool n_ctrl, bool n_shift) {
-    this->alt = n_alt;
-    this->ctrl = n_ctrl;
-    this->shift = n_shift;
-    if (k_focus) {
-      return k_focus->event_key_down(key,n_alt,n_ctrl,n_shift);
-    } else return true;
+  virtual bool input_key_down(signed long key, bool n_alt, bool n_ctrl, bool n_shift) {
+    req_v(k_focus, true);
+    return k_focus->event_key_down(key,n_alt,n_ctrl,n_shift);
   }
 
-  bool key_up(signed long key, bool alt, bool ctrl, bool shift) {
-    this->ctrl = ctrl;
-    if (k_focus) {
-      return k_focus->event_key_up(key,alt,ctrl,shift);
-    } else return true;
+  bool input_key_up(signed long key, bool alt, bool ctrl, bool shift) {
+    req_v(k_focus, true);
+    return k_focus->event_key_up(key,alt,ctrl,shift);
   }
 
+  void input_text(wchar_t character_wide, char character) {
+    req(k_focus);
+    k_focus->event_text(character_wide, character);
+  }
 
   static void set_key_modifiers(bool alt_, bool ctrl_, bool shift_);
 
-  void mouse_down(float x, float y, int button);
-  void mouse_up(float x, float y, int button);
-  void mouse_move(float x, float y);
-  void mouse_move_passive(float x, float y);
-  void mouse_wheel(float y);
+  void input_mouse_down(float x, float y, int button);
+  void input_mouse_up(float x, float y, int button);
+  void input_mouse_move(float x, float y);
+  void input_mouse_move_passive(float x, float y);
+  void input_mouse_wheel(float y);
 
-// INTERNAL EVENTS IN RESPONSE TO EXTERNAL INPUT, DEFAULTS (CAN BE OVERRIDDEN)
+  // INTERNAL EVENTS IN RESPONSE TO EXTERNAL INPUT, DEFAULTS (CAN BE OVERRIDDEN)
   virtual bool event_key_down(signed long key, bool alt = false, bool ctrl = false, bool shift = false)
   {
     VSX_UNUSED(key);
@@ -459,8 +457,12 @@ public:
     return true;
   }
 
+  virtual void event_text(wchar_t character_wide, char character)
+  {
+    VSX_UNUSED(character_wide);
+    VSX_UNUSED(character_wide);
+  }
 
-  // new events
   virtual void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   virtual void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   virtual void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button)

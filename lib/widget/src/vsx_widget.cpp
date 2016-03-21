@@ -357,7 +357,7 @@ vsx_widget* vsx_widget::find_component(vsx_widget_coords coords, vsx_widget_dist
 
 
 
-void vsx_widget::mouse_wheel(float y)
+void vsx_widget::input_mouse_wheel(float y)
 {
 	if (m_o_focus)
 	m_o_focus->event_mouse_wheel(y);
@@ -368,7 +368,7 @@ void vsx_widget::event_mouse_wheel(float y)
   VSX_UNUSED(y);
 }
 
-void vsx_widget::mouse_move_passive(float x, float y)
+void vsx_widget::input_mouse_move_passive(float x, float y)
 {
   vsx_mouse_control.set_cursor(MOUSE_CURSOR_ARROW);
   vsx_widget_coords coord;
@@ -391,7 +391,7 @@ void vsx_widget::set_key_modifiers(bool alt_, bool ctrl_, bool shift_)
 	shift = shift_;
 }
 
-void vsx_widget::mouse_down(float x, float y, int button)
+void vsx_widget::input_mouse_down(float x, float y, int button)
 {
   vsx_mouse_control.set_cursor(MOUSE_CURSOR_ARROW);
   vsx_mouse_control.show_cursor();
@@ -457,7 +457,7 @@ void vsx_widget::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords
 }
 
 
-void vsx_widget::mouse_move(float x, float y)
+void vsx_widget::input_mouse_move(float x, float y)
 {
   vsx_mouse_control.set_cursor(MOUSE_CURSOR_ARROW);
   if (m_focus)
@@ -470,7 +470,7 @@ void vsx_widget::mouse_move(float x, float y)
   }
 }
 
-void vsx_widget::mouse_up(float x, float y, int button)
+void vsx_widget::input_mouse_up(float x, float y, int button)
 {
   vsx_mouse_control.set_cursor(MOUSE_CURSOR_ARROW);
   if (m_focus)

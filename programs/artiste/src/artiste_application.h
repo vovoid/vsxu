@@ -91,7 +91,7 @@ public:
   void char_event(const wchar_t& character)
   {
     req(my_draw.desktop);
-    my_draw.desktop->key_down(character, vsx_input_keyboard.pressed_alt(), vsx_input_keyboard.pressed_ctrl(), vsx_input_keyboard.pressed_shift());
+    my_draw.desktop->input_key_down(character, vsx_input_keyboard.pressed_alt(), vsx_input_keyboard.pressed_ctrl(), vsx_input_keyboard.pressed_shift());
   }
 
   void key_down_event(long scancode)
@@ -103,41 +103,41 @@ public:
     if (vsx_input_keyboard.pressed_ctrl() && scancode == VSX_SCANCODE_4)
       vsx_profiler_manager::get_instance()->disable();
 
-    my_draw.desktop->key_down(scancode, vsx_input_keyboard.pressed_alt(), vsx_input_keyboard.pressed_ctrl(), vsx_input_keyboard.pressed_shift());
+    my_draw.desktop->input_key_down(scancode, vsx_input_keyboard.pressed_alt(), vsx_input_keyboard.pressed_ctrl(), vsx_input_keyboard.pressed_shift());
   }
 
   void key_up_event(long scancode)
   {
     req(my_draw.desktop);
-    my_draw.desktop->key_up(scancode, vsx_input_keyboard.pressed_alt(), vsx_input_keyboard.pressed_ctrl(), vsx_input_keyboard.pressed_shift());
+    my_draw.desktop->input_key_up(scancode, vsx_input_keyboard.pressed_alt(), vsx_input_keyboard.pressed_ctrl(), vsx_input_keyboard.pressed_shift());
   }
 
   // movement with left mouse button pressed, i.e. dragging or moving after click
   void mouse_move_event(int x, int y)
   {
     req(my_draw.desktop);
-    my_draw.desktop->mouse_move(x, y);
+    my_draw.desktop->input_mouse_move(x, y);
   }
 
   // movement without left button pressed - "hovering"
   void mouse_move_passive_event(int x, int y)
   {
     req(my_draw.desktop);
-    my_draw.desktop->mouse_move_passive(x, y);
+    my_draw.desktop->input_mouse_move_passive(x, y);
   }
 
   // buttons: 0 = left, 1 = middle, 2 = right
   void mouse_down_event(unsigned long button, int x, int y)
   {
     req(my_draw.desktop);
-    my_draw.desktop->mouse_down(x, y, button );
+    my_draw.desktop->input_mouse_down(x, y, button );
   }
 
   // buttons: 0 = left, 1 = middle, 2 = right
   void mouse_up_event(unsigned long button, int x, int y)
   {
     req(my_draw.desktop);
-    my_draw.desktop->mouse_up( x, y, button );
+    my_draw.desktop->input_mouse_up( x, y, button );
   }
 
   // -1 to -5 or whatever up to +1

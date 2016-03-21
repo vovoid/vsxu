@@ -69,7 +69,7 @@ void vsx_widget_desktop::reinit()
   vsx_widget::reinit();
 }
 
-bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool n_shift)
+bool vsx_widget_desktop::input_key_down(signed long key, bool n_alt, bool n_ctrl, bool n_shift)
 {
   this->alt = n_alt;
   this->ctrl = n_ctrl;
@@ -126,7 +126,7 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
 }
 
 
-bool vsx_widget_desktop::key_up(signed long key, bool alt, bool ctrl, bool shift)
+bool vsx_widget_desktop::input_key_up(signed long key, bool alt, bool ctrl, bool shift)
 {
   this->ctrl = ctrl;
 

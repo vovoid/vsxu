@@ -47,7 +47,6 @@ public:
   void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);
   bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
-  //bool event_key_up(signed long key, bool alt, bool ctrl, bool shift);
   void command_process_back_queue(vsx_command_s *t);
 
   vsx_widget_controller_color();
