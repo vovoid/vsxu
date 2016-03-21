@@ -53,7 +53,7 @@ if (VSXU_GLFW EQUAL 1)
     )
 else()
     set(GFX_LIB_SOURCES
-        src/sdl/vsx_mouse.cpp
+        src/sdl/vsx_application_input_mouse_control.cpp
         src/sdl/vsx_application_run.cpp
     )
 endif()

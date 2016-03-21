@@ -51,7 +51,7 @@ class vsx_widget_chooser_editor : public vsx_widget_editor {
   vsx_widget_coords drag_coords;
   int mod_i;
   vsx_string<>macro_name;
-  vsx_vector3<> drop_pos;
+  vsx_vector2f drop_pos;
   vsx_widget* server;
   int draw_tooltip;
   vsx_string<>tooltip_text;

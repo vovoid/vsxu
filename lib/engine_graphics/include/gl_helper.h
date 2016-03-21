@@ -27,6 +27,7 @@
 
 
 #include <vsx_platform.h>
+#include <math/vector/vsx_vector2.h>
 #include <math/vector/vsx_vector3.h>
 #include <color/vsx_color.h>
 #include <engine_graphics_dllimport.h>
@@ -34,7 +35,7 @@
 
 
 
-VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box(const vsx_vector3<> &pos, const float &width, const float &height);
+VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box(const vsx_vector2f &pos, const float &width, const float &height);
 VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_c(const vsx_vector3<> &pos, const float &width, const float &height);
 VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_tex(const vsx_vector3<> &pos, const float &width, const float &height);
 VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_tex_c(const vsx_vector3<> &pos, const float &width, const float &height);

@@ -426,7 +426,7 @@ public:
 
   void key_down_event(long scancode)
   {
-    if (vsx_keyboard.pressed_alt() && vsx_keyboard.pressed_ctrl() && vsx_keyboard.pressed_shift() && scancode == VSX_SCANCODE_P)
+    if (vsx_input_keyboard.pressed_alt() && vsx_input_keyboard.pressed_ctrl() && vsx_input_keyboard.pressed_shift() && scancode == VSX_SCANCODE_P)
     {
       if (record_movie == false)
         movie_frame_count = 0;
@@ -434,15 +434,13 @@ public:
       return;
     }
 
-    if (vsx_keyboard.pressed_alt() && vsx_keyboard.pressed_ctrl() && !vsx_keyboard.pressed_shift() && scancode == VSX_SCANCODE_P)
+    if (vsx_input_keyboard.pressed_alt() && vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_shift() && scancode == VSX_SCANCODE_P)
       take_screenshot = true;
 
-    if (*gui_prod_fullwindow && vsx_keyboard.pressed_alt() && !vsx_keyboard.pressed_ctrl() && !vsx_keyboard.pressed_shift() && scancode == VSX_SCANCODE_T)
+    if (*gui_prod_fullwindow && vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_shift() && scancode == VSX_SCANCODE_T)
       gui_prod_fullwindow_helptext = !gui_prod_fullwindow_helptext;
 
-    if (*gui_prod_fullwindow && !vsx_keyboard.pressed_alt() && vsx_keyboard.pressed_ctrl() && !vsx_keyboard.pressed_shift() && scancode == VSX_SCANCODE_T)
+    if (*gui_prod_fullwindow && !vsx_input_keyboard.pressed_alt() && vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_shift() && scancode == VSX_SCANCODE_T)
       reset_time_measurements = true;
-
-    desktop->key_down(-scancode, vsx_keyboard.pressed_alt(), vsx_keyboard.pressed_ctrl(), vsx_keyboard.pressed_shift());
   }
 };

@@ -30,7 +30,6 @@
 #include "vsx_command.h"
 #include "vsx_font.h"
 #include <filesystem/vsx_filesystem.h>
-#include "vsx_mouse.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
 // local includes

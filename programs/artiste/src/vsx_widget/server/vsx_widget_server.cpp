@@ -1229,7 +1229,7 @@ void vsx_widget_server::event_mouse_down(vsx_widget_distance distance,vsx_widget
   selection = false;
   delta_move = delta_zoom = 0.0f;
   selection_start = distance.center;
-  remPointer = mouse.get_cursor_pos();
+  remPointer = vsx_input_mouse.position;
   if (button == 0)
   {
     selection_end = selection_start;
@@ -1277,10 +1277,10 @@ void vsx_widget_server::event_mouse_move(vsx_widget_distance distance,vsx_widget
   {
 
     selection_end = distance.center;
-    vsx_vector3<> a;
-    vsx_vector3<> b;
-    a = selection_start;// - pos;
-    b = selection_end;// - parent->get_pos_p() - pos;
+    vsx_vector2f a;
+    vsx_vector2f b;
+    a = selection_start;
+    b = selection_end;
 
     if (a.x < b.x) {
       float t = a.x;
@@ -1315,24 +1315,24 @@ void vsx_widget_server::event_mouse_move(vsx_widget_distance distance,vsx_widget
   } else
   {
     if (mouse_down_r && !mouse_down_l) {
-      if (mouse.get_cursor_pos() != remPointer) {
-        float dz = (mouse.get_cursor_pos().y-remPointer.y);
+      if (vsx_input_mouse.position != remPointer) {
+        float dz = (vsx_input_mouse.position.y-remPointer.y);
         camera.set_extra_movement( vsx_vector3f(0, 0, -dz) * 0.0005f );
         if (delta_zoom * 0.005f > 0.09f)
-          mouse.hide_cursor();
-        mouse.set_cursor_pos(remPointer.x,remPointer.y);
+          vsx_mouse_control.hide_cursor();
+        vsx_mouse_control.set_cursor_pos(remPointer.x,remPointer.y);
       }
     }
     if (!mouse_down_r && mouse_down_l && server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_INTERNAL) {
-      if (mouse.get_cursor_pos() != remPointer) {
+      if (vsx_input_mouse.position != remPointer) {
         vsx_vector3f delta(
-          mouse.get_cursor_pos().x-remPointer.x,
-          mouse.get_cursor_pos().y-remPointer.y
+          vsx_input_mouse.position.x - remPointer.x,
+          vsx_input_mouse.position.y - remPointer.y
         );
         camera.set_extra_movement( delta * 0.0003f );
         if ( (delta * 0.005f).length() > 0.09f)
-          mouse.hide_cursor();
-        mouse.set_cursor_pos(remPointer.x,remPointer.y);
+          vsx_mouse_control.hide_cursor();
+        vsx_mouse_control.set_cursor_pos(remPointer.x, remPointer.y);
       }
     }
     else
@@ -1342,11 +1342,12 @@ void vsx_widget_server::event_mouse_move(vsx_widget_distance distance,vsx_widget
 
 void vsx_widget_server::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
 {
-  mouse.show_cursor();
+  vsx_mouse_control.show_cursor();
   if (selection)
   {
-    vsx_vector3<> a = selection_start - parent->get_pos_p() - pos;
-    vsx_vector3<> b = selection_end - parent->get_pos_p() - pos;
+    vsx_vector3f pp = parent->get_pos_p() - pos;
+    vsx_vector3<> a = vsx_vector3f(selection_start.x, selection_start.y) - pp;
+    vsx_vector3<> b = vsx_vector3f(selection_end.x, selection_end.y) - pp;
     for (std::list <vsx_widget*>::iterator it=children.begin(); it != children.end(); ++it)
     {
       if (
@@ -1416,8 +1417,8 @@ void vsx_widget_server::draw()
   if (selection)
   {
     vsx_widget_skin::get_instance()->set_color_gl_a(0, 0.3);
-    vsx_vector3<> s_s = selection_start+pos;
-    vsx_vector3<> s_e = selection_end+pos;
+    vsx_vector2f s_s = selection_start + vsx_vector2f(pos.x, pos.y);
+    vsx_vector2f s_e = selection_end + vsx_vector2f(pos.x, pos.y);
     draw_box(s_s, s_e.x-s_s.x,s_e.y-s_s.y);
     glLineWidth(1);
     glColor4f(0.4,0.4,0.6,0.7);

@@ -2,6 +2,6 @@
 class vsx_widget_distance
 {
 public:
-  vsx_vector3<> center;
-  vsx_vector3<> corner;
+  vsx_vector2f center;
+  vsx_vector2f corner;
 };

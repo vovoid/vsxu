@@ -47,7 +47,6 @@
 
 // widget
 #include "vsx_widget_dllimport.h"
-#include "vsx_mouse.h"
 #include "vsx_widget_coords.h"
 #include "vsx_widget_distance.h"
 #include "vsx_widget_camera.h"
@@ -86,7 +85,6 @@ public:
   // GLOBALS
   WIDGET_DLLIMPORT static bool global_delete;
   // style
-  WIDGET_DLLIMPORT static vsx_mouse mouse;
   WIDGET_DLLIMPORT static float screen_x;
   WIDGET_DLLIMPORT static float screen_y;
   WIDGET_DLLIMPORT static float screen_aspect;
@@ -185,9 +183,9 @@ public:
   float interpolation_speed;
   bool interpolating_pos;
   bool interpolating_size;
-  vsx_vector3<> scaling_start;
-  vsx_vector3<> scaling_start_size;
-  vsx_vector3<> scaling_start_pos;
+  vsx_vector2f scaling_start;
+  vsx_vector2f scaling_start_size;
+  vsx_vector2f scaling_start_pos;
 
   bool support_interpolation;
   bool support_scaling;
@@ -432,6 +430,8 @@ public:
       return k_focus->event_key_up(key,alt,ctrl,shift);
     } else return true;
   }
+
+
   static void set_key_modifiers(bool alt_, bool ctrl_, bool shift_);
 
   void mouse_down(float x, float y, int button);

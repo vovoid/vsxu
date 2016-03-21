@@ -1113,7 +1113,7 @@ void vsx_widget_component::draw()
       } else
       if (m_o_focus == this && !mouse_down_l && !mouse_down_r) {
         glColor4f(0,0,0,0.8);
-        vsx_vector3<> rp = t + message_pos;
+        vsx_vector3f rp = t + vsx_vector3f(message_pos.x, message_pos.y);
         rp.y -= 0.004;
         draw_box(rp, 0.004*20, -0.004*10);
         rp.x += 0.0008;

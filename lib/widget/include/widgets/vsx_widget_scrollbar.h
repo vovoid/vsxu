@@ -40,7 +40,7 @@ class WIDGET_DLLIMPORT vsx_widget_scrollbar : public vsx_widget
   float* control_value;
   float shz;
   int scroll_type; // 0 = horizontal, 1 = vertical
-  vsx_vector3<> click_down;
+  vsx_vector2f click_down;
 
 public:
 

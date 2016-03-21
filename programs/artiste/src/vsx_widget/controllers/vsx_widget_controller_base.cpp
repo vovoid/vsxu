@@ -75,7 +75,7 @@ vsx_widget_controller_base::vsx_widget_controller_base() //include first
 
 vsx_widget_controller_base::~vsx_widget_controller_base()
 {
-  mouse.show_cursor();
+  vsx_mouse_control.show_cursor();
 }
 
 void vsx_widget_controller_base::init()
@@ -112,16 +112,6 @@ void vsx_widget_controller_base::generate_menu()
   menu->size.x = 0.2;
   menu->size.y = 0.5;
   //don't forget to init the menu in subclasses
-}
-
-bool vsx_widget_controller_base::key_down(signed long key, bool alt, bool ctrl, bool shift)
-{
-  VSX_UNUSED(alt);
-  VSX_UNUSED(ctrl);
-  VSX_UNUSED(shift);
-
-  if (key == 'c') delete_();
-  return true;
 }
 
 void vsx_widget_controller_base::get_value()
@@ -226,7 +216,7 @@ void vsx_widget_controller_base::event_mouse_down(vsx_widget_distance distance,v
 {
   mouse_moves = 0;
 
-  remPointer = mouse.get_cursor_pos();
+  remPointer = vsx_input_mouse.position;
 
   if (!owned)
   {
@@ -272,7 +262,7 @@ void vsx_widget_controller_base::event_mouse_move(vsx_widget_distance distance,v
   ++mouse_moves;  
   if (controlling)
   {
-    if (remPointer != mouse.get_cursor_pos()) //don't send unnecessary messages
+    if (remPointer != vsx_input_mouse.position) //don't send unnecessary messages
       // send target_value to the engine or parent widget
       send_to_server();
   }

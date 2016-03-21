@@ -30,7 +30,6 @@
 class input_test_application
     : public vsx_application
 {
-
 public:
 
   void draw(int id)
@@ -47,7 +46,6 @@ public:
 
     if (event.type == vsx_input_event::type_keyboard)
       vsx_printf(L" keyboard event, pressed: %d     scancode: %d \n ", event.keyboard.pressed,  event.keyboard.scan_code);
-
   }
 
   void key_down_event(long key)

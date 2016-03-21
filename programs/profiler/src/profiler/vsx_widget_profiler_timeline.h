@@ -52,7 +52,7 @@ public:
   void time_holder_set(vsx_widget_time_holder* n);
   vsx_widget_time_holder* time_holder_get();
 
-  void move_time(vsx_vector3<> world);
+  void move_time(vsx_vector2f world);
   void auto_move_time();
 
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)

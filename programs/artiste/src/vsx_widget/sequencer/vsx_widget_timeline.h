@@ -37,7 +37,7 @@ public:
   float auto_move_dir;
   float a_dist;
   bool show_wave_data;
-  void move_time(vsx_vector3<> world);
+  void move_time(vsx_vector2f world);
 
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
   {

@@ -39,8 +39,8 @@ class vsx_widget_server : public vsx_widget {
 
   bool selection;
   float delta_move,delta_zoom;
-  vsx_vector3<> remPointer;
-  vsx_vector3<> selection_start,selection_end;
+  vsx_vector2f remPointer;
+  vsx_vector2f selection_start,selection_end;
 
   vsx_command_list dump_commands;
   // dialogs

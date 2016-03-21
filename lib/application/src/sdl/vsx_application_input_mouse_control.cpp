@@ -21,46 +21,36 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __vsx_mouse__
-#define __vsx_mouse__
-#ifdef _WIN32
-#include <windows.h>
-#endif
+#include <vsx_application_input_mouse_control.h>
+#include "vsx_application_sdl_window_holder.h"
+#include <SDL2/SDL.h>
 
-#include <math/vector/vsx_vector3.h>
+void vsx_application_mouse_control::set_cursor(int id) {
+  cursor = id;
+}
 
-#include "vsx_application_dllimport.h"
-
-#define MOUSE_CURSOR_ARROW 0
-#define MOUSE_CURSOR_HAND 1
-#define MOUSE_CURSOR_IBEAM 2
-#define MOUSE_CURSOR_SIZE 3
-#define MOUSE_CURSOR_NS 4
-#define MOUSE_CURSOR_WE 5
-#define MOUSE_CURSOR_NESW 6
-#define MOUSE_CURSOR_NWSE 7
-
-class APPLICATION_DLLIMPORT vsx_mouse
+void vsx_application_mouse_control::show_cursor()
 {
-  int cursor;
-  bool visible;
-  vsx_vector3<> position;
+  SDL_ShowCursor(1);
+  // This causes problems with knobs & arcballs, mouse visibility is disabled for now
+  //glfwEnable(GLFW_MOUSE_CURSOR);
+  //glfwSetMousePos((int)(position.x), (int)(position.y));
+}
 
-public:
+void vsx_application_mouse_control::hide_cursor()
+{
+  SDL_ShowCursor(1);
+  // This causes problems with knobs & arcballs, mouse visibility is disabled for now
+  //  glfwDisable(GLFW_MOUSE_CURSOR);
+}
 
-  void set_cursor(int id);
 
-  vsx_vector3<> get_cursor_pos() __attribute__((always_inline))
-  {
-    return position;
-  }
+void vsx_application_mouse_control::set_cursor_pos(float x, float y)
+{
+  SDL_WarpMouseInWindow(vsx_application_sdl_window_holder::get_instance()->window, x, y);
+}
 
-  void set_cursor_pos(float x, float y);
-  void show_cursor();
-  void hide_cursor();
-
-  vsx_mouse();
-};
-
-#endif
-
+vsx_application_mouse_control::vsx_application_mouse_control()
+{
+  cursor = 0;
+}

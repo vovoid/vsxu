@@ -242,7 +242,6 @@ void vsx_widget_ultra_chooser::event_mouse_move_passive(vsx_widget_distance dist
           draw_tooltip = 1;
           tooltip_pos = distance.corner;
           tooltip_pos.y-=0.01;
-          tooltip_pos.z = pos.z;
         }
       }
     }
@@ -331,7 +330,6 @@ void vsx_widget_ultra_chooser::event_mouse_move(vsx_widget_distance distance,vsx
   if (drag_module) {
 
     draw_tooltip = 0;
-    drag_pos.z = 0;
         vsx_widget_distance l_distance;
         vsx_widget* tt = root->find_component(coords,l_distance);
         if (tt)

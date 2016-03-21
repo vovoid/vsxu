@@ -239,12 +239,12 @@ void vsx_widget_controller_color::event_mouse_move(vsx_widget_distance distance,
 
   if (angle_down)
   {
-    if (mouse.get_cursor_pos() != remPointer)
+    if (vsx_input_mouse.position != remPointer)
     {
       angle_dest -= (distance.center.x-remWorld.x)*20;
       while (angle_dest > 1) angle_dest -= 1.0;
       while (angle_dest < 0) angle_dest += 1.0;
-      mouse.set_cursor_pos(remPointer.x,remPointer.y);
+      vsx_mouse_control.set_cursor_pos(remPointer.x,remPointer.y);
       calculate_color();
       send_to_server();
     }
@@ -264,7 +264,7 @@ void vsx_widget_controller_color::event_mouse_move(vsx_widget_distance distance,
 }
 
 void vsx_widget_controller_color::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
-  if (angle_down || alpha_down) mouse.show_cursor();
+  if (angle_down || alpha_down) vsx_application_control::get_instance()->mouse.show_cursor();
   alpha_down = angle_down = color_down = false;
   vsx_widget::event_mouse_up(distance,coords,button);
 }
@@ -285,23 +285,20 @@ void vsx_widget_controller_color::event_mouse_down(vsx_widget_distance distance,
     if (((distance.center.x > -size.x/2) && (distance.center.x < -size.x/2+base_size*size.x))
     && ((distance.center.y > -size.y/2) && (distance.center.y < -size.y/2+base_size*size.y)))
     {
-      //printf("color down\n");
       color_down = true;
-    } else
+    }
+    else
     if (((distance.center.x > -size.x/2) && (distance.center.x < -size.x/2+base_size*size.x))
     && ((distance.center.y > -size.y/2+base_size*size.y) && (distance.center.y < size.y/2)))
     {
-      //printf("angle down\n");
       angle_down = true;
-      remPointer = mouse.get_cursor_pos();
-      mouse.hide_cursor();
+      remPointer = vsx_input_mouse.position;
+      vsx_mouse_control.hide_cursor();
     } else
     if (((distance.center.x > -size.x/2+base_size*size.x) && (distance.center.x < size.x/2))
     && ((distance.center.y > -size.y/2) && (distance.center.y < -size.y/2+base_size*size.y)))
     {
-      //printf("alpha down\n");
       alpha_down = true;
-      //mouse.hide_cursor();
     }
   }
   if (color_down) event_mouse_move(distance,coords);

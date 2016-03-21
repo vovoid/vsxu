@@ -63,15 +63,15 @@ void vsx_widget_controller_knob::init()
 }
 
 void vsx_widget_controller_knob::on_delete() {
-  mouse.show_cursor();
+  vsx_mouse_control.show_cursor();
 }
 
 void vsx_widget_controller_knob::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
 {
   if (controlling && button == 0)
   {
-    mouse.show_cursor();
-    mouse.set_cursor_pos(remPointer.x,remPointer.y);
+    vsx_mouse_control.show_cursor();
+    vsx_mouse_control.set_cursor_pos(remPointer.x,remPointer.y);
   }
   vsx_widget_controller_base::event_mouse_up(distance, coords, button);
 }
@@ -85,21 +85,21 @@ void vsx_widget_controller_knob::event_mouse_down(vsx_widget_distance distance,v
   if (a.length() <0.5 && button == 0)
   {
     controlling = true;
-    mouse.hide_cursor();
+    vsx_mouse_control.hide_cursor();
   }
   vsx_widget_controller_base::event_mouse_down(distance, coords, button);
 }
 
 void vsx_widget_controller_knob::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
 {
-  if (mouse.get_cursor_pos() != remPointer && controlling)
+  if (vsx_input_mouse.position != remPointer && controlling)
   {
-    deltamove=(distance.center-remWorld)/size;
+    deltamove = (distance.center-remWorld)/size;
     if (fabs(deltamove.x)>fabs(deltamove.y)) deltamove.y=0.0f; else deltamove.x=0.0f;
     target_value += (((deltamove.y)+((deltamove.x)/15.0f))*0.5*multiplier);
     cap_value();
     vsx_widget_controller_base::event_mouse_move(distance, coords);
-    mouse.set_cursor_pos(remPointer.x,remPointer.y);
+    vsx_mouse_control.set_cursor_pos(remPointer.x,remPointer.y);
   } else
   vsx_widget_controller_base::event_mouse_move(distance, coords);
 }

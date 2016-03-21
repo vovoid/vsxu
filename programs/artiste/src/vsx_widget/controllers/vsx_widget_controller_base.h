@@ -40,9 +40,10 @@ public:
   double smx, smy; // coordinate where mouse has been clicked
   double mdx, mdy; // delta mouse move
   bool controlling, isolate;
-  //float xd;
   vsx_vector3<> parentpos;
-  vsx_vector3<> deltamove,remPointer,remWorld;
+  vsx_vector2f deltamove;
+  vsx_vector2f remPointer;
+  vsx_vector2f remWorld;
   float temp;
   std::map<vsx_string<>,vsx_string<> >* param_spec;
 //----
@@ -72,7 +73,6 @@ public:
   virtual void generate_menu();
   virtual void init();
   virtual void before_delete();
-  virtual bool key_down(signed long key, bool alt, bool ctrl, bool shift);
   virtual void command_process_back_queue(vsx_command_s *t);
   virtual void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   virtual void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button);

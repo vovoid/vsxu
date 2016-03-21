@@ -259,10 +259,8 @@ void vsx_widget_controller_ab::draw()
 void vsx_widget_controller_ab::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
 
     if (controlling && button == 0)
-    {
-      mouse.set_cursor_pos(remPointer.x,remPointer.y);
-    }
-    mouse.show_cursor();
+      vsx_mouse_control.set_cursor_pos(remPointer.x, remPointer.y);
+    vsx_mouse_control.show_cursor();
     LastRot = ThisRot;
     controlling = false;
     vsx_widget::event_mouse_up(distance,coords,button);
@@ -279,8 +277,8 @@ void vsx_widget_controller_ab::event_mouse_down(vsx_widget_distance distance,vsx
     if (sqrt(MousePt.s.X*MousePt.s.X + MousePt.s.Y*MousePt.s.Y) < 0.4f)
     {
       controlling = true;
-      remPointer=mouse.get_cursor_pos();
-      mouse.hide_cursor();
+      remPointer = vsx_input_mouse.position;
+      vsx_mouse_control.hide_cursor();
     }
   }
 
@@ -289,7 +287,7 @@ void vsx_widget_controller_ab::event_mouse_down(vsx_widget_distance distance,vsx
 
 void vsx_widget_controller_ab::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
 {
-  if (mouse.get_cursor_pos() != remPointer && controlling)
+  if (vsx_input_mouse.position != remPointer && controlling)
   {
     Point2fT    oldMousePt = MousePt;
 
@@ -327,7 +325,7 @@ void vsx_widget_controller_ab::event_mouse_move(vsx_widget_distance distance,vsx
 
     LastRot = ThisRot;
 
-    mouse.set_cursor_pos(remPointer.x,remPointer.y);
+    vsx_mouse_control.set_cursor_pos(remPointer.x,remPointer.y);
   } else
   if (!controlling)
   vsx_widget_controller_base::event_mouse_move(distance, coords);
@@ -339,7 +337,7 @@ void vsx_widget_controller_ab::event_mouse_double_click(vsx_widget_distance dist
   VSX_UNUSED(coords);
   VSX_UNUSED(button);
 
-  mouse.show_cursor();
+  vsx_mouse_control.show_cursor();
   _delete();
 }
 

@@ -47,7 +47,7 @@ vsx_widget_time_holder* vsx_widget_profiler_timeline::time_holder_get()
 
 
 
-void vsx_widget_profiler_timeline::move_time(vsx_vector3<> world)
+void vsx_widget_profiler_timeline::move_time(vsx_vector2f world)
 {
   if (!time_holder)
     VSX_ERROR_RETURN("time_holder not set");

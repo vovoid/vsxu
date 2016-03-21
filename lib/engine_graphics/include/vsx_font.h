@@ -30,6 +30,8 @@
 
 #include <texture/vsx_texture.h>
 #include <color/vsx_color.h>
+#include <math/vector/vsx_vector2.h>
+#include <math/vector/vsx_vector3.h>
 
 #include <vsx_platform.h>
 
@@ -92,6 +94,12 @@ public:
   
   
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print(vsx_vector3<> p, const vsx_string<>& str, const float size, const vsx_string<>colors = "");
+
+  vsx_vector3<> print(vsx_vector2f p, const vsx_string<>& str, const float size, const vsx_string<>colors = "")
+  {
+    return print(vsx_vector3f(p.x, p.y), str, size, colors);
+  }
+
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print(vsx_vector3<> p, const vsx_string<>& str, const vsx_string<>& font, float size, const vsx_string<>colors = "");
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print_center(vsx_vector3<> p, const vsx_string<>& str, float size);
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print_right(vsx_vector3<> p, const vsx_string<>& str, float size);

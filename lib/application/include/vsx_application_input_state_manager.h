@@ -26,5 +26,5 @@ public:
   }
 };
 
-#define vsx_keyboard vsx_application_input_state_manager::get()->keyboard
-
+#define vsx_input_keyboard vsx_application_input_state_manager::get()->keyboard
+#define vsx_input_mouse vsx_application_input_state_manager::get()->mouse

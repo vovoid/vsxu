@@ -32,7 +32,6 @@ std::map<vsx_string<>, vsx_widget*> vsx_widget::global_widget_list;
 std::map<int, vsx_widget*> vsx_widget::global_index_list;
 
 
-vsx_mouse vsx_widget::mouse;
 vsx_widget *vsx_widget::root;
 
 vsx_widget_camera vsx_widget::camera;
@@ -371,7 +370,7 @@ void vsx_widget::event_mouse_wheel(float y)
 
 void vsx_widget::mouse_move_passive(float x, float y)
 {
-  mouse.set_cursor(MOUSE_CURSOR_ARROW);
+  vsx_mouse_control.set_cursor(MOUSE_CURSOR_ARROW);
   vsx_widget_coords coord;
   coord.init(x,y);
   vsx_widget_distance result;
@@ -394,8 +393,8 @@ void vsx_widget::set_key_modifiers(bool alt_, bool ctrl_, bool shift_)
 
 void vsx_widget::mouse_down(float x, float y, int button)
 {
-	mouse.set_cursor(MOUSE_CURSOR_ARROW);
-  mouse.show_cursor();
+  vsx_mouse_control.set_cursor(MOUSE_CURSOR_ARROW);
+  vsx_mouse_control.show_cursor();
 
   vsx_widget_coords coord;
   coord.init(x,y);
@@ -406,7 +405,7 @@ void vsx_widget::mouse_down(float x, float y, int button)
 
   // set up coordinates for
   mouse_down_pos = result;
-  mouse.set_cursor_pos(x,y);
+  vsx_mouse_control.set_cursor_pos(x,y);
   k_focus = widget_obj_at_cursor;
   m_focus = widget_obj_at_cursor;
   widget_obj_at_cursor->event_mouse_down(result,coord,button);
@@ -460,11 +459,11 @@ void vsx_widget::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords
 
 void vsx_widget::mouse_move(float x, float y)
 {
-  mouse.set_cursor(MOUSE_CURSOR_ARROW);
+  vsx_mouse_control.set_cursor(MOUSE_CURSOR_ARROW);
   if (m_focus)
   {
     vsx_widget_coords coord;
-    mouse.set_cursor_pos(x,y);
+    vsx_mouse_control.set_cursor_pos(x,y);
     vsx_widget_distance distance;
     m_focus->calculate_mouse_distance(x,y,coord,distance);
     m_focus->event_mouse_move(distance,coord);
@@ -473,7 +472,7 @@ void vsx_widget::mouse_move(float x, float y)
 
 void vsx_widget::mouse_up(float x, float y, int button)
 {
-  mouse.set_cursor(MOUSE_CURSOR_ARROW);
+  vsx_mouse_control.set_cursor(MOUSE_CURSOR_ARROW);
   if (m_focus)
   {
     vsx_widget_coords coord;
@@ -517,22 +516,22 @@ void vsx_widget::event_mouse_move_passive(vsx_widget_distance distance,vsx_widge
     }
 
     if ((resize_i == 2) || (resize_i == 8))
-      mouse.set_cursor(MOUSE_CURSOR_WE);
+      vsx_mouse_control.set_cursor(MOUSE_CURSOR_WE);
 
     if ((resize_i == 1) || (resize_i == 4))
-      mouse.set_cursor(MOUSE_CURSOR_NS);
+      vsx_mouse_control.set_cursor(MOUSE_CURSOR_NS);
 
     if (resize_i == 6)
-      mouse.set_cursor(MOUSE_CURSOR_NWSE);
+      vsx_mouse_control.set_cursor(MOUSE_CURSOR_NWSE);
 
     if (resize_i == 9)
-      mouse.set_cursor(MOUSE_CURSOR_NWSE);
+      vsx_mouse_control.set_cursor(MOUSE_CURSOR_NWSE);
 
     if (resize_i == 3)
-      mouse.set_cursor(MOUSE_CURSOR_NESW);
+      vsx_mouse_control.set_cursor(MOUSE_CURSOR_NESW);
 
     if (resize_i == 12)
-      mouse.set_cursor(MOUSE_CURSOR_NESW);
+      vsx_mouse_control.set_cursor(MOUSE_CURSOR_NESW);
   }
 }
 
@@ -556,14 +555,12 @@ void vsx_widget::calculate_mouse_distance(float x, float y, vsx_widget_coords &c
     distance.center = world;
     distance.corner.x = target_size.x*0.5 - world.x;
     distance.corner.y = target_size.y*0.5 - world.y;
-    distance.corner.z = distance.center.z = 0;
     return;
   }
 
   distance.corner = world;
   distance.center.x = world.x - target_size.x*0.5f;
   distance.center.y = world.y - target_size.y*0.5f;
-  distance.corner.z = distance.center.z = 0;
 }
 
 void vsx_widget::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
@@ -625,22 +622,22 @@ void vsx_widget::resize(vsx_widget_distance distance)
     return;
 
   if ((resize_i == 2) || (resize_i == 8))
-    mouse.set_cursor(MOUSE_CURSOR_WE);
+    vsx_mouse_control.set_cursor(MOUSE_CURSOR_WE);
 
   if ((resize_i == 1) || (resize_i == 4))
-    mouse.set_cursor(MOUSE_CURSOR_NS);
+    vsx_mouse_control.set_cursor(MOUSE_CURSOR_NS);
 
   if (resize_i == 6)
-    mouse.set_cursor(MOUSE_CURSOR_NWSE);
+    vsx_mouse_control.set_cursor(MOUSE_CURSOR_NWSE);
 
   if (resize_i == 9)
-    mouse.set_cursor(MOUSE_CURSOR_NWSE);
+    vsx_mouse_control.set_cursor(MOUSE_CURSOR_NWSE);
 
   if (resize_i == 3)
-    mouse.set_cursor(MOUSE_CURSOR_NESW);
+    vsx_mouse_control.set_cursor(MOUSE_CURSOR_NESW);
 
   if (resize_i == 12)
-    mouse.set_cursor(MOUSE_CURSOR_NESW);
+    vsx_mouse_control.set_cursor(MOUSE_CURSOR_NESW);
 
   float dx = distance.center.x-mouse_down_pos.center.x;
   float dy = mouse_down_pos.center.y - distance.center.y;

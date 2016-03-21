@@ -1851,7 +1851,7 @@ void vsx_widget_anchor::event_mouse_down(vsx_widget_distance distance,vsx_widget
         if (io == -1 && connections.size() && p_type != "render") return;
         temp_drag_connector = add(new vsx_widget_connector_bezier,name+":ct");
         ((vsx_widget_connector_bezier*)temp_drag_connector)->receiving_focus = false;
-        temp_drag_connector->size = distance.center;
+        temp_drag_connector->size = vsx_vector3f(distance.center.x, distance.center.y);
         temp_drag_connector->init();
       }
     } else

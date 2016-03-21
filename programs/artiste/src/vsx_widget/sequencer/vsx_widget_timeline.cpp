@@ -30,7 +30,6 @@
 #include "vsx_command.h"
 #include "vsx_font.h"
 #include <filesystem/vsx_filesystem.h>
-#include "vsx_mouse.h"
 #include "vsx_param.h"
 #include "vsx_module.h"
 
@@ -47,7 +46,7 @@
 #include <gl_helper.h>
 
 
-void vsx_widget_timeline::move_time(vsx_vector3<> world) {
+void vsx_widget_timeline::move_time(vsx_vector2f world) {
   if (owner->engine_status == VSX_ENGINE_STOPPED) {
     float f =  CLAMP( (world.x + size.x/2) / (size.x), 0, 1);
     float c_time = owner->tstart+f*(owner->tend - owner->tstart);

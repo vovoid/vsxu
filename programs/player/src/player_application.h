@@ -114,7 +114,7 @@ public:
         overlay->set_help(2);
         break;
       case VSX_SCANCODE_R:
-        if (vsx_keyboard.pressed_ctrl())
+        if (vsx_input_keyboard.pressed_ctrl())
           manager->pick_random_visual();
         else
         {

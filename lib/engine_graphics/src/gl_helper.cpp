@@ -25,7 +25,7 @@
 #include <vsx_gl_global.h>
 #include <gl_helper.h>
 
-void draw_box(const vsx_vector3<> &pos, const float &width, const float &height)
+void draw_box(const vsx_vector2f &pos, const float &width, const float &height)
 {
   const GLfloat squareVertices[] =
   {

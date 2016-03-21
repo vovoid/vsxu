@@ -32,7 +32,7 @@
 #define COMPONENT_SCALE 2
 
 class vsx_widget_component : public vsx_widget {
-  vsx_vector3<> message_pos;
+  vsx_vector2f message_pos;
 
   vsx_nw_vector<vsx_module_operation*> module_operations;
   vsx_widget* module_operations_dialog;

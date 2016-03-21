@@ -60,10 +60,10 @@ class vsx_widget_ultra_chooser : public vsx_widget {
  bool drag_module;
  bool drag_dropped;
  bool allow_move;
- vsx_vector3<> drag_pos;
- vsx_vector3<> drop_pos;
+ vsx_vector2f drag_pos;
+ vsx_vector2f drop_pos;
  vsx_string<>macro_name;
- vsx_vector3<> tooltip_pos;
+ vsx_vector2f tooltip_pos;
  int draw_tooltip;
  vsx_string<>tooltip_text;
  

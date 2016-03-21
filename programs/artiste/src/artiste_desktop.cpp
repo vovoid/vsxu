@@ -103,33 +103,32 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
   {
     switch (key)
     {
-      case -VSX_SCANCODE_SPACE:
+      case VSX_SCANCODE_SPACE:
         ((vsx_window_texture_viewer*)tv)->toggle_run();
         break;
+
       // fullwindow
-      case -VSX_SCANCODE_F:
+      case VSX_SCANCODE_F:
         ((vsx_window_texture_viewer*)tv)->toggle_fullwindow();
 
         if (((vsx_window_texture_viewer*)tv)->get_fullwindow())
         {
-          mouse.hide_cursor();
+          vsx_mouse_control.hide_cursor();
         }
         else
         {
-          mouse.show_cursor();
+          vsx_mouse_control.show_cursor();
         }
 
         if (!((vsx_window_texture_viewer*)tv)->get_fullwindow())
           this->performance_mode = false;
       break;
       // close all controllers
-      case -'C':
-      case -'c':
+      case VSX_SCANCODE_C:
         delete_all_by_type(VSX_WIDGET_TYPE_CONTROLLER);
       break;
       // close all open anchors
-      case -'D':
-      case -'d':
+      case VSX_SCANCODE_D:
         for (std::map<int, vsx_widget*>::iterator it = global_index_list.begin();  it != global_index_list.end(); ++it) {
           if ((*it).second->widget_type == VSX_WIDGET_TYPE_ANCHOR) {
             if ((*it).second->parent)
@@ -146,19 +145,15 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
   {
     switch (key)
     {
-      case -'F':
-      case -'f': // F
+      case VSX_SCANCODE_F:
         if (((vsx_window_texture_viewer*)tv)->get_fullwindow())
         {
           this->performance_mode = !this->performance_mode;
         }
         if (this->performance_mode)
-        {
-          mouse.show_cursor();
-        } else
-        {
-          mouse.hide_cursor();
-        }
+          vsx_mouse_control.show_cursor();
+        else
+          vsx_mouse_control.hide_cursor();
 
       default:
         break;
@@ -168,7 +163,7 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
   if (!ctrl && !alt)
   switch (key)
   {
-    case -GLFW_KEY_SPACE:
+    case VSX_SCANCODE_SPACE:
     {
       {
         if (a_focus->widget_type != VSX_WIDGET_TYPE_SERVER)
@@ -181,26 +176,26 @@ bool vsx_widget_desktop::key_down(signed long key, bool n_alt, bool n_ctrl, bool
       }
     }
     break;
-    case -VSX_SCANCODE_UP: case -VSX_SCANCODE_E:
+    case VSX_SCANCODE_UP: case VSX_SCANCODE_E:
       camera.set_movement_y( 1.0 );
     break;
 
-    case -VSX_SCANCODE_DOWN: case -VSX_SCANCODE_D:
+    case VSX_SCANCODE_DOWN: case VSX_SCANCODE_D:
       camera.set_movement_y( -1.0 );
     break;
-//    case -GLFW_KEY_LEFT: case -'s': :
-//      camera.set_movement_x( -1.0 );
-//    break;
-//    case -GLFW_KEY_RIGHT: case -'F': :
-//      camera.set_movement_x( 1.0 );
-//    break;
-//    case -GLFW_KEY_PAGEUP: case -'R': :
-//      camera.set_movement_z( -1.0 );
-//    break;
-//    case -GLFW_KEY_PAGEDOWN: case -'W': :
-//      camera.set_movement_z( 1.0 );
-//    break;
-  } // switch
+    case VSX_SCANCODE_LEFT: case VSX_SCANCODE_S :
+      camera.set_movement_x( -1.0 );
+    break;
+    case VSX_SCANCODE_RIGHT: case VSX_SCANCODE_F :
+      camera.set_movement_x( 1.0 );
+    break;
+    case VSX_SCANCODE_PAGEUP: case VSX_SCANCODE_R:
+      camera.set_movement_z( -1.0 );
+    break;
+    case VSX_SCANCODE_PAGEDOWN: case VSX_SCANCODE_W:
+      camera.set_movement_z( 1.0 );
+    break;
+  }
   return false;
 }
 
@@ -217,22 +212,22 @@ bool vsx_widget_desktop::key_up(signed long key, bool alt, bool ctrl, bool shift
 
   switch (key)
   {
-    case -VSX_SCANCODE_UP: case -VSX_SCANCODE_E:
-    case -VSX_SCANCODE_DOWN: case -VSX_SCANCODE_D:
+    case VSX_SCANCODE_UP: case VSX_SCANCODE_E:
+    case VSX_SCANCODE_DOWN: case VSX_SCANCODE_D:
       camera.set_movement_y( 0.0 );
     break;
 
-    case GLFW_KEY_LEFT: case 'S': case 's':
-    case GLFW_KEY_RIGHT: case 'F': case 'f':
+    case VSX_SCANCODE_LEFT: case VSX_SCANCODE_S:
+    case VSX_SCANCODE_RIGHT: case VSX_SCANCODE_F:
       camera.set_movement_x( 0.0 );
     break;
 
-    case GLFW_KEY_PAGEUP: case 'R': case 'r':
-    case GLFW_KEY_PAGEDOWN: case 'W': case 'w':
+    case VSX_SCANCODE_PAGEUP: case VSX_SCANCODE_R:
+    case VSX_SCANCODE_PAGEDOWN: case VSX_SCANCODE_W:
       camera.set_movement_z( 0.0 );
     break;
 
-    case GLFW_KEY_TAB:
+    case VSX_SCANCODE_TAB:
       ((vsxu_assistant*)assistant)->toggle_size();
     break;
   }

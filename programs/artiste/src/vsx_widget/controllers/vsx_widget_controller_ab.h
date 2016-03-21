@@ -31,7 +31,10 @@ class vsx_widget_controller_ab : public vsx_widget_controller_base
 {
 private:
   GLUquadricObj *quadratic;
-  vsx_vector3<> clickpos,deltamove,remPointer,remWorld;
+  vsx_vector2f clickpos;
+  vsx_vector2f deltamove;
+  vsx_vector2f remPointer;
+  vsx_vector2f remWorld;
   float v2[3];
   float v2_int[3];
   
