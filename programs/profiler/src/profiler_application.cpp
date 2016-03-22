@@ -43,99 +43,18 @@
 
 
 // global vars
-vsx_string<>fpsstring = "VSX Ultra "+vsx_string<>(vsxu_version)+" - 2012 Vovoid";
+vsx_string<>fpsstring = "VSX Ultra "+vsx_string<>(VSXU_VERSION)+" - 2012 Vovoid";
 
 // from the perspective (both for gui/server) from here towards the tcp thread
 vsx_widget_desktop *desktop = 0;
 vsx_font myf;
 vsx_command_list system_command_queue;
 
-
-
-unsigned long frame_counter = 0;
-unsigned long delta_frame_counter = 0;
-float delta_frame_time = 0.0f;
-float delta_fps;
-float total_time = 0.0f;
-
-float global_time;
-vsx_timer time2;
-
 void load_desktop_a();
 
-// draw-related variables
-class vsx_artiste_draw {
-public:
-  bool first;
-  vsx_string<>current_fps;
-  vsx_timer gui_t;
-  vsx_timer engine_render_time;
-  int frame_count;
-  int movie_frame_count;
-  float gui_g_time;
-  double dt;
-  double gui_f_time;
-  double gui_fullscreen_fpstimer;
-  double max_fps;
-  double min_fps;
-  double max_render_time;
-  double min_render_time;
 
-  vsx_profiler* profiler;
-
-  vsx_artiste_draw() :
-    first(true),
-    frame_count(0),
-    gui_g_time(0),
-    gui_f_time(0),
-    gui_fullscreen_fpstimer(0),
-    max_fps(0),
-    min_fps(1000000),
-    max_render_time(-1),
-    min_render_time(1000)
-  {}
-  ~vsx_artiste_draw() {}
-
-  void draw()
-  {
-    if (first)
-    {
-      profiler = vsx_profiler_manager::get_instance()->get_profiler();
-      load_desktop_a();
-      first = false;
-    }
-
-    dt = gui_t.dtime();
-    gui_f_time += dt;
-    gui_g_time += dt;
-
-    ++frame_count;
-
-    vsx_widget_time::get_instance()->set_dtime( dt );
-    vsx_widget_time::get_instance()->increase_time( dt );
-    desktop->vsx_command_process_f();
-
-    desktop->frames = frame_count;
-
-
-
-      profiler->sub_begin("init_frame");
-          desktop->init_frame();
-      profiler->sub_end();
-
-      profiler->sub_begin("desktop draw");
-          desktop->draw();
-      profiler->sub_end();
-
-      profiler->sub_begin("draw 2d");
-          desktop->draw_2d();
-      profiler->sub_end();
-
-      vsx_command_process_garbage();
-  }
-};
-
-vsx_artiste_draw* my_draw = 0x0;
+#include "vsx_profiler_draw.h"
+vsx_profiler_draw* my_draw = 0x0;
 
 void load_desktop_a()
 {
@@ -147,7 +66,7 @@ void load_desktop_a()
 
 void app_init()
 {
-  my_draw = new vsx_artiste_draw();
+  my_draw = new vsx_profiler_draw();
 
   //---------------------------------------------------------------------------
   vsx::filesystem filesystem;

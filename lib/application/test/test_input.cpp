@@ -32,6 +32,13 @@ class input_test_application
 {
 public:
 
+  vsx_string<> window_title_get()
+  {
+    char titlestr[ 200 ];
+    sprintf( titlestr, "Vovoid VSXu Applicataion Test Input %s [%s %d-bit]", VSXU_VER, PLATFORM_NAME, PLATFORM_BITS);
+    return vsx_string<>(titlestr);
+  }
+
   void draw(int id)
   {
     VSX_UNUSED(id);
@@ -48,7 +55,7 @@ public:
       vsx_printf(L" keyboard event, pressed: %d     scancode: %d \n ", event.keyboard.pressed,  event.keyboard.scan_code);
   }
 
-  void key_down_event(long key)
+  void event_key_down(long key)
   {
     vsx_printf(L"application key down event, scan code: %d\n", key);
   }
@@ -56,21 +63,11 @@ public:
 
 
 
-
-
-
 int main(int argc, char* argv[])
 {
   vsx_argvector::get_instance()->init_from_argc_argv(argc, argv);
-
   input_test_application application;
   vsx_application_manager::get_instance()->application_set(&application);
-
-  char titlestr[ 200 ];
-  sprintf( titlestr, "Vovoid VSXu Applicataion Test Input %s [%s %d-bit]", vsxu_ver, PLATFORM_NAME, PLATFORM_BITS);
-  application.window_title_set(vsx_string<>(&titlestr[0]));
-
   vsx_application_run::run();
-
   return 0;
 }

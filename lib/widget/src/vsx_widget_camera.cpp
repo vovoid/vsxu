@@ -23,6 +23,7 @@
 
 // global includes
 #include <math/vector/vsx_vector3.h>
+#include <string/vsx_string.h>
 
 // widget
 #include "vsx_widget_camera.h"
@@ -82,7 +83,8 @@ void vsx_widget_camera::run()
       (round(xp*2000) == round(camera_target.x*2000)) &&
       (round(yp*2000) == round(camera_target.y*2000)) &&
       (round(zp*2000) == round(camera_target.z*2000))
-    ) interpolating = false;
+    )
+      interpolating = false;
     return;
   }
 
@@ -91,20 +93,23 @@ void vsx_widget_camera::run()
 
   // interpolation falloff control
   double tt = dtime * (double)interpolation_speed * global_interpolation_speed;
-  if (tt > 1) { tt = 1; }
+  tt = clamp(tt, 0, 1);
 
-  if(zpd != 0.0) {
+  if (fabs(zpd) > 0.0) {
     double sgn = SGN(zpd);
     zps += dtime * acc * sgn * global_interpolation_speed;
     zps = CLAMP(zps, -1.2, 1.2);
   }
-  if(zpd == 0.0) {
+
+  if(fabs(zpd) < 0.00001) {
     double sgn = SGN(zps);
     zps -= dtime * dec * sgn * global_interpolation_speed;
     zps = MAX(zps * sgn, 0) * sgn;
   }
 
-  zp += zps * fabs(zp - 1.1) * (double)key_speed * dtime + zpp*(zp - 1.0);
+  zp +=
+      zps * fabs(zp - 1.1) * (double)key_speed * dtime +
+      zpp * (zp - 1.0);
   zpp = zpp*(1-tt);
 
   zp = CLAMP(zp, 1.2, 100.0);
@@ -120,8 +125,13 @@ void vsx_widget_camera::run()
     xps -= dtime * dec * sgn * global_interpolation_speed;
     xps = MAX(xps * sgn, 0) * sgn;
   }
-  xp += xps * fabs(zp - 1.1) * (double)key_speed * dtime*0.6 + xpp*(zp - 1.0);
-  xpp = xpp*(1-tt);
+
+  xp +=
+      xps * fabs(zp - 1.1) * (double)key_speed * dtime * 0.6
+      +
+      xpp * (zp - 1.0);
+  xpp = xpp * (1 - tt);
+
   xp = CLAMP(xp, -10, 10);
 
 

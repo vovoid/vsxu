@@ -24,6 +24,8 @@
 #ifndef VSX_WIDGET_CAMERA_H
 #define VSX_WIDGET_CAMERA_H
 
+#include <tools/vsx_req.h>
+#include <vsx_application_input_state_manager.h>
 #include <math/vector/vsx_vector3.h>
 #include "vsx_widget_dllimport.h"
 
@@ -100,9 +102,9 @@ public:
 
   void set_extra_movement( vsx_vector3f m)
   {
-    xpp = m.x;
-    ypp = m.y;
-    zpp = m.z;
+    xpp += m.x;
+    ypp += m.y;
+    zpp += m.z;
   }
 
   void set_key_speed(double d)
@@ -126,6 +128,55 @@ public:
   }
 
   void run();
+
+  void event_key_down(uint16_t key)
+  {
+    req(!vsx_input_keyboard.pressed_ctrl());
+    req(!vsx_input_keyboard.pressed_alt());
+    switch (key)
+    {
+      case VSX_SCANCODE_UP: case VSX_SCANCODE_E:
+        set_movement_y( 1.0 );
+      break;
+      case VSX_SCANCODE_DOWN: case VSX_SCANCODE_D:
+        set_movement_y( -1.0 );
+      break;
+      case VSX_SCANCODE_LEFT: case VSX_SCANCODE_S :
+        set_movement_x( -1.0 );
+      break;
+      case VSX_SCANCODE_RIGHT: case VSX_SCANCODE_F :
+        set_movement_x( 1.0 );
+      break;
+      case VSX_SCANCODE_PAGEUP: case VSX_SCANCODE_R:
+        set_movement_z( -1.0 );
+      break;
+      case VSX_SCANCODE_PAGEDOWN: case VSX_SCANCODE_W:
+        set_movement_z( 1.0 );
+      break;
+    }
+  }
+
+  void event_key_up(uint16_t key)
+  {
+    switch (key)
+    {
+      case VSX_SCANCODE_UP: case VSX_SCANCODE_E:
+      case VSX_SCANCODE_DOWN: case VSX_SCANCODE_D:
+        set_movement_y( 0.0 );
+      break;
+
+      case VSX_SCANCODE_LEFT: case VSX_SCANCODE_S:
+      case VSX_SCANCODE_RIGHT: case VSX_SCANCODE_F:
+        set_movement_x( 0.0 );
+      break;
+
+      case VSX_SCANCODE_PAGEUP: case VSX_SCANCODE_R:
+      case VSX_SCANCODE_PAGEDOWN: case VSX_SCANCODE_W:
+        set_movement_z( 0.0 );
+      break;
+    }
+  }
+
 };
 
 

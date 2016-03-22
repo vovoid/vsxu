@@ -41,8 +41,6 @@ vsx_widget *vsx_widget::m_o_focus = 0;
 vsx_widget *vsx_widget::k_focus = 0;
 vsx_widget *vsx_widget::a_focus = 0;
 
-float vsx_widget::mouse_down_l_x;
-float vsx_widget::mouse_down_l_y;
 bool vsx_widget::mouse_down_l;
 bool vsx_widget::mouse_down_r;
 
@@ -94,8 +92,6 @@ vsx_widget::vsx_widget()
   double_click_d[4] = vsx_widget_time::get_instance()->get_time();
   mouse_down_l = false;
   mouse_down_r = false;
-  mouse_down_l_x = 0;
-  mouse_down_l_y = 0;
   enabled = 1; // is this object to receive events?
   constrained_x = true;
   constrained_y = true;
@@ -360,7 +356,7 @@ vsx_widget* vsx_widget::find_component(vsx_widget_coords coords, vsx_widget_dist
 void vsx_widget::input_mouse_wheel(float y)
 {
 	if (m_o_focus)
-	m_o_focus->event_mouse_wheel(y);
+    m_o_focus->event_mouse_wheel(y);
 }
 
 void vsx_widget::event_mouse_wheel(float y)
@@ -405,7 +401,6 @@ void vsx_widget::input_mouse_down(float x, float y, int button)
 
   // set up coordinates for
   mouse_down_pos = result;
-  vsx_mouse_control.set_cursor_pos(x,y);
   k_focus = widget_obj_at_cursor;
   m_focus = widget_obj_at_cursor;
   widget_obj_at_cursor->event_mouse_down(result,coord,button);
@@ -463,7 +458,6 @@ void vsx_widget::input_mouse_move(float x, float y)
   if (m_focus)
   {
     vsx_widget_coords coord;
-    vsx_mouse_control.set_cursor_pos(x,y);
     vsx_widget_distance distance;
     m_focus->calculate_mouse_distance(x,y,coord,distance);
     m_focus->event_mouse_move(distance,coord);

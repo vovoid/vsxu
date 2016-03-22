@@ -24,6 +24,7 @@
 #ifndef VSX_WIDGET_SERVER_H
 #define VSX_WIDGET_SERVER_H
 
+#include <math/vector/vsx_vector2.h>
 #include <vsx_command_client_server.h>
 
 #define VSX_WIDGET_SERVER_CONNECTION_TYPE_INTERNAL 1
@@ -39,7 +40,8 @@ class vsx_widget_server : public vsx_widget {
 
   bool selection;
   float delta_move,delta_zoom;
-  vsx_vector2f remPointer;
+  vsx_vector2f mouse_click_position;
+
   vsx_vector2f selection_start,selection_end;
 
   vsx_command_list dump_commands;

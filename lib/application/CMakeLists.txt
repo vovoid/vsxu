@@ -9,6 +9,8 @@ project (${module_id})
 # CMAKE PACKAGES ###############################################################
 ################################################################################
 include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeVSXuGfxLib.txt)
+
 
 PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
 
@@ -47,7 +49,7 @@ endif (VSXU_DEBUG EQUAL 1)
 # SOURCES ######################################################################
 ################################################################################
 
-if (VSXU_GLFW EQUAL 1)
+if (VSXU_GFX_LIB EQUAL "GLFW")
     set(GFX_LIB_SOURCES
         src/glfw/vsx_mouse.cpp
     )

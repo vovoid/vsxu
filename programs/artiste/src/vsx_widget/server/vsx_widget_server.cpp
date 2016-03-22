@@ -86,7 +86,7 @@ vsx_widget_server::vsx_widget_server() {
   log(" _   _  ___ _  __     _        ___  ___   ___");
   log(" \\\\  / //_   \\//      /  / /    /  /__/  /__/");
   log("  \\\\/  ___/ _/\\\\_    /__/ /__  /  /  \\  /  /");
-  log("   "+vsx_string<>(vsxu_version));
+  log("   "+vsx_string<>(VSXU_VERSION));
   log("-----------------------------------------------------------------");
   log(" (c) 2003-2011 vovoid || http://vovoid.com || http://vsxu.com");
 }
@@ -961,7 +961,7 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
   || t->cmd == "component_create"
   || t->cmd == "component_assign"
   || t->cmd == "component_delete") {
-    if (((vsx_widget_desktop*)root)->auto_undo)
+    if (((vsx_artiste_desktop*)root)->auto_undo)
     undo_s();
   }
 
@@ -1229,7 +1229,8 @@ void vsx_widget_server::event_mouse_down(vsx_widget_distance distance,vsx_widget
   selection = false;
   delta_move = delta_zoom = 0.0f;
   selection_start = distance.center;
-  remPointer = vsx_input_mouse.position;
+  mouse_click_position = vsx_input_mouse.position;
+
   if (button == 0)
   {
     selection_end = selection_start;
@@ -1275,7 +1276,6 @@ void vsx_widget_server::event_mouse_move(vsx_widget_distance distance,vsx_widget
 {
   if (selection)
   {
-
     selection_end = distance.center;
     vsx_vector2f a;
     vsx_vector2f b;
@@ -1312,32 +1312,39 @@ void vsx_widget_server::event_mouse_move(vsx_widget_distance distance,vsx_widget
         }
       }
     }
-  } else
-  {
-    if (mouse_down_r && !mouse_down_l) {
-      if (vsx_input_mouse.position != remPointer) {
-        float dz = (vsx_input_mouse.position.y-remPointer.y);
-        camera.set_extra_movement( vsx_vector3f(0, 0, -dz) * 0.0005f );
-        if (delta_zoom * 0.005f > 0.09f)
-          vsx_mouse_control.hide_cursor();
-        vsx_mouse_control.set_cursor_pos(remPointer.x,remPointer.y);
-      }
-    }
-    if (!mouse_down_r && mouse_down_l && server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_INTERNAL) {
-      if (vsx_input_mouse.position != remPointer) {
-        vsx_vector3f delta(
-          vsx_input_mouse.position.x - remPointer.x,
-          vsx_input_mouse.position.y - remPointer.y
-        );
-        camera.set_extra_movement( delta * 0.0003f );
-        if ( (delta * 0.005f).length() > 0.09f)
-          vsx_mouse_control.hide_cursor();
-        vsx_mouse_control.set_cursor_pos(remPointer.x, remPointer.y);
-      }
-    }
-    else
-    vsx_widget::event_mouse_move(distance,coords);
+    return;
   }
+
+
+  if (!vsx_input_mouse.button_left && vsx_input_mouse.button_right)
+  {
+    if (vsx_input_mouse.position != mouse_click_position)
+    {
+      float dz = (vsx_input_mouse.position.y - mouse_click_position.y);
+      camera.set_extra_movement( vsx_vector3f(0, 0, -dz) * 0.1f );
+      vsx_mouse_control.hide_cursor();
+      vsx_mouse_control.set_cursor_pos(mouse_click_position);
+    }
+    return;
+  }
+
+  if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_INTERNAL)
+  if (vsx_input_mouse.button_left && !vsx_input_mouse.button_right)
+  {
+    if (vsx_input_mouse.position != mouse_click_position)
+    {
+      vsx_vector3f delta(
+        - (vsx_input_mouse.position.x - mouse_click_position.x),
+        - (vsx_input_mouse.position.y - mouse_click_position.y)
+      );
+      camera.set_extra_movement( delta * 0.1 );
+      vsx_mouse_control.hide_cursor();
+      vsx_mouse_control.set_cursor_pos(mouse_click_position);
+    }
+    return;
+  }
+
+  vsx_widget::event_mouse_move(distance,coords);
 }
 
 void vsx_widget_server::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)

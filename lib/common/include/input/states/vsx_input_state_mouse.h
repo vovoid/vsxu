@@ -9,6 +9,7 @@ class vsx_input_state_mouse
 {
 public:
   vsx_vector2f position;
+  vsx_vector2f position_screen;
   vsx_vector2f wheel;
 
   bool buttons[32] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -21,14 +22,24 @@ public:
   void consume(vsx_input_event& event)
   {
     req(event.type == vsx_input_event::type_mouse);
-    req(event.mouse.button_id < 32);
 
     if (event.mouse.type == vsx_input_event_mouse::movement)
     {
+      position_screen.x = event.mouse.x;
+      position_screen.y = event.mouse.y;
       position.x = (float)event.mouse.x / (float)vsx_gl_state::get_instance()->viewport_get_width();
       position.y = (float)event.mouse.y / (float)vsx_gl_state::get_instance()->viewport_get_height();
+      return;
     }
 
+    if (event.mouse.type == vsx_input_event_mouse::wheel)
+    {
+      wheel.x += (float)event.mouse.x;
+      wheel.y += (float)event.mouse.y;
+      return;
+    }
+
+    req(event.mouse.button_id < 32);
     buttons[event.mouse.button_id] = event.mouse.button_state;
 
     if (event.mouse.type == vsx_input_event_mouse::button_left)
@@ -46,11 +57,6 @@ public:
     if (event.mouse.type == vsx_input_event_mouse::button_x2)
       button_x2 = event.mouse.button_state;
 
-    if (event.mouse.type == vsx_input_event_mouse::wheel)
-    {
-      wheel.x += (float)event.mouse.x;
-      wheel.y += (float)event.mouse.y;
-    }
   }
 
 };

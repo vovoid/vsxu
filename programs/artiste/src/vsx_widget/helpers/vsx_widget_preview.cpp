@@ -69,7 +69,7 @@ void vsx_window_texture_viewer::draw_2d()
   pos_.x = pos.x+dragborder;
   size_.x = size.x-dragborder*2;
 
-  title = vsxu_version " @ "+
+  title = VSXU_VERSION " @ "+
       vsx_string_helper::i2s( (int)ceil(size_.x*(screen_x-1)) )+"x"+
       vsx_string_helper::i2s( (int)ceil(size_.y*(screen_y-1)) )+", "+
       vsx_string_helper::i2s((int)round(fps))+" FPS, Ctrl+F(ullscreen)";

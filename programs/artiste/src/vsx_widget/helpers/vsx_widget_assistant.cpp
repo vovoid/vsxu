@@ -208,7 +208,7 @@ void vsxu_assistant::toggle_size()
   }
   printf("assistant size is now: %f\n",size_multiplier);
   configuration["assistant_size"] = vsx_string_helper::f2s(size_multiplier);
-  ((vsx_widget_desktop*)root)->save_configuration();
+  ((vsx_artiste_desktop*)root)->save_configuration();
 }
 
 void vsxu_assistant::temp_hide() {

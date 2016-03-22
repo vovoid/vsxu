@@ -119,12 +119,12 @@ public:
 
   inline bool operator ==(const vsx_vector2 &t)
   {
-    return (x==t.x&&y==t.y);
+    return (fabs(x - t.x) < 0.00001 || fabs(y - t.y) < 0.00001);
   }
 
   inline bool operator !=(const vsx_vector2 &t)
   {
-    return (x != t.x || y != t.y);
+    return (fabs(x - t.x) > 0.00001 || fabs(y - t.y) > 0.00001);
   }
 
   inline T length()

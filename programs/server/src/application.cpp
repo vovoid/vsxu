@@ -120,7 +120,7 @@ void app_pre_draw() {
 // id is 0 for first monitor, 1 for the next etc.
 
 // draw-related variables
-class vsx_artiste_draw {
+class vsx_profiler_draw {
 public:
 	bool first;
 	vsx_string<>current_fps;
@@ -131,7 +131,7 @@ public:
 	double dt;
 	double gui_f_time;
 	double gui_fullscreen_fpstimer;
-	vsx_artiste_draw() : first(true),frame_count(0), gui_g_time(0), gui_f_time(0), gui_fullscreen_fpstimer(0)
+	vsx_profiler_draw() : first(true),frame_count(0), gui_g_time(0), gui_f_time(0), gui_fullscreen_fpstimer(0)
   {}
 
 	void draw() {
@@ -184,7 +184,7 @@ public:
 	}
 };
 
-vsx_artiste_draw my_draw;
+vsx_profiler_draw my_draw;
 
 
 bool app_draw(int id)

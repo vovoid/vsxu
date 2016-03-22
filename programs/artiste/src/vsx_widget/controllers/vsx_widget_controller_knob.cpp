@@ -95,8 +95,14 @@ void vsx_widget_controller_knob::event_mouse_move(vsx_widget_distance distance,v
   if (vsx_input_mouse.position != remPointer && controlling)
   {
     deltamove = (distance.center-remWorld)/size;
-    if (fabs(deltamove.x)>fabs(deltamove.y)) deltamove.y=0.0f; else deltamove.x=0.0f;
-    target_value += (((deltamove.y)+((deltamove.x)/15.0f))*0.5*multiplier);
+
+    // x moves slower than Y
+    if (fabs(deltamove.x) > fabs(deltamove.y))
+      deltamove.y=0.0f;
+    else
+      deltamove.x=0.0f;
+
+    target_value += (((deltamove.y)+((deltamove.x)/15.0f)) * 0.1 * multiplier);
     cap_value();
     vsx_widget_controller_base::event_mouse_move(distance, coords);
     vsx_mouse_control.set_cursor_pos(remPointer.x,remPointer.y);

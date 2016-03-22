@@ -1868,7 +1868,7 @@ void vsx_widget_anchor::event_mouse_down(vsx_widget_distance distance,vsx_widget
   } else
   {
     drag_status = false;
-    ((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_show();
+    ((vsxu_assistant*)((vsx_artiste_desktop*)root)->assistant)->temp_show();
     vsx_widget_connector_bezier::dim_alpha = 1.0f;
     vsx_widget_connector_bezier::receiving_focus = true;
     if (temp_drag_connector)
@@ -1966,7 +1966,7 @@ void vsx_widget_anchor::event_mouse_move(vsx_widget_distance distance,vsx_widget
   {
     drag_status = true;
     drag_coords = coords;
-    ((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_hide();
+    ((vsxu_assistant*)((vsx_artiste_desktop*)root)->assistant)->temp_hide();
     if (temp_drag_connector)
     {
       vsx_widget_connector_bezier::dim_alpha = 0.25f;
@@ -2024,7 +2024,7 @@ void vsx_widget_anchor::event_mouse_up(vsx_widget_distance distance,vsx_widget_c
       }
     }
     drag_status = false;
-    ((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_show();
+    ((vsxu_assistant*)((vsx_artiste_desktop*)root)->assistant)->temp_show();
     vsx_widget_connector_bezier::dim_alpha = 1.0f;
     vsx_widget_connector_bezier::receiving_focus = true;
 

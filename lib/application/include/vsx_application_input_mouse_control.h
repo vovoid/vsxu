@@ -23,6 +23,7 @@
 
 #pragma once
 
+#include <math/vector/vsx_vector2.h>
 #include <math/vector/vsx_vector3.h>
 
 #include "vsx_application_dllimport.h"
@@ -45,6 +46,14 @@ public:
 
   void set_cursor(int id);
   void set_cursor_pos(float x, float y);
+
+  void set_cursor_pos(vsx_vector2f& pos)
+  {
+    set_cursor_pos(pos.x, pos.y);
+  }
+
+  void set_cursor_pos_screen(float x, float y);
+
   void show_cursor();
   void hide_cursor();
 

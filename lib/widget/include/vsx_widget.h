@@ -65,10 +65,11 @@
 #define VSX_WIDGET_TYPE_CONTROLLER 6
 #define VSX_WIDGET_TYPE_ULTRA_CHOOSER 7
 #define VSX_WIDGET_TYPE_EDITOR 8
-#define VSX_WIDGET_TYPE_DESKTOP 100
-#define VSX_WIDGET_TYPE_COMPONENT 101
-#define VSX_WIDGET_TYPE_SERVER 102
-#define VSX_WIDGET_TYPE_WINDOW 200
+#define VSX_WIDGET_TYPE_WINDOW 9
+
+// these two defines should be moved into the artiste project:
+#define VSX_WIDGET_TYPE_COMPONENT 1001
+#define VSX_WIDGET_TYPE_SERVER 1002
 
 enum vsx_widget_render_type
 {
@@ -114,8 +115,6 @@ public:
   WIDGET_DLLIMPORT static unsigned long help_timestamp;
   WIDGET_DLLIMPORT static bool mouse_down_l;
   WIDGET_DLLIMPORT static bool mouse_down_r;
-  WIDGET_DLLIMPORT static float mouse_down_l_x; // TBD
-  WIDGET_DLLIMPORT static float mouse_down_l_y;
   WIDGET_DLLIMPORT static vsx_widget_distance mouse_down_pos;  // in coordinates 2d/3d depending on render type
   float double_click_d[5]; // delta time value for determining double clicks
   WIDGET_DLLIMPORT static int viewport[4];

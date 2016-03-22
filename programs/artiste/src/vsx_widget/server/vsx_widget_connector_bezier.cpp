@@ -463,7 +463,7 @@ void vsx_widget_connector_bezier::on_delete()
     vsx_texture_loader::destroy(mtex_blob);
 
   if (!global_delete)
-  ((vsx_widget_anchor*)parent)->update_connection_order();
+    ((vsx_widget_anchor*)parent)->update_connection_order();
 }
 
 void vsx_widget_connector_bezier::init() 

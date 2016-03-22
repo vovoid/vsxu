@@ -30,8 +30,6 @@ class vsx_application
 {
 protected:
 
-  vsx_string<> window_title;
-
 public:
 
   virtual void init()
@@ -42,15 +40,7 @@ public:
   {
   }
 
-  void window_title_set(vsx_string<> new_title)
-  {
-    window_title = new_title;
-  }
-
-  vsx_string<> window_title_get()
-  {
-    return window_title;
-  }
+  virtual vsx_string<> window_title_get() = 0;
 
   virtual void pre_draw()
   {
@@ -70,37 +60,38 @@ public:
   }
 
 
-  virtual void char_event(const wchar_t& character)
+  virtual void event_text(const wchar_t& character_wide, char character)
   {
+    VSX_UNUSED(character_wide);
     VSX_UNUSED(character);
   }
 
-  virtual void key_down_event(long scancode)
+  virtual void event_key_down(long scancode)
   {
     VSX_UNUSED(scancode);
   }
 
-  virtual void key_up_event(long scancode)
+  virtual void event_key_up(long scancode)
   {
     VSX_UNUSED(scancode);
   }
 
   // movement with left mouse button pressed, i.e. dragging or moving after click
-  virtual void mouse_move_event(int x, int y)
+  virtual void event_mouse_move(int x, int y)
   {
     VSX_UNUSED(x);
     VSX_UNUSED(y);
   }
 
   // movement without left button pressed - "hovering"
-  virtual void mouse_move_passive_event(int x, int y)
+  virtual void event_mouse_move_passive(int x, int y)
   {
     VSX_UNUSED(x);
     VSX_UNUSED(y);
   }
 
   // buttons: 0 = left, 1 = middle, 2 = right
-  virtual void mouse_down_event(unsigned long button, int x, int y)
+  virtual void event_mouse_down(unsigned long button, int x, int y)
   {
     VSX_UNUSED(button);
     VSX_UNUSED(x);
@@ -108,7 +99,7 @@ public:
   }
 
   // buttons: 0 = left, 1 = middle, 2 = right
-  virtual void mouse_up_event(unsigned long button, int x, int y)
+  virtual void event_mouse_up(unsigned long button, int x, int y)
   {
     VSX_UNUSED(button);
     VSX_UNUSED(x);
@@ -116,7 +107,7 @@ public:
   }
 
   // -1 to -5 or whatever up to +1
-  virtual void mouse_wheel_event(float diff, int x, int y)
+  virtual void event_mouse_wheel(float diff, int x, int y)
   {
     VSX_UNUSED(diff);
     VSX_UNUSED(x);

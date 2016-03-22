@@ -6,13 +6,13 @@ message("configuring            " ${module_id})
 project (${module_id})
 
 include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeVSXuGfxLib.txt)
 
 ################################################################################
 # CMAKE PACKAGES ###############################################################
 ################################################################################
 find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
-
 
 
 ################################################################################
@@ -78,14 +78,13 @@ if(UNIX)
   include(${CMAKE_SOURCE_DIR}/cmake_suffix.txt)
 
   target_link_libraries(${module_id}
-    ${GLFW_LIBRARIES}
+    ${VSXU_GFX_LIB_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
     ${GLEW_LIBRARIES}
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
     rt
   )
-
 
   target_link_libraries(${module_id} vsx_common)
   target_link_libraries(${module_id} vsx_compression)

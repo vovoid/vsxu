@@ -31,7 +31,7 @@ public:
   int movie_frame_count;
 
   // fps
-  vsx_string<>fpsstring = "VSX Ultra "+vsx_string<>(vsxu_version)+" - 2012 Vovoid";
+  vsx_string<>fpsstring = "VSX Ultra "+vsx_string<>(VSXU_VERSION)+" - 2012 Vovoid";
   int frame_count = 0;
   float gui_g_time = 0.0f;
   double dt;
@@ -54,7 +54,7 @@ public:
   bool reset_time_measurements = false;
 
   // desktop
-  vsx_widget_desktop *desktop = 0;
+  vsx_artiste_desktop *desktop = 0;
   vsx_logo_intro *intro;
   vsx_font myf;
 
@@ -72,11 +72,10 @@ public:
     VSXP_CLASS_CONSTRUCTOR
   }
 
-
   void load_desktop_a(vsx_string<> state_name = "")
   {
     //printf("{CLIENT} creating desktop:");
-    desktop = new vsx_widget_desktop;
+    desktop = new vsx_artiste_desktop;
     //printf(" [DONE]\n");
     internal_cmd_in.clear_normal();
     internal_cmd_out.clear_normal();
@@ -99,7 +98,7 @@ public:
             )
           )
         );
-    internal_cmd_out.add_raw(vsx_string<>("vsxu_welcome ")+vsx_string<>(vsxu_ver)+" 0", true);
+    internal_cmd_out.add_raw(vsx_string<>("vsxu_welcome ")+vsx_string<>(VSXU_VER)+" 0", true);
     desktop->system_command_queue = &system_command_queue;
     vsx_widget* t_viewer = desktop->find("vsxu_preview");
     if (t_viewer)
@@ -282,7 +281,8 @@ public:
             if (frame_time > max_render_time) max_render_time = frame_time;
             if (frame_time < min_render_time) min_render_time = frame_time;
             myf.print(vsx_vector3<>(-0.99f,0.92f+0.04f),
-                      vsxu_version " (c) 2003-2013 Vovoid "
+                      vsx_string<>(VSXU_VERSION) + " " +
+                      VSXU_VERSION_COPYRIGHT +
                       "- Alt+T=toggle this text - "
                       "Ctrl+Alt+P (take screenshot) - "
                       "Alt+F (toggle perf. mode) :: "
@@ -327,9 +327,8 @@ public:
     } else
     {
       int zz = (int)((f_wait-gui_f_time)*1000.0f);
-      if (zz < 0) zz = 0;
-      //printf("zz%d ",zz);
-      //Sleep(zz);
+      if (zz < 0)
+        zz = 0;
     }
     //------------------------------------------------------------------
     // movie recording
@@ -404,9 +403,6 @@ public:
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
       if (access((vsx_data_path::get_instance()->data_path_get()+"screenshots").c_str(),0) != 0) mkdir((vsx_data_path::get_instance()->data_path_get()+"/screenshots").c_str(),0700);
       #endif
-      /*FILE* fp = fopen(filename,"wb");
-      fwrite(pixeldata_flipped, 1, viewport[2] * viewport[3] * 3, fp);
-      fclose(fp);*/
       vsx_string<>err;
       jpeg.SaveJPEG( vsx_data_path::get_instance()->data_path_get()+"screenshots"+DIRECTORY_SEPARATOR+vsx_string_helper::i2s(time(0x0))+"_"+ vsx_string_helper::i2s(viewport[2]) + "_" + vsx_string_helper::i2s(viewport[3])+".jpg", err, 100 );
       jpeg.m_pBuf = 0;

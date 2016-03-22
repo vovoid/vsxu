@@ -31,11 +31,16 @@
 class vsx_application_artiste
     : public vsx_application
 {
-  vsx_string<> window_title;
-
   vsx_artiste_draw my_draw;
 
 public:
+
+  vsx_string<> window_title_get()
+  {
+    char titlestr[ 200 ];
+    sprintf( titlestr, "Vovoid VSXu Artiste %s [%s %d-bit] %s", VSXU_VER, PLATFORM_NAME, PLATFORM_BITS, VSXU_VERSION_COPYRIGHT);
+    return vsx_string<>(titlestr);
+  }
 
   void init()
   {
@@ -45,16 +50,6 @@ public:
   void uninit()
   {
     my_draw.uninit();
-  }
-
-  void window_title_set(vsx_string<> new_title)
-  {
-    window_title = new_title;
-  }
-
-  vsx_string<> window_title_get()
-  {
-    return window_title;
   }
 
   void pre_draw()
@@ -88,14 +83,16 @@ public:
   }
 
 
-  void char_event(const wchar_t& character)
+  void event_text(const wchar_t& character_wide, char character)
   {
     req(my_draw.desktop);
-    my_draw.desktop->input_key_down(character, vsx_input_keyboard.pressed_alt(), vsx_input_keyboard.pressed_ctrl(), vsx_input_keyboard.pressed_shift());
+    my_draw.desktop->input_text(character_wide, character);
   }
 
-  void key_down_event(long scancode)
+  void event_key_down(long scancode)
   {
+    my_draw.key_down_event(scancode);
+
     req(my_draw.desktop);
     if (vsx_input_keyboard.pressed_ctrl() && scancode == VSX_SCANCODE_5)
       vsx_profiler_manager::get_instance()->enable();
@@ -106,44 +103,44 @@ public:
     my_draw.desktop->input_key_down(scancode, vsx_input_keyboard.pressed_alt(), vsx_input_keyboard.pressed_ctrl(), vsx_input_keyboard.pressed_shift());
   }
 
-  void key_up_event(long scancode)
+  void event_key_up(long scancode)
   {
     req(my_draw.desktop);
     my_draw.desktop->input_key_up(scancode, vsx_input_keyboard.pressed_alt(), vsx_input_keyboard.pressed_ctrl(), vsx_input_keyboard.pressed_shift());
   }
 
   // movement with left mouse button pressed, i.e. dragging or moving after click
-  void mouse_move_event(int x, int y)
+  void event_mouse_move(int x, int y)
   {
     req(my_draw.desktop);
     my_draw.desktop->input_mouse_move(x, y);
   }
 
   // movement without left button pressed - "hovering"
-  void mouse_move_passive_event(int x, int y)
+  void event_mouse_move_passive(int x, int y)
   {
     req(my_draw.desktop);
     my_draw.desktop->input_mouse_move_passive(x, y);
   }
 
   // buttons: 0 = left, 1 = middle, 2 = right
-  void mouse_down_event(unsigned long button, int x, int y)
+  void event_mouse_down(unsigned long button, int x, int y)
   {
     req(my_draw.desktop);
     my_draw.desktop->input_mouse_down(x, y, button );
   }
 
   // buttons: 0 = left, 1 = middle, 2 = right
-  void mouse_up_event(unsigned long button, int x, int y)
+  void event_mouse_up(unsigned long button, int x, int y)
   {
     req(my_draw.desktop);
     my_draw.desktop->input_mouse_up( x, y, button );
   }
 
   // -1 to -5 or whatever up to +1
-  void mouse_wheel_event(float diff, int x, int y)
+  void event_mouse_wheel(float diff, int x, int y)
   {
-    VSX_UNUSED(diff);
+    my_draw.desktop->input_mouse_wheel(diff);
     VSX_UNUSED(x);
     VSX_UNUSED(y);
   }

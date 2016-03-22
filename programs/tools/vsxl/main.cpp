@@ -226,7 +226,7 @@ void initialise(int argc,char* argv[])
 {
   VSX_UNUSED(argc);
   VSX_UNUSED(argv);
-  std::cout<<"__Vovoid VSXu-Librarian "<< vsxu_ver;
+  std::cout<<"__Vovoid VSXu-Librarian "<< VSXU_VER;
 #if PLATFORM == PLATFORM_LINUX
   std::cout<<" [GNU/Linux "<<PLATFORM_BITS<<"-bit]__\n";
 #elif PLATFORM == PLATFORM_WINDOWS

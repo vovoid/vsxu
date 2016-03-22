@@ -37,6 +37,13 @@ class player_application
 
 public:
 
+  vsx_string<> window_title_get()
+  {
+    char titlestr[ 200 ];
+    sprintf( titlestr, "Vovoid VSXu Player %s [%s %d-bit]", VSXU_VER, PLATFORM_NAME, PLATFORM_BITS);
+    return vsx_string<>(titlestr);
+  }
+
   void print_help()
   {
     vsx_application::print_help();
@@ -81,7 +88,7 @@ public:
       overlay->render();
   }
 
-  void key_down_event(long key)
+  void event_key_down(long key)
   {
     switch (key)
     {

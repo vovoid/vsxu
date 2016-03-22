@@ -24,7 +24,7 @@ class vsx_application_sdl_input_event_handler
 
     // application
     vsx_application_input_state_manager::get()->consume_event(vsx_event);
-    vsx_application_manager::get()->key_down_event(sdl_event.key.keysym.scancode);
+    vsx_application_manager::get()->event_key_down(sdl_event.key.keysym.scancode);
     vsx_application_manager::get()->input_event(vsx_event);
   }
 
@@ -37,7 +37,7 @@ class vsx_application_sdl_input_event_handler
 
     // application
     vsx_application_input_state_manager::get()->consume_event(vsx_event);
-    vsx_application_manager::get()->key_up_event(sdl_event.key.keysym.scancode);
+    vsx_application_manager::get()->event_key_up(sdl_event.key.keysym.scancode);
     vsx_application_manager::get()->input_event(vsx_event);
   }
 
@@ -59,7 +59,7 @@ class vsx_application_sdl_input_event_handler
 
     // application
     vsx_application_input_state_manager::get()->consume_event(vsx_event);
-    vsx_application_manager::get_instance()->get()->char_event( text[0] );
+    vsx_application_manager::get_instance()->get()->event_text( vsx_event.text.character_wide, vsx_event.text.character );
     vsx_application_manager::get()->input_event(vsx_event);
   }
 
@@ -79,10 +79,10 @@ class vsx_application_sdl_input_event_handler
     // application
     vsx_application_input_state_manager::get()->consume_event(vsx_event);
 
-    if (sdl_event.motion.state & SDL_BUTTON_LMASK)
-      vsx_application_manager::get()->mouse_move_event(sdl_event.motion.x, sdl_event.motion.y);
+    if (sdl_event.motion.state)
+      vsx_application_manager::get()->event_mouse_move(sdl_event.motion.x, sdl_event.motion.y);
     else
-      vsx_application_manager::get()->mouse_move_passive_event(sdl_event.motion.x, sdl_event.motion.y);
+      vsx_application_manager::get()->event_mouse_move_passive(sdl_event.motion.x, sdl_event.motion.y);
 
     vsx_application_manager::get()->input_event(vsx_event);
   }
@@ -116,13 +116,13 @@ class vsx_application_sdl_input_event_handler
     vsx_application_input_state_manager::get()->consume_event(vsx_event);
 
     if (sdl_event.button.button == SDL_BUTTON_LEFT)
-      vsx_application_manager::get()->mouse_down_event(0, sdl_event.button.x, sdl_event.button.y);
+      vsx_application_manager::get()->event_mouse_down(0, sdl_event.button.x, sdl_event.button.y);
 
     if (sdl_event.button.button == SDL_BUTTON_MIDDLE)
-      vsx_application_manager::get()->mouse_down_event(1, sdl_event.button.x, sdl_event.button.y);
+      vsx_application_manager::get()->event_mouse_down(1, sdl_event.button.x, sdl_event.button.y);
 
     if (sdl_event.button.button == SDL_BUTTON_RIGHT)
-      vsx_application_manager::get()->mouse_down_event(2, sdl_event.button.x, sdl_event.button.y);
+      vsx_application_manager::get()->event_mouse_down(2, sdl_event.button.x, sdl_event.button.y);
 
     vsx_application_manager::get()->input_event(vsx_event);
   }
@@ -156,13 +156,13 @@ class vsx_application_sdl_input_event_handler
     vsx_application_input_state_manager::get()->consume_event(vsx_event);
 
     if (sdl_event.button.button == SDL_BUTTON_LEFT)
-      vsx_application_manager::get()->mouse_up_event(0, sdl_event.motion.x, sdl_event.motion.y);
+      vsx_application_manager::get()->event_mouse_up(0, sdl_event.motion.x, sdl_event.motion.y);
 
     if (sdl_event.button.button == SDL_BUTTON_MIDDLE)
-      vsx_application_manager::get()->mouse_up_event(1, sdl_event.motion.x, sdl_event.motion.y);
+      vsx_application_manager::get()->event_mouse_up(1, sdl_event.motion.x, sdl_event.motion.y);
 
     if (sdl_event.button.button == SDL_BUTTON_RIGHT)
-      vsx_application_manager::get()->mouse_up_event(2, sdl_event.motion.x, sdl_event.motion.y);
+      vsx_application_manager::get()->event_mouse_up(2, sdl_event.motion.x, sdl_event.motion.y);
 
     vsx_application_manager::get()->input_event(vsx_event);
   }
@@ -178,7 +178,7 @@ class vsx_application_sdl_input_event_handler
 
     // application
     vsx_application_input_state_manager::get()->consume_event(vsx_event);
-    vsx_application_manager::get()->mouse_wheel_event(sdl_event.wheel.y, sdl_event.wheel.x, sdl_event.wheel.y);
+    vsx_application_manager::get()->event_mouse_wheel(sdl_event.wheel.y, sdl_event.wheel.x, sdl_event.wheel.y);
     vsx_application_manager::get()->input_event(vsx_event);
   }
 

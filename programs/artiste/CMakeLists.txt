@@ -3,7 +3,7 @@ set(module_id vsxu_artiste)
 message("configuring            " ${module_id})
 
 include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
-
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeVSXuGfxLib.txt)
 
 ################################################################################
 project (${module_id})
@@ -13,16 +13,6 @@ project (${module_id})
 ################################################################################
 find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
-
-PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
-
-include_directories(
-  ${SDL2_INCLUDE_DIRS}
-)
-
-link_directories(
-  ${SDL2_LIBRARY_DIRS}
-)
 
 ################################################################################
 # INCLUDES #####################################################################
@@ -101,7 +91,6 @@ set(SOURCES
   src/vsx_widget/arcball/arcball.cpp
   src/vsx_widget/module_choosers/vsx_widget_module_chooser.cpp
   src/vsx_widget/module_choosers/vsx_widget_module_chooser_list.cpp
-  src/artiste_desktop.cpp
   src/artiste_main.cpp
 )
 
@@ -119,14 +108,13 @@ include(${CMAKE_SOURCE_DIR}/cmake_suffix.txt)
 if(UNIX)
   target_link_libraries(
     ${module_id}
-    ${GLFW_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${GLEW_LIBRARIES}
     ${OPENGL_LIBRARIES}
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
     vsx_application
-    ${SDL2_LIBRARIES}
+    ${VSXU_GFX_LIB_LIBS}
     vsx_engine_graphics
     vsx_engine
     vsx_common
@@ -148,10 +136,9 @@ if(WIN32)
     -static-libgcc
     -static-libstdc++
     -static
-    ${GLFW_LIBRARIES}
     ${GLEW_LIBRARIES}
     vsx_application
-    ${SDL2_LIBRARIES}
+    ${VSXU_GFX_LIB_LIBS}
     wsock32
     ws2_32
     vsx_engine

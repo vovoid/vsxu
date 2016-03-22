@@ -98,7 +98,7 @@ void vsx_widget_ultra_chooser::cancel_drop() {
   drag_module = false;
   drag_dropped = false;
   allow_move = false;
-  ((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_show();
+  ((vsxu_assistant*)((vsx_artiste_desktop*)root)->assistant)->temp_show();
 }
 
 bool vsx_widget_ultra_chooser::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
@@ -132,7 +132,7 @@ void vsx_widget_ultra_chooser::command_process_back_queue(vsx_command_s *t) {
     k_focus = this;
     a_focus = this;
     drag_dropped = false;
-    ((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_show();
+    ((vsxu_assistant*)((vsx_artiste_desktop*)root)->assistant)->temp_show();
     parent->front(this);
   } else
   if (t->cmd == "component_create_name") {
@@ -141,7 +141,7 @@ void vsx_widget_ultra_chooser::command_process_back_queue(vsx_command_s *t) {
     k_focus = this;
     a_focus = this;
     drag_dropped = false;
-    ((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_show();
+    ((vsxu_assistant*)((vsx_artiste_desktop*)root)->assistant)->temp_show();
     // check wich type it is
     if (treedraw->selected->node->node->module_info->component_class == "macro") {
       // everything else will be contained in this macro, so modify the macro_name var
@@ -158,7 +158,7 @@ void vsx_widget_ultra_chooser::command_process_back_queue(vsx_command_s *t) {
       //  component_create math_logic;oscillator_dlux macro1.my_oscillator 0.013 0.204
       command_q_b.add_raw("component_create "+treedraw->selected->node->node->module_info->identifier+" "+macro_name+t->cmd_data+" "+vsx_string_helper::f2s(drop_pos.x)+" "+vsx_string_helper::f2s(drop_pos.y));
       parent->vsx_command_queue_b(this);
-      ((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_show();
+      ((vsxu_assistant*)((vsx_artiste_desktop*)root)->assistant)->temp_show();
     }
   }
 }
@@ -338,7 +338,7 @@ void vsx_widget_ultra_chooser::event_mouse_move(vsx_widget_distance distance,vsx
       visible = 0.15;
       drag_pos = distance.corner;
 
-      ((vsxu_assistant*)((vsx_widget_desktop*)root)->assistant)->temp_hide();
+      ((vsxu_assistant*)((vsx_artiste_desktop*)root)->assistant)->temp_hide();
     }
     return;
   }

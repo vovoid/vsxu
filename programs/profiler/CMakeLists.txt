@@ -7,22 +7,13 @@ message("configuring            " ${module_id})
 project (${module_id})
 
 include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeVSXuGfxLib.txt)
 
 ################################################################################
 # CMAKE PACKAGES ###############################################################
 ################################################################################
 find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
-
-PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
-
-include_directories(
-  ${SDL2_INCLUDE_DIRS}
-)
-
-link_directories(
-  ${SDL2_LIBRARY_DIRS}
-)
 
 
 ################################################################################
@@ -66,9 +57,6 @@ add_definitions(
 
 set(SOURCES
   src/profiler_main.cpp
-  src/profiler_application.cpp
-  src/profiler_desktop.cpp
-
   src/profiler/vsx_widget_profiler.cpp
   src/profiler/vsx_widget_profiler_timeline.cpp
   src/profiler/vsx_widget_profiler_thread.cpp
@@ -89,7 +77,6 @@ include(${CMAKE_SOURCE_DIR}/cmake_suffix.txt)
 if(UNIX)
   target_link_libraries(
     ${module_id}
-    ${GLFW_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${GLEW_LIBRARIES}
     ${OPENGL_LIBRARIES}
@@ -101,7 +88,7 @@ if(UNIX)
     vsx_engine_graphics
     vsx_widget
     vsx_application
-    ${SDL2_LIBRARIES}
+    ${VSXU_GFX_LIB_LIBS}
     rt
   )
 endif(UNIX)
@@ -109,7 +96,6 @@ endif(UNIX)
 if (WIN32)
   target_link_libraries(
     ${module_id}
-    ${GLFW_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${GLEW_LIBRARIES}
     ${PNG_LIBRARIES}
@@ -120,7 +106,7 @@ if (WIN32)
     vsx_engine_graphics
     vsx_widget
     vsx_application
-    ${SDL2_LIBRARIES}
+    ${VSXU_GFX_LIB_LIBS}
   )
 
 endif()

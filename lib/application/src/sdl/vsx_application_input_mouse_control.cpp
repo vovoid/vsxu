@@ -32,20 +32,23 @@ void vsx_application_mouse_control::set_cursor(int id) {
 void vsx_application_mouse_control::show_cursor()
 {
   SDL_ShowCursor(1);
-  // This causes problems with knobs & arcballs, mouse visibility is disabled for now
-  //glfwEnable(GLFW_MOUSE_CURSOR);
-  //glfwSetMousePos((int)(position.x), (int)(position.y));
 }
 
 void vsx_application_mouse_control::hide_cursor()
 {
-  SDL_ShowCursor(1);
-  // This causes problems with knobs & arcballs, mouse visibility is disabled for now
-  //  glfwDisable(GLFW_MOUSE_CURSOR);
+  SDL_ShowCursor(0);
 }
 
 
 void vsx_application_mouse_control::set_cursor_pos(float x, float y)
+{
+  int w;
+  int h;
+  SDL_GetWindowSize(vsx_application_sdl_window_holder::get_instance()->window, &w, &h);
+  SDL_WarpMouseInWindow(vsx_application_sdl_window_holder::get_instance()->window, (int)(x*(float)w), (int)(y*(float)h));
+}
+
+void vsx_application_mouse_control::set_cursor_pos_screen(float x, float y)
 {
   SDL_WarpMouseInWindow(vsx_application_sdl_window_holder::get_instance()->window, x, y);
 }

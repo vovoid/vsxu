@@ -27,7 +27,7 @@ vsx_data_path::vsx_data_path()
       (void)r;
     }
 
-    data_path = data_path + vsxu_ver + "/";
+    data_path = data_path + VSXU_VER + "/";
 
     if (access(data_path.c_str(),0) != 0)
       mkdir( (data_path).c_str(),0700);
