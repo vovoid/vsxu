@@ -1927,18 +1927,18 @@ void vsx_widget_anchor::event_mouse_double_click(vsx_widget_distance distance, v
       }
 
 
-      if (ctrl)
+      if (vsx_input_keyboard.pressed_ctrl())
       {
         command_q_b.add_raw("seq_pool_add");
         this->vsx_command_queue_b(this);
       } else
-      if (alt)
+      if (vsx_input_keyboard.pressed_alt())
       {
         command_q_b.add_raw("pseq_a_m");
         this->vsx_command_queue_b(this);
       }
       else
-      if (shift)
+      if (vsx_input_keyboard.pressed_shift())
       {
       }
       else

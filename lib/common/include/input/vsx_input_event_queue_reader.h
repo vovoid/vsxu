@@ -15,8 +15,7 @@ public:
     if (read_pointer == queue->size() )
       return 0x0;
 
-    return &(*queue)[read_pointer];
-    read_pointer++;
+    return &(*queue)[read_pointer++];
 
     return 0x0;
   }
@@ -62,5 +61,14 @@ public:
     return 0x0;
   }
 
-
 };
+
+#define vsx_input_event_queue_reader_consume(target) \
+  vsx_input_event_queue_reader reader(engine_state->event_queue); \
+  while (1) \
+  { \
+    vsx_input_event* event = reader.consume(); \
+    if (!event) \
+      break; \
+    target.consume(*event); \
+  }

@@ -82,7 +82,14 @@ public:
 
   void input_event(const vsx_input_event& event)
   {
-    req(my_draw.is_engine_fullscreen());
+    if (!my_draw.is_engine_fullscreen())
+    {
+      if (event.type == vsx_input_event::type_keyboard)
+        return;
+
+      if (event.type == vsx_input_event::type_mouse)
+        return;
+    }
     event_queue.add(event);
   }
 
