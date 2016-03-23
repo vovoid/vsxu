@@ -63,8 +63,8 @@ public:
 
 };
 
-#define vsx_input_event_queue_reader_consume(target) \
-  vsx_input_event_queue_reader reader(engine_state->event_queue); \
+#define vsx_input_event_queue_reader_consume(source_queue, target) \
+  vsx_input_event_queue_reader reader(source_queue); \
   while (1) \
   { \
     vsx_input_event* event = reader.consume(); \

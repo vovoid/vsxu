@@ -136,7 +136,7 @@ public:
 
   void run()
   {
-    vsx_input_event_queue_reader_consume(state_game_controller);
+    vsx_input_event_queue_reader_consume(engine_state->event_queue, state_game_controller);
 
     analog_left_x->set( state_game_controller.analog_left.x );
     analog_left_y->set( state_game_controller.analog_left.y );
