@@ -19,6 +19,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/lib/common/include
   ${CMAKE_SOURCE_DIR}/lib/engine/include
+  ${CMAKE_SOURCE_DIR}/lib/engine/include_internal
   ${CMAKE_SOURCE_DIR}/lib/engine_graphics/include
   include
   src/log

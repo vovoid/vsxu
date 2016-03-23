@@ -62,7 +62,7 @@ public:
   {
     passthru->set( block->get() );
 
-    if (engine->state == VSX_ENGINE_LOADING)
+    if (engine_state->state == VSX_ENGINE_LOADING)
       return true;
 
     if (block->get() >= 0.5)

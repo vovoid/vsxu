@@ -25,7 +25,7 @@
 #include "vsx_command.h"
 #include "vsx_command_list.h"
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 #include <time/vsx_timer.h>
 #include "vsx_comp_channel.h"
 #include "vsx_comp_abs.h"

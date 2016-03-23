@@ -19,7 +19,7 @@ function(CREATE_STATIC_GLUE module_id)
     file(APPEND ../../static_factory_funcmapping.h
       "vsx_module* " vsx_module_${module_id_f}_cm "(unsigned long module, void* args);\n"
       "void " vsx_module_${module_id_f}_dm "(vsx_module* m, unsigned long module);\n"
-      "unsigned long " vsx_module_${module_id_f}_nm "(vsx_engine_environment* environment);\n"
+      "unsigned long " vsx_module_${module_id_f}_nm "(vsx_module_engine_environment* environment);\n"
     )
     # create a cpp include file for calls
     file(APPEND ../../static_factory_funcmapping.cpp "  VSXM_SF_ADD_MODULE(\"${module_id}\"," vsx_module_${module_id_f}_cm "," vsx_module_${module_id_f}_dm "," vsx_module_${module_id_f}_nm ");\n")

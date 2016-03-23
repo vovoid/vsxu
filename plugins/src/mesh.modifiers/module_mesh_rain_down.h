@@ -162,7 +162,7 @@ public:
       float* v_weight_p = vertex_weight_array.get_pointer();
       float* v_ex_p = vertex_explosion_array_x.get_pointer();
       float* v_ez_p = vertex_explosion_array_z.get_pointer();
-      float dtx = engine->dtime;
+      float dtx = engine_state->dtime;
       float speed = start->get()*2.0f;
       float spdtx = speed * dtx;
       float spdtx_exp = spdtx*explosion_factor->get();

@@ -22,7 +22,7 @@
 */
 
 
-#include <vsx_module.h>
+#include <module/vsx_module.h>
 
 #include <inttypes.h>
 #include <bitmap/vsx_bitmap.h>

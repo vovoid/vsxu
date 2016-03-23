@@ -1,4 +1,4 @@
-#include <vsx_module.h>
+#include <module/vsx_module.h>
 #include <vsx_param.h>
 #include <texture/vsx_texture.h>
 #include <bitmap/vsx_bitmap_helper.h>

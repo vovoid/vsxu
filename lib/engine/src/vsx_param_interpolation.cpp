@@ -23,7 +23,7 @@
 
 #include <list>
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 #include "vsx_command.h"
 #include "vsx_command_list.h"
 #include "vsx_param_interpolation.h"

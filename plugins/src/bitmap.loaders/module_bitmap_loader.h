@@ -155,7 +155,7 @@ public:
 
     if (bitmap && reload)
     {
-      bitmap = vsx_bitmap_cache::get_instance()->aquire_reload( filename_cache, engine->filesystem, true, bitmap_loader_hint );
+      bitmap = vsx_bitmap_cache::get_instance()->aquire_reload( filename_cache, engine_state->filesystem, true, bitmap_loader_hint );
       return;
     }
 
@@ -169,7 +169,7 @@ public:
       bitmap = vsx_bitmap_cache::get_instance()->
         aquire_create( filename_cache, bitmap_loader_hint );
 
-    vsx_bitmap_loader::load(bitmap, filename_cache, engine->filesystem, true, bitmap_loader_hint );
+    vsx_bitmap_loader::load(bitmap, filename_cache, engine_state->filesystem, true, bitmap_loader_hint );
   }
 
   void on_delete()

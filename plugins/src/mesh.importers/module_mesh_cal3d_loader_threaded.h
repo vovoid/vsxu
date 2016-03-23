@@ -330,7 +330,7 @@ public:
         vsx_nw_vector<int> mesh_parts;
         vsx_nw_vector<int> material_parts;
         vsx::file *fp;
-        fp = engine->filesystem->f_open(current_filename.c_str(), "r");
+        fp = engine_state->filesystem->f_open(current_filename.c_str(), "r");
         if (!fp) {
           return;
         }
@@ -339,7 +339,7 @@ public:
         char buf[1024];
         vsx_string<>line;
         int mesh_id = 0;
-        while (engine->filesystem->f_gets(buf,1024,fp))
+        while (engine_state->filesystem->f_gets(buf,1024,fp))
         {
           line = buf;
           if (line[line.size()-1] == 0x0A) line.pop_back();
@@ -349,24 +349,24 @@ public:
             vsx_string<>deli = "=";
             vsx_string_helper::explode(line, deli, parts);
             if (parts[0] == "skeleton") {
-              vsx::file* h = engine->filesystem->f_open((file_path+parts[1]).c_str(),"r");
+              vsx::file* h = engine_state->filesystem->f_open((file_path+parts[1]).c_str(),"r");
               if (h) {
                 resources.push_back(file_path+parts[1]);
-                char* a = engine->filesystem->f_gets_entire(h);
+                char* a = engine_state->filesystem->f_gets_entire(h);
                 TiXmlDocument doc;
                 doc.Parse(a);
                 free(a);
                 CalCoreSkeletonPtr skeleton = CalLoader::loadXmlCoreSkeleton(doc);
                 if (skeleton)
                   c_model->setCoreSkeleton( skeleton.get() );
-                engine->filesystem->f_close(h);
+                engine_state->filesystem->f_close(h);
               }
             }
             if (parts[0] == "mesh") {
-              vsx::file* h = engine->filesystem->f_open((file_path+parts[1]).c_str(),"r");
+              vsx::file* h = engine_state->filesystem->f_open((file_path+parts[1]).c_str(),"r");
               if (h) {
                 resources.push_back(file_path+parts[1]);
-                char* a = engine->filesystem->f_gets_entire(h);
+                char* a = engine_state->filesystem->f_gets_entire(h);
                 TiXmlDocument doc;
                 doc.Parse(a);
                 free(a);
@@ -374,12 +374,12 @@ public:
                 c_model->addCoreMesh( mesh.get() );
                 if (mesh_id > -1)
                   mesh_parts.push_back(mesh_id);
-                engine->filesystem->f_close(h);
+                engine_state->filesystem->f_close(h);
               }
             }
           }
         }
-        engine->filesystem->f_close(fp);
+        engine_state->filesystem->f_close(fp);
         m_model = new CalModel(c_model);
         m_model->attachMesh(mesh_id);
 
@@ -714,7 +714,7 @@ VSXP_S_BEGIN("cal3d run");
 
     if (thread_info.is_thread)
       if ( wait_for_thread->get() )
-        if (times_run++ > 60 && engine->dtime > 0.01)
+        if (times_run++ > 60 && engine_state->dtime > 0.01)
         {
           if (thread_sync_strategy->get() == 0)
             while (!__sync_fetch_and_add(&worker_produce, 0))

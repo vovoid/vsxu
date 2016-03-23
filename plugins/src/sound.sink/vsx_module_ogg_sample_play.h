@@ -34,8 +34,8 @@ class vsx_module_ogg_sample_play : public vsx_module
   // private
   vsx_sample_ogg main_sample;
 
-  vsx_engine_float_array full_pcm_data_l;
-  vsx_engine_float_array full_pcm_data_r;
+  vsx_module_engine_float_array full_pcm_data_l;
+  vsx_module_engine_float_array full_pcm_data_r;
 
 public:
 
@@ -86,7 +86,7 @@ public:
   {
     if (name == "filename")
     {
-      main_sample.set_filesystem( engine->filesystem );
+      main_sample.set_filesystem( engine_state->filesystem );
       main_sample.load_filename( filename->get() );
 
       // store the sample data in float array
@@ -114,32 +114,32 @@ public:
   void run()
   {
 
-    engine->param_float_arrays[2] = &full_pcm_data_l;
-    engine->param_float_arrays[3] = &full_pcm_data_r;
+    engine_state->param_float_arrays[2] = &full_pcm_data_l;
+    engine_state->param_float_arrays[3] = &full_pcm_data_r;
 
 
-    if (fabs(engine->vtime - main_sample.get_time()) > 0.08)
+    if (fabs(engine_state->vtime - main_sample.get_time()) > 0.08)
     {
-      main_sample.goto_time(engine->vtime);
+      main_sample.goto_time(engine_state->vtime);
       float cur_sample_time = main_sample.get_time();
       VSX_UNUSED(cur_sample_time);
     }
 
-    if (engine->state == VSX_ENGINE_PLAYING)
+    if (engine_state->state == VSX_ENGINE_PLAYING)
     {
-      if (engine->dtime < 0.0f)
+      if (engine_state->dtime < 0.0f)
       {
-        main_sample.goto_time( engine->vtime );
+        main_sample.goto_time( engine_state->vtime );
       }
       main_sample.play();
     }
-    if (engine->state == VSX_ENGINE_STOPPED)
+    if (engine_state->state == VSX_ENGINE_STOPPED)
     {
-      //vsx_printf(L"engine is stopped at %f\n", engine->vtime );
+      //vsx_printf(L"engine is stopped at %f\n", engine_state->vtime );
       main_sample.stop();
-      if (engine->dtime != 0.0f)
+      if (engine_state->dtime != 0.0f)
       {
-        main_sample.goto_time( engine->vtime );
+        main_sample.goto_time( engine_state->vtime );
       }
     }
     main_sample.set_stereo_type( format->get() + 1 );

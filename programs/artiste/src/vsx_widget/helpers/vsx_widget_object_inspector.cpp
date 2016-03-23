@@ -40,7 +40,7 @@
 #include "server/vsx_widget_comp.h"
 #include <filesystem/vsx_filesystem.h>
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 #include <time/vsx_timer.h>
 #include "widgets/vsx_widget_panel.h"
 #include "widgets/vsx_widget_base_edit.h"

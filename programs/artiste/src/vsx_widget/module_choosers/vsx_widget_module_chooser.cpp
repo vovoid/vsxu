@@ -31,7 +31,7 @@
 #include "vsx_font.h"
 #include <filesystem/vsx_filesystem.h>
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 #include <texture/vsx_texture.h>
 
 

@@ -91,8 +91,8 @@ private:
   int first;
   int start_loaded_modules;
 
-  vsx_engine_float_array int_freq;
-  vsx_engine_float_array int_wav;
+  vsx_module_engine_float_array int_freq;
+  vsx_module_engine_float_array int_wav;
 
   // options
   bool option_preload_all;

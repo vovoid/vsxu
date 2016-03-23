@@ -130,7 +130,7 @@ public:
       gr[i]->color1[1] = color1->get(1);
       gr[i]->color1[2] = color1->get(2);
       gr[i]->step_freq = 10.0f * step_length->get();
-      gr[i]->update(engine->dtime, (*(particles->particles))[i].pos.x, (*(particles->particles))[i].pos.y, (*(particles->particles))[i].pos.z);
+      gr[i]->update(engine_state->dtime, (*(particles->particles))[i].pos.x, (*(particles->particles))[i].pos.y, (*(particles->particles))[i].pos.z);
       gr[i]->render();
     }
     render_result->set(1);

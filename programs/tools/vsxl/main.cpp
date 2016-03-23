@@ -8,7 +8,7 @@
 
 #include <string/vsx_string.h>
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 #include "vsx_module_list_abs.h"
 #include "vsx_module_list_factory.h"
 #include "vsx_platform.h"

@@ -2,7 +2,7 @@
 #define MODULERENDERSTATE_H
 
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 #include "vsx_engine.h"
 #include "vsx_engine_helper.h"
 #include "vsx_data_path.h"
@@ -56,7 +56,7 @@ public:
       {
         delete helper;
       }
-      helper = new vsx_engine_helper( vsx_data_path::get_instance()->data_path_get() + current_filename, (vsx_module_list_abs*) engine->module_list);
+      helper = new vsx_engine_helper( vsx_data_path::get_instance()->data_path_get() + current_filename, (vsx_module_list_abs*) engine_state->module_list);
     }
   }
 

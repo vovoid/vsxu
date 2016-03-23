@@ -91,7 +91,7 @@ public:
   
 	//void load_module(vsx_string<>module_class, vsx_string<>name);
 
-  void load_module(const vsx_string<>& module_name, vsx_module_engine_info* engine_info);
+  void load_module(const vsx_string<>& module_name, vsx_module_engine_state* engine_info);
   void unload_module();
 	void init_module();
 	

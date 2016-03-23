@@ -32,6 +32,7 @@ class vsx_application_artiste
     : public vsx_application
 {
   vsx_artiste_draw my_draw;
+  vsx_input_event_queue event_queue;
 
 public:
 
@@ -45,6 +46,7 @@ public:
   void init()
   {
     my_draw.init();
+    my_draw.vxe->set_input_event_queue(&event_queue);
   }
 
   void uninit()
@@ -60,6 +62,7 @@ public:
   void draw()
   {
     my_draw.draw();
+    event_queue.reset();
   }
 
   void print_help()
@@ -80,6 +83,7 @@ public:
   void input_event(const vsx_input_event& event)
   {
     req(my_draw.is_engine_fullscreen());
+    event_queue.add(event);
   }
 
 

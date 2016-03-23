@@ -23,7 +23,7 @@
 
 #include <filesystem/vsx_filesystem.h>
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 #include <time/vsx_timer.h>
 #include <list>
 #include "vsx_command.h"

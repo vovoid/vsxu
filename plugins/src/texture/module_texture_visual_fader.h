@@ -52,7 +52,7 @@ public:
       fade_pos_out->set(fade_pos_in->get());
     } else
     {
-      fade_pos_out->set((float)fmod(engine->real_vtime, 1.0f));
+      fade_pos_out->set((float)fmod(engine_state->real_vtime, 1.0f));
     }
   }
 };

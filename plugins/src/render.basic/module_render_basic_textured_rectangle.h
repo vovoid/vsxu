@@ -1,4 +1,4 @@
-#include <vsx_module.h>
+#include <module/vsx_module.h>
 #include <vsx_param.h>
 
 class module_render_basic_textured_rectangle : public vsx_module

@@ -29,7 +29,7 @@
 #include "pthread.h"
 #include "vsx_command.h"
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 #include <texture/vsx_texture.h>
 #include <time/vsx_timer.h>
 #include <filesystem/vsx_filesystem.h>

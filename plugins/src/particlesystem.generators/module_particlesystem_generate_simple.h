@@ -165,11 +165,11 @@ public:
     float ddtime;
     if (time_source->get())
     {
-      ddtime = engine->real_dtime;
+      ddtime = engine_state->real_dtime;
     }
     else
     {
-      ddtime = engine->dtime;
+      ddtime = engine_state->dtime;
     }
 
     if (first || (ddtime < 0))

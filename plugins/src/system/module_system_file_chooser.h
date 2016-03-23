@@ -68,7 +68,7 @@ public:
           old_path = directory_path->get();
           std::list< vsx_string<> > files;
 
-          vsx_string<> engine_resources_base_path = engine->filesystem->get_base_path();
+          vsx_string<> engine_resources_base_path = engine_state->filesystem->get_base_path();
 
           vsx::filesystem_helper::get_files_recursive(engine_resources_base_path + DIRECTORY_SEPARATOR + directory_path->get(), &files);
 

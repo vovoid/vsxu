@@ -43,7 +43,7 @@ public:
 
   vsx_comp_abs* parent;
 
-  vsx_module_engine_info* r_engine_info;
+  vsx_module_engine_state* r_engine_info;
 
   // time warp
   float time_multiplier;

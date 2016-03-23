@@ -226,9 +226,9 @@ int echo_log(const char* message, int a) {
 int i;
 
   void run() {
-    float l_mul = multiplier->get()*engine->amp*0.4f;
+    float l_mul = multiplier->get()*engine_state->amp*0.4f;
     // set wave
-    if (0 == engine->param_float_arrays.size())
+    if (0 == engine_state->param_float_arrays.size())
     {
       // enable to test using random data when not getting sound
       //int i;
@@ -242,8 +242,8 @@ int i;
       }*/
     } else
     {
-      vsx_engine_float_array* lv_wave_data = engine->param_float_arrays[0];
-      //vsx_engine_float_array* lv_freq_data = engine->param_float_arrays[1];
+      vsx_module_engine_float_array* lv_wave_data = engine_state->param_float_arrays[0];
+      //vsx_module_engine_float_array* lv_freq_data = engine_state->param_float_arrays[1];
 
       // Process incoming wave data
       for (i = 0; i < 512; ++i)

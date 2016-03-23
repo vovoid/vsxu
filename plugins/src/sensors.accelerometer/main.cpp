@@ -31,7 +31,7 @@
 #include <stdlib.h>
 
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 #include "vsx_math_3d.h"
 
 #include "Net.h"
@@ -173,7 +173,7 @@ int module_sensors_remote_accelerometer::nextPort = 5555;
 extern "C" {
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
-__declspec(dllexport) unsigned long get_num_modules(vsx_engine_environment* environment);
+__declspec(dllexport) unsigned long get_num_modules(vsx_module_engine_environment* environment);
 }
 
 vsx_module* MOD_CM(unsigned long module) {
@@ -191,7 +191,7 @@ void MOD_DM(vsx_module* m,unsigned long module) {
   }
 }
 
-unsigned long MOD_NM(vsx_engine_environment* environment) {
+unsigned long MOD_NM(vsx_module_engine_environment* environment) {
   return 2;
 }
 

@@ -22,7 +22,7 @@
 */
 
 
-#include <vsx_module.h>
+#include <module/vsx_module.h>
 
 #include <bitmap/vsx_bitmap.h>
 #include <texture/vsx_texture.h>

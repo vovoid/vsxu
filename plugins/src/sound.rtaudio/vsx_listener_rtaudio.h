@@ -232,7 +232,7 @@ int i;
 
 void run()
 {
-  pa_audio_data.l_mul = multiplier->get()*engine->amp;
+  pa_audio_data.l_mul = multiplier->get()*engine_state->amp;
   wave_p->set_p(pa_audio_data.wave[0]);
   spectrum_p->set_p(pa_audio_data.spectrum[0]);
   spectrum_p_hq->set_p(pa_audio_data.spectrum[0]);

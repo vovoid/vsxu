@@ -131,14 +131,14 @@ public:
 
       // operating_system
       case 0:
-        vtime = engine->real_vtime;
-        dtime = engine->real_dtime;
+        vtime = engine_state->real_vtime;
+        dtime = engine_state->real_dtime;
       break;
 
       // master sequencer
       case 1:
-        vtime = engine->vtime;
-        dtime = engine->dtime;
+        vtime = engine_state->vtime;
+        dtime = engine_state->dtime;
       break;
 
     }

@@ -19,7 +19,7 @@ public:
     write_pointer = 0;
   }
 
-  void add(vsx_input_event& event)
+  void add(const vsx_input_event& event)
   {
     queue[write_pointer] = event;
     write_pointer++;

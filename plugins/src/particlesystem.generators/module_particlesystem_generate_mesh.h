@@ -201,8 +201,8 @@ public:
   void run() {
     float ddtime;
     if (time_source->get()) {
-      ddtime = engine->real_dtime;
-    } else ddtime = engine->dtime;
+      ddtime = engine_state->real_dtime;
+    } else ddtime = engine_state->dtime;
 
     if (ddtime < 0) first = true;
     float dtime = ddtime;

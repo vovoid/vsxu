@@ -64,7 +64,7 @@ public:
         q_out = &(*particles->particles)[i].rotation;
         q1.x = 0.0f;
         q1.w = 1.0f;
-        q1.y = rotation_dir->get(0) * engine->dtime;
+        q1.y = rotation_dir->get(0) * engine_state->dtime;
         q1.z = 0.0f;
         q1.normalize();
         q_out->mul(*q_out, q1);
@@ -72,7 +72,7 @@ public:
         q1.x = 0.0f;
         q1.w = 1.0f;
         q1.y = 0.0f;
-        q1.z = rotation_dir->get(0) * engine->dtime;
+        q1.z = rotation_dir->get(0) * engine_state->dtime;
         q1.normalize();
         q_out->mul(*q_out, q1);
       }
@@ -84,9 +84,9 @@ public:
       // go through all particles
       for (unsigned long i = 0; i <  particles->particles->size(); ++i) {
         // add the delta-time to the time of the particle
-        (*particles->particles)[i].pos.x += px*engine->dtime;
-        (*particles->particles)[i].pos.y += py*engine->dtime;
-        (*particles->particles)[i].pos.z += pz*engine->dtime;
+        (*particles->particles)[i].pos.x += px*engine_state->dtime;
+        (*particles->particles)[i].pos.y += py*engine_state->dtime;
+        (*particles->particles)[i].pos.z += pz*engine_state->dtime;
       }*/
       // in case some modifier has decided to base some mesh or whatever on the particle system
       // increase the timsetamp so that module can know that it has to copy the particle system all

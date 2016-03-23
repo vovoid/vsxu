@@ -203,7 +203,7 @@ public:
     float materialWeight = material_weight->get();
     float lowerBoundary = lower_boundary->get();
 
-    //use engine->dtime; and dtimeRest
+    //use engine_state->dtime; and dtimeRest
     //to repeat the calculation several times ((dtime + rest) * stepsPerSecond)
 
 

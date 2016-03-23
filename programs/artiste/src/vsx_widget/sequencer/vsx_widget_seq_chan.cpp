@@ -35,7 +35,7 @@
 #include "vsx_command.h"
 #include "vsx_font.h"
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 // local includes
 #include "vsx_widget.h"
 #include "vsx_widget_sequence_editor.h"

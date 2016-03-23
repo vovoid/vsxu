@@ -111,7 +111,7 @@ public:
       if (0 == sem_trywait(&my->sem_worker_todo))
       {
         pthread_mutex_lock(&my->mesh_mutex);
-        my->t += my->time_speed->get()*my->engine->real_dtime;
+        my->t += my->time_speed->get()*my->engine_state->real_dtime;
         my->ocean.dtime = my->t;
         my->ocean.display();
         my->mesh->data->vertices.reset_used(0);

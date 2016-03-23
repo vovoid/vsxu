@@ -38,7 +38,7 @@
 #include <time/vsx_timer.h>
 #include "vsx_command.h"
 #include "vsx_math_3d.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 #include "vsx_param_interpolation.h"
 #include "vsx_comp_abs.h"
 #include "vsx_param_abstraction.h"

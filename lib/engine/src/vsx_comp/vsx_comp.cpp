@@ -81,7 +81,7 @@ vsx_comp::~vsx_comp()
   #endif
 }
 
-void vsx_comp::load_module(const vsx_string<>& module_name, vsx_module_engine_info* engine_info)
+void vsx_comp::load_module(const vsx_string<>& module_name, vsx_module_engine_state* engine_info)
 {
   vsx_module_list_abs* module_list = ((vsx_engine*)engine_owner)->get_module_list();
   module = module_list->load_module_by_name( module_name );
@@ -286,7 +286,7 @@ void vsx_comp::init_channels() {
 
 void vsx_comp::init_module()
 {
-  module->engine = r_engine_info;
+  module->engine_state = r_engine_info;
   module->declare_params(*in_module_parameters, *out_module_parameters);
   LOG("init_module 1")
   module->module_info(module_info);

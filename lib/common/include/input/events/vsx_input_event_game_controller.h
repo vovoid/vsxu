@@ -17,7 +17,6 @@ public:
   };
 
   enum {
-    name,
 
     // left analog stick
     axis_analog_left_x,

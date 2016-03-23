@@ -72,7 +72,7 @@
 
 
 #ifdef VSXU_ENGINE_INFO_STATIC
-vsx_module_engine_info vsx_engine::engine_info;
+vsx_module_engine_state vsx_engine::engine_info;
 #endif
 
 
@@ -165,7 +165,7 @@ float vsx_engine::get_frame_elapsed_time()
   return g_timer.atime() - frame_start_time;
 }
 
-vsx_module_engine_info* vsx_engine::get_engine_info()
+vsx_module_engine_state* vsx_engine::get_engine_info()
 {
   return &engine_info;
 }
@@ -280,17 +280,10 @@ vsx_string<>vsx_engine::get_modules_not_loaded()
   return res;
 }
 
-
-void vsx_engine::input_event(vsx_engine_input_event &new_input_event)
+void vsx_engine::set_input_event_queue(vsx_input_event_queue* queue)
 {
-  if (!valid) return;
-  if (engine_info.num_input_events < VSX_ENGINE_INPUT_EVENT_BUFSIZE)
-  {
-    engine_info.input_events[engine_info.num_input_events] = new_input_event;
-    engine_info.num_input_events++;
-  }
+  engine_info.event_queue = queue;
 }
-
 
 int vsx_engine::load_state(vsx_string<>filename, vsx_string<>*error_string)
 {
@@ -368,7 +361,7 @@ void vsx_engine::set_speed(float spd)
 }
 
 // set internal float parameter
-void vsx_engine::set_float_array_param(int id, vsx_engine_float_array* float_array)
+void vsx_engine::set_float_array_param(int id, vsx_module_engine_float_array* float_array)
 {
   if (!valid)
     return;
@@ -712,13 +705,8 @@ bool vsx_engine::render()
     {
       engine_info.dtime = 0.0f;
     }
-
-    // reset input events counter
-    reset_input_events();
     return true;
   }
-  // reset input events counter
-  reset_input_events();
   return false;
 }
 

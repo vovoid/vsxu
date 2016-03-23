@@ -89,7 +89,7 @@ public:
     current_filename = filename->get();
     vsx::file *fp;
 
-    if ((fp = engine->filesystem->f_open(current_filename.c_str(), "r")) == NULL)
+    if ((fp = engine_state->filesystem->f_open(current_filename.c_str(), "r")) == NULL)
     {
       VSX_ERROR_RETURN("Could not open file");
     }
@@ -110,7 +110,7 @@ public:
       mesh->data->vertex_normals.reset_used();
       mesh->data->faces.reset_used();
 
-      while (engine->filesystem->f_gets(buf,65535,fp))
+      while (engine_state->filesystem->f_gets(buf,65535,fp))
       {
         line = buf;
 
@@ -199,7 +199,7 @@ public:
       }
     } else {
 
-      while (engine->filesystem->f_gets(buf,65535,fp))
+      while (engine_state->filesystem->f_gets(buf,65535,fp))
       {
         line = buf;
         if (line[line.size()-1] == 0x0A) line.pop_back();
@@ -287,9 +287,9 @@ public:
       }
     }
 
-    engine->filesystem->f_close(fp);
+    engine_state->filesystem->f_close(fp);
     loading_done = true;
-    mesh->timestamp = (int)(engine->real_vtime*1000.0f);
+    mesh->timestamp = (int)(engine_state->real_vtime*1000.0f);
 
     result->set_p(mesh);
   }

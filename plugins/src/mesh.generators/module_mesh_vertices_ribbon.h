@@ -126,7 +126,7 @@ public:
     vsx_vector3<> up_side = normal;
     up_side *= up.length();
 
-    float t = engine->vtime * time_amp->get();
+    float t = engine_state->vtime * time_amp->get();
 
     float p_scale = particle_scale->get();
 

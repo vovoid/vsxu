@@ -24,7 +24,7 @@
 
 #include "_configuration.h"
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 #include <vsx_font.h>
 #include <FTGL/ftgl.h>
 
@@ -222,7 +222,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
     )
     {
       vsx::file *fp;
-      if ((fp = engine->filesystem->f_open(font_in->get().c_str(), "rb")) == NULL)
+      if ((fp = engine_state->filesystem->f_open(font_in->get().c_str(), "rb")) == NULL)
       {
         printf("font not found: %s\n",cur_font.c_str());
         return;
@@ -239,9 +239,9 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
         delete ftfont2;
         ftfont2 = 0;
       }
-      unsigned long size = engine->filesystem->f_get_size(fp);
+      unsigned long size = engine_state->filesystem->f_get_size(fp);
       char* fdata = (char*)malloc(size);
-      unsigned long bread = engine->filesystem->f_read((void*)fdata, size, fp);
+      unsigned long bread = engine_state->filesystem->f_read((void*)fdata, size, fp);
       if (bread == size)
       {
         switch (cur_render_type)
@@ -262,7 +262,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
         }
         loading_done = true;
       }
-      engine->filesystem->f_close(fp);
+      engine_state->filesystem->f_close(fp);
     }
   }
 
@@ -389,7 +389,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 extern "C" {
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
-__declspec(dllexport) unsigned long get_num_modules(vsx_engine_environment* environment);
+__declspec(dllexport) unsigned long get_num_modules(vsx_module_engine_environment* environment);
 }
 
 
@@ -412,7 +412,7 @@ void MOD_DM(vsx_module* m,unsigned long module)
   }
 }
 
-unsigned long MOD_NM(vsx_engine_environment* environment)
+unsigned long MOD_NM(vsx_module_engine_environment* environment)
 {
   VSX_UNUSED(environment);
   // we have only one module. it's id is 0

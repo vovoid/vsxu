@@ -39,7 +39,7 @@
 #include "vsx_widget_object_inspector.h"
 #include <filesystem/vsx_filesystem.h>
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 #include <time/vsx_timer.h>
 #include "vsx_engine.h"
 #include "widgets/vsx_widget_panel.h"

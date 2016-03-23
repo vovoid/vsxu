@@ -96,7 +96,7 @@ public:
   {
     if (name == "filename")
     {
-      main_sample.set_filesystem( engine->filesystem );
+      main_sample.set_filesystem( engine_state->filesystem );
       main_sample.load_filename( filename->get() );
     }
   }

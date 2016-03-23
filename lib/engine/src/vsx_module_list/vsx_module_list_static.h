@@ -28,7 +28,7 @@
 #include <vector>
 #include <string/vsx_string.h>
 #include <vsx_param.h>
-#include <vsx_module.h>
+#include <module/vsx_module.h>
 #include <tools/vsx_foreach.h>
 
 #include "vsx_dlopen.h"
@@ -59,7 +59,7 @@ public:
     //unsigned long total_num_modules = 0;
 
     // set up engine environment for later use (directories in which modules can look for config)
-    vsx_engine_environment engine_environment;
+    vsx_module_engine_environment engine_environment;
     engine_environment.engine_parameter[0] = PLATFORM_SHARED_FILES + "plugin-config/";
 
 
@@ -105,8 +105,8 @@ public:
 
       //-------------------------------------------------------------------------
       // init get_num_modules method
-      unsigned long(*get_num_modules)(vsx_engine_environment*) =
-          (unsigned long(*)(vsx_engine_environment*))
+      unsigned long(*get_num_modules)(vsx_module_engine_environment*) =
+          (unsigned long(*)(vsx_module_engine_environment*))
           modules[i]->nm
           ;
       //-------------------------------------------------------------------------

@@ -28,7 +28,7 @@
 #include <vector>
 #include <string/vsx_string.h>
 #include <vsx_param.h>
-#include <vsx_module.h>
+#include <module/vsx_module.h>
 #include <filesystem/vsx_filesystem_helper.h>
 
 #include "vsx_dlopen.h"
@@ -60,7 +60,7 @@ public:
 
 
     // set up engine environment for later use (directories in which modules can look for config)
-    vsx_engine_environment engine_environment;
+    vsx_module_engine_environment engine_environment;
     engine_environment.engine_parameter[0] = PLATFORM_SHARED_FILES+"plugin-config/";
 
     // recursively find the plugin so's from the plugins directory
@@ -163,8 +163,8 @@ public:
         continue; // try to load the next plugin
       }
       // init get_num_modules method
-      unsigned long(*get_num_modules)(vsx_engine_environment*) =
-          (unsigned long(*)(vsx_engine_environment*))
+      unsigned long(*get_num_modules)(vsx_module_engine_environment*) =
+          (unsigned long(*)(vsx_module_engine_environment*))
           vsx_dlopen::sym(
             plugin_handle,
             "get_num_modules"

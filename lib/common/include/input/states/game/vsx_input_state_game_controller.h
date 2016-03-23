@@ -10,13 +10,6 @@ class vsx_input_state_game_controller
 {
 public:
 
-  vsx_input_state_game_controller()
-  {
-    vsx_printf(L"constructor");
-  }
-
-  vsx_string<> name;
-
   vsx_vector2f analog_left;
   vsx_vector2f analog_right;
 

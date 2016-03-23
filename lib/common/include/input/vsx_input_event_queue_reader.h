@@ -2,19 +2,20 @@
 
 #include "vsx_input_event_queue.h"
 
+// This should be created on the stack, not the heap.
 class vsx_input_event_queue_reader
 {
   size_t read_pointer = 0;
-  vsx_ma_vector< vsx_input_event >& queue;
+  vsx_ma_vector< vsx_input_event >* queue;
 
 public:
 
   vsx_input_event* consume()
   {
-    if (read_pointer == queue.size() )
+    if (read_pointer == queue->size() )
       return 0x0;
 
-    return &queue[read_pointer];
+    return &(*queue)[read_pointer];
     read_pointer++;
 
     return 0x0;
@@ -37,7 +38,29 @@ public:
 
   vsx_input_event_queue_reader(vsx_input_event_queue* queue_n)
   {
-    queue = queue_n->queue;
+    queue = &queue_n->queue;
   }
+
+  // to disallow creating this class on the heap, i.e. with new
+  void* operator new(size_t) throw()
+  {
+    return 0x0;
+  }
+
+  void* operator new(size_t, void*) throw()
+  {
+    return 0x0;
+  }
+
+  void* operator new[](size_t) throw()
+  {
+    return 0x0;
+  }
+
+  void* operator new[](size_t, void*) throw()
+  {
+    return 0x0;
+  }
+
 
 };

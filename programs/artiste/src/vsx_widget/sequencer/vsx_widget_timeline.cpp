@@ -31,7 +31,7 @@
 #include "vsx_font.h"
 #include <filesystem/vsx_filesystem.h>
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 
 // local includes
 #include "vsx_widget.h"
@@ -178,12 +178,12 @@ void vsx_widget_timeline::draw_waveform_data(float y_mid, float y_size_half)
 
   vsx_widget_server* server = (vsx_widget_server*)owner->get_server();
   vsx_engine* engine = (vsx_engine*)(server->engine);
-  vsx_module_engine_info* engine_info = engine->get_engine_info();
+  vsx_module_engine_state* engine_info = engine->get_engine_info();
 
   if (engine_info->param_float_arrays.size() >= 4 && a_focus == this)
   {
-    vsx_engine_float_array *full_pcm_data_l;
-    vsx_engine_float_array *full_pcm_data_r;
+    vsx_module_engine_float_array *full_pcm_data_l;
+    vsx_module_engine_float_array *full_pcm_data_r;
     full_pcm_data_l = engine_info->param_float_arrays[2];
     full_pcm_data_r = engine_info->param_float_arrays[3];
     if (full_pcm_data_l->array.size() > 0)

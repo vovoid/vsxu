@@ -1,4 +1,4 @@
-#include <vsx_module.h>
+#include <module/vsx_module.h>
 
 #include <texture/vsx_texture.h>
 #include <bitmap/generators/vsx_bitmap_generator_blob.h>
@@ -158,7 +158,7 @@ public:
       if (!texture)
         texture = new vsx_texture<>;
 
-      texture->texture = vsx_texture_gl_cache::get_instance()->aquire(cache_handle, engine->filesystem, false, 0, hint, false );
+      texture->texture = vsx_texture_gl_cache::get_instance()->aquire(cache_handle, engine_state->filesystem, false, 0, hint, false );
       texture_out->set(texture);
       return;
     }

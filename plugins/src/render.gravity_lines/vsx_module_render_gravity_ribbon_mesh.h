@@ -190,7 +190,7 @@ public:
         } else
         {
           gr[i]->update(
-            engine->dtime,
+            engine_state->dtime,
             (*mesh)->data->vertices[mesh_index].x,
             (*mesh)->data->vertices[mesh_index].y,
             (*mesh)->data->vertices[mesh_index].z
@@ -259,7 +259,7 @@ public:
         } else
         {
           gr[i]->update(
-            engine->dtime,
+            engine_state->dtime,
             (*mesh)->data->vertices[mesh_index].x,
             (*mesh)->data->vertices[mesh_index].y,
             (*mesh)->data->vertices[mesh_index].z

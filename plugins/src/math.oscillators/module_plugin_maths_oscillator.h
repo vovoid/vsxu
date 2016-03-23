@@ -123,12 +123,12 @@ public:
   {
     if (time_source->get() == 0)
     {
-      vtime = engine->real_vtime;
-      dtime = engine->real_dtime;
+      vtime = engine_state->real_vtime;
+      dtime = engine_state->real_dtime;
     } else
     {
-      vtime = engine->vtime;
-      dtime = engine->dtime;
+      vtime = engine_state->vtime;
+      dtime = engine_state->dtime;
     }
     switch (drive_type->get())
     {

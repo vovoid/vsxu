@@ -1,4 +1,4 @@
-#include <vsx_module.h>
+#include <module/vsx_module.h>
 #include <vsx_param.h>
 #include <texture/vsx_texture.h>
 
@@ -181,7 +181,7 @@ public:
 
     texture = vsx_texture_loader::load(
       filename_cache,
-      engine->filesystem,
+      engine_state->filesystem,
       true, // threaded
       bitmap_loader_hint,
       hint,

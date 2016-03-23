@@ -51,25 +51,25 @@ public:
     // set engine play state
     if (prev_play == 0.0f && trig_play->get() > 0.0f)
     {
-      engine->request_play = 1;
+      engine_state->request_play = 1;
     }
     prev_play = trig_play->get();
 
     // set engine stop state
     if (prev_stop == 0.0f && trig_stop->get() > 0.0f)
     {
-      engine->request_stop = 1;
+      engine_state->request_stop = 1;
     }
     prev_stop = trig_stop->get();
 
     // set engine rewind state
     if (prev_rewind == 0.0f && trig_rewind->get() > 0.0f)
     {
-      engine->request_rewind = 1;
+      engine_state->request_rewind = 1;
     }
     prev_rewind = trig_rewind->get();
     // set engine vtime
-    engine->request_set_time = trig_set_time->get();
+    engine_state->request_set_time = trig_set_time->get();
   }
 
 };

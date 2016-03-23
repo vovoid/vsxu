@@ -33,7 +33,7 @@ protected:
 
 // filesystem handler
   vsx::filesystem filesystem;
-  vsx_engine_environment engine_environment;
+  vsx_module_engine_environment engine_environment;
 
 //-- current state name
   vsx_string<>state_name;
@@ -52,9 +52,9 @@ protected:
 
 //-- module engine_info struct
   #ifdef VSXU_ENGINE_INFO_STATIC
-    static vsx_module_engine_info engine_info;
+    static vsx_module_engine_state engine_info;
   #else
-    vsx_module_engine_info engine_info;
+    vsx_module_engine_state engine_info;
   #endif
 
 //-- outputs
@@ -172,8 +172,6 @@ protected:
   void send_state_to_client(vsx_command_list *cmd_out);
   int get_state_as_commandlist(vsx_command_list &savelist);
   void message_fail(vsx_string<>header, vsx_string<>message);
-  // called each frame after engine has rendered
-  void reset_input_events();
   // add component to the forge
   vsx_comp* add(vsx_string<>label);
 public:

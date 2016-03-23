@@ -52,14 +52,14 @@ public:
 
   bool activate_offscreen()
   {
-    if (engine->state == VSX_ENGINE_LOADING)
+    if (engine_state->state == VSX_ENGINE_LOADING)
       return true;
 
-    if (engine->state == VSX_ENGINE_PLAYING)
+    if (engine_state->state == VSX_ENGINE_PLAYING)
     {
-      if (engine->vtime < fadeout_time->get())
+      if (engine_state->vtime < fadeout_time->get())
       {
-        fadeout_out->set(1.0f - engine->vtime/fadeout_time->get());
+        fadeout_out->set(1.0f - engine_state->vtime/fadeout_time->get());
         return true;
       }
     }

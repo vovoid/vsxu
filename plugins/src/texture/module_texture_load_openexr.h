@@ -201,7 +201,7 @@ public:
     Array2D<float> aPixels;
     int width, height;
 
-    vsx_string<>nf = engine->filesystem->get_base_path() + filename_in->get();
+    vsx_string<>nf = engine_state->filesystem->get_base_path() + filename_in->get();
 
     readGZ1
     (

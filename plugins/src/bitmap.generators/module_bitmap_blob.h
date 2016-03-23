@@ -21,7 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <vsx_module.h>
+#include <module/vsx_module.h>
 
 #include <bitmap/generators/vsx_bitmap_generator_blob.h>
 

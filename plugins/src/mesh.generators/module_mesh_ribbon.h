@@ -113,7 +113,7 @@ public:
     vsx_vector3<> up_side = normal;
     up_side *= up.length();
 
-    float t = engine->vtime * time_amp->get();
+    float t = engine_state->vtime * time_amp->get();
 
     #define COUNT 20.0f
     diff *= 1.0f / COUNT;

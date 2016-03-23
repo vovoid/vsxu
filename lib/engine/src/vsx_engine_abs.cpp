@@ -89,12 +89,6 @@ void vsx_engine_abs::constructor_set_default_values()
   component_name_autoinc = 0;
 }
 
-void vsx_engine_abs::reset_input_events()
-{
-  if (!valid) return;
-  engine_info.num_input_events = 0;
-}
-
 int vsx_engine_abs::i_load_state(vsx_command_list& load1,vsx_string<>*error_string, vsx_string<>info_filename)
 {
   if (!valid) return 2;

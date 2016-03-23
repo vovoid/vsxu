@@ -1,5 +1,4 @@
-#ifndef VSX_MODULE_OPERATION_H
-#define VSX_MODULE_OPERATION_H
+#pragma once
 
 #include <string/vsx_string.h>
 #include <string/vsx_string_helper.h>
@@ -92,4 +91,3 @@ public:
   }
 };
 
-#endif

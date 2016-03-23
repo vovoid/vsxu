@@ -99,7 +99,7 @@ public:
         int found = -1;
         float last_length = 1000.0f;
         vsx_vector3<> last_dist;
-        charges[i] += delta_charges[i] * engine->dtime;
+        charges[i] += delta_charges[i] * engine_state->dtime;
         //if (i == 0) printf("%f\n", charges[i]);
         vsx_vector3<> dist;
         for (int j = 0; j < run_particles; j++)
@@ -146,8 +146,8 @@ public:
             charges[i] += charges[found];
             glLineWidth(charges[i]);
             charges[i] = 0;
-            charges[i] += -delta_charges[i] * engine->dtime * 0.5f;
-            charges[found] += -delta_charges[found] * engine->dtime * 0.5f;
+            charges[i] += -delta_charges[i] * engine_state->dtime * 0.5f;
+            charges[found] += -delta_charges[found] * engine_state->dtime * 0.5f;
             //delta_charges[i] = ((float)(rand()%1000) * 0.001f - 0.5f) * 5.0f;
             //delta_charges[j] = ((float)(rand()%1000) * 0.001f - 0.5f) * 5.0f;
             //printf("%f\n", charges[i]);

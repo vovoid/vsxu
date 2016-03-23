@@ -24,7 +24,7 @@
 #include <cv.h>
 #include <math/vector/vsx_vector3.h>
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 
 
 class tracker_bitmap_color : public vsx_module

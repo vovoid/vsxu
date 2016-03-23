@@ -26,7 +26,7 @@
 
 #include "vsx_widget.h"
 #include "vsx_widget_connector_info.h"
-#include <vsx_module_operation.h>
+#include <module/vsx_module_operation.h>
 
 #define COMPONENT_MOVE 1
 #define COMPONENT_SCALE 2

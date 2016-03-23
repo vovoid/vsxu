@@ -32,16 +32,16 @@
 #include "vsx_command.h"
 #include "vsx_command_list.h"
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 #include <time/vsx_timer.h>
 
-#include "vsx_comp_abs.h"
-#include "vsx_comp_channel.h"
-#include "vsx_param_abstraction.h"
-#include "vsx_param_interpolation.h"
-#include "vsx_param_sequence.h"
-#include "vsx_param_sequence_list.h"
-#include "vsx_sequence_pool.h"
+#include <lib/engine/include_internal/vsx_comp_abs.h>
+#include <lib/engine/include_internal/vsx_comp_channel.h>
+#include <lib/engine/include_internal/vsx_param_abstraction.h>
+#include <lib/engine/include_internal/vsx_param_interpolation.h>
+#include <lib/engine/include_internal/vsx_param_sequence.h>
+#include <lib/engine/include_internal/vsx_param_sequence_list.h>
+#include <lib/engine/include_internal/vsx_sequence_pool.h>
 #include "vsx_module_list_abs.h"
 #include "vsx_module_list_factory.h"
 
@@ -96,7 +96,7 @@ public:
 
   //---------------------------------------------------------------------------
   // returns a pointer to the engine info struct (same one used in the modules)
-  vsx_module_engine_info* get_engine_info();
+  vsx_module_engine_state* get_engine_info();
 
   //---------------------------------------------------------------------------
   // prohibit components from calling module's run()
@@ -131,10 +131,10 @@ public:
 
   // 0 = reserved for wave data
   // 1 = reserved for frequency data
-  void set_float_array_param(int id, vsx_engine_float_array* float_array);
+  void set_float_array_param(int id, vsx_module_engine_float_array* float_array);
 
   // send keyboard and mouse events through the engine down to the modules
-  void input_event(vsx_engine_input_event &new_input_event);
+  void set_input_event_queue(vsx_input_event_queue* queue);
 
   // module and parameter interface
   unsigned long get_num_modules();
@@ -187,7 +187,7 @@ public:
 };
 
 
-#include "vsx_comp.h"
+#include <lib/engine/include_internal/vsx_comp.h>
 
 #endif
 
