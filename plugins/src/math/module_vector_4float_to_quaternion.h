@@ -37,7 +37,7 @@ class module_vector_4float_to_quaternion : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "maths;converters;4float_to_quaternion";

@@ -40,7 +40,7 @@ public:
   int n_segs;
   int l_param_updates;
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;solid;mesh_planes";

@@ -676,7 +676,7 @@ bool vsx_engine::render()
         {
           if (!(*it)->module->loading_done)
           {
-            vsx_module_info foom;
+            vsx_module_specification foom;
             (*it)->module->module_info(&foom);
 
             LOG3(vsx_string<>("waiting for module: ")+foom.identifier+" with name: "+(*it)->name);

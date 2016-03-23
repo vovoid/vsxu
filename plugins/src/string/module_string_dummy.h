@@ -8,7 +8,7 @@ class module_string_dummy : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "string;string_dummy||dummies;string_dummy";

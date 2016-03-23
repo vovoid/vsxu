@@ -143,7 +143,7 @@ public:
         }
 
         // ask the module to provide its module info
-        vsx_module_info* module_info = new vsx_module_info;
+        vsx_module_specification* module_info = new vsx_module_specification;
         module_object->module_info( module_info );
 
         // check to see if this module can run on this system
@@ -182,7 +182,7 @@ public:
           // create a copy of the template
           applied_plugin_info = new vsx_module_plugin_info;
           *applied_plugin_info = module_plugin_info_template;
-          vsx_module_info* applied_module_info = new vsx_module_info;
+          vsx_module_specification* applied_module_info = new vsx_module_specification;
           *applied_module_info = *module_info;
           applied_plugin_info->module_info = applied_module_info;
 
@@ -220,7 +220,7 @@ public:
     }
 
 
-    for (std::vector< vsx_module_info* >::iterator it = module_infos.begin(); it != module_infos.end(); it++)
+    for (std::vector< vsx_module_specification* >::iterator it = module_infos.begin(); it != module_infos.end(); it++)
     {
       delete *it;
     }
@@ -232,9 +232,9 @@ public:
 
 
 
-  std::vector< vsx_module_info* >* get_module_list( bool include_hidden = false)
+  std::vector< vsx_module_specification* >* get_module_list( bool include_hidden = false)
   {
-    std::vector< vsx_module_info* >* result = new std::vector< vsx_module_info* >;
+    std::vector< vsx_module_specification* >* result = new std::vector< vsx_module_specification* >;
     for (std::map< vsx_string<>, void* >::const_iterator it = module_plugin_list.begin(); it != module_plugin_list.end(); it++)
     {
       vsx_module_plugin_info* plugin_info = (vsx_module_plugin_info*)((*it).second);

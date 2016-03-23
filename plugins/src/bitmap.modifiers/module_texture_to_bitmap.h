@@ -41,7 +41,7 @@ public:
   int p_updates;
 
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->in_param_spec = "texture_in:texture";
     info->identifier = "texture;loaders;texture2bitmap";

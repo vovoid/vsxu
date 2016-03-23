@@ -48,7 +48,7 @@ class module_bitmap_generators_blob : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "bitmaps;generators;blob||bitmaps;generators;particles;blob";

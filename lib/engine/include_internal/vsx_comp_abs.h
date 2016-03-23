@@ -57,7 +57,7 @@ public:
   double new_time_output;
 #endif  
  	vsx_module* module;
-  vsx_module_info* module_info;
+  vsx_module_specification* module_info;
   vsx_string<>identifier;
   vsx_string<>component_class;
   vsx_string<>in_param_spec;

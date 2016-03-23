@@ -59,7 +59,7 @@ public:
   vsx_bitmap* old_bitmap = 0x0;
 
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->in_param_spec =
       "function:complex{"

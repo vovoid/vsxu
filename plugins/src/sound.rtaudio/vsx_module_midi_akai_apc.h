@@ -138,7 +138,7 @@ public:
   }
 
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     std::stringstream in_buff;
     in_buff << "midi_source:enum?";

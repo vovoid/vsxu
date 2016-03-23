@@ -35,7 +35,7 @@ class module_quaternion_rotation_accumulator_2d : public vsx_module {
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "maths;accumulators;quat_rotation_accum_2d";

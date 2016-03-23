@@ -11,7 +11,7 @@ class module_system_trig_sequencer : public vsx_module
   float prev_rewind;
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "system;system_sequencer_control";

@@ -145,7 +145,7 @@ int running=1;
 struct MAINDATA
 {
   vsx_module_list_abs* modules;
-  std::vector<vsx_module_info*>* info;
+  std::vector<vsx_module_specification*>* info;
   xmlFile* file;
 };
 MAINDATA g;
@@ -253,7 +253,7 @@ void initialise(int argc,char* argv[])
   */
 
   vsx_module_list_abs* mymodules = vsx_module_list_factory_create();
-  std::vector<vsx_module_info*>* myinfo = mymodules->get_module_list();
+  std::vector<vsx_module_specification*>* myinfo = mymodules->get_module_list();
   std::cout<<"Modules Detected: "<<myinfo->size()<<std::endl;
 
   std::stringstream ss;

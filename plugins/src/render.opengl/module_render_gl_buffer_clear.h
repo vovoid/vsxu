@@ -10,7 +10,7 @@ class module_render_gl_buffer_clear : public vsx_module
   // internal
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;opengl_modifiers;buffer_clear";

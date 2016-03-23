@@ -9,7 +9,7 @@ class module_particlesystem_modifier_wind : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "particlesystems;modifiers;basic_wind_deformer";

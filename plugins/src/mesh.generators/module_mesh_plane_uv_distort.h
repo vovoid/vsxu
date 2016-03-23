@@ -71,7 +71,7 @@ public:
   }
 
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;solid;plane_uv_distort";

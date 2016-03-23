@@ -50,7 +50,7 @@
 
 #include "vsx_module_engine_state.h"
 #include "vsx_module_engine_environment.h"
-#include "vsx_module_info.h"
+#include "vsx_module_specification.h"
 #include "vsx_module_operation.h"
 
 #ifdef _WIN32
@@ -110,7 +110,7 @@ public:
   // If you don't do heavy processing, set it to true in the declare_params() method.
   bool loading_done = false;
   // this is the function that the engine will call to get information about the module
-  virtual void module_info(vsx_module_info* info)
+  virtual void module_info(vsx_module_specification* info)
   {
     VSX_UNUSED(info);
   }

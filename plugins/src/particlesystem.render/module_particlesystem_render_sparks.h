@@ -26,7 +26,7 @@ public:
   vsx_nw_vector<float> delta_charges;
   vsx_nw_vector<int> discharged_particles;
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;particlesystems;sparks";

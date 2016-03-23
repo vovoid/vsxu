@@ -38,7 +38,7 @@ public:
   bool first_run;
   int n_rays;
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;particles;mesh_rays";

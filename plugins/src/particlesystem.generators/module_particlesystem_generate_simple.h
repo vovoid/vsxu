@@ -44,7 +44,7 @@ class module_particlesystem_generate_simple : public vsx_module
   vsx_module_param_particlesystem* result_particlesystem;
 
 public:
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "particlesystems;generators;basic_spray_emitter";

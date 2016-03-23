@@ -14,7 +14,7 @@ class module_particlesystem_modifier_size_noise : public vsx_module
   float* f_randpool_pointer;
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "particlesystems;modifiers;size_noise";

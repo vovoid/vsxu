@@ -44,7 +44,7 @@ public:
   int p_updates;
   bool first;
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier = "particlesystems;generators;bitmap2particlesystem";
     info->in_param_spec =

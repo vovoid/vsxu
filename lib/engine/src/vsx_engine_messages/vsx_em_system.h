@@ -24,7 +24,7 @@
 
 if (cmd == "get_module_list")
 {
-  std::vector< vsx_module_info* >* my_module_list = module_list->get_module_list();
+  std::vector< vsx_module_specification* >* my_module_list = module_list->get_module_list();
 
   for
   (

@@ -286,7 +286,7 @@ void vsx_widget_server::on_delete() {
   if (mtex)
       vsx_texture_loader::destroy(mtex);
 
-  for (std::map<vsx_string<>,vsx_module_info*>::iterator it = module_list.begin(); it != module_list.end(); ++it)
+  for (std::map<vsx_string<>,vsx_module_specification*>::iterator it = module_list.begin(); it != module_list.end(); ++it)
     delete (*it).second;
 
   for (size_t i = 0; i < module_infos_created_for_choosers.size(); i++)
@@ -735,8 +735,8 @@ void vsx_widget_server::vsx_command_process_f() {
         // VARNING: inparamspec osv. r inte implemenenterat i servern!  <-- BUUU
         if (c->parts.size() > 2) {
           // init new module information holder
-          vsx_module_info* a;
-          a = new vsx_module_info;
+          vsx_module_specification* a;
+          a = new vsx_module_specification;
           a->identifier = c->parts[2]; // xx;yy;zz
           a->description = vsx_string_helper::base64_decode(c->parts[3]); // long text
           // set component class (render, mesh, texture etc)
@@ -753,7 +753,7 @@ void vsx_widget_server::vsx_command_process_f() {
       } else
       if (c->cmd == "module_list_end") {
         // add macros to the module list
-        vsx_module_info* a;
+        vsx_module_specification* a;
         std::list< vsx_string<> > mfiles;
         vsx_string<>base = vsx_data_path::get_instance()->data_path_get() + "macros";
         vsx::filesystem_helper::get_files_recursive(base, &mfiles, "", "");
@@ -771,7 +771,7 @@ void vsx_widget_server::vsx_command_process_f() {
               )
             )
           );
-          a = new vsx_module_info;
+          a = new vsx_module_specification;
           module_infos_created_for_choosers.push_back(a);
           a->identifier = "macros;"+ss;
           //printf("a->ident: %s\n",a->identifier.c_str());
@@ -794,7 +794,7 @@ void vsx_widget_server::vsx_command_process_f() {
         server_message = vsx_string_helper::base64_decode(c->parts[1]);
       } else
       if (c->cmd == "states_list") {
-        vsx_module_info* a = new vsx_module_info;
+        vsx_module_specification* a = new vsx_module_specification;
         module_infos_created_for_choosers.push_back(a);
         a->identifier = "states;"+vsx_string_helper::str_replace<char>(":20:"," ",c->parts[1]);
         a->component_class = "state";
@@ -805,7 +805,7 @@ void vsx_widget_server::vsx_command_process_f() {
         ((vsx_widget_ultra_chooser*)state_chooser)->build_tree();
       } else
       if (c->cmd == "prods_list") {
-        vsx_module_info* a = new vsx_module_info;
+        vsx_module_specification* a = new vsx_module_specification;
         module_infos_created_for_choosers.push_back(a);
         a->identifier = "prods;"+vsx_string_helper::str_replace<char>(":20:"," ",c->parts[1]);
         a->component_class = "prod";
@@ -816,7 +816,7 @@ void vsx_widget_server::vsx_command_process_f() {
         ((vsx_widget_ultra_chooser*)state_chooser)->build_tree();
       } else
       if (c->cmd == "visuals_list") {
-        vsx_module_info* a = new vsx_module_info;
+        vsx_module_specification* a = new vsx_module_specification;
         module_infos_created_for_choosers.push_back(a);
         a->identifier = "visuals;"+vsx_string_helper::str_replace<char>(":20:"," ",c->parts[1]);
         a->component_class = "visuals";
@@ -827,8 +827,8 @@ void vsx_widget_server::vsx_command_process_f() {
         ((vsx_widget_ultra_chooser*)state_chooser)->build_tree();
       }
       if (c->cmd == "resources_list" && c->parts.size() == 2) {
-        vsx_module_info* a;
-        a = new vsx_module_info;
+        vsx_module_specification* a;
+        a = new vsx_module_specification;
         module_infos_created_for_choosers.push_back(a);
         a->identifier = vsx_string_helper::str_replace<char>(":20:"," ",c->parts[1]);
         a->component_class = "resource";
@@ -1153,8 +1153,8 @@ void vsx_widget_server::command_process_back_queue(vsx_command_s *t) {
       //         module_info_add [identifier] {information} {in_param_spec} {out_param_spec}
       if (t->parts.size() > 1) {
         bool duplicate = false;
-        vsx_module_info* a;
-        a = new vsx_module_info;
+        vsx_module_specification* a;
+        a = new vsx_module_specification;
         module_infos_created_for_choosers.push_back(a);
         if (module_list.find(t->parts[1]) != module_list.end()) duplicate = true;
         module_list[t->parts[1]] = a;

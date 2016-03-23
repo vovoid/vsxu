@@ -49,7 +49,7 @@ public:
   vsx_vector3<> start;
   vsx_rand rand;
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;vertices;lightning_vertices";

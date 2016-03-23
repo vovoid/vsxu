@@ -83,7 +83,7 @@ public:
   int current_max_normalization_level;
 
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;solid;mesh_sphere_octahedron";

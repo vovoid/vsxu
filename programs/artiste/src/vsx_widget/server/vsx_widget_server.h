@@ -34,9 +34,9 @@ class vsx_widget_server : public vsx_widget {
   vsx_texture<>* mtex;
 
   //module selection stuff
-  std::map<vsx_string<>,vsx_module_info*> module_list;
-  std::map<vsx_string<>,vsx_module_info*>::const_iterator module_iter;
-  vsx_nw_vector<vsx_module_info*> module_infos_created_for_choosers;
+  std::map<vsx_string<>,vsx_module_specification*> module_list;
+  std::map<vsx_string<>,vsx_module_specification*>::const_iterator module_iter;
+  vsx_nw_vector<vsx_module_specification*> module_infos_created_for_choosers;
 
   bool selection;
   float delta_move,delta_zoom;

@@ -47,7 +47,7 @@
 
 vsx_comp::vsx_comp() {
   module = 0;
-  module_info = new vsx_module_info;
+  module_info = new vsx_module_specification;
   vsxl_modifier = 0;
   internal_critical = false;
   size = 0.05f;

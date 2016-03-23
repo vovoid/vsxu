@@ -59,7 +59,7 @@ class vsx_widget_chooser_editor : public vsx_widget_editor {
 
 public:
   std::vector<int> i_rows_lookup;
-  std::vector<vsx_module_info*> i_mod_info;
+  std::vector<vsx_module_specification*> i_mod_info;
 
 
   vsx_widget_chooser_editor()
@@ -342,7 +342,7 @@ void vsx_module_chooser_list::command_process_back_queue(vsx_command_s *t) {
   visible = 0;
 }
 
-void vsx_module_chooser_list::add_item(vsx_string<>name,vsx_module_info* m_info)
+void vsx_module_chooser_list::add_item(vsx_string<>name,vsx_module_specification* m_info)
 {
   i_rows.push_back(name);
   ((vsx_widget_chooser_editor*)widget_list)->i_mod_info.push_back(m_info);

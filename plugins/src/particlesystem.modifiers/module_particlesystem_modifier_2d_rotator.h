@@ -13,7 +13,7 @@ class module_particlesystem_modifier_2d_rotator : public vsx_module
   vsx_quaternion<>* q_out;
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "particlesystems;modifiers;particle_2d_rotator";

@@ -42,7 +42,7 @@ public:
   vsx_mesh<>* mesh;
   int l_param_updates;
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;vertices;ribbon_vertices";

@@ -21,7 +21,7 @@ class module_render_basic_colored_rectangle : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;basic;colored_rectangle"

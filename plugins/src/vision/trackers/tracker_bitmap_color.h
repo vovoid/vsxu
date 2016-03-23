@@ -50,7 +50,7 @@ public:
   tracker_bitmap_color();
   ~tracker_bitmap_color();
   virtual void on_delete();
-  virtual void module_info(vsx_module_info* info);
+  virtual void module_info(vsx_module_specification* info);
   virtual void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters);
   virtual void run();
   virtual void output(vsx_module_param_abs* param);

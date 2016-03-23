@@ -16,13 +16,13 @@ class module_texture_translate : public vsx_module
 public:
 
   module_texture_translate() : transform(0, 0, 0) {}
-  void module_info(vsx_module_info* info);
+  void module_info(vsx_module_specification* info);
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters);
   void run();
   void on_delete();
 };
 
-void module_texture_translate::module_info(vsx_module_info* info)
+void module_texture_translate::module_info(vsx_module_specification* info)
 {
   info->identifier = "texture;modifiers;translate";
   info->in_param_spec = "translation_vector:float3,texture_in:texture";

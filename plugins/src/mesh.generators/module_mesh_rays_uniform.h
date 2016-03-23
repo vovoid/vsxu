@@ -45,7 +45,7 @@ public:
   int n_rays;
   vsx_rand rand;
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;particles;mesh_rays_uniform";

@@ -42,7 +42,7 @@ class vsx_depth_test : public vsx_module {
 	// internal
 public:
 
-	void module_info(vsx_module_info* info)
+	void module_info(vsx_module_specification* info)
 	{
   	info->identifier = "!renderers;opengl_modifiers;depth_test";
   	info->description = "Enables or disables depth testing\n\
@@ -107,7 +107,7 @@ class vsx_module_kaleido_star : public vsx_module
   bool list_built;
 public:
 
-void module_info(vsx_module_info* info)
+void module_info(vsx_module_specification* info)
 {
   info->identifier = "!renderers;vovoid;kaleidoscope";
   info->in_param_spec = "\
@@ -251,7 +251,7 @@ class vsx_depth_mask : public vsx_module {
 	// internal
 public:
 
-	void module_info(vsx_module_info* info)
+	void module_info(vsx_module_specification* info)
 	{
 	  info->identifier = "!renderers;opengl_modifiers;depth_mask";
 	  info->description = "Enables/Disables depth buffer writing.\nSee the help text for depth_test for more info.";
@@ -318,7 +318,7 @@ class vsx_module_mesh_old_supershape : public vsx_module {
   int l_param_updates;
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier = "!mesh;solid;mesh_supershape";
     info->description = "";

@@ -38,7 +38,7 @@ public:
 
   // internal
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;modifiers;pickers;mesh_attach_picker";

@@ -32,7 +32,7 @@ class module_mesh_box : public vsx_module {
   int l_param_updates;
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;solid;mesh_box";

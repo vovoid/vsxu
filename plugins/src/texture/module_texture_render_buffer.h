@@ -33,7 +33,7 @@ class module_texture_render_buffer : public vsx_module {
 
 public:
 
-void module_info(vsx_module_info* info) {
+void module_info(vsx_module_specification* info) {
   info->identifier =
     "texture;buffers;render_buffer";
 

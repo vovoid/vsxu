@@ -15,7 +15,7 @@ class module_texture_visual_fader : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info) {
+  void module_info(vsx_module_specification* info) {
     info->identifier = "system;visual_fader";
     info->in_param_spec = "texture_a_in:texture,texture_b_in:texture,fade_pos_in:float";
     info->out_param_spec = "texture_a_out:texture,texture_b_out:texture,fade_pos_out:float";

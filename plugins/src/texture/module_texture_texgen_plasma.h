@@ -43,7 +43,7 @@ class module_texture_texgen_plasma : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "texture;generators;plasma"

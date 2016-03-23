@@ -40,7 +40,7 @@ class module_mesh_to_float3_arrays : public vsx_module
   vsx_vector_array<> int_face_normals;
   vsx_vector_array<> int_face_centers;
 public:
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;modifiers;converters;mesh_to_float3_arrays";

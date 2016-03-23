@@ -15,7 +15,7 @@ class module_render_state : vsx_module
   vsx_string<>current_filename;
 
 public:
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;state_loader"

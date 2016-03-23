@@ -41,7 +41,7 @@ class module_arith_ ## OP_TYPE : public vsx_module {\
   vsx_module_param_ ## PARAM_TYPE_OUT* param_out;\
 	/* internal*/\
 public:\
-  void module_info(vsx_module_info* info)\
+  void module_info(vsx_module_specification* info)\
   {\
     info->identifier = "maths;arithmetics;binary;" #OP_TYPE;\
     info->description = DESCRIPTION;\
@@ -257,7 +257,7 @@ class vsx_arith_add : public vsx_module {
 	vsx_module_param_float* floatc;
 	// internal
 public:
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier = "maths;arithmetics;binary;add";
     info->description = "add 2 floats";

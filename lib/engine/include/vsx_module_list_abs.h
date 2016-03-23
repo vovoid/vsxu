@@ -37,13 +37,13 @@ protected:
 
   // module list (master)
   // holds module_infos harvested from the modules
-  std::vector< vsx_module_info* > module_infos;
+  std::vector< vsx_module_specification* > module_infos;
 
   // module list by string - holds all modules, including hidden modules
-  std::map< vsx_string<>, vsx_module_info* > module_list;
+  std::map< vsx_string<>, vsx_module_specification* > module_list;
 
   // module list intended for GUI consumption, doesn't contain hidden modules
-  std::vector< vsx_module_info* > module_list_public;
+  std::vector< vsx_module_specification* > module_list_public;
 
 public:
   // Init / Build Module List
@@ -55,7 +55,7 @@ public:
 
   // Return a list of the modules
   // Note that you must destroy the return value.
-  virtual std::vector< vsx_module_info* >* get_module_list( bool include_hidden = false) = 0;
+  virtual std::vector< vsx_module_specification* >* get_module_list( bool include_hidden = false) = 0;
 
   // Load Module By Name
   //   Used to load a vsxu module

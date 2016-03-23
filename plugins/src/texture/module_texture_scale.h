@@ -15,14 +15,14 @@ class module_texture_scale : public vsx_module
 
 public:
   module_texture_scale() : transform(1, 1, 1) {}
-  void module_info(vsx_module_info* info);
+  void module_info(vsx_module_specification* info);
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters);
   void run();
   void on_delete();
 };
 
 
-void module_texture_scale::module_info(vsx_module_info* info)
+void module_texture_scale::module_info(vsx_module_specification* info)
 {
   info->identifier =
     "texture;modifiers;scale";

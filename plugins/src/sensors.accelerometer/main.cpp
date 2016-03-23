@@ -49,7 +49,7 @@ public:
     }
   ~module_sensors_local_accelerometer(){}
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier = "sensors;local;accelerometer";
     info->description = "returns [ax,ay,az] values of the local accelerometer, if available.\n";
@@ -110,7 +110,7 @@ public:
     return true;
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "sensors;remote;accelerometer";

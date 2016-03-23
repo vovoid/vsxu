@@ -80,7 +80,7 @@ void tracker_bitmap_color::release_buffers()
 }
 
 
-void tracker_bitmap_color::module_info(vsx_module_info* info)
+void tracker_bitmap_color::module_info(vsx_module_specification* info)
 {
   info->identifier = "vision;trackers;bitmap_color_tracker";
   info->description = "Tracks the centroid of a colored blob in the input bitmap.\n\

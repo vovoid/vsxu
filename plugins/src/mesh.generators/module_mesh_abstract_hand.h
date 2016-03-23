@@ -91,7 +91,7 @@ class module_mesh_abstract_hand : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;solid;mesh_super_banana";

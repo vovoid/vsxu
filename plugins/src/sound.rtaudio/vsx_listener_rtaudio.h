@@ -68,7 +68,7 @@ class vsx_listener_pulse : public vsx_module {
 
 public:
 
-void module_info(vsx_module_info* info)
+void module_info(vsx_module_specification* info)
 {
   info->identifier =
     "sound;input_visualization_listener"

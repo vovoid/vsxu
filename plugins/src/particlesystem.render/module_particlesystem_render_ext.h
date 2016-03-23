@@ -46,7 +46,7 @@ public:
   vsx_vbo_bucket<vsx_face1, GL_POINTS, GL_STREAM_DRAW, vsx_quaternion<> > point_bucket;
 
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;particlesystems;render_particlesystem_ext";

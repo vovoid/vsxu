@@ -28,7 +28,7 @@ input_video_file::input_video_file():
 {
 }
 
-void input_video_file::module_info(vsx_module_info* info)
+void input_video_file::module_info(vsx_module_specification* info)
 {
   info->in_param_spec = "filename:resource";
     info->identifier = "vision;input;video_file_input";

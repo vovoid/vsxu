@@ -35,7 +35,7 @@ class module_vector_cross_product : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "maths;arithmetics;vector;vector_cross_product";

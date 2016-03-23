@@ -8,7 +8,7 @@ class module_string_resource_to_string : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "string;converters;res_to_str||string;res_to_str";

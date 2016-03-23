@@ -22,7 +22,7 @@ class module_render_gl_texture_coord_gen : public vsx_module {
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "texture;opengl;texture_coord_gen";

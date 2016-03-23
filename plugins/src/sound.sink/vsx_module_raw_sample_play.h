@@ -41,7 +41,7 @@ class vsx_module_raw_sample_play : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "sound;raw_sample_play";

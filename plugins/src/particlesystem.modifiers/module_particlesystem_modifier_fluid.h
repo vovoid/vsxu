@@ -193,7 +193,7 @@ class module_particlesystem_modifier_fluid : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "particlesystems;modifiers;particle_fluid_deformer";

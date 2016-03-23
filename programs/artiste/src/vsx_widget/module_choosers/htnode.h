@@ -16,7 +16,7 @@
 class HTNode {
 
 public:
-  vsx_module_info* module_info;
+  vsx_module_specification* module_info;
   int value;
   vsx_string<>name;
   vsx_color<> color;
@@ -44,7 +44,7 @@ public:
   // this function will build a tree structure out of a string
   // string syntax: texture;generators;simple;jaw's_own_texgen
   //
-  HTNode* add(vsx_string<>add_name, vsx_module_info* m_info) {
+  HTNode* add(vsx_string<>add_name, vsx_module_specification* m_info) {
     vsx_nw_vector<vsx_string<> > add_c;
     vsx_string<> deli = ";";
     vsx_string_helper::explode(add_name,deli,add_c,-1);

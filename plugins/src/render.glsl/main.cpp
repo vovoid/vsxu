@@ -105,7 +105,7 @@ public:
     shader_source = 0;
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier_save = "renderers;shaders;glsl_loader";
     if (shader_source == 0)

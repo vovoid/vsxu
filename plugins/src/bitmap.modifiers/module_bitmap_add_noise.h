@@ -87,7 +87,7 @@ public:
     return 0;
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier = "bitmaps;modifiers;add_noise";
     info->in_param_spec = "bitmap_in:bitmap";

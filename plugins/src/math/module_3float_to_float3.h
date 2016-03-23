@@ -36,7 +36,7 @@ class module_3float_to_float3 : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier = "maths;converters;3float_to_float3";
     info->description = "[floata, floatb, floatc] are copied and \n"
