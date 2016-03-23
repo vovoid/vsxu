@@ -2,7 +2,6 @@ set(module_id vsxu_server)
 
 message("configuring            " ${module_id})
 
-
 project (${module_id})
 
 include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
@@ -56,49 +55,38 @@ endif()
 set(OS_SOURCES "")
 
 if(UNIX)
-    set(OS_SOURCES
-      src/main/linux-opengl/main.cpp
+    set(SOURCES
+      src/main.cpp
     )
-endif(UNIX)
 
+  if (VSXU_STATIC EQUAL 1)
+    include(../plugins/static_factory_cmake_link_directories)
+  endif (VSXU_STATIC EQUAL 1)
 
-
-set(SOURCES
-  src/application.cpp
-)
-
-if (VSXU_STATIC EQUAL 1)
-  include(../plugins/static_factory_cmake_link_directories)
-endif (VSXU_STATIC EQUAL 1)
-
-
-if(UNIX)
-
-  add_executable(${module_id}  ${SOURCES} ${OS_SOURCES})
+  add_executable(${module_id} ${SOURCES})
   include(${CMAKE_SOURCE_DIR}/cmake_suffix.txt)
 
-  target_link_libraries(${module_id}
-    ${VSXU_GFX_LIB_LIBS}
+  target_link_libraries(
+    ${module_id}
     ${CMAKE_THREAD_LIBS_INIT}
     ${GLEW_LIBRARIES}
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
+    vsx_application
+    ${VSXU_GFX_LIB_LIBS}
     rt
+    vsx_common
+    vsx_compression
+    vsx_engine
+    vsx_engine_graphics
   )
-
-  target_link_libraries(${module_id} vsx_common)
-  target_link_libraries(${module_id} vsx_compression)
-  target_link_libraries(${module_id} vsx_engine)
-  target_link_libraries(${module_id} vsx_engine_graphics)
 
   if (VSXU_STATIC EQUAL 1)
     include(../plugins/static_factory_cmake_target_link_libraries)
   endif ()
 
   install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT server)
-endif(UNIX)
 
-IF (UNIX)
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/vsxu-server-fullscreen.desktop.in
                   ${CMAKE_CURRENT_BINARY_DIR}/vsxu-server-fullscreen.desktop
                   @ONLY)

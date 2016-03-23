@@ -6,8 +6,8 @@ message("configuring            " ${module_id})
 ################################################################################
 project (${module_id})
 
-
 include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeVSXuGfxLib.txt)
 
 ################################################################################
 # CMAKE PACKAGES ###############################################################
@@ -78,7 +78,6 @@ include(${CMAKE_SOURCE_DIR}/cmake_suffix.txt)
 if(UNIX)
   target_link_libraries(
     ${module_id}
-    ${GLFW_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${GLEW_LIBRARIES}
     ${OPENGL_LIBRARIES}
@@ -91,7 +90,7 @@ if(UNIX)
     vsx_common
     vsx_compression
     vsx_application
-    ${SDL2_LIBRARIES}
+    ${VSXU_GFX_LIB_LIBS}
     rt
   )
 endif()
@@ -100,21 +99,20 @@ if(WIN32)
   target_link_libraries(
    ${module_id}
    -static
-    ${GLFW_LIBRARIES}
-    wsock32
-    ws2_32
-    vsx_engine_audiovisual
-    vsx_engine_graphics
-    vsx_engine
-    vsx_common
-    vsx_compression
-    ${PNG_LIBRARIES}
-    ${ZLIB_LIBRARIES}
-    ${JPEG_LIBRARIES}
-    gdi32
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${OPENGL_LIBRARIES}
-    ${SDL2_LIBRARIES}
+   wsock32
+   ws2_32
+   vsx_engine_audiovisual
+   vsx_engine_graphics
+   vsx_engine
+   vsx_common
+   vsx_compression
+   ${PNG_LIBRARIES}
+   ${ZLIB_LIBRARIES}
+   ${JPEG_LIBRARIES}
+   gdi32
+   ${CMAKE_THREAD_LIBS_INIT}
+   ${OPENGL_LIBRARIES}
+   ${VSXU_GFX_LIB_LIBS}
 )
 endif()
 
