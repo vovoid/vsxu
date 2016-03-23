@@ -188,12 +188,27 @@ class vsx_application_sdl_input_event_handler
   void handle_controller_axis_motion(SDL_Event& sdl_event)
   {
     // vsx event
-    vsx_input_event vsx_event(vsx_input_event::type_gamepad);
+    vsx_input_event vsx_event(vsx_input_event::type_game_controller);
+    vsx_event.game_controller.id = sdl_event.caxis.which;
     if (sdl_event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX)
-      vsx_event.gamepad.type = vsx_input_event_gamepad::axis_left_x;
+      vsx_event.game_controller.type = vsx_input_event_game_controller::axis_analog_left_x;
 
     if (sdl_event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY)
-      vsx_event.gamepad.type = vsx_input_event_gamepad::axis_left_y;
+      vsx_event.game_controller.type = vsx_input_event_game_controller::axis_analog_left_y;
+
+    if (sdl_event.caxis.axis == SDL_CONTROLLER_AXIS_RIGHTX)
+      vsx_event.game_controller.type = vsx_input_event_game_controller::axis_analog_right_x;
+
+    if (sdl_event.caxis.axis == SDL_CONTROLLER_AXIS_RIGHTY)
+      vsx_event.game_controller.type = vsx_input_event_game_controller::axis_analog_right_y;
+
+    if (sdl_event.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERLEFT)
+      vsx_event.game_controller.type = vsx_input_event_game_controller::axis_trigger_left;
+
+    if (sdl_event.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
+      vsx_event.game_controller.type = vsx_input_event_game_controller::axis_trigger_right;
+
+    vsx_event.game_controller.axis_value = 1.0/32767 * sdl_event.caxis.value;
 
     // application
     vsx_application_input_state_manager::get()->consume_event(vsx_event);
@@ -203,7 +218,24 @@ class vsx_application_sdl_input_event_handler
   void handle_controller_button_down(SDL_Event& sdl_event)
   {
     // vsx event
-    vsx_input_event vsx_event(vsx_input_event::type_gamepad);
+    vsx_input_event vsx_event(vsx_input_event::type_game_controller);
+    vsx_event.game_controller.button_state = true;
+    vsx_event.game_controller.id = sdl_event.cbutton.which;
+
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT) vsx_event.game_controller.type = vsx_input_event_game_controller::button_dpad_left;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT) vsx_event.game_controller.type = vsx_input_event_game_controller::button_dpad_right;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN) vsx_event.game_controller.type = vsx_input_event_game_controller::button_dpad_down;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP) vsx_event.game_controller.type = vsx_input_event_game_controller::button_dpad_up;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_A) vsx_event.game_controller.type = vsx_input_event_game_controller::button_down;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_B) vsx_event.game_controller.type = vsx_input_event_game_controller::button_right;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_X) vsx_event.game_controller.type = vsx_input_event_game_controller::button_left;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_Y) vsx_event.game_controller.type = vsx_input_event_game_controller::button_up;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_START) vsx_event.game_controller.type = vsx_input_event_game_controller::button_start;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_BACK) vsx_event.game_controller.type = vsx_input_event_game_controller::button_select;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) vsx_event.game_controller.type = vsx_input_event_game_controller::button_shoulder_right;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER) vsx_event.game_controller.type = vsx_input_event_game_controller::button_shoulder_left;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSTICK) vsx_event.game_controller.type = vsx_input_event_game_controller::button_analog_left;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSTICK) vsx_event.game_controller.type = vsx_input_event_game_controller::button_analog_right;
 
     // application
     vsx_application_input_state_manager::get()->consume_event(vsx_event);
@@ -213,7 +245,24 @@ class vsx_application_sdl_input_event_handler
   void handle_controller_button_up(SDL_Event& sdl_event)
   {
     // vsx event
-    vsx_input_event vsx_event(vsx_input_event::type_gamepad);
+    vsx_input_event vsx_event(vsx_input_event::type_game_controller);
+    vsx_event.game_controller.button_state = false;
+    vsx_event.game_controller.id = sdl_event.cbutton.which;
+
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT) vsx_event.game_controller.type = vsx_input_event_game_controller::button_dpad_left;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT) vsx_event.game_controller.type = vsx_input_event_game_controller::button_dpad_right;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN) vsx_event.game_controller.type = vsx_input_event_game_controller::button_dpad_down;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP) vsx_event.game_controller.type = vsx_input_event_game_controller::button_dpad_up;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_A) vsx_event.game_controller.type = vsx_input_event_game_controller::button_down;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_B) vsx_event.game_controller.type = vsx_input_event_game_controller::button_right;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_X) vsx_event.game_controller.type = vsx_input_event_game_controller::button_left;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_Y) vsx_event.game_controller.type = vsx_input_event_game_controller::button_up;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_START) vsx_event.game_controller.type = vsx_input_event_game_controller::button_start;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_BACK) vsx_event.game_controller.type = vsx_input_event_game_controller::button_select;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) vsx_event.game_controller.type = vsx_input_event_game_controller::button_shoulder_right;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER) vsx_event.game_controller.type = vsx_input_event_game_controller::button_shoulder_left;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSTICK) vsx_event.game_controller.type = vsx_input_event_game_controller::button_analog_left;
+    if (sdl_event.cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSTICK) vsx_event.game_controller.type = vsx_input_event_game_controller::button_analog_right;
 
     // application
     vsx_application_input_state_manager::get()->consume_event(vsx_event);

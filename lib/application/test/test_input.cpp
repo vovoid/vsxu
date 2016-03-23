@@ -25,6 +25,7 @@
 #include <vsx_platform.h>
 #include <vsx_gl_global.h>
 #include <vsx_application_manager.h>
+#include <vsx_application_input_state_manager.h>
 #include <vsx_application_run.h>
 
 class input_test_application
@@ -39,10 +40,8 @@ public:
     return vsx_string<>(titlestr);
   }
 
-  void draw(int id)
+  void draw()
   {
-    VSX_UNUSED(id);
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 
@@ -53,6 +52,20 @@ public:
 
     if (event.type == vsx_input_event::type_keyboard)
       vsx_printf(L" keyboard event, pressed: %d     scancode: %d \n ", event.keyboard.pressed,  event.keyboard.scan_code);
+
+    if (event.type == vsx_input_event::type_game_controller)
+    {
+      vsx_printf(L" dpad: %d %d %d %d\n", vsx_input_game.controllers[0].d_pad_left, vsx_input_game.controllers[0].d_pad_right, vsx_input_game.controllers[0].d_pad_up, vsx_input_game.controllers[0].d_pad_down);
+      vsx_printf(L" dpad direction: %f, %f\n", vsx_input_game.controllers[0].d_pad_direction().x, vsx_input_game.controllers[0].d_pad_direction().y);
+      vsx_printf(L" right buttons: %d %d %d %d\n", vsx_input_game.controllers[0].button_down, vsx_input_game.controllers[0].button_up, vsx_input_game.controllers[0].button_right, vsx_input_game.controllers[0].button_left);
+      vsx_printf(L" analog left: %f %f\n", vsx_input_game.controllers[0].analog_left.x, vsx_input_game.controllers[0].analog_left.y);
+      vsx_printf(L" analog right: %f %f \n", vsx_input_game.controllers[0].analog_right.x, vsx_input_game.controllers[0].analog_right.y);
+      vsx_printf(L" start select: %d %d\n", vsx_input_game.controllers[0].button_start, vsx_input_game.controllers[0].button_select);
+      vsx_printf(L" shoulder buttons: %d %d\n", vsx_input_game.controllers[0].button_shoulder_left, vsx_input_game.controllers[0].button_shoulder_right);
+      vsx_printf(L" triggers: %f %f\n", vsx_input_game.controllers[0].trigger_left, vsx_input_game.controllers[0].trigger_right);
+      vsx_printf(L" analog stick buttons: %d %d\n", vsx_input_game.controllers[0].button_analog_left, vsx_input_game.controllers[0].button_analog_right);
+    }
+
   }
 
   void event_key_down(long key)

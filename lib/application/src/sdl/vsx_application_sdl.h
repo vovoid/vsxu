@@ -38,13 +38,11 @@ class vsx_application_sdl
     DisableProcessWindowsGhosting();
     #endif
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | SDL_INIT_EVENTS) < 0)
-        sdl_tools::sdldie("Unable to initialize SDL"); /* Or die on error */
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0)
+        sdl_tools::sdldie("Unable to initialize SDL");
 
     SDL_DisableScreenSaver();
 
-    /* Turn on double buffering with a 24bit Z buffer.
-     * You may need to change this to 16 or 32 for your system */
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
@@ -88,7 +86,6 @@ class vsx_application_sdl
       );
 
     SDL_StartTextInput();
-    //SDL_ShowCursor(0);
 
     sdl_tools::checkSDLError(__LINE__);
 
@@ -115,11 +112,29 @@ class vsx_application_sdl
       );
   }
 
+  SDL_GameController *gamecontroller[4] = {0x0,0x0,0x0,0x0};
+  void setup_game_input()
+  {
+    if (SDL_NumJoysticks() == 0)
+      return;
+
+    size_t current_controller = 0;
+    for (int i = 0; i < SDL_NumJoysticks(); ++i)
+    {
+      if ( SDL_IsGameController(i) )
+      {
+        gamecontroller[current_controller] = SDL_GameControllerOpen(i);
+        current_controller++;
+      }
+    }
+  }
+
 public:
 
   void run()
   {
     setup();
+    setup_game_input();
 
     size_t frames = 0;
 
