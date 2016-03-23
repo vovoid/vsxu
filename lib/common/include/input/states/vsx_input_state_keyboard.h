@@ -11,12 +11,12 @@ class vsx_input_state_keyboard
 
 public:
 
-  bool pressed(int16_t key)
+  inline bool pressed(int16_t key)
   {
     return keys[key];
   }
 
-  bool pressed_alt()
+  inline bool pressed_alt()
   {
     if (keys[VSX_SCANCODE_LALT])
       return true;
@@ -27,7 +27,7 @@ public:
     return false;
   }
 
-  bool pressed_ctrl()
+  inline bool pressed_ctrl()
   {
     if (keys[VSX_SCANCODE_LCTRL])
       return true;
@@ -38,7 +38,7 @@ public:
     return false;
   }
 
-  bool pressed_shift()
+  inline bool pressed_shift()
   {
     if (keys[VSX_SCANCODE_LSHIFT])
       return true;
@@ -49,7 +49,7 @@ public:
     return false;
   }
 
-  void consume(vsx_input_event& event)
+  inline void consume(vsx_input_event& event)
   {
     req(event.type == vsx_input_event::type_keyboard);
     keys[event.keyboard.scan_code] = event.keyboard.pressed;

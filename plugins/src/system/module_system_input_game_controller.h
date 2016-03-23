@@ -37,21 +37,13 @@ public:
   vsx_module_param_float* button_start;
   vsx_module_param_float* button_select;
 
-  module_system_input_game_controler()
-  {
-  }
-
-  void on_delete()
-  {
-  }
-  
   void module_info(vsx_module_specification* info)
   {
     info->identifier =
-      "system;input;game_controller";
+      "system;input;input_game_controller";
 
     info->description =
-      "Game controller, conforms to Steam game controller";
+      "Game controller";
 
     info->in_param_spec = "";
     info->out_param_spec =
