@@ -21,10 +21,9 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_WIDGET_SEQ_POOL_H_
-#define VSX_WIDGET_SEQ_POOL_H_
+#pragma once
 
-
+#include <vsx_widget_window.h>
 
 class vsx_widget_seq_pool_manager : public vsx_widget_window {
   vsx_string<>i_hint;
@@ -57,10 +56,8 @@ public:
   void show();
   void init();
   void i_draw();
-  bool event_key_down(signed long key, bool alt = false, bool ctrl = false, bool shift = false);
+  void event_text(wchar_t character_wide, char character);
+  bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
   void set_server(vsx_widget* serv);
   vsx_widget_seq_pool_manager();
 };
-
-
-#endif /*VSX_WIDGET_SEQ_POOL_H_*/

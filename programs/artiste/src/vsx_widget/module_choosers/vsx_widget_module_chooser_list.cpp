@@ -301,6 +301,14 @@ void vsx_module_chooser_list::set_server(vsx_widget* serv)
   ((vsx_widget_chooser_editor*)widget_list)->set_server(serv);
 }
 
+void vsx_module_chooser_list::event_text(wchar_t character_wide, char character)
+{
+  VSX_UNUSED(character_wide);
+  VSX_UNUSED(character);
+  vsx_string<>filter = ((vsx_widget_base_edit*)widget_search)->get_string();
+  ((vsx_widget_editor*)widget_list)->editor->set_filter_string( filter );
+}
+
 bool vsx_module_chooser_list::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
 {
   VSX_UNUSED(key);

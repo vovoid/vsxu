@@ -295,13 +295,21 @@ void vsx_widget_seq_pool_manager::set_server(vsx_widget* serv)
   ((vsx_widget_pool_tree*)edit)->set_server(serv);
 }
 
+void vsx_widget_seq_pool_manager::event_text(wchar_t character_wide, char character)
+{
+  VSX_UNUSED(character_wide);
+  VSX_UNUSED(character);
+
+  vsx_string<>filter = ((vsx_widget_base_edit*)search)->get_string();
+  ((vsx_widget_editor*)edit)->editor->set_filter_string( filter );
+}
+
 bool vsx_widget_seq_pool_manager::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
 {
   VSX_UNUSED(key);
   VSX_UNUSED(alt);
   VSX_UNUSED(ctrl);
   VSX_UNUSED(shift);
-
   vsx_string<>filter = ((vsx_widget_base_edit*)search)->get_string();
   ((vsx_widget_editor*)edit)->editor->set_filter_string( filter );
   return true;
