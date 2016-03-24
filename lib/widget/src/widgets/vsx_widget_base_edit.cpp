@@ -588,7 +588,7 @@ void vsx_widget_base_edit::i_draw()
 }
 
 
-bool vsx_widget_base_edit::event_key_down(signed long key) {
+bool vsx_widget_base_edit::event_key_down(uint16_t key) {
   if (!editing_enabled) return true;
   size_t it = 0;
   std::vector<int>::iterator itlv = lines_visible.begin();

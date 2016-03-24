@@ -1209,7 +1209,7 @@ void vsx_widget_server::param_alias_ok(vsx_string<>p_def, vsx_string<>io, vsx_st
   }
 }
 
-bool vsx_widget_server::event_key_down(signed long key)
+bool vsx_widget_server::event_key_down(uint16_t key)
 {
   if (vsx_input_keyboard.pressed_ctrl())
   {
@@ -1508,7 +1508,7 @@ vsx_string<>vsx_widget_server::get_unique_name(vsx_string<>name)
   vsx_string_helper::explode(name, delimiter, parts);
 
   if (parts.size() == 1)
-    return name + "_1";
+    parts.push_back("1");
 
   vsx_string<> &final_part = parts[parts.size()-1];
   foreach(final_part, i)

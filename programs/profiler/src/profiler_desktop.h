@@ -75,7 +75,7 @@ public:
     vsx_widget::reinit();
   }
 
-  bool input_key_down(signed long key)
+  bool input_key_down(uint16_t key)
   {
     if (!k_focus)
       return true;
@@ -87,7 +87,7 @@ public:
     return false;
   }
 
-  bool input_key_up(signed long key)
+  bool input_key_up(uint16_t key)
   {
     if (!k_focus)
       return true;

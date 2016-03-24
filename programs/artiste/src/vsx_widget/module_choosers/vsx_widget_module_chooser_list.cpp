@@ -309,7 +309,7 @@ void vsx_module_chooser_list::event_text(wchar_t character_wide, char character)
   ((vsx_widget_editor*)widget_list)->editor->set_filter_string( filter );
 }
 
-bool vsx_module_chooser_list::event_key_down(signed long key)
+bool vsx_module_chooser_list::event_key_down(uint16_t key)
 {
   VSX_UNUSED(key);
   vsx_string<>filter = ((vsx_widget_base_edit*)widget_search)->get_string();

@@ -705,7 +705,7 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
   vsx_widget::command_process_back_queue(t);
 }
 
-bool vsx_widget_sequence_editor::event_key_down(signed long key)
+bool vsx_widget_sequence_editor::event_key_down(uint16_t key)
 {
   switch(key) {
     case VSX_SCANCODE_T:

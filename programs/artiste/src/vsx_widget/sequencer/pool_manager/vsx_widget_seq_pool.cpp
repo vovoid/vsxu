@@ -304,7 +304,7 @@ void vsx_widget_seq_pool_manager::event_text(wchar_t character_wide, char charac
   ((vsx_widget_editor*)edit)->editor->set_filter_string( filter );
 }
 
-bool vsx_widget_seq_pool_manager::event_key_down(signed long key)
+bool vsx_widget_seq_pool_manager::event_key_down(uint16_t key)
 {
   VSX_UNUSED(key);
   vsx_string<>filter = ((vsx_widget_base_edit*)search)->get_string();

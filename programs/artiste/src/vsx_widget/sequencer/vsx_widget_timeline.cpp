@@ -239,7 +239,7 @@ void vsx_widget_timeline::draw_waveform_data(float y_mid, float y_size_half)
 
 }
 
-bool vsx_widget_timeline::event_key_down(signed long key)
+bool vsx_widget_timeline::event_key_down(uint16_t key)
 {
   float dt = (owner->tend-owner->tstart)*0.5;
   switch(key) {

@@ -101,7 +101,7 @@ void vsx_widget_ultra_chooser::cancel_drop() {
   ((vsxu_assistant*)((vsx_artiste_desktop*)root)->assistant)->temp_show();
 }
 
-bool vsx_widget_ultra_chooser::event_key_down(signed long key)
+bool vsx_widget_ultra_chooser::event_key_down(uint16_t key)
 {
   if (key == VSX_SCANCODE_ESCAPE) {
     if (drag_dropped) {

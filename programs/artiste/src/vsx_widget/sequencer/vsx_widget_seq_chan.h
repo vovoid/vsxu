@@ -132,7 +132,7 @@ public:
 
 
 
-  bool event_key_down(signed long key);
+  bool event_key_down(uint16_t key);
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);

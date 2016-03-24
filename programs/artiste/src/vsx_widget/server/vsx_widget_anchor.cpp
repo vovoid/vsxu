@@ -1719,7 +1719,7 @@ void vsx_widget_anchor::toggle(int override)
 } // toggle
 
 
-bool vsx_widget_anchor::event_key_down(signed long key)
+bool vsx_widget_anchor::event_key_down(uint16_t key)
 {
   VSX_UNUSED(key);
   return true;

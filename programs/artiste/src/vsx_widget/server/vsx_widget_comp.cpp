@@ -1657,7 +1657,7 @@ void vsx_widget_component::perform_delete()
   server->vsx_command_queue_b(this);
 }
 
-bool vsx_widget_component::event_key_down(signed long key)
+bool vsx_widget_component::event_key_down(uint16_t key)
 {
   if (key == VSX_SCANCODE_DELETE)
   {

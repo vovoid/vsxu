@@ -128,7 +128,7 @@ public:
   void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords);
   void event_mouse_wheel(float y);
 
-  bool event_key_down(signed long key);
+  bool event_key_down(uint16_t key);
 
 };
 

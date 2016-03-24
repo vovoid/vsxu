@@ -81,7 +81,7 @@ public:
 
   void i_draw();
 
-  bool event_key_down(signed long key);
+  bool event_key_down(uint16_t key);
 
 };
 

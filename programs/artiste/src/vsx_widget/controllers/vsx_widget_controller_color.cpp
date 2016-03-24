@@ -315,7 +315,7 @@ void vsx_widget_controller_color::event_mouse_double_click(vsx_widget_distance d
   _delete();
 }
 
-bool vsx_widget_controller_color::event_key_down(signed long key)
+bool vsx_widget_controller_color::event_key_down(uint16_t key)
 {
   switch (key) {
     case 'f':

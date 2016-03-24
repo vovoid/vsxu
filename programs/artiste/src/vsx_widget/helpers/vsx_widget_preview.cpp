@@ -138,7 +138,7 @@ void vsx_window_texture_viewer::draw_2d()
   draw_children_2d();
 }
 
-bool vsx_window_texture_viewer::event_key_down(signed long key)
+bool vsx_window_texture_viewer::event_key_down(uint16_t key)
 {
   if (vsx_input_keyboard.pressed_ctrl() && key == VSX_SCANCODE_SPACE)
   {

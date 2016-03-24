@@ -41,7 +41,7 @@ public:
   void show();
   void init() {}
   void i_draw();
-  bool event_key_down(signed long key);
+  bool event_key_down(uint16_t key);
   void event_text(wchar_t character_wide, char character);
 	void add_item(vsx_string<>name,vsx_module_specification* m_info);
 	void build_tree();

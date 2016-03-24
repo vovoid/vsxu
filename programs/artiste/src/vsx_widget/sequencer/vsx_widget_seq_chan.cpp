@@ -2267,7 +2267,7 @@ void vsx_widget_seq_channel::draw_selection_box(float t0, float y0)
   glEnd();
 }
 
-bool vsx_widget_seq_channel::event_key_down(signed long key)
+bool vsx_widget_seq_channel::event_key_down(uint16_t key)
 {
   if (is_controller) return true;
   switch (key)

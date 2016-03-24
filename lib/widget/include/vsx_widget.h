@@ -259,7 +259,7 @@ public:
 
   inline void backwards_message(const vsx_string<>&message)
   {
-		command_q_b.add_raw(message);
+    command_q_b.add_raw(message);
     if (cmd_parent)
     {
       cmd_parent->vsx_command_queue_b(this);
@@ -268,7 +268,7 @@ public:
 
   inline void message(const vsx_string<>&message)
   {
-		command_q_b.add_raw(message);
+    command_q_b.add_raw(message);
   	this->vsx_command_queue_b(this);
   }
 
@@ -411,13 +411,13 @@ public:
   // this is bool so that external (super-global) processors can know wether or not to react on the keys..
   // this returning true means that they're allowed to process the keys, if not, it's exclusive to the widget
   // who has k_focus - like an edit box.
-  virtual bool input_key_down(signed long key)
+  virtual bool input_key_down(uint16_t key)
   {
     req_v(k_focus, true);
     return k_focus->event_key_down(key);
   }
 
-  bool input_key_up(signed long key)
+  bool input_key_up(uint16_t key)
   {
     req_v(k_focus, true);
     return k_focus->event_key_up(key);
@@ -435,13 +435,13 @@ public:
   void input_mouse_wheel(float y);
 
   // INTERNAL EVENTS IN RESPONSE TO EXTERNAL INPUT, DEFAULTS (CAN BE OVERRIDDEN)
-  virtual bool event_key_down(signed long key)
+  virtual bool event_key_down(uint16_t key)
   {
     VSX_UNUSED(key);
     return true;
   }
 
-  virtual bool event_key_up(signed long key)
+  virtual bool event_key_up(uint16_t key)
   {
     VSX_UNUSED(key);
     return true;

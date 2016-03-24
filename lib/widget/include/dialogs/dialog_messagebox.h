@@ -57,7 +57,7 @@ public:
   }
 
 
-  virtual bool event_key_down(signed long key)
+  virtual bool event_key_down(uint16_t key)
   {
     VSX_UNUSED(key);
     k_focus = parent;

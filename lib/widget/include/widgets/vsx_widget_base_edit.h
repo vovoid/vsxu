@@ -89,7 +89,7 @@ public:
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);
   void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords);
   void event_text(wchar_t character_wide, char character);
-  bool event_key_down(signed long key);
+  bool event_key_down(uint16_t key);
   virtual void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_wheel(float y);
   void set_filter_string(vsx_string<>&filter_string);

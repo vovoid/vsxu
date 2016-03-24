@@ -72,7 +72,7 @@ public:
   void i_draw();
   void draw_waveform_data(float y_mid, float y_size_half);
 
-  bool event_key_down(signed long key);
+  bool event_key_down(uint16_t key);
 
   vsx_widget_timeline()
   {

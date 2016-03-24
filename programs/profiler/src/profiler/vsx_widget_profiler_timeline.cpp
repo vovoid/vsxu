@@ -179,7 +179,7 @@ void vsx_widget_profiler_timeline::i_draw()
 
 }
 
-bool vsx_widget_profiler_timeline::event_key_down(signed long key)
+bool vsx_widget_profiler_timeline::event_key_down(uint16_t key)
 {
   if (!time_holder)
     VSX_ERROR_RETURN_V("time_holder not set", true);

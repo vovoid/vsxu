@@ -43,16 +43,20 @@ void vsx_widget_controller_dialog::get_in_param_spec(std::pair<vsx_string<>,vsx_
     vsx_widget_controller_base::get_in_param_spec(parampair);
     if (parampair.first.substr(0,8)=="control_")
     {
-      vsx_widget* newwidget;
+      vsx_widget* new_widget = 0x0;
       vsx_string<>type=parampair.first.substr(8);
-      if (type=="knob")
-      newwidget=add(new vsx_widget_controller_knob,name+".knob");
-      else if (type=="slider")
-      newwidget=add(new vsx_widget_controller_slider,name+".slider");
 
-      ((vsx_widget_controller_base*)newwidget)->owned=true;
-      ((vsx_widget_controller_base*)newwidget)->drawconnection=false;
-      ((vsx_widget_controller_base*)newwidget)->in_param_spec=parampair.second;
-      ((vsx_widget_controller_base*)newwidget)->init();
+      if (type=="knob")
+        new_widget = add(new vsx_widget_controller_knob,name+".knob");
+
+      if (type=="slider")
+        new_widget = add(new vsx_widget_controller_slider,name+".slider");
+
+      req(new_widget);
+
+      ((vsx_widget_controller_base*)new_widget)->owned=true;
+      ((vsx_widget_controller_base*)new_widget)->drawconnection=false;
+      ((vsx_widget_controller_base*)new_widget)->in_param_spec=parampair.second;
+      ((vsx_widget_controller_base*)new_widget)->init();
     }
 }

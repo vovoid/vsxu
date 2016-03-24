@@ -193,7 +193,7 @@ void vsx_widget_profiler::command_process_back_queue(vsx_command_s *t)
   vsx_printf(L"t->cmd: %s\n", t->cmd_data.c_str());
 }
 
-bool vsx_widget_profiler::event_key_down(signed long key)
+bool vsx_widget_profiler::event_key_down(uint16_t key)
 {
   VSX_UNUSED(key);
   return true;

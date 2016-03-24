@@ -101,7 +101,7 @@ public:
   void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords);
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);
-  bool event_key_down(signed long key);
+  bool event_key_down(uint16_t key);
   void draw_2d();
   vsx_widget_ultra_chooser();
   void on_delete();
