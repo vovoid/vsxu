@@ -44,10 +44,6 @@ vsx_widget *vsx_widget::a_focus = 0;
 bool vsx_widget::mouse_down_l;
 bool vsx_widget::mouse_down_r;
 
-bool vsx_widget::ctrl;
-bool vsx_widget::alt;
-bool vsx_widget::shift;
-
 int vsx_widget::frames;
 
 float vsx_widget::screen_x;
@@ -379,14 +375,6 @@ void vsx_widget::input_mouse_move_passive(float x, float y)
 }
 
 
-
-void vsx_widget::set_key_modifiers(bool alt_, bool ctrl_, bool shift_)
-{
-	alt = alt_;
-	ctrl = ctrl_;
-	shift = shift_;
-}
-
 void vsx_widget::input_mouse_down(float x, float y, int button)
 {
   vsx_mouse_control.set_cursor(MOUSE_CURSOR_ARROW);
@@ -438,7 +426,7 @@ void vsx_widget::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords
     a_focus = this;
     mouse_down_l = true;
     if (support_scaling)
-    if (alt && !ctrl) {
+    if (vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_ctrl()) {
       scaling_start = distance.center;
       scaling_start_size = size;
       scaling_start_pos = target_pos;
@@ -586,9 +574,9 @@ void vsx_widget::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords
   (
     support_scaling
     &&
-    alt
+    vsx_input_keyboard.pressed_alt()
     &&
-    !ctrl
+    !vsx_input_keyboard.pressed_ctrl()
   )
   {
     target_size.x += (distance.center.x-mouse_down_pos.center.x)*2.0f;

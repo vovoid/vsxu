@@ -1719,12 +1719,9 @@ void vsx_widget_anchor::toggle(int override)
 } // toggle
 
 
-bool vsx_widget_anchor::event_key_down(signed long key, bool alt, bool ctrl, bool shift) 
+bool vsx_widget_anchor::event_key_down(signed long key)
 {
   VSX_UNUSED(key);
-  VSX_UNUSED(alt);
-  VSX_UNUSED(ctrl);
-  VSX_UNUSED(shift);
   return true;
 }
 
@@ -1840,7 +1837,7 @@ void vsx_widget_anchor::event_mouse_down(vsx_widget_distance distance,vsx_widget
         temp_drag_connector->_delete();
         temp_drag_connector = 0;
       }
-      if (ctrl && alt)
+      if (vsx_input_keyboard.pressed_ctrl() && vsx_input_keyboard.pressed_alt())
       {
         clone_value = true;
         drag_anchor = 0;

@@ -105,7 +105,7 @@ public:
   void select_add_gui(vsx_widget* comp);
 
   void param_alias_ok(vsx_string<>p_def, vsx_string<>io, vsx_string<>comp, vsx_string<>param, vsx_string<>source_comp, vsx_string<>source_param, vsx_string<>seven);
-  bool event_key_down(signed long key, bool alt = false, bool ctrl = false, bool shift = false);
+  bool event_key_down(signed long key);
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button);

@@ -205,10 +205,10 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
       if (local_time > 0.0f && local_time < total_length)
       {
         mouse_clicked_id = item_iterator;
-        if (alt ) index_hit = 1;
-        if (ctrl) index_hit = 0;
+        if (vsx_input_keyboard.pressed_alt() ) index_hit = 1;
+        if (vsx_input_keyboard.pressed_ctrl()) index_hit = 0;
         extra_hit = (local_time > item_length) ? 0 : 1;
-        if (shift)
+        if (vsx_input_keyboard.pressed_shift())
         {
           // delete this one!
           backwards_message("mseq_channel row remove " + channel_name + " " + vsx_string_helper::i2s(mouse_clicked_id));
@@ -242,7 +242,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
         if (
           button == 0
           &&
-          shift
+          vsx_input_keyboard.pressed_shift()
         )
         {
           // if cur_time is within the current
@@ -255,7 +255,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
                   / (size.x)));
               item_action_id = item_iterator - 1;
             }
-            if (alt)
+            if (vsx_input_keyboard.pressed_alt())
             {
               if (time_iterator_old < cur_time && time_iterator > cur_time )
               {
@@ -269,7 +269,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
           {
             i_distance = (totalsize * ((distance.center.x - o_dlx) / (size.x)));
             item_action_id = item_iterator - 1;
-            if (alt)
+            if (vsx_input_keyboard.pressed_alt())
               if (time_iterator_old < cur_time && time_iterator > cur_time )
               {
                 i_distance = cur_time - time_iterator_old;
@@ -281,15 +281,15 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
 
         // check if we've hit a point
         if (
-            (!ctrl && !alt && !shift)
+            (!vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_shift())
             ||
-            (ctrl && alt && shift)
+            (vsx_input_keyboard.pressed_ctrl() && vsx_input_keyboard.pressed_alt() && vsx_input_keyboard.pressed_shift())
             ||
-            (ctrl && alt)
+            (vsx_input_keyboard.pressed_ctrl() && vsx_input_keyboard.pressed_alt())
             ||
-            (alt && !ctrl && !shift)
+            (vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_shift())
             ||
-            (shift && button == 2)
+            (vsx_input_keyboard.pressed_shift() && button == 2)
         )
         {
           if (distance.center.x > dlx - 0.001 && distance.center.x < dlx + 0.001
@@ -355,7 +355,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
 
 
     // add new point if nothing clicked up there
-    if ( item_action_id == -1 && (shift) && button == 0)
+    if ( item_action_id == -1 && (vsx_input_keyboard.pressed_shift()) && button == 0)
     {
       // dlx has been increased up until the final point,
       // now check if the distance is further to the right - outside of the range of points
@@ -363,7 +363,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
       if (distance.center.x > dlx)
       {
         i_distance = (totalsize * ((distance.center.x - dlx) / (size.x)));
-        if (alt)
+        if (vsx_input_keyboard.pressed_alt())
         {
           i_distance = cur_time - time_iterator_old;
           can_move = false;
@@ -378,7 +378,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
       &&
       button == 0
       &&
-      shift
+      vsx_input_keyboard.pressed_shift()
     )
     {
       // code for adding a new keyframe/point, relies on above code
@@ -394,7 +394,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
           val = vsx_string_helper::f2s(
             (distance.center.y + size.y / 2) / size.y * totalysize + y_start
           );
-          if (ctrl)
+          if (vsx_input_keyboard.pressed_ctrl())
             val = items[item_action_id].get_value();
           val = vsx_string_helper::base64_encode( val );
         break;
@@ -434,7 +434,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
     }
 
     // code for removing a keyframe
-    if (shift && button == 2)
+    if (vsx_input_keyboard.pressed_shift() && button == 2)
     {
       if (mouse_clicked_id > 0 && items.size() > 2)
       {
@@ -455,7 +455,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
     }
 
     // should we bring up the menu?
-    if (mouse_clicked_id != -1 && !ctrl && !alt && !shift && button == 2)
+    if (mouse_clicked_id != -1 && !vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_shift() && button == 2)
     {
       front(menu_interpolation);
       if (parent != root)
@@ -466,7 +466,7 @@ void vsx_widget_seq_channel::event_mouse_down(vsx_widget_distance distance,
       menu_temp_disable = true;
     }
 
-    if (mouse_clicked_id == -1 && alt && !ctrl && !shift)
+    if (mouse_clicked_id == -1 && vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_shift())
     {
         // set time
         if (owner)
@@ -487,7 +487,7 @@ void vsx_widget_seq_channel::event_mouse_up(vsx_widget_distance distance,
   if (button == 2)
     mouse_down_r = false;
 
-  if (!shift && !ctrl && !alt)
+  if (!vsx_input_keyboard.pressed_shift() && !vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_alt())
   vsx_widget::event_mouse_up(distance, coords, button);
 }
 
@@ -587,7 +587,7 @@ void vsx_widget_seq_channel::event_mouse_double_click(
     }
   }
 
-  if (ctrl)
+  if (vsx_input_keyboard.pressed_ctrl())
   {
     command_q_b.add_raw("remove_chan " + channel_name + " " + param_name);
     parent->vsx_command_queue_b(this);
@@ -596,18 +596,18 @@ void vsx_widget_seq_channel::event_mouse_double_click(
 
 void vsx_widget_seq_channel::event_mouse_wheel(float y)
 {
-  if (ctrl)
+  if (vsx_input_keyboard.pressed_ctrl())
     y *= 10.0f;
 
   float dt = (y_end - y_start) * 0.5;
 
-  if (!alt)
+  if (!vsx_input_keyboard.pressed_alt())
   {
     y_start += y * dt * 0.05;
     y_end += y * dt * 0.05;
   }
 
-  if (alt)
+  if (vsx_input_keyboard.pressed_alt())
   {
     float center_y = (hover_value_pos - y_start) / (y_end - y_start);
     y_start += y * dt * 0.05 * (center_y);
@@ -759,7 +759,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
     if (extra_hit == 1)
     {
       float y_val = y	- vsx_string_helper::s2f(items[mouse_clicked_id].get_value());
-      if (alt)
+      if (vsx_input_keyboard.pressed_alt())
         y_val = 0;
       items[mouse_clicked_id].set_handle1(
         vsx_vector3<>(
@@ -769,7 +769,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
       );
 
       // move the previous bezier handle
-      if ( ctrl && !shift)
+      if ( vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_shift())
       {
         vsx_widget_param_sequence_item* other_item = 0x0;
         float cur_time_x = items[mouse_clicked_id].get_handle1().x * items[mouse_clicked_id].get_total_length();
@@ -802,7 +802,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
     if (extra_hit == 2)
     {
       float y_val = y	- vsx_string_helper::s2f(items[mouse_clicked_id + 1].get_value());
-      if (alt)
+      if (vsx_input_keyboard.pressed_alt())
         y_val = 0;
       items[mouse_clicked_id].set_handle2(
         vsx_vector3<>(
@@ -812,7 +812,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
       );
 
       // move the next bezier handle
-      if (ctrl && !shift)
+      if (vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_shift())
       {
         vsx_widget_param_sequence_item* other_item = 0x0;
         float cur_time_x = (1.0 - items[mouse_clicked_id].get_handle2().x ) * items[mouse_clicked_id].get_total_length();
@@ -883,7 +883,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
     float cur_hover_pos = distance.center.x;
 
     // code for snapping to timeline
-    if (shift && !is_controller
+    if (vsx_input_keyboard.pressed_shift() && !is_controller
         &&
         cur_time_line_pos_x + 0.001f > cur_hover_pos
         &&
@@ -918,7 +918,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
       )
     {
 
-      if (mouse_clicked_id != 0 && (!alt && !ctrl ))
+      if (mouse_clicked_id != 0 && (!vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_ctrl() ))
       {
         // update the previous one
         if (is_controller)
@@ -964,7 +964,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
         else
           send_parent_dump();
       }
-      else if (alt && !ctrl)
+      else if (vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_ctrl())
       {
         items[mouse_clicked_id].increase_total_length( delta_time_movement );
         if (mouse_clicked_id > 0)
@@ -972,7 +972,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
 
       }
 
-      if ( (!alt && !ctrl) || (alt && ctrl))
+      if ( (!vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_ctrl()) || (vsx_input_keyboard.pressed_alt() && vsx_input_keyboard.pressed_ctrl()))
       {
         float y = ((distance.center.y + size.y / 2) / size.y) * totalysize
             + y_start;
@@ -1004,7 +1004,7 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
         if (param_type == VSX_MODULE_PARAM_ID_FLOAT || param_type == VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE)
           items[mouse_clicked_id].set_value(vsx_string_helper::f2s(y));
 
-        if (ctrl && alt && shift)
+        if (vsx_input_keyboard.pressed_ctrl() && vsx_input_keyboard.pressed_alt() && vsx_input_keyboard.pressed_shift())
         {
           if (mouse_clicked_id == 0)
           {
@@ -1051,12 +1051,12 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
 
 
   // No point clicked, maybe move timeline
-  if (alt && owner && can_move)
+  if (vsx_input_keyboard.pressed_alt() && owner && can_move)
   {
     ((vsx_widget_timeline*)(owner->timeline))->move_time(distance.center);
 
     // snap to point
-    if (shift && !is_controller)
+    if (vsx_input_keyboard.pressed_shift() && !is_controller)
     {
       // look through all items
       bool run = true;
@@ -2267,31 +2267,36 @@ void vsx_widget_seq_channel::draw_selection_box(float t0, float y0)
   glEnd();
 }
 
-bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
-    bool ctrl, bool shift)
+bool vsx_widget_seq_channel::event_key_down(signed long key)
 {
-  VSX_UNUSED(shift);
-
   if (is_controller) return true;
   switch (key)
   {
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-      toggle_exclusive(key - 48);
+    case VSX_SCANCODE_1:
+      toggle_exclusive(0);
       break;
-    case 'a':
+    case VSX_SCANCODE_2:
+      toggle_exclusive(1);
+      break;
+    case VSX_SCANCODE_3:
+      toggle_exclusive(2);
+      break;
+    case VSX_SCANCODE_4:
+      toggle_exclusive(3);
+      break;
+    case VSX_SCANCODE_5:
+      toggle_exclusive(4);
+      break;
+
+    case VSX_SCANCODE_A:
     {
-      if (ctrl)
+      if (vsx_input_keyboard.pressed_ctrl())
         backwards_message("play");
       else
         backwards_message("stop");
     }
     break;
-    case 'E':
-    case 'e':
+    case VSX_SCANCODE_E:
       {
         float dt = (y_end - y_start) * 0.03;
         y_start += dt;
@@ -2299,7 +2304,7 @@ bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
         return false;
       }
     break;
-    case 'd':
+    case VSX_SCANCODE_D:
       {
         float dt = (y_end - y_start) * 0.03;
         y_start -= dt;
@@ -2307,12 +2312,11 @@ bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
         return false;
       }
     break;
-    case 's':
+    case VSX_SCANCODE_S:
       {
-        if (ctrl)
+        if (vsx_input_keyboard.pressed_ctrl())
         {
-          return ((vsx_widget_timeline*) owner->timeline)->event_key_down(key,
-              false, false, false);
+          return ((vsx_widget_timeline*) owner->timeline)->event_key_down(key);
         }
         else
         {
@@ -2320,25 +2324,23 @@ bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
         }
       }
     break;
-    case 'f':
+    case VSX_SCANCODE_F:
       {
-        if (ctrl)
+        if (vsx_input_keyboard.pressed_ctrl())
         {
           if (owner)
-            return ((vsx_widget_timeline*) owner->timeline)->event_key_down(key,
-                false, false, false);
+            return ((vsx_widget_timeline*) owner->timeline)->event_key_down(key);
         }
       }
     break;
-    case 'r':
+    case VSX_SCANCODE_R:
       {
-        if (ctrl)
+        if (vsx_input_keyboard.pressed_ctrl())
         {
           if (owner)
-            ((vsx_widget_timeline*) owner->timeline)->event_key_down(key, false,
-                false, false);
+            ((vsx_widget_timeline*) owner->timeline)->event_key_down(key);
         }
-        if (alt)
+        if (vsx_input_keyboard.pressed_alt())
         {
           float dt = (y_end - y_start) * 0.5;
           y_start = y_start + dt - dt * 0.97;
@@ -2347,15 +2349,14 @@ bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
         return false;
       }
     break;
-    case 'w':
+    case VSX_SCANCODE_W:
       {
-        if (ctrl)
+        if (vsx_input_keyboard.pressed_ctrl())
         {
           if (owner)
-            ((vsx_widget_timeline*) owner->timeline)->event_key_down(key, false,
-                false, false);
+            ((vsx_widget_timeline*) owner->timeline)->event_key_down(key);
         }
-        if (alt)
+        if (vsx_input_keyboard.pressed_alt())
         {
           float dt = (y_end - y_start) * 0.5;
           y_start = y_start + dt - dt * 1.03;
@@ -2365,22 +2366,22 @@ bool vsx_widget_seq_channel::event_key_down(signed long key, bool alt,
       }
     break;
 
-    case 't':
-      if (ctrl)
+    case VSX_SCANCODE_T:
+      if (vsx_input_keyboard.pressed_ctrl())
         // set bezier interpolation type
         set_bezier_time_aligned_handles();
       break;
 
-    case 'c':
-      if (ctrl)
+    case VSX_SCANCODE_C:
+      if (vsx_input_keyboard.pressed_ctrl())
       {
         owner->action_copy();
         return false;
       }
       break;
 
-    case 'v':
-      if (ctrl)
+    case VSX_SCANCODE_V:
+      if (vsx_input_keyboard.pressed_ctrl())
       {
         owner->action_paste();
         return false;

@@ -89,7 +89,7 @@ public:
   // removes all sequence channels, used when switching seqpool etc.
   void clear_sequencer();
   virtual void command_process_back_queue(vsx_command_s *t);
-  virtual bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
+  virtual bool event_key_down(signed long key);
   virtual void interpolate_size();
   void set_server(vsx_widget* new_server);
   vsx_widget* get_server();

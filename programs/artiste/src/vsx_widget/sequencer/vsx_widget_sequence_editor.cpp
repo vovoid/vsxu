@@ -705,20 +705,16 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
   vsx_widget::command_process_back_queue(t);
 }
 
-bool vsx_widget_sequence_editor::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+bool vsx_widget_sequence_editor::event_key_down(signed long key)
 {
-  VSX_UNUSED(alt);
-  VSX_UNUSED(ctrl);
-  VSX_UNUSED(shift);
-
   switch(key) {
-    case 't':
+    case VSX_SCANCODE_T:
       {
         if (channels_start > 0) --channels_start;
         interpolate_size();
       }
     break;
-    case 'g':
+    case VSX_SCANCODE_G:
       {
         if (channels_start < (long)channels.size()-1) ++channels_start;
         interpolate_size();

@@ -259,7 +259,7 @@ void vsx_widget_base_edit::set_filter_string(vsx_string<>&filter_string)
 
 void vsx_widget_base_edit::caret_goto_end()
 {
-  event_key_down(VSX_SCANCODE_END, false, false,false);
+  event_key_down(VSX_SCANCODE_END);
 }
 
 void vsx_widget_base_edit::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
@@ -292,7 +292,7 @@ void vsx_widget_base_edit::event_mouse_down(vsx_widget_distance distance,vsx_wid
     }
     }
     if (caretx > lines[(int)(carety+scroll_y)].size()-scroll_x)
-      event_key_down(VSX_SCANCODE_END,false,false,false);
+      event_key_down(VSX_SCANCODE_END);
   }
   if (mirror_mouse_down_object != 0)
     mirror_mouse_down_object->event_mouse_down(distance, coords, button);
@@ -588,7 +588,7 @@ void vsx_widget_base_edit::i_draw()
 }
 
 
-bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, bool shift) {
+bool vsx_widget_base_edit::event_key_down(signed long key) {
   if (!editing_enabled) return true;
   size_t it = 0;
   std::vector<int>::iterator itlv = lines_visible.begin();
@@ -671,7 +671,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
     case VSX_SCANCODE_PAGEDOWN:
       if (!single_row) {
         for (int zz = 0; zz < characters_height*0.95; ++zz) {
-        event_key_down(VSX_SCANCODE_DOWN,false,false,false);
+        event_key_down(VSX_SCANCODE_DOWN);
         }
       }
       break;
@@ -716,23 +716,23 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
           lines.remove_index(it);
           lines_p.erase(itp);
           lines_visible.erase(itlv);
-        event_key_down(VSX_SCANCODE_UP,false,false,false);
-        event_key_down(VSX_SCANCODE_END,false,false,false);
+        event_key_down(VSX_SCANCODE_UP);
+        event_key_down(VSX_SCANCODE_END);
           lines[carety+(int)scroll_y] += tempstring;
           lines_p[carety+(int)scroll_y] += tempstring;
           process_line(carety+(int)scroll_y);
           process_line(carety+(int)scroll_y+1);
         }
       }
-      if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
+      if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key);
     break;
 
     // delete
     case VSX_SCANCODE_DELETE:
-      event_key_down(VSX_SCANCODE_RIGHT,false,false,false);
-      event_key_down(VSX_SCANCODE_BACKSPACE,false,false,false);
+      event_key_down(VSX_SCANCODE_RIGHT);
+      event_key_down(VSX_SCANCODE_BACKSPACE);
       process_line(carety+(int)scroll_y);
-      if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
+      if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key);
     break;
 
     // enter / return
@@ -744,7 +744,7 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
         command_q_b.add_raw(d+lines[0]);
         parent->vsx_command_queue_b(this);
       } else {
-        if ((size_t)caretx+(size_t)scroll_x > lines[carety+(int)scroll_y].size()) event_key_down(-35,false,false,false);
+        if ((size_t)caretx+(size_t)scroll_x > lines[carety+(int)scroll_y].size()) event_key_down(-35);
         while (c2 < carety+(int)scroll_y) { ++c2; ++it; ++itp; ++itlv; }
         ++it;
         ++itp;
@@ -760,12 +760,12 @@ bool vsx_widget_base_edit::event_key_down(signed long key, bool alt, bool ctrl, 
         lines_p[carety+(int)scroll_y] = tempstring2;
         lines_p.insert(itp,tempstring);
 
-        event_key_down(VSX_SCANCODE_DOWN,false,false,false);
-        event_key_down(VSX_SCANCODE_HOME,false,false,false);
+        event_key_down(VSX_SCANCODE_DOWN);
+        event_key_down(VSX_SCANCODE_HOME);
         process_line(carety-1+(int)scroll_y);
         process_line(carety+(int)scroll_y);
       }
-      if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key, alt, ctrl, shift);
+      if (mirror_keystrokes_object) mirror_keystrokes_object->event_key_down(key);
     break;
 
     // esc

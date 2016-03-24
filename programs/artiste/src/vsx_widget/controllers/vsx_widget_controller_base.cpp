@@ -138,11 +138,11 @@ void vsx_widget_controller_base::get_in_param_spec(std::pair<vsx_string<>,vsx_st
 
 float vsx_widget_controller_base::snap(float newval)
 {
-  if (shift && !ctrl && !alt)
+  if (vsx_input_keyboard.pressed_shift() && !vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_alt())
     return f_round(newval,1);
-  if (ctrl && !shift && !alt)
+  if (vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_shift() && !vsx_input_keyboard.pressed_alt())
     return f_round(newval,2);
-  if (alt && !ctrl && !shift)
+  if (vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_shift())
     return f_round(newval,3);
   return newval;
 }
@@ -191,9 +191,6 @@ void vsx_widget_controller_base::event_mouse_up(vsx_widget_distance distance,vsx
   target_value = snap(target_value);
 
   if (button == 0)
-  if (mouse_moves < 5 && last_clicked == this) { //;;(distance.center-mouse_down_pos.center).length() < 0.01f) {
-
-  }
   controlling = false;
   vsx_widget::event_mouse_up(distance,coords,button);
 }

@@ -118,7 +118,7 @@ void vsx_widget_controller_mixer::command_process_back_queue(vsx_command_s *t)
     vsx_string<>cmd="";
     for (unsigned long i=0;i<mixers.size();++i)
     {
-      if (ctrl && shift)
+      if (vsx_input_keyboard.pressed_ctrl() && vsx_input_keyboard.pressed_shift())
       {
         cmd += t->parts[1];
         ((vsx_widget_controller_channel*)mixers[i])->set_value(vsx_string_helper::s2f(t->parts[1]));

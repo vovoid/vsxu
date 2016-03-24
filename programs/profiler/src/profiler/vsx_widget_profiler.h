@@ -68,7 +68,7 @@ public:
   void load_plot(size_t id);
 
   void command_process_back_queue(vsx_command_s *t);
-  bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
+  bool event_key_down(signed long key);
 
   void event_mouse_wheel(float y);
 

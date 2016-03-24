@@ -136,21 +136,17 @@ public:
     font.unload();
   }
 
-  bool input_key_down(signed long key, bool n_alt, bool n_ctrl, bool n_shift)
+  bool input_key_down(signed long key)
   {
-    this->alt = n_alt;
-    this->ctrl = n_ctrl;
-    this->shift = n_shift;
-
     if (!k_focus)
       return true;
 
-    bool k_focus_result = k_focus->event_key_down(key,alt,ctrl,shift);
+    bool k_focus_result = k_focus->event_key_down(key);
 
     if (!k_focus_result)
       return true;
 
-    if (ctrl)
+    if (vsx_input_keyboard.pressed_ctrl())
     {
       switch (key)
       {
@@ -194,7 +190,7 @@ public:
       }
     }
 
-    if (alt)
+    if (vsx_input_keyboard.pressed_alt())
     {
       switch (key)
       {
@@ -213,7 +209,7 @@ public:
       }
     }
 
-    if (!ctrl && !alt)
+    if (!vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_alt())
       if (key == VSX_SCANCODE_SPACE)
       {
         if (a_focus->widget_type != VSX_WIDGET_TYPE_SERVER)
@@ -230,14 +226,12 @@ public:
     return false;
   }
 
-  bool input_key_up(signed long key, bool alt, bool ctrl, bool shift)
+  bool input_key_up(signed long key)
   {
-    this->ctrl = ctrl;
-
     if (!k_focus)
       return true;
 
-    if (!k_focus->event_key_up(key,alt,ctrl,shift))
+    if (!k_focus->event_key_up(key))
       return false;
 
     camera.event_key_up(key);

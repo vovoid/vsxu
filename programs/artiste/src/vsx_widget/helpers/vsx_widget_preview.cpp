@@ -138,24 +138,21 @@ void vsx_window_texture_viewer::draw_2d()
   draw_children_2d();
 }
 
-bool vsx_window_texture_viewer::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+bool vsx_window_texture_viewer::event_key_down(signed long key)
 {
-  VSX_UNUSED(alt);
-  VSX_UNUSED(shift);
-
-  if (ctrl && key == 32)
+  if (vsx_input_keyboard.pressed_ctrl() && key == VSX_SCANCODE_SPACE)
   {
     run = !run;
     return false;
   }
 
-  if (key == 32)
+  if (key == VSX_SCANCODE_SPACE)
   {
     run = !run;
     return false;
   }
 
-  if (key == 13)
+  if (key == VSX_SCANCODE_RETURN)
   {
     fullwindow = !fullwindow;
   }

@@ -12,6 +12,10 @@ public:
   vsx_vector2f position_screen;
   vsx_vector2f wheel;
 
+  vsx_vector2f position_click_left;
+  vsx_vector2f position_click_middle;
+  vsx_vector2f position_click_right;
+
   bool buttons[32] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   bool button_left = false;
   bool button_middle = false;
@@ -43,13 +47,26 @@ public:
     buttons[event.mouse.button_id] = event.mouse.button_state;
 
     if (event.mouse.type == vsx_input_event_mouse::button_left)
+    {
       button_left = event.mouse.button_state;
-
-    if (event.mouse.type == vsx_input_event_mouse::button_right)
-      button_right = event.mouse.button_state;
+      if (button_left)
+        position_click_left = position;
+    }
 
     if (event.mouse.type == vsx_input_event_mouse::button_middle)
+    {
       button_middle = event.mouse.button_state;
+      if (button_middle)
+        position_click_middle = position;
+    }
+
+    if (event.mouse.type == vsx_input_event_mouse::button_right)
+    {
+      button_right = event.mouse.button_state;
+      if (button_right)
+        position_click_right = position;
+    }
+
 
     if (event.mouse.type == vsx_input_event_mouse::button_x1)
       button_x1 = event.mouse.button_state;

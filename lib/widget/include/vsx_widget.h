@@ -124,9 +124,6 @@ public:
   // time
   // these have to be set from outside, by using #include <time/vsx_timer.h> and using the timer class
   WIDGET_DLLIMPORT static int frames;
-  WIDGET_DLLIMPORT static bool ctrl;
-  WIDGET_DLLIMPORT static bool alt;
-  WIDGET_DLLIMPORT static bool shift;
 
   //
   WIDGET_DLLIMPORT static bool performance_mode;
@@ -414,22 +411,22 @@ public:
   // this is bool so that external (super-global) processors can know wether or not to react on the keys..
   // this returning true means that they're allowed to process the keys, if not, it's exclusive to the widget
   // who has k_focus - like an edit box.
-  virtual bool input_key_down(signed long key, bool n_alt, bool n_ctrl, bool n_shift) {
+  virtual bool input_key_down(signed long key)
+  {
     req_v(k_focus, true);
-    return k_focus->event_key_down(key,n_alt,n_ctrl,n_shift);
+    return k_focus->event_key_down(key);
   }
 
-  bool input_key_up(signed long key, bool alt, bool ctrl, bool shift) {
+  bool input_key_up(signed long key)
+  {
     req_v(k_focus, true);
-    return k_focus->event_key_up(key,alt,ctrl,shift);
+    return k_focus->event_key_up(key);
   }
 
   void input_text(wchar_t character_wide, char character) {
     req(k_focus);
     k_focus->event_text(character_wide, character);
   }
-
-  static void set_key_modifiers(bool alt_, bool ctrl_, bool shift_);
 
   void input_mouse_down(float x, float y, int button);
   void input_mouse_up(float x, float y, int button);
@@ -438,21 +435,15 @@ public:
   void input_mouse_wheel(float y);
 
   // INTERNAL EVENTS IN RESPONSE TO EXTERNAL INPUT, DEFAULTS (CAN BE OVERRIDDEN)
-  virtual bool event_key_down(signed long key, bool alt = false, bool ctrl = false, bool shift = false)
+  virtual bool event_key_down(signed long key)
   {
     VSX_UNUSED(key);
-    VSX_UNUSED(alt);
-    VSX_UNUSED(ctrl);
-    VSX_UNUSED(shift);
     return true;
   }
 
-  virtual bool event_key_up(signed long key, bool alt = false, bool ctrl = false, bool shift = false)
+  virtual bool event_key_up(signed long key)
   {
     VSX_UNUSED(key);
-    VSX_UNUSED(alt);
-    VSX_UNUSED(ctrl);
-    VSX_UNUSED(shift);
     return true;
   }
 

@@ -57,13 +57,9 @@ public:
   }
 
 
-  virtual bool event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+  virtual bool event_key_down(signed long key)
   {
     VSX_UNUSED(key);
-    VSX_UNUSED(alt);
-    VSX_UNUSED(ctrl);
-    VSX_UNUSED(shift);
-
     k_focus = parent;
     a_focus = parent;
     _delete();

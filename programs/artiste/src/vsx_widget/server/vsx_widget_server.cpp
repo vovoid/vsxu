@@ -1209,12 +1209,9 @@ void vsx_widget_server::param_alias_ok(vsx_string<>p_def, vsx_string<>io, vsx_st
   }
 }
 
-bool vsx_widget_server::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+bool vsx_widget_server::event_key_down(signed long key)
 {
-  VSX_UNUSED(alt);
-  VSX_UNUSED(shift);
-
-  if (ctrl)
+  if (vsx_input_keyboard.pressed_ctrl())
   {
     if (key == 'z' || key == 'Z')
     {
@@ -1234,11 +1231,11 @@ void vsx_widget_server::event_mouse_down(vsx_widget_distance distance,vsx_widget
   if (button == 0)
   {
     selection_end = selection_start;
-    if (ctrl && !alt)
+    if (vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_alt())
     {
       selection = true;
     } else
-    if (!ctrl && !alt)
+    if (!vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_alt())
     {
       for (std::list<vsx_widget*>::iterator it = selected_list.begin(); it != selected_list.end(); ++it)
       {
@@ -1253,17 +1250,17 @@ void vsx_widget_server::event_mouse_down(vsx_widget_distance distance,vsx_widget
 void vsx_widget_server::event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button)
 {
   VSX_UNUSED(coords);
-  if (button == 0 && alt && !shift && !ctrl)
+  if (button == 0 && vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_shift() && !vsx_input_keyboard.pressed_ctrl())
   {
     command_q_b.add_raw("add_empty_macro "+vsx_string_helper::f2s(distance.center.x)+","+vsx_string_helper::f2s(distance.center.y));
     vsx_command_queue_b(this);
   } else
-  if (button == 0 && ctrl && !shift && !alt)
+  if (button == 0 && vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_shift() && !vsx_input_keyboard.pressed_alt())
   {
     command_q_b.add_raw("state_menu_load");
     vsx_command_queue_b(this);
   } else
-  if (button == 0 && !ctrl && !shift && !alt)
+  if (button == 0 && !vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_shift() && !vsx_input_keyboard.pressed_alt())
   {
     front(module_chooser);
     ((vsx_widget_ultra_chooser*)state_chooser)->message = "";

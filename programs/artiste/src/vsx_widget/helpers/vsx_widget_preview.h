@@ -54,7 +54,7 @@ public:
   bool get_fullwindow();
   bool* get_fullwindow_ptr();
 
-  virtual bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
+  virtual bool event_key_down(signed long key);
   virtual void command_process_back_queue(vsx_command_s *t);
 
   vsx_window_texture_viewer();

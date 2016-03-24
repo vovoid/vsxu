@@ -84,13 +84,13 @@ public:
   void event_key_down(long scancode)
   {
     req(my_draw.desktop);
-    my_draw.desktop->input_key_down(scancode, vsx_input_keyboard.pressed_alt(), vsx_input_keyboard.pressed_ctrl(), vsx_input_keyboard.pressed_shift());
+    my_draw.desktop->input_key_down(scancode);
   }
 
   void event_key_up(long scancode)
   {
     req(my_draw.desktop);
-    my_draw.desktop->input_key_up(scancode, vsx_input_keyboard.pressed_alt(), vsx_input_keyboard.pressed_ctrl(), vsx_input_keyboard.pressed_shift());
+    my_draw.desktop->input_key_up(scancode);
   }
 
   // movement with left mouse button pressed, i.e. dragging or moving after click

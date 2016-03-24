@@ -101,20 +101,17 @@ void vsx_widget_ultra_chooser::cancel_drop() {
   ((vsxu_assistant*)((vsx_artiste_desktop*)root)->assistant)->temp_show();
 }
 
-bool vsx_widget_ultra_chooser::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+bool vsx_widget_ultra_chooser::event_key_down(signed long key)
 {
-  VSX_UNUSED(alt);
-  VSX_UNUSED(ctrl);
-  VSX_UNUSED(shift);
-
-  if (key == 27) {
+  if (key == VSX_SCANCODE_ESCAPE) {
     if (drag_dropped) {
       cancel_drop();
     } else
     hide();
   } else
   // home
-  if (key == -36 || key == 'a') {
+  if (key == VSX_SCANCODE_A)
+  {
     HTCoord h;
     endpoint = h;
     h = treedraw->draw_root->getCoordinates();
@@ -374,7 +371,7 @@ void vsx_widget_ultra_chooser::event_mouse_up(vsx_widget_distance distance,vsx_w
             if (treedraw->selected) {
               if (server) {
                 drag_dropped = false;
-                if (ctrl)
+                if (vsx_input_keyboard.pressed_ctrl())
                 ((dialog_query_string*)name_dialog)->show(((vsx_widget_server*)server)->get_unique_name(treedraw->selected->getName()));
                 else
                 {

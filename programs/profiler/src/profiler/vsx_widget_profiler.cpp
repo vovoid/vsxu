@@ -193,12 +193,9 @@ void vsx_widget_profiler::command_process_back_queue(vsx_command_s *t)
   vsx_printf(L"t->cmd: %s\n", t->cmd_data.c_str());
 }
 
-bool vsx_widget_profiler::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+bool vsx_widget_profiler::event_key_down(signed long key)
 {
   VSX_UNUSED(key);
-  VSX_UNUSED(alt);
-  VSX_UNUSED(ctrl);
-  VSX_UNUSED(shift);
   return true;
 }
 
@@ -223,7 +220,7 @@ void vsx_widget_profiler::update_children()
 
 void vsx_widget_profiler::event_mouse_wheel(float y)
 {
-  if (shift)
+  if (vsx_input_keyboard.pressed_shift())
   {
     vsx_printf(L"camera z: %f\n", camera.get_pos_z());
 

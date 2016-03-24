@@ -75,30 +75,24 @@ public:
     vsx_widget::reinit();
   }
 
-  bool input_key_down(signed long key, bool n_alt, bool n_ctrl, bool n_shift)
+  bool input_key_down(signed long key)
   {
-    this->alt = n_alt;
-    this->ctrl = n_ctrl;
-    this->shift = n_shift;
-
     if (!k_focus)
       return true;
 
-    if (!k_focus->event_key_down(key,alt,ctrl,shift))
+    if (!k_focus->event_key_down(key))
       return true;
 
     camera.event_key_down(key);
     return false;
   }
 
-  bool input_key_up(signed long key, bool alt, bool ctrl, bool shift)
+  bool input_key_up(signed long key)
   {
-    this->ctrl = ctrl;
-
     if (!k_focus)
       return true;
 
-    if (!k_focus->event_key_up(key,alt,ctrl,shift))
+    if (!k_focus->event_key_up(key))
       return false;
 
     camera.event_key_up(key);

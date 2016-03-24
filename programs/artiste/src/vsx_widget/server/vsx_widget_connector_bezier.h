@@ -65,7 +65,7 @@ public:
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);
-  bool event_key_down(signed long key, bool alt, bool ctrl, bool shift);
+  bool event_key_down(signed long key);
   void draw();
   vsx_widget_connector_bezier();
   ~vsx_widget_connector_bezier();

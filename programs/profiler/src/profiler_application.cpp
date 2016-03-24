@@ -116,7 +116,7 @@ void app_char(long key)
   if (!desktop)
     return;
 
-  desktop->input_key_down(key,app_alt, app_ctrl, app_shift);
+  desktop->input_key_down(key);
 }
 
 void app_key_down(long key)
@@ -124,8 +124,7 @@ void app_key_down(long key)
   if (!desktop)
     return;
 
-  desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
-  desktop->input_key_down(-key, app_alt, app_ctrl, app_shift);
+  desktop->input_key_down( key);
 }
 
 void app_key_up(long key)
@@ -133,15 +132,13 @@ void app_key_up(long key)
   if (!desktop)
     return;
 
-  desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
-  desktop->input_key_up(key,app_alt, app_ctrl, app_shift);
+  desktop->input_key_up(key);
 }
 
 void app_mouse_move_passive(int x, int y)
 {
   if (!desktop)
     return;
-  desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
   desktop->input_mouse_move_passive((float)x,(float)y);
 }
 
@@ -149,8 +146,6 @@ void app_mouse_move(int x, int y)
 {
   if (!desktop)
     return;
-
-  desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
 
   desktop->input_mouse_move(
     clamp(x, 0, vsx_gl_state::get_instance()->viewport_get_width() ),
@@ -163,7 +158,6 @@ void app_mouse_down(unsigned long button,int x,int y)
   if (!desktop)
     return;
 
-  desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
   desktop->input_mouse_down(x,y,button);
 }
 
@@ -172,7 +166,6 @@ void app_mouse_up(unsigned long button,int x,int y)
   if (!desktop)
     return;
 
-  desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
   desktop->input_mouse_up(x,y,button);
 }
 
@@ -180,8 +173,6 @@ void app_mousewheel(float diff,int x,int y)
 {
   if (!desktop)
     return;
-
-  desktop->set_key_modifiers(app_alt, app_ctrl, app_shift);
 
   desktop->input_mouse_move_passive((float)x,(float)y);
   desktop->input_mouse_wheel(diff);

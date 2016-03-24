@@ -179,16 +179,12 @@ void vsx_widget_profiler_timeline::i_draw()
 
 }
 
-bool vsx_widget_profiler_timeline::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+bool vsx_widget_profiler_timeline::event_key_down(signed long key)
 {
-  VSX_UNUSED(alt);
-  VSX_UNUSED(shift);
-
   if (!time_holder)
     VSX_ERROR_RETURN_V("time_holder not set", true);
 
-
-  if (!ctrl)
+  if (!vsx_input_keyboard.pressed_ctrl())
     return true;
 
   float dt = time_holder->diff() * 0.5;

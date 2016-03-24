@@ -1138,7 +1138,7 @@ void vsx_widget_component::event_mouse_move_passive(vsx_widget_distance distance
 
 void vsx_widget_component::event_mouse_wheel(float y)
 {
-  if (macro && open && alt)
+  if (macro && open && vsx_input_keyboard.pressed_alt())
   {
     macro_overlay_opacity += -y * 0.1f;
     if (macro_overlay_opacity < 0.0f) macro_overlay_opacity = 0.0f;
@@ -1197,12 +1197,12 @@ void vsx_widget_component::macro_toggle() {
 
 void vsx_widget_component::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
   menu_temp_disable = true;
-  if (!alt && !shift && button == 2) {
+  if (!vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_shift() && button == 2) {
     ((vsx_widget_server*)server)->select(this);
   }
   if (macro && open && button == 0)
   support_scaling = true; else support_scaling = false;
-  if (shift && ctrl && !alt && button == 0) {
+  if (vsx_input_keyboard.pressed_shift() && vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_alt() && button == 0) {
     if (!((vsx_widget_server*)server)->select_add(this)) return;
 
     if (((vsx_widget_server*)(this->server))->selected_list.size())
@@ -1214,17 +1214,17 @@ void vsx_widget_component::event_mouse_down(vsx_widget_distance distance,vsx_wid
       transform_state = COMPONENT_MOVE;
     }
   } else
-  if (ctrl && alt && !shift && button == 0) {
+  if (vsx_input_keyboard.pressed_ctrl() && vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_shift() && button == 0) {
     real_pos = target_pos;
     ethereal = true;
     move_time = vsx_widget_time::get_instance()->get_time();
     transform_state = COMPONENT_MOVE;
   } else
-  if (ctrl && !alt && !shift && button == 0) {
+  if (vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_shift() && button == 0) {
     ((vsx_widget_server*)server)->select_add_gui(this);
   }
   else
-  if (alt && !shift && !ctrl && button == 2) {
+  if (vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_shift() && !vsx_input_keyboard.pressed_ctrl() && button == 2) {
     if (component_type == "macro") {
       macro_toggle();
       parent->front(this);
@@ -1237,7 +1237,7 @@ void vsx_widget_component::event_mouse_down(vsx_widget_distance distance,vsx_wid
     ((vsx_widget_component*)parent)->macro_toggle();
     return;
   } else
-  if (alt && !ctrl && button == 0 && component_type == "macro" && open) {
+  if (vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_ctrl() && button == 0 && component_type == "macro" && open) {
     if (support_scaling) {
       if (transform_state == COMPONENT_SCALE) scaled = true;
       move_time = vsx_widget_time::get_instance()->get_time();
@@ -1260,22 +1260,22 @@ void vsx_widget_component::event_mouse_double_click(vsx_widget_distance distance
 {
   VSX_UNUSED(coords);
   if (component_type == "macro") {
-    if (button == 0 && alt && !shift && !ctrl) {
+    if (button == 0 && vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_shift() && !vsx_input_keyboard.pressed_ctrl()) {
       command_q_b.add_raw("add_empty_macro "+vsx_string_helper::f2s(distance.center.x)+","+vsx_string_helper::f2s(distance.center.y));
       vsx_command_queue_b(this);
     } else
 
-    if (alt && button == 2 && !ctrl && !shift) {
+    if (vsx_input_keyboard.pressed_alt() && button == 2 && !vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_shift()) {
       return;
     } else
-    if (button == 0 && !ctrl && !shift && !alt) {
+    if (button == 0 && !vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_shift() && !vsx_input_keyboard.pressed_alt()) {
       if (open) {
         ((vsx_widget_server*)server)->front(((vsx_widget_server*)server)->module_chooser);
         ((vsx_widget_server*)server)->module_chooser->show();
       }
     }
   } else {
-    if (!alt && button == 0 && !ctrl && !shift) {
+    if (!vsx_input_keyboard.pressed_alt() && button == 0 && !vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_shift()) {
       vsx_vector3<> pp = get_pos_p();
       root->move_camera(vsx_vector3<>(pp.x, pp.y, 1.2f+size.x*3.0f));
       transform_state = -1;
@@ -1289,14 +1289,14 @@ void vsx_widget_component::event_mouse_up(vsx_widget_distance distance,vsx_widge
 {
   if (ethereal) {
     // do stuff
-    if (ctrl && !shift && alt) {
+    if (vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_shift() && vsx_input_keyboard.pressed_alt()) {
       command_q_b.add_raw("component_clone "+name+" "+name+"_clone "+vsx_string_helper::f2s(target_pos.x)+" "+vsx_string_helper::f2s(target_pos.y));
       server->vsx_command_queue_b(this);
       target_pos = real_pos;
       interpolating_pos = true;
       ethereal = false;
     } else
-    if (ctrl && shift && !alt) {
+    if (vsx_input_keyboard.pressed_ctrl() && vsx_input_keyboard.pressed_shift() && !vsx_input_keyboard.pressed_alt()) {
       // component assign code
       vsx_widget_distance l_distance;
       vsx_widget* dest_macro_component = root->find_component(coords,l_distance,true);
@@ -1657,11 +1657,8 @@ void vsx_widget_component::perform_delete()
   server->vsx_command_queue_b(this);
 }
 
-bool vsx_widget_component::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+bool vsx_widget_component::event_key_down(signed long key)
 {
-  VSX_UNUSED(alt);
-  VSX_UNUSED(ctrl);
-  VSX_UNUSED(shift);
   if (key == VSX_SCANCODE_DELETE)
   {
     if (((vsx_widget_server*)(this->server))->selected_list.size())
@@ -1671,7 +1668,7 @@ bool vsx_widget_component::event_key_down(signed long key, bool alt, bool ctrl, 
       }
     }
   }
-  if (key == (signed long)'q') {
+  if (key == VSX_SCANCODE_Q) {
     show_titles = !show_titles;
   }
   return true;

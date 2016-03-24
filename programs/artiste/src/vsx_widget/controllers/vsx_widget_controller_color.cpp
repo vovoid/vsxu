@@ -315,11 +315,8 @@ void vsx_widget_controller_color::event_mouse_double_click(vsx_widget_distance d
   _delete();
 }
 
-bool vsx_widget_controller_color::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+bool vsx_widget_controller_color::event_key_down(signed long key)
 {
-  VSX_UNUSED(alt);
-  VSX_UNUSED(ctrl);
-  VSX_UNUSED(shift);
   switch (key) {
     case 'f':
       angle_dest+= 0.01;

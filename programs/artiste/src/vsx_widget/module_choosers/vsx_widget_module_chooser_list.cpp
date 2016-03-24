@@ -202,7 +202,7 @@ public:
           vsx_string<> deli = ";";
           vsx_string_helper::explode(i_mod_info[mod_i]->identifier, deli, parts);
           vsx_string<> module_name = parts[parts.size()-1];
-          if (ctrl)
+          if (vsx_input_keyboard.pressed_ctrl())
             ((dialog_query_string*)name_dialog)->show(((vsx_widget_server*)server)->get_unique_name(module_name));
           else
           {
@@ -309,12 +309,9 @@ void vsx_module_chooser_list::event_text(wchar_t character_wide, char character)
   ((vsx_widget_editor*)widget_list)->editor->set_filter_string( filter );
 }
 
-bool vsx_module_chooser_list::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+bool vsx_module_chooser_list::event_key_down(signed long key)
 {
   VSX_UNUSED(key);
-  VSX_UNUSED(alt);
-  VSX_UNUSED(ctrl);
-  VSX_UNUSED(shift);
   vsx_string<>filter = ((vsx_widget_base_edit*)widget_search)->get_string();
   ((vsx_widget_editor*)widget_list)->editor->set_filter_string( filter );
   return true;

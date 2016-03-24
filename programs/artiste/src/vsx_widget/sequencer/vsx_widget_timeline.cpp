@@ -239,16 +239,13 @@ void vsx_widget_timeline::draw_waveform_data(float y_mid, float y_size_half)
 
 }
 
-bool vsx_widget_timeline::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+bool vsx_widget_timeline::event_key_down(signed long key)
 {
-  VSX_UNUSED(alt);
-  VSX_UNUSED(shift);
-
   float dt = (owner->tend-owner->tstart)*0.5;
   switch(key) {
     case 'a':
     {
-      if (ctrl)
+      if (vsx_input_keyboard.pressed_ctrl())
         backwards_message("play");
       else
         backwards_message("stop");
@@ -258,7 +255,7 @@ bool vsx_widget_timeline::event_key_down(signed long key, bool alt, bool ctrl, b
   if (key == 't')
     show_wave_data = !show_wave_data;
 
-  if (!ctrl)
+  if (!vsx_input_keyboard.pressed_ctrl())
     return true;
 
   switch(key) {

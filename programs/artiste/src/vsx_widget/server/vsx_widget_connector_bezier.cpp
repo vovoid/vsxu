@@ -502,12 +502,9 @@ void vsx_widget_connector_bezier::init()
 }
 
 
-bool vsx_widget_connector_bezier::event_key_down(signed long key, bool alt, bool ctrl, bool shift)
+bool vsx_widget_connector_bezier::event_key_down(signed long key)
 {
-  VSX_UNUSED(alt);
-  VSX_UNUSED(ctrl);
-  VSX_UNUSED(shift);
-  if (key == 127) {
+  if (key == VSX_SCANCODE_DELETE) {
     command_q_b.add_raw("disconnect");
     vsx_command_queue_b(this);
   }
