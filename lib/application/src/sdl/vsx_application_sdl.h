@@ -80,6 +80,7 @@ class vsx_application_sdl
         vsx_string_helper::s2i( vsx_argvector::get_instance()->get_param_subvalue("s", 0, "x,", "1280") ),
         vsx_string_helper::s2i( vsx_argvector::get_instance()->get_param_subvalue("s", 1, "x,", "720") ),
         SDL_WINDOW_OPENGL
+        | SDL_WINDOW_RESIZABLE
         | SDL_WINDOW_ALLOW_HIGHDPI
         | SDL_WINDOW_SHOWN
         | SDL_WINDOW_BORDERLESS * (vsx_argvector::get_instance()->has_param("bl") ? 1 : 0)

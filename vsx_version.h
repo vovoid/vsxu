@@ -15,6 +15,6 @@
 #define VSXU_VERSION_MINOR 5
 #define VSXU_VERSION_PATCH 0
 
-#define VSXU_VERSION_COPYRIGHT "2003-2016 Vovoid Media Technologies AB"
+#define VSXU_VERSION_COPYRIGHT "©2003-2016 Vovoid Media Technologies AB"
 
 #endif
