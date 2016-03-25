@@ -1611,6 +1611,11 @@ void basic_test()
   vsx_filesystem_tree_reader reader;
   reader.initialize(result_binary.get_pointer());
 
+  // non-existent file
+  uint32_t t_reader_result = reader.get_payload_by_filename( "qqqq" );
+  test_assert (t_reader_result == 0);
+
+
   long long cache_misses;
 
   perf.cache_misses_start();
@@ -1639,6 +1644,7 @@ void basic_test()
   vsx_printf(L"cache misses: %lld\n", cache_misses);
 
   test_assert( reader_result == 1 );
+
 }
 
 

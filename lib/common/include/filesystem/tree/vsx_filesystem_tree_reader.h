@@ -7,11 +7,23 @@
 class vsx_filesystem_tree_reader
 {
   unsigned char* data_pointer = 0x0;
+
+  void populate_filename_list_internal(vsx_nw_vector<vsx_string<>>& filenames, unsigned char* start_point, vsx_string<> directory_base)
+  {
+
+
+  }
+
 public:
 
   void initialize(unsigned char* p)
   {
     data_pointer = p;
+  }
+
+  void populate_filename_list(vsx_nw_vector<vsx_string<>>& filenames)
+  {
+
   }
 
   uint32_t get_payload_by_filename(vsx_string<> filename)
@@ -26,6 +38,9 @@ public:
     while (true)
     {
       if (filename_iterator > filename_parts.size() - 1)
+        return 0;
+
+      if (!*p)
         return 0;
 
       unsigned char string_length = *p & 0x7F;

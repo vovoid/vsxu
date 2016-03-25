@@ -1,0 +1,18 @@
+meta_set fHx8fHw=
+component_create renderers;opengl_modifiers;buffer_clear buffer_clear -0.199433 0.011046
+param_set buffer_clear color_buffer 1
+component_create renderers;basic;colored_rectangle colored_rectangle -0.282888 0.020250
+param_set colored_rectangle angle 0.18889114260673522949
+component_create texture;buffers;render_surface_color_buffer render_surface_color_buffer -0.141751 0.003068
+param_set render_surface_color_buffer multisample 1
+param_set render_surface_color_buffer texture_size 5
+cpp screen0 0.000000 0.000000
+param_set screen0 gamma_correction 1.00000095367431640625
+param_set screen0 clear_color 0.00000000000002926513,0.00000000000000000000,0.00000000000000000001,0.00000070461976520164
+component_create renderers;basic;textured_rectangle textured_rectangle -0.060137 0.011659
+break
+break
+param_connect textured_rectangle texture_in render_surface_color_buffer color_buffer
+param_connect screen0 screen textured_rectangle render_out
+param_connect render_surface_color_buffer render_in buffer_clear render_out
+param_connect buffer_clear render_in colored_rectangle render_out

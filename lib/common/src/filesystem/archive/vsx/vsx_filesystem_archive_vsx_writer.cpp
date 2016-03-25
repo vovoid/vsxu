@@ -30,6 +30,18 @@ void filesystem_archive_vsx_writer::file_add_all_worker(vsx_nw_vector<filesystem
   }
 }
 
+void filesystem_archive_vsx_writer::archive_files_saturate_all()
+{
+  foreach (archive_files, i)
+  {
+    filesystem_archive_file_write &archive_file = archive_files[i];
+    if (archive_file.data.size())
+      continue;
+    req_continue(archive_file.operation == filesystem_archive_file_write::operation_add);
+    archive_file.data = filesystem_helper::file_read(archive_file.source_filename);
+  }
+}
+
 
 void filesystem_archive_vsx_writer::file_add_all()
 {
@@ -45,7 +57,7 @@ void filesystem_archive_vsx_writer::file_add_all()
     files_to_process++;
     bool is_last = i == (archive_files.size() - 1);
 
-    pool->push_back(&archive_file);
+    pool->push_back(&archive_files[i]);
     pooled_size += archive_file.data.size();
 
     if (pooled_size <= work_chunk_size && !is_last)
@@ -111,6 +123,7 @@ void filesystem_archive_vsx_writer::add_file
   if (deferred_multithreaded)
   {
     filesystem_archive_file_write file_info;
+    file_info.source_filename = filename;
     file_info.filename = filename;
     file_info.operation = filesystem_archive_file_write::operation_add;
     archive_files.push_back(file_info);
@@ -166,6 +179,7 @@ void filesystem_archive_vsx_writer::close()
 {
   req(archive_handle);
 
+  archive_files_saturate_all();
   file_add_all();
   archive_filename = "";
   fclose(archive_handle);

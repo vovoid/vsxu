@@ -76,6 +76,7 @@ public:
       else
         target_offset += children[i]->name.size() + 1 + sizeof(vsx_filesystem_tree_node_storage_footer);
     }
+    target_offset += 1;
 
     foreach (children, i)
       children[i]->calculate_offsets(target_offset);

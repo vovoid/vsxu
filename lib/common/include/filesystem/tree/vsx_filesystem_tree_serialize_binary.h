@@ -40,6 +40,8 @@ class vsx_filesystem_tree_serialize_binary
       }
     }
 
+    result.push_back(0);
+
     foreach (node->children, i)
       serialize_node(node->children[i], result);
   }

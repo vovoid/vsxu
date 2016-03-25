@@ -24,6 +24,8 @@ public:
 
   explicit vsx_thread_pool(size_t threads = std::thread::hardware_concurrency())
   {
+    running_jobs = 0;
+
     for(size_t i = 0;i<threads;++i)
       workers.emplace_back(
         [this]
@@ -42,9 +44,11 @@ public:
               this->tasks.pop();
             }
 
+            running_jobs++;
             task();
+            running_jobs--;
 
-            if (this->tasks.empty())
+            if (this->running_jobs.load() == 0)
               this->queue_empty_condition.notify_all();
           }
         }
@@ -61,7 +65,7 @@ public:
     for(std::thread &worker: workers)
       worker.join();
   }
-  
+
   // Add tasks to the task queue
   template<class F, class... Args>
   inline auto add(F&& f, Args&&... args)
@@ -113,17 +117,14 @@ private:
   std::vector< std::thread > workers;
   // the task queue
   std::queue< std::function<void()> > tasks;
-  
+
   // synchronization
   std::mutex queue_mutex;
   std::condition_variable condition;
   bool stop = false;
 
   // More synchronization for wait_all()
+  std::atomic<int> running_jobs;
   std::mutex queue_empty_mutex;
   std::condition_variable queue_empty_condition;
 };
- 
-
-
-

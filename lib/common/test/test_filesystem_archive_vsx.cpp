@@ -20,9 +20,9 @@ void build_up()
 
 void teardown()
 {
-  unlink("test_filesystem_archive_file_1");
-  unlink("test_filesystem_archive_file_2");
-  unlink("test_filesystem_archive.vsx");
+  //unlink("test_filesystem_archive_file_1");
+  //unlink("test_filesystem_archive_file_2");
+  //unlink("test_filesystem_archive.vsx");
 }
 
 void test_plain_files()

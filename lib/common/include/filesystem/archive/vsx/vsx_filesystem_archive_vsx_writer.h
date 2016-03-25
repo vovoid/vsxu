@@ -22,6 +22,7 @@ namespace vsx
 
     void file_add_all_worker(vsx_nw_vector<filesystem_archive_file_write*>* work_list);
     void file_add_all();
+    void archive_files_saturate_all();
     void file_compress_and_add_to_archive(vsx_string<> filename, vsx_ma_vector<unsigned char>& uncompressed_data);
 
   public:

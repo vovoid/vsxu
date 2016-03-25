@@ -25,16 +25,13 @@
 #include <windows.h>
 #endif
 
+#include <vsx_version.h>
 #include <container/vsx_nw_vector.h>
 #include <vsx_argvector.h>
 #include <string/vsx_string.h>
 #include <string/vsx_string_helper.h>
 #include <filesystem/vsx_filesystem_helper.h>
 #include <filesystem/vsx_filesystem.h>
-#include <filesystem/archive/vsx/vsx_filesystem_archive_vsx_reader.h>
-#include <filesystem/archive/vsx/vsx_filesystem_archive_vsx_writer.h>
-#include <filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_reader.h>
-#include <filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_writer.h>
 #include <debug/vsx_error.h>
 
 #include <stdio.h>
@@ -48,158 +45,43 @@
 #endif
 
 vsx_string<>current_path = "./";
-vsx::filesystem filesystem;
-vsx_argvector* arg = vsx_argvector::get_instance();
 
-void extract()
-{
-  bool dry_run = arg->has_param("dry");
-
-  // Sanitize current_path
-  if (!current_path.size())
-    VSX_ERROR_EXIT("Fatal error: current_path is empty",1);
-
-  if (access(current_path.c_str(),W_OK))
-    VSX_ERROR_EXIT("current_path is not accessible for writing",1);
-
-  vsx_string<> filename = arg->get_param_value("x");
-
-  // Sanitize file
-  if (!filesystem.is_file(filename))
-    VSX_ERROR_EXIT( (vsx_string<>("Invalid archive supplied,")+filename).c_str(), 1);
-
-  filesystem.get_archive()->load( filename.c_str(), arg->has_param("mt") );
-
-  // Sanitize archive
-  if (!filesystem.get_archive()->is_archive_populated())
-    VSX_ERROR_EXIT("Archive contains no files or failed to load", 2);
-
-  vsx_nw_vector<vsx::filesystem_archive_file_read>* archive_files = filesystem.get_archive()->files_get();
-  for (unsigned long i = 0; i < (*archive_files).size(); ++i)
-  {
-    vsx_string<> out_filename = (*archive_files)[i].filename;
-    vsx_string<> out_dir = vsx_string_helper::path_from_filename(out_filename);
-    vsx_string<> full_out_path = current_path + "/" + out_filename;
-    vsx_string<> out_directory = current_path + "/" + out_dir;
-
-    if (!dry_run)
-      vsx::filesystem_helper::create_directory( out_directory.c_str() );
-
-    vsx::file* fpi = filesystem.f_open((*archive_files)[i].filename.c_str(), "r");
-      if (!fpi)
-        VSX_ERROR_EXIT( (vsx_string<>("Internal Error: fpi invalid when reading ")+(*archive_files)[i].filename).c_str(), 3);
-
-      FILE* fpo = 0;
-      if (!dry_run)
-      {
-        fpo = fopen(full_out_path.c_str(), "wb");
-        if (!fpo)
-          VSX_ERROR_EXIT( (vsx_string<>("Internal Error: fpo invalid when opening file for writing: ")+full_out_path).c_str(), 3 );
-      }
-
-        char* buf = filesystem.f_gets_entire(fpi);
-          if (!buf)
-          {
-            if (!dry_run)
-            fclose(fpo);
-            VSX_ERROR_EXIT("Internal Error: buf invalid", 4);
-          }
-
-          if (!dry_run)
-            fwrite(buf,sizeof(char),fpi->size,fpo);
-
-      if (!dry_run)
-        fclose(fpo);
-    filesystem.f_close(fpi);
-  }
-
-  filesystem.get_archive()->close();
-
-  // success
-  exit(0);
-}
-
-void create()
-{
-  // Sanitize the presence of -f / -fl
-  if (!arg->has_param_with_value("f") && !arg->has_param_with_value("fl"))
-    VSX_ERROR_EXIT("Error, you must supply files to be added to the archive", 100);
-
-  vsx_string<> filenames;
-  vsx_nw_vector< vsx_string<> > parts;
-  vsx::filesystem_archive_vsx_writer archive;
-
-  if (arg->has_param_with_value("f"))
-    filenames = arg->get_param_value("f");
-
-  if (arg->has_param_with_value("fl"))
-  {
-    vsx_string<> file_list_file = arg->get_param_value("fl");
-    if (!vsx::filesystem::get_instance()->is_file(file_list_file))
-      VSX_ERROR_EXIT("Error, can not read file list file...", 101);
-    filenames = vsx_string_helper::read_from_file<1024*1024>( file_list_file );
-  }
-
-  vsx_printf(L"filenames: %s\n", filenames.c_str());
-
-  vsx_string<>deli = ":";
-  vsx_string_helper::explode(filenames, deli, parts);
-
-  if (!parts.size())
-    VSX_ERROR_EXIT("There seems to be no entries in the file list", 101);
-
-  // Make sure we can read all the files
-  for (size_t i = 0; i < parts.size(); i++)
-    if (access(parts[i].c_str(),R_OK))
-      VSX_ERROR_EXIT( ( vsx_string<>("Pre-check failed, error accessing file: ") + parts[i]).c_str()  ,1);
-
-  vsx_string<>archive_filename = arg->get_param_value("c");
-
-  archive.create(archive_filename.c_str());
-
-  for (size_t i = 0; i < parts.size(); i++) {
-    vsx_printf(L"* adding: %s \n", parts[i].c_str() );
-    archive.add_file( parts[i], "", true);
-  }
-
-  filesystem.get_archive()->close();
-
-  vsx_printf(L"-- successfully created the archive: %s\n", archive_filename.c_str());
-
-  // success
-  exit(0);
-}
+#include "extract.h"
+#include "create_vsx.h"
+#include "create_vsxz.h"
 
 int main(int argc, char* argv[])
 {
-  vsx_printf(L"vsxz\n");
-  arg->init_from_argc_argv(argc, argv);
+  vsx_printf(
+        L"VSXz Archiver\n"
+        "Part of %s %s\n", VSXU_VERSION, VSXU_VERSION_COPYRIGHT);
+  vsx_argvector::get_instance()->init_from_argc_argv(argc, argv);
 
-  if ( arg->has_param_with_value("x") )
-  {
+  if ( vsx_argvector::get_instance()->has_param_with_value("x") )
     extract();
-  }
 
-  if ( arg->has_param_with_value("c") )
+  if ( vsx_argvector::get_instance()->has_param_with_value("c") )
   {
-    vsx_printf(L"creating archive\n");
-    create();
+    if (vsx_argvector::get_instance()->has_param("z"))
+      create_vsxz();
+    else
+      create_vsx();
   }
 
   vsx_printf
   (
-    L"VSXz packer (operates on .vsx files)\n"
-    "\n"
-    "\n"
+    L"\n"
     "Extract archive: \n"
     "  vsxz -x [archive filename] \n"
-    "\n"
-    "OPTIONS:\n"
-    "  -preload\n"
-    "        Reads all the compressed data into RAM upon loading the archive\n"
+    "       -dry  dry run\n"
+    "       -m    measure time\n"
     "\n"
     "Create archive: \n"
-    "  vsxz -c [archive filename] -f file1:file2:file3 -fl [file with file list like -f]\n"
+    "  vsxz -c [archive filename]                    (mandatory)\n"
+    "       -f file1:file2:file3                     (mandatory)\n"
+    "       -fl [file with file list like -f]        (optional)\n"
+    "       -z pack archive as vsxz                  (optional)\n"
+    "\n"
   );
 
 

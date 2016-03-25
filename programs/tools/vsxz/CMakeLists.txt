@@ -24,6 +24,8 @@ if (VSXU_STATIC EQUAL 1)
   add_definitions(-DVSXU_STATIC)
 endif()
 
+file(GLOB_RECURSE HEADER_FILES *.h)
+
 
 get_filename_component(list_file_path ${CMAKE_CURRENT_LIST_FILE} PATH)
 string(REGEX MATCH "[a-z._-]*$" module_id ${list_file_path})
@@ -38,7 +40,7 @@ set(SOURCES
 
 project (${module_id})
 
-add_executable(${module_id}  ${SOURCES})
+add_executable(${module_id}  ${SOURCES} ${HEADER_FILES})
 
 include(${CMAKE_SOURCE_DIR}/cmake_suffix.txt)
 
