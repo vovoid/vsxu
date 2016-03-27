@@ -4,6 +4,7 @@
 
 void create_vsx()
 {
+  req(vsx_argvector::get_instance()->has_param_with_value("c"));
 
   vsx_nw_vector< vsx_string<> > filenames;
   populate_filenames(filenames);

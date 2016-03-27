@@ -37,7 +37,6 @@ namespace vsx
     bool is_archive_populated();
     bool is_file(vsx_string<> filename);
 
-    vsx_nw_vector<filesystem_archive_file_read>* files_get();
-
+    void files_get(vsx_nw_vector<filesystem_archive_file_read>& files);
   };
 }

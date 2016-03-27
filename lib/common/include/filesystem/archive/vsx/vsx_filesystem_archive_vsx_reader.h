@@ -28,7 +28,7 @@ namespace vsx
 
     bool load(const char* archive_filename, bool load_data_multithreaded);
 
-    vsx_nw_vector<filesystem_archive_file_read>* files_get();
+    void files_get(vsx_nw_vector<filesystem_archive_file_read>& files);
     void file_open(const char* filename, file* &handle);
 
     void close();

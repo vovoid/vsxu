@@ -13,7 +13,7 @@ namespace vsx
   public:
     virtual bool load(const char* archive_filename, bool load_data_multithreaded) = 0;
 
-    virtual vsx_nw_vector<filesystem_archive_file_read>* files_get() = 0;
+    virtual void files_get(vsx_nw_vector<filesystem_archive_file_read>& files) = 0;
     virtual void file_open(const char* filename, file* &handle) = 0;
 
     virtual void close() = 0;

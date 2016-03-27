@@ -50,6 +50,7 @@ public:
 
   static vsx_ma_vector<unsigned char> serialize(vsx_filesystem_tree_writer& writer)
   {
+    writer.calculate_offsets();
     vsx_ma_vector<unsigned char> result;
     serialize_node(&writer.root_node, result);
     return result;

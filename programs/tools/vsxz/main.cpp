@@ -46,6 +46,7 @@
 
 vsx_string<>current_path = "./";
 
+#include "info.h"
 #include "extract.h"
 #include "create_vsx.h"
 #include "create_vsxz.h"
@@ -57,16 +58,10 @@ int main(int argc, char* argv[])
         "Part of %s %s\n", VSXU_VERSION, VSXU_VERSION_COPYRIGHT);
   vsx_argvector::get_instance()->init_from_argc_argv(argc, argv);
 
-  if ( vsx_argvector::get_instance()->has_param_with_value("x") )
-    extract();
-
-  if ( vsx_argvector::get_instance()->has_param_with_value("c") )
-  {
-    if (vsx_argvector::get_instance()->has_param("z"))
-      create_vsxz();
-    else
-      create_vsx();
-  }
+  info();
+  extract();
+  create_vsxz();
+  create_vsx();
 
   vsx_printf
   (

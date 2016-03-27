@@ -29,6 +29,7 @@ public:
 
   static vsx_string<> serialize(vsx_filesystem_tree_writer& writer)
   {
+    writer.calculate_offsets();
     return serialize_node(&writer.root_node);
   }
 };

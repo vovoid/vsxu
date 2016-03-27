@@ -36,7 +36,8 @@ bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool loa
         header->tree_size
       );
 
-  tree.initialize( mmap->data + sizeof(vsxz_header) );
+
+
 
   unsigned char* uncompressed_data_start = uncompressed_data.get_pointer();
 
@@ -134,9 +135,22 @@ bool filesystem_archive_vsxz_reader::is_file(vsx_string<> filename)
   return tree.get_payload_by_filename(vsx_string<>(filename)) != 0x0;
 }
 
-vsx_nw_vector<filesystem_archive_file_read>* filesystem_archive_vsxz_reader::files_get()
+void filesystem_archive_vsxz_reader::files_get(vsx_nw_vector<filesystem_archive_file_read>& files)
 {
-  return 0;
+  vsx_nw_vector< vsx_string<> > filenames;
+  vsx_nw_vector< uint32_t > file_info_table_indices;
+  tree.get_filename_payload_list(filenames, file_info_table_indices);
+  foreach (filenames, i)
+  {
+    vsxz_header_file_info* file_info = &file_info_table[file_info_table_indices[i]];
+
+    filesystem_archive_file_read read;
+    unsigned char* data_ptr = uncompressed_data_start_pointers[file_info->chunk];
+
+    read.uncompressed_data.set_volatile();
+    read.uncompressed_data.set_data( data_ptr + file_info->offset, file_info->size );
+    files.move_back( std::move(read));
+  }
 }
 
 }

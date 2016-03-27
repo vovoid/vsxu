@@ -68,10 +68,10 @@ bool filesystem_archive_reader::is_file(vsx_string<> filename)
   return archive->is_file(filename);
 }
 
-vsx_nw_vector<filesystem_archive_file_read>* filesystem_archive_reader::files_get()
+void filesystem_archive_reader::files_get(vsx_nw_vector<filesystem_archive_file_read>& files)
 {
-  req_v(archive, 0x0);
-  return archive->files_get();
+  req(archive);
+  archive->files_get(files);
 }
 
 void filesystem_archive_reader::file_open(const char* filename, file* &handle)

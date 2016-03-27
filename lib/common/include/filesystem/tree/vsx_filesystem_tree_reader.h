@@ -8,10 +8,51 @@ class vsx_filesystem_tree_reader
 {
   unsigned char* data_pointer = 0x0;
 
-  void populate_filename_list_internal(vsx_nw_vector<vsx_string<>>& filenames, unsigned char* start_point, vsx_string<> directory_base)
+  void get_filename_payload_list_internal(vsx_nw_vector<vsx_string<>>& filenames, vsx_nw_vector<uint32_t>& payloads, unsigned char* start_point, vsx_string<> directory_base)
   {
+    unsigned char* p = start_point;
+    while (true)
+    {
+      if (!*p)
+        break;
 
+      vsx_string<> current_name;
+      unsigned char string_length = *p & 0x7F;
+      unsigned char is_dir = *p & 0x80;
+      p++;
+      uint16_t children_offset = 0;
+      if (is_dir)
+      {
+        children_offset = ((uint16_t)*p) << 8;
+        p++;
+        children_offset += *p;
+        p++;
+      }
 
+      for (size_t i = 0; i < string_length; i++)
+      {
+        current_name.push_back( *p );
+        p++;
+      }
+
+      if (is_dir)
+      {
+        get_filename_payload_list_internal(filenames, payloads, data_pointer + children_offset, (directory_base.size()?directory_base + "/":vsx_string<>()) + current_name);
+        continue;
+      }
+
+      filenames.push_back((directory_base.size()?directory_base + "/":vsx_string<>()) + current_name);
+
+      uint32_t payload = ((uint32_t)(*p)) << 24;
+      p++;
+      payload += ((uint32_t)(*p)) << 16;
+      p++;
+      payload += ((uint32_t)(*p)) << 8;
+      p++;
+      payload += *p;
+      p++;
+      payloads.push_back(payload);
+    }
   }
 
 public:
@@ -21,9 +62,9 @@ public:
     data_pointer = p;
   }
 
-  void populate_filename_list(vsx_nw_vector<vsx_string<>>& filenames)
+  void get_filename_payload_list(vsx_nw_vector<vsx_string<>>& filenames, vsx_nw_vector<uint32_t>& payloads)
   {
-
+    get_filename_payload_list_internal(filenames, payloads, data_pointer, "");
   }
 
   uint32_t get_payload_by_filename(vsx_string<> filename)

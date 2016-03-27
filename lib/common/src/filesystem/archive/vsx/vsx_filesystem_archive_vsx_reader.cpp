@@ -119,9 +119,15 @@ bool filesystem_archive_vsx_reader::load(const char* archive_filename, bool load
 }
 
 
-vsx_nw_vector<filesystem_archive_file_read>* filesystem_archive_vsx_reader::files_get()
+void filesystem_archive_vsx_reader::files_get(vsx_nw_vector<filesystem_archive_file_read>& files)
 {
-  return &archive_files;
+  foreach (archive_files, i)
+    files.push_back( archive_files[i] );
+  foreach (files, i)
+  {
+    files[i].compressed_data.set_volatile();
+    files[i].uncompressed_data.set_volatile();
+  }
 }
 
 void filesystem_archive_vsx_reader::file_open(const char* filename, file* &handle)
