@@ -128,3 +128,8 @@ private:
   std::mutex queue_empty_mutex;
   std::condition_variable queue_empty_condition;
 };
+
+
+#define threaded_task vsx_thread_pool::instance()->add( [&]()
+#define threaded_task_end );
+#define threaded_task_wait_all vsx_thread_pool::instance()->wait_all()

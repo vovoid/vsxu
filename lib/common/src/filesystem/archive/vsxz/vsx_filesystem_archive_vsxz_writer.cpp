@@ -78,16 +78,24 @@ void filesystem_archive_vsxz_writer::close()
       continue;
     }
 
-    // if file is large, try to compress it, if it is pointless, store in uncompressed chunk
-    if (archive_files[i].data.size() > 8192)
+    // if file is large, try to compress it, if ratio is too low, schedule in uncompressed chunk
+    if (archive_files[i].data.size() > 1024*1024)
     {
-      vsx_ma_vector<unsigned char> lzma_compressed = vsx::compression_lzma::compress( archive_files[i].data );
-      float lzma_ratio = (float)(lzma_compressed.size()) / (float)(archive_files[i].data.size());
+      float lzma_ratio;
+      threaded_task {
+        vsx_ma_vector<unsigned char> lzma_compressed = vsx::compression_lzma::compress( archive_files[i].data );
+        lzma_ratio = (float)(lzma_compressed.size()) / (float)(archive_files[i].data.size());
+      } threaded_task_end;
 
-      vsx_ma_vector<unsigned char> lzham_compressed = vsx::compression_lzham::compress( archive_files[i].data );
-      float lzham_ratio = (float)(lzham_compressed.size()) / (float)(archive_files[i].data.size());
+      float lzham_ratio;
+      threaded_task {
+        vsx_ma_vector<unsigned char> lzham_compressed = vsx::compression_lzham::compress( archive_files[i].data );
+        lzham_ratio = (float)(lzham_compressed.size()) / (float)(archive_files[i].data.size());
+      } threaded_task_end;
 
-      if ( lzma_ratio > 0.8 && lzham_ratio > 0.8)
+      threaded_task_wait_all;
+
+      if ( lzma_ratio > 0.95 && lzham_ratio > 0.95)
       {
         chunks[0].add_file( &archive_files[i] );
         continue;
