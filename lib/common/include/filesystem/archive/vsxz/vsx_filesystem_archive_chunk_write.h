@@ -5,6 +5,8 @@
 #include <filesystem/archive/vsx_filesystem_archive_file_write.h>
 #include <filesystem/tree/vsx_filesystem_tree_writer.h>
 #include <perf/vsx_perf.h>
+#include <tools/vsx_thread_pool.h>
+#include <vsx_compression_lzham.h>
 
 namespace vsx
 {
@@ -78,31 +80,34 @@ public:
   {
     req(uncompressed_data.size());
 
-    vsx_ma_vector< unsigned char> uncompressed_data_readback;
+    threaded_task {
 
-    vsx_perf perf;
-    perf.cpu_instructions_start();
+      vsx_ma_vector< unsigned char> uncompressed_data_readback;
 
-    // LZHAM
-    compressed_data = vsx::compression_lzham::compress( uncompressed_data );
-    perf.cpu_instructions_begin();
-      uncompressed_data_readback = vsx::compression_lzham::uncompress(compressed_data, uncompressed_data.size() );
-    long long cpu_instructions_lzham = perf.cpu_instructions_end();
+      vsx_perf perf;
+      perf.cpu_instructions_start();
 
-    // LZMA
-    compression_type = compression_lzma;
-    compressed_data = vsx::compression_lzma::compress( uncompressed_data );
-    perf.cpu_instructions_begin();
-      uncompressed_data_readback = vsx::compression_lzma::uncompress(compressed_data, uncompressed_data.size() );
-    long long cpu_instructions_lzma = perf.cpu_instructions_end();
-
-    if (cpu_instructions_lzham < cpu_instructions_lzma)
-    {
+      // LZHAM
       compressed_data = vsx::compression_lzham::compress( uncompressed_data );
-      compression_type = compression_lzham;
-    }
+      perf.cpu_instructions_begin();
+        uncompressed_data_readback = vsx::compression_lzham::uncompress(compressed_data, uncompressed_data.size() );
+      long long cpu_instructions_lzham = perf.cpu_instructions_end();
 
-    perf.cpu_instructions_stop();
+      // LZMA
+      compression_type = compression_lzma;
+      compressed_data = vsx::compression_lzma::compress( uncompressed_data );
+      perf.cpu_instructions_begin();
+        uncompressed_data_readback = vsx::compression_lzma::uncompress(compressed_data, uncompressed_data.size() );
+      long long cpu_instructions_lzma = perf.cpu_instructions_end();
+
+      if (cpu_instructions_lzham < cpu_instructions_lzma)
+      {
+        compressed_data = vsx::compression_lzham::compress( uncompressed_data );
+        compression_type = compression_lzham;
+      }
+
+      perf.cpu_instructions_stop();
+    } threaded_task_end;
   }
 
   void write_file_info_table(FILE* file)

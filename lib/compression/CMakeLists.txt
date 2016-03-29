@@ -29,6 +29,7 @@ file(GLOB_RECURSE HEADER_FILES *.h)
 
 add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
+ -fno-strict-aliasing
 ) 
 
 if (VSXU_DEBUG EQUAL 1)

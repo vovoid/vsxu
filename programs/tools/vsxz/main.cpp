@@ -54,7 +54,7 @@ vsx_string<>current_path = "./";
 int main(int argc, char* argv[])
 {
   vsx_printf(
-        L"VSXz Archiver\n"
+        L"\nVSXz Archiver\n"
         "Part of %s %s\n", VSXU_VERSION, VSXU_VERSION_COPYRIGHT);
   vsx_argvector::get_instance()->init_from_argc_argv(argc, argv);
 

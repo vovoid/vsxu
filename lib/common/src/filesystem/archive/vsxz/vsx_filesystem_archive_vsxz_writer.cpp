@@ -102,10 +102,11 @@ void filesystem_archive_vsxz_writer::close()
       }
     }
 
+    vsx_printf(L"adding file %s to chunk %d\n", archive_files[i].filename.c_str(), 2 + chunk_other_iterator);
     chunks[2 + chunk_other_iterator].add_file( &archive_files[i] );
 
     // when chunks reach 1 MB, start rotating
-    if (chunks[chunk_other_iterator].is_size_above_treshold())
+    if (chunks[2 + chunk_other_iterator].is_size_above_treshold())
     {
       chunk_other_iterator++;
       if (chunk_other_iterator == 6)
@@ -125,9 +126,7 @@ void filesystem_archive_vsxz_writer::close()
 
   // compress chunks
   for (size_t i = 1; i < 8; i++)
-    threaded_task {
-      chunks[i].compress();
-    } threaded_task_end;
+    chunks[i].compress();
   threaded_task_wait_all;
 
   // count valid chunks

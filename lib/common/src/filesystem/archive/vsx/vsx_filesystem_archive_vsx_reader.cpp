@@ -100,7 +100,6 @@ bool filesystem_archive_vsx_reader::load(const char* archive_filename, bool load
     file_info.archive_position = ftell(archive_handle)+1;
     file_info.compressed_data.allocate( size - 1 );
 
-    vsx_printf(L"reading file...\n");
     if (load_data_multithreaded)
     {
       size_t rb = fread(file_info.compressed_data.get_pointer(), 1, size, archive_handle);
