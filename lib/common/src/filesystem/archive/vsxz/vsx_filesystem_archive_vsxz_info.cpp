@@ -45,8 +45,13 @@ void filesystem_archive_vsxz_info::get_info(const char* archive_filename, vsx_nw
     vsx_string<>("        Filenames:\n");
     foreach (filenames, i)
     {
-      if (file_info_table[payloads[i]].chunk == chunk_i)
+      if (file_info_table[payloads[i] - 1].chunk == chunk_i)
         result.push_back(vsx_string<>("            ") + filenames[i] + "\n");
     }
+  }
+
+  for (size_t file_i = 0; file_i < header->file_count; file_i++)
+  {
+
   }
 }

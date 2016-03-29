@@ -36,6 +36,7 @@ bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool loa
         header->tree_size
       );
 
+  tree.initialize( mmap->data + sizeof(vsxz_header) );
 
 
 
@@ -67,8 +68,8 @@ bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool loa
         unsigned char* uncompressed_data
       )
       {
-        if (!chunk.compressed_size)
-          return;
+        req(chunk.compressed_size);
+        req(chunk.compression_type);
 
         vsx_ma_vector<unsigned char> compressed;
         compressed.set_volatile();
@@ -108,6 +109,7 @@ void filesystem_archive_vsxz_reader::file_open(const char* filename, file* &hand
 
   handle->data.set_volatile();
   handle->data.set_data( data_ptr + file_info->offset, file_info->size );
+  handle->size = handle->data.get_sizeof();
 }
 
 void filesystem_archive_vsxz_reader::close()
@@ -147,6 +149,7 @@ void filesystem_archive_vsxz_reader::files_get(vsx_nw_vector<filesystem_archive_
     filesystem_archive_file_read read;
     unsigned char* data_ptr = uncompressed_data_start_pointers[file_info->chunk];
 
+    read.filename = filenames[i];
     read.uncompressed_data.set_volatile();
     read.uncompressed_data.set_data( data_ptr + file_info->offset, file_info->size );
     files.move_back( std::move(read));

@@ -77,18 +77,17 @@ void extract()
     if (!dry_run)
       fwrite(buf,sizeof(char),fpi->size,fpo);
 
-
     if (!dry_run)
       fclose(fpo);
     filesystem.f_close(fpi);
-
   }
+
   if ( vsx_argvector::get_instance()->has_param("m") )
   {
     uint64_t cpu_instructions = perf_cpu_instructions.cpu_instructions_end();
     vsx_printf(
       L"decompression took:\n"
-      " - %f seconds at 3.0 GHz",
+      " - %f seconds at 3.0 GHz"
       " - %lld CPU instructions\n",
       (double)cpu_instructions / 3000000000.0,
       cpu_instructions

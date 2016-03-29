@@ -125,7 +125,10 @@ void filesystem_archive_vsxz_writer::close()
 
   // compress chunks
   for (size_t i = 1; i < 8; i++)
-    chunks[i].compress();
+    threaded_task {
+      chunks[i].compress();
+    } threaded_task_end;
+  threaded_task_wait_all;
 
   // count valid chunks
   size_t valid_chunk_index = 2;
