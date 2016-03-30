@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
   vsx_ma_vector<unsigned char> data;
 
-  for_n(512,i)
+  for_n(i, 0, 512)
     data[i] = (unsigned char)rand();
 
   vsx_ma_vector<unsigned char> compressed = vsx::compression_lzma_old::compress(data);

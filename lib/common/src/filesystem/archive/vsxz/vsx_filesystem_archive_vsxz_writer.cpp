@@ -63,108 +63,156 @@ void filesystem_archive_vsxz_writer::archive_files_saturate_all()
 
 void filesystem_archive_vsxz_writer::close()
 {
+  req(archive_files.size());
+
   // Read all files from disk
   archive_files_saturate_all();
 
-  // add files to compression chunks
-  filesystem_archive_chunk_write chunks[8];
+
+  // Calculate compression ratios for all large files
+  vsx_ma_vector<float> compression_ratios;
+  compression_ratios.allocate(archive_files.size() - 1);
+  compression_ratios.memory_clear();
+
+  foreach (archive_files, i)
+  {
+    req_continue(archive_files[i].data.size() <= 1024*1024);
+
+    vsx_thread_pool::instance()->add( [&](float& ratio, size_t ai)
+      {
+        vsx_ma_vector<unsigned char> lzma_compressed = vsx::compression_lzma::compress( archive_files[ai].data );
+        float lzma_ratio = (float)(lzma_compressed.size()) / (float)(archive_files[ai].data.size());
+        vsx_ma_vector<unsigned char> lzham_compressed = vsx::compression_lzham::compress( archive_files[ai].data );
+        float lzham_ratio = (float)(lzham_compressed.size()) / (float)(archive_files[ai].data.size());
+        if (lzham_ratio < lzma_ratio)
+          ratio = lzham_ratio;
+        else
+          ratio = lzma_ratio;
+      },
+      compression_ratios[i],
+      i
+    );
+  }
+
+
+  // Add files to compression chunks
+  filesystem_archive_chunk_write chunks[max_chunks];
   size_t chunk_other_iterator = 0;
+  vsx_ma_vector<bool> is_added;
+  is_added.allocate(archive_files.size() - 1);
+  is_added.memory_clear();
+
   foreach (archive_files, i)
   {
     // peek data, handle text files
     if (filesystem_identifier::is_text_file(archive_files[i].data))
     {
       chunks[1].add_file( &archive_files[i] );
+      is_added[i] = true;
       continue;
     }
 
-    // if file is large, try to compress it, if ratio is too low, schedule in uncompressed chunk
-    if (archive_files[i].data.size() > 1024*1024)
+    size_t id_found = 0;
+    int64_t max_size_found = -1;
+    foreach (archive_files, si)
     {
-      float lzma_ratio;
-      threaded_task {
-        vsx_ma_vector<unsigned char> lzma_compressed = vsx::compression_lzma::compress( archive_files[i].data );
-        lzma_ratio = (float)(lzma_compressed.size()) / (float)(archive_files[i].data.size());
-      } threaded_task_end;
-
-      float lzham_ratio;
-      threaded_task {
-        vsx_ma_vector<unsigned char> lzham_compressed = vsx::compression_lzham::compress( archive_files[i].data );
-        lzham_ratio = (float)(lzham_compressed.size()) / (float)(archive_files[i].data.size());
-      } threaded_task_end;
-
-      threaded_task_wait_all;
-
-      if ( lzma_ratio > 0.95 && lzham_ratio > 0.95)
-      {
-        chunks[0].add_file( &archive_files[i] );
+      if (is_added[si])
         continue;
+
+      int64_t cur_size = archive_files[si].data.size();
+      if (cur_size > max_size_found)
+      {
+        id_found = si;
+        max_size_found = cur_size;
       }
     }
+    is_added[id_found] = true;
 
-    vsx_printf(L"adding file %s to chunk %d\n", archive_files[i].filename.c_str(), 2 + chunk_other_iterator);
-    chunks[2 + chunk_other_iterator].add_file( &archive_files[i] );
+    // if file is large, try to compress it, if ratio is too low, schedule in uncompressed chunk
+    if (
+      archive_files[id_found].data.size() > 1024*1024
+      &&
+      compression_ratios[id_found] > 0.8
+    )
+    {
+      vsx_printf(L"adding file %s to chunk 0\n", archive_files[id_found].filename.c_str());
+      chunks[0].add_file( &archive_files[id_found] );
+      continue;
+    }
+
+    vsx_printf(L"adding file %s to chunk %d\n", archive_files[id_found].filename.c_str(), 2 + chunk_other_iterator);
+    chunks[2 + chunk_other_iterator].add_file( &archive_files[id_found] );
 
     // when chunks reach 1 MB, start rotating
     if (chunks[2 + chunk_other_iterator].is_size_above_treshold())
     {
       chunk_other_iterator++;
-      if (chunk_other_iterator == 6)
+      if (chunk_other_iterator == max_chunks - 2)
         chunk_other_iterator = 0;
     }
   }
 
-  // set chunk id in all file info structs
-  for (size_t i = 0; i < 8; i++)
+  // Set chunk id in all file info structs
+  for_n(i, 0, max_chunks)
     chunks[i].set_chunk_id(i);
 
-  // add to file tree
+  // Add to file tree
   vsx_filesystem_tree_writer tree;
   size_t file_list_index = 1;
-  for (size_t i = 0; i < 8; i++)
+
+  for_n(i, 0, max_chunks)
     chunks[i].add_to_tree( tree, file_list_index);
 
-  // compress chunks
-  for (size_t i = 1; i < 8; i++)
+  // Compress chunks
+  for_n(i, 1, max_chunks)
     chunks[i].compress();
   threaded_task_wait_all;
 
-  // count valid chunks
+  // Count valid chunks
   size_t valid_chunk_index = 2;
-  for (; valid_chunk_index < 8; valid_chunk_index++)
+  for (; valid_chunk_index < max_chunks; valid_chunk_index++)
     if (!chunks[valid_chunk_index].has_files())
       break;
 
-  // serialize tree
+  // Serialize tree
   vsx_ma_vector<unsigned char> tree_data = vsx_filesystem_tree_serialize_binary::serialize(tree);
 
-  // calculate & fill in header
+  // Calculate & fill in header
   vsxz_header header;
   header.file_count = archive_files.size();
   header.chunk_count = valid_chunk_index;
 
-  for (size_t i = 0; i < 8; i++)
+  for_n(i, 0, max_chunks)
     header.compression_uncompressed_memory_size += chunks[i].get_compressed_uncompressed_size();
 
   header.file_count = archive_files.size();
   header.tree_size = tree_data.size();
 
-  // write archive to disk
+
+
+  // Write archive to disk
   FILE* file = fopen(archive_filename.c_str(),"wb");
-  fwrite(&header, sizeof(vsxz_header), 1, file);
-  fwrite(tree_data.get_pointer(), 1, tree_data.get_sizeof(), file);
+  {
+    // header:
+    fwrite(&header, sizeof(vsxz_header), 1, file);
 
-  for (size_t i = 0; i < 8; i++)
-    chunks[i].write_file_info_table(file);
+    // tree:
+    fwrite(tree_data.get_pointer(), 1, tree_data.get_sizeof(), file);
 
-  chunks[0].write_chunk_info_table(file, true);
-  chunks[1].write_chunk_info_table(file, true);
-  for (size_t i = 2; i < 8; i++)
-    chunks[i].write_chunk_info_table(file);
+    // file info table:
+    for_n(i, 0, max_chunks)
+      chunks[i].write_file_info_table(file);
 
-  for (size_t i = 0; i < 8; i++)
-    chunks[i].write_data(file);
+    // chunk info table:
+    chunks[0].write_chunk_info_table(file, true);
+    chunks[1].write_chunk_info_table(file, true);
+    for_n(i, 2, max_chunks)
+      chunks[i].write_chunk_info_table(file);
 
+    // compressed data:
+    for_n(i, 0, max_chunks)
+      chunks[i].write_data(file);
+  }
   fclose(file);
 }
 

@@ -9,30 +9,19 @@ int main(int argc, char *argv[])
   VSX_UNUSED(argc);
   VSX_UNUSED(argv);
 
-  vsx_thread_pool my_thread_pool(80);
-  my_thread_pool.add(
-        [=]()
-        {
-          for_n(512,i)
-            vsx_printf(L"hello world from thread 1\n");
-        }
-      );
-
-  vsx_thread_pool::instance()->add(
-    [=]()
+  threaded_task
     {
-      for_n(512,i)
+      for_n(i, 0, 512)
         vsx_printf(L"hello world from thread 1\n");
     }
-  );
+  threaded_task_end;
 
-  vsx_thread_pool::instance()->add(
-    [=]()
+  threaded_task
     {
-      for_n(512,i)
+      for_n(i, 0, 512)
         vsx_printf(L"hello world from thread 2\n");
     }
-  );
+  threaded_task_end;
 
   vsx_thread_pool::instance()->wait_all();
 

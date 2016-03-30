@@ -11,6 +11,7 @@ class filesystem_archive_vsxz_writer
   : public filesystem_archive_writer_base
 {
   const size_t work_chunk_size = 1024*1024 * 5;
+  const size_t max_chunks = 9;
 
   vsx_string<> archive_filename;
   vsx_nw_vector<filesystem_archive_file_write> archive_files;
