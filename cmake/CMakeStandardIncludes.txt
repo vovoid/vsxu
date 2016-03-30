@@ -11,7 +11,6 @@ include_directories(
   ${ZLIB_INCLUDE_DIRS}
   ${JPEG_INCLUDE_DIRS}
   ${GLEW_INCLUDE_DIRS}
-  ${GLFW_INCLUDE_DIRS}
 )
 
 link_directories(
@@ -20,5 +19,4 @@ link_directories(
   ${ZLIB_LIBRARY_DIRS}
   ${JPEG_LIBRARY_DIRS}
   ${GLEW_LIBRARY_DIRS}
-  ${GLFW_LIBRARY_DIRS}
 )
