@@ -18,6 +18,8 @@ public:
     GLuint existing_depth_texture_id // depth buffer from other buffer, 0 to ignore
   )
   {
+    VSX_UNUSED(existing_depth_texture_id);
+
     if ( !has_buffer_support() )
       VSX_ERROR_RETURN(L"No FBO support");
 
