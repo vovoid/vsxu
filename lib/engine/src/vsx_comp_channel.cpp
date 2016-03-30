@@ -27,10 +27,10 @@
 #include "vsx_param.h"
 #include <module/vsx_module.h>
 #include <time/vsx_timer.h>
-#include "vsx_comp_channel.h"
-#include "vsx_comp_abs.h"
-#include "vsx_param_abstraction.h"
-#include "vsx_comp.h"
+#include <internal/vsx_comp_channel.h>
+#include <internal/vsx_comp_abs.h>
+#include <internal/vsx_param_abstraction.h>
+#include <internal/vsx_comp.h>
 
 #include <stdio.h>
 

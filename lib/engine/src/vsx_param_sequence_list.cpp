@@ -28,13 +28,13 @@
 #include <list>
 #include "vsx_command.h"
 #include "vsx_command_list.h"
-#include "vsx_comp_abs.h"
-#include "vsx_param_abstraction.h"
-#include "vsx_param_sequence.h"
+#include <internal/vsx_comp_abs.h>
+#include <internal/vsx_param_abstraction.h>
+#include <internal/vsx_param_sequence.h>
 #include "vsx_master_sequencer/vsx_master_sequence_channel.h"
-#include "vsx_param_sequence_list.h"
-#include "vsx_param_interpolation.h"
-#include "vsx_sequence_pool.h"
+#include <internal/vsx_param_sequence_list.h>
+#include <internal/vsx_param_interpolation.h>
+#include <internal/vsx_sequence_pool.h>
 
 #include "vsx_engine.h"
 #include <math/quaternion/vsx_quaternion.h>

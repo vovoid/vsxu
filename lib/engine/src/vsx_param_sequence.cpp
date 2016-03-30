@@ -22,7 +22,7 @@
 */
 
 #include "vsx_engine.h"
-#include "vsx_param_sequence.h"
+#include <internal/vsx_param_sequence.h>
 #include <math/vector/vsx_vector3_helper.h>
 #include <math/quaternion/vsx_quaternion_helper.h>
 #include <string/vsx_string_helper.h>

@@ -21,9 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-
-#ifndef VSX_ENGINE_HELPER_H
-#define VSX_ENGINE_HELPER_H
+#pragma once
 
 #include <vsx_command_list.h>
 #include <vsx_engine.h>
@@ -74,5 +72,3 @@ public:
     cmd_in.add_raw( command );
   }
 };
-
-#endif // VSX_ENGINE_HELPER_H

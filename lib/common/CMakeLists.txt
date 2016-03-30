@@ -74,22 +74,7 @@ install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT commo
 
 ######################################################################################
 # Install the Headers so as to install VSXu as a library
-if (UNIX OR VSXU_WINDOWS_LIB_BUILD)
-  file(GLOB HEADERS "include/*.h")
-  install (DIRECTORY "include/audio" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/engine COMPONENT Devel)
-  install (DIRECTORY "include/color" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/engine COMPONENT Devel)
-  install (DIRECTORY "include/container" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/engine COMPONENT Devel)
-  install (DIRECTORY "include/debug" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/engine COMPONENT Devel)
-  install (DIRECTORY "include/filesystem" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/engine COMPONENT Devel)
-  install (DIRECTORY "include/graphics" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/common COMPONENT Devel)
-  install (DIRECTORY "include/log" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/common COMPONENT Devel)
-  install (DIRECTORY "include/math" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/common COMPONENT Devel)
-  install (DIRECTORY "include/particlesystem" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/common COMPONENT Devel)
-  install (DIRECTORY "include/profiler" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/engine COMPONENT Devel)
-  install (DIRECTORY "include/string" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/engine COMPONENT Devel)
-  install (DIRECTORY "include/time" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/engine COMPONENT Devel)
-  install (DIRECTORY "include/tools" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/engine COMPONENT Devel)
-endif()
+install (DIRECTORY "include/" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/common COMPONENT Devel)
 ################################################################################
 
 

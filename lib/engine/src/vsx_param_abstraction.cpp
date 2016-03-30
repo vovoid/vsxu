@@ -27,12 +27,12 @@
 #include "vsx_command_list.h"
 #include <string/vsx_string_helper.h>
 class vsx_engine_param_list;
-#include "vsx_comp_abs.h"
-#include "vsx_comp_channel.h"
-#include "vsx_param_abstraction.h"
+#include <internal/vsx_comp_abs.h>
+#include <internal/vsx_comp_channel.h>
+#include <internal/vsx_param_abstraction.h>
 #include <time/vsx_timer.h>
-#include "vsx_comp_channel.h"
-#include "vsx_param_interpolation.h"
+#include <internal/vsx_comp_channel.h>
+#include <internal/vsx_param_interpolation.h>
 #include "scripting/vsx_param_vsxl.h"
 #include <log/vsx_log.h>
 

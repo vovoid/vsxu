@@ -21,9 +21,10 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#pragma once
 
-#ifndef VSX_ENGINE_HELPER_POOL_H
-#define VSX_ENGINE_HELPER_POOL_H
+#include <vsx_command_list.h>
+#include <vsx_engine.h>
 
 
 template <int num_engines = 64>
@@ -42,7 +43,7 @@ protected:
 
 public:
 
-  void load(vsx_string<>state_name, vsx_module_list_abs* module_list, vsx_filesystem::filesystem* filesystem = 0x0)
+  void load(vsx_string<>state_name, vsx_module_list_abs* module_list, vsx::filesystem* filesystem = 0x0)
   {
     for (size_t i = 0; i < num_engines; i++)
     {
@@ -137,5 +138,3 @@ public:
   }
 
 };
-
-#endif

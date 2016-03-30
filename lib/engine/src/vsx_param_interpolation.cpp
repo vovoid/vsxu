@@ -26,7 +26,7 @@
 #include <module/vsx_module.h>
 #include "vsx_command.h"
 #include "vsx_command_list.h"
-#include "vsx_param_interpolation.h"
+#include <internal/vsx_param_interpolation.h>
 #include <math/quaternion/vsx_quaternion.h>
 
 // --- FLOAT3

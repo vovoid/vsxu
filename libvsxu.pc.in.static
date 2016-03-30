@@ -9,4 +9,5 @@ Description: VSXu is an OpenGL-based modular programming environment, mainly to 
 Version: @VSXU_VERSION@
 Requires:
 Libs: -L${prefix}/${libdir} -lvsxu_engine -lvsxu_engine_graphics -lvsxu_engine_audiovisual -L${prefix}/${libdir_plugins} @VSXU_PLUGIN_PKGCONFIG_LIBS@
-Cflags: -I${prefix}/${includedir}/ -I${prefix}/${includedir}/engine -I${prefix}/${includedir}/engine_graphics -I${prefix}/${includedir}/engine_audiovisual -I${prefix}/${includedir}/profiler
+Cflags: -I${prefix}/${includedir}/ -I${prefix}/${includedir}/application -I${prefix}/${includedir}/common -I${prefix}/${includedir}/compression -I${prefix}/${includedir}/engine -I${prefix}/${includedir}/engine_audiovisual -I${prefix}/${includedir}/engine_graphics -I${prefix}/${includedir}/widget
+

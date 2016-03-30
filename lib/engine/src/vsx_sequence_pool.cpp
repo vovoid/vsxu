@@ -22,7 +22,7 @@
 */
 
 #include "vsx_engine.h"
-#include "vsx_sequence_pool.h"
+#include <internal/vsx_sequence_pool.h>
 #include "vsx_data_path.h"
 
 void vsx_sequence_pool::set_engine(void* new_engine)

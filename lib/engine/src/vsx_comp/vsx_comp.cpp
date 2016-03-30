@@ -25,16 +25,16 @@
 #include "vsx_command.h"
 #include <time/vsx_timer.h>
 #include "vsx_engine.h"
-#include "vsx_comp_channel.h"
-#include "vsx_param_abstraction.h"
-#include "vsx_comp.h"
-#include "vsx_param_interpolation.h"
-#include "vsx_param_sequence.h"
+#include <internal/vsx_comp_channel.h>
+#include <internal/vsx_param_abstraction.h>
+#include <internal/vsx_comp.h>
+#include <internal/vsx_param_interpolation.h>
+#include <internal/vsx_param_sequence.h>
 #include "vsx_master_sequencer/vsx_master_sequence_channel.h"
-#include "vsx_param_sequence_list.h"
-#include "vsx_sequence_pool.h"
+#include <internal/vsx_param_sequence_list.h>
+#include <internal/vsx_sequence_pool.h>
 #include <filesystem/vsx_filesystem.h>
-#include "vsx_param_abstraction.h"
+#include <internal/vsx_param_abstraction.h>
 #include "tools/vsx_foreach.h"
 
 #ifndef VSXE_NO_GM
@@ -42,7 +42,7 @@
 #include "scripting/vsx_comp_vsxl.h"
 #endif
 
-#include "vsx_comp_channel.h"
+#include <internal/vsx_comp_channel.h>
 #include <log/vsx_log.h>
 
 vsx_comp::vsx_comp() {

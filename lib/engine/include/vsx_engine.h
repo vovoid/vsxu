@@ -35,13 +35,13 @@
 #include <module/vsx_module.h>
 #include <time/vsx_timer.h>
 
-#include <lib/engine/include_internal/vsx_comp_abs.h>
-#include <lib/engine/include_internal/vsx_comp_channel.h>
-#include <lib/engine/include_internal/vsx_param_abstraction.h>
-#include <lib/engine/include_internal/vsx_param_interpolation.h>
-#include <lib/engine/include_internal/vsx_param_sequence.h>
-#include <lib/engine/include_internal/vsx_param_sequence_list.h>
-#include <lib/engine/include_internal/vsx_sequence_pool.h>
+#include <internal/vsx_comp_abs.h>
+#include <internal/vsx_comp_channel.h>
+#include <internal/vsx_param_abstraction.h>
+#include <internal/vsx_param_interpolation.h>
+#include <internal/vsx_param_sequence.h>
+#include <internal/vsx_param_sequence_list.h>
+#include <internal/vsx_sequence_pool.h>
 #include "vsx_module_list_abs.h"
 #include "vsx_module_list_factory.h"
 
@@ -187,7 +187,7 @@ public:
 };
 
 
-#include <lib/engine/include_internal/vsx_comp.h>
+#include <internal/vsx_comp.h>
 
 #endif
 

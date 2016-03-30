@@ -19,7 +19,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/lib/common/include
   ${CMAKE_SOURCE_DIR}/lib/engine/include
-  ${CMAKE_SOURCE_DIR}/lib/engine/include_internal
   ${CMAKE_SOURCE_DIR}/lib/engine_graphics/include
   include
   src/log
@@ -169,10 +168,7 @@ install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engin
 
 ######################################################################################
 # Install the Headers so as to install VSXu as a library
-if (UNIX OR VSXU_WINDOWS_LIB_BUILD)
-  file(GLOB HEADERS "include/*.h")
-  install (FILES ${HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/engine COMPONENT Devel)
-endif()
+install (DIRECTORY "include/" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/engine COMPONENT Devel)
 ################################################################################
 
 if (WIN32)
