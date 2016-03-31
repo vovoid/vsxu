@@ -36,19 +36,20 @@ public:
 
             {
               std::unique_lock<std::mutex> lock(this->queue_mutex);
-              this->condition.wait(lock,
-                [this]{ return this->stop || !this->tasks.empty(); });
+
+              this->condition.wait(lock, [this]{ return this->stop || !this->tasks.empty(); });
+
               if(this->stop && this->tasks.empty())
                 return;
+
               task = std::move(this->tasks.front());
               this->tasks.pop();
             }
 
-            running_jobs++;
             task();
-            running_jobs--;
+            this->tasks_queued--;
 
-            if (this->running_jobs.load() == 0)
+            if (!this->tasks_queued.load())
               this->queue_empty_condition.notify_all();
           }
         }
@@ -71,6 +72,8 @@ public:
   inline auto add(F&& f, Args&&... args)
     -> std::future<typename std::result_of<F(Args...)>::type>
   {
+    tasks_queued++;
+
     using return_type = typename std::result_of<F(Args...)>::type;
 
     auto task = std::make_shared< std::packaged_task<return_type()> >(
@@ -98,7 +101,7 @@ public:
 
   inline void wait_all()
   {
-    if (tasks.empty())
+    if ( !tasks_queued.load() )
       return;
 
     std::unique_lock<std::mutex> queue_empty_lock(this->queue_empty_mutex);
@@ -125,6 +128,7 @@ private:
 
   // More synchronization for wait_all()
   std::atomic<int> running_jobs;
+  std::atomic<int> tasks_queued;
   std::mutex queue_empty_mutex;
   std::condition_variable queue_empty_condition;
 };

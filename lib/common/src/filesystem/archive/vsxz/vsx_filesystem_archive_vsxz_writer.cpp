@@ -51,6 +51,7 @@ void filesystem_archive_vsxz_writer::add_string(vsx_string<> filename, vsx_strin
 
 void filesystem_archive_vsxz_writer::archive_files_saturate_all()
 {
+  vsx_printf(L"reading all files from disk...\n");
   foreach (archive_files, i)
   {
     filesystem_archive_file_write &archive_file = archive_files[i];
@@ -59,6 +60,7 @@ void filesystem_archive_vsxz_writer::archive_files_saturate_all()
     req_continue(archive_file.operation == filesystem_archive_file_write::operation_add);
     archive_file.data = filesystem_helper::file_read(archive_file.source_filename);
   }
+  vsx_printf(L"reading all files from disk [DONE]\n");
 }
 
 void filesystem_archive_vsxz_writer::close()
