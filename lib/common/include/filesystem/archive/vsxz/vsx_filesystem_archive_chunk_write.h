@@ -82,6 +82,7 @@ public:
 
     threaded_task {
 
+      vsx_printf(L"compressing chunk %d\n", file_info_table[0].chunk);
       vsx_ma_vector< unsigned char> uncompressed_data_readback;
 
       vsx_perf perf;
@@ -107,6 +108,7 @@ public:
       }
 
       perf.cpu_instructions_stop();
+      vsx_printf(L"compressing chunk %d [DONE]\n", file_info_table[0].chunk);
     } threaded_task_end;
   }
 

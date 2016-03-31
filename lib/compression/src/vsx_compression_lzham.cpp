@@ -85,7 +85,6 @@ void compression_lzham::uncompress(
 
 
   /*
-
   lzham_decompress_state_ptr state = lzham_decompress_init(&decomp_params);
 
   lzham_decompress_status_t status;

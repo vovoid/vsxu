@@ -65,6 +65,10 @@ void filesystem_archive_vsxz_writer::close()
 {
   req(archive_files.size());
 
+  vsx_ma_vector<bool> is_processed;
+  is_processed.allocate(archive_files.size() - 1);
+  is_processed.memory_clear();
+
   // Read all files from disk
   archive_files_saturate_all();
 
@@ -76,47 +80,13 @@ void filesystem_archive_vsxz_writer::close()
 
   foreach (archive_files, i)
   {
-    req_continue(archive_files[i].data.size() <= 1024*1024);
 
-    vsx_thread_pool::instance()->add( [&](float& ratio, size_t ai)
-      {
-        vsx_ma_vector<unsigned char> lzma_compressed = vsx::compression_lzma::compress( archive_files[ai].data );
-        float lzma_ratio = (float)(lzma_compressed.size()) / (float)(archive_files[ai].data.size());
-        vsx_ma_vector<unsigned char> lzham_compressed = vsx::compression_lzham::compress( archive_files[ai].data );
-        float lzham_ratio = (float)(lzham_compressed.size()) / (float)(archive_files[ai].data.size());
-        if (lzham_ratio < lzma_ratio)
-          ratio = lzham_ratio;
-        else
-          ratio = lzma_ratio;
-      },
-      compression_ratios[i],
-      i
-    );
-  }
-
-
-  // Add files to compression chunks
-  filesystem_archive_chunk_write chunks[max_chunks];
-  size_t chunk_other_iterator = 0;
-  vsx_ma_vector<bool> is_added;
-  is_added.allocate(archive_files.size() - 1);
-  is_added.memory_clear();
-
-  foreach (archive_files, i)
-  {
-    // peek data, handle text files
-    if (filesystem_identifier::is_text_file(archive_files[i].data))
-    {
-      chunks[1].add_file( &archive_files[i] );
-      is_added[i] = true;
-      continue;
-    }
-
+    // look for largest file
     size_t id_found = 0;
     int64_t max_size_found = -1;
     foreach (archive_files, si)
     {
-      if (is_added[si])
+      if (is_processed[si])
         continue;
 
       int64_t cur_size = archive_files[si].data.size();
@@ -126,7 +96,63 @@ void filesystem_archive_vsxz_writer::close()
         max_size_found = cur_size;
       }
     }
-    is_added[id_found] = true;
+    is_processed[id_found] = true;
+
+    if (archive_files[id_found].data.size() <= 1024*1024)
+      break;
+
+    vsx_thread_pool::instance()->add( [&](float& ratio, size_t ai)
+      {
+        vsx_printf(L"calculating ratio for %s\n", archive_files[ai].filename.c_str());
+        vsx_ma_vector<unsigned char> lzma_compressed = vsx::compression_lzma::compress( archive_files[ai].data );
+        float lzma_ratio = (float)(lzma_compressed.size()) / (float)(archive_files[ai].data.size());
+        vsx_ma_vector<unsigned char> lzham_compressed = vsx::compression_lzham::compress( archive_files[ai].data );
+        float lzham_ratio = (float)(lzham_compressed.size()) / (float)(archive_files[ai].data.size());
+        if (lzham_ratio < lzma_ratio)
+          ratio = lzham_ratio;
+        else
+          ratio = lzma_ratio;
+        vsx_printf(L"calculating ratio for %s [DONE]\n", archive_files[ai].filename.c_str());
+      },
+      compression_ratios[id_found],
+      id_found
+    );
+  }
+
+  vsx_thread_pool::instance()->wait_all();
+
+
+  // Add files to compression chunks
+  filesystem_archive_chunk_write chunks[max_chunks];
+  size_t chunk_other_iterator = 2;
+  is_processed.memory_clear();
+
+  foreach (archive_files, i)
+  {
+    // peek data, handle text files
+    if (filesystem_identifier::is_text_file(archive_files[i].data))
+    {
+      chunks[1].add_file( &archive_files[i] );
+      is_processed[i] = true;
+      continue;
+    }
+
+    // look for largest file
+    size_t id_found = 0;
+    int64_t max_size_found = -1;
+    foreach (archive_files, si)
+    {
+      if (is_processed[si])
+        continue;
+
+      int64_t cur_size = archive_files[si].data.size();
+      if (cur_size > max_size_found)
+      {
+        id_found = si;
+        max_size_found = cur_size;
+      }
+    }
+    is_processed[id_found] = true;
 
     // if file is large, try to compress it, if ratio is too low, schedule in uncompressed chunk
     if (
@@ -140,16 +166,37 @@ void filesystem_archive_vsxz_writer::close()
       continue;
     }
 
-    vsx_printf(L"adding file %s to chunk %d\n", archive_files[id_found].filename.c_str(), 2 + chunk_other_iterator);
-    chunks[2 + chunk_other_iterator].add_file( &archive_files[id_found] );
+
+    // find out which chunk has least data in it
+    size_t chunk_found = 2;
+    uint64_t min_size = 0xffffffffffffffff;
+    for_n(i, 2, max_chunks)
+    {
+      if (!chunks[i].is_size_above_treshold())
+      {
+        chunk_found = i;
+        break;
+      }
+
+      if (chunks[i].uncompressed_data.size() < min_size)
+      {
+        chunk_found = i;
+        min_size = chunks[i].uncompressed_data.size();
+      }
+    }
+
+    chunk_other_iterator = chunk_found;
+
+    vsx_printf(L"adding file %s to chunk %d\n", archive_files[id_found].filename.c_str(), chunk_other_iterator);
+    chunks[chunk_other_iterator].add_file( &archive_files[id_found] );
 
     // when chunks reach 1 MB, start rotating
-    if (chunks[2 + chunk_other_iterator].is_size_above_treshold())
+    /*if (chunks[2 + chunk_other_iterator].is_size_above_treshold())
     {
       chunk_other_iterator++;
       if (chunk_other_iterator == max_chunks - 2)
         chunk_other_iterator = 0;
-    }
+    }*/
   }
 
   // Set chunk id in all file info structs
