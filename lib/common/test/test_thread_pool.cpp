@@ -18,12 +18,13 @@ int main(int argc, char *argv[])
 
   threaded_task
     {
+      test_assert(!vsx_thread_pool::instance()->wait_all());
       for_n(i, 0, 512)
         vsx_printf(L"hello world from thread 2\n");
     }
   threaded_task_end;
 
-  vsx_thread_pool::instance()->wait_all();
+  threaded_task_wait_all;
 
   test_complete
   return 0;

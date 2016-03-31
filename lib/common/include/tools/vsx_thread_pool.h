@@ -11,6 +11,9 @@
 #include <stdexcept>
 
 #include <vsx_platform.h>
+#include <tools/vsx_foreach.h>
+#include <string/vsx_printf.h>
+#include <debug/vsx_backtrace.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
   #include <platform/win64/mingw-std-threads/mingw.thread.h>
@@ -24,8 +27,6 @@ public:
 
   explicit vsx_thread_pool(size_t threads = std::thread::hardware_concurrency())
   {
-    running_jobs = 0;
-
     for(size_t i = 0;i<threads;++i)
       workers.emplace_back(
         [this]
@@ -99,13 +100,19 @@ public:
     return tasks.empty();
   }
 
-  inline void wait_all()
+  inline bool wait_all()
   {
+    foreach(workers, i)
+      if (std::this_thread::get_id() == workers[i].get_id())
+        vsx_printf(L"\n\n\n\nWARNING!!! DO NOT RUN THREAD POOL WAIT ALL INSIDE A THREAD POOL TASK!!!\n      If the pool is filled, you end up with a deadlock. \n\n");
+        return false;
+
     if ( !tasks_queued.load() )
-      return;
+      return true;
 
     std::unique_lock<std::mutex> queue_empty_lock(this->queue_empty_mutex);
     queue_empty_condition.wait(queue_empty_lock);
+    return true;
   }
 
   static vsx_thread_pool* instance()
