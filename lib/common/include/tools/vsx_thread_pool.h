@@ -127,7 +127,6 @@ private:
   bool stop = false;
 
   // More synchronization for wait_all()
-  std::atomic<int> running_jobs;
   std::atomic<int> tasks_queued;
   std::mutex queue_empty_mutex;
   std::condition_variable queue_empty_condition;
