@@ -61,7 +61,7 @@ namespace filesystem_helper
     #endif
   }
 
-  inline vsx_ma_vector<unsigned char> file_read(vsx_string<> filename)
+  inline vsx_ma_vector<unsigned char> read(vsx_string<> filename)
   {
     vsx_ma_vector<unsigned char> result;
     FILE* fp = fopen(filename.c_str(),"rb");
@@ -80,6 +80,25 @@ namespace filesystem_helper
 
     fclose(fp);
     return result;
+  }
+
+  inline void write(vsx_string<> filename, vsx_string<> string)
+  {
+    FILE* fp = fopen(filename.c_str(),"wb");
+    if (!fp)
+      VSX_ERROR_RETURN("fp is not valid");
+
+    fwrite(string.get_pointer(), 1, string.size(), fp);
+    fclose(fp);
+  }
+
+  inline void write(vsx_string<> filename, vsx_ma_vector<unsigned char> data)
+  {
+    FILE* fp = fopen(filename.c_str(),"wb");
+    if (!fp)
+      VSX_ERROR_RETURN("fp is not valid");
+    fwrite(data.get_pointer(), 1, data.get_sizeof(), fp);
+    fclose(fp);
   }
 
   void get_files_recursive(

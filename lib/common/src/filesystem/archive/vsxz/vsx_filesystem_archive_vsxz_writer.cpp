@@ -58,7 +58,7 @@ void filesystem_archive_vsxz_writer::archive_files_saturate_all()
     if (archive_file.data.size())
       continue;
     req_continue(archive_file.operation == filesystem_archive_file_write::operation_add);
-    archive_file.data = filesystem_helper::file_read(archive_file.source_filename);
+    archive_file.data = filesystem_helper::read(archive_file.source_filename);
   }
   vsx_printf(L"reading all files from disk [DONE]\n");
 }

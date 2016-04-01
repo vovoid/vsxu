@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
   VSX_UNUSED(argv);
 
   vsx_ma_vector<unsigned char> data;
-  data = filesystem_helper::file_read("test_lzham_data");
+  data = filesystem_helper::read("test_lzham_data");
 
   /*data[0] = 'h';
   data[1] = 'e';

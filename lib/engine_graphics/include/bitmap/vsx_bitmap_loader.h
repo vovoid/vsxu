@@ -2,14 +2,13 @@
 
 #include <tools/vsx_singleton_counter.h>
 
-#include "loader/vsx_bitmap_loader_png.h"
-#include "loader/vsx_bitmap_loader_jpg.h"
-#include "loader/vsx_bitmap_loader_tga.h"
-#include "loader/vsx_bitmap_loader_dds.h"
+#include "loaders/vsx_bitmap_loader_png.h"
+#include "loaders/vsx_bitmap_loader_jpg.h"
+#include "loaders/vsx_bitmap_loader_tga.h"
+#include "loaders/vsx_bitmap_loader_dds.h"
 
 class vsx_bitmap_loader
 {
-
   inline static vsx_bitmap_loader_base* get_data_loader_by_image_type(vsx_string<>& filename)
   {
     if (vsx_string_helper::verify_filesuffix(filename, "png"))

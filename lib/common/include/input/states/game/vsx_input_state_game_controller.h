@@ -11,7 +11,10 @@ class vsx_input_state_game_controller
 public:
 
   vsx_vector2f analog_left;
+  float analog_left_treshold = 0.15f;
+
   vsx_vector2f analog_right;
+  float analog_right_treshold = 0.15f;
 
   float trigger_left = 0.0f;
   float trigger_right = 0.0f;
@@ -52,14 +55,14 @@ public:
   {
     req(event.type == vsx_input_event::type_game_controller);
     if (event.game_controller.type == vsx_input_event_game_controller::axis_analog_left_x)
-      analog_left.x = event.game_controller.axis_value;
+      analog_left.x = fabs(event.game_controller.axis_value) > analog_left_treshold ? event.game_controller.axis_value : 0.0f;
     if (event.game_controller.type == vsx_input_event_game_controller::axis_analog_left_y)
-      analog_left.y = event.game_controller.axis_value;
+      analog_left.y = fabs(event.game_controller.axis_value) > analog_left_treshold ? event.game_controller.axis_value : 0.0f;
 
     if (event.game_controller.type == vsx_input_event_game_controller::axis_analog_right_x)
-      analog_right.x = event.game_controller.axis_value;
+      analog_right.x = fabs(event.game_controller.axis_value) > analog_right_treshold ? event.game_controller.axis_value : 0.0f;
     if (event.game_controller.type == vsx_input_event_game_controller::axis_analog_right_y)
-      analog_right.y = event.game_controller.axis_value;
+      analog_right.y = fabs(event.game_controller.axis_value) > analog_right_treshold ? event.game_controller.axis_value : 0.0f;
 
     if (event.game_controller.type == vsx_input_event_game_controller::axis_trigger_left)
       trigger_left = event.game_controller.axis_value;

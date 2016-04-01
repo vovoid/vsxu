@@ -26,6 +26,10 @@
 
 #include <debug/vsx_error.h>
 
+#ifndef VSX_NO_GL
+  #include <vsx_gl_global.h>
+#endif
+
 class vsx_texture_gl
 {
 public:

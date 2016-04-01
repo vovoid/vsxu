@@ -3,6 +3,8 @@
 #include "vsx_bitmap_loader_base.h"
 #include <bitmap/vsx_bitmap_transform.h>
 #include <tools/vsx_singleton_counter.h>
+#include <vsxg.h>
+#include <tools/vsx_thread_pool.h>
 
 class vsx_bitmap_loader_png
     : public vsx_bitmap_loader_base

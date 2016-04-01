@@ -420,6 +420,7 @@ if(UNIX)
  add_subdirectory(programs/server)
 endif(UNIX)
 
+add_subdirectory(programs/tools/vsxbt)
 add_subdirectory(programs/tools/vsxz)
 add_subdirectory(programs/tools/obj2vxm)
 if(UNIX)
@@ -432,17 +433,17 @@ endif(UNIX)
 IF (UNIX OR VSXU_WINDOWS_LIB_BUILD)
   if (VSXU_STATIC EQUAL 1 AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/plugins/static_factory_pkgconfig_libs")
     file (STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/plugins/static_factory_pkgconfig_libs" VSXU_PLUGIN_PKGCONFIG_LIBS)
-    CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/libvsxu.pc.in.static
-                    ${CMAKE_CURRENT_BINARY_DIR}/libvsxu.pc
+    CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/libvsx.pc.in.static
+                    ${CMAKE_CURRENT_BINARY_DIR}/libvsx.pc
                     @ONLY)
 
   else()
-    CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/libvsxu.pc.in.dynamic
-                    ${CMAKE_CURRENT_BINARY_DIR}/libvsxu.pc
+    CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/libvsx.pc.in.dynamic
+                    ${CMAKE_CURRENT_BINARY_DIR}/libvsx.pc
                     @ONLY)
   endif()
 
-  INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/libvsxu.pc
+  INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/libvsx.pc
            DESTINATION ${VSXU_INSTALL_LIB_DIR}/pkgconfig)
 ENDIF()
 

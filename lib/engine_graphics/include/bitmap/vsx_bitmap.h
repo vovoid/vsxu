@@ -26,6 +26,7 @@
 
 #include <stdlib.h>
 #include <tools/vsx_req.h>
+#include <tools/vsx_foreach.h>
 #include <tools/vsx_lock.h>
 
 class vsx_bitmap
@@ -184,6 +185,14 @@ public:
     for (size_t mipmap_level = 0; mipmap_level < 15; mipmap_level++)
       for (size_t cubemap_side = 0; cubemap_side < 6; cubemap_side++)
         data_free(mipmap_level, cubemap_side);
+  }
+
+  inline size_t sides_count_get()
+  {
+    for_n(i, 0, 6)
+      if (!data[0][i])
+        return i;
+    return 6;
   }
 
   ~vsx_bitmap()

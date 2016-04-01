@@ -23,6 +23,28 @@ public:
   bool button_x1 = false;
   bool button_x2 = false;
 
+  bool dragging = false;
+
+  bool is_hovering()
+  {
+    return !button_left && !button_middle && !button_right;
+  }
+
+  vsx_vector2f position_centered()
+  {
+    return vsx_vector2f(-0.5, -0.5) + position;
+  }
+
+  vsx_vector2f position_click_left_centered()
+  {
+    return vsx_vector2f(-0.5, -0.5) + position_click_left;
+  }
+
+  vsx_vector2f position_click_right_centered()
+  {
+    return vsx_vector2f(-0.5, -0.5) + position_click_right;
+  }
+
   void consume(vsx_input_event& event)
   {
     req(event.type == vsx_input_event::type_mouse);
@@ -33,6 +55,7 @@ public:
       position_screen.y = event.mouse.y;
       position.x = (float)event.mouse.x / (float)vsx_gl_state::get_instance()->viewport_get_width();
       position.y = (float)event.mouse.y / (float)vsx_gl_state::get_instance()->viewport_get_height();
+      dragging = button_left || button_right;
       return;
     }
 

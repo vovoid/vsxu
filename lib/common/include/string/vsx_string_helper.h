@@ -358,6 +358,22 @@ namespace vsx_string_helper
     return result;
   }
 
+  template < typename W = char >
+  inline vsx_string<W> implode_single(
+      vsx_nw_vector< vsx_string<W> >& in,
+      const W delimiter
+  )
+  {
+    vsx_string<W> result;
+    foreach(in, i)
+    {
+      if (i)
+        result += delimiter;
+      result += in[i];
+    }
+    return result;
+  }
+
 
   /**
    * @brief str_replace
@@ -508,6 +524,14 @@ namespace vsx_string_helper
     return vsx_string_helper::implode(results, deli, 0, 1);
   }
 
+  inline vsx_string<> add_filename_suffix(vsx_string<> filename, vsx_string<> suffix)
+  {
+    vsx_nw_vector< vsx_string<> > parts;
+    vsx_string_helper::explode_single<char>(filename, '.', parts);
+    req_v(parts.size() > 1, filename);
+    parts[parts.size() - 2 ] += "_" + suffix;
+    return vsx_string_helper::implode_single<char>(parts, '.');
+  }
 
 
   /**

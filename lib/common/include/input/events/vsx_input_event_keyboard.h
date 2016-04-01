@@ -1,6 +1,7 @@
 #pragma once
 
 #include <inttypes.h>
+#include "vsx_input_event_keyboard_scancode.h"
 
 class vsx_input_event_keyboard
 {

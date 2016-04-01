@@ -49,6 +49,48 @@ public:
     return false;
   }
 
+  inline vsx_vector2f direction_arrows()
+  {
+    vsx_vector2f dir;
+    if (keys[VSX_SCANCODE_LEFT])
+      dir.x += -1.0;
+    if (keys[VSX_SCANCODE_RIGHT])
+      dir.x += 1.0;
+    if (keys[VSX_SCANCODE_UP])
+      dir.y += 1.0;
+    if (keys[VSX_SCANCODE_DOWN])
+      dir.y += -1.0;
+    return dir;
+  }
+
+  inline vsx_vector2f direction_esdf()
+  {
+    vsx_vector2f dir;
+    if (keys[VSX_SCANCODE_S])
+      dir.x += -1.0;
+    if (keys[VSX_SCANCODE_F])
+      dir.x += 1.0;
+    if (keys[VSX_SCANCODE_E])
+      dir.y += 1.0;
+    if (keys[VSX_SCANCODE_D])
+      dir.y += -1.0;
+    return dir;
+  }
+
+  inline vsx_vector2f direction_wasd()
+  {
+    vsx_vector2f dir;
+    if (keys[VSX_SCANCODE_A])
+      dir.x += -1.0;
+    if (keys[VSX_SCANCODE_D])
+      dir.x += 1.0;
+    if (keys[VSX_SCANCODE_W])
+      dir.y += 1.0;
+    if (keys[VSX_SCANCODE_S])
+      dir.y += -1.0;
+    return dir;
+  }
+
   inline void consume(vsx_input_event& event)
   {
     req(event.type == vsx_input_event::type_keyboard);

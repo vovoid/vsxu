@@ -24,7 +24,7 @@ void filesystem_archive_vsx_writer::file_add_all_worker(vsx_nw_vector<filesystem
     vsx_string<> filename = info->filename;
 
     if (!info->data.size())
-      info->data = filesystem_helper::file_read(filename);
+      info->data = filesystem_helper::read(filename);
 
     info->compressed_data = compression_lzma_old::compress( info->data );
   }
@@ -38,7 +38,7 @@ void filesystem_archive_vsx_writer::archive_files_saturate_all()
     if (archive_file.data.size())
       continue;
     req_continue(archive_file.operation == filesystem_archive_file_write::operation_add);
-    archive_file.data = filesystem_helper::file_read(archive_file.source_filename);
+    archive_file.data = filesystem_helper::read(archive_file.source_filename);
   }
 }
 
@@ -134,7 +134,7 @@ void filesystem_archive_vsx_writer::add_file
   if (disk_filename != "")
     fopen_filename = disk_filename;
 
-  vsx_ma_vector<unsigned char> uncompressed_data = filesystem_helper::file_read(fopen_filename);
+  vsx_ma_vector<unsigned char> uncompressed_data = filesystem_helper::read(fopen_filename);
 
   file_compress_and_add_to_archive(filename, uncompressed_data);
 

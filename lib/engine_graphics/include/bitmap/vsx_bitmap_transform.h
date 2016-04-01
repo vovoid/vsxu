@@ -11,12 +11,12 @@ class vsx_bitmap_transform
   inline void split_into_cubemap_by_type(vsx_bitmap* bitmap)
   {
     void* source_data = bitmap->data_get();
-    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 0);
-    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 1);
-    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 2);
-    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 3);
-    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 4);
-    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 5);
+    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 0, sizeof(T) * (bitmap->height * bitmap->height));
+    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 1, sizeof(T) * (bitmap->height * bitmap->height));
+    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 2, sizeof(T) * (bitmap->height * bitmap->height));
+    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 3, sizeof(T) * (bitmap->height * bitmap->height));
+    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 4, sizeof(T) * (bitmap->height * bitmap->height));
+    bitmap->data_set( malloc( sizeof(T) * (bitmap->height * bitmap->height) ), 0, 5, sizeof(T) * (bitmap->height * bitmap->height));
 
     for (size_t cube_map_side = 0; cube_map_side < 6; cube_map_side++)
     {
