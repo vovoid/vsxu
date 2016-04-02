@@ -66,7 +66,8 @@ public:
 
     texture->unload();
 
-    if (texture->bitmap->hint & vsx_bitmap::cubemap_split_6_1_hint)
+    if (texture->bitmap->hint & vsx_bitmap::cubemap_split_6_1_hint || texture->bitmap->hint & vsx_bitmap::cubemap_load_files_hint)
+      if (texture->bitmap->sides_count_get() == 6)
     {
       texture->init_opengl_texture_cubemap();
       vsx_texture_gl_loader::upload_cube(texture);

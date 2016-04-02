@@ -77,6 +77,7 @@ public:
     near_clipping = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"near_clipping");
     far_clipping = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"far_clipping");
     perspective_correct = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"perspective_correct");
+    perspective_correct->set(1);
 
     rotation->set(0,0);
     rotation->set(0,1);
