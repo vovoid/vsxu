@@ -26,7 +26,7 @@
 
 if ( cmd == "help" )
 {
-  while (1)
+  forever
   {
     if (cmd_data != "" && cmd_data != "param_set")
       break;
@@ -248,7 +248,7 @@ if (cmd == "ps")
 
 if ( cmd == "help" )
 {
-  while (1)
+  forever
   {
     if (cmd_data != "" && cmd_data != "param_clone_value")
       break;

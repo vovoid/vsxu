@@ -36,6 +36,8 @@ class vsx_bitmap_writer_tga
     vsx_string<> target_filename = vsx_string_helper::add_filename_suffix(filename, vsx_string_helper::i2s(side));
     FILE* file_handle = fopen( target_filename.c_str(), "wb");
     tga_header header;
+
+    header.data_type_code = 2;
     header.bits_per_pixel = bitmap->channels * 8;
     header.width = bitmap->height;
     header.height = bitmap->height;
@@ -48,6 +50,7 @@ class vsx_bitmap_writer_tga
   {
     FILE* file_handle = fopen(filename.c_str(), "wb");
     tga_header header;
+    header.data_type_code = 2;
     header.bits_per_pixel = bitmap->channels * 8;
     header.width = bitmap->width;
     header.height = bitmap->height;

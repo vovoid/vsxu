@@ -457,7 +457,8 @@ public:
         prctl(PR_SET_NAME,cal);
       }
     #endif
-    while (1)
+
+    forever
     {
       if (thread_info.is_thread)
       {

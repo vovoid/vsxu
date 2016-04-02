@@ -260,7 +260,7 @@ public:
 
         // write the data to disk
         size_t max_iterations = 0;
-        while (1)
+        forever
         {
           if (!profilers[i].queue.consume( recieve_chunk ))
             break;

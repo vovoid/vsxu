@@ -1521,7 +1521,8 @@ vsx_string<>vsx_widget_server::get_unique_name(vsx_string<>name)
   size_t component_suffix_value = 1;
   if (i_val.size())
     component_suffix_value = vsx_string_helper::s2i(i_val);
-  while (1)
+
+  forever
   {
     parts[parts.size() - 1] = vsx_string_helper::i2s(component_suffix_value);
     vsx_string<> proposed_new_name = vsx_string_helper::implode(parts, delimiter);

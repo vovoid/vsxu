@@ -30,7 +30,7 @@ vsx_ma_vector<unsigned char> compression_lzham::compress(vsx_ma_vector<unsigned 
   vsx_ma_vector<unsigned char> out_buf;
   out_buf.allocate(1024*1024);
   size_t in_buf_ofs = 0;
-  while (1)
+  forever
   {
     size_t out_buf_size = 1024*1024;
     size_t in_buf_size = uncompressed_data.get_sizeof() - in_buf_ofs;

@@ -166,6 +166,48 @@ public:
   }
 
 
+  void bgr_to_rgb(vsx_bitmap* bitmap)
+  {
+    req(bitmap->storage_format == vsx_bitmap::byte_storage);
+    for_n(side, 0, bitmap->sides_count_get())
+    {
+      unsigned char* data = (unsigned char*)bitmap->data_get(0, side);
+      for_n(i, 0, bitmap->width * bitmap->height)
+      {
+        unsigned char temp = *(data + 2);
+        *(data + 2) = *data;
+        *data = temp;
+        data += bitmap->channels;
+      }
+    }
+  }
+
+
+  void alpha_channel_remove(vsx_bitmap* bitmap)
+  {
+    req(bitmap->channels == 4);
+    req(bitmap->storage_format == vsx_bitmap::byte_storage);
+    for_n(side, 0, bitmap->sides_count_get())
+    {
+      unsigned char* source_data = (unsigned char*)bitmap->data_get(0, side);
+      unsigned char* dest_data = (unsigned char*)malloc(bitmap->width * bitmap->height * 3);
+      unsigned char* source_data_p = source_data;
+      bitmap->data_set(dest_data, 0, side, bitmap->width * bitmap->height * 3);
+      for_n(i, 0, bitmap->width * bitmap->height)
+      {
+        *dest_data = *source_data_p;
+        dest_data++; source_data_p++;
+        *dest_data = *source_data_p;
+        dest_data++; source_data_p++;
+        *dest_data = *source_data_p;
+        dest_data++; source_data_p++;
+        source_data_p++;
+      }
+      free(source_data);
+    }
+    bitmap->channels = 3;
+  }
+
 
   void sphere_map_into_cubemap(vsx_bitmap* bitmap)
   {

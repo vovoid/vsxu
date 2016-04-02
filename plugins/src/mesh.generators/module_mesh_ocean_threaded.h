@@ -126,7 +126,7 @@ public:
 
   static void* worker(void *ptr)
   {
-    while (1)
+    forever
     {
       module_mesh_ocean_threaded* my = ((module_mesh_ocean_threaded*)ptr);
       if (0 == sem_trywait(&my->sem_worker_todo))

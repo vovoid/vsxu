@@ -151,7 +151,8 @@ void* vsx_command_list_server::server_worker(void *ptr)
   printf("g\n");
 
   addr_size = sizeof their_addr;
-  while (1)
+
+  forever
   {
     printf("waiting for connection...\n");
     run = true;

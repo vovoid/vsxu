@@ -14,7 +14,7 @@ void test_legacy()
   command_list.set_filesystem(&my_filesystem);
   command_list.load_from_file("_states/_default", true);
   vsx_command_s* command;
-  while (1)
+  forever
   {
     req_break(command = command_list.get());
     vsx_printf(L"command: %s\n", command->raw.c_str());
