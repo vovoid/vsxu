@@ -10,6 +10,8 @@ class vsx_input_state_mouse
 public:
   vsx_vector2f position;
   vsx_vector2f position_screen;
+  bool position_changed_since_last_frame = false;
+
   vsx_vector2f wheel;
 
   vsx_vector2f position_click_left;
@@ -45,6 +47,11 @@ public:
     return vsx_vector2f(-0.5, -0.5) + position_click_right;
   }
 
+  void reset()
+  {
+    position_changed_since_last_frame = false;
+  }
+
   void consume(vsx_input_event& event)
   {
     req(event.type == vsx_input_event::type_mouse);
@@ -56,6 +63,7 @@ public:
       position.x = (float)event.mouse.x / (float)vsx_gl_state::get_instance()->viewport_get_width();
       position.y = (float)event.mouse.y / (float)vsx_gl_state::get_instance()->viewport_get_height();
       dragging = button_left || button_right;
+      position_changed_since_last_frame = true;
       return;
     }
 

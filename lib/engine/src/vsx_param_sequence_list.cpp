@@ -31,7 +31,7 @@
 #include <internal/vsx_comp_abs.h>
 #include <internal/vsx_param_abstraction.h>
 #include <internal/vsx_param_sequence.h>
-#include "vsx_master_sequencer/vsx_master_sequence_channel.h"
+#include <internal/vsx_master_sequence_channel.h>
 #include <internal/vsx_param_sequence_list.h>
 #include <internal/vsx_param_interpolation.h>
 #include <internal/vsx_sequence_pool.h>
