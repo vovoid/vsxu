@@ -30,10 +30,7 @@
 #include "debug/vsx_error.h"
 
 #ifndef VSX_FONT_NO_FT
-#include "ftgl/FTGLPolygonFont.h"
-#include "ftgl/FTGLBitmapFont.h"
-#include "ftgl/FTGLOutlineFont.h"
-#include "ftgl/FTGLTextureFont.h"
+#include <FTGL/ftgl.h>
 #endif
 
 
@@ -55,13 +52,17 @@ void vsx_font::load(vsx_string<>font, vsx::filesystem* filesystem)
   else
   {
     #ifndef VSX_FONT_NO_FT
-    font_info->type = 1;
-    font_info->ftfont = new FTGLPolygonFont((base_path+"resources\\fonts\\font"+font+".ttf").c_str());
-    font_info->ftfont->FaceSize(10);
-    font_info->ftfont->CharMap(ft_encoding_unicode);
-    font_info->ftfont_outline = new FTGLOutlineFont((base_path+"resources\\fonts\\font"+font+".ttf").c_str());
-    font_info->ftfont_outline->FaceSize(10);
-    font_info->ftfont_outline->CharMap(ft_encoding_unicode);
+    my_font_info.type = 1;
+
+    FTGLPolygonFont* pfont = new FTGLPolygonFont( (base_path+"resources\\fonts\\font"+font+".ttf").c_str() );
+    pfont->FaceSize(10);
+    pfont->CharMap(ft_encoding_unicode);
+    my_font_info.ftfont = (void*)pfont;
+
+    FTGLOutlineFont* pfont_outline = new FTGLOutlineFont( (base_path+"resources\\fonts\\font"+font+".ttf").c_str() );
+    pfont_outline->FaceSize(10);
+    pfont_outline->CharMap(ft_encoding_unicode);
+    my_font_info.ftfont_outline = (void*)pfont_outline;
     #endif
   }
 }
@@ -83,14 +84,17 @@ void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsx::filesystem* 
   if (f_info->type == 1)
   {
     #ifndef VSX_FONT_NO_FT
-    delete f_info->ftfont;
-    delete f_info->ftfont_outline;
-    f_info->ftfont = new FTGLPolygonFont((base_path+"resources/fonts/font"+font+".ttf").c_str());
-    f_info->ftfont->FaceSize(10);
-    f_info->ftfont->CharMap(ft_encoding_unicode);
-    f_info->ftfont_outline = new FTGLOutlineFont((base_path+"resources/fonts/font"+font+".ttf").c_str());
-    f_info->ftfont_outline->FaceSize(10);
-    f_info->ftfont_outline->CharMap(ft_encoding_unicode);
+    delete (FTGLPolygonFont*)f_info->ftfont;
+    delete (FTGLOutlineFont*)f_info->ftfont_outline;
+    FTGLPolygonFont* pfont = new FTGLPolygonFont( (base_path+"resources\\fonts\\font"+font+".ttf").c_str() );
+    pfont->FaceSize(10);
+    pfont->CharMap(ft_encoding_unicode);
+    my_font_info.ftfont = (void*)pfont;
+
+    FTGLOutlineFont* pfont_outline = new FTGLOutlineFont( (base_path+"resources\\fonts\\font"+font+".ttf").c_str() );
+    pfont_outline->FaceSize(10);
+    pfont_outline->CharMap(ft_encoding_unicode);
+    my_font_info.ftfont_outline = (void*)pfont_outline;
     #endif
   }
 }  
@@ -191,22 +195,8 @@ void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsx::filesystem* 
     else
     {
       #ifndef VSX_FONT_NO_FT
-      double size_s = 0.5*size*0.1;
       glEnable(GL_BLEND);
       glPushMatrix();
-        double dx = p.x;
-        double dy = p.y;
-      if (background) {
-        glColor4f(background_color.r,background_color.g,background_color.b,background_color.a);
-        vsx_vector ps = get_size(str,size);
-        ps.x *= 1.05;
-          glBegin(GL_QUADS);
-              glVertex3f(dx,dy,dz);
-              glVertex3f(dx,dy+size*1.05,dz);
-              glVertex3f(dx+ps.x,dy+size*1.05,dz);
-              glVertex3f(dx+ps.x,dy,dz);
-          glEnd();
-      }
       glColor4f(color.r,color.g,color.b,color.a);
       glTranslatef(p.x,p.y+size*0.2,p.z);
       if (outline_transparency > 0.3)
@@ -215,7 +205,7 @@ void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsx::filesystem* 
       glColor4f(color.r,color.g,color.b,(1-outline_transparency)*color.a);
 
       glScalef(size*0.8*0.1,size*0.1,0.018);
-      my_font_info->ftfont->Render(str.c_str());
+      ((FTGLPolygonFont*)my_font_info.ftfont)->Render(str.c_str());
       glColor4f(color.r,color.g,color.b,outline_transparency*color.a);
       glPopMatrix();
       #endif
@@ -226,13 +216,11 @@ void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsx::filesystem* 
 vsx_vector3<> vsx_font::get_size(const vsx_string<>& str, float size = 1)
 {
   #ifndef VSX_FONT_NO_FT
-    if (!my_font_info) {
-      return vsx_vector(0);
-    }
-    if (font[0] == '-') {
+    if (my_font_info.type == 1)
+    {
       float x1, y1, z1, x2, y2, z2;
-      my_font_info->ftfont->BBox( str.c_str(), x1, y1, z1, x2, y2, z2);
-      vsx_vector pp;
+      ((FTGLPolygonFont*)my_font_info.ftfont)->BBox( str.c_str(), x1, y1, z1, x2, y2, z2);
+      vsx_vector3<> pp;
       pp.x = (x2*size-x1*size)*0.8*0.1;
       return pp;
     }    
@@ -259,10 +247,8 @@ vsx_vector3<> vsx_font::print_center(vsx_vector3<> p, const vsx_string<>& str, f
   p.x -= (align*0.37f*size*(float)str.size())*0.5f;
   #ifndef VSX_FONT_NO_FT
   float x1, y1, z1, x2, y2, z2;
-  if (my_font_info)
-  {
-    my_font_info->ftfont->BBox( str.c_str(), x1, y1, z1, x2, y2, z2);
-  }
+  if (my_font_info.type == 1)
+    ((FTGLPolygonFont*)my_font_info.ftfont)->BBox( str.c_str(), x1, y1, z1, x2, y2, z2);
   p.x -= (x2*size-x1*size)*0.5*0.08;
   #endif
   return print(p,str,size);
@@ -273,10 +259,8 @@ vsx_vector3<> vsx_font::print_right(vsx_vector3<> p, const vsx_string<>& str, fl
   p.x -= (align*0.37f*size*(float)str.size());
   #ifndef VSX_FONT_NO_FT
     float x1, y1, z1, x2, y2, z2;
-    if (my_font_info) {
-      my_font_info->ftfont->BBox( str.c_str(), x1, y1, z1, x2, y2, z2);
-    }
-    //vsx_vector pp = p;
+    if (my_font_info.type == 1)
+      ((FTGLPolygonFont*)my_font_info.ftfont)->BBox( str.c_str(), x1, y1, z1, x2, y2, z2);
     p.x -= (x2*size-x1*size)*0.08;
   #endif
   return print(p,str,size);
