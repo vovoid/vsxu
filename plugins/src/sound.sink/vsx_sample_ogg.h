@@ -1,6 +1,7 @@
 #ifndef VSX_SAMPLE_OGG_H
 #define VSX_SAMPLE_OGG_H
 
+#include <filesystem/vsx_filesystem.h>
 #include <audio/vsx_sample.h>
 #include "ogg_vorbis.c"
 
@@ -26,7 +27,7 @@ public:
     if (!filesystem)
       return;
 
-    vsx::file_handle *fp;
+    vsx::file *fp;
     if
     (
       (fp = filesystem->f_open(filename.c_str(), "r"))
