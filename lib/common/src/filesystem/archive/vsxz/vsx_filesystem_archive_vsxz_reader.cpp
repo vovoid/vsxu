@@ -10,6 +10,7 @@ namespace vsx
 
 bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool load_data_multithreaded)
 {
+  VSX_UNUSED(load_data_multithreaded);
   mmap = filesystem_mmap::create(archive_filename);
   req_v(mmap, false);
   req_v(mmap->size > sizeof(vsxz_header) + sizeof(vsxz_header_file_info), false);

@@ -36,6 +36,7 @@ void filesystem_archive_vsxz_writer::add_file
 
 void filesystem_archive_vsxz_writer::add_string(vsx_string<> filename, vsx_string<> payload, bool deferred_multithreaded)
 {
+  VSX_UNUSED(deferred_multithreaded);
   filesystem_archive_file_write file_info;
   file_info.filename = filename;
   req(payload.size());

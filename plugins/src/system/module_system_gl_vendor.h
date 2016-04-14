@@ -42,6 +42,7 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
+    VSX_UNUSED(in_parameters);
     loading_done = true;
     detection_complete = false;
 

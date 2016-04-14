@@ -267,6 +267,11 @@ __declspec(dllexport) unsigned long get_num_modules(vsx_module_engine_environmen
 __declspec(dllexport) void set_environment_info(vsx_module_engine_environment* environment);
 }
 
+#ifndef MOD_CM
+#define MOD_CM vsx_module_render_glsl_cm
+#define MOD_DM vsx_module_render_glsl_dm
+#define MOD_NM vsx_module_render_glsl_nm
+#endif
 
 vsx_module* MOD_CM(unsigned long module, void* args)
 {
