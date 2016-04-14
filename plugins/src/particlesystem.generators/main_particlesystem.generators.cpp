@@ -47,6 +47,12 @@ __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
 __declspec(dllexport) unsigned long get_num_modules(vsx_module_engine_environment* environment);
 }
 
+#ifndef MOD_CM
+#define MOD_CM vsx_module_particlesystem_generators_cm
+#define MOD_DM vsx_module_particlesystem_generators_dm
+#define MOD_NM vsx_module_particlesystem_generators_nm
+#endif
+
 
 vsx_module* MOD_CM(unsigned long module, void* args)
 {

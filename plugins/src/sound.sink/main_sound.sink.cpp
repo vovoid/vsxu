@@ -76,6 +76,12 @@ void print_help()
 {
 }
 
+#ifndef MOD_CM
+#define MOD_CM vsx_module_sound_sink_cm
+#define MOD_DM vsx_module_sound_sink_dm
+#define MOD_NM vsx_module_sound_sink_nm
+#endif
+
 
 vsx_module* MOD_CM(unsigned long module, void* args)
 {
