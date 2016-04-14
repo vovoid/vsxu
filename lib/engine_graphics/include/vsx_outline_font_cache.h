@@ -1,8 +1,6 @@
-#ifndef VSX_OUTLINE_FONT_CACHE_H
-#define VSX_OUTLINE_FONT_CACHE_H
+#pragma once
 
-
-
+#include <vsx_font_outline.h>
 
 class outline_font_cache
 {
@@ -80,4 +78,3 @@ public:
   }
 };
 
-#endif

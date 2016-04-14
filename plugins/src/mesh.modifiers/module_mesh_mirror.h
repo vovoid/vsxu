@@ -79,8 +79,7 @@ public:
   {
     vsx_mesh<>** p = mesh_in->get_addr();
 
-    if (!p)
-      VSX_ERROR_RETURN("mesh_in is invalid\n");
+    req(p);
 
     // check if there's work to do, otherwise return
     if

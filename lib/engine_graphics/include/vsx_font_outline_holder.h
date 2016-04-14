@@ -1,5 +1,6 @@
-#ifndef VSX_FONT_OUTLINE_HOLDER_H
-#define VSX_FONT_OUTLINE_HOLDER_H
+#pragma once
+//#include <FTGL/ftgl.h>
+//#include <vsx_font.h>
 
 class font_outline_holder
 {
@@ -102,4 +103,3 @@ public:
 };
 
 
-#endif
