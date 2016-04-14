@@ -320,7 +320,7 @@ int vsx_engine::load_state(vsx_string<>filename, vsx_string<>*error_string)
   load1.garbage_collect();
 
   if (!is_archive)
-    filesystem.set_base_path( vsx_data_path::get_instance()->data_path_get() );
+    filesystem.set_base_path( vsx_data_path::get_instance()->data_path_get());
 
   int res = i_load_state(load1,error_string,filename);
   load1.clear_normal();

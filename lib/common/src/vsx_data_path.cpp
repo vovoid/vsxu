@@ -10,13 +10,24 @@
 #endif
 
 #include <stdio.h>
-
+#include <vsx_argvector.h>
 
 vsx_data_path vsx_data_path::instance;
 
-vsx_data_path::vsx_data_path()
+void vsx_data_path::init()
 {
+  if (vsx_argvector::get_instance()->has_param_with_value("data_path"))
+  {
+    vsx_string<> new_data_path = vsx_argvector::get_instance()->get_param_value("data_path");
+    if (new_data_path[new_data_path.size()-1] != DIRECTORY_SEPARATOR[0])
+      new_data_path.push_back(DIRECTORY_SEPARATOR[0]);
+    data_path = new_data_path;
+    return;
+  }
+
   #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+
+
     char* home_dir = getenv ("HOME");
     data_path = vsx_string<>(home_dir)+"/.local/share/vsxu/";
 

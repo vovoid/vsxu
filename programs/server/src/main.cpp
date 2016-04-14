@@ -28,10 +28,12 @@
 
 #include <vsx_application_manager.h>
 #include <vsx_application_run.h>
+#include <vsx_data_path.h>
 
 int main(int argc, char* argv[])
 {
   vsx_argvector::get_instance()->init_from_argc_argv(argc, argv);
+  vsx_data_path::get_instance()->init();
   server_application application;
   vsx_application_manager::get_instance()->application_set(&application);
   vsx_application_run::run();

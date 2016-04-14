@@ -32,6 +32,7 @@
 int main(int argc, char* argv[])
 {
   vsx_argvector::get_instance()->init_from_argc_argv(argc, argv);
+  vsx_data_path::get_instance()->init();
   vsx_application_profiler application;
   vsx_application_manager::get_instance()->application_set(&application);
   vsx_application_run::run();

@@ -123,7 +123,7 @@ endif()
 
 
 if (VSXU_STATIC EQUAL 1)
-  include(../plugins/static_factory_cmake_target_link_libraries)
+  include(${CMAKE_SOURCE_DIR}/plugins/static_factory_cmake_target_link_libraries)
 endif()
 
 
