@@ -142,6 +142,7 @@ class vsx_application_sdl
       );
     }
 
+    update_viewport_size();
 
     vsx_application_manager::get_instance()->get()->init();
 
