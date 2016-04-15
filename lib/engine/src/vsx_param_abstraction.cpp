@@ -869,11 +869,21 @@ vsx_string<>vsx_engine_param::get_string()
     }
     case VSX_MODULE_PARAM_ID_MESH:
     {
-      /*
-      vsx_mesh* m = ((vsx_module_param_mesh*)module_param)->param_data;
-      if (m->data)
-      sprintf(res,"%d vertices %d faces",(int)m->data->vertices.size(), (int)m->data->faces.size());
-      return vsx_string<>(res);*/
+      vsx_mesh<>* m = *((vsx_module_param_mesh*)module_param)->param_data;
+      vsx_string<> ret;
+      if (!m->data)
+        return "";
+
+      ret +=
+          "  mesh:\n"
+          "    vertex count: " + vsx_string_helper::i2s(m->data->vertices.size()) + "\n"
+          "    normal count: " + vsx_string_helper::i2s(m->data->vertex_normals.size()) + "\n"
+          "    tex coord count: " + vsx_string_helper::i2s(m->data->vertex_tex_coords.size()) + "\n"
+          "    vertex color count: " + vsx_string_helper::i2s(m->data->vertex_colors.size()) + "\n"
+          "    faces count: " + vsx_string_helper::i2s(m->data->faces.size()) + "\n"
+        ;
+
+      return ret;
     }
   }
   return "";

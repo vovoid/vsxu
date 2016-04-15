@@ -23,6 +23,9 @@
 
 #pragma once
 
+#include <texture/vsx_texture.h>
+#include <vsx_param.h>
+
 typedef struct {
   vsx_module_param_abs* module_param;
   vsx_string<>name;
@@ -517,6 +520,26 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
         break;
       }
     }
+  }
+
+  virtual bool validate_input_params()
+  {
+    for (unsigned long i = 0; i < uniform_list.size(); ++i) {
+      if (uniform_list[i].param_type_id == VSX_MODULE_PARAM_ID_TEXTURE)
+      {
+        if (!((vsx_module_param_texture*)uniform_list[i].module_param)->get_addr())
+          return false;
+
+        vsx_texture<>* ba = ((vsx_module_param_texture*)uniform_list[i].module_param)->get();
+        if (!ba)
+          return false;
+
+        if (ba)
+          if (!ba->texture->uploaded_to_gl)
+            ba->upload_gl();
+      }
+    }
+    return true;
   }
 
   virtual void set_uniforms()

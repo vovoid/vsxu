@@ -217,15 +217,15 @@ public:
   }
 
 
+  bool shader_activated = false;
   bool activate_offscreen()
   {
-    #if PLATFORM == PLATFORM_LINUX || PLATFORM == PLATFORM_WINDOWS
+    if (shader.validate_input_params())
+    {
+      shader_activated = true;
       shader.begin();
       shader.set_uniforms();
-    #else
-      shader.set_uniforms();
-      shader.begin();
-    #endif
+    }
     return true;
   }
 
@@ -236,7 +236,11 @@ public:
 
   void deactivate_offscreen()
   {
-    shader.end();
+    if (shader_activated)
+    {
+      shader.end();
+      shader_activated = false;
+    }
   }
 
   bool init()
