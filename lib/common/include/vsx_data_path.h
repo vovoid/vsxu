@@ -20,7 +20,7 @@ class COMMON_DLLIMPORT vsx_data_path
 
 public:
 
-  vsx_data_path();
+  void init();
 
   vsx_string<>& data_path_get()
   {
