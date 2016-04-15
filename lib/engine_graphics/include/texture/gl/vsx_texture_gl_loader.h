@@ -320,8 +320,8 @@ inline void upload_cube( vsx_texture_gl* texture_gl )
           sides[cube_map_side],  // opengl target
           mip_map_level, // mipmap level
           get_compression_format(bitmap),
-          bitmap->width,
-          bitmap->height,
+          bitmap->width >> mip_map_level,
+          bitmap->height >> mip_map_level,
           0, // border 0 or 1
           bitmap->data_size_get(mip_map_level, cube_map_side),
           bitmap->data_get(mip_map_level, cube_map_side)

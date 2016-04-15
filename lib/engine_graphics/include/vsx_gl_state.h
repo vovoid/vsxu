@@ -1200,6 +1200,7 @@ public:
 
   inline void clear_errors()
   {
+    accumulate_errors();
     gl_errors = "";
   }
 
@@ -1217,6 +1218,7 @@ public:
     if ((errCode = glGetError()) != GL_NO_ERROR) {
         errString = gluErrorString(errCode);
         gl_errors += vsx_string<>((char*)errString) + "\n";
+        vsx_printf(L"error string: %s\n", errString);
     }
 #endif
   }

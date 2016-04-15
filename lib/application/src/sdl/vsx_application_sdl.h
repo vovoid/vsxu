@@ -8,6 +8,30 @@
 #include <string/vsx_string_helper.h>
 #include "vsx_application_sdl_window_holder.h"
 
+
+void gl_debug_callback
+(
+  GLenum _source,
+  GLenum _type,
+  GLuint _id,
+  GLenum _severity,
+  GLsizei _length,
+  const char* _message,
+  void* _user_param
+)
+{
+  req(_type != 33361 && _type != 33360);
+
+  VSX_UNUSED(_source);
+  VSX_UNUSED(_type);
+  VSX_UNUSED(_severity);
+  VSX_UNUSED(_length);
+  VSX_UNUSED(_user_param);
+  VSX_UNUSED(_id);
+  vsx_printf(L"GLDEBUG: %s\n", _message);
+}
+
+
 class vsx_application_sdl
 {
   SDL_GLContext context;
@@ -102,6 +126,22 @@ class vsx_application_sdl
     SDL_GL_SetSwapInterval(1);
 
     glewInit();
+
+    if (__GLEW_ARB_debug_output && vsx_argvector::get_instance()->has_param("gl_debug") )
+    {
+      vsx_printf(L"GLDEBUG: Enabling...\n");
+      glDebugMessageCallbackARB( (GLDEBUGPROCARB)gl_debug_callback, NULL);
+      GLuint unusedIds = 0;
+      glDebugMessageControlARB(
+          GL_DONT_CARE,
+          GL_DONT_CARE,
+          GL_DONT_CARE,
+          0,
+          &unusedIds,
+          true
+      );
+    }
+
 
     vsx_application_manager::get_instance()->get()->init();
 
