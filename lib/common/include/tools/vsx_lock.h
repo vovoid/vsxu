@@ -1,21 +1,37 @@
 #pragma once
 
+#include <atomic>
+
 class vsx_lock
 {
-  volatile __attribute__((aligned(64))) int64_t ticket_number = 0;
-  volatile __attribute__((aligned(64))) int64_t turn = 0;
+  std::atomic_uint_fast64_t ticket_number;
+  std::atomic_uint_fast64_t turn;
 
 public:
 
+  vsx_lock()
+  {
+    ticket_number = 0;
+    turn = 0;
+  }
+
   inline void aquire()
   {
-    int64_t my_turn = __sync_fetch_and_add( &ticket_number, 1);
+    uint64_t my_turn =  ticket_number.fetch_add(1);
     while (turn != my_turn)
       continue;
   }
 
   inline void release()
   {
-    __sync_fetch_and_add( &turn, 1);
+    turn.fetch_add(1);
   }
+
+  inline const vsx_lock& operator=(const vsx_lock& other)
+  {
+    this->ticket_number = other.ticket_number.load();
+    this->turn = other.turn.load();
+    return *this;
+  }
+
 };
