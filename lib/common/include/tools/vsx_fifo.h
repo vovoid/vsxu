@@ -21,8 +21,9 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_FIFO_H
-#define VSX_FIFO_H
+#pragma once
+
+#include <atomic>
 
 template<
     typename T = int64_t,   // your data type
@@ -32,22 +33,29 @@ class vsx_fifo
 {
 private:
   // this is the only variable shared between the threads
-  volatile __attribute__((aligned(64))) int64_t live_count = 0;
+  std::atomic_uint_fast64_t live_count;
 
   // this variable is owned by the producer thread; keep it on its own cache page
-  int64_t __attribute__((aligned(64))) write_pointer = 0;
+  std::atomic_uint_fast64_t write_pointer;
 
   // this variable is owned by consumer thread; keep it on its own cache page
-  int64_t __attribute__((aligned(64))) read_pointer = 0;
+  std::atomic_uint_fast64_t read_pointer;
 
   // actual data storage
   T __attribute__((aligned(64))) buffer[buffer_size];
 
 public:
 
-  int64_t live_count_get()
+  vsx_fifo()
   {
-    return live_count;
+    live_count = 0;
+    write_pointer = 0;
+    read_pointer = 0;
+  }
+
+  uint64_t live_count_get()
+  {
+    return live_count.load();
   }
 
   // producer - if there is room in the queue, write to it
@@ -61,18 +69,18 @@ public:
     (
       buffer_size
       ==
-      live_count   // if our cache is old, it'll be OK next time
+      live_count.load()   // if our cache is old, it'll be OK next time
     )
       return false;
 
     // advance the cyclic write pointer
-    write_pointer++;
+    write_pointer.fetch_add(1);
 
     // write value
-    buffer[write_pointer & (buffer_size-1) ] = value;
+    buffer[write_pointer.load() & (buffer_size-1) ] = value;
 
     // now make this data available to the consumer
-    __sync_fetch_and_add( &live_count, 1);
+    live_count.fetch_add(1);
     return true;
   }
 
@@ -89,25 +97,21 @@ public:
     (
       0
       ==
-      live_count // if our cache is old, no harm done
+      live_count.load() // if our cache is old, no harm done
     )
       return false;
 
     // advance the cyclic read pointer
-    read_pointer++;
+    read_pointer.fetch_add(1);
 
     // read value
-    result = buffer[read_pointer & (buffer_size-1) ];
+    result = buffer[read_pointer.load() & (buffer_size-1) ];
 
     // now we have read the value which means it can
     // be re-used, so decrease the live_count
-    __sync_fetch_and_sub( &live_count, 1 );
+    live_count.fetch_sub(1);
 
     return true;
   }
 
-
-
 };
-
-#endif

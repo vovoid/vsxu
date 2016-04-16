@@ -110,7 +110,7 @@ public:
       (vsx_bitmap* bitmap, float frequency, float attenuation, vsx_color<> color, bool alpha, uint16_t size)
       {
         generate(bitmap, frequency, attenuation, color, alpha, size);
-        __sync_fetch_and_add( &(bitmap->data_ready), 1 );
+        bitmap->data_ready.fetch_add(1);
         bitmap->lock.release();
       },
       bitmap,

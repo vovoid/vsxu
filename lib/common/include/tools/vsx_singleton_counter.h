@@ -1,20 +1,22 @@
-#ifndef VSX_SINGLETON_COUNTER_H
-#define VSX_SINGLETON_COUNTER_H
+#pragma once
 
-#include <inttypes.h>
+#include <atomic>
 
 // Atomic, unique counter across all cores
 class vsx_singleton_counter
 {
-  uint64_t counter = 0;
+  std::atomic_uint_fast64_t counter;
 
 public:
+
+  vsx_singleton_counter()
+  {
+    counter = 0;
+  }
 
   static uint64_t get()
   {
     static vsx_singleton_counter vsc;
-    return __sync_fetch_and_add( &vsc.counter, 1);
+    return vsc.counter.fetch_add(1);
   }
 };
-
-#endif

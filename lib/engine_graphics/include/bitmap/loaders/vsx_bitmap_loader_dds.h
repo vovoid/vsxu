@@ -167,7 +167,7 @@ class vsx_bitmap_loader_dds
       }
 
     bitmap->timestamp = vsx_singleton_counter::get();
-    __sync_fetch_and_add( &(bitmap->data_ready), 1 );
+    bitmap->data_ready.fetch_add(1);
 
     return 0;
   }

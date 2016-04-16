@@ -233,7 +233,7 @@ public:
       )
       {
         generate(bitmap, period_red, period_green, period_blue, period_alpha, offset_red, offset_green, offset_blue, offset_alpha, amp, ofs, size);
-        __sync_fetch_and_add( &(bitmap->data_ready), 1 );
+        bitmap->data_ready.fetch_add(1);
         bitmap->lock.release();
       },
       bitmap,

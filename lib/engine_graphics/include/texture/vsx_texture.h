@@ -62,7 +62,7 @@ public:
     req(texture);
     req(!texture->uploaded_to_gl);
     req(texture->bitmap);
-    req(__sync_fetch_and_add(&(texture->bitmap->data_ready), 0));
+    req(texture->bitmap->data_ready.load());
 
     texture->unload();
 

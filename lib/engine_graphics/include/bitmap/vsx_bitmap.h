@@ -130,7 +130,7 @@ public:
 
 
   // has thread finished producing data when loading?
-  volatile __attribute__((aligned(64))) uint64_t data_ready = 0;
+  std::atomic_uint_fast64_t data_ready;
 
   enum compression_type {
     compression_none = 0,
@@ -140,6 +140,19 @@ public:
   };
 
   compression_type compression = compression_none;
+
+
+  void copy_information_from(const vsx_bitmap& other)
+  {
+    width = other.width;
+    height = other.height;
+    depth = other.depth;
+    alpha = other.alpha;
+    channels = other.channels;
+    channels_bgra = other.channels_bgra;
+    storage_format = other.storage_format;
+    compression = other.compression;
+  }
 
   // cache information
   bool attached_to_cache = false;
@@ -193,6 +206,11 @@ public:
       if (!data[0][i])
         return i;
     return 6;
+  }
+
+  vsx_bitmap()
+  {
+    data_ready = 0;
   }
 
   ~vsx_bitmap()

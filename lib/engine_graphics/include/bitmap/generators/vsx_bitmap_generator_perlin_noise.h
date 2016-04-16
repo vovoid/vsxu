@@ -272,7 +272,7 @@ public:
                  octave, frequency, perlin_strength, alpha,
                  color, storage_float, size );
 
-        __sync_fetch_and_add( &(bitmap->data_ready), 1 );
+        bitmap->data_ready.fetch_add(1);
         bitmap->lock.release();
       },
       bitmap,

@@ -113,7 +113,7 @@ public:
       return;
     }
 
-    bitmap = *source_bitmap;
+    bitmap.copy_information_from( *source_bitmap );
     ++frame;
 
     if (bitmap.width != source_bitmap->width && bitmap.height != source_bitmap->height)

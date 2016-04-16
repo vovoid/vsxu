@@ -130,7 +130,7 @@ public:
       (vsx_bitmap* bitmap, int rand_seed, int amplitude, uint16_t size)
       {
         generate(bitmap, rand_seed, amplitude, size);
-        __sync_fetch_and_add( &(bitmap->data_ready), 1 );
+        bitmap->data_ready.fetch_add(1);
         bitmap->lock.release();
       },
       bitmap,

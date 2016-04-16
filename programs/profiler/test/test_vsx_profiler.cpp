@@ -9,8 +9,7 @@
 
 #include <profiler/vsx_profiler_manager.h>
 
-
-volatile __attribute__((aligned(64))) int64_t run_threads = 1;
+std::atomic_uint_fast64_t run_threads;
 
 void *thread_producer( void *arg )
 {
@@ -18,7 +17,7 @@ void *thread_producer( void *arg )
   vsx_profiler_manager::get_instance()->init_profiler();
 
   vsx_profiler* p = vsx_profiler_manager::get_instance()->get_profiler();
-  while ( __sync_fetch_and_add( &run_threads, 0) )
+  while ( run_threads.load() )
   {
     p->maj_begin();
     p->sub_begin("1 test1");
@@ -38,7 +37,7 @@ void *thread_producer2( void *arg )
 {
   VSX_UNUSED(arg);
   vsx_profiler* p = vsx_profiler_manager::get_instance()->get_profiler();
-  while ( __sync_fetch_and_add( &run_threads, 0) )
+  while ( run_threads.load() )
   {
     p->maj_begin();
     p->sub_begin("2 test1");
@@ -61,6 +60,7 @@ int main()
 {
   int procs = 0;
   int i;
+  run_threads = 1;
   pthread_t *thrs;
 
   // Getting number of CPUs
@@ -97,7 +97,8 @@ int main()
 
   sleep( 20 );
 
-  __sync_fetch_and_sub( &run_threads, 1);
+  run_threads.fetch_sub(1);
+  run_threads.fetch_sub(1);
 
 
   for (i = 0; i < 2; i++)

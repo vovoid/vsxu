@@ -219,7 +219,7 @@ public:
     }
 
     result_bitmap->timestamp++;
-    __sync_fetch_and_add( &(module->bitmap.data_ready), 1 );
+    module->bitmap.data_ready.fetch_add(1);
 
     return 0;
   }

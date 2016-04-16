@@ -202,7 +202,6 @@ public:
     fwrite(&c,sizeof(vsx_profile_chunk),1,fp);
 
     fclose(fp);
-    pthread_exit(0);
     return NULL;
   }
 
@@ -323,7 +322,6 @@ public:
         }
       }
     }
-    pthread_exit(0);
     return 0x0;
   }
 
