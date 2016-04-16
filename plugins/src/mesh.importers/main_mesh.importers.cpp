@@ -25,8 +25,6 @@
 #include "_configuration.h"
 #include "vsx_param.h"
 #include <module/vsx_module.h>
-#include <pthread.h>
-#include <semaphore.h>
 
 
 #include "module_mesh_cal3d_loader_threaded.h"

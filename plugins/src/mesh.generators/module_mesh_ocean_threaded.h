@@ -1,3 +1,6 @@
+#include <pthread.h>
+#include <semaphore.h>
+
 #include "ocean/fftrefraction.h"
 #include "ocean/matrix.h"
 #include "ocean/paulslib.h"

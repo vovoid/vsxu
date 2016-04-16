@@ -23,7 +23,6 @@
 
 
 #include "_configuration.h"
-#include "pthread.h"
 #include "vsx_param.h"
 #include <module/vsx_module.h>
 #include <vector>

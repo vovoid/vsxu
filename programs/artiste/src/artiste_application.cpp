@@ -26,7 +26,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include "vsx_gl_global.h"
-#include "pthread.h"
 #include "vsx_command.h"
 #include "vsx_param.h"
 #include <module/vsx_module.h>

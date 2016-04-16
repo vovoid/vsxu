@@ -27,7 +27,6 @@
 #include "vsx_gl_global.h"
 #include "vsx_param.h"
 #include <module/vsx_module.h>
-#include <pthread.h>
 
 #ifndef _WIN32
 #include <unistd.h>

@@ -27,8 +27,6 @@
 #include <module/vsx_module.h>
 #include <math/vsx_sequence.h>
 #include <math/vsx_bspline.h>
-#include <pthread.h>
-#include <semaphore.h>
 
 
 #include "module_mesh_bspline_vertices.h"
