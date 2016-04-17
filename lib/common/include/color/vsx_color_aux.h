@@ -1,14 +1,13 @@
-#ifndef VSX_COLOR_AUX_H
-#define VSX_COLOR_AUX_H
+#pragma once
 
 #include <color/vsx_color.h>
 #include <string/vsx_string.h>
 #include <filesystem/vsx_filesystem.h>
 
 
-namespace vsx_color_aux
-{
-  inline vsx_color<> from_string(vsx_string<>&val) VSX_ALWAYS_INLINE
+//namespace vsx_color_aux
+//{
+  vsx_color<> from_string(vsx_string<char> &val) VSX_ALWAYS_INLINE
   {
     vsx_color<> res;
     vsx_string<>deli = ",";
@@ -50,6 +49,6 @@ namespace vsx_color_aux
   {
     printf( "Name: %s. r: %f b: %f b: %f a: %f\n",label, v.r, v.g, v.b, v.a );
   }
-}
+//}
 
-#endif // VSX_COLOR_AUX_H
+

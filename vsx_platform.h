@@ -3,9 +3,8 @@
 //  engine_graphics
 //  artiste
 // NOT needed when using these libraries.
-#ifndef VSX_PLATFORM_H
-#define VSX_PLATFORM_H
 
+#pragma once
 // unused macro
 #define VSX_UNUSED(arg) (void)arg
 
@@ -96,4 +95,10 @@
 
 #endif
 
+
+#ifdef __GNUC__
+#define VSX_PACK( class_to_pack ) class_to_pack __attribute__((__packed__))
+#else
+#define __PRETTY_FUNCTION__ ""
+#define VSX_PACK( class_to_pack ) __pragma( pack(push, 1) ) class_to_pack __pragma( pack(pop) )
 #endif

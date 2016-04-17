@@ -40,7 +40,7 @@ class vsx_nw_vector
   size_t allocation_increment = 1;
   size_t data_volatile = 0;
   size_t timestamp = 0;
-  __attribute__((aligned(64))) T* A = 0;
+  T* A = 0;
 
 public:
 

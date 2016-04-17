@@ -2,11 +2,11 @@
 #include "vsx_version.h"
 
 #include <stdlib.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <string>
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-  #include <sys/stat.h>
+#include <unistd.h>
+#include <sys/stat.h>
 #endif
 
 #include <stdio.h>

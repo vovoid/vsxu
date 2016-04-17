@@ -15,12 +15,6 @@
 #include <string/vsx_printf.h>
 #include <debug/vsx_backtrace.h>
 
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-  #include <platform/win64/mingw-std-threads/mingw.thread.h>
-  #include <platform/win64/mingw-std-threads/mingw.mutex.h>
-  #include <platform/win64/mingw-std-threads/mingw.condition_variable.h>
-#endif
-
 class vsx_thread_pool
 {
 public:

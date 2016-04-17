@@ -4,12 +4,16 @@
 #include <string/vsx_string.h>
 #include <vsx_common_dllimport.h>
 
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+#include <windows.h>
+#endif
+
 #include <stdlib.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <string>
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-  #include <sys/stat.h>
+#include <unistd.h>
+#include <sys/stat.h>
 #endif
 
 #include <stdio.h>
@@ -29,11 +33,13 @@ public:
 
   void ensure_output_directory(vsx_string<> name)
   {
-    if (access(  (data_path_get() + name).c_str(),0) != 0)
       #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+        if (access((data_path_get() + name).c_str(), 0) != 0)
         mkdir( (data_path_get() + name).c_str(), 0700 );
       #else
-        mkdir( (data_path_get() + name).c_str() );
+        DWORD dwAttr = GetFileAttributes((data_path_get() + name).c_str());
+        if (dwAttr != 0xffffffff && (dwAttr & FILE_ATTRIBUTE_DIRECTORY))       
+          CreateDirectory( (data_path_get() + name).c_str(), NULL );
       #endif
   }
 

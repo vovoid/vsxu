@@ -25,10 +25,11 @@
 #ifndef VSX_VECTOR_H
 #define VSX_VECTOR_H
 
+#include <vsx_platform.h>
 #include <inttypes.h>
 #include <math/vsx_math.h>
 
-
+VSX_PACK(
 template<typename T = float>
 class vsx_vector3
 {
@@ -263,7 +264,9 @@ public:
     y = b;
     z = c;
   }
-} __attribute__((packed));
+}
+);
+
 
 typedef vsx_vector3<float> vsx_vector3f;
 typedef vsx_vector3<double> vsx_vector3d;

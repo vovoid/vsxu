@@ -184,7 +184,7 @@ public:
   static vsx_string<> get_executable_directory()
   {
     char pBuf[512];
-    const ssize_t len = 512;
+    const size_t len = 512;
 
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
       int bytes = GetModuleFileName(NULL, pBuf, len);

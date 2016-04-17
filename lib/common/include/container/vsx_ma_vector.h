@@ -48,7 +48,7 @@ class vsx_ma_vector
   size_t allocation_increment = 1;
   size_t data_volatile = 0;
   size_t timestamp = 0;
-  __attribute__((aligned(64))) T* A = 0x0;
+  T* A = 0x0;
 
 public:
 
@@ -214,7 +214,7 @@ public:
     allocated = used;
   }
 
-  T& operator[](unsigned long index)
+  T& operator[](size_t index)
   {
     allocate(index);
     return A[index];

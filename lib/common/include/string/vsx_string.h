@@ -32,7 +32,7 @@
 #include <iomanip>
 
  
-template<typename W = char> // wchar_t
+template<typename W = char> 
 class vsx_string
 {
   mutable vsx_nw_vector<W> data;
@@ -40,7 +40,7 @@ class vsx_string
   // deal with the terminating 0 character
   inline bool zero_test() const VSX_ALWAYS_INLINE
   {
-    return (data[data.get_used()-1]);
+    return (data[data.get_used()-1]) > 0;
   }
 
   inline void zero_add() const VSX_ALWAYS_INLINE
@@ -148,7 +148,7 @@ public:
 	}
   
   // constructors
-  vsx_string()
+  vsx_string<W>()
   :
   data()
   {
@@ -168,7 +168,7 @@ public:
 //----------------------------------------------------------------------------
 // NULLTERMINATED *
 //----------------------------------------------------------------------------
-  vsx_string<W>(const W* other_string)
+  vsx_string<W> (const W* other_string)
   :
   data()
   {

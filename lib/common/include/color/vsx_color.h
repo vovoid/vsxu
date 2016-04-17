@@ -21,8 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_COLOR_H
-#define VSX_COLOR_H
+#pragma once 
 
 #include <math/vector/vsx_vector3.h>
 #include <vsx_platform.h>
@@ -170,5 +169,3 @@ public:
 typedef vsx_color<float> vsx_colorf;
 typedef vsx_color<double> vsx_colord;
 
-
-#endif
