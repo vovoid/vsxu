@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef __GNUC__
+
 #ifdef __i386
 __inline__ uint64_t vsx_rdtsc()
 {
@@ -14,4 +16,9 @@ inline uint64_t vsx_rdtsc()
   __asm__ volatile ("rdtsc" : "=a" (a), "=d" (d));
   return (d<<32) | a;
 }
+#endif
+#else
+
+#define vsx_rdtsc __rdtsc
+
 #endif

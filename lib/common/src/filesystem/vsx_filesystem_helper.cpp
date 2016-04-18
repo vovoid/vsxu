@@ -1,6 +1,14 @@
 #include <filesystem/vsx_filesystem_helper.h>
 #include <sys/types.h>
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+#include <io.h>
+#endif
+
+#ifdef __GNUC__
 #include <dirent.h>
+#endif
+
 #include <filesystem/vsx_filesystem.h>
 #include <string/vsx_string_helper.h>
 
@@ -24,7 +32,7 @@ void get_files_recursive(vsx_string<>startpos, std::list< vsx_string<> >* filena
 {
 #endif
 
-#ifdef _WIN32
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
   _finddata_t fdp;
 #else
   DIR* dir;

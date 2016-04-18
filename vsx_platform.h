@@ -102,5 +102,5 @@
 #else
 #define __PRETTY_FUNCTION__ ""
 #define VSX_PACK_BEGIN __pragma( pack(push, 1) )
-#define VSX_PACK_END; __pragma( pack(pop) )
+#define VSX_PACK_END ; __pragma( pack(pop) )
 #endif

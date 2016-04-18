@@ -126,6 +126,7 @@ void filesystem_archive_vsxz_writer::close()
 
 
   // Add files to compression chunks
+  const size_t max_chunks = 9;
   filesystem_archive_chunk_write chunks[max_chunks];
   size_t chunk_other_iterator = 2;
   is_processed.memory_clear();

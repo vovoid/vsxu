@@ -15,6 +15,7 @@
  */
 namespace vsx
 {
+VSX_PACK_BEGIN
 struct vsxz_header
 {
    uint8_t identifier[4] = {'V','S', 'X', 'Z'}; // "VSXZ"
@@ -24,20 +25,25 @@ struct vsxz_header
    uint32_t chunk_count = 0; // number of compression chunks in this archive
    uint32_t compression_uncompressed_memory_size = 0; // the chunk of memory needed for uncompressing the entire archive
    uint32_t reserved[4] = {0xEFBEADDE, 0xEFBEADDE, 0xEFBEADDE, 0xEFBEADDE};
-} __attribute__((packed));
+}
+VSX_PACK_END
 
+VSX_PACK_BEGIN
 struct vsxz_header_chunk_info
 {
   uint16_t compression_type = 0; // 0 for none, 1 for lzma, 2 for lzham
   uint32_t compressed_size = 0;
   uint32_t uncompressed_size = 0;
-} __attribute__((packed));
+}
+VSX_PACK_END
 
+VSX_PACK_BEGIN
 struct vsxz_header_file_info
 {
   uint8_t chunk = 0; // chunk index, starts with 0
   uint32_t offset = 0; // offset within the chunk
   uint32_t size = 0; // uncompressed size
-} __attribute__((packed));
+}
+VSX_PACK_END
 
 }

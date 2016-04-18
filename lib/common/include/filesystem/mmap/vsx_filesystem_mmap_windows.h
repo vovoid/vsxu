@@ -46,7 +46,7 @@ public:
         0
       );
 
-    req_error_v(map_ptr != INVALID_HANDLE_VALUE, "Invalid mapping handle", 0x0);
+    req_error_v(map_handle != INVALID_HANDLE_VALUE, "Invalid mapping handle", 0x0);
 
     unsigned char* map_ptr = (unsigned char*)
       (

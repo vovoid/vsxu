@@ -36,7 +36,7 @@
 #endif
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-  #include <libloaderapi.h> // GetProcAddress/GetModuleFileName
+  #include <windows.h> // GetProcAddress/GetModuleFileName
 #endif
 
 #include <container/vsx_nw_vector.h>
