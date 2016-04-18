@@ -62,6 +62,7 @@ class vsx_bitmap_loader_dds
     : public vsx_bitmap_loader_base
 {
 
+  VSX_PACK_BEGIN
   struct dds_header
   {
     uint32_t    magic;
@@ -95,7 +96,8 @@ class vsx_bitmap_loader_dds
     } caps;
 
     uint32_t    reserved_2;
-  } __attribute__((packed));
+  }
+  VSX_PACK_END
 
   static bool worker_load_file(vsx_bitmap* bitmap, vsx::filesystem* filesystem, vsx::file* file_handle, size_t cube_map_side)
   {

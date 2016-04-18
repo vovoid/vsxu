@@ -1,19 +1,24 @@
 #pragma once
 
+#include <vsx_platform.h>
 #include <container/vsx_nw_vector.h>
 #include <string/vsx_string.h>
 
 
+VSX_PACK_BEGIN
 struct vsx_filesystem_tree_node_storage_header
 {
   uint8_t filename_length_mask;
   uint16_t child_node_offset;
-} __attribute__((packed));
+}
+VSX_PACK_END
 
+VSX_PACK_BEGIN
 struct vsx_filesystem_tree_node_storage_footer
 {
   uint32_t payload;
-} __attribute__((packed));
+}
+VSX_PACK_END
 
 class vsx_filesystem_tree_node
 {

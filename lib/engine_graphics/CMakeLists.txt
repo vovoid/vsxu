@@ -23,7 +23,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/
   ${CMAKE_SOURCE_DIR}/lib/common/include
   ${CMAKE_SOURCE_DIR}/lib/engine_graphics/include
-  ${CMAKE_SOURCE_DIR}/lib/engine_graphics/include/ftgl
 )
 
 ################################################################################

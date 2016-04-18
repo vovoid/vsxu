@@ -22,8 +22,7 @@
 */
 
 
-#ifndef VSX_QUATERNION_H
-#define VSX_QUATERNION_H
+#pragma once
 
 #include <math/vector/vsx_vector3.h>
 #include <math/vsx_matrix.h>
@@ -38,6 +37,7 @@ inline double vsx_math_3d_max(const double& x, const double& y)
   return ( x > y ) ? x : y;
 }
 
+VSX_PACK_BEGIN
 template<typename T = float>
 class vsx_quaternion
 {
@@ -301,8 +301,5 @@ public:
     p2.z = 2*x*z*p1.x + 2*y*z*p1.y + z*z*p1.z - 2*w*y*p1.x - y*y*p1.z + 2*w*x*p1.y - x*x*p1.z + w*w*p1.z;
     return p2;
   }
-} __attribute__((packed));
-
-
-
-#endif
+}
+VSX_PACK_END

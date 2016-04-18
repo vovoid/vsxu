@@ -29,7 +29,7 @@
 #include <inttypes.h>
 #include <math/vsx_math.h>
 
-VSX_PACK(
+VSX_PACK_BEGIN
 template<typename T = float>
 class vsx_vector3
 {
@@ -265,8 +265,7 @@ public:
     z = c;
   }
 }
-);
-
+VSX_PACK_END
 
 typedef vsx_vector3<float> vsx_vector3f;
 typedef vsx_vector3<double> vsx_vector3d;

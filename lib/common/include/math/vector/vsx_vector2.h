@@ -28,6 +28,7 @@
 #include <math/vsx_math.h>
 #include <math/vector/vsx_vector3.h>
 
+VSX_PACK_BEGIN
 template<typename T = float>
 class vsx_vector2
 {
@@ -209,7 +210,8 @@ public:
     x = nx;
     y = ny;
   }
-} __attribute__((packed));
+}
+VSX_PACK_END
 
 typedef vsx_vector2<float> vsx_vector2f;
 typedef vsx_vector2<double> vsx_vector2d;

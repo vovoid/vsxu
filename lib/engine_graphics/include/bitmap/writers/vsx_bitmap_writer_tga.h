@@ -12,6 +12,7 @@ class vsx_bitmap_writer_tga
     : public vsx_bitmap_writer_base
 {
 
+  VSX_PACK_BEGIN
   struct tga_header {
      uint8_t id_length = 0;
      uint8_t color_map_type = 0;
@@ -28,7 +29,8 @@ class vsx_bitmap_writer_tga
 
      uint8_t bits_per_pixel = 0;
      uint8_t image_descriptor = 0;
-  } __attribute__((packed));
+  }
+  VSX_PACK_END
 
 
   static void worker_cubemap_side(vsx_bitmap* bitmap, vsx_string<> filename, size_t side = 0)

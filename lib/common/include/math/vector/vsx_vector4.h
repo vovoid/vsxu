@@ -29,6 +29,7 @@
 #include <math/vsx_math.h>
 #include <math/vector/vsx_vector3.h>
 
+VSX_PACK_BEGIN
 template<typename T = float>
 class vsx_vector4
 {
@@ -59,7 +60,8 @@ public:
     w = n[4];
   }
 
-} __attribute__((packed));
+}
+VSX_PACK_END
 
 typedef vsx_vector4<float> vsx_vector4f;
 typedef vsx_vector4<double> vsx_vector4d;

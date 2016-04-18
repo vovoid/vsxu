@@ -157,6 +157,7 @@ if(VSXU_DEBUG_SYMBOLS)
   add_definitions(-g)
 endif()
 
+add_definitions(-fmax-errors=500)
 
 if(VSXU_DEBUG)
   message("Compiling with debug flags")

@@ -8,6 +8,7 @@ class vsx_bitmap_loader_tga
     : public vsx_bitmap_loader_base
 {
 
+  VSX_PACK_BEGIN
   struct tga_header {
      uint8_t id_length;
      uint8_t color_map_type;
@@ -24,7 +25,8 @@ class vsx_bitmap_loader_tga
 
      uint8_t bits_per_pixel;
      uint8_t image_descriptor;
-  } __attribute__((packed));
+  }
+  VSX_PACK_END
 
 
   static void* worker(vsx_bitmap* bitmap, vsx::filesystem* filesystem, vsx_string<> filename)
