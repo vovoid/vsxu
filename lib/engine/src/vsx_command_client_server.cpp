@@ -23,7 +23,6 @@
 
 
 #include <vsx_platform.h>
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include "vsx_command_client_server.h"
 
 
@@ -42,7 +41,7 @@
 
 #define handle_error(msg) \
            perror(msg); \
-           return 0;
+           return;
 
 #define BUFLEN 256*1024
 
@@ -78,16 +77,13 @@ void vsx_command_list_server::set_command_lists(vsx_command_list* new_in,
 bool vsx_command_list_server::start()
 {
   if (!cmd_in || !cmd_out) return false;
-  pthread_attr_init(&worker_t_attr);
-  pthread_create(&worker_t, &worker_t_attr, &server_worker, (void*)this);
-  pthread_detach(worker_t);
+  worker_thread = std::thread( [this](){ server_worker(); } );
   return true;
 }
 
-void* vsx_command_list_server::server_worker(void *ptr)
+void vsx_command_list_server::server_worker()
 {
   printf("server starting...\n");
-  vsx_command_list_server* this_ = (vsx_command_list_server*)ptr;
   int listen_sock = -1;
   int status;
   struct addrinfo hints;
@@ -197,7 +193,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
 
       vsx_command_s *out_command;
       int count_sent = 0;
-      while (this_->cmd_out->pop(&out_command))
+      while (cmd_out->pop(&out_command))
       {
         //printf("sending command: %s\n",out_command->str().c_str() );
         vsx_string<>res = out_command->str()+"\n";
@@ -258,7 +254,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
             {
               if (message_stack != "_")
               {
-                this_->cmd_in->add_raw(message_stack);
+                cmd_in->add_raw(message_stack);
               }
             }
             message_stack = "";
@@ -291,7 +287,7 @@ void* vsx_command_list_server::server_worker(void *ptr)
           }
           else
           {
-            this_->cmd_in->add_raw(*msg);
+            cmd_in->add_raw(*msg);
           }
         }
         memset(&recv_buf,0,size_recv+0x1);
@@ -300,7 +296,6 @@ void* vsx_command_list_server::server_worker(void *ptr)
     }
   }
   close(listen_sock);
-  return 0;
 }
 
 // ****************************************************************************
@@ -314,9 +309,8 @@ vsx_command_list_client::vsx_command_list_client()
   connected = VSX_COMMAND_CLIENT_NEVER_CONNECTED;
 }
 
-void* vsx_command_list_client::client_worker(void *ptr)
+void vsx_command_list_client::client_worker()
 {
-  vsx_command_list_client* this_ = (vsx_command_list_client*)ptr;
   /*int status;*/
   struct addrinfo hints;
   struct addrinfo *servinfo;  // will point to the results
@@ -331,14 +325,14 @@ void* vsx_command_list_client::client_worker(void *ptr)
   hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
 
   // get ready to connect
-  /*status = */getaddrinfo(this_->server_address.c_str(), "11030", &hints, &servinfo);
+  /*status = */getaddrinfo(server_address.c_str(), "11030", &hints, &servinfo);
 
   sock = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
 
   // servinfo now points to a linked list of 1 or more struct addrinfos
   if (connect(sock, servinfo->ai_addr, servinfo->ai_addrlen) == -1)
   {
-    this_->connected = VSX_COMMAND_CLIENT_DISCONNECTED;
+    connected = VSX_COMMAND_CLIENT_DISCONNECTED;
     handle_error("connect");
   }
 
@@ -358,7 +352,7 @@ void* vsx_command_list_client::client_worker(void *ptr)
   memset(&recv_buf,0,BUFLEN);
   bool run = true;
 
-  this_->connected = VSX_COMMAND_CLIENT_CONNECTED;
+  connected = VSX_COMMAND_CLIENT_CONNECTED;
   while (run)
   {
     size_recv = recv(sock, &recv_buf, BUFLEN-1, MSG_DONTWAIT);
@@ -368,14 +362,14 @@ void* vsx_command_list_client::client_worker(void *ptr)
       {
         close(sock);
         run = false;
-        this_->connected = VSX_COMMAND_CLIENT_DISCONNECTED;
+        connected = VSX_COMMAND_CLIENT_DISCONNECTED;
         //printf("line: %d\n", __LINE__);
-        return 0;
+        return;
       }
     }
     int count_sent = 0;
     vsx_command_s *out_command;
-    while (this_->cmd_out.pop(&out_command))
+    while (cmd_out.pop(&out_command))
     {
       vsx_string<>res = out_command->str()+"\n";
       //printf("sending to server: %s\n", res.c_str() );
@@ -387,10 +381,10 @@ void* vsx_command_list_client::client_worker(void *ptr)
         ) == -1)
       {
           close(sock);
-          this_->cmd_out.add_front(out_command);
-          this_->connected = VSX_COMMAND_CLIENT_DISCONNECTED;
+          cmd_out.add_front(out_command);
+          connected = VSX_COMMAND_CLIENT_DISCONNECTED;
           //printf("line: %d\n", __LINE__);
-          return 0;
+          return;
       }
       else
       {
@@ -408,10 +402,10 @@ void* vsx_command_list_client::client_worker(void *ptr)
           MSG_NOSIGNAL
         ) == -1) {
           close(sock);
-          this_->connected = VSX_COMMAND_CLIENT_DISCONNECTED;
+          connected = VSX_COMMAND_CLIENT_DISCONNECTED;
           run = false;
           printf("line: %d\n", __LINE__);
-          return 0;
+          return;
         }
         keepalive_timer = 0;
       }
@@ -430,7 +424,7 @@ void* vsx_command_list_client::client_worker(void *ptr)
           )
         {
           //printf("got2: %s___\n",message_stack.c_str());
-          this_->cmd_in.add_raw(message_stack);
+          cmd_in.add_raw(message_stack);
           message_stack = "";
         } else
         {
@@ -444,7 +438,6 @@ void* vsx_command_list_client::client_worker(void *ptr)
     }
     usleep(10);
   }
-  return 0;
 }
 
 vsx_command_list* vsx_command_list_client::get_command_list_in()
@@ -460,9 +453,7 @@ vsx_command_list* vsx_command_list_client::get_command_list_out()
 bool vsx_command_list_client::client_connect(vsx_string<>&server_a)
 {
   server_address = server_a;
-  pthread_attr_init(&worker_t_attr);
-  pthread_create(&worker_t, &worker_t_attr, &client_worker, (void*)this);
-  pthread_detach(worker_t);
+  worker_thread = std::thread( [this](){ client_worker(); });
   return true;
 }
 
@@ -471,4 +462,4 @@ int vsx_command_list_client::get_connection_status()
   return connected;
 }
 
-#endif
+

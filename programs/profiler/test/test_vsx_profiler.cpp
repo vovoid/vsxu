@@ -1,6 +1,5 @@
 #include <thread>
 #include <inttypes.h>
-#include <pthread.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <sched.h>
@@ -29,7 +28,6 @@ void thread_producer()
     p->maj_end();
   }
   vsx_printf(L"exiting p1\n");
-  pthread_exit(0);
 }
 
 void thread_producer2()
@@ -48,31 +46,16 @@ void thread_producer2()
     p->maj_end();
   }
   vsx_printf(L"exiting p2\n");
-  pthread_exit(0);
 }
 
 
 
 int main()
 {
-  unsigned int procs = 0;
   run_threads = 1;
-  pthread_t *thrs;
-
-  // Getting number of CPUs
-  procs = std::thread::hardware_concurrency();
-  vsx_printf(L"This system has %d cores available\n", procs);
-
-  thrs = (pthread_t*)malloc( sizeof( pthread_t ) * procs );
-  if (thrs == NULL)
-  {
-    perror( "malloc" );
-    return -1;
-  }
 
   std::thread t1 = std::thread( [](){thread_producer();});
   std::thread t2 = std::thread( [](){thread_producer2();});
-
 
   sleep( 20 );
 
@@ -80,7 +63,6 @@ int main()
 
   t1.join();
   t2.join();
-  free( thrs );
 
   return 0;
 }

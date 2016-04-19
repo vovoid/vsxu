@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 
+
+
+find_package(Threads REQUIRED)
+
   add_definitions(
     -g
     -Wtype-limits
@@ -20,5 +24,5 @@ include_directories(
 
 add_executable(test_vsx_profiler test_vsx_profiler.cpp )
 
-target_link_libraries( test_vsx_profiler  pthread )
+target_link_libraries( test_vsx_profiler ${CMAKE_THREAD_LIBS_INIT})
 

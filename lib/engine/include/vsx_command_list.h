@@ -8,7 +8,6 @@
 #include <container/vsx_ma_vector.h>
 
 #include "vsx_command.h"
-#include <pthread.h>
 
 // thread safety notice:
 //  an instance of this class shouldn't be shared among more than 2 threads hence it's a simple mutex
@@ -17,22 +16,16 @@
 template<class T>
 class vsx_command_buffer_broker
 {
-  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-    pthread_mutex_t mutex1;
-  #endif
+  vsx_lock lock;
 
   void get_lock()
   {
-    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-      pthread_mutex_lock( &mutex1 );
-    #endif
+    lock.aquire();
   }
 
   void release_lock()
   {
-    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-      pthread_mutex_unlock( &mutex1 );
-    #endif
+    lock.release();
   }
 
   vsx::filesystem* filesystem = 0x0;
@@ -427,28 +420,18 @@ public:
 
   vsx_command_buffer_broker()
   {
-    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-      pthread_mutex_init(&mutex1, NULL);
-    #endif
   }
 
   vsx_command_buffer_broker(bool delete_commands)
   :
   delete_commands_on_delete(delete_commands)
   {
-    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-      pthread_mutex_init(&mutex1, NULL);
-    #endif
   }
 
   ~vsx_command_buffer_broker()
   {
     if (delete_commands_on_delete)
       clear_delete();
-
-    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-      pthread_mutex_destroy(&mutex1);
-    #endif
   }
 
 };

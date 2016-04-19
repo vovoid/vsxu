@@ -24,8 +24,8 @@
 #pragma once
 
 #include <vsx_platform.h>
-#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 
+#include <thread>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,7 +35,6 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include <unistd.h>
-#include <pthread.h>
 #include <string/vsx_string.h>
 #include <vsx_command.h>
 #include "vsx_command_list.h"
@@ -46,13 +45,12 @@
 
 class vsx_command_list_server
 {
-  pthread_t         worker_t;
-  pthread_attr_t    worker_t_attr;
+  std::thread worker_thread;
   vsx_command_list* cmd_in;
   vsx_command_list* cmd_out;
 
   // internal worker method
-  static void* server_worker(void *ptr);
+  void server_worker();
 
 public:
   vsx_command_list_server();
@@ -65,8 +63,7 @@ public:
 
 class vsx_command_list_client
 {
-  pthread_t         worker_t;
-  pthread_attr_t    worker_t_attr;
+  std::thread worker_thread;
   vsx_command_list cmd_in;
   vsx_command_list cmd_out;
 
@@ -74,7 +71,7 @@ class vsx_command_list_client
   vsx_string<>server_address;
   
   // internal worker method
-  static void* client_worker(void *ptr);
+  void client_worker();
   int connected;
 public:
   vsx_command_list_client();
@@ -88,5 +85,3 @@ public:
   // get connection status
   int get_connection_status();
 };
-
-#endif
