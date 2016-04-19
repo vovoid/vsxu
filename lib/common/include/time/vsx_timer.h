@@ -22,15 +22,16 @@
 */
 
 
-#ifndef VSX_TIMER_H
-#define VSX_TIMER_H
+#pragma once
 
-//#ifndef WIN32
+#include <vsx_platform.h>
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include <time.h>
 #include <sys/time.h>
-//#endif
+#endif
 
-#ifdef _WIN32
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
 #include <windows.h>
 #endif
 
@@ -89,5 +90,3 @@ vsx_timer() {
 
 };
 
-
-#endif

@@ -20,7 +20,7 @@ vsx_string<> create_random_data_file()
   FILE* fp = fopen(filename.c_str(), "wb");
   for (uint64_t i = 0; i < times; i++)
   {
-    char buf[block];
+    char* buf = (char*)malloc(block);
     for (size_t j = 0; j < block; j++ )
       buf[j] = rand();
 
