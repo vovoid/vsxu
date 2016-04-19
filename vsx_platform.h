@@ -27,9 +27,19 @@
 #define PLATFORM_FAMILY_UNIX 1
 #define PLATFORM_FAMILY_OTHER 2
 
+#define COMPILER_GCC 1
+#define COMPILER_MINGW 2
+#define COMPILER_VISUAL_STUDIO 4
+
 
 #ifndef PLATFORM
     #if defined(WIN32) || defined(WIN64) || defined(_WIN32) || defined(_WIN64)
+      #ifdef __GNUC__
+        #define COMPILER COMPILER_MINGW + COMPILER_GCC
+      #endif
+      #ifdef _MSC_VER
+        #define COMPILER COMPILER_VISUAL_STUDIO
+      #endif
         #define PLATFORM                                        PLATFORM_WINDOWS
         #define PLATFORM_NAME                                   "Windows"
         #define PLATFORM_FAMILY                                 PLATFORM_FAMILY_WINDOWS
@@ -53,6 +63,7 @@
         #define DIRECTORY_SEPARATOR                             "/"
         #define DIRECTORY_SEPARATOR_CHAR                        '/'
     #elif defined(linux) || defined(__linux) || defined(__linux__) || defined(__CYGWIN__)
+        #define COMPILER COMPILER_GCC
         #define PLATFORM                                        PLATFORM_LINUX
         #define PLATFORM_NAME                                   "GNU / Linux"
         #define PLATFORM_FAMILY                                 PLATFORM_FAMILY_UNIX
@@ -95,12 +106,30 @@
 
 #endif
 
-
-#ifdef __GNUC__
+// packing
+#if COMPILER == COMPILER_GCC
 #define VSX_PACK_BEGIN
 #define VSX_PACK_END __attribute__((__packed__));
-#else
+#endif
+
+#if COMPILER == COMPILER_VISUAL_STUDIO
 #define __PRETTY_FUNCTION__ ""
 #define VSX_PACK_BEGIN __pragma( pack(push, 1) )
 #define VSX_PACK_END ; __pragma( pack(pop) )
+#endif
+
+
+// aligned malloc
+#if COMPILER == COMPILER_VISUAL_STUDIO
+  #include <malloc.h>
+  #define vsx_aligned_malloc(n) _aligned_malloc(n, 64)
+  #define vsx_aligned_realloc(pointer, n) _aligned_realloc(pointer, n, 64)
+  #define vsx_aligned_free(pointer) _aligned_free(pointer)
+#endif
+
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+  #define vsx_aligned_malloc(n) aligned_alloc(64, n)
+  #define vsx_aligned_realloc(pointer, n) realloc(pointer, n)
+  #define vsx_aligned_free(pointer) free(pointer)
 #endif

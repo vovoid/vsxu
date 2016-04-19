@@ -40,7 +40,9 @@ class vsx_string
   // deal with the terminating 0 character
   inline bool zero_test() const VSX_ALWAYS_INLINE
   {
-    return (data[data.get_used()-1]) > 0;
+    if (!data.size())
+      return false;
+    return (data[data.get_used()-1]) == 0;
   }
 
   inline void zero_add() const VSX_ALWAYS_INLINE

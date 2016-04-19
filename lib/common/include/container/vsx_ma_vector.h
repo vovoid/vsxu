@@ -68,7 +68,7 @@ public:
   void set_data(T* nA, int nsize) VSX_ALWAYS_INLINE
   {
     if (A && !data_volatile)
-      free(A);
+      vsx_aligned_free(A);
     A = nA;
     used = allocated = nsize;
   }
@@ -147,7 +147,7 @@ public:
     req(!data_volatile);
 
     if (A)
-      free(A);
+      vsx_aligned_free(A);
 
     A = 0;
     used = allocated = 0;
@@ -169,9 +169,9 @@ public:
   inline void allocate_bytes(size_t b) VSX_ALWAYS_INLINE
   {
     if (A)
-      free(A);
+      vsx_aligned_free(A);
 
-    A = (T*)malloc( b );
+    A = (T*)vsx_aligned_malloc( b );
     used = b / sizeof(T);
     allocated = used;
   }
@@ -186,10 +186,10 @@ public:
       if (A)
       {
         allocated = index + allocation_increment;
-        A = (T*)realloc(A,sizeof(T)*allocated);
+        A = (T*)vsx_aligned_realloc(A,sizeof(T)*allocated);
       } else
       {
-        A = (T*)malloc(sizeof(T)*(index+allocation_increment));
+        A = (T*)vsx_aligned_malloc(sizeof(T)*(index+allocation_increment));
         allocated = index+allocation_increment;
       }
       if (allocation_increment < 64)
@@ -210,7 +210,7 @@ public:
   {
     if (allocated == used)
       return;
-    A = (T*)realloc(A, sizeof(T) * used);
+    A = (T*)vsx_aligned_realloc(A, sizeof(T) * used);
     allocated = used;
   }
 
@@ -245,7 +245,7 @@ public:
   inline vsx_ma_vector<T>& operator=(vsx_ma_vector<T>&& other) VSX_ALWAYS_INLINE
   {
     if (A)
-      free(A);
+      vsx_aligned_free(A);
 
     allocated = other.allocated;
     used = other.used;
@@ -285,7 +285,7 @@ public:
   {
     req(!data_volatile);
     req(A);
-    free(A);
+    vsx_aligned_free(A);
   }
 };
 

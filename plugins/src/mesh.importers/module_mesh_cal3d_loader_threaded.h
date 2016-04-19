@@ -26,7 +26,7 @@ typedef struct {
 } morph_info;
 
 typedef struct {
-  volatile __attribute__((aligned(64))) int64_t is_thread;
+  std::atomic_uint_fast64_t is_thread;
   void* class_pointer;
 } cal3d_thread_info;
 
@@ -64,7 +64,7 @@ public:
     vsx_nw_vector<morph_info> morphs;
 
     // threading stuff
-    pthread_t         worker_t;
+    std::thread worker_thread;
     vsx_mesh<>*         mesh; // locked by the mesh
 
     int p_updates;
@@ -74,11 +74,11 @@ public:
     uint64_t               times_run;
     cal3d_thread_info thread_info;
 
-    volatile __attribute__((aligned(64))) int64_t worker_produce;
-    volatile __attribute__((aligned(64))) int64_t param_produce;
-    volatile __attribute__((aligned(64))) int64_t thread_exit;
+    std::atomic_uint_fast64_t worker_produce;
+    std::atomic_uint_fast64_t param_produce;
+    std::atomic_uint_fast64_t thread_exit;
 
-    volatile __attribute__((aligned(64))) float time_to_animate;
+    float time_to_animate = 1.0f / 120.0f;
 
     // transform
     vsx_quaternion<> pre_rotation_quaternion;
@@ -108,10 +108,9 @@ public:
     thread_exit = 0;
 
     times_run = 0;
-    time_to_animate = 1.0f / 120.0f;
 
     thread_info.class_pointer = 0x0;
-    thread_info.is_thread = false;
+    thread_info.is_thread = 0;
   }
 
   bool init()
@@ -123,17 +122,17 @@ public:
   {
     if (thread_created)
     {
-      __sync_fetch_and_add( &thread_exit, 1);
+      thread_exit.fetch_add(1);
 
       // make thread do a dry run if not already running
-      if (!__sync_fetch_and_add( &param_produce, 0))
-          __sync_fetch_and_add( &param_produce, 1);
+      if (!param_produce.load())
+          param_produce.fetch_add(1);
 
-      if (__sync_fetch_and_add( &param_produce, 0)) // we have sent some work to the thread
-        while (__sync_fetch_and_add( &param_produce, 0) && !__sync_fetch_and_add(&worker_produce, 0))
+      if (param_produce.load()) // we have sent some work to the thread
+        while ( param_produce.load() && !worker_produce.load())
         {}
 
-      pthread_join(worker_t, NULL);
+      worker_thread.join();
     }
 
     if (c_model) {
@@ -308,9 +307,8 @@ public:
 
   void param_set_notify(const vsx_string<>& name)
   {
-
-    if (__sync_fetch_and_add( &param_produce, 0))
-      while (__sync_fetch_and_add( &param_produce, 0))
+    if (param_produce.load())
+      while (param_produce.load())
       {}
 
 
@@ -443,15 +441,13 @@ public:
   }
 
 
-  static void* worker(void *ptr)
+  void worker()
   {
-    cal3d_thread_info thread_info= *(cal3d_thread_info*)ptr;
-    module_mesh_cal3d_import* my = ((module_mesh_cal3d_import*)  thread_info.class_pointer);
     int first_rendering = 0;
 
     vsx_timer timer;
     #if (PLATFORM == PLATFORM_LINUX)
-      if (thread_info.is_thread)
+      if (thread_info.is_thread.load())
       {
         const char* cal = "cal3d::worker";
         prctl(PR_SET_NAME,cal);
@@ -460,32 +456,32 @@ public:
 
     forever
     {
-      if (thread_info.is_thread)
+      if (thread_info.is_thread.load())
       {
-        if (my->thread_sync_strategy->get() == 0)
-          while (!__sync_fetch_and_add(&my->param_produce, 0))
+        if (thread_sync_strategy->get() == 0)
+          while (!param_produce.load())
             usleep(1);
 
-        if (my->thread_sync_strategy->get() == 1)
-          while (!__sync_fetch_and_add(&my->param_produce, 0))
+        if (thread_sync_strategy->get() == 1)
+          while (!param_produce.load())
             #if (PLATFORM == PLATFORM_LINUX)
               sched_yield();
             #else
               Sleep(0);
             #endif
 
-        if (my->thread_sync_strategy->get() == 2)
-          while (!__sync_fetch_and_add(&my->param_produce, 0))
+        if (thread_sync_strategy->get() == 2)
+          while (!param_produce.load())
           {}
       }
 
       timer.start();
 
-      CalSkeleton* m_skeleton = my->m_model->getSkeleton();
+      CalSkeleton* m_skeleton = m_model->getSkeleton();
       m_skeleton->calculateState();
 
       CalRenderer *pCalRenderer;
-      pCalRenderer = my->m_model->getRenderer();
+      pCalRenderer = m_model->getRenderer();
       pCalRenderer->beginRendering();
       int meshCount;
       meshCount = pCalRenderer->getMeshCount();
@@ -504,28 +500,28 @@ public:
           // select mesh and submesh for further data access
           if(pCalRenderer->selectMeshSubmesh(meshId, submeshId))
           {
-            my->mesh->data->vertices[pCalRenderer->getVertexCount()+1] = vsx_vector3<>(0,0,0);
-            pCalRenderer->getVertices(&my->mesh->data->vertices[0].x);
+            mesh->data->vertices[pCalRenderer->getVertexCount()+1] = vsx_vector3<>(0,0,0);
+            pCalRenderer->getVertices(&mesh->data->vertices[0].x);
 
-            my->mesh->data->vertex_normals[pCalRenderer->getVertexCount()+1] = vsx_vector3<>(0,0,0);
-            pCalRenderer->getNormals(&my->mesh->data->vertex_normals[0].x);
+            mesh->data->vertex_normals[pCalRenderer->getVertexCount()+1] = vsx_vector3<>(0,0,0);
+            pCalRenderer->getNormals(&mesh->data->vertex_normals[0].x);
 
             if (pCalRenderer->isTangentsEnabled(0))
             {
-              //my->mesh->data->vertex_tangents[pCalRenderer->getVertexCount()+1].x = 0;// = vsx_vector(0,0,0);
-              //int num_tagentspaces = pCalRenderer->getTangentSpaces(0,&my->mesh->data->vertex_tangents[0].x);
+              //mesh->data->vertex_tangents[pCalRenderer->getVertexCount()+1].x = 0;// = vsx_vector(0,0,0);
+              //int num_tagentspaces = pCalRenderer->getTangentSpaces(0,&mesh->data->vertex_tangents[0].x);
             }
 
 
             if (first_rendering < 4)
             {
-              my->mesh->data->vertex_tex_coords[pCalRenderer->getVertexCount()+1].s = 0;
-              pCalRenderer->getTextureCoordinates(0,&my->mesh->data->vertex_tex_coords[0].s);
+              mesh->data->vertex_tex_coords[pCalRenderer->getVertexCount()+1].s = 0;
+              pCalRenderer->getTextureCoordinates(0,&mesh->data->vertex_tex_coords[0].s);
 
               int faceCount = pCalRenderer->getFaceCount();
-              (my->mesh)->data->faces.allocate(faceCount*3);
-              pCalRenderer->getFaces((int*)&(my->mesh)->data->faces[0].a);
-              (my->mesh)->data->faces.reset_used(faceCount);
+              (mesh)->data->faces.allocate(faceCount*3);
+              pCalRenderer->getFaces((int*)&(mesh)->data->faces[0].a);
+              (mesh)->data->faces.reset_used(faceCount);
               first_rendering++;
             }
           }
@@ -538,14 +534,14 @@ public:
       // ********************************************************************
       // perform transforms
 
-      my->post_rot_translate_vec += my->rot_center;
+      post_rot_translate_vec += rot_center;
 
-      my->pre_rotation_mat = my->pre_rotation_quaternion.matrix();
-      my->rotation_mat = my->rotation_quaternion.matrix();
+      pre_rotation_mat = pre_rotation_quaternion.matrix();
+      rotation_mat = rotation_quaternion.matrix();
 
-      unsigned long end = (my->mesh)->data->vertices.size();
-      vsx_vector3<>* vs_v = &(my->mesh)->data->vertices[0];
-      vsx_vector3<>* vs_n = &(my->mesh)->data->vertex_normals[0];
+      unsigned long end = (mesh)->data->vertices.size();
+      vsx_vector3<>* vs_v = &(mesh)->data->vertices[0];
+      vsx_vector3<>* vs_n = &(mesh)->data->vertex_normals[0];
 
 
       for (unsigned long i = 0; i < end; i++)
@@ -553,13 +549,13 @@ public:
         // pre rotation
         vs_v->multiply_matrix_other_vec
         (
-          &my->pre_rotation_mat.m[0],
-          *vs_v - my->pre_rot_center
+          &pre_rotation_mat.m[0],
+          *vs_v - pre_rot_center
         );
-        (*vs_v) += my->pre_rot_center;
+        (*vs_v) += pre_rot_center;
         vsx_vector3<> n = *vs_n;
         vs_n->multiply_matrix_other_vec(
-          &my->pre_rotation_mat.m[0],
+          &pre_rotation_mat.m[0],
           n
         );
 
@@ -567,15 +563,15 @@ public:
         // post rotation
         vs_v->multiply_matrix_other_vec
         (
-          &my->rotation_mat.m[0],
-          *vs_v - my->rot_center
+          &rotation_mat.m[0],
+          *vs_v - rot_center
         );
         // vertex offset
-        (*vs_v) += my->post_rot_translate_vec;
+        (*vs_v) += post_rot_translate_vec;
         // normal rotation
         n = *vs_n;
         vs_n->multiply_matrix_other_vec(
-          &my->rotation_mat.m[0],
+          &rotation_mat.m[0],
           n
         );
         vs_v++;
@@ -585,7 +581,7 @@ public:
       // ********************************************************************
       // calculate tangent space coordinates
 
-      vsx_mesh<>* mesh = my->mesh;
+      vsx_mesh<>* mesh = mesh;
 
       mesh->data->vertex_colors.allocate( mesh->data->vertices.size() );
       mesh->data->vertex_colors.memory_clear();
@@ -645,27 +641,23 @@ public:
           //tangent[a].w = (Dot(Cross(n, t), tan2[a]) < 0.0F) ? -1.0F : 1.0F;
       }
 
-      __sync_fetch_and_add(&my->worker_produce, 1);
-      if (__sync_fetch_and_add(&my->param_produce, 0))
-        __sync_fetch_and_sub(&my->param_produce, 1);
+      worker_produce.fetch_add(1);
+      if (param_produce.load())
+        param_produce.fetch_sub(1);
 
-      my->time_to_animate = timer.dtime();
+      time_to_animate = timer.dtime();
 
       // if we're not supposed to run in a thread
-      if (0 == thread_info.is_thread)
-        return 0;
+      if (0 == thread_info.is_thread.load())
+        return;
 
       // see if the exit flag is set (user changed from threaded to non-threaded mode)
-      if (__sync_fetch_and_add( &my->thread_exit, 0))
+      if (thread_exit.load())
       {
-        int *retval = new int;
-        *retval = 0;
-        my->thread_exit = 0;
-        pthread_exit((void*)retval);
-        return 0;
+        thread_exit = 0;
+        return;
       }
     }
-    return 0;
   }
 
   void run()
@@ -684,45 +676,44 @@ VSXP_S_BEGIN("cal3d run");
     if (thread_created && use_thread->get() == 0)
     {
       // this means the thread is running. kill it off.
-      __sync_fetch_and_add( &thread_exit, 1);
+      thread_exit.fetch_add(1);
 
       // make thread do a dry run if not already running
-      if (!__sync_fetch_and_add( &param_produce, 0))
-          __sync_fetch_and_add( &param_produce, 1);
+      if (!param_produce.load())
+        param_produce.fetch_add(1);
 
-      if (__sync_fetch_and_add( &param_produce, 0)) // we have sent some work to the thread
-        while (__sync_fetch_and_add( &param_produce, 0) && !__sync_fetch_and_add(&worker_produce, 0))
+      if (param_produce.load()) // we have sent some work to the thread
+        while (param_produce.load() && !worker_produce.load() )
         {}
 
-      void* ret;
-      pthread_join(worker_t,&ret);
+      worker_thread.join();
       thread_created = false;
       thread_info.is_thread = 0;
     }
 
     if (!thread_created && use_thread->get() == 1)
     {
-      __sync_fetch_and_add( &thread_info.is_thread, 1);
-      pthread_create(&worker_t, NULL, &worker, (void*)&thread_info);
+      thread_info.is_thread.fetch_add(1);
+      worker_thread = std::thread( [this](){worker();} );
       thread_created = true;
     }
 
     if (0 == use_thread->get())
     {
       thread_info.is_thread = 0;
-      worker((void*)&thread_info);
+      worker();
     }
 
-    if (thread_info.is_thread)
+    if (thread_info.is_thread.load())
       if ( wait_for_thread->get() )
         if (times_run++ > 60 && engine_state->dtime > 0.01)
         {
           if (thread_sync_strategy->get() == 0)
-            while (!__sync_fetch_and_add(&worker_produce, 0))
+            while (!worker_produce.load())
               usleep(1);
 
           if (thread_sync_strategy->get() == 1)
-            while (!__sync_fetch_and_add(&worker_produce, 0))
+            while (!worker_produce.load())
               #if (PLATFORM == PLATFORM_LINUX)
                 sched_yield();
               #else
@@ -730,13 +721,13 @@ VSXP_S_BEGIN("cal3d run");
               #endif
 
           if (thread_sync_strategy->get() == 2)
-            while (!__sync_fetch_and_add( &worker_produce, 0))
+            while (!worker_produce.load())
             {}
         }
 
-    if (__sync_fetch_and_add( &worker_produce, 0) == 1)
+    if (worker_produce.load() == 1)
     {
-      __sync_fetch_and_sub( &worker_produce, 1);
+      worker_produce.fetch_sub(1);
       // lock ackquired. thread is waiting for us to set the semaphore before doing anything again.
       module_mesh_cal3d_import* my = this;
 
@@ -783,9 +774,9 @@ VSXP_S_BEGIN("cal3d run");
     (
         p_updates != param_updates
         &&
-        __sync_fetch_and_add( &param_produce, 0) == 0
+        !param_produce.load()
         &&
-        __sync_fetch_and_add( &worker_produce, 0) == 0
+        !worker_produce.load()
     )
     {
       CalQuaternion q2;
@@ -828,7 +819,7 @@ VSXP_S_BEGIN("cal3d run");
       post_rot_translate_vec.z = post_rot_translate->get(2);
 
       p_updates = param_updates;
-      __sync_fetch_and_add( &param_produce, 1);
+      param_produce.fetch_add(1);
     }
     VSXP_S_END
   }
