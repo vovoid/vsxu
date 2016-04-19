@@ -125,7 +125,7 @@ inline size_t getCurrentRSS( )
 
 inline void print_memory_info()
 {
-  vsx_printf(L"Current memory used: %ld\n", getCurrentRSS()/(1024*1024) );
+  vsx_printf(L"Current memory used: %lld\n", getCurrentRSS()/(1024*1024) );
 }
 
 }

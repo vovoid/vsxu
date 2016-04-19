@@ -65,7 +65,7 @@ public:
     memcpy((void*)A, (void*)(F->get_pointer()), sizeof(T) * used);
   }
 
-  void set_data(T* nA, int nsize) VSX_ALWAYS_INLINE
+  void set_data(T* nA, size_t nsize) VSX_ALWAYS_INLINE
   {
     if (A && !data_volatile)
       vsx_aligned_free(A);

@@ -67,7 +67,7 @@ bool filesystem_archive_vsx_reader::load(const char* archive_filename, bool load
 
   // Find out total size
   fseek (archive_handle, 0, SEEK_END);
-  unsigned long size = ftell(archive_handle);
+  size_t size = ftell(archive_handle);
 
   // Sanitize size
   req_v(size > 4, false);
@@ -78,11 +78,11 @@ bool filesystem_archive_vsx_reader::load(const char* archive_filename, bool load
   char header[5];
   header[4] = 0;
   if (!fread(header,sizeof(char),4,archive_handle))
-    VSX_ERROR_RETURN_V("VSXz Reading header size with fread failed!",0);
+    VSX_ERROR_RETURN_V(L"VSXz Reading header size with fread failed!",0);
 
   vsx_string<> hs(header);
   if (hs != "VSXz")
-    VSX_ERROR_RETURN_V("VSXz tag is wrong",0);
+    VSX_ERROR_RETURN_V(L"VSXz tag is wrong",0);
 
   while (fread(&size,sizeof(uint32_t), 1, archive_handle) != 0)
   {
@@ -104,14 +104,14 @@ bool filesystem_archive_vsx_reader::load(const char* archive_filename, bool load
     {
       size_t rb = fread(file_info.compressed_data.get_pointer(), 1, size, archive_handle);
       if (!rb)
-        VSX_ERROR_EXIT("Could not read compressed data",100)
+        VSX_ERROR_EXIT(L"Could not read compressed data",100)
       archive_files.move_back(std::move(file_info));
       continue;
     }
     archive_files.move_back(std::move(file_info));
 
     // Default behaviour
-    fseek(archive_handle, size, SEEK_CUR);
+    fseek(archive_handle, (long)size, SEEK_CUR);
   }
 
   if (load_data_multithreaded)

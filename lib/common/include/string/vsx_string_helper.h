@@ -39,7 +39,7 @@ namespace vsx_string_helper
   inline vsx_string<>i2x(const uint64_t &in)
   {
     char string_res[256] = "";
-    sprintf(string_res,"%lx",in);
+    sprintf(string_res,"%llx",in);
     return vsx_string<>(string_res);
   }
 

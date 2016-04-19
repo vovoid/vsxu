@@ -133,3 +133,6 @@
   #define vsx_aligned_realloc(pointer, n) realloc(pointer, n)
   #define vsx_aligned_free(pointer) free(pointer)
 #endif
+
+#define WIDE2(x) L##x
+#define WIDE1(x) WIDE2(x)
