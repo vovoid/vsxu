@@ -1,3 +1,4 @@
+#include <thread>
 #include <inttypes.h>
 #include <pthread.h>
 #include <unistd.h>
@@ -11,9 +12,8 @@
 
 std::atomic_uint_fast64_t run_threads;
 
-void *thread_producer( void *arg )
+void thread_producer()
 {
-  VSX_UNUSED(arg);
   vsx_profiler_manager::get_instance()->init_profiler();
 
   vsx_profiler* p = vsx_profiler_manager::get_instance()->get_profiler();
@@ -30,12 +30,10 @@ void *thread_producer( void *arg )
   }
   vsx_printf(L"exiting p1\n");
   pthread_exit(0);
-  return NULL;
 }
 
-void *thread_producer2( void *arg )
+void thread_producer2()
 {
-  VSX_UNUSED(arg);
   vsx_profiler* p = vsx_profiler_manager::get_instance()->get_profiler();
   while ( run_threads.load() )
   {
@@ -51,26 +49,18 @@ void *thread_producer2( void *arg )
   }
   vsx_printf(L"exiting p2\n");
   pthread_exit(0);
-  return NULL;
 }
 
 
 
 int main()
 {
-  int procs = 0;
-  int i;
+  unsigned int procs = 0;
   run_threads = 1;
   pthread_t *thrs;
 
   // Getting number of CPUs
-  procs = (int)sysconf( _SC_NPROCESSORS_ONLN );
-  if (procs < 0)
-  {
-    perror( "sysconf" );
-    return -1;
-  }
-
+  procs = std::thread::hardware_concurrency();
   vsx_printf(L"This system has %d cores available\n", procs);
 
   thrs = (pthread_t*)malloc( sizeof( pthread_t ) * procs );
@@ -80,32 +70,16 @@ int main()
     return -1;
   }
 
-  pthread_create(
-    &thrs[0],
-    NULL,
-    thread_producer,
-    0x0
-  );
-
-  pthread_create(
-    &thrs[1],
-    NULL,
-    thread_producer2,
-    0x0
-  );
+  std::thread t1 = std::thread( [](){thread_producer();});
+  std::thread t2 = std::thread( [](){thread_producer2();});
 
 
   sleep( 20 );
 
   run_threads.fetch_sub(1);
-  run_threads.fetch_sub(1);
 
-
-  for (i = 0; i < 2; i++)
-  {
-    pthread_join( thrs[i], NULL );
-  }
-
+  t1.join();
+  t2.join();
   free( thrs );
 
   return 0;

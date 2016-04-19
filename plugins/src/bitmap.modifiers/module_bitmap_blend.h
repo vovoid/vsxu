@@ -22,6 +22,7 @@
 */
 
 #include <bitmap/vsx_bitmap.h>
+#include <thread>
 
 typedef unsigned char uint8;
 
@@ -109,7 +110,7 @@ public:
   // internal
   int bitm_timestamp = -1;
 
-  pthread_t	worker_t;
+  std::thread worker_thread;
 
   int p_updates = 0;
   int timestamp_1 = -1;
@@ -119,18 +120,14 @@ public:
   vsx_bitmap *bitmap_source_1;
   vsx_bitmap *bitmap_source_2;
 
-  bool worker_running = false;
   void* to_delete_data = 0;
 
   // our worker thread, to keep the tough generating work off the main loop
   // this is a fairly simple operation, but when you want to generate fractals
   // and decode film, you could run into several seconds of processing time.
-  static void* worker(void *ptr)
+  void worker()
   {
-    module_bitmap_blend* module = ((module_bitmap_blend*)ptr);
-    vsx_bitmap* result_bitmap = &module->bitmap;
-    vsx_bitmap* bitmap_source_1 = module->bitmap_source_1;
-    vsx_bitmap* bitmap_source_2 = module->bitmap_source_2;
+    vsx_bitmap* result_bitmap = &bitmap;
 
     unsigned long x,y,ix,iy;
 
@@ -139,11 +136,11 @@ public:
 
     bool ixbound = false, iybound = false;
     iy = 0;
-    for (y = (unsigned long)module->bitm1_ofs_in->get(1); y < result_bitmap->height && !iybound; y++)
+    for (y = (unsigned long)bitm1_ofs_in->get(1); y < result_bitmap->height && !iybound; y++)
     {
       ix = 0;
       ixbound = false;
-      for (x = (unsigned long)module->bitm1_ofs_in->get(0); x < result_bitmap->width && !ixbound; x++)
+      for (x = (unsigned long)bitm1_ofs_in->get(0); x < result_bitmap->width && !ixbound; x++)
       {
         ((uint32_t*)result_bitmap->data_get())[x + y * result_bitmap->width] = ((uint32_t*)bitmap_source_1->data_get())[ix + iy * bitmap_source_1->width];
         ix++;
@@ -158,12 +155,12 @@ public:
     iybound = false;
     iy = 0;
 
-    for (y = (unsigned long)module->bitm2_ofs_in->get(1); y < result_bitmap->height && !iybound; y++)
+    for (y = (unsigned long)bitm2_ofs_in->get(1); y < result_bitmap->height && !iybound; y++)
     {
       ix = 0;
       ixbound = false;
 
-      for (x = (unsigned long)module->bitm2_ofs_in->get(0); x < result_bitmap->width && !ixbound; x++)
+      for (x = (unsigned long)bitm2_ofs_in->get(0); x < result_bitmap->width && !ixbound; x++)
       {
         uint32_t* data = (uint32_t*)result_bitmap->data_get();
         uint32_t* data2 = (uint32_t*)bitmap_source_2->data_get();
@@ -176,11 +173,11 @@ public:
               ((unsigned char*)&data2[ix + iy * bitmap_source_2->width])[a], \
               ((unsigned char*)&data[x + y * result_bitmap->width])[a], \
               BLT, \
-              module->bitm2_opacity_in->get() \
+              bitm2_opacity_in->get() \
             );\
         }\
 
-        switch (module->filter_type_in->get())
+        switch (filter_type_in->get())
         {
           case BLEND_NORMAL       : BLEND_FUNC(Blend_Normal) break;
           case BLEND_LIGHTEN      : BLEND_FUNC(Blend_Lighten) break;
@@ -219,9 +216,7 @@ public:
     }
 
     result_bitmap->timestamp++;
-    module->bitmap.data_ready.fetch_add(1);
-
-    return 0;
+    bitmap.data_ready.fetch_add(1);
   }
 
   void module_info(vsx_module_specification* info)
@@ -323,11 +318,9 @@ public:
       to_delete_data = 0;
     }
 
-    if (bitmap.data_ready && worker_running)
+    if (bitmap.data_ready && worker_thread.joinable())
     {
-      pthread_join(worker_t,0);
-      worker_running = false;
-
+      worker_thread.join();
       bitmap.data_ready = 0;
       bitm_timestamp = bitmap.timestamp;
       bitmap_out->set(&bitmap);
@@ -344,7 +337,7 @@ public:
     req(bitmap_source_2);
     req(bitmap_source_1->data_ready);
     req(bitmap_source_2->data_ready);
-    req(!worker_running);
+    req(!worker_thread.joinable());
     req(bitmap_source_1->timestamp != timestamp_1 || bitmap_source_2->timestamp != timestamp_2 || p_updates != param_updates);
 
     p_updates = param_updates;
@@ -366,14 +359,13 @@ public:
       bitmap.height = (unsigned int)target_size_in->get(1);
     }
 
-    worker_running = true;
-    pthread_create(&worker_t, NULL, &worker, (void*)this);
+    worker_thread = std::thread( [this](){worker();} );
   }
 
   void on_delete()
   {
-    if (worker_running)
-      pthread_join(worker_t,NULL);
+    if (worker_thread.joinable())
+      worker_thread.join();
   }
 
 };
