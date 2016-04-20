@@ -1,6 +1,5 @@
 #include <atomic>
 #include <thread>
-#include <pthread.h>
 #include <semaphore.h>
 #include <tools/vsx_lock.h>
 

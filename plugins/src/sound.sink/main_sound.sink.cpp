@@ -33,7 +33,6 @@
 #include <module/vsx_module.h>
 #include <math/vsx_float_array.h>
 
-#include <pthread.h>
 #include <unistd.h>
 
 

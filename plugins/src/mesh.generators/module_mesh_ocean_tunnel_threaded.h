@@ -1,3 +1,5 @@
+#include <atomic>
+#include <thread>
 #include "ocean/fftrefraction.h"
 #include "ocean/matrix.h"
 #include "ocean/paulslib.h"
@@ -7,39 +9,34 @@ class module_mesh_ocean_tunnel_threaded : public vsx_module
 public:
   // in
   vsx_module_param_float* time_speed;
+
   // out
   vsx_module_param_mesh* result;
 
   // internal
-  vsx_mesh<>* mesh;
-  vsx_mesh<>* mesh_a;
-  vsx_mesh<>* mesh_b;
-  //bool first_run;
+  vsx_mesh<>* mesh = 0x0;
+  vsx_mesh<>* mesh_a = 0x0;
+  vsx_mesh<>* mesh_b = 0x0;
   Alaska ocean;
   float t;
 
   // threading stuff
-  pthread_t         worker_t;
+  std::thread worker_thread;
 
-  pthread_mutex_t   mesh_mutex;
-  int               thread_has_something_to_deliver; // locked by the mesh mutex
-  pthread_mutex_t   thread_exit_mutex;
-  sem_t sem_worker_todo; // indicates wether the worker should do anything.
-  bool              thread_created;
+  bool thread_created = false;
+  std::atomic_int_fast8_t thread_has_something_to_deliver;
+  std::atomic_int_fast8_t thread_exit;
+  std::atomic_int_fast8_t worker_todo; // indicates wether the worker should do anything.
 
   int p_updates;
   bool              worker_running;
   int               thread_state;
-  int               thread_exit;
+
   module_mesh_ocean_tunnel_threaded()
   {
-    pthread_mutex_init(&mesh_mutex,NULL);
-    pthread_mutex_init(&thread_exit_mutex,NULL);
-    sem_init(&sem_worker_todo,0,0);
     thread_has_something_to_deliver = 0;
-    thread_created = false;
-    mesh_a = 0;
-    mesh_b = 0;
+    thread_exit = 0;
+    worker_todo = 0;
   }
 
   bool init()
@@ -49,24 +46,16 @@ public:
 
   ~module_mesh_ocean_tunnel_threaded()
   {
-    if (thread_created)
+    if (worker_thread.joinable())
     {
-      pthread_mutex_lock(&thread_exit_mutex);
-        thread_exit = 1;
-      pthread_mutex_unlock(&thread_exit_mutex);
-      void* ret;
-      int jret = pthread_join(worker_t, &ret);
-      if (jret == 22) printf("ocean_tunnel_threaded: pthread_join failed: EINVAL\n");
-      if (jret == 3) printf("ocean_tunnel_threaded: pthread_join failed: ESRCH\n");
+      thread_exit.fetch_add(1);
+      worker_thread.join();
     }
     if (mesh_a != 0)
     {
       delete mesh_a;
       delete mesh_b;
     }
-    pthread_mutex_destroy(&thread_exit_mutex);
-    pthread_mutex_destroy(&mesh_mutex);
-    sem_destroy(&sem_worker_todo);
   }
 
   void module_info(vsx_module_specification* info)
@@ -103,21 +92,19 @@ public:
     t = 0;
   }
 
-  static void* worker(void *ptr)
+  void worker()
   {
-    forever
+    for(;;)
     {
-      module_mesh_ocean_tunnel_threaded* my = ((module_mesh_ocean_tunnel_threaded*)ptr);
-      if (0 == sem_trywait(&my->sem_worker_todo))
+      if (worker_todo.load())
       {
-        pthread_mutex_lock(&my->mesh_mutex);
-        my->t += my->time_speed->get()*my->engine_state->real_dtime;
-        my->ocean.dtime = my->t;
-        my->ocean.display();
-        my->mesh->data->vertices.reset_used(0);
-        my->mesh->data->vertex_normals.reset_used(0);
-        my->mesh->data->vertex_tex_coords.reset_used(0);
-        my->mesh->data->faces.reset_used(0);
+        t += time_speed->get()*engine_state->real_dtime;
+        ocean.dtime = t;
+        ocean.display();
+        mesh->data->vertices.reset_used(0);
+        mesh->data->vertex_normals.reset_used(0);
+        mesh->data->vertex_tex_coords.reset_used(0);
+        mesh->data->faces.reset_used(0);
         vsx_face3 face;
         vsx_vector3<> g;
         vsx_vector3<> c;
@@ -135,9 +122,9 @@ public:
                 if (j%2 == 1) continue;
     #define TDIV (float)MAX_WORLD_X
     #define TD2  (float)MAX_WORLD_X*0.5f
-                g.x = my->ocean.sea[i][j][0];//+L*MAX_WORLD_X;
-                g.y = my->ocean.sea[i][j][1];//+k*MAX_WORLD_Y;
-                g.z = my->ocean.sea[i][j][2];//*ocean.scale_height;
+                g.x = ocean.sea[i][j][0];//+L*MAX_WORLD_X;
+                g.y = ocean.sea[i][j][1];//+k*MAX_WORLD_Y;
+                g.z = ocean.sea[i][j][2];//*ocean.scale_height;
 
                 float gr = \
                 PI*2.0f * g.x/(TDIV);
@@ -145,55 +132,55 @@ public:
 
 
                 vsx_vector3<> nn;
-                nn.x = my->ocean.big_normals[i][j][0];
-                nn.y = my->ocean.big_normals[i][j][1];
+                nn.x = ocean.big_normals[i][j][0];
+                nn.y = ocean.big_normals[i][j][1];
                 nn.normalize();
-                my->mesh->data->vertex_normals.push_back(vsx_vector3<>(\
+                mesh->data->vertex_normals.push_back(vsx_vector3<>(\
                   nn.x* cos(nra) + nn.y * -sin(nra),\
                   nn.x* sin(nra) + nn.y * cos(nra),\
-                  my->ocean.big_normals[i][j][2]));
-                my->mesh->data->vertex_normals[my->mesh->data->vertex_normals.size()-1].normalize();
+                  ocean.big_normals[i][j][2]));
+                mesh->data->vertex_normals[mesh->data->vertex_normals.size()-1].normalize();
 
 
                 float gz = 2.0f+fabs(g.z)*1.5f;
                 c.x = cos(gr)*gz;
                 c.y = sin(gr)*gz;
                 c.z = g.y*2.0f;
-                b = my->mesh->data->vertices.push_back(c);
-                my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord2f(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
+                b = mesh->data->vertices.push_back(c);
+                mesh->data->vertex_tex_coords.push_back(vsx_tex_coord2f(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
                 ++a;
                 if (a >= 3) {
                   face.a = b-3;
                   face.b = b-2;
                   face.c = b-1;
-                  my->mesh->data->faces.push_back(face);
+                  mesh->data->faces.push_back(face);
                 }
-                g.x = my->ocean.sea[i+1][j][0];//+L*MAX_WORLD_X;
-                g.y = my->ocean.sea[i+1][j][1];//+k*MAX_WORLD_Y;
-                g.z = my->ocean.sea[i+1][j][2];//*ocean.scale_height;
+                g.x = ocean.sea[i+1][j][0];//+L*MAX_WORLD_X;
+                g.y = ocean.sea[i+1][j][1];//+k*MAX_WORLD_Y;
+                g.z = ocean.sea[i+1][j][2];//*ocean.scale_height;
 
                 gr = \
                 PI*2.0f* g.x/(TDIV);
                 nra = gr + 90.0f / 360.0f * 2*PI;
 
 
-                nn.x = my->ocean.big_normals[i+1][j][0];
-                nn.y = my->ocean.big_normals[i+1][j][1];
+                nn.x = ocean.big_normals[i+1][j][0];
+                nn.y = ocean.big_normals[i+1][j][1];
                 nn.normalize();
-                my->mesh->data->vertex_normals.push_back(vsx_vector3<>(\
+                mesh->data->vertex_normals.push_back(vsx_vector3<>(\
                   nn.x* cos(nra) + nn.y * -sin(nra),\
                   nn.x* sin(nra) + nn.y * cos(nra),\
-                  my->ocean.big_normals[i+1][j][2]));
+                  ocean.big_normals[i+1][j][2]));
 
-                my->mesh->data->vertex_normals[my->mesh->data->vertex_normals.size()-1].normalize();
+                mesh->data->vertex_normals[mesh->data->vertex_normals.size()-1].normalize();
 
                 gz = 2.0f+fabs(g.z)*1.5f;
                 c.x = cos(gr)*gz;
                 c.y = sin(gr)*gz;
                 c.z = g.y*2.0f;
-                b = my->mesh->data->vertices.push_back(c);
+                b = mesh->data->vertices.push_back(c);
 
-                my->mesh->data->vertex_tex_coords.push_back(vsx_tex_coord2f(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
+                mesh->data->vertex_tex_coords.push_back(vsx_tex_coord2f(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
 
                 ++a;
 
@@ -201,52 +188,42 @@ public:
                   face.a = b-3;
                   face.b = b-2;
                   face.c = b-1;
-                  my->mesh->data->faces.push_back(face);
+                  mesh->data->faces.push_back(face);
                 }
               }
             }
           }
         }
-        my->thread_has_something_to_deliver++;
-        pthread_mutex_unlock(&my->mesh_mutex);
+        thread_has_something_to_deliver++;
       } // sem_trywait
-      pthread_mutex_lock(&my->thread_exit_mutex);
-      int time_to_exit = my->thread_exit;
-      pthread_mutex_unlock(&my->thread_exit_mutex);
-      if (time_to_exit) {
-        int *retval = new int;
-        *retval = 0;
-        my->thread_exit = 0;
-        pthread_exit((void*)retval);
-        return 0;
-      }
+      if (thread_exit.load())
+        return;
     }
   }
 
-  void run() {
+  void run()
+  {
     loading_done = true;
     if (!thread_created)
     {
-      pthread_create(&worker_t, NULL, &worker, (void*)this);
+      worker_thread = std::thread( [this](){worker();} );
       thread_created = true;
-      sem_post(&sem_worker_todo);
+      worker_todo.fetch_add(1);
       return;
     }
-    // this concept assumes that the run takes shorter than the framerate to do
-    if (0 == pthread_mutex_lock(&mesh_mutex) )
-    {
-      // lock ackquired. thread is waiting for us to set the semaphore before doing anything again.
-      if (thread_has_something_to_deliver)
-      {
-        mesh->timestamp++;
-        result->set(mesh);
 
-        // toggle to the other mesh
-        if (mesh == mesh_a) mesh = mesh_b;
-        else mesh = mesh_a;
-        sem_post(&sem_worker_todo);
-      }
-      pthread_mutex_unlock(&mesh_mutex);
+    if (thread_has_something_to_deliver.load())
+    {
+      mesh->timestamp++;
+      result->set(mesh);
+
+      // toggle to the other mesh
+      if (mesh == mesh_a)
+        mesh = mesh_b;
+      else
+        mesh = mesh_a;
+
+      worker_todo.fetch_add(1);
     }
   }
 };
