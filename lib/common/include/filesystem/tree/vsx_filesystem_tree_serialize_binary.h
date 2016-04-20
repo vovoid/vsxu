@@ -17,7 +17,7 @@ class vsx_filesystem_tree_serialize_binary
       vsx_filesystem_tree_node* cur_node = node->children[i];
 
       result.push_back(
-          cur_node->name.size()
+          (unsigned char)cur_node->name.size()
           |
           (cur_node->children.size()?1:0) << 7
         );

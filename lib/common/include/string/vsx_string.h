@@ -135,11 +135,8 @@ public:
     data.set_data(data_pointer, length);
   }
 
-  W& operator[](int index) const VSX_ALWAYS_INLINE
+  W& operator[](size_t index) const VSX_ALWAYS_INLINE
   {
-    if (index < 0)
-      index = 0;
-
     return data[index];
   }
 
@@ -196,7 +193,7 @@ public:
   inline const vsx_string<W>& operator=(const vsx_string<W>& other_string) VSX_ALWAYS_INLINE
   {
     data.clear();
-    int other_string_size = other_string.size();
+    size_t other_string_size = other_string.size();
     if (other_string_size > 0)
       data[other_string_size-1] = 0;
     W* dp = data.get_pointer();
@@ -404,7 +401,7 @@ public:
         ++found;
         if (found == search.size()) 
         {
-          int f = start-(found-1);
+          int f = start-((int)found-1);
           if (f < 0)
             return 0;
           else
@@ -438,12 +435,12 @@ public:
     zero_remove();
 
     if (length == -1)
-      length = size();
+      length = (int)size();
 
     if (start < 0)
     {
     	int s = -start;
-    	start = size()-s;
+    	start = (int)size()-s;
 
     	if (length == -1)
         length = s;
@@ -482,12 +479,12 @@ public:
       {
         if (replace.size())
         {
-          n = n.substr(0,loc) + replace + n.substr(loc+search.size());
-          loc += replace.size();
+          n = n.substr(0,loc) + replace + n.substr(loc + (int)search.size());
+          loc += (int)replace.size();
         }
         else
         {
-          n = n.substr(0,loc) + n.substr(loc+search.size());
+          n = n.substr(0,loc) + n.substr(loc + (int)search.size());
           ++loc;
         }
       }

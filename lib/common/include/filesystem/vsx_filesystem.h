@@ -40,9 +40,9 @@ namespace vsx
 
     char* f_gets(char* buf, unsigned long max_buf_size, file* handle);
     char* f_gets_entire(file* handle);
-    int f_read(void* buf, unsigned long num_bytes, file* handle);
+    size_t f_read(void* buf, size_t num_bytes, file* handle);
 
-    unsigned long f_get_size(file* handle);
+    size_t f_get_size(file* handle);
 
     static filesystem* get_instance()
     {

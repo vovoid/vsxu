@@ -96,7 +96,7 @@ void filesystem_archive_vsx_writer::file_add_all()
   foreach (archive_files, i)
   {
     fseek(archive_handle,0,SEEK_END);
-    uint32_t data_size = archive_files[i].compressed_data.get_sizeof()+ archive_files[i].filename.size() + 1;
+    uint32_t data_size = (uint32_t)(archive_files[i].compressed_data.get_sizeof()+ archive_files[i].filename.size() + 1);
     fwrite(&data_size, sizeof(uint32_t),1,archive_handle);
     fputs(archive_files[i].filename.c_str(), archive_handle);
     char nn = 0;
@@ -147,7 +147,7 @@ void filesystem_archive_vsx_writer::file_compress_and_add_to_archive(vsx_string<
 {
   vsx_ma_vector<unsigned char> compressed_data = compression_lzma_old::compress( uncompressed_data );
 
-  uint32_t data_size = compressed_data.get_sizeof() + filename.size() + 1;
+  uint32_t data_size = (uint32_t)(compressed_data.get_sizeof() + filename.size() + 1);
 
   fseek(archive_handle,0,SEEK_END);
   fwrite(&data_size,sizeof(uint32_t),1,archive_handle);

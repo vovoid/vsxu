@@ -34,11 +34,11 @@ class vsx_filesystem_tree_node
   uint16_t total_block_size = 0;
   uint16_t offset = 0;
 
-  int quick_sort_partition(vsx_filesystem_tree_node** a, int first, int last)
+  size_t quick_sort_partition(vsx_filesystem_tree_node** a, size_t first, size_t last)
   {
     vsx_filesystem_tree_node* pivot = a[first];
-    int lastS1 = first;
-    int firstUnknown = first + 1;
+    size_t lastS1 = first;
+    size_t firstUnknown = first + 1;
     while (firstUnknown <= last) {
       if (a[firstUnknown]->name < pivot->name) {
         lastS1++;
@@ -54,10 +54,10 @@ class vsx_filesystem_tree_node
     return lastS1;
   }
 
-  void quick_sort(vsx_filesystem_tree_node** a, int first, int last)
+  void quick_sort(vsx_filesystem_tree_node** a, size_t first, size_t last)
   {
     if (first < last) {
-      int pivotIndex = quick_sort_partition(a, first, last);
+      size_t pivotIndex = quick_sort_partition(a, first, last);
       quick_sort(a, first, pivotIndex - 1);
       quick_sort(a, pivotIndex + 1, last);
     }
@@ -77,9 +77,9 @@ public:
     foreach (children, i)
     {
       if (children[i]->children.size())
-        target_offset += children[i]->name.size() + sizeof(vsx_filesystem_tree_node_storage_header);
+        target_offset += (uint16_t)children[i]->name.size() + sizeof(vsx_filesystem_tree_node_storage_header);
       else
-        target_offset += children[i]->name.size() + 1 + sizeof(vsx_filesystem_tree_node_storage_footer);
+        target_offset += (uint16_t)children[i]->name.size() + 1 + sizeof(vsx_filesystem_tree_node_storage_footer);
     }
     target_offset += 1;
 

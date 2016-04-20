@@ -40,8 +40,8 @@ public:
     archive_file_write.push_back( file_info );
 
     vsxz_header_file_info info;
-    info.offset = uncompressed_data.size();
-    info.size = file_info->data.size();
+    info.offset = (uint32_t)uncompressed_data.size();
+    info.size = (uint32_t)file_info->data.size();
 
     foreach(file_info->data, i)
       uncompressed_data.push_back(file_info->data[i]);
@@ -54,7 +54,7 @@ public:
     return uncompressed_data.size() > 1024*1024;
   }
 
-  void set_chunk_id(uint16_t index)
+  void set_chunk_id(uint8_t index)
   {
     foreach (file_info_table, i)
       file_info_table[i].chunk = index;
@@ -63,7 +63,7 @@ public:
   void add_to_tree(vsx_filesystem_tree_writer& tree, size_t &index)
   {
     foreach (archive_file_write, i) {
-      tree.add_file(archive_file_write[i]->filename, index);
+      tree.add_file(archive_file_write[i]->filename, (uint32_t)index);
       index++;
     }
   }
@@ -73,7 +73,7 @@ public:
     if (compression_type == compression_none)
       return 0;
 
-    return uncompressed_data.get_sizeof();
+    return (uint32_t)uncompressed_data.get_sizeof();
   }
 
   void compress()
@@ -124,8 +124,8 @@ public:
       return;
 
     vsxz_header_chunk_info info;
-    info.compressed_size = compressed_data.size();
-    info.uncompressed_size = uncompressed_data.size();
+    info.compressed_size = (uint32_t)compressed_data.size();
+    info.uncompressed_size = (uint32_t)uncompressed_data.size();
     info.compression_type = (uint16_t)compression_type;
     fwrite(&info, sizeof(vsxz_header_chunk_info), 1, file);
   }

@@ -94,7 +94,7 @@ namespace vsx_string_helper
    */
   inline float s2f(const vsx_string<> &in)
   {
-    return atof(in.c_str());
+    return (float)atof(in.c_str());
   }
 
   /**
@@ -350,7 +350,7 @@ namespace vsx_string_helper
 
     req_v(start_index <= in.size()-1, "");
 
-    int calculated_end_index = in.size() - (shave_off_at_end + 1);
+    size_t calculated_end_index = in.size() - (shave_off_at_end + 1);
     req_v(calculated_end_index >= 0, "");
     size_t end_index = calculated_end_index;
 
@@ -548,7 +548,7 @@ namespace vsx_string_helper
     result.reset_used();
     wchar_t w = 0;
     int bytes = 0;
-    wchar_t err = L'�';
+    wchar_t err = L'?';
     for (size_t i = 0; i < src.size(); i++)
     {
       unsigned char c = (unsigned char)src[i];
@@ -653,10 +653,10 @@ namespace vsx_string_helper
 
       if ((uint64_t)w <= 0x10ffff)
       {
-        result.push_back(0xf0 | ((w >> 18)& 0x07));
-        result.push_back(0x80| ((w >> 12) & 0x3f));
-        result.push_back(0x80| ((w >> 6) & 0x3f));
-        result.push_back(0x80| (w & 0x3f));
+        result.push_back(0xf0 | (((uint64_t)w >> 18)& 0x07));
+        result.push_back(0x80| (((uint64_t)w >> 12) & 0x3f));
+        result.push_back(0x80| (((uint64_t)w >> 6) & 0x3f));
+        result.push_back(0x80| ((uint64_t)w & 0x3f));
         continue;
       }
 
@@ -686,7 +686,7 @@ namespace vsx_string_helper
   {
     int i;
     char               c;
-    int len = data.size();
+    size_t len = data.size();
     vsx_string<>            ret;
     const char          fillchar = '=';
     // 00000000001111111111222222
@@ -749,7 +749,7 @@ namespace vsx_string_helper
     int i;
     char               c;
     char               c1;
-    int len = data.size();
+    size_t len = data.size();
     vsx_string<>            ret;
     const char          fillchar = '=';
     // 00000000001111111111222222
@@ -796,5 +796,13 @@ namespace vsx_string_helper
     }
 
     return ret;
+  }
+
+  inline vsx_string<wchar_t> char_to_wchar(vsx_string<> source)
+  {
+    vsx_string<wchar_t> result;
+    foreach(source, i)
+      result.push_back(source[i]);
+    return result;
   }
 }

@@ -106,7 +106,7 @@ void filesystem_archive_vsxz_writer::close()
 
     vsx_thread_pool::instance()->add( [&](float& ratio, size_t ai)
       {
-        vsx_printf(L"calculating ratio for %s\n", archive_files[ai].filename.c_str());
+        vsx_printf(L"calculating ratio for %s\n", vsx_string_helper::char_to_wchar(archive_files[ai].filename).c_str());
         vsx_ma_vector<unsigned char> lzma_compressed = vsx::compression_lzma::compress( archive_files[ai].data );
         float lzma_ratio = (float)(lzma_compressed.size()) / (float)(archive_files[ai].data.size());
         vsx_ma_vector<unsigned char> lzham_compressed = vsx::compression_lzham::compress( archive_files[ai].data );
@@ -115,7 +115,7 @@ void filesystem_archive_vsxz_writer::close()
           ratio = lzham_ratio;
         else
           ratio = lzma_ratio;
-        vsx_printf(L"calculating ratio for %s [DONE]\n", archive_files[ai].filename.c_str());
+        vsx_printf(L"calculating ratio for %s [DONE]\n", vsx_string_helper::char_to_wchar(archive_files[ai].filename).c_str());
       },
       compression_ratios[id_found],
       id_found
@@ -165,7 +165,7 @@ void filesystem_archive_vsxz_writer::close()
       compression_ratios[id_found] > 0.8
     )
     {
-      vsx_printf(L"adding file %s to chunk 0\n", archive_files[id_found].filename.c_str());
+      vsx_printf(L"adding file %s to chunk 0\n", vsx_string_helper::char_to_wchar(archive_files[id_found].filename).c_str());
       chunks[0].add_file( &archive_files[id_found] );
       continue;
     }
@@ -191,7 +191,7 @@ void filesystem_archive_vsxz_writer::close()
 
     chunk_other_iterator = chunk_found;
 
-    vsx_printf(L"adding file %s to chunk %d\n", archive_files[id_found].filename.c_str(), chunk_other_iterator);
+    vsx_printf(L"adding file %s to chunk %lld\n", vsx_string_helper::char_to_wchar(archive_files[id_found].filename).c_str(), chunk_other_iterator);
     chunks[chunk_other_iterator].add_file( &archive_files[id_found] );
 
     // when chunks reach 1 MB, start rotating
@@ -205,7 +205,7 @@ void filesystem_archive_vsxz_writer::close()
 
   // Set chunk id in all file info structs
   for_n(i, 0, max_chunks)
-    chunks[i].set_chunk_id(i);
+    chunks[i].set_chunk_id((uint8_t)i);
 
   // Add to file tree
   vsx_filesystem_tree_writer tree;
@@ -230,14 +230,14 @@ void filesystem_archive_vsxz_writer::close()
 
   // Calculate & fill in header
   vsxz_header header;
-  header.file_count = archive_files.size();
-  header.chunk_count = valid_chunk_index;
+  header.file_count = (uint32_t)archive_files.size();
+  header.chunk_count = (uint32_t)valid_chunk_index;
 
   for_n(i, 0, max_chunks)
     header.compression_uncompressed_memory_size += chunks[i].get_compressed_uncompressed_size();
 
-  header.file_count = archive_files.size();
-  header.tree_size = tree_data.size();
+  header.file_count = (uint32_t)archive_files.size();
+  header.tree_size = (uint32_t)tree_data.size();
 
 
 

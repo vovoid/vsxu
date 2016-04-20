@@ -1,3 +1,4 @@
+#include <vsx_platform.h>
 #include <filesystem/vsx_filesystem_helper.h>
 #include <sys/types.h>
 
@@ -40,11 +41,14 @@ void get_files_recursive(vsx_string<>startpos, std::list< vsx_string<> >* filena
 #endif
 
   vsx::filesystem filesystem;
-
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+  intptr_t fhandle = 0x0;
+#else
   long fhandle = 0;
+#endif
   bool run = true;
 
-  #ifdef _WIN32
+  #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
     vsx_string<> fstring = startpos+"/*";
     fhandle = _findfirst(fstring.c_str(),&fdp);
   #else

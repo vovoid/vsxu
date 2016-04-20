@@ -27,5 +27,5 @@ uint32_t vsx_rand::rand()
 
 float vsx_rand::frand()
 {
-  return ((MersenneTwister*)state)->genrand_real1();
+  return (float)((MersenneTwister*)state)->genrand_real1();
 }

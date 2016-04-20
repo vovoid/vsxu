@@ -1,5 +1,6 @@
 #include <filesystem/archive/vsx/vsx_filesystem_archive_vsx_reader.h>
 #include <filesystem/vsx_filesystem_helper.h>
+#include <string/vsx_string_helper.h>
 #include <debug/vsx_error.h>
 #include <tools/vsx_req_error.h>
 #include <tools/vsx_thread_pool.h>
@@ -63,7 +64,7 @@ bool filesystem_archive_vsx_reader::load(const char* archive_filename, bool load
   archive_name = archive_filename;
   archive_handle = fopen(archive_filename,"rb");
 
-  req_error_v(archive_handle, (vsx_string<>("could not open archive: ") + archive_name).c_str(), false);
+  req_error_v(archive_handle, (vsx_string<wchar_t>(L"could not open archive: ") + vsx_string_helper::char_to_wchar(archive_name)).c_str(), false);
 
   // Find out total size
   fseek (archive_handle, 0, SEEK_END);
@@ -134,7 +135,7 @@ void filesystem_archive_vsx_reader::files_get(vsx_nw_vector<filesystem_archive_f
 
 void filesystem_archive_vsx_reader::file_open(const char* filename, file* &handle)
 {
-  req_error(archive_handle, "archive handle not valid");
+  req_error(archive_handle, L"archive handle not valid");
 
   bool found = false;
   vsx_string<> fname(filename);
@@ -164,7 +165,7 @@ void filesystem_archive_vsx_reader::file_open(const char* filename, file* &handl
 
     // saturate compressed data
     lock.aquire();
-      fseek(archive_handle, archive_file.archive_position - 1, SEEK_SET);
+      fseek(archive_handle, (long)archive_file.archive_position - 1, SEEK_SET);
       if (!fread(archive_file.compressed_data.get_pointer(), 1, archive_file.compressed_data.get_sizeof(), archive_handle))
       {
         delete handle;

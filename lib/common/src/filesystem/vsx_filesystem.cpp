@@ -144,7 +144,7 @@ void filesystem::f_close(file* &handle)
 }
 
 
-unsigned long filesystem::f_get_size(file* handle)
+size_t filesystem::f_get_size(file* handle)
 {
   if (archive.is_archive())
     return handle->size;
@@ -161,7 +161,7 @@ char* filesystem::f_gets_entire(file* handle)
   if (handle->data.size())
     return (char*)handle->data.get_pointer();
 
-  unsigned long size = f_get_size(handle);
+  size_t size = f_get_size(handle);
   char* buf = (char*)malloc(size+1);
   req_v(buf, 0x0);
   f_read((void*)buf, size, handle);
@@ -200,7 +200,7 @@ char* filesystem::f_gets(char* buf, unsigned long max_buf_size, file* handle)
 }
 
 
-int filesystem::f_read(void* buf, unsigned long num_bytes, file* handle)
+size_t filesystem::f_read(void* buf, size_t num_bytes, file* handle)
 {
   if (!handle->data.size())
     return fread(buf, 1, num_bytes, handle->handle);

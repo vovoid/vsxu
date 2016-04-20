@@ -12,7 +12,7 @@ class vsx_filesystem_tree_writer
 
   vsx_filesystem_tree_node root_node;
 
-  void add_file_internal(vsx_filesystem_tree_node* node, vsx_nw_vector< vsx_string<> > &parts, size_t index, uint64_t payload)
+  void add_file_internal(vsx_filesystem_tree_node* node, vsx_nw_vector< vsx_string<> > &parts, size_t index, uint32_t payload)
   {
     if (index > parts.size() - 1 )
       return;

@@ -145,7 +145,7 @@ public:
   }
 
 
-  inline void reset_used(int val = 0) VSX_ALWAYS_INLINE
+  inline void reset_used(size_t val = 0) VSX_ALWAYS_INLINE
   {
     if (val >= 0)
      used = val;
@@ -158,7 +158,7 @@ public:
   	allocation_increment = new_increment;
   }
 
-  void set_data(T* nA, int nsize) VSX_ALWAYS_INLINE
+  void set_data(T* nA, size_t nsize) VSX_ALWAYS_INLINE
   {
     if (A && !data_volatile)
       delete[] A;
