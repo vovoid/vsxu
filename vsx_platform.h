@@ -113,7 +113,7 @@
 #endif
 
 #if COMPILER == COMPILER_VISUAL_STUDIO
-#define __PRETTY_FUNCTION__ ""
+#define __PRETTY_FUNCTION__ L""
 #define VSX_PACK_BEGIN __pragma( pack(push, 1) )
 #define VSX_PACK_END ; __pragma( pack(pop) )
 #endif
@@ -134,5 +134,5 @@
   #define vsx_aligned_free(pointer) free(pointer)
 #endif
 
-#define WIDE2(x) L##x
+#define WIDE2(x) L ##x
 #define WIDE1(x) WIDE2(x)
