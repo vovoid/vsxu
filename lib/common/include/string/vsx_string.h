@@ -50,7 +50,7 @@ class vsx_string
     if (!data.size())
       data.push_back((W)0);
     else
-      if (zero_test())
+      if (!zero_test())
         data.push_back((W)0);
   }
 

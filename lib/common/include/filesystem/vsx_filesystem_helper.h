@@ -2,6 +2,7 @@
 
 #include <list>
 #include <string/vsx_string.h>
+#include <string/vsx_string_helper.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <vsx_platform.h>
@@ -24,7 +25,7 @@ namespace filesystem_helper
       return 0;
 
     fseek (fp, 0, SEEK_END);
-    int s = ftell(fp);
+    long s = ftell(fp);
     fclose(fp);
 
     return (size_t)s;

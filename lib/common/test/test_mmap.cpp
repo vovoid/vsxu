@@ -2,9 +2,11 @@
 #include <string/vsx_string_helper.h>
 #include <time/vsx_timer.h>
 #include <vsx_argvector.h>
+#include <test/vsx_test.h>
 
-size_t times = 2000;
+size_t times = 20;
 size_t block = 1024*1024;
+uint64_t written_sum = 0;
 
 void reset_linux_cache(vsx_string<> name, int value)
 {
@@ -20,9 +22,13 @@ vsx_string<> create_random_data_file()
   FILE* fp = fopen(filename.c_str(), "wb");
   for (uint64_t i = 0; i < times; i++)
   {
-    char* buf = (char*)malloc(block);
-    for (size_t j = 0; j < block; j++ )
-      buf[j] = rand();
+    unsigned char* buf = (unsigned char*)malloc(block);
+    for (size_t j = 0; j < block; j++)
+    {
+      unsigned char v = rand();
+      buf[j] = v;
+      written_sum += v;
+    }    
 
     fwrite(buf, 1, block, fp);
   }
@@ -50,24 +56,20 @@ int main(int argc, char *argv[])
   vsx::file_mmap* map_handle = mmap.create(name.c_str());
   float map_time = timer.dtime();
   uint64_t sum = 0;
-//  vsx_printf(L"file handle size: %d\n", file_handle->size);
 
   for (size_t i = 0; i < times * block; i++)
   {
-//    vsx_printf(L"data: %d\n", file_handle->file_data[i]);
     sum += map_handle->data[i];
   }
   float read_time = timer.dtime();
 
-//  vsx_printf(L"map time: %f\n", map_time);
-//  vsx_printf(L"read time: %f\n", read_time);
-  vsx_printf(L"sum: %f\n", map_time + read_time);
+  test_assert(sum, written_sum);
 
   unlink(name.c_str());
   vsx::filesystem_mmap::destroy( map_handle );
 
 
-//  char b = getchar();
-
+  test_complete
+  char b = getchar();
   return 0;
 }

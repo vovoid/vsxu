@@ -21,6 +21,9 @@ public:
     req_v(filename, 0x0);
     req_v(strlen(filename), 0x0);
 
+    size_t file_size = filesystem_helper::file_get_size(filename);
+    req_v(file_size, 0x0);
+
     void* handle =
       CreateFile(
         filename,
@@ -33,8 +36,6 @@ public:
       );
     req_error_v(handle != INVALID_HANDLE_VALUE, L"Invalid file handle", 0x0);
 
-    size_t file_size = filesystem_helper::file_get_size( filename );
-    req_v(file_size, 0x0);
 
     HANDLE map_handle =
       CreateFileMapping(
