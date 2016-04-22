@@ -35,8 +35,16 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_compression_lzma", "li
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_compression_lzham", "lib\compression\test\test_compression_lzham.vcxproj", "{B02FA827-FE6E-45AA-94E7-1B63448D5777}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3489A41A-D4EF-4AB6-A2FF-40070ADB2A8F} = {3489A41A-D4EF-4AB6-A2FF-40070ADB2A8F}
+		{FA791770-E120-4E57-BF27-C00DFF212DF3} = {FA791770-E120-4E57-BF27-C00DFF212DF3}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_thread_pool", "lib\common\test\test_thread_pool.vcxproj", "{E2059EFF-79C3-454C-989B-80E26E064DBB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3489A41A-D4EF-4AB6-A2FF-40070ADB2A8F} = {3489A41A-D4EF-4AB6-A2FF-40070ADB2A8F}
+		{FA791770-E120-4E57-BF27-C00DFF212DF3} = {FA791770-E120-4E57-BF27-C00DFF212DF3}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
