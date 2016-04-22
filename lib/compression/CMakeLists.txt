@@ -89,7 +89,7 @@ set(SOURCES_LZHAM
 
 set(SOURCES_LZMA_OLD
   thirdparty/lzma-old/Common/StringConvert.cpp
-  thirdparty/lzma-old/Common/Alloc.cpp
+  thirdparty/lzma-old/Common/Alloc_.cpp
   thirdparty/lzma-old/Common/StringToInt.cpp
   thirdparty/lzma-old/Common/CRC.cpp
   thirdparty/lzma-old/Common/String.cpp

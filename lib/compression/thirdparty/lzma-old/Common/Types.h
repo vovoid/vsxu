@@ -11,6 +11,7 @@ typedef unsigned int UInt32;
 #ifdef _MSC_VER
 typedef __int64 Int64;
 typedef unsigned __int64 UInt64;
+typedef size_t ssize_t;
 #else
 typedef long long int Int64;
 typedef unsigned long long int UInt64;
