@@ -40,6 +40,7 @@ void test_plain_files()
 
   test_assert(archive_load.is_file("test_filesystem_archive_file_1"));
   test_assert(archive_load.is_file("test_filesystem_archive_file_2"));
+  archive_load.close();
 }
 
 void test_text_files()
@@ -65,6 +66,7 @@ void test_text_files()
   test_assert(archive_load.is_file("test_filesystem_archive_file_1"));
   test_assert(archive_load.is_file("test_filesystem_archive_file_2"));
   delete handle;
+  archive_load.close();
 }
 
 

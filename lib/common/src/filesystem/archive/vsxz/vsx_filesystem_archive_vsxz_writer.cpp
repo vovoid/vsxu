@@ -243,6 +243,7 @@ void filesystem_archive_vsxz_writer::close()
 
   // Write archive to disk
   FILE* file = fopen(archive_filename.c_str(),"wb");
+
   {
     // header:
     fwrite(&header, sizeof(vsxz_header), 1, file);

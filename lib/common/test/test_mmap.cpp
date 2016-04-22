@@ -65,6 +65,19 @@ int main(int argc, char *argv[])
 
   test_assert(sum == written_sum);
 
+  mmap.destroy(map_handle);
+
+
+  map_handle = mmap.create(name.c_str());
+  sum = 0;
+
+  for (size_t i = 0; i < times * block; i++)
+  {
+    sum += map_handle->data[i];
+  }
+
+  test_assert(sum == written_sum);
+
   unlink(name.c_str());
   vsx::filesystem_mmap::destroy( map_handle );
 
