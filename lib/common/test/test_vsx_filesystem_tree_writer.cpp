@@ -24,11 +24,11 @@ void test_level2()
 
   vsx_ma_vector<unsigned char> result_binary = vsx_filesystem_tree_serialize_binary::serialize(writer);
 
-  FILE* fp = fopen("/tmp/test_file_tree.bin", "w");
+  FILE* fp = fopen("test_file_tree.bin", "w");
   fwrite(result_binary.get_pointer(), 1, result_binary.get_sizeof(), fp);
   fclose(fp);
 
-  vsx::file_mmap* mm = vsx::filesystem_mmap::create("/tmp/test_file_tree.bin");
+  vsx::file_mmap* mm = vsx::filesystem_mmap::create("test_file_tree.bin");
 
   vsx_filesystem_tree_reader reader;
   reader.initialize(mm->data);
@@ -37,7 +37,7 @@ void test_level2()
   vsx_nw_vector< uint32_t > payloads;
   reader.get_filename_payload_list(filenames, payloads);
   foreach (filenames, i)
-    vsx_printf(L"level2: filename from tree: %s    with paypload: %ld\n", filenames[i].c_str(), payloads[i]);
+    vsx_printf(L"level2: filename from tree: %s    with paypload: %ld\n", vsx_string_helper::char_to_wchar(filenames[i]).c_str(), payloads[i]);
 
 }
 
@@ -1548,11 +1548,11 @@ void test_level()
 
   vsx_ma_vector<unsigned char> result_binary = vsx_filesystem_tree_serialize_binary::serialize(writer);
 
-  FILE* fp = fopen("/tmp/test_file_tree.bin", "w");
+  FILE* fp = fopen("test_file_tree.bin", "w");
   fwrite(result_binary.get_pointer(), 1, result_binary.get_sizeof(), fp);
   fclose(fp);
 
-  vsx::file_mmap* mm = vsx::filesystem_mmap::create("/tmp/test_file_tree.bin");
+  vsx::file_mmap* mm = vsx::filesystem_mmap::create("test_file_tree.bin");
 
 
   vsx_filesystem_tree_reader reader;
@@ -1602,7 +1602,7 @@ void test_level()
   vsx_nw_vector< uint32_t > payloads;
   reader.get_filename_payload_list(filenames, payloads);
   foreach (filenames, i)
-    vsx_printf(L"filename from tree: %s    with paypload: %ld\n", filenames[i].c_str(), payloads[i]);
+    vsx_printf(L"filename from tree: %s    with paypload: %ld\n", vsx_string_helper::char_to_wchar(filenames[i]).c_str(), payloads[i]);
 
 
 
@@ -1624,7 +1624,7 @@ void test_level()
 
   vsx::filesystem_mmap::destroy(mm);
 
-  unlink("/tmp/test_file_tree.bin");
+  unlink("test_file_tree.bin");
 }
 
 void basic_test()
