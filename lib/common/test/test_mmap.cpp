@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
   }
   float read_time = timer.dtime();
 
-  test_assert(sum, written_sum);
+  test_assert(sum == written_sum);
 
   unlink(name.c_str());
   vsx::filesystem_mmap::destroy( map_handle );

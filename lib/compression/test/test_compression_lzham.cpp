@@ -3,6 +3,7 @@
 #include <tools/vsx_foreach.h>
 #include <vsx_compression_lzham.h>
 #include <filesystem/vsx_filesystem_helper.h>
+#include <test/vsx_test.h>
 
 #define LZMA_PROPS_SIZE 14
 #define LZMA_SIZE_OFFSET 6
@@ -39,8 +40,10 @@ int main(int argc, char *argv[])
     if (data[i] != uncompressed[i])
     {
       vsx_printf(L"data differs on index %d\n", (int)i);
-      exit(1);
+      test_assert(true, false);
+      break;
     }
 
+  test_complete
   return 0;
 }

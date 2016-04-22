@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
   threaded_task
     {
-      for_n(i, 0, 512)
+      for_n(i, 0, 32)
         vsx_printf(L"hello world from thread 1\n");
     }
   threaded_task_end;
@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
   threaded_task
     {
       test_assert(!vsx_thread_pool::instance()->wait_all());
-      for_n(i, 0, 512)
+      for_n(i, 0, 32)
         vsx_printf(L"hello world from thread 2\n");
     }
   threaded_task_end;

@@ -98,8 +98,10 @@ public:
   {
     foreach(workers, i)
       if (std::this_thread::get_id() == workers[i].get_id())
+      {
         vsx_printf(L"\n\n\n\nWARNING!!! DO NOT RUN THREAD POOL WAIT ALL INSIDE A THREAD POOL TASK!!!\n      If the pool is filled, you end up with a deadlock. \n\n");
         return false;
+      }
 
     if ( !tasks_queued.load() )
       return true;

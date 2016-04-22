@@ -36,6 +36,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_compression_lzma", "li
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_compression_lzham", "lib\compression\test\test_compression_lzham.vcxproj", "{B02FA827-FE6E-45AA-94E7-1B63448D5777}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_thread_pool", "lib\common\test\test_thread_pool.vcxproj", "{E2059EFF-79C3-454C-989B-80E26E064DBB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -92,6 +94,14 @@ Global
 		{B02FA827-FE6E-45AA-94E7-1B63448D5777}.Release|x64.Build.0 = Release|x64
 		{B02FA827-FE6E-45AA-94E7-1B63448D5777}.Release|x86.ActiveCfg = Release|Win32
 		{B02FA827-FE6E-45AA-94E7-1B63448D5777}.Release|x86.Build.0 = Release|Win32
+		{E2059EFF-79C3-454C-989B-80E26E064DBB}.Debug|x64.ActiveCfg = Debug|x64
+		{E2059EFF-79C3-454C-989B-80E26E064DBB}.Debug|x64.Build.0 = Debug|x64
+		{E2059EFF-79C3-454C-989B-80E26E064DBB}.Debug|x86.ActiveCfg = Debug|Win32
+		{E2059EFF-79C3-454C-989B-80E26E064DBB}.Debug|x86.Build.0 = Debug|Win32
+		{E2059EFF-79C3-454C-989B-80E26E064DBB}.Release|x64.ActiveCfg = Release|x64
+		{E2059EFF-79C3-454C-989B-80E26E064DBB}.Release|x64.Build.0 = Release|x64
+		{E2059EFF-79C3-454C-989B-80E26E064DBB}.Release|x86.ActiveCfg = Release|Win32
+		{E2059EFF-79C3-454C-989B-80E26E064DBB}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,5 +117,6 @@ Global
 		{3F6261E6-3A3F-44D7-9C95-6DE335BE6F00} = {E209C64C-7666-4419-B5BF-EE4A724E7E56}
 		{E857528D-F8EC-4BAD-BDF3-22401CE5C8DB} = {E209C64C-7666-4419-B5BF-EE4A724E7E56}
 		{B02FA827-FE6E-45AA-94E7-1B63448D5777} = {E209C64C-7666-4419-B5BF-EE4A724E7E56}
+		{E2059EFF-79C3-454C-989B-80E26E064DBB} = {6EEC703E-49AA-4AA0-BF8C-B47818530B63}
 	EndGlobalSection
 EndGlobal
