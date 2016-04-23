@@ -10,3 +10,6 @@
 [submodule "lib/engine_graphics/thirdparty/ftgl"]
 	path = lib/engine_graphics/thirdparty/ftgl
 	url = https://github.com/vovoid/ftgl.git
+[submodule "dependencies"]
+	path = dependencies
+	url = https://github.com/vovoid/vsxu-dependencies.git
