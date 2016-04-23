@@ -68,7 +68,7 @@ namespace filesystem_helper
     FILE* fp = fopen(filename.c_str(),"rb");
 
     if (!fp)
-      VSX_ERROR_RETURN_V(L"fp is not valid", result);
+      VSX_ERROR_RETURN_V("fp is not valid", result);
 
     fseek (fp, 0, SEEK_END);
     long int file_pos = ftell(fp);
@@ -77,7 +77,7 @@ namespace filesystem_helper
     fseek(fp,0,SEEK_SET);
 
     if ( !fread(result.get_pointer(), sizeof(char), result.size(), fp) )
-      VSX_ERROR_RETURN_V(L"Error reading file!", result);
+      VSX_ERROR_RETURN_V("Error reading file!", result);
 
     fclose(fp);
     return result;
@@ -87,7 +87,7 @@ namespace filesystem_helper
   {
     FILE* fp = fopen(filename.c_str(),"wb");
     if (!fp)
-      VSX_ERROR_RETURN(L"fp is not valid");
+      VSX_ERROR_RETURN("fp is not valid");
 
     fwrite(string.get_pointer(), 1, string.size(), fp);
     fclose(fp);
@@ -97,7 +97,7 @@ namespace filesystem_helper
   {
     FILE* fp = fopen(filename.c_str(),"wb");
     if (!fp)
-      VSX_ERROR_RETURN(L"fp is not valid");
+      VSX_ERROR_RETURN("fp is not valid");
     fwrite(data.get_pointer(), 1, data.get_sizeof(), fp);
     fclose(fp);
   }

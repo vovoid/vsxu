@@ -29,7 +29,7 @@ vsx_ma_vector<unsigned char> compression_lzma_old::compress(vsx_ma_vector<unsign
 {
   vsx_ma_vector<unsigned char> compressed_data;
 
-  UInt32 dictionary = uncompressed_data.size() << 1;
+  UInt32 dictionary = (UInt32)(uncompressed_data.size() << 1);
   size_t uncompressed_data_size = uncompressed_data.get_sizeof();
   size_t outSize = (size_t)uncompressed_data_size / 20 * 21 + (1 << 16);
   size_t outSizeProcessed;

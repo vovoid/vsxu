@@ -37,7 +37,7 @@ void test_level2()
   vsx_nw_vector< uint32_t > payloads;
   reader.get_filename_payload_list(filenames, payloads);
   foreach (filenames, i)
-    vsx_printf(L"level2: filename from tree: %s    with paypload: %ld\n", vsx_string_helper::char_to_wchar(filenames[i]).c_str(), payloads[i]);
+    vsx_printf(L"level2: filename from tree: %hs    with paypload: %ld\n", filenames[i].c_str(), payloads[i]);
 
 }
 
@@ -1602,7 +1602,7 @@ void test_level()
   vsx_nw_vector< uint32_t > payloads;
   reader.get_filename_payload_list(filenames, payloads);
   foreach (filenames, i)
-    vsx_printf(L"filename from tree: %s    with paypload: %ld\n", vsx_string_helper::char_to_wchar(filenames[i]).c_str(), payloads[i]);
+    vsx_printf(L"filename from tree: %hs    with paypload: %ld\n", filenames[i].c_str(), payloads[i]);
 
 
 

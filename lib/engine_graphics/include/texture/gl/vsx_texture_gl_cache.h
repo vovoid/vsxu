@@ -95,7 +95,7 @@ public:
   void dump_to_stdout()
   {
     foreach (items, i)
-      vsx_printf(L"item filename: %s %d\n", items[i]->filename.c_str(), items[i]->used);
+      vsx_printf(L"item filename: %hs %d\n", items[i]->filename.c_str(), items[i]->used);
   }
 
   bool has(vsx_string<>& filename, uint64_t bitmap_loader_hint, uint64_t hint)
@@ -118,7 +118,7 @@ public:
     // reload data
     if (reload)
     {
-      vsx_printf(L"reloading %s\n", filename.c_str());
+      vsx_printf(L"reloading %hs\n", filename.c_str());
       item->texture_gl->uploaded_to_gl = false;
       item->texture_gl->bitmap = vsx_bitmap_cache::get_instance()->aquire_reload( filename, filesystem, reload_with_thread, bitmap_loader_hint );
       return item->texture_gl;

@@ -106,7 +106,7 @@ void filesystem_archive_vsxz_writer::close()
 
     vsx_thread_pool::instance()->add( [&](float& ratio, size_t ai)
       {
-        vsx_printf(L"calculating ratio for %s\n", vsx_string_helper::char_to_wchar(archive_files[ai].filename).c_str());
+        vsx_printf(L"calculating ratio for %hs\n", archive_files[ai].filename.c_str());
         vsx_ma_vector<unsigned char> lzma_compressed = vsx::compression_lzma::compress( archive_files[ai].data );
         float lzma_ratio = (float)(lzma_compressed.size()) / (float)(archive_files[ai].data.size());
         vsx_ma_vector<unsigned char> lzham_compressed = vsx::compression_lzham::compress( archive_files[ai].data );
@@ -115,7 +115,7 @@ void filesystem_archive_vsxz_writer::close()
           ratio = lzham_ratio;
         else
           ratio = lzma_ratio;
-        vsx_printf(L"calculating ratio for %s [DONE]\n", vsx_string_helper::char_to_wchar(archive_files[ai].filename).c_str());
+        vsx_printf(L"calculating ratio for %hs [DONE]\n", archive_files[ai].filename.c_str());
       },
       compression_ratios[id_found],
       id_found
@@ -165,7 +165,7 @@ void filesystem_archive_vsxz_writer::close()
       compression_ratios[id_found] > 0.8
     )
     {
-      vsx_printf(L"adding file %s to chunk 0\n", vsx_string_helper::char_to_wchar(archive_files[id_found].filename).c_str());
+      vsx_printf(L"adding file %hs to chunk 0\n", archive_files[id_found].filename.c_str());
       chunks[0].add_file( &archive_files[id_found] );
       continue;
     }
@@ -191,7 +191,7 @@ void filesystem_archive_vsxz_writer::close()
 
     chunk_other_iterator = chunk_found;
 
-    vsx_printf(L"adding file %s to chunk %lld\n", vsx_string_helper::char_to_wchar(archive_files[id_found].filename).c_str(), chunk_other_iterator);
+    vsx_printf(L"adding file %hs to chunk %lld\n", archive_files[id_found].filename.c_str(), chunk_other_iterator);
     chunks[chunk_other_iterator].add_file( &archive_files[id_found] );
 
     // when chunks reach 1 MB, start rotating

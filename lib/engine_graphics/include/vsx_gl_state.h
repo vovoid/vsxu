@@ -486,7 +486,7 @@ private:
 
 public:
   // res must be a float[4]
-  inline void material_set_fv(int face_direction, int type, float* res)
+  inline void material_set_fv(size_t face_direction, size_t type, float* res)
   {
     if (!res)
       return;
@@ -838,7 +838,7 @@ public:
   inline void matrix_push()
   {
     if (i_matrix_stack_pointer[i_matrix_mode] + 1 > VSX_GL_STATE_STACK_DEPTH)
-      VSX_ERROR_RETURN(L"Trying to push to a full matrix stack!\n");
+      VSX_ERROR_RETURN("Trying to push to a full matrix stack!\n");
 
     matrix_stack[i_matrix_mode][i_matrix_stack_pointer[i_matrix_mode]] = core_matrix[i_matrix_mode];
     i_matrix_stack_pointer[i_matrix_mode]++;
@@ -850,7 +850,7 @@ public:
   inline void matrix_pop()
   {
     if (!i_matrix_stack_pointer[i_matrix_mode])
-      VSX_ERROR_RETURN(L"Error, popping off of an empty matrix stack\n");
+      VSX_ERROR_RETURN("Error, popping off of an empty matrix stack\n");
 
     i_matrix_stack_pointer[i_matrix_mode]--;
     core_matrix[i_matrix_mode] = matrix_stack[i_matrix_mode][i_matrix_stack_pointer[i_matrix_mode]];
@@ -983,12 +983,12 @@ public:
   inline void matrix_ortho(double left, double right, double bottom, double top, double near_limit, double far_limit)
   {
 
-    #define TX (right + left) / (right - left)
-    #define TY ((top + bottom) / (top - bottom))
-    #define TZ ((far_limit + near_limit) / (far_limit - near_limit))
-    #define N0 2.0 / (right - left)
-    #define N1 2.0 / (top - bottom)
-    #define N2 -2.0 / (far_limit - near_limit)
+    #define TX (float)((right + left) / (right - left))
+    #define TY (float)((top + bottom) / (top - bottom))
+    #define TZ (float)((far_limit + near_limit) / (far_limit - near_limit))
+    #define N0 (float)(2.0f / (right - left))
+    #define N1 (float)(2.0f / (top - bottom))
+    #define N2 (float)(-2.0f / (far_limit - near_limit))
 
     #define m m_temp.m
 
@@ -1020,12 +1020,12 @@ public:
   }
 
   inline void matrix_frustum(double left, double right, double bottom, double top, double z_near, double z_far) {
-    #define N0 (2.0 * z_near) / (right - left)
-    #define N1 (2.0 * z_near) / (top - bottom)
-    #define A (right + left) / (right - left)
-    #define B (top + bottom) / (top - bottom)
-    #define C -(z_far + z_near) / (z_far - z_near)
-    #define D -(2.0 * z_far * z_near) / (z_far - z_near)
+    #define N0 (float)((2.0 * z_near) / (right - left))
+    #define N1 (float)((2.0 * z_near) / (top - bottom))
+    #define A (float)((right + left) / (right - left))
+    #define B (float)((top + bottom) / (top - bottom))
+    #define C (float)(-(z_far + z_near) / (z_far - z_near))
+    #define D (float)(-(2.0 * z_far * z_near) / (z_far - z_near))
 
     #define m m_temp.m
 
@@ -1101,15 +1101,15 @@ public:
           0              0              -1             0
     */
 
-    #define N0 (zFar + zNear) / (zNear - zFar)
-    #define N1 (2.0 * zFar * zNear) / (zNear - zFar)
+    #define N0 (float)((zFar + zNear) / (zNear - zFar))
+    #define N1 (float)((2.0 * zFar * zNear) / (zNear - zFar))
     double f = tan( HALF_PI - (fovy * (PI / 180.0)) * 0.5 );
     double fdiva = f / aspect;
     #define m m_temp.m
-    m[0] = fdiva;         m[4] = 0.0;      m[8] = 0.0;     m[12] = 0.0;
-    m[1] = 0.0;          m[5] = f;         m[9] = 0.0;     m[13] = 0.0;
-    m[2] = 0.0;          m[6] = 0.0;      m[10] = N0;      m[14] = N1;
-    m[3] = 0.0;         m[7] = 0.0;     m[11] = -1.0;    m[15] = 0.0;
+    m[0] = (float)fdiva; m[4] = 0.0;      m[8] = 0.0;     m[12] = 0.0;
+    m[1] = 0.0;          m[5] = (float)f; m[9] = 0.0;     m[13] = 0.0;
+    m[2] = 0.0;          m[6] = 0.0;      m[10] = N0;     m[14] = N1;
+    m[3] = 0.0;          m[7] = 0.0;      m[11] = -1.0;   m[15] = 0.0;
     #undef m
     #undef N0
     #undef N1
@@ -1218,7 +1218,7 @@ public:
     if ((errCode = glGetError()) != GL_NO_ERROR) {
         errString = gluErrorString(errCode);
         gl_errors += vsx_string<>((char*)errString) + "\n";
-        vsx_printf(L"error string: %s\n", errString);
+        vsx_printf(L"error string: %hs\n", errString);
     }
 #endif
   }
@@ -1226,7 +1226,7 @@ public:
 private:
   VSX_ENGINE_GRAPHICS_DLLIMPORT static vsx_gl_state instance;
 public:
-  static vsx_gl_state* get_instance() __attribute__((always_inline))
+  inline static vsx_gl_state* get_instance()
   {
     return &instance;
   }

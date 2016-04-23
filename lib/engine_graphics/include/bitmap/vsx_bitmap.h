@@ -92,7 +92,7 @@ public:
   vsx_string<> filename;
 
   // timestamp for different engine modules to keep track of when to invalidate themselves
-  int timestamp = 0;
+  uint64_t timestamp = 0;
 
   // make sure this is not destroyed while a thread is working on it
   vsx_lock lock;
@@ -219,7 +219,7 @@ public:
   }
 
 
-  bool get_mipmap_level_count()
+  size_t get_mipmap_level_count()
   {
     size_t mip_map_level_count = 0;
     for (size_t mip_map_level = 0; mip_map_level < mip_map_level_max; mip_map_level++)

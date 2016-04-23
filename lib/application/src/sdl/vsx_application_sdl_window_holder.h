@@ -1,4 +1,9 @@
+#include <vsx_platform.h>
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+#include <SDL.h>
+#else
 #include <SDL2/SDL.h>
+#endif
 
 class vsx_application_sdl_window_holder
 {

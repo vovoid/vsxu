@@ -64,7 +64,7 @@ bool filesystem_archive_vsx_reader::load(const char* archive_filename, bool load
   archive_name = archive_filename;
   archive_handle = fopen(archive_filename,"rb");
 
-  req_error_v(archive_handle, (vsx_string<wchar_t>(L"could not open archive: ") + vsx_string_helper::char_to_wchar(archive_name)).c_str(), false);
+  req_error_v(archive_handle, (vsx_string<>("could not open archive: ") + archive_name).c_str(), false);
 
   // Find out total size
   fseek (archive_handle, 0, SEEK_END);
@@ -79,11 +79,11 @@ bool filesystem_archive_vsx_reader::load(const char* archive_filename, bool load
   char header[5];
   header[4] = 0;
   if (!fread(header,sizeof(char),4,archive_handle))
-    VSX_ERROR_RETURN_V(L"VSXz Reading header size with fread failed!",0);
+    VSX_ERROR_RETURN_V("VSXz Reading header size with fread failed!",0);
 
   vsx_string<> hs(header);
   if (hs != "VSXz")
-    VSX_ERROR_RETURN_V(L"VSXz tag is wrong",0);
+    VSX_ERROR_RETURN_V("VSXz tag is wrong",0);
 
   while (fread(&size,sizeof(uint32_t), 1, archive_handle) != 0)
   {
@@ -135,7 +135,7 @@ void filesystem_archive_vsx_reader::files_get(vsx_nw_vector<filesystem_archive_f
 
 void filesystem_archive_vsx_reader::file_open(const char* filename, file* &handle)
 {
-  req_error(archive_handle, L"archive handle not valid");
+  req_error(archive_handle, "archive handle not valid");
 
   bool found = false;
   vsx_string<> fname(filename);

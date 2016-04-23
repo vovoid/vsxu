@@ -124,7 +124,7 @@ inline void handle_anisotropic_mip_map_min_mag(vsx_texture_gl* texture_gl)
     ||
     !(texture_gl->hint & vsx_texture_gl::generate_mipmaps_hint)
   )
-    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAX_LEVEL, texture_gl->bitmap->get_mipmap_level_count() - 1);
+    glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MAX_LEVEL, (GLint)texture_gl->bitmap->get_mipmap_level_count() - 1);
 
 
   // magnification filter
@@ -140,7 +140,7 @@ inline void handle_anisotropic_mip_map_min_mag(vsx_texture_gl* texture_gl)
     if (!(texture_gl->hint & vsx_texture_gl::linear_interpolate_hint) && texture_gl->hint & vsx_texture_gl::mipmap_linear_interpolate_hint)
       glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
 
-    if ((texture_gl->hint & vsx_texture_gl::linear_interpolate_hint) && (!texture_gl->hint & vsx_texture_gl::mipmap_linear_interpolate_hint))
+    if ((texture_gl->hint & vsx_texture_gl::linear_interpolate_hint) && !(texture_gl->hint & vsx_texture_gl::mipmap_linear_interpolate_hint))
       glTexParameteri(texture_gl->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 
     if (!(texture_gl->hint & vsx_texture_gl::linear_interpolate_hint) && !(texture_gl->hint & vsx_texture_gl::mipmap_linear_interpolate_hint))

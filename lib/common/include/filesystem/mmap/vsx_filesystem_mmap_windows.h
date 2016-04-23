@@ -34,7 +34,7 @@ public:
         FILE_ATTRIBUTE_NORMAL,
         0
       );
-    req_error_v(handle != INVALID_HANDLE_VALUE, L"Invalid file handle", 0x0);
+    req_error_v(handle != INVALID_HANDLE_VALUE, "Invalid file handle", 0x0);
 
 
     HANDLE map_handle =
@@ -47,7 +47,7 @@ public:
         0
       );
 
-    req_error_v(map_handle != INVALID_HANDLE_VALUE, L"Invalid mapping handle", 0x0);
+    req_error_v(map_handle != INVALID_HANDLE_VALUE, "Invalid mapping handle", 0x0);
 
     unsigned char* map_ptr = (unsigned char*)
       (
@@ -60,7 +60,7 @@ public:
         )
       );
 
-    req_error_v(map_ptr, L"Invalid map view of file", 0x0);
+    req_error_v(map_ptr, "Invalid map view of file", 0x0);
 
     file_mmap* file_handle = new file_mmap();
     file_handle->filename = filename;

@@ -13,7 +13,7 @@ public:
    * and quits the application */
   static void sdldie(const char *msg)
   {
-    vsx_printf(L"%s: %s\n", msg, SDL_GetError());
+    vsx_printf(L"%hs: %hs\n", msg, SDL_GetError());
     SDL_Quit();
     exit(1);
   }
@@ -25,7 +25,7 @@ public:
           const char *error = SDL_GetError();
           if (*error != '\0')
           {
-                  vsx_printf(L"SDL Error: %s\n", error);
+                  vsx_printf(L"SDL Error: %hs\n", error);
                   if (line != -1)
                           vsx_printf(L" + line: %i\n", line);
                   SDL_ClearError();

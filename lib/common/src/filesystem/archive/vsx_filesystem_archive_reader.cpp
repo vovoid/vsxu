@@ -30,7 +30,7 @@ bool filesystem_archive_reader::load(const char* archive_filename, bool load_dat
   if (archive_type == archive_vsxz)
     archive = new filesystem_archive_vsxz_reader();
 
-  req_error_v(archive, L"unsupported file format", 1);
+  req_error_v(archive, "unsupported file format", 1);
 
   return archive->load(archive_filename, load_data_multithreaded);
 }

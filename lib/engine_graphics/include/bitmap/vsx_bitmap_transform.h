@@ -124,8 +124,8 @@ public:
     {
       GLfloat* data2 = (GLfloat*)malloc(sizeof(GLfloat) * width * height * channels);
       int dy = 0;
-      int sxbpp = width * channels;
-      for (int y = height-1; y >= 0; --y)
+      size_t sxbpp = width * channels;
+      for (size_t y = height-1; y >= 0; --y)
       {
         for (unsigned long x = 0; x < width * channels; ++x)
           data2[dy*sxbpp + x] = ((GLfloat*)bitmap->data_get())[y*sxbpp + x];
@@ -137,12 +137,12 @@ public:
     }
 
     unsigned char* data2 = (unsigned char*)malloc(width * height * channels);
-    int dy = 0;
-    int stride_x = width * channels;
-    for (int y = height-1; y >= 0; --y)
+    size_t dy = 0;
+    size_t stride_x = width * channels;
+    for (size_t y = height-1; y >= 0; --y)
     {
-      int dysxbpp = dy * stride_x;
-      int ysxbpp = y * stride_x;
+      size_t dysxbpp = dy * stride_x;
+      size_t ysxbpp = y * stride_x;
       for (size_t x = 0; x < width*channels; ++x)
         data2[dysxbpp + x] = ((unsigned char*)bitmap->data_get())[ysxbpp + x];
       ++dy;

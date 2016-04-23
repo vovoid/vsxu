@@ -23,7 +23,12 @@
 
 #include <vsx_application_input_mouse_control.h>
 #include "vsx_application_sdl_window_holder.h"
+#include <vsx_platform.h>
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+#include <SDL.h>
+#else
 #include <SDL2/SDL.h>
+#endif
 
 void vsx_application_mouse_control::set_cursor(int id) {
   cursor = id;
@@ -50,7 +55,7 @@ void vsx_application_mouse_control::set_cursor_pos(float x, float y)
 
 void vsx_application_mouse_control::set_cursor_pos_screen(float x, float y)
 {
-  SDL_WarpMouseInWindow(vsx_application_sdl_window_holder::get_instance()->window, x, y);
+  SDL_WarpMouseInWindow(vsx_application_sdl_window_holder::get_instance()->window, (int)x, (int)y);
 }
 
 vsx_application_mouse_control::vsx_application_mouse_control()

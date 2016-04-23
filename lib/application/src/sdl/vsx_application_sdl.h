@@ -1,6 +1,11 @@
 #pragma once
 
+#include <vsx_platform.h>
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+#include <SDL.h>
+#else
 #include <SDL2/SDL.h>
+#endif
 #include <vsx_application_control.h>
 #include "vsx_application_sdl_tools.h"
 #include "vsx_application_sdl_input_event_handler.h"
@@ -28,7 +33,7 @@ void gl_debug_callback
   VSX_UNUSED(_length);
   VSX_UNUSED(_user_param);
   VSX_UNUSED(_id);
-  vsx_printf(L"GLDEBUG: %s\n", _message);
+  vsx_printf(L"GLDEBUG: %hs\n", _message);
 }
 
 

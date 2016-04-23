@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     if (data[i] != uncompressed[i])
     {
       vsx_printf(L"data differs on index %d\n", (int)i);
-      test_assert(true, false);
+      test_assert(false);
       break;
     }
 

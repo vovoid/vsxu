@@ -32,6 +32,18 @@ namespace vsx_string_helper
   }
 
   /**
+  * @brief i2s
+  * @param in
+  * @return
+  */
+  inline vsx_string<>i2s(const size_t &in)
+  {
+    char string_res[256] = "";
+    sprintf(string_res, "%zu", in);
+    return vsx_string<>(string_res);
+  }
+
+  /**
    * @brief i2x
    * @param in
    * @return
@@ -796,13 +808,5 @@ namespace vsx_string_helper
     }
 
     return ret;
-  }
-
-  inline vsx_string<wchar_t> char_to_wchar(vsx_string<> source)
-  {
-    vsx_string<wchar_t> result;
-    foreach(source, i)
-      result.push_back(source[i]);
-    return result;
   }
 }

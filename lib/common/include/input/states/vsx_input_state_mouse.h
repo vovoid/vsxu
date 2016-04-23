@@ -58,8 +58,8 @@ public:
 
     if (event.mouse.type == vsx_input_event_mouse::movement)
     {
-      position_screen.x = event.mouse.x;
-      position_screen.y = event.mouse.y;
+      position_screen.x = (float)event.mouse.x;
+      position_screen.y = (float)event.mouse.y;
       position.x = (float)event.mouse.x / (float)vsx_gl_state::get_instance()->viewport_get_width();
       position.y = (float)event.mouse.y / (float)vsx_gl_state::get_instance()->viewport_get_height();
       dragging = button_left || button_right;

@@ -1,6 +1,12 @@
 #pragma once
 
+#include <vsx_platform.h>
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+#include <SDL.h>
+#else
 #include <SDL2/SDL.h>
+#endif
+
 #include <input/events/vsx_input_event_keyboard_scancode.h>
 #include <input/vsx_input_event.h>
 #include <vsx_gl_state.h>
@@ -178,7 +184,7 @@ class vsx_application_sdl_input_event_handler
 
     // application
     vsx_application_input_state_manager::get()->consume_event(vsx_event);
-    vsx_application_manager::get()->event_mouse_wheel(sdl_event.wheel.y, sdl_event.wheel.x, sdl_event.wheel.y);
+    vsx_application_manager::get()->event_mouse_wheel((float)sdl_event.wheel.y, sdl_event.wheel.x, sdl_event.wheel.y);
     vsx_application_manager::get()->input_event(vsx_event);
   }
 
@@ -208,7 +214,7 @@ class vsx_application_sdl_input_event_handler
     if (sdl_event.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
       vsx_event.game_controller.type = vsx_input_event_game_controller::axis_trigger_right;
 
-    vsx_event.game_controller.axis_value = 1.0/32767 * sdl_event.caxis.value;
+    vsx_event.game_controller.axis_value = 1.0f/32767 * sdl_event.caxis.value;
 
     // application
     vsx_application_input_state_manager::get()->consume_event(vsx_event);

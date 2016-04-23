@@ -65,10 +65,10 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
     logo_time = 0.0f;
   }
 
-  logo_rot1 += dtime*0.01;
-  logo_rot2 -= dtime*0.014;
-  logo_rot3 += dtime*0.005;
-  logo_time += dtime*2;
+  logo_rot1 += dtime*0.01f;
+  logo_rot2 -= dtime*0.014f;
+  logo_rot3 += dtime*0.005f;
+  logo_time += dtime*2.0f;
 
   if (inalpha > 1) inalpha = 1;
   alpha = 1-(logo_time-((animlen-fade)/(fade<1?1:fade)));
@@ -98,7 +98,7 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
   luna_size.y = 15;
   logo_pos.x = 0;
   logo_pos.y = 0;
-  logo_pos.z = 1.1;
+  logo_pos.z = 1.1f;
   logo_size.x = 20;
   logo_size.y = 20;
   if (logo_time < animlen) {
@@ -109,13 +109,13 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
       glColor4f(0,0,0,b_alpha);
       glBegin(GL_QUADS);
         glTexCoord2f(0, 0);
-        glVertex3f(logo_pos.x-logo_size.x*1.5/2,logo_pos.y-logo_size.y/2,logo_pos.z);
+        glVertex3f(logo_pos.x-logo_size.x*1.5f/2,logo_pos.y-logo_size.y/2,logo_pos.z);
         glTexCoord2f(0, 1);
-        glVertex3f(logo_pos.x-logo_size.x*1.5/2,logo_pos.y+logo_size.y/2,logo_pos.z);
+        glVertex3f(logo_pos.x-logo_size.x*1.5f/2,logo_pos.y+logo_size.y/2,logo_pos.z);
         glTexCoord2f(1, 1);
-        glVertex3f(logo_pos.x+logo_size.x*1.5/2,logo_pos.y+logo_size.y/2,logo_pos.z);
+        glVertex3f(logo_pos.x+logo_size.x*1.5f/2,logo_pos.y+logo_size.y/2,logo_pos.z);
         glTexCoord2f(1, 0);
-        glVertex3f(logo_pos.x+logo_size.x*1.5/2,logo_pos.y-logo_size.y/2,logo_pos.z);
+        glVertex3f(logo_pos.x+logo_size.x*1.5f/2,logo_pos.y-logo_size.y/2,logo_pos.z);
       glEnd();
     }
     float alphab = alpha*0.4;
