@@ -81,6 +81,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{125BD411-3
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "engine_graphics", "lib\engine_graphics\engine_graphics.vcxproj", "{A298C59C-B5EF-4240-86A7-6BA8F4A07BB6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_input", "lib\application\test\test_input.vcxproj", "{C5BA19A5-21DF-4078-95C4-735E4E45B348}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -193,6 +195,14 @@ Global
 		{A298C59C-B5EF-4240-86A7-6BA8F4A07BB6}.Release|x64.Build.0 = Release|x64
 		{A298C59C-B5EF-4240-86A7-6BA8F4A07BB6}.Release|x86.ActiveCfg = Release|Win32
 		{A298C59C-B5EF-4240-86A7-6BA8F4A07BB6}.Release|x86.Build.0 = Release|Win32
+		{C5BA19A5-21DF-4078-95C4-735E4E45B348}.Debug|x64.ActiveCfg = Debug|x64
+		{C5BA19A5-21DF-4078-95C4-735E4E45B348}.Debug|x64.Build.0 = Debug|x64
+		{C5BA19A5-21DF-4078-95C4-735E4E45B348}.Debug|x86.ActiveCfg = Debug|Win32
+		{C5BA19A5-21DF-4078-95C4-735E4E45B348}.Debug|x86.Build.0 = Debug|Win32
+		{C5BA19A5-21DF-4078-95C4-735E4E45B348}.Release|x64.ActiveCfg = Release|x64
+		{C5BA19A5-21DF-4078-95C4-735E4E45B348}.Release|x64.Build.0 = Release|x64
+		{C5BA19A5-21DF-4078-95C4-735E4E45B348}.Release|x86.ActiveCfg = Release|Win32
+		{C5BA19A5-21DF-4078-95C4-735E4E45B348}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -219,5 +229,6 @@ Global
 		{E34F6E3D-F298-4171-B105-A23D7DA4D75A} = {B49F3A48-C5D8-4B7C-8BC4-154050600A7D}
 		{125BD411-3FF8-42A8-B972-C9D5B04FF75B} = {E34F6E3D-F298-4171-B105-A23D7DA4D75A}
 		{A298C59C-B5EF-4240-86A7-6BA8F4A07BB6} = {E34F6E3D-F298-4171-B105-A23D7DA4D75A}
+		{C5BA19A5-21DF-4078-95C4-735E4E45B348} = {457CE805-F651-4B12-8D3B-D18FBAF2A9D5}
 	EndGlobalSection
 EndGlobal

@@ -19,13 +19,47 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\glpng.cpp" />
     <ClCompile Include="src\gl_helper.cpp" />
-    <ClCompile Include="src\jpg.cpp" />
     <ClCompile Include="src\logo_intro.cpp" />
     <ClCompile Include="src\vsx_font.cpp" />
     <ClCompile Include="src\vsx_font_outline.cpp" />
     <ClCompile Include="src\vsx_gl_state.cpp" />
+    <ClCompile Include="thirdparty\freetype2\src\autofit\autofit.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftbase.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftbbox.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftbdf.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftbitmap.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftcid.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftdebug.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftfstype.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftgasp.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftglyph.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftgxval.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftinit.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftlcdfil.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftmm.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftotval.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftpatent.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftpfr.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftstroke.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftsynth.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftsystem.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\fttype1.c" />
+    <ClCompile Include="thirdparty\freetype2\src\base\ftwinfnt.c" />
+    <ClCompile Include="thirdparty\freetype2\src\bdf\bdf.c" />
+    <ClCompile Include="thirdparty\freetype2\src\cff\cff.c" />
+    <ClCompile Include="thirdparty\freetype2\src\cid\type1cid.c" />
+    <ClCompile Include="thirdparty\freetype2\src\pcf\pcf.c" />
+    <ClCompile Include="thirdparty\freetype2\src\pfr\pfr.c" />
+    <ClCompile Include="thirdparty\freetype2\src\pshinter\pshinter.c" />
+    <ClCompile Include="thirdparty\freetype2\src\psnames\psnames.c" />
+    <ClCompile Include="thirdparty\freetype2\src\raster\raster.c" />
+    <ClCompile Include="thirdparty\freetype2\src\sfnt\sfnt.c" />
+    <ClCompile Include="thirdparty\freetype2\src\smooth\smooth.c" />
+    <ClCompile Include="thirdparty\freetype2\src\truetype\truetype.c" />
+    <ClCompile Include="thirdparty\freetype2\src\type1\type1.c" />
+    <ClCompile Include="thirdparty\freetype2\src\type42\type42.c" />
+    <ClCompile Include="thirdparty\freetype2\src\winfonts\winfnt.c" />
     <ClCompile Include="thirdparty\ftgl\src\FTBuffer.cpp" />
     <ClCompile Include="thirdparty\ftgl\src\FTCharmap.cpp" />
     <ClCompile Include="thirdparty\ftgl\src\FTCleanup.cpp" />
@@ -60,6 +94,8 @@
     <ClCompile Include="thirdparty\ftgl\src\FTPoint.cpp" />
     <ClCompile Include="thirdparty\ftgl\src\FTSize.cpp" />
     <ClCompile Include="thirdparty\ftgl\src\FTVectoriser.cpp" />
+    <ClCompile Include="thirdparty\glew-1.7.0\src\glew.c" />
+    <ClCompile Include="thirdparty\lodepng\lodepng.cpp" />
     <ClCompile Include="thirdparty\perlin\perlin.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -97,7 +133,6 @@
     <ClInclude Include="include\texture\transform\vsx_texture_transform_translate.h" />
     <ClInclude Include="include\texture\vsx_texture.h" />
     <ClInclude Include="include\texture\vsx_texture_loader.h" />
-    <ClInclude Include="include\vsxg.h" />
     <ClInclude Include="include\vsx_font.h" />
     <ClInclude Include="include\vsx_font_outline.h" />
     <ClInclude Include="include\vsx_font_outline_holder.h" />
@@ -107,6 +142,97 @@
     <ClInclude Include="include\vsx_logo_intro.h" />
     <ClInclude Include="include\vsx_outline_font_cache.h" />
     <ClInclude Include="include\vsx_vbo_bucket.h" />
+    <ClInclude Include="thirdparty\freetype2\devel\ft2build.h" />
+    <ClInclude Include="thirdparty\freetype2\devel\ftoption.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\config\ftconfig.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\config\ftheader.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\config\ftmodule.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\config\ftoption.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\config\ftstdlib.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\freetype.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftadvanc.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftautoh.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftbbox.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftbdf.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftbitmap.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftbzip2.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftcache.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftcffdrv.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftchapters.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftcid.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\fterrdef.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\fterrors.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftfntfmt.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftgasp.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftglyph.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftgxval.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftgzip.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftimage.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftincrem.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftlcdfil.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftlist.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftlzw.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftmac.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftmm.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftmodapi.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftmoderr.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftotval.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftoutln.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftpfr.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftrender.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftsizes.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftsnames.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftstroke.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftsynth.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftsystem.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\fttrigon.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftttdrv.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\fttypes.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ftwinfnt.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\autohint.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\ftcalc.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\ftdebug.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\ftdriver.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\ftgloadr.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\fthash.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\ftmemory.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\ftobjs.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\ftpic.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\ftrfork.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\ftserv.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\ftstream.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\fttrace.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\ftvalid.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\internal.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\psaux.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\pshints.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svbdf.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svcid.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svfntfmt.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svgldict.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svgxval.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svkern.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svmm.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svotval.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svpfr.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svpostnm.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svprop.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svpscmap.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svpsinfo.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svsfnt.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svttcmap.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svtteng.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svttglyf.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\services\svwinfnt.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\sfnt.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\t1types.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\internal\tttypes.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\t1tables.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ttnameid.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\tttables.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\tttags.h" />
+    <ClInclude Include="thirdparty\freetype2\include\freetype\ttunpat.h" />
+    <ClInclude Include="thirdparty\freetype2\include\ft2build.h" />
     <ClInclude Include="thirdparty\ftgl\src\FTCharmap.h" />
     <ClInclude Include="thirdparty\ftgl\src\FTCharToGlyphIndexMap.h" />
     <ClInclude Include="thirdparty\ftgl\src\FTCleanup.h" />
@@ -164,6 +290,10 @@
     <ClInclude Include="thirdparty\ftgl\src\FTUnicode.h" />
     <ClInclude Include="thirdparty\ftgl\src\FTVector.h" />
     <ClInclude Include="thirdparty\ftgl\src\FTVectoriser.h" />
+    <ClInclude Include="thirdparty\glew-1.7.0\include\GL\glew.h" />
+    <ClInclude Include="thirdparty\glew-1.7.0\include\GL\glxew.h" />
+    <ClInclude Include="thirdparty\glew-1.7.0\include\GL\wglew.h" />
+    <ClInclude Include="thirdparty\mini-jpeg\jpeg_decoder.h" />
     <ClInclude Include="thirdparty\perlin\perlin.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -231,8 +361,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\common\include;$(ProjectDir)\..\engine_graphics\include;$(ProjectDir)\..\..\dependencies\glew-1.7.0\include;$(ProjectDir)\..\..\;$(ProjectDir)\thirdparty\ftgl\src;$(ProjectDir)\thirdparty\ftgl;$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\common\include;$(ProjectDir)\..\engine_graphics\include;$(ProjectDir)\..\..\dependencies\glew-1.7.0\include;$(ProjectDir)\..\..\;$(ProjectDir)\thirdparty\ftgl\src;$(ProjectDir)\thirdparty\ftgl;$(ProjectDir)\include;$(ProjectDir)\thirdparty\freetype2\include;$(ProjectDir)\thirdparty\mini-jpeg;$(ProjectDir)\thirdparty\lodepng;$(ProjectDir)\thirdparty\glew-1.7.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;FTGL_LIBRARY_STATIC;FT2_BUILD_LIBRARY;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -256,8 +386,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\common\include;$(ProjectDir)\..\engine_graphics\include;$(ProjectDir)\..\..\dependencies\glew-1.7.0\include;$(ProjectDir)\..\..\;$(ProjectDir)\thirdparty\ftgl\src;$(ProjectDir)\thirdparty\ftgl;$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\common\include;$(ProjectDir)\..\engine_graphics\include;$(ProjectDir)\..\..\dependencies\glew-1.7.0\include;$(ProjectDir)\..\..\;$(ProjectDir)\thirdparty\ftgl\src;$(ProjectDir)\thirdparty\ftgl;$(ProjectDir)\include;$(ProjectDir)\thirdparty\freetype2\include;$(ProjectDir)\thirdparty\mini-jpeg;$(ProjectDir)\thirdparty\lodepng;$(ProjectDir)\thirdparty\glew-1.7.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;FTGL_LIBRARY_STATIC;FT2_BUILD_LIBRARY;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

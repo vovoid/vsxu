@@ -27,7 +27,6 @@
 #include <vsx_platform.h>
 #include <engine_graphics_dllimport.h>
 #include <string/vsx_string.h>
-#include <vsxg.h>
 #include <bitmap/vsx_bitmap.h>
 #include <math/vsx_matrix.h>
 #include <tools/vsx_req.h>
