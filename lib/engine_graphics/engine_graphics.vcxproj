@@ -94,7 +94,6 @@
     <ClCompile Include="thirdparty\ftgl\src\FTPoint.cpp" />
     <ClCompile Include="thirdparty\ftgl\src\FTSize.cpp" />
     <ClCompile Include="thirdparty\ftgl\src\FTVectoriser.cpp" />
-    <ClCompile Include="thirdparty\glew-1.7.0\src\glew.c" />
     <ClCompile Include="thirdparty\lodepng\lodepng.cpp" />
     <ClCompile Include="thirdparty\perlin\perlin.cpp" />
   </ItemGroup>
