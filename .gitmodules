@@ -19,6 +19,3 @@
 [submodule "lib/engine_graphics/thirdparty/lodepng"]
 	path = lib/engine_graphics/thirdparty/lodepng
 	url = https://github.com/vovoid/lodepng.git
-[submodule "lib/engine_graphics/thirdparty/glew"]
-	path = lib/engine_graphics/thirdparty/glew
-	url = https://github.com/vovoid/glew.git
