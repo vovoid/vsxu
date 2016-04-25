@@ -25,6 +25,7 @@
 #pragma once
 
 #include <stdlib.h>
+#include <string/vsx_string.h>
 #include <tools/vsx_req.h>
 #include <tools/vsx_foreach.h>
 #include <tools/vsx_lock.h>

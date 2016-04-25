@@ -210,7 +210,6 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
     if (!bitmap->data_get(mip_map_level,0))
       break;
 
-    texture_gl->mip_map_levels_uploaded++;
 
     if (get_compression_format(bitmap))
     {
@@ -224,6 +223,7 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
         bitmap->data_size_get(mip_map_level, 0),
         bitmap->data_get(mip_map_level, 0)
       );
+      texture_gl->mip_map_levels_uploaded++;
       continue;
     }
 
@@ -238,6 +238,7 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
       source_type, // source data type
       bitmap->data_get(mip_map_level, 0) // pointer to data
     );
+    texture_gl->mip_map_levels_uploaded++;
   }
 
   bitmap->lock.release();

@@ -29,7 +29,6 @@
 #include <map>
 #include "vsx_glsl.h"
 #include <texture/vsx_texture.h>
-#include <vsxg.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>

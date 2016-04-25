@@ -36,7 +36,7 @@ namespace vsx_string_helper
   * @param in
   * @return
   */
-  inline vsx_string<>i2s(const size_t &in)
+  inline vsx_string<>st2s(const size_t &in)
   {
     char string_res[256] = "";
     sprintf(string_res, "%zu", in);

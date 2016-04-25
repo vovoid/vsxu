@@ -51,15 +51,16 @@ endif (VSXU_DEBUG EQUAL 1)
 ################################################################################
 
 set(SOURCES
-  src/glpng.cpp
-  src/jpg.cpp
   src/logo_intro.cpp
   src/vsx_font.cpp
   src/vsx_font_outline.cpp
   src/vsx_gl_state.cpp
   src/gl_helper.cpp
+  src/bitmap/loaders/vsx_bitmap_loader_jpg.cpp
+  src/bitmap/loaders/vsx_bitmap_loader_png.cpp
 )
 
+#ftgl
 include_directories(
 thirdparty/ftgl
 thirdparty/ftgl/src
@@ -101,6 +102,7 @@ thirdparty/ftgl/src/FTSize.cpp
 thirdparty/ftgl/src/FTVectoriser.cpp
 )
 
+#perlin
 include_directories(
 thirdparty/perlin
 )
@@ -108,14 +110,28 @@ set(SOURCES_PERLIN
 thirdparty/perlin/perlin.cpp
 )
 
+#lodepng
+include_directories(
+thirdparty/lodepng
+)
+set(SOURCES_LODEPNG
+thirdparty/lodepng/lodepng.cpp
+)
+
+#jpeg
+include_directories(
+thirdparty/mini-jpeg
+)
+
+
 file(GLOB_RECURSE HEADER_FILES *.h)
 
 
 if (VSXU_STATIC EQUAL 1)  
   #static build  
-  add_library(${module_id} STATIC ${SOURCES} ${SOURCES_FTGL} ${SOURCES_PERLIN} ${HEADER_FILES})
+  add_library(${module_id} STATIC ${SOURCES} ${SOURCES_FTGL} ${SOURCES_PERLIN} ${HEADER_FILES} ${SOURCES_LODEPNG})
 else ()
-  add_library(${module_id} SHARED ${SOURCES} ${SOURCES_FTGL} ${SOURCES_PERLIN} ${HEADER_FILES})
+  add_library(${module_id} SHARED ${SOURCES} ${SOURCES_FTGL} ${SOURCES_PERLIN} ${HEADER_FILES} ${SOURCES_LODEPNG})
 endif()
 
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)

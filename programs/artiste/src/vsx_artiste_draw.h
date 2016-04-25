@@ -1,7 +1,7 @@
 
 #include <vsx_application_control.h>
 #include <vsx_application_input_state_manager.h>
-
+#include <bitmap/vsx_bitmap_writer.h>
 #include <time/vsx_timer.h>
 #include <vsx_gl_global.h>
 #include <vsx_logo_intro.h>
@@ -335,38 +335,29 @@ public:
     //------------------------------------------------------------------
     if (record_movie)
     {
-      GLint viewport[4];
-      glGetIntegerv(GL_VIEWPORT, viewport);
-      char* pixeldata = (char*)malloc( viewport[2] * viewport[3] * 3 );
-      char* pixeldata_flipped = (char*)malloc( viewport[2] * viewport[3] * 3 );
+      unsigned char* pixeldata = (unsigned char*)malloc( vsx_gl_state::get_instance()->viewport_get_height() * vsx_gl_state::get_instance()->viewport_get_width() * 3 );
+      unsigned char* pixeldata_flipped = (unsigned char*)malloc( vsx_gl_state::get_instance()->viewport_get_height() * vsx_gl_state::get_instance()->viewport_get_width() * 3 );
       take_screenshot = false;
-      glReadPixels(0,0,viewport[2],viewport[3],GL_RGB,GL_UNSIGNED_BYTE, (GLvoid*)pixeldata);
-      int x3 = viewport[2]*3;
-      int hi = viewport[3];
+      glReadPixels(0, 0, vsx_gl_state::get_instance()->viewport_get_width(), vsx_gl_state::get_instance()->viewport_get_height(),GL_RGB,GL_UNSIGNED_BYTE, (GLvoid*)pixeldata);
+      int x3 = vsx_gl_state::get_instance()->viewport_get_width() * 3;
+      int hi = vsx_gl_state::get_instance()->viewport_get_height();
       for (int y = 0; y < hi; y++)
-      {
         for (int x = 0; x < x3; x++)
-        {
           pixeldata_flipped[y*x3+x] = pixeldata[ (hi-y)*x3+x];
-        }
-      }
 
-      CJPEGTest jpeg;
-      jpeg.m_nResX = viewport[2];
-      jpeg.m_nResY = viewport[3];
-      jpeg.m_pBuf = (unsigned char*)pixeldata_flipped;
+      vsx_bitmap bitmap;
+      bitmap.width  = vsx_gl_state::get_instance()->viewport_get_width();
+      bitmap.height = vsx_gl_state::get_instance()->viewport_get_height();
+      bitmap.data_set(pixeldata_flipped, 0, 0, 3 * bitmap.width * bitmap.height);
 
-      //char filename[32768];
-      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-      if (access((vsx_data_path::get_instance()->data_path_get() + "videos").c_str(),0) != 0) mkdir((vsx_data_path::get_instance()->data_path_get()+"/videos").c_str(),0700);
-        //sprintf(filename, "%sscreenshots/%d_%d_%d_rgb.jpg",vsx_get_data_path().c_str(),(int)time(0),viewport[2],viewport[3]);
-      #endif
-      vsx_string<>err;
       char mfilename[32];
       sprintf(mfilename, "%05d", movie_frame_count);
-
-      jpeg.SaveJPEG( vsx_data_path::get_instance()->data_path_get() + "videos"+DIRECTORY_SEPARATOR+vsx_string<>(mfilename)+"_"+ vsx_string_helper::i2s(viewport[2]) + "_" + vsx_string_helper::i2s(viewport[3])+".jpg", err, 100 );
-      jpeg.m_pBuf = 0;
+      vsx_bitmap_writer::write(&bitmap,
+        vsx_data_path::get_instance()->data_path_get() + "videos" + DIRECTORY_SEPARATOR +
+        vsx_string<>(mfilename)+"_" +
+        vsx_string_helper::i2s(vsx_gl_state::get_instance()->viewport_get_width()) + "_" + vsx_string_helper::i2s(vsx_gl_state::get_instance()->viewport_get_height()) +
+        ".tga"
+      );
       free(pixeldata);
       free(pixeldata_flipped);
       movie_frame_count++;
@@ -378,34 +369,28 @@ public:
 
     if (take_screenshot)
     {
-      GLint viewport[4];
-      glGetIntegerv(GL_VIEWPORT, viewport);
-      char* pixeldata = (char*)malloc( viewport[2] * viewport[3] * 3 );
-      char* pixeldata_flipped = (char*)malloc( viewport[2] * viewport[3] * 3 );
+      unsigned char* pixeldata = (unsigned char*)malloc( vsx_gl_state::get_instance()->viewport_get_height() * vsx_gl_state::get_instance()->viewport_get_width() * 3 );
+      unsigned char* pixeldata_flipped = (unsigned char*)malloc( vsx_gl_state::get_instance()->viewport_get_height() * vsx_gl_state::get_instance()->viewport_get_width() * 3 );
       take_screenshot = false;
-      glReadPixels(0,0,viewport[2],viewport[3],GL_RGB,GL_UNSIGNED_BYTE, (GLvoid*)pixeldata);
+      glReadPixels(0, 0, vsx_gl_state::get_instance()->viewport_get_width(), vsx_gl_state::get_instance()->viewport_get_height(),GL_RGB,GL_UNSIGNED_BYTE, (GLvoid*)pixeldata);
 
-      int x3 = viewport[2]*3;
-      int hi = viewport[3];
+      int x3 = vsx_gl_state::get_instance()->viewport_get_width() * 3;
+      int hi = vsx_gl_state::get_instance()->viewport_get_height();
       for (int y = 0; y < hi; y++)
-      {
         for (int x = 0; x < x3; x++)
-        {
           pixeldata_flipped[y*x3+x] = pixeldata[ (hi-y)*x3+x];
-        }
-      }
 
-      CJPEGTest jpeg;
-      jpeg.m_nResX = viewport[2];
-      jpeg.m_nResY = viewport[3];
-      jpeg.m_pBuf = (unsigned char*)pixeldata_flipped;
+      vsx_bitmap bitmap;
+      bitmap.width  = vsx_gl_state::get_instance()->viewport_get_width();
+      bitmap.height = vsx_gl_state::get_instance()->viewport_get_height();
+      bitmap.data_set(pixeldata_flipped, 0, 0, 3 * bitmap.width * bitmap.height);
 
-      #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-      if (access((vsx_data_path::get_instance()->data_path_get()+"screenshots").c_str(),0) != 0) mkdir((vsx_data_path::get_instance()->data_path_get()+"/screenshots").c_str(),0700);
-      #endif
-      vsx_string<>err;
-      jpeg.SaveJPEG( vsx_data_path::get_instance()->data_path_get()+"screenshots"+DIRECTORY_SEPARATOR+vsx_string_helper::i2s(time(0x0))+"_"+ vsx_string_helper::i2s(viewport[2]) + "_" + vsx_string_helper::i2s(viewport[3])+".jpg", err, 100 );
-      jpeg.m_pBuf = 0;
+      vsx_bitmap_writer::write( &bitmap,
+        vsx_data_path::get_instance()->data_path_get() + "screenshots" + DIRECTORY_SEPARATOR +
+        vsx_string_helper::i2s(time(0x0)) +"_"+
+        vsx_string_helper::i2s(vsx_gl_state::get_instance()->viewport_get_width()) + "_" + vsx_string_helper::i2s(vsx_gl_state::get_instance()->viewport_get_height()) +
+        ".tga"
+      );
       free(pixeldata);
       free(pixeldata_flipped);
     }

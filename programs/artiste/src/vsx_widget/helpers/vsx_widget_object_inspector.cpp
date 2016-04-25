@@ -77,12 +77,12 @@ void vsx_window_object_inspector::draw_2d() {
       if (texture->texture->bitmap->width != 0.0) {
         texture_loaded = true;
         vsx_vector3<> aa;
-        aa.x = 0.4/screenaspect*(texture->texture->bitmap->width/texture->texture->bitmap->height);
+        aa.x = 0.4/screenaspect;
+        aa.x *= ((float)texture->texture->bitmap->width/(float)texture->texture->bitmap->height);
         aa.y = 0.4;
         aa.z = 0;
-        printf("resizing to tex\n");
         resize_to(aa);
-        move(1*screen_aspect-0.4/screenaspect*(texture->texture->bitmap->width/texture->texture->bitmap->height),1.0f-aa.y,0);
+        move(1*screen_aspect-0.4/screenaspect*((float)texture->texture->bitmap->width/(float)texture->texture->bitmap->height),1.0f-aa.y,0);
       }
   }
 }
