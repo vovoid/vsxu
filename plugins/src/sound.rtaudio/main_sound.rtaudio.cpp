@@ -96,6 +96,13 @@ extern "C"
   __declspec(dllexport) void on_unload_library();
 }
 
+#ifndef MOD_CM
+#define MOD_CM vsx_module_sound_rtaudio_cm
+#define MOD_DM vsx_module_sound_rtaudio_dm
+#define MOD_NM vsx_module_sound_rtaudio_nm
+#endif
+
+
 size_t sound_module_type = 0;
 
 void print_help()

@@ -227,6 +227,9 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
       continue;
     }
 
+    if ((bitmap->width * bitmap->channels) % 4)
+      glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
     glTexImage2D(
       texture_gl->gl_type, // opengl type
       mip_map_level, // mipmap level
@@ -238,6 +241,10 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
       source_type, // source data type
       bitmap->data_get(mip_map_level, 0) // pointer to data
     );
+
+    if ((bitmap->width * bitmap->channels) % 4)
+      glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+
     texture_gl->mip_map_levels_uploaded++;
   }
 
