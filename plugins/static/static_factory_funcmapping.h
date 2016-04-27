@@ -78,10 +78,6 @@ unsigned long vsx_module_render_text_nm(vsx_module_engine_environment* environme
 //void vsx_module_selectors_dm(vsx_module* m, unsigned long module);
 //unsigned long vsx_module_selectors_nm(vsx_module_engine_environment* environment);
 
-//vsx_module* vsx_module_sensors_accelerometer_cm(unsigned long module, void* args);
-//void vsx_module_sensors_accelerometer_dm(vsx_module* m, unsigned long module);
-//unsigned long vsx_module_sensors_accelerometer_nm(vsx_module_engine_environment* environment);
-
 vsx_module* vsx_module_sound_rtaudio_cm(unsigned long module, void* args);
 void vsx_module_sound_rtaudio_dm(vsx_module* m, unsigned long module);
 unsigned long vsx_module_sound_rtaudio_nm(vsx_module_engine_environment* environment);

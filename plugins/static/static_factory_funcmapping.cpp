@@ -20,7 +20,6 @@ VSXM_SF_ADD_MODULE("bitmap.generators",vsx_module_bitmap_generators_cm,vsx_modul
   VSXM_SF_ADD_MODULE("render.opengl",vsx_module_render_opengl_cm,vsx_module_render_opengl_dm,vsx_module_render_opengl_nm);
   VSXM_SF_ADD_MODULE("render.text",vsx_module_render_text_cm,vsx_module_render_text_dm,vsx_module_render_text_nm);
   // VSXM_SF_ADD_MODULE("selectors", vsx_module_selectors_cm,vsx_module_selectors_dm,vsx_module_selectors_nm);
-  // VSXM_SF_ADD_MODULE("sensors.accelerometer", vsx_module_sensors_accelerometer_cm,vsx_module_sensors_accelerometer_dm,vsx_module_sensors_accelerometer_nm);
   VSXM_SF_ADD_MODULE("sound.rtaudio", vsx_module_sound_rtaudio_cm, vsx_module_sound_rtaudio_dm, vsx_module_sound_rtaudio_nm);
   // VSXM_SF_ADD_MODULE("sound.sink",vsx_module_sound_sink_cm,vsx_module_sound_sink_dm,vsx_module_sound_sink_nm);
   VSXM_SF_ADD_MODULE("string",vsx_module_string_cm,vsx_module_string_dm,vsx_module_string_nm);
