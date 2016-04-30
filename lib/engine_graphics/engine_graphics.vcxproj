@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\bitmap\loaders\vsx_bitmap_loader_jpg.cpp" />
+    <ClCompile Include="src\bitmap\loaders\vsx_bitmap_loader_png.cpp" />
     <ClCompile Include="src\gl_helper.cpp" />
     <ClCompile Include="src\logo_intro.cpp" />
     <ClCompile Include="src\vsx_font.cpp" />
@@ -94,6 +96,8 @@
     <ClCompile Include="thirdparty\ftgl\src\FTPoint.cpp" />
     <ClCompile Include="thirdparty\ftgl\src\FTSize.cpp" />
     <ClCompile Include="thirdparty\ftgl\src\FTVectoriser.cpp" />
+    <ClCompile Include="thirdparty\glew-1.7.0\src\glew.c" />
+    <ClCompile Include="thirdparty\glew-1.7.0\src\glewinfo.c" />
     <ClCompile Include="thirdparty\lodepng\lodepng.cpp" />
     <ClCompile Include="thirdparty\perlin\perlin.cpp" />
   </ItemGroup>
@@ -361,7 +365,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\common\include;$(ProjectDir)\..\engine_graphics\include;$(ProjectDir)\..\..\dependencies\glew-1.7.0\include;$(ProjectDir)\..\..\;$(ProjectDir)\thirdparty\ftgl\src;$(ProjectDir)\thirdparty\ftgl;$(ProjectDir)\include;$(ProjectDir)\thirdparty\freetype2\include;$(ProjectDir)\thirdparty\mini-jpeg;$(ProjectDir)\thirdparty\lodepng;$(ProjectDir)\thirdparty\glew-1.7.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;FTGL_LIBRARY_STATIC;FT2_BUILD_LIBRARY;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;FTGL_LIBRARY_STATIC;FT2_BUILD_LIBRARY;GLEW_STATIC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
   </ItemDefinitionGroup>

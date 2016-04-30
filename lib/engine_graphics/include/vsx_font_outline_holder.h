@@ -62,11 +62,11 @@ public:
     vsx::file* fp;
 
     if ((fp = filesystem->f_open(font_file_name.c_str(), "rb")) == NULL)
-      VSX_ERROR_RETURN_S("font not found: ",font_file_name.c_str());
+      VSX_ERROR_RETURN_S(L"font not found: ",font_file_name.c_str());
 
     file_name = font_file_name;
 
-    unsigned long size = filesystem->f_get_size(fp);
+    size_t size = filesystem->f_get_size(fp);
 
     fdata = (char*)malloc(size);
     filesystem->f_read((void*)fdata, size, fp);
@@ -76,7 +76,7 @@ public:
       font_inner = new FTGLTextureFont((unsigned char*)fdata, size);
       font_inner->FaceSize(48);
       if (!font_inner->CharMap(ft_encoding_unicode))
-        VSX_ERROR_RETURN("Could not set unicode freetype encoding");
+        VSX_ERROR_RETURN(L"Could not set unicode freetype encoding");
     }
     if (type & outline)
     {

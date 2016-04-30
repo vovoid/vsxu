@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{B49F3A48-C5D8-4B7C-8BC4-154050600A7D}"
 EndProject
@@ -82,6 +82,12 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "engine_graphics", "lib\engine_graphics\engine_graphics.vcxproj", "{A298C59C-B5EF-4240-86A7-6BA8F4A07BB6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_input", "lib\application\test\test_input.vcxproj", "{C5BA19A5-21DF-4078-95C4-735E4E45B348}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3489A41A-D4EF-4AB6-A2FF-40070ADB2A8F} = {3489A41A-D4EF-4AB6-A2FF-40070ADB2A8F}
+		{FA791770-E120-4E57-BF27-C00DFF212DF3} = {FA791770-E120-4E57-BF27-C00DFF212DF3}
+		{DA2F3D7C-B54E-43CA-B13D-901179490FB4} = {DA2F3D7C-B54E-43CA-B13D-901179490FB4}
+		{A298C59C-B5EF-4240-86A7-6BA8F4A07BB6} = {A298C59C-B5EF-4240-86A7-6BA8F4A07BB6}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

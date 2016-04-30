@@ -125,9 +125,9 @@ public:
       GLfloat* data2 = (GLfloat*)malloc(sizeof(GLfloat) * width * height * channels);
       int dy = 0;
       size_t sxbpp = width * channels;
-      for (int y = height-1; y >= 0; --y)
+      for (int y = (int)height-1; y >= 0; --y)
       {
-        for (unsigned long x = 0; x < width * channels; ++x)
+        for (unsigned long x = 0; x < (int)width * channels; ++x)
           data2[dy*sxbpp + x] = ((GLfloat*)bitmap->data_get())[y*sxbpp + x];
         ++dy;
       }
