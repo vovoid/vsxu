@@ -2,6 +2,7 @@
 
 
 #include <vsx_gl_global.h>
+#include <vsx_gl_state.h>
 
 double vsx_widget_coords::modelMatrix[16];
 double vsx_widget_coords::projMatrix[16];
@@ -9,9 +10,10 @@ int vsx_widget_coords::viewport[4];
 
 vsx_vector3<> vsx_vec_viewport()
 {
-  GLint viewport[4];
-  glGetIntegerv(GL_VIEWPORT, viewport);
-  return vsx_vector3<>(viewport[2],viewport[3],0);
+  return vsx_vector3f(
+    (float)vsx_gl_state::get_instance()->viewport_get_width(),
+    (float)vsx_gl_state::get_instance()->viewport_get_height()
+  );
 }
 
 
@@ -29,8 +31,8 @@ void vsx_widget_coords::init(float x, float y)
   gluUnProject(wx,wy,wz,modelMatrix,projMatrix,viewport,&xx,&yy,&zz);
 
   // world
-  world_global.x = xx;
-  world_global.y = yy;
+  world_global.x = (float)xx;
+  world_global.y = (float)yy;
   world_global.z = 0.0f;
   world_local.x = world_local.y = 0.0f;
   // screen

@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
   VSX_UNUSED(argc);
   VSX_UNUSED(argv);
 
-  srand(time(0x0));
+  srand((unsigned int)time(0x0));
 
   vsx_ma_vector<unsigned char> data;
 
@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 
   foreach(data, i)
     if (data[i] != uncompressed[i])
-      vsx_printf(L"data differs on index %ld\n", i);
+      vsx_printf(L"data differs on index %uz\n", i);
 
   return 0;
 }

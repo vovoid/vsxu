@@ -25,16 +25,16 @@
 #include <map>
 #include <list>
 #include <vector>
-#include "vsx_command.h"
+#include <command/vsx_command.h>
 #include <string/vsx_string_helper.h>
 #include <texture/vsx_texture.h>
 #include "vsx_font.h"
-#include "vsx_widget.h"
-#include "vsx_widget_panel.h"
-#include "vsx_widget_base_edit.h"
-#include "vsx_widget_popup_menu.h"
+#include <vsx_widget.h>
+#include <widgets/vsx_widget_panel.h>
+#include <widgets/vsx_widget_base_edit.h>
+#include <widgets/vsx_widget_popup_menu.h>
+#include <widgets/vsx_widget_button.h>
 #include <stdlib.h>
-#include "vsx_widget_button.h"
 #include <gl_helper.h>
 
 vsx_widget_base_edit::vsx_widget_base_edit() {
@@ -81,7 +81,7 @@ vsx_widget_base_edit::vsx_widget_base_edit() {
   filter_string_enabled = false;
   support_interpolation = false;
 
-  font_size = 0.004;
+  font_size = 0.004f;
   caretx = 0;
   carety = 0;
   scroll_x = 0;
@@ -95,9 +95,9 @@ vsx_widget_base_edit::vsx_widget_base_edit() {
   num_hidden_lines = 0;
 
   font.syntax_colors[0] = vsx_widget_skin::get_instance()->get_color(14); // base color
-  font.syntax_colors[1] = vsx_color<>(0.8,0.8,0.8,1); // comment
-  font.syntax_colors[2] = vsx_color<>(0,1,1,1);
-  font.syntax_colors[3] = vsx_color<>(153.0f/255.0f,204.0f/255.0f,1,1);
+  font.syntax_colors[1] = vsx_color<>(0.8f, 0.8f, 0.8f, 1.0f); // comment
+  font.syntax_colors[2] = vsx_color<>(0, 1, 1, 1);
+  font.syntax_colors[3] = vsx_color<>(153.0f/255.0f, 204.0f/255.0f, 1, 1);
 
   menu = add(new vsx_widget_popup_menu,".edit_menu");
   menu->commands.adds(VSX_COMMAND_MENU, "clear", "clear","a"); //build a menu
@@ -107,8 +107,8 @@ vsx_widget_base_edit::vsx_widget_base_edit() {
   menu->commands.adds(VSX_COMMAND_MENU, "font_size>;large", "font_size","0.016"); //build a menu
   menu->commands.adds(VSX_COMMAND_MENU, "font_size>;larger", "font_size","0.022"); //build a menu
   menu->commands.adds(VSX_COMMAND_MENU, "font_size>;largest", "font_size","0.032"); //build a menu
-  menu->size.x = 0.2;
-  menu->size.y = 0.5;
+  menu->size.x = 0.2f;
+  menu->size.y = 0.5f;
   menu->init();
 
   calculate_scroll_size();
@@ -119,7 +119,7 @@ void vsx_widget_base_edit::command_process_back_queue(vsx_command_s *t) {
   if (t->cmd == "action")
   {
     // TODO: take into account hidden lines
-    backwards_message("editor_action "+vsx_string_helper::i2s(id)+" "+lines[scroll_y + vsx_string_helper::s2i(t->parts[1])]);
+    backwards_message("editor_action "+vsx_string_helper::i2s(id)+" "+lines[(size_t)scroll_y + vsx_string_helper::s2i(t->parts[1])]);
     return;
   }
 
@@ -195,9 +195,10 @@ void vsx_widget_base_edit::calculate_scroll_size() {
       t_longest_line = lines[i].size();
 
   t_longest_line += 3;
-  if (t_longest_line > longest_line) longest_line = t_longest_line;
-  characters_width = floor(target_size.x/(font_size*0.37));
-  characters_height = floor(target_size.y/(font_size));
+  if (t_longest_line > (size_t)longest_line) 
+    longest_line = (float)t_longest_line;
+  characters_width = (float)floor(target_size.x/(font_size*0.37));
+  characters_height = (float)floor(target_size.y/(font_size));
 
     scroll_x_max = longest_line;
     scroll_x_size = 1-(float)(longest_line - characters_width)/longest_line;
@@ -228,7 +229,7 @@ void vsx_widget_base_edit::set_string(const vsx_string<>& str) {
 
   foreach (lines, i)
     if (lines[i].size() > longest_line)
-      longest_line = lines[i].size();
+      longest_line = (float)lines[i].size();
 
   // hide eventual action buttons
   for (size_t i = 0; i < action_buttons.size(); i++)
@@ -329,7 +330,7 @@ void vsx_widget_base_edit::event_text(wchar_t character_wide, char character)
   updates++;
   ++caretx;
   if ((size_t)caretx > lines[carety+(int)scroll_y].size()-(int)scroll_x)
-    caretx = lines[carety+(int)scroll_y].size()-(int)scroll_x;
+    caretx = (int)lines[carety+(int)scroll_y].size()-(int)scroll_x;
 
   int t_scroll_x = (int)scroll_x;
 
@@ -360,11 +361,8 @@ int count_whitespaces(vsx_string<>& s)
 {
   size_t i = 0;
   while (i < s.size() && s[i] == ' ')
-  {
-    //printf("line: %d\n",__LINE__);
     i++;
-  }
-  return i;
+  return (int)i;
 }
 
 void vsx_widget_base_edit::event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button)
@@ -484,8 +482,8 @@ void vsx_widget_base_edit::i_draw()
   if (ff < 0) ff = 0;
   scroll_y = round(scrollbar_pos_y*(ff));
   vsx_vector3<> p = get_pos_p();
-  p.x -= target_size.x*0.5;
-  p.y -= target_size.y*0.5;
+  p.x -= target_size.x*0.5f;
+  p.y -= target_size.y*0.5f;
   if (render_type == render_3d) {
     p.z = pos.z;
   } else {
@@ -573,9 +571,9 @@ void vsx_widget_base_edit::i_draw()
   //  if (it == lines.end()) run = false;
   }
   if (k_focus == this && editing_enabled) {
-    pp.x = p.x+(float)caretx*font_size*0.37;
+    pp.x = p.x+(float)caretx*font_size*0.37f;
     pp.y = p.y-font_size*(float)(carety);
-    float tt = (float)((int)(vsx_widget_time::get_instance()->get_time()*3000) % 1000)*0.001;
+    float tt = (float)((int)(vsx_widget_time::get_instance()->get_time()*3000) % 1000)*0.001f;
 
     if (selected_line_highlight)
       font.color = vsx_widget_skin::get_instance()->get_color(17);
@@ -663,7 +661,7 @@ bool vsx_widget_base_edit::event_key_down(uint16_t key) {
           --carety;
         }
         if ((size_t)caretx > lines[carety+(int)scroll_y].size()-(int)scroll_x)
-         caretx = lines[carety+(int)scroll_y].size()-(int)scroll_x;
+         caretx = (int)lines[carety+(int)scroll_y].size()-(int)scroll_x;
       }
       break;
 
@@ -683,7 +681,7 @@ bool vsx_widget_base_edit::event_key_down(uint16_t key) {
 
     // end
     case VSX_SCANCODE_END:
-      caretx = lines[carety+(int)scroll_y].size()-(int)scroll_x;
+      caretx = (int)lines[carety+(int)scroll_y].size()-(int)scroll_x;
       if (caretx > characters_width-3) {
         scroll_x += caretx - characters_width+3;
         caretx = (int)characters_width-3;
@@ -692,7 +690,7 @@ bool vsx_widget_base_edit::event_key_down(uint16_t key) {
       if (caretx < 0) {
         scroll_x += caretx-5;
         if (scroll_x < 0) scroll_x = 0;
-        caretx = lines[carety+(int)scroll_y].size()-(int)scroll_x;
+        caretx = (int)lines[carety+(int)scroll_y].size()-(int)scroll_x;
       }
     break;
 
@@ -749,13 +747,20 @@ bool vsx_widget_base_edit::event_key_down(uint16_t key) {
         ++it;
         ++itp;
         ++itlv;
-        tempstring = lines[carety+(int)scroll_y].substr(caretx+(int)scroll_x,lines[carety+(int)scroll_y].size()-(caretx+(int)scroll_x));
+        tempstring = lines[carety+(int)scroll_y].
+          substr(
+            caretx + (int)scroll_x,   
+            (int)lines[carety+(int)scroll_y].size() - (caretx + (int)scroll_x)
+          );
         tempstring2 = lines[carety+(int)scroll_y].substr(0,caretx+(int)scroll_x);
         lines[carety+(int)scroll_y] = tempstring2;
         lines.insert(it,tempstring);
         lines_visible.insert(itlv,0);
 
-        tempstring = lines_p[carety+(int)scroll_y].substr(caretx+(int)scroll_x,lines_p[carety+(int)scroll_y].size()-(caretx+(int)scroll_x));
+        tempstring = lines_p[carety+(int)scroll_y].substr(
+            caretx + (int)scroll_x,
+            (int)lines_p[carety+(int)scroll_y].size() - (caretx+(int)scroll_x)
+          );
         tempstring2 = lines_p[carety+(int)scroll_y].substr(0,caretx+(int)scroll_x);
         lines_p[carety+(int)scroll_y] = tempstring2;
         lines_p.insert(itp,tempstring);

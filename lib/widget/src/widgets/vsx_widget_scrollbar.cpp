@@ -25,11 +25,11 @@
 #include <map>
 #include <list>
 #include <vector>
-#include "vsx_command.h"
+#include <command/vsx_command.h>
 #include <texture/vsx_texture.h>
 #include "vsx_font.h"
 #include "vsx_widget.h"
-#include "vsx_widget_scrollbar.h"
+#include <widgets/vsx_widget_scrollbar.h>
 #include <gl_helper.h>
 
 

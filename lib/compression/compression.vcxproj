@@ -83,7 +83,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_7ZIP_ST;WIN32;_MBCS;LZHAM_NO_THREADING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\common\include;$(ProjectDir)\..\..\;$(ProjectDir)\thirdparty\lzham-sdk\lzhamdecomp;$(ProjectDir)\thirdparty\lzham-sdk/lzhamcomp;$(ProjectDir)\thirdparty\lzham-sdk/include;$(ProjectDir)\include</AdditionalIncludeDirectories>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableSpecificWarnings>4010</DisableSpecificWarnings>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

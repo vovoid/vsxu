@@ -23,7 +23,7 @@
 
 
 #include <vsx_platform.h>
-#include "vsx_command_client_server.h"
+#include <command/vsx_command_client_server.h>
 
 
 #include <netinet/in.h>

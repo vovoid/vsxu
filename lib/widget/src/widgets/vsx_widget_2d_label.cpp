@@ -28,7 +28,7 @@
 void vsx_widget_2d_label::init()
 {
   halign = a_center;
-  font_size = size.y = 0.014;
+  font_size = size.y = 0.014f;
 
 }
 

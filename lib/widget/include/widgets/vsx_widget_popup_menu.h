@@ -36,7 +36,7 @@ public:
   int id_over;
   int over;
   vsx_command_s *current_command_over;
-  double row_size;
+  float row_size;
   void init();
   void init_extra_commands();
 
@@ -48,7 +48,7 @@ public:
   void i_draw();
   vsx_widget_popup_menu()
   {
-    target_size.x = size.x = 0.4;
+    target_size.x = size.x = 0.4f;
   }
   void on_delete();
 };

@@ -21,18 +21,20 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_PROFILER_H
-#define VSX_PROFILER_H
+#pragma once
 
+#include <vsx_platform.h>
 #include <tools/vsx_fifo.h>
 #include <tools/vsx_rdtsc.h>
-#include <unistd.h>
 #include <sys/types.h>
-#include <unistd.h>
-
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+#include <unistd.h>
 #include <sys/syscall.h>
+#endif
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+typedef int pid_t;
 #endif
 
 #include <sys/stat.h>
@@ -126,7 +128,7 @@ public:
    * @brief thread_name Optional thread name
    * @param tag
    */
-  inline void thread_name( const char* tag ) __attribute__((always_inline))
+  inline void thread_name( const char* tag )
   {
     vsx_profile_chunk chunk;
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_THREAD_NAME;
@@ -150,7 +152,7 @@ public:
    *
    * @param tag
    */
-  inline void sub_begin( const char* tag ) __attribute__((always_inline))
+  inline void sub_begin( const char* tag )
   {
     if (!enabled)
       return;
@@ -167,7 +169,8 @@ public:
     }
     chunk.tag[i-1] = 0;
     chunk.id = thread_id;
-    asm volatile("": : :"memory");
+    VSX_MEMORY_BARRIER;
+
     chunk.cycles = vsx_rdtsc();
     while (!queue.produce(chunk))
     {
@@ -177,13 +180,13 @@ public:
     }
   }
 
-  inline void sub_end() __attribute__((always_inline))
+  inline void sub_end()
   {
     if (!enabled)
       return;
 
     uint64_t t = vsx_rdtsc();
-    asm volatile("": : :"memory");
+    VSX_MEMORY_BARRIER;
     vsx_profile_chunk chunk;
     chunk.spin_waste = 0;
     chunk.id = thread_id;
@@ -209,7 +212,7 @@ public:
     chunk.spin_waste = 0;
     chunk.id = thread_id;
     chunk.flags = VSX_PROFILE_CHUNK_FLAG_SECTION_START;
-    asm volatile("": : :"memory");
+    VSX_MEMORY_BARRIER;
     chunk.cycles = vsx_rdtsc();
     while (!queue.produce(chunk))
     {
@@ -242,7 +245,7 @@ public:
    * @brief plot_name Optional plot name
    * @param tag
    */
-  inline void plot_name(uint64_t id, const char* tag ) __attribute__((always_inline))
+  inline void plot_name(uint64_t id, const char* tag )
   {
     if (!enabled)
       return;
@@ -343,5 +346,3 @@ public:
 };
 
 
-
-#endif

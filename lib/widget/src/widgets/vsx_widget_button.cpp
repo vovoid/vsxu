@@ -22,20 +22,20 @@
 */
 
 
-#include "vsx_widget_button.h"
+#include <widgets/vsx_widget_button.h>
 
 void vsx_widget_button::init()
 {
   coord_type = VSX_WIDGET_COORD_CENTER;
   if (render_type == render_2d)
   {
-    border = 0.0023;
-    size.x = 0.06;
-    size.y = 0.03;
+    border = 0.0023f;
+    size.x = 0.06f;
+    size.y = 0.03f;
   } else {
-    border = 0.0009;
-    size.x = 0.03;
-    size.y = 0.015;
+    border = 0.0009f;
+    size.x = 0.03f;
+    size.y = 0.015f;
   }
   target_size = size;
 }
@@ -70,8 +70,8 @@ void vsx_widget_button::i_draw()
 
   if (coord_type == VSX_WIDGET_COORD_CENTER)
   {
-    i_pos.x -= size.x*0.5;
-    i_pos.y += size.y*0.5;
+    i_pos.x -= size.x*0.5f;
+    i_pos.y += size.y*0.5f;
   }
 
   float font_size_smaller = 1.0f;
@@ -87,10 +87,10 @@ void vsx_widget_button::i_draw()
   }
 
   glBegin(GL_QUADS);
-    glVertex3f((i_pos.x+border)*screen_aspect                                  , i_pos.y-size.y+border, i_pos.z);
-    glVertex3f((i_pos.x+border)*screen_aspect                                  , i_pos.y-border, i_pos.z);
-    glVertex3f((i_pos.x+size.x-border)*screen_aspect                           , i_pos.y-border, i_pos.z);
-    glVertex3f((i_pos.x+size.x-border)*screen_aspect                           , i_pos.y-size.y+border, i_pos.z);
+    glVertex3f((i_pos.x+border)*screen_aspect                                  , i_pos.y-size.y+(float)border, i_pos.z);
+    glVertex3f((i_pos.x+border)*screen_aspect                                  , i_pos.y-(float)border, i_pos.z);
+    glVertex3f((i_pos.x+size.x-border)*screen_aspect                           , i_pos.y-(float)border, i_pos.z);
+    glVertex3f((i_pos.x+size.x-border)*screen_aspect                           , i_pos.y-size.y+(float)border, i_pos.z);
   glEnd();
 
 
@@ -132,7 +132,7 @@ void vsx_widget_button::i_draw()
   float dd;
   if ((m_focus == this) && (!outside))
   {
-    dd = size.y*0.05;
+    dd = size.y*0.05f;
   }
   else
   {
@@ -143,7 +143,7 @@ void vsx_widget_button::i_draw()
 
   font.print_center
   (
-    vsx_vector3<>( (i_pos.x + size.x * 0.5 + dd),  i_pos.y-size.y+size.y * 0.25),
+    vsx_vector3<>( (i_pos.x + size.x * 0.5f + dd),  i_pos.y-size.y+size.y * 0.25f),
     title,
     size.y * 0.4f * font_size_smaller
   );

@@ -49,6 +49,10 @@
 #include <string/vsx_string_helper.h>
 #include <debug/vsx_error.h>
 
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS && COMPILER == COMPILER_VISUAL_STUDIO
+#include <io.h>
+#endif
+
 #if (PLATFORM == PLATFORM_LINUX)
   #include <sys/prctl.h>
 #endif
@@ -160,25 +164,29 @@ public:
 
     vsx_string<>profiler_directory = profiler_directory_get();
 
-    if (access(profiler_directory.c_str(),0) != 0)
+#if COMPILER == COMPILER_VISUAL_STUDIO
+    if (_access(profiler_directory.c_str(),0) != -1)
+#else
+    if (access(profiler_directory.c_str(), 0) != 0)
+#endif
 #if (PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX)
       mkdir( (profiler_directory).c_str(), 0700);
 #else
-      mkdir( (profiler_directory).c_str() );
+      CreateDirectory( (profiler_directory).c_str(), nullptr );
 #endif
 
 #if (PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX)
     vsx_string<>filename = profiler_directory + "/" + vsx_string<>(program_invocation_short_name) +
         "_" +vsx_string_helper::i2s(time(0x0)) + ".dat";
 #else
-    vsx_string<>filename = profiler_directory + "/" + "_" +vsx_string_helper::i2s(time(0x0)) + ".dat";
+    vsx_string<>filename = profiler_directory + "/" + "_" +vsx_string_helper::i2s((int)time(0x0)) + ".dat";
 #endif
     vsx_timer timer;
 
     FILE* fp = fopen( filename.c_str() , "wb");
 
 		if (!fp)
-      VSX_ERROR_EXIT("VSX PROFILER: ***ERROR*** I/O thread can not open file. Aborting...", 900);
+      VSX_ERROR_EXIT(L"VSX PROFILER: ***ERROR*** I/O thread can not open file. Aborting...", 900);
 
     timer.start();
     double accumulated_time = 0.0;
@@ -256,7 +264,7 @@ public:
             if (current_depth > max_depth)
             {
               max_depth = current_depth;
-							vsx_printf(L"VSX PROFILER:  Stack depth new maximum: %ld\n", max_depth);
+							vsx_printf(L"VSX PROFILER:  Stack depth new maximum: %zu\n", max_depth);
             }
 						if (current_depth > VSX_PROFILER_STACK_DEPTH_WARNING)
               vsx_printf(L"VSX PROFILER:  ***WARNING*** Stack depth: %d\n", VSX_PROFILER_STACK_DEPTH_WARNING);
@@ -391,7 +399,7 @@ public:
       }
 
       if (thread_list[i] == 0)
-        VSX_ERROR_EXIT("VSX PROFILER: Trying to get profiler without initializing it first. Reached end of profiler array.", 1);
+        VSX_ERROR_EXIT(L"VSX PROFILER: Trying to get profiler without initializing it first. Reached end of profiler array.", 1);
 
     }
     return 0x0;
@@ -405,7 +413,7 @@ public:
     // find the pointer and set the corresponding thread id to 0
   }
 
-  static vsx_profiler_manager* get_instance() __attribute__((always_inline))
+  static vsx_profiler_manager* get_instance()
   {
     static vsx_profiler_manager pm;
     return &pm;

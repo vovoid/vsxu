@@ -22,7 +22,7 @@
 */
 
 #include <filesystem/vsx_filesystem.h>
-#include "vsx_widget_popup_menu.h"
+#include <widgets/vsx_widget_popup_menu.h>
 #include <gl_helper.h>
 #include <math/vector/vsx_vector3_helper.h>
 
@@ -70,17 +70,17 @@ void vsx_widget_popup_menu::i_draw()
         visible = 0;
       else
       {
-        draw_box(vsx_vector3<>((sx-0.001)*screen_aspect,target_pos.y+0.001+target_size.y),(size.x+0.002)*screen_aspect,-((float)menu_items.count())*row_size-0.002);
+        draw_box(vsx_vector3<>((sx-0.001f)*screen_aspect,target_pos.y+0.001f+target_size.y),(size.x+0.002f)*screen_aspect,-((float)menu_items.count())*row_size-0.002f);
       }
     }
     else
     {
-      draw_box(vsx_vector3<>((sx-0.001)*screen_aspect,target_pos.y+0.001+target_size.y),(size.x+0.002)*screen_aspect,-((float)menu_items.count())*row_size-0.002);
+      draw_box(vsx_vector3<>((sx-0.001f)*screen_aspect,target_pos.y+0.001f+target_size.y),(size.x+0.002f)*screen_aspect,-((float)menu_items.count())*row_size-0.002f);
       font.print(vsx_vector3<>(sx*screen_aspect,target_pos.y+target_size.y),parent->title,row_size);
     }
 
 
-    double y = target_pos.y+target_size.y;
+    float y = target_pos.y+target_size.y;
     vsx_command_s *t;
 
     menu_items.reset();
@@ -96,7 +96,7 @@ void vsx_widget_popup_menu::i_draw()
           vsx_widget_popup_menu* sub = ((vsx_widget_popup_menu*)l_list[t->title]);
           if (!sub->visible) {
             sub->visible = 2;
-            sub->target_pos.x = target_pos.x+(1/screen_aspect)*row_size*(float)t->title.size()*0.33;
+            sub->target_pos.x = target_pos.x+(1/screen_aspect)*row_size*(float)t->title.size()*0.33f;
             sub->target_pos.y = y;
             sub->size = size;
             sub->id_over = over;
@@ -110,7 +110,7 @@ void vsx_widget_popup_menu::i_draw()
         vsx_widget_skin::get_instance()->set_color_gl(1);
 
       draw_box(vsx_vector3<>((sx)*screen_aspect,y),size.x*screen_aspect,-row_size);
-      font.print(vsx_vector3<>((sx+0.003)*screen_aspect,y-row_size),t->title,row_size*0.8);
+      font.print(vsx_vector3<>((sx+0.003f)*screen_aspect,y-row_size),t->title,row_size*0.8f);
       y-=row_size;
       ++c;
     }
@@ -149,7 +149,7 @@ void vsx_widget_popup_menu::init() {
   coord_related_parent = false;
 
   topmost = true;
-  row_size = 0.02;
+  row_size = 0.02f;
   visible = 0;
   over = 0;
   oversub = false;
@@ -177,7 +177,7 @@ void vsx_widget_popup_menu::event_mouse_move_passive(vsx_widget_distance distanc
   //printf("menu passive %d %f %f \n",menu_items.count(),target_pos.y,distance.corner.y);
 
   //!glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
-    over = menu_items.count()-((int)((distance.corner.y)/row_size));
+    over = (int)menu_items.count()-((int)((distance.corner.y)/row_size));
 }
 
 void vsx_widget_popup_menu::command_process_back_queue(vsx_command_s *t) {

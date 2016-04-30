@@ -24,7 +24,7 @@
 #include <vsx_gl_global.h>
 #include "vsx_widget.h"
 #include "vsx_widget_window.h"
-#include "vsx_widget_button.h"
+#include <widgets/vsx_widget_button.h>
 #include <gl_helper.h>
 
 vsx_widget_window::vsx_widget_window()
@@ -58,9 +58,9 @@ void vsx_widget_window::init() {
 void vsx_widget_window::i_draw() {
 	if (button_close)
 	{
-		((vsx_widget_button*)button_close)->border = 0.0001;
-    button_close->set_pos(vsx_vector3<>(size.x-font_size*0.4f,size.y-font_size*0.5f-0.5f*dragborder));
-    button_close->set_size(vsx_vector3<>(font_size*0.4f,font_size*0.8f-dragborder));
+		((vsx_widget_button*)button_close)->border = 0.0001f;
+    button_close->set_pos(vsx_vector3<>(size.x-font_size*0.4f,size.y-font_size*0.5f-0.5f*(float)dragborder));
+    button_close->set_size(vsx_vector3<>(font_size*0.4f,font_size*0.8f - (float)dragborder));
 	}
 
   if (visible)
@@ -77,19 +77,19 @@ void vsx_widget_window::i_draw() {
     vsx_widget_skin::get_instance()->set_color_gl(0);
 
     // left
-    draw_box(pos+vsx_vector3<>(0,dragborder),dragborder,size.y-dragborder-dragborder);
+    draw_box(pos+vsx_vector3<>(0, (float)dragborder), (float)dragborder, size.y - (float)dragborder - (float)dragborder);
 
     // right
-    draw_box(pos+vsx_vector3<>(size.x-dragborder,dragborder),dragborder,size.y-dragborder-dragborder);
+    draw_box(pos+vsx_vector3<>(size.x- (float)dragborder, (float)dragborder), (float)dragborder,size.y- (float)dragborder- (float)dragborder);
 
     // bottom
-    draw_box(pos,size.x,dragborder);
+    draw_box(pos,size.x, (float)dragborder);
 
     // top
-    draw_box(pos+vsx_vector3<>(0.0f,size.y-dragborder),size.x,dragborder);
+    draw_box(pos+vsx_vector3<>(0.0f,size.y- (float)dragborder),size.x, (float)dragborder);
 
     vsx_widget_skin::get_instance()->set_color_gl(3);
 
-    font.print(vsx_vector3<>((pos.x+font_size*0.1)*screen_aspect,pos.y+size.y-font_size*0.85),title,font_size*0.6);
+    font.print(vsx_vector3<>((pos.x+font_size*0.1f)*screen_aspect,pos.y+size.y-font_size*0.85f),title,font_size*0.6f);
 	}
 }

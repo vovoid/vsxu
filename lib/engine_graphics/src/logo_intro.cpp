@@ -59,7 +59,7 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
     }
   }
 
-  float dtime = timer.dtime();
+  float dtime = (float)timer.dtime();
   if (always) {
     dtime = 0;
     logo_time = 0.0f;
@@ -118,13 +118,13 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
         glVertex3f(logo_pos.x+logo_size.x*1.5f/2,logo_pos.y-logo_size.y/2,logo_pos.z);
       glEnd();
     }
-    float alphab = alpha*0.4;
+    float alphab = alpha * 0.4f;
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     if (draw_background)
     {
       luna_bkg->bind();
         glPushMatrix();
-        glColor4f(0.298,0.368,0.41,alphab);
+        glColor4f(0.298f, 0.368f, 0.41f, alphab);
         glRotatef(logo_rot1*360,0,0,1);
         glBegin(GL_QUADS);
           glTexCoord2f(0, 0);
@@ -151,7 +151,7 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
         glEnd();
         glPopMatrix();
         glPushMatrix();
-        glColor4f(0.15,0.433,0.46,alphab);
+        glColor4f(0.15f, 0.433f, 0.46f, alphab);
         glRotatef(360*logo_rot3,0,0,1);
         glBegin(GL_QUADS);
           glTexCoord2f(0, 0);
@@ -168,8 +168,8 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
         logo_size.x = 22;
         logo_size.y = 22;
 
-        glColor4f(0.433,0.25,0.56,alphab);
-        glRotatef(360*logo_rot3*0.5,0,0,1);
+        glColor4f(0.433f, 0.25f, 0.56f, alphab);
+        glRotatef(360.0f * logo_rot3 * 0.5f, 0, 0, 1);
         glBegin(GL_QUADS);
           glTexCoord2f(0, 0);
           glVertex3f(logo_pos.x-logo_size.x/2,logo_pos.y-logo_size.y/2,logo_pos.z);
@@ -182,10 +182,10 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
         glEnd();
         glPopMatrix();
       luna_bkg->_bind();
-      glColor4f(1,1,1,alpha*0.8);
+      glColor4f(1, 1, 1, alpha*0.8f);
     } else
     {
-      glColor4f(1,1,1,alpha*1.0);
+      glColor4f(1, 1, 1, alpha*1.0f);
     }
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
@@ -208,8 +208,8 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
 vsx_logo_intro::vsx_logo_intro() {
   logo_time = 0;
   logo_rot1 = 0;
-  logo_rot2 = 0.13;
-  logo_rot3 = 0.3;
+  logo_rot2 = 0.13f;
+  logo_rot3 = 0.3f;
   destroy_textures = true;
 
   luna = vsx_texture_loader::load( PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"vsxu_logo.dds", vsx::filesystem::get_instance(), false, vsx_bitmap::flip_vertical_hint, vsx_texture_gl::linear_interpolate_hint );

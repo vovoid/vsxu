@@ -24,6 +24,7 @@
 #pragma once
 
 #include <atomic>
+#include <vsx_platform.h>
 
 template<
     typename T = int64_t,   // your data type
@@ -42,7 +43,7 @@ private:
   std::atomic_uint_fast64_t read_pointer;
 
   // actual data storage
-  T __attribute__((aligned(64))) buffer[buffer_size];
+  T alignas(64) buffer[buffer_size];
 
 public:
 
@@ -62,7 +63,7 @@ public:
   // returns:
   //   true - value written successfully
   //   false - no more room in the queue, try later
-  inline bool produce(const T &value) __attribute__((always_inline))
+  inline bool produce(const T &value)
   {
     // if the buffer is full, we can't do anything
     if
@@ -89,7 +90,7 @@ public:
   // returns:
   //    true  - value fetched successfully
   //    false - queue is empty, try later
-  inline bool consume(T &result) __attribute__((always_inline))
+  inline bool consume(T &result)
   {
     // is there something to read?
     // if not, return false

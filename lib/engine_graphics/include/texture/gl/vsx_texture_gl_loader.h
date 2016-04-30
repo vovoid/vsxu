@@ -215,12 +215,12 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
     {
       glCompressedTexImage2D(
         texture_gl->gl_type,  // opengl type
-        mip_map_level, // mipmap level
+        (GLint)mip_map_level, // mipmap level
         get_compression_format(bitmap),
         bitmap->width >> mip_map_level,
         bitmap->height >> mip_map_level,
         0, // border 0 or 1
-        bitmap->data_size_get(mip_map_level, 0),
+        (GLsizei)bitmap->data_size_get(mip_map_level, 0),
         bitmap->data_get(mip_map_level, 0)
       );
       texture_gl->mip_map_levels_uploaded++;
@@ -232,7 +232,7 @@ inline void upload_2d( vsx_texture_gl* texture_gl )
 
     glTexImage2D(
       texture_gl->gl_type, // opengl type
-      mip_map_level, // mipmap level
+      (GLint)mip_map_level, // mipmap level
       target_format, // storage type
       bitmap->width >> mip_map_level,
       bitmap->height >> mip_map_level,
@@ -326,12 +326,12 @@ inline void upload_cube( vsx_texture_gl* texture_gl )
       for (size_t cube_map_side = 0; cube_map_side < 6; cube_map_side++)
         glCompressedTexImage2D(
           sides[cube_map_side],  // opengl target
-          mip_map_level, // mipmap level
+          (GLint)mip_map_level, // mipmap level
           get_compression_format(bitmap),
           bitmap->width >> mip_map_level,
           bitmap->height >> mip_map_level,
           0, // border 0 or 1
-          bitmap->data_size_get(mip_map_level, cube_map_side),
+          (GLsizei)bitmap->data_size_get(mip_map_level, cube_map_side),
           bitmap->data_get(mip_map_level, cube_map_side)
         );
       // next mip map level
@@ -341,7 +341,7 @@ inline void upload_cube( vsx_texture_gl* texture_gl )
     for (size_t cube_map_side = 0; cube_map_side < 6; cube_map_side++)
       glTexImage2D(
         sides[cube_map_side],  // opengl target
-        mip_map_level,  // mipmap level
+        (GLint)mip_map_level,  // mipmap level
         target_format, // storage type
         bitmap->height, // size x
         bitmap->height, // size y

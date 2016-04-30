@@ -30,7 +30,7 @@ class WIDGET_DLLIMPORT vsx_widget_button : public vsx_widget
 {
   bool outside;
 public:
-  double border;
+  float border;
   void init();
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);

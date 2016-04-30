@@ -31,7 +31,7 @@
 #include <vector>
 #include <filesystem/vsx_filesystem.h>
 #include <string/vsx_string_helper.h>
-#include "vsx_engine_dllimport.h"
+#include <vsx_common_dllimport.h>
 
 #ifdef VSXU_DEBUG
   #include "debug/vsx_error.h"
@@ -60,15 +60,15 @@
 
 //**********************************************************************************************************************
 class vsx_command_s;
-ENGINE_DLLIMPORT extern std::vector<vsx_command_s*> vsx_command_garbage_list; // the parts of the command
-ENGINE_DLLIMPORT void vsx_command_process_garbage();
-ENGINE_DLLIMPORT void vsx_command_process_garbage_exit();
+COMMON_DLLIMPORT extern std::vector<vsx_command_s*> vsx_command_garbage_list; // the parts of the command
+COMMON_DLLIMPORT void vsx_command_process_garbage();
+COMMON_DLLIMPORT void vsx_command_process_garbage_exit();
 
 
-ENGINE_DLLIMPORT class vsx_command_s
+COMMON_DLLIMPORT class vsx_command_s
 {
 public:
-  ENGINE_DLLIMPORT static int id;
+  COMMON_DLLIMPORT static int id;
 
   int iterations = 0;
   #ifdef VSXU_DEBUG
@@ -108,7 +108,7 @@ public:
     return cmd + " " + cmd_data;
   }
 
-  ENGINE_DLLIMPORT void parse();
+  COMMON_DLLIMPORT void parse();
 
   void gc()
   {
@@ -123,7 +123,7 @@ public:
   }
 
   // returns a string like "part1 part2 part3" if start was 1 and end was 3
-  ENGINE_DLLIMPORT vsx_string<>get_parts(int start = 0, int end = -1);
+  COMMON_DLLIMPORT vsx_string<>get_parts(int start = 0, int end = -1);
 
   void dump_to_stdout()
   {

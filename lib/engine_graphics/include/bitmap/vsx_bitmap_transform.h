@@ -139,7 +139,7 @@ public:
     unsigned char* data2 = (unsigned char*)malloc(width * height * channels);
     size_t dy = 0;
     size_t stride_x = width * channels;
-    for (int y = height-1; y >= 0; --y)
+    for (int y = (int)height-1; y >= 0; --y)
     {
       size_t dysxbpp = dy * stride_x;
       size_t ysxbpp = y * stride_x;

@@ -35,7 +35,7 @@ class WIDGET_DLLIMPORT vsx_widget_camera
   double xpd, ypd, zpd; //current direction
   double xpp, ypp, zpp; // additional movement
 
-  vsx_vector3<> camera_target;
+  vsx_vector3f camera_target;
 
   double xp;
   double yp;
@@ -43,8 +43,8 @@ class WIDGET_DLLIMPORT vsx_widget_camera
   double zpf;
   double zpa;
 
-  float interpolation_speed;
-  float key_speed;
+  double interpolation_speed;
+  double key_speed;
 
   bool interpolating;
 
@@ -58,7 +58,7 @@ public:
 
   vsx_vector3<> get_pos()
   {
-    return vsx_vector3<>(xp, yp, zp);
+    return vsx_vector3<>((float)xp, (float)yp, (float)zp);
   }
 
   void set_pos( vsx_vector3<> destination )
@@ -69,7 +69,7 @@ public:
 
   vsx_vector3<> get_pos_2d()
   {
-    return vsx_vector3<>(xp, yp, 0.0);
+    return vsx_vector3<>((float)xp, (float)yp, 0.0f);
   }
 
   void set_distance(double d);
@@ -114,17 +114,17 @@ public:
 
   float get_pos_x()
   {
-    return xp;
+    return (float)xp;
   }
 
   float get_pos_y()
   {
-    return yp;
+    return (float)yp;
   }
 
   float get_pos_z()
   {
-    return zp;
+    return (float)zp;
   }
 
   void run();

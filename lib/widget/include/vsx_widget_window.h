@@ -37,12 +37,12 @@ public:
 
   virtual vsx_vector3<> get_inner_size()
   {
-    return vsx_vector3<>( size.x - dragborder * 2, size.y - font_size - dragborder * 2.0 );
+    return vsx_vector3<>( size.x - (float)dragborder * 2, size.y - font_size - (float)dragborder * 2.0f );
   }
 
   virtual vsx_vector3<> get_inner_pos()
   {
-    return vsx_vector3<>(size.x * 0.5,size.y * 0.5 - font_size * 0.5 + dragborder*0.5f);
+    return vsx_vector3<>(size.x * 0.5f, size.y * 0.5f - font_size * 0.5f + (float)dragborder*0.5f);
   }
 
 

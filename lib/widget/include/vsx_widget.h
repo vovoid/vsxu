@@ -29,7 +29,7 @@
 #include <string/vsx_string.h>
 #include <string/vsx_string_helper.h>
 #include <color/vsx_color.h>
-#include <vsx_command_list.h>
+#include <command/vsx_command_list.h>
 
 // engine_graphics
 #include <vsx_font.h>

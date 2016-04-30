@@ -57,6 +57,9 @@
     <ClCompile Include="third-party\mt\mt.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\command\vsx_command.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\audio\vsx_audio_constants.h">
@@ -369,6 +372,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="third-party\mt\mt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\command\vsx_command.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\command\vsx_command_client_server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\command\vsx_command_list.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -447,9 +447,9 @@ namespace vsx_string_helper
     {
       if (loc <= required_pos || required_pos == -1)
       {
-          subject = subject.substr(0,loc) + rep + subject.substr(loc+search.size());
-          subject_r = subject_r.substr(0,loc) + rep + subject_r.substr(loc+search.size());
-          loc += replace.size();
+          subject = subject.substr(0,loc) + rep + subject.substr(loc + (int)search.size());
+          subject_r = subject_r.substr(0,loc) + rep + subject_r.substr(loc + (int)search.size());
+          loc += (int)replace.size();
       }
       else
         return subject_r;

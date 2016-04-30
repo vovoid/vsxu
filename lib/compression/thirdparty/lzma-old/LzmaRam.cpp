@@ -204,7 +204,7 @@ int LzmaRamEncode(
     } 
     if (i == 0 || outStreamSpec->Pos <= minSize)
     {
-      minSize = outStreamSpec->Pos;
+      minSize = (unsigned int)outStreamSpec->Pos;
       bestIsFiltered = curModeIsFiltered;
     }
     if (outStreamSpec->Overflow)

@@ -34,6 +34,7 @@
 
 #ifndef PLATFORM
     #if defined(WIN32) || defined(WIN64) || defined(_WIN32) || defined(_WIN64)
+      #include <windows.h>
       #ifdef __GNUC__
         #define COMPILER COMPILER_MINGW + COMPILER_GCC
       #endif
@@ -110,14 +111,15 @@
 #if COMPILER == COMPILER_GCC
 #define VSX_PACK_BEGIN
 #define VSX_PACK_END __attribute__((__packed__));
+#define VSX_MEMORY_BARRIER asm volatile("": : :"memory")
 #endif
 
 #if COMPILER == COMPILER_VISUAL_STUDIO
 #define __PRETTY_FUNCTION__ L""
 #define VSX_PACK_BEGIN __pragma( pack(push, 1) )
 #define VSX_PACK_END ; __pragma( pack(pop) )
+#define VSX_MEMORY_BARRIER MemoryBarrier()
 #endif
-
 
 // aligned malloc
 #if COMPILER == COMPILER_VISUAL_STUDIO
@@ -126,7 +128,6 @@
   #define vsx_aligned_realloc(pointer, n) _aligned_realloc(pointer, n, 64)
   #define vsx_aligned_free(pointer) _aligned_free(pointer)
 #endif
-
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   #define vsx_aligned_malloc(n) aligned_alloc(64, n)

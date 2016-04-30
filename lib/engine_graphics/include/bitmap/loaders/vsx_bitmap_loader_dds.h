@@ -162,7 +162,7 @@ class vsx_bitmap_loader_dds
       for (size_t i = 1; i < 6; i++)
       {
         vsx_string<> new_filename = filename;
-        new_filename.replace("_0", "_"+vsx_string_helper::i2s(i));
+        new_filename.replace("_0", "_"+vsx_string_helper::i2s((int)i));
         vsx::file* file_handle = filesystem->f_open(new_filename.c_str(), "rb");
         worker_load_file(bitmap, filesystem, file_handle, i);
         filesystem->f_close(file_handle);

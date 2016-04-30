@@ -25,12 +25,12 @@ vsx_string<>vsx_widget_editor::get_string() {
 void vsx_widget_editor::i_draw() {
   calc_size();
 
-  float db15 = dragborder*2.5f;
-  scrollbar_horiz->set_pos(vsx_vector3<>(-size.x*0.5,-size.y*0.5));
+  float db15 = (float)dragborder*2.5f;
+  scrollbar_horiz->set_pos(vsx_vector3<>(-size.x*0.5f, -size.y*0.5f));
   scrollbar_horiz->set_size(vsx_vector3<>(target_size.x-db15, db15));
   scrollbar_horiz->set_window_size( editor->scroll_x_size );
 
-  scrollbar_vert->set_pos(vsx_vector3<>(size.x*0.5-db15,-size.y*0.5+db15));
+  scrollbar_vert->set_pos(vsx_vector3<>(size.x*0.5f-db15,-size.y*0.5f+db15));
   scrollbar_vert->set_size(vsx_vector3<>(db15,target_size.y-scrollbar_horiz->size.y));
   scrollbar_vert->set_window_size( editor->scroll_y_size );
 

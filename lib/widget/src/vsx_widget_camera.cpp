@@ -61,9 +61,9 @@ void vsx_widget_camera::move_camera(vsx_vector3<> world)
 
 void vsx_widget_camera::set_distance(double d)
 {
-  camera_target.x = xp;
-  camera_target.y = yp;
-  camera_target.z = d;
+  camera_target.x = (float)xp;
+  camera_target.y = (float)yp;
+  camera_target.z = (float)d;
   interpolating = true;
 }
 

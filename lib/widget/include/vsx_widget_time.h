@@ -44,7 +44,7 @@ public:
 
   float get_time()
   {
-    return elapsed_time;
+    return (float)elapsed_time;
   }
 
   void set_dtime(double t)

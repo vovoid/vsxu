@@ -17,7 +17,7 @@
 #define VSX_ERROR_RETURN_S(s,s2) \
 { \
   vsx_printf(L"**********************************************************************************\n");\
-  vsx_printf(L"ERROR in %s#%d, %s:    %s, %s\n", WIDE1(__FILE__), __LINE__, __PRETTY_FUNCTION__, s, s2); \
+  vsx_printf(L"ERROR in %s#%d, %s:    %s, %hs\n", WIDE1(__FILE__), __LINE__, __PRETTY_FUNCTION__, s, s2); \
   vsx_backtrace::print_backtrace();\
   return; \
 }

@@ -84,7 +84,6 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\..\;$(ProjectDir)\include;$(ProjectDir)\..\compression\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -117,6 +116,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\audio\vsx_audio_mixer_manager.cpp" />
+    <ClCompile Include="src\command\vsx_command.cpp" />
     <ClCompile Include="src\filesystem\archive\vsxz\vsx_filesystem_archive_vsxz_info.cpp" />
     <ClCompile Include="src\filesystem\archive\vsxz\vsx_filesystem_archive_vsxz_reader.cpp" />
     <ClCompile Include="src\filesystem\archive\vsxz\vsx_filesystem_archive_vsxz_writer.cpp" />
@@ -141,6 +141,9 @@
     <ClInclude Include="include\audio\vsx_sample_raw.h" />
     <ClInclude Include="include\color\vsx_color.h" />
     <ClInclude Include="include\color\vsx_color_aux.h" />
+    <ClInclude Include="include\command\vsx_command.h" />
+    <ClInclude Include="include\command\vsx_command_client_server.h" />
+    <ClInclude Include="include\command\vsx_command_list.h" />
     <ClInclude Include="include\container\vsx_ma_vector.h" />
     <ClInclude Include="include\container\vsx_nw_vector.h" />
     <ClInclude Include="include\container\vsx_nw_vector_nd.h" />

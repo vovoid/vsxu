@@ -1,9 +1,9 @@
 #ifndef VSX_WIDGET_SKIN_H
 #define VSX_WIDGET_SKIN_H
 
-#include <GL/gl.h>
+#include <vsx_gl_global.h>
 #include <vsx_widget_dllimport.h>
-#include <vsx_command_list.h>
+#include <command/vsx_command_list.h>
 #include <string/vsx_string.h>
 #include <color/vsx_color.h>
 
@@ -14,12 +14,12 @@ class vsx_widget_skin
 
 public:
 
-  void set_color_gl(const size_t &index) __attribute__((always_inline))
+  void set_color_gl(const size_t &index)
   {
     glColor4fv(&skin_colors[index].r);
   }
 
-  void set_color_gl_a(const size_t &index, float a) __attribute__((always_inline))
+  void set_color_gl_a(const size_t &index, float a) 
   {
     glColor4f(
       skin_colors[index].r,
@@ -29,12 +29,12 @@ public:
     );
   }
 
-  vsx_color<> get_color(size_t index) __attribute__((always_inline))
+  vsx_color<> get_color(size_t index) 
   {
     return skin_colors[index];
   }
 
-  vsx_color<> get_color(size_t index, float rm, float gm = 1.0, float bm = 1.0, float am = 1.0) __attribute__((always_inline))
+  vsx_color<> get_color(size_t index, float rm, float gm = 1.0, float bm = 1.0, float am = 1.0)
   {
     return vsx_color<>(
       skin_colors[index].r * rm,
@@ -49,7 +49,7 @@ public:
     skin_path = n;
   }
 
-  vsx_string<>& skin_path_get() __attribute__((always_inline))
+  vsx_string<>& skin_path_get() 
   {
     return skin_path;
   }
@@ -81,7 +81,7 @@ public:
 private:
   WIDGET_DLLIMPORT static vsx_widget_skin instance;
 public:
-  static vsx_widget_skin* get_instance() __attribute__((always_inline))
+  static vsx_widget_skin* get_instance() 
   {
     return &instance;
   }

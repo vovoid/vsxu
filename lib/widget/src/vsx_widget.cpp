@@ -97,8 +97,8 @@ vsx_widget::vsx_widget()
   size.z = 0; // z size
   support_interpolation = false;
   topmost = false;
-  size_min.x = 0.1;
-  size_min.y = 0.1;
+  size_min.x = 0.1f;
+  size_min.y = 0.1f;
   marked_for_deletion = false;
   resize_i = 0;
   allow_move_x = true;
@@ -107,7 +107,7 @@ vsx_widget::vsx_widget()
   allow_resize_y = false;
   dragborder = 0.0025;
   support_scaling = false;
-  font_size = 0.025;
+  font_size = 0.025f;
   menu_temp_disable = false;
 
   // init profiler
@@ -481,7 +481,7 @@ void vsx_widget::event_mouse_move_passive(vsx_widget_distance distance,vsx_widge
 
   if (visible) {
     resize_i = 0;
-  	float db = dragborder*1.5f;
+  	float db = (float)(dragborder*1.5);
     if (allow_resize_y) {
       // /|
       // ||
@@ -535,8 +535,8 @@ void vsx_widget::calculate_mouse_distance(float x, float y, vsx_widget_coords &c
   if (coord_type == VSX_WIDGET_COORD_CENTER)
   {
     distance.center = world;
-    distance.corner.x = target_size.x*0.5 - world.x;
-    distance.corner.y = target_size.y*0.5 - world.y;
+    distance.corner.x = target_size.x*0.5f - world.x;
+    distance.corner.y = target_size.y*0.5f - world.y;
     return;
   }
 
@@ -781,12 +781,12 @@ void vsx_widget::move(double x, double y, double z)
   }
 
   if (allow_move_x)
-    target_pos.x = x;
+    target_pos.x = (float)x;
 
   if (allow_move_y)
-    target_pos.y = y;
+    target_pos.y = (float)y;
 
-  target_pos.z = z;
+  target_pos.z = (float)z;
 
   if (support_interpolation)
   {
@@ -1048,7 +1048,7 @@ void vsx_widget::reinit()
 void vsx_widget::interpolate_pos()
 {
   float tt =
-      vsx_widget_time::get_instance()->get_dtime() * interpolation_speed *
+      (float)vsx_widget_time::get_instance()->get_dtime() * interpolation_speed *
       vsx_widget_global_interpolation::get_instance()->get();
   if (tt > 1)
   {
@@ -1068,7 +1068,7 @@ void vsx_widget::interpolate_pos()
 
 void vsx_widget::interpolate_size()
 {
-  float tt = vsx_widget_time::get_instance()->get_dtime() * interpolation_speed
+  float tt = (float)vsx_widget_time::get_instance()->get_dtime() * interpolation_speed
       * vsx_widget_global_interpolation::get_instance()->get();
   if (tt > 1)
   {

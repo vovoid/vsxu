@@ -25,11 +25,11 @@
 #include <map>
 #include <list>
 #include <vector>
-#include "vsx_command.h"
+#include <command/vsx_command.h>
 #include <texture/vsx_texture.h>
 #include "vsx_font.h"
-#include "../vsx_widget.h"
-#include "vsx_widget_panel.h"
+#include <vsx_widget.h>
+#include <widgets/vsx_widget_panel.h>
 #include <gl_helper.h>
 
 void vsx_widget_panel::calc_size() {
@@ -52,8 +52,8 @@ vsx_vector3<> vsx_widget_panel::calc_pos() {
     p.x += target_pos.x;
     p.y += target_pos.y;
   }
-  p.x -= target_size.x*0.5;
-  p.y -= target_size.y*0.5;
+  p.x -= target_size.x*0.5f;
+  p.y -= target_size.y*0.5f;
   if (render_type == render_3d) {
     p.z = pos.z;
   } else {
@@ -100,15 +100,15 @@ void vsx_widget_panel::base_draw() {
   vsx_color<> w(0,0,0,1);
   //draw_box_gradient(p, dragborder, target_size.y, skin_color[0], skin_color[1], skin_color[1], skin_color[0]);
 
-  draw_box_gradient(p, dragborder, target_size.y, vsx_widget_skin::get_instance()->get_color(0), vsx_widget_skin::get_instance()->get_color(1), vsx_widget_skin::get_instance()->get_color(1), vsx_widget_skin::get_instance()->get_color(0));
+  draw_box_gradient(p, (float)dragborder, target_size.y, vsx_widget_skin::get_instance()->get_color(0), vsx_widget_skin::get_instance()->get_color(1), vsx_widget_skin::get_instance()->get_color(1), vsx_widget_skin::get_instance()->get_color(0));
 
   //  draw_box_gradient(p, target_size.x, dragborder, r, b, b, r);
-  draw_box_gradient(p, target_size.x, dragborder, w, b, b, w);
-  p.y += size.y-dragborder;
-  draw_box_gradient(p, target_size.x, dragborder, vsx_widget_skin::get_instance()->get_color(0), vsx_widget_skin::get_instance()->get_color(0), vsx_widget_skin::get_instance()->get_color(1), vsx_widget_skin::get_instance()->get_color(1));
+  draw_box_gradient(p, target_size.x, (float)dragborder, w, b, b, w);
+  p.y += size.y - (float)dragborder;
+  draw_box_gradient(p, target_size.x, (float)dragborder, vsx_widget_skin::get_instance()->get_color(0), vsx_widget_skin::get_instance()->get_color(0), vsx_widget_skin::get_instance()->get_color(1), vsx_widget_skin::get_instance()->get_color(1));
 
   //  draw_box_gradient(p, target_size.x, dragborder, skin_color[0], skin_color[0], skin_color[1], gr);
-  p.x += size.x-dragborder;
+  p.x += size.x - (float)dragborder;
 
   //p.y +=
   //draw_box_gradient(p, dragborder, -(target_size.y-dragborder), gr, skin_color[0], skin_color[1], skin_color[1]);
@@ -134,7 +134,7 @@ void vsx_widget_split_panel::set_border(float border) {
 }
 
 vsx_widget_split_panel::vsx_widget_split_panel() {
-  splitter_size = dragborder*0.5f;
+  splitter_size = (float)dragborder*0.5f;
   split_pos = 0.2f;
   one = (vsx_widget_panel*)add(new vsx_widget_panel,"1");
   one->size_from_parent = true;
@@ -152,10 +152,7 @@ void vsx_widget_split_panel::event_mouse_move_passive(vsx_widget_distance distan
 void vsx_widget_split_panel::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords) 
 {
   VSX_UNUSED(coords);
-
-  split_pos = ((distance.center.y+(size.y)*0.5)/(size.y));
-  if (split_pos > 0.95) split_pos = 0.95;
-  if (split_pos < 0.05) split_pos = 0.05;
+  split_pos = CLAMP(((distance.center.y+(size.y)*0.5f)/(size.y)), 0.05f, 0.95f);
 }
 
 
@@ -227,12 +224,12 @@ void vsx_widget_split_panel::i_draw()
     one->size = one->target_size;
       
     one->target_pos.x = 0;
-    one->target_pos.y = -target_size.y*0.5+0.5*split_pos*sy;
+    one->target_pos.y = -target_size.y*0.5f + 0.5f*split_pos*sy;
     one->target_pos.z = pos.z;
     one->pos = one->target_pos;
 
     two->target_pos.x = 0;
-    two->target_pos.y = target_size.y*0.5-0.5*(1.0f-split_pos)*sy;
+    two->target_pos.y = target_size.y*0.5f - 0.5f*(1.0f-split_pos)*sy;
     two->target_pos.z = pos.z;
     two->pos = two->target_pos;
 

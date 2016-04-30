@@ -198,13 +198,13 @@ void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsx::filesystem* 
       glEnable(GL_BLEND);
       glPushMatrix();
       glColor4f(color.r,color.g,color.b,color.a);
-      glTranslatef(p.x,p.y+size*0.2,p.z);
-      if (outline_transparency > 0.3)
+      glTranslatef(p.x,p.y+size*0.2f,p.z);
+      if (outline_transparency > 0.3f)
       glColor4f(color.r,color.g,color.b,color.a);
       else
       glColor4f(color.r,color.g,color.b,(1-outline_transparency)*color.a);
 
-      glScalef(size*0.8*0.1,size*0.1,0.018);
+      glScalef(size * 0.8f * 0.1f, size*0.1f, 0.018f);
       ((FTGLPolygonFont*)my_font_info.ftfont)->Render(str.c_str());
       glColor4f(color.r,color.g,color.b,outline_transparency*color.a);
       glPopMatrix();
@@ -221,7 +221,7 @@ vsx_vector3<> vsx_font::get_size(const vsx_string<>& str, float size = 1)
       float x1, y1, z1, x2, y2, z2;
       ((FTGLPolygonFont*)my_font_info.ftfont)->BBox( str.c_str(), x1, y1, z1, x2, y2, z2);
       vsx_vector3<> pp;
-      pp.x = (x2*size-x1*size)*0.8*0.1;
+      pp.x = (x2*size-x1*size)*0.8f*0.1f;
       return pp;
     }    
   #endif
@@ -249,7 +249,7 @@ vsx_vector3<> vsx_font::print_center(vsx_vector3<> p, const vsx_string<>& str, f
   float x1, y1, z1, x2, y2, z2;
   if (my_font_info.type == 1)
     ((FTGLPolygonFont*)my_font_info.ftfont)->BBox( str.c_str(), x1, y1, z1, x2, y2, z2);
-  p.x -= (x2*size-x1*size)*0.5*0.08;
+  p.x -= (x2*size-x1*size)*0.5f*0.08f;
   #endif
   return print(p,str,size);
 }
@@ -261,7 +261,7 @@ vsx_vector3<> vsx_font::print_right(vsx_vector3<> p, const vsx_string<>& str, fl
     float x1, y1, z1, x2, y2, z2;
     if (my_font_info.type == 1)
       ((FTGLPolygonFont*)my_font_info.ftfont)->BBox( str.c_str(), x1, y1, z1, x2, y2, z2);
-    p.x -= (x2*size-x1*size)*0.08;
+    p.x -= (x2*size-x1*size)*0.08f;
   #endif
   return print(p,str,size);
 }
