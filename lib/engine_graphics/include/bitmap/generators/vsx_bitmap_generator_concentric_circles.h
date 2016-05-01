@@ -67,7 +67,7 @@ public:
 
         float dstf = dd * one_div_hsize;
 
-        float dist = pow(fabs(cos(dstf * PI * frequency)), attenuation) * cos(dstf * PI * 0.5);
+        float dist = (float)(pow(fabs(cos(dstf * PI * frequency)), (float)attenuation) * cos(dstf * PI * 0.5));
 
         if (alpha)
         {

@@ -143,7 +143,7 @@ BINARY_OP (
   )
 
 BINARY_OP (
-  max, 
+  vsx_max, 
   float, float, float, 
   "param1", "param2", "result", 
   VSX_MODULE_PARAM_ID_FLOAT, VSX_MODULE_PARAM_ID_FLOAT, VSX_MODULE_PARAM_ID_FLOAT,
@@ -159,7 +159,7 @@ BINARY_OP (
   )
 
 BINARY_OP (
-  min, 
+  vsx_min, 
   float, float, float, 
   "param1", "param2", "minimum", 
   VSX_MODULE_PARAM_ID_FLOAT, VSX_MODULE_PARAM_ID_FLOAT, VSX_MODULE_PARAM_ID_FLOAT,

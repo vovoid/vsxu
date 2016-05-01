@@ -95,7 +95,7 @@ public:
     float x_e_f = end->get();
     if (x_e > (*(my_array->data)).size()-1)
     {
-      x_e = (*(my_array->data)).size()-1;
+      x_e = (float)((*(my_array->data)).size() - 1);
       x_e_f = x_e;
     }
     divisor += x - start->get();

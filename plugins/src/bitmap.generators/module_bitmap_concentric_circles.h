@@ -139,7 +139,7 @@ public:
           frequency_in->get(),
           attenuation_in->get(),
           vsx_color<>(color_in->get(0), color_in->get(1), color_in->get(2), color_in->get(3)),
-          (bool)alpha_in->get(),
+          alpha_in->get() != 0,
           size_in->get()
         );
 
@@ -153,7 +153,7 @@ public:
       frequency_in->get(),
       attenuation_in->get(),
       vsx_color<>(color_in->get(0), color_in->get(1), color_in->get(2), color_in->get(3)),
-      (bool)alpha_in->get(),
+      alpha_in->get() != 0,
       size_in->get()
     );
     worker_running = true;

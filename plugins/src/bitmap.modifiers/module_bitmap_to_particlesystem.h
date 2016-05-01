@@ -105,18 +105,18 @@ public:
       p_updates = param_updates;
     }
 
-    int i = 0;
-    int width = bitmap->width;
+    unsigned int i = 0;
+    unsigned int width = bitmap->width;
     float space = size_in->get()/(float)width;
     float dest = -size_in->get()*0.5f;
     if (first) {
       for (size_t y = 0; y < bitmap->height; ++y)
       {
-        for (int x = 0; x < width; ++x)
+        for (size_t x = 0; x < width; ++x)
         {
-          (*particles.particles)[i].pos.x = dest+(float)x*space+random_weight_in->get()*(-0.5+(float)(rand()%1000)/1000.0f);
+          (*particles.particles)[i].pos.x = dest+(float)x*space+random_weight_in->get()*(-0.5f+(float)(rand()%1000)/1000.0f);
           (*particles.particles)[i].pos.y = 0;
-          (*particles.particles)[i].pos.z = dest+(float)y*space+random_weight_in->get()*(-0.5+(float)(rand()%1000)/1000.0f);
+          (*particles.particles)[i].pos.z = dest+(float)y*space+random_weight_in->get()*(-0.5f+(float)(rand()%1000)/1000.0f);
           ++i;
         }
       }
@@ -128,8 +128,8 @@ public:
     {
       for (size_t y = 0; y < bitmap->height; ++y)
       {
-        int cc = y*width;
-        for (int x = 0; x < width; ++x)
+        size_t cc = y*width;
+        for (size_t x = 0; x < width; ++x)
         {
           (*particles.particles)[i].color.b = ((float)(unsigned char)((((uint32_t*)bitmap->data_get())[cc+x]&0x00FF0000)>>16))/255.0f;
           (*particles.particles)[i].color.g = ((float)(unsigned char)((((uint32_t*)bitmap->data_get())[cc+x]&0x0000FF00)>>8))/255.0f;

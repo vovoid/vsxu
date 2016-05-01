@@ -54,8 +54,10 @@ typedef unsigned char uint8;
 
 #define BLEND_MODES_COUNT 24
 
+#ifndef min
 #define min(A,B) A<B?A:B
 #define max(A,B) A>B?A:B
+#endif
 
 #define Blend_Normal(A,B) ((unsigned char)(A))
 #define Blend_Lighten(A,B)  ((unsigned char)((B > A) ? B:A))
@@ -108,13 +110,13 @@ public:
   vsx_module_param_bitmap* bitmap_out;
 
   // internal
-  int bitm_timestamp = -1;
+  uint64_t bitm_timestamp = -1;
 
   std::thread worker_thread;
 
   int p_updates = 0;
-  int timestamp_1 = -1;
-  int timestamp_2 = -1;
+  uint64_t timestamp_1 = -1;
+  uint64_t timestamp_2 = -1;
 
   vsx_bitmap bitmap;
   vsx_bitmap *bitmap_source_1;

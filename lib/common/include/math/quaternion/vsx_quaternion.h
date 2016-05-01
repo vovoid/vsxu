@@ -266,10 +266,10 @@ public:
     #define m32 mm->m[14]
     #define m33 mm->m[15]
 */
-    w = sqrt( vsx_math_3d_max( 0, 1 + m00 + m11 + m22 ) ) * 0.5;
-    x = sqrt( vsx_math_3d_max( 0, 1 + m00 - m11 - m22 ) ) * 0.5;
-    y = sqrt( vsx_math_3d_max( 0, 1 - m00 + m11 - m22 ) ) * 0.5;
-    z = sqrt( vsx_math_3d_max( 0, 1 - m00 - m11 + m22 ) ) * 0.5;
+    w = (T)sqrt( vsx_math_3d_max( 0, 1 + m00 + m11 + m22 ) ) * 0.5;
+    x = (T)sqrt( vsx_math_3d_max( 0, 1 + m00 - m11 - m22 ) ) * 0.5;
+    y = (T)sqrt( vsx_math_3d_max( 0, 1 - m00 + m11 - m22 ) ) * 0.5;
+    z = (T)sqrt( vsx_math_3d_max( 0, 1 - m00 - m11 + m22 ) ) * 0.5;
 
     x = copysign( x, m21 - m12 );
     y = copysign( y, m02 - m20 );

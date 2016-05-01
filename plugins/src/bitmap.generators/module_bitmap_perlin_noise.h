@@ -157,18 +157,18 @@ public:
     }
 
     vsx_string<> cache_handle = vsx_bitmap_generator_perlin_noise::generate_cache_handle(
-        blob_enable_in->get(),
+        blob_enable_in->get() > 0,
         blob_arms_in->get(),
         blob_attenuation_in->get(),
         blob_star_flower_in->get(),
         blob_angle_in->get(),
-        rand_seed_in->get(),
-        octave_in->get(),
-        frequency_in->get(),
+        (int)rand_seed_in->get(),
+        (int)octave_in->get(),
+        (int)frequency_in->get(),
         perlin_strength_in->get(),
-        alpha_in->get(),
+        alpha_in->get() > 0,
         vsx_color<>(color_in->get(0),color_in->get(1),color_in->get(2),color_in->get(3)),
-        bitmap_type_in->get(),
+        bitmap_type_in->get() != 0,
         size_in->get()
       );
 
@@ -179,18 +179,18 @@ public:
     bitmap->filename = cache_handle;
     vsx_bitmap_generator_perlin_noise::generate_thread(
         bitmap,
-        blob_enable_in->get(),
+        blob_enable_in->get() > 0,
         blob_arms_in->get(),
         blob_attenuation_in->get(),
         blob_star_flower_in->get(),
         blob_angle_in->get(),
-        rand_seed_in->get(),
-        octave_in->get(),
-        frequency_in->get(),
+        (int)rand_seed_in->get(),
+        (int)octave_in->get(),
+        (int)frequency_in->get(),
         perlin_strength_in->get(),
-        alpha_in->get(),
+        alpha_in->get() > 0,
         vsx_color<>(color_in->get(0),color_in->get(1),color_in->get(2),color_in->get(3)),
-        bitmap_type_in->get(),
+        bitmap_type_in->get() != 0,
         size_in->get()
     );
     worker_running = true;

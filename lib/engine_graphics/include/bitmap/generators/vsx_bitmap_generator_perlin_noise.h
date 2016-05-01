@@ -67,7 +67,7 @@ public:
       uint16_t size
   )
   {
-    Perlin* perlin = new Perlin( octave + 1, frequency + 1, 1.0f, rand_seed );
+    Perlin* perlin = new Perlin( octave + 1, (float)frequency + 1.0f, 1.0f, rand_seed );
 
     int i_size = 8 << size;
     float f_size = (float)i_size;
@@ -121,7 +121,7 @@ public:
               if (phase > 2.0f)
                 phase = 1.0f;
 
-              dist = cos(dstf * PI/2.0f)*phase;
+              dist = (float)cos(dstf * PI/2.0f)*phase;
               dist = CLAMP(dist, 0.0f, 1.0f);
             }
           }
@@ -186,7 +186,7 @@ public:
             if (phase > 2.0f)
               phase = 1.0f;
 
-            dist = cos(dstf * PI/2.0f)*phase;
+            dist = (float)cos(dstf * PI/2.0f)*phase;
             dist = CLAMP(dist, 0.01f, 1.0f);
           }
           float pf =
@@ -200,17 +200,17 @@ public:
 
           if (alpha)
           {
-            long pr = CLAMP( 255.0f * color.r, 0, 255);
-            long pg = CLAMP( 255.0f * color.g, 0, 255);
-            long pb = CLAMP( 255.0f * color.b, 0, 255);
-            long pa = CLAMP( color.a * pf, 0, 255);
+            long pr = (long)CLAMP( 255.0f * color.r, 0, 255);
+            long pg = (long)CLAMP( 255.0f * color.g, 0, 255);
+            long pb = (long)CLAMP( 255.0f * color.b, 0, 255);
+            long pa = (long)CLAMP( color.a * pf, 0, 255);
             *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
           } else
           {
-            long pr = CLAMP( color.r * pf, 0, 255);
-            long pg = CLAMP( color.g * pf, 0, 255);
-            long pb = CLAMP( color.b * pf, 0, 255);
-            long pa = CLAMP( 255.0f * color.a, 0, 255);
+            long pr = (long)CLAMP( color.r * pf, 0, 255);
+            long pg = (long)CLAMP( color.g * pf, 0, 255);
+            long pb = (long)CLAMP( color.b * pf, 0, 255);
+            long pa = (long)CLAMP( 255.0f * color.a, 0, 255);
             *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
           }
           ++p;

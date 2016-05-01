@@ -174,10 +174,10 @@ void output(vsx_module_param_abs* param) {
         float dist1  = ((float)j + 1.0f) * (1.0f   / nRings);
         float angle1 = ((float)i + 1.0f) * (2.0f * (float)PI / nSectors);
 
-        float uFact = j&1?1:-1;
-        float vFact = i&1?1:-1;
-        float uOffs = j&1?0:1;
-        float vOffs = i&1?0:1;
+        float uFact = j&1?1.0f:-1.0f;
+        float vFact = i&1?1.0f:-1.0f;
+        float uOffs = j&1?0.0f:1.0f;
+        float vOffs = i&1?0.0f:1.0f;
 
         for(int k = 0; k < tessV; k++)
           for(int l = 0; l < tessU; l++) {
@@ -358,8 +358,8 @@ public:
     x_num_segments->set(15.0f);
     x_start        = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"x_start");
     x_stop         = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"x_stop");
-    x_start->set(-HALF_PI);
-    x_stop->set(HALF_PI);
+    x_start->set(-(float)HALF_PI);
+    x_stop->set( (float)HALF_PI);
     x_a            = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"x_a");
     x_a->set(1.0f);
     x_b            = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"x_b");
@@ -377,8 +377,8 @@ public:
     y_num_segments->set(15.0f);
     y_start        = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"y_start");
     y_stop         = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"y_stop");
-    y_start->set(-PI);
-    y_stop->set(PI);
+    y_start->set(-(float)PI);
+    y_stop->set((float)PI);
     y_a            = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"y_a");
     y_a->set(1.0f);
     y_b            = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"y_b");
@@ -498,9 +498,9 @@ public:
                     , -1.0f/_y_n1);
 
           vsx_vector3<> tmp_vec;//(sin(angle) * rad, y, cos(angle) * rad);
-          tmp_vec.x = r1 * cos(phi) * r2 * cos(theta);
-          tmp_vec.y = r1 * sin(phi) * r2 * cos(theta);
-          tmp_vec.z = r2 * sin(theta);
+          tmp_vec.x = (float)(r1 * cos(phi) * r2 * cos(theta));
+          tmp_vec.y = (float)(r1 * sin(phi) * r2 * cos(theta));
+          tmp_vec.z = (float)(r2 * sin(theta));
           //printf("%f %f %f\n", tmp_vec.x, tmp_vec.y, tmp_vec.z);
           mesh->data->vertices[vi] = tmp_vec;
           mesh->data->vertex_normals[vi] = tmp_vec;

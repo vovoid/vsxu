@@ -138,7 +138,7 @@ public:
 
     req( has_state_changed() );
 
-    bool reload = reload_in->get();
+    bool reload = reload_in->get() > 0;
     reload_in->set(0);
 
     if (!vsx_string_helper::verify_filesuffix(filename_in->get(), file_suffix))

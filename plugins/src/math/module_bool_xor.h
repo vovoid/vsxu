@@ -68,6 +68,13 @@ public:
 
   void run()
   {
-    result_float->set((float)((bool)round(float_a->get()) ^ (bool)round(float_b->get())));
+    result_float->set(
+      (float)
+      (
+        (bool) (round(float_a->get()) > 0) 
+        ^ 
+        (bool) (round(float_b->get()) > 0)
+      )
+    );
   }
 };
