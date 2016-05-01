@@ -144,8 +144,6 @@ set(SOURCES
   src/vsx_module_list/vsx_module_list_factory.cpp
   src/vsx_module_list/vsx_dlopen.cpp
   src/vsx_param.cpp
-  src/vsx_command.cpp
-  src/vsx_command_client_server.cpp
 )
 
 ################################################################################
@@ -181,4 +179,3 @@ target_link_libraries(${module_id}
   ${DL_LIBRARY}
 )
 
-add_subdirectory(test)

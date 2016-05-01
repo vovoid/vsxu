@@ -27,8 +27,9 @@
 #include <list>
 #include <vector>
 #include <math.h>
-#include "vsx_command.h"
-#include "vsx_command_list.h"
+#include <command/vsx_command.h>
+#include <command/vsx_command_list.h>
+#include <command/vsx_command_client_server.h>
 #include "vsx_font.h"
 #include <filesystem/vsx_filesystem.h>
 #include "vsx_param.h"
@@ -38,7 +39,6 @@
 // local includes
 #include "vsx_widget_comp.h"
 #include "vsx_widget_anchor.h"
-#include <vsx_command_client_server.h>
 #include "vsx_widget_server.h"
 #include "controllers/vsx_widget_controller_base.h"
 #include "controllers/vsx_widget_controller_editor.h"

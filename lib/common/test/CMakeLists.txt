@@ -50,3 +50,6 @@ target_link_libraries(test_vsx_perf rt vsx_common ${CMAKE_THREAD_LIBS_INIT})
 
 add_executable(test_vsx_input_event_queue test_vsx_input_event_queue.cpp )
 target_link_libraries(test_vsx_input_event_queue rt vsx_common ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(test_command_list test_command_list.cpp )
+target_link_libraries(test_command_list vsx_common vsx_compression vsx_engine vsx_engine_graphics ${CMAKE_THREAD_LIBS_INIT} rt)

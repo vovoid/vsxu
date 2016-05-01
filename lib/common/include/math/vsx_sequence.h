@@ -293,6 +293,14 @@ public:
     items.push_back(a);
   }
 
+  channel(const channel& seq)
+  {
+    channel* sq = (channel*)&seq;
+    items.reset_used();
+    for (unsigned long i = 0; i < (sq->items.size()); ++i)
+      items.push_back(sq->items[i]);
+  }
+
   channel(channel& seq)
   {
     items.reset_used();

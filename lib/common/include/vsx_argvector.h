@@ -200,7 +200,7 @@ public:
 
       char szTmp[32];
       sprintf(szTmp, "/proc/self/exe");
-      ssize_t bytes = MIN(readlink(szTmp, pBuf, len), len - 1);
+      ssize_t bytes = MIN(readlink(szTmp, pBuf, len), (ssize_t)len - 1);
 
       if(bytes >= 0)
         pBuf[bytes] = '\0';

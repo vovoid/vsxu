@@ -36,7 +36,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include <string/vsx_string.h>
-#include <vsx_command.h>
+#include "vsx_command.h"
 #include "vsx_command_list.h"
 
 #define VSX_COMMAND_CLIENT_NEVER_CONNECTED 0

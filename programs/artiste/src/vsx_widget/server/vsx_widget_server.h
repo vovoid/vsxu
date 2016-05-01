@@ -25,7 +25,9 @@
 #define VSX_WIDGET_SERVER_H
 
 #include <math/vector/vsx_vector2.h>
-#include <vsx_command_client_server.h>
+#include <command/vsx_command.h>
+#include <command/vsx_command_list.h>
+#include <command/vsx_command_client_server.h>
 
 #define VSX_WIDGET_SERVER_CONNECTION_TYPE_INTERNAL 1
 #define VSX_WIDGET_SERVER_CONNECTION_TYPE_SOCKET 2

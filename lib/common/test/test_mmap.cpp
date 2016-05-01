@@ -54,14 +54,12 @@ int main(int argc, char *argv[])
   vsx::filesystem_mmap mmap;
   timer.start();
   vsx::file_mmap* map_handle = mmap.create(name.c_str());
-  float map_time = timer.dtime();
   uint64_t sum = 0;
 
   for (size_t i = 0; i < times * block; i++)
   {
     sum += map_handle->data[i];
   }
-  float read_time = timer.dtime();
 
   test_assert(sum == written_sum);
 

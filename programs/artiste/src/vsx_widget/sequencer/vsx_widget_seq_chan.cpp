@@ -32,7 +32,9 @@
 #include <math.h>
 #include <math/quaternion/vsx_quaternion_helper.h>
 #include <texture/vsx_texture.h>
-#include "vsx_command.h"
+#include <command/vsx_command.h>
+#include <command/vsx_command_list.h>
+#include <command/vsx_command_client_server.h>
 #include "vsx_font.h"
 #include "vsx_param.h"
 #include <module/vsx_module.h>

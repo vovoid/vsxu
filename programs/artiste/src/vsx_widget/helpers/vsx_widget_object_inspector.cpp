@@ -27,7 +27,9 @@
 #include <list>
 #include <vector>
 #include <math.h>
-#include "vsx_command.h"
+#include <command/vsx_command.h>
+#include <command/vsx_command_list.h>
+#include <command/vsx_command_client_server.h>
 #include "vsx_font.h"
 #include <vsx_data_path.h>
 #include <texture/vsx_texture.h>

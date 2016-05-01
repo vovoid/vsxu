@@ -43,7 +43,7 @@ private:
   std::atomic_uint_fast64_t read_pointer;
 
   // actual data storage
-  T alignas(64) buffer[buffer_size];
+  T buffer[buffer_size];
 
 public:
 

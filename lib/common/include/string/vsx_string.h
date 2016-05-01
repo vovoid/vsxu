@@ -198,7 +198,7 @@ public:
       data[other_string_size-1] = 0;
     W* dp = data.get_pointer();
     W* sp = other_string.get_pointer();
-    for (int i = 0; i < other_string_size; ++i)
+    for (size_t i = 0; i < other_string_size; ++i)
       dp[i] = sp[i];
     return *this;
   }

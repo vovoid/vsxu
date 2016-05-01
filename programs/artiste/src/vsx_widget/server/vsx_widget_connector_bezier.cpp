@@ -26,8 +26,8 @@
 #include <list>
 #include <vector>
 #include <math.h>
-#include "vsx_command.h"
-#include "vsx_command_list.h"
+#include <command/vsx_command.h>
+#include <command/vsx_command_list.h>
 #include "vsx_font.h"
 #include <filesystem/vsx_filesystem.h>
 #include "vsx_widget_anchor.h"

@@ -130,7 +130,14 @@
 #endif
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-  #define vsx_aligned_malloc(n) aligned_alloc(64, n)
+  #include <stdio.h>
+  #include <stdlib.h>
+  inline void* vsx_aligned_malloc(size_t n)
+  {
+    void* r;
+    posix_memalign(&r, 64, n);
+    return r;
+  }
   #define vsx_aligned_realloc(pointer, n) realloc(pointer, n)
   #define vsx_aligned_free(pointer) free(pointer)
 #endif

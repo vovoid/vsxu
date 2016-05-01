@@ -30,7 +30,9 @@
 #include "vsx_version.h"
 
 #include "vsx_widget.h"
-#include <vsx_command_client_server.h>
+#include <command/vsx_command.h>
+#include <command/vsx_command_list.h>
+#include <command/vsx_command_client_server.h>
 #include "server/vsx_widget_server.h"
 #include <vsx_gl_state.h>
 

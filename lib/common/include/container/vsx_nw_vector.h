@@ -146,10 +146,7 @@ public:
 
   inline void reset_used(size_t val = 0) VSX_ALWAYS_INLINE
   {
-    if (val >= 0)
      used = val;
-    else
-      used = 0;
   }
 
   inline void set_allocation_increment(unsigned long new_increment)  VSX_ALWAYS_INLINE

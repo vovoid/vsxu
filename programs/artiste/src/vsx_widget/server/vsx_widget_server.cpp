@@ -33,7 +33,8 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <filesystem/vsx_filesystem.h>
-#include "vsx_command.h"
+#include <command/vsx_command.h>
+#include <command/vsx_command_client_server.h>
 #include "vsx_font.h"
 #include "vsx_param.h"
 #include <module/vsx_module.h>
@@ -47,7 +48,6 @@
 #include "module_choosers/vsx_widget_module_chooser.h"
 #include "module_choosers/vsx_widget_module_chooser_list.h"
 #include "vsx_widget_comp.h"
-#include <vsx_command_client_server.h>
 #include "vsx_widget_server.h"
 #include "vsx_widget_anchor.h"
 #include "vsx_widget_connector_bezier.h"

@@ -253,7 +253,7 @@ int vsx_engine_param::connect_far_abs(vsx_engine_param_connection_info* info,int
       }
 
 
-      if ((info->localorder+1) > info->num_dest_connections/2)
+      if ((info->localorder+1) > (int)info->num_dest_connections/2)
       {
         return alias_parent->connect_far_abs(info,norder,this);
       }

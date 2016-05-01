@@ -29,7 +29,7 @@
 #include <vsx_application_input_state_manager.h>
 
 #include <vsx_engine.h>
-#include <vsx_command_client_server.h>
+#include <command/vsx_command_client_server.h>
 
 class server_application
     : public vsx_application

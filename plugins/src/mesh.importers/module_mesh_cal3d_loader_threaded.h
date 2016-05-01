@@ -65,7 +65,7 @@ public:
 
     // threading stuff
     std::thread worker_thread;
-    vsx_mesh<>*         mesh; // locked by the mesh
+    vsx_mesh<>* mesh = 0x0; // locked by the mesh
 
     int p_updates;
     bool              worker_running;
@@ -580,8 +580,6 @@ public:
 
       // ********************************************************************
       // calculate tangent space coordinates
-
-      vsx_mesh<>* mesh = mesh;
 
       mesh->data->vertex_colors.allocate( mesh->data->vertices.size() );
       mesh->data->vertex_colors.memory_clear();

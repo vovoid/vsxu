@@ -362,9 +362,9 @@ namespace vsx_string_helper
 
     req_v(start_index <= in.size()-1, "");
 
-    size_t calculated_end_index = in.size() - (shave_off_at_end + 1);
+    long calculated_end_index = (long)in.size() - (shave_off_at_end + 1);
     req_v(calculated_end_index >= 0, "");
-    size_t end_index = calculated_end_index;
+    size_t end_index = (size_t)calculated_end_index;
 
     vsx_string<> result;
     for (size_t i = start_index; i < end_index; ++i)
@@ -696,7 +696,6 @@ namespace vsx_string_helper
    */
   inline vsx_string<> base64_encode(vsx_string<>data)
   {
-    int i;
     char               c;
     size_t len = data.size();
     vsx_string<>            ret;
@@ -714,7 +713,7 @@ namespace vsx_string_helper
       "0123456789+/";
 
 
-    for (i = 0; i < len; ++i)
+    for (size_t i = 0; i < len; ++i)
     {
       c = (data[i] >> 2) & 0x3f;
       ret.push_back(cvt[c]);
@@ -758,7 +757,6 @@ namespace vsx_string_helper
    */
   inline vsx_string<>base64_decode(vsx_string<>data)
   {
-    int i;
     char               c;
     char               c1;
     size_t len = data.size();
@@ -777,7 +775,7 @@ namespace vsx_string_helper
       "0123456789+/";
 
 
-    for (i = 0; i < len; ++i)
+    for (size_t i = 0; i < len; ++i)
     {
       c = (char) cvt.find(data[i]);
       ++i;

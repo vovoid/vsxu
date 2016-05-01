@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include <vsx_command_list.h>
+#include <command/vsx_command_list.h>
 #include <vsx_engine.h>
 
 class vsx_engine_helper

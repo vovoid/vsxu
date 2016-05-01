@@ -26,7 +26,9 @@
 #include <list>
 #include <vector>
 #include <math.h>
-#include "vsx_command.h"
+#include <command/vsx_command.h>
+#include <command/vsx_command_list.h>
+#include <command/vsx_command_client_server.h>
 #include "vsx_font.h"
 #include <filesystem/vsx_filesystem.h>
 #include "vsx_param.h"
@@ -39,7 +41,6 @@
 #include "widgets/vsx_widget_popup_menu.h"
 #include "vsx_widget_window.h"
 #include "vsx_widget_anchor.h"
-#include <vsx_command_client_server.h>
 #include "vsx_widget_server.h"
 #include "module_choosers/vsx_widget_module_chooser.h"
 #include "vsx_widget_connector_bezier.h"
