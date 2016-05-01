@@ -362,7 +362,7 @@ namespace vsx_string_helper
 
     req_v(start_index <= in.size()-1, "");
 
-    long calculated_end_index = (long)in.size() - (shave_off_at_end + 1);
+    long calculated_end_index = (long)in.size() - ((long)shave_off_at_end + 1);
     req_v(calculated_end_index >= 0, "");
     size_t end_index = (size_t)calculated_end_index;
 

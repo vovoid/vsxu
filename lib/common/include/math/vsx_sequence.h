@@ -22,16 +22,17 @@
 */
 
 
-#ifndef VSX_SEQUENCE_H
-#define VSX_SEQUENCE_H
+#pragma once
 
+#pragma warning( push )
+#pragma warning( disable : 4521)
 
 #include <debug/vsx_error.h>
 #include <vsx_platform.h>
 #include <string/vsx_string_helper.h>
 #include <math/vector/vsx_vector2.h>
 #include <math/vector/vsx_vector2_helper.h>
-#include "vsx_engine_dllimport.h"
+#include <vsx_common_dllimport.h>
 
 namespace vsx
 {
@@ -552,4 +553,6 @@ public:
 }
 
 }
-#endif
+
+#pragma warning( pop )
+
