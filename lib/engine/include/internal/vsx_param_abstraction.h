@@ -58,7 +58,7 @@ class vsx_engine_param_connection_info {
 public:
   int connection_order;
   int localorder;
-  int num_dest_connections;
+  size_t num_dest_connections;
   vsx_engine_param* src;  // can be volatile!
   vsx_string<>src_name;
   vsx_engine_param* dest; // can be volatile!
@@ -215,7 +215,7 @@ public:
 //		return module_param_list->id_vec[id];
   }
 
-  unsigned long count() {
+  size_t count() {
     return param_id_list.size();
   }
   ~vsx_engine_param_list();

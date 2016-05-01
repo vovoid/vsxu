@@ -23,8 +23,8 @@
 
 #include "vsx_param.h"
 #include <module/vsx_module.h>
-#include "vsx_command.h"
-#include "vsx_command_list.h"
+#include <command/vsx_command.h>
+#include <command/vsx_command_list.h>
 #include <string/vsx_string_helper.h>
 class vsx_engine_param_list;
 #include <internal/vsx_comp_abs.h>
@@ -182,8 +182,8 @@ int vsx_engine_param::connect(vsx_engine_param* src) {
 
 
   vsx_engine_param_connection_info cinfo;
-  cinfo.connection_order = real_dest_param->channel->connections.size()-1;
-  cinfo.localorder = connections.size();
+  cinfo.connection_order = (int)real_dest_param->channel->connections.size()-1;
+  cinfo.localorder = (int)connections.size();
   cinfo.num_dest_connections = 0;
   cinfo.src = src;
   cinfo.dest = this;
@@ -284,16 +284,19 @@ int vsx_engine_param::connect_far_abs(vsx_engine_param_connection_info* info,int
       if (new_source) {
         // only way to know we haven't jumped from an alias
         if (!referrer) {
-          if (info->connection_order > (int)connections.size()+1000) info->connection_order = connections.size();
+          if (info->connection_order > (int)connections.size()+1000) 
+            info->connection_order = (int)connections.size();
           return connect_abs(new_source, info->channel_connection, info->connection_order, order);
 
         } else {
           if (order == -1) {
             // insert in the beginning
-            if (info->connection_order > (int)connections.size()+1000) info->connection_order = connections.size();
+            if (info->connection_order > (int)connections.size()+1000) 
+              info->connection_order = (int)connections.size();
             return connect_abs(new_source, info->channel_connection, info->connection_order, -1);
           } else {
-            if (info->connection_order > (int)connections.size()+1000) info->connection_order = connections.size();
+            if (info->connection_order > (int)connections.size()+1000) 
+              info->connection_order = (int)connections.size();
             return connect_abs(new_source, info->channel_connection, info->connection_order, order);
           }
         }
@@ -542,7 +545,7 @@ void vsx_engine_param::dump_aliases_and_connections_rc(vsx_command_list* command
       (*it)->dest->name+" "+
       (*it)->src->owner->component->name+" "+
       (*it)->src->name+" "+
-      vsx_string_helper::i2s((connections.size() - c) -1)//connections.size()-1-c)
+      vsx_string_helper::i2s( ((int)connections.size() - c) -1)//connections.size()-1-c)
       );
       (*it)->dest->dump_aliases_and_connections_rc(command_result);
     } else
@@ -554,7 +557,7 @@ void vsx_engine_param::dump_aliases_and_connections_rc(vsx_command_list* command
       (*it)->dest->name+" "+
       (*it)->src->owner->component->name+" "+
       (*it)->src->name+" "+
-      vsx_string_helper::i2s((connections.size() - c) -1)//connections.size()-1-c)
+      vsx_string_helper::i2s(((int)connections.size() - c) -1)//connections.size()-1-c)
       );
     }
     ++c;
@@ -593,7 +596,7 @@ void vsx_engine_param::dump_pflags(vsx_command_list* command_result)
 
 void vsx_engine_param::get_abs_connections(std::list<vsx_engine_param_connection_info*>* abs_connections, vsx_engine_param* dest)
 {
-  int count = connections.size()-1;
+  int count = (int)connections.size()-1;
 
   for (std::vector<vsx_engine_param_connection*>::reverse_iterator it = connections.rbegin(); it != connections.rend(); ++it)
   {
@@ -790,7 +793,7 @@ vsx_string<>vsx_engine_param::get_string()
       return
         "Pointer: 0x" + vsx_string_helper::i2x((uint64_t)bitmap) + "\n" +
         "    filename: " + bitmap->filename + "\n"
-        "    timestamp: " + vsx_string_helper::i2s(bitmap->timestamp) + "\n"
+        "    timestamp: " + vsx_string_helper::i2s((int)bitmap->timestamp) + "\n"
         "    hint:\n"
         "      flip_vertically: " + vsx_string_helper::i2s((bitmap->hint & vsx_bitmap::flip_vertical_hint) > 0) + "\n"
         "      split_cubemap: " + vsx_string_helper::i2s((bitmap->hint & vsx_bitmap::cubemap_split_6_1_hint) > 0) + "\n"
@@ -808,8 +811,8 @@ vsx_string<>vsx_engine_param::get_string()
         "      3: 0x" + vsx_string_helper::i2x((uint64_t)bitmap->data_get(0,3)) + "\n"
         "      4: 0x" + vsx_string_helper::i2x((uint64_t)bitmap->data_get(0,4)) + "\n"
         "      5: 0x" + vsx_string_helper::i2x((uint64_t)bitmap->data_get(0,5)) + "\n"
-        "    mip map levels: " + vsx_string_helper::i2s((uint64_t)bitmap->get_mipmap_level_count()) + "\n"
-        "    data_ready: " + vsx_string_helper::i2s(bitmap->data_ready) + "\n"
+        "    mip map levels: " + vsx_string_helper::i2s((int)bitmap->get_mipmap_level_count()) + "\n"
+        "    data_ready: " + vsx_string_helper::i2s((int)bitmap->data_ready) + "\n"
         "    compressed_data: " + vsx_string_helper::i2s(bitmap->compression) + "\n"
         "    attached_to_cache: " + vsx_string_helper::i2s(bitmap->attached_to_cache) + "\n"
         "    references: " + vsx_string_helper::i2s(bitmap->references) + "\n"
@@ -827,7 +830,7 @@ vsx_string<>vsx_engine_param::get_string()
         "GL:\n"
         "  id: " + vsx_string_helper::i2s(tex->texture->gl_id) + "\n"
         "  type: " + vsx_string_helper::i2s(tex->texture->gl_type) + "\n"
-        "  mip map levels uploaded: " + vsx_string_helper::i2s(tex->texture->mip_map_levels_uploaded) + "\n"
+        "  mip map levels uploaded: " + vsx_string_helper::i2s((int)tex->texture->mip_map_levels_uploaded) + "\n"
         "  attached_to_cache: " + vsx_string_helper::i2s(tex->texture->attached_to_cache) + "\n"
         "  references: " + vsx_string_helper::i2s(tex->texture->references) + "\n"
         "  data_hint:\n"
@@ -841,7 +844,7 @@ vsx_string<>vsx_engine_param::get_string()
         ret +=
         "  bitmap:\n"
         "    filename: " + tex->texture->bitmap->filename + "\n"
-        "    timestamp: " + vsx_string_helper::i2s(tex->texture->bitmap->timestamp) + "\n"
+        "    timestamp: " + vsx_string_helper::i2s((int)tex->texture->bitmap->timestamp) + "\n"
         "    hint:\n"
         "      flip_vertically: " + vsx_string_helper::i2s((tex->texture->bitmap->hint & vsx_bitmap::flip_vertical_hint) > 0) + "\n"
         "      split_cubemap: " + vsx_string_helper::i2s((tex->texture->bitmap->hint & vsx_bitmap::cubemap_split_6_1_hint) > 0) + "\n"
@@ -859,8 +862,8 @@ vsx_string<>vsx_engine_param::get_string()
         "      3: 0x" + vsx_string_helper::i2x((uint64_t)tex->texture->bitmap->data_get(0,3)) + "\n"
         "      4: 0x" + vsx_string_helper::i2x((uint64_t)tex->texture->bitmap->data_get(0,4)) + "\n"
         "      5: 0x" + vsx_string_helper::i2x((uint64_t)tex->texture->bitmap->data_get(0,5)) + "\n"
-        "    data_ready: " + vsx_string_helper::i2s(tex->texture->bitmap->data_ready) + "\n"
-        "    mip map levels: " + vsx_string_helper::i2s((uint64_t)tex->texture->bitmap->get_mipmap_level_count()) + "\n"
+        "    data_ready: " + vsx_string_helper::i2s((int)tex->texture->bitmap->data_ready) + "\n"
+        "    mip map levels: " + vsx_string_helper::i2s((int)tex->texture->bitmap->get_mipmap_level_count()) + "\n"
         "    compressed_data: " + vsx_string_helper::i2s(tex->texture->bitmap->compression) + "\n"
         "    attached_to_cache: " + vsx_string_helper::i2s(tex->texture->bitmap->attached_to_cache) + "\n"
         "    references: " + vsx_string_helper::i2s(tex->texture->bitmap->references) + "\n"
@@ -876,11 +879,11 @@ vsx_string<>vsx_engine_param::get_string()
 
       ret +=
           "  mesh:\n"
-          "    vertex count: " + vsx_string_helper::i2s(m->data->vertices.size()) + "\n"
-          "    normal count: " + vsx_string_helper::i2s(m->data->vertex_normals.size()) + "\n"
-          "    tex coord count: " + vsx_string_helper::i2s(m->data->vertex_tex_coords.size()) + "\n"
-          "    vertex color count: " + vsx_string_helper::i2s(m->data->vertex_colors.size()) + "\n"
-          "    faces count: " + vsx_string_helper::i2s(m->data->faces.size()) + "\n"
+          "    vertex count: " + vsx_string_helper::i2s((int)m->data->vertices.size()) + "\n"
+          "    normal count: " + vsx_string_helper::i2s((int)m->data->vertex_normals.size()) + "\n"
+          "    tex coord count: " + vsx_string_helper::i2s((int)m->data->vertex_tex_coords.size()) + "\n"
+          "    vertex color count: " + vsx_string_helper::i2s((int)m->data->vertex_colors.size()) + "\n"
+          "    faces count: " + vsx_string_helper::i2s((int)m->data->faces.size()) + "\n"
         ;
 
       return ret;
@@ -973,7 +976,7 @@ void vsx_engine_param::set_string(vsx_string<>data)
   vsx_nw_vector <vsx_string<> > data_parts;
   vsx_string_helper::explode(data,deli,data_parts);
   for (size_t i = 0; i < data_parts.size(); i++)
-    set_string_index(data_parts[i],i);
+    set_string_index(data_parts[i], (int)i);
 }
 
 void vsx_engine_param::set_string_index(vsx_string<>data, int index) {
@@ -1274,7 +1277,7 @@ int vsx_engine_param_list::alias(vsx_engine_param* src, vsx_string<>name, int or
   new_conn->alias_connection = true;
 
   if (order == -1)
-    return src->connections.size()-1;
+    return (int)src->connections.size()-1;
 
   return c;
 }
@@ -1433,7 +1436,7 @@ vsx_string<>vsx_engine_param_list::single_param_spec(vsx_string<>param_name, int
       {
         vsx_string<>res = "";
         int spos = loc;
-        int size = sin.size();
+        int size = (int)sin.size();
         while (spos < size) {
           res+=sin[spos];
           ++spos;

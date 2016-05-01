@@ -26,9 +26,9 @@
 #include <module/vsx_module.h>
 #include <time/vsx_timer.h>
 #include <list>
-#include "vsx_command.h"
+#include <command/vsx_command.h>
+#include <command/vsx_command_list.h>
 #include <string/vsx_string_helper.h>
-#include "vsx_command_list.h"
 #include <internal/vsx_comp_abs.h>
 #include <internal/vsx_param_abstraction.h>
 #include <internal/vsx_param_sequence.h>
@@ -253,7 +253,7 @@ void vsx_master_sequence_channel::remove_all_lines_referring_to_sequence_list(vs
   {
     if (items[i]->pool_sequence_list == list)
     {
-      i_remove_line(i);
+      i_remove_line((int)i);
       i = 0;
     } else
     {

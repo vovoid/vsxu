@@ -174,7 +174,7 @@ public:
   // MODULE PARAMETER METHODS
   // -------------------------------------------------------------------------------------------
   // this method is only used by the modules 
-  void set(T val, int index = 0) __attribute__((always_inline))
+  void set(T val, int index = 0)
   {
     check_free();
     param_data[index] = val;
@@ -183,7 +183,7 @@ public:
     value_from_module = true;
   }
   // this method is only used by the modules 
-  void set_p(T& val, int index = 0) __attribute__((always_inline))
+  void set_p(T& val, int index = 0)
   {
     check_free();
     param_data[index] = val;
@@ -192,14 +192,14 @@ public:
     value_from_module = true;
   }
 
-  void set_inc_updates(T val, int index = 0) __attribute__((always_inline))
+  void set_inc_updates(T val, int index = 0)
   {
     set(val, index);
     updates++;
   }
 
   
-  T* get_addr() __attribute__((always_inline))
+  T* get_addr()
   {
     if (!valid)
       return 0;
@@ -207,7 +207,7 @@ public:
     return param_data;
   }
   
-  T& get(int index = 0) __attribute__((always_inline))
+  T& get(int index = 0)
   {
     return param_data[index];
   }

@@ -31,7 +31,7 @@ class vsx_nw_vector_nd
   size_t used = 0;
   size_t allocation_increment = 1;
   size_t timestamp = 0;
-  __attribute__((aligned(64))) T* A = 0;
+  T* A = 0;
 public:
   inline T* get_pointer() VSX_ALWAYS_INLINE
   {
@@ -46,8 +46,14 @@ public:
   {
     return used;
   }
-  // std::vector compatibility
+
   inline size_t push_back(T val) VSX_ALWAYS_INLINE
+  {
+    (*this)[used] = val;
+    return used;
+  }
+
+  inline size_t push_back_ref(T& val) VSX_ALWAYS_INLINE
   {
     (*this)[used] = val;
     return used;
@@ -130,7 +136,7 @@ public:
       used = index+1;
   }
 
-  T& operator[](unsigned long index) {
+  T& operator[](size_t index) {
     allocate(index);
     return A[index];
   }

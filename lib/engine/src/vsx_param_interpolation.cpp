@@ -24,8 +24,8 @@
 #include <list>
 #include "vsx_param.h"
 #include <module/vsx_module.h>
-#include "vsx_command.h"
-#include "vsx_command_list.h"
+#include <command/vsx_command.h>
+#include <command/vsx_command_list.h>
 #include <internal/vsx_param_interpolation.h>
 #include <math/quaternion/vsx_quaternion.h>
 
@@ -175,17 +175,18 @@ bool vsx_module_param_interpolation_float::set(vsx_string<>value, int arity, flo
 }
 
 bool vsx_module_param_interpolation_float::interpolate(float dtime) {
-  //float tt = dtime*16;
-  double tt = dtime*dest_interp;
-  if (tt > 1.0) tt = 1.0;
-  temp = (double)((vsx_module_param_float*)target_param)->get_internal() * (1.0-tt)+(double)destination_value*tt;
-  //printf("temp: %f\n",temp);
-  ((vsx_module_param_float*)target_param)->set_internal(temp);
-  //printf("dv:   %f       t:   %f\n",destination_value,temp);
-  if (++iterations > 5000) return false;
+  double tt = CLAMP(dtime*dest_interp, 0.0, 1.0);
+
+  ((vsx_module_param_float*)target_param)->set_internal(
+    (float)((double)((vsx_module_param_float*)target_param)->get_internal() * (1.0 - tt) + (double)destination_value*tt)
+  );
+
+  if (++iterations > 5000) 
+    return false;
+
   if (fabs((double)destination_value - temp) < 0.00001)
     return false;
-  else
+
   return true;
 }
 

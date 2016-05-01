@@ -22,7 +22,8 @@
 */
 
 #include <string/vsx_string.h>
-#include "vsx_command.h"
+#include <command/vsx_command.h>
+#include <command/vsx_command_list.h>
 #include <time/vsx_timer.h>
 #include "vsx_engine.h"
 #include <internal/vsx_comp_channel.h>

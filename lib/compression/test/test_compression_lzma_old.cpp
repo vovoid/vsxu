@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 
   foreach(data, i)
     if (data[i] != uncompressed[i])
-      vsx_printf(L"data differs on index %uz\n", i);
+      vsx_printf(L"data differs on index %zu\n", i);
 
   return 0;
 }

@@ -31,7 +31,7 @@ public:
 
 STDMETHODIMP CInStreamRam::Read(void *data, UInt32 size, UInt32 *processedSize)
 {
-  UInt32 remain = Size - Pos;
+  UInt32 remain = (UInt32)(Size - Pos);
   if (size > remain)
     size = remain;
   for (UInt32 i = 0; i < size; i++)

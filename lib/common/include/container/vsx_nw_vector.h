@@ -59,7 +59,6 @@ public:
     return used;
   }
 
-  // std::vector compatibility
   inline size_t push_back(T val) VSX_ALWAYS_INLINE
   {
     (*this)[used] = val;

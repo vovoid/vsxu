@@ -117,7 +117,7 @@ if (cmd == "param_get" || cmd == "pgo")
 {
   // syntax:
   //  param_get [component] [param] [extra_info]
-  if (!c->parts.size() >= 3)
+  if (!(c->parts.size() >= 3))
     goto process_message_queue_end;
 
   vsx_comp* dest = get_component_by_name(c->parts[1]);

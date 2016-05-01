@@ -26,7 +26,7 @@ public:
     int i_height = height;
 
     if ( !has_buffer_support() )
-      VSX_ERROR_RETURN(L"No FBO support");
+      VSX_ERROR_RETURN("No FBO support");
 
     int prev_buf_l;
     prev_buf_l = vsx_gl_state::get_instance()->framebuffer_bind_get();
@@ -127,8 +127,8 @@ public:
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, i_width, i_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     }
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL,0);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_mag);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, min_mag);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (GLfloat)min_mag);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLfloat)min_mag);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // set your texture parameters here if required ...

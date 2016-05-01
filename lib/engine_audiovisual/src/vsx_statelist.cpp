@@ -61,7 +61,7 @@ void vsx_statelist::add_visual_path(vsx_string<>new_visual_path)
   for (std::list< vsx_string<> >::iterator it = state_file_list.begin(); it != state_file_list.end(); ++it) {
       state_info state;
       state.state_name = *it;
-      state.state_name_suffix = state.state_name.substr(new_visual_path.size(),state.state_name.size() - new_visual_path.size() );
+      state.state_name_suffix = state.state_name.substr((int)new_visual_path.size(), (int)(state.state_name.size() - new_visual_path.size()) );
   #ifdef VSXU_DEBUG
       printf("adding state %s\n",(*it).c_str());
   #endif
@@ -436,10 +436,8 @@ void vsx_statelist::render()
           param_t_a->set(&tex1);
           param_t_b->set(&tex_to);
           fade_pos_from_engine->set(1.0f);
-          float t = transition_time;
-          if (t > 1.0f) t = 1.0f;
-          if (t < 0.0f) t = 0.0f;
-          param_pos->set(1.0-t);
+          float t = CLAMP(transition_time, 0.0f, 1.0f);
+          param_pos->set(1.0f - t);
           glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
           faders[fade_id]->render();
         }
@@ -447,7 +445,7 @@ void vsx_statelist::render()
 
       if (transition_time <= 1.0f)
       {
-        transition_time -= timer.dtime();
+        transition_time -= (float)timer.dtime();
       }
     }
   } else
@@ -591,7 +589,7 @@ void vsx_statelist::save_fx_levels_from_user()
 void vsx_statelist::init(vsx_string<>base_path,vsx_string<>init_sound_type)
 {
   randomizer = true;
-  srand ( time(NULL)+rand() );
+  srand ( (unsigned int)time(NULL)+rand() );
   randomizer_time = (float)(rand()%1000)*0.001f*15.0f+10.0f;
   transition_time = 2.0f;
   message_time = -1.0f;
@@ -626,7 +624,7 @@ void vsx_statelist::init(vsx_string<>base_path,vsx_string<>init_sound_type)
   for (std::list< vsx_string<> >::iterator it = state_file_list.begin(); it != state_file_list.end(); ++it) {
     state_info state;
     state.state_name = *it;
-    state.state_name_suffix = state.state_name.substr(own_path.size(),state.state_name.size() - own_path.size() );
+    state.state_name_suffix = state.state_name.substr((int)own_path.size(), (int)(state.state_name.size() - own_path.size()) );
 #ifdef VSXU_DEBUG
     printf("adding state %s\n",(*it).c_str());
 #endif

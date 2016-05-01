@@ -32,7 +32,6 @@
   #include <syslog.h>
 #endif
 
-#include <dirent.h>
 #include <sys/types.h>
 #include <string/vsx_string.h>
 #include <log/vsx_log.h>
@@ -49,6 +48,7 @@
 #include <filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_writer.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+  #include <dirent.h>
   #include <stdio.h>
   #include <stdlib.h>
   #include <string>
@@ -162,7 +162,7 @@ bool vsx_engine::get_commands_internal_count()
 
 float vsx_engine::get_frame_elapsed_time()
 {
-  return g_timer.atime() - frame_start_time;
+  return (float)(g_timer.atime() - frame_start_time);
 }
 
 vsx_module_engine_state* vsx_engine::get_engine_info()
@@ -240,7 +240,7 @@ void vsx_engine::get_external_exposed_parameters( vsx_nw_vector< vsx_module_para
 
 unsigned long vsx_engine::get_num_modules()
 {
-  return forge.size();
+  return (unsigned long)forge.size();
 }
 
 vsx_comp* vsx_engine::get_component_by_name(vsx_string<>label)
@@ -302,7 +302,7 @@ int vsx_engine::load_state(vsx_string<>filename, vsx_string<>*error_string)
   bool is_archive = false;
   if (filename.size() >= 4)
   {
-    if (filename.substr(filename.size()-4,4) == ".vsx")
+    if (filename.substr((int)filename.size()-4,4) == ".vsx")
     {
       filesystem.get_archive()->load(filename.c_str(), false);
       if (filesystem.get_archive()->is_archive_populated())
@@ -641,7 +641,7 @@ bool vsx_engine::render()
       engine_info.vtime = sequence_pool.get_vtime();
 
     // run the parameter interpolators
-    interpolation_list.run(m_timer.dtime());
+    interpolation_list.run( (float)m_timer.dtime() );
 
 
     // render the state by iterating over the outputs

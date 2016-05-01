@@ -349,37 +349,37 @@ public:
   }
 
 
-  inline friend int operator==(const vsx_string<W>& left, const vsx_string<W>& right)
+  inline friend bool operator==(const vsx_string<W>& left, const vsx_string<W>& right)
   {
     return vsx_string<W>::s_equals(left, right);
   }
 
-  inline friend int operator<(const vsx_string<W>& left,const vsx_string<W>& right) VSX_ALWAYS_INLINE
+  inline friend bool operator<(const vsx_string<W>& left,const vsx_string<W>& right) VSX_ALWAYS_INLINE
   {
     return strcmp(left.c_str(), right.c_str())<0;
   }
 
-  inline friend int operator<=(const vsx_string<W>& left,const vsx_string<W>& right) VSX_ALWAYS_INLINE
+  inline friend bool operator<=(const vsx_string<W>& left,const vsx_string<W>& right) VSX_ALWAYS_INLINE
   {
     return strcmp(left.c_str(), right.c_str())<=0;
   }
 
-  inline friend int operator>(const vsx_string<W>& left,const vsx_string<W>& right) VSX_ALWAYS_INLINE
+  inline friend bool operator>(const vsx_string<W>& left,const vsx_string<W>& right) VSX_ALWAYS_INLINE
   {
     return strcmp(left.c_str(), right.c_str())>0;
   }
 
-  inline friend int operator>=(const vsx_string<W>& left,const vsx_string<W>& right) VSX_ALWAYS_INLINE
+  inline friend bool operator>=(const vsx_string<W>& left,const vsx_string<W>& right) VSX_ALWAYS_INLINE
   {
     return strcmp(left.c_str(), right.c_str())>=0;
   }
 
-  inline friend int operator!=(const vsx_string<W>& left,const vsx_string<W>& right) VSX_ALWAYS_INLINE
+  inline friend bool operator!=(const vsx_string<W>& left,const vsx_string<W>& right) VSX_ALWAYS_INLINE
   {
     if (left.size() != right.size())
-      return 1;
+      return true;
 
-    return strcmp(left.c_str(), right.c_str());
+    return !vsx_string<W>::s_equals(left, right);
   }
  
   inline int find(const vsx_string<W>& search, int start = 0) const VSX_ALWAYS_INLINE

@@ -19,49 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\vsx_widget.cpp" />
-    <ClCompile Include="src\vsx_widget_camera.cpp" />
-    <ClCompile Include="src\vsx_widget_coords.cpp" />
-    <ClCompile Include="src\vsx_widget_global_interpolation.cpp" />
-    <ClCompile Include="src\vsx_widget_skin.cpp" />
-    <ClCompile Include="src\vsx_widget_time.cpp" />
-    <ClCompile Include="src\vsx_widget_window.cpp" />
-    <ClCompile Include="src\widgets\vsx_widget_2d_label.cpp" />
-    <ClCompile Include="src\widgets\vsx_widget_2d_pager.cpp" />
-    <ClCompile Include="src\widgets\vsx_widget_base_edit.cpp" />
-    <ClCompile Include="src\widgets\vsx_widget_button.cpp" />
-    <ClCompile Include="src\widgets\vsx_widget_editor.cpp" />
-    <ClCompile Include="src\widgets\vsx_widget_panel.cpp" />
-    <ClCompile Include="src\widgets\vsx_widget_popup_menu.cpp" />
-    <ClCompile Include="src\widgets\vsx_widget_scrollbar.cpp" />
+    <ClCompile Include="src\vsx_manager.cpp" />
+    <ClCompile Include="src\vsx_statelist.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\dialogs\dialog_messagebox.h" />
-    <ClInclude Include="include\dialogs\dialog_query_string.h" />
-    <ClInclude Include="include\vsx_widget.h" />
-    <ClInclude Include="include\vsx_widget_camera.h" />
-    <ClInclude Include="include\vsx_widget_coords.h" />
-    <ClInclude Include="include\vsx_widget_distance.h" />
-    <ClInclude Include="include\vsx_widget_dllimport.h" />
-    <ClInclude Include="include\vsx_widget_global_interpolation.h" />
-    <ClInclude Include="include\vsx_widget_skin.h" />
-    <ClInclude Include="include\vsx_widget_time.h" />
-    <ClInclude Include="include\vsx_widget_window.h" />
-    <ClInclude Include="include\widgets\vsx_widget_2d_label.h" />
-    <ClInclude Include="include\widgets\vsx_widget_2d_pager.h" />
-    <ClInclude Include="include\widgets\vsx_widget_base_edit.h" />
-    <ClInclude Include="include\widgets\vsx_widget_button.h" />
-    <ClInclude Include="include\widgets\vsx_widget_editor.h" />
-    <ClInclude Include="include\widgets\vsx_widget_panel.h" />
-    <ClInclude Include="include\widgets\vsx_widget_popup_menu.h" />
-    <ClInclude Include="include\widgets\vsx_widget_scrollbar.h" />
+    <ClInclude Include="include\vsx_manager.h" />
+    <ClInclude Include="src\vsx_statelist.h" />
+    <ClInclude Include="src\vsx_state_info.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{69DBB0E9-A94C-44CA-9C04-12EFD9109EC7}</ProjectGuid>
+    <ProjectGuid>{3C93DFC2-4540-4A99-88B2-2F31D10ADA72}</ProjectGuid>
     <RootNamespace>
     </RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
-    <ProjectName>widget</ProjectName>
+    <ProjectName>engine_audiovisual</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -121,10 +92,10 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\common\include;$(ProjectDir)\..\application\include;$(ProjectDir)\..\engine_graphics\include;$(ProjectDir)\..\..\dependencies\SDL2_prebuilt_windows\include;$(ProjectDir)\..\..\dependencies\glew-1.7.0\include;$(ProjectDir)\..\..\;$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\common\include;$(ProjectDir)\..\engine\include;$(ProjectDir)\..\engine_graphics\include;$(ProjectDir)\..\..\dependencies\SDL2_prebuilt_windows\include;$(ProjectDir)\..\..\dependencies\glew-1.7.0\include;$(ProjectDir)\..\..\;$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;GLEW_STATIC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <DisableSpecificWarnings>
-      </DisableSpecificWarnings>
+      <MultiProcessorCompilation>
+      </MultiProcessorCompilation>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

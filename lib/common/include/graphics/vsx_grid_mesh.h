@@ -25,6 +25,11 @@
 #pragma once
 
 #include <container/vsx_nw_vector_nd.h>
+#include <container/vsx_nw_vector.h>
+#include <container/vsx_ma_vector.h>
+#include <color/vsx_color.h>
+#include <math/vector/vsx_vector3.h>
+
 
 // this is an attempt to make a mesh class that can help with producing meshes
 // for use in the lowlevel mesh format where the mesh itself can be described as a 2d wrap
@@ -109,9 +114,9 @@ public:
     f.cx = cx;
     f.cy = cy;
     faces.push_back(f);
-    vertices[ax][ay].faces.push_back(faces.size()-1);
-    vertices[bx][by].faces.push_back(faces.size()-1);
-    vertices[cx][cy].faces.push_back(faces.size()-1);
+    vertices[ax][ay].faces.push_back((unsigned long)faces.size()-1);
+    vertices[bx][by].faces.push_back((unsigned long)faces.size()-1);
+    vertices[cx][cy].faces.push_back((unsigned long)faces.size()-1);
   }
   
   // run this when you have defined all vertices and faces  

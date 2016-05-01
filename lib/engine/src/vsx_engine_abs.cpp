@@ -32,7 +32,6 @@
   #include <syslog.h>
 #endif
 
-#include <dirent.h>
 #include <sys/types.h>
 #include <string/vsx_string.h>
 #include <log/vsx_log.h>
@@ -42,6 +41,7 @@
 #include <vsx_data_path.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
@@ -110,7 +110,7 @@ int vsx_engine_abs::i_load_state(vsx_command_list& load1,vsx_string<>*error_stri
         failed_component = mc->parts[2];
         //components_existing = false;
         if (error_string) *error_string = "VSX Engine could not find or load module: "+mc->parts[1];
-        vsx_printf( L"%s\n",vsx_string<>(
+        vsx_printf( L"%hs\n",vsx_string<>(
                   "**************************************************\n"
                   "Notice: \n\tVSX Engine could not load module: "
                   "'"+mc->parts[1]+"'"

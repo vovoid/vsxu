@@ -76,7 +76,7 @@ public:
       font_inner = new FTGLTextureFont((unsigned char*)fdata, size);
       font_inner->FaceSize(48);
       if (!font_inner->CharMap(ft_encoding_unicode))
-        VSX_ERROR_RETURN(L"Could not set unicode freetype encoding");
+        VSX_ERROR_RETURN("Could not set unicode freetype encoding");
     }
     if (type & outline)
     {

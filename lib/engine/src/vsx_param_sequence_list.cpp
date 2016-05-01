@@ -26,8 +26,8 @@
 #include <module/vsx_module.h>
 #include <time/vsx_timer.h>
 #include <list>
-#include "vsx_command.h"
-#include "vsx_command_list.h"
+#include <command/vsx_command.h>
+#include <command/vsx_command_list.h>
 #include <internal/vsx_comp_abs.h>
 #include <internal/vsx_param_abstraction.h>
 #include <internal/vsx_param_sequence.h>
@@ -45,7 +45,7 @@ void vsx_param_sequence_list::get_init(vsx_engine_param* param, vsx_command_list
   if (parameter_channel_map.find(param) != parameter_channel_map.end())
   {
     vsx_param_sequence* p = (*parameter_channel_map.find(param)).second;
-    dest->add_raw(prefix+"pseq_p_ok init "+comp_name+" "+param->name+" "+vsx_string_helper::f2s(p->items.size()));
+    dest->add_raw(prefix+"pseq_p_ok init "+comp_name+" "+param->name+" "+vsx_string_helper::f2s((float)p->items.size()));
   }
 }
 

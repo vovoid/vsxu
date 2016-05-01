@@ -293,14 +293,6 @@ public:
     items.push_back(a);
   }
 
-  channel(const channel& seq)
-  {
-    channel* sq = (channel*)&seq;
-    items.reset_used();
-    for (unsigned long i = 0; i < (sq->items.size()); ++i)
-      items.push_back(sq->items[i]);
-  }
-
   channel(channel& seq)
   {
     items.reset_used();
@@ -489,7 +481,7 @@ public:
     {
       parts.push_back(
         vsx_string_helper::f2s(items[i].delay)+";"+
-        vsx_string_helper::f2s(items[i].interpolation)+";"+
+        vsx_string_helper::f2s((float)(int)items[i].interpolation)+";"+
         vsx_string_helper::base64_encode((items[i].get_value()))
       );
     }
