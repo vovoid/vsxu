@@ -111,14 +111,14 @@ public:
       mesh->data->vertex_normals.reset_used();
       mesh->data->faces.reset_used();
 
-      float ray_w = 0.05 * ray_width->get();
+      float ray_w = 0.05f * ray_width->get();
       rand.srand(0);
 
       for (int i = 0; i < (int)num_rays->get(); ++i)
       {
-        float s = rand.frand() * TWO_PI;
-        float t = rand.frand() * TWO_PI;
-        float vr = rand.frand() * TWO_PI;
+        float s = rand.frand() * (float)(TWO_PI);
+        float t = rand.frand() * (float)(TWO_PI);
+        float vr = rand.frand() * (float)(TWO_PI);
 
         vsx_vector3<> srv(1.0, 0.0, 0.0);
         vsx_vector3<> trv(0.0, 0.0, 1.0);

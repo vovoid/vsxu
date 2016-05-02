@@ -86,16 +86,21 @@ public:
       for (int j = 0; j < 100; ++j) {
         star_worm* my_worm = new star_worm;
         my_worm->size = 0.0f;
-        my_worm->freq.x = (rand()%10000)*0.0001-0.5;
-        my_worm->freq.y = (rand()%10000)*0.0001-0.5;
-        my_worm->freq.z = (rand()%10000)*0.0001-0.5;
-        my_worm->freq.w = (rand()%10000)*0.0001-0.5;
+        my_worm->freq.x = (rand()%10000)*0.0001f-0.5f;
+        my_worm->freq.y = (rand()%10000)*0.0001f-0.5f;
+        my_worm->freq.z = (rand()%10000)*0.0001f-0.5f;
+        my_worm->freq.w = (rand()%10000)*0.0001f-0.5f;
 
-        my_worm->phs.x = (rand()%10000)*0.0001-0.5;
-        my_worm->phs.y = (rand()%10000)*0.0001-0.5;
-        my_worm->phs.z = (rand()%10000)*0.0001-0.5;
-        my_worm->phs.w = (rand()%10000)*0.0001-0.5;
-        my_worm->color = vsx_color<>((rand()%10000)*0.0001,(rand()%10000)*0.0001,(rand()%10000)*0.0001,0.5f);
+        my_worm->phs.x = (rand()%10000)*0.0001f-0.5f;
+        my_worm->phs.y = (rand()%10000)*0.0001f-0.5f;
+        my_worm->phs.z = (rand()%10000)*0.0001f-0.5f;
+        my_worm->phs.w = (rand()%10000)*0.0001f-0.5f;
+        my_worm->color = vsx_color<>(
+            (rand()%10000)*0.0001f, 
+            (rand()%10000)*0.0001f,
+            (rand()%10000)*0.0001f,
+            0.5f
+          );
         worms.push_back(my_worm);
       }
       first_run = false;

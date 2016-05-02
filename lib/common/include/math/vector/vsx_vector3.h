@@ -180,9 +180,9 @@ public:
 
   inline void midpoint(const vsx_vector3& a, const vsx_vector3& b)
   {
-    x = (a.x + b.x) * 0.5;
-    y = (a.y + b.y) * 0.5;
-    z = (a.z + b.z) * 0.5;
+    x = (a.x + b.x) * (T)0.5;
+    y = (a.y + b.y) * (T)0.5;
+    z = (a.z + b.z) * (T)0.5;
   }
 
 

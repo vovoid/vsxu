@@ -147,7 +147,7 @@ public:
       int i2 = i;
       float it = (float)i * one_div_count;
       float ft = sin(it * 3.14159f + t) * sin(-it * 5.18674f - t);
-      float thick = fabs(sin(it * 3.14159f + t * 0.5));
+      float thick = (float)fabs(sin(it * 3.14159f + t * 0.5));
       vsx_vector3<> skew = up * ft * skew_amount * thick;
       mesh->data->vertices[i2    ] = pos + up * thick + skew;
       mesh->data->vertex_normals[i2    ] = normal;

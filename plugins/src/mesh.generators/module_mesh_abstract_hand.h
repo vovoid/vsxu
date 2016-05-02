@@ -234,16 +234,16 @@ public:
         double j1 = (float)j * one_div_num_sectors_minus_one;
         vsx_vector3<> tmp_vec
         (
-          circle_base_pos.x + cos(j1 * TWO_PI) * size_shape_x[index8192] * size_shape_x_multiplier_f,
-          circle_base_pos.y + sin(j1 * TWO_PI) * size_shape_y[index8192] * size_shape_y_multiplier_f,
+          circle_base_pos.x + (float)cos(j1 * TWO_PI) * size_shape_x[index8192] * size_shape_x_multiplier_f,
+          circle_base_pos.y + (float)sin(j1 * TWO_PI) * size_shape_y[index8192] * size_shape_y_multiplier_f,
           circle_base_pos.z
         );
         mesh->data->vertices[vi] = tmp_vec;
         mesh->data->vertex_normals[vi] = tmp_vec - circle_base_pos;
         mesh->data->vertex_normals[vi].normalize();
         mesh->data->vertex_colors[vi] = vsx_color<>(1, 1, 1, 1);
-        mesh->data->vertex_tex_coords[vi].s = j1;
-        mesh->data->vertex_tex_coords[vi].t = ip;
+        mesh->data->vertex_tex_coords[vi].s = (GLfloat)j1;
+        mesh->data->vertex_tex_coords[vi].t = (GLfloat)ip;
 
         if (i && j)
         {

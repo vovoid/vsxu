@@ -129,9 +129,9 @@ public:
       float sz = scaling->get(2) * length->get();
       for (i = 0; i < (int)num_points->get(); ++i)
       {
-        mesh->data->vertices[i].x = start.x + (rand.frand()-0.5f)*sx * sin((float)i * one_div_num_points * PI);
-        mesh->data->vertices[i].y = start.y + (rand.frand()-0.5f)*sy * sin((float)i * one_div_num_points * PI);
-        mesh->data->vertices[i].z = start.z + (rand.frand()-0.5f)*sz * sin((float)i * one_div_num_points * PI);
+        mesh->data->vertices[i].x = start.x + (rand.frand()-0.5f)*sx * sin((float)i * one_div_num_points * (float)PI);
+        mesh->data->vertices[i].y = start.y + (rand.frand()-0.5f)*sy * sin((float)i * one_div_num_points * (float)PI);
+        mesh->data->vertices[i].z = start.z + (rand.frand()-0.5f)*sz * sin((float)i * one_div_num_points * (float)PI);
         float c = 1.0f - (float)i * one_div_num_points;
         mesh->data->vertex_colors[i].r = c;
         mesh->data->vertex_colors[i].g = c;

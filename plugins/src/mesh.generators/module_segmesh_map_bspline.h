@@ -106,8 +106,8 @@ public:
     if (!spline0.points.size()) return;
     spline0.set_pos(stime);
 
-    num = base_mesh->vertices.size();
-    sides = base_mesh->vertices[0].size();
+    num = (int)base_mesh->vertices.size();
+    sides = (float)base_mesh->vertices[0].size();
     spline_step = length->get()/((float)num+1.0f);
 
     spline0.step(spline_step);

@@ -37,7 +37,7 @@ class module_mesh_thorn : public vsx_module
   float gfunc(float b)
   {
     VSX_UNUSED(b);
-    return 0.4;
+    return 0.4f;
   }
 public:
   bool init() {

@@ -82,7 +82,7 @@ public:
     param_updates = 0;
     size_t width = (size_t)pow(2, (size_t)power_of_two_size->get());
 
-    float onedivwidth = 1.0 / (float)width;
+    float onedivwidth = 1.0f / (float)width;
     float halfonedivwidth = -0.5f;
     for (size_t x = 0; x < width; x++)
     {
@@ -104,13 +104,13 @@ public:
       for (size_t z = 1; z < width; z++)
       {
         vsx_face3 a;
-        a.a = x-1 +  (z - 1) * width;
-        a.b = x   +  (z - 1) * width;
-        a.c = x-1 +  (z    ) * width;
+        a.a = (GLuint)(x-1 +  (z - 1) * width);
+        a.b = (GLuint)(x   +  (z - 1) * width);
+        a.c = (GLuint)(x-1 +  (z    ) * width);
         mesh->data->faces.push_back(a);
-        a.a = x   +  (z - 1) * width;
-        a.b = x-1 +  (z    ) * width;
-        a.c = x   +  (z    ) * width;
+        a.a = (GLuint)(x   +  (z - 1) * width);
+        a.b = (GLuint)(x-1 +  (z    ) * width);
+        a.c = (GLuint)(x   +  (z    ) * width);
         mesh->data->faces.push_back(a);
       }
     }

@@ -115,13 +115,14 @@ public:
   void run()
   {
     vsx_2dgrid_mesh* bb = seg_mesh_in->get_addr();
-    if (bb) {
-      sides = bb->vertices[0].size();
+    if (bb) 
+    {
+      sides = (long)bb->vertices[0].size();
       length_inc = length_p->get()/segments->get();
       calc_shapes();
 
       float zz = 0;
-      long num_vertices = base_mesh.vertices.size();
+      long num_vertices = (long)base_mesh.vertices.size();
       for (unsigned long i = 0; i < segments->get(); ++i) {
         float ip = (float)i / (float)segments->get();
         int index8192 = (int)round(8192.0f*ip);

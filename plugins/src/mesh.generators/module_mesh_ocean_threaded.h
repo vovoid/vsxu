@@ -1,6 +1,5 @@
 #include <atomic>
 #include <thread>
-#include <semaphore.h>
 #include <tools/vsx_lock.h>
 
 #include "ocean/fftrefraction.h"

@@ -22,7 +22,62 @@
     <ClCompile Include="src\bitmap.generators\main_bitmap.generators.cpp" />
     <ClCompile Include="src\bitmap.loaders\main_bitmap.loaders.cpp" />
     <ClCompile Include="src\bitmap.modifiers\main_bitmap.modifiers.cpp" />
+    <ClCompile Include="src\math.oscillators\main_math.oscillators.cpp" />
     <ClCompile Include="src\math\main_math.cpp" />
+    <ClCompile Include="src\mesh.generators\main_mesh.generators.cpp" />
+    <ClCompile Include="src\mesh.generators\metaballs\marching_cubes.cpp" />
+    <ClCompile Include="src\mesh.generators\metaballs\metaballs.cpp" />
+    <ClCompile Include="src\mesh.generators\ocean\bourke.cpp" />
+    <ClCompile Include="src\mesh.generators\ocean\fftrefraction.cpp" />
+    <ClCompile Include="src\mesh.generators\ocean\gauss.cpp" />
+    <ClCompile Include="src\mesh.generators\ocean\matrix.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\animation.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\animation_action.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\animation_cycle.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\bone.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\buffersource.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\cal3d_wrapper.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\calxmlbindings.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\coreanimatedmorph.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\coreanimation.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\corebone.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\corekeyframe.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\corematerial.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\coremesh.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\coremodel.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\coremorphkeyframe.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\coremorphtrack.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\coreskeleton.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\coresubmesh.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\coresubmorphtarget.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\coretrack.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\dualquaternion.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\error.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\global.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\hardwaremodel.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\loader.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\matrix.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\mesh.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\mixer.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\model.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\morphtargetmixer.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\physique.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\physiquedualquaternion.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\platform.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\quaternion.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\renderer.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\saver.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\skeleton.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\springsystem.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\streamsource.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\submesh.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\tinybind.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\tinyxml.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\tinyxmlerror.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\tinyxmlparser.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\vector.cpp" />
+    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\xmlformat.cpp" />
+    <ClCompile Include="src\mesh.importers\main_mesh.importers.cpp" />
     <ClCompile Include="src\_deprecated\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -39,6 +94,12 @@
     <ClInclude Include="src\bitmap.modifiers\module_bitmap_to_particlesystem.h" />
     <ClInclude Include="src\bitmap.modifiers\module_texture_to_bitmap.h" />
     <ClInclude Include="src\bitmap.modifiers\_configuration.h" />
+    <ClInclude Include="src\math.oscillators\module_plugin_maths_oscillator.h" />
+    <ClInclude Include="src\math.oscillators\module_plugin_maths_oscillators_float_sequencer.h" />
+    <ClInclude Include="src\math.oscillators\module_plugin_maths_oscillators_inside_range.h" />
+    <ClInclude Include="src\math.oscillators\module_plugin_maths_oscillators_pulse_oscillator.h" />
+    <ClInclude Include="src\math.oscillators\module_plugin_maths_oscillators_string_sequencer.h" />
+    <ClInclude Include="src\math.oscillators\_configuration.h" />
     <ClInclude Include="src\math\math_binary_ops.h" />
     <ClInclude Include="src\math\module_3float_to_float3.h" />
     <ClInclude Include="src\math\module_4float_to_float4.h" />
@@ -95,6 +156,48 @@
     <ClInclude Include="src\math\module_vector_normalize.h" />
     <ClInclude Include="src\math\module_vector_quaternion_to_4float.h" />
     <ClInclude Include="src\math\_configuration.h" />
+    <ClInclude Include="src\mesh.generators\metaballs\marching_cubes.h" />
+    <ClInclude Include="src\mesh.generators\metaballs\metaballs.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_abstract_hand.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_box.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_bspline_vertices.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_cloud_plane.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_disc.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_grid.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_kaleidoscope.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_lightning_vertices.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_metaballs.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_needle.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_ocean_threaded.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_ocean_tunnel_threaded.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_planes.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_planeworld.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_plane_uv_distort.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_rays.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_rays_uniform.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_ribbon.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_ribbon_cloth.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_sphere.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_sphere_icosahedron.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_sphere_octahedron.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_star.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_supershape.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_thorn.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_torus_knot.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_vertices_rand_points.h" />
+    <ClInclude Include="src\mesh.generators\module_mesh_vertices_ribbon.h" />
+    <ClInclude Include="src\mesh.generators\module_segmesh_loft.h" />
+    <ClInclude Include="src\mesh.generators\module_segmesh_map_bspline.h" />
+    <ClInclude Include="src\mesh.generators\module_segmesh_shape_basic.h" />
+    <ClInclude Include="src\mesh.generators\ocean\fftrefraction.h" />
+    <ClInclude Include="src\mesh.generators\ocean\matrix.h" />
+    <ClInclude Include="src\mesh.generators\ocean\paulslib.h" />
+    <ClInclude Include="src\mesh.generators\_configuration.h" />
+    <ClInclude Include="src\mesh.importers\module_mesh_cal3d_loader_threaded.h" />
+    <ClInclude Include="src\mesh.importers\module_mesh_import_obj.h" />
+    <ClInclude Include="src\mesh.importers\module_mesh_import_robj.h" />
+    <ClInclude Include="src\mesh.importers\module_mesh_import_vxm.h" />
+    <ClInclude Include="src\mesh.importers\_configuration.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E2E4CBD5-7815-4BCC-9CC1-981B6EC3DB8F}</ProjectGuid>
@@ -161,8 +264,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\lib\common\include;$(ProjectDir)\..\lib\engine\include;$(ProjectDir)\..\lib\engine_graphics\include;$(ProjectDir)\..\;$(ProjectDir)\..\dependencies\glew-1.7.0\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;GLEW_STATIC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\lib\common\include;$(ProjectDir)\..\lib\engine\include;$(ProjectDir)\..\lib\engine_graphics\include;$(ProjectDir)\..\;$(ProjectDir)\src\mesh.importers\cal3d\cal3d\src;$(ProjectDir)\..\dependencies\glew-1.7.0\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_MBCS;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;GLEW_STATIC=1;CAL3D_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>
       </MultiProcessorCompilation>
     </ClCompile>

@@ -164,13 +164,16 @@ public:
                 nra = gr + 90.0f / 360.0f * 2*PI;
 
 
-                nn.x = ocean.big_normals[i+1][j][0];
-                nn.y = ocean.big_normals[i+1][j][1];
+                nn.x = (float)ocean.big_normals[i+1][j][0];
+                nn.y = (float)ocean.big_normals[i+1][j][1];
                 nn.normalize();
-                mesh->data->vertex_normals.push_back(vsx_vector3<>(\
-                  nn.x* cos(nra) + nn.y * -sin(nra),\
-                  nn.x* sin(nra) + nn.y * cos(nra),\
-                  ocean.big_normals[i+1][j][2]));
+                mesh->data->vertex_normals.push_back(
+                  vsx_vector3<>(
+                    (float)(nn.x * cos(nra) + nn.y * -sin(nra)),
+                    (float)(nn.x * (float)sin(nra) + nn.y * cos(nra)),
+                    (float)ocean.big_normals[i+1][j][2]
+                  )
+                );
 
                 mesh->data->vertex_normals[mesh->data->vertex_normals.size()-1].normalize();
 
@@ -178,7 +181,7 @@ public:
                 c.x = cos(gr)*gz;
                 c.y = sin(gr)*gz;
                 c.z = g.y*2.0f;
-                b = mesh->data->vertices.push_back(c);
+                b = (unsigned long)mesh->data->vertices.push_back(c);
 
                 mesh->data->vertex_tex_coords.push_back(vsx_tex_coord2f(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
 

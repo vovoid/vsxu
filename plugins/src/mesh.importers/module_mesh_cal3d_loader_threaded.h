@@ -460,7 +460,7 @@ public:
       {
         if (thread_sync_strategy->get() == 0)
           while (!param_produce.load())
-            usleep(1);
+            std::this_thread::sleep_for(std::chrono::microseconds(1));
 
         if (thread_sync_strategy->get() == 1)
           while (!param_produce.load())
@@ -708,7 +708,7 @@ VSXP_S_BEGIN("cal3d run");
         {
           if (thread_sync_strategy->get() == 0)
             while (!worker_produce.load())
-              usleep(1);
+              std::this_thread::sleep_for(std::chrono::microseconds(1));
 
           if (thread_sync_strategy->get() == 1)
             while (!worker_produce.load())

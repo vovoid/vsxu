@@ -202,8 +202,8 @@ public:
       // x and y are the roundness
       float ip = (float)i * one_div_num_stacks;
       float ip2 = (float)(i+1) * one_div_num_stacks;
-      float phi = TWO_PI * ip;
-      float phi2 = TWO_PI * ip2;
+      float phi = (float)(TWO_PI * ip);
+      float phi2 = (float)(TWO_PI * ip2);
 
       // knot vertex pos
 
@@ -240,8 +240,8 @@ public:
       {
         double j1 = (float)j * j1_div_num_sectors;
 
-        float px = cos(j1 * TWO_PI) * size_shape_x[index8192] * size_shape_x_multiplier_f;
-        float py = sin(j1 * TWO_PI) * size_shape_y[index8192] * size_shape_y_multiplier_f;
+        float px = (float)cos(j1 * TWO_PI) * size_shape_x[index8192] * size_shape_x_multiplier_f;
+        float py = (float)sin(j1 * TWO_PI) * size_shape_y[index8192] * size_shape_y_multiplier_f;
 
         vsx_vector3<> tmp_vec(
             circle_base_pos.x,

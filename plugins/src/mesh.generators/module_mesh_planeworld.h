@@ -71,7 +71,7 @@ public:
     mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_result");
     bspline_vertices_mesh = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"bspline_vertices_mesh");
     spline0.init(vsx_vector3<>(0.0f), 0.7f, 0.3f, 0.6f);
-    srand ( time(NULL) );
+    srand ( (unsigned int)time(NULL) );
   }
 
   void run()

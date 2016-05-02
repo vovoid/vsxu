@@ -67,10 +67,10 @@ void run() {
         float dist1  = ((float)j + 1.0f) * (1.0f   / nRings);
         float angle1 = ((float)i + 1.0f) * (2.0f * (float)PI / nSectors);
 
-        float uFact = j&1?1:-1;
-        float vFact = i&1?1:-1;
-        float uOffs = j&1?0:1;
-        float vOffs = i&1?0:1;
+        float uFact = j&1?1.0f:-1.0f;
+        float vFact = i&1?1.0f:-1.0f;
+        float uOffs = j&1?0.0f:1.0f;
+        float vOffs = i&1?0.0f:1.0f;
 
         for(int k = 0; k < tessV; k++)
           for(int l = 0; l < tessU; l++) {
