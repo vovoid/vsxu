@@ -28,6 +28,8 @@ const int gl_face_direction[] =
   #ifndef VSX_NO_GL
   GL_FRONT,
   GL_BACK
+  #else
+  0, 0
   #endif
 };
 
@@ -53,6 +55,8 @@ const int gl_depth_functions[] =
   GL_NOTEQUAL,
   GL_GEQUAL,
   GL_ALWAYS
+  #else
+  0,0,0,0,0,0,0,0
   #endif
 };
 
@@ -73,6 +77,8 @@ const int gl_material_types[] =
   GL_SPECULAR,
   GL_EMISSION,
   GL_SHININESS
+  #else
+  0
   #endif
 };
 
@@ -87,6 +93,8 @@ const int gl_matrix_modes[] =
     GL_PROJECTION,
     GL_MODELVIEW,
     GL_TEXTURE
+  #else
+  0
   #endif
 };
 
@@ -136,6 +144,8 @@ const int gl_blend_factors[] =
   GL_ONE_MINUS_SRC1_COLOR,
   GL_SRC1_ALPHA,
   GL_ONE_MINUS_SRC1_ALPHA
+  #else
+  0
   #endif
 };
 
@@ -151,6 +161,8 @@ const int gl_polygon_fill[] =
   GL_POINT,
   GL_LINE,
   GL_FILL
+  #else
+  0
   #endif
 };
 

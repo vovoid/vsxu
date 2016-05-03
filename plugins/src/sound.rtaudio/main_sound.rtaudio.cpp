@@ -33,16 +33,15 @@
 #include <module/vsx_module.h>
 #include <math/vsx_float_array.h>
 
-#include <pthread.h>
 #include "fftreal/fftreal.h"
-#include <unistd.h>
 
 #include <RtAudio/RtAudio.h>
 #include <RtAudio/RtError.h>
 
 
 #if (PLATFORM == PLATFORM_LINUX)
-  #include <sys/prctl.h>
+#include <unistd.h>
+#include <sys/prctl.h>
 #endif
 
 // rt audio driver type

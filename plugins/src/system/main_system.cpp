@@ -27,10 +27,8 @@
 #include <module/vsx_module.h>
 #include <vsx_platform.h>
 #include <time.h>
-#include <sys/time.h>
 #include <stdio.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <vsx_platform.h>
 
 

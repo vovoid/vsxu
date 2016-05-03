@@ -31,7 +31,6 @@
 #include <texture/vsx_texture.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
 #include <texture/buffer/vsx_texture_buffer_color.h>
 #include <texture/buffer/vsx_texture_buffer_color_depth.h>
 #include <texture/buffer/vsx_texture_buffer_render.h>
