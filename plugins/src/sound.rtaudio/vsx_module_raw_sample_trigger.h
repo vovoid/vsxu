@@ -22,6 +22,7 @@
 */
 
 #include <audio/vsx_sample_raw.h>
+#include <tools/vsx_thread_pool.h>
 
 class vsx_module_raw_sample_trigger : public vsx_module
 {
@@ -95,8 +96,12 @@ public:
   {
     if (name == "filename")
     {
-      main_sample.set_filesystem( engine_state->filesystem );
-      main_sample.load_filename( filename->get() );
+      threaded_task
+      {
+        main_sample.set_filesystem( engine_state->filesystem );
+        main_sample.load_filename( filename->get() );
+      }
+      threaded_task_end;
     }
   }
 
