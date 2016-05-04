@@ -53,6 +53,7 @@
     <ClCompile Include="thirdparty\freetype2\src\cid\type1cid.c" />
     <ClCompile Include="thirdparty\freetype2\src\pcf\pcf.c" />
     <ClCompile Include="thirdparty\freetype2\src\pfr\pfr.c" />
+    <ClCompile Include="thirdparty\freetype2\src\psaux\psaux.c" />
     <ClCompile Include="thirdparty\freetype2\src\pshinter\pshinter.c" />
     <ClCompile Include="thirdparty\freetype2\src\psnames\psnames.c" />
     <ClCompile Include="thirdparty\freetype2\src\raster\raster.c" />
@@ -82,7 +83,7 @@
     <ClCompile Include="thirdparty\ftgl\src\FTGlyph\FTBitmapGlyph.cpp" />
     <ClCompile Include="thirdparty\ftgl\src\FTGlyph\FTBufferGlyph.cpp" />
     <ClCompile Include="thirdparty\ftgl\src\FTGlyph\FTExtrudeGlyph.cpp" />
-    <ClCompile Include="thirdparty\ftgl\src\FTGlyph\FTGlyph.cpp" />
+    <ClCompile Include="thirdparty\ftgl\src\FTGlyph\FTGLGlyph.cpp" />
     <ClCompile Include="thirdparty\ftgl\src\FTGlyph\FTGlyphGlue.cpp" />
     <ClCompile Include="thirdparty\ftgl\src\FTGlyph\FTOutlineGlyph.cpp" />
     <ClCompile Include="thirdparty\ftgl\src\FTGlyph\FTPixmapGlyph.cpp" />
@@ -367,6 +368,8 @@
       <AdditionalIncludeDirectories>$(ProjectDir)\..\common\include;$(ProjectDir)\..\engine_graphics\include;$(ProjectDir)\..\..\dependencies\glew-1.7.0\include;$(ProjectDir)\..\..\;$(ProjectDir)\thirdparty\ftgl\src;$(ProjectDir)\thirdparty\ftgl;$(ProjectDir)\include;$(ProjectDir)\thirdparty\freetype2\include;$(ProjectDir)\thirdparty\mini-jpeg;$(ProjectDir)\thirdparty\lodepng;$(ProjectDir)\thirdparty\glew-1.7.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;FTGL_LIBRARY_STATIC;FT2_BUILD_LIBRARY;GLEW_STATIC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4312</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -391,6 +394,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\common\include;$(ProjectDir)\..\engine_graphics\include;$(ProjectDir)\..\..\dependencies\glew-1.7.0\include;$(ProjectDir)\..\..\;$(ProjectDir)\thirdparty\ftgl\src;$(ProjectDir)\thirdparty\ftgl;$(ProjectDir)\include;$(ProjectDir)\thirdparty\freetype2\include;$(ProjectDir)\thirdparty\mini-jpeg;$(ProjectDir)\thirdparty\lodepng;$(ProjectDir)\thirdparty\glew-1.7.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;FTGL_LIBRARY_STATIC;FT2_BUILD_LIBRARY;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

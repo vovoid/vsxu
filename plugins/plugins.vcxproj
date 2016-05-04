@@ -53,7 +53,6 @@
     <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\coretrack.cpp" />
     <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\dualquaternion.cpp" />
     <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\error.cpp" />
-    <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\global.cpp" />
     <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\hardwaremodel.cpp" />
     <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\loader.cpp" />
     <ClCompile Include="src\mesh.importers\cal3d\cal3d\src\cal3d\matrix.cpp" />
@@ -86,12 +85,16 @@
     <ClCompile Include="src\particlesystem.render\main_particlesystem.render.cpp" />
     <ClCompile Include="src\render.basic\main_render.basic.cpp" />
     <ClCompile Include="src\render.glsl\main_render.glsl.cpp" />
+    <ClCompile Include="src\render.gravity_lines\gravity_lines\gravity_lines.cpp" />
+    <ClCompile Include="src\render.gravity_lines\gravity_lines\gravity_strip.cpp" />
     <ClCompile Include="src\render.gravity_lines\main_render.gravity_lines.cpp" />
     <ClCompile Include="src\render.opengl\main_render.opengl.cpp" />
     <ClCompile Include="src\render.text\main_render.text.cpp" />
+    <ClCompile Include="src\sound.rtaudio\fftreal\fftreal.cpp" />
+    <ClCompile Include="src\sound.rtaudio\fftreal\test.cpp" />
     <ClCompile Include="src\sound.rtaudio\lib\RtAudio\RtAudio.cpp" />
+    <ClCompile Include="src\sound.rtaudio\lib\RtMidi\RtMidi.cpp" />
     <ClCompile Include="src\sound.rtaudio\main_sound.rtaudio.cpp" />
-    <ClCompile Include="src\sound.rtaudio\ogg_vorbis.c" />
     <ClCompile Include="src\string\main_string.cpp" />
     <ClCompile Include="src\system\main_system.cpp" />
     <ClCompile Include="src\texture\main_texture.cpp" />
@@ -263,6 +266,8 @@
     <ClInclude Include="src\render.basic\module_render_basic_textured_rectangle.h" />
     <ClInclude Include="src\render.basic\module_render_line.h" />
     <ClInclude Include="src\render.glsl\default_shader.h" />
+    <ClInclude Include="src\render.gravity_lines\gravity_lines\gravity_lines.h" />
+    <ClInclude Include="src\render.gravity_lines\gravity_lines\gravity_strip.h" />
     <ClInclude Include="src\render.gravity_lines\vsx_module_render_gravity_lines.h" />
     <ClInclude Include="src\render.gravity_lines\vsx_module_render_gravity_ribbon.h" />
     <ClInclude Include="src\render.gravity_lines\vsx_module_render_gravity_ribbon_mesh.h" />
@@ -296,6 +301,7 @@
     <ClInclude Include="src\render.opengl\module_render_gl_texture_coord_gen.h" />
     <ClInclude Include="src\render.opengl\module_render_gl_translate.h" />
     <ClInclude Include="src\render.opengl\module_render_gl_viewport_size.h" />
+    <ClInclude Include="src\sound.rtaudio\fftreal\fftreal.h" />
     <ClInclude Include="src\sound.rtaudio\rtaudio_play.h" />
     <ClInclude Include="src\sound.rtaudio\rtaudio_record.h" />
     <ClInclude Include="src\sound.rtaudio\vsx_listener_mediaplayer.h" />
@@ -410,9 +416,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\lib\common\include;$(ProjectDir)\..\lib\engine\include;$(ProjectDir)\..\lib\engine_graphics\include;$(ProjectDir)\..\;$(ProjectDir)\src\mesh.importers\cal3d\cal3d\src;$(ProjectDir)\..\dependencies\glew-1.7.0\include;$(ProjectDir);$(ProjectDir)\src\sound.rtaudio\lib;$(ProjectDir)\..\lib\engine_graphics\thirdparty\ftgl\src;$(ProjectDir)\..\lib\engine_graphics\thirdparty\freetype2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MBCS;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;GLEW_STATIC=1;CAL3D_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MultiProcessorCompilation>
-      </MultiProcessorCompilation>
+      <PreprocessorDefinitions>_MBCS;_CRT_NONSTDC_NO_DEPRECATE;FTGL_LIBRARY_STATIC;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;GLEW_STATIC=1;CAL3D_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -436,7 +443,9 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\lib\common\include;$(ProjectDir)\..\lib\engine\include;$(ProjectDir)\..\lib\engine_graphics\include;$(ProjectDir)\..\;$(ProjectDir)\src\mesh.importers\cal3d\cal3d\src;$(ProjectDir)\..\dependencies\glew-1.7.0\include;$(ProjectDir);$(ProjectDir)\src\sound.rtaudio\lib;$(ProjectDir)\..\lib\engine_graphics\thirdparty\ftgl\src;$(ProjectDir)\..\lib\engine_graphics\thirdparty\freetype2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_MBCS;_CRT_NONSTDC_NO_DEPRECATE;FTGL_LIBRARY_STATIC;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;GLEW_STATIC=1;CAL3D_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

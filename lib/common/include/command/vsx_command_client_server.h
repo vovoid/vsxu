@@ -25,6 +25,8 @@
 
 #include <vsx_platform.h>
 
+#if PLATFORM_FAMILY != PLATFORM_FAMILY_WINDOWS
+
 #include <thread>
 #include <stdio.h>
 #include <stdlib.h>
@@ -85,3 +87,5 @@ public:
   // get connection status
   int get_connection_status();
 };
+
+#endif

@@ -97,20 +97,20 @@ public:
     return v;
   }
 
-  inline const T& front()
+  inline const T* front()
   {
     if (!used)
-      return std::move(T());
+      return 0x0;
 
-    return A[0];
+    return &A[0];
   }
 
-  inline const T& back()
+  inline const T* back()
   {
     if (!used)
-      return std::move(T());
+      return 0x0;
 
-    return A[used-1];
+    return &A[used-1];
   }
 
   inline size_t size() VSX_ALWAYS_INLINE

@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\artiste_main.cpp" />
+    <ClCompile Include="src\log\vsx_log_a.cpp" />
+    <ClCompile Include="src\vsx_widget\arcball\arcball.cpp" />
+    <ClCompile Include="src\vsx_widget\controllers\vsx_widget_controller_ab.cpp" />
+    <ClCompile Include="src\vsx_widget\controllers\vsx_widget_controller_base.cpp" />
+    <ClCompile Include="src\vsx_widget\controllers\vsx_widget_controller_channel.cpp" />
+    <ClCompile Include="src\vsx_widget\controllers\vsx_widget_controller_color.cpp" />
+    <ClCompile Include="src\vsx_widget\controllers\vsx_widget_controller_dialog.cpp" />
+    <ClCompile Include="src\vsx_widget\controllers\vsx_widget_controller_editor.cpp" />
+    <ClCompile Include="src\vsx_widget\controllers\vsx_widget_controller_knob.cpp" />
+    <ClCompile Include="src\vsx_widget\controllers\vsx_widget_controller_mixer.cpp" />
+    <ClCompile Include="src\vsx_widget\controllers\vsx_widget_controller_pad.cpp" />
+    <ClCompile Include="src\vsx_widget\controllers\vsx_widget_controller_seq.cpp" />
+    <ClCompile Include="src\vsx_widget\controllers\vsx_widget_controller_slider.cpp" />
+    <ClCompile Include="src\vsx_widget\helpers\vsx_widget_assistant.cpp" />
+    <ClCompile Include="src\vsx_widget\helpers\vsx_widget_console.cpp" />
+    <ClCompile Include="src\vsx_widget\helpers\vsx_widget_note.cpp" />
+    <ClCompile Include="src\vsx_widget\helpers\vsx_widget_object_inspector.cpp" />
+    <ClCompile Include="src\vsx_widget\helpers\vsx_widget_preview.cpp" />
+    <ClCompile Include="src\vsx_widget\module_choosers\vsx_widget_module_chooser.cpp" />
+    <ClCompile Include="src\vsx_widget\module_choosers\vsx_widget_module_chooser_list.cpp" />
+    <ClCompile Include="src\vsx_widget\sequencer\pool_manager\vsx_widget_seq_pool.cpp" />
+    <ClCompile Include="src\vsx_widget\sequencer\vsx_widget_master_sequencer.cpp" />
+    <ClCompile Include="src\vsx_widget\sequencer\vsx_widget_sequence_editor.cpp" />
+    <ClCompile Include="src\vsx_widget\sequencer\vsx_widget_seq_chan.cpp" />
+    <ClCompile Include="src\vsx_widget\sequencer\vsx_widget_timeline.cpp" />
+    <ClCompile Include="src\vsx_widget\server\vsx_widget_anchor.cpp" />
+    <ClCompile Include="src\vsx_widget\server\vsx_widget_comp.cpp" />
+    <ClCompile Include="src\vsx_widget\server\vsx_widget_connector_bezier.cpp" />
+    <ClCompile Include="src\vsx_widget\server\vsx_widget_server.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\artiste_application.h" />
+    <ClInclude Include="src\artiste_desktop.h" />
+    <ClInclude Include="src\log\vsx_log_a.h" />
+    <ClInclude Include="src\vsx_artiste_draw.h" />
+    <ClInclude Include="src\vsx_widget\arcball\arcball.h" />
+    <ClInclude Include="src\vsx_widget\controllers\vsx_widget_controller_ab.h" />
+    <ClInclude Include="src\vsx_widget\controllers\vsx_widget_controller_base.h" />
+    <ClInclude Include="src\vsx_widget\controllers\vsx_widget_controller_channel.h" />
+    <ClInclude Include="src\vsx_widget\controllers\vsx_widget_controller_color.h" />
+    <ClInclude Include="src\vsx_widget\controllers\vsx_widget_controller_dialog.h" />
+    <ClInclude Include="src\vsx_widget\controllers\vsx_widget_controller_editor.h" />
+    <ClInclude Include="src\vsx_widget\controllers\vsx_widget_controller_knob.h" />
+    <ClInclude Include="src\vsx_widget\controllers\vsx_widget_controller_mixer.h" />
+    <ClInclude Include="src\vsx_widget\controllers\vsx_widget_controller_pad.h" />
+    <ClInclude Include="src\vsx_widget\controllers\vsx_widget_controller_seq.h" />
+    <ClInclude Include="src\vsx_widget\controllers\vsx_widget_controller_slider.h" />
+    <ClInclude Include="src\vsx_widget\helpers\vsx_widget_assistant.h" />
+    <ClInclude Include="src\vsx_widget\helpers\vsx_widget_console.h" />
+    <ClInclude Include="src\vsx_widget\helpers\vsx_widget_note.h" />
+    <ClInclude Include="src\vsx_widget\helpers\vsx_widget_object_inspector.h" />
+    <ClInclude Include="src\vsx_widget\helpers\vsx_widget_preview.h" />
+    <ClInclude Include="src\vsx_widget\module_choosers\htcoord.h" />
+    <ClInclude Include="src\vsx_widget\module_choosers\htgeodesic.h" />
+    <ClInclude Include="src\vsx_widget\module_choosers\htmodel.h" />
+    <ClInclude Include="src\vsx_widget\module_choosers\htnode.h" />
+    <ClInclude Include="src\vsx_widget\module_choosers\htsector.h" />
+    <ClInclude Include="src\vsx_widget\module_choosers\vsx_widget_hyperbolic_tree.h" />
+    <ClInclude Include="src\vsx_widget\module_choosers\vsx_widget_module_chooser.h" />
+    <ClInclude Include="src\vsx_widget\module_choosers\vsx_widget_module_chooser_list.h" />
+    <ClInclude Include="src\vsx_widget\sequencer\pool_manager\vsx_widget_seq_pool.h" />
+    <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_master_sequencer.h" />
+    <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_param_sequence_item.h" />
+    <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_sequence_clipboard.h" />
+    <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_sequence_clipboard_item.h" />
+    <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_sequence_editor.h" />
+    <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_sequence_tree.h" />
+    <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_seq_chan.h" />
+    <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_timeline.h" />
+    <ClInclude Include="src\vsx_widget\server\vsx_widget_anchor.h" />
+    <ClInclude Include="src\vsx_widget\server\vsx_widget_comp.h" />
+    <ClInclude Include="src\vsx_widget\server\vsx_widget_connector_bezier.h" />
+    <ClInclude Include="src\vsx_widget\server\vsx_widget_connector_info.h" />
+    <ClInclude Include="src\vsx_widget\server\vsx_widget_server.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{03E886AD-EC33-4F71-BCBD-688BE47E4C5B}</ProjectGuid>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IntDir>$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\;$(ProjectDir)..\..\lib\application\include;$(ProjectDir)..\..\lib\common\include;$(ProjectDir)..\..\lib\engine\include;$(ProjectDir)..\..\lib\engine_graphics\include;$(ProjectDir)..\..\lib\engine_graphics\thirdparty\glew-1.7.0\include;$(ProjectDir)..\..\lib\widget\include;$(ProjectDir)src\vsx_widget;$(ProjectDir)src</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VSXU_STATIC;GLEW_STATIC=1</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>application.lib;widget.lib;SDL2.lib;common.lib;compression.lib;engine_graphics.lib;engine.lib;plugins.lib;opengl32.lib;glu32.lib;winmm.lib;version.lib;ole32.lib;oleaut32.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDirectory)..\..\x64\$(Configuration);$(ProjectDirectory)..\..\dependencies\SDL2_prebuilt_windows\x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>mkdir $(SolutionDir)x64\$(Configuration)\share
+xcopy /Y /E $(SolutionDir)share $(SolutionDir)x64\$(Configuration)\share</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\;$(ProjectDir)..\..\lib\application\include;$(ProjectDir)..\..\lib\common\include;$(ProjectDir)..\..\lib\engine\include;$(ProjectDir)..\..\lib\engine_graphics\include;$(ProjectDir)..\..\lib\engine_graphics\thirdparty\glew-1.7.0\include;$(ProjectDir)..\..\lib\widget\include;$(ProjectDir)src\vsx_widget;$(ProjectDir)src</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VSXU_STATIC;GLEW_STATIC=1</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(ProjectDirectory)..\..\x64\$(Configuration);$(ProjectDirectory)..\..\dependencies\SDL2_prebuilt_windows\x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>application.lib;widget.lib;SDL2.lib;common.lib;compression.lib;engine_graphics.lib;engine.lib;plugins.lib;opengl32.lib;glu32.lib;winmm.lib;version.lib;ole32.lib;oleaut32.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>mkdir $(SolutionDir)x64\$(Configuration)\share
+xcopy /Y /E $(SolutionDir)share $(SolutionDir)x64\$(Configuration)\share</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

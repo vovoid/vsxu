@@ -13,9 +13,6 @@
 [submodule "dependencies"]
 	path = dependencies
 	url = https://github.com/vovoid/vsxu-dependencies.git
-[submodule "lib/engine_graphics/thirdparty/freetype2"]
-	path = lib/engine_graphics/thirdparty/freetype2
-	url = git://git.sv.nongnu.org/freetype/freetype2.git
 [submodule "lib/engine_graphics/thirdparty/lodepng"]
 	path = lib/engine_graphics/thirdparty/lodepng
 	url = https://github.com/vovoid/lodepng.git

@@ -292,7 +292,7 @@ public:
     get_lock();
     if (commands.size())
     {
-        T* t = commands.front();
+        T* t = *commands.front();
         commands.pop_front();
 
       release_lock();
@@ -311,7 +311,7 @@ public:
     get_lock();
     if (commands.size())
     {
-      T *t = commands.back();
+      T *t = *commands.back();
       commands.pop_back();
       release_lock();
       return t;
@@ -347,7 +347,8 @@ public:
       if (parse)
       {
         add_raw(line);
-        (*commands.back()).type = type;
+        if (commands.back())
+          (*(*commands.back())).type = type;
         continue;
       }
 

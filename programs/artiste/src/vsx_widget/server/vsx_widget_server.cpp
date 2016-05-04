@@ -31,7 +31,9 @@
   #include <io.h>
 #endif
 #include <sys/types.h>
+#if COMPILER != COMPILER_VISUAL_STUDIO
 #include <dirent.h>
+#endif
 #include <filesystem/vsx_filesystem.h>
 #include <command/vsx_command.h>
 #include <command/vsx_command_client_server.h>

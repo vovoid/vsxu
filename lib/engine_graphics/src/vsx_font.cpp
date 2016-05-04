@@ -246,7 +246,12 @@ vsx_vector3<> vsx_font::print_center(vsx_vector3<> p, const vsx_string<>& str, f
 {
   p.x -= (align*0.37f*size*(float)str.size())*0.5f;
   #ifndef VSX_FONT_NO_FT
-  float x1, y1, z1, x2, y2, z2;
+  float x1 = 0.0f;
+  float y1 = 0.0f;
+  float z1 = 0.0f; 
+  float x2 = 0.0f;
+  float y2 = 0.0f;
+  float z2 = 0.0f;
   if (my_font_info.type == 1)
     ((FTGLPolygonFont*)my_font_info.ftfont)->BBox( str.c_str(), x1, y1, z1, x2, y2, z2);
   p.x -= (x2*size-x1*size)*0.5f*0.08f;
@@ -258,8 +263,13 @@ vsx_vector3<> vsx_font::print_right(vsx_vector3<> p, const vsx_string<>& str, fl
 {
   p.x -= (align*0.37f*size*(float)str.size());
   #ifndef VSX_FONT_NO_FT
-    float x1, y1, z1, x2, y2, z2;
-    if (my_font_info.type == 1)
+  float x1 = 0.0f;
+  float y1 = 0.0f;
+  float z1 = 0.0f;
+  float x2 = 0.0f;
+  float y2 = 0.0f;
+  float z2 = 0.0f;
+  if (my_font_info.type == 1)
       ((FTGLPolygonFont*)my_font_info.ftfont)->BBox( str.c_str(), x1, y1, z1, x2, y2, z2);
     p.x -= (x2*size-x1*size)*0.08f;
   #endif

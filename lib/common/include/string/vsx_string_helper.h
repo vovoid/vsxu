@@ -483,10 +483,13 @@ namespace vsx_string_helper
     vsx_string_helper::explode(str1, delimiter, str1_parts);
     vsx_string_helper::explode(str2, delimiter, str2_parts);
 
+    req(str1_parts.front());
+    req(str2_parts.front());
+
     while (
       str1_parts.size() && str2_parts.size()
       &&
-      str1_parts.front() == str2_parts.front()
+      *str1_parts.front() == *str2_parts.front()
     )
     {
       str1_parts.pop_front();
