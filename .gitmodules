@@ -16,3 +16,6 @@
 [submodule "lib/engine_graphics/thirdparty/lodepng"]
 	path = lib/engine_graphics/thirdparty/lodepng
 	url = https://github.com/vovoid/lodepng.git
+[submodule "lib/engine_graphics/thirdparty/freetype2"]
+	path = lib/engine_graphics/thirdparty/freetype2
+	url = https://github.com/vovoid/freetype2.git
