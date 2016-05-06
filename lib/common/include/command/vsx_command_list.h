@@ -274,7 +274,7 @@ public:
     get_lock();
       if (commands.size())
       {
-        *t = commands.front();
+        *t = *commands.front();
         commands.pop_front();
         release_lock();
         return true;
@@ -330,9 +330,8 @@ public:
     if (!filesystem)
       filesystem = vsx::filesystem::get_instance();
 
-    vsx::file* fp;
-    if ((fp = filesystem->f_open(filename.c_str(), "r")) == NULL)
-      return;
+    vsx::file* fp = filesystem->f_open(filename.c_str(), "r");
+    req(fp);
 
     char buf[65535];
     vsx_string<>line;

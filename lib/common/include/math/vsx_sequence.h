@@ -24,11 +24,14 @@
 
 #pragma once
 
+#include <vsx_platform.h>
+
+#if COMPILER == COMPILER_VISUAL_STUDIO
 #pragma warning( push )
 #pragma warning( disable : 4521)
+#endif
 
 #include <debug/vsx_error.h>
-#include <vsx_platform.h>
 #include <string/vsx_string_helper.h>
 #include <math/vector/vsx_vector2.h>
 #include <math/vector/vsx_vector2_helper.h>
@@ -554,5 +557,6 @@ public:
 
 }
 
+#if COMPILER == COMPILER_VISUAL_STUDIO
 #pragma warning( pop )
-
+#endif

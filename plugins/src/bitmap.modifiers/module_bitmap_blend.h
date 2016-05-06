@@ -340,7 +340,7 @@ public:
     req(bitmap_source_1->data_ready);
     req(bitmap_source_2->data_ready);
     req(!worker_thread.joinable());
-    req((int64_t)bitmap_source_1->timestamp != timestamp_1 || (int64_t)bitmap_source_2->timestamp != timestamp_2 || p_updates != param_updates);
+    req(bitmap_source_1->timestamp != timestamp_1 || bitmap_source_2->timestamp != timestamp_2 || p_updates != param_updates);
 
     p_updates = param_updates;
     timestamp_1 = bitmap_source_1->timestamp;

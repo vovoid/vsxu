@@ -97,7 +97,7 @@ public:
     return v;
   }
 
-  inline const T* front()
+  inline T* front()
   {
     if (!used)
       return 0x0;
@@ -105,7 +105,7 @@ public:
     return &A[0];
   }
 
-  inline const T* back()
+  inline T* back()
   {
     if (!used)
       return 0x0;

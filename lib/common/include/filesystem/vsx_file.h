@@ -14,8 +14,8 @@ namespace vsx
     {
       FILE* handle = 0x0;
       size_t position;  // position in the data stream
-      size_t size;  // size of the data stream in bytes
     };
+    size_t size;  // size of the data stream in bytes
 
 
     vsx_ma_vector<unsigned char> data;

@@ -137,7 +137,8 @@ void filesystem::f_close(file* &handle)
     return;
 
   if (!archive.is_archive())
-    fclose(handle->handle);
+    if (handle->handle)
+      fclose(handle->handle);
 
   delete handle;
   handle = 0x0;
@@ -172,7 +173,11 @@ char* filesystem::f_gets_entire(file* handle)
 char* filesystem::f_gets(char* buf, unsigned long max_buf_size, file* handle)
 {
   if (!archive.is_archive())
+  {
+    if (!handle->handle)
+      return 0x0;
     return fgets(buf, max_buf_size, handle->handle);
+  }
 
   unsigned long i = 0;
   bool run = true;

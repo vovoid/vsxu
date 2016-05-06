@@ -1,3 +1,7 @@
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+#include <sys/time.h>
+#endif
+
 class module_system_clock : public vsx_module
 {
   // out
