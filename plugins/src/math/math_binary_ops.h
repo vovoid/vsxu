@@ -142,8 +142,11 @@ BINARY_OP (
   "this module divides 2 float-values"
   )
 
+#ifdef max
+#undef max
+#endif
 BINARY_OP (
-  vsx_max, 
+  max,
   float, float, float, 
   "param1", "param2", "result", 
   VSX_MODULE_PARAM_ID_FLOAT, VSX_MODULE_PARAM_ID_FLOAT, VSX_MODULE_PARAM_ID_FLOAT,
@@ -158,8 +161,11 @@ BINARY_OP (
   "returns the greater value of 2 float-values"
   )
 
+#ifdef min
+#undef min
+#endif
 BINARY_OP (
-  vsx_min, 
+  min,
   float, float, float, 
   "param1", "param2", "minimum", 
   VSX_MODULE_PARAM_ID_FLOAT, VSX_MODULE_PARAM_ID_FLOAT, VSX_MODULE_PARAM_ID_FLOAT,

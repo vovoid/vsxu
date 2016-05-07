@@ -5,9 +5,9 @@
 #include <filesystem/vsx_filesystem.h>
 
 
-//namespace vsx_color_aux
-//{
-  vsx_color<> from_string(vsx_string<char> &val) VSX_ALWAYS_INLINE
+namespace vsx_color_aux
+{
+  inline vsx_color<> from_string(vsx_string<char> &val) VSX_ALWAYS_INLINE
   {
     vsx_color<> res;
     vsx_string<>deli = ",";
@@ -49,6 +49,6 @@
   {
     printf( "Name: %s. r: %f b: %f b: %f a: %f\n",label, v.r, v.g, v.b, v.a );
   }
-//}
+}
 
 

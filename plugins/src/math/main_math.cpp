@@ -161,8 +161,8 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 7:  return (vsx_module*)(new module_arith_sub);
     case 8:  return (vsx_module*)(new module_arith_mult);
     case 9:  return (vsx_module*)(new module_arith_div);
-    case 10: return (vsx_module*)(new module_arith_vsx_min);
-    case 11: return (vsx_module*)(new module_arith_vsx_max);
+    case 10: return (vsx_module*)(new module_arith_min);
+    case 11: return (vsx_module*)(new module_arith_max);
     case 12: return (vsx_module*)(new module_arith_pow);
     case 13: return (vsx_module*)(new module_arith_round);
     case 14: return (vsx_module*)(new module_arith_floor);
@@ -233,8 +233,8 @@ void MOD_DM(vsx_module* m,unsigned long module)
     case 7: delete (module_arith_sub*)m; break;
     case 8: delete (module_arith_mult*)m; break;
     case 9: delete (module_arith_div*)m; break;
-    case 10: delete (module_arith_vsx_min*)m; break;
-    case 11: delete (module_arith_vsx_max*)m; break;
+    case 10: delete (module_arith_min*)m; break;
+    case 11: delete (module_arith_max*)m; break;
     case 12: delete (module_arith_pow*)m; break;
     case 13: delete (module_arith_round*)m; break;
     case 14: delete (module_arith_floor*)m; break;

@@ -290,6 +290,7 @@ public:
   {
     if (!(module_list.find(module_name_to_look_for) != module_list.end()))
     {
+
       return false;
     }
     return true;
