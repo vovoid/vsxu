@@ -157,10 +157,27 @@ size_t filesystem::f_get_size(file* handle)
   return size;
 }
 
+unsigned char* filesystem::f_data_get(file* handle)
+{
+  if (handle->data.size())
+    return handle->data.get_pointer();
+
+  size_t size = f_get_size(handle);
+  unsigned char* buf = (unsigned char*)malloc(size);
+  req_v(buf, 0x0);
+  f_read((void*)buf, size, handle);
+  return buf;
+}
+
 char* filesystem::f_gets_entire(file* handle)
 {
   if (handle->data.size())
-    return (char*)handle->data.get_pointer();
+  {
+    char* string = (char*)malloc(handle->data.size() + 1);
+    memcpy(string, (char*)handle->data.get_pointer(), handle->data.size());
+    string[handle->data.size()] = 0;
+    return string;
+  }
 
   size_t size = f_get_size(handle);
   char* buf = (char*)malloc(size+1);

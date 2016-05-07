@@ -9,7 +9,7 @@ void vsx_bitmap_loader_jpg::worker(vsx_bitmap* bitmap, vsx::filesystem* filesyst
   req(file);
   njInit();
 
-  unsigned char* data = (unsigned char*)filesystem->f_gets_entire(file);
+  unsigned char* data = filesystem->f_data_get(file);
   nj_result_t result = njDecode(data, (int)filesystem->f_get_size(file));
   filesystem->f_close(file);
 

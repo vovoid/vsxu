@@ -39,7 +39,22 @@ namespace vsx
     void f_close(file* &handle);
 
     char* f_gets(char* buf, unsigned long max_buf_size, file* handle);
+
+    /**
+     * @brief f_gets_entire
+     * @param handle
+     * @return 0-terminated sgring
+     */
     char* f_gets_entire(file* handle);
+
+    /**
+     * @brief f_data_get
+     * @param handle
+     * @return pointer to raw data, try to use this when reading from an archive
+     */
+    unsigned char* f_data_get(file* handle);
+
+
     size_t f_read(void* buf, size_t num_bytes, file* handle);
 
     size_t f_get_size(file* handle);

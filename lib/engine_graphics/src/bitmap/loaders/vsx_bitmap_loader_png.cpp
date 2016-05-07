@@ -6,7 +6,7 @@ void vsx_bitmap_loader_png::worker(vsx_bitmap* bitmap, vsx::filesystem* filesyst
   vsx::file* file = filesystem->f_open(filename.c_str(), "rb");
   req(file);
 
-  unsigned char* data = (unsigned char*)filesystem->f_gets_entire(file);
+  unsigned char* data = filesystem->f_data_get(file);
 
   unsigned char* result;
   lodepng_decode32(&result, &bitmap->width, &bitmap->height, data, filesystem->f_get_size(file));

@@ -340,8 +340,14 @@ public:
         while (engine_state->filesystem->f_gets(buf,1024,fp))
         {
           line = buf;
+
+          req_continue(line.size());
           if (line[line.size()-1] == 0x0A) line.pop_back();
+          req_continue(line.size());
+
           if (line[line.size()-1] == 0x0D) line.pop_back();
+          req_continue(line.size());
+
           if (line.size()) {
             vsx_nw_vector< vsx_string<> > parts;
             vsx_string<>deli = "=";
