@@ -29,8 +29,14 @@
 class vsx_application
 {
 protected:
+  vsx_string<> window_title;
 
 public:
+
+  vsx_string<>& window_title_get()
+  {
+    return window_title;
+  }
 
   virtual void init()
   {
@@ -40,7 +46,6 @@ public:
   {
   }
 
-  virtual vsx_string<> window_title_get() = 0;
 
   virtual void pre_draw()
   {
