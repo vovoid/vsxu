@@ -23,7 +23,7 @@
 
 
 #include "_configuration.h"
-#include "vsx_gl_global.h"
+#include <vsx_gl_global.h>
 #include "vsx_param.h"
 #include <module/vsx_module.h>
 #ifndef _WIN32

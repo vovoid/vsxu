@@ -59,9 +59,6 @@ if(UNIX)
       src/main.cpp
     )
 
-  if (VSXU_STATIC EQUAL 1)
-    include(${CMAKE_SOURCE_DIR}/plugins/static_factory_cmake_link_directories)
-  endif (VSXU_STATIC EQUAL 1)
 
   add_executable(${module_id} ${SOURCES})
   include(${CMAKE_SOURCE_DIR}/cmake_suffix.txt)
@@ -80,10 +77,16 @@ if(UNIX)
     vsx_engine
     vsx_engine_graphics
   )
-
   if (VSXU_STATIC EQUAL 1)
-    include(${CMAKE_SOURCE_DIR}/plugins/static_factory_cmake_target_link_libraries)
-  endif ()
+    target_link_libraries(${module_id}
+      plugins
+      vsx_common
+      vsx_compression
+      vsx_engine
+      vsx_engine_graphics
+      plugins
+    )
+  endif (VSXU_STATIC EQUAL 1)
 
   install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT server)
 

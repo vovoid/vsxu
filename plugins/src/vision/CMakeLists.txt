@@ -36,7 +36,7 @@ include(../cmake_globals.txt)
 CREATE_MODULE(${module_id})
 
 
-CREATE_TARGET_LINK_LIBRARIES(
+set(LIBRARIES
   ${OpenCV_LIBS} ${CMAKE_THREAD_LIBS_INIT}
 )
 

@@ -87,6 +87,7 @@ if(UNIX)
     vsx_engine
     vsx_engine_graphics
     vsx_widget
+    vsx_engine_graphics
     vsx_application
     ${VSXU_GFX_LIB_LIBS}
     rt

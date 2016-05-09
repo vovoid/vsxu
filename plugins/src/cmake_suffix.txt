@@ -1,5 +1,5 @@
 
-if (PLUGINS_SINGLE_LIB)
+if (VSXU_STATIC EQUAL 1)
 else()
 link_directories(${OpenGL_LIB_DIR})
 target_link_libraries(

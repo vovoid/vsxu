@@ -76,23 +76,44 @@ add_executable(${module_id} ${SOURCES} ${HEADER_FILES})
 include(${CMAKE_SOURCE_DIR}/cmake_suffix.txt)
 
 if(UNIX)
-  target_link_libraries(
-    ${module_id}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${GLEW_LIBRARIES}
-    ${OPENGL_LIBRARIES}
-    ${PNG_LIBRARIES}
-    ${ZLIB_LIBRARIES}
-    ${JPEG_LIBRARIES}
-    vsx_engine_audiovisual
-    vsx_engine_graphics
-    vsx_engine
-    vsx_common
-    vsx_compression
-    vsx_application
-    ${VSXU_GFX_LIB_LIBS}
-    rt
-  )
+  if (VSXU_STATIC)
+    target_link_libraries(
+      ${module_id}
+      ${CMAKE_THREAD_LIBS_INIT}
+      ${GLEW_LIBRARIES}
+      ${OPENGL_LIBRARIES}
+      vsx_application
+      ${VSXU_GFX_LIB_LIBS}
+      vsx_engine_audiovisual
+      vsx_common
+      vsx_compression
+      vsx_engine
+      vsx_engine_graphics
+      plugins
+      vsx_engine_audiovisual
+      rt
+      vsx_common
+      vsx_compression
+      vsx_engine
+      vsx_engine_graphics
+      plugins
+    )
+  else()
+    target_link_libraries(
+      ${module_id}
+      ${CMAKE_THREAD_LIBS_INIT}
+      ${GLEW_LIBRARIES}
+      ${OPENGL_LIBRARIES}
+      vsx_application
+      ${VSXU_GFX_LIB_LIBS}
+      vsx_common
+      vsx_compression
+      vsx_engine
+      vsx_engine_graphics
+      vsx_engine_audiovisual
+      rt
+    )
+  endif()
 endif()
 
 if(WIN32)
@@ -123,7 +144,7 @@ endif()
 
 
 if (VSXU_STATIC EQUAL 1)
-  include(${CMAKE_SOURCE_DIR}/plugins/static_factory_cmake_target_link_libraries)
+  target_link_libraries(${module_id} plugins)
 endif()
 
 

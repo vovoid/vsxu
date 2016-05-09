@@ -59,12 +59,31 @@ set_target_properties(
 target_link_libraries(
   ${module_id}
   vsx_engine
-  vsx_engine_graphics
   vsx_common
   vsx_compression
+  vsx_common
+  vsx_engine_graphics
   ${CMAKE_THREAD_LIBS_INIT}
   rt
 )
+
+  if (VSXU_STATIC EQUAL 1)
+    target_link_libraries(${module_id}
+      plugins
+      vsx_engine
+      vsx_common
+      vsx_compression
+      vsx_common
+      vsx_engine_graphics
+      plugins
+      vsx_engine
+      vsx_common
+      vsx_compression
+      vsx_common
+      vsx_engine_graphics
+    )
+  endif (VSXU_STATIC EQUAL 1)
+
 
 
 #set(CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -lrt")

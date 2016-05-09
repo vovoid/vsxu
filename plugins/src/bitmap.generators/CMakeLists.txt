@@ -15,6 +15,8 @@ CREATE_STATIC_GLUE(${module_id})
 file(GLOB LOCAL_SOURCES "*.cpp")
 file(GLOB_RECURSE HEADER_FILES *.h)
 
+message( "bitmap generators: ${LOCAL_SOURCES} ${HEADER_FILES}")
+
 # include common
 include(../cmake_globals.txt)
 

@@ -12,60 +12,71 @@ CREATE_STATIC_GLUE(${module_id})
 if(UNIX)
   add_definitions( -fPIC -fpermissive )
 endif(UNIX)
-add_definitions(-DCAL3D_EXPORTS)
 
-include_directories(cal3d/cal3d/src)
+set(DEFINITIONS
+  -DCAL3D_EXPORTS
+  -Wno-narrowing
+  -Wno-vla
+  -Wno-parentheses
+  -Wno-unused-but-set-variable
+)
+
+set(INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src)
+
+add_definitions(${DEFINITIONS})
+
+include_directories(${INCLUDE_DIRS})
 
 # find the local source files
 file(GLOB LOCAL_SOURCES "*.cpp")
 
 set(SOURCES
-cal3d/cal3d/src/cal3d/animation_action.cpp
-cal3d/cal3d/src/cal3d/animation.cpp
-cal3d/cal3d/src/cal3d/animation_cycle.cpp
-cal3d/cal3d/src/cal3d/bone.cpp
-cal3d/cal3d/src/cal3d/buffersource.cpp
-cal3d/cal3d/src/cal3d/cal3d_wrapper.cpp
-cal3d/cal3d/src/cal3d/calxmlbindings.cpp
-cal3d/cal3d/src/cal3d/coreanimatedmorph.cpp
-cal3d/cal3d/src/cal3d/coreanimation.cpp
-cal3d/cal3d/src/cal3d/corebone.cpp
-cal3d/cal3d/src/cal3d/corekeyframe.cpp
-cal3d/cal3d/src/cal3d/corematerial.cpp
-cal3d/cal3d/src/cal3d/coremesh.cpp
-cal3d/cal3d/src/cal3d/coremodel.cpp
-cal3d/cal3d/src/cal3d/coremorphkeyframe.cpp
-cal3d/cal3d/src/cal3d/coremorphtrack.cpp
-cal3d/cal3d/src/cal3d/coreskeleton.cpp
-cal3d/cal3d/src/cal3d/coresubmesh.cpp
-cal3d/cal3d/src/cal3d/coresubmorphtarget.cpp
-cal3d/cal3d/src/cal3d/coretrack.cpp
-cal3d/cal3d/src/cal3d/dualquaternion.cpp
-cal3d/cal3d/src/cal3d/error.cpp
-cal3d/cal3d/src/cal3d/global.cpp
-cal3d/cal3d/src/cal3d/hardwaremodel.cpp
-cal3d/cal3d/src/cal3d/loader.cpp
-cal3d/cal3d/src/cal3d/matrix.cpp
-cal3d/cal3d/src/cal3d/mesh.cpp
-cal3d/cal3d/src/cal3d/mixer.cpp
-cal3d/cal3d/src/cal3d/model.cpp
-cal3d/cal3d/src/cal3d/morphtargetmixer.cpp
-cal3d/cal3d/src/cal3d/physique.cpp
-cal3d/cal3d/src/cal3d/physiquedualquaternion.cpp
-cal3d/cal3d/src/cal3d/platform.cpp
-cal3d/cal3d/src/cal3d/quaternion.cpp
-cal3d/cal3d/src/cal3d/renderer.cpp
-cal3d/cal3d/src/cal3d/saver.cpp
-cal3d/cal3d/src/cal3d/skeleton.cpp
-cal3d/cal3d/src/cal3d/springsystem.cpp
-cal3d/cal3d/src/cal3d/streamsource.cpp
-cal3d/cal3d/src/cal3d/submesh.cpp
-cal3d/cal3d/src/cal3d/tinybind.cpp
-cal3d/cal3d/src/cal3d/tinyxml.cpp
-cal3d/cal3d/src/cal3d/tinyxmlerror.cpp
-cal3d/cal3d/src/cal3d/tinyxmlparser.cpp
-cal3d/cal3d/src/cal3d/vector.cpp
-cal3d/cal3d/src/cal3d/xmlformat.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/animation_action.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/animation.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/animation_cycle.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/bone.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/buffersource.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/cal3d_wrapper.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/calxmlbindings.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/coreanimatedmorph.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/coreanimation.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/corebone.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/corekeyframe.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/corematerial.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/coremesh.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/coremodel.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/coremorphkeyframe.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/coremorphtrack.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/coreskeleton.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/coresubmesh.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/coresubmorphtarget.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/coretrack.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/dualquaternion.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/error.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/global.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/hardwaremodel.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/loader.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/matrix.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/mesh.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/mixer.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/model.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/morphtargetmixer.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/physique.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/physiquedualquaternion.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/platform.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/quaternion.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/renderer.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/saver.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/skeleton.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/springsystem.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/streamsource.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/submesh.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/tinybind.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/tinyxml.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/tinyxmlerror.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/tinyxmlparser.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/vector.cpp
+${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/xmlformat.cpp
 )
 
 file(GLOB_RECURSE HEADER_FILES *.h)
@@ -79,9 +90,3 @@ CREATE_MODULE(${module_id})
 # include common
 include(../cmake_suffix.txt)
 
-add_definitions(
-   -Wno-narrowing
-   -Wno-vla
-   -Wno-parentheses
-   -Wno-unused-but-set-variable
-   )

@@ -154,7 +154,7 @@ if (VSXU_STATIC EQUAL 1)
 
   #static build
   add_library(${module_id} STATIC ${SOURCES} ${HEADER_FILES} ${GAME_MONKEY})
-  include(${CMAKE_SOURCE_DIR}/plugins/static_factory_cmake_target_link_libraries)
+  target_link_libraries(${module_id} plugins)
 
 else ()
 

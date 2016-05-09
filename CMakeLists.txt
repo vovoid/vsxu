@@ -374,7 +374,7 @@ else(VSXU_DEBUG)
     else()
         add_definitions(
           -O3
-          -flto
+          #-flto
 
           -mtune=nocona
           -fmessage-length=0
