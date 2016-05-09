@@ -174,6 +174,5 @@ target_link_libraries(
   ${OPENGL_LIBRARIES}
   ${PNG_LIBRARIES}
   ${ZLIB_LIBRARIES}
-  ${JPEG_LIBRARIES}
 )
 

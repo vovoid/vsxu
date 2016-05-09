@@ -43,11 +43,16 @@ function(CREATE_STATIC_GLUE module_id)
 endfunction(CREATE_STATIC_GLUE)
 
 
-
-
 function( CREATE_MODULE ${module_id} )
   if (VSXU_STATIC EQUAL 1)
-    add_library(${module_id} STATIC ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES} ${HEADER_FILES})
+
+    if (PLUGINS_SINGLE_LIB EQUAL 1)
+      GET_PROPERTY(LOCAL_GLOBAL_SOURCES GLOBAL PROPERTY GLOBAL_PLUGIN_SOURCES)
+      SET_PROPERTY(GLOBAL PROPERTY GLOBAL_PLUGIN_SOURCES "${LOCAL_GLOBAL_SOURCES} ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES} ${HEADER_FILES}")
+    else()
+      add_library(${module_id} STATIC ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES} ${HEADER_FILES})
+    endif()
+
   else (VSXU_STATIC EQUAL 1)
     add_library(${module_id} MODULE ${LOCAL_SOURCES} ${API_STUBS} ${SOURCES} ${HEADER_FILES})
   endif (VSXU_STATIC EQUAL 1)
@@ -254,6 +259,11 @@ add_subdirectory(src/texture)
 
 if (PLUGINS_EXPERIMENTAL_SENSORS)
   add_subdirectory(src/sensors.accelerometer)
+endif()
+
+if (PLUGINS_SINGLE_LIB EQUAL 1)
+  GET_PROPERTY(SOURCES GLOBAL PROPERTY GLOBAL_PLUGIN_SOURCES)
+  add_library(plugins STATIC ${SOURCES})
 endif()
 
 

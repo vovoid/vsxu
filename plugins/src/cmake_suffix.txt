@@ -1,4 +1,6 @@
 
+if (PLUGINS_SINGLE_LIB)
+else()
 link_directories(${OpenGL_LIB_DIR})
 target_link_libraries(
   ${module_id}
@@ -28,3 +30,5 @@ set_target_properties(
     PROPERTIES
       PREFIX ""
 )
+
+endif()
