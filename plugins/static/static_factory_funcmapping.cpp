@@ -19,10 +19,13 @@ VSXM_SF_ADD_MODULE("bitmap.generators",vsx_module_bitmap_generators_cm,vsx_modul
   VSXM_SF_ADD_MODULE("render.gravity_lines",vsx_module_render_gravity_lines_cm,vsx_module_render_gravity_lines_dm,vsx_module_render_gravity_lines_nm);
   VSXM_SF_ADD_MODULE("render.opengl",vsx_module_render_opengl_cm,vsx_module_render_opengl_dm,vsx_module_render_opengl_nm);
   VSXM_SF_ADD_MODULE("render.text",vsx_module_render_text_cm,vsx_module_render_text_dm,vsx_module_render_text_nm);
-  // VSXM_SF_ADD_MODULE("selectors", vsx_module_selectors_cm,vsx_module_selectors_dm,vsx_module_selectors_nm);
-  VSXM_SF_ADD_MODULE("sound.rtaudio", vsx_module_sound_rtaudio_cm, vsx_module_sound_rtaudio_dm, vsx_module_sound_rtaudio_nm);
-  // VSXM_SF_ADD_MODULE("sound.sink",vsx_module_sound_sink_cm,vsx_module_sound_sink_dm,vsx_module_sound_sink_nm);
+  #ifdef VSXU_AUDIO_SINK
+    VSXM_SF_ADD_MODULE("sound.sink",vsx_module_sound_sink_cm,vsx_module_sound_sink_dm,vsx_module_sound_sink_nm);
+  #else
+    VSXM_SF_ADD_MODULE("sound.rtaudio", vsx_module_sound_rtaudio_cm, vsx_module_sound_rtaudio_dm, vsx_module_sound_rtaudio_nm);
+  #endif
   VSXM_SF_ADD_MODULE("string",vsx_module_string_cm,vsx_module_string_dm,vsx_module_string_nm);
   VSXM_SF_ADD_MODULE("system",vsx_module_system_cm,vsx_module_system_dm,vsx_module_system_nm);
   VSXM_SF_ADD_MODULE("texture",vsx_module_texture_cm,vsx_module_texture_dm,vsx_module_texture_nm);
+  // VSXM_SF_ADD_MODULE("selectors", vsx_module_selectors_cm,vsx_module_selectors_dm,vsx_module_selectors_nm);
   //  VSXM_SF_ADD_MODULE("vision",vsx_module_vision_cm,vsx_module_vision_dm,vsx_module_vision_nm);

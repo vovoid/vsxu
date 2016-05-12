@@ -78,13 +78,15 @@ unsigned long vsx_module_render_text_nm(vsx_module_engine_environment* environme
 //void vsx_module_selectors_dm(vsx_module* m, unsigned long module);
 //unsigned long vsx_module_selectors_nm(vsx_module_engine_environment* environment);
 
-vsx_module* vsx_module_sound_rtaudio_cm(unsigned long module, void* args);
-void vsx_module_sound_rtaudio_dm(vsx_module* m, unsigned long module);
-unsigned long vsx_module_sound_rtaudio_nm(vsx_module_engine_environment* environment);
-
-//vsx_module* vsx_module_sound_sink_cm(unsigned long module, void* args);
-//void vsx_module_sound_sink_dm(vsx_module* m, unsigned long module);
-//unsigned long vsx_module_sound_sink_nm(vsx_module_engine_environment* environment);
+#ifdef VSXU_AUDIO_SINK
+  vsx_module* vsx_module_sound_sink_cm(unsigned long module, void* args);
+  void vsx_module_sound_sink_dm(vsx_module* m, unsigned long module);
+  unsigned long vsx_module_sound_sink_nm(vsx_module_engine_environment* environment);
+#else
+  vsx_module* vsx_module_sound_rtaudio_cm(unsigned long module, void* args);
+  void vsx_module_sound_rtaudio_dm(vsx_module* m, unsigned long module);
+  unsigned long vsx_module_sound_rtaudio_nm(vsx_module_engine_environment* environment);
+#endif
 
 vsx_module* vsx_module_string_cm(unsigned long module, void* args);
 void vsx_module_string_dm(vsx_module* m, unsigned long module);
