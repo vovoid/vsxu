@@ -81,7 +81,7 @@ void test_filesystem_archive_reader()
 {
   filesystem my_filesystem;
   my_filesystem.get_archive()->load("test_filesystem_archive.vsx", true);
-  file* my_file =  my_filesystem.f_open("test_filesystem_archive_file_1", "r");
+  file* my_file =  my_filesystem.f_open("test_filesystem_archive_file_1");
   test_assert(my_file);
   char* entire_file = my_filesystem.f_gets_entire(my_file);
 

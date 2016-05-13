@@ -15,14 +15,7 @@ CREATE_STATIC_GLUE(${module_id})
 file(GLOB SOURCES "*.cpp" "ftgl/*.cpp")
 file(GLOB_RECURSE HEADER_FILES *.h)
 
-if(WIN32)
-  include_directories(lib/win32/include)
-  include_directories(lib/win32/include/freetype2)
-endif(WIN32)
-
-if(UNIX)
-  include_directories(/usr/include/freetype2)
-endif(UNIX)
+include_directories(${CMAKE_CURRENT_LIST_DIR}/../../../lib/engine_graphics/thirdparty/ftgl/src)
 
 # include common
 include(../cmake_globals.txt)

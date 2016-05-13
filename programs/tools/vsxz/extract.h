@@ -51,7 +51,7 @@ void extract()
     if (!dry_run)
       vsx::filesystem_helper::create_directory( out_directory.c_str() );
 
-    vsx::file* fpi = filesystem.f_open(archive_files[i].filename.c_str(), "r");
+    vsx::file* fpi = filesystem.f_open(archive_files[i].filename.c_str());
     if (!fpi)
     {
       continue;

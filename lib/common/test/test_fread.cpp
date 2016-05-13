@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 //  reset_linux_cache("/proc/sys/vm/drop_caches", 3);
 
   timer.start();
-  vsx::file* fp = vsx::filesystem::get_instance()->f_open(name.c_str(), "rb");
+  vsx::file* fp = vsx::filesystem::get_instance()->f_open(name.c_str());
   unsigned char* data = (unsigned char*)vsx::filesystem::get_instance()->f_gets_entire(fp);
   float map_time = timer.dtime();
   uint64_t sum = 0;
