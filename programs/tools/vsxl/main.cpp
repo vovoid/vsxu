@@ -14,20 +14,11 @@
 #include "vsx_platform.h"
 #include "vsx_version.h"
 
-#if PLATFORM == PLATFORM_LINUX
-  #include <unistd.h>
-  #include <signal.h>
-  #include <fcntl.h>
-  #include <sys/stat.h>
-#elif PLATFORM == PLATFORM_WINDOWS
-  std::cout<<"This Platform is Currently Unsupported.\n";
-#elif PLATFORM == PLATFORM_MAC
-  std::cout<<"This Platform is Currently Unsupported.\n";
-#elif PLATFORM == PLATFORM_SOMETHINGELSE
-  std::cout<<"Error: Unknown Platform\n";
-#else
-  std::cout<<"Error: Could not work out Platform of host machine.\n";
-#endif
+#include <unistd.h>
+#include <signal.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+
 
 //FORWARD-DECLARATIONS--------------------------------------------
 
@@ -41,100 +32,32 @@ void exitHandler(int signal);
 class xmlFile
 {
 public:
-#if PLATFORM == PLATFORM_LINUX
   int fd;
-#elif PLATFORM == PLATFORM_WINDOWS
-  HANDLE fd;
-#elif PLATFORM == PLATFORM_MAC
-  std::cout<<"This Platform is Currently Unsupported.\n";
-#elif PLATFORM == PLATFORM_SOMETHINGELSE
-  std::cout<<"Error: Unknown Platform\n";
-#else
-  std::cout<<"Error: Could not work out Platform of host machine.\n";
-#endif
 
   char* xFGetCWD()
   {
-    #if PLATFORM == PLATFORM_LINUX
       return getcwd(NULL, 255);
-    #elif PLATFORM == PLATFORM_WINDOWS
-      std::cout<<"This Platform is Currently Unsupported.\n";
-    #elif PLATFORM == PLATFORM_MAC
-      std::cout<<"This Platform is Currently Unsupported.\n";
-    #elif PLATFORM == PLATFORM_SOMETHINGELSE
-      std::cout<<"Error: Unknown Platform\n";
-    #else
-      std::cout<<"Error: Could not work out Platform of host machine.\n";
-    #endif
   }
 
   void xFOpen(const char* path)
   {
-    #if PLATFORM == PLATFORM_LINUX
       fd = open(path, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-    #elif PLATFORM == PLATFORM_WINDOWS
-      std::cout<<"This Platform is Currently Unsupported.\n";
-    #elif PLATFORM == PLATFORM_MAC
-      std::cout<<"This Platform is Currently Unsupported.\n";
-    #elif PLATFORM == PLATFORM_SOMETHINGELSE
-      std::cout<<"Error: Unknown Platform\n";
-    #else
-      std::cout<<"Error: Could not work out Platform of host machine.\n";
-    #endif
   }
 
   int xFRead(const char** buffer, int buflen = 1024)
   {
-    #if PLATFORM == PLATFORM_LINUX
       return read(fd, buffer, buflen);
-    #elif PLATFORM == PLATFORM_WINDOWS
-      std::cout<<"This Platform is Currently Unsupported.\n";
-      return -1;
-    #elif PLATFORM == PLATFORM_MAC
-      std::cout<<"This Platform is Currently Unsupported.\n";
-      return -1;
-    #elif PLATFORM == PLATFORM_SOMETHINGELSE
-      std::cout<<"Error: Unknown Platform\n";
-      return -1;
-    #else
-      std::cout<<"Error: Could not work out Platform of host machine.\n";
-      return -1;
-    #endif
   }
 
   int xFWrite(const char* buffer, int buflen = -1)
   {
     if(buflen == -1) buflen = strlen(buffer);
-    #if PLATFORM == PLATFORM_LINUX
       return write(fd, buffer, buflen);
-    #elif PLATFORM == PLATFORM_WINDOWS
-      std::cout<<"This Platform is Currently Unsupported.\n";
-      return -1;
-    #elif PLATFORM == PLATFORM_MAC
-      std::cout<<"This Platform is Currently Unsupported.\n";
-      return -1;
-    #elif PLATFORM == PLATFORM_SOMETHINGELSE
-      std::cout<<"Error: Unknown Platform\n";
-      return -1;
-    #else
-      std::cout<<"Error: Could not work out Platform of host machine.\n";
-      return -1;
-    #endif
   }
 
   void xFClose()
   {
-    #if PLATFORM == PLATFORM_LINUX
       close(fd);
-    #elif PLATFORM == PLATFORM_WINDOWS
-      std::cout<<"This Platform is Currently Unsupported.\n";
-    #elif PLATFORM == PLATFORM_MAC
-      std::cout<<"This Platform is Currently Unsupported.\n";
-    #elif PLATFORM == PLATFORM_SOMETHINGELSE
-      std::cout<<"Error: Unknown Platform\n";
-    #else
-      std::cout<<"Error: Could not work out Platform of host machine.\n";
-    #endif
   }
 };
 
@@ -187,39 +110,19 @@ std::string xmlFormat(std::string str)
 
 //SIGNAL-HANDLERS-------------------------------------------------
 
-#if PLATFORM == PLATFORM_LINUX
   void exitHandler(int signal)
   {
     VSX_UNUSED(signal);
     running=0;
   }
-#elif PLATFORM == PLATFORM_WINDOWS
-  std::cout<<"This Platform is Currently Unsupported.\n";
-#elif PLATFORM == PLATFORM_MAC
-  std::cout<<"This Platform is Currently Unsupported.\n";
-#elif PLATFORM == PLATFORM_SOMETHINGELSE
-  std::cout<<"Error: Unknown Platform\n";
-#else
-  std::cout<<"Error: Could not work out Platform of host machine.\n";
-#endif
 
 //MAIN-FUNCTIONS--------------------------------------------------
 
 void setExitHandler()
 {
-#if PLATFORM == PLATFORM_LINUX
   signal(SIGHUP, exitHandler);
   signal(SIGINT, exitHandler);
   signal(SIGTERM, exitHandler);
-#elif PLATFORM == PLATFORM_WINDOWS
-  std::cout<<"This Platform is Currently Unsupported.\n";
-#elif PLATFORM == PLATFORM_MAC
-  std::cout<<"This Platform is Currently Unsupported.\n";
-#elif PLATFORM == PLATFORM_SOMETHINGELSE
-  std::cout<<"Error: Unknown Platform\n";
-#else
-  std::cout<<"Error: Could not work out Platform of host machine.\n";
-#endif
 }
 
 void initialise(int argc,char* argv[])
@@ -227,22 +130,7 @@ void initialise(int argc,char* argv[])
   VSX_UNUSED(argc);
   VSX_UNUSED(argv);
   std::cout<<"__Vovoid VSXu-Librarian "<< VSXU_VER;
-#if PLATFORM == PLATFORM_LINUX
   std::cout<<" [GNU/Linux "<<PLATFORM_BITS<<"-bit]__\n";
-#elif PLATFORM == PLATFORM_WINDOWS
-  std::cout<<" [Windows "<<PLATFORM_BITS<<"-bit]__\n";
-  std::cout<<"This Platform is Currently Unsupported.\n";
-#elif PLATFORM == PLATFORM_MAC
-  std::cout<<" [Macintosh "<<PLATFORM_BITS<<"-bit]__\n";
-  std::cout<<"This Platform is Currently Unsupported.\n";
-#elif PLATFORM == PLATFORM_SOMETHINGELSE
-  std::cout<<"__\n";
-  std::cout<<"Error: Unknown Platform\n";
-#else
-  std::cout<<"__\n";
-  std::cout<<"Error: Could not work out Platform of host machine.\n";
-#endif
-  
 
   /*
   for(int i=0;i<argc;i++)
