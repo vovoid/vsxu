@@ -244,6 +244,7 @@ public:
         param_data[i] = val->param_data[i];
       }		
     }
+    updates++;
     valid = true;
     return;
   }

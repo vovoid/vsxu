@@ -41,8 +41,8 @@ class vsx_texture
 public:
 
   // transformation object
-  vsx_texture_transform_base* transform_obj;
-  T* texture;
+  vsx_texture_transform_base* transform_obj = 0x0;
+  T* texture = 0x0;
 
 
   void set_transform(vsx_texture_transform_base* new_transform_obj)
@@ -130,9 +130,6 @@ public:
   }
 
   vsx_texture(bool attached_to_cache = false)
-    :
-      transform_obj(0x0),
-      texture(0x0)
   {
     if (!attached_to_cache)
       texture = new T(false);

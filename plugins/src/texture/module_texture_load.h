@@ -25,6 +25,7 @@ class module_texture_load: public vsx_module
   // internal
   vsx_string<> filename_cache;
   vsx_texture<>* texture = 0x0;
+  vsx_texture<>* texture_to_destroy = 0x0;
 
   // data hints
   int flip_vertical_cache = 0;
@@ -145,8 +146,10 @@ public:
 
   void run()
   {
-    if (texture && texture->texture->bitmap->data_ready)
+    if (texture && texture->texture && texture->texture->bitmap->data_ready)
     {
+      if (texture_to_destroy)
+        vsx_texture_loader::destroy(texture_to_destroy);
       loading_done = true;
       message = "module||ok";
     }
@@ -165,7 +168,7 @@ public:
     filename_cache = filename_in->get();
 
     if (texture && !reload)
-      vsx_texture_loader::destroy(texture);
+      texture_to_destroy = texture;
 
     uint64_t bitmap_loader_hint = 0;
     bitmap_loader_hint |= vsx_bitmap::flip_vertical_hint * flip_vertical_cache;

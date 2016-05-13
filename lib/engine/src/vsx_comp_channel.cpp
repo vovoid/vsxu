@@ -218,6 +218,7 @@ bool vsx_channel_texture::execute() {
 	if(connections.size() == 0) {
     return !my_param->critical;// return false; else return true; 
   }
+
 	vector<vsx_channel_connection_info*>::iterator it; 
 	for (it = connections.begin(); it < connections.end(); ++it) 
   { 
@@ -229,9 +230,16 @@ bool vsx_channel_texture::execute() {
 	for (it = connections.begin(); it < connections.end(); ++it) 
   { 
     //(*it)->src_comp->run();
-		if(!(*it)->src_comp->run((*it)->module_param) && my_param->all_required) return false; 
+		if(!(*it)->src_comp->run((*it)->module_param) && my_param->all_required) 
+      return false; 
+
     ((vsx_module_param_texture*)my_param->module_param)
         ->set_internal_from_param(((vsx_module_param_texture*)(*it)->module_param));
+    if (((vsx_module_param_texture*)my_param->module_param)->get_addr() &&
+      (unsigned long long)((vsx_module_param_texture*)my_param->module_param)->get()->texture > 0xd000000000000000)
+    {
+      vsx_printf(L"invalid pointer\n");
+    }
 	} 
 	return true;
 }

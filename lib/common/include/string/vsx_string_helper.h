@@ -272,6 +272,7 @@ namespace vsx_string_helper
     for (size_t i = 0; i < input.size(); i++)
       if (input[i] == delimiter_char)
       {
+        temp.trim_lf();
         parts.push_back( temp );
         temp.clear();
       } else
