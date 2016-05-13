@@ -209,6 +209,20 @@ public:
     return vsx_string_helper::path_from_filename(vsx_string<>(pBuf));
   }
 
+  static vsx_string<> get_home_directory()
+  {
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+    char* home_dir = getenv("HOME");
+    #else
+      #if COMPILER == COMPILER_VISUAL_STUDIO
+        char* home_dir = std::getenv("USERPROFILE");
+      #else
+        char* home_dir = getenv("USERPROFILE");
+      #endif
+    #endif
+    return vsx_string<>(home_dir);
+  }
+
 private:
   COMMON_DLLIMPORT static vsx_argvector instance;
 public:

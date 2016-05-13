@@ -35,7 +35,7 @@ namespace vsx
     bool is_file(const char* filename);
     bool is_file(const vsx_string<> filename);
 
-    file* f_open(const char* filename, const char* mode);
+    file* f_open(const char* filename);
     void f_close(file* &handle);
 
     char* f_gets(char* buf, unsigned long max_buf_size, file* handle);

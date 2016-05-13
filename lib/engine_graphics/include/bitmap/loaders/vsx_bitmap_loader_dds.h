@@ -152,7 +152,7 @@ class vsx_bitmap_loader_dds
 
   static void* worker(vsx_bitmap* bitmap, vsx::filesystem* filesystem, vsx_string<> filename)
   {
-    vsx::file* file_handle = filesystem->f_open(filename.c_str(), "rb");
+    vsx::file* file_handle = filesystem->f_open(filename.c_str());
     worker_load_file(bitmap, filesystem, file_handle, 0);
     filesystem->f_close(file_handle);
 
@@ -163,7 +163,7 @@ class vsx_bitmap_loader_dds
       {
         vsx_string<> new_filename = filename;
         new_filename.replace("_0", "_"+vsx_string_helper::i2s((int)i));
-        vsx::file* file_handle = filesystem->f_open(new_filename.c_str(), "rb");
+        vsx::file* file_handle = filesystem->f_open(new_filename.c_str());
         worker_load_file(bitmap, filesystem, file_handle, i);
         filesystem->f_close(file_handle);
       }

@@ -31,7 +31,7 @@ class vsx_bitmap_loader_tga
 
   static void* worker(vsx_bitmap* bitmap, vsx::filesystem* filesystem, vsx_string<> filename)
   {
-    vsx::file* file_handle = filesystem->f_open(filename.c_str(), "rb");
+    vsx::file* file_handle = filesystem->f_open(filename.c_str());
     tga_header header;
     filesystem->f_read( &header, sizeof(header), file_handle );
 

@@ -75,7 +75,7 @@ bool filesystem::is_file(const char* filename)
     return archive.is_file(vsx_string<>(filename));
 
   file *fp;
-  fp = this->f_open(filename, "r");
+  fp = this->f_open(filename);
   if (fp == NULL)
   {
     return false;
@@ -92,7 +92,7 @@ bool filesystem::is_file(const vsx_string<>filename)
     return archive.is_file(filename);
 
   file *fp;
-  fp = this->f_open(filename.c_str(), "r");
+  fp = this->f_open(filename.c_str());
   if (fp == NULL)
     return false;
   this->f_close(fp);
@@ -101,7 +101,7 @@ bool filesystem::is_file(const vsx_string<>filename)
 
 
 
-file* filesystem::f_open(const char* filename, const char* mode)
+file* filesystem::f_open(const char* filename)
 {
   vsx_string<> i_filename(filename);
 
@@ -122,7 +122,7 @@ file* filesystem::f_open(const char* filename, const char* mode)
     i_filename = vsx_string_helper::str_replace<char>("/","\\",i_filename);
   #endif
 
-  handle->handle = fopen((base_path+i_filename).c_str(),mode);
+  handle->handle = fopen((base_path+i_filename).c_str(),"rb");
   if (!handle->handle)
   {
     delete handle;

@@ -222,7 +222,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
     )
     {
       vsx::file *fp;
-      if ((fp = engine_state->filesystem->f_open(font_in->get().c_str(), "rb")) == NULL)
+      if ((fp = engine_state->filesystem->f_open(font_in->get().c_str())) == NULL)
       {
         printf("font not found: %s\n",cur_font.c_str());
         return;

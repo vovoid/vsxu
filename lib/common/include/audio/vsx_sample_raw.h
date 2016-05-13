@@ -28,7 +28,7 @@ public:
     vsx::file *fp;
     if
     (
-      (fp = filesystem->f_open(filename.c_str(), "r"))
+      (fp = filesystem->f_open(filename.c_str()))
       ==
       NULL
     )

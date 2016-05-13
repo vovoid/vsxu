@@ -5,7 +5,7 @@
 
 void vsx_bitmap_loader_jpg::worker(vsx_bitmap* bitmap, vsx::filesystem* filesystem, vsx_string<> filename)
 {
-  vsx::file* file = filesystem->f_open(filename.c_str(), "rb");
+  vsx::file* file = filesystem->f_open(filename.c_str());
   req(file);
   njInit();
 

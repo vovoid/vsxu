@@ -162,7 +162,7 @@ public:
     current_plots.reset_used();
 
     vsx_string<>filename = vsx_profiler_manager::profiler_directory_get() + DIRECTORY_SEPARATOR + filenames[index];
-    vsx::file* fp = filesystem.f_open( filename.c_str() , "r" );
+    vsx::file* fp = filesystem.f_open( filename.c_str());
 
     unsigned long file_size = filesystem.f_get_size(fp);
 

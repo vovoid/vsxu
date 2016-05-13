@@ -67,7 +67,7 @@ public:
     current_filename = filename->get();
     vsx::file *fp;
 
-    if ((fp = engine_state->filesystem->f_open(current_filename.c_str(), "r")) == NULL)
+    if ((fp = engine_state->filesystem->f_open(current_filename.c_str())) == NULL)
       return;
     char tag[4] = {0,0,0,0};
     engine_state->filesystem->f_read((void*)&tag,sizeof(char) * 4,fp);

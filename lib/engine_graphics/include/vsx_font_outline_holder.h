@@ -61,7 +61,7 @@ public:
   {
     vsx::file* fp;
 
-    if ((fp = filesystem->f_open(font_file_name.c_str(), "rb")) == NULL)
+    if ((fp = filesystem->f_open(font_file_name.c_str())) == NULL)
       VSX_ERROR_RETURN_S(L"font not found: ",font_file_name.c_str());
 
     file_name = font_file_name;

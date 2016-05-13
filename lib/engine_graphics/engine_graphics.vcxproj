@@ -98,7 +98,6 @@
     <ClCompile Include="thirdparty\ftgl\src\FTSize.cpp" />
     <ClCompile Include="thirdparty\ftgl\src\FTVectoriser.cpp" />
     <ClCompile Include="thirdparty\glew-1.7.0\src\glew.c" />
-    <ClCompile Include="thirdparty\glew-1.7.0\src\glewinfo.c" />
     <ClCompile Include="thirdparty\lodepng\lodepng.cpp" />
     <ClCompile Include="thirdparty\perlin\perlin.cpp" />
   </ItemGroup>
@@ -305,7 +304,7 @@
     <RootNamespace>
     </RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
-    <ProjectName>engine_graphics</ProjectName>
+    <ProjectName>vsx_engine_graphics</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -366,10 +365,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\common\include;$(ProjectDir)\..\engine_graphics\include;$(ProjectDir)\..\..\dependencies\glew-1.7.0\include;$(ProjectDir)\..\..\;$(ProjectDir)\thirdparty\ftgl\src;$(ProjectDir)\thirdparty\ftgl;$(ProjectDir)\include;$(ProjectDir)\thirdparty\freetype2\include;$(ProjectDir)\thirdparty\mini-jpeg;$(ProjectDir)\thirdparty\lodepng;$(ProjectDir)\thirdparty\glew-1.7.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;FTGL_LIBRARY_STATIC;FT2_BUILD_LIBRARY;GLEW_STATIC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;FTGL_LIBRARY_STATIC;FT2_BUILD_LIBRARY;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4312</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -395,6 +395,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)\..\common\include;$(ProjectDir)\..\engine_graphics\include;$(ProjectDir)\..\..\dependencies\glew-1.7.0\include;$(ProjectDir)\..\..\;$(ProjectDir)\thirdparty\ftgl\src;$(ProjectDir)\thirdparty\ftgl;$(ProjectDir)\include;$(ProjectDir)\thirdparty\freetype2\include;$(ProjectDir)\thirdparty\mini-jpeg;$(ProjectDir)\thirdparty\lodepng;$(ProjectDir)\thirdparty\glew-1.7.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;FTGL_LIBRARY_STATIC;FT2_BUILD_LIBRARY;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

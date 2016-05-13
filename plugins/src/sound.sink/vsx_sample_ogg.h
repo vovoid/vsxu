@@ -30,7 +30,7 @@ public:
     vsx::file *fp;
     if
     (
-      (fp = filesystem->f_open(filename.c_str(), "r"))
+      (fp = filesystem->f_open(filename.c_str()))
       ==
       NULL
     )
@@ -64,7 +64,7 @@ public:
 
     if (-1 == samples_loaded)
     {
-      vsx_printf(L"error loading ogg file, not a vorbis stream or other error...\n");
+      //vsx_printf(L"error loading ogg file, not a vorbis stream or other error...\n");
       return;
     }
 

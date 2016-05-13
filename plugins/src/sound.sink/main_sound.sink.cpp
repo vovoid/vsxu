@@ -33,7 +33,9 @@
 #include <module/vsx_module.h>
 #include <math/vsx_float_array.h>
 
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
 #include <unistd.h>
+#endif
 
 
 #if (PLATFORM == PLATFORM_LINUX)

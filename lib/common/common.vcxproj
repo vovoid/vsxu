@@ -22,7 +22,7 @@
     <ProjectGuid>{FA791770-E120-4E57-BF27-C00DFF212DF3}</ProjectGuid>
     <RootNamespace>common</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
-    <ProjectName>common</ProjectName>
+    <ProjectName>vsx_common</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -86,6 +86,7 @@
       <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -111,6 +112,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)\..\..\;$(ProjectDir)\include;$(ProjectDir)\..\compression\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

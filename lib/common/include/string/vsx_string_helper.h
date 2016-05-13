@@ -224,7 +224,7 @@ namespace vsx_string_helper
   inline vsx_string<> read_from_file(vsx_string<> filename, vsx::filesystem* filesystem)
   {
     vsx_string<> result;
-    vsx::file* fp = filesystem->f_open(filename.c_str(), "r");
+    vsx::file* fp = filesystem->f_open(filename.c_str());
     if (!fp)
       return "";
 

@@ -89,7 +89,7 @@ public:
     current_filename = filename->get();
     vsx::file *fp;
 
-    if ((fp = engine_state->filesystem->f_open(current_filename.c_str(), "r")) == NULL)
+    if ((fp = engine_state->filesystem->f_open(current_filename.c_str())) == NULL)
     {
       VSX_ERROR_RETURN("Could not open file");
     }

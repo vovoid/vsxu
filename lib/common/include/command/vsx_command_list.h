@@ -330,7 +330,7 @@ public:
     if (!filesystem)
       filesystem = vsx::filesystem::get_instance();
 
-    vsx::file* fp = filesystem->f_open(filename.c_str(), "r");
+    vsx::file* fp = filesystem->f_open(filename.c_str());
     req(fp);
 
     char buf[65535];
