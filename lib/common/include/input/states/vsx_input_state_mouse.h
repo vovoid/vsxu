@@ -52,7 +52,7 @@ public:
     position_changed_since_last_frame = false;
   }
 
-  void consume(vsx_input_event& event)
+  void consume(const vsx_input_event& event)
   {
     req(event.type == vsx_input_event::type_mouse);
 

@@ -91,7 +91,7 @@ public:
     return dir;
   }
 
-  inline void consume(vsx_input_event& event)
+  inline void consume(const vsx_input_event& event)
   {
     req(event.type == vsx_input_event::type_keyboard);
     keys[event.keyboard.scan_code] = event.keyboard.pressed;
