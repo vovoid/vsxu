@@ -91,7 +91,6 @@
     <ClCompile Include="src\render.opengl\main_render.opengl.cpp" />
     <ClCompile Include="src\render.text\main_render.text.cpp" />
     <ClCompile Include="src\sound.sink\main_sound.sink.cpp" />
-    <ClCompile Include="src\sound.sink\ogg_vorbis.c" />
     <ClCompile Include="src\string\main_string.cpp" />
     <ClCompile Include="src\system\main_system.cpp" />
     <ClCompile Include="src\texture\main_texture.cpp" />
