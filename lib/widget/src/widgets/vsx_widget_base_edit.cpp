@@ -501,11 +501,14 @@ void vsx_widget_base_edit::i_draw()
   int num_visible_found = 0;
   int real_line = 0;
   while (num_visible_found < scroll_y && real_line < (int)(lines.size()-1)) {
-    //printf("traversing visible found\n");
-    if (lines_visible[real_line] == 0) num_visible_found++;
+    if (lines_visible[real_line] == 0)
+      num_visible_found++;
     real_line++;
   }
-  while (lines_visible[real_line] != 0 && real_line < (int)(lines.size()-1)) real_line++;
+  req(lines_visible.size());
+
+  while (lines_visible[real_line] != 0 && real_line < (int)(lines.size()-1))
+    real_line++;
 
   int curline = real_line;
   vsx_vector3<> pp = p;
