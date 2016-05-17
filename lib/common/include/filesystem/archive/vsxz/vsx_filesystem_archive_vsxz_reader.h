@@ -24,7 +24,7 @@ class filesystem_archive_vsxz_reader
   file_mmap* mmap = 0x0;
   vsx_ma_vector<unsigned char> uncompressed_data;
   vsx_filesystem_tree_reader tree;
-  unsigned char* uncompressed_data_start_pointers[8] = {0,0,0,0,0,0,0,0};
+  unsigned char* uncompressed_data_start_pointers[9] = {0,0,0,0,0,0,0,0,0};
   vsxz_header_file_info* file_info_table = 0x0;
 
 public:

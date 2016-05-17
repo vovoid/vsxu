@@ -110,7 +110,7 @@ void filesystem_archive_vsxz_reader::file_open(const char* filename, file* &hand
 
   handle->data.set_volatile();
   handle->data.set_data( data_ptr + file_info->offset, file_info->size );
-  handle->size = handle->data.get_sizeof();
+  handle->size = file_info->size;
 }
 
 void filesystem_archive_vsxz_reader::close()
