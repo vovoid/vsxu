@@ -260,19 +260,19 @@ bool vsx_widget_timeline::event_key_down(uint16_t key)
     return true;
 
   switch(key) {
-    case 'f':
+    case VSX_SCANCODE_F:
         owner->tstart += dt*0.03;
         owner->tend += dt*0.03;
         return false;
     break;
 
-    case 's':
+    case VSX_SCANCODE_S:
         owner->tstart -= dt*0.03;
         owner->tend -= dt*0.03;
         return false;
     break;
 
-    case 'w':
+    case VSX_SCANCODE_W:
         if (owner->curtime < owner->tstart) {
           owner->tstart = owner->curtime;
           owner->tend = owner->curtime + dt*2;
@@ -286,7 +286,7 @@ bool vsx_widget_timeline::event_key_down(uint16_t key)
         return false;
     break;
 
-    case 'r':
+    case VSX_SCANCODE_R:
       if (owner->curtime < owner->tstart || owner->curtime > owner->tend) {
         owner->tstart = owner->curtime - dt;
         owner->tend = owner->curtime + dt;

@@ -335,45 +335,54 @@ void vsx_widget_sequence_editor::channels_open_at_time()
   interpolate_size();
 }
 
-
-void vsx_widget_sequence_editor::toggle_channel_visible(vsx_string<>name) {
+void vsx_widget_sequence_editor::channel_show(vsx_string<> name)
+{
   if (channels_map.find(name) != channels_map.end())
   {
-    ((vsx_widget_seq_channel*)channels_map[name])->hidden_by_sequencer = !((vsx_widget_seq_channel*)channels_map[name])->hidden_by_sequencer;
+    ((vsx_widget_seq_channel*)channels_map[name])->hidden_by_sequencer = false;
+    interpolate_size();
+    return;
   }
-  else {
-    // we need to get this from the engine again
-    vsx_string<>deli = ":";
-    vsx_nw_vector< vsx_string<> > parts;
-    vsx_string_helper::explode(name,deli,parts);
-    if (parts.size())
+
+  // we need to get this from the engine again
+  vsx_string<>deli = ":";
+  vsx_nw_vector< vsx_string<> > parts;
+  vsx_string_helper::explode(name,deli,parts);
+  if (parts.size())
+  {
+    if (parts[1] == "[master]")
     {
-      if (parts[1] == "[master]")
-      {
-        command_q_b.add_raw("mseq_channel inject_get "+parts[0]);
-      }
-      else
-      {
-        command_q_b.add_raw("pseq_p inject_get "+parts[0]+" "+parts[1]);
-      }
+      command_q_b.add_raw("mseq_channel inject_get "+parts[0]);
     }
-    parent->vsx_command_queue_b(this);
+    else
+    {
+      command_q_b.add_raw("pseq_p inject_get "+parts[0]+" "+parts[1]);
+    }
   }
+  parent->vsx_command_queue_b(this);
   interpolate_size();
 }
 
-void vsx_widget_sequence_editor::group_show_channels(vsx_string<> group_name)
+void vsx_widget_sequence_editor::channel_toggle_visible(vsx_string<>name) {
+  if (channels_map.find(name) != channels_map.end())
+  {
+    ((vsx_widget_seq_channel*)channels_map[name])->hidden_by_sequencer = !((vsx_widget_seq_channel*)channels_map[name])->hidden_by_sequencer;
+    return;
+  }
+  channel_show(name);
+  interpolate_size();
+}
+
+void vsx_widget_sequence_editor::group_show_channels(vsx_string<> group_name, bool additional)
 {
-  for (auto it = channels_map.begin(); it != channels_map.end(); it++)
-    ((vsx_widget_seq_channel*)(*it).second)->hidden_by_sequencer = true;
+  if (!additional)
+    for (auto it = channels_map.begin(); it != channels_map.end(); it++)
+      ((vsx_widget_seq_channel*)(*it).second)->hidden_by_sequencer = true;
 
   vsx_nw_vector< vsx_string<> > component_parameters;
   vsx_string_helper::explode_single(groups[group_name], '*', component_parameters);
   foreach (component_parameters, i)
-  {
-    vsx_printf(L"component_parameters[%d] == %s\n", i, component_parameters[i].c_str());
-    toggle_channel_visible(component_parameters[i]);
-  }
+    channel_show(component_parameters[i]);
 }
 
 void vsx_widget_sequence_editor::group_delete(vsx_string<> group_name)

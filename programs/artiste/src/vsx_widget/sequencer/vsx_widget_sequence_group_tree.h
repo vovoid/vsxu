@@ -77,7 +77,8 @@ public:
     VSX_UNUSED(button);
 
     sequence_editor->group_show_channels(
-      editor->get_line( editor->selected_line )
+      editor->get_line( editor->selected_line ),
+      vsx_input_keyboard.pressed_shift()
     );
   }
 

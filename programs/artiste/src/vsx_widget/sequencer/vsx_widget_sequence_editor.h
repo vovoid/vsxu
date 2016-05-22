@@ -85,8 +85,9 @@ public:
 
   virtual void init();
   void i_draw();
-  void toggle_channel_visible(vsx_string<>name);
-  void group_show_channels(vsx_string<> group_name);
+  void channel_toggle_visible(vsx_string<>name);
+  void channel_show(vsx_string<> name);
+  void group_show_channels(vsx_string<> group_name, bool additional = false);
   void group_delete(vsx_string<> group_name);
   void close_open_channels();
   void channels_open_at_time();

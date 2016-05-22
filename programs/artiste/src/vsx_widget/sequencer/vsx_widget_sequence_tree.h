@@ -70,7 +70,7 @@ public:
     VSX_UNUSED(coords);
     VSX_UNUSED(button);
 
-    sequence_editor->toggle_channel_visible(
+    sequence_editor->channel_toggle_visible(
       editor->get_line( editor->selected_line )
     );
   }
