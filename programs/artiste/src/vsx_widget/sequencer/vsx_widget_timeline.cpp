@@ -244,7 +244,7 @@ bool vsx_widget_timeline::event_key_down(uint16_t key)
 {
   float dt = (owner->tend-owner->tstart)*0.5;
   switch(key) {
-    case 'a':
+    case VSX_SCANCODE_A:
     {
       if (vsx_input_keyboard.pressed_ctrl())
         backwards_message("play");
@@ -253,7 +253,7 @@ bool vsx_widget_timeline::event_key_down(uint16_t key)
     }
   }
 
-  if (key == 't')
+  if (key == VSX_SCANCODE_T)
     show_wave_data = !show_wave_data;
 
   if (!vsx_input_keyboard.pressed_ctrl())

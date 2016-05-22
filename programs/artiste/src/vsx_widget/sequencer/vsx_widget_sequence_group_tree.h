@@ -4,12 +4,12 @@
 #include <widgets/vsx_widget_popup_menu.h>
 #include <dialogs/dialog_query_string.h>
 
-class vsx_widget_sequence_tree :
+class vsx_widget_sequence_group_tree :
     public vsx_widget_editor
 {
   vsx_widget_sequence_editor* sequence_editor;
   vsx_widget* save_dialog;
-  vsx_widget* group_add_dialog;
+  vsx_nw_vector< vsx_string<> > group_names;
 
 public:
 
@@ -33,8 +33,7 @@ public:
     pos_from_parent = true;
 
     editor->menu = editor->add(new vsx_widget_popup_menu,".sequencer_list_menu");
-    editor->menu->commands.adds(VSX_COMMAND_MENU, "Save selected sequence to disk...", "menu_save","");
-    editor->menu->commands.adds(VSX_COMMAND_MENU, "Add to group...", "menu_group_add","");
+    editor->menu->commands.adds(VSX_COMMAND_MENU, "save selected sequence to disk...", "menu_save","");
     editor->menu->size.x = 0.2;
     editor->menu->init();
   }
@@ -44,24 +43,31 @@ public:
     save_dialog = add
     (
       new dialog_query_string(
-          "Save sequence to disk",
+          "Perform Operation",
           "Filename"
       ),
       "save"
     );
     save_dialog->set_render_type( render_2d );
     save_dialog->init();
+  }
 
-    group_add_dialog = add
-    (
-      new dialog_query_string(
-          "Add to channel/parameter group",
-          "Group Name"
-      ),
-      "group_add"
-    );
-    group_add_dialog->set_render_type( render_2d );
-    group_add_dialog->init();
+  void clear_groups()
+  {
+    group_names.clear();
+    editor->set_string("");
+  }
+
+  void add_group(vsx_string<> name)
+  {
+    foreach (group_names, i)
+      if (group_names[i] == name)
+        return;
+
+    group_names.push_back(name);
+
+    vsx_string<> result = vsx_string_helper::implode_single<char>(group_names, 0x0A);
+    editor->set_string(result);
   }
 
   void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button)
@@ -70,35 +76,25 @@ public:
     VSX_UNUSED(coords);
     VSX_UNUSED(button);
 
-    sequence_editor->toggle_channel_visible(
+    sequence_editor->group_show_channels(
       editor->get_line( editor->selected_line )
     );
   }
 
-  vsx_string<> get_selected_component()
+  vsx_string<> get_selected_group()
   {
-    vsx_nw_vector< vsx_string<> > parts;
-    vsx_string_helper::explode_single(editor->get_line( editor->selected_line ),':',parts);
-    return parts[0];
-  }
-
-  vsx_string<> get_selected_parameter()
-  {
-    vsx_nw_vector< vsx_string<> > parts;
-    vsx_string_helper::explode_single(editor->get_line( editor->selected_line ),':',parts);
-    return parts[1];
+    return editor->get_line( editor->selected_line );
   }
 
   void command_process_back_queue(vsx_command_s *t)
   {
+    if (t->cmd == "editor_action")
+      sequence_editor->group_delete(t->parts[2]);
+
     if (t->cmd == "menu_save")
       return (void)dynamic_cast<dialog_query_string*>(save_dialog)->show();
-
-    if (t->cmd == "menu_group_add")
-      return (void)dynamic_cast<dialog_query_string*>(group_add_dialog)->show();
-
     vsx_widget::command_process_back_queue(t);
   }
 
-};
 
+};

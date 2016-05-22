@@ -322,6 +322,8 @@ void vsx_widget_base_edit::event_mouse_move_passive(vsx_widget_distance distance
 
 void vsx_widget_base_edit::event_text(wchar_t character_wide, char character)
 {
+  req(editing_enabled);
+
   if (allowed_chars.size())
     if (allowed_chars.find(character) == -1)
       return;

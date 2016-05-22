@@ -41,6 +41,7 @@
 #include "vsx_widget.h"
 #include "vsx_widget_sequence_editor.h"
 #include "vsx_widget_sequence_tree.h"
+#include "vsx_widget_sequence_group_tree.h"
 #include "vsx_widget_seq_chan.h"
 #include "vsx_widget_timeline.h"
 #include "widgets/vsx_widget_button.h"
@@ -146,12 +147,36 @@ void vsx_widget_sequence_editor::init()
   but_paste->target_size.x = but_paste->size.x = 0.040;
   but_paste->commands.adds(4,"but_paste","but_paste","");
 
+  but_show_sequence_list = add(new vsx_widget_button,"but_show_sequence_list");
+  but_show_sequence_list->render_type = render_3d;
+  but_show_sequence_list->init();
+  but_show_sequence_list->title = "params";
+  but_show_sequence_list->target_size.x = but_paste->size.x = 0.040;
+  but_show_sequence_list->commands.adds(4,"but_show_sequence_list","but_show_sequence_list","");
+
+  but_show_sequence_group_list = add(new vsx_widget_button,"but_show_sequence_group_list");
+  but_show_sequence_group_list->render_type = render_3d;
+  but_show_sequence_group_list->init();
+  but_show_sequence_group_list->title = "groups";
+  but_show_sequence_group_list->target_size.x = but_paste->size.x = 0.040;
+  but_show_sequence_group_list->commands.adds(4,"but_show_sequence_group_list","but_show_sequence_group_list","");
+
+
 
   vsx_widget_sequence_tree* sequence_tree = (vsx_widget_sequence_tree*)add(new vsx_widget_sequence_tree, "sequence_list");
   sequence_tree->init();
   sequence_tree->extra_init();
   sequence_tree->set_sequence_editor( this );
   sequence_list = (vsx_widget*)sequence_tree;
+
+  vsx_widget_sequence_group_tree* sequence_group_tree = (vsx_widget_sequence_group_tree*)add(new vsx_widget_sequence_group_tree, "sequence_group_list");
+  sequence_group_tree->init();
+  sequence_group_tree->extra_init();
+  sequence_group_tree->set_sequence_editor( this );
+  sequence_group_list = (vsx_widget*)sequence_group_tree;
+  sequence_group_list->hide();
+
+
   this->interpolate_size();
   set_render_type(render_type);
   sequence_tree->init_2d();
@@ -197,6 +222,9 @@ void vsx_widget_sequence_editor::load_sequence_list()
 {
   command_q_b.add_raw("seq_list");
   parent->vsx_command_queue_b(this);
+
+  command_q_b.add_raw("group_list");
+  parent->vsx_command_queue_b(this);
 }
 
 void vsx_widget_sequence_editor::i_draw()
@@ -235,8 +263,15 @@ void vsx_widget_sequence_editor::update_list()
 void vsx_widget_sequence_editor::interpolate_size()
 {
   vsx_widget::interpolate_size();
-  sequence_list->set_pos(vsx_vector3<>(-size.x/2+0.05f+dragborder));
-  sequence_list->set_size(vsx_vector3<>(0.1f,size.y-dragborder*2));
+  sequence_list->set_pos(vsx_vector3<>(-size.x/2+0.05f+dragborder, -0.01));
+  sequence_list->set_size(vsx_vector3<>(0.1f,size.y-dragborder*2 - 0.02));
+
+  sequence_group_list->set_pos(vsx_vector3<>(-size.x/2+0.05f+dragborder, -0.01));
+  sequence_group_list->set_size(vsx_vector3<>(0.1f,size.y-dragborder*2 - 0.02));
+
+  but_show_sequence_list->set_pos(vsx_vector3f( -size.x * 0.5f + but_show_sequence_list->size.x * 0.5 + dragborder * 2, size.y * 0.5f - but_show_sequence_list->size.y * 0.5 - dragborder * 2.0f ) );
+  but_show_sequence_group_list->set_pos(vsx_vector3f( but_show_sequence_list->pos.x + but_show_sequence_list->size.x + dragborder , but_show_sequence_list->pos.y ) );
+
   but_rew->set_pos(vsx_vector3<>( -size.x * 0.5f + 0.1f + but_rew->size.x*0.5f + dragborder*2 ,size.y*0.5f-but_rew->size.x*0.5f-dragborder*2));
   but_play->set_pos(vsx_vector3<>(but_rew->pos.x+but_rew->size.x+dragborder, but_rew->pos.y));
   but_stop->set_pos(vsx_vector3<>(but_play->pos.x + but_play->size.x + dragborder, but_rew->pos.y));
@@ -325,6 +360,28 @@ void vsx_widget_sequence_editor::toggle_channel_visible(vsx_string<>name) {
     parent->vsx_command_queue_b(this);
   }
   interpolate_size();
+}
+
+void vsx_widget_sequence_editor::group_show_channels(vsx_string<> group_name)
+{
+  for (auto it = channels_map.begin(); it != channels_map.end(); it++)
+    ((vsx_widget_seq_channel*)(*it).second)->hidden_by_sequencer = true;
+
+  vsx_nw_vector< vsx_string<> > component_parameters;
+  vsx_string_helper::explode_single(groups[group_name], '*', component_parameters);
+  foreach (component_parameters, i)
+  {
+    vsx_printf(L"component_parameters[%d] == %s\n", i, component_parameters[i].c_str());
+    toggle_channel_visible(component_parameters[i]);
+  }
+}
+
+void vsx_widget_sequence_editor::group_delete(vsx_string<> group_name)
+{
+  command_q_b.add_raw(
+    "group_del " + group_name
+  );
+  parent->vsx_command_queue_b(this);
 }
 
 void vsx_widget_sequence_editor::check_timeline() {
@@ -463,6 +520,18 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
     return;
   }
 
+  if (t->cmd == "but_show_sequence_list")
+  {
+    sequence_list->show();
+    sequence_group_list->hide();
+  }
+
+  if (t->cmd == "but_show_sequence_group_list")
+  {
+    sequence_list->hide();
+    sequence_group_list->show();
+  }
+
 
   if (t->cmd == "editor_action")
   {
@@ -523,6 +592,26 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
       ((vsx_widget_sequence_tree*)sequence_list)->set_string(vsx_string_helper::implode(sorted_names,deli));
     } else ((vsx_widget_sequence_tree*)sequence_list)->set_string("[none defined]");
   } else
+
+  if (t->cmd == "group_list_ok")
+  {
+    ((vsx_widget_sequence_group_tree*)sequence_group_list)->clear_groups();
+
+    vsx_string<> data = t->parts[1];
+    vsx_nw_vector< vsx_string<> > group_list;
+    vsx_string_helper::explode_single(data, '|', group_list);
+    foreach(group_list, i)
+    {
+      vsx_nw_vector< vsx_string<> > group_name_params;
+      vsx_string_helper::explode_single(group_list[i], '+', group_name_params);
+      groups[group_name_params[0]] = group_name_params[1];
+      ((vsx_widget_sequence_group_tree*)sequence_group_list)->add_group(group_name_params[0]);
+
+    }
+
+
+  } else
+
   // sequence list operations
   if (t->cmd == "pseq_l_dump_ok") {
     if (t->parts.size() > 1)
@@ -559,6 +648,13 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
         show_after_init = true;
       }
     }
+
+    if (t->parts[1] == "group_add")
+    {
+      groups[t->parts[2]] = t->parts[5];
+      ((vsx_widget_sequence_group_tree*)sequence_group_list)->add_group(t->parts[2]);
+    }
+
     if (t->parts[1] == "list" || t->parts[1] == "init") {
       if (channels_map.find(t->parts[2]+":"+t->parts[3]) == channels_map.end()) {
         vsx_widget* new_sequence_channel = add(new vsx_widget_seq_channel,".chan");
@@ -696,6 +792,18 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
     command_q_b.add_raw(
       "pseq_p "
       "save " +
+      dynamic_cast<vsx_widget_sequence_tree*>(sequence_list)->get_selected_component() + " " +
+      dynamic_cast<vsx_widget_sequence_tree*>(sequence_list)->get_selected_parameter() + " " +
+      t->cmd_data
+    );
+    parent->vsx_command_queue_b(this);
+  }
+
+  if (t->cmd == "group_add")
+  {
+    command_q_b.add_raw(
+      "pseq_p "
+      "group_add " +
       dynamic_cast<vsx_widget_sequence_tree*>(sequence_list)->get_selected_component() + " " +
       dynamic_cast<vsx_widget_sequence_tree*>(sequence_list)->get_selected_parameter() + " " +
       t->cmd_data

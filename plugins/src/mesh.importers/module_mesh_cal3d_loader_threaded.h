@@ -725,7 +725,7 @@ VSXP_S_BEGIN("cal3d run");
               #endif
 
           if (thread_sync_strategy->get() == 2)
-            while (!worker_produce.load())
+            while (!worker_produce.load() && param_produce.load())
             {}
         }
 

@@ -2,7 +2,7 @@
 #define RTAUDIO_PLAY_H
 
 #include <audio/vsx_audio_mixer_manager.h>
-
+#include "lib/RtAudio/RtAudio.h"
 
 // rt audio instance
 RtAudio* padc_play = 0x0;
@@ -63,7 +63,7 @@ void setup_rtaudio_play()
 
   if ( padc_play->getDeviceCount() < 1 )
   {
-    printf("WARNING::::::::      No audio devices found!\n");
+    vsx_printf(L"WARNING::::::::      No audio devices found!\n");
     return;
   }
 

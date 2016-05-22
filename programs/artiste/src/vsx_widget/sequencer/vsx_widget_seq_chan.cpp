@@ -2271,7 +2271,9 @@ void vsx_widget_seq_channel::draw_selection_box(float t0, float y0)
 
 bool vsx_widget_seq_channel::event_key_down(uint16_t key)
 {
-  if (is_controller) return true;
+  if (is_controller)
+    return true;
+
   switch (key)
   {
     case VSX_SCANCODE_1:
@@ -2299,6 +2301,8 @@ bool vsx_widget_seq_channel::event_key_down(uint16_t key)
     }
     break;
     case VSX_SCANCODE_E:
+
+      if (vsx_input_keyboard.pressed_alt())
       {
         float dt = (y_end - y_start) * 0.03;
         y_start += dt;
@@ -2307,6 +2311,8 @@ bool vsx_widget_seq_channel::event_key_down(uint16_t key)
       }
     break;
     case VSX_SCANCODE_D:
+
+      if (vsx_input_keyboard.pressed_alt())
       {
         float dt = (y_end - y_start) * 0.03;
         y_start -= dt;
@@ -2340,15 +2346,18 @@ bool vsx_widget_seq_channel::event_key_down(uint16_t key)
         if (vsx_input_keyboard.pressed_ctrl())
         {
           if (owner)
+          {
             ((vsx_widget_timeline*) owner->timeline)->event_key_down(key);
+            return false;
+          }
         }
         if (vsx_input_keyboard.pressed_alt())
         {
           float dt = (y_end - y_start) * 0.5;
           y_start = y_start + dt - dt * 0.97;
           y_end = y_end - dt + dt * 0.97;
+          return false;
         }
-        return false;
       }
     break;
     case VSX_SCANCODE_W:
@@ -2356,15 +2365,18 @@ bool vsx_widget_seq_channel::event_key_down(uint16_t key)
         if (vsx_input_keyboard.pressed_ctrl())
         {
           if (owner)
+          {
             ((vsx_widget_timeline*) owner->timeline)->event_key_down(key);
+            return false;
+          }
         }
         if (vsx_input_keyboard.pressed_alt())
         {
           float dt = (y_end - y_start) * 0.5;
           y_start = y_start + dt - dt * 1.03;
           y_end = y_end - dt + dt * 1.03;
+          return false;
         }
-        return false;
       }
     break;
 
@@ -2389,7 +2401,6 @@ bool vsx_widget_seq_channel::event_key_down(uint16_t key)
         return false;
       }
       break;
-
   }
   return true;
 }

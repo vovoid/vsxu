@@ -25,6 +25,8 @@
 #ifndef VSX_PARAM_SEQUENCE_LIST_H_
 #define VSX_PARAM_SEQUENCE_LIST_H_
 
+#include "vsx_param_sequence_group.h"
+
 class vsx_param_sequence_list {
 	void* engine;
   float int_vtime;
@@ -36,7 +38,10 @@ class vsx_param_sequence_list {
   std::map<vsx_engine_param*,vsx_param_sequence*> parameter_channel_map;
   std::list<void*> master_channel_list;
   std::map<vsx_string<>,void*> master_channel_map;
+  std::map<vsx_string<>, vsx_param_sequence_group* > groups;
+
 public:
+
   // parameter sequencer operations
   void add_param_sequence(vsx_engine_param* param, vsx_comp_abs* comp);
   void remove_param_sequence(vsx_engine_param* param);
@@ -51,7 +56,7 @@ public:
   void insert_line(vsx_engine_param* param, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix = "");
   void remove_line(vsx_engine_param* param, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix = "");
 
-  vsx_string<>dump_param(vsx_engine_param* param);
+  vsx_string<> dump_param(vsx_engine_param* param);
   void inject_param(vsx_engine_param* param, vsx_comp_abs* comp, vsx_string<>data);
 
   void get_params_with_keyframe_at_time(float time, float tolerance, vsx_nw_vector<vsx_engine_param* >& result);
@@ -69,10 +74,18 @@ public:
   void dump_master_channels_to_command_list(vsx_command_list &savelist);
   void inject_master_channel(vsx_string<>name, vsx_string<>data);
 
+  // parameter group operations
+  void group_add_param(vsx_string<> group_name, vsx_string<> comp_param);
+  void group_del_param(vsx_string<> group_name, vsx_string<> comp_param);
+  void group_del(vsx_string<> group_name);
+  vsx_string<> group_dump(vsx_string<> group_name);
+  vsx_string<> group_dump_all();
+  void group_inject(vsx_string<>& data);
+
   // load / save operations
   void get_sequences(vsx_command_list* dest);
-  vsx_string<>get_sequence_list_dump();
-  vsx_string<>get_channel_names();
+  vsx_string<> get_sequence_list_dump();
+  vsx_string<> get_channel_names();
 
   // time operations
   void set_time(float new_vtime) { int_vtime = new_vtime; }

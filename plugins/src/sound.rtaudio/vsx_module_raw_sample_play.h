@@ -54,7 +54,7 @@ public:
     info->in_param_spec =
       "filename:resource,"
       "format:enum?mono|stereo,"
-      "gain:float,"
+      "gain:float?default_controller=controller_slider,"
       "show_waveform_in_sequencer:enum?no|yes"
     ;
 
@@ -88,6 +88,7 @@ public:
   bool init()
   {
     setup_rtaudio_play();
+    vsx_printf(L"rtaudio play\n");
     vsx_audio_mixer& main_mixer = *vsx_audio_mixer_manager::get_instance();
     main_mixer.register_channel( &main_sample );
     return true;

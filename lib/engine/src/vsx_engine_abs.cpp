@@ -571,6 +571,8 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
   // dump the master sequences with their connections to the sequence pools
   sequence_list.dump_master_channels_to_command_list(savelist);
 
+
+
   // dump the loop point
   if (loop_point_end > 0.0f)
   {

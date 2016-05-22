@@ -80,8 +80,8 @@ public:
   float characters_width, characters_height;
   void set_string(const vsx_string<>& str);
   void caret_goto_end();
-  vsx_string<>get_string();
-  vsx_string<>get_line(unsigned long line);
+  vsx_string<> get_string();
+  vsx_string<> get_line(unsigned long line);
 
   void i_draw();
   virtual void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);

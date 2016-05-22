@@ -43,13 +43,21 @@ class vsx_widget_sequence_editor : public vsx_widget
   vsx_widget* but_copy;
   vsx_widget* but_paste;
 
+  // sequence list / group buttons
+  vsx_widget* but_show_sequence_list;
+  vsx_widget* but_show_sequence_group_list;
+
+  vsx_widget* sequence_list;
+  vsx_widget* sequence_group_list;
+
 
   std::vector<vsx_widget*> channels;
   std::map<vsx_string<>,vsx_widget*> channels_map;
   float channels_visible;
   int channels_start;
-  vsx_widget* sequence_list;
   void update_list();
+
+  std::map<vsx_string<>, vsx_string<>> groups;
 
   vsx_widget_sequence_clipboard clipboard;
 
@@ -78,6 +86,8 @@ public:
   virtual void init();
   void i_draw();
   void toggle_channel_visible(vsx_string<>name);
+  void group_show_channels(vsx_string<> group_name);
+  void group_delete(vsx_string<> group_name);
   void close_open_channels();
   void channels_open_at_time();
 

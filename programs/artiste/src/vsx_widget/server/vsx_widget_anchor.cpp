@@ -1372,7 +1372,9 @@ void vsx_widget_anchor::init_menu(bool include_controllers)
   {
     if (p_type == "float") 
     {
-      if (!default_controller.size()) default_controller = "controller_knob";
+      if (!default_controller.size())
+        default_controller = "controller_knob";
+
       if (include_controllers) 
       {
         menu_->commands.adds(VSX_COMMAND_MENU, "set default value", "param_set_default","");

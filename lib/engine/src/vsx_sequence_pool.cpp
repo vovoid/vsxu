@@ -290,12 +290,14 @@ void vsx_sequence_pool::dump_to_command_list(vsx_command_list &savelist)
         savelist.add_raw("seq_pool pseq_inject "+(*it).first+" "+i_parts[0]+" "+i_parts[1]+" "+i_parts[2]);
       }
     }
+
+    vsx_string<> groups = (*it).second->group_dump_all();
+    if (groups.size())
+      savelist.add_raw("seq_pool group_inject "+(*it).first+" "+(*it).second->group_dump_all());
   }
   if (reinit_edit) {
     toggle_edit();
   }
-
-//seq_pool 1=add
 }
 
 

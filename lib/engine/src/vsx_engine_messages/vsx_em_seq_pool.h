@@ -33,6 +33,19 @@ if (cmd == "seq_pool")
     goto process_message_queue_end;
   }
 
+  if (c->parts[1] == "group_list")
+  {
+    cmd_out->add_raw(c->parts[0]+" "+c->parts[1]+"_ok "+sequence_pool.get_selected()->group_dump_all(), VSX_COMMAND_GARBAGE_COLLECT);
+    goto process_message_queue_end;
+  }
+
+  if (c->parts[1] == "group_del")
+  {
+    sequence_pool.get_selected()->group_del(c->parts[2]);
+    cmd_out->add_raw(c->parts[0]+" group_list_ok "+sequence_pool.get_selected()->group_dump_all(), VSX_COMMAND_GARBAGE_COLLECT);
+    goto process_message_queue_end;
+  }
+
 
 
   // ***************************************
@@ -327,6 +340,18 @@ if (cmd == "seq_pool")
     }
   }
 
+  // 0=seq_pool 1=group_inject 2=[seq_pool_name] 3=[data]
+  if (c->parts[1] == "group_inject")
+  {
+    if (!sequence_pool.get_sequence_list_by_name(c->parts[2]))
+      goto process_message_queue_end;
+
+    sequence_pool.get_sequence_list_by_name(c->parts[2])->
+        group_inject(c->parts[3]);
+
+    goto process_message_queue_end;
+
+  }
 
 
   // ***************************************
@@ -368,6 +393,7 @@ if (cmd == "seq_pool")
             cmd_out->add_raw("seq_pool pseq_p_ok remove "+c->parts[3]+" "+c->parts[4], VSX_COMMAND_GARBAGE_COLLECT);
           }
 
+          // 0=seq_pool 1=pseq_p 2=command 3=[component] 4=[param] 5=[data]
           if (c->parts[2] == "save")
           {
             if (c->parts.size() != 6)
@@ -379,6 +405,26 @@ if (cmd == "seq_pool")
               sequence_pool.get_selected()->dump_param(param)
             );
           }
+
+          // 0=seq_pool 1=pseq_p 2=command 3=[component] 4=[param] 5=[group_name]
+          if (c->parts[2] == "group_add")
+          {
+            if (c->parts.size() != 6)
+              goto process_message_queue_end;
+
+            sequence_pool.get_selected()->group_add_param(c->parts[5], c->parts[3]+":"+c->parts[4]);
+            cmd_out->add_raw("seq_pool pseq_p_ok group_add "+c->parts[5]+" "+c->parts[3]+" "+c->parts[4]+" "+
+                sequence_pool.get_selected()->group_dump(c->parts[5]));
+          }
+
+          if (c->parts[2] == "group_del_param")
+          {
+            if (c->parts.size() != 6)
+              goto process_message_queue_end;
+
+            sequence_pool.get_selected()->group_del_param(c->parts[5], c->parts[3]+":"+c->parts[4]);
+          }
+
         }
       }
     }

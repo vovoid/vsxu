@@ -352,6 +352,68 @@ void vsx_param_sequence_list::inject_master_channel(vsx_string<>name, vsx_string
   ((vsx_master_sequence_channel*)master_channel_map[name])->inject(data);
 }
 
+
+void vsx_param_sequence_list::group_add_param(vsx_string<> group_name, vsx_string<> comp_param)
+{
+  if (groups.find(group_name) == groups.end())
+    groups[group_name] = new vsx_param_sequence_group();
+
+  groups[group_name]->add(comp_param);
+}
+
+void vsx_param_sequence_list::group_del_param(vsx_string<> group_name, vsx_string<> comp_param)
+{
+  if (groups.find(group_name) == groups.end())
+    return;
+
+  groups[group_name]->remove(comp_param);
+}
+
+void vsx_param_sequence_list::group_del(vsx_string<> group_name)
+{
+  if (groups.find(group_name) == groups.end())
+    return;
+
+  delete groups[group_name];
+  groups.erase(group_name);
+}
+
+vsx_string<> vsx_param_sequence_list::group_dump(vsx_string<> group_name)
+{
+  if (groups.find(group_name) == groups.end())
+    return "";
+
+  return groups[group_name]->dump();
+}
+
+vsx_string<> vsx_param_sequence_list::group_dump_all()
+{
+  vsx_string<> result;
+  for (auto it = groups.begin(); it != groups.end(); it++)
+  {
+    if (result.size())
+      result += "|";
+    result += (*it).first+"+"+(*it).second->dump();
+  }
+  return result;
+}
+
+void vsx_param_sequence_list::group_inject(vsx_string<>& data)
+{
+  vsx_nw_vector< vsx_string<> > group_list;
+  vsx_string_helper::explode_single(data, '|', group_list);
+  groups.clear();
+  foreach (group_list, i)
+  {
+    vsx_nw_vector< vsx_string<> > group_components;
+    vsx_string_helper::explode_single(group_list[i], '+', group_components);
+    vsx_string<> group_name = group_components[0];
+    groups[group_name] = new vsx_param_sequence_group();
+    groups[group_name]->load(group_components[1]);
+  }
+}
+
+
 void vsx_param_sequence_list::dump_master_channels_to_command_list(vsx_command_list &savelist)
 {
   //TODO: !!!

@@ -387,6 +387,8 @@ void vsx_widget_seq_pool_manager::command_process_back_queue(vsx_command_s *t)
       ||
       t->parts[1] == "seq_list_ok"
       ||
+      t->parts[1] == "group_list_ok"
+      ||
       t->parts[1] == "time_upd"
     )
     {
@@ -458,6 +460,10 @@ void vsx_widget_seq_pool_manager::command_process_back_queue(vsx_command_s *t)
     t->cmd == "pseq_l_dump"
     ||
     t->cmd == "seq_list"
+    ||
+    t->cmd == "group_list"
+    ||
+    t->cmd == "group_del"
     ||
     t->cmd == "propagate_time"
     ||
