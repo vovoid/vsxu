@@ -969,9 +969,12 @@ void vsx_widget_seq_channel::event_mouse_move(vsx_widget_distance distance,
       else if (vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_ctrl())
       {
         items[mouse_clicked_id].increase_total_length( delta_time_movement );
-        if (mouse_clicked_id > 0)
-          items[mouse_clicked_id-1].increase_total_length( -delta_time_movement );
-
+        if (!vsx_input_keyboard.pressed(VSX_SCANCODE_HOME))
+          if (mouse_clicked_id > 0)
+          {
+            items[mouse_clicked_id-1].increase_total_length( -delta_time_movement );
+            other_item_id_to_update = mouse_clicked_id - 1;
+          }
       }
 
       if ( (!vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_ctrl()) || (vsx_input_keyboard.pressed_alt() && vsx_input_keyboard.pressed_ctrl()))
