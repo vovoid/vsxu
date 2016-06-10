@@ -42,8 +42,8 @@
     <ClCompile Include="src\vsx_widget\module_choosers\vsx_widget_module_chooser_list.cpp" />
     <ClCompile Include="src\vsx_widget\sequencer\pool_manager\vsx_widget_seq_pool.cpp" />
     <ClCompile Include="src\vsx_widget\sequencer\vsx_widget_master_sequencer.cpp" />
+    <ClCompile Include="src\vsx_widget\sequencer\vsx_widget_sequence_channel.cpp" />
     <ClCompile Include="src\vsx_widget\sequencer\vsx_widget_sequence_editor.cpp" />
-    <ClCompile Include="src\vsx_widget\sequencer\vsx_widget_seq_chan.cpp" />
     <ClCompile Include="src\vsx_widget\sequencer\vsx_widget_timeline.cpp" />
     <ClCompile Include="src\vsx_widget\server\vsx_widget_anchor.cpp" />
     <ClCompile Include="src\vsx_widget\server\vsx_widget_comp.cpp" />
@@ -83,11 +83,12 @@
     <ClInclude Include="src\vsx_widget\sequencer\pool_manager\vsx_widget_seq_pool.h" />
     <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_master_sequencer.h" />
     <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_param_sequence_item.h" />
+    <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_sequence_channel.h" />
     <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_sequence_clipboard.h" />
     <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_sequence_clipboard_item.h" />
     <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_sequence_editor.h" />
+    <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_sequence_group_tree.h" />
     <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_sequence_tree.h" />
-    <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_seq_chan.h" />
     <ClInclude Include="src\vsx_widget\sequencer\vsx_widget_timeline.h" />
     <ClInclude Include="src\vsx_widget\server\vsx_widget_anchor.h" />
     <ClInclude Include="src\vsx_widget\server\vsx_widget_comp.h" />
@@ -151,7 +152,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>vsx_application.lib;vsx_widget.lib;SDL2.lib;vsx_common.lib;vsx_compression.lib;vsx_engine_graphics.lib;vsx_engine.lib;vsx_plugins.lib;opengl32.lib;glu32.lib;winmm.lib;version.lib;ole32.lib;oleaut32.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vsx_application.lib;vsx_widget.lib;SDL2main.lib;SDL2.lib;vsx_common.lib;vsx_compression.lib;vsx_engine_graphics.lib;vsx_engine.lib;vsx_plugins.lib;opengl32.lib;glu32.lib;winmm.lib;version.lib;ole32.lib;oleaut32.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDirectory)..\..\x64\$(Configuration);$(ProjectDirectory)..\..\dependencies\SDL2_prebuilt_windows\x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -167,7 +168,7 @@ xcopy /Y /E $(SolutionDir)share $(SolutionDir)x64\$(Configuration)\share</Comman
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDirectory)..\..\x64\$(Configuration);$(ProjectDirectory)..\..\dependencies\SDL2_prebuilt_windows\x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vsx_application.lib;vsx_widget.lib;SDL2.lib;vsx_common.lib;vsx_compression.lib;vsx_engine_graphics.lib;vsx_engine.lib;vsx_plugins.lib;opengl32.lib;glu32.lib;winmm.lib;version.lib;ole32.lib;oleaut32.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vsx_application.lib;vsx_widget.lib;SDL2main.lib;SDL2.lib;vsx_common.lib;vsx_compression.lib;vsx_engine_graphics.lib;vsx_engine.lib;vsx_plugins.lib;opengl32.lib;glu32.lib;winmm.lib;version.lib;ole32.lib;oleaut32.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>mkdir $(SolutionDir)x64\$(Configuration)\share

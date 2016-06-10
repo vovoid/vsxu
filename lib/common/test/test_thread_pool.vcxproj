@@ -76,14 +76,14 @@
       <PreprocessorDefinitions>VSXU_STATIC</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>common.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vsx_common.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDirectory)..\..\..\x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDirectory)..\..\..\x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>common.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vsx_common.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\..\..\;$(ProjectDir)\..\include</AdditionalIncludeDirectories>

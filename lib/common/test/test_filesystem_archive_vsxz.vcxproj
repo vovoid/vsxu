@@ -76,7 +76,7 @@
       <PreprocessorDefinitions>VSXU_STATIC</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>common.lib;compression.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vsx_common.lib;compression.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDirectory)..\..\..\x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -87,7 +87,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDirectory)..\..\..\x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>common.lib;compression.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vsx_common.lib;compression.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
