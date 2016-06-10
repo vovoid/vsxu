@@ -79,9 +79,13 @@ public:
   virtual void load_sequence_list();
   bool update_time_from_engine;
   int engine_status;
-  float tstart;
-  float tend;
-  float curtime;
+  float time_left_border;
+  float time_right_border;
+  float time;
+
+  bool time_selection_active = false;
+  float time_selection_left = 0.0f;
+  float time_selection_right = 0.0f;
 
   virtual void init();
   void i_draw();

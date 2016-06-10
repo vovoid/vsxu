@@ -21,22 +21,37 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_WIDGET_TIMELINE_H
-#define VSX_WIDGET_TIMELINE_H
+#pragma once
+
+#include "vsx_widget_sequence_editor.h"
 
 class vsx_widget_timeline : public vsx_widget {
   vsx_vector3<> parentpos;
+
+  float time_from_click_coordinate(vsx_vector2f world)
+  {
+    return
+      MAX(
+        owner->time_left_border
+        +
+        CLAMP( (world.x + size.x/2) / (size.x), 0, 1)
+        *
+        (owner->time_right_border - owner->time_left_border),
+        0
+      );
+  }
+
 public:
+
   vsx_widget_sequence_editor* owner;
 
   void init() {
     auto_move_dir = 0;
   }
 
-  float dd_time;
   float auto_move_dir;
   float a_dist;
-  bool show_wave_data;
+  bool show_wave_data = false;
   void move_time(vsx_vector2f world);
 
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
@@ -76,12 +91,6 @@ public:
 
   vsx_widget_timeline()
   {
-    show_wave_data = false;
   }
 };
 
-
-
-
-
-#endif

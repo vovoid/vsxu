@@ -461,6 +461,11 @@ if (cmd == "seq_pool")
           {
             sequence_pool.get_selected()->insert_line(param, cmd_out, c,"seq_pool ");
           } else
+          // insert absolute
+          if (c->parts[1] == "insert_absolute")
+          {
+            sequence_pool.get_selected()->insert_line_absolute(param, cmd_out, c,"seq_pool ");
+          } else
           //remove
           if (c->parts[1] == "remove")
           {

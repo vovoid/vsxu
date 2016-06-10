@@ -220,6 +220,20 @@ void vsx_param_sequence_list::insert_line(vsx_engine_param* param, vsx_command_l
   }
 }
 
+void vsx_param_sequence_list::insert_line_absolute(vsx_engine_param* param, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix)
+{
+  if (parameter_channel_map.find(param) != parameter_channel_map.end())
+  {
+    vsx_param_sequence* p = parameter_channel_map[param];
+    p->insert_line_absolute(dest,cmd_in,cmd_prefix);
+    if (engine && run_on_edit_enabled)
+    {
+      p->execute(int_vtime);
+    }
+  }
+}
+
+
 void vsx_param_sequence_list::remove_line(vsx_engine_param* param, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix)
 {
   if (parameter_channel_map.find(param) != parameter_channel_map.end())

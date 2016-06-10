@@ -47,14 +47,22 @@
 #include <gl_helper.h>
 
 
-void vsx_widget_timeline::move_time(vsx_vector2f world) {
-  if (owner->engine_status == VSX_ENGINE_STOPPED) {
-    float f =  CLAMP( (world.x + size.x/2) / (size.x), 0, 1);
-    float c_time = owner->tstart+f*(owner->tend - owner->tstart);
-    if (c_time < 0)
-      c_time = 0;
+void vsx_widget_timeline::move_time(vsx_vector2f world)
+{
+  if (owner->engine_status == VSX_ENGINE_STOPPED)
+  {
+    float c_time = time_from_click_coordinate(world);
+    if (vsx_input_keyboard.pressed_ctrl())
+    {
+      owner->time_selection_right = c_time;
+      owner->time_selection_active = true;
+      if (owner->time_selection_right < owner->time_selection_left)
+        owner->time_selection_active = false;
+      return;
+    }
 
-    float a = (c_time-owner->tstart)/(owner->tend-owner->tstart);
+    float a = (c_time - owner->time_left_border)/(owner->time_right_border - owner->time_left_border);
+
     if (a > 0.95) {
       auto_move_dir = 1;
       owner->update_time_from_engine = false;
@@ -66,8 +74,11 @@ void vsx_widget_timeline::move_time(vsx_vector2f world) {
       owner->update_time_from_engine = false;
     } else {
       auto_move_dir = 0;
-      owner->curtime = c_time;
-      command_q_b.add_raw("time_set "+vsx_string_helper::f2s(owner->curtime));
+      owner->time = c_time;
+      owner->time_selection_active = false;
+      owner->time_selection_left = owner->time;
+
+      command_q_b.add_raw("time_set "+vsx_string_helper::f2s(owner->time));
       parent->vsx_command_queue_b(this);
       owner->update_time_from_engine = false;
     }
@@ -80,8 +91,8 @@ void vsx_widget_timeline::move_time(vsx_vector2f world) {
 void vsx_widget_timeline::i_draw()
 {
   parentpos = parent->get_pos_p();
-  float time_diff = owner->tend - owner->tstart;
-  totalsize = (owner->tend - owner->tstart);
+  float time_diff = owner->time_right_border - owner->time_left_border;
+  totalsize = (owner->time_right_border - owner->time_left_border);
 
   float y_mid = parentpos.y + pos.y;
   float y_size = size.y;
@@ -90,27 +101,27 @@ void vsx_widget_timeline::i_draw()
 
   if (auto_move_dir) {
     float dtime = vsx_widget_time::get_instance()->get_dtime();
-    float curtime = owner->curtime + auto_move_dir * dtime * time_diff*10.0f*a_dist;
-    float tstart = owner->tstart + auto_move_dir*dtime*time_diff*10.0f*a_dist;
-    float tend = owner->tend + auto_move_dir*dtime*time_diff*10.0f*a_dist;
+    float curtime = owner->time + auto_move_dir * dtime * time_diff*10.0f*a_dist;
+    float tstart = owner->time_left_border + auto_move_dir*dtime*time_diff*10.0f*a_dist;
+    float tend = owner->time_right_border + auto_move_dir*dtime*time_diff*10.0f*a_dist;
     if (curtime >= 0) {
-      owner->curtime = curtime;
-      owner->tstart = tstart;
-      owner->tend = tend;
+      owner->time = curtime;
+      owner->time_left_border = tstart;
+      owner->time_right_border = tend;
     }
-    command_q_b.add_raw("time_set "+vsx_string_helper::f2s(owner->curtime));
+    command_q_b.add_raw("time_set "+vsx_string_helper::f2s(owner->time));
     parent->vsx_command_queue_b(this);
   }
 
   glBegin(GL_QUADS);
-    if (owner->tstart < 0) {
+    if (owner->time_left_border < 0) {
       glColor4f(0.4,0.3,0.3f,0.5f);
-      ff = size.x*(fabs(owner->tstart)/totalsize);
+      ff = size.x*(fabs(owner->time_left_border)/totalsize);
       glVertex2f(parentpos.x+pos.x-size.x*0.5f, y_mid+y_size_half);
       glVertex2f(parentpos.x+pos.x-size.x*0.5f+ff, y_mid+y_size_half);
       glVertex2f(parentpos.x+pos.x-size.x*0.5f+ff, y_mid-y_size_half);
       glVertex2f(parentpos.x+pos.x-size.x*0.5f, y_mid-y_size_half);
-      if (owner->tend > 0) {
+      if (owner->time_right_border > 0) {
         glColor4f(0.3,0.4,0.3,0.5f);
         glVertex2f(parentpos.x+pos.x-size.x*0.5f+ff, y_mid+y_size_half);
         glVertex2f(parentpos.x+pos.x+size.x*0.5f, y_mid+y_size_half);
@@ -133,17 +144,18 @@ void vsx_widget_timeline::i_draw()
 
   draw_box_border(vsx_vector3<>(parentpos.x+pos.x-size.x*0.5,y_mid-y_size_half), vsx_vector3<>(size.x,y_size), dragborder*0.5);
 
-  levelstart = ((float)(int)(trunc(owner->tstart+(owner->tstart>=0.0?0.5:-0.5))) - owner->tstart)/totalsize;
+  levelstart = ((float)(int)(trunc(owner->time_left_border+(owner->time_left_border>=0.0?0.5:-0.5))) - owner->time_left_border)/totalsize;
 
   levelstart = 0;
 
   font.color.a = 0.8f;
 
+  // vertical markings per second
   float one_div_totalsize_times_sizex = 1.0f / totalsize * size.x;
-  for (int i = (int)owner->tstart; i < (int)(owner->tend)+1; ++i)
+  for (int i = (int)owner->time_left_border; i < (int)(owner->time_right_border)+1; ++i)
   {
     glColor3f(0.5,0.5,0.5);
-    float x =  (float)(i-owner->tstart) * one_div_totalsize_times_sizex;
+    float x =  (float)(i-owner->time_left_border) * one_div_totalsize_times_sizex;
     if (x > 0)
     {
       x += parentpos.x+pos.x - size.x*0.5f+levelstart*size.x;
@@ -155,14 +167,39 @@ void vsx_widget_timeline::i_draw()
     }
   }
 
+  float y_top = y_mid+y_size*0.416666667;
+  float y_bottom = y_mid-y_size*0.416666667;
+
+  // current selection area
+  if (owner->time_selection_active)
+  {
+    float left_selection_factor = ((owner->time_selection_left - owner->time_left_border) /
+                                 (owner->time_right_border - owner->time_left_border))
+                                * size.x
+        + parentpos.x+pos.x-size.x * 0.5f;
+    float right_selection_factor = ((owner->time_selection_right - owner->time_left_border) /
+                                 (owner->time_right_border - owner->time_left_border))
+                                * size.x
+        + parentpos.x+pos.x-size.x * 0.5f;
+    glColor4f(0.7, 0.7, 1.0, 0.2);
+    glBegin(GL_QUADS);
+      glVertex2f( left_selection_factor, y_top );
+      glVertex2f( right_selection_factor, y_top );
+      glVertex2f( right_selection_factor, y_bottom);
+      glVertex2f( left_selection_factor, y_bottom);
+    glEnd();
+  }
+
+
+  // line denoting current time
   glColor3f(1,1,1);
-  float f = ((owner->curtime - owner->tstart) /
-             (owner->tend - owner->tstart))
+  float current_time_factor = ((owner->time - owner->time_left_border) /
+             (owner->time_right_border - owner->time_left_border))
             * size.x;
 
   glBegin(GL_LINES);
-    glVertex2f(parentpos.x+pos.x-size.x*0.5f+f,y_mid+y_size*0.416666667);
-    glVertex2f(parentpos.x+pos.x-size.x*0.5f+f,y_mid-y_size*0.416666667);
+    glVertex2f(parentpos.x+pos.x-size.x*0.5f+current_time_factor, y_top);
+    glVertex2f(parentpos.x+pos.x-size.x*0.5f+current_time_factor, y_bottom);
   glEnd();
 
   draw_waveform_data( y_mid, y_size_half );
@@ -171,11 +208,8 @@ void vsx_widget_timeline::i_draw()
 
 void vsx_widget_timeline::draw_waveform_data(float y_mid, float y_size_half)
 {
-  // ************************************************************
-  // sound waveform display
-  // ************************************************************
-  if (!show_wave_data)
-    return;
+  req(show_wave_data);
+  req(!owner->time_selection_active);
 
   vsx_widget_server* server = (vsx_widget_server*)owner->get_server();
   vsx_engine* engine = (vsx_engine*)(server->engine);
@@ -192,10 +226,10 @@ void vsx_widget_timeline::draw_waveform_data(float y_mid, float y_size_half)
       // assuming we have 44100 samples per second
       float x_start = parentpos.x+pos.x-size.x*0.5f;
       float x_end   = parentpos.x+pos.x+size.x*0.5f;
-      float t_start = owner->tstart;
-      float t_end = owner->tend;
+      float t_start = owner->time_left_border;
+      float t_end = owner->time_right_border;
       size_t data_end = (size_t) (t_end * 44100.0f);
-      if (owner->tstart < 0)
+      if (owner->time_left_border < 0)
       {
         x_start += fabs(t_start / (t_end - t_start)) * size.x;
         //data_end -= fabs(t_start) * 44100.0f;
@@ -242,7 +276,7 @@ void vsx_widget_timeline::draw_waveform_data(float y_mid, float y_size_half)
 
 bool vsx_widget_timeline::event_key_down(uint16_t key)
 {
-  float dt = (owner->tend-owner->tstart)*0.5;
+  float dt = (owner->time_right_border-owner->time_left_border)*0.5;
   switch(key) {
     case VSX_SCANCODE_A:
     {
@@ -261,39 +295,39 @@ bool vsx_widget_timeline::event_key_down(uint16_t key)
 
   switch(key) {
     case VSX_SCANCODE_F:
-        owner->tstart += dt*0.03;
-        owner->tend += dt*0.03;
+        owner->time_left_border += dt*0.03;
+        owner->time_right_border += dt*0.03;
         return false;
     break;
 
     case VSX_SCANCODE_S:
-        owner->tstart -= dt*0.03;
-        owner->tend -= dt*0.03;
+        owner->time_left_border -= dt*0.03;
+        owner->time_right_border -= dt*0.03;
         return false;
     break;
 
     case VSX_SCANCODE_W:
-        if (owner->curtime < owner->tstart) {
-          owner->tstart = owner->curtime;
-          owner->tend = owner->curtime + dt*2;
+        if (owner->time < owner->time_left_border) {
+          owner->time_left_border = owner->time;
+          owner->time_right_border = owner->time + dt*2;
         } else
-        if (owner->curtime > owner->tend) {
-          owner->tstart = owner->curtime-dt*2;
-          owner->tend = owner->curtime;
+        if (owner->time > owner->time_right_border) {
+          owner->time_left_border = owner->time-dt*2;
+          owner->time_right_border = owner->time;
         }
-        owner->tstart -= (owner->curtime-owner->tstart)/(dt)*dt*0.03;
-        owner->tend += (owner->tend-owner->curtime)/(dt)*dt*0.03;
+        owner->time_left_border -= (owner->time-owner->time_left_border)/(dt)*dt*0.03;
+        owner->time_right_border += (owner->time_right_border-owner->time)/(dt)*dt*0.03;
         return false;
     break;
 
     case VSX_SCANCODE_R:
-      if (owner->curtime < owner->tstart || owner->curtime > owner->tend) {
-        owner->tstart = owner->curtime - dt;
-        owner->tend = owner->curtime + dt;
+      if (owner->time < owner->time_left_border || owner->time > owner->time_right_border) {
+        owner->time_left_border = owner->time - dt;
+        owner->time_right_border = owner->time + dt;
       }
 
-      owner->tstart += (owner->curtime-owner->tstart)/(dt)*dt*0.03;
-      owner->tend -= (owner->tend-owner->curtime)/(dt)*dt*0.03;
+      owner->time_left_border += (owner->time-owner->time_left_border)/(dt)*dt*0.03;
+      owner->time_right_border -= (owner->time_right_border-owner->time)/(dt)*dt*0.03;
       return false;
     break;
   }

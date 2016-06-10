@@ -7,7 +7,9 @@ class vsx_widget_sequence_clipboard_item
 public:
   vsx_string<> component;
   vsx_string<> parameter;
-  float value;
+  vsx_string<> value;
+  float time_offset;
+  size_t interpolation_type;
 };
 
 #endif

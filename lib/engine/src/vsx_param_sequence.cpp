@@ -29,12 +29,6 @@
 
 vsx_bezier_calc<float> bez_calc;
 
-vsx_param_sequence_item::vsx_param_sequence_item()
-{
-  total_length = 1.0f;
-  value = "";
-  interpolation = 1;
-}
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
@@ -320,6 +314,7 @@ void vsx_param_sequence::inject(vsx_string<>ij)
     items.push_back(pa);
     //printf("inject delay: %s\n",pld[0].c_str());
   }
+  recalculate_accum_times();
 }
 
 
@@ -350,6 +345,7 @@ void vsx_param_sequence::rescale_time(float start, float scale)
       }
     }
   }
+  recalculate_accum_times();
 }
 
 bool vsx_param_sequence::has_keyframe_at_time(float time, float tolerance)
@@ -426,7 +422,10 @@ vsx_param_sequence::vsx_param_sequence(int p_type,vsx_engine_param* param)
     }
     break;
   }
+  recalculate_accum_times();
 }
+
+
 void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix)
 {
   VSX_UNUSED(dest);
@@ -453,12 +452,14 @@ void vsx_param_sequence::update_line(vsx_command_list* dest, vsx_command_s* cmd_
     pa.handle2 = vsx_vector3_helper::from_string<float>(pld_l[2]);
   }
 
-  items[ vsx_string_helper::s2i(cmd_in->parts[7]) ] = pa;
+  items[ vsx_string_helper::s2i(cmd_in->parts[7]) ] = std::move(pa);
   cur_val = to_val = "";
   last_time = 0.0;
   line_time = 0.0;
   line_cur = 0;
   p_time = 0;
+
+  recalculate_accum_times();
 }
 
 void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix)
@@ -508,8 +509,69 @@ void vsx_param_sequence::insert_line(vsx_command_list* dest, vsx_command_s* cmd_
   line_cur = 0;
   p_time = 0;
   dest->add_raw(cmd_prefix+"pseq_r_ok insert "+cmd_in->parts[2]+" "+param->name+" "+cmd_in->parts[4]+" "+cmd_in->parts[5]+" "+cmd_in->parts[6]+" "+cmd_in->parts[7]);
-  //printf("pseql_r insert %s\n",base64_decode(cmd_in->parts[4]).c_str());
+
+  recalculate_accum_times();
 }
+
+void vsx_param_sequence::insert_line_absolute(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix)
+{
+  total_time = 0.0f; // reset total time for re-calculation
+
+  vsx_string<> value = vsx_string_helper::base64_decode(cmd_in->parts[4]);
+  float time = vsx_string_helper::s2f(cmd_in->parts[5]);
+  size_t interpolation = vsx_string_helper::s2i( cmd_in->parts[6]);
+
+  vsx_param_sequence_item pa;
+  pa.interpolation = interpolation;
+  pa.value = std::move(value);
+
+  if (pa.interpolation == 4) {
+    vsx_nw_vector<vsx_string<> > pld_l;
+    vsx_string<>pdeli_l = ":";
+    vsx_string<>vtemp = pa.value;
+    vsx_string_helper::explode(vtemp,pdeli_l,pld_l);
+    pa.value = pld_l[0];
+    pa.handle1 = vsx_vector3_helper::from_string<float>(pld_l[1]);
+    pa.handle2 = vsx_vector3_helper::from_string<float>(pld_l[2]);
+  }
+
+  bool in_between = false;
+  for (auto it = items.begin(); it != items.end(); it++)
+  {
+    if ( (*it).accum_time + (*it).total_length < time )
+      continue;
+
+    float prev_total_length = (*it).total_length;
+    (*it).total_length = time - (*it).accum_time;
+
+
+    pa.total_length = prev_total_length - (*it).total_length;
+    it++;
+    items.insert(it, pa);
+
+    in_between = true;
+    break;
+  }
+
+  if (!in_between)
+  {
+    items[items.size() - 1].total_length = time - items[items.size() - 1].accum_time;
+    pa.total_length = 3.0;
+    items.push_back(pa);
+  }
+
+  cur_val = to_val = "";
+  last_time = 0.0;
+  line_time = 0.0;
+  line_cur = 0;
+  p_time = 0;
+
+  dest->add_raw(cmd_prefix+"pseq_r_ok insert_absolute "+cmd_in->parts[2]+" "+param->name+" "+cmd_in->parts[4]+" "+cmd_in->parts[5]+" "+cmd_in->parts[6]);
+  recalculate_accum_times();
+  calculate_total_time(true);
+}
+
+
 
 void vsx_param_sequence::remove_line(vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix)
 {
@@ -553,4 +615,5 @@ void vsx_param_sequence::remove_line(vsx_command_list* dest, vsx_command_s* cmd_
   p_time = 0;
 
   dest->add_raw(cmd_prefix+"pseq_r_ok remove "+cmd_in->parts[2]+" "+cmd_in->parts[3]+" "+cmd_in->parts[4]);
+  recalculate_accum_times();
 }

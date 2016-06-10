@@ -168,6 +168,11 @@ if (cmd == "pseq_r")
       if (c->parts[1] == "insert") {
         sequence_list.insert_line(param, cmd_out, c);
       } else
+      // insert absolute
+      if (c->parts[1] == "insert_absolute")
+      {
+        sequence_list.insert_line_absolute(param, cmd_out, c);
+      } else
       //remove
       if (c->parts[1] == "remove") {
         sequence_list.remove_line(param, cmd_out, c);

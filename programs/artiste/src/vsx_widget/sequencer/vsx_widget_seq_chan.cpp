@@ -493,56 +493,37 @@ void vsx_widget_seq_channel::event_mouse_up(vsx_widget_distance distance,
   vsx_widget::event_mouse_up(distance, coords, button);
 }
 
-void vsx_widget_seq_channel::create_keyframe(float time, float value)
+void vsx_widget_seq_channel::create_keyframe(float time, vsx_string<> value, size_t interpolation_type)
 {
-  int item_action_id = -1;
-  float i_distance = 0.0f;
-  float accum_time = 0.0f;
-  for (size_t i = 0; i < items.size()-1; i++)
-  {
-    if (accum_time + items[i].get_total_length() > time)
-    {
-      i_distance = time - accum_time;
-      item_action_id = i;
-      break;
-    }
-
-    accum_time += items[i].get_total_length();
-  }
-  if (item_action_id == -1)
-  {
-    item_action_id = items.size()-1;
-    i_distance = time - accum_time;
-  }
-
   server_message(
-        "pseq_r insert",
-        vsx_string_helper::base64_encode( vsx_string_helper::f2s(value) )  + " " +
-        vsx_string_helper::f2s(i_distance) + " " +
-        "1 " +
-        vsx_string_helper::i2s(item_action_id)
+        "pseq_r insert_absolute",
+        vsx_string_helper::base64_encode( value )  + " " + // 4
+        vsx_string_helper::f2s(time) + " " + // 5
+        vsx_string_helper::i2s(interpolation_type) + " " // 6
   );
 }
 
-bool vsx_widget_seq_channel::get_keyframe_value(float time, float tolerance, float& result)
+void vsx_widget_seq_channel::get_keyframe_value(float time_start, float time_end, vsx_nw_vector< vsx_string<> >& values, vsx_ma_vector<float>& time_offsets, vsx_ma_vector<size_t>& interpolation_types)
 {
   float accum_time = 0.0f;
   for (size_t i = 0; i < items.size(); i++)
   {
     if
     (
-      time > accum_time - tolerance
+      accum_time > time_start
       &&
-      time < accum_time + tolerance
+      accum_time < time_end
     )
     {
-      result = items[i].convert_to_float( items[i].get_value() );
-      return true;
+      values.push_back( items[i].get_value_by_interpolation() );
+      time_offsets.push_back( accum_time - time_start );
+      interpolation_types.push_back( items[i].get_interpolation() );
     }
 
     accum_time += items[i].get_total_length();
   }
-  return false;
+  if (interpolation_types.size())
+    interpolation_types[interpolation_types.size() - 1] = 1;
 }
 
 void vsx_widget_seq_channel::event_mouse_double_click(
@@ -1373,33 +1354,34 @@ void vsx_widget_seq_channel::command_process_back_queue(vsx_command_s *t)
         }
       ++it;
       vsx_widget_param_sequence_item pa;
+
       pa.set_value( vsx_string_helper::base64_decode(t->parts[4]) ); //?
       pa.set_total_length( items[action_item].get_total_length() - vsx_string_helper::s2f(t->parts[5]) );
       items[action_item].set_total_length( vsx_string_helper::s2f(t->parts[5]) );
       pa.set_interpolation( vsx_string_helper::s2i( t->parts[6] ) );
+
       if (pa.get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_BEZIER)
-      {
-        vsx_nw_vector<vsx_string<> > pld_l;
-        vsx_string<>pdeli_l = ":";
-        vsx_string<>vtemp = vsx_string_helper::base64_decode(t->parts[4]);
-        vsx_string_helper::explode(vtemp, pdeli_l, pld_l);
-        pa.set_value( pld_l[0] );
-        pa.set_handle1( vsx_vector3_helper::from_string<float>(pld_l[1]) );
-        pa.set_handle2( vsx_vector3_helper::from_string<float>(pld_l[2]) );
-      }
-      else
-      {
-        pa.set_value( vsx_string_helper::base64_decode(t->parts[4]) );
-      }
+        set_value_bezier( vsx_string_helper::base64_decode(t->parts[4]), pa );
 
       items.insert(it, pa);
+      return;
     }
-    else if (t->parts[1] == "remove")
+
+    if (t->parts[1] == "insert_absolute")
+    {
+      vsx_string<> value = vsx_string_helper::base64_decode(t->parts[4]);
+      float time = vsx_string_helper::s2f(t->parts[5]);
+      size_t interpolation = vsx_string_helper::s2i(t->parts[6]);
+      insert_absolute( time, value, interpolation );
+      return;
+    }
+
+    if (t->parts[1] == "remove")
     {
       long i_td = vsx_string_helper::s2i(t->parts[4]);
       i_remove_line(i_td);
+      return;
     }
-    return;
   }
 
 
@@ -1530,9 +1512,9 @@ void vsx_widget_seq_channel::i_draw()
 
   if (owner)
   {
-    view_time_start = owner->tstart;
-    view_time_end = owner->tend;
-    cur_time = owner->curtime;
+    view_time_start = owner->time_left_border;
+    view_time_end = owner->time_right_border;
+    cur_time = owner->time;
   }
   parentpos = parent->get_pos_p();
 
@@ -1994,6 +1976,35 @@ void vsx_widget_seq_channel::i_draw()
       font.print(passive_mouse_pos+vsx_vector3<>(0.001,0.002), passive_value, 0.003);
       font.print(passive_mouse_pos+vsx_vector3<>(-0.015,-0.002), passive_time, 0.003);
     }
+
+
+
+    // draw time-selection
+    if (owner->time_selection_active)
+    {
+      float y_mid = parentpos.y + pos.y;
+      float y_size = size.y;
+      float y_top = y_mid+y_size*0.5;
+      float y_bottom = y_mid-y_size*0.5;
+      float left_selection_factor = ((owner->time_selection_left - owner->time_left_border) /
+                                   (owner->time_right_border - owner->time_left_border))
+                                  * size.x
+          + parentpos.x+pos.x-size.x * 0.5f;
+      float right_selection_factor = ((owner->time_selection_right - owner->time_left_border) /
+                                   (owner->time_right_border - owner->time_left_border))
+                                  * size.x
+          + parentpos.x+pos.x-size.x * 0.5f;
+      glColor4f(0.7, 0.7, 1.0, 0.2);
+      glBegin(GL_QUADS);
+        glVertex2f( left_selection_factor, y_top );
+        glVertex2f( right_selection_factor, y_top );
+        glVertex2f( right_selection_factor, y_bottom);
+        glVertex2f( left_selection_factor, y_bottom);
+      glEnd();
+    }
+
+
+
   } // if channel type is parameter
   if (!is_controller)
   {

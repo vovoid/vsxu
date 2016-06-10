@@ -60,9 +60,9 @@
 void vsx_widget_sequence_editor::init()
 {
   update_time_from_engine = true;
-  tstart = -1;
-  curtime = 0;
-  tend = 20;
+  time_left_border = -1;
+  time = 0;
+  time_right_border = 20;
 
   support_interpolation = true;
   allow_resize_x = true;
@@ -330,7 +330,15 @@ void vsx_widget_sequence_editor::close_open_channels()
 void vsx_widget_sequence_editor::channels_open_at_time()
 {
   close_open_channels();
-  command_q_b.add_raw("pseq_inject_get_keyframe_at_time "+ vsx_string_helper::f2s(curtime) + " 0.1");
+  if (!time_selection_active)
+    command_q_b.add_raw("pseq_inject_get_keyframe_at_time "+ vsx_string_helper::f2s(time) + " 0.1");
+
+  if (time_selection_active)
+  {
+    float selection_width = fabs(time_selection_right - time_selection_left);
+    command_q_b.add_raw("pseq_inject_get_keyframe_at_time "+ vsx_string_helper::f2s(time + selection_width * 0.5) + " " + vsx_string_helper::f2s( selection_width * 0.5 ));
+  }
+
   parent->vsx_command_queue_b(this);
   interpolate_size();
 }
@@ -394,26 +402,26 @@ void vsx_widget_sequence_editor::group_delete(vsx_string<> group_name)
 }
 
 void vsx_widget_sequence_editor::check_timeline() {
-    if (curtime < tstart) {
-      float dd = tstart - curtime;
-      tstart -= dd;
-      tend -= dd;
+    if (time < time_left_border) {
+      float dd = time_left_border - time;
+      time_left_border -= dd;
+      time_right_border -= dd;
     } else
-    if (curtime > tend) {
-      float dd = curtime - tend;
-      tstart += dd;
-      tend += dd;
+    if (time > time_right_border) {
+      float dd = time - time_right_border;
+      time_left_border += dd;
+      time_right_border += dd;
     }
-    float a = (curtime-tstart)/(tend-tstart);
+    float a = (time-time_left_border)/(time_right_border-time_left_border);
     if (a > 0.8) {
-      float dd = (a-0.8)*(tend-tstart);
-      tend += dd;
-      tstart += dd;
+      float dd = (a-0.8)*(time_right_border-time_left_border);
+      time_right_border += dd;
+      time_left_border += dd;
     } else
     if (a < 0.1) {
-      float dd = ((1-a*4)*0.25)*(tend-tstart);
-      tend -= dd;
-      tstart -= dd;
+      float dd = ((1-a*4)*0.25)*(time_right_border-time_left_border);
+      time_right_border -= dd;
+      time_left_border -= dd;
     }
 }
 
@@ -440,14 +448,20 @@ void vsx_widget_sequence_editor::remove_master_channel_items_with_name(vsx_strin
 
 void vsx_widget_sequence_editor::action_copy()
 {
+  req(time_selection_active);
+
   clipboard.clear();
   for (size_t i = 0; i < channels.size(); i++)
   {
     vsx_widget_seq_channel& channel = *((vsx_widget_seq_channel*)channels[i]);
-    float result;
-    if ( !channel.get_keyframe_value(curtime, 0.1, result) )
-      continue;
-    clipboard.add( channel.channel_name, channel.param_name, result );
+    vsx_nw_vector< vsx_string<> > values;
+    vsx_ma_vector<float> time_offsets;
+    vsx_ma_vector<size_t> interpolation_types;
+
+    channel.get_keyframe_value(time_selection_left, time_selection_right, values, time_offsets, interpolation_types);
+
+    foreach (values, i)
+      clipboard.add( channel.channel_name, channel.param_name, values[i], time_offsets[i], interpolation_types[i] );
   }
 }
 
@@ -457,7 +471,7 @@ void vsx_widget_sequence_editor::action_paste()
   for (size_t i = 0; i < items.size(); i++)
   {
     vsx_widget_seq_channel& channel = *((vsx_widget_seq_channel*)channels_map[items[i].component+":"+items[i].parameter]);
-    channel.create_keyframe( curtime, items[i].value );
+    channel.create_keyframe( time + items[i].time_offset, items[i].value, items[i].interpolation_type );
   }
 }
 
@@ -719,7 +733,7 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
   } else
   if (t->cmd == "time_upd") {
     if (update_time_from_engine) {
-      curtime = vsx_string_helper::s2f(t->parts[1]);
+      time = vsx_string_helper::s2f(t->parts[1]);
       check_timeline();
     }
     engine_status = vsx_string_helper::s2i(t->parts[2]);

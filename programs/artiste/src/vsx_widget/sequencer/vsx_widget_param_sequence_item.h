@@ -23,20 +23,29 @@ enum sequence_param_type_t
 
 class vsx_widget_param_sequence_item
 {
-  int type; // 0 = param, 1 = master
-  sequence_param_type_t sequence_param_type;
-  float total_length; // in seconds (float)
-  float length; // for master channel, this is the length of the block
-  vsx_string<>value; // if master, this is the name of the sequence_pool
-  size_t interpolation;
+  int type = 0; // 0 = param, 1 = master
+  sequence_param_type_t sequence_param_type = pt_float;
+  float total_length = 1.0f; // in seconds (float)
+  float length = 0.1f; // for master channel, this is the length of the block
+  float accum_time = 0.0f;
+  vsx_string<> value; // if master, this is the name of the sequence_pool
+  size_t interpolation = 0;
   vsx_vector3<> handle1;
   vsx_vector3<> handle2;
 
   // child controller for setting the sequence for a master channel item
-  vsx_widget* master_channel_time_sequence;
+  vsx_widget* master_channel_time_sequence = 0x0;
   vsx_string<>pool_name;
 
 public:
+
+  vsx_widget_param_sequence_item()
+  {
+    handle1.x = 0.1f;
+    handle1.y = 1.5f;
+    handle2.x = 0.9f;
+    handle2.y = 1.5f;
+  }
 
 
   int get_type()
@@ -123,6 +132,17 @@ public:
     if (length < 0.0f)
       length = 0.0f;
   }
+
+
+  float get_accum_time()
+  {
+    return accum_time;
+  }
+
+  void set_accum_time(float n) {
+    accum_time = n;
+  }
+
 
 
 
@@ -264,23 +284,6 @@ public:
   }
 
 
-  vsx_widget_param_sequence_item()
-    :
-    type(0),
-    sequence_param_type(pt_float),
-    total_length(1.0),
-    length(0.1),
-    value("")
-  {
-    interpolation = 0;
-
-    handle1.x = 0.1f;
-    handle1.y = 1.5f;
-    handle2.x = 0.9f;
-    handle2.y = 1.5f;
-
-    master_channel_time_sequence = 0x0;
-  }
 };
 
 

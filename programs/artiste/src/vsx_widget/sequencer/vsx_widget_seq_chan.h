@@ -26,6 +26,7 @@
 
 #include "sequencer/vsx_widget_sequence_editor.h"
 #include "vsx_widget_param_sequence_item.h"
+#include <math/vector/vsx_vector3_helper.h>
 
 #define VSX_WIDGET_SEQ_CHANNEL_TYPE_PARAMETER 0
 #define VSX_WIDGET_SEQ_CHANNEL_TYPE_MASTER 1
@@ -84,14 +85,7 @@ class vsx_widget_seq_channel : public vsx_widget
   int num_rows;
   bool edit_mode;
   vsx_string<>edit_str;
-  void server_message(vsx_string<>msg,vsx_string<>data)
-  {
-    command_q_b.add_raw(msg+" "+channel_name+" "+param_name+" "+data);
-    parent->vsx_command_queue_b(this);
-  }
-  void i_remove_line(long i_td);
 
-  void send_parent_dump();
 
   // temp values for color calculations
   static vsx_color<> col_temp_1;
@@ -102,6 +96,76 @@ class vsx_widget_seq_channel : public vsx_widget
   vsx_widget* manual_time_input_dialog;
 
   static vsx_texture<>* mtex_blob;
+
+
+  void server_message(vsx_string<>msg,vsx_string<>data)
+  {
+    command_q_b.add_raw(msg+" "+channel_name+" "+param_name+" "+data);
+    parent->vsx_command_queue_b(this);
+  }
+
+  void i_remove_line(long i_td);
+
+  void send_parent_dump();
+
+  void recalculate_accum_times()
+  {
+    float accum_time = 0.0f;
+    foreach(items, i)
+    {
+      items[i].set_accum_time( accum_time );
+      accum_time += items[i].get_total_length();
+    }
+  }
+
+  void set_value_bezier(vsx_string<> value, vsx_widget_param_sequence_item& pa)
+  {
+    vsx_nw_vector<vsx_string<> > pld_l;
+    vsx_string<> pdeli_l = ":";
+    vsx_string_helper::explode(value, pdeli_l, pld_l);
+    pa.set_value( pld_l[0] );
+    pa.set_handle1( vsx_vector3_helper::from_string<float>(pld_l[1]) );
+    pa.set_handle2( vsx_vector3_helper::from_string<float>(pld_l[2]) );
+  }
+
+  void insert_absolute(float time, vsx_string<>& value, size_t interpolation)
+  {
+    recalculate_accum_times();
+
+    vsx_widget_param_sequence_item pa;
+    pa.set_interpolation( interpolation );
+    pa.set_value( value );
+
+
+    if (pa.get_interpolation() == VSX_WIDGET_PARAM_SEQUENCE_INTERPOLATION_BEZIER)
+      set_value_bezier( value, pa );
+
+    bool in_between = false;
+    for (auto it = items.begin(); it != items.end(); it++)
+    {
+      if ( (*it).get_accum_time() + (*it).get_total_length() < time )
+        continue;
+
+      float prev_total_length = (*it).get_total_length();
+      (*it).set_total_length( time - (*it).get_accum_time() );
+
+      pa.set_total_length( prev_total_length - (*it).get_total_length() );
+      it++;
+      items.insert(it, pa);
+      in_between = true;
+      break;
+    }
+
+    if (!in_between)
+    {
+      items[items.size() - 1].set_total_length( time - items[items.size() - 1].get_accum_time() );
+      pa.set_total_length( 3.0 );
+      items.push_back(pa);
+    }
+
+    recalculate_accum_times();
+  }
+
 
 public:
   bool hidden_by_sequencer;
@@ -150,8 +214,8 @@ public:
 
   void draw_chan_box(float t0, float y0, vsx_string<> display_value, vsx_color<> box_color, float c_size = SEQ_CHAN_BOX_SIZE);
   void draw_selection_box(float t0, float y0);
-  void create_keyframe(float time, float value);
-  bool get_keyframe_value(float time, float tolerance, float& result);
+  void create_keyframe(float time, vsx_string<> value, size_t interpolation_type);
+  void get_keyframe_value(float time_start, float time_end, vsx_nw_vector< vsx_string<> >& values, vsx_ma_vector<float>& time_offsets, vsx_ma_vector<size_t>& interpolation_types);
 
 
   void drop_master_channel(vsx_widget_distance distance, vsx_widget_coords coords, vsx_string<>name);
