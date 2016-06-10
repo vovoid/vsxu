@@ -28,14 +28,14 @@
 #include "vsx_widget_param_sequence_item.h"
 #include <math/vector/vsx_vector3_helper.h>
 
-#define VSX_WIDGET_SEQ_CHANNEL_TYPE_PARAMETER 0
-#define VSX_WIDGET_SEQ_CHANNEL_TYPE_MASTER 1
+#define vsx_widget_sequence_channel_TYPE_PARAMETER 0
+#define vsx_widget_sequence_channel_TYPE_MASTER 1
 
 #define SEQ_CHAN_BOX_SIZE 0.0014f
 #define SEQ_CHAN_BOX_SIZE05 0.0007f
 
 
-class vsx_widget_seq_channel : public vsx_widget
+class vsx_widget_sequence_channel : public vsx_widget
 {
 
   float view_time_start, view_time_end, cur_time;
@@ -216,7 +216,7 @@ public:
   void draw_selection_box(float t0, float y0);
   void create_keyframe(float time, vsx_string<> value, size_t interpolation_type);
   void get_keyframe_value(float time_start, float time_end, vsx_nw_vector< vsx_string<> >& values, vsx_ma_vector<float>& time_offsets, vsx_ma_vector<size_t>& interpolation_types);
-
+  void clear_selection(float time_start, float time_end);
 
   void drop_master_channel(vsx_widget_distance distance, vsx_widget_coords coords, vsx_string<>name);
 
@@ -225,7 +225,7 @@ public:
   void set_bezier_time_aligned_handles();
   void align_bezier_time_handles();
 
-  vsx_widget_seq_channel()
+  vsx_widget_sequence_channel()
     :
       view_time_start(0.0f),
       view_time_end(0.0f),
@@ -250,7 +250,7 @@ public:
       hidden_by_sequencer(false),
       is_controller(false),
       owner(0),
-      channel_type(VSX_WIDGET_SEQ_CHANNEL_TYPE_PARAMETER),
+      channel_type(vsx_widget_sequence_channel_TYPE_PARAMETER),
       totalsize(0.0f),
       ff(0.0f),
       levelstart(0.0f),

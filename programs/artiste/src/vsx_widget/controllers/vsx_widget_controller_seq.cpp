@@ -22,7 +22,7 @@
 */
 
 #include "vsx_widget_controller_seq.h"
-#include "sequencer/vsx_widget_seq_chan.h"
+#include "sequencer/vsx_widget_sequence_channel.h"
 
 
 void vsx_widget_controller_sequence::init()
@@ -31,7 +31,7 @@ void vsx_widget_controller_sequence::init()
   init_children();
   init_run = true;
   set_size(vsx_vector3<>(0.12f,0.1f));
-  seq_chan = add(new vsx_widget_seq_channel,"chan");
+  seq_chan = add(new vsx_widget_sequence_channel,"chan");
 
   if (size_controlled_from_outside)
   	seq_chan->size = size;
@@ -41,11 +41,11 @@ void vsx_widget_controller_sequence::init()
   seq_chan->target_size = seq_chan->size;
   seq_chan->init();
   seq_chan->visible = 1;
-  ((vsx_widget_seq_channel*)seq_chan)->set_view_time(-0.05f, 1.05f);
-  ((vsx_widget_seq_channel*)seq_chan)->hidden_by_sequencer = false;
-  ((vsx_widget_seq_channel*)seq_chan)->y_start = -0.15f;
-  ((vsx_widget_seq_channel*)seq_chan)->y_end = 1.1f;
-  ((vsx_widget_seq_channel*)seq_chan)->is_controller = true;
+  ((vsx_widget_sequence_channel*)seq_chan)->set_view_time(-0.05f, 1.05f);
+  ((vsx_widget_sequence_channel*)seq_chan)->hidden_by_sequencer = false;
+  ((vsx_widget_sequence_channel*)seq_chan)->y_start = -0.15f;
+  ((vsx_widget_sequence_channel*)seq_chan)->y_end = 1.1f;
+  ((vsx_widget_sequence_channel*)seq_chan)->is_controller = true;
   get_value();
 }
 
@@ -59,7 +59,7 @@ void vsx_widget_controller_sequence::set_size(vsx_vector3<> new_size)
 void vsx_widget_controller_sequence::set_param_type(int n)
 {
   if (seq_chan)
-    ((vsx_widget_seq_channel*)seq_chan)->set_param_type(n);
+    ((vsx_widget_sequence_channel*)seq_chan)->set_param_type(n);
 }
 
 void vsx_widget_controller_sequence::command_process_back_queue(vsx_command_s *t) {
@@ -92,11 +92,11 @@ void vsx_widget_controller_sequence::i_draw()
 
 void vsx_widget_controller_sequence::set_span(float new_y_start, float new_y_end)
 {
-  ((vsx_widget_seq_channel*)seq_chan)->y_start = new_y_start;
-  ((vsx_widget_seq_channel*)seq_chan)->y_end = new_y_end;
+  ((vsx_widget_sequence_channel*)seq_chan)->y_start = new_y_start;
+  ((vsx_widget_sequence_channel*)seq_chan)->y_end = new_y_end;
 }
 
 void vsx_widget_controller_sequence::set_view_time(float start, float end)
 {
-	((vsx_widget_seq_channel*)seq_chan)->set_view_time(start, end);
+  ((vsx_widget_sequence_channel*)seq_chan)->set_view_time(start, end);
 }

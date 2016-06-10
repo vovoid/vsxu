@@ -41,7 +41,7 @@
 #include <texture/vsx_texture.h>
 
 #include "sequencer/vsx_widget_sequence_editor.h"
-#include "sequencer/vsx_widget_seq_chan.h"
+#include "sequencer/vsx_widget_sequence_channel.h"
 #include "vsx_widget_seq_pool.h"
 #include <gl_helper.h>
 
@@ -177,9 +177,9 @@ public:
         if (search_widget->widget_type == VSX_WIDGET_TYPE_SEQUENCE_CHANNEL)
         {
           drop_pos = l_distance.center;
-          if (((vsx_widget_seq_channel*)search_widget)->channel_type == VSX_WIDGET_SEQ_CHANNEL_TYPE_MASTER)
+          if (((vsx_widget_sequence_channel*)search_widget)->channel_type == vsx_widget_sequence_channel_TYPE_MASTER)
           {
-            ((vsx_widget_seq_channel*)search_widget)->drop_master_channel(distance,coords,editor->get_line(editor->selected_line));
+            ((vsx_widget_sequence_channel*)search_widget)->drop_master_channel(distance,coords,editor->get_line(editor->selected_line));
           }
         }
       }

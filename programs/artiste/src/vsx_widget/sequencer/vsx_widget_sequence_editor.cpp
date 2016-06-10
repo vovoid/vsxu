@@ -42,7 +42,7 @@
 #include "vsx_widget_sequence_editor.h"
 #include "vsx_widget_sequence_tree.h"
 #include "vsx_widget_sequence_group_tree.h"
-#include "vsx_widget_seq_chan.h"
+#include "vsx_widget_sequence_channel.h"
 #include "vsx_widget_timeline.h"
 #include "widgets/vsx_widget_button.h"
 #include "widgets/vsx_widget_popup_menu.h"
@@ -94,7 +94,7 @@ void vsx_widget_sequence_editor::init()
   but_play->init();
   but_play->title = ">";
   but_play->target_size.x = but_play->size.x = 0.015;
-  but_play->commands.adds(4,"play","play","");
+  but_play->commands.adds(4,"but_play","but_play","");
 
   but_stop = add(new vsx_widget_button,name+"stop");
   but_stop->render_type = render_3d;
@@ -218,6 +218,13 @@ void vsx_widget_sequence_editor::clear_sequencer()
   channels_map.clear();
 }
 
+void vsx_widget_sequence_editor::set_bezier_time_aligned_handles()
+{
+  foreach( channels, i)
+    ((vsx_widget_sequence_channel*)channels[i])->set_bezier_time_aligned_handles();
+}
+
+
 void vsx_widget_sequence_editor::load_sequence_list()
 {
   command_q_b.add_raw("seq_list");
@@ -289,12 +296,13 @@ void vsx_widget_sequence_editor::interpolate_size()
 
   channels_visible = (size.y-timeline->size.y*2.5-0.001f)/0.052f;
   float ypos = size.y*0.5-dragborder*2-but_rew->size.y-timeline->size.y-dragborder;//-0.027-0.025;
-  for (int i = 0; i < channels_start; ++i) channels[i]->visible = false;
+  for (int i = 0; i < channels_start; ++i)
+    channels[i]->visible = false;
   unsigned long i = channels_start;
 
   while (i < channels.size())
   {
-    if (((vsx_widget_seq_channel*)channels[i])->hidden_by_sequencer)
+    if (((vsx_widget_sequence_channel*)channels[i])->hidden_by_sequencer)
     {
       channels[i]->visible = false;
     } else
@@ -347,7 +355,7 @@ void vsx_widget_sequence_editor::channel_show(vsx_string<> name)
 {
   if (channels_map.find(name) != channels_map.end())
   {
-    ((vsx_widget_seq_channel*)channels_map[name])->hidden_by_sequencer = false;
+    ((vsx_widget_sequence_channel*)channels_map[name])->hidden_by_sequencer = false;
     interpolate_size();
     return;
   }
@@ -374,7 +382,7 @@ void vsx_widget_sequence_editor::channel_show(vsx_string<> name)
 void vsx_widget_sequence_editor::channel_toggle_visible(vsx_string<>name) {
   if (channels_map.find(name) != channels_map.end())
   {
-    ((vsx_widget_seq_channel*)channels_map[name])->hidden_by_sequencer = !((vsx_widget_seq_channel*)channels_map[name])->hidden_by_sequencer;
+    ((vsx_widget_sequence_channel*)channels_map[name])->hidden_by_sequencer = !((vsx_widget_sequence_channel*)channels_map[name])->hidden_by_sequencer;
     return;
   }
   channel_show(name);
@@ -385,7 +393,7 @@ void vsx_widget_sequence_editor::group_show_channels(vsx_string<> group_name, bo
 {
   if (!additional)
     for (auto it = channels_map.begin(); it != channels_map.end(); it++)
-      ((vsx_widget_seq_channel*)(*it).second)->hidden_by_sequencer = true;
+      ((vsx_widget_sequence_channel*)(*it).second)->hidden_by_sequencer = true;
 
   vsx_nw_vector< vsx_string<> > component_parameters;
   vsx_string_helper::explode_single(groups[group_name], '*', component_parameters);
@@ -443,7 +451,7 @@ vsx_widget* vsx_widget_sequence_editor::get_server()
 void vsx_widget_sequence_editor::remove_master_channel_items_with_name(vsx_string<>name)
 {
   for (std::vector<vsx_widget*>::iterator it = channels.begin(); it != channels.end(); it++)
-    ((vsx_widget_seq_channel*)(*it))->remove_master_channel_items_with_name(name);
+    ((vsx_widget_sequence_channel*)(*it))->remove_master_channel_items_with_name(name);
 }
 
 void vsx_widget_sequence_editor::action_copy()
@@ -453,7 +461,7 @@ void vsx_widget_sequence_editor::action_copy()
   clipboard.clear();
   for (size_t i = 0; i < channels.size(); i++)
   {
-    vsx_widget_seq_channel& channel = *((vsx_widget_seq_channel*)channels[i]);
+    vsx_widget_sequence_channel& channel = *((vsx_widget_sequence_channel*)channels[i]);
     vsx_nw_vector< vsx_string<> > values;
     vsx_ma_vector<float> time_offsets;
     vsx_ma_vector<size_t> interpolation_types;
@@ -470,8 +478,20 @@ void vsx_widget_sequence_editor::action_paste()
   vsx_nw_vector< vsx_widget_sequence_clipboard_item >& items = *clipboard.items_get_ptr();
   for (size_t i = 0; i < items.size(); i++)
   {
-    vsx_widget_seq_channel& channel = *((vsx_widget_seq_channel*)channels_map[items[i].component+":"+items[i].parameter]);
+    vsx_widget_sequence_channel& channel = *((vsx_widget_sequence_channel*)channels_map[items[i].component+":"+items[i].parameter]);
     channel.create_keyframe( time + items[i].time_offset, items[i].value, items[i].interpolation_type );
+  }
+}
+
+void vsx_widget_sequence_editor::action_cut()
+{
+  req(time_selection_active);
+  action_copy();
+
+  for (size_t i = 0; i < channels.size(); i++)
+  {
+    vsx_widget_sequence_channel& channel = *((vsx_widget_sequence_channel*)channels[i]);
+    channel.clear_selection(time_selection_left, time_selection_right);
   }
 }
 
@@ -488,6 +508,12 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
   if (t->cmd == "menu_close")
   {
     command_q_b.add_raw("delete_sequencer");
+    parent->vsx_command_queue_b(this);
+  } else
+  if (t->cmd == "but_play")
+  {
+    command_q_b.add_raw("play");
+    update_time_from_engine = true;
     parent->vsx_command_queue_b(this);
   }
   else
@@ -581,7 +607,7 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
     std::vector<vsx_widget*>::iterator it = channels.begin();
     while (run)
     {
-      if (((vsx_widget_seq_channel*)(*it))->channel_name == t->parts[1] && ((vsx_widget_seq_channel*)(*it))->param_name == t->parts[2])
+      if (((vsx_widget_sequence_channel*)(*it))->channel_name == t->parts[1] && ((vsx_widget_sequence_channel*)(*it))->param_name == t->parts[2])
       {
         run = false;
         (*it)->_delete();
@@ -680,16 +706,16 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
 
     if (t->parts[1] == "list" || t->parts[1] == "init") {
       if (channels_map.find(t->parts[2]+":"+t->parts[3]) == channels_map.end()) {
-        vsx_widget* new_sequence_channel = add(new vsx_widget_seq_channel,".chan");
+        vsx_widget* new_sequence_channel = add(new vsx_widget_sequence_channel,".chan");
         new_sequence_channel->size.x = size.x*0.995f;
         new_sequence_channel->size.y = 0.05f;
         new_sequence_channel->target_size = new_sequence_channel->size;
-        ((vsx_widget_seq_channel*)new_sequence_channel)->owner = this;
-        ((vsx_widget_seq_channel*)new_sequence_channel)->channel_type = VSX_WIDGET_SEQ_CHANNEL_TYPE_PARAMETER;
-        ((vsx_widget_seq_channel*)new_sequence_channel)->channel_name = t->parts[2]; // name of channel / module
-        ((vsx_widget_seq_channel*)new_sequence_channel)->param_name = t->parts[3];
+        ((vsx_widget_sequence_channel*)new_sequence_channel)->owner = this;
+        ((vsx_widget_sequence_channel*)new_sequence_channel)->channel_type = vsx_widget_sequence_channel_TYPE_PARAMETER;
+        ((vsx_widget_sequence_channel*)new_sequence_channel)->channel_name = t->parts[2]; // name of channel / module
+        ((vsx_widget_sequence_channel*)new_sequence_channel)->param_name = t->parts[3];
         new_sequence_channel->init();
-        if (show_after_init) ((vsx_widget_seq_channel*)new_sequence_channel)->hidden_by_sequencer = false;
+        if (show_after_init) ((vsx_widget_sequence_channel*)new_sequence_channel)->hidden_by_sequencer = false;
         new_sequence_channel->set_render_type(render_type);
         channels.push_back(new_sequence_channel);
         channels_map[t->parts[2]+":"+t->parts[3]] = new_sequence_channel;
@@ -706,8 +732,8 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
         // if the channel is opened, remove it
         if
         (
-            ((vsx_widget_seq_channel*)(*it))->channel_name == t->parts[2]
-            && ((vsx_widget_seq_channel*)(*it))->param_name == t->parts[3]
+            ((vsx_widget_sequence_channel*)(*it))->channel_name == t->parts[2]
+            && ((vsx_widget_sequence_channel*)(*it))->param_name == t->parts[3]
         )
         {
           run = false;
@@ -760,17 +786,17 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
       }
     }
     if (t->parts[1] == "add") {
-      vsx_widget* new_sequence_channel = add(new vsx_widget_seq_channel,".chan");
+      vsx_widget* new_sequence_channel = add(new vsx_widget_sequence_channel,".chan");
       new_sequence_channel->size.x = size.x*0.995;
       new_sequence_channel->size.y = 0.05;
       new_sequence_channel->target_size = new_sequence_channel->size;
-      ((vsx_widget_seq_channel*)new_sequence_channel)->owner = this;
-      ((vsx_widget_seq_channel*)new_sequence_channel)->channel_type = VSX_WIDGET_SEQ_CHANNEL_TYPE_MASTER;
-      ((vsx_widget_seq_channel*)new_sequence_channel)->channel_name = t->parts[2]; // name of channel
-      ((vsx_widget_seq_channel*)new_sequence_channel)->param_name = "[master]";
+      ((vsx_widget_sequence_channel*)new_sequence_channel)->owner = this;
+      ((vsx_widget_sequence_channel*)new_sequence_channel)->channel_type = vsx_widget_sequence_channel_TYPE_MASTER;
+      ((vsx_widget_sequence_channel*)new_sequence_channel)->channel_name = t->parts[2]; // name of channel
+      ((vsx_widget_sequence_channel*)new_sequence_channel)->param_name = "[master]";
       new_sequence_channel->init();
       //if (show_after_init)
-      ((vsx_widget_seq_channel*)new_sequence_channel)->hidden_by_sequencer = false;
+      ((vsx_widget_sequence_channel*)new_sequence_channel)->hidden_by_sequencer = false;
       new_sequence_channel->set_render_type(render_type);
       channels.push_back(new_sequence_channel);
       channels_map[t->parts[2]+":[master]"] = new_sequence_channel;
@@ -787,7 +813,7 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
       if (channels_map.find(t->parts[2]+":[master]") != channels_map.end())
       {
         // GOTCHA!
-        vsx_widget_seq_channel* removing_channel = (vsx_widget_seq_channel*)channels_map[t->parts[2]+":[master]"];
+        vsx_widget_sequence_channel* removing_channel = (vsx_widget_sequence_channel*)channels_map[t->parts[2]+":[master]"];
         std::vector<vsx_widget*>::iterator it = channels.begin();
         bool run = true;
         while (run)
@@ -795,7 +821,7 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
           if ( (*it) == removing_channel )
           {
             run = false;
-            ((vsx_widget_seq_channel*)(*it))->_delete();
+            ((vsx_widget_sequence_channel*)(*it))->_delete();
             channels.erase(it);
           } else
           {
@@ -843,13 +869,15 @@ bool vsx_widget_sequence_editor::event_key_down(uint16_t key)
   switch(key) {
     case VSX_SCANCODE_T:
       {
-        if (channels_start > 0) --channels_start;
+        if (channels_start > 0)
+          --channels_start;
         interpolate_size();
       }
     break;
     case VSX_SCANCODE_G:
       {
-        if (channels_start < (long)channels.size()-1) ++channels_start;
+        if (channels_start < (long)channels.size()-1)
+          ++channels_start;
         interpolate_size();
       }
     break;

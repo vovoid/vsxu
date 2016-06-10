@@ -37,7 +37,7 @@
 // local includes
 #include "vsx_widget.h"
 #include "vsx_widget_sequence_editor.h"
-#include "vsx_widget_seq_chan.h"
+#include "vsx_widget_sequence_channel.h"
 #include "vsx_widget_timeline.h"
 #include "widgets/vsx_widget_base_edit.h"
 

@@ -84,9 +84,9 @@ set(SOURCES
   src/vsx_widget/helpers/vsx_widget_console.cpp
   src/vsx_widget/helpers/vsx_widget_note.cpp
   src/vsx_widget/sequencer/vsx_widget_master_sequencer.cpp
-  src/vsx_widget/sequencer/vsx_widget_seq_chan.cpp
-  src/vsx_widget/sequencer/pool_manager/vsx_widget_seq_pool.cpp
+  src/vsx_widget/sequencer/vsx_widget_sequence_channel.cpp
   src/vsx_widget/sequencer/vsx_widget_sequence_editor.cpp
+  src/vsx_widget/sequencer/pool_manager/vsx_widget_seq_pool.cpp
   src/vsx_widget/sequencer/vsx_widget_timeline.cpp
   src/vsx_widget/arcball/arcball.cpp
   src/vsx_widget/module_choosers/vsx_widget_module_chooser.cpp

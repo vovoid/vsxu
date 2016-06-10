@@ -98,7 +98,9 @@ public:
 
   void action_copy();
   void action_paste();
+  void action_cut();
 
+  void set_bezier_time_aligned_handles();
 
 
   // removes all sequence channels, used when switching seqpool etc.
