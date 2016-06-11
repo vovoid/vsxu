@@ -152,7 +152,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>vsx_application.lib;vsx_widget.lib;SDL2main.lib;SDL2.lib;vsx_common.lib;vsx_compression.lib;vsx_engine_graphics.lib;vsx_engine.lib;vsx_plugins.lib;opengl32.lib;glu32.lib;winmm.lib;version.lib;ole32.lib;oleaut32.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vsx_application.lib;vsx_widget.lib;SDL2main.lib;SDL2.lib;vsx_common.lib;vsx_compression.lib;vsx_engine_graphics.lib;vsx_engine.lib;vsx_plugins.lib;opengl32.lib;glu32.lib;winmm.lib;version.lib;ole32.lib;oleaut32.lib;imm32.lib;dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDirectory)..\..\x64\$(Configuration);$(ProjectDirectory)..\..\dependencies\SDL2_prebuilt_windows\x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -168,7 +168,7 @@ xcopy /Y /E $(SolutionDir)share $(SolutionDir)x64\$(Configuration)\share</Comman
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDirectory)..\..\x64\$(Configuration);$(ProjectDirectory)..\..\dependencies\SDL2_prebuilt_windows\x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vsx_application.lib;vsx_widget.lib;SDL2main.lib;SDL2.lib;vsx_common.lib;vsx_compression.lib;vsx_engine_graphics.lib;vsx_engine.lib;vsx_plugins.lib;opengl32.lib;glu32.lib;winmm.lib;version.lib;ole32.lib;oleaut32.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vsx_application.lib;vsx_widget.lib;SDL2main.lib;SDL2.lib;vsx_common.lib;vsx_compression.lib;vsx_engine_graphics.lib;vsx_engine.lib;vsx_plugins.lib;opengl32.lib;glu32.lib;winmm.lib;version.lib;ole32.lib;oleaut32.lib;imm32.lib;dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>mkdir $(SolutionDir)x64\$(Configuration)\share

@@ -74,7 +74,11 @@ void setup_rtaudio_play()
   parameters.nChannels = 2;
   parameters.firstChannel = 0;
   unsigned int sampleRate = 44100;
+#if (PLATFORM == PLATFORM_WINDOWS)
+  unsigned int bufferFrames = 1024;
+#else
   unsigned int bufferFrames = 512;
+#endif
   double data[2];
 
   //

@@ -90,10 +90,7 @@
     <ClCompile Include="src\render.gravity_lines\main_render.gravity_lines.cpp" />
     <ClCompile Include="src\render.opengl\main_render.opengl.cpp" />
     <ClCompile Include="src\render.text\main_render.text.cpp" />
-    <ClCompile Include="src\sound.rtaudio\fftreal\fftreal.cpp" />
-    <ClCompile Include="src\sound.rtaudio\lib\RtAudio\RtAudio.cpp" />
-    <ClCompile Include="src\sound.rtaudio\lib\RtMidi\RtMidi.cpp" />
-    <ClCompile Include="src\sound.rtaudio\main_sound.rtaudio.cpp" />
+    <ClCompile Include="src\sound.sink\main_sound.sink.cpp" />
     <ClCompile Include="src\string\main_string.cpp" />
     <ClCompile Include="src\system\main_system.cpp" />
     <ClCompile Include="src\texture\main_texture.cpp" />
@@ -300,6 +297,12 @@
     <ClInclude Include="src\render.opengl\module_render_gl_texture_coord_gen.h" />
     <ClInclude Include="src\render.opengl\module_render_gl_translate.h" />
     <ClInclude Include="src\render.opengl\module_render_gl_viewport_size.h" />
+    <ClInclude Include="src\sound.sink\vsx_module_ogg_sample_play.h" />
+    <ClInclude Include="src\sound.sink\vsx_module_ogg_sample_trigger.h" />
+    <ClInclude Include="src\sound.sink\vsx_module_raw_sample_play.h" />
+    <ClInclude Include="src\sound.sink\vsx_module_raw_sample_trigger.h" />
+    <ClInclude Include="src\sound.sink\vsx_sample_ogg.h" />
+    <ClInclude Include="src\sound.sink\_configuration.h" />
     <ClInclude Include="src\string\module_string_dummy.h" />
     <ClInclude Include="src\string\module_string_resource_to_string.h" />
     <ClInclude Include="src\system\module_render_state.h" />
@@ -409,7 +412,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\lib\common\include;$(ProjectDir)\..\lib\engine\include;$(ProjectDir)\..\lib\engine_graphics\include;$(ProjectDir)\..\;$(ProjectDir)\src\mesh.importers\cal3d\cal3d\src;$(ProjectDir)\..\dependencies\glew-1.7.0\include;$(ProjectDir);$(ProjectDir)\src\sound.rtaudio\lib;$(ProjectDir)\..\lib\engine_graphics\thirdparty\ftgl\src;$(ProjectDir)\..\lib\engine_graphics\thirdparty\freetype2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__WINDOWS_DS__;_MBCS;_CRT_NONSTDC_NO_DEPRECATE;FTGL_LIBRARY_STATIC;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;GLEW_STATIC=1;CAL3D_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>VSXU_AUDIO_SINK;_MBCS;_CRT_NONSTDC_NO_DEPRECATE;FTGL_LIBRARY_STATIC;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;GLEW_STATIC=1;CAL3D_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>false</ExceptionHandling>
@@ -437,7 +440,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\lib\common\include;$(ProjectDir)\..\lib\engine\include;$(ProjectDir)\..\lib\engine_graphics\include;$(ProjectDir)\..\;$(ProjectDir)\src\mesh.importers\cal3d\cal3d\src;$(ProjectDir)\..\dependencies\glew-1.7.0\include;$(ProjectDir);$(ProjectDir)\src\sound.rtaudio\lib;$(ProjectDir)\..\lib\engine_graphics\thirdparty\ftgl\src;$(ProjectDir)\..\lib\engine_graphics\thirdparty\freetype2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__WINDOWS_DS__;_MBCS;_CRT_NONSTDC_NO_DEPRECATE;FTGL_LIBRARY_STATIC;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;GLEW_STATIC=1;CAL3D_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>VSXU_AUDIO_SINK;_MBCS;_CRT_NONSTDC_NO_DEPRECATE;FTGL_LIBRARY_STATIC;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;GLEW_STATIC=1;CAL3D_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
