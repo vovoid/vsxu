@@ -122,7 +122,7 @@ void filesystem_archive_vsxz_writer::close()
     );
   }
 
-  vsx_thread_pool::instance()->wait_all();
+  vsx_thread_pool::instance()->wait_all(100);
 
 
   // Add files to compression chunks
@@ -217,7 +217,7 @@ void filesystem_archive_vsxz_writer::close()
   // Compress chunks
   for_n(i, 1, max_chunks)
     chunks[i].compress();
-  threaded_task_wait_all;
+  threaded_task_wait_all(100);
 
   // Count valid chunks
   size_t valid_chunk_index = 2;

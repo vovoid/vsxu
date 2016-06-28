@@ -21,6 +21,8 @@ public:
 
   explicit vsx_thread_pool(size_t threads = std::thread::hardware_concurrency())
   {
+    tasks_queued = 0;
+
     for(size_t i = 0;i<threads;++i)
       workers.emplace_back(
         [this]
@@ -32,6 +34,8 @@ public:
             {
               std::unique_lock<std::mutex> lock(this->queue_mutex);
 
+              // waits if not stopping
+              // waits if tasks empty
               this->condition.wait(lock, [this]{ return this->stop || !this->tasks.empty(); });
 
               if(this->stop && this->tasks.empty())
@@ -44,8 +48,11 @@ public:
             task();
             this->tasks_queued--;
 
-            if (!this->tasks_queued.load())
+            /*if (!this->tasks_queued.load())
+            {
+              std::lock_guard<std::mutex> lk(this->queue_empty_mutex);
               this->queue_empty_condition.notify_all();
+            }*/
           }
         }
       );
@@ -94,7 +101,7 @@ public:
     return tasks.empty();
   }
 
-  inline bool wait_all()
+  inline bool wait_all(size_t milliseconds)
   {
     foreach(workers, i)
       if (std::this_thread::get_id() == workers[i].get_id())
@@ -106,8 +113,16 @@ public:
     if ( !tasks_queued.load() )
       return true;
 
-    std::unique_lock<std::mutex> queue_empty_lock(this->queue_empty_mutex);
-    queue_empty_condition.wait(queue_empty_lock);
+    uint64_t task_count = tasks_queued.load();
+    while (task_count)
+    {
+      vsx_printf(L"tasks left to wait for: %ld\n", task_count);
+      std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+      task_count = tasks_queued.load();
+    }
+
+//    std::unique_lock<std::mutex> queue_empty_lock(this->queue_empty_mutex);
+//    queue_empty_condition.wait(queue_empty_lock);
     return true;
   }
 
@@ -130,7 +145,7 @@ private:
   bool stop = false;
 
   // More synchronization for wait_all()
-  std::atomic<int> tasks_queued;
+  std::atomic<uint64_t> tasks_queued;
   std::mutex queue_empty_mutex;
   std::condition_variable queue_empty_condition;
 };
@@ -138,4 +153,4 @@ private:
 
 #define threaded_task vsx_thread_pool::instance()->add( [&]()
 #define threaded_task_end );
-#define threaded_task_wait_all vsx_thread_pool::instance()->wait_all()
+#define threaded_task_wait_all(ms) vsx_thread_pool::instance()->wait_all(ms)

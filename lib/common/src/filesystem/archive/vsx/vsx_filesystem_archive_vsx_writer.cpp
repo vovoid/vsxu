@@ -88,7 +88,7 @@ void filesystem_archive_vsx_writer::file_add_all()
       pool
     );
 
-  vsx_thread_pool::instance()->wait_all();
+  vsx_thread_pool::instance()->wait_all(100);
 
   req(files_to_process);
 

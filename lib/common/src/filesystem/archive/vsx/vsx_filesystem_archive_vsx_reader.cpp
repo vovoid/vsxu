@@ -51,7 +51,7 @@ void filesystem_archive_vsx_reader::load_all()
     pooled_size = 0;
   }
   vsx_printf(L"waiting for threads...\n");
-  vsx_thread_pool::instance()->wait_all();
+  vsx_thread_pool::instance()->wait_all(100);
   vsx_printf(L"done waiting\n");
 }
 

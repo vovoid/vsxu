@@ -94,7 +94,7 @@ bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool loa
     offset_compressed += chunk_info_table[chunk_i].compressed_size;
     offset_uncompressed += chunk_info_table[chunk_i].uncompressed_size;
   }
-  vsx_thread_pool::instance()->wait_all();
+  vsx_thread_pool::instance()->wait_all(100);
   return true;
 }
 

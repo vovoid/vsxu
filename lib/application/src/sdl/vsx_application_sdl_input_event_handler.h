@@ -214,7 +214,13 @@ class vsx_application_sdl_input_event_handler
     if (sdl_event.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
       vsx_event.game_controller.type = vsx_input_event_game_controller::axis_trigger_right;
 
-    vsx_event.game_controller.axis_value = 1.0f/32767 * sdl_event.caxis.value;
+    vsx_event.game_controller.axis_value = 1.0f/32767.0 * sdl_event.caxis.value;
+
+    if (sdl_event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY)
+      vsx_event.game_controller.axis_value = -vsx_event.game_controller.axis_value;
+
+    if (sdl_event.caxis.axis == SDL_CONTROLLER_AXIS_RIGHTY)
+      vsx_event.game_controller.axis_value = -vsx_event.game_controller.axis_value;
 
     // application
     vsx_application_input_state_manager::get()->consume_event(vsx_event);
