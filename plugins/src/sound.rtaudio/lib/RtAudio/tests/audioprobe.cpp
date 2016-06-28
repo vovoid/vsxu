@@ -18,13 +18,17 @@ int main()
   apiMap[RtAudio::MACOSX_CORE] = "OS-X Core Audio";
   apiMap[RtAudio::WINDOWS_ASIO] = "Windows ASIO";
   apiMap[RtAudio::WINDOWS_DS] = "Windows Direct Sound";
+  apiMap[RtAudio::WINDOWS_WASAPI] = "Windows WASAPI";
   apiMap[RtAudio::UNIX_JACK] = "Jack Client";
   apiMap[RtAudio::LINUX_ALSA] = "Linux ALSA";
+  apiMap[RtAudio::LINUX_PULSE] = "Linux PulseAudio";
   apiMap[RtAudio::LINUX_OSS] = "Linux OSS";
   apiMap[RtAudio::RTAUDIO_DUMMY] = "RtAudio Dummy";
 
   std::vector< RtAudio::Api > apis;
   RtAudio :: getCompiledApi( apis );
+
+  std::cout << "\nRtAudio Version " << RtAudio::getVersion() << std::endl;
 
   std::cout << "\nCompiled APIs:\n";
   for ( unsigned int i=0; i<apis.size(); i++ )

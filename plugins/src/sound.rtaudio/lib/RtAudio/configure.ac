@@ -1,63 +1,126 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(RtAudio, 4.0, gary@music.mcgill.ca, rtaudio)
+AC_INIT(RtAudio, 4.1.2, gary@music.mcgill.ca, rtaudio)
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_SRCDIR(RtAudio.cpp)
-AC_CONFIG_FILES([rtaudio-config Makefile tests/Makefile])
+AC_CONFIG_FILES([rtaudio-config rtaudio.pc Makefile tests/Makefile doc/Makefile doc/doxygen/Doxyfile])
+AM_INIT_AUTOMAKE([1.14 -Wall -Werror foreign subdir-objects])
+
+# libtool version: current:revision:age
+#
+# If the library source code has changed at all since the last update, then
+# increment revision (`c:r:a' becomes `c:r+1:a').
+#
+# If any interfaces have been added, removed, or changed since the last update,
+# increment current, and set revision to 0.
+#
+# If any interfaces have been added since the last public release, then
+# increment age.
+#
+# If any interfaces have been removed since the last public release, then set
+# age to 0.
+m4_define([lt_current], 5)
+m4_define([lt_revision], 0)
+m4_define([lt_age], 0)
+
+m4_define([lt_version_info], [lt_current:lt_revision:lt_age])
+m4_define([lt_current_minus_age], [m4_eval(lt_current - lt_age)])
+
+SO_VERSION=lt_version_info
+AC_SUBST(SO_VERSION)
+
+# Check version number coherency between RtAudio.h and configure.ac
+AC_MSG_CHECKING([that version numbers are coherent])
+AC_RUN_IFELSE(
+   [AC_LANG_PROGRAM([#include <string.h>
+                     `grep "define RTAUDIO_VERSION" $srcdir/RtAudio.h`],
+                    [return strcmp(RTAUDIO_VERSION, PACKAGE_VERSION);])],
+   [AC_MSG_RESULT([yes])],
+   [AC_MSG_FAILURE([testing RTAUDIO_VERSION==PACKAGE_VERSION failed, check that RtAudio.h defines RTAUDIO_VERSION as "$PACKAGE_VERSION" or that the first line of configure.ac has been updated.])])
+
+# Enable some nice automake features if they are available
+m4_ifdef([AM_MAINTAINER_MODE], [AM_MAINTAINER_MODE])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Fill GXX with something before test.
 AC_SUBST( GXX, ["no"] )
 
+dnl Check for pkg-config program, used for configuring some libraries.
+m4_define_default([PKG_PROG_PKG_CONFIG],
+[AC_MSG_CHECKING([pkg-config])
+AC_MSG_RESULT([no])])
+
+PKG_PROG_PKG_CONFIG
+
+dnl If the pkg-config autoconf support isn't installed, define its
+dnl autoconf macro to disable any packages depending on it.
+m4_define_default([PKG_CHECK_MODULES],
+[AC_MSG_CHECKING([$1])
+AC_MSG_RESULT([no])
+$4])
+
+# Check for debug
+AC_MSG_CHECKING(whether to compile debug version)
+AC_ARG_ENABLE(debug,
+  [AS_HELP_STRING([--enable-debug],[enable various debug output])],
+  [: ${CXXFLAGS="-g -O0"};] [AC_DEFINE([__RTAUDIO_DEBUG__])],
+  [: ${CXXFLAGS="-O3"}])
+
 # Checks for programs.
 AC_PROG_CXX(g++ CC c++ cxx)
-AC_PROG_RANLIB
+AM_PROG_AR
 AC_PATH_PROG(AR, ar, no)
 if [[ $AR = "no" ]] ; then
     AC_MSG_ERROR("Could not find ar - needed to create a library");
 fi
 
+# Initialize libtool
+LT_INIT([win32-dll])
+AC_CONFIG_MACRO_DIR([m4])
+
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(sys/ioctl.h unistd.h)
 
-# Check for debug
-AC_MSG_CHECKING(whether to compile debug version)
-AC_ARG_ENABLE(debug,
-  [  --enable-debug = enable various debug output],
-  [AC_SUBST( cppflag, [-D__RTAUDIO_DEBUG__] ) AC_SUBST( cxxflag, [-g] ) AC_SUBST( object_path, [Debug] ) AC_MSG_RESULT(yes)],
-  [AC_SUBST( cppflag, [] ) AC_SUBST( cxxflag, [-O2] ) AC_SUBST( object_path, [Release] ) AC_MSG_RESULT(no)])
-
+# Check compiler and use -Wall if gnu
+if test x"$GXX" = "xyes"; then
+  CXXFLAGS="${CXXFLAGS} -Wall -Wextra"
+  # Add -Werror in debug mode
+  if test x"${enable_debug+set}" = xset; then
+    CXXFLAGS="${CXXFLAGS} -Werror"
+  fi
+fi
 
 # Checks for functions
 AC_CHECK_FUNC(gettimeofday, [cppflag="$cppflag -DHAVE_GETTIMEOFDAY"], )
 
-# For -I and -D flags
-CPPFLAGS="$CPPFLAGS $cppflag"
+# Checks for doxygen
+AC_CHECK_PROG( DOXYGEN, [doxygen], [doxygen] )
+AM_CONDITIONAL( MAKE_DOC, [test "x${DOXYGEN}" != x] )
 
-# For debugging and optimization ... overwrite default because it has both -g and -O2
-#CXXFLAGS="$CXXFLAGS $cxxflag"
-CXXFLAGS="$cxxflag"
-
-# Check compiler and use -Wall if gnu.
-if [test $GXX = "yes" ;] then
-  AC_SUBST( cxxflag, [-Wall] )
-fi
-
-CXXFLAGS="$CXXFLAGS $cxxflag"
-
-AC_CANONICAL_HOST
-
-AC_SUBST( sharedlib, ["librtaudio.so"] )
-AC_SUBST( sharedname, ["librtaudio.so.\$(RELEASE)"] )
-AC_SUBST( libflags, ["-shared -Wl,-soname,\$(SHARED).\$(MAJOR) -o \$(SHARED).\$(RELEASE)"] )
-case $host in
-  *-apple*)
-  AC_SUBST( sharedlib, ["librtaudio.dylib"] )
-  AC_SUBST( sharedname, ["librtaudio.\$(RELEASE).dylib"] )
-  AC_SUBST( libflags, ["-dynamiclib -o librtaudio.\$(RELEASE).dylib"] )
-esac
+# Copy doc files to build dir if necessary
+AC_CONFIG_LINKS( [doc/release.txt:doc/release.txt] )
+AC_CONFIG_LINKS( [doc/doxygen/footer.html:doc/doxygen/footer.html] )
+AC_CONFIG_LINKS( [doc/doxygen/error.txt:doc/doxygen/error.txt] )
+AC_CONFIG_LINKS( [doc/doxygen/tutorial.txt:doc/doxygen/tutorial.txt] )
+AC_CONFIG_LINKS( [doc/doxygen/compiling.txt:doc/doxygen/compiling.txt] )
+AC_CONFIG_LINKS( [doc/doxygen/acknowledge.txt:doc/doxygen/acknowledge.txt] )
+AC_CONFIG_LINKS( [doc/doxygen/license.txt:doc/doxygen/license.txt] )
+AC_CONFIG_LINKS( [doc/doxygen/header.html:doc/doxygen/header.html] )
+AC_CONFIG_LINKS( [doc/doxygen/duplex.txt:doc/doxygen/duplex.txt] )
+AC_CONFIG_LINKS( [doc/doxygen/settings.txt:doc/doxygen/settings.txt] )
+AC_CONFIG_LINKS( [doc/doxygen/probe.txt:doc/doxygen/probe.txt] )
+AC_CONFIG_LINKS( [doc/doxygen/playback.txt:doc/doxygen/playback.txt] )
+AC_CONFIG_LINKS( [doc/doxygen/multi.txt:doc/doxygen/multi.txt] )
+AC_CONFIG_LINKS( [doc/doxygen/recording.txt:doc/doxygen/recording.txt] )
+AC_CONFIG_LINKS( [doc/doxygen/apinotes.txt:doc/doxygen/apinotes.txt] )
+AC_CONFIG_LINKS( [doc/images/mcgill.gif:doc/images/mcgill.gif] )
+AC_CONFIG_LINKS( [doc/images/ccrma.gif:doc/images/ccrma.gif] )
 
 # Checks for package options and external software
+AC_CANONICAL_HOST
+
 AC_SUBST( api, [""] )
+AC_SUBST( req, [""] )
 AC_MSG_CHECKING(for audio API)
 case $host in
   *-*-netbsd*)
@@ -77,14 +140,16 @@ case $host in
   # Look for ALSA flag
   AC_ARG_WITH(alsa, [  --with-alsa = choose native ALSA API support (linux only)], [
     api="$api -D__LINUX_ALSA__"
+    req="$req alsa"
     AC_MSG_RESULT(using ALSA)
     AC_CHECK_LIB(asound, snd_pcm_open, , AC_MSG_ERROR(ALSA support requires the asound library!))], )
 
   # Look for PULSE flag
   AC_ARG_WITH(pulse, [  --with-pulse = choose PulseAudio API support (linux only)], [
     api="$api -D__LINUX_PULSE__"
+    req="$req libpulse-simple"
     AC_MSG_RESULT(using PulseAudio)
-    AC_CHECK_LIB(pulse-simple, pa_simple_new, , AC_MSG_ERROR(PulseAudio support requires the pulse-simple library!))], )
+    AC_CHECK_LIB(pulse-simple, pa_simple_flush, , AC_MSG_ERROR(PulseAudio support requires the pulse-simple library!))], )
 
   # Look for OSS flag
   AC_ARG_WITH(oss, [  --with-oss = choose OSS API support (linux only)], [
@@ -95,6 +160,7 @@ case $host in
   if [test "$api" == "";] then
     AC_MSG_RESULT(using ALSA)
     AC_SUBST( api, [-D__LINUX_ALSA__] )
+    req="$req alsa"
     AC_CHECK_LIB(asound, snd_pcm_open, , AC_MSG_ERROR(ALSA support requires the asound library!))
   fi
 
@@ -143,7 +209,13 @@ case $host in
     AC_MSG_RESULT(using DirectSound)
     LIBS="-ldsound -lwinmm $LIBS" ], )
 
-  # If no audio api flags specified, use DirectSound
+  # Look for WASAPI flag
+  AC_ARG_WITH(wasapi, [  --with-wasapi = choose Windows Audio Session API support (windoze only)], [
+    api="$api -D__WINDOWS_WASAPI__"
+    AC_MSG_RESULT(using WASAPI)
+    LIBS="-lwinmm -luuid -lksuser $LIBS" ], )
+
+  # If no audio api flags specified, use DS
   if [test "$api" == "";] then
     AC_SUBST( api, [-D__WINDOWS_DS__] )
     AC_MSG_RESULT(using DirectSound)

@@ -87,26 +87,19 @@ void setup_rtaudio_play()
   options.flags = RTAUDIO_MINIMIZE_LATENCY;
   options.streamName = "vsxu";
 
-  try
-  {
-    padc_play->openStream
-    (
-      &parameters,
-      NULL,
-      RTAUDIO_SINT16,
-      sampleRate,
-      &bufferFrames,
-      &play_callback,
-      (void *)&data,
-      &options
-    );
-    padc_play->startStream();
-    padc_play->getStreamLatency();
-  }
-  catch ( RtError& e )
-  {
-    e.printMessage();
-  }
+  padc_play->openStream
+  (
+    &parameters,
+    NULL,
+    RTAUDIO_SINT16,
+    sampleRate,
+    &bufferFrames,
+    &play_callback,
+    (void *)&data,
+    &options
+  );
+  padc_play->startStream();
+  padc_play->getStreamLatency();
 
 }
 
@@ -118,15 +111,8 @@ void shutdown_rtaudio_play()
 
   if (rt_play_refcounter == 0)
   {
-    try
-    {
       // Stop the stream
       padc_play->stopStream();
-    }
-    catch (RtError& e)
-    {
-      e.printMessage();
-    }
 
     if ( padc_play->isStreamOpen() )
       padc_play->closeStream();

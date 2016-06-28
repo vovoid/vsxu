@@ -36,7 +36,7 @@
 #include "fftreal/fftreal.h"
 
 #include <RtAudio/RtAudio.h>
-#include <RtAudio/RtError.h>
+//#include <RtAudio/RtError.h>
 
 
 #if (PLATFORM == PLATFORM_LINUX)

@@ -26,6 +26,10 @@ typedef signed short  MY_TYPE;
 #define SCALE  32767.0
 
 /*
+typedef S24 MY_TYPE;
+#define FORMAT RTAUDIO_SINT24
+#define SCALE  8388607.0
+
 typedef signed int  MY_TYPE;
 #define FORMAT RTAUDIO_SINT32
 #define SCALE  2147483647.0
@@ -40,7 +44,7 @@ typedef double  MY_TYPE;
 */
 
 // Platform-dependent sleep routines.
-#if defined( __WINDOWS_ASIO__ ) || defined( __WINDOWS_DS__ )
+#if defined( __WINDOWS_ASIO__ ) || defined( __WINDOWS_DS__ ) || defined( __WINDOWS_WASAPI__ )
   #include <windows.h>
   #define SLEEP( milliseconds ) Sleep( (DWORD) milliseconds ) 
 #else // Unix variants
@@ -66,8 +70,8 @@ struct OutputData {
 };
 
 // Interleaved buffers
-int output( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
-            double streamTime, RtAudioStreamStatus status, void *data )
+int output( void *outputBuffer, void * /*inputBuffer*/, unsigned int nBufferFrames,
+            double /*streamTime*/, RtAudioStreamStatus /*status*/, void *data )
 {
   OutputData *oData = (OutputData*) data;
 
@@ -121,12 +125,15 @@ int main( int argc, char *argv[] )
   oParams.nChannels = channels;
   oParams.firstChannel = offset;
 
+  if ( device == 0 )
+    oParams.deviceId = dac.getDefaultOutputDevice();
+
   data.channels = channels;
   try {
     dac.openStream( &oParams, NULL, FORMAT, fs, &bufferFrames, &output, (void *)&data );
     dac.startStream();
   }
-  catch ( RtError& e ) {
+  catch ( RtAudioError& e ) {
     std::cout << '\n' << e.getMessage() << '\n' << std::endl;
     goto cleanup;
   }
