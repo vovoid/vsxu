@@ -119,16 +119,8 @@ public:
     intbuf << "vsxu_midi_" << ++num_modules;
 
 
-        try
-        {
-            m_midi_in = new RtMidiIn(RtMidi::UNSPECIFIED,intbuf.str().c_str(),1024*6);
-            m_midi_in->ignoreTypes(false,false,false);
-
-        }
-        catch (RtError &error)
-        {
-            error.printMessage();
-        }
+    m_midi_in = new RtMidiIn(RtMidi::UNSPECIFIED,intbuf.str().c_str(),1024*6);
+    m_midi_in->ignoreTypes(false,false,false);
 
   }
 
@@ -956,16 +948,9 @@ public:
       {
         new_src = port_count-1;
       }
-      try
-      {
-        current_port = new_src;
-        m_midi_in->closePort();
-        m_midi_in->openPort(current_port);
-      }
-      catch (RtError &error)
-      {
-        message = error.getMessage().c_str();
-      }
+      current_port = new_src;
+      m_midi_in->closePort();
+      m_midi_in->openPort(current_port);
     }
 
     if ( port_count != m_midi_in->getPortCount())
