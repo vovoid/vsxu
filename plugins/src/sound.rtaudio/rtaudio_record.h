@@ -180,7 +180,6 @@ void setup_rtaudio_record()
   RtAudio::StreamOptions options;
       options.streamName = "vsxu";
 
-  try {
     padc_record->openStream(
       NULL,
       &parameters,
@@ -192,10 +191,6 @@ void setup_rtaudio_record()
       &options
     );
     padc_record->startStream();
-  }
-  catch ( RtError& e ) {
-    e.printMessage();
-  }
 }
 
 void shutdown_rtaudio_record()
@@ -206,13 +201,8 @@ void shutdown_rtaudio_record()
 
   if (rt_record_refcounter == 0)
   {
-    try {
       // Stop the stream
       padc_record->stopStream();
-    }
-    catch (RtError& e) {
-      e.printMessage();
-    }
 
     if ( padc_record->isStreamOpen() ) padc_record->closeStream();
     delete padc_record;

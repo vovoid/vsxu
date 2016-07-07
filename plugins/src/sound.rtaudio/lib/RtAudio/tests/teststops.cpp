@@ -21,7 +21,7 @@
 #define REPETITIONS 10
 
 // Platform-dependent sleep routines.
-#if defined( __WINDOWS_ASIO__ ) || defined( __WINDOWS_DS__ )
+#if defined( __WINDOWS_ASIO__ ) || defined( __WINDOWS_DS__ ) || defined( __WINDOWS_WASAPI__ )
   #include <windows.h>
   #define SLEEP( milliseconds ) Sleep( (DWORD) milliseconds ) 
 #else // Unix variants
@@ -51,8 +51,8 @@ struct MyData {
 };
 
 // Interleaved buffers
-int pulse( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
-           double streamTime, RtAudioStreamStatus status, void *mydata )
+int pulse( void *outputBuffer, void * /*inputBuffer*/, unsigned int nBufferFrames,
+           double /*streamTime*/, RtAudioStreamStatus status, void *mydata )
 {
   // Write out a pulse signal and ignore the input buffer.
   unsigned int i, j;
@@ -121,6 +121,11 @@ int main( int argc, char *argv[] )
   iParams.nChannels = mydata.channels;
   iParams.firstChannel = iOffset;
 
+  if ( iDevice == 0 )
+    iParams.deviceId = adc->getDefaultInputDevice();
+  if ( oDevice == 0 )
+    oParams.deviceId = adc->getDefaultOutputDevice();
+
   // First, test external stopStream() calls.
   mydata.pulseCount = PULSE_RATE * fs;
   mydata.nFrames = 50 * fs;
@@ -141,7 +146,7 @@ int main( int argc, char *argv[] )
       SLEEP( pausetime );
     }
   }
-  catch ( RtError& e ) {
+  catch ( RtAudioError& e ) {
     e.printMessage();
     goto cleanup;
   }
@@ -168,7 +173,7 @@ int main( int argc, char *argv[] )
       SLEEP( pausetime );
     }
   }
-  catch ( RtError& e ) {
+  catch ( RtAudioError& e ) {
     e.printMessage();
     goto cleanup;
   }
@@ -193,7 +198,7 @@ int main( int argc, char *argv[] )
       SLEEP( pausetime );
     }
   }
-  catch ( RtError& e ) {
+  catch ( RtAudioError& e ) {
     e.printMessage();
     goto cleanup;
   }
@@ -222,7 +227,7 @@ int main( int argc, char *argv[] )
       SLEEP( pausetime );
     }
   }
-  catch ( RtError& e ) {
+  catch ( RtAudioError& e ) {
     e.printMessage();
     goto cleanup;
   }
@@ -253,7 +258,7 @@ int main( int argc, char *argv[] )
       SLEEP( pausetime );
     }
   }
-  catch ( RtError& e ) {
+  catch ( RtAudioError& e ) {
     e.printMessage();
     goto cleanup;
   }

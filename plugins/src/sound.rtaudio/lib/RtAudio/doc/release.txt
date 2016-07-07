@@ -1,6 +1,40 @@
-RtAudio - a set of C++ classes that provide a common API for realtime audio input/output across Linux (native ALSA, JACK, PulseAudio, and OSS), Macintosh OS X (CoreAudio and JACK), and Windows (DirectSound and ASIO) operating systems.
+RtAudio - a set of C++ classes that provide a common API for realtime audio input/output across Linux (native ALSA, JACK, PulseAudio, and OSS), Macintosh OS X (CoreAudio and JACK), and Windows (DirectSound, ASIO and WASAPI) operating systems.
 
-By Gary P. Scavone, 2001-2012.
+By Gary P. Scavone, 2001-2016.
+
+v4.1.2: (22 February 2016)
+- added more complete automake support (thanks to Stephen Sinclair)
+- miscellaneous small fixes and updates, see github repo commit history for details
+
+v4.1.1: (26 April 2014)
+- updates to WASAPI API for MinGW compiling
+- WASAPI bug fixes for audio INPUT mode
+- DirectSound bug fix for INPUT mode
+- Bug fixes in Core, Jack, ASIO and DS for internal draining in INPUT mode
+- updates to test programs for default device specifiers
+- CMake buildfile update for WASAPI
+- new setStreamTime function
+
+v4.1.0: (10 April 2014)
+- RtError class renamed RtAudioError and embedded in RtAudio.h (RtError.h deleted)
+- new support for the Windows WASAPI API (thanks to Marcus Tomlinson)
+- CMake support (thanks to Berkus Decker)
+- pulse audio update to support bufferFrames argument with audio input (thanks to Jonatan Wallmander)
+- fixes for ALSA API to avoid high CPU usage during stops and to clear stale data before input (thanks to Pluto Hades)
+- miscellaneous efficiency updates suggested by Martin Koegler
+- bug fix for OS-X xrun reporting problem
+- bug fix related to error when opening a stream after closing a previously open stream
+
+v4.0.12: (16 April 2013)
+- new functionality to allow error reporting via a client-supplied function (thanks to Pavel Mogilevskiy)
+- new function to return the version number
+- updated RtAudio.cpp and ASIO files for UNICODE support (thanks to Renaud Schoonbroodt)
+- updates to PulseAudio API support (thanks to Peter Meerwald and Tristan Matthews)
+- updates for pkg-config support in configure script
+- 24-bit format changed to true 24-bit format, not sub-bytes of 32-bits (thanks to Marc Britton)
+- bug fixes to make sure stream status is closed if error during probeDeviceOpen
+- updates / fixes to SCHED_RR code in ALSA (thanks to Marc Lindahl)
+- various changes to avoid global variables (thanks to Martin Koegler)
 
 v4.0.11: (14 June 2012)
 - fixes for memory leaks in ALSA (thanks to Martin Koegler)
