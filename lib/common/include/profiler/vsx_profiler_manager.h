@@ -110,7 +110,7 @@ public:
         consumer_thread.join();
       vsx_printf(L"[destruction complete]\n");
     }
-	}
+  }
 
   void start()
   {
@@ -135,21 +135,21 @@ public:
     return vsx_data_path::get_instance()->data_path_get()+"profiler";
   }
 
-	void enable()
-	{
+  void enable()
+  {
     req(!enable_data_collection.load());
 
-		vsx_printf(L"VSX PROFILER:  request consumer to data collection...\n");
+    vsx_printf(L"VSX PROFILER:  request consumer to data collection...\n");
     enable_data_collection.fetch_add(1);
-	}
+  }
 
-	void disable()
-	{
+  void disable()
+  {
     req(enable_data_collection.load());
 
-		vsx_printf(L"VSX PROFILER:  request consumer to disable data collection...\n");
+    vsx_printf(L"VSX PROFILER:  request consumer to disable data collection...\n");
     enable_data_collection.fetch_sub(1);
-	}
+  }
 
   static void* io_worker()
   {
@@ -185,7 +185,7 @@ public:
 
     FILE* fp = fopen( filename.c_str() , "wb");
 
-		if (!fp)
+    if (!fp)
       VSX_ERROR_EXIT(L"VSX PROFILER: ***ERROR*** I/O thread can not open file. Aborting...", 900);
 
     timer.start();
@@ -222,7 +222,7 @@ public:
       prctl(PR_SET_NAME,cal);
     #endif
 
-		vsx_profiler_manager* pm = vsx_profiler_manager::get_instance();
+    vsx_profiler_manager* pm = vsx_profiler_manager::get_instance();
 
     vsx_profiler* profilers = &pm->profiler_list[0];
     pid_t* producer_threads = &pm->thread_list[0];
@@ -264,11 +264,11 @@ public:
             if (current_depth > max_depth)
             {
               max_depth = current_depth;
-							vsx_printf(L"VSX PROFILER:  Stack depth new maximum: %zu\n", max_depth);
+              vsx_printf(L"VSX PROFILER:  Stack depth new maximum: %zu\n", max_depth);
             }
-						if (current_depth > VSX_PROFILER_STACK_DEPTH_WARNING)
+            if (current_depth > VSX_PROFILER_STACK_DEPTH_WARNING)
               vsx_printf(L"VSX PROFILER:  ***WARNING*** Stack depth: %d\n", VSX_PROFILER_STACK_DEPTH_WARNING);
-					}
+          }
 
           if (
               recieve_chunk.flags == VSX_PROFILE_CHUNK_FLAG_SECTION_END
@@ -276,53 +276,53 @@ public:
               recieve_chunk.flags == VSX_PROFILE_CHUNK_FLAG_END
               )
           {
-						if ( !current_depth )
-							vsx_printf(L"VSX PROFILER:  ***WARNING*** Got stack depth below zero. Fix your code!\n");
-						current_depth--;
+            if ( !current_depth )
+              vsx_printf(L"VSX PROFILER:  ***WARNING*** Got stack depth below zero. Fix your code!\n");
+            current_depth--;
           }
 
-					// handle enabling switch, only toggle when at zero depth
-					if (
+          // handle enabling switch, only toggle when at zero depth
+          if (
               current_enabled != pm->enable_data_collection.load()
-							&&
-							!current_depth
-							)
-					{
+              &&
+              !current_depth
+              )
+          {
             current_enabled = pm->enable_data_collection.load();
-						if (current_enabled)
+            if (current_enabled)
             {
               vsx_printf(L"VSX PROFILER:  [enabled data collector]\n");
             }
-						else
+            else
             {
-							vsx_printf(L"VSX PROFILER:  [disabled data collector]\n");
+              vsx_printf(L"VSX PROFILER:  [disabled data collector]\n");
             }
 
-						continue;
-					}
+            continue;
+          }
 
-					if (current_enabled)
-					{
-						recieve_buffer[current_buffer_page][recieve_buffer_iterator] = recieve_chunk;
+          if (current_enabled)
+          {
+            recieve_buffer[current_buffer_page][recieve_buffer_iterator] = recieve_chunk;
 
-						recieve_buffer_iterator++;
+            recieve_buffer_iterator++;
 
-						if (recieve_buffer_iterator == VSX_PROFILER_RECIEVE_BUFFER_ITEMS)
-						{
-							recieve_buffer_iterator = 0;
+            if (recieve_buffer_iterator == VSX_PROFILER_RECIEVE_BUFFER_ITEMS)
+            {
+              recieve_buffer_iterator = 0;
 
-							// send to io
-							while (!pm->io_pool.produce(&recieve_buffer[current_buffer_page][0]))
-							{
-								vsx_printf(L"VSX PROFILER:  ***PERFORMANCE WARNING*** spinning while i/o fifo is full...\n");
-							}
+              // send to io
+              while (!pm->io_pool.produce(&recieve_buffer[current_buffer_page][0]))
+              {
+                vsx_printf(L"VSX PROFILER:  ***PERFORMANCE WARNING*** spinning while i/o fifo is full...\n");
+              }
 
-							current_buffer_page++;
+              current_buffer_page++;
 
-							if (current_buffer_page == VSX_PROFILER_RECIEVE_BUFFER_PAGES)
-								current_buffer_page = 0;
-						}
-					}
+              if (current_buffer_page == VSX_PROFILER_RECIEVE_BUFFER_PAGES)
+                current_buffer_page = 0;
+            }
+          }
 
           // read max 4 packets per thread
           if ( max_iterations++ > 4)
@@ -362,7 +362,7 @@ public:
       if (thread_list[i] == local_thread_id)
       {
         thread_lock.release();
-				vsx_printf(L"VSX PROFILER: ***WARNING*** Profiler already initialized for thread id %d. Did you call init() twice by mistake?\n",local_thread_id);
+        vsx_printf(L"VSX PROFILER: ***WARNING*** Profiler already initialized for thread id %d. Did you call init() twice by mistake?\n",local_thread_id);
         return;
       }
 
