@@ -122,6 +122,18 @@ namespace vsx_string_helper
   }
 
   /**
+   * @brief i2s
+   * @param in
+   * @return
+   */
+  inline vsx_string<wchar_t>f2sw(const float &in)
+  {
+    wchar_t string_res[64] = L"";
+    swprintf(string_res, 64, L"%f", in);
+    return vsx_string<wchar_t>(string_res);
+  }
+
+  /**
    * @brief f2s
    * @param in
    * @param decimals

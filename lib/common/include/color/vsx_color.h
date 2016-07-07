@@ -140,6 +140,83 @@ public:
     a=ia;
   }
 
+
+  inline vsx_color operator +(const vsx_color &t)
+  {
+    vsx_color temp;
+    temp.r = r + t.r;
+    temp.g = g + t.g;
+    temp.b = b + t.b;
+    temp.a = a + t.a;
+    return temp;
+  }
+
+  inline vsx_color operator +=(const vsx_color &t)
+  {
+    r += t.r;
+    g += t.g;
+    b += t.b;
+    a += t.a;
+    return *this;
+  }
+
+  inline vsx_color operator *=(const float &t)
+  {
+    r *= t;
+    g *= t;
+    b *= t;
+    a *= t;
+    return *this;
+  }
+
+  inline vsx_color operator -=(const vsx_color &t)
+  {
+    r -= t.r;
+    g -= t.g;
+    b -= t.b;
+    a -= t.a;
+    return *this;
+  }
+
+  inline vsx_color operator -()
+  {
+    vsx_color temp;
+    temp.r = -r;
+    temp.g = -g;
+    temp.b = -b;
+    temp.a = -a;
+    return temp;
+  }
+
+  inline vsx_color operator -(const vsx_color &t)
+  {
+    vsx_color temp;
+    temp.r = r - t.r;
+    temp.g = g - t.g;
+    temp.b = b - t.b;
+    temp.a = a - t.a;
+    return temp;
+  }
+
+  inline vsx_color operator *(const vsx_color &t)
+  {
+    vsx_color temp;
+    temp.r = r * t.r;
+    temp.g = g * t.g;
+    temp.b = b * t.b;
+    temp.a = a * t.a;
+    return temp;
+  }
+
+  inline vsx_color operator *(const float &t)
+  {
+    vsx_color temp;
+    temp.r = r * t;
+    temp.g = g * t;
+    temp.b = b * t;
+    return temp;
+  }
+
   vsx_color()
     :
       a(1)
