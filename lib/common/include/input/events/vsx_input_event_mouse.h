@@ -8,10 +8,16 @@ class vsx_input_event_mouse
 public:
 
   bool button_state = false;
+
+  // x on screen when type == movement
+  // button_id otherwise
   union{
     int32_t x = 0;
     uint32_t button_id;
   };
+
+  // y on screen
+  // mousewheel movement
   int32_t y = 0;
 
   enum

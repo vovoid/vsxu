@@ -518,13 +518,16 @@ public:
 
   inline void trim_lf() VSX_ALWAYS_INLINE
   {
-    if ( !this->size() )
-      return;
-
+    req(this->size());
     if ( (*this)[this->size()-1] == 0x0A )
       this->pop_back();
 
+    req(this->size());
     if ( (*this)[this->size()-1] == 0x0D )
+      this->pop_back();
+
+    req(this->size());
+    if ( (*this)[this->size()-1] == 0x0A )
       this->pop_back();
   }
 };
