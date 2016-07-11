@@ -140,6 +140,14 @@ public:
     a=ia;
   }
 
+  void set_percentages(const T rp, const T gp, const T bp, const T ap)
+  {
+    r = rp * 0.01;
+    g = gp * 0.01;
+    b = bp * 0.01;
+    a = ap * 0.01;
+  }
+
 
   inline vsx_color operator +(const vsx_color &t)
   {
