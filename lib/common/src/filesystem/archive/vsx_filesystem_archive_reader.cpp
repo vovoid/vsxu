@@ -52,19 +52,19 @@ void filesystem_archive_reader::close()
 
 bool filesystem_archive_reader::is_archive()
 {
-  req_v(archive, false);
+  reqrv(archive, false);
   return archive->is_archive();
 }
 
 bool filesystem_archive_reader::is_archive_populated()
 {
-  req_v(archive, false);
+  reqrv(archive, false);
   return archive->is_archive_populated();
 }
 
 bool filesystem_archive_reader::is_file(vsx_string<> filename)
 {
-  req_v(archive, false);
+  reqrv(archive, false);
   return archive->is_file(filename);
 }
 

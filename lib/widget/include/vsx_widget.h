@@ -419,7 +419,7 @@ public:
 
   bool input_key_up(uint16_t key)
   {
-    req_v(k_focus, true);
+    reqrv(k_focus, true);
     return k_focus->event_key_up(key);
   }
 

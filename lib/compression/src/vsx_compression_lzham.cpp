@@ -135,7 +135,7 @@ void compression_lzham::uncompress(
 vsx_ma_vector<unsigned char> compression_lzham::uncompress(vsx_ma_vector<unsigned char> &compressed_data, size_t original_size)
 {
   vsx_ma_vector<unsigned char> uncompressed_data;
-  req_v(original_size, uncompressed_data);
+  reqrv(original_size, uncompressed_data);
   uncompressed_data.allocate(original_size - 1);
   uncompress(uncompressed_data, compressed_data);
   return uncompressed_data;

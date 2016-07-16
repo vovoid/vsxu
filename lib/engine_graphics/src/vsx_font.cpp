@@ -108,7 +108,7 @@ void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsx::filesystem* 
   vsx_vector3<> vsx_font::print(vsx_vector3<> p, const vsx_string<>& str, const float size = 1, vsx_string<>colors)
   {
     req_error_v(my_font_info.name.size(), "font not loaded", p)
-    req_v(str.size(), p);
+    reqrv(str.size(), p);
 
     bool use_colors = false;
 
@@ -127,7 +127,7 @@ void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsx::filesystem* 
       glPushMatrix();
       glTranslatef(p.x,p.y,p.z);
 
-        req_v(my_font_info.texture->bind(), vsx_vector3<>());
+        reqrv(my_font_info.texture->bind(), vsx_vector3<>());
         colc = (char*)colors.c_str();
 
         if (use_colors)

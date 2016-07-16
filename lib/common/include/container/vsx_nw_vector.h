@@ -266,7 +266,7 @@ public:
 
   inline vsx_nw_vector<T>& operator=(vsx_nw_vector<T>&& other) VSX_ALWAYS_INLINE
   {
-    req_v(!data_volatile, *this);
+    reqrv(!data_volatile, *this);
 
     if (A)
       clear();
@@ -287,7 +287,7 @@ public:
 
   inline const vsx_nw_vector<T>& operator=(const vsx_nw_vector<T>& other) VSX_ALWAYS_INLINE
   {
-    req_v(!data_volatile, *this);
+    reqrv(!data_volatile, *this);
 
     allocate(other.allocated);
     used = other.used;

@@ -248,8 +248,8 @@ public:
   // Thread safety: NO
   T* get_cur()
   {
-    req_v(commands.size(), 0x0);
-    req_v(commands_iterator != commands.size(), 0x0);
+    reqrv(commands.size(), 0x0);
+    reqrv(commands_iterator != commands.size(), 0x0);
     return commands[commands_iterator];
   }
 
@@ -257,8 +257,8 @@ public:
   // Thread safety: NO
   T* get()
   {
-    req_v(commands.size(), 0x0);
-    req_v(commands_iterator != commands.size(), 0x0);
+    reqrv(commands.size(), 0x0);
+    reqrv(commands_iterator != commands.size(), 0x0);
 
     T* h = commands[commands_iterator];
     ++commands_iterator;

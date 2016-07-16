@@ -368,15 +368,15 @@ namespace vsx_string_helper
     size_t shave_off_at_end = 0
   )
   {
-    req_v(in.size(), "");
+    reqrv(in.size(), "");
 
     if (in.size() == 1)
       return in[0];
 
-    req_v(start_index <= in.size()-1, "");
+    reqrv(start_index <= in.size()-1, "");
 
     long calculated_end_index = (long)in.size() - ((long)shave_off_at_end + 1);
-    req_v(calculated_end_index >= 0, "");
+    reqrv(calculated_end_index >= 0, "");
     size_t end_index = (size_t)calculated_end_index;
 
     vsx_string<> result;
@@ -447,8 +447,8 @@ namespace vsx_string_helper
     int required_pos = -1
   )
   {
-    req_v(search.size(), subject_r);
-    req_v(subject.size() == subject_r.size(), subject_r);
+    reqrv(search.size(), subject_r);
+    reqrv(subject.size() == subject_r.size(), subject_r);
 
     vsx_string<> rep;
     for (size_t i = 0; i < search.size(); ++i)
@@ -528,7 +528,7 @@ namespace vsx_string_helper
     vsx_nw_vector <vsx_string<char> > parts;
     vsx_string<char> deli = ".";
     vsx_string_helper::explode(input,deli,parts);
-    req_v(parts.size(), false);
+    reqrv(parts.size(), false);
 
     vsx_string<> a = parts[parts.size()-1];
     a.make_lowercase();
@@ -560,7 +560,7 @@ namespace vsx_string_helper
   {
     vsx_nw_vector< vsx_string<> > parts;
     vsx_string_helper::explode_single<char>(filename, '.', parts);
-    req_v(parts.size() > 1, filename);
+    reqrv(parts.size() > 1, filename);
     parts[parts.size() - 2 ] += "_" + suffix;
     return vsx_string_helper::implode_single<char>(parts, '.');
   }

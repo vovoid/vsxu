@@ -20,8 +20,8 @@ public:
 
   static file_mmap* create(const char* filename)
   {
-    req_v(filename, 0x0);
-    req_v(strlen(filename), 0x0);
+    reqrv(filename, 0x0);
+    reqrv(strlen(filename), 0x0);
 
     int handle = open(filename, O_RDONLY);
 
@@ -29,7 +29,7 @@ public:
 
     size_t file_size = filesystem_helper::file_get_size( filename );
 
-    req_v(file_size, 0x0);
+    reqrv(file_size, 0x0);
 
     unsigned char* map_ptr =
       (unsigned char*)mmap(

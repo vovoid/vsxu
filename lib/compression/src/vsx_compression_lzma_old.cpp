@@ -58,7 +58,7 @@ vsx_ma_vector<unsigned char> compression_lzma_old::uncompress(vsx_ma_vector<unsi
   if (LzmaRamGetUncompressedSize(compressed_data.get_pointer(), compressed_data.size(), &outSize) != 0)
     return uncompressed_data;
 
-  req_v(outSize, uncompressed_data);
+  reqrv(outSize, uncompressed_data);
 
   uncompressed_data.allocate(outSize - 1);
 

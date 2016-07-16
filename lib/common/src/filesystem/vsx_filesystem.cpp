@@ -105,7 +105,7 @@ file* filesystem::f_open(const char* filename)
 {
   vsx_string<> i_filename(filename);
 
-  req_v(i_filename.size(), 0x0);
+  reqrv(i_filename.size(), 0x0);
 
   file* handle = new file;
 
@@ -164,7 +164,7 @@ unsigned char* filesystem::f_data_get(file* handle)
 
   size_t size = f_get_size(handle);
   unsigned char* buf = (unsigned char*)malloc(size);
-  req_v(buf, 0x0);
+  reqrv(buf, 0x0);
   f_read((void*)buf, size, handle);
   return buf;
 }
@@ -181,7 +181,7 @@ char* filesystem::f_gets_entire(file* handle)
 
   size_t size = f_get_size(handle);
   char* buf = (char*)malloc(size+1);
-  req_v(buf, 0x0);
+  reqrv(buf, 0x0);
   f_read((void*)buf, size, handle);
   buf[size] = 0;
   return buf;

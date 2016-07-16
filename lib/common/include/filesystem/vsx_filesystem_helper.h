@@ -72,7 +72,7 @@ namespace filesystem_helper
 
     fseek (fp, 0, SEEK_END);
     long int file_pos = ftell(fp);
-    req_v(file_pos, result);
+    reqrv(file_pos, result);
     result.allocate(file_pos - 1);
     fseek(fp,0,SEEK_SET);
 

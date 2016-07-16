@@ -71,7 +71,7 @@ bool filesystem_archive_vsx_reader::load(const char* archive_filename, bool load
   size_t size = ftell(archive_handle);
 
   // Sanitize size
-  req_v(size > 4, false);
+  reqrv(size > 4, false);
 
   fseek(archive_handle,0,SEEK_SET);
 

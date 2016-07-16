@@ -18,11 +18,11 @@ public:
 
   static file_mmap* create(const char* filename)
   {
-    req_v(filename, 0x0);
-    req_v(strlen(filename), 0x0);
+    reqrv(filename, 0x0);
+    reqrv(strlen(filename), 0x0);
 
     size_t file_size = filesystem_helper::file_get_size(filename);
-    req_v(file_size, 0x0);
+    reqrv(file_size, 0x0);
 
     void* handle =
       CreateFile(

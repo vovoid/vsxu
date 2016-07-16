@@ -12,14 +12,14 @@ bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool loa
 {
   VSX_UNUSED(load_data_multithreaded);
   mmap = filesystem_mmap::create(archive_filename);
-  req_v(mmap, false);
-  req_v(mmap->size > sizeof(vsxz_header) + sizeof(vsxz_header_file_info), false);
+  reqrv(mmap, false);
+  reqrv(mmap->size > sizeof(vsxz_header) + sizeof(vsxz_header_file_info), false);
   header = (vsxz_header*)mmap->data;
 
-  req_v(header->identifier[0] == 'V', false);
-  req_v(header->identifier[1] == 'S', false);
-  req_v(header->identifier[2] == 'X', false);
-  req_v(header->identifier[3] == 'Z', false);
+  reqrv(header->identifier[0] == 'V', false);
+  reqrv(header->identifier[1] == 'S', false);
+  reqrv(header->identifier[2] == 'X', false);
+  reqrv(header->identifier[3] == 'Z', false);
 
   uncompressed_data.allocate(header->compression_uncompressed_memory_size - 1);
 
@@ -129,7 +129,7 @@ bool filesystem_archive_vsxz_reader::is_archive()
 
 bool filesystem_archive_vsxz_reader::is_archive_populated()
 {
-  req_v(header, false);
+  reqrv(header, false);
   return header->file_count > 0;
 }
 
