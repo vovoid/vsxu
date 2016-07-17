@@ -116,7 +116,6 @@ public:
     uint64_t task_count = tasks_queued.load();
     while (task_count)
     {
-      vsx_printf(L"tasks left to wait for: %ld\n", task_count);
       std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
       task_count = tasks_queued.load();
     }
