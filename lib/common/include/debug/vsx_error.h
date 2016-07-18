@@ -34,7 +34,7 @@
 #define VSX_ERROR_EXIT(s,i) \
 { \
   vsx_printf(L"**********************************************************************************\n");\
-  vsx_printf(L"ERROR in %s#%d, %s:    %s\n", WIDE1(__FILE__), __LINE__, __PRETTY_FUNCTION__, s); \
+  vsx_printf(L"ERROR in %s#%d, %s:    %hs\n", WIDE1(__FILE__), __LINE__, __PRETTY_FUNCTION__, s); \
   vsx_printf(L"Exiting with error id %d\n", i);\
   vsx_backtrace::print_backtrace();\
   exit(i); \

@@ -448,7 +448,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
     if (!linked) return "";
     vsx_string<>res = ",uniforms:complex{";
     bool first = true;
-    for (int i = uniform_list.size()-1; i >= 0; --i) {
+    for (int i = (int)uniform_list.size()-1; i >= 0; --i) {
 
       if (uniform_list[i].name.size() && uniform_list[i].name[0] == '_')
         continue;
@@ -465,7 +465,7 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
 #if (VSXU_DEBUG)    
     printf("a_list size: %d\n", (int)attribute_list.size() );
 #endif
-    for (int i = attribute_list.size()-1; i >= 0; --i) {
+    for (int i = (int)attribute_list.size()-1; i >= 0; --i) {
       //if (a_list[i].name[0] != '_')
       {
         if (first) first = false;
