@@ -71,8 +71,8 @@ void vsx_widget_sequence_channel::init()
   is_controller = false;
   graph_color = vsx_color<>(1.0f, 1.0f, 1.0f);
   graph_oob_color = vsx_color<>(1, 0, 0, 1);
-  y_start = -2;
-  y_end = 2;
+  y_start = -0.1;
+  y_end = 1.1;
   if (channel_type == vsx_widget_sequence_channel_TYPE_PARAMETER)
   {
     command_q_b.add_raw("pseq_p inject_get " + channel_name + " " + param_name);

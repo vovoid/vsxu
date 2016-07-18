@@ -413,7 +413,7 @@ public:
   // who has k_focus - like an edit box.
   virtual bool input_key_down(uint16_t key)
   {
-    req_v(k_focus, true);
+    reqrv(k_focus, true);
     return k_focus->event_key_down(key);
   }
 
