@@ -40,7 +40,7 @@ add_executable(test_string test_string.cpp )
 target_link_libraries(test_string rt vsx_common ${CMAKE_THREAD_LIBS_INIT})
 
 add_executable(test_thread_pool test_thread_pool.cpp )
-target_link_libraries(test_thread_pool rt vsx_common ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(test_thread_pool rt vsx_common vsx_compression ${CMAKE_THREAD_LIBS_INIT})
 
 add_executable(test_vsx_filesystem_tree_writer test_vsx_filesystem_tree_writer.cpp )
 target_link_libraries(test_vsx_filesystem_tree_writer rt vsx_common ${CMAKE_THREAD_LIBS_INIT})
