@@ -28,9 +28,51 @@ class vsx_bitmap_loader_tga
   }
   VSX_PACK_END
 
+  static void* worker_archive(vsx_bitmap* bitmap, vsx::filesystem* filesystem, vsx_string<> filename)
+  {
+    vsx::file* file_handle = filesystem->f_open(filename.c_str());
+    tga_header* header;
+
+    unsigned char* data = filesystem->f_data_get(file_handle);
+    size_t file_offset = 0;
+    unsigned long num_bytes = 0;
+    int channels = 0;
+    header = (tga_header*)data;
+
+    if (header->data_type_code != 2)
+      goto end;
+
+    // Read past the ID text
+    if (header->id_length)
+      file_offset += header->id_length;
+
+    channels = header->bits_per_pixel / 8;
+    bitmap->channels = channels;
+    bitmap->width = header->width;
+    bitmap->height = header->height;
+    bitmap->channels_bgra = true;
+
+    num_bytes = channels * header->width * header->height;
+
+    bitmap->data_mark_volatile();
+    bitmap->data_set(data + file_offset, 0, 0, num_bytes);
+
+    bitmap->filename = filename;
+
+    handle_transformations(bitmap);
+
+    bitmap->timestamp = vsx_singleton_counter::get();
+    bitmap->data_ready.fetch_add(1);
+
+  end:
+    return 0;
+  }
 
   static void* worker(vsx_bitmap* bitmap, vsx::filesystem* filesystem, vsx_string<> filename)
   {
+    if (filesystem->get_archive()->is_archive())
+      return worker_archive(bitmap, filesystem, filename);
+
     vsx::file* file_handle = filesystem->f_open(filename.c_str());
     tga_header header;
     filesystem->f_read( &header, sizeof(header), file_handle );
