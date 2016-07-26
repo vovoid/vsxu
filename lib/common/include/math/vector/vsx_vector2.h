@@ -158,6 +158,18 @@ public:
     y*=a;
   }
 
+  inline T dot_product(const vsx_vector2* ov)
+  {
+    return x * ov->x + y * ov->y;
+  }
+
+  // calculates the cross product of the two other vectors and stores it here
+  inline void cross(const vsx_vector2 &u, const vsx_vector2 &vv) {
+    x = (u.y*vv.z) - (u.z*vv.y);
+    y = (u.z*vv.x) - (u.x*vv.z);
+  }
+
+
 
   inline void multiply_matrix(const T *m)
   {
