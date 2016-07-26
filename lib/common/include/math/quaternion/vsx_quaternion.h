@@ -66,6 +66,13 @@ public:
     w = ww;
   }
 
+  template<typename D>
+  inline vsx_quaternion<D> convert()
+  {
+    return vsx_quaternion<D>((D)x, (D)y, (D)z, (D)w);
+  }
+
+
   static size_t arity()
   {
     return 4;

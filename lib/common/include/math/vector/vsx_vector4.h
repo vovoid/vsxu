@@ -47,6 +47,12 @@ public:
       w(0.0)
   {}
 
+  template<typename D>
+  inline vsx_vector4<D> convert()
+  {
+    return vsx_vector4<D>((D)x, (D)y, (D)z, (D)w);
+  }
+
   static size_t arity()
   {
     return 4;

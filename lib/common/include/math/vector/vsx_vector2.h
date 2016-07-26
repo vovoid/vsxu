@@ -41,6 +41,12 @@ public:
     return 2;
   }
 
+  template<typename D>
+  inline vsx_vector2<D> convert()
+  {
+    return vsx_vector2<D>((D)x, (D)y);
+  }
+
   inline vsx_vector2 operator +(const vsx_vector2 &t)
   {
     vsx_vector2 temp;

@@ -70,24 +70,26 @@ class vsx_bitmap
   ;
 
   uint64_t data_size [15] [6] =
-  {
-    {0,0,0,0,0,0},
-    {0,0,0,0,0,0},
-    {0,0,0,0,0,0},
-    {0,0,0,0,0,0},
-    {0,0,0,0,0,0},
-    {0,0,0,0,0,0},
-    {0,0,0,0,0,0},
-    {0,0,0,0,0,0},
-    {0,0,0,0,0,0},
-    {0,0,0,0,0,0},
-    {0,0,0,0,0,0},
-    {0,0,0,0,0,0},
-    {0,0,0,0,0,0},
-    {0,0,0,0,0,0},
-    {0,0,0,0,0,0}
-  }
-;
+    {
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0},
+      {0,0,0,0,0,0}
+    }
+  ;
+
+  bool data_volatile = false;
 
 public:
   vsx_string<> filename;
@@ -178,6 +180,11 @@ public:
     return total_bytes;
   }
 
+  inline void data_mark_volatile()
+  {
+    data_volatile = true;
+  }
+
   inline void data_set(void* new_value, size_t mip_map_level = 0, size_t cube_map_side = 0, uint64_t size = 0)
   {
     data[mip_map_level][cube_map_side] = new_value;
@@ -187,6 +194,7 @@ public:
   inline void data_free(size_t mip_map_level = 0, size_t cube_map_side = 0)
   {
     req(data[mip_map_level][cube_map_side]);
+    req(!data_volatile);
     lock.aquire();
     free(data[mip_map_level][cube_map_side]);
     data[mip_map_level][cube_map_side] = 0x0;
@@ -196,6 +204,7 @@ public:
 
   inline void data_free_all()
   {
+    req(!data_volatile);
     for (size_t mipmap_level = 0; mipmap_level < 15; mipmap_level++)
       for (size_t cubemap_side = 0; cubemap_side < 6; cubemap_side++)
         data_free(mipmap_level, cubemap_side);

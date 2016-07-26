@@ -38,6 +38,12 @@ public:
   T y = (T)0.0;
   T z = (T)0.0;
 
+  template<typename D>
+  inline vsx_vector3<D> convert()
+  {
+    return vsx_vector3<D>((D)x, (D)y, (D)z);
+  }
+
   static size_t arity()
   {
     return 3;
