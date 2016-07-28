@@ -74,6 +74,7 @@ class vsx_bitmap_loader_tga
       return worker_archive(bitmap, filesystem, filename);
 
     vsx::file* file_handle = filesystem->f_open(filename.c_str());
+    reqrv(file_handle, 0);
     tga_header header;
     filesystem->f_read( &header, sizeof(header), file_handle );
 
