@@ -1,8 +1,4 @@
-// Inclusion of this file is only needed when building
-//  engine 
-//  engine_graphics
-//  artiste
-// NOT needed when using these libraries.
+// Useful information about the current OS / compiler and compiler / OS-specific hacks
 
 #pragma once
 // unused macro
@@ -135,12 +131,14 @@
   inline void* vsx_aligned_malloc(size_t n)
   {
     void* r;
-    posix_memalign(&r, 64, n);
+    int f = posix_memalign(&r, 64, n);
+    (void)f;
     return r;
   }
   #define vsx_aligned_realloc(pointer, n) realloc(pointer, n)
   #define vsx_aligned_free(pointer) free(pointer)
 #endif
 
+// wchar string hack
 #define WIDE2(x) L ##x
 #define WIDE1(x) WIDE2(x)

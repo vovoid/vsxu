@@ -164,9 +164,9 @@ public:
   }
 
   // calculates the cross product of the two other vectors and stores it here
-  inline void cross(const vsx_vector2 &u, const vsx_vector2 &vv) {
-    x = (u.y*vv.z) - (u.z*vv.y);
-    y = (u.z*vv.x) - (u.x*vv.z);
+  inline void cross(const vsx_vector2 &u, float z = 1.0f) {
+    x =  (u.y * z);
+    y = -(u.x * z);
   }
 
 

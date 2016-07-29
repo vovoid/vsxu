@@ -1,5 +1,4 @@
-#ifndef VSX_VBO_BUCKET_H
-#define VSX_VBO_BUCKET_H
+#pragma once
 
 #include <container/vsx_ma_vector.h>
 #include <math/vector/vsx_vector2.h>
@@ -58,6 +57,17 @@ public:
   vsx_ma_vector< vsx_color<> >      vertex_colors;
   vsx_ma_vector< Tuv >  vertex_tex_coords;
   vsx_ma_vector< Tf >              faces;
+
+  // 2. reset buffers
+  inline void reset_used()
+  {
+    vertices.reset_used();
+    vertex_normals.reset_used();
+    vertex_colors.reset_used();
+    vertex_tex_coords.reset_used();
+    faces.reset_used();
+  }
+
 
   // 2. call any of the invalidation functions after changing the data
   inline void invalidate_vertices()
@@ -541,5 +551,3 @@ private:
   }
 }; // end VBO Bucket
 
-
-#endif

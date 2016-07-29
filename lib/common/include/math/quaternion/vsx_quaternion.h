@@ -308,5 +308,13 @@ public:
     p2.z = 2*x*z*p1.x + 2*y*z*p1.y + z*z*p1.z - 2*w*y*p1.x - y*y*p1.z + 2*w*x*p1.y - x*x*p1.z + w*w*p1.z;
     return p2;
   }
-}
+
+  vsx_vector2<T> transform(const vsx_vector2<T> &p1)
+  {
+    vsx_vector2<T> p2;
+    p2.x = w*w*p1.x - 2*z*w*p1.y + x*x*p1.x + 2*y*x*p1.y - z*z*p1.x - y*y*p1.x;
+    p2.y = 2*x*y*p1.x + y*y*p1.y + 2*w*z*p1.x - z*z*p1.y + w*w*p1.y - x*x*p1.y;
+    return p2;
+  }
+  }
 VSX_PACK_END

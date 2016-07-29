@@ -21,9 +21,9 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_MATRIX_H
-#define VSX_MATRIX_H
+#pragma once
 
+#include <math/vector/vsx_vector2.h>
 #include <math/vector/vsx_vector3.h>
 
 template<typename T = float>
@@ -51,18 +51,28 @@ public:
     m[12] = m[3];  m[13] = m[7];  m[14] = m[11];  m[15] = m[15];
   }
 
-  inline vsx_vector3<double> multiply_vector(const vsx_vector3<double> &a)
+  inline vsx_vector3d multiply_vector(const vsx_vector3d &a)
   {
-    vsx_vector3<double> b;
+    vsx_vector3d b;
     b.x = m[0] * a.x + m[1] * a.y + m[2]  * a.z + m[3];
     b.y = m[4] * a.x + m[5] * a.y + m[6]  * a.z + m[7];
     b.z = m[8] * a.x + m[9] * a.y + m[10] * a.z + m[11];
     return b;
   }
 
-  inline vsx_vector3<float> multiply_vector(const vsx_vector3<float> &a)
+  template < typename Ti = float>
+  inline vsx_vector2<Ti> multiply_vector(const vsx_vector2<Ti> &a)
   {
-    vsx_vector3<float> b;
+    vsx_vector2<Ti> b;
+    b.x = m[0] * a.x + m[1] * a.y + m[3];
+    b.y = m[4] * a.x + m[5] * a.y + m[7];
+    return b;
+  }
+
+  template < typename Ti = float>
+  inline vsx_vector3<Ti> multiply_vector(const vsx_vector3<Ti> &a)
+  {
+    vsx_vector3<Ti> b;
     b.x = m[0] * a.x + m[1] * a.y + m[2]  * a.z + m[3];
     b.y = m[4] * a.x + m[5] * a.y + m[6]  * a.z + m[7];
     b.z = m[8] * a.x + m[9] * a.y + m[10] * a.z + m[11];
@@ -200,6 +210,25 @@ public:
     m[2] = z.x; m[6] = z.y; m[10] = z.z;
   }
 
+  inline void rotation_from_vectors_n(vsx_vector2<T>* xv, vsx_vector3<T>* yv)
+  {
+    vsx_vector3<T> x, y, z;
+    x.x = xv->x;
+    x.y = xv->y;
+    x.normalize();
+
+    y = *yv;
+    y.normalize();
+
+    z.cross(x,y);
+    z.normalize();
+
+    m[0] = x.x; m[4] = x.y; m[8] = x.z;
+    m[1] = y.x; m[5] = y.y; m[9] = y.z;
+    m[2] = z.x; m[6] = z.y; m[10] = z.z;
+  }
+
+
   inline void rotation_from_vectors_n(vsx_vector3<T>* xv, vsx_vector3<T>* yv)
   {
     vsx_vector3<T> x, y, z;
@@ -236,5 +265,3 @@ public:
 
 };
 
-
-#endif
