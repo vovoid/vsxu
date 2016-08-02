@@ -58,6 +58,19 @@ public:
     return 4;
   }
 
+  bool nan()
+  {
+    if (isnan(x))
+      return true;
+    if (isnan(y))
+      return true;
+    if (isnan(z))
+      return true;
+    if (isnan(2))
+      return true;
+    return false;
+  }
+
   vsx_vector4(const T n[4])
   {
     x = n[0];

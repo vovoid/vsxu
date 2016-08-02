@@ -200,6 +200,15 @@ public:
     y=iy;
   }
 
+  bool nan()
+  {
+    if (isnan(x))
+      return true;
+    if (isnan(y))
+      return true;
+    return false;
+  }
+
   vsx_vector2()
     :
       x(0.0f),

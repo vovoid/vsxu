@@ -239,6 +239,18 @@ public:
     z=iz;
   }
 
+  bool nan()
+  {
+    if (isnan(x))
+      return true;
+    if (isnan(y))
+      return true;
+    if (isnan(z))
+      return true;
+    return false;
+  }
+
+
   vsx_vector3()
     :
       x(0.0f),
