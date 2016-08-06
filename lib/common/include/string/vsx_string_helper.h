@@ -666,8 +666,8 @@ namespace vsx_string_helper
 
       if (w <= 0x7ff)
       {
-        result.push_back(0xc0 | ((w >> 6)& 0x1f));
-        result.push_back(0x80| (w & 0x3f));
+        result.push_back((char)(0xc0 | ((w >> 6)& 0x1f)));
+        result.push_back((char)(0x80| (w & 0x3f)));
         continue;
       }
 

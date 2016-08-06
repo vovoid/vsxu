@@ -338,7 +338,8 @@ private:
 
   inline void destroy_vbo()
   {
-    if (!vbo_id_vertex_normals_texcoords) return;
+    req(vbo_id_vertex_normals_texcoords);
+
     glDeleteBuffersARB(1, &vbo_id_draw_indices);
     glDeleteBuffersARB(1, &vbo_id_vertex_normals_texcoords);
 
