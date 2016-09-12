@@ -188,6 +188,8 @@ public:
     if (!fp)
       VSX_ERROR_EXIT(L"VSX PROFILER: ***ERROR*** I/O thread can not open file. Aborting...", 900);
 
+
+    vsx_printf(L"[Profiler writing to %s]\n", filename.c_str());
     timer.start();
     double accumulated_time = 0.0;
     while ( pm->thread_run_control.load() )
