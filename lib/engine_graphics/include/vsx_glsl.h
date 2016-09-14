@@ -27,13 +27,14 @@
 #include <vsx_param.h>
 
 typedef struct {
-  vsx_module_param_abs* module_param;
+  vsx_module_param_abs* module_param = 0x0;
   vsx_string<>name;
   vsx_string<>param_type;
-  int param_type_id;
-  int glsl_id;
-  int glsl_type;
-  GLint glsl_location;
+  int param_type_id = 0;
+  int glsl_id = 0;
+  int glsl_type = 0;
+  size_t local_array_pos = 0;
+  GLint glsl_location = 0;
 } vsx_glsl_type_info;
 
 class vsx_glsl {
