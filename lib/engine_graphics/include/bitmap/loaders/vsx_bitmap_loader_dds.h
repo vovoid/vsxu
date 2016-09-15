@@ -128,9 +128,19 @@ class vsx_bitmap_loader_dds
     bitmap->height = header.height;
     bitmap->channels = 4;
 
-    size_t row_size = MAX(1, (header.width + 3) / 4) * bytes_per_block;
-    req_error_v(row_size == header.pitch_or_linear_size, "size differes from pitch or linear size", false);
-
+/*    size_t row_size = MAX(1, (header.width + 3) / 4) * bytes_per_block;
+    if (row_size != header.pitch_or_linear_size)
+      req_error_v(
+          row_size == header.pitch_or_linear_size,
+          (
+            vsx_string<>("size differes from pitch or linear size, header pitch:") +
+            vsx_string_helper::i2s(header.pitch_or_linear_size) + " row size: " +
+            vsx_string_helper::i2s(row_size)
+          ).c_str()
+          ,
+          false
+        );
+*/
     unsigned int x = header.width;
     unsigned int y = header.height;
     for (unsigned int mip_map_level = 0; mip_map_level < header.mip_map_count; ++mip_map_level)
@@ -182,8 +192,18 @@ class vsx_bitmap_loader_dds
     bitmap->height = header->height;
     bitmap->channels = 4;
 
-    size_t row_size = MAX( 1, (header->width + 3) / 4 ) * bytes_per_block;
-    req_error_v( row_size == header->pitch_or_linear_size, "size differes from pitch or linear size", false);
+    /*size_t row_size = MAX( 1, (header->width + 3) / 4 ) * bytes_per_block;
+      req_error_v(
+          row_size == header->pitch_or_linear_size,
+          (
+            vsx_string<>("size differes from pitch or linear size, header pitch:") +
+            vsx_string_helper::i2s(header->pitch_or_linear_size) + " row size: " +
+            vsx_string_helper::i2s(row_size)
+          ).c_str()
+          ,
+          false
+        );
+      */
 
     bitmap->data_mark_volatile();
     unsigned int x = header->width;
@@ -208,13 +228,13 @@ class vsx_bitmap_loader_dds
   static void* worker(vsx_bitmap* bitmap, vsx::filesystem* filesystem, vsx_string<> filename)
   {
     vsx::file* file_handle = filesystem->f_open(filename.c_str());
+    bitmap->filename = filename;
     if (filesystem->get_archive()->is_archive())
       worker_load_file_archive(bitmap, filesystem, file_handle, 0);
     else
       worker_load_file(bitmap, filesystem, file_handle, 0);
     filesystem->f_close(file_handle);
 
-    bitmap->filename = filename;
 
     if (bitmap->hint & vsx_bitmap::cubemap_load_files_hint)
       for (size_t i = 1; i < 6; i++)
