@@ -128,19 +128,15 @@ class vsx_bitmap_loader_dds
     bitmap->height = header.height;
     bitmap->channels = 4;
 
-/*    size_t row_size = MAX(1, (header.width + 3) / 4) * bytes_per_block;
+    size_t row_size =
+        MAX(1, (header.width + 3) / 4) *
+        MAX(1, (header.height + 3) / 4) *
+        bytes_per_block
+      ;
+
     if (row_size != header.pitch_or_linear_size)
-      req_error_v(
-          row_size == header.pitch_or_linear_size,
-          (
-            vsx_string<>("size differes from pitch or linear size, header pitch:") +
-            vsx_string_helper::i2s(header.pitch_or_linear_size) + " row size: " +
-            vsx_string_helper::i2s(row_size)
-          ).c_str()
-          ,
-          false
-        );
-*/
+      vsx_printf(L"WARNING!!!    DDS pitch or linear size wrong,      %s\n", bitmap->filename.c_str());
+
     unsigned int x = header.width;
     unsigned int y = header.height;
     for (unsigned int mip_map_level = 0; mip_map_level < header.mip_map_count; ++mip_map_level)
@@ -192,18 +188,22 @@ class vsx_bitmap_loader_dds
     bitmap->height = header->height;
     bitmap->channels = 4;
 
-    /*size_t row_size = MAX( 1, (header->width + 3) / 4 ) * bytes_per_block;
-      req_error_v(
-          row_size == header->pitch_or_linear_size,
-          (
-            vsx_string<>("size differes from pitch or linear size, header pitch:") +
-            vsx_string_helper::i2s(header->pitch_or_linear_size) + " row size: " +
-            vsx_string_helper::i2s(row_size)
-          ).c_str()
-          ,
-          false
-        );
-      */
+    size_t row_size =
+        MAX(1, (header->width + 3) / 4) *
+        MAX(1, (header->height + 3) / 4) *
+        bytes_per_block
+      ;
+
+    req_error_v(
+        row_size == header->pitch_or_linear_size,
+        (
+          vsx_string<>("size differes from pitch or linear size, header pitch:") +
+          vsx_string_helper::i2s(header->pitch_or_linear_size) + " row size: " +
+          vsx_string_helper::i2s(row_size)
+        ).c_str()
+        ,
+        false
+      );
 
     bitmap->data_mark_volatile();
     unsigned int x = header->width;
