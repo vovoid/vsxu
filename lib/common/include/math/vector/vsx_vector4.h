@@ -25,6 +25,7 @@
 #ifndef VSX_VECTOR4_H
 #define VSX_VECTOR4_H
 
+#include <cmath>
 #include <inttypes.h>
 #include <math/vsx_math.h>
 #include <math/vector/vsx_vector3.h>
@@ -66,7 +67,7 @@ public:
       return true;
     if (isnan(z))
       return true;
-    if (isnan(2))
+    if (isnan(w))
       return true;
     return false;
   }
