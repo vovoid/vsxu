@@ -254,3 +254,11 @@ public:
 typedef vsx_color<float> vsx_colorf;
 typedef vsx_color<double> vsx_colord;
 
+#define vsx_color_white vsx_colorf(1.0f, 1.0f, 1.0f, 1.0f)
+#define vsx_color_black vsx_colorf(0.0f, 0.0f, 0.0f, 1.0f)
+#define vsx_color_red vsx_colorf(1.0f, 0.0f, 0.0f, 1.0f)
+#define vsx_color_green vsx_colorf(0.0f, 1.0f, 0.0f, 1.0f)
+#define vsx_color_blue vsx_colorf(0.0f, 0.0f, 1.0f, 1.0f)
+
+
+
