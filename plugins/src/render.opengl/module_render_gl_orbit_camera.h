@@ -136,7 +136,7 @@ public:
     gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
     gl_state->matrix_load_identity();
 
-    gl_state->matrix_glu_lookat(
+    gl_state->matrix_glu_lookatf(
       rotation_.x*dist+destination->get(0),
       rotation_.y*dist+destination->get(1),
       rotation_.z*dist+destination->get(2),

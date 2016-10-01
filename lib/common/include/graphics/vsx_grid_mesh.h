@@ -40,7 +40,7 @@
 class vsx_grid_vertex {
 public:
   bool valid;
-  unsigned long id; // used when dumping faces into vsx_mesh
+  GLuint id; // used when dumping faces into vsx_mesh
   vsx_vector3<> coord;  // xyz
   vsx_color<> color;  // color
   vsx_vector3<> normal; // vertex normal
@@ -169,7 +169,7 @@ public:
     mesh->data->vertices.reset_used();
     mesh->data->vertex_normals.reset_used();
     mesh->data->vertex_tex_coords.reset_used();
-    unsigned long mvid = 0;
+    GLuint mvid = 0;
     for (unsigned long a = 0; a < vertices.size(); ++a) {
       for (unsigned long b = 0; b < vertices[a].size(); ++b) {
         mesh->data->vertices[mvid] = vertices[a][b].coord;

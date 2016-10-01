@@ -93,7 +93,7 @@ bool activate_offscreen()
 
   gl_state->matrix_glu_perspective(fov->get(), 1.0, fabs(near_clipping->get()), far_clipping->get());
   gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
-  gl_state->matrix_glu_lookat(
+  gl_state->matrix_glu_lookatf(
 	  position->get(0),
 	  position->get(1),
 	  position->get(2),

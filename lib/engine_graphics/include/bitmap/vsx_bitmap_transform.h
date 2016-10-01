@@ -58,8 +58,8 @@ class vsx_bitmap_transform
     uint32_t c10 = source_data[ (vv + 1) % height * width + (uu    ) % width];
     uint32_t c11 = source_data[ (vv + 1) % height * width + (uu + 1) % width];
 
-    float fracU = (u + 10000) - (int)(u + 10000);
-    float fracV = (v + 10000) - (int)(v + 10000);
+    float fracU = (u + 10000.0f) - (u + 10000.0f);
+    float fracV = (v + 10000.0f) - (v + 10000.0f);
 
     uint32_t a, r, g, b;
     uint32_t a00, a01, a10, a11;
@@ -74,10 +74,10 @@ class vsx_bitmap_transform
       b = (((col) >> 0) & 255);
 
     #define interpol(x, x00, x01, x10, x11, fracU, fracV)\
-      x = (uint32_t)(x00 * (1.0f - fracU) * (1.0f - fracV) + \
-          x01 * (fracU) * (1.0f - fracV) + \
-          x10 * (1.0f - fracU) * (fracV) + \
-          x11 * (fracU) * (fracV));
+      x = (uint32_t)((float)x00 * (1.0f - fracU) * (1.0f - fracV) + \
+          (float)x01 * (fracU) * (1.0f - fracV) + \
+          (float)x10 * (1.0f - fracU) * (fracV) + \
+          (float)x11 * (fracU) * (fracV));
 
     sep_col(c00, a00, r00, g00, b00);
     sep_col(c01, a01, r01, g01, b01);
@@ -96,7 +96,7 @@ class vsx_bitmap_transform
   {
     v_norm(vec);
 
-    float sphV = (float)((acos(-vec[1]) / PI) ) * height;
+    float sphV = (float)((acos(-vec[1]) / PI) ) * (float)height;
 
     float vec2[4] = {
       vec[0],
@@ -107,7 +107,7 @@ class vsx_bitmap_transform
     float scale = v_rlen(vec2);
     v_smult(vec, scale);
 
-    float sphU = (float)(atan2(vec[0], vec[2]) / PI ) * 0.5f * width;
+    float sphU = (float)(atan2(vec[0], vec[2]) / PI ) * 0.5f * (float)width;
 
     return sphere_map_get_color(source_data, sphU, sphV, width, height);
   }
@@ -212,7 +212,7 @@ public:
   void sphere_map_into_cubemap(vsx_bitmap* bitmap)
   {
     int texSize = bitmap->height;
-    int texSize1 = texSize - 1;
+    float texSize1 = (float)texSize - 1.0f;
     int u, v;
     uint32_t* source_data = (uint32_t*)bitmap->data_get();
 
@@ -232,33 +232,33 @@ public:
           switch(cube_map_side)
           {
             case 0:
-              vec[0] = ((float)u / texSize1 - 0.5f) * 2;
-              vec[1] = ((float)v / texSize1 - 0.5f) * 2;
+              vec[0] = ((float)u / texSize1 - 0.5f) * 2.0f;
+              vec[1] = ((float)v / texSize1 - 0.5f) * 2.0f;
               vec[2] = 1;
               vec[3] = 1;
             break;
             case 1:
               vec[0] = 1;
-              vec[1] = ((float)v / texSize1 - 0.5f) * 2;
-              vec[2] = -((float)u / texSize1 - 0.5f) * 2;
+              vec[1] = ((float)v / texSize1 - 0.5f) * 2.0f;
+              vec[2] = -((float)u / texSize1 - 0.5f) * 2.0f;
               vec[3] = 1;
             break;
             case 2:
-              vec[0] = -((float)u / texSize1 - 0.5f) * 2;
-              vec[1] = ((float)v / texSize1 - 0.5f) * 2;
+              vec[0] = -((float)u / texSize1 - 0.5f) * 2.0f;
+              vec[1] = ((float)v / texSize1 - 0.5f) * 2.0f;
               vec[2] = -1;
               vec[3] = 1;
             break;
             case 3:
               vec[0] = -1;
-              vec[1] = ((float)v / texSize1 - 0.5f) * 2;
-              vec[2] = ((float)u / texSize1 - 0.5f) * 2;
+              vec[1] = ((float)v / texSize1 - 0.5f) * 2.0f;
+              vec[2] = ((float)u / texSize1 - 0.5f) * 2.0f;
               vec[3] = 1;
             break;
             case 4:
-              vec[0] = -((float)v / texSize1 - 0.5f) * 2;
+              vec[0] = -((float)v / texSize1 - 0.5f) * 2.0f;
               vec[1] = -1;
-              vec[2] = ((float)u / texSize1 - 0.5f) * 2;
+              vec[2] = ((float)u / texSize1 - 0.5f) * 2.0f;
               vec[3] = 1;
             break;
             case 5:

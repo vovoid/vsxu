@@ -177,7 +177,7 @@ public:
 
 #if (PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX)
     vsx_string<>filename = profiler_directory + "/" + vsx_string<>(program_invocation_short_name) +
-        "_" +vsx_string_helper::i2s(time(0x0)) + ".dat";
+        "_" +vsx_string_helper::i2s((int)time(0x0)) + ".dat";
 #else
     vsx_string<>filename = profiler_directory + "/" + "_" +vsx_string_helper::i2s((int)time(0x0)) + ".dat";
 #endif
@@ -341,7 +341,7 @@ public:
 #if (PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS)
     return GetCurrentThreadId();
 #else
-    return syscall( __NR_gettid );
+    return (pid_t)syscall( __NR_gettid );
 #endif
   }
 

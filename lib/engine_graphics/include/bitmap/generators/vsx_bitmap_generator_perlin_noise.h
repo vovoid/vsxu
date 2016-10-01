@@ -107,9 +107,9 @@ public:
                 (float)pow(
                   1.0f -
                     (
-                      (float)fabs(
-                        (float)cos(
-                          blob_angle + blob_arms * (float)atan2(xx,yy)
+                      fabsf(
+                        cosf(
+                          blob_angle + blob_arms * atan2f(xx,yy)
                         )
                       )
                       *

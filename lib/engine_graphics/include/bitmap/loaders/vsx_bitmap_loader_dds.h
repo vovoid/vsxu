@@ -199,7 +199,7 @@ class vsx_bitmap_loader_dds
         (
           vsx_string<>("size differes from pitch or linear size, header pitch:") +
           vsx_string_helper::i2s(header->pitch_or_linear_size) + " row size: " +
-          vsx_string_helper::i2s(row_size)
+          vsx_string_helper::st2s(row_size)
         ).c_str()
         ,
         false

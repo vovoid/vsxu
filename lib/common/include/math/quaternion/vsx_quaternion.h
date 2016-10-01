@@ -106,8 +106,8 @@ public:
     if ( ((T)1.0 - cosom) > (T)0.00001 )
     {
       // standard case (slerp)
-      omega = acos(cosom);
-      sinom = sin(omega);
+      omega = (T)acos(cosom);
+      sinom = (T)sin(omega);
       scale0 = (T)sin(((T)1.0 - t) * omega) / sinom;
       scale1 = (T)sin(t * omega) / sinom;
     }
@@ -190,11 +190,11 @@ public:
 
   inline void from_axis_angle( vsx_vector3<T> &source_axis, T &source_angle)
   {
-    T f = sin( source_angle * 0.5f );
+    T f = (T)sin( source_angle * (T)0.5 );
     x = source_axis.x * f;
     y = source_axis.y * f;
     z = source_axis.z * f;
-    w = cos( source_angle * 0.5f );
+    w = (T)cos( source_angle * (T)0.5 );
   }
 
   inline void to_axis_angle( vsx_vector3<T> &result_axis, T &result_angle)

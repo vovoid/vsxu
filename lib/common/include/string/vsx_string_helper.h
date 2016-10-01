@@ -32,6 +32,18 @@ namespace vsx_string_helper
   }
 
   /**
+   * @brief i2s
+   * @param in
+   * @return
+   */
+  inline vsx_string<>ui642s(const uint64_t &in)
+  {
+    char string_res[256] = "";
+    sprintf(string_res,"%lu",in);
+    return vsx_string<>(string_res);
+  }
+
+  /**
   * @brief i2s
   * @param in
   * @return
@@ -673,18 +685,18 @@ namespace vsx_string_helper
 
       if ((uint64_t)w <= 0xffff)
       {
-        result.push_back(0xe0 | ((w >> 12)& 0x0f));
-        result.push_back(0x80| ((w >> 6) & 0x3f));
-        result.push_back(0x80| (w & 0x3f));
+        result.push_back((char)(0xe0 | ((w >> 12)& 0x0f)));
+        result.push_back((char)(0x80| ((w >> 6) & 0x3f)));
+        result.push_back((char)(0x80| (w & 0x3f)));
         continue;
       }
 
       if ((uint64_t)w <= 0x10ffff)
       {
-        result.push_back(0xf0 | (((uint64_t)w >> 18)& 0x07));
-        result.push_back(0x80| (((uint64_t)w >> 12) & 0x3f));
-        result.push_back(0x80| (((uint64_t)w >> 6) & 0x3f));
-        result.push_back(0x80| ((uint64_t)w & 0x3f));
+        result.push_back((char)(0xf0 | ((uint64_t)w >> 18)& 0x07));
+        result.push_back((char)(0x80 | ((uint64_t)w >> 12) & 0x3f));
+        result.push_back((char)(0x80 | ((uint64_t)w >> 6) & 0x3f));
+        result.push_back((char)(0x80 | (uint64_t)w & 0x3f));
         continue;
       }
 
@@ -710,7 +722,9 @@ namespace vsx_string_helper
    * @param data
    * @return
    */
-  inline vsx_string<> base64_encode(vsx_string<>data)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+  inline vsx_string<> base64_encode(vsx_string<> data)
   {
     char               c;
     size_t len = data.size();
@@ -735,14 +749,21 @@ namespace vsx_string_helper
       ret.push_back(cvt[c]);
       c = (data[i] << 4) & 0x3f;
       if (++i < len)
-        c |= (data[i] >> 4) & 0x0f;
+        c |=  (
+                data[i]
+                >>
+                4
+              )
+              &
+              0x0f
+            ;
 
       ret.push_back(cvt[c]);
       if (i < len)
       {
         c = (data[i] << 2) & 0x3f;
         if (++i < len)
-          c |= (data[i] >> 6) & 0x03;
+          c |= (char)((data[i] >> (char)6) & (char)0x03);
 
         ret.push_back( cvt[c]);
       }
@@ -824,3 +845,5 @@ namespace vsx_string_helper
     return ret;
   }
 }
+
+#pragma GCC diagnostic pop

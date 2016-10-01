@@ -66,7 +66,7 @@ public:
     return *this;
   }
 
-  inline vsx_vector3 operator *=(const float &t)
+  inline vsx_vector3 operator *=(const T &t)
   {
     x*=t;
     y*=t;
@@ -109,7 +109,7 @@ public:
     return temp;
   }
 
-  inline vsx_vector3 operator *(const float &t)
+  inline vsx_vector3 operator *(const T &t)
   {
     vsx_vector3 temp;
     temp.x = x*t;

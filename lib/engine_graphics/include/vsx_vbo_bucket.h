@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vsx_gl_global.h>
 #include <container/vsx_ma_vector.h>
 #include <math/vector/vsx_vector2.h>
 #include <math/vector/vsx_vector3.h>
@@ -404,7 +405,7 @@ private:
     // tex coords
     if ( vertex_tex_coords.get_used() )
     {
-      glTexCoordPointer(Tuv::arity(),GL_FLOAT,0,(GLvoid*)offset_texcoords);
+      glTexCoordPointer((GLint)Tuv::arity(),GL_FLOAT,0,(GLvoid*)offset_texcoords);
       m_flags |= VSX_VBOB_TEXCOORDS;
     }
 
@@ -458,7 +459,7 @@ private:
     glDrawElements
     (
       T_type,
-      num,
+      (GLsizei)num,
       GL_UNSIGNED_INT,
       0
     );

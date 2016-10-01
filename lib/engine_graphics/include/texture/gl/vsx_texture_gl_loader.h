@@ -59,7 +59,7 @@ inline void upload_1d(vsx_texture_gl* texture_gl, void* data, unsigned long size
       texture_gl->gl_type,  // opengl type
       0, // mipmap level
       GL_RGBA32F_ARB, // internal format
-      size, // size
+      (int)size, // size
       0, // border
       bpp2, // source data format
       GL_FLOAT, // source data type
@@ -73,7 +73,7 @@ inline void upload_1d(vsx_texture_gl* texture_gl, void* data, unsigned long size
         texture_gl->gl_type,  // opengl type
         0,  // mipmap level
         GL_COMPRESSED_RGB_ARB, // storage type
-        size, // size x
+        (int)size, // size x
         0,      // border 0 or 1
         bpp2,   // source data format
         GL_UNSIGNED_BYTE, // source data type
@@ -86,7 +86,7 @@ inline void upload_1d(vsx_texture_gl* texture_gl, void* data, unsigned long size
         texture_gl->gl_type,  // opengl type
         0,  // mipmap level
         GL_COMPRESSED_RGBA_ARB, // storage type
-        size, // size x
+        (int)size, // size x
         0,      // border 0 or 1
         bpp2,   // source data format
         GL_UNSIGNED_BYTE, // source data type

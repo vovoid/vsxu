@@ -28,10 +28,10 @@ namespace vsx_vector2_helper
   template<typename T>
   inline vsx_string<>to_string(const vsx_vector2<T> &v, const int num_values = 2) VSX_ALWAYS_INLINE
   {
-    vsx_string<>local = vsx_string_helper::f2s(v.x);
+    vsx_string<>local = vsx_string_helper::f2s((float)v.x);
 
     if (num_values > 1)
-      local += vsx_string<>(",")+vsx_string_helper::f2s(v.y);
+      local += vsx_string<>(",")+vsx_string_helper::f2s((float)v.y);
 
     return local;
   }

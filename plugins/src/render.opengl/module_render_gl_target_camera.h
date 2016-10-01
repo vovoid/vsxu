@@ -113,7 +113,7 @@ public:
     }
     gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
 
-    gl_state->matrix_glu_lookat
+    gl_state->matrix_glu_lookatf
     (
       position->get(0),
       position->get(1),

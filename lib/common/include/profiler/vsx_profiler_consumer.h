@@ -137,11 +137,11 @@ public:
     vsx_string<>res;
     for (size_t i = 0; i < current_threads.size(); i++)
     {
-      res += "thread " + vsx_string_helper::i2s(current_threads[i]) + "\n";
+      res += "thread " + vsx_string_helper::i2s((int)current_threads[i]) + "\n";
     }
     for (size_t i = 0; i < current_plots.size(); i++)
     {
-      res += "plot " + vsx_string_helper::i2s(current_plots[i]) + "\n";
+      res += "plot " + vsx_string_helper::i2s((int)current_plots[i]) + "\n";
     }
     return res;
   }
@@ -191,7 +191,7 @@ public:
     current_max_time = vsx_string_helper::s2f( vsx_string<>( last_profile.tag, 32) );
     cpu_clock_end = last_profile.cycles;
 
-    cycles_per_second = (cpu_clock_end-cpu_clock_start) / current_max_time;
+    cycles_per_second = ((double)cpu_clock_end - (double)cpu_clock_start) / current_max_time;
     one_div_cycles_per_second = 1.0 / cycles_per_second;
 
     for (size_t i = 0; i < current_profile.size()-2; i++)

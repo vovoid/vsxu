@@ -75,7 +75,7 @@ public:
         float yy = size_div_size_minus_two * ((float)y)+0.5f;
         float dd = sqrt(xx*xx + yy*yy);
         float dstf = dd/((float)hsize+1);
-        float phase = (float)pow(1.0f - (float)fabs((float)cos(angle+arms*(float)atan2(xx,yy)))*(star_flower+(1-star_flower)*(((dstf)))),attenuation);
+        float phase = (float)pow(1.0f - fabsf(cosf(angle+arms*atan2f(xx,yy)))*(star_flower+(1-star_flower)*(((dstf)))),attenuation);
         if (phase > 2.0f)
           phase = 1.0f;
 

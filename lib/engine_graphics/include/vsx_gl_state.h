@@ -900,6 +900,13 @@ public:
     #endif
   }
 
+  inline void matrix_translate_d(double x, double y, double z, bool gl = true)
+  {
+    matrix_translate_f((float)x, (float)y, (float)z, gl);
+  }
+
+
+
   inline void matrix_translate_f(float x, float y, float z, bool gl = true)
   {
     /*
@@ -941,8 +948,8 @@ public:
     */
     float radians;
     radians = (angle * (float)PI) / 180.0f;
-    float c = cos(radians);
-    float s = sin(radians);
+    float c = cosf(radians);
+    float s = sinf(radians);
     float c1 = 1.0f - c;
 
     float xx = x*x;
@@ -950,7 +957,7 @@ public:
     float zz = z*z;
 
     //normalize vector
-    float length = sqrt(xx + yy + zz);
+    float length = (float)sqrt(xx + yy + zz);
     if (length != 1.0f)
     {
       x = x / length;
@@ -1136,7 +1143,27 @@ public:
     matrix_mode(VSX_GL_MODELVIEW_MATRIX);
   }
 
-  inline void matrix_glu_lookat(
+  inline void matrix_glu_lookatd(
+      double eyex, double eyey, double eyez,
+      double centerx, double centery, double centerz,
+      double upx, double upy, double upz
+  )
+  {
+    matrix_glu_lookatf(
+      (float)eyex,
+      (float)eyey,
+      (float)eyez,
+      (float)centerx,
+      (float)centery,
+      (float)centerz,
+      (float)upx,
+      (float)upy,
+      (float)upz
+    );
+  }
+
+
+  inline void matrix_glu_lookatf(
       float eyex, float eyey, float eyez,
       float centerx, float centery, float centerz,
       float upx, float upy, float upz
@@ -1150,7 +1177,7 @@ public:
     z[2] = eyez - centerz;
 
 
-    mag = sqrt(z[0] * z[0] + z[1] * z[1] + z[2] * z[2]);
+    mag = sqrtf(z[0] * z[0] + z[1] * z[1] + z[2] * z[2]);
     if (mag)
     {
       z[0] /= mag;
@@ -1172,7 +1199,7 @@ public:
     y[2] =  z[0] * x[1] - z[1] * x[0];
 
 
-    mag = sqrt(x[0] * x[0] + x[1] * x[1] + x[2] * x[2]);
+    mag = sqrtf(x[0] * x[0] + x[1] * x[1] + x[2] * x[2]);
     if (mag)
     {
       x[0] /= mag;
@@ -1180,7 +1207,7 @@ public:
       x[2] /= mag;
     }
 
-    mag = sqrt(y[0] * y[0] + y[1] * y[1] + y[2] * y[2]);
+    mag = sqrtf(y[0] * y[0] + y[1] * y[1] + y[2] * y[2]);
     if (mag)
     {
       y[0] /= mag;

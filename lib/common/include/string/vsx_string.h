@@ -143,7 +143,7 @@ public:
   void make_lowercase() VSX_ALWAYS_INLINE
   {
     foreach(data, i)
-			data[i] = tolower(data[i]);
+      data[i] = (char)tolower(data[i]);
 	}
   
   // constructors

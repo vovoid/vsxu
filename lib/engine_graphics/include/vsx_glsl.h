@@ -217,14 +217,15 @@ protected:
     GLint size;
     GLenum type;
 
-    for (i = 0; i < num_uniforms; ++i) {
-      glGetActiveUniformARB(prog,i,1000,&length,&size,&type,(GLcharARB*)&name);
+    for_n (ai, 0, num_uniforms)
+    {
+      glGetActiveUniformARB(prog, (GLuint)ai,1000,&length,&size,&type,(GLcharARB*)&name);
       vsx_string<>sn = name;
       
       if (vars.find(sn) != vars.end()) {
         vsx_glsl_type_info n_info;
         n_info.name = sn;
-        n_info.glsl_id = i;
+        n_info.glsl_id = (GLuint)ai;
         n_info.glsl_type = type;
         n_info.glsl_location = glGetUniformLocationARB(prog,name);
         n_info.module_param = 0;
@@ -286,8 +287,9 @@ protected:
     #if (VSXU_DEBUG)
     printf("num attributes (openGL): %d\n", num_attributes);
     #endif
-    for (i = 0; i < num_attributes; ++i) {
-      glGetActiveAttribARB(prog,i,1000,&length,&size,&type,(GLcharARB*)&name);
+    for_n (ai, 0, num_attributes)
+    {
+      glGetActiveAttribARB(prog, (GLuint)ai,1000,&length,&size,&type,(GLcharARB*)&name);
       vsx_string<>sn = name;
 
       #if (VSXU_DEBUG)
@@ -296,7 +298,7 @@ protected:
       if (attributes.find(sn) != attributes.end()) {
         vsx_glsl_type_info n_info;
         n_info.name = sn;
-        n_info.glsl_id = i;
+        n_info.glsl_id = (GLuint)ai;
         n_info.glsl_type = type;
         n_info.glsl_location = glGetAttribLocationARB(prog,name);
         n_info.module_param = 0;
