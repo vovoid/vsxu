@@ -60,8 +60,8 @@ public:
     float var_h = h * 6;
     int var_i = (int)floor( var_h );             //Or ... var_i = floor( var_h )
     float var_1 = v * ( 1 - s );
-    float var_2 = v * ( 1 - s * ( var_h - var_i ) );
-    float var_3 = v * ( 1 - s * ( 1 - ( var_h - var_i ) ) );
+    float var_2 = v * ( (T)1 - s * ( var_h - (T)var_i ) );
+    float var_3 = v * ( (T)1 - s * ( (T)1 - ( var_h - (T)var_i ) ) );
     float var_r, var_g, var_b;
     if      ( var_i == 0 ) { var_r = v     ; var_g = var_3 ; var_b = var_1; }
     else if ( var_i == 1 ) { var_r = var_2 ; var_g = v     ; var_b = var_1; }
@@ -240,7 +240,7 @@ public:
   }
 
 
-  vsx_color(const float &rr, const float &gg = 0.0f, const float &bb = 0.0f, const float &aa = 0.0f)
+  vsx_color(float rr, float gg = 0.0f, float bb = 0.0f, float aa = 0.0f)
     :
       r(rr),
       g(gg),
@@ -254,6 +254,7 @@ public:
 typedef vsx_color<float> vsx_colorf;
 typedef vsx_color<double> vsx_colord;
 
+#define vsx_color_transparent vsx_colorf(0.0f, 0.0f, 0.0f, 0.0f)
 #define vsx_color_white vsx_colorf(1.0f, 1.0f, 1.0f, 1.0f)
 #define vsx_color_black vsx_colorf(0.0f, 0.0f, 0.0f, 1.0f)
 #define vsx_color_red vsx_colorf(1.0f, 0.0f, 0.0f, 1.0f)
