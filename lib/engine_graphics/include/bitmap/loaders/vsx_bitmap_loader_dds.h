@@ -228,8 +228,10 @@ class vsx_bitmap_loader_dds
   static void* worker(vsx_bitmap* bitmap, vsx::filesystem* filesystem, vsx_string<> filename)
   {
     vsx::file* file_handle = filesystem->f_open(filename.c_str());
+    req_error_v( file_handle, vsx_string<>( ("error loading file") + filename).c_str(), 0 );
+
     bitmap->filename = filename;
-    if (filesystem->get_archive()->is_archive())
+    if (filesystem->get_archive() && filesystem->get_archive()->is_archive())
       worker_load_file_archive(bitmap, filesystem, file_handle, 0);
     else
       worker_load_file(bitmap, filesystem, file_handle, 0);
