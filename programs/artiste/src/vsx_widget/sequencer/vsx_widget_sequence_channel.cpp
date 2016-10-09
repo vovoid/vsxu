@@ -2002,7 +2002,7 @@ void vsx_widget_sequence_channel::i_draw()
 
 
     // draw time-selection
-    if (owner->time_selection_active)
+    if (owner && owner->time_selection_active)
     {
       float y_mid = parentpos.y + pos.y;
       float y_size = size.y;
