@@ -30,10 +30,12 @@ class vsx_texture_gl_cache
   };
 
   vsx_nw_vector<vsx_texture_gl_cache_item*> items;
+  vsx_lock items_lock;
 
   void create_item(vsx_string<>& filename, uint64_t bitmap_loader_hint, uint64_t hint, vsx_texture_gl* texture_gl)
   {
     vsx_texture_gl_cache_item* item = 0x0;
+    items_lock.aquire();
     foreach (items, i)
       if (!items[i]->used)
       {
@@ -52,6 +54,7 @@ class vsx_texture_gl_cache
     item->bitmap_loader_hint = bitmap_loader_hint;
     item->hint = hint;
     item->texture_gl = texture_gl;
+    items_lock.release();
   }
 
   void recycle_item(vsx_texture_gl_cache_item* item)
