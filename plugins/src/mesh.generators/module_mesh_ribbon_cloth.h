@@ -35,6 +35,9 @@ class module_mesh_ribbon_cloth : public vsx_module
   vsx_module_param_float* step_size;
   vsx_module_param_float* stiffness;
   vsx_module_param_float* floor_y;
+  vsx_module_param_float* gravity_amount;
+  vsx_module_param_float* length;
+  vsx_module_param_float* edge_treshold;
   vsx_module_param_int* reinit;
 
   // out
@@ -73,14 +76,19 @@ public:
     info->in_param_spec =
       "start_point:float3,"
       "end_point:float3,"
-      "up_vector:float3,"
-      "width:float,"
-      "skew_amp:float,"
-      "time_amp:float,"
-      "damping_Factor:float,"
-      "step_size:float,"
-      "stiffness:float,"
-      "floor_y:float,"
+      "options:complex{"
+        "up_vector:float3,"
+        "width:float,"
+        "skew_amp:float,"
+        "time_amp:float,"
+        "damping_Factor:float,"
+        "step_size:float,"
+        "stiffness:float,"
+        "floor_y:float,"
+        "gravity_amount:float,"
+        "length:float,"
+        "edge_treshold:float"
+      "},"
       "reinit:enum?no|yes"
     ;
 
@@ -119,6 +127,17 @@ public:
     time_amp->set(1.0f);
     width->set(0.1f);
 
+
+    gravity_amount = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"gravity_amount");
+    gravity_amount->set(1.0f);
+
+    length = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"length");
+    length->set(20.0f);
+
+    edge_treshold = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"edge_treshold");
+    edge_treshold->set(0.04f);
+
+
     reinit = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"reinit");
     reinit->set(0);
 
@@ -142,28 +161,8 @@ public:
 
     vsx_vector3<> a(start_point->get(0), start_point->get(1), start_point->get(2));
     vsx_vector3<> b(end_point->get(0), end_point->get(1), end_point->get(2));
-    vsx_vector3<> up(up_vector->get(0), up_vector->get(1), up_vector->get(2));
-    up *= width->get();
 
 
-    vsx_vector3<> pos = vsx_vector3<>(0.0f,0.0f,0.0f);
-    vsx_vector3<> diff = b-a;
-    vsx_vector3<> diff_n = diff;
-    diff_n.normalize();
-
-    vsx_vector3<> normal;
-    vsx_vector3<> up_n = up;
-    up_n.normalize();
-    normal.cross(diff_n, up_n);
-
-    vsx_vector3<> up_side = normal;
-    up_side *= up.length();
-
-    float t = engine_state->vtime * time_amp->get();
-
-    #define COUNT 20.0f
-    diff *= (0.4f*0.1f) / COUNT;
-    float skew_amount = skew_amp->get();
     //     i=0   1   2   3   4   5   6   7   8   9
     // /\    0   2   4   6   8   10  12  14  16  18
     // ||    x---x---x---x---x---x---x---x---x---x
@@ -171,13 +170,31 @@ public:
     //       x---x---x---x---x---x---x---x---x---x
     //       1   3   5   7   9   11  13  15  17  19
 
-    vsx_vector3<> addpos;
 
     if (regen)
     {
+      vsx_vector3<> up(up_vector->get(0), up_vector->get(1), up_vector->get(2));
+      up *= width->get();
+
+      vsx_vector3<> pos = vsx_vector3<>(0.0f,0.0f,0.0f);
+      vsx_vector3<> diff = b-a;
+      vsx_vector3<> diff_n = diff;
+      diff_n.normalize();
+
+      vsx_vector3<> normal;
+      vsx_vector3<> up_n = up;
+      up_n.normalize();
+      normal.cross(diff_n, up_n);
+
+      float t = engine_state->vtime * time_amp->get();
+
+      diff *= width->get() * (0.4f*0.1f) / length->get();
+      float skew_amount = skew_amp->get();
+
+
       prev_pos = a;
-      vertices_speed.allocate((int)COUNT*4);
-      for (int i = 0; i < (int)COUNT*4; i++)
+      vertices_speed.allocate((int)length->get()*4);
+      for (int i = 0; i < (int)length->get()*4; i++)
       {
         vertices_speed[i].x = 0.0f;
         vertices_speed[i].y = -0.04f;
@@ -186,12 +203,12 @@ public:
 
       regen = false;
       mesh->data->faces.reset_used();
-      for (int i = 0; i < (int)COUNT; i++)
+      for (int i = 0; i < (int)length->get(); i++)
       {
         int i2 = i << 1;
-        float it = (float)i / COUNT;
+        float it = (float)i / length->get();
         float ft = sin(it * 3.14159f + t) * sin(-it * 5.18674f - t);
-        float thick = 0.58f*0.11f;
+        float thick = 0.11f * width->get();
         vsx_vector3<> skew = up * ft * skew_amount * thick;
 
         mesh->data->vertices[i2    ] = pos + up * thick + skew;
@@ -228,10 +245,9 @@ public:
           len.x = fabs( (v1 - v0).length()/*+(float)(rand()%1000)*0.0001f*/);
           len.y = fabs( (v2 - v1).length()/*+(float)(rand()%1000)*0.0001f*/);
           len.z = fabs( (v0 - v2).length()/*+(float)(rand()%1000)*0.00005f*/);
-          #define TRESH 0.04f
-          if (len.x < TRESH) len.x = TRESH;
-          if (len.y < TRESH) len.y = TRESH;
-          if (len.z < TRESH) len.z = TRESH;
+          if (len.x < edge_treshold->get()) len.x = edge_treshold->get();
+          if (len.y < edge_treshold->get()) len.y = edge_treshold->get();
+          if (len.z < edge_treshold->get()) len.z = edge_treshold->get();
 
           face_lengths.push_back(len);
 
@@ -247,24 +263,23 @@ public:
           len.x = fabs( (v1 - v0).length()/*+(float)(rand()%1000)*0.0001f */);
           len.y = fabs( (v2 - v1).length()/*+(float)(rand()%1000)*0.0001f */);
           len.z = fabs( (v0 - v2).length()/*+(float)(rand()%1000)*0.00005f */);
-          #define TRESH 0.04f
-          if (len.x < TRESH) len.x = TRESH;
-          if (len.y < TRESH) len.y = TRESH;
-          if (len.z < TRESH) len.z = TRESH;
+          if (len.x < edge_treshold->get()) len.x = edge_treshold->get();
+          if (len.y < edge_treshold->get()) len.y = edge_treshold->get();
+          if (len.z < edge_treshold->get()) len.z = edge_treshold->get();
 
 
           face_lengths.push_back(len);
         }
       }
     }
-    #undef COUNT
 
+    vsx_vector3<> addpos;
     float fcount = 1.0f / (float)mesh->data->faces.size();
     float dirx = -b.x*0.05f;
     float dirz = -b.z*0.05f;
     float stepsizemultiplier = 0.02f * step_size->get();
     //float gravity_pull = -0.01f;
-    float gravity_pull = -0.003f;
+    float gravity_pull = -0.003f * gravity_amount->get();
     vsx_face3* face_p = mesh->data->faces.get_pointer();
     vsx_vector3<>* vertices_speed_p = vertices_speed.get_pointer();
     vsx_vector3<>* faces_length_p = face_lengths.get_pointer();
