@@ -244,6 +244,8 @@ private:
 public:
   inline void line_width_set(float n)
   {
+    if (n < 1.0f)
+      n = 1.0f;
     _line_width = n;
     #ifndef VSX_NO_GL
     glLineWidth( _line_width );
@@ -1178,7 +1180,7 @@ public:
 
 
     mag = sqrtf(z[0] * z[0] + z[1] * z[1] + z[2] * z[2]);
-    if (mag)
+    if (mag > 0.0f)
     {
       z[0] /= mag;
       z[1] /= mag;
@@ -1200,7 +1202,7 @@ public:
 
 
     mag = sqrtf(x[0] * x[0] + x[1] * x[1] + x[2] * x[2]);
-    if (mag)
+    if (mag > 0.0f)
     {
       x[0] /= mag;
       x[1] /= mag;
@@ -1208,7 +1210,7 @@ public:
     }
 
     mag = sqrtf(y[0] * y[0] + y[1] * y[1] + y[2] * y[2]);
-    if (mag)
+    if (mag > 0.0f)
     {
       y[0] /= mag;
       y[1] /= mag;
