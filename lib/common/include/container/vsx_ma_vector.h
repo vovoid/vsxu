@@ -192,7 +192,7 @@ public:
         A = (T*)vsx_aligned_malloc(sizeof(T)*(index+allocation_increment));
         allocated = index+allocation_increment;
       }
-      if (allocation_increment < 64)
+      if (allocation_increment < 32)
         allocation_increment *= 2;
       else
         allocation_increment = (size_t)((float)allocation_increment * 1.3f);
