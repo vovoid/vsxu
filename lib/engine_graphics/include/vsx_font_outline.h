@@ -112,7 +112,13 @@ public:
     align = 2;
   }
 
-  void text_set(vsx_string<W>& s)
+  void text_set(vsx_string<W> s)
+  {
+    text = s;
+    process_lines();
+  }
+
+  void text_set_ref(vsx_string<W>& s)
   {
     text = s;
     process_lines();
