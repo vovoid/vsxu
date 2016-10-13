@@ -25,6 +25,8 @@
 #ifndef VSX_MODULE_LIST_ABS_H
 #define VSX_MODULE_LIST_ABS_H
 
+#include <module/vsx_module_specification.h>
+
 // Module List Abstract Class
 
 class vsx_module_list_abs
