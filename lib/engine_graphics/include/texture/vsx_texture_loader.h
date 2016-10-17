@@ -17,7 +17,7 @@ class vsx_texture_loader
 public:
 
   template <class T = vsx_texture_gl>
-  static inline vsx_texture<T>* load(
+  static inline std::unique_ptr<vsx_texture<T>> load(
       vsx_string<> filename, // i.e. "my_image.png" or "my_image.jpg"
       vsx::filesystem* filesystem,  // your filesystem or vsx::filesystem::get_instance()
       bool thread,  // load in a thread or not, recommended when doing bitmap transforms
@@ -26,7 +26,7 @@ public:
       bool try_to_reload = false // notifies the cache that if the image is already loaded, just reload it
   )
   {
-    vsx_texture<T>* texture = new vsx_texture<T>(true);
+    std::unique_ptr<vsx_texture<T>> texture( new vsx_texture<T>(true) );
     texture->texture = handle_cache(filename, filesystem, thread, bitmap_loader_hint, gl_loader_hint, try_to_reload );
     if (texture->texture)
       return texture;
@@ -63,7 +63,6 @@ public:
     if (!texture->texture->bitmap->filename.size())
       VSX_ERROR_RETURN("Trying to destroy a texture with no filename set");
 
-    vsx_texture_gl_cache::get_instance()->destroy( texture->texture );
     delete texture;
     texture = 0x0;
   }

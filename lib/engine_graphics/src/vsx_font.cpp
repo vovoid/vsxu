@@ -67,12 +67,6 @@ void vsx_font::load(vsx_string<>font, vsx::filesystem* filesystem)
   }
 }
 
-void vsx_font::unload()
-{
-  if (my_font_info.texture)
-    vsx_texture_loader::destroy( my_font_info.texture );
-}
-
 void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsx::filesystem* filesystem)
 {
   if (f_info->type == 0)

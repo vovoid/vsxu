@@ -37,22 +37,11 @@
 
 class vsx_font_info {
 public:
-  int type; // 0 = texture (old) 1 = new (FtGL)
-  vsx_texture<>* texture;
+  int type = 0; // 0 = texture (old) 1 = new (FtGL)
+  std::unique_ptr<vsx_texture<>> texture;
   vsx_string<>name;
-  void* ftfont;
-  void* ftfont_outline;
-  vsx_font_info()
-  :
-  type(0),
-  texture(0x0),
-  ftfont(0x0),
-  ftfont_outline(0x0)
-  {}
-
-  ~vsx_font_info()
-  {
-  }
+  void* ftfont = 0x0;
+  void* ftfont_outline = 0x0;
 };  
 
 class vsx_font {
@@ -81,7 +70,6 @@ class vsx_font {
   }
 public:
   VSX_ENGINE_GRAPHICS_DLLIMPORT void load(vsx_string<>font, vsx::filesystem* filesystem);
-  VSX_ENGINE_GRAPHICS_DLLIMPORT void unload();
 
   vsx_nw_vector< vsx_color<> > syntax_colors;
   // is in 2d mode?

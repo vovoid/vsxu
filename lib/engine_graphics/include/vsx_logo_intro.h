@@ -31,8 +31,8 @@
 
 
 class vsx_logo_intro {
-  vsx_texture<>* luna;
-  vsx_texture<>* luna_bkg;
+  std::unique_ptr<vsx_texture<>> luna;
+  std::unique_ptr<vsx_texture<>> luna_bkg;
   
   float logo_time;
   vsx_vector3<> logo_pos, logo_size;

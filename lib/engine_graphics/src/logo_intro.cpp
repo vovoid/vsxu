@@ -52,8 +52,8 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
     {
       if (destroy_textures)
       {
-        vsx_texture_loader::destroy(luna);
-        vsx_texture_loader::destroy(luna_bkg);
+        luna.reset(nullptr);
+        luna_bkg.reset(nullptr);
         finished = true;
       }
     }

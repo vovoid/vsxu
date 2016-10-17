@@ -33,6 +33,7 @@
 
 #include "gl/vsx_texture_gl.h"
 #include "transform/vsx_texture_transform_base.h"
+#include <texture/gl/vsx_texture_gl_cache.h>
 
 template <class T = vsx_texture_gl>
 class vsx_texture
@@ -138,7 +139,13 @@ public:
   ~vsx_texture()
   {
     if (texture && !texture->attached_to_cache)
+    {
       delete texture;
+      return;
+    }
+
+    if (texture && texture->attached_to_cache)
+      vsx_texture_gl_cache::get_instance()->destroy( texture );
   }
 };
 

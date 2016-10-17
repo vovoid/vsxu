@@ -24,8 +24,8 @@ class module_texture_load: public vsx_module
 
   // internal
   vsx_string<> filename_cache;
-  vsx_texture<>* texture = 0x0;
-  vsx_texture<>* texture_to_destroy = 0x0;
+  std::unique_ptr<vsx_texture<>> texture;
+  std::unique_ptr<vsx_texture<>> texture_to_destroy;
 
   // data hints
   int flip_vertical_cache = 0;
@@ -149,7 +149,7 @@ public:
     if (texture && texture->texture && texture->texture->bitmap->data_ready)
     {
       if (texture_to_destroy)
-        vsx_texture_loader::destroy(texture_to_destroy);
+        texture_to_destroy.reset(nullptr);
       loading_done = true;
       message = "module||ok";
     }
@@ -168,7 +168,7 @@ public:
     filename_cache = filename_in->get();
 
     if (texture && !reload)
-      texture_to_destroy = texture;
+      texture_to_destroy = std::move(texture);
 
     uint64_t bitmap_loader_hint = 0;
     bitmap_loader_hint |= vsx_bitmap::flip_vertical_hint * flip_vertical_cache;
@@ -190,7 +190,7 @@ public:
       hint,
       reload
     );
-    texture_out->set(texture);
+    texture_out->set(texture.get());
   }
 
   void on_delete()
@@ -198,7 +198,7 @@ public:
     vsx_thread_pool::instance()->wait_all(10);
 
     if (texture)
-      vsx_texture_loader::destroy(texture);
+      texture.reset(nullptr);
   }
 
 };
