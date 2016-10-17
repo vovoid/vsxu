@@ -18,7 +18,7 @@ public:
 
   // only run from main thread
   static void create() {
-    std::unique_ptr<T>& r = T::get_storage();
+    std::unique_ptr<T>& r = get_storage();
     r = std::unique_ptr<T>( new T() );
   }
 
@@ -28,7 +28,7 @@ public:
   }
 
   static void destroy() {
-    std::unique_ptr<T>& r = T::get_storage();
+    std::unique_ptr<T>& r = get_storage();
     r.reset(nullptr);
   }
 
