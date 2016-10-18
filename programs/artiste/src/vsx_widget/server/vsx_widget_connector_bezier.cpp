@@ -459,8 +459,7 @@ void vsx_widget_connector_bezier::before_delete()
 
 void vsx_widget_connector_bezier::on_delete() 
 {
-  if (mtex_blob)
-    vsx_texture_loader::destroy(mtex_blob);
+  mtex_blob.reset(nullptr);
 
   if (!global_delete)
     ((vsx_widget_anchor*)parent)->update_connection_order();
@@ -525,9 +524,4 @@ vsx_widget_connector_bezier::vsx_widget_connector_bezier()
   color_initialized = false;
 }
 
-vsx_widget_connector_bezier::~vsx_widget_connector_bezier()
-{
-  if (mtex_blob)
-  delete mtex_blob;
-}
 

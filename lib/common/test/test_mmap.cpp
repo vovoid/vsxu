@@ -82,5 +82,6 @@ int main(int argc, char *argv[])
 
   test_complete
   char b = getchar();
+  VSX_UNUSED(b);
   return 0;
 }

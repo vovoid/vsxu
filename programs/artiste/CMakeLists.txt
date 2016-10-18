@@ -141,6 +141,10 @@ if(UNIX)
       vsx_engine_graphics
       rt
       vsx_widget
+      vsx_common
+      vsx_compression
+      vsx_engine
+      vsx_engine_graphics
     )
   endif()
 endif(UNIX)

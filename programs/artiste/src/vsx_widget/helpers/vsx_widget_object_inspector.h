@@ -36,7 +36,7 @@ class vsx_window_object_inspector : public vsx_widget_window {
   vsx_widget *component_rename_button;
   
   std::vector<vsx_widget*> component_list;
-  vsx_texture<>* texture;
+  std::unique_ptr<vsx_texture<>> texture;
   bool texture_loaded;
   vsx_string<>filename_loaded;
   int view_type;

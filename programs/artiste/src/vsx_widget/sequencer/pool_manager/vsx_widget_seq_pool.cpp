@@ -50,7 +50,7 @@
 
 
 class vsx_widget_pool_tree : public vsx_widget_editor {
-  vsx_texture<>* mtex_blob;
+  std::unique_ptr<vsx_texture<>> mtex_blob;
   //vsx_widget* name_dialog;
   bool dragging;
   vsx_widget_coords drag_coords;
@@ -91,7 +91,7 @@ public:
 
   void before_delete()
   {
-    vsx_texture_loader::destroy(mtex_blob);
+    mtex_blob.reset(nullptr);
   }
 
   void event_mouse_move(vsx_widget_distance distance, vsx_widget_coords coords)

@@ -84,7 +84,7 @@ public:
   vsx_widget* assistant;
 	vsx_widget *console;
   vsx_command_list *system_command_queue;
-  vsx_texture<>* mtex;
+  std::unique_ptr<vsx_texture<>> mtex;
 
 
   void save_configuration()
@@ -132,8 +132,7 @@ public:
 
   void on_delete()
   {
-    vsx_texture_loader::destroy(mtex);
-    font.unload();
+    mtex.reset(nullptr);
   }
 
   bool input_key_down(uint16_t key)

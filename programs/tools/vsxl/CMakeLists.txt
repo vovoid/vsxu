@@ -58,13 +58,15 @@ set_target_properties(
 
 target_link_libraries(
   ${module_id}
-  vsx_engine
+  ${CMAKE_THREAD_LIBS_INIT}
   vsx_common
   vsx_compression
-  vsx_common
-  vsx_engine_graphics
-  ${CMAKE_THREAD_LIBS_INIT}
+  vsx_engine
   rt
+  vsx_widget
+  vsx_common
+  vsx_compression
+  vsx_engine
 )
 
   if (VSXU_STATIC EQUAL 1)

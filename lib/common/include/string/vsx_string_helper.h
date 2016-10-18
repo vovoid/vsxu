@@ -686,17 +686,17 @@ namespace vsx_string_helper
       if ((uint64_t)w <= 0xffff)
       {
         result.push_back((char)(0xe0 | ((w >> 12)& 0x0f)));
-        result.push_back((char)(0x80| ((w >> 6) & 0x3f)));
-        result.push_back((char)(0x80| (w & 0x3f)));
+        result.push_back((char)(0x80 | ((w >> 6) & 0x3f)));
+        result.push_back((char)(0x80 | (w & 0x3f)));
         continue;
       }
 
       if ((uint64_t)w <= 0x10ffff)
       {
-        result.push_back((char)(0xf0 | ((uint64_t)w >> 18)& 0x07));
-        result.push_back((char)(0x80 | ((uint64_t)w >> 12) & 0x3f));
-        result.push_back((char)(0x80 | ((uint64_t)w >> 6) & 0x3f));
-        result.push_back((char)(0x80 | (uint64_t)w & 0x3f));
+        result.push_back((char)(0xf0 | (((uint64_t)w >> 18)& 0x07)) );
+        result.push_back((char)(0x80 | (((uint64_t)w >> 12) & 0x3f)) );
+        result.push_back((char)(0x80 | (((uint64_t)w >> 6) & 0x3f)) );
+        result.push_back((char)(0x80 | ((uint64_t)w & 0x3f)) );
         continue;
       }
 

@@ -934,9 +934,9 @@ void vsx_widget_anchor::before_delete()
 
 void vsx_widget_anchor::on_delete()
 {
-  vsx_texture_loader::destroy( mtex_d );
-  vsx_texture_loader::destroy( mtex_blob );
-  vsx_texture_loader::destroy( mtex_blob_small );
+  mtex_d.reset(nullptr);
+  mtex_blob.reset(nullptr);
+  mtex_blob_small.reset(nullptr);
 }
 
 

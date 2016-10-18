@@ -1682,9 +1682,7 @@ void vsx_widget_component::before_delete() {
 
 void vsx_widget_component::on_delete()
 {
-  vsx_texture_loader::destroy( mtex );
-  vsx_texture_loader::destroy( mtex_blob );
-  if (mtex_overlay)
-    vsx_texture_loader::destroy( mtex_overlay );
-
+  mtex.reset(nullptr);
+  mtex_blob.reset(nullptr);
+  mtex_overlay.reset(nullptr);
 }

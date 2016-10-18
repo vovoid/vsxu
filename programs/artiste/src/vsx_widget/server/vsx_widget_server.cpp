@@ -285,8 +285,7 @@ void vsx_widget_server::reinit()
 }
 
 void vsx_widget_server::on_delete() {
-  if (mtex)
-      vsx_texture_loader::destroy(mtex);
+  mtex.reset(nullptr);
 
   for (std::map<vsx_string<>,vsx_module_specification*>::iterator it = module_list.begin(); it != module_list.end(); ++it)
     delete (*it).second;

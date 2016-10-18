@@ -976,6 +976,8 @@ public:
 
       //vsx_printf(L"%X %X %X\n", byte1, byte2, byte3);
 
+      type = 0;
+      chan = 0;
       if(byte1-0xB0>=0)
       {
        chan = byte1-0xB0;

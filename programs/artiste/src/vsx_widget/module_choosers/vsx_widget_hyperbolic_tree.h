@@ -31,7 +31,7 @@ public:
   HTCoord*            oldZe;  // old euclidian coords
   HTCoord*            zs;  // current screen coords
   HTGeodesic* mygeodesic;
-  vsx_texture<>* mtex = 0x0;
+  std::unique_ptr<vsx_texture<>> mtex = 0x0;
 
   vsx_widget_hyperbolic_tree* selected;  // selected node
   HTModel*         node;  // encapsulated HTModelNode
@@ -57,8 +57,7 @@ public:
       delete (*it).second;
     }
 
-    if (mtex)
-      vsx_texture_loader::destroy(mtex);
+    mtex.reset(nullptr);
   }
 
   // create the base maintainer class
@@ -108,8 +107,6 @@ public:
 
   // constructor for child elements
   vsx_widget_hyperbolic_tree(vsx_widget_hyperbolic_tree* s_root, vsx_widget_hyperbolic_tree* s_drawroot, vsx_widget_hyperbolic_tree* father, HTModel* node, int type)
-  :
-  mtex(0x0)
   {
     selected = 0;
     mygeodesic = 0;

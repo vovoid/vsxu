@@ -261,8 +261,7 @@ void vsx_window_object_inspector::show() {
 
 void vsx_window_object_inspector::unload()
 {
-  if (view_type == 1)
-    vsx_texture_loader::destroy(texture);
+  texture.reset(nullptr);
 }
 
 void vsx_window_object_inspector::load_file(vsx_string<>filename)
@@ -271,9 +270,6 @@ void vsx_window_object_inspector::load_file(vsx_string<>filename)
 
   if (filename_loaded == filename)
     return;
-
-  if (texture)
-    vsx_texture_loader::destroy(texture);
 
   texture = vsx_texture_loader::load(
     filename,

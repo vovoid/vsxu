@@ -122,7 +122,6 @@ public:
 
   void uninit()
   {
-    myf.unload();
     vxe->stop();
     delete vxe;
     vsx_module_list_factory_destroy( module_list );

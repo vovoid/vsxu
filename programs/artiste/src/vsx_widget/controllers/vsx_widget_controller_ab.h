@@ -35,8 +35,8 @@ private:
   vsx_vector2f deltamove;
   vsx_vector2f remPointer;
   vsx_vector2f remWorld;
-  float v2[3];
-  float v2_int[3];
+  float v2[3] = {0,0,0};
+  float v2_int[3] = {0, 0, 0};
   
   Matrix4fT   Transform;
   Matrix3fT   LastRot;
@@ -52,7 +52,7 @@ private:
   vsx_vector3<>  ball_size;
   vsx_widget* label;
 
-  vsx_texture<>* mtex = 0x0;
+  std::unique_ptr<vsx_texture<>> mtex;
   ArcBall_t*   ArcBall;
 
   int  tuple_type; // 3 = float3, 4 = float4
@@ -67,16 +67,7 @@ public:
   void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords);
   void command_process_back_queue(vsx_command_s *t);
-  vsx_widget_controller_ab()
-  {
-  	v2[0] = v2[1] = v2[2] = 0.0f;
-  }
 
-  ~vsx_widget_controller_ab()
-  {
-    if (mtex)
-      delete mtex;
-  }
 };
 
 

@@ -189,8 +189,7 @@ void vsxu_assistant::init()
 
 void vsxu_assistant::on_delete()
 {
-  req(texture);
-  vsx_texture_loader::destroy(texture);
+  texture = nullptr;
 }
 
 void vsxu_assistant::toggle_size()
