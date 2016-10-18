@@ -9,7 +9,7 @@ template<class T>
 class managed_singleton
 {
 
-  static std::unique_ptr<T>& get_storage() {
+  static inline std::unique_ptr<T>& get_storage() {
     static std::unique_ptr<T> r;
     return r;
   }
@@ -17,17 +17,17 @@ class managed_singleton
 public:
 
   // only run from main thread
-  static void create() {
+  static inline void create() {
     std::unique_ptr<T>& r = get_storage();
     r = std::unique_ptr<T>( new T() );
   }
 
-  static T* get() {
+  static inline __attribute__((always_inline)) T* get() {
     std::unique_ptr<T>& r = get_storage();
     return r.get();
   }
 
-  static void destroy() {
+  static inline void destroy() {
     std::unique_ptr<T>& r = get_storage();
     r.reset(nullptr);
   }
