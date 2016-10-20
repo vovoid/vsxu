@@ -410,7 +410,7 @@ private:
     }
 
     // enable vertices
-    glVertexPointer(sizeof(Tv)/sizeof(float),GL_FLOAT,0,(GLvoid*)offset_vertices);
+    glVertexPointer((GLint)(sizeof(Tv)/sizeof(float)),GL_FLOAT,0,(GLvoid*)offset_vertices);
 
     // bind the index array buffer buffer for use
     glBindBufferARB
