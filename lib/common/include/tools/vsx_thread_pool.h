@@ -17,9 +17,17 @@
 
 class vsx_thread_pool
 {
+
 public:
 
-  explicit vsx_thread_pool(size_t threads = std::thread::hardware_concurrency())
+  enum priority {
+    low_priority,
+    normal_priority,
+    high_priority
+  };
+
+  explicit vsx_thread_pool(size_t threads = std::thread::hardware_concurrency()):
+    tasks([](prioritized_task l, prioritized_task r){ return std::get<0>(l) < std::get<0>(r); } )
   {
     tasks_queued = 0;
 
@@ -41,7 +49,7 @@ public:
               if(this->stop && this->tasks.empty())
                 return;
 
-              task = std::move(this->tasks.front());
+              task = std::get<1>(std::move(this->tasks.top()));
               this->tasks.pop();
             }
 
@@ -71,7 +79,7 @@ public:
 
   // Add tasks to the task queue
   template<class F, class... Args>
-  inline auto add(F&& f, Args&&... args)
+  inline auto add(vsx_thread_pool::priority p, F&& f, Args&&... args)
     -> std::future<typename std::result_of<F(Args...)>::type>
   {
     tasks_queued++;
@@ -90,10 +98,18 @@ public:
       if(stop)
         throw std::runtime_error("enqueue on stopped thread_pool");
 
-      tasks.emplace([task](){ (*task)(); });
+      tasks.emplace(prioritized_task( static_cast<int>(p), [task](){ (*task)(); } ));
     }
     condition.notify_one();
     return res;
+  }
+
+  // Add tasks to the task queue
+  template<class F, class... Args>
+  inline auto add(F&& f, Args&&... args)
+    -> std::future<typename std::result_of<F(Args...)>::type>
+  {
+    return add(normal_priority, f, args...);
   }
 
   inline bool is_jobless()
@@ -132,11 +148,14 @@ public:
   }
 
 private:
-
   // need to keep track of threads so we can join them
   std::vector< std::thread > workers;
+
   // the task queue
-  std::queue< std::function<void()> > tasks;
+  using prioritized_task = std::tuple< uint64_t, std::function<void()> >;
+  std::priority_queue< prioritized_task,
+                       std::vector<prioritized_task>,
+                       std::function<bool(prioritized_task, prioritized_task)> > tasks;
 
   // synchronization
   std::mutex queue_mutex;
