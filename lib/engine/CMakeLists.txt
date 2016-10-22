@@ -177,5 +177,6 @@ endif()
 
 target_link_libraries(${module_id}
   ${DL_LIBRARY}
+  vsx_common
 )
 

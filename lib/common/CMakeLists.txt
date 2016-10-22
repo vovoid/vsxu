@@ -70,7 +70,7 @@ else ()
   add_library(${module_id} SHARED ${SOURCES} ${HEADER_FILES})
 endif ()
 
-target_link_libraries(${module_id} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(${module_id} ${CMAKE_THREAD_LIBS_INIT} vsx_compression)
 
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT common)
 
