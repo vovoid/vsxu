@@ -79,6 +79,23 @@ public:
     return b;
   }
 
+  template < typename Ti = float>
+  inline vsx_vector3<Ti> multiply_vector_alt(const vsx_vector3<Ti> &a)
+  {
+    vsx_vector3<Ti> b;
+    b.x = m[0] * a.x + m[1] * a.y + m[2]  * a.z + m[12];
+    b.y = m[4] * a.x + m[5] * a.y + m[6]  * a.z + m[13];
+    b.z = m[8] * a.x + m[9] * a.y + m[10] * a.z + m[14];
+    return b;
+  }
+
+  /*
+   *
+   * res.x = mat.row1.x*x + mat.row2.x*y + mat.row3.x*z + mat.row4.x*w;
+    res.y = mat.row1.y*x + mat.row2.y*y + mat.row3.y*z + mat.row4.y*w;
+    res.z = mat.row1.z*x + mat.row2.z*y + mat.row3.z*z + mat.row4.z*w;
+*/
+
 
   inline void assign_inverse(vsx_matrix<T> *mm) {
     T d00, d01, d02, d03;
@@ -163,14 +180,14 @@ public:
         if ( i == j ) continue;
         T sum = 0.0;
         for ( int k = i; k < j; k++ )
-            sum += m[k*maxsize+j]*( (i==k) ? 1.0 : m[i*maxsize+k] );
+            sum += m[k*maxsize+j]*( (i==k) ? 1.0f : m[i*maxsize+k] );
         m[i*maxsize+j] = -sum;
         }
     for ( int i = 0; i < actualsize; i++ )   // final inversion
       for ( int j = 0; j < actualsize; j++ )  {
         T sum = 0.0;
         for ( int k = ((i>j)?i:j); k < actualsize; k++ )
-          sum += ((j==k)?1.0:m[j*maxsize+k])*m[k*maxsize+i];
+          sum += ((j==k)?1.0f:m[j*maxsize+k])*m[k*maxsize+i];
         m[j*maxsize+i] = sum;
         }
     }

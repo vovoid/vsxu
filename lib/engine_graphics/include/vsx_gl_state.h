@@ -174,7 +174,6 @@ public:
   {
     _material_init_values_default();
     _viewport_init_values_default();
-    _matrix_init();
     _blend_mode_init_default();
     _depth_init();
     _line_width_init();
@@ -795,18 +794,10 @@ private:
 
   vsx_matrix<float> core_matrix[3];
   vsx_matrix<float> matrix_stack[3][VSX_GL_STATE_STACK_DEPTH];
-  int i_matrix_stack_pointer[3];
-  int i_matrix_mode;
+  int i_matrix_stack_pointer[3] = {0, 0, 0};
+  int i_matrix_mode = 0;
   vsx_matrix<float> m_temp;
   vsx_matrix<float> m_temp_2;
-
-  inline void _matrix_init()
-  {
-    i_matrix_stack_pointer[0] = 0;
-    i_matrix_stack_pointer[1] = 0;
-    i_matrix_stack_pointer[2] = 0;
-    i_matrix_mode = 0;
-  }
 
 public:
 
@@ -830,6 +821,11 @@ public:
   inline void matrix_get_v(int mode, float* res)
   {
     memcpy(res, &core_matrix[mode].m[0], sizeof(vsx_matrix<float>) );
+  }
+
+  inline vsx_matrix<float>& matrix_get()
+  {
+    return core_matrix[i_matrix_mode];
   }
 
   inline void matrix_mode(int new_mode)
