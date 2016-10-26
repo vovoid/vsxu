@@ -67,3 +67,8 @@ public:
     texture = 0x0;
   }
 };
+
+
+#define vsx_texture_load_gl_once(t, filename, filesystem, gl_hint) \
+  if (!t) \
+    t = vsx_texture_loader::load(filename, filesystem, true, 0, gl_hint);

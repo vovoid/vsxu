@@ -91,6 +91,18 @@ public:
     i_invalidate_colors();
   }
 
+  inline void invalidate()
+  {
+    if (vertices.size())
+      i_invalidate_vertices();
+    if (vertex_normals.size())
+      i_invalidate_normals();
+    if (vertex_tex_coords.size())
+      i_invalidate_texcoords();
+    if (vertex_colors.size())
+      i_invalidate_colors();
+  }
+
   // 3. fire off the upload to the GPU
   inline void update()
   {
