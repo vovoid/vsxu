@@ -29,3 +29,8 @@ float vsx_rand::frand()
 {
   return (float)((MersenneTwister*)state)->genrand_real1();
 }
+
+float vsx_rand::frand_c()
+{
+  return (float)((MersenneTwister*)state)->genrand_real1() - 0.5f;
+}
