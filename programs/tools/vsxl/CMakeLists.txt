@@ -62,11 +62,13 @@ target_link_libraries(
   vsx_common
   vsx_compression
   vsx_engine
+  vsx_engine_graphics
   rt
   #vsx_widget
   vsx_common
   vsx_compression
   vsx_engine
+  vsx_engine_graphics
 )
 
   if (VSXU_STATIC EQUAL 1)

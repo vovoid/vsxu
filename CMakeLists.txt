@@ -425,7 +425,7 @@ add_subdirectory(programs/tools/vsxbt)
 add_subdirectory(programs/tools/vsxz)
 add_subdirectory(programs/tools/obj2vxm)
 if(UNIX)
-    #add_subdirectory(programs/tools/vsxl)
+    add_subdirectory(programs/tools/vsxl)
 endif(UNIX)
 
 ################################################################################
