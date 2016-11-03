@@ -58,6 +58,7 @@ set(SOURCES
   src/filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_writer.cpp
   src/filesystem/vsx_filesystem_helper.cpp
   src/filesystem/vsx_filesystem.cpp
+  #src/string/vsx_json.cpp
 )
 
 ################################################################################
