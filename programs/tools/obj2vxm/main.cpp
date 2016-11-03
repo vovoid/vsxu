@@ -176,7 +176,7 @@ int main(int argc, char* argv[])
 
 
   size_t vert_size = mesh.data->vertices.size() * sizeof(vsx_vector3<>);
-  printf("writing %ld vertex bytes\n",vert_size);
+  vsx_printf(L"writing %ld vertex bytes\n",vert_size);
   fwrite((void*)&vert_size,sizeof(size_t),1,fp);
 
   fwrite((void*)mesh.data->vertices.get_pointer(),sizeof(vsx_vector3<>),mesh.data->vertices.size(),fp);
@@ -184,7 +184,7 @@ int main(int argc, char* argv[])
 
 
   size_t normals_size = mesh.data->vertex_normals.size() * sizeof(vsx_vector3<>);
-  printf("writing %ld normals bytes\n",normals_size);
+  vsx_printf(L"writing %ld normals bytes\n",normals_size);
   fwrite((void*)&normals_size,sizeof(size_t),1,fp);
 
   fwrite((void*)mesh.data->vertex_normals.get_pointer(),sizeof(vsx_vector3<>),mesh.data->vertex_normals.size(),fp);
@@ -192,7 +192,7 @@ int main(int argc, char* argv[])
 
 
   size_t tex_coords_size = mesh.data->vertex_tex_coords.size() * sizeof(vsx_tex_coord2f);
-  printf("writing %ld texcoord bytes\n",tex_coords_size);
+  vsx_printf(L"writing %ld texcoord bytes\n",tex_coords_size);
   fwrite((void*)&tex_coords_size,sizeof(size_t),1,fp);
 
   fwrite((void*)mesh.data->vertex_tex_coords.get_pointer(),sizeof(vsx_tex_coord2f), mesh.data->vertex_tex_coords.size(),fp);
@@ -201,7 +201,7 @@ int main(int argc, char* argv[])
 
 
   size_t faces_size = mesh.data->faces.size() * sizeof(vsx_face3);
-  printf("writing %ld face bytes\n",faces_size);
+  vsx_printf(L"writing %ld face bytes\n",faces_size);
   fwrite((void*)&faces_size,sizeof(size_t),1,fp);
 
   fwrite((void*)mesh.data->faces.get_pointer(),sizeof(vsx_face3),mesh.data->faces.size(),fp);
