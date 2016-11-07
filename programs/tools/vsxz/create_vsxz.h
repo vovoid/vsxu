@@ -12,6 +12,9 @@ void create_vsxz()
 
   vsx::filesystem_archive_vsxz_writer archive;
 
+  if (vsx_argvector::get_instance()->has_param("nc"))
+    archive.disable_compression();
+
   vsx_string<> archive_filename = vsx_argvector::get_instance()->get_param_value("c");
   archive.create(archive_filename.c_str());
 

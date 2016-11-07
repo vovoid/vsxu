@@ -104,6 +104,9 @@ void filesystem_archive_vsxz_writer::close()
     if (archive_files[id_found].data.size() <= 1024*1024)
       break;
 
+
+    compression_ratios[id_found] = 1.0f;
+    req_continue(do_compress);
     vsx_thread_pool::instance()->add( [&](float& ratio, size_t ai)
       {
         vsx_printf(L"calculating ratio for %hs\n", archive_files[ai].filename.c_str());
@@ -160,9 +163,13 @@ void filesystem_archive_vsxz_writer::close()
 
     // if file is large, try to compress it, if ratio is too low, schedule in uncompressed chunk
     if (
-      archive_files[id_found].data.size() > 1024*1024
-      &&
-      compression_ratios[id_found] > 0.8
+      !do_compress
+      ||
+      (
+        archive_files[id_found].data.size() > 1024*1024
+        &&
+        compression_ratios[id_found] > 0.8
+      )
     )
     {
       vsx_printf(L"adding file %hs to chunk 0\n", archive_files[id_found].filename.c_str());

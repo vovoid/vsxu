@@ -76,6 +76,7 @@ int main(int argc, char* argv[])
     "       -f file1:file2:file3                     (mandatory)\n"
     "       -fl [file with file list like -f]        (optional)\n"
     "       -z pack archive as vsxz                  (optional)\n"
+    "       -nc when creating vsxz, don't compress   (optional)\n"
     "\n"
   );
 
