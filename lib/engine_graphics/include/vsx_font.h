@@ -35,6 +35,24 @@
 
 #include <vsx_platform.h>
 
+//#define VSX_FONT_ "\x01\x00\x00\x00\xff"
+#define VSX_FONT_BLACK "\x01\x01\x01\x01\xff"
+#define VSX_FONT_BLUE "\x01\x01\x01\xaa\xff"
+#define VSX_FONT_GREEN "\x01\x01\xaa\x01\xff"
+#define VSX_FONT_CYAN "\x01\x01\xaa\xaa\xff"
+#define VSX_FONT_RED "\x01\xaa\x01\x01\xff"
+#define VSX_FONT_MAGENTA "\x01\xaa\x01\xaa\xff"
+#define VSX_FONT_BROWN "\x01\xaa\x55\x01\xff"
+#define VSX_FONT_GRAY "\x01\xaa\xaa\xaa\xff"
+#define VSX_FONT_DARK_GRAY "\x01\x55\x55\x55\xff"
+#define VSX_FONT_BRIGHT_BLUE "\x01\x55\x55\xff\xff"
+#define VSX_FONT_BRIGHT_GREEN "\x01\x55\xff\x55\xff"
+#define VSX_FONT_BRIGHT_CYAN "\x01\x55\xff\xff\xff"
+#define VSX_FONT_BRIGHT_RED "\x01\xff\x55\x55\xff"
+#define VSX_FONT_BRIGHT_MAGENTA "\x01\xff\x55\xff\xff"
+#define VSX_FONT_YELLOW "\x01\xff\xff\x55\xff"
+#define VSX_FONT_WHITE "\x01\xff\xff\xff\xff"
+
 class vsx_font_info {
 public:
   int type = 0; // 0 = texture (old) 1 = new (FtGL)
