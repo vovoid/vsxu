@@ -659,7 +659,10 @@ void vsx_engine_param::rebuild_orders(std::vector<int>* new_order)
 bool vsx_engine_param::delete_conn(vsx_engine_param_connection* conn) {
   for (std::vector<vsx_engine_param_connection*>::iterator it = connections.begin(); it != connections.end(); it++) {
     if ((*it) == conn) {
+      bool alias_connection = (*it)->alias_connection;
       connections.erase(it);
+      if (alias_connection)
+        delete (*it);
       return true;
     }
   }
