@@ -176,6 +176,13 @@ protected:
   vsx_comp* add(vsx_string<>label);
 public:
 
+  vsx_engine_abs()
+    :
+      commands_res_internal(false),
+      commands_out_cache(false),
+      commands_internal(false)
+  {}
+
   // module and parameter interface
   virtual unsigned long get_num_modules() = 0;
   virtual vsx_comp* get_component_by_name(vsx_string<>label) = 0;

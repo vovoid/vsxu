@@ -68,6 +68,7 @@ public:
 
   ~vsx_texture_gl()
   {
+    unload();
     req(bitmap);
     req(!bitmap->attached_to_cache);
     delete bitmap;

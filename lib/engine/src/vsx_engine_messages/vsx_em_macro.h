@@ -42,10 +42,10 @@ if (cmd == "macro_dump" || cmd == "component_clone")
     goto process_message_queue_end;
 
   // puchiko has been found, nyo!
-  vsx_command_list tmp_comp;
-  vsx_command_list tmp_param_set;
-  vsx_command_list tmp_connections;
-  vsx_command_list tmp_aliases;
+  vsx_command_list tmp_comp(true);
+  vsx_command_list tmp_param_set(true);
+  vsx_command_list tmp_connections(true);
+  vsx_command_list tmp_aliases(true);
 
   bool drun = true;
   bool macro = ((*forge_map_iter).second->component_class == "macro");

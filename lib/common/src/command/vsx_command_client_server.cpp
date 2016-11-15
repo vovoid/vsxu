@@ -305,6 +305,8 @@ void vsx_command_list_server::server_worker()
 // ****************************************************************************
 
 vsx_command_list_client::vsx_command_list_client()
+  : cmd_in(true),
+    cmd_out(true)
 {
   connected = VSX_COMMAND_CLIENT_NEVER_CONNECTED;
 }

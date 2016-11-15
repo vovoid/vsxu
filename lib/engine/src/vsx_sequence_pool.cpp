@@ -209,7 +209,7 @@ bool vsx_sequence_pool::export_to_file(vsx_string<>filename)
   vsx_param_sequence_list* sequence_list = cur_sequence_list;
   if (!sequence_list) return false;
 
-  vsx_command_list savelist;
+  vsx_command_list savelist(true);
 
   vsx_string<> sequence_dump = sequence_list->get_sequence_list_dump();
   vsx_string<> deli = "&";
@@ -239,7 +239,7 @@ bool vsx_sequence_pool::export_to_file(vsx_string<>filename)
 
 bool vsx_sequence_pool::import_from_file(vsx_string<>filename)
 {
-  vsx_command_list import_list;
+  vsx_command_list import_list(true);
   import_list.load_from_file( vsx_data_path::get_instance()->data_path_get() + "animations/"+filename);
   while (vsx_command_s* c = import_list.pop())
   {

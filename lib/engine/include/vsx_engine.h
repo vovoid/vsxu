@@ -44,10 +44,9 @@
 #include <internal/vsx_sequence_pool.h>
 #include "vsx_module_list_abs.h"
 #include "vsx_module_list_factory.h"
-
+#include <internal/vsx_note.h>
 
 class vsx_timer;
-class vsx_note;
 class vsx_comp;
 class vsxl_engine;
 

@@ -39,7 +39,6 @@
 #include <internal/vsx_master_sequence_channel.h>
 
 #include "vsx_module_list_factory.h"
-#include "vsx_note.h"
 #include "vsx_data_path.h"
 #include <string/vsx_string_helper.h>
 #include <vsx_param_helper.h>
@@ -295,7 +294,7 @@ int vsx_engine::load_state(vsx_string<>filename, vsx_string<>*error_string)
   if (filesystem.get_archive()->is_archive())
     filesystem.get_archive()->close();
 
-  vsx_command_list load1;
+  vsx_command_list load1(true);
   load1.set_filesystem(&filesystem);
   vsx_string<> i_filename = filename;
 
@@ -336,13 +335,12 @@ int vsx_engine::load_state_filesystem(vsx_string<>filename, vsx_string<>*error_s
 
   engine_info.filesystem = fs;
 
-  vsx_command_list load1;
+  vsx_command_list load1(true);
   load1.set_filesystem( fs );
 
   load1.load_from_file(filename, true);
 
   int res = i_load_state(load1, error_string, filename);
-  load1.clear_normal();
 
   return res;
 }
@@ -767,6 +765,7 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
     // break command
     if (c->cmd == "break")
     {
+      delete c;
       return;
     }
 
@@ -792,9 +791,7 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
     #include "vsx_engine_messages/vsx_em_module_operation.h"
 
     if (cmd == "help")
-    {
       goto process_message_queue_end;
-    }
 
     // this shouldn't be reached unless no command is performed and thus jumped
     // to process_message_queue_end
@@ -806,15 +803,12 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
 
     process_message_queue_end:
 
-
-
     if (current_state != VSX_ENGINE_LOADING)
-    {
       process_message_queue_redeclare(cmd_out_res);
-    }
 
+    delete c;
 
-    total_time+=vsx_command_timer.dtime();
+    total_time += vsx_command_timer.dtime();
   }
 
 } // process_comand_queue

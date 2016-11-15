@@ -100,7 +100,7 @@ if (cmd == "package_export")
     vsx::filesystem_archive_vsx_writer archive;
     vsx_string<>filename = (c->parts[2]+vsx_string_helper::str_replace<char>(";","",c->parts[1]));
     archive.create((base_path+filename).c_str());
-    vsx_command_list savelist;
+    vsx_command_list savelist(true);
     get_state_as_commandlist(savelist);
 
     vsx_string<> state_as_string = savelist.get_as_string();
@@ -150,7 +150,7 @@ if (cmd == "state_save")
   {
     vsx_string<>base_path = vsx_data_path::get_instance()->data_path_get();
     vsx::filesystem tfs;
-    vsx_command_list savelist;
+    vsx_command_list savelist(true);
     get_state_as_commandlist(savelist);
     savelist.set_filesystem(&tfs);
     vsx_string<>filename = base_path+"states/"+vsx_string_helper::str_replace<char>(";","/",c->parts[1]);

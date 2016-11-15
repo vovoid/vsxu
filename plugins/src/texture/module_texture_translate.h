@@ -52,10 +52,14 @@ void module_texture_translate::run()
   }
 
   if (!texture_out)
-    texture_out = new vsx_texture<>;
+  {
+    texture_out = new vsx_texture<>();
+    delete texture_out->texture->bitmap;
+  }
 
   // copy texture info
   (*texture_out->texture) = (*(*texture_in)->texture);
+  texture_out->texture->attached_to_cache = false;
 
   float x = translation_vec->get(0);
   float y = translation_vec->get(1);
@@ -71,7 +75,7 @@ void module_texture_translate::on_delete()
 {
   if (texture_out)
   {
-    texture_out->texture = 0x0;
+    texture_out->texture->bitmap = 0x0;
     delete texture_out;
   }
 }

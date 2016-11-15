@@ -137,8 +137,12 @@ void filesystem::f_close(file* &handle)
     return;
 
   if (!archive.is_archive())
+  {
     if (handle->handle)
       fclose(handle->handle);
+    if (handle->data.size())
+      free( handle->data.get_pointer() );
+  }
 
   delete handle;
   handle = 0x0;
@@ -159,13 +163,16 @@ size_t filesystem::f_get_size(file* handle)
 
 unsigned char* filesystem::f_data_get(file* handle)
 {
-  if (handle->data.size())
-    return handle->data.get_pointer();
+  if (archive.is_archive())
+    if (handle->data.size())
+      return handle->data.get_pointer();
 
   size_t size = f_get_size(handle);
   unsigned char* buf = (unsigned char*)malloc(size);
   reqrv(buf, 0x0);
   f_read((void*)buf, size, handle);
+  handle->data.set_volatile();
+  handle->data.set_data( buf, size );
   return buf;
 }
 

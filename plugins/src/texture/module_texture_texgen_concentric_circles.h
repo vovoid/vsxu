@@ -155,7 +155,7 @@ public:
     if (texture)
       texture_old = texture;
 
-    texture = new vsx_texture<>;
+    texture = new vsx_texture<>(true);
 
     texture->texture = vsx_texture_gl_cache::get_instance()->create(cache_handle, 0, hint);
     texture->texture->bitmap->filename = cache_handle;

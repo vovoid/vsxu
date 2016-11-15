@@ -102,7 +102,7 @@ public:
   // expose this param when running engine in a module?
   int external_expose;
 
-// we save here our own connections so we can disconnect properly when an alias is removed
+  // we save here our own connections so we can disconnect properly when an alias is removed
   std::vector<vsx_engine_param_connection*> connections;
   vsx_engine_param_connection* get_conn_by_dest(vsx_engine_param* dest);
   vsx_engine_param_connection* get_conn_by_src(vsx_engine_param* src);

@@ -21,9 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-
-#ifndef VSX_COMP_H
-#define VSX_COMP_H
+#pragma once
 
 #include "vsx_comp_abs.h"
 
@@ -130,5 +128,3 @@ public:
   ~vsx_comp();
 };
 
-
-#endif

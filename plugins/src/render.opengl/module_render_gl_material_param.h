@@ -153,6 +153,12 @@ public:
     operations.push_back( operation );
   }
 
+  void destroy_operations(vsx_nw_vector<vsx_module_operation*>& operations )
+  {
+    foreach(operations, i)
+      delete operations[i];
+  }
+
   void run_operation(vsx_module_operation& operation)
   {
     if (operation.handle == "save")

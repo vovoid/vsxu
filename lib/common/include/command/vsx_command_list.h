@@ -226,7 +226,7 @@ public:
   void clear_delete()
   {
     foreach(commands, i)
-      delete (T*) (commands[i]);
+      delete commands[i];
     commands.clear();
   }
 
@@ -416,10 +416,6 @@ public:
       size_t j = commands.size();
     release_lock();
     return j;
-  }
-
-  vsx_command_buffer_broker()
-  {
   }
 
   vsx_command_buffer_broker(bool delete_commands)

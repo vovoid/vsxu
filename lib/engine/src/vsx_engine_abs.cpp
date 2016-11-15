@@ -37,7 +37,7 @@
 #include <log/vsx_log.h>
 #include "vsx_engine.h"
 #include <internal/vsx_master_sequence_channel.h>
-#include "vsx_note.h"
+#include <internal/vsx_note.h>
 #include <vsx_data_path.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
@@ -92,7 +92,7 @@ void vsx_engine_abs::constructor_set_default_values()
 int vsx_engine_abs::i_load_state(vsx_command_list& load1,vsx_string<>*error_string, vsx_string<>info_filename)
 {
   if (!valid) return 2;
-  vsx_command_list load2,loadr2;
+  vsx_command_list loadr2(true);
   load1.reset();
   vsx_command_s* mc = 0;
   // check the macro list to verify the existence of the componente we need for this macro
@@ -128,7 +128,7 @@ int vsx_engine_abs::i_load_state(vsx_command_list& load1,vsx_string<>*error_stri
     }
   }
   static vsx_string<>sld("state_load_done");
-  load1.add_raw(sld, VSX_COMMAND_GARBAGE_COLLECT);
+  load1.add_raw(sld);
   load1.reset();
 
   LOG("i_load_state: all modules are available, proceeding with load")
@@ -142,9 +142,8 @@ int vsx_engine_abs::i_load_state(vsx_command_list& load1,vsx_string<>*error_stri
   start();
   LOG("i_load_state pre processing_message_queue")
 
-  process_message_queue(&load1,&loadr2,true);
+  process_message_queue(&load1,&loadr2,true,true);
   LOG("i_load_state post processing_message_queue")
-  load2.clear_normal();
   loadr2.clear_normal();
 
   current_state = VSX_ENGINE_LOADING;
@@ -319,8 +318,8 @@ void vsx_engine_abs::send_state_to_client(vsx_command_list *cmd_out)
 //    return;
 //  }
 
-  vsx_command_list temp_conn;
-  vsx_command_list temp_conn_alias;
+  vsx_command_list temp_conn(true);
+  vsx_command_list temp_conn_alias(true);
   for (unsigned long i = 0; i < forge.size(); ++i)
   {
     vsx_string<>xs,ys;
@@ -357,18 +356,14 @@ void vsx_engine_abs::send_state_to_client(vsx_command_list *cmd_out)
   // conns
   vsx_command_s* outc;
   temp_conn_alias.reset();
-  while ( (outc = temp_conn_alias.get()) ) {
+  while ( (outc = temp_conn_alias.get()) )
     cmd_out->addc(outc, VSX_COMMAND_GARBAGE_COLLECT);
-    delete outc;
-  }
 
   sequence_list.get_sequences(&temp_conn);
 
   temp_conn.reset();
-  while ( (outc = temp_conn.get()) ) {
+  while ( (outc = temp_conn.get()) )
     cmd_out->addc( outc, VSX_COMMAND_GARBAGE_COLLECT);
-    delete outc;
-  }
 
   // notes
   for (note_iter = note_map.begin(); note_iter != note_map.end(); note_iter++)
@@ -459,10 +454,10 @@ void vsx_engine_abs::i_clear(vsx_command_list *cmd_out,bool clear_critical)
 
 int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
 {
-  vsx_command_list tmp_comp;
-  vsx_command_list tmp_param_set;
-  vsx_command_list tmp_connections;
-  vsx_command_list tmp_aliases;
+  vsx_command_list tmp_comp(true);
+  vsx_command_list tmp_param_set(true);
+  vsx_command_list tmp_connections(true);
+  vsx_command_list tmp_aliases(true);
   tmp_aliases.add_raw("break");
 
   if (meta_information.size())

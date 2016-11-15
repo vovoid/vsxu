@@ -65,6 +65,7 @@ void vsx_command_process_garbage_exit()
     delete a;
     it++;
   }
+  vsx_command_garbage_list.clear();
 }
 
 vsx_string<>vsx_command_s::get_parts(int start, int end) {
