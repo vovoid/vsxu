@@ -26,16 +26,19 @@ public:
     high_priority
   };
 
-  explicit vsx_thread_pool(size_t threads = std::thread::hardware_concurrency()):
-    tasks([](prioritized_task l, prioritized_task r){ return std::get<0>(l) < std::get<0>(r); } )
+  explicit vsx_thread_pool(size_t threads = std::thread::hardware_concurrency())
+    :
+    tasks(
+      [](prioritized_task l, prioritized_task r){ return std::get<0>(l) < std::get<0>(r); }
+    )
   {
     tasks_queued = 0;
 
-    for(size_t i = 0;i<threads;++i)
+    for_n (i, 0, threads)
       workers.emplace_back(
         [this]
         {
-          for(;;)
+          forever
           {
             std::function<void()> task;
 
@@ -55,12 +58,6 @@ public:
 
             task();
             this->tasks_queued--;
-
-            /*if (!this->tasks_queued.load())
-            {
-              std::lock_guard<std::mutex> lk(this->queue_empty_mutex);
-              this->queue_empty_condition.notify_all();
-            }*/
           }
         }
       );
@@ -126,18 +123,9 @@ public:
         return false;
       }
 
-    if ( !tasks_queued.load() )
-      return true;
-
-    uint64_t task_count = tasks_queued.load();
-    while (task_count)
-    {
+    while (tasks_queued.load())
       std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
-      task_count = tasks_queued.load();
-    }
 
-//    std::unique_lock<std::mutex> queue_empty_lock(this->queue_empty_mutex);
-//    queue_empty_condition.wait(queue_empty_lock);
     return true;
   }
 

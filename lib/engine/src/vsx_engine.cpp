@@ -765,7 +765,8 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
     // break command
     if (c->cmd == "break")
     {
-      delete c;
+      if (!c->garbage_collected)
+        delete c;
       return;
     }
 
