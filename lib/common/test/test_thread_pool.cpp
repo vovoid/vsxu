@@ -4,10 +4,18 @@
 #include <vsx_argvector.h>
 #include <test/vsx_test.h>
 
+class foo
+{
+public:
+  vsx_thread_pool pool;
+};
+
 int main(int argc, char *argv[])
 {
   VSX_UNUSED(argc);
   VSX_UNUSED(argv);
+
+  foo* f = new foo;
 
   threaded_task
     {
@@ -25,6 +33,8 @@ int main(int argc, char *argv[])
   threaded_task_end;
 
   threaded_task_wait_all(100);
+
+  delete f;
 
   test_complete
   return 0;

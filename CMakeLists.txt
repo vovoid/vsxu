@@ -143,6 +143,11 @@ if (UNIX)
 #  add_definitions( -Werror ) # no reason for linux not to compile
 endif()
 
+
+if (VSXU_STATIC_AUDIO_SINK EQUAL 1)
+  add_definitions(-DVSXU_AUDIO_SINK=1)
+endif()
+
 if (VSX_PRINTF_TO_FILE EQUAL 1)
   add_definitions(-DVSX_PRINTF_TO_FILE)
 endif()

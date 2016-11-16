@@ -11,9 +11,7 @@ include (../cmake_globals.txt)
 # set defines for MOD_CM, MOD_DM, MOD_NM
 CREATE_STATIC_GLUE(${module_id})
 
-set(SOURCES
-  main_sound.sink.cpp
-)
+file(GLOB LOCAL_SOURCES "*.cpp")
 file(GLOB_RECURSE HEADER_FILES *.h)
 
 # actual compilation target

@@ -96,7 +96,7 @@ add_subdirectory(src/render.text)
 add_subdirectory(src/selectors)
 
 if (VSXU_STATIC_AUDIO_SINK)
-  add_definition(VSXU_AUDIO_SINK)
+  add_definitions(-DVSXU_AUDIO_SINK=1)
   add_subdirectory(src/sound.sink)
 else()
   add_subdirectory(src/sound.rtaudio)
