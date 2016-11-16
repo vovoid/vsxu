@@ -638,6 +638,9 @@ void vsx_statelist::init(vsx_string<>base_path,vsx_string<>init_sound_type)
 }
 
 vsx_statelist::vsx_statelist() 
+  :
+    l_cmd_in(false),
+    l_cmd_out(false)
 {
   option_preload_all = false;
 }

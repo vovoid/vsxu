@@ -226,7 +226,8 @@ public:
   void clear_delete()
   {
     foreach(commands, i)
-      delete commands[i];
+      if (!commands[i]->garbage_collected)
+        delete commands[i];
     commands.clear();
   }
 

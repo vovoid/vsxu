@@ -46,7 +46,9 @@ public:
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords);
   void i_draw();
+
   vsx_widget_popup_menu()
+    : menu_items(false)
   {
     target_size.x = size.x = 0.4f;
   }

@@ -50,15 +50,17 @@ endif()
 # SOURCES ######################################################################
 ################################################################################
 
+file(GLOB_RECURSE HEADER_FILES *.h)
+
 set(SOURCES
   src/vsx_statelist.cpp
   src/vsx_manager.cpp
 )
 
 if (VSXU_STATIC EQUAL 1)
-  add_library(${module_id} STATIC ${SOURCES})
+  add_library(${module_id} STATIC ${SOURCES} ${HEADER_FILES})
 else()
-  add_library(${module_id} SHARED ${SOURCES})
+  add_library(${module_id} SHARED ${SOURCES} ${HEADER_FILES})
 endif()
 
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)

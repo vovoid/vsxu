@@ -170,7 +170,7 @@ void vsxu_assistant::init()
   menu->init();
 
   vsx_command_s* c;
-  vsx_command_list cla;
+  vsx_command_list cla(false);
   cla.load_from_file( vsx_data_path::get_instance()->data_path_get() + "help_settings.conf",true,4);
   cla.garbage_collect();
   auto_ = false;
@@ -245,7 +245,7 @@ void vsxu_assistant::command_process_back_queue(vsx_command_s *t) {
     if (!auto_)
     {
       inspected = 0;
-      vsx_command_list cla;
+      vsx_command_list cla(true);
       cla.add_raw("auto");
 
       vsx_string<> cla_string = cla.get_as_string();
@@ -264,7 +264,7 @@ void vsxu_assistant::command_process_back_queue(vsx_command_s *t) {
   {
     auto_ = false;
     vsx_command_s* c;
-    vsx_command_list cl;
+    vsx_command_list cl(true);
     cl.load_from_file(PLATFORM_SHARED_FILES+"doc/"+t->cmd_data+".txt",false,4);
     vsx_string<>newstr;
     course.clear();

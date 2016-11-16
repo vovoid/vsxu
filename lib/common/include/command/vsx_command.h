@@ -71,9 +71,7 @@ public:
   COMMON_DLLIMPORT static int id;
 
   int iterations = 0;
-  #ifdef VSXU_DEBUG
-    bool garbage_collected = false;
-  #endif
+  bool garbage_collected = false;
   bool parsed = false;
   int owner = 0; // for color-coding this command
   int type = 0; // type of command
@@ -117,9 +115,7 @@ public:
         VSX_ERROR_RETURN(L"double garbage collection");
     #endif
     vsx_command_garbage_list.push_back(this);
-    #ifdef VSXU_DEBUG
-      garbage_collected = true;
-    #endif
+    garbage_collected = true;
   }
 
   // returns a string like "part1 part2 part3" if start was 1 and end was 3

@@ -72,7 +72,9 @@
 
 // VSX_WIDGET_SERVER ***************************************************************************************************
 
-vsx_widget_server::vsx_widget_server() {
+vsx_widget_server::vsx_widget_server()
+  : dump_commands(false)
+{
   widget_type = VSX_WIDGET_TYPE_SERVER;
   cmd_out = 0;
   cmd_in = 0;
@@ -234,11 +236,11 @@ void vsx_widget_server::init()
   init_children();
 
   init_run = true;
-  cmd_out->add_raw("get_module_list", true);
-  cmd_out->add_raw("get_list resources", true);
-  cmd_out->add_raw("get_list states", true);
-  cmd_out->add_raw("get_list prods", true);
-  cmd_out->add_raw("get_list visuals", true);
+  cmd_out->add_raw("get_module_list", VSX_COMMAND_GARBAGE_COLLECT);
+  cmd_out->add_raw("get_list resources", VSX_COMMAND_GARBAGE_COLLECT);
+  cmd_out->add_raw("get_list states", VSX_COMMAND_GARBAGE_COLLECT);
+  cmd_out->add_raw("get_list prods", VSX_COMMAND_GARBAGE_COLLECT);
+  cmd_out->add_raw("get_list visuals", VSX_COMMAND_GARBAGE_COLLECT);
 
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_INTERNAL)
   {
@@ -260,7 +262,7 @@ void vsx_widget_server::init()
       cmd_out->add_raw("state_load "+vsx_string_helper::base64_encode("states;_default"), VSX_COMMAND_GARBAGE_COLLECT);
     }
   }
-  cmd_out->add_raw("get_state", true);
+  cmd_out->add_raw("get_state", VSX_COMMAND_GARBAGE_COLLECT);
 
   // set sequencer to 0, we gonna fill it later
   sequencer = 0;
@@ -852,7 +854,7 @@ void vsx_widget_server::vsx_command_process_f() {
       if (c->cmd == "macro_prerun") {
         if (c->parts[1] == connection_id) {
           // woop
-          vsx_command_list macro_commands;
+          vsx_command_list macro_commands(false);
           macro_commands.load_from_file(
             vsx_string_helper::str_replace<char>(
               ";",

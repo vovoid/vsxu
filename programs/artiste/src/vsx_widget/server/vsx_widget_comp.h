@@ -49,6 +49,7 @@ public:
   vsx_widget* name_dialog;
   vsx_command_list macro_commands;
 
+
   // is this critical to the vme? if so, can't be deleted.
   bool internal_critical;
 
@@ -89,6 +90,11 @@ public:
   std::map<vsx_string<>, vsx_widget*> p_l_list_out;
   std::map<vsx_string<>, vsx_widget*>::const_iterator p_l_list_out_iter;
   std::map<vsx_string<>, vsx_widget*> t_list; // temporary list for rescuing of re-inited anchors
+
+
+  vsx_widget_component()
+    : macro_commands(true)
+  {}
 
   void command_process_back_queue(vsx_command_s *t);
   void vsx_command_process_f();

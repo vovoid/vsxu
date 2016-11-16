@@ -92,7 +92,7 @@ public:
     // final destination for the configuration data
     vsx_string<>save_filename = vsx_data_path::get_instance()->data_path_get() + "vsxu.conf";
 
-    vsx_command_list s_conf;
+    vsx_command_list s_conf(false);
     for (std::map<vsx_string<>, vsx_string<> >::iterator it = configuration.begin(); it != configuration.end(); ++it)
       s_conf.add_raw((*it).first+" "+(*it).second);
 

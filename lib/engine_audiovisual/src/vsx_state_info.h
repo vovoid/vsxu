@@ -14,6 +14,9 @@ public:
   bool is_volatile;
 
   state_info(const state_info &other)
+    :
+      cmd_in(false),
+      cmd_out(false)
   {
     fx_level = other.fx_level;
     speed = other.speed;
@@ -28,6 +31,9 @@ public:
   }
 
   state_info()
+    :
+      cmd_in(false),
+      cmd_out(false)
   {
     speed = 1.0f;
     engine = 0;

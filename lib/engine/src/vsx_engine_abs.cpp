@@ -544,7 +544,7 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
 
   vsx_command_s* outc;
   tmp_comp.reset();
-  while ( (outc = tmp_comp.get()) ) {
+  while ( (outc = tmp_comp.pop()) ) {
     savelist.addc(outc);
     delete outc;
   }

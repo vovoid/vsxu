@@ -90,6 +90,7 @@ class vsx_font {
   }
 public:
   VSX_ENGINE_GRAPHICS_DLLIMPORT void load(vsx_string<>font, vsx::filesystem* filesystem);
+  VSX_ENGINE_GRAPHICS_DLLIMPORT void unload();
 
   vsx_nw_vector< vsx_color<> > syntax_colors;
   // is in 2d mode?
@@ -122,6 +123,11 @@ public:
   vsx_font()
   {
     init_vars();
+  }
+
+  ~vsx_font()
+  {
+
   }
 };
 

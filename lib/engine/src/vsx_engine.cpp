@@ -806,7 +806,8 @@ void vsx_engine::process_message_queue(vsx_command_list *cmd_in, vsx_command_lis
     if (current_state != VSX_ENGINE_LOADING)
       process_message_queue_redeclare(cmd_out_res);
 
-    delete c;
+    if (!c->garbage_collected)
+      delete c;
 
     total_time += vsx_command_timer.dtime();
   }

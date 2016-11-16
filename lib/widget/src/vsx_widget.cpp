@@ -66,6 +66,10 @@ bool vsx_widget::performance_mode = false;
 
 
 vsx_widget::vsx_widget()
+  :
+    commands(false),
+    command_q_b(false),
+    command_q_f(false)
 {
   widget_type = VSX_WIDGET_TYPE_WIDGET;
   interpolation_speed = 10.0f;
@@ -124,9 +128,8 @@ vsx_widget::~vsx_widget()
   }
 
   if (this == root)
-  {
     global_delete = true;
-  }
+
   if (global_delete)
   {
     for (std::list <vsx_widget*>::iterator it = children.begin(); it != children.end(); ++it) {
@@ -139,6 +142,7 @@ vsx_widget::~vsx_widget()
     global_widget_list.clear();
     global_index_list.clear();
     global_delete = false;
+    font.unload();
   }
 
 }

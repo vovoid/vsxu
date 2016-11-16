@@ -30,7 +30,8 @@ public:
     max_fps(0),
     min_fps(1000000),
     max_render_time(-1),
-    min_render_time(1000)
+    min_render_time(1000),
+    system_command_queue(false)
   {}
   ~vsx_profiler_draw() {}
 

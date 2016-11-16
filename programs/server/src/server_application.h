@@ -43,6 +43,13 @@ class server_application
 
 public:
 
+  server_application()
+    :
+      internal_cmd_in(false),
+      internal_cmd_out(false)
+  {}
+
+
   vsx_string<> window_title_get()
   {
     char titlestr[ 200 ];

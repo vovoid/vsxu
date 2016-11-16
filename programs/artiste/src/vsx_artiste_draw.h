@@ -68,7 +68,12 @@ public:
 
   VSXP_CLASS_DECLARE
 
-  vsx_artiste_draw() {
+  vsx_artiste_draw()
+    :
+      system_command_queue(false),
+      internal_cmd_in(false),
+      internal_cmd_out(false)
+  {
     VSXP_CLASS_CONSTRUCTOR
   }
 
@@ -122,6 +127,7 @@ public:
 
   void uninit()
   {
+    myf.unload();
     vxe->stop();
     delete vxe;
     vsx_module_list_factory_destroy( module_list );
