@@ -65,14 +65,11 @@ vsx_param_sequence_list::vsx_param_sequence_list(void* my_engine) {
 
 vsx_param_sequence_list::~vsx_param_sequence_list()
 {
-  for (
-        std::map<vsx_engine_param*,vsx_param_sequence*>::iterator it = parameter_channel_map.begin();
-        it != parameter_channel_map.end();
-        it++
-      )
-  {
-    delete (*it).second;
-  }
+  for (auto it : parameter_channel_map)
+    delete it.second;
+
+  for (auto it : groups)
+    delete it.second;
 }
 
 
@@ -416,6 +413,10 @@ void vsx_param_sequence_list::group_inject(vsx_string<>& data)
 {
   vsx_nw_vector< vsx_string<> > group_list;
   vsx_string_helper::explode_single(data, '|', group_list);
+
+  for (auto it : groups)
+    delete it.second;
+
   groups.clear();
   foreach (group_list, i)
   {
