@@ -11,6 +11,7 @@ target_link_libraries(
   vsx_engine
   ${CMAKE_THREAD_LIBS_INIT}
   ${OPENGL_LIBRARIES}
+  ${LIBRARIES}
 )
 
 if (UNIX OR VSXU_WINDOWS_LIB_BUILD)

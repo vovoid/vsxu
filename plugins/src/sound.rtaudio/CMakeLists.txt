@@ -66,6 +66,8 @@ if(AUDIO_LIBRARIES)
   include_directories (${INCLUDE_DIRS})
   add_definitions(${DEFINITIONS})
 
+message("audio libraries:\n")
+message(${AUDIO_LIBRARIES})
   # set defines for MOD_CM, MOD_DM, MOD_NM
   CREATE_STATIC_GLUE(${module_id})
 
@@ -86,7 +88,9 @@ if(AUDIO_LIBRARIES)
 
   include(../cmake_suffix.txt)
 
-  set(LIBRARIES ${AUDIO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+  target_link_libraries(${module_id} ${AUDIO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+
+#  set(LIBRARIES ${AUDIO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 endif(AUDIO_LIBRARIES)
 

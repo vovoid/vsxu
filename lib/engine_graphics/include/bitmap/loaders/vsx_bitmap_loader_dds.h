@@ -135,7 +135,7 @@ class vsx_bitmap_loader_dds
       ;
 
     if (row_size != header.pitch_or_linear_size)
-      vsx_printf(L"WARNING!!!    DDS pitch or linear size wrong,      %s\n", bitmap->filename.c_str());
+      vsx_printf(L"WARNING!!!    DDS pitch or linear size wrong,      %hs\n", bitmap->filename.c_str());
 
     unsigned int x = header.width;
     unsigned int y = header.height;

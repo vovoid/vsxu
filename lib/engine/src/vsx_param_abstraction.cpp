@@ -398,7 +398,7 @@ bool vsx_engine_param::disconnect() {
 
   std::vector<vsx_engine_param_connection*> temp_conn = connections;
   for (std::vector<vsx_engine_param_connection*>::iterator it = temp_conn.begin(); it != temp_conn.end(); ++it) {
-    if ((*it)->alias_connection)
+    if ((*it)->alias_connection && (*it)->dest != this)
     {
       (*it)->dest->disconnect();
       (*it)->dest->unalias();
@@ -662,7 +662,7 @@ bool vsx_engine_param::delete_conn(vsx_engine_param_connection* conn) {
       bool alias_connection = (*it)->alias_connection;
       connections.erase(it);
       if (alias_connection)
-        delete (*it);
+        delete conn;
       return true;
     }
   }
