@@ -21,7 +21,7 @@ public:
     VSX_UNUSED(existing_depth_texture_id);
 
     if ( !has_buffer_support() )
-      VSX_ERROR_RETURN(L"No FBO support");
+      VSX_ERROR_RETURN("No FBO support");
 
     if (multisample)
       glEnable(GL_MULTISAMPLE);

@@ -164,7 +164,7 @@ public:
     vsx_string<>filename = vsx_profiler_manager::profiler_directory_get() + DIRECTORY_SEPARATOR + filenames[index];
     vsx::file* fp = filesystem.f_open( filename.c_str());
 
-    unsigned long file_size = filesystem.f_get_size(fp);
+    size_t file_size = filesystem.f_get_size(fp);
 
     // Some sanity checks
     if ( file_size % sizeof(vsx_profile_chunk) )

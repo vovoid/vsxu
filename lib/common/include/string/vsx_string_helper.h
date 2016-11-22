@@ -39,7 +39,7 @@ namespace vsx_string_helper
   inline vsx_string<>ui642s(const uint64_t &in)
   {
     char string_res[256] = "";
-    sprintf(string_res,"%lu",in);
+    sprintf(string_res,"%llu",in);
     return vsx_string<>(string_res);
   }
 
@@ -722,8 +722,12 @@ namespace vsx_string_helper
    * @param data
    * @return
    */
+#ifdef __GNUC__
+#if __GNUC__ > 3
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
+#endif
+#endif
   inline vsx_string<> base64_encode(vsx_string<> data)
   {
     char               c;
@@ -846,4 +850,9 @@ namespace vsx_string_helper
   }
 }
 
+#ifdef __GNUC__
+#if __GNUC__ > 3
+
 #pragma GCC diagnostic pop
+#endif
+#endif

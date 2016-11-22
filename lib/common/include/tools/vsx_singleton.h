@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vsx_platform.h>
+
 namespace vsx
 {
 
@@ -8,7 +10,7 @@ class singleton
 {
 public:
 
-  static inline __attribute__((always_inline)) T* get() {
+  static inline VSX_ALWAYS_INLINE T* get() {
     static T t;
     return &t;
   }

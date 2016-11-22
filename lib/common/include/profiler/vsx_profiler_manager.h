@@ -165,7 +165,7 @@ public:
     vsx_string<>profiler_directory = profiler_directory_get();
 
 #if COMPILER == COMPILER_VISUAL_STUDIO
-    if (_access(profiler_directory.c_str(),0) != -1)
+    if (_access(profiler_directory.c_str(), 0) != 0)
 #else
     if (access(profiler_directory.c_str(), 0) != 0)
 #endif
@@ -186,10 +186,10 @@ public:
     FILE* fp = fopen( filename.c_str() , "wb");
 
     if (!fp)
-      VSX_ERROR_EXIT(L"VSX PROFILER: ***ERROR*** I/O thread can not open file. Aborting...", 900);
+      VSX_ERROR_EXIT("VSX PROFILER: ***ERROR*** I/O thread can not open file. Aborting...", 900);
 
 
-    vsx_printf(L"[Profiler writing to %s]\n", filename.c_str());
+    vsx_printf(L"[Profiler writing to %hs]\n", filename.c_str());
     timer.start();
     double accumulated_time = 0.0;
     while ( pm->thread_run_control.load() )

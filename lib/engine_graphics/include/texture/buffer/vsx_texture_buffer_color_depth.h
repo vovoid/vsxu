@@ -22,7 +22,7 @@ public:
   )
   {
     if ( !has_buffer_support() )
-      VSX_ERROR_RETURN(L"No FBO support");
+      VSX_ERROR_RETURN("No FBO support");
 
     int i_width = width;
     int i_height = height;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vsx_platform.h>
 
 namespace vsx
 {
@@ -22,7 +23,7 @@ public:
     r = std::unique_ptr<T>( new T() );
   }
 
-  static inline __attribute__((always_inline)) T* get() {
+  static inline VSX_ALWAYS_INLINE T* get() {
     std::unique_ptr<T>& r = get_storage();
     return r.get();
   }
