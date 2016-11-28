@@ -39,7 +39,7 @@ typedef struct {
 
 class vsx_glsl {
 protected:
-  bool linked;
+  bool linked = false;
 
   GLint gl_get_val(GLhandleARB object, GLenum pname) {
     GLint val = 0;
@@ -333,9 +333,9 @@ protected:
 
 
 public:
-  GLhandleARB vs,
-              fs,
-              prog;
+  GLhandleARB vs = 0;
+  GLhandleARB fs = 0;
+  GLhandleARB prog = 0;
 
   vsx_string<>vertex_program;
   vsx_string<>fragment_program;
@@ -737,35 +737,28 @@ The message from OpenGL was:\n"+get_log(prog)+"&&vertex_program||"+get_log(prog)
         
   void begin()
   {
-    if (!linked) return;
+    req(linked);
     glUseProgram(prog);
   }
-  
+    
+  void end() {
+    req(linked);
+    unset_uniforms();
+    glUseProgram(0);
+  }
+
   void stop() {
     glDeleteShader(vs);
     glDeleteShader(fs);
     glDeleteProgram(prog);
-  	linked = false;
+    linked = false;
   }
-  
-  void end() {
-    if (!linked) return;
-    unset_uniforms();
-      glUseProgram(0);
-  }
-  vsx_glsl() : 
-      linked(false),
-      vs(0),
-      fs(0),
-      prog(0) 
-  {}
+
   ~vsx_glsl()
   {
-    if (linked)
-    {
-      glDeleteShader(vs);
-      glDeleteShader(fs);
-      glDeleteProgram(prog);
-    }
+    req(linked);
+    glDeleteShader(vs);
+    glDeleteShader(fs);
+    glDeleteProgram(prog);
   }
 };
