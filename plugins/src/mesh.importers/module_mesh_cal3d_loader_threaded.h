@@ -741,22 +741,48 @@ VSXP_S_BEGIN("cal3d run");
       {
         mesh_bbox->data->vertices.allocate(my->bones.size() * 8);
 
+        vsx_matrix<float> pre_rotation_mat_local = pre_rotation_quaternion.matrix();
+        vsx_matrix<float> rotation_mat_local = rotation_quaternion.matrix();
+
         for (unsigned long j = 0; j < my->bones.size(); ++j)
         {
-          if (my->bones[j].bone != 0)
-          {
-            CalVector t1 = my->bones[j].bone->getTranslationAbsolute();
-            CalQuaternion q2 = my->bones[j].bone->getRotationAbsolute();
+          req_continue(my->bones[j].bone != 0);
+          CalVector t1 = my->bones[j].bone->getTranslationAbsolute();
+          vsx_vector3f vs_v;
+          vs_v.x = t1.x;
+          vs_v.y = t1.y;
+          vs_v.z = t1.z;
 
-            my->bones[j].result_rotation   ->set( q2.x, 0 );
-            my->bones[j].result_rotation   ->set( q2.y, 1 );
-            my->bones[j].result_rotation   ->set( q2.z, 2 );
-            my->bones[j].result_rotation   ->set( q2.w, 3 );
+          CalQuaternion q2 = my->bones[j].bone->getRotationAbsolute();
 
-            my->bones[j].result_translation->set( t1.x, 0 );
-            my->bones[j].result_translation->set( t1.y, 1 );
-            my->bones[j].result_translation->set( t1.z, 2 );
-          }
+          // pre rotation
+          vs_v.multiply_matrix_other_vec
+          (
+            &pre_rotation_mat_local.m[0],
+            vs_v - pre_rot_center
+          );
+          vs_v += pre_rot_center;
+
+          // post rotation
+          vs_v.multiply_matrix_other_vec
+          (
+            &rotation_mat_local.m[0],
+            vs_v - rot_center
+          );
+          // vertex offset
+          vs_v.x += post_rot_translate->get(0) + rotation_center->get(0);
+          vs_v.y += post_rot_translate->get(1) + rotation_center->get(1);
+          vs_v.z += post_rot_translate->get(2) + rotation_center->get(2);
+
+          my->bones[j].result_translation->set( vs_v.x, 0 );
+          my->bones[j].result_translation->set( vs_v.y, 1 );
+          my->bones[j].result_translation->set( vs_v.z, 2 );
+
+          my->bones[j].result_rotation   ->set( q2.x, 0 );
+          my->bones[j].result_rotation   ->set( q2.y, 1 );
+          my->bones[j].result_rotation   ->set( q2.z, 2 );
+          my->bones[j].result_rotation   ->set( q2.w, 3 );
+
         }
         for (unsigned long j = 0; j < my->morphs.size(); ++j)
         {
