@@ -140,6 +140,7 @@ public:
   vsx_comp* get_component_by_name(vsx_string<>label);
   vsx_comp* get_by_id(unsigned long id);
   vsx_module_param_abs* get_in_param_by_name(vsx_string<>module_name, vsx_string<>param_name);
+  vsx_module_param_abs* get_out_param_by_name(vsx_string<>module_name, vsx_string<>param_name);
   vsx_module* get_module_by_name(vsx_string<>module_name);
   vsx_string<>get_modules_not_loaded();
 

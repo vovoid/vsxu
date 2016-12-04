@@ -207,16 +207,25 @@ void vsx_engine::reset_time()
 
 vsx_module_param_abs* vsx_engine::get_in_param_by_name(vsx_string<>module_name, vsx_string<>param_name)
 {
-  if (!valid)
-    return 0x0;
+  reqrv(valid, 0x0);
   vsx_comp* c = get_component_by_name(module_name);
-  if (c)
-  {
-    vsx_engine_param* p = c->get_params_in()->get_by_name(param_name);
-    if (p) return p->module_param;
-  }
-  return 0x0;
+  reqrv(c, 0x0);
+  vsx_engine_param* p = c->get_params_in()->get_by_name(param_name);
+  reqrv(p, 0x0);
+  return p->module_param;
 }
+
+
+vsx_module_param_abs* vsx_engine::get_out_param_by_name(vsx_string<>module_name, vsx_string<>param_name)
+{
+  reqrv(valid, 0x0);
+  vsx_comp* c = get_component_by_name(module_name);
+  reqrv(c, 0x0);
+  vsx_engine_param* p = c->get_params_out()->get_by_name(param_name);
+  reqrv(p, 0x0);
+  return p->module_param;
+}
+
 
 void vsx_engine::get_external_exposed_parameters( vsx_nw_vector< vsx_module_param_abs* >* result )
 {
