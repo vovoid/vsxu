@@ -268,13 +268,15 @@ void vsxu_assistant::command_process_back_queue(vsx_command_s *t) {
     cl.load_from_file(PLATFORM_SHARED_FILES+"doc/"+t->cmd_data+".txt",false,4);
     vsx_string<>newstr;
     course.clear();
-    while ((c = cl.pop())) {
+    while ((c = cl.pop()))
+    {
       if (c->raw == "|||") {
         course.push_back(newstr);
         newstr = "";
       } else {
         newstr = newstr + c->raw+"\n";
       }
+      delete c;
     }
     course.push_back(newstr);
     ((vsx_widget_2d_pager*)pager)->set_max_page( course.size() );
