@@ -31,6 +31,7 @@ class module_texture_effect_blur : public vsx_module
   vsx_module_param_float* attenuation;
   vsx_module_param_int* texture_size;
   vsx_module_param_int* passes;
+  vsx_module_param_int* alpha;
   int tex_size_internal = -1;
 
   int res_x = 256;
@@ -61,7 +62,8 @@ void module_info(vsx_module_specification* info)
     "start_value:float,"
     "attenuation:float,"
     "texture_size:enum?2048x2048|1024x1024|512x512|256x256|128x128|64x64|32x32|16x16|8x8|4x4|VIEWPORT_SIZE|VIEWPORT_SIZE_DIV_2|VIEWPORT_SIZE_DIV_4|VIEWPORT_SIZEx2,"
-    "passes:enum?ONE|TWO"
+    "passes:enum?ONE|TWO,"
+    "alpha:enum?NO|YES"
   ;
 
   info->out_param_spec =
@@ -88,6 +90,10 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   start_value->set(1.0f);
   attenuation = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
   attenuation->set(1.0f);
+
+  alpha = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"alpha");
+  alpha->set(0);
+
 
 shader.vertex_program = "\
 varying vec2 texcoord;\n\
@@ -215,11 +221,11 @@ void main(void)\n\
       if (!texture)
         texture = new vsx_texture<>();
 
-      buffer.reinit(texture, res_x, res_y, true, false, false, true, 0);
+      buffer.reinit(texture, res_x, res_y, true, alpha->get() == 1, false, true, 0);
 
       if (!texture2)
         texture2 = new vsx_texture<>();
-      buffer2.reinit(texture2, res_x, res_y, true, false, false, true, 0);
+      buffer2.reinit(texture2, res_x, res_y, true, alpha->get() == 1, false, true, 0);
     }
 
     vsx_texture<>** ti = glow_source->get_addr();
