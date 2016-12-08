@@ -165,64 +165,69 @@ int vsx_engine_param::connect_abs(vsx_engine_param* src, vsx_channel_connection_
   return order;
 }
 
-int vsx_engine_param::connect(vsx_engine_param* src) {
+int vsx_engine_param::connect(vsx_engine_param* src_param) {
 //  printf("vsx_engine_param::connect\n");
   // 1. create the low-level link on component level
-    // for that we need to access that
-    vsx_engine_param* real_dest_param;
-    vsx_engine_param* real_src_param;
-    if (alias) real_dest_param = alias_owner; else real_dest_param = this;
-    if (src->alias) real_src_param = src->alias_owner; else real_src_param = src;
+  vsx_engine_param* real_dest_param = 0x0;
+  vsx_engine_param* real_src_param = 0x0;
 
-    // clear the value if needed
-    clean_up_module_param(real_dest_param->module_param);
+  if (alias)
+    real_dest_param = alias_owner;
+  else
+    real_dest_param = this;
 
-    vsx_channel_connection_info* channel_connection = real_dest_param->channel->connect(real_src_param);
-    if (!channel_connection) return -1;
+  if (src_param->alias)
+    real_src_param = src_param->alias_owner;
+  else
+    real_src_param = src_param;
 
+  // clear the value if needed
+  clean_up_module_param(real_dest_param->module_param);
 
-  vsx_engine_param_connection_info cinfo;
-  cinfo.connection_order = (int)real_dest_param->channel->connections.size()-1;
-  cinfo.localorder = (int)connections.size();
-  cinfo.num_dest_connections = 0;
-  cinfo.src = src;
-  cinfo.dest = this;
-  cinfo.channel_connection = channel_connection;
-  return connect_far_abs(&cinfo,-2);
+  vsx_channel_connection_info* channel_connection = real_dest_param->channel->connect(real_src_param);
+  if (!channel_connection)
+    return -1;
+
+  // 2. create the abstract connection
+  vsx_engine_param_connection_info conn_info;
+  conn_info.connection_order = (int)real_dest_param->channel->connections.size()-1;
+  conn_info.localorder = (int)connections.size();
+  conn_info.num_dest_connections = 0;
+  conn_info.src = src_param;
+  conn_info.dest = this;
+  conn_info.channel_connection = channel_connection;
+  return connect_far_abs(&conn_info,-2);
 }
 
 vsx_engine_param* vsx_engine_param::alias_to_level(vsx_engine_param* dest) {
   // this will only work for params belonging to a io == 1 list
-  if (owner->io == 1) {
-    vsx_string<>src_name = owner->component->name;
-    vsx_string<>dest_name = dest->owner->component->name;
-    vsx_string_helper::str_remove_equal_prefix(src_name, dest_name,".");
+  reqrv(owner->io == 1, 0x0);
 
-    vsx_string<>deli = ".";
-    vsx_nw_vector <vsx_string<> > dest_name_parts;
-    vsx_string_helper::explode(dest_name, deli, dest_name_parts);
-    dest_name = vsx_string_helper::implode(dest_name_parts, deli, 0, 1);
+  // empty_1.render_line_1
+  vsx_string<> src_name = owner->component->name;
 
-    vsx_nw_vector <vsx_string<> > src_name_parts;
-    vsx_string_helper::explode(src_name,deli,src_name_parts);
-    dest_name = vsx_string_helper::implode(src_name_parts, deli, 0, 1);
+  vsx_string<> dest_name = dest->owner->component->name;
 
-    if (dest_name_parts.size() == 0) {
-      if (src_name_parts.size() == 0) return this; else {
-        // go through our connections to see if there is an alias already
+  vsx_string_helper::str_remove_equal_prefix(src_name, dest_name,".");
 
-        for (std::vector<vsx_engine_param_connection*>::iterator it = connections.begin(); it != connections.end(); ++it) {
-          if ((*it)->alias_connection) return (*it)->dest->alias_to_level(dest);
-        }
+  vsx_nw_vector <vsx_string<> > src_name_parts;
+  vsx_string_helper::explode_single(src_name, '.', src_name_parts);
+  vsx_string<> deli = '.';
+  vsx_string<> new_src_name = vsx_string_helper::implode( src_name_parts, deli, 0, 1);
+  reqrv(new_src_name.size(), this);
 
-        vsx_string<>new_name = owner->component->parent->get_params_out()->alias_get_unique_name("alias_"+name);
-        owner->component->parent->get_params_out()->alias(this,new_name,-1);
-        return owner->component->parent->get_params_out()->get_by_name(new_name)->alias_to_level(dest);
-      }
-    } else return this;
-  }
-  return 0;
+  // go through our connections to see if there is an alias already
+  for (std::vector<vsx_engine_param_connection*>::iterator it = connections.begin(); it != connections.end(); ++it)
+    if ((*it)->alias_connection)
+      return (*it)->dest->alias_to_level(dest);
+
+  vsx_string<> new_name = owner->component->parent->get_params_out()->alias_get_unique_name("alias_"+name);
+  owner->component->parent->get_params_out()->alias(this,new_name,-1);
+  return owner->component->parent->get_params_out()->get_by_name(new_name)->alias_to_level(dest);
 }
+
+
+
 
 int vsx_engine_param::connect_far_abs(vsx_engine_param_connection_info* info,int order,vsx_engine_param* referrer) {
   // build from our end, build from other end, connect with regular connection
@@ -269,26 +274,29 @@ int vsx_engine_param::connect_far_abs(vsx_engine_param_connection_info* info,int
     dest_name = vsx_string_helper::implode(dest_name_parts,deli, 0, 1);
 
     vsx_nw_vector <vsx_string<> > src_name_parts;
-    vsx_string_helper::explode(src_name,deli,src_name_parts);
+    vsx_string_helper::explode(src_name, deli, src_name_parts);
     src_name = vsx_string_helper::implode(src_name_parts,deli, 0, 1);
 
 
-    if (dest_name_parts.size() == 1) {
+    if (dest_name_parts.size() == 1)
+    {
       // check if we can make a clean connection to the src
       // if not, ask src to build to this level.
       vsx_engine_param* new_source = info->src;
-      if (src_name != "") {
+      if (src_name != "")
         new_source = info->src->alias_to_level(this);
-      }
+
       // we need the src to alias itself down to our level
-      if (new_source) {
+      if (new_source)
+      {
         // only way to know we haven't jumped from an alias
-        if (!referrer) {
+        if (!referrer)
+        {
           if (info->connection_order > (int)connections.size()+1000) 
             info->connection_order = (int)connections.size();
           return connect_abs(new_source, info->channel_connection, info->connection_order, order);
-
-        } else {
+        } else
+        {
           if (order == -1) {
             // insert in the beginning
             if (info->connection_order > (int)connections.size()+1000) 
@@ -434,7 +442,8 @@ void vsx_engine_param::disconnect_abs_connections() {
 
   std::vector<vsx_engine_param_connection*> temp_conn = connections;
   for (std::vector<vsx_engine_param_connection*>::iterator it = temp_conn.begin(); it != temp_conn.end(); ++it) {
-    if ((*it)->alias_connection) {
+    if ((*it)->alias_connection)
+    {
       (*it)->dest->disconnect_abs_connections();
 //      printf("deleting alias %s\n",name.c_str());
       // 1. delete the param from our list
@@ -442,7 +451,6 @@ void vsx_engine_param::disconnect_abs_connections() {
       // 2. delete the param itself
       (*it)->dest->owner->delete_param((*it)->dest);
       // 3. delete the conn itself
-      delete *it;
 
     } else
     {

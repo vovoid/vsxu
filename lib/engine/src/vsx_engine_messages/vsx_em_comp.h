@@ -189,6 +189,7 @@ if (cmd == "component_assign")
   foreach(comp_source, i)
   {
     vsx_comp* comp = get_component_by_name( comp_source[i] );
+    req_continue(comp);
     components.push_back(comp);
   }
 
@@ -196,7 +197,8 @@ if (cmd == "component_assign")
   bool namecheck = true;
   vsx_string<>first_part;
   vsx_string<>comp_name;
-  for (std::vector<vsx_comp*>::iterator it = components.begin(); it != components.end(); ++it) {
+  for (std::vector<vsx_comp*>::iterator it = components.begin(); it != components.end(); ++it)
+  {
     first_part = c->parts[1]+".";
     comp_name = (*it)->name;
     if (c->parts[1] == "") {

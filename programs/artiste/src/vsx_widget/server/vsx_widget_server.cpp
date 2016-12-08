@@ -590,8 +590,10 @@ void vsx_widget_server::vsx_command_process_f() {
           vsx_widget_component* component_moved = *it;
 
           vsx_string<>parent_name_prefix;
-          if (component_moved->parent == this) parent_name_prefix = "";
-          else parent_name_prefix = component_moved->parent->name;
+          if (component_moved->parent == this)
+            parent_name_prefix = "";
+          else
+            parent_name_prefix = component_moved->parent->name;
 
           // get list of connections
           std::list<vsx_widget_connector_info*> in_connection_list;

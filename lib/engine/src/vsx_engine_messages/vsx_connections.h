@@ -21,6 +21,8 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <internal/vsx_comp.h>
+
 if (cmd == "param_connect")
 {
   // syntax:
@@ -82,8 +84,10 @@ if (cmd == "param_disconnect")
     vsx_comp* dest = get_component_by_name(c->parts[1]);
     vsx_comp* src  = get_component_by_name(c->parts[3]);
     if (dest && src) {
-      vsx_engine_param* dest_param = dest->get_params_in()->get_by_name(c->parts[2]);
-      vsx_engine_param* src_param = src->get_params_out()->get_by_name(c->parts[4]);
+      vsx_string<> src_param_name = c->parts[4];
+      vsx_string<> dest_param_name = c->parts[2];
+      vsx_engine_param* dest_param = dest->get_params_in()->get_by_name(dest_param_name);
+      vsx_engine_param* src_param = src->get_params_out()->get_by_name(src_param_name);
       if (dest_param->disconnect(src_param) != -1) {
         cmd_out->add_raw("param_disconnect_ok "+c->parts[1]+" "+c->parts[2]+" "+c->parts[3]+" "+c->parts[4], VSX_COMMAND_GARBAGE_COLLECT);
       }

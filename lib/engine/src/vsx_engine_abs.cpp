@@ -466,17 +466,21 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
   for (forge_map_iter = forge_map.begin(); forge_map_iter != forge_map.end(); ++forge_map_iter)
   {
     vsx_comp* comp = (*forge_map_iter).second;
-    if (((*forge_map_iter).second->component_class == "macro"))
-    tmp_comp.add_raw(vsx_string<>("macro_create ")+(*forge_map_iter).first+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y)+" "+vsx_string_helper::f2s((*forge_map_iter).second->size));
+
+    if (comp->component_class == "macro")
+      tmp_comp.add_raw(vsx_string<>("macro_create ")+(*forge_map_iter).first+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y)+" "+vsx_string_helper::f2s((*forge_map_iter).second->size));
     else
     {
       if ((*forge_map_iter).first != "screen0")
-      tmp_comp.add_raw("component_create "+comp->identifier+" "+comp->name+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y));
+        tmp_comp.add_raw("component_create "+comp->identifier+" "+comp->name+" "+vsx_string_helper::f2s(comp->position.x)+" "+vsx_string_helper::f2s(comp->position.y));
       else
-      tmp_comp.add_raw("cpp screen0 "+vsx_string_helper::f2s(((*forge_map_iter).second)->position.x)+" "+vsx_string_helper::f2s(((*forge_map_iter).second)->position.y));
+        tmp_comp.add_raw("cpp screen0 "+vsx_string_helper::f2s(((*forge_map_iter).second)->position.x)+" "+vsx_string_helper::f2s(((*forge_map_iter).second)->position.y));
+
       comp->get_params_in()->dump_aliases_and_connections("", &tmp_connections);
       comp->get_params_out()->dump_aliases("", &tmp_aliases);
     }
+
+
     for (unsigned long i = 0; i < comp->get_params_in()->param_id_list.size(); ++i)
     {
       bool run = true;

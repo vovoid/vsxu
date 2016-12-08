@@ -1593,10 +1593,8 @@ void vsx_widget_component::rename_add_prefix(vsx_string<>prefix, vsx_string<>old
     }
   }
   vsx_string<>new_name = name;
-  vsx_string<>old_name = old_name_remove;
-  if (old_name_remove != "") {
-    vsx_string_helper::str_remove_equal_prefix(new_name, old_name, ".");
-  }
+  if (old_name_remove != "")
+    vsx_string_helper::str_remove_equal_prefix(new_name, old_name_remove, ".");
 
   vsx_nw_vector< vsx_string<> > prefix_list;
   vsx_nw_vector< vsx_string<> > name_list;
