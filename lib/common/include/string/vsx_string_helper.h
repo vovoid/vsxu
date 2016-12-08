@@ -358,7 +358,11 @@ namespace vsx_string_helper
     }
 
     if (count == 0)
-      results.push_back(input);
+      if (input.size())
+      {
+        results.push_back(input);
+        return 1;
+      }
 
     return count;
   }
@@ -382,13 +386,14 @@ namespace vsx_string_helper
   {
     reqrv(in.size(), "");
 
+    long calculated_end_index = (long)in.size() - ((long)shave_off_at_end + 1);
+    reqrv(calculated_end_index >= 0, "");
+
     if (in.size() == 1)
       return in[0];
 
     reqrv(start_index <= in.size()-1, "");
 
-    long calculated_end_index = (long)in.size() - ((long)shave_off_at_end + 1);
-    reqrv(calculated_end_index >= 0, "");
     size_t end_index = (size_t)calculated_end_index;
 
     vsx_string<> result;
