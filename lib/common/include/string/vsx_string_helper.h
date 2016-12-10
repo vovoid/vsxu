@@ -39,7 +39,11 @@ namespace vsx_string_helper
   inline vsx_string<>ui642s(const uint64_t &in)
   {
     char string_res[256] = "";
+    #if COMPILER == COMPILER_VISUAL_STUDIO
     sprintf(string_res,"%llu",in);
+    #else
+    sprintf(string_res,"%lu",in);
+    #endif
     return vsx_string<>(string_res);
   }
 
