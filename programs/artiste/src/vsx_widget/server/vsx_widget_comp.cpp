@@ -1197,29 +1197,37 @@ void vsx_widget_component::macro_toggle() {
 
 void vsx_widget_component::event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button) {
   menu_temp_disable = true;
-  if (!vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_shift() && button == 2) {
+  if (!vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_shift() && button == 2)
     ((vsx_widget_server*)server)->select(this);
-  }
+
   if (macro && open && button == 0)
-  support_scaling = true; else support_scaling = false;
-  if (vsx_input_keyboard.pressed_shift() && vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_alt() && button == 0) {
-    if (!((vsx_widget_server*)server)->select_add(this)) return;
+    support_scaling = true;
+  else
+      support_scaling = false;
+
+  if (vsx_input_keyboard.pressed_shift() && vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_alt() && button == 0)
+  {
+    if (!((vsx_widget_server*)server)->select_add(this))
+        return;
 
     if (((vsx_widget_server*)(this->server))->selected_list.size())
-    for (std::list<vsx_widget*>::iterator itx = ((vsx_widget_server*)server)->selected_list.begin(); itx != ((vsx_widget_server*)server)->selected_list.end(); ++itx) {
-      ((vsx_widget_component*)(*itx))->real_pos = ((vsx_widget_component*)(*itx))->target_pos;
-      ((vsx_widget_component*)(*itx))->ethereal = true;
-      ethereal_all = true;
-      move_time = vsx_widget_time::get_instance()->get_time();
-      transform_state = COMPONENT_MOVE;
-    }
-  } else
+      for (std::list<vsx_widget*>::iterator itx = ((vsx_widget_server*)server)->selected_list.begin(); itx != ((vsx_widget_server*)server)->selected_list.end(); ++itx)
+      {
+        ((vsx_widget_component*)(*itx))->real_pos = ((vsx_widget_component*)(*itx))->target_pos;
+        ((vsx_widget_component*)(*itx))->ethereal = true;
+        ethereal_all = true;
+        move_time = vsx_widget_time::get_instance()->get_time();
+        transform_state = COMPONENT_MOVE;
+      }
+  }
+  else
   if (vsx_input_keyboard.pressed_ctrl() && vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_shift() && button == 0) {
     real_pos = target_pos;
     ethereal = true;
     move_time = vsx_widget_time::get_instance()->get_time();
     transform_state = COMPONENT_MOVE;
-  } else
+  }
+  else
   if (vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_shift() && button == 0) {
     ((vsx_widget_server*)server)->select_add_gui(this);
   }
@@ -1372,11 +1380,12 @@ void vsx_widget_component::event_mouse_up(vsx_widget_distance distance,vsx_widge
       move(target_pos.x,target_pos.y,target_pos.z);
       else
       move(pos.x,pos.y,pos.z);
-      server_move_notify();
+      server_move_notify(true);
     } else
     if (support_scaling)
     if (transform_state == COMPONENT_SCALE) {
       resize_to(target_size);
+      server_scale_notify(true);
       scaled = false;
     }
   }
@@ -1399,7 +1408,7 @@ void vsx_widget_component::move(double x, double y, double z) {
     for (std::list<vsx_widget*>::iterator itx = ((vsx_widget_server*)server)->selected_list.begin(); itx != ((vsx_widget_server*)server)->selected_list.end(); ++itx) {
       if ((*itx)->parent == sel_first->parent) {
         (*itx)->vsx_widget::move((*itx)->pos.x+a.x,(*itx)->pos.y+a.y,(*itx)->pos.z);
-        ((vsx_widget_component*)(*itx))->server_move_notify();
+        ((vsx_widget_component*)(*itx))->server_move_notify(false);
       }
     }
   }
@@ -1410,7 +1419,7 @@ void vsx_widget_component::move(double x, double y, double z) {
   if (ethereal) {
     constrained_y = constrained_x = true;
   } else
-  server_move_notify();
+  server_move_notify(false);
 }
 
 void vsx_widget_component::resize_to(vsx_vector3<> to_size) {
@@ -1421,20 +1430,23 @@ void vsx_widget_component::resize_to(vsx_vector3<> to_size) {
       if (to_size.x > parent->size.x*0.95) to_size.y = to_size.x = parent->size.x*0.95;
     }
   }
-  server_scale_notify();
+  server_scale_notify(false);
   vsx_widget::resize_to(to_size);
 }
 
-void vsx_widget_component::server_move_notify() {
-  if (vsx_widget_time::get_instance()->get_time() - move_time > 1) {
+void vsx_widget_component::server_move_notify(bool force) {
+  if (vsx_widget_time::get_instance()->get_time() - move_time > 1 || force)
+  {
     command_q_b.add_raw("cpp "+name+" "+vsx_string_helper::f2s(pos.x)+" "+vsx_string_helper::f2s(pos.y));
     server->vsx_command_queue_b(this);
     move_time = vsx_widget_time::get_instance()->get_time();
   }
 }
 
-void vsx_widget_component::server_scale_notify() {
-  if (vsx_widget_time::get_instance()->get_time() - move_time > 1) {
+void vsx_widget_component::server_scale_notify(bool force)
+{
+  if (vsx_widget_time::get_instance()->get_time() - move_time > 1 || force)
+  {
     command_q_b.add_raw("component_size "+name+" "+vsx_string_helper::f2s(target_size.x));
     server->vsx_command_queue_b(this);
     move_time = vsx_widget_time::get_instance()->get_time();

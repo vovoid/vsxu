@@ -120,14 +120,14 @@ public:
 
 
   // to keep track of our position and send it to the server
-  float move_time;
+  float move_time = 0.0f;
 
   int inside_xy_l(vsx_vector3<> &test, vsx_vector3<> &global);
   int transform_state;
   void move(double x, double y, double z);
   void resize_to(vsx_vector3<> to_size);
-  void server_move_notify();
-  void server_scale_notify();
+  void server_move_notify(bool force);
+  void server_scale_notify(bool force);
   void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   void event_mouse_double_click(vsx_widget_distance distance,vsx_widget_coords coords,int button);
