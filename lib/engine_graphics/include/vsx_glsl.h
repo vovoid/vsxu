@@ -217,7 +217,7 @@ protected:
     GLint size;
     GLenum type;
 
-    for_n (ai, 0, num_uniforms)
+    for_n (ai, 0, (size_t)num_uniforms)
     {
       glGetActiveUniformARB(prog, (GLuint)ai,1000,&length,&size,&type,(GLcharARB*)&name);
       vsx_string<>sn = name;
@@ -287,7 +287,7 @@ protected:
     #if (VSXU_DEBUG)
     printf("num attributes (openGL): %d\n", num_attributes);
     #endif
-    for_n (ai, 0, num_attributes)
+    for_n (ai, 0, (size_t)num_attributes)
     {
       glGetActiveAttribARB(prog, (GLuint)ai,1000,&length,&size,&type,(GLcharARB*)&name);
       vsx_string<>sn = name;

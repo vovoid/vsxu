@@ -19,6 +19,13 @@ typedef struct {
   CalVector o_t;
 } bone_info;
 
+class bone_result
+{
+public:
+  vsx_quaternion<> rotation;
+  vsx_vector3f translation;
+};
+
 typedef struct {
   vsx_string<> name;
   int id;
@@ -51,6 +58,7 @@ public:
     // out
     vsx_module_param_mesh* result;
     vsx_module_param_mesh* bones_bounding_box;
+
     // internal
     vsx_mesh<>* mesh_a;
     vsx_mesh<>* mesh_b;
@@ -60,7 +68,9 @@ public:
     vsx_string<>current_filename;
     CalCoreModel* c_model;
     CalModel* m_model;
+
     vsx_nw_vector<bone_info> bones;
+    vsx_nw_vector<bone_result> bones_result;
     vsx_nw_vector<morph_info> morphs;
 
     // threading stuff
@@ -400,6 +410,8 @@ public:
           b1.bone = m_skeleton->getBone(b_id);
           b1.o_t = b1.bone->getTranslation();
           bones.push_back(b1);
+          bone_result res;
+          bones_result.push_back(res);
           ++b_id;
         }
 
@@ -645,6 +657,8 @@ public:
           //tangent[a].w = (Dot(Cross(n, t), tan2[a]) < 0.0F) ? -1.0F : 1.0F;
       }
 
+      update_bones_output();
+
       worker_produce.fetch_add(1);
       if (param_produce.load())
         param_produce.fetch_sub(1);
@@ -661,6 +675,59 @@ public:
         thread_exit = 0;
         return;
       }
+    }
+  }
+
+
+  void update_bones_output()
+  {
+    vsx_matrix<float> pre_rotation_mat_local = pre_rotation_quaternion.matrix();
+    vsx_matrix<float> rotation_mat_local = rotation_quaternion.matrix();
+
+    for (unsigned long j = 0; j < bones.size(); ++j)
+    {
+      req_continue(bones[j].bone != 0);
+      CalVector t1 = bones[j].bone->getTranslationAbsolute();
+      vsx_vector3f vs_v;
+      vs_v.x = t1.x;
+      vs_v.y = t1.y;
+      vs_v.z = t1.z;
+
+      CalQuaternion q2 = bones[j].bone->getRotationAbsolute();
+
+      // pre rotation
+      vs_v.multiply_matrix_other_vec
+      (
+        &pre_rotation_mat_local.m[0],
+        vs_v - pre_rot_center
+      );
+      vs_v += pre_rot_center;
+
+      // post rotation
+      vs_v.multiply_matrix_other_vec
+      (
+        &rotation_mat_local.m[0],
+        vs_v - rot_center
+      );
+      // vertex offset
+      vs_v.x += post_rot_translate->get(0) + rotation_center->get(0);
+      vs_v.y += post_rot_translate->get(1) + rotation_center->get(1);
+      vs_v.z += post_rot_translate->get(2) + rotation_center->get(2);
+
+      bones_result[j].translation = vs_v;
+      bones_result[j].rotation.x = q2.x;
+      bones_result[j].rotation.y = q2.y;
+      bones_result[j].rotation.z = q2.z;
+      bones_result[j].rotation.w = q2.w;
+
+//      bones[j].result_translation->set( vs_v.x, 0 );
+//      bones[j].result_translation->set( vs_v.y, 1 );
+//      bones[j].result_translation->set( vs_v.z, 2 );
+
+//      bones[j].result_rotation   ->set( q2.x, 0 );
+//      bones[j].result_rotation   ->set( q2.y, 1 );
+//      bones[j].result_rotation   ->set( q2.z, 2 );
+//      bones[j].result_rotation   ->set( q2.w, 3 );
     }
   }
 
@@ -733,62 +800,26 @@ VSXP_S_BEGIN("cal3d run");
     {
       worker_produce.fetch_sub(1);
       // lock ackquired. thread is waiting for us to set the semaphore before doing anything again.
-      module_mesh_cal3d_import* my = this;
-
       m_model->getSkeleton()->calculateBoundingBoxes();
 
-      if (!my->redeclare_out)
+      if (!redeclare_out)
       {
-        mesh_bbox->data->vertices.allocate(my->bones.size() * 8);
+        mesh_bbox->data->vertices.allocate(bones.size() * 8);
 
-        vsx_matrix<float> pre_rotation_mat_local = pre_rotation_quaternion.matrix();
-        vsx_matrix<float> rotation_mat_local = rotation_quaternion.matrix();
-
-        for (unsigned long j = 0; j < my->bones.size(); ++j)
+        foreach (bones, i)
         {
-          req_continue(my->bones[j].bone != 0);
-          CalVector t1 = my->bones[j].bone->getTranslationAbsolute();
-          vsx_vector3f vs_v;
-          vs_v.x = t1.x;
-          vs_v.y = t1.y;
-          vs_v.z = t1.z;
-
-          CalQuaternion q2 = my->bones[j].bone->getRotationAbsolute();
-
-          // pre rotation
-          vs_v.multiply_matrix_other_vec
-          (
-            &pre_rotation_mat_local.m[0],
-            vs_v - pre_rot_center
-          );
-          vs_v += pre_rot_center;
-
-          // post rotation
-          vs_v.multiply_matrix_other_vec
-          (
-            &rotation_mat_local.m[0],
-            vs_v - rot_center
-          );
-          // vertex offset
-          vs_v.x += post_rot_translate->get(0) + rotation_center->get(0);
-          vs_v.y += post_rot_translate->get(1) + rotation_center->get(1);
-          vs_v.z += post_rot_translate->get(2) + rotation_center->get(2);
-
-          my->bones[j].result_translation->set( vs_v.x, 0 );
-          my->bones[j].result_translation->set( vs_v.y, 1 );
-          my->bones[j].result_translation->set( vs_v.z, 2 );
-
-          my->bones[j].result_rotation   ->set( q2.x, 0 );
-          my->bones[j].result_rotation   ->set( q2.y, 1 );
-          my->bones[j].result_rotation   ->set( q2.z, 2 );
-          my->bones[j].result_rotation   ->set( q2.w, 3 );
-
+          bones[i].result_translation->set( bones_result[i].translation.x, 0 );
+          bones[i].result_translation->set( bones_result[i].translation.y, 1 );
+          bones[i].result_translation->set( bones_result[i].translation.z, 2 );
+          bones[i].result_rotation   ->set( bones_result[i].rotation.x, 0 );
+          bones[i].result_rotation   ->set( bones_result[i].rotation.y, 1 );
+          bones[i].result_rotation   ->set( bones_result[i].rotation.z, 2 );
+          bones[i].result_rotation   ->set( bones_result[i].rotation.w, 3 );
         }
-        for (unsigned long j = 0; j < my->morphs.size(); ++j)
-        {
-          my->m_model->getMesh(0)->getSubmesh(0)->
+
+        for (unsigned long j = 0; j < morphs.size(); ++j)
+          m_model->getMesh(0)->getSubmesh(0)->
             setMorphTargetWeight(morphs[j].id, morphs[j].weight->get() );
-        }
       }
 
       mesh->timestamp++;
@@ -797,7 +828,8 @@ VSXP_S_BEGIN("cal3d run");
       // toggle to the other mesh
       if (mesh == mesh_a)
         mesh = mesh_b;
-      else mesh = mesh_a;
+      else
+        mesh = mesh_a;
     }
 
     if
