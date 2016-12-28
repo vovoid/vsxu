@@ -8,6 +8,13 @@ project (${module_id})
 
 message("configuring vsxu module            " ${module_id})
 
+if (WIN32)
+include_directories( ${CMAKE_CURRENT_LIST_DIR}/../../../lib/engine_graphics/thirdparty/freetype2/include )
+include_directories( ${CMAKE_CURRENT_LIST_DIR}/../../../lib/engine_graphics/thirdparty/freetype2/include/freetype )
+include_directories( ${CMAKE_CURRENT_LIST_DIR}/../../../lib/engine_graphics/thirdparty/freetype2/include/freetype/config )
+add_definitions( -DFTGL_LIBRARY_STATIC -DFT2_BUILD_LIBRARY)
+endif()
+
 # set defines for MOD_CM, MOD_DM, MOD_NM
 CREATE_STATIC_GLUE(${module_id})
 

@@ -288,6 +288,8 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
       return;
     }
 
+    if (text_in->get() == "_")
+      return;
 
 
     float obj_size = size->get();

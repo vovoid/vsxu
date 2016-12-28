@@ -65,6 +65,13 @@ include_directories(
 thirdparty/ftgl
 thirdparty/ftgl/src
 )
+if (WIN32)
+include_directories( thirdparty/freetype2/include )
+include_directories( thirdparty/freetype2/include/freetype )
+include_directories( thirdparty/freetype2/include/freetype/config )
+add_definitions( -DFTGL_LIBRARY_STATIC -DFT2_BUILD_LIBRARY)
+endif()
+
 set(SOURCES_FTGL
 thirdparty/ftgl/src/FTBuffer.cpp
 thirdparty/ftgl/src/FTCharmap.cpp

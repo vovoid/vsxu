@@ -235,7 +235,7 @@ public:
 
     camera.event_key_up(key);
 
-    if (key ==  VSX_SCANCODE_TAB)
+    if (key ==  VSX_SCANCODE_TAB && !vsx_input_keyboard.pressed_alt() && !vsx_input_keyboard.pressed_ctrl() && !vsx_input_keyboard.pressed_shift())
       ((vsxu_assistant*)assistant)->toggle_size();
 
     return false;
