@@ -37,6 +37,7 @@
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
   #include <windows.h> // GetProcAddress/GetModuleFileName
+  #include <vsx_unistd.h>
 #endif
 
 #include <container/vsx_nw_vector.h>

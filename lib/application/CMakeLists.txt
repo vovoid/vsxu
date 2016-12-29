@@ -12,13 +12,6 @@ include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
 include(${CMAKE_SOURCE_DIR}/cmake/CMakeVSXuGfxLib.txt)
 
 
-PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
-
-include_directories(
-  ${SDL2_INCLUDE_DIRS}
-)
-
-
 ################################################################################
 # INCLUDES #####################################################################
 ################################################################################

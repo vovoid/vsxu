@@ -72,6 +72,7 @@ endif()
 
 if (WIN32 AND VSXU_STATIC EQUAL 1)
   add_definitions(-DGLEW_STATIC=1)
+  add_definitions(-DFTGL_LIBRARY_STATIC -DFT2_BUILD_LIBRARY)
 endif()
 
 add_subdirectory(src/bitmap.generators)

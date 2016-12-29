@@ -15,16 +15,6 @@ include(${CMAKE_SOURCE_DIR}/cmake/CMakeVSXuGfxLib.txt)
 find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
 
-PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
-
-include_directories(
-  ${SDL2_INCLUDE_DIRS}
-)
-
-link_directories(
-  ${SDL2_LIBRARY_DIRS}
-)
-
 
 ################################################################################
 # INCLUDES #####################################################################
@@ -119,9 +109,9 @@ endif()
 if(WIN32)
   target_link_libraries(
    ${module_id}
-   -static
    wsock32
    ws2_32
+   vsx_application
    vsx_engine_audiovisual
    vsx_engine_graphics
    vsx_engine

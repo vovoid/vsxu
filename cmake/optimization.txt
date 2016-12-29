@@ -1,0 +1,104 @@
+
+function (VSX_DEBUG_GCC)
+  if (NOT VSXU_DEBUG)
+    return()
+  endif()
+  if (MSVC)
+    return()
+  endif()
+  message("Compiling with debug flags")
+  add_definitions(
+    -g
+    -Wall
+    -Werror=return-type
+    #-Werror=unused-parameter
+    #-Weffc++
+    #-Wdouble-promotion
+    -mtune=nocona
+  )
+endfunction()
+
+function (VSX_OPTIMIZATION_GCC)
+    if (VSXU_DEBUG)
+      return()
+    endif()
+    if (MSVC)
+      return()
+    endif()
+    if (NOT (OPTIMIZATION_FLAGS EQUAL 1) )
+      return()
+    endif()
+    add_definitions(
+      -DVSX_OPTIMIZATIONS=1
+      -mtune=nocona
+      -lrt
+      -lm
+      -O3
+      -fno-thread-jumps
+      -fno-if-conversion2
+      -fno-loop-optimize
+      -ftree-dce
+      -ftree-sra
+      -ftree-copyrename
+      -ftree-fre
+      -ftree-ch
+      -fmerge-constants
+      -fcrossjumping
+      -fcse-follow-jumps
+      -fcse-skip-blocks
+      -fexpensive-optimizations
+      -fstrength-reduce
+      -frerun-cse-after-loop
+      -frerun-loop-opt
+      -fforce-addr
+      -fpeephole2
+      -fschedule-insns2
+      -fregmove
+      -freorder-blocks
+      -fsched-interblock
+      -funit-at-a-time
+      -falign-functions
+      -falign-jumps
+      -falign-loops
+      -falign-labels
+      -finline-functions
+      -ftracer
+      -fmodulo-sched
+      -fgcse-sm
+      -freschedule-modulo-scheduled-loops
+      -ftree-loop-im
+      -ftree-loop-ivcanon
+      -maccumulate-outgoing-args
+      -mno-align-stringops
+      -funsafe-math-optimizations
+      -fno-signaling-nans
+    )
+endfunction()
+
+function (VSX_REGULAR_GCC)
+    if (VSXU_DEBUG)
+      return()
+    endif()
+    if (MSVC)
+      return()
+    endif()
+    if (OPTIMIZATION_FLAGS EQUAL 1 )
+      return()
+    endif()
+    add_definitions(
+      -O3
+      #-flto
+
+      -mtune=nocona
+      -fmessage-length=0
+      #-fpermissive
+      -finline-functions
+      -ffast-math
+    )
+endfunction()
+
+VSX_DEBUG_GCC()
+VSX_OPTIMIZATION_GCC()
+VSX_REGULAR_GCC()
+
+

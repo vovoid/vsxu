@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 
 find_package(Threads REQUIRED)
 
+if (NOT MSVC)
   add_definitions(
     -g
     -Wtype-limits
@@ -13,9 +14,7 @@ find_package(Threads REQUIRED)
     -Wempty-body
     -Wunused-parameter
   )
-if(WIN32)
-  add_definitions( -Wno-error ) # vsx_filesystem::filesystemst WIN32
-endif(WIN32)
+endif()
 
 include_directories(
   ${CMAKE_SOURCE_DIR}

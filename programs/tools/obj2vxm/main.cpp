@@ -25,12 +25,18 @@
 #include <windows.h>
 #endif
 #include <vector>
+#include <vsx_platform.h>
 #include <container/vsx_ma_vector.h>
 #include <math/vector/vsx_vector3.h>
 #include <container/vsx_nw_vector.h>
 #include <string/vsx_string.h>
 #include <string/vsx_string_helper.h>
-#include <unistd.h>
+
+#if PLATFORM == PLATFORM_WINDOWS
+  #include <vsx_unistd.h>
+#else
+  #include <unistd.h>
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 

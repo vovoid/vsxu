@@ -7,28 +7,18 @@ find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})
 
-PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeVSXuGfxLib.txt)
 
-include_directories(
-  ${SDL2_INCLUDE_DIRS}
-)
-
-link_directories(
-  ${SDL2_LIBRARY_DIRS}
-)
-
-add_definitions(
-  -g
-  -Wtype-limits
-  -Wuninitialized
-  -Wignored-qualifiers
-  -Wempty-body
-  -Wunused-parameter
-)
-
-if(WIN32)
-  add_definitions( -Wno-error ) # vsx_filesystem::filesystemst WIN32
-endif(WIN32)
+if (NOT MSVC)
+  add_definitions(
+    -g
+    -Wtype-limits
+    -Wuninitialized
+    -Wignored-qualifiers
+    -Wempty-body
+    -Wunused-parameter
+  )
+endif()
 
 include_directories(
   ${CMAKE_SOURCE_DIR}
@@ -41,7 +31,11 @@ target_link_libraries(test_input
   ${OPENGL_LIBRARIES}
   vsx_application
   ${SDL2_LIBRARIES}
-  rt
+)
+if (NOT WIN32)
+    target_link_libraries(test_input rt )
+endif()
+target_link_libraries(test_input
   vsx_common
   vsx_engine_graphics
   vsx_compression

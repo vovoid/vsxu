@@ -53,6 +53,7 @@ add_definitions(
 if (VSXU_STATIC EQUAL 1)
   add_definitions(-DVSXU_STATIC)
   add_definitions(-DGLEW_STATIC)
+  add_definitions(-DFTGL_LIBRARY_STATIC)
 endif()
 
 
@@ -153,21 +154,17 @@ endif(UNIX)
 if(WIN32)
   target_link_libraries(
     ${module_id}
-    -static-libgcc
-    -static-libstdc++
-    -static
-    ${GLEW_LIBRARIES}
     vsx_application
     ${VSXU_GFX_LIB_LIBS}
     wsock32
     ws2_32
+    vsx_engine_graphics
     vsx_engine
     vsx_common
     vsx_compression
     vsx_widget
     gdi32
     ${OPENGL_LIBRARIES}
-    vsx_engine_graphics
     ${JPEG_LIBRARIES}
     ${PNG_LIBRARIES}
     ${ZLIB_LIBRARIES}

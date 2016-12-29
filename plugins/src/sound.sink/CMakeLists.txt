@@ -19,6 +19,7 @@ CREATE_MODULE(${module_id})
 
 include(../cmake_suffix.txt)
 
+if (not MSVC)
 add_definitions(
         -Wno-parentheses
         -Wno-unused-value
@@ -26,3 +27,4 @@ add_definitions(
         -Wno-unused-function
         -Wno-unused-but-set-variable
         )
+endif()

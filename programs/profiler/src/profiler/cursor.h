@@ -1,18 +1,15 @@
-#ifndef CURSOR_H
-#define CURSOR_H
+#pragma once
+
+#include <vsx_platform.h>
 
 class cursor
 {
 public:
   vsx_vector3<> pos;
 
-  inline static cursor* get_instance() __attribute__((always_inline))
+  inline static cursor* get_instance() VSX_ALWAYS_INLINE
   {
     static cursor c;
     return &c;
   }
 };
-
-
-
-#endif

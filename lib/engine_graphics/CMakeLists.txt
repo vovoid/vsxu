@@ -65,49 +65,92 @@ include_directories(
 thirdparty/ftgl
 thirdparty/ftgl/src
 )
-if (WIN32)
-include_directories( thirdparty/freetype2/include )
-include_directories( thirdparty/freetype2/include/freetype )
-include_directories( thirdparty/freetype2/include/freetype/config )
-add_definitions( -DFTGL_LIBRARY_STATIC -DFT2_BUILD_LIBRARY)
-endif()
+
+
+set( SOURCES_FREETYPE
+    thirdparty/freetype2/src/autofit/autofit.c
+    thirdparty/freetype2/src/base/ftbase.c
+    thirdparty/freetype2/src/base/ftbbox.c
+    thirdparty/freetype2/src/base/ftbdf.c
+    thirdparty/freetype2/src/base/ftbitmap.c
+    thirdparty/freetype2/src/base/ftcid.c
+    thirdparty/freetype2/src/base/ftdebug.c
+    thirdparty/freetype2/src/base/ftfstype.c
+    thirdparty/freetype2/src/base/ftgasp.c
+    thirdparty/freetype2/src/base/ftglyph.c
+    thirdparty/freetype2/src/base/ftgxval.c
+    thirdparty/freetype2/src/base/ftinit.c
+    thirdparty/freetype2/src/base/ftlcdfil.c
+    thirdparty/freetype2/src/base/ftmm.c
+    thirdparty/freetype2/src/base/ftotval.c
+    thirdparty/freetype2/src/base/ftpatent.c
+    thirdparty/freetype2/src/base/ftpfr.c
+    thirdparty/freetype2/src/base/ftstroke.c
+    thirdparty/freetype2/src/base/ftsynth.c
+    thirdparty/freetype2/src/base/ftsystem.c
+    thirdparty/freetype2/src/base/fttype1.c
+    thirdparty/freetype2/src/base/ftwinfnt.c
+    thirdparty/freetype2/src/bdf/bdf.c
+    thirdparty/freetype2/src/cff/cff.c
+    thirdparty/freetype2/src/cid/type1cid.c
+    thirdparty/freetype2/src/pcf/pcf.c
+    thirdparty/freetype2/src/pfr/pfr.c
+    thirdparty/freetype2/src/psaux/psaux.c
+    thirdparty/freetype2/src/pshinter/pshinter.c
+    thirdparty/freetype2/src/psnames/psnames.c
+    thirdparty/freetype2/src/raster/raster.c
+    thirdparty/freetype2/src/sfnt/sfnt.c
+    thirdparty/freetype2/src/smooth/smooth.c
+    thirdparty/freetype2/src/truetype/truetype.c
+    thirdparty/freetype2/src/type1/type1.c
+    thirdparty/freetype2/src/type42/type42.c
+    thirdparty/freetype2/src/winfonts/winfnt.c
+)
 
 set(SOURCES_FTGL
-thirdparty/ftgl/src/FTBuffer.cpp
-thirdparty/ftgl/src/FTCharmap.cpp
-thirdparty/ftgl/src/FTCleanup.cpp
-thirdparty/ftgl/src/FTContour.cpp
-thirdparty/ftgl/src/FTFace.cpp
-thirdparty/ftgl/src/FTFont/FTBitmapFont.cpp
-thirdparty/ftgl/src/FTFont/FTBufferFont.cpp
-thirdparty/ftgl/src/FTFont/FTExtrudeFont.cpp
-thirdparty/ftgl/src/FTFont/FTFont.cpp
-thirdparty/ftgl/src/FTFont/FTFontGlue.cpp
-thirdparty/ftgl/src/FTFont/FTOutlineFont.cpp
-thirdparty/ftgl/src/FTFont/FTPixmapFont.cpp
-thirdparty/ftgl/src/FTFont/FTPolygonFont.cpp
-thirdparty/ftgl/src/FTFont/FTTextureFont.cpp
-thirdparty/ftgl/src/FTFont/FTTriangleExtractorFont.cpp
-thirdparty/ftgl/src/FTGL.cpp
-thirdparty/ftgl/src/FTGlyph/FTBitmapGlyph.cpp
-thirdparty/ftgl/src/FTGlyph/FTBufferGlyph.cpp
-thirdparty/ftgl/src/FTGlyph/FTExtrudeGlyph.cpp
-thirdparty/ftgl/src/FTGlyph/FTGLGlyph.cpp
-thirdparty/ftgl/src/FTGlyph/FTGlyphGlue.cpp
-thirdparty/ftgl/src/FTGlyph/FTOutlineGlyph.cpp
-thirdparty/ftgl/src/FTGlyph/FTPixmapGlyph.cpp
-thirdparty/ftgl/src/FTGlyph/FTPolygonGlyph.cpp
-thirdparty/ftgl/src/FTGlyph/FTTextureGlyph.cpp
-thirdparty/ftgl/src/FTGlyph/FTTriangleExtractorGlyph.cpp
-thirdparty/ftgl/src/FTGlyphContainer.cpp
-thirdparty/ftgl/src/FTLayout/FTLayout.cpp
-thirdparty/ftgl/src/FTLayout/FTLayoutGlue.cpp
-thirdparty/ftgl/src/FTLayout/FTSimpleLayout.cpp
-thirdparty/ftgl/src/FTLibrary.cpp
-thirdparty/ftgl/src/FTPoint.cpp
-thirdparty/ftgl/src/FTSize.cpp
-thirdparty/ftgl/src/FTVectoriser.cpp
+    thirdparty/ftgl/src/FTBuffer.cpp
+    thirdparty/ftgl/src/FTCharmap.cpp
+    thirdparty/ftgl/src/FTCleanup.cpp
+    thirdparty/ftgl/src/FTContour.cpp
+    thirdparty/ftgl/src/FTFace.cpp
+    thirdparty/ftgl/src/FTFont/FTBitmapFont.cpp
+    thirdparty/ftgl/src/FTFont/FTBufferFont.cpp
+    thirdparty/ftgl/src/FTFont/FTExtrudeFont.cpp
+    thirdparty/ftgl/src/FTFont/FTFont.cpp
+    thirdparty/ftgl/src/FTFont/FTFontGlue.cpp
+    thirdparty/ftgl/src/FTFont/FTOutlineFont.cpp
+    thirdparty/ftgl/src/FTFont/FTPixmapFont.cpp
+    thirdparty/ftgl/src/FTFont/FTPolygonFont.cpp
+    thirdparty/ftgl/src/FTFont/FTTextureFont.cpp
+    thirdparty/ftgl/src/FTFont/FTTriangleExtractorFont.cpp
+    thirdparty/ftgl/src/FTGL.cpp
+    thirdparty/ftgl/src/FTGlyph/FTBitmapGlyph.cpp
+    thirdparty/ftgl/src/FTGlyph/FTBufferGlyph.cpp
+    thirdparty/ftgl/src/FTGlyph/FTExtrudeGlyph.cpp
+    thirdparty/ftgl/src/FTGlyph/FTGLGlyph.cpp
+    thirdparty/ftgl/src/FTGlyph/FTGlyphGlue.cpp
+    thirdparty/ftgl/src/FTGlyph/FTOutlineGlyph.cpp
+    thirdparty/ftgl/src/FTGlyph/FTPixmapGlyph.cpp
+    thirdparty/ftgl/src/FTGlyph/FTPolygonGlyph.cpp
+    thirdparty/ftgl/src/FTGlyph/FTTextureGlyph.cpp
+    thirdparty/ftgl/src/FTGlyph/FTTriangleExtractorGlyph.cpp
+    thirdparty/ftgl/src/FTGlyphContainer.cpp
+    thirdparty/ftgl/src/FTLayout/FTLayout.cpp
+    thirdparty/ftgl/src/FTLayout/FTLayoutGlue.cpp
+    thirdparty/ftgl/src/FTLayout/FTSimpleLayout.cpp
+    thirdparty/ftgl/src/FTLibrary.cpp
+    thirdparty/ftgl/src/FTPoint.cpp
+    thirdparty/ftgl/src/FTSize.cpp
+    thirdparty/ftgl/src/FTVectoriser.cpp
 )
+
+if (WIN32)
+  include_directories( thirdparty/freetype2/include )
+  include_directories( thirdparty/freetype2/include/freetype )
+  include_directories( thirdparty/freetype2/include/freetype/config )
+  add_definitions( -DFTGL_LIBRARY_STATIC -DFT2_BUILD_LIBRARY)
+  set(SOURCES ${SOURCES} ${SOURCES_FREETYPE} thirdparty/glew-1.7.0/src/glew.c)
+endif()
 
 #perlin
 include_directories(
@@ -119,10 +162,10 @@ thirdparty/perlin/perlin.cpp
 
 #lodepng
 include_directories(
-thirdparty/lodepng
+    thirdparty/lodepng
 )
 set(SOURCES_LODEPNG
-thirdparty/lodepng/lodepng.cpp
+    thirdparty/lodepng/lodepng.cpp
 )
 
 #jpeg
@@ -135,7 +178,7 @@ file(GLOB_RECURSE HEADER_FILES *.h)
 
 
 if (VSXU_STATIC EQUAL 1)  
-  #static build  
+  #static build
   add_library(${module_id} STATIC ${SOURCES} ${SOURCES_FTGL} ${SOURCES_PERLIN} ${HEADER_FILES} ${SOURCES_LODEPNG})
 else ()
   add_library(${module_id} SHARED ${SOURCES} ${SOURCES_FTGL} ${SOURCES_PERLIN} ${HEADER_FILES} ${SOURCES_LODEPNG})

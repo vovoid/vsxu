@@ -87,27 +87,50 @@ set(SOURCES_LZHAM
   thirdparty/lzham-sdk/lzhamcomp/lzham_match_accel.cpp
 )
 
-set(SOURCES_LZMA_OLD
-  thirdparty/lzma-old/Common/StringConvert.cpp
-  thirdparty/lzma-old/Common/Alloc_.cpp
-  thirdparty/lzma-old/Common/StringToInt.cpp
-  thirdparty/lzma-old/Common/CRC.cpp
-  thirdparty/lzma-old/Common/String.cpp
-  thirdparty/lzma-old/Common/Vector.cpp
-  thirdparty/lzma-old/Common/C_FileIO.cpp
-  thirdparty/lzma-old/7zip/Common/OutBuffer.cpp
-  thirdparty/lzma-old/7zip/Common/StreamUtils.cpp
-  thirdparty/lzma-old/7zip/Common/InBuffer.cpp
-  thirdparty/lzma-old/7zip/Compress/LZMA/LZMADecoder.cpp
-  thirdparty/lzma-old/7zip/Compress/LZMA/LZMAEncoder.cpp
-  thirdparty/lzma-old/7zip/Compress/LZ/LZOutWindow.cpp
-  thirdparty/lzma-old/7zip/Compress/LZ/LZInWindow.cpp
-  thirdparty/lzma-old/7zip/Compress/RangeCoder/RangeCoderBit.cpp
-  thirdparty/lzma-old/LzmaRam.cpp
-  thirdparty/lzma-old/7zip/Compress/LZMA_C/LzmaDecode.c
-  thirdparty/lzma-old/7zip/Compress/Branch/BranchX86.c
-  thirdparty/lzma-old/LzmaRamDecode.c
-)
+if (WIN32)
+    set(SOURCES_LZMA_OLD
+        thirdparty/lzma-old/7zip/Common/InBuffer.cpp
+        thirdparty/lzma-old/7zip/Common/OutBuffer.cpp
+        thirdparty/lzma-old/7zip/Common/StreamUtils.cpp
+        thirdparty/lzma-old/7zip/Compress/Branch/BranchX86.c
+        thirdparty/lzma-old/7zip/Compress/LZMA/LZMADecoder.cpp
+        thirdparty/lzma-old/7zip/Compress/LZMA/LZMAEncoder.cpp
+        thirdparty/lzma-old/7zip/Compress/LZMA_C/LzmaDecode.c
+        thirdparty/lzma-old/7zip/Compress/LZ/LZInWindow.cpp
+        thirdparty/lzma-old/7zip/Compress/LZ/LZOutWindow.cpp
+        thirdparty/lzma-old/7zip/Compress/RangeCoder/RangeCoderBit.cpp
+        thirdparty/lzma-old/Common/Alloc_.cpp
+        thirdparty/lzma-old/Common/CRC.cpp
+        thirdparty/lzma-old/Common/String.cpp
+        thirdparty/lzma-old/Common/StringConvert.cpp
+        thirdparty/lzma-old/Common/StringToInt.cpp
+        thirdparty/lzma-old/Common/Vector.cpp
+        thirdparty/lzma-old/LzmaRam.cpp
+        thirdparty/lzma-old/LzmaRamDecode.c
+     )
+else()
+    set(SOURCES_LZMA_OLD
+      thirdparty/lzma-old/Common/StringConvert.cpp
+      thirdparty/lzma-old/Common/Alloc_.cpp
+      thirdparty/lzma-old/Common/StringToInt.cpp
+      thirdparty/lzma-old/Common/CRC.cpp
+      thirdparty/lzma-old/Common/String.cpp
+      thirdparty/lzma-old/Common/Vector.cpp
+      thirdparty/lzma-old/Common/C_FileIO.cpp
+      thirdparty/lzma-old/7zip/Common/OutBuffer.cpp
+      thirdparty/lzma-old/7zip/Common/StreamUtils.cpp
+      thirdparty/lzma-old/7zip/Common/InBuffer.cpp
+      thirdparty/lzma-old/7zip/Compress/LZMA/LZMADecoder.cpp
+      thirdparty/lzma-old/7zip/Compress/LZMA/LZMAEncoder.cpp
+      thirdparty/lzma-old/7zip/Compress/LZ/LZOutWindow.cpp
+      thirdparty/lzma-old/7zip/Compress/LZ/LZInWindow.cpp
+      thirdparty/lzma-old/7zip/Compress/RangeCoder/RangeCoderBit.cpp
+      thirdparty/lzma-old/LzmaRam.cpp
+      thirdparty/lzma-old/7zip/Compress/LZMA_C/LzmaDecode.c
+      thirdparty/lzma-old/7zip/Compress/Branch/BranchX86.c
+      thirdparty/lzma-old/LzmaRamDecode.c
+    )
+endif()
 
 
 ################################################################################

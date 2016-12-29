@@ -9,6 +9,13 @@ message("configuring vsxu module            " ${module_id})
 set(AUDIO_LIBRARIES "")
 set(WITH_MIDI FALSE)
 
+if (WIN32)
+    add_definitions(
+      -D__WINDOWS_DS__
+      -D_MBCS
+    )
+endif()
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   find_package(PULSEAUDIO)
   if(PULSEAUDIO_FOUND)
@@ -88,7 +95,9 @@ message(${AUDIO_LIBRARIES})
 
   include(../cmake_suffix.txt)
 
-  target_link_libraries(${module_id} ${AUDIO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+  if(NOT (VSXU_STATIC EQUAL 1))
+    target_link_libraries(${module_id} ${AUDIO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+  endif()
 
 #  set(LIBRARIES ${AUDIO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 

@@ -49,7 +49,6 @@ set(SOURCES
   src/vsx_data_path.cpp
   src/log/vsx_log.cpp
   src/command/vsx_command.cpp
-  src/command/vsx_command_client_server.cpp
   src/filesystem/archive/vsx_filesystem_archive_reader.cpp
   src/filesystem/archive/vsx/vsx_filesystem_archive_vsx_reader.cpp
   src/filesystem/archive/vsx/vsx_filesystem_archive_vsx_writer.cpp
@@ -60,6 +59,10 @@ set(SOURCES
   src/filesystem/vsx_filesystem.cpp
   #src/string/vsx_json.cpp
 )
+
+if (NOT WIN32)
+  set(SOURCES ${SOURCES} src/command/vsx_command_client_server.cpp)
+endif()
 
 ################################################################################
 # LINKAGE ######################################################################

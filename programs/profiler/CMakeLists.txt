@@ -101,6 +101,7 @@ if (WIN32)
     ${GLEW_LIBRARIES}
     ${PNG_LIBRARIES}
     ${JPEG_LIBRARIES}
+    vsx_application
     vsx_common
     vsx_compression
     vsx_engine

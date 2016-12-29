@@ -1,11 +1,12 @@
 #include <thread>
 #include <inttypes.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <sched.h>
-#include <linux/unistd.h>
-#include <sys/syscall.h>
 #include <vsx_platform.h>
+
+#if PLATFORM == PLATFORM_LINUX
+  #include <unistd.h>
+#endif
+
+#include <stdlib.h>
 
 #include <profiler/vsx_profiler_manager.h>
 
@@ -20,9 +21,9 @@ void thread_producer()
   {
     p->maj_begin();
     p->sub_begin("1 test1");
-    usleep(20);
+    std::this_thread::sleep_for(std::chrono::microseconds(20));
     p->sub_begin("1 test2");
-    usleep(200);
+    std::this_thread::sleep_for(std::chrono::microseconds(200));
     p->sub_end();
     p->sub_end();
     p->maj_end();
@@ -37,11 +38,11 @@ void thread_producer2()
   {
     p->maj_begin();
     p->sub_begin("2 test1");
-    usleep(100);
+    std::this_thread::sleep_for(std::chrono::microseconds(100));
     p->sub_begin("2 test2");
-    usleep(300);
+    std::this_thread::sleep_for(std::chrono::microseconds(300));
     p->sub_end();
-    usleep(50);
+    std::this_thread::sleep_for(std::chrono::microseconds(50));
     p->sub_end();
     p->maj_end();
   }
@@ -57,7 +58,7 @@ int main()
   std::thread t1 = std::thread( [](){thread_producer();});
   std::thread t2 = std::thread( [](){thread_producer2();});
 
-  sleep( 20 );
+  std::this_thread::sleep_for(std::chrono::seconds(20));
 
   run_threads.fetch_sub(1);
 

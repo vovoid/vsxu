@@ -15,11 +15,16 @@ endif(UNIX)
 
 set(DEFINITIONS
   -DCAL3D_EXPORTS
-  -Wno-narrowing
-  -Wno-vla
-  -Wno-parentheses
-  -Wno-unused-but-set-variable
 )
+
+if(NOT MSVC)
+  set(DEFINITIONS ${DEFINITIONS}
+    -Wno-narrowing
+    -Wno-vla
+    -Wno-parentheses
+    -Wno-unused-but-set-variable
+  )
+endif()
 
 set(INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src)
 

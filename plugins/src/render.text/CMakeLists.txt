@@ -12,6 +12,8 @@ if (WIN32)
 include_directories( ${CMAKE_CURRENT_LIST_DIR}/../../../lib/engine_graphics/thirdparty/freetype2/include )
 include_directories( ${CMAKE_CURRENT_LIST_DIR}/../../../lib/engine_graphics/thirdparty/freetype2/include/freetype )
 include_directories( ${CMAKE_CURRENT_LIST_DIR}/../../../lib/engine_graphics/thirdparty/freetype2/include/freetype/config )
+include_directories( ${CMAKE_CURRENT_LIST_DIR}/../../../lib/engine_graphics/thirdparty/ftgl)
+include_directories( ${CMAKE_CURRENT_LIST_DIR}/../../../lib/engine_graphics/thirdparty/ftgl/src)
 add_definitions( -DFTGL_LIBRARY_STATIC -DFT2_BUILD_LIBRARY)
 endif()
 

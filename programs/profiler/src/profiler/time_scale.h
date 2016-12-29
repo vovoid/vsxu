@@ -1,6 +1,8 @@
 #ifndef TIME_SCALE_H
 #define TIME_SCALE_H
 
+#include <vsx_platform.h>
+
 class time_scale
 {
 public:
@@ -28,7 +30,7 @@ public:
     return (x - time_offset) / time_size_x;
   }
 
-  inline static time_scale* get_instance() __attribute__((always_inline))
+  inline static time_scale* get_instance() VSX_ALWAYS_INLINE
   {
     static time_scale ts;
     return &ts;

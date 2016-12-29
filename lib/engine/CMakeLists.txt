@@ -38,9 +38,11 @@ file(GLOB_RECURSE HEADER_FILES *.h)
 #  -DVSXS_DEBUG=1
 # )
 
-add_definitions( -Wno-parentheses ) # LZMA
-#add_definitions( -Wno-int-to-pointer-cast ) # vsx_filesystem::filesystemst WIN64
-add_definitions( -Wno-error -fpermissive ) # vsx_filesystem::filesystemst WIN64
+if (NOT MSVC)
+  add_definitions( -Wno-parentheses ) # LZMA
+  #add_definitions( -Wno-int-to-pointer-cast ) # vsx_filesystem::filesystemst WIN64
+  add_definitions( -Wno-error -fpermissive ) # vsx_filesystem::filesystemst WIN64
+endif()
 
 add_definitions(
   # -DBUILDING_DLL

@@ -15,17 +15,9 @@ message("=====================================================================")
 ################################################################################
 set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 
-
 ################################################################################
 # GLOBAL INSTALL VARIABLES #####################################################
 ################################################################################
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    set(VSXU_INSTALL_INCLUDE_DIR "include/vsxu")
-    set(VSXU_INSTALL_LIB_DIR ".")
-    set(VSXU_INSTALL_BIN_DIR ".")
-    set(VSXU_INSTALL_SHARE_DIR ".")
-endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(VSXU_INSTALL_INCLUDE_DIR "include/vsxu")
@@ -134,15 +126,38 @@ INCLUDE(CPack)
 # DEFINES ######################################################################
 ################################################################################
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
 # C++14: set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive" )
 
-add_definitions( -Wall -Wno-sign-compare)
-if (UNIX)
-#  add_definitions( -Werror ) # no reason for linux not to compile
-endif()
+if (MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -MP8")
+  set(VSXU_STATIC 1)
+  add_definitions(-DVSXU_STATIC)
+  add_definitions(-DGLEW_STATIC)
+  add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+  include_directories( dependencies/SDL2_prebuilt_windows/include )
+  include_directories( dependencies/glew-1.7.0/include )
+  include_directories( lib/engine_graphics/thirdparty/ftgl)
+  include_directories( lib/engine_graphics/thirdparty/ftgl/src)
+  include_directories( lib/engine_graphics/thirdparty/freetype2/include )
+  include_directories( lib/engine_graphics/thirdparty/freetype2/include/freetype )
+  include_directories( lib/engine_graphics/thirdparty/freetype2/include/freetype/config )
 
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
+    add_definitions( -Wall -Wno-sign-compare)
+    add_definitions(-fmax-errors=500)
+
+    if (VSXU_STATIC EQUAL 1)
+      add_definitions(-g)
+      add_definitions(-DVSXU_STATIC)
+      add_definitions(-DGLEW_STATIC)
+    endif()
+
+    if(VSXU_DEBUG_SYMBOLS)
+      add_definitions(-g)
+    endif()
+endif()
 
 if (VSXU_STATIC_AUDIO_SINK EQUAL 1)
   add_definitions(-DVSXU_AUDIO_SINK=1)
@@ -152,244 +167,9 @@ if (VSX_PRINTF_TO_FILE EQUAL 1)
   add_definitions(-DVSX_PRINTF_TO_FILE)
 endif()
 
-if (VSXU_STATIC EQUAL 1)
-  add_definitions(-g)
-  add_definitions(-DVSXU_STATIC)
-  add_definitions(-DGLEW_STATIC)
-endif()
 
-if(VSXU_DEBUG_SYMBOLS)
-  add_definitions(-g)
-endif()
 
-add_definitions(-fmax-errors=500)
-
-if(VSXU_DEBUG)
-  message("Compiling with debug flags")
-  add_definitions(
-    -g
-    -Wall
-    -Werror=return-type
-    #-Werror=unused-parameter
-    #-Weffc++
-    #-Wdouble-promotion
-    -mtune=nocona
-  )
-else(VSXU_DEBUG)
-  if (OPTIMIZATION_FLAGS EQUAL 1)
-     if(UNIX)
-       add_definitions( -fno-delayed-branch )
-     endif(UNIX)
-    add_definitions(
-      -DVSX_OPTIMIZATIONS=1
-      -mtune=nocona
-      -lrt 
-      -lm
-      -O3
-      -fno-thread-jumps 
-      -fno-if-conversion2 
-      -fno-loop-optimize 
-      -ftree-dce 
-      -ftree-sra 
-      -ftree-copyrename 
-      -ftree-fre 
-      -ftree-ch 
-      -fmerge-constants 
-      -fcrossjumping 
-      -fcse-follow-jumps
-      -fcse-skip-blocks
-      -fexpensive-optimizations
-      -fstrength-reduce
-      -frerun-cse-after-loop
-      -frerun-loop-opt
-      -fforce-addr
-      -fpeephole2
-      -fschedule-insns2
-      -fregmove
-      -freorder-blocks
-      -fsched-interblock
-      -funit-at-a-time
-      -falign-functions
-      -falign-jumps
-      -falign-loops
-      -falign-labels
-      -finline-functions
-      -ftracer
-      -fmodulo-sched
-      -fgcse-sm
-      -freschedule-modulo-scheduled-loops
-      -ftree-loop-im
-      -ftree-loop-ivcanon
-      -maccumulate-outgoing-args
-      -mno-align-stringops
-      -funsafe-math-optimizations
-      -fno-signaling-nans
-    )
-  else (OPTIMIZATION_FLAGS EQUAL 1)
-    if (VSXU_BUILD_WINDOWS_32)
-        if(UNIX)
-          add_definitions( -fno-delayed-branch )
-        endif(UNIX)
-        add_definitions(
-#from O1
-          -fauto-inc-dec
-          -fcompare-elim
-          -fcprop-registers
-          -fdce
-          -fdefer-pop
-          -fdse
-          -fguess-branch-probability
-          -fif-conversion2
-          -fif-conversion
-          -fipa-pure-const
-          -fipa-profile
-          -fipa-reference
-          -fmerge-constants
-          -fsplit-wide-types
-          -ftree-bit-ccp
-          -ftree-builtin-call-dce
-          -ftree-ccp
-          -ftree-ch
-          -ftree-copyrename
-          -ftree-dce
-          -ftree-dominator-opts
-          -ftree-dse
-          -ftree-forwprop
-          -ftree-fre
-          -ftree-phiprop
-          -ftree-sra
-          -ftree-pta
-          -ftree-ter
-          -funit-at-a-time
-          -fomit-frame-pointer
-#from O2
-          -fthread-jumps
-          -falign-functions  -falign-jumps
-          -falign-loops  -falign-labels
-          -fcaller-saves
-          -fcrossjumping
-          -fcse-follow-jumps  -fcse-skip-blocks
-          -fdelete-null-pointer-checks
-          -fdevirtualize
-          -fexpensive-optimizations
-          -fgcse  -fgcse-lm
-          -finline-small-functions
-          -findirect-inlining
-          -fipa-sra
-          -foptimize-sibling-calls
-          -fpartial-inlining
-          -fpeephole2
-          -fregmove
-          -freorder-blocks  -freorder-functions
-          -frerun-cse-after-loop
-          -fsched-interblock  -fsched-spec
-          -fschedule-insns  -fschedule-insns2
-          -fnostrict-aliasing -fstrict-overflow
-          -ftree-switch-conversion
-          -ftree-pre
-          -ftree-vrp
-#from O3
-          -finline-functions
-          -funswitch-loops
-          -fpredictive-commoning
-          -fgcse-after-reload
-          -ftree-vectorize
-          -fipa-cp-clone
-#general
-          -mtune=nocona
-          -fmessage-length=0
-          #-fpermissive
-          -ffast-math
-        )
-    elseif(VSXU_BUILD_WINDOWS_64)
-        if(UNIX)
-          add_definitions( -fno-delayed-branch )
-        endif(UNIX)
-        add_definitions(
-#from O1
-          -fauto-inc-dec
-          -fcompare-elim
-          -fcprop-registers
-          -fdce
-          -fdefer-pop
-          -fdse
-          -fguess-branch-probability
-          -fif-conversion2
-          -fif-conversion
-          -fipa-pure-const
-          -fipa-profile
-          -fipa-reference
-          -fmerge-constants
-          -fsplit-wide-types
-          -ftree-bit-ccp
-          -ftree-builtin-call-dce
-          -ftree-ccp
-          -ftree-ch
-          -ftree-copyrename
-          -ftree-dce
-          -ftree-dominator-opts
-          -ftree-dse
-          -ftree-forwprop
-          -ftree-fre
-          -ftree-phiprop
-          -ftree-sra
-          -ftree-pta
-          -ftree-ter
-          -funit-at-a-time
-          -fomit-frame-pointer
-#from O2
-          -fthread-jumps
-          -falign-functions  -falign-jumps
-          -falign-loops  -falign-labels
-          -fcaller-saves
-          -fcrossjumping
-          -fcse-follow-jumps  -fcse-skip-blocks
-          -fdelete-null-pointer-checks
-          -fdevirtualize
-          -fexpensive-optimizations
-          -fgcse  -fgcse-lm
-          -finline-small-functions
-          -findirect-inlining
-          -fipa-sra
-          -foptimize-sibling-calls
-          -fpartial-inlining
-          -fpeephole2
-          -fregmove
-          -freorder-blocks  -freorder-functions
-          -frerun-cse-after-loop
-          -fsched-interblock  -fsched-spec
-          -fschedule-insns  -fschedule-insns2
-          -fnostrict-aliasing -fstrict-overflow
-          -ftree-switch-conversion
-          -ftree-pre
-          -ftree-vrp
-#from O3
-          -finline-functions
-          -funswitch-loops
-          -fpredictive-commoning
-          -fgcse-after-reload
-          -ftree-vectorize
-          -fipa-cp-clone
-#general
-          -mtune=nocona
-          -fmessage-length=0
-          #-fpermissive
-          -ffast-math
-        )
-    else()
-        add_definitions(
-          -O3
-          #-flto
-
-          -mtune=nocona
-          -fmessage-length=0
-          #-fpermissive
-          -finline-functions
-          -ffast-math
-        )
-    endif()
-  endif (OPTIMIZATION_FLAGS EQUAL 1)
-endif(VSXU_DEBUG)
+include (cmake/optimization.txt)
 
 add_definitions(-DVSXU_INSTALL_LIB_DIR="${VSXU_INSTALL_LIB_DIR}")
 #add_definitions(-DVSX_VECTOR_TYPE_DOUBLE=1)
