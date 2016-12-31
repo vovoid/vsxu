@@ -26,7 +26,7 @@ endif()
 
 
 get_filename_component(list_file_path ${CMAKE_CURRENT_LIST_FILE} PATH)
-string(REGEX MATCH "[a-z._-]*$" module_id ${list_file_path})
+string(REGEX MATCH "[a-z0-9._-]*$" module_id ${list_file_path})
 
 message("configuring            " ${module_id})
 
@@ -46,7 +46,7 @@ set_target_properties(
   ${module_id}
     PROPERTIES
       OUTPUT_NAME
-        obj2vxm
+        ${module_id}
 )
 
 target_link_libraries(${module_id}
