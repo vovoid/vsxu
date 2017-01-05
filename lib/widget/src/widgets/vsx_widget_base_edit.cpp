@@ -111,6 +111,9 @@ vsx_widget_base_edit::vsx_widget_base_edit() {
   menu->size.y = 0.5f;
   menu->init();
 
+  lines[0] = "";
+  lines_visible.push_back(0);
+
   calculate_scroll_size();
 }
 
@@ -138,52 +141,56 @@ void vsx_widget_base_edit::command_process_back_queue(vsx_command_s *t) {
   command_q_b.add(t);
 }
 
-// PRIVATE
 void vsx_widget_base_edit::process_line(int n_line) {
-  if (!process_characters) return;
+  req(process_characters);
+
   int i = n_line;
   vsx_string<>b;
 
   char fill = (char)0x01;
   if (lines[i].size() >= 2)
-  if (lines[i][0] == '/' && lines[i][1] == '/')
-  fill = (char)0x02;
+    if (lines[i][0] == '/' && lines[i][1] == '/')
+      fill = (char)0x02;
 
-  for (size_t j = 0; j < lines[i].size(); ++j) {
+  for (size_t j = 0; j < lines[i].size(); ++j)
     b = b + fill;
-  }
-  if (fill == (char)0x01)
-  for (std::map<vsx_string<>,char>::iterator it = keywords.begin(); it != keywords.end(); ++it) {
-    char f = (char)(*it).second;
-    if (enable_syntax_highlighting)
-    b = vsx_string_helper::str_replace_char_pad((*it).first, vsx_string<>(f), lines[i], b);
-  }
-  if (n_line > (int)lines_p.size()-1) {
 
+  if (fill == (char)0x01)
+    for (std::map<vsx_string<>,char>::iterator it = keywords.begin(); it != keywords.end(); ++it)
+    {
+      char f = (char)(*it).second;
+      if (enable_syntax_highlighting)
+        b = vsx_string_helper::str_replace_char_pad((*it).first, vsx_string<>(f), lines[i], b);
+    }
+
+  if (n_line > (int)lines_p.size()-1)
     lines_p.push_back(b);
-  } else
-  lines_p[n_line] = b;
+  else
+    lines_p[n_line] = b;
 }
 
 void vsx_widget_base_edit::process_lines() {
-  if (!process_characters) return;
+  req(process_characters);
+
   lines_p.clear();
-  for (unsigned long i = 0; i < lines.size(); ++i) {
+  for (unsigned long i = 0; i < lines.size(); ++i)
+  {
     vsx_string<>b;
 
     char fill = (char)0x01;
     if (lines[i].size() >= 2)
-    if (lines[i][0] == '/' && lines[i][1] == '/')
-    fill = (char)0x02;
+      if (lines[i][0] == '/' && lines[i][1] == '/')
+        fill = (char)0x02;
 
-    for (size_t j = 0; j < lines[i].size(); ++j) {
+    for (size_t j = 0; j < lines[i].size(); ++j)
       b = b + fill;
-    }
+
     if (fill == (char)0x01)
-    for (std::map<vsx_string<>,char>::iterator it = keywords.begin(); it != keywords.end(); ++it) {
-      char f = (char)(*it).second;
-      b = vsx_string_helper::str_replace_char_pad((*it).first, vsx_string<>(f), lines[i], b);
-    }
+      for (std::map<vsx_string<>,char>::iterator it = keywords.begin(); it != keywords.end(); ++it)
+      {
+        char f = (char)(*it).second;
+        b = vsx_string_helper::str_replace_char_pad((*it).first, vsx_string<>(f), lines[i], b);
+      }
     lines_p.push_back(b);
   }
 }
@@ -328,6 +335,9 @@ void vsx_widget_base_edit::event_text(wchar_t character_wide, char character)
     if (allowed_chars.find(character) == -1)
       return;
 
+  if (lines.size() == 1 && !lines_visible.size())
+    lines_visible.push_back(0);
+
   lines[carety + (int)scroll_y].insert(caretx+(int)scroll_x, character);
   updates++;
   ++caretx;
@@ -463,14 +473,6 @@ void vsx_widget_base_edit::fold_all()
   calculate_scroll_size();
 }
 
-/*******************************************************************************
-        _               _
-       (_)             | |
-  _  _  _            _ | |  ____   ____  _ _ _
- (_)(_)| |          / || | / ___) / _  || | | |
-  _  _ | | _______ ( (_| || |    ( ( | || | | |
- (_)(_)|_|(_______) \____||_|     \_||_| \____|
-********************************************************************************/
 void vsx_widget_base_edit::i_draw()
 {
   if (!lines.size())
@@ -483,20 +485,22 @@ void vsx_widget_base_edit::i_draw()
   float ff = longest_y - characters_height;
   if (ff < 0) ff = 0;
   scroll_y = round(scrollbar_pos_y*(ff));
-  vsx_vector3<> p = get_pos_p();
-  p.x -= target_size.x*0.5f;
-  p.y -= target_size.y*0.5f;
+  vsx_vector3<> pos = get_pos_p();
+  pos.x -= target_size.x*0.5f;
+  pos.y -= target_size.y*0.5f;
   if (render_type == render_3d) {
-    p.z = pos.z;
+    pos.z = pos.z;
   } else {
-    p.z = 0.0f;
+    pos.z = 0.0f;
   }
 
   vsx_widget_skin::get_instance()->set_color_gl(18);
 
-  draw_box(p, target_size.x, target_size.y);
-  //int ypos = 0;
-  p.y += target_size.y-font_size;
+  draw_box(pos, target_size.x, target_size.y);
+
+
+  pos.y += target_size.y-font_size;
+  render_caret();
   calculate_scroll_size();
   bool run = true;
 
@@ -513,7 +517,7 @@ void vsx_widget_base_edit::i_draw()
     real_line++;
 
   int curline = real_line;
-  vsx_vector3<> pp = p;
+  vsx_vector3<> pp = pos;
   //std::vector <vsx_string<> >::iterator it = lines.begin();
   font.syntax_colors[0] = vsx_widget_skin::get_instance()->get_color(14);
   int cur_render_line = 0;
@@ -524,24 +528,19 @@ void vsx_widget_base_edit::i_draw()
   {
     if (lines_visible[curline] == 0)
     {
-      //printf("rendering %d\n",curline);
       // save current size for speed in a variable
       long cursize = (long)lines[curline].size();
-      //printf("scroll_x: %d\n",scroll_x);
-      //printf("curline: %d\n",curline);
-      //printf("cursize: %d\n",cursize);
       if (selected_line_highlight && curline == selected_line)
       {
         vsx_widget_skin::get_instance()->set_color_gl(15);
-
         font.syntax_colors[0] = vsx_widget_skin::get_instance()->get_color(16); // base color
         draw_box(pp,target_size.x,font_size);
       }
-      if (cursize-(long)scroll_x >= (long)characters_width) {
+      if (cursize-(long)scroll_x >= (long)characters_width)
         font.print(pp,lines[curline].substr((int)scroll_x,(int)characters_width),font_size,lines_p[curline].substr((int)scroll_x,(int)characters_width));
-      } else
-      if (scroll_x < cursize)
-      font.print(pp,lines[curline].substr((int)scroll_x,(int)(lines[curline].size()-floor(scroll_x))),font_size,lines_p[curline].substr((int)scroll_x,(int)(lines[curline].size()-scroll_x)));
+      else
+        if (scroll_x < cursize)
+          font.print(pp,lines[curline].substr((int)scroll_x,(int)(lines[curline].size()-floor(scroll_x))),font_size,lines_p[curline].substr((int)scroll_x,(int)(lines[curline].size()-scroll_x)));
 
       if (enable_line_action_buttons)
       {
@@ -568,26 +567,31 @@ void vsx_widget_base_edit::i_draw()
       }
       cur_render_line++;
     }
-//    ++it;
     ++curline;
-    //printf("%d %d %d %d\n",cur_render_line,(int)(characters_height-1), (int)curline, (lines.size()-1));
     if (cur_render_line > (long)characters_height-1 || (long)curline > (long)lines.size()-1)
-    run = false;
-  //  if (it == lines.end()) run = false;
-  }
-  if (k_focus == this && editing_enabled) {
-    pp.x = p.x+(float)caretx*font_size*0.37f;
-    pp.y = p.y-font_size*(float)(carety);
-    float tt = (float)((int)(vsx_widget_time::get_instance()->get_time()*3000) % 1000)*0.001f;
-
-    if (selected_line_highlight)
-      font.color = vsx_widget_skin::get_instance()->get_color(17);
-
-    font.color.a = 1-tt;
-    font.print(pp,"_",font_size);
-    font.color.a = 1;
+      run = false;
   }
   font.color = vsx_color<>(1,1,1,1);
+}
+
+void vsx_widget_base_edit::render_caret()
+{
+  req(k_focus == this);
+  req(editing_enabled);
+
+  vsx_vector3<> pos = get_pos_p();
+  pos.x -= target_size.x*0.5f;
+  pos.y -= target_size.y*0.5f;
+  pos.x += (float)caretx*font_size*0.37f;
+  pos.y -= font_size*(float)(carety);
+  float tt = (float)((int)(vsx_widget_time::get_instance()->get_time()*3000) % 1000)*0.001f;
+
+  if (selected_line_highlight)
+    font.color = vsx_widget_skin::get_instance()->get_color(17);
+
+  font.color.a = 1 - tt;
+  font.print(pos, "_", font_size);
+  font.color.a = 1;
 }
 
 

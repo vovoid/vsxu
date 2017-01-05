@@ -402,7 +402,7 @@ void vsx_widget_sequence_channel::event_mouse_down(vsx_widget_distance distance,
         break;
         case VSX_MODULE_PARAM_ID_STRING:
         case VSX_MODULE_PARAM_ID_STRING_SEQUENCE:
-          val = vsx_string_helper::base64_encode("");
+          val = vsx_string_helper::base64_encode("_");
           break;
         case VSX_MODULE_PARAM_ID_QUATERNION:
           val = items[item_action_id].get_value();

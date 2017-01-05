@@ -50,6 +50,7 @@ class WIDGET_DLLIMPORT vsx_widget_base_edit : public vsx_widget_panel {
   void process_line(int n_line);
   void process_lines();
   void calculate_scroll_size();
+  void render_caret();
   bool filter_string_enabled;
 public:
   int caretx, carety;
