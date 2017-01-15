@@ -7,7 +7,25 @@
 class vsx_bitmap_transform
 {
 
-  template < typename T = char >
+  template <typename T>
+  class rgb_pixel
+  {
+    T r;
+    T g;
+    T b;
+  };
+
+  template <typename T>
+  class rgba_pixel
+  {
+    T r;
+    T g;
+    T b;
+    T a;
+  };
+
+
+  template < typename T = uint32_t >
   inline void split_into_cubemap_by_type(vsx_bitmap* bitmap)
   {
     void* source_data = bitmap->data_get();
@@ -36,6 +54,7 @@ class vsx_bitmap_transform
         );
       }
     }
+    bitmap->width = bitmap->height;
     free(source_data);
   }
 
@@ -155,14 +174,28 @@ public:
   void split_into_cubemap(vsx_bitmap* bitmap)
   {
     req_error(bitmap->width / 6 == bitmap->height, "Not cubemap, should be aspect 6:1");
-    req_error(bitmap->channels == 4, "RGB cubemaps not implemented");
     req_error(IS_POWER_OF_TWO(bitmap->height), "Height must be power of two")
 
-    if (bitmap->storage_format == vsx_bitmap::float_storage)
-      split_into_cubemap_by_type<float>(bitmap);
+    if (bitmap->channels == 4)
+    {
+      if (bitmap->storage_format == vsx_bitmap::float_storage)
+        split_into_cubemap_by_type< rgba_pixel<float> >(bitmap);
 
-    if (bitmap->storage_format == vsx_bitmap::byte_storage)
-      split_into_cubemap_by_type<uint32_t>(bitmap);
+      if (bitmap->storage_format == vsx_bitmap::byte_storage)
+        split_into_cubemap_by_type< rgba_pixel<char> >(bitmap);
+      return;
+    }
+    if (bitmap->channels == 3)
+    {
+      if (bitmap->storage_format == vsx_bitmap::float_storage)
+        split_into_cubemap_by_type< rgb_pixel<float> >(bitmap);
+
+      if (bitmap->storage_format == vsx_bitmap::byte_storage)
+        split_into_cubemap_by_type<rgb_pixel<char> >(bitmap);
+      return;
+    }
+
+    vsx_printf(L"Error, unsupported bitmap channel count: %d\n", bitmap->channels);
   }
 
 
@@ -182,12 +215,46 @@ public:
     }
   }
 
+  template <typename T = char >
+  bool is_alpha_channel_used(vsx_bitmap* bitmap, const T below_value)
+  {
+    reqrv(bitmap->channels == 4, false);
+    reqrv(bitmap->storage_format == vsx_bitmap::byte_storage, false);
+    for_n(side, 0, bitmap->sides_count_get())
+    {
+      T* source_data = (T*)bitmap->data_get(0, side);
+      for_n(i, 0, bitmap->width * bitmap->height)
+      {
+        // r
+        source_data++; // -> g
+        source_data++; // -> b
+        source_data++; // -> a
+        if (*source_data < below_value)
+          return true;
+        source_data++; // -> r
+      }
+    }
+    return false;
+  }
+
+  bool can_alpha_channel_be_removed(vsx_bitmap* bitmap)
+  {
+    reqrv(bitmap->channels == 4, false);
+    if (bitmap->storage_format == vsx_bitmap::byte_storage)
+      if (is_alpha_channel_used<char>(bitmap, 255))
+        return false;
+    if (bitmap->storage_format == vsx_bitmap::float_storage)
+      if ( is_alpha_channel_used<float>(bitmap, 1.0f) )
+        return false;
+    return true;
+  }
 
   void alpha_channel_remove(vsx_bitmap* bitmap)
   {
     req(bitmap->channels == 4);
     req(bitmap->storage_format == vsx_bitmap::byte_storage);
-    for_n(side, 0, bitmap->sides_count_get())
+    size_t num_sides = bitmap->sides_count_get();
+    for_n(side, 0, num_sides)
     {
       unsigned char* source_data = (unsigned char*)bitmap->data_get(0, side);
       unsigned char* dest_data = (unsigned char*)malloc(bitmap->width * bitmap->height * 3);
@@ -195,11 +262,11 @@ public:
       bitmap->data_set(dest_data, 0, side, bitmap->width * bitmap->height * 3);
       for_n(i, 0, bitmap->width * bitmap->height)
       {
-        *dest_data = *source_data_p;
+        *dest_data = *source_data_p; // r
         dest_data++; source_data_p++;
-        *dest_data = *source_data_p;
+        *dest_data = *source_data_p; // g
         dest_data++; source_data_p++;
-        *dest_data = *source_data_p;
+        *dest_data = *source_data_p; // b
         dest_data++; source_data_p++;
         source_data_p++;
       }
