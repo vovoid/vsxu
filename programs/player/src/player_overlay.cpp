@@ -271,10 +271,11 @@ Speed           :\n\
 Run time        :\n\
 Frames rendered :\n\
 Modules in state:","ascii",0.06);
-        if (manager)
+        vsx_string<> visual_path = manager->get_meta_visual_filename().c_str();
+        vsx_string<> visual_filename = vsx_string_helper::filename_from_path(visual_path);
         myf->print(
           vsx_vector3<>(-0.1,0.4),
-          vsx_string<>(manager->get_meta_visual_filename().c_str())+"\n"+
+          vsx_string<>(visual_filename.c_str())+"\n"+
           vsx_string_helper::f2s(delta_fps)+"\n"+
           vsx_string_helper::f2s(manager->get_fx_level(),3)+"\n"+
           vsx_string_helper::f2s(manager->get_speed(),3)+"\n"+
