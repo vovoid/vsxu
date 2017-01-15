@@ -1,3 +1,5 @@
+#include <tools/vsx_req.h>
+
 class module_render_gl_texture_bind : public vsx_module
 {
   // in
@@ -53,29 +55,25 @@ public:
 
   bool activate_offscreen() {
     t_tex = tex_in->get_addr();
-    if (t_tex)
-    {
-      glMatrixMode(GL_TEXTURE);
-      glPushMatrix();
-      if ((*t_tex)->get_transform())
-        (*t_tex)->get_transform()->transform();
+    reqrv(t_tex, true);
 
-      glMatrixMode(GL_MODELVIEW);
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+    if ((*t_tex)->get_transform())
+      (*t_tex)->get_transform()->transform();
 
+    glMatrixMode(GL_MODELVIEW);
 
-      (*t_tex)->bind();
-
-    }
+    (*t_tex)->bind();
     return true;
   }
 
   void deactivate_offscreen() {
-    if (t_tex) {
-      (*t_tex)->_bind();
-      glMatrixMode(GL_TEXTURE);
-      glPopMatrix();
-      glMatrixMode(GL_MODELVIEW);
-    }
+    req(t_tex);
+    (*t_tex)->_bind();
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
   }
 };
 
