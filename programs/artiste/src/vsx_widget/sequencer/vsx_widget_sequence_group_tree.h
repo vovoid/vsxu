@@ -94,6 +94,7 @@ public:
 
     if (t->cmd == "menu_save")
       return (void)dynamic_cast<dialog_query_string*>(save_dialog)->show();
+
     vsx_widget::command_process_back_queue(t);
   }
 

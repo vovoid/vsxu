@@ -848,6 +848,19 @@ void vsx_widget_sequence_editor::command_process_back_queue(vsx_command_s *t) {
     parent->vsx_command_queue_b(this);
   }
 
+  if (t->cmd == "save_data")
+  {
+    command_q_b.add_raw(
+      "pseq_p "
+      "save_data " +
+      dynamic_cast<vsx_widget_sequence_tree*>(sequence_list)->get_selected_component() + " " +
+      dynamic_cast<vsx_widget_sequence_tree*>(sequence_list)->get_selected_parameter() + " " +
+      t->cmd_data
+    );
+    parent->vsx_command_queue_b(this);
+  }
+
+
   if (t->cmd == "group_add")
   {
     command_q_b.add_raw(

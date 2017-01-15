@@ -281,6 +281,14 @@ vsx_string<>vsx_param_sequence_list::dump_param(vsx_engine_param* param) {
   return "";
 }
 
+vsx_string<>vsx_param_sequence_list::dump_param_values(vsx_engine_param* param) {
+  if (parameter_channel_map.find(param) != parameter_channel_map.end())
+    return parameter_channel_map[param]->dump_values();
+
+  return "";
+}
+
+
 void vsx_param_sequence_list::inject_param(vsx_engine_param* param, vsx_comp_abs* comp, vsx_string<>data) {
   if (parameter_channel_map.find(param) == parameter_channel_map.end()) {
     // add sequence

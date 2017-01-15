@@ -22,9 +22,10 @@
 */
 
 
-#ifndef VSX_PARAM_SEQUENCE_LIST_H_
-#define VSX_PARAM_SEQUENCE_LIST_H_
+#pragma once
 
+#include <internal/vsx_param_abstraction.h>
+#include <internal/vsx_param_sequence.h>
 #include "vsx_param_sequence_group.h"
 
 class vsx_param_sequence_list {
@@ -58,6 +59,7 @@ public:
   void remove_line(vsx_engine_param* param, vsx_command_list* dest, vsx_command_s* cmd_in, vsx_string<>cmd_prefix = "");
 
   vsx_string<> dump_param(vsx_engine_param* param);
+  vsx_string<> dump_param_values(vsx_engine_param* param);
   void inject_param(vsx_engine_param* param, vsx_comp_abs* comp, vsx_string<>data);
 
   void get_params_with_keyframe_at_time(float time, float tolerance, vsx_nw_vector<vsx_engine_param* >& result);
@@ -107,10 +109,8 @@ public:
   	other_time_source = 0x0;
   	total_time = 0.0f;
   	run_on_edit_enabled = true;
-  };
+  }
   vsx_param_sequence_list(void* my_engine);
   ~vsx_param_sequence_list();
   vsx_param_sequence_list(const vsx_param_sequence_list &b);
 };
-
-#endif /* VSX_PARAM_SEQUENCE_LIST_H_ */

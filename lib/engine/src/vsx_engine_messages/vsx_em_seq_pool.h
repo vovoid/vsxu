@@ -406,6 +406,21 @@ if (cmd == "seq_pool")
             );
           }
 
+          // 0=seq_pool 1=pseq_p 2=command 3=[component] 4=[param] 5=[data]
+          if (c->parts[2] == "save_data")
+          {
+            if (c->parts.size() != 6)
+              goto process_message_queue_end;
+
+            vsx_string<> filename = vsx_data_path::get_instance()->data_path_get() +  "sequences" + DIRECTORY_SEPARATOR + c->parts[5];
+
+            vsx_string_helper::write_to_file(
+              filename,
+              sequence_pool.get_selected()->dump_param_values(param)
+            );
+          }
+
+
           // 0=seq_pool 1=pseq_p 2=command 3=[component] 4=[param] 5=[group_name]
           if (c->parts[2] == "group_add")
           {

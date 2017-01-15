@@ -9,6 +9,7 @@ class vsx_widget_sequence_tree :
 {
   vsx_widget_sequence_editor* sequence_editor;
   vsx_widget* save_dialog;
+  vsx_widget* save_dialog_data;
   vsx_widget* group_add_dialog;
 
 public:
@@ -34,6 +35,7 @@ public:
 
     editor->menu = editor->add(new vsx_widget_popup_menu,".sequencer_list_menu");
     editor->menu->commands.adds(VSX_COMMAND_MENU, "Save selected sequence to disk...", "menu_save","");
+    editor->menu->commands.adds(VSX_COMMAND_MENU, "Save selected sequence data to disk...", "menu_save_data","");
     editor->menu->commands.adds(VSX_COMMAND_MENU, "Add to group...", "menu_group_add","");
     editor->menu->size.x = 0.2;
     editor->menu->init();
@@ -51,6 +53,17 @@ public:
     );
     save_dialog->set_render_type( render_2d );
     save_dialog->init();
+
+    save_dialog_data = add
+    (
+      new dialog_query_string(
+          "Save sequence data to disk",
+          "Filename"
+      ),
+      "save_data"
+    );
+    save_dialog_data->set_render_type( render_2d );
+    save_dialog_data->init();
 
     group_add_dialog = add
     (
@@ -93,6 +106,9 @@ public:
   {
     if (t->cmd == "menu_save")
       return (void)dynamic_cast<dialog_query_string*>(save_dialog)->show();
+
+    if (t->cmd == "menu_save_data")
+      return (void)dynamic_cast<dialog_query_string*>(save_dialog_data)->show();
 
     if (t->cmd == "menu_group_add")
       return (void)dynamic_cast<dialog_query_string*>(group_add_dialog)->show();

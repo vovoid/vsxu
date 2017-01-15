@@ -21,10 +21,9 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <internal/vsx_param_sequence_list.h>
 
-#ifndef VSX_SEQUENCE_POOL_H_
-#define VSX_SEQUENCE_POOL_H_
-
+#pragma once
 
 // There is one main sequence list (old sequencer) which is enabled by default.
 // If you enable the sequence manager and project sequencer (will be enabled when the manager-commands are run from state)
@@ -89,10 +88,11 @@ public:
   bool export_to_file(vsx_string<>filename);
   bool import_from_file(vsx_string<>filename);
 
+  bool export_values_to_file(vsx_string<> filename);
+
 	// deinitialization
   void clear();
 
 	vsx_sequence_pool();
 };
 
-#endif /* VSX_SEQUENCE_POOL_H_ */

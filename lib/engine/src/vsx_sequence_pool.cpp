@@ -261,6 +261,35 @@ bool vsx_sequence_pool::import_from_file(vsx_string<>filename)
   return true;
 }
 
+bool vsx_sequence_pool::export_values_to_file(vsx_string<>filename)
+{
+  vsx_param_sequence_list* sequence_list = cur_sequence_list;
+  if (!sequence_list) return false;
+
+  vsx_string<> result;
+  vsx_string<> sequence_dump = sequence_list->get_sequence_list_dump();
+  vsx_string<> deli = "&";
+  vsx_nw_vector <vsx_string<> > parts;
+  vsx_string_helper::explode(sequence_dump, deli, parts);
+
+  if (sequence_dump != "")
+  {
+    for (size_t i = 0; i < parts.size(); i++)
+    {
+      vsx_string<>i_deli = "#";
+      vsx_nw_vector <vsx_string<> > i_parts;
+      vsx_string_helper::explode(parts[i], i_deli, i_parts);
+      // 0=pseq_inject 1=[component] 2=[param] 3=[data]
+      result += i_parts[2] + "\n";
+    }
+  }
+  vsx_string_helper::write_to_file(
+      vsx_data_path::get_instance()->data_path_get()+"animations/"+filename,
+      result
+    );
+  return true;
+}
+
 
 void vsx_sequence_pool::dump_to_command_list(vsx_command_list &savelist)
 {

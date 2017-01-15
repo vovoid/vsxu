@@ -272,7 +272,7 @@ float vsx_param_sequence::calculate_total_time(bool no_cache)
   return total_time;
 }
 
-vsx_string<>vsx_param_sequence::dump()
+vsx_string<> vsx_param_sequence::dump()
 {
   vsx_string<>res = "";
   vsx_nw_vector< vsx_string<> > ml;
@@ -283,6 +283,30 @@ vsx_string<>vsx_param_sequence::dump()
   res = vsx_string_helper::implode(ml, deli);
   return res;
 }
+
+
+vsx_string<> vsx_param_sequence::dump_values()
+{
+  vsx_string<>res = "";
+  vsx_nw_vector< vsx_string<> > ml;
+  if (param->module_param->type == VSX_MODULE_PARAM_ID_STRING)
+  {
+    foreach(items, i)
+    {
+      vsx_string<> value = items[i].get_value();
+      req_continue(value != "_");
+      ml.push_back( value + " \"\"" );
+    }
+  }
+  else
+    foreach(items, i)
+      ml.push_back( items[i].get_value() );
+
+  vsx_string<>deli = "\n";
+  res = vsx_string_helper::implode(ml, deli);
+  return res;
+}
+
 
 void vsx_param_sequence::inject(vsx_string<>ij)
 {
@@ -312,7 +336,6 @@ void vsx_param_sequence::inject(vsx_string<>ij)
       pa.handle2 = vsx_vector3_helper::from_string<float>(pld_l[2]);
     }
     items.push_back(pa);
-    //printf("inject delay: %s\n",pld[0].c_str());
   }
   recalculate_accum_times();
 }
@@ -364,9 +387,7 @@ bool vsx_param_sequence::has_keyframe_at_time(float time, float tolerance)
 
     if (accum_time - tolerance * 2 > time)
       return false;
-
   }
-
   return false;
 }
 
