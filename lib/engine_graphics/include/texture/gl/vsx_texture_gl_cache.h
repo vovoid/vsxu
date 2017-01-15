@@ -150,12 +150,15 @@ public:
 
     // still more references
     if (item->texture_gl->references)
+    {
+      texture_gl = 0x0;
       return;
+    }
 
     item->texture_gl->unload();
     delete item->texture_gl;
     recycle_item(item);
-    texture_gl = 0;
+    texture_gl = 0x0;
   }
 
   ~vsx_texture_gl_cache()
