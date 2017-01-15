@@ -577,6 +577,17 @@ namespace vsx_string_helper
     return vsx_string_helper::implode(results, deli, 0, 1);
   }
 
+  inline vsx_string<> filename_from_path(vsx_string<> filename, char override_directory_separator = 0)
+  {
+    vsx_string<> deli = DIRECTORY_SEPARATOR;
+    if (override_directory_separator)
+      deli = override_directory_separator;
+    vsx_nw_vector <vsx_string<> > results;
+    vsx_string_helper::explode(filename, deli, results);
+    reqrv(results.size(), "");
+    return results[results.size()-1];
+  }
+
   inline vsx_string<> add_filename_suffix(vsx_string<> filename, vsx_string<> suffix)
   {
     vsx_nw_vector< vsx_string<> > parts;
