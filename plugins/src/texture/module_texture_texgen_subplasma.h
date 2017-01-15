@@ -130,8 +130,10 @@ public:
 
     if (vsx_texture_gl_cache::get_instance()->has(cache_handle, 0, hint))
     {
-      if (!texture)
-        texture = new vsx_texture<>;
+      if (texture)
+        texture_old = texture;
+
+      texture = new vsx_texture<>(true);
 
       texture->texture = vsx_texture_gl_cache::get_instance()->aquire(cache_handle, engine_state->filesystem, false, 0, hint, false );
       texture_out->set(texture);

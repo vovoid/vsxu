@@ -158,8 +158,7 @@ public:
       if (texture)
         texture_old = texture;
 
-      if (!texture)
-        texture = new vsx_texture<>(true);
+      texture = new vsx_texture<>(true);
 
       texture->texture = vsx_texture_gl_cache::get_instance()->aquire(cache_handle, engine_state->filesystem, false, 0, hint, false );
       texture_out->set(texture);
@@ -191,15 +190,16 @@ public:
   {
     vsx_thread_pool::instance()->wait_all(10);
 
-    if (texture_old)
-    {
-      vsx_texture_gl_cache::get_instance()->destroy( texture_old->texture );
-      delete texture_old;
-    }
     if (texture)
     {
       vsx_texture_gl_cache::get_instance()->destroy( texture->texture );
       delete texture;
+    }
+
+    if (texture_old)
+    {
+      vsx_texture_gl_cache::get_instance()->destroy( texture_old->texture );
+      delete texture_old;
     }
   }
 };

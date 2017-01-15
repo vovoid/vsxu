@@ -139,6 +139,8 @@ public:
 
   void destroy(vsx_texture_gl*& texture_gl)
   {
+    req(texture_gl);
+
     vsx_texture_gl_cache_item* item = get_item(texture_gl);
     if (!item)
       VSX_ERROR_RETURN("Invalid cache item");

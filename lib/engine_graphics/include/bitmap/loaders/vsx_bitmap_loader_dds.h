@@ -128,14 +128,14 @@ class vsx_bitmap_loader_dds
     bitmap->height = header.height;
     bitmap->channels = 4;
 
-    size_t row_size =
-        MAX(1, (header.width + 3) / 4) *
-        MAX(1, (header.height + 3) / 4) *
-        bytes_per_block
-      ;
+//    size_t row_size =
+//        MAX(1, (header.width + 3) / 4) *
+//        MAX(1, (header.height + 3) / 4) *
+//        bytes_per_block
+//      ;
 
-    if (row_size != header.pitch_or_linear_size)
-      vsx_printf(L"WARNING!!!    DDS pitch or linear size wrong,      %hs\n", bitmap->filename.c_str());
+    //if (row_size != header.pitch_or_linear_size)
+    //  vsx_printf(L"WARNING!!!    DDS pitch or linear size wrong,      %hs\n", bitmap->filename.c_str());
 
     unsigned int x = header.width;
     unsigned int y = header.height;
