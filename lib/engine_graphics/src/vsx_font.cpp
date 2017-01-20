@@ -128,11 +128,11 @@ void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsx::filesystem* 
       dx = 0;
       dy = 0;
 
+
+      reqrv(my_font_info.texture->bind(), vsx_vector3<>());
+      colc = (char*)colors.c_str();
       glPushMatrix();
       glTranslatef(p.x,p.y,p.z);
-
-        reqrv(my_font_info.texture->bind(), vsx_vector3<>());
-        colc = (char*)colors.c_str();
 
         if (use_colors)
         {
@@ -190,8 +190,8 @@ void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsx::filesystem* 
           }
         }
         glEnd();
-        my_font_info.texture->_bind();
       glPopMatrix();
+      my_font_info.texture->_bind();
       ep.x = dx+p.x;  // this might need to be fixed
       ep.y = dy+p.y;
       return ep;

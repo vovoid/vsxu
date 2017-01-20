@@ -18,6 +18,7 @@ namespace vsx
     vsx_string<> base_path;
 
     bool archive_prohibited = false;
+    static size_t num_open_files;
 
   public:
 

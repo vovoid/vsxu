@@ -99,7 +99,7 @@ bool filesystem::is_file(const vsx_string<>filename)
   return true;
 }
 
-
+size_t  filesystem::num_open_files = 0;
 
 file* filesystem::f_open(const char* filename)
 {
@@ -122,11 +122,19 @@ file* filesystem::f_open(const char* filename)
     i_filename = vsx_string_helper::str_replace<char>("/","\\",i_filename);
   #endif
 
-  handle->handle = fopen((base_path+i_filename).c_str(),"rb");
+  vsx_string<> target_filename = base_path+i_filename;
+  handle->handle = fopen(target_filename.c_str(),"rb");
   if (!handle->handle)
   {
+    if (errno != ENOENT)
+      vsx_printf(L"File open failed - %s, errno: %d\n", filename, errno);
     delete handle;
     handle = 0x0;
+  }
+  if (handle)
+  {
+    num_open_files++;
+    //vsx_printf(L"open files: %d      %s\n", num_open_files, filename);
   }
   return handle;
 }
@@ -136,6 +144,7 @@ void filesystem::f_close(file* &handle)
   if (!handle)
     return;
 
+  num_open_files--;
   if (!archive.is_archive())
   {
     if (handle->handle)

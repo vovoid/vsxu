@@ -65,6 +65,8 @@ public:
     memcpy((void*)A, (void*)(F->get_pointer()), sizeof(T) * used);
   }
 
+  // nA  - pointer to data
+  // nsize - number of elements = byte_count / sizeof(t)
   void set_data(T* nA, size_t nsize) VSX_ALWAYS_INLINE
   {
     if (A && !data_volatile)
