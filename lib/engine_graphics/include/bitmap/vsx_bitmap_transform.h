@@ -241,7 +241,7 @@ public:
   {
     reqrv(bitmap->channels == 4, false);
     if (bitmap->storage_format == vsx_bitmap::byte_storage)
-      if (is_alpha_channel_used<char>(bitmap, 255))
+      if (is_alpha_channel_used<char>(bitmap, (char)255))
         return false;
     if (bitmap->storage_format == vsx_bitmap::float_storage)
       if ( is_alpha_channel_used<float>(bitmap, 1.0f) )
