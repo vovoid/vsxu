@@ -108,6 +108,7 @@ file* filesystem::f_open(const char* filename)
   reqrv(i_filename.size(), 0x0);
 
   file* handle = new file;
+  handle->filename = i_filename;
 
   if (archive.is_archive())
   {
@@ -134,7 +135,7 @@ file* filesystem::f_open(const char* filename)
   if (handle)
   {
     num_open_files++;
-    //vsx_printf(L"open files: %d      %s\n", num_open_files, filename);
+    vsx_printf(L"open files: %d      %hs\n", num_open_files, filename);
   }
   return handle;
 }

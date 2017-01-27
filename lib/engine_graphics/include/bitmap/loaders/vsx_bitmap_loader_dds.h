@@ -153,6 +153,7 @@ class vsx_bitmap_loader_dds
       if (!y)
         y = 1;
     }
+    vsx_printf(L"loaded dds image: %hs\n", file_handle->filename.c_str() );
     return true;
   }
 
@@ -194,7 +195,7 @@ class vsx_bitmap_loader_dds
         bytes_per_block
       ;
 
-    req_error_v(
+    /*req_error_v(
         row_size == header->pitch_or_linear_size,
         (
           vsx_string<>("size differes from pitch or linear size, header pitch:") +
@@ -203,7 +204,7 @@ class vsx_bitmap_loader_dds
         ).c_str()
         ,
         false
-      );
+      );*/
 
     bitmap->data_mark_volatile();
     unsigned int x = header->width;
@@ -222,6 +223,7 @@ class vsx_bitmap_loader_dds
       if (!y)
         y = 1;
     }
+    vsx_printf(L"loaded dds image: %hs\n", file_handle->filename.c_str() );
     return true;
   }
 
