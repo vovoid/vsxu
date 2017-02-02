@@ -323,7 +323,7 @@ public:
     if (bitmap.data_ready && worker_thread.joinable())
     {
       worker_thread.join();
-      bitmap.data_ready = 0;
+      //bitmap.data_ready = 0;
       bitm_timestamp = bitmap.timestamp;
       bitmap_out->set(&bitmap);
       loading_done = true;
@@ -340,7 +340,12 @@ public:
     req(bitmap_source_1->data_ready);
     req(bitmap_source_2->data_ready);
     req(!worker_thread.joinable());
-    req(bitmap_source_1->timestamp != timestamp_1 || bitmap_source_2->timestamp != timestamp_2 || p_updates != param_updates);
+    req(
+          bitmap_source_1->timestamp != timestamp_1
+        ||
+        bitmap_source_2->timestamp != timestamp_2
+        ||
+        p_updates != param_updates);
 
     p_updates = param_updates;
     timestamp_1 = bitmap_source_1->timestamp;

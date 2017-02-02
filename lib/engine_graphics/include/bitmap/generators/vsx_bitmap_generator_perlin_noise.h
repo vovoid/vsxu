@@ -76,10 +76,17 @@ public:
 
     int hsize = i_size / 2;
 
+    bitmap->channels = alpha?4:3;
+
+    if (storage_float)
+      bitmap->storage_format = vsx_bitmap::channel_storage_format::float_storage;
+    else
+      bitmap->storage_format = vsx_bitmap::channel_storage_format::byte_storage;
+
     if (storage_float)
     {
-      bitmap->data_set( malloc( sizeof(float) * i_size * i_size ) );
-      float *p = (float*)bitmap->data_get();
+      bitmap->data_set( malloc( sizeof(float) * i_size * i_size * bitmap->channels ) );
+      float* p = (float*)bitmap->data_get();
       float yp = 0.0f;
       float ddiv = 1.0f / (((float)hsize)+1.0f);
       for (int y = -hsize; y < hsize; ++y)
@@ -133,16 +140,13 @@ public:
             p[1] = color.g;
             p[2] = color.b;
             p[3] = CLAMP( pf * color.a, 0.0f, 1.0f);
+            p += 4;
           } else {
             p[0] = color.r * pf;
             p[1] = color.g * pf;
             p[2] = color.b * pf;
-            p[3] = CLAMP( color.a, 0.0f, 1.0f);
+            p += 3;
           }
-          ++p;
-          ++p;
-          ++p;
-          ++p;
           xp += divisor;
         }
         yp += divisor;
@@ -151,9 +155,9 @@ public:
     {
       // integer storage
       bitmap->data_set( malloc( sizeof(uint32_t) * i_size * i_size ) );
-      uint32_t *p = (uint32_t*)bitmap->data_get();
+      unsigned char* p = (unsigned char*)bitmap->data_get();
       float yp = 0.0f;
-      float ddiv = 1.0f / (((float)hsize)+1.0f);
+      float one_div_hsize = 1.0f / (((float)hsize)+1.0f);
 
       for (int y = -hsize; y < hsize; ++y)
       {
@@ -165,8 +169,8 @@ public:
           {
             float xx = (f_size/(f_size-2.0f))*((float)x)+0.5f;
             float yy = (f_size/(f_size-2.0f))*((float)y)+0.5f;
-            float dd = sqrt(xx*xx + yy*yy);
-            float dstf = dd * ddiv;
+            float distance_from_center = sqrt(xx*xx + yy*yy);
+            float dstf = CLAMP(distance_from_center * one_div_hsize, 0.0f, 1.0f);
             float phase =
               (float)pow(
                 1.0f -
@@ -186,7 +190,7 @@ public:
             if (phase > 2.0f)
               phase = 1.0f;
 
-            dist = (float)cos(dstf * PI/2.0f)*phase;
+            dist = (float)cos(dstf * PI/2.0f) * phase;
             dist = CLAMP(dist, 0.01f, 1.0f);
           }
           float pf =
@@ -200,20 +204,23 @@ public:
 
           if (alpha)
           {
-            long pr = (long)CLAMP( 255.0f * color.r, 0, 255);
-            long pg = (long)CLAMP( 255.0f * color.g, 0, 255);
-            long pb = (long)CLAMP( 255.0f * color.b, 0, 255);
-            long pa = (long)CLAMP( color.a * pf, 0, 255);
-            *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
+            *p = CLAMP( (unsigned char)(255.0f * color.r), 0, 255);
+            p++;
+            *p = CLAMP( (unsigned char)(255.0f * color.g), 0, 255);
+            p++;
+            *p = CLAMP( (unsigned char)(255.0f * color.b), 0, 255);
+            p++;
+            *p = CLAMP( (unsigned char)color.a * pf, 0, 255);
+            p++;
           } else
           {
-            long pr = (long)CLAMP( color.r * pf, 0, 255);
-            long pg = (long)CLAMP( color.g * pf, 0, 255);
-            long pb = (long)CLAMP( color.b * pf, 0, 255);
-            long pa = (long)CLAMP( 255.0f * color.a, 0, 255);
-            *p = 0x01000000 * pa | pb * 0x00010000 | pg * 0x00000100 | pr;
+            *p = CLAMP( (unsigned char)(pf * color.r), 0, 255);
+            p++;
+            *p = CLAMP( (unsigned char)(pf * color.g), 0, 255);
+            p++;
+            *p = CLAMP( (unsigned char)(pf * color.b), 0, 255);
+            p++;
           }
-          ++p;
           xp += divisor;
         }
         yp += divisor;

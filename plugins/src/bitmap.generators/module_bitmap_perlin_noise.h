@@ -80,7 +80,7 @@ public:
         "},"
         "options:complex{"
           "color:float4?default_controller=controller_col,"
-          "alpha:enum?no|yes&nc=1"
+          "alpha:enum?no|yes&nc=1,"
           "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024|2048x2048&nc=1,"
           "bitmap_type:enum?integer|float&nc=1"
         "}"

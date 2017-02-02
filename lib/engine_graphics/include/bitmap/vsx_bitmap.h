@@ -191,6 +191,21 @@ public:
     data_size[mip_map_level][cube_map_side] = size;
   }
 
+  inline void data_allocate(size_t mip_map_level, size_t cube_map_side, int width, int height, channel_storage_format format, unsigned int channels)
+  {
+    if (format == channel_storage_format::byte_storage)
+    {
+      size_t size_bytes = width * height * channels;
+      data_set( malloc(size_bytes), mip_map_level, cube_map_side );
+    }
+
+    if (format == channel_storage_format::float_storage)
+    {
+      size_t size_bytes = sizeof(float) * width * height * channels;
+      data_set( malloc(size_bytes), mip_map_level, cube_map_side );
+    }
+  }
+
   inline void data_free(size_t mip_map_level = 0, size_t cube_map_side = 0)
   {
     req(data[mip_map_level][cube_map_side]);

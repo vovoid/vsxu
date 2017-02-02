@@ -64,8 +64,15 @@ namespace vsx_bitmap_helper
         if (!source.data_get(mip_map_level, cube_map_side))
           continue;
 
+        void* destination_data = destination.data_get(mip_map_level, cube_map_side);
+        if (!destination_data)
+        {
+          destination.data_allocate( mip_map_level, cube_map_side, source.width, source.height, source.storage_format, source.channels );
+          destination_data = destination.data_get(mip_map_level, cube_map_side);
+        }
+
         memcpy(
-              destination.data_get(mip_map_level, cube_map_side),
+              destination_data,
               source.data_get(mip_map_level, cube_map_side),
               source.get_channel_size() * source.width * source.height);
       }

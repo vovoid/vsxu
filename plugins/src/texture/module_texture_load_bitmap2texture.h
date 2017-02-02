@@ -141,13 +141,13 @@ public:
 
     if (flip_vertical_cache)
     {
+      bitmap.data_free_all();
       vsx_bitmap_helper::copy(*source_bitmap, bitmap);
       vsx_bitmap_transform::get_instance()->flip_vertically(&bitmap);
       texture->texture->bitmap = &bitmap;
       vsx_texture_gl_loader::upload_2d( texture->texture );
       texture->texture->bitmap = 0x0;
     }
-
 
     texture_out->set(texture);
     loading_done = true;

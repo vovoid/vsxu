@@ -189,12 +189,12 @@ class vsx_bitmap_loader_dds
     bitmap->height = header->height;
     bitmap->channels = 4;
 
-    size_t row_size =
+    /*size_t row_size =
         MAX(1, (header->width + 3) / 4) *
         MAX(1, (header->height + 3) / 4) *
         bytes_per_block
       ;
-
+    */
     /*req_error_v(
         row_size == header->pitch_or_linear_size,
         (
