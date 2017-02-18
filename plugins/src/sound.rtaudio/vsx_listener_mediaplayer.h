@@ -68,7 +68,7 @@ class vsx_listener_mediaplayer : public vsx_module
 
 public:
 
-void module_info(vsx_module_info* info)
+void module_info(vsx_module_specification* info)
 {
   info->identifier =
     "sound;input_visualization_listener"
@@ -189,15 +189,15 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   octaves_r_6_p->set(0);
   octaves_r_7_p->set(0);
   wave_p = (vsx_module_param_float_array*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"wave");
-  wave.data = new vsx_array<float>;
+  wave.data = new vsx_ma_vector<float>;
   for (int i = 0; i < 512; ++i) wave.data->push_back(0);
   wave_p->set_p(wave);
 
 
   spectrum_p = (vsx_module_param_float_array*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"spectrum");
   spectrum_p_hq = (vsx_module_param_float_array*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_ARRAY,"spectrum_hq");
-  spectrum.data = new vsx_array<float>;
-  spectrum_hq.data = new vsx_array<float>;
+  spectrum.data = new vsx_ma_vector<float>;
+  spectrum_hq.data = new vsx_ma_vector<float>;
   for (int i = 0; i < 512; ++i) spectrum.data->push_back(0);
   for (int i = 0; i < 512; ++i) spectrum_hq.data->push_back(0);
   spectrum_p->set_p(spectrum);
@@ -226,9 +226,9 @@ int echo_log(const char* message, int a) {
 int i;
 
   void run() {
-    float l_mul = multiplier->get()*engine->amp*0.4f;
+    float l_mul = multiplier->get()*engine_state->amp*0.4f;
     // set wave
-    if (0 == engine->param_float_arrays.size())
+    if (0 == engine_state->param_float_arrays.size())
     {
       // enable to test using random data when not getting sound
       //int i;
@@ -242,8 +242,8 @@ int i;
       }*/
     } else
     {
-      vsx_engine_float_array* lv_wave_data = engine->param_float_arrays[0];
-      //vsx_engine_float_array* lv_freq_data = engine->param_float_arrays[1];
+      vsx_module_engine_float_array* lv_wave_data = engine_state->param_float_arrays[0];
+      //vsx_module_engine_float_array* lv_freq_data = engine_state->param_float_arrays[1];
 
       // Process incoming wave data
       for (i = 0; i < 512; ++i)

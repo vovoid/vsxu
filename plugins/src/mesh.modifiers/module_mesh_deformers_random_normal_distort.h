@@ -37,7 +37,7 @@ public:
 
   // internal
   vsx_mesh<>* mesh;
-  vsx_array< vsx_vector3<> > normals_dist_array;
+  vsx_ma_vector< vsx_vector3<> > normals_dist_array;
   unsigned long int prev_timestamp;
   vsx_vector3<> v, v_;
   float vertex_distortion_factor_;
@@ -52,7 +52,7 @@ public:
   {
     delete mesh;
   }
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;modifiers;deformers;mesh_normal_randistort";
@@ -151,11 +151,11 @@ public:
       v_ = v;
       vertex_distortion_factor_ = vertex_distortion_factor->get();
 /*
-      vsx_array<vsx_vector> vertices;
-      vsx_array<vsx_vector> vertex_normals;
-      vsx_array<vsx_color> vertex_colors;
-      vsx_array<vsx_tex_coord> vertex_tex_coords;
-      vsx_array<vsx_face> faces;
+      vsx_ma_vector<vsx_vector> vertices;
+      vsx_ma_vector<vsx_vector> vertex_normals;
+      vsx_ma_vector<vsx_color> vertex_colors;
+      vsx_ma_vector<vsx_tex_coord> vertex_tex_coords;
+      vsx_ma_vector<vsx_face> faces;
 */
       bool normal_transform_enabled = false;
       bool vertex_transform_enabled = false;

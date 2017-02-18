@@ -35,11 +35,14 @@ public:
   // internal
   vsx_mesh<>* mesh;
   vsx_quaternion_array<> i_tangents;
-  vsx_array< vsx_quaternion<> > data;
+  vsx_ma_vector< vsx_quaternion<> > data;
+  unsigned long prev_timestamp;
+  vsx_vector3<> v;
 
   bool init()
   {
     mesh = new vsx_mesh<>;
+    prev_timestamp = 1000000;
     return true;
   }
 
@@ -48,7 +51,7 @@ public:
     delete mesh;
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;modifiers;helpers;mesh_compute_tangents_vertex_color_array";
@@ -78,8 +81,6 @@ public:
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
   }
 
-  unsigned long prev_timestamp;
-  vsx_vector3<> v;
 
   void run()
   {

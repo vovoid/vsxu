@@ -17,7 +17,7 @@ class vsx_module_render_gravity_lines : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;vovoid;gravity_lines";
@@ -87,10 +87,10 @@ public:
     gr.color1[1] = color1->get(1);
     gr.color1[2] = color1->get(2);
     gr.step_freq = 10.0f * step_length->get();
-    if (last_updated != engine->vtime)
+    if (last_updated != engine_state->vtime)
     {
-      gr.update(engine->dtime, pos->get(0), pos->get(1), pos->get(2));
-      last_updated = engine->vtime;
+      gr.update(engine_state->dtime, pos->get(0), pos->get(1), pos->get(2));
+      last_updated = engine_state->vtime;
     }
     gr.render();
     render_result->set(1);

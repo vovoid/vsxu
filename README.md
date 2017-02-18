@@ -1,6 +1,6 @@
 Vovoid VSXu
 =================
-©2003-2013 Vovoid Media Technologies AB, Sweden
+©2003-2015 Vovoid Media Technologies AB, Sweden
 
 http://www.vsxu.com
 
@@ -28,7 +28,7 @@ Compilation Instructions for a basic version of VSXu Ubuntu/Debian:
 
 Make sure you have met the build dependencies:
 
-      sudo apt-get install libglew-dev libglfw-dev libpng12-dev libftgl-dev libjpeg-dev libpulse-dev libopenexr-dev libxrandr-dev make cmake g++ gcc git-core
+      sudo apt-get install libglew-dev libpng12-dev libftgl-dev libjpeg-dev libpulse-dev libopenexr-dev libxrandr-dev make cmake g++ gcc git-core
 
 Optional dependencies:
 
@@ -41,6 +41,7 @@ Get the VSXu Source from github:
 Build it:
 
       cd vsxu
+      git submodule update --init
       mkdir build
       cd build
       cmake -DCMAKE_INSTALL_PREFIX=/usr ..

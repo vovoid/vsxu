@@ -1,4 +1,4 @@
-#include <vsx_string_helper.h>
+#include <string/vsx_string_helper.h>
 
 
 class module_mesh_import_robj : public vsx_module
@@ -16,7 +16,7 @@ public:
   vsx_mesh<>* mesh;
   bool first_run;
   int n_rays;
-  vsx_string current_filename;
+  vsx_string<>current_filename;
 
 
   bool init()
@@ -30,7 +30,7 @@ public:
     delete mesh;
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;importers;robj_importer";
@@ -78,7 +78,7 @@ public:
 
     param_updates = 0;
 
-    if (!verify_filesuffix(filename->get(),"robj"))
+    if (!vsx_string_helper::verify_filesuffix(filename->get(),"robj"))
     {
       filename->set(current_filename);
       message = "module||ERROR! This is not a ROBJ mesh file!";
@@ -87,19 +87,19 @@ public:
     else message = "module||ok";
 
     current_filename = filename->get();
-    vsxf_handle *fp;
+    vsx::file *fp;
 
-    if ((fp = engine->filesystem->f_open(current_filename.c_str(), "r")) == NULL)
+    if ((fp = engine_state->filesystem->f_open(current_filename.c_str())) == NULL)
     {
       VSX_ERROR_RETURN("Could not open file");
     }
 
     char buf[65535];
-    vsx_string line;
-    vsx_array<vsx_vector3<> > vertices;
-    vsx_array<vsx_vector3<> > normals;
-    vsx_array<vsx_tex_coord2f> texcoords;
-    vsx_array<vsx_tex_coord2f> texcoords_2;
+    vsx_string<>line;
+    vsx_ma_vector<vsx_vector3<> > vertices;
+    vsx_ma_vector<vsx_vector3<> > normals;
+    vsx_ma_vector<vsx_tex_coord2f> texcoords;
+    vsx_ma_vector<vsx_tex_coord2f> texcoords_2;
 
     int face_cur = 0;
     bool found_normals = false;
@@ -111,7 +111,7 @@ public:
       mesh->data->vertex_normals.reset_used();
       mesh->data->faces.reset_used();
 
-      while (engine->filesystem->f_gets(buf,65535,fp))
+      while (engine_state->filesystem->f_gets(buf,65535,fp))
       {
         line = buf;
 
@@ -121,9 +121,9 @@ public:
         if (!line.size())
           continue;
 
-        vsx_avector<vsx_string> parts;
-        vsx_string deli = " ";
-        explode(line, deli, parts);
+        vsx_nw_vector< vsx_string<> > parts;
+        vsx_string<>deli = " ";
+        vsx_string_helper::explode(line, deli, parts);
         if (parts[0] == "v") {
           vertices.push_back(vsx_vector3<>(vsx_string_helper::s2f(parts[1]),vsx_string_helper::s2f(parts[2]),vsx_string_helper::s2f(parts[3])));
         } else
@@ -153,15 +153,15 @@ public:
         } else
         if (parts[0] == "f") {
             vsx_face3 ff;
-            vsx_string deli2 = "/";
+            vsx_string<>deli2 = "/";
 
 
-            vsx_avector<vsx_string> parts2;
-            explode(parts[1], deli2, parts2);
-            vsx_avector<vsx_string> parts3;
-            explode(parts[2], deli2, parts3);
-            vsx_avector<vsx_string> parts4;
-            explode(parts[3], deli2, parts4);
+            vsx_nw_vector< vsx_string<> > parts2;
+            vsx_string_helper::explode(parts[1], deli2, parts2);
+            vsx_nw_vector< vsx_string<> > parts3;
+            vsx_string_helper::explode(parts[2], deli2, parts3);
+            vsx_nw_vector< vsx_string<> > parts4;
+            vsx_string_helper::explode(parts[3], deli2, parts4);
 
             ff.c = face_cur;
             ff.b = face_cur+1;
@@ -200,16 +200,16 @@ public:
                 {
                   mesh->data->vertex_tex_coords[ff.a * tex_coord_multiplier + 1 ] =
                       texcoords_2[
-                        vsx_string_helper::s2i( parts2[1] ) - 1
+                        vsx_string_helper::s2i( parts2[3] ) - 1
                       ];
 
                   mesh->data->vertex_tex_coords[ff.b * tex_coord_multiplier + 1 ] =
                       texcoords_2[
-                        vsx_string_helper::s2i( parts3[1] ) - 1
+                        vsx_string_helper::s2i( parts3[3] ) - 1
                       ];
                   mesh->data->vertex_tex_coords[ff.c * tex_coord_multiplier + 1 ] =
                       texcoords_2[
-                        vsx_string_helper::s2i( parts4[1] ) - 1
+                        vsx_string_helper::s2i( parts4[3] ) - 1
                       ];
                 }
               }
@@ -244,16 +244,16 @@ public:
       }
     } else {
 
-      while (engine->filesystem->f_gets(buf,65535,fp))
+      while (engine_state->filesystem->f_gets(buf,65535,fp))
       {
         line = buf;
         if (line[line.size()-1] == 0x0A) line.pop_back();
         if (line[line.size()-1] == 0x0D) line.pop_back();
         if (line.size())
         {
-          vsx_avector<vsx_string> parts;
-          vsx_string deli = " ";
-          explode(line, deli, parts);
+          vsx_nw_vector< vsx_string<> > parts;
+          vsx_string<>deli = " ";
+          vsx_string_helper::explode(line, deli, parts);
           if (parts[0] == "v")
           {
             mesh->data->vertices.push_back(vsx_vector3<>(vsx_string_helper::s2f(parts[1]),vsx_string_helper::s2f(parts[2]),vsx_string_helper::s2f(parts[3])));
@@ -261,14 +261,14 @@ public:
           if (parts[0] == "f")
           {
               vsx_face3 ff;
-              vsx_string deli2 = "/";
+              vsx_string<>deli2 = "/";
 
-              vsx_avector<vsx_string> parts2;
-              explode(parts[1], deli2, parts2);
-              vsx_avector<vsx_string> parts3;
-              explode(parts[2], deli2, parts3);
-              vsx_avector<vsx_string> parts4;
-              explode(parts[3], deli2, parts4);
+              vsx_nw_vector< vsx_string<> > parts2;
+              vsx_string_helper::explode(parts[1], deli2, parts2);
+              vsx_nw_vector< vsx_string<> > parts3;
+              vsx_string_helper::explode(parts[2], deli2, parts3);
+              vsx_nw_vector< vsx_string<> > parts4;
+              vsx_string_helper::explode(parts[3], deli2, parts4);
 
               ff.c = vsx_string_helper::s2i(parts2[0])-1;
               ff.b = vsx_string_helper::s2i(parts3[0])-1;
@@ -332,9 +332,9 @@ public:
       }
     }
 
-    engine->filesystem->f_close(fp);
+    engine_state->filesystem->f_close(fp);
     loading_done = true;
-    mesh->timestamp = (int)(engine->real_vtime*1000.0f);
+    mesh->timestamp = (int)(engine_state->real_vtime*1000.0f);
 
     result->set_p(mesh);
   }

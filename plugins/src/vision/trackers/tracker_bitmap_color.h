@@ -22,9 +22,9 @@
 #define TRACKER_BITMAP_COLOR_H
 
 #include <cv.h>
-#include <vector/vsx_vector3.h>
+#include <math/vector/vsx_vector3.h>
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 
 
 class tracker_bitmap_color : public vsx_module
@@ -50,7 +50,7 @@ public:
   tracker_bitmap_color();
   ~tracker_bitmap_color();
   virtual void on_delete();
-  virtual void module_info(vsx_module_info* info);
+  virtual void module_info(vsx_module_specification* info);
   virtual void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters);
   virtual void run();
   virtual void output(vsx_module_param_abs* param);

@@ -44,7 +44,7 @@ public:
   {
     delete mesh;
   }
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;modifiers;transforms;mesh_scale";
@@ -107,11 +107,11 @@ public:
         vs_d[i] = vs_p[i] * v;
       }
 /*
-      vsx_array<vsx_vector> vertices;
-      vsx_array<vsx_vector> vertex_normals;
-      vsx_array<vsx_color> vertex_colors;
-      vsx_array<vsx_tex_coord> vertex_tex_coords;
-      vsx_array<vsx_face> faces;
+      vsx_ma_vector<vsx_vector> vertices;
+      vsx_ma_vector<vsx_vector> vertex_normals;
+      vsx_ma_vector<vsx_color> vertex_colors;
+      vsx_ma_vector<vsx_tex_coord> vertex_tex_coords;
+      vsx_ma_vector<vsx_face> faces;
 */
 
       mesh->data->vertex_normals.set_volatile();

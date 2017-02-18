@@ -25,8 +25,8 @@
 #include "_configuration.h"
 #include "vsx_gl_global.h"
 #include "vsx_param.h"
-#include "vsx_module.h"
-#include "vsx_quaternion.h"
+#include <module/vsx_module.h>
+#include <math/quaternion/vsx_quaternion.h>
 
 
 
@@ -51,9 +51,14 @@
 extern "C" {
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
-__declspec(dllexport) unsigned long get_num_modules(vsx_engine_environment* environment);
+__declspec(dllexport) unsigned long get_num_modules(vsx_module_engine_environment* environment);
 }
 
+#ifndef MOD_CM
+#define MOD_CM vsx_module_particlesystem_modifiers_cm
+#define MOD_DM vsx_module_particlesystem_modifiers_dm
+#define MOD_NM vsx_module_particlesystem_modifiers_nm
+#endif
 
 
 vsx_module* MOD_CM(unsigned long module, void* args)
@@ -81,7 +86,7 @@ void MOD_DM(vsx_module* m,unsigned long module) {
   }
 }
 
-unsigned long MOD_NM(vsx_engine_environment* environment)
+unsigned long MOD_NM(vsx_module_engine_environment* environment)
 {
   VSX_UNUSED(environment);
   return 6;

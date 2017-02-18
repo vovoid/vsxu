@@ -46,7 +46,7 @@ public:
     delete mesh;
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;modifiers;transforms;mesh_mirror";
@@ -79,8 +79,7 @@ public:
   {
     vsx_mesh<>** p = mesh_in->get_addr();
 
-    if (!p)
-      VSX_ERROR_RETURN("mesh_in is invalid\n");
+    req(p);
 
     // check if there's work to do, otherwise return
     if

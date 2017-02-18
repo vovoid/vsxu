@@ -7,7 +7,7 @@ class module_segmesh_shape_basic : public vsx_module
   vsx_2dgrid_mesh gmesh;
   float incr;
 public:
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;segmesh;shape;segmesh_shape_basic";

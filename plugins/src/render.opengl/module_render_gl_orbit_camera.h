@@ -29,7 +29,7 @@ public:
 
 
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;opengl_modifiers;cameras;orbit_camera";
@@ -77,6 +77,7 @@ public:
     near_clipping = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"near_clipping");
     far_clipping = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"far_clipping");
     perspective_correct = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"perspective_correct");
+    perspective_correct->set(1);
 
     rotation->set(0,0);
     rotation->set(0,1);
@@ -135,10 +136,7 @@ public:
     gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
     gl_state->matrix_load_identity();
 
-  #ifdef VSXU_OPENGL_ES
-    glRotatef(-90,0,0,1);
-  #endif
-    gl_state->matrix_glu_lookat(
+    gl_state->matrix_glu_lookatf(
       rotation_.x*dist+destination->get(0),
       rotation_.y*dist+destination->get(1),
       rotation_.z*dist+destination->get(2),

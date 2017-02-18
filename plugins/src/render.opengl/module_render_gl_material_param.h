@@ -1,3 +1,5 @@
+#include <vsx_gl_state.h>
+
 class module_render_gl_material_param : public vsx_module
 {
   // in
@@ -28,7 +30,7 @@ class module_render_gl_material_param : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;opengl_modifiers;material_param";
@@ -141,12 +143,70 @@ public:
     gl_state = vsx_gl_state::get_instance();
   }
 
+  void declare_operations(vsx_nw_vector<vsx_module_operation*>& operations )
+  {
+    vsx_module_operation* operation = new vsx_module_operation;
+    operation->handle = "save";
+    operation->name = "Save material to disk...";
+    operation->param_1_required = true;
+    operation->param_1_name = "Filename";
+    operations.push_back( operation );
+  }
+
+  void destroy_operations(vsx_nw_vector<vsx_module_operation*>& operations )
+  {
+    foreach(operations, i)
+      delete operations[i];
+  }
+
+  void run_operation(vsx_module_operation& operation)
+  {
+    if (operation.handle == "save")
+    {
+      if (!operation.param_1.size())
+      {
+        message = "module||file name empty";
+        return;
+      }
+
+      vsx_data_path::get_instance()->ensure_output_directory("lights");
+
+      // Serialization format: 0 0:0.836,-0.35,-0.467:0.45955,0.752,1.0,1.0:0.5,0.58,0.66,1.0:1.0,1.0,1.0,1.0
+      vsx_string_helper::write_to_file(
+        vsx_data_path::get_instance()->data_path_get() +  "lights" + DIRECTORY_SEPARATOR + operation.param_1,
+
+            vsx_string_helper::f2s( ambient_reflectance->get(0) ) + "," +
+            vsx_string_helper::f2s( ambient_reflectance->get(1) ) + "," +
+            vsx_string_helper::f2s( ambient_reflectance->get(2) ) + "," +
+            vsx_string_helper::f2s( ambient_reflectance->get(3) ) + ":" +
+
+            vsx_string_helper::f2s( diffuse_reflectance->get(0) ) + "," +
+            vsx_string_helper::f2s( diffuse_reflectance->get(1) ) + "," +
+            vsx_string_helper::f2s( diffuse_reflectance->get(2) ) + "," +
+            vsx_string_helper::f2s( diffuse_reflectance->get(3) ) + ":" +
+
+            vsx_string_helper::f2s( specular_reflectance->get(0) ) + "," +
+            vsx_string_helper::f2s( specular_reflectance->get(1) ) + "," +
+            vsx_string_helper::f2s( specular_reflectance->get(2) ) + "," +
+            vsx_string_helper::f2s( specular_reflectance->get(3) ) + ":" +
+
+            vsx_string_helper::f2s( emission_intensity->get(0) ) + "," +
+            vsx_string_helper::f2s( emission_intensity->get(1) ) + "," +
+            vsx_string_helper::f2s( emission_intensity->get(2) ) + "," +
+            vsx_string_helper::f2s( emission_intensity->get(3) ) + ":" +
+
+            vsx_string_helper::f2s( specular_exponent->get() )
+      );
+    }
+    message = "module||shader saved successfully";
+  }
+
 
   bool activate_offscreen()
   {
     unsigned int ff = faces_affected->get();
 
-    float specular[4];
+    float specular[4] = {0.0f, 0.0f, 0.0f, 0.0f};
     specular[0] = specular_exponent->get();
     if (specular[0] > 120.0f)
       specular[0] = 120.0f;

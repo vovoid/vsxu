@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 2.6)
 
 # compute module id from compilation path
 get_filename_component(list_file_path ${CMAKE_CURRENT_LIST_FILE} PATH)
-string(REGEX MATCH "[a-z0-9.-]*$" module_id ${list_file_path})
+string(REGEX MATCH "[a-z0-9._-]*$" module_id ${list_file_path})
 
 project (${module_id})
 
@@ -36,7 +36,7 @@ include(../cmake_globals.txt)
 CREATE_MODULE(${module_id})
 
 
-CREATE_TARGET_LINK_LIBRARIES(
+set(LIBRARIES
   ${OpenCV_LIBS} ${CMAKE_THREAD_LIBS_INIT}
 )
 

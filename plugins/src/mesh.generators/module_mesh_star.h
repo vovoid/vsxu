@@ -11,7 +11,7 @@ public:
   vsx_color<> color;
   vsx_quaternion<> phs;
   vsx_quaternion<> freq;
-  vsx_avector_nd<star_line> lines;
+  vsx_nw_vector_nd<star_line> lines;
   star_worm() {
     for (int i = 0; i < 20; ++i) {
       star_line line;
@@ -40,7 +40,7 @@ class module_mesh_star : public vsx_module {
 
   float trail_length;
 
-  vsx_avector<star_worm*> worms;
+  vsx_nw_vector<star_worm*> worms;
   vsx_float_array* spectrum;
 
 public:
@@ -55,7 +55,7 @@ public:
     delete mesh;
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;particles;mesh_star";
@@ -86,16 +86,21 @@ public:
       for (int j = 0; j < 100; ++j) {
         star_worm* my_worm = new star_worm;
         my_worm->size = 0.0f;
-        my_worm->freq.x = (rand()%10000)*0.0001-0.5;
-        my_worm->freq.y = (rand()%10000)*0.0001-0.5;
-        my_worm->freq.z = (rand()%10000)*0.0001-0.5;
-        my_worm->freq.w = (rand()%10000)*0.0001-0.5;
+        my_worm->freq.x = (rand()%10000)*0.0001f-0.5f;
+        my_worm->freq.y = (rand()%10000)*0.0001f-0.5f;
+        my_worm->freq.z = (rand()%10000)*0.0001f-0.5f;
+        my_worm->freq.w = (rand()%10000)*0.0001f-0.5f;
 
-        my_worm->phs.x = (rand()%10000)*0.0001-0.5;
-        my_worm->phs.y = (rand()%10000)*0.0001-0.5;
-        my_worm->phs.z = (rand()%10000)*0.0001-0.5;
-        my_worm->phs.w = (rand()%10000)*0.0001-0.5;
-        my_worm->color = vsx_color<>((rand()%10000)*0.0001,(rand()%10000)*0.0001,(rand()%10000)*0.0001,0.5f);
+        my_worm->phs.x = (rand()%10000)*0.0001f-0.5f;
+        my_worm->phs.y = (rand()%10000)*0.0001f-0.5f;
+        my_worm->phs.z = (rand()%10000)*0.0001f-0.5f;
+        my_worm->phs.w = (rand()%10000)*0.0001f-0.5f;
+        my_worm->color = vsx_color<>(
+            (rand()%10000)*0.0001f, 
+            (rand()%10000)*0.0001f,
+            (rand()%10000)*0.0001f,
+            0.5f
+          );
         worms.push_back(my_worm);
       }
       first_run = false;
@@ -104,17 +109,17 @@ public:
     vsx_quaternion<> quat;
     int jj = 0;
     for (unsigned long i = 0; i < worms.size(); ++i) {
-      quat.x = sin(worms[i]->freq.x*engine->vtime+worms[i]->phs.x);
-      quat.y = sin(worms[i]->freq.y*engine->vtime+worms[i]->phs.y);
-      quat.z = sin(worms[i]->freq.z*engine->vtime+worms[i]->phs.z);
-      quat.w = sin(worms[i]->freq.w*engine->vtime+worms[i]->phs.w);
+      quat.x = sin(worms[i]->freq.x*engine_state->vtime+worms[i]->phs.x);
+      quat.y = sin(worms[i]->freq.y*engine_state->vtime+worms[i]->phs.y);
+      quat.z = sin(worms[i]->freq.z*engine_state->vtime+worms[i]->phs.z);
+      quat.w = sin(worms[i]->freq.w*engine_state->vtime+worms[i]->phs.w);
       quat.normalize();
-      mesh->data->vertices[jj] = vsx_vector3<>(0);
+      mesh->data->vertices[jj] = vsx_vector3<>(0.0f);
       mesh->data->vertex_colors[jj] = vsx_color<>();
       ++jj;
       for (unsigned long k = 0; k < worms[i]->lines.size(); ++k) {
         vsx_quaternion<> qq = worms[i]->lines[k].pos;
-        float tt = engine->dtime * worms[i]->lines[k].speed;
+        float tt = engine_state->dtime * worms[i]->lines[k].speed;
         worms[i]->lines[k].pos.slerp(qq, quat, tt);
         vsx_matrix<float> mat2 = worms[i]->lines[k].pos.matrix();
         mesh->data->vertices[jj] = mat2.multiply_vector(vsx_vector3<>(1.0f,0,0));

@@ -21,118 +21,50 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <module/vsx_module.h>
 
+#include <bitmap/vsx_bitmap.h>
+#include <math/vector/vsx_vector2.h>
+#include <color/vsx_color.h>
+#include <bitmap/generators/vsx_bitmap_generator_plasma.h>
 
 class module_bitmap_plasma : public vsx_module
 {
 public:
-  // in
+  // in - function
+  vsx_module_param_float4* col_amp_in;
+  vsx_module_param_float4* col_ofs_in;
+
+  // in - function - period
+  vsx_module_param_float3* r_period_in;
+  vsx_module_param_float3* g_period_in;
+  vsx_module_param_float3* b_period_in;
+  vsx_module_param_float3* a_period_in;
+
+  // in - function - ofs
+  vsx_module_param_float3* r_ofs_in;
+  vsx_module_param_float3* g_ofs_in;
+  vsx_module_param_float3* b_ofs_in;
+  vsx_module_param_float3* a_ofs_in;
+
+  // in - options
+  vsx_module_param_int* size_in;
 
   // out
-  vsx_module_param_bitmap* result1;
+  vsx_module_param_bitmap* bitmap_out;
+
   // internal
-  bool need_to_rebuild;
-
-  vsx_bitmap bitm;
-  int bitm_timestamp;
-
-  pthread_t	worker_t;
-
-  int p_updates;
-  int my_ref;
-
-  //vsx_module_param_float* star_offset;
-  vsx_module_param_float* arms;
-  vsx_module_param_float* attenuation;
-  vsx_module_param_float* star_flower;
-  vsx_module_param_float* angle;
+  bool worker_running = false;
+  vsx_bitmap* bitmap = 0x0;
+  vsx_bitmap* old_bitmap = 0x0;
 
 
-  vsx_module_param_float4* col_amp;
-  vsx_module_param_float4* col_ofs;
-
-  vsx_module_param_float3* r_period;
-  vsx_module_param_float3* g_period;
-  vsx_module_param_float3* b_period;
-  vsx_module_param_float3* a_period;
-
-  vsx_module_param_float3* r_ofs;
-  vsx_module_param_float3* g_ofs;
-  vsx_module_param_float3* b_ofs;
-  vsx_module_param_float3* a_ofs;
-  vsx_module_param_int* size;
-  
-  vsx_bitmap*       work_bitmap;
-  bool              thread_created;
-  bool              worker_running;
-  int               thread_state;
-  int               i_size;
-
-  // our worker thread, to keep the tough generating work off the main loop
-  // this is a fairly simple operation, but when you want to generate fractals
-  // and decode film, you could run into several seconds of processing time. 
-  static void* worker(void *ptr) {
-    
-    ((module_bitmap_plasma*)ptr)->worker_running = true;
-    int x,y;
-    module_bitmap_plasma* mod = ((module_bitmap_plasma*)ptr);
-    float rpx = mod->r_period->get(0);
-    float rpy = mod->r_period->get(1);
-    float gpx = mod->g_period->get(0);
-    float gpy = mod->g_period->get(1);
-    float bpx = mod->b_period->get(0);
-    float bpy = mod->b_period->get(1);
-    float apx = mod->a_period->get(0);
-    float apy = mod->a_period->get(1);
-
-    float rox = mod->r_ofs->get(0);
-    float roy = mod->r_ofs->get(1);
-    float gox = mod->g_ofs->get(0);
-    float goy = mod->g_ofs->get(1);
-    float box = mod->b_ofs->get(0);
-    float boy = mod->b_ofs->get(1);
-    float aox = mod->a_ofs->get(0);
-    float aoy = mod->a_ofs->get(1);
-    
-    float ramp = mod->col_amp->get(0)*127.0f;
-    float gamp = mod->col_amp->get(1)*127.0f;
-    float bamp = mod->col_amp->get(2)*127.0f;
-    float aamp = mod->col_amp->get(3)*127.0f;
-
-    float rofs = mod->col_ofs->get(0)*127.0f;
-    float gofs = mod->col_ofs->get(1)*127.0f;
-    float bofs = mod->col_ofs->get(2)*127.0f;
-    float aofs = mod->col_ofs->get(3)*127.0f;
-
-    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_plasma*)ptr)->work_bitmap->data;
-    int ssize = ((module_bitmap_plasma*)ptr)->i_size;
-    int hsize = ssize >> 1;
-    float size = (float)(2.0f*PI)/(float)ssize;
-    
-    for(y = -hsize; y < hsize; ++y)
-    {
-      for(x = -hsize; x < hsize; ++x,p++)
-      {
-        long r = (long)round(fmod(fabs((sin((x*size+rox)*rpx)*sin((y*size+roy)*rpy)+1.0f)*ramp+rofs),255.0));
-        long g = (long)round(fmod(fabs((sin((x*size+gox)*gpx)*sin((y*size+goy)*gpy)+1.0f)*gamp+gofs),255.0));
-        long b = (long)round(fmod(fabs((sin((x*size+box)*bpx)*sin((y*size+boy)*bpy)+1.0f)*bamp+bofs),255.0));
-        long a = (long)round(fmod(fabs((sin((x*size+aox)*apx)*sin((y*size+aoy)*apy)+1.0f)*aamp+aofs),255.0));
-        *p = 0x01000000 * a | b * 0x00010000 | g * 0x00000100 | r;
-
-      }
-    }// for y
-    ((module_bitmap_plasma*)ptr)->work_bitmap->timestamp++;
-    ((module_bitmap_plasma*)ptr)->work_bitmap->valid = true;
-    ((module_bitmap_plasma*)ptr)->thread_state = 2;
-    return 0;
-  }
-  
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->in_param_spec =
-      "settings:complex{"
-        "col_amp:float4?default_controller=controller_col,"
-        "col_ofs:float4?default_controller=controller_col,"
+      "function:complex{"
+        "col_amp:float4,"
+        "col_ofs:float4,"
         "period:complex{"
           "r_period:float3,"
           "g_period:float3,"
@@ -146,7 +78,9 @@ public:
           "a_ofs:float3"
         "}"
       "},"
-      "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024"
+      "options:complex{"
+        "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024&nc=1"
+      "}"
     ;
 
     info->identifier = "bitmaps;generators;plasma";
@@ -158,114 +92,106 @@ public:
   
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-    thread_state = 0;
-    worker_running = false;
-    thread_created = false;
-    p_updates = -1;
+    // function
+    col_amp_in = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"col_amp");
+    col_amp_in->set(1.0f, 0);
+    col_amp_in->set(1.0f, 1);
+    col_amp_in->set(1.0f, 2);
+    col_amp_in->set(1.0f, 3);
+    col_ofs_in = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"col_ofs");
 
-    col_amp = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"col_amp");
-    col_amp->set(1.0f,0);
-    col_amp->set(1.0f,1);
-    col_amp->set(1.0f,2);
-    col_amp->set(1.0f,3);
-    col_ofs = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"col_ofs");
+    r_period_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"r_period");
+    r_period_in->set(1.0f, 0);
+    r_period_in->set(1.0f, 1);
 
+    g_period_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"g_period");
+    g_period_in->set(1.0f, 0);
+    g_period_in->set(1.0f, 1);
 
-    r_period = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"r_period");
-    r_period->set(1.0f,0);
-    r_period->set(1.0f,1);
-    g_period = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"g_period");
-    g_period->set(1.0f,0);
-    g_period->set(16.0f,1);
-    b_period = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"b_period");
-    a_period = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"a_period");
+    b_period_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"b_period");
+    a_period_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"a_period");
 
-    r_ofs = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"r_ofs");
-    g_ofs = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"g_ofs");
-    b_ofs = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"b_ofs");
-    a_ofs = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"a_ofs");
+    r_ofs_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"r_ofs");
+    g_ofs_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"g_ofs");
+    b_ofs_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"b_ofs");
+    a_ofs_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"a_ofs");
 
-    arms = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"arms");
-
-    attenuation = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
-    attenuation->set(0.1f);
-
-    size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
-    size->set(4);
+    // options
+    size_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
+    size_in->set(4);
     
-    star_flower = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"star_flower");
-
-    angle = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"angle");
-    i_size = 0;
-  	result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-    result1->set_p(bitm);
-    work_bitmap = &bitm;
-    bitm.data = 0;
-    bitm.bpp = 4;
-    bitm.bformat = GL_RGBA;
-    bitm.valid = false;
-    my_ref = 0;
-    bitm_timestamp = bitm.timestamp = rand();
-    need_to_rebuild = true;
-    to_delete_data = 0;
+    // out
+    bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
   }
-  void *to_delete_data;
-  void run() {
-    // initialize our worker thread, we don't want to keep the renderloop waiting do we?
-    if (!worker_running)
-    if (p_updates != param_updates) {
-      //need_to_rebuild = false;
-      if (i_size != 8 << size->get()) {
-        i_size = 8 << size->get();
-        if (bitm.data) to_delete_data = bitm.data;
-        //if (bitm.data) delete[] bitm.data;
-        bitm.data = new vsx_bitmap_32bt[i_size*i_size];
-        bitm.size_y = bitm.size_x = i_size;
-      }
 
-      p_updates = param_updates;
-      bitm.valid = false;
-      //printf("creating thread\n");
-      thread_state = 1;
-      thread_created = true;
-      worker_running = true;
-      pthread_create(&worker_t, NULL, &worker, (void*)this);
 
-      //printf("done creating thread\n");
-    }
-    if (thread_state == 2) {
-      if (bitm.valid && bitm_timestamp != bitm.timestamp) {
-        pthread_join(worker_t,NULL);
-        worker_running = false;
-        // ok, new version
-        //printf("uploading blob to vram\n");
-        bitm_timestamp = bitm.timestamp;
-        result1->set_p(bitm);
-        loading_done = true;
-        if (to_delete_data)
-        {
-          delete[] (vsx_bitmap_32bt*)to_delete_data;
-          to_delete_data = 0;
-        }
-      }
-      thread_state = 3;
-    }  
-  }
-  void start() {
-  }  
-  
-  void stop() {}
-  
-  void on_delete() {
-    if (worker_running)
+  void run()
+  {
+    if (bitmap && bitmap->data_ready)
     {
-      // wait for thread to finish
-      void* ret;
-      pthread_join(worker_t,&ret);
+      bitmap_out->set(bitmap);
+      loading_done = true;
+
+      if (old_bitmap)
+      {
+        vsx_bitmap_cache::get_instance()->destroy(old_bitmap);
+        old_bitmap = 0;
+      }
+      worker_running = false;
     }
-    if  (bitm.data)
+
+    req(!worker_running);
+    req( param_updates );
+    param_updates = 0;
+
+
+    if (bitmap)
     {
-      delete[] (vsx_bitmap_32bt*)bitm.data;
+      old_bitmap = bitmap;
+      bitmap = 0x0;
     }
+
+    vsx_string<> cache_handle = vsx_bitmap_generator_plasma::generate_cache_handle(
+        vsx_vector2f(r_period_in->get(0), r_period_in->get(1)),
+        vsx_vector2f(g_period_in->get(0), g_period_in->get(1)),
+        vsx_vector2f(b_period_in->get(0), b_period_in->get(1)),
+        vsx_vector2f(a_period_in->get(0), a_period_in->get(1)),
+        vsx_vector2f(r_ofs_in->get(0), r_ofs_in->get(1)),
+        vsx_vector2f(g_ofs_in->get(0), g_ofs_in->get(1)),
+        vsx_vector2f(b_ofs_in->get(0), b_ofs_in->get(1)),
+        vsx_vector2f(a_ofs_in->get(0), a_ofs_in->get(1)),
+        vsx_colorf(col_amp_in->get(0), col_amp_in->get(1), col_amp_in->get(2), col_amp_in->get(3)),
+        vsx_colorf(col_ofs_in->get(0), col_ofs_in->get(1), col_ofs_in->get(2), col_ofs_in->get(3)),
+        size_in->get()
+      );
+
+    if (!bitmap)
+      bitmap = vsx_bitmap_cache::get_instance()->
+        aquire_create(cache_handle, 0);
+
+    bitmap->filename = cache_handle;
+    vsx_bitmap_generator_plasma::generate_thread(
+          bitmap,
+          vsx_vector2f(r_period_in->get(0), r_period_in->get(1)),
+          vsx_vector2f(g_period_in->get(0), g_period_in->get(1)),
+          vsx_vector2f(b_period_in->get(0), b_period_in->get(1)),
+          vsx_vector2f(a_period_in->get(0), a_period_in->get(1)),
+          vsx_vector2f(r_ofs_in->get(0), r_ofs_in->get(1)),
+          vsx_vector2f(g_ofs_in->get(0), g_ofs_in->get(1)),
+          vsx_vector2f(b_ofs_in->get(0), b_ofs_in->get(1)),
+          vsx_vector2f(a_ofs_in->get(0), a_ofs_in->get(1)),
+          vsx_colorf(col_amp_in->get(0), col_amp_in->get(1), col_amp_in->get(2), col_amp_in->get(3)),
+          vsx_colorf(col_ofs_in->get(0), col_ofs_in->get(1), col_ofs_in->get(2), col_ofs_in->get(3)),
+          size_in->get()
+    );
+    worker_running = true;
   }
+
+  void on_delete()
+  {
+    if (bitmap)
+      vsx_bitmap_cache::get_instance()->destroy(bitmap);
+  }
+
+
 };

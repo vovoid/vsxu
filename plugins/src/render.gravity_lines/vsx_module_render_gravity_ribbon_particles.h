@@ -14,7 +14,7 @@ class vsx_module_render_gravity_ribbon_particles : public vsx_module
   vsx_module_param_render* render_result;
 
   // internal
-  vsx_avector<gravity_strip*> gr;
+  vsx_nw_vector<gravity_strip*> gr;
   gravity_strip* grp;
   float last_update;
   unsigned long prev_num_particles;
@@ -35,7 +35,7 @@ public:
     }
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;particlesystems;render_particle_ribbon";
@@ -130,7 +130,7 @@ public:
       gr[i]->color1[1] = color1->get(1);
       gr[i]->color1[2] = color1->get(2);
       gr[i]->step_freq = 10.0f * step_length->get();
-      gr[i]->update(engine->dtime, (*(particles->particles))[i].pos.x, (*(particles->particles))[i].pos.y, (*(particles->particles))[i].pos.z);
+      gr[i]->update(engine_state->dtime, (*(particles->particles))[i].pos.x, (*(particles->particles))[i].pos.y, (*(particles->particles))[i].pos.z);
       gr[i]->render();
     }
     render_result->set(1);

@@ -1,0 +1,96 @@
+meta_set fHx8fHw=
+component_create texture;loaders;bitmap2texture bitmap2texture -0.193910 -0.022091
+param_set bitmap2texture flip_vertical 0
+component_create texture;loaders;bitmap2texture bitmap2texture_1 -0.184803 -0.085013
+param_set bitmap2texture_1 flip_vertical 0
+param_set bitmap2texture_1 min_mag_filter 0
+component_create texture;loaders;bitmap2texture bitmap2texture_2 -0.203212 -0.230446
+param_set bitmap2texture_2 flip_vertical 0
+component_create texture;loaders;bitmap2texture bitmap2texture_3 -0.219404 -0.287117
+param_set bitmap2texture_3 flip_vertical 0
+component_create texture;loaders;bitmap2texture bitmap2texture_4 -0.248438 0.019307
+param_set bitmap2texture_4 flip_vertical 0
+component_create renderers;opengl_modifiers;blend_mode blend_mode_1 0.008652 0.057870
+param_set blend_mode_1 dest_blend 1
+component_create bitmaps;generators;blob blob_1 -0.325114 -0.001792
+param_set blob_1 attenuation 2.40215158462524414062
+param_set blob_1 star_flower 1.23160576820373535156
+component_create texture;generators;blob blob_3 -0.306216 0.063316
+param_set blob_3 attenuation 2.40215158462524414062
+param_set blob_3 star_flower 1.23160576820373535156
+param_set blob_3 color 0.00000087228795564442,0.41807636618614196777,0.99999964237213134766,1.00000000000000000000
+param_set blob_3 size 5
+component_create texture;generators;concentric_circles concentric_circles_1 -0.323055 -0.060013
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera_1 -0.023954 0.014666
+param_set orbit_camera_1 distance 1.01025366783142089844
+param_set orbit_camera_1 perspective_correct 1
+component_create maths;oscillators;oscillator oscillator_1 -0.501584 0.014076
+param_set oscillator_1 amp 4.05740547180175781250
+param_set oscillator_1 ofs 4.20115184783935546875
+param_set oscillator_1 freq 0.34126311540603637695
+component_create bitmaps;generators;perlin_noise perlin_noise_1 -0.499405 -0.244416
+param_set perlin_noise_1 rand_seed 6.29957056045532226562
+param_set perlin_noise_1 octave 7
+param_set perlin_noise_1 frequency 3
+param_set perlin_noise_1 enable_blob 1
+param_set perlin_noise_1 arms 2.62969183921813964844
+param_set perlin_noise_1 attenuation 1.82242321968078613281
+param_set perlin_noise_1 size 5
+component_create bitmaps;generators;plasma plasma_1 -0.508145 -0.291999
+param_set plasma_1 col_amp 1.00000000000000000000,0.99999904632568359375,0.99999904632568359375,1.00000000000000000000
+param_set plasma_1 r_period 2.48729395866394042969,5.31482648849487304688,0.00000000000000000000
+param_set plasma_1 r_ofs 0.42528998851776123047,0.00000000000000000000,0.00000000000000000000
+param_set plasma_1 g_ofs 0.00000088252664909305,0.00000000000000000019,0.00000000000000000000
+param_set plasma_1 b_ofs 0.00000000000000000000,0.00000086738822346888,0.00000000000000000000
+param_set plasma_1 size 3
+cpp screen0 0.000000 0.000000
+param_set screen0 gamma_correction 1.00000095367431640625
+param_set screen0 clear_color 0.00000000000000000000,0.00000087449831198683,0.00000000000000000000,0.00000100000011116208
+component_create bitmaps;generators;subplasma subplasma_1 -0.324089 -0.138172
+param_set subplasma_1 amplitude 3
+param_set subplasma_1 size 3
+component_create renderers;basic;textured_rectangle textured_rectangle -0.180647 -0.071650
+param_set textured_rectangle size 0.45498165488243103027
+param_set textured_rectangle position 0.99999928474426269531,0.53759002685546875000,0.00000000000000000000
+component_create renderers;basic;textured_rectangle textured_rectangle_1 -0.116800 -0.008301
+param_set textured_rectangle_1 size 0.45498165488243103027
+param_set textured_rectangle_1 position 0.00000000000000000000,0.53759014606475830078,0.00000000000000000000
+component_create renderers;basic;textured_rectangle textured_rectangle_2 -0.170215 0.061708
+param_set textured_rectangle_2 size 0.45498165488243103027
+param_set textured_rectangle_2 angle -0.48055741190910339355
+param_set textured_rectangle_2 position -1.26719808578491210938,-0.30388599634170532227,0.00000000000000000000
+component_create renderers;basic;textured_rectangle textured_rectangle_3 -0.122310 -0.139585
+param_set textured_rectangle_3 size 0.45498165488243103027
+param_set textured_rectangle_3 angle -0.48055741190910339355
+param_set textured_rectangle_3 position 0.00000000000000000000,-0.30388599634170532227,0.00000000000000000000
+component_create renderers;basic;textured_rectangle textured_rectangle_4 -0.150139 -0.286827
+param_set textured_rectangle_4 size 0.40000936388969421387
+param_set textured_rectangle_4 angle -0.00000886136785993585
+param_set textured_rectangle_4 position -1.22508811950683593750,0.59306710958480834961,0.00000000000000000000
+component_create renderers;basic;textured_rectangle textured_rectangle_5 -0.147261 -0.214881
+param_set textured_rectangle_5 size 0.40000936388969421387
+param_set textured_rectangle_5 angle -0.00000886136785993585
+param_set textured_rectangle_5 position -1.22508811950683593750,0.59306710958480834961,0.00000000000000000000
+component_create system;time time_1 -0.519111 -0.138576
+break
+break
+param_connect textured_rectangle_4 texture_in bitmap2texture_3 texture
+param_connect textured_rectangle_3 texture_in bitmap2texture_2 texture
+param_connect textured_rectangle_2 texture_in blob_3 texture
+param_connect textured_rectangle_1 texture_in concentric_circles_1 texture
+param_connect textured_rectangle texture_in bitmap2texture_1 texture
+param_connect subplasma_1 rand_seed time_1 r_time
+param_connect screen0 screen blend_mode_1 render_out
+param_connect orbit_camera_1 render_in textured_rectangle_2 render_out
+param_connect orbit_camera_1 render_in textured_rectangle_1 render_out
+param_connect orbit_camera_1 render_in textured_rectangle render_out
+param_connect orbit_camera_1 render_in textured_rectangle_3 render_out
+param_connect orbit_camera_1 render_in textured_rectangle_4 render_out
+param_connect concentric_circles_1 attenuation oscillator_1 float
+param_connect blob_3 arms oscillator_1 float
+param_connect blob_1 arms oscillator_1 float
+param_connect blend_mode_1 render_in orbit_camera_1 render_out
+param_connect bitmap2texture_4 bitmap blob_1 bitmap
+param_connect bitmap2texture_3 bitmap plasma_1 bitmap
+param_connect bitmap2texture_2 bitmap perlin_noise_1 bitmap
+param_connect bitmap2texture_1 bitmap subplasma_1 bitmap

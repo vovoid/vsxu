@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FA791770-E120-4E57-BF27-C00DFF212DF3}</ProjectGuid>
+    <RootNamespace>common</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>vsx_common</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IntDir>$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\;$(ProjectDir)\include;$(ProjectDir)\..\compression\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\;$(ProjectDir)\include;$(ProjectDir)\..\compression\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;VSXU_STATIC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\audio\vsx_audio_mixer_manager.cpp" />
+    <ClCompile Include="src\command\vsx_command.cpp" />
+    <ClCompile Include="src\filesystem\archive\vsxz\vsx_filesystem_archive_vsxz_info.cpp" />
+    <ClCompile Include="src\filesystem\archive\vsxz\vsx_filesystem_archive_vsxz_reader.cpp" />
+    <ClCompile Include="src\filesystem\archive\vsxz\vsx_filesystem_archive_vsxz_writer.cpp" />
+    <ClCompile Include="src\filesystem\archive\vsx\vsx_filesystem_archive_vsx_reader.cpp" />
+    <ClCompile Include="src\filesystem\archive\vsx\vsx_filesystem_archive_vsx_writer.cpp" />
+    <ClCompile Include="src\filesystem\archive\vsx_filesystem_archive_reader.cpp" />
+    <ClCompile Include="src\filesystem\vsx_filesystem.cpp" />
+    <ClCompile Include="src\filesystem\vsx_filesystem_helper.cpp" />
+    <ClCompile Include="src\log\vsx_log.cpp" />
+    <ClCompile Include="src\math\vsx_rand.cpp" />
+    <ClCompile Include="src\vsx_argvector.cpp" />
+    <ClCompile Include="src\vsx_data_path.cpp" />
+    <ClCompile Include="third-party\mt\mt.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\audio\vsx_audio_constants.h" />
+    <ClInclude Include="include\audio\vsx_audio_mixer.h" />
+    <ClInclude Include="include\audio\vsx_audio_mixer_channel.h" />
+    <ClInclude Include="include\audio\vsx_audio_mixer_manager.h" />
+    <ClInclude Include="include\audio\vsx_audio_node.h" />
+    <ClInclude Include="include\audio\vsx_sample.h" />
+    <ClInclude Include="include\audio\vsx_sample_raw.h" />
+    <ClInclude Include="include\color\vsx_color.h" />
+    <ClInclude Include="include\color\vsx_color_aux.h" />
+    <ClInclude Include="include\command\vsx_command.h" />
+    <ClInclude Include="include\command\vsx_command_client_server.h" />
+    <ClInclude Include="include\command\vsx_command_list.h" />
+    <ClInclude Include="include\container\vsx_ma_vector.h" />
+    <ClInclude Include="include\container\vsx_nw_vector.h" />
+    <ClInclude Include="include\container\vsx_nw_vector_nd.h" />
+    <ClInclude Include="include\debug\vsx_backtrace.h" />
+    <ClInclude Include="include\debug\vsx_error.h" />
+    <ClInclude Include="include\debug\vsx_memory.h" />
+    <ClInclude Include="include\filesystem\archive\vsxz\vsx_filesystem_archive_chunk_write.h" />
+    <ClInclude Include="include\filesystem\archive\vsxz\vsx_filesystem_archive_vsxz_header.h" />
+    <ClInclude Include="include\filesystem\archive\vsxz\vsx_filesystem_archive_vsxz_info.h" />
+    <ClInclude Include="include\filesystem\archive\vsxz\vsx_filesystem_archive_vsxz_reader.h" />
+    <ClInclude Include="include\filesystem\archive\vsxz\vsx_filesystem_archive_vsxz_writer.h" />
+    <ClInclude Include="include\filesystem\archive\vsx\vsx_filesystem_archive_vsx_reader.h" />
+    <ClInclude Include="include\filesystem\archive\vsx\vsx_filesystem_archive_vsx_writer.h" />
+    <ClInclude Include="include\filesystem\archive\vsx_filesystem_archive_file_read.h" />
+    <ClInclude Include="include\filesystem\archive\vsx_filesystem_archive_file_write.h" />
+    <ClInclude Include="include\filesystem\archive\vsx_filesystem_archive_reader.h" />
+    <ClInclude Include="include\filesystem\archive\vsx_filesystem_archive_reader_base.h" />
+    <ClInclude Include="include\filesystem\archive\vsx_filesystem_archive_writer_base.h" />
+    <ClInclude Include="include\filesystem\mmap\vsx_filesystem_mmap.h" />
+    <ClInclude Include="include\filesystem\mmap\vsx_filesystem_mmap_linux.h" />
+    <ClInclude Include="include\filesystem\mmap\vsx_filesystem_mmap_windows.h" />
+    <ClInclude Include="include\filesystem\mmap\vsx_file_mmap.h" />
+    <ClInclude Include="include\filesystem\tree\vsx_filesystem_tree_node.h" />
+    <ClInclude Include="include\filesystem\tree\vsx_filesystem_tree_reader.h" />
+    <ClInclude Include="include\filesystem\tree\vsx_filesystem_tree_serialize_binary.h" />
+    <ClInclude Include="include\filesystem\tree\vsx_filesystem_tree_serialize_string.h" />
+    <ClInclude Include="include\filesystem\tree\vsx_filesystem_tree_writer.h" />
+    <ClInclude Include="include\filesystem\vsx_file.h" />
+    <ClInclude Include="include\filesystem\vsx_filesystem.h" />
+    <ClInclude Include="include\filesystem\vsx_filesystem_helper.h" />
+    <ClInclude Include="include\filesystem\vsx_filesystem_identifier.h" />
+    <ClInclude Include="include\graphics\face\vsx_face1.h" />
+    <ClInclude Include="include\graphics\face\vsx_face2.h" />
+    <ClInclude Include="include\graphics\face\vsx_face3.h" />
+    <ClInclude Include="include\graphics\face\vsx_face4.h" />
+    <ClInclude Include="include\graphics\vsx_grid_mesh.h" />
+    <ClInclude Include="include\graphics\vsx_mesh.h" />
+    <ClInclude Include="include\graphics\vsx_mesh_helper.h" />
+    <ClInclude Include="include\graphics\vsx_texcoord.h" />
+    <ClInclude Include="include\input\events\vsx_input_event_game_controller.h" />
+    <ClInclude Include="include\input\events\vsx_input_event_keyboard.h" />
+    <ClInclude Include="include\input\events\vsx_input_event_keyboard_scancode.h" />
+    <ClInclude Include="include\input\events\vsx_input_event_mouse.h" />
+    <ClInclude Include="include\input\events\vsx_input_event_text.h" />
+    <ClInclude Include="include\input\states\game\vsx_input_state_game_controller.h" />
+    <ClInclude Include="include\input\states\game\vsx_input_state_game_joystick.h" />
+    <ClInclude Include="include\input\states\vsx_input_state_game.h" />
+    <ClInclude Include="include\input\states\vsx_input_state_keyboard.h" />
+    <ClInclude Include="include\input\states\vsx_input_state_mouse.h" />
+    <ClInclude Include="include\input\vsx_input_event.h" />
+    <ClInclude Include="include\input\vsx_input_event_queue.h" />
+    <ClInclude Include="include\input\vsx_input_event_queue_reader.h" />
+    <ClInclude Include="include\log\vsx_log.h" />
+    <ClInclude Include="include\math\quaternion\vsx_quaternion.h" />
+    <ClInclude Include="include\math\quaternion\vsx_quaternion_array.h" />
+    <ClInclude Include="include\math\quaternion\vsx_quaternion_helper.h" />
+    <ClInclude Include="include\math\vector\vsx_vector2.h" />
+    <ClInclude Include="include\math\vector\vsx_vector2_helper.h" />
+    <ClInclude Include="include\math\vector\vsx_vector3.h" />
+    <ClInclude Include="include\math\vector\vsx_vector3_helper.h" />
+    <ClInclude Include="include\math\vector\vsx_vector4.h" />
+    <ClInclude Include="include\math\vector\vsx_vector_array.h" />
+    <ClInclude Include="include\math\vsx_bezier_calc.h" />
+    <ClInclude Include="include\math\vsx_bspline.h" />
+    <ClInclude Include="include\math\vsx_float_array.h" />
+    <ClInclude Include="include\math\vsx_integrator.h" />
+    <ClInclude Include="include\math\vsx_math.h" />
+    <ClInclude Include="include\math\vsx_matrix.h" />
+    <ClInclude Include="include\math\vsx_rand.h" />
+    <ClInclude Include="include\math\vsx_sequence.h" />
+    <ClInclude Include="include\particlesystem\vsx_particlesystem.h" />
+    <ClInclude Include="include\perf\vsx_perf.h" />
+    <ClInclude Include="include\perf\vsx_perf_linux.h" />
+    <ClInclude Include="include\perf\vsx_perf_win.h" />
+    <ClInclude Include="include\profiler\vsx_profiler.h" />
+    <ClInclude Include="include\profiler\vsx_profiler_consumer.h" />
+    <ClInclude Include="include\profiler\vsx_profiler_manager.h" />
+    <ClInclude Include="include\string\vsx_printf.h" />
+    <ClInclude Include="include\string\vsx_string.h" />
+    <ClInclude Include="include\string\vsx_string_helper.h" />
+    <ClInclude Include="include\test\vsx_test.h" />
+    <ClInclude Include="include\time\vsx_timer.h" />
+    <ClInclude Include="include\tools\vsx_fifo.h" />
+    <ClInclude Include="include\tools\vsx_foreach.h" />
+    <ClInclude Include="include\tools\vsx_lock.h" />
+    <ClInclude Include="include\tools\vsx_rdtsc.h" />
+    <ClInclude Include="include\tools\vsx_req.h" />
+    <ClInclude Include="include\tools\vsx_req_error.h" />
+    <ClInclude Include="include\tools\vsx_singleton_counter.h" />
+    <ClInclude Include="include\tools\vsx_thread_pool.h" />
+    <ClInclude Include="include\vsx_abstract.h" />
+    <ClInclude Include="include\vsx_argvector.h" />
+    <ClInclude Include="include\vsx_common_dllimport.h" />
+    <ClInclude Include="include\vsx_data_path.h" />
+    <ClInclude Include="third-party\mt\mt.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

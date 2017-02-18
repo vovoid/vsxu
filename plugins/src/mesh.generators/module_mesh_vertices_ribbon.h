@@ -42,7 +42,7 @@ public:
   vsx_mesh<>* mesh;
   int l_param_updates;
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;vertices;ribbon_vertices";
@@ -105,7 +105,7 @@ public:
 
   void run()
   {
-    mesh->data->vertices[0] = vsx_vector3<>(0);
+    mesh->data->vertices[0] = vsx_vector3<>(0.0f);
 
     vsx_vector3<> a(start_point->get(0), start_point->get(1), start_point->get(2));
     vsx_vector3<> b(end_point->get(0), end_point->get(1), end_point->get(2));
@@ -126,7 +126,7 @@ public:
     vsx_vector3<> up_side = normal;
     up_side *= up.length();
 
-    float t = engine->vtime * time_amp->get();
+    float t = engine_state->vtime * time_amp->get();
 
     float p_scale = particle_scale->get();
 
@@ -147,21 +147,14 @@ public:
       int i2 = i;
       float it = (float)i * one_div_count;
       float ft = sin(it * 3.14159f + t) * sin(-it * 5.18674f - t);
-      float thick = fabs(sin(it * 3.14159f + t * 0.5));
+      float thick = (float)fabs(sin(it * 3.14159f + t * 0.5));
       vsx_vector3<> skew = up * ft * skew_amount * thick;
-
       mesh->data->vertices[i2    ] = pos + up * thick + skew;
-
       mesh->data->vertex_normals[i2    ] = normal;
-
       pos += diff;
-
       mesh->data->vertex_colors[i2] = vsx_color<>(thick * p_scale, thick * p_scale, thick * p_scale, 1.0);
-
       mesh->data->vertex_tex_coords[i2]   = vsx_tex_coord2f(it, 0);
-
     }
-    #undef COUNT
 
     mesh->timestamp++;
     result->set(mesh);

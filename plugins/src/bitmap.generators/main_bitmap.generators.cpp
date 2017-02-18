@@ -23,10 +23,9 @@
 
 
 #include "_configuration.h"
-#include "vsx_gl_global.h"
+#include <vsx_gl_global.h>
 #include "vsx_param.h"
-#include "vsx_module.h"
-#include <pthread.h>
+#include <module/vsx_module.h>
 #ifndef _WIN32
 #include <unistd.h>
 #define Sleep sleep
@@ -61,9 +60,14 @@
 extern "C" {
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
-__declspec(dllexport) unsigned long get_num_modules(vsx_engine_environment* environment);
+__declspec(dllexport) unsigned long get_num_modules(vsx_module_engine_environment* environment);
 }
 
+#ifndef MOD_CM
+#define MOD_CM vsx_module_bitmap_generators_cm
+#define MOD_DM vsx_module_bitmap_generators_dm
+#define MOD_NM vsx_module_bitmap_generators_nm
+#endif
 
 
 vsx_module* MOD_CM(unsigned long module, void* args)
@@ -72,13 +76,11 @@ vsx_module* MOD_CM(unsigned long module, void* args)
 
   switch(module)
   {
-    case 0: { module_bitmap_generators_blob* b = new module_bitmap_generators_blob; b->c_type = 0; return (vsx_module*)b; }
-    case 1: { module_bitmap_generators_blob* b = new module_bitmap_generators_blob; b->c_type = 1; return (vsx_module*)b; }
-    case 2: { module_bitmap_generators_concentric_circles* b = new module_bitmap_generators_concentric_circles; b->c_type = 0; return (vsx_module*)b; }
-    case 3: { module_bitmap_generators_concentric_circles* b = new module_bitmap_generators_concentric_circles; b->c_type = 1; return (vsx_module*)b; }
-    case 4: return (vsx_module*)(new module_bitmap_plasma);
-    case 5: return (vsx_module*)(new module_bitmap_subplasma);
-    case 6: return (vsx_module*)(new module_bitmap_perlin_noise);
+    case 0: return (vsx_module*)(new module_bitmap_generators_blob);
+    case 1: return (vsx_module*)(new module_bitmap_generators_concentric_circles);
+    case 2: return (vsx_module*)(new module_bitmap_plasma);
+    case 3: return (vsx_module*)(new module_bitmap_subplasma);
+    case 4: return (vsx_module*)(new module_bitmap_perlin_noise);
   }
   return 0;
 }
@@ -87,19 +89,16 @@ void MOD_DM(vsx_module* m,unsigned long module)
 {
 
   switch(module) {
-    case 0:
-    case 1: delete (module_bitmap_generators_blob*)m; break;
-    case 2:
-    case 3: delete (module_bitmap_generators_concentric_circles*)m; break;
-
-    case 4: delete (module_bitmap_plasma*)m; break;
-    case 5: delete (module_bitmap_subplasma*)m; break;
-    case 6: delete (module_bitmap_perlin_noise*)m; break;
+    case 0: delete (module_bitmap_generators_blob*)m; break;
+    case 1: delete (module_bitmap_generators_concentric_circles*)m; break;
+    case 2: delete (module_bitmap_plasma*)m; break;
+    case 3: delete (module_bitmap_subplasma*)m; break;
+    case 4: delete (module_bitmap_perlin_noise*)m; break;
   }
 }
 
-unsigned long MOD_NM(vsx_engine_environment* environment)
+unsigned long MOD_NM(vsx_module_engine_environment* environment)
 {
   VSX_UNUSED(environment);
-  return 7;
+  return 5;
 }

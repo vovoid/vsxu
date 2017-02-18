@@ -37,7 +37,7 @@ class module_4f_hsv_to_rgb_f4 : public vsx_module
   vsx_color<> color;
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier = "maths;color;converters;4f_hsv_to_f4_rgb";
 

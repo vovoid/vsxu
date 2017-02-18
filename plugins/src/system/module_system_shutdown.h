@@ -7,7 +7,7 @@ class module_system_shutdown : public vsx_module
 	// internal
 public:
 
-void module_info(vsx_module_info* info)
+void module_info(vsx_module_specification* info)
 {
   info->identifier = "system;shutdown";
   info->description = "If the shutdown value is above 1.0\n\

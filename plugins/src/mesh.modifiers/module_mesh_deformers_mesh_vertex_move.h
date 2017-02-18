@@ -41,8 +41,8 @@ public:
   unsigned long p_timestamp;
   vsx_mesh<>* mesh;
   vsx_quaternion<> q;
-  vsx_avector<unsigned long> moved_vertices;
-  vsx_avector<int> vertices_needing_normal_calc;
+  vsx_nw_vector<unsigned long> moved_vertices;
+  vsx_nw_vector<int> vertices_needing_normal_calc;
   float falloff;
   int first_index;
   vsx_mesh<>** p;
@@ -58,7 +58,7 @@ public:
     delete mesh;
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;modifiers;deformers;mesh_vertex_move";
@@ -214,11 +214,11 @@ public:
         mesh->data->vertex_normals[i] = (*p)->data->vertex_normals[i];
       }
 /*
-      vsx_array<vsx_vector> vertices;
-      vsx_array<vsx_vector> vertex_normals;
-      vsx_array<vsx_color> vertex_colors;
-      vsx_array<vsx_tex_coord> vertex_tex_coords;
-      vsx_array<vsx_face> faces;
+      vsx_ma_vector<vsx_vector> vertices;
+      vsx_ma_vector<vsx_vector> vertex_normals;
+      vsx_ma_vector<vsx_color> vertex_colors;
+      vsx_ma_vector<vsx_tex_coord> vertex_tex_coords;
+      vsx_ma_vector<vsx_face> faces;
 */
       for (unsigned int i = 0; i < (*p)->data->vertex_tex_coords.size(); i++) mesh->data->vertex_tex_coords[i] = (*p)->data->vertex_tex_coords[i];
       for (unsigned int i = 0; i < (*p)->data->vertex_tangents.size(); i++) mesh->data->vertex_tangents[i] = (*p)->data->vertex_tangents[i];

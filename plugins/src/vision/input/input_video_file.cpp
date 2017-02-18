@@ -17,7 +17,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <vsxfst.h>
+#include <filesystem/vsx_filesystem.h>
 #include <highgui.h>
 #include "input_video_file.h"
 #include "vsx_data_path.h"
@@ -28,7 +28,7 @@ input_video_file::input_video_file():
 {
 }
 
-void input_video_file::module_info(vsx_module_info* info)
+void input_video_file::module_info(vsx_module_specification* info)
 {
   info->in_param_spec = "filename:resource";
     info->identifier = "vision;input;video_file_input";
@@ -45,7 +45,7 @@ void input_video_file::declare_params(vsx_module_param_list& in_parameters, vsx_
   m_result->set_p(m_bitm);
 }
 
-void input_video_file::param_set_notify(const vsx_string& name)
+void input_video_file::param_set_notify(const vsx_string<>& name)
 {
   if(name == "filename" && isValid()){
     release_capture();

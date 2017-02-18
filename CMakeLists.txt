@@ -15,17 +15,9 @@ message("=====================================================================")
 ################################################################################
 set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 
-
 ################################################################################
 # GLOBAL INSTALL VARIABLES #####################################################
 ################################################################################
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    set(VSXU_INSTALL_INCLUDE_DIR "include/vsxu")
-    set(VSXU_INSTALL_LIB_DIR ".")
-    set(VSXU_INSTALL_BIN_DIR ".")
-    set(VSXU_INSTALL_SHARE_DIR ".")
-endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(VSXU_INSTALL_INCLUDE_DIR "include/vsxu")
@@ -49,32 +41,14 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 endif()
 
 ######################################################################################
+enable_testing()
+
+######################################################################################
 # Install the Global Headers so as to install VSXu as a library
 if (UNIX OR VSXU_WINDOWS_LIB_BUILD)
   file(GLOB HEADERS "*.h")
   install (FILES ${HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR} COMPONENT Devel)
 endif()
-
-################################################################################
-# The pkg-config file
-################################################################################
-IF (UNIX OR VSXU_WINDOWS_LIB_BUILD)
-  if (VSXU_STATIC EQUAL 1 AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/plugins/static_factory_pkgconfig_libs")
-    file (STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/plugins/static_factory_pkgconfig_libs" VSXU_PLUGIN_PKGCONFIG_LIBS)
-    CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/libvsxu.pc.in.static
-                    ${CMAKE_CURRENT_BINARY_DIR}/libvsxu.pc
-                    @ONLY)
-
-  else()
-    CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/libvsxu.pc.in.dynamic
-                    ${CMAKE_CURRENT_BINARY_DIR}/libvsxu.pc
-                    @ONLY)
-  endif()
-
-  INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/libvsxu.pc
-           DESTINATION ${VSXU_INSTALL_LIB_DIR}/pkgconfig)
-ENDIF()
-
 
 ################################################################################
 # CPACK OPTIONS ################################################################
@@ -122,10 +96,11 @@ SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jonatan 'jaw' Wallmander / Vovoid Media Tec
 
 SET(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "VSXu ${CPACK_PACKAGE_VERSION}")
 ##set(CPACK_PACKAGE_EXECUTABLES "vsxu_player;VSXu Player Window" "vsxu_artiste;VSXu Artiste")
-set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
-    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_player_launcher.exe \\\"
-    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Artiste.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_artiste.exe \\\"
-")
+# FIXME: should have a "if(INSTALL_EXE)" ...
+#set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+#    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_player_launcher.exe \\\"
+#    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Artiste.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_artiste.exe \\\"
+#")
 set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
     Delete \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player.lnk\\\"
     Delete \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Artiste.lnk\\\"
@@ -151,236 +126,50 @@ INCLUDE(CPack)
 # DEFINES ######################################################################
 ################################################################################
 
+# C++14: set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive" )
 
-if (VSXU_STATIC EQUAL 1)
+if (MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -MP8")
+  set(VSXU_STATIC 1)
   add_definitions(-DVSXU_STATIC)
-endif()
+  add_definitions(-DGLEW_STATIC)
+  add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+  include_directories( dependencies/SDL2_prebuilt_windows/include )
+  include_directories( dependencies/glew-1.7.0/include )
+  include_directories( lib/engine_graphics/thirdparty/ftgl)
+  include_directories( lib/engine_graphics/thirdparty/ftgl/src)
+  include_directories( lib/engine_graphics/thirdparty/freetype2/include )
+  include_directories( lib/engine_graphics/thirdparty/freetype2/include/freetype )
+  include_directories( lib/engine_graphics/thirdparty/freetype2/include/freetype/config )
 
-if(VSXU_DEBUG_SYMBOLS)
-  add_definitions(-g)
-endif()
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
+    add_definitions( -Wall -Wno-sign-compare)
+    add_definitions(-fmax-errors=500)
 
-
-if(VSXU_DEBUG)
-  message("All warnings are enabled")
-  add_definitions(
-    -g
-    -Wall
-    -mtune=nocona
-    -Wtype-limits
-    -fpermissive
-    -Wuninitialized
-    -Wignored-qualifiers
-    -Wempty-body
-    -Wunused-parameter
-  )
-else(VSXU_DEBUG)
-  if (OPTIMIZATION_FLAGS EQUAL 1)
-    add_definitions(
-      -DVSX_OPTIMIZATIONS=1
-      -mtune=nocona
-      -lrt 
-      -lm 
-      -O3
-      -fno-thread-jumps 
-      -fno-if-conversion2 
-      -fno-delayed-branch 
-      -fno-loop-optimize 
-      -ftree-dce 
-      -ftree-sra 
-      -ftree-copyrename 
-      -ftree-fre 
-      -ftree-ch 
-      -fmerge-constants 
-      -fcrossjumping 
-      -fcse-follow-jumps
-      -fcse-skip-blocks
-      -fexpensive-optimizations
-      -fstrength-reduce
-      -frerun-cse-after-loop
-      -frerun-loop-opt
-      -fforce-addr
-      -fpeephole2
-      -fschedule-insns2
-      -fregmove
-      -freorder-blocks
-      -fsched-interblock
-      -funit-at-a-time
-      -falign-functions
-      -falign-jumps
-      -falign-loops
-      -falign-labels
-      -finline-functions
-      -ftracer
-      -fmodulo-sched
-      -fgcse-sm
-      -freschedule-modulo-scheduled-loops
-      -ftree-loop-im
-      -ftree-loop-ivcanon
-      -maccumulate-outgoing-args
-      -mno-align-stringops
-      -funsafe-math-optimizations
-      -fno-signaling-nans
-    )
-  else (OPTIMIZATION_FLAGS EQUAL 1)
-    if (VSXU_BUILD_WINDOWS_32)
-        add_definitions(
-#from O1
-          -fauto-inc-dec
-          -fcompare-elim
-          -fcprop-registers
-          -fdce
-          -fdefer-pop
-          -fdelayed-branch
-          -fdse
-          -fguess-branch-probability
-          -fif-conversion2
-          -fif-conversion
-          -fipa-pure-const
-          -fipa-profile
-          -fipa-reference
-          -fmerge-constants
-          -fsplit-wide-types
-          -ftree-bit-ccp
-          -ftree-builtin-call-dce
-          -ftree-ccp
-          -ftree-ch
-          -ftree-copyrename
-          -ftree-dce
-          -ftree-dominator-opts
-          -ftree-dse
-          -ftree-forwprop
-          -ftree-fre
-          -ftree-phiprop
-          -ftree-sra
-          -ftree-pta
-          -ftree-ter
-          -funit-at-a-time
-          -fomit-frame-pointer
-#from O2
-          -fthread-jumps
-          -falign-functions  -falign-jumps
-          -falign-loops  -falign-labels
-          -fcaller-saves
-          -fcrossjumping
-          -fcse-follow-jumps  -fcse-skip-blocks
-          -fdelete-null-pointer-checks
-          -fdevirtualize
-          -fexpensive-optimizations
-          -fgcse  -fgcse-lm
-          -finline-small-functions
-          -findirect-inlining
-          -fipa-sra
-          -foptimize-sibling-calls
-          -fpartial-inlining
-          -fpeephole2
-          -fregmove
-          -freorder-blocks  -freorder-functions
-          -frerun-cse-after-loop
-          -fsched-interblock  -fsched-spec
-          -fschedule-insns  -fschedule-insns2
-          -fstrict-aliasing -fstrict-overflow
-          -ftree-switch-conversion
-          -ftree-pre
-          -ftree-vrp
-#from O3
-          -finline-functions
-          -funswitch-loops
-          -fpredictive-commoning
-          -fgcse-after-reload
-          -ftree-vectorize
-          -fipa-cp-clone
-#general
-          -mtune=nocona
-          -fmessage-length=0
-          -fpermissive
-          -ffast-math
-        )
-    elseif(VSXU_BUILD_WINDOWS_64)
-        add_definitions(
-#from O1
-          -fauto-inc-dec
-          -fcompare-elim
-          -fcprop-registers
-          -fdce
-          -fdefer-pop
-          -fdelayed-branch
-          -fdse
-          -fguess-branch-probability
-          -fif-conversion2
-          -fif-conversion
-          -fipa-pure-const
-          -fipa-profile
-          -fipa-reference
-          -fmerge-constants
-          -fsplit-wide-types
-          -ftree-bit-ccp
-          -ftree-builtin-call-dce
-          -ftree-ccp
-          -ftree-ch
-          -ftree-copyrename
-          -ftree-dce
-          -ftree-dominator-opts
-          -ftree-dse
-          -ftree-forwprop
-          -ftree-fre
-          -ftree-phiprop
-          -ftree-sra
-          -ftree-pta
-          -ftree-ter
-          -funit-at-a-time
-          -fomit-frame-pointer
-#from O2
-          -fthread-jumps
-          -falign-functions  -falign-jumps
-          -falign-loops  -falign-labels
-          -fcaller-saves
-          -fcrossjumping
-          -fcse-follow-jumps  -fcse-skip-blocks
-          -fdelete-null-pointer-checks
-          -fdevirtualize
-          -fexpensive-optimizations
-          -fgcse  -fgcse-lm
-          -finline-small-functions
-          -findirect-inlining
-          -fipa-sra
-          -foptimize-sibling-calls
-          -fpartial-inlining
-          -fpeephole2
-          -fregmove
-          -freorder-blocks  -freorder-functions
-          -frerun-cse-after-loop
-          -fsched-interblock  -fsched-spec
-          -fschedule-insns  -fschedule-insns2
-          -fstrict-aliasing -fstrict-overflow
-          -ftree-switch-conversion
-          -ftree-pre
-          -ftree-vrp
-#from O3
-          -finline-functions
-          -funswitch-loops
-          -fpredictive-commoning
-          -fgcse-after-reload
-          -ftree-vectorize
-          -fipa-cp-clone
-#general
-          -mtune=nocona
-          -fmessage-length=0
-          -fpermissive
-          -ffast-math
-        )
-    else()
-        add_definitions(
-          -O3
-          -mtune=nocona
-          -fmessage-length=0
-          -fpermissive
-          -finline-functions
-          -ffast-math
-        )
+    if (VSXU_STATIC EQUAL 1)
+      add_definitions(-g)
+      add_definitions(-DVSXU_STATIC)
+      add_definitions(-DGLEW_STATIC)
     endif()
-  endif (OPTIMIZATION_FLAGS EQUAL 1)
-endif(VSXU_DEBUG)
+
+    if(VSXU_DEBUG_SYMBOLS)
+      add_definitions(-g)
+    endif()
+endif()
+
+if (VSXU_STATIC_AUDIO_SINK EQUAL 1)
+  add_definitions(-DVSXU_AUDIO_SINK=1)
+endif()
+
+if (VSX_PRINTF_TO_FILE EQUAL 1)
+  add_definitions(-DVSX_PRINTF_TO_FILE)
+endif()
+
+
+
+include (cmake/optimization.txt)
 
 add_definitions(-DVSXU_INSTALL_LIB_DIR="${VSXU_INSTALL_LIB_DIR}")
 #add_definitions(-DVSX_VECTOR_TYPE_DOUBLE=1)
@@ -389,36 +178,61 @@ add_definitions(-DVSXU_INSTALL_LIB_DIR="${VSXU_INSTALL_LIB_DIR}")
 ################################################################################
 # VSXU LIBRARIES ###############################################################
 ################################################################################
-add_subdirectory(engine)
-add_subdirectory(engine_audiovisual)
-add_subdirectory(engine_graphics)
+add_subdirectory(lib/engine_audiovisual)
+add_subdirectory(lib/engine_graphics)
+
+# order matters - need to add plugins before engine to create static glue ######
 add_subdirectory(plugins)
-add_subdirectory(widget)
+################################################################################
+
+add_subdirectory(lib/application)
+add_subdirectory(lib/common)
+add_subdirectory(lib/compression)
+add_subdirectory(lib/engine)
+add_subdirectory(lib/widget)
 
 ################################################################################
 # VSXU IMPLEMENTATIONS/BINARIES ################################################
 ################################################################################
-if (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
-  add_subdirectory(artiste)
-  add_subdirectory(player)
-  if (VSXU_DEMO_PLAYER)
-    add_subdirectory(player_demo)
+add_subdirectory(programs/artiste)
+add_subdirectory(programs/player)
+if (VSXU_DEMO_PLAYER)
+  add_subdirectory(programs/player_demo)
+endif()
+
+add_subdirectory(programs/profiler)
+
+if(UNIX)
+ add_subdirectory(programs/server)
+endif(UNIX)
+
+add_subdirectory(programs/tools/vsxbt)
+add_subdirectory(programs/tools/vsxz)
+add_subdirectory(programs/tools/obj2vxm)
+add_subdirectory(programs/tools/raw2wav)
+if(UNIX)
+    add_subdirectory(programs/tools/vsxl)
+endif(UNIX)
+
+################################################################################
+# The pkg-config file
+################################################################################
+IF (UNIX OR VSXU_WINDOWS_LIB_BUILD)
+  if (VSXU_STATIC EQUAL 1 AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/plugins/static_factory_pkgconfig_libs")
+    file (STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/plugins/static_factory_pkgconfig_libs" VSXU_PLUGIN_PKGCONFIG_LIBS)
+    CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/libvsx.pc.in.static
+                    ${CMAKE_CURRENT_BINARY_DIR}/libvsx.pc
+                    @ONLY)
+
+  else()
+    CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/libvsx.pc.in.dynamic
+                    ${CMAKE_CURRENT_BINARY_DIR}/libvsx.pc
+                    @ONLY)
   endif()
-endif (NOT VSXU_OPENGL_ES_2_0 EQUAL 1)
 
-if(UNIX)
-  add_subdirectory(profiler)
-  add_subdirectory(server)
-endif(UNIX)
-
-add_subdirectory(tools/vsxz)
-add_subdirectory(tools/obj2vxm)
-if(UNIX)
-    add_subdirectory(tools/vsxl)
-endif(UNIX)
-
-
-
+  INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/libvsx.pc
+           DESTINATION ${VSXU_INSTALL_LIB_DIR}/pkgconfig)
+ENDIF()
 
 # uninstall target
 configure_file(

@@ -1,3 +1,5 @@
+#include <filesystem/vsx_filesystem_helper.h>
+
 class module_system_file_chooser : public vsx_module
 {
   // in
@@ -10,12 +12,12 @@ class module_system_file_chooser : public vsx_module
 
   // internal
   int p_updates;
-  vsx_avector<vsx_string> files_list;
-  vsx_string old_path;
+  vsx_nw_vector< vsx_string<> > files_list;
+  vsx_string<>old_path;
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "system;filesystem;file_chooser";
@@ -64,14 +66,14 @@ public:
         if (old_path != directory_path->get())
         {
           old_path = directory_path->get();
-          std::list<vsx_string> files;
-          //vsxfst tt;
-          vsx_string engine_resources_base_path = engine->filesystem->get_base_path();
+          std::list< vsx_string<> > files;
 
-          get_files_recursive(engine_resources_base_path + DIRECTORY_SEPARATOR + directory_path->get(), &files);
+          vsx_string<> engine_resources_base_path = engine_state->filesystem->get_base_path();
+
+          vsx::filesystem_helper::get_files_recursive(engine_resources_base_path + DIRECTORY_SEPARATOR + directory_path->get(), &files);
 
           files_list.reset_used(0);
-          for (std::list<vsx_string>::iterator it = files.begin(); it != files.end(); ++it)
+          for (std::list< vsx_string<> >::iterator it = files.begin(); it != files.end(); ++it)
           {
             if ((*it).find(".svn/") == -1)
             {

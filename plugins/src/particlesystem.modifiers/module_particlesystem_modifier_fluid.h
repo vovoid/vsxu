@@ -193,7 +193,7 @@ class module_particlesystem_modifier_fluid : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "particlesystems;modifiers;particle_fluid_deformer";
@@ -270,7 +270,7 @@ public:
       omx = px;
       omy = py;
 
-      dt = 0.01f;//engine->dtime;
+      dt = 0.01f;//engine_state->dtime;
 
       vel_step ( N, u, v, u_prev, v_prev, visc, dt );
 
@@ -313,9 +313,9 @@ public:
 
         (*particles->particles)[i].speed.z = v[IX(dpx,dpy)] * _strength;// + v[IX(dpx+1,dpy)]*vb + v[IX(dpx,dpy+1)]*vc + v[IX(dpx+1,dpy+1)]*vd;
 
-        //(*particles->particles)[i].pos.x += px*engine->dtime;
-        //(*particles->particles)[i].pos.y = 0;//py*engine->dtime;
-        //(*particles->particles)[i].pos.z += pz*engine->dtime;
+        //(*particles->particles)[i].pos.x += px*engine_state->dtime;
+        //(*particles->particles)[i].pos.y = 0;//py*engine_state->dtime;
+        //(*particles->particles)[i].pos.z += pz*engine_state->dtime;
       }
       if (draw_velocity->get()) draw_velocity_func();
       // in case some modifier has decided to base some mesh or whatever on the particle system

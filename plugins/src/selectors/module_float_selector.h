@@ -25,6 +25,7 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
 
 #define SEQ_RESOLUTION 8192
 
@@ -39,7 +40,7 @@ class module_float_selector : public vsx_module
 
   vsx_module_param_int* wrap;
   vsx_module_param_int* interpolation;
-  vsx_module_param_sequence* sequence;
+  vsx_module_param_float_sequence* sequence;
   vsx_module_param_int* reverse;
   vsx_module_param_int* reset_seq_to_default;
 
@@ -62,16 +63,16 @@ class module_float_selector : public vsx_module
   
   int i_wrap;
   int i_interpolation;
-  vsx_sequence i_sequence;
-  vsx_sequence i_seq_default;
-  vsx_array<float> i_sequence_data;
+  vsx::sequence::channel<vsx::sequence::value_float> i_sequence;
+  vsx::sequence::channel<vsx::sequence::value_float> i_seq_default;
+  vsx_ma_vector<float> i_sequence_data;
   long i_seq_index;
   int i_reverse;
   int i_reset_seq_to_default;
  
   std::stringstream i_paramString;
   std::stringstream i_paramName;
-  vsx_string i_in_param_string;
+  vsx_string<>i_in_param_string;
 
   bool i_am_ready;
 
@@ -102,15 +103,15 @@ public:
     i_reverse = 2;       //Autoreverse Normal
     i_reset_seq_to_default = -1;
 
-    i_seq_default.items[0].value = 0.0; //Sets default values for sequence
-    i_seq_default.items[0].delay = 1.0;
-    i_seq_default.items[0].interpolation = 2; //Cosine
+    i_seq_default.get_item_by_index(0).value = 0.0; //Sets default values for sequence
+    i_seq_default.get_item_by_index(0).delay = 1.0;
+    i_seq_default.get_item_by_index(0).interpolation = vsx::sequence::cosine;
 
     i_in_param_string = "";
   }
   
   //Initialise Module & GUI
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "selectors;float_selector";
@@ -180,7 +181,7 @@ public:
     interpolation = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,
 "interpolation");
     interpolation->set(i_interpolation);
-    sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "sequence");
+    sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "sequence");
     sequence->set(i_seq_default);
     reverse = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reverse");
     reverse->set(i_reverse);
@@ -220,7 +221,7 @@ public:
     
     wrap = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "wrap");
     interpolation = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "interpolation");
-    sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE, "sequence");
+    sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "sequence");
     reverse = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reverse");
     reset_seq_to_default = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reset_seq_to_default");
 
@@ -296,9 +297,7 @@ public:
 
     //Cache Sequence Data
     for(int i = 0; i < SEQ_RESOLUTION; ++i)
-    {
-      i_sequence_data[i] = i_sequence.execute(1.0f / (float)(SEQ_RESOLUTION - 1));
-    }
+      i_sequence_data[i] = i_sequence.execute(1.0f / (float)(SEQ_RESOLUTION - 1)).get_float();
           
     i_seq_index = ((i_index - (float)i_index_x0) 
                 / (float)(i_index_x1 - i_index_x0))

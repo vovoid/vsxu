@@ -1,0 +1,18 @@
+meta_set fHx8fHw=
+component_create renderers;basic;colored_rectangle colored_rectangle -0.054449 0.038598
+param_set colored_rectangle size 1.00000000000000000000,0.30000001192092895508,-0.00000000004740946524
+pseq_p inject colored_rectangle angle 3.000000;1;MC4wMDAwMDA=|78.985725;1;MC4wMDAwMDA=|0.062059;1;LTAuMDAxNTQ3|0.425495;1;MC42Mjk2MDc=|0.301400;1;MC42NTk2NjI=|2.007329;1;MC4wMjg1MDg=|0.053184;1;LTAuMDMxNjAy|1.028294;1;MC41MDkzODc=|0.177289;1;MC40MTkyMjI=|8.048642;1;LTAuMTIxNzY2|0.541770;1;LTAuMDg3MDYw|0.056287;1;MC45Mzg3MTI=|4.300271;1;MC4wNzk5MjY=|0.887320;1;MC4wODQ2Nzg=|2.181324;1;MC44OTk0NTM=|0.499121;1;MC40NjA3Mjg=|1.000000;1;LTAuMTY2MDIy
+param_set colored_rectangle border_enable 0
+param_set colored_rectangle rotation_axis 0.00000091072951136084,0.00000000003496501005,0.99999994039535522461
+component_create renderers;basic;colored_rectangle colored_rectangle_1 -0.043434 -0.007684
+param_set colored_rectangle_1 size 1.00000000000000000000,0.18007010221481323242,-0.00000000000000000000
+pseq_p inject colored_rectangle_1 angle 3.000000;1;LTAuMDAxNjA2|75.486557;1;LTAuMDAxNjA2|2.084845;1;LTAuNTAzNjY4|0.713609;1;LTAuNTUxMTA4|0.699609;1;MC42ODIzMzE=|1.000000;1;LTAuNDA4Nzg4
+param_set colored_rectangle_1 border_enable 0
+param_set colored_rectangle_1 color 1.00000000000000000000,0.00000092788030769952,1.00000000000000000000,1.00000000000000000000
+cpp screen0 0.000000 0.000000
+component_create system;sound;stream_play stream_play -0.160649 0.009785
+param_set stream_play time_mode 1
+param_set stream_play spectrum_enabled 0
+ps64 stream_play filename cmVzb3VyY2VzL2x1bmEzZC9sdW5hX3Rha2UyXzA4X21hc3RlcmluZ19qb2ludHN0ZXJlbzE2MGticHMubXAz
+param_connect screen0 screen colored_rectangle render_out
+param_connect screen0 screen colored_rectangle_1 render_out

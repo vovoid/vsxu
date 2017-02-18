@@ -41,7 +41,7 @@ class module_arith_ ## OP_TYPE : public vsx_module {\
   vsx_module_param_ ## PARAM_TYPE_OUT* param_out;\
 	/* internal*/\
 public:\
-  void module_info(vsx_module_info* info)\
+  void module_info(vsx_module_specification* info)\
   {\
     info->identifier = "maths;arithmetics;binary;" #OP_TYPE;\
     info->description = DESCRIPTION;\
@@ -142,8 +142,11 @@ BINARY_OP (
   "this module divides 2 float-values"
   )
 
+#ifdef max
+#undef max
+#endif
 BINARY_OP (
-  max, 
+  max,
   float, float, float, 
   "param1", "param2", "result", 
   VSX_MODULE_PARAM_ID_FLOAT, VSX_MODULE_PARAM_ID_FLOAT, VSX_MODULE_PARAM_ID_FLOAT,
@@ -158,8 +161,11 @@ BINARY_OP (
   "returns the greater value of 2 float-values"
   )
 
+#ifdef min
+#undef min
+#endif
 BINARY_OP (
-  min, 
+  min,
   float, float, float, 
   "param1", "param2", "minimum", 
   VSX_MODULE_PARAM_ID_FLOAT, VSX_MODULE_PARAM_ID_FLOAT, VSX_MODULE_PARAM_ID_FLOAT,
@@ -257,7 +263,7 @@ class vsx_arith_add : public vsx_module {
 	vsx_module_param_float* floatc;
 	// internal
 public:
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier = "maths;arithmetics;binary;add";
     info->description = "add 2 floats";

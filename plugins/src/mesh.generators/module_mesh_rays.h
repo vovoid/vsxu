@@ -38,7 +38,7 @@ public:
   bool first_run;
   int n_rays;
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;particles;mesh_rays";
@@ -93,7 +93,7 @@ public:
 
   void run()
   {
-    mesh->data->vertices[0] = vsx_vector3<>(0);
+    mesh->data->vertices[0] = vsx_vector3<>(0.0f);
     mesh->data->vertex_colors[0] = vsx_color<>(center_color->get(0),center_color->get(1),center_color->get(2),center_color->get(3));
 
     if (first_run || n_rays != (int)num_rays->get() || limit_ray_size->updates)

@@ -21,7 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <vsx_mesh_helper.h>
+#include <graphics/vsx_mesh_helper.h>
 
 // Phi - the square root of 5 plus 1 divided by 2
 #define sqr5 2.2361
@@ -63,7 +63,7 @@ public:
   int current_subdivision_level;
   int current_max_normalization_level;
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;solid;mesh_sphere_icosahedron";
@@ -361,8 +361,8 @@ public:
 
     mesh->timestamp++;
 
-//    vsx_string* r = vsx_mesh_helper::mesh_to_obj(mesh);
-//    vsx_printf("%s\n", r->c_str());
+//    vsx_string<>* r = vsx_mesh_helper::mesh_to_obj(mesh);
+//    vsx_printf(L"%s\n", r->c_str());
 
     result->set_p(mesh);
   }

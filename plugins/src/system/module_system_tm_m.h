@@ -9,12 +9,12 @@ class module_system_tm_m : public vsx_module
   vsx_module_param_render* render_result;
 
   // internal
-  vsx_string sname;
+  vsx_string<>sname;
   char* iname;
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "system;tm_measure";
@@ -48,7 +48,7 @@ public:
     render_result->set(0);
   }
 
-  void param_set_notify(const vsx_string& name)
+  void param_set_notify(const vsx_string<>& name)
   {
     #ifdef VSXU_TM
     if (name == "handle_name")

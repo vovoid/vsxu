@@ -30,19 +30,18 @@
   //#include "wincompat.h"
 #endif
 #include "vsx_param.h"
-#include "vsx_module.h"
-#include "vsx_float_array.h"
+#include <module/vsx_module.h>
+#include <math/vsx_float_array.h>
 
-#include <pthread.h>
 #include "fftreal/fftreal.h"
-#include <unistd.h>
 
 #include <RtAudio/RtAudio.h>
-#include <RtAudio/RtError.h>
+//#include <RtAudio/RtError.h>
 
 
 #if (PLATFORM == PLATFORM_LINUX)
-  #include <sys/prctl.h>
+#include <unistd.h>
+#include <sys/prctl.h>
 #endif
 
 // rt audio driver type
@@ -92,9 +91,16 @@ extern "C"
   __declspec(dllexport) void print_help();
   __declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
   __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
-  __declspec(dllexport) unsigned long get_num_modules(vsx_engine_environment* environment);
+  __declspec(dllexport) unsigned long get_num_modules(vsx_module_engine_environment* environment);
   __declspec(dllexport) void on_unload_library();
 }
+
+#ifndef MOD_CM
+#define MOD_CM vsx_module_sound_rtaudio_cm
+#define MOD_DM vsx_module_sound_rtaudio_dm
+#define MOD_NM vsx_module_sound_rtaudio_nm
+#endif
+
 
 size_t sound_module_type = 0;
 
@@ -214,8 +220,9 @@ void MOD_DM(vsx_module* m,unsigned long module)
 
 }
 
-unsigned long MOD_NM(vsx_engine_environment* environment)
+unsigned long MOD_NM(vsx_module_engine_environment* environment)
 {
+  VSX_UNUSED(environment);
   return 6;
 }
 

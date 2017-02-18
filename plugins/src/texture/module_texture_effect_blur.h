@@ -21,6 +21,8 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <texture/buffer/vsx_texture_buffer_color.h>
+
 class module_texture_effect_blur : public vsx_module
 {
   // in
@@ -29,15 +31,20 @@ class module_texture_effect_blur : public vsx_module
   vsx_module_param_float* attenuation;
   vsx_module_param_int* texture_size;
   vsx_module_param_int* passes;
-  int tex_size_internal;
+  vsx_module_param_int* alpha;
+  int tex_size_internal = -1;
 
-  int res_x, res_y;
+  int res_x = 256;
+  int res_y = 256;
   // out
   vsx_module_param_texture* texture_result;
 
   // internal
-  vsx_texture* texture;
-  vsx_texture* texture2;
+  vsx_texture<>* texture = 0x0;
+  vsx_texture<>* texture2 = 0x0;
+  vsx_texture_buffer_color buffer;
+  vsx_texture_buffer_color buffer2;
+
   vsx_glsl shader;
   GLuint tex_id;
   GLuint glsl_offset_id,glsl_tex_id,glsl_attenuation;
@@ -45,12 +52,7 @@ class module_texture_effect_blur : public vsx_module
 
 public:
 
-
-  ~module_texture_effect_blur()
-  {
-  }
-
-void module_info(vsx_module_info* info)
+void module_info(vsx_module_specification* info)
 {
   info->identifier =
     "texture;effects;blur";
@@ -60,7 +62,8 @@ void module_info(vsx_module_info* info)
     "start_value:float,"
     "attenuation:float,"
     "texture_size:enum?2048x2048|1024x1024|512x512|256x256|128x128|64x64|32x32|16x16|8x8|4x4|VIEWPORT_SIZE|VIEWPORT_SIZE_DIV_2|VIEWPORT_SIZE_DIV_4|VIEWPORT_SIZEx2,"
-    "passes:enum?ONE|TWO"
+    "passes:enum?ONE|TWO,"
+    "alpha:enum?NO|YES"
   ;
 
   info->out_param_spec =
@@ -77,30 +80,19 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
   texture_size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"texture_size");
   texture_size->set(3);
-  tex_size_internal = 3;
 
   passes = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"passes");
   passes->set(0);
 
   gl_state = vsx_gl_state::get_instance();
 
-  texture = new vsx_texture;
-  res_x = res_y = 256;
-  texture->reinit_color_buffer(res_x,res_y,true,false);
-  texture->valid = true;
-
-  texture2 = new vsx_texture;
-  texture2->reinit_color_buffer(res_x,res_y,true,false);
-  texture2->valid = true;
-
-
   start_value = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"start_value");
   start_value->set(1.0f);
   attenuation = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"attenuation");
   attenuation->set(1.0f);
 
-  texture_result->set(texture);
-
+  alpha = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"alpha");
+  alpha->set(0);
 
 
 shader.vertex_program = "\
@@ -159,7 +151,7 @@ void main(void)\n\
 }\n\
 ";
 
-  vsx_string shader_res = shader.link();
+  vsx_string<>shader_res = shader.link();
 //  printf("shader res: %s\n",shader_res.c_str());
   glsl_tex_id = glGetUniformLocationARB(shader.prog,"GlowTexture");
   glsl_offset_id = glGetUniformLocationARB(shader.prog,"texOffset");
@@ -168,23 +160,9 @@ void main(void)\n\
 }
 
   void run() {
-    if
-    (
-      !glow_source->connected
-    )
-    {
+    if ( !glow_source->connected )
       return;
-    }
-    if (texture == 0)
-    {
-      texture = new vsx_texture;
 
-      tex_size_internal = 3;
-      texture->reinit_color_buffer(res_x,res_y,true,false);
-
-      texture2 = new vsx_texture;
-      texture2->reinit_color_buffer(res_x,res_y,true,false);
-    }
     bool rebuild = false;
     if (texture_size->get() >= 10)
     {
@@ -239,15 +217,22 @@ void main(void)\n\
           res_y = gl_state->viewport_get_height() * 2.0;
         break;
       };
-      texture->reinit_color_buffer(res_x,res_y,true,false);
-      texture2->reinit_color_buffer(res_x,res_y,true,false);
+
+      if (!texture)
+        texture = new vsx_texture<>();
+
+      buffer.reinit(texture, res_x, res_y, true, alpha->get() == 1, false, true, 0);
+
+      if (!texture2)
+        texture2 = new vsx_texture<>();
+      buffer2.reinit(texture2, res_x, res_y, true, alpha->get() == 1, false, true, 0);
     }
 
-    vsx_texture** ti = glow_source->get_addr();
+    vsx_texture<>** ti = glow_source->get_addr();
 
-    if (!ti) return;
-    if (!texture) return;
-    if (!texture2) return;
+    req(ti);
+    req(texture);
+    req(texture2);
 
     //
     (*ti)->bind();
@@ -277,7 +262,7 @@ void main(void)\n\
     float pixel_offset_size_x = start_value->get() * 0.1f / (float)res_x;
     float pixel_offset_size_y = start_value->get() * 0.1f / (float)res_y;
 
-    texture->begin_capture_to_buffer();
+    buffer.begin_capture_to_buffer();
       loading_done = true;
       glColor4f(1,1,1,1);
       glDisable(GL_BLEND);
@@ -303,11 +288,11 @@ void main(void)\n\
           glEnd();
         shader.end();
       (*ti)->_bind();
-    texture->end_capture_to_buffer();
-    texture->valid = true;
+    buffer.end_capture_to_buffer();
 
-    //
-    texture2->begin_capture_to_buffer();
+    // -------------------------------
+
+    buffer2.begin_capture_to_buffer();
       loading_done = true;
       glColor4f(1,1,1,1);
       glDisable(GL_BLEND);
@@ -333,8 +318,7 @@ void main(void)\n\
           glEnd();
         shader.end();
       texture->_bind();
-    texture2->end_capture_to_buffer();
-    texture2->valid = true;
+    buffer2.end_capture_to_buffer();
 
     if (passes->get() == 0)
     {
@@ -342,15 +326,13 @@ void main(void)\n\
       return;
     }
 
+    // 2nd pass ***************************************************************
 
 
-//    pixel_offset_size_x = 1.0f / (float)res_x;
-//    pixel_offset_size_y = 1.0f / (float)res_y;
     pixel_offset_size_x = start_value->get() * 0.4f / (float)res_x;
     pixel_offset_size_y = start_value->get() * 0.4f / (float)res_y;
 
-    // 2nd pass
-    texture->begin_capture_to_buffer();
+    buffer.begin_capture_to_buffer();
       loading_done = true;
       glColor4f(1,1,1,1);
       glDisable(GL_BLEND);
@@ -376,10 +358,9 @@ void main(void)\n\
           glEnd();
         shader.end();
       texture2->_bind();
-    texture->end_capture_to_buffer();
-    texture->valid = true;
+    buffer.end_capture_to_buffer();
 
-    texture2->begin_capture_to_buffer();
+    buffer2.begin_capture_to_buffer();
       loading_done = true;
       glColor4f(1,1,1,1);
       glDisable(GL_BLEND);
@@ -405,8 +386,7 @@ void main(void)\n\
           glEnd();
         shader.end();
       texture->_bind();
-    texture2->end_capture_to_buffer();
-    texture2->valid = true;
+    buffer2.end_capture_to_buffer();
 
 
 
@@ -417,8 +397,8 @@ void main(void)\n\
   void stop() {
     shader.stop();
     if (texture) {
-      texture->deinit_buffer();
-      texture2->deinit_buffer();
+      buffer.deinit(texture);
+      buffer2.deinit(texture2);
       delete texture;
       delete texture2;
       texture = 0;
@@ -436,8 +416,8 @@ void main(void)\n\
   void on_delete()
   {
     if (texture) {
-      texture->deinit_buffer();
-      texture2->deinit_buffer();
+      buffer.deinit(texture);
+      buffer2.deinit(texture2);
       delete texture;
       delete texture2;
       texture = 0;

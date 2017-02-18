@@ -31,6 +31,7 @@ public:
 
   // out
   vsx_module_param_mesh* mesh_out;
+  vsx_module_param_float3* translation_passthru;
 
   // internal
   vsx_mesh<>* mesh;
@@ -47,7 +48,7 @@ public:
     delete mesh;
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;modifiers;transforms;mesh_translate";
@@ -61,7 +62,9 @@ public:
     ;
 
     info->out_param_spec =
-      "mesh_out:mesh";
+      "mesh_out:mesh,"
+      "translation_passthru:float3"
+    ;
 
     info->component_class =
       "mesh";
@@ -72,10 +75,11 @@ public:
     mesh_in = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_in");
     translation = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "translation");
     loading_done = true;
+
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
+    translation_passthru = (vsx_module_param_float3*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"translation_passthru");
     prev_timestamp = 0xFFFF;
   }
-  vsx_vector3<> v;
   void run()
   {
 
@@ -86,9 +90,11 @@ public:
       return;
     }
 
-    if (param_updates || prev_timestamp != (*p)->timestamp)
+    if (param_updates || prev_timestamp != (*p)->timestamp || translation->updates)
     {
+      translation->updates = 0;
       prev_timestamp = (*p)->timestamp;
+      vsx_vector3<> v;
       v.x = translation->get(0);
       v.y = translation->get(1);
       v.z = translation->get(2);
@@ -110,11 +116,11 @@ public:
         vs_d[i] = vs_p[i] + v;
       }
 /*
-      vsx_array<vsx_vector> vertices;
-      vsx_array<vsx_vector> vertex_normals;
-      vsx_array<vsx_color> vertex_colors;
-      vsx_array<vsx_tex_coord> vertex_tex_coords;
-      vsx_array<vsx_face> faces;
+      vsx_ma_vector<vsx_vector> vertices;
+      vsx_ma_vector<vsx_vector> vertex_normals;
+      vsx_ma_vector<vsx_color> vertex_colors;
+      vsx_ma_vector<vsx_tex_coord> vertex_tex_coords;
+      vsx_ma_vector<vsx_face> faces;
 */
 
       mesh->data->vertex_normals.set_volatile();
@@ -136,6 +142,10 @@ public:
 
       mesh->timestamp++;
       mesh_out->set_p(mesh);
+
+      translation_passthru->set(v.x, 0);
+      translation_passthru->set(v.y, 1);
+      translation_passthru->set(v.z, 2);
 
       param_updates = 0;
     }

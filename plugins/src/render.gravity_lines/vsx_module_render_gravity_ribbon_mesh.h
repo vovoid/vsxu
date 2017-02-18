@@ -21,7 +21,7 @@ class vsx_module_render_gravity_ribbon_mesh : public vsx_module
   vsx_module_param_mesh* mesh_result;
 
   // internal
-  vsx_avector<gravity_strip*> gr;
+  vsx_nw_vector<gravity_strip*> gr;
   gravity_strip* grp;
   vsx_mesh<>** mesh;
   vsx_mesh<>* mesh_out;
@@ -44,7 +44,7 @@ public:
     delete mesh_out;
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;mesh;render_mesh_ribbon";
@@ -190,7 +190,7 @@ public:
         } else
         {
           gr[i]->update(
-            engine->dtime,
+            engine_state->dtime,
             (*mesh)->data->vertices[mesh_index].x,
             (*mesh)->data->vertices[mesh_index].y,
             (*mesh)->data->vertices[mesh_index].z
@@ -259,7 +259,7 @@ public:
         } else
         {
           gr[i]->update(
-            engine->dtime,
+            engine_state->dtime,
             (*mesh)->data->vertices[mesh_index].x,
             (*mesh)->data->vertices[mesh_index].y,
             (*mesh)->data->vertices[mesh_index].z

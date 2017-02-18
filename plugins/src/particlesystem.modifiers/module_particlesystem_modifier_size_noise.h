@@ -1,4 +1,4 @@
-#include <vsx_rand.h>
+#include <math/vsx_rand.h>
 
 class module_particlesystem_modifier_size_noise : public vsx_module
 {
@@ -10,11 +10,11 @@ class module_particlesystem_modifier_size_noise : public vsx_module
   // out
   vsx_module_param_particlesystem* result_particlesystem;
   vsx_rand rand;
-  vsx_array<float> f_randpool;
+  vsx_ma_vector<float> f_randpool;
   float* f_randpool_pointer;
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "particlesystems;modifiers;size_noise";

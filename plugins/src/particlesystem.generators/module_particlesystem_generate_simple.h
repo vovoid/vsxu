@@ -1,4 +1,4 @@
-#include <vsx_rand.h>
+#include <math/vsx_rand.h>
 
 class module_particlesystem_generate_simple : public vsx_module
 {
@@ -44,7 +44,7 @@ class module_particlesystem_generate_simple : public vsx_module
   vsx_module_param_particlesystem* result_particlesystem;
 
 public:
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "particlesystems;generators;basic_spray_emitter";
@@ -149,7 +149,7 @@ public:
     // default is 100 particles, should be enough for most effects (tm)
     particles_count->set(100);
     particles.timestamp = 0;
-    particles.particles = new vsx_array< vsx_particle<> >;
+    particles.particles = new vsx_ma_vector< vsx_particle<> >;
     //result_particlesystem->set_p(particles);
     first = true;
 
@@ -165,11 +165,11 @@ public:
     float ddtime;
     if (time_source->get())
     {
-      ddtime = engine->real_dtime;
+      ddtime = engine_state->real_dtime;
     }
     else
     {
-      ddtime = engine->dtime;
+      ddtime = engine_state->dtime;
     }
 
     if (first || (ddtime < 0))

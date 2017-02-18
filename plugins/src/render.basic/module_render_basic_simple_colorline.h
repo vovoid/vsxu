@@ -16,11 +16,11 @@ class module_render_basic_simple_colorline : public vsx_module {
 
   // internal
   vsx_float_array* data; // our default value
-  vsx_array<float> xposs;
+  vsx_ma_vector<float> xposs;
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;oscilloscopes;simple_colorline";

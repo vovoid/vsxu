@@ -30,7 +30,7 @@ class module_mesh_segmesh_to_mesh : public vsx_module
   vsx_mesh<>* mesh;
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;segmesh;segmesh_to_mesh";

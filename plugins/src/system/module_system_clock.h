@@ -1,3 +1,7 @@
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+#include <sys/time.h>
+#endif
+
 class module_system_clock : public vsx_module
 {
   // out
@@ -13,7 +17,7 @@ class module_system_clock : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "system;clock";

@@ -1,4 +1,6 @@
+#include <time.h>
 #include <vsx_data_path.h>
+#include <texture/buffer/vsx_texture_buffer_color_depth.h>
 
 class module_texture_screenshot_hires : public vsx_module
 {
@@ -20,7 +22,9 @@ class module_texture_screenshot_hires : public vsx_module
   vsx_module_param_render* render_out;
 
   // internal
-  vsx_texture* texture;
+  vsx_texture<>* texture = 0x0;
+  vsx_texture_buffer_color_depth buffer;
+
   vsx_gl_state* gl_state;
   GLfloat tmpMat[16];
 
@@ -39,7 +43,7 @@ class module_texture_screenshot_hires : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "texture;capture;screenshot_hires";
@@ -88,8 +92,6 @@ public:
     M = 32;
     N = 32;
 
-    texture = new vsx_texture;
-    texture->init_color_depth_buffer(512,512);
 
     pixeldata = (char*)malloc( 512 * 512 * 4 );
     pixeldata_target = (char*)malloc( 512 * 512 * 4 * M * N );
@@ -97,6 +99,9 @@ public:
 
   void on_delete()
   {
+    if (!texture)
+      return;
+
     delete texture;
     free(pixeldata);
     free(pixeldata_target);
@@ -104,6 +109,13 @@ public:
 
   bool activate_offscreen()
   {
+    if (!texture)
+    {
+      texture = new vsx_texture<>;
+      buffer.init(texture, 512,512, false,true,true,false,0);
+    }
+
+
     double z_near = 0.01;
     double z_far = 2000.0;
     double aspect = 1.0 / gl_state->viewport_width_div_height_get();
@@ -125,7 +137,7 @@ public:
     }
 
     if (capture_in_progress)
-      texture->begin_capture_to_buffer();
+      buffer.begin_capture_to_buffer();
 
 
 
@@ -196,7 +208,7 @@ public:
       memcpy(&pixeldata_target[ target_pos ], &pixeldata[ source_pos ], subrow_size);
     }
 
-    texture->end_capture_to_buffer();
+    buffer.end_capture_to_buffer();
 
     m++;
 

@@ -22,6 +22,7 @@
 */
 
 
+#include <time.h>
 
 
 class module_mesh_planeworld : public vsx_module
@@ -50,7 +51,7 @@ public:
     gmesh.cleanup();
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;vovoid;planeworld";
@@ -69,8 +70,8 @@ public:
   {
     mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_result");
     bspline_vertices_mesh = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"bspline_vertices_mesh");
-    spline0.init(vsx_vector3<>(0), 0.7f, 0.3f, 0.6f);
-    srand ( time(NULL) );
+    spline0.init(vsx_vector3<>(0.0f), 0.7f, 0.3f, 0.6f);
+    srand ( (unsigned int)time(NULL) );
   }
 
   void run()
@@ -128,7 +129,7 @@ public:
       gmesh.vertices[i+1][2].coord = ma.multiply_vector(gmesh.vertices[0][2].coord)+spos;
       gmesh.vertices[i+1][3].coord = ma.multiply_vector(gmesh.vertices[0][3].coord)+spos;
 
-      gmesh.vertices[i+1][0].tex_coord = vsx_vector3<>(0);
+      gmesh.vertices[i+1][0].tex_coord = vsx_vector3<>(0.0f);
       gmesh.vertices[i+1][1].tex_coord = vsx_vector3<>(1,0);
       gmesh.vertices[i+1][2].tex_coord = vsx_vector3<>(1,1);
       gmesh.vertices[i+1][3].tex_coord = vsx_vector3<>(0,1);

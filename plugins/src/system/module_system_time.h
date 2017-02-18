@@ -10,7 +10,7 @@ class module_system_time : public vsx_module
 
   // internal
 
-void module_info(vsx_module_info* info)
+void module_info(vsx_module_specification* info)
 {
   info->identifier =
     "system;time";
@@ -64,10 +64,10 @@ void module_info(vsx_module_info* info)
 
   void run()
   {
-    time_out->set(engine->vtime);
-    dtime_out->set(engine->dtime);
-    r_time_out->set(engine->real_vtime);
-    r_dtime_out->set(engine->real_dtime);
+    time_out->set(engine_state->vtime);
+    dtime_out->set(engine_state->dtime);
+    r_time_out->set(engine_state->real_vtime);
+    r_dtime_out->set(engine_state->real_dtime);
   }
 
 };

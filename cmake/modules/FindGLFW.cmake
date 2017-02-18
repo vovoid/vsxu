@@ -21,28 +21,23 @@
 
 #Search for the include file...
 FIND_PATH(GLFW_INCLUDE_PATH GL/glfw.h DOC "Path to GLFW include directory."
-  HINTS
-  $ENV{GLFW_ROOT}
-  PATH_SUFFIX include #For finding the include file under the root of the glfw expanded archive, typically on Windows.
   PATHS
-  /usr/include/
-  /usr/local/include/
-  # By default headers are under GL subfolder
-  /usr/include/GL
-  /usr/local/include/GL
-  ${GLFW_ROOT_DIR}/include/ # added by ptr
- 
+    $ENV{DEPINSTALL}/include
+    /usr/include/
+    /usr/local/include/
+    # By default headers are under GL subfolder
+    /usr/include/GL
+    /usr/local/include/GL
+  NO_DEFAULT_PATH
 )
 
 FIND_LIBRARY(GLFW_LIBRARY DOC "Absolute path to GLFW library."
   NAMES glfw GLFW.lib
-  HINTS
-  $ENV{GLFW_ROOT}
-  PATH_SUFFIXES lib/win32 #For finding the library file under the root of the glfw expanded archive, typically on Windows.
   PATHS
-  /usr/local/lib
-  /usr/lib
-  ${GLFW_ROOT_DIR}/lib-msvc100/release # added by ptr
+    $ENV{DEPINSTALL}/lib
+    /usr/local/lib
+    /usr/lib
+  NO_DEFAULT_PATH
 )
 
 INCLUDE(FindPackageHandleStandardArgs)

@@ -49,7 +49,7 @@ public:
   bool list_built;
   vsx_glsl shader;
 
-  void param_set_notify(const vsx_string& name)
+  void param_set_notify(const vsx_string<>& name)
   {
     if ((name == "vertex_program" || name == "fragment_program"))
     {
@@ -66,7 +66,7 @@ public:
     }
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;mesh;mesh_dot_billboards";
@@ -153,7 +153,7 @@ public:
 
     loading_done = true;
     list_built = false;
-    vsx_string h = shader.link();
+    vsx_string<>h = shader.link();
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     redeclare_in_params(in_parameters);
     gl_state = vsx_gl_state::get_instance();

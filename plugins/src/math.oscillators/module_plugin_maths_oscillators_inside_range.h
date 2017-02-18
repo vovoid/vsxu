@@ -41,7 +41,7 @@ public:
 
 
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "maths;oscillators;inside_range";
@@ -131,7 +131,7 @@ public:
     {
       is_in_range = true;
       every_beat->set(1.0f);
-      float random_number = rand() % 100;
+      float random_number = (float)(rand() % 100);
       if (random_number > randomness->get())
       {
         random_beat->set(0.0f);

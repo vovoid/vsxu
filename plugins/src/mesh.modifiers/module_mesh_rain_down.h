@@ -37,9 +37,9 @@ class module_mesh_rain_down : public vsx_module
   unsigned long prev_timestamp;
   vsx_vector3<> v;
   float prev_start;
-  vsx_array<float> vertex_weight_array;
-  vsx_array<float> vertex_explosion_array_x;
-  vsx_array<float> vertex_explosion_array_z;
+  vsx_ma_vector<float> vertex_weight_array;
+  vsx_ma_vector<float> vertex_explosion_array_x;
+  vsx_ma_vector<float> vertex_explosion_array_z;
 public:
   bool init() {
     mesh = new vsx_mesh<>;
@@ -51,7 +51,7 @@ public:
     delete mesh;
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;modifiers;deformers;mesh_rain_down";
@@ -162,7 +162,7 @@ public:
       float* v_weight_p = vertex_weight_array.get_pointer();
       float* v_ex_p = vertex_explosion_array_x.get_pointer();
       float* v_ez_p = vertex_explosion_array_z.get_pointer();
-      float dtx = engine->dtime;
+      float dtx = engine_state->dtime;
       float speed = start->get()*2.0f;
       float spdtx = speed * dtx;
       float spdtx_exp = spdtx*explosion_factor->get();

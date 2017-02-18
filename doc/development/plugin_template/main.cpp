@@ -1,6 +1,6 @@
-#include <vsxfst.h> // file system and string functions
+#include <filesystem/vsx_filesystem.h> // file system and string functions
 #include <vsx_param.h> // parameter definitions
-#include <vsx_module.h> // module base class + definition
+#include <module/vsx_module.h> // module base class + definition
 #include <vsx_math_3d.h> // vsx_vector and matrix maths
 
 class vsx_module_template : public vsx_module {
@@ -17,7 +17,7 @@ class vsx_module_template : public vsx_module {
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier = "templates;simple";
     info->description = 

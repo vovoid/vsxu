@@ -4,7 +4,7 @@
 #include <OpenEXR/ImfInputFile.h>
 #include <OpenEXR/ImfRgbaFile.h>
 #include <OpenEXR/ImathBox.h>
-
+#include <bitmap/vsx_bitmap.h>
 
 using namespace Imf;
 using namespace Imath;
@@ -13,20 +13,20 @@ class module_texture_load_openexr : public vsx_module
 {
   // in
   float time;
-  vsx_module_param_resource* filename;
+  vsx_module_param_resource* filename_in;
 
   // out
-  vsx_module_param_texture* result_texture;
+  vsx_module_param_texture* texture_out;
 
   // internal
-  vsx_bitmap bitm;
+  vsx_bitmap bitmap;
   int bitm_timestamp;
 
-  vsx_texture* texture;
+  vsx_texture<>* texture;
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "texture;loaders;exr_tex_load";
@@ -48,14 +48,14 @@ public:
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
 
-    filename = (vsx_module_param_resource*)in_parameters.create(VSX_MODULE_PARAM_ID_RESOURCE,"filename");
-    filename->set("");
+    filename_in = (vsx_module_param_resource*)in_parameters.create(VSX_MODULE_PARAM_ID_RESOURCE,"filename");
+    filename_in->set("");
     bitm_timestamp = 0;
 
     texture = new vsx_texture;
     texture->init_opengl_texture_2d();
 
-    result_texture = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
+    texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture");
     loading_done = true;
   }
 
@@ -79,8 +79,8 @@ public:
     width = dw.max.x - dw.min.x + 1;
     height = dw.max.y - dw.min.y + 1;
 
-    vsx_printf("width %d\n", width);
-    vsx_printf("height %d\n", height);
+    vsx_printf(L"width %d\n", width);
+    vsx_printf(L"height %d\n", height);
 
     rPixels.resizeErase (height, width);
     gPixels.resizeErase (height, width);
@@ -192,7 +192,7 @@ public:
   }
   */
 
-  void param_set_notify(const vsx_string& name)
+  void param_set_notify(const vsx_string<>& name)
   {
     VSX_UNUSED(name);
     Array2D<float> rPixels;
@@ -201,7 +201,7 @@ public:
     Array2D<float> aPixels;
     int width, height;
 
-    vsx_string nf = engine->filesystem->get_base_path() + filename->get();
+    vsx_string<>nf = engine_state->filesystem->get_base_path() + filename_in->get();
 
     readGZ1
     (
@@ -214,12 +214,12 @@ public:
       height
     );
 
-    bitm.bpp = GL_RGBA32F_ARB;
-    bitm.bformat = GL_RGBA;
+    bitmap.bpp = GL_RGBA32F_ARB;
+    bitmap.bformat = GL_RGBA;
 
     size_t count_bytes = sizeof(float) * width * height * 4;
     float* data = (float*)malloc( count_bytes );
-    bitm.data = (void*)data;
+    bitmap.data[0][0] = (void*)data;
 
     for (size_t y = 0; y < height; y++)
     {
@@ -232,17 +232,17 @@ public:
       }
     }
 
-    bitm.size_x = width;
-    bitm.size_y = height;
+    bitmap.size_x = width;
+    bitmap.size_y = height;
 
     bitm_timestamp++;
-    bitm.timestamp = bitm_timestamp;
+    bitmap.timestamp = bitm_timestamp;
 
-    texture->upload_ram_bitmap_2d(&bitm,false);
+    texture->upload_ram_bitmap_2d(&bitmap,false);
 
     free(data);
 
-    result_texture->set(texture);
+    texture_out->set(texture);
   }
 
   void stop()
@@ -253,8 +253,8 @@ public:
   void start()
   {
     texture->init_opengl_texture_2d();
-    texture->upload_ram_bitmap_2d(&bitm,false);
-    result_texture->set(texture);
+    texture->upload_ram_bitmap_2d(&bitmap,false);
+    texture_out->set(texture);
   }
 
   void on_delete()

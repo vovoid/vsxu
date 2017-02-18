@@ -10,7 +10,7 @@ public:
   // internal
   vsx_mesh<>* mesh;
 
-  vsx_string current_filename;
+  vsx_string<>current_filename;
 
   bool init()
   {
@@ -23,7 +23,7 @@ public:
     delete mesh;
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;importers;vxm_importer";
@@ -56,7 +56,7 @@ public:
     if (filename->get() == current_filename)
       return;
 
-    if (!verify_filesuffix(filename->get(),"vxm"))
+    if (!vsx_string_helper::verify_filesuffix(filename->get(),"vxm"))
     {
       message = "module||ERROR in file name suffix! This is not a VXM mesh file!";
       return;
@@ -65,66 +65,66 @@ public:
     message = "module||ok";
 
     current_filename = filename->get();
-    vsxf_handle *fp;
-    //printf("a\n");
-    if ((fp = engine->filesystem->f_open(current_filename.c_str(), "r")) == NULL)
+    vsx::file *fp;
+
+    if ((fp = engine_state->filesystem->f_open(current_filename.c_str())) == NULL)
       return;
     char tag[4] = {0,0,0,0};
-    engine->filesystem->f_read((void*)&tag,sizeof(char) * 4,fp);
-    vsx_string line;
+    engine_state->filesystem->f_read((void*)&tag,sizeof(char) * 4,fp);
+    vsx_string<>line;
     line = tag;
-    //printf("vxm line read: %s\n",line.c_str());
+
     if (line != "vxm")
     {
       message = "module||ERROR reading start tag! This is not a VXM mesh file!";
-      engine->filesystem->f_close(fp);
+      engine_state->filesystem->f_close(fp);
       return;
     }
 
 
     size_t vert_size;
-    engine->filesystem->f_read((void*)&vert_size,sizeof(size_t) * 1,fp);
+    engine_state->filesystem->f_read((void*)&vert_size,sizeof(size_t) * 1,fp);
     if (vert_size)
     {
-      vsx_printf("vertex bytes: %ld\n",vert_size);
+      vsx_printf(L"vertex bytes: %ld\n",vert_size);
       void* vert_p = malloc(vert_size);
-      engine->filesystem->f_read(vert_p,vert_size,fp);
+      engine_state->filesystem->f_read(vert_p,vert_size,fp);
       mesh->data->vertices.set_data( (vsx_vector3<>*)vert_p, vert_size / sizeof(vsx_vector3<>) );
     }
 
     size_t normals_size;
-    engine->filesystem->f_read((void*)&normals_size,sizeof(size_t) * 1,fp);
+    engine_state->filesystem->f_read((void*)&normals_size,sizeof(size_t) * 1,fp);
     if (normals_size)
     {
-      vsx_printf("normals bytes: %ld\n",normals_size);
+      vsx_printf(L"normals bytes: %ld\n",normals_size);
       void* norm_p = malloc( normals_size);
-      engine->filesystem->f_read(norm_p,normals_size,fp);
+      engine_state->filesystem->f_read(norm_p,normals_size,fp);
       mesh->data->vertex_normals.set_data((vsx_vector3<>*)norm_p,normals_size / sizeof(vsx_vector3<>));
     }
 
     size_t tex_coords_size;
-    engine->filesystem->f_read((void*)&tex_coords_size,sizeof(size_t) * 1,fp);
+    engine_state->filesystem->f_read((void*)&tex_coords_size,sizeof(size_t) * 1,fp);
     if (tex_coords_size)
     {
-      vsx_printf("texcoord count: %ld\n",tex_coords_size);
+      vsx_printf(L"texcoord count: %ld\n",tex_coords_size);
       void* texcoords_p = malloc(tex_coords_size);
-      engine->filesystem->f_read(texcoords_p,tex_coords_size,fp);
+      engine_state->filesystem->f_read(texcoords_p,tex_coords_size,fp);
       mesh->data->vertex_tex_coords.set_data((vsx_tex_coord2f*)texcoords_p,tex_coords_size / sizeof(vsx_tex_coord2f));
     }
 
     size_t faces_size;
-    engine->filesystem->f_read((void*)&faces_size,sizeof(size_t) * 1,fp);
+    engine_state->filesystem->f_read((void*)&faces_size,sizeof(size_t) * 1,fp);
     if (faces_size)
     {
-      vsx_printf("face count: %ld\n",faces_size);
+      vsx_printf(L"face count: %ld\n",faces_size);
       void* faces_p = malloc(faces_size);
-      engine->filesystem->f_read(faces_p,faces_size,fp);
+      engine_state->filesystem->f_read(faces_p,faces_size,fp);
       mesh->data->faces.set_data((vsx_face3*)faces_p,faces_size / sizeof(vsx_face3));
     }
 
-    engine->filesystem->f_close(fp);
+    engine_state->filesystem->f_close(fp);
     loading_done = true;
-    mesh->timestamp = (int)(engine->real_vtime*1000.0f);
+    mesh->timestamp = (int)(engine_state->real_vtime*1000.0f);
     result->set_p(mesh);
 
   }

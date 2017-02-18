@@ -45,11 +45,11 @@ public:
 
   // internal
   vsx_mesh<>* mesh;
-  vsx_array<vertex_holder*> distances;
+  vsx_ma_vector<vertex_holder*> distances;
 
   // previous id maintanence
   vsx_float_array i_ids;
-  vsx_array<float> ids_data;
+  vsx_ma_vector<float> ids_data;
 
   //*******************************************************************************
   //*******************************************************************************
@@ -147,7 +147,7 @@ public:
     delete mesh;
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;vertices;modifiers;mesh_vertex_distance_sort";

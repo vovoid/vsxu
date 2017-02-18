@@ -40,7 +40,7 @@ public:
   int n_segs;
   int l_param_updates;
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;solid;mesh_planes";
@@ -99,7 +99,7 @@ public:
   {
     if (l_param_updates != param_updates)
       first_run = true;
-    mesh->data->vertices[0] = vsx_vector3<>(0);
+    mesh->data->vertices[0] = vsx_vector3<>(0.0f);
 
     if (first_run || n_segs != num_planes->get())
     {

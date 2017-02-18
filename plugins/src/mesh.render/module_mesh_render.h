@@ -40,7 +40,7 @@ class module_mesh_render : public vsx_module
   vsx_module_param_particlesystem* particles_in;
 
 
-  vsx_avector<vsx_string> gl_errors;
+  vsx_nw_vector< vsx_string<> > gl_errors;
 
   // out
   vsx_module_param_render* render_result;
@@ -48,7 +48,7 @@ class module_mesh_render : public vsx_module
   // internal
   vsx_mesh<>** particle_mesh;
   vsx_mesh<>** mesh;
-  vsx_texture** ta;
+  vsx_texture<>** ta;
   bool m_normals, m_tex_coords, m_colors;
   vsx_matrix<float> mod_mat, proj_mat;
   vsx_particlesystem<>* particles;
@@ -72,6 +72,7 @@ class module_mesh_render : public vsx_module
   // vbo handles
   GLuint vbo_id_vertex_normals_texcoords;
   GLuint vbo_id_draw_indices;
+
 
   // current - state - used to see if anything has changed
   GLuint current_vbo_draw_type;
@@ -114,7 +115,6 @@ class module_mesh_render : public vsx_module
   bool init_vbo(GLuint draw_type = GL_DYNAMIC_DRAW_ARB)
   {
     if (vbo_id_vertex_normals_texcoords) {
-      //printf("init vbo failed - vbo_id_vertex_normals_texcoords already has a value: %d\n", vbo_id_vertex_normals_texcoords);
       return true;
     }
     current_vbo_draw_type = draw_type;
@@ -134,6 +134,7 @@ class module_mesh_render : public vsx_module
         &vbo_id_vertex_normals_texcoords
       );
     }
+
     // bind the vertex, normals buffer for use
     glBindBufferARB
     (
@@ -252,14 +253,19 @@ class module_mesh_render : public vsx_module
     //printf("total VBO memory used: %d bytes\n", used_memory);
     current_num_faces = (*mesh)->data->faces.size();
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+
+
     return true;
   }
 
   void destroy_vbo()
   {
-    if (!vbo_id_vertex_normals_texcoords) return;
+    if (!vbo_id_vertex_normals_texcoords)
+      return;
+
     glDeleteBuffersARB(1, &vbo_id_draw_indices);
     glDeleteBuffersARB(1, &vbo_id_vertex_normals_texcoords);
+
 
     vbo_id_vertex_normals_texcoords = 0;
     vbo_id_draw_indices = 0;
@@ -268,7 +274,9 @@ class module_mesh_render : public vsx_module
 
   bool check_if_need_to_reinit_vbo(GLuint draw_type)
   {
-    if (!vbo_id_vertex_normals_texcoords) return true;
+    if (!vbo_id_vertex_normals_texcoords)
+      return true;
+
     if (current_num_vertices != (*mesh)->data->vertices.size() ) return true;
     if (current_num_faces != (*mesh)->data->faces.size() ) return true;
     if (current_vbo_draw_type != draw_type) return true;
@@ -286,7 +294,7 @@ class module_mesh_render : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;mesh;mesh_basic_render";
@@ -370,10 +378,6 @@ public:
     current_num_vertices = 0;
     current_num_faces = 0;
 
-    // vbo handles
-    vbo_id_vertex_normals_texcoords = 0;
-    vbo_id_draw_indices = 0;
-
     current_vbo_draw_type = 0;
 
     current_num_vertices = 0;
@@ -387,13 +391,12 @@ public:
     ta = tex_a->get_addr();
     if (ta)
     {
-      vsx_transform_obj& texture_transform = *(*ta)->get_transform();
-
       glMatrixMode(GL_TEXTURE);
       glPushMatrix();
 
       if ((*ta)->get_transform())
-      texture_transform();
+        (*ta)->get_transform()->transform();
+
       (*ta)->bind();
     }
   }
@@ -579,34 +582,6 @@ public:
     render_result->set(1);
   }
 
-  void output_opengl_es(vsx_module_param_abs* param)
-  {
-    VSX_UNUSED(param);
-    mesh = mesh_in->get_addr();
-    // sanity checks
-    if (!mesh) { render_result->set(0); return; }
-    if (!(*mesh)->data) { render_result->set(0); return; }
-    if (!(*mesh)->data->faces.get_used()) { render_result->set(0); return; }
-
-    enable_texture();
-
-    if (vertex_colors->get()) glEnable(GL_COLOR_MATERIAL);
-
-    if (vertex_colors->get()) glEnable(GL_COLOR_MATERIAL);
-
-    prev_mesh_timestamp = (*mesh)->timestamp;
-
-    enable_client_arrays_no_vbo();
-    glDrawElements(GL_TRIANGLES,(*mesh)->data->faces.get_used()*3,GL_UNSIGNED_SHORT,(*mesh)->data->faces.get_pointer());
-    disable_client_arrays_no_vbo();
-
-    disable_texture();
-
-    if (vertex_colors->get()) glDisable(GL_COLOR_MATERIAL);
-
-    render_result->set(1);
-  }
-
   void run()
   {
     mesh = mesh_in->get_addr();
@@ -724,9 +699,6 @@ public:
   void output(vsx_module_param_abs* param)
   {
     VSX_UNUSED(param);
-    #ifdef VSXU_OPENGL_ES
-    output_opengl_es(param); return;
-    #endif
     mesh = mesh_in->get_addr();
     // sanity checks
     if (!mesh)
@@ -859,22 +831,19 @@ public:
       return;
     }
 
-    if (!enable_client_arrays_vbo()) return;
+    if (!enable_client_arrays_vbo())
+      return;
 
     if (gl_errors.size() > 0)
-    {
       return;
-    }
 
-      perform_draw();
+    perform_draw();
 
     cleanup_successful_rendering();
   }
 
   void stop()
   {
-    #ifndef VSXU_OPENGL_ES
     destroy_vbo();
-    #endif
   }
 };

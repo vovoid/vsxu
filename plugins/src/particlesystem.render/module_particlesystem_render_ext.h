@@ -1,5 +1,7 @@
-#include "vsx_particlesystem.h"
+#include <particlesystem/vsx_particlesystem.h>
 #include "vsx_vbo_bucket.h"
+#include <math/vsx_sequence.h>
+#include <texture/vsx_texture.h>
 
 class module_particlesystem_render_ext : public vsx_module
 {
@@ -8,11 +10,11 @@ public:
   // in
   vsx_module_param_particlesystem* particles_in;
   vsx_module_param_texture* tex_inf;
-  vsx_module_param_sequence* size_lifespan_sequence;
-  vsx_module_param_sequence* alpha_lifespan_sequence;
-  vsx_module_param_sequence* r_lifespan_sequence;
-  vsx_module_param_sequence* g_lifespan_sequence;
-  vsx_module_param_sequence* b_lifespan_sequence;
+  vsx_module_param_float_sequence* size_lifespan_sequence;
+  vsx_module_param_float_sequence* alpha_lifespan_sequence;
+  vsx_module_param_float_sequence* r_lifespan_sequence;
+  vsx_module_param_float_sequence* g_lifespan_sequence;
+  vsx_module_param_float_sequence* b_lifespan_sequence;
 
   vsx_module_param_string* i_vertex_program;
   vsx_module_param_string* i_fragment_program;
@@ -23,18 +25,18 @@ public:
 
   // internal
   vsx_particlesystem<>* particles;
-  vsx_texture** tex;
+  vsx_texture<>** tex;
 
   // sequences
-  vsx_sequence seq_size;
-  vsx_sequence seq_alpha;
-  vsx_sequence seq_r;
-  vsx_sequence seq_g;
-  vsx_sequence seq_b;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_size;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_alpha;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_r;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_g;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_b;
 
-  vsx_texture *texture_lookup_sizes;
+  vsx_texture<>* texture_lookup_sizes;
 
-  vsx_texture *texture_lookup_color;
+  vsx_texture<>* texture_lookup_color;
 
   vsx_glsl shader;
 
@@ -44,7 +46,7 @@ public:
   vsx_vbo_bucket<vsx_face1, GL_POINTS, GL_STREAM_DRAW, vsx_quaternion<> > point_bucket;
 
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;particlesystems;render_particlesystem_ext";
@@ -54,11 +56,11 @@ public:
       "texture:texture,"
       "options:complex"
       "{"
-        "size_lifespan_sequence:sequence,"
-        "alpha_lifespan_sequence:sequence,"
-        "r_lifespan_sequence:sequence,"
-        "g_lifespan_sequence:sequence,"
-        "b_lifespan_sequence:sequence,"
+        "size_lifespan_sequence:float_sequence,"
+        "alpha_lifespan_sequence:float_sequence,"
+        "r_lifespan_sequence:float_sequence,"
+        "g_lifespan_sequence:float_sequence,"
+        "b_lifespan_sequence:float_sequence,"
         "ignore_particles_at_center:enum?no|yes"
       "},"
       "vertex_program:string,"
@@ -83,19 +85,19 @@ public:
 
     ignore_particles_at_center = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "ignore_particles_at_center");
 
-    size_lifespan_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"size_lifespan_sequence");
+    size_lifespan_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"size_lifespan_sequence");
     size_lifespan_sequence->set(seq_size);
     calc_sizes();
 
-    alpha_lifespan_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"alpha_lifespan_sequence");
+    alpha_lifespan_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"alpha_lifespan_sequence");
     alpha_lifespan_sequence->set(seq_alpha);
     calc_alphas();
 
-    r_lifespan_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"r_lifespan_sequence");
+    r_lifespan_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"r_lifespan_sequence");
     r_lifespan_sequence->set(seq_r);
-    g_lifespan_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"g_lifespan_sequence");
+    g_lifespan_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"g_lifespan_sequence");
     g_lifespan_sequence->set(seq_g);
-    b_lifespan_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"b_lifespan_sequence");
+    b_lifespan_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"b_lifespan_sequence");
     b_lifespan_sequence->set(seq_b);
     r_lifespan_sequence->updates = 1;
     g_lifespan_sequence->updates = 1;
@@ -151,10 +153,11 @@ public:
           ;
 
     // create and prepare the textures
-    texture_lookup_sizes = new vsx_texture;
-    texture_lookup_sizes->init_opengl_texture_1d();
-    texture_lookup_color = new vsx_texture;
-    texture_lookup_color->init_opengl_texture_1d();
+    texture_lookup_sizes = new vsx_texture<>();
+    texture_lookup_sizes->texture->init_opengl_texture_1d();
+
+    texture_lookup_color = new vsx_texture<>();
+    texture_lookup_color->texture->init_opengl_texture_1d();
 
     loading_done = true;
     redeclare_in_params(in_parameters);
@@ -177,7 +180,7 @@ public:
   }
 
 
-  void param_set_notify(const vsx_string& name) {
+  void param_set_notify(const vsx_string<>& name) {
     if ((name == "vertex_program" || name == "fragment_program")) {
       shader.vertex_program = i_vertex_program->get();
       shader.fragment_program = i_fragment_program->get();
@@ -191,7 +194,7 @@ public:
   }
 
 
-  vsx_array<float> texture_lookup_sizes_data;
+  vsx_ma_vector<float> texture_lookup_sizes_data;
 
 
   inline void calc_sizes()
@@ -202,15 +205,14 @@ public:
     seq_size.reset();
     for (int i = 0; i < 8192; ++i)
     {
-      texture_lookup_sizes_data[i] = seq_size.execute(1.0f/8191.0f);
+      texture_lookup_sizes_data[i] = seq_size.execute(1.0f/8191.0f).get_float();
     }
-    texture_lookup_sizes->valid = true;
     texture_lookup_sizes->bind();
-    glTexParameteri(texture_lookup_sizes->texture_info->ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexParameteri(texture_lookup_sizes->texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_lookup_sizes->texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_sizes->texture->gl_type, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(texture_lookup_sizes->texture->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_sizes->texture->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexImage1D(
-      texture_lookup_sizes->texture_info->ogl_type,  // opengl type
+      texture_lookup_sizes->texture->gl_type,  // opengl type
       0, // mipmap level
       1, // internal format
       8191, // size
@@ -220,11 +222,12 @@ public:
       texture_lookup_sizes_data.get_pointer()
     );
 
+    texture_lookup_sizes->texture->uploaded_to_gl = true;
     texture_lookup_sizes->_bind();
 
   }
 
-  vsx_array< vsx_color<> > texture_lookup_color_data;
+  vsx_ma_vector< vsx_color<> > texture_lookup_color_data;
 
   inline void calc_alphas()
   {
@@ -234,15 +237,14 @@ public:
     seq_alpha.reset();
     for (int i = 0; i < 8192; ++i)
     {
-      texture_lookup_color_data[i].a = seq_alpha.execute(1.0f/8191.0f);
+      texture_lookup_color_data[i].a = seq_alpha.execute(1.0f/8191.0f).get_float();
     }
-    texture_lookup_color->valid = true;
     texture_lookup_color->bind();
-    glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_color->texture->gl_type, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(texture_lookup_color->texture->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_color->texture->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexImage1D(
-      texture_lookup_color->texture_info->ogl_type,  // opengl type
+      texture_lookup_color->texture->gl_type,  // opengl type
       0, // mipmap level
       4, // internal format
       8191, // size
@@ -251,6 +253,7 @@ public:
       GL_FLOAT, // source data type
       texture_lookup_color_data.get_pointer()
     );
+    texture_lookup_sizes->texture->uploaded_to_gl = true;
     texture_lookup_color->_bind();
 
   }
@@ -273,18 +276,17 @@ public:
     seq_b.reset();
     for (int i = 0; i < 8192; ++i)
     {
-      texture_lookup_color_data[i].r = seq_r.execute(1.0f/8191.0f);
-      texture_lookup_color_data[i].g = seq_g.execute(1.0f/8191.0f);
-      texture_lookup_color_data[i].b = seq_b.execute(1.0f/8191.0f);
+      texture_lookup_color_data[i].r = seq_r.execute(1.0f/8191.0f).get_float();
+      texture_lookup_color_data[i].g = seq_g.execute(1.0f/8191.0f).get_float();
+      texture_lookup_color_data[i].b = seq_b.execute(1.0f/8191.0f).get_float();
     }
-    texture_lookup_color->valid = true;
     texture_lookup_color->bind();
-    glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(texture_lookup_color->texture_info->ogl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_color->texture->gl_type, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(texture_lookup_color->texture->gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(texture_lookup_color->texture->gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glTexImage1D(
-      texture_lookup_color->texture_info->ogl_type,  // opengl type
+      texture_lookup_color->texture->gl_type,  // opengl type
       0, // mipmap level
       4, // internal format
       8191, // size
@@ -384,21 +386,19 @@ public:
       render_result->set(0);
       return;
     }
-    if ( !((*tex)->valid))
-    {
-      return;
-    }
 
 
-    (*tex)->begin_transform();
+
+    if ( (*tex)->get_transform() )
+      (*tex)->get_transform()->transform();
     if (!(*tex)->bind())
     {
-      vsx_printf("bind failed\n");
+      vsx_printf(L"bind failed\n");
     }
 
     if ( !shader.get_linked() )
     {
-      vsx_string h = shader.link();
+      vsx_string<>h = shader.link();
       #ifdef VSXU_DEBUG
         printf("vert = %s\n\n\n\n",shader.vertex_program.c_str());
         printf("frag = %s\n",shader.fragment_program.c_str());
@@ -451,7 +451,6 @@ public:
     glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
     (*tex)->_bind();
-    (*tex)->end_transform();
 
     render_result->set(1);
   }

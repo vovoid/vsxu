@@ -9,7 +9,7 @@ class module_render_gl_depth_func : public vsx_module
   vsx_gl_state* gl_state;
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier = "renderers;opengl_modifiers;depth_function";
     info->description = "";

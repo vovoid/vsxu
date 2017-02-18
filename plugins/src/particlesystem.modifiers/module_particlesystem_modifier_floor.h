@@ -23,11 +23,11 @@ public:
   // internal
   int i;
   vsx_particlesystem<>* particles;
-  vsx_array<float> f_randpool;
+  vsx_ma_vector<float> f_randpool;
   float* f_randpool_pointer;
 
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "particlesystems;modifiers;floor";

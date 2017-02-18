@@ -43,7 +43,7 @@ public:
   vsx_vector3<> upv;
   vsx_font* myf;
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;mesh;mesh_face_id_render";
@@ -97,7 +97,7 @@ public:
 
     loading_done = true;
     myf = new vsx_font();
-    vsxf filesystem;
+    vsx::filesystem filesystem;
     myf->load("/home/jaw/vsxu-dev/vsxu/share/font/font-ascii.png", &filesystem);
   }
 

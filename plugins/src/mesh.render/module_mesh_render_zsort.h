@@ -45,15 +45,15 @@ class module_mesh_render_zsort : public vsx_module
 
   // internal
   vsx_mesh<>** mesh;
-  vsx_texture** ta;
+  vsx_texture<>** ta;
   bool m_normals, m_tex, m_colors;
   vsx_matrix<float> mod_mat, proj_mat;
-  vsx_avector_nd<face_holder> f_distances;
-  vsx_avector_nd<vsx_face3> f_result;
+  vsx_nw_vector_nd<face_holder> f_distances;
+  vsx_nw_vector_nd<vsx_face3> f_result;
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;mesh;mesh_transparency_render";
@@ -136,7 +136,7 @@ public:
     glGetFloatv(GL_PROJECTION_MATRIX, mod_mat.m);
     glPopMatrix();
 
-    vsx_vector3<> center(0);
+    vsx_vector3<> center(0.0f);
     vsx_vector3<> deep(0,0,1);
     vsx_vector3<> istart = mod_mat.multiply_vector(center);
     vsx_vector3<> end = mod_mat.multiply_vector(deep);
@@ -168,15 +168,12 @@ public:
 
     if (ta)
     {
-      vsx_transform_obj& texture_transform = *(*ta)->get_transform();
-
       glMatrixMode(GL_TEXTURE);
       glPushMatrix();
 
       if ((*ta)->get_transform())
-      {
-        texture_transform();
-      }
+        (*ta)->get_transform()->transform();
+
       (*ta)->bind();
     }
 

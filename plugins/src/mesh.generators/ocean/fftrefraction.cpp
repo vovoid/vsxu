@@ -62,7 +62,7 @@ Alaska::Alaska()
   scale_height = 0.25;//scale the wave heights
 
   //	wind = .7;
-  wind = 0.1;
+  wind = 0.1f;
   factor = 10.0;	//this determines speed of wave
 }
 
@@ -264,7 +264,7 @@ void Alaska::myinit(void)
 
 float	Alaska::neg1Pow(int k)
 {
-	return pow(-1,k);
+	return (float)pow(-1,k);
 }
 
 void	Alaska::pre_choppy()

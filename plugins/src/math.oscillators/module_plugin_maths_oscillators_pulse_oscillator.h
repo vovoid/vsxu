@@ -40,7 +40,7 @@ public:
   float current_phase;
   float current_pos;
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "maths;oscillators;pulse_oscillator";

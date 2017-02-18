@@ -22,7 +22,7 @@
 */
 
 
-#include <vsx_rand.h>
+#include <math/vsx_rand.h>
 
 class module_mesh_lightning_vertices : public vsx_module
 {
@@ -49,7 +49,7 @@ public:
   vsx_vector3<> start;
   vsx_rand rand;
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;vertices;lightning_vertices";
@@ -129,9 +129,9 @@ public:
       float sz = scaling->get(2) * length->get();
       for (i = 0; i < (int)num_points->get(); ++i)
       {
-        mesh->data->vertices[i].x = start.x + (rand.frand()-0.5f)*sx * sin((float)i * one_div_num_points * PI);
-        mesh->data->vertices[i].y = start.y + (rand.frand()-0.5f)*sy * sin((float)i * one_div_num_points * PI);
-        mesh->data->vertices[i].z = start.z + (rand.frand()-0.5f)*sz * sin((float)i * one_div_num_points * PI);
+        mesh->data->vertices[i].x = start.x + (rand.frand()-0.5f)*sx * sin((float)i * one_div_num_points * (float)PI);
+        mesh->data->vertices[i].y = start.y + (rand.frand()-0.5f)*sy * sin((float)i * one_div_num_points * (float)PI);
+        mesh->data->vertices[i].z = start.z + (rand.frand()-0.5f)*sz * sin((float)i * one_div_num_points * (float)PI);
         float c = 1.0f - (float)i * one_div_num_points;
         mesh->data->vertex_colors[i].r = c;
         mesh->data->vertex_colors[i].g = c;

@@ -20,7 +20,7 @@ class module_render_gl_target_camera : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;opengl_modifiers;cameras;target_camera";
@@ -113,7 +113,7 @@ public:
     }
     gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
 
-    gl_state->matrix_glu_lookat
+    gl_state->matrix_glu_lookatf
     (
       position->get(0),
       position->get(1),

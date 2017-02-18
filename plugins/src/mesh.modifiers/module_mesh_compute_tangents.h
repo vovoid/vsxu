@@ -34,7 +34,7 @@ public:
   vsx_module_param_quaternion_array* tangents;
   // internal
   vsx_quaternion_array<> i_tangents;
-  vsx_array< vsx_quaternion<> > data;
+  vsx_ma_vector< vsx_quaternion<> > data;
 
   bool init()
   {
@@ -45,7 +45,7 @@ public:
   {
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;modifiers;helpers;mesh_compute_tangents";

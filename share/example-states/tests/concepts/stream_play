@@ -1,0 +1,8 @@
+meta_set fHx8fHw=
+cpp screen0 0.000000 0.000000
+param_set screen0 gamma_correction 1.00000095367431640625
+param_set screen0 clear_color 0.00000046420717580986,0.00000077531802844533,0.00000096349174327770,1.00000000000000000000
+component_create system;sound;stream_play stream_play -0.342920 0.020159
+param_set stream_play time_mode 1
+param_set stream_play spectrum_enabled 0
+ps64 stream_play filename cmVzb3VyY2VzL2x1bmEzZC9sdW5hX3Rha2UyXzA4X21hc3RlcmluZ19qb2ludHN0ZXJlbzE2MGticHMubXAz

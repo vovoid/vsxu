@@ -16,7 +16,7 @@ class module_render_gl_depth_buffer : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;opengl_modifiers;depth_buffer";

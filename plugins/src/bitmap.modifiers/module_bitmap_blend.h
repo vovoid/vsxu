@@ -21,7 +21,8 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-
+#include <bitmap/vsx_bitmap.h>
+#include <thread>
 
 typedef unsigned char uint8;
 
@@ -53,8 +54,10 @@ typedef unsigned char uint8;
 
 #define BLEND_MODES_COUNT 24
 
+#ifndef min
 #define min(A,B) A<B?A:B
 #define max(A,B) A>B?A:B
+#endif
 
 #define Blend_Normal(A,B) ((unsigned char)(A))
 #define Blend_Lighten(A,B)  ((unsigned char)((B > A) ? B:A))
@@ -89,93 +92,94 @@ class module_bitmap_blend : public vsx_module
 {
 public:
 
-  // in
-  vsx_module_param_bitmap* in1;
-  vsx_module_param_bitmap* in2;
-  vsx_module_param_int* filter_type;
-  vsx_module_param_int* bitmap_type;
-  vsx_module_param_float3* bitm1_ofs;
-  vsx_module_param_float3* bitm2_ofs;
-  vsx_module_param_float3* target_size;
-  vsx_module_param_float* bitm2_opacity;
-
-  // out
-  vsx_module_param_bitmap* result1;
-
-  // internal
-  bool need_to_rebuild;
-
-  int bitm_timestamp;
-
-  pthread_t	worker_t;
-
-  int p_updates;
-
-
-  vsx_bitmap bitm;
-  vsx_bitmap *bitm1;
-  vsx_bitmap *bitm2;
-
+  // module type
   int blend_type;
 
-  vsx_bitmap*       work_bitmap;
-  bool              worker_running;
-  bool              thread_created;
-  int               thread_state;
-  int my_ref;
 
+  // in
+  vsx_module_param_bitmap* bitmap_in_1;
+  vsx_module_param_bitmap* bitmap_in_2;
+  vsx_module_param_int* filter_type_in;
+  vsx_module_param_int* bitmap_type_in;
+  vsx_module_param_float3* bitm1_ofs_in;
+  vsx_module_param_float3* bitm2_ofs_in;
+  vsx_module_param_float3* target_size_in;
+  vsx_module_param_float* bitm2_opacity_in;
 
+  // out
+  vsx_module_param_bitmap* bitmap_out;
+
+  // internal
+  uint64_t bitm_timestamp = -1;
+
+  std::thread worker_thread;
+
+  int p_updates = 0;
+  uint64_t timestamp_1 = -1;
+  uint64_t timestamp_2 = -1;
+
+  vsx_bitmap bitmap;
+  vsx_bitmap *bitmap_source_1;
+  vsx_bitmap *bitmap_source_2;
+
+  void* to_delete_data = 0;
 
   // our worker thread, to keep the tough generating work off the main loop
   // this is a fairly simple operation, but when you want to generate fractals
   // and decode film, you could run into several seconds of processing time.
-  static void* worker(void *ptr)
+  void worker()
   {
-    module_bitmap_blend* mod = ((module_bitmap_blend*)ptr);
-    vsx_bitmap* bitm = mod->work_bitmap;
-    vsx_bitmap* bitm1 = mod->bitm1;
-    vsx_bitmap* bitm2 = mod->bitm2;
+    vsx_bitmap* result_bitmap = &bitmap;
 
     unsigned long x,y,ix,iy;
 
-    for (x = 0; x < bitm->size_x * bitm->size_y; x++) ((vsx_bitmap_32bt*)bitm->data)[x] = 0;
+    for (x = 0; x < result_bitmap->width * result_bitmap->height; x++)
+      ((uint32_t*)result_bitmap->data_get())[x] = 0;
 
     bool ixbound = false, iybound = false;
     iy = 0;
-    for (y = (unsigned long)mod->bitm1_ofs->get(1); y < bitm->size_y && !iybound; y++)
+    for (y = (unsigned long)bitm1_ofs_in->get(1); y < result_bitmap->height && !iybound; y++)
     {
       ix = 0;
       ixbound = false;
-      for (x = (unsigned long)mod->bitm1_ofs->get(0); x < bitm->size_x && !ixbound; x++)
+      for (x = (unsigned long)bitm1_ofs_in->get(0); x < result_bitmap->width && !ixbound; x++)
       {
-        ((vsx_bitmap_32bt*)bitm->data)[x + y * bitm->size_x] = ((vsx_bitmap_32bt*)bitm1->data)[ix + iy * bitm1->size_x];
+        ((uint32_t*)result_bitmap->data_get())[x + y * result_bitmap->width] = ((uint32_t*)bitmap_source_1->data_get())[ix + iy * bitmap_source_1->width];
         ix++;
-        if (ix >= bitm1->size_x) ixbound = true;
+        if (ix >= bitmap_source_1->width)
+          ixbound = true;
       }
       iy++;
-      if (iy >= bitm1->size_y) iybound = true;
+      if (iy >= bitmap_source_1->height)
+        iybound = true;
     }
 
     iybound = false;
     iy = 0;
 
-    for (y = (unsigned long)mod->bitm2_ofs->get(1); y < bitm->size_y && !iybound; y++)
+    for (y = (unsigned long)bitm2_ofs_in->get(1); y < result_bitmap->height && !iybound; y++)
     {
       ix = 0;
       ixbound = false;
 
-      for (x = (unsigned long)mod->bitm2_ofs->get(0); x < bitm->size_x && !ixbound; x++)
+      for (x = (unsigned long)bitm2_ofs_in->get(0); x < result_bitmap->width && !ixbound; x++)
       {
-        vsx_bitmap_32bt* data = (vsx_bitmap_32bt*)bitm->data;
-        vsx_bitmap_32bt* data2 = (vsx_bitmap_32bt*)bitm2->data;
+        uint32_t* data = (uint32_t*)result_bitmap->data_get();
+        uint32_t* data2 = (uint32_t*)bitmap_source_2->data_get();
 
         #define BLEND_FUNC(BLT) \
         for (int a = 0; a < 4; a++)\
         {\
-          ((unsigned char*)&data[x + y * bitm->size_x])[a] = Blend_Opacity(((unsigned char*)&data2[ix + iy * bitm2->size_x])[a],((unsigned char*)&data[x + y * bitm->size_x])[a],BLT,mod->bitm2_opacity->get());\
+          ((unsigned char*)&data[x + y * result_bitmap->width])[a] = \
+            Blend_Opacity( \
+              ((unsigned char*)&data2[ix + iy * bitmap_source_2->width])[a], \
+              ((unsigned char*)&data[x + y * result_bitmap->width])[a], \
+              BLT, \
+              bitm2_opacity_in->get() \
+            );\
         }\
 
-        switch (mod->filter_type->get())
+        switch (filter_type_in->get())
         {
           case BLEND_NORMAL       : BLEND_FUNC(Blend_Normal) break;
           case BLEND_LIGHTEN      : BLEND_FUNC(Blend_Lighten) break;
@@ -205,20 +209,19 @@ public:
         }
 
         ix++;
-        if (ix >= bitm2->size_x) ixbound = true;
+        if (ix >= bitmap_source_2->width)
+          ixbound = true;
       }
       iy++;
-      if (iy >= bitm2->size_y) iybound = true;
+      if (iy >= bitmap_source_2->height)
+        iybound = true;
     }
 
-    bitm->timestamp++;
-    bitm->valid = true;
-    mod->thread_state = 2;
-
-    return 0;
+    result_bitmap->timestamp++;
+    bitmap.data_ready.fetch_add(1);
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->in_param_spec =
       "bmp1:complex"
@@ -242,7 +245,7 @@ public:
         "BLEND_PIN_LIGHT|BLEND_HARD_MIX|BLEND_REFLECT|BLEND_GLOW|BLEND_PHOENIX,"
       "bitmap_type:enum?integer|float"
     ;
-    vsx_string nn;
+    vsx_string<>nn;
     switch (blend_type)
     {
       case BLEND_NORMAL       :nn = "blend_normal"; break;
@@ -281,125 +284,95 @@ public:
      ;
   }
 
-  int timestamp1;
-  int timestamp2;
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-    thread_state = 0;
-    worker_running = false;
-    thread_created = false;
-    p_updates = -1;
-    work_bitmap = &bitm;
-    bitm.data = 0;
-    bitm.bpp = 4;
-    bitm.bformat = GL_RGBA;
-    bitm.valid = false;
-    my_ref = 0;
-    bitm_timestamp = bitm.timestamp = rand();
-    need_to_rebuild = true;
-    bitm.size_y = bitm.size_x = 0;
-    timestamp1 = timestamp2 = -1;
-    to_delete_data = 0;
+    //--------------------------------------------------------------------------------------------------
+    bitmap_in_1 = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"in1");
+    bitmap_in_2 = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"in2");
+
+    target_size_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"target_size");
+    target_size_in->set(512.0f,0);
+    target_size_in->set(512.0f,1);
+
+    bitm1_ofs_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"bitm1_ofs");
+    bitm2_ofs_in = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"bitm2_ofs");
+
+    bitm2_opacity_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"bitm2_opacity");
+    bitm2_opacity_in->set(1.0f);
+
+    filter_type_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"blend_type");
+    filter_type_in->set(blend_type);
+
+    bitmap_type_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"bitmap_type");
+
+    bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
 
     //--------------------------------------------------------------------------------------------------
-
-    in1 = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"in1");
-
-    in2 = (vsx_module_param_bitmap*)in_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"in2");
-
-    result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-
-    target_size = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"target_size");
-    target_size->set(512.0f,0);
-    target_size->set(512.0f,1);
-
-    bitm1_ofs = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"bitm1_ofs");
-    bitm2_ofs = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"bitm2_ofs");
-
-    bitm2_opacity = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"bitm2_opacity");
-    bitm2_opacity->set(1.0f);
-
-    filter_type = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"blend_type");
-    filter_type->set(blend_type);
-
-    bitmap_type = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"bitmap_type");
-
-    //--------------------------------------------------------------------------------------------------
-
-    result1->set_p(bitm);
   }
 
-  void *to_delete_data;
 
   void run()
   {
-    bitm1 = in1->get_addr();
-    bitm2 = in2->get_addr();
-
-    // initialize our worker thread, we don't want to keep the renderloop waiting do we?
-    if (!worker_running)
-    if (bitm1 && bitm2 && !to_delete_data)
+    if (to_delete_data)
     {
-      if (bitm1->valid && bitm2->valid)
-      if (timestamp1 != bitm1->timestamp || timestamp2 != bitm2->timestamp || p_updates != param_updates)
-      {
-        p_updates = param_updates;
-        bitm.valid = false;
-        timestamp1 = bitm1->timestamp;
-        timestamp2 = bitm2->timestamp;
-
-        if (bitm.size_x != (unsigned long)target_size->get(0) || bitm.size_y != (unsigned long)target_size->get(1))
-        {
-          if (bitm.data != 0) to_delete_data = bitm.data;
-          bitm.data = new vsx_bitmap_32bt[(int)target_size->get(0)*(int)target_size->get(1)];
-          bitm.size_x = (int)target_size->get(0);
-          bitm.size_y = (int)target_size->get(1);
-        }
-
-        thread_state = 1;
-        worker_running = true;
-        thread_created = true;
-        pthread_create(&worker_t, NULL, &worker, (void*)this);
-      }
-    }
-
-    if (thread_state == 2)
-    {
-      if (bitm.valid && bitm_timestamp != bitm.timestamp)
-      {
-        if (worker_running)
-        {
-          pthread_join(worker_t,0);
-        }
-        worker_running = false;
-
-        // ok, new version
-        bitm_timestamp = bitm.timestamp;
-        result1->set_p(bitm);
-        loading_done = true;
-      }
-      thread_state = 3;
-    }
-    if (thread_state == 3)
-    if ( to_delete_data )
-    {
-      delete[] (vsx_bitmap_32bt*)to_delete_data;
+      free(to_delete_data);
       to_delete_data = 0;
     }
 
+    if (bitmap.data_ready && worker_thread.joinable())
+    {
+      worker_thread.join();
+      //bitmap.data_ready = 0;
+      bitm_timestamp = bitmap.timestamp;
+      bitmap_out->set(&bitmap);
+      loading_done = true;
+    }
+
+    req(bitmap_in_1->has_value());
+    req(bitmap_in_2->has_value());
+
+    bitmap_source_1 = bitmap_in_1->get();
+    bitmap_source_2 = bitmap_in_2->get();
+
+    req(bitmap_source_1);
+    req(bitmap_source_2);
+    req(bitmap_source_1->data_ready);
+    req(bitmap_source_2->data_ready);
+    req(!worker_thread.joinable());
+    req(
+          bitmap_source_1->timestamp != timestamp_1
+        ||
+        bitmap_source_2->timestamp != timestamp_2
+        ||
+        p_updates != param_updates);
+
+    p_updates = param_updates;
+    timestamp_1 = bitmap_source_1->timestamp;
+    timestamp_2 = bitmap_source_2->timestamp;
+
+    bitmap.data_ready = 0;
+
+    // Reallocate image data
+    if (
+      bitmap.width != (unsigned int)target_size_in->get(0)
+      ||
+      bitmap.height != (unsigned int)target_size_in->get(1)
+    )
+    {
+      to_delete_data = bitmap.data_get();
+      bitmap.data_set( malloc( sizeof(uint32_t) * (int)target_size_in->get(0) * (int)target_size_in->get(1) ) );
+      bitmap.width = (unsigned int)target_size_in->get(0);
+      bitmap.height = (unsigned int)target_size_in->get(1);
+    }
+
+    worker_thread = std::thread( [this](){worker();} );
   }
 
   void on_delete()
   {
-    if (worker_running)
-    {
-      pthread_join(worker_t,NULL);
-    }
-    if (bitm.data)
-    {
-      delete[] (vsx_bitmap_32bt*)bitm.data;
-    }
+    if (worker_thread.joinable())
+      worker_thread.join();
   }
 
 };

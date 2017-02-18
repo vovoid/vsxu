@@ -14,7 +14,7 @@ class module_render_line : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;basic;render_line";
@@ -74,37 +74,6 @@ public:
   void output(vsx_module_param_abs* param)
   {
     VSX_UNUSED(param);
-    #ifdef VSXU_OPENGL_ES
-      GLfloat line_vertices[] = {
-        point_a->get(0), point_a->get(1), point_a->get(2),
-        point_b->get(0), point_b->get(1), point_b->get(2),
-      };
-      GLfloat line_colors[] = {
-        color_a->get(0),color_a->get(1),color_a->get(2),color_a->get(3),
-        color_b->get(0),color_b->get(1),color_b->get(2),color_b->get(3),
-      };
-
-      #ifdef VSXU_OPENGL_ES_1_0
-        glVertexPointer(3, GL_FLOAT, 0, line_vertices);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glColorPointer(4, GL_FLOAT, 0, line_colors);
-        glEnableClientState(GL_COLOR_ARRAY);
-      glDrawArrays(GL_LINE_STRIP, 0, 2);
-      #endif
-      #ifdef VSXU_OPENGL_ES_2_0
-        vsx_es_begin();
-
-
-        glEnableVertexAttribArray(0);
-        vsx_es_set_default_arrays((GLvoid*)&line_vertices, (GLvoid*)&line_colors);
-        //glVertexAttribPointer(0,2,GL_FLOAT, GL_FALSE, 0, line_vertices);
-
-        glDrawArrays(GL_LINE_STRIP, 0, 2);
-
-        vsx_es_end();
-
-      #endif
-    #else
       glBegin(GL_LINES);
         glColor4f(color_a->get(0),color_a->get(1),color_a->get(2),color_a->get(3));
         glVertex3f(point_a->get(0), point_a->get(1), point_a->get(2));
@@ -112,7 +81,6 @@ public:
         glColor4f(color_b->get(0),color_b->get(1),color_b->get(2),color_b->get(3));
         glVertex3f(point_b->get(0), point_b->get(1), point_b->get(2));
       glEnd();
-    #endif
     render_result->set(1);
     loading_done = true;
   }

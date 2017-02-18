@@ -40,7 +40,7 @@ class vsx_module_ogg_sample_trigger : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "sound;ogg_sample_trigger";
@@ -87,21 +87,23 @@ public:
   bool init()
   {
     setup_rtaudio_play();
+    vsx_audio_mixer& main_mixer = *vsx_audio_mixer_manager::get_instance();
     main_mixer.register_channel( &main_sample );
     return true;
   }
 
-  void param_set_notify(const vsx_string& name)
+  void param_set_notify(const vsx_string<>& name)
   {
     if (name == "filename")
     {
-      main_sample.set_filesystem( engine->filesystem );
+      main_sample.set_filesystem( engine_state->filesystem );
       main_sample.load_filename( filename->get() );
     }
   }
 
   void on_delete()
   {
+    vsx_audio_mixer& main_mixer = *vsx_audio_mixer_manager::get_instance();
     main_mixer.unregister_channel( &main_sample );
     shutdown_rtaudio_play();
   }

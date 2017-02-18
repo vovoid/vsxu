@@ -1,0 +1,39 @@
+if (VSXU_GFX_LIB EQUAL "GLFW")
+
+  VSX_INCLUDE_LIB(GLFW libglfw GLFW GLFW_INCLUDE_PATH GLFW_LIBRARY)
+  include_directories( ${GLFW_INCLUDE_DIRS} )
+  link_directories( ${GLFW_LIBRARY_DIRS} )
+  set(VSXU_GFX_LIB_LIBS ${GLFW_LIBRARIES} )
+
+else()
+
+  if (WIN32)
+  include_directories(${CMAKE_SOURCE_DIR}/dependencies/SDL2_prebuilt_windows/include)
+    if (CMAKE_BUILD_TYPE EQUAL RelWithDebInfo)
+        set(SDL2_LIBRARIES
+          ${CMAKE_SOURCE_DIR}/dependencies/SDL2_prebuilt_windows/x64/Debug/SDL2.lib
+          ${CMAKE_SOURCE_DIR}/dependencies/SDL2_prebuilt_windows/x64/Debug/SDL2main.lib
+          WINMM.LIB
+          version.lib
+          Imm32.lib
+          dsound
+        )
+    else()
+        set(SDL2_LIBRARIES
+          ${CMAKE_SOURCE_DIR}/dependencies/SDL2_prebuilt_windows/x64/Release/SDL2.lib
+          ${CMAKE_SOURCE_DIR}/dependencies/SDL2_prebuilt_windows/x64/Release/SDL2main.lib
+          WINMM.LIB
+          version.lib
+          Imm32.lib
+          dsound
+        )
+    endif()
+    set(VSXU_GFX_LIB_LIBS ${SDL2_LIBRARIES} )
+  else()
+    # SDL 2.x
+    PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+    include_directories( ${SDL2_INCLUDE_DIRS} )
+    set(VSXU_GFX_LIB_LIBS ${SDL2_LIBRARIES} )
+  endif()
+
+endif()

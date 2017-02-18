@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{3489A41A-D4EF-4AB6-A2FF-40070ADB2A8F}</ProjectGuid>
+    <RootNamespace>compression</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>vsx_compression</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IntDir>$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_7ZIP_ST;WIN32;_MBCS;LZHAM_NO_THREADING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\common\include;$(ProjectDir)\..\..\;$(ProjectDir)\thirdparty\lzham-sdk\lzhamdecomp;$(ProjectDir)\thirdparty\lzham-sdk/lzhamcomp;$(ProjectDir)\thirdparty\lzham-sdk/include;$(ProjectDir)\include</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4010</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\common\include;$(ProjectDir)\..\..\;$(ProjectDir)\thirdparty\lzham-sdk\lzhamdecomp;$(ProjectDir)\thirdparty\lzham-sdk/lzhamcomp;$(ProjectDir)\thirdparty\lzham-sdk/include;$(ProjectDir)\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_7ZIP_ST;WIN32;_MBCS;LZHAM_NO_THREADING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\vsx_compression_lzham.cpp" />
+    <ClCompile Include="src\vsx_compression_lzma.cpp" />
+    <ClCompile Include="src\vsx_compression_lzma_old.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamcomp\lzham_lzbase.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamcomp\lzham_lzcomp.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamcomp\lzham_lzcomp_internal.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamcomp\lzham_lzcomp_state.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamcomp\lzham_match_accel.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_assert.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_checksum.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_huffman_codes.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_lzdecomp.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_lzdecompbase.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_mem.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_platform.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_prefix_coding.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_symbol_codec.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_timer.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_vector.cpp" />
+    <ClCompile Include="thirdparty\lzham-sdk\lzhamlib\lzham_lib.cpp" />
+    <ClCompile Include="thirdparty\lzma-old\7zip\Common\InBuffer.cpp" />
+    <ClCompile Include="thirdparty\lzma-old\7zip\Common\OutBuffer.cpp" />
+    <ClCompile Include="thirdparty\lzma-old\7zip\Common\StreamUtils.cpp" />
+    <ClCompile Include="thirdparty\lzma-old\7zip\Compress\Branch\BranchX86.c" />
+    <ClCompile Include="thirdparty\lzma-old\7zip\Compress\LZMA\LZMADecoder.cpp" />
+    <ClCompile Include="thirdparty\lzma-old\7zip\Compress\LZMA\LZMAEncoder.cpp" />
+    <ClCompile Include="thirdparty\lzma-old\7zip\Compress\LZMA_C\LzmaDecode.c" />
+    <ClCompile Include="thirdparty\lzma-old\7zip\Compress\LZ\LZInWindow.cpp" />
+    <ClCompile Include="thirdparty\lzma-old\7zip\Compress\LZ\LZOutWindow.cpp" />
+    <ClCompile Include="thirdparty\lzma-old\7zip\Compress\RangeCoder\RangeCoderBit.cpp" />
+    <ClCompile Include="thirdparty\lzma-old\Common\Alloc_.cpp" />
+    <ClCompile Include="thirdparty\lzma-old\Common\CRC.cpp" />
+    <ClCompile Include="thirdparty\lzma-old\Common\String.cpp" />
+    <ClCompile Include="thirdparty\lzma-old\Common\StringConvert.cpp" />
+    <ClCompile Include="thirdparty\lzma-old\Common\StringToInt.cpp" />
+    <ClCompile Include="thirdparty\lzma-old\Common\Vector.cpp" />
+    <ClCompile Include="thirdparty\lzma-old\LzmaRam.cpp" />
+    <ClCompile Include="thirdparty\lzma-old\LzmaRamDecode.c" />
+    <ClCompile Include="thirdparty\lzma-sdk\C\Alloc.c" />
+    <ClCompile Include="thirdparty\lzma-sdk\C\LzFind.c" />
+    <ClCompile Include="thirdparty\lzma-sdk\C\LzFindMt.c" />
+    <ClCompile Include="thirdparty\lzma-sdk\C\LzmaDec.c" />
+    <ClCompile Include="thirdparty\lzma-sdk\C\LzmaEnc.c" />
+    <ClCompile Include="thirdparty\lzma-sdk\C\LzmaLib.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\vsx_compression_lzham.h" />
+    <ClInclude Include="include\vsx_compression_lzma.h" />
+    <ClInclude Include="include\vsx_compression_lzma_old.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamcomp\lzham_comp.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamcomp\lzham_lzbase.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamcomp\lzham_lzcomp_internal.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamcomp\lzham_match_accel.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamcomp\lzham_null_threading.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamcomp\lzham_threading.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_assert.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_checksum.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_config.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_core.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_decomp.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_helpers.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_huffman_codes.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_lzdecompbase.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_math.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_mem.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_platform.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_prefix_coding.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_symbol_codec.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_timer.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_traits.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_types.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_utils.h" />
+    <ClInclude Include="thirdparty\lzham-sdk\lzhamdecomp\lzham_vector.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -27,8 +27,8 @@
 #else
 #endif
 #include "vsx_param.h"
-#include "vsx_module.h"
-#include "vsxfst.h"
+#include <module/vsx_module.h>
+#include <filesystem/vsx_filesystem.h>
 #include <RtMidi/RtMidi.h>
 #include <sstream>
 
@@ -119,16 +119,8 @@ public:
     intbuf << "vsxu_midi_" << ++num_modules;
 
 
-        try
-        {
-            m_midi_in = new RtMidiIn(RtMidi::UNSPECIFIED,intbuf.str().c_str(),1024*6);
-            m_midi_in->ignoreTypes(false,false,false);
-
-        }
-        catch (RtError &error)
-        {
-            error.printMessage();
-        }
+    m_midi_in = new RtMidiIn(RtMidi::UNSPECIFIED,intbuf.str().c_str(),1024*6);
+    m_midi_in->ignoreTypes(false,false,false);
 
   }
 
@@ -138,12 +130,12 @@ public:
   }
 
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     std::stringstream in_buff;
     in_buff << "midi_source:enum?";
     port_count = m_midi_in->getPortCount();
-    for(int i=0;i<port_count;i++)
+    for(unsigned int i=0; i < port_count; i++)
     {
       in_buff << i << "__" << remove_spaces(m_midi_in->getPortName(i)).c_str();
       if(i<port_count-1)
@@ -951,21 +943,14 @@ public:
 
     if ( current_port != get_port() )
     {
-      int new_src = midi_source->get();
+      unsigned int new_src = midi_source->get();
       if ( new_src > port_count-1 )
       {
         new_src = port_count-1;
       }
-      try
-      {
-        current_port = new_src;
-        m_midi_in->closePort();
-        m_midi_in->openPort(current_port);
-      }
-      catch (RtError &error)
-      {
-        message = error.getMessage().c_str();
-      }
+      current_port = new_src;
+      m_midi_in->closePort();
+      m_midi_in->openPort(current_port);
     }
 
     if ( port_count != m_midi_in->getPortCount())
@@ -989,8 +974,10 @@ public:
       byte2=mess.at(1);
       byte3=mess.at(2);
 
-      //vsx_printf("%X %X %X\n", byte1, byte2, byte3);
+      //vsx_printf(L"%X %X %X\n", byte1, byte2, byte3);
 
+      type = 0;
+      chan = 0;
       if(byte1-0xB0>=0)
       {
        chan = byte1-0xB0;
@@ -1329,9 +1316,9 @@ public:
     }
   }
 private:
-  vsx_string remove_spaces(std::string st)
+  vsx_string<>remove_spaces(std::string st)
   {
-    vsx_string str = st.c_str();
+    vsx_string<>str = st.c_str();
     for(size_t i=0;i<st.length();i++)
     {
       if(str[i]==' '||str[i]==':')
@@ -1342,9 +1329,9 @@ private:
     return str;
   }
 
-  int get_port()
+  unsigned int get_port()
   {
-    int i = midi_source->get();
+    unsigned int i = midi_source->get();
     if(i > port_count)
     {
      return port_count;

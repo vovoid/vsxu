@@ -1,0 +1,21 @@
+[submodule "plugins/src/mesh.importers/cal3d"]
+	path = plugins/src/mesh.importers/cal3d
+	url = https://github.com/vovoid/cal3d.git
+[submodule "lib/compression/thirdparty/lzma-sdk"]
+	path = lib/compression/thirdparty/lzma-sdk
+	url = https://github.com/vovoid/LZMA-SDK.git
+[submodule "lib/compression/thirdparty/lzham-sdk"]
+	path = lib/compression/thirdparty/lzham-sdk
+	url = https://github.com/vovoid/lzham_codec.git
+[submodule "lib/engine_graphics/thirdparty/ftgl"]
+	path = lib/engine_graphics/thirdparty/ftgl
+	url = https://github.com/vovoid/ftgl.git
+[submodule "dependencies"]
+	path = dependencies
+	url = https://github.com/vovoid/vsxu-dependencies.git
+[submodule "lib/engine_graphics/thirdparty/lodepng"]
+	path = lib/engine_graphics/thirdparty/lodepng
+	url = https://github.com/vovoid/lodepng.git
+[submodule "lib/engine_graphics/thirdparty/freetype2"]
+	path = lib/engine_graphics/thirdparty/freetype2
+	url = https://github.com/vovoid/freetype2.git

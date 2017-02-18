@@ -33,7 +33,7 @@ class module_float4_dummy : public vsx_module
   // internal
 
 public:
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "maths;dummies;float4_dummy"

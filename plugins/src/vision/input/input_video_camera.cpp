@@ -46,7 +46,7 @@ input_video_camera::~input_video_camera()
   count--;
 }
 
-void input_video_camera::module_info(vsx_module_info* info)
+void input_video_camera::module_info(vsx_module_specification* info)
 {
   info->in_param_spec = "";
     info->identifier = "vision;input;video_camera_input";

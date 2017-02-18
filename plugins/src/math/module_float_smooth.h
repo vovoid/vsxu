@@ -36,7 +36,7 @@ class module_float_smooth : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "!maths;interpolation;float_interpolation"
@@ -80,7 +80,7 @@ public:
 
   void run()
   {
-    double tt = engine->real_dtime*speed->get();
+    double tt = engine_state->dtime*speed->get();
     if (tt > 1.0) tt = 1.0;
 
     double temp = (float)(internal_value*(1.0-tt)+(double)float_in->get() * tt);

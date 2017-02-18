@@ -33,7 +33,7 @@ class module_float_to_float3 : public vsx_module
   // internal
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "maths;converters;float_to_float3";

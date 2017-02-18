@@ -36,7 +36,7 @@ class module_float3_accumulator : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "maths;accumulators;float3_accumulator";

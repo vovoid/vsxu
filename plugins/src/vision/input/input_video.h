@@ -24,9 +24,10 @@
 #include <cv.h>
 #include <pthread.h>
 #include "vsx_gl_global.h"
-#include <vector/vsx_vector3.h>
+#include <math/vector/vsx_vector3.h>
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
+#include <bitmap/vsx_bitmap.h>
 
 #define N_BUFFERS 2
 

@@ -1,18 +1,17 @@
-if(WIN32)
-  target_link_libraries(${module_id} gdi32)
-endif()
-  
 
+if (VSXU_STATIC EQUAL 1)
+else()
 link_directories(${OpenGL_LIB_DIR})
 target_link_libraries(
   ${module_id}
-  vsxu_engine_graphics
-  vsxu_engine
-  ${CMAKE_THREAD_LIBS_INIT}
+  vsx_engine_graphics
   ${GLEW_LIBRARY}
+  ${FTGL_LIBRARY}
+  ${FREETYPE_LIBRARIES}
+  vsx_engine
+  ${CMAKE_THREAD_LIBS_INIT}
   ${OPENGL_LIBRARIES}
-  ${PNG_LIBRARIES}
-  ${JPEG_LIBRARIES}
+  ${LIBRARIES}
 )
 
 if (UNIX OR VSXU_WINDOWS_LIB_BUILD)
@@ -32,3 +31,5 @@ set_target_properties(
     PROPERTIES
       PREFIX ""
 )
+
+endif()

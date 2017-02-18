@@ -48,9 +48,9 @@ public:
 
   // internal
   vsx_mesh<>* mesh;
-  vsx_array< vsx_vector3<> > faceLengths;
-  vsx_array<float> faceAreas;
-  vsx_array< vsx_vector3<> > verticesSpeed;
+  vsx_ma_vector< vsx_vector3<> > faceLengths;
+  vsx_ma_vector<float> faceAreas;
+  vsx_ma_vector< vsx_vector3<> > verticesSpeed;
 
   bool debug;
   bool init()
@@ -73,7 +73,7 @@ public:
   }
 
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;modifiers;deformers;mesh_inflate";
@@ -203,7 +203,7 @@ public:
     float materialWeight = material_weight->get();
     float lowerBoundary = lower_boundary->get();
 
-    //use engine->dtime; and dtimeRest
+    //use engine_state->dtime; and dtimeRest
     //to repeat the calculation several times ((dtime + rest) * stepsPerSecond)
 
 

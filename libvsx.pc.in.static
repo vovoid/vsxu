@@ -1,0 +1,13 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=@VSXU_INSTALL_LIB_DIR@
+libdir_plugins=@VSXU_INSTALL_LIB_DIR@/vsxu/plugins
+includedir=@VSXU_INSTALL_INCLUDE_DIR@
+
+Name: libvsxu
+Description: VSXu is an OpenGL-based modular programming environment, mainly to visualize music and create graphic effects in real-time.
+Version: @VSXU_VERSION@
+Requires:
+Libs: -L${prefix}/${libdir} -lvsxu_engine -lvsxu_engine_graphics -lvsxu_engine_audiovisual -L${prefix}/${libdir_plugins} @VSXU_PLUGIN_PKGCONFIG_LIBS@
+Cflags: -I${prefix}/${includedir}/ -I${prefix}/${includedir}/application -I${prefix}/${includedir}/common -I${prefix}/${includedir}/compression -I${prefix}/${includedir}/engine -I${prefix}/${includedir}/engine_audiovisual -I${prefix}/${includedir}/engine_graphics -I${prefix}/${includedir}/widget
+

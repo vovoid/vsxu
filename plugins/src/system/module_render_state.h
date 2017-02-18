@@ -2,7 +2,7 @@
 #define MODULERENDERSTATE_H
 
 #include "vsx_param.h"
-#include "vsx_module.h"
+#include <module/vsx_module.h>
 #include "vsx_engine.h"
 #include "vsx_engine_helper.h"
 #include "vsx_data_path.h"
@@ -12,10 +12,10 @@ class module_render_state : vsx_module
   vsx_engine_helper* helper;
   vsx_module_param_render* render_result;
   vsx_module_param_resource* filename_in;
-  vsx_string current_filename;
+  vsx_string<>current_filename;
 
 public:
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "renderers;state_loader"
@@ -46,7 +46,7 @@ public:
   {
     if(filename_in->get() != current_filename)
     {
-      if (!verify_filesuffix(filename_in->get(),"vsx"))
+      if (!vsx_string_helper::verify_filesuffix(filename_in->get(),"vsx"))
       {
         message = "module||ERROR!! File not .vsx!";
         return;
@@ -56,7 +56,7 @@ public:
       {
         delete helper;
       }
-      helper = new vsx_engine_helper( vsx_data_path::get_instance()->data_path_get() + current_filename, (vsx_module_list_abs*) engine->module_list);
+      helper = new vsx_engine_helper( vsx_data_path::get_instance()->data_path_get() + current_filename, (vsx_module_list_abs*) engine_state->module_list);
     }
   }
 

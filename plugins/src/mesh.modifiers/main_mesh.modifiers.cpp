@@ -24,10 +24,9 @@
 
 #include "_configuration.h"
 #include <vsx_param.h>
-#include <vsx_module.h>
-#include <vsx_float_array.h>
-#include <vsx_quaternion.h>
-#include <pthread.h>
+#include <module/vsx_module.h>
+#include <math/vsx_float_array.h>
+#include <math/quaternion/vsx_quaternion.h>
 
 // TODO: optimize the mesh_quat_rotate to also use volatile arrays for speed
 // TODO: optimize the inflation mesh modifier to use volatile arrays for passthru arrays
@@ -56,6 +55,7 @@
 #include "module_mesh_vertex_distance_sort.h"
 #include "module_mesh_vortex.h"
 #include "module_segmesh_to_mesh.h"
+#include "module_mesh_interpolate_2p.h"
 
 //******************************************************************************
 //*** F A C T O R Y ************************************************************
@@ -68,8 +68,14 @@
 extern "C" {
 __declspec(dllexport) vsx_module* create_new_module(unsigned long module, void* args);
 __declspec(dllexport) void destroy_module(vsx_module* m,unsigned long module);
-__declspec(dllexport) unsigned long get_num_modules(vsx_engine_environment* environment);
+__declspec(dllexport) unsigned long get_num_modules(vsx_module_engine_environment* environment);
 }
+
+#ifndef MOD_CM
+#define MOD_CM vsx_module_mesh_modifiers_cm
+#define MOD_DM vsx_module_mesh_modifiers_dm
+#define MOD_NM vsx_module_mesh_modifiers_nm
+#endif
 
 
 vsx_module* MOD_CM(unsigned long module, void* args)
@@ -98,6 +104,7 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 18: return (vsx_module*)(new module_mesh_segmesh_to_mesh);
     case 19: return (vsx_module*)(new module_mesh_compute_tangents_vertex_color_array);
     case 20: return (vsx_module*)(new module_mesh_mirror);
+    case 21: return (vsx_module*)(new module_mesh_interpolate_2p);
   }
   return 0;
 }
@@ -126,10 +133,11 @@ void MOD_DM(vsx_module* m,unsigned long module) {
     case 18: delete (module_mesh_segmesh_to_mesh*)m; break;
     case 19: delete (module_mesh_compute_tangents_vertex_color_array*)m; break;
     case 20: delete (module_mesh_mirror*)m; break;
+    case 21: delete (module_mesh_interpolate_2p*)m; break;
   }
 }
 
-unsigned long MOD_NM(vsx_engine_environment* environment) {
+unsigned long MOD_NM(vsx_module_engine_environment* environment) {
   VSX_UNUSED(environment);
-  return 21;
+  return 22;
 }

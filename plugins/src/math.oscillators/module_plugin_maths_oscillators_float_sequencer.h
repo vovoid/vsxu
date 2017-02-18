@@ -26,7 +26,7 @@ class module_plugin_maths_oscillators_float_sequencer : public vsx_module
 {
 public:
   // in
-  vsx_module_param_sequence* float_sequence;
+  vsx_module_param_float_sequence* float_sequence;
   vsx_module_param_float* length;
   vsx_module_param_float* trigger;
   vsx_module_param_float* trigger_reverse;
@@ -44,13 +44,13 @@ public:
   float prev_trig_val;
   float prev_trig_val_reverse;
   int trigger_state;
-  vsx_sequence seq_int;
+  vsx::sequence::channel<vsx::sequence::value_float> seq_int;
   float sequence_cache[8192];
   float delta_multiplier;
   float prev_time;
 
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "maths;oscillators;float_sequencer";
@@ -58,7 +58,7 @@ public:
     info->description = "";
 
     info->in_param_spec =
-      "float_sequence:sequence,"
+      "float_sequence:float_sequence,"
       "length:float,"
       "options:complex"
       "{"
@@ -87,7 +87,7 @@ public:
     dtime = 0.0f;
     prev_time = 0.0f;
 
-    float_sequence = (vsx_module_param_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_SEQUENCE,"float_sequence");
+    float_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE,"float_sequence");
     float_sequence->set(seq_int);
 
     behaviour = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"behaviour");
@@ -118,7 +118,7 @@ public:
     float_sequence->updates = 0;
     seq_int.reset();
     for (int i = 0; i < 8192; ++i) {
-      sequence_cache[i] = seq_int.execute(1.0f/8192.0f);
+      sequence_cache[i] = seq_int.execute(1.0f/8192.0f).get_float();
     }
   }
 
@@ -131,14 +131,14 @@ public:
 
       // operating_system
       case 0:
-        vtime = engine->real_vtime;
-        dtime = engine->real_dtime;
+        vtime = engine_state->real_vtime;
+        dtime = engine_state->real_dtime;
       break;
 
       // master sequencer
       case 1:
-        vtime = engine->vtime;
-        dtime = engine->dtime;
+        vtime = engine_state->vtime;
+        dtime = engine_state->dtime;
       break;
 
     }
@@ -262,10 +262,14 @@ public:
 
     }
 
+    if (length->get() > 0.00001)
+    {
+      float tt = i_time / length->get();
+      if (tt != tt)
+        return;
 
-    float tt = i_time / length->get();
-
-    calc_cache();
-    result1->set(sequence_cache[(int)round(8191.0f*tt)]);
+      calc_cache();
+      result1->set(sequence_cache[(int)round(8191.0f*tt)]);
+    }
   }
 };

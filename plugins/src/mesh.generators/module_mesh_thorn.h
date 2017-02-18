@@ -37,7 +37,7 @@ class module_mesh_thorn : public vsx_module
   float gfunc(float b)
   {
     VSX_UNUSED(b);
-    return 0.4;
+    return 0.4f;
   }
 public:
   bool init() {
@@ -50,7 +50,7 @@ public:
     delete mesh;
   }
 
-void module_info(vsx_module_info* info)
+void module_info(vsx_module_specification* info)
 {
   info->identifier =
     "mesh;vovoid;thorn";

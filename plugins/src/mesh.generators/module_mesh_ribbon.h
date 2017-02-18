@@ -40,7 +40,7 @@ public:
   vsx_mesh<>* mesh;
   int l_param_updates;
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;generators;ribbon";
@@ -92,7 +92,7 @@ public:
 
   void run()
   {
-    mesh->data->vertices[0] = vsx_vector3<>(0);
+    mesh->data->vertices[0] = vsx_vector3<>(0.0f);
 
     vsx_vector3<> a(start_point->get(0), start_point->get(1), start_point->get(2));
     vsx_vector3<> b(end_point->get(0), end_point->get(1), end_point->get(2));
@@ -113,7 +113,7 @@ public:
     vsx_vector3<> up_side = normal;
     up_side *= up.length();
 
-    float t = engine->vtime * time_amp->get();
+    float t = engine_state->vtime * time_amp->get();
 
     #define COUNT 20.0f
     diff *= 1.0f / COUNT;

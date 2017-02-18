@@ -9,7 +9,7 @@ class module_particlesystem_modifier_wind : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "particlesystems;modifiers;basic_wind_deformer";
@@ -63,9 +63,9 @@ public:
     for (unsigned long i = 0; i <  particles->particles->size(); ++i)
     {
       // add the delta-time to the time of the particle
-      (*particles->particles)[i].pos.x += px*engine->dtime;
-      (*particles->particles)[i].pos.y += py*engine->dtime;
-      (*particles->particles)[i].pos.z += pz*engine->dtime;
+      (*particles->particles)[i].pos.x += px*engine_state->dtime;
+      (*particles->particles)[i].pos.y += py*engine_state->dtime;
+      (*particles->particles)[i].pos.z += pz*engine_state->dtime;
     }
     // in case some modifier has decided to base some mesh or whatever on the particle system
     // increase the timsetamp so that module can know that it has to copy the particle system all

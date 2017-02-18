@@ -1,12 +1,12 @@
 #ifndef VSX_SAMPLE_OGG_H
 #define VSX_SAMPLE_OGG_H
 
-#include "vsx_sample.h"
+#include <audio/vsx_sample.h>
 #include "ogg_vorbis.c"
 
 class vsx_sample_ogg : public vsx_sample
 {
-  vsxf* filesystem;
+  vsx::filesystem* filesystem;
 
 public:
 
@@ -16,20 +16,20 @@ public:
   {
   }
 
-  void set_filesystem(vsxf* n)
+  void set_filesystem(vsx::filesystem* n)
   {
     filesystem = n;
   }
 
-  void load_filename(vsx_string filename)
+  void load_filename(vsx_string<>filename)
   {
     if (!filesystem)
       return;
 
-    vsxf_handle *fp;
+    vsx::file *fp;
     if
     (
-      (fp = filesystem->f_open(filename.c_str(), "r"))
+      (fp = filesystem->f_open(filename.c_str()))
       ==
       NULL
     )
@@ -51,11 +51,13 @@ public:
     // decode the ogg stream
     // (unsigned char *mem, int len, int *channels, short **output);
     int num_channels;
+    int sample_rate;
     int samples_loaded = stb_vorbis_decode_memory
         (
           (unsigned char*)temp_storage,
           file_size,
           &num_channels,
+          &sample_rate,
           &result
         );
 
@@ -63,7 +65,7 @@ public:
 
     if (-1 == samples_loaded)
     {
-      vsx_printf("error loading ogg file, not a vorbis stream or other error...\n");
+      //vsx_printf(L"error loading ogg file, not a vorbis stream or other error...\n");
       return;
     }
 

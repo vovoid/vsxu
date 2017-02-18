@@ -1,0 +1,216 @@
+meta_set fHx8fHw=
+component_create maths;converters;3float_to_float3 3float_to_float3 -0.611290 0.048095
+component_create maths;converters;3float_to_float3 3float_to_float3_1 -0.583443 0.026056
+component_create maths;arithmetics;binary;add add -0.722462 0.161372
+param_set add param2 0.25116139650344848633
+component_create renderers;opengl_modifiers;auto_normalize auto_normalize -0.701637 0.445482
+component_create particlesystems;generators;basic_spray_emitter basic_spray_emitter -1.116088 0.471678
+param_set basic_spray_emitter emitter_position 0.14891299605369567871,0.00000095134407729347,-0.05193699896335601807
+param_set basic_spray_emitter speed_x 16.51601982116699218750
+param_set basic_spray_emitter speed_y 1.85345160961151123047
+param_set basic_spray_emitter speed_z 1.00415182113647460938
+param_set basic_spray_emitter num_particles 893.59552001953125000000
+param_set basic_spray_emitter particle_size_base 0.09551646560430526733
+param_set basic_spray_emitter particle_size_random_weight 2.01162791252136230469
+param_set basic_spray_emitter particle_lifetime_base 5.58318424224853515625
+param_set basic_spray_emitter particle_rotation_dir 0.04116204380989074707,0.03107590414583683014,0.01009003911167383194,0.99861812591552734375
+component_create renderers;opengl_modifiers;blend_mode blend_mode -0.615787 0.399011
+component_create renderers;opengl_modifiers;blend_mode blend_mode_1 0.096246 0.167352
+param_set blend_mode_1 dest_blend 1
+component_create renderers;opengl_modifiers;blend_mode blend_mode_1_1 0.095248 0.105497
+param_set blend_mode_1_1 source_blend 1
+param_set blend_mode_1_1 dest_blend 1
+component_create texture;particles;blob blob -0.784611 -0.063235
+param_set blob attenuation 1.99999141693115234375
+param_set blob size 5
+component_create texture;effects;blur blur -0.038917 0.063606
+param_set blur texture_size 10
+param_set blur start_value 1.99999129772186279297
+param_set blur attenuation 1.43376278877258300781
+component_create renderers;opengl_modifiers;buffer_clear buffer_clear -0.453571 0.100355
+param_set buffer_clear color_buffer 1
+param_set buffer_clear clear_color 0.00000000000000000000,0.00000099999988378840,0.00000000000000000000,0.00000098216776223126
+component_create renderers;opengl_modifiers;buffer_clear buffer_clear_1 -0.414872 0.350536
+param_set buffer_clear_1 color_buffer 1
+param_set buffer_clear_1 clear_color 0.00000000000000000000,0.00000086345568206525,0.00000000000000000000,0.47656798362731933594
+param_set buffer_clear_1 depth_buffer 1
+macro_create camera_rotation_helper -0.689158 0.233062 0.233937
+component_create maths;converters;3float_to_float3 camera_rotation_helper.3float_to_float3 0.071481 0.066716
+component_create maths;dummies;float_dummy camera_rotation_helper.float_dummy -0.072832 0.021251
+param_set camera_rotation_helper.float_dummy float_in 0.04337583482265472412
+component_create maths;oscillators;oscillator camera_rotation_helper.oscillator -0.000505 0.042352
+param_set camera_rotation_helper.oscillator amp 0.99999910593032836914
+param_set camera_rotation_helper.oscillator ofs 0.00000093879611995362
+param_set camera_rotation_helper.oscillator phase -0.49999904632568359375
+component_create maths;oscillators;oscillator camera_rotation_helper.oscillator1 0.001985 -0.008290
+param_set camera_rotation_helper.oscillator1 amp 0.99999910593032836914
+param_set camera_rotation_helper.oscillator1 ofs 0.00000082698852565954
+param_set camera_rotation_helper.oscillator1 phase 0.00000091451869366210
+component_create maths;oscillators;oscillator camera_rotation_helper.oscillator_1 -0.000953 0.072972
+param_set camera_rotation_helper.oscillator_1 amp 0.15468184649944305420
+param_set camera_rotation_helper.oscillator_1 ofs 0.00000093879611995362
+param_set camera_rotation_helper.oscillator_1 phase -0.49999904632568359375
+param_set camera_rotation_helper.oscillator_1 freq 0.05362590029835700989
+component_create renderers;basic;colored_rectangle colored_rectangle -0.715261 0.120196
+param_set colored_rectangle position 0.00000000000000000000,0.00000000000000000000,0.00000097949657629215
+param_set colored_rectangle size 243.88090515136718750000,0.03905994445085525513,0.00000000000000000000
+param_set colored_rectangle border_width 1.99999010562896728516
+param_set colored_rectangle border_color 0.99999916553497314453,0.00000000000000000000,0.00000000000000000000,1.00000000000000000000
+param_set colored_rectangle rotation_axis 0.00000099999988378840,0.99999904632568359375,0.65515887737274169922
+param_set colored_rectangle color 0.73037916421890258789,0.73037916421890258789,0.34902244806289672852,0.99999904632568359375
+component_create renderers;basic;colored_rectangle colored_rectangle_1 -0.672284 0.187021
+param_set colored_rectangle_1 position 0.00000000000000000000,0.00000000000000000000,0.00000095925588539103
+param_set colored_rectangle_1 size 121.94049072265625000000,0.09524887800216674805,0.00000000000000000000
+param_set colored_rectangle_1 border_width 1.99999010562896728516
+param_set colored_rectangle_1 border_color 0.99999916553497314453,0.00000000000000000000,0.00000000000000000000,1.00000000000000000000
+param_set colored_rectangle_1 rotation_axis 0.00000099999988378840,0.99999904632568359375,0.65515887737274169922
+param_set colored_rectangle_1 color 0.73037916421890258789,0.73037916421890258789,0.34902244806289672852,0.99999904632568359375
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer -0.663574 0.395324
+param_set depth_buffer depth_test 1
+param_set depth_buffer depth_mask 1
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer_1 -0.646625 0.134191
+param_set depth_buffer_1 depth_test 1
+param_set depth_buffer_1 depth_mask 1
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer_2 -0.502308 -0.026305
+param_set depth_buffer_2 depth_test 1
+component_create renderers;opengl_modifiers;depth_buffer depth_buffer_3 -0.354488 0.298424
+param_set depth_buffer_3 depth_test 1
+param_set depth_buffer_3 depth_mask 1
+component_create maths;dummies;float3_dummy float3_dummy -0.587373 0.212431
+component_create maths;dummies;float_dummy float_dummy -0.613301 0.317622
+param_set float_dummy float_in 10.41127300262451171875
+component_create renderers;opengl_modifiers;gl_translate gl_translate -0.511294 0.382554
+param_set gl_translate translation 0.09038299322128295898,0.00000000000000000000,-0.23781585693359375000
+component_create renderers;opengl_modifiers;gl_translate gl_translate_1 -0.542209 0.124513
+component_create renderers;opengl_modifiers;gl_translate gl_translate_1_1 -0.527220 0.004225
+component_create renderers;opengl_modifiers;light_directional light_directional -0.742124 0.428068
+param_set light_directional enabled 1
+param_set light_directional position -0.30373284220695495605,0.02137221768498420715,0.95251685380935668945
+param_set light_directional ambient_color 0.00000021360904156609,0.00747320614755153656,0.99999910593032836914,1.00000000000000000000
+param_set light_directional diffuse_color 0.99999994039535522461,0.98423790931701660156,0.62256002426147460938,1.00000000000000000000
+param_set light_directional specular_color 0.16765914857387542725,0.17136499285697937012,0.06761699914932250977,1.00000000000000000000
+component_create renderers;opengl_modifiers;light_directional light_directional_1 -0.706849 0.382364
+param_set light_directional_1 light_id 1
+param_set light_directional_1 enabled 1
+param_set light_directional_1 position 0.14976680278778076172,-0.36166703701019287109,-0.92019915580749511719
+param_set light_directional_1 ambient_color 0.00000000012247142189,0.00000000713204073577,0.00000093797785893912,1.00000000000000000000
+param_set light_directional_1 diffuse_color 0.50107008218765258789,0.67746514081954956055,0.79542422294616699219,1.00000000000000000000
+param_set light_directional_1 specular_color 0.16765914857387542725,0.17136499285697937012,0.06761699914932250977,1.00000000000000000000
+component_create renderers;opengl_modifiers;material_param material_param -0.818102 0.486258
+param_set material_param diffuse_reflectance 0.99999910593032836914,0.99999910593032836914,0.99999994039535522461,1.00000000000000000000
+param_set material_param specular_reflectance 0.99999994039535522461,0.99999994039535522461,0.99999910593032836914,1.00000000000000000000
+param_set material_param specular_exponent 126.83636474609375000000
+component_create renderers;mesh;mesh_basic_render mesh_basic_render -0.938550 0.486179
+param_set mesh_basic_render use_display_list 1
+component_create mesh;modifiers;transforms;mesh_norm_scale mesh_norm_scale -1.076011 0.549298
+component_create mesh;modifiers;deformers;mesh_normal_randistort mesh_normal_randistort -1.165264 0.583090
+param_set mesh_normal_randistort distortion_factor 0.11106011271476745605,0.10675899684429168701,0.09815300256013870239
+param_set mesh_normal_randistort distort_vertices 1
+param_set mesh_normal_randistort vertex_distortion_factor 2.58838820457458496094
+component_create mesh;solid;mesh_sphere mesh_sphere -1.245409 0.585811
+param_set mesh_sphere num_sectors 30.81201553344726562500
+param_set mesh_sphere num_stacks 30.07344055175781250000
+component_create maths;arithmetics;binary;mult mult -0.700265 0.031545
+component_create maths;arithmetics;binary;mult mult_1 -0.639910 -0.012359
+param_set mult_1 param2 -0.99999159574508666992
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera -0.367552 0.129527
+param_set orbit_camera perspective_correct 1
+component_create renderers;opengl_modifiers;cameras;orbit_camera orbit_camera_1 -0.463284 0.357039
+param_set orbit_camera_1 perspective_correct 1
+component_create maths;oscillators;oscillator oscillator -0.974863 0.365250
+param_set oscillator freq 0.20465201139450073242
+component_create maths;oscillators;oscillator oscillator_1 -0.808355 0.127019
+param_set oscillator_1 osc_type 2
+param_set oscillator_1 amp -0.00000835367245599627
+param_set oscillator_1 ofs -0.00000835383434605319
+param_set oscillator_1 freq 0.05740540847182273865
+component_create maths;oscillators;oscillator oscillator_2 -0.783531 0.025328
+param_set oscillator_2 osc_type 4
+param_set oscillator_2 amp 0.42833194136619567871
+param_set oscillator_2 ofs 0.00000852398807182908
+param_set oscillator_2 freq 0.64407110214233398438
+component_create texture;buffers;render_surface_color_depth_buffer render_surface_color_depth_buffer -0.320245 0.224127
+param_set render_surface_color_depth_buffer float_texture 1
+param_set render_surface_color_depth_buffer multisample 1
+param_set render_surface_color_depth_buffer texture_size 10
+component_create texture;buffers;render_surface_color_depth_buffer render_surface_color_depth_buffer_1 -0.201763 0.118517
+param_set render_surface_color_depth_buffer_1 multisample 1
+param_set render_surface_color_depth_buffer_1 texture_size 10
+cpp screen0 0.197247 0.146992
+param_set screen0 gamma_correction 1.00000095367431640625
+param_set screen0 clear_color 0.00000000000002926513,0.00000000000000000000,0.00000000000000000001,0.00000070461976520164
+component_create renderers;basic;textured_rectangle textured_rectangle -0.116540 0.227456
+param_set textured_rectangle global_alpha 0.94413715600967407227
+param_set textured_rectangle angle 0.00000864248977450188
+component_create renderers;basic;textured_rectangle textured_rectangle_1 0.020744 0.108340
+param_set textured_rectangle_1 global_alpha 1.09999203681945800781
+param_set textured_rectangle_1 size 0.99999004602432250977
+param_set textured_rectangle_1 angle 0.00000888345311977901
+component_create renderers;basic;textured_rectangle textured_rectangle_1_1 0.014279 0.168896
+param_set textured_rectangle_1_1 global_alpha 0.50000852346420288086
+param_set textured_rectangle_1_1 size 0.99999004602432250977
+param_set textured_rectangle_1_1 angle 0.00000888345311977901
+component_create renderers;basic;textured_rectangle textured_rectangle_2 -0.573095 -0.084107
+param_set textured_rectangle_2 global_alpha 0.43329709768295288086
+param_set textured_rectangle_2 facing_camera 1
+param_set textured_rectangle_2 size 3.99652552604675292969
+param_set textured_rectangle_2 color_multiplier 0.83435744047164916992,0.83435744047164916992,0.52578204870223999023,1.00000000000000000000
+break
+param_alias alias_result_float3:float3 1 camera_rotation_helper alias_result_float3 camera_rotation_helper.3float_to_float3 result_float3
+break
+param_connect textured_rectangle_2 texture_in blob texture
+param_connect textured_rectangle_1_1 texture_in render_surface_color_depth_buffer_1 color_buffer
+param_connect textured_rectangle_1 texture_in blur texture_out
+param_connect textured_rectangle texture_in render_surface_color_depth_buffer color_buffer
+param_connect screen0 screen blend_mode_1 render_out
+param_connect screen0 screen blend_mode_1_1 render_out
+param_connect render_surface_color_depth_buffer_1 depth_buffer render_surface_color_depth_buffer depth_buffer
+param_connect render_surface_color_depth_buffer_1 render_in orbit_camera render_out
+param_connect render_surface_color_depth_buffer render_in depth_buffer_3 render_out
+param_connect orbit_camera_1 render_in gl_translate render_out
+param_connect orbit_camera_1 distance float_dummy result_float
+param_connect orbit_camera_1 rotation float3_dummy out_float3
+param_connect orbit_camera render_in buffer_clear render_out
+param_connect orbit_camera distance float_dummy result_float
+param_connect orbit_camera rotation float3_dummy out_float3
+param_connect mult_1 param1 mult product
+param_connect mult param2 oscillator_2 float
+param_connect mult param1 oscillator_2 float
+param_connect mesh_normal_randistort mesh_in mesh_sphere mesh
+param_connect mesh_norm_scale mesh_in mesh_normal_randistort mesh_out
+param_connect mesh_basic_render particles basic_spray_emitter particlesystem
+param_connect mesh_basic_render mesh_in mesh_norm_scale mesh_out
+param_connect material_param render_in mesh_basic_render render_out
+param_connect light_directional_1 render_in auto_normalize render_out
+param_connect light_directional render_in material_param render_out
+param_connect gl_translate_1_1 render_in depth_buffer_1 render_out
+param_connect gl_translate_1_1 translation 3float_to_float3_1 result_float3
+param_connect gl_translate_1 render_in depth_buffer_1 render_out
+param_connect gl_translate_1 translation 3float_to_float3 result_float3
+param_connect gl_translate render_in blend_mode render_out
+param_connect float3_dummy float3_in camera_rotation_helper alias_result_float3
+param_connect depth_buffer_3 render_in buffer_clear_1 render_out
+param_connect depth_buffer_2 render_in textured_rectangle_2 render_out
+param_connect depth_buffer_1 render_in colored_rectangle render_out
+param_connect depth_buffer render_in light_directional_1 render_out
+param_connect colored_rectangle_1 angle add sum
+param_connect colored_rectangle angle oscillator_1 float
+param_connect camera_rotation_helper.oscillator1 freq camera_rotation_helper.float_dummy result_float
+param_connect camera_rotation_helper.oscillator freq camera_rotation_helper.float_dummy result_float
+param_alias alias_float_in:float -1 camera_rotation_helper alias_float_in camera_rotation_helper.float_dummy float_in
+param_connect camera_rotation_helper.3float_to_float3 floatc camera_rotation_helper.oscillator1 float
+param_connect camera_rotation_helper.3float_to_float3 floatb camera_rotation_helper.oscillator_1 float
+param_connect camera_rotation_helper.3float_to_float3 floata camera_rotation_helper.oscillator float
+param_connect buffer_clear_1 render_in orbit_camera_1 render_out
+param_connect buffer_clear render_in gl_translate_1 render_out
+param_connect buffer_clear render_in gl_translate_1_1 render_out
+param_connect buffer_clear render_in depth_buffer_2 render_out
+param_connect blur glow_source render_surface_color_depth_buffer_1 color_buffer
+param_connect blend_mode_1_1 render_in textured_rectangle_1 render_out
+param_connect blend_mode_1 render_in textured_rectangle render_out
+param_connect blend_mode_1 render_in textured_rectangle_1_1 render_out
+param_connect blend_mode render_in depth_buffer render_out
+param_connect auto_normalize render_in light_directional render_out
+param_connect add param1 oscillator_1 float
+param_connect 3float_to_float3_1 floatb mult_1 product
+param_connect 3float_to_float3 floatb mult product

@@ -19,36 +19,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef DEFAULT_SHADER_H_
-#define DEFAULT_SHADER_H_
-
-
-
-
-#ifdef VSXU_OPENGL_ES_2_0
-const char* default_vert =
-"attribute vec4 vertices;\
-attribute vec4 colors;\
-\
-uniform mat4 mm;\
-\
-varying vec4 col;\
-\
-void main() {\
-  col = colors;\
-  gl_Position = mm * vertices;\
-}\
-";
-
-const char* default_frag =
-"precision lowp float;\
-varying vec4 col;\
-void main() {\
-  gl_FragColor = col;\
-}\
-";
-#else
-
+#pragma once
 
 /*
 const char* default_vert2 = "\
@@ -181,11 +152,6 @@ const char* default_frag = "\
         gl_FragColor = color;\n\
     }\n\
 ";
-
-#endif // else VSXU_OPENGL_ES_2_0
-
-#endif /*DEFAULT_SHADER_H_*/
-
 
 
 	

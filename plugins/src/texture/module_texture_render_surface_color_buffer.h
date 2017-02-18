@@ -1,31 +1,36 @@
+#include <texture/buffer/vsx_texture_buffer_color.h>
 
 class module_texture_render_surface_color_buffer : public vsx_module {
   // in
   vsx_module_param_render* render_in;
-  vsx_module_param_int* texture_size;
-  vsx_module_param_int* float_texture;
-  vsx_module_param_int* alpha_channel;
-  vsx_module_param_float* size_x;
-  vsx_module_param_float* size_y;
+  vsx_module_param_int* texture_size_in;
+  vsx_module_param_int* float_texture_in;
+  vsx_module_param_int* alpha_channel_in;
+  vsx_module_param_int* multisample_in;
+  vsx_module_param_int* min_mag_filter_in;
+  vsx_module_param_float* size_x_in;
+  vsx_module_param_float* size_y_in;
+
   // out
-  vsx_module_param_texture* texture_result;
+  vsx_module_param_texture* texture_out;
+
   // internal
   int res_x, res_y;
   int dbuff;
-  int tex_size_internal;
-  vsx_texture* texture;
+  int tex_size_enum;
+  vsx_texture<>* texture = 0x0;
+  vsx_texture_buffer_color buffer;
 
-  int float_texture_int;
-  int alpha_channel_int;
-
-  GLuint glsl_prog;
+  int float_texture_cache;
+  int alpha_channel_cache;
+  int multisample_cache;
+  int min_mag_filter_cache;
 
   vsx_gl_state* gl_state;
 
 public:
-  module_texture_render_surface_color_buffer() : texture(0) {};
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "texture;buffers;render_surface_color_buffer";
@@ -65,7 +70,9 @@ public:
         "size_x:float,"
         "size_y:float,"
         "float_texture:enum?no|yes&nc=1,"
-        "alpha_channel:enum?no|yes&nc=1"
+        "alpha_channel:enum?no|yes&nc=1,"
+        "multisample:enum?no|yes&nc=1,"
+        "min_mag_filter:enum?nearest|linear&nc=1"
       "}"
     ;
 
@@ -82,94 +89,109 @@ public:
     render_in->run_activate_offscreen = true;
     res_x = 512;
 
-    float_texture = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "float_texture");
-    float_texture->set(0);
-    float_texture_int = 0;
+    float_texture_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "float_texture");
+    float_texture_in->set(0);
+    float_texture_cache = 0;
 
-    alpha_channel = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "alpha_channel");
-    alpha_channel->set(1);
-    alpha_channel_int = 1;
+    alpha_channel_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "alpha_channel");
+    alpha_channel_in->set(1);
+    alpha_channel_cache = 1;
 
-    texture_size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "texture_size");
-    texture_size->set(2);
+    multisample_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "multisample");
+    multisample_in->set(0);
+    multisample_cache = 0;
 
-    size_x = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "size_x");
-    size_x->set(32.0);
+    min_mag_filter_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "min_mag_filter");
+    min_mag_filter_in->set(1); // linear
+    min_mag_filter_cache = 1;
 
-    size_y = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "size_y");
-    size_y->set(32.0);
+    texture_size_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "texture_size");
+    texture_size_in->set(2);
 
-    tex_size_internal = -1;
+    size_x_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "size_x");
+    size_x_in->set(32.0);
 
-    texture_result = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"color_buffer");
+    size_y_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "size_y");
+    size_y_in->set(32.0);
+
+    tex_size_enum = -1;
+
+    texture_out = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"color_buffer");
 
     gl_state = vsx_gl_state::get_instance();
-
-    start();
   }
 
   bool can_run()
   {
-    vsx_texture tex;
-    return tex.has_buffer_support();
+    return vsx_texture_buffer_base::has_buffer_support();
   }
 
   void start()
   {
-    texture = new vsx_texture;
-    texture->init_color_depth_buffer(res_x,res_x);
-    texture->valid = false;
-    texture_result->set(texture);
   }
 
   bool activate_offscreen()
   {
     bool rebuild = false;
 
-    if (alpha_channel->get() != alpha_channel_int)
+    if (alpha_channel_in->get() != alpha_channel_cache)
     {
-      alpha_channel_int = alpha_channel->get();
+      alpha_channel_cache = alpha_channel_in->get();
       rebuild = true;
     }
 
-    if (float_texture->get() != float_texture_int)
+    if (float_texture_in->get() != float_texture_cache)
     {
-      float_texture_int = float_texture->get();
+      float_texture_cache = float_texture_in->get();
       rebuild = true;
     }
 
-    if (texture_size->get() >= 10)
+    if (multisample_in->get() != multisample_cache)
+    {
+      multisample_cache = multisample_in->get();
+      rebuild = true;
+    }
+
+    if (min_mag_filter_in->get() != min_mag_filter_cache)
+    {
+      min_mag_filter_cache = min_mag_filter_in->get();
+      rebuild = true;
+    }
+
+    if (texture_size_in->get() >= 10)
     {
       int t_res_x = gl_state->viewport_get_width();
       int t_res_y = gl_state->viewport_get_height();
 
-      if (texture_size->get() == 10) {
-        if (t_res_x != res_x || t_res_y != res_y) rebuild = true;
-      }
+      if (texture_size_in->get() == 10)
+        if (t_res_x != res_x || t_res_y != res_y) 
+          rebuild = true;
 
-      if (texture_size->get() == 11) {
-        if (t_res_x / 2 != res_x || t_res_y / 2 != res_y) rebuild = true;
-      }
+      if (texture_size_in->get() == 11) 
+        if (t_res_x / 2 != res_x || t_res_y / 2 != res_y) 
+          rebuild = true;
 
-      if (texture_size->get() == 12) {
-        if (t_res_x / 4 != res_x || t_res_y / 4 != res_y) rebuild = true;
-      }
+      if (texture_size_in->get() == 12) 
+        if (t_res_x / 4 != res_x || t_res_y / 4 != res_y) 
+          rebuild = true;
 
-      if (texture_size->get() == 13) {
-        if (t_res_x * 2 != res_x || t_res_y * 2 != res_y) rebuild = true;
-      }
 
-      if (texture_size->get() == 14) {
-        if (t_res_x * 4 != res_x || t_res_y * 4 != res_y) rebuild = true;
-      }
+      if (texture_size_in->get() == 13) 
+        if (t_res_x * 2 != res_x || t_res_y * 2 != res_y) 
+          rebuild = true;
+
+      if (texture_size_in->get() == 14) 
+        if (t_res_x * 4 != res_x || t_res_y * 4 != res_y) 
+          rebuild = true;
+      
     }
 
-    if (texture_size->get() == 15)
+    if (texture_size_in->get() == 15)
     {
-      tex_size_internal = texture_size->get();
+      tex_size_enum = texture_size_in->get();
 
-      float i_size_x = size_x->get();
-      float i_size_y = size_y->get();
+      float i_size_x = size_x_in->get();
+      float i_size_y = size_y_in->get();
 
       if (i_size_x < 1.0)
         i_size_x = 1.0;
@@ -187,11 +209,11 @@ public:
 
 
 
-    if (texture_size->get() != tex_size_internal || rebuild)
+    if (texture_size_in->get() != tex_size_enum || rebuild)
     {
-      tex_size_internal = texture_size->get();
+      tex_size_enum = texture_size_in->get();
 
-      switch (tex_size_internal) {
+      switch (tex_size_enum) {
         case 0: res_y = res_x = 2048; break;
         case 1: res_y = res_x = 1024; break;
         case 2: res_y = res_x = 512; break;
@@ -224,17 +246,25 @@ public:
         break;
       };
 
-      texture->reinit_color_depth_buffer
+      if (!texture)
+        texture = new vsx_texture<>;
+
+      buffer.reinit
       (
+        texture,
         res_x,
         res_y,
-        float_texture_int,
-        alpha_channel_int
+
+        float_texture_cache,
+        alpha_channel_cache,
+        multisample_cache,
+        min_mag_filter_cache,
+        0
       );
     }
 
 
-    texture->begin_capture_to_buffer();
+    buffer.begin_capture_to_buffer();
 
     glUseProgram(0);
 
@@ -245,29 +275,30 @@ public:
   void deactivate_offscreen()
   {
     if (texture)
-    {
-      texture->end_capture_to_buffer();
-    }
-
-    ((vsx_module_param_texture*)texture_result)->set(texture);
-
+      buffer.end_capture_to_buffer();
+    ((vsx_module_param_texture*)texture_out)->set(texture);
   }
 
   void stop()
   {
-    if (texture)
-    {
-      texture->deinit_buffer();
-      delete texture;
-      texture = 0;
-    }
+    if (!texture)
+      return;
+
+    buffer.deinit( texture );
+    delete texture;
+    texture = 0;
+
+    // make sure it's rebuilt
+    tex_size_enum = -1;
   }
 
-  void on_delete() {
+  void on_delete() 
+  {
     stop();
   }
 
-  ~module_texture_render_surface_color_buffer() {
+  ~module_texture_render_surface_color_buffer() 
+  {
     if (texture)
     delete texture;
   }

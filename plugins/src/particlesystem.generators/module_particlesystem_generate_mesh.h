@@ -52,11 +52,11 @@ public:
 
   // out
   vsx_module_param_particlesystem* result_particlesystem;
-  vsx_array<float> f_randpool;
+  vsx_ma_vector<float> f_randpool;
   float* f_randpool_pointer;
 
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "particlesystems;generators;particles_mesh_spray";
@@ -186,7 +186,7 @@ public:
     // default is 100 particles, should be enough for most effects (tm)
     particles_count->set(100);
     //particles.num_particles = 100;
-    particles.particles = new vsx_array<vsx_particle<> >;
+    particles.particles = new vsx_ma_vector<vsx_particle<> >;
     //particles.particles->allocation_increment = 1000;
     particles.timestamp = 0;
 
@@ -201,8 +201,8 @@ public:
   void run() {
     float ddtime;
     if (time_source->get()) {
-      ddtime = engine->real_dtime;
-    } else ddtime = engine->dtime;
+      ddtime = engine_state->real_dtime;
+    } else ddtime = engine_state->dtime;
 
     if (ddtime < 0) first = true;
     float dtime = ddtime;

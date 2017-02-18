@@ -46,7 +46,7 @@ public:
     delete mesh;
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;modifiers;transforms;mesh_rotate_quat";
@@ -122,11 +122,11 @@ public:
         mesh->data->vertex_normals[i] = mat.multiply_vector((*p)->data->vertex_normals[i]);
       }
 /*
-      vsx_array<vsx_vector> vertices;
-      vsx_array<vsx_vector> vertex_normals;
-      vsx_array<vsx_color> vertex_colors;
-      vsx_array<vsx_tex_coord> vertex_tex_coords;
-      vsx_array<vsx_face> faces;
+      vsx_ma_vector<vsx_vector> vertices;
+      vsx_ma_vector<vsx_vector> vertex_normals;
+      vsx_ma_vector<vsx_color> vertex_colors;
+      vsx_ma_vector<vsx_tex_coord> vertex_tex_coords;
+      vsx_ma_vector<vsx_face> faces;
 */
       for (unsigned int i = 0; i < (*p)->data->vertex_tex_coords.size(); i++) mesh->data->vertex_tex_coords[i] = (*p)->data->vertex_tex_coords[i];
       for (unsigned int i = 0; i < (*p)->data->vertex_tangents.size(); i++) mesh->data->vertex_tangents[i] = (*p)->data->vertex_tangents[i];

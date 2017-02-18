@@ -18,7 +18,7 @@ class module_mesh_metaballs : public vsx_module
 
 public:
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;solid;metaballs";
@@ -69,10 +69,10 @@ public:
       balls.SetGridSize(l_grid_size);
       i_grid_size = l_grid_size;
     }
-    if (!(engine->dtime > 0.0f))
+    if (!(engine_state->dtime > 0.0f))
       return;
 
-    float dd = engine->dtime;
+    float dd = engine_state->dtime;
     if (dd < 0) dd = 0;
     balls.Update(dd);
 

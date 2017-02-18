@@ -15,7 +15,7 @@ class module_render_basic_oscilloscope : public vsx_module {
 public:
 
 
-void module_info(vsx_module_info* info)
+void module_info(vsx_module_specification* info)
 {
   info->identifier =
     "renderers;oscilloscopes;simple_oscilloscope";
@@ -74,7 +74,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 	render_result->set(0);
 }
 
-vsx_array<float> xposs;
+vsx_ma_vector<float> xposs;
 
 void output(vsx_module_param_abs* param)
 {

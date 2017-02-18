@@ -35,7 +35,7 @@ public:
   // internal
   vsx_mesh<>* mesh;
 
-  vsx_avector< vsx_vector3<> > random_distort_points;
+  vsx_nw_vector< vsx_vector3<> > random_distort_points;
 
   bool init()
   {
@@ -48,7 +48,7 @@ public:
     delete mesh;
   }
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;modifiers;deformers;mesh_noise";

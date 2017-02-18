@@ -9,6 +9,80 @@ Welcome to the Change Log of the Vovoid VSXu Project
 ***********************************************************************************************************************
 
   ######################################
+  VSXu 0.5.0 (September 2014)
+  ######################################
+
+  General:
+    + The whole project now can be compiled into static libs for embedding into 3rd party projects
+    + VSX Widget is now a separate project (serving both Artiste & Profiler) improved cohesion to make reusability
+      better.
+
+  VSXu Player
+
+  VSXu Engine / Engine Graphics:
+    + New command: set_time_speed - set the time factor in the engine. Default = 1.0
+    + Cloning of text values now works (for copying shader strings etc. between modules)
+    + Work has begun to give better critical error messages
+    + VBO now supports 2d vectors for highly optimized line drawing
+    + vsxf supports multi-threaded decompression of .vsx files
+    + Textures are now loaded in a deferred fashion (optimization with multi-threaded loading)
+    + Internal math data carriers (vector, quat etc.) now support double as well as float (C++ templates)
+    + vsx_time now uses clock_monotonic rather than gettimeofday on Linux
+    ' Some commands do better range checking / data validation
+    ' States saved with user-defined shader preset would not load for other users. Such modules are now always saved
+      as the normal glsl_loader.
+
+  VSXu Artiste:
+    + Updated GPL license to v 3.0
+    + Sequencer / animation editor:
+      + Holding Ctrl while manipulating bezier handle now mirrors to next opposing handle
+      + Changing interpolation type to "bezier" now tries to mimic previous interpolation type thus making it
+        easier to convert existing tweens to the bezier type
+    ' Fixed bug where scrolling in the search box of the module list crashed the program
+    + Cloning values (Ctrl + Alt + Lbutton-Drag) now does not invoke interpolation on the server
+    + Mouse Cursor hidden when Fullwindow (not performance mode)
+    + New command line parameter -ff to start the preview window in fullscreen mode
+
+  VSXu Server:
+    ' Fixed a bug where the effect would flicker
+
+  Tools:
+    + OBJ2VXM improved
+    + VSXu Profiler - a coding tool to profile anything. Includes easy to use interface for programmers
+      and viewer for the saved data files. Includes stack-based recording and value plotting.
+    + VSXz can now create .vsx archives from file names supplied as parameters
+
+  New modules:
+    + Bitmap / Texture generator: concentric_circles
+    + Mesh Mirror -  mirrors a mesh around one or more axes
+    + Texture Dummy
+    + Colored Line - color-space oscilloscope (color changing instead of position)
+    + Float array memory buffer - updates the array with one value per frame
+    + Get camera orientation from modelview matrix - useful to create parallel rendering pipeline
+    + Frustum matrix - for frustum manipulations
+    + High resolution screenshot module using frustum operations (can not be used with camera)
+    + float_clamp
+    + Whole new module class with parameter-based modules: Selectors
+      These act as multiplexers letting you pass through one of the inputs. Can be used for building
+      mixers.
+    + ROBJ loader - our own OBJ format for embedding 2 uv maps in one OBJ file (for lightmaps)
+
+  Improved Modules:
+    + Akai APC20 APC40 module now supports knobs
+    + All modules' code has been looked over and improved to comply with current coding standard and to prepare
+      for documentation generator "Librarian"
+    + OBJ Importer now has option to centralize the mesh data around [0, 0, 0]
+    ' Float array pick had an range check error causing segfault
+    + Render Face Id module has maximum_id parameter to limit rendering
+    + render_particlesystem_ext now stores original particle creation position in gl_Color.xyz available in the
+      vertex shader
+    + render_particlesystem_ext now stores total particle lifetime in gl_Color.w available in the vertex shader
+    + Cal3D module now adds vertex id in gl_Color.a component for use in vertex shaders
+    ' sequencer oscillator behaved in a bad way
+
+***********************************************************************************************************************
+
+  ######################################
   VSXu 0.4.1 (Development)
   ######################################
 

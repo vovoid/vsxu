@@ -13,35 +13,35 @@
 #include <cstdlib>
 
 /*
-typedef signed long  MY_TYPE;
-#define FORMAT RTAUDIO_SINT24
-#define SCALE  2147483647.0
-
-typedef char  MY_TYPE;
+typedef char MY_TYPE;
 #define FORMAT RTAUDIO_SINT8
 #define SCALE  127.0
 */
 
-typedef signed short  MY_TYPE;
+typedef signed short MY_TYPE;
 #define FORMAT RTAUDIO_SINT16
 #define SCALE  32767.0
 
 /*
-typedef signed long  MY_TYPE;
+typedef S24 MY_TYPE;
+#define FORMAT RTAUDIO_SINT24
+#define SCALE  8388607.0
+
+typedef signed long MY_TYPE;
 #define FORMAT RTAUDIO_SINT32
 #define SCALE  2147483647.0
 
-typedef float  MY_TYPE;
+typedef float MY_TYPE;
 #define FORMAT RTAUDIO_FLOAT32
 #define SCALE  1.0
 
-typedef double  MY_TYPE;
+typedef double MY_TYPE;
 #define FORMAT RTAUDIO_FLOAT64
 #define SCALE  1.0
 */
 
 // Platform-dependent sleep routines.
-#if defined( __WINDOWS_ASIO__ ) || defined( __WINDOWS_DS__ )
+#if defined( __WINDOWS_ASIO__ ) || defined( __WINDOWS_DS__ ) || defined( __WINDOWS_WASAPI__ )
   #include <windows.h>
   #define SLEEP( milliseconds ) Sleep( (DWORD) milliseconds ) 
 #else // Unix variants
@@ -62,6 +62,17 @@ void usage( void ) {
   std::cout << "    channelOffset = an optional channel offset on the device (default = 0),\n";
   std::cout << "    and time = an optional time duration in seconds (default = no limit).\n\n";
   exit( 0 );
+}
+
+void errorCallback( RtAudioError::Type type, const std::string &errorText )
+{
+  // This example error handling function does exactly the same thing
+  // as the embedded RtAudio::error() function.
+  std::cout << "in errorCallback" << std::endl;
+  if ( type == RtAudioError::WARNING )
+    std::cerr << '\n' << errorText << "\n\n";
+  else if ( type != RtAudioError::WARNING )
+    throw( RtAudioError( errorText, type ) );
 }
 
 unsigned int channels;
@@ -88,7 +99,7 @@ int saw( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 
   for ( i=0; i<nBufferFrames; i++ ) {
     for ( j=0; j<channels; j++ ) {
-      *buffer++ = (MY_TYPE) (lastValues[j] * SCALE);
+      *buffer++ = (MY_TYPE) (lastValues[j] * SCALE * 0.5);
       lastValues[j] += BASE_RATE * (j+1+(j*0.1));
       if ( lastValues[j] >= 1.0 ) lastValues[j] -= 2.0;
     }
@@ -101,8 +112,8 @@ int saw( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 
 #else // Use non-interleaved buffers
 
-int saw( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
-         double streamTime, RtAudioStreamStatus status, void *data )
+int saw( void *outputBuffer, void * /*inputBuffer*/, unsigned int nBufferFrames,
+         double /*streamTime*/, RtAudioStreamStatus status, void *data )
 {
   unsigned int i, j;
   extern unsigned int channels;
@@ -116,7 +127,7 @@ int saw( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   for ( j=0; j<channels; j++ ) {
     increment = BASE_RATE * (j+1+(j*0.1));
     for ( i=0; i<nBufferFrames; i++ ) {
-      *buffer++ = (MY_TYPE) (lastValues[j] * SCALE);
+      *buffer++ = (MY_TYPE) (lastValues[j] * SCALE * 0.5);
       lastValues[j] += increment;
       if ( lastValues[j] >= 1.0 ) lastValues[j] -= 2.0;
     }
@@ -163,16 +174,19 @@ int main( int argc, char *argv[] )
   oParams.nChannels = channels;
   oParams.firstChannel = offset;
 
-  options.flags |= RTAUDIO_HOG_DEVICE;
+  if ( device == 0 )
+    oParams.deviceId = dac.getDefaultOutputDevice();
+
+  options.flags = RTAUDIO_HOG_DEVICE;
   options.flags |= RTAUDIO_SCHEDULE_REALTIME;
 #if !defined( USE_INTERLEAVED )
   options.flags |= RTAUDIO_NONINTERLEAVED;
 #endif
   try {
-    dac.openStream( &oParams, NULL, FORMAT, fs, &bufferFrames, &saw, (void *)data, &options );
+    dac.openStream( &oParams, NULL, FORMAT, fs, &bufferFrames, &saw, (void *)data, &options, &errorCallback );
     dac.startStream();
   }
-  catch ( RtError& e ) {
+  catch ( RtAudioError& e ) {
     e.printMessage();
     goto cleanup;
   }
@@ -190,7 +204,7 @@ int main( int argc, char *argv[] )
       // Stop the stream
       dac.stopStream();
     }
-    catch ( RtError& e ) {
+    catch ( RtAudioError& e ) {
       e.printMessage();
     }
   }

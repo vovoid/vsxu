@@ -47,7 +47,7 @@ public:
   }
 
 
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->identifier =
       "mesh;segmesh;map_segmesh_bspline";
@@ -84,8 +84,8 @@ public:
     mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_result");
     mesh_result->set_p(result_mesh);
 
-    spline0.init(vsx_vector3<>(0), 0.7f, 0.3f, 0.6f);
-    spline0.points[0] = vsx_vector3<>(0);
+    spline0.init(vsx_vector3<>(0.0f), 0.7f, 0.3f, 0.6f);
+    spline0.points[0] = vsx_vector3<>(0.0f);
 
     upv = vsx_vector3<>(0,1);
   }
@@ -106,8 +106,8 @@ public:
     if (!spline0.points.size()) return;
     spline0.set_pos(stime);
 
-    num = base_mesh->vertices.size();
-    sides = base_mesh->vertices[0].size();
+    num = (int)base_mesh->vertices.size();
+    sides = (float)base_mesh->vertices[0].size();
     spline_step = length->get()/((float)num+1.0f);
 
     spline0.step(spline_step);

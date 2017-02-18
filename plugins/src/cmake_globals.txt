@@ -1,3 +1,6 @@
+
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeFindLib.txt)
+
 if (VSXU_DEBUG_NOPRINTFS EQUAL 1)
   add_definitions(-g -Wall)
 endif(VSXU_DEBUG_NOPRINTFS EQUAL 1)
@@ -8,32 +11,15 @@ if (VSXU_DEBUG EQUAL 1)
 endif ()
 
 add_definitions(
-  -DBUILDING_DLL=1 
+  -DGLEW_STATIC=1
   -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
 )
 
 include_directories(
-  ${GLEW_INCLUDE_PATH}
-  ./
-  ../include
-  ../../include
-  ${CMAKE_SOURCE_DIR}/engine/include
-  ${CMAKE_SOURCE_DIR}/profiler/include
-  ${CMAKE_SOURCE_DIR}/engine_graphics/include
-  ../../../
+  ${GLEW_INCLUDE_DIRS}
+  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}/plugins
+  ${CMAKE_SOURCE_DIR}/lib/common/include
+  ${CMAKE_SOURCE_DIR}/lib/engine/include
+  ${CMAKE_SOURCE_DIR}/lib/engine_graphics/include
 )
-
-
-if(WIN32)
-
-  cmake_policy(SET CMP0015 NEW)
-  cmake_policy(SET CMP0011 OLD)
-  #include_directories(../../../lib/win32)
-  add_definitions(-D_WIN32=1)
-  find_path(WINDOWS_LIB_PATH NAMES pthreadGCE.so
-    PATHS
-      ../../lib/win32
-  )
-
-endif(WIN32)
-

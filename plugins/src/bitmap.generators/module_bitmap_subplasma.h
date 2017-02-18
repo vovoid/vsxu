@@ -21,125 +21,40 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <vsx_rand.h>
+#include <module/vsx_module.h>
 
-
-unsigned char catmullrom_interpolate(int v0, int v1, int v2, int v3, float xx)
-{
-  int a =v0 - v1;
-  int P =v3 - v2 - a;
-  int Q =a - P;
-  int R =v2 - v0;
-  int t=(int)(v1+xx*(R+xx*(Q+xx*P)));
-  if (t > 255) return 255; else
-  if (t < 0) return 0; else
-  return (unsigned char)t;
-}
-
-
+#include <bitmap/vsx_bitmap.h>
+#include <bitmap/generators/vsx_bitmap_generator_subplasma.h>
 
 class module_bitmap_subplasma : public vsx_module
 {
 public:
-  // in
-  vsx_module_param_float* rand_seed;
-  vsx_module_param_int* size;
-  vsx_module_param_int* amplitude;
+  // in - function
+  vsx_module_param_float* rand_seed_in;
+  vsx_module_param_int* amplitude_in;
+
+  // in - options
+  vsx_module_param_int* size_in;
 
   // out
-  vsx_module_param_bitmap* result1;
+  vsx_module_param_bitmap* bitmap_out;
 
   // internal
-  bool need_to_rebuild;
-
-  vsx_bitmap bitm;
-  int bitm_timestamp;
-
-  pthread_t					worker_t;
-  pthread_attr_t		worker_t_attr;
-
-  int p_updates;
-  int my_ref;
-
-  vsx_bitmap*       work_bitmap;
-  bool              thread_created;
-  bool              worker_running;
-  int               thread_state;
-  int               i_size;
-
-  // our worker thread, to keep the tough generating work off the main loop
-  // this is a fairly simple operation, but when you want to generate fractals
-  // and decode film, you could run into several seconds of processing time.
-  static void* worker(void *ptr)
-  {
-    int x,y;
-    module_bitmap_subplasma* mod = ((module_bitmap_subplasma*)ptr);
-    unsigned char* SubPlasma = new unsigned char[mod->i_size * mod->i_size];
-    for (x = 0; x < mod->i_size*mod->i_size; ++x) { SubPlasma[x] = 0; }
-    int np=2 << mod->amplitude->get();
-
-    unsigned int musize = mod->i_size-1;
+  bool worker_running = false;
+  vsx_bitmap* bitmap = 0x0;
+  vsx_bitmap* old_bitmap = 0x0;
 
 
-    unsigned int mmu = (unsigned int)(((float)mod->i_size/(float)np));
-    unsigned int mm1 = mmu-1;
-    unsigned int mm2 = mmu*2;
-    float mmf = (float)mmu;
-
-    vsx_rand rand;
-
-    rand.srand((int)mod->rand_seed->get());
-    for (y=0; y < np; y++)
-      for (x=0; x < np; x++)
-        SubPlasma[x*mmu+y*mmu*mod->i_size] = rand.rand();
-
-    for (y=0; y<np; y++)
-      for (x=0; x<mod->i_size; x++)
-      {
-        int p=x&(~mm1);
-        int zy=y*mmu*mod->i_size;
-        SubPlasma[x+zy] = catmullrom_interpolate(
-          SubPlasma[((p-mmu)&musize)+zy],
-          SubPlasma[((p   )&musize)+zy],
-          SubPlasma[((p+mmu)&musize)+zy],
-          SubPlasma[((p+mm2)&musize)+zy],
-          (x&mm1)/mmf);
-      }
-
-    int sl = mod->size->get()+3;
-    for (y=0; y<mod->i_size; y++)
-      for (x=0; x<mod->i_size; x++) {
-        int p=y&(~(mm1));
-        SubPlasma[x+y*mod->i_size] = catmullrom_interpolate(
-          SubPlasma[x+(((p-mmu)&musize)<<sl)],
-          SubPlasma[x+(((p   )&musize)<<sl)],
-          SubPlasma[x+(((p+mmu)&musize)<<sl)],
-          SubPlasma[x+(((p+mm2)&musize)<<sl)],
-          (y&(mm1))/mmf);
-      }
-
-    vsx_bitmap_32bt *p = (vsx_bitmap_32bt*)((module_bitmap_subplasma*)ptr)->work_bitmap->data;
-
-
-    for (x = 0; x < mod->i_size * (mod->i_size); ++x, p++)
-    {
-      *p = 0xFF000000 | ((vsx_bitmap_32bt)SubPlasma[x]) << 16 | (vsx_bitmap_32bt)SubPlasma[x] << 8 | (vsx_bitmap_32bt)SubPlasma[x];// | 0 * 0x00000100 | 0;
-
-    }
-
-    delete[] SubPlasma;
-    ((module_bitmap_subplasma*)ptr)->work_bitmap->timestamp++;
-    ((module_bitmap_subplasma*)ptr)->work_bitmap->valid = true;
-    ((module_bitmap_subplasma*)ptr)->thread_state = 2;
-    return 0;
-  }
-
-  void module_info(vsx_module_info* info)
+  void module_info(vsx_module_specification* info)
   {
     info->in_param_spec =
-      "rand_seed:float,"
-      "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024,"
-      "amplitude:enum?2|4|8|16|32|64|128|256|512"
+      "function:complex{"
+        "rand_seed:float,"
+        "amplitude:enum?2|4|8|16|32|64|128|256|512&nc=1"
+      "},"
+      "options:complex{"
+        "size:enum?8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024&nc=1"
+      "}"
     ;
     info->identifier = "bitmaps;generators;subplasma";
     info->out_param_spec = "bitmap:bitmap";
@@ -152,89 +67,70 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-    thread_state = 0;
-    worker_running = false;
-    thread_created = false;
-    p_updates = -1;
+    // function
+    rand_seed_in = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"rand_seed");
+    rand_seed_in->set(4.0f);
 
+    amplitude_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"amplitude");
 
-    rand_seed = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"rand_seed");
-    rand_seed->set(4.0f);
+    // options
+    size_in = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
+    size_in->set(4);
 
-    size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"size");
-    size->set(4);
-
-    amplitude = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"amplitude");
-
-    i_size = 0;
-    result1 = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
-    result1->set_p(bitm);
-    work_bitmap = &bitm;
-    bitm.data = 0;
-    bitm.bpp = 4;
-    bitm.bformat = GL_RGBA;
-    bitm.valid = false;
-    my_ref = 0;
-    bitm_timestamp = bitm.timestamp = rand();
-    need_to_rebuild = true;
-    //bitm.data = new vsx_bitmap_32bt[256*256];
-    //bitm.size_y = bitm.size_x = 256;
-    to_delete_data = 0;
+    // out
+    bitmap_out = (vsx_module_param_bitmap*)out_parameters.create(VSX_MODULE_PARAM_ID_BITMAP,"bitmap");
   }
-  void *to_delete_data;
-  void run() {
-    // initialize our worker thread, we don't want to keep the renderloop waiting do we?
-    if (!worker_running)
-    if (p_updates != param_updates) {
-      //need_to_rebuild = false;
-      if (i_size != 8 << size->get()) {
-        i_size = 8 << size->get();
-        if (bitm.data) to_delete_data = bitm.data;
-          //delete[] bitm.data;
-        bitm.data = new vsx_bitmap_32bt[i_size*i_size];
-        bitm.size_y = bitm.size_x = i_size;
-      }
 
-      p_updates = param_updates;
-      bitm.valid = false;
-      //printf("creating thread\n");
-      pthread_attr_init(&worker_t_attr);
-      thread_state = 1;
-      worker_running = true;
-      thread_created = true;
-      pthread_create(&worker_t, &worker_t_attr, &worker, (void*)this);
 
-      //printf("done creating thread\n");
-    }
-    if (thread_state == 2) {
-      if (bitm.valid && bitm_timestamp != bitm.timestamp)
+  void run()
+  {
+    if (bitmap && bitmap->data_ready)
+    {
+      bitmap_out->set(bitmap);
+      loading_done = true;
+
+      if (old_bitmap)
       {
-        pthread_join(worker_t,0);
-        worker_running = false;
-        // ok, new version
-        //printf("uploading subplasma to param\n");
-        bitm_timestamp = bitm.timestamp;
-        result1->set_p(bitm);
-        loading_done = true;
+        vsx_bitmap_cache::get_instance()->destroy(old_bitmap);
+        old_bitmap = 0;
       }
-      thread_state = 3;
+      worker_running = false;
     }
-    if (to_delete_data && my_ref == 0)
+
+    req(!worker_running);
+
+    req( param_updates );
+    param_updates = 0;
+
+    if (bitmap)
     {
-      delete[] (vsx_bitmap_32bt*)to_delete_data;
-      to_delete_data = 0;
+      old_bitmap = bitmap;
+      bitmap = 0x0;
     }
+
+    vsx_string<> cache_handle = vsx_bitmap_generator_subplasma::generate_cache_handle(
+          (int)rand_seed_in->get(),
+          amplitude_in->get(),
+          size_in->get()
+        );
+
+    if (!bitmap)
+      bitmap = vsx_bitmap_cache::get_instance()->
+        aquire_create(cache_handle, 0);
+
+    bitmap->filename = cache_handle;
+    vsx_bitmap_generator_subplasma::generate_thread(
+          bitmap,
+          (int)rand_seed_in->get(),
+          amplitude_in->get(),
+          size_in->get()
+    );
+    worker_running = true;
   }
 
-  void on_delete() {
-    if (worker_running)
-    {
-      // wait for thread to finish
-      pthread_join(worker_t,NULL);
-    }
-    if (bitm.data)
-    {
-      delete[] (vsx_bitmap_32bt*)bitm.data;
-    }
+  void on_delete()
+  {
+    if (bitmap)
+      vsx_bitmap_cache::get_instance()->destroy(bitmap);
   }
 };
