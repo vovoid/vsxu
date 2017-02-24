@@ -24,7 +24,7 @@
 #pragma once
 
 #include <vsx_platform.h>
-#include <tools/vsx_fifo.h>
+#include <tools/vsx_fifo_mt.h>
 #include <tools/vsx_rdtsc.h>
 #include <sys/types.h>
 
@@ -109,7 +109,7 @@ typedef struct
 class vsx_profiler
 {
 public:
-  vsx_fifo<vsx_profile_chunk,4096> queue;
+  vsx_fifo_mt<vsx_profile_chunk,4096> queue;
   pid_t thread_id;
   bool enabled;
 

@@ -85,7 +85,7 @@ public:
   vsx_profiler profiler_list[VSX_PROFILER_MAX_THREADS];
   pid_t thread_list [VSX_PROFILER_MAX_THREADS];
 
-  vsx_fifo<vsx_profile_chunk*,VSX_PROFILER_RECIEVE_BUFFER_PAGES> io_pool;
+  vsx_fifo_mt<vsx_profile_chunk*,VSX_PROFILER_RECIEVE_BUFFER_PAGES> io_pool;
 
   vsx_profiler_manager()
   {

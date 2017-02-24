@@ -21,8 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_MATH_H
-#define VSX_MATH_H
+#pragma once
 
 #include <stdio.h>
 #include <math.h>
@@ -103,7 +102,17 @@ inline void mat_vec_mult3x3(float *m, float *a, float *b)
 }
 
 
+// generic solution
+template <class T>
+inline int num_digits(T number)
+{
+    int digits = 0;
+    if (number < 0) digits = 1; // remove this line if '-' counts as a digit
+    while (number) {
+        number /= 10;
+        digits++;
+    }
+    return digits;
+}
 
 
-
-#endif

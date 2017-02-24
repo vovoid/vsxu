@@ -424,6 +424,31 @@ namespace vsx_string_helper
     return result;
   }
 
+  template < typename W = char >
+  inline vsx_string<W> pad_left(
+      vsx_string<W> source,
+      W character,
+      size_t limit
+    )
+  {
+    vsx_string<W> result;
+    while ((int)result.size() < (int)limit - (int)source.size())
+      result += character;
+    return result + source;
+  }
+
+  template < typename W = char >
+  inline vsx_string<W> pad_right(
+      vsx_string<W> source,
+      W character,
+      size_t limit
+    )
+  {
+    while (source.size() < limit)
+      source += character;
+    return source;
+  }
+
 
   /**
    * @brief str_replace
