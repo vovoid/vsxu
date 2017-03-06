@@ -57,7 +57,7 @@ set(SOURCES
   src/filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_writer.cpp
   src/filesystem/vsx_filesystem_helper.cpp
   src/filesystem/vsx_filesystem.cpp
-  #src/string/vsx_json.cpp
+  src/string/vsx_json.cpp
 )
 
 if (NOT WIN32)
@@ -82,12 +82,5 @@ install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT commo
 # Install the Headers so as to install VSXu as a library
 install (DIRECTORY "include/" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/common COMPONENT Devel)
 ################################################################################
-
-
-if (WIN32)
-  if (VSXU_BUILD_WINDOWS_32)
-    install(FILES  DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT common)
-  endif()
-endif()
 
 add_subdirectory(test)

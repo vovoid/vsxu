@@ -164,17 +164,13 @@ else ()
   add_library(${module_id} SHARED ${SOURCES} ${HEADER_FILES} ${GAME_MONKEY})
 endif ()
 
-install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)
+if (UNIX)
+  install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)
 
 ######################################################################################
 # Install the Headers so as to install VSXu as a library
-install (DIRECTORY "include/" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/engine COMPONENT Devel)
+  install (DIRECTORY "include/" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/engine COMPONENT Devel)
 ################################################################################
-
-if (WIN32)
-  if (VSXU_BUILD_WINDOWS_32)
-    install(FILES  DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT engine)
-  endif()
 endif()
 
 target_link_libraries(${module_id}

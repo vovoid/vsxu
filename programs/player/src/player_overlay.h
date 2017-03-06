@@ -25,7 +25,7 @@
 #define INFO_OVERLAY_H_
 
 #include "vsx_font.h"
-#include "vsx_manager.h"
+#include <audiovisual/vsx_statelist.h>
 #include <time/vsx_timer.h>
 #include <filesystem/vsx_filesystem.h>
 #include <vsx_logo_intro.h>
@@ -44,7 +44,7 @@ class vsx_overlay {
 	float scroll_pos;
 	float dt;
 	float intro_timer;
-  vsx_manager_abs* manager;
+  vsx_statelist* manager;
   int help_id;
   float fx_alpha;
   bool first;
@@ -53,7 +53,7 @@ class vsx_overlay {
 public:
 	
 	vsx_overlay();
-  void set_manager(vsx_manager_abs* new_manager);
+  void set_manager(vsx_statelist* new_manager);
 	void reinit();
 	void render();
   void set_help(int id);

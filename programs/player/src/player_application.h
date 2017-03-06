@@ -24,14 +24,14 @@
 #pragma once
 
 #include "vsx_application.h"
-#include <vsx_manager.h>
+#include <audiovisual/vsx_statelist.h>
 #include "player_overlay.h"
 #include <vsx_application_input_state_manager.h>
 
 class player_application
     : public vsx_application
 {
-  vsx_manager_abs* manager = 0x0;
+  vsx_statelist manager;
   vsx_overlay* overlay = 0x0;
   bool no_overlay = false;
 
@@ -61,18 +61,17 @@ public:
     no_overlay = vsx_argvector::get_instance()->has_param("no");
 
     // create a new manager
-    manager = manager_factory();
-    manager->set_option_preload_all(vsx_argvector::get_instance()->has_param("pl"));
+    manager.set_option_preload_all(vsx_argvector::get_instance()->has_param("pl"));
 
     // init manager with the shared path and sound input type.
-    manager->init( (PLATFORM_SHARED_FILES).c_str(), "");
+    manager.init( (PLATFORM_SHARED_FILES).c_str(), "");
 
     // create a new text overlay
     overlay = new vsx_overlay;
-    overlay->set_manager(manager);
+    overlay->set_manager(&manager);
 
     if (vsx_argvector::get_instance()->has_param("dr"))
-      manager->set_randomizer(false);
+      manager.set_randomizer(false);
 
     printf("INFO: app_draw first done\n");
   }
@@ -80,9 +79,7 @@ public:
   void draw()
   {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    if (manager)
-      manager->render();
+    manager.render();
 
     if (overlay && !no_overlay)
       overlay->render();
@@ -93,26 +90,26 @@ public:
     switch (key)
     {
       case VSX_SCANCODE_ESCAPE:
-        if (manager)
-          manager_destroy(manager);
         exit(0);
       case VSX_SCANCODE_PAGEUP:
-        manager->inc_speed();
+        manager.inc_speed();
         break;
       case VSX_SCANCODE_PAGEDOWN:
-        manager->dec_speed();
+        manager.dec_speed();
         break;
       case VSX_SCANCODE_UP:
-        manager->inc_fx_level(); overlay->show_fx_graph();
+        manager.inc_fx_level();
+        overlay->show_fx_graph();
         break;
       case VSX_SCANCODE_DOWN:
-        manager->dec_fx_level(); overlay->show_fx_graph();
+        manager.dec_fx_level();
+        overlay->show_fx_graph();
         break;
       case VSX_SCANCODE_LEFT:
-        manager->prev_visual();
+        manager.prev_state();
         break;
       case VSX_SCANCODE_RIGHT:
-        manager->next_visual();
+        manager.next_state();
         break;
       case VSX_SCANCODE_F1:
         overlay->set_help(1);
@@ -122,10 +119,10 @@ public:
         break;
       case VSX_SCANCODE_R:
         if (vsx_input_keyboard.pressed_ctrl())
-          manager->pick_random_visual();
+          manager.random_state();
         else
         {
-          manager->toggle_randomizer();
+          manager.toggle_randomizer();
           overlay->show_randomizer_status();
         }
         break;

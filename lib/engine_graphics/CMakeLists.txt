@@ -184,7 +184,9 @@ else ()
   add_library(${module_id} SHARED ${SOURCES} ${SOURCES_FTGL} ${SOURCES_PERLIN} ${HEADER_FILES} ${SOURCES_LODEPNG})
 endif()
 
+if (UNIX)
 install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT engine)
+endif()
 
 ######################################################################################
 # Install the Headers so as to install VSXu as a library

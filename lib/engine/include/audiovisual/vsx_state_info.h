@@ -1,17 +1,20 @@
 #pragma once
 
+#include <vsx_engine.h>
+
 class state_info {
 public:
-  float fx_level;
-  float speed;
-  vsx_engine* engine;
-  vsx_string<>state_name;
-  vsx_string<>state_name_suffix;
+  float fx_level = 1.0f;
+  float speed = 1.0f;
+  vsx::filesystem* filesystem = 0x0;
+  vsx_engine* engine = 0x0;
+  vsx_string<> state_name;
+  vsx_string<> state_name_suffix;
   vsx_command_list cmd_in;
   vsx_command_list cmd_out;
-  bool need_stop;
-  bool need_reload;
-  bool is_volatile;
+  bool need_stop = false;
+  bool need_reload = false;
+  bool is_volatile = false;
 
   state_info(const state_info &other)
     :
@@ -35,18 +38,12 @@ public:
       cmd_in(false),
       cmd_out(false)
   {
-    speed = 1.0f;
-    engine = 0;
-    need_stop = false;
-    need_reload = false;
-    is_volatile = false;
   }
 
   ~state_info()
   {
-    if (is_volatile)
-      return;
-    if (engine)
-      delete engine;
+    req(!is_volatile);
+    req(engine);
+    delete engine;
   }
 };

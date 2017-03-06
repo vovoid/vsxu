@@ -7,6 +7,7 @@
 #include <filesystem/vsx_filesystem.h>
 #include <tools/vsx_req.h>
 
+
 namespace vsx_string_helper
 {
   /**
@@ -893,6 +894,16 @@ namespace vsx_string_helper
 
     return ret;
   }
+
+  inline void ensure_trailing_dir_separator(vsx_string<>& str)
+  {
+    req(str.size());
+    req(str[str.size()-1] != DIRECTORY_SEPARATOR_CHAR);
+    str.push_back( DIRECTORY_SEPARATOR_CHAR );
+  }
+
+
+
 }
 
 #ifdef __GNUC__

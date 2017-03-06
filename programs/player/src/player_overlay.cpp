@@ -46,7 +46,7 @@ vsx_overlay::vsx_overlay() {
   intro->set_destroy_textures(false);
 }
 
-void vsx_overlay::set_manager(vsx_manager_abs* new_manager)
+void vsx_overlay::set_manager(vsx_statelist* new_manager)
 {
   manager = new_manager;
 }
@@ -97,7 +97,8 @@ void vsx_overlay::render() {
   }
 
   if (manager) {
-    if (manager->visual_loading() != "") title_timer = 2.0f;
+    if (manager->state_loading() != "")
+      title_timer = 2.0f;
     myf->color.a = title_timer;
     vsx_string<>output;
     if (manager->get_meta_visual_name() != "") output += vsx_string<>(manager->get_meta_visual_name().c_str());
@@ -280,8 +281,9 @@ Modules in state:","ascii",0.06);
           vsx_string_helper::f2s(manager->get_fx_level(),3)+"\n"+
           vsx_string_helper::f2s(manager->get_speed(),3)+"\n"+
           vsx_string_helper::f2s(total_time,3)+"\n"+
-          vsx_string_helper::i2s(frame_counter)+"\n"+
-          vsx_string_helper::i2s(manager->get_engine_num_modules()),0.06
+          vsx_string_helper::i2s(frame_counter)
+          ,
+          0.06
         );
       }
       break;

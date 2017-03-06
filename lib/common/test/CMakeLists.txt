@@ -57,3 +57,6 @@ target_link_libraries(test_vsx_input_event_queue ${RT_LIBRARY} vsx_common ${CMAK
 
 add_executable(test_command_list test_command_list.cpp )
 target_link_libraries(test_command_list vsx_common vsx_compression vsx_engine vsx_engine_graphics ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
+
+add_executable(test_json test_json.cpp )
+target_link_libraries(test_json vsx_common vsx_compression vsx_engine vsx_engine_graphics ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})

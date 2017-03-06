@@ -27,7 +27,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/lib/common/include
   ${CMAKE_SOURCE_DIR}/lib/engine/include
   ${CMAKE_SOURCE_DIR}/lib/engine_graphics/include
-  ${CMAKE_SOURCE_DIR}/lib/engine_audiovisual/include
   ${CMAKE_SOURCE_DIR}/programs/player/src
 )
 
@@ -74,13 +73,11 @@ if(UNIX)
       ${OPENGL_LIBRARIES}
       vsx_application
       ${VSXU_GFX_LIB_LIBS}
-      vsx_engine_audiovisual
       vsx_common
       vsx_compression
       vsx_engine
       vsx_engine_graphics
       plugins
-      vsx_engine_audiovisual
       rt
       vsx_common
       vsx_compression
@@ -100,7 +97,6 @@ if(UNIX)
       vsx_compression
       vsx_engine
       vsx_engine_graphics
-      vsx_engine_audiovisual
       rt
     )
   endif()
@@ -112,7 +108,6 @@ if(WIN32)
    wsock32
    ws2_32
    vsx_application
-   vsx_engine_audiovisual
    vsx_engine_graphics
    vsx_engine
    vsx_common

@@ -90,12 +90,15 @@ else ()
 
 endif ()
 
-install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT widget)
 
-######################################################################################
-# Install the Headers so as to install VSXu as a library
-install (DIRECTORY "include/" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/widget COMPONENT Devel)
-################################################################################
+if (UNIX)
+  install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_LIB_DIR} COMPONENT widget)
+
+  ######################################################################################
+  # Install the Headers so as to install VSXu as a library
+  install (DIRECTORY "include/" DESTINATION ${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_INCLUDE_DIR}/widget COMPONENT Devel)
+  ################################################################################
+endif()
 
 if(UNIX)
 target_link_libraries(
