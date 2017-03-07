@@ -113,7 +113,6 @@ public:
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
-      //printf("SETTING DEFAULT PROGRAMS\n");
       shader.vertex_program = ""
           "uniform float _vx; \n"
           "varying vec4 particle_color;\n"
@@ -129,13 +128,13 @@ public:
           "{\n"
           "  float tt = gl_Vertex.w;\n"
           "  particle_color = texture1D(_lookup_colors, tt).rgba; \n  "
-          "  gl_Vertex.w = 1.0;\n"
-          "  gl_Position = ftransform();\n"
+          "  vec4 vertex = gl_Vertex;\n"
+          "  vertex.w = 1.0;\n"
+          "  gl_Position = gl_ModelViewProjectionMatrix * vertex;\n"
           "  float vertDist = distance(vec3(gl_Position.x,gl_Position.y,gl_Position.z), vec3(0.0,0.0,0.0));\n"
           "  float dist_alpha;\n"
           "  dist_alpha = pow(1 / vertDist,1.1);\n"
           "  gl_PointSize = _vx * 0.05 * dist_alpha * texture1D( _lookup_sizes, tt ).r;\n"
-          "//  if (gl_PointSize < 1.0) particle_color.a = gl_PointSize;\n"
           "}";
       shader.fragment_program =
           "uniform sampler2D _tex;\n"

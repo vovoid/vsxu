@@ -38,9 +38,11 @@ vsx_widget_controller_editor::vsx_widget_controller_editor()
 	panel = add(new vsx_widget_split_panel,"p");
 	vsx_widget* b_panel = ((vsx_widget_split_panel*)panel)->one->add(new vsx_widget_split_panel,"p2");
 	editor = ((vsx_widget_split_panel*)b_panel)->two->add(new vsx_widget_editor,"e1");
+  ((vsx_widget_editor*)editor)->editor->draw_line_numbers = true;
 	((vsx_widget_split_panel*)b_panel)->two->size_min.y = 0.02;
 	((vsx_widget_split_panel*)b_panel)->one->size_min.y = 0.02;
-	e_log = (vsx_widget*)((vsx_widget_split_panel*)b_panel)->one->add(new vsx_widget_editor,"e2");
+
+  e_log = (vsx_widget*)((vsx_widget_split_panel*)b_panel)->one->add(new vsx_widget_editor,"e2");
 	((vsx_widget_base_edit*)((vsx_widget_editor*)e_log)->editor)->editing_enabled = false;
 	((vsx_widget_split_panel*)panel)->split_pos = 0.9;
 	((vsx_widget_split_panel*)panel)->splitter_size = 0;

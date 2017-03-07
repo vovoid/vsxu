@@ -488,11 +488,9 @@ void vsx_widget_base_edit::i_draw()
   vsx_vector3<> pos = get_pos_p();
   pos.x -= target_size.x*0.5f;
   pos.y -= target_size.y*0.5f;
-  if (render_type == render_3d) {
-    pos.z = pos.z;
-  } else {
+
+  if (render_type == render_2d)
     pos.z = 0.0f;
-  }
 
   vsx_widget_skin::get_instance()->set_color_gl(18);
 
@@ -500,8 +498,11 @@ void vsx_widget_base_edit::i_draw()
 
 
   pos.y += target_size.y-font_size;
+
   render_caret();
+
   calculate_scroll_size();
+
   bool run = true;
 
   int num_visible_found = 0;
@@ -521,7 +522,16 @@ void vsx_widget_base_edit::i_draw()
   //std::vector <vsx_string<> >::iterator it = lines.begin();
   font.syntax_colors[0] = vsx_widget_skin::get_instance()->get_color(14);
   int cur_render_line = 0;
-  if (selected_line_highlight) font.color = vsx_widget_skin::get_instance()->get_color(14);
+  if (selected_line_highlight)
+    font.color = vsx_widget_skin::get_instance()->get_color(14);
+
+  if (draw_line_numbers)
+    font.print(pp + vsx_vector3<>(0.0f, font_size, 0.0f),
+             vsx_string_helper::i2s(carety + scroll_y + 1),
+             font_size);
+
+
+
   if (scroll_y < lines.size())
   if (curline < (int)lines.size())
   while (run)
@@ -536,11 +546,22 @@ void vsx_widget_base_edit::i_draw()
         font.syntax_colors[0] = vsx_widget_skin::get_instance()->get_color(16); // base color
         draw_box(pp,target_size.x,font_size);
       }
+
       if (cursize-(long)scroll_x >= (long)characters_width)
-        font.print(pp,lines[curline].substr((int)scroll_x,(int)characters_width),font_size,lines_p[curline].substr((int)scroll_x,(int)characters_width));
+        font.print(pp,
+                   lines[curline].substr((int)scroll_x,(int)characters_width),
+                   font_size,
+                   lines_p[curline].substr((int)scroll_x,(int)characters_width));
       else
         if (scroll_x < cursize)
-          font.print(pp,lines[curline].substr((int)scroll_x,(int)(lines[curline].size()-floor(scroll_x))),font_size,lines_p[curline].substr((int)scroll_x,(int)(lines[curline].size()-scroll_x)));
+          font.print(
+               pp,
+               lines[curline].substr( (int)scroll_x, (int)(lines[curline].size()-floor(scroll_x)) ),
+               font_size,
+               lines_p[curline].substr((int)scroll_x,(int)(lines[curline].size()-scroll_x))
+             );
+
+
 
       if (enable_line_action_buttons)
       {
@@ -571,6 +592,7 @@ void vsx_widget_base_edit::i_draw()
     if (cur_render_line > (long)characters_height-1 || (long)curline > (long)lines.size()-1)
       run = false;
   }
+
   font.color = vsx_color<>(1,1,1,1);
 }
 
@@ -581,9 +603,21 @@ void vsx_widget_base_edit::render_caret()
 
   vsx_vector3<> pos = get_pos_p();
   pos.x -= target_size.x*0.5f;
-  pos.y -= target_size.y*0.5f;
+
+  if (render_type == render_2d)
+  {
+    pos.y -= target_size.y * 0.5f;
+    pos.y -= font_size*(float)(carety);
+  }
+
+  if (render_type == render_3d)
+  {
+    pos.y += target_size.y*0.5f;
+    pos.y -= font_size*(float)(carety + 1);
+  }
+
   pos.x += (float)caretx*font_size*0.37f;
-  pos.y -= font_size*(float)(carety);
+
   float tt = (float)((int)(vsx_widget_time::get_instance()->get_time()*3000) % 1000)*0.001f;
 
   if (selected_line_highlight)

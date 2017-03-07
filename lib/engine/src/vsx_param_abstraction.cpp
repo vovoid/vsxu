@@ -726,6 +726,8 @@ vsx_string<>vsx_engine_param::get_type_name() {
 
 char res[256];
 
+
+
 vsx_string<>vsx_engine_param::get_string()
 {
   if (alias)
@@ -901,6 +903,14 @@ vsx_string<>vsx_engine_param::get_string()
     }
   }
   return "";
+}
+
+vsx_string<>vsx_engine_param::get_save_string()
+{
+  reqrv(module_param->type != VSX_MODULE_PARAM_ID_MESH, "");
+  reqrv(module_param->type != VSX_MODULE_PARAM_ID_TEXTURE, "");
+  reqrv(module_param->type != VSX_MODULE_PARAM_ID_BITMAP, "");
+  return get_string();
 }
 
 vsx_string<>vsx_engine_param::get_default_string()

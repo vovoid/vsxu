@@ -9,7 +9,7 @@ void info()
   vsx_nw_vector< vsx_string<> > result;
   archive_info.get_info( vsx_argvector::get_instance()->get_param_value("info").c_str(), result );
   foreach (result, i)
-    vsx_printf(L"%s", result[i].c_str());
+    vsx_printf(L"%hs", result[i].c_str());
 
   exit(0);
 }

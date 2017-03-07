@@ -18,6 +18,23 @@ namespace vsx
 {
 namespace filesystem_helper
 {
+  inline bool is_dir(vsx_string<> filename)
+  {
+    struct stat s;
+    stat(filename.c_str(), &s);
+    return (s.st_mode & S_IFDIR) != 0;
+  }
+
+  /**
+    dev 2
+    st mode 33206
+    nlink 1
+    rdev 2
+   * @brief file_get_size
+   * @param filename
+   * @return
+   */
+
   inline size_t file_get_size(vsx_string<> filename)
   {
     FILE* fp = fopen(filename.c_str(), "rb");
@@ -68,7 +85,7 @@ namespace filesystem_helper
     FILE* fp = fopen(filename.c_str(),"rb");
 
     if (!fp)
-      VSX_ERROR_RETURN_V("fp is not valid", result);
+      VSX_ERROR_RETURN_V(("error opening file: " + filename).c_str(), result);
 
     fseek (fp, 0, SEEK_END);
     long int file_pos = ftell(fp);

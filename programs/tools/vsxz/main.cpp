@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 {
   vsx_printf(
         L"\nVSXz Archiver\n"
-        "Part of %s %s\n", VSXU_VERSION, VSXU_VERSION_COPYRIGHT);
+        "Part of %hs %hs\n", VSXU_VERSION, VSXU_VERSION_COPYRIGHT);
   vsx_argvector::get_instance()->init_from_argc_argv(argc, argv);
 
   info();
@@ -75,6 +75,7 @@ int main(int argc, char* argv[])
     "  vsxz -c [archive filename]                    (mandatory)\n"
     "       -f file1:file2:file3                     (mandatory)\n"
     "       -fl [file with file list like -f]        (optional)\n"
+    "       -fn [file w/file list one file per line] (optional)\n"
     "       -z pack archive as vsxz                  (optional)\n"
     "       -nc when creating vsxz, don't compress   (optional)\n"
     "\n"

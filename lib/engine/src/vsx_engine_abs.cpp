@@ -499,7 +499,7 @@ int vsx_engine_abs::get_state_as_commandlist(vsx_command_list &savelist)
         } else
         {
           // or dump the value
-          vsx_string<>pval = param->get_string();
+          vsx_string<>pval = param->get_save_string();
           if (!param->alias) {
             if (
               pval !=

@@ -16,13 +16,13 @@ void create_vsx()
   archive.create(archive_filename.c_str());
 
   for (size_t i = 0; i < filenames.size(); i++) {
-    vsx_printf(L"* adding: %s \n", filenames[i].c_str() );
+    vsx_printf(L"* adding: %hs \n", filenames[i].c_str() );
     archive.add_file( filenames[i], "", true);
   }
 
   archive.close();
 
-  vsx_printf(L"-- successfully created the archive: %s\n", archive_filename.c_str());
+  vsx_printf(L"-- successfully created the archive: %hs\n", archive_filename.c_str());
 
   // success
   exit(0);

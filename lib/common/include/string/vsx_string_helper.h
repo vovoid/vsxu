@@ -226,19 +226,21 @@ namespace vsx_string_helper
   template < int buf_size = 1024 >
   inline vsx_string<> read_from_file(vsx_string<> filename)
   {
+    vsx_printf(L"apa1\n");
     vsx_string<> result;
     FILE* fp = fopen(filename.c_str(), "r");
     if (!fp)
       return "";
 
-    char buf[buf_size];
+    char* buf = (char*)malloc(buf_size);
 
-    while ( fgets(buf,buf_size,fp) )
+    while ( fgets(buf, buf_size, fp) )
     {
       vsx_string<> line(buf);
       result += line;
     }
     fclose(fp);
+    free(buf);
     return result;
   }
 
@@ -256,7 +258,7 @@ namespace vsx_string_helper
     if (!fp)
       return "";
 
-    char buf[buf_size] = "";
+    char* buf = (char*)malloc(buf_size);
 
     while ( filesystem->f_gets(buf,buf_size,fp) )
     {
@@ -264,6 +266,7 @@ namespace vsx_string_helper
       result += line;
     }
     filesystem->f_close(fp);
+    free(buf);
     return result;
   }
 

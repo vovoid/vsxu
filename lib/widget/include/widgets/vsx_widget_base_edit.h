@@ -58,6 +58,7 @@ public:
 	bool enable_syntax_highlighting;
 	bool selected_line_highlight;
 	bool enable_line_action_buttons;
+  bool draw_line_numbers = false;
 	int selected_line;
   vsx_string<>command_prefix; // sent to parent in command when single row (command hog)
   vsx_string<>allowed_chars; // if empty all are allowed
