@@ -38,12 +38,8 @@ void populate_filenames(vsx_nw_vector< vsx_string<> >& filenames)
       VSX_ERROR_EXIT("Error, can not read file list file...", 101);
     vsx_printf(L"Attempting to read file names from: %hs\n", file_list_file.c_str());
     filenames_string = vsx_string_helper::read_from_file<1024*1024>( file_list_file );
-    vsx_printf(L"foo\n");
     deli = "\n";
   }
-
-  vsx_printf(L"foo\n");
-  vsx_printf(L"File names:\n %hs\n", filenames_string.c_str());
 
   vsx_string_helper::explode(filenames_string, deli, filenames);
 
@@ -52,8 +48,12 @@ void populate_filenames(vsx_nw_vector< vsx_string<> >& filenames)
 
   // Make sure we can read all the files
   for (size_t i = 0; i < filenames.size(); i++)
+  {
+    req_continue(filenames[i].size());
+    req_continue(filenames[i][0] != '#');
+
     if (access(filenames[i].c_str(), R_OK))
       VSX_ERROR_EXIT( ( vsx_string<>("Pre-check failed, error accessing file: ") + filenames[i]).c_str()  ,1);
-
+  }
 }
 

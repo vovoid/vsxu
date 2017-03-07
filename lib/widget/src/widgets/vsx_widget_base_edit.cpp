@@ -527,10 +527,8 @@ void vsx_widget_base_edit::i_draw()
 
   if (draw_line_numbers)
     font.print(pp + vsx_vector3<>(0.0f, font_size, 0.0f),
-             vsx_string_helper::i2s(carety + scroll_y + 1),
+             vsx_string_helper::i2s(carety + (int)scroll_y + 1),
              font_size);
-
-
 
   if (scroll_y < lines.size())
   if (curline < (int)lines.size())

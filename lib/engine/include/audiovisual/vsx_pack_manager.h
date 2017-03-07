@@ -18,7 +18,7 @@ class pack_manager
 
 public:
 
-  void load(vsx_string<> base_path, vsx_string<> visual_pack_path = "visual_packs")
+  void load(vsx_string<> base_path, vsx_string<> visual_pack_path = "visuals_packs")
   {
     vsx_string_helper::ensure_trailing_dir_separator(base_path);
     vsx::filesystem_helper::get_files_recursive(base_path + visual_pack_path, &file_list, "", "");

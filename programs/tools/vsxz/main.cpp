@@ -79,6 +79,9 @@ int main(int argc, char* argv[])
     "       -z pack archive as vsxz                  (optional)\n"
     "       -nc when creating vsxz, don't compress   (optional)\n"
     "\n"
+    "Information:\n"
+    "  vsxz -info [archive filename]                 show meta data about archive\n"
+    "\n"
   );
 
 

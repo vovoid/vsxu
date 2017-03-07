@@ -226,7 +226,6 @@ namespace vsx_string_helper
   template < int buf_size = 1024 >
   inline vsx_string<> read_from_file(vsx_string<> filename)
   {
-    vsx_printf(L"apa1\n");
     vsx_string<> result;
     FILE* fp = fopen(filename.c_str(), "r");
     if (!fp)
