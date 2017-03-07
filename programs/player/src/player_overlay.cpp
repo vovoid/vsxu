@@ -99,12 +99,19 @@ void vsx_overlay::render() {
   if (manager) {
     if (manager->state_loading() != "")
       title_timer = 2.0f;
+
     myf->color.a = title_timer;
     vsx_string<>output;
-    if (manager->get_meta_visual_name() != "") output += vsx_string<>(manager->get_meta_visual_name().c_str());
-    if (manager->get_meta_visual_creator() != "") output += vsx_string<>(" by ")+manager->get_meta_visual_creator().c_str();
-    if (manager->get_meta_visual_company() != "") output += vsx_string<>(" of ")+manager->get_meta_visual_company().c_str();
-    if (output == "") 
+    if (manager->get_meta_visual_name() != "")
+      output += vsx_string<>(manager->get_meta_visual_name().c_str());
+
+    if (manager->get_meta_visual_creator() != "")
+      output += vsx_string<>(" by ")+manager->get_meta_visual_creator().c_str();
+
+    if (manager->get_meta_visual_company() != "")
+      output += vsx_string<>(" of ")+manager->get_meta_visual_company().c_str();
+
+    if (output == "")
     {
       output = vsx_string<>(manager->get_meta_visual_filename().c_str());
       int i = output.size()-1;
@@ -116,11 +123,11 @@ void vsx_overlay::render() {
     }
     myf->print(vsx_vector3<>(-1.0f,0.96f),output,0.04);
   }
-  //myf->print(vsx_vector(0.75f,0.96f),"Vovoid VSXu",0.04);
   myf->color.a = 1.0f;
   title_timer -= dt;
 
-  if (fx_alpha > 0.0f) {
+  if (fx_alpha > 0.0f)
+  {
     float local_alpha = fx_alpha;
     if (local_alpha > 1.0f) local_alpha = 1.0f;
     glColor4f(0,0,0,0.5f*local_alpha);
@@ -154,7 +161,7 @@ void vsx_overlay::render() {
     glBegin(GL_TRIANGLE_STRIP);
     glVertex3f(0.98f,-0.9,0);
     glVertex3f(0.92f,-0.9,0);
-      for (float i = 0; i <= manager->get_fx_level(); i+=0.1f) {
+      for (float i = 0; i <= manager->fx_level_get(); i+=0.1f) {
         glColor4f(i/16.0f,1.0f-i/16.0f,0,local_alpha);
         glVertex3f(0.98f,-0.9+i/16.0f,0);
         glVertex3f(0.92f-(float)pow((double)i,(double)1.29)*0.01,-0.9+i/16.0f,0);
@@ -164,7 +171,7 @@ void vsx_overlay::render() {
     myf->color.r = myf->color.g = myf->color.b = 1.0f;
     myf->color.a = local_alpha;
     myf->print(vsx_vector3<>(0.915f,-0.98f),"FX LVL",0.035);
-    myf->print(vsx_vector3<>(0.85f,0.1f),vsx_string_helper::f2s(manager->get_fx_level()),0.035);
+    myf->print(vsx_vector3<>(0.85f,0.1f),vsx_string_helper::f2s(manager->fx_level_get()),0.035);
   }
   myf->color.r = myf->color.g = myf->color.b = myf->color.a = 1.0f;
   fx_alpha -= dt*4;
@@ -278,10 +285,11 @@ Modules in state:","ascii",0.06);
           vsx_vector3<>(-0.1,0.4),
           vsx_string<>(visual_filename.c_str())+"\n"+
           vsx_string_helper::f2s(delta_fps)+"\n"+
-          vsx_string_helper::f2s(manager->get_fx_level(),3)+"\n"+
-          vsx_string_helper::f2s(manager->get_speed(),3)+"\n"+
+          vsx_string_helper::f2s(manager->fx_level_get(),3)+"\n"+
+          vsx_string_helper::f2s(manager->speed_get(),3)+"\n"+
           vsx_string_helper::f2s(total_time,3)+"\n"+
-          vsx_string_helper::i2s(frame_counter)
+          vsx_string_helper::i2s(frame_counter) + "\n" +
+          vsx_string_helper::i2s( manager->get_meta_modules_in_engine() )
           ,
           0.06
         );

@@ -7,6 +7,8 @@
 #include <SDL2/SDL.h>
 #endif
 #include <vsx_application_control.h>
+#include <time/vsx_timer.h>
+#include <time/vsx_time_manager.h>
 #include "vsx_application_sdl_tools.h"
 #include "vsx_application_sdl_input_event_handler.h"
 #include <vsx_gl_state.h>
@@ -41,6 +43,7 @@ class vsx_application_sdl
 {
   SDL_GLContext context;
   vsx_application_sdl_input_event_handler event_handler;
+  vsx_timer frame_timer;
 
   void update_viewport_size()
   {
@@ -191,6 +194,7 @@ public:
       exit(1);
     }
 
+    frame_timer.start();
     bool running = true;
     while( running )
     {
@@ -245,6 +249,9 @@ public:
 
       if (vsx_application_control::get_instance()->is_shutdown_requested())
         break;
+
+      // time manager
+      vsx::common::time::manager::get()->update(frame_timer.dtime());
     }
 
     vsx_application_manager::get()->uninit();

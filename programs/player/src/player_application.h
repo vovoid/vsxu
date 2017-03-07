@@ -60,11 +60,13 @@ public:
 
     no_overlay = vsx_argvector::get_instance()->has_param("no");
 
+    vsx_module_list_manager::get()->module_list = vsx_module_list_factory_create();
+
     // create a new manager
     manager.set_option_preload_all(vsx_argvector::get_instance()->has_param("pl"));
 
     // init manager with the shared path and sound input type.
-    manager.init( (PLATFORM_SHARED_FILES).c_str(), "");
+    manager.load( (PLATFORM_SHARED_FILES).c_str());
 
     // create a new text overlay
     overlay = new vsx_overlay;
@@ -92,17 +94,17 @@ public:
       case VSX_SCANCODE_ESCAPE:
         exit(0);
       case VSX_SCANCODE_PAGEUP:
-        manager.inc_speed();
+        manager.speed_inc();
         break;
       case VSX_SCANCODE_PAGEDOWN:
-        manager.dec_speed();
+        manager.speed_dec();
         break;
       case VSX_SCANCODE_UP:
-        manager.inc_fx_level();
+        manager.fx_level_inc();
         overlay->show_fx_graph();
         break;
       case VSX_SCANCODE_DOWN:
-        manager.dec_fx_level();
+        manager.fx_level_dec();
         overlay->show_fx_graph();
         break;
       case VSX_SCANCODE_LEFT:
@@ -127,6 +129,11 @@ public:
         }
         break;
     }
+  }
+
+  void uninit()
+  {
+    vsx_module_list_factory_destroy(vsx_module_list_manager::get()->module_list);
   }
 
 };

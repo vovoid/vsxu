@@ -293,7 +293,7 @@ void vsx_engine::set_input_event_queue(vsx_input_event_queue* queue)
   engine_info.event_queue = queue;
 }
 
-int vsx_engine::load_state(vsx_string<>filename, vsx_string<>*error_string)
+int vsx_engine::load_state(vsx_string<>filename, vsx_string<>* error_string)
 {
   if (!valid)
     return 2;

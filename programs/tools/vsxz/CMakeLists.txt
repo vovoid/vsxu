@@ -62,5 +62,6 @@ if(UNIX)
   target_link_libraries(${module_id}
     rt
   )
-  install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 endif(UNIX)
+
+install(TARGETS ${module_id} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)

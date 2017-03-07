@@ -29,6 +29,7 @@
 #include <vsx_application_manager.h>
 #include <vsx_application_run.h>
 #include <vsx_data_path.h>
+#include <vsx_module_list_manager.h>
 
 int main(int argc, char* argv[])
 {
@@ -37,6 +38,5 @@ int main(int argc, char* argv[])
   player_application application;
   vsx_application_manager::get_instance()->application_set(&application);
   vsx_application_run::run();
-
   return 0;
 }

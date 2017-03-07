@@ -60,9 +60,9 @@ public:
   }
   
 // normal time
-double ntime() {
-  return ((double)clock())/((double)CLOCKS_PER_SEC);
-}
+//double ntime() {
+//  return ((double)clock())/((double)CLOCKS_PER_SEC);
+//}
 
 // accurate time
 double atime() {

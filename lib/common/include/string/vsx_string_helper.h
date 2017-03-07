@@ -7,7 +7,6 @@
 #include <filesystem/vsx_filesystem.h>
 #include <tools/vsx_req.h>
 
-
 namespace vsx_string_helper
 {
   /**
@@ -901,8 +900,6 @@ namespace vsx_string_helper
     req(str[str.size()-1] != DIRECTORY_SEPARATOR_CHAR);
     str.push_back( DIRECTORY_SEPARATOR_CHAR );
   }
-
-
 
 }
 
