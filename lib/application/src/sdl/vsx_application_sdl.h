@@ -60,7 +60,7 @@ class vsx_application_sdl
 
   void setup()
   {
-    if (vsx_argvector::get_instance()->has_param("-help"))
+    if (vsx_argvector::get_instance()->has_param("-help") || vsx_argvector::get_instance()->has_param("help"))
     {
       vsx_application_manager::get_instance()->get()->print_help();
       exit(0);
@@ -71,15 +71,68 @@ class vsx_application_sdl
     DisableProcessWindowsGhosting();
     #endif
 
+
+
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0)
         sdl_tools::sdldie("Unable to initialize SDL");
+
+
+    //Get number of displays
+    int num_displays = SDL_GetNumVideoDisplays();
+    SDL_Rect* display_bounds = 0x0;
+    display_bounds = new SDL_Rect[ num_displays ];
+    for( int i = 0; i < num_displays; ++i )
+        SDL_GetDisplayBounds( i, &display_bounds[ i ] );
+    size_t chosen_display = 0;
+    if (vsx_argvector::get_instance()->has_param("d"))
+    {
+      chosen_display = vsx_string_helper::s2i(vsx_argvector::get_instance()->get_param_value("d"));
+      if (!chosen_display)
+        chosen_display = 1;
+      chosen_display--;
+      if (chosen_display > num_displays - 1)
+        chosen_display = num_displays - 1;
+    }
+
+    if (vsx_argvector::get_instance()->has_param("dq"))
+    {
+      vsx_printf(L"Number of displays attached: %d\n", num_displays);
+      exit(0);
+    }
 
     SDL_DisableScreenSaver();
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-    if (vsx_argvector::get_instance()->has_param("f") && !vsx_argvector::get_instance()->has_param_with_value("s"))
+    // borderless window, taking up one full desktop
+    if (
+      vsx_argvector::get_instance()->has_param("d")
+      &&
+      !vsx_argvector::get_instance()->has_param("f")
+      &&
+      !vsx_argvector::get_instance()->has_param_with_value("s")
+    )
+      vsx_application_sdl_window_holder::get_instance()->window = SDL_CreateWindow(
+        vsx_application_manager::get_instance()->get()->window_title_get().c_str(),
+        display_bounds[chosen_display].x,
+        display_bounds[chosen_display].y,
+        display_bounds[chosen_display].w,
+        display_bounds[chosen_display].h,
+        SDL_WINDOW_OPENGL
+        | SDL_WINDOW_ALLOW_HIGHDPI
+        | SDL_WINDOW_SHOWN
+        | SDL_WINDOW_BORDERLESS
+      );
+
+    // real fullscreen, main desktop resolution
+    if (
+      !vsx_argvector::get_instance()->has_param("d")
+      &&
+      vsx_argvector::get_instance()->has_param("f")
+      &&
+      !vsx_argvector::get_instance()->has_param_with_value("s")
+    )
       vsx_application_sdl_window_holder::get_instance()->window = SDL_CreateWindow(
         vsx_application_manager::get_instance()->get()->window_title_get().c_str(),
         SDL_WINDOWPOS_CENTERED,
@@ -92,7 +145,14 @@ class vsx_application_sdl
         | SDL_WINDOW_SHOWN
       );
 
-    if (vsx_argvector::get_instance()->has_param("f") && vsx_argvector::get_instance()->has_param_with_value("s"))
+    // real fullscreen, custom resolution
+    if (
+      !vsx_argvector::get_instance()->has_param("d")
+      &&
+      vsx_argvector::get_instance()->has_param("f")
+      &&
+      vsx_argvector::get_instance()->has_param_with_value("s")
+    )
       vsx_application_sdl_window_holder::get_instance()->window = SDL_CreateWindow(
         vsx_application_manager::get_instance()->get()->window_title_get().c_str(),
         SDL_WINDOWPOS_CENTERED,
@@ -105,7 +165,12 @@ class vsx_application_sdl
         | SDL_WINDOW_SHOWN
       );
 
-    if (!vsx_argvector::get_instance()->has_param("f"))
+    // regular window, custom resolution, borderless optional
+    if (
+      !vsx_argvector::get_instance()->has_param("d")
+      &&
+      !vsx_argvector::get_instance()->has_param("f")
+    )
       vsx_application_sdl_window_holder::get_instance()->window = SDL_CreateWindow(
         vsx_application_manager::get_instance()->get()->window_title_get().c_str(),
         SDL_WINDOWPOS_CENTERED,
@@ -118,6 +183,9 @@ class vsx_application_sdl
         | SDL_WINDOW_SHOWN
         | SDL_WINDOW_BORDERLESS * (vsx_argvector::get_instance()->has_param("bl") ? 1 : 0)
       );
+
+
+
 
     SDL_StartTextInput();
 

@@ -42,8 +42,8 @@ public:
   {
     vsx_application::print_help();
     vsx_printf(
-      L"  -pl        Preload all visuals on start \n"
-       "  -dr        Disable randomizer     \n"
+      L"    -pl                       Preload all visuals on start \n"
+       "    -dr                       Disable randomizer     \n"
     );
   }
 
@@ -91,7 +91,6 @@ public:
         );
       fx_levels_loaded = true;
     }
-
   }
 
   void event_key_down(long key)

@@ -70,7 +70,7 @@ private:
   vsx_string<> message;
   bool render_first = true;
 
-  bool randomizer = false;
+  bool randomizer = true;
   float randomizer_time = 0.0f;
 
   vsx_module_engine_float_array int_freq;

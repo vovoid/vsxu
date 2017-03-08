@@ -55,6 +55,29 @@ public:
 
   virtual void print_help()
   {
+    vsx_printf(
+      L"Window mode / settings: \n"
+       "    -f                        True fullscreen (video mode change) \n"
+       "\n"
+       "    -s [x-res]x[y-res]        Fullscreen resolution or window size \n"
+       "                              Example: -s 1920x1080\n"
+       "\n"
+       "    -bl                       Borderless window. Not usable together\n"
+       "                              with -f\n"
+       "\n"
+       "    -d [id]                   Show borderless fullwindow on display [id]\n"
+       "    -dq                       Print how many displays are available and exit\n"
+       "                              [id] is a value between 1 and number of displays\n"
+       "    -gl_debug                 Enable OpenGL debug callback\n"
+       "\n"
+       "    Examples:\n"
+       "      -f -s 1920x1080         Fullscreen, Full HD resolution\n"
+       "      -d 2                    Show bordless window taking up all of  display #2\n"
+       "      -s 500x500 -bl          Borderless window, 500 by 500 pixels\n"
+       "\n"
+       "\n"
+       "Application settings:\n"
+    );
   }
 
   virtual void input_event(const vsx_input_event& event)
