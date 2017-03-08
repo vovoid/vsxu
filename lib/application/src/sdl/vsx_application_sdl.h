@@ -200,6 +200,7 @@ public:
     {
       update_viewport_size();
 
+
       SDL_Event event;
       while (SDL_PollEvent(&event))
       {
@@ -246,6 +247,18 @@ public:
       vsx_application_manager::get()->draw();
 
       SDL_GL_SwapWindow(vsx_application_sdl_window_holder::get_instance()->window);
+
+      if (vsx_application_control::get_instance()->is_preferences_path_creation_requested())
+        if (!vsx_application_control::get_instance()->preferences_path.size())
+        {
+          char *base_path = SDL_GetPrefPath(
+                vsx_application_manager::get()->organization_get().c_str(),
+                vsx_application_manager::get()->application_name_get().c_str()
+              );
+          if (base_path) {
+              vsx_application_control::get_instance()->preferences_path = vsx_string<>(base_path);
+          }
+        }
 
       if (vsx_application_control::get_instance()->is_shutdown_requested())
         break;

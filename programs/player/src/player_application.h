@@ -37,13 +37,6 @@ class player_application
 
 public:
 
-  vsx_string<> window_title_get()
-  {
-    char titlestr[ 200 ];
-    sprintf( titlestr, "Vovoid VSXu Player %s [%s %d-bit]", VSXU_VER, PLATFORM_NAME, PLATFORM_BITS);
-    return vsx_string<>(titlestr);
-  }
-
   void print_help()
   {
     vsx_application::print_help();
@@ -55,8 +48,6 @@ public:
 
   void init()
   {
-    printf("INFO: app_draw first\n");
-
     no_overlay = vsx_argvector::get_instance()->has_param("no");
 
     vsx_module_list_manager::get()->module_list = vsx_module_list_factory_create();
@@ -74,7 +65,12 @@ public:
     if (vsx_argvector::get_instance()->has_param("dr"))
       vsx::engine::audiovisual::state_manager::get()->set_randomizer(false);
 
-    printf("INFO: app_draw first done\n");
+    char titlestr[ 200 ];
+    sprintf( titlestr, "Vovoid VSXu Player %s [%s %d-bit]", VSXU_VER, PLATFORM_NAME, PLATFORM_BITS);
+    window_title = vsx_string<>(titlestr);
+    organization_name = "Vovoid Media Technologies AB";
+    application_name = "VSXu Player";
+    vsx_application_control::get_instance()->create_preferences_path_request();
   }
 
   void draw()
@@ -88,6 +84,7 @@ public:
 
   void event_key_down(long key)
   {
+    vsx_printf(L"pref: %hs\n", vsx_application_control::get_instance()->preferences_path.c_str());
     switch (key)
     {
       case VSX_SCANCODE_ESCAPE:

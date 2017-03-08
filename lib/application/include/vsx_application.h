@@ -29,14 +29,12 @@
 class vsx_application
 {
 protected:
+
+  vsx_string<> organization_name;
+  vsx_string<> application_name;
   vsx_string<> window_title;
 
 public:
-
-  vsx_string<>& window_title_get()
-  {
-    return window_title;
-  }
 
   virtual void init()
   {
@@ -118,4 +116,17 @@ public:
     VSX_UNUSED(x);
     VSX_UNUSED(y);
   }
+
+  vsx_string<>& organization_get() {
+    return organization_name;
+  }
+
+  vsx_string<>& application_name_get() {
+    return application_name;
+  }
+
+  vsx_string<>& window_title_get() {
+    return window_title;
+  }
+
 };
