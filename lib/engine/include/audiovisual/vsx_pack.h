@@ -23,7 +23,7 @@ public:
   {
     fs = new vsx::filesystem();
     fs->get_archive()->load( filename.c_str(), true );
-    vsx::json json = vsx::json_helper::json_from_file("manifest.json", fs);
+    vsx::json json = vsx::json_helper::load_json_from_file("manifest.json", fs);
     vsx_string<> name = json["name"].string_value().c_str();
     vsx_printf(L"name %hs\n", name.c_str());
 

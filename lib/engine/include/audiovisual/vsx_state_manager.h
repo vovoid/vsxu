@@ -63,9 +63,6 @@ private:
   // currently active state
   state* state_current = 0x0;
 
-  // module list shared among all engine instances
-  vsx_module_list_abs* module_list = 0x0;
-
   vsx_string<> config_dir;
   vsx_string<> visual_path;
 
@@ -115,9 +112,9 @@ public:
       delete *it;
   }
 
-  void set_module_list( vsx_module_list_abs* new_module_list)
+  std::vector<state*>& states_get()
   {
-    module_list = new_module_list;
+    return states;
   }
 
   void start()
@@ -143,7 +140,7 @@ public:
     return randomizer;
   }
 
-  void select_visual (int selection)
+  void select_state (int selection)
   {
     req(states.size());
     req(*states_iter == state_current);
@@ -169,7 +166,7 @@ public:
   }
 
 
-  void random_state()
+  void select_random_state()
   {
     req(states.size());
     req(*states_iter == state_current);
@@ -184,7 +181,7 @@ public:
 
     if ((*states_iter) == state_current)
     {
-      random_state();
+      select_random_state();
       return;
     }
 
@@ -192,7 +189,7 @@ public:
     faders.mark_change();
   }
 
-  void next_state()
+  void select_next_state()
   {
     req(states.size());
     req(*states_iter == state_current);
@@ -205,7 +202,7 @@ public:
     faders.mark_change();
   }
 
-  void prev_state()
+  void select_prev_state()
   {
     req(states.size());
     req(*states_iter == state_current);
@@ -287,7 +284,7 @@ public:
     randomizer_time -= vsx::common::time::manager::get()->dt;
     if (randomizer_time < 0.0f)
     {
-      random_state();
+      select_random_state();
       randomizer_time = (float)(rand()%1000)*0.001f*15.0f+10.0f;
     }
   }

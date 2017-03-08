@@ -9,13 +9,19 @@ namespace vsx
 namespace json_helper
 {
 
-inline vsx::json json_from_file(vsx_string<> filename, vsx::filesystem* filesystem)
+inline vsx::json load_json_from_file(vsx_string<> filename, vsx::filesystem* filesystem)
 {
   std::string json_error;
   vsx_string<> buf = vsx_string_helper::read_from_file(filename, filesystem);
-  vsx_printf(L"buf: %hs\n", buf.c_str());
   vsx::json result = vsx::json::parse(buf.c_str(), json_error);
   return result;
+}
+
+inline void save_json_to_file(vsx_string<> filename, vsx::json& json)
+{
+  std::string buf;
+  json.dump(buf);
+  vsx_string_helper::write_to_file(filename, vsx_string<>(buf.c_str()) );
 }
 
 }

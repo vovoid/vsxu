@@ -9,6 +9,7 @@
 #include <vsx_application_control.h>
 #include <time/vsx_timer.h>
 #include <time/vsx_time_manager.h>
+#include <filesystem/vsx_filesystem_helper.h>
 #include "vsx_application_sdl_tools.h"
 #include "vsx_application_sdl_input_event_handler.h"
 #include <vsx_gl_state.h>
@@ -256,7 +257,8 @@ public:
                 vsx_application_manager::get()->application_name_get().c_str()
               );
           if (base_path) {
-              vsx_application_control::get_instance()->preferences_path = vsx_string<>(base_path);
+            vsx::filesystem_helper::create_directory(base_path);
+            vsx_application_control::get_instance()->preferences_path = vsx_string<>(base_path);
           }
         }
 

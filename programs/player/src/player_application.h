@@ -28,6 +28,7 @@
 #include <audiovisual/vsx_state_manager.h>
 #include "player_overlay.h"
 #include <vsx_application_input_state_manager.h>
+#include <audiovisual/vsx_state_fx_save.h>
 
 class player_application
     : public vsx_application
@@ -73,6 +74,7 @@ public:
     vsx_application_control::get_instance()->create_preferences_path_request();
   }
 
+  bool fx_levels_loaded = false;
   void draw()
   {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -80,6 +82,16 @@ public:
 
     if (overlay && !no_overlay)
       overlay->render();
+
+    if (!fx_levels_loaded && vsx_application_control::get_instance()->preferences_path.size())
+    {
+      vsx::engine::audiovisual::fx_load(
+          vsx::engine::audiovisual::state_manager::get()->states_get(),
+          vsx_application_control::get_instance()->preferences_path + "fx_levels.json"
+        );
+      fx_levels_loaded = true;
+    }
+
   }
 
   void event_key_down(long key)
@@ -104,10 +116,10 @@ public:
         overlay->show_fx_graph();
         break;
       case VSX_SCANCODE_LEFT:
-        vsx::engine::audiovisual::state_manager::get()->prev_state();
+        vsx::engine::audiovisual::state_manager::get()->select_prev_state();
         break;
       case VSX_SCANCODE_RIGHT:
-        vsx::engine::audiovisual::state_manager::get()->next_state();
+        vsx::engine::audiovisual::state_manager::get()->select_next_state();
         break;
       case VSX_SCANCODE_F1:
         overlay->set_help(1);
@@ -117,7 +129,7 @@ public:
         break;
       case VSX_SCANCODE_R:
         if (vsx_input_keyboard.pressed_ctrl())
-          vsx::engine::audiovisual::state_manager::get()->random_state();
+          vsx::engine::audiovisual::state_manager::get()->select_random_state();
         else
         {
           vsx::engine::audiovisual::state_manager::get()->toggle_randomizer();
@@ -129,6 +141,11 @@ public:
 
   void uninit()
   {
+    vsx::engine::audiovisual::fx_save(
+        vsx::engine::audiovisual::state_manager::get()->states_get(),
+        vsx_application_control::get_instance()->preferences_path + "fx_levels.json"
+      );
+
     vsx::engine::audiovisual::state_manager::destroy();
     vsx_module_list_factory_destroy(vsx_module_list_manager::get()->module_list);
   }
