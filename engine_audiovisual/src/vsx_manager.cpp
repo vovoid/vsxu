@@ -162,6 +162,14 @@ void vsx_manager::add_visual_path(const char* new_visual_path)
   ((vsx_statelist*)int_state_manager)->add_visual_path(vsx_string(new_visual_path));
 }
 
+void vsx_manager::add_visual_path(const char* new_visual_path)
+{
+  if(!new_visual_path)
+    return;
+
+  ((vsx_statelist*)int_state_manager)->add_visual_path(vsx_string(new_visual_path));
+}
+
 void vsx_manager::start()
 {
 ((vsx_statelist*)int_state_manager)->start();
