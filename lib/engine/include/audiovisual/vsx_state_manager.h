@@ -35,23 +35,33 @@
 
 #include <GL/glew.h>
 #include "vsx_engine.h"
-#include <texture/buffer/vsx_texture_buffer_render.h>
-#include "vsx_state_info.h"
 #include <math/vsx_rand_singleton.h>
 #include <time/vsx_time_manager.h>
+#include <tools/vsx_managed_singleton.h>
+
+#include <audiovisual/vsx_state.h>
 #include <audiovisual/vsx_pack_manager.h>
 #include <audiovisual/vsx_fader_manager.h>
 
-class vsx_statelist
+namespace vsx
+{
+namespace engine
+{
+namespace audiovisual
+{
+
+class state_manager
+  : public vsx::managed_singleton<state_manager>
 {
 private:
-  vsx::engine::audiovisual::fader_manager faders;
+  fader_manager faders;
+  pack_manager packs;
 
-  std::vector<state_info*> statelist;
-  std::vector<state_info*>::iterator state_iter;
+  std::vector<state*> states;
+  std::vector<state*>::iterator states_iter;
 
-  // our currently running state
-  state_info* current_state = 0x0;
+  // currently active state
+  state* state_current = 0x0;
 
   // module list shared among all engine instances
   vsx_module_list_abs* module_list = 0x0;
@@ -69,33 +79,39 @@ private:
   vsx_module_engine_float_array int_freq;
   vsx_module_engine_float_array int_wav;
 
-  // options
-  bool option_preload_all = false;
-
   void init_states()
   {
-    // go through statelist and load and validate every plugin
-    std::vector<state_info*> new_statelist;
-    for (state_iter = statelist.begin(); state_iter != statelist.end(); state_iter++)
+    // go through states and exclude broken visuals
+    std::vector<state*> new_statelist;
+    for (states_iter = states.begin(); states_iter != states.end(); states_iter++)
     {
       // 0 = successfully loaded
-      req_continue(!(*state_iter)->init());
+      req_continue(!(*states_iter)->init());
 
       // state is OK, add to state list
-      new_statelist.push_back(*state_iter);
+      new_statelist.push_back(*states_iter);
 
+      // preload where applicable
       if (option_preload_all == true)
-        while ( !(*state_iter)->done_loading() )
-          (*state_iter)->render();
+        while ( !(*states_iter)->done_loading() )
+          (*states_iter)->render();
     }
-    statelist = new_statelist;
+    states = new_statelist;
   }
 
 public:
 
-  ~vsx_statelist()
+  // options
+  bool option_preload_all = false;
+
+  state_manager()
   {
-    for (auto it = statelist.begin(); it != statelist.end(); ++it)
+    randomizer_time = vsx_rand_singleton::get()->rand.frand()*15.0f + 10.0f;
+  }
+
+  ~state_manager()
+  {
+    for (auto it = states.begin(); it != states.end(); ++it)
       delete *it;
   }
 
@@ -103,20 +119,15 @@ public:
   {
     module_list = new_module_list;
   }
-  
-  void set_option_preload_all(bool new_value)
-  {
-    option_preload_all = new_value;
-  }
 
   void start()
   {
-    current_state->start();
+    state_current->start();
   }
 
   void stop()
   {
-    for (auto it = statelist.begin(); it != statelist.end(); ++it)
+    for (auto it = states.begin(); it != states.end(); ++it)
       (*it)->stop();
   }
 
@@ -134,111 +145,111 @@ public:
 
   void select_visual (int selection)
   {
-    req(statelist.size());
-    req(*state_iter == current_state);
+    req(states.size());
+    req(*states_iter == state_current);
 
     bool change = true;
     int count = 0;
-    state_iter = statelist.begin();
+    states_iter = states.begin();
     while (change)
     {
-      ++state_iter;
+      ++states_iter;
       count++;
       if (count >= selection)
         change = false;
 
-      if (state_iter == statelist.end())
+      if (states_iter == states.end())
       {
-          state_iter = statelist.begin();
+          states_iter = states.begin();
           change = false;
       }
     }
-    (*state_iter)->init();
+    (*states_iter)->init();
     faders.mark_change();
   }
 
-  
+
   void random_state()
   {
-    req(statelist.size());
-    req(*state_iter == current_state);
+    req(states.size());
+    req(*states_iter == state_current);
 
-    int steps = rand() % statelist.size();
+    int steps = rand() % states.size();
     while (steps) {
-      ++state_iter;
-      if (state_iter == statelist.end())
-        state_iter = statelist.begin();
+      ++states_iter;
+      if (states_iter == states.end())
+        states_iter = states.begin();
       --steps;
     }
 
-    if ((*state_iter) == current_state)
+    if ((*states_iter) == state_current)
     {
       random_state();
       return;
     }
 
-    (*state_iter)->init();
+    (*states_iter)->init();
     faders.mark_change();
   }
 
   void next_state()
   {
-    req(statelist.size());
-    req(*state_iter == current_state);
+    req(states.size());
+    req(*states_iter == state_current);
 
-    if (state_iter == statelist.end())
-      state_iter = statelist.begin();
-    ++state_iter;
+    if (states_iter == states.end())
+      states_iter = states.begin();
+    ++states_iter;
 
-    (*state_iter)->init();
+    (*states_iter)->init();
     faders.mark_change();
   }
 
   void prev_state()
   {
-    req(statelist.size());
-    req(*state_iter == current_state);
-    if (state_iter == statelist.begin())
-      state_iter = statelist.end();
-    --state_iter;
-    (*state_iter)->init();
+    req(states.size());
+    req(*states_iter == state_current);
+    if (states_iter == states.begin())
+      states_iter = states.end();
+    --states_iter;
+    (*states_iter)->init();
     faders.mark_change();
   }
 
   vsx_string<> state_loading()
   {
     reqrv(faders.is_transitioning(), "";)
-    return (*state_iter)->name;
-  }  
-  
+    return (*states_iter)->name;
+  }
+
   void speed_inc()
   {
-    (*state_iter)->adjust_speed(1.04f);
+    (*states_iter)->adjust_speed(1.04f);
   }
 
   void speed_dec()
   {
-    (*state_iter)->adjust_speed(0.96f);
+    (*states_iter)->adjust_speed(0.96f);
   }
 
   float speed_get()
   {
-    return (*state_iter)->speed;
+    return (*states_iter)->speed;
   }
 
   void fx_level_inc()
   {
-    (*state_iter)->adjust_fx_level(0.05f);
+    (*states_iter)->adjust_fx_level(0.05f);
   }
 
   void fx_level_dec()
   {
-    (*state_iter)->adjust_fx_level( -0.05f);
+    (*states_iter)->adjust_fx_level( -0.05f);
   }
 
   float fx_level_get()
   {
-    return (*state_iter)->fx_level;
+    return (*states_iter)->fx_level;
   }
 
   void handle_render_first()
@@ -246,28 +257,28 @@ public:
     req(render_first);
     render_first = false;
 
-    if ( state_iter == statelist.end() )
+    if ( states_iter == states.end() )
       return;
 
     init_states();
 
     // reset state_iter to a random state
-    state_iter = statelist.begin();
-    int steps = vsx_rand_singleton::get()->rand.rand() % statelist.size();
+    states_iter = states.begin();
+    int steps = vsx_rand_singleton::get()->rand.rand() % states.size();
     while (steps) {
-      ++state_iter;
-      if (state_iter == statelist.end())
-        state_iter = statelist.begin();
+      ++states_iter;
+      if (states_iter == states.end())
+        states_iter = states.begin();
       --steps;
     }
 
-    current_state = *state_iter;
+    state_current = *states_iter;
   }
 
   bool render_change()
   {
-    reqrv( *state_iter != current_state, false); // change is on the way
-    return faders.render( current_state, *state_iter );
+    reqrv( *states_iter != state_current, false); // change is on the way
+    return faders.render( state_current, *states_iter );
   }
 
   void update_randomizer()
@@ -283,74 +294,85 @@ public:
 
   void render()
   {
-    req( statelist.size() );
+    req( states.size() );
     handle_render_first();
     update_randomizer();
     req( !render_change());
-    current_state->render();
+    state_current->render();
+  }
+
+  void load_individual_visuals(vsx_string<>& base_path, vsx_string<> visual_path = "visuals_player")
+  {
+    vsx_string_helper::ensure_trailing_dir_separator(base_path);
+    std::list< vsx_string<> > state_file_list;
+    vsx::filesystem_helper::get_files_recursive(base_path + visual_path, &state_file_list,"","");
+    for (auto it = state_file_list.begin(); it != state_file_list.end(); ++it) {
+      state* new_state = new state();
+      new_state->filename = *it;
+      states.push_back(new_state);
+    }
   }
 
   void load(vsx_string<> base_path)
   {
-    randomizer_time = vsx_rand_singleton::get()->rand.frand()*15.0f + 10.0f;
-    vsx_string_helper::ensure_trailing_dir_separator(base_path);
     faders.load(base_path);
+    load_individual_visuals(base_path);
 
-    visual_path = "visuals_player";
+    packs.load(base_path);
+    packs.add_states(states);
 
-    std::list< vsx_string<> > state_file_list;
-    vsx::filesystem_helper::get_files_recursive(base_path + visual_path, &state_file_list,"","");
-    for (auto it = state_file_list.begin(); it != state_file_list.end(); ++it) {
-      state_info* state = new state_info();
-      state->filename = *it;
-      statelist.push_back(state);
-    }
-    state_iter = statelist.begin();
+    // reset state iter
+    states_iter = states.begin();
   }
 
   void set_sound_freq(float* data)
   {
-    req(current_state);
+    req(state_current);
     for (unsigned long i = 0; i < 513; i++)
       int_freq.array[i] = data[i];
-    current_state->set_float_array_param(1, int_freq);
+    state_current->set_float_array_param(1, int_freq);
   }
 
   void set_sound_wave(float* data)
   {
-    req(current_state);
+    req(state_current);
     for (unsigned long i = 0; i < 513; i++)
       int_wav.array[i] = data[i];
-    current_state->set_float_array_param(0, int_wav);
+    state_current->set_float_array_param(0, int_wav);
   }
-  
+
   vsx_string<> get_meta_visual_filename()
   {
-    return (*state_iter)->filename;
+    return (*states_iter)->filename;
   }
 
   vsx_string<> get_meta_visual_name()
   {
     // TODO: handle packs here
-    reqrv((*state_iter)->engine, "");
-    return (*state_iter)->engine->get_meta_information(0);
+    reqrv((*states_iter)->engine, "");
+    return (*states_iter)->engine->get_meta_information(0);
   }
 
   vsx_string<> get_meta_visual_creator()
   {
-    reqrv((*state_iter)->engine, "");
-    return (*state_iter)->engine->get_meta_information(1);
+    reqrv((*states_iter)->engine, "");
+    return (*states_iter)->engine->get_meta_information(1);
   }
 
   vsx_string<> get_meta_visual_company()
   {
-    reqrv((*state_iter)->engine, "");
-    return (*state_iter)->engine->get_meta_information(2);
+    reqrv((*states_iter)->engine, "");
+    return (*states_iter)->engine->get_meta_information(2);
   }
 
   size_t get_meta_modules_in_engine()
   {
-    reqrv(current_state->engine,0);
-    return current_state->engine->get_num_modules();
+    reqrv(state_current->engine,0);
+    return state_current->engine->get_num_modules();
   }
 };
+
+}
+}
+}
+

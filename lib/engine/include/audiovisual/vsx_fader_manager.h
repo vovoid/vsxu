@@ -1,14 +1,15 @@
 #pragma once
 
-#include <audiovisual/vsx_state_info.h>
+#include <audiovisual/vsx_state.h>
 #include <vsx_gl_state.h>
 #include <time/vsx_time_manager.h>
+#include <texture/buffer/vsx_texture_buffer_render.h>
 
 namespace vsx
 {
 namespace engine
 {
-namespace  audiovisual
+namespace audiovisual
 {
 
 class fader_manager
@@ -68,7 +69,7 @@ public:
    * @param upcoming
    * @return true when rendering throug a fader
    */
-  bool render(state_info*& current, state_info* upcoming)
+  bool render(state*& current, state* upcoming)
   {
     buf_to.begin_capture_to_buffer();
       upcoming->render();

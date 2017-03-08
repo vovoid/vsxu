@@ -24,14 +24,13 @@
 #pragma once
 
 #include "vsx_application.h"
-#include <audiovisual/vsx_statelist.h>
+#include <audiovisual/vsx_state_manager.h>
 #include "player_overlay.h"
 #include <vsx_application_input_state_manager.h>
 
 class player_application
     : public vsx_application
 {
-  vsx_statelist manager;
   vsx_overlay* overlay = 0x0;
   bool no_overlay = false;
 
@@ -61,19 +60,19 @@ public:
     no_overlay = vsx_argvector::get_instance()->has_param("no");
 
     vsx_module_list_manager::get()->module_list = vsx_module_list_factory_create();
+    vsx::engine::audiovisual::state_manager::create();
 
     // create a new manager
-    manager.set_option_preload_all(vsx_argvector::get_instance()->has_param("pl"));
+    vsx::engine::audiovisual::state_manager::get()->option_preload_all = vsx_argvector::get_instance()->has_param("pl");
 
     // init manager with the shared path and sound input type.
-    manager.load( (PLATFORM_SHARED_FILES).c_str());
+    vsx::engine::audiovisual::state_manager::get()->load( (PLATFORM_SHARED_FILES).c_str());
 
     // create a new text overlay
     overlay = new vsx_overlay;
-    overlay->set_manager(&manager);
 
     if (vsx_argvector::get_instance()->has_param("dr"))
-      manager.set_randomizer(false);
+      vsx::engine::audiovisual::state_manager::get()->set_randomizer(false);
 
     printf("INFO: app_draw first done\n");
   }
@@ -81,7 +80,7 @@ public:
   void draw()
   {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    manager.render();
+    vsx::engine::audiovisual::state_manager::get()->render();
 
     if (overlay && !no_overlay)
       overlay->render();
@@ -94,24 +93,24 @@ public:
       case VSX_SCANCODE_ESCAPE:
         exit(0);
       case VSX_SCANCODE_PAGEUP:
-        manager.speed_inc();
+        vsx::engine::audiovisual::state_manager::get()->speed_inc();
         break;
       case VSX_SCANCODE_PAGEDOWN:
-        manager.speed_dec();
+        vsx::engine::audiovisual::state_manager::get()->speed_dec();
         break;
       case VSX_SCANCODE_UP:
-        manager.fx_level_inc();
+        vsx::engine::audiovisual::state_manager::get()->fx_level_inc();
         overlay->show_fx_graph();
         break;
       case VSX_SCANCODE_DOWN:
-        manager.fx_level_dec();
+        vsx::engine::audiovisual::state_manager::get()->fx_level_dec();
         overlay->show_fx_graph();
         break;
       case VSX_SCANCODE_LEFT:
-        manager.prev_state();
+        vsx::engine::audiovisual::state_manager::get()->prev_state();
         break;
       case VSX_SCANCODE_RIGHT:
-        manager.next_state();
+        vsx::engine::audiovisual::state_manager::get()->next_state();
         break;
       case VSX_SCANCODE_F1:
         overlay->set_help(1);
@@ -121,10 +120,10 @@ public:
         break;
       case VSX_SCANCODE_R:
         if (vsx_input_keyboard.pressed_ctrl())
-          manager.random_state();
+          vsx::engine::audiovisual::state_manager::get()->random_state();
         else
         {
-          manager.toggle_randomizer();
+          vsx::engine::audiovisual::state_manager::get()->toggle_randomizer();
           overlay->show_randomizer_status();
         }
         break;
@@ -133,6 +132,7 @@ public:
 
   void uninit()
   {
+    vsx::engine::audiovisual::state_manager::destroy();
     vsx_module_list_factory_destroy(vsx_module_list_manager::get()->module_list);
   }
 

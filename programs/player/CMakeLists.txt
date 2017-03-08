@@ -141,6 +141,7 @@ install(
   DIRECTORY
     ${CMAKE_SOURCE_DIR}/share/visuals_faders
     ${CMAKE_SOURCE_DIR}/share/visuals_player
+    ${CMAKE_SOURCE_DIR}/share/visuals_packs
     ${CMAKE_SOURCE_DIR}/share/font
   DESTINATION
     ${VSXU_INSTALL_SHARE_DIR}

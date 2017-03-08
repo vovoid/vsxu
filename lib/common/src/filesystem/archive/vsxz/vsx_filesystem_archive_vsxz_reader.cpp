@@ -101,7 +101,11 @@ bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool loa
 void filesystem_archive_vsxz_reader::file_open(const char* filename, file* &handle)
 {
   uint32_t file_info_table_index = tree.get_payload_by_filename(vsx_string<>(filename));
-  req(file_info_table_index);
+  if (!file_info_table_index)
+  {
+    handle = 0x0;
+    return;
+  }
   file_info_table_index--;
 
   vsxz_header_file_info* file_info = &file_info_table[file_info_table_index];

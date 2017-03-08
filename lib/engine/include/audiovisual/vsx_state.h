@@ -4,7 +4,14 @@
 #include <string/vsx_json.h>
 #include <vsx_module_list_manager.h>
 
-class state_info {
+namespace vsx
+{
+namespace engine
+{
+namespace audiovisual
+{
+
+class state {
 
   vsx_command_list cmd_in;
   vsx_command_list cmd_out;
@@ -24,7 +31,7 @@ public:
   bool need_stop = false;
   bool need_reload = false;
 
-  state_info(const state_info &other)
+  state(const state &other)
     :
       cmd_in(false),
       cmd_out(false)
@@ -39,7 +46,7 @@ public:
     need_reload = other.need_reload;
   }
 
-  state_info(vsx::json::object json_object, vsx::filesystem* filesystem)
+  state(vsx::json::object json_object, vsx::filesystem* filesystem)
     :
       cmd_in(false),
       cmd_out(false)
@@ -48,7 +55,7 @@ public:
     this->name = json_object["name"].string_value().c_str();
   }
 
-  state_info()
+  state()
     :
       cmd_in(false),
       cmd_out(false)
@@ -68,7 +75,7 @@ public:
     return engine->load_state( filename, &error );
   }
 
-  ~state_info()
+  ~state()
   {
     req(engine);
     engine->stop();
@@ -125,3 +132,7 @@ public:
     cmd_out.clear_normal();
   }
 };
+
+}
+}
+}

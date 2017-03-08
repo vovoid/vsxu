@@ -13,7 +13,9 @@ inline vsx::json json_from_file(vsx_string<> filename, vsx::filesystem* filesyst
 {
   std::string json_error;
   vsx_string<> buf = vsx_string_helper::read_from_file(filename, filesystem);
-  return vsx::json::parse(buf.c_str(), json_error);
+  vsx_printf(L"buf: %hs\n", buf.c_str());
+  vsx::json result = vsx::json::parse(buf.c_str(), json_error);
+  return result;
 }
 
 }

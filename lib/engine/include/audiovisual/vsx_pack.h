@@ -3,7 +3,7 @@
 #include <filesystem/vsx_filesystem.h>
 #include <string/vsx_string_helper.h>
 #include <string/vsx_json_helper.h>
-#include <audiovisual/vsx_state_info.h>
+#include <audiovisual/vsx_state.h>
 
 namespace vsx
 {
@@ -14,22 +14,35 @@ namespace audiovisual
 
 class pack
 {
-  vsx_ma_vector< state_info* > states;
+  vsx_ma_vector< state* > states;
   vsx::filesystem* fs = 0x0;
 
 public:
 
-  void load(vsx_string<> filename)
+  pack(vsx_string<> filename)
   {
     fs = new vsx::filesystem();
     fs->get_archive()->load( filename.c_str(), true );
     vsx::json json = vsx::json_helper::json_from_file("manifest.json", fs);
-    foreach(json["visuals"].array_items(), i)
-      states.push_back( new state_info( json["visuals"].array_items()[i].object_value(), fs ) );
+    vsx_string<> name = json["name"].string_value().c_str();
+    vsx_printf(L"name %hs\n", name.c_str());
 
-
-
+    vsx::json::array array = json["visuals"].array_items();
+    foreach (array, i)
+      states.push_back(
+        new state(
+          array[i].object_items(),
+          fs
+        )
+      );
   }
+
+  void add_states(std::vector<state*>& result)
+  {
+    foreach (states, i)
+      result.push_back(states[i]);
+  }
+
 };
 }
 }

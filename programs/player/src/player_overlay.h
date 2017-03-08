@@ -21,11 +21,10 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef INFO_OVERLAY_H_
-#define INFO_OVERLAY_H_
+#pragma once
 
 #include "vsx_font.h"
-#include <audiovisual/vsx_statelist.h>
+#include <audiovisual/vsx_state_manager.h>
 #include <time/vsx_timer.h>
 #include <filesystem/vsx_filesystem.h>
 #include <vsx_logo_intro.h>
@@ -44,7 +43,6 @@ class vsx_overlay {
 	float scroll_pos;
 	float dt;
 	float intro_timer;
-  vsx_statelist* manager;
   int help_id;
   float fx_alpha;
   bool first;
@@ -57,7 +55,6 @@ public:
     help_id = 0;
     scroll_pos = 0.0f;
     title_timer = 0.0f;
-    manager = 0;
     myf = new vsx_font(PLATFORM_SHARED_FILES);
     myf->load(vsx_string<>("font/font-ascii.png"), vsx::filesystem::get_instance());
     frame_counter = 0;
@@ -73,11 +70,6 @@ public:
     intro->set_destroy_textures(false);
   }
 
-  void set_manager(vsx_statelist* new_manager)
-  {
-    manager = new_manager;
-  }
-
   void render()
   {
 
@@ -89,7 +81,7 @@ public:
     glEnable(GL_BLEND);
     ++frame_counter;
     ++delta_frame_counter;
-    dt = time2.dtime();
+    dt = (float)time2.dtime();
     delta_frame_time+= dt;
     total_time += dt;
     if (delta_frame_counter == 100) {
@@ -109,7 +101,7 @@ public:
     {
       myf->color.a = show_randomizer_timer;
       vsx_string<>message;
-      if (manager->get_randomizer_status())
+      if (vsx::engine::audiovisual::state_manager::get()->get_randomizer_status())
       {
         message = "Enabling randomizer...";
       } else
@@ -121,28 +113,26 @@ public:
       show_randomizer_timer -= dt;
     }
 
-    if (manager) {
-      if (manager->state_loading() != "")
-        title_timer = 2.0f;
+    if (vsx::engine::audiovisual::state_manager::get()->state_loading() != "")
+      title_timer = 2.0f;
 
-      myf->color.a = title_timer;
-      vsx_string<>output;
-      if (manager->get_meta_visual_name() != "")
-        output += vsx_string<>(manager->get_meta_visual_name().c_str());
+    myf->color.a = title_timer;
+    vsx_string<>output;
+    if (vsx::engine::audiovisual::state_manager::get()->get_meta_visual_name() != "")
+      output += vsx_string<>(vsx::engine::audiovisual::state_manager::get()->get_meta_visual_name().c_str());
 
-      if (manager->get_meta_visual_creator() != "")
-        output += vsx_string<>(" by ")+manager->get_meta_visual_creator().c_str();
+    if (vsx::engine::audiovisual::state_manager::get()->get_meta_visual_creator() != "")
+      output += vsx_string<>(" by ") + vsx::engine::audiovisual::state_manager::get()->get_meta_visual_creator().c_str();
 
-      if (output == "")
-      {
-        output = vsx_string<>(manager->get_meta_visual_filename().c_str());
-        int i = output.size()-1;
-        while (output[i] != '/' && output[i] != '\\')
-          --i;
-        output = vsx_string<>(manager->get_meta_visual_filename().substr(i+1, output.size()-i-5).c_str());
-      }
-      myf->print(vsx_vector3<>(-1.0f,0.96f),output,0.04);
+    if (output == "")
+    {
+      output = vsx_string<>(vsx::engine::audiovisual::state_manager::get()->get_meta_visual_filename().c_str());
+      int i = output.size()-1;
+      while (output[i] != '/' && output[i] != '\\')
+        --i;
+      output = vsx_string<>(vsx::engine::audiovisual::state_manager::get()->get_meta_visual_filename().substr(i+1, output.size()-i-5).c_str());
     }
+    myf->print(vsx_vector3<>(-1.0f,0.96f),output,0.04);
     myf->color.a = 1.0f;
     title_timer -= dt;
 
@@ -164,7 +154,7 @@ public:
       glBegin(GL_TRIANGLE_STRIP);
       glVertex3f(0.98f,-0.9,0);
       glVertex3f(0.92f,-0.9,0);
-        for (float i = 0; i <= manager->fx_level_get(); i+=0.1f) {
+        for (float i = 0; i <= vsx::engine::audiovisual::state_manager::get()->fx_level_get(); i+=0.1f) {
           glColor4f(i/16.0f,1.0f-i/16.0f,0,local_alpha);
           glVertex3f(0.98f,-0.9+i/16.0f,0);
           glVertex3f(0.92f-(float)pow((double)i,(double)1.29)*0.01,-0.9+i/16.0f,0);
@@ -173,7 +163,7 @@ public:
       myf->color.r = myf->color.g = myf->color.b = 1.0f;
       myf->color.a = local_alpha;
       myf->print(vsx_vector3<>(0.915f,-0.98f),"FX LVL",0.035);
-      myf->print(vsx_vector3<>(0.85f,0.1f),vsx_string_helper::f2s(manager->fx_level_get()),0.035);
+      myf->print(vsx_vector3<>(0.85f,0.1f),vsx_string_helper::f2s(vsx::engine::audiovisual::state_manager::get()->fx_level_get()),0.035);
     }
 
     myf->color.r = myf->color.g = myf->color.b = myf->color.a = 1.0f;
@@ -260,34 +250,32 @@ public:
         #endif
         break;
       case 2:
-        if (manager) {
-          myf->print(vsx_vector3<>(-0.8,0.4),
-            "Current visual  :\n"
-            "Current FPS     :\n"
-            "FX level        :\n"
-            "Speed           :\n"
-            "Run time        :\n"
-            "Frames rendered :\n"
-            "Modules in state:",
-            "ascii",
-            0.06
-          );
-          vsx_string<> visual_path = manager->get_meta_visual_filename().c_str();
-          vsx_string<> visual_filename = vsx_string_helper::filename_from_path(visual_path);
-          myf->print(
-            vsx_vector3<>(-0.1,0.4),
-            vsx_string<>(visual_filename.c_str())+"\n"+
-            vsx_string_helper::f2s(delta_fps)+"\n"+
-            vsx_string_helper::f2s(manager->fx_level_get(),3)+"\n"+
-            vsx_string_helper::f2s(manager->speed_get(),3)+"\n"+
-            vsx_string_helper::f2s(total_time,3)+"\n"+
-            vsx_string_helper::i2s(frame_counter) + "\n" +
-            vsx_string_helper::i2s( manager->get_meta_modules_in_engine() )
-            ,
-            0.06
-          );
-        }
-        break;
+        myf->print(vsx_vector3<>(-0.8,0.4),
+          "Current visual  :\n"
+          "Current FPS     :\n"
+          "FX level        :\n"
+          "Speed           :\n"
+          "Run time        :\n"
+          "Frames rendered :\n"
+          "Modules in state:",
+          "ascii",
+          0.06
+        );
+        vsx_string<> visual_path = vsx::engine::audiovisual::state_manager::get()->get_meta_visual_filename().c_str();
+        vsx_string<> visual_filename = vsx_string_helper::filename_from_path(visual_path);
+        myf->print(
+          vsx_vector3<>(-0.1,0.4),
+          vsx_string<>(visual_filename.c_str())+"\n"+
+          vsx_string_helper::f2s(delta_fps)+"\n"+
+          vsx_string_helper::f2s(vsx::engine::audiovisual::state_manager::get()->fx_level_get(),3)+"\n"+
+          vsx_string_helper::f2s(vsx::engine::audiovisual::state_manager::get()->speed_get(),3)+"\n"+
+          vsx_string_helper::f2s(total_time,3)+"\n"+
+          vsx_string_helper::i2s(frame_counter) + "\n" +
+          vsx_string_helper::i2s( vsx::engine::audiovisual::state_manager::get()->get_meta_modules_in_engine() )
+          ,
+          0.06
+        );
+      break;
     };
   }
 
@@ -302,5 +290,3 @@ public:
   }
 
 };
-
-#endif /*INFO_OVERLAY_H_*/
