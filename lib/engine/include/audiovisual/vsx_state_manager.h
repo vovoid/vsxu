@@ -343,26 +343,20 @@ public:
 
   vsx_string<> get_meta_visual_filename()
   {
-    return (*states_iter)->filename;
+    reqrv(state_current, "");
+    return state_current->filename;
   }
 
   vsx_string<> get_meta_visual_name()
   {
-    // TODO: handle packs here
-    reqrv((*states_iter)->engine, "");
-    return (*states_iter)->engine->get_meta_information(0);
+    reqrv(state_current, "");
+    return state_current->get_name();
   }
 
-  vsx_string<> get_meta_visual_creator()
+  vsx_string<> get_meta_visual_author()
   {
-    reqrv((*states_iter)->engine, "");
-    return (*states_iter)->engine->get_meta_information(1);
-  }
-
-  vsx_string<> get_meta_visual_company()
-  {
-    reqrv((*states_iter)->engine, "");
-    return (*states_iter)->engine->get_meta_information(2);
+    reqrv(state_current, "");
+    return state_current->get_author();
   }
 
   size_t get_meta_modules_in_engine()

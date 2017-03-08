@@ -52,7 +52,9 @@ public:
       cmd_out(false)
   {
     this->filesystem = filesystem;
+    this->filename = json_object["filename"].string_value().c_str();
     this->name = json_object["name"].string_value().c_str();
+    this->author = json_object["author"].string_value().c_str();
   }
 
   state()
@@ -131,6 +133,25 @@ public:
     engine->render();
     cmd_out.clear_normal();
   }
+
+  vsx_string<> get_name()
+  {
+    if (filesystem)
+      return name;
+
+    reqrv(engine, "");
+    return engine->get_meta_information(0);
+  }
+
+  vsx_string<> get_author()
+  {
+    if (filesystem)
+      return author;
+
+    reqrv(engine, "");
+    return engine->get_meta_information(1);
+  }
+
 };
 
 }

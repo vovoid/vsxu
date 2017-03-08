@@ -121,8 +121,8 @@ public:
     if (vsx::engine::audiovisual::state_manager::get()->get_meta_visual_name() != "")
       output += vsx_string<>(vsx::engine::audiovisual::state_manager::get()->get_meta_visual_name().c_str());
 
-    if (vsx::engine::audiovisual::state_manager::get()->get_meta_visual_creator() != "")
-      output += vsx_string<>(" by ") + vsx::engine::audiovisual::state_manager::get()->get_meta_visual_creator().c_str();
+    if (vsx::engine::audiovisual::state_manager::get()->get_meta_visual_author() != "")
+      output += vsx_string<>(" by ") + vsx::engine::audiovisual::state_manager::get()->get_meta_visual_author().c_str();
 
     if (output == "")
     {
@@ -261,7 +261,7 @@ public:
           "ascii",
           0.06
         );
-        vsx_string<> visual_path = vsx::engine::audiovisual::state_manager::get()->get_meta_visual_filename().c_str();
+        vsx_string<> visual_path = vsx::engine::audiovisual::state_manager::get()->get_meta_visual_name().c_str();
         vsx_string<> visual_filename = vsx_string_helper::filename_from_path(visual_path);
         myf->print(
           vsx_vector3<>(-0.1,0.4),

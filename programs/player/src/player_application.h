@@ -24,6 +24,7 @@
 #pragma once
 
 #include "vsx_application.h"
+#include <vsx_application_control.h>
 #include <audiovisual/vsx_state_manager.h>
 #include "player_overlay.h"
 #include <vsx_application_input_state_manager.h>
@@ -50,7 +51,6 @@ public:
       L"  -pl        Preload all visuals on start \n"
        "  -dr        Disable randomizer     \n"
     );
-
   }
 
   void init()
@@ -91,7 +91,7 @@ public:
     switch (key)
     {
       case VSX_SCANCODE_ESCAPE:
-        exit(0);
+        vsx_application_control::get_instance()->shutdown_request();
       case VSX_SCANCODE_PAGEUP:
         vsx::engine::audiovisual::state_manager::get()->speed_inc();
         break;

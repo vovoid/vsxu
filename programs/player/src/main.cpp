@@ -28,12 +28,14 @@
 
 #include <vsx_application_manager.h>
 #include <vsx_application_run.h>
+#include <math/vsx_rand_singleton.h>
 #include <vsx_data_path.h>
 #include <vsx_module_list_manager.h>
 
 int main(int argc, char* argv[])
 {
   vsx_argvector::get_instance()->init_from_argc_argv(argc, argv);
+  vsx_rand_singleton::get()->rand.srand( (uint32_t)time(0x0) );
   vsx_data_path::get_instance()->init();
   player_application application;
   vsx_application_manager::get_instance()->application_set(&application);
