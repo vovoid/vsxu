@@ -1,7 +1,6 @@
-
 ***********************************************************************************************************************
 
-Welcome to the Change Log of the Vovoid VSXu Project
+Welcome to the Changelog of the Vovoid VSXu Project
 
   Some nomenclature:
     + new feature
@@ -52,7 +51,7 @@ Welcome to the Change Log of the Vovoid VSXu Project
 
   So why this new format?
 
-  Before, the way a texture image was loaded was this (for a 4k UHD 3840x2160 image):
+  Before, the way a texture image was loaded was this (for a 4k/UHD 3840x2160 image):
     1. Load PNG compressed data;
     2. Decompress PNG into RAM (using 32MB of RAM)
     3. Flip the image vertically on CPU (using another 32MB of RAM).
@@ -61,7 +60,7 @@ Welcome to the Change Log of the Vovoid VSXu Project
     6. OpenGL drivers write the texture to VRAM
 
   Now the process is shorter:
-    1. Load DDS image into RAM (8MB ram used)
+    1. Load DDS image into RAM (using 8MB ram)
     2. OpenGL drivers write the pre-compressed texture data directly to VRAM
 
   Worth noting is that DDS (like JPEG) is a destructible compression algorithm, so only use it as a final pass.
@@ -74,8 +73,9 @@ Welcome to the Change Log of the Vovoid VSXu Project
 
   VSXu Player:
     + better window handling, see all flags with --help
-    + now supports running borderless fullscreen window on a specific display (a feature many have requested)
-    + saving of FX levels now works on Windows as well as Linux; format is JSON.
+    + borderless window
+    + borderless fullscreen window on a specific display
+    + saving of FX levels per visual now works on Windows as well as Linux; format is JSON.
       Old files will not be converted into the new format, sorry about that.
 
   New modules:
@@ -86,7 +86,6 @@ Welcome to the Change Log of the Vovoid VSXu Project
     + light disable
     + blocker module with custom limit
     + string dummy
-
 
   VSXu Artiste:
     + support for dumping contents of a sequencer to disk
