@@ -1,0 +1,1 @@
+Put your own visuals (.vsx files) exported from VSXu Artiste in this directory for them to be recognized by player.

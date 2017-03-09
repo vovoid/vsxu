@@ -22,11 +22,13 @@ void fx_save(std::vector<state*>& states, vsx_string<> filename)
       }
     );
 
+  vsx::json result = vsx::json::object{
+    {"visuals" , fx_array }
+  };
+
   vsx::json_helper::save_json_to_file(
     filename,
-      vsx::json(vsx::json::object{
-      {"visuals" , fx_array }
-      })
+    result
   );
 }
 
