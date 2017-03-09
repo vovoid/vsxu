@@ -9,6 +9,100 @@ Welcome to the Change Log of the Vovoid VSXu Project
 ***********************************************************************************************************************
 
   ######################################
+  VSXu 0.6.0 (March 2017)
+  ######################################
+
+  Feature wise, VSXu 0.6.0 might just look like a patch release (0.5.1 was broken on many graphics drivers).
+  But it's a lot more than that.
+
+  This release has been long in the making, mainly due to the fact that we've been releasing and continuing work on
+  our action platformer game - "Luna Sky".
+
+  As with all previous projects, VSXu is a big part of Luna Sky as well, supplying low level graphics routines.
+  The game engine and game logic is a separate project.
+
+  A lot of the work on "Luna Sky" has spilled over on the VSXu project.
+
+  Worth noting is:
+  - a complete refactoring and restructuring of the VSXu project codebase
+  - totally rewritten bitmap / texture backend including caching and support for DDS / DXTx formats
+  - new compressed package format - VSXz which is faster in many ways
+
+  Visuals for VSXu Player can now be released either as a "pack" (a VSXz file with multiple visuals in it), and as standalone
+  .vsx files - one visualization per file.
+
+  The two formats have their advantages and disadvantages:
+   - if you have, say 3 "states" that use the same assets (texture files, obj / mesh files) - before you had to create 3
+     individual .vsx files, each including a copy of the asset files needed.
+   - VSXz files solve this by enabling multiple "states" to share the same files.
+  While you can create VSXz packs (contact us if you wish to), the most likely use case is you creating standalone .vsx files.
+  Mainly because there is no easy way to create a pack from Artiste (and there won't be).
+
+  As mentioned, the texture backend is totally new. This means improvements in RAM consumption and loading speed.
+  How does this affect visuals creators then?
+
+  While you can still use JPG and PNG images, those formats are STRONGLY discouraged.
+  Instead, you should use the .dds format with either DXT1 or DXT5 compression.
+
+  We recommend ImageMagick for converting. In a terminal, just go:
+
+    $ convert image.png image.dds
+
+  It's that simple.
+
+  So why this new format?
+
+  Before, the way a texture image was loaded was this (for a 4k UHD 3840x2160 image):
+    1. Load PNG compressed data;
+    2. Decompress PNG into RAM (using 32MB of RAM)
+    3. Flip the image vertically on CPU (using another 32MB of RAM).
+    4. Send this data to the OpenGL Drivers
+    5. OpenGL drivers compress data into DXT1 or DXT5 using up another 8MB RAM
+    6. OpenGL drivers write the texture to VRAM
+
+  Now the process is shorter:
+    1. Load DDS image into RAM (8MB ram used)
+    2. OpenGL drivers write the pre-compressed texture data directly to VRAM
+
+  Worth noting is that DDS (like JPEG) is a destructible compression algorithm, so only use it as a final pass.
+
+  Some of your old projects are going to break in 0.6.0. If you want help porting them, let us know.
+
+  General:
+    + VSXu now builds and debugs on Windows with Microsoft's compiler together with QtCreator.
+    + color depth buffer now has multisample support
+
+  VSXu Player:
+    + better window handling, see all flags with --help
+    + now supports running borderless fullscreen window on a specific display (a feature many have requested)
+    + saving of FX levels now works on Windows as well as Linux; format is JSON.
+      Old files will not be converted into the new format, sorry about that.
+
+  New modules:
+    + mesh;particles;mesh_rays_uniform
+    + keyboard input module ( reads when fullscreen)
+    + gamepad input module
+    + OpenGL vendor module, shows information about graphics drivers
+    + light disable
+    + blocker module with custom limit
+    + string dummy
+
+
+  VSXu Artiste:
+    + support for dumping contents of a sequencer to disk
+    + shaders can be saved from a GLSL module (right-click it for an option menu)
+    + some parameters now show more information when hovering over them, mainly texture, bitmap and mesh
+    + copy & paste in sequence editor
+    ' crash related to empty edit boxes
+    ' modules positions were not saved properly
+    ' memory leak in parameter abstraction layer
+
+  ######################################
+  VSXu 0.5.1 (December 2014)
+  ######################################
+  Bug fix release.
+
+  ######################################
   VSXu 0.5.0 (September 2014)
   ######################################
 
