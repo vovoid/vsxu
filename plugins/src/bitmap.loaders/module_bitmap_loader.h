@@ -143,7 +143,7 @@ public:
 
     if (!vsx_string_helper::verify_filesuffix(filename_in->get(), file_suffix))
     {
-      message = vsx_string<>("module||ERROR! This is not a ") + file_suffix_uppercase + " image file!";
+      user_message = vsx_string<>("module||ERROR! This is not a ") + file_suffix_uppercase + " image file!";
       return;
     }
 

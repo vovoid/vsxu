@@ -56,12 +56,12 @@ public:
       //printf("PARAM_SET_NOTIFY %s\n\n",name.c_str());
       shader.vertex_program = i_vertex_program->get();
       shader.fragment_program = i_fragment_program->get();
-      message = shader.link();
+      user_message = shader.link();
 
-      if (message.size() == 0)
+      if (user_message.size() == 0)
       {
         redeclare_in = true;
-        message = "module||ok";
+        user_message = "module||ok";
       }
     }
   }

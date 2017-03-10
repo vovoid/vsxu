@@ -38,6 +38,16 @@ class player_application
 
 public:
 
+  player_application()
+  {
+    char titlestr[ 200 ];
+    sprintf( titlestr, "Vovoid VSXu Player %s [%s %d-bit]", VSXU_VER, PLATFORM_NAME, PLATFORM_BITS);
+    window_title = vsx_string<>(titlestr);
+    organization_name = "Vovoid Media Technologies AB";
+    application_name = "VSXu Player";
+    vsx_application_control::get_instance()->create_preferences_path_request();
+  }
+
   void print_help()
   {
     vsx_application::print_help();
@@ -66,12 +76,6 @@ public:
     if (vsx_argvector::get_instance()->has_param("dr"))
       vsx::engine::audiovisual::state_manager::get()->set_randomizer(false);
 
-    char titlestr[ 200 ];
-    sprintf( titlestr, "Vovoid VSXu Player %s [%s %d-bit]", VSXU_VER, PLATFORM_NAME, PLATFORM_BITS);
-    window_title = vsx_string<>(titlestr);
-    organization_name = "Vovoid Media Technologies AB";
-    application_name = "VSXu Player";
-    vsx_application_control::get_instance()->create_preferences_path_request();
   }
 
   bool fx_levels_loaded = false;
@@ -91,11 +95,16 @@ public:
         );
       fx_levels_loaded = true;
     }
+
+    if (vsx::engine::audiovisual::state_manager::get()->system_message.size())
+    {
+      vsx_application_control::get_instance()->message_box_title = "Error";
+      vsx_application_control::get_instance()->message_box_message = vsx::engine::audiovisual::state_manager::get()->system_message;
+    }
   }
 
   void event_key_down(long key)
   {
-    vsx_printf(L"pref: %hs\n", vsx_application_control::get_instance()->preferences_path.c_str());
     switch (key)
     {
       case VSX_SCANCODE_ESCAPE:

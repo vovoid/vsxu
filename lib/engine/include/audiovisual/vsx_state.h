@@ -126,6 +126,11 @@ public:
     engine->set_float_array_param(id, &data);
   }
 
+  vsx_string<> system_message_get()
+  {
+    return engine->system_message_get();
+  }
+
   void render()
   {
     req(engine);

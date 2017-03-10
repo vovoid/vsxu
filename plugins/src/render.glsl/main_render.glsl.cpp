@@ -147,13 +147,13 @@ public:
     if ((name == "vertex_program" || name == "fragment_program")) {
       shader.vertex_program = i_vertex_program->get();
       shader.fragment_program = i_fragment_program->get();
-      message = shader.link();
-      if (message.size() == 0)
+      user_message = shader.link();
+      if (user_message.size() == 0)
       {
         redeclare_in = true;
-        message = "module||ok";
+        user_message = "module||ok";
       } else
-        vsx_printf(L"** SHADER COMPILATION ERROR:\n\n%s", message.c_str());
+        vsx_printf(L"** SHADER COMPILATION ERROR:\n\n%s", user_message.c_str());
     }
   }
 
@@ -194,7 +194,7 @@ public:
     {
       if (!operation.param_1.size())
       {
-        message = "module||file name empty";
+        user_message = "module||file name empty";
         return;
       }
       vsx_string_helper::write_to_file(
@@ -204,7 +204,7 @@ public:
         shader.fragment_program
       );
     }
-    message = "module||shader saved successfully";
+    user_message = "module||shader saved successfully";
   }
 
   void destroy_operations(vsx_nw_vector<vsx_module_operation*>& operations)

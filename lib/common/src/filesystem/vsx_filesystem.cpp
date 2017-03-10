@@ -135,7 +135,7 @@ file* filesystem::f_open(const char* filename)
   if (handle)
   {
     num_open_files++;
-    vsx_printf(L"open files: %d      %hs\n", num_open_files, filename);
+    //vsx_printf(L"open files: %d      %hs\n", num_open_files, filename);
   }
   return handle;
 }

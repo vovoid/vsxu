@@ -1,6 +1,8 @@
 #ifndef RTAUDIO_RECORD_H
 #define RTAUDIO_RECORD_H
 
+#include <exception>
+
 float fftbuf[1024];
 size_t fftbuf_it = 0;
 
@@ -134,12 +136,12 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 
 
 
-void setup_rtaudio_record()
+vsx_string<> setup_rtaudio_record()
 {
   if (padc_record)
   {
     rt_record_refcounter++;
-    return;
+    return "";
   }
   else
   {
@@ -152,10 +154,7 @@ void setup_rtaudio_record()
   }
 
   if ( padc_record->getDeviceCount() < 1 )
-  {
-    printf("WARNING::::::::      No audio devices found!\n");
-    return;
-  }
+    return "ERROR: No audio devices found!";
 
   vsx_audio_record_buf* pa_d = &pa_audio_data;
 
@@ -180,6 +179,8 @@ void setup_rtaudio_record()
   RtAudio::StreamOptions options;
       options.streamName = "vsxu";
 
+  try
+  {
     padc_record->openStream(
       NULL,
       &parameters,
@@ -191,20 +192,37 @@ void setup_rtaudio_record()
       &options
     );
     padc_record->startStream();
+  }
+  catch (...)
+  {
+    return "!ERROR: Something went wrong setting up audio recording.\n\n"
+        "This could be caused by not having anything plugged in,\n"
+        "or you might need to enable stereo mix on your sound card recording settings.\n"
+        "Sometimes the default audio drivers don't have this enabled, so you might need\n"
+        "to install audio drivers from your sound chip manufacturer."
+      ;
+  }
+  return "";
 }
 
 void shutdown_rtaudio_record()
 {
-  if (!padc_record) return;
-  if (rt_record_refcounter == 0) return;
+  req(padc_record);
+  req(rt_record_refcounter);
   rt_record_refcounter--;
 
   if (rt_record_refcounter == 0)
   {
+    try
+    {
       // Stop the stream
       padc_record->stopStream();
 
-    if ( padc_record->isStreamOpen() ) padc_record->closeStream();
+    if ( padc_record->isStreamOpen() )
+      padc_record->closeStream();
+    }
+    catch (...)
+    {}
     delete padc_record;
     delete fftr;
     padc_record = 0;

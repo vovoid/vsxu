@@ -284,7 +284,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
     if (!ftfont)
     {
-      message = "module||error loading font "+cur_font;
+      user_message = "module||error loading font "+cur_font;
       return;
     }
 

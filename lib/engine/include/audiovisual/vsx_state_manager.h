@@ -101,6 +101,9 @@ public:
   // options
   bool option_preload_all = false;
 
+  // global error message
+  vsx_string<> system_message;
+
   state_manager()
   {
     randomizer_time = vsx_rand_singleton::get()->rand.frand()*15.0f + 10.0f;
@@ -294,6 +297,11 @@ public:
     req( states.size() );
     handle_render_first();
     update_randomizer();
+
+    system_message = "";
+    foreach (states, i)
+      system_message += states[i]->system_message_get();
+
     req( !render_change());
     state_current->render();
   }

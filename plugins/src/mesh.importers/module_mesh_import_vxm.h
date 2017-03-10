@@ -58,11 +58,11 @@ public:
 
     if (!vsx_string_helper::verify_filesuffix(filename->get(),"vxm"))
     {
-      message = "module||ERROR in file name suffix! This is not a VXM mesh file!";
+      user_message = "module||ERROR in file name suffix! This is not a VXM mesh file!";
       return;
     }
 
-    message = "module||ok";
+    user_message = "module||ok";
 
     current_filename = filename->get();
     vsx::file *fp;
@@ -76,7 +76,7 @@ public:
 
     if (line != "vxm")
     {
-      message = "module||ERROR reading start tag! This is not a VXM mesh file!";
+      user_message = "module||ERROR reading start tag! This is not a VXM mesh file!";
       engine_state->filesystem->f_close(fp);
       return;
     }

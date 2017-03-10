@@ -588,22 +588,22 @@ public:
     // sanity checks
     if (!mesh)
     {
-      message="module||Can not render: mesh is not set"; render_result->set(0);
+      user_message="module||Can not render: mesh is not set"; render_result->set(0);
       return;
     }
     if (!(*mesh)->data)
     {
-      message="module||Can not render: Mesh data is not set";
+      user_message="module||Can not render: Mesh data is not set";
       render_result->set(0);
       return;
     }
     if (!(*mesh)->data->faces.get_used())
     {
-      message="module||Can not render: Mesh has no faces";
+      user_message="module||Can not render: Mesh has no faces";
       render_result->set(0);
       return;
     }
-    message="module||ok";
+    user_message="module||ok";
 
     // don't upload unless changed
     if
@@ -703,13 +703,13 @@ public:
     // sanity checks
     if (!mesh)
     {
-      message="module||Can not render: mesh is not set";
+      user_message="module||Can not render: mesh is not set";
       render_result->set(0);
       return;
     }
-    if (!(*mesh)->data) { message="module||Can not render: Mesh data is not set"; render_result->set(0); return; }
-    if (!(*mesh)->data->faces.get_used()) { message="module||Can not render: Mesh has no faces"; render_result->set(0); return; }
-    message="module||ok";
+    if (!(*mesh)->data) { user_message="module||Can not render: Mesh data is not set"; render_result->set(0); return; }
+    if (!(*mesh)->data->faces.get_used()) { user_message="module||Can not render: Mesh has no faces"; render_result->set(0); return; }
+    user_message="module||ok";
     if (use_display_list->get())
     {
       // make sure vbo is set to static draw

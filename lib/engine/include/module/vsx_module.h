@@ -67,16 +67,16 @@ class vsx_module
 {
 public:
   //-----internal:
-    int module_id; // module id, used when destroying a module. Managed by engine. Should be treated as read-only!
-    vsx_string<> module_identifier; // when created, holds module identifier. Managed by engine. Should be treated as read-only!
+  int module_id; // module id, used when destroying a module. Managed by engine. Should be treated as read-only!
+  vsx_string<> module_identifier; // when created, holds module identifier. Managed by engine. Should be treated as read-only!
 
 
   // this property will be set by the engine, it allows access to certain parts of the engine for the modules.
   vsx_module_engine_state* engine_state = 0x0;
 
 
-  vsx_string<>message; // message from module to client regarding this parameter
-                      // will be emptied by the engine so just put something in it :)
+  vsx_string<> user_message; // message from module to engine
+                        // will be emptied by the engine the frame after it has been set
 
   // format is as follows:
   // module||The message goes here...        <-- module message, "module" reserved word

@@ -153,7 +153,6 @@ class vsx_bitmap_loader_dds
       if (!y)
         y = 1;
     }
-    vsx_printf(L"loaded dds image: %hs\n", file_handle->filename.c_str() );
     return true;
   }
 
@@ -223,7 +222,6 @@ class vsx_bitmap_loader_dds
       if (!y)
         y = 1;
     }
-    vsx_printf(L"loaded dds image: %hs\n", file_handle->filename.c_str() );
     return true;
   }
 

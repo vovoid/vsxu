@@ -165,7 +165,7 @@ public:
     {
       if (!operation.param_1.size())
       {
-        message = "module||file name empty";
+        user_message = "module||file name empty";
         return;
       }
 
@@ -198,7 +198,7 @@ public:
             vsx_string_helper::f2s( specular_exponent->get() )
       );
     }
-    message = "module||shader saved successfully";
+    user_message = "module||shader saved successfully";
   }
 
 

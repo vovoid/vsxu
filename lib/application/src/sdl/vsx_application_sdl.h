@@ -333,6 +333,13 @@ public:
       if (vsx_application_control::get_instance()->is_shutdown_requested())
         break;
 
+      if (vsx_application_control::get_instance()->message_box_title.size())
+      {
+        sdl_tools::show_message_box( vsx_application_control::get_instance()->message_box_title, vsx_application_control::get_instance()->message_box_message );
+        vsx_application_control::get_instance()->message_box_title = "";
+        vsx_application_control::get_instance()->message_box_message = "";
+      }
+
       // time manager
       vsx::common::time::manager::get()->update(frame_timer.dtime());
     }

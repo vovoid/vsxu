@@ -151,7 +151,7 @@ public:
       if (texture_to_destroy)
         texture_to_destroy.reset(nullptr);
       loading_done = true;
-      message = "module||ok";
+      user_message = "module||ok";
     }
 
     req(has_parameters_changed());
@@ -161,7 +161,7 @@ public:
 
     if (!vsx_string_helper::verify_filesuffix(filename_in->get(), file_suffix))
     {
-      message = vsx_string<>("module||ERROR! This is not a ") + file_suffix_uppercase + " image file!";
+      user_message = vsx_string<>("module||ERROR! This is not a ") + file_suffix_uppercase + " image file!";
       return;
     }
 

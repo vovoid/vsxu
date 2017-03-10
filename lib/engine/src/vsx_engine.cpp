@@ -406,8 +406,6 @@ bool vsx_engine::start()
     sequence_list.set_engine(this);
     first_start = false;
 
-    log("trying to add screen",0);
-
     // create a new component for the screen
     vsx_comp* comp = new vsx_comp;
     comp->internal_critical = true;

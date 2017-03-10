@@ -81,10 +81,11 @@ public:
     if (!vsx_string_helper::verify_filesuffix(filename->get(), "obj"))
     {
       filename->set(current_filename);
-      message = "module||ERROR! This is not a OBJ mesh file!";
+      user_message = "module||ERROR! This is not a OBJ mesh file!";
       return;
     }
-    else message = "module||ok";
+    else
+      user_message = "module||ok";
 
     current_filename = filename->get();
     vsx::file *fp;

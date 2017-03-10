@@ -15,6 +15,10 @@ public:
   // preferences path
   vsx_string<> preferences_path;
 
+  // message box
+  vsx_string<> message_box_title;
+  vsx_string<> message_box_message;
+
   void create_preferences_path_request()
   {
     create_preferences_path = true;

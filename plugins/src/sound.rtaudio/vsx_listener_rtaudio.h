@@ -205,14 +205,12 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   for (int i = 0; i < 512; ++i) spectrum_hq.data->push_back(0);
   spectrum_p->set_p(spectrum);
   spectrum_p_hq->set_p(spectrum_hq);
-  //printf("spectrum size0: %d\n",spectrum.data->size());
-
 
   loading_done = true;
 }
 
 bool init() {
-  setup_rtaudio_record();
+  user_message = setup_rtaudio_record();
   return true;
 }
 

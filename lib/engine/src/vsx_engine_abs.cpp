@@ -291,6 +291,14 @@ void vsx_engine_abs::redeclare_out_params(vsx_comp* comp, vsx_command_list *cmd_
   }
 }
 
+vsx_string<> vsx_engine_abs::system_message_get()
+{
+  reqrv(system_message.size(), "");
+  vsx_string<> temp = system_message;
+  system_message = "";
+  return temp;
+}
+
 void vsx_engine_abs::process_message_queue_redeclare(vsx_command_list *cmd_out_res)
 {
   for (std::vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it)
@@ -302,9 +310,18 @@ void vsx_engine_abs::process_message_queue_redeclare(vsx_command_list *cmd_out_r
       if ((*it)->module->redeclare_out) {
         redeclare_out_params(*it,cmd_out_res);
       }
-      if ((*it)->module->message.size()) {
-        cmd_out_res->add_raw("c_msg "+(*it)->name+" "+vsx_string_helper::base64_encode((*it)->module->message), VSX_COMMAND_GARBAGE_COLLECT);
-        (*it)->module->message = "";
+      if ((*it)->module->user_message.size())
+      {
+        vsx_string<>& message = (*it)->module->user_message;
+        if (message[0] == '!')
+        {
+          system_message += message.substr(1);
+          message = "";
+          continue;
+        }
+
+        cmd_out_res->add_raw("c_msg "+(*it)->name+" "+vsx_string_helper::base64_encode(message), VSX_COMMAND_GARBAGE_COLLECT);
+        message = "";
       }
     }
   }

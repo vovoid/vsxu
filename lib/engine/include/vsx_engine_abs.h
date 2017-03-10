@@ -35,6 +35,9 @@ protected:
   vsx::filesystem filesystem;
   vsx_module_engine_environment engine_environment;
 
+// system message, for critical errors
+  vsx_string<> system_message;
+
 //-- current state name
   vsx_string<>state_name;
 
@@ -190,7 +193,14 @@ public:
   virtual vsx_module_param_abs* get_in_param_by_name(vsx_string<>module_name, vsx_string<>param_name) = 0;
   virtual vsx_module_param_abs* get_out_param_by_name(vsx_string<>module_name, vsx_string<>param_name) = 0;
   virtual vsx_module* get_module_by_name(vsx_string<>module_name) = 0;
-  virtual vsx_string<>get_modules_not_loaded() = 0;
+  virtual vsx_string<> get_modules_not_loaded() = 0;
+
+  /**
+   * @brief system_message_get
+   * This method will reset the internal system message string once called.
+   * @return current system message.
+   */
+  vsx_string<> system_message_get();
 
   // get a list of all external-exposed parameters (parameters that we want to export from a sub-engine)
   virtual void get_external_exposed_parameters( vsx_nw_vector< vsx_module_param_abs* >* result ) = 0;
