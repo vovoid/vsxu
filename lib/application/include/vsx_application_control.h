@@ -19,6 +19,9 @@ public:
   vsx_string<> message_box_title;
   vsx_string<> message_box_message;
 
+  // window title
+  vsx_string<> window_title;
+
   void create_preferences_path_request()
   {
     create_preferences_path = true;

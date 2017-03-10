@@ -340,6 +340,12 @@ public:
         vsx_application_control::get_instance()->message_box_message = "";
       }
 
+      if (vsx_application_control::get_instance()->window_title.size())
+      {
+        SDL_SetWindowTitle(vsx_application_sdl_window_holder::get_instance()->window, vsx_application_control::get_instance()->window_title.c_str());
+        vsx_application_control::get_instance()->window_title = "";
+      }
+
       // time manager
       vsx::common::time::manager::get()->update(frame_timer.dtime());
     }

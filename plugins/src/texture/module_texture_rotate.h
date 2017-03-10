@@ -72,17 +72,17 @@ void module_texture_rotate::run()
   if (!texture_out)
   {
     texture_out = new vsx_texture<>();
-    delete texture_out->texture->bitmap;
+    delete texture_out->texture;
   }
 
   // copy texture info
-  (*texture_out->texture) = (*(*texture_in)->texture);
-  texture_out->texture->attached_to_cache = false;
+  texture_out->texture = (*texture_in)->texture;
 
   float x = rotation_axis->get(0);
   float y = rotation_axis->get(1);
   float z = rotation_axis->get(2);
   float a = rotation_angle->get()*360;
+
   vsx_texture_transform_base* prev_transform = (*texture_in)->get_transform();
   transform.set_previous_transform(prev_transform);
   transform.update(a, x, y, z);
@@ -94,7 +94,7 @@ void module_texture_rotate::on_delete()
 {
   if (texture_out)
   {
-    texture_out->texture->bitmap = 0x0;
+    texture_out->texture = 0x0;
     delete texture_out;
   }
 }

@@ -890,13 +890,16 @@ vsx_string<>vsx_engine_param::get_string()
       if (!m->data)
         return "";
 
+
       ret +=
           "  mesh:\n"
-          "    vertex count: " + vsx_string_helper::i2s((int)m->data->vertices.size()) + "\n"
-          "    normal count: " + vsx_string_helper::i2s((int)m->data->vertex_normals.size()) + "\n"
-          "    tex coord count: " + vsx_string_helper::i2s((int)m->data->vertex_tex_coords.size()) + "\n"
-          "    vertex color count: " + vsx_string_helper::i2s((int)m->data->vertex_colors.size()) + "\n"
-          "    faces count: " + vsx_string_helper::i2s((int)m->data->faces.size()) + "\n"
+          "    data:\n"
+          "      vertex count: " + vsx_string_helper::i2s((int)m->data->vertices.size()) + "\n"
+          "      normal count: " + vsx_string_helper::i2s((int)m->data->vertex_normals.size()) + "\n"
+          "      tex coord count: " + vsx_string_helper::i2s((int)m->data->vertex_tex_coords.size()) + "\n"
+          "      vertex color count: " + vsx_string_helper::i2s((int)m->data->vertex_colors.size()) + "\n"
+          "      faces count: " + vsx_string_helper::i2s((int)m->data->faces.size()) + "\n"
+          "   timestamp: " + vsx_string_helper::i2s((int)m->timestamp) + "\n"
         ;
 
       return ret;

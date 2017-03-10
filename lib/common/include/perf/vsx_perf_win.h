@@ -45,4 +45,9 @@ public:
   {
   }
 
+  int memory_currently_used()
+  {
+    return 0;
+  }
+
 };

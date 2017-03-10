@@ -74,6 +74,17 @@ public:
     delete bitmap;
   }
 
+  void copy_from(vsx_texture_gl* other)
+  {
+    this->hint = other->hint;
+    this->bitmap = other->bitmap;
+    if (other->gl_id)
+      this->gl_id = other->gl_id;
+    this->gl_type = other->gl_type;
+
+    this->gl_type = other->gl_type;
+  }
+
   void init_opengl_texture_1d()
   {
     #ifndef VSX_NO_GL

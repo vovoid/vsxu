@@ -27,6 +27,7 @@
 #include <vsx_application_input_state_manager.h>
 #include "vsx_artiste_draw.h"
 #include <vsx_module_list_factory.h>
+#include <perf/vsx_perf.h>
 
 class vsx_application_artiste
     : public vsx_application
@@ -34,13 +35,22 @@ class vsx_application_artiste
   vsx_artiste_draw my_draw;
   vsx_input_event_queue event_queue;
 
+  size_t window_title_i = 0;
+  void update_window_title()
+  {
+    req(!(window_title_i++ % 60));
+    vsx_perf perf;
+    char titlestr[ 200 ];
+    sprintf( titlestr, "Vovoid VSXu Artiste %s [%s %d-bit] [%d MB RAM used] %s", VSXU_VER, PLATFORM_NAME, PLATFORM_BITS, perf.memory_currently_used(), VSXU_VERSION_COPYRIGHT);
+    window_title = vsx_string<>(titlestr);
+    vsx_application_control::get_instance()->window_title = window_title;
+  }
+
 public:
 
-  vsx_string<> window_title_get()
+  vsx_application_artiste()
   {
-    char titlestr[ 200 ];
-    sprintf( titlestr, "Vovoid VSXu Artiste %s [%s %d-bit] %s", VSXU_VER, PLATFORM_NAME, PLATFORM_BITS, VSXU_VERSION_COPYRIGHT);
-    return vsx_string<>(titlestr);
+    update_window_title();
   }
 
   void init()
@@ -63,17 +73,14 @@ public:
   {
     my_draw.draw();
     event_queue.reset();
+    update_window_title();
   }
 
   void print_help()
   {
     vsx_printf(
        L"VSXu Artiste command syntax:\n"
-       "  -f             fullscreen mode\n"
        "  -ff            start preview in fullwindow mode (same as Ctrl+F)"
-       "  -s 1920,1080   screen/window size\n"
-       "  -p 100,100     window posision\n"
-       "  -novsync       disable vsync\n"
        "  -gl_debug      enable nvidia's gl debug callback\n"
        "\n"
     );
