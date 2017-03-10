@@ -1,0 +1,72 @@
+################################################################################
+# CPACK OPTIONS ################################################################
+################################################################################
+SET(CPACK_PACKAGE_NAME "vsxu")
+SET(CPACK_DEBIAN_PACKAGE_NAME "vsxu")
+SET(CPACK_PACKAGE_VERSION ${VSXU_VERSION})
+SET(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/COPYING)
+
+if (UNIX)
+  SET(CPACK_PACKAGING_INSTALL_PREFIX "/opt/vovoid")
+  SET(CPACK_SET_DESTDIR "on")
+  SET(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+endif()
+
+SET(ARCHITECTURE i386)
+IF (CMAKE_SIZEOF_VOID_P EQUAL 8)
+  SET(ARCHITECTURE amd64)
+  set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
+ENDIF()
+
+SET(VERSION ${CPACK_DEBIAN_PACKAGE_VERSION})
+SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+SET(CPACK_DEBIAN_PACKAGE_SECTION "graphics")
+SET(CPACK_DEBIAN_ARCHITECTURE ${ARCHITECTURE})
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libxrandr2 (>= 2:1.3.0-3), libc6 (>= 2.1.3), libgcc1 (>= 1:4.1.1), libglfw2 (>= 2.6), libpng12-0 (>= 1.2.46-3), libjpeg8 (>= 6b1-1), libglew1.6 (>=1.6.0)")
+
+SET(CPACK_PACKAGE_DESCRIPTION "VSXu Music Visualizer")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "VSXu Music Visualizer, Realtime Graphics Visual Programming Language, ")
+SET(CPACK_PACKAGE_CONTACT "Jonatan Wallmander <jonatan@vovoid.com> ")
+SET(CPACK_PACKAGE_FILE_NAME ${CMAKE_PROJECT_NAME}_${VSXU_VERSION}_${CPACK_DEBIAN_ARCHITECTURE})
+if (VSXU_DEBUG)
+  SET(CPACK_PACKAGE_FILE_NAME ${CMAKE_PROJECT_NAME}_${VSXU_VERSION}_${CPACK_DEBIAN_ARCHITECTURE}_debug)
+endif()
+
+SET(CPACK_COMPONENTS_ALL artiste player)
+SET(CPACK_COMPONENT_ARTISTE_DISPLAY_NAME "VSXu Artiste")
+SET(CPACK_COMPONENT_PLAYER_DISPLAY_NAME "VSXu Player")
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jonatan 'jaw' Wallmander / Vovoid Media Technologies AB")
+
+SET(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "VSXu ${CPACK_PACKAGE_VERSION}")
+
+if (INSTALL_WIN_LAUNCHER)
+  install(FILES ${CMAKE_SOURCE_DIR}/../vsxu_player_launcher/vsxu_player_launcher.exe DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT player)
+  set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_player_launcher.exe \\\"
+      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Artiste.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_artiste.exe \\\"
+  ")
+else()
+  set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_player.exe \\\"
+      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Artiste.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_artiste.exe \\\"
+  ")
+endif()
+set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
+    Delete \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player.lnk\\\"
+    Delete \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Artiste.lnk\\\"
+")
+
+set(CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
+set(CPACK_PACKAGE_NAME VSXu ${CPACK_PACKAGE_VERSION})
+set(CPACK_PACKAGE_VENDOR "Vovoid Media Technologies AB")
+set(CPACK_PACKAGE_VERSION_MAJOR ${VSXU_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${VSXU_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${VSXU_VERSION_PATCH})
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "Vovoid VSXu ${CPACK_PACKAGE_VERSION}")
+if(VSXU_DEBUG)
+  set(CPACK_STRIP_FILES 0)
+else()
+  set(CPACK_STRIP_FILES 1)
+endif()
+
+INCLUDE(CPack)
