@@ -113,6 +113,8 @@ class vsx_application_sdl
       &&
       !vsx_argvector::get_instance()->has_param_with_value("s")
     )
+    {
+      vsx_printf(L"Reported screen bounds: x: %d, y: %d, width: %d, height: %d", display_bounds[chosen_display].x, display_bounds[chosen_display].y, display_bounds[chosen_display].w, display_bounds[chosen_display].h);
       vsx_application_sdl_window_holder::get_instance()->window = SDL_CreateWindow(
         vsx_application_manager::get_instance()->get()->window_title_get().c_str(),
         display_bounds[chosen_display].x,
@@ -124,6 +126,7 @@ class vsx_application_sdl
         | SDL_WINDOW_SHOWN
         | SDL_WINDOW_BORDERLESS
       );
+    }
 
     // real fullscreen, main desktop resolution
     if (
