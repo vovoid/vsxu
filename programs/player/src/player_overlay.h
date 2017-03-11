@@ -118,21 +118,19 @@ public:
 
     myf->color.a = title_timer;
     vsx_string<>output;
-    if (vsx::engine::audiovisual::state_manager::get()->get_meta_visual_name() != "")
-      output += vsx_string<>(vsx::engine::audiovisual::state_manager::get()->get_meta_visual_name().c_str());
+    if (vsx::engine::audiovisual::state_manager::get()->get_meta_upcoming_visual_name() != "")
+      output += vsx_string<>(vsx::engine::audiovisual::state_manager::get()->get_meta_upcoming_visual_name().c_str());
 
-    if (vsx::engine::audiovisual::state_manager::get()->get_meta_visual_author() != "")
-      output += vsx_string<>(" by ") + vsx::engine::audiovisual::state_manager::get()->get_meta_visual_author().c_str();
+    if (vsx::engine::audiovisual::state_manager::get()->get_meta_upcoming_visual_author() != "")
+      output += vsx_string<>(" by ") + vsx::engine::audiovisual::state_manager::get()->get_meta_upcoming_visual_author().c_str();
 
     if (output == "")
     {
-      output = vsx_string<>(vsx::engine::audiovisual::state_manager::get()->get_meta_visual_filename().c_str());
-      int i = output.size()-1;
-      while (output[i] != '/' && output[i] != '\\')
-        --i;
-      output = vsx_string<>(vsx::engine::audiovisual::state_manager::get()->get_meta_visual_filename().substr(i+1, output.size()-i-5).c_str());
+      output = vsx_string<>(vsx::engine::audiovisual::state_manager::get()->get_meta_visual_name().c_str());
+      if (vsx::engine::audiovisual::state_manager::get()->get_meta_visual_author() != "")
+        output += vsx_string<>(" by ") + vsx::engine::audiovisual::state_manager::get()->get_meta_visual_author().c_str();
     }
-    myf->print(vsx_vector3<>(-1.0f,0.96f),output,0.04);
+    myf->print(vsx_vector3<>(-0.99f,0.94f),output,0.04);
     myf->color.a = 1.0f;
     title_timer -= dt;
 

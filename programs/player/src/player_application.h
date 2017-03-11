@@ -61,7 +61,7 @@ public:
     vsx_application::print_help();
     vsx_printf(
       L"    -pl                       Preload all visuals on start \n"
-       "    -dr                       Disable randomizer     \n"
+       "    -dp                       Disable automatic progression     \n"
        "    -rs                       Sequential visual progression\n"
     );
   }
@@ -82,7 +82,7 @@ public:
     // create a new text overlay
     overlay = new vsx_overlay;
 
-    if (vsx_argvector::get_instance()->has_param("dr"))
+    if (vsx_argvector::get_instance()->has_param("dp"))
       vsx::engine::audiovisual::state_manager::get()->set_randomizer(false);
 
     if (vsx_argvector::get_instance()->has_param("rs"))

@@ -204,9 +204,9 @@ public:
     req(states.size());
     req(*states_iter == state_current);
 
+    ++states_iter;
     if (states_iter == states.end())
       states_iter = states.begin();
-    ++states_iter;
 
     (*states_iter)->init();
     faders.mark_change();
@@ -388,6 +388,12 @@ public:
   {
     reqrv(state_current, "");
     return state_current->get_author();
+  }
+
+  vsx_string<> get_meta_upcoming_visual_author()
+  {
+    reqrv(state_current != *states_iter, "");
+    return (*states_iter)->get_author();
   }
 
   size_t get_meta_modules_in_engine()

@@ -96,7 +96,6 @@ public:
   vsx_module_param_mesh* result;
   // internal
   vsx_mesh<>* mesh;
-  bool first_run;
   int n_segs;
   int l_param_updates;
 
@@ -159,7 +158,6 @@ public:
     y_stop->set((float)PI);
 
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
-    first_run = true;
   }
 
   bool init()
@@ -172,16 +170,14 @@ public:
   {
     delete mesh;
   }
+  vsx_nw_vector< vsx_vector3<> > prev_row_normals;
 
   void run()
   {
-    if (l_param_updates != param_updates)
-    {
-      first_run = true;
-    }
-    mesh->data->vertices[0] = vsx_vector3<>(10);
+    req(param_updates);
+    param_updates = 0;
 
-    if (!first_run) return;
+    mesh->data->vertices[0] = vsx_vector3<>(10);
 
 
     l_param_updates = param_updates;
@@ -233,7 +229,8 @@ public:
 
     float phi = _y_start;
 
-    vsx_nw_vector< vsx_vector3<> > prev_row_normals;
+    prev_row_normals.reset_used();
+
     vsx_vector3<> prev_norm;
 
     for (int i = 0; i < _x_num_segments+1; i++)
@@ -293,9 +290,7 @@ public:
       phi += phi_step;
     }
 
-    first_run = false;
     mesh->timestamp++;
     result->set_p(mesh);
-
   }
 };

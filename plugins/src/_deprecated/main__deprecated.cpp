@@ -313,7 +313,6 @@ class vsx_module_mesh_old_supershape : public vsx_module {
   vsx_module_param_mesh* result;
   // internal
   vsx_mesh<>* mesh;
-  bool first_run;
   int n_segs;
   int l_param_updates;
 public:
@@ -395,7 +394,6 @@ public:
 
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
     result->set_p(mesh);
-    first_run = true;
   }
 
   bool init() {
@@ -408,145 +406,130 @@ public:
   }
 
 
-  void run() {
-    if (l_param_updates != param_updates) first_run = true;
+  void run()
+  {
+    req(param_updates);
+    param_updates = 0;
     mesh->data->vertices[0] = vsx_vector3<>(10);
 
-    if (first_run) {
-      l_param_updates = param_updates;
-      //printf("generating random points\n");
-      mesh = new vsx_mesh<>;
-      mesh->data->vertices.reset_used();
-      mesh->data->faces.reset_used();
-      int vi = 0; // vertex index
+    l_param_updates = param_updates;
+    mesh->data->vertices.reset_used();
+    mesh->data->faces.reset_used();
+    int vi = 0; // vertex index
 
-      // sanity checks
-      float _x_start = x_start->get();
-      //if (_x_start < -half_pi) _x_start = -half_pi;
-      //if (_x_start > half_pi) _x_start = half_pi;
+    // sanity checks
+    float _x_start = x_start->get();
 
-      float _x_stop = x_stop->get();
-      //if (_x_stop < -half_pi) _x_stop = -half_pi;
-      //if (_x_stop > half_pi) _x_stop = half_pi;
+    float _x_stop = x_stop->get();
 
-      if (_x_start > _x_stop) {
-        float t = _x_start;
-        _x_start = _x_stop;
-        _x_stop = t;
-      }
+    if (_x_start > _x_stop) {
+      float t = _x_start;
+      _x_start = _x_stop;
+      _x_stop = t;
+    }
 
-      float _y_start = y_start->get();
-      //if (_y_start < -pi) _y_start = -pi;
-      //if (_y_start > pi) _y_start = pi;
+    float _y_start = y_start->get();
 
-      float _y_stop = y_stop->get();
-      //if (_y_stop < -pi) _y_stop = -pi;
-      //if (_y_stop > pi) _y_stop = pi;
+    float _y_stop = y_stop->get();
 
-      if (_y_start > _y_stop) {
-        float t = _y_start;
-        _y_start = _y_stop;
-        _y_stop = t;
-      }
+    if (_y_start > _y_stop) {
+      float t = _y_start;
+      _y_start = _y_stop;
+      _y_stop = t;
+    }
 
 
-      double theta_step = (_x_stop - _x_start) / x_num_segments->get();
-      double phi_step = (_y_stop - _y_start) / y_num_segments->get();
-      int _x_num_segments = (int)x_num_segments->get();
-      int _y_num_segments = (int)x_num_segments->get()+1;
+    double theta_step = (_x_stop - _x_start) / x_num_segments->get();
+    double phi_step = (_y_stop - _y_start) / y_num_segments->get();
+    int _x_num_segments = (int)x_num_segments->get();
+    int _y_num_segments = (int)x_num_segments->get()+1;
 
 
-      double _x_a = x_a->get();
-      double _x_b = x_b->get();
-      double _x_n1 = x_n1->get();
-      double _x_n2 = x_n2->get();
-      double _x_n3 = x_n3->get();
-      double _x_m = x_m->get();
+    double _x_a = x_a->get();
+    double _x_b = x_b->get();
+    double _x_n1 = x_n1->get();
+    double _x_n2 = x_n2->get();
+    double _x_n3 = x_n3->get();
+    double _x_m = x_m->get();
 
-      double _y_a = y_a->get();
-      double _y_b = y_b->get();
-      double _y_n1 = y_n1->get();
-      double _y_n2 = y_n2->get();
-      double _y_n3 = y_n3->get();
-      double _y_m = y_m->get();
+    double _y_a = y_a->get();
+    double _y_b = y_b->get();
+    double _y_n1 = y_n1->get();
+    double _y_n2 = y_n2->get();
+    double _y_n3 = y_n3->get();
+    double _y_m = y_m->get();
 
 
 
 
-      double theta = _x_start;
-      for (int i = 0; i < _x_num_segments; i++) {
-        double r1 = pow(
+    double theta = _x_start;
+    for (int i = 0; i < _x_num_segments; i++) {
+      double r1 = pow(
+                  pow(
+                    fabs((1.0f / _x_a) * cos(_x_m * theta / 4.0f))
+                    , _x_n2)
+                  +
+                  pow(
+                    fabs((1.0f / _x_b) * sin(_x_m * theta / 4.0f))
+                    , _x_n3)
+                , -1.0f/_x_n1);
+      double phi = _y_start;
+      for(int j = 0; j < _y_num_segments; j++) {
+
+        double r2 = pow(
                     pow(
-                      fabs((1.0f / _x_a) * cos(_x_m * theta / 4.0f))
-                      , _x_n2)
+                      fabs((1.0f / _y_a) * cos(_y_m * phi / 4.0f))
+                      , _y_n2)
                     +
                     pow(
-                      fabs((1.0f / _x_b) * sin(_x_m * theta / 4.0f))
-                      , _x_n3)
-                  , -1.0f/_x_n1);
-        double phi = _y_start;
-        for(int j = 0; j < _y_num_segments; j++) {
+                      fabs((1.0f / _y_b) * sin(_y_m * phi / 4.0f))
+                      , _y_n3)
+                  , -1.0f/_y_n1);
 
-          double r2 = pow(
-                      pow(
-                        fabs((1.0f / _y_a) * cos(_y_m * phi / 4.0f))
-                        , _y_n2)
-                      +
-                      pow(
-                        fabs((1.0f / _y_b) * sin(_y_m * phi / 4.0f))
-                        , _y_n3)
-                    , -1.0f/_y_n1);
-
-          vsx_vector3<> tmp_vec;//(sin(angle) * rad, y, cos(angle) * rad);
-          tmp_vec.x = (float)(r1 * cos(phi) * r2 * cos(theta));
-          tmp_vec.y = (float)(r1 * sin(phi) * r2 * cos(theta));
-          tmp_vec.z = (float)(r2 * sin(theta));
-          //printf("%f %f %f\n", tmp_vec.x, tmp_vec.y, tmp_vec.z);
-          mesh->data->vertices[vi] = tmp_vec;
-          mesh->data->vertex_normals[vi] = tmp_vec;
-          mesh->data->vertex_colors[vi] = vsx_color<>(1, 1, 1, 1);
-          phi += phi_step;
-          vi++;
-        }
-        theta += theta_step;
+        vsx_vector3<> tmp_vec;
+        tmp_vec.x = (float)(r1 * cos(phi) * r2 * cos(theta));
+        tmp_vec.y = (float)(r1 * sin(phi) * r2 * cos(theta));
+        tmp_vec.z = (float)(r2 * sin(theta));
+        mesh->data->vertices[vi] = tmp_vec;
+        mesh->data->vertex_normals[vi] = tmp_vec;
+        mesh->data->vertex_colors[vi] = vsx_color<>(1, 1, 1, 1);
+        phi += phi_step;
+        vi++;
       }
+      theta += theta_step;
+    }
 
 
-      for(int i = 0; i < _y_num_segments - 2; i++) {
-        for(int j = 0; j < _x_num_segments; j++) {
-          vsx_face3 a;
-          a.a = i * _x_num_segments + j;
-          a.b = (i + 1) * _x_num_segments + j;
-          a.c = i * _x_num_segments + ((j + 1) % _x_num_segments);
-          if (a.a > mesh->data->vertices.size()) a.a = 0;
-          if (a.b > mesh->data->vertices.size()) a.b = 0;
-          if (a.c > mesh->data->vertices.size()) a.c = 0;
-          vsx_vector3<> aa = mesh->data->vertices[a.b] - mesh->data->vertices[a.a];
-          vsx_vector3<> b = mesh->data->vertices[a.c] - mesh->data->vertices[a.a];
-          vsx_vector3<> n;
-          n.cross(aa,b);
-          n.normalize();
-          mesh->data->vertex_normals[a.a] = mesh->data->vertex_normals[a.b] = mesh->data->vertex_normals[a.c] = n;
-          //printf("%d %d %d\n", a.a, a.b, a.c);
-          mesh->data->faces.push_back(a);
-          a.a = i * _x_num_segments + ((j + 1) % _x_num_segments);
-          a.b = (i + 1) * _x_num_segments + j;
-          a.c = (i + 1) * _x_num_segments + ((j + 1) % _x_num_segments);
-          //printf("%d %d %d\n", a.a, a.b, a.c);
-          aa = mesh->data->vertices[a.b] - mesh->data->vertices[a.a];
-          b = mesh->data->vertices[a.c] - mesh->data->vertices[a.a];
-          //vsx_vector n;
-          n.cross(aa,b);
-          n.normalize();
-          mesh->data->vertex_normals[a.a] = mesh->data->vertex_normals[a.b] = mesh->data->vertex_normals[a.c] = n;
+    for(int i = 0; i < _y_num_segments - 2; i++) {
+      for(int j = 0; j < _x_num_segments; j++) {
+        vsx_face3 a;
+        a.a = i * _x_num_segments + j;
+        a.b = (i + 1) * _x_num_segments + j;
+        a.c = i * _x_num_segments + ((j + 1) % _x_num_segments);
+        if (a.a > mesh->data->vertices.size()) a.a = 0;
+        if (a.b > mesh->data->vertices.size()) a.b = 0;
+        if (a.c > mesh->data->vertices.size()) a.c = 0;
+        vsx_vector3<> aa = mesh->data->vertices[a.b] - mesh->data->vertices[a.a];
+        vsx_vector3<> b = mesh->data->vertices[a.c] - mesh->data->vertices[a.a];
+        vsx_vector3<> n;
+        n.cross(aa,b);
+        n.normalize();
+        mesh->data->vertex_normals[a.a] = mesh->data->vertex_normals[a.b] = mesh->data->vertex_normals[a.c] = n;
+        mesh->data->faces.push_back(a);
+        a.a = i * _x_num_segments + ((j + 1) % _x_num_segments);
+        a.b = (i + 1) * _x_num_segments + j;
+        a.c = (i + 1) * _x_num_segments + ((j + 1) % _x_num_segments);
+        aa = mesh->data->vertices[a.b] - mesh->data->vertices[a.a];
+        b = mesh->data->vertices[a.c] - mesh->data->vertices[a.a];
+        n.cross(aa,b);
+        n.normalize();
+        mesh->data->vertex_normals[a.a] = mesh->data->vertex_normals[a.b] = mesh->data->vertex_normals[a.c] = n;
 
-          mesh->data->faces.push_back(a);
-        }
+        mesh->data->faces.push_back(a);
       }
     }
-    result->set(mesh);
-
-    //  }
+    mesh->timestamp++;
+    result->set_p(mesh);
   }
 };
 

@@ -451,6 +451,22 @@ public:
     if (m_tex_coords) glEnableClientState(GL_TEXTURE_COORD_ARRAY);
   }
 
+  void disable_client_arrays_no_vbo()
+  {
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    if (m_normals) {
+      glDisableClientState(GL_NORMAL_ARRAY);
+    }
+
+    if (m_tex_coords) {
+      glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    }
+
+    if (m_colors) {
+      glDisableClientState(GL_COLOR_ARRAY);
+    }
+  }
 
   bool enable_client_arrays_vbo()
   {
@@ -528,23 +544,6 @@ public:
   }
 
 
-  void disable_client_arrays_no_vbo()
-  {
-    glDisableClientState(GL_VERTEX_ARRAY);
-
-    if (m_normals) {
-      glDisableClientState(GL_NORMAL_ARRAY);
-    }
-
-    if (m_tex_coords) {
-      glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    }
-
-    if (m_colors) {
-      glDisableClientState(GL_COLOR_ARRAY);
-    }
-  }
-
   void disable_client_arrays_vbo()
   {
     glDisableClientState(GL_VERTEX_ARRAY);
@@ -606,19 +605,8 @@ public:
     user_message="module||ok";
 
     // don't upload unless changed
-    if
-    (
-      prev_mesh_timestamp == (*mesh)->timestamp
-    )
-    {
-      return;
-    }
-
-
-    if (check_if_need_to_reinit_vbo(current_vbo_draw_type))
-    {
-      return;
-    }
+    req(prev_mesh_timestamp != (*mesh)->timestamp);
+    req(!check_if_need_to_reinit_vbo(current_vbo_draw_type));
 
 
     // bind the vertex, normals buffer for use
@@ -631,7 +619,7 @@ public:
     // if buffer type is "DYNAMIC_DRAW", upload new data
     if (current_vbo_draw_type == GL_DYNAMIC_DRAW_ARB)
     {
-      //printf("uploading %d vertices to VBO\n", (*mesh)->data->vertices.size());
+      //vsx_printf(L"uploading %d vertices to VBO\n", (*mesh)->data->vertices.size());
       //printf("vertices ofset: %d\n", offset_vertices);
       if ((*mesh)->data->vertex_normals.get_used())
       {
@@ -824,7 +812,6 @@ public:
         perform_draw();
 
         glPopMatrix();
-
       }
 
       cleanup_successful_rendering();

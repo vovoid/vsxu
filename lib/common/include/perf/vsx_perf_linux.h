@@ -133,6 +133,11 @@ public:
    */
   int memory_currently_used()
   {
+    return memory_currently_used_bytes() / (1024 * 1024);
+  }
+
+  int memory_currently_used_bytes()
+  {
     FILE* file = fopen("/proc/self/status", "r");
     int result = -1;
     char line[128];
@@ -144,7 +149,7 @@ public:
         }
     }
     fclose(file);
-    return result / 1024;
+    return result * 1024;
   }
 
 };
