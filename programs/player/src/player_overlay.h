@@ -28,6 +28,7 @@
 #include <time/vsx_timer.h>
 #include <filesystem/vsx_filesystem.h>
 #include <vsx_logo_intro.h>
+#include <perf/vsx_perf.h>
 
 
 class vsx_overlay {
@@ -47,8 +48,17 @@ class vsx_overlay {
   float fx_alpha;
   bool first;
   vsx_logo_intro* intro;
-	
+  vsx_perf perf;
+
 public:
+
+  vsx_string<> current_visual_name()
+  {
+    vsx_string<> result = vsx_string<>(vsx::engine::audiovisual::state_manager::get()->get_meta_visual_name().c_str());
+    if (vsx::engine::audiovisual::state_manager::get()->get_meta_visual_author() != "")
+      result += vsx_string<>(" by ") + vsx::engine::audiovisual::state_manager::get()->get_meta_visual_author().c_str();
+    return result;
+  }
 	
   vsx_overlay()
   {
@@ -125,11 +135,8 @@ public:
       output += vsx_string<>(" by ") + vsx::engine::audiovisual::state_manager::get()->get_meta_upcoming_visual_author().c_str();
 
     if (output == "")
-    {
-      output = vsx_string<>(vsx::engine::audiovisual::state_manager::get()->get_meta_visual_name().c_str());
-      if (vsx::engine::audiovisual::state_manager::get()->get_meta_visual_author() != "")
-        output += vsx_string<>(" by ") + vsx::engine::audiovisual::state_manager::get()->get_meta_visual_author().c_str();
-    }
+      output = current_visual_name();
+
     myf->print(vsx_vector3<>(-0.99f,0.94f),output,0.04);
     myf->color.a = 1.0f;
     title_timer -= dt;
@@ -256,22 +263,23 @@ public:
           "Run time        :\n"
           "Frames rendered :\n"
           "Modules in state:\n"
-          "Loading in background:\n",
+          "Loading in background:\n"
+          "RAM usage (total):\n"
+          ,
           "ascii",
           0.06
         );
-        vsx_string<> visual_path = vsx::engine::audiovisual::state_manager::get()->get_meta_visual_name().c_str();
-        vsx_string<> visual_filename = vsx_string_helper::filename_from_path(visual_path);
         myf->print(
           vsx_vector3<>(-0.1,0.4),
-          vsx_string<>(visual_filename.c_str())+"\n"+
+          vsx_string<>(current_visual_name().c_str())+"\n"+
           vsx_string_helper::f2s(delta_fps)+"\n"+
           vsx_string_helper::f2s(vsx::engine::audiovisual::state_manager::get()->fx_level_get(),3)+"\n"+
           vsx_string_helper::f2s(vsx::engine::audiovisual::state_manager::get()->speed_get(),3)+"\n"+
           vsx_string_helper::f2s(total_time,3)+"\n"+
           vsx_string_helper::i2s(frame_counter) + "\n" +
           vsx_string_helper::i2s( vsx::engine::audiovisual::state_manager::get()->get_meta_modules_in_engine() ) + "\n" +
-          vsx::engine::audiovisual::state_manager::get()->get_meta_upcoming_visual_name()
+          vsx::engine::audiovisual::state_manager::get()->get_meta_upcoming_visual_name() + "\n" +
+          vsx_string_helper::i2s( perf.memory_currently_used() ) + " MB\n"
           ,
           0.06
         );
