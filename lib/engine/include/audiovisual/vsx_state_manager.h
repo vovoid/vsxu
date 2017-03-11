@@ -70,8 +70,10 @@ private:
   vsx_string<> message;
   bool render_first = true;
 
+  float auto_change_time = 0.0f;
+
   bool randomizer = true;
-  float randomizer_time = 0.0f;
+  bool sequential = false;
 
   vsx_module_engine_float_array int_freq;
   vsx_module_engine_float_array int_wav;
@@ -106,7 +108,7 @@ public:
 
   state_manager()
   {
-    randomizer_time = vsx_rand_singleton::get()->rand.frand()*15.0f + 10.0f;
+    auto_change_time = vsx_rand_singleton::get()->rand.frand()*15.0f + 10.0f;
   }
 
   ~state_manager()
@@ -143,6 +145,10 @@ public:
     return randomizer;
   }
 
+  void set_sequential(bool status) {
+    sequential = status;
+  }
+
   void select_state (int selection)
   {
     req(states.size());
@@ -169,7 +175,7 @@ public:
   }
 
 
-  void select_random_state()
+  void select_random_state(bool mark_change = true)
   {
     req(states.size());
     req(*states_iter == state_current);
@@ -189,7 +195,8 @@ public:
     }
 
     (*states_iter)->init();
-    faders.mark_change();
+    if (mark_change)
+      faders.mark_change();
   }
 
   void select_next_state()
@@ -252,6 +259,28 @@ public:
     return (*states_iter)->fx_level;
   }
 
+  bool update_auto_change_time()
+  {
+    auto_change_time -= vsx::common::time::manager::get()->dt;
+    reqrv(auto_change_time < 0.0f, false);
+    auto_change_time = (float)(rand()%1000)*0.001f*15.0f+10.0f;
+    return true;
+  }
+
+  void update_randomizer()
+  {
+    req(randomizer);
+    req(update_auto_change_time());
+    select_random_state();
+  }
+
+  void update_sequential()
+  {
+    req(sequential);
+    req(update_auto_change_time());
+    select_next_state();
+  }
+
   void handle_render_first()
   {
     req(render_first);
@@ -262,17 +291,16 @@ public:
 
     init_states();
 
-    // reset state_iter to a random state
+    // reset state_iter
     states_iter = states.begin();
-    int steps = vsx_rand_singleton::get()->rand.rand() % states.size();
-    while (steps) {
-      ++states_iter;
-      if (states_iter == states.end())
-        states_iter = states.begin();
-      --steps;
-    }
-
     state_current = *states_iter;
+
+    // select random initial state
+    if (randomizer)
+    {
+      select_random_state(false);
+      state_current = *states_iter;
+    }
   }
 
   bool render_change()
@@ -281,22 +309,14 @@ public:
     return faders.render( state_current, *states_iter );
   }
 
-  void update_randomizer()
-  {
-    req(randomizer);
-    randomizer_time -= vsx::common::time::manager::get()->dt;
-    if (randomizer_time < 0.0f)
-    {
-      select_random_state();
-      randomizer_time = (float)(rand()%1000)*0.001f*15.0f+10.0f;
-    }
-  }
-
   void render()
   {
     req( states.size() );
     handle_render_first();
+
+    // automatic progression
     update_randomizer();
+    update_sequential();
 
     system_message = "";
     foreach (states, i)
@@ -310,7 +330,7 @@ public:
   {
     vsx_string_helper::ensure_trailing_dir_separator(base_path);
     std::list< vsx_string<> > state_file_list;
-    vsx::filesystem_helper::get_files_recursive(base_path + visual_path, &state_file_list,"","");
+    vsx::filesystem_helper::get_files_recursive(base_path + visual_path, &state_file_list,".vsx","");
     for (auto it = state_file_list.begin(); it != state_file_list.end(); ++it) {
       state* new_state = new state();
       new_state->filename = *it;
@@ -356,6 +376,12 @@ public:
   {
     reqrv(state_current, "");
     return state_current->get_name();
+  }
+
+  vsx_string<> get_meta_upcoming_visual_name()
+  {
+    reqrv(state_current != *states_iter, "");
+    return (*states_iter)->get_name();
   }
 
   vsx_string<> get_meta_visual_author()

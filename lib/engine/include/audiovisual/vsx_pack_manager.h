@@ -23,7 +23,7 @@ public:
   {
     vsx_string_helper::ensure_trailing_dir_separator(base_path);
     std::list< vsx_string<> > file_list;
-    vsx::filesystem_helper::get_files_recursive(base_path + visual_pack_path, &file_list, "", "");
+    vsx::filesystem_helper::get_files_recursive(base_path + visual_pack_path, &file_list, ".vsxz", "");
     for (auto it = file_list.begin(); it != file_list.end(); ++it)
       packs.push_back( new pack(*it));
   }

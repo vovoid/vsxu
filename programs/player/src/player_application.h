@@ -29,6 +29,7 @@
 #include "player_overlay.h"
 #include <vsx_application_input_state_manager.h>
 #include <audiovisual/vsx_state_fx_save.h>
+#include <perf/vsx_perf.h>
 
 class player_application
     : public vsx_application
@@ -38,13 +39,20 @@ class player_application
 
 public:
 
+  size_t window_title_i = 0;
+  void update_window_title()
+  {
+    req(!(window_title_i++ % 60));
+    vsx_perf perf;
+    char titlestr[ 200 ];
+    sprintf( titlestr, "Vovoid VSXu Player %s [%s %d-bit] [%d MB RAM used] %s", VSXU_VER, PLATFORM_NAME, PLATFORM_BITS, perf.memory_currently_used(), VSXU_VERSION_COPYRIGHT);
+    window_title = vsx_string<>(titlestr);
+    vsx_application_control::get_instance()->window_title = window_title;
+  }
+
   player_application()
   {
-    char titlestr[ 200 ];
-    sprintf( titlestr, "Vovoid VSXu Player %s [%s %d-bit]", VSXU_VER, PLATFORM_NAME, PLATFORM_BITS);
-    window_title = vsx_string<>(titlestr);
-    organization_name = "Vovoid Media Technologies AB";
-    application_name = "VSXu Player";
+    update_window_title();
     vsx_application_control::get_instance()->create_preferences_path_request();
   }
 
@@ -54,6 +62,7 @@ public:
     vsx_printf(
       L"    -pl                       Preload all visuals on start \n"
        "    -dr                       Disable randomizer     \n"
+       "    -rs                       Sequential visual progression\n"
     );
   }
 
@@ -76,11 +85,19 @@ public:
     if (vsx_argvector::get_instance()->has_param("dr"))
       vsx::engine::audiovisual::state_manager::get()->set_randomizer(false);
 
+    if (vsx_argvector::get_instance()->has_param("rs"))
+    {
+      vsx::engine::audiovisual::state_manager::get()->set_randomizer(false);
+      vsx::engine::audiovisual::state_manager::get()->set_sequential(true);
+    }
+
   }
 
   bool fx_levels_loaded = false;
   void draw()
   {
+    update_window_title();
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vsx::engine::audiovisual::state_manager::get()->render();
 

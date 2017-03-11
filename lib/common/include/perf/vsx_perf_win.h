@@ -2,6 +2,8 @@
 
 
 #include <tools/vsx_rdtsc.h>
+#include "windows.h"
+#include "psapi.h"
 
 class vsx_perf
 {
@@ -47,7 +49,9 @@ public:
 
   int memory_currently_used()
   {
-    return 0;
+    PROCESS_MEMORY_COUNTERS pmc;
+    GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc));
+    return (int)pmc.WorkingSetSize / (1024 * 1024);
   }
 
 };

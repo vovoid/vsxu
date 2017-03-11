@@ -257,7 +257,8 @@ public:
           "Speed           :\n"
           "Run time        :\n"
           "Frames rendered :\n"
-          "Modules in state:",
+          "Modules in state:\n"
+          "Loading in background:\n",
           "ascii",
           0.06
         );
@@ -271,7 +272,8 @@ public:
           vsx_string_helper::f2s(vsx::engine::audiovisual::state_manager::get()->speed_get(),3)+"\n"+
           vsx_string_helper::f2s(total_time,3)+"\n"+
           vsx_string_helper::i2s(frame_counter) + "\n" +
-          vsx_string_helper::i2s( vsx::engine::audiovisual::state_manager::get()->get_meta_modules_in_engine() )
+          vsx_string_helper::i2s( vsx::engine::audiovisual::state_manager::get()->get_meta_modules_in_engine() ) + "\n" +
+          vsx::engine::audiovisual::state_manager::get()->get_meta_upcoming_visual_name()
           ,
           0.06
         );
