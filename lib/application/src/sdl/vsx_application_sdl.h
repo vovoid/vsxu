@@ -71,11 +71,16 @@ class vsx_application_sdl
     DisableProcessWindowsGhosting();
     #endif
 
-
-
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0)
         sdl_tools::sdldie("Unable to initialize SDL");
 
+    SDL_version compiled;
+    SDL_version linked;
+
+    SDL_VERSION(&compiled);
+    SDL_GetVersion(&linked);
+
+    //vsx_printf(L"SDL Version: %d.%d.%d\n", linked.major, linked.minor, linked.patch);
 
     //Get number of displays
     int num_displays = SDL_GetNumVideoDisplays();
