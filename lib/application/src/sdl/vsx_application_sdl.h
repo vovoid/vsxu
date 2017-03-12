@@ -80,7 +80,8 @@ class vsx_application_sdl
     SDL_VERSION(&compiled);
     SDL_GetVersion(&linked);
 
-    //vsx_printf(L"SDL Version: %d.%d.%d\n", linked.major, linked.minor, linked.patch);
+    vsx_printf(L"VSX Application: \n    %hs\n    Build Date: %hs, %hs\n", vsx_application_manager::get_instance()->get()->window_title_get().c_str(), __DATE__, __TIME__);
+    vsx_printf(L"    SDL Version: %d.%d.%d\n", linked.major, linked.minor, linked.patch);
 
     //Get number of displays
     int num_displays = SDL_GetNumVideoDisplays();
