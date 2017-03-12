@@ -103,7 +103,7 @@ public:
 
     if (intro_timer > 0.0f) {
       myf->color.a = intro_timer;
-      myf->print(vsx_vector3<>(-0.60f,-0.95f),"Press F1 for help   |    Welcome to Vovoid VSXu by jaw / cor / asterix / saidinesh5",0.04);
+      myf->print(vsx_vector3<>(-0.40f,-0.95f),"Welcome to VSXu!   --   Press F1 for help",0.04);
       intro_timer -= dt;
     }
 

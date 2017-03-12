@@ -33,7 +33,7 @@
 // logo animation settings
 float startanim = 0;
 //float animlen = 12;
-float animlen = 5;
+float animlen = 8;
 float fade = 1;
 
 float inalpha = 1;//(logo_time-startanim)/(fade*0.5);
@@ -124,7 +124,7 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
     {
       luna_bkg->bind();
         glPushMatrix();
-        glColor4f(0.298f, 0.368f, 0.41f, alphab);
+        glColor4f(44.0f / 255.0f, 57.0f / 255.0f, 83.0f/ 255.0f, alphab);
         glRotatef(logo_rot1*360,0,0,1);
         glBegin(GL_QUADS);
           glTexCoord2f(0, 0);
@@ -138,6 +138,7 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
         glEnd();
         glPopMatrix();
         glPushMatrix();
+        glColor4f(42.0f / 255.0f, 98.0f / 255.0f, 104.0f/ 255.0f, alphab);
         glRotatef(360*logo_rot2,0,0,alphab);
         glBegin(GL_QUADS);
           glTexCoord2f(0, 0);
@@ -151,7 +152,7 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
         glEnd();
         glPopMatrix();
         glPushMatrix();
-        glColor4f(0.15f, 0.433f, 0.46f, alphab);
+        glColor4f(42.0f / 255.0f, 58.0f / 255.0f, 104.0f/ 255.0f, alphab);
         glRotatef(360*logo_rot3,0,0,1);
         glBegin(GL_QUADS);
           glTexCoord2f(0, 0);
@@ -168,7 +169,7 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
         logo_size.x = 22;
         logo_size.y = 22;
 
-        glColor4f(0.433f, 0.25f, 0.56f, alphab);
+        glColor4f(60.0f / 255.0f, 67.0f / 255.0f, 100.0f/ 255.0f, alphab);
         glRotatef(360.0f * logo_rot3 * 0.5f, 0, 0, 1);
         glBegin(GL_QUADS);
           glTexCoord2f(0, 0);
@@ -187,7 +188,7 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
     {
       glColor4f(1, 1, 1, alpha*1.0f);
     }
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     luna->bind();
       glBegin(GL_QUADS);

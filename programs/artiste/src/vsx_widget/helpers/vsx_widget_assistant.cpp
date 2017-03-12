@@ -142,7 +142,7 @@ void vsxu_assistant::init()
   topmost = true;
 
   texture = vsx_texture_loader::load(
-    PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"luna.png",
+    PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"assistant_luna.png",
     vsx::filesystem::get_instance(),
     true, // threaded
     vsx_bitmap::flip_vertical_hint,
