@@ -176,13 +176,19 @@ public:
     print_help();
     if (title_timer > -5.0f && total_time > 4.0f)
     {
-      // small intro
+      // corner intro
       GLint viewport[4];
       glGetIntegerv(GL_VIEWPORT, viewport);
-      glViewport(viewport[2]-(GLint)(viewport[2]*0.17f),viewport[3]-(GLint)(viewport[3]*0.17f),viewport[2]/5,viewport[3]/5);
+      glViewport(
+        viewport[2] - (GLint)(viewport[2]*0.16f),
+        viewport[3] - (GLint)(viewport[3]*0.19f),
+        viewport[2]/5,
+        (GLsizei) ((double)viewport[3]/5.2)
+      );
       bool draw_always = false;
-      if (title_timer>1.8f) draw_always = true;
-      intro->draw(draw_always,false,false);
+      if (title_timer>1.8f)
+        draw_always = true;
+      intro->draw(draw_always, false, false);
       glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
     } else
     {
