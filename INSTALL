@@ -93,7 +93,30 @@ Examples:
     cmake . -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxupulse"
 	
   On Windows, with visual studio compiler and windows SDK
-  Put this in a .bat file:
+
+  NOTE! Before doing anything, check if you have:
+
+    C:\Users\[user]\AppData\Roaming\QtProject
+
+  if so, delete this directory. It contains Qt Creator config, and it has issues changing its config
+  between 32-bit and 64-bit compiling so we need a truly fresh install.
+
+  - Install CMake (cmake.org)
+  - Install Windows SDK (for debugging) (https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk)
+  - Install Visual C++ Build tools (http://landinghub.visualstudio.com/visual-cpp-build-tools)
+
+Qt Creator (optional):
+  - Install Qt Creator 4.1.0
+  - In QtCreator Settings, Build & Run, Edit the "Default" kit and switch compiler from "x86" to "amd64". (optional)
+  - Open the project (CMakeLists.txt)
+  - Go to Projects, Build
+  - Change build type to "Release With Debug Information". The game won't run in just "Debug" mode. (too slow)
+  - Set CMAKE_MAKE_PROGRAM to the path of jom.exe (bundled with Qt Creator), for instance C:/Qt/qtcreator-4.1.0/bin/jom.exe
+
+  NOTE! If you mess up, go and delete C:\Users\[user]\AppData\Roaming\QtProject
+
+
+  To compile VSXU, put this in a .bat file:
     echo off
     set VSXU_BUILD_BASE_PATH=%CD%
     rmdir /s /q build
@@ -101,4 +124,3 @@ Examples:
     cd build
     cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_GENERATOR="NMake Makefiles" ..\..\..\vsxu\
     C:\Qt\qtcreator-4.1.0\bin\jom install
-
