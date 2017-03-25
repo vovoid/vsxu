@@ -127,7 +127,7 @@ set(SOURCES_FTGL
     thirdparty/ftgl/src/FTGlyph/FTBitmapGlyph.cpp
     thirdparty/ftgl/src/FTGlyph/FTBufferGlyph.cpp
     thirdparty/ftgl/src/FTGlyph/FTExtrudeGlyph.cpp
-    thirdparty/ftgl/src/FTGlyph/FTGLGlyph.cpp
+    thirdparty/ftgl/src/FTGlyph/FTGlyph.cpp
     thirdparty/ftgl/src/FTGlyph/FTGlyphGlue.cpp
     thirdparty/ftgl/src/FTGlyph/FTOutlineGlyph.cpp
     thirdparty/ftgl/src/FTGlyph/FTPixmapGlyph.cpp
