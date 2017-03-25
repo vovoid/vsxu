@@ -86,36 +86,19 @@ Examples:
   This is my test/debug-it-all command:
     cmake . -DVSXU_DEBUG=1 -DENGINE_SCRIPTING=1 -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxu_debug"
 
-  This is my personal installation for demo making:
-    cmake . -DVSXU_SOUND_FMOD=1 -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxu"
-
   This is my default personal installation:
     cmake . -DOPTIMIZATION_FLAGS=1 -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxu_0.3.0"
 
   For visualization (with pulseaudio) on Linux:
     cmake . -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxupulse"
-
-  For debugging static opengles (for phones etc)
-    cmake . -DCMAKE_INSTALL_PREFIX="/home/jaw/bin/vsxu_static_debug" -DVSXU_DEBUG=1 -DVSXU_OPENGL_ES_2_0=1 -DVSXU_STATIC=1
 	
-  On Windows:
-    cmake -G "MinGW Makefiles" -DCMAKE_INCLUDE_PATH="C:/MingW/include" -DCMAKE_LIBRARY_PATH="C:/Mingw/lib" ../vsxu
-    cmake . -G "MinGW Makefiles" -DVSXU_DEBUG=1
+  On Windows, with visual studio compiler and windows SDK
+  Put this in a .bat file:
+    echo off
+    set VSXU_BUILD_BASE_PATH=%CD%
+    rmdir /s /q build
+    md build
+    cd build
+    cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_GENERATOR="NMake Makefiles" ..\..\..\vsxu\
+    C:\Qt\qtcreator-4.1.0\bin\jom install
 
--------------------------------------------------------------------------------
- S O U N D    I N P U T S
--------------------------------------------------------------------------------
-
-  The default (on linux) is to build the pulseaudio listener.
-  On Windows the FMOD module.
-
-  You can currently only use ONE sound module, if you build+install multiple ones
-  you get conflicts and only the first will be loaded by the engine.
-
-  Optional scenario #1:
-    If You want an mp3/xm/it/ogg-playing standalone vsxu artiste to run presentations
-    or other advanced projects you should use the VSXU_SOUND_FMOD flag. It builds
-   
-  Options scenario #2:
-    You want to integrate vsxu into your media player or other project and you want
-    to feed vsxu with your own sound data. Then VSXU_SOUND_MEDIA_PLAYER is for you.
