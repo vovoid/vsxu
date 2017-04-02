@@ -35,6 +35,11 @@ public:
     action();
   }
 
+  void set_to_max()
+  {
+    value = (float)max_time_ms * 0.001f;
+  }
+
 };
 
 }
