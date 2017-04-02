@@ -135,6 +135,7 @@ add_subdirectory(programs/profiler)
 
 if(UNIX)
  add_subdirectory(programs/server)
+ add_subdirectory(programs/launcher)
 endif(UNIX)
 
 add_subdirectory(programs/tools/vsxbt)

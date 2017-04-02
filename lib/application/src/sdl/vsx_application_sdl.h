@@ -115,9 +115,11 @@ class vsx_application_sdl
     if (
       vsx_argvector::get_instance()->has_param("d")
       &&
-      !vsx_argvector::get_instance()->has_param("f")
+      vsx_argvector::get_instance()->has_param("f")
       &&
       !vsx_argvector::get_instance()->has_param_with_value("s")
+      &&
+      !vsx_argvector::get_instance()->has_param_with_value("p")
     )
     {
       vsx_printf(L"Reported screen bounds: x: %d, y: %d, width: %d, height: %d", display_bounds[chosen_display].x, display_bounds[chosen_display].y, display_bounds[chosen_display].w, display_bounds[chosen_display].h);
@@ -176,8 +178,6 @@ class vsx_application_sdl
 
     // regular window, custom resolution, borderless optional
     if (
-      !vsx_argvector::get_instance()->has_param("d")
-      &&
       !vsx_argvector::get_instance()->has_param("f")
     )
       vsx_application_sdl_window_holder::get_instance()->window = SDL_CreateWindow(
@@ -233,11 +233,17 @@ class vsx_application_sdl
     vsx_application_manager::get_instance()->get()->init();
 
     if (vsx_argvector::get_instance()->has_param_with_value("p"))
-      SDL_SetWindowPosition(
-        vsx_application_sdl_window_holder::get_instance()->window,
-            vsx_string_helper::s2i( vsx_argvector::get_instance()->get_param_subvalue("p", 0, "x,", "720") ),
-            vsx_string_helper::s2i( vsx_argvector::get_instance()->get_param_subvalue("p", 1, "x,", "300") )
-      );
+    {
+      int x_pos = vsx_string_helper::s2i( vsx_argvector::get_instance()->get_param_subvalue("p", 0, "x,", "720") );
+      int y_pos = vsx_string_helper::s2i( vsx_argvector::get_instance()->get_param_subvalue("p", 1, "x,", "300") );
+      if (vsx_argvector::get_instance()->has_param_with_value("d"))
+      {
+        x_pos += display_bounds[chosen_display].x;
+        y_pos += display_bounds[chosen_display].y;
+      }
+
+      SDL_SetWindowPosition( vsx_application_sdl_window_holder::get_instance()->window, x_pos, y_pos);
+    }
   }
 
   SDL_GameController *gamecontroller[4] = {0x0,0x0,0x0,0x0};
