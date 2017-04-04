@@ -15,9 +15,6 @@ if(VSXU_DEBUG)
   add_definitions(-DVSXU_DEBUG)
 endif(VSXU_DEBUG)
 
-add_definitions(-DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}")
-add_definitions(-DVSXU_BIN_DIR="${CMAKE_INSTALL_PREFIX}/${VSXU_INSTALL_BIN_DIR}")
-
 set(SOURCES
   main.cpp
   mainwindow.cpp

@@ -49,11 +49,9 @@ void MainWindow::populateBinaryComboBox(QString filename, QString description)
 {
     QString binaryname = filename;
 
+    QDir d(QCoreApplication::applicationDirPath());
 #ifdef Q_OS_WIN
     binaryname = binaryname + ".exe";
-    QDir d;
-#else
-    QDir d(VSXU_BIN_DIR); //From add_definition(-DVSXU_BIN_DIR) in cmakelists
 #endif
 
     if( (!filename.isEmpty()))
