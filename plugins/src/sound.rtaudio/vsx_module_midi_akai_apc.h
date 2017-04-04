@@ -1061,75 +1061,75 @@ public:
             case 0x3a:
               clip_track->set(ON);
             break;
-          case 0x3b:
-            device_on_off->set(ON);
-          break;
-          case 0x3c:
-            arrow_left->set(ON);
-          break;
-          case 0x3d:
-            arrow_right->set(ON);
-          break;
-        case 0x3e:
-          detail_view->set(ON);
-        break;
-        case 0x3f:
-          rec_quant->set(ON);
-        break;
-          case 0x40:
-            midi_overdub->set(ON);
-          break;
-        case 0x41:
-          metronome->set(ON);
-        break;
-        case 0x50:
-          master->set(ON);
-        break;
-          case 0x57:
-            pan->set(ON);
-          break;
-        case 0x58:
-          send_a->set(ON);
-        break;
-        case 0x59:
-          send_b->set(ON);
-        break;
-          case 0x5a:
-            send_c->set(ON);
-          break;
-          case 0x5b:
-            play->set(ON);
-          break;
-          case 0x5c:
-            stop->set(ON);
-          break;
-          case 0x5d:
-            record->set(ON);
-          break;
-          case 0x5e:
-            up->set(ON);
-          break;
-          case 0x5f:
-            down->set(ON);
-          break;
-          case 0x60:
-            right->set(ON);
-          break;
-        case 0x61:
-          left->set(ON);
-        break;
-        case 0x62:
-          shift->set(ON);
-        break;
-          case 0x63:
-            tap_tempo->set(ON);
-          break;
-        case 0x64:
-          nudge_plus->set(ON);
-        break;
-        case 0x65:
-          nudge_minus->set(ON);
-        break;
+            case 0x3b:
+              device_on_off->set(ON);
+            break;
+            case 0x3c:
+              arrow_left->set(ON);
+            break;
+            case 0x3d:
+              arrow_right->set(ON);
+            break;
+            case 0x3e:
+              detail_view->set(ON);
+            break;
+            case 0x3f:
+              rec_quant->set(ON);
+            break;
+            case 0x40:
+              midi_overdub->set(ON);
+            break;
+            case 0x41:
+              metronome->set(ON);
+            break;
+            case 0x50:
+              master->set(ON);
+            break;
+            case 0x57:
+              pan->set(ON);
+            break;
+            case 0x58:
+              send_a->set(ON);
+            break;
+            case 0x59:
+              send_b->set(ON);
+            break;
+            case 0x5a:
+              send_c->set(ON);
+            break;
+            case 0x5b:
+              play->set(ON);
+            break;
+            case 0x5c:
+              stop->set(ON);
+            break;
+            case 0x5d:
+              record->set(ON);
+            break;
+            case 0x5e:
+              up->set(ON);
+            break;
+            case 0x5f:
+              down->set(ON);
+            break;
+            case 0x60:
+              right->set(ON);
+            break;
+            case 0x61:
+              left->set(ON);
+            break;
+            case 0x62:
+              shift->set(ON);
+            break;
+            case 0x63:
+              tap_tempo->set(ON);
+            break;
+            case 0x64:
+              nudge_plus->set(ON);
+            break;
+            case 0x65:
+              nudge_minus->set(ON);
+            break;
           }
         break;
 
@@ -1180,78 +1180,78 @@ public:
             case 86:
               scene_launch[byte2-82]->set(OFF);
             break;
-          case 0x3a:
-            clip_track->set(OFF);
-          break;
-        case 0x3b:
-          device_on_off->set(OFF);
-        break;
-        case 0x3c:
-          arrow_left->set(OFF);
-        break;
-        case 0x3d:
-          arrow_right->set(OFF);
-        break;
-      case 0x3e:
-        detail_view->set(OFF);
-      break;
-      case 0x3f:
-        rec_quant->set(OFF);
-      break;
-        case 0x40:
-          midi_overdub->set(OFF);
-        break;
-      case 0x41:
-        metronome->set(OFF);
-      break;
-      case 0x50:
-        master->set(OFF);
-      break;
-        case 0x57:
-          pan->set(OFF);
-        break;
-      case 0x58:
-        send_a->set(OFF);
-      break;
-      case 0x59:
-        send_b->set(OFF);
-      break;
-        case 0x5a:
-          send_c->set(OFF);
-        break;
-        case 0x5b:
-          play->set(OFF);
-        break;
-        case 0x5c:
-          stop->set(OFF);
-        break;
-        case 0x5d:
-          record->set(OFF);
-        break;
-        case 0x5e:
-          up->set(OFF);
-        break;
-        case 0x5f:
-          down->set(OFF);
-        break;
-        case 0x60:
-          right->set(OFF);
-        break;
-      case 0x61:
-        left->set(OFF);
-      break;
-      case 0x62:
-        shift->set(OFF);
-      break;
-        case 0x63:
-          tap_tempo->set(OFF);
-        break;
-      case 0x64:
-        nudge_plus->set(OFF);
-      break;
-      case 0x65:
-        nudge_minus->set(OFF);
-      break;
+            case 0x3a:
+              clip_track->set(OFF);
+            break;
+            case 0x3b:
+              device_on_off->set(OFF);
+            break;
+            case 0x3c:
+              arrow_left->set(OFF);
+            break;
+            case 0x3d:
+              arrow_right->set(OFF);
+            break;
+            case 0x3e:
+              detail_view->set(OFF);
+            break;
+            case 0x3f:
+              rec_quant->set(OFF);
+            break;
+            case 0x40:
+              midi_overdub->set(OFF);
+            break;
+            case 0x41:
+              metronome->set(OFF);
+            break;
+            case 0x50:
+              master->set(OFF);
+            break;
+            case 0x57:
+              pan->set(OFF);
+            break;
+            case 0x58:
+              send_a->set(OFF);
+            break;
+            case 0x59:
+              send_b->set(OFF);
+            break;
+            case 0x5a:
+              send_c->set(OFF);
+            break;
+            case 0x5b:
+              play->set(OFF);
+            break;
+            case 0x5c:
+              stop->set(OFF);
+            break;
+            case 0x5d:
+              record->set(OFF);
+            break;
+            case 0x5e:
+              up->set(OFF);
+            break;
+            case 0x5f:
+              down->set(OFF);
+            break;
+            case 0x60:
+              right->set(OFF);
+            break;
+            case 0x61:
+              left->set(OFF);
+            break;
+            case 0x62:
+              shift->set(OFF);
+            break;
+            case 0x63:
+              tap_tempo->set(OFF);
+            break;
+            case 0x64:
+              nudge_plus->set(OFF);
+            break;
+            case 0x65:
+              nudge_minus->set(OFF);
+            break;
           }
         break;
         case CC_ABSOLUTE:
