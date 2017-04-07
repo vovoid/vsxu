@@ -125,6 +125,7 @@ add_subdirectory(lib/widget)
 ################################################################################
 # VSXU IMPLEMENTATIONS/BINARIES ################################################
 ################################################################################
+add_subdirectory(programs/launcher)
 add_subdirectory(programs/artiste)
 add_subdirectory(programs/player)
 if (VSXU_DEMO_PLAYER)
@@ -135,7 +136,7 @@ add_subdirectory(programs/profiler)
 
 if(UNIX)
  add_subdirectory(programs/server)
- add_subdirectory(programs/launcher)
+
 endif(UNIX)
 
 add_subdirectory(programs/tools/vsxbt)
