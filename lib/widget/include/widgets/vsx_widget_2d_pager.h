@@ -22,8 +22,7 @@
 */
 
 
-#ifndef VSX_WIDGET_2D_PAGER_H
-#define VSX_WIDGET_2D_PAGER_H
+#pragma once
 
 #include "vsx_widget.h"
 
@@ -50,7 +49,3 @@ public:
   void decrease();
   vsx_widget_2d_pager();
 };
-
-
-
-#endif // VSX_WIDGET_2D_PAGER_H

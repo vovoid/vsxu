@@ -78,12 +78,10 @@ vsx_widget::vsx_widget()
   render_type = render_3d;
   coord_type = VSX_WIDGET_COORD_CENTER;
   coord_related_parent = true;
-  menu = 0;
   init_run = false;
   id = static_widget_id_accumulator;
   global_index_list[id] = this;
   ++static_widget_id_accumulator;
-  visible = 1;
   parent = this;
   double_click_d[0] =
   double_click_d[1] =
@@ -284,8 +282,8 @@ vsx_widget* vsx_widget::find_component(vsx_widget_coords coords, vsx_widget_dist
   }
 
   vsx_widget *tt;
-  if (!enabled) return 0;
-  if (!visible) return 0;
+  reqrv(enabled, 0);
+  reqrv(visible > 0.0f, 0);
 
 
   if (coord_related_parent)
@@ -482,43 +480,42 @@ void vsx_widget::input_mouse_up(float x, float y, int button)
 void vsx_widget::event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
 {
   VSX_UNUSED(coords);
+  req(visible > 0.0f);
 
-  if (visible) {
-    resize_i = 0;
-  	float db = (float)(dragborder*1.5);
-    if (allow_resize_y) {
-      // /|
-      // ||
-      if ((distance.corner.y < size.y) && (distance.corner.y > size.y-db)) resize_i += 1;
-      // ||
-      // \|
-      if (distance.corner.y < db) resize_i += 4;
-    }
-    if (allow_resize_x) {
-      // |          ---->|
-      if ((distance.corner.x < target_size.x) && (distance.corner.x > target_size.x-db)) resize_i += 2;
-      // |<----          |
-      if (distance.corner.x < db) resize_i += 8;
-    }
-
-    if ((resize_i == 2) || (resize_i == 8))
-      vsx_mouse_control.set_cursor(MOUSE_CURSOR_WE);
-
-    if ((resize_i == 1) || (resize_i == 4))
-      vsx_mouse_control.set_cursor(MOUSE_CURSOR_NS);
-
-    if (resize_i == 6)
-      vsx_mouse_control.set_cursor(MOUSE_CURSOR_NWSE);
-
-    if (resize_i == 9)
-      vsx_mouse_control.set_cursor(MOUSE_CURSOR_NWSE);
-
-    if (resize_i == 3)
-      vsx_mouse_control.set_cursor(MOUSE_CURSOR_NESW);
-
-    if (resize_i == 12)
-      vsx_mouse_control.set_cursor(MOUSE_CURSOR_NESW);
+  resize_i = 0;
+  float db = (float)(dragborder*1.5);
+  if (allow_resize_y) {
+    // /|
+    // ||
+    if ((distance.corner.y < size.y) && (distance.corner.y > size.y-db)) resize_i += 1;
+    // ||
+    // \|
+    if (distance.corner.y < db) resize_i += 4;
   }
+  if (allow_resize_x) {
+    // |          ---->|
+    if ((distance.corner.x < target_size.x) && (distance.corner.x > target_size.x-db)) resize_i += 2;
+    // |<----          |
+    if (distance.corner.x < db) resize_i += 8;
+  }
+
+  if ((resize_i == 2) || (resize_i == 8))
+    vsx_mouse_control.set_cursor(MOUSE_CURSOR_WE);
+
+  if ((resize_i == 1) || (resize_i == 4))
+    vsx_mouse_control.set_cursor(MOUSE_CURSOR_NS);
+
+  if (resize_i == 6)
+    vsx_mouse_control.set_cursor(MOUSE_CURSOR_NWSE);
+
+  if (resize_i == 9)
+    vsx_mouse_control.set_cursor(MOUSE_CURSOR_NWSE);
+
+  if (resize_i == 3)
+    vsx_mouse_control.set_cursor(MOUSE_CURSOR_NESW);
+
+  if (resize_i == 12)
+    vsx_mouse_control.set_cursor(MOUSE_CURSOR_NESW);
 }
 
 void vsx_widget::calculate_mouse_distance(float x, float y, vsx_widget_coords &coord, vsx_widget_distance &distance)
@@ -552,18 +549,17 @@ void vsx_widget::calculate_mouse_distance(float x, float y, vsx_widget_coords &c
 void vsx_widget::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
 {
   VSX_UNUSED(distance);
+  req(button == 2);
+  req(menu);
 
-  if (button == 2)
+  if (menu_temp_disable)
   {
-    if (!menu_temp_disable)
-    if (menu)
-    {
-      front(menu);
-      menu->visible = 2;
-      menu->pos = menu->target_pos = coords.screen_global;
-    }
     menu_temp_disable = false;
+    return;
   }
+
+  menu->pos = menu->target_pos = coords.screen_global;
+  menu->show();
 }
 
 
@@ -604,8 +600,7 @@ void vsx_widget::event_mouse_move(vsx_widget_distance distance,vsx_widget_coords
 
 void vsx_widget::resize(vsx_widget_distance distance)
 {
-  if (!visible)
-    return;
+  req(visible > 0.0f);
 
   if ((resize_i == 2) || (resize_i == 8))
     vsx_mouse_control.set_cursor(MOUSE_CURSOR_WE);
@@ -846,7 +841,7 @@ void vsx_widget::hide_children()
 }
 
 
-vsx_widget *vsx_widget::add(vsx_widget *widget_pointer, vsx_string<>name)
+vsx_widget* vsx_widget::add(vsx_widget *widget_pointer, vsx_string<>name)
 {
   // set the name of the widget internally
   widget_pointer->name = name;
@@ -1064,8 +1059,8 @@ void vsx_widget::interpolate_pos()
   pos.y = pos.y*(1-tt)+target_pos.y*tt;
 
   if (
-    (round(pos.x*2000.0f) == round(target_pos.x*2000.0f)) &&
-    (round(pos.y*2000.0f) == round(target_pos.y*2000.0f))
+    ((int)round(pos.x*2000.0f) == (int)round(target_pos.x*2000.0f)) &&
+    ((int)round(pos.y*2000.0f) == (int)round(target_pos.y*2000.0f))
   )
     interpolating_pos = false;
 }
@@ -1082,8 +1077,8 @@ void vsx_widget::interpolate_size()
   size.x = size.x*(1-tt)+target_size.x*tt;
   size.y = size.y*(1-tt)+target_size.y*tt;
   if (
-    (round(size.x*2000) == round(target_size.x*2000)) &&
-    (round(size.y*2000) == round(target_size.y*2000))
+    ((int)round(size.x*2000) == (int)round(target_size.x*2000)) &&
+    ((int)round(size.y*2000) == (int)round(target_size.y*2000))
   ) interpolating_size = false;
 }
 
@@ -1114,8 +1109,7 @@ void vsx_widget::resize_to(vsx_vector3<> to_size)
 
 void vsx_widget::draw()
 {
-  if (!visible)
-    return;
+  req(visible > 0.0f);
 
   if (render_type == render_3d)
   {
@@ -1129,8 +1123,7 @@ void vsx_widget::draw_2d()
 	#ifdef VSX_DEBUG
 	printf("draw 2d: %s\n",name.c_str());
 	#endif
-  if (!visible)
-    return;
+  req(visible > 0.0f);
 
   if (render_type == render_2d)
   {

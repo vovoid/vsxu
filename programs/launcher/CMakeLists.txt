@@ -56,7 +56,6 @@ add_definitions(
 
 set(SOURCES
   src/launcher_main.cpp
-  src/launcher/vsx_widget_launcher.cpp
 )
 
 file(GLOB_RECURSE HEADER_FILES *.h)

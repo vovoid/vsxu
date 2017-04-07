@@ -20,9 +20,7 @@
 * with this program; if not, write to the Free Software Foundation, Inc.,
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-
-#ifndef VSX_WIDGET_DESKTOP_H
-#define VSX_WIDGET_DESKTOP_H
+#pragma once
 
 #include <vsx_widget.h>
 
@@ -49,7 +47,6 @@ public:
     vsx_widget_skin::get_instance()->skin_path_set( PLATFORM_SHARED_FILES+vsx_string<>("gfx")+DIRECTORY_SEPARATOR+"vsxu_luna"+DIRECTORY_SEPARATOR );
     vsx_widget_skin::get_instance()->init();
 
-
     font.load(PLATFORM_SHARED_FILES+"font"+DIRECTORY_SEPARATOR+"font-ascii.png", vsx::filesystem::get_instance());
 
     mtex = vsx_texture_loader::load(
@@ -66,7 +63,6 @@ public:
 
     launcher = (vsx_widget_launcher*)this->add((vsx_widget*)(new vsx_widget_launcher), "launcher");
     launcher->init();
-
 
     vsx_widget_global_interpolation::get_instance()->set( 1.0);
     camera.set_key_speed( 3.0 );
@@ -218,11 +214,3 @@ public:
 
 };
 
-
-
-
-
-
-
-
-#endif

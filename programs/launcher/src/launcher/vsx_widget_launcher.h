@@ -25,30 +25,130 @@
 
 // widget
 #include <vsx_widget.h>
+#include <widgets/vsx_widget_popup_menu.h>
+#include <widgets/vsx_widget_editor.h>
+#include <widgets/vsx_widget_base_edit.h>
+#include <widgets/vsx_widget_label.h>
+#include <widgets/vsx_widget_dropbox.h>
 
 // engine_graphics
+#include <gl_helper.h>
 #include <vsx_vbo_bucket.h>
+
+using std::unique_ptr;
 
 class vsx_widget_launcher : public vsx_widget
 {
-  vsx_widget* timeline_window;
-
 public:
 
-  void init();
-  void update_list();
+  vsx_widget_base_edit* editor = 0x0;
+  vsx_widget_label* label = 0x0;
+  vsx_widget_dropbox* application_selection;
 
-  void update_children();
 
-  void i_draw();
+  void init()
+  {
+    support_interpolation = true;
+    allow_resize_x = true;
+    allow_resize_y = true;
+    set_size(vsx_vector3<>(1.6f,0.9f));
+    size_min.x = 0.2;
+    size_min.y = 0.2;
 
-  void command_process_back_queue(vsx_command_s *t);
-  bool event_key_down(uint16_t key);
+    title = "Launch VSXu";
 
-  void event_mouse_wheel(float y);
+    allow_move_x = false;
+    allow_move_y = false;
 
-  void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords);
+    set_pos( camera.get_pos_2d() );
+    camera.set_distance(2.9);
 
-  void interpolate_size();
+    // Menu
+    menu = add(new vsx_widget_popup_menu, ".comp_menu");
+    menu->commands.adds(VSX_COMMAND_MENU, "close", "menu_close", "");
+    menu->size.x = size.x * 0.1;
+    menu->init();
+    menu->set_render_type(render_2d);
+
+    editor = dynamic_cast<vsx_widget_base_edit*>( add(new vsx_widget_base_edit(), "editor") );
+    editor->set_pos( vsx_vector3f( -0.4, 0.0 ) );
+    editor->set_size( vsx_vector3f(0.1, 0.1) );
+    editor->set_font_size( 0.08f );
+    editor->set_string("hej");
+    editor->set_render_type(vsx_widget_render_type::render_3d);
+
+    label = dynamic_cast<vsx_widget_label*>( add(new vsx_widget_label(), "label") );
+    label->set_pos( vsx_vector3f( -0.4, 0.0 ) );
+    label->set_size( vsx_vector3f(0.1, 0.1) );
+    label->set_font_size( 0.08f );
+    label->title = "hej";
+    label->set_render_type(vsx_widget_render_type::render_3d);
+
+    application_selection = dynamic_cast<vsx_widget_dropbox*>( add(new vsx_widget_dropbox("Select Application"), "application_selection") );
+    application_selection->set_pos( vsx_vector3f( 0.0, 0.45 - 0.05 ) );
+    application_selection->set_size( vsx_vector3f(0.8, 0.1) );
+    application_selection->set_font_size( 0.08f );
+    application_selection->set_render_type(vsx_widget_render_type::render_3d);
+    application_selection->init();
+
+    application_selection->add_option( 0, "VSXu Artiste" );
+    application_selection->add_option( 1, "VSXu Player" );
+    application_selection->add_option( 2, "VSXu Profiler" );
+
+
+    // make sure interpolation is called
+    this->interpolate_size();
+    init_run = true;
+  }
+
+  void i_draw()
+  {
+    vsx_vector3<> position = get_pos_p();
+    glBegin(GL_QUADS);
+      vsx_widget_skin::get_instance()->set_color_gl(1);
+      glVertex3f(position.x-size.x*0.5f, position.y+size.y*0.5f,position.z);
+      glVertex3f(position.x+size.x*0.5f, position.y+size.y*0.5f,position.z);
+      glVertex3f(position.x+size.x*0.5f, position.y+-size.y*0.5f,position.z);
+      glVertex3f(position.x-size.x*0.5f, position.y+-size.y*0.5f,position.z);
+    glEnd();
+    vsx_widget_skin::get_instance()->set_color_gl(0);
+    draw_box_border(vsx_vector3<>(position.x-size.x*0.5,position.y-size.y*0.5f), vsx_vector3<>(size.x,size.y), dragborder);
+
+    glColor4f(1,1,1,1);
+
+    vsx_widget::i_draw();
+  }
+
+  void command_process_back_queue(vsx_command_s *t)
+  {
+    if (t->cmd == "menu_close")
+    {
+      _delete();
+      return;
+    }
+
+    vsx_printf(L"t->cmd: %s\n", t->cmd_data.c_str());
+  }
+
+  bool event_key_down(uint16_t key)
+  {
+    VSX_UNUSED(key);
+    return true;
+  }
+
+  void event_mouse_wheel(float y)
+  {
+  }
+
+  void event_mouse_move_passive(vsx_widget_distance distance,vsx_widget_coords coords)
+  {
+    VSX_UNUSED(distance);
+  }
+
+  void interpolate_size()
+  {
+    vsx_widget::interpolate_size();
+  }
+
 };
 

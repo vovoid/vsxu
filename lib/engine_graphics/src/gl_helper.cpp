@@ -123,35 +123,38 @@ void draw_box_tex(const vsx_vector3<> &pos, const float &width, const float &hei
 
 }
 
-void draw_box_gradient(const vsx_vector3<> &pos, float width, float height, const vsx_color<> &a, const vsx_color<> &b, const vsx_color<> &c, const vsx_color<> &d)
+void draw_box_gradient(
+    const vsx_vector3<> &pos, float width, float height,
+    const vsx_color<> &top_left, const vsx_color<> &bottom_left,
+    const vsx_color<> &bottom_right, const vsx_color<> &top_right)
 {
 	glBegin(GL_QUADS);
     glColor4f(
-      a.r,
-      a.g,
-      a.b,
-      a.a
+      top_left.r,
+      top_left.g,
+      top_left.b,
+      top_left.a
     );
       glVertex2f(pos.x, pos.y+height);
     glColor4f(
-      b.r,
-      b.g,
-      b.b,
-      b.a
+      bottom_left.r,
+      bottom_left.g,
+      bottom_left.b,
+      bottom_left.a
     );
       glVertex2f(pos.x, pos.y);
     glColor4f(
-      c.r,
-      c.g,
-      c.b,
-      c.a
+      bottom_right.r,
+      bottom_right.g,
+      bottom_right.b,
+      bottom_right.a
     );
       glVertex2f(pos.x+width, pos.y);
     glColor4f(
-      d.r,
-      d.g,
-      d.b,
-      d.a
+      top_right.r,
+      top_right.g,
+      top_right.b,
+      top_right.a
     );
  			glVertex2f(pos.x+width, pos.y+height);
 	glEnd();

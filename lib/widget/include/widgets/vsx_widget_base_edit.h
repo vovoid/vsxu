@@ -44,7 +44,6 @@ class WIDGET_DLLIMPORT vsx_widget_base_edit : public vsx_widget_panel {
   float longest_line;
   float longest_y;
   int num_hidden_lines;
-//  vsx_font myf;
   vsx_string<>syntax_col[5];
   bool process_characters;
   void process_line(int n_line);
@@ -52,6 +51,7 @@ class WIDGET_DLLIMPORT vsx_widget_base_edit : public vsx_widget_panel {
   void calculate_scroll_size();
   void render_caret();
   bool filter_string_enabled;
+
 public:
   int caretx, carety;
 	int updates;

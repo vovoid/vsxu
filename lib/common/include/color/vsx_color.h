@@ -96,7 +96,7 @@ public:
     float del_max = var_max - var_min;             //Delta RGB value
     v = var_max;
 
-    if ( del_max == 0 )                     //This is a gray, no chroma...
+    if ( FLOAT_EQUALS(del_max, 0.0f) )                     //This is a gray, no chroma...
     {
       h = 0;                                //HSV results = From 0 to 1
       s = 0;
@@ -109,9 +109,9 @@ public:
       float del_G = ( ( ( var_max - var_g ) / 6.0f ) + ( del_max / 2.0f ) ) / del_max;
       float del_B = ( ( ( var_max - var_b ) / 6.0f ) + ( del_max / 2.0f ) ) / del_max;
 
-      if      ( var_r == var_max ) h = del_B - del_G;
-      else if ( var_g == var_max ) h = ( 1.0f / 3.0f ) + del_R - del_B;
-      else if ( var_b == var_max ) h = ( 2.0f / 3.0f ) + del_G - del_R;
+      if      ( FLOAT_EQUALS(var_r, var_max) ) h = del_B - del_G;
+      else if ( FLOAT_EQUALS(var_g, var_max) ) h = ( 1.0f / 3.0f ) + del_R - del_B;
+      else if ( FLOAT_EQUALS(var_b, var_max) ) h = ( 2.0f / 3.0f ) + del_G - del_R;
 
     }
     result->h = h;

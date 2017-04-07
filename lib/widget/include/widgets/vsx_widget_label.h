@@ -22,32 +22,59 @@
 */
 
 
-#include <vsx_gl_global.h>
-#include "widgets/vsx_widget_2d_label.h"
+#pragma once
 
-void vsx_widget_2d_label::init()
+#include "vsx_widget.h"
+
+enum align{
+  a_left,
+  a_center,
+  a_right
+};
+
+class WIDGET_DLLIMPORT vsx_widget_label
+  :
+    public vsx_widget
 {
-  halign = a_center;
-  font_size = size.y = 0.014f;
+public:
 
-}
+  bool inside_xyd(vsx_vector3<> world, vsx_vector3<> screen)
+  {
+    VSX_UNUSED(world);
+    VSX_UNUSED(screen);
 
-void vsx_widget_2d_label::draw_2d()
-{
-  if (!visible) return;
-  glColor3f(1,1,1);
-  vsx_vector3<> p = parent->get_pos_p()+pos;
-  p.y -= font_size*0.5f;
-  switch ((align)halign) {
-    case a_left:
-      font.print(p, title,font_size);
-    break;
-    case a_center:
-      font.print_center(p, title,font_size);
-    break;
-    case a_right:
-      font.print_right(p, title,font_size);
-    break;
+    return false;
   }
-}
 
+  align halign;
+
+  void init()
+  {
+    halign = a_center;
+    font_size = size.y = 0.014f;
+    set_render_type(vsx_widget_render_type::render_2d);
+  }
+
+  void i_draw()
+  {
+    req(visible);
+
+    glColor3f(1,1,1);
+    vsx_vector3<> p = parent->get_pos_p()+pos;
+    p.y -= font_size*0.5f;
+    switch ((align)halign) {
+      case a_left:
+        font.print(p, title,font_size);
+      break;
+      case a_center:
+        font.print_center(p, title,font_size);
+      break;
+      case a_right:
+        font.print_right(p, title,font_size);
+      break;
+    }
+  }
+
+
+
+};

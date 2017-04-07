@@ -65,7 +65,7 @@ void vsx_widget_scrollbar::event_mouse_move(vsx_widget_distance distance,vsx_wid
     cur_pos = distance.corner.x + cur_pos_click_down-click_down.x;
     if (cur_pos < 0) cur_pos = 0;
     if (cur_pos > (1-shz)*size.x) cur_pos = (1-shz)*size.x;
-    if ((1-shz)*size.x != 0)
+    if ( fabsf((1-shz) * size.x) > 0.0f)
     value = ((cur_pos/((1-shz)*size.x))*(float)scroll_max);
     else value = 0;
   }
@@ -88,9 +88,7 @@ void vsx_widget_scrollbar::event_mouse_move(vsx_widget_distance distance,vsx_wid
 
 void vsx_widget_scrollbar::i_draw()
 {
-  if (!visible)
-    return;
-
+  req(visible > 0.0f);
 
   scroll_handle_size = window_size;
 

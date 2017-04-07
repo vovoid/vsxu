@@ -78,7 +78,7 @@ set(SOURCES_LZHAM
   thirdparty/lzham-sdk/lzhamdecomp/lzham_platform.cpp
   thirdparty/lzham-sdk/lzhamdecomp/lzham_prefix_coding.cpp
   thirdparty/lzham-sdk/lzhamdecomp/lzham_symbol_codec.cpp
-  thirdparty/lzham-sdk/lzhamdecomp/lzham_timer.cpp
+  #thirdparty/lzham-sdk/lzhamdecomp/lzham_timer.cpp
   thirdparty/lzham-sdk/lzhamdecomp/lzham_vector.cpp
   thirdparty/lzham-sdk/lzhamcomp/lzham_lzbase.cpp
   thirdparty/lzham-sdk/lzhamcomp/lzham_lzcomp.cpp

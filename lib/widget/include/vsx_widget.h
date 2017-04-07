@@ -191,11 +191,11 @@ public:
   bool topmost;
 
   // 2d gui stuff
-  float visible;
+  float visible = 1.0f;
   virtual void show() { visible = 1.0f; }
   virtual void hide() { visible = 0.0f; }
   // popup menu support
-  vsx_widget* menu;
+  vsx_widget* menu = 0x0;
   bool menu_temp_disable; // temporary disable showing the menu
 
   // available list of commands for a widget
@@ -338,7 +338,7 @@ public:
     }
     for (children_iter=children.begin(); children_iter != children.end(); ++children_iter)
     {
-      if ((*children_iter)->visible)
+      if ((*children_iter)->visible > 0.0f)
       (*children_iter)->init_frame();
     }
   }

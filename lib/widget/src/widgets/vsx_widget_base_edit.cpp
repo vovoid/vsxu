@@ -643,7 +643,7 @@ bool vsx_widget_base_edit::event_key_down(uint16_t key) {
     case VSX_SCANCODE_LEFT:
       --caretx;
       if (caretx < 0) {
-        if (scroll_x) {
+        if (fabsf(scroll_x) > 0.0f) {
           ++caretx;
           --scroll_x;
           //fix_pos();
@@ -674,7 +674,7 @@ bool vsx_widget_base_edit::event_key_down(uint16_t key) {
         --carety;
         if (carety < 0) {
           carety = 0;
-          if (scroll_y) {
+          if (fabsf(scroll_y) > 0.0f) {
             --scroll_y;
           }
         }
@@ -743,7 +743,8 @@ bool vsx_widget_base_edit::event_key_down(uint16_t key) {
         if (caretx < 0) {--scroll_x; ++caretx;}
         process_line(carety+(int)scroll_y);
       } else {
-        if (scroll_y+carety) {
+        if ((int)(scroll_y + carety))
+        {
           while (c2 < carety+scroll_y)
           {
             ++c2;

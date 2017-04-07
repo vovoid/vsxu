@@ -3,7 +3,8 @@
 #include "launcher_desktop.h"
 
 // draw-related variables
-class vsx_launcher_draw {
+class vsx_launcher_draw
+{
 public:
   std::unique_ptr<vsx_launcher_desktop> desktop;
   vsx_string<> current_fps;
@@ -11,13 +12,6 @@ public:
   vsx_timer engine_render_time;
   int frame_count = 0;
   float gui_g_time = 0;
-  double dt = 0.0;
-  double gui_fullscreen_fpstimer = 0.0;
-  double max_fps = 0.0;
-  double min_fps = 0.0;
-  double max_render_time = 0.0;
-  double min_render_time = 0.0;
-  vsx_font myf;
   vsx_command_list system_command_queue;
 
   vsx_launcher_draw() :
@@ -33,7 +27,7 @@ public:
 
   void draw()
   {
-    dt = gui_t.dtime();
+    double dt = gui_t.dtime();
     gui_g_time += dt;
     ++frame_count;
     vsx_widget_time::get_instance()->set_dtime( dt );

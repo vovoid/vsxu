@@ -73,7 +73,7 @@ void vsx_widget_2d_pager::event_mouse_down(vsx_widget_distance distance,vsx_widg
 
 void vsx_widget_2d_pager::i_draw()
 {
-  if (!visible) return;
+  req(visible > 0.0f);
   if (max_page == 0) cur_page = -1;
   font.print_center(get_pos_p(), "<< "+vsx_string_helper::i2s(cur_page+1)+" / "+vsx_string_helper::i2s(max_page)+" >>", size.y*0.6f);
 }

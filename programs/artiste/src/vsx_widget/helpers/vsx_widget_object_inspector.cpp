@@ -47,7 +47,7 @@
 #include "widgets/vsx_widget_panel.h"
 #include "widgets/vsx_widget_base_edit.h"
 #include "widgets/vsx_widget_button.h"
-#include "widgets/vsx_widget_2d_label.h"
+#include "widgets/vsx_widget_label.h"
 
 
 void vsx_window_object_inspector::draw_2d() {
@@ -203,8 +203,8 @@ vsx_window_object_inspector::vsx_window_object_inspector()
   component_rename_edit->init();
   topmost = true;
   component_rename_button = add(new vsx_widget_button,"button_rename");
-  label1 = add(new vsx_widget_2d_label,"label1");
-  label2 = add(new vsx_widget_2d_label,"label1");
+  label1 = add(new vsx_widget_label,"label1");
+  label2 = add(new vsx_widget_label,"label1");
 
   vsx_widget::init_children();
   title = "object inspector";
@@ -239,11 +239,11 @@ vsx_window_object_inspector::vsx_window_object_inspector()
   // -------------------------------------------------------------------------------------------------------------------
   //-- CHOOSER INSPECTOR -----------------------------------------------------------------------------------------------
 
-  ((vsx_widget_2d_label*)label1)->halign = a_left;
+  ((vsx_widget_label*)label1)->halign = a_left;
   label1->pos.x = 0.005f;
   label1->pos.y = 0.05f;
   label1->visible = 1;
-  ((vsx_widget_2d_label*)label2)->halign = a_left;
+  ((vsx_widget_label*)label2)->halign = a_left;
   label2->pos.x = 0.005f;
   label2->pos.y = 0.12f;
   label2->visible = 0;
