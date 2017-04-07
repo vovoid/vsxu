@@ -11,7 +11,6 @@
 #define VSX_ALWAYS_INLINE
 #endif
 
-
 #define PLATFORM_WINDOWS          0
 #define PLATFORM_LINUX          1
 #define PLATFORM_MACINTOSH      2
@@ -55,7 +54,7 @@
         #define PLATFORM_SHARED_FILES                           vsx_string<>("")
         #define PLATFORM_DLL_SUFFIX                             ".dylib"
         #ifdef PLATFORM_SHARED_FILES_STL
-          #define PLATFORM_SHARED_FILES_STLSTRING                         std::string("")
+          #define PLATFORM_SHARED_FILES_STLSTRING               std::string("")
         #endif
         #define DIRECTORY_SEPARATOR                             "/"
         #define DIRECTORY_SEPARATOR_CHAR                        '/'
@@ -64,10 +63,10 @@
         #define PLATFORM                                        PLATFORM_LINUX
         #define PLATFORM_NAME                                   "GNU / Linux"
         #define PLATFORM_FAMILY                                 PLATFORM_FAMILY_UNIX
-        #define PLATFORM_SHARED_FILES                           vsx_string<>(CMAKE_INSTALL_PREFIX)+vsx_string<>("/share/vsxu/")
+        #define PLATFORM_SHARED_FILES                           vsx_string<>(get_exec_path().c_str()) + "/../share/vsxu/"
         #define PLATFORM_DLL_SUFFIX                             ".so"
         #ifdef PLATFORM_SHARED_FILES_STL
-          #define PLATFORM_SHARED_FILES_STLSTRING               std::string(CMAKE_INSTALL_PREFIX)+std::string("/share/vsxu/")
+          #define PLATFORM_SHARED_FILES_STLSTRING               get_exec_path() + std::string("/../share/vsxu/")
         #endif
         #define DIRECTORY_SEPARATOR                             "/"
         #define DIRECTORY_SEPARATOR_CHAR                        '/'
@@ -128,6 +127,11 @@
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
   #include <stdio.h>
   #include <stdlib.h>
+  #include <unistd.h>
+  #include <libgen.h>
+  #include <string>
+  #include <cstring>
+
   inline void* vsx_aligned_malloc(size_t n)
   {
     void* r;
@@ -137,6 +141,61 @@
   }
   #define vsx_aligned_realloc(pointer, n) realloc(pointer, n)
   #define vsx_aligned_free(pointer) free(pointer)
+
+  inline std::string get_exec_path()
+  {
+    int dest_len = 2048;
+    char path[2048];
+    std::string result;
+
+    /*If we are in linux */
+    if (readlink ("/proc/self/exe", path, dest_len) != -1)
+    {
+      dirname (path);
+      strcat  (path, "/");
+      result = path;
+    }
+    else
+    {
+      /* else Try the PATH. */
+      char* systemPath = getenv ("PATH");
+      char* candidateDir = NULL;
+      char* baseName = NULL;
+      if (systemPath != NULL)
+      {
+        dest_len--;
+        systemPath = strdup (systemPath);
+        for (candidateDir = strtok (systemPath, ":"); candidateDir != NULL; candidateDir = strtok (NULL, ":"))
+        {
+          strncpy (path, candidateDir, dest_len);
+          strncat (path, "/", dest_len);
+          strncat (path, baseName, dest_len);
+
+          if (access(path, F_OK) == 0)
+          {
+            free (systemPath);
+            dirname (path);
+            strcat  (path, "/");
+            result = path;
+            break;
+          }
+        }
+        free(systemPath);
+        dest_len++;
+      }
+    }
+
+    if(result != "")
+        return result;
+
+    /* again someone has use execve: we dont knowe the executable name; we surrender and give instead current path */
+    if (getcwd (path, dest_len - 1) == NULL)
+        return std::string();
+    strcat  (path, "/");
+    result = path;
+    return result;
+}
+
 #endif
 
 // wchar string hack
