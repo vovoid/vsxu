@@ -240,12 +240,14 @@ vsx_window_object_inspector::vsx_window_object_inspector()
   //-- CHOOSER INSPECTOR -----------------------------------------------------------------------------------------------
 
   ((vsx_widget_label*)label1)->halign = a_left;
-  label1->pos.x = 0.005f;
+  label1->pos.x = 0.005f + size.x * 0.5f;
   label1->pos.y = 0.05f;
+  label1->size = vsx_vector3f(size.x, 0.02f);
   label1->visible = 1;
   ((vsx_widget_label*)label2)->halign = a_left;
-  label2->pos.x = 0.005f;
+  label2->pos.x = 0.005f + size.x * 0.5f;
   label2->pos.y = 0.12f;
+  label2->size = vsx_vector3f(size.x, 0.02f);
   label2->visible = 0;
 
   // normal OI

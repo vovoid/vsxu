@@ -157,7 +157,8 @@ public:
         labels.push_back(l);
         l->init();
         l->halign = a_left;
-        l->set_pos(vsx_vector3<>(e->pos.x-e->size.x*0.5,yp+0.02f));
+        l->set_pos( vsx_vector3<>(e->pos.x, yp + 0.02f) );
+        l->set_size( vsx_vector3f(size.x - 0.04f, 0.02f) );
         l->set_font_size(0.015f);
         l->title = f_parts[i];
 

@@ -24,7 +24,8 @@
 
 #pragma once
 
-#include "vsx_widget.h"
+#include <vsx_widget.h>
+#include <gl_helper.h>
 
 enum align{
   a_left,
@@ -36,7 +37,11 @@ class WIDGET_DLLIMPORT vsx_widget_label
   :
     public vsx_widget
 {
+  bool outside = false;
+
 public:
+
+  std::function<void()> on_click = [](){};
 
   bool inside_xyd(vsx_vector3<> world, vsx_vector3<> screen)
   {
@@ -55,22 +60,71 @@ public:
     set_render_type(vsx_widget_render_type::render_2d);
   }
 
+  void event_mouse_down(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+  {
+    VSX_UNUSED(distance);
+    VSX_UNUSED(coords);
+    VSX_UNUSED(button);
+
+    outside = false;
+    m_focus = this;
+  }
+
+  void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button)
+  {
+    VSX_UNUSED(distance);
+    VSX_UNUSED(coords);
+    VSX_UNUSED(button);
+    req(!outside);
+
+    on_click();
+  }
+
+  void event_mouse_move(vsx_widget_distance distance,vsx_widget_coords coords)
+  {
+    VSX_UNUSED(coords);
+    outside =
+      !(
+        (distance.corner.x > 0)
+        &&
+        (distance.corner.x < target_size.x)
+        &&
+        (distance.corner.y > 0)
+        &&
+        (distance.corner.y < target_size.y)
+      );
+  }
+
+  void draw_debug(vsx_vector3f position)
+  {
+    draw_box_gradient(
+          position - vsx_vector3f(size.x * 0.5f, size.y * 0.5f),
+          size.x, size.y,
+          vsx_widget_skin::get_instance()->get_color(3), vsx_widget_skin::get_instance()->get_color(3),
+          vsx_widget_skin::get_instance()->get_color(4), vsx_widget_skin::get_instance()->get_color(4)
+    );
+  }
+
   void i_draw()
   {
     req(visible);
 
+    vsx_vector3<> position = parent->get_pos_p() + pos;
+
+//    draw_debug(position);
+
     glColor3f(1,1,1);
-    vsx_vector3<> p = parent->get_pos_p()+pos;
-    p.y -= font_size*0.5f;
+    position.y -= font_size*0.5f;
     switch ((align)halign) {
       case a_left:
-        font.print(p, title,font_size);
+        position.x -= size.x * 0.5f;
+        font.print(position, title,font_size);
       break;
       case a_center:
-        font.print_center(p, title,font_size);
+        font.print_center(position, title,font_size);
       break;
       case a_right:
-        font.print_right(p, title,font_size);
+        font.print_right(position, title,font_size);
       break;
     }
   }

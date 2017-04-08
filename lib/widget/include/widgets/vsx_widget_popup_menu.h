@@ -195,7 +195,9 @@ public:
 
     font.color = vsx_color<>(1,1,1,1);
 
-    vsx_widget_skin::get_instance()->set_color_gl(0);
+    vsx_color<> background_color = vsx_widget_skin::get_instance()->get_color(0);
+    glColor4f(background_color.r, background_color.g, background_color.b, 0.9f);
+//    vsx_widget_skin::get_instance()->set_color_gl(0);
 
     if (parent->widget_type == VSX_WIDGET_TYPE_2D_MENU_POPUP) {
       if (((vsx_widget_popup_menu*)parent)->over && ((vsx_widget_popup_menu*)parent)->over != id_over)
