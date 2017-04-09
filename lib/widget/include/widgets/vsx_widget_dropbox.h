@@ -30,8 +30,23 @@ class vsx_widget_dropbox
   vsx_widget_label* label = 0x0;
   vsx_widget_button* button = 0x0;
 
+  void on_select(vsx_command_s& command)
+  {
+    int value = vsx_string_helper::s2i(command.cmd);
+    foreach (options, i)
+      if (options[i].value == value)
+      {
+        selected = i;
+        label->title = options[selected].title;
+        on_selection(value, options[selected].title);
+        return;
+      }
+  }
+
 public:
   size_t selected = 0;
+
+  std::function<void(size_t, vsx_string<>&)> on_selection = [](size_t value, vsx_string<>& title){};
 
   vsx_widget_dropbox(vsx_string<> title)
   {
@@ -85,18 +100,6 @@ public:
     label->set_pos( vsx_vector3f( -0.025f, 0) );
     button->set_size( vsx_vector3f(0.05, 0.1));
     button->set_pos( vsx_vector3f( size.x * 0.5f - 0.025, 0.0));
-  }
-
-  void on_select(vsx_command_s& command)
-  {
-    int value = vsx_string_helper::s2i(command.cmd);
-    foreach (options, i)
-      if (options[i].value == value)
-      {
-        selected = i;
-        label->title = options[selected].title;
-        return;
-      }
   }
 
   void add_option(int value, vsx_string<> title)

@@ -15,7 +15,7 @@
 #include <vsx_gl_state.h>
 #include <string/vsx_string_helper.h>
 #include "vsx_application_sdl_window_holder.h"
-
+#include <vsx_application_display.h>
 
 void gl_debug_callback
 (
@@ -88,7 +88,14 @@ class vsx_application_sdl
     SDL_Rect* display_bounds = 0x0;
     display_bounds = new SDL_Rect[ num_displays ];
     for( int i = 0; i < num_displays; ++i )
+    {
         SDL_GetDisplayBounds( i, &display_bounds[ i ] );
+        vsx_application_display::get()->displays.push_back( vsx_application_display::display_info(display_bounds[i].x, display_bounds[i].y, display_bounds[i].w, display_bounds[i].h) );
+    }
+
+
+
+
     size_t chosen_display = 0;
     if (vsx_argvector::get_instance()->has_param("d"))
     {

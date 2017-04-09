@@ -31,6 +31,8 @@
 #include <widgets/vsx_widget_label.h>
 #include <widgets/vsx_widget_dropbox.h>
 #include <widgets/vsx_widget_checkbox.h>
+#include <vsx_application_display.h>
+#include <vsx_argvector.h>
 
 // engine_graphics
 #include <gl_helper.h>
@@ -139,10 +141,22 @@ public:
     display_selection->set_font_size( 0.08f );
     display_selection->set_render_type(vsx_widget_render_type::render_3d);
     display_selection->init();
+    display_selection->on_selection =
+      [this](size_t value, vsx_string<> title)
+      {
+        VSX_UNUSED(title);
+        std::pair<int, int> new_x_y = vsx_application_display::get()->get_local_pos(value, vsx_string_helper::s2i(resolution_x_edit->get_string()), vsx_string_helper::s2i(resolution_y_edit->get_string()));
+        position_x_edit->set_string( vsx_string_helper::i2s( new_x_y.first ) );
+        position_y_edit->set_string( vsx_string_helper::i2s( new_x_y.second ) );
+      };
 
     display_selection->add_option( 0, "Display 1 (primary)" );
-    display_selection->add_option( 1, "Display 2" );
-    display_selection->add_option( 2, "Display 3" );
+
+    if (vsx_application_display::get()->displays.size() > 1)
+    {
+      for_n(i, 1, vsx_application_display::get()->displays.size())
+        display_selection->add_option(i, "Display " + vsx_string_helper::i2s(i));
+    }
 
 
     // fullscreen
@@ -230,7 +244,6 @@ public:
     borderless->set_render_type(vsx_widget_render_type::render_3d);
     borderless->init();
 
-
     // launch button
     launch_button = dynamic_cast<vsx_widget_button*>( add(new vsx_widget_button(), "launch_button") );
     launch_button->set_pos( vsx_vector3f( 0.0, -0.4f ) );
@@ -238,10 +251,40 @@ public:
     launch_button->title = "Launch!";
     launch_button->set_font_size( 0.08f );
     launch_button->set_render_type(vsx_widget_render_type::render_3d);
+    launch_button->on_click = [this](){
+      launch();
+    };
 
     // make sure interpolation is called
     this->interpolate_size();
     init_run = true;
+  }
+
+  void launch()
+  {
+    vsx_string<> command = vsx_argvector::get_instance()->get_executable_directory();
+    if (application_selection->selected == 0)
+      command += DIRECTORY_SEPARATOR  "vsxu_player";
+    if (application_selection->selected == 1)
+      command += DIRECTORY_SEPARATOR  "vsxu_artiste";
+    if (application_selection->selected == 2)
+      command += DIRECTORY_SEPARATOR  "vsxu_profiler";
+
+    command += " ";
+    command += "-d " + vsx_string_helper::i2s(display_selection->selected + 1) + " ";
+
+    if (!fullscreen->checked)
+    {
+      command += "-p " + position_x_edit->get_string() + "," + position_y_edit->get_string() + " ";
+      command += "-s " + resolution_x_edit->get_string() + "x" + resolution_y_edit->get_string();
+      if (borderless->checked)
+        command += " -bl";
+    }
+    command += " &";
+    system(command.c_str());
+    sleep(2);
+    vsx_printf(L"command: %s\n", command.c_str());
+    vsx_application_control::get_instance()->shutdown_request();
   }
 
   void i_draw()
