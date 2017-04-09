@@ -33,6 +33,7 @@
 #include <widgets/vsx_widget_checkbox.h>
 #include <vsx_application_display.h>
 #include <vsx_argvector.h>
+#include <tools/vsx_process.h>
 
 // engine_graphics
 #include <gl_helper.h>
@@ -262,7 +263,9 @@ public:
 
   void launch()
   {
-    vsx_string<> command = vsx_argvector::get_instance()->get_executable_directory();
+    vsx_string<> working_directory = vsx_argvector::get_instance()->get_executable_directory();
+    vsx_string<> command = working_directory;
+
     if (application_selection->selected == 0)
       command += DIRECTORY_SEPARATOR  "vsxu_player";
     if (application_selection->selected == 1)
@@ -280,10 +283,8 @@ public:
       if (borderless->checked)
         command += " -bl";
     }
-    command += " &";
-    system(command.c_str());
-    sleep(2);
-    vsx_printf(L"command: %s\n", command.c_str());
+
+    vsx_process::launch_detached_process( command, working_directory );
     vsx_application_control::get_instance()->shutdown_request();
   }
 
