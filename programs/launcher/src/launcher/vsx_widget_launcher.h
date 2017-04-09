@@ -162,7 +162,7 @@ public:
     if (vsx_application_display::get()->displays.size() > 1)
     {
       for_n(i, 1, vsx_application_display::get()->displays.size())
-        display_selection->add_option((int)i, "Display " + vsx_string_helper::i2s((int)i));
+        display_selection->add_option((int)i, "Display " + vsx_string_helper::i2s((int)i + 1));
     }
 
 
