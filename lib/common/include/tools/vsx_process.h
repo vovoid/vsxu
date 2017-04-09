@@ -23,7 +23,7 @@ public:
       vsx_string<wchar_t> command_16 = vsx_string_helper::string_convert<>(command);
       vsx_string<wchar_t> working_directory_16 = vsx_string_helper::string_convert<>(working_directory);
 
-      bool success = false;
+      BOOL success = false;
       DWORD dwCreationFlags = CREATE_NO_WINDOW;
 
       //dwCreationFlags |= CREATE_UNICODE_ENVIRONMENT;
@@ -31,21 +31,22 @@ public:
       STARTUPINFOW startupInfo =
       {
         sizeof( STARTUPINFO ), 0, 0, 0,
-        (ulong)CW_USEDEFAULT, (ulong)CW_USEDEFAULT,
-        (ulong)CW_USEDEFAULT, (ulong)CW_USEDEFAULT,
+        (DWORD)CW_USEDEFAULT, (DWORD)CW_USEDEFAULT,
+        (DWORD)CW_USEDEFAULT, (DWORD)CW_USEDEFAULT,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0
       };
+      //LPSTR
 
       success = CreateProcess(
         0,
-        command_16.c_str(),
+        (LPSTR)command.c_str(),
         0,
         0,
         FALSE,
         dwCreationFlags,
         nullptr,
-        working_directory_16.c_str(),
-        &startupInfo,
+        working_directory.c_str(),
+        (LPSTARTUPINFO)&startupInfo,
         &pinfo
       );
 

@@ -38,8 +38,13 @@ include_directories(
 
 add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
- -Werror=float-equal
 )
+if (MSVC)
+else()
+  add_definitions(
+   -Werror=float-equal
+  )
+endif()
 
 if (VSXU_DEBUG EQUAL 1)
   add_definitions( -DVSXU_DEBUG )

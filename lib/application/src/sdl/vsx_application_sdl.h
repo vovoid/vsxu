@@ -3,6 +3,7 @@
 #include <vsx_platform.h>
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
 #include <SDL.h>
+#include <windows.h>
 #else
 #include <SDL2/SDL.h>
 #endif
@@ -60,6 +61,12 @@ class vsx_application_sdl
 
   void setup()
   {
+    // on Windows, hide the console window
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+      if (!vsx_argvector::get_instance()->has_param("-console"))
+        ShowWindow( GetConsoleWindow(), SW_HIDE );
+    #endif
+
     if (vsx_argvector::get_instance()->has_param("-help") || vsx_argvector::get_instance()->has_param("help"))
     {
       vsx_application_manager::get_instance()->get()->print_help();

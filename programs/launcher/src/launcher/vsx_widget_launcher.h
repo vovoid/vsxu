@@ -69,14 +69,21 @@ public:
 
   vsx_widget_button* launch_button = 0x0;
 
+  void set_window_position_to_center(size_t value)
+  {
+    std::pair<int, int> new_x_y = vsx_application_display::get()->get_local_pos(value, vsx_string_helper::s2i(resolution_x_edit->get_string()), vsx_string_helper::s2i(resolution_y_edit->get_string()));
+    position_x_edit->set_string( vsx_string_helper::i2s( new_x_y.first ) );
+    position_y_edit->set_string( vsx_string_helper::i2s( new_x_y.second ) );
+  }
+
   void init()
   {
     support_interpolation = true;
     allow_resize_x = true;
     allow_resize_y = true;
     set_size(vsx_vector3<>(2.28f, 1.2f));
-    size_min.x = 0.2;
-    size_min.y = 0.2;
+    size_min.x = 0.2f;
+    size_min.y = 0.2f;
 
     title = "Launch VSXu";
 
@@ -89,26 +96,27 @@ public:
     // Menu
     menu = add(new vsx_widget_popup_menu, ".comp_menu");
     menu->commands.adds(VSX_COMMAND_MENU, "close", "menu_close", "");
-    menu->size.x = size.x * 0.1;
+    menu->size.x = size.x * 0.1f;
     menu->init();
     menu->set_render_type(render_2d);
 
     // title
     label = dynamic_cast<vsx_widget_label*>( add(new vsx_widget_label(), "label") );
-    label->set_pos( vsx_vector3f( 0.0, 0.55 ) );
-    label->set_size( vsx_vector3f( 2.28, 0.1) );
+    label->set_pos( vsx_vector3f( 0.0f, 0.55f ) );
+    label->set_size( vsx_vector3f( 2.28f, 0.1f) );
     label->set_font_size( 0.08f );
     label->title = "VSXu Launcher";
     label->halign = a_center;
     label->set_render_type(vsx_widget_render_type::render_3d);
 
+    float gui_base_pos_x = 0.25f;
 
     // application
-    float application_selection_pos_x = 0.0f;
+    float application_selection_pos_x = gui_base_pos_x;
     float application_selection_pos_y = 0.4f;
     application_label = dynamic_cast<vsx_widget_label*>( add(new vsx_widget_label(), "label") );
-    application_label->set_pos( vsx_vector3f( application_selection_pos_x -0.4 - 0.25, application_selection_pos_y ) );
-    application_label->set_size( vsx_vector3f( 0.5, 0.1) );
+    application_label->set_pos( vsx_vector3f( application_selection_pos_x -0.4f - 0.25f, application_selection_pos_y ) );
+    application_label->set_size( vsx_vector3f( 0.5f, 0.1f) );
     application_label->set_font_size( 0.06f );
     application_label->title = "Select Application:";
     application_label->halign = a_left;
@@ -116,7 +124,7 @@ public:
 
     application_selection = dynamic_cast<vsx_widget_dropbox*>( add(new vsx_widget_dropbox("Select Application"), "application_selection") );
     application_selection->set_pos( vsx_vector3f( application_selection_pos_x, application_selection_pos_y ) );
-    application_selection->set_size( vsx_vector3f(0.8, 0.1) );
+    application_selection->set_size( vsx_vector3f(0.8f, 0.1f) );
     application_selection->set_font_size( 0.08f );
     application_selection->set_render_type(vsx_widget_render_type::render_3d);
     application_selection->init();
@@ -126,11 +134,11 @@ public:
     application_selection->add_option( 2, "VSXu Profiler" );
 
     // display selection
-    float display_selection_pos_x = 0.0f;
+    float display_selection_pos_x = gui_base_pos_x;
     float display_selection_pos_y = 0.3f;
     display_label = dynamic_cast<vsx_widget_label*>( add(new vsx_widget_label(), "label") );
-    display_label->set_pos( vsx_vector3f( display_selection_pos_x -0.4 - 0.25, display_selection_pos_y ) );
-    display_label->set_size( vsx_vector3f( 0.5, 0.1) );
+    display_label->set_pos( vsx_vector3f( display_selection_pos_x -0.4f - 0.25f, display_selection_pos_y ) );
+    display_label->set_size( vsx_vector3f( 0.5f, 0.1f) );
     display_label->set_font_size( 0.06f );
     display_label->title = "Select display:";
     display_label->halign = a_left;
@@ -138,7 +146,7 @@ public:
 
     display_selection = dynamic_cast<vsx_widget_dropbox*>( add(new vsx_widget_dropbox("Select display"), "display_selection") );
     display_selection->set_pos( vsx_vector3f( display_selection_pos_x, display_selection_pos_y ) );
-    display_selection->set_size( vsx_vector3f(0.8, 0.1) );
+    display_selection->set_size( vsx_vector3f(0.8f, 0.1f) );
     display_selection->set_font_size( 0.08f );
     display_selection->set_render_type(vsx_widget_render_type::render_3d);
     display_selection->init();
@@ -146,9 +154,7 @@ public:
       [this](size_t value, vsx_string<> title)
       {
         VSX_UNUSED(title);
-        std::pair<int, int> new_x_y = vsx_application_display::get()->get_local_pos(value, vsx_string_helper::s2i(resolution_x_edit->get_string()), vsx_string_helper::s2i(resolution_y_edit->get_string()));
-        position_x_edit->set_string( vsx_string_helper::i2s( new_x_y.first ) );
-        position_y_edit->set_string( vsx_string_helper::i2s( new_x_y.second ) );
+        set_window_position_to_center(value);
       };
 
     display_selection->add_option( 0, "Display 1 (primary)" );
@@ -156,81 +162,82 @@ public:
     if (vsx_application_display::get()->displays.size() > 1)
     {
       for_n(i, 1, vsx_application_display::get()->displays.size())
-        display_selection->add_option(i, "Display " + vsx_string_helper::i2s(i));
+        display_selection->add_option((int)i, "Display " + vsx_string_helper::i2s((int)i));
     }
 
 
     // fullscreen
     fullscreen = dynamic_cast<vsx_widget_checkbox*>( add(new vsx_widget_checkbox("Fullscreen"), "fullscreen") );
-    fullscreen->set_pos( vsx_vector3f( 0.0, 0.2f ) );
-    fullscreen->set_size( vsx_vector3f(0.8, 0.1) );
+    fullscreen->set_pos( vsx_vector3f( gui_base_pos_x, 0.2f ) );
+    fullscreen->set_size( vsx_vector3f(0.8f, 0.1f) );
     fullscreen->set_font_size( 0.08f );
     fullscreen->set_render_type(vsx_widget_render_type::render_3d);
     fullscreen->init();
 
 
+
     // window resolution
-    float resolution_selection_pos_x = 0.0f;
-    float resolution_selection_pos_y = 0.1;
+    float resolution_selection_pos_x = gui_base_pos_x;
+    float resolution_selection_pos_y = 0.1f;
     resolution_label = dynamic_cast<vsx_widget_label*>( add(new vsx_widget_label(), "label") );
-    resolution_label->set_pos( vsx_vector3f( resolution_selection_pos_x -0.4 - 0.25, resolution_selection_pos_y ) );
-    resolution_label->set_size( vsx_vector3f( 0.5, 0.1) );
+    resolution_label->set_pos( vsx_vector3f( resolution_selection_pos_x -0.4f - 0.25f, resolution_selection_pos_y ) );
+    resolution_label->set_size( vsx_vector3f( 0.5f, 0.1f) );
     resolution_label->set_font_size( 0.06f );
     resolution_label->title = "Window size:";
     resolution_label->halign = a_left;
     resolution_label->set_render_type(vsx_widget_render_type::render_3d);
 
     resolution_x_edit = dynamic_cast<vsx_widget_base_edit*>( add(new vsx_widget_base_edit(), "editor") );
-    resolution_x_edit->set_pos( vsx_vector3f( resolution_selection_pos_x - 0.4f + 0.15, resolution_selection_pos_y ) );
-    resolution_x_edit->set_size( vsx_vector3f(0.3, 0.1) );
+    resolution_x_edit->set_pos( vsx_vector3f( resolution_selection_pos_x - 0.4f + 0.15f, resolution_selection_pos_y ) );
+    resolution_x_edit->set_size( vsx_vector3f(0.3f, 0.1f) );
     resolution_x_edit->set_font_size( 0.08f );
     resolution_x_edit->set_string("1280");
     resolution_x_edit->set_render_type(vsx_widget_render_type::render_3d);
     resolution_x_edit->allowed_chars = "0123456789";
 
     resolution_y_edit = dynamic_cast<vsx_widget_base_edit*>( add(new vsx_widget_base_edit(), "editor") );
-    resolution_y_edit->set_pos( vsx_vector3f( resolution_selection_pos_x - 0.4f + 0.15 + 0.45f, resolution_selection_pos_y ) );
-    resolution_y_edit->set_size( vsx_vector3f(0.3, 0.1) );
+    resolution_y_edit->set_pos( vsx_vector3f( resolution_selection_pos_x - 0.4f + 0.15f + 0.45f, resolution_selection_pos_y ) );
+    resolution_y_edit->set_size( vsx_vector3f(0.3f, 0.1f) );
     resolution_y_edit->set_font_size( 0.08f );
     resolution_y_edit->set_string("720");
     resolution_y_edit->set_render_type(vsx_widget_render_type::render_3d);
 
     resolution_label_mid = dynamic_cast<vsx_widget_label*>( add(new vsx_widget_label(), "label") );
-    resolution_label_mid->set_pos( vsx_vector3f( resolution_selection_pos_x - 0.4f + 0.15 + 0.25f, resolution_selection_pos_y ) );
-    resolution_label_mid->set_size( vsx_vector3f( 0.1, 0.1) );
+    resolution_label_mid->set_pos( vsx_vector3f( resolution_selection_pos_x - 0.4f + 0.15f + 0.25f, resolution_selection_pos_y ) );
+    resolution_label_mid->set_size( vsx_vector3f( 0.1f, 0.1f) );
     resolution_label_mid->set_font_size( 0.06f );
     resolution_label_mid->title = "by";
     resolution_label_mid->halign = a_left;
     resolution_label_mid->set_render_type(vsx_widget_render_type::render_3d);
 
     // window position
-    float position_selection_pos_x = 0.0f;
+    float position_selection_pos_x = gui_base_pos_x;
     float position_selection_pos_y = 0.0;
     position_label = dynamic_cast<vsx_widget_label*>( add(new vsx_widget_label(), "label") );
-    position_label->set_pos( vsx_vector3f( position_selection_pos_x -0.4 - 0.25, position_selection_pos_y ) );
-    position_label->set_size( vsx_vector3f( 0.5, 0.1) );
+    position_label->set_pos( vsx_vector3f( position_selection_pos_x -0.4f - 0.25f, position_selection_pos_y ) );
+    position_label->set_size( vsx_vector3f( 0.5f, 0.1f) );
     position_label->set_font_size( 0.06f );
     position_label->title = "Window position:";
     position_label->halign = a_left;
     position_label->set_render_type(vsx_widget_render_type::render_3d);
 
     position_x_edit = dynamic_cast<vsx_widget_base_edit*>( add(new vsx_widget_base_edit(), "editor") );
-    position_x_edit->set_pos( vsx_vector3f( position_selection_pos_x - 0.4f + 0.15, position_selection_pos_y ) );
-    position_x_edit->set_size( vsx_vector3f(0.3, 0.1) );
+    position_x_edit->set_pos( vsx_vector3f( position_selection_pos_x - 0.4f + 0.15f, position_selection_pos_y ) );
+    position_x_edit->set_size( vsx_vector3f(0.3f, 0.1f) );
     position_x_edit->set_font_size( 0.08f );
     position_x_edit->set_string("1280");
     position_x_edit->set_render_type(vsx_widget_render_type::render_3d);
 
     position_y_edit = dynamic_cast<vsx_widget_base_edit*>( add(new vsx_widget_base_edit(), "editor") );
-    position_y_edit->set_pos( vsx_vector3f( position_selection_pos_x - 0.4f + 0.15 + 0.45f, position_selection_pos_y ) );
-    position_y_edit->set_size( vsx_vector3f(0.3, 0.1) );
+    position_y_edit->set_pos( vsx_vector3f( position_selection_pos_x - 0.4f + 0.15f + 0.45f, position_selection_pos_y ) );
+    position_y_edit->set_size( vsx_vector3f(0.3f, 0.1f) );
     position_y_edit->set_font_size( 0.08f );
     position_y_edit->set_string("720");
     position_y_edit->set_render_type(vsx_widget_render_type::render_3d);
 
     position_label_mid = dynamic_cast<vsx_widget_label*>( add(new vsx_widget_label(), "label") );
-    position_label_mid->set_pos( vsx_vector3f( position_selection_pos_x - 0.4f + 0.15 + 0.25f, position_selection_pos_y ) );
-    position_label_mid->set_size( vsx_vector3f( 0.1, 0.1) );
+    position_label_mid->set_pos( vsx_vector3f( position_selection_pos_x - 0.4f + 0.15f + 0.25f, position_selection_pos_y ) );
+    position_label_mid->set_size( vsx_vector3f( 0.1f, 0.1f) );
     position_label_mid->set_font_size( 0.06f );
     position_label_mid->title = ",";
     position_label_mid->halign = a_left;
@@ -239,22 +246,24 @@ public:
 
     // borderless
     borderless = dynamic_cast<vsx_widget_checkbox*>( add(new vsx_widget_checkbox("Borderless window"), "borderless") );
-    borderless->set_pos( vsx_vector3f( 0.0, -0.1f ) );
-    borderless->set_size( vsx_vector3f(0.8, 0.1) );
+    borderless->set_pos( vsx_vector3f( gui_base_pos_x, -0.1f ) );
+    borderless->set_size( vsx_vector3f(0.8f, 0.1f) );
     borderless->set_font_size( 0.08f );
     borderless->set_render_type(vsx_widget_render_type::render_3d);
     borderless->init();
 
     // launch button
     launch_button = dynamic_cast<vsx_widget_button*>( add(new vsx_widget_button(), "launch_button") );
-    launch_button->set_pos( vsx_vector3f( 0.0, -0.4f ) );
-    launch_button->set_size( vsx_vector3f(1.5, 0.1) );
+    launch_button->set_pos( vsx_vector3f( 0.0f, -0.4f ) );
+    launch_button->set_size( vsx_vector3f(1.5f, 0.1f) );
     launch_button->title = "Launch!";
     launch_button->set_font_size( 0.08f );
     launch_button->set_render_type(vsx_widget_render_type::render_3d);
     launch_button->on_click = [this](){
       launch();
     };
+
+    set_window_position_to_center(0);
 
     // make sure interpolation is called
     this->interpolate_size();
@@ -274,7 +283,10 @@ public:
       command += DIRECTORY_SEPARATOR  "vsxu_profiler";
 
     command += " ";
-    command += "-d " + vsx_string_helper::i2s(display_selection->selected + 1) + " ";
+    command += "-d " + vsx_string_helper::i2s((int)display_selection->selected + 1) + " ";
+
+    if (fullscreen->checked)
+      command += "-f ";
 
     if (!fullscreen->checked)
     {
@@ -323,8 +335,6 @@ public:
       _delete();
       return;
     }
-
-    vsx_printf(L"t->cmd: %s\n", t->cmd_data.c_str());
   }
 
   bool event_key_down(uint16_t key)

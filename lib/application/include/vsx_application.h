@@ -57,6 +57,7 @@ public:
   {
     vsx_printf(
       L"Window mode / settings: \n"
+       "    -p x,y                    Window position \n"
        "    -f                        True fullscreen (video mode change) \n"
        "\n"
        "    -s [x-res]x[y-res]        Fullscreen resolution or window size \n"

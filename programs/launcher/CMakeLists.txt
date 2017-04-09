@@ -105,14 +105,14 @@ if (WIN32)
     vsx_application
     ${VSXU_GFX_LIB_LIBS}
   )
-
 endif()
+
 
 ################################################################################
 ## INSTALL #####################################################################
 ################################################################################
 
-install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT profiler)
+install(TARGETS ${module_id} DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT launcher)
 
 ######################################################################################
 # Install the Headers so as to install VSXu as a library
