@@ -222,6 +222,10 @@ class vsx_application_sdl
 
     SDL_GL_MakeCurrent( vsx_application_sdl_window_holder::get_instance()->window, context );
 
+    vsx_printf(L"    OpenGL Vendor: %hs\n", glGetString(GL_VENDOR));
+    vsx_printf(L"    OpenGL Renderer: %hs\n", glGetString(GL_RENDERER));
+
+
     /* This makes our buffer swap syncronized with the monitor's vertical refresh */
     SDL_GL_SetSwapInterval(1);
 

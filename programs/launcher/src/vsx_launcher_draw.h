@@ -1,6 +1,6 @@
 #pragma once
 
-#include "launcher_desktop.h"
+#include "vsx_launcher_desktop.h"
 
 // draw-related variables
 class vsx_launcher_draw

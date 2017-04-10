@@ -23,8 +23,9 @@
 
 #include <vsx_version.h>
 #include <vsx_platform.h>
+#include <vsx_data_path.h>
 
-#include "launcher_application.h"
+#include "vsx_application_launcher.h"
 
 #include <vsx_application_manager.h>
 #include <vsx_application_run.h>

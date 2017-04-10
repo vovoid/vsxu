@@ -24,7 +24,7 @@
 
 #include <vsx_widget.h>
 
-#include "launcher/vsx_widget_launcher.h"
+#include "vsx_widget_launcher.h"
 
 class vsx_launcher_desktop : public vsx_widget
 {

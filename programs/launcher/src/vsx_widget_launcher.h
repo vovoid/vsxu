@@ -67,6 +67,10 @@ public:
 
   vsx_widget_checkbox* borderless = 0x0;
 
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+  vsx_widget_checkbox* console = 0x0;
+#endif
+
   vsx_widget_button* launch_button = 0x0;
 
   void set_window_position_to_center(size_t value)
@@ -252,6 +256,17 @@ public:
     borderless->set_render_type(vsx_widget_render_type::render_3d);
     borderless->init();
 
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+    // console
+    console = dynamic_cast<vsx_widget_checkbox*>( add(new vsx_widget_checkbox("Enable console window"), "console") );
+    console->set_pos( vsx_vector3f( gui_base_pos_x, -0.2f ) );
+    console->set_size( vsx_vector3f(0.8f, 0.1f) );
+    console->set_font_size( 0.08f );
+    console->set_render_type(vsx_widget_render_type::render_3d);
+    console->init();
+    #endif
+
+
     // launch button
     launch_button = dynamic_cast<vsx_widget_button*>( add(new vsx_widget_button(), "launch_button") );
     launch_button->set_pos( vsx_vector3f( 0.0f, -0.4f ) );
@@ -287,6 +302,11 @@ public:
 
     if (fullscreen->checked)
       command += "-f ";
+
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+    if (console->checked)
+      command += "-console ";
+    #endif
 
     if (!fullscreen->checked)
     {
