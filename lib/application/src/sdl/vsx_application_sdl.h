@@ -380,7 +380,7 @@ public:
       }
 
       // time manager
-      vsx::common::time::manager::get()->update(frame_timer.dtime());
+      vsx::common::time::manager::get()->update((float)frame_timer.dtime());
     }
 
     vsx_application_manager::get()->uninit();

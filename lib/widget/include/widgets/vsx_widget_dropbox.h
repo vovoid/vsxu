@@ -51,8 +51,8 @@ public:
   vsx_widget_dropbox(vsx_string<> title)
   {
     label = dynamic_cast<vsx_widget_label*>( add(new vsx_widget_label(), "label") );
-    label->set_pos( vsx_vector3f( -0.1, 0.0 ) );
-    label->set_size( vsx_vector3f(0.1, 0.1) );
+    label->set_pos( vsx_vector3f( -0.1f, 0.0 ) );
+    label->set_size( vsx_vector3f(0.1f, 0.1f) );
     label->set_font_size( 0.08f );
     label->title = title;
     label->halign = a_left;
@@ -63,8 +63,8 @@ public:
       };
 
     button = dynamic_cast<vsx_widget_button*>( add(new vsx_widget_button(), "button") );
-    button->set_pos( vsx_vector3f( 0.1, 0.0));
-    button->set_size( vsx_vector3f(0.05, 0.1));
+    button->set_pos( vsx_vector3f( 0.1f, 0.0f));
+    button->set_size( vsx_vector3f(0.05f, 0.1f));
     button->title = "\x1f";
     button->set_font_size( 0.08f );
     button->on_click =
@@ -75,7 +75,7 @@ public:
 
     menu = add(new vsx_widget_popup_menu, ".comp_menu");
     menu->init();
-    menu->size.x = 0.2;
+    menu->size.x = 0.2f;
     dynamic_cast<vsx_widget_popup_menu*>(menu)->row_size_by_font_size( 0.08f );
 
     dynamic_cast<vsx_widget_popup_menu*>(menu)->on_selection =
@@ -90,16 +90,16 @@ public:
     menu->set_render_type(render_type);
     menu->size.x = size.x;
     menu->target_size.x = size.x;
-    menu->set_pos( get_pos_p() + vsx_vector3f(-size.x * 0.5, -size.y * 0.5) );
+    menu->set_pos( get_pos_p() + vsx_vector3f(-size.x * 0.5f, -size.y * 0.5f) );
     menu->show();
   }
 
   void recalculate_sizes()
   {
-    label->set_size(vsx_vector3f(size.x - 0.05f , 0.1) );
-    label->set_pos( vsx_vector3f( -0.025f, 0) );
-    button->set_size( vsx_vector3f(0.05, 0.1));
-    button->set_pos( vsx_vector3f( size.x * 0.5f - 0.025, 0.0));
+    label->set_size(vsx_vector3f(size.x - 0.05f , 0.1f) );
+    label->set_pos( vsx_vector3f( -0.025f, 0.0f) );
+    button->set_size( vsx_vector3f(0.05f, 0.1f));
+    button->set_pos( vsx_vector3f( size.x * 0.5f - 0.025f, 0.0f));
   }
 
   void add_option(int value, vsx_string<> title)

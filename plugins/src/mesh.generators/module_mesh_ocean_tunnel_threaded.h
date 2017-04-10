@@ -122,23 +122,23 @@ public:
                 if (j%2 == 1) continue;
     #define TDIV (float)MAX_WORLD_X
     #define TD2  (float)MAX_WORLD_X*0.5f
-                g.x = ocean.sea[i][j][0];//+L*MAX_WORLD_X;
-                g.y = ocean.sea[i][j][1];//+k*MAX_WORLD_Y;
-                g.z = ocean.sea[i][j][2];//*ocean.scale_height;
+                g.x = (float)ocean.sea[i][j][0];//+L*MAX_WORLD_X;
+                g.y = (float)ocean.sea[i][j][1];//+k*MAX_WORLD_Y;
+                g.z = (float)ocean.sea[i][j][2];//*ocean.scale_height;
 
                 float gr = \
-                PI*2.0f * g.x/(TDIV);
-                float nra = gr + 90.0f / 360.0f * 2*PI;
+                (float)PI*2.0f * g.x/(TDIV);
+                float nra = gr + 90.0f / 360.0f * 2*(float)PI;
 
 
                 vsx_vector3<> nn;
-                nn.x = ocean.big_normals[i][j][0];
-                nn.y = ocean.big_normals[i][j][1];
+                nn.x = (float)ocean.big_normals[i][j][0];
+                nn.y = (float)ocean.big_normals[i][j][1];
                 nn.normalize();
                 mesh->data->vertex_normals.push_back(vsx_vector3<>(\
-                  nn.x* cos(nra) + nn.y * -sin(nra),\
-                  nn.x* sin(nra) + nn.y * cos(nra),\
-                  ocean.big_normals[i][j][2]));
+                  nn.x* cosf(nra) + nn.y * -sinf(nra),\
+                  nn.x* sinf(nra) + nn.y * cosf(nra),\
+                  (float)ocean.big_normals[i][j][2]));
                 mesh->data->vertex_normals[mesh->data->vertex_normals.size()-1].normalize();
 
 
@@ -146,7 +146,7 @@ public:
                 c.x = cos(gr)*gz;
                 c.y = sin(gr)*gz;
                 c.z = g.y*2.0f;
-                b = mesh->data->vertices.push_back(c);
+                b = (unsigned long)mesh->data->vertices.push_back(c);
                 mesh->data->vertex_tex_coords.push_back(vsx_tex_coord2f(fabs(g.x-TD2)*2.0f , fabs(g.y-TD2)*2.0f));
                 ++a;
                 if (a >= 3) {
@@ -155,13 +155,13 @@ public:
                   face.c = b-1;
                   mesh->data->faces.push_back(face);
                 }
-                g.x = ocean.sea[i+1][j][0];//+L*MAX_WORLD_X;
-                g.y = ocean.sea[i+1][j][1];//+k*MAX_WORLD_Y;
-                g.z = ocean.sea[i+1][j][2];//*ocean.scale_height;
+                g.x = (float)ocean.sea[i+1][j][0];//+L*MAX_WORLD_X;
+                g.y = (float)ocean.sea[i+1][j][1];//+k*MAX_WORLD_Y;
+                g.z = (float)ocean.sea[i+1][j][2];//*ocean.scale_height;
 
                 gr = \
-                PI*2.0f* g.x/(TDIV);
-                nra = gr + 90.0f / 360.0f * 2*PI;
+                (float)PI*2.0f* g.x/(TDIV);
+                nra = gr + 90.0f / 360.0f * 2*(float)PI;
 
 
                 nn.x = (float)ocean.big_normals[i+1][j][0];

@@ -30,7 +30,8 @@ file(GLOB_RECURSE HEADER_FILES *.h)
 add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
 ) 
-if (NOT MSVC)
+if (MSVC)
+else()
   add_definitions(-fno-strict-aliasing)
 endif()
 
