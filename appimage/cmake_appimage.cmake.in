@@ -1,0 +1,71 @@
+set(APPIMAGE_PROJECT_NAME @CMAKE_PROJECT_NAME@)
+set(APPIMAGE_INTERMEDIATE_DIR @CMAKE_CURRENT_BINARY_DIR@/@CMAKE_PROJECT_NAME@.AppDir/)
+set(APPIMAGE_APPRUN_BINARY @CMAKE_SOURCE_DIR@/appimage/AppRun)
+set(APPIMAGE_ASSISTANT_BINARY @CMAKE_SOURCE_DIR@/appimage/AppImageAssistant)
+set(APPIMAGE_DESKTOP_FILE @CMAKE_SOURCE_DIR@/appimage/application.desktop)
+set(APPIMAGE_ICON_FILE @CMAKE_SOURCE_DIR@/appimage/icon.png)
+
+function(appimage_intermediate_path DST_PATH SRC_PATH)
+    get_filename_component(SRC_PATH ${SRC_PATH} REALPATH)
+    string(REGEX REPLACE "^@CMAKE_INSTALL_PREFIX@" "" DEST_PATH ${SRC_PATH})
+    get_filename_component(DEST_PATH ${APPIMAGE_INTERMEDIATE_DIR}/usr/${DEST_PATH} REALPATH)
+    set(${DST_PATH} ${DEST_PATH} PARENT_SCOPE)
+endfunction()
+
+function(copy_file SRC_PATH DST_PATH)
+    execute_process(
+        COMMAND @CMAKE_COMMAND@ -E copy ${SRC_PATH} ${DST_PATH}
+        OUTPUT_VARIABLE copy_out
+        RESULT_VARIABLE copy_retval
+    )
+
+    if(NOT ${copy_retval} EQUAL 0)
+        message(FATAL_ERROR "Problem when copying ${SRC_PATH}")
+    endif (NOT ${copy_retval} EQUAL 0)
+endfunction()
+
+#Get the files to be packed from install_manifest
+if (NOT EXISTS "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt")
+    message(FATAL_ERROR "Cannot find install manifest: \"@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt\" . Did you run make install yet?")
+endif(NOT EXISTS "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt")
+
+file(READ "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt" files)
+string(REGEX REPLACE "\n" ";" files "${files}")
+list(REVERSE files)
+
+#Gather all directories that needed to be created in the appimage 
+foreach (file ${files})
+    get_filename_component(dir ${file} DIRECTORY)
+    list(APPEND directories ${dir})
+endforeach(file)
+
+list(REMOVE_DUPLICATES directories)
+
+#Create all the directories
+foreach(dir ${directories})
+    appimage_intermediate_path(directory ${dir})
+    message("Creating Path: ${directory}")
+    execute_process(COMMAND @CMAKE_COMMAND@ -E make_directory ${directory})
+endforeach()
+
+#Copy the files to appropriate path
+foreach (file ${files})
+    message(STATUS "Copying \"$ENV{DESTDIR}${file}\" to AppImageDir")
+    if (EXISTS "$ENV{DESTDIR}${file}")
+        appimage_intermediate_path(DEST_PATH ${file})
+        copy_file("$ENV{DESTDIR}${file}" ${DEST_PATH})
+    else (EXISTS "$ENV{DESTDIR}${file}")
+        message(STATUS "File \"$ENV{DESTDIR}${file}\" does not exist.")
+    endif (EXISTS "$ENV{DESTDIR}${file}")
+endforeach(file)
+
+#Copy AppImage specific items
+copy_file(@CMAKE_SOURCE_DIR@/appimage/AppRun ${APPIMAGE_INTERMEDIATE_DIR})
+copy_file(@CMAKE_SOURCE_DIR@/appimage/application.desktop ${APPIMAGE_INTERMEDIATE_DIR})
+#copy_file(@CMAKE_SOURCE_DIR@/appimage/icon.png ${APPIMAGE_INTERMEDIATE_DIR})
+copy_file(@CMAKE_SOURCE_DIR@/appimage/icon.png ${APPIMAGE_INTERMEDIATE_DIR}/.DirIcon)
+
+#TODO: Gather Dependencies??
+
+#Create the AppImage finally
+execute_process(COMMAND "${APPIMAGE_ASSISTANT_BINARY}" "${APPIMAGE_INTERMEDIATE_DIR}" "${APPIMAGE_PROJECT_NAME}")

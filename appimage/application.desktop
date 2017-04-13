@@ -1,0 +1,7 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=VSXu
+Exec=vsxu_launcher
+StartupWMClass=vsxu_launcher
+Icon=icon.png

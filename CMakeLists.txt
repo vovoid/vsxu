@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
+cmake_policy(SET CMP0040 OLD)
 
 PROJECT(VSXu)
 
@@ -179,4 +180,14 @@ configure_file(
 
 add_custom_target(uninstall
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+# appimage target
+    configure_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/appimage/cmake_appimage.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/cmake_appimage.cmake"
+        IMMEDIATE @ONLY)
+
+    add_custom_target(appimage COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_appimage.cmake)
+endif()
 
