@@ -35,6 +35,14 @@ public:
     action();
   }
 
+  void on_countdown_min(float dt, std::function<void()> action)
+  {
+    value -= dt;
+    req(value < 0.0f);
+    value = (float)min_time_ms * 0.001f;
+    action();
+  }
+
   void set_to_max()
   {
     value = (float)max_time_ms * 0.001f;
