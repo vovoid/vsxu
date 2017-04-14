@@ -558,7 +558,10 @@ void vsx_widget::event_mouse_up(vsx_widget_distance distance,vsx_widget_coords c
     return;
   }
 
-  menu->pos = menu->target_pos = coords.screen_global;
+  if (menu->render_type == vsx_widget_render_type::render_3d)
+    menu->pos = menu->target_pos = coords.world_global;
+  else
+    menu->pos = menu->target_pos = coords.screen_global;
   menu->show();
 }
 
