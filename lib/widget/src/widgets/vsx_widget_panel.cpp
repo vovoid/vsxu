@@ -192,23 +192,23 @@ void vsx_widget_split_panel::i_draw()
     sy = size.y-splitter_size;
     float sx = size.x;
 
-    if (two->size_min.y) {
+    if (fabsf(two->size_min.y) > 0.0f) {
       if (sy*(1-split_pos) < two->size_min.y) {
         split_pos = (sy-two->size_min.y)/sy;
       }
     }
-    if (two->size_max.y) {
+    if (fabsf(two->size_max.y) > 0.0f) {
       if (sy*(1-split_pos) > two->size_max.y) {
         split_pos = (sy-two->size_max.y)/sy;
       }
     }
 
-    if (one->size_min.y) {
+    if (fabsf(one->size_min.y) > 0.0f) {
       if (sy*(split_pos) < one->size_min.y) {
         split_pos = (one->size_min.y)/sy;
       }
     }
-    if (one->size_max.y) {
+    if (fabsf(one->size_max.y) > 0.0f) {
       if (sy*(split_pos) > two->size_max.y) {
         split_pos = (one->size_max.y)/sy;
       }
@@ -234,7 +234,7 @@ void vsx_widget_split_panel::i_draw()
     two->pos = two->target_pos;
 
     glColor4f(1,1,1,1);
-    if (splitter_size != 0)
+    if (!FLOAT_EQUALS(splitter_size, 0) )
     draw_box(p+vsx_vector3<>(0,split_pos*sy),sx,splitter_size);
   }
 }

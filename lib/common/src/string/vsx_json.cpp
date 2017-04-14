@@ -146,7 +146,7 @@ protected:
 
     // Comparisons
     bool equals(const json_value * other) const override {
-        return m_value == static_cast<const value<tag, T> *>(other)->m_value;
+      return m_value == static_cast<const value<tag, T> *>(other)->m_value;
     }
     bool less(const json_value * other) const override {
         return m_value < static_cast<const value<tag, T> *>(other)->m_value;
@@ -159,7 +159,7 @@ protected:
 class json_double final : public value<json::NUMBER, double> {
     double number_value() const override { return m_value; }
     int int_value() const override { return static_cast<int>(m_value); }
-    bool equals(const json_value * other) const override { return m_value == other->number_value(); }
+    bool equals(const json_value * other) const override { return fabs(m_value - other->number_value()) < std::numeric_limits<double>::epsilon(); }
     bool less(const json_value * other)   const override { return m_value <  other->number_value(); }
 public:
     explicit json_double(double value_) : value(value_) {}
@@ -168,7 +168,7 @@ public:
 class json_int final : public value<json::NUMBER, int> {
     double number_value() const override { return m_value; }
     int int_value() const override { return m_value; }
-    bool equals(const json_value * other) const override { return m_value == other->number_value(); }
+    bool equals(const json_value * other) const override { return fabs( (double)m_value - other->number_value() ) < std::numeric_limits<double>::epsilon(); }
     bool less(const json_value * other)   const override { return m_value <  other->number_value(); }
 public:
     explicit json_int(int value_) : value(value_) {}

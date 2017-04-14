@@ -39,6 +39,7 @@ public:
     editor->menu->commands.adds(VSX_COMMAND_MENU, "Add to group...", "menu_group_add","");
     editor->menu->size.x = 0.2;
     editor->menu->init();
+    editor->menu->set_render_type( vsx_widget_render_type::render_3d );
   }
 
   void init_2d()

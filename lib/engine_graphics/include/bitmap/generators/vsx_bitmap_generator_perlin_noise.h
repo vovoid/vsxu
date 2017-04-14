@@ -210,7 +210,7 @@ public:
             p++;
             *p = CLAMP( (unsigned char)(255.0f * color.b), 0, 255);
             p++;
-            *p = CLAMP( (unsigned char)color.a * pf, 0, 255);
+            *p = CLAMP( (unsigned char)(color.a * pf), 0, 255);
             p++;
           } else
           {

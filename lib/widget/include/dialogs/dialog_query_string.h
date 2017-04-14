@@ -29,7 +29,7 @@
 
 #include "widgets/vsx_widget_base_edit.h"
 #include "widgets/vsx_widget_button.h"
-#include "widgets/vsx_widget_2d_label.h"
+#include "widgets/vsx_widget_label.h"
 
 
 
@@ -153,11 +153,12 @@ public:
         e->allowed_chars = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#�%&()=+?-_.,:/;";
 
         // add a label for this editor
-        vsx_widget_2d_label *l = (vsx_widget_2d_label*)add(new vsx_widget_2d_label,"l");
+        vsx_widget_label *l = (vsx_widget_label*)add(new vsx_widget_label,"l");
         labels.push_back(l);
         l->init();
         l->halign = a_left;
-        l->set_pos(vsx_vector3<>(e->pos.x-e->size.x*0.5,yp+0.02f));
+        l->set_pos( vsx_vector3<>(e->pos.x, yp + 0.02f) );
+        l->set_size( vsx_vector3f(size.x - 0.04f, 0.02f) );
         l->set_font_size(0.015f);
         l->title = f_parts[i];
 

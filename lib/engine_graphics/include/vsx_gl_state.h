@@ -956,7 +956,7 @@ public:
 
     //normalize vector
     float length = (float)sqrt(xx + yy + zz);
-    if (length != 1.0f)
+    if (FLOAT_EQUALS(length, 1.0f))
     {
       x = x / length;
       y = y / length;

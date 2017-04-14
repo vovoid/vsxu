@@ -3,6 +3,7 @@
 #include <vsx_platform.h>
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
 #include <SDL.h>
+#include <windows.h>
 #else
 #include <SDL2/SDL.h>
 #endif
@@ -15,7 +16,7 @@
 #include <vsx_gl_state.h>
 #include <string/vsx_string_helper.h>
 #include "vsx_application_sdl_window_holder.h"
-
+#include <vsx_application_display.h>
 
 void gl_debug_callback
 (
@@ -60,6 +61,12 @@ class vsx_application_sdl
 
   void setup()
   {
+    // on Windows, hide the console window
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+      if (!vsx_argvector::get_instance()->has_param("-console"))
+        ShowWindow( GetConsoleWindow(), SW_HIDE );
+    #endif
+
     if (vsx_argvector::get_instance()->has_param("-help") || vsx_argvector::get_instance()->has_param("help"))
     {
       vsx_application_manager::get_instance()->get()->print_help();
@@ -88,7 +95,14 @@ class vsx_application_sdl
     SDL_Rect* display_bounds = 0x0;
     display_bounds = new SDL_Rect[ num_displays ];
     for( int i = 0; i < num_displays; ++i )
+    {
         SDL_GetDisplayBounds( i, &display_bounds[ i ] );
+        vsx_application_display::get()->displays.push_back( vsx_application_display::display_info(display_bounds[i].x, display_bounds[i].y, display_bounds[i].w, display_bounds[i].h) );
+    }
+
+
+
+
     size_t chosen_display = 0;
     if (vsx_argvector::get_instance()->has_param("d"))
     {
@@ -207,6 +221,10 @@ class vsx_application_sdl
     sdl_tools::checkSDLError(__LINE__);
 
     SDL_GL_MakeCurrent( vsx_application_sdl_window_holder::get_instance()->window, context );
+
+    vsx_printf(L"    OpenGL Vendor: %hs\n", glGetString(GL_VENDOR));
+    vsx_printf(L"    OpenGL Renderer: %hs\n", glGetString(GL_RENDERER));
+
 
     /* This makes our buffer swap syncronized with the monitor's vertical refresh */
     SDL_GL_SetSwapInterval(1);
@@ -362,7 +380,7 @@ public:
       }
 
       // time manager
-      vsx::common::time::manager::get()->update(frame_timer.dtime());
+      vsx::common::time::manager::get()->update((float)frame_timer.dtime());
     }
 
     vsx_application_manager::get()->uninit();

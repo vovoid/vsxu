@@ -38,8 +38,13 @@ include_directories(
 
 add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
- # -DBUILDING_DLL=1
 )
+if (MSVC)
+else()
+  add_definitions(
+   -Werror=float-equal
+  )
+endif()
 
 if (VSXU_DEBUG EQUAL 1)
   add_definitions( -DVSXU_DEBUG )
@@ -63,13 +68,9 @@ set(SOURCES
   src/vsx_widget_time.cpp
   src/vsx_widget_window.cpp
   src/vsx_widget_global_interpolation.cpp
-  src/widgets/vsx_widget_2d_label.cpp
   src/widgets/vsx_widget_2d_pager.cpp
   src/widgets/vsx_widget_base_edit.cpp
-  src/widgets/vsx_widget_editor.cpp
-  src/widgets/vsx_widget_button.cpp
   src/widgets/vsx_widget_panel.cpp
-  src/widgets/vsx_widget_popup_menu.cpp
   src/widgets/vsx_widget_scrollbar.cpp
 )
 file(GLOB_RECURSE HEADER_FILES *.h)

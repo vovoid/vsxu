@@ -32,28 +32,23 @@ if (VSXU_DEBUG)
   SET(CPACK_PACKAGE_FILE_NAME ${CMAKE_PROJECT_NAME}_${VSXU_VERSION}_${CPACK_DEBIAN_ARCHITECTURE}_debug)
 endif()
 
-SET(CPACK_COMPONENTS_ALL artiste player)
+SET(CPACK_COMPONENTS_ALL artiste player launcher)
 SET(CPACK_COMPONENT_ARTISTE_DISPLAY_NAME "VSXu Artiste")
 SET(CPACK_COMPONENT_PLAYER_DISPLAY_NAME "VSXu Player")
+SET(CPACK_COMPONENT_LAUNCHER_DISPLAY_NAME "VSXu Launcher")
+set(CPACK_COMPONENT_ARTISTE_DEPENDS launcher)
+set(CPACK_COMPONENT_PLAYER_DEPENDS launcher)
+
+
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jonatan 'jaw' Wallmander / Vovoid Media Technologies AB")
 
 SET(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "VSXu ${CPACK_PACKAGE_VERSION}")
 
-if (INSTALL_WIN_LAUNCHER)
-  install(FILES ${CMAKE_SOURCE_DIR}/../vsxu_player_launcher/vsxu_player_launcher.exe DESTINATION ${VSXU_INSTALL_BIN_DIR} COMPONENT player)
-  set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
-      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_player_launcher.exe \\\"
-      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Artiste.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_artiste.exe \\\"
-  ")
-else()
-  set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
-      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_player.exe \\\"
-      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Artiste.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_artiste.exe \\\"
-  ")
-endif()
+set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Launch VSXu.lnk\\\" \\\"$INSTDIR\\\\.\\\\vsxu_launcher.exe\\\"
+")
 set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
-    Delete \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Player.lnk\\\"
-    Delete \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\VSXu Artiste.lnk\\\"
+    Delete \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Launch VSXu.lnk\\\"
 ")
 
 set(CPACK_NSIS_EXECUTABLES_DIRECTORY ".")

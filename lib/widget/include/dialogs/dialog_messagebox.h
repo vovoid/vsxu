@@ -27,7 +27,7 @@
 #include "vsx_widget_window.h"
 
 #include "widgets/vsx_widget_button.h"
-#include "widgets/vsx_widget_2d_label.h"
+#include "widgets/vsx_widget_label.h"
 
 
 class dialog_messagebox : public vsx_widget_window {
@@ -84,7 +84,7 @@ public:
     vsx_string<> deli = "|";
     vsx_string_helper::explode(hint,deli,lines);
     for (unsigned long i = 0; i < lines.size(); i++) {
-      vsx_widget* b = add(new vsx_widget_2d_label,"");
+      vsx_widget* b = add(new vsx_widget_label,"");
       labels.push_back(b);
     }
     vsx_widget::init_children();

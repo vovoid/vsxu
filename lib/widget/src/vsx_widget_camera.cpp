@@ -80,9 +80,9 @@ void vsx_widget_camera::run()
     yp = yp*(1.0-tt) + (double)camera_target.y * tt;
     zp = zp*(1.0-tt) + (double)camera_target.z * tt;
     if (
-      (round(xp*2000) == round(camera_target.x*2000)) &&
-      (round(yp*2000) == round(camera_target.y*2000)) &&
-      (round(zp*2000) == round(camera_target.z*2000))
+      ((int)round(xp*2000) == (int)round(camera_target.x*2000)) &&
+      ((int)round(yp*2000) == (int)round(camera_target.y*2000)) &&
+      ((int)round(zp*2000) == (int)round(camera_target.z*2000))
     )
       interpolating = false;
     return;
@@ -115,12 +115,12 @@ void vsx_widget_camera::run()
   zp = CLAMP(zp, 1.2, 100.0);
 
 
-  if(xpd != 0.0) {
+  if(!DOUBLE_EQUALS(xpd, 0.0)) {
     double sgn = SGN(xpd);
     xps += dtime * acc * sgn * global_interpolation_speed;
     xps = CLAMP(xps, -1, 1);
   }
-  if(xpd == 0.0) {
+  if(DOUBLE_EQUALS(xpd, 0.0)) {
     double sgn = SGN(xps);
     xps -= dtime * dec * sgn * global_interpolation_speed;
     xps = MAX(xps * sgn, 0) * sgn;
@@ -135,12 +135,12 @@ void vsx_widget_camera::run()
   xp = CLAMP(xp, -10, 10);
 
 
-  if(ypd != 0.0) {
+  if(!DOUBLE_EQUALS(ypd, 0.0)) {
     double sgn = SGN(ypd);
     yps += dtime * acc * sgn * global_interpolation_speed;
     yps = CLAMP(yps, -1, 1);
   }
-  if(ypd == 0.0) {
+  if(DOUBLE_EQUALS(ypd, 0.0)) {
     double sgn = SGN(yps);
     yps -= dtime * dec * sgn * global_interpolation_speed;
     yps = MAX(yps * sgn, 0) * sgn;

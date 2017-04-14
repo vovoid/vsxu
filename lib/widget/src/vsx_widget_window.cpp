@@ -63,33 +63,31 @@ void vsx_widget_window::i_draw() {
     button_close->set_size(vsx_vector3<>(font_size*0.4f,font_size*0.8f - (float)dragborder));
 	}
 
-  if (visible)
-  {
-    font.color.a = color.a;
+  req(visible > 0.0f);
+  font.color.a = color.a;
 
 
-    vsx_widget_skin::get_instance()->set_color_gl(1);
-    draw_box(pos,size.x,size.y);
-    vsx_widget_skin::get_instance()->set_color_gl(2);
-    draw_box(pos+vsx_vector3<>(0.0f,size.y-font_size),size.x,font_size);
+  vsx_widget_skin::get_instance()->set_color_gl(1);
+  draw_box(pos,size.x,size.y);
+  vsx_widget_skin::get_instance()->set_color_gl(2);
+  draw_box(pos+vsx_vector3<>(0.0f,size.y-font_size),size.x,font_size);
 
-    // border
-    vsx_widget_skin::get_instance()->set_color_gl(0);
+  // border
+  vsx_widget_skin::get_instance()->set_color_gl(0);
 
-    // left
-    draw_box(pos+vsx_vector3<>(0, (float)dragborder), (float)dragborder, size.y - (float)dragborder - (float)dragborder);
+  // left
+  draw_box(pos+vsx_vector3<>(0, (float)dragborder), (float)dragborder, size.y - (float)dragborder - (float)dragborder);
 
-    // right
-    draw_box(pos+vsx_vector3<>(size.x- (float)dragborder, (float)dragborder), (float)dragborder,size.y- (float)dragborder- (float)dragborder);
+  // right
+  draw_box(pos+vsx_vector3<>(size.x- (float)dragborder, (float)dragborder), (float)dragborder,size.y- (float)dragborder- (float)dragborder);
 
-    // bottom
-    draw_box(pos,size.x, (float)dragborder);
+  // bottom
+  draw_box(pos,size.x, (float)dragborder);
 
-    // top
-    draw_box(pos+vsx_vector3<>(0.0f,size.y- (float)dragborder),size.x, (float)dragborder);
+  // top
+  draw_box(pos+vsx_vector3<>(0.0f,size.y- (float)dragborder),size.x, (float)dragborder);
 
-    vsx_widget_skin::get_instance()->set_color_gl(3);
+  vsx_widget_skin::get_instance()->set_color_gl(3);
 
-    font.print(vsx_vector3<>((pos.x+font_size*0.1f)*screen_aspect,pos.y+size.y-font_size*0.85f),title,font_size*0.6f);
-	}
+  font.print(vsx_vector3<>((pos.x+font_size*0.1f)*screen_aspect,pos.y+size.y-font_size*0.85f),title,font_size*0.6f);
 }

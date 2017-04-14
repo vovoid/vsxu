@@ -24,13 +24,13 @@
 #include <graphics/vsx_mesh_helper.h>
 
 // Phi - the square root of 5 plus 1 divided by 2
-#define sqr5 2.2361
-#define phi (1.0 + sqr5) * 0.5
+#define sqr5 2.2361f
+#define phi (1.0f + sqr5) * 0.5f
 
 // Golden ratio - the ratio of edgelength to radius
-#define ratio (float)sqrt( 10.0 + (2.0 * sqr5)) / (4.0 * phi)
-#define ia (42.0 / ratio) * 0.5
-#define ib (42.0 / ratio) / (2.0 * phi)
+#define ratio (float)sqrt( 10.0f + (2.0f * sqr5)) / (4.0f * phi)
+#define ia (42.0f / ratio) * 0.5f
+#define ib (42.0f / ratio) / (2.0f * phi)
 
 
 #define v0  vsx_vector3<>(    0,   (ib),  -(ia)  )
@@ -266,7 +266,7 @@ public:
       {
         if (mesh->data->vertices[j] == find)
         {
-          index_a = j;
+          index_a = (int)j;
           break;
         }
       }
@@ -277,7 +277,7 @@ public:
         vsx_vector3<> n(0,0,0);
         mesh->data->vertex_normals.push_back(n);
 
-        index_a = vertex_index;
+        index_a = (int)vertex_index;
         vertex_index++;
       }
 
@@ -289,7 +289,7 @@ public:
       {
         if (mesh->data->vertices[j] == find)
         {
-          index_b = j;
+          index_b = (int)j;
           break;
         }
       }
@@ -300,7 +300,7 @@ public:
         vsx_vector3<> n(0,0,0);
         mesh->data->vertex_normals.push_back(n);
 
-        index_b = vertex_index;
+        index_b = (int)vertex_index;
         vertex_index++;
       }
 
@@ -312,7 +312,7 @@ public:
       {
         if (mesh->data->vertices[j] == find)
         {
-          index_c = j;
+          index_c = (int)j;
           break;
         }
       }
@@ -323,7 +323,7 @@ public:
         vsx_vector3<> n(0,0,0);
         mesh->data->vertex_normals.push_back(n);
 
-        index_c = vertex_index;
+        index_c = (int)vertex_index;
         vertex_index++;
       }
 

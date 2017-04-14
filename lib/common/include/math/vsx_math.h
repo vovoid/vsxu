@@ -25,6 +25,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <limits>
 #include <cstring>
 #include <stdint.h>
 
@@ -49,8 +50,11 @@
 #define clamp(N, L, U) (MAX(MIN((N), (U)), (L)))
 
 
+#define DOUBLE_EQUALS(A, B) \
+        ((fabs(B - A) < std::numeric_limits<double>::epsilon()) ? true : false)
+
 #define FLOAT_EQUALS(A, B) \
-        ((fabs(B - A) < 0.00001) ? true : false)
+        ((fabsf(B - A) < std::numeric_limits<float>::epsilon()) ? true : false)
 
 #define FLOAT_EXACT(A, B) \
 	(((A > B) || (A < B)) ? false : true)

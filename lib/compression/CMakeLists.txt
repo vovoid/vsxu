@@ -29,8 +29,11 @@ file(GLOB_RECURSE HEADER_FILES *.h)
 
 add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
- -fno-strict-aliasing
 ) 
+if (MSVC)
+else()
+  add_definitions(-fno-strict-aliasing)
+endif()
 
 if (VSXU_DEBUG EQUAL 1)
   add_definitions( -DVSXU_DEBUG )
@@ -78,7 +81,7 @@ set(SOURCES_LZHAM
   thirdparty/lzham-sdk/lzhamdecomp/lzham_platform.cpp
   thirdparty/lzham-sdk/lzhamdecomp/lzham_prefix_coding.cpp
   thirdparty/lzham-sdk/lzhamdecomp/lzham_symbol_codec.cpp
-  thirdparty/lzham-sdk/lzhamdecomp/lzham_timer.cpp
+  #thirdparty/lzham-sdk/lzhamdecomp/lzham_timer.cpp
   thirdparty/lzham-sdk/lzhamdecomp/lzham_vector.cpp
   thirdparty/lzham-sdk/lzhamcomp/lzham_lzbase.cpp
   thirdparty/lzham-sdk/lzhamcomp/lzham_lzcomp.cpp
