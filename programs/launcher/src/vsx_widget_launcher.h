@@ -34,6 +34,7 @@
 #include <vsx_application_display.h>
 #include <vsx_argvector.h>
 #include <tools/vsx_process.h>
+#include <container/vsx_nw_vector.h>
 
 // engine_graphics
 #include <gl_helper.h>
@@ -289,6 +290,7 @@ public:
   {
     vsx_string<> working_directory = vsx_argvector::get_instance()->get_executable_directory();
     vsx_string<> command = working_directory;
+    vsx_nw_vector< vsx_string<> > args;
 
     if (application_selection->selected == 0)
       command += DIRECTORY_SEPARATOR  "vsxu_player";
@@ -297,27 +299,28 @@ public:
     if (application_selection->selected == 2)
       command += DIRECTORY_SEPARATOR  "vsxu_profiler";
 
-    command += " ";
-    command += "-d " + vsx_string_helper::i2s((int)display_selection->selected + 1) + " ";
+    args.push_back("-d");
+    args.push_back(vsx_string_helper::i2s((int)display_selection->selected + 1));
 
     if (fullscreen->checked)
-      command += "-f ";
-
-    #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-    if (console->checked)
-      command += "-console ";
-    #endif
+      args.push_back("-f");
 
     if (!fullscreen->checked)
     {
-      command += "-p " + position_x_edit->get_string() + "," + position_y_edit->get_string() + " ";
-      command += "-s " + resolution_x_edit->get_string() + "x" + resolution_y_edit->get_string();
+      args.push_back("-p");
+      args.push_back(position_x_edit->get_string() + "," + position_y_edit->get_string());
+      args.push_back("-s");
+      args.push_back(resolution_x_edit->get_string() + "x" + resolution_y_edit->get_string());
       if (borderless->checked)
-        command += " -bl";
+        args.push_back("-bl");
     }
 
-    vsx_process::launch_detached_process( command, working_directory );
-    vsx_application_control::get_instance()->shutdown_request();
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+    if (console->checked)
+      args.push_back("-console");
+    #endif
+    vsx_process::exec( command, args, working_directory );
+    //vsx_application_control::get_instance()->shutdown_request();
   }
 
   void i_draw()

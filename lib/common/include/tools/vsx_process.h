@@ -2,13 +2,32 @@
 
 #include <vsx_platform.h>
 #include <string/vsx_string_helper.h>
+#include <container/vsx_nw_vector.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
 #include <windows.h>
+#include <direct.h>
+#endif
+
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+#include <unistd.h>
 #endif
 class vsx_process
 {
 public:
+  static void exec(vsx_string<>& command, vsx_nw_vector< vsx_string<> >& args, vsx_string<>& working_directory)
+  {
+      char** char_args = new char*[args.size() + 1];
+      for(int i = 0; i < args.size(); i++)
+      {
+          char_args[i] = new char[args[i].size()];
+          std::strcpy(char_args[i], args[i].c_str());
+      }
+      char_args[args.size()] = 0;
+      chdir(working_directory.c_str());
+      //TODO: whattodo when this fails? other than free up the allocated memory from above?
+      execv(command.c_str(), char_args);
+  }
 
   static void launch_detached_process(vsx_string<> command, vsx_string<> working_directory)
   {
