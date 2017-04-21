@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
-cmake_policy(SET CMP0040 OLD)
+if(POLICY CMP0040)
+  cmake_policy(SET CMP0040 OLD)
+endif()
 
 PROJECT(VSXu)
 
