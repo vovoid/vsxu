@@ -317,10 +317,13 @@ public:
 
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
     if (console->checked)
-      args.push_back("-console");
+    {
+       args.push_back("-console");
+       ShowWindow( GetConsoleWindow(), SW_SHOW );
+       vsx_application_control::get_instance()->show_console_window_request();
+    }
     #endif
     vsx_process::exec( command, args, working_directory );
-    //vsx_application_control::get_instance()->shutdown_request();
   }
 
   void i_draw()
