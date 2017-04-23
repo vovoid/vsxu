@@ -46,6 +46,7 @@
         #endif
         #define DIRECTORY_SEPARATOR                             "\\"
         #define DIRECTORY_SEPARATOR_CHAR                             '\\'
+        #define VSXU_PLUGIN_LOCATION                           vsx_string<>("plugins/")
 
     #elif defined(__APPLE__) || defined(__MACH__)
         #define PLATFORM                                        PLATFORM_MACINTOSH
@@ -58,12 +59,14 @@
         #endif
         #define DIRECTORY_SEPARATOR                             "/"
         #define DIRECTORY_SEPARATOR_CHAR                        '/'
+        #define VSXU_PLUGIN_LOCATION                           vsx_string<>("plugins/")
     #elif defined(linux) || defined(__linux) || defined(__linux__) || defined(__CYGWIN__)
         #define COMPILER COMPILER_GCC
         #define PLATFORM                                        PLATFORM_LINUX
         #define PLATFORM_NAME                                   "GNU / Linux"
         #define PLATFORM_FAMILY                                 PLATFORM_FAMILY_UNIX
         #define PLATFORM_SHARED_FILES                           vsx_string<>(get_exec_path().c_str()) + "/../share/vsxu/"
+        #define VSXU_PLUGIN_LOCATION                           vsx_string<>(get_exec_path().c_str()) + "/../lib/vsxu/plugins"
         #define PLATFORM_DLL_SUFFIX                             ".so"
         #ifdef PLATFORM_SHARED_FILES_STL
           #define PLATFORM_SHARED_FILES_STLSTRING               get_exec_path() + std::string("/../share/vsxu/")
@@ -77,6 +80,7 @@
         #define PLATFORM_SHARED_FILES                           ""
         #define DIRECTORY_SEPARATOR                             "/"
         #define DIRECTORY_SEPARATOR_CHAR                        '/'
+        #define VSXU_PLUGIN_LOCATION                           vsx_string<>("plugins/")
     #endif
 
     /*
