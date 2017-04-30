@@ -1,8 +1,9 @@
 #!/bin/bash
 APPNAME=VSXu
+APPVERSION=0.6.0
 APPDIR=$APPNAME.AppDir
 
-SRCDIR="../"
+SRCDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../"
 
 function copy_deps {
   pushd $1
@@ -46,13 +47,14 @@ delete_blacklisted()
 
 
 mkdir -p build-appimage/$APPDIR/usr/
+mkdir -p $SRCDIR/out/
 
 #Copy AppRun etc..
 cp $SRCDIR/appimage/AppRun build-appimage/$APPDIR/
 cp $SRCDIR/appimage/$APPNAME.desktop build-appimage/$APPDIR/
 cp $SRCDIR/appimage/$APPNAME.png build-appimage/$APPDIR/
 
-cd build-appimage
+pushd build-appimage
 cmake -DCMAKE_INSTALL_PREFIX=$PWD/$APPDIR/usr $SRCDIR || exit -1
 make -j`nproc` || exit -1
 make install || exit -1
@@ -68,5 +70,7 @@ rm -v $APPDIR/usr/lib/x86_64-linux-gnu/lib{xcb,drm,X,xkb,xshm}*.so.*
 #rm -vrf $APPDIR/usr/lib/x86_64-linux-gnu/mesa/
 delete_blacklisted $APPDIR
 
-$SRCDIR/appimage/appimagetool $PWD/$APPDIR $APPNAME.AppImage
+GLIBC_VERSION=`find . -name *.so -or -name *.so.* -or -type f -executable  -exec readelf -s '{}' 2>/dev/null \; | sed -n 's/.*@GLIBC_//p'| awk '{print $1}' | sort --version-sort | tail -n 1`
+$SRCDIR/appimage/appimagetool $PWD/$APPDIR $SRCDIR/out/$APPNAME-$APPVERSION.glibc$GLIBC_VERSION.AppImage
+popd
 
