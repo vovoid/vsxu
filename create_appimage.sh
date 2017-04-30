@@ -53,9 +53,9 @@ cp $SRCDIR/appimage/$APPNAME.desktop build/$APPDIR/
 cp $SRCDIR/appimage/$APPNAME.png build/$APPDIR/
 
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=$PWD/$APPDIR/usr ..
-make -j`nproc`
-make install
+cmake -DCMAKE_INSTALL_PREFIX=$PWD/$APPDIR/usr .. || exit -1
+make -j`nproc` || exit -1
+make install || exit -1
 
 #Copy deps - Running multiple times to catch all dependencies
 copy_deps $APPDIR
