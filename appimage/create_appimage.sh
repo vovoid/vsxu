@@ -27,7 +27,7 @@ function copy_deps {
 delete_blacklisted()
 {
   pushd $1
-  BLACKLISTED_FILES=$(cat $SRCDIR/appimage/excludelist | sed '/^\s*$/d' | sed '/^#.*$/d')
+  BLACKLISTED_FILES=$(cat ../../excludelist | sed '/^\s*$/d' | sed '/^#.*$/d')
   echo $BLACKLISTED_FILES
   for FILE in $BLACKLISTED_FILES ; do
     FOUND=$(find . -xtype f -name "${FILE}" 2>/dev/null)
@@ -50,9 +50,9 @@ mkdir -p build-appimage/$APPDIR/usr/
 mkdir -p $SRCDIR/out/
 
 #Copy AppRun etc..
-cp $SRCDIR/appimage/AppRun build-appimage/$APPDIR/
-cp $SRCDIR/appimage/$APPNAME.desktop build-appimage/$APPDIR/
-cp $SRCDIR/appimage/$APPNAME.png build-appimage/$APPDIR/
+cp AppRun build-appimage/$APPDIR/
+cp $APPNAME.desktop build-appimage/$APPDIR/
+cp $APPNAME.png build-appimage/$APPDIR/
 
 pushd build-appimage
 cmake -DCMAKE_INSTALL_PREFIX=$PWD/$APPDIR/usr $SRCDIR || exit -1
