@@ -2,7 +2,7 @@
 APPNAME=VSXu
 APPDIR=$APPNAME.AppDir
 
-SRCDIR="../"
+SRCDIR="../../"
 
 function copy_deps {
   pushd $1
@@ -26,7 +26,7 @@ function copy_deps {
 delete_blacklisted()
 {
   pushd $1
-  BLACKLISTED_FILES=$(cat $SRCDIR/appimage/excludelist | sed '/^\s*$/d' | sed '/^#.*$/d')
+  BLACKLISTED_FILES=$(cat ../../excludelist | sed '/^\s*$/d' | sed '/^#.*$/d')
   echo $BLACKLISTED_FILES
   for FILE in $BLACKLISTED_FILES ; do
     FOUND=$(find . -xtype f -name "${FILE}" 2>/dev/null)
@@ -48,9 +48,9 @@ delete_blacklisted()
 mkdir -p build-appimage/$APPDIR/usr/
 
 #Copy AppRun etc..
-cp $SRCDIR/appimage/AppRun build-appimage/$APPDIR/
-cp $SRCDIR/appimage/$APPNAME.desktop build-appimage/$APPDIR/
-cp $SRCDIR/appimage/$APPNAME.png build-appimage/$APPDIR/
+cp AppRun build-appimage/$APPDIR/
+cp $APPNAME.desktop build-appimage/$APPDIR/
+cp $APPNAME.png build-appimage/$APPDIR/
 
 cd build-appimage
 cmake -DCMAKE_INSTALL_PREFIX=$PWD/$APPDIR/usr $SRCDIR || exit -1
@@ -68,5 +68,5 @@ rm -v $APPDIR/usr/lib/x86_64-linux-gnu/lib{xcb,drm,X,xkb,xshm}*.so.*
 #rm -vrf $APPDIR/usr/lib/x86_64-linux-gnu/mesa/
 delete_blacklisted $APPDIR
 
-$SRCDIR/appimage/appimagetool $PWD/$APPDIR $APPNAME.AppImage
+../appimagetool $PWD/$APPDIR $APPNAME.AppImage
 
