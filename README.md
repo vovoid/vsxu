@@ -1,5 +1,5 @@
-Vovoid VSXu
-=================
+Vovoid VSXu [![Build Status](https://travis-ci.org/vovoid/vsxu.svg?branch=master)](https://travis-ci.org/vovoid/vsxu)
+===========
 ©2003-2015 Vovoid Media Technologies AB, Sweden
 
 http://www.vsxu.com
@@ -28,7 +28,7 @@ Compilation Instructions for a basic version of VSXu Ubuntu/Debian:
 
 Make sure you have met the build dependencies:
 
-      sudo apt-get install libglew-dev libpng12-dev libftgl-dev libjpeg-dev libpulse-dev libopenexr-dev libxrandr-dev make cmake g++ gcc git-core
+      sudo apt-get install libglew-dev libpng12-dev libjpeg-dev libpulse-dev libopenexr-dev libxrandr-dev make cmake g++ gcc git-core
 
 Optional dependencies:
 
