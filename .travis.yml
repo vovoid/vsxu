@@ -16,4 +16,4 @@ install:
   - git submodule init
   - git submodule update
 
-script: sh ./create_appimage.sh
+script: bash ./create_appimage.sh
