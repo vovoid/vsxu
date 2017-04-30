@@ -65,15 +65,14 @@ void vsx_data_path::init()
       mkdir( (data_path+"resources").c_str(),0700);
       // add symlinks to examples
 
-      int r;
-      r = symlink ( (PLATFORM_SHARED_FILES+"example-macros").c_str(), (data_path+"macros/examples").c_str() );
-      r = symlink ( (PLATFORM_SHARED_FILES+"example-states").c_str(), (data_path+"states/examples").c_str() );
-      r = symlink ( (PLATFORM_SHARED_FILES+"example-prods").c_str(), (data_path+"prods/examples").c_str() );
-      r = symlink ( (PLATFORM_SHARED_FILES+"example-visuals").c_str(), (data_path+"visuals/examples").c_str() );
-      r = symlink ( (PLATFORM_SHARED_FILES+"example-resources").c_str(), (data_path+"resources/examples").c_str() );
-      r = symlink ( (PLATFORM_SHARED_FILES+"example-faders").c_str(), (data_path+"visuals_faders/examples").c_str() );
-      r = symlink ( (PLATFORM_SHARED_FILES+"debug-states").c_str(), (data_path+"states/debug").c_str() );
-      (void)r;
+      system((vsx_string<>("cp -Rf ") + PLATFORM_SHARED_FILES + "vsxu.conf " + data_path).c_str());
+      system((vsx_string<>("cp -Rf ") + PLATFORM_SHARED_FILES + "example-macros " + data_path + "macros/examples/").c_str());
+      system((vsx_string<>("cp -Rf ") + PLATFORM_SHARED_FILES + "example-states " + data_path + "states/examples/").c_str());
+      system((vsx_string<>("cp -Rf ") + PLATFORM_SHARED_FILES + "example-prods " + data_path + "prods/examples/").c_str());
+      system((vsx_string<>("cp -Rf ") + PLATFORM_SHARED_FILES + "example-visuals " + data_path + "visuals/examples/").c_str());
+      system((vsx_string<>("cp -Rf ") + PLATFORM_SHARED_FILES + "example-resources " + data_path + "resources/examples/").c_str());
+      system((vsx_string<>("cp -Rf ") + PLATFORM_SHARED_FILES + "example-faders " + data_path + "visuals_faders/examples/").c_str());
+      system((vsx_string<>("cp -Rf ") + PLATFORM_SHARED_FILES + "debug-states " + data_path + "debug/").c_str());
     }
   #else // platform family = unix
     #if COMPILER == COMPILER_VISUAL_STUDIO

@@ -7,6 +7,8 @@ class vsx_application_control
 {
   bool shutdown = false;
   bool create_preferences_path = false;
+  bool show_console_window = false;
+
 public:
 
   // mouse control
@@ -41,6 +43,21 @@ public:
   bool is_shutdown_requested()
   {
     return shutdown;
+  }
+
+  bool is_show_console_window_requested()
+  {
+    return show_console_window;
+  }
+
+  void show_console_window_request()
+  {
+    show_console_window = true;
+  }
+
+  void show_console_window_reset()
+  {
+    show_console_window = false;
   }
 
   static vsx_application_control* get_instance();

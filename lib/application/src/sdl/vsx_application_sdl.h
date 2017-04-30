@@ -61,9 +61,9 @@ class vsx_application_sdl
 
   void setup()
   {
-    // on Windows, hide the console window
+    // on Windows, handle the console window
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-      if (!vsx_argvector::get_instance()->has_param("-console"))
+      if (!vsx_argvector::get_instance()->has_param("console"))
         ShowWindow( GetConsoleWindow(), SW_HIDE );
     #endif
 
@@ -377,6 +377,14 @@ public:
       {
         SDL_SetWindowTitle(vsx_application_sdl_window_holder::get_instance()->window, vsx_application_control::get_instance()->window_title.c_str());
         vsx_application_control::get_instance()->window_title = "";
+      }
+
+      if (vsx_application_control::get_instance()->is_show_console_window_requested())
+      {
+        #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+          ShowWindow( GetConsoleWindow(), SW_SHOW );
+        #endif
+        vsx_application_control::get_instance()->show_console_window_reset();
       }
 
       // time manager

@@ -68,7 +68,7 @@ public:
     std::list< vsx_string<> > mfiles;
     vsx::filesystem_helper::get_files_recursive
     (
-      VSXU_PLUGIN_LOCATION  // from CmakeLists.txt
+      VSXU_PLUGIN_LOCATION  // from vsx_platform.h
       ,
       &mfiles
       ,
