@@ -183,16 +183,3 @@ configure_file(
 add_custom_target(uninstall
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-# appimage target
-    set(APPIMAGE_PROJECT_NAME "VSXu")
-    set(APPIMAGE_PROJECT_BINARY "vsxu_launcher")
-    set(APPIMAGE_PROJECT_ICON "${CMAKE_CURRENT_SOURCE_DIR}/share/icons/hicolor/48x48/apps/vsxu.png")
-    configure_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/appimage/cmake_appimage.cmake.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/cmake_appimage.cmake"
-        IMMEDIATE @ONLY)
-
-    add_custom_target(appimage COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_appimage.cmake)
-endif()
-
