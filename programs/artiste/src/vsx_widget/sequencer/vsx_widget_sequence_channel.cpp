@@ -111,6 +111,8 @@ void vsx_widget_sequence_channel::init()
   menu_interpolation->commands.adds(VSX_COMMAND_MENU, "bezier interpolation",
       "menu_interp", "4");
   menu_interpolation->init();
+  dynamic_cast<vsx_widget_popup_menu*>(menu_interpolation)->row_size_by_font_size( 0.006f );
+  dynamic_cast<vsx_widget_popup_menu*>(menu)->row_size_by_font_size( 0.006f );
 
   manual_value_input_dialog = add(new dialog_query_string("set value","set value"),"menu_interp_keyboard_value");
   ((dialog_query_string*)manual_value_input_dialog)->init();
@@ -463,7 +465,12 @@ void vsx_widget_sequence_channel::event_mouse_down(vsx_widget_distance distance,
       if (parent != root)
         parent->front(this);
       menu_interpolation->visible = 2;
-      menu_interpolation->set_pos(coords.screen_global);
+      menu_interpolation->set_render_type(vsx_widget_render_type::render_3d);
+
+      vsx_vector3f menu_target_pos = get_pos_p();
+      menu_target_pos.x += distance.center.x;
+      menu_target_pos.y += distance.center.y;
+      menu_interpolation->set_pos(menu_target_pos);
       run_event_mouse_down = false;
       menu_temp_disable = true;
     }
