@@ -204,21 +204,21 @@ public:
 
           if (alpha)
           {
-            *p = CLAMP( (unsigned char)(255.0f * color.r), 0, 255);
+            *p = (unsigned char)CLAMP( (255.0f * color.r), 0, 255.0f);
             p++;
-            *p = CLAMP( (unsigned char)(255.0f * color.g), 0, 255);
+            *p = (unsigned char)CLAMP( (255.0f * color.g), 0, 255.0f);
             p++;
-            *p = CLAMP( (unsigned char)(255.0f * color.b), 0, 255);
+            *p = (unsigned char)CLAMP( (255.0f * color.b), 0, 255.0f);
             p++;
-            *p = CLAMP( (unsigned char)(color.a * pf), 0, 255);
+            *p = (unsigned char)CLAMP( (color.a * pf), 0, 255.0f);
             p++;
           } else
           {
-            *p = CLAMP( (unsigned char)(pf * color.r), 0, 255);
+            *p = (unsigned char)CLAMP( (pf * color.r), 0, 255.0f);
             p++;
-            *p = CLAMP( (unsigned char)(pf * color.g), 0, 255);
+            *p = (unsigned char)CLAMP( (pf * color.g), 0, 255.0f);
             p++;
-            *p = CLAMP( (unsigned char)(pf * color.b), 0, 255);
+            *p = (unsigned char)CLAMP( (pf * color.b), 0, 255.0f);
             p++;
           }
           xp += divisor;
