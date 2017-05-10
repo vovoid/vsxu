@@ -424,7 +424,7 @@ public:
           {
             morph_info mi;
             mi.id = i;
-            mi.name = morph_targets[i]->name().c_str();
+            mi.name = morph_targets[i]->getName().c_str();
             morphs.push_back( mi );
           }
         }

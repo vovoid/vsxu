@@ -42,7 +42,7 @@ ${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/animation_cycle.cpp
 ${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/bone.cpp
 ${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/buffersource.cpp
 ${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/cal3d_wrapper.cpp
-${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/calxmlbindings.cpp
+#${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/calxmlbindings.cpp
 ${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/coreanimatedmorph.cpp
 ${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/coreanimation.cpp
 ${CMAKE_CURRENT_LIST_DIR}/cal3d/cal3d/src/cal3d/corebone.cpp
