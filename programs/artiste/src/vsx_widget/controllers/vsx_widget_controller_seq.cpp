@@ -67,23 +67,35 @@ void vsx_widget_controller_sequence::command_process_back_queue(vsx_command_s *t
   {
     command_q_b.add_raw("param_set "+(target_param!= ""?(target_param+" "):"")+t->parts[2]+command_suffix);
     parent->vsx_command_queue_b(this);
-  } else
+  }
+
   if (t->cmd == "pg_ok") {
     command_q_b.add_raw("pseq_p_ok inject_get foo bar "+t->parts[3]);
     seq_chan->vsx_command_queue_b(this);
   }
-  else
+
   if (t->cmd == "pg64_ok") {
     command_q_b.add_raw("pseq_p_ok inject_get foo bar " + vsx_string_helper::base64_decode(t->parts[3]));
     seq_chan->vsx_command_queue_b(this);
   }
-  else
+
   if (t->cmd == "menu_close" || t->cmd == "remove_chan")
+  {
+    if (parent_removal)
+    {
+      visible = 0;
+      seq_chan->visible = 0;
+    }
+    else
 			_delete();
+  }
 }
 
 void vsx_widget_controller_sequence::i_draw()
 {
+  if (visible)
+    seq_chan->visible = visible;
+
 	if (draw_base)
 	{
     vsx_widget_controller_base::i_draw();

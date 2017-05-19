@@ -114,6 +114,17 @@ if (cmd == "pseq_p")
       );
   }
 
+  // 0=pseq_p 1=command 2=[component] 3=[param] 4=[data]
+  if (c->parts[1] == "save_data")
+  {
+    vsx_string<> filename = vsx_data_path::get_instance()->data_path_get() +  "sequences" + DIRECTORY_SEPARATOR + c->parts[4];
+
+    vsx_string_helper::write_to_file(
+      filename,
+      sequence_list.dump_param_values(param)
+    );
+  }
+
 
   if (c->parts[1] == "add") {
     if (!param->sequence) {

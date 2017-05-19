@@ -86,11 +86,13 @@ void vsx_widget_sequence_channel::init()
   }
   title = "channel";
   target_pos = pos;
+
   menu = add(new vsx_widget_popup_menu, ".comp_menu");
   menu->commands.adds(VSX_COMMAND_MENU, "close", "menu_close", "");
   menu->commands.adds(VSX_COMMAND_MENU, "delete", "menu_remove", "");
   menu->size.x = 0.1;
   menu->init();
+  dynamic_cast<vsx_widget_popup_menu*>(menu)->row_size_by_font_size( 0.006f );
 
   visible = 0;
 
@@ -112,7 +114,6 @@ void vsx_widget_sequence_channel::init()
       "menu_interp", "4");
   menu_interpolation->init();
   dynamic_cast<vsx_widget_popup_menu*>(menu_interpolation)->row_size_by_font_size( 0.006f );
-  dynamic_cast<vsx_widget_popup_menu*>(menu)->row_size_by_font_size( 0.006f );
 
   manual_value_input_dialog = add(new dialog_query_string("set value","set value"),"menu_interp_keyboard_value");
   ((dialog_query_string*)manual_value_input_dialog)->init();
@@ -543,6 +544,7 @@ void vsx_widget_sequence_channel::event_mouse_double_click(
     {
       command_q_b.add_raw("remove_chan " + channel_name + " " + param_name);
       parent->vsx_command_queue_b(this);
+      return;
     }
   }
 
