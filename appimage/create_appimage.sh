@@ -1,6 +1,6 @@
 #!/bin/bash
 APPNAME=VSXu
-APPVERSION=0.6.0
+APPVERSION=0.6.1
 APPDIR=$APPNAME.AppDir
 
 SRCDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../"
