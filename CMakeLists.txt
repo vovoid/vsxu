@@ -7,7 +7,7 @@ PROJECT(VSXu)
 
 set(VSXU_VERSION_MAJOR "0")
 set(VSXU_VERSION_MINOR "6")
-set(VSXU_VERSION_PATCH "0")
+set(VSXU_VERSION_PATCH "1")
 set(VSXU_VERSION ${VSXU_VERSION_MAJOR}.${VSXU_VERSION_MINOR}.${VSXU_VERSION_PATCH})
 
 message("---------------------------------------------------------------------")

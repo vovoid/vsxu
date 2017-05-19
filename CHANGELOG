@@ -8,6 +8,14 @@ Welcome to the Changelog of the Vovoid VSXu Project
 ***********************************************************************************************************************
 
   ######################################
+  VSXu 0.6.1 (May 2017)
+  ######################################
+  Bug fix / Patch release
+
+  ' menu text too small in sequencer
+  ' not possible to close master channel item / segfault
+
+  ######################################
   VSXu 0.6.0 (March 2017)
   ######################################
 
