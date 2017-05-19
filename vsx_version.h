@@ -7,8 +7,8 @@
 
 #pragma once
 
-#define VSXU_VERSION "VSXu 0.6.0"
-#define VSXU_VER "0.6.0"
+#define VSXU_VERSION "VSXu 0.6.1"
+#define VSXU_VER "0.6.1"
 
 #define VSXU_VERSION_MAJOR 0
 #define VSXU_VERSION_MINOR 6
