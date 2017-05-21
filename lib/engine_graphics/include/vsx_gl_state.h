@@ -170,17 +170,6 @@ VSX_ENGINE_GRAPHICS_DLLIMPORT class vsx_gl_state
 {
 public:
 
-  vsx_gl_state()
-  {
-    _material_init_values_default();
-    _viewport_init_values_default();
-    _blend_mode_init_default();
-    _depth_init();
-    _line_width_init();
-    _point_size_init();
-    _framebuffer_binding_init();
-  }
-
 //***************************************************************************
 //*** FRAMEBUFFER BINDING ***************************************************
 //***************************************************************************
@@ -202,12 +191,7 @@ public:
 
 private:
 
-  unsigned int _framebuffer_binding;
-
-  inline void _framebuffer_binding_init()
-  {
-    _framebuffer_binding = 0;
-  }
+  unsigned int _framebuffer_binding = 0;
 
 
 //***************************************************************************
@@ -228,13 +212,7 @@ public:
   }
 
 private:
-  float _point_size;
-
-  inline void _point_size_init()
-  {
-    _point_size = 1.0f;
-  }
-
+  float _point_size = 1.0f;
 
 
 //***************************************************************************
@@ -257,19 +235,56 @@ public:
   }
 
 private:
-  float _line_width;
-
-  inline void _line_width_init()
-  {
-    _line_width = 1.0f;
-  }
-
+  float _line_width = 1.0f;
 
 
 //***************************************************************************
 //*** DEPTH BUFFER **********************************************************
 //***************************************************************************
+
+  int _depth_mask_stack[VSX_GL_STATE_STACK_DEPTH];
+  size_t _depth_mask_stack_pointer = 0;
+
+  int _depth_test_stack[VSX_GL_STATE_STACK_DEPTH];
+  size_t _depth_test_stack_pointer = 0;
+
 public:
+
+  void depth_mask_push()
+  {
+    if (_depth_test_stack_pointer + 1 == VSX_GL_STATE_STACK_DEPTH)
+      VSX_ERROR_RETURN(L"Depth mask stack overflow!");
+
+    _depth_mask_stack[_depth_test_stack_pointer] = _depth_mask_enabled;
+    _depth_test_stack_pointer++;
+  }
+
+  void depth_mask_pop()
+  {
+    if (!_depth_test_stack_pointer)
+      VSX_ERROR_RETURN(L"Depth mask stack underrun!");
+
+    _depth_test_stack_pointer--;
+    depth_mask_set(_depth_mask_stack[_depth_test_stack_pointer]);
+  }
+
+  void depth_test_push()
+  {
+    if (_depth_test_stack_pointer + 1 == VSX_GL_STATE_STACK_DEPTH)
+      VSX_ERROR_RETURN(L"Depth test stack overflow!");
+
+    _depth_test_stack[_depth_test_stack_pointer] = _depth_test_enabled;
+    _depth_test_stack_pointer++;
+  }
+
+  void depth_test_pop()
+  {
+    if (!_depth_test_stack_pointer)
+      VSX_ERROR_RETURN(L"Depth test stack underrun!");
+
+    _depth_test_stack_pointer--;
+    depth_test_set(_depth_test_stack[_depth_test_stack_pointer]);
+  }
 
   // depth mask
   void depth_mask_set(int n, bool debug = false)
@@ -339,16 +354,9 @@ public:
   }
 
 private:
-  int _depth_mask_enabled;
-  int _depth_test_enabled;
-  int _depth_function;
-
-  void _depth_init()
-  {
-    _depth_mask_enabled = 0;
-    _depth_test_enabled = 0;
-    _depth_function = 1;
-  }
+  int _depth_mask_enabled = 0;
+  int _depth_test_enabled = 0;
+  int _depth_function = 1;
 
 
 
@@ -472,26 +480,14 @@ public:
 
 private:
 
-  int _blend_enabled;
-  int _blend_src;
-  int _blend_dst;
-  float _blend_color[4];
+  int _blend_enabled = 0;
+  int _blend_src = 0;
+  int _blend_dst = 0;
+  float _blend_color[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 
   int _blend_func_stack[2][VSX_GL_STATE_STACK_DEPTH];
-  size_t _blend_func_stack_pointer;
+  size_t _blend_func_stack_pointer = 0;
 
-
-  void _blend_mode_init_default()
-  {
-    _blend_func_stack_pointer = 0;
-    _blend_enabled = 0;
-    _blend_src = 0;
-    _blend_dst = 0;
-    _blend_color[0] = 0.0f;
-    _blend_color[1] = 0.0f;
-    _blend_color[2] = 0.0f;
-    _blend_color[3] = 1.0f;
-  }
 
 //***************************************************************************
 //*** MATERIAL **************************************************************
@@ -570,6 +566,57 @@ public:
     }
   }
 
+  inline void _material_init_values_default()
+  {
+    // ambient materials
+    material_colors[VSX_GL_AMBIENT][VSX_GL_FRONT][0] = 0.2f;
+    material_colors[VSX_GL_AMBIENT][VSX_GL_FRONT][1] = 0.2f;
+    material_colors[VSX_GL_AMBIENT][VSX_GL_FRONT][2] = 0.2f;
+    material_colors[VSX_GL_AMBIENT][VSX_GL_FRONT][3] = 1.0f;
+
+    material_colors[VSX_GL_AMBIENT][VSX_GL_BACK] [0] = 0.2f;
+    material_colors[VSX_GL_AMBIENT][VSX_GL_BACK] [1] = 0.2f;
+    material_colors[VSX_GL_AMBIENT][VSX_GL_BACK] [2] = 0.2f;
+    material_colors[VSX_GL_AMBIENT][VSX_GL_BACK] [3] = 1.0f;
+
+    // diffuse
+    material_colors[VSX_GL_DIFFUSE][VSX_GL_FRONT][0] = 0.8f;
+    material_colors[VSX_GL_DIFFUSE][VSX_GL_FRONT][1] = 0.8f;
+    material_colors[VSX_GL_DIFFUSE][VSX_GL_FRONT][2] = 0.8f;
+    material_colors[VSX_GL_DIFFUSE][VSX_GL_FRONT][3] = 1.0f;
+
+    material_colors[VSX_GL_DIFFUSE][VSX_GL_BACK] [0] = 0.8f;
+    material_colors[VSX_GL_DIFFUSE][VSX_GL_BACK] [1] = 0.8f;
+    material_colors[VSX_GL_DIFFUSE][VSX_GL_BACK] [2] = 0.8f;
+    material_colors[VSX_GL_DIFFUSE][VSX_GL_BACK] [3] = 1.0f;
+
+    // specular
+    material_colors[VSX_GL_SPECULAR][VSX_GL_FRONT][0] = 0.0f;
+    material_colors[VSX_GL_SPECULAR][VSX_GL_FRONT][1] = 0.0f;
+    material_colors[VSX_GL_SPECULAR][VSX_GL_FRONT][2] = 0.0f;
+    material_colors[VSX_GL_SPECULAR][VSX_GL_FRONT][3] = 1.0f;
+
+    material_colors[VSX_GL_SPECULAR][VSX_GL_BACK] [0] = 0.0f;
+    material_colors[VSX_GL_SPECULAR][VSX_GL_BACK] [1] = 0.0f;
+    material_colors[VSX_GL_SPECULAR][VSX_GL_BACK] [2] = 0.0f;
+    material_colors[VSX_GL_SPECULAR][VSX_GL_BACK] [3] = 1.0f;
+
+    // emission
+    material_colors[VSX_GL_EMISSION][VSX_GL_FRONT][0] = 0.0f;
+    material_colors[VSX_GL_EMISSION][VSX_GL_FRONT][1] = 0.0f;
+    material_colors[VSX_GL_EMISSION][VSX_GL_FRONT][2] = 0.0f;
+    material_colors[VSX_GL_EMISSION][VSX_GL_FRONT][3] = 1.0f;
+
+    material_colors[VSX_GL_EMISSION][VSX_GL_BACK] [0] = 0.0f;
+    material_colors[VSX_GL_EMISSION][VSX_GL_BACK] [1] = 0.0f;
+    material_colors[VSX_GL_EMISSION][VSX_GL_BACK] [2] = 0.0f;
+    material_colors[VSX_GL_EMISSION][VSX_GL_BACK] [3] = 1.0f;
+
+    // shininess
+    material_colors[VSX_GL_SHININESS][VSX_GL_FRONT][0] = 0.0f;
+    material_colors[VSX_GL_SHININESS][VSX_GL_BACK] [0] = 0.0f;
+  }
+
   inline void material_set_default()
   {
     _material_init_values_default();
@@ -638,58 +685,36 @@ public:
 
 private:
 
-  inline void _material_init_values_default()
-  {
-    // ambient materials
-    material_colors[VSX_GL_AMBIENT][VSX_GL_FRONT][0] = 0.2f;
-    material_colors[VSX_GL_AMBIENT][VSX_GL_FRONT][1] = 0.2f;
-    material_colors[VSX_GL_AMBIENT][VSX_GL_FRONT][2] = 0.2f;
-    material_colors[VSX_GL_AMBIENT][VSX_GL_FRONT][3] = 1.0f;
+  float material_colors[5][2][4] =
+    {
+      // ambient
+      {
+        {0.2f, 0.2f, 0.2f, 1.0f},
+        {0.2f, 0.2f, 0.2f, 1.0f}
+      },
+      // diffuse
+      {
+        {0.8f, 0.8f, 0.8f, 1.0f},
+        {0.8f, 0.8f, 0.8f, 1.0f}
+      },
+      // specular
+      {
+        {0.0f, 0.0f, 0.0f, 1.0f},
+        {0.0f, 0.0f, 0.0f, 1.0f}
+      },
+      // emission
+      {
+        {0.0f, 0.0f, 0.0f, 1.0f},
+        {0.0f, 0.0f, 0.0f, 1.0f}
+      },
+      // shininess
+      {
+        {0.0f, 0.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 0.0f, 0.0f}
+      },
 
-    material_colors[VSX_GL_AMBIENT][VSX_GL_BACK] [0] = 0.2f;
-    material_colors[VSX_GL_AMBIENT][VSX_GL_BACK] [1] = 0.2f;
-    material_colors[VSX_GL_AMBIENT][VSX_GL_BACK] [2] = 0.2f;
-    material_colors[VSX_GL_AMBIENT][VSX_GL_BACK] [3] = 1.0f;
-
-    // diffuse
-    material_colors[VSX_GL_DIFFUSE][VSX_GL_FRONT][0] = 0.8f;
-    material_colors[VSX_GL_DIFFUSE][VSX_GL_FRONT][1] = 0.8f;
-    material_colors[VSX_GL_DIFFUSE][VSX_GL_FRONT][2] = 0.8f;
-    material_colors[VSX_GL_DIFFUSE][VSX_GL_FRONT][3] = 1.0f;
-
-    material_colors[VSX_GL_DIFFUSE][VSX_GL_BACK] [0] = 0.8f;
-    material_colors[VSX_GL_DIFFUSE][VSX_GL_BACK] [1] = 0.8f;
-    material_colors[VSX_GL_DIFFUSE][VSX_GL_BACK] [2] = 0.8f;
-    material_colors[VSX_GL_DIFFUSE][VSX_GL_BACK] [3] = 1.0f;
-
-    // specular
-    material_colors[VSX_GL_SPECULAR][VSX_GL_FRONT][0] = 0.0f;
-    material_colors[VSX_GL_SPECULAR][VSX_GL_FRONT][1] = 0.0f;
-    material_colors[VSX_GL_SPECULAR][VSX_GL_FRONT][2] = 0.0f;
-    material_colors[VSX_GL_SPECULAR][VSX_GL_FRONT][3] = 1.0f;
-
-    material_colors[VSX_GL_SPECULAR][VSX_GL_BACK] [0] = 0.0f;
-    material_colors[VSX_GL_SPECULAR][VSX_GL_BACK] [1] = 0.0f;
-    material_colors[VSX_GL_SPECULAR][VSX_GL_BACK] [2] = 0.0f;
-    material_colors[VSX_GL_SPECULAR][VSX_GL_BACK] [3] = 1.0f;
-
-    // emission
-    material_colors[VSX_GL_EMISSION][VSX_GL_FRONT][0] = 0.0f;
-    material_colors[VSX_GL_EMISSION][VSX_GL_FRONT][1] = 0.0f;
-    material_colors[VSX_GL_EMISSION][VSX_GL_FRONT][2] = 0.0f;
-    material_colors[VSX_GL_EMISSION][VSX_GL_FRONT][3] = 1.0f;
-
-    material_colors[VSX_GL_EMISSION][VSX_GL_BACK] [0] = 0.0f;
-    material_colors[VSX_GL_EMISSION][VSX_GL_BACK] [1] = 0.0f;
-    material_colors[VSX_GL_EMISSION][VSX_GL_BACK] [2] = 0.0f;
-    material_colors[VSX_GL_EMISSION][VSX_GL_BACK] [3] = 1.0f;
-
-    // shininess
-    material_colors[VSX_GL_SHININESS][VSX_GL_FRONT][0] = 0.0f;
-    material_colors[VSX_GL_SHININESS][VSX_GL_BACK] [0] = 0.0f;
-  }
-
-  float material_colors[5][2][4];
+    }
+  ;
 
 //***************************************************************************
 //*** VIEWPORT **************************************************************
@@ -775,18 +800,9 @@ public:
 
 
 private:
-  int _viewport_size[4];
-  float _viewport_w_d_h; // width divided by height
+  int _viewport_size[4] = {0,0,0,0};
+  float _viewport_w_d_h = 1.0f; // width divided by height
 
-
-  inline void _viewport_init_values_default()
-  {
-    _viewport_size[0] = 0;
-    _viewport_size[1] = 0;
-    _viewport_size[2] = 0;
-    _viewport_size[3] = 0;
-    _viewport_w_d_h = 1.0f;
-  }
 
 //***************************************************************************
 //*** MATRIX OPS ************************************************************
