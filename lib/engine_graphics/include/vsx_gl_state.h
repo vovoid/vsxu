@@ -253,7 +253,7 @@ public:
   void depth_mask_push()
   {
     if (_depth_test_stack_pointer + 1 == VSX_GL_STATE_STACK_DEPTH)
-      VSX_ERROR_RETURN(L"Depth mask stack overflow!");
+      VSX_ERROR_RETURN("Depth mask stack overflow!");
 
     _depth_mask_stack[_depth_test_stack_pointer] = _depth_mask_enabled;
     _depth_test_stack_pointer++;
@@ -262,7 +262,7 @@ public:
   void depth_mask_pop()
   {
     if (!_depth_test_stack_pointer)
-      VSX_ERROR_RETURN(L"Depth mask stack underrun!");
+      VSX_ERROR_RETURN("Depth mask stack underrun!");
 
     _depth_test_stack_pointer--;
     depth_mask_set(_depth_mask_stack[_depth_test_stack_pointer]);
@@ -271,7 +271,7 @@ public:
   void depth_test_push()
   {
     if (_depth_test_stack_pointer + 1 == VSX_GL_STATE_STACK_DEPTH)
-      VSX_ERROR_RETURN(L"Depth test stack overflow!");
+      VSX_ERROR_RETURN("Depth test stack overflow!");
 
     _depth_test_stack[_depth_test_stack_pointer] = _depth_test_enabled;
     _depth_test_stack_pointer++;
@@ -280,7 +280,7 @@ public:
   void depth_test_pop()
   {
     if (!_depth_test_stack_pointer)
-      VSX_ERROR_RETURN(L"Depth test stack underrun!");
+      VSX_ERROR_RETURN("Depth test stack underrun!");
 
     _depth_test_stack_pointer--;
     depth_test_set(_depth_test_stack[_depth_test_stack_pointer]);
