@@ -175,7 +175,7 @@ public:
     current_profile.allocate( chunks_in_file );
 
     filesystem.f_read( current_profile.get_pointer(), file_size, fp );
-    vsx_printf(L"VSX PROFILER: loaded profile with %ld chunks\n", chunks_in_file);
+    vsx_printf(L"VSX PROFILER: loaded profile with %ld chunks\n", (long)chunks_in_file);
 
     if (current_profile.size() < 3)
       VSX_ERROR_RETURN("not enough data in profile");
@@ -230,11 +230,11 @@ public:
 
     for (size_t i = 0; i < current_threads.size(); i++)
     {
-      vsx_printf(L"Current thread: %ld\n", current_threads[i]);
+      vsx_printf(L"Current thread: %ld\n", (long)current_threads[i]);
     }
     for (size_t i = 0; i < current_plots.size(); i++)
     {
-      vsx_printf(L"Current plot: %ld\n", current_plots[i]);
+      vsx_printf(L"Current plot: %ld\n", (long)current_plots[i]);
     }
 
 
@@ -300,7 +300,7 @@ public:
       if (chunk.flags == VSX_PROFILE_CHUNK_FLAG_START /*&& chunk.cycles > cycles_begin_time*/)
       {
         compute_stack[compute_stack_pointer].time_start = cycles_to_time( chunk.cycles );
-        vsx_printf(L"tag: %s\n", chunk.tag);
+        vsx_printf(L"tag: %hs\n", chunk.tag);
         compute_stack[compute_stack_pointer].tag = chunk.tag;
         compute_stack[compute_stack_pointer].cycles_start = chunk.cycles;
 //        vsx_printf(L"starting time inner: %f\n", compute_stack[compute_stack_pointer].time_start);

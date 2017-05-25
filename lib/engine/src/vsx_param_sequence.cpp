@@ -540,7 +540,7 @@ void vsx_param_sequence::insert_line_absolute(vsx_command_list* dest, vsx_comman
 
   vsx_string<> value = vsx_string_helper::base64_decode(cmd_in->parts[4]);
   float time = vsx_string_helper::s2f(cmd_in->parts[5]);
-  size_t interpolation = vsx_string_helper::s2i( cmd_in->parts[6]);
+  int interpolation = vsx_string_helper::s2i( cmd_in->parts[6]);
 
   vsx_param_sequence_item pa;
   pa.interpolation = interpolation;

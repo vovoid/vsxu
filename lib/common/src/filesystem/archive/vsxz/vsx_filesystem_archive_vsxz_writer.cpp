@@ -206,7 +206,7 @@ void filesystem_archive_vsxz_writer::close()
 
   foreach (is_processed, i)
     if (!is_processed[i])
-      vsx_printf(L"*** file id %ld not processed! (%hs)\n",i, archive_files[i].filename.c_str());
+      vsx_printf(L"*** file id %ld not processed! (%hs)\n",(long)i, archive_files[i].filename.c_str());
 
   // Set chunk id in all file info structs
   for_n(i, 0, max_chunks)

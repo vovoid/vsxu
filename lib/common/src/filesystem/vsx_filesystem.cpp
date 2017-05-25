@@ -128,7 +128,7 @@ file* filesystem::f_open(const char* filename)
   if (!handle->handle)
   {
     if (errno != ENOENT)
-      vsx_printf(L"File open failed - %s, errno: %d\n", filename, errno);
+      vsx_printf(L"File open failed - %hs, errno: %d\n", filename, errno);
     delete handle;
     handle = 0x0;
   }

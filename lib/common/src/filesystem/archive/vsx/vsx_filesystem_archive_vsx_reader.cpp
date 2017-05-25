@@ -105,7 +105,7 @@ bool filesystem_archive_vsx_reader::load(const char* archive_filename, bool load
     {
       size_t rb = fread(file_info.compressed_data.get_pointer(), 1, size, archive_handle);
       if (!rb)
-        VSX_ERROR_EXIT(L"Could not read compressed data",100)
+        VSX_ERROR_EXIT("Could not read compressed data",100)
       archive_files.move_back(std::move(file_info));
       continue;
     }

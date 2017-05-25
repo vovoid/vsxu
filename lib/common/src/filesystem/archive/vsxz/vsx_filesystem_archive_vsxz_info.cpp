@@ -64,7 +64,7 @@ void filesystem_archive_vsxz_info::get_info(const char* archive_filename, vsx_nw
   for (size_t i = 0; i < header->file_count; i++)
   {
     result.push_back(
-          vsx_string<>(" file info table #") + vsx_string_helper::i2s(i) + "  - chunk: " +
+          vsx_string<>(" file info table #") + vsx_string_helper::i2s((int)i) + "  - chunk: " +
           vsx_string_helper::i2s(file_info_table[i].chunk) + "  offset: " +
           vsx_string_helper::i2s(file_info_table[i].offset) + "  size: " +
           vsx_string_helper::i2s(file_info_table[i].size) + "\n"
@@ -72,7 +72,7 @@ void filesystem_archive_vsxz_info::get_info(const char* archive_filename, vsx_nw
   }
 
   result.push_back(
-        vsx_string<>(" uncompressed size from chunks: ") + vsx_string_helper::i2s(total_uncompressed_size_from_chunks) + "\n" +
+        vsx_string<>(" uncompressed size from chunks: ") + vsx_string_helper::i2s((int)total_uncompressed_size_from_chunks) + "\n" +
         vsx_string<>(" uncompressed size from header: ") + vsx_string_helper::i2s(header->compression_uncompressed_memory_size) + "\n"
   );
 }
