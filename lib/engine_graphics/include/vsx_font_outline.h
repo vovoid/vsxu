@@ -92,7 +92,7 @@ public:
   {
   }
 
-  void set_leading(float n)
+  void set_row_spacing(float n)
   {
     leading = n;
   }

@@ -470,7 +470,7 @@ public:
 
     req(search.size());
 
-    vsx_string<> n = *this;
+    vsx_string<W> n = *this;
     int loc = 1;
     int replacements = 0;
     while ((loc = n.find(search, loc-1)) != -1)
