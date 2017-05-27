@@ -36,11 +36,39 @@ protected:
 
 public:
 
-  virtual void init()
+  /**
+   * @brief init_no_graphics
+   * Called before the graphics subsystem has been initialized
+   * Things to initialize here:
+   *  - managed singletons in correct orderf
+   *  - filesystem constructs
+   */
+  virtual void init_no_graphics()
   {
   }
 
-  virtual void uninit()
+  /**
+   * @brief init_graphics
+   * Called after the graphics subsystem has been initialized
+   * You can expect an graphics context to be present
+   */
+  virtual void init_graphics()
+  {
+  }
+
+  /**
+   * @brief uninit_graphics
+   * Uninit while graphics subsystem (a context) is still present
+   */
+  virtual void uninit_graphics()
+  {
+  }
+
+  /**
+   * @brief uninit_no_graphics
+   * Uninit after graphics subsystem has been torn down
+   */
+  virtual void uninit_no_graphics()
   {
   }
 

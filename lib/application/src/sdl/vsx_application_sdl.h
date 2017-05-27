@@ -67,6 +67,9 @@ class vsx_application_sdl
         ShowWindow( GetConsoleWindow(), SW_HIDE );
     #endif
 
+    // initialization performed before SDL / graphics has been initialized
+    vsx_application_manager::get_instance()->get()->init_no_graphics();
+
     if (vsx_argvector::get_instance()->has_param("-help") || vsx_argvector::get_instance()->has_param("help"))
     {
       vsx_application_manager::get_instance()->get()->print_help();
@@ -248,7 +251,7 @@ class vsx_application_sdl
 
     update_viewport_size();
 
-    vsx_application_manager::get_instance()->get()->init();
+    vsx_application_manager::get_instance()->get()->init_graphics();
 
     if (vsx_argvector::get_instance()->has_param_with_value("p"))
     {
@@ -391,11 +394,16 @@ public:
       vsx::common::time::manager::get()->update((float)frame_timer.dtime());
     }
 
-    vsx_application_manager::get()->uninit();
+    // uninit with graphics
+    vsx_application_manager::get()->uninit_graphics();
 
     // Close OpenGL window and terminate
     SDL_GL_DeleteContext(context);
     SDL_DestroyWindow(vsx_application_sdl_window_holder::get_instance()->window);
+
+    // uninit without graphics
+    vsx_application_manager::get()->uninit_no_graphics();
+
     SDL_Quit();
   }
 };
