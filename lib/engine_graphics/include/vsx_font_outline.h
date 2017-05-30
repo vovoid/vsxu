@@ -177,7 +177,7 @@ public:
     if (font_holder)
       unload(cache);
 
-    font_holder = cache->get( filesystem, font_path, render_type );
+    font_holder = cache->get_font( filesystem, font_path, render_type );
   }
 
   void unload(outline_font_cache* cache)

@@ -1,8 +1,10 @@
 #pragma once
 
 #include <vsx_font_outline.h>
+#include <tools/vsx_managed_singleton.h>
 
 class outline_font_cache
+  : public vsx::managed_singleton<outline_font_cache>
 {
   vsx_nw_vector< vsx_string<> > names;
   vsx_nw_vector<font_outline_holder*> pointers;
@@ -54,7 +56,7 @@ class outline_font_cache
 
 public:
 
-  font_outline_holder* get( vsx::filesystem* filesystem, vsx_string<>path, vsx_font_outline_render_type type)
+  font_outline_holder* get_font( vsx::filesystem* filesystem, vsx_string<>path, vsx_font_outline_render_type type)
   {
     font_outline_holder* font_holder = find_and_bind( path );
     if (font_holder)
