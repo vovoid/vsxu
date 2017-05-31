@@ -16,13 +16,32 @@ namespace vsx
   {
     filesystem_archive_reader archive;
     vsx_string<> base_path;
+    vsx_string<> prefix_remove;
 
     bool archive_prohibited = false;
     static size_t num_open_files;
 
+    vsx_string<> remove_prefix(vsx_string<> i_filename)
+    {
+      if (prefix_remove.size())
+      {
+        int res = i_filename.find(prefix_remove);
+        if (res != -1)
+        {
+          i_filename = i_filename.substr((int)prefix_remove.size());
+        }
+      }
+      return i_filename;
+    }
+
   public:
 
     void set_base_path(vsx_string<> new_base_path);
+    void set_prefix_remove(vsx_string<> prefix_remove)
+    {
+      this->prefix_remove = prefix_remove;
+    }
+
     vsx_string<> get_base_path();
 
     filesystem_archive_reader* get_archive()

@@ -71,11 +71,14 @@ vsx_string<> filesystem::get_base_path()
 
 bool filesystem::is_file(const char* filename)
 {
+  vsx_string<> i_filename(filename);
+  i_filename = remove_prefix(i_filename);
+
   if (archive.is_archive())
-    return archive.is_file(vsx_string<>(filename));
+    return archive.is_file(i_filename);
 
   file *fp;
-  fp = this->f_open(filename);
+  fp = this->f_open(i_filename.c_str());
   if (fp == NULL)
   {
     return false;
@@ -87,12 +90,13 @@ bool filesystem::is_file(const char* filename)
 
 bool filesystem::is_file(const vsx_string<>filename)
 {
+  vsx_string<> i_filename = remove_prefix(filename);
 
   if (archive.is_archive())
-    return archive.is_file(filename);
+    return archive.is_file(i_filename);
 
   file *fp;
-  fp = this->f_open(filename.c_str());
+  fp = this->f_open(i_filename.c_str());
   if (fp == NULL)
     return false;
   this->f_close(fp);
@@ -104,6 +108,7 @@ size_t  filesystem::num_open_files = 0;
 file* filesystem::f_open(const char* filename)
 {
   vsx_string<> i_filename(filename);
+  i_filename = remove_prefix(i_filename);
 
   reqrv(i_filename.size(), 0x0);
 
@@ -237,7 +242,6 @@ char* filesystem::f_gets(char* buf, unsigned long max_buf_size, file* handle)
 
   return 0x0;
 }
-
 
 size_t filesystem::f_read(void* buf, size_t num_bytes, file* handle)
 {
