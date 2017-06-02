@@ -230,7 +230,7 @@ class vsx_bitmap_loader_dds
     vsx::file* file_handle = filesystem->f_open(filename.c_str());
     if (!file_handle)
     {
-      vsx_printf(L"%hs\n", vsx_string<>( ("error loading file: ") + filename).c_str());
+      vsx_printf(L"%hs\n", vsx_string<>( ("error loading DDS texture: ") + filename).c_str());
       return 0;
     }
 

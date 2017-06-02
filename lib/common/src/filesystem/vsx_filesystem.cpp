@@ -110,6 +110,7 @@ file* filesystem::f_open(const char* filename)
   vsx_string<> i_filename(filename);
   i_filename = remove_prefix(i_filename);
 
+
   reqrv(i_filename.size(), 0x0);
 
   file* handle = new file;
@@ -117,7 +118,7 @@ file* filesystem::f_open(const char* filename)
 
   if (archive.is_archive())
   {
-    archive.file_open(filename, handle);
+    archive.file_open(i_filename.c_str(), handle);
     return handle;
   }
 

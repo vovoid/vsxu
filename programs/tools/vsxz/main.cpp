@@ -82,6 +82,9 @@ int main(int argc, char* argv[])
     "Information:\n"
     "  vsxz -info [archive filename]                 show meta data about archive\n"
     "\n"
+    "  Under Linux, you can reset the disk cache like this:\n"
+    "       sync && echo 3 > /proc/sys/vm/drop_caches\n"
+    "\n"
   );
 
 
