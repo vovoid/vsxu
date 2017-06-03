@@ -267,14 +267,26 @@ class vsx_application_sdl
     }
   }
 
-  SDL_GameController *gamecontroller[4] = {0x0,0x0,0x0,0x0};
+  SDL_GameController *gamecontroller[32] = {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+                                            0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+                                            0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+                                            0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0
+                                           };
   void setup_game_input()
   {
     if (SDL_NumJoysticks() == 0)
       return;
 
+    int max_num_joysticks = SDL_NumJoysticks();
+
+    if (max_num_joysticks > 32)
+    {
+      vsx_printf(L"SDL: Too many joysticks connected, more than 32...\n", (int)SDL_NumJoysticks());
+      max_num_joysticks = 32;
+    }
+
     size_t current_controller = 0;
-    for (int i = 0; i < SDL_NumJoysticks(); ++i)
+    for (int i = 0; i < max_num_joysticks; ++i)
     {
       if ( SDL_IsGameController(i) )
       {
