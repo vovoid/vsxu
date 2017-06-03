@@ -75,4 +75,9 @@ public:
   {
     cmd_in.add_raw( command );
   }
+
+  bool is_fully_loaded()
+  {
+    return engine->get_modules_left_to_load() == 0;
+  }
 };
