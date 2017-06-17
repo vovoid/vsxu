@@ -296,6 +296,7 @@ class vsx_application_sdl
     }
   }
 
+
 public:
 
   void run()
@@ -327,6 +328,11 @@ public:
             if (event.caxis.value == -32768)
               event.caxis.value = -32767;
           break;
+
+          case SDL_CONTROLLERDEVICEADDED:
+          case SDL_CONTROLLERDEVICEREMOVED:
+            setup_game_input();
+
 
           case SDL_WINDOWEVENT:
             switch (event.window.event)

@@ -32,6 +32,11 @@ public:
     current_state = value;
   }
 
+  void reset()
+  {
+    current_state = initial_state;
+  }
+
 };
 
 }
