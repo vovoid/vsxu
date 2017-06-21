@@ -35,7 +35,7 @@ class vsx_application_launcher
 
 public:
 
-  void init()
+  void init_graphics()
   {
     organization_name = "Vovoid Media Technologies AB";
     application_name = "VSXu Launcher";
@@ -49,7 +49,7 @@ public:
     my_draw->init();
   }
 
-  void uninit()
+  void uninit_graphics()
   {
     my_draw.reset();
   }

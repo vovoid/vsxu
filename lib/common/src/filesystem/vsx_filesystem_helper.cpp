@@ -120,13 +120,13 @@ void get_files_recursive(vsx_string<>startpos, std::list< vsx_string<> >* filena
       if (S_ISDIR(stbuf.st_mode) || S_ISLNK(stbuf.st_mode))
 #endif
       {
-        if (!filesystem.is_file( startpos + "/" + cur_directory_item + "/" + dir_ignore_token) )
-          get_files_recursive(startpos+"/"+cur_directory_item,filenames,include_filter,exclude_filter,dir_ignore_token);
+        if (!filesystem.is_file( startpos + DIRECTORY_SEPARATOR + cur_directory_item + DIRECTORY_SEPARATOR + dir_ignore_token) )
+          get_files_recursive(startpos+DIRECTORY_SEPARATOR+cur_directory_item,filenames,include_filter,exclude_filter,dir_ignore_token);
       }
       else
       {
         if (include)
-          filenames->push_back(startpos+"/"+cur_directory_item);
+          filenames->push_back(startpos+DIRECTORY_SEPARATOR+cur_directory_item);
       }
     }
 #ifdef _WIN32

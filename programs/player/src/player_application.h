@@ -66,7 +66,7 @@ public:
     );
   }
 
-  void init()
+  void init_graphics()
   {
     no_overlay = vsx_argvector::get_instance()->has_param("no");
 
@@ -164,7 +164,7 @@ public:
     }
   }
 
-  void uninit()
+  void uninit_graphics()
   {
     vsx::engine::audiovisual::fx_save(
         vsx::engine::audiovisual::state_manager::get()->states_get(),

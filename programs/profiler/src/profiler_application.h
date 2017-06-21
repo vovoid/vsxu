@@ -42,12 +42,12 @@ public:
     return vsx_string<>(titlestr);
   }
 
-  void init()
+  void init_graphics()
   {
     my_draw.init();
   }
 
-  void uninit()
+  void uninit_graphics()
   {
   }
 

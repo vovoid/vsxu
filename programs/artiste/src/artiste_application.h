@@ -53,13 +53,13 @@ public:
     update_window_title();
   }
 
-  void init()
+  void init_graphics()
   {
     my_draw.init();
     my_draw.vxe->set_input_event_queue(&event_queue);
   }
 
-  void uninit()
+  void uninit_graphics()
   {
     my_draw.uninit();
   }

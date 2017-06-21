@@ -281,7 +281,7 @@ class vsx_application_sdl
 
     if (max_num_joysticks > 32)
     {
-      vsx_printf(L"SDL: Too many joysticks connected, more than 32...\n", (int)SDL_NumJoysticks());
+      vsx_printf(L"SDL: Too many joysticks connected - %d, more than 32...\n", (int)SDL_NumJoysticks());
       max_num_joysticks = 32;
     }
 

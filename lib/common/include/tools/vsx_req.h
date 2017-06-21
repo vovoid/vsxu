@@ -42,4 +42,3 @@
 #define req_break(t) \
   if (!(t)) \
     break
-
