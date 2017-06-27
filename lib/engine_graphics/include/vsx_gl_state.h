@@ -762,6 +762,20 @@ public:
     return _viewport_w_d_h;
   }
 
+  inline float viewport_normalize_from_16_9(float v)
+  {
+    return v / (16.0f / 9.0f) * _viewport_w_d_h;
+  }
+
+  inline vsx_vector3f viewport_normalize_from_16_9(vsx_vector3f v)
+  {
+    return vsx_vector3f(
+      viewport_normalize_from_16_9(v.x),
+      v.y,
+      v.z
+    );
+  }
+
   // substitute for glViewport()
   inline void viewport_set
   (
