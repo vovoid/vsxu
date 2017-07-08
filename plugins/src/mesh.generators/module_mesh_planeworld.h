@@ -36,7 +36,7 @@ class module_mesh_planeworld : public vsx_module
 
   // internal
   vsx_mesh<>* mesh;
-  vsx_bspline spline0;
+  vsx_bspline<vsx_vector3f> spline0;
   vsx_2dgrid_mesh gmesh;
 
 public:
@@ -70,7 +70,6 @@ public:
   {
     mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_result");
     bspline_vertices_mesh = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"bspline_vertices_mesh");
-    spline0.init(vsx_vector3<>(0.0f), 0.7f, 0.3f, 0.6f);
     srand ( (unsigned int)time(NULL) );
   }
 
@@ -94,7 +93,7 @@ public:
     vsx_vector3<> spos;
 
     spline0.step(1);
-    spos = spline0.calc_coord();
+    spos = spline0.get_current();
 
     //vsx_vector upv = vsx_vector(0,1);
 
@@ -116,7 +115,7 @@ public:
     //-----
     for (unsigned long i = 0; i < spline0.points.size()*(int)iterations_p; ++i) {
       spline0.step(step);
-      spos = spline0.calc_coord();
+      spos = spline0.get_current();
 
       e = spos-old;
       old = spos;

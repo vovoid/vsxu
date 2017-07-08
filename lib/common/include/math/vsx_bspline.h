@@ -3,7 +3,7 @@
 *
 * This file is part of Vovoid VSXu Engine.
 *
-* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies AB Copyright (C) 2003-2013
+* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies AB Copyright (C) 2003-2017
 * @see The GNU Lesser General Public License (LGPL)
 *
 * VSXu Engine is free software; you can redistribute it and/or modify
@@ -21,21 +21,20 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_BSPLINE_H
-#define VSX_BSPLINE_H
+#pragma once
 
+#include <inttypes.h>
+#include <container/vsx_ma_vector.h>
+
+template <class T, typename FT = float>
 class vsx_bspline
 {
 public:
-  float		current_pos;
-  float   real_pos;
-  vsx_vector3<>	p0, p1, p2, p3;
-  float		minDistNext;
-  float		maxDistNext;
-  vsx_vector3<> center;
-  float		radius;
-  long old_pos;
-  vsx_ma_vector< vsx_vector3<> > points;
+  FT current_pos = 0.0f;
+  FT real_pos = 0.0f;
+  T	p0, p1, p2, p3;
+  size_t old_pos;
+  vsx_ma_vector< T > points;
   
   vsx_bspline() :
     real_pos(0.0f),
@@ -43,74 +42,38 @@ public:
   {
  		current_pos = 0.0f;
   }
-  
-  vsx_bspline(vsx_vector3<> _center, float _radius, float _minDistNext, float _maxDistNext)
+  	
+  inline void set_pos(FT t)
   {
-		current_pos = 0.0f;
-		center = _center;
-		radius = _radius;
-		minDistNext = _minDistNext;
-		maxDistNext = _maxDistNext;
-  }
-
-  inline void init_random_points()
-  {
-    for (int i = 0; i < 250; ++i)
+    int new_int_pos = (int)t;
+    if (new_int_pos != old_pos)
     {
-      points.push_back(
-        vsx_vector3<>(
-          ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f),
-          ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f),
-          ((float)rand() / (float)RAND_MAX * 2.0f - 1.0f)
-        )
-      );
-    }
-    p0 = points[0];
-    p1 = points[1];
-    p2 = points[2];
-    p3 = points[3];
-  }
-
-
-  inline void init(vsx_vector3<> _center, float _radius, float _minDistNext, float _maxDistNext)
-  {
-		center = _center;
-		radius = _radius;
-		minDistNext = _minDistNext;
-		maxDistNext = _maxDistNext;
-  }
-	
-  inline void set_pos(float t)
-  {
-    int tt = (int)t;
-    //float tt = fmod(t,(float)points.size()-4);
-    if (tt != old_pos)
-    {
-      old_pos = tt;
+      old_pos = new_int_pos;
       p0 = points[(old_pos)%points.size()];
       p1 = points[(old_pos+1)%points.size()];
       p2 = points[(old_pos+2)%points.size()];
       p3 = points[(old_pos+3)%points.size()];
     }
     real_pos = current_pos = t;
-    if (current_pos > 1.0f) current_pos -= (int)current_pos;
+    if (current_pos > 1.0f)
+      current_pos -= (int)current_pos;
   }
   
-  inline void step(float stepn)
+  inline void step(FT stepn)
   {
     set_pos(real_pos+stepn);
   }
 
-  inline vsx_vector3<> calc_coord()
+  inline T get_current()
   {
-    vsx_vector3<> v;
-		float t = current_pos;
-		float t2 = t * t;
-		float t3 = t2 * t;
+    T v;
+    FT t = current_pos;
+    FT t2 = t * t;
+    FT t3 = t2 * t;
 
-		float k1 = 1.0f - 3.0f * t + 3.0f * t2 - t3;
-		float k2 = 4.0f - 6.0f * t2 + 3.0f * t3;
-		float k3 = 1.0f + 3.0f * t + 3.0f * t2 - 3.0f * t3;
+    FT k1 = 1.0f - 3.0f * t + 3.0f * t2 - t3;
+    FT k2 = 4.0f - 6.0f * t2 + 3.0f * t3;
+    FT k3 = 1.0f + 3.0f * t + 3.0f * t2 - 3.0f * t3;
 
 		v = (p0 * k1 + 
 				p1 * k2 + 
@@ -118,6 +81,11 @@ public:
 				p3 * t3) * (1.0f / 6.0f);
 		return v;
   }
-};
 
-#endif
+  inline T get(FT t)
+  {
+    set_pos(t);
+    return get_current();
+  }
+
+};

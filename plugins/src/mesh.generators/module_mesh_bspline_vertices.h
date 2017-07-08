@@ -33,7 +33,7 @@ class module_mesh_bspline_vertices : public vsx_module
 
   // internal
   vsx_mesh<>* mesh;
-  vsx_bspline spline0;
+  vsx_bspline<vsx_vector3f> spline0;
   bool first_run;
 
 public:
@@ -80,7 +80,6 @@ public:
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH, "mesh" );
 
     first_run = true;
-    spline0.init(vsx_vector3<>(0.0f), 0.7f, 0.3f, 0.6f);
   }
 
   void run()
@@ -100,7 +99,7 @@ public:
       int i;
       for (i = 0; i < (int)((*in)->data->vertices.size()-1) * idens; ++i) {
         spline0.step(step);
-        mesh->data->vertices[i] = spline0.calc_coord();
+        mesh->data->vertices[i] = spline0.get_current();
       }
       mesh->data->vertices.reset_used(i);
       first_run = false;

@@ -1,4 +1,6 @@
 #include <math/vsx_bspline.h>
+#include <math/vector/vsx_vector3.h>
+
 // this should deliver a rotation matrix that is the rotation in a specific point
 // on a spline defined by the vertices in bspline_mesh_in.
 class module_bspline_matrix : public vsx_module
@@ -10,7 +12,7 @@ class module_bspline_matrix : public vsx_module
   vsx_module_param_matrix* matrix_result;
   vsx_module_param_float3* position;
   // internal
-  vsx_bspline spline0;
+  vsx_bspline<vsx_vector3f> spline0;
   vsx_matrix<float> matrix;
   vsx_vector3<> pos1, pos2, e, upv;
 
@@ -58,9 +60,9 @@ public:
 
     if (!spline0.points.size()) return;
     spline0.set_pos(b_pos->get()+0.1f);
-      pos1 = spline0.calc_coord();
+      pos1 = spline0.get_current();
       spline0.step(0.1f);
-      pos2 = spline0.calc_coord();
+      pos2 = spline0.get_current();
       e = pos2-pos1;
       e.normalize();
 

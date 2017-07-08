@@ -9,7 +9,7 @@ class module_segmesh_map_bspline : public vsx_module
   vsx_module_param_render* render_result;
   vsx_module_param_mesh* mesh_result;
   // internal
-  vsx_bspline spline0;
+  vsx_bspline<vsx_vector3f> spline0;
   // the mesh we're gonna put on the path
   vsx_2dgrid_mesh *base_mesh;
   // our building tool
@@ -84,7 +84,6 @@ public:
     mesh_result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_result");
     mesh_result->set_p(result_mesh);
 
-    spline0.init(vsx_vector3<>(0.0f), 0.7f, 0.3f, 0.6f);
     spline0.points[0] = vsx_vector3<>(0.0f);
 
     upv = vsx_vector3<>(0,1);
@@ -111,7 +110,7 @@ public:
     spline_step = length->get()/((float)num+1.0f);
 
     spline0.step(spline_step);
-    spos = spline0.calc_coord();
+    spos = spline0.get_current();
     e = spos-old;
     e.normalize();
     old = spos;
@@ -120,7 +119,7 @@ public:
     for (i = 0; i < num; ++i)
     {
       spline0.step(spline_step);
-      spos = spline0.calc_coord();
+      spos = spline0.get_current();
 
       e = spos-old;
       e.normalize();
