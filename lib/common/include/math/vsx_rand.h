@@ -38,6 +38,8 @@ public:
 
   void srand(uint32_t seed);
   uint32_t rand();
+  double drand();
+  double drand_c();
   float frand();
   float frand_c();
 };

@@ -144,6 +144,13 @@ public:
     return false;
   }
 
+  inline T& last()
+  {
+    if (!used)
+      return (*this)[0];
+    return (*this)[used-1];
+  }
+
   inline void clear() VSX_ALWAYS_INLINE
   {
     req(!data_volatile);
