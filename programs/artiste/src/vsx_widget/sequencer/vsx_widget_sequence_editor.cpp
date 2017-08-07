@@ -67,7 +67,7 @@ void vsx_widget_sequence_editor::init()
   support_interpolation = true;
   allow_resize_x = true;
   allow_resize_y = true;
-  set_size(vsx_vector3<>(1.0f,0.5f));
+  set_size(vsx_vector3<>(1.0f,1.5f));
   size_min.x = 0.2;
   size_min.y = 0.2;
   target_pos = pos = camera.get_pos_2d() + vsx_vector3<>(0.25);
@@ -79,7 +79,7 @@ void vsx_widget_sequence_editor::init()
 
   timeline = add(new vsx_widget_timeline,name+".timeline");
   timeline->init();
-  timeline->set_size(vsx_vector3<>(size.x*0.995f,size.y*0.04f));
+  timeline->set_size(vsx_vector3<>(size.x*0.995f,size.y*0.04f*0.33));
   ((vsx_widget_timeline*)timeline)->owner = this;
 
   but_rew = add(new vsx_widget_button,name+"rewind");
