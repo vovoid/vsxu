@@ -130,6 +130,25 @@ public:
     glDisable(texture->gl_type);
   }
 
+
+  inline vsx_texture<T>& operator=(vsx_texture<T>&& other)
+  {
+    texture = other.texture;
+    transform_obj = other.transform_obj;
+    other.texture = 0x0;
+    other.transform_obj = 0x0;
+    return *this;
+  }
+
+  vsx_texture(vsx_texture<T>&& other)
+  {
+    texture = other.texture;
+    transform_obj = other.transform_obj;
+    other.texture = 0x0;
+    other.transform_obj = 0x0;
+  }
+
+
   vsx_texture(bool attached_to_cache = false)
   {
     if (!attached_to_cache)
@@ -144,8 +163,8 @@ public:
       return;
     }
 
-    if (texture && texture->attached_to_cache)
-      vsx_texture_gl_cache::get_instance()->destroy( texture );
+//    if (texture && texture->attached_to_cache)
+//      vsx_texture_gl_cache::get_instance()->destroy( texture );
   }
 };
 

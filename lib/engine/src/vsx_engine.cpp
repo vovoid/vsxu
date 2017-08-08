@@ -697,9 +697,6 @@ bool vsx_engine::render()
       if (modules_left_to_load == 0 && commands_internal.count() == 0)
       {
         current_state = VSX_ENGINE_PLAYING;
-
-        if (filesystem.get_archive()->is_archive())
-          filesystem.get_archive()->close();
       }
     }
 

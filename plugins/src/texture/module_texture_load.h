@@ -146,7 +146,10 @@ public:
 
   void run()
   {
-    if (texture && texture->texture && texture->texture->bitmap->data_ready)
+    if (texture)
+    if (texture->texture)
+    if (texture->texture->bitmap)
+    if (texture->texture->bitmap->data_ready)
     {
       if (texture_to_destroy)
         texture_to_destroy.reset(nullptr);
@@ -182,14 +185,14 @@ public:
     hint |= vsx_texture_gl::linear_interpolate_hint * min_mag_filter_cache;
     hint |= vsx_texture_gl::mipmap_linear_interpolate_hint * mipmap_min_filter_cache;
 
-    texture = vsx_texture_loader::load(
+    texture = std::move(vsx_texture_loader::load(
       filename_cache,
       engine_state->filesystem,
       true, // threaded
       bitmap_loader_hint,
       hint,
       reload
-    );
+    ));
     texture_out->set(texture.get());
   }
 

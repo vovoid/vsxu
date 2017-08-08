@@ -389,6 +389,9 @@ void vsx_engine_abs::send_state_to_client(vsx_command_list *cmd_out)
 
 void vsx_engine_abs::i_clear(vsx_command_list *cmd_out,bool clear_critical)
 {
+  if (filesystem.get_archive()->is_archive())
+    filesystem.get_archive()->close();
+
   std::map<vsx_string<>,vsx_comp*> forge_map_save;
   std::vector<vsx_comp*> forge_save;
   for (std::map<vsx_string<>,vsx_comp*>::iterator fit = forge_map.begin(); fit != forge_map.end(); ++fit) {

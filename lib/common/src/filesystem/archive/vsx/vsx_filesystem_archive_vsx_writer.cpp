@@ -123,7 +123,7 @@ void filesystem_archive_vsx_writer::add_file
   if (deferred_multithreaded)
   {
     filesystem_archive_file_write file_info;
-    file_info.source_filename = filename;
+    file_info.source_filename = disk_filename;
     file_info.filename = filename;
     file_info.operation = filesystem_archive_file_write::operation_add;
     archive_files.push_back(file_info);
@@ -162,6 +162,8 @@ void filesystem_archive_vsx_writer::add_string(vsx_string<> filename, vsx_string
 {
   filesystem_archive_file_write file_info;
   file_info.filename = filename;
+  file_info.operation = filesystem_archive_file_write::operation_add;
+
   foreach (payload, i)
     file_info.data[i] = (unsigned char)payload[i];
 

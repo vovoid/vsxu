@@ -29,7 +29,7 @@ public:
     std::unique_ptr<vsx_texture<T>> texture( new vsx_texture<T>(true) );
     texture->texture = handle_cache(filename, filesystem, thread, bitmap_loader_hint, gl_loader_hint, try_to_reload );
     if (texture->texture)
-      return texture;
+      return std::move(texture);
 
     texture->texture = vsx_texture_gl_cache::get_instance()->create(filename, bitmap_loader_hint, gl_loader_hint);
 
@@ -42,7 +42,7 @@ public:
       )
     ;
 
-    return texture;
+    return std::move(texture);
   }
 
   template <class T = vsx_texture_gl>

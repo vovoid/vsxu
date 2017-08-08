@@ -39,13 +39,13 @@
         #define PLATFORM                                        PLATFORM_WINDOWS
         #define PLATFORM_NAME                                   "Windows"
         #define PLATFORM_FAMILY                                 PLATFORM_FAMILY_WINDOWS
-        #define PLATFORM_SHARED_FILES                           vsx_string<>("share\\")
+        #define PLATFORM_SHARED_FILES                           vsx_string<>("share/")
         #define PLATFORM_DLL_SUFFIX                             ".dll"
         #ifdef PLATFORM_SHARED_FILES_STL
-          #define PLATFORM_SHARED_FILES_STLSTRING               std::string("share\\")
+          #define PLATFORM_SHARED_FILES_STLSTRING               std::string("share/")
         #endif
-        #define DIRECTORY_SEPARATOR                             "\\"
-        #define DIRECTORY_SEPARATOR_CHAR                             '\\'
+        #define DIRECTORY_SEPARATOR                             "/"
+        #define DIRECTORY_SEPARATOR_CHAR                             '/'
         #define VSXU_PLUGIN_LOCATION                           vsx_string<>("plugins/")
 
     #elif defined(__APPLE__) || defined(__MACH__)
