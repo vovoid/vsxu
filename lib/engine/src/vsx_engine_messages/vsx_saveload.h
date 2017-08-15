@@ -52,7 +52,7 @@ if (cmd == "state_load_done")
 // deletes every single component in the whole engine
 if (cmd == "clear")
 {
-  i_clear(&commands_out_cache);
+  i_clear(&commands_out_cache, false, true);
   cmd_out->add_raw(cmd+"_ok "+cmd_data, VSX_COMMAND_GARBAGE_COLLECT);
   goto process_message_queue_end;
 }

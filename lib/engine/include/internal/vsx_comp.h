@@ -59,6 +59,7 @@ protected:
 public:
 
   // is internal critical to vsx_engine?
+  // mainly used for screen
   bool internal_critical;
   
   // parameter lists filled out by the module

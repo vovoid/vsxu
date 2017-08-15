@@ -387,11 +387,8 @@ void vsx_engine_abs::send_state_to_client(vsx_command_list *cmd_out)
     cmd_out->add_raw(vsx_string<>((*note_iter).second.serialize()), VSX_COMMAND_GARBAGE_COLLECT);
 }
 
-void vsx_engine_abs::i_clear(vsx_command_list *cmd_out,bool clear_critical)
+void vsx_engine_abs::i_clear(vsx_command_list *cmd_out, bool clear_critical, bool close_archive)
 {
-  if (filesystem.get_archive()->is_archive())
-    filesystem.get_archive()->close();
-
   std::map<vsx_string<>,vsx_comp*> forge_map_save;
   std::vector<vsx_comp*> forge_save;
   for (std::map<vsx_string<>,vsx_comp*>::iterator fit = forge_map.begin(); fit != forge_map.end(); ++fit) {
@@ -461,14 +458,14 @@ void vsx_engine_abs::i_clear(vsx_command_list *cmd_out,bool clear_critical)
   engine_info.dtime = 0;
   engine_info.real_vtime = 0;
   current_state = VSX_ENGINE_STOPPED;
-  if (filesystem.get_archive()->is_archive())
-  {
-    if (cmd_out)
-    {
-      filesystem.get_archive()->close();
-      send_state_to_client(cmd_out);
-    }
-  }
+
+  if (close_archive)
+    if (filesystem.get_archive()->is_archive())
+      if (cmd_out)
+      {
+        filesystem.get_archive()->close();
+        send_state_to_client(cmd_out);
+      }
 }
 
 

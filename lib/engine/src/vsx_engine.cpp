@@ -90,7 +90,10 @@ vsx_engine::~vsx_engine()
   commands_internal.clear_normal();
   commands_res_internal.clear_normal();
   commands_out_cache.clear_normal();
-  i_clear(0,true);
+  i_clear(0,true, true);
+
+  if (filesystem.get_archive()->is_archive())
+    filesystem.get_archive()->close();
 
   for (size_t i = 0; i < undo_buffer.size(); i++)
   {
@@ -834,6 +837,9 @@ double vsx_engine::get_fps()
 void vsx_engine::unload_state()
 {
   i_clear();
+
+  if (filesystem.get_archive()->is_archive())
+    filesystem.get_archive()->close();
 }
 
 

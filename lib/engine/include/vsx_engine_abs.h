@@ -166,7 +166,14 @@ protected:
   void tell_client_time(vsx_command_list *cmd_out);
 
   int i_load_state(vsx_command_list& load1, vsx_string<>*error_string, vsx_string<>info_filename = "[undefined]");
-  void i_clear(vsx_command_list *cmd_out = 0, bool clear_critical = false);
+
+  /**
+   * @brief i_clear
+   * @param cmd_out
+   * @param clear_critical Screen or other component critical to the engine.
+   * @param close_archive If filesystem is an archive, close it
+   */
+  void i_clear(vsx_command_list *cmd_out = 0, bool clear_critical = false, bool close_archive = false);
   void rename_component();
   int rename_component(vsx_string<>old_identifier, vsx_string<>new_base = "$", vsx_string<>new_name = "$");
   void process_message_queue_redeclare(vsx_command_list *cmd_out_res);
