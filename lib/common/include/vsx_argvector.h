@@ -192,7 +192,7 @@ public:
       if(bytes == 0)
         return "";
       else
-        return vsx_string_helper::path_from_filename(vsx_string<>(pBuf));
+        return vsx_string_helper::path_from_filename(vsx_string<>(pBuf), '\\');
     #else
 
       // if packed with UPX

@@ -129,29 +129,41 @@ file* filesystem::f_open(const char* filename)
     i_filename = vsx_string_helper::str_replace<char>("/","\\",i_filename);
   #endif
 
-  vsx_string<> target_filename = base_path+i_filename;
+  vsx_string<> target_filename = base_path + i_filename;
   handle->handle = fopen(target_filename.c_str(),"rb");
   if (!handle->handle)
   {
+    if (errno == EMFILE)
+    {
+      vsx_printf(L"File open failed - Too many open files! - %hs, errno: %d\n", filename, errno);
+      for(auto it = open_files.begin(); it != open_files.end(); it++)
+        if (it->second) // io handle open
+          vsx_printf(L"  Open File: \"%hs\"\n", it->first.c_str());
+    }
+
     if (errno != ENOENT)
       vsx_printf(L"File open failed - %hs, errno: %d\n", filename, errno);
+
     delete handle;
     handle = 0x0;
   }
   if (handle)
   {
     num_open_files++;
-    //vsx_printf(L"open files: %d      %hs\n", num_open_files, filename);
+    open_files[handle->filename] = true;
+    //vsx_printf(L"open files: %d \"%hs\"\n", num_open_files, handle->filename.c_str());
   }
   return handle;
 }
 
 void filesystem::f_close(file* &handle)
 {
-  if (!handle)
-    return;
+  req(handle);
 
   num_open_files--;
+
+  open_files.erase(handle->filename);
+
   if (!archive.is_archive())
   {
     if (handle->handle)
@@ -164,6 +176,15 @@ void filesystem::f_close(file* &handle)
   handle = 0x0;
 }
 
+void filesystem::f_close_io(file* &handle)
+{
+  req(handle);
+  req(!archive.is_archive());
+  req(handle->handle);
+  fclose(handle->handle);
+  handle->handle = 0x0;
+  open_files[handle->filename] = false;
+}
 
 size_t filesystem::f_get_size(file* handle)
 {

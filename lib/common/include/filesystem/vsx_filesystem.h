@@ -2,6 +2,7 @@
 
 #include <vsx_common_dllimport.h>
 #include <stdio.h>
+#include <map>
 #include <string/vsx_string.h>
 
 #include "vsx_file.h"
@@ -20,6 +21,8 @@ namespace vsx
 
     bool archive_prohibited = false;
     static size_t num_open_files;
+
+    std::map< vsx_string<>, bool> open_files;
 
     vsx_string<> remove_prefix(vsx_string<> i_filename)
     {
@@ -57,6 +60,12 @@ namespace vsx
 
     file* f_open(const char* filename);
     void f_close(file* &handle);
+    /**
+     * @brief f_close_io Closes underlying operating system handle but preserving
+     * memory read from file.
+     * @param handle
+     */
+    void f_close_io(file* &handle);
 
     char* f_gets(char* buf, unsigned long max_buf_size, file* handle);
 
