@@ -136,9 +136,9 @@ file* filesystem::f_open(const char* filename)
     if (errno == EMFILE)
     {
       vsx_printf(L"File open failed - Too many open files! - %hs, errno: %d\n", filename, errno);
-      for(auto it = open_files.begin(); it != open_files.end(); it++)
-        if (it->second) // io handle open
-          vsx_printf(L"  Open File: \"%hs\"\n", it->first.c_str());
+      //for(auto it = open_files.begin(); it != open_files.end(); it++)
+      //  if (it->second) // io handle open
+      //    vsx_printf(L"  Open File: \"%hs\"\n", it->first.c_str());
     }
 
     if (errno != ENOENT)
@@ -150,7 +150,7 @@ file* filesystem::f_open(const char* filename)
   if (handle)
   {
     num_open_files++;
-    open_files[handle->filename] = true;
+    //open_files[handle->filename] = true;
     //vsx_printf(L"open files: %d \"%hs\"\n", num_open_files, handle->filename.c_str());
   }
   return handle;
@@ -162,7 +162,7 @@ void filesystem::f_close(file* &handle)
 
   num_open_files--;
 
-  open_files.erase(handle->filename);
+  //open_files.erase(handle->filename);
 
   if (!archive.is_archive())
   {
@@ -183,13 +183,15 @@ void filesystem::f_close_io(file* &handle)
   req(handle->handle);
   fclose(handle->handle);
   handle->handle = 0x0;
-  open_files[handle->filename] = false;
+  //open_files[handle->filename] = false;
 }
 
 size_t filesystem::f_get_size(file* handle)
 {
   if (archive.is_archive())
     return handle->size;
+
+  reqrv(handle->handle,0);
 
   long prev_pos = ftell(handle->handle);
   fseek( handle->handle, 0, SEEK_END);
@@ -235,8 +237,7 @@ char* filesystem::f_gets(char* buf, unsigned long max_buf_size, file* handle)
 {
   if (!archive.is_archive())
   {
-    if (!handle->handle)
-      return 0x0;
+    reqrv(handle->handle, 0);
     return fgets(buf, max_buf_size, handle->handle);
   }
 
@@ -267,6 +268,8 @@ char* filesystem::f_gets(char* buf, unsigned long max_buf_size, file* handle)
 
 size_t filesystem::f_read(void* buf, size_t num_bytes, file* handle)
 {
+  reqrv(handle->handle, 0);
+
   if (!handle->data.size())
     return fread(buf, 1, num_bytes, handle->handle);
 
