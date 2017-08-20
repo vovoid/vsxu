@@ -55,6 +55,7 @@
 #include "module_mesh_cloud_plane.h"
 #include "module_mesh_planeworld.h"
 #include "module_mesh_thorn.h"
+#include "module_mesh_plasma_tree.h"
 #include "module_segmesh_loft.h"
 #include "module_segmesh_map_bspline.h"
 #include "module_segmesh_shape_basic.h"
@@ -118,6 +119,7 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     case 28: return (vsx_module*)(new module_segmesh_shape_basic);
     case 29: return (vsx_module*)(new module_mesh_vertices_ribbon);
     case 30: return (vsx_module*)(new module_mesh_rays_uniform);
+    case 31: return (vsx_module*)(new module_mesh_plasma_tree);
   }
   return 0;
 }
@@ -156,11 +158,12 @@ void MOD_DM(vsx_module* m,unsigned long module)
     case 28: delete (module_segmesh_shape_basic*)m; break;
     case 29: delete (module_mesh_vertices_ribbon*)m; break;
     case 30: delete (module_mesh_rays_uniform*)m; break;
+    case 31: delete (module_mesh_plasma_tree*)m; break;
   }
 } 
 
 unsigned long MOD_NM(vsx_module_engine_environment* environment)
 {
   VSX_UNUSED(environment);
-  return 31;
+  return 32;
 }
