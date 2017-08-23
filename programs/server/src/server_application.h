@@ -57,7 +57,7 @@ public:
     return vsx_string<>(titlestr);
   }
 
-  void init()
+  void init_graphics()
   {
     module_list = vsx_module_list_factory_create();
     vxe = new vsx_engine(module_list);
@@ -66,7 +66,7 @@ public:
     cl_server.start();
   }
 
-  void uninit()
+  void uninit_graphics()
   {
     vxe->stop();
     delete vxe;
