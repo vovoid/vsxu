@@ -24,6 +24,9 @@
 #include <math/vsx_bspline.h>
 #include <math/quaternion/vsx_quaternion.h>
 #include <math/quaternion/vsx_quaternion_helper.h>
+#include <graphics/vsx_mesh.h>
+#include <math/vsx_math.h>
+#include <tools/vsx_foreach.h>
 
 
 class module_mesh_plasma_tree: public vsx_module
@@ -89,9 +92,56 @@ public:
     spline.points.push_back(vsx_vector3f(0,0,0));
     spline.points.push_back(vsx_vector3f(0,0,0));
     vsx_quaternion<float> base_rot_quat(base_rotation->get(0), base_rotation->get(1), base_rotation->get(2), base_rotation->get(3));
-    vsx_vector3f axis;
-    float angle;
-    base_rot_quat.to_axis_angle( axis, angle );
+//    vsx_vector3f axis;
+//    float angle;
+//    base_rot_quat.to_axis_angle( axis, angle );
+
+    vsx_quaternion<float> x_rot;
+    x_rot.from_axis_angle(vsx_vector3f(1,0,0), 0.1f);
+    vsx_quaternion<float> z_rot;
+    z_rot.from_axis_angle(vsx_vector3f(0,0,1), 0.1f);
+    vsx_quaternion<float> step_rot;
+    step_rot *= x_rot;
+    step_rot *= z_rot;
+
+
+    base_rot_quat *= step_rot;
+
+    vsx_vector3f current_pos;
+    float vector_length = 1.0f;
+
+    vsx_vector3f cross(0.1,0,0);
+    vsx_vector3f cross_result = cross;//base_rot_quat.transform(cross);
+
+    mesh->data->vertices.push_back( current_pos - cross_result );
+    mesh->data->vertices.push_back( current_pos + cross_result );
+    mesh->data->vertex_colors.push_back(vsx_color<float>(1,1,1,1));
+    mesh->data->vertex_colors.push_back(vsx_color<float>(1,1,1,1));
+    mesh->data->vertex_normals.push_back(vsx_vector3f(0,1,0));
+    mesh->data->vertex_normals.push_back(vsx_vector3f(0,1,0));
+
+    for_n(i, 0, 7)
+    {
+      vsx_vector3f direction = base_rot_quat.transform( vsx_vector3f(0,1,0) );
+      direction.normalize();
+      direction *= vector_length;
+
+      current_pos += direction;
+      mesh->data->vertices.push_back( current_pos - cross_result);
+      mesh->data->vertices.push_back( current_pos + cross_result);
+      mesh->data->vertex_colors.push_back(vsx_color<float>(1,1,1,1));
+      mesh->data->vertex_colors.push_back(vsx_color<float>(1,1,1,1));
+      mesh->data->vertex_normals.push_back(vsx_vector3f(0,1,0));
+      mesh->data->vertex_normals.push_back(vsx_vector3f(0,1,0));
+
+      size_t vertices_count = mesh->data->vertices.size();
+      mesh->data->faces.push_back(vsx_face3(vertices_count-1, vertices_count-4, vertices_count-2 ));
+      mesh->data->faces.push_back(vsx_face3(vertices_count-1, vertices_count-3, vertices_count-4 ));
+
+      base_rot_quat *= step_rot;
+      cross_result = base_rot_quat.transform(cross);
+      vector_length *= ONE_DIV_GOLDEN_RATIO_FLOAT;
+    }
 
 
 
@@ -110,7 +160,7 @@ public:
     mesh->data->vertices.reset_used();
     mesh->data->faces.reset_used();
 
-
+    generate_stem();
 
     //printf("generating random points\n");
 //    for (int i = 1; i < (int)num_rays->get(); ++i)
