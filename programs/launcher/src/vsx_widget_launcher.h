@@ -137,6 +137,9 @@ public:
     application_selection->add_option( 0, "VSXu Player" );
     application_selection->add_option( 1, "VSXu Artiste" );
     application_selection->add_option( 2, "VSXu Profiler" );
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      application_selection->add_option( 3, "VSXu Server" );
+    #endif
 
     // display selection
     float display_selection_pos_x = gui_base_pos_x;
@@ -298,6 +301,10 @@ public:
       command += DIRECTORY_SEPARATOR  "vsxu_artiste";
     if (application_selection->selected == 2)
       command += DIRECTORY_SEPARATOR  "vsxu_profiler";
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+      if (application_selection->selected == 3)
+        command += DIRECTORY_SEPARATOR  "vsxu_server";
+    #endif
 
     args.push_back("-d");
     args.push_back(vsx_string_helper::i2s((int)display_selection->selected + 1));
