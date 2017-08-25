@@ -123,6 +123,38 @@ void draw_box_tex(const vsx_vector3<> &pos, const float &width, const float &hei
 
 }
 
+
+void draw_box_tex_upside_down(const vsx_vector3<> &pos, const float &width, const float &height)
+{
+  const GLshort squareTexcoords[] =
+  {
+    0, 1,
+    1, 1,
+    0, 0,
+    1, 0
+  };
+
+  const GLfloat squareVertices[] =
+  {
+    pos.x, pos.y,
+    pos.x+width,  pos.y,
+    pos.x,  pos.y+height,
+    pos.x+width,   pos.y+height
+  };
+
+  glVertexPointer(2, GL_FLOAT, 0, squareVertices);
+  glTexCoordPointer(2, GL_SHORT, 0, squareTexcoords);
+
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+  glDisableClientState(GL_VERTEX_ARRAY);
+
+}
+
 void draw_box_gradient(
     const vsx_vector3<> &pos, float width, float height,
     const vsx_color<> &top_left, const vsx_color<> &bottom_left,

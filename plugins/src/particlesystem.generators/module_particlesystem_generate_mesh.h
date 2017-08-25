@@ -1,3 +1,5 @@
+#include <particlesystem/vsx_particlesystem.h>
+
 class module_particlesystem_generate_mesh : public vsx_module
 {
 public:
@@ -204,7 +206,9 @@ public:
       ddtime = engine_state->real_dtime;
     } else ddtime = engine_state->dtime;
 
-    if (ddtime < 0) first = true;
+    if (ddtime < 0)
+      first = true;
+
     float dtime = ddtime;
     // get the mesh
     vsx_mesh<>** our_mesh;
@@ -230,9 +234,12 @@ public:
 
       if (particle_count+1 != (*particles.particles).size())
         first = true;
-      if (first) {
+
+      if (first)
+      {
         //printf("first %d %d\n",(int)particles_count->get(),(int)(*particles.particles).size());
         (*particles.particles).allocate(particle_count);
+        (*particles.particles).reset_used(particle_count+1);
         (*particles.particles).memory_clear();
         f_randpool.allocate(particle_count*10);
         f_randpool.memory_clear();
@@ -321,11 +328,14 @@ public:
       // update the particle system with the new count so the renderer (and modifiers) can read it
       //particles.num_particles = ceil(nump);
       //long p_to_go;
-      if (particles_per_second->get() < 0) particles_to_go = 1000000000.0f;
-      else {
-        particles_to_go += particles_per_second->get()*dtime;
-        if (particles_to_go > particles_per_second->get()) particles_to_go = particles_per_second->get();
-      }
+      if (particles_per_second->get() < 0)
+        particles_to_go = 1000000000.0f;
+      else
+        {
+          particles_to_go += particles_per_second->get()*dtime;
+          if (particles_to_go > particles_per_second->get())
+            particles_to_go = particles_per_second->get();
+        }
 
       // set the rand pool pointer to something nice and random
       f_randpool_pointer = f_randpool.get_pointer() + rand.rand()%(nump+1);

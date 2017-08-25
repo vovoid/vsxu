@@ -36,6 +36,7 @@
 
 
 VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box(const vsx_vector2f &pos, const float &width, const float &height);
+VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_tex_upside_down(const vsx_vector3<> &pos, const float &width, const float &height);
 VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_c(const vsx_vector3<> &pos, const float &width, const float &height);
 VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_tex(const vsx_vector3<> &pos, const float &width, const float &height);
 VSX_ENGINE_GRAPHICS_DLLIMPORT void draw_box_tex_c(const vsx_vector3<> &pos, const float &width, const float &height);

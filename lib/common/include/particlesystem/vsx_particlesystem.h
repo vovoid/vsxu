@@ -21,9 +21,9 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#pragma once
 
-#ifndef VSX_PARTICLESYSTEM_H
-#define VSX_PARTICLESYSTEM_H
+#include <container/vsx_ma_vector.h>
 
 template<typename T = float>
 class vsx_particle
@@ -56,5 +56,3 @@ public:
   }
 };  
 
-
-#endif

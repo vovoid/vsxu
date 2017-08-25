@@ -103,7 +103,7 @@ void vsxu_assistant::i_draw()
 
   texture->bind();
     glColor3f(1,1,1);
-    draw_box_tex(pos, size.x, size.y);
+    draw_box_tex_upside_down(pos, size.x, size.y);
   texture->_bind();
 
 
@@ -142,7 +142,7 @@ void vsxu_assistant::init()
   topmost = true;
 
   texture = vsx_texture_loader::load(
-    PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"assistant_luna.png",
+    PLATFORM_SHARED_FILES+"gfx"+DIRECTORY_SEPARATOR+"assistant_luna.dds",
     vsx::filesystem::get_instance(),
     true, // threaded
     vsx_bitmap::flip_vertical_hint,

@@ -177,7 +177,7 @@ public:
 
   void select_random_state(bool mark_change = true)
   {
-    req(states.size());
+    req(states.size() > 1);
     req(*states_iter == state_current);
 
     int steps = rand() % states.size();

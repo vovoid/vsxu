@@ -85,7 +85,7 @@ public:
 
   void generate_stem()
   {
-    vsx_bspline<vector3f> spline;
+    vsx_bspline<vsx_vector3f> spline;
     spline.points.push_back(vsx_vector3f(0,0,0));
     spline.points.push_back(vsx_vector3f(0,0,0));
     vsx_quaternion<float> base_rot_quat(base_rotation->get(0), base_rotation->get(1), base_rotation->get(2), base_rotation->get(3));

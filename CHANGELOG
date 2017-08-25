@@ -8,6 +8,19 @@ Welcome to the Changelog of the Vovoid VSXu Project
 ***********************************************************************************************************************
 
   ######################################
+  VSXu 0.6.2 (August 2017)
+  ######################################
+  Bug fix / Patch release
+
+  + following new Luna design, Luna graphics updated
+  ' vsx export from artiste broken
+  ' when only loading one .vsx visual in player, it would hang in an endless loop
+  ' mesh particle system module ceased to work when lowering the number of particles in artiste
+  ' bitmap loading from engine when archive loaded caused crash because the archive was closed too early.
+    Now the archive is open during the whole run of the engine, using more memory, but at the same time allowing for
+    asynchronous load times and loading of data later.
+
+  ######################################
   VSXu 0.6.1 (May 2017)
   ######################################
   Bug fix / Patch release
