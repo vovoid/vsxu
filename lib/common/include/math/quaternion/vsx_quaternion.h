@@ -187,8 +187,7 @@ public:
     return x * ov->x   +   y * ov->y   +   z * ov->z;
   }
 
-
-  inline void from_axis_angle( vsx_vector3<T> &source_axis, T &source_angle)
+  inline void from_axis_angle( vsx_vector3<T> source_axis, T source_angle)
   {
     T f = (T)sin( source_angle * (T)0.5 );
     x = source_axis.x * f;
@@ -197,7 +196,7 @@ public:
     w = (T)cos( source_angle * (T)0.5 );
   }
 
-  inline void to_axis_angle( vsx_vector3<T> &result_axis, T &result_angle)
+  inline void to_axis_angle( vsx_vector3<T> result_axis, T result_angle)
   {
     result_angle = 2 * acos(w);
     T sq = 1.0f / sqrt(1-w*w);
@@ -300,7 +299,7 @@ public:
     w *= len;
   }
 
-  vsx_vector3<T> transform(const vsx_vector3<T> &p1)
+  inline vsx_vector3<T> transform(const vsx_vector3<T> p1)
   {
     vsx_vector3<T> p2;
     p2.x = w*w*p1.x + 2*y*w*p1.z - 2*z*w*p1.y + x*x*p1.x + 2*y*x*p1.y + 2*z*x*p1.z - z*z*p1.x - y*y*p1.x;
@@ -309,7 +308,7 @@ public:
     return p2;
   }
 
-  vsx_vector2<T> transform(const vsx_vector2<T> &p1)
+  inline vsx_vector2<T> transform(const vsx_vector2<T> p1)
   {
     vsx_vector2<T> p2;
     p2.x = w*w*p1.x - 2*z*w*p1.y + x*x*p1.x + 2*y*x*p1.y - z*z*p1.x - y*y*p1.x;
