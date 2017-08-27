@@ -24,16 +24,308 @@
 #include <math/vsx_bspline.h>
 #include <math/quaternion/vsx_quaternion.h>
 #include <math/quaternion/vsx_quaternion_helper.h>
+#include <math/vector/vsx_vector4.h>
 #include <graphics/vsx_mesh.h>
 #include <math/vsx_math.h>
 #include <tools/vsx_foreach.h>
+#include <math/vsx_tween_values.h>
+#include <tools/vsx_debug_dump.h>
+
+class plasma_tree_generator
+{
+  void generate_leaf(
+      vsx_mesh<>& mesh,
+      size_t leaf_steps,
+    vsx_vector3f leaf_cross,
+    float growth,
+      float step_factor,
+
+    vsx_vector3f start_pos,
+    vsx_quaternion<float> base_rot_quat,
+    float rotationx,
+    float rotationy,
+    float vector_length
+  )
+  {
+    vsx_quaternion<float> x_rot;
+    x_rot.from_axis_angle(vsx_vector3f(1,0,0), rotationx );
+    vsx_quaternion<float> z_rot;
+    z_rot.from_axis_angle(vsx_vector3f(0,0,1), rotationy );
+    vsx_quaternion<float> step_rot;
+    step_rot *= x_rot;
+    step_rot *= z_rot;
+
+    vsx_vector3f current_pos = start_pos;
+
+    vsx_vector3f cross = leaf_cross * growth;
+    vsx_vector3f cross_result = base_rot_quat.transform(cross);
+
+    vsx_bspline<vsx_vector3f> spline_vertices;
+    spline_vertices.points.push_back(current_pos);
+    spline_vertices.points.push_back(current_pos);
+    vsx_bspline<vsx_vector3f> spline_cross;
+    spline_cross.points.push_back(cross_result);
+    spline_cross.points.push_back(cross_result);
+
+
+    for_n(i, 0, leaf_steps)
+    {
+      vsx_vector3f direction = base_rot_quat.transform( vsx_vector3f(0,1,0) );
+      direction.normalize();
+      direction *= vector_length;
+      current_pos += direction;
+
+      // save position for stem
+      spline_vertices.points.push_back(current_pos);
+      spline_cross.points.push_back(cross_result);
+      base_rot_quat *= step_rot;
+      cross_result = base_rot_quat.transform(cross);
+      vector_length *= step_factor;
+    }
+
+    // build leaf mesh
+    mesh.data->vertices.push_back( spline_vertices.get(0.01f) - spline_cross.get(0.01f) );
+    mesh.data->vertices.push_back( spline_vertices.get(0.01f) + spline_cross.get(0.01f) );
+    mesh.data->vertex_colors.push_back(vsx_color<float>(1,1,1,1));
+    mesh.data->vertex_colors.push_back(vsx_color<float>(1,1,1,1));
+    mesh.data->vertex_normals.push_back(vsx_vector3f(0,1,0));
+    mesh.data->vertex_normals.push_back(vsx_vector3f(0,1,0));
+    mesh.data->vertex_tex_coords.push_back(vsx_tex_coord2f(0.0f,0));
+    mesh.data->vertex_tex_coords.push_back(vsx_tex_coord2f(1.0f,0));
+
+    size_t tesselation_steps = 20;
+    float one_div_tess = growth / (float)tesselation_steps;
+
+    for_n(i, 0, tesselation_steps)
+    {
+      float t = (float)i * one_div_tess;
+      t = vsx::tween_values<float>::in_linear(t, 0.01f,1.0);
+      mesh.data->vertices.push_back( spline_vertices.get(t) - spline_cross.get(t));
+      mesh.data->vertices.push_back( spline_vertices.get(t) + spline_cross.get(t));
+      mesh.data->vertex_colors.push_back(vsx_color<float>(1,1,1,1));
+      mesh.data->vertex_colors.push_back(vsx_color<float>(1,1,1,1));
+      mesh.data->vertex_normals.push_back(vsx_vector3f(0,1,0));
+      mesh.data->vertex_normals.push_back(vsx_vector3f(0,1,0));
+      mesh.data->vertex_tex_coords.push_back(vsx_tex_coord2f(0.0f,t));
+      mesh.data->vertex_tex_coords.push_back(vsx_tex_coord2f(1.0f,t));
+
+      GLuint vertices_count = (GLuint)mesh.data->vertices.size();
+      mesh.data->faces.push_back(vsx_face3(vertices_count-1, vertices_count-4, vertices_count-2 ));
+      mesh.data->faces.push_back(vsx_face3(vertices_count-1, vertices_count-3, vertices_count-4 ));
+    }
+  }
+
+public:
+
+  /**
+   * @brief generate
+   * @param mesh
+   * @param step_factor 0.0..1.5
+   * @param start_vector_length 0.9
+   * @param stem_steps 10
+   * @param leaf_steps 9
+   * @param leaf_size 2.0
+   * @param growth 0..2.0
+   * @param rotation_x 0.14
+   * @param rotation_y 0.14 or -0.14
+   * @param leaf_rotation_x -0.5
+   * @param leaf_rotation_y -0.07
+   * @param leaf_rotation_z 0.33
+   * @param stem_cross {0.08, 0.06, -0.18}
+   * @param leaf_cross {0.34, -0.16, 0.04}
+   * @param base_rotation {0,0,0,1}
+   */
+  void generate(
+      vsx_mesh<>& mesh,
+      float step_factor,
+      float start_vector_length,
+      size_t stem_steps,
+      size_t leaf_steps,
+      float leaf_size,
+      float growth,
+      float rotation_x,
+      float rotation_y,
+      float leaf_rotation_x,
+      float leaf_rotation_y,
+      float leaf_rotation_z,
+      vsx_vector3f stem_cross,
+      vsx_vector3f leaf_cross,
+      vsx_quaternionf base_rotation
+  )
+  {
+    vsx_quaternion<float> base_rot_quat = base_rotation;
+    vsx_quaternion<float> leaf_base_rot_quat_forward;
+    vsx_quaternion<float> leaf_base_rot_quat_backward;
+
+    vsx_quaternion<float> x_rot;
+    vsx_quaternion<float> z_rot;
+    x_rot.from_axis_angle(vsx_vector3f(1,0,0), rotation_x * (0.5f + vsx::tween_values<float>::in_sin(growth, 0.5, 1.0) ) );
+    z_rot.from_axis_angle(vsx_vector3f(0,0,1), rotation_y * (0.5f + vsx::tween_values<float>::in_sin(growth, 0.5, 1.0) ) );
+
+    vsx_quaternion<float> step_rot;
+    step_rot *= x_rot;
+    step_rot *= z_rot;
+
+    vsx_quaternion<float> leaf_x_rot;
+    vsx_quaternion<float> leaf_y_rot;
+    vsx_quaternion<float> leaf_z_rot;
+
+    vsx_quaternion<float> leaf_step_rot_forward;
+    leaf_x_rot.from_axis_angle(vsx_vector3f(1,0,0), rotation_x * 0.5f * growth);
+    leaf_y_rot.from_axis_angle(vsx_vector3f(0,0,1), leaf_rotation_z * 0.5f * growth);
+    leaf_z_rot.from_axis_angle(vsx_vector3f(0,0,1), rotation_y * 0.5f * growth);
+    leaf_step_rot_forward *= leaf_x_rot;
+    leaf_step_rot_forward *= leaf_z_rot;
+    leaf_step_rot_forward *= leaf_y_rot;
+
+    vsx_quaternion<float> leaf_step_rot_backward;
+    leaf_x_rot.from_axis_angle(vsx_vector3f(1,0,0), -rotation_x * 0.5f * growth);
+    leaf_y_rot.from_axis_angle(vsx_vector3f(0,0,1), -leaf_rotation_z * 0.5f * growth);
+    leaf_z_rot.from_axis_angle(vsx_vector3f(0,0,1), -rotation_y * 0.5f * growth);
+    leaf_step_rot_backward *= leaf_x_rot;
+    leaf_step_rot_backward *= leaf_z_rot;
+    leaf_step_rot_backward *= leaf_y_rot;
+
+    vsx_vector3f current_pos;
+    float vector_length = start_vector_length;
+
+    vsx_vector3f cross = stem_cross * growth;
+    vsx_vector3f cross_result = base_rot_quat.transform(cross);
+
+    vsx_bspline<vsx_vector3f> spline_vertices;
+    spline_vertices.points.push_back(vsx_vector3f(0,0,0));
+    spline_vertices.points.push_back(vsx_vector3f(0,0,0));
+    vsx_bspline<vsx_vector3f> spline_cross;
+    spline_cross.points.push_back(cross_result);
+    spline_cross.points.push_back(cross_result);
+
+    float total_length = 0.0f;
+    vsx_ma_vector< float > leaf_positions;
+
+    vsx_bspline< vsx_vector4f > leaf_rotations_forward;
+    vsx_bspline< vsx_vector4f > leaf_rotations_backward;
+    vsx_ma_vector< float > leaf_sizes;
+
+    for_n(i, 0, stem_steps)
+    {
+      vsx_vector3f direction = base_rot_quat.transform( vsx_vector3f(0,1,0) );
+      direction.normalize();
+      direction *= vector_length;
+      current_pos += direction;
+
+      // leafs
+      if (i)
+      {
+        total_length += vector_length;
+        leaf_positions.push_back(total_length);
+        leaf_rotations_forward.points.push_back( (
+                                                   base_rot_quat *
+                                                   leaf_base_rot_quat_forward).get_vector4() );
+        leaf_rotations_backward.points.push_back( (
+                                                    base_rot_quat *
+                                                    leaf_base_rot_quat_backward).get_vector4() );
+        leaf_sizes.push_back( vector_length * step_factor );
+        leaf_base_rot_quat_forward *= leaf_step_rot_forward;
+        leaf_base_rot_quat_backward *= leaf_step_rot_backward;
+      }
+
+      // save position for stem
+      spline_vertices.points.push_back(current_pos);
+      spline_cross.points.push_back(cross_result);
+
+      // calculate new rotations
+      base_rot_quat *= step_rot;
+      cross_result = base_rot_quat.transform(cross);
+      vector_length *= step_factor;
+    }
+
+    // normalize leaf positions
+    foreach (leaf_positions, i)
+      leaf_positions[i] = leaf_positions[i] / total_length;
+
+    // build stem mesh
+    mesh.data->vertices.push_back( spline_vertices.get(0.01f) - spline_cross.get(0.01f) );
+    mesh.data->vertices.push_back( spline_vertices.get(0.01f) + spline_cross.get(0.01f) );
+    mesh.data->vertex_colors.push_back(vsx_color<float>(1,1,1,1));
+    mesh.data->vertex_colors.push_back(vsx_color<float>(1,1,1,1));
+    mesh.data->vertex_normals.push_back(vsx_vector3f(0,1,0));
+    mesh.data->vertex_normals.push_back(vsx_vector3f(0,1,0));
+    mesh.data->vertex_tex_coords.push_back(vsx_tex_coord2f(0.0f,0));
+    mesh.data->vertex_tex_coords.push_back(vsx_tex_coord2f(1.0f,0));
+
+    size_t tesselation_steps = 20;
+    float one_div_tess = growth / (float)tesselation_steps;
+
+    for_n(i, 0, tesselation_steps)
+    {
+      float t = (float)i * one_div_tess;
+      t = vsx::tween_values<float>::in_linear(t, 0.01f, 1.0);
+      mesh.data->vertices.push_back( spline_vertices.get(t) - spline_cross.get(t));
+      mesh.data->vertices.push_back( spline_vertices.get(t) + spline_cross.get(t));
+      mesh.data->vertex_colors.push_back(vsx_color<float>(1,1,1,1));
+      mesh.data->vertex_colors.push_back(vsx_color<float>(1,1,1,1));
+      mesh.data->vertex_normals.push_back(vsx_vector3f(0,1,0));
+      mesh.data->vertex_normals.push_back(vsx_vector3f(0,1,0));
+      mesh.data->vertex_tex_coords.push_back(vsx_tex_coord2f(0.0f,t));
+      mesh.data->vertex_tex_coords.push_back(vsx_tex_coord2f(1.0f,t));
+
+
+      GLuint vertices_count = (GLuint)mesh.data->vertices.size();
+      mesh.data->faces.push_back(vsx_face3(vertices_count-1, vertices_count-4, vertices_count-2 ));
+      mesh.data->faces.push_back(vsx_face3(vertices_count-1, vertices_count-3, vertices_count-4 ));
+    }
+
+    // build leafs
+    foreach (leaf_positions, i)
+    {
+      generate_leaf(
+            mesh,
+            leaf_steps,
+          leaf_cross,
+          growth,
+            step_factor,
+
+          spline_vertices.get(leaf_positions[i] * growth),
+          vsx_quaternionf(leaf_rotations_forward.get(leaf_positions[i] * growth)),
+          leaf_rotation_x,
+          leaf_rotation_y,
+          leaf_sizes[i] * leaf_size
+        );
+      generate_leaf(
+            mesh,
+            leaf_steps,
+          leaf_cross,
+            growth,
+            step_factor,
+
+          spline_vertices.get(leaf_positions[i] * growth),
+          vsx_quaternionf(leaf_rotations_backward.get(leaf_positions[i] * growth)),
+          leaf_rotation_x,
+          leaf_rotation_y,
+          leaf_sizes[i] * leaf_size
+        );
+    }
+  }
+};
 
 
 class module_mesh_plasma_tree: public vsx_module
 {
 public:
   // in
-  vsx_module_param_float* recursion_levels;
+  vsx_module_param_float* step_factor;
+  vsx_module_param_float* start_vector_length;
+  vsx_module_param_float* stem_steps;
+  vsx_module_param_float* leaf_steps;
+  vsx_module_param_float* leaf_size;
+  vsx_module_param_float* growth;
+  vsx_module_param_float* rotation_x;
+  vsx_module_param_float* rotation_y;
+  vsx_module_param_float* leaf_rotation_x;
+  vsx_module_param_float* leaf_rotation_y;
+  vsx_module_param_float* leaf_rotation_z;
+  vsx_module_param_float3* stem_cross;
+  vsx_module_param_float3* leaf_cross;
   vsx_module_param_quaternion* base_rotation;
 
   // out
@@ -41,6 +333,7 @@ public:
 
   // internal
   vsx_mesh<>* mesh;
+  plasma_tree_generator generator;
   bool first_run;
 
   void module_info(vsx_module_specification* info)
@@ -52,7 +345,22 @@ public:
       "Plasma tree";
 
     info->in_param_spec =
-      "recursion_levels:float,"
+      "step_factor:float,"
+      "start_vector_length:float,"
+      "stem_steps:float,"
+      "leaf_steps:float,"
+      "leaf_size:float,"
+      "growth:float,"
+        "rotation:complex"
+        "{"
+          "rotation_x:float,"
+          "rotation_y:float,"
+          "leaf_rotation_x:float,"
+          "leaf_rotation_y:float,"
+          "leaf_rotation_z:float"
+        "},"
+      "stem_cross:float3,"
+      "leaf_cross:float3,"
       "base_rotation:quaternion"
     ;
 
@@ -66,8 +374,49 @@ public:
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
     loading_done = true;
-    recursion_levels = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "recursion_levels");
-    recursion_levels->set(2);
+    step_factor = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "step_factor");
+    step_factor->set(0.62f);
+
+    start_vector_length = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "start_vector_length");
+    start_vector_length->set(1.0f);
+
+    stem_steps = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "stem_steps");
+    stem_steps->set(5);
+
+    leaf_steps = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "leaf_steps");
+    leaf_steps->set(5);
+
+    leaf_size = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "leaf_size");
+    leaf_size->set(1.0f);
+
+    growth = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "growth");
+    growth->set(1.0f);
+
+    rotation_x = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "rotation_x");
+    rotation_x->set(0.1f);
+
+    rotation_y = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "rotation_y");
+    rotation_y->set(0.1f);
+
+    leaf_rotation_x = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "leaf_rotation_x");
+    leaf_rotation_x->set(0.1f);
+
+    leaf_rotation_y = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "leaf_rotation_y");
+    leaf_rotation_y->set(0.1f);
+
+    leaf_rotation_z = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "leaf_rotation_z");
+    leaf_rotation_z->set(0.0f);
+
+    stem_cross = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "stem_cross");
+    stem_cross->set(0.1f, 0);
+    stem_cross->set(0, 1);
+    stem_cross->set(0, 2);
+
+    leaf_cross = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3, "leaf_cross");
+    leaf_cross->set(0.1f, 0);
+    leaf_cross->set(0, 1);
+    leaf_cross->set(0, 2);
+
 
     base_rotation = (vsx_module_param_quaternion*)in_parameters.create(VSX_MODULE_PARAM_ID_QUATERNION, "base_rotation");
 
@@ -86,112 +435,80 @@ public:
     delete mesh;
   }
 
-  void generate_stem()
-  {
-    vsx_bspline<vsx_vector3f> spline;
-    spline.points.push_back(vsx_vector3f(0,0,0));
-    spline.points.push_back(vsx_vector3f(0,0,0));
-    vsx_quaternion<float> base_rot_quat(base_rotation->get(0), base_rotation->get(1), base_rotation->get(2), base_rotation->get(3));
-//    vsx_vector3f axis;
-//    float angle;
-//    base_rot_quat.to_axis_angle( axis, angle );
-
-    vsx_quaternion<float> x_rot;
-    x_rot.from_axis_angle(vsx_vector3f(1,0,0), 0.1f);
-    vsx_quaternion<float> z_rot;
-    z_rot.from_axis_angle(vsx_vector3f(0,0,1), 0.1f);
-    vsx_quaternion<float> step_rot;
-    step_rot *= x_rot;
-    step_rot *= z_rot;
-
-
-    base_rot_quat *= step_rot;
-
-    vsx_vector3f current_pos;
-    float vector_length = 1.0f;
-
-    vsx_vector3f cross(0.1,0,0);
-    vsx_vector3f cross_result = cross;//base_rot_quat.transform(cross);
-
-    mesh->data->vertices.push_back( current_pos - cross_result );
-    mesh->data->vertices.push_back( current_pos + cross_result );
-    mesh->data->vertex_colors.push_back(vsx_color<float>(1,1,1,1));
-    mesh->data->vertex_colors.push_back(vsx_color<float>(1,1,1,1));
-    mesh->data->vertex_normals.push_back(vsx_vector3f(0,1,0));
-    mesh->data->vertex_normals.push_back(vsx_vector3f(0,1,0));
-
-    for_n(i, 0, 7)
-    {
-      vsx_vector3f direction = base_rot_quat.transform( vsx_vector3f(0,1,0) );
-      direction.normalize();
-      direction *= vector_length;
-
-      current_pos += direction;
-      mesh->data->vertices.push_back( current_pos - cross_result);
-      mesh->data->vertices.push_back( current_pos + cross_result);
-      mesh->data->vertex_colors.push_back(vsx_color<float>(1,1,1,1));
-      mesh->data->vertex_colors.push_back(vsx_color<float>(1,1,1,1));
-      mesh->data->vertex_normals.push_back(vsx_vector3f(0,1,0));
-      mesh->data->vertex_normals.push_back(vsx_vector3f(0,1,0));
-
-      size_t vertices_count = mesh->data->vertices.size();
-      mesh->data->faces.push_back(vsx_face3(vertices_count-1, vertices_count-4, vertices_count-2 ));
-      mesh->data->faces.push_back(vsx_face3(vertices_count-1, vertices_count-3, vertices_count-4 ));
-
-      base_rot_quat *= step_rot;
-      cross_result = base_rot_quat.transform(cross);
-      vector_length *= ONE_DIV_GOLDEN_RATIO_FLOAT;
-    }
-
-
-
-  }
-
-
   void run()
   {
-    mesh->data->vertices[0] = vsx_vector3<>(0.0f);
-    mesh->data->vertex_colors[0] = vsx_color<>(1,1,1,1);
+    req(
+      first_run
+      ||
+          step_factor->updates
+          ||
+          start_vector_length->updates
+          ||
+          stem_steps->updates
+          ||
+          leaf_steps->updates
+          ||
+          leaf_size->updates
+          ||
+          growth->updates
+          ||
+          rotation_x->updates
+          ||
+          rotation_y->updates
+          ||
+          leaf_rotation_x->updates
+          ||
+          leaf_rotation_y->updates
+          ||
+          leaf_rotation_z->updates
+          ||
+          stem_cross->updates
+          ||
+          leaf_cross->updates
+          ||
+      base_rotation->updates
+    );
 
-    req(first_run || recursion_levels->updates);
+    step_factor->updates = 0;
+    start_vector_length->updates = 0;
+    stem_steps->updates = 0;
+    leaf_steps->updates = 0;
+    leaf_size->updates = 0;
+    growth->updates = 0;
+    rotation_x->updates = 0;
+    rotation_y->updates = 0;
+    leaf_rotation_x->updates = 0;
+    leaf_rotation_y->updates = 0;
+    leaf_rotation_z->updates = 0;
+    stem_cross->updates = 0;
+    leaf_cross->updates = 0;
+    base_rotation->updates = 0;
 
-    mesh->data->vertex_tex_coords[0].s = 0;
-    mesh->data->vertex_tex_coords[0].t = 0;
+
     mesh->data->vertices.reset_used();
     mesh->data->faces.reset_used();
+    mesh->data->vertex_normals.reset_used();
+    mesh->data->vertex_colors.reset_used();
+    mesh->data->vertex_tex_coords.reset_used();
 
-    generate_stem();
+    generator.generate(
+          *mesh,
+          step_factor->get(),
+          start_vector_length->get(),
+          (size_t)stem_steps->get(),
+          (size_t)leaf_steps->get(),
+          leaf_size->get(),
+          growth->get(),
+          rotation_x->get(),
+          rotation_y->get(),
+          leaf_rotation_x->get(),
+          leaf_rotation_y->get(),
+          leaf_rotation_z->get(),
+          vsx_vector3f( stem_cross->get(0), stem_cross->get(1), stem_cross->get(2) ),
+          vsx_vector3f( leaf_cross->get(0), leaf_cross->get(1), leaf_cross->get(2) ),
+          vsx_quaternionf(base_rotation->get(0), base_rotation->get(1), base_rotation->get(2), base_rotation->get(3))
+        );
 
-    //printf("generating random points\n");
-//    for (int i = 1; i < (int)num_rays->get(); ++i)
-//    {
-//      mesh->data->vertices[i*2].x = (rand()%10000)*0.0001f-0.5f;
-//      mesh->data->vertices[i*2].y = (rand()%10000)*0.0001f-0.5f;
-//      mesh->data->vertices[i*2].z = (rand()%10000)*0.0001f-0.5f;
-//      mesh->data->vertex_colors[i*2] = vsx_color<>(0,0,0,0);
-//      mesh->data->vertex_tex_coords[i*2].s = 0.0f;
-//      mesh->data->vertex_tex_coords[i*2].t = 1.0f;
-//      if (limit_ray_size->get() > 0.0f )
-//      {
-//        mesh->data->vertices[i*2+1].x = mesh->data->vertices[i*2].x+((rand()%10000)*0.0001f-0.5f)*limit_ray_size->get();
-//        mesh->data->vertices[i*2+1].y = mesh->data->vertices[i*2].y+((rand()%10000)*0.0001f-0.5f)*limit_ray_size->get();
-//        mesh->data->vertices[i*2+1].z = mesh->data->vertices[i*2].z+((rand()%10000)*0.0001f-0.5f)*limit_ray_size->get();
-//      }
-//      else
-//      {
-//        mesh->data->vertices[i*2+1].x = (rand()%10000)*0.0001f-0.5f;
-//        mesh->data->vertices[i*2+1].y = (rand()%10000)*0.0001f-0.5f;
-//        mesh->data->vertices[i*2+1].z = (rand()%10000)*0.0001f-0.5f;
-//      }
-
-//      mesh->data->vertex_colors[i*2+1] = vsx_color<>(0,0,0,0);
-//      mesh->data->vertex_tex_coords[i*2+1].s = 1.0f;
-//      mesh->data->vertex_tex_coords[i*2+1].t = 0.0f;
-//      mesh->data->faces[i-1].a = 0;
-//      mesh->data->faces[i-1].b = i*2;
-//      mesh->data->faces[i-1].c = i*2+1;
-//      n_rays = (int)num_rays->get();
-//    }
     first_run = false;
     mesh->timestamp++;
     result->set_p(mesh);

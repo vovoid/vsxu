@@ -21,9 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-
-#ifndef VSX_VECTOR4_H
-#define VSX_VECTOR4_H
+#pragma once
 
 #include <cmath>
 #include <inttypes.h>
@@ -47,6 +45,16 @@ public:
       z(0.0),
       w(0.0)
   {}
+
+    vsx_vector4(T x, T y, T z, T w)
+    {
+      this->x = x;
+      this->y = y;
+      this->z = z;
+      this->w = w;
+    }
+
+
 
   template<typename D>
   inline vsx_vector4<D> convert()
@@ -80,11 +88,52 @@ public:
     w = n[4];
   }
 
+  vsx_vector4 operator +(const vsx_vector4<T> &t) const
+  {
+    vsx_vector4 temp;
+    temp.x = x + t.x;
+    temp.y = y + t.y;
+    temp.z = z + t.z;
+    temp.w = w + t.w;
+    return temp;
+  }
+
+  vsx_vector4 operator -(const vsx_vector4<T> &t) const
+  {
+    vsx_vector4 temp;
+    temp.x = x - t.x;
+    temp.y = y - t.y;
+    temp.z = z - t.z;
+    temp.w = w - t.w;
+    return temp;
+  }
+
+
+  vsx_vector4 operator *(const vsx_vector4<T> &t) const
+  {
+    vsx_vector4 temp;
+    temp.x = x * t.x;
+    temp.y = y * t.y;
+    temp.z = z * t.z;
+    temp.w = w * t.w;
+    return temp;
+  }
+
+  vsx_vector4 operator *(const float &t) const
+  {
+    vsx_vector4 temp;
+    temp.x = x * t;
+    temp.y = y * t;
+    temp.z = z * t;
+    temp.w = w * t;
+    return temp;
+  }
+
+
+
 }
 VSX_PACK_END
 
 typedef vsx_vector4<float> vsx_vector4f;
 typedef vsx_vector4<double> vsx_vector4d;
 
-
-#endif

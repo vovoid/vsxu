@@ -25,6 +25,7 @@
 #pragma once
 
 #include <math/vector/vsx_vector3.h>
+#include <math/vector/vsx_vector4.h>
 #include <math/vsx_matrix.h>
 
 inline float vsx_math_3d_max(const float& x, const float& y)
@@ -65,6 +66,15 @@ public:
     z = zz;
     w = ww;
   }
+
+  vsx_quaternion(vsx_vector4<T> source)
+  {
+    x = source.x;
+    y = source.y;
+    z = source.z;
+    w = source.w;
+  }
+
 
   template<typename D>
   inline vsx_quaternion<D> convert()
@@ -151,6 +161,17 @@ public:
     temp.z = z-t.z;
     return temp;
   }
+
+  vsx_quaternion operator +(const vsx_vector3<T> &t) const
+  {
+    vsx_quaternion temp;
+    temp.x = x + t.x;
+    temp.y = y + t.y;
+    temp.z = z + t.z;
+    temp.w = w + t.w;
+    return temp;
+  }
+
 
   vsx_quaternion operator *(const vsx_quaternion<T> &t) const
   {
@@ -315,5 +336,22 @@ public:
     p2.y = 2*x*y*p1.x + y*y*p1.y + 2*w*z*p1.x - z*z*p1.y + w*w*p1.y - x*x*p1.y;
     return p2;
   }
+
+  inline void from_vector4(vsx_vector4<T> source)
+  {
+    x = source.x;
+    y = source.y;
+    z = source.z;
+    w = source.w;
   }
+
+  inline vsx_vector4<T> get_vector4()
+  {
+    return vsx_vector4<T>(x,y,z,w);
+  }
+
+}
 VSX_PACK_END
+
+typedef vsx_quaternion<float> vsx_quaternionf;
+typedef vsx_quaternion<double> vsx_quaterniond;

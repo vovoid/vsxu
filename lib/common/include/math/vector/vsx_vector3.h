@@ -21,9 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-
-#ifndef VSX_VECTOR_H
-#define VSX_VECTOR_H
+#pragma once
 
 #include <vsx_platform.h>
 #include <inttypes.h>
@@ -288,5 +286,3 @@ VSX_PACK_END
 typedef vsx_vector3<float> vsx_vector3f;
 typedef vsx_vector3<double> vsx_vector3d;
 
-
-#endif
