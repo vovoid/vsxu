@@ -282,3 +282,5 @@ public:
 
 };
 
+typedef vsx_matrix<float> vsx_matrixf;
+typedef vsx_matrix<double> vsx_matrixd;
