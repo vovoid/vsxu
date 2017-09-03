@@ -48,11 +48,17 @@ public:
   };
   T a;
 
+  /**
+   * @brief hsv
+   * @param h 0..1
+   * @param s 0..1
+   * @param v 0..1
+   */
   inline void hsv(T h, T s, T v)
   {
-    if ( s == 0 )                       //HSV values = From 0 to 1
+    if ( s == 0 )
     {
-      r = v;                      //RGB results = From 0 to 255
+      r = v;
       g = v;
       b = v;
       return;
@@ -70,7 +76,7 @@ public:
     else if ( var_i == 4 ) { var_r = var_3 ; var_g = var_1 ; var_b = v;     }
     else                   { var_r = v     ; var_g = var_1 ; var_b = var_2; }
 
-    r = var_r;                  //RGB results = From 0 to 255
+    r = var_r;
     g = var_g;
     b = var_b;
   }
@@ -148,6 +154,12 @@ public:
     a = ap * (T)0.01;
   }
 
+  void multiply_rgb(T factor)
+  {
+    r *= factor;
+    g *= factor;
+    b *= factor;
+  }
 
   inline vsx_color operator +(const vsx_color &t)
   {
