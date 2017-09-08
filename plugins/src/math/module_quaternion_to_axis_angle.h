@@ -88,7 +88,7 @@ public:
     // make sure source quaternion is normalized
     i_quat.normalize();
 
-    float r_angle;
+    float r_angle = 0;
     vsx_vector3<> r_axis;
     i_quat.to_axis_angle( r_axis, r_angle);
 

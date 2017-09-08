@@ -97,7 +97,7 @@ public:
     T p1 = points[(new_int_pos+1)%points.size()];
     T p2 = points[(new_int_pos+2)%points.size()];
     T p3 = points[(new_int_pos+3)%points.size()];
-    return get_internal(fmod(t2,1.0), p0, p1, p2, p3);
+    return get_internal((FT)fmod(t2,1.0), p0, p1, p2, p3);
   }
 
 
