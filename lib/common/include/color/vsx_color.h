@@ -154,11 +154,24 @@ public:
     a = ap * (T)0.01;
   }
 
-  void multiply_rgb(T factor)
+  vsx_color multiply_rgb(T factor)
   {
-    r *= factor;
-    g *= factor;
-    b *= factor;
+    vsx_color<T> c;
+    c.r *= factor;
+    c.g *= factor;
+    c.b *= factor;
+    c.a = a;
+    return c;
+  }
+
+  inline vsx_color multiply_rgb(T factor, T alpha)
+  {
+    vsx_color<T> c;
+    c.r = r * factor;
+    c.g = g * factor;
+    c.b = b * factor;
+    c.a = alpha;
+    return c;
   }
 
   inline vsx_color operator +(const vsx_color &t)

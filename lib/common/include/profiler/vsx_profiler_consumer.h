@@ -271,7 +271,7 @@ public:
 
       if (chunk.id != thread_id)
       {
-        vsx_printf(L"chunk id: %ld\n", chunk.id);
+        vsx_printf(L"chunk id: %ld\n", (long)chunk.id);
         continue;
       }
 
