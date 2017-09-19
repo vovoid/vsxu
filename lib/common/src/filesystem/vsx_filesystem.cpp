@@ -268,7 +268,8 @@ char* filesystem::f_gets(char* buf, unsigned long max_buf_size, file* handle)
 
 size_t filesystem::f_read(void* buf, size_t num_bytes, file* handle)
 {
-  reqrv(handle->handle, 0);
+  if (!archive.is_archive())
+    reqrv(handle->handle, 0);
 
   if (!handle->data.size())
     return fread(buf, 1, num_bytes, handle->handle);
