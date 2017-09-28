@@ -81,7 +81,7 @@ class vsx_application_sdl
     DisableProcessWindowsGhosting();
     #endif
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0)
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER) < 0)
         sdl_tools::sdldie("Unable to initialize SDL");
 
     SDL_version compiled;
