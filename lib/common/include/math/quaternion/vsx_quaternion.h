@@ -298,10 +298,9 @@ public:
     y = (T)sqrt( vsx_math_3d_max( 0, 1 - m00 + m11 - m22 ) ) * (T)0.5;
     z = (T)sqrt( vsx_math_3d_max( 0, 1 - m00 - m11 + m22 ) ) * (T)0.5;
 
-    x = copysign( x, m21 - m12 );
-    y = copysign( y, m02 - m20 );
-    z = copysign( z, m10 - m01 );
-    
+    x = (T)copysign( x, m21 - m12 );
+    y = (T)copysign( y, m02 - m20 );
+    z = (T)copysign( z, m10 - m01 );
   }
 
   

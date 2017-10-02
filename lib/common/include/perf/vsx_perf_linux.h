@@ -16,7 +16,7 @@ class vsx_perf
   perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
                   int cpu, int group_fd, unsigned long flags)
   {
-      int ret;
+      long int ret;
 
       ret = syscall(__NR_perf_event_open, hw_event, pid, cpu,
                      group_fd, flags);
@@ -28,12 +28,12 @@ class vsx_perf
   int parseLine(char* line)
   {
     // This assumes that a digit will be found and the line ends in " Kb".
-    int i = strlen(line);
+    size_t i = strlen(line);
     const char* p = line;
     while (*p <'0' || *p > '9') p++;
     line[i-3] = '\0';
     i = atoi(p);
-    return i;
+    return (int)i;
   }
 
 
@@ -55,7 +55,7 @@ public:
     pe.exclude_kernel = include_kernel?0:1;
     pe.exclude_hv = 1;
 
-    fd = perf_event_open(&pe, 0, -1, -1, 0);
+    fd = (int)perf_event_open(&pe, 0, -1, -1, 0);
     if (fd == -1) {
        fprintf(stderr, "Error opening leader %llx\n", pe.config);
     }
@@ -98,7 +98,7 @@ public:
     pe.exclude_kernel = 1;
     pe.exclude_hv = 1;
 
-    fd = perf_event_open(&pe, 0, -1, -1, 0);
+    fd = (int)perf_event_open(&pe, 0, -1, -1, 0);
     if (fd == -1) {
        fprintf(stderr, "Error opening leader %llx\n", pe.config);
     }

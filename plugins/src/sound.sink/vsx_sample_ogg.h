@@ -52,11 +52,13 @@ public:
     // decode the ogg stream
     // (unsigned char *mem, int len, int *channels, short **output);
     int num_channels;
+    int sample_rate;
     int samples_loaded = stb_vorbis_decode_memory
         (
           (unsigned char*)temp_storage,
           file_size,
           &num_channels,
+          &sample_rate,
           &result
         );
 
