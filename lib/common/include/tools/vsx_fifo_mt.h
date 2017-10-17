@@ -33,7 +33,7 @@ template<
     typename T = int64_t,   // your data type
     int buffer_size = 4096  // MUST be: >=2 and power of two;
     >
-class vsx_fifo_mt
+class alignas(64) vsx_fifo_mt
 {
 private:
   // this is the only variable shared between the threads

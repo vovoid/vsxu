@@ -57,7 +57,7 @@
   #include <sys/prctl.h>
 #endif
 
-// You can set VSX_PROFILER_MAX_THREADS in your make script as well
+// You can set VSX_PROFILER_MAX_THREADS in your makefile as well
 
 #ifndef VSX_PROFILER_MAX_THREADS
   #define VSX_PROFILER_MAX_THREADS 8
@@ -151,69 +151,7 @@ public:
     enable_data_collection.fetch_sub(1);
   }
 
-  static void* io_worker()
-  {
-    vsx_printf(L"[Profiler IO running]\n");
 
-    #if (PLATFORM == PLATFORM_LINUX)
-      const char* cal = "profiler::io_thread";
-      prctl(PR_SET_NAME,cal);
-    #endif
-
-    vsx_profiler_manager* pm = vsx_profiler_manager::get_instance();
-
-    vsx_string<>profiler_directory = profiler_directory_get();
-
-#if COMPILER == COMPILER_VISUAL_STUDIO
-    if (_access(profiler_directory.c_str(), 0) != 0)
-#else
-    if (access(profiler_directory.c_str(), 0) != 0)
-#endif
-#if (PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX)
-      mkdir( (profiler_directory).c_str(), 0700);
-#else
-      CreateDirectory( (profiler_directory).c_str(), nullptr );
-#endif
-
-#if (PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX)
-    vsx_string<>filename = profiler_directory + "/" + vsx_string<>(program_invocation_short_name) +
-        "_" +vsx_string_helper::i2s((int)time(0x0)) + ".dat";
-#else
-    vsx_string<>filename = profiler_directory + "/" + "_" +vsx_string_helper::i2s((int)time(0x0)) + ".dat";
-#endif
-    vsx_timer timer;
-
-    FILE* fp = fopen( filename.c_str() , "wb");
-
-    if (!fp)
-      VSX_ERROR_EXIT("VSX PROFILER: ***ERROR*** I/O thread can not open file. Aborting...", 900);
-
-
-    vsx_printf(L"[Profiler writing to %hs]\n", filename.c_str());
-    timer.start();
-    double accumulated_time = 0.0;
-    while ( pm->thread_run_control.load() )
-    {
-      vsx_profile_chunk* r;
-      while ( pm->io_pool.consume(r) )
-      {
-        fwrite(r,sizeof(vsx_profile_chunk) * VSX_PROFILER_RECIEVE_BUFFER_ITEMS,1,fp);
-      }
-      double d1 = timer.dtime();
-      if (pm->enable_data_collection)
-        accumulated_time += d1;
-    }
-
-    vsx_profile_chunk c;
-    c.cycles = vsx_rdtsc();
-    c.flags = VSX_PROFILE_CHUNK_FLAG_TIMESTAMP;
-    memset(c.tag,0,32);
-    sprintf(c.tag,"%f", accumulated_time );
-    fwrite(&c,sizeof(vsx_profile_chunk),1,fp);
-
-    fclose(fp);
-    return NULL;
-  }
 
   static void* consumer_worker()
   {
@@ -335,6 +273,70 @@ public:
     return 0x0;
   }
 
+
+  static void* io_worker()
+  {
+    vsx_printf(L"[Profiler IO running]\n");
+
+    #if (PLATFORM == PLATFORM_LINUX)
+      const char* cal = "profiler::io_thread";
+      prctl(PR_SET_NAME,cal);
+    #endif
+
+    vsx_profiler_manager* pm = vsx_profiler_manager::get_instance();
+
+    vsx_string<>profiler_directory = profiler_directory_get();
+
+#if COMPILER == COMPILER_VISUAL_STUDIO
+    if (_access(profiler_directory.c_str(), 0) != 0)
+#else
+    if (access(profiler_directory.c_str(), 0) != 0)
+#endif
+#if (PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX)
+      mkdir( (profiler_directory).c_str(), 0700);
+#else
+      CreateDirectory( (profiler_directory).c_str(), nullptr );
+#endif
+
+#if (PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX)
+    vsx_string<>filename = profiler_directory + "/" + vsx_string<>(program_invocation_short_name) +
+        "_" +vsx_string_helper::i2s((int)time(0x0)) + ".dat";
+#else
+    vsx_string<>filename = profiler_directory + "/" + "_" +vsx_string_helper::i2s((int)time(0x0)) + ".dat";
+#endif
+    vsx_timer timer;
+
+    FILE* fp = fopen( filename.c_str() , "wb");
+
+    if (!fp)
+      VSX_ERROR_EXIT("VSX PROFILER: ***ERROR*** I/O thread can not open file. Aborting...", 900);
+
+
+    vsx_printf(L"[Profiler writing to %hs]\n", filename.c_str());
+    timer.start();
+    double accumulated_time = 0.0;
+    while ( pm->thread_run_control.load() )
+    {
+      vsx_profile_chunk* r;
+      while ( pm->io_pool.consume(r) )
+      {
+        fwrite(r,sizeof(vsx_profile_chunk) * VSX_PROFILER_RECIEVE_BUFFER_ITEMS,1,fp);
+      }
+      double d1 = timer.dtime();
+      if (pm->enable_data_collection)
+        accumulated_time += d1;
+    }
+
+    vsx_profile_chunk c;
+    c.cycles = vsx_rdtsc();
+    c.flags = VSX_PROFILE_CHUNK_FLAG_TIMESTAMP;
+    memset(c.tag,0,32);
+    sprintf(c.tag,"%f", accumulated_time );
+    fwrite(&c,sizeof(vsx_profile_chunk),1,fp);
+
+    fclose(fp);
+    return NULL;
+  }
 
   static pid_t gettid( void )
   {

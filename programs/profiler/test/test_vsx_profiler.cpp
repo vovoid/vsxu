@@ -33,6 +33,8 @@ void thread_producer()
 
 void thread_producer2()
 {
+  //vsx_profiler_manager::get_instance()->init_profiler();
+
   vsx_profiler* p = vsx_profiler_manager::get_instance()->get_profiler();
   while ( run_threads.load() )
   {
@@ -53,12 +55,16 @@ void thread_producer2()
 
 int main()
 {
+  vsx_data_path::get_instance()->init();
+  vsx_profiler_manager::get_instance()->start();
+  vsx_profiler_manager::get_instance()->enable();
+
   run_threads = 1;
 
   std::thread t1 = std::thread( [](){thread_producer();});
   std::thread t2 = std::thread( [](){thread_producer2();});
 
-  std::this_thread::sleep_for(std::chrono::seconds(20));
+  std::this_thread::sleep_for(std::chrono::seconds(5));
 
   run_threads.fetch_sub(1);
 

@@ -23,5 +23,5 @@ include_directories(
 
 add_executable(test_vsx_profiler test_vsx_profiler.cpp )
 
-target_link_libraries( test_vsx_profiler ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries( test_vsx_profiler ${CMAKE_THREAD_LIBS_INIT} vsx_common)
 

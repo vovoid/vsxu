@@ -21,8 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_PROFILER_CONSUMER_H
-#define VSX_PROFILER_CONSUMER_H
+#pragma once
 
 #include <list>
 
@@ -261,25 +260,18 @@ public:
     if (current_profile.size() < 2)
       VSX_ERROR_RETURN("Not enough chunks in loaded profile data");
 
-//    uint64_t cycles_begin_time = cpu_clock_start + (uint64_t)(t_start * cycles_per_second);
-//    uint64_t cycles_end_time = cpu_clock_start + (uint64_t)(t_end * cycles_per_second);
-
     // now find the first major chunk
     for (size_t i = 0; i < current_profile.size(); i++)
     {
       vsx_profile_chunk& chunk = current_profile[i];
 
       if (chunk.id != thread_id)
-      {
-        vsx_printf(L"chunk id: %ld\n", (long)chunk.id);
         continue;
-      }
 
       if (chunk.flags == VSX_PROFILE_CHUNK_FLAG_SECTION_START /* && chunk.cycles > cycles_begin_time*/)
       {
         compute_stack[compute_stack_pointer].time_start = cycles_to_time( chunk.cycles );
         compute_stack[compute_stack_pointer].cycles_start = chunk.cycles;
-//        vsx_printf(L"starting time: %f\n", compute_stack[compute_stack_pointer].time_start);
         compute_stack_pointer++;
         if (compute_stack_pointer == compute_stack_depth)
           compute_stack_pointer--;
@@ -294,16 +286,13 @@ public:
         compute_stack[compute_stack_pointer].depth = compute_stack_pointer;
         compute_stack[compute_stack_pointer].cycles_end = chunk.cycles;
         chunks_result.push_back( compute_stack[compute_stack_pointer] );
-//        vsx_printf(L"ending time: %f\n", compute_stack[compute_stack_pointer].time_end);
       }
 
       if (chunk.flags == VSX_PROFILE_CHUNK_FLAG_START /*&& chunk.cycles > cycles_begin_time*/)
       {
         compute_stack[compute_stack_pointer].time_start = cycles_to_time( chunk.cycles );
-        vsx_printf(L"tag: %hs\n", chunk.tag);
         compute_stack[compute_stack_pointer].tag = chunk.tag;
         compute_stack[compute_stack_pointer].cycles_start = chunk.cycles;
-//        vsx_printf(L"starting time inner: %f\n", compute_stack[compute_stack_pointer].time_start);
         compute_stack_pointer++;
         if (compute_stack_pointer == compute_stack_depth)
           compute_stack_pointer--;
@@ -318,10 +307,7 @@ public:
         compute_stack[compute_stack_pointer].depth = compute_stack_pointer;
         compute_stack[compute_stack_pointer].cycles_end = chunk.cycles;
         chunks_result.push_back( compute_stack[compute_stack_pointer] );
-//        vsx_printf(L"ending time inner: %f\n", compute_stack[compute_stack_pointer].time_end);
       }
-//      vsx_printf(L"stack pointer: %d\n", compute_stack_pointer);
-
     }
 
   }
@@ -367,9 +353,7 @@ public:
         chunks_result.push_back( plot );
       }
     }
-
   }
-
 
 
   static vsx_profiler_consumer* get_instance()
@@ -380,4 +364,4 @@ public:
 };
 
 
-#endif
+

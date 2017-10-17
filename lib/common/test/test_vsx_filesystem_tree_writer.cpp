@@ -1576,7 +1576,7 @@ void test_level()
 
   perf.cache_misses_begin();
     perf_cpu.cpu_instructions_begin();
-      reader_result = reader.get_payload_by_filename( "destructible_sphere_box/norm" );
+      reader_result = reader.get_payload_by_filename( "resources/luna_game/destructible_sphere_box/norm" );
     cpu_cycles = perf_cpu.cpu_instructions_end();
   cache_misses = perf.cache_misses_end();
 
@@ -1597,11 +1597,11 @@ void test_level()
 
 
 
-  vsx_nw_vector< vsx_string<> > filenames;
-  vsx_nw_vector< uint32_t > payloads;
-  reader.get_filename_payload_list(filenames, payloads);
-  foreach (filenames, i)
-    vsx_printf(L"level_1 filename from tree: %hs    with paypload: %ld\n", filenames[i].c_str(), payloads[i]);
+  //vsx_nw_vector< vsx_string<> > filenames;
+  //vsx_nw_vector< uint32_t > payloads;
+  //reader.get_filename_payload_list(filenames, payloads);
+  //foreach (filenames, i)
+  //  vsx_printf(L"level_1 filename from tree: %hs    with paypload: %ld\n", filenames[i].c_str(), payloads[i]);
 
 
 
