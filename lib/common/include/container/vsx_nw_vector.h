@@ -20,8 +20,8 @@
 * with this program; if not, write to the Free Software Foundation, Inc.,
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#ifndef vsx_nw_vector_H
-#define vsx_nw_vector_H
+
+#pragma once
 
 #include <stdlib.h>
 #include <string.h>
@@ -275,7 +275,7 @@ public:
     used = other.used;
     allocation_increment = other.allocation_increment;
     timestamp = other.timestamp;
-    A = std::move(other.A);
+    A = other.A;
 
     other.allocated = 0;
     other.used = 0;
@@ -298,7 +298,7 @@ public:
     return *this;
   }
 
-  vsx_nw_vector(vsx_nw_vector<T>& other)
+  vsx_nw_vector(const vsx_nw_vector<T>& other)
   {
     req(!other.data_volatile);
     allocate(other.allocated);
@@ -341,4 +341,3 @@ public:
   }
 };
 
-#endif

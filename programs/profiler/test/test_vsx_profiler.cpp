@@ -33,7 +33,7 @@ void thread_producer()
 
 void thread_producer2()
 {
-  //vsx_profiler_manager::get_instance()->init_profiler();
+  vsx_profiler_manager::get_instance()->init_profiler();
 
   vsx_profiler* p = vsx_profiler_manager::get_instance()->get_profiler();
   while ( run_threads.load() )

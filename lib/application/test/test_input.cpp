@@ -27,6 +27,7 @@
 #include <vsx_application_manager.h>
 #include <vsx_application_input_state_manager.h>
 #include <vsx_application_run.h>
+#include <vector>
 
 class input_test_application
     : public vsx_application
@@ -70,7 +71,6 @@ public:
       vsx_printf(L" triggers: %f %f\n", vsx_input_game.controllers[0].trigger_left, vsx_input_game.controllers[0].trigger_right);
       vsx_printf(L" analog stick buttons: %d %d\n", vsx_input_game.controllers[0].button_analog_left, vsx_input_game.controllers[0].button_analog_right);
     }
-
   }
 
   void event_key_down(long key)
@@ -80,12 +80,101 @@ public:
 };
 
 
+class A
+{
+private:
+  int* _number = 0x0;
+
+  void allocate()
+  {
+    req(!_number);
+    _number = new int;
+  }
+
+public:
+
+  // normal
+  A(int a)
+  {
+    allocate();
+    *_number = a;
+    vsx_printf(L"A constructor %d\n", *_number);
+  }
+
+  ~A()
+  {
+    if (!_number)
+    {
+      vsx_printf(L"A destructor nullptr\n");
+      return;
+    }
+
+    vsx_printf(L"A destructor %d\n", *_number);
+    delete _number;
+  }
+
+  // copy
+  A(A& other)
+  {
+    allocate();
+    req(other._number);
+    *_number = *other._number;
+    vsx_printf(L"A copy constructor %d\n", *_number);
+  }
+
+  A& operator= (const A& other)
+  {
+    allocate();
+    reqrv(other._number, *this);
+    *_number = *other._number;
+    vsx_printf(L"A equals operator %d\n", *_number);
+    return *this;
+  }
+
+  // move
+  A(A&& other)
+  {
+    req(other._number);
+    _number = other._number;
+    other._number = 0x0;
+    vsx_printf(L"A move constructor %d\n", *_number);
+  }
+
+  A& operator= (A&& other)
+  {
+    reqrv(other._number, *this);
+    _number = other._number;
+    other._number = 0x0;
+    vsx_printf(L"A equals move operator %d\n", *_number);
+    return *this;
+  }
+
+};
+
 
 int main(int argc, char* argv[])
 {
-  vsx_argvector::get_instance()->init_from_argc_argv(argc, argv);
+//  A a1{3};
+//  A a2{a1};
+//  A a3{A{4}};
+
+  //std::vector<A> v;
+  //v.push_back(A{5});
+
+//  A a5{7};
+//  A a6{8};
+//  a6 = a5;
+
+//  A a7{9};
+ // a7 = A{10};
+
+//  A a8{11};
+ // A a9{std::move(a8)};
+
+/*  vsx_argvector::get_instance()->init_from_argc_argv(argc, argv);
   input_test_application application;
   vsx_application_manager::get_instance()->application_set(&application);
   vsx_application_run::run();
+  */
   return 0;
 }
