@@ -962,6 +962,13 @@ public:
     #endif
   }
 
+  /**
+   * @brief matrix_rotate_f
+   * @param angle degrees
+   * @param x axis x
+   * @param y axis y
+   * @param z axis z
+   */
   inline void matrix_rotate_f(float angle, float x, float y, float z)
   {
     vsx_matrix<float> m_rotate;
