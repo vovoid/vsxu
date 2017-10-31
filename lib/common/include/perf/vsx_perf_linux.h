@@ -25,7 +25,7 @@ class vsx_perf
 
   int fd = 0;
 
-  int parseLine(char* line)
+  size_t parseLine(char* line)
   {
     // This assumes that a digit will be found and the line ends in " Kb".
     size_t i = strlen(line);
@@ -131,15 +131,15 @@ public:
    * Returns number of megabytes
    * @return
    */
-  int memory_currently_used()
+  size_t memory_currently_used()
   {
     return memory_currently_used_bytes() / (1024 * 1024);
   }
 
-  int memory_currently_used_bytes()
+  size_t memory_currently_used_bytes()
   {
     FILE* file = fopen("/proc/self/status", "r");
-    int result = -1;
+    size_t result = 0;
     char line[128];
 
     while (fgets(line, 128, file) != NULL){
