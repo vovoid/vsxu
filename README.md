@@ -34,9 +34,13 @@ Optional dependencies:
 
       sudo apt-get install libopencv-dev libcvaux-dev libhighgui-dev libcv-dev
 
-Get the VSXu Source from github:
+Get the VSXu Source from github via ssh:
 
-      git clone git://github.com/vovoid/vsxu.git
+      git clone git@github.com:vovoid/vsxu.git
+      
+Get the VSXu Source from github via https:
+
+      git clone https://github.com/vovoid/vsxu.git
 
 Build it:
 
