@@ -239,6 +239,96 @@ private:
 
 
 //***************************************************************************
+//*** LIGHTING **************************************************************
+//***************************************************************************
+
+  bool _lighting_stack[VSX_GL_STATE_STACK_DEPTH];
+  size_t _lighting_stack_pointer = 0;
+
+public:
+
+  void lighting_push()
+  {
+    if (_lighting_stack_pointer + 1 == VSX_GL_STATE_STACK_DEPTH)
+      VSX_ERROR_RETURN("Lighting stack overflow!");
+
+    _lighting_stack[_lighting_stack_pointer] = _lighting_enabled;
+    _lighting_stack_pointer++;
+  }
+
+  void lighting_pop()
+  {
+    if (!_lighting_stack_pointer)
+      VSX_ERROR_RETURN("Lighting stack underrun!");
+
+    _lighting_stack_pointer--;
+    lighting_set(_lighting_stack[_lighting_stack_pointer]);
+  }
+
+  void lighting_set(bool status)
+  {
+    _lighting_enabled = status;
+    #ifndef VSX_NO_GL
+    if (status)
+    {
+      glEnable( GL_LIGHTING );
+    } else
+    {
+      glDisable( GL_LIGHTING );
+    }
+    #endif
+  }
+
+private:
+  bool _lighting_enabled = false;
+
+
+//***************************************************************************
+//*** BLEND *****************************************************************
+//***************************************************************************
+
+  int _blend_stack[VSX_GL_STATE_STACK_DEPTH];
+  size_t _blend_stack_pointer = 0;
+
+public:
+
+  void blend_push()
+  {
+    if (_blend_stack_pointer + 1 == VSX_GL_STATE_STACK_DEPTH)
+      VSX_ERROR_RETURN("blend stack overflow!");
+
+    _blend_stack[_blend_stack_pointer] = _blend_enabled;
+    _blend_stack_pointer++;
+  }
+
+  void blend_pop()
+  {
+    if (!_blend_stack_pointer)
+      VSX_ERROR_RETURN("blend stack underrun!");
+
+    _blend_stack_pointer--;
+    blend_set(_blend_stack[_blend_stack_pointer]);
+  }
+
+//  void blend_set(bool status)
+//  {
+//    _blend_enabled = status;
+//    #ifndef VSX_NO_GL
+//    if (status)
+//    {
+//      glEnable( GL_BLEND );
+//    } else
+//    {
+//      glDisable( GL_BLEND );
+//    }
+//    #endif
+//  }
+
+private:
+//  bool _blend_enabled = false;
+
+
+//***************************************************************************
 //*** DEPTH BUFFER **********************************************************
 //***************************************************************************
 
