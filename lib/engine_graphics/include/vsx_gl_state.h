@@ -267,6 +267,7 @@ public:
 
   void lighting_set(bool status)
   {
+    req(_lighting_enabled != status);
     _lighting_enabled = status;
     #ifndef VSX_NO_GL
     if (status)
