@@ -20,12 +20,12 @@ void thread_producer()
   while ( run_threads.load() )
   {
     p->maj_begin();
-    p->sub_begin("1 test1");
-    std::this_thread::sleep_for(std::chrono::microseconds(20));
-    p->sub_begin("1 test2");
-    std::this_thread::sleep_for(std::chrono::microseconds(200));
-    p->sub_end();
-    p->sub_end();
+      p->sub_begin("1 test1");
+        std::this_thread::sleep_for(std::chrono::microseconds(20));
+        p->sub_begin("1 test2");
+          std::this_thread::sleep_for(std::chrono::microseconds(200));
+        p->sub_end();
+      p->sub_end();
     p->maj_end();
   }
   vsx_printf(L"exiting p1\n");

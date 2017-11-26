@@ -251,7 +251,7 @@ public:
             {
               recieve_buffer_iterator = 0;
 
-              // send to io
+              // when page filled, send a full "page" to io thread
               while (!pm->io_pool.produce(&recieve_buffer[current_buffer_page][0]))
               {
                 vsx_printf(L"VSX PROFILER:  ***PERFORMANCE WARNING*** spinning while i/o fifo is full...\n");
