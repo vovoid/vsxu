@@ -1,6 +1,6 @@
 /**
 * Written by Alastair Cota for:
-* 
+*
 * Project: VSXu: Realtime modular visual programming engine.
 *
 * This file is part of Vovoid VSXu.
@@ -76,13 +76,13 @@ class module_texture_selector : public vsx_module
   vsx_module_param_float* index;
   vsx_module_param_int* inputs;
   std::vector<vsx_module_param_texture*> texture_x;
-  
+
   vsx_module_param_int* wrap;
   vsx_module_param_int* blend_type;
   vsx_module_param_float_sequence* sequence;
   vsx_module_param_int* reverse;
   vsx_module_param_int* reset_seq_to_default;
-  
+
   vsx_module_param_int* blend_size;
   vsx_module_param_float_sequence* A_sequence;
   vsx_module_param_int* A_reverse;
@@ -118,7 +118,7 @@ class module_texture_selector : public vsx_module
   int i_index_x1;
   bool i_underRange;
   bool i_overRange;
-  
+
   int i_wrap;
   int i_blend_type;
   vsx::sequence::channel<vsx::sequence::value_float> i_sequence;
@@ -141,7 +141,7 @@ class module_texture_selector : public vsx_module
   vsx_ma_vector<float> i_B_sequence_data;
   long i_B_seq_index;
   int i_B_reverse;
-  
+
   float i_A_mixLevel;
   float i_B_mixLevel;
 
@@ -149,7 +149,7 @@ class module_texture_selector : public vsx_module
   uint32_t* i_clear_bmp_data;
   long i_clear_color[4];
   float i_prev_clear_color[4];
- 
+
   std::stringstream i_paramString;
   std::stringstream i_paramName;
   vsx_string<>i_in_param_string;
@@ -169,7 +169,7 @@ public:
   //Initialise Data
 
   vsx_glsl shader;
-    
+
   //Initialise Module & GUI
   void module_info(vsx_module_specification* info)
   {
@@ -204,19 +204,19 @@ public:
           "8x8|16x16|32x32|64x64|128x128|256x256|512x512|1024x1024|2048x2048,"
           "A_crossfade:complex"
           "{"
-            "A_sequence:sequence,"
+            "A_sequence:float_sequence,"
             "A_reverse:enum?Off|On,"
             "A_reset_seq_to_default:enum?ok?nc=1"
           "},"
           "B_crossfade:complex"
           "{"
-            "B_sequence:sequence,"
+            "B_sequence:float_sequence,"
             "B_reverse:enum?Off|On,"
             "B_reset_seq_to_default:enum?ok?nc=1"
           "},"
           "clear_color:float4?default_controller=controller_col"
         "},"
-        "sequence:sequence,"
+        "sequence:float_sequence,"
         "reverse:enum?Off|On,"
         "reset_seq_to_default:enum?ok?nc=1"
       "}";
@@ -293,9 +293,9 @@ public:
     i_in_param_string = "";
 
     loading_done = true; //Allows main sequencer to start playing
-    
+
     //Give the programs to the shader and retrieve id's for its uniform variables
-    shader.vertex_program = VERTEX_PROGRAM;     
+    shader.vertex_program = VERTEX_PROGRAM;
     shader.fragment_program = FRAGMENT_PROGRAM;
     shader.link(); //return from this shows glsl compiler errors if any
     glsl_A_tex = glGetUniformLocationARB(shader.prog, "A_tex");
@@ -338,7 +338,7 @@ public:
     reverse->set(i_reverse);
     reset_seq_to_default = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reset_seq_to_default");
     reset_seq_to_default->set(-1);
-    
+
     //Blend options
     blend_size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "blend_size");
     blend_size->set(i_tex_size);
@@ -407,7 +407,7 @@ public:
     sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "sequence");
     reverse = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reverse");
     reset_seq_to_default = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "reset_seq_to_default");
-    
+
     blend_size = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "blend_size");
     clear_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4, "clear_color");
 
@@ -418,12 +418,12 @@ public:
     B_sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "B_sequence");
     B_reverse = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "B_reverse");
     B_reset_seq_to_default = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "B_reset_seq_to_default");
-    
+
     i_am_ready = true; //Data is ready, we can start running properly!
   }
 
 //---SHADER-FUNCTIONS-----------------------------------------------------------
- 
+
   //Set GL parameters for a texture
   void BindTexture(vsx_texture<>* tex)
   {
@@ -444,7 +444,7 @@ public:
       loading_done = true;
       glColor4f(1,1,1,1);
       glDisable(GL_BLEND);
-      
+
       if(GLEW_VERSION_1_3) glActiveTexture(GL_TEXTURE0); //multitexturing
       texInA->bind();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
@@ -453,13 +453,13 @@ public:
       texInB->bind();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    
+
         shader.begin();
           glUniform1iARB(glsl_A_tex, 0); //0 and 1 are GL_TEXTURE numbers
           glUniform1iARB(glsl_B_tex, 1);
           glUniform1fARB(glsl_A_mix, Amix); //binding of parameter id's to their
           glUniform1fARB(glsl_B_mix, Bmix); //values for this run of the shader
-        
+
           glBegin(GL_QUADS);
             glTexCoord2f(0.0f,0.0f);
             glVertex3f(-1.0f, -1.0f, 0.0f);
@@ -524,16 +524,16 @@ public:
 
     if(i_B_reverse == 1) //Reverse B On
       i_B_seq_index = (ix1 - ix) * (float)SEQ_RESOLUTION;
-     
-    i_A_seq_index = (long)FLOAT_CLAMP((float)i_A_seq_index, 0.0, 
+
+    i_A_seq_index = (long)FLOAT_CLAMP((float)i_A_seq_index, 0.0,
                                       (float)(SEQ_RESOLUTION - 1));
     i_B_seq_index = (long)FLOAT_CLAMP((float)i_B_seq_index, 0.0,
                                       (float)(SEQ_RESOLUTION - 1));
-     
+
     i_A_mixLevel = i_A_sequence_data[i_A_seq_index]; //had to do it twice or
     i_B_mixLevel = i_B_sequence_data[i_B_seq_index]; //it'd be argument overkill!
   }
-  
+
   //Set-Up Data for Linear Blend
   void SetupLinearBlend()
   {
@@ -629,13 +629,13 @@ public:
       i_tex_A = texture_x[i_index_x0]->get_addr();
     if(texture_x[i_index_x1]->connected)
       i_tex_B = texture_x[i_index_x1]->get_addr();
-    
+
     if((i_tex_A) && (i_tex_B) && (i_tex_output))
     {
       BindTexture(*i_tex_A);
       BindTexture(*i_tex_B);
       BindTexture(i_tex_output);
-      
+
       BlendTexture(*i_tex_A,
                    *i_tex_B,
                    FLOAT_CLAMP(i_A_mixLevel, 0.0, 1.0),
@@ -687,7 +687,7 @@ public:
       i_clear_color[1] = (long)FLOAT_CLAMP(255.0 * clear_color->get(1), 0.0, 255.0);
       i_clear_color[2] = (long)FLOAT_CLAMP(255.0 * clear_color->get(2), 0.0, 255.0);
       i_clear_color[3] = (long)FLOAT_CLAMP(255.0 * clear_color->get(3), 0.0, 255.0);
-  
+
       *i_clear_bmp_data = 0x01000000 * i_clear_color[3]
                                      |
                           0x00010000 * i_clear_color[2]
@@ -709,7 +709,7 @@ public:
   {
     i_new_size = blend_size->get();
     if(i_tex_size != i_new_size)
-    { 
+    {
       i_tex_size = i_new_size;
       buf_output.reinit(i_tex_output, 8 << i_tex_size, 8 << i_tex_size, true, true, false, true, 0);
       buf_blank.reinit(i_tex_blank, 8 << i_tex_size, 8 << i_tex_size, true, true, false, true, 0);

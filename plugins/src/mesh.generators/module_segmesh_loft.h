@@ -70,9 +70,9 @@ public:
 
     info->in_param_spec =
       "segment_mesh_in:segment_mesh,"
-      "loft_x:sequence,"
-      "loft_y:sequence,"
-      "loft_z:sequence,"
+      "loft_x:float_sequence,"
+      "loft_y:float_sequence,"
+      "loft_z:float_sequence,"
       "segments:float?min=2,"
       "length:float"
     ;
@@ -115,7 +115,7 @@ public:
   void run()
   {
     vsx_2dgrid_mesh* bb = seg_mesh_in->get_addr();
-    if (bb) 
+    if (bb)
     {
       sides = (long)bb->vertices[0].size();
       length_inc = length_p->get()/segments->get();

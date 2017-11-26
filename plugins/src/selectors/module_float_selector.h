@@ -1,6 +1,6 @@
 /**
 * Written by Alastair Cota for:
-* 
+*
 * Project: VSXu: Realtime modular visual programming engine.
 *
 * This file is part of Vovoid VSXu.
@@ -60,7 +60,7 @@ class module_float_selector : public vsx_module
 
   float i_value_y0;
   float i_value_y1;
-  
+
   int i_wrap;
   int i_interpolation;
   vsx::sequence::channel<vsx::sequence::value_float> i_sequence;
@@ -69,7 +69,7 @@ class module_float_selector : public vsx_module
   long i_seq_index;
   int i_reverse;
   int i_reset_seq_to_default;
- 
+
   std::stringstream i_paramString;
   std::stringstream i_paramName;
   vsx_string<>i_in_param_string;
@@ -81,7 +81,7 @@ class module_float_selector : public vsx_module
 public:
 
   //Initialise Data
-  module_float_selector() 
+  module_float_selector()
   {
     i_am_ready = false; //Don't do operations if the data isn't ready
 
@@ -97,7 +97,7 @@ public:
 
     i_value_y0 = 0.0;   //Float values for index calculation
     i_value_y1 = 0.0;
-    
+
     i_wrap = 2;          //Wrap
     i_interpolation = 0; //No Interpolation
     i_reverse = 2;       //Autoreverse Normal
@@ -109,7 +109,7 @@ public:
 
     i_in_param_string = "";
   }
-  
+
   //Initialise Module & GUI
   void module_info(vsx_module_specification* info)
   {
@@ -138,7 +138,7 @@ public:
       "options:complex{"
         "wrap:enum?None_Zero|None_Freeze|Wrap,"
         "interpolation:enum?None|Linear|Sequence,"
-        "sequence:sequence,"
+        "sequence:float_sequence,"
         "reverse:enum?Off|On|Auto_Normal|Auto_Inverted,"
         "reset_seq_to_default:enum?ok}";
 
@@ -172,7 +172,7 @@ public:
       float_x.push_back((vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, i_paramName.str().c_str()));
       float_x[i]->set(0.0);
     }
-    
+
     i_paramString << "},";
     i_in_param_string = i_paramString.str().c_str();
 
@@ -200,7 +200,7 @@ public:
 
     index = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "index");
     inputs = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "inputs");
-    
+
     float_x.clear();
     i_paramString.str("");
     i_paramString << "float_x:complex{";
@@ -218,7 +218,7 @@ public:
 
     i_paramString << "},";
     i_in_param_string = i_paramString.str().c_str();
-    
+
     wrap = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "wrap");
     interpolation = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "interpolation");
     sequence = (vsx_module_param_float_sequence*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT_SEQUENCE, "sequence");
@@ -298,19 +298,19 @@ public:
     //Cache Sequence Data
     for(int i = 0; i < SEQ_RESOLUTION; ++i)
       i_sequence_data[i] = i_sequence.execute(1.0f / (float)(SEQ_RESOLUTION - 1)).get_float();
-          
-    i_seq_index = ((i_index - (float)i_index_x0) 
+
+    i_seq_index = ((i_index - (float)i_index_x0)
                 / (float)(i_index_x1 - i_index_x0))
                 * (float)SEQ_RESOLUTION;
-    
+
     //Bugfix for No Wrap - Zero Ends on Sequence Interpolation
     if(i_wrap == 0)
     {
       i_value_y0 = (i_index_x == i_prev_inputs + 1) ? 0.0 : i_value_y0;
       i_value_y1 = (i_index_x == -1) ? 0.0 : i_value_y1;
     }
-    
-    //Determine Which Graph Reversal Method to Use      
+
+    //Determine Which Graph Reversal Method to Use
     i_reverse = reverse->get();
     switch(i_reverse)
     {
@@ -331,7 +331,7 @@ public:
       case 2: //Autoreverse - Normal
         result->set(FLOAT_INTERPOLATE((i_value_y0 < i_value_y1) ? i_value_y0 : i_value_y1,
                                       (i_value_y0 < i_value_y1) ? i_value_y1 : i_value_y0,
-                                      (i_value_y0 < i_value_y1) 
+                                      (i_value_y0 < i_value_y1)
                               ? (float)i_index_x0 + i_sequence_data[i_seq_index]
                               : (float)i_index_x1 - i_sequence_data[i_seq_index],
                                 (float)i_index_x0,

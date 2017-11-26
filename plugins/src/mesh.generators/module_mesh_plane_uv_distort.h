@@ -82,9 +82,9 @@ public:
       "x_res:float?min=2,"
       "y_res:float?min=2,"
       "distortion:complex{"
-        "x_shape:sequence,"
+        "x_shape:float_sequence,"
         "x_shape_multiplier:float,"
-        "z_shape:sequence,"
+        "z_shape:float_sequence,"
         "z_shape_multiplier:float"
       "}"
     ;

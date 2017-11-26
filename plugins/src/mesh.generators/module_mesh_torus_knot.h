@@ -103,9 +103,9 @@ public:
         "phi_offset:float,"
         "size:complex"
         "{"
-          "size_shape_x:sequence,"
+          "size_shape_x:float_sequence,"
           "size_shape_x_multiplier:float,"
-          "size_shape_y:sequence,"
+          "size_shape_y:float_sequence,"
           "size_shape_y_multiplier:float"
         "}"
         ;
