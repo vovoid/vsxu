@@ -775,6 +775,7 @@ public:
           "nudge_minus:float"
       "}"
     ;
+    info->output = true;
     info->component_class = "system";
     info->description = "This represents the Akai APC20 midi\ncontroller.";
   }

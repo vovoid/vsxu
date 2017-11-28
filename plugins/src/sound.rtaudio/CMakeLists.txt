@@ -54,7 +54,7 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  set( DEFINITIONS -D__WINDOWS_DS__)
+  set( DEFINITIONS -D__WINDOWS_DS__ -D__WINDOWS_MM__)
   set( AUDIO_LIBRARIES ${AUDIO_LIBRARIES} winmm dsound)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
