@@ -48,7 +48,9 @@
 #include "module_system_input_keyboard.h"
 #include "module_system_input_mouse.h"
 
-
+#if PLATFORM == PLATFORM_LINUX
+  #include "module_system_joystick.h"
+#endif
 
 //******************************************************************************
 //*** F A C T O R Y ************************************************************
@@ -87,6 +89,9 @@ vsx_module* MOD_CM(unsigned long module, void* args) {
     case 10: return (vsx_module*)(new module_system_input_game_controler);
     case 11: return (vsx_module*)(new module_system_input_keyboard);
     case 12: return (vsx_module*)(new module_system_input_mouse);
+#if PLATFORM == PLATFORM_LINUX
+  case 13: return (vsx_module*)(new module_system_joystick);
+#endif
   }
   return 0;
 }
@@ -106,12 +111,19 @@ void MOD_DM(vsx_module* m,unsigned long module) {
     case 10: delete (module_system_input_game_controler*)m; break;
     case 11: delete (module_system_input_keyboard*)m; break;
     case 12: delete (module_system_input_mouse*)m; break;
+#if PLATFORM == PLATFORM_LINUX
+  case 13: delete (module_system_joystick*)m; break;
+#endif
   }
 }
 
 unsigned long MOD_NM(vsx_module_engine_environment* environment)
 {
   VSX_UNUSED(environment);
+#if PLATFORM == PLATFORM_LINUX
+return 14;
+#else
   return 13;
-}  
+#endif
+}
 
