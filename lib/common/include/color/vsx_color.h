@@ -21,10 +21,12 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#pragma once 
+#pragma once
 
 #include <math/vector/vsx_vector3.h>
 #include <vsx_platform.h>
+
+#define VSX_COLOR_H
 
 template<typename T = float>
 class vsx_color

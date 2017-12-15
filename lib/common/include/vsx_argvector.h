@@ -63,6 +63,17 @@ public:
     data.push_back(val);
   }
 
+  /**
+   * @brief add_param_and_value
+   * @param param Ex. "my_param", without the "-"
+   * @param value String value.
+   */
+  void add_param_and_value(vsx_string<> param, vsx_string<> value)
+  {
+    data.push_back("-" + param);
+    data.push_back(value);
+  }
+
   bool has_param(const vsx_string<>& param)
   {
     size_t data_num_elements = size();

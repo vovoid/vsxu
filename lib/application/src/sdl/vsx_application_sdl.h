@@ -103,7 +103,46 @@ class vsx_application_sdl
         vsx_application_display::get()->displays.push_back( vsx_application_display::display_info(display_bounds[i].x, display_bounds[i].y, display_bounds[i].w, display_bounds[i].h) );
     }
 
+    // automatic proportional window size
+    if (num_displays >= 1 && vsx_argvector::get_instance()->has_param("sa") && !vsx_argvector::get_instance()->has_param("s"))
+    {
+      int w = display_bounds[0].w;
+      int w_initial = w;
+      int h = display_bounds[0].h;
 
+      // Full HD => 720p
+      if (w == 1920 && h == 1080)
+      {
+        w = 1280;
+        h = 720;
+        vsx_printf(L"VSX Application: Setting automatic window size: %d x %d", w, h);
+      }
+
+      // UHD => double 720p
+      if (w == 3840 && h == 2160)
+      {
+        w = 2560;
+        h = 1440;
+        vsx_printf(L"VSX Application: Setting automatic window size: %d x %d", w, h);
+      }
+
+      // 2560x[1600|1440] => 1080p
+      if (w == 2560)
+      {
+        w = 1920;
+        h = 1080;
+        vsx_printf(L"VSX Application: Setting automatic window size: %d x %d", w, h);
+      }
+
+      // another unsupported resolution
+      if (w_initial == w)
+      {
+        w = (int)( (float)w * 0.66f );
+        h = (int)( (float)h * 0.66f );
+        vsx_printf(L"VSX Application: Setting automatic window size (based on first display) to 66\\% resolution: %d x %d", w, h);
+      }
+      vsx_argvector::get_instance()->add_param_and_value( "s", vsx_string_helper::i2s(w) + "x" + vsx_string_helper::i2s(h) );
+    }
 
 
     size_t chosen_display = 0;

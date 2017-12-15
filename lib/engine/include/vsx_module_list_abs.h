@@ -21,10 +21,9 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#pragma once
 
-#ifndef VSX_MODULE_LIST_ABS_H
-#define VSX_MODULE_LIST_ABS_H
-
+#include <module/vsx_module.h>
 #include <module/vsx_module_specification.h>
 
 // Module List Abstract Class
@@ -80,5 +79,3 @@ public:
   virtual ~vsx_module_list_abs()
   {}
 };
-
-#endif
