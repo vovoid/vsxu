@@ -23,6 +23,10 @@
 
 #pragma once
 
+#ifndef VSX_MATRIX
+#define VSX_MATRIX
+#endif
+
 #include <math/vector/vsx_vector2.h>
 #include <math/vector/vsx_vector3.h>
 
@@ -49,6 +53,19 @@ public:
     m[4] = m[1];   m[5] = m[5];   m[6] = m[9];   m[7] = m[13];
     m[8] = m[2];   m[9] = m[6];   m[10] = m[10];  m[11] = m[14];
     m[12] = m[3];  m[13] = m[7];  m[14] = m[11];  m[15] = m[15];
+  }
+
+  inline void transpose2() {
+    T m_1 = m[1];
+    T m_2 = m[2];
+    T m_3 = m[3];
+    m[1] = m[4];   m[2] = m[8];   m[3] = m[12];
+    T m_6 = m[6];
+    T m_7 = m[7];
+    m[4] = m_1;    m[6] = m[9];   m[7] = m[13];
+    T m_11 = m[11];
+    m[8] = m_2;   m[9] = m_6;    m[11] = m[14];
+    m[12] = m_3;  m[13] = m_7;  m[14] = m_11;
   }
 
   inline vsx_vector3d multiply_vector(const vsx_vector3d &a)
@@ -86,6 +103,16 @@ public:
     b.x = m[0] * a.x + m[1] * a.y + m[2]  * a.z + m[12];
     b.y = m[4] * a.x + m[5] * a.y + m[6]  * a.z + m[13];
     b.z = m[8] * a.x + m[9] * a.y + m[10] * a.z + m[14];
+    return b;
+  }
+
+  template < typename Ti = float>
+  inline vsx_vector3<Ti> multiply_vector_alt2(const vsx_vector3<Ti> &a)
+  {
+    vsx_vector3<Ti> b;
+    b.x = m[0] * a.x + m[3] * a.y + m[6] * a.z + m[12];
+    b.y = m[1] * a.x + m[4] * a.y + m[7] * a.z + m[13];
+    b.z = m[2] * a.x + m[5] * a.y + m[8] * a.z + m[14];
     return b;
   }
 
