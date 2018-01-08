@@ -26,6 +26,10 @@
 #include <vsx_platform.h>
 #include <inttypes.h>
 #include <math/vsx_math.h>
+#include <math/vector/vsx_vector2.h>
+
+template<typename T>
+class vsx_vector2;
 
 VSX_PACK_BEGIN
 template<typename T = float>
@@ -255,6 +259,14 @@ public:
       y(0.0f),
       z(0.0f)
   {}
+
+  vsx_vector3(const vsx_vector2<T> &n, T z = 0)
+  {
+    x = n.x;
+    y = n.y;
+    this->z = z;
+  }
+
 
   vsx_vector3(const T n[3])
   {

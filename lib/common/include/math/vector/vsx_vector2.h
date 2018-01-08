@@ -26,6 +26,9 @@
 #include <math/vsx_math.h>
 #include <math/vector/vsx_vector3.h>
 
+template<typename T>
+class vsx_vector3;
+
 VSX_PACK_BEGIN
 template<typename T = float>
 class vsx_vector2
