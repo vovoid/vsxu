@@ -156,6 +156,13 @@ public:
     a = ap * (T)0.01;
   }
 
+  vsx_color multiply_a(T alpha)
+  {
+    vsx_color<T> c = *this;
+    c.a = alpha;
+    return c;
+  }
+
   vsx_color multiply_rgb(T factor)
   {
     vsx_color<T> c;
