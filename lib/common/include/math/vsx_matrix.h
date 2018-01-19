@@ -29,6 +29,7 @@
 
 #include <math/vector/vsx_vector2.h>
 #include <math/vector/vsx_vector3.h>
+#include <type_traits>
 
 template<typename T = float>
 class vsx_matrix
@@ -289,6 +290,61 @@ public:
     m[2] = z.x; m[6] = z.y; m[10] = z.z;
   }
 
+
+  inline void translate(T x, T y, T z)
+  {
+    /*
+    1 0 0 x
+    0 1 0 y
+    0 0 1 z
+    0 0 0 1
+    */
+    m[0] = 1.0f;  m[4] = 0.0f;   m[8] = 0.0f;   m[12] = x;
+    m[1] = 0.0f;  m[5] = 1.0f;   m[9] = 0.0f;   m[13] = y;
+    m[2] = 0.0f;  m[6] = 0.0f;   m[10] = 1.0f;  m[14] = z;
+    m[3] = 0.0f;  m[7] = 0.0f;   m[11] = 0.0f;  m[15] = 1.0f;
+  }
+
+  inline void rotation_from_axis_angle_radians(T angle, T x, T y, T z)
+  {
+    /*
+      Rotation matrix:
+      xx(1-c)+c   xy(1-c)-zs  xz(1-c)+ys   0
+      yx(1-c)+zs  yy(1-c)+c   yz(1-c)-xs   0
+      xz(1-c)-ys  yz(1-c)+xs  zz(1-c)+c    0
+      0           0           0            1
+
+      c = cos(angle), s = sin(angle), and ||( x,y,z )|| = 1
+    */
+    T c = (T)cos(angle);
+    T s = (T)sin(angle);
+    T c1 = 1 - c;
+
+    T xx = x*x;
+    T yy = y*y;
+    T zz = z*z;
+
+    //normalize vector
+    T length = (T)sqrt(xx + yy + zz);
+    if ((T)DOUBLE_EQUALS(length, 1))
+    {
+      x = x / length;
+      y = y / length;
+      z = z / length;
+    }
+
+    m[0 ] = x*x*(c1)+c;
+    m[4 ] = x*y*(c1)-z*s;
+    m[8 ] = x*z*(c1)+y*s;
+
+    m[1 ] = x*y*(c1)+z*s;
+    m[5 ] = y*y*(c1)+c;
+    m[9 ] = y*z*(c1)-x*s;
+
+    m[2 ] = x*z*(c1)-y*s;
+    m[6 ] = y*z*(c1)+x*s;
+    m[10] = z*z*(c1)+c;
+  }
 
   #ifdef DEBUG
   void dump(char* label="n/a")
