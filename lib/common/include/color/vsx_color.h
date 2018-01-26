@@ -166,9 +166,9 @@ public:
   vsx_color multiply_rgb(T factor)
   {
     vsx_color<T> c;
-    c.r *= factor;
-    c.g *= factor;
-    c.b *= factor;
+    c.r = r * factor;
+    c.g = g * factor;
+    c.b = b * factor;
     c.a = a;
     return c;
   }

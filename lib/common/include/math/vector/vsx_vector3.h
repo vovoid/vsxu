@@ -23,6 +23,8 @@
 
 #pragma once
 
+#define VSX_VECTOR3
+
 #include <vsx_platform.h>
 #include <inttypes.h>
 #include <math/vsx_math.h>
@@ -252,6 +254,10 @@ public:
     return false;
   }
 
+  vsx_vector2<T> xy()
+  {
+    return vsx_vector2<T>(x, y);
+  }
 
   vsx_vector3()
     :

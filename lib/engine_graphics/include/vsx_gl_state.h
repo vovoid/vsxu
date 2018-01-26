@@ -1113,6 +1113,64 @@ public:
     #endif
   }
 
+  /**
+   * @brief matrix_rotate_f
+   * @param angle degrees
+   * @param x axis x
+   * @param y axis y
+   * @param z axis z
+   */
+  inline void matrix_rotate_radians_f(float angle, float x, float y, float z)
+  {
+    vsx_matrix<float> m_rotate;
+    /*
+      Rotation matrix:
+      xx(1-c)+c   xy(1-c)-zs  xz(1-c)+ys   0
+      yx(1-c)+zs  yy(1-c)+c   yz(1-c)-xs   0
+      xz(1-c)-ys  yz(1-c)+xs  zz(1-c)+c    0
+      0           0           0            1
+
+      c = cos(angle), s = sin(angle), and ||( x,y,z )|| = 1
+    */
+    float c = cosf(angle);
+    float s = sinf(angle);
+    float c1 = 1.0f - c;
+
+    float xx = x*x;
+    float yy = y*y;
+    float zz = z*z;
+
+    //normalize vector
+    float length = (float)sqrt(xx + yy + zz);
+    if (FLOAT_EQUALS(length, 1.0f))
+    {
+      x = x / length;
+      y = y / length;
+      z = z / length;
+    }
+
+    m_rotate.m[0 ] = x*x*(c1)+c;
+    m_rotate.m[4 ] = x*y*(c1)-z*s;
+    m_rotate.m[8 ] = x*z*(c1)+y*s;
+
+    m_rotate.m[1 ] = x*y*(c1)+z*s;
+    m_rotate.m[5 ] = y*y*(c1)+c;
+    m_rotate.m[9 ] = y*z*(c1)-x*s;
+
+    m_rotate.m[2 ] = x*z*(c1)-y*s;
+    m_rotate.m[6 ] = y*z*(c1)+x*s;
+    m_rotate.m[10] = z*z*(c1)+c;
+
+    memcpy(&m_temp.m[0], &core_matrix[i_matrix_mode].m[0], sizeof(vsx_matrix<float>) );
+    core_matrix[i_matrix_mode].multiply( &m_rotate, &m_temp);
+
+    #ifndef VSX_NO_GL
+      // TODO: use real OpenGL call here
+      glLoadIdentity();
+      glMultMatrixf(core_matrix[i_matrix_mode].m);
+    #endif
+  }
+
   inline void matrix_mult_f(float* res)
   {
     memcpy(&m_temp.m[0], res, sizeof(vsx_matrix<float>) );

@@ -23,6 +23,8 @@
 
 #pragma once
 
+#define VSX_VECTOR2
+
 #include <math/vsx_math.h>
 #include <math/vector/vsx_vector3.h>
 

@@ -134,6 +134,15 @@ public:
     destroy_vbo();
   }
 
+#ifdef VSX_DUMP
+  void debug_dump()
+  {
+    vsx_printf(L"vertices:");
+    foreach(vertices, i)
+      VSX_DUMP(vertices[i]);
+  }
+#endif
+
   vsx_vbo_bucket()
   {
     m_flags = 0;
