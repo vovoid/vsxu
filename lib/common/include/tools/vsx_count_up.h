@@ -17,7 +17,7 @@ public:
     value++;
     if (wrap)
       if (value > max)
-        value = 0;
+        value = start;
     return cur;
   }
 
