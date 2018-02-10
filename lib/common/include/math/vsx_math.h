@@ -60,7 +60,7 @@
         ((fabsf(B - A) < std::numeric_limits<float>::epsilon()) ? true : false)
 
 #define FLOAT_EXACT(A, B) \
-	(((A > B) || (A < B)) ? false : true)
+  (((A > B) || (A < B)) ? false : true)
 
 #define FLOAT_MOD(V, M) \
         ((V < 0) ? fmod(V, M) + M : fmod(V, M))
@@ -70,6 +70,9 @@
 
 #define IS_POWER_OF_TWO(v) \
   ((v != 0) && !(v & (v - 1)))
+
+#define IS_BETWEEN(v, a, b) \
+  (v > a && v < b)
 
 inline float FLOAT_INTERPOLATE(float Y0, float Y1, float X, float X0, float X1)
 {
