@@ -29,7 +29,7 @@ public:
       VSX_ERROR_RETURN("No FBO support");
 
     int prev_buf_l;
-    prev_buf_l = vsx_gl_state::get_instance()->framebuffer_bind_get();
+    prev_buf_l = vsx_gl_state::get()->framebuffer_bind_get();
 
     // MIN / MAG filter
     GLint min_mag = linear_filter?GL_LINEAR:GL_NEAREST;
@@ -155,7 +155,7 @@ public:
     this->height = height;
 
     // restore eventual previous buffer
-    vsx_gl_state::get_instance()->framebuffer_bind(prev_buf_l);
+    vsx_gl_state::get()->framebuffer_bind(prev_buf_l);
 
     valid_fbo = true; // fbo valid for capturing
   }
@@ -216,27 +216,27 @@ public:
     if (capturing_to_buffer)
       VSX_ERROR_RETURN("trying to capture to a buffer already capturing");
 
-    vsx_gl_state::get_instance()->viewport_get( &viewport_size[0] );
+    vsx_gl_state::get()->viewport_get( &viewport_size[0] );
 
-    prev_buf = vsx_gl_state::get_instance()->framebuffer_bind_get();
+    prev_buf = vsx_gl_state::get()->framebuffer_bind_get();
     glPushAttrib(GL_ALL_ATTRIB_BITS );
-    vsx_gl_state::get_instance()->matrix_get_v( VSX_GL_PROJECTION_MATRIX, buffer_save_matrix[0].m );
-    vsx_gl_state::get_instance()->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, buffer_save_matrix[1].m );
-    vsx_gl_state::get_instance()->matrix_get_v( VSX_GL_TEXTURE_MATRIX, buffer_save_matrix[2].m );
+    vsx_gl_state::get()->matrix_get_v( VSX_GL_PROJECTION_MATRIX, buffer_save_matrix[0].m );
+    vsx_gl_state::get()->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, buffer_save_matrix[1].m );
+    vsx_gl_state::get()->matrix_get_v( VSX_GL_TEXTURE_MATRIX, buffer_save_matrix[2].m );
 
 
-    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_PROJECTION_MATRIX );
-    vsx_gl_state::get_instance()->matrix_load_identity();
-    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
-    vsx_gl_state::get_instance()->matrix_load_identity();
-    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_TEXTURE_MATRIX );
-    vsx_gl_state::get_instance()->matrix_load_identity();
+    vsx_gl_state::get()->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+    vsx_gl_state::get()->matrix_load_identity();
+    vsx_gl_state::get()->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+    vsx_gl_state::get()->matrix_load_identity();
+    vsx_gl_state::get()->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+    vsx_gl_state::get()->matrix_load_identity();
 
-    buffer_save_blend = vsx_gl_state::get_instance()->blend_get();
-    vsx_gl_state::get_instance()->blend_set(1);
+    buffer_save_blend = vsx_gl_state::get()->blend_get();
+    vsx_gl_state::get()->blend_set(1);
 
-    vsx_gl_state::get_instance()->framebuffer_bind(frame_buffer_handle);
-    vsx_gl_state::get_instance()->viewport_set(0, 0, width, height);
+    vsx_gl_state::get()->framebuffer_bind(frame_buffer_handle);
+    vsx_gl_state::get()->viewport_set(0, 0, width, height);
 
     capturing_to_buffer = true;
   }
@@ -265,21 +265,21 @@ public:
       GL_NEAREST
     );
 
-    vsx_gl_state::get_instance()->framebuffer_bind(prev_buf);
-    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_PROJECTION_MATRIX );
-    vsx_gl_state::get_instance()->matrix_load_identity();
-    vsx_gl_state::get_instance()->matrix_mult_f( buffer_save_matrix[0].m );
-    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
-    vsx_gl_state::get_instance()->matrix_load_identity();
-    vsx_gl_state::get_instance()->matrix_mult_f( buffer_save_matrix[1].m );
-    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_TEXTURE_MATRIX );
-    vsx_gl_state::get_instance()->matrix_load_identity();
-    vsx_gl_state::get_instance()->matrix_mult_f( buffer_save_matrix[2].m );
-    vsx_gl_state::get_instance()->blend_set(buffer_save_blend);
+    vsx_gl_state::get()->framebuffer_bind(prev_buf);
+    vsx_gl_state::get()->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+    vsx_gl_state::get()->matrix_load_identity();
+    vsx_gl_state::get()->matrix_mult_f( buffer_save_matrix[0].m );
+    vsx_gl_state::get()->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+    vsx_gl_state::get()->matrix_load_identity();
+    vsx_gl_state::get()->matrix_mult_f( buffer_save_matrix[1].m );
+    vsx_gl_state::get()->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+    vsx_gl_state::get()->matrix_load_identity();
+    vsx_gl_state::get()->matrix_mult_f( buffer_save_matrix[2].m );
+    vsx_gl_state::get()->blend_set(buffer_save_blend);
 
     glPopAttrib();
 
-    vsx_gl_state::get_instance()->viewport_set( &viewport_size[0] );
+    vsx_gl_state::get()->viewport_set( &viewport_size[0] );
 
     capturing_to_buffer = false;
   }

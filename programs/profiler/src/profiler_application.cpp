@@ -148,8 +148,8 @@ void app_mouse_move(int x, int y)
     return;
 
   desktop->input_mouse_move(
-    clamp(x, 0, vsx_gl_state::get_instance()->viewport_get_width() ),
-    clamp(y, 0, vsx_gl_state::get_instance()->viewport_get_height() )
+    clamp(x, 0, vsx_gl_state::get()->viewport_get_width() ),
+    clamp(y, 0, vsx_gl_state::get()->viewport_get_height() )
   );
 }
 

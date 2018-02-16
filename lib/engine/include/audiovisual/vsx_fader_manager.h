@@ -35,8 +35,8 @@ public:
     for (auto it = fader_file_list.begin(); it != fader_file_list.end(); ++it)
       faders.push_back( new fader(*it) );
 
-    buf_current.init(&tex_current,vsx_gl_state::get_instance()->viewport_get_width(), vsx_gl_state::get_instance()->viewport_get_height(), false, true, false, true, 0);
-    buf_upcoming.init(&tex_upcoming, vsx_gl_state::get_instance()->viewport_get_width(), vsx_gl_state::get_instance()->viewport_get_height(), false, true, false, true, 0);
+    buf_current.init(&tex_current,vsx_gl_state::get()->viewport_get_width(), vsx_gl_state::get()->viewport_get_height(), false, true, false, true, 0);
+    buf_upcoming.init(&tex_upcoming, vsx_gl_state::get()->viewport_get_width(), vsx_gl_state::get()->viewport_get_height(), false, true, false, true, 0);
   }
 
   void mark_change()

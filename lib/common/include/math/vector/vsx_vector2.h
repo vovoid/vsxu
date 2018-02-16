@@ -189,7 +189,7 @@ public:
     y = m[4] * b.x + m[5] * b.y +  m[7];
   }
 
-  inline double distance(const vsx_vector2 &otherpoint)
+  inline double distance(const vsx_vector2 otherpoint)
   {
     double dx = otherpoint.x - x;
     double dy = otherpoint.y - y;

@@ -84,7 +84,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   passes = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"passes");
   passes->set(0);
 
-  gl_state = vsx_gl_state::get_instance();
+  gl_state = vsx_gl_state::get();
 
   start_value = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"start_value");
   start_value->set(1.0f);

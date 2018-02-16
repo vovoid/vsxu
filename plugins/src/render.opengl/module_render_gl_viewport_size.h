@@ -44,7 +44,7 @@ public:
     vy = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"vy");
     vy->set(0.0f);
 
-    gl_state = vsx_gl_state::get_instance();
+    gl_state = vsx_gl_state::get();
   }
 
   void run()

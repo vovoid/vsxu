@@ -232,7 +232,7 @@ public:
       VSX_ERROR_RETURN("Font Outline not initialized");
 
     if (gl_state == 0x0)
-      gl_state = vsx_gl_state::get_instance();
+      gl_state = vsx_gl_state::get();
 
     gl_state->matrix_mode (VSX_GL_MODELVIEW_MATRIX );
     gl_state->matrix_push();

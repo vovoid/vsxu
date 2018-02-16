@@ -61,7 +61,7 @@ public:
 
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 
-    gl_state = vsx_gl_state::get_instance();
+    gl_state = vsx_gl_state::get();
 
   }
 

@@ -100,7 +100,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   render_in->set(0);
   render_in->run_activate_offscreen = true;
   render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
-  gl_state = vsx_gl_state::get_instance();
+  gl_state = vsx_gl_state::get();
 }
 
 

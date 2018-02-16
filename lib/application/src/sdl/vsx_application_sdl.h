@@ -56,7 +56,7 @@ class vsx_application_sdl
     height = height > 0 ? height : 1;
 
     // Set viewport
-    vsx_gl_state::get_instance()->viewport_set( 0, 0, width, height );
+    vsx_gl_state::get()->viewport_set( 0, 0, width, height );
   }
 
   void setup()

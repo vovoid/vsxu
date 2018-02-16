@@ -11,8 +11,8 @@ int vsx_widget_coords::viewport[4];
 vsx_vector3<> vsx_vec_viewport()
 {
   return vsx_vector3f(
-    (float)vsx_gl_state::get_instance()->viewport_get_width(),
-    (float)vsx_gl_state::get_instance()->viewport_get_height()
+    (float)vsx_gl_state::get()->viewport_get_width(),
+    (float)vsx_gl_state::get()->viewport_get_height()
   );
 }
 

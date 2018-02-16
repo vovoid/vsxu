@@ -142,7 +142,7 @@ public:
 
     allocate_second_texture = true;
 
-    gl_state = vsx_gl_state::get_instance();
+    gl_state = vsx_gl_state::get();
   }
 
   bool can_run()

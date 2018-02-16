@@ -60,8 +60,8 @@ public:
     {
       position_screen.x = (float)event.mouse.x;
       position_screen.y = (float)event.mouse.y;
-      position.x = (float)event.mouse.x / (float)vsx_gl_state::get_instance()->viewport_get_width();
-      position.y = (float)event.mouse.y / (float)vsx_gl_state::get_instance()->viewport_get_height();
+      position.x = (float)event.mouse.x / (float)vsx_gl_state::get()->viewport_get_width();
+      position.y = (float)event.mouse.y / (float)vsx_gl_state::get()->viewport_get_height();
       dragging = button_left || button_right;
       position_changed_since_last_frame = true;
       return;

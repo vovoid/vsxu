@@ -84,7 +84,7 @@ public:
 
   void beginBlobs()
   {
-    vsx_gl_state* gl_state = vsx_gl_state::get_instance();
+    vsx_gl_state* gl_state = vsx_gl_state::get();
     GLfloat tmpMat[16];
     gl_state->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, blobMat );
     gl_state->matrix_mode( VSX_GL_PROJECTION_MATRIX );

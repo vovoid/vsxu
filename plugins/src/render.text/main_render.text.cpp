@@ -175,7 +175,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   render_result->set(0);
   declare_run = true;
 
-  gl_state = vsx_gl_state::get_instance();
+  gl_state = vsx_gl_state::get();
 }
 
 

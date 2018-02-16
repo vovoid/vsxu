@@ -87,7 +87,7 @@ public:
 
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 
-    gl_state = vsx_gl_state::get_instance();
+    gl_state = vsx_gl_state::get();
     capture_in_progress = 0;
     M = 32;
     N = 32;

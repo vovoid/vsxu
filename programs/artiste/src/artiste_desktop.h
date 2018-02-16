@@ -312,8 +312,8 @@ public:
 
   void draw_2d()
   {
-    screen_x = vsx_gl_state::get_instance()->viewport_get_width();
-    screen_y = vsx_gl_state::get_instance()->viewport_get_height();
+    screen_x = vsx_gl_state::get()->viewport_get_width();
+    screen_y = vsx_gl_state::get()->viewport_get_height();
 
     glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);

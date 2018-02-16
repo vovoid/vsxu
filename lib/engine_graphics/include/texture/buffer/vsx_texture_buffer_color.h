@@ -30,12 +30,12 @@ public:
     int i_height = height;
     is_multisample = multisample;
 
-    vsx_gl_state::get_instance()->clear_errors();
+    vsx_gl_state::get()->clear_errors();
 
 
     // save the previous FBO (stack behaviour)
     int prev_buf_l;
-    prev_buf_l = vsx_gl_state::get_instance()->framebuffer_bind_get();
+    prev_buf_l = vsx_gl_state::get()->framebuffer_bind_get();
 
     GLuint texture_storage_type;
 
@@ -51,32 +51,32 @@ public:
 
     // Generate Color Texture
     glGenTextures(1, &frame_buffer_fbo_attachment_texture);
-    vsx_gl_state::get_instance()->accumulate_errors();
+    vsx_gl_state::get()->accumulate_errors();
 
     if (multisample)
       glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, frame_buffer_fbo_attachment_texture);
     else
       glBindTexture(GL_TEXTURE_2D, frame_buffer_fbo_attachment_texture);
-    vsx_gl_state::get_instance()->accumulate_errors();
+    vsx_gl_state::get()->accumulate_errors();
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    vsx_gl_state::get_instance()->accumulate_errors();
+    vsx_gl_state::get()->accumulate_errors();
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    vsx_gl_state::get_instance()->accumulate_errors();
+    vsx_gl_state::get()->accumulate_errors();
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_mag);
-    vsx_gl_state::get_instance()->accumulate_errors();
+    vsx_gl_state::get()->accumulate_errors();
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, min_mag);
-    vsx_gl_state::get_instance()->accumulate_errors();
+    vsx_gl_state::get()->accumulate_errors();
 
     if (multisample)
       glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, texture_storage_type, i_width, i_height, GL_FALSE);
     else
       //NULL means reserve texture memory, but texels are undefined
       glTexImage2D(GL_TEXTURE_2D, 0, texture_storage_type, i_width, i_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
-    vsx_gl_state::get_instance()->accumulate_errors();
+    vsx_gl_state::get()->accumulate_errors();
 
 
 
@@ -84,10 +84,10 @@ public:
     // GENERATE FBO
     //-------------------------
     glGenFramebuffersEXT(1, &frame_buffer_handle);
-    vsx_gl_state::get_instance()->accumulate_errors();
+    vsx_gl_state::get()->accumulate_errors();
 
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle);
-    vsx_gl_state::get_instance()->accumulate_errors();
+    vsx_gl_state::get()->accumulate_errors();
 
 
     // Attach textures to the FBO
@@ -112,7 +112,7 @@ public:
     //-------------------------
 
 
-    vsx_gl_state::get_instance()->accumulate_errors();
+    vsx_gl_state::get()->accumulate_errors();
 
     // Create Render buffer for blitting back to texture
     if (multisample)
@@ -145,7 +145,7 @@ public:
       );
 
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frame_buffer_handle);
-      vsx_gl_state::get_instance()->accumulate_errors();
+      vsx_gl_state::get()->accumulate_errors();
 
     }
 
@@ -180,7 +180,7 @@ public:
         vsx_printf(L"Error initializing FBO, status = %d\n", status);
       break;
     }
-    vsx_gl_state::get_instance()->framebuffer_bind(prev_buf_l);
+    vsx_gl_state::get()->framebuffer_bind(prev_buf_l);
   }
 
   void reinit
@@ -241,27 +241,27 @@ public:
     if (capturing_to_buffer)
       VSX_ERROR_RETURN("trying to capture to a buffer already capturing");
 
-    vsx_gl_state::get_instance()->viewport_get( &viewport_size[0] );
+    vsx_gl_state::get()->viewport_get( &viewport_size[0] );
 
-    prev_buf = vsx_gl_state::get_instance()->framebuffer_bind_get();
+    prev_buf = vsx_gl_state::get()->framebuffer_bind_get();
     glPushAttrib(GL_ALL_ATTRIB_BITS );
-    vsx_gl_state::get_instance()->matrix_get_v( VSX_GL_PROJECTION_MATRIX, buffer_save_matrix[0].m );
-    vsx_gl_state::get_instance()->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, buffer_save_matrix[1].m );
-    vsx_gl_state::get_instance()->matrix_get_v( VSX_GL_TEXTURE_MATRIX, buffer_save_matrix[2].m );
+    vsx_gl_state::get()->matrix_get_v( VSX_GL_PROJECTION_MATRIX, buffer_save_matrix[0].m );
+    vsx_gl_state::get()->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, buffer_save_matrix[1].m );
+    vsx_gl_state::get()->matrix_get_v( VSX_GL_TEXTURE_MATRIX, buffer_save_matrix[2].m );
 
 
-    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_PROJECTION_MATRIX );
-    vsx_gl_state::get_instance()->matrix_load_identity();
-    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
-    vsx_gl_state::get_instance()->matrix_load_identity();
-    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_TEXTURE_MATRIX );
-    vsx_gl_state::get_instance()->matrix_load_identity();
+    vsx_gl_state::get()->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+    vsx_gl_state::get()->matrix_load_identity();
+    vsx_gl_state::get()->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+    vsx_gl_state::get()->matrix_load_identity();
+    vsx_gl_state::get()->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+    vsx_gl_state::get()->matrix_load_identity();
 
-    buffer_save_blend = vsx_gl_state::get_instance()->blend_get();
-    vsx_gl_state::get_instance()->blend_set(1);
+    buffer_save_blend = vsx_gl_state::get()->blend_get();
+    vsx_gl_state::get()->blend_set(1);
 
-    vsx_gl_state::get_instance()->framebuffer_bind(frame_buffer_handle);
-    vsx_gl_state::get_instance()->viewport_set(0, 0, width, height);
+    vsx_gl_state::get()->framebuffer_bind(frame_buffer_handle);
+    vsx_gl_state::get()->viewport_set(0, 0, width, height);
 
     capturing_to_buffer = true;
   }
@@ -293,21 +293,21 @@ public:
       );
     }
 
-    vsx_gl_state::get_instance()->framebuffer_bind(prev_buf);
-    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_PROJECTION_MATRIX );
-    vsx_gl_state::get_instance()->matrix_load_identity();
-    vsx_gl_state::get_instance()->matrix_mult_f( buffer_save_matrix[0].m );
-    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
-    vsx_gl_state::get_instance()->matrix_load_identity();
-    vsx_gl_state::get_instance()->matrix_mult_f( buffer_save_matrix[1].m );
-    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_TEXTURE_MATRIX );
-    vsx_gl_state::get_instance()->matrix_load_identity();
-    vsx_gl_state::get_instance()->matrix_mult_f( buffer_save_matrix[2].m );
-    vsx_gl_state::get_instance()->blend_set(buffer_save_blend);
+    vsx_gl_state::get()->framebuffer_bind(prev_buf);
+    vsx_gl_state::get()->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+    vsx_gl_state::get()->matrix_load_identity();
+    vsx_gl_state::get()->matrix_mult_f( buffer_save_matrix[0].m );
+    vsx_gl_state::get()->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+    vsx_gl_state::get()->matrix_load_identity();
+    vsx_gl_state::get()->matrix_mult_f( buffer_save_matrix[1].m );
+    vsx_gl_state::get()->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+    vsx_gl_state::get()->matrix_load_identity();
+    vsx_gl_state::get()->matrix_mult_f( buffer_save_matrix[2].m );
+    vsx_gl_state::get()->blend_set(buffer_save_blend);
 
     glPopAttrib();
 
-    vsx_gl_state::get_instance()->viewport_set( &viewport_size[0] );
+    vsx_gl_state::get()->viewport_set( &viewport_size[0] );
 
     capturing_to_buffer = false;
   }

@@ -1,5 +1,4 @@
-#ifndef VSX_GL_STATE_H
-#define VSX_GL_STATE_H
+#pragma once
 
 // shadow state of OpenGL to avoid glGet* calls
 
@@ -8,7 +7,9 @@
 #include <engine_graphics_dllimport.h>
 #include <math/vsx_matrix.h>
 #include <string/vsx_string.h>
+#include <tools/vsx_singleton.h>
 
+#define vsxgl vsx_gl_state::get()
 
 ///////////////////////////////////////////////////////////////////////////////
 // WARNING:
@@ -167,6 +168,7 @@ const int gl_polygon_fill[] =
 };
 
 VSX_ENGINE_GRAPHICS_DLLIMPORT class vsx_gl_state
+  : public vsx::singleton<vsx_gl_state>
 {
 public:
 
@@ -1180,7 +1182,6 @@ public:
       glLoadIdentity();
       glMultMatrixf( core_matrix[i_matrix_mode].m );
     #endif
-
   }
 
   inline void matrix_ortho(double left, double right, double bottom, double top, double near_limit, double far_limit)
@@ -1446,16 +1447,4 @@ public:
 #endif
   }
 
-private:
-  VSX_ENGINE_GRAPHICS_DLLIMPORT static vsx_gl_state instance;
-public:
-  inline static vsx_gl_state* get_instance()
-  {
-    return &instance;
-  }
-
 };
-
-
-
-#endif

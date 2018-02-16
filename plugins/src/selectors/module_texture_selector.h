@@ -231,7 +231,7 @@ public:
   {
     i_am_ready = false; //Don't do operations if the data isn't ready
 
-    gl_state = vsx_gl_state::get_instance();
+    gl_state = vsx_gl_state::get();
 
     i_prev_inputs = 15; //"16" for loading
     i_curr_inputs = 2;  //"3" for default

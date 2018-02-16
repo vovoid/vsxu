@@ -16,8 +16,8 @@ namespace vsx_texture_transform_helper
     if (!texture->get_transform())
       return;
 
-    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_TEXTURE_MATRIX );
-    vsx_gl_state::get_instance()->matrix_push();
+    vsx_gl_state::get()->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+    vsx_gl_state::get()->matrix_push();
 
     texture->get_transform()->transform();
   }
@@ -28,7 +28,7 @@ namespace vsx_texture_transform_helper
     if (!texture->get_transform())
       return;
 
-    vsx_gl_state::get_instance()->matrix_mode( VSX_GL_TEXTURE_MATRIX );
-    vsx_gl_state::get_instance()->matrix_pop();
+    vsx_gl_state::get()->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+    vsx_gl_state::get()->matrix_pop();
   }
 }

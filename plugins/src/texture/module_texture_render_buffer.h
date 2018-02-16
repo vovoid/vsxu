@@ -129,7 +129,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
   texture_result = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture_out");
 
-  gl_state = vsx_gl_state::get_instance();
+  gl_state = vsx_gl_state::get();
 
   allocate_second_texture = true;
   start();
