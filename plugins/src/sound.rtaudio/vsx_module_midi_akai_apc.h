@@ -928,7 +928,13 @@ public:
     nudge_minus->set(0.0f);
 
     redeclare_in_params(in_parameters);
-    m_midi_in->openPort(current_port);
+    try
+    {
+      m_midi_in->openPort(current_port);
+    }
+    catch (const std::exception& e)
+    {
+    }
 
     loading_done = true;
   }
