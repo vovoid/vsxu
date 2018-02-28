@@ -21,11 +21,10 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_ARGVECTOR_H
-#define VSX_ARGVECTOR_H
-
+#pragma once
 
 #include <vsx_platform.h>
+#include <SDL.h>
 #include <vsx_common_dllimport.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
@@ -47,6 +46,8 @@
 class vsx_argvector
 {
   vsx_nw_vector< vsx_string<> > data;
+  vsx_string<> config_directory;
+
 public:
   vsx_string<>& operator[](size_t index)
   {
@@ -221,6 +222,7 @@ public:
     return vsx_string_helper::path_from_filename(vsx_string<>(pBuf));
   }
 
+
   static vsx_string<> get_home_directory()
   {
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
@@ -235,6 +237,18 @@ public:
     return vsx_string<>(home_dir);
   }
 
+  void set_config_directory(vsx_string<> n)
+  {
+    config_directory = n;
+  }
+
+  vsx_string<> get_config_directory()
+  {
+    if (config_directory.size())
+      return config_directory;
+    return get_home_directory();
+  }
+
 private:
   COMMON_DLLIMPORT static vsx_argvector instance;
 public:
@@ -245,5 +259,3 @@ public:
 
   vsx_argvector() {}
 };
-
-#endif // VSX_ARGVECTOR_H

@@ -18,7 +18,7 @@ void log(vsx_string<>message, int level)
     openlog ("vsx_engine", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
     syslog(LOG_ERR,"%d: %s", level, message.c_str());
   #else
-    printf("LOG: %s\n", message.c_str() );
+    printf("VSX_LOG: %s\n", message.c_str() );
     /*
     if (log_level < level) return;
     printf("%s\n",message.c_str());

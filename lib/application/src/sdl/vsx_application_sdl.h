@@ -139,7 +139,7 @@ class vsx_application_sdl
       {
         w = (int)( (float)w * 0.66f );
         h = (int)( (float)h * 0.66f );
-        vsx_printf(L"VSX Application: Setting automatic window size (based on first display) to 66\\% resolution: %d x %d", w, h);
+        vsx_printf(L"VSX Application: Setting automatic window size (based on first display) to 66\% resolution: %d x %d", w, h);
       }
       vsx_argvector::get_instance()->add_param_and_value( "s", vsx_string_helper::i2s(w) + "x" + vsx_string_helper::i2s(h) );
     }

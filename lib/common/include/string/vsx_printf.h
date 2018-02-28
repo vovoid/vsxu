@@ -1,20 +1,20 @@
-
 #pragma once
 
-#ifdef VSX_PRINTF_TO_FILE
+#include <tools/vsx_singleton.h>
+#include <stdio.h>
 
-class vsx_pf_file_holder
+class vsx_printf_file_holder
+  : public vsx::singleton<vsx_printf_file_holder>
 {
-  FILE* fp;
+  FILE* fp = 0x0;
+
 public:
-  vsx_pf_file_holder()
-    :
-      fp(0x0)
+
+  vsx_printf_file_holder()
   {
-    fp = fopen( (vsx_string<>("debug")+ DIRECTORY_SEPARATOR +vsx_string<>("debug_log.txt")).c_str(), "w");
   }
 
-  ~vsx_pf_file_holder()
+  ~vsx_printf_file_holder()
   {
     if (fp)
       fclose(fp);
@@ -25,29 +25,23 @@ public:
     return fp;
   }
 
+  void output_to_file(const char* filename)
+  {
+    fp = fopen(filename, "w");
+  }
+
   void flush()
   {
     fflush(fp);
   }
-
-public:
-  static vsx_pf_file_holder* get_instance()
-  {
-    static vsx_pf_file_holder instance;
-    return &instance;
-  }
 };
 
-
 #define vsx_printf(...) \
-  fwprintf(vsx_pf_file_holder::get_instance()->get_fp(), __VA_ARGS__); \
-  vsx_pf_file_holder::get_instance()->flush();
-
-#else
-
-  #define vsx_printf(...) \
-    wprintf(__VA_ARGS__); \
-    fflush(stdout)
-
-  #endif
-#
+{ \
+  wprintf(__VA_ARGS__); \
+  fflush(stdout); \
+  if (vsx_printf_file_holder::get()->get_fp()) { \
+    fwprintf(vsx_printf_file_holder::get()->get_fp(), __VA_ARGS__); \
+    vsx_printf_file_holder::get()->flush(); \
+  } \
+}
