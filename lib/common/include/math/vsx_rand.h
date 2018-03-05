@@ -38,8 +38,28 @@ public:
 
   void srand(uint32_t seed);
   uint32_t rand();
+
+  /**
+   * @brief drand
+   * @return a value between 0 and 1
+   */
   double drand();
+
+  /**
+   * @brief drand_c
+   * @return a value between -0.5 and 0.5
+   */
   double drand_c();
+
+  /**
+   * @brief frand
+   * @return a value between 0 and 1
+   */
   float frand();
+
+  /**
+   * @brief frand_c
+   * @return a value between -0.5f and 0.5f
+   */
   float frand_c();
 };
