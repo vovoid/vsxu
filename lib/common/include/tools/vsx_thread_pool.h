@@ -37,6 +37,9 @@ public:
     if (threads > 4)
       threads -= 2;
 
+    if (threads == 4)
+      threads -= 1;
+
     for_n (i, 0, threads)
       workers.emplace_back(
         [this]
