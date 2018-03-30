@@ -80,7 +80,29 @@ public:
       "render";
   }
 
+  void declare_operations(vsx_nw_vector<vsx_module_operation*>& operations )
+  {
+    vsx_module_operation* operation = new vsx_module_operation;
+    operation->handle = "flip_uv_vertical";
+    operation->name = "Flip UVs vertically";
+    operations.push_back( operation );
+  }
 
+  void run_operation(vsx_module_operation& operation)
+  {
+    if (operation.handle == "flip_uv_vertical")
+    {
+      tex_coord_a->set( 1 - tex_coord_a->get(1), 1 );
+      tex_coord_b->set( 1 - tex_coord_b->get(1), 1 );
+      user_message = "module||uvs flipped vertically";
+    }
+  }
+
+  void destroy_operations(vsx_nw_vector<vsx_module_operation*>& operations)
+  {
+    foreach (operations, i)
+      delete operations[i];
+  }
 
   void beginBlobs()
   {

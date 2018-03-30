@@ -65,7 +65,6 @@ public:
   vsx_command_list internal_cmd_in;
   vsx_command_list internal_cmd_out;
 
-
   VSXP_CLASS_DECLARE
 
   vsx_artiste_draw()
@@ -79,9 +78,11 @@ public:
 
   void load_desktop_a(vsx_string<> state_name = "")
   {
-    //printf("{CLIENT} creating desktop:");
     desktop = new vsx_artiste_desktop;
-    //printf(" [DONE]\n");
+
+    if (vsx_argvector::get_instance()->has_param("no_fps_overlay"))
+      gui_prod_fullwindow_helptext = false;
+
     internal_cmd_in.clear_normal();
     internal_cmd_out.clear_normal();
     // connect server widget to command lists

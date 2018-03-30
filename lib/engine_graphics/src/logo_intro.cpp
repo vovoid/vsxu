@@ -21,18 +21,15 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-
-//#include <string>
-//#ifdef FOO
 #include <map>
 #include "vsx_gl_global.h"
 #include <texture/vsx_texture.h>
 #include <time/vsx_timer.h>
 #include <vsx_logo_intro.h>
+#include <vsx_argvector.h>
 
 // logo animation settings
 float startanim = 0;
-//float animlen = 12;
 float animlen = 8;
 float fade = 1;
 
@@ -58,6 +55,13 @@ void vsx_logo_intro::draw(bool always,bool draw_background,bool draw_black_overl
       }
     }
   }
+
+  if (vsx_argvector::get_instance()->has_param("no_intro_overlay"))
+  {
+    logo_time = 1000;
+    finished = true;
+  }
+
 
   float dtime = (float)timer.dtime();
   if (always) {
@@ -219,7 +223,4 @@ vsx_logo_intro::vsx_logo_intro() {
 }
 
 void vsx_logo_intro::reinit() {
-  //luna->load_png_thread("_gfx/vsxu_logo.png",false);
-  //luna_bkg->load_png_thread("_gfx/vsxu_logo_bkg.png",false);
 }
-//#endif
