@@ -29,6 +29,7 @@
 #include "debug/vsx_error.h"
 #include <FTGL/ftgl.h>
 #include <string/vsx_string_helper.h>
+#include <vsx_gl_state.h>
 
 template < typename W = char >
 class text_info {
@@ -198,14 +199,22 @@ public:
     for (unsigned long i = 0; i < lines.size(); ++i)
     {
       gl_state->matrix_push();
+
+        float multiplier = 0.5f;
+        gl_state->matrix_scale_f(multiplier, multiplier, multiplier);
+
         if (align == 0)
           gl_state->matrix_translate_f( 0, ypos, 0 );
 
         if (align == 1)
-          gl_state->matrix_translate_f( -lines[i].size_x*0.5f,ypos, 0 );
+        {
+          vsx_printf(L"DEBUG: lines %s  -  size x: %f\n", lines[i].string.c_str(), lines[i].size_x);
+          gl_state->matrix_translate_f( -(lines[i].size_x) * 0.5f, ypos, 0 );
+        }
 
         if (align == 2)
-          gl_state->matrix_translate_f( -lines[i].size_x,ypos,0 );
+          gl_state->matrix_translate_f( -lines[i].size_x * multiplier, ypos, 0 );
+
 
         glColor4f(color.r, color.g, color.b, color.a);
         font_inner->Render(lines[i].string.c_str());
@@ -216,7 +225,7 @@ public:
           font_outline->Render(lines[i].string.c_str());
         }
       gl_state->matrix_pop();
-      ypos += leading;
+      ypos += leading / multiplier;
     }
   }
 

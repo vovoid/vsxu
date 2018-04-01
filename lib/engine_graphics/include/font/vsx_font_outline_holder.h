@@ -72,14 +72,14 @@ public:
     if (type & inner)
     {
       font_inner = new FTGLTextureFont((unsigned char*)fdata, size);
-      font_inner->FaceSize(64);
+      font_inner->FaceSize(96);
       if (!font_inner->CharMap(ft_encoding_unicode))
         VSX_ERROR_RETURN("Could not set unicode freetype encoding");
     }
     if (type & outline)
     {
       font_outline = new FTGLOutlineFont((unsigned char*)fdata, size);
-      font_outline->FaceSize(64);
+      font_outline->FaceSize(96);
       font_outline->CharMap(ft_encoding_unicode);
     }
     filesystem->f_close(fp);
