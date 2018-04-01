@@ -207,10 +207,7 @@ public:
           gl_state->matrix_translate_f( 0, ypos, 0 );
 
         if (align == 1)
-        {
-          vsx_printf(L"DEBUG: lines %s  -  size x: %f\n", lines[i].string.c_str(), lines[i].size_x);
           gl_state->matrix_translate_f( -(lines[i].size_x) * 0.5f, ypos, 0 );
-        }
 
         if (align == 2)
           gl_state->matrix_translate_f( -lines[i].size_x * multiplier, ypos, 0 );
