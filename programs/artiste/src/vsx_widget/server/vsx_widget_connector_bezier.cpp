@@ -28,7 +28,7 @@
 #include <math.h>
 #include <command/vsx_command.h>
 #include <command/vsx_command_list.h>
-#include "vsx_font.h"
+#include <font/vsx_font.h>
 #include <filesystem/vsx_filesystem.h>
 #include "vsx_widget_anchor.h"
 #include "vsx_widget_comp.h"

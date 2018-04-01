@@ -31,7 +31,7 @@
 #include <command/vsx_command.h>
 #include <command/vsx_command_list.h>
 #include <command/vsx_command_client_server.h>
-#include "vsx_font.h"
+#include <font/vsx_font.h>
 #include <filesystem/vsx_filesystem.h>
 #include "vsx_param.h"
 #include <module/vsx_module.h>

@@ -30,7 +30,7 @@
 #include <vsx_gl_global.h>
 
 // engine_graphics
-#include <vsx_font.h>
+#include <font/vsx_font.h>
 #include <vsx_gl_state.h>
 
 // generic

@@ -52,8 +52,8 @@ endif (VSXU_DEBUG EQUAL 1)
 
 set(SOURCES
   src/logo_intro.cpp
-  src/vsx_font.cpp
-  src/vsx_font_outline.cpp
+  src/font/vsx_font.cpp
+  src/font/vsx_font_outline.cpp
   src/vsx_gl_state.cpp
   src/gl_helper.cpp
   src/bitmap/loaders/vsx_bitmap_loader_jpg.cpp

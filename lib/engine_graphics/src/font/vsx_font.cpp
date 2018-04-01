@@ -26,7 +26,7 @@
 #include <map>
 #include <list>
 #include <filesystem/vsx_filesystem.h>
-#include "vsx_font.h"
+#include <font/vsx_font.h>
 #include "debug/vsx_error.h"
 
 #ifndef VSX_FONT_NO_FT
@@ -101,7 +101,7 @@ void vsx_font::reinit(vsx_font_info* f_info, vsx_string<>font, vsx::filesystem* 
     my_font_info.ftfont_outline = (void*)pfont_outline;
     #endif
   }
-}  
+}
 
 
   vsx_vector3<> vsx_font::print(vsx_vector3<> p, const vsx_string<>& str, const vsx_string<>& font, float size = 1, vsx_string<>colors) {
@@ -227,7 +227,7 @@ vsx_vector3<> vsx_font::get_size(const vsx_string<>& str, float size = 1)
       vsx_vector3<> pp;
       pp.x = (x2*size-x1*size)*0.8f*0.1f;
       return pp;
-    }    
+    }
   #endif
 
     int lines = 0;
@@ -243,7 +243,7 @@ vsx_vector3<> vsx_font::get_size(const vsx_string<>& str, float size = 1)
       if (cur_pos > max_char) max_char = cur_pos;
     }
     return vsx_vector3<>(((float)max_char)*0.37f*size,size*1.05f*(float)lines);
-  }  
+  }
 
 
 vsx_vector3<> vsx_font::print_center(vsx_vector3<> p, const vsx_string<>& str, float size = 1)
@@ -252,7 +252,7 @@ vsx_vector3<> vsx_font::print_center(vsx_vector3<> p, const vsx_string<>& str, f
   #ifndef VSX_FONT_NO_FT
   float x1 = 0.0f;
   float y1 = 0.0f;
-  float z1 = 0.0f; 
+  float z1 = 0.0f;
   float x2 = 0.0f;
   float y2 = 0.0f;
   float z2 = 0.0f;
@@ -279,6 +279,6 @@ vsx_vector3<> vsx_font::print_right(vsx_vector3<> p, const vsx_string<>& str, fl
   #endif
   return print(p,str,size);
 }
-  
+
 
 

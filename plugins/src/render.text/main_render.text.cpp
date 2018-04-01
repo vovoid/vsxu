@@ -25,7 +25,7 @@
 #include "_configuration.h"
 #include "vsx_param.h"
 #include <module/vsx_module.h>
-#include <vsx_font.h>
+#include <font/vsx_font.h>
 #include <FTGL/ftgl.h>
 
 typedef struct

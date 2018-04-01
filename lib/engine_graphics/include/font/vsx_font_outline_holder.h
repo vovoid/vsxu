@@ -1,6 +1,4 @@
 #pragma once
-//#include <FTGL/ftgl.h>
-//#include <vsx_font.h>
 
 class font_outline_holder
 {
@@ -74,14 +72,14 @@ public:
     if (type & inner)
     {
       font_inner = new FTGLTextureFont((unsigned char*)fdata, size);
-      font_inner->FaceSize(48);
+      font_inner->FaceSize(64);
       if (!font_inner->CharMap(ft_encoding_unicode))
         VSX_ERROR_RETURN("Could not set unicode freetype encoding");
     }
     if (type & outline)
     {
       font_outline = new FTGLOutlineFont((unsigned char*)fdata, size);
-      font_outline->FaceSize(48);
+      font_outline->FaceSize(64);
       font_outline->CharMap(ft_encoding_unicode);
     }
     filesystem->f_close(fp);
@@ -101,5 +99,4 @@ public:
       free(fdata);
   }
 };
-
 

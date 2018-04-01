@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include "vsx_font.h"
+#include <font/vsx_font.h>
 #include <audiovisual/vsx_state_manager.h>
 #include <time/vsx_timer.h>
 #include <filesystem/vsx_filesystem.h>

@@ -26,7 +26,7 @@
 #include "vsx_param.h"
 #include <module/vsx_module.h>
 #define VSX_FONT_NO_FT 1
-#include "vsx_font.h"
+#include <font/vsx_font.h>
 #include "vsx_glsl.h"
 
 

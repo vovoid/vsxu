@@ -32,7 +32,7 @@
 #include <command/vsx_command_list.h>
 
 // engine_graphics
-#include <vsx_font.h>
+#include <font/vsx_font.h>
 
 // profiler
 #include <profiler/vsx_profiler_manager.h>

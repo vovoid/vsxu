@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vsx_font_outline.h>
+#include <font/vsx_font_outline.h>
 #include <tools/vsx_managed_singleton.h>
 
 class outline_font_cache

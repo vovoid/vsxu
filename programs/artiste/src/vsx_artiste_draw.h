@@ -6,7 +6,7 @@
 #include <vsx_gl_global.h>
 #include <vsx_logo_intro.h>
 #include <profiler/vsx_profiler_manager.h>
-#include <vsx_font.h>
+#include <font/vsx_font.h>
 #include <vsx_engine.h>
 #include <artiste_desktop.h>
 #include <server/vsx_widget_server.h>
