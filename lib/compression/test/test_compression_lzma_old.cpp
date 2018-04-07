@@ -3,6 +3,9 @@
 #include <tools/vsx_foreach.h>
 #include <vsx_compression_lzma_old.h>
 
+#ifdef main
+#undef main
+#endif
 
 #define LZMA_PROPS_SIZE 14
 #define LZMA_SIZE_OFFSET 6

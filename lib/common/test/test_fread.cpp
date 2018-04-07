@@ -3,6 +3,10 @@
 #include <time/vsx_timer.h>
 #include <vsx_argvector.h>
 
+#ifdef main
+#undef main
+#endif
+
 size_t times = 2000;
 size_t block = 1024*1024;
 

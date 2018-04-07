@@ -3,6 +3,10 @@
 #include <vsx_argvector.h>
 #include <test/vsx_test.h>
 
+#ifdef main
+#undef main
+#endif
+
 void test_string_replace()
 {
   vsx_string<> test1("something $$name something");

@@ -5,6 +5,10 @@
 #include <filesystem/vsx_filesystem_helper.h>
 #include <test/vsx_test.h>
 
+#ifdef main
+#undef main
+#endif
+
 #define LZMA_PROPS_SIZE 14
 #define LZMA_SIZE_OFFSET 6
 

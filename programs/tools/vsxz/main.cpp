@@ -51,6 +51,10 @@ vsx_string<>current_path = "./";
 #include "create_vsx.h"
 #include "create_vsxz.h"
 
+#ifdef main
+#undef main
+#endif
+
 int main(int argc, char* argv[])
 {
   vsx_printf(

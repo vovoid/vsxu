@@ -4,6 +4,10 @@
 #include <vsx_argvector.h>
 #include <test/vsx_test.h>
 
+#ifdef main
+#undef main
+#endif
+
 size_t times = 20;
 size_t block = 1024*1024;
 uint64_t written_sum = 0;
@@ -28,7 +32,7 @@ vsx_string<> create_random_data_file()
       unsigned char v = rand();
       buf[j] = v;
       written_sum += v;
-    }    
+    }
 
     fwrite(buf, 1, block, fp);
   }

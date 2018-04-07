@@ -30,7 +30,7 @@ file(GLOB_RECURSE HEADER_FILES *.h)
 
 add_definitions(
  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
-) 
+)
 
 if (VSXU_DEBUG EQUAL 1)
   add_definitions( -DVSXU_DEBUG )
