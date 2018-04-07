@@ -210,7 +210,7 @@ public:
           gl_state->matrix_translate_f( -(lines[i].size_x) * 0.5f, ypos, 0 );
 
         if (align == 2)
-          gl_state->matrix_translate_f( -lines[i].size_x * multiplier, ypos, 0 );
+          gl_state->matrix_translate_f( -lines[i].size_x, ypos, 0 );
 
 
         glColor4f(color.r, color.g, color.b, color.a);
