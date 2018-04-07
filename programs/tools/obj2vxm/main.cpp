@@ -46,6 +46,10 @@
 #include <io.h>
 #endif
 
+#ifdef main
+#undef main
+#endif
+
 vsx_mesh<float> mesh;
 
 char cur_path[4096];

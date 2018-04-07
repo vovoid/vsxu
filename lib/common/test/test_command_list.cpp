@@ -4,6 +4,10 @@
 #include <vsx_argvector.h>
 #include <test/vsx_test.h>
 
+#ifdef main
+#undef main
+#endif
+
 using namespace vsx;
 
 void test_legacy()

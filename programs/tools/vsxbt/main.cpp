@@ -36,6 +36,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef main
+#undef main
+#endif
+
 vsx_string<>current_path = "./";
 
 int main(int argc, char* argv[])
