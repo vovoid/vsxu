@@ -4,9 +4,9 @@
 #include <vsx_compression_lzham.h>
 #include <tools/vsx_thread_pool.h>
 #include <filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_header.h>
-#include <filesystem/archive/vsxz/vsx_filesystem_archive_chunk_write.h>
 #include <filesystem/vsx_filesystem_identifier.h>
 #include <filesystem/tree/vsx_filesystem_tree_serialize_binary.h>
+
 
 namespace vsx
 {
@@ -65,24 +65,14 @@ void filesystem_archive_vsxz_writer::archive_files_saturate_all()
   vsx_printf(L"reading all files from disk [DONE]\n");
 }
 
-
-
-void filesystem_archive_vsxz_writer::close()
+void filesystem_archive_vsxz_writer::calculate_ratios()
 {
-  req(archive_files.size());
+  compression_ratios.allocate(archive_files.size() - 1);
+  compression_ratios.memory_clear();
 
   vsx_ma_vector<bool> is_processed;
   is_processed.allocate(archive_files.size() - 1);
   is_processed.memory_clear();
-
-  // Read all files from disk
-  archive_files_saturate_all();
-
-
-  // Calculate compression ratios for all large files
-  vsx_ma_vector<float> compression_ratios;
-  compression_ratios.allocate(archive_files.size() - 1);
-  compression_ratios.memory_clear();
 
   foreach (archive_files, i)
   {
@@ -107,8 +97,14 @@ void filesystem_archive_vsxz_writer::close()
     if (archive_files[id_found].data.size() <= 1024*1024)
       break;
 
-
     compression_ratios[id_found] = 1.0f;
+
+    if (!do_calculate_ratios)
+    {
+      compression_ratios[id_found] = 0.5f;
+      continue;
+    }
+
     req_continue(do_compress);
     vsx_thread_pool::instance()->add( [&](float& ratio, size_t ai)
       {
@@ -128,12 +124,14 @@ void filesystem_archive_vsxz_writer::close()
     );
   }
 
+  // wait until thread pool done
   vsx_thread_pool::instance()->wait_all(100);
+}
 
-
-  // Add files to compression chunks
-  const size_t max_chunks = 9;
-  filesystem_archive_chunk_write chunks[max_chunks];
+void filesystem_archive_vsxz_writer::add_files_to_chunk_space_evenly()
+{
+  vsx_ma_vector<bool> is_processed;
+  is_processed.allocate(archive_files.size() - 1);
   is_processed.memory_clear();
 
   foreach (archive_files, i)
@@ -157,11 +155,11 @@ void filesystem_archive_vsxz_writer::close()
     is_processed[id_found] = true;
 
     // handle text file
-    if (filesystem_identifier::is_text_file(archive_files[id_found].data))
+    if (filesystem_identifier::is_text_file(archive_files[id_found].data, 256))
     {
       chunks[1].add_file( &archive_files[id_found] );
       is_processed[id_found] = true;
-      vsx_printf(L"adding file %hs to chunk 1\n", archive_files[id_found].filename.c_str());
+      vsx_printf(L"adding file %hs to text file chunk: 1\n", archive_files[id_found].filename.c_str());
       continue;
     }
 
@@ -207,6 +205,21 @@ void filesystem_archive_vsxz_writer::close()
   foreach (is_processed, i)
     if (!is_processed[i])
       vsx_printf(L"*** file id %ld not processed! (%hs)\n",(long)i, archive_files[i].filename.c_str());
+}
+
+
+void filesystem_archive_vsxz_writer::close()
+{
+  req(archive_files.size());
+
+  // Read all files from disk
+  archive_files_saturate_all();
+
+  // Calculate compression ratios for all large files
+  calculate_ratios();
+
+  // Add files to compression chunks
+  add_files_to_chunk_space_evenly();
 
   // Set chunk id in all file info structs
   for_n(i, 0, max_chunks)

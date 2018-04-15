@@ -82,6 +82,7 @@ int main(int argc, char* argv[])
     "       -fn [file w/file list one file per line] (optional)\n"
     "       -z pack archive as vsxz                  (optional)\n"
     "       -nc when creating vsxz, don't compress   (optional)\n"
+    "       -nrc no ratio calculation                (optional)\n"
     "\n"
     "Information:\n"
     "  vsxz -info [archive filename]                 show meta data about archive\n"

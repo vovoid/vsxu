@@ -12,6 +12,9 @@ void create_vsxz()
 
   vsx::filesystem_archive_vsxz_writer archive;
 
+  if (vsx_argvector::get_instance()->has_param("nrc"))
+    archive.set_no_ratio_calculation();
+
   if (vsx_argvector::get_instance()->has_param("nc"))
     archive.disable_compression();
 

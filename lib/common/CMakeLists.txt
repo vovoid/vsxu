@@ -52,6 +52,7 @@ set(SOURCES
   src/filesystem/archive/vsx_filesystem_archive_reader.cpp
   src/filesystem/archive/vsx/vsx_filesystem_archive_vsx_reader.cpp
   src/filesystem/archive/vsx/vsx_filesystem_archive_vsx_writer.cpp
+  src/filesystem/archive/vsxz/vsx_filesystem_archive_chunk_write.cpp
   src/filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_reader.cpp
   src/filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_info.cpp
   src/filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_writer.cpp

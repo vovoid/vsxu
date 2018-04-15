@@ -7,7 +7,7 @@ namespace vsx
 class filesystem_identifier
 {
 public:
-  static bool is_text_file(vsx_ma_vector<unsigned char>& data)
+  static bool is_text_file(vsx_ma_vector<unsigned char>& data, size_t count = 50)
   {
     size_t char_count = 0;
     size_t other_count = 0;
@@ -16,7 +16,7 @@ public:
 
     foreach (data, i)
     {
-      if (i > 50)
+      if (i > count)
         break;
 
       if (
@@ -25,6 +25,12 @@ public:
           (data_p[i] >= 'A' && data_p[i] <= 'Z')
           ||
           (data_p[i] >= '0' && data_p[i] <= '9')
+          ||
+          (data_p[i] == ' ' )
+          ||
+          (data_p[i] == '_' )
+          ||
+          (data_p[i] == '-' )
         )
       {
         char_count++;

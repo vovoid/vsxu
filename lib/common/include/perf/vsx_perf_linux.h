@@ -57,7 +57,7 @@ public:
 
     fd = (int)perf_event_open(&pe, 0, -1, -1, 0);
     if (fd == -1) {
-       fprintf(stderr, "Error opening leader %llx\n", pe.config);
+       fprintf(stderr, "VSX Perf: Error opening cache misses event handle %llx\n", pe.config);
     }
   }
 
@@ -100,7 +100,7 @@ public:
 
     fd = (int)perf_event_open(&pe, 0, -1, -1, 0);
     if (fd == -1) {
-       fprintf(stderr, "Error opening leader %llx\n", pe.config);
+       fprintf(stderr, "VSX Perf: Error opening cpu instructions event handle %llx\n", pe.config);
     }
 
   }
