@@ -240,6 +240,9 @@ UpgradeLog*.htm
 *.bim.layout
 *.bim_*.settings
 
+# Mac OS folder attributes folder
+.DS_Store/
+
 # Microsoft Fakes
 FakesAssemblies/
 
@@ -262,6 +265,9 @@ FakesAssemblies/
 **/*.Server/GeneratedArtifacts
 **/*.Server/ModelManifest.xml
 _Pvt_Extensions
+
+# Visual Studio Code Text Editor Files
+.vscode/
 
 # Paket dependency manager
 .paket/paket.exe
